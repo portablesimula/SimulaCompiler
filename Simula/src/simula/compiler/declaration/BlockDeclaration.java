@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
-import simula.compiler.SimulaCompiler;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.expression.Variable;
@@ -33,8 +32,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public class BlockDeclaration extends DeclarationScope // Declaration implements Scope
-{ 
-  private static int currentBlockLevel=0; // Used during doChecking
+{ private static int currentBlockLevel=0; // Used during doChecking
   public boolean isMainModule;  // If true; this is the outermost Subblock or Prefixed Block.
   public boolean isContextFree; // If true; all member methods are independent of context
 //	Variable blockPrefix; // Block Prefix in case of Prefixed Block.
@@ -79,7 +77,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   //*** createMaybeBlock
   //***********************************************************************************************
   // Used by ProgramModule
-//  public static BlockDeclaration createMaybeBlock(Expression blockPrefix,String blockIdentifier)
   public static BlockDeclaration createMaybeBlock(Variable blockPrefix,String blockIdentifier)
   {	BlockDeclaration module=new BlockDeclaration(Global.sourceName);
 	module.isMainModule=true;
@@ -230,7 +227,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	block.declaredIn.hasLocalClasses=true;
 	//Util.BREAK("BlockDeclaration.doParseClassDeclaration: set hasLocalClasses in="+block.declaredIn);
 //	if(block.prefix==null) block.prefix=StandardClass.BASICIO.identifier;
-//	if(block.prefix==null) block.prefix=StandardClass.COMPONENT.identifier;
 	if(block.prefix==null) block.prefix=StandardClass.CLASS.identifier;
 
 	BlockParser.doParse(block,true);
@@ -369,7 +365,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   }
   
   // ***********************************************************************************************
-  // *** Coding: doPrototypeCoding
+  // *** Coding: doPrototypeCoding  --  This code instead of traditional Prototype
   // ***********************************************************************************************
   private void doPrototypeCoding(String indent)
   {	//String packetName=SimulaCompiler.packetName;
@@ -400,9 +396,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     		doMethodJavaCoding(indent); break;
       case SubBlock:
 //    	    doSubBlockJavaCoding(indent); break;
-    	  
-//    	   code: new SubBlock
-    	  
   		    doBlockJavaCoding(indent); break;
       case PrefixedBlock:
   		    doBlockJavaCoding(indent); break;
@@ -545,37 +538,13 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	
 	Util.code(indent+"      // Declaration Code");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+"   ");
-
-	
-//	if(blockKind==BlockKind.Class || blockKind==BlockKind.PrefixedBlock
-////				|| blockKind==BlockKind.SimulaProgram
-//				) doCodeCreateClassBody(indent+"      ");
-//	if(blockKind==BlockKind.Switch) doCodeSwitchBody(indent+"      ");
-//
-//	if(isQPSystemBlock() || isDetachable())
-//	{ if(this.isMainModule)
-//		Util.code(indent+"      "+"BEGIN(); // Begin Program in current Thread"); 
-//	}
-//	else
-//	if(blockKind==BlockKind.Procedure)
-//		Util.code(indent+"      "+"STM();");
-	
 	switch(blockKind)
 	{ case Class:
 	  case PrefixedBlock: doCodeCreateClassBody(indent+"      "); break;
 	  case Switch: doCodeSwitchBody(indent+"      "); break;
 	  case Procedure: Util.code(indent+"      "+"STM();");		
-	  
-//	  case StandardClass:
-//	  case ConnectionBlock:
-//	  case CompoundStatement:
-//	  case Method: // Procedure coded as a Java Method. 
-//	  case SimulaProgram:
-//	  case SubBlock:
-		  						
 	  default: // Nothing
 	}
-		
 	Util.code(indent+"   "+'}'); // End of Constructor
   }
   
@@ -617,12 +586,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   {	switch(blockKind)
 	{ case SubBlock:  codeSubBlockCode(indent); break;
 	  case Procedure: codeProcedureBody(indent); break;
-	  case Class: codeClassStatements(indent);
-//		  String classID=this.getJavaIdentifier();
-////		  Util.code(indent+"public adHoc00$A STM() { return((adHoc00$A)CODE$.EXEC$()); }");
-//		  Util.code(indent+"   public "+classID+" STM() { return(("+classID+")CODE$.EXEC$()); }");
-
-		  break; // USES DEFAULT VERSION OF  STM()
+	  case Class: codeClassStatements(indent); break;
 //	  case PrefixedBlock: codeSubBlockCode(indent); break;
 	  case PrefixedBlock: break; // USES DEFAULT VERSION OF  STM()
 	  case SimulaProgram: codeProgramCode(indent); break;
@@ -649,11 +613,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   private void codeProgramCode(String indent)
   {	Util.code(indent+"   // SimulaProgram Statements");
-//	Util.code(indent+"   public "+getJavaIdentifier()+" STM() {");
-//	Util.code(indent+"   public void STM() {");
 	Util.code(indent+"   public RTObject$ STM() {");
 	Util.code(indent+"      "+"BPRG(\""+identifier+"\");");
-	doCodeLabelSwitch(indent+"      "); // Prepare for goto-engineering.
+	doCodeLabelSwitch(indent+"      "); // Prepare for goto/label-engineering.
 	for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
 	Util.code(indent+"      "+"EBLK();");
 	Util.code(indent+"      "+"return(null);");
@@ -665,8 +627,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   private void codeSubBlockCode(String indent)
   {	Util.code(indent+"   // SubBlock Statements");
-//	Util.code(indent+"   public "+getJavaIdentifier()+" STM() {");
-//	Util.code(indent+"   public void STM() {");
 	Util.code(indent+"   public RTObject$ STM() {");
     Util.code(indent+"      "+"BBLK();");
     doCodeLabelSwitch(indent+"      "); // Prepare for goto-engineering.
@@ -771,15 +731,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   { StringBuilder s=new StringBuilder(indent);
     s.append('[').append(blockLevel).append("] ");
     if(prefix!=null) s.append(prefix).append(' ');
-//    s.append("CLASS ").append(identifier);
     s.append(blockKind).append(' ').append(identifier);
     s.append(editParameterList());
     System.out.println(s.toString());
-	String beg="begin["+edScopeChain()+']'; //if(prefix!=null) beg=prefix+" "+beg;
+	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
     System.out.println(indent+beg); 
-//    for(Iterator<Declaration> it=declarationList.iterator();it.hasNext();) it.next().print(indent+"   ",";");
-//    for(Iterator<Statement> it=statements.iterator();it.hasNext();) it.next().print(indent+"   ",";");
     for(Declaration decl:declarationList) decl.print(indent+"   ",";");
     for(Statement stm:statements) stm.print(indent+"   ",";");
 	System.out.println(indent+"end["+edScopeChain()+']'+tail); 

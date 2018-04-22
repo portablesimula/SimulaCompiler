@@ -109,7 +109,6 @@ public abstract class BlockParser extends SyntaxClass
     { block.setStatement(Statement.doParse());
       if(inClass) block.statements.add(new InnerStatement()); // Implicit INNER
     }
-
   }
   
   private static void doParseBody(BlockDeclaration block,boolean inClass)

@@ -53,7 +53,6 @@ public class UnaryOperation extends Expression {
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-//		return ("(" + oprator.toJavaCode() + ' ' + operand.toJavaCode() + ")");
 		return ("(" + oprator.toJavaCode() + "(" + operand.toJavaCode() + "))");
 	}
 

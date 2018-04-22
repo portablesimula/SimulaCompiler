@@ -7,7 +7,6 @@
  */
 package simula.compiler.statement;
 
-import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
@@ -19,7 +18,6 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.runtime.Simulation$;
 
 /**
  * Activation Statement.
@@ -49,12 +47,6 @@ public class ActivationStatement extends Statement
   Expression time=null;
   Boolean prior=false;
   ActivationCode code;
-  
-//	Meaning  activate;  // Set during doCheckin
-//	Meaning  activate1;
-//	Meaning  activate2;
-//	Meaning  activate3;
-
 
   public ActivationStatement()
   { Token activator=Parser.prevToken;
@@ -64,7 +56,6 @@ public class ActivationStatement extends Statement
     sched=Parser.currentToken;
     code=ActivationCode.direct;
     if(Parser.accept(KeyWord.AT)||Parser.accept(KeyWord.DELAY))
-//    { code=(Parser.currentToken.getKeyWord()==KeyWord.AT)?ActivationCode.at:ActivationCode.delay;
     { code=(Parser.prevToken.getKeyWord()==KeyWord.AT)?ActivationCode.at:ActivationCode.delay;
       time=Expression.parseExpression();
       if(Parser.accept(KeyWord.PRIOR)) prior=true;
@@ -138,9 +129,6 @@ public class ActivationStatement extends Statement
 		  
   public String toString()
   { String pri=""; if(prior) pri=" PRIOR";
-//    if(atDelay) 
-//	     return(""+activator+' '+object1+' '+code+' '+time+pri);
-//    else return(""+activator+' '+object1+' '+code+' '+object2);
     String activator=((REAC)?"REACTIVATE ":"ACTIVATE ")+object1;
 	switch(code) {
       case at:

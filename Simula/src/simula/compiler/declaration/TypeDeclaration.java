@@ -98,7 +98,6 @@ public class TypeDeclaration extends Declaration {
 		String modifier = "";
 		if (Global.currentScope.blockKind==BlockKind.Class) modifier = "public ";
 		String value=(constantElement!=null)?constantElement.toJavaCode():type.edDefaultValue();
-//		return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + '=' + type.edDefaultValue() + ';');
 		return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + '=' + value + ';');
 	}
 

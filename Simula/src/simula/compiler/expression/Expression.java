@@ -9,7 +9,6 @@ package simula.compiler.expression;
 
 import simula.compiler.SyntaxClass;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -58,7 +57,6 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public abstract class Expression extends SyntaxClass
-//{ public Expression backLink;
 { public SyntaxClass backLink; // True: This Expression is part of <backLink>Expression/Statement
 
   public String toString() { return("NO EXPRESSION"); }
@@ -79,15 +77,12 @@ public abstract class Expression extends SyntaxClass
   { //Parser.BREAK("Expression: parseSimpleExpression");   
 //  return(parseBinaryOperation2(13));  // 13: assignment
     return(parseBinaryOperation(14));  // 14: assignment
-//    return(parseOperation(14));  // 14: assignment  NY UTGAVE !!! 
   }
 
   private static Expression parseUnaryOperation()
   { // Parser.TRACE("Expression: parseUnaryOperation");
-	  
     Expression expr=new UnaryOperation(Parser.prevToken.getKeyWord(),parsePrimaryExpression());
     return(expr);
-//    return(parseOperation(14));  // 14: assignment  NY UTGAVE !!! 
   }
   
   // Vet ikke hvorfor dette virker !
@@ -105,35 +100,10 @@ public abstract class Expression extends SyntaxClass
     return(expr);
   }
   
-//  // Vet ikke hvorfor dette virker !  NY UTGAVE !!!
-//  private static Expression parseOperation(final int level)
-//  { //Parser.BREAK("Expression: parseOperation, level="+level);
-//    if(Parser.acceptUnaryOperator(level))
-//    { Parser.BREAK("Expression: parseOperation(1), level="+level);
-//      Expression expr=new UnaryOperation(Parser.prevToken.getKeyWord(),parseSimpleExpression());
-//      Util.BREAK("Expression: parseOperation(1), level="+level+", expr="+expr);
-//      return(expr);
-//    }
-//    else
-//    {	
-//	Expression expr=(level>0)?parseOperation(level-1):parsePrimaryExpression();
-//    //if(DEBUG) Util.BREAK("Expression: parseBinaryOperation(2), level="+level+", expr="+expr);
-//    while(Parser.acceptOperatorLevel(level))
-//    { KeyWord opr=Parser.prevToken.getKeyWord();
-//      if(level==0) expr=new BinaryOperation(expr,opr,parsePrimaryExpression());
-//      else if(opr==KeyWord.ASSIGNVALUE || opr==KeyWord.ASSIGNREF)
-//    	   expr=new BinaryOperation(expr,opr,parseExpression());
-//      else expr=new BinaryOperation(expr,opr,parseBinaryOperation(level-1));
-//    }
-//    
-//    return(expr);
-//    }
-//  }
-  
   
   private static Expression parseBooleanPrimary()
   { return(parseBooleanPrimary(7)); }
-  // Vet ikke hvorfor dette virker !  NY UTGAVE !!!
+  // Vet ikke hvorfor dette virker ! 
   private static Expression parseBooleanPrimary(final int level)
   { //if(DEBUG) Parser.BREAK("Expression.parseBooleanPrimary: level="+level);
 //	Expression expr=(level>0)?parseOperation(level-1):parseBooleanPrimary();
@@ -170,22 +140,8 @@ public abstract class Expression extends SyntaxClass
 	else if(Parser.accept(KeyWord.MINUS)) return(parseUnaryOperation());
 	else if(Parser.accept(KeyWord.NOT))
 	{ // Boolean-secondary =  [ NOT ]  Boolean-primary
-	  //return(parseUnaryOperation());
-		
-//	  Expression expr=parseSimpleExpression();
-//	  Expression expr=parsePrimaryExpression();
 	  Expression expr=parseBooleanPrimary();
-//	  Parser.BREAK("Expression.parsePrimaryExpression: prim="+expr);
-//	  if(Parser.acceptValueRelationalOperator())
-//	  { expr=new BinaryOperation(expr,Parser.lastKeyWord(),parseSimpleExpression());
-//
-//	  }
-	  
 	  expr=new UnaryOperation(KeyWord.NOT,expr);
-	  
-	  
-//	  Expression expr=new UnaryOperation(KeyWord.NOT,parsePrimaryExpression());
-//	  Expression expr=new UnaryOperation(KeyWord.NOT,parseExpression());
 	  return(expr);
 
 	}

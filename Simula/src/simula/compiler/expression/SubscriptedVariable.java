@@ -17,7 +17,6 @@ import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.BlockKind;
-import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
@@ -204,8 +203,6 @@ public class SubscriptedVariable extends Variable {
 	  { //ArrayDeclaration array=(ArrayDeclaration)decl;
 	    //Util.BREAK("SubscriptedVariable("+identifier+").get: ArrayDeclaration="+array);
 	    int nDim=0;
-	    //s.append("M.A[x-M.LB[1]]");
-//	    s.append(edVariable(false)).append(".A"); //[x-M.LB[1]]");
 	    s.append(edVariable(false)).append(".Elt"); //[x-M.LB[1]]");
 		for(Expression ix:checkedParams) {
 		   String index="["+ix.toJavaCode()+"-"+edVariable(false)+".LB["+(nDim++)+"]]";
@@ -235,10 +232,8 @@ public class SubscriptedVariable extends Variable {
 		  //s.append("M.A[x-M.LB[1]]");
 	      String var=edVariable(false);
 	  	  if(par.mode==ParameterMode.name) var=var+".get()";
-//	  	  s.append(var).append(".A"); //[x-M.LB[1]]");
 	  	  s.append(var).append(".Elt"); //[x-M.LB[1]]");
 		  for(Expression ix:checkedParams) {
-//			  String index="["+ix.toJavaCode()+"-"+edVariable(false)+".LB["+(nDim++)+"]]"; 
 			  String index="["+ix.toJavaCode()+"-"+var+".LB["+(nDim++)+"]]"; 
 			  s.append(index);
 		  }

@@ -93,18 +93,6 @@ public class BinaryOperation extends Expression
 	  }
 	  case EXP:
 	  {	lhs.doChecking(); rhs.doChecking();
-//		Type type1=lhs.type; Type type2=rhs.type;
-//        if(type1==Type.ShortInteger || type1==Type.Integer)
-//	    { if(type2==Type.ShortInteger || type2==Type.Integer)  this.type=Type.Integer;
-//	      else if(type2==Type.Real || type2==Type.LongReal)  this.type=type2;
-//	    }
-//	    else if(type1==Type.Real || type1==Type.LongReal )
-//	    { if(type2==Type.ShortInteger || type2==Type.Integer)  this.type=type1;
-//	      else if(type2==Type.Real || type2==Type.LongReal)  this.type=type2;
-//	    }
-//		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-//		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-//    	if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
     	this.type=Type.LongReal;
 		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
 		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
@@ -143,8 +131,6 @@ public class BinaryOperation extends Expression
 		//Util.BREAK("BinaryOperation.doChecking:"+lhs+" "+opr+" "+rhs);
 		lhs.doChecking(); rhs.doChecking();
 		Type type1=lhs.type;
-//		Type type2=rhs.type;
-//		Util.log("BinaryOperation.doChecking: getRefIdent="+type1.getRefIdent());
 	    String refIdent=type1.getRefIdent();
 	    if(refIdent==null)
 	    	Util.error("BinaryOperation.doChecking: The Variable "+lhs+" is not ref() type");
@@ -224,9 +210,7 @@ public class BinaryOperation extends Expression
 	{ Variable var=(Variable)attr;
 	  String ident=var.identifier;
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(5a) findAttribute("+ident+")  Search in "+decl);
-//	  Declaration remote=((BlockDeclaration)decl).findAttribute(ident);
 	  
-	  //Meaning remote=((BlockDeclaration)decl).findMeaning(ident);	  
 	  Meaning remote=objType.getQual().findMeaning(ident);	  
 	  
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(5) findAttribute("+ident+")  ==> "+remote);
@@ -240,8 +224,7 @@ public class BinaryOperation extends Expression
 	  }
 	  else if(remote.declaredAs instanceof BlockDeclaration) // Procedure (or Class ?)
 	  { //Util.BREAK("BinaryOperation.doRemoteChecking: Call Remote Procedure "+remote+", qual="+remote.getClass().getSimpleName());
-//		if(((BlockDeclaration)remote.declaredAs).blockKind!=BlockKind.Method)
-		     callRemoteProcedure=(BlockDeclaration)remote.declaredAs; 
+		callRemoteProcedure=(BlockDeclaration)remote.declaredAs; 
 	  }
 	  result=remote.declaredAs.type;
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(6) - attr="+attr+", attr.Type="+result);
@@ -262,12 +245,10 @@ public class BinaryOperation extends Expression
 	if(attr instanceof Variable) // Covers FunctionDesignator and SubscriptedVariable since they are subclasses
 	{ Variable var=(Variable)attr;
 	  String ident=var.identifier;
-//	  Declaration remote=StandardClass.typeText.findAttribute(ident);
 	  Meaning remote=StandardClass.typeText.findMeaning(ident);
 	  //Util.BREAK("BinaryOperation.doRemoteTextChecking: remote="+remote);
 	  if(remote==null) Util.error("BinaryOperation.doRemoteTextChecking: "+ident+" is not a Text attribute");
 	  var.setRemotelyAccessed(remote);
-	  //var.doChecking();
 	  callRemoteProcedure=(BlockDeclaration)remote.declaredAs; 
 	  result=remote.declaredAs.type;
 
@@ -399,13 +380,11 @@ public class BinaryOperation extends Expression
       Util.BREAK("BinaryOperation.doCodeTextValueAssignment: value="+value);
       if(value!=null)
       { Util.BREAK("BinaryOperation.doCodeTextValueAssignment: value="+value+", qual="+value.getClass().getSimpleName());
-        //s.append(lhs.toJavaCode()).append(".ASGSTR$(\"").append(value).append("\")");
         s.append("ASGSTR$(").append(lhs.toJavaCode()).append(",\"").append(value).append("\")");
         Util.BREAK("BinaryOperation.doCodeTextValueAssignment: result="+s.toString());
     	return(s.toString()); 
       }
     }
-//    s.append(lhs.toJavaCode()).append(".ASGTXT$(").append(rhs.toJavaCode()).append(')');
     s.append("ASGTXT$(").append(lhs.toJavaCode()).append(',').append(rhs.toJavaCode()).append(')');
 	return(s.toString());  
   }
@@ -509,7 +488,6 @@ public class BinaryOperation extends Expression
 	// Generate: obj.M.A[6-obj.M.LB[1]];
 	String obj=beforeDot.toJavaCode();
     String remoteIdent=obj+'.'+array.edVariable(true);
-//    s.append(remoteIdent+".A");
     s.append(remoteIdent+".Elt");
 	for(Expression ix:array.checkedParams) {
 		String index="["+ix.toJavaCode()+"-"+remoteIdent+".LB["+(nDim++)+"]]"; // TODO: NEW ARRAY CODE
@@ -517,19 +495,6 @@ public class BinaryOperation extends Expression
 	}
     return(s.toString());
   }
-  
-//  private String CallRemoteProcedure(Expression obj,BlockDeclaration procedure,Variable var)
-//  { 
-////	String call="new "+procedure.getJavaIdentifier();//+"("+obj.get();
-////    String staticLink=obj.get();
-////	Util.BREAK("BinaryOperation.CallRemoteProcedure: staticLink="+staticLink);
-////	if(var instanceof SubscriptedVariable)
-////	{ call=call+((SubscriptedVariable)var).edProcedureParameters(staticLink,procedure);
-////	} else call=call+'('+staticLink+')';
-////	if(procedure.type!=null && backLink!=null) call=call+".$result";
-////	return(call);
-//	return(CallProcedure.remote(obj, procedure, var, backLink));
-//  }
 
   public String toString()
   { return("("+lhs+' '+opr+' '+rhs+")"); }

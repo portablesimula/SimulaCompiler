@@ -14,7 +14,6 @@ import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
-import simula.compiler.declaration.TypeDeclaration;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
@@ -30,7 +29,7 @@ import simula.compiler.utilities.VariableKind;
  * 
  * Coding Utilities
  * 
- * @author Øystein
+ * @author Øystein Myhre Andersen
  *
  */
 public class CallProcedure {
@@ -52,7 +51,7 @@ public class CallProcedure {
 	  s.append("new ").append(decl.getJavaIdentifier());
 	  String staticLink=meaning.edStaticLink();
       // Generate Parameter Transmission
-      s.append(edProcedureParameters(variable,staticLink,procedure));   //HER
+      s.append(edProcedureParameters(variable,staticLink,procedure)); 
       // Check if part of expression
 	  if(decl.type!=null && variable.backLink!=null) s.append(".$result");
 	  return(s.toString());
@@ -81,13 +80,10 @@ public class CallProcedure {
 	  { // Call Remote Method
 		return(asRemoteMethod(obj,procedure,func,backLink));
 	  }
-	  String call="new "+procedure.getJavaIdentifier();//+"("+obj.get();
+	  String call="new "+procedure.getJavaIdentifier();
 	  String staticLink=obj.get();
 	  //Util.BREAK("CallProcedure.remote: staticLink="+staticLink);
 	  
-//	  if(func instanceof SubscriptedVariable)
-//	  { call=call+edProcedureParameters(func,staticLink,procedure);
-//	  } else call=call+'('+staticLink+')';
 	  call=call+edProcedureParameters(func,staticLink,procedure);
 	  
 	  //Util.BREAK("CallProcedure.remote: procedure.type="+procedure.type);
@@ -145,9 +141,6 @@ public class CallProcedure {
 	  Meaning meaning=variable.meaning;
 	  BlockDeclaration procedure = (BlockDeclaration) meaning.declaredAs;
 	  //Util.BREAK("CallProcedure.asNormalMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
-	  
-//	  String params="()";
-//	  if(variable instanceof SubscriptedVariable) params=edProcedureParameters(variable,null,procedure);
 	  String params=edProcedureParameters(variable,null,procedure);
 	  
 	  String methodCall=meaning.declaredAs.getJavaIdentifier()+params;
@@ -160,7 +153,6 @@ public class CallProcedure {
 	  //Util.BREAK("CallProcedure.asNormalMethod: staticLink="+staticLink);
 	  //Util.BREAK("CallProcedure.asNormalMethod: isContextFree="+staticLink.isContextFree);
 	  //Util.BREAK("CallProcedure.asNormalMethod: remotelyAccessed="+variable.remotelyAccessed);
-//	  if(!staticLink.isContextFree && !variable.remotelyAccessed)
 	  if(!staticLink.isContextFree)
 	  { //String castIdent=staticLink.getJavaIdentifier();
 	    //Util.BREAK("CallProcedure.asNormalMethod: staticLink.blockLevel="+staticLink.blockLevel);
@@ -311,7 +303,6 @@ public class CallProcedure {
 		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Actual Parameter: " + actualParameter);
 		  Parameter formalParameter = (Parameter)formalIterator.next();
 		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Formal Parameter: " + formalParameter);
-//		  Type formalType = formalParameter.type;
 		  if(prevPar) s.append(','); prevPar=true;
 		  Type formalType=formalParameter.type;
 		  ParameterKind kind=formalParameter.kind;  
@@ -367,7 +358,6 @@ public class CallProcedure {
 		    if(mode==null) // Simple Type/Ref/Text by Default
 		    	s.append(actualParameter.toJavaCode());
 		    else if(mode==ParameterMode.value)  // Simple Type/Ref/Text by Value
-//		    { if(parameterKind==ParameterKind.SimpleText)
 		    { if(formalType==Type.Text)
 		    	   s.append("copy(").append(actualParameter.toJavaCode()).append(')');
 		      else s.append(actualParameter.toJavaCode());
@@ -415,7 +405,6 @@ public class CallProcedure {
       			    //Util.BREAK("CallProcedure.doSimpleParameter: putValue="+putValue);
                     s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x$)");
                     s.append("{ "+formalType.toJavaType()+" y=x$; ");
-//                    s.append(var.edVariable(false)).append(putValue);
                     s.append(var.toJavaCode()).append(putValue);
                     s.append("return(y); }");
                   }
@@ -475,8 +464,6 @@ public class CallProcedure {
 	    s.append(actualParameter.toJavaCode()).append(".COPY()");
 	  }
 	  else if(mode==ParameterMode.name) {
-//	    s.append("new $NAME<$ARROBJ>()");
-//		s.append("{ public $ARROBJ get() { return("+actualParameter.toJavaCode()+"); }");
 	    String arrObj="$ARRAY<"+formalType.toJavaType()+"[]>";  // TODO: NEW ARRAY CODE  FEIL: BARE ONE-DIMENSIONAL !!!!
 		s.append("new $NAME<"+arrObj+">()");
 		s.append("{ public "+arrObj+" get() { return("+actualParameter.toJavaCode()+"); }");

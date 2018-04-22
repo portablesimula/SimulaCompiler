@@ -13,7 +13,6 @@ import java.util.Vector;
 
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
-import simula.compiler.expression.UnaryOperation;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -83,7 +82,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public class ArrayDeclaration extends Declaration {
-	// Type type;
+	// Type type; inherited
 	Vector<BoundPair> boundPairList;
 	public int nDim() { return(boundPairList.size()); }
 
@@ -95,7 +94,6 @@ public class ArrayDeclaration extends Declaration {
 			Vector<BoundPair> boundPairList) {
 		super(identifier);
 		this.type=type;
-//		this.type=Type.Array;  // ARRAY !
 		this.boundPairList = boundPairList;
 		if (Option.TRACE_PARSE)
 			Util.TRACE("END NEW ArrayDeclaration: " + toString());
@@ -125,21 +123,14 @@ public class ArrayDeclaration extends Declaration {
 		Vector<BoundPair> boundPairList = new Vector<BoundPair>();
 		do {
 			Expression LB = Expression.parseExpression();
-//			boolean assignRef = false; // See NOTE above.
-//			if (Parser.accept(KeyWord.ASSIGNREF)) assignRef = true;
-//			else
-			 	Parser.expect(KeyWord.COLON);
-			
+			Parser.expect(KeyWord.COLON);
 			Expression UB = Expression.parseExpression();
-//			if (assignRef)
-//				UB = new UnaryOperation(KeyWord.MINUS, UB);
 			boundPairList.add(new BoundPair(LB, UB));
 		} while (Parser.accept(KeyWord.COMMA));
 		Parser.expect(KeyWord.ENDPAR);
 		for (Enumeration<String> e = identList.elements(); e.hasMoreElements();) {
 			String identifier = e.nextElement();
-			declarationList.add(new ArrayDeclaration(identifier.toString(),
-					type, boundPairList));
+			declarationList.add(new ArrayDeclaration(identifier.toString(),type, boundPairList));
 		}
 	}
 

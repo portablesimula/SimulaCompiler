@@ -8,7 +8,6 @@
 package simula.compiler.parsing;
 
 import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Precedence;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;

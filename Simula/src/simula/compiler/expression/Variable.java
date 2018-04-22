@@ -11,7 +11,6 @@ import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
-import simula.compiler.declaration.StandardClass;
 import simula.compiler.declaration.StandardProcedure;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.parsing.Parser;
@@ -132,13 +131,10 @@ public class Variable extends Expression {
 		String result = this.edVariable(false); // Not a destination
 //		Util.BREAK("Variable("+result+").get() DeclaredAs="+meaning.declaredAs);
 		if(meaning.declaredAs instanceof Parameter)
-		{
-//		  if(((Parameter)meaning.declaredAs).mode == ParameterMode.name)
-		  Parameter par=(Parameter)meaning.declaredAs;
+		{ Parameter par=(Parameter)meaning.declaredAs;
 		  if(par.mode == ParameterMode.name) result = result + ".get()";
 		  if(par.kind == ParameterKind.Procedure)
-		  {
-			//result = result + ".CPF().STM()";
+		  {	//result = result + ".CPF().STM()";
 			Type type=par.type;
 			if(type!=null)
 			{ result="("+type.toJavaType()+')'+result;
@@ -158,7 +154,6 @@ public class Variable extends Expression {
 	  BlockKind blockKind=decl.blockKind;
 	  //Util.BREAK("Variable.edVariable("+id+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
 	  //Util.BREAK("Variable.edVariable("+id+"): decl="+decl+", BlockKind="+blockKind+", qual="+decl.getClass().getSimpleName());
-//	  BlockDeclaration currentModule=Global.currentJavaModule.blockDeclaration; // Class, Procedure, ...
 	  int n=meaning.declaredIn.blockLevel;
 
 	  if(blockKind==BlockKind.Procedure || blockKind==BlockKind.Method)
@@ -214,8 +209,7 @@ public class Variable extends Expression {
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		//Util.BREAK("Variable.toJavaCode: ident="+identifier+", decl="+declaredAs+", qual="+declaredAs.getClass().getSimpleName());
-			return (get());
+		return (get());
 	}
 
 	public String toString() {

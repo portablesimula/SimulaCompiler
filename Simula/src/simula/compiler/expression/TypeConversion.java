@@ -26,12 +26,10 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		    this.doChecking();
 	}
 
-	//    String ccc=TypeConversion.mayBeConvert(fromType,toType,"y");
 	// Test if a TypeConversion is necessary and then do it.
 	public static String mayBeConvert(Type fromType,Type toType,String expr) {
 		if(fromType==Type.Real || fromType==Type.LongReal)
 		{ if(toType==Type.Integer || toType==Type.ShortInteger)
-//            return("=("+toType.toJavaType()+")(("+fromType.toJavaType()+")"+expr+"+0.5);");
             return("=("+toType.toJavaType()+")("+expr+"+0.5);");
 		}
         return("=("+toType.toJavaType()+")("+expr+");");
@@ -62,7 +60,7 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		default: return (false);
 		}
 	}
-	  public Variable getVariable() // { return(null); } // Is redefined in (Variable and) BinaryOperation(DOT)
+	  public Variable getVariable() // Is redefined in (Variable and) BinaryOperation(DOT)
 	  {	return(expression.getVariable()); }
 
 	public void doChecking() {
@@ -114,7 +112,6 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		if(type==Type.Integer || type==Type.ShortInteger)
 		{ Type fromType=expression.type;
 		  if(fromType==Type.Real || fromType==Type.LongReal)
-//			  evaluated=evaluated+"+0.5";
 			  evaluated="(("+evaluated+")+0.5)";
 		}
 		return ("((" + cast + ")(" + evaluated + "))");

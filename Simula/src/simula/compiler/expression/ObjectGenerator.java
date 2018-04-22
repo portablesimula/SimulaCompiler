@@ -59,8 +59,7 @@ public class ObjectGenerator extends Expression {
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			if (!Parser.accept(KeyWord.ENDPAR)) {
-				do {
-					params.add(parseSimpleExpression());
+				do { params.add(parseSimpleExpression());
 				} while (Parser.accept(KeyWord.COMMA));
 				Parser.expect(KeyWord.ENDPAR);
 			}
@@ -78,16 +77,10 @@ public class ObjectGenerator extends Expression {
 					+ Global.currentScope.edScopeChain());
 		meaning = Global.currentScope.findMeaning(classIdentifier);
 		if (meaning == null) Util.error("Undefined variable: " + classIdentifier);
-		// String name=match.getClass().getName();
-		// Debug.BREAK("ObjectGenerator.doChecking("+classIdentifier+") match is "+name);
 		Declaration declaredAs=meaning.declaredAs;
 		if (declaredAs instanceof BlockDeclaration) // Declared Procedure/Class ...
-		{
-			BlockDeclaration cls = (BlockDeclaration)declaredAs;
+		{	BlockDeclaration cls = (BlockDeclaration)declaredAs;
 			Util.ASSERT(this.type.equals(cls.type),"Umulig situasjon ?");
-			//this.type=cls.type;
-			// Debug.BREAK("ObjectGenerator.doChecking: type="+this.type);
-
 			// Check parameters
 			Iterator<Parameter> formalIterator = cls.parameterIterator();
 			Iterator<Expression> actualIterator = params.iterator();
@@ -107,7 +100,6 @@ public class ObjectGenerator extends Expression {
 				if (Option.TRACE_CHECKER)
 					Util.TRACE("Actual Parameter: " + actualType + " "
 							+ actualParameter + ", Actual Type=" + actualType);
-//				checkedParams.add(TypeConversion.testAndCreate(formalType,actualParameter));
 				Expression checkedParameter=TypeConversion.testAndCreate(formalType,actualParameter);
 				checkedParameter.backLink=this;
 				checkedParams.add(checkedParameter);
@@ -116,10 +108,8 @@ public class ObjectGenerator extends Expression {
 			if (formalIterator.hasNext())
 				Util.error("Wrong number of parameters to " + cls);
 		} else if (declaredAs instanceof Parameter) // Parameter Procedure
-		{
-			Parameter spec = (Parameter) declaredAs;
+		{	Parameter spec = (Parameter) declaredAs;
 			Util.ASSERT(this.type.equals(spec.type),"Umulig situasjon ?");
-//			this.type=spec.type;
 			ParameterKind kind = spec.kind;
 			if (kind != ParameterKind.Procedure)
 				Util.error("ObjectGenerator("+classIdentifier+") is matched to a parameter "+kind);

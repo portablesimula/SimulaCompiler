@@ -14,6 +14,11 @@ import simula.compiler.expression.Variable;
 import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Util;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class BlockStatement extends Statement {
 	public BlockDeclaration blockDeclaration;
 
@@ -40,13 +45,9 @@ public class BlockStatement extends Statement {
 		if(blockDeclaration.blockKind!=BlockKind.CompoundStatement)
 		{ //String staticLink="this"; // TODO: Usikker på dette
 		  String staticLink=blockDeclaration.edCTX(blockDeclaration.blockLevel-1);
-		
-		  //Util.code(indent+"new "+getJavaIdentifier()+"("+staticLink+").STM();");
-		  
 		  Variable blockPrefix=blockDeclaration.blockPrefix;
 		  StringBuilder s = new StringBuilder();
 		  s.append("new ").append(getJavaIdentifier()).append('(');
-//		  s.append(blockPrefix.meaning.edStaticLink());
 		  s.append(staticLink);
 
 		  if(blockPrefix instanceof SubscriptedVariable)
@@ -59,8 +60,6 @@ public class BlockStatement extends Statement {
 			   s.append(".START();");
 		  else s.append(".STM();");
 		  Util.code(indent+s.toString());
-
-		  
 		}
 		blockDeclaration.doJavaCoding(indent);
 	}

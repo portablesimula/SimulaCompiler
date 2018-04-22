@@ -54,7 +54,6 @@ public class ConnectionBlock extends DeclarationScope
   { this.statement=statement; }
 
   public Meaning findMeaning(String identifier)
-//  { Meaning result=classDeclaration.findMeaning(identifier);
   { Meaning result=classDeclaration.findAttributeMeaning(identifier);
     //Util.BREAK("ConnectionBlock.findDefinition("+identifier+") ==> "+result);
     if(result!=null)
@@ -86,10 +85,7 @@ public class ConnectionBlock extends DeclarationScope
   }
   
   public String getJavaIdentifier()
-  {
-//	return(""+inspectedVariable);
-	return(inspectedVariable.toJavaCode());
-  }
+  {	return(inspectedVariable.toJavaCode()); }
   
   
   // ***********************************************************************************************

@@ -48,14 +48,12 @@ public class Constant extends Expression {
 		ASSERT_SEMANTICS_CHECKED(this);
 		//Util.BREAK("Constant.toJavaCode: "+this);
 		if(type==Type.Text)
-//		{ if(value==null) return("NOTEXT");
 		{ if(value==null) return("null");
 		  String val=value.toString();
           val=encode(val);
 		  return("new TXT$(\""+val+"\")");
 		}
 		if(type==Type.Character) return("'"+value+"'");
-		//if(type==Type.Real) return (""+value+'f');
 		return (""+value);
 	}
 	

@@ -125,8 +125,6 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     
 //    Scheduling .............................................. 9.3
 //    Procedures call (7.3.2), resume (7.3.3).
-
-    // ??????
     
 //    Mathematical functions .................................. 9.4
 //    Procedures sqrt, sin, cos, tan, cotan, arcsin, arccos,
@@ -597,7 +595,6 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   // *** The Standard Class Simset
   // ******************************************************************
-//  public static StandardClass Simset=new StandardClass("RTObject","Simset");
   public static StandardClass Simset=new StandardClass("CLASS","Simset");
   static
   { ENVIRONMENT.addStandardClass(Simset);
@@ -606,7 +603,6 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   // *** The Standard Class Linkage
   // ******************************************************************
-//  public static StandardClass Linkage=new StandardClass("RTObject","Linkage");
   public static StandardClass Linkage=new StandardClass("CLASS","Linkage");
   static
   { Simset.addStandardClass(Linkage);

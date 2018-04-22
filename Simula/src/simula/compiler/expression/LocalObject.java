@@ -66,11 +66,6 @@ public class LocalObject extends Expression {
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-//		return ("((" + classDeclaration.getJavaIdentifier() + ")this)");
-//		return ("((" + classDeclaration.getJavaIdentifier() + ")$THIS)");
-//		return ("((" + classDeclaration.getJavaIdentifier() + ")current)");
-//		return ("((" + classDeclaration.getJavaIdentifier() + ")CTX["+classDeclaration.blockLevel+"])");
-		
 		if(classDeclaration.blockLevel!=Global.currentScope.blockLevel)
 			 return ("((" + classDeclaration.getJavaIdentifier() + ")"+Global.currentScope.edCTX(classDeclaration.blockLevel)+")");
 		else return ("(" + classDeclaration.getJavaIdentifier() + ".this)");
