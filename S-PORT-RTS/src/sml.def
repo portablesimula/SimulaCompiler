@@ -1,0 +1,619 @@
+ Module SML("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,CENT,SMST;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3, Norway                                          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 C l a s s    S I M U L A T I O N                ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+
+Macro NAME_ATTR(4);
+begin const infix(atrdes) %1 = record:atrdes
+        (ident=ref( %2 ),fld=field( %3 ),
+         mode=M_NAME,kind=K_SMP,type= %4 );
+endmacro;
+
+--------   M O D U L E    I N F O   ---------
+
+const infix(modinf) SMLMOD=record:modinf(mod_idt=ref(SMLIDT),smb_lvl=2);
+
+DEFINE_IDENT(%SMLIDT%,%10%,%('S','I','M','U','L','A','T','I','O','N')%);
+
+---------   C l a s s    S I M U L A T I O N   ---------
+
+ Visible record simulation:linkage;
+ begin ref(ranking) sqs; ref(process) cur,main end;
+
+ Visible const infix(cla_pre_ptp:3) SMLPTP=record:cla_pre_ptp
+       ( plv=1,lng=size(simulation),pnt_vec=ref(SML_PNT_VEC),
+         xpp=ref(SMLXPP),dcl=SMLDCL,stm=SMLSTM,cnt_inr=SMLINR,
+         prefix =(ref(SIMSETPTP),ref(SMLPTP),none));
+
+ const infix(pntvec:3) SML_PNT_VEC=record:pntvec
+       ( npnt=3,pnt=(field(simulation.sqs),
+         field(simulation.cur),field(simulation.main)));
+
+const infix(extptp) SMLXPP=record:extptp
+   (idt=ref(SMLIDT),mod_inf=ref(SMLMOD),atr_vec=ref(SMLATR),blk_typ=BLK_CLA);
+
+% UT const infix(blkvec:2) SMLVEC=record:blkvec
+% UT   (nblk=2,blk=(record:blkdes(pp=ref(RANKPTP)),
+% UT                record:blkdes(pp=ref(PROCESSPTP)) ));
+
+const infix(atrvec:2) SMLATR=record:atrvec
+   (natr=2,atr=(ref(SA_CUR),ref(SA_MAIN)));
+
+SIMPLE_ATTR(%SA_CUR%,%ID_CUR%,%simulation.cur%,%T_REF%);
+SIMPLE_ATTR(%SA_MAIN%,%ID_MAIN%,%simulation.main%,%T_REF%);
+
+DEFINE_IDENT(%ID_CUR%,%7%,%('C','U','R','R','E','N','T')%);
+DEFINE_IDENT(%ID_MAIN%,%4%,%('M','A','I','N')%);
+
+---------   C l a s s    R A N K I N G   ---------
+ Visible record ranking:linkage;
+ begin ref(ranking) bl,ll,rl; long real rnk end;
+
+ Visible const infix(cla_pre_ptp:4) RANKPTP=record:cla_pre_ptp
+       ( plv=2,lng=size(ranking),pnt_vec=ref(RNK_PNT_VEC),
+         xpp=ref(RNKXPP),dcl=RNKDCL,stm=RNKSTM,cnt_inr=RNKINR,
+         prefix=(ref(LINKAGEPTP),ref(LINKPTP),ref(RANKPTP),none));
+
+ const infix(pntvec:3) RNK_PNT_VEC=record:pntvec
+       ( npnt=3,pnt=(field(ranking.bl),field(ranking.ll),field(ranking.rl)));
+
+const infix(extptp) RNKXPP=record:extptp
+   (idt=ref(RNKIDT),mod_inf=ref(SMLMOD),atr_vec=ref(RNKATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:1) RNKATR=record:atrvec
+   (natr=1,atr=ref(RA_RNK));
+
+SIMPLE_ATTR(%RA_RNK%,%ID_RNK%,%ranking.rnk%,%T_LRL%);
+
+DEFINE_IDENT(%RNKIDT%,%7%,%('E','L','E','M','E','N','T')%);
+DEFINE_IDENT(%ID_RNK%,%4%,%('R','A','N','K')%);
+
+---------   C l a s s    P R O C E S S   ---------
+
+ Visible record process:ranking;     begin end;
+
+ Visible const infix(cla_pre_ptp:5) PROCESSPTP=record:cla_pre_ptp
+       ( plv=3,lng=size(process),pnt_vec=none,xpp=ref(PRCXPP),
+         dcl=PCSDCL,stm=PCSSTM,cnt_inr=PCSINR,
+         prefix=(ref(LINKAGEPTP),ref(LINKPTP),ref(RANKPTP),
+                                 ref(PROCESSPTP),none));
+
+const infix(extptp) PRCXPP=record:extptp
+   (idt=ref(PRCIDT),mod_inf=ref(SMLMOD),atr_vec=ref(PRCATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:2) PRCATR=record:atrvec
+   (natr=2,atr=(ref(PA_EVT),ref(PA_NEV)));
+
+SIMPLE_ATTR(%PA_EVT%,%ID_EVT%,%ranking.rnk%,%T_LRL%);
+NAME_ATTR(%PA_NEV%,%ID_NEV%,%ranking.bl%,%T_REF%);
+
+DEFINE_IDENT(%ID_EVT%,%6%,%('E','V','T','I','M','E')%);
+DEFINE_IDENT(%ID_NEV%,%6%,%('N','E','X','T','E','V')%);
+DEFINE_IDENT(%PRCIDT%,%7%,%('P','R','O','C','E','S','S')%);
+
+---------   C l a s s    M A I N P R O G R A M   ---------
+
+ Record mainprog:process;            begin end;
+
+ const infix(cla_pre_ptp:6) MAINPTP=record:cla_pre_ptp
+       ( plv=4,lng=size(mainprog),pnt_vec=none,xpp=ref(MPRXPP),
+         dcl=MPRDCL,stm=MPRSTM,cnt_inr=MPRINR,
+         prefix=(ref(LINKAGEPTP),ref(LINKPTP),ref(RANKPTP),
+                                 ref(PROCESSPTP),ref(MAINPTP),none));
+
+
+const infix(extptp) MPRXPP=record:extptp
+   (idt=ref(MPRIDT),mod_inf=ref(SMLMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%MPRIDT%,%12%,%('M','A','I','N','_','P','R','O','G','R','A','M')%);
+%title ***  R a n k i n g   ***
+
+ Routine RANK_PRED;
+ import ref(ranking) ins; export ref(ranking) prd;
+ begin if ins.rl = ins then prd:=none;   --  ins = head
+       elsif ins.rl <> none then prd:=ins.rl;
+       elsif ins.ll <> none
+       then prd:=ins.ll;
+            if prd.rl = prd then prd:=none endif;  --  ins = first
+       elsif ins.bl = none then prd:=none;  --  Instance is not ranked.
+       else ---  'ins' is a terminal node, which has a predecessor.
+            prd:=ins;
+            repeat while prd.bl.ll = prd do prd:=prd.bl endrepeat;
+            prd:=prd.bl.ll;
+       endif;
+ end;
+
+
+ Routine RANK_SUC;
+ import ref(ranking) ins; export ref(ranking) suc;
+ begin if ins.bl = none then suc:=none;  -- Instance is not ranked.
+       elsif ins.bl.rl = ins.bl then suc:=none;  --  ins = last  or  ins = head
+       else ---  All nodes below 'ins' is preceding 'ins'.
+            suc:=ins.bl;  --  Try the father.
+            if (suc.rl <> ins) and (suc.rl <> none)
+            then --  Look in the right subtree of the father,
+                 --  for the node with the least rank value,
+                 --  which must be the leftmost terminal node.
+                 suc:=suc.rl;
+                 repeat while suc.ll <> none do suc:=suc.ll endrepeat;
+            endif;
+       endif;
+ end;
+
+
+ Routine RANK_CLEAR;
+ import ref(ranking) head;
+ begin ref(ranking) ins,temp;
+       if head.rl <> head then IERR("RANK_CLEAR") endif;     --  TEMP
+       if head.bl <> head ---  The set is non-empty.
+       then ins:=head.bl; ins.ll:=none;      --  ins = first
+            head.ll.bl:=none;                --  last.bl = none
+            head.bl:=head.ll:=head;
+            repeat while ins.bl <> none
+            do ---  The instance is the one with the least rank,
+               ---  that is, it is the leftmost terminal node.
+               ---  ins.ll = ins.rl = none
+               ---  Delete terminal nodes, as long as the father has no
+               ---  right subtree. (Probably a common situation.)
+               repeat temp:=ins.bl; ins.bl:=none; ins:=temp;
+               while (ins.rl = none) and (ins.bl <> none)
+               do ins.ll:=none endrepeat;
+               ---  Make the right subtree the left subtree,
+               ---  so that the tree will remain properly ordered.
+               ins.ll:=ins.rl;   ins.rl:=none;
+               repeat ---  Find the leftmost terminal node.   ins.rl = none
+                      repeat while ins.ll <> none do  ins:=ins.ll  endrepeat;
+               while ins.rl <> none
+               do ---  Make the right subtree the left subtree,
+                  ---  so that the tree will remain properly ordered.
+                  ins.ll:=ins.rl; ins.rl:=none;
+               endrepeat;
+            endrepeat;
+       endif;
+ end;
+
+
+ Routine RANK_EMPTY;
+ import ref(ranking) head; export boolean empty;
+ begin if head.rl <> head then IERR("RANK_EMPTY") endif;
+       empty:=head.bl = head;
+ end;
+
+
+ Routine RANK_FIRST;
+ import ref(ranking) head; export ref(ranking) first;
+ begin if head.rl <> head then IERR("RANK_FIRST") endif;
+       first:=head.bl; if first = head then first:=none endif;
+ end;
+
+
+ Routine RANK_LAST;
+ import ref(ranking) head; export ref(ranking) last;
+ begin if head.rl <> head then IERR("RANK_LAST") endif;
+       last:=head.ll; if last = head then last:=none endif;
+ end;
+
+
+ Routine RANK_FOLLOW;
+ import ref(ranking) ins;      --  Link
+        ref(ranking) prd;      --  Linkage
+ begin if ins.rl = ins then IERR("RANK_FOLLOW") endif;
+       if ins.bl <> none then RANK_OUT(ins) endif;
+       if (prd <> none)
+       then ---  Make sure that 'prd' is ranked.
+            if prd.bl <> none
+            then ins.rnk:=prd.rnk;
+                 ---  Insert 'ins' between 'prd' and its father.
+                 if prd = prd.bl.ll then prd.bl.ll:=ins;
+                 else prd.bl.rl:=ins; endif;
+                 ins.ll:=prd; ins.bl:=prd.bl; prd.bl:=ins;
+            endif;
+       endif;
+ end;
+
+
+ Routine RANK_OUT;
+ import ref(ranking) ins;
+ begin ref(ranking) suc,bl,ll,rl;
+       if ins.rl = ins then IERR("RANK_OUT") endif;
+       ---  Make sure that the instance is ranked.
+       if ins.bl <> none
+       then bl:=ins.bl; ll:=ins.ll; rl:=ins.rl;
+            if ll = none
+            then ---  Remove a terminal node, while maintaining
+                 ---  bl.ll = none   ====>   bl.rl = none
+                 if bl.ll = ins then bl.ll:=bl.rl endif;
+                 bl.rl:=none;
+            elsif ll.rl = ll ---  ins = first  and  ll = head
+            then if bl = ll
+                 then ---  Remove the one and only ranked instance.
+                      ll.bl:=ll.ll:=ll;
+                 else ---  Remove the first, but not the last, instance.
+                      bl.ll:=bl.rl; bl.rl:=none;
+                      ---  ll = head, maintain  head.bl = first
+                      suc:=bl;
+                      repeat while suc.ll <> none do suc:=suc.ll endrepeat;
+                      ll.bl:=suc; suc.ll:=ll;
+                 endif;
+            elsif rl = none
+            then if bl.ll = ins then bl.ll:=ll else bl.rl:=ll endif;
+                 ll.bl:=bl;
+            else ---  ins.ll <> none  and  ins.rl <> none
+                 ---  Replace the node by its right subtree.
+                 if bl.ll = ins then bl.ll:=rl else bl.rl:=rl endif;
+                 rl.bl:=bl;
+                 ---  Must find a free link for the left subtree.
+                 ---  The one to look for is 'll.suc' (ll.suc.ll = none).
+                 ---  'll.suc' must be the leftmost node in the right subtree.
+                 suc:=rl;
+                 repeat while suc.ll <> none do suc:=suc.ll endrepeat;
+                 ll.bl:=suc; suc.ll:=ll;
+            endif;
+            ins.bl:=ins.ll:=ins.rl:=none;
+       endif;
+ end;
+
+
+ Routine RANK_INTO;
+ import ref(ranking) ins,head; long real rnk;
+ begin ref(ranking) e;
+       if ins.rl = ins then IERR("RANK_INTO-1") endif;
+       if ins.bl <> none then RANK_OUT(ins) endif;
+       if head <> none
+       then if head.rl <> head then IERR("RANK_INTO-2") endif;
+            ins.rnk:=rnk;
+            if rnk >= head.ll.rnk ---  Rank it last.
+            then ins.bl:=head; ins.ll:=head.ll;
+                 head.ll:=head.ll.bl:=ins;
+            elsif rnk < head.bl.rnk ---  Rank it first.
+            then ins.ll:=head; ins.bl:=head.bl;
+                 head.bl:=head.bl.ll:=ins;
+            else e:=head.ll;
+       L1:L2:    ---  rnk < e.rnk
+                 if e.ll = none then e.ll:=ins;
+                 elsif rnk < e.ll.rnk then e:=e.ll; goto L1;
+                 elsif e.rl = none then e.rl:=ins;
+                 elsif rnk < e.rl.rnk then e:=e.rl; goto L2;
+                 else ---  e.rnk  >  rnk  >=  e.rl.rnk  >=  e.ll.rnk
+                      ins.ll:=e.rl; e.rl:=e.rl.bl:=ins;
+                 endif;
+                 ins.bl:=e;
+            endif;
+       endif;
+ end;
+
+
+ Routine RANK_PRECEDE;
+ import ref(ranking) ins,suc;
+ begin if ins.rl = ins then IERR("RANK_PRECEDE-1") endif;
+       if ins.bl <> none then RANK_OUT(ins) endif;
+       if (suc <> none)
+       then if suc.rl = suc then IERR("RANK_PRECEDE-2") endif;
+            ---  Make sure that 'suc' is ranked.
+            if suc.bl <> none
+            then ins.rnk:=suc.rnk;
+                 ---  Insert 'ins' as the left subtree of 'suc',
+                 ---  letting it inherit the subtrees of 'suc'.
+                 ins.bl:=suc; ins.ll:=suc.ll; ins.rl:=suc.rl;
+                 suc.ll:=ins; suc.rl:=none;
+                 ---  Update the back links of the sons of 'suc'.
+                 if ins.ll <> none
+                 then ins.ll.bl:=ins;
+                      if ins.rl <> none then ins.rl.bl:=ins endif;
+                 endif;
+            endif;
+       endif;
+ end;
+
+ Routine RANK_PRIOR;
+ import ref(ranking) ins,head; long real rnk;
+ begin ref(ranking) e;
+       if ins.rl = ins then IERR("RANK_PRIOR-1") endif;
+       if ins.bl <> none then RANK_OUT(ins) endif;
+       if head <> none
+       then if head.rl <> head then IERR("RANK_PRIOR-2") endif;
+            ins.rnk:=rnk;
+            if rnk > head.ll.rnk ---  Rank it last.
+            then ins.bl:=head; ins.ll:=head.ll;
+                 head.ll:=head.ll.bl:=ins;
+            elsif rnk <= head.bl.rnk ---  Rank it first.
+            then ins.ll:=head; ins.bl:=head.bl;
+                 head.bl:=head.bl.ll:=ins;
+            else e:=head.ll;
+       L1:L2:    ---  rnk <= e.rnk
+                 if e.ll = none then e.ll:=ins;
+                 elsif rnk <= e.ll.rnk then e:=e.ll; goto L1;
+                 elsif e.rl = none then e.rl:=ins;
+                 elsif rnk <= e.rl.rnk then e:=e.rl; goto L2;
+                 else ---  e.rnk  >=  rnk  >  e.rl.rnk  >=  e.ll.rnk
+                      ins.ll:=e.rl; e.rl:=e.rl.bl:=ins;
+                 endif;
+                 ins.bl:=e;
+            endif;
+       endif;
+ end;
+
+%title ***  S i m u l a t i o n   ***
+
+ Macro SQS_FIRST(0); begin simblk.sqs.bl; endmacro;
+ Macro SQS_LAST(0);  begin simblk.sqs.ll; endmacro;
+
+
+ Visible routine ACTIVATE1; -- after:code=true, before:code=false
+ import ref(process) x; boolean reac,code; ref(process) y;
+ exit label psc;
+ begin ref(simulation) simblk; ref(process) newcur;
+       if x = none
+       then if bio.trc  --- (re)activate none
+            then TRC_SML(if reac then SML_RAC1 else SML_ACT1,x) endif;
+       elsif x.sort = S_TRM
+       then if bio.trc  --- (re)activate terminated process
+            then TRC_SML(if reac then SML_RAC2 else SML_ACT2,x) endif;
+       elsif (x.bl <> none) and (not reac)
+       then if bio.trc  --- activate scheduled process
+            then TRC_SML(SML_ACT3,x) endif;
+       elsif x = y
+       then if bio.trc  --- reactivate  x  before/after  x
+            then TRC_SML(SML_RAC3,x) endif;
+       else if code then RANK_FOLLOW(x,y) else RANK_PRECEDE(x,y) endif;
+            if bio.trc
+            then TRC_SML(if reac then SML_RACT else SML_ACTI,x) endif;
+            simblk:=x.sl qua simulation;
+            newcur:=SQS_FIRST() qua process;
+            ---  If y is not scheduled in a before/after statement,
+            ---  then the only effect is to remove x from the sequencing set.
+            if newcur = simblk.sqs then ERROR(ENO_SML_1) endif;
+            if newcur <> simblk.cur
+            then simblk.cur:=newcur; smltim:=newcur.rnk;
+                 psc:=RESUMX(newcur,psc);
+            endif;
+       endif;
+ end;
+
+
+ Visible routine ACTIVATE2; -- delay:code=true, at:code=false
+ import ref(process) x; boolean reac,code; long real t; boolean prior;
+ exit label psc;
+ begin long real time; ref(simulation) simblk; ref(process) newcur;
+       if x = none
+       then if bio.trc  --- (re)activate none
+            then TRC_SML(if reac then SML_RAC1 else SML_ACT1,x) endif;
+       elsif x.sort = S_TRM
+       then if bio.trc  --- (re)activate terminated process
+            then TRC_SML(if reac then SML_RAC2 else SML_ACT2,x) endif;
+       elsif (x.bl <> none) and (not reac)
+       then if bio.trc  --- activate scheduled process
+            then TRC_SML(SML_ACT3,x) endif;
+       else simblk:=x.sl qua simulation; time:=simblk.cur.rnk;
+            if code then if t < 0.0&&0 then t:=0.0&&0 endif; t:=time+t;
+            elsif t<time then t:=time endif;
+            ---  Invariant:   t >= time
+            if prior then RANK_PRIOR(x,simblk.sqs,t);
+            else RANK_INTO(x,simblk.sqs,t) endif;
+            if bio.trc
+            then TRC_SML(if reac then SML_RACT else SML_ACTI,x) endif;
+            newcur:=SQS_FIRST() qua ref(process);
+            if newcur <> simblk.cur
+            then simblk.cur:=newcur; smltim:=newcur.rnk;
+                 psc:=RESUMX(newcur,psc);
+            endif;
+       endif;
+ end;
+
+
+ Visible routine ACTIVATE3;                     --  Activate/Reactivate x
+ import ref(process) x; boolean reac; exit label psc;
+ begin ref(simulation) simblk;
+       if x = none
+       then if bio.trc  --- (re)activate none
+            then TRC_SML(if reac then SML_RAC1 else SML_ACT1,x) endif;
+       elsif x.sort = S_TRM
+       then if bio.trc  --- (re)activate terminated process
+            then TRC_SML(if reac then SML_RAC2 else SML_ACT2,x) endif;
+       elsif (x.bl <> none) and (not reac)
+       then if bio.trc  --- activate scheduled process
+            then TRC_SML(SML_ACT3,x) endif;
+       elsif x.sl qua ref(simulation).cur = x
+       then if bio.trc  --- reactivate current
+            then TRC_SML(SML_RAC4,x) endif;
+       else simblk:=x.sl; RANK_PRECEDE(x,simblk.cur);
+            if bio.trc
+            then TRC_SML(if reac then SML_RACT else SML_ACTI,x) endif;
+            simblk.cur:=x; smltim:=x.rnk; psc:=RESUMX(x,psc);
+       endif;
+ end;
+
+
+ Visible routine CANCEL;
+ import ref(simulation) simblk; ref(process) ins; exit label psc;
+ begin if ins = simblk.cur  --- Cancel current?
+       then ---  Here follows the inline code for a call on PASSIVATE.
+            ---  Remove the first element from the sequencing set.
+            RANK_OUT(simblk.cur);
+            if bio.trc then TRC_SML(SML_CANC,ins) endif;
+            simblk.cur:=SQS_FIRST() qua process;
+            ---  Check that the no. of scheduled processes are greater than one.
+            if simblk.cur = simblk.sqs then ERROR(ENO_SML_2) endif;
+            smltim:=simblk.cur.rnk; psc:=RESUMX(simblk.cur,psc); goto E;
+       elsif ins <> none then RANK_OUT(ins) endif;
+       if bio.trc then TRC_SML(SML_CANC,ins) endif;
+E:end;
+
+
+ Visible routine WAIT;
+ import ref(simulation) simblk; ref(linkage) set; exit label psc;
+ begin ---  Insert the first process in the given two-way list.
+       SMST_INTO(simblk.cur,set);
+       ---  Here follows the inline code for a call on PASSIVATE.
+       ---  Remove the first element from the sequencing set.
+       RANK_OUT(simblk.cur);
+       if bio.trc then TRC_SML(SML_WAIT,set) endif;
+       simblk.cur:=SQS_FIRST() qua process;
+       ---  Check that the no. of scheduled processes are greater than one.
+       if simblk.cur = simblk.sqs then ERROR(ENO_SML_2) endif;
+       smltim:=simblk.cur.rnk; psc:=RESUMX(simblk.cur,psc);
+ end;
+
+
+ Visible routine PASSIVATE;
+ import ref(simulation) simblk; exit label psc;
+ begin ref(process) x;
+       ---  Remove the first element from the sequencing set.
+       x:=simblk.cur; RANK_OUT(x);
+       if bio.trc then TRC_SML(SML_PASS,x) endif;
+       simblk.cur:=SQS_FIRST() qua process;
+       ---  Check that the no. of scheduled processes are greater than one.
+       if simblk.cur = simblk.sqs then ERROR(ENO_SML_2) endif;
+       smltim:=simblk.cur.rnk; psc:=RESUMX(simblk.cur,psc);
+ end;
+
+
+ Visible routine HOLD;
+ import ref(simulation) simblk; long real time; exit label psc;
+ begin ref(ranking) suc; ref(process) x; x:=simblk.cur;
+       if time>0.0&&0 then time:=x.rnk:=x.rnk+time endif;
+       suc:=RANK_SUC(x);
+       if suc <> none
+       then if suc.rnk <= time
+            then RANK_INTO(x,simblk.sqs,time);
+                 if bio.trc then TRC_SML(SML_HOLD,x) endif;
+                 simblk.cur:=suc; smltim:=suc.rnk;
+                 psc:=RESUMX(simblk.cur,psc); goto E;
+            endif;
+       endif;
+       if bio.trc then TRC_SML(SML_HOLD,x) endif;
+       smltim:=time;
+E:end;
+%page
+
+ Visible routine EVTIME;
+ import ref(process) prcs; export long real time;
+ begin if prcs.bl = none then ERROR(ENO_PRC_1) endif;
+       time:=prcs.rnk;
+ end;
+
+
+ Visible routine IDLE;
+ import ref(process) prcs; export boolean val;
+ begin val:=prcs.bl = none; end;
+
+
+ Visible routine TERMINATED;
+ import ref(process) prcs; export boolean val;
+ begin val:=prcs.sort = S_TRM; end;
+
+
+ Visible routine NEXTEV;
+ import ref(process) ins; export ref(process) suc;
+ begin suc:=RANK_SUC(ins); end;
+
+
+ Visible routine ACCUM;
+ import ref(simulation) simblk; name(long real) a,b,c; long real d;
+ begin long real time; time:=simblk.cur.rnk;
+       var(a):=var(a)+(var(c)*(time-var(b)));
+       var(b):=time; var(c):=var(c)+d;
+ end;
+%title ******   R  A  N  K  I  N  G   ******
+
+            ---  The following reference is used here only.
+            ref(cla_pre_ptp)   subpp;
+
+%visible
+
+            ---   Class RANK on prefix level two.
+ RNKDCL:    ---   Declaration code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(3);
+            if subpp <> none then goto subpp.dcl endif;
+            goto RNKINR;    -- shortcut
+ RNKSTM:    ---   Before inner statement code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(3);
+            if subpp <> none then goto subpp.stm endif;
+ RNKINR:    ---   After inner statement code.
+            E_CLA_PRE;
+            IERR("RNKINR");         --  Not really necessary, but . . .
+
+
+---       ******   P  R  O  C  E  S  S   ******
+%visible
+          ---   Class PROCESS at prefix level 3.
+ PCSDCL:  ---   Declaration code.
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(4);
+          if subpp <> none then goto subpp.dcl endif;
+ PCSSTM:  ---   Statements before inner.
+          DETACH(curins);
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(4);
+          if subpp <> none then goto subpp.stm endif;
+ PCSINR:  ---   Statements after inner.
+          curins.sort:=S_TRM;
+    ---   curins.dl:=none;  --- Removed 15/8-84. Used by passivate.
+          PASSIVATE(curins.sl);
+          IERR("PCSINR");
+
+
+---       ******   M  A  I  N  P  R  O  G  R  A  M   ******
+%hidden
+          ---   Class MAINPROG at prefix level 4.
+ MPRDCL:  ---   Declaration code.
+ MPRSTM:  ---   Statements before inner.
+          repeat  while true do  DETACH(curins)  endrepeat;
+ MPRINR:  ---  Statements after inner.
+          IERR("MPRINR");
+
+
+%title ******   S  I  M  U  L  A  T  I  O  N   ******
+%visible
+            ---  The class SIMULATION at prefix level 1.
+ SMLDCL:    ---  Declaration Code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+            if subpp <> none then goto subpp.dcl endif;
+
+ SMLSTM:    ---   Before inner statement code.
+            ---   Create head of SQS.
+            B_CLA(curins,ref(RANKPTP));
+            curins qua ref(simulation).sqs:=tmp.pnt;
+            curins qua ref(simulation).sqs.bl :=
+            curins qua ref(simulation).sqs.ll :=
+            curins qua ref(simulation).sqs.rl :=
+            curins qua ref(simulation).sqs;
+
+            --- Create the Main Program object.
+            B_CLA(curins,ref(MAINPTP));
+            curins qua ref(simulation).main:=tmp.pnt;
+
+            ---  Schedule main program as first event in SQS.
+            RANK_INTO(curins qua ref(simulation).main,
+                       curins qua ref(simulation).sqs,0.0&&0);
+            smltim:=0.0&&0;
+
+            curins qua ref(simulation).cur :=
+            curins qua ref(simulation).main;
+
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+            if subpp <> none then goto subpp.stm endif;
+
+ SMLINR:    ---   After inner statement code.
+            E_CLA_PRE;
+            IERR("SMLINR");
+%hidden
+
+end;

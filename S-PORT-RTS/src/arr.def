@@ -1,0 +1,219 @@
+ Module ARR("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,STRG; 
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1987 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Oslo, Norway                                                   ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                          A r r a y s                            ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---   pje 1987: dummy arrays, lower/upperbound incl.                ---
+       -----------------------------------------------------------------------
+
+
+
+ Visible routine ARR_G_NEW;
+ import range(0:MAX_TYPE) type; range(1:MAX_DIM) ndim; integer bound(MAX_BND);
+ export ref(arbody) bod;
+ begin integer base,nelt,i,j; range(0:MAX_SORT) sort;
+       infix(arrbnd) bnd; ref(arhead) head; size lng;
+       ---  Create a single array head.
+       lng:=rec_size(arhead,ndim); ALLOC(%head%,%lng%,%bio%);
+       head.sort:=S_ARHEAD; head.lng :=lng; head.ndim:=ndim;
+       --  Fill in lower and upper bounds,
+       --  the dope vector and the negated base index.
+       i:=ndim - 1; j:=2*i; nelt:=1; base:=0;
+       repeat bnd.lb:=bound(j); bnd.ub:=bound(j+1);
+              bnd.dope:=bnd.ub - bnd.lb + 1;
+-- pje        if bnd.dope <= 0 then  ERROR(ENO_ARR_1)  endif;
+              if bnd.dope <  0 then  bnd.dope:=0;      endif;
+                            -- note that this causes nelt to be zero
+              head.bound(i):=bnd; nelt:=nelt * bnd.dope;
+              base:=base * bnd.dope + bnd.lb;
+       while i > 0 do i:=i-1; j:=j-2 endrepeat;
+       head.nelt:=nelt; head.bound(ndim-1).dope:= -base;
+
+       ---   Create a single array body entity.
+       sort:=S_ARBODY;
+       ---  Compute the size of the array body entity.
+       case 0:MAX_TYPE (type)
+       when T_BOO: lng:=rec_size(boo_arr,nelt);
+       when T_CHA: lng:=rec_size(cha_arr,nelt);
+       when T_SIN: lng:=rec_size(sin_arr,nelt);
+       when T_INT: lng:=rec_size(int_arr,nelt);
+       when T_REA: lng:=rec_size(rea_arr,nelt);
+       when T_LRL: lng:=rec_size(lrl_arr,nelt);
+       when T_REF: lng:=rec_size(ref_arr,nelt); sort:=S_ARBREF;
+       when T_TXT: lng:=rec_size(txt_arr,nelt); sort:=S_ARBTXT;
+       otherwise   IERR("ARR_G_NEW")  endcase;
+       ---  Allocate storage.
+       ALLOC(%bod%,%lng%,%head%);
+       bod.sort:=sort; bod.lng:=lng; bod.head:=head;
+       if bio.trc then TRC_ARR(bod,type) endif;
+ end;
+
+
+ Visible routine ARR_2_NEW;
+ import range(0:MAX_TYPE) type; integer lb_1,ub_1,lb_2,ub_2;
+ export ref(arent2) arr;
+ begin integer dope,nelt; range(0:MAX_SORT) sort; size lng;
+       if (ub_1<lb_1) or (ub_2<lb_2)
+       then dope:=0 else dope:=ub_1 - lb_1 + 1 endif;
+       nelt:=dope * (ub_2-lb_2+1);
+-- pje dope:=ub_1 - lb_1 + 1;      if dope <= 0 then ERROR(ENO_ARR_1) endif;
+-- pje nelt:=dope * (ub_2-lb_2+1); if nelt <= 0 then ERROR(ENO_ARR_1) endif;
+       sort:=S_ARENT2;
+       ---  Compute the size of the array entity.
+       case 0:MAX_TYPE (type)
+       when T_BOO: lng:=rec_size(boo_arr_2,nelt);
+       when T_CHA: lng:=rec_size(cha_arr_2,nelt);
+       when T_SIN: lng:=rec_size(sin_arr_2,nelt);
+       when T_INT: lng:=rec_size(int_arr_2,nelt);
+       when T_REA: lng:=rec_size(rea_arr_2,nelt);
+       when T_LRL: lng:=rec_size(lrl_arr_2,nelt);
+       when T_REF: lng:=rec_size(ref_arr_2,nelt); sort:=S_ARREF2;
+       when T_TXT: lng:=rec_size(txt_arr_2,nelt); sort:=S_ARTXT2;
+       otherwise  IERR("ARR_2_NEW")   endcase;
+       ---  Allocate storage.
+       ALLOC(%arr%,%lng%,%bio%); arr.sort:=sort;
+       arr.lng :=lng;  arr.lb_1:=lb_1; arr.ub_1:=ub_1;
+       arr.dope:=dope; arr.lb_2:=lb_2; arr.ub_2:=ub_2;
+       arr.neg_base:=- (lb_2 * dope + lb_1);
+       if bio.trc then TRC_ARR(arr,type) endif;
+ end;
+
+
+ Visible routine ARR_1_NEW;
+ import range(0:MAX_TYPE) type; integer lb,ub;
+ export ref(arent1) arr;
+ begin integer nelt; range(0:MAX_SORT) sort; size lng;
+-- pje nelt:=ub - lb + 1; if nelt <= 0 then ERROR(ENO_ARR_1) endif;
+       nelt:=ub - lb + 1; if nelt <  0 then nelt:=0          endif;
+       sort:=S_ARENT1;
+       ---  Compute the size of the array entity.
+       case 0:MAX_TYPE (type)
+       when T_BOO: lng:=rec_size(boo_arr_1,nelt);
+       when T_CHA: lng:=rec_size(cha_arr_1,nelt);
+       when T_SIN: lng:=rec_size(sin_arr_1,nelt);
+       when T_INT: lng:=rec_size(int_arr_1,nelt);
+       when T_REA: lng:=rec_size(rea_arr_1,nelt);
+       when T_LRL: lng:=rec_size(lrl_arr_1,nelt);
+       when T_REF: lng:=rec_size(ref_arr_1,nelt); sort:=S_ARREF1;
+       when T_TXT: lng:=rec_size(txt_arr_1,nelt); sort:=S_ARTXT1;
+       otherwise  IERR("ARR_1_NEW")   endcase;
+
+       ALLOC(%arr%,%lng%,%bio%); ---  Allocate storage.
+       arr.sort:=sort; arr.lng :=lng; arr.lb:=lb; arr.ub:=ub;
+       if bio.trc then TRC_ARR(arr,type) endif;
+ end;
+
+
+ Visible routine ARR_COP_NEW;
+ import field(ref(entity)) src;  --  Offset of source.
+        field(ref(entity)) dst;  --  Offset of destination.
+        range(0:MAX_TYPE) typ;   --  Element type. 
+ begin ref(entity) new,old; size lng;
+       lng:=var(curins + src).lng;
+       ALLOC(%new%,%lng%,%bio%);     --  Garbage Collection may occur.
+       old:=var(curins + src);
+       ---   Find the size of the common properties part, and move it.
+       case  0:MAX_SORT (old.sort)
+       when  S_ARBODY,S_ARBREF,S_ARBTXT:  lng:=size(arbody);
+       when  S_ARENT2,S_ARREF2,S_ARTXT2:  lng:=size(arent2);
+       when  S_ARENT1,S_ARREF1,S_ARTXT1:  lng:=size(arent1);
+       otherwise  IERR("ARR_COP_NEW-1")  endcase;
+       envir_MOVE(old,new,lng); var(curins + dst):=new;
+       if bio.trc then TRC_ARR(new,typ) endif;
+ end;
+
+
+ Visible routine ARR_BY_VAL;
+ import ref(instance) parins;    --  Parameter instance.
+        field(ref(entity)) fld;  --  Offset of parameter.
+        range(0:MAX_TYPE) typ;   --  Element type. 
+ export ref(instance) updated;   --  Parameter instance.
+ begin ref(entity) new,old; size lng;
+       lng:=var(parins + fld).lng;
+       ALLOC(%new%,%lng%,%parins%);  --  Garbage Collection may occur.
+       old:=var(parins + fld); envir_MOVE(old,new,lng);
+       var(parins + fld):=new; updated:=parins;
+       if bio.trc then TRC_ARR(new,typ) endif;
+ end;
+
+ Visible routine ARR_COP_TMP; --- Copy the array referenced by TMP.ARR
+ import range(0:MAX_TYPE) typ;     --  Element type. 
+ begin ref(entity) new,old; size lng;
+       old:=tmp.arr; lng:=old.lng;
+       ALLOC(%new%,%lng%,%old%);  --  Garbage Collection may occur.
+       envir_MOVE(old,new,lng);
+       tmp.arr:=new; if bio.trc then TRC_ARR(new,typ) endif;
+ end;
+
+ Visible routine LOWBND; 
+ import ref(entity) arr; integer i; export integer res;
+ begin ref(arhead) head;
+       case  0:MAX_SORT (arr.sort)
+       when  S_ARBODY,S_ARBREF,S_ARBTXT: 
+             head:=arr qua arbody.head;
+             if (i>0) and (i<=head.ndim) then res:=head.bound(i-1).lb
+             else ERROR(ENO_ARR_1);
+             endif;
+       when  S_ARENT2,S_ARREF2,S_ARTXT2:
+             if    i=1 then res:=arr qua arent2.lb_1
+             elsif i=2 then res:=arr qua arent2.lb_2;
+             else ERROR(ENO_ARR_1);
+             endif;
+       when  S_ARENT1,S_ARREF1,S_ARTXT1:
+             if    i=1 then res:=arr qua arent1.lb;
+             else ERROR(ENO_ARR_1);
+             endif;
+       otherwise  IERR("ARR_LOWBND")  endcase;
+
+ end;
+
+ Visible routine UPPBND; 
+ import ref(entity) arr; integer i; export integer res;
+ begin ref(arhead) head;
+       case  0:MAX_SORT (arr.sort)
+       when  S_ARBODY,S_ARBREF,S_ARBTXT: 
+             head:=arr qua arbody.head;
+             if (i>0) and (i<=head.ndim) then res:=head.bound(i-1).ub;
+             else ERROR(ENO_ARR_1);
+             endif;
+       when  S_ARENT2,S_ARREF2,S_ARTXT2:
+             if    i=1 then res:=arr qua arent2.ub_1
+             elsif i=2 then res:=arr qua arent2.ub_2
+             else ERROR(ENO_ARR_1);
+             endif;
+       when  S_ARENT1,S_ARREF1,S_ARTXT1:
+             if   i=1 then res:=arr qua arent1.ub;
+             else ERROR(ENO_ARR_1);
+             endif;
+       otherwise  IERR("ARR_LOWBND")  endcase;
+ end;
+
+-- Visible routine ARRNDIM;  -- non-standard function (pje)
+-- import ref(entity) arr; integer i; export integer res;
+-- begin case  0:MAX_SORT (arr.sort)
+--       when  S_ARBODY,S_ARBREF,S_ARBTXT: 
+--             res:=arr qua arhead.head.ndim;
+--       when  S_ARENT2,S_ARREF2,S_ARTXT2:
+--             res:=2;
+--       when  S_ARENT1,S_ARREF1,S_ARTXT1:
+--             res:=1;
+--       otherwise  IERR("ARR_LOWBND")  endcase;
+-- end;
+
+end;

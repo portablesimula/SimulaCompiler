@@ -1,0 +1,168 @@
+External class CHCKINIT;
+
+CHCKINIT class SCODER0;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1985,86 by                                           ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  0.           ---
+%      ---                                                                 ---
+%      --- Selection switches: IZ                                          ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'M' Included always when macro capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCODER:MNE
+%+I %INSERT (RTS-105)RTSINIT:MNE       !NOTE: *** MAY BE CHANGED ***;
+
+      ref(outbytefile) SCF;
+      text progheadstring;
+
+      visiblegenerator class codegenerator0(maxcalldepth, maxjumpdepth,
+                                    max_index,maxasd);
+      short integer maxcalldepth, maxjumpdepth,max_index,maxasd;
+      begin
+%-I         ! ********** Mnemonics defined in S-CODE/RTS *********;
+%-I         short integer k_smp,k_pro,k_arr,k_lab,k_swt,k_cla;!Attr. Kind Codes;
+%-I         short integer m_ref,m_value,m_name,m_local;      ! Attr. Mode Codes;
+%-I         short integer t_notype,t_boo,t_cha,t_sin,        ! Attr. Type Codes;
+%-I                       t_int,t_rea,t_lrl,t_ref,t_txt;
+%-I         short integer s_txtent;                       ! Entity Sort Codes ;
+%-I         short integer par_thk_ass,par_thk_nas,        ! Actual Param. Code;
+%-I                       par_qnt_ass,par_qnt_nas,
+%-I                       par_qnt_lit;
+
+%-I         short integer
+%-I         vaccess,vaccessv,vanone,vasscall,vassign,vasspar,vassrep,vattr,
+%-I         vbdest,vbjump,vbjumpif,vbody,vbseg,
+%-I         vcall,vcompare,vconst,vconstspec,vconvert,
+%-I         vcaaddr,vcdot,vcgaddr,vcoaddr,vcpaddr,vcraddr,vcrecord,vcint,
+%-I         vcsize,vdeco,vdelete,vderef,vdist,vdsize,
+%-I         vdup,velse,vempty,vendif,
+%-I         vendmodule,vendprofile,vendprogram,vendrecord,vendskip,veseg,
+%-I         vexisting,vexport,vexternal,veval,
+%-I         vfalse,vfdest,vfetch,vfixrep,vfjump,vfjumpif,vfswitch,vgetobj,
+%-I         vglobal,vglobalspec,vgnone,vgoto,vif,vimport,vinco,
+%-I         vindex,vindexv,vinfo,vinit,vinsert,vlocate,
+%-I         vlabel,vlabelspec,vline,vmain,vmaxlen,vmodule,vnobody,vnosize,
+%-I         vnowhere,vonone,vpop,vpopall,vprecall,vprefix,
+%-I         vprofile,vprogram,vpush,vpushv,vpushc,vpushlen,
+%-I         vrecord,vrefer,vremote,vremotev,vrep,vrepcall,
+%-I         vrestore,vrupdate,vsave,vselect,vselectv,vsetobj,
+%-I         vsetswitch,vsize,vskipif,vsysinsert,vtag,vtext,vtrue,vupdate,
+%-I         vxor;
+
+%-I         !******    Variables denoting values of predefined tags  ********;
+
+%-I         short integer ptint,ptchar,ptbool,ptoaddr,ptaaddr,ptpaddr,ptsize,
+%-I                       ptgaddr,ptraddr,ptsint,ptreal,ptlreal;
+
+         !***********   Displacements relative to some base tag   ********;
+
+%-I      integer quantdisp,descriptordisp,prototypedisp,
+%-I              cntdisp, startdisp,
+%-I              dcldisp, stmdisp,cnt_inrdisp,
+%-I              profiledisp,bodydisp,contextdisp,exportdisp,
+%-I              indirectdisp,
+%-I              atrdesdisp;
+%+K      short integer instrefdisp;
+         short integer sequdisp; ! negative = -1;
+%        short integer quickstmtdisp, quickreturndisp;
+         short integer zerostringindex;  ! Hash index of the string "0";
+         short integer maxtagstack;      ! Upper bound of tagstack ;
+
+%title ******   Conversion FEC representation => RTS repr.   ******
+
+%        for several of the arrays, D-option will set the exact bounds;
+%        zero is normally chosen as lower bound for efficiency reasons
+
+%-D      short integer array arr1elttag,arr2elttag,arr3elttag(0:8);
+%+D      short integer array arr1elttag,arr2elttag,arr3elttag(1:8);
+         ! *** legal: SIMULA types (1-dim, 2-dim, multi-dim) ***;
+
+         short integer array vopc(0:150); ! Integer values for various
+            opc symbols, indexed by Rank(opc);
+
+         short integer array invert(ILT:IRFNE);
+         ! *** legal: value and ref relations ***;
+         !Return the operator of the inverted relation ;
+
+%-D      short integer array typetag(0:IVALU);
+%+D      short integer array typetag(1:IVALU);
+         !*** legal: SIMULA types + IVALU ***;
+
+         short integer array rtstypecode(0:INOTY);
+         ! *** legal: SIMULA types + INOTY, ILABE ***;
+         ! NB: label has no type code in RTS (label is a kind of its own);
+
+         short integer array rtskind(0:IIDN);
+         ! *** legal: IPROC, IARRA, ILABE, ISWIT, IIDN ***;
+
+         short integer array rtsmode(0:IFRMP);
+         ! *** legal: IVALU, INAME, IDCLI, IFRMP ***;
+
+%-D      short integer array type_pro_tag(0:8);
+%+D      short integer array type_pro_tag(1:8);
+         ! *** legal: SIMULA types ***;
+         ! Gives tag of the type procedure records defined
+           in RTS, which are to be used as prefix for
+           a type procedure record generated by FEC ;
+
+%-D      short integer array e_fnp_ass1,e_fnp_ass2(0:8);
+%+D      short integer array e_fnp_ass1,e_fnp_ass2(1:8);
+         ! *** legal: SIMULA types ***;
+         ! Gives the profile/body tag of the routine E_FNP_ASS_<type> ;
+
+%-D      short integer array e_fnp_acc1,e_fnp_acc2(0:8);
+%+D      short integer array e_fnp_acc1,e_fnp_acc2(1:8);
+         !*** legal: SIMULA types ***;
+         ! Gives the profile/body tag of the routine E_FNP_ACC_<type> ;
+
+%-D      short integer array resulttag(0:8);
+%+D      short integer array resulttag(1:8);
+         ! *** legal: SIMULA types ***;
+         ! Gives tag of the record attribute <type>_pro.val ;
+
+%-D      short integer array quantvarianttag(0:IARRA);
+%+D      short integer array quantvarianttag(1:IARRA);
+         ! *** legal: SIMULA types + ILABE, PROC, ARRA ;
+         ! Gives tag of the attribute in some of the variants
+           of the record quant defined in RTS ;
+
+%-D      short integer array fnp_pro_1,fnp_pro_2(    0:ILONG);
+%+D      short integer array fnp_pro_1,fnp_pro_2(ISHOR:ILONG);
+         ! *** legal: arithmetic types ***;
+         ! Give profile/body tag of the routine FNP_PRO_<type> ;
+
+%-D      short integer array litpardesvarianttag(0:8);
+%+D      short integer array litpardesvarianttag(1:8);
+         !*** legal: SIMULA types ***;
+
+%-D      short integer array fpt_profile, fpt_body(0:8);
+%+D      short integer array fpt_profile, fpt_body(1:8);
+         !*** legal: SIMULA types ***;
+
+%INSERT (RTS-105)RTSINIT:DECL
+% this file contains declarations to be visible within the code generator
+
+      end codegenerator0;
+
+end SCODER0;

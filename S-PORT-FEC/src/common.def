@@ -1,0 +1,392 @@
+Class COMMON( MAXID, MAXBLNO, MAXBLEV );
+short integer MAXID, MAXBLNO, MAXBLEV  ;
+virtual: procedure cannotproceed;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1985,86 by                                           ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                   C l a s s    C o m m o n                      ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      --- Selection switches: DPI                                         ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+      short integer release; ! - to become constant ;
+
+%   *** insert here either mnemonics or declarations of internal symbols ***
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%-I %INSERT (FEC-105)COMMON:DECL
+
+%title ***  S y m b o l    T a b l e  ***
+%+D   text array DB(0:256);
+%     comment: the array db contains the text version of the
+%              i-symbols defined above in the order of the rank;
+
+      short integer FIRSTID, lastid;
+      short integer FIRSTCONST , lastconst;
+
+      ref(symbolgroup) array symtab(0:255);
+%            identifiers are allocated bottom up,
+%            literals    are allocated top down:   lastid<lastconst always
+%            NOTE: keywords have predefined indices from one up
+
+      class symbolgroup;
+      begin text array val(0:255); end;
+
+      ref(symbolbox) array hashtab(0:210);
+
+      class symbolbox;
+      begin character upx, lowx;
+            ref(symbolbox) next;
+            inner;
+            upx:=char(hashindex//256); lowx:=char(rem(hashindex,256));
+            symtabindex:=rank(upx); sgrx:=rank(lowx);
+            if symtab(symtabindex)==none
+            then symtab(symtabindex):-new symbolgroup;
+      end;
+
+%+P   prior
+      text procedure idname(index); short integer index;
+      begin short integer tab;
+            if index<=0           then idname:-notext
+            else begin tab:=index//256;
+                 idname:-if symtab(tab)==none then notext
+                         else symtab(tab).val(rem(index,256));
+      end   end;
+
+      symbolbox class identifier;
+      begin hashindex:=lastid:=lastid+1;
+            if hashindex>=lastconst then cannotproceed(588);
+      end of identifier;
+
+      symbolbox class constant;
+      begin hashindex:=lastconst:=lastconst-1;
+            if hashindex<=lastid then cannotproceed(588);
+      end of constant;
+
+      short integer hashindex, symtabindex,sgrx; !global use;
+
+%+P   prior
+      procedure DEFIDENT(ident); text ident;
+      begin ref(symbolbox) hashid;
+            short integer ih;
+%-Z         short integer ip,il;
+            ih:=0;
+%+Z         ident.setpos(1); while ident.more  do ih:=ih+rank(ident.getchar);
+%-Z         il:=ident.length; ip:=0;
+%-Z         while ip<il do begin ih:=ih+rank(loadchar(ident,ip)); ip:=ip+1 end;
+            ih:=rem(ih,211);  hashid:-hashtab(ih);
+            if hashid==none then begin
+               hashtab(ih):-new identifier;  goto SETV;
+            end
+            else begin
+      SCAN:     if symtab(rank(hashid.upx)).val(rank(hashid.lowx))<>ident
+                then begin
+                   if hashid.next=/=none
+                   then begin hashid:-hashid.next; goto SCAN; end;
+                   hashid.next:-new identifier;
+      SETV:        symtab(symtabindex).val(sgrx):-copy(ident);
+                end
+                else hashindex:=rank(hashid.upx)*256+rank(hashid.lowx);
+            end;
+      end;
+
+%+P   prior
+      procedure DEFCONST(const); text const;
+      begin ref(symbolbox) hashid;
+            short integer ih,cp,cl;
+            ih:=53;
+          ! the same string as id and const must have different indices ???;
+%+Z         const.setpos(1); while const.more do ih:=ih+rank(const.getchar);
+%-Z         cl:=const.length; cp:=0;
+%-Z         while cp<cl do begin ih:=ih+rank(loadchar(const,cp)); cp:=cp+1 end;
+            ih:=rem(ih,211);  hashid:-hashtab(ih);
+            if hashid==none then begin
+               hashtab(ih):-new constant;  goto SETV;
+            end
+            else begin
+      SCAN:     if symtab(rank(hashid.upx)).val(rank(hashid.lowx))<>const
+                then begin
+                   if hashid.next=/=none
+                   then begin hashid:-hashid.next; goto SCAN; end;
+                   hashid.next:-new constant;
+      SETV:        symtab(symtabindex).val(sgrx):-copy(const);
+                end
+                else hashindex:=rank(hashid.upx)*256+rank(hashid.lowx);
+            end;
+       end;
+
+      !***  predefined constants  ***;
+      short integer questindex;
+
+      !***  predefined identifiers, mnemonics in STANDARDID:MNE  ***;
+%-I   short integer errorident,simsetindex, simulationindex,
+%-I                 detachident,actindex1,actindex2,actindex3,
+%-I                 rankindex,isorankindex,charindex,isocharindex,
+%-I                 maxindex,minindex,signindex,absindex,remindex,
+%-I                 sourcelineindex,
+%-I                 loadcharindex,storecharindex;
+
+%title *** VARIABLES FOR PARAMETERS TO COMPILER ***
+      ref(printfile) listfile;
+      text listpart;
+      boolean listingon,GiveNotes;
+      boolean SportOK;           ! enables special features;
+      integer linenr;  text line;
+      ref(outbytefile) L2OUPT;
+      ref(inbytefile) L2INPT;
+
+      character     currentpass; ! number of current pass;
+      short integer numerrfound; ! number of errors found until now;
+      short integer numwarnfound;! number of warnings              ;
+      short integer maxnumoftags;! highest tag ever used (spec. use in SCANNER);
+      character     termstatus;  ! Reported to environment at termination;
+      text datetime;             ! Date and time for this compilation;
+      text predefname,simsetname,simulaname;
+
+      text attrfilename, moduleident, checkcode;
+      !*** set by parser, used in builder ***;
+
+      short integer maxerrno;
+      short integer maxdepth;    ! max nesting of statements;
+      short integer maxconst;
+      text feoptions;            ! Options for testoutput etc. ;
+      boolean definition;        ! set at %DEFINITION;
+      boolean recomp;            ! set if recompilation;
+      boolean separatecomp;      ! set if separate compilation;
+
+      !******  switches set according to options  *******;
+%+D   boolean scannerdump;   ! dump of scanner output;
+%+D   boolean syntaxdump;    ! dump from interior of parser;
+%+D   boolean parserdump;    ! dump of parser output;
+%+D   boolean Aoption;       ! - not used                  ;
+%+D   boolean Boption;       ! generate_/set_encl_block_descr;
+%+D   boolean Coption;       ! - not used                  ;
+%+D   boolean Doption;       ! - not used                  ;
+%+D   boolean Eoption;       ! Output of attr-fil output   ;
+%+Z   boolean Foption;       ! Predef identifiers not incl.;
+%+D   boolean Goption;       ! - not used                  ;
+%+D   boolean Hoption;       ! - not used                  ;
+%+Z   boolean Ioption;       ! INIT PREDEF/SIMSET/SIMLTN   ;
+%+D   boolean Joption;       ! - not used                  ;
+%+D   boolean Koption;       ! - not used                  ;
+      boolean Loption;       ! Output of linenum. & hightag;
+%+D   boolean Moption;       ! - not used                  ;
+%+D   boolean Noption;       ! - not used                  ;
+      boolean Ooption;       ! Output pass summary         ;
+%+D   boolean Poption;       ! Dump from alloc             ;
+%+D   boolean Qoption;       ! Dump from connectcopy       ;
+%+D   boolean Roption;       ! Output of L2-input          ;
+%+D   boolean Soption;       ! Output of checker input     ;
+%+D   boolean Toption;       ! Dump of expression stack    ;
+%+D   boolean Uoption;       ! not output of param-descriptors;
+%+D   boolean Voption;       ! - not used                  ;
+%+D   boolean Woption;       ! - not used                  ;
+%+Z   boolean xidstart;      ! special identifiers legal;
+%+D   boolean Yoption;       ! - not used                  ;
+%+D   boolean Zoption;       ! Output of coder-input       ;
+
+      short integer opt,opd,opn,optx; ! operator/operand communication;
+
+      ref(component) scanner,parser,coder;
+
+      class component;;
+%title ***  U t i l i t y    P r o c e d u r e s  ***
+
+      ! ***   LEFT..., CONC  temp until RTS/ENVIR is correct  ***;
+
+      text lefttxtbuf; !TEMP;
+%+P   prior
+      text procedure leftint(i); integer i; !TEMP ;
+      begin lefttxtbuf.putint(i); i:=0;
+%+Z         lefttxtbuf.setpos(1);
+%+Z         while lefttxtbuf.getchar=' '     do i:=i+1;
+%-Z         while loadchar(lefttxtbuf,i)=' ' do i:=i+1;
+            leftint:-lefttxtbuf.sub(i+1,35-i);
+      end;
+
+%+P   prior
+      text procedure leftreal(val);
+%+R   long real val;
+%-R   integer   val;
+      begin short integer i;  i:=0;
+%+R         lefttxtbuf.putreal(val,20);
+%-R         lefttxtbuf.putint(val);
+%+Z         lefttxtbuf.setpos(1);
+%+Z         while lefttxtbuf.getchar=' '     do i:=i+1;
+%-Z         while loadchar(lefttxtbuf,i)=' ' do i:=i+1;
+            leftreal:-lefttxtbuf.sub(i+1,35-i);
+      end;
+
+
+% +P  prior
+      text procedure conc(t1,t2);  ! TEMP until text conc implemented;
+      text t1,t2;
+      begin text t;  short integer i1,i2;
+            i1:=t1.length; i2:=t2.length;
+            conc:-t:-blanks(i1+i2);
+            t:=t1; t.sub(i1+1,i2):=t2;
+      end conc;
+
+% +P  prior
+      text procedure conc3(t1,t2,t3); ! TEMP until text conc implemented;
+      text t1,t2,t3;
+      begin text t;  short integer i1,i2,i3;
+            i1:=t1.length; i2:=t2.length; i3:=t3.length;
+            conc3:-t:-blanks(i1+i2+i3);
+            t:=t1; t.sub(i1+1,i2):=t2; t.sub(i1+i2+1,i3):=t3;
+      end conc3;
+
+%+P   prior
+      boolean procedure xoption(c); character c;   !below, fecmain;
+      begin feoptions.setpos(1);
+            while feoptions.more do
+            if feoptions.getchar=c then
+            begin xoption:=true; goto E end;
+      E:end;
+
+%+P   prior
+      procedure setoptions;  !check2, fecmain;
+      begin
+%+D         scannerdump:=xoption('1');
+%+D         syntaxdump:=xoption('5');
+%+D         parserdump:=xoption('2');
+%+D         Aoption:=xoption('A');     ! - not used ;
+%+D         Boption:=xoption('B');     ! generate_/set_encl_block_descr;
+%+D         Coption:=xoption('A');     ! - not used ;
+%+D         Doption:=xoption('A');     ! - not used ;
+%+D         Eoption:=xoption('E');     ! Output of attr-fil output   ;
+%+Z         Foption:=xoption('F');     ! Predef identifiers not incl.;
+%+D         Goption:=xoption('G');     ! - not used ;
+%+D         Hoption:=xoption('H');     ! - not used ;
+%+Z         Ioption:=xoption('I');     ! Initialise PREDEF/SIMSET/SIMLTN;
+%+D         Joption:=xoption('J');     ! - not used ;
+%+D         Koption:=xoption('K');     ! - not used ;
+            Loption:=xoption('L');     ! Output of linenum. & hightag;
+%+D         Moption:=xoption('M');     ! - not used ;
+%+D         Noption:=xoption('N');     ! - not used ;
+            Ooption:=xoption('O');     ! Output pass summary ;
+%+D         Poption:=xoption('P');     ! Dump from alloc             ;
+%+D         Qoption:=xoption('Q');     ! Dump from connectcopy       ;
+%+D         Roption:=xoption('R');     ! Output of L2-input          ;
+%+D         Soption:=xoption('S');     ! Output of checker input     ;
+%+D         Toption:=xoption('T');     ! Dump of expression stack    ;
+%+D         Uoption:=xoption('U');     ! Not output of param-descriptors ;
+%+D         Voption:=xoption('V');     ! - not used ;
+%+D         Woption:=xoption('W');     ! - not used ;
+%+Z         xidstart:=xoption('X');    ! Allow underline as first in id;
+%+D         Yoption:=xoption('Y');     ! - not used ;
+%+D         Zoption:=xoption('Z');     ! Output of coder-input       ;
+      end;
+
+%title ***  TEXTUALLY BLOCK AND DECLARATION REPRESENTATION  ***
+
+      ref(brec)array bltab(0:maxblno); ! 0 only used for init pass2;
+      short integer nextblno;
+
+      class quant(type,kind,qualid,categ);
+            character type,kind;
+            short integer qualid;
+            character categ;
+      begin boolean protect;       ! true if attribute 'protected';
+            short integer descrno; ! blno of descr;
+            short integer dim;     ! Also language in external;
+            short integer extname;
+            short integer ident;
+            integer line;
+            ref(quant)next;
+
+%           For coding of type/kind/categ see "quantity";
+
+%+D         procedure dump;
+%+D         begin outtext("**QUANT: type=");
+%+D               outtext(DB(rank(type))); outtext(",kind=");
+%+D               outtext(DB(rank(kind))); outtext(",categ=");
+%+D               outtext(DB(rank(categ))); outtext(",ident=");
+%+D               outint(ident,7); outtext(",qualid="); outint(qualid,6);
+%+D               outimage; outtext("       ");
+%+D               outint(line,6); outtext("  ");
+%+D               if rank(categ)=IEXTR then
+%+D               begin outint(dim,7); outint(extname,7) end
+%+D          else begin outint(dim,6); outint(descrno,6) end;
+%+D               outimage;
+%+D         end of quant-dump;
+
+            ident:=opd; line:=linenr;
+
+      end of quant;
+
+      class brec(kind); character kind;
+      comment: Kind is IPROC, ICLAS, IBLKB or IPRFB;
+      begin
+            character sysprefix;
+              ! 'N': contains no SIMSET/SIMULATION prefixed block;
+              ! 'E': contains a  SIMSET prefixed block;
+              !      but no SIMULATION prefixed block;
+              ! 'L': contains a  SIMULATION prefixed block;
+            boolean restricted; ! true if some attr is protected;
+            short integer blno;
+            short integer prefid; comment: Contains blno of par-brec
+                            when this is procedure body-brec;
+            short integer fornests;
+            short integer connests;
+            integer line1;      !,line2 - currently not used;
+            ref(quant)fvirt;
+            ref(quant)fpar;
+            ref(hidpack)fvispack;
+            ref(brec)prev;    !link together brec's in a stack;
+
+%+D         procedure dump;
+%+D         begin ref(quant)q; ref(hidpack)v;
+%+D               outtext("**BREC: "); outint(blno,5); outtext("  ");
+%+D               outtext(DB(rank(kind)));
+%+D               outint(line1,5); ! outint(line2,5);
+%+D               outint(fornests,5); outint(connests,5);
+%+D               outint(prefid,7);
+%+D               outtext("-");outchar(sysprefix);
+%+D               outimage;
+%+D               q:-fvirt; while q=/= none do begin q.dump; q:-q.next end;
+%+D               q:-fpar ; while q=/= none do begin q.dump; q:-q.next end;
+%+D               v:-fvispack;
+%+D               while v=/=none do begin v.dump; v:-v.next end;
+%+D         end of brec-dump;
+
+            sysprefix:='N';
+      end of brec;
+
+      class hidpack(ident);
+      short integer ident;
+      begin integer line;
+            ref(hidpack)next;
+
+%+D         procedure dump;
+%+D         begin outtext("**VISPACK: ");
+%+D               outtext(if this hidpack is protpack then "protected "
+%+D                                                   else "hidden ");
+%+D               outtext(idname(ident)); outint(line,6); outimage;
+%+D         end of vispack-dump;
+
+            line:=linenr;
+      end of hidpack;
+
+      hidpack class protpack; ;
+
+end of Class COMMON;

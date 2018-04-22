@@ -1,0 +1,56 @@
+
+%QUALIFIEDNAMES
+%
+% From https://en.wikipedia.org/wiki/Simula
+%
+Begin
+   Class Glyph;
+       Virtual: Procedure print;
+   Begin
+   End;
+
+   Glyph Class Char (c);
+      Character c;
+   Begin
+      Procedure print(dummy); integer dummy;
+      begin outtext("***************  Char.print  "); outimage;
+            outchar(c); outimage;
+      end;
+      integer i; ! TEST ;
+      print(4); !TEST;
+   End;
+
+   Glyph Class Line (elements);
+      Ref (Glyph) Array elements;
+   Begin
+      Procedure print(dummy); integer dummy;
+      begin 
+         Integer i;
+         outtext("***************  Line.print  "); outimage;
+         i:=UpperBound (elements, 1); !-- TEST ;
+         elements(i).print(5);           !-- TEST ;
+         
+         For i:= 1 Step 1 Until UpperBound (elements, 1) Do
+            elements(i).print(6);
+         outimage;
+      End;
+      integer i; ! TEST ;
+      print(7); !TEST;
+      
+   End;
+
+   Ref (Glyph) rg;
+   Ref (Glyph) Array rgs (0 : 3);
+
+   ! Main program;
+   outtext("***************  MAIN PROGRAM !!!!!!!!!!!!!!!!!!!!!!!!!! "); outimage;
+   rgs(0) :- New Char ('A');
+   rgs(1) :- New Char ('b');
+   rgs(2) :- New Char ('b');
+   rgs(3) :- New Char ('a');
+   outtext("***************  MAIN PROGRAM 22222222222222222222222222 "); outimage;
+   rg:- New Line (rgs);
+   outtext("***************  MAIN PROGRAM 33333333333333333333333333 "); outimage;
+   rg.print(8);
+   outtext("***************  MAIN PROGRAM 44444444444444444444444444 "); outimage;
+End;

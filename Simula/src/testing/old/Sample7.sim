@@ -1,0 +1,8 @@
+begin
+  class A;
+  begin 
+     ref(A) x,y;
+     if(none=/=x) then x.y:-x;
+  end;
+end;
+     

@@ -1,0 +1,285 @@
+ Module MNTX("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,STRG,CENT,FIL,LIBR;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1987 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Oslo, Norway                                                   ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---   E r r o r    a n d    E x c e p t i o n    H a n d l i n g    ---
+       ---                                                                 ---
+       ---          B e g i n    a n d    E n d    P r o g r a m           ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+%title ***  M N E M O N I C S    a n d    R E C O R D S  ***
+
+Define EXC_UNS = 0;              -- Unspecified error condition
+Define EXC_BRK = 10;             -- Breakpoint trap
+Define EXC_ITR = 11;             -- User interrupt
+Define EXC_TIM = 12;             -- Time limit exceeded
+Define EXC_IMP = 13;             -- Continuation impossible
+Define EXC_SST = 14;             -- Start of statement
+
+%title ***  G L O B A L    V A R I A B L E S   ***
+integer errstat;           -- Current error status code
+integer er_msg;            --  Primary error message number.
+integer er_msx;            --  Additional error message number.
+range(0:MAX_ENO) er_no;
+range(0:MAX_STS) er_sts;
+range(0:MAX_TRM) er_trm;
+ref(filent) er_fil;
+infix(labqnt) erh;  --- After ERROR return label temp
+
+%title ***  E R R O R    H A N D L I N G  ***
+ Visible body(pinierr) INIERR;
+ begin label cont; er_no:=eno;
+       if eno = ENO_SYS_1 then er_msg:=er_msx:= -1;
+       else er_msg:=eno;
+            if    (eno >= ENO_ITR_MIN) and (eno <= ENO_ITR_MAX)
+            then  er_msx:=ENO_ITR_0
+            elsif (eno >= ENO_FPT_MIN) and (eno <= ENO_FPT_MAX)
+            then  er_msx:=ENO_FPT_0
+            elsif (eno >= ENO_FNP_MIN) and (eno <= ENO_FNP_MAX)
+            then  er_msx:=ENO_FNP_0
+            else  er_msx:= -1 endif;
+       endif;
+       er_fil:=fil; er_sts:=status; status:=0; curins.lsc:=envir_OUTERMOST;
+       if status <> 0 then status:=0; curins.lsc:=nowhere endif;
+       case 0:MAX_ACT (act_lvl)
+       when ACT_GC,ACT_INI,ACT_TRM: er_trm:=TRM_SYS; cont:=SYS_STMTS;
+       when ACT_USR: er_trm:=TRM_ERR; cont:=USR_STMTS;
+       when ACT_SMB: er_trm:=TRM_SYS; cont:=USR_STMTS; er_msx:=ENO_ITN_2;
+       when ACT_ERR: er_trm:=TRM_SYS; cont:=TRM_STMTS;
+       endcase;
+       goto cont;
+ end;
+
+
+ Visible body(pexchdl) EXCHDL;
+ begin curins.lsc:=addr; er_no:=code; er_msg:=er_no;
+       case 0:MAX_EXC (code)
+       when EXC_IMP:             -- Continuation Impossible: I.e. system error.
+            er_no:=0; er_msg:= -1; cont:=nowhere;
+       when EXC_TIM:             -- Time Limit Exceeded
+            er_trm:=TRM_ERR;
+            case 0:MAX_ACT (act_lvl)
+            when ACT_GC,ACT_INI: cont:=SYS_STMTS;
+            when ACT_TRM: cont:=addr;  -- If termination is going on, continue.
+            otherwise cont:=TRM_STMTS endcase;
+   --  when EXC_ITR: -- User Interrupt is NOT YET IMPLEMENTED !
+       when EXC_BRK:
+            case 0:MAX_ACT (act_lvl)
+            when ACT_GC,ACT_INI,ACT_ERR:
+                          er_msx:=ENO_ITN_1; er_trm:=TRM_SYS; cont:=SYS_STMTS;
+            when ACT_USR: er_no:=0; er_msg:= -1;
+                          bio.obs_evt:=EVT_BRK; cont:=SMB_STMTS;
+            when ACT_SMB: er_msx:=ENO_ITN_2; er_trm:=TRM_SYS; cont:=USR_STMTS;
+            when ACT_TRM: cont:=nowhere;                ---  Give in.
+            endcase;
+       otherwise
+            er_msx:= -1;
+            case 0:MAX_ACT (act_lvl)
+            when ACT_GC,ACT_INI: er_trm:=TRM_SYS; cont:=SYS_STMTS;
+            when ACT_USR: er_trm:=TRM_ERR; cont:=USR_STMTS;
+            when ACT_SMB: er_msx:=ENO_ITN_2;
+                          er_trm:=TRM_SYS; cont:=USR_STMTS;
+            when ACT_ERR: er_trm:=TRM_SYS; cont:=TRM_STMTS;
+            when ACT_TRM: cont:=nowhere;                ---  Give in.
+            endcase;
+    endcase;
+ end;
+%title ***  E V E N T    H A N D L E R  ***
+
+Visible body(PSIMOB) SIMOB;
+-- import integer code;
+--        ref(entity) ent1,ent2;
+begin
+      -- ???? AI:=curins; -- Reactivation point of user program --
+      -- ???? repeat while AI.lsc=nowhere do AI:=AI.dl endrepeat;
+
+      if bio.obs_evt = EVT_ERR
+      then
+           ED_ERR(er_no,er_fil,er_msg,er_msx,er_sts);
+           --- ??? DISPLAY_OPERATING_CHAIN ???
+      endif;
+      bio.obs_evt:=0;
+      bio.act_lvl:=ACT_USR; E_PROG(TRM_REQ,nostring);
+end;
+
+%title ***  B e g i n / E n d    U s e r    P r o g r a m  ***
+
+--------   M O D U L E    I N F O   ---------
+
+const infix(modinf) BASMOD=record:modinf(mod_idt=ref(RTSIDT),smb_lvl=2);
+
+DEFINE_IDENT(%RTSIDT%,%8%,%('R','T','S','.','M','N','T','R')%);
+
+---------   C l a s s    S Y S T E M   ---------
+
+ const infix(cla_pre_ptp:2) SYSTEMPTP=record:cla_pre_ptp
+       (plv=0,lng = size(instance),pnt_vec=none,xpp=none,
+         dcl=nowhere,stm=nowhere,cnt_inr=nowhere,
+         prefix =(ref(SYSTEMPTP),none));
+
+
+---------   C l a s s    B A S I C I O   ---------
+
+ visible const infix(cla_pre_ptp:2) BASICIOPTP=record:cla_pre_ptp
+       (plv=0,lng = size(basicio),pnt_vec=ref(BIOPNT),xpp=ref(BIOXPP),
+         dcl=BIODCL,stm=BIOSTM,cnt_inr=BIOINR,
+         prefix =(ref(BASICIOPTP),none));
+
+ const infix(pntvec:4) BIOPNT=record:pntvec
+       (npnt=4,pnt=(field(basicio.sysin),field(basicio.sysout),
+                    field(basicio.ern.ins),field(basicio.erh.sl)));
+const infix(extptp) BIOXPP=record:extptp
+   (idt=ref(BIOIDT),mod_inf=ref(BASMOD),atr_vec=ref(BIOATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:2) BIOATR=record:atrvec
+   (natr=2,atr=(ref(BA_SYSIN),ref(BA_SYSOUT)));
+
+SIMPLE_ATTR(%BA_SYSIN%,%ID_SYSIN%,%basicio.sysin%,%T_REF%);
+SIMPLE_ATTR(%BA_SYSOUT%,%ID_SYSOUT%,%basicio.sysout%,%T_REF%);
+
+DEFINE_IDENT(%BIOIDT%,%7%,%('B','A','S','I','C','I','O')%);
+DEFINE_IDENT(%ID_SYSIN%,%5%,%('S','Y','S','I','N')%);
+DEFINE_IDENT(%ID_SYSOUT%,%6%,%('S','Y','S','O','U','T')%);
+
+%page
+Visible routine B_PROG;
+import ref(cla_pre_ptp) bio_ptp;        --  Prototype of BASICIO.
+exit label psc;
+begin ref(instance) sys; integer i;
+      act_lvl:=ACT_INI; bio:=curins:=none; status:=0; utpos:=0;
+      pgsize:=24; pgleft:=pgsize;
+      err_ini:=entry(inierr); smb:=entry(SIMOB); -- For error diagnostics.
+      envir_INIT(entry(exchdl));                -- Exception handler.
+      if status <> 0 then  ERR_SYS  endif;
+      maxlen:= none + maxlen + size(savent) - none;
+      ---  Compute how much storage we must allocate for the predefined
+      ---  enclosing instances, create initial storage pool and initialize
+      ---  the pool structure. Also set 'bio' to point to start of the pool.
+      STRG_INIT(none + SYSTEMPTP.lng + bio_ptp.lng             -- TEMP
+                 + PFILPTP.lng + PFILPTP.lng + FILPTP.lng
+                 + size(txtent:ouptlinelng) + size(txtent:inptlinelng)
+                 - none);
+      bio.pool_nxt:=bio.pool_nxt + bio_ptp.lng;
+      bio.sort:=S_PRE; bio.pp:=bio_ptp;
+      bio.ini_tim:=GET_CPU_TIME; bio.lsc:=BIODCL;
+      ---  Create the outermost prefixed block instance.
+      ---  This instance will enclose BASICIO.
+      sys:=bio.pool_nxt;
+      bio.pool_nxt:=bio.pool_nxt + SYSTEMPTP.lng;
+      sys.sort:=S_PRE; sys.pp:=ref(SYSTEMPTP);
+      sys.lsc:=psc;    --  So that we know where the user program is!
+      bio.sl:=bio.dl:=sys; curins:=bio;
+      bio.maxint:=maxint;        bio.minint:=minint;
+      bio.maxreal:=maxreal;      bio.minreal:=minreal;
+      bio.maxlreal:=maxlreal;    bio.minlreal:=minlreal;
+      bio.maxrank:=maxrank;  --- bio.simid:-" Some string ";
+      bio.lwten:='&'; envir_LTEN('&');   if status <> 0 then ERR_SYS endif;
+      bio.dcmrk:='.'; envir_DCMARK('.'); if status <> 0 then ERR_SYS endif;
+
+      psc:=BIODCL;       --  See next subsection, on the
+                          --  page after the next page.
+end;
+
+
+Routine SYS_FIL_SPC;
+import range(1:3) code; export infix(txtqnt) txt;
+begin integer n; n:=envir_DSETSPEC(code,STRBUF(0));
+      if status <> 0 then ERR_SYS endif;
+      txt:=BLANKS(n); C_MOVE(STRBUF(n),TXT_TO_STR(txt));
+end;
+
+
+Visible routine  E_PROG;
+import range(0:MAX_TRM) trm; infix(string) dummy;
+begin ref(filent) F,N;
+      if bio.sysout.img.cp > bio.sysout.img.sp then OUTIMAGE(bio.sysout) endif;
+      if trm=TRM_NRM then
+         if envir_GET_INTINFO(19)>0 then
+            STRG_TERM; bio.trc:=false endif;
+         if status<>0 then status:=0 endif;
+      endif;
+      if bio.edt_ovf > 0
+      then ED_OUT; ED_STR("No. of text edit overflows: ");
+           ED_INT(bio.edt_ovf); ED_OUT;
+      endif;
+      act_lvl:=ACT_TRM; bio.trc:=false; N:=bio.fil_lst;
+      repeat F:=N while F <> none
+      do N:=F.suc; if F=bio.sysin then elsif F=bio.sysout then
+         else ED_STR("The file "); ED_STR(TXT_TO_STR(F.nam));
+              ED_STR(" was open at program termination.");
+              PRT(" Closed by Simula Runtime System."); CLOSE(F);
+         endif;
+      endrepeat;
+      if bio.logfile > 0 then envir_CLOSE(bio.logfile,nostring)
+      elsif bio.logfile < 0 then envir_CLOSE(-bio.logfile,nostring) endif;
+      CLOSE(bio.sysin); CLOSE(bio.sysout); envir_TERM(trm,nostring);
+end;
+
+Visible routine ERRX; import infix(txtqnt) mss;
+begin infix(string) str;   --  TXT_TO_STR(img).
+      str.nchr:=mss.lp-mss.sp; str.chradr:=name(mss.ent.cha(mss.sp));
+      PRT(str); ERROR(ENO_SYS_1);
+end;
+
+Visible routine TRMP;
+begin E_PROG(TRM_REQ,nostring) end;
+%page
+%visible
+ BIODCL:  BIOSTM:  ---  We get here only once, when exiting from B_PROG.
+
+    ---  Create and open sysout.
+    B_CLA(bio,ref(PFILPTP)); bio.sysout:=tmp.pnt;
+    bio.sysout.nam:=SYS_FIL_SPC(2);
+    OPEN(bio.sysout,BLANKS(ouptlinelng));
+
+    ---  Create and open sysin.
+    B_CLA(bio,ref(IFILPTP)); bio.sysin:=tmp.pnt;
+    bio.sysin.nam:=SYS_FIL_SPC(1);
+    OPEN(bio.sysin,BLANKS(inptlinelng));
+
+    ---  Now when the system files are open,we can output error messages
+    bio.obs_evt:=EVT_INI;
+    act_lvl:=ACT_USR;
+    bio.logfile:=0;
+    goto   bio.sl.lsc;  ---  Now we can go back to the user program.
+
+BIOINR:  IERR("BIOINR");            ---  Pray you will never get here.
+%hidden
+
+
+ USR_STMTS:   ---  A Run-Time error has occurred in the user program or the
+              ---  observation tool. Issue the appropriate diagnostics.
+              ---  If the error occurred in the user program and the
+              ---  observation tool is present, give control to it.
+              bio.obs_evt:=EVT_ERR;
+ SMB_STMTS:   -- Call SIMOB --
+              act_lvl:=ACT_SMB; call PSIMOB(smb)(0,none,none);
+              act_lvl:=ACT_USR;
+              if (bio.erh.sl <> none)
+              then var((bio.ern.ins+bio.ern.fld) qua name(integer)) := er_no;
+                   erh:=bio.erh; bio.erh.sl:=none; bio.ern.ins:=none;
+                   E_GOTO(erh);
+              else goto curins.lsc endif; --- Resume user program
+
+ TRM_STMTS:   -- Control should come here if controlled
+              -- termination is wanted after an error.
+              act_lvl:=ACT_TRM; E_PROG(er_trm,nostring);
+
+ SYS_STMTS:   -- Control should come here if immediate
+              -- termination is wanted after an error.
+              act_lvl:=ACT_TRM; envir_TERM(er_trm,nostring);
+end;

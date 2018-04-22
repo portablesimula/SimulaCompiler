@@ -1,0 +1,81 @@
+begin
+   class A(pa1,pa2); integer pa1; Text pa2;
+   Begin
+     integer a1,a2;
+     ref(A) Ax;
+   end;
+
+   A class B(pb1,pb2); ref(D) pb1; integer pb2;
+   Begin
+     Boolean test;
+     integer b1,b2;
+%     a1:=a2;
+   end;
+
+   B class C(pc1,pc2); integer pc1; character pc2;
+   Begin
+     integer c1,c2;
+     ref(C) z;
+%     c1:=c2;
+   end;
+
+   B class D(pd1,pd2); integer pd1,pd2;
+   Begin
+     integer d1,d2;
+      ref(B) yy;
+      ref(C) zz;
+      ref(D) ww;
+%      c:=a1;
+%      c:=Ax.a1;
+%      x:-yy;
+%      x:-z;
+%      zz:-ww;
+%     a1:=d2;
+%     d1:=d2;
+   end;
+ 
+   A class E(pe1,pe2); Text pe1; real pe2;
+   Begin
+     Boolean test;
+     integer b1,b2;
+%     a1:=a2;
+   end;
+   
+   C(1,notext,none,2,3,'f') begin
+%   C(1,none,none,2,3,'f') begin
+      integer c;
+      ref(A) aa;
+      ref(B) bb;
+      ref(C) cc;
+      ref(D) dd;
+      bb:-new B(4,"abc",none,4);
+      cc:-new C(4,"abc",none,4,6,'k');
+%     cc:-new C(4,"abc",cc,4,6,'k'); !Illegal parameter cc;
+      bb:-cc; 
+%      cc:-bb; !Illegal;
+      
+      c:=a1;
+      c:=Ax.a1;
+      Ax:-bb;
+%      x:-z;
+%      zz:-ww;
+%     a1:=c2;
+%      yy:-if test then yy else zz;
+%      yy:-if test then zz else yy;
+%      yy:-none;
+%      yy:-if test then zz else none;
+%      yy:-if zz in A then zz else none;
+%      test:=AAA in B;
+%      test:=zz is A;
+      
+      aa:-if bb in A then bb else none;
+      
+%       BBB :- none;     
+   end;
+   
+   Simset begin
+      integer i;
+      i:=4;
+   end;   
+   
+end;

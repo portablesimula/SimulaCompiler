@@ -1,0 +1,141 @@
+External class CHECKER2;
+
+CHECKER2 class CHCKINIT;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1987 by                                              ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---      S e m a n t i c    C h e c k e r     I n i t .             ---
+%      ---                                                                 ---
+%      --- Selection switches: DIZ                                         ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCOPE:MNE
+
+procedure checkerinit;
+inspect new semchecker do begin
+      checker:-this semchecker;
+      constantelt:-new ConstEltChecker;
+      true_const :-new boolconst(none,ICONS,ITRUE);
+      false_const:-new boolconst(none,ICONS,IFALS);
+      exptop:-new exp(none,INOTY);! dummy element of expression stack;
+      exptop.cl:=IEEXP; exptop.type:=IOTHW;
+      opttop:=0; optstack(0):=char(INOTY);! operator with lowest priority;
+      expexptop(opttop):-exptop;
+      NargUnknown:=1000; lastnap:-new nextargumentproducer(none,none);
+      argerrtop:=0;
+      for c:=IINTG,ITEXT,IREF,ICHAR,IBOOL,ILABE do nearly(c):= char(c);
+      nearly(ISHOR):= char(IINTG);
+      nearly(IREAL):= char(IINTG);
+      nearly(ILONG):= char(IINTG);
+      nearly(ISCST):= nearly(ITEXT);
+
+      for c:=IPLUS,IMINU,IMULT,ISLAS,IPOWE,IIDIV
+       do    expectedtype(c):=char(IINTG);
+      for c:=ICAND,ICOR,IOR,IAND,IIMP,IEQV,ITHSB,IWHDO
+       do    expectedtype(c):= char(IBOOL);
+      expectedtype(IGOE ):= char(ILABE);
+      expectedtype(ICONC):= char(ITEXT);
+      for c:=IFRMP,INOTY,IDCLS,IIFSB,IGOTO,IWSTB,IFASG,IFDNO,
+             ISTEP,IUNTI,IWHIL,IACTV,IREAC,IAT,IAFTR,IBEFO,IDELA
+       do    recunstackstop(c):=true;
+
+      inspect new unstack do begin
+         ust:-this unstack;
+         priority(INOTY):= char(0); ! lowest priority;
+
+         priority(IIFSB):= char(1);
+                                       comprior(ITHSB):= char(2);
+         priority(IGOTO):= char(1);
+                                       comprior(IGOE ):= char(2);
+         priority(IINSP):=
+         priority(IWHEN):=
+         priority(IWSTB):=
+         priority(IOTHW):=
+         priority(ICONB):= char(1);    comprior(ICONB):=
+                                       comprior(IWHDO):=
+                                       comprior(IFWHN):=
+                                       comprior(IBEGI):=
+                                       comprior(IBNDE):=
+                                       comprior(IDIME):=
+                                       comprior(IARDE):=
+                                       comprior(ICOMA):=
+                                       comprior(IARGE):=
+                                       comprior(ICAPE):=
+                                       comprior(ISWEE):= char(2);
+                                       comprior(IELME):= char(5);
+         priority(IFRMP):= char(1);
+         priority(ILFPA):= char(2);
+                                       comprior(IRGPA):= char(3);
+         priority(IWHIL):= char(4);    comprior(IWHIL):= char(5);
+         priority(IUNTI):= char(4);    comprior(IUNTI):= char(6);
+         priority(ISTEP):= char(5);    comprior(ISTEP):=
+                                       comprior(IDO  ):= char(5);
+         priority(IIF):=
+         priority(ITHEN):= char(5);    comprior(ITHEN):= char(6);
+         priority(IELSE):= char(6);    comprior(IELSE):=
+                                       comprior(IEEXP):= char(6);
+         priority(IAT  ):= char(5);    comprior(IAT  ):= char(6);
+         priority(IDELA):= char(5);    comprior(IDELA):= char(6);
+         priority(IBEFO):= char(5);    comprior(IBEFO):= char(6);
+         priority(IAFTR):= char(5);    comprior(IAFTR):= char(6);
+         priority(IACTV):=
+         priority(IREAC):=
+         priority(IASSG):=             comprior(IASSG):=
+         priority(IDENO):=             comprior(IDENO):=
+         priority(IFASG):=             comprior(IFASG):=
+         priority(IFDNO):=             comprior(IFDNO):=
+         priority(ITO  ):=             comprior(ITO  ):= char(5); !const  '=';
+                                       comprior(IASGE):=
+                                       comprior(ISMCL):= char(2); !const elt ;
+                                       comprior(IACTE):=
+                                       comprior(IPRIO):=
+         priority(ICONC):=             comprior(ICONC):=
+         priority(ICOR ):=             comprior(ICOR ):= char(6);
+         priority(ICAND):=             comprior(ICAND):= char(7);
+         priority(IEQV ):=             comprior(IEQV ):= char(8);
+         priority(IIMP ):=             comprior(IIMP ):= char(9);
+         priority(IOR  ):=             comprior(IOR  ):= char(10);
+         priority(IAND ):=             comprior(IAND ):= char(11);
+         priority(INOT ):=             comprior(INOT ):= char(12);
+      for c:=IEQ,ILE,ILT,IGE,IGT,INE,IRFNE,IRFEQ do
+         priority(c):=                 comprior(c)    := char(13);
+         priority(IPLUS):=             comprior(IPLUS):=
+         priority(IMINU):=             comprior(IMINU):= char(14);
+      for c:=IMULT,ISLAS,IIDIV,IUMNS do                         !not IUPLS;
+         priority(c):=                 comprior(c):=     char(15);
+         priority(IPOWE):=             comprior(IPOWE):= char(16);
+     end inspect new unstack;
+
+     tar:-copy(":  array bound no. xx  is non-arithmetic          ");
+     indexerrmsg:-blanks(50); paramerrmsg:-blanks(30);
+     indexerrmsg.sub(1,10):="index no. ";
+     indexerrmsg.sub(13,20):="  is non-arithmetic";
+     paramerrmsg.sub(1,21):="actual parameter no. ";
+     paramerrmsg.sub(24,4):=" in ";
+
+%+Z  if Foption then !Nothing; else
+     begin DEFIDENT("_TEXT"); globmeaning(HASHINDEX); textclass:-gm_result end;
+
+  end procedure checkerinit;
+
+end CHECKERINIT;

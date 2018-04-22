@@ -1,0 +1,104 @@
+
+%QUALIFIEDNAMES
+% ===============================================   Main   program =============
+%  PROGRAM Name:   Simula a.s. - SIMULA TEST NO 72
+%
+%  PURPOSE:     Test of formal procedures.
+%
+%  WRITTEN BY:  BEH   25/08-86
+% ==============================================================================
+Begin
+
+   Ref(A) x, v;
+   integer An;
+
+   Class A;
+   Begin
+      Integer n;
+      Text Procedure ident;
+      begin
+         Text t;
+         t:-copy("A ");
+         t.sub(2,1).putint(n);
+         ident:-t;
+      end;
+         
+      Ref(A) Procedure Z;
+      Begin
+            Trace("Z BEGIN",5);
+            P("x",x);
+            Trace("Z MIDLE",6);
+            Z:- v:- New A;
+            Trace("Z BEGIN",7);
+      End;
+
+      Integer  i;
+      An:=aN+1; n:=An;
+      Trace("NEW "&ident&" BEGIN",15);
+      i:=5;
+      Trace("NEW "&ident&" BEGIN",15);
+   End;
+
+   Procedure P(msg,y); Name y; text msg Ref(A)y;
+   Begin
+   Trace("P("&msg&") BEGIN",2);
+    Q("y.i",y.i)
+   Trace("P("&msg&") END",8);
+   End;
+
+   Procedure Q(msg,ii); Name ii; text msg; Integer ii;
+   Begin
+    Trace("Q("&msg&") BEGIN",3);
+    ii:=ii+2
+    Trace("Q("&msg&") END",4);
+   End;
+   
+   Procedure Trace(msg,n); Text msg; Integer n;
+   Begin 
+      outtext(msg & " Trace "); outint(n,0);
+      if x == none then outtext("   x==NONE") else
+      begin outtext("  x(="&x.ident&").i="); outint(x.i,0); end;
+      if v == none then outtext("   v==NONE") else
+      begin outtext("  v(="&v.ident&").i="); outint(v.i,0); end;
+%     outtext(" x.i="); outint(if x==NONE then -1 else x.i,0);
+%      outtext(" v.i="); outint(if v==NONE then -1 else v.i,0);
+      outimage;
+   end;  
+
+   Outtext("--- START Simula a.s. TEST 72") ;
+   Outimage ;
+   Outtext("--- Test of formal procedures.") ;
+   Outimage ; Outimage ;
+
+   x:- New A;
+   Trace("MAIN FIRST",1);
+   P("x.Z",x.Z);
+   Trace("MAIN LAST",9);
+
+
+   IF x.i = 9 and v.i = 5 THEN
+   Begin
+      Outtext("--- NO ERRORS FOUND IN THIS TEST") ;
+      Outimage
+   End Else
+   Begin
+      Outtext ("*** error : Procedure calls.") ;
+      Outimage ;
+      Outtext ("            Erroneus values: x.i = ") ;
+      if x =/= none then
+         Outint (x.i, 5)
+      else
+         Outtext (" object none") ;
+      Outimage ;
+      Outtext ("                             v.i = ") ;
+      if v =/= none then
+         Outint (v.i, 5)
+      else
+         Outtext (" object none") ;
+      Outimage ;
+      Outimage
+   End;
+
+   Outtext("--- END Simula a.s. TEST 72") ;
+   Outimage
+ End

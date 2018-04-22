@@ -1,0 +1,19 @@
+begin integer n,m; Boolean bb;
+  begin Array A[1:n,1:m]; integer i,j;
+    inimage();
+    sysout.outtext("Hurra!");
+    outimage();
+    close();
+  
+    for j:= 1 step 1 until m do
+    begin for i:= 1 step 1 until n-1 do
+       begin A[i,j] := inreal;
+          if(if sysin.more then inchar <> ' ' else false)
+          then error("");
+       end;
+       A[n,j]:= inreal;
+       if inchar <> '*' then error("");
+next:end;     
+  end;  
+  terminate_program();  
+end;

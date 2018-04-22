@@ -1,0 +1,16 @@
+
+%QUALIFIEDNAMES
+
+begin
+   integer lsc;
+   procedure p(b); boolean b;
+   begin
+      M:N:
+      if b then goto M else goto L;
+      outtext("");
+      goto if b then N else M;
+   end;
+   L: 
+   outtext("");
+   goto L;
+end;   

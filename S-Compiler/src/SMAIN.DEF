@@ -1,0 +1,23 @@
+ begin insert SCOMN,SKNWN,SBASE,COASM,PARSE;
+       -----------------------------------------------------------------
+       ---  COPYRIGHT 1989 by                                        ---
+       ---  Simula a.s.                                              ---
+       ---  Oslo, Norway                                             ---
+       ---                                                           ---
+       ---                                                           ---
+       ---              P O R T A B L E     S I M U L A              ---
+       ---                                                           ---
+       ---                   F O R    I B M    P C                   ---
+       ---                                                           ---
+       ---                                                           ---
+       ---           S   -   C   O   M   P   I   L   E   R           ---
+       ---                                                           ---
+       ---                 M a i n    P r o g r a m                  ---
+       ---                                                           ---
+       -----------------------------------------------------------------
+
+       INITIATE; PARAM; BEGPROG; MONITOR; RELOUT; ENDPROG;
+
+       TERMINATE; EnvTerm(3,"Internal Error");
+
+ end;

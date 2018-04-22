@@ -1,0 +1,37 @@
+
+%STANDARDCLASS
+
+ByteFile class OutbyteFile_;
+begin
+      
+      Boolean procedure open;
+      begin if(not OPEN_) then
+         begin
+            OPEN_:=true;
+            BYTESIZE_ := 8; ! value of access mode BYTESIZE_;
+         end;   
+      end open;
+      
+      Boolean procedure close;
+      if OPEN_ then
+      begin 
+         ! ... ;
+         OPEN_:=false;
+         close := true;
+      end close;
+ 
+      procedure outbyte(x); short integer x;
+      begin if not OPEN_ then error("file closed")
+%       else if( (x < 0) or (x >= 2**BYTESIZE_))
+%            then error("Illegal byte value")
+%            else ... ; ! output of x;
+      end outbyte;     
+      
+      procedure outtext(t);   text t;
+      begin t.setpos(1);
+            while t.more do  outbyte(rank(t.getchar))
+      end outtext;
+    
+      Boolean procedure checkpoint; ;;
+      
+end outbytefile;

@@ -1,0 +1,11 @@
+begin ref(Simset) list;
+       integer i,j,k;
+       real r;
+       if b >=4 then r:=1.24 else k:=74;
+       begin
+%         L:i:=j+34;;
+%         t[6]:="abc";
+%         P(4);
+          i:=j+k;
+       end;
+end;

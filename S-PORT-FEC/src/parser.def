@@ -1,0 +1,1480 @@
+External class SCANNER;
+
+SCANNER class PARSER;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1985,86 by                                           ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---             T h e    S y n t a x    C h e c k e r               ---
+%      ---                                                                 ---
+%      --- Selection switches: DKPIRZ                                      ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'R' Included for full REAL capability                        ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)PARSER:MNE
+
+      ref(expression)ex;
+      boolean experrorfound;
+      short integer experrorno;
+      boolean array recoversymbol(0:150); ! zero never used;
+      short integer c;  ! TEMP;
+      character array symboltype(0:127);   ! CONST local use;
+
+%     ********   Named Constants   ********
+
+%-I   character declsymbol,exprtermin,
+%-I             arithop,relop,logop;
+%-I   character allstmt,allbutif,outermost,
+%-I             classbody,stmtorinner,procbody,
+%-I             basicstmt,openstmt,innerstmt,declunit,
+%-I             compstmt,usualblock,prefixblock;
+%-I   character stmtnotseen, lastwasstmt, lastwasdecl;
+                !*** values for blockstatus;
+
+      ref(statementstack) stmtstack;
+      class statementstack;  !*** only one ever generated ***;
+      begin ref(statement) first, last;
+
+%+P         prior
+            procedure pop;
+            begin last:-last.caller;
+                  !*** here the popped may go to a free list ***;
+                  last.next:-none;  curdepth:=curdepth-1;
+            end;
+
+%+P         prior
+            procedure push;
+            begin character sr;  ref(statement) newstat;
+                  !*** newstat may take from free list instead ***;
+%+D               if syntaxdump then W3(DB(IBEGI),cs,IBEGI,1);
+                  if last.isblocklike then begin
+                     if symboltype(cs)=declsymbol
+                        or!else; (cs=IIDN and!then; opt=ICLAS)
+%+K                     or!else;  cs=IPRIO
+                     then begin
+                        if last.blockstatus=lastwasstmt then ScanWarn(266);
+                        newstat:-new declaration;
+                        goto EX;
+                     end;
+                     if last.blockstatus=stmtnotseen
+                     then begin opn:=IDCLE; call(coder) end;
+                  end;
+                  labelused:=false;
+                  while cs=IIDN and!then; opt=ICL
+                     do begin opn:=ICL; call(coder); NEXTSYMBOL; !skip opt=ICL;
+                        NEXTSYMBOL; labelused:=true;
+                  end;
+
+                  sr:=last.stmtreq;
+                  if cs=IIDN  or!else; cs=ICONS or!else; cs=IBEGI or!else;
+                     cs=ITHIS or!else; cs=INEW  or!else; cs=ILFPA
+                  then newstat:-new exprorblock
+                  else begin if sr=outermost then writeerror(254);
+                        if cs=IIF               then newstat:-new ifstat
+                   else if cs=IWHIL             then newstat:-new whilstat
+                   else if cs=IINSP             then newstat:-new inspectstat
+                   else if cs=IFOR              then newstat:-new forstat
+                   else if cs=IGOTO             then newstat:-new gotostat
+                   else if cs=IINNE             then newstat:-new innerstat
+                   else if cs=IACTV or cs=IREAC then newstat:-new activatestat
+                        else                         newstat:- new dummystat;
+                  end;
+                  if (sr=classbody or!else; sr=procbody) and!then;
+                     (labelused or!else; cs<>IBEGI) then begin
+%                    NOTE: prefixed block as body of CLASS ?????????
+%                 !*** here is start of statement of procedure/class.
+%                      The only special case not taken here is if
+%                      cs is the begin of a compound.
+%                      this is treated in exprorblock.  ;
+                     opn:=IDCLE; call(coder);
+                  end;
+            EX:   newstat.caller:-last; last:-last.next:-newstat;
+                  curdepth:=curdepth+1;
+                  if curdepth>maxdepth then maxdepth:=curdepth;
+            end ***push***;
+
+            first:-last:-new module; curdepth:=1;
+      end;
+
+      short integer curdepth;
+      short integer blockfound;    ! indicates the nesting of (true) blocks;
+      ref(grammer)myparser;  ! ref to grammer, used after ConstElt-call;
+      boolean startexprstmt; !*** true only when "expression"
+                                  is parsing start of stmt;
+      boolean labelused; !*** used to remember if label
+                              from grammer to statement;
+      ref(statement)st,stc; ! workvariables in grammer;
+      character sr; ! workvariable in grammer;
+
+%+D   procedure W0(t); text t;
+%+D   begin if pos>0 then outimage; outtext(t); outimage end;
+%+D
+%+D   procedure W1(t,i); text t; short integer i;
+%+D   begin if pos>0 then outimage; outtext(t);
+%+D         outint(i,5); outimage;
+%+D   end;
+%+D
+%+D   procedure W3(t,i1,i2,i3); text t; short integer i1,i2,i3;
+%+D   begin if pos>0 then outimage; outtext(t);
+%+D         outint(i1,5); outint(i2,5); outint(i3,5);outimage;
+%+D   end;
+%+D
+%+D   procedure W8(t,i1,i2,i3,i4,i5,i6,i7,i8);
+%+D   text t; short integer i1,i2,i3,i4,i5,i6,i7,i8;
+%+D   begin if pos>0 then outimage; outtext(t);
+%+D         outint(i1,3);outint(i2,3);outint(i3,3);
+%+D         outint(i4,3);outint(i5,3);outint(i6,3);
+%+D         outint(i7,3);outint(i8,3); outimage;
+%+D   end;
+
+      !*** possibly ring-recursive ***;
+      procedure syntaxerror(errorno);short integer errorno;
+      begin if cs=IEOP then begin
+                  writeerror(267); parser qua grammer.recovery end
+            else begin text t; short integer p,errpos;
+                  t:-blanks(80); t:=errmsg(errorno);
+                  if experrorfound then begin
+                        p:=t.strip.length+4;
+                        t.sub(p,t.length-p-2):=errmsg(experrorno+220);
+                        experrorfound:=false;
+                  end;
+                  errpos:=(if optx<>0 and not readfinish and
+                           opdline=linenr then opdpos else optpos)+1;
+                  outp1message(errpos,t,2);
+                  parser qua grammer.recovery;
+           end;
+      end;
+
+%+P   prior
+      procedure search;
+%           ! performs a search for the first symbol
+%             which is a recoversymbol, cs will denote the found symbol;
+            while not recoversymbol(cs) do NEXTSYMBOL;
+
+%-I %+P   prior
+%-I   procedure NEXTSYMBOL;
+%-I    begin if readfinish then myparser.moresymbols
+%-I          else begin cs:=opt; readfinish:=true end;
+%-I %+D      if syntaxdump then W1("next:",cs);
+%-I    end NEXTSYMBOL;
+
+%+Z   procedure lookforstring;
+%+Z   ! called after decl.-identifiers when I-option;
+%+Z   if cs=IRFEQ !IEQ; then begin
+%+Z         NEXTSYMBOL;
+%+Z         if cs=ICONS and!then; optx=ITEXT then begin
+%+Z              opn:=IEXNM; call(coder); NEXTSYMBOL;
+%+Z         end;
+%+Z   end of lookforstring;
+
+%+P   prior
+      boolean procedure readtype;
+      if cs<=ITEXT then begin
+         if cs=IREF then begin  !check identifier followed by ) ;
+            NEXTSYMBOL;
+            if cs<>ILFPA then scanwarn(216) else NEXTSYMBOL;
+            if cs<>IIDN then begin short integer opdp;
+               writeerror(224);
+               opn:=IBREC; call(coder); opdp:=opd;
+               opn:=IREF;  opd:=errorident; call(coder);
+               opn:=IEREC; opd:=opdp;       call(coder); goto EX;
+            end;
+            opn:=IREF; call(coder); NEXTSYMBOL;
+            if cs<>IRGPA then scanwarn(223);
+         end
+         else begin opn:=cs; call(coder) end; !*** value type + text;
+         readtype:=true; NEXTSYMBOL;
+      end else   EX:  readtype:=false;
+
+%title ***  readprocpar ***
+
+      procedure readprocpar(speckind); short integer speckind;
+%           !  speckind = IPSPC: procedurespec,
+%                       = ICSPC: classspec,
+      begin short integer opx;
+            boolean namefound,valuefound;
+
+            procedure procparerror(errno);short integer errno;
+            begin writeerror(errno); opn:=IBREC; call(coder);
+     searchagain: search; opn:=IEREC; call(coder);
+                  if cs=ICOMA then goto P1
+             else if cs=ISMCL then begin NEXTSYMBOL;  goto namevaluepart end
+             else if cs=INAME or!else; cs=IVALU then goto namevaluepart
+             else if symboltype(cs)=declsymbol then   goto specification
+             else if cs=IEND then begin NEXTSYMBOL;   goto searchagain end
+                  else                                goto readprocparexit;
+            end procparerror;
+
+            !  when searching for recoversymbols, the declaration symbols
+               plus name and value must be searched for;
+            for c:=IARRA,IBOOL,ICHAR,IEXTR,IINTG,ILONG,IREAL,IREF,
+                   ISHOR,ISWIT,ITEXT,IPROC,INAME,IVALU,ICOMA
+            do recoversymbol(c):=true;
+
+            if cs=ILFPA then begin
+   P1:            NEXTSYMBOL;
+                  if cs <> IIDN then procparerror(224);
+                  opn:=IFRMP; call(coder); NEXTSYMBOL;
+%+Z               if Ioption then lookforstring;
+                  if cs=ICOMA then goto P1;
+                  if cs <> IRGPA then procparerror(225);
+                  NEXTSYMBOL;
+                  if cs <> ISMCL then procparerror(233);
+                  NEXTSYMBOL;
+   namevaluepart: while cs=INAME or!else; cs=IVALU do begin
+                        if cs=INAME then begin
+                              if speckind = ICSPC then writeerror(234);
+                              if namefound then writeerror(235);
+                              namefound:= true;
+                        end
+                        else begin if valuefound then writeerror(236);
+                              valuefound:= true;
+                        end;
+                        opx:=cs;
+   P2:                  NEXTSYMBOL;
+                        if cs <> IIDN then procparerror(224);
+                        opn:=opx; call(coder); NEXTSYMBOL;
+                        if cs=ICOMA then goto P2;
+                        if cs <> ISMCL then procparerror(233);
+                        NEXTSYMBOL;
+                  end;
+   specification: readspecification(speckind);
+                  if cs=INAME or!else; cs=IVALU then procparerror(262);
+            end else
+            begin if cs <> ISMCL then procparerror(233);
+                  NEXTSYMBOL;
+            end;
+   readprocparexit:
+            opn:=IEPRM; call(coder);
+            for c:=IARRA,IBOOL,ICHAR,IEXTR,IINTG,ILONG,IREAL,IREF,
+                   ISHOR,ISWIT,ITEXT,IPROC,INAME,IVALU,ICOMA
+                   do recoversymbol(c):=false;
+      end readprocpar;
+%title *** readclasspar ***
+
+      procedure readclasspar;
+      begin short integer oph;
+
+%+P         prior
+            procedure classparerror(errno);short integer errno;
+            begin writeerror(errno); opn:=IBREC; call(coder);
+     searchagain: search; opn:=IEREC; call(coder);
+                  if symboltype(cs)=declsymbol then        goto specification
+             else if cs=IEND then begin NEXTSYMBOL;        goto searchagain end
+             else if cs=IVIRT then                         goto virtualspec
+             else if cs=IHIDD or cs=IPRTC or cs=IPRHI then goto hiddenprotected
+             else goto readclassparexit;
+            end classparerror;
+
+            readprocpar(ICSPC);
+            for c:=IARRA,IBOOL,ICHAR,IEXTR,IINTG,ILONG,
+                   IREAL,IREF,ISHOR,ISWIT,ITEXT,IPROC,
+                   IHIDD,IPRTC,IPRHI,IVIRT
+            do recoversymbol(c):=true;
+
+hiddenprotected:
+            while cs=IHIDD or!else; cs=IPRTC or!else; cs=IPRHI do begin
+                  oph:=cs;
+              PH: NEXTSYMBOL;
+                  if cs <> IIDN then classparerror(224);
+                  opn:=oph; call(coder); NEXTSYMBOL;
+                  if cs=ICOMA then goto PH;
+                  if cs <> ISMCL then classparerror(233);
+                  NEXTSYMBOL;
+            end;
+
+virtualspec:
+            if cs=IVIRT then begin
+                  NEXTSYMBOL;
+specification:    readspecification(IVSPC);
+            end;
+            if cs=INAME or!else; cs=IVALU then writeerror(262)
+       else if symboltype(cs)=declsymbol then writeerror(263);
+
+readclassparexit:
+            for c:=IARRA,IBOOL,ICHAR,IEXTR,IINTG,ILONG,
+                   IREAL,IREF,ISHOR,ISWIT,ITEXT,IPROC,
+                   IHIDD,IPRTC,IPRHI,IVIRT
+            do recoversymbol(c):=false;
+      end readclasspar;
+
+%title *** readspecification ***
+
+      procedure readspecification(speckind); short integer speckind;
+      begin short integer opnx;
+
+%+P         prior
+            procedure specificationerror(errno);short integer errno;
+            begin writeerror(errno); opn:=IBREC; call(coder);
+     searchagain: search; opn:=IEREC; call(coder);
+                  if cs=ICOMA then                   goto P3
+             else if cs=ISMCL then begin NEXTSYMBOL; goto spes end
+             else if symboltype(cs)=declsymbol then  goto spes
+             else if cs=IEND then begin NEXTSYMBOL;  goto searchagain end
+             else goto readspecificationexit;
+            end specificationerror;
+
+            recoversymbol(ICOMA):=true;
+      spes: if readtype then goto if cs=IPROC or!else; cs=IARRA
+                                  then P2 else P4;
+            if cs=IPROC then begin opn:=INOTY; call(coder); goto P2 end;
+            if cs=IARRA then begin opn:=IREAL; call(coder); goto P2 end;
+            if cs=ISWIT or cs=ILABE then begin
+            P2:   opnx:=opn:=cs; call(coder);
+            P3:   NEXTSYMBOL;
+            P4:   if cs <> IIDN then specificationerror(224);
+                  opn:= speckind; call(coder); NEXTSYMBOL;
+                  if speckind=IVSPC and!then; opnx=IPROC and!then; cs=IIS
+                  then begin !specification of virtual procedure;
+                       NEXTSYMBOL;
+                       if not extbinding then specificationerror(259);
+                  end;
+                  if cs=ICOMA then goto P3
+             else if cs <> ISMCL then specificationerror(233);
+                  NEXTSYMBOL; goto spes;
+            end
+       else if speckind=IVSPC and cs=IIDN then begin !*** assume procedure;
+               writeerror(222); opn:=opnx:=IPROC; call(coder); goto P4
+            end;
+readspecificationexit:
+            recoversymbol(ICOMA):=false;
+      end readspecification;
+
+%+P   prior
+      boolean procedure extbinding; !--- corr: accept spec with type ;
+      begin boolean type; type:=readtype; extbinding:=false; !--- corr pje;
+            if cs=IPROC then begin
+                  if not !read;type then begin opn:=INOTY; call(coder); end;
+                  NEXTSYMBOL;
+                  if cs <> IIDN then syntaxerror(224)
+                  else begin
+                     opn:=INOTE; call(coder); NEXTSYMBOL;
+                     readprocpar(IPSPC);
+                     if cs=ISMCL then extbinding:=true else syntaxerror(277);
+                  end;
+            end
+            else syntaxerror(278);
+      end;
+
+%title ***  G r a m m e r  ***
+      component class grammer;
+      begin ref(statement)c_stmt;
+
+%+P         prior
+            procedure moresymbols;
+            begin detach;
+%+D            if scannerdump then dump("scanner:");
+               if optx<>0 then begin
+                  cs:=if optx=INOTY then IIDN else ICONS; readfinish:=false end
+               else cs:=opt;
+            end;
+
+%+P         prior
+            procedure setbasicrecovery;
+            for c:=IEND,ISMCL,IBEGI,IGOTO,IWHIL,IINSP,IFOR,IINNE,IACTV,IREAC
+            do recoversymbol(c):=true;
+
+%+P         prior
+            procedure recovery;
+            begin short integer c;  ref(statement) stmnt;
+                  if ibrecoutput then ibrecoutput:=false
+                  else begin opn:=IBREC; call(coder) end;
+                  for c:=1 step 1 until 150 do recoversymbol(c):=false;
+                  setbasicrecovery;
+                  stmnt:-stmtstack.first;
+                  while stmnt=/=none
+                     do begin stmnt.recoversetting; stmnt:-stmnt.next end;
+                  search;
+                  while not stmtstack.last.recover do stmtstack.pop;
+%                       ! curdepth is now the index on the statement which
+%                         recovered successfully and may now continue parsing;
+                  opn:=IEREC; call(coder);
+%               ! goto proceed;    NEVER DO THAT - left as a warning !!!
+            end recovery;
+
+            detach;      !*** detach and do initialisations ***;
+            NEXTSYMBOL;
+
+            goto proceed;
+
+   newunit: stmtstack.push;
+   proceed: while true do begin
+                  c_stmt:- stmtstack.last; call(c_stmt);
+                  if c_stmt.recovered then begin
+                     c_stmt.recovered:=false; goto proceed end;
+                  if not c_stmt.finish then goto newunit;
+                  stmtstack.pop;
+            end;
+
+      end ***grammer***;
+%title ***  S t a t e m e n t  ***
+
+      class statement; virtual:boolean procedure recover;
+                               procedure recoversetting;
+      begin
+            boolean finish; ! if not  finish then start of
+                              new unit inside current is ment, else
+                              current unit is finished;
+            boolean recovered;
+            boolean isblocklike; ! is true for blocks, prefixed
+                                   blocks and compounds;
+
+            character stmtreq, stmttype;
+%              !  stmtreq is requirement to inner unit:
+%                         =allstmt    : all statements,
+%                         =allbutif   : all but if-stmt,
+%                         =outermost  : only block,comp.stmt or
+%                                       ext,proc-or class-decl,
+%                         =classbody  : classbody,
+%                         =stmtorinner: statements or inner,
+%                         =procbody   : procedure body.
+
+%                       stmttype is type of actual internal unit:
+%                         =basicstmt : basic stmt,block or compound,
+%                         =openstmt  : all "open" stmt,
+%                         =innerstmt : inner, also used to signal
+%                                    split body to class declaration
+%                         =declunit  : declaration;
+
+
+            character blockstatus;
+%                   ! only significant when isblocklike=true.
+%                     defines the status with respect to occurence
+%                     of declarations and statements.
+%                     =stmtnotseen: no statement seen,
+%                     =lastwasstmt: obvious,
+%                     =lastwasdecl: obvious, but only used when
+%                                   statements are seen;
+%                   ! i.e. both lastwasstmt and lastwasdecl implies
+%                     that statment has been seen (?) :
+%                     initially the blockstatus is stmtnotseen, then,
+%                     at the first occurence of a statement, it becomes
+%                     lastwasstmt, thereafter it may alternate between
+%                     this state and lastwasdecl.  For a syntactically
+%                     correct program the state lastwasdecl is never
+%                     entered (?) ;
+
+            short integer errorno;
+            ref(statement) caller, next;
+
+            procedure recoversetting; ;    ! virtual match;
+
+      end statement;
+%title   ***********   L2 code buffering   *************
+
+      component class codebuffer;
+      begin ref(component) prev;  !stacked coder;
+            ref(elt) curelt, firstelt;
+
+%+P         prior
+            procedure empty;
+            begin short integer opdp,optxp; opdp:=opd; optxp:=optx;
+                  while curelt=/=none do begin
+                        opd:=curelt.opdd; optxp:=curelt.optxx;
+                        opn:=curelt.opnn; call(coder);
+                        curelt:-curelt.next;
+                  end;
+                  opd:=opdp; optx:=optxp;
+            end;
+
+            prev:-coder; coder:-this component;
+            firstelt:-curelt:-new elt; !dummy head of list;
+      LOOP: detach;
+            if opn<>IVIRT then begin
+               curelt:-curelt.next:-new elt; goto LOOP end;
+            curelt:-firstelt.next; coder:-prev;
+      end;
+
+      class elt;
+      begin short integer opdd,optxx,opnn; ref(elt)next;
+            opdd:=opd; optxx:=optx; opnn:=opn;
+      end;
+
+%title *** syntax - class module ***
+
+      statement class module;
+      begin ref(codebuffer)buf; ! Module with external head ?;
+            character     rp; !*** returnpoint after internal unit;
+
+            boolean procedure recover;
+            begin recovered:= recover:=true;
+                  rp:=char(  if cs=ISMCL then 4 else
+                             if cs=IBEGI then 5 else
+                             if cs=IEOP  then 7 else 6 );
+            end;
+
+            procedure recoversetting;
+            if errorno=1 then begin
+                  errorno:=0; recoversymbol(IEOP):=true end
+       else for c:=ISMCL,IBEGI,IEXTR,IEOP do recoversymbol(c):=true;
+
+            switch RECOVERSW:=       RECOVER1,RECOVER2,RECOVER3,RECOVER4;
+            switch RPSW:= S0, S1, S2,RECOVER1,RECOVER2,RECOVER3,RECOVER4;
+
+%+D         if syntaxdump then W0("module");
+            rp:='!1!';
+
+  PARSE:    detach;  goto RPSW(rank(rp));
+
+  S0:       isblocklike:=true; blockstatus:=stmtnotseen; stmtreq:=outermost;
+            if cs=IEXTR then buf:-new codebuffer; !ext.head - swap coder;
+  RECOVER3: while cs=IEXTR do begin
+                  rp:='!2!'; finish:=false; goto PARSE;
+  S1:             if cs <> ISMCL then ScanWarn(213) else
+%                       begin syntaxerror(233); goto PARSE; end;
+  RECOVER1:       NEXTSYMBOL;
+            end;
+            if buf=/=none then begin ! external head - buffered in codebuffer;
+                  opn:=IVIRT; call(coder); ! terminate buffering;
+                  if symboltype(cs)=declsymbol or (cs=IIDN and opt=ICLAS)
+                  then !sep. compilation - no special action;
+                  else begin  !writeerror(285); ! TEMP restricted - removed;
+                       opn:=IDCLE; call(coder); opn:=IBLKB; call(coder);
+                       blockfound:=1;   ! Simulate enclosing block;
+                  end;
+                  buf.empty; buf:-none; ! output buffered L2;
+            end;
+
+  RECOVER2: rp:='!3!'; finish:=false; goto PARSE;
+
+  S2:       if cs=ISMCL then NEXTSYMBOL;
+            if cs <> IEOP then begin
+               ScanWarn(264); while cs<>IEOP do NEXTSYMBOL end;
+  RECOVER4: while blockfound>0 do begin
+               opn:=IEND; call(coder); blockfound:=blockfound-1 end;
+%                 terminate inserted psudo-block around external declarations
+%                 (external head of main program) or for/inspect statement;
+            opn:=IEOP; call(coder);
+            while true do NEXTSYMBOL; !*** skip after final end ***;
+            !***  mdule must never terminate ***;
+
+      end module;
+%title *** syntax - class declaration ***
+
+      statement class declaration;
+      begin boolean arrayidentfound,typeread,extprocdecl,priorseen;
+            character type;  ! =0: typeread false, else type-code;
+            character    rp; !*** returnpoint after internal unit;
+            switch RPSW:= S0, S1, S2;
+
+            boolean procedure recover;
+            begin switch erroraction:= ERR0,ERR1,ERR2,ERR3,ERR4,
+                                       ERR5,ERR6,ERR7,ERR8;
+                  goto erroraction(errorno+1);
+
+            ERR2: opn:=IABTE; call(coder);
+            ERR3:
+            ERR4: opn:=IBNDE; call(coder);
+                  opn:=IABTE; call(coder);
+            ERR5: opn:=IARDE; call(coder); goto exit;
+            ERR6: opn:=ISWDE; call(coder); goto exit;
+            ERR7: opn:=IEXNM; opd:=questindex;
+                  call(coder); goto exit;
+            ERR8: ! an error has occurred in the enclosed
+                    statement and it has not recovered;
+                  if cs=IEOP then begin
+                     opn:=if rp='!1!' then IEND else
+                          if rp='!2!' and stmttype=innerstmt
+                          then IEND else IECWI;
+                     call(coder);
+                  end else recovered:= recover:=true;
+            ERR0:ERR1:
+      exit: end recover;
+
+      procedure REGSEPCOMP;
+      begin separatecomp:=true;
+%+Z         if Ioption then begin
+%+Z            if idname(opd)="_PREDEFMODULE" then attrfilename:-predefname
+%+Z       else if idname(opd)="SIMSET"        then attrfilename:-simsetname
+%+Z       else if idname(opd)="SIMULATION"    then attrfilename:-simulaname;
+%+Z            moduleident:-attrfilename;
+%+Z            checkcode:-copy("SIMULA xxxx");
+%+Z            checkcode.sub(8,4).putint(RELEASE);
+%+Z         end else begin
+                  givetextinfo(1,idname(opd)); attrfilename:-gettextinfo(11);
+                  moduleident:-gettextinfo(14); checkcode:-gettextinfo(15);
+                  if checkcode==notext then checkcode:-datetime;
+                  if not recomp and moduleident=notext then
+                  begin if GiveNotes then
+                        begin outtext( "NOTE: Module identifier == NOTEXT, "
+                                       "Attribute file name '");
+                              outtext(attrfilename); outtext("' used");
+                              outimage;
+                        end;
+                        moduleident:-copy(attrfilename);
+                  end;
+%+Z         end;
+      end;
+
+%+D         if syntaxdump then W0("declaration");
+            rp:='!1!';
+
+     PARSE: detach;  goto RPSW(rank(rp));
+
+        S0: caller.stmttype:=declunit;
+% %+K         if cs=IPRIO then
+% %+K         begin NEXTSYMBOL;
+% %+K               if readtype then begin !prior 'type' - skip prior;
+% %+K                     type:=char(opn); ScanWarn(283); goto AFTERPRI end;
+% %+K               if cs=IPROC then
+% %+K               begin if caller.stmtreq=outermost then
+% %+K                     begin writeerror(284); opn:=INOTY end else
+% %+K                     opn:=INONE; ! is type for prior;
+% %+K               end else fatalLTT(283,-1); ! give up;
+% %+K               call(coder); type:=char(opn);
+% %+K         end else
+%+K         if cs=IPRIO then begin priorseen:=true; NEXTSYMBOL end;
+            type:= if readtype then char(opn) else char(0);
+%+K         if priorseen and cs<>IPROC then fatalLTT(283,-1);
+
+  AFTERPRI: if type<>char(0) or!else; cs=IPROC or!else; cs=IARRA then begin
+                  if cs=IPROC then
+                  begin if type=char(0) then begin opn:=INOTY; call(coder) end;
+                        NEXTSYMBOL;
+                        if cs <> IIDN then begin
+                              errorno:=1; syntaxerror(224); goto PARSE end;
+                        if caller.stmtreq=outermost then REGSEPCOMP; ! TEMP;
+%+K                     if priorseen then begin
+%+K                        priorseen:=false; opn:=INONE end else
+                        opn:=IDCLP; call(coder); NEXTSYMBOL;
+%+Z                     if Ioption then lookforstring;
+                        readprocpar(IPSPC);
+                        rp:='!2!'; finish:=false; stmtreq:=procbody;
+                        errorno:=8; !if error occurs in the enclosed statement;
+                        detach;
+                    S1: opn:=IEND; call(coder);
+                  end
+             else if cs=IARRA then begin
+                        if caller.stmtreq=outermost then begin
+                              errorno:=1;syntaxerror(261);goto PARSE; end;
+                        if type=char(0) then begin opn:=IREAL; call(coder) end;
+                    A1: NEXTSYMBOL;
+                        if cs <> IIDN then begin
+                              errorno:= if arrayidentfound then 2 else 1;
+                              syntaxerror(224); goto PARSE;
+                        end;
+                        opn:=IDCLA; call(coder); NEXTSYMBOL;
+                        arrayidentfound:=true;
+%+Z                     if Ioption then lookforstring;
+                        if cs=ICOMA then goto A1;
+                        if cs <> ILFPA then begin
+                              errorno:=2; syntaxerror(226); goto PARSE end;
+                    A2: NEXTSYMBOL;
+                        call(ex);
+                        if not ex.wasexpr then begin
+                           errorno:=4; syntaxerror(227); goto PARSE end;
+                        if cs <> ICL and!then; cs <> IDENO then
+                           begin errorno:=4; syntaxerror(228); goto PARSE end;
+                    A3: opn:=IBNDE; call(coder);
+                        if cs=IDENO then cs:=IMINU else NEXTSYMBOL;
+                        call(ex);
+                        if not ex.wasexpr then begin
+                              errorno:=5; syntaxerror(227); goto PARSE end;
+                        if cs=ICOMA then begin
+                              opn:=IDIME; call(coder); goto A2 end;
+                        if cs <> IRGPA then begin
+                              errorno:=5; syntaxerror(225); goto PARSE end;
+                        opn:=IARDE; call(coder); NEXTSYMBOL;
+                        if cs=ICOMA then goto A1;
+                  end
+             else begin if caller.stmtreq=outermost then begin
+                              syntaxerror(261); goto PARSE end;
+                    d1: if cs <> IIDN then begin
+                              errorno:=1;  syntaxerror(224); goto PARSE end;
+                        opn:=IDCLI; call(coder); NEXTSYMBOL;
+%+Z                     if Ioption then lookforstring else
+                        if cs=IEQ then begin !constant;
+                           opn:=ITO; call(coder); NEXTSYMBOL;
+                           call(ex);
+                           if not ex.wasexpr then begin
+                              errorno:=5; syntaxerror(227); goto PARSE end;
+                           opn:=ISMCL; call(coder);
+                        end;
+                        if cs=ICOMA then begin
+                           NEXTSYMBOL; goto d1; end;
+                  end;
+            end
+       else if cs=ICLAS or!else; (cs=IIDN and!then; opt=ICLAS) then
+            begin opn:=if cs=IIDN then ICPRF else INOTY;
+                  call(coder);
+                  if cs=IIDN then NEXTSYMBOL; ! skip opt=ICLAS;
+                  NEXTSYMBOL;
+                  if cs <> IIDN then begin
+                        errorno:=1; syntaxerror(224); goto PARSE end;
+                  if caller.stmtreq=outermost then REGSEPCOMP; ! TEMP??;
+                  opn:=IDCLC; call(coder); NEXTSYMBOL;
+%+Z               if Ioption then lookforstring;
+                  readclasspar;
+                  rp:='!3!'; finish:=false; stmtreq:=classbody;
+                  errorno:=8; !if error occurs in the enclosed statement;
+                  detach;
+              S2: opn:=if stmttype=innerstmt then IEND
+                       else IECWI !means end class without inner;;
+                  call(coder);
+            end
+       else if cs=ISWIT then
+            begin
+                  if caller.stmtreq=outermost  then begin
+                        errorno:=1; syntaxerror(261); goto PARSE end;
+                  NEXTSYMBOL;
+                  if cs <> IIDN then begin
+                        errorno:=1;  syntaxerror(224); goto PARSE end;
+                  opn:=IDCLS; call(coder); NEXTSYMBOL;
+%+Z               if Ioption then lookforstring;
+                  if cs <> IASSG then
+                        begin errorno:=6; syntaxerror(229); goto PARSE end;
+             SW1: NEXTSYMBOL; call(ex);
+                  if not ex.wasexpr then begin
+                        errorno:=6; syntaxerror(274); goto PARSE end;
+                  if not  ex.desig then writeerror(230);
+                  if cs = ICOMA then begin
+                        opn:=ISWEE; call(coder); goto SW1 end;
+                  opn:=ISWEE; call(coder);
+                  opn:=ISWDE; call(coder);
+            end
+       else if cs=IEXTR then
+            begin NEXTSYMBOL;
+                  if cs=ICLAS then
+                  begin opn:=INOTY; call(coder);
+                        opn:=ICLAS; call(coder);
+                  end
+             else begin
+                        extprocdecl:=true;
+                        if cs=IIDN then begin ! Non-Simula procedure ;
+                              if caller.stmtreq=outermost
+                              then writeerror(280);
+                              ! Non-Simula procedure in external head ;
+                              opn:=ILANG; call(coder); NEXTSYMBOL;
+                        end
+                        else begin opn:=ISIMU; call(coder)  end;
+                        if readtype then typeread:=true
+                        else begin opn:=INOTY; call(coder) end;
+                        if cs <> IPROC then begin
+                              errorno:=1; syntaxerror(231); goto PARSE end;
+                        opn:=IPROC; call(coder);
+                  end;
+                  !  an external binding or external list should follow;
+                  NEXTSYMBOL;
+                  if cs <> IIDN then begin
+                        errorno:=1; syntaxerror(224); goto PARSE end;
+                  opn:=IEXTR; call(coder); NEXTSYMBOL;
+                  if cs=IEQ then begin
+                        NEXTSYMBOL;
+                        if cs <> ICONS or optx<>ITEXT then begin
+                              errorno:=7; syntaxerror(232); goto PARSE end;
+                        opn:=IEXNM; call(coder); NEXTSYMBOL;
+                  end
+             else begin opd:=questindex; opn:=IEXNM; call(coder) end;
+                  if cs=IIS then begin
+                        if not extprocdecl then begin
+                              errorno:=1; syntaxerror(276); goto PARSE end;
+                        if typeread then writeerror(279);
+                        NEXTSYMBOL;
+                        if extbinding then goto exexit
+                        else begin errorno:=1; goto PARSE; end;
+                  end else  ! external list ;
+                  if cs <> ICOMA then goto exexit else
+                  begin NEXTSYMBOL;
+                        if cs <> IIDN then begin
+                              errorno:=1; syntaxerror(224); goto PARSE end;
+                  end;
+                  while cs=IIDN do begin
+                        opn:=IEXTR; call(coder); NEXTSYMBOL;
+                        if cs=IEQ then begin
+                              NEXTSYMBOL;
+                              if cs <> ICONS or optx<>ITEXT then
+                              begin errorno:=7;syntaxerror(232);goto PARSE end;
+                              opn:=IEXNM; call(coder); NEXTSYMBOL;
+                        end
+                   else begin opd:=questindex; opn:=IEXNM; call(coder);
+                        end;
+                        if cs <> ICOMA then goto exexit;
+                        NEXTSYMBOL;
+                  end;
+                  errorno:=1; syntaxerror(224); goto PARSE;
+    exexit: end else internalerror(552); !intern.decl.err.;
+            finish:=true;
+
+            detach;
+
+      end declaration;
+%title *** syntax - class exprorblock ***
+
+      statement class exprorblock;
+      begin
+            boolean innerseen,labels,type,unlabbody;
+            character blocktype; !  =compstmt   : compound stmt,
+                                    =usualblock : block,
+                                    =prefixblock: prefixed block;
+            character R;  !*** requirement to inner stmt;
+            character rp; !*** returnpoint after internal unit;
+            short integer recovernox, recoverno;
+
+            switch RPSW:= S0, S1, recoverfromhere;
+
+            boolean procedure recover;
+            begin if errorno=1 then begin opn:=IASGE; call(coder); end
+             else if cs=IEOP then
+                  begin if blocktype=prefixblock or
+                           (blocktype=usualblock and not  unlabbody) then
+                        begin opn:=IEND; call(coder);
+                              blockfound:=blockfound-1 end;
+                  end
+             else begin recoverno:=if cs=ISMCL then 1 else
+                                   if cs=IEND  then 2 else 3;
+                        if recoverno <> 3 then recovered:=recover:=true;
+                        rp:='!3!';
+                  end;
+            end recover;
+
+            procedure recoversetting;
+            for c:=!ISMCL,IEND,IBEGI,IGOTO,IFOR,IWHIL,IINSP,IACTV,IREAC,IINNE,;
+                   ! these are ALWAYS recovery symbols;
+                    IARRA, IBOOL, ICHAR, IEXTR, IINTG, ILONG,
+                    IREAL, IREF , ISHOR, ISWIT, ITEXT, IPROC
+               do  recoversymbol(c):=true;
+
+%+D         if syntaxdump then W1("exprorblock",rank(stmtstack.last.stmtreq));
+            rp:='!1!';
+
+     PARSE: detach;
+%            if recoverno > 0 then goto recoverfromhere;
+%                this statement has recovered with success and the recoverno
+%                indicates where doparse is to resume its actions
+            goto RPSW(rank(rp));
+
+        S0: caller.stmttype:=basicstmt;
+%           - may be changed to innerstmt if this is a split body;
+            labels:=labelused;
+            if cs <> IBEGI then begin
+                  startexprstmt:=true; call(ex); startexprstmt:=false;
+                  if cs=IBEGI then begin
+                        if not ex.blockprefix then begin
+                              writeerror(237);
+                              ! test if the prefix is a valid statement;
+                              goto testcallorobjgen;
+                        end;
+                        opn:=if optx<>0 then IBPRF else IBEGI;
+                        ! prefix without or with parameters resp.;
+                        call(coder); NEXTSYMBOL;
+                        isblocklike:=true; blockfound:=blockfound+1;
+                        blocktype:=prefixblock; blockstatus:=stmtnotseen;
+                        R:=allstmt; goto unitmore;
+                  end
+             else if caller.stmtreq=outermost then writeerror(254)
+             else if cs=IASSG then begin
+                  L1:   if not ex.lhsassig then writeerror(238);
+                        opn:=cs; call(coder); NEXTSYMBOL;
+                        call(ex);
+                        if cs = IASSG then goto L1;
+                        if not  ex.wasexpr then begin
+                              errorno:=1; syntaxerror(239); goto PARSE end;
+                        opn:=IASGE; call(coder);
+                  end
+             else if cs=IDENO then begin
+                  L2:   if not ex.lhsdenote then writeerror(240);
+                        opn:=cs; call(coder); NEXTSYMBOL;
+                        call(ex);
+                        if cs=IDENO then goto l2;
+                        if not  ex.wasexpr then begin
+                              errorno:=1; syntaxerror(241); goto PARSE end;
+                        opn:=IASGE; call(coder);
+                  end else
+testcallorobjgen: begin if not  ex.callorobjgen then writeerror(242);
+                        opn:=IESTM; call(coder);
+                  end;
+            end
+       else begin ! begin is found;
+                  NEXTSYMBOL;
+                  unlabbody:=not labels and!then;
+                     (caller.stmtreq=classbody or caller.stmtreq=procbody);
+                  if
+                          if symboltype(cs)=declsymbol then true
+%+K                  else if cs=IPRIO then true
+                     else if cs=IIDN  then opt=ICLAS else false
+                  then begin
+                       blocktype:=usualblock;
+                       isblocklike:=true; blockstatus:=stmtnotseen;
+                       if not  unlabbody then begin
+                          opn:=IBLKB; call(coder);
+                          blockfound:=blockfound+1;
+                       end;
+                  end
+                  else begin
+                       blocktype:=compstmt;
+                       isblocklike:=true; blockstatus:=lastwasstmt;
+                       if unlabbody then begin opn:=IDCLE; call(coder) end;
+                  end;
+
+                  R:=if caller.stmtreq=classbody
+                     and not  labels then stmtorinner else allstmt;
+
+        unitmore: rp:='!2!'; finish:=false; stmtreq:=R; goto PARSE;
+ recoverfromhere:
+              S1: if stmttype=declunit then
+                  begin if cs <> ISMCL then writeerror(244);
+                        if blockstatus=lastwasstmt
+                                       then blockstatus:=lastwasdecl;
+                        ! errormessage given earlier;
+                  end else !it was statement;
+                  if blockstatus <> lastwasstmt then blockstatus:=lastwasstmt;
+                  if stmttype=innerstmt then begin
+                        if innerseen then writeerror(243);
+                        innerseen:=true; caller.stmttype:=innerstmt;
+                  end;
+
+                  recovernox:=recoverno; recoverno:=0;
+                  if recovernox=2 then goto endrecover;
+                  if recovernox=3 then goto unitmore;
+                  if cs=ISMCL then begin NEXTSYMBOL; goto unitmore end;
+                  if cs <> IEND then begin syntaxerror(244); goto PARSE end;
+     endrecover:  if blocktype=prefixblock
+                     or (blocktype=usualblock and not  unlabbody) then begin
+                        opn:=IEND; call(coder);
+                        blockfound:=blockfound-1 end;
+                  NEXTSYMBOL;
+            end of blocktreatment;
+            finish:=true; detach;
+      end of exprorblock;
+%title ***  WHILE / GOTO - Statement  ***
+
+      statement class whilstat;
+      begin
+            character     rp; !*** returnpoint after internal unit;
+            switch RPSW:= S0, S1, recover1;
+
+            boolean procedure recover;
+            begin recovered:=recover:=true;
+                  if cs=IDO then rp:='!3!'
+             else begin opn:=IWHDO; call(coder);
+                        opn:=IWHSE; call(coder);
+                        recovered:= recover:=false;
+                  end;
+            end;
+
+            procedure recoversetting; recoversymbol(IDO):=true;
+
+%+D         if syntaxdump then W0("WHILE");
+            rp:='!1!';
+
+     PARSE: detach;  goto RPSW(rank(rp));
+
+        S0: caller.stmttype:=openstmt;
+            opn:=IWSTB; call(coder); NEXTSYMBOL;
+            call(ex);
+            if not ex.wasexpr then begin syntaxerror(245); goto PARSE end;
+            if cs <> IDO then begin syntaxerror(246); goto PARSE end;
+  recover1: opn:=IWHDO; call(coder); NEXTSYMBOL;
+            rp:='!2!'; finish:=false; stmtreq:=allstmt; goto PARSE;
+        S1: opn:=IWHSE; call(coder); finish:=true;
+
+            detach;
+      end whilstat;
+
+
+      statement class gotostat;
+      begin
+            boolean procedure recover;
+            begin opn:=IGOE; call(coder); end;
+
+%+D         if syntaxdump then W0("gotostat");
+     PARSE: detach; caller.stmttype:=basicstmt;
+            opn:=IGOTO; call(coder); NEXTSYMBOL;
+            call(ex);
+            if not ex.desig then begin syntaxerror(230); goto PARSE end;
+            opn:=IGOE; call(coder); finish:=true;
+
+            detach;
+      end gotostat;
+%title ***  IF - Statement  ***
+
+      statement class ifstat;
+      begin
+            character     rp; !*** returnpoint after internal unit;
+            switch RPSW:= S0, S1, S2, recover1, recover2;
+
+            boolean procedure recover;
+            begin recovered:= recover:=true;
+                  if cs=ITHEN then rp:='!4!'
+             else if cs=IELSE then begin
+                        opn:=ITHSB; call(coder); rp:='!5!' end
+             else begin opn:=ITHSB; call(coder);
+                        opn:=IIFSE; call(coder);
+                        recovered:=recover:=false;
+                  end;
+            end;
+
+            procedure recoversetting;
+            for c:=ITHEN,IELSE do recoversymbol(c):=true;
+
+%+D         if syntaxdump then W0("IF");
+            rp:='!1!';
+
+     PARSE: detach;  goto RPSW(rank(rp));
+
+        S0: if caller.stmtreq=allbutif then writeerror(258);
+            caller.stmttype:=openstmt;
+            opn:=IIFSB; call(coder); NEXTSYMBOL;
+            call(ex);
+            if not ex.wasexpr then begin syntaxerror(245); goto PARSE end;
+            if cs <> ITHEN then begin syntaxerror(248); goto PARSE end;
+  recover1: opn:=ITHSB; call(coder); NEXTSYMBOL;
+            stmtreq:=allbutif; finish:=false; rp:='!2!'; goto PARSE;
+        S1: !  Return from stmt following then;
+            if stmttype=basicstmt then begin
+%                 ! stmt after then was unconditional, an else-part may follow;
+                  if cs=IELSE then begin
+      recover2:      opn:=IELSB; call(coder); NEXTSYMBOL;
+                     stmtreq:=allstmt; finish:=false; rp:='!3!'; goto PARSE;
+                  end;
+            end else if cs=IELSE then writeerror(249);
+        S2: opn:=IIFSE; call(coder); finish:= true;
+            detach;
+      end ifstat;
+
+%title *** FOR - Statement ***
+
+      statement class forstat;
+      begin boolean enclgen;
+            character     rp; !*** returnpoint after internal unit;
+
+            switch RPSW := S0, S1;
+
+            boolean procedure recover;
+            begin switch erroraction:= ERR1,ERR2,ERR3,ERR4,ERR5,ERR6,ERR7,ERR8;
+                  goto erroraction(errorno);
+            ERR2:      opn:=IFASG; call(coder);
+                       opn:=IABTE; call(coder);
+            ERR7:ERR8:
+            ERR3:ERR4: opn:=IDO;   call(coder);
+                       opn:=IFORE; call(coder);
+                       if enclgen then begin enclgen:=false;
+                          blockfound:=0; opn:=IEND; call(coder) end;
+            ERR5:ERR6: opn:=IUNTI; call(coder);
+                       opn:=IABTE; call(coder);
+                       ! Complete for-stmt from do;
+                       goto ERR4;
+            ERR1:
+       exit:end recover;
+
+%+D         if syntaxdump then W0("FOR");
+            rp:='!1!';
+            if blockfound=0 then begin enclgen:=true; blockfound:=1;
+               detach; opn:=IBLKB; call(coder); goto S0 end;
+
+     PARSE: detach; goto RPSW(rank(rp));
+
+        S0: caller.stmttype:=openstmt;
+            NEXTSYMBOL;
+            if cs<>IIDN then begin errorno:=1; syntaxerror(224); goto PARSE end;
+            opn:=IFOR; call(coder); NEXTSYMBOL;
+            if cs <> IASSG and!then; cs <> IDENO then begin
+                  errorno:=2; syntaxerror(250); goto PARSE end;
+            opn:=if cs=IASSG then IFASG else IFDNO;
+            call(coder); NEXTSYMBOL;
+   forelem: ! treatment of a for element;
+            call(ex);
+            if not ex.wasexpr then begin
+                  errorno:=3; syntaxerror(245); goto PARSE end;
+            if cs=ISTEP then begin
+                  opn:=cs; call(coder); NEXTSYMBOL;
+                  call(ex);
+                  if not ex.wasexpr then begin
+                        errorno:=5; syntaxerror(245); goto PARSE end;
+                  if cs <> IUNTI then begin
+                        errorno:=6; syntaxerror(251); goto PARSE end;
+                  opn:=cs; call(coder); NEXTSYMBOL;
+                  call(ex);
+                  if not ex.wasexpr then begin
+                        errorno:=7; syntaxerror(245); goto PARSE end;
+            end else
+            if cs=IWHIL then begin
+                  opn:=cs; call(coder); NEXTSYMBOL;
+                  call(ex);
+                  if not ex.wasexpr then begin
+                        errorno:=8; syntaxerror(245); goto PARSE end;
+            end;
+            if cs=ICOMA then begin
+                  opn:=IELME; call(coder); NEXTSYMBOL;
+                  goto forelem end;
+            if cs <> IDO then begin
+                  errorno:=4; syntaxerror(246); goto PARSE end;
+            opn:=cs; call(coder); NEXTSYMBOL;
+            stmtreq:=allstmt;finish:=false;  rp:='!2!';  goto PARSE;
+        S1: ! finish of for-stmt;
+            opn:=IFORE; call(coder); finish:= true;
+            if enclgen then
+            begin enclgen:=false; blockfound:=0; opn:=IEND; call(coder) end;
+
+            detach;
+      end forstat;
+
+%title *** INSPECT - Statement ***
+
+      statement class inspectstat;
+      begin boolean firstwhen,iothwsent,enclgen;
+            character     rp; !*** returnpoint after internal unit;
+
+            switch RPSW := S0, S1, S2, S3;
+
+            boolean procedure recover;
+            begin recover:=false;
+                  if errorno=1 then goto ERR1  else
+                  if errorno=2 then goto ERR2  else
+                  if errorno=3 then goto ERR3  else goto ERR4;
+
+                  ERR1:ERR2: opn:=ICONB; call(coder); !goto exit;
+                  ERR3:ERR4:
+                  exit:   opn:=if iothwsent then IOTHE else ICONE; call(coder);
+                          if enclgen then begin enclgen:=false;
+                             blockfound:=0; opn:=IEND; call(coder) end;
+            end recover;
+
+%+D         if syntaxdump then W0("inspect");
+            rp:='!1!';
+            if blockfound=0 then begin enclgen:=true; blockfound:=1;
+               detach; opn:=IBLKB; call(coder); goto S0 end;
+
+     PARSE: detach;  goto RPSW(rank(rp));
+
+        S0: caller.stmttype:=openstmt;
+            opn:=cs; call(coder); NEXTSYMBOL;
+            call(ex);
+            if not ex.wasexpr then begin
+                  errorno:=1; syntaxerror(245); goto PARSE end;
+            if cs=IWHEN then firstwhen:=true
+            else begin
+                  if cs=IDO then begin
+                     opn:=ICONB; call(coder); NEXTSYMBOL;
+                     stmtreq:=allstmt; finish:=false; rp:='!2!' end
+                  else begin
+                     errorno:=2; syntaxerror(252) end;
+                  goto PARSE;
+            end;
+
+       S1:  ! Treatment of a when-list;
+            while cs=IWHEN do begin
+                  NEXTSYMBOL;
+                  if cs <> IIDN then begin
+                        errorno:=3; syntaxerror(224); goto PARSE end;
+                  if firstwhen then begin
+                        opn:=IFWHN; firstwhen:=false
+                  end else opn:=IWHEN;
+                  call(coder); NEXTSYMBOL;
+                  if cs <> IDO then begin
+                       errorno:=4; syntaxerror(246); end
+                  else begin
+                       NEXTSYMBOL;
+                       stmtreq:=allstmt; finish:=false; rp:='!2!';
+                  end;
+                  goto PARSE;
+            end;
+            ! cs is not when, look for otherwise;
+       S2:  ! treatment of a possible otherwise;
+            if cs=IOTHW then begin
+                  opn:=cs; call(coder); NEXTSYMBOL;
+                  iothwsent:=true;
+                  stmtreq:=allstmt; finish:=false; rp:='!4!'; goto PARSE;
+       S3:        ! Return from statement after otherwise,output
+                    special end of connection;
+                  opn:=IOTHE; call(coder); finish:=true;
+                  if enclgen then begin enclgen:=false;
+                     blockfound:=0; opn:=IEND; call(coder) end;
+                  goto PARSE;
+            end;
+            ! inspect finish;
+            opn:=ICONE; call(coder); finish:= true;
+            if enclgen then begin enclgen:=false;
+               blockfound:=0; opn:=IEND; call(coder) end;
+            detach;
+      end inspectstat;
+
+%title *** ACTIVATE / INNER / DUMMY - Statement ***
+      statement class activatestat;
+      begin
+            boolean procedure recover;
+            begin recover:=false; opn:=IACTE; call(coder) end;
+
+%+D         if syntaxdump then W0("activate");
+     PARSE: detach; caller.stmttype:=basicstmt;
+            opn:=cs; call(coder); NEXTSYMBOL; call(ex);
+            if not ex.wasexpr then begin syntaxerror(245); goto PARSE end;
+            if cs=IAT or cs=IDELA then begin
+                  opn:=cs; call(coder); NEXTSYMBOL; call(ex);
+                  if not ex.wasexpr then begin syntaxerror(245); goto PARSE end;
+                  if cs=IPRIO then begin
+                        opn:=cs; call(coder); NEXTSYMBOL end;
+            end
+       else if cs=IBEFO or cs=IAFTR then begin
+                  opn:=cs; call(coder); NEXTSYMBOL; call(ex);
+                  if not ex.wasexpr then begin syntaxerror(245); goto PARSE end;
+            end;
+            opn:=IACTE; call(coder); finish:= true; detach;
+      end activatestat;
+
+
+      statement class innerstat;
+      begin
+%+D         if syntaxdump then W1("innerstat",rank(stmtstack.last.stmtreq));
+     PARSE: detach;
+            if caller.stmtreq = stmtorinner then begin
+               caller.stmttype:=innerstmt; opn:=cs; call(coder); end
+            else ScanWarn(233);
+            NEXTSYMBOL; finish:=true; detach;
+      end innerstat;
+
+
+      statement class dummystat;
+      begin
+            boolean procedure recover;  recover:=false;
+
+%+D         if syntaxdump then W0("dummy");
+     PARSE: detach; caller.stmttype:=basicstmt;
+            if cs=IEND  then  else if cs=ISMCL then
+       else if cs=IELSE then  else if cs=IWHEN then
+       else if cs=IOTHW then  else if cs=IEOP  then
+            else begin
+                  syntaxerror(
+                     if symboltype(cs)=declsymbol or (cs=IIDN and opt=ICLAS)
+                     then 260 else 242);
+                  goto PARSE;
+            end;
+            finish:= true; detach;
+      end dummystat;
+%title ***  E x p r e s s i o n  ***
+
+      class expression;
+      begin boolean A,B,C,D,E,F,G;        !*** FALSE means: ;
+
+%        A: IF-expr     B: DOT/QUA     C: operator/CONST<>notext/IN/IS
+%        D: LFPA in primary            E: lastsymbol was RGPA
+%        F: NEW/THIS or notext         G: lastsym QUA
+
+            boolean wasexpr;              !*** TRUE means: correct expression;
+
+            character operatortype;
+            short integer lastsymb;! last symbol, may be INOTY,ILFPA or IQUA;
+            short integer opnx; !*** workvariables in exp;
+
+            ref(expression) ex;
+
+            procedure experror(errorno);short integer errorno;
+            begin
+%+D               if syntaxdump then W1("experror  ",errorno);
+                  wasexpr:=false; experrorfound:=true; experrorno:=errorno;
+                  opn:=IBREC; call(coder);
+                  ibrecoutput:=true; opn:=IABTE; call(coder);
+                  goto restart;
+            end experror;
+
+            boolean procedure blockprefix;
+                  blockprefix:= wasexpr and!then; A and!then; B and!then; C
+                                        and!then; D and!then; F;
+            boolean procedure desig;
+                  desig:= wasexpr and!then; B and!then; C and!then; F;
+            boolean procedure lhsassig;
+                  lhsassig:=    wasexpr and!then; A and!then; C and!then; G;
+            boolean procedure lhsdenote;
+                  lhsdenote:=   wasexpr and!then; A and!then; C
+                                        and!then; E and!then; G;
+            boolean procedure callorobjgen;
+                  callorobjgen:=wasexpr and!then; A and!then; C
+                                        and!then; E and!then; G;
+
+            procedure exp(sr); boolean sr;  !RECURSIVE;
+            begin
+                  ! sr=true means that a simple expression is required
+                              (not starting with 'IF');
+
+                  short integer parnum;
+
+                  procedure parexprecover;
+                  begin ! recovers from errors in expressions
+                                occurring as parameter expressions;
+
+                        recoversymbol(ICOMA):=recoversymbol(IRGPA):=true;
+                        search;
+                        recoversymbol(ICOMA):=recoversymbol(IRGPA):=false;
+
+                        if ibrecoutput then
+                        begin opn:=IEREC; call(coder);
+                              ibrecoutput:=false;
+                        end;
+                        goto (if cs=ICOMA then comarecover else
+                              if cs=IRGPA then rgparecover else rgpaerror);
+                  end parexprecover;
+
+                  parnum:= 0;
+%+D               if syntaxdump then W0("exp called");
+
+         restart: if cs=IIF then begin
+                        if sr and!then; parnum=0 then experror(51);
+                        opn:=cs; call(coder); NEXTSYMBOL;
+                        if ex==none then ex:-new expression;
+                        call(ex); !*** inner expression;
+                        if not ex.wasexpr then experror(25);
+                        if cs <> ITHEN then experror(28);
+                        opn:=ITHEN; call(coder); NEXTSYMBOL;
+                        exp(true);
+                        if cs <> IELSE then experror(52);
+                        opn:=IELSE; call(coder); NEXTSYMBOL;
+                        exp(false);
+                        opn:=IEEXP; call(coder);
+                        if parnum=0 then begin
+                              A:=false; lastsymb:=INOTY; goto expexit end;
+                        if cs <> IRGPA then experror(3);
+                        opn:=IRGPA; call(coder); NEXTSYMBOL;
+                        lastsymb:=IRGPA; parnum:= parnum-1; goto postfix;
+                  end;
+
+          prefix:    if cs=INOT then begin
+          relopout:     C:=false; opn:=cs;
+                        call(coder); NEXTSYMBOL; end;
+
+                     if cs=IMINU or!else; cs=IPLUS then begin
+          arunaryout:   opn:=if cs=IMINU then IUMNS else IUPLS;
+          arithopout:   C:=false; call(coder); NEXTSYMBOL;
+                     end;
+
+                  lastsymb:=INOTY;
+                  if cs=IIDN then
+             else if cs=INEW then F:=false
+             else if cs=ITHIS then begin
+                        NEXTSYMBOL;
+                        if cs <> IIDN then experror(4);
+                        opn:=ITHIS; call(coder); NEXTSYMBOL;
+                        F:=false; goto postfix;
+                  end
+             else if cs=ICONS then begin
+                     opn:=cs; call(coder); NEXTSYMBOL;
+                     if opd = INOTE then begin !*** cs is notext;
+                        F:=false; goto postfix;  end
+                     else begin C:=false; goto operator end;
+                  end
+             else if cs=ILFPA then begin
+                     opn:=cs; call(coder); NEXTSYMBOL;
+                     D:=false; parnum:=parnum+1; goto restart;
+                  end
+             else experror(if symboltype(cs)=exprtermin then 55 else 54);
+
+                  !*** a primary is found, identifier and new ***;
+                  !*** may be followed by a parameter-list    ***;
+
+           param: opn:=cs; ! IIDN, INEW or IDOT;
+                  if cs <> IIDN then begin
+                        NEXTSYMBOL;
+                        if cs <> IIDN then experror(4);
+                  end;
+                  NEXTSYMBOL;
+                  if cs=ILFPA then begin
+                        opn:=opnx:=if opn=INEW then INEWP else
+                                   if opn=IIDN then IIDNP else IDOTP;
+                        call(coder);
+
+           paramexp:    NEXTSYMBOL;
+                        if ex==none then ex:-new expression;
+                        call(ex); !*** inner expression;
+                        if not ex.wasexpr then begin
+                              writeerror(245); parexprecover end;
+                        if cs=ICOMA then begin
+           comarecover:       opn:=cs; call(coder); goto paramexp end;
+                        if cs <> IRGPA then begin
+             rgpaerror:       ! terminate IDN(..) properly;
+                              if not(cs=IBEGI and startexprstmt) then begin
+                                    opn:=if opnx=INEWP then ICAPE else IARGE;
+                                    call(coder);
+                              end;
+                              experror(5);
+                        end;
+           rgparecover: NEXTSYMBOL;
+                        if not(cs=IBEGI and startexprstmt) then begin
+                              opn:=if opnx = INEWP then ICAPE else IARGE;
+                              call(coder);
+                        end;
+                  end
+             else if not(cs=IBEGI and startexprstmt) then call(coder);
+
+         postfix: if cs=IDOT then begin
+                        B:=false; lastsymb:=INOTY; goto param end;
+
+                  if cs=IQUA then begin
+                        NEXTSYMBOL;
+                        if cs <> IIDN then experror(4);
+                        opn:=IQUA; call(coder); NEXTSYMBOL;
+                        lastsymb:=IQUA; B:=false; goto postfix;
+                  end;
+
+                  if cs=IIS or!else; cs=IIN then begin
+                        opn:=cs; C:=false; NEXTSYMBOL;
+                        if cs <> IIDN then experror(4);
+                        call(coder); lastsymb:=INOTY; NEXTSYMBOL;
+                  end;
+
+        operator: operatortype:=symboltype(cs);
+                  if operatortype=relop then goto relopout;
+                  if operatortype=arithop then begin
+                     opn:=cs; goto arithopout end;
+                  if operatortype=logop then begin
+                     C:=false; opn:=cs;call(coder); NEXTSYMBOL;
+                     goto prefix
+                  end;
+
+                  !*** cs was no operator;
+                  if cs=IRGPA then begin
+                        if parnum <> 0 then begin
+                              opn:=cs; call(coder); NEXTSYMBOL;
+                              parnum:=parnum-1; lastsymb:=IRGPA;
+                              goto postfix;
+                        end;
+                  end
+             else if parnum <> 0 then experror(53);
+
+         expexit:
+%+D               if syntaxdump then
+%+D               begin W8("A B C D E F G wasexpr  = ",
+%+D                         if A then 1 else 0,if B then 1 else 0,
+%+D                         if C then 1 else 0,if D then 1 else 0,
+%+D                         if E then 1 else 0,if F then 1 else 0,
+%+D                         if G then 1 else 0,if wasexpr then 1 else 0);
+%+D               end;
+            end exp;
+
+  restart: while true do begin
+               detach;
+%+D            if syntaxdump then W1("expression called,cs= ",cs);
+               A:=B:=C:=D:=E:=F:=G:=wasexpr:=true;
+
+               if (cs=IIDN or!else; cs=ICONS)
+                  and symboltype(opt)=exprtermin then begin
+                     if cs=ICONS then begin
+                           if opd=INOTE then F:=false else C:=false;
+                     end;
+                     opn:=if cs=IIDN then ISIDN else ISCST; !single;
+                     call(coder); NEXTSYMBOL;
+               end
+               else begin
+                    exp(false); E:=lastsymb<>IRGPA; G:=lastsymb<>IQUA end;
+           end;
+
+      end expression;
+
+end PARSER;

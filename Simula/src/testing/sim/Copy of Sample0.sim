@@ -1,0 +1,14 @@
+
+%QUALIFIEDNAMES
+begin
+   ref(C) x;
+   Class C;
+   Begin
+      integer i;
+      detach;
+   End;
+   
+   x:-new C();
+   !detach; ! error: 'Undefined variable: detach' ;
+  
+end;

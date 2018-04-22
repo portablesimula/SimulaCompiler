@@ -1,0 +1,29 @@
+class TypeConversionSamples;
+begin
+   integer i,j; real r,q; Text U; Boolean cond;
+   integer array AR[1:9];
+   class A(n); integer n; begin end;
+ A class B(T); text T; begin end;
+ B class C; begin end;
+ B class D; begin end;
+   procedure P(i,x,T); integer i; ref(B) x; Text T; begin end;
+   ref(A) aa; ref(B) bb; ref(C) cc; ref(D) dd;
+   r:=i;
+   aa:-bb;
+   bb:-aa;
+%   aa:-(if cond then cc else dd).T;
+%   aa:-((if cond then cc else dd) qua B).T;
+   P(r,aa,"xxx");
+   new B(r,"abra");
+   AR[r]:=bb.n;
+   bb.T:-U;
+   bb.T:=U;
+%   aa:=bb;
+   i:=r:=j:=q;
+   r:=if(i>4)then i else i+5;
+%   r:=(if(i>4)then i else i+5)+3.14;
+%   cond:=(if(i>4)then i else i+5)=3.14;
+
+  if(bb is A) then r:=j;
+   
+end;

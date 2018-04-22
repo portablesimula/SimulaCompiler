@@ -1,0 +1,1530 @@
+External class SCODINIT;
+
+SCODINIT class SCODMAIN;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1985,86 by                                           ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  4.           ---
+%      ---                                                                 ---
+%      --- Selection Switches: DKIZ                                        ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCODER:MNE
+%+I %INSERT (RTS-105)RTSINIT:MNE
+
+codegeneratorinit class codegenerator;
+begin
+      switch action:=
+%INSERT (FEC-105)SWITCH:INIT
+
+
+      goto afternext; !*** i.e. detach and initialise ***;
+
+LICONC:  ! Binary text concatenation;
+LIPLUS:  ! Binary plus, type in opt;
+LIMINU:  ! Binary minus, type in opt;
+LIMULT:  ! Binary multiplication, type in opt;
+LIAND:   ! Binary and;
+LICAND:  ! Binary conditional and;
+LIOR:    ! Binary or;
+LICOR:   ! Binary conditional or;
+LIEQV:   ! Binary equivalence;
+LIIMP:   ! Binary implication;
+LIIDIV:  ! Binary integer division, IINTG in opt;
+LISLAS:  ! Binary real division, type in opt;
+         if opi=0 then ! postfix operator ; outbinary(opc);
+
+LIINSP:  ! Start of inspection statement;
+
+LITO:    ! Termination of left hand side in assignment;
+
+LIIFSB:  ! If in if-statement;
+
+NXT:  lastopc:=opc;   lastopt:=opt;  lastopi:=opi;
+%     lastoptx:=optx; lastopq:-opq;  ! not used;
+
+      opc:=opt:=optx:=IVIRT; opq:-none; opi:=0;
+
+LIACTV:   LIAFTR:   LIAT:     LIBEFO:
+LIBOOL:   LICHAR:   LICLAS:   LIDELA:   LIDENO:   LIEXNM:
+LIEXTR:   LIHIDD:   LIINTG:
+LILABE:   LILONG:   LINEW:    LIPRIO:
+LIREAC:   LIREAL:   LISHOR:   LISWIT:   LIVIRT:   LICOMN:
+LINONE:   LITRUE:   LIFALS:
+LIROPD:   LIABTE:   LIACTE:   LIBLNO:   LIBREC:
+LIEREC:   LILANG:
+
+LIGO:    ! New options;
+
+dummynext: detach; comment: Get next opc w/parameters from checker;
+
+afternext:
+%+D   if Zoption then
+%+D   begin if opc=ILINE then outimage;
+%+D         outtext(DB(opc)); outtext("  opt= ");
+%+D         if opt=IVIRT then outtext("     ") else
+%+D         outtext(DB(opt)); outtext("  optx= ");
+%+D         if optx=IVIRT then outtext("     ") else
+%+D         outtext(DB(optx)); outtext("  ");
+%+D         outint(opi,6); outtext("  ");
+%+D         if opq=/=none then
+%+D         begin if opq.kind <> char(IBLKB) and opq.kind <> char(IBPRF) then
+%+D               outtext(idname(opq.ident));
+%+D               outint(opq.encl.blno,7);
+%+D         end;
+%+D         outimage;
+%+D   end;
+
+      goto action(opc);
+
+LISCST:  ! Single const, ;
+LICONS:  ! const, opi is index of constant, opt=type;
+      ccc:= if opt=ISCST then ITEXT else if opt=ITEXT then INOTE else opt;
+            !*** text const. has strange type, because of 'lastopt' ***;
+
+      if ccc=ITEXT then begin !text constant different from NOTEXT;
+%+Z      xxx:=idname(opi).length;
+%-Z      xxx:=symtab(opi//256).val(rem(opi,256)).length;
+         jjj:=lastusedtag:=lastusedtag+1;
+         ! Generate tagged constant of record txtent;
+         outconstdef(jjj,Z_txtent); outfixrep(xxx);
+         outrecordconst(Z_txtent);
+         outattrconst(Z_entity_sl,ptoaddr); outinstr(vonone);
+         outattrconst(Z_entity_gcl,ptoaddr);
+            outaddrconst(vcoaddr,jjj);             ! Refers itself;
+         outattrconst(Z_entity_sor,ptint); outinteger(s_txtent);
+         outattrconst(Z_entity_lng,ptsize); outinstr(vnosize);
+         outattrconst(Z_txtent_nch,ptint); outinteger(xxx);
+         outattrconst(Z_txtent_cha,ptchar); textval(opi);
+         outendrecord;
+
+         if opc=ISCST and!then; lastopc=IDCLS then
+         begin ! Single text constant passed to name/unspecified;
+               txtrc:=lastusedtag:=lastusedtag+1;
+               outconstdef(txtrc,Z_txtqnt); outinstr(vcrecord);
+         end else ! text constant anywhere else: Push constant of record txtqnt;
+               outpushc(vcrecord);
+
+         ! common to text constant in both cases;
+         outtag(Z_txtqnt);
+         outattrconst(Z_txtqnt_ent,ptoaddr);
+            outaddrconst(vcoaddr,jjj);
+         outattrconst(Z_txtqnt_cp,ptint); outinteger(0);
+         outattrconst(Z_txtqnt_sp,ptint); outinteger(0);
+         outattrconst(Z_txtqnt_lp,ptint); outinteger(xxx);
+         outendrecord;
+
+         if opc=ISCST and!then; lastopc=IDCLS
+         then begin ! make PARDES constant ;
+
+            PDC:= lastusedtag:= lastusedtag + 1;
+
+            outconstdef(PDC,Z_LPARDES);
+            outrecordconst( Z_LPARDES);
+            outattrconst(Z_PARDES_COD,ptint);
+            outinteger(par_qnt_lit);
+            outattrconst(Z_PARDES_KIN,ptint);
+            outinteger(rtskind(IIDN) !kind K_SMP ;);
+            outattrconst(Z_PARDES_TYP,ptint);
+            outinteger(rtstypecode(ITEXT));
+            outattrconst(litpardesvarianttag(ITEXT),ptoaddr );
+            outaddrconst(vcoaddr,txtrc);
+            outendrecord;
+
+            if curpar==none then begin ! text constant to formal unspecified ;
+               outdup;
+               outasscall(fpt_profile(ITEXT));
+               outpushcint(curparno-1);
+               outasspar;
+               outpushcaddr(vcoaddr,PDC);
+               outasspar;
+               outpushcaddr(vcoaddr,PDC);
+               outasspar;
+               outpushcaddr(vcaaddr,litpardesvarianttag(ITEXT) );
+               outasspar;
+               outcall(fpt_body(ITEXT),0);
+            end
+            else begin                 ! text constant to formal name ;
+               update_PARQNT;
+               select_PARQNT(Z_parqnt_ap);
+               outpushcaddr(vcoaddr,PDC);
+               outassign;
+            end;
+         end;
+      end
+
+ else if opc=ISCST and!then; lastopc=IDCLS then begin
+         ! single constant as actual to name/unspecified;
+
+         ! type<>TEXT or type=NOTEXT ;
+         ! make PARDES constant ;
+
+         PDC:= lastusedtag:= lastusedtag + 1;
+
+         outconstdef(PDC,Z_LPARDES);
+         outrecordconst( Z_LPARDES);
+         outattrconst(Z_PARDES_COD,ptint);
+         outinteger(par_qnt_lit);
+         outattrconst(Z_PARDES_KIN,ptint);
+         outinteger(rtskind(IIDN) !kind K_SMP ;);
+         outattrconst(Z_PARDES_TYP,ptint);
+         outinteger(rtstypecode(if ccc=INOTE then ITEXT else ccc));
+         outattrconst(litpardesvarianttag(if ccc=INOTE then ITEXT else ccc),
+                      typetag(if ccc=INOTE then IREF else ccc));
+         if ccc=INOTE then outaddrconst(vcoaddr,Z_notext) else
+         outsimplevalue(if ccc=IBOOL or!else; ccc=IREF then opi else ccc,opi);
+         outendrecord;
+
+         if curpar==none then begin        ! actual to unspecified ;
+            outdup;
+            outasscall(fpt_profile(if ccc=INOTE then ITEXT else ccc));
+            outpushcint(curparno-1);
+            outasspar;
+            outpushcaddr(vcoaddr,PDC);
+            outasspar;
+            outpushcaddr(vcoaddr,PDC);
+            outasspar;
+            outpushcaddr(vcaaddr,litpardesvarianttag(
+                                 if ccc=INOTE then ITEXT else ccc));
+            outasspar;
+            if opi=INONE then begin
+               outpushc(vonone); ! qualification ;
+               outasspar;
+            end;
+            outcall(fpt_body(if ccc=INOTE then ITEXT else ccc),0);
+         end else
+         begin
+            update_PARQNT;
+            select_PARQNT(Z_parqnt_ap);
+            outpushcaddr(vcoaddr,PDC);
+            outassign;
+         end;
+      end
+
+ else if ccc=INOTE then outpush(Z_notext)
+      ! constant not as actual parameter ;
+      else outpushsimc(opi,if ccc=IBOOL or!else; ccc=IREF then opi else ccc);
+      goto NXT;
+
+
+LISIDN:  ! A single direct reference to opq;
+LIIDN:   ! A normal direct reference to opq;
+      if opq.kind=char(IIDN) then
+      begin if opq.categ=char(INAME) then fnp_acc_smp else
+            begin ! access of simple local/global/by value parameter;
+                  staticencl(opq); outremotev(opq.ftag+quantdisp);
+            end;
+      end simple kind
+ else if opq.kind=char(IARRA) then
+      begin if opq.categ=char(INAME) then fnp_acc_arr else
+            begin staticencl(opq); outremotev(opq.ftag+quantdisp) end;
+            ! an array reference is on the stack;
+            pushcall(opq);
+      end
+ else if opq.kind=char(IPROC) or!else; opq.kind=char(ICLAS) then pushcall(opq)
+         ! code generation deferred until PARAM-BEGIN which will always occur;
+ else if opq.kind=char(ILABE) then procLIIDNlab
+ else if opq.kind=char(ISWIT) then procLIIDNswt
+ else StopScode_2(589,opq.line); !LIIDN;
+      goto NXT;
+
+LIDOT:! A normal dot reference to opq;
+      ! opq is a remotely accessed attribute of a class,
+        thus we know the following:
+        - opq.kind cannot be ILABE or ISWIT.
+        - opq.categ cannot be INAME (classes cannot have name
+          parameters).
+        - if opq.kind=IPROC then opq.categ cannot be IVALU, IFRMP
+          or INAME (classes cannot have procedure parameters) ;
+
+      if lastopc <> IQUA and!then; NoneCheck then outnonetest(vonone,IDOT);
+      if (opq.categ=char(IDCLI) or!else;
+          opq.categ=char(IVALU) or!else; opq.categ=char(IFRMP))
+         and!then; (opq.kind=char(IIDN) or!else; opq.kind=char(IARRA))
+      then outremotev(opq.ftag+quantdisp)
+      else if opq.kind<>char(IPROC) ! Code gen. for procedure call deferred
+                                      until PARAM-BEGIN which will always occur;
+      then StopScode_2(590,opq.line);! IDOT: illegal kind ;
+      if opq.kind <> char(IIDN) then
+            pushcall(opq); ! Array access/ procedure call ;
+      goto NXT;
+
+LIDOTP:  ! Remote variable preceeding := or :- (DOT-VAR);
+      if lastopc <> IQUA and!then; NoneCheck then outnonetest(vonone,IDOT);
+      outremote(opq.ftag+quantdisp); outeval; goto NXT;
+
+LINOTY:  ! Text-var-dot;
+%     pushcall(opq);
+%     ! Code generation for the procedure call deferred until PARAM-BEGIN ;
+%     goto NXT;
+
+LINOTE:  ! Text-exp-dot,opq denotes text attribute procedure;
+      pushcall(opq);
+      ! Code generation for the procedure call deferred until PARAM-BEGIN ;
+      goto NXT;
+
+LIDCLP:  !  RESULT -
+            The result variable of text procedure opq (is head!);
+         ! (as target in a text value assignment to procedure) ;
+      outpushv(Z_curins);
+      st_rblev:=crtblev-opq.descr.rtblev;
+      while st_rblev>0 do begin
+            outremotev(Z_entity_sl); st_rblev:=st_rblev-1 end;
+      outremote(Z_txt_pro_va);  ! resulttag(ITEXT) ;
+      goto NXT;
+
+LITHIS:  ! Local reference to (may be inspected) class opq;
+      if opq.descr.blev<0 then
+      begin ! Test corresponding to the one in 'staticencl' :
+              opq may be one of the connectcopies corresponding to
+              the inspections of sysin and sysout ;
+            outpushv(Z_bio);
+            outremotev(
+               if opq.descr.blev=-1 then Z_bio_sysout else Z_bio_sysin);
+      end else
+      begin outpushv(Z_curins);
+            st_rblev:=crtblev-opq.descr.rtblev;
+            while st_rblev>0 do begin
+                  outremotev(Z_entity_sl); st_rblev:=st_rblev-1 end;
+            if opq.kind=char(IINSP) then outremotev(conpointtag(opq.descr));
+      end;
+      goto NXT;
+
+LIIDNP:  ! (SINGLE-VAR) Single name variable preceding := or :-,
+           or single text variable (even no-name) preceding
+           .<procedure> or := ;
+      if opq.categ <> char(INAME) then
+      begin ! text variable, not name, preceding .<procedure> or := ;
+            staticencl(opq); outremote(opq.ftag+quantdisp);
+      end else
+      begin ! name variable ;
+            if opi=1 and!then; opq.type=char(ITEXT) then
+            begin ! text name in front of .<procedure> or := ;
+                  GADDRval; outrefer(Z_txtqnt);
+            end else
+            begin ! name variable (including text) preceding :-,
+                    or name variable (not text) preceding := ;
+                  addrPARQNT(opq,false); outselectv(Z_parqnt_ap);
+                  outremotev(Z_pardes_cod); outpushcint(par_thk_ass);
+                  outskipif(INE);
+                    expandsave; outprecall(Z_b_fnp_ass1);
+                    addrPARQNT(opq,true); outasspar;
+                    outcall(Z_b_fnp_ass2,0); expandrestore;
+                  outendskip;
+            end;
+      end;
+      goto NXT;
+
+LISSWA:  ! Single identifier as actual to name or unspec, or
+                 procedure, array or switch as such (SINGLE-ACTUAL);
+      procLISSWA; goto NXT;
+
+LILFPA:  ! Remote idenfier as actual parameter to name or unspec,
+           or remote procedure or array as such (DOT-ACTUAL);
+      procLILFPA; goto NXT;
+
+LIIF:    ! If in expression;
+      notinconditional:=false; ! Used for designational expressions;
+      generalgoto:=ingotostmt; goto NXT;
+
+LITHEN:  ! Then in expression;
+      if lastopi <> -1 or!else; lastopt=ITEXT then
+      begin outpushc(vtrue); outif(IEQ) end;
+      ! lastopi=-1 and lastopt<>ITEXT means that the expression
+        preceding THEN was a relational expression that has been
+        coded specially, see LIEQ:.... ;
+      goto NXT;
+
+LIELSE:  ! Else in expression;
+      outelse; goto NXT;
+
+LIEEXP:  ! End of if-then-else expression;
+      outendif; goto NXT;
+
+LIDCLA:  ! Declaration of array,switch or label;
+      if opq.kind=char(ILABE) then outlabeldef(opq.ftag+quantdisp) else
+      if opq.kind=char(ISWIT) then
+      begin ! Switch declaration;
+            ! (switch element which requires thunk is not yet properly
+              handled): ;
+            opq.plev:= opi;    ! plain switch: opi=1, not plain: opi=2 ;
+            inswitchdecl:=true;
+            notinconditional:=true;
+            pushcall(opq); ! Switch pushed on callstack ;
+            outconstdef(opq.ftag+quantdisp,Z_swtdes);
+            outfixrep(opq.dim+1);
+            outrecordconst(Z_swtdes);
+            outattrconst(Z_swtdes_nel,ptint);
+            outinteger(opq.dim);
+            outattrconst(Z_swtdes_elt,Z_swtelt);
+            ! The first, dummy switch element:  ;
+            swteltconst(false,0,0,0,0);
+      end else ! kind=IARRA ;
+      begin if calldepth=0 then
+            begin pushcall(opq);
+                  outprecall( if opq.dim=1 then Z_arr_1_new1 else
+                              if opq.dim=2 then Z_arr_2_new1 else
+                              Z_arr_g_new1 );
+                  outpushcint(rtstypecode(rank(opq.type))); outasspar;
+                  if opq.dim>2 then
+                  begin outpushcint(opq.dim); outasspar end;
+            end else curstatus:=char(rank(curstatus)+1);
+               ! if there are more than one array being declared
+                 simultaneously, curstatus will count them;
+      end;
+      goto NXT;
+
+LIBNDE:  ! Colon between bounds;
+LIDIME:  ! End of bound-pair;
+         if curcall.dim<3 then outasspar; goto NXT;
+
+LIARDE:  ! End of array decl;
+         if curcall.dim>2 then
+         begin outassrep(curcall.dim*2);
+               outcall(Z_arr_g_new2,1);
+         end else
+         begin outasspar;
+               if curcall.dim=1 then outcall(Z_arr_1_new2,1) else
+               if curcall.dim=2 then outcall(Z_arr_2_new2,1) else
+               StopScode_2(684,curcall.line);
+         end;
+         outpushv(Z_curins); outremote(curcall.ftag+quantdisp);
+         outrupdate; outpop;
+         ! curstatus>0 indicates multiple array declaration;
+         for iii:=1 step 1 until rank(curstatus) do
+         begin outprecall(Z_arr_c_new1);
+               outpushcaddr(vcaaddr,curcall.ftag+quantdisp);
+               outasspar; curcall:-curcall.next;
+               outpushcaddr(vcaaddr,curcall.ftag+quantdisp);
+               outasspar; outpushcint(rtstypecode(rank(curcall.type)));
+               outasspar; outcall(Z_arr_c_new2,0);
+         end;
+         outempty; popcall; goto NXT;
+
+LISWEE: ! Comma between switch elements;
+         notinconditional:=true; goto NXT;
+
+LISWDE:  ! End of switch declaration;
+         outendrecord;          ! end swtdes ;
+         outempty;
+         popcall;   ! pop the switch ;
+         inswitchdecl:=false;
+         goto NXT;
+
+LICAPE:  ! Begin of indices (SUBSCRIPT-BEGIN) ;
+         if curcall.kind=char(ISWIT) then  !Switch: nothing ; else
+         begin ! Begin array indices ;
+               ! opi = actual no of indices ;
+               curstatus:=char(opi);
+               ! an array reference is on the stack ;
+               if opi=1 then begin
+                  inspect curcall do
+                  if BoundCheck then !not inline code;
+             else if arraylb<>0
+                  then begin outremote(arr1elttag(rank(type))); goto NXT end;
+               end;
+               outdup;
+               if opi=1 then outasscall(Z_arr_1_ind1) else
+               if opi=2 then outasscall(Z_arr_2_ind1) else
+               begin outremote(Z_arbody_hea); outasscall(Z_arr_g_ind1);
+                     outpushcint(opi); outasspar;
+               end;
+         end;
+         goto NXT;
+
+LICOMA:  ! Comma between array access indices;
+         if curstatus<'!3!' then outasspar; goto NXT;
+
+LINEWP:  ! End of subscripted var preceeding := or :-  (SUBSCRIPT-VAR);
+LIARGE:  ! End of switch or array access indices (SUBSCRIPT-END);
+         if curcall.kind=char(ISWIT) then
+         begin
+            ! Termination of switch designator ;
+            if curstatus='!1!' then
+            begin
+               ! Optimised case ;
+               outdup;
+               outpush(curcall.ftag+quantdisp);
+               outselectv(Z_swtdes_nel);
+               getnewindex; xxx:=curindex; outfjumpif(IGT,xxx);
+                outdup;
+                outpushcint(0);
+                outskipif(IGT);
+                 outpopall;
+               outfdest(xxx);
+                 outprecall(Z_err_swt1);
+                 outcall(Z_err_swt2,0);
+                outendskip;
+               outindex;
+               outselectv(Z_swtelt_pad);
+               outgoto;
+            end optimised switch access else
+            begin
+               ! Push a LABQNT on TOS ;
+
+               generalgoto:=ingotostmt;
+
+               ! the index expression is on the stack;
+               outpush(Z_tmp);
+               outselect(Z_quant_int);
+               outrupdate;
+               expandsave;
+               outprecall(Z_b_swt_lab1);
+               outpush(Z_tmp);
+               outselectv(Z_quant_int);
+               outasspar;
+               get_SWTQNT(curcall);
+               outasspar;
+               outcall(Z_b_swt_lab2,0);
+               expandrestore;
+
+               ! the original index expression is on the stack ;
+
+               outasscall(Z_e_swt_lab1);
+               get_SWTQNT(curcall);
+               outasspar;
+               outcall(Z_e_swt_lab2,1);
+
+               if curcall is extquantity then
+               begin
+                  if curcall qua extquantity.classific='E' then
+                  ! Switch designator as actual to label
+                    parameter to non-Simula procedure ;
+                  ! a label quant is on the stack, a paddr is
+                    to be delivered to the routine;
+                  begin
+              notimp("general actual label parameter to non-Simula",0);
+              ! It must be tested at run time that the label is local
+                to the current Simula block, i.e. that its sl is curins,
+                and that it is at current connection level.  (???)
+                The following test is not good enough ;
+                     outpush(Z_tmp);
+                     outselect(Z_quant_lab);
+                     outrupdate; outpop;
+                     outpush(Z_tmp);
+                     outselect(Z_quant_lab);
+                     outdup;
+                     outselect(Z_labqnt_sl);
+                     outpush(Z_curins);
+                     outskipif(IEQ);
+                     outprecall(Z_error1);
+                     outpushcint(126); outasspar;
+                     outcall(Z_error2,0);
+                     outendskip;
+                     outselect(Z_labqnt_pad);
+                  end;
+               end;
+            end;
+
+            popcall;
+
+         end ISWIT else
+         begin
+            ! kind=IARRA ;
+
+            endsubscription(if opc=IARGE then IVALU
+                                              ! VAL mode on stack ;
+                                         else IREF );
+            popcall;
+         end;
+         goto NXT;
+
+
+LIARRA:  ! End of subscripted var as actual parameter to name or
+                 unspec  (SUBSCRIPT-ACTUAL);
+         procLIARRA; goto NXT;
+
+LIPROC:  ! PARAM-BEGIN  opi=number of parameters;
+
+         inspect curcall do
+         begin
+            if kind=char(IBPRF) then
+            begin
+               outprecall(if opi=0 then Z_b_pre1 else Z_a_pre1);
+               outpushcaddr(vcoaddr,ftag+prototypedisp);
+               outasspar;
+               if opi=0 then outcall(Z_b_pre2,0)
+               else          outcall(Z_a_pre2,1);
+            end else
+            if kind=char(ICLAS) then
+            begin
+               expandsave;
+               outprecall(if opi=0 then Z_b_cla1 else Z_a_cla1);
+               staticencl(this quantity);
+               outasspar;
+               outpushcaddr(vcoaddr,ftag+prototypedisp);
+               outasspar;
+               if opi=0 then outcall(Z_b_cla2,0)
+               else outcall(Z_a_cla2,1);
+            end
+            else begin  !kind=IPROC;
+               clf:=
+%+K                 if (if categ=char(IDCLI) then descr.thisused else false)
+%+K                 then 'p' else
+                    if this quantity is extquantity then
+                       this quantity qua extquantity.classific else ' ';
+                    ! For a normal Simula procedure clf will be 'p' (quick),
+                      ' ' (local) or 'N' (external), otherwise it will
+                      be 'E','L','M','R','S','Y','Z','V','W','I',
+                         'T','U' or 'O' ;
+
+               if clf=' ' or!else; clf='N'
+%+K                                       or!else; clf='p'
+               then begin ! Normal Simula procedure ;
+                  if categ=char(IDCLI) or!else; categ=char(IEXTR) then begin
+                     if lastopc=IDOT then begin ! Object reference on TOS;
+                        if asd>1 then begin ! Save required ;
+                           outpush(Z_tmp);
+                           outselect(Z_quant_pnt);
+                           outrupdate;
+                           outpop;
+                           expandsave;
+                           outpush(Z_tmp);
+                           outselectv(Z_quant_pnt);
+                        end else
+                        begin
+                           saveindex:=saveindex+1;
+                           saveemitted(saveindex):=false;
+                        end;
+                     end remotely accessed
+                     else begin
+                        expandsave;
+                        staticencl(this quantity);
+                     end;
+%+K                  if clf='p' then begin
+%+K                     if saveemitted(saveindex) then begin
+%+K                        warnLT(488); opi:=opi+1; !TEMP - ensure a_pro;
+%+K                     end
+%+K                     else begin !*** if SAVE then as normal proc., else: ;
+%+K                          outremote(curcall.ftag+instrefdisp);
+%+K                          goto EPRIPRO end;
+%+K                  end;
+                     outasscall(if opi=0 then Z_b_pro1 else Z_a_pro1);
+                     outpushcaddr(vcoaddr,ftag+prototypedisp);
+                     outasspar;
+                     if opi=0 then outcall(Z_b_pro2,0)
+                              else outcall(Z_a_pro2,1);
+%+K                  if clf='p' then opi:=opi-1; !TEMP;
+     EPRIPRO:     end IDCLI or IEXTR else
+
+                  if categ=char(IVIRT) then
+                  begin
+                     if lastopc=IDOT then ! Object reference on TOS;
+                     begin
+                        if asd>1 then ! Save required ;
+                        begin
+                           outpush(Z_tmp);
+                           outselect(Z_quant_pnt);
+                           outrupdate;
+                           outpop;
+                           expandsave;
+                           outprecall(if opi=0 then Z_b_vir_pro1
+                                               else Z_a_vir_pro1);
+                           outpush(Z_tmp);
+                           outselectv(Z_quant_pnt);
+                           outasspar;
+                        end else
+                        begin
+                           saveindex:=saveindex+1;
+                           saveemitted(saveindex):=false;
+                           outasscall(if opi=0 then Z_b_vir_pro1
+                                               else Z_a_vir_pro1);
+                        end;
+                     end remotely accessed else
+                     begin expandsave;
+                        outprecall(if opi=0 then Z_b_vir_pro1
+                                            else Z_a_vir_pro1);
+                        staticencl(this quantity);
+                        outasspar;
+                     end;
+
+                     outpushcint(virtno-1);
+                     outasspar;
+                     if opi=0 then outcall(Z_b_vir_pro2,0) else
+                     begin
+                        outpushcint(opi);  ! number of actuals ;
+                        outasspar;
+                        outcall(Z_a_vir_pro2,1);
+                     end;
+                  end IVIRT else
+
+                  begin ! Formal procedure: cannot be remotely accessed;
+                     expandsave;
+                     outprecall(if opi=0 then Z_b_fml_pro1
+                                         else Z_a_fml_pro1);
+                     get_PROQNT(this quantity,true !precall; );
+                     outasspar;
+                     if opi=0 then outcall(Z_b_fml_pro2,0) else
+                     begin
+                        outpushcint(opi);  ! number of actuals ;
+                        outasspar;
+                        outcall(Z_a_fml_pro2,1);
+                     end;
+                  end formal procedure;
+               end Normal Simula procedure else
+
+               if clf='I' then !Nothing to do; else
+
+               if clf='V' or!else; clf='W' then
+               begin
+                  if lastopc=IDOT then outremotev(ftag+quantdisp) else
+                  begin
+                     staticencl(this quantity);
+                     outremotev(ftag+quantdisp);
+                  end;
+                  if clf='W' then outremotev(ftag+indirectdisp);
+               end else
+
+               ! Routine procedure: ;
+               if lastopc=IDOT then
+               begin
+                  ! Remotely accessed: object reference on TOS ;
+                  if clf='M' and!then; asd>1 then
+                  begin
+                  ! Possible garbage collection and object reference is
+                   not the only element on the stack: save is required;
+                     outpush(Z_tmp);
+                     outselect(Z_quant_pnt);
+                     outrupdate;
+                     outpop;
+                     expandsave;
+                     outprecall(ftag+profiledisp);
+                     outpush(Z_tmp);
+                     outselectv(Z_quant_pnt);
+                     outasspar;
+                  end else
+                  begin
+                  ! Mark that save is not emitted, in order to make the
+                    corresponding expandrestore work correctly;
+                     saveindex:=saveindex+1;
+                     saveemitted(saveindex):=false;
+                     if clf='Y' then
+                     begin outremote(Z_filent_img); outderef end else
+                     if clf='Z' then outremotev(Z_filent_img);
+                     ! TOS is first extra parameter: ;
+                     outasscall(ftag+profiledisp);
+                  end;
+               end else
+               if lastopc=INOTY then !TEXT-VAR-DOT; ! mode REF on stack;
+               begin
+                  if clf='T' then outderef;
+                  outasscall(ftag+profiledisp);
+                  saveindex:=saveindex+1;
+                  saveemitted(saveindex):=false;
+               end else
+               if lastopc=INOTE then !TEXT-EXP-DOT; ! mode VAL on stack;
+               begin
+                  if clf='T' then curcall:-next;
+                  outasscall(curcall.ftag+profiledisp);
+                  saveindex:=saveindex+1;
+                  saveemitted(saveindex):=false;
+               end else
+               begin
+                  if clf='S' or!else; clf='M' then expandsave else
+                  begin
+                     saveindex:=saveindex+1;
+                     saveemitted(saveindex):=false;
+                  end;
+                  outprecall(ftag+profiledisp);
+
+                  if clf='L' or!else; clf='E' or!else; clf='M' or!else;
+                     clf='Y' or!else; clf='Z' or!else; clf='O'
+                  then begin
+                     ! Extra first parameter ;
+                     staticencl(this quantity);
+                     if clf='Y' then
+                     begin outremote(Z_filent_img); outderef; end else
+                     if clf='Z' then outremotev(Z_filent_img);
+                     outasspar;
+                  end;
+               end;
+            end kind=IPROC;
+         end inspection of curcall;
+         goto NXT;
+
+LIFRMP:  ! Start of checked actual parameter to formal value or
+                 default. Formal parameter in opq  (WEAK-PAR);
+         if curpar=/=none then termpar; ! Terminates previous parameter;
+         curpar:-opq;! Start transfer of specified parameter opq
+                       to procedure, class or prefixed block ;
+         clf:=if curpar is extquantity
+              then curpar qua extquantity.classific else ' ';
+         if (clf<>'P' and!then; clf<>'Q' and!then;
+             clf<>'F' and!then; clf<>'!1!')
+%+K         or!else; (rank(curpar.encl.kind)=IPROC and curpar.encl.thisused)
+         then begin outdup; outremote(curpar.ftag) end;
+         goto NXT;
+
+
+LIDCLS:  ! Start of actual parameter consisting of a single
+                 identifier or const, to formal name or unspec (SINGLE-STRONG) ;
+         procLIDCLS; goto NXT;
+
+LIDCLI:  ! Start of actual parameter consisting of more than a
+                 single, to formal name or unspec  (EXP-STRONG) ;
+               ! We know that thunk is required ??? ;
+         procLIDCLI; goto NXT;
+
+LIRGPA:  ! Termination of actual expression  in case of EXP-STRONG
+                 and expression not terminated by itself (EXP-ACTUAL) ;
+         procLIRGPA; goto NXT;
+
+LIEPRM:  ! End of checked actual parameter list to  class or
+                 procedure (CH-PARAM-END) ;
+         if curcall.kind=char(ICLAS) then
+         begin if curpar=/=none then
+               begin ! Terminate transfer of last parameter ;
+                     termpar; outasscall(Z_i_cla1);
+                     outcall(Z_i_cla2,0);
+               end;
+               expandrestore; outpush(Z_tmp);
+               outselectv(Z_quant_pnt); outeval;
+         end ICLAS else
+         begin ! curcall.kind=IPROC ;
+               if curpar=/=none then termpar;
+               termspecprocall;  ! contains RESTORE ;
+         end IPROC ;
+         popcall; goto NXT;
+
+LIUPLS:  ! End of unchecked parameter list (UCH-PARAM-END) ;
+         procLIUPLS; goto NXT;
+
+LIUMNS:  ! Unary minus, type in opt;
+LINOT:   ! Logical not;
+         outunary(opc); goto NXT;
+
+LIIS:    ! Is-relation, opq is given class;
+         outdup; outpushc(vonone); outif(INE); outremotev(Z_entity_pp);
+         outendif; outpushcaddr(vcoaddr,opq.ftag+prototypedisp);
+         outcompare(IEQ); goto NXT;
+
+LIIN:    ! In-relation, opq is given class;
+         outdup; outpushc(vonone); outif(INE); outremotev(Z_entity_pp);
+         outdup; outremotev(Z_cpptp_plv); outpushcint(opq.plev);
+         outif(IGT); outremote(Z_cpptp_pre); outpushcint(opq.plev);
+         outindexv; outendif; outendif;
+         outpushcaddr(vcoaddr,opq.ftag+prototypedisp); outcompare(IEQ);
+         goto NXT;
+
+LIQUA:   ! Explicit qua, qualifying class in opq. If opq==none
+               then qualification by superclass resulting in nonetest;
+         if NoneCheck then outnonetest(vonone,IQUA);
+         if opq =/= none and!then; QuaCheck then quatest(opq);
+         goto NXT;
+
+LIPOWE:
+         procLIPOWE; goto NXT;
+
+LIEQ: LILE: LILT: LINE: LIGE: LIGT: ! Value relations,
+                                            type in opt;
+         if opt=ITEXT then
+         begin if opi=2 then ! prefix operator; outprecall(Z_txtrel1) else
+               if opi=1 then ! infix operator; outasspar else
+               begin ! postfix operator ;
+                     outasspar; outpushcint(opc-ILT+1);  ! (txtrelcode(opc));
+                     outasspar; outcall(Z_txtrel2,1);
+               end;
+         end else
+         ! opt <> ITEXT,
+           code generation only for postfix operator (opi=0/-1/-2/-3) ;
+         if opi=0 then outcompare(opc) else
+         if opi=-1 then outif(opc) else   ! is part of if-expression ;
+         if opi=-2 then             ! is part of if-/while-statement ;
+         begin getnewindex; pushjump(curindex);
+               outfjumpif(invert(opc),curindex); outempty;
+         end else
+         if opi=-3 then             ! is part of while-forelement ;
+         begin getnewindex;
+               ! if complexfor then START-index  else FINISH-index  ;
+               pushjump(curindex);
+               outfjumpif(if complexfor then opc else invert(opc),curindex);
+               outempty;
+         end;
+         goto NXT;
+
+LIRFNE: LIRFEQ: ! Ref relations, type in opt;
+         if opt=ITEXT then begin
+               if opi>2 then begin ! postfix: compare to notext;
+                  opi:=opi-10;     !TEMP - because of  lastopi;
+                  outpush(Z_txttmp); outrupdate; outpop;
+                  outpush(Z_txttmp); outselectv(Z_txtqnt_ent);
+                  outpushc(vonone);
+                  outcompare(if opc=IRFNE then INE else IEQ);
+               end
+          else if opi=2 then ! prefix operator; outprecall(Z_trfrel1)
+          else if opi=1 then ! infix operator; outasspar
+               else begin    ! postfix operator ;
+                  outasspar;
+                  outpushc(if opc=IRFNE then vtrue else vfalse);
+                  outasspar;
+                  outcall(Z_trfrel2,1);
+               end;
+         end
+
+%        opt<>ITEXT: code generated only for postfix operator (opi=0/-1/-2/-3)
+    else if opi= 0 then outcompare(if opc=IRFNE then INE else IEQ)
+    else if opi=-1 then      outif(if opc=IRFNE then INE else IEQ)
+    else if opi=-2 then begin          ! is part of if-/while-statement ;
+            getnewindex; pushjump(curindex);
+            outfjumpif(if opc=IRFNE then IEQ else INE,curindex);
+                       ! Relation is inverted ;
+            outempty;
+         end else
+         if opi=-3 then begin          ! is part of while-forelement ;
+            getnewindex;
+            ! if complexfor then START-index  else FINISH-index  ;
+            pushjump(curindex);
+            outfjumpif(if complexfor then
+                            (if opc=IRFNE then INE else IEQ)
+                       else (if opc=IRFNE then IEQ else INE),curindex);
+            outempty;
+         end;
+         goto NXT;
+
+LIPRHI:  ! Convert in connection with assignment;
+LIPRTC:  ! Convert top of stack to type opt;
+         outconvert(opt); goto NXT;
+
+LIASSG:  ! ASSIGN, type in opt;
+         if opi=0 then outassign  ! Final assignment;
+         else begin outeval; outupdate end;
+         goto NXT;
+
+LISIMU:  ! SIMPLE-ASS opq opt;
+         staticencl(opq); outremote(opq.ftag+quantdisp); outrupdate;
+         if opi=0 then outpop; ! Final assignment;
+         goto NXT;
+
+LINAME:  ! ASS-TO-NAME, form par in opq;
+         addrPARQNT(opq,false);
+         outselectv(Z_parqnt_sem); outpushc(vtrue);
+         outif(IEQ);
+           addrPARQNT(opq,false); outselectv(Z_parqnt_ent);
+           addrPARQNT(opq,false); outselectv(Z_parqnt_fld);
+           outlocate; outrefer(typetag(rank(opq.type))); outrupdate;
+         outelse;
+           outdup; outasscall(e_fnp_ass1(rank(opq.type)));
+           addrPARQNT( opq,true); outasspar;
+           outcall(e_fnp_ass2(rank(opq.type)),0);
+         outendif;
+         if opi=0 then outpop;  ! Final asignment ;
+         goto NXT;
+
+LIDCLC:  ! RESULT-ASS -
+                 Simple assignment to the result variable of procedure
+                 opq (is head!). opi=0: final assign, opi=1:sub assign;
+         outpushv(Z_curins);
+         st_rblev:=crtblev-opq.descr.rtblev;
+         while st_rblev>0 do begin
+               outremotev(Z_entity_sl); st_rblev:=st_rblev-1 end;
+         outremote(resulttag(rank(opq.type)));
+         outrupdate;
+         if opi=0 then outpop;
+         goto NXT;
+
+LITEXT:  ! END-EXPR-TARGET -
+                 infix := in case of text value assignment;
+               ! opt=INOTE/INOTY ;
+         if opi=1 then
+         begin if opt=INOTY then ! Target is variable ;
+               outderef; outdup; ! A sub-assignment ;
+         end;
+         if opt=INOTY then ! Target is variable ;
+         begin if opi <> 1 then outderef;
+               outasscall(Z_txtass_at1);
+         end else          ! Target is general expression ;
+            outasscall(Z_txtass_tm1);
+         goto NXT;
+
+LIVALU:  ! TEXT-VAL-ASS -
+                 postfix := in case of text value assignment;
+               ! opt=INOTE/INOTY;
+         outasspar;
+         outcall(if opt=INOTY then Z_txtass_at2 else Z_txtass_tm2,0);
+         if asd>0 and!then; opt=INOTY then outrefer(Z_txtqnt);
+         goto NXT;
+
+LIASGE:  ! End of assignment statement;
+         outempty; goto NXT;
+
+LIREF:   ! Implicit qua, qualification in opq;
+         if QuaCheck then begin
+            outdup; outpushc(vonone);
+            outif(INE); ! no testing if value==none ;
+            quatest(opq); outendif end;
+         goto NXT;
+
+
+LIBLKB:  ! (BLOCK) Begin of block,pref. block, procedure or class;
+               ! If procedure then opq is body qnt. else qnt.;
+% UT     subblockno(opq.descr.blev):=0;
+% UT     if simob_descr then
+% UT     begin
+% UT        if opq.kind=char(IBLKB) or opq.kind=char(IBPRF) then
+% UT        generate_block_descr(opq,opq.ftag+prototypedisp,-1);
+% UT
+% UT        set_encl_block_descr(if opq.kind=char(IPROC) and opq.plev=1
+% UT                             then opq.prefqual else opq    );
+% UT     end;
+
+         ! ********** Generate Record Descriptors ********* ;
+         if opq.kind <> char(ICLAS) then outdescriptors(opq);
+
+         if opq.kind=char(IPROC) then
+         begin
+            outbseg;
+            ! opq is body, get head:  ;
+            opq:-opq.prefqual;
+!  %+K         if opq.descr.thisused then                    ;
+!  %+K         outlabeldef(opq.ftag+quickstmtdisp) else      ;
+            outlabeldef(opq.ftag+startdisp);
+         end else
+         if opq.kind=char(ICLAS) then
+         begin
+               outbseg;
+               outlabeldef(opq.ftag+dcldisp);
+         end else
+         if opq.kind=char(IBLKB) then
+         begin
+            outprecall(Z_b_sub1);
+            outpushcaddr(vcoaddr,opq.ftag+prototypedisp);
+            outasspar;
+            outcall(Z_b_sub2,0);
+% UT        subblockno(opq.descr.blev-1):=
+% UT        subblockno(opq.descr.blev-1)+1;
+         end else
+         if opq.kind=char(IBPRF) then
+         begin
+% UT        subblockno(opq.descr.blev-1):=
+% UT        subblockno(opq.descr.blev-1)+1;
+            pushcall(opq);
+            ! Code generation deferred until PARAM-BEGIN ;
+         end IBPRF else
+            StopScode_2(598,opq.line); !LIBLKB;
+         goto NXT;
+
+LIBEGI:  ! (END-PREF-PAR) End of actual parameters to pref. block;
+         if curpar=/=none then
+         begin ! There has been parameters, terminate trans of the last;
+               termpar; outasscall(Z_i_pre1); outcall(Z_i_pre2,0);
+         end;
+         outlabeldef(curcall.ftag+dcldisp);
+         popcall; goto NXT;
+
+LIDCLE:  ! End of declarations, opq has in which block;
+%+K      gen_quick_instances(opq);
+         if cblev=0 then goto NXT; !outermost level;
+         if opq.kind=char(ICLAS) or!else; opq.kind=char(IBPRF) then
+         begin if opq.kind=char(ICLAS) then access_subclass(Z_cpptp_dcl);
+               if opq.plev>0 then
+               begin qqq:-opq.prefqual; while qqq.plev>0 do qqq:-qqq.prefqual;
+                     outpushcaddr(vcpaddr,qqq.ftag+stmdisp); outgoto;
+               end;
+               outlabeldef(opq.ftag+stmdisp);
+         end ICLAS or IBPRF;
+         goto NXT;
+
+LIINNE:  ! Inner in class and opq gives class;
+LIECWI:  ! End of class body without inner;
+         access_subclass(Z_cpptp_stm);
+         outlabeldef(opq.ftag+cnt_inrdisp);
+         if opc=IINNE then goto NXT;
+
+LIEND:   ! End of block, prefixed block, class or procedure;
+         if opq.kind=char(ICLAS) then
+         begin
+            if opq.plev=0 then
+            begin
+               outprecall(Z_e_cla_pre1);
+               outcall(Z_e_cla_pre2,0);
+            end else
+            begin
+               outpushcaddr(vcpaddr,opq.prefqual.ftag+cnt_inrdisp);
+               outgoto;
+            end;
+            outeseg; outempty;
+         end else
+
+
+         if opq.kind=char(IPROC) then begin
+            if ReuseProc !*** test that activation record is TOS ***;
+%+K            and not opq.prefqual.descr.thisused     !- but not quick!!!;
+            then begin outprecall(Z_e_pro1); outcall(Z_e_pro2,0) end
+            else begin
+               outpush(Z_curins);
+               outdup;
+               if opq.type <> char(INOTY) then begin
+                  outpush(Z_tmp);
+                  outselect(Z_quant_pnt);
+                  outrupdate;
+               end;
+               outremotev(Z_instance_d);
+               outupdate;
+               outremotev(Z_instance_l);
+               outgoto;
+            end ***no reuse***;
+            outeseg; outempty;   !*** corr 26/6 87 pje (outside "no reuse") **;
+         end ***IPROC*** else
+
+         if opq.kind=char(IBLKB) then  !*** corr 29/9 87 pje (reuse impl.) ***;
+         begin
+            if ReuseProc !*** test that activation record is TOS ***;
+            then begin outprecall(Z_e_pro1); outcall(Z_e_pro2,0) end
+            else begin
+                 outpush(Z_curins);
+                 outdup;
+                 outremotev(Z_instance_d);
+                 outassign;
+            end;
+            outlabeldef(opq.ftag+cntdisp);
+         end IBLKB else
+
+         if opq.kind=char(IBPRF) then
+         begin
+            outpushcaddr(vcpaddr,opq.prefqual.ftag+cnt_inrdisp);
+            outgoto;
+            outlabeldef(opq.ftag+cnt_inrdisp);
+         end else
+
+            StopScode_2(599,opq.line); !* LIEND *;
+
+         if opq.kind <> char(ICLAS) then
+         begin
+            outprototypes(opq);
+         end else
+         if cblev=2 !sepcomplev+1; and!then; separatecomp
+         then outprototypes(opq);
+
+         if lastusedtag>maxnumoftags then maxnumoftags:=lastusedtag;
+         if opq.kind <> char(ICLAS) then begin
+            if Loption then
+            begin
+               if lastusedtag>maxusedtag then
+               begin maxusedtag:=lastusedtag;
+                     outimage; outtext(" ** Highest tag:");
+                     outint(maxusedtag,5); outimage;
+               end;
+            end;
+
+%+K         if (if opq.kind=char(IPROC) then not opq.descr.thisused else true)
+%+K         then begin
+               if lastidenttag > opq.ftag-1 then !no delete ; else
+         !     lastusedtag:=lastidenttag else  ;
+
+               begin
+                  if simob_level > 0 and!then;
+                     (opq.kind=char(IBPRF) or!else; opq.kind=char(IBLKB))
+                  then  lastusedtag:=opq.ftag+1
+                  else  lastusedtag:=opq.ftag-1;
+
+                  outdelete(lastusedtag+1);
+               end;
+%+K         end;
+         end;
+         goto NXT;
+
+LIWSTB:  ! While in while-statement;
+         getnewindex; pushjump(curindex); outbdest(curindex); goto NXT;
+
+LIWHSE:  ! End of while-statement;
+         iii:=popjump; jjj:=popjump; outbjump(jjj); outfdest(iii);
+         goto NXT;
+
+LIWHDO:  ! Do in while-statement;
+LITHSB:  ! Then in if-statement;
+         if lastopi <> -2 or!else; lastopt=ITEXT then
+         begin outpushc(vfalse); getnewindex; pushjump(curindex);
+               outfjumpif(IEQ,curindex); outempty;
+         end;
+         ! lastopi=-2 and lastopt<>ITEXT means that the expression
+           preceding THEN/DO was a relational expression that has been
+           coded specially, see LIEQ:.... ;
+         goto NXT;
+
+LIELSB:  ! Else in if-statement;
+         getnewindex; outfjump(curindex);
+         jjj:=popjump; outfdest(jjj);
+         pushjump(curindex); goto NXT;
+
+LIIFSE:  ! End of if-statement;
+         iii:=popjump; outfdest(iii);
+         goto NXT;
+
+LIGOTO:  ! Goto in goto-statement;
+         ingotostmt:=true;
+         notinconditional:=true;
+         goto NXT;
+
+LIGOE:   ! End of goto-statement;
+         if generalgoto then
+         begin ! labelquant on the stack ;
+               outasscall(Z_e_goto1); outcall(Z_e_goto2,0);
+               generalgoto:=false;
+         end;
+         ingotostmt:=false; outempty; goto NXT;
+
+LIFOR:   ! FOR
+                 start of for statement. opq is qnt. with kind=IFORE;
+         forbrecord:-opq.descr;
+         if forbrecord.fornests <> 0 then
+         begin
+            complexfor:=true;
+            iii:=cblev; goto enterx;
+            ! Find the block where the for-return variable is allocated;
+            while forblock.kind=char(IINSP) do
+            begin
+               iii:=iii-1;
+              enterx:
+               forblock:-display(iii).declquant;
+               while forblock.kind=char(IFORE) do
+                     forblock:-forblock.prefqual;
+            end while;
+            if forblock.kind=char(IPROC) then
+            begin
+               forblock:-forblock.prefqual;
+            end if;
+            pushtag( firstfortag( forblock) + forbrecord.fornests - 1 );
+            ! Tag of PADDR variable for this complex-for nesting level;
+         end else
+             complexfor:=false;
+         pushjump(-1); ! Push a non-positive indicator on the jumpstack;
+         goto NXT;
+
+LIFASG:  ! FOR-VAL
+                 Value for-statement, cont.var. in opq;
+LIFDNO:  ! FOR-REF
+                 Reference for-statement, cont. var. in opq;
+LIBPRF:  ! FOR-FAST ;
+               ! For statement with one step-until element only, where
+                 stepexpr is a constant and untilexpr is a constant or
+                 a single, no-name identifier of simple kind;
+         contvar:-opq; conttype:=contvar.type;
+         if conttype=char(ISHOR) then conttype:=char(IINTG);
+         forelemstart; goto NXT;
+
+LIWHIL:  ! FOR-WHILE ;
+         forelemkind:='W';
+         if complexfor then outlabeldef(forretlabel)
+    else begin getnewindex; pushjump(curindex);    ! RET index ;
+               outbdest(curindex);
+         end;
+         goto NXT;
+
+LICL:   ! (UNTIL) , opt=untiltype;
+         forelemkind:='I';
+         untiltype:=char(if opt=ISHOR then IINTG else opt);
+%        contuntiltype:=mostfloating(untiltype,conttype);
+         contuntiltype:=if untiltype<conttype then conttype else untiltype;
+         if conttype <> contuntiltype then outconvert(rank(contuntiltype));
+         goto NXT;
+
+LISMCL: !  (STEP) , opt=steptype;
+         steptype:=char(if opt=ISHOR then IINTG else opt);
+%        contsteptype:=mostfloating(conttype,steptype);
+         contsteptype:=if conttype<steptype then steptype else conttype;
+%        testtype:=mostfloating(contuntiltype,contsteptype);
+         testtype:=if contuntiltype<contsteptype
+                   then contsteptype else contuntiltype;
+         if untiltype <> contuntiltype then outconvert(rank(contuntiltype));
+         outbinary(IMINU);
+         if contuntiltype <> testtype then outconvert(rank(testtype));
+         goto NXT;
+
+LISTEP:  ! FOR-STEP , type of step-expr in opt;
+         if steptype <> testtype then outconvert(rank(testtype));
+         outbinary(IMULT);
+         outpushsimc(zerostringindex,rank(testtype));
+         getnewindex; iii:=curindex;
+         ! if complexfor then STARTi- else START-index ;
+         outfjumpif(ILE,iii);
+         if complexfor then
+         begin
+            pushjump(iii);
+            getnewindex; pushjump(curindex); ! NEXTi index ;
+            outfjump(curindex);
+            outlabeldef(forretlabel);
+         end else
+         begin
+            getnewindex; pushjump(curindex); ! FINISH1 index ;
+            outfjump(curindex);
+            getnewindex; pushjump(curindex); ! RET index ;
+            outbdest(curindex);
+            pushjump(iii);
+         end;
+         goto NXT;
+
+LIUNTI:  ! FOR-UNTIL , untiltype in opt;
+         if steptype <> contsteptype then outconvert(rank(contsteptype));
+         outdup;
+         if conttype <> contsteptype then outconvert(rank(conttype));
+                                          ! Makes TOS 'less floating';
+         staticencl(contvar); outremotev(contvar.ftag+quantdisp);
+         outbinary(IPLUS); staticencl(contvar);
+         outremote(contvar.ftag+quantdisp); outrupdate;
+         if conttype <> contuntiltype then outconvert(rank(contuntiltype));
+         goto NXT;
+
+LIELME:  ! FOR-ELEM-COMMA ;
+         forelemend; forelemstart; goto NXT;
+
+LIDO:  ! FOR-DO ;
+          forelemend;
+          if complexfor then
+          begin
+             getnewindex; iii:=curindex;
+             ! FINISH index, not pushed until all START indices popped ;
+             outfjump(iii);
+             jjj:=popjump;
+             while jjj>0 do
+             begin
+                ! jjj is a START index;
+                outfdest(jjj);
+                jjj:=popjump;
+             end;
+             if jjj <> -1 then StopScode_1(600) else pushjump(-1);
+                ! jjj should be the non-positive marker pushed at LIFOR,
+                  and should remain on the stack ;
+             pushjump(iii);
+          end;
+          outdescriptors(display(cblev).declquant);
+             ! spec of labels local to for-body ;
+          goto NXT;
+
+LIFORE:  ! END-FOR ;
+         iii:=popjump;
+         if iii=-1 then !non-complex for, 'S' element: nothing to do ;
+               GiveMessage(linenr,1,errcat(489,490))
+    else begin
+            jjj:=popjump;
+            if jjj=-1 then
+            begin
+               ! complex for, iii is FINISH index ;
+               outpushv(Z_curins);
+               outremotev(tagstacktop);   ! Tag of PADDR variable ;
+               outgoto;
+               poptag;
+               outfdest(iii);
+            end else
+            begin
+               ! jjj<>-1: non-complex for, 'W' or 'I' element ;
+               ! iii= FINISH or FINISH2 index ;
+               ! jjj= RET index ;
+               outbjump(jjj); outfdest(iii);
+               iii:=popjump;
+               if iii <> -1 then ! 'W' element ;
+               begin
+                  outfdest(iii);
+                  if popjump <> -1 then StopScode_1(676);
+               end;
+            end;
+         end;
+         goto NXT;
+
+LICSPC:   ! STEP-FAST - sign of constant is NOT reflected in opi;
+         stepfastindex:=opi;
+         goto NXT;
+
+LIPSPC:   ! UNTIL-FAST - sign of constant is NOT reflected in opi;
+         if stepfastindex=zerostringindex then
+         begin warnLT(491);
+               ! Special case indicated on ffi-stack:    ;
+               curffi:-new ffi(none,0,0,none);
+         end else
+         begin
+            if opi <> 0 then  outpushsimc(opi,IINTG) !*** untilexpr is const;
+       else if opq=/=none then begin                 !*** untilexpr is ident;
+               if opq.kind <> char(IIDN) or opq.categ=char(INAME) then
+                  StopScode_1(679) ! untilfast ident wrong kind/categ;
+               else begin
+                  staticencl(opq);
+                  outremotev(opq.ftag+quantdisp);
+               end;
+            end else StopScode_1(680); ! No fast-until expression;
+
+            curffi:-new ffi(contvar,stepfastindex,opi,opq);
+                    ! Push on ffi-stack ;
+
+            getnewindex; pushjump(curindex); ! FINISH index ;
+            outfjumpif(if idname(stepfastindex).sub(1,1)="-" then ILT else IGT,
+                       curindex);
+         end;
+         getnewindex; pushjump(curindex); ! RET index ;
+         outbdest(curindex);
+         goto NXT;
+
+LIVSPC:  ! FOR-DO-FAST ;
+         forelemend;
+         outdescriptors(display(cblev).declquant);
+            ! spec of labels local to for-body ;
+         outempty; goto NXT;
+
+LICPRF:  ! END-FOR-FAST ;
+         inspect curffi do
+         begin if contvar==none then
+               begin ! special case with zero step: i.e. infinite loop;
+                     iii:=popjump;           ! RET index ;
+                     outbjump(iii);
+               end else begin
+                     outpushsimc(stepindex,IINTG);
+                     staticencl(contvar); outremotev(contvar.ftag+quantdisp);
+                     outbinary(IPLUS); staticencl(contvar);
+                     outremote(contvar.ftag+quantdisp); outrupdate;
+                     if untilindex<>0 then outpushsimc(untilindex,IINTG)
+                     else begin
+                           staticencl(untilopq);
+                           outremotev(untilopq.ftag+quantdisp);
+                     end;
+                     iii:=popjump; ! RET index ;
+                     outbjumpif(if idname(stepindex).sub(1,1)="-"
+                                then IGE else ILE, iii);
+                     iii:=popjump; ! FINISH index ;
+                     outfdest(iii);
+               end;
+               if popjump <> -1 then StopScode_1(681);
+               curffi:-prev; ! pop ffi-stack;
+         end inspect;
+         goto NXT;
+
+
+LIESTM:  ! End of proc. call or class gen. as statement;
+         if asd>0 then outpop;
+         outempty; goto NXT;
+
+LICONB:  ! The do in insp. without when, opq is connection copy;
+         getnewindex;     ! LO index ;
+         pushjump(curindex); pushtag(conpointtag(opq.descr));
+         inspectstart(curindex);  ! Including conditional jump to curindex
+                                    and update of connection pointer ;
+         outpop;
+         outdescriptors(display(cblev).declquant);
+            ! spec of labels local to the connection block ;
+         goto NXT;
+
+LIFWHN:  ! The first "when" in insp. , opq is connectcopy ;
+         getnewindex; iii:=curindex;         ! LO index ;
+         pushjump(iii);
+         getnewindex; pushjump(-curindex);   ! LEND1-index, not used yet;
+         getnewindex;                        ! LNEXT1-index;
+         pushjump(-curindex); pushtag(conpointtag(opq.descr));
+         inspectstart(iii);  ! Including conditional jump to iii, and
+                                update of connection pointer ;
+         whentest(curindex); ! uses value of opq ;
+         outdescriptors(display(cblev).declquant);
+            ! spec of labels local to the connection block ;
+         goto NXT;
+
+LIWHEN: ! When in insp. that is not the first, opq has connect-
+                copy of given class;
+         jjj:=popjump;              ! previous LNEXTi index (negative) ;
+         iii:=popjump;              ! previous LENDi index (negative) ;
+         pushjump(iii);             ! shall remain on stack ;
+         getnewindex; pushjump(-curindex); ! next LENDi index, not used yet;
+         resetconpoint; outfjump(-iii); outfdestKEEP(-jjj);
+         getnewindex; pushjump(-curindex);  ! next LNEXTi index ;
+         outpushv(Z_curins); outremotev(tagstacktop);
+         whentest(curindex);         ! Uses values of opq ;
+         outdescriptors(display(cblev).declquant);
+            ! spec of labels local to the connection block ;
+         goto NXT;
+
+LIOTHW:  ! Otherwise in insp. statement;
+         resetconpoint; iii:=popjump;
+         if iii<0 then
+         begin ! There has been when-clauses,-iii is the last LNEXTi-index;
+               jjj:=popjump;       ! Last LENDi index (negative) ;
+               pushjump(jjj);      ! shall remain on stack;
+               outfjump(-jjj); outfdestKEEP(-iii); resetconpoint;
+               ! The LO index is the next positive index on jumpstack: ;
+               xxx:=curjump; while jumpstack(xxx)<0 do xxx:=xxx-1;
+               outfdestKEEP(jumpstack(xxx));
+                  ! LO index not released or popped until LIOTHE ;
+         end else
+         begin ! No when clauses, iii is LO index ;
+               getnewindex;     ! LE index;
+               outfjump(curindex); pushjump(curindex);
+               outfdest(iii);
+         end;
+         poptag; goto NXT;
+
+LIOTHE:  ! End of otherwise clause of inspect statement;
+         iii:=popjump;
+         if iii<0 then
+         begin ! There has been when-clauses ;
+               while iii<0 do  ! fdest for all LENDi indices on stack ;
+               begin outfdest(-iii); iii:=popjump end;
+               ! iii = LO index. Has been kept on jumpstack as a marker,
+                 but can now be released:  ;
+               indexused(iii):=false;
+         end else
+         begin ! No when clauses, iii is LE index ;
+               outfdest(iii);
+         end;
+         goto NXT;
+
+LICONE:  ! End of insp. statement without otherwise;
+         resetconpoint; iii:=popjump;
+         if iii<0 then
+         begin ! There has been when clauses,-iii is the last LNEXTi-index;
+               jjj:=popjump;       ! Last LENDi-index (negative);
+               outfjump(-jjj); outfdestKEEP(-iii); resetconpoint;
+               while jjj<0 do  ! fdest for all LENDi indices on stack ;
+               begin outfdest(-jjj); jjj:=popjump end;
+               outfdest(jjj); ! jjj is LO index ;
+         end else begin outfdest(iii); ! LO index ; end;
+         poptag; goto NXT;
+
+LISSWB:! Setswitch, first in ssnuma and second in opi.       ;
+      if ssnuma=987 then outinfo(opi) else outsetswitch(ssnuma,opi);
+      goto dummynext;
+
+LILINE: ! New line number in opi;
+      if inswitchdecl then !nothing; else
+      if asd=0 then outline(opi) else waitingline:=opi;
+      goto dummynext;
+
+LIEOP:! End of program;
+      ! Generation of 'module_info' ;
+      if simob_descr then
+      begin if separatecomp then
+            begin ref(quantity) q;
+                  q:-display(1 !sepcomplev;).fpar;
+                  while q.categ=char(IEXTR) do q:-q.next; !Passing ext-head;
+                  ! q is the sep. compiled proc/class;
+                  moduleinfogeneration(q.ident, moduleident,
+                          if recomp then oldcheckcode else checkcode);
+            end else moduleinfogeneration(0,notext,notext);
+      end;
+
+      if separatecomp then outendmodule else
+      begin outprecall(Z_e_prog1);
+            outpushcint(0); ! Termcode=normal termination;
+            outasspar; outpushv(Z_nostring); ! No message ;
+            outasspar; outcall(Z_e_prog2,0)
+      end;
+      outendprogram;
+      if termstatus<'4' then termstatus:='0';
+      ENDCOMP;
+
+end of codegenerator;
+
+end SCODERMAIN;

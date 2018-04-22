@@ -1,0 +1,949 @@
+ Module FORM("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,STRG,CENT,ARR;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3, Norway                                          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---     F o r m a l    N a m e    P a r a m e t e r s    a n d      ---
+       ---                                                                 ---
+       ---        P a r a m e t e r    T r a n s m i s s i o n   to        ---
+       ---                                                                 ---
+       ---     F o r m a l    or    V i r t u a l    P r o c e d u r e     ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+%page
+ const infix(ptp) VAL_THK_PTP =
+ record:ptp(pnt_vec=none,xpp=ref(THK_XPP),lng=size(thunk));
+
+ const infix(ptp) ADR_THK_PTP =
+ record:ptp(pnt_vec=ref(ADR_THK_VEC),xpp=ref(THK_XPP),lng=size(thunk));
+
+ const infix(pntvec:1) ADR_THK_VEC =
+ record:pntvec(npnt=1,pnt=(field(thunk.val.ins)));
+
+ const infix(ptp) ADR_TXT_PTP =
+ record:ptp(pnt_vec=ref(ADR_TXT_VEC),xpp=ref(THK_XPP),lng=size(thunk));
+
+ const infix(pntvec:1) ADR_TXT_VEC =
+ record:pntvec(npnt=1,pnt=(field(thunk.val.txt.ent)));
+
+ const infix(extptp) THK_XPP =
+ record:extptp(idt=ref(THK_IDT),atr_vec=none,blk_typ=BLK_THK);
+
+ const infix(identifier:5) THK_IDT =
+ record:identifier(ncha=5,cha=('T','H','U','N','K'));
+
+%page     
+ Routine AB_THK;
+ import ref(instance)  sl;   --  static link
+        ref(ptp) pp;         --  the thunk prototype
+        label pad;           --  start of thunk code
+        boolean fp_is_smp;   --  is formal of simple kind?
+ export label psc;           --  start thunk execution here
+ begin ref(thunk) thk;       --  to storage area being allocated.
+       ---  Check that the save entity allocation invariant still holds!!
+       if bio.pool_nxt > bio.pool_lim                           ---- CORR
+       then GARB(bio.pool_nxt,nosize,name(sl)) endif;           ---- CORR
+       if bio.thk_lst <> none
+       then --  Remove the first one from the free list.
+            thk:=bio.thk_lst; bio.thk_lst:=bio.thk_lst.dl;
+            --  If it is a thunk for a left hand side, or if it is a thunk
+            --  for a text with attribute access, make sure that the garbage
+            --  collector won't follow any old and invalid reference values.
+            if pp=ref(ADR_THK_PTP) then thk.val.ins:=none;
+            elsif pp=ref(ADR_TXT_PTP) then thk.val.txt.ent:=none endif;
+       else ALLOC(%thk%,%size(thunk)%,%sl%); thk.sort:=S_THK endif;
+       repeat while sl.sort=S_THK do sl:=sl.sl endrepeat;
+       thk.sl:=sl; thk.pp:=pp; thk.dl:=curins;
+       thk.fp_is_smp:=fp_is_smp; curins:=thk; psc:=pad;
+       if bio.trc then curins.lsc:=pad; TRC_BEG endif;
+ end;
+
+
+ Visible routine E_THK; exit label psc;
+ begin ref(thunk) thk;
+       if bio.trc then curins.lsc:=psc; TRC_END endif;
+       thk:=curins; curins:=curins.dl;
+       if thk.pp = ref(ADR_THK_PTP)
+       then -- The thunk shall be inserted in the dynamic chain of its caller.
+            -- There may however be a save entity allocated for the call on
+            -- this thunk. That save entity is then found immediately below
+            -- the caller now. No other save entity can occur just below the
+            -- caller. Since such a save entity will be used in a restore
+            -- immediately after this thunk finishes, the thunk must be
+            -- inserted below it.
+            if curins.dl.sort = S_SAV
+            then thk.dl:=curins.dl.dl; curins.dl.dl:=thk;
+            else thk.dl:=curins.dl; curins.dl:=thk endif;
+            thk.lsc:=nowhere;     --  Because may enter operating chain.
+            thk.sl:=none;         --  Because garbage collection may occur.
+       else -- The thunk value is accessed immediately after the thunk finishes
+            -- its execution. Thus the thunk can be inserted in the free list.
+            -- Note that even if it is inserted in the free list it is not free
+            -- to be used by others until its result has been accessed, but we
+            -- know that the "next operation" will be to access its result (and
+            -- then the order of the operations does not matter).
+            thk.dl:=bio.thk_lst; bio.thk_lst:=thk;
+       endif;
+       psc:=curins.lsc;
+ end;
+
+
+ Visible routine MAKE_VIR_LAB;
+ import ref(instance) sl; range(0:MAX_VIR) vir_ind;
+ export infix(labqnt) lab;
+ begin lab.pad:=sl.pp qua ref(cla_pre_ptp).vir_vec.vir(vir_ind).pad;
+       if lab.pad = nowhere then ERROR(ENO_VIR_1) endif;   --  No match?
+       lab.sl:=sl;         --  The label must be local to the class.
+       lab.clv:=0;         --  The label must be on connection level zero.
+ end;
+
+ Visible routine MAKE_VIR_PRO;
+ import ref(instance) sl; range(0:MAX_VIR) vir_ind;
+ export infix(proqnt) pro;
+ begin infix(virdes) vir;   --  Local copy here for efficiency reasons.
+       vir:=sl.pp qua ref(cla_pre_ptp).vir_vec.vir(vir_ind);
+       if vir.ppp = none then ERROR(ENO_VIR_1) endif;      --  No match?
+       pro.ppp:=vir.ppp; pro.qal:=vir.qal; pro.sl:=sl;
+ end;
+
+ Visible routine MAKE_VIR_SWT;
+ import ref(instance) sl; range(0:MAX_VIR) vir_ind;
+ export infix(swtqnt) swt;
+ begin swt.des:=sl.pp qua ref(cla_pre_ptp).vir_vec.vir(vir_ind).des;
+       if swt.des = none then ERROR(ENO_VIR_1) endif;      --  No match?
+       swt.sl:=sl;         --  The switch must be local to the class.
+ end;
+
+ Visible routine B_SWT_TO_LAB;
+ import integer ind;               --  The index;
+        infix(swtqnt) swt;         --  The switch.
+ exit label psc;
+ begin infix(swtelt) elt;
+       if (ind <= 0)  or (ind > swt.des.nelt) then ERROR(ENO_SWT_1) endif;
+       elt:=swt.des.elt(ind);
+       if elt.thk
+       then curins.lsc:=psc;
+            ---  Allocate a thunk instance and prepare its initiation.
+            psc:=AB_THK(swt.sl,ref(VAL_THK_PTP),elt.pad,false);
+       else ---  Check that the save entity allocation invariant still holds!!
+            if bio.pool_nxt > bio.pool_lim                     ---- CORR
+            then GARB(bio.pool_nxt,nosize,name(bio)) endif;    ---- CORR
+       endif;
+ end;
+
+
+ Visible routine E_SWT_TO_LAB;
+ import integer ind;               --  The index;
+        infix(swtqnt) swt;         --  The switch.
+ export infix(labqnt) lab;
+ begin infix(swtelt) elt; range(0:MAX_RBL) rbl; ref(instance) sl;
+       elt:=swt.des.elt(ind);
+       if elt.thk
+       then ---  Pick up the label evaluated by the thunk instance.
+            lab:=tmp.pnt qua ref(thunk).val.lab;
+       elsif elt.pad <> nowhere
+       then ---  It must be a directly visible local or global label.
+            sl :=swt.sl; rbl:=elt.rbl;
+            repeat while rbl > 0 do sl:=sl.sl; rbl:=rbl-1 endrepeat;
+            lab.sl:=sl; lab.pad:=elt.pad; lab.clv:=elt.clv;
+       else ---  It must be a directly visible parameter called by reference.
+            sl :=swt.sl; rbl:=elt.rbl;
+            repeat while rbl > 0 do sl:=sl.sl; rbl:=rbl-1 endrepeat;
+            lab :=var((sl + elt.fld) qua name(infix(labqnt)));
+       endif;
+ end;
+%title ***  Evaluate name parameter --> LHS destination  ***
+
+ Visible routine B_FNP_ASS;
+ import name(infix(parqnt)) fnp;         --  Parameter's address
+ exit label psc;
+ begin curins.lsc:= psc;
+       psc:= AB_THK(var(fnp).ent qua ref(instance),ref(ADR_THK_PTP),
+                     if var(fnp).ap.type = T_REF
+                     then var(fnp).ap qua ref(refthkpardes).pad
+                     else var(fnp).ap qua ref(thkpardes).pad,true);
+ end;
+
+
+ Routine FNP_ASS_ADR;
+ import name(infix(parqnt)) fnp;  --  parameter quantity address
+        range(0:MAX_ENO) eno;     --  error number
+ export name() adr;               --  actual parameter's address
+ begin ref(thunk) thk;            --  To the executed thunk instance.
+       ---  Check that the actual parameter denotes a variable.
+       case 0:MAX_PAR (var(fnp).ap.code)
+       when PAR_QNT_ASS: adr:= var(fnp).ent + var(fnp).fld;
+       when PAR_THK_ASS:
+            ---  Unchain the thunk instance and insert it in the free list.
+            thk:= curins.dl; curins.dl:= thk.dl;
+            thk.dl:= bio.thk_lst; bio.thk_lst:= thk;
+            adr:= thk.val.ins + thk.val.fld;
+       otherwise ERROR(eno) endcase;
+ end;
+
+
+ Visible routine E_FNP_ASS_BOO;
+ import boolean f_rhs;               --  right hand side value
+        name(infix(parqnt)) fnp;     --  parameter quantity address
+ begin var(FNP_ASS_ADR(fnp,ENO_FNP_1) qua name(boolean)):= f_rhs; end;
+
+ Visible routine E_FNP_ASS_CHA;
+ import character f_rhs;             --  right hand side value
+        name(infix(parqnt)) fnp;     --  parameter quantity address
+ begin var(FNP_ASS_ADR(fnp,ENO_FNP_1) qua name(character)):= f_rhs; end;
+
+
+ Macro E_FNP_ASS_CNV(0);
+ begin name() adr;          --  actual parameter's address
+       adr:= FNP_ASS_ADR(fnp,ENO_FNP_1);
+       ---  We know that the actual parameter is a simple variable.
+       ---  Convert from formal type to actual type during the assignment.
+       case T_SIN:T_LRL (var(fnp).ap.type)
+       when T_SIN: var(adr qua name(infix(quant))).sin:=f_rhs qua short integer;
+       when T_INT: var(adr qua name(integer))       := f_rhs qua integer;
+       when T_REA: var(adr qua name(real))          := f_rhs qua real;
+       when T_LRL: var(adr qua name(long real))     := f_rhs qua long real;
+       otherwise IERR("E_FNP_ASS_CNV") endcase;
+ endmacro;
+
+
+ Visible routine E_FNP_ASS_SIN;
+ import short integer f_rhs; -- right hand side, converted to formal type
+        name(infix(parqnt)) fnp; --  parameter quantity address
+ begin E_FNP_ASS_CNV(); end;
+
+
+ Visible routine E_FNP_ASS_INT;
+ import integer f_rhs;    --  right hand side , converted to formal type
+        name(infix(parqnt)) fnp; --  parameter quantity address
+ begin E_FNP_ASS_CNV(); end;
+
+
+ Visible routine E_FNP_ASS_REA;
+ import real f_rhs;    --  right hand side , converted to formal type
+        name(infix(parqnt)) fnp; --  parameter quantity address
+ begin E_FNP_ASS_CNV(); end;
+
+
+ Visible routine E_FNP_ASS_LRL;
+ import long real f_rhs;    --  right hand side , converted to formal type
+        name(infix(parqnt)) fnp; --  parameter quantity address
+ begin E_FNP_ASS_CNV(); end;
+
+
+ Visible routine E_FNP_ASS_REF;
+ import ref(instance) f_rhs; --  right hand side , qualified as formal type
+        name(infix(parqnt)) fnp; --  parameter quantity address
+ begin ---  Check that the right hand side object is subordinate to
+       ---  the actual parameter, which denotes a ref-variable.
+       if f_rhs <> none
+       then FNP_CHK_QAL(var(fnp).ap qua ref(refpardes).qal,
+                       f_rhs.pp qua ref(cla_pre_ptp),ENO_FNP_5);
+       endif;
+       var(FNP_ASS_ADR(fnp,ENO_FNP_1) qua name(ref(instance))):= f_rhs;
+ end;
+
+
+ Visible routine E_FNP_ASS_TXT_REF;
+ import infix(txtqnt) f_rhs;       -- right hand side value
+        name(infix(parqnt)) fnp;   --  parameter quantity address
+ begin var(FNP_ASS_ADR(fnp,ENO_FNP_1) qua name(infix(txtqnt))):= f_rhs; end;
+
+%title ***  Evaluate name parameter --> value  ***
+ Visible routine B_FNP_ACC;
+ import name(infix(parqnt)) fnp;      --  Parameter's address
+ exit label psc;
+ begin ref(pardes) ap;                --  Actual parameter's descriptor
+       label pad;                     --  start of thunk code
+       boolean fp_is_smp;             --  is formal of simple kind
+       ap:= var(fnp).ap;              --  For fast execution.
+       if ((ap.code = PAR_THK_NAS) or (ap.code = PAR_THK_ASS))
+       then curins.lsc:= psc;
+            if ap.type = T_REF then pad:=ap qua ref(refthkpardes).pad
+            else pad:=ap qua ref(thkpardes).pad endif;
+            if var(fnp).fp = none then fp_is_smp:=true            ---   T E M P
+            else                                                  ---   T E M P
+                 fp_is_smp:=var(fnp).fp.kind = K_SMP;
+            endif;                                                ---   T E M P
+
+            psc:= AB_THK(var(fnp).ent,ref(VAL_THK_PTP),pad,fp_is_smp);
+       else ---  Check that the save entity allocation invariant still holds!!
+            if bio.pool_nxt > bio.pool_lim                      ---- CORR
+            then GARB(bio.pool_nxt,nosize,name(bio)) endif;     ---- CORR
+       endif;
+ end;
+
+
+ Visible routine FNP_ACC_ADR;
+ import name(infix(parqnt)) fnp;  --  parameter quantity address
+ export name() adr;               --  actual parameter's address
+ begin ref(pardes)   ap;          --  Local copy here for efficiency.
+       ap:= var(fnp).ap;
+       case 0:MAX_PAR (ap.code)
+       when PAR_QNT_LIT:
+            case 0:MAX_TYPE (ap.type)
+            when T_BOO:  adr:= name(ap qua ref(litpardes).l_boo);
+            when T_CHA:  adr:= name(ap qua ref(litpardes).l_cha);
+            when T_SIN:  adr:= name(ap qua ref(litpardes).l_sin);
+            when T_INT:  adr:= name(ap qua ref(litpardes).l_int);
+            when T_REA:  adr:= name(ap qua ref(litpardes).l_rea);
+            when T_LRL:  adr:= name(ap qua ref(litpardes).l_lrl);
+            when T_REF:  adr:= name(ap qua ref(litpardes).l_ref);
+            when T_TXT:  adr:=  ap qua ref(litpardes).l_txt + nofield
+                                   qua name(infix(txtqnt));
+            otherwise IERR("FNP_ACC_ADR-1") endcase;
+       when PAR_QNT_NAS:  IERR("FNP_ACC_ADR-2");
+       when PAR_QNT_ASS: adr:= var(fnp).ent + var(fnp).fld;
+       when PAR_THK_NAS:
+            if var(fnp).fp <> none                                ---   T E M P
+            then                                                  ---   T E M P
+                 if var(fnp).fp.kind <> K_SMP then IERR("FNP_ACC_ADR-3") endif;
+            endif;                                                ---   T E M P
+            case 0:MAX_TYPE (ap.type)
+            when T_BOO:  adr:= name(bio.thk_lst.val.boo);
+            when T_CHA:  adr:= name(bio.thk_lst.val.cha);
+            when T_SIN:  adr:= name(bio.thk_lst.val.sin);
+            when T_INT:  adr:= name(bio.thk_lst.val.int);
+            when T_REA:  adr:= name(bio.thk_lst.val.rea);
+            when T_LRL:  adr:= name(bio.thk_lst.val.lrl);
+            when T_REF:  adr:= name(bio.thk_lst.val.pnt);
+            when T_TXT:  adr:= name(bio.thk_lst.val.txt);
+            otherwise IERR("FNP_ACC_ADR-4") endcase;
+       when PAR_THK_ASS:
+            adr:= bio.thk_lst.val.ins + bio.thk_lst.val.fld;
+       otherwise IERR("FNP_ACC_ADR-5") endcase;
+ end;
+
+
+ Visible routine E_FNP_ACC_BOO;
+ import name(infix(parqnt)) fnp; export boolean val;
+ begin val:= var(FNP_ACC_ADR(fnp) qua name(boolean)); end;
+
+
+ Visible routine E_FNP_ACC_CHA;
+ import name(infix(parqnt)) fnp; export character val;
+ begin val:= var(FNP_ACC_ADR(fnp) qua name(character)); end;
+
+
+ Macro E_FNP_ACC_CNV(1);  --  The parameter is the type of 'val'.
+ begin name() adr;
+       adr:= FNP_ACC_ADR(fnp);
+       case T_SIN:T_LRL (var(fnp).ap.type)
+       when T_SIN:  val:= var(adr qua name(infix(quant))).sin qua %1;
+       when T_INT:  val:= var(adr qua name(integer)) qua %1;
+       when T_REA:  val:= var(adr qua name(real)) qua %1;
+       when T_LRL:  val:= var(adr qua name(long real)) qua %1;
+       otherwise IERR("E_FNP_ACC_CNV") endcase;
+ endmacro;
+
+
+ Visible routine E_FNP_ACC_SIN;
+ import name(infix(parqnt)) fnp; export short integer val;
+ begin E_FNP_ACC_CNV(%short integer%); end;
+
+ Visible routine E_FNP_ACC_INT;
+ import name(infix(parqnt)) fnp; export integer val;
+ begin E_FNP_ACC_CNV(%integer%); end;
+
+ Visible routine E_FNP_ACC_REA;
+ import name(infix(parqnt)) fnp; export real val;
+ begin E_FNP_ACC_CNV(%real%); end;
+
+ Visible routine E_FNP_ACC_LRL;
+ import name(infix(parqnt)) fnp; export long real val;
+ begin E_FNP_ACC_CNV(%long real%); end;
+
+
+ Visible routine E_FNP_ACC_REF;
+ import name(infix(parqnt)) fnp; export ref(instance) val;
+ begin val:= var(FNP_ACC_ADR(fnp) qua name(ref(instance)));
+       ---  Check that the qualification of the accessed object is
+       ---  subordinate the the formal qualification.
+       if val <> none
+       then FNP_CHK_QAL(var(fnp).fp qua ref(refatrdes).qal,
+                        val.pp qua ref(cla_pre_ptp),ENO_FNP_6);
+       endif;
+ end;
+
+
+ Visible routine E_FNP_ACC_TXT;
+ import name(infix(parqnt)) fnp; export infix(txtqnt) val;
+ begin val:= var(FNP_ACC_ADR(fnp) qua name(infix(txtqnt))); end;
+
+
+ Visible routine E_FNP_ACC_ARR;
+ import name(infix(parqnt)) fnp; export ref(entity) val;
+ begin case 0:MAX_PAR (var(fnp).ap.code)
+       when PAR_QNT_NAS:   --  Parameter quantity contains the array pointer.
+            val:= var(fnp).ent;
+       when PAR_THK_NAS:   --  The actual quantity is in the thunk instance.
+            val:= bio.thk_lst.val.arr;
+       otherwise IERR("E_FNP_ACC_ARR") endcase;
+ end;
+
+
+ Visible routine E_FNP_ACC_PRO;
+ import name(infix(parqnt)) fnp; export infix(proqnt) val;
+ begin case 0:MAX_PAR (var(fnp).ap.code)
+       when PAR_QNT_NAS:   --  Parameter quantity contains the actual quantity.
+            val.sl:= var(fnp).ent qua ref(instance);
+            val.ppp:= var(fnp).ppp; val.qal:= var(fnp).qal;
+       when PAR_THK_NAS:   --  The actual quantity is in the thunk instance.
+            val:= bio.thk_lst.val.pro;
+       otherwise IERR("E_FNP_ACC_PRO") endcase;
+       ---  If it is a ref-procedure, check qualification.
+       if var(fnp).fp.type = T_REF then
+          FNP_CHK_QAL(var(fnp).fp qua ref(refatrdes).qal,val.qal,ENO_FNP_7);
+       endif;
+ end;
+
+
+ Visible routine E_FNP_ACC_LAB;
+ import name(infix(parqnt)) fnp; export infix(labqnt) val;
+ begin case 0:MAX_PAR (var(fnp).ap.code)
+       when PAR_QNT_NAS:   --  Parameter quantity contains the actual quantity.
+            val.sl:= var(fnp).ent qua ref(instance);
+            val.pad:= var(fnp).pad; val.clv:= var(fnp).clv;
+       when PAR_THK_NAS:   --  The actual quantity is in the thunk instance.
+            val:= bio.thk_lst.val.lab;
+       otherwise IERR("E_FNP_ACC_LAB") endcase;
+ end;
+
+
+ Visible routine E_FNP_ACC_SWT;
+ import name(infix(parqnt)) fnp; export infix(swtqnt) val;
+ begin case 0:MAX_PAR (var(fnp).ap.code)
+       when PAR_QNT_NAS:   --  Parameter quantity contains the actual quantity.
+            val.sl:= var(fnp).ent qua ref(instance);
+            val.des:= var(fnp).des;
+       when PAR_THK_NAS:   --  The actual quantity is in the thunk instance.
+            val:= bio.thk_lst.val.swt;
+       otherwise IERR("E_FNP_ACC_SWT") endcase;
+ end;
+
+%title ***  Pick up value returned by name procedure  ***
+
+ Macro FNP_PRO_CNV(1);   --  The parameter is the type of 'val'.
+ begin case T_SIN:T_LRL(type)                                -- Actual type.
+       when T_SIN:    val:= tmp.pnt qua ref(sin_pro).val qua %1;
+       when T_INT:    val:= tmp.pnt qua ref(int_pro).val qua %1;
+       when T_REA:    val:= tmp.pnt qua ref(rea_pro).val qua %1;
+       when T_LRL:    val:= tmp.pnt qua ref(lrl_pro).val qua %1;
+       otherwise IERR("FNP_PRO_CNV") endcase;
+ endmacro;
+
+
+ Visible routine FNP_PRO_SIN;
+ import range(0:MAX_TYPE) type; export short integer val;
+ begin FNP_PRO_CNV(%short integer%); end;
+
+ Visible routine FNP_PRO_INT;
+ import range(0:MAX_TYPE) type; export integer val;
+ begin FNP_PRO_CNV(%integer%); end;
+
+ Visible routine FNP_PRO_REA;
+ import range(0:MAX_TYPE) type; export real val;
+ begin FNP_PRO_CNV(%real%); end;
+
+ Visible routine FNP_PRO_LRL;
+ import range(0:MAX_TYPE) type; export long real val;
+ begin FNP_PRO_CNV(%long real%); end;
+
+%title ***  Evaluate name (text) before dot (e.g. t.setpos)  ***
+
+ Visible routine B_FNP_TXT_ADR;
+ import name(infix(parqnt)) fnp;  --  Parameter's address
+ exit label psc;
+ begin ref(pardes) ap;            --  Actual parameter's descriptor
+       ref(thunk) thk;            --  To storage area being allocated.
+       ap:= var(fnp).ap;              --  For fast execution.
+       case 0:MAX_PAR (ap.code)
+       when PAR_QNT_LIT:    ---  Allocate a thunk instance and store a copy
+                            ---  of the text literal in it.
+            ALLOC(%thk%,%size(thunk)%,%bio%);
+            thk.sort:= S_THK; thk.pp:= ref(ADR_TXT_PTP);
+            thk.val.txt  := var(ap qua ref(litpardes).l_txt + nofield
+                                 qua name(infix(txtqnt)));
+            tmp.pnt:= thk;
+       when PAR_THK_NAS:                  ---  Allocate and initiate a thunk.
+            curins.lsc:= psc;
+            psc:= AB_THK(var(fnp).ent qua ref(instance),ref(ADR_TXT_PTP),
+                             ap qua ref(thkpardes).pad,true);
+       when PAR_THK_ASS:                  ---  Allocate and initiate a thunk.
+            ---  Since the address which the thunk will evaluate shall
+            ---  be used at once, the thunk gets the "access" prototype.
+            ---  See the routine E_FNP_TXT_ADR.
+            curins.lsc:= psc;
+            psc:= AB_THK(var(fnp).ent qua ref(instance),ref(VAL_THK_PTP),
+                             ap qua ref(thkpardes).pad,true);
+       otherwise IERR("B_FNP_TXT_ADR") endcase;
+ end;
+
+
+ Visible routine E_FNP_TXT_ADR;
+ import name(infix(parqnt)) fnp;  --  parameter quantity address
+ export name() adr;               --  actual parameter's address
+ begin case 0:MAX_PAR (var(fnp).ap.code)
+       when PAR_QNT_LIT:
+            adr:= name(tmp.pnt qua ref(thunk).val.txt);
+       when PAR_THK_NAS:
+            adr:= name(bio.thk_lst.val.txt);
+            ---  Remove the thunk instance from the free list.
+            ---  It will never be put in the free list again.
+            bio.thk_lst:= bio.thk_lst.dl;
+       when PAR_THK_ASS:
+            adr:= bio.thk_lst.val.ins + bio.thk_lst.val.fld;
+       otherwise IERR("E_FNP_TXT_ADR") endcase;
+ end;
+
+
+ Visible routine E_FNP_ADR;
+ import name(infix(parqnt)) fnp;  --  parameter quantity address
+ export name() adr;               --  actual parameter's address
+ begin ---  Check that the actual parameter denotes a variable, which implies
+       ---  that its kind is simple, and get its address.
+       adr:= FNP_ASS_ADR(fnp,ENO_FNP_2);
+       if var(fnp).ap.type <> var(fnp).fp.type then ERROR(ENO_FNP_3) endif;
+       if var(fnp).ap.type = T_REF
+       then if var(fnp).ap qua ref(refpardes).qal
+            <> var(fnp).fp qua ref(refatrdes).qal then ERROR(ENO_FNP_4) endif;
+       endif;
+ end;
+
+%title ***   F o r m a l   a n d    V i r t u a l    P r o c e d u r e   ***
+ Macro GET_FP(2);     --- The call is always GET_FP(%parins%,%n%);
+ begin ref(atrdes)fp; --- It has parameters for documentation purposes only.
+       fp:= parins.pp qua ref(pro_ptp).par_vec.atr(n);
+ endmacro;
+
+
+ Visible routine B_FPT;
+ import ref(instance) parins;  --  Transmitting to this procedure
+        ref(instance) sl;      --  Static enclosure for thunk
+        ref(pardes) ap;        --  Actual parameter's descriptor
+        short integer n;       --  No. (position) of parameter
+ exit label psc;
+ begin GET_FP(%parins%,%n%);
+       --  Save the parameter instance by inserting it in the dynamic chain.
+       parins.dl:= curins.dl;         curins.dl:= parins;
+       if  (fp.mode <> M_NAME)
+       and ((ap.code = PAR_THK_NAS)  or (ap.code = PAR_THK_ASS))
+       then curins.lsc:= psc;
+            psc:= AB_THK(sl,ref(VAL_THK_PTP),if ap.type = T_REF then
+                             ap qua ref(refthkpardes).pad
+                             else ap qua ref(thkpardes).pad,fp.kind=K_SMP);
+       endif;
+ end;
+
+
+ Visible routine E_FPT;
+ import short integer n;       --  No. (position) of parameter.
+        infix(parqnt) par;     --  Transmitting this parameter.
+        ref(instance) cla_sl;  --  Qualifying class declared here.
+                               --  Different from none <0> ref type.
+ export ref(instance) parins;  --  Transmitting to this procedure.
+ begin name() adr;             --  The address of the target.
+       ref(pardes) ap;         --  Local copy here for efficiency.
+       ref(atrdes) fp;         --  Formal parameter's descriptor.
+       -- Restore the parameter instance by removing it from the dynamic chain.
+       parins:= curins.dl;            curins.dl:= parins.dl;
+       ---  Pick up the corresponding formal parameter descriptor,
+       fp:= parins.pp qua ref(pro_ptp).par_vec.atr(n);
+       ap:= par.ap;              --  Use local variable for efficiency.
+       adr:= parins + fp.fld;    --  Compute the address of the target.
+       par.fp:= fp;         ---  Set mode, kind, type ... for formal parameter.
+       if fp.mode = M_NAME
+       then ---  Formal parameter is call by name. Whether the actual parameter
+            ---  is call by name or not, the parameter quantity we have imported
+            ---  is representing it correctly, except for its formal properties.
+            ---  See if actual and formal matches exactly and check legality.
+            par.sem:= par.sem  and  FPT_TO_FNP_CHK(ap,fp);
+            var(adr qua name(infix(parqnt))):= par;
+       else ---  Formal is by value or by reference.
+            ---  Check for legality and compatibility.
+            FPT_TO_FRP_CHK(ap,fp);
+            case  0:MAX_KIND (fp.kind)
+            when  K_SMP:             --  Formal parameter is of simple kind.
+                  ---  Store the parameter value into the target.
+                  case 0:MAX_TYPE (fp.type)
+                  when T_BOO:   var(adr qua name(boolean))
+                                :=  E_FNP_ACC_BOO(name(par));
+                  when T_CHA:   var(adr qua name(character))
+                                :=  E_FNP_ACC_CHA(name(par));
+                  when T_SIN:   var(adr qua name(infix(quant))).sin
+                                :=  E_FNP_ACC_SIN(name(par));
+                  when T_INT:   var(adr qua name(integer))
+                                :=  E_FNP_ACC_INT(name(par));
+                  when T_REA:   var(adr qua name(real))
+                                :=  E_FNP_ACC_REA(name(par));
+                  when T_LRL:   var(adr qua name(long real))
+                                :=  E_FNP_ACC_LRL(name(par));
+                  when T_REF:   var(adr qua name(ref(instance)))
+                                :=  E_FNP_ACC_REF(name(par));
+                  when T_TXT:   var(adr qua name(infix(txtqnt)))
+                                :=  E_FNP_ACC_TXT(name(par));
+                       ---  Check if the text is transmitted by value.
+                       ---  Garbage collection may occur in TXT_BY_VAL.
+                       if fp.mode = M_VALUE
+                       then parins:= TXT_BY_VAL(parins,fp.fld) endif;
+                  endcase;
+            when  K_ARR:             --  Formal parameter is of array kind.
+                  ---  Store the parameter value into the parameter quantity.
+                  var(adr qua name(ref(entity))):=  E_FNP_ACC_ARR(name(par));
+                  ---  Check if the array is transmitted by value.
+                  ---  Garbage collection may occur in ARR_BY_VAL.
+                  if fp.mode = M_VALUE
+                  then parins:= ARR_BY_VAL(parins,fp.fld,fp.type) endif;
+            when  K_PRO:             --  Formal parameter is of procedure kind.
+                  var(adr qua name(infix(proqnt))):= E_FNP_ACC_PRO(name(par));
+            when  K_LAB:             --  Formal parameter is of label kind.
+                  var(adr qua name(infix(labqnt))):= E_FNP_ACC_LAB(name(par));
+            when  K_SWT:             --  Formal parameter is of switch kind.
+                  var(adr qua name(infix(swtqnt))):= E_FNP_ACC_SWT(name(par));
+            endcase;
+       endif;   -- End formal is by value or by reference.
+ end;
+%page
+
+ Macro M_FPT_SMP_PAR(1);     --  First parameter is the procedure name.
+ begin Visible routine %1;  --  Transmit literal or non-thunk variable.
+       import ref(instance) parins; --  Transmitting to this procedure.
+              short integer n;      --  No. (position) of parameter.
+              ref(pardes) ap;       --  Actual parameter's descriptor.
+              ref() obj;            --  Object part of address.
+              field() fld;          --  Offset part of address.
+ endmacro;
+
+
+ Macro M_FPT_SMP_BOD(0);
+ begin ref(atrdes)     fp;    --  Formal parameter descriptor.
+       fp:= parins.pp qua ref(pro_ptp).par_vec.atr(n);
+       if fp.mode = M_NAME ---  Formal is call by name.
+       then FPT_TO_FNP(parins,ap,fp,obj,fld);
+       else                ---  Formal is call by reference or value.
+            if fp.kind <> K_SMP then ERROR(ENO_FPT_3) endif;
+ endmacro;
+
+
+ M_FPT_SMP_PAR(%FPT_BOO%);
+ begin M_FPT_SMP_BOD();
+            if fp.type <> T_BOO then ERROR(ENO_FPT_4)  endif;
+            ---  Place the actual quantity in the parameter quantity.
+            var((parins + fp.fld) qua name(boolean)):=
+                 var((obj + fld) qua name(boolean));
+       endif;   -- End formal is call by value.
+ end;
+
+
+ M_FPT_SMP_PAR(%FPT_CHA%);
+ begin M_FPT_SMP_BOD();
+            if fp.type <> T_CHA then ERROR(ENO_FPT_4)  endif;
+            ---  Place the actual quantity in the parameter quantity.
+            var((parins + fp.fld) qua name(character)):=
+                  var((obj + fld) qua name(character));
+       endif;   -- End formal is call by value.
+ end;
+
+
+ Macro FPT_CNV(1);
+ ---  The parameter is an expression describing the type of the
+ ---  value to be transmitted.
+ begin ---  Place the actual quantity in the parameter quantity.
+       case 0:MAX_TYPE (fp.type)
+       when T_SIN: var((parins + fp.fld) qua name(infix(quant))).sin :=
+                   var((obj+fld) qua name(infix(quant))). %1 qua short integer;
+       when T_INT: var((parins + fp.fld) qua name(integer))       :=
+                   var((obj+fld) qua name(infix(quant))). %1 qua integer;
+       when T_REA: var((parins + fp.fld) qua name(real))          :=
+                   var((obj+fld) qua name(infix(quant))). %1 qua real;
+       when T_LRL: var((parins + fp.fld) qua name(long real))     :=
+                   var((obj+fld) qua name(infix(quant))). %1 qua long real;
+       otherwise   ERROR(ENO_FPT_5);
+       endcase;
+ endmacro;
+
+
+ M_FPT_SMP_PAR(%FPT_SIN%);
+ begin M_FPT_SMP_BOD();
+            FPT_CNV(%sin%);
+       endif;   -- End formal is call by value.
+ end;
+
+ M_FPT_SMP_PAR(%FPT_INT%);
+ begin M_FPT_SMP_BOD();
+            FPT_CNV(%int%);
+       endif;   -- End formal is call by value.
+ end;
+
+
+ M_FPT_SMP_PAR(%FPT_REA%);
+ begin M_FPT_SMP_BOD();
+            FPT_CNV(%rea%);
+       endif;   -- End formal is call by value.
+ end;
+
+
+ M_FPT_SMP_PAR(%FPT_LRL%);
+ begin M_FPT_SMP_BOD();
+            FPT_CNV(%lrl%);
+       endif;   -- End formal is call by value.
+ end;
+
+
+ M_FPT_SMP_PAR(%FPT_REF%);
+ ref(instance) cla_sl;       --  Qualifying class declared here.
+ begin ref(instance) val;    --  The value of the parameter.
+       M_FPT_SMP_BOD();
+            if fp.type <> T_REF then ERROR(ENO_FPT_4) endif;
+            ---  Place the actual quantity in the parameter quantity.
+            val:=  var((obj + fld) qua name(ref(instance)));
+            ---  Check qualification.
+            if val <> none
+            then FNP_CHK_QAL(fp qua ref(refatrdes).qal,
+                            val.pp qua ref(cla_pre_ptp),ENO_FPT_1);
+            endif;
+            var((parins+fp.fld) qua name(ref(instance))):= val;
+       endif;   -- End formal is call by value.
+ end;
+
+
+ Visible routine FPT_TXT;    --  Transmit literal or non-thunk variable.
+ import ref(instance) parins; --  Transmitting to this procedure.
+        short integer n;      --  No. (position) of parameter.
+        ref(pardes) ap;       --  Actual parameter's descriptor.
+        ref() obj;            --  Object part of address.
+        field() fld;          --  Offset part of address.
+ begin
+       ref(atrdes)     fp;    --  Formal parameter descriptor.
+       ref()           tp;    --  E.g. ref(infix(txtqnt)).
+       fp:= parins.pp qua ref(pro_ptp).par_vec.atr(n);
+       if fp.mode = M_NAME ---  Formal is call by name.
+       then FPT_TO_FNP(parins,ap,fp,obj,fld);
+       else                ---  Formal is call by reference or value.
+            if fp.kind <> K_SMP then ERROR(ENO_FPT_3) endif;
+
+            if fp.type <> T_TXT then ERROR(ENO_FPT_4)  endif;
+            ---  Place the actual quantity in the parameter quantity.
+            if ap.code=PAR_QNT_LIT
+            then tp:=ap qua ref(LITPARDES).l_txt;
+                 var((parins+fp.fld) qua name(infix(txtqnt))):=
+                        tp qua ref(quant).txt;
+            else var((parins+fp.fld) qua name(infix(txtqnt))):=
+                        var((obj+fld) qua name(infix(txtqnt)));
+            endif;
+            ---  Garbage collection may occur in TXT_BY_VAL.
+            if fp.mode = M_VALUE then parins:= TXT_BY_VAL(parins,fp.fld);
+            endif;
+       endif;   -- End formal is call by reference or value.
+ end;
+
+
+ Visible routine FPT_ARR;
+ import ref(instance) parins;  --  Transmitting to this procedure
+        short integer n;       --  No. (position) of parameter
+        ref(pardes) ap;        --  Actual parameter's descriptor
+        ref(instance) cla_sl;  --  Qualifying class declared here.
+        ref(entity) arr;       --  The actual array.
+ begin GET_FP(%parins%,%n%);
+       if fp.mode = M_NAME     ---  Formal is call by name.
+       then FPT_TO_FNP(parins,ap,fp,arr,nofield);
+       else ---  Check for legality and compatibility.
+            FPT_TO_FRP_CHK(ap,fp);
+            ---  Place the actual quantity in the parameter quantity.
+            var((parins + fp.fld) qua name(ref(entity))):= arr;
+            ---  Garbage collection may occur in ARR_BY_VAL.
+            if fp.mode = M_VALUE
+            then parins:= ARR_BY_VAL(parins,fp.fld,fp.type) endif;
+       endif;   -- End formal is call by reference or value.
+ end;
+
+
+ Visible routine FPT_PRO;
+ import ref(instance) parins;   --  Transmitting to this procedure
+        short integer n;        --  No. (position) of parameter
+        ref(pardes) ap;         --  Actual parameter's descriptor
+        ref(instance) cla_sl;   --  Qualifying class declared here.
+        infix(proqnt) pro;      --  The actual procedure
+ begin name(infix(parqnt)) fnp; --  Address of name parameter.
+       GET_FP(%parins%,%n%);
+       if fp.mode = M_NAME      ---  Formal is call by name.
+       then FPT_TO_FNP(parins,ap,fp,pro.sl,nofield);
+            ---  Set component values of the quantity we are transferring to.
+            fnp:=(parins + fp.fld) qua name(infix(parqnt));
+            var(fnp).ppp:= pro.ppp; var(fnp).qal:= pro.qal;
+       else ---  Check for legality and compatibility.
+            FPT_TO_FRP_CHK(ap,fp);
+            ---  Place the actual quantity in the parameter quantity.
+            var((parins + fp.fld) qua name(infix(proqnt))):= pro;
+       endif;   -- End formal is call by value.
+ end;
+
+
+ Visible routine FPT_LAB;  --  Transmit non-thunk label.
+ import ref(instance) parins;    --  Transmitting to this procedure
+        short integer n;         --  No. (position) of parameter
+        ref(pardes) ap;          --  Actual parameter's descriptor
+        infix(labqnt) lab;       --  The actual label.
+ begin name(infix(parqnt)) fnp;  --  Address of name parameter.
+       GET_FP(%parins%,%n%);
+       if fp.mode = M_NAME       ---  Formal is call by name.
+       then FPT_TO_FNP(parins,ap,fp,lab.sl,nofield);
+            ---  Set component values of the quantity we are transferring to.
+            fnp:=(parins + fp.fld) qua name(infix(parqnt));
+            var(fnp).pad:= lab.pad; var(fnp).clv:= lab.clv;
+       else if fp.kind <> K_LAB then ERROR(ENO_FPT_3)  endif;
+            ---  Place the actual quantity in the parameter quantity.
+            var((parins + fp.fld) qua name(infix(labqnt))):= lab;
+       endif;   -- End formal is call by value.
+ end;
+
+
+ Visible routine FPT_SWT;  --  Transmit non-thunk switch.
+ import ref(instance) parins;   --  Transmitting to this procedure
+        short integer n;        --  No. (position) of parameter
+        ref(pardes) ap;         --  Actual parameter's descriptor
+        infix(swtqnt) swt;      --  The actual switch.
+ begin GET_FP(%parins%,%n%);
+       if fp.mode = M_NAME      ---  Formal is call by name.
+       then FPT_TO_FNP(parins,ap,fp,swt.sl,nofield);
+            ---  Set component value of the quantity we are transferring to.
+            var((parins + fp.fld) qua name(infix(parqnt))).des:= swt.des;
+       else if fp.kind <> K_SWT then ERROR(ENO_FPT_3)  endif;
+            ---  Place the actual quantity in the parameter quantity.
+            var((parins + fp.fld) qua name(infix(swtqnt))):= swt;
+       endif;   -- End formal is call by value.
+ end;
+
+
+ Routine FPT_TO_FNP;
+ import ref(instance) parins; --  Transmitting to this one
+        ref(pardes) ap;       --  Actual parameter's descriptor
+        ref(atrdes) fp;       --  Formal parameter's descriptor
+        ref(entity) ent;      --  Entity part of address.
+        field() fld;          --  Offset part of address.
+ begin infix(parqnt) fnp;     --  Local quantity here for efficiency.
+       ---  Set the component values of the quantity we are transferring to.
+       fnp.ap:= ap; fnp.fp:= fp;
+       fnp.sem:= FPT_TO_FNP_CHK(ap,fp);
+       fnp.ent:= ent; fnp.fld:= fld;
+       ---  Transfer to the target, which has been initialised to 'null'.
+       var((parins + fp.fld) qua name(infix(parqnt))):= fnp;
+ end;
+
+
+ Routine FPT_TO_FNP_CHK;
+ import ref(pardes) ap;  --  Actual parameter's descriptor
+        ref(atrdes) fp;  --  Formal parameter's descriptor
+ export boolean sem;     --  Do formal and actual match exactly?
+ begin ---  See if actual and formal matches exactly.
+       sem:=(fp.kind = ap.kind)  and (fp.type = ap.type);
+       if sem
+       then if ap.type = T_REF
+            then if fp qua ref(refatrdes).qal = ap qua ref(refpardes).qal
+                 then sem:=(ap.code = PAR_QNT_ASS);  --  Implies kind simple.
+                 else if(fp.kind <> K_ARR) then ERROR(ENO_FPT_7)  endif;
+                      sem:= false;
+                 endif;
+            else sem:=(ap.code = PAR_QNT_ASS);     --  Implies kind simple.
+            endif;
+       else --- Invariant: (fp.kind <> ap.kind)  or (fp.type <> ap.type)
+            --- Check for legality and compability.
+            case 0:MAX_KIND (fp.kind)
+            when K_SMP:       --  Formal parameter is of simple kind.
+                 if (ap.kind <> K_SMP) and (ap.kind <> K_PRO)
+                 then ERROR(ENO_FPT_3) endif;
+                 if not COMPAT(ap.type,fp.type) then ERROR(ENO_FPT_5) endif;
+                 --  The qualification shall not be checked now, if type is ref.
+            when K_ARR:       --  Formal parameter is of array kind.
+                 if ap.kind <> K_ARR   then ERROR(ENO_FPT_3) endif;
+                 if ap.type <> fp.type then ERROR(ENO_FPT_4) endif;
+                 --  The exact match test above must have chosen the then-part.
+                 IERR("FPT_TO_FNP_CHK");
+            when K_PRO:       --  Formal parameter is of procedure kind.
+                 if ap.kind <> K_PRO            then ERROR(ENO_FPT_3) endif;
+                 if not compat(ap.type,fp.type) then ERROR(ENO_FPT_5) endif;
+                 --  If formal is a ref-procedure, then we will never get here.
+                 --  The exact match test above must have chosen the then-part.
+                 --  However, the qualification shall not be checked now.
+            otherwise          --  Formal parameter is of label or switch kind.
+                  ERROR(ENO_FPT_3);
+            endcase;
+       endif;
+ end;
+
+
+ Routine FPT_TO_FRP_CHK;
+ import ref(pardes) ap;    --  Actual parameter's descriptor
+        ref(atrdes) fp;    --  Formal parameter's descriptor
+ begin case 0:MAX_KIND (fp.kind)
+       when K_SMP:       --  Formal parameter is of simple kind.
+            if (ap.kind <> K_SMP)  and (ap.kind <> K_PRO)
+            then ERROR(ENO_FPT_3) endif;
+            if not COMPAT(ap.type,fp.type) then ERROR(ENO_FPT_5)  endif;
+            --  The qualification shall not be checked now, if type is ref.
+       when K_ARR:       --  Formal parameter is of array kind.
+            if ap.kind <> K_ARR   then ERROR(ENO_FPT_3) endif;
+            if ap.type <> fp.type then ERROR(ENO_FPT_4) endif;
+            if fp.type = T_REF
+            then ---  The compiler has checked that the formal is not by value.
+                 if (fp qua ref(refatrdes).qal) <> (ap qua ref(refpardes).qal)
+                 then ERROR(ENO_FPT_7) endif;
+            endif;
+       when K_PRO:       --  Formal parameter is of procedure kind.
+            if ap.kind <> K_PRO then ERROR(ENO_FPT_3)  endif;
+            if (fp.type <> T_NOTYPE)  and (ap.type <> fp.type)
+            then ERROR(ENO_FPT_8) endif; --  Neither subordinate nor coincident.
+            if fp.type = T_REF
+            then --  Must check qualification, even if checked by E_FNP_ACC_PRO.
+                 FNP_CHK_QAL(fp qua ref(refatrdes).qal,
+                              ap qua ref(refpardes).qal,ENO_FPT_2);
+            endif;
+       when K_LAB:       --  Formal parameter is of label kind.
+            if ap.kind <> K_LAB then ERROR(ENO_FPT_3) endif;
+       when K_SWT:       --  Formal parameter is of switch kind.
+            if ap.kind <> K_SWT then ERROR(ENO_FPT_3) endif;
+       endcase;
+ end;
+
+
+ Visible routine MAKE_THK_PARQNT;
+ import ref(pardes) ap;      --  Actual parameter's descriptor
+ export infix(parqnt) par;   --  Representing the transmitted
+ begin par.ap:= ap; par.fp:= none;
+       par.sem:= false; par.ent:= curins;
+       ---  None of the variant parts are in use. Thus the following statements
+       ---  are not necessary, but they are included in order to 'nullify' as
+       ---  much as possible of the variant storage area.
+       par.ppp:= none; par.qal:= none;
+ end;
+
+
+ Routine COMPAT;
+ import range(0:MAX_TYPE) at;         --  actual type
+        range(0:MAX_TYPE) ft;         --  formal type
+ export boolean cmpt;
+ begin case 0:MAX_TYPE (ft)
+       when T_NOTYPE: cmpt:= true;     -- formal is untyped procedure
+       when T_SIN,T_INT,T_REA,T_LRL:
+            case 0:MAX_TYPE (at)
+            when T_INT,T_SIN,T_REA,T_LRL: cmpt:= true;
+            otherwise cmpt:= false  endcase
+       otherwise cmpt:= at = ft  endcase;
+ end;
+
+ end;

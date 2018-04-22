@@ -1,0 +1,36 @@
+
+%  STANDARDCLASS
+%DISPLAY ON 
+%QUALIFIEDNAMES
+
+% Example from Simula Standard 
+% -----------------------------
+% Note: Consider the statement "X:= i:= Y:= F:= 3.14" where X and Y are real variables,
+% i is an integer variable, and F is a formal parameter called by name and specified real.
+% If the actual parameter for F is a real variable, then X, i, Y and F are given the values 3, 3, 3.14 and 3.14 respectively.
+% If the actual parameter is an integer variable, the respective values are 3, 3, 3.14 and 3.
+
+
+begin
+   
+   Procedure P(Case,F,Facit); name F; long real F; text Case,Facit;
+   begin
+    integer i;
+    long real X,Y;
+    X:= i:= Y:= F:= 3.54;
+
+    outtext("Test "&Case&": results: X="); outfix(X,4,6); 
+    outtext(", i="); outint(i,0);
+    outtext(", Y="); outfix(Y,4,6);
+    outtext(", F="); outfix(F,4,6);
+    outimage;
+    outtext("               "&Facit); outimage; outimage;
+   end;
+   
+   long real r;
+   integer n;
+   P("case 1",r,"Facit: X=4.0000, i=4, Y=3.5400, F=3.5400");
+   P("case 2",n,"Facit: X=4.0000, i=4, Y=3.5400, F=4.0000");
+
+   
+end;   

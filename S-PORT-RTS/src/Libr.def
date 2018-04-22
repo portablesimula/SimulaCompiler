@@ -1,0 +1,397 @@
+ Module LIBR("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,STRG,CENT,ARR;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3, Norway                                          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---               S t a n d a r d   P r o c e d u r e s             ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---   Created  26/03-84  by  Hans Petter Dahle and \ystein Myhre    ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+
+
+ Visible routine RARCCOS; import real arg; export real val;
+ begin val:=envir_RARCCOS(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DARCCOS; import long real arg; export long real val;
+ begin val:=envir_DARCCOS(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RARCSIN; import real arg; export real val;
+ begin val:=envir_RARCSIN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DARCSIN; import long real arg; export long real val;
+ begin val:=envir_DARCSIN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RARCTAN; import real arg; export real val;
+ begin val:=envir_RARCTAN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DARCTAN; import long real arg; export long real val;
+ begin val:=envir_DARCTAN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RATAN2; import real y,x; export real val;
+ begin val:=envir_RATAN2(y,x); if status > 0 then ERR_STD endif end;
+
+ Visible routine DATAN2; import long real y,x; export long real val;
+ begin val:=envir_DATAN2(y,x); if status > 0 then ERR_STD endif end;
+
+ Visible routine RCOS; import real arg; export real val;
+ begin val:=envir_RCOS(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DCOS; import long real arg; export long real val;
+ begin val:=envir_DCOS(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DATE_AND_TIME; export infix(txtqnt) res;
+ begin integer n; n:=envir_TIMDAT(STRBUF(0));
+       if status > 0 then ERR_SYS endif;
+       res:=BLANKS(n); C_MOVE(STRBUF(n),TXT_TO_STR(res));
+ end;
+
+ Visible routine REXP; import real arg; export real val;
+ begin val:=envir_REXP(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DEXP; import long real arg; export long real val;
+ begin val:=envir_DEXP(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine HISTO; import ref(rea_arr_1) a,b; real c,d;
+ begin integer i,nelt; i:=0;
+       if a.sort <> S_ARENT1 then ERROR(ENO_STD_1) endif;
+       if b.sort <> S_ARENT1 then ERROR(ENO_STD_1) endif;
+       nelt:=b.ub - b.lb + 1;
+       if nelt >= (a.ub-a.lb+1) then ERROR(ENO_STD_2) endif;
+       repeat if b.elt(i) >= c then goto EX endif;  i:=i+1;
+       while i < nelt do endrepeat;
+EX:    a.elt(i):=a.elt(i)+d;
+ end;
+
+ Visible routine RLN; import real arg; export real val;
+ begin val:=envir_RLN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DLN; import long real arg; export long real val;
+ begin val:=envir_DLN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RLOG; import real arg; export real val;
+ begin val:=envir_RLOG(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DLOG; import long real arg; export long real val;
+ begin val:=envir_DLOG(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RSIN; import real arg; export real val;
+ begin val:=envir_RSIN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DSIN; import long real arg; export long real val;
+ begin val:=envir_DSIN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RSQRT; import real arg; export real val;
+ begin val:=envir_RSQRT(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DSQRT; import long real arg; export long real val;
+ begin val:=envir_DSQRT(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RTAN; import real arg; export real val;
+ begin val:=envir_RTAN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DTAN; import long real arg; export long real val;
+ begin val:=envir_DTAN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RCOTAN; import real arg; export real val;
+ begin val:=envir_RCOTAN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DCOTAN; import long real arg; export long real val;
+ begin val:=envir_DCOTAN(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RSINH; import real arg; export real val;
+ begin val:=envir_RSINH(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DSINH; import long real arg; export long real val;
+ begin val:=envir_DSINH(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RCOSH; import real arg; export real val;
+ begin val:=envir_RCOSH(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DCOSH; import long real arg; export long real val;
+ begin val:=envir_DCOSH(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine RTANH; import real arg; export real val;
+ begin val:=envir_RTANH(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine DTANH; import long real arg; export long real val;
+ begin val:=envir_DTANH(arg); if status > 0 then ERR_STD endif end;
+
+ Visible routine TIMEUSED; export long real val;
+ begin val:=GET_CPU_TIME - bio.ini_tim end;
+
+ Visible routine CLOCKTIME; export long real val;
+ begin val:=envir_GET_CLOCK_TIME end;
+
+ Visible routine SRCLIN; export integer val;
+ begin val:=envir_GET_LINE_NO(envir_OUTERMOST);
+       if status > 0 then ERR_STD endif;
+ end;
+
+ routine ERR_STD;
+ begin if status = 27 then ERROR(ENO_STD_3);
+       else ERR_SYS endif;
+ end;
+
+ Visible routine GET_CPU_TIME; export long real sec;
+ begin sec:=envir_GET_CPU_TIME;
+       if status > 0 then
+          if status <> 19 then ERR_SYS endif;
+          status:=0; sec:=0.0&&0
+       endif;
+ end;
+
+ Visible routine GET_INTINFO; import integer index; export integer val;
+ begin val:=envir_GET_INTINFO(index); -- if status > 0 then ERR_SYS endif end;
+       if status>0 then val:=-status; status:=0 endif end; -- pje jan 87
+
+ Visible routine GET_TEXTINFO; import integer index; export infix(txtqnt) res;
+ begin integer n; n:=envir_GET_TEXTINFO(index,STRBUF(0));
+ --    if status > 0 then ERR_SYS endif;
+       if status > 0 then res:=notext; status:=0;          -- pje jan 87
+       else res:=BLANKS(n); C_MOVE(STRBUF(n),TXT_TO_STR(res)); endif;
+ end;
+
+ Visible routine GIVE_INTINFO; import integer index,inf;
+ begin envir_GIVE_INTINFO(index,inf); if status > 0 then ERR_SYS endif end;
+
+ Visible routine GIVE_TEXTINFO; import integer index; infix(txtqnt) txt;
+ begin envir_GIVE_TEXTINFO(index,TXT_TO_STR(txt));
+       if status > 0 then ERR_SYS endif;
+ end;
+%page
+
+ Visible routine RTS_UTILITY; import integer code,val; exit label psc;
+ begin ref(entity) nxt,dum; 
+       curins.lsc:=psc;
+          if code = 0 then bio.trc:=true;
+       elsif code = 1 then SNAPSHOT;
+       elsif code = 2 then
+       elsif code = 3 then nxt:=bio.pool_lim; 
+                           repeat val:=val-1 while val >= 0
+                           do nxt:=nxt-size(entity) endrepeat;
+                           if (nxt-size(entity)) > bio.pool_nxt 
+                           then dum:=bio.pool_nxt; bio.pool_nxt:=nxt;
+                                dum.sort:=S_TXTENT; dum.lng:=nxt-dum;
+                           endif;
+       elsif code = 4 then GARB(bio.pool_nxt,nosize,name(bio));   --- CORR
+       elsif code = 5 then
+       elsif code = 6 then
+       else IERR("RTS_UTILITY") endif;
+ end;
+
+ Visible routine ERR_LAB; import infix(labqnt) erh; name(integer) eno;
+ begin bio.erh:=erh;
+       bio.ern.ins:=conv_ref(eno);
+       bio.ern.fld:=conv_field(eno);
+ end;
+
+ Visible routine SYS_FIL_NAM;
+ import range(0:MAX_KEY) key; export infix(txtqnt) res;
+ begin infix(string) from,to;
+       to:=STRBUF(0); to.nchr:=envir_GET_DSETNAME(key,to);
+       if status > 0
+       then if key <= 3 then ERR_SYS;
+            elsif (status = 2) or (status = 3)
+            then status:=0; from:= "Unknown file.";
+                 to.nchr:=from.nchr; C_MOVE(from,to);
+            else from:="Error return from environment, cannot get full name.";
+                 status:=0; to.nchr:=from.nchr; C_MOVE(from,to);
+            endif;
+       endif;
+       --- We shall return a text quantity referring
+       --- the first characters of the editing buffer.
+       res:=BLANKS(to.nchr); C_MOVE(STRBUF(to.nchr),TXT_TO_STR(res));
+ end;
+
+ Visible routine MAKE_LAB;
+ import ref(instance) sl; label pad; range(0:MAX_CLV) clv;
+ export infix(labqnt) lab;
+ begin lab.sl:=sl; lab.pad:=pad; lab.clv:=clv end;
+
+ Visible routine MAKE_PRO;
+ import ref(instance) sl; ref(pro_ptp) ppp; ref(cla_pre_ptp) qal;
+ export infix(proqnt) pro;
+ begin pro.sl:=sl; pro.ppp:=ppp; pro.qal:=qal end;
+
+ Visible routine MAKE_SWT;
+ import ref(instance) sl; ref(swtdes) des;
+ export infix(swtqnt) swt;
+ begin swt.sl:=sl; swt.des:=des end;
+
+
+ Visible routine PRE_SAV;
+ import size lng;  --  Length of S-Code save object part.
+ export ref() obj; --  Courtesy of the environment.
+ begin ref(savent) sav;     --  To the entity to be allocated
+       -- Check if the invariant on save entity allocation is violated --
+       if bio.pool_nxt > bio.pool_lim then IERR("LIBR.PRE_SAV") endif;
+       sav:=bio.pool_nxt; sav.sort:=S_SAV; obj:=sav+size(savent);
+       bio.pool_nxt:=obj+lng; sav.lng:=bio.pool_nxt-sav;
+       --- Insert the save entity in the current instance's dynamic chain.
+       sav.dl:=curins.dl; curins.dl:=sav;
+       if lng = nosize then obj:=none endif;
+ end;
+
+ Visible routine RESTORE;
+ begin ref(savent) sav;  -- The entity to be restored
+       ---  Remove the save entity from the dynamic chain.
+       sav:=curins.dl;
+       if sav.sort <> S_SAV then IERR("RESTORE") endif;        --  TEMP
+       curins.dl:=sav.dl;
+       rstr:=if sav.lng <> size(savent) then sav+size(savent) else none;
+ end;
+%title ***   R a n d o m   D r a w i n g   ***
+
+ Visible routine DISCRETE;
+ import ref(rea_arr_1) a; name(integer) u; export integer i;
+ begin integer j,nelt; real v;
+       if a.sort <> S_ARENT1 then ERROR(ENO_DRW_1) endif;
+       v:=envir_DRAW(u); nelt:=a.ub-a.lb+1; i:=a.ub+1; j:=0;
+       repeat if a.elt(j) > v then i:=a.lb+j; nelt:=0 endif;
+              j:= j + 1;
+       while j < nelt do endrepeat;
+ end;
+
+
+ Visible routine DRAW;
+ import real a; name(integer) u; export boolean val;
+ begin if a >= 1.0 then val:= true;
+    elsif a <= 0.0 then val:= false;
+    else val:= if a >= envir_DRAW(u) then true else false;
+    endif;
+ end;
+
+
+ Visible routine ERLANG;
+ import real a,b; name(integer) u; export real val;
+ begin integer c; real bc,ab,z,v;
+       if (a <= 0.0) or (b <= 0.0) then ERROR(ENO_DRW_7) endif;
+       val:= 0.0; c:= RENTIER(b);
+       bc:= b - (c qua real); ab:= a * b;
+       repeat c:= c - 1;
+       while c >= 0
+       do v:= envir_DRAW(u); z:= envir_RLN(v);
+          if status > 0 then ERR_SYS  endif;
+          val:= val - (z/ab);
+       endrepeat;
+       if bc > 0.0
+       then v:= envir_DRAW(u); z:= envir_RLN(v);
+            if status > 0 then ERR_SYS  endif;
+            val:= val - ((bc*z) / ab );
+       endif;
+ end;
+
+ Visible routine HISTD;
+ import ref(rea_arr_1) a; name(integer) u; export integer i;
+ begin integer j;         --  Array index.
+       integer nelt;      --  Number of array elements.
+       real sum;          --  Sum of all array element values.
+       real wsum;         --  Weighted sum of all array element values.
+       real tmp;          --  Temporary variabel.
+       if a.sort <> S_ARENT1 then ERROR(ENO_DRW_1) endif;
+       nelt:= a.ub + a.lb - 1; j:= 0; sum:= 0.0;
+       repeat tmp:= a.elt(j);
+              if tmp < 0.0 then ERROR(ENO_DRW_2) endif;
+              sum:= sum + tmp; j:= j + 1;
+       while j < nelt do endrepeat;
+       wsum:= sum * envir_DRAW(u);              --  Make  0 <= wsum < sum
+       j:= 0; sum:= 0.0;
+       repeat sum:= sum + a.elt(j);
+              if sum >= wsum                   --  We will take the then-branch
+              then i:= a.lb+j; nelt:=0 endif;  --  once and only once.
+              j:= j + 1;
+       while j < nelt do endrepeat;
+ end;
+
+
+ Visible routine LINEAR;
+ import ref(rea_arr_1) a,b; name(integer) u; export real val;
+ begin integer i,nelt; real a_val,a_lag,a_dif,b_val,b_lag,v;
+       if a.sort <> S_ARENT1 then ERROR(ENO_DRW_1) endif;
+       if b.sort <> S_ARENT1 then ERROR(ENO_DRW_1) endif;
+       nelt:= a.ub + a.lb - 1;
+       if nelt <> (b.ub+b.lb-1) then ERROR(ENO_DRW_3) endif;
+       v:= envir_DRAW(u); i:= 0;
+       repeat while a.elt(i) < v do i:=i+1 endrepeat;
+       if i <= 0
+       then if (v = 0.0) and (a.elt = 0.0) then i:= 1;
+            else ERROR(ENO_DRW_4) endif;
+       elsif i >= nelt then ERROR(ENO_DRW_4) endif;
+
+       a_val:= a.elt(i); a_lag:= a.elt(i-1); a_dif:= a_val - a_lag;
+       if a_dif = 0.0 then val:= b.elt(i-1)
+       else b_val:= b.elt(i); b_lag:= b.elt(i-1);
+            val:= (((b_val-b_lag)/a_dif) * (v-a_lag)) + b_lag;
+       endif;
+ end;
+
+
+ Visible routine  NEGEXP;
+ import real a; name(integer) u; export real val;
+ begin real v;
+       if a <= 0.0 then ERROR(ENO_DRW_5) endif;
+       v:= envir_DRAW(u); val:= - envir_RLN(v) / a;
+       if status > 0 then ERR_SYS endif;
+ end;
+
+
+ Visible routine  NORMAL;
+ import real a,b; name(integer) u; export real val;
+ begin real t,p,q,v,x; boolean z;
+       if b < 0.0 then ERROR(ENO_DRW_8) endif;
+       v:= envir_DRAW(u);
+       if v > 0.5 then z:=true; v:=1.0-v else z:= false endif;
+       t:= envir_RLN(v);        if status > 0 then ERR_SYS endif;
+       t:= envir_RSQRT(-t-t);   if status > 0 then ERR_SYS endif;
+       p:= 2.515517 + (t * (0.802853 + (t*0.010328)));
+       q:= 1.0 + (t * (1.432788 + (t * (0.189269 + (t*0.001308)))));
+       x:= b * (t-(p/q));
+       val:= a + if z then x else -x ;
+ end;
+
+
+ Visible routine  POISSON;
+ import real a; name(integer) u; export real val;
+ begin real acc,xpa,sqa;
+       if a <= 0.0 then val:= 0.0 elsif a > 20.0
+       then sqa:= envir_RSQRT(a); if status > 0 then ERR_SYS endif;
+            val:= normal(a,sqa,u);
+       else acc:= 1.0; val:= 0.0;
+            xpa:= envir_REXP(-a); if status > 0 then ERR_SYS endif;
+            repeat acc:= acc * envir_DRAW(u);
+            while acc >= xpa do val:= val + 1.0 endrepeat;
+      endif;
+ end;
+
+
+ Visible routine  RANDINT;
+ import integer a,b; name(integer) u; export integer val;
+ begin if b < a then ERROR(ENO_DRW_6) endif;
+       val:=RENTIER(envir_DRAW(u) * ((b-a+1) qua real)) + a;
+ end;
+
+
+ Visible routine UNIFORM;
+ import real a,b; name(integer) u; export real val;
+ begin if b < a then ERROR(ENO_DRW_6) endif;
+       val:=a+((b-a)*envir_DRAW(u));
+ end;
+
+end;

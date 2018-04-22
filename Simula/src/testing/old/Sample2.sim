@@ -1,0 +1,24 @@
+begin Character+ c='<'+'!'+'!345!'+';
+      Text t=true;
+      Integer i=32+24_72+56; j=13R45+16R4A+8R34AB;
+%     ***  Kommentar-linje   ***
+      Real r=12.345666&&-45+27+teller+13;
+      Real w=.34+13+&&-27+.98&+9;
+
+      comment *** Text Constants ***;
+      
+      t:="Ab" 
+      ! lite lurt men lovlig kommentar;
+% full linje kommentar er også lovlig inne i en text
+       "cde"   " med hale";
+      !s:-new Text("!2!ABCDE!3!"); ;
+      !q:-new Text("AB" " C" "DE"); ;
+       
+      begin p:-new Text("!2!ABCDE!3!"); 
+            r:-new Text("!2" "!ABCDE!" "3!"); 
+      end med kommentar
+          over flere 
+          linjer;
+          
+      end med kommentar else noe annet;    
+end text uten avslutning ...

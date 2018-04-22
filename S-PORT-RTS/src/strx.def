@@ -1,0 +1,557 @@
+ Module STRG("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL;
+
+-----  Old GARB with new ALLOC Macro ----  etc...
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1987 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Oslo, Norway                                                   ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---       S t o r a g e   M a n a g e m e n t   S y s t e m         ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---       Selection Switches: D  (debug dumps)                      ---
+       -----------------------------------------------------------------------
+
+
+-- CORR Visible macro ALLOC(3);
+-- CORR begin repeat %1:=bio.pool_nxt;
+-- CORR              bio.pool_nxt:= bio.pool_nxt + %2;
+-- CORR       while  bio.pool_nxt > bio.pool_lim       --- MUST BE CHANGED !!!!!
+-- CORR       do     GARB(%1,%2,name(%3))    endrepeat;
+-- CORR endmacro;
+
+       Visible macro ALLOC(3);                                      ---- CORR
+       begin %1:=bio.pool_nxt; bio.pool_nxt:= bio.pool_nxt + %2;    ---- CORR
+             if bio.pool_nxt > bio.pool_lim                         ---- CORR
+             then %1:=GARB(%1,%2,name(%3)) endif;                   ---- CORR
+       endmacro;                                                    ---- CORR
+
+       Macro MARK_and_FOLLOW(1);
+       begin z:=%1;
+--??         if bio.trc then PTT_ENT("Chain",z) endif;  --- NEW
+             if z <> none then if z.gcl=none
+             then z.gcl:=chain; chain:=z endif endif;
+       endmacro;
+
+       Macro UPDATE(1);
+       begin if %1 <> none then
+--??         if bio.trc then PTT_ENT("Change",%1) endif;  --- NEW
+                                %1 := %1 . gcl endif endmacro;
+
+       long real garb_time;         -- Time used within the Garbage Collector
+       integer   garb_count;        -- No. of call's on the Garbage Collector
+--XX   size      worksize;          -- Total size of all defined pools
+       integer   npool;             -- Max no. of pools which can be defined
+       ref(area) first_pool;        -- Pointer to first storage pool
+       ref(area) last_pool;         -- Pointer to last storage pool
+       ref(area) current_pool;      -- Pointer to current storage pool
+
+       record area;                 -- Definition of storage pool
+       begin ref(area) suc;         -- Used to organize the pool list
+             short integer sequ;    -- Sequence number (1,2, ... )
+             ref(entity) nxt,lim;   -- Boundary pointers within the pool
+       end;
+%title ***   Storage   Initiation  /  Termination   ***
+
+ Visible routine STRG_INIT; import size minpool;  -- Minimum pool size
+ begin size poolsize; -- Initial pool's size
+       integer sequ;  -- Initial pool's sequence number (= 1)
+ 
+       ---  Create initial storage pool and initialize the pool structure.
+       garb_time:=0&&0;
+                        sequ:=1; garb_count:=0;
+       npool:=envir_get_intinfo(24);            if status>0 then ERR_SYS endif;
+       poolsize:=envir_get_sizeinfo(1,sequ);    if status>0 then ERR_SYS endif;
+       if poolsize < minpool then ERR_SYS endif;
+       current_pool:=envir_area(poolsize,sequ); if status>0 then ERR_SYS endif;
+       ZEROAREA(current_pool,current_pool+poolsize);
+
+       current_pool.lim:=(current_pool+poolsize) - size(entity);
+       current_pool.nxt:=current_pool + size(area);
+       current_pool.sequ:= sequ;
+       first_pool:=last_pool:=current_pool;
+       bio:=current_pool.nxt;
+       bio.pool_nxt:=current_pool.nxt;
+       bio.pool_lim:=current_pool.lim  - maxlen;
+--XX   worksize:=current_pool.lim - bio.pool_nxt;
+
+       if (npool/2)*2 <> npool                       --- TEMP
+       then sequ:=npool;                             --- TEMP
+            repeat sequ:=sequ-1 while sequ>0         --- TEMP
+            do extend_storage(poolsize) endrepeat;   --- TEMP
+       endif;                                        --- TEMP
+
+ end;
+
+
+ Visible routine STRG_TERM;
+ begin
+--XX   ED_STR("Size of Storage at Termination: "); ED_SIZE(worksize);
+       if garb_count > 0
+       then ED_OUT; ED_STR("(Garbage Collections: "); ED_INT(garb_count);
+            ED_STR(", GC-time: "); ED_FIX(garb_time qua real); PRT(")");
+       else PRT(" (No Garbage Collections)") endif;
+ end;
+%title ***   Storage Extension   ***
+
+ Routine extend_storage; import size minext;
+ begin size ext,lng; ref(area) p; ref() lim; integer sequ;
+
+--??   ED_STR("*** Extend Storage (beg)"); STRG_DUMP(1);  ---NEW
+       if npool > last_pool.sequ
+       then --- Create new pool ---
+             sequ:=last_pool.sequ+1;
+             lng:=envir_get_sizeinfo(1,sequ);
+             if status>0 then ERR_SYS endif;
+             p:=envir_area(lng,sequ); if status>0 then ERR_SYS endif;
+             p.sequ:=sequ; last_pool.suc:=p; last_pool:=p;
+             p.suc:=none;                                       --- NEW
+             p.nxt:=p+size(area); p.lim:=(p+lng)-size(entity);
+             ext:=p.lim+size(area)-p;
+       else  --- Extend Current pool ---
+             p:=current_pool; ext:=envir_get_sizeinfo(2,p.sequ);
+             if status>0 then ERR_SYS endif;
+             if ext <> nosize
+             then lim:=(p.lim+ext)+size(entity);
+                  p:=envir_area(lim-p,p.sequ);
+                  if status>0 then ERR_SYS endif;
+                  p.lim:=lim-size(entity);
+             endif;
+       endif;
+--??   ED_STR("*** Extend Storage (end)"); STRG_DUMP(1);  ---NEW
+       if ext < minext then ERROR(ENO_DSM_1) endif;
+--XX   worksize:= none+worksize+ext-none;
+ end;
+%title ***   The Garbage Collector   ***
+
+ Visible routine GARB;
+ import ref() poolnxt; size request; name(ref(entity)) xpnt;         ---- CORR
+ export ref(entity) result;                                          ---- CORR
+ begin long real gctime; ref(entity) gap,pnxt; Boolean packed;
+       range(0:MAX_ACT) act; 
+---- ????????????  current_pool.nxt:=bio.pool_nxt-request;           ---- CORR
+                   current_pool.nxt:=poolnxt;                        ---- CORR
+
+       if bio.trc then
+--                     ED_STR("*** GC-Beg"); STRG_DUMP(1);  ---NEW
+                       TRC_GC(GC_BEG,none) endif;
+       packed:=false;
+
+       repeat if current_pool.suc <> none
+              then SWAP: -- perform pool-swap
+%+D                    if bio.trc then                       --- TEMP
+--                     ED_STR("*** GC-SWAP"); STRG_DUMP(1);  --- TEMP
+%+D                    TRC_GC(GC_BEG,none) endif;            --- TEMP
+                   gap:=current_pool.nxt; gap.sort:=S_GAP;
+                   current_pool:=current_pool.suc;
+                   current_pool.nxt:=current_pool+size(area);
+                   --- Set tailing gap-entity's gcl to point
+                   --- to the first entity in next pool.
+                   gap.gcl:=current_pool.nxt;
+              elsif packed
+              then -- Try to extend storage and test again
+%+D                    if bio.trc then                       --- TEMP
+--                     ED_STR("*** GC-XBEG"); STRG_DUMP(1);  --- TEMP
+%+D                    TRC_GC(GC_BEG,none) endif;            --- TEMP
+                   extend_storage(none+request+maxlen-none);
+                   bio.pool_lim:=current_pool.lim-maxlen;
+                   if bio.pool_nxt>(bio.pool_lim-request) then goto SWAP endif;
+              else -- Perform full storage compaction
+                   gctime:=envir_GET_CPU_TIME;
+                   if status > 0 then status:=0; gctime:=0&&0; endif;
+                   garb_count:=garb_count+1; packed:=true;
+                   bio.thk_lst:=none; act:=act_lvl; act_lvl:=ACT_GC;
+                   PASS1(xpnt);   if bio.trc then TRC_GC(GC_EP1,none) endif;
+                   pnxt:=PASS2;   if bio.trc then TRC_GC(GC_EP2,none) endif;
+                   PASS3(xpnt);   if bio.trc then TRC_GC(GC_EP3,none) endif;
+                   PASS4;         if bio.trc then TRC_GC(GC_EP4,none) endif;
+                   if pnxt <> current_pool.nxt then ERROR(ENO_SYS_1) endif;
+
+                   act_lvl:=act;
+                   garb_time:=garb_time + (envir_GET_CPU_TIME-gctime);
+                   if status > 0 then status:=0; garb_time:=0&&0; endif;
+              endif;
+              bio.pool_nxt:=current_pool.nxt;
+              bio.pool_lim:=current_pool.lim-maxlen;
+%+D                    if bio.trc then                       --- TEMP
+-- UT                  ED_STR("*** GC-LOOP"); STRG_DUMP(1);  --- TEMP
+%+D                    TRC_GC(GC_BEG,none) endif;            --- TEMP
+       while bio.pool_nxt > (bio.pool_lim-request) do endrepeat;
+
+       -- Clear free area of current pool --
+       ZEROAREA(bio.pool_nxt,bio.pool_lim+maxlen+size(entity));
+       result:=bio.pool_nxt; bio.pool_nxt:= bio.pool_nxt + request;  ---- CORR
+       if bio.trc then
+-- UT                  ED_STR("*** GC-End"); STRG_DUMP(1);  ---NEW
+                       TRC_GC(GC_END,none) endif;
+ end;
+%title ***   Pass 1 - Marking   ***
+
+ Routine PASS1; import name(ref(entity)) xpnt;
+ begin ref(entity) x;       -- The entity which is currently treated
+       ref(entity) y;       -- Local utility
+       ref(entity) z;       -- Used by the 'MARK_and_FOLLOW' macro
+       ref() chain;         -- The entity chain
+       ref(ptp) pp;         -- Local utility
+       integer i,j;         -- Local utility
+       name() q;            -- Local utility
+       ref(pntvec) pnt_vec; -- Local utility
+       ref(filent) F,N; -- Used to scan the open file list
+
+       chain:= ref(nostring);  MARK_and_FOLLOW(%curins%);
+       MARK_and_FOLLOW(%bio%); MARK_and_FOLLOW(%var(xpnt)%);
+
+       repeat while chain <> ref(nostring)
+       do x:= chain; chain:= x.gcl;
+--??      if bio.trc then PRT_ENT("Follow",x); TRC_GC(GC_PRC1,x) endif;
+          case 0:MAX_SORT (x.sort)
+          when S_TXTENT,S_ARHEAD:  -- no local pointer
+          when S_ARBODY: MARK_and_FOLLOW(%x qua ref(arbody).head%);
+          when S_ARBREF: MARK_and_FOLLOW(%x qua ref(arbody).head%);
+               i:=x qua ref(arbody).head.nelt;
+               repeat i:= i - 1 while i >= 0
+               do MARK_and_FOLLOW(%x qua ref(ref_arr).elt(i)%) endrepeat;
+
+          when S_ARBTXT: MARK_and_FOLLOW(%x qua ref(arbody).head%);
+               i:=x qua ref(arbody).head.nelt;
+               repeat i:= i - 1 while i >= 0
+               do MARK_and_FOLLOW(%x qua ref(txt_arr).elt(i).ent%) endrepeat;
+
+          when S_ARENT2:  -- no local pointer
+          when S_ARREF2:
+               i := (x qua ref(arent2).ub_1 - x qua ref(arent2).lb_1 + 1 )
+                  * (x qua ref(arent2).ub_2 - x qua ref(arent2).lb_2 + 1 )
+               repeat i:= i - 1 while i >= 0
+               do MARK_and_FOLLOW(%x qua ref(ref_arr_2).elt(i)%) endrepeat;
+
+          when S_ARTXT2:
+               i := (x qua ref(arent2).ub_1 - x qua ref(arent2).lb_1 + 1 )
+                  * (x qua ref(arent2).ub_2 - x qua ref(arent2).lb_2 + 1 )
+               repeat i:= i - 1 while i >= 0
+               do MARK_and_FOLLOW(%x qua ref(txt_arr_2).elt(i).ent%) endrepeat;
+
+          when S_ARENT1:  -- no local pointer
+          when S_ARREF1:
+               i := x qua ref(arent1).ub - x qua ref(arent1).lb + 1;
+               repeat i:= i - 1 while i >= 0
+               do MARK_and_FOLLOW(%x qua ref(ref_arr_1).elt(i)%) endrepeat;
+
+          when S_ARTXT1:
+               i := x qua ref(arent1).ub - x qua ref(arent1).lb + 1;
+               repeat i:= i - 1 while i >= 0
+               do MARK_and_FOLLOW(%x qua ref(txt_arr_1).elt(i).ent%) endrepeat;
+          when S_SAV: MARK_and_FOLLOW(%x.sl%);
+                      MARK_and_FOLLOW(%x qua ref(instance).dl%);
+                      if x.lng > size(savent)
+                      then init_pointer(x+size(savent));
+                           repeat y:=get_pointer while y <> none
+                           do MARK_and_FOLLOW(%y%) endrepeat;
+                      endif;
+          when S_SUB,S_PRO,S_THK:
+               MARK_and_FOLLOW(%x.sl%);
+               MARK_and_FOLLOW(%x qua ref(instance).dl%);
+               j:= 0; pnt_vec:=x.pp.pnt_vec;
+               if pnt_vec <> none
+               then repeat while j < pnt_vec.npnt
+                    do q:= x + pnt_vec.pnt(j); j:=j+1;
+                       MARK_and_FOLLOW(%var(q qua name(ref()))%);
+                    endrepeat;
+               endif;
+
+          when S_ATT,S_DET,S_RES,S_TRM,S_PRE:
+               MARK_and_FOLLOW(%x.sl%);
+               MARK_and_FOLLOW(%x qua ref(instance).dl%);
+               pp:= x.pp; i:= pp qua ref(cla_pre_ptp).plv;
+               repeat j:= 0; pnt_vec:=pp.pnt_vec;
+                      if pnt_vec <> none
+                      then repeat while j < pnt_vec.npnt
+                           do q:= x + pnt_vec.pnt(j); j:=j+1;
+                              MARK_and_FOLLOW(%var(q qua name(ref()))%);
+                           endrepeat; endif;
+               while i>0 do i:=i-1;
+                            pp:= pp qua ref(cla_pre_ptp).prefix(i);
+               endrepeat;
+          otherwise ERROR(ENO_SYS_1) endcase;
+       endrepeat;
+
+
+       N:=bio.fil_lst; --- Scan through all open files ---
+       repeat F:=N while F <> none do N:=F.suc; if F.gcl = none
+          then TRC_GC(GC_FIL,F) endif; --- Unclosed file found as Garbage ---
+       endrepeat;
+
+ end;
+%title ***   Pass 2 - Compute new Object Addresses   ***
+
+ Routine PASS2; export ref(entity) pnxt;
+ begin ref(area) pool;
+--XX                   size lng,used,minfree;
+                       size lng,free,minfree;   --- NEW
+       ref(entity) x,y,z,gap;
+
+       pool:=first_pool; z:=pool.lim
+       gap:=none;
+--XX              used:=nosize;
+                                x:=y:=pool+size(area);
+
+       repeat while true
+       do
+--??      if bio.trc then PRT_ENT("Treat",x); TRC_GC(GC_PRC1,x) endif; --- NEW
+          case 0:MAX_SORT (x.sort)
+          when S_NOSORT: goto ENDP2;
+          when S_ARHEAD,S_ARBODY,S_ARBREF,S_ARBTXT,S_ARENT2,S_ARREF2,S_ARTXT2,
+               S_ARENT1,S_ARREF1,S_ARTXT1,S_TXTENT,S_SAV: lng:= x.lng
+          when S_SUB,S_PRO,S_THK,S_ATT,
+               S_DET,S_RES,S_TRM,S_PRE: lng:= x.pp.lng;
+          when S_GAP:
+--XX                  lng:= x.gcl - x; x.gcl:=none;
+                      if gap = none then gap:= x endif;  --- NEW
+                      x:=x.gcl; goto E;                  --- NEW
+          otherwise ERROR(ENO_SYS_1) endcase;
+
+
+          if x.gcl <> none
+          then -- Marked Entity --
+--XX           x.gcl:= y; y:= y + lng;
+--XX           if y > z
+               free:= z-y;                  --- NEW
+               if lng > free                --- NEW
+               then -- New Pool is Full --
+--XX                used:=pool.lim+size(area)+used-pool;
+                    pool.nxt:=x; pool:=pool.suc;
+--XX                y:=pool.nxt; z:=pool.lim;
+                    y:=pool+size(area); z:=pool.lim;
+--XX                x.gcl:= y; y:=y+lng;
+               endif
+               x.gcl:= y; y:= y + lng;       --- NEW
+               if gap <> none
+               then gap.gcl:= x;
+--??                if bio.trc then PRT_ENT("Gap ",x) endif;
+                                 gap:= none endif;
+--??           if bio.trc then PRT_ENT("Used",x) endif;
+          else -- Unmarked Entity --
+               if gap = none
+               then gap:= x; gap.sort:= S_GAP endif;
+          endif;
+          x:= x + lng;
+ E:    endrepeat;
+
+ ENDP2:if gap <> none then gap.gcl:= x
+%+D                 if bio.trc then PRT_ENT("Gapx",x) endif;
+                                       endif;
+--XX   used:=y+size(area)+used-pool;
+--XX   minfree:=envir_get_sizeinfo(3,0);
+--XX   if status <> 0 then status:=0; minfree:=nosize endif; ----- T E M P
+--XX   if (none+worksize-used) < (none+minfree-maxlen)
+--XX   then extend_storage(none+minfree-maxlen-worksize+used-none) endif;
+
+       if pool = last_pool                                      --- NEW
+       then free:=z-y; minfree:=envir_get_sizeinfo(3,pool.sequ); -- NEW
+            if status <> 0 then status:=0; minfree:=nosize;     --- NEW
+            elsif free < minfree                                --- NEW
+            then extend_storage(none+minfree-free-none) endif;  --- NEW
+       endif;                                                   --- NEW
+
+       pool.nxt:=none; current_pool:=pool; pnxt:=y;
+ end;
+%title ***   Pass 3 - Update Pointers   ***
+
+ Routine PASS3; import name(ref(entity)) xpnt;
+ begin ref(entity) x,y,z; ref(ptp) pp; integer i,j;
+       ref(pntvec) pnt_vec; name(ref(entity)) q; ref(filent) F,N;
+       -- NOTE: bio is fixed allocated at the beginning of the     --- NEW
+       --       first pool and NEVER MOVED.                        --- NEW
+       if bio.gcl <> bio then ERROR(ENO_SYS_1) endif;              --- NEW
+       -- NOTE: Due to GC-Tracing: curins must not be updated      --- NEW
+       --       until the end of pass 3                            --- NEW
+--XX   UPDATE(%var(xpnt)%); UPDATE(%bio%); UPDATE(%curins%);
+       x:=first_pool+size(area);
+       repeat while true
+       do
+--??      if bio.trc then PRT_ENT("Update",x); TRC_GC(GC_PRC3,x); z:=x endif;
+          case 0:MAX_SORT (x.sort)
+          when S_NOSORT: goto ENDP3;
+          when S_GAP:    x:= x.gcl;
+          when S_TXTENT: x:= x + x.lng;
+          when S_ARHEAD: x:= x + x.lng;
+          when S_ARBODY: UPDATE(%x qua ref(arbody).head%); x:= x + x.lng;
+          when S_ARBREF: i:=x qua ref(arbody).head.nelt;
+               UPDATE(%x qua ref(arbody).head%);
+               repeat i:= i - 1 while i >= 0
+               do UPDATE(%x qua ref(ref_arr).elt(i)%) endrepeat;
+               x:= x + x.lng;
+          when S_ARBTXT: i:=x qua ref(arbody).head.nelt;
+               UPDATE(%x qua ref(arbody).head%);
+               repeat i:= i - 1 while i >= 0
+               do UPDATE(%x qua ref(txt_arr).elt(i).ent%) endrepeat;
+               x:= x + x.lng;
+
+          when S_ARENT2: x:= x + x.lng;
+          when S_ARREF2:
+               i := (x qua ref(arent2).ub_1 - x qua ref(arent2).lb_1 + 1 )
+                  * (x qua ref(arent2).ub_2 - x qua ref(arent2).lb_2 + 1 )
+               repeat i:= i - 1 while i >= 0
+               do UPDATE(%x qua ref(ref_arr_2).elt(i)%) endrepeat;
+               x:= x + x.lng;
+
+          when S_ARTXT2:
+               i := (x qua ref(arent2).ub_1 - x qua ref(arent2).lb_1 + 1 )
+                  * (x qua ref(arent2).ub_2 - x qua ref(arent2).lb_2 + 1 )
+               repeat i:= i - 1 while i >= 0
+               do UPDATE(%x qua ref(txt_arr_2).elt(i).ent%) endrepeat;
+               x:= x + x.lng;
+
+          when S_ARENT1: x:= x + x.lng;
+          when S_ARREF1:
+               i := x qua ref(arent1).ub - x qua ref(arent1).lb + 1;
+               repeat i:= i - 1 while i >= 0
+               do UPDATE(%x qua ref(ref_arr_1).elt(i)%) endrepeat;
+               x:= x + x.lng;
+
+          when S_ARTXT1:
+               i := x qua ref(arent1).ub - x qua ref(arent1).lb + 1;
+               repeat i:= i - 1 while i >= 0
+               do UPDATE(%x qua ref(txt_arr_1).elt(i).ent%) endrepeat;
+               x:= x + x.lng;
+          when S_SAV: UPDATE(%x.sl%); UPDATE(%x qua ref(instance).dl%);
+                      if x.lng > size(savent)
+                      then init_pointer(x+size(savent));
+                           repeat y:= get_pointer while y <> none
+                           do set_pointer(y.gcl) endrepeat;
+                      endif;
+                      x:= x + x.lng;
+          when S_SUB,S_PRO,S_THK:
+               UPDATE(%x.sl%); UPDATE(%x qua ref(instance).dl%);
+               j:= 0; pnt_vec:=x.pp.pnt_vec;
+               if pnt_vec <> none
+               then repeat while j < pnt_vec.npnt
+                    do q:= x + pnt_vec.pnt(j); j:=j+1;
+                       UPDATE(%var(q)%);
+                    endrepeat;
+               endif;
+               x:= x + x.pp.lng;
+          when S_ATT,S_DET,S_RES,S_TRM,S_PRE:
+               UPDATE(%x.sl%); UPDATE(%x qua ref(instance).dl%);
+               pp:= x.pp; i:= pp qua ref(cla_pre_ptp).plv;
+               repeat j:= 0; pnt_vec:=pp.pnt_vec;
+                      if pnt_vec <> none
+                      then repeat while j < pnt_vec.npnt
+                           do q:= x + pnt_vec.pnt(j); j:=j+1;
+                              UPDATE(%var(q)%);
+                           endrepeat;
+                      endif;
+               while i>0 do i:=i-1;
+                            pp:=pp qua ref(cla_pre_ptp).prefix(i);
+               endrepeat;
+               x:= x + x.pp.lng;
+          otherwise ERROR(ENO_SYS_1) endcase;
+
+--??      if bio.trc then PRT_ENT("Updated",z); TRC_GC(GC_UPD3,z) endif;
+       endrepeat;
+
+ENDP3: N:=bio.fil_lst; --- Scan through all open files ---
+       repeat F:=N while F <> none
+       do N:=F.suc; if N <> none then F.suc:=N.gcl endif;
+          if F.prd <> none then F.prd:=F.prd.gcl endif;
+       endrepeat;
+       UPDATE(%bio.fil_lst%);
+       UPDATE(%var(xpnt)%); UPDATE(%curins%);              --- NEW
+ end;
+%title ***   Pass 4 - Compact all Storage Pools   ***
+
+ Routine PASS4;
+ begin ref(area) pool; integer sort; size lng;
+       ref(entity) x,y,z,filled,gap;
+
+       pool:=first_pool; x:=y:=filled:=pool+size(area);
+       z:=pool.nxt; if z <> none then sort:=z.sort; z.sort:=S_NOSORT endif;
+       repeat while true
+       do case 0:MAX_SORT (x.sort)
+          when S_NOSORT: lng:=x-y;
+                         if y <> filled then envir_move(y,filled,lng) endif;
+                         pool.nxt:=filled+lng;
+                         if z = none then goto ENDP4 endif;
+                         if z <> x then ERROR(ENO_SYS_1) endif;
+                         gap:=pool.nxt; gap.sort:=S_GAP;
+                         y:=x; x.sort:=sort; pool:=pool.suc;
+                         gap.gcl:=filled:=pool+size(area); z:=pool.nxt;
+                         if z <> none then sort:=z.sort; z.sort:=S_NOSORT endif;
+          when S_GAP: lng:= x - y;
+                      if y <> filled then envir_move(y,filled,lng) endif;
+                      filled:= filled + lng; y:=x:= x.gcl;
+          when S_ARHEAD,S_ARBODY,S_ARBREF,S_ARBTXT,S_ARENT2,S_ARREF2,
+               S_ARTXT2,S_ARENT1,S_ARREF1,S_ARTXT1,S_TXTENT,S_SAV:
+               x.gcl:=none; x:= x + x.lng
+          when S_SUB,S_PRO,S_THK,S_ATT,S_DET,S_RES,S_TRM,S_PRE:
+               x.gcl:=none; x:=x+x.pp.lng;
+          otherwise ERROR(ENO_SYS_1) endcase;
+       endrepeat;
+
+ENDP4: pool.nxt.sort:=S_NOSORT;
+ end;
+%title ******   D u m p    U t i l i t i e s   ******
+%+D Visible routine STRG_DUMP; import integer level;
+%+D begin ref(area) pool; ED_OUT;
+%+D       ED_STR("****** STORAGE SUMMARY ******  Npool: ");   --- NEW
+%+D       ED_INT(npool); ED_OUT;                              --- NEW
+%+D       ED_STR("first_pool:");     ED_OADDR(first_pool);
+%+D       ED_STR("  last_pool:");    ED_OADDR(last_pool);
+%+D       ED_STR("  current_pool:"); ED_OADDR(current_pool); ED_OUT;
+%+D       if level > 0
+%+D       then pool:=first_pool;
+%+D            repeat while pool <> none
+%+D            do DMP_POOL(pool,level); pool:=pool.suc endrepeat;
+%+D       endif;
+%+D end;
+
+%+D Routine DMP_POOL; import ref(area) pool; integer level;
+%+D begin ref(entity) x; x:=pool+size(area); ED_OUT; 
+%+D       ED_STR("pool.suc:"); ED_OADDR(pool.suc);
+%+D       ED_STR("  pool.nxt:"); ED_OADDR(pool.nxt);
+%+D       ED_STR("  pool.lim:"); ED_OADDR(pool.lim); ED_OUT;
+%+D       if level > 1
+%+D       then ED_OUT; ED_STR(" ************   STORAGE POOL "); 
+%+D            ED_INT(pool.sequ); ED_STR("   ************"); ED_OUT;
+%+D            repeat while true
+%+D            do ---  GC_TRC("Entity: ",x); ---   FYLL INN GAMMEL GC_TRC !!!
+%+D               case 0:MAX_SORT (x.sort)
+%+D               when S_NOSORT: goto E1;
+%+D               when S_GAP: x:= x.gcl;
+%+D                           if (x<pool) or (x>pool.lim) then goto E2 endif;
+%+D               when S_TXTENT,S_ARHEAD,S_ARBODY,S_ARBREF,S_ARBTXT,S_ARENT2,
+%+D                    S_ARREF2,S_ARTXT2,S_ARENT1,S_ARREF1,S_ARTXT1,S_SAV:
+%+D                    x:= x + x.lng;
+%+D               when S_SUB,S_PRO,S_THK,S_ATT,S_DET,S_RES,S_TRM,S_PRE:
+%+D                    x:= x + x.pp.lng;
+%+D               otherwise goto E3 endcase;
+%+D            endrepeat;
+%+D E1:E2:E3:  ED_OUT; ED_STR(" ************   END STORAGE POOL "); 
+%+D            ED_INT(pool.sequ); ED_STR("   ************"); ED_OUT;
+%+D       endif;
+%+D end;      
+
+%+D Routine PRT_ENT; import infix(string) mss; ref(entity) x;
+%+D begin ED_STR(mss); ED_STR(" ");
+%+D       if x = none then ED_STR("None"); ED_OUT;
+%+D       else if (x.sort<0) or (x.sort>MAX_SORT)
+%+D            then ED_STR(" *** Unknown SORT ***"); ED_OUT;
+%+D            else ED_ENT_IDT(x); ED_OUT; DMP_ENT(x) endif;
+%+D       endif;
+%+D end;      
+
+    Routine PTT_ENT; import infix(string) mss; ref(entity) x;
+    begin ED_STR(mss); ED_STR(" "); ED_OADDR(x); ED_OUT end;
+
+end;

@@ -1,0 +1,30 @@
+
+%INCLUDE_QPS
+%QUALIFIEDNAMES
+
+begin
+   ref(A) x;
+   class A;
+   begin
+      integer i;
+      outtext("A: State 1(Initiating)"); outimage;
+      detach;     
+      outtext("A: State 2"); outimage;
+      detach;
+      outtext("A: State 3(Terminating)"); outimage;
+   end A;
+   
+   begin
+      outtext("Main: Before new A"); outimage;
+      x:-new A();
+      outtext("Main: Before first call"); outimage;
+      call(x);
+      outtext("Main: Before second call"); outimage;
+      call(x);
+      outtext("Main: Before third call"); outimage;
+      outtext("Main: Expected result:"); outimage;
+      outtext("Call(x): x is not in detached state."); outimage;
+      call(x);
+   end subBlock;
+   
+end program;

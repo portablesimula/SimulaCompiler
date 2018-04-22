@@ -1,0 +1,1077 @@
+External class SCODER1;
+
+SCODER1 class SCODER2;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1985,86 by                                           ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  2.           ---
+%      ---                                                                 ---
+%      --- Selection switches: DKPIZ                                       ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCODER:MNE
+%+I %INSERT (RTS-105)RTSINIT:MNE
+
+codegenerator1 class codegenerator2;
+begin short integer ll1,ll2; ref(identtagtable) simob_ident;
+
+      class identtagtable;
+      begin short integer array tag(0:maxid+maxconst);
+            ! tag for the S-code identifier constants
+             0 if no identifier constant is generated ;
+      end;
+
+      short integer lastidenttag;
+           ! last tag used for an identifier constant, as this ;
+           ! should not be deleted at exit from a block        ;
+
+%+P   prior
+      short integer procedure identifiertag(index); short integer index;
+      begin text ident;
+            if simob_ident.tag(index)=0 then begin
+                  ident:-idname(index);
+                  lastidenttag:=
+                  simob_ident.tag(index):=lastusedtag:=lastusedtag+1;
+                  outconstdef(simob_ident.tag(index),Z_identifier);
+                  outfixrep(ident.length);
+                  outrecordconst(Z_identifier);
+                    outattrconst(Z_ident_ncha,ptint);
+                    outinteger(ident.length);
+                    outattrconst(Z_ident_cha,ptchar);
+                    textval(index);
+                  outendrecord;
+            end;
+            identifiertag:=simob_ident.tag(index);
+      end identifiertag;
+%title ***  Procedure PROFILEGENERATOR  ***
+%+P   prior
+      procedure profilegenerator(extq);ref(extquantity)extq;
+      begin ref(quantity)qty; text it; short integer idlength,index;
+            ! This procedure produces the routine profile corresponding
+              to the declaration of an external non-Simula procedure;
+
+%+P         prior
+            procedure outprofile(ptag); short integer ptag;
+            begin SCF.outbyte(vprofile); outtag(ptag) end;
+
+%+P         prior
+            procedure outexternal(ptag,id,nat,xid);
+            short integer ptag,id,nat,xid;
+            begin SCF.outbyte(vexternal); SCF.out2byte(0); outtag(ptag);
+                  outstring(id); outstring(nat); outstring(xid);
+            end;
+
+%+P         prior
+            procedure outimport(ptag,ptype,id);
+            short integer ptag,ptype,id;
+            begin SCF.outbyte(vimport); SCF.out2byte(0); outtag(ptag);
+                  outstring(id); outtag(ptype);
+            end;
+
+%+P         prior
+            procedure outexport(ptag,type); short integer ptag,type;
+            begin SCF.outbyte(vexport); outtag(ptag); outtag(type) end;
+
+%+P         prior
+            procedure outendprofile; SCF.outbyte(vendprofile);
+
+            inspect extq do
+            begin if module==none then
+                  begin outprofile(ftag+profiledisp);
+                        outexternal(ftag+bodydisp,ident,dim,virtno);
+                        it:-blanks(12);
+                        it.sub(1,1).putint(rtstypecode(IREF));
+                        it.sub(2,1).putint(rtskind(IIDN));  !simple;
+                        it.sub(3,1).putint(rtsmode(IFRMP)); !default;
+                        it.sub(5,8):="_CONTEXT";
+                        DEFCONST(it);index:=HASHINDEX;
+                        outimport(ftag+contextdisp,ptoaddr,index);
+                        qty:-descr.fpar;
+               nextqty: inspect qty do
+                        begin idlength:=idname(ident).length;
+                              it:-blanks(idlength+4);
+                              it.sub(1,1).putint(rtstypecode(rank(type)));
+                              it.sub(2,1).putint(rtskind(rank(kind)));
+                              it.sub(3,1).putint(rtsmode(rank(categ)));
+                              it.sub(5,idlength):=idname(ident);
+                              DEFCONST(it);index:=HASHINDEX;
+                              outimport(ftag,
+                                        if rank(categ)=INAME then ptgaddr else
+                                        if rank(kind)= IARRA then ptoaddr else
+                                        if rank(kind)= ILABE then ptpaddr
+                                                else typetag(rank(type)),
+                                        index);
+                              qty:-next; goto nextqty;
+                        end inspect qty;
+                        if rank(type) <> INOTY then
+                        outexport(ftag+exportdisp,
+                                  if rank(type)=ITEXT then Z_string
+                                                else typetag(rank(type)));
+                        outendprofile;
+                  end;
+            end;
+      end profilegenerator ;
+%title ***  Procedure DESCRIPTORGENERATOR  ***
+
+%+P   prior
+      procedure descriptorgenerator(q);ref(quantity)q;
+      begin ref(quantity)qty;
+            short integer t,firstnesttag,lastnesttag,bcnttag;
+            ref(extmodule)eee;
+
+            ! 'Descriptorgenerator' is called for each block, with q== ;
+            ! declquant of the block. The purpose is to generate the   ;
+            ! record descriptor for the block.                         ;
+            inspect q do
+            begin outinstr(vrecord); outtag(ftag+descriptordisp);
+                  outinstr(vprefix);
+                  outtag(if plev>0 then prefqual.ftag+descriptordisp else
+                         if rank(kind)=IPROC and!then; rank(type) <> INOTY
+                            and!then; rank(type) <> IOTHW
+                         then type_pro_tag(rank(type)) else Z_instance );
+
+                  qty:-descr.fpar;
+        nextqty:  inspect qty do
+                  begin
+                        if rank(categ)=INAME then
+                        outattrdef(ftag+quantdisp,Z_parqnt)
+                   else
+                        if rank(kind)=IARRA then
+                        ! array, local or by value/reference parameter;
+                        outattrdef(ftag+quantdisp,ptoaddr)
+                   else
+                        if rank(kind)=IIDN then begin
+                        ! simple kind (including text), constant,
+                          local or by value/reference parameter;
+                          if rank(q.kind)=ICLAS or!else; arraylb=0 then
+                             outattrdef(ftag+quantdisp,typetag(rank(type)))
+                        end
+                   else
+                        ! For the remaining kinds only parameters are
+                          represented in the instance record. By reference is
+                          the only possible transmission mode (INAME already
+                          treated above): ;
+                        if rank(categ)=IFRMP then
+                        begin if rank(kind)=IPROC then
+                              outattrdef(ftag+quantdisp,Z_proqnt)
+                         else if rank(kind)=ILABE then
+                              outattrdef(ftag+quantdisp,Z_labqnt)
+                         else if rank(kind)=ISWIT then
+                              outattrdef(ftag+quantdisp,Z_swtqnt);
+                        end;
+                        qty:-next; goto nextqty;
+                  end inspect qty;
+
+                  ! Production of fornests attributes of type PADDR and
+                    of connests attributes of type OADDR;
+                  ! For a procedure body fornests and connests will
+                    be zero, they are counted in the procedure head;
+
+                  firstnesttag:=firstfortag(q);
+                  lastnesttag:=firstnesttag+descr.fornests-1;
+                  for t:=firstnesttag step 1 until lastnesttag
+                  do outattrdef(t,ptpaddr);
+
+                  firstnesttag:=lastnesttag+1;
+                  lastnesttag:=firstnesttag+descr.connests-1;
+                  for t:=firstnesttag step 1 until lastnesttag
+                  do outattrdef(t,ptoaddr);
+
+                  if simob_descr then
+                  begin
+%+K                     if (if rank(kind)=IPROC and rank(categ)=IDCLI then
+%+K                            descr.thisused else false) then
+%+K                     ! quick procedure, no sequ attribute ;
+%+K                     else
+                        if rank(kind)=IPROC and plev=0 or rank(kind)=ICLAS
+                        then outattrdef(ftag+sequdisp,ptint);
+
+                        ! Generation of instance counters for local blocks, ;
+                        ! in this version only for procedures and classes ;
+                        ! but not for external procedures with binding ;
+
+                        qty:-descr.fpar;
+              nextqty2: inspect qty
+                        when extquantity do !no instance counter ;
+                        when quantity do
+                        begin if rank(kind)=IPROC
+                              and (rank(categ)=IDCLI or rank(categ)=IEXTR)
+                              or rank(kind)=ICLAS then
+                              begin bcnttag:=lastusedtag:=lastusedtag+1;
+                                    if simob_descr then
+                                       outattrdef(bcnttag,ptint);
+                              end;
+
+                              if descr is extbrecord  then
+                              begin ! Put prototypetag of this quantity into ;
+                                    ! the corresponding extmodule object ;
+
+                                    eee:-firstextmodule.next;
+                                    while eee=/=none do
+                                    begin if eee.qty=/=this quantity
+                                          then eee:-eee.next
+                                     else begin eee.pptag:=ftag+prototypedisp;
+                                                eee:-none;
+                                          end;
+                                    end;
+                              end;
+                              qty:-next; goto nextqty2;
+                        end inspect qty;
+                  end simob_descr;
+
+%+K               qty:-q.descr.fpar;
+%+K               while qty=/=none do
+%+K               begin if (if rank(qty.kind)=IPROC and rank(qty.categ)=IDCLI
+%+K                            then qty.descr.thisused else false) then
+%+K                     outattrdef(qty.ftag+instrefdisp,ptoaddr);
+%+K                     qty:-qty.next;
+%+K               end;
+                  outendrecord;
+            end inspect q;
+      end descriptorgenerator;
+%title ***  Procedure PROTOTYPEGENERATOR  ***
+
+      short integer noofprototypes;
+            ! Counts total number of blocks for which a prototype is
+              generated in the current S-Code module.  Is used to give
+              each block a unique index into the resource-info vector
+              of the module;
+
+      procedure outprototypes(q);ref(quantity)q;
+      ! Is called at block end for all blocks except classes.
+        Is called  recursively for local classes.  Is also called at
+        block end for a separately compiled class ;
+      begin ref(quantity)qty,pqty;
+            qty:-q.descr.fpar;
+            while qty=/=none do
+            begin
+!nov 86;          if qty.arraylb<>0 then begin
+!nov 86;             if rank(q.kind)<>ICLAS and!then; rank(qty.kind)=IIDN
+!nov 86;             then begin ! remove constant element ;
+!nov 86;                if pqty==none then q.descr.fpar:-qty.next
+!nov 86;                else pqty.next:-qty.next;
+!nov 86;                goto qtynext
+!nov 86;          end end;
+                  if qty.categ=char(IDCLI) and!then; qty.kind=char(ICLAS)
+                  then outprototypes(qty);
+!nov 86;          pqty:-qty;
+         qtynext: qty:-qty.next;
+            end;
+            prototypegenerator(q);
+      end outprototypes;
+
+      procedure prototypegenerator(q);ref(quantity)q;
+      begin !*** Called from outprototypes only.                           ***;
+            !*** Is called for each block and generates the prototype etc. ***;
+            !*** For a procedure it is called with the body as parameter.  ***;
+
+            ref(quantity)qty;
+      short integer npar,            ! number of parameters;
+                    navirt,          ! number of virtuals;
+                    npnt,            ! no.of pointers ;
+                    pntvec,          ! tag of pointer vector ;
+                    atrvirvec,       ! tag of attribute or virtual vector ;
+                    prototidenttag,  ! tag of identitifier for prototype ;
+                    xpp_tag,         ! tag of prototype extension ;
+                    nent,            ! no.of entities in entity list ;
+                    atrvec_tag;      ! tag for atrvec ;
+
+%+P         prior
+            boolean procedure pointer(qty);ref(quantity)qty;
+            begin ! Return true if qty has to be represented
+                    in the pointer vector of its enclosure ;
+            inspect qty do pointer :=
+               if categ=char(INAME) then true else if kind=char(IARRA) then true
+          else if kind=char(IIDN) and!then;
+                  (type=char(ITEXT) or!else; type=char(IREF)) then true
+          else if categ=char(IFRMP) and!then;
+                  (kind=char(IPROC) or!else;
+                   kind=char(ILABE) or!else; kind=char(ISWIT)) then true
+%+K       else if kind=char(IPROC) and!then; categ=char(IDCLI)
+%+K            then descr.thisused !quick proc,no atrlist element;
+               else false;
+            end pointer;
+%page
+
+%+P   prior
+      procedure count(qty);ref(quantity)qty;
+      begin ref(quantity)q;
+            !*** qty denotes the decl quantity, for a procedure called    ***;
+            !*** first with qty == quantity of the body, then             ***;
+            !*** again for the head.  For a quick procedure called        ***;
+            !*** only once, with qty==head.                               ***;
+            !*** Count number of elements in pointer vector and           ***;
+            !*** in entity_list (simob info) by updating the              ***;
+            !*** global variables npnt and nent.                          ***;
+
+      REP:  npnt:=npnt+qty.descr.connests;
+
+            q:-qty.descr.fpar;
+            if qty.kind=char(IPROC) and!then; qty.plev=0 ! Head quantity ; then
+            begin while q =/= none do
+                  begin if pointer(q) then npnt:=npnt+1; q:-q.next end;
+            end else
+            begin while q =/= none do
+                  begin if simob_entity then nent:=nent+1;
+                        if pointer(q) then npnt:=npnt+1; q:-q.next;
+                  end while;
+            end;
+
+            if qty.kind=char(IPROC) and!then; qty.plev=1 !body quantity ;
+            then begin
+                  if simob_entity and!then; qty.type <> char(INOTY)
+                  then nent:=nent+1;
+                  if qty.type=char(IREF)
+                     or!else; qty.type=char(ITEXT) then npnt:=npnt+1;
+                  qty:-qty.prefqual; goto REP;
+            end;
+
+      end count;
+%page
+      procedure pntlist(qty); ref(quantity)qty;
+      begin ref(quantity)q; short integer t,firstconntag,lastconntag;
+            !*** Produce all AADDR-elements in the ptnvec of qty:          ***;
+            !*** candidates are locals and parameters, connection pointers,***;
+            !*** and the possible result attribute of a type procedure.    ***;
+            !*** Connection pointers should be represented first in pntvec ***;
+
+            inspect qty do
+            begin if kind=char(IPROC) and!then; plev=1 !body quantity; then
+                  begin ! Treat the procedure head first: ;
+                        pntlist(prefqual);
+                        if type=char(IREF)
+                        then outaddrconst(vcaaddr,Z_ref_pro_va)
+                   else if type=char(ITEXT) then
+                        begin outcdot(Z_txt_pro_va);
+                              outaddrconst(vcaaddr,Z_txtqnt_ent);
+                        end;
+                  end treatment of procedure body ;
+
+                  ! ptnvec elements for connection pointers: ;
+                  ! (for procedures connests are counted in the
+                     procedure head, and not in the body) ;
+                  if descr.connests > 0 then
+                  begin firstconntag:=
+                           firstfortag(this quantity)+descr.fornests;
+                        lastconntag:=firstconntag+descr.connests-1;
+                        for t:=firstconntag step 1 until lastconntag
+                        do outaddrconst(vcaaddr,t);
+                  end;
+
+                  q:-descr.fpar;
+         nextqty: inspect q do
+                  begin
+%+K                     if (if kind=char(IPROC) and categ=char(IDCLI) then
+%+K                                   descr.thisused else false) then
+%+K                        ! quick proc, called with head quantity ;
+%+K                        ! describe its instref as a ref attribute;
+%+K                        outaddrconst(vcaaddr,ftag+instrefdisp)
+%+K                     else
+                        if pointer(this quantity) then
+                        begin if categ <> char(INAME) and!then;
+                                 (kind=char(IARRA) or!else;
+                                 (kind=char(IIDN) and!then; type=char(IREF))  )
+                              then outaddrconst(vcaaddr,ftag+quantdisp)
+                         else begin outcdot(ftag+quantdisp);
+                                    if categ=char(INAME) then
+                                       outaddrconst(vcaaddr,Z_parqnt_ent)
+                               else if kind=char(IIDN) then ! type=ITEXT ;
+                                       outaddrconst(vcaaddr,Z_txtqnt_ent)
+                               else if categ=char(IFRMP) then
+                                       outaddrconst(vcaaddr,
+                                          if kind=char(IPROC) then Z_proqnt_sl
+                                     else if kind=char(ILABE) then Z_labqnt_sl
+                                     else ! kind=ISWIT ;  Z_swtqnt_sl  );
+                              end;
+                        end;
+                        q:-next; goto nextqty;
+                  end inspect of q;
+            end inspect qty;
+      end pntlist;
+%page
+      procedure paramspeclist(q); ref(quantity) q; inspect q do
+      begin short integer i;
+            short integer array atrdestag(0:npar); !zero never used;
+            ref(quantity) qty;
+
+            !*** Generate Parameter Vector: first (ref)atrdes      ***;
+            !*** constants for all parameters, then an atrvec      ***;
+            !*** constant refering to these.                       ***;
+            !***                                                   ***;
+            !*** We are in the procedure body: the parameters are  ***;
+            !*** recorded in the procedure head (its fpar list     ***;
+            !*** contains the parameters, and nothing but the      ***;
+            !*** parameters).                                      ***;
+            if simob_entity then
+            begin qty:-prefqual.descr.fpar; ! Get parameter list;
+                  for i:= 1 step 1 until npar do
+                  begin identifiertag(qty.ident); qty:-qty.next end;
+            end;
+
+            qty:-prefqual.descr.fpar; ! Get parameter list;
+            for i:= 1 step 1 until npar do
+            begin inspect qty do
+                  begin if categ=char(INAME) then atrdestag(i):=ftag+atrdesdisp
+                        else atrdestag(i):=lastusedtag:=lastusedtag+1;
+
+                        if type=char(IREF) then
+                        begin outconstdef(if categ=char(INAME)
+                                          then ftag+atrdesdisp
+                                          else lastusedtag, Z_ratrdes);
+                              outrecordconst(Z_ratrdes);
+                        end else
+                        begin outconstdef(if categ=char(INAME)
+                                          then ftag+atrdesdisp
+                                          else lastusedtag, Z_atrdes);
+                              outrecordconst(Z_atrdes);
+                        end;
+
+                        outattrconst(Z_atrdes_ide,ptoaddr);
+                        if simob_entity
+                        then outaddrconst(vcoaddr,simob_ident.tag(ident))
+                        else outinstr(vonone);
+
+                        outattrconst(Z_atrdes_fld,ptaaddr);
+                        outaddrconst(vcaaddr,ftag+quantdisp);
+
+                        outattrconst(Z_atrdes_mod,ptint);
+                        outinteger(rtsmode(rank(categ)));
+
+                        outattrconst(Z_atrdes_kin,ptint);
+                        outinteger(rtskind(rank(kind)));
+
+                        outattrconst(Z_atrdes_typ,ptint);
+                        outinteger(rtstypecode(rank(type)));
+
+                        if type=char(IREF) then
+                        begin
+                              ! refatrdes attributes describing prefqual;
+                              ! First comes (rbl,con) which are intended
+                                for transplantation check.  The enclosure
+                                of the qualifying class (prefqual.encl)
+                                is of interest. rbl is its run time block
+                                level relative to the procedure of which
+                                qty is a parameter (encl) ;
+                              outattrconst(Z_ratrdes_rb,ptint);
+                              outinteger(encl.rtblev-prefqual.encl.rtblev);
+
+                              outattrconst(Z_ratrdes_co,ptaaddr);
+                              if prefqual.encl.kind=char(IINSP) then
+                                 outaddrconst(vcaaddr,
+                                              conpointtag(prefqual.encl))
+                              else outinstr(vanone);
+
+                              outattrconst(Z_ratrdes_qa,ptoaddr);
+                              outaddrconst(vcoaddr,
+                                           prefqual.ftag+prototypedisp);
+                        end type=IREF;
+                        outendrecord;       ! end (ref)atrdes ;
+
+                        qty:-next;
+                  end otherwise StopScode_2(669,line !is q.line; );
+            end for;
+
+            ! Generation of Attribute Vector for the parameters;
+            atrvirvec:=lastusedtag:=lastusedtag+1;
+
+            outconstdef(atrvirvec,Z_atrvec); outfixrep(npar);
+            outrecordconst(Z_atrvec);
+            outattrconst(Z_atrvec_nat,ptint);
+            outinteger(npar);
+            outattrconst(Z_atrvec_atr,ptoaddr);
+
+            for i:=1 step 1 until npar do outaddrconst(vcoaddr,atrdestag(i));
+            outendrecord;         ! end atrvec ;
+      end;
+%page
+
+      procedure entityspeclist(qty); ref(quantity)qty;
+      begin ref(quantity)q; short integer i,kk;
+            short integer array atrdestag(0:nent);  ! zero never used;
+
+            if qty.kind=char(IPROC) and!then; qty.plev=1 then ! Body quantity;
+            begin q:-qty.prefqual;
+                  if q.type <> char(INOTY) then
+                  begin ! atrdes for the result attribute ;
+                        identifiertag(qty.ident);
+                        i:=i+1; atrdestag(i):=lastusedtag:=lastusedtag+1;
+                        if qty.type=char(IREF) then
+                        begin outconstdef(lastusedtag,Z_ratrdes);
+                              outrecordconst(Z_ratrdes);
+                        end else
+                        begin outconstdef(lastusedtag,Z_atrdes);
+                              outrecordconst(Z_atrdes);
+                        end;
+                          outattrconst(Z_atrdes_ide,ptoaddr);
+                          outaddrconst(vcoaddr,simob_ident.tag(qty.ident));
+                          outattrconst(Z_atrdes_fld,ptaaddr);
+                          outaddrconst(vcaaddr,resulttag(rank(qty.type)));
+                          outattrconst(Z_atrdes_mod,ptint);
+                          outinteger(3); !mode=local;
+                          outattrconst(Z_atrdes_kin,ptint);
+                          outinteger(0); !kind=simple;
+                          outattrconst(Z_atrdes_typ,ptint);
+                          outinteger(rtstypecode(rank(qty.type)));
+                          if qty.type=char(IREF) then
+                          begin outattrconst(Z_ratrdes_rb,ptint);
+                                outinteger(0);             !***  T E M P  ***;
+                                outattrconst(Z_ratrdes_co,ptaaddr);
+                                outinstr(vanone);          !***  T E M P  ***;
+                                outattrconst(Z_ratrdes_qa,ptoaddr);
+                                if qty.prefqual==none then outinstr(vonone)
+                                else outaddrconst(vcoaddr,
+                                             qty.prefqual.ftag+prototypedisp);
+                          end;
+                        outendrecord;
+                  end;
+            end atrdes for the result attribute;
+
+            q:-qty.descr.fpar;
+            while q=/=none do begin identifiertag(q.ident); q:-q.next end;
+
+            q:-qty.descr.fpar;
+            while q=/=none do begin
+                  i:=i+1; atrdestag(i):=lastusedtag:=lastusedtag+1;
+                  if q.type=char(IREF) then
+                  begin outconstdef(lastusedtag,Z_ratrdes);
+                        outrecordconst(Z_ratrdes);
+                  end else
+                  begin outconstdef(lastusedtag,Z_atrdes);
+                        outrecordconst(Z_atrdes);
+                  end;
+                    outattrconst(Z_atrdes_ide,ptoaddr);
+                    outaddrconst(vcoaddr,simob_ident.tag(q.ident));
+                    outattrconst(Z_atrdes_fld,ptaaddr);
+                    if q.type=char(ILABE)
+                    then begin outinstr(vanone); kk:=k_lab end
+               else if q.kind=char(ICLAS)
+                    then begin outinstr(vanone); kk:=k_cla end
+               else if q.kind=char(IPROC) and!then; q.categ=char(IDCLI)
+                    then begin outinstr(vanone); kk:=k_pro end
+               else if q is extquantity
+                    then begin outinstr(vanone); kk:=k_pro end
+               else begin outaddrconst(vcaaddr,q.ftag+quantdisp);
+                          kk:=rtskind(rank(q.kind));
+                    end;
+                    outattrconst(Z_atrdes_mod,ptint);
+                    outinteger( if q.categ=char(IDCLI) then 3
+                                else if q.categ=char(IEXTR) then 4
+                                else rtsmode(rank(q.categ)));
+                    outattrconst(Z_atrdes_kin,ptint); outinteger(kk);
+                    outattrconst(Z_atrdes_typ,ptint);
+                    outinteger(rtstypecode(rank(q.type)));
+                    if q.type=char(IREF) then
+                    begin outattrconst(Z_ratrdes_rb,ptint);
+                          outinteger(0);             !***  T E M P  ***;
+                          outattrconst(Z_ratrdes_co,ptaaddr);
+                          outinstr(vanone);          !***  T E M P  ***;
+                          outattrconst(Z_ratrdes_qa,ptoaddr);
+                          if q.prefqual == none then outinstr(vonone)
+                          else outaddrconst(vcoaddr,
+                                               q.prefqual.ftag+prototypedisp);
+                    end;
+                  outendrecord;
+                  q:-q.next;
+            end;
+
+            !*** Generation of Attribute Vector ***;
+            atrvec_tag:=lastusedtag:=lastusedtag+1;
+            outconstdef(atrvec_tag,Z_atrvec); outfixrep(nent);
+            outrecordconst(Z_atrvec);
+              outattrconst(Z_atrvec_nat,ptint); outinteger(nent);
+              outattrconst(Z_atrvec_atr,ptoaddr);
+              for i:=1 step 1 until nent do outaddrconst(vcoaddr,atrdestag(i));
+            outendrecord;         ! end atrvec ;
+      end entityspeclist;
+%page
+
+      noofprototypes:=noofprototypes+1;
+
+      inspect q do
+      begin npar:=descr.npar; navirt:=descr.navirt; npnt:=nent:=0;
+            count(this quantity);  !npnt and nent are counted;
+
+            if simob_descr then
+            begin prototidenttag:=
+                      if kind=char(IBLKB) or!else; kind=char(IBPRF) then 0
+                      else identifiertag(ident);
+
+                  !*** produce the atrvec constant ***;
+                  if simob_entity and!then; nent>0 then entityspeclist(q);
+
+                  !*** Produce the Prototype extension constant ***;
+                  xpp_tag:=lastusedtag:=lastusedtag+1;
+
+                  outconstdef(xpp_tag,Z_extptp);
+                  outrecordconst(Z_extptp);
+                    outattrconst(Z_extptp_idt,ptoaddr);
+                    if prototidenttag=0 then outinstr(vonone)
+                    else outaddrconst(vcoaddr,prototidenttag);
+                    outattrconst(Z_extptp_mod,ptoaddr);
+                    outaddrconst(vcoaddr,prototinfo);
+                    outattrconst(Z_extptp_atr,ptoaddr);
+                    if nent=0 then outinstr(vonone)
+                    else outaddrconst(vcoaddr,atrvec_tag);
+                    outattrconst(Z_extptp_btp,ptint);
+                    begin short integer tp;
+                          if kind = char(ICLAS) then tp:=3   ! BLK_CLA ;
+                     else if kind = char(IBPRF) then tp:=4   ! BLK_PRE ;
+                     else if kind = char(IBLKB) then tp:=0   ! BLK_SUB ;
+                     else if kind = char(IPROC) then
+                          begin if npar>0 then tp:=2   ! BLK_FNC ;
+                                          else tp:=1   ! BLK_PRO ;
+                          end;
+                          outinteger(tp);
+                    end;
+                  outendrecord;   ! extptp ;
+            end simob_descr ;
+
+            if npnt > 0 then
+            begin !*** Generation of pointer vector ***;
+                  pntvec:=lastusedtag:=lastusedtag+1;
+                  outconstdef(pntvec,Z_pntvec); outfixrep(npnt);
+                  outrecordconst(Z_pntvec);
+                    outattrconst(Z_pntvec_nco,ptint);
+                    outinteger(descr.connests);
+                    outattrconst(Z_pntvec_npn,ptint);
+                    outinteger(npnt);
+                    outattrconst(Z_pntvec_pnt,ptaaddr);
+                    pntlist(this quantity);
+                  outendrecord;
+            end generation of pointer vector;
+
+            if kind=char(IPROC) then
+            begin if npar > 0
+%+D                           and (simob_entity or not Uoption)
+                  then paramspeclist(this quantity)
+            end
+       else if navirt > 0 then
+            begin !*** Generation of Virtual Attribute Vector ***;
+                  atrvirvec:=lastusedtag:=lastusedtag+1;
+
+                  outconstdef(atrvirvec,Z_virvec); outfixrep(navirt);
+                  outrecordconst(Z_virvec);
+                  outattrconst(Z_virvec_nvi,ptint);
+                  outinteger(navirt);
+                  outattrconst(Z_virvec_vir,Z_virdes);
+
+                  qty:-descr.favirt;
+                  while qty=/=none do
+                  begin
+                     outrecordconst(Z_virdes);
+                     inspect qty do
+                     begin
+                        if kind=char(IPROC) then
+                        begin
+                           outattrconst(Z_virdes_ppp,ptoaddr);
+                           if match==none then outinstr(vonone)
+                           else outaddrconst(vcoaddr,
+                                             match.ftag+prototypedisp);
+                           outattrconst(Z_virdes_qal,ptoaddr);
+                           if match==none or!else; type <> char(IREF) then
+                                outinstr(vonone)
+                           else outaddrconst(vcoaddr,
+                                match.prefqual.ftag+prototypedisp);
+                        end else
+                        if kind=char(ILABE) then
+                        begin
+                           outattrconst(Z_virdes_pad,ptpaddr);
+                           if match==none then outinstr(vnowhere)
+                           else outaddrconst(vcpaddr,
+                                             match.ftag+quantdisp );
+                        end else
+                        if kind=char(ISWIT) then
+                        begin
+                           outattrconst(Z_virdes_des,ptoaddr);
+                           if match==none then outinstr(vonone)
+                           else outaddrconst(vcoaddr,
+                                             match.ftag+quantdisp);
+                        end else
+                           StopScode_2(587,qty.line); !wrong virtual;
+
+                        qty:-next;
+                     end inspect qty;
+                     outendrecord;    ! end virdes;
+                  end while;
+                  outendrecord;       ! end virvec;
+               end;
+
+               ! Generate record of appropriate prototype ;
+
+               if kind=char(IBLKB) then
+               begin
+                  outconstdef(ftag+prototypedisp,Z_sptp);
+                  outrecordconst(Z_sptp);
+               end else
+               if kind=char(IPROC) then
+               begin
+                  outconstdef(prefqual.ftag+prototypedisp,Z_pptp);
+                  outrecordconst(Z_pptp);
+               end else
+               ! kind=ICLAS or IBPRF ;
+               begin
+                  outconstdef(ftag+prototypedisp,Z_cpptp); outfixrep(plev+2);
+                  outrecordconst(Z_cpptp);
+               end;
+
+               outattrconst(Z_ptp_pnt_ve,ptoaddr);
+               if npnt>0 then outaddrconst(vcoaddr,pntvec)
+               else outinstr(vonone);
+
+               outattrconst(Z_ptp_xpp,ptoaddr);
+               if simob_descr then outaddrconst(vcoaddr,xpp_tag)
+               else outinstr(vonone);
+
+               outattrconst(Z_ptp_lng,ptsize);
+               outsizeconst(vcsize,ftag+descriptordisp);
+
+               if kind=char(IBLKB) then
+               begin
+                  outattrconst(Z_sptp_cnt,ptpaddr);
+                  outaddrconst(vcpaddr,ftag+cntdisp);
+               end else
+               if kind=char(IPROC) then
+               begin
+                  outattrconst(Z_pptp_start,ptpaddr);
+                  outaddrconst(vcpaddr,prefqual.ftag+startdisp);
+
+                  outattrconst(Z_pptp_par_v,ptoaddr);
+                  if npar > 0
+%+D                           and (simob_entity or not Uoption)
+                  then outaddrconst(vcoaddr,atrvirvec)
+                  else outinstr(vonone);
+               end else
+               ! kind=ICLAS or IBPRF ;
+               begin
+                  outattrconst(Z_cpptp_plv,ptint);
+                  outinteger(plev);
+
+                  outattrconst(Z_cpptp_dcl,ptpaddr);
+                  outaddrconst(vcpaddr,ftag+dcldisp);
+
+                  outattrconst(Z_cpptp_stm,ptpaddr);
+                  outaddrconst(vcpaddr,ftag+stmdisp);
+
+                  outattrconst(Z_cpptp_c_i,ptpaddr);
+                  outaddrconst(vcpaddr,ftag+cnt_inrdisp);
+
+                  outattrconst(Z_cpptp_v_v,ptoaddr);
+                  if navirt>0 then outaddrconst(vcoaddr,atrvirvec)
+                  else outinstr(vonone);
+
+                  outattrconst(Z_cpptp_pre,ptoaddr);
+
+                  ! Prefix chain generation ;
+                  if plev>0 then
+                  begin
+                     short integer pl;
+                     ref(quantity)array pref(0:plev-1);
+                     ref(quantity)pq;
+
+                     pq:-prefqual;
+                     while pq.plev>0 do
+                     begin
+                        pref(pq.plev):-pq;
+                        pq:-pq.prefqual;
+                     end;
+                     outaddrconst(vcoaddr,pq.ftag+prototypedisp);
+                     for pl:=1 step 1 until plev-1 do
+                        outaddrconst(vcoaddr,
+                                     pref(pl).ftag+prototypedisp);
+                  end plev>0;
+                  outaddrconst(vcoaddr,ftag+prototypedisp);
+                  outinstr(vonone);
+
+               end ICLAS or IBPRF;
+
+               outendrecord;        ! end prototype ;
+
+            end inspect q;
+
+         end prototypegenerator;
+
+%title ***  Procedure OUTDESCRIPTORS  ***
+
+      procedure outdescriptors(q);ref(quantity)q;
+      begin ! This procedure is called at "block begin" for all kinds of
+            brecords, except for classes and procedure heads.
+            It generates descriptors for all quantities which has to be
+            defined when code for the body of the brecord is generated ;
+
+            ! First outdescriptors is called recursively for a possible
+            prefix class, if it is not done yet.  Then the descriptors
+            for q are generated, including recursive calls on
+            outdescriptors for classes and procedure heads local to q ;
+
+            ! If q is external quantity then a routine profile is generated.
+            Otherwise the descriptors produced for q are:
+               - record descriptor for q.
+               - specifications of labels and switches local to q. These
+                 are not represented by an attribute of the record
+                 descriptor for q.  Labelspecs are generated for the
+                 labels (including the labels which are contained in the
+                 prototype: cnt/start/dcl/smt/cnt_inr).  Constspecs are
+                 generated for the switch descriptors ;
+
+            ref(quantity)qty;
+
+            if q.categ=char(IEXTR) then
+            begin if q qua extquantity.classific='N' then
+                  ! external SIMULA quantity ;
+                  begin SCF.outbyte(vinsert);
+                        outstring(q qua extquantity.module.moduleid);
+                        outstring(q qua extquantity.module.checkcode);
+                        outstring(q.virtno); ! extid;
+                        outtag(q qua extquantity.module.ftag);
+                        outtag(q qua extquantity.module.ftag
+                             + q qua extquantity.module.exttagnum-1 );
+                  end
+             else if q qua extquantity.classific='E' then
+                  ! external non-SIMULA quantity             ;
+                  profilegenerator(q);
+            end else
+            begin if q.kind=char(ICLAS) then
+                  begin q.descriptorpr:=true;
+                        if q.plev>0 then
+                        begin if not q.prefqual.descriptorpr  and!then;
+                              not q.prefqual is extquantity
+                              then outdescriptors(q.prefqual);
+                        end;
+                  end;
+
+                  if q.kind=char(ICLAS) or!else; q.kind=char(IPROC) or!else;
+                     q.kind=char(IBLKB) or!else; q.kind=char(IBPRF) then
+                  begin descriptorgenerator(q);
+                        ! Generate constspecs for the prototype and its
+                          label attributes. The reason is:              ;
+                        ! Prototypes are first generated at "block end" and
+                          the labels are first defined when the statements of
+                          the block is being compiled;
+                        if q.kind=char(IBLKB) then
+                        begin outconstspec(q.ftag+prototypedisp,Z_sptp);
+                              outlabelspec(q.ftag+cntdisp);
+                        end
+                   else if q.kind=char(IPROC) then
+                        begin if q.plev=0 then
+                              begin outconstspec(q.ftag+prototypedisp,Z_pptp);
+                                    outlabelspec(q.ftag+startdisp);
+
+                                    ! generate constspecs for name params   ;
+                                    ! to this procedures, as they are used  ;
+                                    ! when calling the procedure            ;
+                                    qty:-q.descr.fpar;
+                                    while qty=/=none do
+                                    begin if qty.categ=char(INAME) then
+                                          outconstspec(qty.ftag+atrdesdisp,
+                                          if qty.type=char(IREF) then Z_ratrdes
+                                                           else Z_atrdes);
+                                          qty:-qty.next;
+                                    end;
+                              end;
+                        end
+                   else begin outconstspec(q.ftag+prototypedisp,Z_cpptp);
+                              outfixrep(q.plev+2);
+                              outlabelspec(q.ftag+dcldisp);
+                              outlabelspec(q.ftag+stmdisp);
+                              outlabelspec(q.ftag+cnt_inrdisp);
+                        end;
+                  end;
+            end;
+
+            q:-q.descr.fpar;
+            while q=/=none do
+            begin if q is extquantity and!then; q.categ <> char(IEXTR)
+                  then !nothing;
+             else begin if (q.kind=char(IPROC) or q.kind=char(ICLAS) and
+                                       not q.descriptorpr) and!then;
+                           (q.categ=char(IDCLI) or!else; q.categ=char(IEXTR))
+                        then outdescriptors(q)
+                   else if q.categ=char(IDCLI) then
+                        begin if q.kind=char(ILABE) then
+                                    outlabelspec(q.ftag+quantdisp)
+                         else if q.kind=char(ISWIT) then
+                              begin outconstspec(q.ftag+quantdisp,Z_swtdes);
+                                    outfixrep(q.dim+1);
+                              end;
+                        end;
+                  end;
+                  q:-q.next;
+            end;
+      end outdescriptors;
+
+%title ***  Procedure GENERATEMODULEHEAD  ***
+
+%+P   prior
+      procedure generatemodulehead(pmoduleident,pcheckcode);
+      text pmoduleident,pcheckcode;
+      begin ! This procedure is called in case of sep.comp. in
+            order to generate the S-module head. It should be
+            called before generation of the program elements and
+            before the generation of insert-statements according
+            to the externals in the external head;
+
+            short integer moduleidindex,checkcodeindex;
+
+            DEFCONST(pmoduleident);moduleidindex:=HASHINDEX;
+            DEFCONST(pcheckcode); checkcodeindex:=HASHINDEX;
+            ! Note that checkcode may be the old checkcode  ;
+            ! in case of recompilation                      ;
+            outmoduledefhead(moduleidindex,checkcodeindex);
+      end generatemodulehead;
+%title ***  Procedure MODULEINFOGENERATION  ***
+      procedure moduleinfogeneration(ident,pmoduleident,pcheckcode);
+      short integer ident; text pmoduleident,pcheckcode;
+      begin ref(extmodule)em;
+            short integer sim_id_tag,source_tag,mod_id_tag,modvec_tag;
+            short integer pmodidentindex,pcheckindex,sourceindex,
+                          RTSindex,FECindex;
+            DEFCONST(pmoduleident);   pmodidentindex:=HASHINDEX;
+            DEFCONST(pcheckcode);     pcheckindex:=HASHINDEX;
+            DEFCONST(gettextinfo(1)); sourceindex:=HASHINDEX;
+
+            if separatecomp then sim_id_tag:=identifiertag(ident);
+            if idname(sourceindex) <> "SYSIN" then
+            source_tag:=identifiertag(sourceindex);
+            if separatecomp then mod_id_tag:=identifiertag(pmodidentindex);
+            if noofextmodules>0 then
+            begin modvec_tag:= lastusedtag:=lastusedtag+1;
+                  outconstspec(modvec_tag,Z_modvec);
+                  outfixrep(noofextmodules);
+            end;
+
+            outconstdef(prototinfo,Z_modinf);
+            outrecordconst(Z_modinf);
+              outattrconst(Z_modinf_mvc,ptoaddr);
+              if noofextmodules=0 then outinstr(vonone)
+              else outaddrconst(vcoaddr,modvec_tag);
+              outattrconst(Z_modinf_sid,ptoaddr);
+              if separatecomp then outaddrconst(vcoaddr,sim_id_tag)
+              else outinstr(vonone);
+              outattrconst(Z_modinf_src,ptoaddr);
+              if idname(sourceindex)="SYSIN" then outinstr(vonone)
+              else outaddrconst(vcoaddr,source_tag);
+              outattrconst(Z_modinf_mid,ptoaddr);
+              if separatecomp then outaddrconst(vcoaddr,mod_id_tag)
+              else outinstr(vonone);
+              outattrconst(Z_modinf_chk,ptint); outinteger(0);   !*** TEMP ***;
+              outattrconst(Z_modinf_rts,ptint); outinteger(RELEASE);
+              outattrconst(Z_modinf_fec,ptint); outinteger(RELEASE);
+              outattrconst(Z_modinf_slv,ptint); outinteger(simob_level);
+            outendrecord;
+
+            if noofextmodules>0 then
+            begin ! Generate modvec for all ext modules brought into this ;
+                  em:-firstextmodule.next;
+                  while em=/=none do
+                  begin em.pptag:=em.qty.ftag+prototypedisp; em:-em.next end;
+
+                  outconstdef(modvec_tag,Z_modvec); outfixrep(noofextmodules);
+                  outrecordconst(Z_modvec);
+                    outattrconst(Z_modvec_nmo,ptint);
+                    outinteger(noofextmodules);
+                    outattrconst(Z_modvec_mod,Z_moddes);
+                    em:-firstextmodule.next;
+                    while em=/=none do
+                    begin outrecordconst(Z_moddes);
+                            outattrconst(Z_moddes_pp,ptoaddr);
+                            outaddrconst(vcoaddr,em.pptag);
+                            outattrconst(Z_moddes_chk,ptint);
+                            outinteger(0);                   !*** T E M P ***;
+                          outendrecord;
+                          em:-em.next;
+                    end;
+                  outendrecord;
+            end;
+      end moduleinfogeneration;
+%title ***  Procedure GENERATETAGINDEXLIST  ***
+
+      procedure generatetagindexlist(q);ref(quantity)q;
+      begin short integer et;
+            ! Outputs (internal tag, external tag) for the quantity
+            q. For a class/procedure it outputs the list for the
+            parameters and the local quantities (for procedures only
+            for the parameters). Is called first time with q being
+            the declquant of class/procedure being sep.comp.;
+
+            et:=exttag(q);
+            if et >= 0 then
+            begin if q.categ=char(IEXTR) and!then; not q.descr is extbrecord
+                  then begin ! external non-Simula procedure with binding ;
+                             !No external numbers allocated for parameter tags;
+                        inspect q when quantity do
+                        begin outtagindex(ftag+profiledisp,et);
+                              outtagindex(ftag+bodydisp,et+1);
+                        end inspect;
+                  end
+             else if (q.kind=char(IPROC) or!else; q.kind=char(ICLAS)) and!then;
+                     q.categ=char(IDCLI) then
+                  begin outtagindex(q.ftag+descriptordisp,et);
+                        outtagindex(q.ftag+prototypedisp,et+1);
+                        if q.kind=char(ICLAS) then
+                        begin outtagindex(q.ftag+dcldisp,et+2);
+                              outtagindex(q.ftag+stmdisp,et+3);
+                              outtagindex(q.ftag+cnt_inrdisp,et+4);
+                        end else ! kind=IPROC ;
+%+K                     begin
+                              outtagindex(q.ftag+startdisp,et+2);
+%+K                           if q.descr.thisused then
+%+K                           outtagindex(q.ftag+instrefdisp,et+3);
+%+K                     end;
+                        q:-q.descr.fpar;
+                        while q=/=none do
+                        begin generatetagindexlist(q); q:-q.next end;
+                  end
+             else begin outtagindex(q.ftag,et);
+                        if q.categ=char(INAME) then
+                        outtagindex(q.ftag+atrdesdisp,et+1);
+                  end;
+            end;
+      end generatetagindexlist;
+%title ***  PROCEDURE SWTELTCONST  ***
+
+%+P  prior
+     procedure swteltconst(thk,pad,rbl,fld,clv);
+     boolean thk; short integer pad,rbl,fld,clv;
+     begin ! Generate a constant of record 'swtelt' ;
+           ! Called from procLIIDNlab ;
+           ! pad and fld will be 0 if nowhere/anone is wanted,
+             otherwise they will be tag-values ;
+           outrecordconst(Z_swtelt);
+           outattrconst(Z_swtelt_thk,ptbool);
+           outinstr(if thk then vtrue else vfalse);
+           outattrconst(Z_swtelt_pad,ptpaddr);
+           if pad=0 then outinstr(vnowhere) else outaddrconst(vcpaddr,pad);
+           outattrconst(Z_swtelt_rbl,ptint);
+           outinteger(rbl); ! If not significant, it will not be used ;
+           outattrconst(Z_swtelt_fld,ptaaddr);
+           if fld=0 then outinstr(vanone) else outaddrconst(vcaaddr,fld);
+           outattrconst(Z_swtelt_clv,ptint);
+           outinteger(clv); ! If not significant, it will not be used ;
+           outendrecord;
+     end swteltconst;
+
+end codegenerator2;
+end SCODER2;
+
+
+

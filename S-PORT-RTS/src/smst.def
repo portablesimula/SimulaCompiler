@@ -1,0 +1,211 @@
+ Module SMST("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,CENT;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3, Norway                                          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                     C l a s s    S I M S E T                    ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+
+
+
+--------   M O D U L E    I N F O   ---------
+
+const infix(modinf) SMSMOD=record:modinf(mod_idt=ref(SMSIDT),smb_lvl=2);
+
+DEFINE_IDENT(%SMSIDT%,%6%,%('S','I','M','S','E','T')%);
+
+---------   C l a s s    S I M S E T   ---------
+
+ Visible const infix(cla_pre_ptp:2) SIMSETPTP=record:cla_pre_ptp
+       ( plv=0,lng=size(instance),pnt_vec=none,xpp=ref(SMSXPP),
+        dcl=SMSDCL,stm=SMSSTM,cnt_inr=SMSINR,
+        prefix=(ref(SIMSETPTP),none));
+
+const infix(extptp) SMSXPP=record:extptp
+   (idt=ref(SMSIDT),mod_inf=ref(SMSMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+% UT const infix(blkvec:3) SMSVEC=record:blkvec
+% UT   (nblk=3,blk=(record:blkdes(pp=ref(LINKAGEPTP)),
+% UT                record:blkdes(pp=ref(LINKPTP)),
+% UT                record:blkdes(pp=ref(HEADPTP)) ));
+
+---------   C l a s s    L I N K A G E   ---------
+
+Visible record linkage:instance;
+begin ref(linkage) prd,suc end;
+
+Visible const infix(cla_pre_ptp:2) LINKAGEPTP=record:cla_pre_ptp
+       ( plv=0,lng=size(linkage),pnt_vec=ref(LKAPNT),xpp=ref(LKAXPP),
+         dcl=SMSDCL,stm=SMSSTM,cnt_inr=SMSINR,
+         prefix=(ref(LINKAGEPTP),none));
+
+const infix(pntvec:2) LKAPNT=record:pntvec
+       ( npnt=2,pnt=( field(linkage.prd),field(linkage.suc)));
+
+const infix(extptp) LKAXPP=record:extptp
+   (idt=ref(LKAIDT),mod_inf=ref(SMSMOD),atr_vec=ref(LKAATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:2) LKAATR=record:atrvec
+   (natr=2,atr=(ref(LA_SUC),ref(LA_PRD)));
+
+SIMPLE_ATTR(%LA_SUC%,%ID_SUC%,%linkage.suc%,%T_REF%);
+SIMPLE_ATTR(%LA_PRD%,%ID_PRD%,%linkage.prd%,%T_REF%);
+
+DEFINE_IDENT(%LKAIDT%,%7%,%('L','I','N','K','A','G','E')%);
+DEFINE_IDENT(%ID_SUC%,%3%,%('S','U','C')%);
+DEFINE_IDENT(%ID_PRD%,%4%,%('P','R','E','D')%);
+
+---------   C l a s s    L I N K   ---------
+
+ Visible const infix(cla_pre_ptp:3) LINKPTP=record:cla_pre_ptp
+       ( plv=1,lng=size(linkage),pnt_vec=none,xpp=ref(LNKXPP),
+         dcl=LNKDCL,stm=LNKSTM,cnt_inr=LNKINR,
+         prefix=(ref(LINKAGEPTP),ref(LINKPTP),none));
+
+const infix(extptp) LNKXPP=record:extptp
+   (idt=ref(LNKIDT),mod_inf=ref(SMSMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%LNKIDT%,%4%,%('L','I','N','K')%);
+
+---------   C l a s s    H E A D   ---------
+
+ Visible const infix(cla_pre_ptp:3) HEADPTP=record:cla_pre_ptp
+       ( plv=1,lng=size(linkage),pnt_vec=none,xpp=ref(HEDXPP),
+         dcl=HEDDCL,stm=HEDSTM,cnt_inr=HEDINR,
+         prefix=(ref(LINKAGEPTP),ref(HEADPTP),none));
+
+const infix(extptp) HEDXPP=record:extptp
+   (idt=ref(HEDIDT),mod_inf=ref(SMSMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%HEDIDT%,%4%,%('H','E','A','D')%);
+%page
+ Visible routine SMST_FOLLOW; import ref(linkage) ins,prd;
+ begin SMST_OUT(ins);
+       if prd <> none
+       then if prd.suc <> none
+            then ins.prd:=prd; ins.suc:=prd.suc;
+                 prd.suc:=prd.suc.prd:=ins;
+            endif;
+       endif;
+ end;
+
+ Visible routine SMST_INTO; import ref(linkage) ins,head;
+ begin SMST_OUT(ins);
+       if head <> none
+       then ins.suc:=head; ins.prd:=head.prd;
+            head.prd:=head.prd.suc:=ins;
+       endif;
+ end;
+
+ Visible routine SMST_OUT; import ref(linkage) ins;
+ begin if ins.suc <> none
+       then ins.prd.suc:=ins.suc; ins.suc.prd:=ins.prd;
+            ins.suc:=ins.prd:=none;
+       endif;
+ end;
+
+ Visible routine SMST_PRECEDE; import ref(linkage) ins,suc;
+ begin SMST_OUT(ins);
+       if suc <> none
+       then if suc.prd <> none
+            then ins.suc:=suc; ins.prd:=suc.prd;
+                 suc.prd:=suc.prd.suc:=ins;
+            endif;
+       endif;
+ end;
+
+ Visible routine SMST_PRED;
+ import ref(linkage) ins; export ref(linkage) prd;
+ begin prd:=ins.prd;
+       if prd <> none
+       then if prd.pp qua ref(cla_pre_ptp).prefix(1) <> ref(LINKPTP)
+            then prd:=none endif;
+       endif;
+ end;
+
+ Visible routine SMST_PREV;
+ import ref(linkage) ins; export ref(linkage) prev;
+ begin prev:=ins.prd; end;
+
+ Visible routine SMST_SUC;
+ import ref(linkage) ins; export ref(linkage) suc;
+ begin suc:=ins.suc;
+       if suc <> none
+       then if suc.pp qua ref(cla_pre_ptp).prefix(1) <> ref(LINKPTP)
+            then suc:=none endif;
+       endif;
+ end;
+
+ Visible routine SMST_CARDINAL;
+ import ref(linkage) head; export integer i;
+ begin ref(linkage) ins; i:=0; ins:=head;
+       repeat ins:=ins.suc while ins <> head do i:=i+1 endrepeat;
+ end;
+
+ Visible routine SMST_CLEAR; import ref(linkage) head;
+ begin ref(linkage) ins,temp;
+       ins:=head.suc; head.suc:=head.prd:=none;
+       repeat while ins <> none
+       do temp:=ins.suc; ins.suc:=ins.prd:=none; ins:=temp endrepeat;
+       head.suc:=head.prd:=head;
+ end;
+
+ Visible routine SMST_EMPTY;
+ import ref(linkage) head; export boolean empty;
+ begin empty:= head.suc=head; end;
+
+
+ ref(cla_pre_ptp) subpp;   --- Local variable
+
+%visible
+
+            ---   Classes SIMSET and LINKAGE on prefix level zero.
+ SMSDCL:    ---   Declaration code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(1);
+            if subpp <> none then goto subpp.dcl endif;
+ SMSSTM:    ---   Before inner statement code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(1);
+            if subpp <> none then goto subpp.stm endif;
+ SMSINR:    ---   After inner statement code.
+            E_CLA_PRE;   IERR("SMSINR");
+
+            ---   Class LINK on prefix level one.
+ LNKDCL:    ---   Declaration code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+            if subpp <> none then goto subpp.dcl endif;
+ LNKSTM:    ---   Before inner statement code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+            if subpp <> none then goto subpp.stm endif;
+ LNKINR:    ---   After inner statement code.
+            goto SMSINR;
+
+            ---   Class HEAD on prefix level one.
+ HEDDCL:    ---   Declaration code.
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+            if subpp <> none then goto subpp.dcl endif;
+ HEDSTM:    ---   Before inner statement code.
+            curins qua linkage.suc:=curins;
+            curins qua linkage.prd:=curins;
+            subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+            if subpp <> none then goto subpp.stm endif;
+ HEDINR:    ---   After inner statement code.
+            goto SMSINR;
+
+%hidden
+end;

@@ -1,0 +1,786 @@
+ Module FIL("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,STRG,CENT;
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3,Norway                                           ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                             F i l e s                           ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+
+
+
+ref(cla_pre_ptp) subpp;
+
+
+--------   M O D U L E    I N F O   ---------
+
+const infix(modinf) FILMOD=record:modinf(mod_idt=ref(RTSIDT),smb_lvl=2);
+
+DEFINE_IDENT(%RTSIDT%,%7%,%('R','T','S','.','F','I','L')%);
+
+---------   C l a s s    F I L E   ---------
+
+Visible const infix(cla_pre_ptp:2)  FILPTP=record: cla_pre_ptp
+       (plv=0,lng=size(filent),pnt_vec=ref(FILPNT),xpp=ref(FILXPP),
+         dcl=FILDCL,stm=FILSTM,cnt_inr=FILINR,prefix=(ref(FILPTP),none));
+
+const infix(pntvec:1) FILPNT=record:pntvec
+       (npnt=1,pnt=field(filent.nam.ent));
+
+const infix(extptp) FILXPP=record:extptp
+   (idt=ref(FILIDT),mod_inf=ref(FILMOD),atr_vec=ref(FILATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:1) FILATR=record:atrvec
+   (natr=1,atr=ref(FA_NAM));
+
+SIMPLE_ATTR(%FA_NAM%,%ID_NAM%,%filent.nam%,%T_TXT%);
+
+DEFINE_IDENT(%FILIDT%,%4%,%('F','I','L','E')%);
+DEFINE_IDENT(%ID_NAM%,%8%,%('F','I','L','E','N','A','M','E')%);
+%page
+
+---------   C l a s s    I M A G E F I L E   ---------
+
+Visible const infix(cla_pre_ptp:3)  IMFPTP=record: cla_pre_ptp
+       (plv=1,lng=size(filent),pnt_vec=ref(IMFPNT),xpp=ref(IMFXPP),
+         dcl=FILDCL2,stm=FILSTM2,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(IMFPTP),none));
+
+const infix(pntvec:1) IMFPNT=record:pntvec
+       (npnt=1,pnt=field(filent.img.ent));
+
+const infix(extptp) IMFXPP=record:extptp
+   (idt=ref(IMFIDT),mod_inf=ref(FILMOD),atr_vec=ref(IMFATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:1) IMFATR=record:atrvec
+   (natr=1,atr=ref(FA_IMG));
+
+SIMPLE_ATTR(%FA_IMG%,%ID_IMG%,%filent.img%,%T_TXT%);
+
+DEFINE_IDENT(%IMFIDT%,%9%,%('I','M','A','G','E','F','I','L','E')%);
+DEFINE_IDENT(%ID_IMG%,%5%,%('I','M','A','G','E')%);
+
+
+---------   C l a s s    B Y T E F I L E   ---------
+
+Visible const infix(cla_pre_ptp:3)  BTFPTP=record: cla_pre_ptp
+       (plv=1,lng=size(filent),xpp=ref(BTFXPP),
+         dcl=FILDCL2,stm=FILSTM2,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(BTFPTP),none));
+
+const infix(extptp) BTFXPP=record:extptp
+   (idt=ref(BTFIDT),mod_inf=ref(FILMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%BTFIDT%,%8%,%('B','Y','T','E','F','I','L','E')%);
+
+
+---------   C l a s s    I n b y t e f i l e   ---------
+
+ Visible const infix(cla_pre_ptp:4) IBFILPTP=record:cla_pre_ptp
+       (plv=2,lng=size(filent),pnt_vec=none,xpp=ref(IBFXPP),
+         dcl=IBFILDCL,stm=FILSTM3,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(BTFPTP),ref(IBFILPTP),none));
+
+const infix(extptp) IBFXPP=record:extptp
+   (idt=ref(IBFIDT),mod_inf=ref(FILMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%IBFIDT%,%10%,%('I','N','B','Y','T','E','F','I','L','E')%);
+
+
+---------   C l a s s    O u t b y t e f i l e   ---------
+
+ Visible const infix(cla_pre_ptp:4) OBFILPTP=record:cla_pre_ptp
+       (plv=2,lng=size(filent),pnt_vec=none,xpp=ref(OBFXPP),
+         dcl=OBFILDCL,stm=FILSTM3,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(BTFPTP),ref(OBFILPTP),none));
+
+const infix(extptp) OBFXPP=record:extptp
+   (idt=ref(OBFIDT),mod_inf=ref(FILMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%OBFIDT%,%11%,%('O','U','T','B','Y','T','E','F','I','L','E')%);
+
+
+---------   C l a s s    D i r e c t b y t e f i l e   ---------
+
+ Visible const infix(cla_pre_ptp:4) DBFILPTP=record:cla_pre_ptp
+       (plv=2,lng=size(filent),pnt_vec=none,xpp=ref(DBFXPP),
+         dcl=DBFILDCL,stm=FILSTM3,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(BTFPTP),ref(DBFILPTP),none));
+
+const infix(extptp) DBFXPP=record:extptp
+   (idt=ref(DBFIDT),mod_inf=ref(FILMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%DBFIDT%,%14%,
+             %('D','I','R','E','C','T','B','Y','T','E','F','I','L','E')%);
+
+
+---------   C l a s s    I n f i l e   ---------
+
+ Visible const infix(cla_pre_ptp:4) IFILPTP=record:cla_pre_ptp
+       (plv=2,lng=size(filent),pnt_vec=none,xpp=ref(IFLXPP),
+         dcl=IFILDCL,stm=FILSTM3,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(IMFPTP),ref(IFILPTP),none));
+
+const infix(extptp) IFLXPP=record:extptp
+   (idt=ref(IFLIDT),mod_inf=ref(FILMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%IFLIDT%,%6%,%('I','N','F','I','L','E')%);
+
+
+---------   C l a s s    O u t f i l e   ---------
+
+ Visible const infix(cla_pre_ptp:4) OFILPTP=record:cla_pre_ptp
+       (plv=2,lng=size(filent),pnt_vec=none,xpp=ref(OFLXPP),
+         dcl=OFILDCL,stm=FILSTM3,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(IMFPTP),ref(OFILPTP),none));
+
+const infix(extptp) OFLXPP=record:extptp
+   (idt=ref(OFLIDT),mod_inf=ref(FILMOD),atr_vec=none,blk_typ=BLK_CLA);
+
+DEFINE_IDENT(%OFLIDT%,%7%,%('O','U','T','F','I','L','E')%);
+
+
+---------   C l a s s    D i r e c t f i l e   ---------
+
+ Visible const infix(cla_pre_ptp:4) DFILPTP=record:cla_pre_ptp
+       (plv=2,lng=size(filent),pnt_vec=none,xpp=ref(DFLXPP),
+         dcl=DFILDCL,stm=FILSTM3,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(IMFPTP),ref(DFILPTP),none));
+
+const infix(extptp) DFLXPP=record:extptp
+   (idt=ref(DFLIDT),mod_inf=ref(FILMOD),atr_vec=ref(DFLATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:1) DFLATR=record:atrvec
+   (natr=1,atr=ref(FA_NAM));
+
+SIMPLE_ATTR(%FA_LOC%,%ID_LOC%,%filent.loc%,%T_INT%);
+
+DEFINE_IDENT(%DFLIDT%,%10%,%('D','I','R','E','C','T','F','I','L','E')%);
+DEFINE_IDENT(%ID_LOC%,%3%,%('L','O','C')%);
+
+
+---------   C l a s s    P r i n t f i l e   ---------
+
+ Visible const infix(cla_pre_ptp:5) PFILPTP=record:cla_pre_ptp
+       (plv=3,lng=size(pfilent),pnt_vec=none,xpp=ref(PFLXPP),
+         dcl=PFILDCL,stm=PFILSTM,cnt_inr=FILINR,
+         prefix=(ref(FILPTP),ref(IMFPTP),ref(OFILPTP),ref(PFILPTP),none));
+
+const infix(extptp) PFLXPP=record:extptp
+   (idt=ref(PFLIDT),mod_inf=ref(FILMOD),atr_vec=ref(PFLATR),blk_typ=BLK_CLA);
+
+const infix(atrvec:4) PFLATR=record:atrvec
+   (natr=4,atr=(ref(FA_SPC),ref(FA_LPP),ref(FA_LIN),ref(FA_PAG)));
+
+SIMPLE_ATTR(%FA_SPC%,%ID_SPC%,%pfilent.spc%,%T_INT%);
+SIMPLE_ATTR(%FA_LPP%,%ID_LPP%,%pfilent.lpp%,%T_INT%);
+SIMPLE_ATTR(%FA_LIN%,%ID_LIN%,%pfilent.lin%,%T_INT%);
+SIMPLE_ATTR(%FA_PAG%,%ID_PAG%,%pfilent.pag%,%T_INT%);
+
+DEFINE_IDENT(%PFLIDT%,%9%,%('P','R','I','N','T','F','I','L','E')%);
+DEFINE_IDENT(%ID_SPC%,%7%,%('S','P','A','C','I','N','G')%);
+DEFINE_IDENT(%ID_LPP%,%14%,
+             %('L','I','N','E','S','_','P','E','R','_','P','A','G','E')%);
+DEFINE_IDENT(%ID_LIN%,%4%,%('L','I','N','E')%);
+DEFINE_IDENT(%ID_PAG%,%4%,%('P','A','G','E')%);
+%page
+
+ Visible routine BOPN;
+ import ref(filent) fil; export boolean success;
+ begin infix(string) nam;  success:=false;
+       if fil.key <> 0 then goto EX endif;
+       nam:=TXT_TO_STR(fil.nam);
+       fil.key:=envir_OPEN(nam,fil.type,nostring,0);
+       if status <> 0
+       then status:=0; fil.key:=0;
+       else if bio.fil_lst <> none then  bio.fil_lst.prd:=fil  endif;
+            fil.suc:=bio.fil_lst; bio.fil_lst:=fil; fil.loc:=1;
+            fil.eof:= false; success:=true; fil.bsize := 8;
+ -- pje     if fil.type=FIL_DIRBYTE
+ -- pje     then fil.maxloc:=envir_MAXLOC(fil.key);
+ -- pje          if status <> 0 then status:=0; fil.maxloc:=maxint - 1 endif;
+ -- pje jan 87   fil.lastloc:=envir_LASTLOC(fil.key);
+ -- pje jan 87   if status <> 0 then status:=0; fil.lastloc:=0 endif;
+ -- pje     endif;
+            if bio.trc then TRC_FIL(fil,FTR_OPEN) endif;
+       endif;
+ EX:end;
+
+ Visible routine OPEN; -- corrected jan 87 pje
+ import ref(filent) fil; infix(txtqnt) img;
+ export boolean success;
+ begin infix(string) nam; integer img_lng;
+       success:=false;
+       if fil.key <> 0 then goto EX endif;
+       nam:=TXT_TO_STR(fil.nam);
+       img_lng:=img.lp - img.sp;
+
+       fil.key:=envir_OPEN(nam,fil.type,nostring,img_lng);
+       if status <> 0 then status:=0; fil.key:=0;
+       else if bio.fil_lst <> none then  bio.fil_lst.prd:=fil  endif;
+            fil.suc:=bio.fil_lst; bio.fil_lst:=fil; fil.loc:=1;
+            case 0:MAX_FIL (fil.type)
+            when FIL_IN: TXTASS_TMP(img,notext); img.cp:=img.lp;
+            when FIL_OUT: img.cp:=img.sp;
+            when FIL_DIR: img.cp:=img.sp;
+ -- pje          fil.maxloc:=envir_MAXLOC(fil.key);
+ -- pje          if status <> 0 then status:=0; fil.maxloc:=maxint - 1 endif;
+                 LOCATE(fil,1);
+ -- pje jan 87   fil.lastloc:=envir_LASTLOC(fil.key);
+ -- pje jan 87   if status <> 0 then status:=0; fil.lastloc:=0 endif;
+            when FIL_PRT:
+                 img.cp:=img.sp; fil qua ref(pfilent).lin:=1; EJECT(fil,1);
+            endcase;
+            fil.eof:= false;
+            fil.img:=img; success:=true;
+            if bio.trc then TRC_FIL(fil,FTR_OPEN) endif;
+       endif;
+ EX:end;
+
+
+ Visible routine CLOSE; import ref(filent) fil;
+ export boolean success; --  pje --
+ begin success:=false;
+       if fil.key <> 0
+       then ---  Some file classes have associated actions at close time.
+            if bio.trc then TRC_FIL(fil,FTR_CLOS) endif;
+            case 0:MAX_FIL (fil.type)
+            when FIL_OUT:
+                 if fil.img.cp <> fil.img.sp then OUTIMAGE(fil) endif;
+            when FIL_PRT:
+                 if fil.img.cp <> fil.img.sp then OUTIMAGE(fil) endif;
+                 fil qua ref(pfilent).spc:=1;
+  ---            EJECT(fil,fil qua ref(pfilent).lpp);   ---  REMOVED
+                 LPP(fil,0); fil qua ref(pfilent).lin:=0;
+             endcase;
+
+             envir_CLOSE(fil.key,nostring);
+  --- UT pje if status <> 0 then ERR_FIL_SYS(fil,false,false) endif;
+             if status=0
+             then fil.loc:=0; fil.key:=0; fil.eof:=true; success:=true;
+
+             ---  Remove the file entity from the list of open files.
+                  if fil.suc <> none then  fil.suc.prd:=fil.prd  endif;
+                  if fil.prd = none then bio.fil_lst:=fil.suc
+                  else fil.prd.suc:=fil.suc endif;
+                  fil.suc:=fil.prd:=none;
+                  fil.img:=notext;
+             else status:=0; -- file can't be closed, return false
+             endif;
+       endif;
+ end;
+
+
+ Visible routine FILNAM;
+ import ref(filent) fil; export infix(txtqnt) res;
+ begin res:=COPY(fil.nam) end;
+
+ Visible routine ISOPEN;
+ import ref(filent) fil; export boolean res;
+ begin res:= fil.key <> 0 end;
+
+ Visible routine SETACC;
+ import ref(filent) fil; infix(txtqnt) acc; export boolean res;
+ begin
+       res:=false; -- TEMP
+ end;
+
+ Visible routine CHKPNT;
+ import ref(filent) fil; export boolean res;
+ begin envir_CHKPNT(fil.key);
+       if status=0 then res:=true else res:=false; status:=0 endif;
+ end;
+
+ Visible routine LOCK;
+ import ref(filent) fil; real lim; integer loc1,loc2; export integer res;
+ begin res := -1;
+       if lim > 0.0
+       then if fil.locked then UNLOCK(fil) endif;
+            res:=envir_LOCKFI(fil.key,lim,loc1,loc2);
+ -- pje     if status <> 0 then ERR_FIL_SYS(fil,true,true) endif;
+            if status<>0 then res:=-(status+1); status:=0; -- pje jan 87
+            elsif res = 0 then fil.locked := true endif;
+       endif;
+ end;
+
+ Visible routine UNLOCK;
+ import ref(filent) fil; export boolean res;
+ begin res := CHKPNT(fil);
+       if fil.locked
+       then envir_UNLOCK(fil.key);
+            if status <> 0 then ERR_FIL_SYS(fil,true,true) endif;
+            fil.locked:=false; -- pje jan 87
+       endif;
+ end;
+
+ Visible routine LAST;
+ import ref(filent) fil; export boolean res;
+ begin infix(txtqnt) img;
+       repeat while not fil.eof
+       do img:=fil.img;
+          repeat while img.cp < img.lp
+          do if img.ent.cha(img.cp) <> ' '
+             then fil.img:=img; res:=false; goto E endif;
+             img.cp:=img.cp + 1;
+          endrepeat;
+          INIMAGE(fil);
+       endrepeat;
+       res:=true;
+ E:end
+
+
+ Routine ERR_INB; --- corrected pje jan 87
+ import ref(filent) fil; export range(0:MAX_BYT) val;
+ begin integer lastloc; val:=0;
+       if fil.type=FIL_INBYTE
+       then if (status=13) and (not fil.eof)
+            then ---  End-of-file was encountered.
+                 fil.eof:=true; status:=0;
+                 if bio.trc then TRC_FIL(fil,FTR_ENDF) endif;
+            else ERR_FIL_SYS(fil,true,true) endif;
+       else val:=status; status:=0; --- directbytefile (save status for below)
+            lastloc:=envir_LASTLOC(fil.key);
+            if status <> 0 then status:=0; lastloc:=maxint-1 endif;
+            if (fil.key<>0) and (fil.loc>lastloc) then val:=0
+            else status:=val; ERR_FIL_SYS(fil,true,true) endif;
+       endif;
+ end;
+
+
+ Visible routine INBYTE;
+ import ref(filent) fil; export range(0:MAX_BYT) val;
+ begin val:=envir_INBYTE(fil.key);
+       if status <> 0 then  val:=ERR_INB(fil)  endif;
+ end;
+
+ Visible routine IN2BYTE;
+ import ref(filent) fil; export range(0:MAX_2BT) val;
+ begin val:=envir_IN2BYTE(fil.key);
+       if status <> 0 then  val:=ERR_INB(fil)  endif;
+ end;
+
+ Visible routine OUTBYTE;
+ import ref(filent) fil; range(0:MAX_BYT) val;
+ begin envir_OUTBYTE(fil.key,val);
+       if status <> 0 then  ERR_FIL_SYS(fil,true,true)  endif;
+ end;
+
+ Visible routine OUT2BYTE;
+ import ref(filent) fil; range(0:MAX_2BT) val;
+ begin envir_OUT2BYTE(fil.key,val);
+       if status <> 0 then  ERR_FIL_SYS(fil,true,true)  endif;
+ end;
+
+ Visible routine INIMAGE;
+ import ref(filent)   fil;
+ begin integer filled; infix(txtqnt) img; infix(string) str;
+       img:=fil.img; if img.lp = 0 then  ERR_FIL(fil,ENO_FIL_5)  endif;
+       if img.ent.gcl <> none then  ERR_FIL(fil,ENO_FIL_6)  endif;
+       str.nchr:=img.lp - img.sp;                 -- Equivalent to call
+       str.chradr:=name(img.ent.cha(img.sp));     -- on TXT_TO_STR.
+       filled:=envir_INIMAGE(fil.key,str);
+       if status <> 0
+       then if (status = 13) and (not fil.eof)    --- end-of-file
+            then var(str.chradr):='!25!';         --- ISO EM-character
+                 filled:=1; fil.eof:=true; status:=0;
+                 if bio.trc then TRC_FIL(fil,FTR_ENDF) endif;
+            elsif (status=35) and (fil.type=FIL_DIR)     -- never-written image
+            then fil.img.cp:=img.lp; status:=0; goto EX; -- zeroed by e_INIM
+            else ERR_FIL_SYS(fil,true,true) endif;
+       endif;
+
+       --- blank fill rest of image if necessary ---
+       if filled < str.nchr
+       then str.nchr:=str.nchr - filled;
+            str.chradr:=name(img.ent.cha(img.sp+filled));
+            C_BLNK(str);
+       endif;
+       fil.img.cp:=img.sp;
+    EX:fil.loc:=fil.loc + 1; --  Non-standard feature.
+       if bio.trc then TRC_FIL(fil,FTR_INIM) endif;
+ end;
+
+ Visible routine INRECORD;   -- corr. feb 87 pje: result inverted
+ import ref(filent) fil; export boolean res;
+ begin integer filled; infix(txtqnt) img; infix(string) str;
+       img:=fil.img; if img.lp = 0 then  ERR_FIL(fil,ENO_FIL_5)  endif;
+       if img.ent.gcl <> none then  ERR_FIL(fil,ENO_FIL_6)  endif;
+       res:=false;
+       str.nchr:=img.lp - img.sp;                 -- Equivalent to call
+       str.chradr:=name(img.ent.cha(img.sp));     -- on TXT_TO_STR.
+       filled:=envir_INIMAGE(fil.key,str);
+       if status <> 0
+       then if (status = 13) and (not fil.eof)    --- end-of-file
+            then var(str.chradr):='!25!';         --- ISO EM-character
+                 filled:=1; fil.eof:=true; status:=0;
+                 if bio.trc then TRC_FIL(fil,FTR_ENDF) endif;
+            elsif status = 34 then res:=true; status:=0;
+            else ERR_FIL_SYS(fil,true,true) endif;
+       endif;
+       fil.img.cp:=img.sp+filled;
+       if bio.trc then TRC_FIL(fil,FTR_INIM) endif;
+ end;
+%page
+
+ Macro IN_ITEM(1);
+ --  First parameter is the name of the function (e.g. envir_GETINT).
+ begin infix(string) item; infix(txtqnt) img;
+       if LAST(fil) then  ERR_FIL(fil,ENO_FIL_8)  endif;
+       img:=fil.img; item.nchr:=img.lp - img.cp;
+       item.chradr:=name(img.ent.cha(img.cp));
+       res:=%1 (item); if status <> 0 then ERR_FIL_SYS(fil,true,true) endif;
+       fil.img.cp:=img.cp + itemsize;
+ endmacro;
+
+
+ Visible routine INCHAR;
+ import ref(filent) fil; export character res;
+ begin infix(txtqnt) img; img:=fil.img;
+       if img.cp >= img.lp then INIMAGE(fil); img:=fil.img endif;
+       res:=img.ent.cha(img.cp); fil.img.cp:=img.cp + 1;
+ end;
+
+
+ Visible routine ININT;
+ import ref(filent) fil; export integer res;
+ begin IN_ITEM(%envir_GETINT%) end;
+
+ Visible routine INREAL;
+ import ref(filent) fil; export long real res;
+ begin IN_ITEM(%envir_GETREAL%) end;
+
+ Visible routine INFRAC;
+ import ref(filent) fil; export integer res;
+ begin IN_ITEM(%envir_GETFRAC%) end;
+
+ Visible routine INTEXT;
+ import ref(filent) fil; integer ncha; export infix(txtqnt) res;
+ begin infix(txtqnt) img; size lng;
+       if ncha > 0
+       then if ncha > MAX_TXT then  ERR_FIL(fil,ENO_FIL_12)  endif;
+            NEW_TXT(%fil%);  --- Create Text Object,making 'res' reference it.
+            img:=fil.img;    --- Fill in Text Object Value ---
+            repeat while res.cp < res.lp
+            do if img.cp >= img.lp then INIMAGE(fil); img:=fil.img endif;
+               res.ent.cha(res.cp):=img.ent.cha(img.cp);
+               res.cp:=res.cp + 1; img.cp:=img.cp + 1;
+            endrepeat;
+            res.cp:=0; fil.img.cp:=img.cp;
+       elsif ncha = 0
+       then res:=notext;
+            ---  Check that the save entity allocation invariant still holds!!
+            if bio.pool_nxt > bio.pool_lim                     ---- CORR
+            then GARB(bio.pool_nxt,nosize,name(bio)) endif;    ---- CORR
+       else ERR_FIL(fil,ENO_FIL_12) endif;
+       if bio.trc then TRC_TXT(res.ent) endif;
+ end;
+
+ Visible routine BINTEXT; -- corrected pje jan. 87
+ import ref(filent) fil; infix(txtqnt) txt; export infix(txtqnt) res;
+ begin integer n,i,c; n:=txt.lp; i:=txt.sp; txt.cp:=i; -- res.setpos(1)
+       repeat while i < n
+       do c:=envir_INBYTE(fil.key);
+          if status <> 0
+          then if (status=13) and (not fil.eof)
+               then ---  End-of-file was encountered.
+                    fil.eof:=true; status:=0; goto E;
+               else ERR_FIL_SYS(fil,true,true) endif;
+          endif;
+          txt.ent.cha(i):= c qua character;
+          i:=i+1;
+       endrepeat;
+ E:    if i=txt.sp then res:=notext else res:=txt; res.lp:=i endif;
+ end;
+%page
+
+ Visible routine OUTIMAGE; import ref(filent) fil;
+ begin infix(txtqnt) img;   --  Local copy here for efficiency.
+       infix(string) str;   --  TXT_TO_STR(img).
+       ref(pfilent) pfil;
+
+       if bio.trc then TRC_FIL(fil,FTR_UTIM) endif;
+       img:=fil.img; if img.lp=0 then ERR_FIL(fil,ENO_FIL_13) endif;
+       str.nchr:=img.lp-img.sp; str.chradr:=name(img.ent.cha(img.sp));
+
+       if fil.type = FIL_PRT
+       then pfil:=fil qua ref(pfilent);
+            if pfil.lin > pfil.lpp then EJECT(pfil,1) endif;
+            envir_PRINT(pfil.key,str,pfil.spc);
+            if status <> 0 then ERR_FIL_SYS(pfil,true,true) endif;
+            pfil.lin:=pfil.lin + pfil.spc;
+       else envir_OUTIMAGE(fil.key,str);
+            if status <> 0 then ERR_FIL_SYS(pfil,true,true) endif;
+       endif;
+
+       C_BLNK(str); fil.img.cp:=img.sp;
+       fil.loc:=fil.loc + 1;                   --  Non-standard feature.
+ end;
+
+ Visible routine OUTRECORD; import ref(filent) fil;
+ begin infix(txtqnt) img;   --  Local copy here for efficiency.
+       infix(string) str;   --  TXT_TO_STR(img).
+       ref(pfilent) pfil;
+
+       if bio.trc then TRC_FIL(fil,FTR_UTIM) endif;
+       img:=fil.img; if img.lp=0 then ERR_FIL(fil,ENO_FIL_13) endif;
+       str.nchr:=img.cp-img.sp; str.chradr:=name(img.ent.cha(img.sp));
+
+       if fil.type = FIL_PRT
+       then pfil:=fil qua ref(pfilent);
+            if pfil.lin > pfil.lpp then EJECT(pfil,1) endif;
+            envir_PRINT(pfil.key,str,pfil.spc);
+            if status <> 0 then ERR_FIL_SYS(pfil,true,true) endif;
+            pfil.lin:=pfil.lin + pfil.spc;
+       else envir_OUTIMAGE(fil.key,str);
+            if status <> 0 then ERR_FIL_SYS(pfil,true,true) endif;
+       endif;
+       fil.img.cp:=img.sp;
+ end;
+
+ Visible routine BREAKOUT; import ref(filent) fil;
+ begin infix(txtqnt) img;   --  Local copy here for efficiency.
+       infix(string) str;   --  TXT_TO_STR(img).
+
+       if bio.trc then TRC_FIL(fil,FTR_UTIM) endif;
+       img:=fil.img; if img.lp=0 then ERR_FIL(fil,ENO_FIL_13) endif;
+       str.nchr:=img.cp-img.sp; str.chradr:=name(img.ent.cha(img.sp));
+       envir_BREAKOUT(fil.key,str);
+       if status <> 0 then ERR_FIL_SYS(fil,true,true) endif;
+       str.nchr:=img.lp-img.sp; C_BLNK(str); fil.img.cp:=img.sp;
+ end;
+
+ Visible routine OUTCHAR;
+ import ref(filent) fil; character val;
+ begin infix(txtqnt) img;
+       img:=fil.img;
+       if img.cp >= img.lp then OUTIMAGE(fil); img:=fil.img endif;
+       ---  At this point we know that 'file.img <> notext'.
+       if img.ent.gcl <> none
+       then if act_lvl <> ACT_GC then ERR_FIL(fil,ENO_FIL_16) endif endif;
+       img.ent.cha(img.cp):=val; fil.img.cp:=img.cp + 1;
+ end;
+
+ Macro  OUT_ITEM(2);
+ --  First parameter is the name of the function (e.g. envir_PUTINT).
+ --  Second parameter contains the extra size arguments,if any.
+ begin infix(string) item; infix(txtqnt) img;
+       img:=fil.img;
+       if w <= 0 then ERR_FIL(fil,ENO_FIL_14);
+       elsif img.cp + w > img.lp
+       then OUTIMAGE(fil); img:=fil.img;
+            if img.cp + w > img.lp then ERR_FIL(fil,ENO_FIL_15) endif;
+       endif;
+       ---  At this point we know that 'file.img <> notext'.
+       if img.ent.gcl <> none then ERR_FIL(fil,ENO_FIL_16) endif; -- Constant?
+       item.nchr:=w; item.chradr:=name(img.ent.cha(img.cp));
+       %1 (item,val %2); if status <> 0 then ERR_OUT(fil,item) endif;
+       fil.img.cp:=img.cp + w;
+ endmacro;
+
+
+ Routine ERR_OUT;
+ import ref(filent) fil; infix(string) item;
+ begin integer n;
+       if status <> 24 then ERR_FIL_SYS(fil,true,true) endif;
+       ---  Overflow,not enough space for all the digits. Starfill.
+       status:=0; n:=item.nchr;
+       repeat n:=n-1 while n>=0 do var(item.chradr)(n) :='*' endrepeat;
+       bio.edt_ovf:=bio.edt_ovf + 1;
+ end;
+
+ Visible routine OUTINT;
+ import ref(filent) fil; integer val,w;
+ begin OUT_ITEM(%envir_PUTINT%,%%) end;
+
+ Visible routine OUTFIX;
+ import ref(filent) fil; real val; integer n,w;
+ begin OUT_ITEM(%envir_PUTFIX%,%,n%) end;
+
+ Visible routine OUTLFIX;
+ import ref(filent) fil; long real val; integer n,w;
+ begin OUT_ITEM(%envir_PUTLFIX%,%,n%) end;
+
+ Visible routine  OUTREAL;
+ import ref(filent) fil; real val; integer n,w;
+ begin OUT_ITEM(%envir_PUTREAL%,%,n%) end;
+
+ Visible routine OUTLREAL;
+ import ref(filent) fil; long real val; integer n,w;
+ begin OUT_ITEM(%envir_PUTLREAL%,%,n%) end;
+
+ Visible routine OUTFRAC;
+ import ref(filent) fil; integer val,n,w;
+ begin OUT_ITEM(%envir_PUTFRAC%,%,n%) end;
+
+ Visible routine OUTTEXT;
+ import ref(filent) fil; infix(txtqnt) txt;
+ begin infix(txtqnt) img;           --  Local copy here for efficiency.
+       infix(string) src;           --  Copy from this string.
+       infix(string) dst;           --  Copy to this string.
+       img:=fil.img; src.nchr:=txt.lp-txt.sp;
+       if img.cp + src.nchr > img.lp
+       then OUTIMAGE(fil); img:=fil.img;
+            if img.cp + src.nchr > img.lp then ERR_FIL(fil,ENO_FIL_18) endif;
+       endif;
+       ---  At this point we know that 'file.img <> notext'.
+       ---  Make sure that we also have 'txt' <> notext'.
+       if txt.lp <> 0
+       then if img.ent.gcl <> none then  ERR_FIL(fil,ENO_FIL_16)  endif;
+            ---  Transfer all the characters in the source.
+            src.chradr:=name(txt.ent.cha(txt.sp));
+            dst.chradr:=name(img.ent.cha(img.cp));
+            dst.nchr:=src.nchr; C_MOVE(src,dst);
+            fil.img.cp:=img.cp+src.nchr;
+       endif;
+ end;
+
+ Visible routine BOUTTEXT;
+ import ref(filent) fil; infix(txtqnt) txt;
+ begin integer n,i,c; n:=txt.lp; i:=txt.sp;
+       repeat while i < n
+       do c:=txt.ent.cha(i) qua integer;
+          envir_OUTBYTE(fil.key,c);
+          if status <> 0 then  ERR_FIL_SYS(fil,true,true)  endif;
+          i:=i+1;
+       endrepeat;
+ end;
+
+ Visible routine DELIMAGE;
+ import ref(filent) fil; export boolean res;
+ begin -- res:=envir_DELIMAGE(fil.key);
+       -- if res then fil.loc:=fil.loc+1 endif
+       res:=false;  --  TEMP
+ end;
+
+ Visible routine  LOCATE;
+ import ref(filent) fil; integer loc;
+ begin envir_LOCATE(fil.key,loc);
+       if status <> 0 then ERR_FIL_SYS(fil,true,true) endif;
+       fil.loc:=loc; fil.eof:=false;
+       if bio.trc then TRC_FIL(fil,FTR_LOCA) endif;
+ end;
+
+ Visible routine MAXLOC;  -- pje jan 87
+ import ref(filent) fil; export integer mloc;
+ begin if fil.key=0 then mloc:=0;
+       else mloc:=envir_MAXLOC(fil.key);
+            if status <> 0 then status:=0; mloc:=maxint - 1 endif;
+       endif;
+ end;
+
+
+ Visible routine LASTLOC; -- pje jan 87
+ import ref(filent) fil; export integer lloc;
+ begin if fil.key=0 then ERR_FIL(fil,ENO_FIL_3) endif;
+       lloc:=envir_LASTLOC(fil.key);
+       if status <> 0 then status:=0; lloc:=0 endif;
+ end;
+
+
+ Visible routine SPACING;
+ import ref(pfilent) pfil; integer spc;
+ begin if (spc < 0) or (spc > pfil.lpp) then ERR_FIL(pfil,ENO_FIL_19) endif;
+       pfil.spc:=spc;
+ end;
+
+
+ Visible routine EJECT;
+ import ref(pfilent) pfil; integer lin;
+ begin if lin < 1 then ERR_FIL(pfil,ENO_FIL_20) endif;
+       if lin > pfil.lpp then lin:=1 endif;
+       if lin > pfil.lin
+       then envir_PRINT(pfil.key,nostring,lin - pfil.lin);
+            if status <> 0 then ERR_FIL_SYS(pfil,true,true) endif;
+            pfil.loc:=pfil.loc + (lin-pfil.lin);         --  Non-standard.
+       else envir_NEWPAGE(pfil.key);
+            if status <> 0 then ERR_FIL_SYS(pfil,true,true) endif;
+            pfil.loc:=pfil.loc + (pfil.lpp-pfil.lin+1);   --  Non-standard.
+            if lin > 1
+            then envir_PRINT(pfil.key,nostring,lin-1);
+                 if status <> 0 then ERR_FIL_SYS(pfil,true,true) endif;
+                 pfil.loc:=pfil.loc + (lin-1);              --  Non-standard.
+            endif;
+       endif;
+       pfil.lin:=lin;
+ end;
+
+ Visible routine  LPP;
+ import ref(pfilent) pfil; integer lpp;
+ export integer result;
+ begin result:=pfil.lpp;
+       if lpp > 0 then pfil.lpp:=lpp;
+       elsif lpp = 0
+       then pfil.lpp:=envir_GETLPP(pfil.key);
+            if status <> 0
+            then if (pfil.key = 0) and (status = 1)
+                 then status:=0; pfil.lpp:=42;                ---  TEMPORARY
+                 else ERR_FIL_SYS(pfil,false,false) endif;
+            endif;
+       else lpp:=maxint-1;  -- lpp<0: "infinite" value
+       endif;
+ end;
+%page
+%Visible
+FILDCL:   ---   Declaration code.
+          curins qua ref(filent).type :=FIL_FILE;
+          if act_lvl = ACT_USR
+          then if curins qua ref(filent).nam = notext
+               then ERROR(ENO_FIL_2) endif;
+          endif;
+          curins qua ref(filent).eof:=true;
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(1);
+          if subpp <> none then goto subpp.dcl endif;
+FILSTM:   ---   Before inner statement code.
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(1);
+          if subpp <> none then goto subpp.stm endif;
+FILINR:   ---   After inner statement code.
+          E_CLA_PRE;   IERR("FIL.FILINR");
+
+
+FILDCL2:  subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+          if subpp <> none then goto subpp.dcl endif;  goto FILINR;
+FILDCL3:  subpp:=curins.pp qua ref(cla_pre_ptp).prefix(3);
+          if subpp <> none then goto subpp.dcl endif;  goto FILINR;
+IBFILDCL: curins qua ref(filent).type:=FIL_INBYTE;     goto FILDCL3;
+OBFILDCL: curins qua ref(filent).type:=FIL_OUTBYTE;    goto FILDCL3;
+DBFILDCL: curins qua ref(filent).type:=FIL_DIRBYTE;    goto FILDCL3;
+IFILDCL:  curins qua ref(filent).type:=FIL_IN;         goto FILDCL3;
+OFILDCL:  curins qua ref(filent).type:=FIL_OUT;        goto FILDCL3;
+DFILDCL:  curins qua ref(filent).type:=FIL_DIR;        goto FILDCL3;
+
+
+FILSTM2:  ---   Before inner statement code.
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(2);
+          if subpp <> none then goto subpp.stm endif;  goto FILINR;
+
+FILSTM3:  ---   Before inner statement code.
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(3);
+          if subpp <> none then goto subpp.stm endif;  goto FILINR;
+
+
+          ---   The class PRINTFILE on prefix level three.
+PFILDCL:  curins qua ref(filent).type :=FIL_PRT;
+          curins qua ref(pfilent).spc:=1;
+          LPP(curins qua ref(pfilent),0);
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(4);
+          if subpp <> none then goto subpp.dcl endif; goto FILINR;
+PFILSTM:  ---   Before inner statement code.
+          subpp:=curins.pp qua ref(cla_pre_ptp).prefix(4);
+          if subpp <> none then goto subpp.stm endif; goto FILINR;
+
+%hidden
+end;

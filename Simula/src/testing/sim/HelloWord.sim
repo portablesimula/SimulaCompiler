@@ -1,0 +1,4 @@
+begin
+   outtext("Hello Word!");
+   outimage;
+end;   

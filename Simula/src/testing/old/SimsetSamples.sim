@@ -1,0 +1,12 @@
+Simset
+   begin
+      ref(Head) Set;
+      ref(Link) elt;
+      integer i;
+
+      Set:-new Head();
+      elt:-new Link();
+      elt.into(Set);
+      i:=Set.cardinal();
+      
+   end;

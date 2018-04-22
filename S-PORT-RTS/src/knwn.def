@@ -1,0 +1,519 @@
+ Module KNWN("RTS 105");
+ begin sysinsert COMN,SYSR;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3, Norway                                          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                   K n o w n   R o u t i n e s                   ---
+       ---                                                                 ---
+       ---                   V i s i b l e   t o   F E C                   ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+%page
+
+Visible define
+
+ ENO_ITR_MIN = 0 ,
+ ENO_ITR_MAX = 14 ,
+ ENO_ITR_0=15,   -- Trap caused by interrupt or exception:
+                 --  (The following exception messages must
+                 --     be the first elements of the repetition).
+ ENO_ITR_1=0,    -- Unspecified error condition.
+ ENO_ITR_2=1,    -- Invalid floating point operation.
+ ENO_ITR_3=2,    -- Floating point division by zero.
+ ENO_ITR_4=3,    -- Floating point overflow.
+ ENO_ITR_5=4,    -- Floating point underflow.
+ ENO_ITR_6=5,    -- Inexact result (floating point operation).
+ ENO_ITR_7=6,    -- Integer overflow.
+ ENO_ITR_8=7,    -- Integer division by zero.
+ ENO_ITR_9=8,    -- Illegal address trap.
+ ENO_ITR_10=9,   -- Illegal instruction trap.
+ ENO_ITR_11=10,  -- Breakpoint trap.
+ ENO_ITR_12=11,  -- User interrupt - NOT YET IMPLEMENTED.
+ ENO_ITR_13=12,  -- Cpu time limit overflow.
+ ENO_ITR_14=13,  -- Continuation is impossible.
+ ENO_ITR_15=14,  -- Start of statement exception - NOT YET IMPLEMENTED.
+
+ ENO_ITN_1=16,   -- Internal error in Simula Run-Time System.
+ ENO_ITN_2=17,   -- Internal error in Simob or Environment.
+ ENO_ITN_3=18,   -- Internal error in the Front-End Compiler.
+ ENO_EXC_1=19,   -- Breakpoint trap, but no observation tool is available.
+ ENO_INI_1=20,   -- Not enough primary storage for predefined instances.
+ ENO_QUA_1=21,   -- Qualification check fails.
+ ENO_NON_1=22,   -- Attempt to remotely access attribute through none
+                 --   (x=none in x.y).
+ ENO_SYS_1=23,   -- User error or none-zero status on return
+                 --   from environment routine call.
+ ENO_SYS_2=24,   -- Exponentiation: Result is undefined.
+ ENO_SYS_3=25,   -- Impossible to satisfy the request,
+                 --   maybe because it is illegal.
+ ENO_SYS_4=26,   -- Actual parameter value is out of range.
+ ENO_SYS_5=27,   -- The service function is not implemented.
+ ENO_SYS_6=28,   -- Illegal action.
+ ENO_DSM_1=29,   -- Storage request cannot be met, not enough primary storage.
+ ENO_GOTO_1=30,  -- Illegal goto destination.
+ ENO_DET_1=31,   -- x.Detach: x is not on the operating chain.
+ ENO_RES_1=32,   -- Resume(x): x is none.
+ ENO_RES_2=33,   -- Resume(x): x is not local to sub-block or prefixed block.
+ ENO_RES_3=34,   -- Resume(x): x is not in detached state.
+ ENO_RES_4=35,   -- Class Process is not local to prefixed block,
+                 --   illegal implicit Resume.
+ ENO_RES_5=36,   -- Implicit Resume(x):
+                 --   Process object x is not in detached state.
+ ENO_ATT_1=37,   -- Call(x): x is none.
+ ENO_ATT_2=38,   -- Call(x): x is not in detached state.
+ ENO_PRO_1=39,   -- Incorrect number of parameters in
+                 --   call on formal or virtual procedure.
+ ENO_VIR_1=40,   -- Virtual attribute has no match.
+ ENO_ARR_1=41,   -- Upper bound value is less than lower bound value
+                 --   in array declaration.
+ ENO_ARR_2=42,   -- Incorrect number of array indicies.
+ ENO_ARR_3=43,   -- Array index value is less than value of lower bound.
+ ENO_ARR_4=44,   -- Array index value is greater than value of upper bound.
+
+ ENO_TXT_1=45,   -- Blanks(n):  n is negative or too large.
+ ENO_TXT_2=46,   -- Text value assignment x := y:
+                 --   x.Length < y.Length, maybe x == notext
+ ENO_TXT_3=47,   -- Text value assignment x := y:  x.Constant = True.
+ ENO_TXT_4=48,   -- Sub(i,n):  i is less than 1.
+ ENO_TXT_5=49,   -- Sub(i,n):  n is negative.
+ ENO_TXT_6=50,   -- t.Sub(i,n): i + n > t.Length + 1, maybe t == notext.
+ ENO_TXT_7=51,   -- t.Get...:  t == notext.
+ ENO_TXT_8=52,   -- t.Get...:  Non-numeric item.
+ ENO_TXT_9=53,   -- t.Get...:  Numeric item is out of range.
+ ENO_TXT_10=54,  -- t.Get...:  Numeric item is not complete.
+ ENO_TXT_11=55,  -- t.Getchar:  t.More = False, maybe t == notext.
+ ENO_TXT_12=56,  -- t.Put...:  t == notext.
+ ENO_TXT_13=57,  -- t.Put...:  t.Constant = True.
+ ENO_TXT_14=58,  -- t.Put...(r,n):  Fraction size specification n is negative.
+ ENO_TXT_15=59,  -- t.Putchar:  t.More = False, maybe t == notext.
+
+ ENO_FNP_MIN = 61 ,
+ ENO_FNP_MAX = 67 ,
+ ENO_FNP_0=60,   -- Parameter called by name:
+ ENO_FNP_1=61,   -- Assignment to formal: Actual is no variable, cannot assign.
+ ENO_FNP_2=62,   -- Parameter transmission: Actual is no variable.
+ ENO_FNP_3=63,   -- The types of the actual and the formal parameter
+                 --   are different.
+ ENO_FNP_4=64,   -- The qualifications of the actual and the formal parameter
+                 --   are different.
+ ENO_FNP_5=65,   -- Assignment to formal:  object is not subordinate to actual.
+ ENO_FNP_6=66,   -- Occurrence of formal:
+                 --   actual object is not subordinate to formal.
+ ENO_FNP_7=67,   -- Occurrence of formal:
+                 --   actual procedure is not subordinate to formal.
+
+ ENO_FPT_MIN = 69 ,
+ ENO_FPT_MAX = 76 ,
+ ENO_FPT_0=68,   -- Parameter transmission to formal or virtual procedure:
+ ENO_FPT_1=69,   -- Actual object is not subordinate to formal parameter.
+ ENO_FPT_2=70,   -- Actual procedure parameter is not
+                 --   subordinate to formal parameter.
+ ENO_FPT_3=71,   -- Actual and formal parameter are of different kinds.
+ ENO_FPT_4=72,   -- Actual and formal parameter are of different types.
+ ENO_FPT_5=73,   -- Actual and formal parameter are of incompatible types.
+ ENO_FPT_6=74,   -- Transplantation:
+                 --   actual and formal qualification are dynamically different.
+ ENO_FPT_7=75,   -- Qualification of actual and formal reference array
+                 --   do not coincide.
+ ENO_FPT_8=76,   -- Types of actual and formal procedure
+                 --   are neither coincident nor subordinate.
+
+ ENO_FIL_1=77,   -- file.Open:  The file is open already.
+ ENO_FIL_2=78,   -- file.Open:  file.FILENAME == notext.
+ ENO_FIL_3=79,   -- file.OPEN = false.
+ ENO_FIL_4=80,   -- file.ENDFILE == true.
+ ENO_FIL_5=81,   -- file.Inimage:  file.image == notext.
+ ENO_FIL_6=82,   -- file.Inimage:  file.image.Constant = true.
+ ENO_FIL_7=83,   -- Directfile.Inimage:  End of file was encountered.
+ ENO_FIL_8=84,   -- file.In...:  Attempt to read through end of file.
+ ENO_FIL_9=85,   -- file.In...:  Non-numeric item.
+ ENO_FIL_10=86,  -- file.In...:  Numeric item is out of range.
+ ENO_FIL_11=87,  -- file.In...:  Numeric item is not complete.
+ ENO_FIL_12=88,  -- file.Intext(n):  n is negative or too large.
+ ENO_FIL_13=89,  -- file.Outimage:  file.image == notext.
+ ENO_FIL_14=90,  -- file.Out...(...,w):  w < 0.
+ ENO_FIL_15=91,  -- file.Out...(...,w):  w > file.image.Length
+ ENO_FIL_16=92,  -- file.Out...:  file.image.Constant = true.
+ ENO_FIL_17=93,  -- file.Out...(...,n,...):
+                 --   Fraction size specification n is negative.
+ ENO_FIL_18=94,  -- file.Outtext(t):  t.Length > file.image.Length
+ ENO_FIL_19=95,  -- Printfile.Spacing(n):  n < 0  or  n > Linesperpage.
+ ENO_FIL_20=96,  -- Printfile.Eject(n):  n <= 0.
+ ENO_FIL_21=97,  -- File.Close:  The file is closed already.
+                 --   (Not by this program execution.)
+ ENO_FIL_22=98,  -- Illegal file operation, not compatible with this file.
+ ENO_FIL_23=99,  -- The external record format
+                 --   is not compatible with this directfile.
+ ENO_FIL_24=100, -- File.Open:  Illegal file name.
+ ENO_FIL_25=101, -- file.Out...:  Output image too long.
+ ENO_FIL_26=102, -- file.In...:  Input image too long.
+ ENO_FIL_27=103, -- file.Out...:  The file is full.
+                 --   (End of file may have been encountered.)
+ ENO_FIL_28=104, -- Directfile:  Location out of range.
+ ENO_FIL_29=105, -- I/O error, e.g. hardware fault.
+                 --   (The error is not caused by this execution.)
+ ENO_FIL_30=106, -- No write access to the file.
+ ENO_FIL_31=107, -- File.Open:  Too many files open simultaneously.
+ ENO_FIL_32=108, -- No read access to the file.
+ ENO_FIL_33=109, -- End of file has been encountered already.
+ ENO_FIL_34=110, -- Installation dependent file error. See the value of STATUS.
+ ENO_SML_1=111,  -- Simulation:  (Re)Activate empties SQS.
+ ENO_SML_2=112,  -- Simulation:  Cancel,Passivate or Wait empties SQS
+ ENO_PRC_1=113,  -- Process.Evtime:  The process is idle.
+ ENO_DRW_1=114,  -- Random drawing:
+                 --   Actual array parameter is not one-dimensional.
+ ENO_DRW_2=115,  -- Histd(a,u):  An element of the array a is negative.
+ ENO_DRW_3=116,  -- Linear(a,b,u):
+                 --   The number of elements in a and b are different.
+ ENO_DRW_4=117,  -- Linear(a,b,u):
+                 --   The array a does not satisfy the stated assumptions.
+ ENO_DRW_5=118,  -- Negexp(a,u) :  a <= 0.
+ ENO_DRW_6=119,  -- Randint(a,b,u) or Uniform(a,b,u) :   b < a.
+ ENO_DRW_7=120,  -- Erlang(a,b,u):  a <= 0  or  b <= 0.
+ ENO_DRW_8=121,  -- Normal(a,b,u):  b <= 0.
+ ENO_DRW_9=122,  -- *** NOT USED
+ ENO_STD_1=123,  -- Histo(a,b,c,d):  Array parameter is not one-dimensional.
+ ENO_STD_2=124,  -- Histo(a,b,c,d):
+                 --   number of elements in a   <=   number of elements in b.
+ ENO_STD_3=125,  -- Standard mathematical function call:
+                 --   Parameter value is out of range.
+ ENO_SWT_1=126,  -- Switch designator:  Index value is out of range.
+ ENO_EXT_1=127   -- Call on external non-SIMULA procedure:
+                 --   actual label is not local.
+;
+%title E r r o r    H a n d l i  n g
+
+ Visible known("ERRNON") ERR_NONE;
+ begin call PINIERR(err_ini)(ENO_NON_1,none) end;
+
+ Visible known("ERRQUA") ERR_QUA;
+ begin call PINIERR(err_ini)(ENO_QUA_1,none) end;
+
+ Visible known("ERRSWT") ERR_SWT;
+ begin call PINIERR(err_ini)(ENO_SWT_1,none) end;
+
+ Visible known("ERROR") ERROR; import range(0:MAX_ENO) eno;
+ begin call PINIERR(err_ini)(eno,none) end;
+%title ***  T e x t    H a d l i n g  ***
+
+ Visible known("TXTREL") TXTREL;
+ import infix(txtqnt) left,right; integer code;
+ export boolean relation;
+ begin integer i;            --  Loop index.
+       integer dif;          --  Difference between lengths.
+       integer lng;          --  Length of common parts.
+       lng:=right.lp-right.sp; dif:=lng-(left.lp-left.sp);
+       if dif <> 0
+       then if code = 2 then relation:=false; goto EXX1;
+            elsif code = 5 then relation:=true; goto EXX2 endif;
+            if dif > 0 then lng:=left.lp - left.sp endif;
+       endif;
+       i:=0; repeat while i < lng
+       do if right.ent.cha(right.sp + i) <> left.ent.cha(left.sp + i)
+          then dif:=(right.ent.cha(right.sp+i) qua integer)
+                   - (left.ent.cha(left.sp+i) qua integer);
+               goto EXX3;
+          endif;
+          i:=i + 1;
+       endrepeat;
+ EXX3:
+       case 1:6 (code)
+       when 1: relation:=0 <  dif
+       when 2: relation:=0  = dif
+       when 3: relation:=0 <= dif
+       when 4: relation:=0 >  dif
+       when 5: relation:=0 <> dif
+       when 6: relation:=0 >= dif
+       otherwise ERROR(ENO_ITN_1);
+       endcase;
+ EXX1:EXX2:end;
+
+
+ Visible known("TRFREL") TRFREL; --- Text reference relation ---
+ import infix(txtqnt) left;
+        infix(txtqnt) right;
+        boolean code;              -- true: =/=   false: ==
+ export boolean relation;
+ begin if left.sp <> right.sp then relation:=code;
+    elsif left.lp <> right.lp then relation:=code;
+    elsif left.ent <> right.ent then relation:=code;
+    else relation:=not code endif;
+ end;
+
+
+ Visible known("STRIP") STRIP;
+ import infix(txtqnt) txt; export infix(txtqnt) res;
+ begin boolean cont; name(character) chaadr;
+       res:=txt; cont:=true;
+       ---   resl.lp = 0  ===>  res = notext  ===>  res.sp = 0
+       if res.lp <> 0 then chaadr:=name(res.ent.cha(res.lp-1)) endif;
+       repeat --- res.lp > res.sp  ==>  chaadr = name(res.ent.cha(res.lp-1))
+             if res.lp <= res.sp then res:=notext; cont:=false;
+             elsif var(chaadr) = ' '
+             then res.lp:=res.lp - 1;               --  Strip off a blank.
+                  chaadr:=name(var(chaadr)(-1)); --  Point to previous char.
+             else res.cp:=res.sp; cont:=false endif;
+    while cont do endrepeat;
+ end;
+%title ***  D e c l a r e d    A r r a y    I n d e x i n g  ***
+
+ Visible known("ARGIND") ARGIND;
+ import ref(arhead) head; integer dim,ind(MAX_DIM);
+ begin integer i,neg_base,subscript; infix(arrbnd) bnd;
+       dim:=dim-1; bnd:=head.bound(dim);
+       neg_base:=bnd.neg_base; subscript:=ind(dim);
+       if subscript < bnd.lb then ERROR(ENO_ARR_3) endif;
+       if subscript > bnd.ub then ERROR(ENO_ARR_4) endif;
+       repeat while dim > 0
+       do dim:=dim - 1; bnd:=head.bound(dim); i:=ind(dim);
+          if i < bnd.lb then ERROR(ENO_ARR_3) endif;
+          if i > bnd.ub then ERROR(ENO_ARR_4) endif;
+          subscript:=subscript * bnd.dope  +  i;
+       endrepeat;
+       ---  The index will later be accessed from the compiler produced code.
+       tmp.int:=subscript + neg_base;
+ end;
+
+
+ Visible known("AR2IND") AR2IND;
+ import ref(arent2) arr; integer ind_1,ind_2;
+ begin if ind_1 < arr.lb_1 then ERROR(ENO_ARR_3) endif;
+       if ind_1 > arr.ub_1 then ERROR(ENO_ARR_4) endif;
+       if ind_2 < arr.lb_2 then ERROR(ENO_ARR_3) endif;
+       if ind_2 > arr.ub_2 then ERROR(ENO_ARR_4) endif;
+       ---  The index will later be accessed from the compiler produced code.
+       tmp.int:=ind_2 * arr.dope + ind_1 + arr.neg_base;
+ end;
+
+
+ Visible known("AR1IND") AR1IND;
+ import ref(arent1) arr; integer ind;
+ begin if ind < arr.lb then ERROR(ENO_ARR_3) endif;
+       if ind > arr.ub then ERROR(ENO_ARR_4) endif;
+       ---  The index will later be accessed from the compiler produced code.
+       tmp.int:=ind - arr.lb;
+ end;
+
+%title ***  P a r a m e t e r    A r r a y    I n d e x i n g  ***
+
+ Visible known("PAGIND") PAGIND;
+ import ref(arhead) head; integer dim,ind(MAX_DIM);
+ begin integer i,neg_base,subscript; infix(arrbnd) bnd;
+       if head.sort <> S_ARHEAD then ERROR(ENO_ARR_2) endif;
+       if head.ndim <> dim then ERROR(ENO_ARR_2) endif;
+       dim:=dim-1; bnd:=head.bound(dim);
+       neg_base:=bnd.neg_base; subscript:=ind(dim);
+       if subscript < bnd.lb then ERROR(ENO_ARR_3) endif;
+       if subscript > bnd.ub then ERROR(ENO_ARR_4) endif;
+       repeat while dim > 0
+       do dim:=dim - 1; bnd:=head.bound(dim); i:=ind(dim);
+          if i < bnd.lb then ERROR(ENO_ARR_3) endif;
+          if i > bnd.ub then ERROR(ENO_ARR_4) endif;
+          subscript:=subscript * bnd.dope  +  i;
+       endrepeat;
+       ---  The index will later be accessed from the compiler produced code.
+       tmp.int:=subscript + neg_base;
+ end;
+
+
+ Visible known("PA2IND") PA2IND;
+ import ref(arent2) arr; integer ind_1,ind_2;
+ begin case  0:MAX_SORT (arr.sort)
+       when  S_ARENT2,S_ARREF2,S_ARTXT2:          --  It is two-dimensional.
+       otherwise ERROR(ENO_ARR_2) endcase;
+       if ind_1 < arr.lb_1 then ERROR(ENO_ARR_3) endif;
+       if ind_1 > arr.ub_1 then ERROR(ENO_ARR_4) endif;
+       if ind_2 < arr.lb_2 then ERROR(ENO_ARR_3) endif;
+       if ind_2 > arr.ub_2 then ERROR(ENO_ARR_4) endif;
+       ---  The index will later be accessed from the compiler produced code.
+       tmp.int:=ind_2 * arr.dope + ind_1 + arr.neg_base;
+ end;
+
+
+ Visible known("PA1IND") PA1IND;
+ import ref(arent1) arr; integer ind;
+ begin case  0:MAX_SORT (arr.sort)
+       when  S_ARENT1,S_ARREF1,S_ARTXT1:          --  It is one-dimensional.
+       otherwise ERROR(ENO_ARR_2) endcase;
+       if ind < arr.lb then ERROR(ENO_ARR_3) endif;
+       if ind > arr.ub then ERROR(ENO_ARR_4) endif;
+       ---  The index will later be accessed from the compiler produced code.
+       tmp.int:=ind - arr.lb;
+ end;
+
+%title
+
+ Visible known("RMIN") RMIN;
+ import real x,y; export real val;
+ begin val:=if x < y then x else y end;
+
+ Visible known("DMIN") DMIN;
+ import long real x,y; export long real val;
+ begin val:=if x < y then x else y end;
+
+ Visible known("RMAX") RMAX;
+ import real x,y; export real val;
+ begin val:=if x > y then x else y end;
+
+ Visible known("DMAX") DMAX;
+ import long real x,y; export long real val;
+ begin val:=if x > y then x else y end;
+
+ Visible known("IABS") IABS;
+ import integer arg; export integer val;
+ begin val:=if arg > 0 then arg else -arg end;
+
+ Visible known("RABS") RABS;
+ import real arg; export real val;
+ begin val:=if arg > 0.0 then arg else -arg end;
+
+ Visible known("DABS") DABS;
+ import long real arg; export long real val;
+ begin val:=if arg > 0.0&&0 then arg else -arg end;
+
+ Visible known("RSIGN") RSIGN;
+ import real arg; export integer val;
+ begin val:=if arg > 0.0 then 1 else if arg < 0.0 then -1 else 0 end;
+
+ Visible known("DSIGN") DSIGN;
+ import long real arg; export integer val;
+ begin val:=if arg > 0.0&&0 then 1 else if arg < 0.0&&0 then -1 else 0 end;
+
+ Visible known("MODULO") MOD;
+ import integer x,y; export integer val;
+ begin val:= x - ((x/y) * y);
+       if    val > 0 then if y < 0 then val:=val+y endif
+       elsif val < 0 then if y > 0 then val:=val+y endif  endif;
+ end;
+
+ Visible known("REMAIN") REMAIND;
+ import integer x,y; export integer val;
+ begin val:= x - ((x/y) * y) end;
+
+ Visible known("RENTI") RENTIER;
+ import real arg; export integer   val;
+ begin val:=arg qua integer;
+       if arg < (val qua real) then val := val - 1 endif;
+ end;
+
+ Visible known("DENTI") DENTIER;
+ import long real arg; export integer val;
+ begin val:=arg qua integer;
+       if arg < (val qua long real) then val := val - 1 endif;
+ end;
+
+ Visible known("DIGIT") DIGIT;
+ import character arg; export boolean val;
+ begin val:=(arg >= '0') and (arg <= '9') end;
+
+ Visible known("LETTER") LETTER;
+ import character arg; export boolean val;
+ begin val:=((arg >= 'A') and (arg <= 'Z'))
+         or ((arg >= 'a') and (arg <= 'z'));
+ end;
+
+ Visible known("RADDEP") RADDEPS;
+ import real arg; export real val;
+ begin ERROR(ENO_SYS_5);
+ ----  val := arg + <small number>
+ end;
+
+ Visible known("DADDEP") DADDEPS;
+ import long real arg; export long real val;
+ begin ERROR(ENO_SYS_5);
+ ----  val := arg + <small number>
+ end;
+
+ Visible known("RSUBEP") RSUBEPS;
+ import real arg; export real val;
+ begin ERROR(ENO_SYS_5);
+ ----  val := arg - <small number>
+ end;
+
+ Visible known("DSUBEP") DSUBEPS;
+ import long real arg; export long real val;
+ begin ERROR(ENO_SYS_5);
+ ----  val := arg - <small number>
+ end;
+%page
+
+ Visible known("IIPOWR") IIPOWER; --- v:=b**x ---
+ import integer b,x; export integer v;
+ begin if x=0 then if b=0 then ERROR(ENO_SYS_2) else v:=1 endif
+       elsif x < 0 then ERROR(ENO_SYS_2) elsif b=0 then v:=0
+       else v:=b; repeat x:=x-1 while x>0 do v:=v*b endrepeat;
+       endif;
+ end;
+
+ Visible known("RIPOWR") RIPOWER; --- v:=b**x ---
+ import real b; integer x; export real v;
+ begin if x=0 then if b=0.0 then ERROR(ENO_SYS_2) else v:=1.0 endif
+       elsif b=0.0 then v:=0.0
+       else if x<0 then x:=-x; v:=1.0; b:=v:=v/b; else v:=b endif;
+            repeat x := x-1 while x > 0 do v:=v*b endrepeat;
+       endif;
+ end;
+
+ Visible known("RRPOWR") RRPOWER; --- v:=b**x ---
+ import real b,x; export real v;
+ begin if x=0.0 then if b=0.0 then ERROR(ENO_SYS_2) else v:=1.0 endif
+       elsif b=0.0 then v:=0.0
+       else v:=envir_RLN(b); if status <> 0 then ERROR(ENO_SYS_2) endif;
+            v:=envir_REXP(v*x); if status <> 0 then ERROR(ENO_SYS_2) endif;
+       endif;
+ end;
+
+ Visible known("RDPOWR") RDPOWER; --- v:=b**x ---
+ import real b; long real x; export long real v;
+ begin if x=0.0&&0 then if b=0.0 then ERROR(ENO_SYS_2) else v:=1.0&&0 endif
+       elsif b=0.0 then v:=0.0&&0;
+       else v:=envir_DLN(b qua long real);
+            if status <> 0 then ERROR(ENO_SYS_2) endif;
+            v:=envir_DEXP(v*x); if status <> 0 then ERROR(ENO_SYS_2) endif;
+    endif;
+ end;
+
+ Visible known("DIPOWR") DIPOWER; --- v:=b**x ---
+ import long real b; integer x; export long real v;
+ begin if x=0 then if b=0.0&&0 then ERROR(ENO_SYS_2) else v:=1.0&&0 endif
+       elsif b=0.0&&0 then v:=0.0&&0;
+       else if x < 0 then x:=-x; v:=1.0&&0; b:=v:=v/b else v:=b endif;
+            repeat  x := x-1  while  x > 0  do  v := v * b  endrepeat;
+       endif;
+ end;
+
+ Visible known("DRPOWR") drpower; --- v:=b**x ---
+ import long real b; real x; export long real v;
+ begin if x=0.0 then if b=0.0&&0 then ERROR(ENO_SYS_2) else v:=1.0&&0 endif
+       elsif b=0.0&&0 then v:=0.0&&0;
+       else v:=envir_DLN(b);
+            if status <> 0 then ERROR(ENO_SYS_2) endif;
+            v:=envir_DEXP(v * (x qua long real));
+            if status <> 0 then ERROR(ENO_SYS_2) endif;
+       endif;
+ end;
+
+ Visible known("DDPOWR") DDPOWER; --- v:=b**x ---
+ import long real b,x; export long real v;
+ begin if x=0.0&&0 then if b=0.0&&0 then ERROR(ENO_SYS_2) else v:=1.0&&0 endif
+       elsif b=0.0&&0 then v:=0.0&&0;
+       else v:=envir_DLN(b); if status <> 0 then ERROR(ENO_SYS_2) endif;
+            v:=envir_DEXP(v*x); if status <> 0 then ERROR(ENO_SYS_2) endif;
+       endif;
+ end;
+
+end;

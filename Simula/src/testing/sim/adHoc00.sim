@@ -1,0 +1,6 @@
+Begin
+  Class A;;
+  integer i;
+  
+  outtext("Hallo fra meg åsså !!!");
+End;

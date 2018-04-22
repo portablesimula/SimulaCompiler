@@ -1,0 +1,18 @@
+
+%INCLUDE_QPS
+%QUALIFIEDNAMES
+Simulation Begin
+   Integer u;
+   ref(Car) bil;
+
+   Process Class Car;
+    Begin
+         Hold (4);
+         Hold (12);
+       End;
+   End;
+
+   bil:- New Car();
+   Activate bil;
+   Hold (100);
+End;

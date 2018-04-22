@@ -1,0 +1,709 @@
+ Module UTIL("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3, Norway                                          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---          I n t e r n a l    R T S    U t i l i t i e s          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+
+Visible macro DEFINE_IDENT(3)
+begin const infix(identifier: %2 ) %1 =record:identifier
+      ( ncha= %2 , cha= %3 );
+endmacro;
+
+Visible macro SIMPLE_ATTR(4);
+begin const infix(atrdes) %1 = record:atrdes
+        (ident=ref( %2 ),fld=field( %3 ),
+         mode=M_LOCAL,kind=K_SMP,type= %4 );
+endmacro;
+
+--  Observation Event Literal Values  --
+Visible define EVT_INI  =  0; -- System generation
+Visible define EVT_ERR  =  1; -- Runtime ERROR
+Visible define EVT_BRK  =  2; -- Break point trap
+Visible define EVT_SST  =  3; -- Statement start interupt
+Visible define EVT_ITR  =  4; -- Attention interupt
+Visible define EVT_BPRG =  5; -- Begin user program
+Visible define EVT_EPRG =  6; -- End user program
+Visible define EVT_BEG  =  7; -- Begin block/procedure/class
+Visible define EVT_END  =  8; -- End   block/procedure/class
+Visible define EVT_GOTO =  9; -- Goto non-local label
+Visible define EVT_QPS  = 10; -- Detach/Call/Resume
+Visible define EVT_ARR  = 11; -- Array allocation
+Visible define EVT_TXT  = 12; -- Text entity generation
+Visible define EVT_FIL  = 13; -- File action open/close/inimage/outimage/locate
+Visible define EVT_SML  = 14; -- SIMULATION events activate/wait ...
+Visible define EVT_GC   = 15; -- Garbage Collection
+Visible define EVT_SNAP = 16; -- User SNAPSHOT
+Visible define EVT_max  = 17;
+
+--  SIMULATION events  --
+Visible define SML_ACTI =  0;  -- activate
+Visible define SML_ACT1 =  1;  -- activate none
+Visible define SML_ACT2 =  2;  -- activate terminated
+Visible define SML_ACT3 =  3;  -- activate scheduled
+Visible define SML_RACT =  4;  -- reactivate
+Visible define SML_RAC1 =  5;  -- reactivate none
+Visible define SML_RAC2 =  6;  -- reactivate terminated
+Visible define SML_RAC3 =  7;  -- reactivate before/after itself
+Visible define SML_RAC4 =  8;  -- reactivate current
+Visible define SML_PASS =  9;  -- passivate
+Visible define SML_CANC = 10;  -- cancel
+Visible define SML_WAIT = 11;  -- wait
+Visible define SML_HOLD = 12;  -- hold
+Visible define SML_max  = 13;
+
+--  Events during file handling  --
+Visible define FTR_OPEN=0; -- open
+Visible define FTR_CLOS=1; -- close
+Visible define FTR_INIM=2; -- inimage/inrecord
+Visible define FTR_UTIM=3; -- outimage/outrecord/breakoutimage/printout
+Visible define FTR_LOCA=4; -- locate
+Visible define FTR_ENDF=5; -- when endfile:=true
+Visible define FTR_max =6;
+
+--  Events during Garbage Collection  --
+Visible define GC_BEG=0;  -- Begin Garbage Collection
+Visible define GC_END=1;  -- Begin Garbage Collection
+Visible define GC_EP1=2;  -- End of pass 1
+Visible define GC_EP2=3;  -- End of pass 2
+Visible define GC_EP3=4;  -- End of pass 3
+Visible define GC_EP4=5;  -- End of pass 4
+Visible define GC_PRC1=6; -- Process entity in pass 1
+Visible define GC_PRC3=7; -- Process entity in pass 3
+Visible define GC_UPD3=8; -- Updated entity in pass 3
+Visible define GC_FIL=9; -- Unclosed file found as garbage
+Visible define GC_max=10;
+
+Visible define TRM_NRM = 0;   -- Normal termination
+Visible define TRM_REQ = 1;   -- User requested termination
+Visible define TRM_ERR = 2;   -- Error in user program or observation tool.
+Visible define TRM_SYS = 3;   -- System error
+Visible define MAX_TRM = 3;
+
+ const infix(string) ERR_MSG(MAX_ENO) = (
+
+ "Unspecified error condition.",                                         --   0
+ "Invalid floating point operation.",                                    --   1
+ "Floating point division by zero.",                                     --   2
+ "Floating point overflow.",                                             --   3
+ "Floating point underflow.",                                            --   4
+ "Inexact result (floating point operation).",                           --   5
+ "Integer overflow.",                                                    --   6
+ "Integer division by zero.",                                            --   7
+ "Illegal address trap.",                                                --   8
+ "Illegal instruction trap.",                                            --   9
+ "Breakpoint trap.",                                                     --  10
+ "User interrupt - NOT YET IMPLEMENTED.",                                --  11
+ "Cpu time limit overflow.",                                             --  12
+ "Continuation is impossible.",                                          --  13
+ "Start of statement exception - NOT YET IMPLEMENTED.",                  --  14
+ "Trap caused by interrupt or exception:",                               --  15
+ "Internal error in Simula Run-Time System. Please report it at once.",  --  16
+ "Internal error in Simob or Environment. Please report it at once.",    --  17
+ "Internal error in the Front-End Compiler. Please report it at once.",  --  18
+ "Breakpoint trap, but no observation tool is available.",               --  19
+ "Not enough primary storage for predefined instances.",                 --  20
+ "Qualification check fails.",                                           --  21
+ "Attempt to remotely access attribute through none  (x=none in x.y).",  --  22
+ "Unexpected non-zero status on return from environment routine call.",  --  23
+ "Exponentiation: Result is undefined.",                                 --  24
+ "Impossible to satisfy the request, maybe because it is illegal.",      --  25
+ "Actual parameter value is out of range.",                              --  26
+ "The service function is not implemented.",                             --  27
+ "Illegal action.",                                                      --  28
+ "Storage request cannot be met, not enough primary storage.",           --  29
+ "Illegal goto destination.",                                            --  30
+ "x.Detach: x is not on the operating chain.",                           --  31
+ "Resume(x): x is none.",                                                --  32
+ "Resume(x): x is not local to sub-block or prefixed block instance",    --  33
+ "Resume(x): x is not in detached state.",                               --  34
+ "Process is not local to prefixed block, illegal implicit Resume.",     --  35
+ "Implicit Resume(x): Process object x is not in detached state.",       --  36
+ "Call(x): x is none.",                                                  --  37
+ "Call(x): x is not in detached state.",                                 --  38
+ "Wrong number of parameters in call on formal or virtual procedure.",   --  39
+ "Virtual attribute has no match.",                                      --  40
+ "Lower/upperbound(a,i): illegal value of i.",                           --  41
+ "Incorrect number of array indices.",                                   --  42
+ "Array index value is out of bounds.",                                  --  43
+ "Array index value is out of bounds.",                                  --  44
+ "Blanks(n):  n is negative or too large.",                              --  45
+ "Text value assignment x := y: x.Length < y.Length, maybe x == notext", --  46
+ "Text value assignment x := y: x.Constant = True.",                     --  47
+ "Sub(i,n):  i is less than 1.",                                         --  48
+ "Sub(i,n):  n is negative.",                                            --  49
+ "t.Sub(i,n): i + n > t.Length + 1, maybe t == notext.",                 --  50
+ "t.Get...:  t == notext.",                                              --  51
+ "t.Get...:  Non-numeric item.",                                         --  52
+ "t.Get...:  Numeric item is out of range.",                             --  53
+ "t.Get...:  Numeric item is not complete.",                             --  54
+ "t.Getchar:  t.More = False, maybe t == notext.",                       --  55
+ "t.Put...:  t == notext.",                                              --  56
+ "t.Put...:  t.Constant = True.",                                        --  57
+ "t.Put...(r,n):  Fraction size specification n is negative.",           --  58
+ "t.Putchar:  t.More = False, maybe t == notext.",                       --  59
+ "Parameter called by name:",                                            --  60
+ "Assignment to formal: Actual is no variable, cannot assign.",          --  61
+ "Parameter transmission: Actual is no variable.",                       --  62
+ "The types of the actual and the formal parameter are different.",      --  63
+ "Different qualifications of the actual and the formal parameter.",     --  64
+ "Assignment to formal:  object is not subordinate to actual.",          --  65
+ "Occurrence of formal: actual object is not subordinate to formal.",    --  66
+ "Occurrence of formal: actual procedure is not subordinate to formal.", --  67
+ "Parameter transmission to formal or virtual procedure:",               --  68
+ "Actual object is not subordinate to formal parameter.",                --  69
+ "Actual procedure parameter is not subordinate to formal parameter.",   --  70
+ "Actual and formal parameter are of different kinds.",                  --  71
+ "Actual and formal parameter are of different types.",                  --  72
+ "Actual and formal parameter are of incompatible types.",               --  73
+ "Transplantation: actual and formal qualification are dynamically different.",
+ "Qualification of actual and formal reference array do not coincide.",  --  75
+ "Types of actual and formal procedure are neither coincident nor subordinate.",
+ "file.Open:  The file is open already.",                                --  77
+ "new ...file: FILENAME == notext.",                                     --  78
+ "file.OPEN = false.",                                                   --  79
+ "file.ENDFILE == true.",                                                --  80
+ "file.In...:  file.image == notext  or  file not open.",                --  81
+ "file.Inimage:  file.image.Constant = true.",                           --  82
+ "Directfile.Inimage:  End of file was encountered.",                    --  83
+ "file.In...:  Attempt to read through end of file.",                    --  84
+ "file.In...:  Non-numeric item.",                                       --  85
+ "file.In...:  Numeric item is out of range.",                           --  86
+ "file.In...:  Numeric item is not complete.",                           --  87
+ "file.Intext(n):  n is negative or too large.",                         --  88
+ "file.Out...:  file.image == notext  or  file not open.",               --  89
+ "file.Out...(...,w):  w < 0.",                                          --  90
+ "file.Out...(...,w):  w > file.image.Length",                           --  91
+ "file.Out...:  file.image.Constant = true.",                            --  92
+ "file.Out...(...,n,...):  Fraction size specification n is negative.",  --  93
+ "file.Outtext(t):  t.Length > file.image.Length",                       --  94
+ "Printfile.Spacing(n):  n < 0  or  n > Linesperpage.",                  --  95
+ "Printfile.Eject(n):  n <= 0.",                                         --  96
+ "File.Close:  The file is closed already.",                             --  97
+ "Illegal file operation, not compatible with this file.",               --  98
+ "The external record format is not compatible with this directfile.",   --  99
+ "File.Open:  Illegal file name.",                                       -- 100
+ "file.Out...:  Output image too long.",                                 -- 101
+ "file.In...:  Input image too long.",                                   -- 102
+ "file.Out...:  The file is full.",                                      -- 103
+ "Directfile:  Location out of range.",                                  -- 104
+ "I/O error, e.g. hardware fault.",                                      -- 105
+ "No write access to the file.",                                         -- 106
+ "File.Open:  Too many files open simultaneously.",                      -- 107
+ "No read access to the file.",                                          -- 108
+ "End of file has been encountered already.",                            -- 109
+ "Installation dependent file error. See the value of STATUS.",          -- 110
+ "Simulation:  (Re)Activate empties SQS.",                               -- 111
+ "Simulation:  Cancel,Passivate or Wait empties SQS",                    -- 112
+ "Process.Evtime:  The process is idle.",                                -- 113
+ "Random drawing:  Actual array parameter is not one-dimensional.",      -- 114
+ "Histd(a,u):  An element of the array a is negative.",                  -- 115
+ "Linear(a,b,u):  The number of elements in a and b are different.",     -- 116
+ "Linear(a,b,u):  The array a does not satisfy the stated assumptions.", -- 117
+ "Negexp(a,u) :  a <= 0.",                                               -- 118
+ "Randint(a,b,u) or Uniform(a,b,u) :   b < a.",                          -- 119
+ "Erlang(a,b,u):  a <= 0  or  b <= 0.",                                  -- 120
+ "Normal(a,b,u):  b <= 0.",                                              -- 121
+ "Random drawing:  u <= 0. (u is the last parameter in the call.)",      -- 122
+ "Histo(a,b,c,d):  Array parameter is not one-dimensional.",             -- 123
+ "Histo(a,b,c,d):  number of elements in a <= number of elements in b.", -- 124
+ "Standard function call:  Parameter value is out of range.",            -- 125
+ "Switch designator:  Index value is out of range.",                     -- 126
+ "Call on external non-SIMULA procedure:  actual label is not local."    -- 127
+ );
+%title ***   E r r o r    H a n d l i n g   ***
+
+ Visible routine ERR_SYS;
+ begin range(0:MAX_ENO) eno;
+       case 0:MAX_STS (status)
+       when 19:  eno:=ENO_SYS_3 ;
+       when 27:  eno:=ENO_SYS_4;
+       when 30:  eno:=ENO_SYS_5;
+       when 33:  eno:=ENO_SYS_6 ;
+       otherwise eno:=ENO_SYS_1 endcase;
+       INI_ERR(eno,none);
+ end;
+
+ Visible routine ERR_FIL;
+ import ref(filent) fil; range(0:MAX_ENO) eno;
+ begin INI_ERR(eno,fil) end;
+
+ Visible routine ERR_FIL_SYS;
+ import ref(filent) fil;
+        boolean eof;  --  Is fil.eof significant?
+        boolean open; --  Is fil.key = 0 significant?
+ begin range(0:MAX_ENO)   eno;
+
+       if open and (fil.key=0) then eno:=ENO_FIL_3;
+       elsif eof and fil.eof   then eno:=ENO_FIL_33;
+       else case  0:MAX_STS (status)
+            when  7: eno:=ENO_FIL_21;
+            when  8: eno:=ENO_FIL_22;
+            when  9: eno:=ENO_FIL_23;
+            when 10: eno:=ENO_FIL_24;
+            when 11: eno:=ENO_FIL_25;
+            when 12: eno:=ENO_FIL_26;
+            when 13: eno:=ENO_FIL_8 ;
+            when 15: eno:=ENO_FIL_27;
+            when 16: eno:=ENO_FIL_28;
+            when 17: eno:=ENO_FIL_29;
+            when 20: eno:=ENO_FIL_30;
+            when 21: eno:=ENO_FIL_9 ;
+            when 22: eno:=ENO_FIL_10;
+            when 23: eno:=ENO_FIL_11;
+            when 25: eno:=ENO_FIL_17;
+            when 29: eno:=ENO_FIL_31;
+            when 31: eno:=ENO_FIL_24;
+            when 32: eno:=ENO_FIL_32;
+            when 35: eno:=ENO_FIL_28;
+            otherwise eno:=ENO_FIL_34 endcase;
+       endif;
+       INI_ERR(eno,fil);
+ end;
+
+ routine INI_ERR;
+ import range(0:MAX_ENO) eno; ref(filent) fil;
+ begin call PINIERR(err_ini)(eno,fil) end;
+
+Visible routine IERR; import infix(string) idn;
+begin ED_OUT; ED_STR("***** Internal Error at "); PRT(idn);
+      call PINIERR(err_ini)(ENO_ITN_1,none);
+end;
+%title ***  U t i l i t y    R o u t i n e s  ***
+
+Visible routine GET_LINE_NO;
+import label adr; export integer lno;
+begin lno := envir_GET_LINE_NO(adr);
+      if status <> 0
+      then if status <> 27 then ERR_SYS endif;
+           status:=0; lno:=0;
+      endif;
+end;
+
+
+Visible routine FNP_CHK_QAL;
+import ref (cla_pre_ptp) super;  -- qualification of left hand side.
+       ref (cla_pre_ptp) sub;    -- qualification of right hand side.
+       range (0:MAX_ENO) eno;    -- error number
+begin if super.plv > sub.plv then  ERROR(eno)  endif;
+      if super <> sub.prefix(super.plv) then  ERROR(eno)  endif;
+end;
+
+Visible routine TXT_TO_STR;
+import infix (txtqnt) txt; export infix (string) str;
+begin str.nchr:=txt.lp - txt.sp;
+      str.chradr:=if txt.lp = 0 then noname
+      else name(txt.ent.cha(txt.sp));
+end;
+
+Visible routine STRBUF; import integer n; export infix(string) s;
+begin s.chradr:=@utbuff; if utpos > 0 then ED_OUT endif;
+      if n > 0 then s.nchr:=n else s.nchr:=utlng endif;
+end;
+%title ***   T  r  a  c  i  n  g   ***
+
+Visible routine TRC_BPRG;
+begin bio.obs_evt:=EVT_BPRG; call PSIMOB(smb)(0,none,none) end;
+
+Visible routine TRC_EPRG;
+begin bio.obs_evt:=EVT_EPRG; call PSIMOB(smb)(0,none,none) end;
+
+Visible routine TRC_BEG;
+begin bio.obs_evt:=EVT_BEG; call PSIMOB(smb)(0,none,none) end;
+
+Visible routine TRC_END;
+begin bio.obs_evt:=EVT_END; call PSIMOB(smb)(0,none,none) end;
+
+Visible routine TRC_GOTO;
+import ref(instance) from; -- The instance executing  goto
+begin bio.obs_evt:=EVT_GOTO; call PSIMOB(smb)(0,from,none) end;
+
+Visible routine TRC_QPS;
+import ref(instance) from; -- The instance executing  detach/call/resume
+       ref(instance) ins;  -- Head of component being detached/called/resumed
+       integer code;       -- 0:detach, 1:call, 2:resume
+begin bio.obs_evt:=EVT_QPS; call PSIMOB(smb)(code,from,ins) end;
+
+Visible routine TRC_ARR;
+import ref(entity) ent; range(0:MAX_TYPE) type;
+begin label lsc; lsc:=curins.lsc;
+      curins.lsc:=envir_OUTERMOST; status:=0;
+      bio.obs_evt:=EVT_ARR; call PSIMOB(smb)(type,ent,none);
+      curins.lsc:=lsc;
+end;
+
+Visible routine TRC_TXT; import ref(txtent) txt;
+begin label lsc; lsc:=curins.lsc;
+      curins.lsc:=envir_OUTERMOST; status:=0;
+      bio.obs_evt:=EVT_TXT; call PSIMOB(smb)(0,txt,none);
+      curins.lsc:=lsc;
+end;
+
+Visible routine TRC_FIL;
+import ref(filent) fil;    -- The file entity
+       integer code;       -- 0:open, 1:close, 2:inimage, 3:outimage, 4:locate
+begin label lsc; lsc:=curins.lsc;
+      curins.lsc:=envir_OUTERMOST; status:=0;
+      bio.obs_evt:=EVT_FIL; call PSIMOB(smb)(code,fil,none);
+      curins.lsc:=lsc;
+end;
+
+Visible routine SNAPSHOT;
+begin label lsc; lsc:=curins.lsc;
+      curins.lsc:=envir_OUTERMOST; status:=0;
+      bio.obs_evt:=EVT_SNAP; call PSIMOB(smb)(0,none,none);
+      curins.lsc:=lsc;
+end;
+
+Visible routine TRC_SML; import integer code; ref(entity) ent;
+begin label lsc; lsc:=curins.lsc;
+      curins.lsc:=envir_OUTERMOST; status:=0;
+      bio.obs_evt:=EVT_SML; call PSIMOB(smb)(code,ent,none);
+      curins.lsc:=lsc;
+end;
+
+Visible routine TRC_GC; import integer code; ref(entity) ent;
+begin label saved_lsc; saved_lsc:=curins.lsc;
+      curins.lsc:=envir_OUTERMOST; status:=0;
+      bio.obs_evt:=EVT_GC; call PSIMOB(smb)(code,ent,none);
+      curins.lsc:=saved_lsc;
+end;
+%title ***  O u t p u t    H a n d l i n g  ***
+
+Visible routine ED_OUT;
+begin infix(string) im;
+      if utpos > 0
+      then if pgsize > 0
+           then pgleft:=pgleft-1;
+                if pgleft <= 0
+                then im.chradr:=@dumbuf; im.nchr:=4;
+                     envir_SYSPROMPT("Enter CR to continue: ",im);
+                     status:=0; pgleft:=pgsize;
+                endif;
+           endif;
+           im.chradr:=@utbuff; im.nchr:=utpos;
+           if bio.logfile > 0 then envir_OUTIMAGE(bio.logfile,im) endif;
+           envir_SYSPRINT(im); utpos:=0;
+           if status <> 0 then status:=0 endif;
+      endif;
+end;
+
+Visible routine PRT; import infix(string) t; begin ED_STR(t); ED_OUT end;
+
+Routine WFIELD; import integer n; export infix(string) s;
+begin if n > (utlng - utpos) then ED_OUT endif
+      if n > utlng then n:=utlng endif;
+      s.chradr:=@utbuff(utpos); s.nchr:=n;
+      utpos:=utpos+n;
+end;
+
+Visible routine ED_SKIP; import integer n;
+begin if (utpos+n) >= utlng then ED_OUT
+      else repeat n:=n-1 while n >= 0 do ED_CHAR(' ') endrepeat endif;
+
+end;
+
+Visible routine ED_CHAR; import character c;
+begin integer x; x:=c qua integer;
+      if x >= 32
+      then if utpos >= utlng then ED_OUT endif;
+           utbuff(utpos):=c; utpos:=utpos+1;
+      else if utpos+3 >= utlng then ED_OUT endif;
+           utbuff(utpos):='!'; utpos:=utpos+1; ED_INT(x);
+           utbuff(utpos):='!'; utpos:=utpos+1;
+      endif;
+end;
+
+Visible routine ED_INT; import integer i;
+begin integer n,v;
+      if i>=0 then v:=i; n:=0
+      elsif i>= -9 then v:= -i; n:=1
+      else v:= -(i/10); n:=2 endif;
+
+      repeat n:=n+1 while v > 9 do v:=v/10 endrepeat;
+      envir_PUTINT(WFIELD(n),i);
+      if status <> 0 then status:=0; IERR("EDINT") endif;
+end;
+
+Visible routine ED_REAL; import real r;
+begin envir_PUTREAL(WFIELD(14),r,7);
+      if status <> 0 then status:=0; IERR("EDREAL") endif;
+end;
+
+Visible routine ED_LREAL; import long real r;
+begin envir_PUTLREAL(WFIELD(23),r,16);
+      if status <> 0 then status:=0; IERR("EDLREAL") endif;
+end;
+
+Visible routine ED_FIX; import real r;
+begin envir_PUTFIX(WFIELD(10),r,2);
+      if status <> 0 then status:=0 endif;
+end;
+
+Visible routine ED_LFIX; import long real r;
+begin envir_PUTLFIX(WFIELD(10),r,2);
+      if status <> 0 then status:=0 endif;
+end;
+
+visible routine ED_AADDR; import field() val;
+begin envir_PUTAADDR(WFIELD(12),val);
+      if status <> 0 then status:=0; IERR("EDAADDR") endif;
+end;
+
+visible routine ED_OADDR; import ref() val;
+begin envir_PUTOADDR(WFIELD(12),val);
+      if status <> 0 then status:=0; IERR("EDOADDR") endif;
+end;
+
+visible routine ED_PADDR; import label val;
+begin envir_PUTPADDR(WFIELD(12),val);
+      if status <> 0 then status:=0; IERR("EDPADDR") endif;
+end;
+
+visible routine ED_RADDR; import entry() val;
+begin envir_PUTRADDR(WFIELD(12),val);
+      if status <> 0 then status:=0; IERR("EDRADDR") endif;
+end;
+
+visible routine ED_SIZE; import size val;
+begin envir_PUTSIZE(WFIELD(12),val);
+      if status <> 0 then status:=0; IERR("EDSIZE") endif;
+end;
+
+
+Visible routine ED_STR; import infix(string) str;
+begin C_MOVE(str,WFIELD(str.nchr)) end;
+
+
+Visible routine ED_TEXT;
+import infix(txtqnt) txt;
+       boolean val;      --  Output the text value?
+begin if txt.lp=0 then ED_STR("notext");
+      else --  Show whether it is a substring or not.
+           if (txt.lp-txt.sp) < txt.ent.ncha then ED_STR("Sub");
+           else ED_STR("Main")  endif;
+
+           --  Show start position and length.
+           ED_CHAR('('); ED_INT(txt.sp + 1);
+           ED_CHAR(','); ED_INT(txt.lp-txt.sp);
+           ED_STR(") pos="); ED_INT(txt.cp-txt.sp+1);
+
+           --  Maybe show the value,i.e. the characters.
+           if val
+           then ED_CHAR(' '); ED_CHAR('"'); txt.cp:=txt.sp;
+                repeat while txt.cp < txt.lp
+                do ED_CHAR(txt.ent.cha(txt.cp));
+                   txt.cp:=txt.cp+1;
+                endrepeat;
+                ED_CHAR('"');
+           endif;
+      endif;
+      ED_OUT;
+end;
+
+Visible routine ED_IDT; import ref(identifier) idt;
+begin infix(string) str;
+      if idt = none then str:="not observable";
+      else str.nchr:=idt.ncha; str.chradr:=name(idt.cha) endif;
+      ED_STR(str);
+end;
+
+Visible routine ED_LINE; import label padr;
+begin ED_STR(" line "); ED_INT(GET_LINE_NO(padr));
+      status:=0; ED_STR(" ");
+end;
+
+Visible routine ED_LSC; import ref(instance) ins;
+begin integer p,lng,lno; ref(extptp) xpp; infix(string) fld;
+      ED_STR(" line "); if ins=none then ED_STR("???"); goto E1 endif;
+      if ins.pp=none then xpp:=none else xpp:=ins.pp.xpp endif;
+      if xpp=none
+      then L1:L2: fld:=WFIELD(25); p:=utpos-25;
+           lng:=envir_LINEID(ins.lsc,fld);
+           if status = 0 then utpos:=p+lng
+           else status:=0; utpos:=p; ED_STR("???") endif;
+      else if xpp.mod_inf=none then goto L1 endif;
+           if xpp.mod_inf.mod_idt=none then goto L2 endif;
+           lno:=GET_LINE_NO(ins.lsc);
+           if status=0 then ED_INT(lno) else status:=0; ED_STR("???") endif;
+           ED_CHAR('('); ED_IDT(xpp.mod_inf.mod_idt); ED_CHAR(')');
+      endif;
+E1:end;
+
+Visible routine ED_MODLINE; import label paddr;
+begin integer p,lng; infix(string) fld;
+      fld:=WFIELD(25); p:=utpos-25; lng:=envir_LINEID(paddr,fld);
+      if status = 0 then utpos:=p+lng
+      else status:=0; utpos:=p; ED_STR("???") endif;
+end;
+
+
+Visible routine ED_TYP;
+import range(0:MAX_TYPE) typ; ref(cla_pre_ptp) qal;
+begin case 0:MAX_TYPE (typ)
+      when T_NOTYPE:                               --  Do nothing.
+      when T_BOO: ED_STR("boolean ");
+      when T_CHA: ED_STR("character ");
+      when T_SIN: ED_STR("short integer ");
+      when T_INT: ED_STR("integer ");
+      when T_REA: ED_STR("real ");
+      when T_LRL: ED_STR("long real ");
+      when T_REF: ED_STR("ref(");
+                  if qal.xpp = none then ED_STR("??");
+                  else ED_IDT(qal.xpp.idt) endif; ED_STR(") ");
+      when T_TXT: ED_STR("text ");
+      endcase;
+end;
+
+Visible routine ED_INS_ID; import ref(instance) ins;
+begin ref(extptp) xpp; label act; act:=nowhere;
+      if ins.pp=none then xpp:=none else xpp:=ins.pp.xpp endif;
+      case 0:MAX_SORT (ins.sort)
+      when S_ATT: ED_STR("attached class ");
+                  act:=ins.pp qua ref(cla_pre_ptp).stm;
+      when S_DET: ED_STR("detached class ");
+                  act:=ins.pp qua ref(cla_pre_ptp).stm;
+      when S_RES: ED_STR("resumed class ");
+                  act:=ins.pp qua ref(cla_pre_ptp).stm;
+      when S_TRM: ED_STR("terminated class ");
+                  act:=ins.pp qua ref(cla_pre_ptp).stm;
+      when S_PRE: ED_STR("prefixed block ")
+                  act:=ins.pp qua ref(cla_pre_ptp).stm;
+      when S_PRO: --  if xpp <> none then ED_TYP(xpp.typ,xpp.qal) endif;
+                  ED_STR("procedure ");
+                  act:=ins.pp qua ref(pro_ptp).start;
+      when S_SUB: ED_STR("sub-block ");
+      when S_THK: ED_STR("parameter evaluation ");
+      endcase;
+      if xpp <> none
+      then if xpp.idt <> none then ED_IDT(xpp.idt) endif;
+---        if xpp.blk_inf.sno <> nofield
+---        then ED_CHAR('('); ED_INT(var(ins+xpp.blk_inf.sno));
+---             ED_CHAR(')');
+---        endif;
+      elsif act <> nowhere
+      then ED_STR(" with first action at "); ED_LINE(act) endif;
+end;
+
+Visible routine ED_ENT_IDT; import ref(entity) ent;
+begin if ent = none then ED_STR("none");
+      else case  0:MAX_SORT (ent.sort)
+           when  S_SUB,S_ATT,S_DET,S_PRE,S_PRO,S_RES,S_THK,S_TRM:
+                 ED_INS_ID(ent);
+           when  S_ARBODY,S_ARBREF,S_ARBTXT:
+                 ED_STR("body of multi-dimensional array ");
+           when  S_ARHEAD:
+                 ED_STR("head of multi-dimensional array ");
+           when  S_ARENT2,S_ARREF2,S_ARTXT2:
+                 ED_STR("two-dimensional array ");
+           when  S_ARENT1,S_ARREF1,S_ARTXT1:
+                 ED_STR("one-dimensional array ");
+           when  S_SAV:  ED_STR("save object entity ");
+           when  S_TXTENT:  ED_STR("text object entity ");
+           when  S_GAP:  ED_STR("garbage gap ")
+           otherwise ED_STR(" ***** unknown entity ***** ")
+           endcase;
+      endif;
+end;
+
+
+Visible routine DMP_ENT; import ref(entity) ent;
+begin ref(instance) ins; size lng;
+
+      if ent <> none
+      then ED_STR(" at object address ");
+           ED_OADDR(ent); ED_STR(" with size ");
+           case 0:MAX_SORT (ent.sort)
+           when S_ATT,S_DET,S_PRE,S_PRO,S_RES,S_SUB,S_THK,S_TRM:
+                lng:=ent.pp.lng;
+           when S_TXTENT,S_ARHEAD,S_ARBODY,S_ARBREF,S_ARBTXT,S_SAV,
+                S_ARENT2,S_ARREF2,S_ARTXT2,S_ARENT1,S_ARREF1,S_ARTXT1:
+                lng:=ent.lng;
+           when S_GAP: lng:=size(entity);
+           otherwise lng:=nosize;
+           endcase;
+           ED_SIZE(lng); ED_OUT;
+           ED_STR("   sl = ");           ED_OADDR(ent.sl);
+           ED_STR("   gcl = ");          ED_OADDR(ent.gcl);
+           ED_OUT;
+
+           case  0:MAX_SORT (ent.sort)
+           when  S_ATT,S_DET,S_PRE,S_PRO,S_RES,S_SUB,S_THK,S_TRM:
+                 ins:=ent qua ref(instance);
+                 ED_STR("   pp = ");     ED_OADDR(ins.pp);
+                 ED_STR("   dl = ");     ED_OADDR(ins.dl);
+                 ED_STR("   lsc = ");    ED_PADDR(ins.lsc);
+           when  S_SAV:
+                 ins:=ent qua ref(instance);
+                 ED_STR("   dl = ");     ED_OADDR(ins.dl);
+           endcase;
+           ED_OUT;
+           envir_DMPOBJ(bio.sysout.key,ent,lng);
+      endif;
+end;
+ 
+
+Visible routine ED_ARR; import ref(entity) ent;
+begin integer i,nelt; ref(arbody) bod; ref(arhead) head;
+      ref(arent1) a1; ref(arent2) a2;
+
+      ED_STR("Array(");
+      case 0:MAX_SORT (ent.sort)
+      when S_ARBODY,S_ARBREF,S_ARBTXT:
+           bod:=ent qua ref(arbody); head:=bod.head; i:=0;
+           repeat ED_INT(head.bound(i).lb); ED_CHAR(':');
+                  ED_INT(head.bound(i).ub); i:=i+1;
+           while i < head.ndim do ED_CHAR(',') endrepeat;
+           ED_CHAR(')'); nelt:=head.nelt;
+      when S_ARENT2,S_ARREF2,S_ARTXT2:
+           a2:=ent qua ref(arent2);
+           nelt:=a2.dope * (a2.ub_2 - a2.lb_2 + 1);
+           ED_INT(a2.lb_1); ED_CHAR(':'); ED_INT(a2.ub_1); ED_STR(",");
+           ED_INT(a2.lb_2); ED_CHAR(':'); ED_INT(a2.ub_2); ED_CHAR(')');
+      when S_ARENT1,S_ARREF1,S_ARTXT1:
+           a1:=ent qua ref(arent1); nelt:=a1.ub - a1.lb + 1;
+           ED_INT(a1.lb); ED_CHAR(':'); ED_INT(a1.ub); ED_CHAR(')');
+      endcase;
+      ED_STR("  no. of elements = "); ED_INT(nelt); ED_OUT;
+end;
+
+
+Visible routine ED_ERR;
+import range(0:MAX_ENO) eno; ref(filent) fil;
+       integer msg,msx; range(0:MAX_STS) sts;
+begin ED_OUT; ED_STR("*** Simula Runtime Error no. "); ED_INT(eno);
+      if sts <> 0  ---  Treat the case of a non-zero status.
+      then ED_STR(".   *****   STATUS =  "); ED_INT(sts); PRT(".   *****");
+      endif;
+      ED_OUT;
+      ---  Output the error message(s) from the RTS.
+      if msg >= 0 then PRT(ERR_MSG(msg)) endif;
+      if msx >= 0 then PRT(ERR_MSG(msx)) endif;
+      ---  If its is a file error, supply additional information.
+      if fil <> none
+      then ED_STR(" Filename: ");
+           if fil = bio.sysin then PRT("sysin")
+           elsif fil = bio.sysout then PRT("sysout")
+           else PRT(TXT_TO_STR(fil.nam)) endif;
+      endif;
+end;
+
+end;

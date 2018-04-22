@@ -1,0 +1,35 @@
+
+%INCLUDE_QPS
+%QUALIFIEDNAMES
+
+begin
+   ref(C)  x;
+
+   procedure P;
+   begin
+      x:-new C();
+      ! - - - ;
+      outtext("In Procedure Q - Just Before first Resume(x)"); Outimage;
+      resume(x);
+   end;
+
+   class C;
+   begin
+      procedure Q;
+      begin
+         ! - - - ;
+         outtext("In Procedure Q - Just Before first Detach"); Outimage;
+         detach;
+         ! - - - ;
+         outtext("In Procedure Q - Just Before second Detach"); Outimage;
+         detach;
+         ! - - - ;
+      end;
+      ! - - - ;
+      Q;
+      ! - - - ;
+   end;
+   ! - - - ;
+   P;
+   ! - - - ;
+end;

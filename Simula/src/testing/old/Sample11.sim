@@ -1,0 +1,58 @@
+begin integer i,j,k,m,f;
+  real w;
+  Text tx;
+  ref(C) x,y,xx;
+  external ref(C) procedure XXX = "file/sub/sub/xxx.code";
+  external procedure QQQ = "file/sub/sub/qqq.code";
+  external class CCC = "file/sub/sub/ccc.code";
+  integer array A,B[3:45,56:23];
+  array CC[2:98,4:76,5:77];
+%  real procedure R();
+  Procedure error(msg); TEXT msg; begin end;
+  Procedure OutChar(c); Character c; begin end;
+  boolean b;
+  switch s:=p1,w;
+  switch q:=s1,s3,q(m), if i > 5 then s3 else s4;
+  real procedure Q(x,y,z); name x; value y,z; real x,z; integer procedure y; Q:=x**y*z;
+  integer ggg;
+  class C(n); integer n; virtual: ref(C)procedure local;
+  begin integer i;
+     ref(C) k,b,f;
+     integer bbb;
+     text array que,table[0:n-1,9:13];
+     i:=4;
+  end;
+  C Class Char(c); Character c;
+  Begin
+     Procedure print; OutChar(c);
+     for i:=1,2,3,i+1 while i<8,11 step 3 until 100 do ;
+  End;
+  Char class AA(n,m,o); integer n,m,o; begin integer atr,attr; end;
+  ref(C) cc;
+%  i:= a+j < b+k;
+%  k:=if b<4 then j else if cc>=bb then kk else a;;
+  if cc IS C then x.k.b.f:-x.k;
+  goto L;
+  inspect xx do bbb:=456;
+  
+%  x:-new Char(' ');
+  
+  inspect x when C do x:-new Char(5,' ') when Char do A[9,56]:=55 otherwise error("x er none");
+  A[8,45]:=4;
+  CC[k*j,f,78];
+%  new AA(45,'!',w,78,Q(4,7,9));
+%  while C in MM do ui:=6;
+  C(56) begin f(); end;
+%      k:=new AA(98,'+',w,78,Q(4,7,9)).attr;
+    m:=this AA.atr;
+%    new AA(234,'?',w,78,Q(4,7,9)).attr:=4;
+    this AA.atr:=94;
+%  this x.y(m.n.t).z[3,7] qua C.pp:=new C(89).pp;
+%  x:=789;
+  tx:-notext;
+  x:-none;
+  tx:=notext;
+  go to L;
+  activate x at 45 prior
+  
+end;

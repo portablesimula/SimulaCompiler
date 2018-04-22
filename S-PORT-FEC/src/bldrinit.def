@@ -1,0 +1,96 @@
+External class BUILDER2;
+
+BUILDER2 class BLDRINIT;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1987 by                                              ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---        B u i l d e r    -   I n i t i a l i s a t i o n         ---
+%      ---                                                                 ---
+%      --- Selection switches: DKPIZ                                       ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      ---    Remember to change value of 'attrlayout' when appropriate    ---
+%      -----------------------------------------------------------------------
+begin
+
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCOPE:MNE
+
+%title ***   Procedure  B U I L D E R I N I T   ***
+
+      procedure builderinit;
+      begin curmaxbl:=getintinfo(21); if curmaxbl=0 then curmaxbl:=255;
+            SportOK:=false; !*** reset if set in Pass 1 ***;
+            unknowns:-new brecord(0,-10,-10); unknowns.kind:=char(IBLKB);
+            setprefgoing:-new quantity; alloc2called:-new quantity;
+            firstextmodule:-currentextmodule:-new extmodule;
+              ! dummy extmodule object ;
+            DEFCONST("MATCH-STAT");
+            setprefgoing.ident:=alloc2called.ident:=HASHINDEX;
+            setprefgoing.encl :-alloc2called.encl :-unknowns;
+            attrlayout:=2; !identifies att.file layout - **** May Change ***;
+            ! initial allocation of the outermost blocklevel;
+%+Z         if not Foption then begin
+                  inspect new brec(char(IEXTR)) do ! kind=IEXTR gives no tags ;
+                  begin ! This Brec plays the role as the enclosure of PREDEF.
+                          Quants are created to represent them, in order
+                          to prepare for the following call on 'allocate'.   ;
+                        DEFIDENT("_PREDEFMODULE");
+                        blno:=opd; opd:=HASHINDEX;
+                        fpar:-new quant(char(INOTY),char(ICLAS),0,char(IEXTR));
+                        ! Is given special treatment in 'extdeclfilename',
+                          thus 'extname' is not needed ;
+                        opd:=blno; blno:=0; bltab(blno):-this brec;
+                  end;
+                  ! Create corresponding Brecord/(Ext)Quantity structure,
+                   including reading of attribute file for PREDEF   ;
+                  cblev:=-5; allocate(0,none);
+                  ! Put the enclosure on display: ;
+                  cblev:=-4;
+                  display(cblev):-blocktab.elt(0); blocktab.elt(0):-none;
+                  ! The 'BASICIO begin' block (PREDEF) is entered ;
+                  ! (exactly the same as if 'enterblock' had been called) ;
+                  cblev:=-3; display(cblev):-display(-4).fpar.descr;
+                  makevisblock(display(cblev).declquant);
+
+                  DEFIDENT("INFILE"); globmeaning(HASHINDEX);
+                  enterconn(gm_result); ! 'inspect sysin' ;
+                  DEFIDENT("PRINTFILE"); globmeaning(HASHINDEX);
+                  enterconn(gm_result); ! 'inspect sysout' ;
+%+Z         end else
+%+Z         begin cblev:=-4;
+%+Z              enterconn(none); enterconn(none); enterconn(none);
+%+Z         end;
+            if separatecomp then enterconn(none); !Adjust the block level;
+                                                 !Not needed any more ???;
+            crtblev:=cblev;
+
+            allocate(1,none); !Allocates the fictious block enclosing
+                              the external head. Corresponds to the
+                              special "brecinit(new BREC(char(IEXTR)))" at the
+                              start of 'declextraction' ;
+            enterblock(1);
+
+            ! (cblev=if separatecomp then 1 else 0)
+              and (display(cblev)==enclosure of external head) ;
+
+     end builderinit;
+
+end BUILDERINIT;

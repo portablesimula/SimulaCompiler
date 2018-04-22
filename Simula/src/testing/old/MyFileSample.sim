@@ -1,0 +1,9 @@
+begin
+FILE_ class MyFile;
+begin Boolean ENDFILE_;
+
+      integer procedure pos; pos:=image.pos;
+      procedure setpos(i); integer i; image.setpos(i);
+
+end MyFile;
+end Program;

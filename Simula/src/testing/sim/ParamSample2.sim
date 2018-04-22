@@ -1,0 +1,21 @@
+
+%QUALIFIEDNAMES
+begin
+   ! --------------------------------------------------------- ;
+   ! -- Eksempel på en Procedure 'F' by Name hvor man på    -- ;
+   ! -- brukstedet, linje 15, mener verdien av kall på 'F'  -- ;
+   ! --------------------------------------------------------- ;
+   real r;
+
+   integer procedure P;
+   begin
+   end;
+   
+   real procedure Q(F); name F; integer procedure F;
+   begin
+      r:=F;
+   end;
+   
+   r := Q(P);
+   
+end;      

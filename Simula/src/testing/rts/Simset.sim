@@ -1,0 +1,73 @@
+
+%INCLUDE_QPS
+%STANDARDCLASS
+
+BASICIO class SIMSET_;
+   begin
+    class linkage;
+       begin ref(linkage) SUC_,PRED_;
+          ref(link) procedure suc;
+             suc:-if SUC_ in link then SUC_ else none;
+          ref(link) procedure pred;
+             pred:-if PRED_ in link then PRED_ else none;   
+       end linkage;
+       
+      linkage class head;
+         begin ref(link) procedure first; first :- suc;
+               ref(link) procedure last; last :- pred;
+               
+               Boolean procedure empty;
+                       empty := SUC_ == this linkage;
+                       
+               integer procedure cardinal;
+               begin integer i;
+                  ref (link) ptr;
+                  ptr :- first;
+                  while ptr =/= none do begin
+                     i   := i+1;
+                     ptr :- ptr.suc
+                  end while;
+                  cardinal := i
+               end cardinal;
+               
+               procedure clear;
+               while first =/= none do first.out;
+               
+               SUC_ :- PRED_ :- this linkage;      
+         end head;
+         
+      linkage class link;
+         begin procedure out;
+               if SUC_ =/= none then
+               begin SUC_.PRED_:-PRED_;
+                     PRED_.SUC_:-SUC_;
+                     SUC_:-PRED_:-none;
+               end out;
+                  
+               procedure follow(X); ref(linkage) X;
+               begin out;
+                  if X =/= none then
+                  begin if X.SUC_ =/= none then
+                     begin PRED_ :- X;
+                           SUC_ :- X.SUC_;
+                           SUC_.PRED_ :- X.SUC_ :- this linkage;
+                     end
+                  end
+               end follow;
+               
+               procedure precede(X); ref(linkage) X;
+               begin out;
+                  if X =/= none then
+                  begin if X.SUC_ =/= none then
+                     begin SUC_ :- X; 
+                           PRED_ :- X.PRED_;
+                           PRED_.SUC_ :- X.PRED_ :- this linkage;
+                     end
+                  end
+               end precede;
+               
+               procedure into(S); ref(head) S; precede(S);
+                                             
+         end link;
+   end SIMSET; 
+     

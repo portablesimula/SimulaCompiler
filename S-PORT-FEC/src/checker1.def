@@ -1,0 +1,2185 @@
+External class BLDRINIT;
+
+BLDRINIT class CHECKER1;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1985,86 by                                           ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---         S e m a n t i c   C h e c k e r     P a r t  1.         ---
+%      ---                                                                 ---
+%      --- Selection switches: DKIRZH                                      ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'R' Included for full real capability                        ---
+%      ---    'Z' Included during system generation (for "ZIMULA")         ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCOPE:MNE
+
+class semchecker1;
+begin character array optstack(0:maxdepth);
+        ! operator stack, stacktop denoted by opttop;
+        ! Excess of 'maxdepth' is never tested explicitly (will
+          lead to RT-error 'array-subscript out of bounds') ;
+      ref(exp)array expexptop(0:maxdepth);
+                              ! Used for error recovery only ???;
+      ref(exp)sos,exptop;
+      short integer xlastblno,opttop;
+      boolean inarraybound;      ! Used to check for use of 'this' or
+                                   local quantities within array bounds;
+      ref(nextargumentproducer) lastnap;
+      short integer NargUnknown; ! Used for formal array/procedure;
+      character array nearly,expectedtype(0:150);
+      ref(forelement)lastforelem;
+      ref(quantity)textclass;
+        ! denotes the declquant of the brecord representing "class text";
+
+      !*** auxiliary variables ***;
+      ref(exp)expv;
+      ref(quantity)cquant,qty,cpqual;
+      ref(brecord)cbrec;
+      short integer c,blkind,copt,vkind;
+      short integer bl,foundblev;
+
+      short integer fkind,ftype,actualkind;
+           ! used in class parameter;
+
+      text tar;
+      short integer arrbno;
+      ref(quantity)q;
+        ! Used e.g. to hold the array quantity during array declaration;
+      text indexerrmsg,paramerrmsg;
+        ! texts for holding errormessages;
+      text array argerrmsg(0:20);          ! zero never used;
+      ref(quantity)array argerrqty(0:20);  ! zero never used;
+      short integer argerrtop;
+      short integer ltype,rtype; !left and right type;
+      short integer t;
+          ! these are used for checking in different subclasses of
+            operation ;
+      boolean formcond,actcond;
+      ref(formal)form; ref(actualuse)act;
+      ref(quantity)activquant,processquant;
+      ref(boolconst)true_const,false_const;
+      ref(textconst)notext_const;
+
+%+P   prior
+      procedure UndeclIdent(err,q); short integer err; ref(quantity) q;
+      inspect q do begin
+            if dim=1 then errLTN(err,qlin(q)); dim:=dim+1
+      end;
+
+%+P   prior
+      procedure MaybeConvert(typ1,typ2); short integer typ1, typ2;
+      begin if typ1=ISHOR then typ1:=IINTG;
+            if typ2=ISHOR then typ2:=IINTG;
+            if typ1<>typ2 then begin opc:=IPRHI; opt:=typ1; call(coder) end
+      end;
+%title ***  E x p r e s s i o n s  ***
+
+      class exp(pred,ch);
+            ref(exp)pred;         ! links the exp objects to form a stack ;
+            short integer ch;     ! "checker-code", see 'exp' subclasses  ;
+    virtual:procedure emit;
+            procedure getindex;
+%+D         procedure dump;
+      begin short integer type;   ! val-type or IREF, ITEXT, ISCST        ;
+            short integer cl;     ! classification - see below            ;
+            character ctype;      ! indicates the exp subclass            ;
+            ref(quantity)qual;    ! qualification  - see below            ;
+
+%+D         procedure dump;
+%+D         begin outtext("EXP            ");
+%+D               outtext("type=");outtext(DB(type));
+%+D               if qual=/=none then begin
+%+D                  if Toption then qual.dump
+%+D                  else begin
+%+D                       outtext("(");outtext(idname(qual.ident));
+%+D                       outtext(")") end
+%+D               end;
+%+D               outtext("  cl=");outtext(errmsg(cl));outimage;
+%+D         end dump;
+
+            short integer procedure getindex(t); short integer t;  ;
+            procedure emit;  ; ! virtual matches;
+
+%+P         prior
+            boolean procedure isconst(ct,i); character ct; short integer i;
+            isconst:= if ctype=ct then this exp qua const.index=i else false;
+
+      end exp;
+
+% qual only used for type=IREF,ITEXT, and in the classes Classcomparator,
+%      instqual and localobj.
+
+% cl   IEEXP (=expression)
+%      ITO   (=target)
+%      IACTE (=actual)
+%      IIF   (=test expression)
+%      IIFSB (=test expression)
+%      IWHIL (=test expression)
+%      ITEXT (=text identifier in front of := or  .<text attribute>)
+%
+%  If a reference or value relation is:
+%     - the test-expression of an if-expression, cl = IIF
+%     - the test-expression of an if- or while-statement, cl = IIFSB
+%     - the test-expression of a while-for-element, cl = IWHIL
+%    (see LITHSB:, LIWHDO: and the emit procedures of ifexp, whileforelem,
+%     refrel and valuerel).
+
+%  ITEXT is used for identifier'cl, when its type=ITEXT and it is followed
+%  by := or .<text attribute>.  If identifier'kind is IPROC, ITEXT is used
+%  only when the identifier is to be interpreted as the result variable
+%  of a procedure with type text.
+%title ***   O p e r a t i o n  -  E x p i n p a r   ***
+      exp class operation(left,right); ref(exp)left,right;
+      begin ! An operation with one or two operands;
+%             If there are two operands they shall be type compatible,
+%             independent of which kind of operation. 'ch' is the operator.
+
+%+D         procedure dump;
+%+D         begin if left=/=none then left.dump;
+%+D               outimage; outtext("operation     ");outtext(DB(ch));
+%+D               outtext("   type=");outtext(DB(type));
+%+D               outtext("   cl=");outtext(errmsg(cl));outimage;
+%+D               if qual=/=none then
+%+D               begin if Toption then qual.dump else
+%+D                     begin outtext("(");outtext(idname(qual.ident));
+%+D                           outtext(")");
+%+D                     end;
+%+D               end;
+%+D               outimage; if right=/=none then right.dump;
+%+D         end dump;
+
+            if left==none then ltype:=IOTHW
+            else begin ltype:=left.type;
+                       if left.ctype=char(IIDN)
+                       then left qua identifier.checkasexp;
+            end;
+            if right==none then rtype:=IOTHW
+            else begin rtype:=right.type; right.cl:=IEEXP;
+                       if right.ctype=char(IIDN)
+                       then right qua identifier.checkasexp;
+            end;
+            if ltype<>IOTHW and!then; rtype<>IOTHW then begin
+                  ! Test type compatibility of left and right;
+                  if nearly(ltype) <> nearly(rtype) then
+                  begin errLTTTT(ltype,rtype,351,ch); type:=IOTHW;
+                  end;
+            end;
+            cl:=IEEXP;
+      end;
+
+
+      operation class expinparantes;
+      begin ! ch=IRGPA, this operation represents an
+              expression within (  ),the expression denoted by left;
+
+            procedure emit;
+            begin left.cl:=IEEXP; left.emit end;
+
+            type:=left.type; qual:-left.qual;
+      end expinparantes;
+%title ***   B o o l e a n   o p e r a t o r s   ***
+      operation class boolop;
+      begin ! ch=ICAND,ICOR,IAND,IOR,IEQV,IIMP,INOT  type=IBOOL, qual==none,
+              in case ch=INOT, left==none;
+
+            procedure emit;
+            begin if left =/= none then begin
+                     left.cl:=IEEXP; left.emit;
+                     !L3-> infix operator;
+                     opc:=ch; opi:=1; call(coder);
+                  end;
+                  right.cl:=IEEXP; right.emit;
+                  !L3-> postfix operator;
+                  opc:=ch; opi:=0; call(coder);
+            end emit;
+
+            if ltype<>IBOOL then begin
+               if ltype<>IOTHW then errLTTTT(353,ltype,354,ch) end;
+            if rtype<>IBOOL then begin
+               if rtype<>IOTHW then errLTTTT(353,rtype,355,ch) end;
+            type:=IBOOL
+      end boolop;
+%title ***   Operation:  r e f   r e l a t i o n   ***
+      operation class refrel;
+      begin ! ch=IRFEQ,IRFNE    type=IBOOL, qual==none,
+              opttype=type of operands (IREF,ITEXT);
+            ! cl=IEEXP,IIF,IIFSB,IWHIL. IIF, IIFSB or IWHIL means that
+              this is a test-expression, of an if-expression, an
+              if/while-statement or an while-forelement respectively ;
+            ! test against notext is optimised (left:-none in this case);
+            short integer opttype;
+
+            procedure emit;
+            begin short integer i10;
+                  if opttype=ITEXT then begin !L3->(prefix operator,opttype);
+                     if left==none then begin i10:=10; goto ROUT end;
+                                        ! *** compare w/notext ***;
+                     opc:=ch; opi:=2; opt:=opttype; call(coder) end;
+                  left.cl:=IEEXP; left.emit;
+                  !L3->(infix operator,opttype);
+                  opc:=ch; opi:=1; opt:=opttype; call(coder);
+           ROUT:  right.cl:=IEEXP; right.emit;
+                  !L3->(postfix operator,opttype);
+                  opc:=ch;
+                  opi:=if cl=IIF   then i10-1 else if cl=IIFSB then i10-2 else
+                       if cl=IWHIL then i10-3 else i10 ;
+                  opt:=opttype; call(coder);
+            end emit;
+
+            ctype:=char(IEQ);
+            if ltype=ITEXT then
+               begin if left.isconst(char(ITEXT),INOTE) then left:-none end
+       else if ltype<>IREF and!then; ltype<>IOTHW
+            then  errLTTTT(357,ltype,354,ch);
+            if rtype=ITEXT then begin
+               if right.isconst(char(ITEXT),INOTE) then begin
+                  right:-left; left:-none end;
+            end
+       else if rtype<>IREF and!then; rtype<>IOTHW
+            then  errLTTTT(357,rtype,355,ch);
+            type:=IBOOL; opttype:=ltype;
+      end;
+%title ***   Operation:  v a l u e   r e l a t i o n   ***
+%page
+      operation class valuerel;
+      begin ! Value relation, ch=(ILT,ILE,IEQ,IGE,IGT),  type=IBOOL, qual==none,
+              opttype=type of operands (arithmetic,ICHAR,ITEXT);
+            ! cl=IEEXP,IIF,IIFSB,IWHIL. IIF, IIFSB or IWHIL means that
+              this is a test-expression, of an if-expression, an
+              if/while-statement or an while-forelement respectively ;
+            character opttype;
+
+            procedure emit;
+            begin if rank(opttype)=ITEXT then begin
+                     !L3->(prefix operator,opttype);
+                     opc:=ch; opi:=2; opt:=rank(opttype); call(coder);
+                  end;
+                  left.cl:=IEEXP; left.emit;
+                  if rank(opttype)<>ITEXT
+                  then MaybeConvert(rank(opttype),left.type);
+                  !L3->(infix operator,opttype);
+                  opc:=ch; opi:=1; opt:=rank(opttype); call(coder);
+                  right.cl:=IEEXP; right.emit;
+                  if rank(opttype)<>ITEXT
+                  then MaybeConvert(rank(opttype),right.type);
+                  !L3->(postfix operator,opttype);
+                  opc:=ch;
+                  opi:=if cl=IIF then -1 else if cl=IIFSB then -2 else
+                       if cl=IWHIL then -3 else 0 ;
+                  opt:=rank(opttype); call(coder);
+            end emit;
+
+            ctype:=char(IEQ);
+            if ltype=IREF or!else; ltype=IBOOL or!else;
+               rtype=IREF or!else; rtype=IBOOL then
+              errLTTTT(357,if ltype=IREF or ltype=IBOOL then ltype else rtype,
+                           if ltype=IREF or ltype=IBOOL then 354 else 355,opn);
+            opttype:= char(if type=IOTHW  !incompatible types; then IOTHW else
+                           if rank(nearly(ltype))=IINTG and!then; rtype>ltype
+                           then rtype else ltype);
+            if rank(opttype)=ISCST then opttype:=char(ITEXT);
+            type:=IBOOL;
+      end valuerel;
+%title ***   A r i t h m e t i c    o p e r a t o r s   ***
+      operation class arithop;
+      begin ! Arithmetic operation, type=resulting type, qual==none;
+%             after the actions of arithop none of ltype and rtype is IOTHW.
+
+            procedure emit;
+            begin left.cl:=IEEXP; left.emit; MaybeConvert(type,left.type);
+                  !L3->infix operator;
+                  opc:=ch; opi:=1; opt:=type; call(coder);
+                  right.cl:=IEEXP; right.emit; MaybeConvert(type,right.type);
+                  !L3->postfix operator;
+                  opc:=ch; opi:=0; opt:=type; call(coder);
+            end emit;
+
+            if rank(nearly(ltype))<>IINTG then begin
+               if ltype <> IOTHW then errLTTTT(353,ltype,354,ch);
+               ltype:=IINTG;
+            end;
+            if rank(nearly(rtype))<>IINTG then begin
+               if rtype <> IOTHW then errLTTTT(353,ltype,355,ch);
+               rtype:=IINTG;
+            end;
+            type:= if ltype<=rtype then rtype else ltype;
+            if type=ISHOR then type:=IINTG;
+      end arithop;
+
+
+      arithop class integerdivide;
+      begin ! ch=IIDIV;
+
+            if ltype>=IREAL then errLTTT(ltype,354,IIDIV);
+            if rtype>=IREAL then errLTTT(rtype,355,IIDIV);
+            type:=IINTG;
+      end integerdivide;
+%page
+      arithop class divide;
+      begin ! ch=ISLAS;
+
+            if type<IREAL then type:=IREAL;
+      end divide;
+%page
+      arithop class power;
+      begin ! ch=IPOWE;
+
+            procedure emit;
+            begin left.cl:=IEEXP; left.emit;
+                  !L3->(infix IPOWE);
+                  opc:=IPOWE; opi:=1;
+                  opt:=right.type; optx:=left.type; call(coder);
+                  right.cl:=IEEXP; right.emit;
+                  !L3->(postfix IPOWE);
+                  opc:=IPOWE; opi:=0;
+                  opt:=right.type; optx:=left.type; call(coder);
+            end emit;
+
+      end power;
+
+
+      arithop class unary;
+      begin ! ch=IUMNS (unary plus is skipped in pass1),  left==none;
+
+            procedure emit;
+            begin right.cl:=IEEXP; right.emit;
+                  !L3->(IUMNS,type);
+                  opc:=IUMNS; opi:=0; opt:=type; call(coder);
+            end emit;
+
+            type:=rtype;
+      end unary;
+%title ***   c l a s s   c o m p a r e   (IN,IS)   ***
+      operation class classcomparator(classident);
+            short integer classident;
+      begin !ch=(IIN,IIS), left==expression preceding IN/IS, right==none,
+             type=IBOOL, qual==class quantity;
+
+%+D         procedure dump;
+%+D         begin left.dump; outimage;
+%+D               outtext(if ch=IIN then "IN            " else
+%+D                                      "IS            "     );
+%+D               outimage;
+%+D               if qual=/=none then
+%+D               begin if Toption then qual.dump else
+%+D                     begin outtext("(");outtext(idname(qual.ident));
+%+D                           outtext(")");
+%+D                     end;
+%+D               end;
+%+D               outimage; outtext("type=");outtext(DB(type));
+%+D               outtext("    cl=");outtext(errmsg(cl));outimage;
+%+D         end dump;
+
+            procedure emit;
+            begin left.cl:=IEEXP; left.emit;
+                  !L3->(IN/IS,qual);
+                  opc:=ch;opq:-qual;call(coder);
+            end emit;
+
+            if ltype <> IREF and!then; ltype <> IOTHW
+            then errLT(if ch=IIN then 359 else 360);
+            if left.ctype=char(IIDN) then left qua identifier.checkasexp;
+            qual:-qualification(classident); type:=IBOOL;
+            if qual=/=none and!then; left.qual=/=none then
+            begin
+                  if subclass(qual,left.qual) or!else;
+                     subclass(left.qual,qual) then !ok;
+             else if GiveNotes then
+                      noteLTNT(if ch=IIN then 361 else 362,
+                               idname(classident),363);
+                  if ch=IIN and!then; subclass(left.qual,qual)
+                     and!then; GiveNotes
+                  then noteLTNT(361,idname(classident),364);
+            end;
+      end classcomparator;
+%title ***   i n s t a n t   q u a l i f i c a t i o n   (QUA)   ***
+      operation class instqual(classident);
+            short integer classident;
+      begin ! ch=IQUA, left==qualified expression, right==none,
+              type=IREF, qual==class quantity,
+              L3opq==the quantity to be sent with IQUA;
+            ref(quantity)L3opq;
+
+%+D         procedure dump;
+%+D         begin left.dump; outimage;
+%+D               outtext("QUA           ");outimage;
+%+D               if qual=/=none then
+%+D               begin if Toption then qual.dump else
+%+D                     begin outtext("(");outtext(idname(qual.ident));
+%+D                           outtext(")");
+%+D                     end;
+%+D               end;
+%+D               outimage; outtext("type=");outtext(DB(type));
+%+D               outtext("    cl=");outtext(errmsg(cl));outimage;
+%+D         end dump;
+
+            procedure emit;
+            begin left.cl:=IEEXP; left.emit;
+                     !L3->(QUA,qualification or none);
+                     opc:=IQUA;opq:-L3opq;call(coder);
+            end;
+
+            if ltype <> IREF and!then; ltype <> IOTHW then
+               errLTNT(365,idname(classident),366);
+            if left.ctype=char(IIDN) then left qua identifier.checkasexp;
+            cquant:-qualification(classident);
+            if rank(cquant.kind)=ICLAS then
+            begin if left.qual=/=none then
+                  begin if left.qual==cquant then
+                        begin L3opq:-none; if GiveNotes then
+                              noteLTNT(367,idname(classident),368);
+                        end
+                   else if subclass(left.qual,cquant) then L3opq:-none
+                   else if subclass(cquant,left.qual) then L3opq:-cquant
+                   else errLQTNT(cquant,369,left.qual,-1);
+                  end;
+                  qual:-cquant;
+            end else qual:-left.qual;
+            type:=IREF;
+      end instqual;
+%title ***   L o c a l   o b j e c t   (THIS)   ***
+      operation class localobject(classident);
+            short integer classident;
+      begin !*** ch=ITHIS, left==right==none        ***;
+            !*** type=IREF, qual==class quantity    ***;
+            ref(quantity)L3opq; ! the quantity to be sent with ITHIS;
+            ref(quantity)q;
+
+%+D         procedure dump;
+%+D         begin outimage; outtext("THIS          "); outimage;
+%+D               if qual=/=none then begin if Toption then qual.dump else
+%+D                     begin outtext("(");outtext(idname(qual.ident));
+%+D                           outtext(")")
+%+D         end   end   end;
+
+            procedure emit;
+            begin opc:=ITHIS; opq:-L3opq; call(coder) end;
+
+            type:=IREF; globmeaning(classident); qty:-gm_result;
+            foundblev:=qty.encl.blev+1;
+            ! block level of class body if qty is a class ;
+            if rank(qty.kind) <> ICLAS then begin
+               errQT(qty,370); qual:-none end
+            else begin
+                 bl:=cblev;
+                 while bl>=foundblev do begin
+                       blkind:=rank(display(bl).kind);
+                       if blkind=IPROC or!else; blkind=IBLKB then
+                              ! no actions, get next block level in bl;
+                       else begin ! blkind=ICLAS,IBPRF,IINSP or IFORE;
+                           cquant:-display(bl).declquant;
+                           ! try to find a matching class identifier,
+                             including the prefix classes;
+                           while (if rank(cquant.kind)=IINSP
+                                  then cquant.match else cquant)=/=qty
+                              do if cquant.plev > 0 then cquant:-cquant.prefqual
+                                 else goto nextbl;
+                           ! a matching class is found,
+                           bl=cquant.descr.blev ;
+                           if inarraybound and!then; bl=cblev then
+                              errLTNT(371,idname(classident),372);
+                           q:-display(bl).declquant;
+                           while rank(q.kind)=IFORE do q:-q.prefqual;
+                                ! q denotes the first non-label declquant  at
+                                  this block level;
+                           if rank(q.kind)=IBPRF then
+                              errLTNT(373,idname(classident),374)
+                      else if rank(q.kind)=ICLAS then q.descr.thisused:=true;
+                           qual:-qty; L3opq:-cquant;
+                           ! cquant is qty (cquant==qty), or cquant is
+                             a connection copy (cquant.match==qty) ;
+                           goto EXIT;
+                       end;
+         nextbl:       bl:=bl-1;
+                 end;
+               ! no matching class found;
+               errLTNT(373,idname(classident),375); L3opq:-qual:-qty;
+               ! in case of "out of place" the wrong class is taken
+                 as qualification of top of stack;
+            end;
+EXIT: end localobject;
+%title ***   a s s i g n m e n t   ***
+      exp class assign(target,source); ref(exp)target,source;
+      begin
+         ! ch=(IASSG,IFASG,IDENO,IFDNO);
+         ! simple eqv (target is single, no-name identifier and
+                       this is not text value assign) ;
+         ! cl=IEEXP means that this is a sub-assignment, i.e. the
+                    source of a multiple assignment ;
+
+%+D      procedure dump;
+%+D      begin
+%+D         target.dump;
+%+D         outimage;
+%+D         outtext(if this assign is valassign
+%+D                 then ":=            "
+%+D                 else ":-            "        );
+%+D         outtext("type=");outtext(DB(type));
+%+D         outtext("   ");
+%+D         outtext("cl=");outtext(errmsg(cl));outimage;
+%+D         source.dump;
+%+D      end dump;
+
+      end assign;
+
+
+%+P   prior
+      boolean procedure result(id); ref(preident) id;
+      begin short integer procblev; ref(quantity) blquant;
+         result:=false;
+%              Called from valassign and refassign, kind=IPROC always
+%              Result delivers true if this is a direct identifier
+%              (not remotely accessed), and we are currently enclosed
+%              by the procedure of which this is the identifier, i.e.
+%              the procedure is on display.
+%              Type of procedure <> INOTY is not checked here ;
+
+         inspect id do
+         if (ch=IIDN or ch=ISIDN) and meaning=/=none  then begin
+            procblev:=meaning.encl.blev+1 ;
+%               blev of procedure if it is on display.
+%               NB! Cannot use meaning.descr.blev, since meaning may be
+%                   a virtual, which has no descriptor.
+            if procblev>0 and procblev <= cblev then begin
+               blquant:-display(procblev).declquant;
+               ! Get outermost prefix, i.e. ignore all IFORE-
+                 blocks, and possibly the body of the procedure:;
+               while rank(blquant.kind)=IFORE do blquant:-blquant.prefqual;
+               if rank(blquant.kind)=IPROC then  blquant:-blquant.prefqual;
+               result:= (if rank(meaning.categ)=IVIRT then
+                         meaning.match else meaning)==blquant;
+            end;
+         end;
+      end result;
+
+%page
+      assign class valassign;
+      begin
+         ! ch=IASSG: ordinary assignment statement,
+           ch=IFASG: assignment as part of for-statement,
+           type=target.type
+           qual==(none,textclass);
+
+         procedure emit;
+         begin
+%              ! target.cl has already been given appropriate value;
+%              ! No difference between IASSG and IFASG ;
+%              ! The case type=ITEXT given special treatment ;
+
+            boolean simple;         ! true if simple assignment;
+
+            if type=ITEXT then begin ! text value assignment ;
+               target.emit;
+               ! L3 -> END-EXPR-TARGET ;
+               opc:=ITEXT ;
+               if cl=IEEXP then opi:=1 ; ! sub-assignment ;
+               opt:=if target.cl=IEEXP then INOTE else INOTY ;
+               call(coder);
+
+               source.cl:=IEEXP;
+               source.emit;
+               ! L3 -> TEXT-VAL-ASS ;
+               opc:=IVALU;
+               if cl=IEEXP then opi:=1 ; ! sub-assignment ;
+               opt:=if target.cl=IEEXP then INOTE else INOTY ;
+               call(coder);
+            end text value assignment
+%page
+            else begin
+               if ( if target is identifier then
+                       target qua identifier.dotexp== none and!then;
+                       rank(target qua identifier.meaning.categ)<>INAME
+                    else false )
+                  or!else; target is preident
+               then simple:=true
+               else begin !*** not simple;
+                  target.emit;
+                  !L3->END-TARGET; opc:= ITO;  call(coder);
+               end;
+               source.cl:=IEEXP; source.emit;
+               if rank(nearly(type))=IINTG then MaybeConvert(type,source.type);
+
+               ! emit the appropriate <assign> operator,
+                 IASSG (ASSIGN), INAME (ASS-TO-NAME),
+                 ISIMU (SIMPLE-ASS) or IDCLC (RESULT-ASS) ;
+               if cl=IEEXP then opi:=1; !This is sub-assignment;
+               opt:=type;
+               inspect target
+                  when preident do begin
+                       opq:-meaning;
+                       if rank(opq.categ)=IVIRT then opq:-opq.match;
+                       opc:=if simple then
+                               (if kind=IPROC then IDCLC else ISIMU) else
+                            if rank(meaning.categ)=INAME then INAME else IASSG;
+                   end otherwise opc:=IASSG;
+               call(coder);
+            end
+         end valassign'emit;
+%page
+         ltype:=target.type; rtype:=source.type;
+         type:=if ltype <> IOTHW then ltype else rtype;
+
+         if ltype=IREF then errLT(376);
+         if rtype=IREF then errLT(377);
+
+         if ltype=IOTHW or rtype=IOTHW then !no testing; else
+         if nearly(ltype) <> nearly(rtype) then errLTTTT(ltype,rtype,351,ch);
+         if source.ctype=char(IIDN) then source qua identifier.checkasexp;
+
+         ! test on assignable kind of target;
+         inspect target
+            when preident do begin
+                 cl:=if type=ITEXT then ITEXT else ITO;
+                 if kind=IIDN then  !simple kind - ok ;
+            else if kind=IPROC then begin
+                    ! identifier of procedure kind as target:
+                      result variable or text procedure call ;
+                    if result(this preident) then begin
+                       if type=INOTY then errLNT(qlin(meaning),380) end
+               else if type=ITEXT then begin
+                       if target.ctype=char(IIDN)
+                       then target qua identifier.checkasexp;
+                       cl:=IEEXP; ! text procedure call ;
+                    end else errLNT(qlin(meaning),381)
+                 end
+            else if kind=IOTHW then !no testing;
+            else if kind=IARRA then errLNT(qlin(meaning),382)
+            else if kind=ILABE then errLNT(qlin(meaning),383)
+            else if kind=ISWIT then errLNT(qlin(meaning),384)
+            else if kind=ICLAS then errLNT(qlin(meaning),385)
+                 else internerr(559,meaning.line) !strange kind left of :=; end
+            when argumented do begin
+                 cl:=ITO; vkind:=ident.kind;
+                 if vkind=IOTHW then ! no testing;
+            else if vkind=IARRA then ! ok ;
+            else if ltype=ITEXT then cl:=IEEXP  ! text procedure call ;
+                 else  ! ltype <> ITEXT and vkind <> IARRA,
+                         i.e. vkind=IPROC,ICLAS,ILABE or ISWIT ;
+                  errLNT(qlin(ident.meaning),386) end
+            when expinparantes do begin
+                 cl:=IEEXP; if type <> ITEXT then errLT(387) end
+            when const do begin
+                 cl:=IEEXP;
+                 errLT(if index=INOTE then 388 else 387) end
+            otherwise errLT(388);
+      end valassign;
+%title ***   R e f e r e n c e   a s s i g n m e n t   ***
+      assign class refassign;
+      begin
+         boolean implqua; ! true if implicit qua test is to
+                            be produced;
+
+         ! ch=IDENO: ordinary ref assignment statement,
+           ch=IFDNO: ref assignment as part of for-statement,
+           type=target.type (IREF or ITEXT),
+           qual==target.qual;
+
+         procedure emit;
+         begin ! No difference between IDENO and IFDNO ;
+            boolean simple;         ! true if simple assignment ;
+
+            if ( if target is identifier then
+                 target qua identifier.dotexp== none and!then;
+                 rank(target qua identifier.meaning.categ)<>INAME else false )
+               or!else; target is preident
+            then simple:=true
+            else begin !*** not simple;
+               target.cl:=ITO; target.emit;
+               !L3->END-TARGET; opc:=ITO; call(coder);
+            end;
+
+            source.cl:=IEEXP;  source.emit;
+            if implqua then begin
+               !L3->(IMPL-QUA,qualification); opc:=IREF;
+               opq:-target.qual; call(coder);
+            end;
+
+            ! emit the appropriate <assign> operator
+              IASSG (ASSIGN), INAME (ASS-TO-NAME),
+              ISIMU (SIMPLE-ASS) or IDCLC (RESULT-ASS) ;
+            if cl=IEEXP then opi:=1; !This is sub-assignment;
+            opt:=type;
+            inspect target
+               when preident do begin
+                    opq:-meaning;
+                    if rank(opq.categ)=IVIRT then opq:-opq.match;
+                    opc:= if simple then (if kind=IPROC then IDCLC else ISIMU)
+                     else if rank(meaning.categ)=INAME then INAME else IASSG;
+                end
+            otherwise opc:=IASSG;
+            call(coder);
+         end refassign'emit;
+
+         ltype:=target.type; rtype:=source.type;
+         if ltype <> IOTHW  then
+         begin if ltype <> IREF and  ltype <> ITEXT   then
+                  errLTTT(389,ltype,390);
+               if rtype <> IOTHW and nearly(ltype) <> nearly(rtype) then
+               begin errLTTTT(ltype,rtype,351,ch) end;
+               type:=ltype;
+         end else
+         if rtype <> IOTHW  then
+         begin if rtype <> IREF and rtype <> ITEXT then
+                  errLTTT(389,rtype,358);
+               type:=rtype;
+         end;
+
+         if target.qual==none then  qual:-source.qual
+         else
+         begin
+            qual:-target.qual;
+            if source.qual==none then !implqua:=false; else
+            if subclass(source.qual,target.qual)
+            then !implqua:=false; else
+            if subclass(target.qual,source.qual)
+            then implqua:=true else
+            begin errLQTNT(target.qual,
+                           391,source.qual,392) end;
+         end;
+         if source.ctype=char(IIDN) then source qua identifier.checkasexp;
+
+         ! test on assignable kind of target;
+         inspect target
+            when preident do begin
+                 if kind=IIDN then  ! simple kind - ok ;
+            else if kind=IPROC then begin
+                    if result(this preident) then begin
+                       if type=INOTY then errLNT(qlin(meaning),393) end
+                    else errLNT(qlin(meaning),394);
+                 end
+            else if kind=IOTHW then ! no testing;
+            else if kind=IARRA then errLNT(qlin(meaning),395)
+            else if kind=ILABE then errLNT(qlin(meaning),396)
+            else if kind=ISWIT then errLNT(qlin(meaning),397)
+            else if kind=ICLAS then errLNT(qlin(meaning),398)
+                 else internerr(560,meaning.line); !strange kind left of :-; end
+            when argumented do begin
+                 vkind:=ident.kind;
+                 if vkind=IOTHW then ! no testing ;
+            else if vkind <> IARRA then errLNT(qlin(ident.meaning),399) end
+%                                        vkind = IPROC,ICLAS,ILABE or ISWIT
+         otherwise errLT(400);
+      end refassign;
+%title ***   c o n d i t i o n a l   e x p r   ***
+      operation class ifexp(testexp); ref(exp)testexp;
+      begin ! ch=IELSE, left denotes then-exp and right denotes else-exp,
+              type=resulting type, qual==resulting qualification;
+
+%+D         procedure dump;
+%+D         begin outimage; outtext("IFEXP         ");
+%+D               outtext("type=");outtext(DB(type));
+%+D               outtext("    cl=");outtext(errmsg(cl));outimage;
+%+D               testexp.dump; outimage; outtext("THENEXP       ");
+%+D               outimage; left.dump; outimage;
+%+D               outtext("ELSEEXP       ");outimage; right.dump;
+%+D         end dump;
+
+            procedure emit;
+            begin !L3->IF-EXPR; opc:=IIF;call(coder);
+                  testexp.cl:=if testexp.ctype=char(IEQ) then IIF else IEEXP;
+                  ! The code for a relational expression as test expression
+                    can be optimized ;
+                  testexp.emit;
+                  !L3->THEN-EXPR; opc:=ITHEN;call(coder);
+                  left.cl:=IEEXP; left.emit;
+                  if rank(nearly(type))=IINTG
+                  then MaybeConvert(type,left.type);
+                  !L3->ELSE-EXPR; opc:=IELSE;call(coder);
+                  right.cl:=IEEXP; right.emit;
+                  if rank(nearly(type))=IINTG
+                  then MaybeConvert(type,right.type);
+                  !L3->END-EXPR; opc:=IEEXP; call(coder);
+            end emit;
+
+            if testexp.type <> IBOOL then errLT(401);
+            if testexp.ctype=char(IIDN) then testexp qua identifier.checkasexp;
+            if type=IOTHW then ! nothing ; else
+               ! in the following ltype and rtype are compatible
+                 (checked in operation'body) ;
+            if ltype=IREF and rtype=IREF then
+            begin type:=IREF;
+                  ! qualification check;
+                  if right.qual=/=none then
+                  begin if left.qual=/=none then
+                        begin cpqual:-comqual(left.qual,right.qual);
+                              if cpqual==none then
+                              begin errLQTNT(left.qual,
+                                            402,right.qual,403);
+                              end
+                         else qual:-cpqual;
+                        end
+                   else qual:-right.qual;
+                  end else qual:-left.qual;
+            end else
+            begin if ltype=IOTHW then
+                  begin type:=rtype; qual:-right.qual end
+             else if rtype=IOTHW then
+                  begin type:=ltype; qual:-left.qual end
+             else if rank(nearly(ltype))=IINTG then
+                  begin !arithmetic operands in conditional expression;
+                        type:=
+                        if ltype=ILONG or rtype=ILONG then ILONG else
+                        if ltype=IREAL or rtype=IREAL then IREAL else
+                        if ltype=IINTG or rtype=IINTG then IINTG else ISHOR;
+                  end
+             else begin ! ltype and rtype are compatible ;
+                        type:=if ltype=ISCST or rtype=ISCST then ISCST
+                                                            else ltype;
+                        qual:-left.qual;
+                  end;
+            end;
+      end ifexp;
+%title ***   C o n s t a n t  G e n e r a t o r s   ***
+%+P   prior
+      procedure NewConstant(pred,ch,index,optx);
+      ref(exp) pred; short integer ch,index,optx;
+      begin switch GSW := GENBOOL, GENCHAR, GENSINT, GENINT, GENREAL,
+                          GENLONG, GENREF,  GENTEXT;
+            goto GSW(optx);
+      GENCHAR:      exptop:- new charconst(pred,ch,index); goto EX;
+      GENTEXT:      exptop:- new textconst(pred,ch,index); goto EX;
+      GENBOOL:      exptop:- new boolconst(pred,ch,index); goto EX;
+      GENREF:       exptop:- new     const(pred,ch,index); goto EX;
+      GENSINT:
+      GENINT:
+      GENREAL:
+      GENLONG:      exptop:- new arithconst(pred,ch,index,optx);
+      EX:
+     end;
+%title ***   C o n s t a n t s   ***
+      exp class const(index); short integer index;
+      begin ! type=type of constant, qual==(none,textclass),
+              ch (=constkind)=ICONS,ISCST;
+
+            procedure emit;
+            begin opc:=ch; opi:=index; opt:=type; call(coder) end;
+
+%+D         procedure dump;
+%+D         begin outtext("CONSTANT ("); outtext(DB(ch)); outtext("), type=");
+%+D               outtext(DB(type)); outtext(", index="); outint(index,5);
+%+D               outtext(", cl="); outtext(errmsg(cl)); outchar(':');
+%+D               if ctype=char(ISHOR) or ctype=char(ITEXT)
+%+D               then outtext(idname(index));
+%+D               outimage;
+%+D         end;
+
+            short integer procedure getindex(t); short integer t;
+            if t=type then getindex:=index;
+
+            ctype:=char(IREF); type:=IREF; cl:=IEEXP;
+
+      end const;
+%page
+      const class arithconst(atype);
+            short integer atype;
+      begin
+%+R         long real procedure constvalue;
+%-R         integer   procedure constvalue;
+            constvalue:=
+%+R                     if type<>IINTG then idname(index).getreal else
+                        idname(index).getint;
+
+            procedure emit;
+            begin opc:=ch; opi:=index; opt:=type; call(coder) end;
+
+            short integer procedure getindex(t); short integer t;
+            begin text z;
+%+R               if t=IINTG and!then; type>=IREAL !i.e. REAL or LONG;
+%+R               then begin z:-leftint(constvalue);
+%+R                  DEFCONST(z); getindex:=HASHINDEX;
+%+R               end else
+                  if nearly(t)=nearly(type) then getindex:=index;
+            end;
+
+            type:=atype; ctype:=char(ISHOR); !TEMP;
+
+      end arithconst;
+
+
+      const class charconst;
+      begin character constvalue;
+
+            short integer procedure getindex(t); short integer t;
+            if t=ICHAR then getindex:=index+1; !NB - because of NUL;
+
+            type:=ICHAR; constvalue:=char(index);  ctype:=char(ICHAR);
+
+      end;
+
+
+      const class textconst;
+      begin text constvalue;
+
+            if index<>INOTE then begin
+               type:=ISCST; constvalue:-idname(index) end
+            else begin type:=ITEXT; qual:-textclass  !notext; end;
+            ctype:=char(ITEXT);
+      end;
+
+      const class boolconst;
+      begin boolean constvalue;
+
+            type:=IBOOL; ctype:=char(IBOOL); constvalue:= index=ITRUE;
+      end;
+
+%title ***  P r e  -  I d e n t i f i e r  ***
+
+      exp class preident(index);
+            short integer index;
+      begin
+%             ch=(IIDN,ISIDN,IIDNP,IDOT,IDOTP,INEW,INEWP,IBPRF,IBLKB),
+%             ch=IBPRF: single class ident as prefix to block,
+%             ch=IBLKB: ident as part of argumented as prefix to block,
+%                       meaning then denotes the class quantity, if ==none
+%                       then the prefixed block is treated as a normal block
+%
+%             type= if class generator then IREF else
+%                   if block prefix then undefined else meaning.type
+%
+%             qual==if class generator then meaning else
+%                   if prefixed block then prefix class else
+%                   if type=ITEXT then textclass else meaning.qual
+%
+
+         ref(quantity)meaning;
+         short integer kind;
+         short integer prectype;  ! only used for ch=IDOT,IDOTP ;
+
+
+%+D      procedure dump;
+%+D      begin ref(exp) dotexp;
+%+D         if ctype=char(IIDN) then begin
+%+D            dotexp:-this preident qua identifier.dotexp;
+%+D            if dotexp=/=none then begin
+%+D               dotexp.dump; outimage;
+%+D               outtext("DOT"); outimage
+%+D         end end;
+%+D         outtext(if ch=IIDN or ch=ISIDN or ch=IIDNP or
+%+D                    ch=IDOT or ch=IDOTP then "IDENT         "
+%+D                 else if ch=INEW or ch=INEWP
+%+D                 then "NEW           "
+%+D                 else !  ch=IBPRF ; "BLOCKPREFIX   "  );
+%+D         outtext("type: ");outtext(DB(type));
+%+D         outtext(", cl: "); outtext(errmsg(cl)); outtext(", meaning: ");
+%+D         if meaning=/=none then begin
+%+D            if Toption then begin  outimage; meaning.dump end
+%+D            else begin outtext(idname(meaning.ident)); outimage end
+%+D         end;
+%+D      end dump;
+
+
+% +P     prior
+%        procedure newerrorquantity;
+%        begin
+%           cquant:-new quantity;
+%           cquant.categ:=char(INEW);   cquant.ident:=index;
+%           cquant.kind:= char(IOTHW);  cquant.type:= char(IOTHW);
+%           cquant.line:= linenr;       cquant.dim:=  1;
+%        end;
+
+
+         short integer procedure getindex(t); short integer t;
+               if nearly(t)=nearly(type) then getindex:=meaning.arraylb;
+
+         procedure emit; ! of pre-identifier, only as part of (simple) assign;
+         begin !L3->(SINGLE-VAR,meaning);
+               opi:=if cl=ITEXT then 1 else 0;
+               opc:=IIDNP; opq:-meaning; call(coder);
+         end preident'emit;
+
+         ctype:=char(ISIDN);
+
+      end pre-ident;
+%title ***   Identifier:  e m i t   ***
+      preident class identifier(dotexp);
+            ref(exp)dotexp;
+      begin
+
+            procedure checkasexp;
+%              ! is called to check that a single identifier is a complete
+%                expression, i.e. that it is not a label or switch or a
+%                class/procedure identifier without specified parameters.
+
+            inspect meaning do
+                 if rank(kind)=IPROC or rank(kind)=ICLAS then begin
+                    if descr=/=none then begin
+                      if descr.npar>0 then errLNT(qlin(this quantity),349) end
+                 end
+            else if rank(kind)=IARRA or rank(kind)=ISWIT then
+                  errLNT(qlin(this quantity),350)
+            ;
+
+         procedure emit; ! of identifier ;
+         begin
+            inspect dotexp
+               when identifier do begin
+                    cl:=if type=ITEXT and kind<>IPROC then ITEXT else IEEXP;
+                        ! text procedure interpreted as procedure call ;
+                    emit end
+               when argumented do begin
+                    cl:=if type=ITEXT and ident.kind=IARRA then ITO else IEEXP;
+                    emit end
+               when exp do begin
+                    cl:=IEEXP;
+                    emit end
+            ;
+
+            if cl=IEEXP then begin
+               if dotexp=/=none then begin
+                  if dotexp.type=ITEXT then begin
+                     if dotexp.cl=ITO or dotexp.cl=ITEXT then begin
+                        !L3->TEXT-VAR-DOT;
+                        opc:=INOTY; opq:-meaning; call(coder) end
+                else if dotexp.cl=IEEXP then begin
+                        !L3->TEXT-EXP-DOT;
+                        opc:=INOTE; opq:-meaning; call(coder)
+                     end;
+                  end else begin
+                     !L3->DOT;
+                     opc:=IDOT; opq:-meaning; call(coder);
+                  end;
+               end else begin ! dotexp==none ;
+                  if ch=IBPRF or ch=IBLKB then begin
+                     ! Expand the corresponding structure: ;
+                     if meaning==none then build_scope(lastblno)
+                     else build_pref_scope(lastblno,meaning);
+                  end;
+                  !L3->(IIDN,ISIDN,IBLKB);
+                  opc:=if ch=IIDN or ch=IIDNP or
+                          ch=INEW or ch=INEWP then IIDN else
+                       if ch=IBPRF then IBLKB else ch;
+                  opq:-if ch=IBPRF or ch=IBLKB
+                       then blocktab.elt(lastblno).declquant
+                            !(prefixed) block quantity;
+                       else meaning;
+                  call(coder);
+               end;
+               if ch=IBPRF then begin
+                  if meaning=/=none then begin
+                     !L3->PARAM-BEGIN - END-PREF-PAR ;
+                     opc:=IPROC; opi:= 0; call(coder);
+                     opc:=IBEGI; call(coder);
+                  end;
+                  enter_block(lastblno);
+               end
+%page
+          else if ch=ISIDN or ch=IIDN or ch=INEW or ch=IDOT then begin
+                  ! Identifier not followed by arguments ;
+                  if kind=IPROC then begin
+                     !L3->PARAM-BEGIN;
+                     opc:=IPROC; opi:=0; call(coder);
+                     if rank(meaning.categ)=IDCLI or
+                        rank(meaning.categ)=IEXTR    then begin
+                        !L3->CH-PARAM-END;
+                           opc:=IEPRM; call(coder);
+                     end else begin
+                        !L3->(UCH-PARAM-END,number of actuals);
+                           opc:=IUPLS; opi:=0; call(coder);
+                     end;
+                  end else
+                  if kind=ICLAS
+                   ! or kind=ISWIT ;  ! impossible (???);
+                  then begin
+                     !L3->PARAM-BEGIN;
+                     opc:=IPROC;  opi:= 0;  call(coder);
+                     !L3->CH-PARAM-END;
+                     opc:=IEPRM; call(coder);
+                  end;
+               end;
+            end cl=IEEXP else
+            if cl=ITO or cl=ITEXT then begin
+               if dotexp=/=none then begin
+                  !L3->(DOT-VAR,meaning);
+                  opc:=IDOTP;  opq:-meaning;  call(coder);
+               end else
+               if kind=IPROC then begin
+                  !L3->(RESULT,meaning);
+                  opc:=IDCLP; opq:-meaning;
+                  if rank(meaning.categ)=IVIRT then opq:-opq.match;
+                  call(coder);
+               end else begin
+                  !L3->(SINGLE-VAR,meaning);
+                     opc:=IIDNP; opq:-meaning;
+                     opi:=if cl=ITEXT then 1 else 0;  call(coder);
+               end;
+            end else
+            if cl=IACTE then begin
+               if dotexp=/=none then begin
+                  !L3->(DOT-ACTUAL,meaning);
+                  opc:=ILFPA;  opq:-meaning;  call(coder);
+               end else begin
+                  !L3->(SINGLE-ACTUAL,meaning);
+                  opc:=ISSWA;  opq:-meaning;  call(coder);
+               end;
+            end
+            else internerr(561,meaning.line);
+                 !strange cl,identifier.emit;
+         end identifier'emit;
+%title ***   Identifier:  b o d y  (direct identifier)   ***
+         exptop:-this identifier; ! may be overwritten below;
+         ctype:=char(IIDN);
+         if ch=IIDN or!else; ch=ISIDN or!else; ch=IIDNP
+         then begin ! direct identifier;
+            globmeaning(index); meaning:-gm_result;
+   REP:     ! meaning changed for insp. label/switch;
+            type:=rank(meaning.type); kind:=rank(meaning.kind);
+            qual:-if type=ITEXT then textclass else meaning.prefqual;
+
+            if rank(meaning.categ)=INEW then UndeclIdent(404,meaning)
+            else begin ! common testing on connected switch/label  and
+                         illegal use of identifiers within array bounds;
+% +K              if rank(meaning.encl.kind)=IINSP then begin
+%                   if kind=ILABE or!else; kind=ISWIT then begin
+%                      if meaning.prevmeaning=/=none then begin
+%                         meaning:-meaning.prevmeaning; goto REP end
+%                      else errLTN(if kind=ILABE then 405 else 406,
+%                                  qlin(meaning)) end;
+% +K                 if kind=IPROC and rank(meaning.categ)=IDCLI then begin
+% +K                    if meaning.descr.thisused
+% +K                    then errLNTT(qlin(meaning),407,408);
+% +K                 end
+% +K              end;
+
+                 if kind=IIDN and!then; meaning.arraylb<>0 and!then;
+                                         ch<>IIDNP then begin
+                    if meaning.arraylb<>index then begin
+                       NewConstant(pred,if ch=ISIDN then ISCST else ICONS,
+                                   meaning.arraylb,type);
+                    end
+                    else begin !use of const before definition;
+                       errLTN(412,qlin(meaning));
+                       meaning.arraylb:=0; !treat as normal; end
+                 end
+
+            else if inarraybound then begin
+                    if (rank(meaning.categ)=IDCLI or!else;
+                        rank(meaning.categ)=IEXTR   ) and!then;
+                       meaning.encl.blev=cblev
+                    then errLTNT(409,idname(meaning.ident),410)
+               else if rank(meaning.categ)=IVIRT
+                    then errLTNT(411,idname(meaning.ident),410)
+                 end
+            end
+         end direct identifier;
+%title ***   Identifier:  b o d y  (remote identifier)   ***
+         if ch=IDOT or ch=IDOTP then begin  ! Remote identifier;
+            if dotexp.ctype=char(IIDN) then dotexp qua identifier.checkasexp;
+            prectype:=dotexp.type;
+            if prectype <> IOTHW then begin
+               if prectype <> IREF and prectype <> ITEXT then errLT(413)
+          else if dotexp.qual==none then errLT(414);
+            end;
+            if prectype=IOTHW or dotexp.qual==none then begin
+%              newerrorquantity; goto found end;
+               cquant:-newnotseen(index); goto found end;
+
+%         ! try to identify the remote attribute, cquant will denote the result;
+            cbrec:-dotexp.qual.descr;
+            cquant:-cbrec.favirt; !Look through virtuals, only in deepest plev;
+            while cquant=/=none do begin
+                  if cquant.ident=index and cquant.visible then goto found;
+                  cquant:-cquant.next end;
+
+   newplev: cquant:-cbrec.fpar;
+            while cquant=/=none do begin
+                  if cquant.ident=index and cquant.visible then goto found;
+                  cquant:-cquant.next end;
+            if cbrec.declquant.plev >= 0  then begin
+               cbrec:-cbrec.declquant.prefqual.descr;  goto newplev end;
+
+%           ! not found, generate an error quantity;
+%           newerrorquantity;
+            cquant:-newnotseen(index); cquant.dim:=2;
+            errLQTNT(cquant,417,dotexp.qual,-1);
+
+   found:   meaning:-cquant;
+            if rank(cquant.type)=ILABE then errLNT(qlin(cquant),
+                                 if rank(cquant.kind)=ILABE then 418 else 419);
+
+% +K         if rank(cquant.kind)=IPROC and rank(cquant.categ)=IDCLI then
+% +K         begin if cquant.descr.thisused then
+% +K            begin errLNTT(qlin(cquant),407,420) end;
+% +K         end; ! IS THIS CHECK STILL NECESSARY???;
+
+            type:=rank(meaning.type); kind:=rank(meaning.kind);
+            qual:-if type=ITEXT then textclass  else meaning.prefqual;
+         end remoteident
+%title ***   Identifier:  b o d y  (NEW, BPRF)   ***
+    else if ch=INEW or ch=INEWP then begin
+            ! object generator;
+            meaning:-qualification(index);
+            type:=IREF;  qual:-meaning; kind:=ICLAS;  ! denotes generator;
+         end generator
+
+    else if ch=IBPRF then begin
+            globmeaning(index); meaning:-gm_result;
+            if rank(meaning.kind) <> ICLAS then begin
+                  errLTN(421,qlin(meaning)); meaning:-none end
+       else if meaning.descr.npar>0 then errLNT(qlin(meaning),422);
+            cl:=IEEXP;
+         end pref. block;
+
+         if kind=IIDN then begin
+            if ch=IIDNP or!else; ch=IDOTP or!else; ch=INEWP
+            then errLNT(qlin(meaning),423)
+         end
+
+    else if kind=ICLAS then begin
+            if (ch=IIDN or ch=ISIDN) or ch=IIDNP and opttop <> 0 then begin
+               errLTN(424,qlin(meaning)); type:=IREF; qual:-meaning;
+               ch:=INEW; ! taken as new ... ;
+            end;
+         end;
+
+      end identifier;
+%title ***  A r g u m e n t s  ***
+      exp class pre_argumented(ident,arguments,noofexpargs,noofactargs);
+            ref(identifier)ident; ref(argument)arguments;
+            short integer noofexpargs,noofactargs;
+      begin ! ch=IBPRF indicates that this argumented is a prefix to
+              a prefixed block;
+
+%+D         procedure dump;
+%+D         begin ident.dump; outimage; outtext("(ARGUMENT     ");outimage;
+%+D               arguments.dump;outimage;outtext("ARGUMENT)     ");outimage;
+%+D         end dump;
+
+            procedure emit; ! of argumented ;
+            begin ident.cl:=IEEXP; ident.emit;
+                  if ident.kind=IARRA or ident.kind=ISWIT then
+                  begin !L3->SUBSCRIPT-BEGIN;
+                        opc:=ICAPE; opi:=noofactargs; call(coder);
+                  end
+             else if ident.kind=IPROC or ident.kind=ICLAS then
+                  begin !L3->PARAM-BEGIN;
+                        opc:=IPROC; opi:=noofactargs; call(coder);
+                  end;
+
+                  if ch=IBPRF and ident.meaning == none then !nothing;
+                  else arguments.emit;
+                  if ident.kind=IOTHW then ! nothing  ; else
+                  if ch=IBPRF then
+                  begin !L3->END-PREF-PAR; opc:=IBEGI;call(coder);
+                        enter_block(lastblno);
+                  end else
+                  if ident.kind=IARRA or ident.kind=ISWIT then
+                  begin if cl=IEEXP then
+                        begin !L3->SUBSCRIPT-END noofactargs;
+                              opc:=IARGE;opi:=noofactargs;call(coder);
+                        end else
+                        if cl=ITO then
+                        begin !L3->SUBSCRIPT-VAR noofactargs;
+                              opc:=INEWP;opi:=noofactargs;call(coder);
+                        end else
+                        if cl=IACTE then
+                        begin !L3->SUBSCRIPT-ACTUAL noofactargs;
+                              opc:=IARRA;opi:=noofactargs;call(coder);
+                        end else
+                        internerr(562,ident.meaning.line);
+                        !strange cl,argumented.emit;
+                  end else
+                  if ident.kind=IPROC or ident.kind=ICLAS then
+                  begin if arguments qua parameter.formal==none then
+                        begin !L3->(UCH-PARAM-END,number of actuals);
+                              opc:=IUPLS;opi:=noofactargs;call(coder);
+                        end else
+                        begin !L3->CH-PARAM-END;
+                              opc:=IEPRM;call(coder);
+                        end;
+                  end else internerr(563,ident.meaning.line);
+                           !strange ident.kind, argumented.emit;
+            end emit;
+
+      end pre_argumented;
+%page
+      pre_argumented class argumented;
+      begin
+            short integer i,ix; character searched;
+            ref(extquantity)q; ref(parameter)p;
+
+%+P         prior
+            procedure setsearched;
+               if isorank(searched)=ISCST then searched:=char(ITEXT) else
+               if isorank(searched)=ISHOR then searched:=char(IINTG);
+
+         ! contains the checking of argumented ;
+         ! and parameter type checking for system procedures ;
+
+         type:=ident.type;   ctype:=char(IIDNP);
+         qual:-ident.qual;
+         if ch=IBPRF then
+         begin
+            ! argumented prefix to block;
+            if ident.kind=INEW or!else; ident.kind=IOTHW then !nothing; else
+            if ident.kind <> ICLAS then
+            begin
+               errLTN(421,qlin(ident.meaning));
+               ident.meaning:-none; !treated as a normal block;
+            end;
+            ident.ch:=IBLKB;
+         end
+
+         else inspect ident.meaning when extquantity do begin
+
+%        Check for possible overloading. Three cases:
+%        - overloading on first     parameter  (  0<longindic<10 )
+%        - overloading on strongest parameter  ( 10<longindic<20 )
+%        - overloading on second    parameter  ( 20<longindic<30 )
+%        Note: - the skip of special cases (classific='T')
+%              - that ISCST>ITEXT
+%              - the (TEMP) resetting of overload-identifier - this should
+%                really be done in BUILDER2.expandexternals. (see use of ix)
+
+            if rank(longindic)>0 then begin
+                 i:=rank(longindic); p:-arguments; q:-this quantity;
+                 searched:=isochar(p.actual.type); ix:=ident;
+                 setsearched;
+                 if i > 20 then begin i:=i-20; goto SEARCH2 end
+            else if i > 10 then begin
+                    i:=i-10;
+                    if p.nextarg.actual.type>isorank(searched) then begin
+            SEARCH2:   searched:=isochar(p.nextarg.actual.type);
+                       setsearched;
+                    end;
+                    while i>=0 do begin
+                       if isorank(q.descr.fpar.next.type)>=isorank(searched)
+                       then goto OL;
+                       q:-q.next; i:=i-1;
+                    end
+                 end
+            else if i > 0 then begin
+                    while i>=0 do begin
+                       if isorank(q.descr.fpar.type)>=isorank(searched)
+                       then begin
+            OL:           this argumented.ident.meaning:-q;
+                          this exp.type:=rank(q.type);
+                          q.ident:=ix;
+                          q:-q.descr.fpar;
+                          while q=/=none and!then; p=/=none do begin
+                             p.formal:-q; q:-q.next; p:-p.nextarg;
+                          end;
+                          goto TYPCHK;
+                       end;
+                       if q.classific='T' then q:-q.next;
+                       !*** skip value-overloading ***;
+                       q:-q.next; i:=i-1;
+                    end;
+                 end;
+
+                 !*** NOW type checking of parameters may be performed ***;
+       TYPCHK:   p:-arguments;
+                 while p=/=none do inspect p do begin
+                       i:=rank(formal.type); ix:=actual.type;
+                       if i <>INOTY and!then; i <>IOTHW and!then;
+                          ix<>INOTY and!then; ix<>IOTHW and!then;
+                          nearly(ix)<>nearly(i)
+                       then errARG(8);
+                       p:-p.nextarg;
+                end;
+
+            end *** overloading ***;
+         end external quantity block;
+
+         if noofexpargs <> noofactargs then
+            errLTNTNT(if noofactargs>noofexpargs then 425 else 426,
+                      qlin(ident.meaning),427,leftint(noofexpargs),-1);
+
+            !*****  perform type checking of parameters here  *****;
+
+      end argumented;
+%title ***   n e x t a r g u m e n t p r o d u c e r   ***
+      class nextargumentproducer(pred,ident);
+         ref(nextargumentproducer)pred; ref(identifier)ident;
+      begin
+         ref(argument)firstarg,lastarg;
+         ref(quantity)testquant;
+           ! denotes the array/procedure/class quantity to be tested;
+         short integer kind;
+           ! denotes the kind,=IARRA,ISWIT,IPROC or ICLAS;
+         short integer count;
+           ! hold the number of expected parameters. Is
+             counted 1 down for each actual parameter, and when
+             the expected number is reached there are generated
+             dummy parameters for the rest of the actuals;
+         short integer noofexpargs;
+           ! number of expected arguments;
+         short integer argno;
+           ! argument number;
+         boolean inuse;
+         ref(nextargumentproducer)suc;
+
+       start:
+          detach;
+          kind:=ident.kind;
+          testquant:-
+            if kind=IIDN then none else
+            if kind=IOTHW then none else
+            if kind=IARRA or kind=ISWIT or rank(ident.meaning.categ)=IDCLI
+               or rank(ident.meaning.categ)=IEXTR
+            then ident.meaning else none;
+         firstarg:-lastarg:-new argument(0,none);
+         inuse:=true;
+
+         argerrtop:=argerrtop+1;
+         argerrmsg(argerrtop):-if kind=IARRA or!else; kind=ISWIT
+                               then indexerrmsg else paramerrmsg;
+         argerrqty(argerrtop):-ident.meaning;
+
+         detach;
+
+         if testquant==none then begin
+            ! Undeclared "procedure" or formal procedure or simple,
+              generate a dummy parameter for each call;
+            argno:=0; noofexpargs:=NargUnknown;
+
+    dummy:  while inuse do begin
+               argno:=argno+1;
+               lastarg:-lastarg.nextarg:- new parameter(argno,exptop,none);
+               exptop:-exptop.pred; ! unstacks the actual;
+               detach;
+            end;
+            goto endofuse;
+         end;
+%        -- else testquant=/=none:
+         if rank(testquant.kind)=IARRA or!else; rank(testquant.kind)=ISWIT
+         then begin
+            noofexpargs:=if rank(testquant.kind)=ISWIT then 1
+                    else if rank(testquant.categ)=IDCLI or
+                            rank(testquant.categ)=IEXTR then testquant.dim
+                         else NargUnknown;  !in case of formal array;
+            argno:=0;
+
+            while inuse do begin
+               argno:=argno+1;
+               lastarg:-lastarg.nextarg:- new index(argno,exptop);
+               exptop:-exptop.pred; ! unstacks the actual;
+               detach;
+            end;
+            goto endofuse;
+         end
+         else begin !  kind=proc or class;
+            ref(brecord)array testbrec(0:testquant.plev);
+            short integer i,number; ref(quantity) cquant;
+
+            cbrec:-testquant.descr;
+            testbrec(cbrec.declquant.plev):-cbrec;
+            number:=testquant.plev;
+            while cbrec.declquant.plev > 0 do begin
+                  cbrec:-cbrec.declquant.prefqual.descr;
+                  testbrec(cbrec.declquant.plev):-cbrec;
+            end;
+
+            noofexpargs:=count:=testquant.descr.npar; i:=0; argno:=0;
+            while count > 0 and inuse do begin
+                  cquant:-testbrec(i).fpar;
+                  if cquant=/=none then begin
+                     if rank(cquant.categ)=IDCLI or rank(cquant.categ)=IEXTR
+                     then cquant:-none;
+                  end;
+                  while cquant=/=none and inuse do begin
+                        count:=count-1; argno:=argno+1;
+                        lastarg:-lastarg.nextarg:-
+                                 new parameter(argno,exptop,cquant);
+                        exptop:-exptop.pred;  ! unstacks the actual;
+                        detach; ! get next parameter;
+                        cquant:-cquant.next;
+                        if cquant=/=none then begin
+                           if rank(cquant.categ)=IDCLI or
+                              rank(cquant.categ)=IEXTR  then cquant:-none end;
+                  end;
+                  ! cquant==none or not inuse;
+                  if not inuse then goto exit else
+                  if i < number then i:=i+1 else goto exit;
+            end;
+     exit:  ! count=0 or not inuse;
+            if inuse and count=0 then goto dummy;
+               ! too many parameters, generate dummy parameters
+                 for the rest of the actual parameters;
+
+         end proc or class testing;
+
+       endofuse:
+         firstarg:-firstarg.nextarg;
+         if noofexpargs=NargUnknown then
+         begin
+            ! formal procedure/array;
+
+            noofexpargs:=argno;
+            recordactualuse(ident.meaning,argno);
+         end;
+         goto start;  !only when reusing the object;
+
+      end nextargumentproducer;
+%title ***   a r g u m e n t  -  i n d e x   ***
+      class argument(argno,actual);
+            short integer argno; ref(exp)actual;
+      virtual:procedure emit;
+%+D           procedure dump;
+      begin
+            ref(argument)nextarg;
+
+%+P         prior
+            procedure errARG(eax); short integer eax;
+            begin text mess;
+                  mess:-cat(argerrmsg(argerrtop),qlin(argerrqty(argerrtop)));
+                  if eax=1 then mess.sub(11,2).putint(argno)
+             else if eax=2 then mess:-cat(catTX(mess,429),
+                                          catTX(idname(cquant.ident),430))
+             else if eax=3 then mess:-cat(mess,errcat3(431,actualkind,432))
+             else if eax=4 then mess:-cat(mess,errcat3(433,actual.type,434))
+             else if eax=5 or eax=9
+                  then mess:-catTX(mess,if eax=5 then 435 else 441)
+             else if eax=6 then mess:-cat(mess,errcat3(436,437,ftype))
+             else if eax=7 or eax=8
+                  then mess:-cat(mess,errcat3(438,actual.type,
+                                      if eax=7 then 439 else 437));
+                  GiveMessage(linenr,2,mess);
+            end errARG;
+
+      end argument;
+
+
+      argument class index;
+      begin ! array index ;
+
+%+D         procedure dump;
+%+D         begin outimage; outtext("INDEX NO      ");
+%+D               outint(argno,5); outimage; actual.dump;
+%+D               if nextarg=/=none then nextarg.dump;
+%+D         end dump;
+
+            procedure emit;
+            begin actual.cl:=IEEXP; actual.emit;
+                  if actual.type <> IINTG then MaybeConvert(IINTG,actual.type);
+                  if nextarg=/=none then
+                  begin !L3->INDEX-COMMA; opc:=ICOMA;call(coder);
+                        nextarg.emit;
+                  end;
+            end emit;
+
+            if actual==none then !nothing; else
+            if actual.type <> IOTHW then
+            begin if rank(nearly(actual.type)) <> IINTG then errARG(1) end;
+            if actual.ctype=char(IIDN) then actual qua identifier.checkasexp;
+      end index;
+%title ***  Procedure / Class  Parameter  ***
+      argument class parameter(formal); ref(quantity)formal;
+      begin boolean implqua; ! true if implicit qua is to be produced ;
+            character clf;   ! classification ;
+
+%+D         procedure dump;
+%+D         begin outimage; outtext("PARAMETER NO  "); outint(argno,5);
+%+D               outimage; outtext("formal:"); outimage;
+%+D               if formal=/=none then
+%+D               begin if Toption then formal.dump else
+%+D                     outtext(idname(formal.ident));
+%+D               end else outtext("none");
+%+D               outimage; outtext("actual:"); outimage; actual.dump;
+%+D         end dump;
+
+            procedure emit;
+            begin if (if formal==none then true
+                      else rank(formal.categ)=INAME) then
+                  begin if actual in const and actual.ch=ISCST  or
+                           actual.ctype=char(IIDN) and actual.ch=ISIDN
+                        and actual.cl <> IEEXP then
+                        begin !L3->(SINGLE-STRONG,formal/none);
+                              opc:=IDCLS; opq:-formal; call(coder);
+                        end else
+                        begin !L3->(EXP-STRONG,formal/none);
+                              opc:=IDCLI; opq:-formal; call(coder);
+                        end;
+                        if (actual.ctype=char(IIDN) or actual.ctype=char(IIDNP))
+                            and actual.cl <> IEEXP
+                        then actual.cl:=IACTE  else actual.cl:=IEEXP;
+                        actual.emit;
+                        if (actual.ctype=char(IIDN) or actual.ctype=char(IIDNP))
+                           and actual.cl=IACTE
+                           or actual in const and actual.ch=ISCST
+                        then !nothing; else
+                        begin !L3->(EXP-ACTUAL,actual.type);
+                              opc:=IRGPA; opt:=actual.type;
+                              if opt=ISCST then opt:=ITEXT;
+                              if opt=IREF then opq:-actual.qual;
+                              call(coder);
+                        end;
+                  end else
+                  begin ! formal=/=none and formal.categ <> INAME;
+                        !L3->(WEAK-PAR,formal);
+                        opc:=IFRMP;opq:-formal;call(coder);
+                        if actual.ctype=char(IIDN) then
+                        actual.cl:=if actual.cl=IACTE then IACTE else IEEXP;
+                        actual.emit;
+                        if rank(formal.kind)=IIDN then
+                        begin if rank(nearly(rank(formal.type)))=IINTG
+                              then MaybeConvert(rank(formal.type),actual.type)
+                         else if implqua then
+                              begin implqua:=false;
+                                    !*** optx=1 signals parameter-qua - NO!!;
+                                    !L3->(IMPL-QUA,qualification); opc:=IREF;
+                                    opq:-formal.prefqual; call(coder);
+                              end;
+                        end;
+                  end;
+                  if nextarg=/=none then nextarg.emit;
+            end emit;
+
+%+D         if Toption then
+%+D         begin outimage; outtext("begin parameter-checking: ");
+%+D               outimage; outtext("formal:"); outimage;
+%+D               if formal=/=none then formal.dump else outtext("none");
+%+D               outimage; outtext("actual:"); outimage; actual.dump;
+%+D               outimage; outtext("stack picture"); outimage;
+%+D               for expv:-exptop,expv.pred
+%+D               while expv=/=none do expv.dump;
+%+D         end;
+            if argerrtop = 0 then goto parameterexit;
+            argerrmsg(argerrtop).sub(22,2).putint(argno);
+            if formal==none then
+            begin
+               if actual.ctype=char(IIDN) then
+               begin
+                  cquant:-actual qua identifier.meaning;
+                  if rank(cquant.kind)=ICLAS then
+                  begin
+                     actual qua identifier.checkasexp; !actual is identifier;
+                     actual.cl:=IEEXP;
+                  end else
+                  if rank(cquant.kind)=IPROC then
+                  begin
+                     if (if cquant is quantity then false
+                         else (cquant qua extquantity.classific <> 'N'
+                          and  cquant qua extquantity.classific <> 'E') ) then
+                     begin
+                        ! system defined procedure/function;
+                        if rank(cquant.type) <> INOTY and
+                           cquant.descr.npar=0  then
+                        begin !function call assumed;
+                              noteLT(428); actual.cl:=IEEXP;
+                        end else errARG(2);
+                     end else actual.cl:=IACTE;
+                  end
+                  else actual.cl:=IACTE;
+               end else
+               if actual.ctype=char(IIDNP) then
+               begin
+                  actual.cl:=
+                  if actual qua argumented.ident.kind=IARRA or
+                     actual qua argumented.ident.kind=ISWIT
+                  then IACTE else IEEXP;
+               end
+               else actual.cl:=IEEXP;
+            end else
+            begin
+               ! procedure or class parameter testing, formal=/=none;
+               ftype:=rank(formal.type); fkind:=rank(formal.kind);
+               clf:=if formal is extquantity
+                    then formal qua extquantity.classific else 'K';
+
+!?;            if fkind=IOTHW or actual.type=IOTHW then !nothing;
+               else begin
+                  if actual.ctype=char(IIDN) then begin
+                     cquant:-actual qua identifier.meaning;
+                     actualkind:=rank(cquant.kind);
+                     if fkind=IIDN or fkind=ILABE then begin
+                        actual qua identifier.checkasexp; !actual is identifier;
+                        if actualkind=IIDN or actualkind=ILABE then
+                        actual.cl:=
+                           if rank(formal.categ)=INAME then IACTE else IEEXP
+                        else
+                        if actualkind=ICLAS ! generator ; then begin
+                           actualkind:=IIDN; actual.cl:=IEEXP;
+                        end else
+                        if actualkind=IPROC and actual.type <> INOTY then begin
+                           actualkind:=IIDN; actual.cl:=IEEXP;
+                        end;
+                     end else
+                     if fkind=IPROC then begin
+                        if actualkind=fkind then begin
+                           if (if cquant is quantity then false
+                               else (cquant qua extquantity.classific<>'N' and
+                                     cquant qua extquantity.classific<>'E') )
+                           then errARG(2) ! system defined procedure ;
+                           else actual.cl:=IACTE;
+                        end;
+                     end else
+                     if fkind=IARRA or fkind=ISWIT then begin
+                        if actualkind=fkind then actual.cl:=IACTE;
+                     end else actual.cl:=IEEXP;
+                  end else
+                  if actual in const then     actualkind:=IIDN else
+                  if actual in operation then
+                     actualkind:=(if actual.type=ILABE then ILABE else IIDN)
+                  else
+                  if actual.ctype=char(IIDNP) then begin
+                     actualkind:=actual qua argumented.ident.kind;
+                     ! actualkind=IARRA,ISWIT,IPROC,ICLAS or IOTHW;
+                     actual.cl:=IEEXP; !default value;
+                     if fkind=IIDN then begin
+                        if actualkind=IPROC or actualkind=ICLAS
+                        then ! type procedure call or class generator;
+                           actualkind:=IIDN
+                        else
+                        if actualkind=IARRA then begin
+                           actual.cl:=
+                           if rank(formal.categ)=INAME then IACTE else IEEXP;
+                           actualkind:=IIDN; !subscription;
+                        end;
+                     end else
+                     if fkind=ILABE then begin
+                        if actualkind=ISWIT then begin
+                           actual.cl:=
+                           if rank(formal.categ)=INAME then IACTE else IEEXP;
+                           actualkind:=ILABE;
+                        end;
+                     end else
+                     if actualkind <> IOTHW then actualkind:=IIDN;
+                  end;
+               end;
+
+               if actualkind=IOTHW or actual.type=IOTHW or fkind=IOTHW
+               then ! no testing, dummy actual exp ;  else
+               if fkind <> actualkind then errARG(3)
+               else begin
+                  ! kind correspondance has been found,
+                    type checking is following;
+                  if fkind=IARRA then begin ! actual must be identifier;
+                     if not actual.ctype=char(IIDN) then internalerror(564);
+                     if rank(formal.type) <> actual.type or!else;
+                       (ftype=IREF and!then; actual.type=IREF and!then;
+                       actual qua identifier.meaning.prefqual=/=formal.prefqual)
+                     then begin
+                        if clf<>'!1!' then errARG(4);
+                        !*** clf='!1!' means: anytype parameter ***;
+             ARROK:  end
+                  end else
+                  if fkind=IPROC then begin ! actual must be identifier;
+                     if rank(formal.categ)=IFRMP then begin
+                        if not actual.ctype=char(IIDN) then internalerror(565);
+                        if not subordinate(actual qua identifier.meaning,formal)
+                        then errARG(5);
+                     end
+                  end else begin
+                     ! normal type checking;
+
+                     if ftype=IOTHW or actual.type=IOTHW then !nothing;
+                     else
+                     if actual.type=INOTY then begin
+                        if ftype<>IOTHW and ftype<>INOTY then errARG(6);
+                     end else
+                     if ftype=INOTY then begin
+                        if actual.type <> IOTHW and actual.type <> INOTY
+                        then errARG(7);
+                     end else
+                     if actual.type <> INOTY then begin
+                        if nearly(ftype) <> nearly(actual.type) then begin
+                           if clf<>'P' and!then; clf<>'Q' then errARG(8)
+                           else !*** formal.encl must be extbrecord ***;
+                           if formal.encl.declquant qua extquantity.longindic
+                              = '!0!' then errARG(8) !*** else overloadable ***;
+                        end
+                        else
+                        if actual.type=ISCST then ! Nothing ; else
+                        if ftype=IREF and actual.type=IREF then begin
+                           if formal.prefqual==textclass then
+                           ! nothing,qual==universal;
+                           else
+                           if formal.prefqual=/=
+                              actual.qual and actual.qual=/=none then
+                           begin
+                              ! qualification check as for :-;
+                              if subclass(formal.prefqual,actual.qual)
+                              then implqua:=true else
+                              if subclass(actual.qual,formal.prefqual)
+                              then !ok; implqua:=false  else errARG(9);
+                           end
+                        end
+                     end;
+
+                  end normal typechecking;
+               end type checking;
+
+               ! testing on actual parameters to external non-Simula  ;
+               ! procedures with binding                              ;
+
+               if clf='F' then begin
+                  if rank(formal.categ)=INAME then begin
+                        if actual.ctype=char(IIDN) then !ok;
+                   else if actual.ctype=char(IIDNP) then begin
+                           if rank(actual qua argumented.ident.meaning.kind)
+                              = IARRA then !ok; else goto ER4 end
+                        else
+                        ER4: errLTT(if actual in const then 442 else 445,444)
+                  end;
+               end;
+            end;
+%+D         if Toption then
+%+D         begin outtext("end parameter-checking");outimage;
+%+D               outtext("stack picture");outimage;
+%+D               for expv:-exptop,expv.pred
+%+D                   while expv=/=none do expv.dump;
+%+D         end;
+parameterexit:
+      end parameter;
+%title ***  S W I T C H  ***
+      exp class switchdef(index);
+            short integer index;
+      begin ref(quantity) sw; ref(switchelement)elements;
+            boolean plain;
+            ! plain is true iff all the switch elements are local
+              labels (categ=IDCLI and declared at the same blocklevel
+              as the switch);
+
+% +P         prior
+            procedure checkplainswitch;
+            begin ref(switchelement)swel; short integer swblev;
+                  swblev:=sw.encl.blev; swel:-elements;
+                  while swel=/=none do
+                  begin if swel.blocklevel <> swblev then
+                        begin goto E; ! not a plain switch ; end;
+                        swel:-swel.next;
+                  end;
+                  plain:=true;
+            E:end;
+
+            procedure emit;
+            begin ref(switchelement)swel;
+                  opc:=IDCLA; opq:-sw;
+                  if rank(opq.categ)=IVIRT and opq.match=/=none
+                  then opq:-opq.match;
+                  opi:=if plain then 1 else 2; call(coder);
+                  swel:-elements;
+                  while swel=/=none do
+                  begin swel.emit; opc:=ISWEE; call(coder);
+                        swel:-swel.next;
+                  end;
+                  opc:=ISWDE; call(coder);
+            end emit;
+
+            globmeaning(index); sw:-gm_result;
+      end switchdef;
+
+      class switchelement(labelexp); ref(exp)labelexp;
+      begin short integer blocklevel;
+%           ! blocklevel = if <labelexp is local/global label> then
+%                             <block level of the label> else 0     ;
+%           ! blocklevel=0 indicates that the corresponding switch is
+%             not plain (block level of a label cannot be zero if it is
+%             declared at the same block level as a switch)   ;
+            ref(switchelement)next;
+
+            procedure emit;
+            begin labelexp.cl:=IEEXP; labelexp.emit end;
+
+            if labelexp==none then ! nothing ; else
+            begin if labelexp.type <> ILABE and labelexp.type <> IOTHW
+                  then errLT(446);
+                  inspect labelexp when identifier do
+                  begin checkasexp;
+                        if rank(meaning.categ)=IDCLI then
+                           blocklevel:=meaning.encl.blev ;
+                  end;
+            end;
+      end switchelement;
+%title ***  F o r  -  S t a t e m e n t  ***
+      exp class forlist(cvindex,forelements);
+            ref(forelement)forelements; short integer cvindex;
+      begin ref(identifier)cvar; ! cvar denotes the controlled variable;
+            boolean fast;        !true if this is a fast for-statement ;
+
+%+D         procedure dump;
+%+D         begin
+%+D            outimage;
+%+D            outtext("FORLIST       controlled var:"); outimage;
+%+D            cvar.dump;
+%+D            if forelements=/=none then forelements.dump;
+%+D         end;
+
+            procedure emit;
+            begin
+               fast:=false;
+               if cvar.type=IINTG then
+               inspect forelements
+                  when stepuntilforelem do begin
+                       if nextforelem==none  and!then;
+                          stepexp.type=IINTG and!then; stepexp.ctype=char(ISHOR)
+                       then begin
+                          inspect untilexp
+                             when arithconst do this forlist.fast:=type=IINTG
+                             when identifier do
+                                  if type=IINTG and dotexp==none and kind=IIDN
+                                  then this forlist.fast:=true;
+                       end;
+               end;
+               opq:-cvar.meaning;
+               opc:= if fast then IBPRF !L3->(FOR-FAST,controlled variable);
+                else if forelements.forassign.ch=IFASG then IFASG else IFDNO;
+                        !L3->(FOR-VAL/FOR-REF,controlled variable);
+               call(coder);
+               if fast then forelements qua stepuntilforelem.fast:=fast;
+               forelements.emit;
+            end emit;
+
+            cvar:- new identifier(exptop,IIDN,cvindex,none);
+            exptop:-cvar.pred; cvar.pred:-none; !remove cvar from stack;
+
+            if rank(cvar.meaning.categ) <> INEW  then begin
+               if rank(cvar.meaning.categ)=INAME then errLTTT(447,448,-1);
+               if cvar.kind <> IOTHW and cvar.kind <> IIDN
+               then errLTTT(449,cvar.kind,448);
+            end;
+
+         end forlist;
+%page
+         class forelement(forassign); ref(assign)forassign;
+            virtual:procedure dump; procedure emit;
+         begin
+            ! forassign denotes an object of class valassign
+              or of class refassign and represents the
+              "assign-part" of every forelement.
+              A simple forelement is represented by a forelement;
+
+            ref(forelement)nextforelem;
+
+%+D         procedure dump;
+%+D         begin outimage;outtext("SIMPLE-FOR-EL");outimage;
+%+D               if forassign=/=none then forassign.dump;
+%+D               if nextforelem=/=none then nextforelem.dump;
+%+D         end dump;
+
+            procedure emit;
+            begin
+               forassign.emit;
+               if nextforelem=/=none then
+               begin
+                  !L3-> FOR-ELEM-COMMA ;
+                     opc:=IELME; call(coder);
+                  nextforelem.emit
+               end;
+            end emit;
+
+         end;
+
+
+
+         forelement class whileforelem(whileexp);
+            ref(exp)whileexp;
+         begin
+%+D         procedure dump;
+%+D         begin
+%+D            outimage;outtext("WHILE-FOR-EL");outimage;
+%+D            if forassign=/=none then forassign.dump;
+%+D            outtext("whileexp:");outimage; whileexp.dump;
+%+D            if nextforelem=/=none then nextforelem.dump;
+%+D         end dump;
+
+            procedure emit;
+            begin
+               ! L3 is changed so that FOR-WHILE is emitted before
+                 the assignment ;
+               !L3-> FOR-WHILE ;
+                  opc:=IWHIL;call(coder);
+
+               forassign.emit;
+               whileexp.cl:= if whileexp.ctype=char(IEQ) then IWHIL else IEEXP;
+               whileexp.emit;
+               if nextforelem=/=none then
+               begin
+                   !L3-> FOR-ELEM-COMMA ;
+                      opc:=IELME;call(coder);
+                   nextforelem.emit
+               end;
+            end emit;
+
+            if whileexp.type <> IOTHW and whileexp.type <> IBOOL then
+            errLT(450);
+           if whileexp.ctype=char(IIDN) then whileexp qua identifier.checkasexp;
+         end;
+
+
+
+         forelement class stepuntilforelem(stepexp,untilexp);
+            ref(exp)stepexp,untilexp;
+         begin
+            boolean fast;
+
+%+D         procedure dump;
+%+D         begin
+%+D            outimage;outtext("STEP-UNTIL-FOR-EL");outimage;
+%+D            if forassign=/=none then forassign.dump;
+%+D            outtext("stepexp:");outimage;stepexp.dump;
+%+D            outtext("untilexp:");outimage;untilexp.dump;
+%+D            if nextforelem=/=none then nextforelem.dump;
+%+D         end dump;
+
+            procedure emit;
+            begin
+               untilexp.cl:=IEEXP;
+               stepexp.cl:=IEEXP;
+
+               forassign.cl:=IEEXP;   !so that it is a sub-assignment;
+               forassign.emit;
+
+               if fast then  begin
+                  !L3->(STEP-FAST,opi);
+                  opc:=ICSPC; opi:=stepexp qua const.index; call(coder);
+
+                  !L3->(UNTIL-FAST,opq,opi);
+                  if untilexp is arithconst then begin
+                     opq:-none; opi:=untilexp qua arithconst.index end
+                  else begin !untilexp is identifier;
+                     opq:-untilexp qua identifier.meaning; opi:=0 end;
+                  opc:=IPSPC; call(coder);
+               end
+               else begin
+                  !L3->(UNTIL,untilexp.type);
+                     opc:=ICL;opt:=untilexp.type;call(coder);
+                  untilexp.emit;
+
+                  !L3->(STEP,stepexp.type);
+                  opc:=ISMCL;opt:=stepexp.type;call(coder);
+                  stepexp.emit;
+
+                  !L3->(FOR-STEP,stepexp.type);
+                     opc:=ISTEP;opt:=stepexp.type;call(coder);
+                  stepexp.emit;
+
+                  !L3->(FOR-UNTIL,untilexp.type);
+                     opc:=IUNTI;opt:=untilexp.type;call(coder);
+                  untilexp.emit;
+
+                  if nextforelem=/=none then begin
+                     !L3-> FOR-ELEM-COMMA ; opc:=IELME; call(coder);
+                     nextforelem.emit
+                  end;
+               end;
+            end emit;
+
+            if stepexp.type <> IOTHW and
+               rank(nearly(stepexp.type)) <> IINTG then errLT(451);
+            if stepexp.ctype=char(IIDN) then stepexp qua identifier.checkasexp;
+
+            if untilexp.type <> IOTHW  and
+               rank(nearly(untilexp.type)) <> IINTG then errLT(452);
+           if untilexp.ctype=char(IIDN) then untilexp qua identifier.checkasexp;
+
+         end stepuntilforelem;
+%title ***  A c t i v a t e p r e l u d e  ***
+
+
+%title
+
+      ref(formal)array formals(0:63);  !*** maxparm - ENVIR parameter???;
+
+      class formal(ident,kind,actuals,next);
+            short integer ident; short integer kind;
+            ref(actualuse)actuals; ref(formal)next;
+      ;
+
+      class actualuse(line,noofactuals); short integer line,noofactuals;
+      begin ref(actualuse)next; end;
+
+      procedure recordactualuse(meaning,actualargs);
+      ref(quantity)meaning; short integer actualargs;
+      begin boolean formcond,actcond;
+            formcond:=actcond:=true;
+            for form:-formals(cblev),form.next while formcond do
+            begin if form.ident=meaning.ident then
+                  begin !insert new actualuse in this list;
+                        for act:-form.actuals,act.next while actcond do
+                        begin ! act will not be none;
+                              if act.next==none then
+                              begin act.next:-new actualuse(linenr,actualargs);
+                                    actcond:=formcond:=false;
+                              end;
+                        end;
+                  end else
+                  if form.next==none then
+                  begin ! make new formal;
+                        form.next:-new formal(meaning.ident,
+                                              rank(meaning.kind),
+                                              new actualuse(linenr,actualargs),
+                                              none);
+                        formcond:=false;
+                  end;
+            end;
+      end recordactualuse;
+
+      ref(quantity)procedure qualification(classident);
+            short integer classident;
+      begin ! if classident is a class identifier then the corresponding
+              class quantity is delivered , else none;
+            ref(quantity)cquant;
+            globmeaning(classident); qualification:-cquant:-gm_result;
+            if rank(cquant.categ) =INEW then UndeclIdent(404,cquant)
+            else if rank(cquant.kind) <> ICLAS then errLTN(453,qlin(cquant));
+      end;
+
+%+P   prior
+      procedure enter_block(blno); short integer blno;
+      begin enterblock(blno); opc:=IBEFO; call(coder);
+            formals(cblev):-new formal(actindex1,IEEXP,none,none);
+      end;
+
+      procedure leave_block;
+      begin if formals(cblev)==none
+            then internalerror(566) !formals(cblev)==none in leave-block";
+       else begin if formals(cblev).next=/=none then
+                  begin short integer check; boolean equal;
+                        for form:-formals(cblev).next,
+                            form.next while form=/=none do
+                        begin equal:=true; check:=form.actuals.noofactuals;
+                              for act:-form.actuals,act.next while act=/=none do
+                              if act.noofactuals <> check then equal:=false;
+                              if not equal then noteLT(458);
+                        end;
+                  end;
+            end;
+            leaveblock; opc:=IDELA; call(coder);
+      end leave_block;
+
+      procedure enter_conn(qual);ref(quantity)qual;
+      begin enterconn(qual); opc:=IAFTR; opq:-qual; call(coder);
+            formals(cblev):-new formal(actindex1,IEEXP,none,none);
+      end;
+
+%-I %+P   prior
+%-I       procedure build_scope(blno); short integer blno;
+%-I       begin allocate(blno,none); opc:=IACTV; call(coder); end;
+
+%-I %+P   prior
+%-I       procedure build_pref_scope(blno,q);
+%-I       short integer blno; ref(quantity)q;
+%-I       begin allocate(blno,q); opc:=IREAC; opq:-q; call(coder); end;
+
+%-I %+P   prior
+%-I       procedure enter_stmt(blno); short integer blno;
+%-I       begin enterstmt(blno); opc:=IAT; call(coder) end;
+
+%-I %+P   prior
+%-I       procedure leave_stmt;
+%-I       begin leavestmt; opc:=IPRIO; call(coder) end;
+
+end semchecker1;
+
+
+end CHECKER1;

@@ -1,0 +1,24 @@
+begin
+Class Test(A,P);
+Ref(Test)Array A; Ref(Test)Procedure P;
+%integer A; real P;
+
+Begin
+   Integer procedure Q(i); integer i; Q:=i+A[7].r; 
+   Ref(Test)Procedure PP; begin r:=q; end;
+   Real r,q;
+   ref(Test) array AA[1:45];
+%   A[i].r:=i;
+%   P(4,5).q:=i;
+%   new Test(A,P).q:=4.6;
+   A.q:=r;
+   if(r<q) then A.q:=4 else A.r:=3.14;
+   if(q>=r)
+   then begin A.q:=44; end
+   else begin A.r:=33.14; end;
+         
+   FOR r:=q while (q<>r)  DO A[4]:-A[9]
+   new Test(AA,PP);
+   A :- P qua Test;
+End;
+End;

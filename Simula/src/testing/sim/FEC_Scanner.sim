@@ -1,0 +1,1898 @@
+% External class ERRMSG;
+
+ERRMSG class SCANNER;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1987 by                                              ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                   T h e    S c a n n e r                        ---
+%      ---                                                                 ---
+%      --- Selection switches: DKIPMRZ                                     ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'M' Included always when macro capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'R' Included if full REAL capability wanted                  ---
+%      ---    'Z' Included at system generation (for "ZIMULA")             ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCANNER:MNE
+%+I %INSERT (FEC-105)PARSER:MNE
+
+%          ******   Pass1 Error Routines   ******
+
+%+P   prior
+      procedure outP1message(where,message,code);
+      short integer where,code; text message;
+      begin short integer lasterrpos,errloop; !OWN;
+            integer lasterrline;
+            if lasterrline=linenr and lasterrpos>=where
+            then begin
+               errloop:=errloop+1;
+               if errloop>2 then GiveMessage(linenr,3,errmsg(280));
+                  ! stop possible looping - this is a FIX;
+            end
+            else begin lasterrpos:=where; errloop:=0;
+               if lasterrline<>linenr then begin !test for listing;
+                  lasterrline:=linenr;
+                  if not listingon or listfile =/= sysout then begin
+                     outint(linenr,5); outtext(":  ");
+                     outtext(listpart); outimage;
+                  end;
+                  setpos(9);
+                  while pos<where+8 do outchar('='); outchar('I'); outimage;
+               end;
+            end;
+            GiveMessage(linenr,code,message);
+      end;
+
+%+P   prior
+      procedure ScanErr(i);  short integer i;
+      outP1message(linepos+1,errmsg(i),2);
+
+%+P   prior
+      procedure ScanWarn(i);  short integer i;
+      outP1message(linepos+1,errmsg(i),1);
+
+      short integer signiflength,linelength,linepos;
+      boolean ibrecoutput;
+
+      boolean readfinish; ! false if operator is not copied to cs;
+      short integer cs;   ! current symbol for parser;
+
+%-I   character EOL; !*** End-Of-Line character ***;
+%-I   short integer null; ! - UT;
+
+%     communication scanner -> parser/errmsg:
+      short integer optpos,extid,opdline,opdpos;
+      character symbol;
+
+%+P   prior
+      procedure writeerror(n); short integer n;
+      begin short integer errpos;
+            errpos:=(if optx<>0 and not readfinish and opdline=linenr
+                     then opdpos else optpos)+1;
+            outp1message(errpos,errmsg(n),2);
+            if ibrecoutput then
+            begin OPN:=IEREC; call(coder); ibrecoutput:=false end;
+      end writeerror;
+
+%title *** DUMP PROCEDURES ***
+%+D   procedure dump_opt(opt); short integer opt;
+%+D   begin outint(opt,6); outchar('=');
+%+D         outtext(if opt<=IFALS then idname(opt) else DB(opt));
+%+D   end;
+
+%+D   procedure dump_opd(opd,optx); short integer opd,optx;
+%+D   begin text t; outint(opd,5); outchar('=');
+%+D         if optx=0 then ! nothing ; else
+%+D         begin outtext(DB(optx));
+%+D               if optx=ICHAR then begin
+%+D                  if opd>32 and opd<127 then outchar(isochar(opd)) end else
+%+D               begin t:-idname(opd);
+%+D                     if t.length<13 then outtext(t) else
+%+D                     begin outtext(t.sub(1,10)); outtext("...")end;
+%+D               end;
+%+D         end;
+%+D   end of dump_opd;
+
+%+D   procedure dump(who); text who;
+%+D   begin if pos>1 then outimage; outtext(who);
+%+D         if optx<>0 then !*** dump the passed operand ***;
+%+D         begin setpos(opdpos+9); outchar('*');
+%+D               setpos(if pos>45 then 10 else 50); dump_opd(opd,optx);
+%+D               if opdline <> linenr then
+%+D               begin outtext(" (line:"); outint(opdline,3);
+%+D                     outtext(") ");
+%+D               end;
+%+D               outimage; outtext(who);
+%+D         end
+%+D
+%+D         *** DUMP THE PASSED OPERATOR *** ;
+%+D         setpos(optpos+9); outchar('*');
+%+D         setpos(if pos>45 then 10 else 50); dump_opt(opt); outimage;
+%+D   end of dump;
+
+
+%+D   procedure dumpfromparser;
+%+D   begin if pos > 1 then outimage;
+%+D         outtext(" from parser l."); outint(linenr,5); outtext(": ");
+%+D         dump_opt(opn);
+%+D         if optx<>0 then dump_opd(opd,optx); outimage;
+%+D   end dumpfromparser;
+
+%title ***  Constant and macro:  Data Structures  ***
+
+%+M  ref(MNEdisplay) MNE; ! all defined constants/MNE's;
+%+M  ref(MNEblock) curbl; ! current block descriptor;
+
+%+M  class MNEdisplay(max); short integer max;
+%+M  begin ref(mnemonic)array display(0:max); end;
+
+%+M  class MNEblock;
+%+M  begin ref(mnemonic) firstm;      !start of chain for this block;
+%+M        ref(mnemonic) chainm;      !last in chain;
+%+M        ref(MNEblock) prevbl;      !last enclosing block with MNE's;
+%+M        short integer level;       !"begin level" of this block;
+
+%+M        !recursive;
+%+M        procedure insert(m);    !insert a mnemonic/macro in this block;
+%+M        ref(mnemonic) m;
+%+M        inspect m do begin
+%+M              prev:-MNE.display(id); MNE.display(id):-this mnemonic;
+%+M              if firstm==none then firstm:-chainm:-this mnemonic
+%+M              else chainm:-chainm.nxtmn:-this mnemonic;
+%+M        end insert;
+
+%+MP       prior
+%+M        procedure release;         !release all MNE's and this block;
+%+M        begin
+%+M           while firstm=/=none do begin
+%+M              MNE.display(firstm.id):-firstm.prev; firstm:-firstm.nxtmn end;
+%+M           curbl:-prevbl;
+%+M        end;
+
+%+M        prevbl:-curbl; curbl:-this MNEblock;
+%+M        level:=maxnumoftags;
+%+M  end MNEblock;
+
+%+M  class mnemonic(id);
+%+M        short integer id;
+%+M  begin ref(macro_atom) fst;
+%+M        ref(mnemonic) nxtmn; !chain together MNE's for a specific block;
+%+M        ref(mnemonic) prev ; !stacked meaning for outer block;
+
+%+DM       procedure dump(id); short integer id;
+%+DM       begin ref(macro_atom) x; x:-fst;
+%+DM             inspect this mnemonic
+%+DM                when macro do begin
+%+DM                     outtext("MACRO "); outtext(idname(id));
+%+DM                     outtext(",  npar ="); outint(npar,4) end
+%+DM             otherwise begin
+%+DM                outtext("MNEMONIC "); outtext(idname(id)) end;
+%+DM             outtext(", chain");
+%+DM             while x =/= none do
+%+DM             begin outtext(":: "); x.dump; x:-x.nxt end; outimage;
+%+DM       E:end;
+%+M  end;
+
+%+M  class macro_atom(val,type); short integer val,type;
+%+M  begin ref(macro_atom) nxt;
+
+%+DM       procedure dump;
+%+DM       inspect this macro_atom
+%+DM          when macro_opt do dump_opt(val)
+%+DM          when macro_opd do dump_opd(val,type)
+%+DM          when macro_par do begin outtext("PAR"); outint(val,2) end
+%+DM       otherwise begin outtext("ATOM"); outint(val,2) end;
+%+M  end;
+
+%+M  macro_atom class macro_opd;;
+%+M  macro_atom class macro_opt;;
+%title ******   Macro Body Parser   *******
+
+%+M  mnemonic class macro; begin short integer npar; end;
+%+M  macro_atom class macro_par;;
+%+M
+%+M  component class macro_parser(prev,macrodef);
+%+M  ref(component) prev; Boolean macrodef;
+%+M  begin ref(macro_atom) md,mt,mp,last;
+%+M        ref(mnemonic) m; short integer id,par,npar,opdp,optxp;
+%+M        boolean terminated;
+%+M
+%+MP       prior
+%+M        procedure chain;
+%+M        begin if md.val <> 0 then
+%+M              begin if m.fst==none then last:-m.fst:-md
+%+M                                   else last:-last.nxt:-md;
+%+M              end;
+%+M              if mt.val <> IROPD then
+%+M              begin if m.fst==none then last:-m.fst:-mt
+%+M                                   else last:-last.nxt:-mt;
+%+M              end;
+%+M        end;
+%+M
+%+MP       prior
+%+M        procedure terminate;
+%+M        begin if m =/= none then begin
+%+M                 if optx<>0 then begin
+%+M                    md:-new macro_opd(opd,optx);
+%+M                    mt:-new macro_opt(IROPD,0);
+%+M                    chain; opt:=opd:=optx:=0;
+%+M                 end;
+%+M                 (if curbl.level<maxnumoftags then new MNEblock else curbl)
+%+M                  .insert(m);
+%+M                 m qua macro.npar:=npar;
+%+MD                if scannerdump then m.dump(id);
+%+M              end;
+%+M              terminated:=true;
+%+M        end;
+%+M
+%+MP       prior
+%+M        procedure detachswap;
+%+M        begin detach;
+%+M              if terminated then goto FINITO;
+%+M        end;
+%+M
+%+M        opdp:=opd; optxp:=optx; optx:=opd:=0; detachswap;
+%+M
+%+M        if macrodef then
+%+M        begin !*** Macro definition ***;
+%+M              if opt<>ICL or optx<>INOTY then goto ERR;
+%+M              id:=opd; m:-new macro(id);
+%+M              if MNE.display(id) =/= none then scanwarn(210);
+%+M              while true do
+%+M              begin detachswap;
+%+M                    md:-new macro_opd(opd,optx); mt:-new macro_opt(opt,0);
+%+M                    if opt=IMULT then
+%+M                    begin detachswap;
+%+M                          if opt <> ISLAS or optx<>0 then
+%+M                          begin chain;
+%+M                                md:-new macro_opd(opd,optx);
+%+M                                mt:-new macro_opt(opt,0);
+%+M                          end else
+%+M                          begin detachswap;
+%+M                                par:=idname(opd).getint;
+%+M                                if par > npar then npar:=par;
+%+M                                mp:-new macro_par(par,0);
+%+M                                if m.fst==none then last:-m.fst:-mp
+%+M                                               else last:-last.nxt:-mp;
+%+M                                md:-new macro_opd(0,0);
+%+M                                mt:-new macro_opt(opt,0);
+%+M                          end;
+%+M                    end;
+%+M                    chain;
+%+M              end;
+%+M        end
+%+M   else begin !*** Mnemonic definition ***;
+%+M        L:    if opt<>IEQ or!else; optx<>INOTY then goto ERR;
+%+M              id:=opd; detach;
+%+M              if opt=ISMCL or!else; opt=ICOMA then begin
+%+M                 if MNE.display(id) =/= none then scanwarn(210);
+%+M                 m:-new mnemonic(id);
+%+M                 (if curbl.level<maxnumoftags then new MNEblock else curbl)
+%+M                  .insert(m);
+%+M                 m.fst:-new macro_opd(opd,optx);
+%+MD                if scannerdump then m.dump(id);
+%+M                 if opt=ICOMA then begin detach; goto L end;
+%+M              end else goto ERR;
+%+M        end;
+%+M
+%+M        if false then ERR: scanwarn(if macrodef then 211 else 212);
+%+M
+%+M  FINITO:
+%+M        parser:-prev; opd:=opdp; optx:=optxp;
+%+M  end macro_parser;
+
+%title ******   Macro Call Scanner   ******
+
+%+M  component class macro_scanner(prev,npar,fst);
+%+M  ref(component) prev; short integer npar; ref(macro_atom) fst;
+%+M  begin ref(macro_atom) array par(0:npar);
+%+M        ref(macro_atom) md,mt,last,save;
+%+M        short integer n,depth,opdp,optxp,optp;
+%+M
+%+MP       prior
+%+M        procedure chain;
+%+M        begin if optx<>0 then
+%+M              begin md:-new macro_opd(opd,optx);
+%+M                    if last==none then last:-par(n):-md
+%+M                                  else last:-last.nxt:-md;
+%+M              end;
+%+M              if opt <> IROPD then
+%+M              begin mt:-new macro_opt(opt,0);
+%+M                    if last==none then last:-par(n):-mt
+%+M                                  else last:-last.nxt:-mt;
+%+M              end;
+%+M        end;
+%+M
+%+MD       if scannerdump then
+%+MD       begin ref(macro_atom) x; x:-fst;
+%+MD             outtext("Macro: "); x.dump;
+%+MD             for x:-x.nxt while x =/= none do
+%+MD             begin outtext(",  "); x.dump end; outimage;
+%+MD       end;
+%+M
+%+M        opdp:=opd; optxp:=optx; optx:=opd:=0; detach; optp:=opt;
+%+M        !******  Parsing of macro parameters  ******;
+%+M        if npar > 0 then
+%+M        begin ! opd=macro-ident, opt='(' ???? ;
+%+M              detach;
+%+M              for n:=1 step 1 until npar do
+%+M              begin last:-none; depth:=0;
+%+M                    while true do
+%+M                    begin if opt=ILFPA then depth:=depth+1 else
+%+M                          if opt=IRGPA then depth:=depth-1;
+%+M                          if depth<0 then
+%+M                          begin opt:=IROPD; chain; goto E end;
+%+M                          if depth=0 and!then; opt=ICOMA then
+%+M                          begin opt:=IROPD; chain; detach; goto L end;
+%+M                          chain; detach;
+%+M                    end;
+%+M        L:    end;
+%+M        E:end;
+%+M
+%+MD       !******  Dumping of macro parameters  ******;
+%+MD       if scannerdump then begin ref(macro_atom) x;
+%+MD             for n:=1 step 1 until npar do
+%+MD             begin outtext("Parameter"); outint(n,2);
+%+MD                   outtext(": "); x:-par(n);
+%+MD                   if x == none then outtext("EMPTY")
+%+MD                   else begin x.dump;
+%+MD                         for x:-x.nxt while x =/= none do
+%+MD                         begin outtext(",  "); x.dump end;
+%+MD                   end;
+%+MD                   outimage;
+%+MD       end   end;
+%+M
+%+M        parser:-prev; prev:-scanner; scanner:-this component;
+%+M
+%+M        begin
+%+MP             prior
+%+M              procedure repopdout;
+%+M              begin opt:=IROPD; call(parser); opt:=optx:=opd:=0 end;
+%+M
+%+MP             prior
+%+M              procedure parsing(t); short integer t;
+%+M              begin opt:=t; call(parser); opt:=optx:=opd:=0 end;
+%+M
+%+M              opt:=0; opd:=opdp; optx:=optxp;
+%+M        P:    inspect fst
+%+M                 when macro_par do begin
+%+M                      save:-fst.nxt; fst:-par(val); goto P end
+%+M                 when macro_opd do begin
+%+M                      if type=INOTY then
+%+M                      inspect MNE.display(val)
+%+M                         when macro do begin
+%+M                              parser:-new macro_scanner(parser,npar,fst);
+%+M                              goto L;
+%+M                          end
+%+M                         when mnemonic do begin
+%+M                              val:=fst.val; type:=fst.type end;
+%+M                      if optx<>0 then repopdout; opd:=val; optx:=type;
+%+M                  end
+%+M                 when macro_opt do PARSING(val)
+%+M              otherwise begin
+%+M                      fst:-save; save:-none;
+%+M                      if fst =/= none then goto P;
+%+M              end;
+%+M         L:   if fst =/= none then
+%+M              begin fst:-fst.nxt; goto P end;
+%+M              if npar=0 and!then; optp <> IROPD then PARSING(optp);
+%+M        end;
+%+M        scanner:-prev;
+%+M  end *** macro_scanner ***;
+%title ***  R E C O G N I Z E R  ***
+%
+% Class RECOGNIZER receives text lines one by one (in 'line') and
+%       passes the located tokens to syntax PARSER.
+%       Note that
+%       - directive lines are treated before this scanner is entered
+%       - empty lines are treated before this scanner is entered
+%       - 'line' is stripped before entry, i.e. line.last=EOL
+%       - after detach, symbol contains first character with Class>=0
+%         (i.e. "front-strip" performed off-line, this is important)
+%
+% Each retrieved token falls into one of the following two categories:
+%       - operator (i.e. most keywords or the special symbols)
+%       - operand  (identifiers, literals and keyword-literals)
+%
+% The following conventions are used as regards the communication
+% between the scanner and the parser:
+%
+%   1) The tokens are passed in global variables OPT and (OPD,OPTX).
+
+%   2) The operators are represented in OPT by corresponding I-symbol.
+
+%   3) Operands are represented in OPD and OPTX by index and type, resp.
+%
+%   4) Whenever an operator is retrieved the scanner activates the parser
+%      to do further processing. If on the other hand the retrieved item
+%      is an operand it is kept aside until the operator following it is
+%      identified and the two are then passed over together (in OPD and
+%      OPT respectively). Note that OPTX=0 in case that the item immedia-
+%      tely preceding the currently passed operator is also an operator.
+%      Note also that composite operators (e.g. 'or else') are passed as such.
+
+%   5) While two operators may follow each other, operands must always be
+%      separated by at least one operator. The scanner does NOT detect
+%      this erroneous situation, it must be handled by the parser.
+
+%   6) The position of the passed operand (operator) within the program
+%      text is indicated by OPDLINE and OPDPOS (LINENR and OPTPOS) values;
+
+%   7) The scanner will attempt to recover from detected errors. In most
+%      cases, a missing character (such as a terminating " for a string)
+%      is inserted.
+%page
+component class recognizer;
+begin
+      boolean scanningstring;! used during scan of string or character const.;
+      boolean skipzeroes;    ! skip insignificant zeroes in unsigned number  ;
+      short integer ampcount;      ! counting ampersands in number           ;
+      short integer current,i;     ! local temps                             ;
+%-I   short integer upcorr ; ! correction for lower case letters (constant)  ;
+      short integer   radix;       ! possible radix in unsigned integer      ;
+      short integer startpos;      ! pos of first char some construction     ;
+      integer startline;           ! line number for start of operand        ;
+      text hashbuf;                ! identifier, number and string buffer    ;
+      short integer hashpos;       ! hashbuf.pos - 1  (see loadchar)         ;
+      text tempt;                  ! temp. used locally                      ;
+
+%-I   character     Illegal_cl,Graphic_cl,Skip_cl,   EOL_cl,   Format_cl,
+%-I                 Exclam_cl, Dquote_cl, Ampsand_cl,Squote_cl,Lpar_cl,
+%-I                 Rpar_cl,   Aster_cl,  Plus_cl,   Comma_cl, Minus_cl,
+%-I                 Dot_cl,    Slash_cl,  Colon_cl,  Semic_cl, Less_cl,
+%-I                 Equal_cl,  Greater_cl,Letter_cl,Uscore_cl, Digit_cl,
+%-I                 Radix_cl,  IllDig_cl, HexLow_cl, HexUp_cl;
+
+%     *********************************************************************
+%     The following switches and the array InputClass must be seen together
+%     *********************************************************************
+
+      character array InputClass(0:255);
+
+      !*** Switch to select scanner-action of first symbol ***;
+      switch Q :=
+           IllegalCc, GraphicCc, SkipCc,    EOLCc,     FormatCc,
+           ExclamCc,  DquoteCc,  AmpsandCc, SquoteCc,  LparCc,
+           RparCc,    AsterCc,   PlusCc,    CommaCc,   MinusCc,
+           DotCc,     SlashCc,   ColonCc,   SemicCc,   LessCc,
+           EqualCc,   GreaterCc, LetterCc,  UscoreCc,  DigitCc,
+           LetterCc,  DigitCc,   LetterCc,  LetterCc;
+
+%     *** switch used to scan identifier ***;
+      switch IDSW :=
+           IllegalIi, GraphicIi, SkipIi,    EOLIi,     FormatIi,
+           ExclamIi,  DquoteIi,  AmpsandIi, SquoteIi,  LparIi,
+           RparIi,    AsterIi,   PlusIi,    CommaIi,   MinusIi,
+           DotIi,     SlashIi,   ColonIi,   SemicIi,   LessIi,
+           EqualIi,   GreaterIi, LetterIi,  UscoreIi,  DigitIi,
+           LetterIi,  DigitIi,   LetterIi,  LetterIi;
+
+%     *** switch used to scan unsigned integer ***
+      switch NUMSW :=
+           IllegalNn, GraphicNn, SkipNn,    EOLNn,     FormatNn,
+           ExclamNn,  DquoteNn,  AmpsandNn, SquoteNn,  LparNn,
+           RparNn,    AsterNn,   PlusNn,    CommaNn,   MinusNn,
+           DotNn,     SlashNn,   ColonNn,   SemicNn,   LessNn,
+           EqualNn,   GreaterNn, LetterNn,  UscoreNn,  DigitNn,
+           RadixNn,   IllDigNn,  HexLowNn,  HexUpNn;            !Special;
+%page
+
+      !*** switch used after operator keyword has been recognized ***;
+
+      switch OPTSW :=
+           ParserC,   ParserC,   SawSHORT,  ParserC,   ParserC,
+%      1     BOOL       CHAR       SHOR       INTG       REAL
+           SawLONG,   ParserC,   ParserC,   ParserC,   ParserC,
+%      6     LONG       REF        TEXT       VALU       LABE
+           ParserC,   ParserC,   ParserC,   SawEND,
+%     11     PROC       ARRA       ELSE       END
+           ParserC,   ParserC,   ParserC,   SawGO,
+%     15     EQV        EXTR       FOR        GO
+           ParserC,   SawHIDDEN, ParserC,   ParserC,
+%     19     GOTO       HIDD       IF         IMP
+           ParserC,   ParserC,   ParserC,   ParserC,   ParserC,
+%     23     IN         INNE       INSP       DO         IS
+           ParserC,   SawBEGIN,  ParserC,   ParserC,   ParserC,
+%     28     CLAS       BEGI       NAME       NEW        NOT
+           SawOR,     ParserC,
+%     33     OR         OTHW
+           ParserC,   ParserC,   SawPROTEC, ParserC,   ParserC,
+%     35     PRIO       DELA       PRTC       QUA        REAC
+           ParserC,   ParserC,   SawAND,    ParserC,   ParserC,
+%     40     AT         BEFO       AND        STEP       SWIT
+           ParserC,   ParserC,   ParserC,   SawTO,     ParserC,
+%     45     ACTV       THEN       THIS       TO         UNTIL
+           ParserC,   SawVIRTUA, ParserC,   ParserC,   ParserC,
+%     50     AFTR       VIRT       WHEN       WHIL       LT
+           ParserC,   ParserC,   ParserC,   ParserC,   ParserC,
+%     55     EQ         LE         GT         NE         GE
+           ExclamCc;
+%     60     COMN
+
+
+%+P   prior
+      procedure repopdout;
+      begin opt:=IROPD; call(parser); opt:=opd:=optx:=0 end;
+%page
+
+%  PUTIDENT and PUTCONST must be equivalent to the DEF-procs in COMMON
+%  - they are rewritten and duplicated here for efficiency reasons
+%  Note that 'current' is used to communicate the index back;
+
+
+%+P   prior
+      procedure PUTIDENT;
+      begin !*** note that 'identifier' sets lastid;
+            short integer ih;
+            short integer cp,cl;
+            ref(symbolbox) hashid;
+            text t;
+            t:-upcase(hashbuf.sub(1,hashpos)); ih:=0;
+%+Z !hash;  while t.more do ih:=ih+rank(t.getchar);
+%-Z !hash;  cp:=0; cl:=hashpos;
+%-Z !hash;  while cp<cl do begin ih:=ih+rank(loadchar(t,cp)); cp:=cp+1 end;
+            ih:=rem(ih,211);  hashid:-hashtab(ih);
+            if hashid==none then begin
+               hashtab(ih):-new identifier; goto SETV;
+            end
+            else begin
+      SCAN:     if symtab(rank(hashid.upx)).val(rank(hashid.lowx))<>t
+                then begin
+                   if hashid.next=/=none
+                   then begin hashid:-hashid.next; goto SCAN; end;
+                   hashid.next:-new identifier;
+      SETV:        symtab(symtabindex).val(sgrx):-copy(t);
+                   current:=hashindex;
+                end else current:=rank(hashid.upx)*256+rank(hashid.lowx);
+            end;
+            hashpos:=0;
+      end;
+
+
+%+P   prior
+      procedure PUTCONST; !*** note that constant sets 'lastconst';
+      begin ! exactly as PUTIDENT, except upcase and initial value of 'ih'
+              (the same string as id and const must have diff. index);
+            short integer ih;
+            short integer cp,cl;
+            ref(symbolbox) hashid;
+            text t;
+            t:-hashbuf.sub(1,hashpos);  ih:=53;
+%+Z !hash;  while t.more do ih:=ih+rank(t.getchar);
+%-Z !hash;  cp:=0; cl:=hashpos;
+%-Z !hash;  while cp<cl do begin ih:=ih+rank(loadchar(t,cp)); cp:=cp+1 end;
+            ih:=rem(ih,211);  hashid:-hashtab(ih);
+            if hashid==none then begin
+               hashtab(ih):-new constant; goto SETV;
+            end
+            else begin
+      SCAN:     if symtab(rank(hashid.upx)).val(rank(hashid.lowx))<>t
+                then begin
+                   if hashid.next=/=none
+                   then begin hashid:-hashid.next; goto SCAN; end;
+                   hashid.next:-new constant;
+      SETV:        symtab(symtabindex).val(sgrx):-copy(t);
+                   current:=hashindex;
+                end else current:=rank(hashid.upx)*256+rank(hashid.lowx);
+            end;
+            hashpos:=0;
+      end;
+%page
+%  The scanahead procedures ensure correct treatment of graphic/national chars
+
+%+P   prior
+      procedure ScanPastFormat;  !NB - don't call from (end-) comment-scan;
+      begin
+      SCAN: while InputClass(isorank(symbol))<=Format_cl do
+                  if linepos<linelength then scanahead else detach;
+            if symbol='!' then begin ScanComment; goto SCAN end;
+      end;
+
+%+P   prior
+      procedure scanahead;
+      begin character I_cl;
+      SCAN:
+%+Z         symbol:=line.getchar;
+%-Z         symbol:=loadchar(line,linepos);
+            linepos:=linepos+1;
+            if InputClass(isorank(symbol))<Format_cl then begin
+               if linepos<linelength then begin
+                  I_cl:=InputClass(isorank(symbol));
+                  if I_cl=Illegal_cl then scanwarn(206) else
+                  if I_cl<Skip_cl then begin !graphic;
+                     if scanningstring then goto EXIT; scanwarn(206) end;
+                  goto SCAN;
+               end;
+            end;
+EXIT: end;
+
+%+P   prior
+      procedure ScanIdent(sym,eqopt);
+      short integer sym, eqopt;
+      begin
+      SCAN: current:=0; ScanPastFormat;
+            startpos:=linepos;
+            if InputClass(isorank(symbol))=Letter_cl then begin
+%+Z            hashbuf.setpos(1);
+               hashpos:=0;
+               while InputClass(isorank(symbol)) >= Letter_cl do begin
+%+Z               hashbuf.putchar(symbol);
+%-Z               storechar(symbol,hashbuf,hashpos);
+                  hashpos:=hashpos+1; scanahead;
+               end;
+               PUTIDENT;
+               if current=sym then begin current:=0;
+                  if eqopt<>0 then opt:=eqopt; goto ParserC end;
+               if current=ICOMN then begin
+                  ScanComment; goto SCAN end;
+            end;
+            if eqopt<>0 then goto SawKW;
+      end;
+
+%+P   prior
+      procedure LookFor(ch,equal,notequal);
+      character ch; short integer equal,notequal;
+      begin scanahead;
+            if ch = symbol then begin opt:=   equal; goto READ_ParserC end;
+            if notequal<>0 then begin opt:=notequal; goto      ParserC end;
+      end;
+%page
+
+%+P   prior
+      procedure ScanComment; !*** scan past comments ***;
+      begin
+         while symbol<>';' do
+            if linepos<linelength then begin
+%+Z            symbol:=line.getchar;
+%-Z            symbol:=loadchar(line,linepos);
+               linepos:=linepos+1;
+            end else detach;
+%+Z      symbol:=line.getchar;
+%-Z      symbol:=loadchar(line,linepos);
+         linepos:=linepos+1;
+      end;
+
+%+P   prior
+      procedure ISOcode; !scan isocoded char, and return result;
+                         !symbol='!' at entry;
+      begin short integer oldpos;
+%+P         prior
+            procedure scancode;
+            begin
+               scanahead;
+               if symbol='!' then goto CODE;
+               if InputClass(isorank(symbol))<>Digit_cl then goto NOCODE;
+               i := isorank(symbol)-isorank('0')+10*i;
+               if i>255 then goto NOCODE;
+            end;
+            oldpos:=linepos;
+            scanahead;
+            if InputClass(isorank(symbol))=Digit_cl then begin
+               i:=isorank(symbol)-isorank('0'); !NB - max 3 digits: ;
+               scancode; scancode; scancode end;
+            goto NOCODE;
+   CODE:    if i<256 then symbol := isochar(i) else begin
+   NOCODE:     symbol:='!';
+%+Z            line.setpos(oldpos+1);
+               linepos:=oldpos;
+            end
+      end;
+
+%+P   prior
+      procedure ampersand;
+      begin
+            if optx<>0 then repopdout; optx:=IREAL; skipzeroes:=true;
+%+Z         hashbuf.setpos(1); hashbuf.putchar('&');
+%-Z         storechar('&',hashbuf,0);
+            hashpos:=startpos:=ampcount:=1;
+      end;
+
+%+P   prior
+      procedure ResetRadix10; !reset poss. illegal digits and radix;
+            if radix<>10 then begin
+               for i:=48 step 1 until 57  do InputClass(i):=Digit_cl;
+               for i:=65 step 1 until 70  do InputClass(i):=Letter_cl;
+               for i:=97 step 1 until 102 do InputClass(i):=Letter_cl;
+               radix:=10;
+            end;
+
+%+P   prior
+      procedure MaybeInsertZero(skip); boolean skip;
+      begin if hashpos=startpos then begin
+%+Z            hashbuf.putchar('0');
+%-Z            storechar('0',hashbuf,hashpos);
+               hashpos:=hashpos+1;
+            end;
+            skipzeroes:=skip
+      end;
+
+%     ******************   MAIN PROGRAM START   ************************
+
+      goto Rstart;   !*** i.e. detach and initialise ***;
+%title ******   RECOGNIZER:  O u t e r  L o o p   ******
+
+            !*** operator found, call parser;
+
+ READ_ParserC:
+%+Z         symbol:=line.getchar;
+%-Z         symbol:=loadchar(line,linepos);
+            linepos:=linepos+1;
+ ParserC:
+            call(parser); opt:=opd:=optx:=0;
+ ASSESS:                               !*** from after-end scan or error;
+            optpos  := linepos;
+            goto Q(isorank(InputClass(isorank(symbol))));
+
+
+            !*** operand found, continue scan;
+ OPERAND_0:                            !*** from charconst;
+%+Z         symbol:=line.getchar;
+%-Z         symbol:=loadchar(line,linepos);
+            linepos:=linepos+1;
+ OPERAND_1: opdline := linenr;         !*** from number and ident;
+ OPERAND_2: opdpos  := optpos;         !*** from string;
+            optpos  := linepos;
+            goto Q(isorank(InputClass(isorank(symbol))));
+
+
+ SawKW:     !*** here from lookahead in vain after special keyword;
+            call(parser); opt:=opd:=optx:=0;
+            optpos:=startpos;
+            if current<>0 then goto IdentifierFound;
+            goto Q(isorank(InputClass(isorank(symbol))));
+
+ EOLcc:
+            if linepos>=linelength then begin ! - else illegal BEL in source;
+ Rstart:       detach; goto ASSESS end;  ! detach used here on outermost level;
+
+ GraphicCc:
+ IllegalCc: scanwarn(206); goto FormatCc;
+
+
+ ExclamCc:  !*** 'comment' or exclamation mark;
+            ScanComment; goto ASSESS;
+ SkipCc:
+ FormatCc:
+%+Z         symbol:=line.getchar;
+%-Z         symbol:=loadchar(line,linepos);
+            linepos:=linepos+1;
+            goto ASSESS;
+
+ UscoreCc:
+%+Z         if xidstart then goto LetterCc else
+            goto IllegalCc;
+
+%title ******   RECOGNIZER:  I d e n t i f i e r   ******;
+%     *** Identifier scan MUST terminate with a call of PUTIDENT
+
+ LetterCc:                     !  Identifier scan - first character;
+%+Z         hashbuf.setpos(1);
+            hashpos:=0;
+ UscoreIi:
+ DigitIi:
+ LetterIi:
+%+Z         hashbuf.putchar(symbol);
+%-Z         storechar(symbol,hashbuf,hashpos);
+            hashpos:=hashpos+1;
+ SkipIi:
+%+Z         symbol:=line.getchar;
+%-Z         symbol:=loadchar(line,linepos);
+            linepos:=linepos+1;
+            goto IDSW(isorank(InputClass(isorank(symbol))));
+
+ GraphicIi:
+ IllegalIi: scanwarn(206); goto SkipIi;
+
+            !***  Identifier terminator ***;
+
+ FormatIi: ExclamIi: DquoteIi: AmpsandIi: SquoteIi: LparIi:  RparIi:
+ AsterIi:  PlusIi:   CommaIi:  MinusIi:   DotIi:    SlashIi: ColonIi:
+ SemicIi:  LessIi:   EqualIi:  GreaterIi: EOLIi:
+
+            PUTIDENT;
+ IdAfterString:
+ IdentifierFound:
+%+M         inspect MNE.display(current)
+%+M            when macro do parser:-new macro_scanner(parser,npar,fst)
+%+M            when mnemonic do begin
+%+M                 inspect fst
+%+M                    when macro_opd do begin
+%+M                         if optx<>0 then repopdout;
+%+M                         opd:=val; optx:=type; goto OPERAND_1 end
+%+M                    when macro_opt do begin opt:=val; goto ParserC end
+%+M            end;
+            if current > ICOMN then                      !*** operand:   ;
+            begin if optx<>0 then repopdout;
+                  optx:=     if current>IFALS then INOTY !*** identifier;
+                        else if current=INOTE then ITEXT
+                        else if current=INONE then IREF else IBOOL;
+                  opd:=current;
+                  goto OPERAND_1;
+            end;
+
+            opt:=current;      !*** operator:  ;
+            goto OPTSW(opt);
+%title ******   RECOGNIZER:  S p e c i a l  k e y w o r d   ******
+
+SawAND:
+!%+Z !TEMP?; if line.length>=linepos+5 then begin
+!%+Z !TEMP?;    if upcase(copy(line.sub(linepos,6)))="!THEN;" then begin
+!%+Z !TEMP?;       line.setpos(linepos+6); symbol:=line.getchar;
+!%+Z !TEMP?;       linepos:=linepos+6; opt:=ICAND; goto ParserC end end;
+            ScanIdent(ITHEN,ICAND);
+
+SawBEGIN:   maxnumoftags:=maxnumoftags+1; goto ParserC;
+
+SawGO:      opt:=IGOTO; ScanIdent(ITO,0);
+            scanwarn(218); goto SawKW;
+
+SawHIDDEN:  ScanIdent(IPRTC,IPRHI);
+
+SawLONG:    ScanIdent(IREAL,0);
+            scanwarn(215); goto SawKW;
+
+SawOR:
+!%+Z !TEMP?; if line.length>=linepos+5 then begin
+!%+Z !TEMP?;    if upcase(copy(line.sub(linepos,6)))="!ELSE;" then begin
+!%+Z !TEMP?;       line.setpos(linepos+6); symbol:=line.getchar;
+!%+Z !TEMP?;       linepos:=linepos+6; opt:=ICOR; goto ParserC end end;
+            ScanIdent(IELSE,ICOR);
+
+SawPROTEC:  ScanIdent(IHIDD,IPRHI);
+
+SawSHORT:   ScanIdent(IINTG,0);
+            scanwarn(214); goto SawKW;
+
+SawTO:      scanerr(213);  goto ASSESS;
+
+SawVIRTUA:  ScanPastFormat;
+            if symbol=':' then goto READ_ParserC;
+            scanerr(217); goto ParserC;
+
+
+ SawEND:
+%+M         if curbl.level>=maxnumoftags then curbl.release;
+            maxnumoftags:=maxnumoftags-1;
+            call(parser); opt:=opd:=optx:=0;
+
+ FindEnd:   !*** scan until semic or SP - if SP then check for keyword;
+            while InputClass(isorank(symbol))<>Letter_cl do begin
+                  if symbol=';' then begin
+                     opt:=ISMCL; optpos:=linepos;
+%+Z                  symbol:=line.getchar;
+%-Z                  symbol:=loadchar(line,linepos);
+                     linepos:=linepos+1; goto TESTENDCOUNT;
+                  end;
+                  if linepos<linelength then scanahead else detach;
+            end;
+
+            optpos:=linepos;  !*** get following special keyword (if any);
+%+Z         hashbuf.setpos(1);
+            hashpos:=0;
+            while InputClass(isorank(symbol))>=Letter_cl do begin
+%+Z               hashbuf.putchar(symbol);
+%-Z               storechar(symbol,hashbuf,hashpos);
+                  hashpos:=hashpos+1; scanahead;
+            end;
+
+            !*** see whether it is a terminating keyword;
+            tempt:-upcase(hashbuf.sub(1,hashpos));
+            opt:=if tempt="END"       then IEND  else
+                 if tempt="ELSE"      then IELSE else
+                 if tempt="WHEN"      then IWHEN else
+                 if tempt="OTHERWISE" then IOTHW else 0;
+            if opt=0 then goto FindEnd;
+ TESTENDCOUNT:
+            if maxnumoftags=0 then begin !*** signif. text after final end;
+               if opt=ISMCL then detach; !semicolon is ok - once;
+               scanwarn(264); while true do detach; !skip to EOF;
+            end;
+            if opt=IEND then goto SawEND; goto ParserC;
+
+%title ******   RECOGNIZER:  N u m b e r   ******
+%     *** Number scan MUST terminate at NTER ***
+
+ DigitCc:   !***  first digit of number ***;
+            if optx<>0 then repopdout;
+%+Z         hashbuf.setpos(1);
+            hashpos:=0; skipzeroes:=true;
+            optx:=IINTG; ! assume integer;
+   USNUMB:  startpos:=hashpos; ResetRadix10;
+            InputClass(82):=InputClass(114):=Radix_cl; !turn on radix poss.;
+ DigitNn:   if skipzeroes then begin
+               if symbol='0' then goto SkipNn;
+               skipzeroes:=false end;
+%+Z         hashbuf.putchar(symbol);
+%-Z         storechar(symbol,hashbuf,hashpos);
+            hashpos:=hashpos+1;
+ SkipNn:
+ UscoreNn:
+%+Z         symbol:=line.getchar;
+%-Z         symbol:=loadchar(line,linepos);
+            linepos:=linepos+1;
+            goto NUMSW(isorank(InputClass(isorank(symbol))));
+
+ DotNn:     !*** dot found;
+            if optx = IINTG then begin !must be first dot;
+               scanahead;
+   NDOT1:      MaybeInsertZero(false);
+%+Z            hashbuf.putchar('.');
+%-Z            storechar('.',hashbuf,hashpos);
+               hashpos:=hashpos+1; optx := IREAL;
+               if InputClass(isorank(symbol))=Digit_cl then goto USNUMB;
+               goto ERRNUMCONST;
+            end;
+            goto NTER; !second dot - terminate;
+
+ AmpsandNn: !*** ampersand found;
+            MaybeInsertZero(true);
+            if ampcount=0 then begin
+%+Z               hashbuf.putchar('&');
+%-Z               storechar('&',hashbuf,hashpos);
+                  hashpos:=hashpos+1;
+            end
+       else if ampcount>=2 then goto ERRNUMCONST;
+            ampcount := ampcount+1;
+   NAMP2:   optx := if ampcount=1 then IREAL else ILONG;
+            scanahead;
+            if symbol = '&' then goto AmpsandNn;
+            if symbol='-' or!else; symbol='+' then begin
+   NAMPS:      if symbol='-' then begin
+%+Z               hashbuf.putchar(symbol);
+%-Z               storechar(symbol,hashbuf,hashpos);
+                  hashpos:=hashpos+1;
+               end;
+               scanahead;
+            end;
+            skipzeroes:=true;
+            if InputClass(isorank(symbol))=Digit_cl then goto USNUMB;
+            goto ERRNUMCONST;
+
+ HexLowNn:  symbol:=isochar(isorank(symbol)-upcorr);
+ HexUpNn:   ! if radix=16 then;   goto DigitNn;
+
+ IllDigNn:  !*** digit higher than radix (radix 2, 4 or 8) ***;
+            ScanWarn(219); symbol:='0'; goto DigitNn;
+
+ IllegalNn:
+ GraphicNn: scanwarn(206); goto SkipNn;
+
+ ERRNUMCONST:
+%+Z         hashbuf.putchar('0'); ! - to ensure a valid constant later;
+%-Z         storechar('0',hashbuf,hashpos);
+            hashpos:=hashpos+1;
+            scanerr(201); !invalid numerical constant;
+            while InputClass(isorank(symbol))=Digit_cl or!else;
+                  symbol='&' or!else; symbol='.'
+               do scanahead;
+
+%       **********  Number scan Terminators  *************
+
+ FormatNn:  ExclamNn:  DquoteNn:  SquoteNn:  LparNn:    RparNn:
+ AsterNn:   PlusNn:    CommaNn:   MinusNn:   SlashNn:   ColonNn:
+ SemicNn:   LessNn:    EqualNn:   GreaterNn: LetterNn:  EOLNn:
+
+ NTER:      MaybeInsertZero(false); PUTCONST; opd:=current;
+            ampcount:=0; ResetRadix10;
+            InputClass(82):=InputClass(114):=Letter_cl; !turn off radix poss.;
+            goto OPERAND_1;
+
+ RadixNn:   !*** r, R - maybe radix signal;
+            MaybeInsertZero(skipzeroes);
+            i:=hashpos-startpos; if i<=0 or i>2 then goto NTER;
+            i:=hashbuf.sub(startpos+1,i).getint;
+            if i=2 or i=4 or i=8 then begin radix:=i;
+               for i:=radix step 1 until 9
+                do InputClass(i+isorank('0')):=IllDig_cl end
+       else if i=16 then begin radix:=i;
+               for i:=65 step 1 until 70  do InputClass(i):=HexUp_cl;
+               for i:=97 step 1 until 102 do InputClass(i):=HexLow_cl end
+            else goto NTER;
+            InputClass(82):=InputClass(114):=Letter_cl; !turn off radix poss.;
+            symbol:='R'; goto DigitNn;
+%title ******   RECOGNIZER:  O p e r a t o r s   ******
+
+PlusCc:  opt:=IPLUS; goto READ_ParserC;
+MinusCc:
+         scanahead; if symbol='-' then goto Rstart;
+         opt:=IMINU; goto ParserC;
+CommaCc: opt:=ICOMA; goto READ_ParserC;
+SemicCc: opt:=ISMCL; goto READ_ParserC;
+LparCc:  opt:=ILFPA; goto READ_ParserC;
+RparCc:  opt:=IRGPA; goto READ_ParserC;
+
+AmpsandCc:
+         scanahead;
+         if InputClass(isorank(symbol))=Digit_cl then begin !*** digit follows;
+            ampersand; goto DigitNn; end;
+         if symbol='-' or!else; symbol='+' then begin      !*** sign follows;
+            ampersand; goto NAMPS; end;
+         if symbol='&' then begin                           !*** double &&;
+            ampersand; goto AmpsandNn end;
+         opt := ICONC;  goto ParserC;                   !*** text conc.;
+
+AsterCc: LookFor('*',IPOWE,IMULT);
+
+SlashCc: LookFor('/',IIDIV,ISLAS);
+
+GreaterCc: LookFor('=',IGE,IGT);
+
+LessCc:  LookFor('>',INE,0);
+         if symbol='=' then begin opt:=ILE; goto READ_ParserC end;
+         opt:=ILT; goto ParserC;
+
+ColonCc: LookFor('=',IASSG,0);
+         if symbol='-' then begin opt:=IDENO; goto READ_ParserC end;
+         opt:=ICL; goto ParserC;
+
+DotCc:   scanahead;
+         if InputClass(isorank(symbol))=Digit_cl then begin
+            if optx<>0 then repopdout;
+%+Z         hashbuf.setpos(1);
+            hashpos:=0; goto NDOT1;
+         end;
+         opt := IDOT; goto ParserC;
+
+EqualCc: LookFor('=',IRFEQ,0);
+         if symbol='/' then begin
+            LookFor('=',IRFNE,0);
+            scanwarn(202); opt:=IRFNE end
+         else opt:=IEQ;
+         goto ParserC;
+%title ******   RECOGNIZER:  C h a r a c t e r  and  S t r i n g   ******
+
+SquoteCc:   if optx<>0 then repopdout;
+            scanningstring:=true; scanahead;
+            if symbol=EOL then begin scanerr(203); goto EOLCc end;
+            if symbol='!' then ISOcode;
+            opd:=isorank(symbol); optx:=ICHAR; scanahead; scanningstring:=false;
+            if symbol=''' then goto OPERAND_0; !*** simple character constant;
+            scanwarn(204); goto OPERAND_1;
+
+
+DquoteCc:   if optx<>0 then repopdout;
+%+Z         hashbuf.setpos(1);
+            hashpos:=0; opdline := linenr; !this operand may extend over lines;
+
+QUOTE:      scanningstring:=true;
+            startpos:=linepos;  i:=hashpos;
+  QREP1:    scanahead;
+            if symbol=EOL then begin
+               !*** insert missing quote after rpar, semic or EOL ***;
+%+Z            line.setpos(startpos+1); hashbuf.setpos(i+1); ! backup scanner;
+               linepos:=startpos;      hashpos:=i;
+               while linepos<linelength do begin
+                     scanahead;
+                     if symbol=')' or symbol=';' then goto QWARN;
+                     hashpos:=hashpos+1;
+               end;
+  QWARN:       scanwarn(205);
+%+Z            hashbuf.setpos(hashpos+1);
+               if linepos<linelength then goto QEXIT else goto QCONC;
+            end
+       else if symbol<>'"' then begin
+               if symbol='!' then ISOcode;
+%+Z            hashbuf.putchar(symbol);
+%-Z            storechar(symbol,hashbuf,hashpos);
+               hashpos:=hashpos+1; goto QREP1
+            end;
+            scanningstring:=false; scanahead;
+            if symbol='"' then begin
+%+Z            hashbuf.putchar('"');
+%-Z            storechar('"',hashbuf,hashpos);
+               hashpos:=hashpos+1; goto QUOTE end;
+
+ QCONC:     ScanPastFormat;
+            if symbol='"' then begin !*** concatenate;
+               i:=hashpos;
+               if hashbuf.length-i<signiflength then begin
+%                 *** extend buffer to hold longest possible string ***
+                  hashbuf:-conc(hashbuf,blanks(signiflength));
+%+Z               hashbuf.setpos(i+1);
+               end;
+               goto QUOTE
+            end;
+
+QEXIT:      if hashpos=0 then opd:=INOTE !empty string==notext;
+            else begin  PUTCONST; opd:=current end;
+            optx:=ITEXT; goto OPERAND_2;
+
+end; ! of recognizer;
+% end; ! error error error TEST ;
+
+%title ***   C l a s s   SourceElt   ***
+
+class SourceElt(fname,imlength,inserted);
+      text fname;            ! source file file name;
+      short integer imlength;! source file image length;
+      boolean inserted;      ! true if this module is INSERT'ed;
+begin boolean liston;        ! stacked listing flag;
+      short integer sflength;! stacked signiflength of this file;
+      ref(infile) sf;        ! actual source file;
+      ref(SourceElt) prev;   ! stack link for inserted modules;
+
+%+P   prior
+      procedure close;
+      begin if fname <> "SYSIN" then sf.close;  !*** never close sysin;
+            inspect prev do begin
+               sourcefile:-sf; listingon:=liston; signiflength:=sflength;
+               incrlnr:=not inserted end;
+            cursource:-prev;
+      end close;
+
+      inspect cursource do begin
+            liston:=listingon; sflength:=signiflength end;
+      if fname <> "SYSIN" then begin
+            sf:-new infile(fname);
+            if not sf.open(blanks(imlength)) then openerror(fname)
+      end else begin
+            sf:-sysin; sf.image:-blanks(imlength)
+      end;
+      prev:-cursource; sourcefile:-sf;
+      if inserted then incrlnr:=listingon:=false;
+end SourceElt;
+
+boolean incrlnr;             ! true if current module is not inserted;
+ref(SourceElt) cursource;
+ref(infile) sourcefile;
+
+%title ***   P A S S  1 :  directive   ***
+
+integer procedure Pass1(L2name);  text L2name;
+begin ! the main program reading and treating full program lines;
+      ! return number of lines read;
+      character c;
+      short integer listlength;
+      short integer maxsourcelength;
+      short integer i,j;
+      text listname;
+      text curtitle;
+      text t;
+%+M   text terminator;
+      boolean array selector(0:255);
+
+%+P   prior
+      procedure directive;
+      begin character c; short integer i; text t,u;
+
+% +P         prior
+            text procedure linefield;
+            begin short integer i;
+                  while line.pos<line.length do
+                     if line.getchar <> ' ' then goto L1;
+                  if u="SELECT" then goto RESETSEL; !linefield=notext is ok;
+                  goto DIRWARN; !otherwise, notext not allowed;
+              L1: i:=line.pos-1;
+                  while line.more do if line.getchar=' ' then
+                  begin line.setpos(line.pos-1); goto L2 end;
+              L2: linefield:-copy(line.sub(i,line.pos-i));
+            E:end;
+
+%+P         prior
+            procedure addoption(c); character c;
+            begin text t;
+                  if not xoption(c) then begin
+                     t:-blanks(feoptions.length+1); t:=feoptions;
+                     t.sub(t.length,1).putchar(c); feoptions:-t;
+                  end;
+            end;
+
+%+P         prior
+            procedure removeoption(c); character c;
+            begin text t; character d;
+                  if xoption(c) then begin
+                     t:-feoptions; feoptions.setpos(1); t.setpos(1);
+                     while feoptions.more do begin
+                           d:=feoptions.getchar;
+                           if d <> c then t.putchar(d);
+                     end;
+                     feoptions:-copy(t.sub(1,t.pos-1));
+                  end;
+            end;
+
+  REP:      line.setpos(2); !pos(1)='%';
+            c:=line.getchar; if c=' ' then goto SKIPLINE;
+            if c='+' then
+  SELPLUS:  begin for c:=line.getchar while letter(c) do
+                  if not selector(isorank(c)) then goto SKIPLINE;
+                  if c='-' then goto SELMINUS; goto SELECTED;
+            end;
+
+            if c='-' then
+  SELMINUS: begin for c:=line.getchar while letter(c) do
+                  if selector(isorank(c)) then goto SKIPLINE;
+                  if c='+' then goto SELPLUS;
+  SELECTED:       while c=' ' do
+                        if line.more then c:=line.getchar
+                        else goto SKIPLINE;
+                  line:-line.sub(line.pos-1,line.length-line.pos+2);
+                  ! remove selection part from line and scan remainder;
+                  if c='%' then goto REP; goto DELIVERLINE;
+            end;
+
+            while line.getchar <> ' ' do;
+            u:-upcase(copy(line.sub(2,line.pos-3)));
+
+            if u="TITLE" then begin
+                  curtitle:-if line.length<=7 then notext
+                            else copy(line.sub(8,line.length-7));
+                  goto PG;
+            end;
+
+            if u="PAGE" then begin
+  PG:             if listingon then inspect listfile do begin
+                        eject(1); outtext("SIMULA "); outtext(datetime);
+                        outtext(curtitle); outimage; outimage; outimage;
+                  end;
+            end
+       else if u="COPY" or u="INSERT" then begin
+                  t:-linefield;
+                  cursource:-new SourceElt(t,cursource.imlength,u="INSERT");
+            end
+       else if u="SETOPT" then begin
+                  short integer i; character c,d;
+                  line.setpos(8);
+                  while line.more do
+                  begin c:=line.getchar;
+                        if c='+' or c='-' then
+                        begin while line.more do
+                              begin d:=line.getchar;
+                                    if d=' ' then goto endpack;
+                                    if c='+' then addoption(d)
+                                    else removeoption(d);
+                              end;
+                        end
+                   else if c <> ' ' then
+                        begin i:=line.pos-1;
+                              while line.more do
+                              if line.getchar=' ' then
+                              begin line.setpos(line.pos-1); goto E end;
+                           E: feoptions:-copy(line.sub(i,line.pos-i));
+                        end;
+         endpack: end;
+                  setoptions; opn:=IGO; call(coder);
+            end
+       else if u="DEFINITION" then begin recomp:=false; definition:=true end
+       else if u="IMPLEMENTATION" then begin recomp:=true;definition:=false end
+       else if u="SOURCE" then    listingon:=listfile=/=none
+       else if u="NOSOURCE" then  listingon:=false
+       else if u="LIST" then
+            begin t:-linefield; t:-upcase(t);
+                  if t="ON" then       listingon:=listfile=/=none
+                  else if t="OFF" then listingon:=false
+                  else goto DIRWARN;
+            end
+       else if u="SETSWITCH" then
+            begin t:-linefield;
+                  if not digit(t.getchar) !or t.length>3; then goto DIRWARN;
+                  inspect coder when L2coder do begin
+                     cswa:=t.getint; if cswa>255 or cswa<0 then goto DIRWARN;
+                     t:-linefield;
+                     if not digit(t.getchar) !or t.length>3; then goto DIRWARN;
+                     cswb:=t.getint; if cswb>255 or cswb<0 then goto DIRWARN;
+                  end;
+                  opn:=ISSWA; call(coder);
+                  !*** scanner and parser are bypassed;
+            end
+       else if u="SLENGTH" then
+            begin t:-linefield;
+                  if not digit(t.getchar) then goto DIRWARN;
+                  i:=t.getint;
+                  if i>maxsourcelength then scanwarn(208)
+                  else signiflength:=i;
+            end
+       else if u="SELECT" then
+            begin t:-linefield;
+       RESETSEL:  for i:= 1 step 1 until 255 do selector(i):=false;
+                  while t.more do selector(isorank(t.getchar)):=true;
+            end
+%+M    else if u="DEFINE" then begin
+%+M         parser:-new macro_parser(parser,false);
+%+M         line:-line.sub(9,line.length-8); goto DELIVERLINE; end
+%+M    else if u="MACRO"  then begin
+%+M         parser:-new macro_parser(parser,true);
+%+M         line:-line.sub(8,line.length-7); goto DELIVERLINE; end
+%+M    else if u="ENDMACRO" then begin
+%+M               inspect parser when macro_parser do begin
+%+M                       terminate;
+%+M                       symbol:=';'; line:-terminator;
+%+M                       call(scanner); !to terminate possible END-comment;
+%+M               end otherwise goto DIRWARN;
+%+M         end
+       else begin
+               if u="BOUNDCHECK" or!else; u="NONECHECK" or!else;
+                  u="QUACHECK" or!else; u="REUSE" or!else; u="SPORT"
+               then begin
+                  t:-linefield; t:-upcase(t);
+                  if t="ON" then  coder qua L2coder.cswb:=1 else
+                  if t="OFF" then coder qua L2coder.cswb:=0
+                  else goto DIRWARN;
+                  if u="SPORT" then SportOK:= t="ON";
+                  coder qua L2coder.cswa:= if u="BOUNDCHECK" then 256
+                                      else if u= "NONECHECK" then 257
+                                      else if u=  "QUACHECK" then 258
+                                      else if u=     "REUSE" then 259 else 260;
+               end else begin
+  PASS2DIR:       coder qua L2coder.cswa:=987; ! Signals unknown directive;
+                  DEFCONST(line.strip); coder qua L2coder.cswb:=HASHINDEX;
+               end;
+               opn:=ISSWA; call(coder);
+            end;
+            goto SKIPLINE;
+  DIRWARN:        ScanWarn(209); goto EXIT;
+  DELIVERLINE:    linelength:=line.length;
+                  if linelength>0 then begin
+                     line:-line.main.sub(line.start,linelength+1);
+                     line.setpos(linelength+1); line.putchar(EOL);
+                     line.setpos(1); symbol:=line.getchar;
+                  end else
+  SKIPLINE: symbol:='%';  ! mark empty line;
+  EXIT:
+      end directive;
+%title ******   P A S S 1:  I n i t i a l i z a t i o n s   ******
+
+%+M   terminator:-"!7!";   !*** BELL as string    - same char as EOL;
+
+%      ******   Set selection switches and FEC-options   ******
+
+      feoptions:-t:-gettextinfo(16); t.setpos(1);
+      while t.more do if t.getchar=':' then
+      begin if t.more then
+            feoptions:-copy(t.sub(t.pos,t.length-t.pos+1))
+            else feoptions:-notext;
+            t.setpos(1); selector(isorank(' ')):=true;
+            for c:=t.getchar while c <> ':' do selector(isorank(c)):=true;
+      end;
+      setoptions;
+
+%      *********  Open source file  *********
+
+      maxsourcelength:=2*getintinfo(8); !NB;
+      signiflength:=getintinfo(20);    ! - of source input;
+      cursource:-new SourceElt(gettextinfo(1),maxsourcelength,false);
+      incrlnr:=true;
+
+%      ********* Open listing file ***********
+
+      listname:-gettextinfo(2);  listlength:=sysout.image.length;
+      if listname=/=notext then begin
+         if listname="SYSOUT" then listfile:-sysout
+         else begin listfile:-new printfile(listname);
+              if not listfile.open(blanks(getintinfo(7))) then begin
+                 listfile:-none;
+                 GiveMessage(0,1,cat(catXT(287,listname),
+                                     errcat(288,289)));
+              end
+              else listlength:=listfile.image.length;
+         end;
+      end;
+      listingon:=listfile=/=none;
+%page
+%      *********  Open L2 output file  **********
+
+      L2OUPT:-new outbytefile(L2NAME);
+      if not L2OUPT.open then begin
+            L2OUPT:-none;
+            GiveMessage(0,2,cat(catXT(295,L2name),errcat(288,296)));
+      end;
+
+%+M   MNE:-new MNEdisplay(maxid); ! generate macro/constant display;
+%+M   curbl:-new MNEblock;        ! outermost constant/MNE block;
+
+%title ******   P A S S 1:    M a i n   L o o p   ******
+
+      while true do begin
+NEXTIMAGE:  sourcefile.inrecord;
+            if sourcefile.endfile then begin
+               cursource.close; if cursource==none then goto EPASS1;
+               goto NEXTIMAGE;
+            end;
+            linelength:=sourcefile.image.pos-1;
+            if incrlnr then linenr:=linenr+1;
+            listpart:-sourcefile.image.sub(1,
+                    if linelength<listlength then linelength else listlength);
+            if linelength>signiflength then linelength:=signiflength;
+            if listingon then inspect listfile do begin
+                  outint(linenr,5); outtext(":  "); outtext(listpart);
+                  outimage;
+            end;
+            if linelength>0 then begin
+                  line:-sourcefile.image.sub(1,linelength+1);
+%+Z               symbol:=line.getchar;
+%-Z               symbol:=loadchar(line,0);
+                  if symbol='%' then begin
+                     if linelength>1 then begin
+%+Z                     if line.getchar<>' '     then begin
+%-Z                     if loadchar(line,1)<>' ' then begin
+                           sourcefile.image.putchar(' '); !set blank at end;
+                           directive;
+                           !*** sets line, symbol, line.last and linelength;
+                     end end;
+                     if symbol='%' then goto NEXTIMAGE;
+                  end else sourcefile.image.putchar(EOL);
+                  line:-line.sub(2,linelength);  linepos:=0;
+                  ! NOTE: line.pos AFTER read = image.pos BEFORE read;
+                  call(scanner);
+            end;  !else skip empty line/line processed by 'directive';
+      end of source input read loop;
+%title ******   P A S S 1:    T e r m i n a t e   ******
+
+EPASS1:
+      Pass1:= linenr;
+      line:-copy("Warn.: Missing END inserted");
+      listpart:-"-- after Source End-of-File --";
+      numwarnfound:=numwarnfound+maxnumoftags;
+      while maxnumoftags>0 do begin
+            if listfile =/= none then begin
+               listfile.outtext(line); listfile.outimage; end;
+            if listfile =/= sysout then begin
+               outtext(line); outimage end;
+            opt:=IEND; call(parser); opd:=optx:=0;
+            maxnumoftags:=maxnumoftags-1;
+      end;
+      opt:=IEOP; call(parser); !*** Scanner is bypassed;
+
+      ClosePass1;
+      if Ooption then
+      begin outimage; outtext("*** END PASS 1 *** Number of lines:");
+            outint(linenr,5);
+            !*** output time used and GC-count also;
+            outimage;
+      end;
+
+end   ******  PASS 1  ******;
+
+
+      procedure ClosePass1;
+      begin while cursource=/=none do cursource.close;
+            if listfile=/=none and!then; listfile=/=sysout then listfile.close;
+            scanner:-parser:-coder:-none;
+%+M         curbl:-none; MNE:-none;
+            if L2OUPT=/=none then begin L2OUPT.close; L2OUPT:-none end;
+      end;
+%title ***  L 2 C O D E R  ***
+
+      component class L2Coder;
+      begin character ctype,ckind;
+            short integer cswa,cswb; ! parameters to setswitch directive;
+            short integer cqual;
+            short integer dimcount;
+            short integer language;
+            short integer iii,jjj; ! working variables;
+            integer lastlinenr;
+            ref(quant)firstarr;
+            ref(brec)cbrec,xbrec;
+            ref(quant)cquant,vquant,xquant;
+            ref(quant)p_or_c_qt;
+%                  ! xbrec and xquant are utility variables used within
+%                    one active phase of the L2Coder.  They never
+%                    carry information from one phase to another.
+%                    p_or_c_qt is used to reference the current
+%                    procedure or class quant during treatment of its
+%                    declaration.  It carries significant information
+%                    from one active phase to another in the special
+%                    case where ="..." is allowed after all declaring
+%                    occurencies of identifiers.
+%                    See LIDCLP, LIDCLC and LIEXNM ;
+
+            ref(hidpack)cvispack;
+
+%+P         prior
+            procedure brecinit(breckind); short integer breckind;
+            inspect new brec(char(breckind)) do begin
+                    line1:=linenr;
+                    fpar:-new quant(' ',' ',0,char(INEWP)); !*** Dummy!;
+                    blno:=nextblno; nextblno:=nextblno+1;
+                    if blno>maxblno then cannotproceed(553);!blno overflow;
+                    this brec.prev:-cbrec; cbrec:-bltab(blno):-this brec;
+                    cquant:-fpar;
+            end ***brecinit***;
+
+%+P         prior
+            procedure brecterm(b); ref(brec)b;
+            begin short integer i,nhid; ref(hidpack) fvis,x;
+                  boolean notok,locals;
+                  ref(quant) pq;
+              inspect b do begin
+                  fpar:-fpar.next;
+                  if cbrec.prev==none then begin cquant:-none; cbrec:-none end
+             else begin cbrec:-cbrec.prev; cquant:-cbrec.fpar;
+                        while cquant.next=/=none do cquant:-cquant.next;
+                  end;
+                  ! not used: line2:=linenr;
+                  fvis:-fvispack; nhid:=0; x:-none;
+                  while fvis=/=none do begin
+                     if fvis is protpack then begin
+                     !*** mark corresponding quant and delete pack ***;
+                        i:=fvis.ident; locals:=notok:=true;
+                        for pq:-fvirt, fpar do begin locals:=not locals;
+                            while pq=/=none do begin
+                                  if pq.ident=i and not pq.protect then begin
+                                     pq.protect:=true;
+                                     if locals then goto FOUND;
+                                     ! if virtual then mark local match too;
+                                     notok:=false end;
+                                  pq:-pq.next;
+                            end
+                        end;
+                        if notok then scanerr(298);
+                 FOUND: if x==none then fvispack:-fvis.next
+                        else x.next:-fvis.next;
+                     end
+                     else begin nhid:=nhid+1; x:-fvis end;
+                     fvis:-fvis.next
+                  end hidpacklist scan;
+                  if nhid>0 then begin
+                     fvis:-new hidpack(0); fvis.line:=nhid;
+                     !*** insert dummy pack with count as first pack;
+                     fvis.next:-fvispack;
+                  end;
+                  fvispack:-fvis;
+              end inspect brec
+            end brecterm;
+
+%+P         prior
+            procedure chainVis(visp); ref(hidpack) visp;
+            if cbrec.fvispack==none then cvispack:-cbrec.fvispack:-visp
+                                    else cvispack:-cvispack.next:- visp;
+
+%            switch action :=
+% INSERT (FEC-105)SWITCH:INIT
+
+%      ******************   M a i n   l o o p   ***********************
+
+            goto NEXTOPN;  !*** i.e. detach and initialise ***;
+
+%      Note: the purpose of "inspect L2OUPT do" is to skip output in case
+%            of errors (e.g. L2 output file couldn't be opened)
+
+    LISCST:LICONS: !The type is output explicitly (SCST/CONS output 4 bytes);
+            inspect L2OUPT do begin
+                    outbyte(opn); outbyte(optx); out2byte(opd); end;
+            goto NEXTOPN;
+
+    LIBLNO:LISSWB:LILINE:
+    LISIDN:LIIDN:LIIDNP:LIDOT:LIDOTP:LINEW:LINEWP:
+    LIIN:LIIS:LIQUA:LITHIS:
+
+ OPDOUT:
+            inspect L2OUPT do begin outbyte(opn);  out2byte(opd); end;
+            goto NEXTOPN;
+
+    LIBNDE:LIDCLE:LILFPA:LIRGPA:
+    LIIF:LITHEN:LIELSE:LIEEXP:
+    LIPLUS:LIMINU:LISLAS:LIMULT:LIIDIV:LIPOWE:
+    LIEQ:LINE:LIGE:LIGT:LILE:LILT:
+    LIAND:LIEQV:LIIMP:LIOR:LIRFEQ:LIRFNE:
+    LIUMNS:LIUPLS:LINOT:LIABTE:LIIFSB:LIGOTO:LIWSTB:
+    LIINSP:LITHSB:LIWHDO:LIGOE:LIELSB:LIIFSE: LIWHSE:
+    LIFASG:LIFDNO:LIASSG:LIDENO:
+    LIASGE:LICOMA:LIARGE:LICAPE:LIESTM:LIOTHE:LIINNE:
+    LIWHIL:LISTEP:LIUNTI:LIDO:LIACTV:LIREAC:
+    LIBEFO:LIAFTR:LIAT:LIDELA:LIPRIO:LIACTE:
+    LICONC:LICAND:LICOR:LISMCL:
+
+ OPNOUT:
+            inspect L2OUPT do outbyte(opn);
+
+% The following actions have been moved from OPNOUT to NEXTOPN to compress
+% L2 output, since the output bytes are ignored in Pass 2 (see Checker2).
+% Output is also skipped for IDCLI, NOTY, val-types, ITEXT, INOTE, ILABE,
+% IREF, INONE, ISWIT, IARRA, IPROC, ICLAS, IFRMP, IVALU, INAME, IPSPC, ICSPC,
+% IEPRM, ICPRF, IVSPC, ISIMU, ILANG, IEXTR, IEXNM, IHIDD, IPTRC, IPRHI
+% for the same reason. All necessary actions are performed here by building
+% the brec/quant/vispack structure.                           PJe - 7/9 1986
+
+% In addition, the L2 language has been changed so that no redundant info
+% is written to the scratch file (hopefully reducing the size). THIS MEANS
+% THAT THIS LANGUAGE IS NO LONGER   < opt(1 byte)  opd(2 bytes) >*  !!!
+% - see OPDOUT and OPNOUT. CHECKER2 changed also.             PJe - 8/10 86
+
+    LICOMN: LITRUE: LIFALS:
+    LIROPD: LIBREC: LIEREC:
+
+ NEXTOPN:   detach;   !***   R e a c t i v a t i o n   p o i n t   ***;
+
+            if linenr <> lastlinenr then
+            begin lastlinenr:=linenr;
+                  inspect L2OUPT do begin
+                          outbyte(ILINE);  out2byte(linenr) end;
+%+D               if parserdump then
+%+D               begin outimage; sysout.outtext("LINE:");
+%+D                     outint(linenr,7); outimage;
+%+D               end;
+            end;
+
+%+D         if parserdump then dumpfromparser;
+
+            goto action(opn);
+
+ LIBLKB:    brecinit(IBLKB);
+  BLOCKOUT: inspect L2OUPT do begin outbyte(IBLNO); out2byte(cbrec.blno) end;
+            goto OPNOUT;
+
+ LIBPRF:    if opd=simsetindex or!else; opd=simulationindex then
+            begin ! Get enclosing block, skipping for-bodies ; !???;
+                  xbrec:-cbrec;
+                  while rank(xbrec.kind)=IFORE and!then;
+                        xbrec.connests = 0 do xbrec:-xbrec.prev;
+                  if opd=simulationindex then xbrec.sysprefix:='L' else
+                  if opd=simsetindex and!then; xbrec.sysprefix='N'
+                  then xbrec.sysprefix:='E';
+            end;
+            brecinit(IBPRF);
+            inspect L2OUPT do begin outbyte(IBLNO); out2byte(cbrec.blno) end;
+            goto OPDOUT;
+
+ LIBEGI:    brecinit(IBPRF);
+            goto BLOCKOUT;
+
+ LIEND:
+ LIECWI:    brecterm(cbrec); goto OPNOUT;
+
+ LICL:      cquant:-cquant.next:-
+              new quant(char(ILABE),char(ILABE),0,char(IDCLI));
+            cquant.protect:=true; !*** labels are protected;
+            goto OPDOUT;
+
+ LIDCLI:    cquant:-cquant.next:-
+              new quant(ctype,char(IIDN),cqual,char(IDCLI));
+            goto NEXTOPN;  !-OPNOUT;
+
+ LINOTY: LIINTG: LIREAL: LILONG: LISHOR: LIBOOL: LICHAR: LITEXT:
+            ! Part of param.spec. or local declaration;
+            ctype:=char(opn); ckind:=char(IIDN); cqual:=0;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LISWIT:
+ LILABE:    !Part of param.spec. ;
+            ctype:=char(ILABE); ckind:=char(opn); cqual:=0;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIREF:     ctype:=char(IREF); ckind:=char(IIDN); cqual:=opd;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIARRA: LIPROC: LICLAS:  ! Param.spec or external decl. ;
+            ckind:=char(opn); goto NEXTOPN;  !-OPNOUT;
+
+ LIDCLS:    cquant:-cquant.next:-
+              new quant(char(ILABE),char(ISWIT),0,char(IDCLI));
+            cquant.protect:=true;  !*** switches are protected;
+            dimcount:=0; goto OPDOUT;
+
+ LISWEE:
+ LIDIME:    dimcount:=dimcount+1; goto OPNOUT;
+
+ LISWDE:    cquant.dim:=dimcount; goto OPNOUT;
+
+ LIDCLA:    cquant:-cquant.next:-
+                    new quant(ctype,char(IARRA),cqual,char(IDCLI));
+            dimcount:=0; if firstarr==none then firstarr:-cquant;
+            goto OPDOUT;
+
+ LIARDE:    dimcount:=dimcount+1;
+            while firstarr=/=none do
+            begin firstarr.dim:=dimcount;
+               firstarr:-firstarr.next end;
+            firstarr:-none; goto OPNOUT;
+
+ LINONE:    !prior procedure;
+% %+K         ctype:=char(opn); ckind:=char(IIDN); cqual:=0;
+%             goto NEXTOPN;  !-OPNOUT;
+%+K         linenr:=-linenr; !*** mark quant generated below;
+%+K         opn:=IDCLP;      !*** do not distinguish further;
+            !*** no goto here;
+
+ LIDCLP:    !normal or prior procedure decl. ;
+            cquant:-cquant.next:-
+                  new quant(ctype,char(IPROC),cqual,char(IDCLI));
+%+K         linenr:=abs(linenr);
+            goto genbrc;
+
+ LINOTE:    !procedure binding (after IS):
+             do not generate new quant, but modify the current one ;
+            if idname(cquant.extname)==notext
+            then cquant.extname:=cquant.ident;
+            cquant.ident:=opd; cquant.type:=ctype; cquant.qualid:=cqual;
+   genbrc:  p_or_c_qt:-cquant; brecinit(IPROC);
+            p_or_c_qt.descrno:=cbrec.blno;
+            inspect L2OUPT do begin
+                    outbyte(IBLNO); out2byte(cbrec.blno+1) end;
+            !*** The blno of the body-brec is output here;
+            ! It is important that p_or_c_qt is left as old cquant ;
+            if opn=IDCLP then goto OPNOUT else goto NEXTOPN;  !-OPNOUT;
+
+ LIFRMP:    cquant:-cquant.next:-
+              new quant(char(IOTHW),char(INOT),0,char(IFRMP));
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIVALU:
+ LINAME:    xquant:-cbrec.fpar;
+            while xquant.next=/=none and!then; xquant.ident <> opd do
+                  xquant:-xquant.next;
+            if xquant.ident <> opd then writeerror(281) else
+            if rank(xquant.categ) <> IFRMP then writeerror(282) else
+               xquant.categ:=char(opn);
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIPSPC:
+ LICSPC:    xquant:-cbrec.fpar;
+            while xquant.next=/=none and!then; xquant.ident <> opd do
+                  xquant:-xquant.next;
+            if xquant.ident <> opd then writeerror(281) else
+            if rank(xquant.kind) <> INOT then writeerror(282) else
+            begin xquant.type:=ctype; xquant.kind:=ckind;
+                  xquant.qualid:=cqual;
+            end;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIEPRM:    if rank(cbrec.kind)=IPROC then
+            begin !*** Terminate par-brec and start body-brec
+                           if not in procedure binding after IS;
+                  xbrec:-cbrec; brecterm(cbrec);
+                  if rank(cquant.categ) <> IEXTR then
+                  begin brecinit(IPROC);
+                        cbrec.prefid:=xbrec.blno;
+                        cbrec.line1:=xbrec.line1;
+                  end;
+            end;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LICPRF:    ! Prefix in class declaration;
+            if opd=simsetindex or!else; opd=simulationindex then
+            begin ! Get enclosing block , skipping for-bodies; !???;
+                  xbrec:-cbrec;
+                  while rank(xbrec.kind)=IFORE and!then;
+                        xbrec.connests = 0 do xbrec:-xbrec.prev;
+                  if opd=simulationindex then xbrec.sysprefix:='L' else
+                  if opd=simsetindex and!then; xbrec.sysprefix='N'
+                  then xbrec.sysprefix:='E';
+            end;
+            cqual:=opd; goto NEXTOPN;  !-OPNOUT;
+
+ LIDCLC:    ! Normal class declaration;
+            p_or_c_qt:-cquant:-cquant.next:-
+               new quant(char(INOTY),char(ICLAS),0,char(IDCLI));
+            brecinit(ICLAS); p_or_c_qt.descrno:=cbrec.blno;
+            cbrec.prefid:=cqual;
+            ! It is important that p_or_c_qt is left as old cquant ;
+            goto BLOCKOUT;
+
+ LIVSPC:    xquant:-new quant(ctype,ckind,cqual,char(IVIRT));
+            if cbrec.fvirt==none then cbrec.fvirt:-vquant:-xquant
+                                 else vquant.next:-vquant:-xquant;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIWHEN:    brecterm(cbrec);  ! no goto OPNOUT here;
+
+ LIFOR: LICONB: LIFWHN:
+            brecinit(IFORE);
+            inspect L2OUPT do begin outbyte(IBLNO); out2byte(cbrec.blno) end;
+            if opn=IFOR then goto OPDOUT;
+            ! cbrec represents a block holding labels
+              local to a connection block ;
+            ! update 'connests' attributes ;
+            jjj:=1;
+            xbrec:-cbrec.prev; !cbrec never none, brecinit just called;
+            while rank(xbrec.kind)=IFORE do  !Count inspect nesting ;
+            begin if xbrec.connests <> 0 then jjj:=jjj+1;
+                  ! xbrec is the IFORE block of an inspect;
+                  xbrec:-xbrec.prev
+            end;
+            cbrec.connests:=jjj;
+            if rank(xbrec.kind)=IPROC then xbrec:-bltab(xbrec.prefid);
+            !  connests is updated in the procedure head, not the body,
+               because of the way quick procedures are implemented ;
+            if xbrec.connests < jjj then xbrec.connests:=jjj;
+            if OPN=ICONB then goto OPNOUT else goto OPDOUT;
+
+ LIELME:    ! We are treating a complex for-loop (several for list
+              elements): update 'fornests' attributes ;
+            jjj:=1; xbrec:-cbrec.prev;
+            while rank(xbrec.kind)=IFORE do  !Count complex-for nesting ;
+            begin if xbrec.fornests <> 0 then jjj:=jjj+1;
+                  ! xbrec represents the body of a complex for;
+                  xbrec:-xbrec.prev
+            end;
+            cbrec.fornests:=jjj;
+            if rank(xbrec.kind)=IPROC then xbrec:-bltab(xbrec.prefid);
+            ! fornests is updated in the procedure head, not the body,
+               because of the way quick procedures are implemented ;
+            if xbrec.fornests < jjj then xbrec.fornests:=jjj;
+            goto OPNOUT;
+
+ LIFORE: LICONE: LIOTHW:
+            brecterm(cbrec); goto OPNOUT;
+
+ LISIMU:    language :=0; goto NEXTOPN;  !-OPNOUT;
+
+ LILANG:    language:=opd; goto NEXTOPN;  !-OPNOUT;
+
+ LIEXTR:    cquant:-cquant.next:-
+              new quant(ctype,ckind,cqual,char(IEXTR));
+            if rank(ckind)=IPROC then cquant.dim:=language;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIEXNM:    (if rank(cquant.categ)=INEWP
+                then p_or_c_qt else cquant).extname:=opd;
+%           ! The first alt. only used when ="..." can follow any
+%             declaring identifier, and a proc or class is declared;
+%           ! cquant.categ=INEWP means that cquant is the first,
+%             dummy quant of cbrec.  The occurence of 'IEXNM opd'
+%             then means that this is a string connected to a
+%             declaration for which a new brec has just been pushed
+%             on the stack, i.e. a normal procedure or class
+%             declaration.
+%             For an external declaration a new brec is not pushed on
+%             stack, which means that in this case cquant is the one
+%             of interest.  This is true in all other cases too, i.e.
+%             when a string is connected to a non-procedure/non-class
+%             quantity ;
+            goto NEXTOPN;  !-OPNOUT;
+
+ LIVIRT:    ! pseudo-block for external head in main program;
+%             This is to fix the problem : a block is inserted and
+%             the external declarations are moved from the current brec
+%             to this new block.
+%   Important assumption: no output has been performed to Pass2 before this!!!
+
+            opn:=IBLKB;
+            xbrec:-cbrec; brecinit(IBLKB); !new block;
+            cquant.next:-xbrec.fpar.next; ! move declarations;
+            xbrec.fpar.next:-none;        ! - and delete reference;
+            while cquant.next=/=none do cquant:-cquant.next;
+            goto BLOCKOUT;
+
+ LITO:      ! '=' in constant element;
+            opd:=cquant.ident; cquant.extname:=-opd; ! mark quant const;
+            goto OPDOUT;
+
+ LIPRHI: LIPRTC: ! 'protected' or 'hidden protected' - split the latter;
+            chainVis(new protpack(opd));
+            if opn=IPRTC then goto NEXTOPN;  !-OPNOUT;
+
+ LIHIDD:    ! 'hidden' specification;
+            chainVis(new hidpack(opd));
+            goto NEXTOPN;  !-OPNOUT;
+
+ LISSWA:    !*** Now both scanner and parser are bypassed;
+            inspect L2OUPT do begin
+                    outbyte(ISSWA); out2byte(cswa);
+                    outbyte(ISSWB); out2byte(cswb);  end;
+%+D         if parserdump then
+%+D         begin sysout.outtext("SWITCHES"); outint(cswa,7);
+%+D               outint(cswb,7); outimage;
+%+D         end;
+            goto NEXTOPN; !*** No normal output!;
+
+ LIEOP:     brecterm(cbrec); !*** The brec on module level;
+            goto OPNOUT;
+
+ LIGO:      ! new options directely from %SETOPT ;
+            DEFCONST(feoptions);
+            inspect L2OUPT do begin outbyte(IGO); out2byte(HASHINDEX); end;
+            goto NEXTOPN; ! no other output;
+
+
+      end L2Coder;
+
+
+end of SCANNER;

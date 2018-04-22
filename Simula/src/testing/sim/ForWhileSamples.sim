@@ -1,0 +1,24 @@
+
+%QUALIFIEDNAMES
+
+begin
+   Integer i,k,n;
+   Boolean b;
+   ref(A) x;
+   class A;
+   begin
+      procedure func; begin x:-none; end;
+   end;
+   
+   While i<4 do i:=i+4;
+%   For i:=34,37 While i<78 do k:=k+1;
+   For i:=34 While i<78 do begin k:=k+1; i:=i+45; end;
+   For i:=34 Step 4 until 78 do k:=k+1;
+   For i:=1 step 1 until n do k:=k+1;
+   
+   For x:-new A() while x=/=NONE do
+%            new func( ( (ForWhileSamples)OBJ[3]  ).x);
+                                     x.func;
+                                     
+   
+end;

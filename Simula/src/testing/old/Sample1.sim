@@ -1,0 +1,6 @@
+begin integer i;
+      comment en text her ;
+      t:="!2!ABCDE!3!";
+      Inspect object when C do C.p(3) Otherwise C.p(13);
+      t:="AB" " C" "DE"; 
+end;

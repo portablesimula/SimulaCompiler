@@ -1,0 +1,916 @@
+ Module CENT("RTS 105");
+ begin sysinsert COMN,SYSR,KNWN,UTIL,STRG;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1987 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Oslo, Norway                                                   ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                C o n t r o l    T r a n s f e r                 ---
+       ---                                                                 ---
+       ---                        a n d    T e x t                         ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+
+
+ Visible routine B_SUB;
+ import ref(sub_ptp) spp;
+ begin ref(instance) ins;      -- The one we will allocate now.
+       ---  Set the program point where the current instance will continue.
+       curins.lsc:=spp.cnt;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%spp.lng%,%bio%);
+       ---  Fill in Sub-Block Attributes.
+       ins.sl:=ins.dl:=curins; ins.sort:=S_SUB; ins.pp:=spp;
+       ---  Enter sub-block instance, we will return to its code.
+       curins:=ins;
+       if bio.trc
+       then curins.lsc:=envir_OUTERMOST; status:=0; TRC_BEG endif;
+ end;
+
+
+ Visible routine B_PRO;
+ import ref(instance) sl; ref(pro_ptp) ppp; exit label psc;
+ begin ref(instance) ins;     -- The one we will allocate now.
+       ---  Set the program point where the current instance will continue.
+       curins.lsc:=psc;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%ppp.lng%,%sl%);
+       ---  Fill in procedure attributes.
+       ins.sl:=sl; ins.sort:=S_PRO; ins.pp:=ppp; ins.dl:=curins;
+       ---  Enter procedure instance's code.
+       curins:=ins; psc:=ppp.start;
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ Visible routine A_PRO;
+ import ref(instance) sl; ref(pro_ptp) ppp;
+ export ref(instance) ins;     -- The one we will allocate now.
+ begin  ---  Allocate storage. If necessary, call the garbage collector.
+        ALLOC(%ins%,%ppp.lng%,%sl%);
+        ---  Fill in procedure attributes.
+        ins.sl:=sl; ins.sort:=S_PRO; ins.pp:=ppp;
+ end;
+
+ Visible routine I_PRO;
+ import ref(instance) ins;      -- The procedure instance.
+ exit label psc;
+ begin ---  Set the program point where the current instance will continue.
+       curins.lsc:=psc;
+       ---  Link to dynamic enclosure.
+       ins.dl:=curins;
+       ---  Enter procedure instance's code.
+       curins:=ins; psc:=curins.pp qua ref(pro_ptp).start;
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ record any_pro:instance; begin infix(quant) val end;
+ infix(any_pro) dummy_pro;
+
+ Visible routine E_PRO; -- end procedure, use if wanted;
+ exit label psc;
+ begin ref(instance) curproc; -- curins at entry
+       curproc:=curins; curins:=curproc.dl;
+       if curproc.sort=S_PRO
+       then psc:=curins.lsc;
+            dummy_pro.val:=curproc qua any_pro.val;   -- move proc value
+            tmp.pnt:=ref(dummy_pro);                  -- and reset temp
+       endif;
+       -- everything necessary has been done.
+       -- for a proper procedure the assignment to "temp" does no harm.
+       -- Now: check to see whether instance is on top of stack
+       if curproc+curproc.pp.lng = bio.pool_nxt
+       then -- explicit release for reuse of instance
+            ZEROAREA(curproc,bio.pool_nxt);
+            bio.pool_nxt:=curproc;
+       endif;
+ end;
+
+ Visible routine B_FML_PRO;
+ import infix(proqnt) pro; exit label psc;
+ begin ref(instance) ins;     -- The one we will allocate now.
+       ---  Set the program point where the current instance will continue.
+       curins.lsc:=psc;
+       ---  Check that the number of parameters are zero.
+       if pro.ppp.par_vec <> none then  ERROR(ENO_PRO_1)  endif;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%pro.ppp.lng%,%pro.sl%);
+       ---  Fill in procedure attributes.
+       ins.sl:=pro.sl; ins.sort:=S_PRO; ins.pp:=pro.ppp; ins.dl:=curins;
+       ---  Enter procedure instance's code.
+       curins:=ins; psc:=pro.ppp.start;
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ Visible routine A_FML_PRO;
+ import infix(proqnt) pro;
+        range(0:MAX_ATR) npar;   --  Number of parameters.
+ export ref(instance) ins;       -- The one we will allocate now.
+ begin ---  Check that the number of parameters are correct.
+       if pro.ppp.par_vec = none then ERROR(ENO_PRO_1);
+       elsif npar <> pro.ppp.par_vec.natr then ERROR(ENO_PRO_1) endif;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%pro.ppp.lng%,%pro.sl%);
+       ---  Fill in procedure attributes.
+       ins.sl:=pro.sl; ins.sort:=S_PRO; ins.pp:=pro.ppp;
+ end;
+
+ Visible routine B_VIR_PRO;
+ import ref(instance) sl;
+        range(0:MAX_VIR) vir_ind;        -- Index in virtual vector.
+ exit label psc;
+ begin ref(instance) ins;  -- The one we will allocate now.
+       ref(pro_ptp) ppp;   -- The prototype for the virtual procedure.
+       ---  Set the program point where the current instance will continue.
+       curins.lsc:=psc;
+       ---  Check that the virtual procedure has a match.
+       ppp:=sl.pp qua ref(cla_pre_ptp).vir_vec.vir(vir_ind).ppp;
+       if ppp = none then  ERROR(ENO_VIR_1)  endif;
+       ---  Check that the number of parameters are zero.
+       if ppp.par_vec <> none then  ERROR(ENO_PRO_1)  endif;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%ppp.lng%,%sl%);
+       ---  Fill in procedure attributes.
+       ins.sl:=sl; ins.sort:=S_PRO; ins.pp:=ppp; ins.dl:=curins;
+       ---  Enter procedure instance's code.
+       curins:=ins; psc:=ppp.start;
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ Visible routine A_VIR_PRO;
+ import ref(instance) sl;
+        range(0:MAX_VIR) vir_ind;   -- Index in virtual vector.
+        range(0:MAX_ATR) npar;      -- Number of parameters.
+ export ref(instance)ins;           -- The one we will allocate now.
+ begin ref(pro_ptp) ppp;   -- The prototype for the virtual procedure.
+       ---  Check that the virtual procedure has a match.
+       ppp:=sl.pp qua ref(cla_pre_ptp).vir_vec.vir(vir_ind).ppp;
+       if ppp = none then  ERROR(ENO_VIR_1)  endif;
+       ---  Check that the number of parameters are correct.
+       if ppp.par_vec = none then ERROR(ENO_PRO_1);
+       elsif npar <> ppp.par_vec.natr then ERROR(ENO_PRO_1) endif;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%ppp.lng%,%sl%);
+       ---  Fill in procedure attributes.
+       ins.sl:=sl; ins.sort:=S_PRO; ins.pp:=ppp;
+ end;
+
+ Visible routine B_CLA;
+ import ref(instance) sl; ref(cla_pre_ptp) cpp; exit label psc;
+ begin ref(instance) ins;     -- The one we will allocate now.
+       ---  Set the program point where the current instance will continue.
+       curins.lsc:=psc;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%cpp.lng%,%sl%);
+       ---  Fill in class attributes.
+       ins.sl:=sl; ins.sort:=S_ATT; ins.pp:=cpp; ins.dl:=curins;
+       ---  Enter object's code.
+       curins:=ins; psc:=cpp.prefix.dcl;  --  prefix(0).dcl
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ Visible routine A_CLA;
+ import ref(instance) sl; ref(cla_pre_ptp) cpp;
+ export ref(instance) ins;    -- The one we will allocate now.
+ begin ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%cpp.lng%,%sl%);
+       ---  Fill in class attributes.
+       ins.sl:=sl; ins.sort:=S_ATT; ins.pp:=cpp;
+ end;
+
+ Visible routine I_CLA;
+ import ref(instance) ins;     -- The object.
+ exit label psc;
+ begin ---  Set the program point where the current instance will continue.
+       curins.lsc:=psc;
+       ---  Link to dynamic enclosure.
+       ins.dl:=curins;
+       ---  Enter object's code.
+       curins:=ins; psc:=curins.pp qua ref(cla_pre_ptp).prefix.dcl; --prefix(0)
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ Visible routine E_CLA_PRE;
+ exit label psc;
+ begin ref(instance) dl;   -- A temporary to the instance dynamically
+                           -- enclosing the resumed object ('curins').
+       ref(instance) main; -- The head of the main component and also
+                           -- the head of the quasi-parallel system.
+       if bio.trc
+       then curins.lsc:=envir_OUTERMOST; status:=0; TRC_END endif;
+       ---  Treat the attached case first, it is probably most common.
+       if curins.sort = S_ATT
+       then curins.sort:=S_TRM; tmp.pnt:=curins;
+            ---  Make the dynamic enclosure the new current instance.
+            ---  Make sure that no garbage is accessible.
+            curins:=curins.dl; tmp.pnt.dl:=none;
+
+       elsif curins.sort = S_RES
+       then ---  Treat the case of a resumed and operating object.
+            ---  It is the head of an object component. This object component
+            ---  contains no other instances than the class object. The class
+            ---  object enters the terminated state, and the object component
+            ---  disappears from its system. The main component of that system
+            ---  takes its place as the operating component of the system.
+            ---  Invariant:  curins.sort = S_RES  and   curins.dl = main.sl
+            curins.sort:=S_TRM;
+            ---  Find main component (and system) head. It must be the static
+            ---  enclosure since the object has been RESUMEd.
+            main  := curins.sl;
+            ---  Ignore any temporary instances.
+            repeat while main.dl.lsc = nowhere do main:=main.dl endrepeat;
+            ---  The main component becomes the operating component.
+            dl:=curins.dl; curins.dl:=none;
+            curins:=main.dl; main.dl:=dl;
+
+       elsif curins.sort = S_PRE
+       then ---  Treat the case of a prefixed block instance.
+            ---  Invariants:  curins.sort = S_PRE, but checking it anyway.
+            curins:=curins.dl;
+       else IERR("E_CLA_PRE") endif;
+       psc:=curins.lsc;
+ end;
+
+ Visible routine B_PRE;
+ import ref(cla_pre_ptp) cpp; exit label psc;
+ begin ref(instance) ins;   -- The one we will allocate now.
+       ---  Set the program point where the current instance will continue.
+       curins.lsc:=cpp.cnt_inr;
+       ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%cpp.lng%,%bio%);
+       ---  Fill in class attributes.
+       ins.sl:=ins.dl:=curins; ins.sort:=S_PRE; ins.pp:=cpp;
+       ---  Enter prefixed block instance's code, that is, start execution of
+       ---  the declaration code for the class on prefix level zero.
+       curins:=ins; psc:=cpp.prefix.dcl;          --  prefix(0)
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ Visible routine A_PRE;
+ import ref(cla_pre_ptp) cpp;
+ export ref(instance) ins;     -- The one we will allocate now.
+ begin ---  Allocate storage. If necessary, call the garbage collector.
+       ALLOC(%ins%,%cpp.lng%,%bio%);
+       ---  Fill in prefixed block attributes.
+       ins.sl:=curins; ins.sort:=S_PRE; ins.pp:=cpp;
+ end;
+
+ Visible routine I_PRE;
+ import ref(instance) ins;      -- The prefixed block instance.
+ exit label psc;
+ begin ---  Set the program point where the current instance will continue.
+       curins.lsc:=ins.pp qua ref(cla_pre_ptp).cnt_inr;
+       ---  Link to dynamic enclosure.
+       ins.dl:=curins;
+       ---  Enter prefixed block instance's code, that is, start execution of
+       ---  the declaration code for the class on prefix level zero.
+       curins:=ins;
+       psc:=curins.pp qua ref(cla_pre_ptp).prefix.dcl;    --  prefix(0)
+       if bio.trc then curins.lsc:=psc; TRC_BEG endif;
+ end;
+
+ Visible routine E_GOTO;
+ import infix(labqnt) lab; exit label psc;
+ begin ref(instance) from;   -- The instance executing the goto
+       ref(instance) dl;     -- Temporary to 'curins.dl'.
+       ref(instance) main;   -- The head of the main component and also
+                             -- the head of the quasi-parallel system.
+       ref(pntvec) pnt_vec;  -- Vector containing connection-ref's.
+
+       ---  Set the program point where the current instance may finish.
+       curins.lsc:=psc; from:=curins;
+       repeat      -- go down operating chain, instance by instance.
+       while curins <> lab.sl
+       do ---  If we are jumping somewhere we shouldn't, report the error.
+          if curins = bio then ERROR(ENO_GOTO_1) endif;
+          if curins.sort = S_ATT
+          then dl:=curins.dl; curins.sort:=S_TRM;
+               curins.dl:=none; curins:=dl;
+ ---      elsif curins.sort = S_RES                    --- REMOVED 4/10-84 ---
+ ---      then --  Terminate this component head, enter the main component.
+ ---           curins.sort:=S_TRM; main:=curins.sl; -- Behave as if DETACH.
+ ---           ---  Ignore any temporary instances.
+ ---           repeat while main.dl.lsc = nowhere
+ ---           do main:=main.dl endrepeat;
+ ---           ---  The main component becomes the operating component.
+ ---           dl:=curins.dl; curins.dl:=none;
+ ---           curins:=main.dl; main.dl:=dl;
+          else curins:=curins.dl endif;
+
+       endrepeat;
+
+       ---  Remove any temporary instances connected to the destination
+       ---  instance, which created the dynamic chain we just have exited.
+       repeat while curins.dl.lsc = nowhere
+       do curins.dl := curins.dl.dl endrepeat;
+
+       ---  In case the destination instance, was previously executing
+       ---  inside inspect-statements, make sure that we are nullifying the
+       ---  connection-references for all the inspect-statements we exited.
+       pnt_vec:=curins.pp.pnt_vec;
+       if pnt_vec <> none then --- Inserted 1/8-84, GS
+          repeat while lab.clv  < pnt_vec.ncon
+          do var((curins + (pnt_vec.pnt(lab.clv qua integer)))
+                             qua name(ref(instance))):=none;
+             lab.clv:=lab.clv + 1;
+          endrepeat;
+       endif;
+       ---  Have updated current instance. Update current program point too.
+       psc:=lab.pad;
+       ---  See if we are tracing the execution.
+       if bio.trc then curins.lsc:=psc; TRC_GOTO(from) endif;
+ end;
+
+
+ Visible routine DETACH;
+ import ref(instance) ins;      --  Instance to be detached.
+ exit label psc;
+ begin ref(instance) dl;    --  Temporary reference to dynamical enclosure.
+       ref(instance) main;  --  The head of the main component and also
+                            --  the head of the quasi-parallel system.
+       ref(instance) from;  --  For tracing only.
+
+       ---  Set the program point where the current instance is executing.
+       curins.lsc:=psc; from:=curins;
+       ---  Detach on a prefixed block is a no-operation.
+       if ins.sort <> S_PRE
+       then --- Make sure that the object is on the operating chain.
+            --- Note that a detached or terminated object cannot be on
+            --- the operating chain.
+            dl:=curins;
+            repeat while dl <> ins
+            do dl:=dl.dl;
+               if dl = none then  ERROR(ENO_DET_1)  endif;
+            endrepeat;
+
+            ---  Treat the case resumed and operating first,
+            ---  because it is probably the dynamically most common.
+            if ins.sort = S_RES
+            then ins.sort := S_DET;
+                 -- Find main component for component to be detached. The main
+                 -- component head must be the static enclosure of the object,
+                 -- since the object has been RESUMEd.
+                 main:=ins.sl;
+                 -- Ignore any temporary instances.
+                 repeat while main.dl.lsc=nowhere do main:=main.dl endrepeat;
+                 repeat while ins.dl.lsc=nowhere do ins:=ins.dl endrepeat;
+                 -- Rotate the contents of 'curins', 'ins.dl' and 'main.dl'.
+                 -- <main.dl,ins.dl,curins>:=<ins.dl,curins,main.dl>
+                 dl:=main.dl;  main.dl:=ins.dl;  ins.dl  := curins;
+                 curins:=dl;
+            elsif ins.sort = S_ATT
+            then ---  Invariant:  ins.sort = S_ATT, but testing it anyway.
+                 ins.sort:=S_DET;
+                 --  Return pointer, if caller is executing NEW <class> ... .
+                 tmp.pnt:=ins;
+                 ---  Ignore any temporary instances.
+                 repeat while ins.dl.lsc = nowhere do  ins := ins.dl  endrepeat;
+                 ---  Swap the contents of object's 'dl' and 'curins'.
+                 ---  <ins.dl,curins>:=<curins,ins.dl>
+                 dl:=ins.dl;  ins.dl:=curins;  curins:=dl;
+            else IERR("DETACH") endif;
+            psc:=curins.lsc;
+       endif;
+       ---  See if we are tracing the execution.
+       if bio.trc then TRC_QPS(from,ins,0) endif;
+ end;
+
+ Visible routine RESUME;
+ import ref(instance) ins;      --  Object to be resumed.
+ exit label psc;
+ begin ref(instance) comp;   --  Component head.
+       ref(instance) m_sl;   --  Static enclosure of main component head.
+       ref(instance) main;   --  The head of the main component and also
+                             --  the head of the quasi-parallel system.
+       ref(instance) from;   --  For tracing only.
+
+       ---  Set the program point where the current instance is executing.
+       curins.lsc:=psc; from:=curins; --  For tracing only.
+       if ins = none then  ERROR(ENO_RES_1)  endif;
+ 
+       if ins.sort <> S_RES  --  A no-operation?
+       then ---  The object to be resumed must be local to a system head.
+            main:=ins.sl;
+            if (main.sort <> S_PRE)  and (main.sort <> S_SUB) then
+               ERROR(ENO_RES_2);
+            endif;
+            if ins.sort <> S_DET then  ERROR(ENO_RES_3)  endif;
+            ---  Find the operating component of the quasi-parallel system.
+            comp:=curins; m_sl:=main.sl;
+            repeat  while comp.dl <> m_sl do  comp := comp.dl  endrepeat;
+            if comp.sort=S_RES then comp.sort:=S_DET endif;
+            ---  Ignore any temporary instances.
+            ---  (Those of the operating component has already been dealt with).
+            repeat  while  ins.dl.lsc = nowhere do  ins := ins.dl  endrepeat;
+            ---  Rotate the contents of 'ins.dl', 'comp.dl' and 'curins'.
+            ---  Invariant:       comp.dl = m_sl
+            ---  <ins.dl,comp.dl,curins>:=<comp.dl,curins,ins.dl>
+            comp.dl:=curins; curins:=ins.dl; ins.dl:=m_sl;
+            ins.sort:=S_RES; psc:=curins.lsc;
+       endif;        --  Of not resumed case.
+       if bio.trc then TRC_QPS(from,ins,2) endif;
+ end;
+
+ Visible routine ATTACH;
+ import ref(instance) ins;      --  Object to be attached.
+ exit label psc;
+ begin ref(instance) dl;     --  Temporary reference to dynamic enclosure.
+       ref(instance) from;   --  For tracing only.
+       ---  Set the program point where the current instance is executing.
+       curins.lsc:=psc; from:=curins;
+       if ins = none        then  ERROR(ENO_ATT_1)  endif;
+       if ins.sort <> S_DET then  ERROR(ENO_ATT_2)  endif;
+       ---  The object to be attached cannot be on the operating chain,
+       ---  because then its state would have been resumed and not detached.
+
+       ---  Swap the contents of 'curins' and object's 'dl'.
+       ---  <ins.dl,curins>:=<curins,ins.dl>;
+       ---  Ignore any temporary instances.
+       repeat  while ins.dl.lsc = nowhere do  ins := ins.dl  endrepeat;
+       dl:=ins.dl;  ins.dl  := curins;  curins:=dl;
+       ---  From now on the object is in attached state.
+       ---  It is no longer a component head.
+       ins.sort:=S_ATT; psc:=curins.lsc;
+       if bio.trc then TRC_QPS(from,ins,1) endif;
+ end;
+%page
+ Visible routine RESUMX;
+ import ref(instance) ins;      --  Object to be resumed.
+        label psc;
+ export label new_psc;
+ begin ref(instance) comp;  --  Component head.
+       ref(instance) m_sl;  --  Static enclosure of main component head.
+       ref(instance) main;  --  The head of the main component and also
+                            --  the head of the quasi-parallel system.
+
+       ---  Set the program point where the current instance is executing.
+       curins.lsc:=psc;
+
+       if ins.sort <> S_RES  --  A no-operation?
+       then ---  The object to be resumed must be local to a system head.
+            ---  This is either the BASICIO or the SIMULATION instance.
+            main:=ins.sl;
+            if main.sort <> S_PRE then ERROR(ENO_RES_4) endif;
+            if ins.sort <> S_DET then ERROR(ENO_RES_5) endif;
+   
+            ---  Find the operating component of the quasi-parallel system.
+            comp:=curins; m_sl:=main.sl;
+            repeat while comp.dl <> m_sl do comp:=comp.dl endrepeat;
+            if comp.sort=S_RES then comp.sort:=S_DET endif;
+            ---  Ignore any temporary instances.
+            ---  (Those of the operating component has already been dealt with)
+            repeat while ins.dl.lsc=nowhere do ins:=ins.dl endrepeat;
+
+            ---  Rotate the contents of 'ins.dl', 'comp.dl' and 'curins'.
+            ---  Invariant:       comp.dl=m_sl
+            ---  <ins.dl,comp.dl,curins>:=<comp.dl,curins,ins.dl>
+            comp.dl:=curins;   curins:=ins.dl;   ins.dl:=m_sl;
+
+            ins.sort:=S_RES;
+       endif;
+       new_psc:=curins.lsc;
+ end;
+%title ***  T e x t    H a n d l i n g  ***
+ Visible macro  NEW_TXT(1);
+ --  The argument is the name of an object reference variable,
+ --  which must be updated by the garbage collector.
+ begin lng:=rec_size(txtent,ncha);         -- computed at run-time
+       ---  Allocate storage. If necessary call the garbage collector.
+       ---  The following is an exact expansion of ALLOC(%res.ent%,%lng%,%1).
+       res.ent:=bio.pool_nxt; bio.pool_nxt:=bio.pool_nxt + lng;   ---- CORR
+       if bio.pool_nxt > bio.pool_lim                             ---- CORR
+       then res.ent:=GARB(res.ent,lng,name(%1)) endif;            ---- CORR
+       res.ent.sort:=S_TXTENT;
+       res.ent.lng:=lng; res.ent.ncha:=ncha;
+       --  A text has been created, give it an unique identification.
+       --  res.ent.sno:=bio.txt_sno:=bio.txt_sno + 1;
+       ---  Set the text quantity to refer to the allocated text object.
+       res.cp:=0; res.sp:=0; res.lp:=ncha;
+ endmacro;
+
+
+ Visible routine TXT_BY_VAL;
+ import ref(instance) parins; field(infix(txtqnt)) fld;
+ export ref(instance) updated;
+ begin infix(string) res_str,src_str; infix(txtqnt) res,src;
+       integer ncha; size lng;
+       src:=var(parins + fld); ncha:=src.lp - src.sp;
+       if ncha = 0
+       then res:=notext;
+            ---  Check that the save entity allocation invariant still holds!!
+            if bio.pool_nxt>bio.pool_lim                        ---- CORR
+            then GARB(bio.pool_nxt,nosize,name(parins)) endif;  ---- CORR
+       else ---  Create Text Object. If necessary call the garbage collector.
+            NEW_TXT(%parins%); src:=var(parins + fld);
+            ---  Move the character values into the allocated text entity.
+            src_str.nchr:=res_str.nchr:=ncha;
+            src_str.chradr:=name(src.ent.cha(src.sp));
+            res_str.chradr:=name(res.ent.cha);                  --  cha(0)
+            C_MOVE(src_str,res_str);
+       endif;
+       if bio.trc then TRC_TXT(res.ent) endif;
+       var( (parins+fld) qua name(infix(txtqnt)) ) := res;
+       updated:=parins;
+ end;
+
+
+
+
+ Visible routine TXTASS_TMP;
+ import  infix(txtqnt) dst,src;
+ begin infix(string) dst_str,src_str;
+       src_str.nchr:=src.lp-src.sp; dst_str.nchr:=dst.lp-dst.sp;
+       if dst_str.nchr < src_str.nchr then ERROR(ENO_TXT_2) endif;
+       ---   dst = notext  ==>  src = notext
+       if dst.lp <> 0  --  notext?
+       then if dst.ent.gcl <> none then ERROR(ENO_TXT_3) endif; -- Constant?
+            dst_str.chradr:=name(dst.ent.cha(dst.sp));
+            src_str.chradr:=if src_str.nchr > 0
+            then name(src.ent.cha(src.sp)) else noname;
+            ---  Transfer all the characters in the source.
+            ---  Blankfill any remaining characters of the destination.
+            C_MOVE(src_str,dst_str);
+       endif;
+ end;
+
+
+ Visible routine TXTASS_ATR;
+ import name(infix(txtqnt)) dst; infix(txtqnt) src;
+ begin infix(string) dst_str,src_str;
+       src_str.nchr:=src.lp - src.sp;
+       dst_str.nchr:=var(dst).lp - var(dst).sp;
+       if dst_str.nchr < src_str.nchr then ERROR(ENO_TXT_2) endif;
+       ---   var(dst) = notext  ===>  src = notext
+       if var(dst).lp <> 0  --  notext?
+       then if var(dst).ent.gcl<>none then ERROR(ENO_TXT_3) endif; -- Constant?
+            dst_str.chradr:=name(var(dst).ent.cha(var(dst).sp));
+            src_str.chradr:=if src_str.nchr > 0
+            then name(src.ent.cha(src.sp)) else noname;
+            ---  Transfer all the characters in the source.
+            ---  Blankfill any remaining characters of the destination.
+            C_MOVE(src_str,dst_str);
+       endif;
+ end;
+
+
+ Visible routine BLANKS;
+ import integer ncha; export infix(txtqnt) res;
+ begin infix(string) str; size lng;
+       if ncha > 0
+       then if ncha > MAX_TXT then ERROR(ENO_TXT_1) endif;
+            ---  Create Text Object. If necessary call the garbage collector.
+            NEW_TXT(%bio%);
+            ---  Blankfill all the characters.
+            str.chradr:=name(res.ent.cha); -- Point to first char.
+            str.nchr:=ncha; C_BLNK(str);
+       elsif ncha = 0
+       then res:=notext;
+            ---  Check that the save entity allocation invariant still holds!!
+            if bio.pool_nxt>bio.pool_lim                       ---- CORR
+            then GARB(bio.pool_nxt,nosize,name(bio)) endif;    ---- CORR
+       else ERROR(ENO_TXT_1) endif;
+       if bio.trc then TRC_TXT(res.ent) endif;
+ end;
+
+
+ Visible routine TXTCNS;
+ import infix(txtqnt) txt; export boolean cns;
+ begin cns:=if txt.lp=0 then true else (txt.ent.gcl <> none) end;
+
+
+ Visible routine COPY;
+ import infix(txtqnt) src; export infix(txtqnt) res;
+ begin integer ncha; infix(string) res_str,src_str; size lng;
+       ncha:=src.lp - src.sp;
+       if ncha = 0
+       then res:=notext;
+            ---  Check that the save entity allocation invariant still holds!!
+            if bio.pool_nxt>bio.pool_lim                      ---- CORR
+            then GARB(bio.pool_nxt,nosize,name(bio)) endif;   ---- CORR
+       else ---  Create Text Object. If necessary call the garbage collector.
+            NEW_TXT(%src.ent%);
+
+            ---  Move the character values into the allocated text entity.
+            src_str.nchr:=res_str.nchr:=ncha;
+            src_str.chradr:=name(src.ent.cha(src.sp));
+            res_str.chradr:=name(res.ent.cha);                  --  cha(0)
+            C_MOVE(src_str,res_str);
+       endif;
+       if bio.trc then TRC_TXT(res.ent) endif;
+ end;
+
+
+ Visible routine TXTMIN;
+ import infix(txtqnt) left, right; export infix(txtqnt) res;
+ begin if TXTREL(left,right,3) then res:=left else res:=right endif end;
+
+ Visible routine TXTMAX;
+ import infix(txtqnt) left, right; export infix(txtqnt) res;
+ begin if TXTREL(left,right,6) then res:=left else res:=right endif end;
+
+
+ Visible routine UPTX;
+ import infix(txtqnt) txt; export infix(txtqnt) res;
+ begin integer n,c,l; n:=txt.lp; l:=txt.sp;
+       repeat n:=n-1 while n >= l
+       do c:=txt.ent.cha(n) qua integer;
+          if c > 96
+          then if c < 123
+               then txt.ent.cha(n):=(c-32) qua character endif;
+          endif;
+       endrepeat;
+       txt.cp:=txt.sp; res:=txt;
+ end;
+
+ Visible routine LWTX;
+ import infix(txtqnt) txt; export infix(txtqnt) res;
+ begin integer n,c,l; n:=txt.lp; l:=txt.sp;
+       repeat n:=n-1 while n >= l
+       do c:=txt.ent.cha(n) qua integer;
+          if c > 64
+          then if c < 91
+               then txt.ent.cha(n):=(c+32) qua character endif;
+          endif;
+       endrepeat;
+       txt.cp:=txt.sp; res:=txt;
+ end;
+
+ Visible routine LENGTH;
+ import infix(txtqnt) txt; export integer lng;
+ begin lng:=txt.lp - txt.sp end;
+
+
+ Visible routine MAIN;
+ import infix(txtqnt) txt; export infix(txtqnt) res;
+ begin res.ent:=txt.ent; res.sp:=0; res.cp:=0;
+       if txt.lp = 0 then res.lp:=0   --  notext
+       else res.lp:=txt.ent.ncha endif;
+ end;
+
+
+ Visible routine MORE;
+ import infix(txtqnt) txt; export boolean mr;
+ begin mr:=txt.cp < txt.lp end;
+
+
+ Visible routine POS;
+ import infix(txtqnt) txt; export integer pos;
+ begin pos:=txt.cp - txt.sp + 1 end;
+
+
+ Visible routine SETPOS_ATR;
+ import name(infix(txtqnt)) adr; integer pos;
+ begin infix(txtqnt) txt; txt:=var(adr);
+       if pos <= 0 then pos:=txt.lp;
+       else pos:=txt.sp + pos - 1;
+            if pos > txt.lp then pos:=txt.lp endif;
+       endif;
+       var(adr).cp:=pos;
+ end;
+
+ Visible routine SETPOS_TMP;
+ import infix(txtqnt) adr; integer pos;
+ begin   end;
+
+
+ Visible routine START;
+ import infix(txtqnt) txt; export integer start;
+ begin start:=txt.sp + 1 end;
+
+
+ Visible routine SUB_TMP;
+ import infix(txtqnt) txt; integer m,n;
+ export infix(txtqnt) res;
+ begin if m < 1 then ERROR(ENO_TXT_4);
+       elsif n < 0 then ERROR(ENO_TXT_5);
+       elsif n = 0 then res:=notext;
+       else res.ent:=txt.ent; res.sp:=txt.sp + m - 1;
+            res.lp:=res.sp + n; res.cp:=res.sp;
+            if res.lp > txt.lp then ERROR(ENO_TXT_6) endif;
+       endif;
+ end;
+
+ Visible routine SUB_ATR;
+ import name(infix(txtqnt)) txt; integer m,n;
+ export infix(txtqnt) res;
+ begin if m < 1 then ERROR(ENO_TXT_4);
+       elsif n < 0 then ERROR(ENO_TXT_5);
+       elsif n = 0 then res:=notext;
+       else res.ent:=var(txt).ent; res.sp:=var(txt).sp + m - 1;
+            res.lp:=res.sp + n; res.cp:=res.sp;
+            if res.lp > var(txt).lp then ERROR(ENO_TXT_6) endif;
+       endif;
+ end;
+
+ Macro GET_ITEM_ATR(1);
+ --  The parameter is the name of the function (e.g. envir_GETINT).
+ begin infix(string) item;
+       infix(txtqnt) txt;             --  Local copy here for efficiency.
+       txt:=var(adr); if txt.lp=0 then ERROR(ENO_TXT_7) endif; -- notext?
+       item.nchr:=txt.lp - txt.sp;
+       item.chradr:=name(txt.ent.cha(txt.sp));
+       res:=%1(item); if status <> 0 then ERR_GET endif;
+       var(adr).cp:=txt.sp + itemsize;
+ endmacro;
+
+ Macro GET_ITEM_TMP(1);
+ --  The parameter is the name of the function (e.g. envir_GETINT).
+ begin infix(string) item;
+    if txt.lp = 0 then ERROR(ENO_TXT_7) endif;          --  notext?
+    item.nchr:=txt.lp - txt.sp;
+    item.chradr:=name(txt.ent.cha(txt.sp));
+    res:=%1(item); if status <> 0 then ERR_GET endif;
+ endmacro;
+
+ Routine ERR_GET;
+ begin if status = 21 then status:=0; ERROR(ENO_TXT_8);
+    elsif status = 22 then status:=0; ERROR(ENO_TXT_9);
+    elsif status = 23 then status:=0; ERROR(ENO_TXT_10);
+    else ERR_SYS endif;
+ end;
+
+
+ Visible routine GETCHAR_ATR;
+ import name(infix(txtqnt)) adr; export character c;
+ begin infix(txtqnt) txt;
+       txt:=var(adr); if txt.cp = txt.lp then ERROR(ENO_TXT_11) endif;
+       c:=txt.ent.cha(txt.cp); var(adr).cp:=txt.cp + 1;
+ end;
+
+ Visible routine GETCHAR_TMP;
+ import infix(txtqnt) txt; export character c;
+ begin if txt.cp = txt.lp then ERROR(ENO_TXT_11) endif;
+       c:=txt.ent.cha(txt.cp);
+ end;
+
+
+ Visible routine GETINT_ATR
+ import name(infix(txtqnt)) adr; export integer res;
+ begin GET_ITEM_ATR(%envir_GETINT%) end;
+
+ Visible routine GETINT_TMP;
+ import infix(txtqnt) txt; export integer res;
+ begin GET_ITEM_TMP(%envir_GETINT%) end;
+
+
+ Visible routine GETREAL_ATR;
+ import name(infix(txtqnt)) adr; export long real res;
+ begin GET_ITEM_ATR(%envir_GETREAL%) end;
+
+ Visible routine GETREAL_TMP;
+ import infix(txtqnt) txt; export long real res;
+ begin GET_ITEM_TMP(%envir_GETREAL%) end;
+
+
+ Visible routine GETFRAC_ATR;
+ import name(infix(txtqnt)) adr; export integer res;
+ begin GET_ITEM_ATR(%envir_GETFRAC%) end;
+
+ Visible routine GETFRAC_TMP;
+ import infix(txtqnt) txt; export integer res;
+ begin GET_ITEM_TMP(%envir_GETFRAC%) end;
+%page
+
+ Macro PUT_ITEM_ATR(2);
+ --  First parameter is the name of the function (e.g. envir_PUTINT).
+ --  Second parameter contains the extra size arguments, if any.
+ begin infix(string) item; infix(txtqnt) txt;
+       txt:=var(adr); if txt.lp=0 then ERROR(ENO_TXT_12) endif; --  notext?
+       if txt.ent.gcl <> none then ERROR(ENO_TXT_13) endif;    --  Constant?
+       item.nchr:=txt.lp - txt.sp; item.chradr:=name(txt.ent.cha(txt.sp));
+       %1(item,val %2); if status <> 0 then ERR_PUT(item) endif;
+       var(adr).cp:=txt.lp;
+ endmacro;
+
+ Macro PUT_ITEM_TMP(2);
+ --  First parameter is the name of the function (e.g. envir_PUTINT).
+ --  Second parameter contains the extra size arguments, if any.
+ begin infix(string) item;
+       if txt.lp = 0 then ERROR(ENO_TXT_12) endif;             --  notext?
+       if txt.ent.gcl <> none then ERROR(ENO_TXT_13) endif;    --  Constant?
+       item.nchr:=txt.lp - txt.sp; item.chradr:=name(txt.ent.cha(txt.sp));
+       %1(item,val %2); if status <> 0 then ERR_PUT(item) endif;
+ endmacro;
+
+ Routine ERR_PUT; import infix(string) item;
+ begin if status = 25 then status:=0; ERROR(ENO_TXT_14);
+       elsif status <> 24 then ERR_SYS endif;
+       status:=0;
+       ---  Overflow, not enough space for all the digits. Starfill.
+       repeat while item.nchr > 0
+       do item.nchr:=item.nchr - 1;
+          var(item.chradr)(item.nchr):='*';
+       endrepeat;
+       bio.edt_ovf:=bio.edt_ovf + 1;
+ end;
+
+
+ Visible routine PUTCHAR_ATR;
+ import name(infix(txtqnt)) adr; character c;
+ begin infix(txtqnt) txt;
+       txt:=var(adr); if txt.cp = txt.lp then ERROR(ENO_TXT_15) endif;
+       if txt.ent.gcl <> none then ERROR(ENO_TXT_13) endif;    --  Constant?
+       txt.ent.cha(txt.cp):=c; var(adr).cp:=txt.cp + 1;
+ end;
+
+ Visible routine PUTCHAR_TMP;
+ import infix(txtqnt) txt; character c;
+ begin if txt.cp = txt.lp then ERROR(ENO_TXT_15) endif;
+       if txt.ent.gcl <> none then ERROR(ENO_TXT_13) endif;    --  Constant?
+       txt.ent.cha(txt.cp):=c;
+ end;
+
+
+ Visible routine PUTINT_ATR;
+ import name(infix(txtqnt)) adr; integer val;
+ begin PUT_ITEM_ATR(%envir_PUTINT%,%%) end;
+
+ Visible routine PUTINT_TMP;
+ import infix(txtqnt) txt; integer val;
+ begin PUT_ITEM_TMP(%envir_PUTINT%,%%) end;
+
+
+ Visible routine PUTREAL_ATR;
+ import name(infix(txtqnt)) adr; real val; integer n;
+ begin PUT_ITEM_ATR(%envir_PUTREAL%,%,n%) end;
+
+ Visible routine PUTREAL_TMP;
+ import infix(txtqnt) txt; real val; integer n;
+ begin PUT_ITEM_TMP(%envir_PUTREAL%,%,n%) end;
+
+
+ Visible routine PUTLRL_ATR;
+ import name(infix(txtqnt)) adr; long real val; integer n;
+ begin PUT_ITEM_ATR(%envir_PUTLREAL%,%,n%) end;
+
+ Visible routine PUTLRL_TMP;
+ import infix(txtqnt) txt; long real val; integer n;
+ begin PUT_ITEM_TMP(%envir_PUTLREAL%,%,n%) end;
+
+
+ Visible routine PUTFIX_ATR;
+ import name(infix(txtqnt)) adr; real val; integer n;
+ begin PUT_ITEM_ATR(%envir_PUTFIX%,%,n%) end;
+
+ Visible routine PUTFIX_TMP;
+ import infix(txtqnt) txt; real val; integer n;
+ begin PUT_ITEM_TMP(%envir_PUTFIX%,%,n%) end;
+
+
+ Visible routine PUTLFIX_ATR;
+ import name(infix(txtqnt)) adr; long real val; integer n;
+ begin PUT_ITEM_ATR(%envir_PUTLFIX%,%,n%) end;
+
+ Visible routine PUTLFIX_TMP;
+ import infix(txtqnt) txt; long real val; integer n;
+ begin PUT_ITEM_TMP(%envir_PUTLFIX%,%,n%) end;
+
+
+ Visible routine PUTFRAC_ATR;
+ import name(infix(txtqnt)) adr; integer val,n;
+ begin PUT_ITEM_ATR(%envir_PUTFRAC%,%,n%) end;
+
+ Visible routine PUTFRAC_TMP;
+ import infix(txtqnt) txt; integer val,n;
+ begin PUT_ITEM_TMP(%envir_PUTFRAC%,%,n%) end;
+
+
+ Visible routine PUT_STR;
+ import name(infix(txtqnt)) dst_adr; infix(string) src_str;
+ begin infix(string) dst_str; infix(txtqnt) dst;
+       if src_str.nchr <> 0  --  nostring?
+       then dst:=var(dst_adr);
+            if dst.ent.gcl <> none then IERR("PUT_STR-1") endif; -- Constant?
+            if dst.lp - dst.cp < src_str.nchr then IERR("PUT_STR-2") endif;
+            dst_str.nchr:=src_str.nchr;
+            dst_str.chradr:=name(dst.ent.cha(dst.cp));
+            ---  Transfer all the characters in the source.
+            ---  Blankfill any remaining characters of the destination.
+            C_MOVE(src_str,dst_str);
+            var(dst_adr).cp:=dst.cp + src_str.nchr;
+       endif;
+ end;
+
+
+ Visible routine LOWTEN; import character c; export character res;
+ begin envir_LTEN(c); if status <> 0 then ERR_SYS endif;
+       res:=bio.lwten; bio.lwten:=c;
+ end;
+
+ Visible routine DCMARK; import character c; export character res;
+ begin envir_DCMARK(c); if status <> 0 then ERR_SYS endif;
+       res:=bio.dcmrk; bio.dcmrk:=c;
+ end;
+
+end;

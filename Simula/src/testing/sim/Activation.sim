@@ -1,0 +1,40 @@
+
+%INCLUDE_QPS
+%QUALIFIEDNAMES
+Simulation Begin
+   Integer u;
+   ref(Car) bil,bil1,bil2;
+   ref (head)towns;
+   ref (town)r,dest;
+   text t;
+
+   Process Class Car(destin); ref(town)destin;
+   Begin
+         Hold (4);
+         Hold (12);
+   End;
+   
+   Link class town(nam_ );value nam_ ;text nam_ ;
+   begin
+     boolean gone;
+     ref(town)procedure find(code);text code; begin find:-none; end;
+   end;
+
+   for r:-r.suc while r is town do r.gone:=false ;
+   
+   
+   bil:-new car(r.find(t));
+   
+   Activate bil;
+
+
+%   bil1:- New Car();
+   Activate bil1;
+   Hold (100);
+   Activate bil2 at 7.45;
+   Activate bil2 at 7.45 prior;
+   Activate bil2 delay 1.23;
+   Activate bil2 delay 1.23 prior;
+   Activate bil2 before bil1;
+   Activate bil2 after bil1;
+End;

@@ -1,0 +1,446 @@
+ Module SYSR("RTS 105");
+ begin sysinsert COMN;
+
+       -----------------------------------------------------------------------
+       ---                                                                 ---
+       ---  COPYRIGHT 1985 by                                              ---
+       ---  Simula a.s.                                                    ---
+       ---  Postboks 335, Blindern                                         ---
+       ---  N-0314 Oslo 3, Norway                                          ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---                 P O R T A B L E     S I M U L A                 ---
+       ---                                                                 ---
+       ---                  R U N T I M E     S Y S T E M                  ---
+       ---                                                                 ---
+       ---                                                                 ---
+       ---        S y s t e m   a n d   K n o w n   R o u t i n e s        ---
+       ---                                                                 ---
+       ---               N o t   v i s i b l e   t o   F E C               ---
+       ---                                                                 ---
+       ---                                                                 ---
+       -----------------------------------------------------------------------
+
+
+ Visible known("SYSPRI") envir_SYSPRINT; import infix(string) img;
+ begin envir_PRINT(bio.sysout.key,img,1) end;
+
+ Visible known("SYSPRO") envir_SYSPROMPT;
+ import infix(string) msg,img; export integer filled;
+ begin envir_BREAKOUT(bio.sysout.key,msg);
+       if status=0 then filled:=envir_INIMAGE(bio.sysin.key,img) endif;
+ end;
+
+ Visible known("CBLNK") C_BLNK; import infix(string) str;
+ begin repeat while str.nchr > 0
+       do var(str.chradr):=' ';       -- Fill in a blank character value.
+          str.chradr:=name(var(str.chradr)(1));   -- Increment one char.
+          str.nchr:=str.nchr - 1;
+       endrepeat;
+ end;
+
+ Visible known("CMOVE") C_MOVE; import infix(string) src,dst;
+ begin integer i,n,rst; i:= -1; n:=src.nchr; rst:=dst.nchr-n;
+       if rst < 0 then n:=dst.nchr; rst:=0 endif;
+       repeat i:=i+1 while i < n     --- Move characters
+       do var(dst.chradr)(i):=var(src.chradr)(i) endrepeat;
+       repeat while rst > 0          --- Blank fill
+       do var(dst.chradr)(n):=' '; n:=n+1; rst:=rst-1 endrepeat;
+ end;
+
+ Visible sysroutine("INITIA") envir_INIT;
+ import entry(pexchdl) exchdl  end;
+
+ Visible sysroutine("TERMIN") envir_TERM;
+ import range(0:3) code; infix(string) msg  end;
+%title ***   I n f o r m a t i o n    E x c h a n g e   ***
+
+ Visible sysroutine("GINTIN") envir_GET_INTINFO;
+ import range(0:127) index; export integer result  end;
+
+ Visible sysroutine("GTEXIN") envir_GET_TEXTINFO;
+ import range(0:127) index; infix(string) item;
+ export integer filled  end;
+ 
+ Visible sysroutine ("SIZEIN")  envir_GET_SIZEINFO;
+ import range(0:127) index; range(0:255) ano;
+ export size result  end;
+
+ Visible sysroutine("GVIINF")  envir_GIVE_INTINFO;
+ import range(0:127) index; integer inform  end;
+
+ Visible sysroutine("GIVINF")  envir_GIVE_TEXTINFO;
+ import range(0:127) index; infix(string) inform  end;
+
+ --- Visible sysroutine("CLOCKT") envir_GET_CLOCK_TIME;
+ --- export long real sec  end;
+ Visible known("CLOCKT") envir_GET_CLOCK_TIME;
+ export long real sec;
+ begin 
+       --------------------------------------
+       --------------------------------------
+ end;
+
+ Visible sysroutine("CPUTIM") envir_GET_CPU_TIME;
+ export long real sec  end;
+
+ Visible sysroutine ("DWAREA")  envir_AREA;
+ import size lng; range(0:255) ano;
+ export ref() pool  end;
+
+ Visible sysroutine("MOVEIN") envir_MOVE;
+ import ref() from,to; size length  end;
+
+%title ***   F i l e   H a n d l i n g   ***
+
+ Visible sysroutine("OPFILE") envir_OPEN;
+ import  infix(string)      dsetspec;
+         range(0:MAX_FIL)   dsettype;
+         infix(string)      action;
+         integer             img_lng;
+ export  range(0:MAX_KEY)   filekey;
+ end;
+
+ Visible sysroutine("CLFILE") envir_CLOSE;
+ import range(1:MAX_KEY) filekey; infix(string) action  end;
+
+ --- Visible sysroutine("LSTLOC") envir_LASTLOC;
+ --- import range(1:MAX_KEY) filekey; export integer res  end;
+ Visible known("LSTLOC") envir_LASTLOC;
+ import range(1:MAX_KEY) filekey; export integer res;
+ begin 
+       --------------------------------------
+       status := 30;
+       --------------------------------------
+ end;
+
+ --- Visible sysroutine("MAXLOC") envir_MAXLOC;
+ --- import range(1:MAX_KEY) filekey; export integer res  end;
+ Visible known("MAXLOC") envir_MAXLOC;
+ import range(1:MAX_KEY) filekey; export integer res;
+ begin res := maxint - 1 end;
+
+ --- Visible sysroutine("CHKPNT") envir_CHKPNT;
+ --- import range(1:MAX_KEY) filekey  end;
+ Visible known("CHKPNT") envir_CHKPNT;
+ import range(1:MAX_KEY) filekey;
+ begin 
+       --------------------------------------
+       status := 30;
+       --------------------------------------
+ end;
+
+ --- Visible sysroutine("LOCKFI") envir_LOCKFI;
+ --- import range(1:MAX_KEY) filekey; real lim; integer loc1,loc2;
+ --- export integer res  end;
+ Visible known("LOCKFI") envir_LOCKFI;
+ import range(1:MAX_KEY) filekey; real lim; integer loc1,loc2;
+ export integer res;
+ begin 
+       --------------------------------------
+       res := -2;
+       --------------------------------------
+ end;
+
+ --- Visible sysroutine("UNLOCK") envir_UNLOCK;
+ --- import range(1:MAX_KEY) filekey  end;
+ Visible known("UNLOCK") envir_UNLOCK;
+ import range(1:MAX_KEY) filekey;
+ begin 
+       --------------------------------------
+       --------------------------------------
+ end;
+
+ Visible sysroutine("INIMAG") envir_INIMAGE;
+ import range(1:MAX_KEY) filekey; infix(string) image;
+ export integer filled  end;
+
+ Visible sysroutine("OUTIMA")  envir_OUTIMAGE;
+ import range(1:MAX_KEY) filekey; infix(string) img  end;
+
+ Visible known("BREAKO") envir_BREAKOUT;
+ import range(1:MAX_KEY) filekey; infix(string) img;
+ begin envir_OUTIMAGE(filekey,img) end;
+
+ Visible sysroutine("LOCATE") envir_LOCATE;
+ import range(1:MAX_KEY) filekey; integer loc  end;
+
+ Visible sysroutine("GDSNAM") envir_GET_DSETNAME;
+ import range(0:MAX_BYT) key; infix(string) str;
+ export integer filled  end;
+
+ Visible sysroutine("GDSPEC") envir_DSETSPEC;
+ import range(1:3) code;
+        infix(string) dsetspec;
+ export integer filled  end;
+
+ Visible sysroutine ("GETLPP")  envir_GETLPP;
+ import range(1:MAX_KEY) filekey; export integer lpp end;
+
+ Visible sysroutine("NEWPAG") envir_NEWPAGE;
+ import range(1:MAX_KEY) filekey  end;
+
+ Visible sysroutine("PRINTO")  envir_PRINT;
+ import range(1:MAX_KEY) filekey; infix(string) image; integer spc  end;
+
+ Visible sysroutine("INBYTE") envir_INBYTE;
+ import range(1:MAX_KEY) filekey; export range(0:MAX_BYT) byte  end;
+
+ Visible known("IN2BYT") envir_IN2BYTE;
+ import range(1:MAX_KEY) filekey; export range(0:MAX_2BT) val;
+ begin val:=envir_INBYTE(filekey);
+       if status = 0 then val:=val * 256 + envir_INBYTE(filekey) endif;
+ end;
+
+ Visible sysroutine("OUTBYT") envir_OUTBYTE;
+ import range(1:MAX_KEY) filekey; range(0:MAX_BYT) byte  end;
+
+ Visible known("OUT2BY") envir_OUT2BYTE;
+ import range(1:MAX_KEY) filekey; range(0:MAX_2BT) val;
+ begin range(0:MAX_BYT) byte;
+       byte:=val / 256; envir_OUTBYTE(filekey,byte);
+       if status = 0 then envir_OUTBYTE(filekey,val-(byte*256)) endif;
+ end;
+
+%title ***   E d i t i n g   a n d   d e - e d i t i n g   ***
+
+ Visible sysroutine("GETINT") envir_GETINT;
+ import infix (string) item; export integer res end;
+
+ Visible sysroutine("GTREAL") envir_GETREAL;
+ import infix (string) item; export long real res  end;
+
+ Visible sysroutine("GTFRAC") envir_GETFRAC;
+ import infix (string) item; export integer res  end;
+
+ Visible sysroutine("PUTINT") envir_PUTINT;
+ import infix (string) item; integer val  end;
+
+ Visible sysroutine("PUTFIX") envir_PUTFIX;
+ import infix (string) item; real val; integer frac  end;
+
+ Visible sysroutine("PTLFIX") envir_PUTLFIX;
+ import infix (string) item; long real val; integer frac  end;
+
+ Visible sysroutine("PTREAL") envir_PUTREAL;
+ import infix (string) item; real val; integer frac  end;
+
+ Visible sysroutine("PLREAL") envir_PUTLREAL;
+ import infix (string) item; long real val; integer frac  end;
+
+ Visible sysroutine("PTFRAC") envir_PUTFRAC;
+ import infix (string) item; integer val,n  end;
+
+ Visible sysroutine ("PTSIZE") envir_PUTSIZE;
+ import infix(string) item; size val  end;
+
+ Visible sysroutine ("PTOADR") envir_PUTOADDR;
+ import infix(string) item; ref() val  end;
+
+ Visible sysroutine ("PTAADR") envir_PUTAADDR;
+ import infix(string) item; field () val  end;
+
+ Visible sysroutine ("PTPADR") envir_PUTPADDR;
+ import infix(string) item; label val  end;
+
+ Visible sysroutine ("PTRADR") envir_PUTRADDR;
+ import infix(string) item; entry() val  end;
+%title ***   S t a n d a r d   P r o c e d u r e s   ***
+
+ Visible sysroutine("DRAWRP") envir_DRAW;
+ import name(integer) u; export real val  end;
+
+ Visible sysroutine("DATTIM") envir_TIMDAT;
+ import infix(string) item; export integer filled  end;
+
+ Visible sysroutine("LOWTEN") envir_LTEN;
+ import character c  end;
+
+ --- Visible sysroutine("DCMARK") envir_DCMARK;
+ --- import character c  end;
+ Visible known("DCMARK") envir_DCMARK;
+ import character c;
+ begin 
+       --------------------------------------
+       --------------------------------------
+ end;
+
+ Visible sysroutine ("RSQROO") envir_RSQRT;
+ import real arg; export real val  end;
+
+ Visible sysroutine("SQROOT") envir_DSQRT;
+ import long real arg; export long real val  end;
+
+ Visible sysroutine ("RLOGAR") envir_RLN;
+ import real arg; export real val  end;
+
+ Visible sysroutine("LOGARI") envir_DLN;
+ import long real arg; export long real val  end;
+
+ Visible known("RLOG10") envir_RLOG;
+ import real arg; export real val;
+ begin val:=envir_RLN(arg) * 0.4342944819;      -- log(e)=0.4342944819
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("DLOG10") envir_DLOG;
+ import long real arg; export long real val;
+ begin val:=envir_DLN(arg) * 0.434294481903252&&0;
+       ---  log(e)=0.434294481903252
+       ---  checking of status must be done at calling place.
+ end;
+
+ Visible sysroutine ("REXPON") envir_REXP;
+ import real arg; export real val  end;
+
+ Visible sysroutine("EXPONE") envir_DEXP;
+ import long real arg; export long real val  end;
+
+ Visible sysroutine("RSINUS") envir_RSIN;
+ import real arg; export real val  end;
+
+ Visible sysroutine("SINUSR") envir_DSIN;
+ import long real arg; export long real val  end;
+
+ Visible known("RCOSIN") envir_RCOS;
+ import real arg; export real val;
+ begin val:= envir_RSIN(arg + 1.5707963268) end;
+
+ Visible known("COSINU") envir_DCOS;
+ import long real arg; export long real val;
+ begin val:= envir_DSIN(arg + 1.5707963267949&&0) end;
+
+ Visible known("RTANGN") envir_RTAN;
+ import real arg; export real val;
+ begin real h; h:=envir_RSIN(arg);
+       if status=0 then val:=h/envir_RSQRT(1.0-(h*h)) endif; -- h = 1 ??
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("TANGEN") envir_DTAN;
+ import long real arg; export long real val;
+ begin long real h; h:=envir_DSIN(arg);
+       if status=0 then val:=h/envir_DSQRT(1.0&&0-(h*h)) endif; --  h = 1 ??
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("RCOTAN") envir_RCOTAN;
+ import real arg; export real val;
+ begin real h; h:=envir_RCOS(arg);
+       if status=0 then val:=h/envir_RSQRT(1.0-(h*h)) endif; -- h = 1 ??
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("COTANG") envir_DCOTAN;
+ import long real arg; export long real val;
+ begin long real h; h:=envir_DCOS(arg);
+       if status=0 then val:=h/envir_DSQRT(1.0&&0-(h*h)) endif; --  h = 1 ??
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible sysroutine("RARTAN") envir_RARCTAN;
+ import real arg; export real val  end;
+
+ Visible sysroutine("ARCTAN") envir_DARCTAN;
+ import long real arg; export long real val  end;
+
+ Visible known("RARCOS") envir_RARCCOS;
+ import real arg; export real val;
+ begin val:=1.5707963268 - envir_RARCSIN(arg);
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("ARCCOS") envir_DARCCOS;
+ import long real arg; export long real val;
+ begin val:=1.5707963267949&&0 - envir_DARCSIN(arg);
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("RARSIN") envir_RARCSIN;
+ import real arg; export real val;
+ begin real h; h:= envir_RSQRT(1.0 - (arg*arg));
+       if status = 0 then val:=envir_RARCTAN(arg/(h+1.0))*2.0 endif;
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("ARCSIN") envir_DARCSIN;
+ import long real arg; export long real val;
+ begin long real h; h:=envir_DSQRT(1.0&&0 - (arg*arg));
+       if status=0 then val:=envir_DARCTAN(arg/(h+1.0&&0))*2.0&&0 endif;
+       --- checking of status must be done at calling place.
+ end;
+
+ Visible known("RATAN2") envir_RATAN2;
+ import real y,x; export real val;
+ begin if x = 0.0
+       then if y=0.0 then status:=27; goto E endif;
+            if y>0.0 then val:=1.5707963268 else val:= -1.5707963268 endif;
+       else val:=envir_RARCTAN(y/x) endif;
+       if x < 0.0 then val := val - 3.1415926536 endif;
+       if y < 0.0 then val := -val endif;
+
+ E:end;
+
+ Visible known("ATAN2") envir_DATAN2;
+ import long real y,x; export long real val;
+ begin if x = 0.0&&0
+       then if y=0.0&&0 then status:=27; goto E endif;
+            if y>0.0&&0 then val:=  1.5707963267949&&0
+                        else val:= -1.5707963267949&&0 endif;
+       else val:=envir_DARCTAN(y/x) endif;
+       if x < 0.0&&0 then val := val - 3.1415926535898&&0 endif;
+       if y < 0.0&&0 then val := -val endif;
+
+ E:end;
+
+ Visible known("RSINH") envir_RSINH;
+ import real arg; export real val;
+ begin val := (envir_REXP(arg) - envir_REXP(-arg)) / 2.0 end;
+
+ Visible known("SINH") envir_DSINH;
+ import long real arg; export long real val;
+ begin val := (envir_DEXP(arg) - envir_DEXP(-arg)) / 2.0&&0 end;
+
+ Visible known("RCOSH") envir_RCOSH;
+ import real arg; export real val;
+ begin val := (envir_REXP(arg) + envir_REXP(-arg)) / 2.0 end;
+
+ Visible known("COSH") envir_DCOSH;
+ import long real arg; export long real val;
+ begin val := (envir_DEXP(arg) + envir_DEXP(-arg)) / 2.0&&0 end;
+
+ Visible known("RTANH") envir_RTANH;
+ import real arg; export real val;
+ begin real x,y; x:=envir_REXP(arg); y:=envir_REXP(-arg);
+       val := (x-y)/(x+y);
+ end;
+
+ Visible known("TANH") envir_DTANH;
+ import long real arg; export long real val;
+ begin long real x,y; x:=envir_DEXP(arg); y:=envir_DEXP(-arg);
+       val := (x-y)/(x+y);
+ end;
+
+%title ***   O b s e r v a t i o n   t o o l s   ***
+ Visible sysroutine ("GTPADR") envir_GETPADDR;
+ import infix(string) modid; integer lno;
+ export label padr  end;
+
+ Visible sysroutine("GTOUTM") envir_OUTERMOST;
+ export label psc  end;
+
+ Visible sysroutine("GTLNID")  envir_LINEID;
+ import label adr; infix(string) item; export integer filled  end;
+
+ Visible sysroutine("GTLNO") envir_GET_LINE_NO;
+ import label pad; export integer lno  end;
+
+ Visible sysroutine("BRKPNT") envir_BREAK;
+ import label adr; boolean sw  end;
+ 
+ Visible sysroutine("DMPOBJ")  envir_DMPOBJ;
+ import range(1:MAX_KEY) filekey; ref() obj; size lng  end;
+
+
+end;

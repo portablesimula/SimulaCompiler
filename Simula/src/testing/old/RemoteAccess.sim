@@ -1,0 +1,23 @@
+begin
+   class C;
+   begin
+      integer j;
+      ref(C) next; ref(C) array A[1:5];
+      integer procedure P(i);integer i;; ;
+   end;
+   
+   C class D;
+   begin
+     integer i;
+     this C.j := i;
+   end;
+   ref(C) x;
+   integer k,l,m,n;
+   
+   x:-x.next.next.A[4].next;
+   x.j:=k+l*m+n;
+   k:=(x.next qua D).i;
+   new D().A[6]:-none; !new C();
+   k:=x.P(7);
+   
+end;   

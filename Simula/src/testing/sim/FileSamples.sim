@@ -1,0 +1,40 @@
+
+%QUALIFIEDNAMES
+begin
+	text image; real r; integer i;
+	ref(InFile) input;
+	input:-new InFile("SYSIN");
+	input.open(blanks(40));
+    outtext("Type any input: ");
+    breakoutimage;
+	input.inimage;
+	image:-input.intext(40);
+	outtext("Echo: "); outtext(image); outimage;
+    outchar('|'); outint(67,12);
+    outchar('|'); outreal(67.89,2,12);
+    outchar('|'); outfix(67.89,2,12);
+    outchar('|'); outfrac(67.89,2,12);
+    outchar('|'); outimage;
+    
+    outchar('|'); outint(67,0);
+    outchar('|'); outreal(67.89,2,0);
+    outchar('|'); outfix(67.89,2,0);
+    outchar('|'); outfrac(67.89,2,0);
+    outchar('|'); outimage;
+    
+    image:=" 3.14  567  12.37&45 123 345 456";
+    image.setpos(1);
+    outchar('|'); outreal(image.getreal,2,12);
+    outchar('|'); outint(image.getint,12);
+    outchar('|'); outreal(image.getreal,2,12);
+    outchar('|'); outint(image.getfrac,12);
+    outrecord;
+    
+     outtext("input IN ImageFile returns "); if input IN ImageFile then outtext("true") else outtext("false"); outimage;
+%     outtext("input IN PrintFile returns "); if input IN PrintFile then outtext("true") else outtext("false"); outimage;
+%     outtext("input IS ImageFile returns "); if input IS ImageFile then outtext("true") else outtext("false"); outimage;
+     outtext("input IS InFile returns "); if input IS InFile then outtext("true") else outtext("false"); outimage;
+%  b:=file IS InFile;
+    
+
+end program;

@@ -1,0 +1,16 @@
+begin
+   !*** Testing multiple Scopes ***;
+   
+   integer i;
+   ref(A) x;
+   
+   class A;
+   begin
+      integer j;
+      j:=i;
+   end;
+   
+   inspect x do i:=j;
+   i:=-+i+4;
+   i:=i+ -(x.j);
+end;       

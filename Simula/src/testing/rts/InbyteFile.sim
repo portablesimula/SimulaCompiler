@@ -1,0 +1,41 @@
+
+%STANDARDCLASS
+
+ByteFile class InbyteFile_;
+begin Boolean ENDFILE_;
+      Boolean procedure endfile;  endfile:= ENDFILE_;
+      
+      Boolean procedure open;
+      begin if(not OPEN_) then
+         begin
+            OPEN_:=true;
+            BYTESIZE_ := 8; ! value of access mode BYTESIZE_;
+            ENDFILE_:=false;
+         end;   
+      end open;
+      
+      Boolean procedure close;
+      if OPEN_ then
+      begin 
+         ! ... ;
+         OPEN_:=false;
+         close := ENDFILE_ := true;
+      end close;
+      
+      short integer procedure inbyte;
+      begin if ENDFILE_ then error("End of file")
+%       else if ... ! no more bytes to read;
+%            then ENDFILE_ := true  ! inbyte returns zero;
+%       else inbyte  := ...! next byte of size BYTESIZE_;
+      end inbyte; 
+              
+      text procedure intext(t);   text t;
+      begin t.setpos(1);
+            while t.more and not ENDFILE_ do t.putchar(Char(inbyte));
+            if ENDFILE_ then t.setpos(t.pos-1);
+            intext:- t.sub(1,t.pos-1)
+      end intext;              
+       
+      ENDFILE_:= true;
+      ! ... ;
+end inbytefile;

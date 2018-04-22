@@ -1,0 +1,4 @@
+begin
+   real x,y;
+   x:=sqrt(y);
+end;

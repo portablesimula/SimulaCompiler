@@ -1,0 +1,39 @@
+
+%QUALIFIEDNAMES
+SIMSET begin real r;
+begin
+   integer i;
+   ref(A) x;
+
+   class A(r); real r;
+   begin
+      ref(A) next; ref(B) y;
+      real procedure Q(p); integer p; Q:=p+i;
+       
+      class B;
+      begin
+         i:=r;
+         inspect x do 
+         begin
+            y:-new B;
+      		x.detach;
+            r:=Q(r);
+         end;   
+      end;
+      
+      
+   end;
+   
+   x:-new A(13);
+ 
+   i:=x.Q(i);
+   
+   inspect x.next do 
+   begin
+      y:-new B;
+      
+      r:=Q(i);
+   end;   
+   
+end;
+end;

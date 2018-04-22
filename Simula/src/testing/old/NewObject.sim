@@ -1,0 +1,10 @@
+begin
+   boolean b;
+   real x,y;
+   class A(a,b,c); real a,b; integer c;
+   begin 
+   end;
+   
+   new A(1,2,3);
+   new A((if x<y then 16 else 32),3.14,5.678);
+end;   

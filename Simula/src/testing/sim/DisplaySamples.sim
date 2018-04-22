@@ -1,0 +1,21 @@
+
+%  STANDARDCLASS
+%DISPLAY ON 
+%QUALIFIEDNAMES
+begin
+  integer j;
+  
+  class A;
+  begin
+     integer i;
+     i:=j+4;
+     inspect x do
+     i:=this A.i;
+     this A.i:=j;
+  end; 
+  
+  ref(A) x;
+  x:-new A();
+  x.i:=89;
+
+end;    

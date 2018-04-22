@@ -1,0 +1,20 @@
+   begin
+    class linkage;
+       begin ref(linkage) SUC,PRED;
+       end linkage;
+       
+      linkage class head;
+         begin               
+               procedure clear;
+               begin ref(link) X;
+                   X.out
+               end clear;
+                  
+         end head;
+         
+      linkage class link;
+         begin procedure out;
+               begin
+               end out;
+         end link;
+   end;

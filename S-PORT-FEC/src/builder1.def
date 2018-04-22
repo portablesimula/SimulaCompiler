@@ -1,0 +1,967 @@
+External class PAS1INIT;
+
+PAS1INIT class BUILDER1;
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1985,86 by                                           ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---               B u i l d e r    P a r t  1.                      ---
+%      ---                                                                 ---
+%      ---  Selection switches: DKPI                                       ---
+%      ---                                                                 ---
+%      ---    'D' Included when dump is wanted                             ---
+%      ---    'K' Included always when quick capability wanted             ---
+%      ---    'P' Included to make compiler use quick procedures           ---
+%      ---    'I' Included to make compiler use inserted mnemonics         ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+begin
+
+%+I %INSERT (FEC-105)COMMON:MNE
+%+I %INSERT (FEC-105)SCOPE:MNE
+
+      !******    MAIN DECLARATIONS   ************;
+
+      boolean BoundCheck, NoneCheck, QuaCheck, ReuseProc;
+      boolean simob_descr,simob_entity; short integer simob_level;
+      ref(brecord)array display(-4:maxblev);
+      short integer cblev;          ! Current blev in display;
+      short integer crtblev; ! Current RT-blev. Keeps track of the
+                        insertion of instances at the static chain ;
+      ref(quantity)array curmeaning(0:maxid); ! The current meaning;
+      short integer lastblno; ! Is written from checker;
+      short integer curmaxbl;
+
+      class blockref(n); short integer n;
+      begin ref(brecord)array elt(0:n); end;
+      ref(blockref) blocktab;
+
+      short integer lastusedtag; comment: For coder use only;
+
+      ref(quantity)detachquant; ! A free detach-quantity used
+                                  again and again (in globmeaning);
+
+      short integer sysindex;
+
+!********    status variables pointed to by the MATCH-attribute  *****;
+
+      ref(quantity)setprefgoing, alloc2called;
+      comment: These represent status of quantities when
+               pointed to by the match-attribute;
+
+!********   variables controlling checker and coder etc.  ******;
+      ref(component) dumgen; !*** Points to dummy coder;
+
+      short integer ssnuma; comment: Number received by ISSWA;
+
+      comment: For communication from checker to coder:  ;
+      short integer opc,opi; ref(quantity)opq;
+      ref(brecord)unknowns; comment: A brecord haveing the unknown
+                             identifiers as local quantities;
+
+
+     !********    procedure VALUETYPE    ************;
+      boolean procedure valuetype(type); character type;
+      valuetype:= rank(type)<=ILONG or!else; rank(type)=IOTHW;
+                  ! false for INOTY, ITEXT or IREF ;
+%title ***  Dummygenerator / Visiblegenerator  ***
+
+      component class dummygenerator;
+      while true do
+      begin opt:=optx:=opc:=INOTY; opi:=0; opq:-none;
+            detach;
+%+D         if Zoption then
+%+D         begin if opc=ILINE then outimage;
+%+D               outtext(DB(opc)); outtext("  ");
+%+D               outtext("opt= ");
+%+D               if opt=INOTY then outtext("     ") else
+%+D               outtext(DB(opt)); outtext("  ");
+%+D               outtext("optx= ");
+%+D               if optx=INOTY then outtext("     ") else
+%+D               outtext(DB(optx)); outtext("  ");
+%+D               outint(opi,6); outtext("  ");
+%+D               if opq=/=none then
+%+D               begin if rank(opq.kind) <> IBLKB and rank(opq.kind) <> IBPRF
+%+D                     then outtext(idname(opq.ident));
+%+D                     outint(opq.encl.blno,7);
+%+D               end;
+%+D               outimage;
+%+D         end;
+      end of dummygenerator;
+
+
+      component class visiblegenerator(lowindtag,maxmodules);
+      short integer lowindtag,maxmodules;
+      begin !********  SYSTEM FOR PREDEFINED TAGS  ***********;
+
+            class module(tabindex,moduleid,checkcode,numoftags,basetag);
+            short integer tabindex,moduleid,checkcode,numoftags,basetag; ;
+
+            ref(module)array moduletab(1:maxmodules);
+            short integer lastmodule;
+            short integer array dirtag(lowindtag:-1);
+            short integer lastindtag; ! is initiated to lowindtag-1;
+
+            ref(module)procedure findmodule(ni); short integer ni;
+            begin
+                  short integer i;
+                  for i:=1 step 1 until lastmodule do
+                  if moduletab(i).moduleid=ni then
+                  begin findmodule:-moduletab(i); goto E end;
+            E:end;
+
+            ref(module)procedure regnewmodule(n,cc,numtag); value n,cc;
+            text n,cc; short integer numtag;
+            begin
+                  short integer ni,cci; DEFCONST(n); ni:=HASHINDEX;
+                  DEFCONST(cc);cci:=HASHINDEX;
+                  if findmodule(ni)=/=none then StopScode_1(572);
+                  lastmodule:=lastmodule+1;
+                  if lastmodule>maxmodules then StopScode_1(573);
+                  regnewmodule:-moduletab(lastmodule):-
+                       new module(lastmodule,ni,cci,numtag,lastusedtag+1);
+                  lastusedtag:=lastusedtag+numtag;
+            end;
+
+            lastindtag:=lowindtag-1;
+      end visiblegenerator;
+%title ***  D i a g n o s t i c s  ***
+
+%+P   prior
+      text procedure qlin(r); ref(quantity) r;
+      begin text t;
+            t:-conc3("'",idname(r.ident),"(l. ");
+            qlin:-conc3(t,leftint(r.line),")'");
+      end;
+
+%+P   prior
+      procedure errQT(q,n);
+      ref(quantity) q; short integer n;
+            GiveMessage(q.line,2,qat(q.ident,n));
+
+%+P   prior
+      procedure errQTT(q,n3,n4);
+      ref(quantity) q; short integer n3,n4;
+            GiveMessage(q.line,2,cat(qat(q.ident,0),errcat(n3,n4)));
+
+%+P   prior
+      procedure errQTN(q,n,qt);
+      ref(quantity) q,qt; short integer n;
+            GiveMessage(q.line,2,cat(qat(q.ident,n),qlin(qt)));
+
+%+P   prior
+      procedure errQTNT(q,n3,qt,n5);
+      ref(quantity) q,qt; short integer n3,n5;
+            GiveMessage(q.line,2,cat(qat(q.ident,n3),catTX(qlin(qt),n5)));
+
+%+P   prior
+      procedure errLQTNT(q,n2,qt,n4);
+      ref(quantity) q,qt; short integer n2,n4;
+            GiveMessage(linenr,2,cat(qat(q.ident,n2),
+                                     catTX(qlin(qt),n4)));
+
+%+P   prior
+      procedure StopScode_1(n); short integer n;
+      begin if numerrfound=0 then internalerror(n);
+            termstatus:='6'; coder:-dumgen;
+      end;
+
+%+P   prior
+      procedure StopScode_2(n,l); short integer n; integer l;
+      begin if numerrfound=0 then internerr(n,l);
+            termstatus:='6'; coder:-dumgen;
+      end;
+%title ***   B R E C O R D   ***
+
+      class brecord(blno,blev,rtblev);
+         short integer blno,      !                                      ;
+                       blev,      !                                      ;
+                       rtblev;    !                                      ;
+      begin
+         short integer npar, nloc;! Accumulated in pref.chain;
+         short integer navirt;
+         integer line1; ! not used : line2;
+         short integer fornests;
+         short integer connests;
+         ref(quantity) declquant;
+         ref(quantity) fpar;
+         ref(quantity) favirt;
+         ref(hidpack)  hidlist;
+         boolean thisused;        ! - also marks prior procedure;
+         boolean restricted;      ! true if this class or prefix has prot.;
+% UT     boolean localclasses;
+         character kind;          ! - for coding, see below;
+         character sysprefix;     ! - for coding, see below;
+
+         boolean procedure thisusedchain;
+         begin ref(quantity)q; q:-declquant;
+               while not q.descr.thisused and q.plev>0 do q:-q.prefqual;
+               thisusedchain:=if q.descr.thisused then true else false;
+         end;
+
+         procedure removeVis(visp,err); ref(hidpack) visp; short integer err;
+         begin ref(hidpack) prev;
+               GiveMessage(abs(visp.line),1,catXT(err,idname(visp.ident)));
+               if hidlist.line=1 then hidlist:-none !*** no more packs;
+               else begin prev:-hidlist;
+                    while prev.next=/=visp do prev:-prev.next;
+                    prev.next:-visp.next;
+                    hidlist.line:=hidlist.line-1;
+               end;
+         end;
+
+%       KIND:             class:                         ICLAS
+%                         procedure:                     IPROC
+%                         simp.block:                    IBLKB
+%                         pref.block:                    IBPRF
+%                         insp. class:                   IINSP
+%                         brecord for labels of
+%                         for- and inspect-statements:   IFORE;
+
+%       SYSPREFIX:        'N': no system prefixed block
+%                         'E': SIMSET prefixed block
+%                         'L': SIMULATION prefixed block
+
+%+D      procedure dump;
+%+D      begin ref(quantity)q;
+%+D            outimage; outtext("** BRECORD:  ");
+%+D            outint(blno,4); outint(blev,4);
+%+D            outint(rtblev,4); outtext("  ");
+%+D            outtext(DB(rank(kind)));
+%+D            outint(line1,5); ! not used  outint(line2,5);
+%+D            outint(npar,5); outint(nloc,5); outint(navirt,5);
+%+D            outint(fornests,5);
+%+D            outint(connests,5);
+% +D   UT      outtext(if localclasses then "  LC  " else "  NLC ");
+%+D            outtext(if thisused then " TU " else " TN ");
+%+D            outchar(sysprefix);outtext("-");
+%+D            if declquant==none then !do nothing; else
+%+D            if declquant.prefqual=/=none then
+%+D            outint(declquant.prefqual.descr.blno,5);
+%+D            inspect this brecord when extbrecord do
+%+D            begin outtext("  EXTB "); outtext(idname(checkcode));
+%+D                  outtext("  "); outchar(status); outtext("  ");
+%+D                  if cause=/=none then outtext(idname(cause.ident));
+%+D            end;
+%+D            outimage;
+%+D            q:-fpar; while q=/=none do begin q.dump; q:-q.next end;
+%+D            q:-favirt; while q=/=none do begin q.dump; q:-q.next end;
+%+D      end of brecord-dump;
+
+      end of class brecord;
+%title ***   Q U A N T I T Y   ***
+
+      class quantity;
+      begin character type,kind,categ,arraycateg;     ! - see below;
+            boolean protect,visible;                  ! - see below;
+            boolean descriptorpr; ! descriptor for this class produced;
+            short integer ident;
+            short integer plev;   ! Also used for prefid/qualid during alloc.;
+            short integer dim;    ! - see below;
+            short integer virtno; ! - see below;
+            short integer ftag;   ! First tag allocated to this quantity;
+            short integer arraylb;! - see below;
+                  integer line;
+            ref(brecord)encl;     ! In virtuals the encloser of  ???????
+                                    where it was specified as virtual;
+            ref(brecord)descr;
+            ref(quantity)prefqual;! For prefix or qualification;
+            ref(quantity)match;
+            ref(quantity)next;    ! Next quantity in list local to brecord;
+            ref(quantity)prevmeaning; ! Previous meaning when redeclared;
+
+%       TYPE:           notype            : INOTY
+%                       integer           : IINTG
+%                       short integer     : ISHOR
+%                       real              : IREAL
+%                       long real         : ILONG
+%                       boolean           : IBOOL
+%                       character         : ICHAR
+%                       label (switch)    : ILABE
+%                       text              : ITEXT
+%                       ref               : IREF
+%                       universal         : IOTHW
+%
+%       KIND:           unspec. par.      : INOT
+%                       simple            : IIDN
+%                       array             : IARRA
+%                       procedure         : IPROC
+%                       class             : ICLAS
+%                       label             : ILABE
+%                       switch            : ISWIT  (TYPE=ILABE)
+%                       universal         : IOTHW
+%                       decl.qnt of block : IBLKB
+%                       ....... of pr.blk : IBPRF
+%                       decl.qnt of insp. : IINSP
+%                       (in last case match gives orig. quantity)
+%                  decl.qnt of lab.brecord: IFORE
+%
+%       CATEG:          local attribute   : IDCLI
+%                       default parameter : IFRMP
+%                       value parameter   : IVALU
+%                       name parameter    : INAME
+%                       virtual           : IVIRT
+%                       external          : IEXTR
+%                       unknown identifier: INEW
+%
+%       ARRAYCATEG:     1.dim clb array   : index of value (kind=IARRA)
+%                       constant element  : index of value (kind=ISIDN)
+%                 Note: the index is positive if the actual value is negative
+%
+%       PROTECT:        true if attribute is protected
+%
+%       VISIBLE:        true whenever the context permits use of this attr.
+%
+%       DIM:            - Dimension of array/switch.
+%                       - "language" of external.
+%                       - if categ=INEW: number of times seen.
+%                       - if categ=IVIRT: dim <> 0 means that this virtual
+%                         is specified at current prefix level;
+
+%       VIRTNO:         - categ=IVIRT: Sequence number in accum. virtual list
+%                       - categ=IEXTR: External name of external
+%                       - categ=INEW:  its sequence number of unknown id's
+%                       - Otherwise, virtno<>0 indicates that this is a special
+%                         declaration that was attached a text value after the
+%                         identifier, virtno gives the index in 'symtab'
+%
+%       MATCH:          - categ=IVIRT: Matching quantity (if any)
+%                       - categ=ICLAS: this variable refering to certain
+%                                      objects indicate different states.
+%                       - kind=IINSP:  then it refers to original ;
+
+            !*** two COPY-procedures, from quant, and from quantity ***;
+
+%+P         prior
+            procedure copyfrom(Q); ref(quant)Q;
+            begin ident:=Q.ident; line:=Q.line;
+                  type:=Q.type; kind:=Q.kind; categ:=Q.categ;
+                  dim:=Q.dim;  protect:=Q.protect;
+                  if Q.extname>0 then virtno:=Q.extname else
+                  if Q.extname=-ident then arraylb:=ident; !mark constant;
+                  plev:=if rank(kind)=ICLAS and Q.descrno <> 0
+                              then bltab(Q.descrno).prefid
+                              else Q.qualid;
+            end of copyfrom;
+
+
+%+P        prior
+           procedure makeequal(q); ref(quantity)q;
+           begin  ref(extquantity) qe1,qe2;
+                  ident:=q.ident;      line:=q.line;
+                  encl:-q.encl;        descr:-q.descr;
+                  type:=q.type;        kind:=q.kind;
+                  categ:=q.categ;      prefqual:-q.prefqual;
+                  plev:=q.plev;        dim:=q.dim;
+                  protect:=q.protect;  visible:=q.visible;
+                  virtno:=q.virtno;    match:-q.match;
+                  arraycateg:=q.arraycateg; arraylb:=q.arraylb;
+                  comment: "next" is not copied  ;
+                  ftag:=q.ftag;
+                  if this quantity is extquantity then
+                  begin qe1:-this quantity; qe2:-q;
+                        qe1.module:-qe2.module;
+                        qe1.classific:=qe2.classific;
+                        qe1.longindic:=qe2.longindic;
+                  end;
+            end;
+
+            !**********     procedure SETPREFIX, in quantity   *******;
+
+            procedure setprefix;
+            comment: This procedure is used within alloc2 to assure
+                     that the prefix of this class is properly set.
+                     It should only be called when:
+                     kind=ICLAS and prefqual(=prefix)==none and
+                     plev(=prefid) <> 0;
+            begin ref(quantity)PQ;
+                  match:-setprefgoing;
+                  globmeaning(plev); PQ:-gm_result; ! plev contains prefix-id;
+                  if rank(PQ.categ)=INEW or rank(PQ.kind) <> ICLAS then
+                     errQTN(this quantity,301,PQ) else
+                  if PQ.encl.blev <> encl.blev then
+                     errQTN(this quantity,302,PQ) else
+                  if PQ.match==setprefgoing then
+                     errQT(this quantity,303) else
+                  begin if PQ.prefqual==none and PQ.plev<>0 then PQ.setprefix;
+                        prefqual:-PQ; plev:=PQ.plev+1; goto out;
+                  end;
+                  prefqual:-none; plev:=0;
+            out:  match:-none;
+            end of procedure setprefix;
+
+
+            !*********    procedure DUMP of quantity   ********;
+
+%+D         procedure dump;
+%+D         begin outimage; outtext("**QUANTITY: ");
+%+D               if rank(kind) <> IBLKB and rank(kind) <> IBPRF then
+%+D               outtext(idname(ident)); outint(line,5);
+%+D               outint(encl.blno,5); outtext("  ");
+%+D               outtext(DB(rank(type ))); outtext("  ");
+%+D               outtext(DB(rank(kind ))); outtext("  ");
+%+D               outtext(DB(rank(categ))); outtext("  ");
+%+D               outint(plev,5);
+%+D               if prefqual=/=none then
+%+D               begin outtext(idname(prefqual.ident));
+%+D                     outint(prefqual.encl.blno,5);
+%+D               end;
+%+D               outimage; outtext("               ");
+%+D               outint(ftag,6);
+%+D               outint(dim,5); outint(virtno,5);
+%+D               if match=/=none then
+%+D               begin outtext(idname(match.ident));
+%+D                     outint(match.encl.blno,5);
+%+D               end;
+%+D               if descr=/=none then outint(descr.blno,5);
+%+D               inspect this quantity when extquantity do
+%+D               begin outtext(" EXTQ ");
+%+D                     if module=/=none then
+%+D                     outtext(idname(module.declquant.ident));
+%+D                     outtext(" clsf:"); outchar(classific);
+%+D                     outtext(" lind:");
+%+D                     outint(rank(longindic),4);
+%+D               end;
+%+D               outimage;
+%+D         end of quantity-dump;
+
+            visible:=true; !*** all quantities are born visible;
+
+      end of quantity;
+
+%title ***   E X T B R E C O R D   ***
+
+      brecord class extbrecord;
+      begin short integer checkcode;   ! If not zero, then checkcode
+                                         identifying compilation;
+            character status; ! Can have the following values:
+                           'S'(source)   Stems from an explicit external
+                                         declaration in the source
+                                         program.
+                           'H'(head)     Stems only from the external
+                                         head of one or more included
+                                         modules.
+                           'B'(body)     Stems from explicit external
+                                         declaration in the body of a
+                                         directely or indirectely
+                                         included module.
+                           'M'(marker)   Marks that an external decl
+                                         that is implicitely included
+                                         at this prefix level is iden-
+                                         tified with an external decl
+                                         at an earlier prefix level. ;
+
+            ref(extquantity)cause; ! The meaning depends on status:
+                        'S':  If=/=none then an implicit ext dcl is
+                              identified with this decl, and its
+                              checkcode is given here.
+                        'M':  The ext decl it is identified to at a
+                              prefix level.
+                        'B':  The first treated external declaration
+                              that brougt this ext declaration in.
+                        'H':  Same as 'B'.  ;
+
+            short integer moduleid; ! Module identifier (in symtab);
+
+            short integer exttagnum; ! The number of external tags in
+                                       this module.
+                                       Set during expansion of externals;
+
+            short integer ftag; ! The first internal tag for this module
+                                  in the program bringing in this module;
+
+      end extbrecord;
+%title ***   E X T Q U A N T I T Y   ***
+
+      quantity class extquantity(module); ref(extbrecord)module;
+%     comment: Module is the module to which it is local.  All locals
+%              in separate modules are represented by extquantities,
+%              also the declquant of the extbrecord itself, in which
+%              case module==descr.        ;
+      begin character classific;
+%           ! Classification with respect to implementation.
+%
+%                 'N'  means normal userdefined declaration, used when
+%                      it comes from a usual external declaration.
+%
+%                 'E'  is used in external procedure that is given
+%                      a binding.
+%
+%                 'F'  is used in parameters to external procedure with
+%                      binding.
+%
+%         ---   The rest is only used in system attribute files   ------
+%
+%                 'X'  Is used when it is of no specific interest.
+%
+%                 'C'  Used for system classes.
+%
+%
+%                  --  Procedures implemented by routines:
+%
+%                 'T'  Used for procedure which is attribute of text
+%                      ( accessed as <text expr>.<procedure> ). Should
+%                      be called as a routine with an extra first GADDR
+%                      parameter (address of text variable).  If the
+%                      <text expr> is not a variable, this routine
+%                      should not be called. Instead its successor in
+%                      the declaration list of 'class _text' should be
+%                      called. This is assumed to be classified with U.
+%
+%                 'U'  Used for procedure which is attribute of text
+%                      ( accessed as <text expr>.<procedure> ).  Should
+%                      be called as a routine with an extra first text
+%                      quantity parameter (as a value).
+%
+%                 'L'  Used for procedures local in classes, that should
+%                      have a reference to the object as an extra first
+%                      parameter.
+%
+%                'M'  Same as 'L', but the routine may lead to garbage
+%                     collection.  Thus SAVE-RESTORE must possibly
+%                     enclose the call.  These are all procedures of
+%                     type text, and the text reference is delivered
+%                     on TOS. If the procedure is remotely accessed,
+%                     the extra first parameter has to be kept in
+%                     TMP.PNT during a possible save.
+%
+%                 'O'  Used for file'open and file'close.
+%                      Extra first parameter should be given as for 'L'.
+%                      Furthermore there are one or two infix(txtqnt)
+%                      parameters: image (open) and action-string (open
+%                      and close). The image should always occur in a
+%                      call on open (for byte-files notext should be
+%                      given). The action-string is optional, i.e. it
+%                      does not have to occur in the call. If it doesn't
+%                      occur, notext should be supplied by FEC.
+%
+%                 'R'  Used for procedures that are to be translated to
+%                      routines with no special treatment.
+%
+%                'S'   Same as 'R', but the routine may lead to garbage
+%                      collection.  Thus SAVE-RESTORE must possibly
+%                      enclose the call.  These are all procedures of
+%                      type text, and the text reference is delivered
+%                      on TOS.
+%
+%                 'Y'  Used for procedure in class file which is an
+%                      operation on the image.  Image of the actual file
+%                      should be given as extra first parameter, as a
+%                      GADDR (corresponding to 'T' above).
+%
+%                 'Z'  Same as 'Y', but the extra first parameter should
+%                      be given as a text quantity value (corresponding
+%                      to 'U' above).
+%
+%
+%                  -- Inline coded procedures:
+%
+%                 'I'  Used for 'rank' and 'isorank'. Is to be
+%                      translated to inline CONVERT INT.
+%
+%                 'J'  Used for 'char' and 'isochar'. Is to be
+%                      translated to inline CONVERT CHAR.
+%
+%                 'V'  Used for type procedures local in classes that
+%                      should be translated to fetching a value
+%                      directely from an attribute (sysin/ sysout/
+%                      certain attributes of file). Is translated to
+%                      code for OADDR of the enclosure followed by a
+%                      REMOTEV.
+%
+%                 'W'  Used for type procedures local in classes that
+%                      should be translated to fetching a value from an
+%                      attribute through one level of indirection.  Is
+%                      translated to code for OADDR followed by two
+%                      REMOTEV's.  Currently used for Simulation'time
+%                      only.
+%
+%                 -- Classification of parameters:
+%
+%                'P'   Used for parameters to procedures that should be
+%                      translated to usual parameters to routines.
+%
+%                'Q'   Used for parameters to routines classified by 'I'
+%                      or 'J'  (rank/isorank/char/isochar).
+%
+%                  ***********************************************;
+
+            character longindic;
+%           !***   The rank of this variable is not zero if this is
+%                  a procedure whose first parameter is real, and if
+%                  it should be replaced by another procedure if the
+%                  first actual parameter is long real.  The version
+%                  to be used then is found by following the next
+%                  pointer rank(longindic) steps.
+%                  It is given after "classific" to attributefile,
+%                  as a negative number in front of "number of tags". ;
+
+      end of extquantity;
+
+%title ***  Procedure EXTTAG  ***
+
+      short integer nextexttag; ! Next external tag to be given to a quantity;
+
+      short integer procedure exttag(q);ref(quantity)q;
+      begin ! Delivers the external tag by which q should be
+              associated, -1 if no external tag should be given to  q;
+            ! exttag should check for "hidden protected" - not impl;
+            ! Called from 'normalattrfile', 'recompattrfile' (Builder2)
+              and 'generatetagindexlist' (coder2) ;
+
+            exttag:=nextexttag; ! Is overwritten if no tag is given;
+
+            if rank(q.categ)=IVIRT then exttag:=-1 else
+            if rank(q.categ)=IEXTR then
+            begin
+                  if q.descr is extbrecord then exttag:=-1 else
+                  ! procedure with binding: profile- and bodytag;
+                  nextexttag:=nextexttag+2;
+            end else
+            if (if q is extquantity then q qua extquantity.classific='F'
+                else false)
+            then ! parameter to external non-Simula procedure ;
+                 exttag:=-1
+       else if q.arraylb<>0 and!then; rank(q.encl.kind)<>ICLAS and!then;
+               rank(q.kind)=IIDN
+            then ! named constant, same check as in LAYOUT ;
+                 exttag:=-1
+       else begin nextexttag:=nextexttag +
+                        (if rank(q.kind)=IPROC and rank(q.categ)=IDCLI then (
+%+K                      if q.descr.thisused then 4 else
+                         3) else
+                         if rank(q.kind)=ICLAS and rank(q.categ)=IDCLI then 5
+                         else
+                         if rank(q.categ)=INAME then 2
+                         else 1 );
+   !              if simob_descr then nextexttag:=nextexttag+2;
+            end;
+      end ***exttag***;
+
+%title ***   GLOBMEANING  -   NEWNOTSEEN   -  VISCHAIN  -  INVISCHAIN   ***
+
+      ref(quantity) gm_result;
+
+%+P   prior
+      procedure globmeaning(ident); short integer ident;
+      begin gm_result:-curmeaning(ident);
+            if gm_result==none then gm_result:-newnotseen(ident);
+      end ***globmeaning***;
+
+
+      ref(quantity)procedure newnotseen(ident); short integer ident;
+      begin ref(quantity)q; q:-unknowns.fpar;
+            if q==none then
+            begin unknowns.fpar:-q:-new quantity; q.virtno:=1 end
+       else begin while q.next=/=none do q:-q.next;
+                  q.next:-new quantity;
+                  q.next.virtno:=q.virtno+1; q:-q.next;
+            end;
+            q.ident:=ident; q.categ:=char(INEW); q.kind:=q.type:=char(IOTHW);
+            q.line:=linenr; q.dim:=1; q.encl:-unknowns;
+            unknowns.nloc:=unknowns.nloc+1;
+            curmeaning(ident):-newnotseen:-q;
+      end of newnotseen;
+
+
+%+P   prior
+      procedure vischain(q);  ref(quantity) q;
+      while q=/=none do begin
+            if q.visible then begin
+               q.prevmeaning:-curmeaning(q.ident); curmeaning(q.ident):-q end;
+            q:-q.next;
+      end ***vischain***;
+
+
+%+P   prior
+      procedure invischain(q);  ref(quantity) q;
+      while q=/=none do begin
+            if curmeaning(q.ident)==q then curmeaning(q.ident):-q.prevmeaning;
+            q:-q.next;
+      end ***invischain***;
+
+%title ******   MAKEVISBLOCK  -  REMVISBLOCK   ******
+      ref(quantity)qz,cm; short integer qblev,lowplev;
+
+%+P   prior
+      procedure makevisblock(q); ref(quantity)q;
+      begin ! Called from enterblock, enterconn and alloc2;
+            qblev:=q.descr.blev;
+            lowplev:=if rank(q.kind)=ICLAS or rank(q.kind)=IINSP
+                     or rank(q.kind)=IBPRF then -1 else 0;
+            vischain(q.descr.favirt);
+            goto enter;
+            while q.plev>lowplev do
+            begin q:-q.prefqual;
+           enter: qz:-q.descr.fpar;           ! obs ;
+                  while qz=/=none do
+                  begin cm:-curmeaning(qz.ident);
+                        if (if cm==none then true
+                            else cm.encl.blev <> qblev
+                        ! redeclarations on inner prefix levels
+                          should not be overridden ;
+%+K                     and cm.encl=/=qz.encl !avoid double par to prior;
+%+K                     ! cm.encl==qz.encl would mean that they occured in  ;
+%+K                     ! the fpar-list of the same brecord. How could that ;
+%+K                     ! ever be possible when cm.ident=qz.ident ????      ;
+                            ) and qz.visible
+                        then begin qz.prevmeaning:-cm;
+                             curmeaning(qz.ident):-qz;
+                        end;
+                        qz:-qz.next;
+                  end;
+            end;
+      end makevisblock;
+
+
+%+P   prior
+      procedure remvisblock(q); ref(quantity)q;
+      begin ! Called from leaveblock ;
+            lowplev:=if rank(q.kind)=ICLAS or rank(q.kind)=IINSP
+                     or rank(q.kind)=IBPRF then -1 else 0;
+            invischain(q.descr.favirt);
+            goto enter;
+            while q.plev>lowplev do begin
+                  q:-q.prefqual;
+          enter:  invischain(q.descr.fpar);
+            end;  ! q.plev=lowplev: q is outermost prefix ;
+      end remvisblock;
+
+
+%-I %+P   prior
+%-I       procedure makevisstmt(q); ref(quantity)q;
+%-I                 vischain(q.descr.fpar);
+
+%-I %+P   prior
+%-I       procedure remvisstmt(q); ref(quantity)q;
+%-I                 invischain(q.descr.fpar);
+
+%title ***   ENTERBLOCK  -  ENTERSTMT  -  LEAVEBLOCK  -  LEAVESTMT   ***
+
+%+P   prior
+      procedure enterblock(blno); short integer blno;
+         ! NB: When this procedure is changed, the special 'enterblock'
+               in brecord'alloc2 must be changed correspondingly ;
+      begin cblev:=cblev+1; crtblev:=crtblev+1;
+            if cblev>curmaxbl then cannotproceed(304);
+            inspect blocktab.elt(blno) do begin
+                    if kind=char(ICLAS) then begin
+                       if declquant.plev>0 then hide(declquant.prefqual);
+                       unprotect(declquant);
+                    end
+               else if kind=char(IBPRF) then hide(declquant.prefqual);
+            end;
+            display(cblev):-blocktab.elt(blno); blocktab.elt(blno):-none;
+            makevisblock(display(cblev).declquant);
+      end enterblock;
+
+
+%+P   prior
+      procedure enterstmt(blno); short integer blno;
+         ! NB: When this procedure is changed, the special 'enterstmt'
+               in brecord'alloc2 must be changed correspondingly ;
+      begin display(cblev):-blocktab.elt(blno); blocktab.elt(blno):-none;
+            makevisstmt(display(cblev).declquant);
+      end enterstmt;
+
+
+      procedure leaveblock;
+      begin ! Used to leave connection blocks too ;
+            if rank(display(cblev).kind) <> IINSP then crtblev:=crtblev-1;
+            inspect display(cblev) do begin
+               remvisblock(declquant);
+               if kind=char(ICLAS) then protect(declquant)
+               else if kind=char(IBPRF) then protect(declquant.prefqual)
+            end;
+            display(cblev):-none; cblev:=cblev-1;
+      end leaveblock;
+
+
+%+P   prior
+      procedure leavestmt;
+      begin remvisstmt(display(cblev).declquant);
+            display(cblev):-display(cblev).declquant.prefqual.descr;
+      end leavestmt;
+
+%title ***   COMQUAL  -  SUBCLASS  -  SUBORDINATE   ***
+
+      ref(quantity)procedure comqual(qx,qy); ref(quantity)qx,qy;
+      !*** Returns a ref to nearest common superclass if any, else none.;
+      if qx==qy then comqual:-qx else
+      begin while qx.plev>qy.plev do qx:-qx.prefqual;
+            while qy.plev>qx.plev do qy:-qy.prefqual;
+            while qx=/=qy and qx.plev>0 do
+            begin qx:-qx.prefqual; qy:-qy.prefqual end;
+            comqual:-if qx==qy then qx else none;
+      end comqual;
+
+
+      boolean procedure subclass(qx,qy); ref(quantity)qx,qy;
+      !*** Is true if qx is a subclass of qy. ;
+      ! NBNB:  THE PARAMETERS MUST NOT BE EQUAL TO NONE !! ;
+      begin
+            while qx.plev>qy.plev do qx:-qx.prefqual;
+            subclass:= qx==qy ;
+      end of subclass;
+
+
+      boolean procedure subordinate(qa,qb); ref(quantity)qa,qb;
+      subordinate:=
+          if rank(qa.type)<>IREF and qa.type=qb.type then true else
+          if rank(qb.type)=INOTY then true else
+          if rank(qa.type)=IREF and rank(qb.type)=IREF then
+             subclass(qa.prefqual,qb.prefqual)
+          else false;
+%title   ******   Attribute protection subroutines   ******
+       ref(quantity) array prefixchain(0:63 !maxplev; );
+
+%+P    prior
+       procedure hide(q); ref(quantity) q;
+       ! *** protected attributes, hidden by q'hidlist, are hidden ***;
+       ! *** The process is performed from the outermost class in ***;
+       begin ref(quantity) qz; ref(hidpack) cvis, fvis;
+             boolean inlocals; short integer curplev,nhid;
+
+             prefixchain(0):-qz:-q; curplev:=0;
+             while curplev<qz.plev do begin
+                   curplev:=curplev+1; prefixchain(curplev):-qz:-qz.prefqual;
+             end;
+
+             while curplev>=0 do begin
+                   q:-prefixchain(curplev);  curplev:=curplev-1;
+                   unprotect(q);
+                   fvis:-q.descr.hidlist; if fvis==none then goto NXTP;
+                   nhid:=fvis.line; fvis:-fvis.next;
+                   !*** first pack carries pack count ***;
+
+             REP:  qz:-q.descr.fpar; inlocals:=true;
+             SCAN: while qz=/=none do begin
+                      if qz.visible then begin
+                         cvis:-fvis;
+                         while cvis=/=none do begin
+                            if cvis.line<0  then !matched; else begin
+                               if cvis.ident=qz.ident then begin !found;
+                                  if qz.protect then qz.visible:=false;
+                                  if inlocals then begin
+                                     !*** test for poss. virt. match ***;
+                                     if (if qz.match=/=none
+                                         then qz.match.categ=char(IVIRT)
+                                         else true)
+                                     then begin
+                            SETM:       cvis.line:=-cvis.line; !mark matched;
+                                        nhid:=nhid-1; if nhid=0 then goto REMM;
+                                        !*** hidlist exhausted ***;
+                                     end
+                                  end
+                                  else if qz.dim=1 then goto SETM;
+                                  goto NEXTATTR;
+                               end;
+                            end;
+                            cvis:-cvis.next;
+                         end;
+                      end;
+          NEXTATTR:   qz:-qz.next;
+                   end;
+
+                   if inlocals then begin  !*** hide virtuals;
+                      inlocals:=false; qz:-q.descr.favirt; goto SCAN end;
+                   if q.plev>0 then begin q:-q.prefqual; goto REP end;
+                   ! *** scan backwards in prefix chain for rem. matches ***;
+
+          REMM:    cvis:-fvis;
+                   while cvis=/=none do begin !unmark all;
+                         cvis.line:=-cvis.line; cvis:-cvis.next end;
+       NXTP: end prefixchain;
+       end ***hide***;
+%page
+%+P    prior
+       procedure protect(q); ref(quantity) q;
+       ! *** make all protected attributes invisible ***;
+
+       begin ref(quantity) qz; boolean inlocals;
+       REP:  qz:-q.descr.fpar; inlocals:=true;
+       SCAN: while qz=/=none do begin
+                   if qz.protect then begin qz.visible:=false;
+                      if inlocals then !nothing; else begin
+                         if qz.match=/=none
+                         then qz.match.visible:=false end;
+                   end;
+                   qz:-qz.next;
+             end;
+
+             if inlocals then begin
+                inlocals:=false; qz:-q.descr.favirt; goto SCAN end;
+
+             if q.plev>0 then begin q:-q.prefqual; goto REP end;
+
+       end ***protect***;
+
+
+%+P    prior
+       procedure unprotect(q); ref(quantity) q;
+       ! *** make all local quantities of q visible ***;
+
+       inspect q.descr do
+       begin q:-favirt; while q=/=none do begin !NB: only local virts (dim=1);
+                              if q.dim=1 then   q.visible:=true; q:-q.next end;
+             q:-fpar;   while q=/=none do begin q.visible:=true; q:-q.next end;
+
+       end ***unprotect***;
+
+
+%+P    prior
+       procedure checkhid(brc,cq); ref(brecord)brc; ref(quantity) cq;
+       !*** check legality of 'hidden' - called only from alloc2 ***;
+       begin ref(hidpack) cvis;
+          while brc.hidlist=/=none and!then; cq=/=none do begin
+             if cq.visible then begin
+                cvis:-brc.hidlist.next;
+                while cvis=/=none do begin
+                      if cq.ident=cvis.ident then begin
+                         if cvis.line>0 then begin
+                            if cq.protect then begin
+                               cvis.line:=-cvis.line; goto NXT end;
+                            brc.removeVis(cvis,300)
+                         end
+                      end;
+                      cvis:-cvis.next;
+                end;
+             end;
+        NXT: cq:-cq.next
+          end
+      end ***checkhid***;
+
+%title
+
+      ref(extquantity)procedure newextquantbrec(blno,blev,rtblev
+                                                         ,status,cause);
+      short integer blno,blev,rtblev; character status; ref(extquantity)cause;
+      begin ref(extquantity)qe; ref(extbrecord)be;
+            be:-new extbrecord(blno,blev,rtblev);
+            newextquantbrec:-qe:-new extquantity(be);
+            qe.descr:-be; be.declquant:-qe;
+            be.status:=status; be.cause:-cause;
+      end;
+
+      class extmodule;
+      begin short integer pptag, ! tag of prototype for sep.class/proc ;
+                    checkcode,   ! index of checkcode  found on attr.file ;
+                    RELEASE;     ! RELEASE number found on attr.file ;
+            ref(quantity) qty;   ! declquantity of external;
+            ref(extmodule)next;
+      end;
+
+      ref(extmodule)firstextmodule,currentextmodule;
+      short integer noofextmodules;
+
+end BUILDER1;

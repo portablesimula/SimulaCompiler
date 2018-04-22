@@ -1,0 +1,14 @@
+begin
+   class point(x,y); real x,y;
+   begin ref(point) procedure plus(P); ref(point) P;
+            plus:-new point(x+P.x,y+P.y);
+   end point;
+   
+   point class polar;
+   begin real r,v;
+         ref(polar) procedure plus(P); ref(point) P;
+            plus:-new polar(x+P.x,y+P.y);
+         r:=sqrt(x**2+y**2);
+         v:=arctg(x,y);
+   end polar;            
+end;         

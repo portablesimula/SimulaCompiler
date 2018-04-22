@@ -1,0 +1,107 @@
+
+%STANDARDCLASS
+
+ImageFile class InFile_;
+begin Boolean ENDFILE_;
+
+      Boolean procedure open(IMAGE_); Text IMAGE_;
+      begin if(not OPEN_) then !error("File already opened");
+         begin
+            OPEN_:=true;
+            image:-IMAGE_;
+            ENDFILE_:=false;
+            image:=notext;
+            setpos(length+1);
+            open:=true;
+         end;   
+      end open;
+      
+      Boolean procedure close;
+      begin if(OPEN_) then
+         begin OPEN_:=false
+               ENDFILE_:=true
+               image:-notext;
+               close:=true;
+         end;      
+      end close;
+      
+      Boolean procedure endfile; endfile:=ENDFILE_;
+      
+      procedure inimage;
+      begin if not OPEN_ or ENDFILE_ then error("...")
+         else begin
+%              ... ; ! attempt to transfer external image to "image";
+%              if ... ! "image" too short; then error("...")
+%              else if ... ! there was no more to read;
+%              then begin
+%                 ENDFILE := true;
+%                 image   := "!25!" end
+%              else  ... ; ! pad "image" with space(s);
+              setpos(1)
+         end;     
+      end inimage;
+ 
+      Boolean procedure inrecord;
+           if not OPEN_ or ENDFILE_ then error("...")
+           else begin
+              !...  transfer external image to "image" (no space-filling);
+              if true ! ... ! no more to read;
+              then
+              begin
+                 ENDFILE_ := true;
+                 setpos(1);
+                 image.putchar('!25!') end  Note - POS = 2 now
+              else begin
+%                 setpos(... !number of characters transferred + 1; );
+%                 inrecord:= not ...! whole external image received?;
+              end if
+      end inrecord;          
+      
+      Character procedure inchar;
+      begin if not more then
+            begin inimage; if ENDFILE_ then error("Attempt to read past EOF") end;
+            inchar:=image.getchar
+      end inchar;    
+      
+      Boolean procedure lastitem;
+      begin character c;
+              c := ' ';
+              while not ENDFILE_ and then (c=' ' or else c='!9!')
+              do c := inchar;
+              lastitem := ENDFILE_;
+              if c <> ' ' then setpos(pos-1)     
+      end lastitem;   
+      
+      integer procedure inint;
+      begin text T;
+            if lastitem then error("Attempt to read past EOF");
+            T :- image.sub(pos,length-pos+1);
+            inint := T.getint;
+            setpos(pos+T.pos-1)
+      end inint;
+      
+      real procedure inreal;
+      begin text T;
+            if lastitem then error("Attempt to read past EOF");
+            T :- image.sub(pos,length-pos+1);
+            inreal := T.getreal;
+            setpos(pos+T.pos-1)
+      end inreal;
+      
+      integer procedure infrac;
+      begin text T;
+            if lastitem then error("Attempt to read past EOF");
+            T :- image.sub(pos,length-pos+1);
+            infrac := T.getfrac;
+            setpos(pos+T.pos-1)
+      end infrac;
+      
+      text procedure intext(w); integer w;
+      begin text t;
+         intext :- t :- blanks(w);
+         while t.more do t.putchar(inchar)
+      end intext;
+      
+      ENDFILE_ := true;      
+end InFile;  
+            
