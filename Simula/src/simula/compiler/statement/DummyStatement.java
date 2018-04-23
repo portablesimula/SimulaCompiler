@@ -25,8 +25,7 @@ public class DummyStatement extends Statement {
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		// No Checking ?
 		SET_SEMANTICS_CHECKED();
 	}

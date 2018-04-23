@@ -1,3 +1,10 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.runtime;
 
 /**
@@ -60,8 +67,7 @@ public class TEXTOBJ extends RTObject$ {
 	char[] MAIN;
 
 	public String toString() {
-		return ("TEXTOBJ: SIZE=" + SIZE + ", CONST=" + CONST + ", MAIN=" + edText(
-				0, SIZE));
+		return ("TEXTOBJ: SIZE=" + SIZE + ", CONST=" + CONST + ", MAIN=" + edText(0, SIZE));
 	}
 
 	// Utility

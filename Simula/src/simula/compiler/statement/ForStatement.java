@@ -77,16 +77,13 @@ public class ForStatement extends Statement
   
   private class ForListElement
   { Expression expr1;
-    Type type;
 	public ForListElement(Expression expr1)
 	{ this.expr1=expr1;
 	  if(Option.TRACE_PARSE) Util.TRACE("NEW ForListElement: "+toString());
 	}  
 	public void doChecking()
 	{ if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ForListElement("+this+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	  expr1.doChecking(); this.type=expr1.type;
-	  // Type checking  //  TODO:
-	  //Debug.BREAK("END ForListElement("+this+").doChecking: type="+type);
+	  expr1.doChecking(); 
 	}
 	public String edCode()
 	{ Util.NOT_IMPLEMENTED("ForStatement: Single expression for list element");
@@ -95,25 +92,16 @@ public class ForStatement extends Statement
 	public String toString() { return(""+expr1); }
   }
   
-  private void sampleForStatements()
-  { int i,k=8;
-	for(i=34,i=37;i<78;) k=k+1;  // For i:=34,37 While i<78 do k=k+1;
-	for(i=34;i<78;)      k=k+1;  // For i:=34 While i<78 do k=k+1;
-	for(i=34;i<=78;i=i+4) k=k+1;  // For i:=34 Step 4 until 78 do k=k+1;
-  }
   private class WhileElement extends ForListElement
   { Expression expr2;
 	public WhileElement(Expression expr1,Expression expr2) { super(expr1); this.expr2=expr2; }  
 	public void doChecking()
 	{ if(Option.TRACE_CHECKER) Util.TRACE("BEGIN WhileElement("+this+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	  expr1.doChecking(); this.type=expr1.type;
+	  expr1.doChecking();
 	  expr2.doChecking(); if(expr2.type!=Type.Boolean) Util.error("While "+expr2+" is not of type Boolean");
 	  expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
-	  // Type checking  //  TODO:
-	  //Debug.BREAK("END WhileElement("+this+").doChecking: type="+type);
 	}
 	public String edCode()
-//	{ return(""+expr1.toJavaCode()+';'+expr2.toJavaCode()+';');
 	{ String code1=expr1.toJavaCode();
 	  return(""+code1+';'+expr2.toJavaCode()+';'+controlVariable.toJavaCode()+"="+code1);
 	}
@@ -126,13 +114,9 @@ public class ForStatement extends Statement
 	public StepUntilElement(Expression expr1,Expression expr2,Expression expr3)
 	{ super(expr1); this.expr2=expr2; this.expr3=expr3; }  
 	public void doChecking()
-	{ //Util.log("BEGIN StepUntilElement("+this+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
-	  expr1.doChecking(); expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
+	{ expr1.doChecking(); expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
 	  expr2.doChecking(); expr2=TypeConversion.testAndCreate(controlVariable.type,expr2);
 	  expr3.doChecking(); expr3=TypeConversion.testAndCreate(controlVariable.type,expr3);
-	  this.type=Type.arithmeticTypeConversion(expr1.type,expr2.type);
-	  // Type checking: expr3 compatible   //  TODO:
-	  //Debug.BREAK("END StepUntilElement("+this+").doChecking: type="+type);
 	}
 	public String edCode()
 	{ // for(i=34;i<=78;i=i+4) k=k+1;  // For i:=34 Step 4 until 78 do k=k+1;

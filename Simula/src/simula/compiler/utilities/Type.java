@@ -13,8 +13,6 @@ import simula.compiler.declaration.BlockDeclaration;
 
 public class Type
 {
-//public static final Type Unknown=new Type("$UNKNOWN"); // Used by ARRAY Object elements
-//  public static final Type Array=new Type(new Token(KeyWord.ARRAY)); // Used by ARRAY Object elements
   public static final Type Integer=new Type(new Token(KeyWord.INTEGER));
   public static final Type ShortInteger=new Type(new Token(KeyWord.INTEGER,KeyWord.SHORT));
   public static final Type Real=new Type(new Token(KeyWord.REAL));
@@ -132,7 +130,6 @@ public class Type
   // any ref is a sub-reference of NONE
   public boolean isSubReferenceOf(Type other)
   {
-//	if(other==null) return(false); // // No ref is a super-reference of NONE
 	String thisRef=this.getRefIdent(); // May be null for NONE
 	String otherRef=other.getRefIdent(); // May be null for NONE
 	boolean result;
@@ -142,7 +139,6 @@ public class Type
 	{ BlockDeclaration thisDecl=(BlockDeclaration)Global.currentScope.findMeaning(thisRef).declaredAs;
 	  BlockDeclaration otherDecl=(BlockDeclaration)Global.currentScope.findMeaning(otherRef).declaredAs;
 	  result=thisDecl.isSubClassOf(otherDecl);
-	  
 	}
     //Util.BREAK("Type("+this+").isSubReferenceOf("+other+") -- Result="+result);
 	return(result); 

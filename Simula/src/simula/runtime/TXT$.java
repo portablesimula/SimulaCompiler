@@ -565,9 +565,9 @@ public class TXT$ {
 		double r=(double)i;
 		StringBuilder pattern=new StringBuilder("###,###.");
 //		while((n--)>0) { pattern.append('#'); r=r/10; }
-		int m=0;
+//		int m=0;
 		while((n--)>0)
-		{ pattern.append('0'); r=r/10; m++;
+		{ pattern.append('0'); r=r/10; //m++;
 		  //if(m==3) { pattern.append(' '); m=0;}
 		}
 		//Util.BREAK("TXTREF.putfrac: pattern="+pattern);

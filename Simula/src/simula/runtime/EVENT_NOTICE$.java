@@ -28,7 +28,6 @@ public class EVENT_NOTICE$ extends Link$ {
 	
 	
 	public EVENT_NOTICE$ suc() {
-//		return ((suc().getClass() == EVENT_NOTICE$.class) ? (EVENT_NOTICE$) suc()	: null);
 		return ((SUC instanceof EVENT_NOTICE$)?(EVENT_NOTICE$)SUC:null);
 	}
 

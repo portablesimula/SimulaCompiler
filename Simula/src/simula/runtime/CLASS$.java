@@ -1,9 +1,8 @@
 package simula.runtime;
 
 import simula.compiler.utilities.Util;
-import simula.runtime.RTObject$.OperationalState;
 
-public abstract class CLASS$ extends RTObject$ { // implements Runnable {
+public abstract class CLASS$ extends RTObject$ {
 
 	// Constructor
 	public CLASS$(RTObject$ staticLink) {

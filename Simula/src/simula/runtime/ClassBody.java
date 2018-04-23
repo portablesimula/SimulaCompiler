@@ -1,7 +1,5 @@
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-
 public abstract class ClassBody {
 	RTObject$ object;
 	public ClassBody inner;

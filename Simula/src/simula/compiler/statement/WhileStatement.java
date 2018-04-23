@@ -2,7 +2,6 @@ package simula.compiler.statement;
 
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -26,18 +25,15 @@ public class WhileStatement extends Statement {
 	Statement doStatement;
 
 	public WhileStatement() {
-		if (Option.TRACE_PARSE)
-			Util.TRACE("Parse WhileStatement, current=" + Parser.currentToken);
+		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement, current=" + Parser.currentToken);
 		condition = Expression.parseExpression();
 		Parser.expect(KeyWord.DO);
 		doStatement = Statement.doParse();
-		if (Option.TRACE_PARSE)
-			Util.TRACE("NEW WhileStatement: " + toString());
+		if (Option.TRACE_PARSE)	Util.TRACE("NEW WhileStatement: " + toString());
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Util.setLine(lineNumber);
 		// Util.BREAK("BEGIN WhileStatement("+condition+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		condition.doChecking();

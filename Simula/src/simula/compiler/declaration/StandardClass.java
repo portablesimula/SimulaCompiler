@@ -663,14 +663,6 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     Simulation.addStandardProcedure(null,"passivate");  
     Simulation.addStandardProcedure(null,"wait",parameter("S",Type.Ref("Head")));  
     Simulation.addStandardProcedure(null,"cancel",parameter("x",Type.Ref("Process")));  
-//    Simulation.addStandardProcedure(null,"ACTIVATE"
-//    		,parameter("REAC",Type.Boolean)
-//    		,parameter("X",Type.Ref("Process"))
-//    		,parameter("CODE",Type.Ref("ActivationCode"))
-//    		,parameter("T",Type.LongReal)
-//    		,parameter("Y",Type.Ref("Process"))
-//    		,parameter("PRIO",Type.Boolean)
-//    		);  
     Simulation.addStandardProcedure(null,"ActivateDirect"
     		,parameter("REAC",Type.Boolean)
     		,parameter("X",Type.Ref("Process"))

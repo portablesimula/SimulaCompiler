@@ -1,9 +1,5 @@
 package simula.compiler.statement;
 
-import simula.compiler.expression.BinaryOperation;
-import simula.compiler.expression.Expression;
-import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Util;
 
 /**

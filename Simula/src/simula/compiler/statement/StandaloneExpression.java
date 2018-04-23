@@ -53,8 +53,6 @@ public class StandaloneExpression extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 	
-
-
 	public void doJavaCoding(String indent) {
 		Util.setLine(lineNumber);
 		Util.code(indent + toJavaCode() + ';');

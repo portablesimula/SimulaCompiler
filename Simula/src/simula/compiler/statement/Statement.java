@@ -98,7 +98,6 @@ public abstract class Statement extends SyntaxClass {
 			return (new StandaloneExpression(expr));
 		  }
 		}
-//		return (null);
 		return(new DummyStatement());
 	}
 

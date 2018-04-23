@@ -34,8 +34,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	protected OperationalState STATE$;
 	private Thread THREAD$;
 	protected ClassBody CODE$;
-	//public void run() {}
-
 	
 	// RTS
 	public static BASICIO$ CTX$=new BASICIO$(null);
@@ -527,13 +525,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  }
 	}
 
-	
-	
-	
-//	public void BEGIN()
-//	{ this.THREAD$=Thread.currentThread(); 
-//	  run();
-//	}
 	
   /**
    * This method is virtual and may be redefined in blocks.

@@ -90,8 +90,6 @@ public class OutbyteFile$ extends ByteFile$ {
 	// Constructor
     public OutbyteFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
-      //BC(blockLevel);
-      // Parameter assignment to locals
       // Create Class Body
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {

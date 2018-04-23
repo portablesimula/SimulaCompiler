@@ -94,18 +94,15 @@ public class InFile$ extends ImageFile$ {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(TXT$ IMAGE_) {
-		// Util.BREAK("InFile.open("+IMAGE_+')');
 		if (OPEN$)
 			return (false);
 		OPEN$ = true;
 		image = IMAGE_;
 		ENDFILE$ = false;
-//		image.ASGTXT$(null); // image := NOTEXT;
 		ASGTXT$(image,null); // image := NOTEXT;
 		setpos(length() + 1);
 
 		InputStream inputStream;
-		//Util.BREAK("InFile.open: Filename=" + FILENAME$);
 		if (FILENAME$.edText().equalsIgnoreCase("sysin"))
 			inputStream = System.in;
 		else {

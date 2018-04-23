@@ -18,5 +18,4 @@ public enum ParameterKind
 , Array
 , Label
 , Switch
-//, Class
 }

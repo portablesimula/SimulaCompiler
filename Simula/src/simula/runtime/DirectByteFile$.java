@@ -113,7 +113,6 @@ public class DirectByteFile$ extends ByteFile$ {
 			e.printStackTrace();
 			return (-1);
 		}
-		// return (LOC$);
 	}
 
 	/**
@@ -431,10 +430,8 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * @return
 	 */
 	public int lock(float timelimit, int loc1, int loc2) {
-		if (timelimit <= 0.0f)
-			return (-1);
-		if (LOCKED$)
-			unlock();
+		if (timelimit <= 0.0f) return (-1);
+		if (LOCKED$) unlock();
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		// Check that operations are completed within 'timelimit'

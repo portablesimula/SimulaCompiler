@@ -80,7 +80,7 @@ public class ConnectionStatement extends Statement
   }
   
   private Variable createInspectVariable(Expression objectExpression)
-  { Util.BREAK("ConnectionStatement.createInspectVariable: type="+objectExpression.type+", objectExpression="+objectExpression);
+  { //Util.BREAK("ConnectionStatement.createInspectVariable: type="+objectExpression.type+", objectExpression="+objectExpression);
     String ident="inspect$Object"+lineNumber;
     Variable var=new Variable(ident);
 	inspectVariableDeclaration=new TypeDeclaration(Type.Ref("RTObject"),ident);
@@ -116,20 +116,14 @@ public class ConnectionStatement extends Statement
 	  refIdentifier=type.getRefIdent();
       //Util.BREAK("ConnectionStatement.DoPart.doChecking: ");
 	  if(refIdentifier==null) Util.error("The Variable "+inspectedVariable+" is not ref() type");
-	  connectionBlock.setClassDeclaration(BinaryOperation.getQualification(refIdentifier));
-	  
-//	  currentScope=connectionBlock;	
+	  connectionBlock.setClassDeclaration(BinaryOperation.getQualification(refIdentifier));	
 	  connectionBlock.doChecking();
-//	  currentScope=enclosure;
 	  SET_SEMANTICS_CHECKED();
 	}
 	
 	public void doCoding(String indent,boolean first)
 	{ ASSERT_SEMANTICS_CHECKED(this);
 	  connectionBlock.doJavaCoding(indent);
-//	  Util.code(indent+"CON()");
-//	  statement.doJavaCoding(indent+"   ");  
-//	  Util.code(indent+"EB()");
 	}
 	
 	public void print(String indent)
@@ -165,10 +159,7 @@ public class ConnectionStatement extends Statement
 	  { Util.warning("Impossible When Part: "+objectExpression+" is not compatible with "+classIdentifier);
 	    impossibleWhenPart=true;
 	  }
-
-//	  currentScope=connectionBlock;	
 	  connectionBlock.doChecking();
-//    currentScope=enclosure;
 	}
 	
 	public void doCoding(String indent,boolean first)
@@ -178,9 +169,6 @@ public class ConnectionStatement extends Statement
 	  String cid=classDeclaration.getJavaIdentifier();
 	  if(!impossibleWhenPart)
 	  { Util.code(prfx+"if("+inspectedVariable.toJavaCode()+" instanceof "+cid+") // WHEN "+cid+" DO ");
-//	    Util.code(indent+"CON()");
-//	    statement.doJavaCoding(indent+"   ");  
-//	    Util.code(indent+"EB()");
 	    connectionBlock.doJavaCoding(indent);
 	  } else Util.code(prfx+"// WHEN "+cid+" DO -- IMPOSSIBLE REMOVED");
 	}

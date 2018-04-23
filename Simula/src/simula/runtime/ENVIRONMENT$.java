@@ -82,7 +82,6 @@ public class ENVIRONMENT$ {//extends RTObject {
 	// ****************************************************
 	public abstract class $NAME<T> {
 		public abstract T get();
-//		public void put(T x) { throw new RuntimeException("Illegal assignment. Name parameter is not a variable"); }
 		public T put(T x) { throw new RuntimeException("Illegal assignment. Name parameter is not a variable"); }
 	}
 	
@@ -93,7 +92,7 @@ public class ENVIRONMENT$ {//extends RTObject {
 	static final String arrayError="Illegal use of array";
 
 	public class $ARRAY<T>
-	{ public T Elt; //T A[]; 
+	{ public T Elt;
 	  public int[] LB;
 	  public int[] UB;
 	  public $ARRAY(T Elt,int[] LB,int[] UB)
@@ -101,7 +100,7 @@ public class ENVIRONMENT$ {//extends RTObject {
 	  public $ARRAY<T> COPY()
 	  {	throw new RuntimeException("Array by Value is not implemented");
 		// T AA=A.clone();
-		// $ARRAY<T> to=new $ARRAY<T>(AA,LB,UB);  
+		// $ARRAY<T> to=new $ARRAY<T>(AA,LB,UB);  // TODO
 		// System.arraycopy(A,0,AA,0,A.length);
 	  }
 	  public String toString()
@@ -268,9 +267,10 @@ public class ENVIRONMENT$ {//extends RTObject {
 	public double addepsilon(double x) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		double addepsilon = 0.0f;
-		addepsilon = x + 0.0f;
-		return (addepsilon);
+//		double addepsilon = 0.0f;
+//		addepsilon = x + 0.0f;
+//		return (addepsilon);
+		throw new RuntimeException("ENVIRONMENT$ -- addepsilon is not implemented");
 	}
 
 	/**
@@ -295,17 +295,11 @@ public class ENVIRONMENT$ {//extends RTObject {
 	public double subepsilon(double x) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		double subepsilon = 0.0f;
-		subepsilon = x - 0.0f;
-		return (subepsilon);
+//		double subepsilon = 0.0f;
+//		subepsilon = x - 0.0f;
+//		return (subepsilon);
+		throw new RuntimeException("ENVIRONMENT$ -- subepsilon is not implemented");
 	}
-	
-	
-	// *****************************************
-	// *** Array utilities ***
-	// *****************************************
-	public int lowerbound ($ARRAY a,int i) { return(a.LB[i-1]); }
-    public int upperbound ($ARRAY a,int i) { return(a.UB[i-1]); }
 
 
 	// *****************************************
@@ -333,10 +327,8 @@ public class ENVIRONMENT$ {//extends RTObject {
 	 * @return
 	 */
 	public TXT$ copy(TXT$ T) {
-		if (T == null)
-			return (null);
+		if (T == null) return (null);
 		TXT$ U = blanks(T.LENGTH);
-		//U.ASGTXT$(T);
 		ASGTXT$(U,T);
 		return (U);
 	}
@@ -351,8 +343,6 @@ public class ENVIRONMENT$ {//extends RTObject {
        if(T1==null) T1=NOTEXT;
        if(T2==null) T2=NOTEXT;
        TXT$ U=blanks(T1.length()+T2.length());
-//       U.sub(1,T1.length()).ASGTXT$(T1);
-//       U.sub(1+T1.length(),T2.length()).ASGTXT$(T2);
        ASGTXT$(U.sub(1,T1.length()),T1);
        ASGTXT$(U.sub(1+T1.length(),T2.length()),T2);
        return(U);
@@ -381,7 +371,6 @@ public class ENVIRONMENT$ {//extends RTObject {
 	 * @return
 	 */
 	public TXT$ blanks(int n) {
-		// Util.BREAK("ENVIRONMENT.Blanks("+n+")");
 		if (n < 0)
 			throw new RuntimeException("Parmameter to blanks < 0");
 		if (n == 0)
@@ -393,40 +382,22 @@ public class ENVIRONMENT$ {//extends RTObject {
 		textRef.LENGTH = n;
 		textRef.POS = 0; // Note: Counting from zero in this implementation
 		textRef.OBJ = textObj;
-		// Util.BREAK("ENVIRONMENT.Blanks("+n+") Result="+textRef);
 		return (textRef);
 	}
 
 	public void ASGSTR$(TXT$ T,String s) {
-//		if(U==null)
-//		{ Util.BREAK("BEGIN TEXT$.ASSIGN("+U+"): "+this);
-//		  Util.BREAK("BEGIN TEXT$.ASSIGN: LEFT ="+this);
-//		  Util.BREAK("BEGIN TEXT$.ASSIGN: RIGHT="+U);
-//		  Util.BREAK("BEGIN TEXT$.ASSIGN: LEFT'OBJ="+edText());	
-//		}
-	       if(T==null) T=NOTEXT;
+	    if(T==null) T=NOTEXT;
 		int fromLength = 0;
 		if (s != null) fromLength = s.length();
 		for (int i = 0; i < fromLength; i++)
 			T.OBJ.MAIN[T.START+i] = s.charAt(i);
 		for (int i = fromLength; i < T.LENGTH; i++)
 			T.OBJ.MAIN[T.START+i] = ' ';
-//		if(U==null)
-//		{ Util.BREAK("END TEXT$.ASSIGN: LEFT ="+this);
-//		  Util.BREAK("END TEXT$.ASSIGN: RIGHT="+U);		
-//		  Util.BREAK("END TEXT$.ASSIGN: LEFT'OBJ="+edText());
-//		}
 	}
 
 	public void ASGTXT$(TXT$ T,TXT$ U) {
-//		if(U==null)
-//		{ Util.BREAK("BEGIN TEXT$.ASSIGN("+U+"): "+this);
-//		  Util.BREAK("BEGIN TEXT$.ASSIGN: LEFT ="+this);
-//		  Util.BREAK("BEGIN TEXT$.ASSIGN: RIGHT="+U);
-//		  Util.BREAK("BEGIN TEXT$.ASSIGN: LEFT'OBJ="+edText());	
-//		}
-	       if(T==null) T=NOTEXT;
-	       if(U==null) U=NOTEXT;
+	    if(T==null) T=NOTEXT;
+	    if(U==null) U=NOTEXT;
 		int fromLength = 0;
 		if (U != null)
 			fromLength = U.LENGTH;
@@ -434,11 +405,6 @@ public class ENVIRONMENT$ {//extends RTObject {
 			T.OBJ.MAIN[T.START+i] = U.OBJ.MAIN[U.START+i];
 		for (int i = fromLength; i < T.LENGTH; i++)
 			T.OBJ.MAIN[T.START+i] = ' ';
-//		if(U==null)
-//		{ Util.BREAK("END TEXT$.ASSIGN: LEFT ="+this);
-//		  Util.BREAK("END TEXT$.ASSIGN: RIGHT="+U);		
-//		  Util.BREAK("END TEXT$.ASSIGN: LEFT'OBJ="+edText());
-//		}
 	}
 	
 	//**************************************************************
@@ -486,7 +452,7 @@ public class ENVIRONMENT$ {//extends RTObject {
 	    case 4: return(0 >  dif);
 	    case 5: return(0 != dif);
 	    case 6: return(0 >= dif);
-	    default: throw new RuntimeException(""); //otherwise error(ENO_ITN_1);
+	    default: throw new RuntimeException("Internal Error");
 	  }
 	}
 
@@ -496,7 +462,6 @@ public class ENVIRONMENT$ {//extends RTObject {
 	public boolean TRF_EQ(TXT$ left,TXT$ right)
 	{ //Util.BREAK("TRF_EQ: left="+left);
 	  //Util.BREAK("TRF_EQ: right="+right);
-	  //if(left==null) Util.FATAL_ERROR("");
 	  if(left==null) left=NOTEXT;
 	  if(right==null) right=NOTEXT;
 	  if(left.LENGTH!=right.LENGTH) return(false);
@@ -507,23 +472,8 @@ public class ENVIRONMENT$ {//extends RTObject {
 	public boolean TRF_NE(TXT$ left,TXT$ right)
 	{ return(!TRF_EQ(left,right)); }
 
-
-//	 Visible known("STRIP") STRIP;
-//	 import infix(txtqnt) txt; export infix(txtqnt) res;
-//	 begin boolean cont; name(character) chaadr;
-//	       res:=txt; cont:=true;
-//	       ---   resl.lp = 0  ===>  res = notext  ===>  res.sp = 0
-//	       if res.lp <> 0 then chaadr:=name(res.ent.cha(res.lp-1)) endif;
-//	       repeat --- res.lp > res.sp  ==>  chaadr = name(res.ent.cha(res.lp-1))
-//	             if res.lp <= res.sp then res:=notext; cont:=false;
-//	             elsif var(chaadr) = ' '
-//	             then res.lp:=res.lp - 1;               --  Strip off a blank.
-//	                  chaadr:=name(var(chaadr)(-1)); --  Point to previous char.
-//	             else res.cp:=res.sp; cont:=false endif;
-//	    while cont do endrepeat;
-//	 end;
 	
-
+	
 	/**
 	 * <pre>
 	 * character procedure char(i);  integer i;
@@ -736,10 +686,6 @@ public class ENVIRONMENT$ {//extends RTObject {
 		return (Math.sqrt(r));
 	}
 
-	// public double arctg(double x, double y) {
-	// return (Math.atan2(x, y));
-	// }
-
 	public double sin(double r) {
 		return (Math.sin(r));
 	}
@@ -859,7 +805,8 @@ public class ENVIRONMENT$ {//extends RTObject {
 	public int sourceline() {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		return (0);
+		//return (0);
+		throw new RuntimeException("ENVIRONMENT$ -- sourceline is not implemented");
 	}
 
 	// *****************************************
@@ -905,10 +852,12 @@ public class ENVIRONMENT$ {//extends RTObject {
 	 * @param i
 	 * @return
 	 */
+	public int lowerbound ($ARRAY<?> a,int i) { return(a.LB[i-1]); }
 	public int lowerbound(float[] a, int i) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		return (0);
+		//return (0);
+		throw new RuntimeException("ENVIRONMENT$ -- lowerbound is not implemented");
 	}
 
 	/**
@@ -929,10 +878,12 @@ public class ENVIRONMENT$ {//extends RTObject {
 	 * @param i
 	 * @return
 	 */
+    public int upperbound ($ARRAY<?> a,int i) { return(a.UB[i-1]); }
 	public int upperbound(float[] a, int i) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		return (0);
+		//return (0);
+		throw new RuntimeException("ENVIRONMENT$ -- upperbound is not implemented");
 	}
 
 	// *****************************************
@@ -988,13 +939,12 @@ public class ENVIRONMENT$ {//extends RTObject {
 	 * @param U
 	 * @return
 	 */
-	private static int basicDrawing(int U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		int n = 3;
-		return (U * 2 ^ (-n));
-	}
-
+//	private static int basicDrawing(int U) {
+//		// TODO: Complete the implementation according
+//		// to Simula Standard Definition.
+//		int n = 3;
+//		return (U * 2 ^ (-n));
+//	}
 	//**********************************************************************
 	//*** Basic Drawing - Temporary solution using default Java-Seed.
 	//**********************************************************************
@@ -1436,7 +1386,8 @@ public class ENVIRONMENT$ {//extends RTObject {
 	public double clocktime() {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		return (0.0);
+		//return (0.0);
+		throw new RuntimeException("ENVIRONMENT$ -- clocktime is not implemented");
 	}
 
 	// *****************************************
@@ -1446,6 +1397,7 @@ public class ENVIRONMENT$ {//extends RTObject {
 	public void histo(float[] A, float[] B, float c, float d) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
+		throw new RuntimeException("ENVIRONMENT$ -- histo is not implemented");
 
 	}
 
@@ -1453,6 +1405,7 @@ public class ENVIRONMENT$ {//extends RTObject {
 			$NAME<Float> b, $NAME<Float> c, float d) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
+		throw new RuntimeException("ENVIRONMENT$ -- accum is not implemented");
 
 	}
 

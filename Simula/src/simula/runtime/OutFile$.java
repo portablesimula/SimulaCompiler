@@ -53,8 +53,6 @@ public class OutFile$ extends ImageFile$ {
 	// Constructor
    public OutFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
-      //BC(blockLevel);
-      // Parameter assignment to locals
       // Create Class Body
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
@@ -92,7 +90,7 @@ public class OutFile$ extends ImageFile$ {
 		image = IMAGE_;
 		setpos(1);
 		OutputStream outputStream;
-		Util.BREAK("OutFile.open: Filename=" + FILENAME$);
+		//Util.BREAK("OutFile.open: Filename=" + FILENAME$);
 		if (FILENAME$.edText().equalsIgnoreCase("sysout"))
 			outputStream = System.out;
 		else {

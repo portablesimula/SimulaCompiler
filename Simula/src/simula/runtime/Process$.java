@@ -1,6 +1,11 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.runtime;
-
-import simula.compiler.utilities.Util;
 
 public class Process$ extends Link$ {
 	public boolean isDetachable() { return(true); }
@@ -12,12 +17,11 @@ public class Process$ extends Link$ {
        super(staticLink);
        CODE$=new ClassBody(CODE$,this) {
           public void STM() {
-             Util.BREAK("Process$ Before INNER");
+             //Util.BREAK("Process$ Before INNER");
              detach();
              if(inner!=null) inner.STM();
-             Util.BREAK("Process$ After INNER");
+             //Util.BREAK("Process$ After INNER");
              TERMINATED_=true;
-//             ((Simulation$)CV$[1]).passivate();
              ((Simulation$)SL$).passivate();
      		 throw new RuntimeException("INTERNAL error:  Process passes through final end.");
        }};
