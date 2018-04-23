@@ -1,6 +1,31 @@
 Begin
-  Class A;;
+  Class A(p1,p2);
+    integer p1; real p2;
+  begin
+    text Array TA(1:40);
+    integer i;
+    real r;
+    i:=4;
+    inner;
+    r:=6;
+  end;   
   integer i;
   
+  integer Procedure P(p1,p2);
+    integer p1; real p2;
+  begin
+    text Array TA(1:40);
+    integer i;
+    P:=p1;
+    i:=6;
+  end;
+  
+  procedure Q(F); integer procedure F;
+  begin
+     integer i;
+     i:=F(4,3.14);
+  end;      
+  
+  i:=P(4,3.14);
   outtext("Hallo fra meg åsså !!!");
 End;

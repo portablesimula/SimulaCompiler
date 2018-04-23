@@ -269,9 +269,11 @@ public class CallProcedure {
 	  { boolean partOfExpression=true;
 	    if(variable.backLink instanceof BinaryOperation)
 	    { BinaryOperation binOper=(BinaryOperation)variable.backLink;
+	      Util.BREAK("CallProcedure.codeCPF: binOper="+binOper);
+	      Util.BREAK("CallProcedure.codeCPF: binOper.opr="+binOper.opr);
 	      Util.BREAK("CallProcedure.codeCPF: binOper.backLink="+binOper.backLink);
 	      // NOTE: Standalone <expression>.<function> should not be casted
-	      if(binOper.backLink==null) partOfExpression=false;
+	      if(binOper.backLink==null && binOper.opr==KeyWord.DOT) partOfExpression=false;
 	    }
 	    if(partOfExpression)
 		{ s.append(".$result()");

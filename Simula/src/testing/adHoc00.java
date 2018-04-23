@@ -1,5 +1,5 @@
 package testing;
-// Simula Beta(0.1) Compiled at Sun Apr 22 15:06:38 CEST 2018
+// Simula Beta(0.1) Compiled at Mon Apr 23 21:36:30 CEST 2018
 import simula.runtime.*;
 public class adHoc00 extends RTObject$ {
    // BlockKind=SimulaProgram, BlockLevel=1, hasLocalClasses=true, System=true, detachUsed=false
@@ -16,6 +16,7 @@ public class adHoc00 extends RTObject$ {
    // SimulaProgram Statements
    public RTObject$ STM() {
       BPRG("adHoc00");
+      i=new adHoc00$P(((adHoc00)PRG$),4,((float)(3.14))).$result;
       sysout().outtext(new TXT$("Hallo fra meg åsså !!!"));
       EBLK();
       return(null);
