@@ -115,24 +115,26 @@ public class ENVIRONMENT$ {//extends RTObject {
 	  }
 	}
 
-	void test1()
-	{ int[] Table$LB={6};
-	  int[] Table$UB={56};
-	  $ARRAY<int[]> Table=new $ARRAY<int[]>(new int[56],Table$LB,Table$UB);
-	  int x=45; // Index
-	  int i=Table.Elt[x-Table.LB[1]];  
-	  Table.Elt[x-Table.LB[1]]=i;
-	}
+//	void test1()
+//	{ int[] Table$LB={6};
+//	  int[] Table$UB={56};
+//	  $ARRAY<int[]> Table=new $ARRAY<int[]>(new int[51],Table$LB,Table$UB);
+//	  int x=45; // Index
+//	  int i=Table.Elt[x-Table.LB[1]];  //  i := Table(x); 
+//	  Table.Elt[x-Table.LB[1]]=i;      //  Table(x) := i;
+//	}
+//	
+//	void test2()
+//	{ $ARRAY<TXT$[][]> TA;
+//	  int[] LB = {6,8};
+//	  int[] UB = {56,88};
+//	  TA=new $ARRAY<TXT$[][]>(new TXT$[51][81],LB,UB);
+//	  int x=45; // Index
+//	  int y=45; // Index
+//	  TXT$ t=TA.Elt[x-TA.LB[1]][y-TA.LB[2]];  //  t :- AI(x,y); 
+//	  TA.Elt[x-TA.LB[1]][y-TA.LB[2]]=t;       //  AI(x,y) :- t;
+//	}
 	
-	void test2()
-	{ $ARRAY<int[][]> AI;
-	  int[] LB = {6,8};
-	  int[] UB = {56,88};
-	  AI=new $ARRAY<int[][]>(new int[56][88],LB,UB);
-	  int x=45; // Index
-	  int i=AI.Elt[x-AI.LB[1]][x-AI.LB[2]];  
-	  AI.Elt[x-AI.LB[1]][x-AI.LB[2]]=i;
-	}
 
 	// *****************************************
 	// *** Basic operations ***

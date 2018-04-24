@@ -205,8 +205,8 @@ public class SubscriptedVariable extends Variable {
 	    int nDim=0;
 	    s.append(edVariable(false)).append(".Elt"); //[x-M.LB[1]]");
 		for(Expression ix:checkedParams) {
-		   String index="["+ix.toJavaCode()+"-"+edVariable(false)+".LB["+(nDim++)+"]]";
-		   s.append(index);
+		     String index="["+ix.toJavaCode()+"-"+edVariable(false)+".LB["+(nDim++)+"]]";
+		     s.append(index);
 		}
 	  }
 	  else

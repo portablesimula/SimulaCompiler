@@ -2,10 +2,12 @@ Begin
   Class A(p1,p2);
     integer p1; real p2;
   begin
-    text Array TA(1:40);
-    integer i;
+    text Array TA(p1+1:40);
+    integer i; text t;
     real r;
     i:=4;
+    t:-TA(13);
+    TA(13):-t;
     inner;
     r:=6;
   end;   

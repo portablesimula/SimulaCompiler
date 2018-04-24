@@ -104,9 +104,9 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  public RTObject$ CPF()
 	  { //Util.BREAK("CPF: procedure="+procedure+", Qual="+procedure.getClass().getSimpleName());
 	    try
-		{ Constructor<?> constructor = procedure.getConstructor(new Class[]{RTObject$.class});
-		  //Util.BREAK("CPF2: constructor="+constructor+", Qual="+procedure.getClass().getSimpleName());
-		  Object obj=constructor.newInstance(staticLink);
+		{ Constructor<?> constr = procedure.getConstructor(new Class[]{RTObject$.class});
+		  //Util.BREAK("CPF2: constr="+constr+", Qual="+procedure.getClass().getSimpleName());
+		  Object obj=constr.newInstance(staticLink);
 		  //Util.BREAK("CPF3: obj="+obj+", Qual="+obj.getClass().getSimpleName());
 		  return((RTObject$)obj);  
 		}

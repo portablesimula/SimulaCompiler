@@ -8,6 +8,7 @@
 package simula.compiler.declaration;
 
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
@@ -101,7 +102,7 @@ public class Parameter extends Declaration
     	  return("$NAME<"+type.toJavaTypeClass()+">");
         case Procedure: return("$NAME<$PRCQNT>");
     	case Label:     return("$NAME<$LABQNT>");
-    	case Array:     return("$NAME<$ARRAY<"+type.toJavaType()+"[]>>");
+    	case Array:		return("$NAME<$ARRAY<"+type.toJavaType()+"[]>>");
     	case Switch:    return("$NAME<$PRCQNT>");
       }
     }

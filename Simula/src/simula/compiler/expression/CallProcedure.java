@@ -19,6 +19,7 @@ import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;

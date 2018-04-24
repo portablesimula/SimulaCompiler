@@ -8,6 +8,7 @@
 package simula.compiler.utilities;
 
 public class Option {
+	
 	public static boolean verbose = false;//true;// 
 	public static boolean WARNINGS=true;
 

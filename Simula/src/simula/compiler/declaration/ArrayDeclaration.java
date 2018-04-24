@@ -136,7 +136,7 @@ public class ArrayDeclaration extends Declaration {
 
 	public static class BoundPair {
 		// BoundPair = ArithmeticExpression : ArithmeticExpression
-		Expression LB, UB;
+		public Expression LB, UB;
 
 		public Expression getLowerBound() {
 			return (LB);
@@ -218,7 +218,6 @@ public class ArrayDeclaration extends Declaration {
 	  Util.code(indent+"   int[] "+arrayIdent+LBs+"}; int[] "+arrayIdent+UBs+"};");
 	  arrType="$ARRAY<"+arrType+'>';
 	  Util.code(indent+"   "+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
-		
 	}
 
 

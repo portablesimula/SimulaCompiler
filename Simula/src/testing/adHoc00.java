@@ -1,5 +1,5 @@
 package testing;
-// Simula Beta(0.1) Compiled at Mon Apr 23 21:36:30 CEST 2018
+// Simula Beta(0.1) Compiled at Tue Apr 24 17:02:40 CEST 2018
 import simula.runtime.*;
 public class adHoc00 extends RTObject$ {
    // BlockKind=SimulaProgram, BlockLevel=1, hasLocalClasses=true, System=true, detachUsed=false

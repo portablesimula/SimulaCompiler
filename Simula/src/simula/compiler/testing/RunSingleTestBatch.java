@@ -50,7 +50,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst19.sim"); // OK:  Text concatenation and text expression evaluation.
 		//names.add("simtst20.sim"); // OK:  Simple tests: integer relations <, <=, =, >=, > and <>
 
-		//names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
+		names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
 		//names.add("simtst22.sim"); // ERR: Test for-loops with various for-list elements
 		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
@@ -84,8 +84,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst50.sim"); // ERR: Test binding and qualification in Connection Blocks
 
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
-		names.add("simtst52.sim"); // OK:  Test 'inner'
-		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
+		//names.add("simtst52.sim"); // OK:  Test 'inner'
+		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // ERR: Test virtual procedures.
@@ -170,6 +170,10 @@ public class RunSingleTestBatch {
 		Option.TRACE_JARING=true; //false;//true;
 
 		String userDir=System.getProperty("user.dir");
+
+		Option.keepJava=userDir+"/src/testing";
+		Option.outputDir=userDir+"/bin/";
+
 
 		for(String name:names)
 		{ 

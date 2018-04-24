@@ -1,5 +1,5 @@
 package testing;
-// Simula Beta(0.1) Compiled at Mon Apr 23 21:36:30 CEST 2018
+// Simula Beta(0.1) Compiled at Tue Apr 24 17:02:40 CEST 2018
 import simula.runtime.*;
    public class adHoc00$P extends RTObject$ {
       // BlockKind=Procedure, BlockLevel=2, hasLocalClasses=false, System=false, detachUsed=false
@@ -10,7 +10,7 @@ import simula.runtime.*;
       public int p1;
       public float p2;
       // Declare locals as attributes
-      public $ARRAY<TXT$[]>TA=null;
+      public $NARRAY<TXT$[]>TA=null;
       int i=0;
       // Parameter Transmission in case of Formal/Virtual Procedure Call
       private int $npar=0; // Number of actual parameters transmitted.
@@ -33,8 +33,7 @@ import simula.runtime.*;
          this.p1 = p1;
          this.p2 = p2;
          // Declaration Code
-         int[] TA$LB={1}; int[] TA$UB={40};
-         TA=new $ARRAY<TXT$[]>(new TXT$[TA$UB[0]-TA$LB[0]+1],TA$LB,TA$UB);
+         TA=new $NARRAY<TXT$[]>(new TXT$[40-1+1],1);
          STM();
       }
       // Procedure Statements
