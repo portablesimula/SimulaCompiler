@@ -22,7 +22,7 @@ import java.util.Random;
  * @author Øystein Myhre Andersen
  *
  */
-public class ENVIRONMENT$ {//extends RTObject {
+public class ENVIRONMENT$ {
 	static long START_TIME = System.currentTimeMillis();
 	static char CURRENTLOWTEN = '&';
 	static char CURRENTDECIMALMARK = '.';
