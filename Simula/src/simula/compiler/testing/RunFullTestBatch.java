@@ -148,7 +148,7 @@ public class RunFullTestBatch {
 		
 		String userDir=System.getProperty("user.dir");
 		//Option.keepJava=userDir+"/src/testing";
-		Option.outputDir=userDir+"/bin/";
+		Option.outputDir=userDir+"/bin/testing/jar/";
 		
 		for(String name:names)
 		{ 

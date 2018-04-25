@@ -170,15 +170,11 @@ public class RunSingleTestBatch {
 		Option.TRACE_JARING=true; //false;//true;
 
 		String userDir=System.getProperty("user.dir");
-
 		Option.keepJava=userDir+"/src/testing";
-		Option.outputDir=userDir+"/bin/";
-
+		Option.outputDir=userDir+"/bin/testing/jar/";
 
 		for(String name:names)
-		{ 
-//			String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
-			String fileName = userDir+"/src/"+Global.packetName+"/batch/"+name;
+		{ String fileName = userDir+"/src/"+Global.packetName+"/batch/"+name;
 		  SimulaCompiler compiler = new SimulaCompiler(fileName);
 		  compiler.doCompile();
 		}
