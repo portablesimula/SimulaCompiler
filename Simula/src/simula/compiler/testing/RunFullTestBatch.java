@@ -147,6 +147,9 @@ public class RunFullTestBatch {
 		Option.WARNINGS=false;
 		
 		String userDir=System.getProperty("user.dir");
+		//Option.keepJava=userDir+"/src/testing";
+		Option.outputDir=userDir+"/bin/";
+		
 		for(String name:names)
 		{ 
 //			String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
