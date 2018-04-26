@@ -147,8 +147,11 @@ public class RunFullTestBatch {
 		Option.WARNINGS=false;
 		
 		String userDir=System.getProperty("user.dir");
+		Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
+//		Global.simulaRtsLib=System.getenv("SIMULA_HOME")+"/Simula.jar";  // TODO: Later  /RTS.jar
 		//Option.keepJava=userDir+"/src/testing";
-		Option.outputDir=userDir+"/bin/testing/jar/";
+//		Option.outputDir=userDir+"/bin/testing/jar/";
+		Option.outputDir=userDir+"/src/testing/bin/";
 		
 		for(String name:names)
 		{ 

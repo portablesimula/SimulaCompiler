@@ -56,7 +56,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		 String name=Global.packetName+"/sim/adHoc00.sim";
+		// String name=Global.packetName+"/sim/AdHoc00.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
@@ -76,7 +76,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/Gauss.sim";
 		// String name=Global.packetName+"/sim/GotoSamples.sim";
 		// String name=Global.packetName+"/sim/HashingExample.sim";
-		// String name=Global.packetName+"/sim/HelloWord.sim";
+		 String name=Global.packetName+"/sim/HelloWord.sim";
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 		// String name=Global.packetName+"/sim/JensensDevice.sim";
 		// String name=Global.packetName+"/sim/MathSample.sim";
@@ -121,15 +121,17 @@ public class TestCompiler {
 			// Java Compiler and Jar-tool Trace Options
 			Option.TRACE_JAVAC=false;//true;
 			Option.TRACE_JAVAC_OUTPUT=false;//true;
-			Option.TRACE_JARING=false;//true;
+			Option.TRACE_JARING=true;//false;//true;
 
 //		Option.keepJava="C:/WorkSpaces/SimulaCompiler/Simula/src/testing";
 //		Option.outputDir="C:/WorkSpaces/SimulaCompiler/Simula/bin/";
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 			String userDir=System.getProperty("user.dir");
+			Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
 
 			Option.keepJava=userDir+"/src/testing";
-			Option.outputDir=userDir+"/bin/";
+//			Option.outputDir=userDir+"/bin/";
+			Option.outputDir=userDir+"/src/testing/bin/";
 			String fileName=userDir+"/src/" + name;
 
 		SimulaCompiler compiler = new SimulaCompiler(fileName);

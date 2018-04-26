@@ -29,13 +29,13 @@ public class Global {
 //	public static String sourceFilePath; 
 	public static String sourceFileDir; 
 	public static String sourceName;
-	public static String rtsDir;      // The simula runtime system  (rts.jar - later)
+	public static String simulaRtsLib;      // The simula runtime system  (rts.jar - later)
 	public static String outputDir;   // Where to put resulting .jar
 
 	public static String tempJavaFileDir;   // Temp dir for .java  files
 	public static String tempClassFileDir;  // Temp dir for .class  files
 	
-	public static String simulaRtsPath;
+	public static String inlineRtsPath;
 	
 //	public static String packetName = "simula.test";
 	public static String packetName = "testing";

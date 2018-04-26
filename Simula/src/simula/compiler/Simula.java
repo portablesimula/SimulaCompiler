@@ -37,6 +37,8 @@ public class Simula {
 
 	static void help() {
 		System.out.println(Global.simulaID+" See: https://github.com/portablesimula\n\n");
+		System.out.println("SIMULA_HOME="+System.getenv("SIMULA_HOME")+"\n\n");
+		System.out.println("JAVA_HOME="+System.getenv("JAVA_HOME")+"\n\n");
 		System.out.println("Usage: java Simula [options] sourceFile \n\n"
 				+ "possible options include:\n"
 				+ "  -help                      Print this synopsis of standard options\n"
@@ -68,7 +70,7 @@ public class Simula {
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
 		}
-//		fileName="C:/WorkSpaces/SimulaCompiler/Simula/src/testing/sim/HelloWord.sim"; // TEMP !!!!!
+//		fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/sim/HelloWord.sim"; // TEMP !!!!!
 		if (fileName == null) error("No input files specified");
 //		// Set DEBUG OPTIONS
 //
@@ -96,11 +98,12 @@ public class Simula {
 //		Option.TRACE_CODING=true;
 //
 //		// Java Compiler and Jar-tool Trace Options
-//		Option.TRACE_JAVAC=false;//true;
-//		Option.TRACE_JAVAC_OUTPUT=false;//true;
-//		Option.TRACE_JARING=false;//true;
+//		Option.TRACE_JAVAC=true;
+//		Option.TRACE_JAVAC_OUTPUT=true;
+//		Option.TRACE_JARING=true;
 		
-
+		Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR=false;//true;//false;
+		Global.simulaRtsLib=System.getenv("SIMULA_HOME")+"/Simula.jar";  // TODO: Later  /RTS.jar
 		// Start compiler ....
 		new SimulaCompiler(fileName).doCompile();
 	}

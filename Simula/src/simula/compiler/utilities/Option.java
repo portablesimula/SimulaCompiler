@@ -35,6 +35,8 @@ public class Option {
 	public static boolean TRACE_JAVAC=false;//true;
 	public static boolean TRACE_JAVAC_OUTPUT=false;//true;
 	public static boolean TRACE_JARING=false;//true;
+	public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;//true;
+
 	
 	
 	/** 
