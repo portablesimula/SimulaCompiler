@@ -56,8 +56,8 @@ public class SimulaCompiler {
 		else Global.outputDir=Option.outputDir;
 		
 //		Global.simulaRtsPath=   "C:/WorkSpaces/SimulaCompiler/Simula/bin/";         // AD'HOC
-		String userDir=System.getProperty("user.dir");
-		Global.inlineRtsPath=userDir+"/bin/";         // AD'HOC
+//		String userDir=System.getProperty("user.dir");
+//		Global.inlineRtsPath=userDir+"/bin/";         // AD'HOC
 
 		// Create Temp .java-Files Directory:
 		String main=Global.sourceName;
@@ -152,30 +152,12 @@ public class SimulaCompiler {
 			if(Option.noexec) { if(Option.verbose) Util.TRACE("No Execution of .jar File"); }
 			else
 			{ if(Option.verbose) Util.TRACE("Execute .jar File");
-			
 			  String opt="";
-//			  if(Global.rtsLib!=null) opt=opt+"-cp "+Global.rtsLib;
 			  if(Global.simulaRtsLib!=null) opt=opt+"-classpath "+Global.simulaRtsLib;
-			  
-//			  opt="-classpath C:/Simula/Simula.jar"; // TESTING !!!
-//			  opt="-classpath C:/Simula"; // TESTING !!!
-//			  opt="-classpath C:/Simula;C:/Simula/Simula.jar;."; // TESTING !!!
-//			  opt="-classpath C:/GitHub/SimulaCompiler/Simula/bin"; // TESTING !!!
-//			  opt="-classpath C:\\GitHub\\SimulaCompiler\\Simula\\bin"; // TESTING !!!
-//			  opt="-classpath C:/Simula/*.jar"; // TESTING !!!
-//			  opt="-classpath C:/GitHub/SimulaCompiler/Simula/bin/*"; // TESTING !!!
-//			  jarFile=jarFile.trim();
-//			  opt="-classpath "+jarFile+";C:/Simula/Simula.jar"; // TESTING !!!
-//			  opt="-cp "+jarFile+";C:/Simula/Simula.jar;."; // TESTING !!!
-			  opt="-cp C:/Simula/Simula.jar"; // TESTING !!!
-			  
-			  Util.BREAK("SimulaCompiler.doCompile: EXECUTE opt="+opt);
-			  //int exitValue3=execute("java -jar "+jarFile);
-//			  String cmd="java -verbose "+opt+" -jar "+jarFile;
+			  //Util.BREAK("SimulaCompiler.doCompile: EXECUTE opt="+opt);
 			  String cmd="java "+opt+" -jar "+jarFile;
-			  Util.BREAK("SimulaCompiler.doCompile: EXECUTE cmd="+cmd);
+			  //Util.BREAK("SimulaCompiler.doCompile: EXECUTE cmd="+cmd);
 			  int exitValue3=execute(cmd);
-			  
 			  if (Option.verbose)
 			     Util.TRACE("*** END Execute .jar File. Exit value="+exitValue3);
 			}
@@ -273,10 +255,8 @@ public class SimulaCompiler {
 	  JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 	  add(target,new File(Global.tempClassFileDir+Global.packetName),Global.tempClassFileDir.length());
 	  if(Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR)
-//	  { add(target,new File(Global.simulaRtsPath+"simula/runtime"),Global.simulaRtsPath.length());
-//	    add(target,new File(Global.simulaRtsPath+"simula/compiler/utilities/Util.class"),Global.simulaRtsPath.length());
-	  { add(target,new File(Global.inlineRtsPath+"simula/runtime"),Global.inlineRtsPath.length());
-	    add(target,new File(Global.inlineRtsPath+"simula/compiler/utilities/Util.class"),Global.inlineRtsPath.length());
+	  { add(target,new File(Global.simulaRtsLib+"simula/runtime"),Global.simulaRtsLib.length());
+	    add(target,new File(Global.simulaRtsLib+"simula/compiler/utilities/Util.class"),Global.simulaRtsLib.length());
 	  }
 	  target.close();
 	  if(Option.verbose) Util.BREAK("*** END Create .jar File.");

@@ -35,8 +35,6 @@ public class Global {
 	public static String tempJavaFileDir;   // Temp dir for .java  files
 	public static String tempClassFileDir;  // Temp dir for .class  files
 	
-	public static String inlineRtsPath;
-	
 //	public static String packetName = "simula.test";
 	public static String packetName = "testing";
 

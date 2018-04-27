@@ -102,8 +102,10 @@ public class Simula {
 //		Option.TRACE_JAVAC_OUTPUT=true;
 //		Option.TRACE_JARING=true;
 		
-		Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR=false;//true;//false;
-		Global.simulaRtsLib=System.getenv("SIMULA_HOME")+"/Simula.jar";  // TODO: Later  /RTS.jar
+		Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;
+//		Global.simulaRtsLib=System.getenv("SIMULA_HOME")+"/Simula.jar";  // TODO: Later  /RTS.jar
+		Global.simulaRtsLib=System.getenv("SIMULA_HOME")+"/rts/";  // TODO: Later  /RTS.jar
+	
 		// Start compiler ....
 		new SimulaCompiler(fileName).doCompile();
 	}
