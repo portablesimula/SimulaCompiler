@@ -44,7 +44,7 @@ import simula.compiler.utilities.VariableKind;
  * 
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class Variable extends Expression {
 	public String identifier;

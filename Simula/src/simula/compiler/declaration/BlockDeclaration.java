@@ -29,7 +29,7 @@ import simula.compiler.utilities.Util;
 /**
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class BlockDeclaration extends DeclarationScope // Declaration implements Scope
 { private static int currentBlockLevel=0; // Used during doChecking

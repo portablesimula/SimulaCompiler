@@ -15,7 +15,7 @@ import java.nio.channels.FileLock;
 import simula.compiler.utilities.Util;
 
 // *********************************************************************
-// TODO: MÅ SKRIVES OM !
+// TODO: MÃ… SKRIVES OM !
 //
 // Vi antar:
 //    1) Filen har 'external images' of fixed size uten separating characters.
@@ -72,7 +72,7 @@ import simula.compiler.utilities.Util;
  * <p>
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class DirectFile$ extends ImageFile$ {

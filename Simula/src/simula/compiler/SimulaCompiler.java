@@ -31,7 +31,7 @@ import simula.compiler.utilities.Util;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class SimulaCompiler {
@@ -85,7 +85,8 @@ public class SimulaCompiler {
 		  Util.TRACE("OutputDir:       "+Global.outputDir);
 		}
 		// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
-		Util.TRACE("SYSTEM: SIMULA_HOME="+System.getenv("SIMULA_HOME"));
+//		Util.TRACE("SYSTEM: SIMULA_HOME="+System.getenv("SIMULA_HOME"));
+//		Util.TRACE("SYSTEM: SIMULA_HOME="+Global.SIMULA_HOME);
 		Util.TRACE("SYSTEM: java.home="+System.getProperty("java.home"));
 		Util.TRACE("SYSTEM: java.class.path="+System.getProperty("java.class.path"));
 		Util.TRACE("SYSTEM: path.separator="+System.getProperty("path.separator"));
@@ -141,9 +142,6 @@ public class SimulaCompiler {
 			// ***************************************************************
 			String jarFile=createJarFile();
 			if(Option.TRACE_JARING) listJarFile(jarFile);
-//			listJarFile(Global.simulaRtsLib+"/");
-//			listJarFile("C:/GitHub/SimulaCompiler/Simula/Simula.jar");
-			listJarFile("C:/Simula/Simula.jar");
 			
 			// ***************************************************************
 			// *** EXECUTE .jar FILE
@@ -257,6 +255,7 @@ public class SimulaCompiler {
 	  if(Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR)
 	  { add(target,new File(Global.simulaRtsLib+"simula/runtime"),Global.simulaRtsLib.length());
 	    add(target,new File(Global.simulaRtsLib+"simula/compiler/utilities/Util.class"),Global.simulaRtsLib.length());
+	    add(target,new File(Global.simulaRtsLib+"simula/compiler/utilities/Option.class"),Global.simulaRtsLib.length());
 	  }
 	  target.close();
 	  if(Option.verbose) Util.BREAK("*** END Create .jar File.");

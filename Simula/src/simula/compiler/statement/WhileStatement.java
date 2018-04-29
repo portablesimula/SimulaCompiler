@@ -1,5 +1,6 @@
 package simula.compiler.statement;
 
+import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.KeyWord;
@@ -18,7 +19,7 @@ import simula.compiler.utilities.Util;
  *
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class WhileStatement extends Statement {
 	Expression condition;
@@ -48,7 +49,17 @@ public class WhileStatement extends Statement {
 		ASSERT_SEMANTICS_CHECKED(this);
 		Util.code(indent + "while(" + condition.toJavaCode() + ") {");
 		doStatement.doJavaCoding(indent + "   ");
+		
+		if(isWhileTrueDo())
+			Util.code(indent + "   if(CODE$==null) break; // Ad'Hoc to prevent JAVAC error'terminate");
+		
 		Util.code(indent + '}');
+	}
+	
+	private boolean isWhileTrueDo()
+	{ // Check for:  while(true) do {}
+	  if(!(condition instanceof Constant)) return(false);
+	  return(((Boolean)((Constant)condition).value));
 	}
 
 	public String toString() {

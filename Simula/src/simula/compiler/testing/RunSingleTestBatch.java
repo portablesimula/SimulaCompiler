@@ -18,7 +18,7 @@ import simula.compiler.utilities.Option;
  * 
  * @author Several from Norwegian Computing Center.
  * @author Several from Simula as.
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class RunSingleTestBatch {
@@ -50,7 +50,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst19.sim"); // OK:  Text concatenation and text expression evaluation.
 		//names.add("simtst20.sim"); // OK:  Simple tests: integer relations <, <=, =, >=, > and <>
 
-		names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
+		//names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
 		//names.add("simtst22.sim"); // ERR: Test for-loops with various for-list elements
 		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
@@ -101,7 +101,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst65.sim"); // ERR: Parameter transmission by reference to classes. FEIL med 2-DIM ARRAY
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES
+		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - Mï¿½ FINTESTES
 		//names.add("simtst69.sim"); // ERR: Test complex use of detach, call and resume.
 		//names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
@@ -122,7 +122,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst84.sim"); // ERR: Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		//names.add("simtst87.sim"); // ERR: Test SIMULATION, simple example.
+		names.add("simtst87.sim"); // ERR: Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
 		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // ERR: Test getfrac/putfrac.

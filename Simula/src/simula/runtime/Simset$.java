@@ -34,7 +34,7 @@ package simula.runtime;
  * which is itself another subclass of "linkage".
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Simset$ extends CLASS$ {

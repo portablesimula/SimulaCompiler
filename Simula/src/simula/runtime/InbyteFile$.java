@@ -36,7 +36,7 @@ import java.io.InputStream;
  * "endfile" returns the value of ENDFILE.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class InbyteFile$ extends ByteFile$ {

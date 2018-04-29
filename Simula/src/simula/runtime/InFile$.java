@@ -47,7 +47,7 @@ import java.io.InputStreamReader;
  * 
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class InFile$ extends ImageFile$ {

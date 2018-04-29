@@ -30,7 +30,7 @@ import simula.compiler.utilities.VariableKind;
  * 
  * Coding Utilities
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class CallProcedure {
@@ -257,8 +257,8 @@ public class CallProcedure {
 	      //s.append(actualParameter.toJavaCode());  NB: ALLE PARAMETRE BY'NAME !!!
 		  Type formalType=actualParameter.type;
 		  
-//		  ParameterKind kind=getActualKind(actualParameter);  // TODO: USIKKER PÅ DETTE !!!
-		  ParameterKind kind=ParameterKind.Simple;            // TODO: USIKKER PÅ DETTE !!!
+//		  ParameterKind kind=getActualKind(actualParameter);  // TODO: USIKKER Pï¿½ DETTE !!!
+		  ParameterKind kind=ParameterKind.Simple;            // TODO: USIKKER Pï¿½ DETTE !!!
 		  
 		  ParameterMode mode=ParameterMode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
 		  s.append(doParameterTransmition(formalType,kind,mode,actualParameter));

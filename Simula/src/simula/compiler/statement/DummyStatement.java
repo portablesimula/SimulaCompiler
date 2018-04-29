@@ -18,7 +18,7 @@ package simula.compiler.statement;
  * 
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class DummyStatement extends Statement {
 	public DummyStatement() {

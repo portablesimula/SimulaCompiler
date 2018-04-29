@@ -30,7 +30,7 @@ import simula.compiler.utilities.Util;
  *        previously created runnable JAR file.
  * </ul>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Simula {
@@ -45,6 +45,8 @@ public class Simula {
 				+ "  -noexec                    Don't execute generated .jar file\n"
 				+ "  -nowarn                    Generate no warnings\n"
 				+ "  -verbose                   Output messages about what the compiler is doing\n"
+				+ "  -SIMULA_HOME <directory>   Specify where to find the Simula Runtime-System\n"
+				+ "                             Default: Taken from the Environment variable SIMULA_HOME\n"
 				+ "  -keepJava <directory>      Specify where to place generated .java files\n"
 				+ "                             Default: Temp directory which is deleted upon exit\n"
 				+ "  -output <directory>        Specify where to place generated executable .jar file\n"
@@ -55,6 +57,8 @@ public class Simula {
 
 	public static void main(String[] argv) {
 		String fileName = null;
+		String SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
+
 		// Parse command line arguments.
 		for(int i=0;i<argv.length;i++) {
 			String arg=argv[i];
@@ -64,13 +68,20 @@ public class Simula {
 				else if (arg.equals("-nowarn")) { Option.nowarn=true; Option.WARNINGS=false; }
 				else if (arg.equals("-verbose")) Option.verbose=true;
 				else if (arg.equals("-standardClass")) Option.standardClass=true;
+				else if (arg.equals("-SIMULA_HOME")) SIMULA_HOME=getSimulaHome(argv[++i]);
 				else if (arg.equals("-keepJava")) setKeepJava(argv[++i]);
 				else if (arg.equals("-outputJava")) setOutputDir(argv[++i]);
 				else error("Unknown option "+arg);
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
 		}
-//		fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/sim/HelloWord.sim"; // TEMP !!!!!
+		if(SIMULA_HOME==null)
+			error("Environment Variable 'SIMULA_HOME' is not defined");
+		
+//		fileName=SIMULA_HOME+"/tst/HelloWord.sim"; // TEMP !!!!!
+//		fileName=SIMULA_HOME+"/tst/JensenDevice.sim"; // TEMP !!!!!
+//		fileName=SIMULA_HOME+"/tst/FittingRoom.sim"; // TEMP !!!!!
+		
 		if (fileName == null) error("No input files specified");
 //		// Set DEBUG OPTIONS
 //
@@ -103,18 +114,28 @@ public class Simula {
 //		Option.TRACE_JARING=true;
 		
 		Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;
-//		Global.simulaRtsLib=System.getenv("SIMULA_HOME")+"/Simula.jar";  // TODO: Later  /RTS.jar
-		Global.simulaRtsLib=System.getenv("SIMULA_HOME")+"/rts/";  // TODO: Later  /RTS.jar
+//		Global.simulaRtsLib=SIMULA_HOME+"/Simula.jar";  // TODO: Later  /RTS.jar
+		Global.simulaRtsLib=SIMULA_HOME+"/rts/";        // TODO: Later  /RTS.jar
 	
 		// Start compiler ....
 		new SimulaCompiler(fileName).doCompile();
 	}
 	
 	private static void error(String msg)
-	{ System.err.println("simula: "+msg+"\n");
+	{ System.err.println("Simula: "+msg+"\n");
 	  help();
 	}
 	
+
+    /**
+     * Option:  -SIMULA_HOME <directory>   Specify where to find the Compiler and Runtime-System\n"
+     */
+    private static String getSimulaHome(String dir)
+    { String SIMULA_HOME=dir;
+      Util.BREAK("SIMULA_HOME: "+SIMULA_HOME);
+      // TODO: Check dir legal directory name
+      return(SIMULA_HOME);
+    }
 
     /**
      * Option:  -keepJava <directory> Specify where to place generated .java files
@@ -129,8 +150,8 @@ public class Simula {
      * Option:  -output <directory>        Specify where to place generated executable .jar file
      */
     private static void setOutputDir(String dir)
-    { Option.keepJava=dir;
-      Util.BREAK("KEEP_JAVA: "+Option.keepJava);
+    { Option.outputDir=dir;
+      Util.BREAK("OUTPUT_DIR: "+Option.keepJava);
       // TODO: Check dir legal directory name
     }
 

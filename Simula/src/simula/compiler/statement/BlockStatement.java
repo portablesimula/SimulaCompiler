@@ -16,7 +16,7 @@ import simula.compiler.utilities.Util;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class BlockStatement extends Statement {
@@ -43,7 +43,7 @@ public class BlockStatement extends Statement {
 
 		//Util.BREAK("BlockStatement.doJavaCoding: blockKind="+blockDeclaration.blockKind);
 		if(blockDeclaration.blockKind!=BlockKind.CompoundStatement)
-		{ //String staticLink="this"; // TODO: Usikker på dette
+		{ //String staticLink="this"; // TODO: Usikker pï¿½ dette
 		  String staticLink=blockDeclaration.edCTX(blockDeclaration.blockLevel-1);
 		  Variable blockPrefix=blockDeclaration.blockPrefix;
 		  StringBuilder s = new StringBuilder();

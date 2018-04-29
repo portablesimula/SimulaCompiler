@@ -54,7 +54,7 @@ import simula.compiler.utilities.Util;
  *   
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public abstract class Expression extends SyntaxClass
 { public SyntaxClass backLink; // True: This Expression is part of <backLink>Expression/Statement

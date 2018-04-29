@@ -40,7 +40,7 @@ package simula.runtime;
  * member.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Linkage$ extends CLASS$ {

@@ -33,7 +33,7 @@ import simula.compiler.utilities.Util;
  *   	Type ::= BOOLEAN | CHARACTER | INTEGER | REAL | REF(ClassIdentifier) | TEXT
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class Declaration extends SyntaxClass
 { public String identifier; // Simula Identifier from Source Text

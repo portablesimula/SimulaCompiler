@@ -42,7 +42,7 @@ package simula.runtime;
  * defined for each set.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Head$ extends Linkage$ {

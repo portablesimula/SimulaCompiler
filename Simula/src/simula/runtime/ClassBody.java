@@ -1,5 +1,9 @@
 package simula.runtime;
 
+/**
+* 
+* @author Øystein Myhre Andersen
+*/
 public abstract class ClassBody {
 	RTObject$ object;
 	public ClassBody inner;

@@ -14,7 +14,7 @@ import simula.compiler.expression.Expression;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Meaning {

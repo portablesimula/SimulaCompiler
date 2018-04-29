@@ -71,7 +71,7 @@ import simula.compiler.utilities.Util;
  * outside its associated bounds causes a run time error.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class SubscriptedVariable extends Variable {
 	Vector<Expression> params = new Vector<Expression>();
@@ -175,7 +175,7 @@ public class SubscriptedVariable extends Variable {
       	    }
       	  }
 		}
-	    else Util.FATAL_ERROR("Umulig å komme hit ??");
+	    else Util.FATAL_ERROR("Umulig ï¿½ komme hit ??");
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END SubscriptedVariable(" + identifier+ ").doChecking: type=" + type);
 	    //Util.BREAK("END SubscriptedVariable("+identifier+").doChecking: type=" + type+", checkedParams="+checkedParams);
@@ -220,7 +220,7 @@ public class SubscriptedVariable extends Variable {
 	       s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
 	    else if(blockKind==BlockKind.Procedure || blockKind==BlockKind.Switch)
 	       s.append(CallProcedure.normal(this));
-	    else Util.FATAL_ERROR("Umulig å komme hit ??");
+	    else Util.FATAL_ERROR("Umulig ï¿½ komme hit ??");
 	    
 	  }
 	  else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
@@ -247,7 +247,7 @@ public class SubscriptedVariable extends Variable {
 	  }
 	  else if (decl instanceof Virtual) // Virtual Procedure
 	       s.append(CallProcedure.virtual(this,(Virtual)decl,remotelyAccessed));
-	  else Util.FATAL_ERROR("Umulig å komme hit ??");
+	  else Util.FATAL_ERROR("Umulig ï¿½ komme hit ??");
 	  String result=s.toString();
 	  return(result);
 	}

@@ -15,7 +15,7 @@ import simula.compiler.declaration.DeclarationScope;
 /**
  * Global Variables 
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Global {

@@ -16,7 +16,7 @@ import simula.compiler.utilities.Util;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public final class SimulaScanner
@@ -52,7 +52,7 @@ public final class SimulaScanner
   //********************************************************************************
   private static int current;
   private static int getNext() { return(current=PreProcessor.getNext()); }
-  private static void pushBack(int chr) { PreProcessor.pushBack(chr); current='¤'; }
+  private static void pushBack(int chr) { PreProcessor.pushBack(chr); current='ï¿½'; }
   private static void pushBack(String s) { PreProcessor.pushBack(s); }
   
   private static String edcurrent()
@@ -180,7 +180,7 @@ public final class SimulaScanner
 	    //case '\v':		/* VT */
 	    case '\f':			/* FF */
 	    case '\r':			/* CR */
-	    case '¤': // See PushBack
+	    case 'ï¿½': // See PushBack
 		  break;
 	    default: Util.error("Illegal character: "+(char)current+", Value="+(int)current);
 	    Util.BREAK("");;
@@ -193,7 +193,7 @@ public final class SimulaScanner
   //********************************************************************************
   //**	                                                      checkFullLineComment 
   //********************************************************************************
-//  private void checkFullLineComment()  // TODO: Denne skal fjernes når Directiv behandles i PreProcessor
+//  private void checkFullLineComment()  // TODO: Denne skal fjernes nï¿½r Directiv behandles i PreProcessor
 //  { if(getNext()!='%') pushBack(current);
 //    else 
 //    { String line=SourceInput.readUntilEndOfLine();

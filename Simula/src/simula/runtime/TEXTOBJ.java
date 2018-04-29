@@ -56,7 +56,7 @@ package simula.runtime;
  * 
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class TEXTOBJ extends RTObject$ {

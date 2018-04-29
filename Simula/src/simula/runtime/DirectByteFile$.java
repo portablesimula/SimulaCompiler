@@ -50,7 +50,7 @@ import simula.compiler.utilities.Util;
  * In this implementation LOC is maintained by the underlying file system.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class DirectByteFile$ extends ByteFile$ {

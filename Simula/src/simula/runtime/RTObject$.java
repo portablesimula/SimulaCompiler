@@ -11,12 +11,17 @@ import java.lang.reflect.Constructor;
 
 import simula.compiler.utilities.Util;
 
+/**
+* 
+* @author Øystein Myhre Andersen
+*/
 public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	private static final boolean DEBUG=true;
 	private static final boolean BLOCK_TRACING=false;//true;
 	private static final boolean THREAD_TRACING=false;//true;
 	private static final boolean CTX_TRACING=false; //true; //false; //true;
 	protected static final boolean QPS_TRACING=false; //true;
+	protected static final boolean SML_TRACING=false; //true;
 
 	public static void warning(String msg) { System.err.println("Warning: "+msg); }
 	

@@ -44,7 +44,7 @@ import simula.compiler.utilities.Util;
  * sequential output file.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class OutFile$ extends ImageFile$ {

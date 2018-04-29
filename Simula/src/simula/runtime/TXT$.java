@@ -43,7 +43,7 @@ import simula.compiler.utilities.Util;
  * 
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class TXT$ {
@@ -492,7 +492,7 @@ public class TXT$ {
 		while((n--)>0) pattern.append('0');
 		//Util.BREAK("TXTREF.putfix: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
-		if(r== -0.0) r=0.0; // NOTE: Java har både +0.0 og -0.0
+		if(r== -0.0) r=0.0; // NOTE: Java har bï¿½de +0.0 og -0.0
 	    String output = myFormatter.format(r);
 	    putResult(T,output.replace(',','.'));
 	}

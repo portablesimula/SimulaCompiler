@@ -40,7 +40,7 @@ package simula.runtime;
  * is available. It represents a line printer oriented file.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class ImageFile$ extends FILE$ {

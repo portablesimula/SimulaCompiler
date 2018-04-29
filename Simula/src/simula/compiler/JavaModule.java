@@ -20,7 +20,7 @@ import simula.compiler.utilities.Util;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class JavaModule

@@ -32,7 +32,7 @@ import java.io.OutputStream;
  * file of bytes.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class OutbyteFile$ extends ByteFile$ {

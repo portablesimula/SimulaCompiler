@@ -19,7 +19,7 @@ import java.util.Random;
  * <p>
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class ENVIRONMENT$ {

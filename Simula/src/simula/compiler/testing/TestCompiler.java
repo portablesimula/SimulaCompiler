@@ -13,7 +13,7 @@ import simula.compiler.utilities.Option;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class TestCompiler {
@@ -70,13 +70,13 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/DetachSamples.sim"; 
 		// String name=Global.packetName+"/sim/DisplaySamples.sim";
 		// String name=Global.packetName+"/sim/FileSamples.sim";
-		// String name=Global.packetName+"/sim/FittingRoom.sim";
+		 String name=Global.packetName+"/sim/FittingRoom.sim";
 		// String name=Global.packetName+"/sim/ForWhileSamples.sim";
 		// String name=Global.packetName+"/sim/FunctionCall.sim";
 		// String name=Global.packetName+"/sim/Gauss.sim";
 		// String name=Global.packetName+"/sim/GotoSamples.sim";
 		// String name=Global.packetName+"/sim/HashingExample.sim";
-		 String name=Global.packetName+"/sim/HelloWord.sim";
+		// String name=Global.packetName+"/sim/HelloWord.sim";
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 		// String name=Global.packetName+"/sim/JensensDevice.sim";
 		// String name=Global.packetName+"/sim/MathSample.sim";

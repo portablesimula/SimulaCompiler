@@ -27,7 +27,7 @@ package simula.runtime;
  * Note: "Bytesize" returns zero before first "open" of the bytefile.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class ByteFile$ extends FILE$ {

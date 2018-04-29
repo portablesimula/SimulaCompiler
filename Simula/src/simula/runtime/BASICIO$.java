@@ -100,7 +100,7 @@ package simula.runtime;
  * not other open files are also closed.
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class BASICIO$ extends RTObject$ {

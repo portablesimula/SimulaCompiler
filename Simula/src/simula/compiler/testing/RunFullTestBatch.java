@@ -18,7 +18,7 @@ import simula.compiler.utilities.Option;
  * 
  * @author Several from Norwegian Computing Center.
  * @author Several from Simula as.
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class RunFullTestBatch {
@@ -101,7 +101,7 @@ public class RunFullTestBatch {
 		//names.add("simtst65.sim"); // ERR: Parameter transmission by reference to classes. FEIL med 2-DIM ARRAY
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES
+		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - Mï¿½ FINTESTES
 		//names.add("simtst69.sim"); // ERR: Test complex use of detach, call and resume.
 		names.add("simtst70.sim"); // OK:  Text attributes and relations
 		

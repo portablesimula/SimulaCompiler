@@ -1,6 +1,3 @@
-
-%QUALIFIEDNAMES
-
 begin
 %  Jensen's device exploits call by name and side-effects.
 %  Call by name is an argument passing convention that delays the
@@ -17,7 +14,7 @@ long real procedure Sum(k, lower, upper, ak);
    begin
       long real s;
       s := 0.0;
-%     for k := lower step 1 until u do ! Illegal in Simula;
+%     for k := lower step 1 until upper do ! Illegal in Simula;
       k := lower;
       while k <= upper do
       begin
@@ -32,9 +29,15 @@ long real procedure Sum(k, lower, upper, ak);
    long real array A(0:99);
    long real result;
    for j:=10 step 1 until 60 do A(j):=j;
+   
+   outtext("-------------------------------------------------------------------"); outimage;
+   outtext("Sample Simula Program: Jensen's Device"); outimage;
+   outtext("First call on 'Sum' - Expected result: Sum=1785"); outimage;
    result:=Sum(i,10,60,A(i));
+   outtext("-------------------------------------------------------------------"); outimage;
    outtext("End JensensDevice sample 1, Sum="); outint(result,6); outimage;
    
+   outtext("-------------------------------------------------------------------"); outimage;
    outtext("Next line should be Runtime Error: Name Parameter is not a Variable"); outimage;
    result:=Sum(j+m*n,10,20,A(i));
    

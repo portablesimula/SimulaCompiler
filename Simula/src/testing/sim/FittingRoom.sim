@@ -1,13 +1,12 @@
 
-%INCLUDE_QPS
-%QUALIFIEDNAMES
-
 % From: https://en.wikipedia.org/wiki/Simula
 
 Simulation Begin
+
    Class FittingRoom; Begin
       Ref (Head) door;
       Boolean inUse;
+      
       Procedure request; Begin
          If inUse Then Begin
              Wait (door);
@@ -15,15 +14,30 @@ Simulation Begin
          End;
          inUse:= True;
       End;
+      
       Procedure leave; Begin
          inUse:= False;
+         reportFittingRoomAvailable;
          Activate door.First;
       End;
+      
+      procedure reportFittingRoomAvailable; Begin
+         ref(Link) elt;
+         OutFix (Time, 2, 6); OutText (": FittingRoom becomes available, Queue: ");
+         elt:-door.first();
+         if elt == none then outtext("Empty");
+         while elt =/= none do Begin
+            OutText(" " & (elt qua Person).pname);
+            elt:-elt.suc();
+         end;   
+         OutImage;
+      end;
+      
       door:- New Head;
    End;
   
    Procedure report (message); Text message; Begin
-      OutFix (Time, 2, 0); OutText (": " & message); OutImage;
+      OutFix (Time, 2, 6); OutText (": " & message); OutImage;
    End;
 
    Process Class Person (pname); Text pname; Begin
@@ -45,5 +59,10 @@ Simulation Begin
    Activate New Person ("Sam");
    Activate New Person ("Sally");
    Activate New Person ("Andy");
+   Activate New Person ("Peter");
+   Activate New Person ("Elisabeth");
+   Activate New Person ("Harry");
+   Activate New Person ("Robert");
+   Activate New Person ("John");
    Hold (100);
 End;

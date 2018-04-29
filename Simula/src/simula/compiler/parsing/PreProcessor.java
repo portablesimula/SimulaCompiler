@@ -23,7 +23,7 @@ import simula.compiler.utilities.Util;
 /**
  * Input Utilities for the Simula Scanner.
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public final class PreProcessor

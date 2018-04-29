@@ -31,7 +31,7 @@ import simula.compiler.utilities.Util;
  *   
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class BinaryOperation extends Expression
 { public Expression lhs;
@@ -199,7 +199,7 @@ public class BinaryOperation extends Expression
 	//if(DEBUG) Util.log("BEGIN doRemoteChecking("+toString()+").doChecking(2) - objType="+objType+", obj="+obj);
 	if(objType==Type.Text) return(doRemoteTextChecking(obj,attr));
 	
-	objType.doChecking(Global.currentScope); // Nødvendig hvis TypeDeclaration er nedenfor   TODO: ER DETTE OK ?
+	objType.doChecking(Global.currentScope); // Nï¿½dvendig hvis TypeDeclaration er nedenfor   TODO: ER DETTE OK ?
 	if(objType.getQual()==null)
 		Util.error("doRemoteChecking: Object Expression ("+obj+") is not a ref() type rather "+objType);
     
@@ -230,7 +230,7 @@ public class BinaryOperation extends Expression
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(6) - attr="+attr+", attr.Type="+result);
 	}
 	else 
-	{ //Util.BREAK("BinaryOperation.doRemoteChecking -- Usikker på dette !!!");		
+	{ //Util.BREAK("BinaryOperation.doRemoteChecking -- Usikker pï¿½ dette !!!");		
 	  //Util.BREAK("BinaryOperation.doRemoteChecking: attr="+attr.getClass().getName());
 	  Util.error("Illegal attribute("+attr+") in remote access");
 	  result=attr.type;
@@ -254,7 +254,7 @@ public class BinaryOperation extends Expression
 
 	}
 	else 
-	{ //Util.BREAK("BinaryOperation.doRemoteTextChecking -- Usikker på dette !!!");		
+	{ //Util.BREAK("BinaryOperation.doRemoteTextChecking -- Usikker pï¿½ dette !!!");		
 	  //Util.BREAK("BinaryOperation.doRemoteTextChecking: attr="+attr.getClass().getName());
 	  Util.error("Illegal attribute("+attr+") in remote access");
 	  result=attr.type;
@@ -321,7 +321,7 @@ public class BinaryOperation extends Expression
 	    }
 	    else if(accessRemoteArray) return(accessRemoteArray(lhs,(SubscriptedVariable)rhs));
 	    String result=lhs.get()+opr.toJavaCode()+rhs.get();
-	    Util.BREAK("BinaryOperation.toJavaCode: DOT result="+result);
+	    //Util.BREAK("BinaryOperation.toJavaCode: DOT result="+result);
 	    return(result);
 	  }
 	  case LT: case LE: case EQ: case NE: case GE: case GT:

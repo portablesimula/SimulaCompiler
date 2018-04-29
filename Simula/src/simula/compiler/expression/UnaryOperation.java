@@ -23,7 +23,7 @@ import simula.compiler.utilities.Util;
  *   UnaryOperation =  operation  Expression
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class UnaryOperation extends Expression {
 	private KeyWord oprator;

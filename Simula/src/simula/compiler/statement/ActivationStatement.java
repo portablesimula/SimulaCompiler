@@ -36,7 +36,7 @@ import simula.compiler.utilities.Util;
  *                     | AFTER ObjectExpression
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class ActivationStatement extends Statement
 { boolean REAC;
@@ -92,7 +92,7 @@ public class ActivationStatement extends Statement
   }
 
   String edActivateDirect()
-  { Util.BREAK("edActivate1: obj1="+object1);
+  { //Util.BREAK("edActivate1: obj1="+object1);
 	String obj1=(object1==null)?"null":object1.toJavaCode();
 	Meaning activate1 = Global.currentScope.findMeaning("ActivateDirect");
 	String staticLink=activate1.edStaticLink();

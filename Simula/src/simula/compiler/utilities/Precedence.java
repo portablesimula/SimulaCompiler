@@ -52,7 +52,7 @@ package simula.compiler.utilities;
  * 
  * Precedence	Operator		Type				Associativity
  * ---------------------------------------------------------------
- *	  15			·		Member selection		Left to Right
+ *	  15			ï¿½		Member selection		Left to Right
  * ---------------------------------------------------------------
  *	  13			+		Unary plus				Right to left
  *					-		Unary minus
@@ -95,7 +95,7 @@ package simula.compiler.utilities;
  * ---------------------------------------------------------------
  *    15			()		Parentheses				Left to Right
  *					[]		Array subscript
- *					·		Member selection		Left to Right
+ *					ï¿½		Member selection		Left to Right
  * ---------------------------------------------------------------
  *    14			++		Unary post-increment	Right to left
  *					--		Unary post-decrement	Right to left
@@ -149,7 +149,7 @@ package simula.compiler.utilities;
  * ---------------------------------------------------------------
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Precedence

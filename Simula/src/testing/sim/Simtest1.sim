@@ -1,18 +1,44 @@
-
-%INCLUDE_QPS
-%QUALIFIEDNAMES
 Simulation Begin
    Integer u;
-   ref(Car) bil;
+   ref(Car) bil1,bil2;
+   ref(Head) queue;
+  
+   Procedure report (message); Text message; Begin
+      OutFix (Time, 2, 0); OutText (": " & message); OutImage;
+      reportQueue;
+   End;
+   
+   Procedure reportQueue;
+   begin
+      ref(Link) elt;
+      OutFix (Time, 2, 0); OutText (": FittingRoom Queue: ");
+      elt:-queue.first();
+      while elt =/= none
+      begin
+         OutText(" " & (elt qua Car).pname);
+         elt:-elt.suc();
+      end;   
+      OutImage;
+   end;
 
-   Process Class Car;
-    Begin
-         Hold (4);
-         Hold (12);
-       End;
+   Process Class Car(pname); Text pname;
+   Begin
+         report(pname & " is created");
+         while true
+         begin
+            report(pname & " is active 1");
+            Hold (4);
+            report(pname & " is active 2");
+        
+%           Hold (12);
+		 end;
    End;
 
-   bil:- New Car();
-   Activate bil;
-   Hold (100);
+   queue :- New Head;
+   bil1:- New Car("Bil1");
+   bil2:- New Car("Bil2");
+   report(bil1.pname & " is queued");
+   Activate bil1 at 4.0;
+   Activate bil2 at 6.0;
+   Hold (20);
 End;

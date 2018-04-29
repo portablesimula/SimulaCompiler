@@ -2,6 +2,11 @@ package simula.runtime;
 
 import simula.compiler.utilities.Util;
 
+/**
+* 
+* @author SIMULA Standards Group
+* @author Øystein Myhre Andersen
+*/
 public abstract class CLASS$ extends RTObject$ {
 
 	// Constructor

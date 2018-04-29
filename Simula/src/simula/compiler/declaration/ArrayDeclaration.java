@@ -79,7 +79,7 @@ import simula.compiler.utilities.Util;
  * </pre>
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class ArrayDeclaration extends Declaration {
 	// Type type; inherited
@@ -148,7 +148,7 @@ public class ArrayDeclaration extends Declaration {
 		}
 
 		public void doChecking() {
-			// TODO: Hvis konstante grenser så eveluerer vi her !
+			// TODO: Hvis konstante grenser sï¿½ eveluerer vi her !
 			LB.doChecking();
 			UB.doChecking();
 			//Util.warning("Only Arrays with lower bound zero is fully supported");

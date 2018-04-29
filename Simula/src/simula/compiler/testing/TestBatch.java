@@ -12,7 +12,7 @@ import simula.compiler.utilities.Option;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class TestBatch {

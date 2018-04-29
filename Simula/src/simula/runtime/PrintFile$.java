@@ -68,7 +68,7 @@ import java.io.OutputStreamWriter;
  * <p>
  * 
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class PrintFile$ extends OutFile$ {

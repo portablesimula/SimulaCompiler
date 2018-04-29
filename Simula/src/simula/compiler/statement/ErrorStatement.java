@@ -10,7 +10,7 @@ package simula.compiler.statement;
 /**
  * Error Statement.
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class ErrorStatement extends Statement {
 	Throwable exception;

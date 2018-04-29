@@ -46,7 +46,7 @@ import simula.compiler.utilities.Util;
  * 
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public abstract class Statement extends SyntaxClass {
 	public static Statement doParse() {

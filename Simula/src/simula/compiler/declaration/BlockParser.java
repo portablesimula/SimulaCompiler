@@ -55,7 +55,7 @@ import simula.compiler.utilities.Util;
  *				VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public abstract class BlockParser extends SyntaxClass
 { 

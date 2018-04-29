@@ -9,7 +9,7 @@ package simula.compiler.utilities;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public enum ActivationCode {

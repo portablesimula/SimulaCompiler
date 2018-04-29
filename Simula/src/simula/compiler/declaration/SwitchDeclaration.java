@@ -30,7 +30,7 @@ import simula.compiler.utilities.Type;
  * </pre>
  *
  * @see simula.compiler.expression.ConditionalExpression
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class SwitchDeclaration extends BlockDeclaration //Declaration
 { Vector<Expression> switchList=new Vector<Expression>();

@@ -41,7 +41,7 @@ import simula.compiler.utilities.Util;
  * ***********************************************************************	
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 
 public abstract class SyntaxClass

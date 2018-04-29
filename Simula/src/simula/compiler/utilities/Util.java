@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
 
 /**
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public class Util

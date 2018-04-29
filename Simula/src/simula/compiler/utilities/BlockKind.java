@@ -11,7 +11,7 @@ package simula.compiler.utilities;
  * Block Kind.
  * <p>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  *
  */
 public enum BlockKind {

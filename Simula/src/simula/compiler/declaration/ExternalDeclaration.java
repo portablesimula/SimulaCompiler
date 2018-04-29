@@ -31,7 +31,7 @@ import simula.compiler.utilities.Util;
  *          external-identifier = text-constant   // E.g  a file-name
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class ExternalDeclaration extends Declaration {
 	/**

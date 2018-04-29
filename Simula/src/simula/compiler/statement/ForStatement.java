@@ -44,7 +44,7 @@ import simula.compiler.utilities.Util;
  *
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class ForStatement extends Statement
 { Variable controlVariable;

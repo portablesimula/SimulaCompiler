@@ -25,7 +25,7 @@ import simula.compiler.utilities.Util;
  *   
  * </pre>
  * 
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  * @see simula.compiler.parsing.SimulaScanner
  */
 public class Constant extends Expression {

@@ -46,7 +46,7 @@ import simula.compiler.utilities.Util;
  * 
  * @see Type
  * @author SIMULA Standards Group
- * @author Øystein Myhre Andersen
+ * @author Ã˜ystein Myhre Andersen
  */
 public class TypeDeclaration extends Declaration {
 	// Type type;

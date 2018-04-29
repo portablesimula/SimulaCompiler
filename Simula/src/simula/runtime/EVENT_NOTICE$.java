@@ -7,8 +7,11 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-
+/**
+* 
+* @author SIMULA Standards Group
+* @author Øystein Myhre Andersen
+*/
 public class EVENT_NOTICE$ extends Link$ {
 	public double EVTIME;
 	public Process$ PROC;
@@ -36,8 +39,6 @@ public class EVENT_NOTICE$ extends Link$ {
 	}
 
 	public void RANK(boolean BEFORE_) {
-		Util.BREAK("EVENT_NOTICE$.RANK: SIMULATION="+SIMULATION);
-		Util.BREAK("EVENT_NOTICE$.RANK: SIMULATION.SQS="+SIMULATION.SQS);
 		EVENT_NOTICE$ P =(EVENT_NOTICE$)SIMULATION.SQS.last();
 		while(P.EVTIME > EVTIME) P = P.pred();
 		if (BEFORE_) while(P.EVTIME == EVTIME) P = P.pred();
