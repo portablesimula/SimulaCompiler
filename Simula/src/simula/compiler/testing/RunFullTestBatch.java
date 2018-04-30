@@ -88,7 +88,7 @@ public class RunFullTestBatch {
 		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels
 		names.add("simtst55.sim"); // OK:  Test virtual procedures.
-		//names.add("simtst56.sim"); // ERR: Test virtual procedures.
+		names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		names.add("simtst57.sim"); // OK: Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
 		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
@@ -107,7 +107,7 @@ public class RunFullTestBatch {
 		
 		names.add("simtst71.sim"); // OK:   Test visibility of identifiers.
 		//names.add("simtst72.sim"); // err: Test of formal procedures. TRENGER FIN-TESTING
-		//names.add("simtst73.sim"); // ERR: Test of formal procedures.
+		names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		names.add("simtst74.sim"); // OK:  Test resume and detach.
 		names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
 		//names.add("simtst76.sim"); // ERR: Test of detach and resume in SIMSET.

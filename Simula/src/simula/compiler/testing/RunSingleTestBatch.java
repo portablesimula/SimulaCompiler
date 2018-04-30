@@ -33,7 +33,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // err: To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
-		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
 		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
@@ -57,8 +57,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
 		//names.add("simtst26.sim"); // err: Designational expressions, goto statement and switch declaration.
 		//names.add("simtst27.sim"); // OK:  Test while-loops.
-		//names.add("simtst28.sim"); // ERR: Paramenter transmission to procedures by value.
-		//names.add("simtst29.sim"); // err: Procedure parameters by value
+		//names.add("simtst28.sim"); // ERR: Paramenter transmission to procedures by value. USES 3-DIM ARRAY-PARAMETERS
+		//names.add("simtst29.sim"); // err: Procedure parameters by value  USES 2-DIM ARRAY-PARAMETERS
 		//names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 
 		//names.add("simtst31.sim"); // ERR: Labels and switches as parameters to procedures
@@ -66,7 +66,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst33.sim"); // err: Test call by reference (Uses: 3-dim arrays)
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.
-		//names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
+		names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
 		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		//names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 		//names.add("simtst39.sim"); // err: Check that a formal parameter is global to the procedure body.
@@ -88,26 +88,26 @@ public class RunSingleTestBatch {
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
-		//names.add("simtst56.sim"); // ERR: Test virtual procedures.
-		//names.add("simtst57.sim"); // OK: Virtual procedure - different number of parameters
+		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
+		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
 		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
 		//names.add("simtst60.sim"); // ERR: Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // ERR: Remote access to attributes which are protected.
-		//names.add("simtst62.sim"); //   OK:  Test complex use of detach and resume.
+		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // ERR: Parameter transmission by value to classes. MYE FEIL MED ARRAY as Parameter
 		//names.add("simtst65.sim"); // ERR: Parameter transmission by reference to classes. FEIL med 2-DIM ARRAY
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - M� FINTESTES
+		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES
 		//names.add("simtst69.sim"); // ERR: Test complex use of detach, call and resume.
 		//names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
 		//names.add("simtst71.sim"); // OK:   Test visibility of identifiers.
 		//names.add("simtst72.sim"); // err: Test of formal procedures. TRENGER FIN-TESTING
-		//names.add("simtst73.sim"); // ERR: Test of formal procedures.
+		//names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst74.sim"); // OK:  Test resume and detach.
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
 		//names.add("simtst76.sim"); // ERR: Test of detach and resume in SIMSET.

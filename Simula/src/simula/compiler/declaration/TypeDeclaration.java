@@ -74,8 +74,8 @@ public class TypeDeclaration extends Declaration {
 	        TypeDeclaration typeDeclaration=new TypeDeclaration(type,ident);
 	        if(Parser.accept(KeyWord.EQ))
 	        {
-	          //typeDeclaration.constantElement=Expression.parseExpression();
-	          typeDeclaration.constantElement=TypeConversion.testAndCreate(type,Expression.parseExpression());
+	          typeDeclaration.constantElement=Expression.parseExpression();
+	          //typeDeclaration.constantElement=TypeConversion.testAndCreate(type,Expression.parseExpression());
 	        }
 	        
 	        declarationList.add(typeDeclaration);
@@ -88,7 +88,10 @@ public class TypeDeclaration extends Declaration {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Util.setLine(lineNumber);
 		type.doChecking(Global.currentScope);
-		if(constantElement!=null) constantElement.doChecking();
+		if(constantElement!=null)
+		{ constantElement.doChecking();
+	      constantElement=TypeConversion.testAndCreate(type,constantElement);
+		}
 		SET_SEMANTICS_CHECKED();
 	}
 

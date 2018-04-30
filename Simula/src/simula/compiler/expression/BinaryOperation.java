@@ -71,7 +71,7 @@ public class BinaryOperation extends Expression
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN BinaryOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	//Util.BREAK("BEGIN BinaryOperation"+toString()+".doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 	switch(opr)
-	{ case PLUS: case MINUS: case MUL: case DIV:
+	{ case PLUS: case MINUS: case MUL:
 	  { // ArithmeticExpression
 		lhs.doChecking(); rhs.doChecking();
 		Type type1=lhs.type; Type type2=rhs.type;
@@ -82,7 +82,19 @@ public class BinaryOperation extends Expression
 		if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
 		break;
 	  }
-	  case INTDIV:
+	  case DIV: // Real Division
+	  { // ArithmeticExpression
+		lhs.doChecking(); rhs.doChecking();
+		Type type1=lhs.type; Type type2=rhs.type;
+//		this.type=Type.arithmeticTypeConversion(type1,type2);
+		this.type=Type.LongReal;
+		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
+		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
+		//Util.BREAK("BinaryOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
+		if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
+		break;
+	  }
+	  case INTDIV: // Integer Division
 	  {	lhs.doChecking(); rhs.doChecking();
 		Type type1=lhs.type; Type type2=rhs.type;
 		if(type1==Type.ShortInteger || type1==Type.Integer)

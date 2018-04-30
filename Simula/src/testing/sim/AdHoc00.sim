@@ -1,35 +1,10 @@
 Begin
-   real a,b,x,ae,se,z,w,r1,r2;
-REAL               minpreal;          ! To contain min pos real val.;
+  integer ps=17;
+  integer ps1=ps+1;  ! Gjelder simtst00 ;
+  real a;
 
-% x :=  8.741816000000000&+06;
-x :=  1.435705219387869&+00;
-
-       ae:= addepsilon(x);
-       se:= subepsilon(x);
-       a:= subepsilon(addepsilon(x));
-       b:= addepsilon(subepsilon(x));
-       z:= addepsilon(x)-x;
-       w:= x-subepsilon(x);
-
-          outtext("x ="); outreal(x,16,23); outimage;
-          outtext("ae="); outreal(ae,16,23); outimage;
-          outtext("se="); outreal(se,16,23); outimage;
-          outtext("a ="); outreal(a,16,23); outimage;
-          outtext("b ="); outreal(b,16,23); outimage;
-          outtext("z ="); outreal(z,26,33); outimage;
-          outtext("w ="); outreal(w,26,33); outimage;
-          
-minpreal :=  addepsilon(0.0); 
-          r1 := minpreal;   r2 := 0;
-
-IF                 r2  = 0&0
-%                                    AND NOT         r1 <  r2
-%   AND NOT         r1 <= r2         AND             r1  > r2
-%   AND             r1 >= r2         AND             r1 <> r2
-   
-     THEN
-ELSE  outtext("ERROR(1) - REAL.2 (comparing REALs)");
-          
+  a:=1/30;  ! Gjelder simtst87 ;
+  
+  outreal(a,6,12); outimage;          
 
 End;
