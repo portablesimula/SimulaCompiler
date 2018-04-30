@@ -32,9 +32,9 @@ public class RunFullTestBatch {
 		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // err: To test putint and putreal.
-		//names.add("simtst05.sim"); // err: Test Aritmetisk Relations
-		//names.add("simtst06.sim"); // err: Test Mathematical Functions
-		//names.add("simtst07.sim"); // err: Test Mathematical Library
+		names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
+		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		names.add("simtst07.sim"); // err: Test Mathematical Library
 		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
 		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants

@@ -32,9 +32,9 @@ public class RunSingleTestBatch {
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // err: To test putint and putreal.
-		//names.add("simtst05.sim"); // err: Test Aritmetisk Relations
-		//names.add("simtst06.sim"); // err: Test Mathematical Functions
-		//names.add("simtst07.sim"); // err: Test Mathematical Library
+		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
+		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
 		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
 		//names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
@@ -122,7 +122,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst84.sim"); // ERR: Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		names.add("simtst87.sim"); // ERR: Test SIMULATION, simple example.
+		//names.add("simtst87.sim"); // ERR: Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
 		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // ERR: Test getfrac/putfrac.

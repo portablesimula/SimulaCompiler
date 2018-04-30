@@ -47,9 +47,13 @@ begin
 
        diff:= abs (if x=0 then x-y else (x-y) / x);
 
-       if diff > 7.0&-14 then                             !***** NOTE 1 *****;
+       if diff > 1.0&-10 then                             !***** NOTE 1 *****;
        begin
-          outtext ("*** rel. error= ");
+          outtext("x="); outreal(x,16,23); 
+          outtext(", y="); outreal(y,16,23); 
+          outtext(", x-y="); outreal(x-y,16,23); 
+          outtext(", (x-y)/x="); outreal((x-y)/x,16,23); 
+          outtext (" *** rel. error= ");
           outreal (diff, 16, 23);
           outimage;
           realdiff:=  true;

@@ -27,9 +27,9 @@ public class ENVIRONMENT$ {
 	static char CURRENTLOWTEN = '&';
 	static char CURRENTDECIMALMARK = '.';
 	public final double maxlongreal=Double.MAX_VALUE;
-	public final double minlongreal=Double.MIN_VALUE;
+	public final double minlongreal= -maxlongreal;//Double.MIN_VALUE;
 	public final float maxreal=Float.MAX_VALUE;
-	public final float minreal=Float.MIN_VALUE;
+	public final float minreal= -maxreal;//Float.MIN_VALUE;
 	public final int maxrank=256; // Character.???;
 	public final int maxint=Integer.MAX_VALUE;
 	public final int minint=Integer.MIN_VALUE;
@@ -248,6 +248,7 @@ public class ENVIRONMENT$ {
 	}
 
 	/**
+	 * Overloaded versions of 'addepsilon'.
 	 * <pre>
 	 * <type of e> procedure addepsilon(e);   <real-type> e;
 	 *     addepsilon := e + ... ; ! see below;
@@ -266,16 +267,15 @@ public class ENVIRONMENT$ {
 	 * @param x
 	 * @return
 	 */
+	public float addepsilon(float x) {
+		return (Math.nextUp(x));
+	}
 	public double addepsilon(double x) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-//		double addepsilon = 0.0f;
-//		addepsilon = x + 0.0f;
-//		return (addepsilon);
-		throw new RuntimeException("ENVIRONMENT$ -- addepsilon is not implemented");
+		return (Math.nextUp(x));
 	}
 
 	/**
+	 * Overloaded versions of 'subepsilon'.
 	 * <pre>
 	 * <type of e> procedure subepsilon(e);   <real-type> e;
 	 *     subepsilon := e - ... ; ! see below;
@@ -294,13 +294,11 @@ public class ENVIRONMENT$ {
 	 * @param x
 	 * @return
 	 */
+	public float subepsilon(float x) {
+		return (Math.nextDown(x));
+	}
 	public double subepsilon(double x) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-//		double subepsilon = 0.0f;
-//		subepsilon = x - 0.0f;
-//		return (subepsilon);
-		throw new RuntimeException("ENVIRONMENT$ -- subepsilon is not implemented");
+		return (Math.nextDown(x));
 	}
 
 

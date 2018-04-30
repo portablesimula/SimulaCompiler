@@ -14,7 +14,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
-{
+{ public boolean overloaded;
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident)
   { super(ident); this.declaredIn=declaredIn; this.type=type; this.blockKind=BlockKind.Method; }
 
@@ -53,7 +53,7 @@ public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
     
 	String modifier="public ";
 	// Test om dette er en 'static' metode
-	// TODO: Gjør dette litt mere elegant !
+	// TODO: GjÃ¸r dette litt mere elegant !
 	StandardClass stdc=(StandardClass)declaredIn;
 	if(stdc.isContextFree) modifier="public static ";
 	

@@ -191,7 +191,7 @@ IF                 r1  = 0.0000&00  AND NOT        0.0 <  r2
    AND             r1 >= r2         AND NOT         r1 <> r2  THEN
 ELSE  err("REAL.1 (comparing REALs)");
 
-r1 := minpreal;  ! r2 = 0;
+r1 := minpreal;   r2 := 0;
 
 IF                 r2  = 0&0        AND NOT         r1 <  r2
    AND NOT         r1 <= r2         AND             r1  > r2

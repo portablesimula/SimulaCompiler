@@ -42,7 +42,7 @@ public class ConditionalExpression extends Expression {
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Util.setLine(lineNumber);
-		Util.warning("ConditionalExpression in this Context is not Supported - Rewrite program");
+		//Util.warning("ConditionalExpression in this Context is not Supported - Rewrite program");
 		condition.doChecking();
 		condition.backLink=this; // To ensure $result from functions
 		//Util.BREAK("ConditionalExpression.doChecking(): Condition: "+condition);

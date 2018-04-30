@@ -8,7 +8,9 @@
 package simula.compiler.declaration;
 
 import simula.compiler.utilities.BlockKind;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
+import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
@@ -73,7 +75,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   // TODO: Rettes slik at alle genererte metoder blir static.
   //       Ta med et flag (enten i klassen eller i alle procedurene
-  //       Dettte svarer til diskusjonen om innføring av 'context class'
+  //       Dettte svarer til diskusjonen om innfï¿½ring av 'context class'
   //  
   public static StandardClass ENVIRONMENT=new StandardClass("RTObject","ENVIRONMENT");
   static
@@ -103,8 +105,14 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     ENVIRONMENT.addStandardProcedure(Type.LongReal,"abs",parameter("e",Type.LongReal));
     ENVIRONMENT.addStandardProcedure(Type.Integer,"sign",parameter("e",Type.LongReal));
     ENVIRONMENT.addStandardProcedure(Type.Integer,"entier",parameter("e",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"addepsilon",parameter("e",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"subepsilon",parameter("e",Type.LongReal));
+    
+    if(Global.OVERLOADING)
+    { ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"addepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
+      ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"subepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
+    } else {
+      ENVIRONMENT.addStandardProcedure(Type.LongReal,"addepsilon",parameter("e",Type.LongReal));
+      ENVIRONMENT.addStandardProcedure(Type.LongReal,"subepsilon",parameter("e",Type.LongReal));
+    }
 
 //    Text utilities .......................................... 9.2
 //    Procedures copy, blanks, char, isochar, rank, isorank,

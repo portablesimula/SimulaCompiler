@@ -20,7 +20,7 @@ import simula.compiler.declaration.DeclarationScope;
  */
 public class Global {
 	public static final String gitURL="https://github.com/portablesimula";
-    public static final String simulaID="Simula Beta(0.1)";
+    public static final String simulaID="Simula Beta(0.2)";
 	public static final String javaDir="C:/Programfiler/Java/jdk1.8.0_73/bin/";
 	
 	public static Vector<JavaModule> javaModules;
@@ -37,6 +37,8 @@ public class Global {
 	
 //	public static String packetName = "simula.test";
 	public static String packetName = "testing";
+	
+	public static boolean OVERLOADING=true; // TODO: Temp implementation of Overloading
 
 
 	public static DeclarationScope currentScope=null; // Current Scope. Maintained during Checking and Coding

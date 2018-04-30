@@ -16,6 +16,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -332,7 +333,11 @@ public class BinaryOperation extends Expression
 	  {	Type type1=lhs.type; Type type2=rhs.type;
 		if( (type1==Type.Text) && (type2==Type.Text) ) return(doCodeTextRefRelation());
 	  }
-      default: return(lhs.get()+opr.toJavaCode()+'('+rhs.get()+')');
+      default:
+    	  { if(this.backLink==null)
+    		     return(lhs.get()+opr.toJavaCode()+'('+rhs.get()+')');
+    	    else return("("+lhs.get()+opr.toJavaCode()+'('+rhs.get()+"))");
+    	  }
 	}
   }
 

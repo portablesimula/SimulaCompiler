@@ -56,7 +56,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		// String name=Global.packetName+"/sim/AdHoc00.sim";
+		 String name=Global.packetName+"/sim/adHoc00.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
@@ -70,7 +70,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/DetachSamples.sim"; 
 		// String name=Global.packetName+"/sim/DisplaySamples.sim";
 		// String name=Global.packetName+"/sim/FileSamples.sim";
-		 String name=Global.packetName+"/sim/FittingRoom.sim";
+		// String name=Global.packetName+"/sim/FittingRoom.sim";
 		// String name=Global.packetName+"/sim/ForWhileSamples.sim";
 		// String name=Global.packetName+"/sim/FunctionCall.sim";
 		// String name=Global.packetName+"/sim/Gauss.sim";
@@ -113,7 +113,7 @@ public class TestCompiler {
 
 			// Checker Trace Options
 			Option.TRACE_CHECKER=false;//true;
-			Option.TRACE_CHECKER_OUTPUT=false;//true;
+			Option.TRACE_CHECKER_OUTPUT=true;//false;//true;
 
 			// Coder Trace Options
 			Option.TRACE_CODING=true;

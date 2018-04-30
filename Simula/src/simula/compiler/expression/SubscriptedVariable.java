@@ -17,8 +17,10 @@ import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.BlockKind;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
@@ -128,6 +130,7 @@ public class SubscriptedVariable extends Variable {
 		{	BlockDeclaration block = (BlockDeclaration) decl;
 			//Util.BREAK("SubscriptedVariable("+identifier+") blockHead="+blockHead);
 			this.type=block.type;
+			Type overloadedType=this.type;
 			// Check parameters
 			Iterator<Parameter> formalIterator = block.parameterIterator();
 			Iterator<Expression> actualIterator = params.iterator();
@@ -140,13 +143,22 @@ public class SubscriptedVariable extends Variable {
 				Expression actualParameter = actualIterator.next();
 				//Util.BREAK("Actual Parameter: " + actualParameter);
 				actualParameter.doChecking();
-				//Util.BREAK("Actual Parameter: " + actualType + " "	+ actualParameter + ", Actual Type=" + actualType);
+				//Util.BREAK("Actual Parameter: " + actualParameter.type + " "	+ actualParameter + ", Actual Type=" + actualParameter.type);
+				if(Global.OVERLOADING && formalType instanceof OverLoad)
+				{ //Util.BREAK("SubscriptedVariable.doChecking(1): "+this);
+				  formalType=actualParameter.type; // TODO: AD'HOC for add/subepsilon
+				  overloadedType=formalType;
+				}
 				Expression checkedParameter=TypeConversion.testAndCreate(formalType,actualParameter);
 				checkedParameter.backLink=this;
 				checkedParams.add(checkedParameter);
 				//Util.BREAK("SubscriptedVariable("+identifier+").doChecking().addCheckedParam: "+checkedParams);
 			}
 			if (formalIterator.hasNext()) Util.error("Wrong number of parameters to " + block);
+			if(Global.OVERLOADING && type instanceof OverLoad)
+			{ //Util.BREAK("SubscriptedVariable.doChecking(2): "+this);
+			  this.type=overloadedType;
+			}
 			
     	} else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
 		{ Parameter spec=(Parameter) decl;
@@ -175,7 +187,7 @@ public class SubscriptedVariable extends Variable {
       	    }
       	  }
 		}
-	    else Util.FATAL_ERROR("Umulig � komme hit ??");
+	    else Util.FATAL_ERROR("Umulig å komme hit ??");
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END SubscriptedVariable(" + identifier+ ").doChecking: type=" + type);
 	    //Util.BREAK("END SubscriptedVariable("+identifier+").doChecking: type=" + type+", checkedParams="+checkedParams);
@@ -220,7 +232,7 @@ public class SubscriptedVariable extends Variable {
 	       s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
 	    else if(blockKind==BlockKind.Procedure || blockKind==BlockKind.Switch)
 	       s.append(CallProcedure.normal(this));
-	    else Util.FATAL_ERROR("Umulig � komme hit ??");
+	    else Util.FATAL_ERROR("Umulig å komme hit ??");
 	    
 	  }
 	  else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
