@@ -51,7 +51,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst20.sim"); // OK:  Simple tests: integer relations <, <=, =, >=, > and <>
 
 		//names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
-		//names.add("simtst22.sim"); // ERR: Test for-loops with various for-list elements
+		names.add("simtst22.sim"); // ERR: Test for-loops with various for-list elements
 		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
@@ -66,7 +66,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst33.sim"); // err: Test call by reference (Uses: 3-dim arrays)
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.
-		names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
+		//names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
 		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		//names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 		//names.add("simtst39.sim"); // err: Check that a formal parameter is global to the procedure body.
@@ -136,7 +136,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst97.sim"); // ERR: Test Process, activation statements, idle, terminated, time.
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		//names.add("simtst99.sim"); // ERR:
-		//names.add("simtst00.sim"); // ERR: Test that put-get-put delivers the identity.
+		//names.add("simtst00.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

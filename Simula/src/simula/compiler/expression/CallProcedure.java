@@ -377,16 +377,22 @@ public class CallProcedure {
 		    }
 		    else  // Simple Type/Ref/Text by Name
 		    { String javaTypeClass=formalType.toJavaTypeClass();
+		    
+		      Variable writeableVariable=null;
 		      if(actualParameter instanceof Variable
 		      || actualParameter.isRemoteVariable()
 		      || actualParameter instanceof TypeConversion)
+		    	  writeableVariable=actualParameter.getVariable();
+
+		      if(writeableVariable!=null)
 		      {	s.append("new $NAME<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
-		    	Variable var=actualParameter.getVariable();
-			    //Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Meaning: " + var.meaning);
-			    //Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic: " + var.meaning.declaredAs);
-			    //Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic'Qual: " + var.meaning.declaredAs.getClass().getSimpleName());
-				if(!(var.meaning.declaredAs instanceof BlockDeclaration))
+			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter: " + actualParameter);
+			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'var: " + writeableVariable);
+			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Meaning: " + writeableVariable.meaning);
+			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic: " + writeableVariable.meaning.declaredAs);
+			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic'Qual: " + writeableVariable.meaning.declaredAs.getClass().getSimpleName());
+				if(!(writeableVariable.meaning.declaredAs instanceof BlockDeclaration))
                 { Type actualType=actualParameter.type;
 				  String rhs="("+actualType.toJavaType()+")x$";
                   if(actualParameter instanceof TypeConversion)
@@ -404,11 +410,11 @@ public class CallProcedure {
       			    //Util.BREAK("CallProcedure.doSimpleParameter: actualType="+actualType);
       			    //Util.BREAK("CallProcedure.doSimpleParameter: formalType="+formalType);
       			    //Util.BREAK("CallProcedure.doSimpleParameter: var.type="+var.type);
-      			    String putValue=TypeConversion.mayBeConvert(actualType,var.type,"y");
+      			    String putValue=TypeConversion.mayBeConvert(actualType,writeableVariable.type,"y");
       			    //Util.BREAK("CallProcedure.doSimpleParameter: putValue="+putValue);
                     s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x$)");
                     s.append("{ "+formalType.toJavaType()+" y=x$; ");
-                    s.append(var.toJavaCode()).append(putValue);
+                    s.append(writeableVariable.toJavaCode()).append(putValue);
                     s.append("return(y); }");
                   }
                   else

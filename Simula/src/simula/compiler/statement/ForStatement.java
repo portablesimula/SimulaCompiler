@@ -23,6 +23,11 @@ import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
+import simula.runtime.ENVIRONMENT$.$NAME;
+import simula.runtime.RTObject$.ForList;
+import simula.runtime.RTObject$.SingleElt;
+import simula.runtime.RTObject$.StepUntil;
+import simula.runtime.RTObject$.WhileElt;
 
 
 /**
@@ -89,6 +94,16 @@ public class ForStatement extends Statement
 	{ Util.NOT_IMPLEMENTED("ForStatement: Single expression for list element");
       return(""+expr1.toJavaCode());
 	}
+	public String edNewCode()
+	{ // new SingleElt(new $NAME<Number>() { public Number get(){return(<expression>); }})
+  	  return("new SingleElt(new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }})");
+	}
+	public String edRefCode()
+	{ // new SingleElt(new $NAME<ClassIdent>() { public ClassIdent get(){return(<expression>); }})
+	  String classIdent=expr1.type.getJavaRefIdent();
+  	  return("new SingleRefElt<"+classIdent+">("
+	    +"new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
+	}
 	public String toString() { return(""+expr1); }
   }
   
@@ -104,6 +119,20 @@ public class ForStatement extends Statement
 	public String edCode()
 	{ String code1=expr1.toJavaCode();
 	  return(""+code1+';'+expr2.toJavaCode()+';'+controlVariable.toJavaCode()+"="+code1);
+	}
+	public String edNewCode()
+	{ // new WhileElt(new $NAME<Number>() { public Number get(){return(<Expression1>); }}
+	  //             ,new $NAME<Boolean>() { public Boolean get(){return(<Boolean'Expression2>); }})
+	  return("new WhileElt(new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
+			            +",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
+	}
+	public String edRefCode()
+	{ // new WhileElt(new $NAME<ClassIdent>() { public ClassIdent get(){return(<Expression1>); }}
+	  //             ,new $NAME<Boolean>() { public Boolean get(){return(<Boolean'Expression2>); }})
+	  String classIdent=expr1.type.getJavaRefIdent();
+	  return("new WhileRefElt<"+classIdent+">("
+	        +"new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
+			+",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 	}
 	public String toString() { return(""+expr1+" while "+expr2); }
   }
@@ -126,6 +155,18 @@ public class ForStatement extends Statement
     		     +controlVariable.toJavaCode()+'='+controlVariable.toJavaCode()+'+'+expr2.toJavaCode();
       return(s);
 	}
+	public String edNewCode()
+	{ // new StepUntil(new $NAME<Number>() { public Number get(){return(<expr1>); }}
+	  //			  ,new $NAME<Number>() { public Number get(){return(<expr2>); }}
+	  //			  ,new $NAME<Number>() { public Number get(){return(<expr3>); }})
+	  expr1.backLink=ForStatement.this; // To ensure $result from functions
+	  expr2.backLink=ForStatement.this; // To ensure $result from functions
+	  expr3.backLink=ForStatement.this; // To ensure $result from functions
+  	  return("new StepUntil(new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
+  	                     +",new $NAME<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
+  	                     +",new $NAME<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
+      
+	}
 	public String toString() { return(""+expr1+" step "+expr2+ " until "+expr3); }
   }
 
@@ -145,6 +186,17 @@ public class ForStatement extends Statement
 	SET_SEMANTICS_CHECKED();
   }
   public void doJavaCoding(String indent)
+  {	if(controlVariable.type.isReferenceType())
+    { if(Global.NEW_REF_FOR_CODING)	{ doCodeReferenceFor(indent); return; }
+	  doOldJavaCoding(indent);
+    }
+    else
+    { if(Global.NEW_VALUE_FOR_CODING) { doNewForCoding(indent); return; }
+      doOldJavaCoding(indent);
+    }
+  }
+
+  public void doOldJavaCoding(String indent)
   {	Util.setLine(lineNumber);
 	ASSERT_SEMANTICS_CHECKED(this);
     if(forList.size()>1) Util.NOT_IMPLEMENTED("ForStatement: Multiple("+forList.size()+") for list elements - ");
@@ -152,7 +204,54 @@ public class ForStatement extends Statement
     Util.code(indent+"for("+controlVariable.toJavaCode()+"="+elt.edCode()+") {");
     doStatement.doJavaCoding(indent+"   ");
     Util.code(indent+'}');
+//    if(elt instanceof StepUntilElement) // AD'HOC Correction after ForStepUntil
+//    { StepUntilElement stepUntilElement=(StepUntilElement)elt;
+//      Util.code(indent+controlVariable.toJavaCode()+"="+stepUntilElement.expr3.toJavaCode()+"; // Set ControlVariable=Until'Value");
+//    }
   }  
+  
+  // ------------------------------------------------------------
+  //	for(Number CV$:new ForList(
+  //			 new SingleElt(n1)
+  //			,new SingleElt(n3)
+  //			,new StepUntil(n5,n3,n201)
+  //			,new WhileElt(n4,b1)
+  //       )) { cv=(int)CV$;
+  //	// Statements ...
+  //	}
+  // ------------------------------------------------------------
+  public void doNewForCoding(String indent)
+  {	Util.setLine(lineNumber);
+	ASSERT_SEMANTICS_CHECKED(this);
+    Util.code(indent+"for(Number CV$:new ForList(");
+    char del=' ';
+    for(ForListElement elt:forList)
+    { Util.code(indent+"   "+del+elt.edNewCode());
+      del=',';
+    }
+    String cast=controlVariable.type.toJavaType();
+    Util.code(indent+"   )) { if(CV$==null) continue; "+controlVariable.toJavaCode()+"=("+cast+")CV$;");
+    
+    doStatement.doJavaCoding(indent+"   ");
+    Util.code(indent+'}');
+  }  
+  public void doCodeReferenceFor(String indent)
+  {	Util.setLine(lineNumber);
+	ASSERT_SEMANTICS_CHECKED(this);
+	String classIdent=controlVariable.type.getJavaRefIdent();
+    Util.code(indent+"for("+classIdent+" CV$:new ForRefList<"+classIdent+">(");
+    char del=' ';
+    for(ForListElement elt:forList)
+    { Util.code(indent+"   "+del+elt.edRefCode());
+      del=',';
+    }
+    String cast=controlVariable.type.toJavaType();
+    Util.code(indent+"   )) { if(CV$==null) continue; "+controlVariable.toJavaCode()+"=("+cast+")CV$;");
+    
+    doStatement.doJavaCoding(indent+"   ");
+    Util.code(indent+'}');
+  }  
+  
   public void print(String indent,String tail)
   { String fl=forList.toString().replace('[',' ').replace(']',' ');
     System.out.println(indent+"FOR "+controlVariable+" "+assignmentOperator+fl+"DO");

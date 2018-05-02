@@ -40,8 +40,11 @@ BEGIN
 
    eps:= 0.001;
 
+   Outtext("TEST(1): cv="); outint(cv,4); outimage;
    FOR  cv:= 1  STEP 1 UNTIL 9 DO x(cv):= cv*cv*cv;
+   Outtext("TEST(2): cv="); outint(cv,4); outimage;
    limit:= 9;
+   Outtext("TEST(3): cv="); outint(cv,4); outimage;
    Gps(limit, innerp, innerp + x(cv) !**2; *x(cv));
 
                          COMMENT WE HAVE NOW FOUND

@@ -56,7 +56,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		 String name=Global.packetName+"/sim/adHoc00.sim";
+		// String name=Global.packetName+"/sim/adHoc00.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
@@ -78,7 +78,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/HashingExample.sim";
 		// String name=Global.packetName+"/sim/HelloWord.sim";
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		// String name=Global.packetName+"/sim/JensensDevice.sim";
+		 String name=Global.packetName+"/sim/JensensDevice.sim";
 		// String name=Global.packetName+"/sim/MathSample.sim";
 		// String name=Global.packetName+"/sim/MultiAssignments.sim";
 		// String name=Global.packetName+"/sim/ParamSample.sim";
@@ -119,8 +119,8 @@ public class TestCompiler {
 			Option.TRACE_CODING=true;
 
 			// Java Compiler and Jar-tool Trace Options
-			Option.TRACE_JAVAC=false;//true;
-			Option.TRACE_JAVAC_OUTPUT=false;//true;
+			Option.TRACE_JAVAC=true;
+			Option.TRACE_JAVAC_OUTPUT=true;
 			Option.TRACE_JARING=true;//false;//true;
 
 //		Option.keepJava="C:/WorkSpaces/SimulaCompiler/Simula/src/testing";

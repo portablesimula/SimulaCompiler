@@ -1,10 +1,23 @@
-Begin
-  integer ps=17;
-  integer ps1=ps+1;  ! Gjelder simtst00 ;
-  real a;
+begin
+  integer i,j,k,f;
+  ref(CA) a,b,c,x;
+  class CA(navn); text navn; begin integer sequ; sequ:=4; end;
 
-  a:=1/30;  ! Gjelder simtst87 ;
+  for i:=1,6,7 step 3 until 30,i+6 while i<k+40 do
+  begin
+     f:=i;
+     outtext("Loop i="); outint(i,0); outimage;
+  end;
+  outtext("End of Loop i="); outint(i,0); outimage;
   
-  outreal(a,6,12); outimage;          
+  a:-new CA("a");
+  b:-new CA("b");
+  c:-new CA("c");
+  for x:-a,b,c,new CA("In Element") while x.sequ>0 do
+  begin
+     outtext("Loop2 x.navn=" & x.navn); outimage;
+%     x.sequ:=0;
+  end;
+  outtext("End of Loop2"); outimage;
 
-End;
+end;

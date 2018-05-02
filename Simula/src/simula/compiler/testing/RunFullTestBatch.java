@@ -25,7 +25,7 @@ public class RunFullTestBatch {
 
 	public static void main(String[] args) {
 		Vector<String> names=new Vector<String>();
-		names.add("adHoc00.sim"); // For ad'hoc testing
+		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
