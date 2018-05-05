@@ -1,9 +1,0 @@
-begin
-  integer i,j,k,f;
-
-  for i:=1,6,7 step 3 until 30,j+k while i<k+100 do
-  begin
-     f:=i;
-  end;
-
-end;

@@ -51,7 +51,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst20.sim"); // OK:  Simple tests: integer relations <, <=, =, >=, > and <>
 
 		//names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
-		names.add("simtst22.sim"); // ERR: Test for-loops with various for-list elements
+		//names.add("simtst22.sim"); // OK:  Test for-loops with various for-list elements
 		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
@@ -80,8 +80,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst46.sim"); // OK:  Test the qualification of a function designator.
 		//names.add("simtst47.sim"); // OK:  Test of this.
 		//names.add("simtst48.sim"); // OK:  Test of qua.
-		//names.add("simtst49.sim"); // ERR: For statements in connection blocks.
-		//names.add("simtst50.sim"); // ERR: Test binding and qualification in Connection Blocks
+		//names.add("simtst49.sim"); // OK: For statements in connection blocks.
+		//names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
 
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'
@@ -101,7 +101,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst65.sim"); // ERR: Parameter transmission by reference to classes. FEIL med 2-DIM ARRAY
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES
+		names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES
 		//names.add("simtst69.sim"); // ERR: Test complex use of detach, call and resume.
 		//names.add("simtst70.sim"); // OK:  Text attributes and relations
 		

@@ -79,6 +79,15 @@ public class ForStatement extends Statement
 	} else return(new ForListElement(expr1));	  
   }
  
+  private String getControlVariableByName(String classIdent)
+  { String cv=controlVariable.toJavaCode();
+    String cast=controlVariable.type.toJavaType();
+	String cvName="new $NAME<"+classIdent+">()"+
+//			"{ public "+classIdent+" put("+classIdent+" x$){"+cv+"=("+cast+")x$; return("+cv+");};"+
+            "{ public "+classIdent+" put("+classIdent+" x$){"+cv+"=("+cast+")x$; return(x$);};"+
+			"  public "+classIdent+" get(){return(("+classIdent+")"+cv+"); }	}";
+	return(cvName);
+  }
   
   private class ForListElement
   { Expression expr1;
@@ -94,15 +103,17 @@ public class ForStatement extends Statement
 	{ Util.NOT_IMPLEMENTED("ForStatement: Single expression for list element");
       return(""+expr1.toJavaCode());
 	}
-	public String edNewCode()
+	public String edNewCode(String classIdent)
 	{ // new SingleElt(new $NAME<Number>() { public Number get(){return(<expression>); }})
-  	  return("new SingleElt(new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }})");
+  	  return("new SingleElt<"+classIdent+">("+getControlVariableByName(classIdent)
+	    +",new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
 	}
 	public String edRefCode()
 	{ // new SingleElt(new $NAME<ClassIdent>() { public ClassIdent get(){return(<expression>); }})
 	  String classIdent=expr1.type.getJavaRefIdent();
-  	  return("new SingleRefElt<"+classIdent+">("
-	    +"new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
+//  	  return("new SingleRefElt<"+classIdent+">("
+//	    +"new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
+  	  return(edNewCode(classIdent));
 	}
 	public String toString() { return(""+expr1); }
   }
@@ -120,19 +131,19 @@ public class ForStatement extends Statement
 	{ String code1=expr1.toJavaCode();
 	  return(""+code1+';'+expr2.toJavaCode()+';'+controlVariable.toJavaCode()+"="+code1);
 	}
-	public String edNewCode()
-	{ // new WhileElt(new $NAME<Number>() { public Number get(){return(<Expression1>); }}
-	  //             ,new $NAME<Boolean>() { public Boolean get(){return(<Boolean'Expression2>); }})
-	  return("new WhileElt(new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
+	public String edNewCode(String classIdent)
+	{ return("new WhileElt<"+classIdent+">("+getControlVariableByName(classIdent)
+			            +",new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
 			            +",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 	}
 	public String edRefCode()
 	{ // new WhileElt(new $NAME<ClassIdent>() { public ClassIdent get(){return(<Expression1>); }}
 	  //             ,new $NAME<Boolean>() { public Boolean get(){return(<Boolean'Expression2>); }})
 	  String classIdent=expr1.type.getJavaRefIdent();
-	  return("new WhileRefElt<"+classIdent+">("
-	        +"new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
-			+",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
+//	  return("new WhileRefElt<"+classIdent+">("
+//	        +"new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
+//			+",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
+  	  return(edNewCode(classIdent));
 	}
 	public String toString() { return(""+expr1+" while "+expr2); }
   }
@@ -155,14 +166,15 @@ public class ForStatement extends Statement
     		     +controlVariable.toJavaCode()+'='+controlVariable.toJavaCode()+'+'+expr2.toJavaCode();
       return(s);
 	}
-	public String edNewCode()
+	public String edNewCode(String classIdent)
 	{ // new StepUntil(new $NAME<Number>() { public Number get(){return(<expr1>); }}
 	  //			  ,new $NAME<Number>() { public Number get(){return(<expr2>); }}
 	  //			  ,new $NAME<Number>() { public Number get(){return(<expr3>); }})
 	  expr1.backLink=ForStatement.this; // To ensure $result from functions
 	  expr2.backLink=ForStatement.this; // To ensure $result from functions
 	  expr3.backLink=ForStatement.this; // To ensure $result from functions
-  	  return("new StepUntil(new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
+  	  return("new StepUntil("+getControlVariableByName(classIdent)
+  	                     +",new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
   	                     +",new $NAME<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
   	                     +",new $NAME<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
       
@@ -211,26 +223,26 @@ public class ForStatement extends Statement
   }  
   
   // ------------------------------------------------------------
-  //	for(Number CV$:new ForList(
+  //	for(Number CVAR$:new ForList(
   //			 new SingleElt(n1)
   //			,new SingleElt(n3)
   //			,new StepUntil(n5,n3,n201)
   //			,new WhileElt(n4,b1)
-  //       )) { cv=(int)CV$;
+  //       )) { cv=(int)CVAR$;
   //	// Statements ...
   //	}
   // ------------------------------------------------------------
   public void doNewForCoding(String indent)
   {	Util.setLine(lineNumber);
 	ASSERT_SEMANTICS_CHECKED(this);
-    Util.code(indent+"for(Number CV$:new ForList(");
+	String CB="CB$"+lineNumber;
+    Util.code(indent+"for(boolean "+CB+":new ForList(");
     char del=' ';
     for(ForListElement elt:forList)
-    { Util.code(indent+"   "+del+elt.edNewCode());
+    { Util.code(indent+"   "+del+elt.edNewCode("Number"));
       del=',';
     }
-    String cast=controlVariable.type.toJavaType();
-    Util.code(indent+"   )) { if(CV$==null) continue; "+controlVariable.toJavaCode()+"=("+cast+")CV$;");
+    Util.code(indent+"   )) { if(!"+CB+") continue;");
     
     doStatement.doJavaCoding(indent+"   ");
     Util.code(indent+'}');
@@ -238,15 +250,14 @@ public class ForStatement extends Statement
   public void doCodeReferenceFor(String indent)
   {	Util.setLine(lineNumber);
 	ASSERT_SEMANTICS_CHECKED(this);
-	String classIdent=controlVariable.type.getJavaRefIdent();
-    Util.code(indent+"for("+classIdent+" CV$:new ForRefList<"+classIdent+">(");
+	String CB="CB$"+lineNumber;
+    Util.code(indent+"for(boolean "+CB+":new ForList(");
     char del=' ';
     for(ForListElement elt:forList)
     { Util.code(indent+"   "+del+elt.edRefCode());
       del=',';
     }
-    String cast=controlVariable.type.toJavaType();
-    Util.code(indent+"   )) { if(CV$==null) continue; "+controlVariable.toJavaCode()+"=("+cast+")CV$;");
+    Util.code(indent+"   )) { if(!"+CB+") continue;");
     
     doStatement.doJavaCoding(indent+"   ");
     Util.code(indent+'}');
