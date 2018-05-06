@@ -174,74 +174,15 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	}
 
     
-//	// *******************************************************
-//	// *** FRAMEWORK for for-list iteration  --  Integer
-//	// *******************************************************
-//	public class IntegerForList implements Iterator<Integer>
-//	{ IntegerForElt[] forElt; int i;
-//	  public IntegerForList(IntegerForElt... forElt)
-//	  { this.forElt=forElt; }
-//	  public boolean hasNext() {return(i<forElt.length && forElt[i].hasNext()); }
-//	  public Integer next()
-//	  { Integer val=forElt[i].next();
-//	    if(!forElt[i].hasNext()) i++;
-//	    return(val);
-//	  }
-//	}
-//	
-//	public class IntegerForElt implements Iterator<Integer>
-//	{ Integer nextValue; boolean more;
-//	  public IntegerForElt(int init)
-//	  { this.nextValue=init; more=true; }
-//	  public boolean hasNext() {return(more); }
-//	  public Integer next()
-//	  { more=false; return(nextValue); }
-//	}
-//	
-//	public class IntegerStepUntil extends IntegerForElt // implements Iterator<Integer>
-//	{ Integer step,until;
-//	  public IntegerStepUntil(int init,int step,int until)
-//	  { super(init); this.step=step; this.until=until; }
-//	  public Integer next()
-//	  { Integer val=nextValue;
-//	    nextValue=val+step;
-//	    more=nextValue<until;
-//		  return(val);
-//	  }
-//	}
-//	public class IntStepUntil implements Iterable<Integer>
-//	{ IntegerStepUntil integerStepUntil;
-//	  public IntStepUntil(int init,int step,int until)
-//	  {	integerStepUntil=new IntegerStepUntil(init,step,until);  }
-//	  public Iterator<Integer> iterator() { return(integerStepUntil); }
-//	}
-//	public class IntForList implements Iterable<Integer>
-//	{ IntegerForList integerForList;
-//	  public IntForList(IntegerForElt... forElt)
-//	  {	integerForList=new IntegerForList(forElt);  }
-//	  public Iterator<Integer> iterator() { return(integerForList); }
-//	}
-//	
-//	private void IntegerTEST()
-//	{
-//	for(int i:(new IntStepUntil(1,4,56))) {}
-//	
-//	for(int cvar:new IntForList(new IntegerForElt(1),new IntegerForElt(3),new IntegerStepUntil(5,3,201))) {}
-//		int cv;
-//		Iterator<Integer> it=new IntegerStepUntil(1,4,56);
-//		while(it.hasNext()) cv=it.next();
-//	}
-
-    
 	// *******************************************************
 	// *** FRAMEWORK for for-list iteration 
 	// *******************************************************
 	
 	public class ForList implements Iterable<Boolean>
-	{ ForListIterator integerForList;
+	{ ForListIterator forListIterator;
 	  public ForList(ForElt... forElt)
-	  {	integerForList=new ForListIterator(forElt);  }
-	  public Iterator<Boolean> iterator() { return(integerForList); }
+	  {	forListIterator=new ForListIterator(forElt);  }
+	  public Iterator<Boolean> iterator() { return(forListIterator); }
 	}
 
 	public class ForListIterator implements Iterator<Boolean>
@@ -262,19 +203,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  public boolean hasNext() {return(more); }
 	}
 	
-//	public class SingleElt extends ForElt
-//	{ $NAME<Number> cvar,nextValue; boolean more;
-//	  public SingleElt($NAME<Number> cvar,$NAME<Number> init)
-//	  { this.cvar=cvar; this.nextValue=init; more=true; }
-//	  public boolean hasNext() {return(nextValue!=null); }
-//	  public Boolean next()
-//	  { if(nextValue==null) return(false);
-//	    Number val=nextValue.get();
-//	    cvar.put(val); nextValue=null;
-//	    Util.BREAK("SingleElt.next: return="+val);
-//	    return(true);
-//	  }
-//	}
 	public class SingleElt<T> extends ForElt
 	{ $NAME<T> cvar,nextValue; //boolean more;
 	  public SingleElt($NAME<T> cvar,$NAME<T> init)
@@ -289,13 +217,12 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  }
 	}
 	
-	public class StepUntil extends ForElt // implements Iterator<Integer>
+	public class StepUntil extends ForElt
 	{ $NAME<Number> cvar,init,step,until;
 	  Number nextValue;
 	  public StepUntil($NAME<Number> cvar,$NAME<Number> init,$NAME<Number> step,$NAME<Number> until)
 	  { this.cvar=cvar; this.init=init; this.step=step; this.until=until; }
 	  public Boolean next()
-//	  { if(nextValue==null) { nextValue=init.get(); cvar.put(nextValue); return(more); } // First value
 	  { if(nextValue==null) { nextValue=init.get(); cvar.put(nextValue); return(true); } // First value
 	    Number val=nextValue;
 //	    nextValue=val+step;
@@ -304,15 +231,12 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	    Number utl=until.get();
 	    if(val instanceof Double || stp instanceof Double) {
 	    	nextValue=new Double(val.doubleValue() + stp.doubleValue());
-//	    	more=nextValue.floatValue() <= utl.doubleValue();
 	        more=( stp.floatValue()*(nextValue.floatValue()-utl.floatValue()) <= 0 );
 	    } else if(val instanceof Float || stp instanceof Float) {
 	    	nextValue=new Float(val.floatValue() + stp.floatValue());
-//	    	more=nextValue.floatValue() <= utl.floatValue();
 	        more=( stp.floatValue()*(nextValue.floatValue()-utl.floatValue()) <= 0 );
 	    } else if(val instanceof Long || stp instanceof Long) {
 	    	nextValue=new Float(val.longValue() + stp.longValue());
-//	    	more=nextValue.longValue() <= utl.longValue();
 	        more=( stp.longValue()*(nextValue.longValue()-utl.longValue()) <= 0 );
 	    } else {
 	    	nextValue=new Integer(val.intValue() + stp.intValue());
@@ -324,18 +248,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  }
 	}
 	
-//	public class WhileElt extends ForElt
-//	{ $NAME<Number> cvar,expr; $NAME<Boolean> cond;
-//	  public WhileElt($NAME<Number> cvar,$NAME<Number> expr,$NAME<Boolean> cond)
-//	  { this.cvar=cvar; this.expr=expr; this.cond=cond; }
-//	  public Boolean next()
-//	  { Number val=expr.get();
-//	    cvar.put(val);
-//	    more=cond.get();    // IF not more return null - test i loopen mot if(CS$==null) continue;
-//	    Util.BREAK("WhileElt.next: more="+more+", return="+val);
-//		return(more);
-//	  }
-//	}
 	public class WhileElt<T> extends ForElt
 	{ $NAME<T> cvar,expr; $NAME<Boolean> cond;
 	  public WhileElt($NAME<T> cvar,$NAME<T> expr,$NAME<Boolean> cond)
@@ -343,108 +255,38 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  public Boolean next()
 	  { T val=expr.get();
 	    cvar.put(val);
-	    more=cond.get();    // IF not more return null - test i loopen mot if(CS$==null) continue;
+	    more=cond.get();    // IF not more return null - test i loopen: if(CB$==null) continue;
 	    //Util.BREAK("WhileElt.next: return="+val);
 		return(more);
 	  }
 	}
 	
-	int cv;
-	private void TEST()
-	{ int gg=0;
-//	for(int i:(new IntStepUntil(1,4,56))) {}
-	
-	$NAME<Number> cvn1=new $NAME<Number>()
-	{ public Number put(Number x){cv=(int)x; return(cv);};
-	  public Number get(){return(cv); }
-	};
-
-	$NAME<Number> n1=new $NAME<Number>() { public Number get(){return(1); }};
-	$NAME<Number> n2=new $NAME<Number>() { public Number get(){return(2); }};
-	$NAME<Number> n3=new $NAME<Number>() { public Number get(){return(3); }};
-	$NAME<Number> n4=new $NAME<Number>() { public Number get(){return(4); }};
-	$NAME<Number> n5=new $NAME<Number>() { public Number get(){return(5); }};
-	$NAME<Number> n201=new $NAME<Number>() { public Number get(){return(201); }};
-	$NAME<Boolean> b1=new $NAME<Boolean>() { public Boolean get(){return(2>01); }};
-	for(boolean CB$:new ForList(
-			 new SingleElt(cvn1,n1)
-			,new SingleElt(cvn1,n3)
-			,new StepUntil(cvn1,n5,n3,n201)
-			,new WhileElt(cvn1,n4,b1) ))
-	{ if(!CB$) continue;
-	  // Statements ...
-	}
-//		Iterator<Integer> it=new IntegerStepUntil(1,4,56);
-//		while(it.hasNext()) cv=it.next();
-	}
-	
-//	public static Number addNumbers(Number a, Number b) {
-//	    if(a instanceof Double || b instanceof Double) {
-//	        return new Double(a.doubleValue() + b.doubleValue());
-//	    } else if(a instanceof Float || b instanceof Float) {
-//	        return new Float(a.floatValue() + b.floatValue());
-//	    } else if(a instanceof Long || b instanceof Long) {
-//	        return new Long(a.longValue() + b.longValue());
-//	    } else {
-//	        return new Integer(a.intValue() + b.intValue());
-//	    }
-//	}
-	
-    
-//	// *******************************************************
-//	// *** FRAMEWORK for for-list iteration  --  RTObject$
-//	// *******************************************************
+//	int cv;
+//	private void TEST()
+//	{ int gg=0;
 //	
-//	public class ForRefList<T> implements Iterable<T>
-//	{ ForRefListIterator<T> integerForList;
-//	  public ForRefList(ForRefElt<T>... forElt)
-//	  {	integerForList=new ForRefListIterator<T>(forElt);  }
-//	  public Iterator<T> iterator() { return(integerForList); }
-//	}
+//	  $NAME<Number> cvn1=new $NAME<Number>()
+//	  { public Number put(Number x){cv=(int)x; return(cv);};
+//	    public Number get(){return(cv); }
+//	  };
 //
-//	public class ForRefListIterator<T> implements Iterator<T>
-//	{ ForRefElt<T>[] forElt; int i;
-//	  public ForRefListIterator(ForRefElt<T>... forElt)
-//	  { this.forElt=forElt; }
-//	  public boolean hasNext() {return(i<forElt.length && forElt[i].hasNext()); }
-//	  public T next()
-//	  { T val=forElt[i].next();
-//	    if(!forElt[i].hasNext()) i++;
-//	    return(val);
+//	  $NAME<Number> n1=new $NAME<Number>() { public Number get(){return(1); }};
+//	  $NAME<Number> n2=new $NAME<Number>() { public Number get(){return(2); }};
+//	  $NAME<Number> n3=new $NAME<Number>() { public Number get(){return(3); }};
+//	  $NAME<Number> n4=new $NAME<Number>() { public Number get(){return(4); }};
+//	  $NAME<Number> n5=new $NAME<Number>() { public Number get(){return(5); }};
+//	  $NAME<Number> n201=new $NAME<Number>() { public Number get(){return(201); }};
+//	  $NAME<Boolean> b1=new $NAME<Boolean>() { public Boolean get(){return(2>01); }};
+//	  for(boolean CB$:new ForList(
+//			 new SingleElt<Number>(cvn1,n1)
+//			,new SingleElt<Number>(cvn1,n3)
+//			,new StepUntil(cvn1,n5,n3,n201)
+//			,new WhileElt<Number>(cvn1,n4,b1) ))
+//	  { if(!CB$) continue;
+//	    // Statements ...
 //	  }
 //	}
-//	
-//	public abstract class ForRefElt<T> implements Iterator<T>
-//	{ boolean more;
-//	  public ForRefElt() { more=true; }
-//	  public boolean hasNext() {return(more); }
-//	}
-//	
-//	public class SingleRefElt<T> extends ForRefElt<T>
-//	{ $NAME<T> nextValue; boolean more;
-//	  public SingleRefElt($NAME<T> init)
-//	  { this.nextValue=init; more=true; }
-//	  public boolean hasNext() {return(more); }
-//	  public T next()
-//	  { more=false;
-//	    T val=nextValue.get();
-//	    //Util.BREAK("SingleElt.next: return="+val);
-//	    return(val);
-//	  }
-//	}
-//	
-//	public class WhileRefElt<T> extends ForRefElt<T>
-//	{ $NAME<T> expr; $NAME<Boolean> cond;
-//	  public WhileRefElt($NAME<T> expr,$NAME<Boolean> cond)
-//	  { this.expr=expr; this.cond=cond; }
-//	  public T next()
-//	  { T val=expr.get();
-//	    more=cond.get();    // IF not more return null - test i loopen mot if(CS$==null) continue;
-//	    if(!more) val=null;
-//	    //Util.BREAK("WhileElt.next: return="+val);
-//		return(val);
-//	  }
-//	}
+	
 
 	// ************************************************************
 	// *** lOCAL label  - Meant for Byte-Code Engineering

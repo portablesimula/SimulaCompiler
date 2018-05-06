@@ -39,8 +39,6 @@ public class Global {
 	public static String packetName = "testing";
 	
 	public static boolean OVERLOADING=true; // TODO: Temp implementation of Overloading
-	public static boolean NEW_VALUE_FOR_CODING=true; // TODO: Temp new implementation of Value For-Statement
-	public static boolean NEW_REF_FOR_CODING=true;//false;//true; // TODO: Temp new implementation of Ref-type For-Statement
 
 
 	public static DeclarationScope currentScope=null; // Current Scope. Maintained during Checking and Coding
