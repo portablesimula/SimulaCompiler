@@ -21,7 +21,7 @@ import simula.compiler.utilities.VariableKind;
 
 public class ConnectionBlock extends DeclarationScope 
 { BlockDeclaration classDeclaration;
-  Variable inspectedVariable;
+  public Variable inspectedVariable;
   Statement statement;
   public BlockDeclaration getClassDeclaration() { return(classDeclaration); } 
   
@@ -32,7 +32,7 @@ public class ConnectionBlock extends DeclarationScope
     //Util.BREAK("ConnectionBlock.getInspectedVariable: inspectedVariable="+inspectedVariable+", type="+inspectedVariable.type);
 	return((Expression)TypeConversion.testAndCreate(type,inspectedVariable));
   } 
-    
+  
   public ConnectionBlock(Variable inspectedVariable)
   { super("Inspect:"+inspectedVariable);
 	blockKind=BlockKind.ConnectionBlock;
@@ -54,12 +54,20 @@ public class ConnectionBlock extends DeclarationScope
   { this.statement=statement; }
 
   public Meaning findMeaning(String identifier)
-  { Meaning result=classDeclaration.findAttributeMeaning(identifier);
+  {	Meaning result=classDeclaration.findAttributeMeaning(identifier);
     //Util.BREAK("ConnectionBlock.findDefinition("+identifier+") ==> "+result);
     if(result!=null)
        result=new Meaning(VariableKind.connectedAttribute,result.declaredAs,this);
     else if(declaredIn!=null) result=declaredIn.findMeaning(identifier);
 	if(result==null) Util.error("Undefined variable: "+identifier);
+    return(result);
+  }
+
+  public DeclarationScope findThis(String identifier)
+  { DeclarationScope result=null;
+ 	//Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
+	if(identifier.equalsIgnoreCase(classDeclaration.identifier)) return(this);
+    else if(declaredIn!=null) result=declaredIn.findThis(identifier);
     return(result);
   }
   

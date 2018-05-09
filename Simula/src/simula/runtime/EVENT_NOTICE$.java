@@ -7,6 +7,8 @@
  */
 package simula.runtime;
 
+import simula.compiler.utilities.Util;
+
 /**
 * 
 * @author SIMULA Standards Group
@@ -35,13 +37,36 @@ public class EVENT_NOTICE$ extends Link$ {
 	}
 
 	public EVENT_NOTICE$ pred() {
-		return((EVENT_NOTICE$)PRED);
+		return((EVENT_NOTICE$)PRED); // May be Head$
 	}
 
-	public void RANK(boolean BEFORE_) {
+//	public void OLD_RANK(boolean BEFORE) {
+//		Util.BREAK("EVENT_NOTICE$.RANK: BEFORE="+BEFORE);
+//		EVENT_NOTICE$ P =(EVENT_NOTICE$)SIMULATION.SQS.last();
+//		Util.BREAK("EVENT_NOTICE$.RANK: SQS.last:"+P);
+//		while(P.EVTIME > EVTIME) P = P.pred();
+//		Util.BREAK("EVENT_NOTICE$.RANK: NOT(P.EVTIME > EVTIME):"+P);
+//		if (BEFORE) while(P.EVTIME == EVTIME) P = P.pred();
+//		Util.BREAK("EVENT_NOTICE$.RANK: Follow:"+P);
+//		follow(P);
+//	}
+
+	public void RANK(boolean BEFORE) {
+//		Util.BREAK("EVENT_NOTICE$.RANK: BEFORE="+BEFORE);
 		EVENT_NOTICE$ P =(EVENT_NOTICE$)SIMULATION.SQS.last();
-		while(P.EVTIME > EVTIME) P = P.pred();
-		if (BEFORE_) while(P.EVTIME == EVTIME) P = P.pred();
+//		Util.BREAK("EVENT_NOTICE$.RANK: SQS.last:"+P);
+		while(P.EVTIME > EVTIME)
+		{ Linkage$ Prv = P.PRED;
+		  if(Prv instanceof EVENT_NOTICE$) P=(EVENT_NOTICE$)Prv;
+		  else { precede(P); return; }
+		}
+//		Util.BREAK("EVENT_NOTICE$.RANK: NOT(P.EVTIME > EVTIME):"+P);
+		if (BEFORE) while(P.EVTIME == EVTIME)
+		{ Linkage$ Prv = P.PRED;
+		  if(Prv instanceof EVENT_NOTICE$) P=(EVENT_NOTICE$)Prv;
+		  else { precede(P); return; }
+		}
+//		Util.BREAK("EVENT_NOTICE$.RANK: Follow:"+P);
 		follow(P);
 	}
 	

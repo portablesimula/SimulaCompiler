@@ -122,7 +122,7 @@ public class RunFullTestBatch {
 		//names.add("simtst84.sim"); // ERR: Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		//names.add("simtst87.sim"); // ERR: Test SIMULATION, simple example.
+		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
 		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // ERR: Test getfrac/putfrac.

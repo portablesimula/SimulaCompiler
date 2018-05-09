@@ -7,6 +7,8 @@
  */
 package simula.runtime;
 
+import simula.compiler.utilities.Util;
+
 /**
  * 
  * The system class "simulation" may be considered an "application package"

@@ -1,9 +1,0 @@
-
-
-NOTE: Inimage
-
-Simula standard sier ... og image:="!25!";
-Det betyr isåfall at den innleste biten av image som ikke er terminert med \n kastes.
-Og at resultatet ikke er et 'one character image' - men et image med en ikke-blank 
-
-Noe må rettes - Text or formal definition. 

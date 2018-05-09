@@ -8,10 +8,13 @@
 package simula.compiler.expression;
 
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -27,11 +30,26 @@ import simula.compiler.utilities.Util;
  * 
  * </pre>
  * 
+ * A local object "this C" is valid provided that the expression is used within
+ * the class body of C or that of any subclass of C, or a connection block whose
+ * block qualification is C or a subclass of C (see 4.8).
+ * <p>
+ * The value of a local object in a given context is the object which is, or is
+ * connected by, the smallest textually enclosing block instance in which the
+ * local object is valid.
+ * <p>
+ * If there is no such block the local object is illegal (in the given context).
+ * For an instance of a procedure or a class body, "textually enclosing" means
+ * containing its declaration.
+ * 
+ * 
+ * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
 public class LocalObject extends Expression {
 	private String classIdentifier;
 	private BlockDeclaration classDeclaration; // Set by doChecking
+	private DeclarationScope declarationScope; // Set by doChecking
 
 	private LocalObject(String classIdentifier) {
 		this.classIdentifier = classIdentifier;
@@ -48,27 +66,31 @@ public class LocalObject extends Expression {
 		return(expr);
 	}
 
-	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+	public void doChecking() { 
+		if (IS_SEMANTICS_CHECKED())	return;
 		Util.setLine(lineNumber);
 		if (Option.TRACE_CHECKER)
-			Util.TRACE("BEGIN LocalObject(" + toString()
-					+ ").doChecking - Current Scope Chain: "
-					+ Global.currentScope.edScopeChain());
-		Declaration decl = Global.currentScope.findMeaning(classIdentifier).declaredAs;
-		Util.BREAK("LocalObject.doChecking: findMeaning("+classIdentifier+") declaredAs="+decl);
-//		if (classDeclaration instanceof BlockDeclaration)
+			Util.TRACE("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
+		Meaning meaning=Global.currentScope.findMeaning(classIdentifier);
+		Declaration decl = meaning.declaredAs;
 		if (decl instanceof BlockDeclaration) classDeclaration=(BlockDeclaration)decl;
 		else Util.error("LocalObject("+this+") "+classIdentifier+" is not a class");
+		declarationScope=Global.currentScope.findThis(classIdentifier);
+		if(declarationScope==null) Util.error("This "+classIdentifier+" -- Is not on static chain.");
 		SET_SEMANTICS_CHECKED();
 	}
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
+		String cast=classDeclaration.getJavaIdentifier();
+		if(declarationScope instanceof ConnectionBlock)
+		{ ConnectionBlock connectionBlock=(ConnectionBlock)declarationScope;
+		  return ("(("+cast+")"+connectionBlock.inspectedVariable.getJavaIdentifier()+")");
+		}
+		BlockDeclaration classDeclaration=(BlockDeclaration)declarationScope;
 		if(classDeclaration.blockLevel!=Global.currentScope.blockLevel)
-			 return ("((" + classDeclaration.getJavaIdentifier() + ")"+Global.currentScope.edCTX(classDeclaration.blockLevel)+")");
-		else return ("(" + classDeclaration.getJavaIdentifier() + ".this)");
+			 return ("(("+cast+")"+Global.currentScope.edCTX(classDeclaration.blockLevel)+")");
+		else return ("("+cast+".this)");
 	}
 
 	public String toString() {

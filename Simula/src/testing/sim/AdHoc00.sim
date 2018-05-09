@@ -1,15 +1,18 @@
-Simulation begin
-  ref(Link) x;
-  ref(Process) y;
-  ref(Storage) z;
+SIMULATION
+begin integer i,klara; real tid,slut;
+                  
+   ref(link) elt;
 
-  Link class Storage;
-  begin
-     ! Ingen detach her ;
-  end;
-  
-  x:-new Process();
-  x.detach;
-  
-  z:-new Storage();
+   process class kund;
+   begin integer efter; real intid; array servtid(1:2);
+                       
+   end;
+
+   elt:-new kund();
+%   process class station(nr,position); integer nr,position;
+%   inspect kundq(nr).first when kund do
+   inspect elt when kund do
+   begin tid:=this kund.intid;
+   end
+
 end;

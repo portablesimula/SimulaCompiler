@@ -212,7 +212,7 @@ public class BinaryOperation extends Expression
 	//if(DEBUG) Util.log("BEGIN doRemoteChecking("+toString()+").doChecking(2) - objType="+objType+", obj="+obj);
 	if(objType==Type.Text) return(doRemoteTextChecking(obj,attr));
 	
-	objType.doChecking(Global.currentScope); // N�dvendig hvis TypeDeclaration er nedenfor   TODO: ER DETTE OK ?
+	objType.doChecking(Global.currentScope); // Nødvendig hvis TypeDeclaration er nedenfor   TODO: ER DETTE OK ?
 	if(objType.getQual()==null)
 		Util.error("doRemoteChecking: Object Expression ("+obj+") is not a ref() type rather "+objType);
     

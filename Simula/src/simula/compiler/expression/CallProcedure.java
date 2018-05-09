@@ -387,11 +387,11 @@ public class CallProcedure {
 		      if(writeableVariable!=null)
 		      {	s.append("new $NAME<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
-			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter: " + actualParameter);
-			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'var: " + writeableVariable);
-			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Meaning: " + writeableVariable.meaning);
-			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic: " + writeableVariable.meaning.declaredAs);
-			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic'Qual: " + writeableVariable.meaning.declaredAs.getClass().getSimpleName());
+//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter: " + actualParameter);
+//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'var: " + writeableVariable);
+//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Meaning: " + writeableVariable.meaning);
+//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic: " + writeableVariable.meaning.declaredAs);
+//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic'Qual: " + writeableVariable.meaning.declaredAs.getClass().getSimpleName());
 				if(!(writeableVariable.meaning.declaredAs instanceof BlockDeclaration))
                 { Type actualType=actualParameter.type;
 				  String rhs="("+actualType.toJavaType()+")x$";

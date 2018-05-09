@@ -91,6 +91,17 @@ public abstract class DeclarationScope extends Declaration {
   }
 
   // ***********************************************************************************************
+  // *** Utility: findThis
+  // ***********************************************************************************************
+  public DeclarationScope findThis(String identifier)
+  { DeclarationScope result=null;
+   	//Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
+	if(identifier.equalsIgnoreCase(this.identifier)) result=this;
+    else if(declaredIn!=null) result=declaredIn.findThis(identifier);
+    return(result);
+  }
+
+  // ***********************************************************************************************
   // *** Coding Utility: edCTX(blockLevel)
   // ***********************************************************************************************
   public String edCTX(int blockLevel)
@@ -116,9 +127,9 @@ public abstract class DeclarationScope extends Declaration {
   // *** Coding: isDetachUsed  -- If the 'detach' attribute is used
   // ***********************************************************************************************
   /**
-   * Ta utgangspunkt i hvilke klasser man har kalt "detach" i, altså kvalifikasjonen av de X som er
-   * brukt i "X.detach".  Men da må man jo også holde greie på hvilke slike som har forekommet i
-   * eksterne "moduler" (som f.eks. SIMULATION), uten at det burde være problematisk. 
+   * Ta utgangspunkt i hvilke klasser man har kalt "detach" i, altsï¿½ kvalifikasjonen av de X som er
+   * brukt i "X.detach".  Men da mï¿½ man jo ogsï¿½ holde greie pï¿½ hvilke slike som har forekommet i
+   * eksterne "moduler" (som f.eks. SIMULATION), uten at det burde vï¿½re problematisk. 
    *  
    * @return
    */
