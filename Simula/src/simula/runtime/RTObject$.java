@@ -217,6 +217,22 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  }
 	}
 	
+	public class SingleTValElt extends ForElt
+	{ // For t:= <TextExpr>  // Text Value Assignment
+	  $NAME<TXT$> cvar,nextValue; //boolean more;
+	  public SingleTValElt($NAME<TXT$> cvar,$NAME<TXT$> init)
+	  { this.cvar=cvar; this.nextValue=init; more=true; }
+	  public boolean hasNext() {return(nextValue!=null); }
+	  public Boolean next()
+	  { if(nextValue==null) return(false);
+	    TXT$ val=nextValue.get();
+	    ASGTXT$(cvar.get(),val);
+	    nextValue=null;
+	    //Util.BREAK("SingleElt.next: return="+val);
+	    return(true);
+	  }
+	}
+	
 	public class StepUntil extends ForElt
 	{ $NAME<Number> cvar,init,step,until;
 	  Number nextValue;
@@ -255,6 +271,21 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  public Boolean next()
 	  { T val=expr.get();
 	    cvar.put(val);
+	    more=cond.get();    // IF not more return null - test i loopen: if(CB$==null) continue;
+	    //Util.BREAK("WhileElt.next: return="+val);
+		return(more);
+	  }
+	}
+	
+	public class WhileTValElt extends ForElt
+	{ // For t:= <TextExpr> while <Cond>  // Text Value Assignment
+	  $NAME<TXT$> cvar,expr; $NAME<Boolean> cond;
+	  public WhileTValElt($NAME<TXT$> cvar,$NAME<TXT$> expr,$NAME<Boolean> cond)
+	  { this.cvar=cvar; this.expr=expr; this.cond=cond; }
+	  public Boolean next()
+	  { TXT$ val=expr.get();
+//	    cvar.put(val);
+	    ASGTXT$(cvar.get(),val);
 	    more=cond.get();    // IF not more return null - test i loopen: if(CB$==null) continue;
 	    //Util.BREAK("WhileElt.next: return="+val);
 		return(more);

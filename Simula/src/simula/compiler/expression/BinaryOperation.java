@@ -391,14 +391,14 @@ public class BinaryOperation extends Expression
   // ***********************************************************************
   private String doCodeTextValueAssignment()
   { StringBuilder s=new StringBuilder();
-    Util.BREAK("BinaryOperation.doCodeTextValueAssignment: rhs="+rhs+", qual="+rhs.getClass().getSimpleName());
+    //Util.BREAK("BinaryOperation.doCodeTextValueAssignment: rhs="+rhs+", qual="+rhs.getClass().getSimpleName());
     if(rhs instanceof Constant)
     { Object value=((Constant)rhs).value;
-      Util.BREAK("BinaryOperation.doCodeTextValueAssignment: value="+value);
+      //Util.BREAK("BinaryOperation.doCodeTextValueAssignment: value="+value);
       if(value!=null)
-      { Util.BREAK("BinaryOperation.doCodeTextValueAssignment: value="+value+", qual="+value.getClass().getSimpleName());
+      { //Util.BREAK("BinaryOperation.doCodeTextValueAssignment: value="+value+", qual="+value.getClass().getSimpleName());
         s.append("ASGSTR$(").append(lhs.toJavaCode()).append(",\"").append(value).append("\")");
-        Util.BREAK("BinaryOperation.doCodeTextValueAssignment: result="+s.toString());
+        //Util.BREAK("BinaryOperation.doCodeTextValueAssignment: result="+s.toString());
     	return(s.toString()); 
       }
     }

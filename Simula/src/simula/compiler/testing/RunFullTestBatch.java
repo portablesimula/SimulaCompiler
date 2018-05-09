@@ -122,7 +122,7 @@ public class RunFullTestBatch {
 		//names.add("simtst84.sim"); // ERR: Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
+		names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
 		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // ERR: Test getfrac/putfrac.
@@ -133,7 +133,7 @@ public class RunFullTestBatch {
 		names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
 		//names.add("simtst96.sim"); // ERR: Test SIMULATION, complex example.
-		//names.add("simtst97.sim"); // ERR: Test Process, activation statements, idle, terminated, time.
+		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		//names.add("simtst99.sim"); // ERR:
 		//names.add("simtst00.sim"); // ERR: Test that put-get-put delivers the identity.

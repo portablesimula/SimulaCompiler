@@ -82,12 +82,8 @@ public class ForStatement extends Statement
     Declaration decl=controlVariable.meaning.declaredAs;
     if(decl instanceof Parameter && ((Parameter)decl).mode==ParameterMode.name)
     	  Util.error("For-Statement's Controled Variable("+controlVariable+") can't be a formal parameter by Name");
-    if(assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)
-    { if(type==Type.Text)
-      	Util.NOT_IMPLEMENTED("For-Statement with text value assignment ( := )");
-      else if(type.isReferenceType()) Util.error("Illegal For-Statement with object value assignment ( := )");
-    }
-
+    if(type!=Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE && type.isReferenceType())
+    	  Util.error("Illegal For-Statement with object value assignment ( := )");
     Iterator<ForListElement> iterator=forList.iterator();
     while(iterator.hasNext()) { iterator.next().doChecking(); }
     doStatement.doChecking();
@@ -162,7 +158,8 @@ public class ForStatement extends Statement
 	  expr1.doChecking(); 
 	}
 	public String edCode(String classIdent)
-	{ return("new SingleElt<"+classIdent+">("+edControlVariableByName(classIdent)
+	{ String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
+	  return("new Single"+forElt+"("+edControlVariableByName(classIdent)
 	    +",new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
 	}
 	public String toString() { return(""+expr1); }
@@ -181,9 +178,10 @@ public class ForStatement extends Statement
 	  expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
 	}
 	public String edCode(String classIdent)
-	{ return("new WhileElt<"+classIdent+">("+edControlVariableByName(classIdent)
-			            +",new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
-			            +",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
+	{ String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
+	  return("new While"+forElt+"("+edControlVariableByName(classIdent)
+	  			+",new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
+	  			+",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 	}
 	public String toString() { return(""+expr1+" while "+expr2); }
   }

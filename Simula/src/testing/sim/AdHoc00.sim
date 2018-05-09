@@ -1,19 +1,22 @@
-SIMULATION
 begin
    integer x,y,z;
    boolean bb;
    character ch;
    text t;
-   ref(Process) p,a,b,c;
+   ref(CA) p,a,b,c;
+   
+   class CA; begin integer e; end;
    
 
 %   for ch:=inchar while ch ne ' 'do t.putchar(ch);
    
 %   for bb:=true, false, x>y while z<1 do z:=z+12;
    
-   t:-blanks(12);
-   for t:="abra","ca","dabra" do outtext(t); outimage;
+   t:-blanks(7);
+   for t:="abra","ca","dabra" do outtext(t); outchar('|'); outimage;
+   for t:-"abra","ca","dabra" do outtext(t); outchar('|'); outimage;
    
-   for p:-a,b,c while p.evtime<1 do z:=z+12;
+   c:-new CA();
+   for p:-a,b,c while p.e< -1 do z:=z+12;
 
 end;
