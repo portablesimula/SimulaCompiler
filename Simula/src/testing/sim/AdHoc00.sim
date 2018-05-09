@@ -1,18 +1,19 @@
 SIMULATION
-begin integer i,klara; real tid,slut;
-                  
-   ref(link) elt;
+begin
+   integer x,y,z;
+   boolean bb;
+   character ch;
+   text t;
+   ref(Process) p,a,b,c;
+   
 
-   process class kund;
-   begin integer efter; real intid; array servtid(1:2);
-                       
-   end;
-
-   elt:-new kund();
-%   process class station(nr,position); integer nr,position;
-%   inspect kundq(nr).first when kund do
-   inspect elt when kund do
-   begin tid:=this kund.intid;
-   end
+%   for ch:=inchar while ch ne ' 'do t.putchar(ch);
+   
+%   for bb:=true, false, x>y while z<1 do z:=z+12;
+   
+   t:-blanks(12);
+   for t:="abra","ca","dabra" do outtext(t); outimage;
+   
+   for p:-a,b,c while p.evtime<1 do z:=z+12;
 
 end;

@@ -82,6 +82,12 @@ public class ForStatement extends Statement
     Declaration decl=controlVariable.meaning.declaredAs;
     if(decl instanceof Parameter && ((Parameter)decl).mode==ParameterMode.name)
     	  Util.error("For-Statement's Controled Variable("+controlVariable+") can't be a formal parameter by Name");
+    if(assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)
+    { if(type==Type.Text)
+      	Util.NOT_IMPLEMENTED("For-Statement with text value assignment ( := )");
+      else if(type.isReferenceType()) Util.error("Illegal For-Statement with object value assignment ( := )");
+    }
+
     Iterator<ForListElement> iterator=forList.iterator();
     while(iterator.hasNext()) { iterator.next().doChecking(); }
     doStatement.doChecking();
@@ -108,6 +114,13 @@ public class ForStatement extends Statement
     char del=' ';
     for(ForListElement elt:forList)
     { String classIdent=(refType)?elt.expr1.type.getJavaRefIdent():"Number";
+      if(elt.expr1.type==Type.Character) classIdent="Character"; // AD'HOC
+      if(elt.expr1.type==Type.Boolean) classIdent="Boolean"; // AD'HOC
+      if(elt.expr1.type==Type.Text)
+      { classIdent="TXT$"; // AD'HOC
+//        if(assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)
+//        	Util.NOT_IMPLEMENTED("For-Statement with text value assignment (:=)");
+      }
       Util.code(indent+"   "+del+elt.edCode(classIdent));
       del=',';
     }
