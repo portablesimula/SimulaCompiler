@@ -79,7 +79,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst45.sim"); // OK:  Test object relations - is and in.
 		//names.add("simtst46.sim"); // OK:  Test the qualification of a function designator.
 		//names.add("simtst47.sim"); // OK:  Test of this.
-		//names.add("simtst48.sim"); // OK:  Test of qua.
+		names.add("simtst48.sim"); // OK:  Test of qua.
 		//names.add("simtst49.sim"); // OK: For statements in connection blocks.
 		//names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
 
@@ -122,7 +122,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst84.sim"); // ERR: Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
+		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
 		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // ERR: Test getfrac/putfrac.
@@ -158,7 +158,7 @@ public class RunSingleTestBatch {
 		Option.TRACE_PARSE=false;//true;
 
 		// Checker Trace Options
-		Option.TRACE_CHECKER=false;//true;
+		Option.TRACE_CHECKER=true;//false;//true;
 		Option.TRACE_CHECKER_OUTPUT=false;//true;
 
 		// Coder Trace Options

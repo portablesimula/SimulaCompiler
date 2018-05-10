@@ -1,22 +1,8 @@
 begin
-   integer x,y,z;
-   boolean bb;
-   character ch;
-   text t;
-   ref(CA) p,a,b,c;
-   
-   class CA; begin integer e; end;
-   
+  long real x,a,b,c;
 
-%   for ch:=inchar while ch ne ' 'do t.putchar(ch);
-   
-%   for bb:=true, false, x>y while z<1 do z:=z+12;
-   
-   t:-blanks(7);
-   for t:="abra","ca","dabra" do outtext(t); outchar('|'); outimage;
-   for t:-"abra","ca","dabra" do outtext(t); outchar('|'); outimage;
-   
-   c:-new CA();
-   for p:-a,b,c while p.e< -1 do z:=z+12;
+  x := a + b + c;
+
+  x := a ** b ** c;
 
 end;

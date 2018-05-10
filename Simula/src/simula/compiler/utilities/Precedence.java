@@ -190,11 +190,17 @@ public class Precedence
   public static final Precedence LEVEL_DIV=LEVEL4;    //  /
   public static final Precedence LEVEL_INTDIV=LEVEL4; //  //
   public static final Precedence LEVEL_EXP=LEVEL3;    //  **   EXP
+  
+  public static final Precedence LEVEL_QUA=LEVEL2;    //  QUA   // TODO: Uavklart precedence DOT vs QUA
   public static final Precedence LEVEL_DOT=LEVEL2;    //  .  DOT   // TODO: Uavklart precedence DOT vs QUA
+  
 //  public static final Precedence LEVEL_DOT=LEVEL1;    //  .  DOT
 //public static final Precedence LEVEL_POS=LEVEL2;    //  unary +  POS
 //public static final Precedence LEVEL_NEG=LEVEL2;    //  unary -  NEG
-  public static final Precedence LEVEL_QUA=LEVEL1;    //  QUA
+  
+//  public static final Precedence LEVEL_DOT=LEVEL1;    //  .  DOT   // TODO: Uavklart precedence DOT vs QUA
+//  public static final Precedence LEVEL_QUA=LEVEL1;    //  QUA   // TODO: Uavklart precedence DOT vs QUA
+  
   public static final Precedence LEVEL_THIS=LEVEL1;   //  THIS
   
 }
