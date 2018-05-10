@@ -57,7 +57,7 @@ public class UnaryOperation extends Expression {
 	}
 
 	public String toString() {
-		return ("(" + oprator + ' ' + operand + ")");
+		return ("(UNARY:" + oprator + ' ' + operand + ")");
 	}
 
 }

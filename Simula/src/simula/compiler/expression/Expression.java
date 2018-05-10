@@ -11,6 +11,7 @@ import simula.compiler.SyntaxClass;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.Precedence;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -75,8 +76,8 @@ public abstract class Expression extends SyntaxClass
 
   protected static Expression parseSimpleExpression()
   { //Parser.BREAK("Expression: parseSimpleExpression");   
-//  return(parseBinaryOperation2(13));  // 13: assignment
-    return(parseBinaryOperation(14));  // 14: assignment
+//  return(parseBinaryOperation(14));  // 14: assignment
+    return(parseBinaryOperation(Precedence.MAX_LEVEL));  // 14: assignment
   }
 
   private static Expression parseUnaryOperation()
@@ -85,7 +86,10 @@ public abstract class Expression extends SyntaxClass
     return(expr);
   }
   
-  // Vet ikke hvorfor dette virker !
+  private static boolean isRightAssossiativ(KeyWord opr)
+  { return(opr==KeyWord.ASSIGNVALUE || opr==KeyWord.ASSIGNREF || opr==KeyWord.EXP); }
+  
+  // Vet ikke hvorfor dette virker ! men alt tyder på at det gjør det !
   private static Expression parseBinaryOperation(final int level)
   { //Parser.BREAK("Expression: parseBinaryOperation, level="+level);
 	Expression expr=(level>0)?parseBinaryOperation(level-1):parsePrimaryExpression();
@@ -93,8 +97,11 @@ public abstract class Expression extends SyntaxClass
     while(Parser.acceptBinaryOperator(level))
     { KeyWord opr=Parser.prevToken.getKeyWord();
       if(level==0) expr=new BinaryOperation(expr,opr,parsePrimaryExpression());
-      else if(opr==KeyWord.ASSIGNVALUE || opr==KeyWord.ASSIGNREF)
-    	   expr=new BinaryOperation(expr,opr,parseExpression());
+//      else if(opr==KeyWord.ASSIGNVALUE || opr==KeyWord.ASSIGNREF)// || opr==KeyWord.EXP)
+//    	   expr=new BinaryOperation(expr,opr,parseExpression());
+//      else if(opr==KeyWord.EXP) expr=new BinaryOperation(expr,opr,parseBinaryOperation(level));  // NY LINJE !!!
+      else if(isRightAssossiativ(opr))
+    	   expr=new BinaryOperation(expr,opr,parseBinaryOperation(level));
       else expr=new BinaryOperation(expr,opr,parseBinaryOperation(level-1));
     }
     return(expr);
@@ -135,7 +142,7 @@ public abstract class Expression extends SyntaxClass
     else if(Parser.accept(KeyWord.NONE)) return(new Constant(Type.Ref,null));
     else if(Parser.accept(KeyWord.NOTEXT)) return(new Constant(Type.Text,null));
     else if(Parser.accept(KeyWord.NEW)) return(ObjectGenerator.parse()); // TODO 
-    else if(Parser.accept(KeyWord.THIS)) return(LocalObject.acceptThisIdentifier()); // TODO 
+    else if(Parser.accept(KeyWord.THIS)) return(LocalObject.acceptThisIdentifier()); 
     else if(Parser.accept(KeyWord.PLUS)) return(parseUnaryOperation());
 	else if(Parser.accept(KeyWord.MINUS)) return(parseUnaryOperation());
 	else if(Parser.accept(KeyWord.NOT))

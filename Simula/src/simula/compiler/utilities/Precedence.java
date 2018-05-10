@@ -166,6 +166,7 @@ public class Precedence
   public static final Precedence LEVEL2=new Precedence(2);
   public static final Precedence LEVEL1=new Precedence(1);
   
+  public static final int MAX_LEVEL=14;
   public static final Precedence LEVEL_ASSIGN=new Precedence(14);   //  :=   :-
   public static final Precedence LEVEL_OR_ELSE=new Precedence(13);  //  OR ELSE   OR_ELSE
   public static final Precedence LEVEL_AND_THEN=new Precedence(12); //  AND THEN  AND_THEN
@@ -190,17 +191,9 @@ public class Precedence
   public static final Precedence LEVEL_DIV=LEVEL4;    //  /
   public static final Precedence LEVEL_INTDIV=LEVEL4; //  //
   public static final Precedence LEVEL_EXP=LEVEL3;    //  **   EXP
+  public static final Precedence LEVEL_QUA=LEVEL2;    //  QUA
+  public static final Precedence LEVEL_DOT=LEVEL2;    //  .  DOT
   
-  public static final Precedence LEVEL_QUA=LEVEL2;    //  QUA   // TODO: Uavklart precedence DOT vs QUA
-  public static final Precedence LEVEL_DOT=LEVEL2;    //  .  DOT   // TODO: Uavklart precedence DOT vs QUA
-  
-//  public static final Precedence LEVEL_DOT=LEVEL1;    //  .  DOT
-//public static final Precedence LEVEL_POS=LEVEL2;    //  unary +  POS
-//public static final Precedence LEVEL_NEG=LEVEL2;    //  unary -  NEG
-  
-//  public static final Precedence LEVEL_DOT=LEVEL1;    //  .  DOT   // TODO: Uavklart precedence DOT vs QUA
-//  public static final Precedence LEVEL_QUA=LEVEL1;    //  QUA   // TODO: Uavklart precedence DOT vs QUA
-  
-  public static final Precedence LEVEL_THIS=LEVEL1;   //  THIS
+//  public static final Precedence LEVEL_THIS=LEVEL1;   //  THIS
   
 }

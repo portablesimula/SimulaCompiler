@@ -306,7 +306,8 @@ public final class SimulaScanner
 		case 'T':
 		  if(name.equalsIgnoreCase("TEXT"))   return(new Token(KeyWord.TEXT));
 		  if(name.equalsIgnoreCase("THEN"))   return(new Token(KeyWord.THEN));
-		  if(name.equalsIgnoreCase("THIS"))   return(new Token(KeyWord.THIS,Precedence.LEVEL_THIS));
+		  if(name.equalsIgnoreCase("THIS"))   return(new Token(KeyWord.THIS));
+//		  if(name.equalsIgnoreCase("THIS"))   return(new Token(KeyWord.THIS,Precedence.LEVEL_THIS));
 		  if(name.equalsIgnoreCase("TO"))     return(new Token(KeyWord.TO));
 		  if(name.equalsIgnoreCase("true"))   return(new Token(KeyWord.BOOLEANKONST,true));
 		  break;

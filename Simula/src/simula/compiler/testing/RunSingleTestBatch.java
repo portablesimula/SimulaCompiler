@@ -33,7 +33,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // err: To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
-		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
 		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
@@ -79,7 +79,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst45.sim"); // OK:  Test object relations - is and in.
 		//names.add("simtst46.sim"); // OK:  Test the qualification of a function designator.
 		//names.add("simtst47.sim"); // OK:  Test of this.
-		names.add("simtst48.sim"); // OK:  Test of qua.
+		//names.add("simtst48.sim"); // OK:  Test of qua.
 		//names.add("simtst49.sim"); // OK: For statements in connection blocks.
 		//names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
 
