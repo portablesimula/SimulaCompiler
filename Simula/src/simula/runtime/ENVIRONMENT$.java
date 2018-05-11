@@ -90,6 +90,7 @@ public class ENVIRONMENT$ {
 	// *** ARRAY OBJECTS
 	// ************************************************************
 	static final String arrayError="Illegal use of array";
+	public int[] IX$(int...ix) { return(ix); }
 
 	public class $ARRAY<T>
 	{ public T Elt;
@@ -113,7 +114,16 @@ public class ENVIRONMENT$ {
 		}
 		return(s.toString());
 	  }
+	  public Object putElt(int[] ix,Object val)
+	  {
+		  return(val);
+	  }
+	  public Object getElt(int[] ix)
+	  {
+		  return(null);
+	  }
 	}
+	
 
 //	void test1()
 //	{ int[] Table$LB={6};

@@ -102,11 +102,13 @@ public class Parameter extends Declaration
     	  return("$NAME<"+type.toJavaTypeClass()+">");
         case Procedure: return("$NAME<$PRCQNT>");
     	case Label:     return("$NAME<$LABQNT>");
-    	case Array:		return("$NAME<$ARRAY<"+type.toJavaType()+"[]>>");
+//    	case Array:		return("$NAME<$ARRAY<"+type.toJavaType()+"[]>>");
+    	case Array:		return("$NAME<$ARRAY<?>>");
     	case Switch:    return("$NAME<$PRCQNT>");
       }
     }
-    if(kind==ParameterKind.Array) return("$ARRAY<"+type.toJavaType()+"[]>");
+//    if(kind==ParameterKind.Array) return("$ARRAY<"+type.toJavaType()+"[]>");
+    if(kind==ParameterKind.Array) return("$ARRAY<?>");
     if(kind==ParameterKind.Procedure) return("$PRCQNT");
     if(kind==ParameterKind.Label) return("$LABQNT");
 	return(type.toJavaType());

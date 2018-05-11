@@ -42,8 +42,7 @@ package simula.compiler.utilities;
  *  5  + -
  *  4  * / //
  *  3  **
- *  2  unary(+ -) NOT QUA THIS
- *  1  .  Remote access
+ *  2  QUA   .  Remote access
  * </pre>
  * 
  * <pre>

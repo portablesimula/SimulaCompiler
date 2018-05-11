@@ -464,7 +464,7 @@ public class CallProcedure {
 	  	  //Util.BREAK("CallProcedure.doArrayParameter: actualParameter'nDim="+array.nDim());
 	  	  if(array.nDim()>1)
 	  	  { Util.NOT_IMPLEMENTED(""+array.nDim()+"-dimensional Array as Parameter is not implemented");
-	  	    Util.EXIT();
+	  	    //Util.EXIT();
 	  	  }
 	  	}
 	  }
@@ -473,7 +473,8 @@ public class CallProcedure {
 	    s.append(actualParameter.toJavaCode()).append(".COPY()");
 	  }
 	  else if(mode==ParameterMode.name) {
-	    String arrObj="$ARRAY<"+formalType.toJavaType()+"[]>";  // TODO: NEW ARRAY CODE  FEIL: BARE ONE-DIMENSIONAL !!!!
+//	    String arrObj="$ARRAY<"+formalType.toJavaType()+"[]>";  // TODO: NEW ARRAY CODE  FEIL: BARE ONE-DIMENSIONAL !!!!
+	    String arrObj="$ARRAY<?>";
 		s.append("new $NAME<"+arrObj+">()");
 		s.append("{ public "+arrObj+" get() { return("+actualParameter.toJavaCode()+"); }");
 		s.append(" }");

@@ -180,7 +180,6 @@ public class ArrayDeclaration extends Declaration {
 	  // public $ARRAY<float[]> Tab=null;
 	  // --------------------------------------------------------------------
 	  String arrType=this.type.toJavaType();
-//	  for(BoundPair boundPair:boundPairList) arrType=arrType+"[]";
 	  int nDim=boundPairList.size();
 	  for(int i=0;i<nDim;i++) arrType=arrType+"[]";
 	  String arrayIdent=this.getJavaIdentifier();

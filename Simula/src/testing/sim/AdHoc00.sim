@@ -1,16 +1,19 @@
 begin
-   long real a,b,c,f,x,y;
-   Class D; begin ref(D) cd; real e; end;
-   ref(D) rd;
+   integer array A(1:4,4:6,6:12);
    
-   x := a + rd.cd qua D. e * f ;
+   Procedure P(IA); integer array IA;
+   begin integer i;
+      i:=IA(1,4,6);
+      IA(2,5,7):=89;
+   end;
    
-   a:= x**2.0 + y**2.0;
+   Procedure Q (ifa1); name ifa1; integer array ifa1;
+   begin integer i;
+      i:=ifa1(1,4,6);
+      ifa1(2,5,7):=89;
+   end;
    
-   x := a + b + c;
-       
-   y := x := a ** b ** c;
-   
-   a:= a + - +4.0 - + -5.0 ;
-
+   A(2,5,9):=45;
+   P(A);
+   Q(A);
 end of program;

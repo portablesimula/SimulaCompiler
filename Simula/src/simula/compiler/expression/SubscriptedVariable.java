@@ -25,6 +25,7 @@ import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
+import simula.runtime.ENVIRONMENT$.$ARRAY;
 
 /**
  * Subscripted Variable.
@@ -241,14 +242,19 @@ public class SubscriptedVariable extends Variable {
 		ParameterKind kind=par.kind;  
 		if(kind==ParameterKind.Array) // Parameter Array
 		{ int nDim=0;
-		  //s.append("M.A[x-M.LB[1]]");
 	      String var=edVariable(false);
 	  	  if(par.mode==ParameterMode.name) var=var+".get()";
-	  	  s.append(var).append(".Elt"); //[x-M.LB[1]]");
-		  for(Expression ix:checkedParams) {
+	  	  StringBuilder ixs=new StringBuilder();
+	  	  String dimBrackets="";
+	  	  for(Expression ix:checkedParams) {
 			  String index="["+ix.toJavaCode()+"-"+var+".LB["+(nDim++)+"]]"; 
-			  s.append(index);
+			  ixs.append(index);
+			  dimBrackets=dimBrackets+"[]";
 		  }
+	  	  String eltType=type.toJavaType();
+	  	  String cast="$ARRAY<"+eltType+dimBrackets+">";
+	  	  String castedVar="(("+cast+")"+var+")";
+	  	  s.append(castedVar).append(".Elt").append(ixs); 
 		}
 		else if(kind==ParameterKind.Procedure) // Parameter Procedure
 		{ if(par.mode==ParameterMode.value)
