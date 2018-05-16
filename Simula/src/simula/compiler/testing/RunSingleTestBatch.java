@@ -33,7 +33,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // err: To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
-		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
 		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
@@ -62,7 +62,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 
 		//names.add("simtst31.sim"); // ERR: Labels and switches as parameters to procedures
-		//names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
+		names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
 		//names.add("simtst33.sim"); // err: Test call by reference (Uses: 3-dim arrays)
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.

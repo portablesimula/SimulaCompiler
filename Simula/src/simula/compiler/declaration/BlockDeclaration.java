@@ -556,14 +556,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   { Util.code(indent+"   // Parameter Transmission in case of Formal/Virtual Procedure Call");
   	Util.code(indent+"   private int $npar=0; // Number of actual parameters transmitted.");
   	Util.code(indent+"   public "+getJavaIdentifier()+" setPar(Object param)");
-  	Util.code(indent+"   { //Util.BREAK(\"CALL "+getJavaIdentifier()+".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$npar+\", staticLink=\"+SL);");
+  	Util.code(indent+"   { //Util.BREAK(\"CALL "+getJavaIdentifier()+".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$npar+\", staticLink=\"+SL$);");
   	Util.code(indent+"     try { switch($npar++) {");
   	int npar=0;
   	for(Parameter par:parameterList)
   	{ String tp=par.toJavaType();
   	  String typeValue;
   	  if(par.mode==ParameterMode.name) typeValue=("("+tp+")param");
-  	  else if(par.kind==ParameterKind.Array) typeValue=("("+tp+")param");
+//  	  else if(par.kind==ParameterKind.Array) typeValue=("("+tp+")param");
+  	  else if(par.kind==ParameterKind.Array) typeValue=("arrayValue(param)");
+  	  else if(par.kind==ParameterKind.Procedure) typeValue=("procValue(param)");
   	  else if(par.kind!=ParameterKind.Simple) typeValue=("("+tp+")param");
   	  else if(par.type.isArithmeticType()) typeValue=(tp+"Value(param)");
 //  	  else typeValue=("("+tp+")param");
@@ -571,7 +573,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   	  Util.code(indent+" 	      case "+(npar++)+": "+par.identifier+"="+typeValue+"; break;");
     }
   	Util.code(indent+" 	      default: throw new RuntimeException(\"Wrong number of parameters\");");
-  	Util.code(indent+"     } } catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+param,e);}");
+  	Util.code(indent+"     } } catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+$npar+\" \"+param,e);}");
   	Util.code(indent+"     return(this);");
   	Util.code(indent+"   }");
   	Util.code(indent+"   // Constructor in case of Formal/Virtual Procedure Call");

@@ -25,7 +25,6 @@ import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.runtime.ENVIRONMENT$.$ARRAY;
 
 /**
  * Subscripted Variable.
@@ -265,7 +264,7 @@ public class SubscriptedVariable extends Variable {
 	  }
 	  else if (decl instanceof Virtual) // Virtual Procedure
 	       s.append(CallProcedure.virtual(this,(Virtual)decl,remotelyAccessed));
-	  else Util.FATAL_ERROR("Umulig � komme hit ??");
+	  else Util.FATAL_ERROR("Umulig å komme hit ??");
 	  String result=s.toString();
 	  return(result);
 	}

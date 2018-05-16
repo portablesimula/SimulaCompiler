@@ -114,14 +114,14 @@ public class ENVIRONMENT$ {
 		}
 		return(s.toString());
 	  }
-	  public Object putElt(int[] ix,Object val)
-	  {
-		  return(val);
-	  }
-	  public Object getElt(int[] ix)
-	  {
-		  return(null);
-	  }
+//	  public Object putElt(int[] ix,Object val)
+//	  {
+//		  return(val);
+//	  }
+//	  public Object getElt(int[] ix)
+//	  {
+//		  return(null);
+//	  }
 	}
 	
 

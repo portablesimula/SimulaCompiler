@@ -254,12 +254,18 @@ public class CallProcedure {
 	    for(Expression actualParameter:func.checkedParams)
 	    { actualParameter.backLink=actualParameter;  // To ensure $result from functions
 	      s.append(".setPar(");
-	      //s.append(actualParameter.toJavaCode());  NB: ALLE PARAMETRE BY'NAME !!!
 		  Type formalType=actualParameter.type;
-		  
-//		  ParameterKind kind=getActualKind(actualParameter);  // TODO: USIKKER P� DETTE !!!
-		  ParameterKind kind=ParameterKind.Simple;            // TODO: USIKKER P� DETTE !!!
-		  
+		  ParameterKind kind=ParameterKind.Simple;            // TODO: USIKKER På DETTE !!!
+//		  Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
+		  if((actualParameter instanceof Variable) && !(actualParameter instanceof SubscriptedVariable))
+		  { Variable var=(Variable)actualParameter;
+//		    Util.BREAK("CallProcedure.codeCPF: actualParameter'meaning="+var.meaning);
+//		    Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs="+var.meaning.declaredAs);
+//		    Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs'Qual="+var.meaning.declaredAs.getClass().getSimpleName());
+		    Declaration decl=var.meaning.declaredAs;
+		    if(decl instanceof Parameter) kind=((Parameter)decl).kind;  // TODO: Flere sånne tilfeller ???
+		    if(decl instanceof BlockDeclaration) kind=ParameterKind.Procedure;  // TODO: Flere sånne tilfeller ???
+		  }
 		  ParameterMode mode=ParameterMode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
 		  s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
 		  s.append(')');
