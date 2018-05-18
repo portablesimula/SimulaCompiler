@@ -18,6 +18,7 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
+import simula.runtime.ENVIRONMENT$.$ARRAY;
 
 /**
  * Array Declaration.
@@ -191,34 +192,31 @@ public class ArrayDeclaration extends Declaration {
 	{ Util.setLine(lineNumber);
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
-	  // int[] Tab$LB={6};
-	  // int[] Tab$UB={56};
-      // Table=$ARRAY<float[]>(new float[Tab$UB[0]-Tab$LB[0]+1],Tab$LB,Tab$UB);
+	  // integer array A(1:4,4:6,6:12);
+	  // --------------------------------------------------------------------
+	  // int[] A$LB=new int[3]; int[] A$UB=new int[3];
+	  // A$LB[0]=1; A$UB[0]=4;
+	  // A$LB[1]=4; A$UB[1]=6;
+	  // A$LB[2]=6; A$UB[2]=12;
+	  // A=new $ARRAY<int[][][]>(new int[A$UB[0]-A$LB[0]+1][A$UB[1]-A$LB[1]+1][A$UB[2]-A$LB[2]+1],A$LB,A$UB);
 	  // --------------------------------------------------------------------
 	  String arrayIdent=this.getJavaIdentifier();
-	  int n=0;
-	  String LBs=null;
-	  String UBs=null;
 	  String arrType=this.type.toJavaType();
 	  String arrGen=arrType;
+	  int nDim=boundPairList.size();
+	  Util.code(indent+"   int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
+	  int n=0;
 	  for(BoundPair boundPair:boundPairList)
 	  {	arrType=arrType+"[]";
-	  
 	    String LBid=arrayIdent+"$LB["+n+"]";
 	    String UBid=arrayIdent+"$UB["+(n++)+"]";
 		String size=UBid+"-"+LBid+"+1";
 		arrGen=arrGen+'['+size+']';
-		
-		LBs=(LBs==null)?LBs="$LB={":LBs+",";
-		LBs=LBs+boundPair.LB.toJavaCode();
-		UBs=(UBs==null)?UBs="$UB={":UBs+",";
-		UBs=UBs+boundPair.UB.toJavaCode();
+		Util.code(indent+"   "+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
 	  }	
-	  Util.code(indent+"   int[] "+arrayIdent+LBs+"}; int[] "+arrayIdent+UBs+"};");
 	  arrType="$ARRAY<"+arrType+'>';
 	  Util.code(indent+"   "+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
 	}
-
 
 	public String toString() {
 		String s = "ARRAY " + identifier + boundPairList;

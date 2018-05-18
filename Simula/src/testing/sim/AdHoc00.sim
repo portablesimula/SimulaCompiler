@@ -1,21 +1,6 @@
 begin
    integer array A(1:4,4:6,6:12);
-   
-   Procedure P(IA,F); integer array IA; procedure F;
-   begin integer i;
-      i:=IA(1,4,6);
-      IA(2,5,7):=89;
-      F(IA,Q);
-   end;
-   
-   Procedure Q (ifa1,F); name ifa1,F; integer array ifa1; procedure F;
-   begin integer i;
-      i:=ifa1(1,4,6);
-      ifa1(2,5,7):=89;
-      F(ifa1,P);
-   end;
-   
+      
    A(2,5,9):=45;
-   P(A,Q);
-   Q(A,P);
+
 end of program;
