@@ -428,7 +428,7 @@ public class ENVIRONMENT$ {
 		return (textRef);
 	}
 
-	public void ASGSTR$(TXT$ T,String s) {
+	public TXT$ ASGSTR$(TXT$ T,String s) {
 	    if(T==null) T=NOTEXT;
 		int fromLength = 0;
 		if (s != null) fromLength = s.length();
@@ -436,9 +436,10 @@ public class ENVIRONMENT$ {
 			T.OBJ.MAIN[T.START+i] = s.charAt(i);
 		for (int i = fromLength; i < T.LENGTH; i++)
 			T.OBJ.MAIN[T.START+i] = ' ';
+		return(T);
 	}
 
-	public void ASGTXT$(TXT$ T,TXT$ U) {
+	public TXT$ ASGTXT$(TXT$ T,TXT$ U) {
 	    if(T==null) T=NOTEXT;
 	    if(U==null) U=NOTEXT;
 		int fromLength = 0;
@@ -448,6 +449,7 @@ public class ENVIRONMENT$ {
 			T.OBJ.MAIN[T.START+i] = U.OBJ.MAIN[U.START+i];
 		for (int i = fromLength; i < T.LENGTH; i++)
 			T.OBJ.MAIN[T.START+i] = ' ';
+		return(T);
 	}
 	
 	//**************************************************************

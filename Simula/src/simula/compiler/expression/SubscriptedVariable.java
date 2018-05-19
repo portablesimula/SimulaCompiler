@@ -101,11 +101,12 @@ public class SubscriptedVariable extends Variable {
 	public void doChecking()
     { if(IS_SEMANTICS_CHECKED()) return;
 		Util.setLine(lineNumber);
-		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
+		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking");
 		super.doChecking();
 		
 		checkedParams = new Vector<Expression>();
 		Declaration decl=meaning.declaredAs;
+		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking: meaning="+meaning);
 		if(decl instanceof ArrayDeclaration) // Declared Array
 		{ ArrayDeclaration array=(ArrayDeclaration)decl;
 		  this.type=array.type;
@@ -115,11 +116,11 @@ public class SubscriptedVariable extends Variable {
 		  while(actualIterator.hasNext())
 		  { if(!formalIterator.hasNext()) Util.error("Wrong number of indices to "+array);
 		    ArrayDeclaration.BoundPair formalParameter=formalIterator.next();
-		    Type formalType=Type.Integer;
-		    if(Option.TRACE_CHECKER) Util.TRACE("Formal Parameter: "+formalParameter+", Formal Type="+formalType);
+//		    Type formalType=Type.Integer;
+		    if(Option.TRACE_CHECKER) Util.TRACE("Formal Parameter: "+formalParameter);
 		    Expression actualParameter=actualIterator.next();
 		    actualParameter.doChecking();
-			Expression checkedParameter=TypeConversion.testAndCreate(formalType,actualParameter);
+			Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
 			checkedParameter.backLink=this;
 			checkedParams.add(checkedParameter);
 		  }
@@ -166,13 +167,19 @@ public class SubscriptedVariable extends Variable {
     	  //Util.BREAK("SubscriptedVariable.doChecking: kind="+kind);
     	  Util.ASSERT(kind==ParameterKind.Array || kind==ParameterKind.Procedure,"Invariant ?");
     	  {	this.type=spec.type;
-    	    Util.warning("SubscriptedVariable("+identifier+") - Parameter Checking is postponed to Runtime");
+//    	    Util.warning("SubscriptedVariable("+identifier+") - Parameter Checking is postponed to Runtime");
     	    Iterator<Expression> actualIterator=params.iterator();
     	    while(actualIterator.hasNext())
     	    { Expression actualParameter=actualIterator.next();
     	      actualParameter.doChecking();
     	      if(kind==ParameterKind.Array && !actualParameter.type.isArithmeticType()) Util.error("Illegal index-type");
-    		  checkedParams.add(actualParameter);
+    	      
+    		  //checkedParams.add(actualParameter);
+    	      if(kind==ParameterKind.Array)
+  			  { Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
+  			    checkedParameter.backLink=this;
+  			    checkedParams.add(checkedParameter);
+  			  } else checkedParams.add(actualParameter);
     	    }
     	  }
     	} else if (decl instanceof Virtual) // Parameter Array, Procedure, ... ???
@@ -236,12 +243,14 @@ public class SubscriptedVariable extends Variable {
 	    
 	  }
 	  else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
-	  {	if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
+	  {	//if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
 	    Parameter par=(Parameter)decl;
 		ParameterKind kind=par.kind;  
 		if(kind==ParameterKind.Array) // Parameter Array
 		{ int nDim=0;
+		  //if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
 	      String var=edVariable(false);
+		  if(connectedObject!=null) var=connectedObject.toJavaCode()+'.'+var;
 	  	  if(par.mode==ParameterMode.name) var=var+".get()";
 	  	  StringBuilder ixs=new StringBuilder();
 	  	  String dimBrackets="";
@@ -253,10 +262,11 @@ public class SubscriptedVariable extends Variable {
 	  	  String eltType=type.toJavaType();
 	  	  String cast="$ARRAY<"+eltType+dimBrackets+">";
 	  	  String castedVar="(("+cast+")"+var+")";
-	  	  s.append(castedVar).append(".Elt").append(ixs); 
+	  	  s.append(castedVar).append(".Elt").append(ixs);
 		}
 		else if(kind==ParameterKind.Procedure) // Parameter Procedure
-		{ if(par.mode==ParameterMode.value)
+	    { if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
+		  if(par.mode==ParameterMode.value)
 	          Util.error("Parameter "+this+" by Value is not allowed - Rewrite Program");
 		  else // Procedure By Reference or Name.
 	      	  s.append(CallProcedure.formal(this,par)); 

@@ -534,7 +534,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	} else Util.code(indent+"      "+"super(staticLink);");
 	Util.code(indent+"      // Parameter assignment to locals");
 	for(Parameter par:parameterList)
-	 	  Util.code(indent+"      this."+par.identifier+" = "+par.identifier+';');	
+	 	  Util.code(indent+"      this."+par.identifier+" = par$"+par.identifier+';');	
 	
 	Util.code(indent+"      // Declaration Code");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+"   ");
@@ -659,7 +659,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private String edSuperParameterList()
   { StringBuilder s=new StringBuilder(); s.append("(staticLink");
     for(Parameter par:new ClassParameterIterator())  // Iterates through prefix-chain
-        s.append(',').append(par.identifier);
+        s.append(',').append("par$").append(par.identifier);
     s.append(");"); //runtimeBlockKind=getRTBlockKind();
     return(s.toString());
   }
@@ -721,7 +721,13 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     boolean withparams=false;
     if(!isMethod) { s.append("RTObject$ staticLink"); withparams=true; }
     for(Declaration par:new ClassParameterIterator())  // Iterates through prefix-chain
-    { if(withparams) s.append(','); withparams=true; s.append(par.toJavaCode()); }
+    { if(withparams) s.append(','); withparams=true;
+//      s.append(par.toJavaCode());
+      s.append(((Parameter)par).toJavaType());
+      s.append(' ');
+      if(!isMethod) s.append("par$");
+      s.append(par.identifier);
+    }
     s.append(") {");
     return(s.toString());
   }

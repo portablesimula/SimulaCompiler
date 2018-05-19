@@ -224,13 +224,20 @@ public class BinaryOperation extends Expression
 	  String ident=var.identifier;
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(5a) findAttribute("+ident+")  Search in "+decl);
 	  
-	  Meaning remote=objType.getQual().findMeaning(ident);	  
+	  Meaning remote=objType.getQual().findMeaning(ident);	  	  
 	  
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(5) findAttribute("+ident+")  ==> "+remote);
 	  if(remote==null) Util.error("BinaryOperation.doRemoteTextChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
 	  var.setRemotelyAccessed(remote);
-	  //Util.BREAK("BinaryOperation.doRemoteChecking: DOT "+var+", qual="+var.getClass().getSimpleName());
-	  //Util.BREAK("BinaryOperation.doRemoteChecking: DOT "+remote+", qual="+remote.getClass().getSimpleName());
+	  if(remote.declaredAs instanceof Parameter)
+	  { Parameter par=(Parameter)remote.declaredAs;
+//	    Util.BREAK("BinaryOperation.doRemoteChecking: DOT par="+par);
+//	    Util.BREAK("BinaryOperation.doRemoteChecking: DOT par'kind="+par.kind);
+		  if(par.kind==ParameterKind.Array) accessRemoteArray=true;
+	  }
+	  //Util.EXIT();
+	  
+	  
 	  if(remote.declaredAs instanceof ArrayDeclaration) // Array // TODO: NEW ARRAY CODE
 	  { if(var instanceof SubscriptedVariable) accessRemoteArray=true;
 		  
@@ -332,7 +339,7 @@ public class BinaryOperation extends Expression
 	    {
 		  return(CallProcedure.remote(lhs,callRemoteProcedure,(Variable)rhs,backLink));
 	    }
-	    else if(accessRemoteArray) return(accessRemoteArray(lhs,(SubscriptedVariable)rhs));
+	    else if(accessRemoteArray) return(doAccessRemoteArray(lhs,(SubscriptedVariable)rhs));
 	    String result=lhs.get()+opr.toJavaCode()+rhs.get();
 	    //Util.BREAK("BinaryOperation.toJavaCode: DOT result="+result);
 	    return(result);
@@ -491,26 +498,33 @@ public class BinaryOperation extends Expression
   // *** CODE: assignToRemoteArray      // TODO: NEW ARRAY CODE
   // ***********************************************************************
   private String assignToRemoteArray(Expression beforeDot,SubscriptedVariable array,Expression rhs)
-  { String lhs=accessRemoteArray(beforeDot,(SubscriptedVariable)array);
+  { String lhs=doAccessRemoteArray(beforeDot,(SubscriptedVariable)array);
 	String asg=lhs+'='+rhs.toJavaCode();
 	return(asg);
   }
   
   // ***********************************************************************
-  // *** CODE: accessRemoteArray 
+  // *** CODE: doAccessRemoteArray 
   // ***********************************************************************
-  private String accessRemoteArray(Expression beforeDot,SubscriptedVariable array)
+  private String doAccessRemoteArray(Expression beforeDot,SubscriptedVariable array)
   { StringBuilder s=new StringBuilder();
 	int nDim=0;
 	// Generate: obj.M.A[6-obj.M.LB[1]];
 	String obj=beforeDot.toJavaCode();
     String remoteIdent=obj+'.'+array.edVariable(true);
-    s.append(remoteIdent+".Elt");
+    StringBuilder ixs=new StringBuilder();
+    String dimBrackets="";
 	for(Expression ix:array.checkedParams) {
 		String index="["+ix.toJavaCode()+"-"+remoteIdent+".LB["+(nDim++)+"]]"; // TODO: NEW ARRAY CODE
-		s.append(index);
+		ixs.append(index);
+		dimBrackets=dimBrackets+"[]";
 	}
-    return(s.toString());
+	String eltType=type.toJavaType();
+	String cast="$ARRAY<"+eltType+dimBrackets+">";
+	String castedVar="(("+cast+")"+remoteIdent+")";
+	s.append(castedVar).append(".Elt").append(ixs);
+
+	return(s.toString());
   }
 
   public String toString()

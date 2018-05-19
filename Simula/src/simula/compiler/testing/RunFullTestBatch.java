@@ -95,9 +95,9 @@ public class RunFullTestBatch {
 		//names.add("simtst60.sim"); // ERR: Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // ERR: Remote access to attributes which are protected.
-		names.add("simtst62.sim"); //   OK:  Test complex use of detach and resume.
+		names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
-		//names.add("simtst64.sim"); // ERR: Parameter transmission by value to classes. MYE FEIL MED ARRAY as Parameter
+		names.add("simtst64.sim"); // OK: Parameter transmission by value to classes. MYE FEIL MED ARRAY as Parameter
 		//names.add("simtst65.sim"); // ERR: Parameter transmission by reference to classes. FEIL med 2-DIM ARRAY
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.

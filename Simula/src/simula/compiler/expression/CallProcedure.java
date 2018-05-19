@@ -247,7 +247,7 @@ public class CallProcedure {
 	// ********************************************************************
 	private static String codeCPF(String ident,Variable variable)
 	{ StringBuilder s=new StringBuilder();
-	  Util.BREAK("CallProcedure.codeCPF: ident="+ident);
+	  //Util.BREAK("CallProcedure.codeCPF: ident="+ident);
 	  s.append(ident).append(".CPF()");
 	  if(variable instanceof SubscriptedVariable)
 	  { SubscriptedVariable func=(SubscriptedVariable)variable;
@@ -256,7 +256,7 @@ public class CallProcedure {
 	      s.append(".setPar(");
 		  Type formalType=actualParameter.type;
 		  ParameterKind kind=ParameterKind.Simple;            // TODO: USIKKER På DETTE !!!
-//		  Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
+		  //Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
 		  if((actualParameter instanceof Variable) && !(actualParameter instanceof SubscriptedVariable))
 		  { Variable var=(Variable)actualParameter;
 //		    Util.BREAK("CallProcedure.codeCPF: actualParameter'meaning="+var.meaning);
@@ -276,9 +276,9 @@ public class CallProcedure {
 	  { boolean partOfExpression=true;
 	    if(variable.backLink instanceof BinaryOperation)
 	    { BinaryOperation binOper=(BinaryOperation)variable.backLink;
-	      Util.BREAK("CallProcedure.codeCPF: binOper="+binOper);
-	      Util.BREAK("CallProcedure.codeCPF: binOper.opr="+binOper.opr);
-	      Util.BREAK("CallProcedure.codeCPF: binOper.backLink="+binOper.backLink);
+//	      Util.BREAK("CallProcedure.codeCPF: binOper="+binOper);
+//	      Util.BREAK("CallProcedure.codeCPF: binOper.opr="+binOper.opr);
+//	      Util.BREAK("CallProcedure.codeCPF: binOper.backLink="+binOper.backLink);
 	      // NOTE: Standalone <expression>.<function> should not be casted
 	      if(binOper.backLink==null && binOper.opr==KeyWord.DOT) partOfExpression=false;
 	    }
@@ -465,14 +465,6 @@ public class CallProcedure {
 	  	Declaration decl=var.meaning.declaredAs;
 	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs="+decl);
 	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs'QUAL="+decl.getClass().getSimpleName());
-//	  	if(decl instanceof ArrayDeclaration)
-//	  	{ ArrayDeclaration array=(ArrayDeclaration)decl;
-//	  	  //Util.BREAK("CallProcedure.doArrayParameter: actualParameter'nDim="+array.nDim());
-//	  	  if(array.nDim()>1)
-//	  	  { Util.NOT_IMPLEMENTED(""+array.nDim()+"-dimensional Array as Parameter is not implemented");
-//	  	    //Util.EXIT();
-//	  	  }
-//	  	}
 	  }
 	  if(mode==ParameterMode.value) {
 	    Util.warning("Array-Parameter by value is not (fully) implemented");
