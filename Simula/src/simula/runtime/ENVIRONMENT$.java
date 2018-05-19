@@ -7,6 +7,8 @@
  */
 package simula.runtime;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -99,10 +101,20 @@ public class ENVIRONMENT$ {
 	  public $ARRAY(T Elt,int[] LB,int[] UB)
 	  { this.Elt=Elt; this.LB=LB; this.UB=UB; }
 	  public $ARRAY<T> COPY()
-	  {	throw new RuntimeException("Array by Value is not implemented");
-		// T AA=A.clone();
-		// $ARRAY<T> to=new $ARRAY<T>(AA,LB,UB);  // TODO
-		// System.arraycopy(A,0,AA,0,A.length);
+	  {	
+//		T AA=(T)copyMultiArrayObject(Elt);
+		T AA=copyMultiArray(Elt);
+		$ARRAY<T> to=new $ARRAY<T>(AA,LB,UB);  // TODO
+		return(to);
+	  }
+	  public int size()
+	  { int s=1;
+		int nDim=LB.length;
+		for(int i=0;i<nDim;i++)
+		{ int length=UB[i]-LB[i]+1;
+		  s=s*length;
+		}
+		return(s);
 	  }
 	  public String toString()
 	  { int nDim=LB.length;
@@ -123,7 +135,28 @@ public class ENVIRONMENT$ {
 //		  return(null);
 //	  }
 	}
-	
+
+	// *******************************************************************************
+	// *** Utility: Multidimensional Array Copy
+	// Taken from: https://coderanch.com/t/378421/java/Multidimensional-array-copy
+	// *******************************************************************************
+	@SuppressWarnings("unchecked")
+	public static <T> T copyMultiArray(T arr) {
+	    return (T) copyMultiArrayObject(arr);
+	}
+	private static Object copyMultiArrayObject(Object arr) {
+	    Class clazz = arr.getClass();
+	    if (!clazz.isArray())
+	        throw new IllegalArgumentException("not an array: " + arr);
+	    Class componentType = clazz.getComponentType();
+	    int length = Array.getLength(arr);
+	    Object copy = Array.newInstance(componentType, length);
+	    if (componentType.isArray())
+	        for (int i = 0; i < length; i++)
+	            Array.set(copy, i, copyMultiArrayObject(Array.get(arr, i)));
+	    else System.arraycopy(arr, 0, copy, 0, length);
+	    return copy;
+	}
 
 //	void test1()
 //	{ int[] Table$LB={6};

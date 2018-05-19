@@ -57,13 +57,13 @@ public class RunSingleTestBatch {
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
 		//names.add("simtst26.sim"); // err: Designational expressions, goto statement and switch declaration.
 		//names.add("simtst27.sim"); // OK:  Test while-loops.
-		//names.add("simtst28.sim"); // ERR: Paramenter transmission to procedures by value. USES 3-DIM ARRAY-PARAMETERS
-		//names.add("simtst29.sim"); // err: Procedure parameters by value  USES 2-DIM ARRAY-PARAMETERS
+		//names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
+		//names.add("simtst29.sim"); // OK:  Procedure parameters by value
 		//names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 
 		//names.add("simtst31.sim"); // ERR: Labels and switches as parameters to procedures
-		names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
-		//names.add("simtst33.sim"); // err: Test call by reference (Uses: 3-dim arrays)
+		//names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
+		//names.add("simtst33.sim"); // OK:  Test call by reference
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.
 		//names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
@@ -97,7 +97,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst61.sim"); // ERR: Remote access to attributes which are protected.
 		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
-		//names.add("simtst64.sim"); // ERR: Parameter transmission by value to classes. MYE FEIL MED ARRAY as Parameter
+		names.add("simtst64.sim"); // ERR: Parameter transmission by value to classes. MYE FEIL MED ARRAY as Parameter
 		//names.add("simtst65.sim"); // ERR: Parameter transmission by reference to classes. FEIL med 2-DIM ARRAY
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.

@@ -388,6 +388,13 @@ public class OutFile$ extends ImageFile$ {
 		else FIELD_(Math.abs(w)).putreal(r, n);
 	}
 
+	public void outreal(float r, int n, int w) {
+		// TODO: Complete the implementation according
+		// to Simula Standard Definition.
+		if(w==0) outtext(new TXT$(""+r));
+		else FIELD_(Math.abs(w)).putreal(r, n);
+	}
+
 	public void outfrac(int i, int n, int w) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.

@@ -520,6 +520,26 @@ public class TXT$ {
 //		while((n--)>1) pattern.append('#');
 		StringBuilder pattern=new StringBuilder("0.");
 		while((n--)>1) pattern.append('0');
+//		pattern.append("E00");
+		pattern.append("E000");
+//		Util.BREAK("TXTREF.putreal: pattern="+pattern);
+		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
+	    String output = myFormatter.format(r);
+	    output=addPlussExponent(output);
+	    putResult(T,output.replace(',','.'));
+	}
+	public void putreal(float r, int n) { putreal(this,r,n); }
+	public static void putreal(TXT$ T,float r, int n) {
+		// TODO: Complete the implementation according
+		// to Simula Standard Definition.
+//		Util.BREAK("TXTREF.putreal("+r+','+n+")");
+		if(n<0) throw new RuntimeException("putreal(r,n) - n < 0");
+		if(n==0) Util.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
+		
+//		StringBuilder pattern=new StringBuilder("#.");
+//		while((n--)>1) pattern.append('#');
+		StringBuilder pattern=new StringBuilder("0.");
+		while((n--)>1) pattern.append('0');
 		pattern.append("E00");
 //		Util.BREAK("TXTREF.putreal: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());

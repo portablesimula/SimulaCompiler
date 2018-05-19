@@ -465,14 +465,14 @@ public class CallProcedure {
 	  	Declaration decl=var.meaning.declaredAs;
 	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs="+decl);
 	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs'QUAL="+decl.getClass().getSimpleName());
-	  	if(decl instanceof ArrayDeclaration)
-	  	{ ArrayDeclaration array=(ArrayDeclaration)decl;
-	  	  //Util.BREAK("CallProcedure.doArrayParameter: actualParameter'nDim="+array.nDim());
-	  	  if(array.nDim()>1)
-	  	  { Util.NOT_IMPLEMENTED(""+array.nDim()+"-dimensional Array as Parameter is not implemented");
-	  	    //Util.EXIT();
-	  	  }
-	  	}
+//	  	if(decl instanceof ArrayDeclaration)
+//	  	{ ArrayDeclaration array=(ArrayDeclaration)decl;
+//	  	  //Util.BREAK("CallProcedure.doArrayParameter: actualParameter'nDim="+array.nDim());
+//	  	  if(array.nDim()>1)
+//	  	  { Util.NOT_IMPLEMENTED(""+array.nDim()+"-dimensional Array as Parameter is not implemented");
+//	  	    //Util.EXIT();
+//	  	  }
+//	  	}
 	  }
 	  if(mode==ParameterMode.value) {
 	    Util.warning("Array-Parameter by value is not (fully) implemented");

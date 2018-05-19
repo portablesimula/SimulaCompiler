@@ -39,6 +39,7 @@ public class Global {
 	public static String packetName = "testing";
 	
 	public static boolean OVERLOADING=true; // TODO: Temp implementation of Overloading
+	public static boolean ROUNDING=true;//false; // TODO: Temp implementation of real to integer rounding
 
 
 	public static DeclarationScope currentScope=null; // Current Scope. Maintained during Checking and Coding

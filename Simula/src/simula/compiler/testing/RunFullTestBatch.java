@@ -57,13 +57,13 @@ public class RunFullTestBatch {
 		names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
 		//names.add("simtst26.sim"); // err: Designational expressions, goto statement and switch declaration.
 		names.add("simtst27.sim"); // OK:  Test while-loops.
-		//names.add("simtst28.sim"); // ERR: Paramenter transmission to procedures by value.
-		//names.add("simtst29.sim"); // err: Procedure parameters by value
+		names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
+		names.add("simtst29.sim"); // OK:  Procedure parameters by value
 		names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 
 		//names.add("simtst31.sim"); // ERR: Labels and switches as parameters to procedures
 		names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
-		//names.add("simtst33.sim"); // err: Test call by reference (Uses: 3-dim arrays)
+		names.add("simtst33.sim"); // OK:  Test call by reference
 		names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		names.add("simtst35.sim"); // OK:  Type procedures as parameters.
 		//names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING

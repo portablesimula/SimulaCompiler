@@ -1,6 +1,19 @@
-begin
-   integer array A(1:4,4:6,6:12);
-      
-   A(2,5,9):=45;
+BEGIN text txt;
+   real rea;
+txt :- copy ("0000000") ;
+rea := txt.getreal ;
+outreal(rea,10,22); outimage;
+outreal(rea,5,22); outimage;
+outreal(rea,3,22); outimage;
+outreal(rea,2,22); outimage;
+txt.putreal (rea, 2) ;
 
-end of program;
+IF txt <> "0.0&+00" THEN                         !********* NOTE 1 ************;
+   BEGIN
+   outtext ("*** error : In put/get operation (13).") ;
+   outimage ;
+   outtext ("    The following result was not expected: ") ;
+   outtext (txt) ;
+   outimage ;
+   END ;
+END;

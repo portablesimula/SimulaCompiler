@@ -43,9 +43,18 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   	typeText.addStandardProcedure(Type.LongReal,"getreal");  
   	typeText.addStandardProcedure(Type.Integer,"getfrac");  
   	typeText.addStandardProcedure(null,"putint",parameter("i",Type.Integer));  
-  	typeText.addStandardProcedure(null,"putfix",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
-  	typeText.addStandardProcedure(null,"putreal",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
+//  	typeText.addStandardProcedure(null,"putfix",parameter("r",Type.LongReal),parameter("n",Type.Integer));
+//  	typeText.addStandardProcedure(null,"putreal",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
   	typeText.addStandardProcedure(null,"putfrac",parameter("i",Type.Integer),parameter("n",Type.Integer));  
+  	
+    if(Global.OVERLOADING)
+    { typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
+      typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
+    } else {
+      typeText.addStandardProcedure(null,"putfix",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
+      typeText.addStandardProcedure(null,"putreal",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
+    }
+
   }
   
   // ******************************************************************
@@ -376,9 +385,14 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     OutFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));  
     OutFile.addStandardProcedure(Type.Text,"FIELD_",parameter("w",Type.Integer));  
     OutFile.addStandardProcedure(null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
-    OutFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-    OutFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-    OutFile.addStandardProcedure(null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+    OutFile.addStandardProcedure(null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    if(Global.OVERLOADING)
+    { OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+      OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    } else {
+      OutFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+      OutFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+    }
   }  
   
   // ******************************************************************
