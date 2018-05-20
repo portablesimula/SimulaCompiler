@@ -135,7 +135,7 @@ public abstract class Expression extends SyntaxClass
     if(Option.TRACE_PARSE) Parser.TRACE("Expression: parsePrimaryExpression");
     if (Parser.accept(KeyWord.BEGPAR)) { Expression expr=parseExpression(); Parser.expect(KeyWord.ENDPAR); return(expr); }
     else if(Parser.accept(KeyWord.INTEGERKONST)) return(new Constant(Type.Integer,Parser.prevToken.getValue()));
-    else if(Parser.accept(KeyWord.REALKONST)) return(new Constant(Type.LongReal,Parser.prevToken.getValue()));
+    else if(Parser.accept(KeyWord.REALKONST)) return(Constant.createRealType(Parser.prevToken.getValue()));
     else if(Parser.accept(KeyWord.BOOLEANKONST)) return(new Constant(Type.Boolean,Parser.prevToken.getValue()));
     else if(Parser.accept(KeyWord.CHARACTERKONST)) return(new Constant(Type.Character,Parser.prevToken.getValue()));
     else if(Parser.accept(KeyWord.TEXTKONST)) return(new Constant(Type.Text,Parser.prevToken.getValue()));

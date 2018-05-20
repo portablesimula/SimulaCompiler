@@ -94,8 +94,8 @@ public class Variable extends Expression {
 		  //Util.BREAK("Variable("+identifier+").doChecking: Declared as'Qual: "+meaning.declaredAs.getClass().getSimpleName());
 		  //Util.BREAK("Variable("+identifier+").doChecking: Declared in'Qual: "+meaning.declaredIn.getClass().getSimpleName());
 		  if(meaning.declaredAs instanceof StandardProcedure)
-		  { //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
-		    Util.ASSERT(meaning.declaredIn.blockKind==BlockKind.Class,"Invariant");
+		  { //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning.declaredAs);
+		    //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared in: "+meaning.declaredIn);
 			meaning.declaredIn.detachUsed=true;
 			//Util.BREAK("Variable("+identifier+").doChecking: (Class "+meaning.declaredIn.identifier+").detachUsed=true");
 		  }

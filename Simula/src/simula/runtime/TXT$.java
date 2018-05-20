@@ -515,6 +515,7 @@ public class TXT$ {
 //		Util.BREAK("TXTREF.putreal("+r+','+n+")");
 		if(n<0) throw new RuntimeException("putreal(r,n) - n < 0");
 		if(n==0) Util.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
+		if(r== -0.0d) r=0.0d;
 		
 //		StringBuilder pattern=new StringBuilder("#.");
 //		while((n--)>1) pattern.append('#');
@@ -535,6 +536,7 @@ public class TXT$ {
 //		Util.BREAK("TXTREF.putreal("+r+','+n+")");
 		if(n<0) throw new RuntimeException("putreal(r,n) - n < 0");
 		if(n==0) Util.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
+		if(r== -0.0f) r=0.0f;
 		
 //		StringBuilder pattern=new StringBuilder("#.");
 //		while((n--)>1) pattern.append('#');

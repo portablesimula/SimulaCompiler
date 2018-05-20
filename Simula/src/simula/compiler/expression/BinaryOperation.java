@@ -86,8 +86,8 @@ public class BinaryOperation extends Expression
 	  { // ArithmeticExpression
 		lhs.doChecking(); rhs.doChecking();
 		Type type1=lhs.type; Type type2=rhs.type;
-//		this.type=Type.arithmeticTypeConversion(type1,type2);
-		this.type=Type.LongReal;
+		this.type=Type.arithmeticTypeConversion(type1,type2);
+//		this.type=Type.LongReal;
 		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
 		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
 		//Util.BREAK("BinaryOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);

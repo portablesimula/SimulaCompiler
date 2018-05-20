@@ -7,7 +7,9 @@
  */
 package simula.compiler.expression;
 
+import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -36,6 +38,12 @@ public class Constant extends Expression {
 		this.value = value;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW Constant: "+this);
 	}
+	
+    public static Constant createRealType(Object value)
+    { Type type=Type.Real;
+      if(value instanceof Double) type=Type.LongReal;
+      return(new Constant(type,value));
+    }
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
@@ -54,6 +62,8 @@ public class Constant extends Expression {
 		  return("new TXT$(\""+val+"\")");
 		}
 		if(type==Type.Character) return("'"+value+"'");
+		if(type==Type.Real) return (""+value+'f');
+		if(type==Type.LongReal) return (""+value+'d');
 		return (""+value);
 	}
 	

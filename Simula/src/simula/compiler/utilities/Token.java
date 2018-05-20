@@ -71,7 +71,8 @@ public class Token
 	  case ASSIGNREF: return (":-");
 
 	  case INTEGERKONST: return("INTEGERKONST("+(Long)value+")"); 
-	  case REALKONST: return("REALKONST("+(Double)value+")");
+//	  case REALKONST: return("REALKONST("+(Double)value+")");
+	  case REALKONST: return("REALKONST("+(Number)value+")");
 	  case CHARACTERKONST: return("CHARACTERKONST("+(Character)value+")");
 	  case TEXTKONST: return("TEXTKONST("+(String)value+")");
 	  case BOOLEANKONST: return("BOOLEANKONST("+(Boolean)value+")");

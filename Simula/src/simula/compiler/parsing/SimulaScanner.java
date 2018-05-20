@@ -417,7 +417,8 @@ public final class SimulaScanner
     String result=number.toString(); number=null;
   	if(Option.TRACE_SCAN) Util.TRACE("scanDotDigit, result='"+result);
     pushBack(current);
-    return(new Token(KeyWord.REALKONST,new Double(result)));
+//    return(new Token(KeyWord.REALKONST,new Double(result)));
+    return(new Token(KeyWord.REALKONST,new Float(result)));
   }
 	
   //********************************************************************************
@@ -428,9 +429,10 @@ public final class SimulaScanner
   //********************************************************************************
   private Token scanDigitsExp(StringBuilder number)
   { String result;
+    boolean doubleAmpersand=false;
 	if(Option.TRACE_SCAN) Util.TRACE("scanDigitsExp, "+edcurrent());
 	if(number==null) { number=new StringBuilder(); number.append('1'); }
-	if(current == '&') getNext();
+	if(current == '&') { getNext(); doubleAmpersand=true; }
 	number.append('e');
 	if(current == '-') { number.append('-'); getNext(); }
 	else if(current == '+') getNext();
@@ -440,7 +442,9 @@ public final class SimulaScanner
 	result=number.toString(); number=null;
   	if(Option.TRACE_SCAN) Util.TRACE("scanDigitsExp, result='"+result);
 	pushBack(current);
-	return(new Token(KeyWord.REALKONST,new Double(result)));
+//	Util.BREAK("SimulaScanner.scanDigitsExp: doubleAmpersand="+doubleAmpersand);
+	if(doubleAmpersand) return(new Token(KeyWord.REALKONST,new Double(result)));
+	return(new Token(KeyWord.REALKONST,new Float(result)));
   }
 	
 
