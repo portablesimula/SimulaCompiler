@@ -386,32 +386,32 @@ public class TXT$ {
 	 */
 	private static String getFracItem(TXT$ T) {
 		StringBuilder sb = new StringBuilder();
-		//Util.BREAK("TEXT$.getFracItem: " + this);
-		char c=0;
+		//Util.BREAK("TEXT$.getFracItem: " + T);
+		char c=0; int limit=T.LENGTH-T.START;
 		T.POS=0; // TEST !!!
-		while (T.POS < T.LENGTH) { // SKIP BLANKS
+		while (T.POS < limit) { // SKIP BLANKS
 			c = T.OBJ.MAIN[T.START + T.POS];
-			//Util.BREAK("TEXT$.getFracItem1: POS=" + POS + " Skip? c=" + c);
+			//Util.BREAK("TEXT$.getFracItem1: POS=" + T.POS + " Skip? c=" + c);
 			if (c != ' ') break;
 			T.POS++;
 		}
 		if(c=='+' || c=='-')
 		{ sb.append(c); T.POS++;
-		  while (T.POS < T.LENGTH) { // SKIP BLANKS
+		  while (T.POS < limit) { // SKIP BLANKS
 			  c = T.OBJ.MAIN[T.START + T.POS];
-			  //Util.BREAK("TEXT$.getFracItem2: POS=" + POS + " Skip? c=" + c);
+			  //Util.BREAK("TEXT$.getFracItem2: POS=" + T.POS + " Skip? c=" + c);
 			  if (c != ' ') break;
 			  T.POS++;
 		  }
 		}
-		while (T.POS < T.LENGTH) { // KEEP DIGITS
+		while (T.POS < limit) { // KEEP DIGITS
 			int lastDigPos=T.POS;
 			c = T.OBJ.MAIN[T.START + T.POS];
 			if(Character.isDigit(c)) { sb.append(c); lastDigPos=T.POS; } //OK
 			else if(c=='.'); // OK  NOTE: DETTE VAR FEIL I PC-SIMULA
 			else if(c==' '); // OK
-			else { T.POS=lastDigPos-1; break; }	
-			//Util.BREAK("TEXT$.getFracItem3: POS=" + POS + " Add c=" + c);
+			else { T.POS=lastDigPos; break; }
+			//Util.BREAK("TEXT$.getFracItem3: POS=" + T.POS + " Add c=" + c);
 			T.POS++;
 		}
 		return (sb.toString());
@@ -419,12 +419,7 @@ public class TXT$ {
 
 	public int getfrac() { return(getfrac(this)); }
 	public static int getfrac(TXT$ T) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		String item = getFracItem(T);
-		//Util.BREAK("TEXT$.getfrac: item=\""+item+'"');
-		int res = Integer.parseInt(item);
-		return (res);
+		return(Integer.parseInt(getFracItem(T)));
 	}
 
 	/**
@@ -572,29 +567,73 @@ public class TXT$ {
 	 * @param n
 	 */
 	public void putfrac(int i, int n) { putfrac(this,i,n); }
-	public static void putfrac(TXT$ T,int i, int n) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//Util.BREAK("TXTREF.putfrac("+i+','+n+")");
-		if(n<=0)
-		{ String pattern="###,###.##";
-		  //Util.BREAK("TXTREF.putfrac: pattern="+pattern);
-		  DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
-		  String output = myFormatter.format(i);
-		  putResult(T,output.replace(',','.'));
-		  return;	
-		}
-		double r=(double)i;
-		StringBuilder pattern=new StringBuilder("###,###.");
-//		while((n--)>0) { pattern.append('#'); r=r/10; }
-//		int m=0;
-		while((n--)>0)
-		{ pattern.append('0'); r=r/10; //m++;
-		  //if(m==3) { pattern.append(' '); m=0;}
-		}
-		//Util.BREAK("TXTREF.putfrac: pattern="+pattern);
-		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
-	    String output = myFormatter.format(r);
-	    putResult(T,output.replace(',','.'));
+	public static void putfrac(TXT$ T,int val, int n) {
+	    int v; // Scaled value (abs)
+	    int d; // Number of digits written
+	    int r; // Remaining digits in current group
+	    int p; // Next available position in item
+	    int c; // Current digit (numerical)
+	    char[] item=new char[T.LENGTH];
+	    
+	    if(n<=0) r=3; else { r=n % 3; if(r==0) r=3; }
+	    
+	    v=Math.abs(val);
+	    d=0; p=item.length-1;
+	    try { while( (v>0) || (d<n) ) {
+		          c=v % 10; v=v/10;
+	              if(r==0) { r=3; if(d!=n) item[p--]=' '; }
+	              item[p--]=(char)(c+'0');
+	              r=r-1; d=d+1;
+	              if(d==n) item[p--]=ENVIRONMENT$.CURRENTDECIMALMARK;
+		      } 
+	          if(val<0) item[p--]='-';
+	          while(p>=0) item[p--]=' ';
+	    } catch(ArrayIndexOutOfBoundsException e)
+	    { RTObject$.warning("Edit Overflow Occured");
+		  for(int i=0;i<item.length;i++) item[i]='*';
+	    }
+	    for(int i=0;i<item.length;i++) T.OBJ.MAIN[T.START+i]=item[i];
 	}
+
+	
+// *** FROM PC-SIMULA disk3/ENV (written in Simuletta)
+//	Visible Routine PTFRAC;  --- put_frac;
+//	import infix(string) item; integer val,n;
+//	begin integer v; -- Scaled value (abs)
+//	      short integer d; -- Number of digits written
+//	      short integer r; -- Remaining digits in current group
+//	      short integer p; -- Next available position in item
+//	      short integer c; -- Current digit (numerical)
+//	%+D   if TRCSW > 3
+//	%+D   then begtrace("PTFRAC("); edint(trcbuf,val); edchar(trcbuf,',');
+//	%+D        edint(trcbuf,n); edchar(trcbuf,')'); outtrace;
+//	%+D   endif;
+//	      if n<=0 then r:=3 else r:=n rem 3; if r=0 then r:=3 endif endif;
+//	      v:=val/10; d:=0; p:=item.nchr-1;
+//	      if val<0 then c:=(v*10)-val; v:= -v else c:=val-(v*10) endif;
+//	      repeat if r = 0
+//	             then r:=3; if d <> n
+//	                  then if p<0 then STAT("PTFRAC-1",xq_tshort); goto E1 endif;
+//	                       var(item.chradr)(p):=' '; p:=p-1;
+//	                  endif;
+//	             endif;
+//	             if p < 0 then STAT("PTFRAC-2",xq_tshort); goto E2 endif;
+//	             var(item.chradr)(p):=(c+ISO_0) qua character; p:=p-1;
+//	             r:=r-1; d:=d+1;
+//	             if d = n
+//	             then if p < 0 then STAT("PTFRAC-3",xq_tshort); goto E3 endif;
+//	                  var(item.chradr)(p):=DMRK; p:=p-1;
+//	             endif;
+//	      while (v>0) or (d<n) do c:=v rem 10; v:=v/10; endrepeat;
+//	      if val < 0
+//	      then if p < 0 then STAT("PTFRAC-4",xq_tshort); goto E4; endif;
+//	           var(item.chradr)(p):='-'; p:=p-1;
+//	      endif;
+//	      repeat while p>=0 do var(item.chradr)(p):=' '; p:=p-1; endrepeat;
+//	E1:E2:E3:E4:end;
+//
+//	end;
+
+	
+	
 }

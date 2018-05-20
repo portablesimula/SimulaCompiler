@@ -118,14 +118,14 @@ public class RunFullTestBatch {
 
 		//names.add("simtst81.sim"); // ERR: Test the value of close.
 		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
-		//names.add("simtst83.sim"); // ERR: Type procedures as attributes to class, and dot access.
+		//names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
 		//names.add("simtst84.sim"); // ERR: Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example. TRENGER FINTEST 
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
 		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
-		//names.add("simtst90.sim"); // ERR: Test getfrac/putfrac.
+		names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
 		//names.add("simtst92.sim"); // ERR: Test virtual labels and procedures.

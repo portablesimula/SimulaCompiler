@@ -1,12 +1,13 @@
 BEGIN
    real r1,r2;
-   
-   r1:=2.345_678&&10;
-   r1:=2.345_678&10;
-   
-   r1 := 0.0;
-   r2 := 2&6;
+   text t1,t2;
 
-   outreal(r1 / r2, 10,22); outimage;
+   t1:-"  45 56 7.89abra";
+   r1:=t1.getfrac;
+   outreal(r1, 10,22); outimage;
+   
+   t2:-blanks(22);
+   t2.putfrac(123456789,2);
+   outtext(t2); outimage;
    
 END;

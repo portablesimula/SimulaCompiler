@@ -57,7 +57,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
 		//names.add("simtst26.sim"); // err: Designational expressions, goto statement and switch declaration.
 		//names.add("simtst27.sim"); // OK:  Test while-loops.
-		//names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
+		names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
 		//names.add("simtst29.sim"); // OK:  Procedure parameters by value
 		//names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 
@@ -117,15 +117,15 @@ public class RunSingleTestBatch {
 		//names.add("simtst80.sim"); // ERR: Test the attribute 'IsOpen' of class file.
 
 		//names.add("simtst81.sim"); // ERR: Test the value of close.
-		names.add("simtst82.sim"); // ERR: Simple test of the operations +, -, *, / and //.
-		//names.add("simtst83.sim"); // ERR: Type procedures as attributes to class, and dot access.
+		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
+		//names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
 		//names.add("simtst84.sim"); // ERR: Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
 		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
-		//names.add("simtst90.sim"); // ERR: Test getfrac/putfrac.
+		//names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
 		//names.add("simtst92.sim"); // ERR: Test virtual labels and procedures.
