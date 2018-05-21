@@ -47,7 +47,7 @@ public class OutbyteFile$ extends ByteFile$ {
 			try {
 				outputStream = new FileOutputStream(FILENAME$.edText());
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				return (false);
 			}
 		}

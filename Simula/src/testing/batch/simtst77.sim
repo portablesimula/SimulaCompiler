@@ -10,6 +10,8 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   
+   Text   fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any77";
 
    Class Les (n, andre); Integer n; Ref (Les) andre;
    Begin Text array linjer (1:300);
@@ -46,9 +48,10 @@ BEGIN
 
          Detach;
 
-         fil :- new infile ("any77");
+
+         fil :- new infile (fileName);
          if not fil.open (blanks (30)) then
-                Error("Can't open infile: any77");
+                Error("Can't open infile: " & fileName);
          fil.Inrecord;
 
          While not fil.Endfile do
@@ -70,7 +73,7 @@ BEGIN
    Outimage ;
    Outtext ("--- Test infile using two infile objects reading from the") ;
    Outimage ;
-   Outtext ("--- same external file (""any77"").") ;
+   Outtext ("--- same external file: " & fileName) ;
    Outimage ; Outimage ;
 
    Resume (New Les(3, New Les(7, none)));

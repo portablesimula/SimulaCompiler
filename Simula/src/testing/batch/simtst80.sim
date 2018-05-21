@@ -17,21 +17,21 @@
 % ======================================================================
 BEGIN
    Boolean errorFound ;
+   
+   Text   fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any8089";
 
    Ref(imagefile) f1, f2;
 
    Outtext ("--- START Simula a.s. TEST 80") ;
    Outimage ;
    Outtext ("--- Test the attribute 'IsOpen' of class file") ;
-   Outtext (" (uses infile ""any8089"").") ;
+   Outtext (" uses infile " & fileName) ;
    Outimage ; Outimage ;
 
-   f1:- New Infile("any8089");                  !**** NOTE 1 ****;
-   f2:- New Infile("any8089");                  !**** NOTE 1 ****;
+   f1:- New Infile(fileName);                  !**** NOTE 1 ****;
+   f2:- New Infile(fileName);                  !**** NOTE 1 ****;
 
-   If not f1 qua Infile.open (blanks(100)) then begin
-      outtext("error: File ""any8089"" cannot be opened."); outimage;
-      errorFound:=true; goto EXIT end;
+   If not f1 qua Infile.open (blanks(100)) then Error("Can't open file: " & fileName);
    If not f2 qua Infile.open (blanks(100)) then begin
       outtext("WARNING: cannot open infile (f2)"); outimage end;
 
@@ -53,7 +53,6 @@ BEGIN
    If not f1 qua Infile.Close then begin errorFound:=true;
       outtext("error: cannot close infile"); outimage; end;
 
-EXIT:
    Outtext ("--- END Simula a.s. TEST 80") ;
    if not errorFound then Outtext (" (NO ERRORS FOUND)") ;
    Outimage

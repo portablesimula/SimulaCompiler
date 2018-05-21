@@ -11,6 +11,8 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   
+   Text   fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any66";
 
    Class Innfil (neste, navn, a) ;
       value navn ;
@@ -25,10 +27,10 @@ BEGIN
 
       fil :- new infile (navn) ;
       if not fil.open (blanks (100)) then
-      begin outtext("The file "); outtext(navn);
-            outtext(" does not exist,"); outimage;
-            outtext("or cannot be opened as infile.");
-            goto slutt;
+      begin outtext("The file does not exist,");
+            outtext("or cannot be opened as infile.");  outimage;
+            
+            Error("Can't open infile: " & navn);
       end;
 
       detach ;
@@ -65,10 +67,10 @@ BEGIN
    Outimage ;
    Outtext ("--- Test corutines and two instances of infile which read ") ;
    Outimage ;
-   Outtext ("--- from the same file (""any66"") simultanously.") ;
+   Outtext ("--- from the same file simultanously.") ;
    Outimage ; Outimage ;
 
-   fil1 :- new Innfil (new Innfil (none, "any66", 5), "any66", 13) ;
+   fil1 :- new Innfil (new Innfil (none, fileName, 5), fileName, 13) ;
    fil2 :- fil1.neste ;
    fil2.neste :- fil1 ;
 
@@ -104,7 +106,7 @@ BEGIN
 
    fil1.fil.close; fil2.fil.close;
 
-slutt:
+% slutt:
    Outtext ("--- END Simula a.s. TEST 66") ;
    Outimage
  END

@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import simula.compiler.utilities.Util;
+
 /**
  * The Class Infile.
  * <p>
@@ -109,7 +111,8 @@ public class InFile$ extends ImageFile$ {
 			try {
 				inputStream = new FileInputStream(FILENAME$.edText());
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				//Util.BREAK("");
 				return (false);
 			}
 		}

@@ -31,7 +31,7 @@ public class RunFullTestBatch {
 		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		names.add("simtst03.sim"); // OK:  Test Text Value Relations
-		//names.add("simtst04.sim"); // err: To test putint and putreal.
+		names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
 		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		names.add("simtst07.sim"); // err: Test Mathematical Library
@@ -111,15 +111,15 @@ public class RunFullTestBatch {
 		names.add("simtst74.sim"); // OK:  Test resume and detach.
 		names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
 		//names.add("simtst76.sim"); // ERR: Test of detach and resume in SIMSET.
-		//names.add("simtst77.sim"); // ERR: Two infile objects reading from the same external file.
-		//names.add("simtst78.sim"); // ERR: Test the text procedure filename of class file.
+		names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
+		names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
 		//names.add("simtst79.sim"); // ERR: Test the attribute 'IsOpen' of class file.
-		//names.add("simtst80.sim"); // ERR: Test the attribute 'IsOpen' of class file.
+		names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
 		//names.add("simtst81.sim"); // ERR: Test the value of close.
 		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		//names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
-		//names.add("simtst84.sim"); // ERR: Test Printfile.
+		names.add("simtst84.sim"); // OK:  Test Printfile.
 		//names.add("simtst85.sim"); // ERR: Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example. TRENGER FINTEST 

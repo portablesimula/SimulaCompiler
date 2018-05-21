@@ -1,6 +1,5 @@
 
-%QUALIFIEDNAMES
-% ================   Main   program  ===========
+%  ================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 4
 %
 %  PURPOSE:  To test reading of integer and real numbers from source text.
@@ -25,7 +24,7 @@
 %  WRITTEN BY:  THE  12.10.83
 %    CORR. BY:  PJE  3/6 86 to conformance with SIMULA Standard.
 %    CORR. BY:  MYH  25/3 2018 improved reports.
-% ====================================================================
+%  ====================================================================
 BEGIN
 INTEGER            found_error;     ! Set to number of errors found. ;
 
@@ -41,7 +40,7 @@ INTEGER            realprecision;   ! To contain the precision for;
 INTEGER            longprecision;   ! reals and long reals       ;
                                     ! respectively.              ;
 
-procedure test(msg,result,expected) text msg,result,expected;
+procedure test(msg,result,expected); text msg,result,expected;
 begin
 IF result <> expected THEN  !*** NOTE 5 ***;
    BEGIN
@@ -137,7 +136,7 @@ rea :=
 340282350000000000000000000000000000000.0
 ;
 txt.putreal (rea, realprecision);
-test("real operation (2).",txt,"                  3.402824&+38");
+test("real operation (2).",txt,"                  3.402823&+38");
 
 rea := - 3;
 txt.putreal (rea, realprecision);
@@ -179,7 +178,7 @@ rea := -
 3.402823500&+38
 ;
 txt.putreal (rea, realprecision);
-test("real operation (9).",txt,"                 -3.402824&+38");
+test("real operation (9).",txt,"                 -3.402823&+38");
 
 rea := &3;
 txt.putreal (rea, realprecision);
@@ -219,7 +218,7 @@ test("real operation (18).",txt,"                 -1.000000&-02");
                                        ! value on the form n&m and   ;
                                        ! with a precision>="realprec.";
 txt.putreal (340282350&30, realprecision);
-test("real operation (19).",txt,"                  3.402824&+38");
+test("real operation (19).",txt,"                  3.402823&+38");
 
 rea := 123456789&+1;
 txt.putreal (rea, realprecision);
@@ -294,7 +293,7 @@ test("real operation (34).",txt,"                  1.234568&-06");
                                        ! with a precision >=         ;
 rea := -3.40282350&38;                 !          "realprecision".   ;
 txt.putreal (rea, realprecision);
-test("real operation (35).",txt,"                 -3.402824&+38");
+test("real operation (35).",txt,"                 -3.402823&+38");
 
 rea := - 30000000000.00&-5;
 txt.putreal (rea, realprecision);
@@ -319,7 +318,7 @@ txt.putreal (lon, longprecision);
 test("long real operation (2).",txt,"        1.797693134862315&+308");
 
 txt.putreal (.88888888888888888&&+00, longprecision);
-test("long real operation (3).",txt,"        8.888888888888890&-001");
+test("long real operation (3).",txt,"        8.888888888888888&-001");
 
 lon := 0;
 txt.putreal (lon, longprecision);

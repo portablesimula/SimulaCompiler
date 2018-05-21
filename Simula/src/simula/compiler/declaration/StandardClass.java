@@ -223,9 +223,9 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //        procedure terminate_program;
   //        begin ... ;  goto STOP  end terminate_program;
   //
-  //            class file 
-  //       file class imagefile
-  //       file class bytefile
+  //            class FILE 
+  //       FILE class imagefile
+  //       FILE class bytefile
   //  imagefile class infile
   //  imagefile class outfile
   //  imagefile class directfile
@@ -284,26 +284,26 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  
   //     if FILENAME_ = notext then error("Illegal File Name");
   //  end FILE_;      
-  public static StandardClass File=new StandardClass("RTObject","File",parameter("FILENAME",Type.Text));
+  public static StandardClass FILE=new StandardClass("RTObject","FILE",parameter("FILENAME",Type.Text));
   static
-  { BASICIO.addStandardClass(File);
-    //File.isContextFree=true;
-    File.addStandardAttribute(Type.Boolean,"OPEN$");  
-    File.addStandardProcedure(Type.Text,"filename");
-    File.addStandardProcedure(Type.Boolean,"isopen");
-    File.addStandardProcedure(Type.Boolean,"setaccess",parameter("mode",Type.Text));  
+  { BASICIO.addStandardClass(FILE);
+    //FILE.isContextFree=true;
+    FILE.addStandardAttribute(Type.Boolean,"OPEN$");  
+    FILE.addStandardProcedure(Type.Text,"filename");
+    FILE.addStandardProcedure(Type.Boolean,"isopen");
+    FILE.addStandardProcedure(Type.Boolean,"setaccess",parameter("mode",Type.Text));  
   }  
   // ******************************************************************
-  // *** The Standard File Class ImageFile
+  // *** The Standard FILE Class ImageFile
   // ******************************************************************
-  //  file class imagefile;
+  //  FILE class imagefile;
   //  begin text image;
   //     procedure setpos(i);  integer i;  image.setpos(i);
   //     integer procedure pos;     pos    := image.pos;
   //     Boolean procedure more;    more   := image.more;
   //     integer procedure length;  length := image.length;
   //  end imagefile;
-  public static StandardClass ImageFile=new StandardClass("File","ImageFile");
+  public static StandardClass ImageFile=new StandardClass("FILE","ImageFile");
   static
   { BASICIO.addStandardClass(ImageFile);
     //ImageFile.isContextFree=true;
@@ -506,14 +506,14 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     PrintFile.addStandardProcedure(null,"outrecord");  
   }  
   // ******************************************************************
-  // *** The Standard File Class ByteFile
+  // *** The Standard FILE Class ByteFile
   // ******************************************************************
-  //  file class bytefile;
+  //  FILE class bytefile;
   //  begin short integer BYTESIZE;
   //     short integer procedure bytesize; bytesize := BYTESIZE;
   //
   //  end bytefile;
-  public static StandardClass ByteFile=new StandardClass("File","ByteFile");
+  public static StandardClass ByteFile=new StandardClass("FILE","ByteFile");
   static
   { BASICIO.addStandardClass(ByteFile);
     //ByteFile.isContextFree=true;

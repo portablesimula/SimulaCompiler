@@ -156,6 +156,7 @@ BEGIN
 
    if sysout.image.strip =
               "FALSE Q1728 299  9.4300&+02 1.8860&-010 OKEYDO" then
+%              FALSE Q1728 299  9.3600&+02 1.8860&-010 OKEYDO
    else
    begin
       Outimage;

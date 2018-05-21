@@ -83,11 +83,14 @@ public class BinaryOperation extends Expression
 		break;
 	  }
 	  case DIV: // Real Division
-	  { // ArithmeticExpression
+	  { // The operator / denotes real division.
+		// Any operand of integer type is converted before the operation.
+		// Division by zero constitutes an error.
 		lhs.doChecking(); rhs.doChecking();
 		Type type1=lhs.type; Type type2=rhs.type;
 		this.type=Type.arithmeticTypeConversion(type1,type2);
 //		this.type=Type.LongReal;
+		if(this.type==Type.Integer) this.type=Type.Real;
 		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
 		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
 		//Util.BREAK("BinaryOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
@@ -95,7 +98,8 @@ public class BinaryOperation extends Expression
 		break;
 	  }
 	  case INTDIV: // Integer Division
-	  {	lhs.doChecking(); rhs.doChecking();
+	  {	
+		lhs.doChecking(); rhs.doChecking();
 		Type type1=lhs.type; Type type2=rhs.type;
 		if(type1==Type.ShortInteger || type1==Type.Integer)
 	    { if(type2==Type.ShortInteger || type2==Type.Integer)  this.type=Type.Integer; }

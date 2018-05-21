@@ -123,7 +123,7 @@ public class PrintFile$ extends OutFile$ {
 	 * 
 	 * @param n
 	 */
-	public void lines_per_page(int n) {
+	public void linesperpage(int n) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		LINES_PER_PAGE$ = n;
@@ -242,7 +242,7 @@ public class PrintFile$ extends OutFile$ {
 			try {
 				outputStream = new FileOutputStream(FILENAME$.edText());
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				return (false);
 			}
 		}

@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import simula.compiler.utilities.Util;
@@ -520,6 +521,14 @@ public class TXT$ {
 		pattern.append("E000");
 //		Util.BREAK("TXTREF.putreal: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
+//		myFormatter.setRoundingMode(RoundingMode.CEILING);
+//		myFormatter.setRoundingMode(RoundingMode.DOWN);
+//		myFormatter.setRoundingMode(RoundingMode.FLOOR);
+//		myFormatter.setRoundingMode(RoundingMode.HALF_DOWN);
+		myFormatter.setRoundingMode(RoundingMode.HALF_EVEN); // Java Default
+//		myFormatter.setRoundingMode(RoundingMode.HALF_UP);
+//		myFormatter.setRoundingMode(RoundingMode.UNNECESSARY);
+//		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
 	    output=addPlussExponent(output);
 	    putResult(T,output.replace(',','.'));
@@ -540,6 +549,14 @@ public class TXT$ {
 		pattern.append("E00");
 //		Util.BREAK("TXTREF.putreal: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
+//		myFormatter.setRoundingMode(RoundingMode.CEILING);
+//		myFormatter.setRoundingMode(RoundingMode.DOWN);
+//		myFormatter.setRoundingMode(RoundingMode.FLOOR);
+//		myFormatter.setRoundingMode(RoundingMode.HALF_DOWN);
+		myFormatter.setRoundingMode(RoundingMode.HALF_EVEN); // Java Default
+//		myFormatter.setRoundingMode(RoundingMode.HALF_UP);
+//		myFormatter.setRoundingMode(RoundingMode.UNNECESSARY);
+//		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
 	    output=addPlussExponent(output);
 	    putResult(T,output.replace(',','.'));

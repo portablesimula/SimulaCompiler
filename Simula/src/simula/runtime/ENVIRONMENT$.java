@@ -872,7 +872,7 @@ public class ENVIRONMENT$ {
 	 * @param msg
 	 */
 	public void error(TXT$ msg) {
-		throw new RuntimeException(msg.toString());
+		throw new RuntimeException(msg.edText());
 	}
 
 	// *****************************************
