@@ -463,9 +463,16 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     DirectFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));   
     DirectFile.addStandardProcedure(Type.Text,"FIELD_",parameter("w",Type.Integer));  
     DirectFile.addStandardProcedure(null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
-    DirectFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-    DirectFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+//    DirectFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+//    DirectFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
     DirectFile.addStandardProcedure(null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+    if(Global.OVERLOADING)
+    { DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+      DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    } else {
+      DirectFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+      DirectFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+    }
   }  
   
   // ******************************************************************

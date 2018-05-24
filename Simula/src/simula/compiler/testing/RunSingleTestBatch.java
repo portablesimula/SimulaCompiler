@@ -66,7 +66,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst33.sim"); // OK:  Test call by reference
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.
-		//names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
+		names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
 		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		//names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 		//names.add("simtst39.sim"); // err: Check that a formal parameter is global to the procedure body.
@@ -113,14 +113,14 @@ public class RunSingleTestBatch {
 		//names.add("simtst76.sim"); // ERR: Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
 		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
-		names.add("simtst79.sim"); // ERR: Test the attribute 'IsOpen' of class file.  DIRECTFILE NOT FULLY IMPLEMENTED
+		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 		//names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
-		//names.add("simtst81.sim"); // ERR: Test the value of close.   DIRECTFILE NOT FULLY IMPLEMENTED
+		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		//names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
-		//names.add("simtst85.sim"); // ERR: Test Directfile.   DIRECTFILE NOT FULLY IMPLEMENTED
+		//names.add("simtst85.sim"); // OK: Test Directfile.   DIRECTFILE NOT FULLY IMPLEMENTED
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.

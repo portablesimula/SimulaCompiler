@@ -155,7 +155,7 @@ public class DirectByteFile$ extends ByteFile$ {
 		if (OPEN$)
 			return (false);
 		// LOC$ = 1; // LOC is maintained by the underlying file system.
-		Util.BREAK("DirectByteFile.open: Filename=" + FILENAME$);
+		//Util.BREAK("DirectByteFile.open: Filename=" + FILENAME$);
 		try {
 			String mode = "rw"; // mode is one of "r", "rw", "rws", or "rwd"
 			randomAccessFile = new RandomAccessFile(FILENAME$.edText(), mode);

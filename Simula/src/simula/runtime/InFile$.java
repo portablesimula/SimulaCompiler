@@ -98,7 +98,7 @@ public class InFile$ extends ImageFile$ {
 	public boolean open(TXT$ IMAGE_) {
 		if (OPEN$)
 			return (false);
-		OPEN$ = true;
+//		OPEN$ = true;
 		image = IMAGE_;
 		ENDFILE$ = false;
 		ASGTXT$(image,null); // image := NOTEXT;
@@ -112,12 +112,15 @@ public class InFile$ extends ImageFile$ {
 				inputStream = new FileInputStream(FILENAME$.edText());
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
-				//Util.BREAK("");
+				OPEN$=false;
+				//Util.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 				return (false);
 			}
 		}
 		InputStreamReader reader = new InputStreamReader(inputStream);
 		lineReader = new BufferedReader(reader);
+		OPEN$ = true;
+		//Util.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 		return (true);
 	}
 

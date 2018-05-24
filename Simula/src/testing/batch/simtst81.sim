@@ -103,7 +103,8 @@ BEGIN
               "(closed directfile ""sxcvz2"")",false);
 
 
-   xf:- New Inbytefile("any8189");
+%   xf:- New Inbytefile("any8189");
+   xf:- New Inbytefile(fileName);
 
    if xf qua Inbytefile.Close
    then report("'close' returns TRUE "

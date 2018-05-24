@@ -7,6 +7,8 @@
  */
 package simula.runtime;
 
+import simula.compiler.utilities.Util;
+
 /**
  * The class file.
  * <p>
@@ -71,6 +73,7 @@ public class FILE$ extends CLASS$ {
 	}
 
 	public boolean isopen() {
+		//Util.BREAK("ISOPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 		return (OPEN$);
 	}
 
@@ -106,6 +109,8 @@ public class FILE$ extends CLASS$ {
 	public boolean setaccess(TXT$ mode) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
+		warning("FILE$("+FILENAME$.edText()+").setaccess("+mode.edText()+") -- is not implemented: ");
+		//Util.NOT_IMPLEMENTED("FILE$(FILENAME$).setaccess: "+mode.edText());
 		return (false);
 	}
 

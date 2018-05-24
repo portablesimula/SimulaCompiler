@@ -85,7 +85,8 @@ public class LocalObject extends Expression {
 		String cast=classDeclaration.getJavaIdentifier();
 		if(declarationScope instanceof ConnectionBlock)
 		{ ConnectionBlock connectionBlock=(ConnectionBlock)declarationScope;
-		  return ("(("+cast+")"+connectionBlock.inspectedVariable.getJavaIdentifier()+")");
+//		  return ("(("+cast+")"+connectionBlock.inspectedVariable.getJavaIdentifier()+")");
+		  return ("(("+cast+")"+connectionBlock.inspectedVariable.toJavaCode()+")");
 		}
 		BlockDeclaration classDeclaration=(BlockDeclaration)declarationScope;
 		if(classDeclaration.blockLevel!=Global.currentScope.blockLevel)

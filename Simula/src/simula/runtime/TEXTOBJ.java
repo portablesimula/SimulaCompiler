@@ -7,6 +7,8 @@
  */
 package simula.runtime;
 
+import simula.compiler.utilities.Util;
+
 /**
  * The Text Object.
  * <p>
@@ -73,8 +75,7 @@ public class TEXTOBJ extends RTObject$ {
 	// Utility
 	public String edText(int start, int length) {
 		StringBuilder s = new StringBuilder();
-		for (int i = start; i < length; i++)
-			s.append(MAIN[i]);
+		for (int i = start; i < (start+length); i++) s.append(MAIN[i]);
 		return (s.toString());
 	}
 

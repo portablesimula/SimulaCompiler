@@ -1,35 +1,43 @@
 BEGIN
-   real r1,r2;
-   real rea;
-   long real lon;
-   text t1,t2;
-   integer s,i,j;
-
-   t1:-"  45 56 7.89abra";
-   r1:=t1.getfrac;
-   outreal(r1, 10,22); outimage;
-   
-   t2:-blanks(22);
-   t2.putfrac(123456789,2);
-   outtext(t2); outimage;
-   
-   
-   s:= 12;
-   i:= 943;
-   outreal((i/s)*s,10,22); outimage;
-   
-   rea := 340282350000000000000000000000000000000.0
-   lon := 340282350000000000000000000000000000000.0
-   
-   outreal(rea, 20,32); outimage;
-   outreal(lon, 20,32); outimage;
-   
-   t1:-"340282350000000000000000000000000000000.0";
-   rea:=t1.getreal; outreal(rea, 20,32); outimage;
-   lon:=t1.getreal; outreal(lon, 20,32); outimage;
-
-   for j:=3 step 1 until 20 do   
-   begin outreal(rea, j,32); outimage; end;
-   
-   
+  ref(Directfile) df;
+  integer a,b;
+  
+  Procedure dump(df); ref(Directfile) df;
+  begin
+     integer n,i;
+     n:=df.lastloc();
+     outtext("DUMP: LastLOC="); outint(n,0); outimage;
+     outtext("    [------------]"); outimage;
+     for i:=1 step 1 until n do
+     begin
+        df.locate(i); df.inimage; outint(i,4); outchar('['); outtext(df.image); outchar(']'); outimage;
+     end;
+     outtext("    [============]"); outimage;
+  end;
+  
+  df:-NEW Directfile("adHocDirect85");
+  df.open(blanks(12));
+  df.locate(3); df.outtext("CCCCCCCCCCCC"); df.outimage;
+  df.locate(1); df.outtext("AAAAAAAAAAAA"); df.outimage;
+  df.locate(2); df.outtext("BBBBBBBBBBBB"); df.outimage;
+  
+  df.locate(1);
+  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
+  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
+  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
+  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
+  
+  dump(df);
+  
+  df.locate(2); df.image:=notext;
+  df.setpos(1); df.outint(1234,6); df.outint(78,4);
+  df.outimage;
+  
+  dump(df);
+  
+  df.locate(2); df.inimage; df.setpos(1);
+  a:=df.inint; outtext("A ="); outint(a,10); outimage;
+  b:=df.inint; outtext("B ="); outint(b,10); outimage;
+  
+  df.close(); 
 END;

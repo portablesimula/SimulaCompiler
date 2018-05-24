@@ -18,7 +18,7 @@ outimage; outimage;
 
 INSPECT NEW DIRECTFILE("direct85") DO BEGIN
 
-   INTEGER  i, j;
+   INTEGER  i, j; REAL tmp;
 
    PROCEDURE check(txt,title,lngth); TEXT txt, title; INTEGER lngth;
    BEGIN
@@ -32,7 +32,7 @@ INSPECT NEW DIRECTFILE("direct85") DO BEGIN
          errorfound := TRUE;
       END;
       SYSOUT.IMAGE := NOTEXT; SYSOUT.IMAGE.SETPOS(1);
-      IMAGE := NOTEXT;               IMAGE.SETPOS(1);
+             IMAGE := NOTEXT;        IMAGE.SETPOS(1);
    END of procedure check;
 
    SETACCESS("CREATE");
@@ -68,7 +68,6 @@ INSPECT NEW DIRECTFILE("direct85") DO BEGIN
    check("  2  4  5  1  3  3","LOCATE, LOCATION and ININT",18);
 
                                        ! SCAN FILE SEQUENTIALLY     ;
-
    LOCATE(1);
    SETPOS(13);
    i := 1;
@@ -147,11 +146,12 @@ INSPECT NEW DIRECTFILE("direct85") DO BEGIN
 
    LOCATE(1);
    IMAGE.SETPOS(1);
-   WHILE LOCATION <= 5 DO OUTREAL(LOCATION, 1, 6);
+%   WHILE LOCATION <= 5 DO OUTREAL(LOCATION, 1, 7);
+   WHILE LOCATION <= 5 DO BEGIN tmp:=LOCATION; OUTREAL(tmp, 1, 6); END;
 
    LOCATE(1);
    INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
+   SYSOUT.OUTTEXT(INTEXT(70));
 
    check(" 1&+00 1&+00 1&+00 2&+00 2&+00 3&+00 3&+00 4&+00 4&+00 5&+00",
          "OUTREAL",60);

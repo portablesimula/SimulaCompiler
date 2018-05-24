@@ -142,11 +142,12 @@ public class TXT$ {
 
 	public void setpos(int i) { setpos(this,i); }
 	public static void setpos(TXT$ T,int i) {
-		T.POS = (i < 1 || i > T.LENGTH + 1) ? T.LENGTH : (i - 1);
+		if (T!=null) T.POS = (i < 1 || i > T.LENGTH + 1) ? T.LENGTH : (i - 1);
 	}
 
 	public boolean more() { return(more(this)); }
 	public static boolean more(TXT$ T) {
+		if (T==null) return(false);
 		return (T.POS < T.LENGTH);
 	}
 
@@ -388,9 +389,8 @@ public class TXT$ {
 	private static String getFracItem(TXT$ T) {
 		StringBuilder sb = new StringBuilder();
 		//Util.BREAK("TEXT$.getFracItem: " + T);
-		char c=0; int limit=T.LENGTH-T.START;
-		T.POS=0; // TEST !!!
-		while (T.POS < limit) { // SKIP BLANKS
+		char c=0; T.POS=0;
+		while (T.POS < T.LENGTH) { // SKIP BLANKS
 			c = T.OBJ.MAIN[T.START + T.POS];
 			//Util.BREAK("TEXT$.getFracItem1: POS=" + T.POS + " Skip? c=" + c);
 			if (c != ' ') break;
@@ -398,23 +398,25 @@ public class TXT$ {
 		}
 		if(c=='+' || c=='-')
 		{ sb.append(c); T.POS++;
-		  while (T.POS < limit) { // SKIP BLANKS
+		  while (T.POS < T.LENGTH) { // SKIP BLANKS
 			  c = T.OBJ.MAIN[T.START + T.POS];
 			  //Util.BREAK("TEXT$.getFracItem2: POS=" + T.POS + " Skip? c=" + c);
 			  if (c != ' ') break;
 			  T.POS++;
 		  }
 		}
-		while (T.POS < limit) { // KEEP DIGITS
-			int lastDigPos=T.POS;
+		int lastDigPos=T.POS;
+		while (T.POS < T.LENGTH) { // KEEP DIGITS
 			c = T.OBJ.MAIN[T.START + T.POS];
 			if(Character.isDigit(c)) { sb.append(c); lastDigPos=T.POS; } //OK
-			else if(c=='.'); // OK  NOTE: DETTE VAR FEIL I PC-SIMULA
+			else if(c=='.'); // OK  NOTE: THIS WAS WRONG IN PC-SIMULA
 			else if(c==' '); // OK
-			else { T.POS=lastDigPos; break; }
+			else break;
 			//Util.BREAK("TEXT$.getFracItem3: POS=" + T.POS + " Add c=" + c);
 			T.POS++;
 		}
+		T.POS=lastDigPos+1;
+		//Util.BREAK("TEXT$.getFracItem: Result: POS="+T.POS+", Item=]"+sb.toString()+'[');
 		return (sb.toString());
 	}
 
@@ -515,7 +517,8 @@ public class TXT$ {
 		
 //		StringBuilder pattern=new StringBuilder("#.");
 //		while((n--)>1) pattern.append('#');
-		StringBuilder pattern=new StringBuilder("0.");
+		StringBuilder pattern=new StringBuilder("0");
+		if(n>1) pattern.append('.');
 		while((n--)>1) pattern.append('0');
 //		pattern.append("E00");
 		pattern.append("E000");
@@ -544,7 +547,9 @@ public class TXT$ {
 		
 //		StringBuilder pattern=new StringBuilder("#.");
 //		while((n--)>1) pattern.append('#');
-		StringBuilder pattern=new StringBuilder("0.");
+//		StringBuilder pattern=new StringBuilder("0.");
+		StringBuilder pattern=new StringBuilder("0");
+		if(n>1) pattern.append('.');
 		while((n--)>1) pattern.append('0');
 		pattern.append("E00");
 //		Util.BREAK("TXTREF.putreal: pattern="+pattern);

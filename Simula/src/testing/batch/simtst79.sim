@@ -57,7 +57,7 @@ BEGIN
    Test(xf.Isopen, false, 1);
 
    xf qua Infile.open(blanks(10));
-   Test(xf.Isopen, false, 2);
+   Test(xf.Isopen, true, 2);
 
    xf:- New Infile("sxcvzg");             !***** NOTE 1, NOTE 3 *****;
    Test(xf.Isopen, false, 3);

@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import simula.compiler.utilities.Util;
+
 /**
  * The class "inbytefile"
  * 
@@ -81,11 +83,14 @@ public class InbyteFile$ extends ByteFile$ {
 		try {
 			inputStream = new FileInputStream(FILENAME$.edText());
 		} catch (FileNotFoundException e) {
+			OPEN$=false;
+			//Util.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 			return (false);
 		}
 		OPEN$ = true;
 		BYTESIZE$ = (short) 8;
 		ENDFILE$ = false;
+		//Util.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 		return (true);
 	}
 
