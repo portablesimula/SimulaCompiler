@@ -1,43 +1,17 @@
 BEGIN
-  ref(Directfile) df;
-  integer a,b;
-  
-  Procedure dump(df); ref(Directfile) df;
-  begin
-     integer n,i;
-     n:=df.lastloc();
-     outtext("DUMP: LastLOC="); outint(n,0); outimage;
-     outtext("    [------------]"); outimage;
-     for i:=1 step 1 until n do
-     begin
-        df.locate(i); df.inimage; outint(i,4); outchar('['); outtext(df.image); outchar(']'); outimage;
-     end;
-     outtext("    [============]"); outimage;
-  end;
-  
-  df:-NEW Directfile("adHocDirect85");
-  df.open(blanks(12));
-  df.locate(3); df.outtext("CCCCCCCCCCCC"); df.outimage;
-  df.locate(1); df.outtext("AAAAAAAAAAAA"); df.outimage;
-  df.locate(2); df.outtext("BBBBBBBBBBBB"); df.outimage;
-  
-  df.locate(1);
-  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
-  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
-  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
-  df.inimage; outchar('['); outtext(df.image); outchar(']'); outimage;
-  
-  dump(df);
-  
-  df.locate(2); df.image:=notext;
-  df.setpos(1); df.outint(1234,6); df.outint(78,4);
-  df.outimage;
-  
-  dump(df);
-  
-  df.locate(2); df.inimage; df.setpos(1);
-  a:=df.inint; outtext("A ="); outint(a,10); outimage;
-  b:=df.inint; outtext("B ="); outint(b,10); outimage;
-  
-  df.close(); 
-END;
+
+   real r;
+   long real q;
+   
+   r:= -3.14 / 1000000
+   q:= -3.14 / 1000000
+   
+   outchar(']'); outreal(r,3,-20); outchar('['); outimage;
+   outchar(']'); outreal(r,3,20); outchar('['); outimage;
+   outchar(']'); outreal(r,3,0); outchar('['); outimage;
+   
+   outchar(']'); outreal(q,3,-20); outchar('['); outimage;
+   outchar(']'); outreal(q,3,20); outchar('['); outimage;
+   outchar(']'); outreal(q,3,0); outchar('['); outimage;
+
+END of program;

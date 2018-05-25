@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import simula.compiler.utilities.Util;
-
 /**
  * The Class Infile.
  * <p>
@@ -53,7 +51,6 @@ import simula.compiler.utilities.Util;
  *
  */
 public class InFile$ extends ImageFile$ {
-	boolean ENDFILE$ = true;
 	BufferedReader lineReader;
 
 	// Constructor
@@ -96,8 +93,7 @@ public class InFile$ extends ImageFile$ {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(TXT$ IMAGE_) {
-		if (OPEN$)
-			return (false);
+		if (OPEN$)	return (false);
 //		OPEN$ = true;
 		image = IMAGE_;
 		ENDFILE$ = false;
@@ -149,8 +145,7 @@ public class InFile$ extends ImageFile$ {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean close() {
-		if (!OPEN$)
-			return (false);
+		if (!OPEN$)	return (false);
 		try {
 			if (lineReader != null)
 				lineReader.close();
@@ -282,181 +277,4 @@ public class InFile$ extends ImageFile$ {
 		return (rest != null);
 	}
 
-	/**
-	 * Inchar.
-	 * <p>
-	 * 
-	 * <pre>
-	 * character procedure inchar;
-	 * begin
-	 *    if not more then inimage;
-	 *    inchar:= image.getchar
-	 * end inchar;
-	 * </pre>
-	 * <p>
-	 * The procedure "inchar" gives access to and scans past the next character.
-	 * Note: The result may be the "EOF-character" EM (ISOrank 25).
-	 * 
-	 * @return
-	 */
-	public char inchar() {
-		if (!more()) {
-			inimage();
-		}
-		return (image.getchar());
-	}
-
-	/**
-	 * Intext.
-	 * <p>
-	 * 
-	 * <pre>
-	 * text procedure intext(w); integer w;
-	 *            begin text t;
-	 *               intext :- t :- blanks(w);
-	 *               while t.more do t.putchar(inchar)
-	 *            end intext;
-	 * </pre>
-	 * <p>
-	 * The expression "intext(w)" where "w" is a positive integer is a reference
-	 * to a new alterable main frame of length w containing a copy of the next w
-	 * characters of the file. POS is set to the following character. The
-	 * expression "intext(0)" references notext. In contrast to the
-	 * item-oriented procedures (see below), "intext" operates on a continuous
-	 * stream of characters, reading several images if necessary.
-	 * <p>
-	 * Note: The result may be a reference to an "EOF-image" (cf.
-	 * inimage/inrecord).
-	 * 
-	 * @param w
-	 * @return
-	 */
-	public TXT$ intext(int w) {
-		TXT$ T = blanks(w);
-		while (T.more())
-			T.putchar(inchar());
-		return (T);
-	}
-
-	/**
-	 * Lastintem.
-	 * <p>
-	 * 
-	 * <pre>
-	 *  Boolean procedure lastitem;
-	 *  begin character c;
-	 *     c := ' ';
-	 *     while not ENDFILE and then (c=' ' or else c='!9!')
-	 *     do c := inchar;
-	 *     lastitem := ENDFILE;
-	 *     if c <> ' ' then setpos(pos-1)
-	 * end lastitem;
-	 * </pre>
-	 * <p>
-	 * The purpose of the procedure "lastitem" is to skip past all SP and HT
-	 * characters (ISOrank 32 and 9 respectively). The process of scanning may
-	 * involve the transfer of several successive external images. If the file
-	 * contains no further non-space, non-tab characters the value true is
-	 * returned.
-	 * 
-	 * @return
-	 */
-	public boolean lastitem() {
-		char c = ' ';
-		while (!ENDFILE$ && (c == ' ' || c == '\t'))
-			c = inchar();
-		if (c != ' ')
-			setpos(pos() - 1);
-		return (ENDFILE$);
-	}
-
-	/**
-	 * Inint.
-	 * <p>
-	 * 
-	 * <pre>
-	 * integer procedure inint;
-	 * if lastitem then error("..." ! Inint: End of file ;)
-	 * else begin text t;
-	 *         t:- image.sub(pos,length-pos+1);
-	 *         inint := t.getint;
-	 *         setpos(pos+t.pos-1)
-	 * end inint;
-	 * </pre>
-	 * <p>
-	 * The procedures "inint" is defined in terms of the corresponding
-	 * de-editing procedure of "image". This procedure, starting at the current
-	 * "pos", skip spaces and tab's, and then scan past and convert a numeric
-	 * item.
-	 * 
-	 * @return the value of an integer item.
-	 */
-	public int inint() {
-		if (lastitem())
-			throw new RuntimeException("Attempt to read past EOF");
-		TXT$ T = image.sub(pos(), length() - pos() + 1);
-		int result = T.getint();
-		setpos(pos() + T.pos() - 1);
-		return (result);
-	}
-
-	/**
-	 * Inreal.
-	 * <p>
-	 * 
-	 * <pre>
-	 * long real procedure inreal;
-	 * if lastitem then error("..." ! Inreal: End of file; )
-	 * else begin text t;
-	 *    t :- image.sub(pos,length-pos+1);
-	 *    inreal := t.getreal;
-	 *    setpos(pos+t.pos-1)
-	 * end inreal;
-	 * </pre>
-	 * <p>
-	 * The procedure "inreal" is defined in terms of the corresponding
-	 * de-editing procedure of "image". This procedure, starting at the current
-	 * "pos", skip spaces and tab's, and then scan past and convert a numeric
-	 * item.
-	 * 
-	 * @return
-	 */
-	public float inreal() {
-		if (lastitem())
-			throw new RuntimeException("Attempt to read past EOF");
-		TXT$ T = image.sub(pos(), length() - pos() + 1);
-		float result = ((float) (T.getreal()));
-		setpos(pos() + T.pos() - 1);
-		return (result);
-	}
-
-	/**
-	 * <p>
-	 * 
-	 * <pre>
-	 * integer procedure infrac;
-	 * if lastitem then error("..." ! Infrac: End of file; )
-	 * else begin text t;
-	 *    t :- image.sub(pos,length-pos+1);
-	 *    infrac := t.getfrac;
-	 *    setpos(pos+t.pos-1)
-	 * end infrac;
-	 * </pre>
-	 * <p>
-	 * The procedure "infrac" is defined in terms of the corresponding
-	 * de-editing procedure of "image". This procedure, starting at the current
-	 * "pos", skip spaces and tab's, and then scan past and convert a numeric
-	 * item.
-	 * 
-	 * 
-	 * @return
-	 */
-	public int infrac() {
-		if (lastitem())
-			throw new RuntimeException("Attempt to read past EOF");
-		TXT$ T = image.sub(pos(), length() - pos() + 1);
-		int result = T.getfrac();
-		setpos(pos() + T.pos() - 1);
-		return (result);
-	}
 }

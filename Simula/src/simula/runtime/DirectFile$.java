@@ -12,17 +12,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 
-import simula.compiler.utilities.Util;
-
-// *********************************************************************
-// TODO: MÅ SKRIVES OM !
-//
-// Vi antar:
-//    1) Filen har 'external images' of fixed size uten separating characters.
-//    2) Character encoding har en-til-en mapping med 8-bit bytes.
-//    3) Unwritten 'external images' consists of all zero bytes
-// *********************************************************************
-
 /**
  * The class "directfile"
  * <p>
@@ -76,14 +65,6 @@ import simula.compiler.utilities.Util;
  *
  */
 public class DirectFile$ extends ImageFile$ {
-
-	/**
-	 * The variable ENDFILE is true when the file is closed or when an image with
-	 * location greater than "lastloc" has been input (through "inimage"). It is set
-	 * after each "inimage" statement. The procedure "endfile" returns the current
-	 * value.
-	 */
-	boolean ENDFILE$;  
 
 	/**
 	 * The variable LOC contains the current ordinal number. When the file is
@@ -143,17 +124,10 @@ public class DirectFile$ extends ImageFile$ {
 	 * with location greater than "lastloc" has been input (through "inimage").
 	 * It is set after each "inimage" statement. The procedure "endfile" returns
 	 * the current value.
-	 * <p>
-	 * In this implementation LOC is maintained by the underlying file system.
 	 * 
 	 * @return
 	 */
 	public boolean endfile() {
-		//Util.BREAK("Directfile: endfile() OPEN$="+OPEN$+", location="+location()+", lastloc="+lastloc());
-//		boolean result=(!OPEN$ || location() > lastloc());
-//		boolean result=(!OPEN$ || LOCATION$ > LASTLOC$);
-		//Util.BREAK("Directfile: endfile() result="+result);
-//		return (result);
 		return(ENDFILE$);
 	}
 
@@ -182,15 +156,13 @@ public class DirectFile$ extends ImageFile$ {
 	 * @return
 	 */
 	public boolean open(TXT$ IMAGE$) {
-		if (OPEN$)
-			return (false);
+		if (OPEN$) return (false);
 		LOC$ = 1;
 		MAXLOC$ = maxint - 1;
 		image = IMAGE$;
 		OPEN$ = true;
 		RECORDSIZE$ = image.length();
 		setpos(1);
-		////Util.BREAK("DirectByteFile.open: Filename=" + FILENAME$);
 		try {
 			String mode = "rws"; // mode is one of "r", "rw", "rws", or "rwd"
 			randomAccessFile = new RandomAccessFile(FILENAME$.edText(), mode);
@@ -218,11 +190,9 @@ public class DirectFile$ extends ImageFile$ {
 	 * @return
 	 */
 	public boolean close() {
-		if (!OPEN$)
-			return (false);
+		if (!OPEN$)	return (false);
 		image = null;
-		if (LOCKED$)
-			unlock();
+		if (LOCKED$) unlock();
 		LOC$ = 0;
 		MAXLOC$ = 0;
 		try {
@@ -232,8 +202,7 @@ public class DirectFile$ extends ImageFile$ {
 			return (false);
 		}
 		OPEN$ = false;
-		// ENDFILE$=true; // ENDFILE is maintained by the underlying file
-		// system.
+		ENDFILE$=true;
 		return (true);
 	}
 
@@ -266,7 +235,6 @@ public class DirectFile$ extends ImageFile$ {
 	 * @param p
 	 */
 	public void locate(int p) {
-		//Util.BREAK("Directfile: locate("+p+") OPEN$="+OPEN$+", location="+location()+", lastloc="+lastloc());
 		if (p < 1 | p > MAXLOC$)
 			throw new RuntimeException("Locate: Parameter out of range");
 		else
@@ -276,7 +244,6 @@ public class DirectFile$ extends ImageFile$ {
 				throw new RuntimeException("Locate failed", e);
 			}
 		LOC$ = p;
-		//Util.BREAK("END:Directfile: locate("+p+") OPEN$="+OPEN$+", location="+location()+", lastloc="+lastloc());
 	}
 
 	/**
@@ -316,8 +283,7 @@ public class DirectFile$ extends ImageFile$ {
 	 * @return
 	 */
 	public int maxloc() {
-		if (!OPEN$)
-			throw new RuntimeException("file closed");
+		if (!OPEN$)	throw new RuntimeException("file closed");
 		return (MAXLOC$);
 	}
 
@@ -355,7 +321,6 @@ public class DirectFile$ extends ImageFile$ {
 	 * 
 	 */
 	public void inimage() {
-		//Util.BREAK("Directfile: inimage() OPEN$="+OPEN$+", location="+location()+", lastloc="+lastloc());
 		char fill = ' '; // Fill character
 		if (!OPEN$)	throw new RuntimeException("File not opened");
 		if (image.length() != RECORDSIZE$)
@@ -364,7 +329,6 @@ public class DirectFile$ extends ImageFile$ {
 		setpos(1); // For Filling
 		int nextSetpos=1;
 		
-//		if (endfile()) image.putchar((char) 25);
 		if (LOC$ > lastloc()) image.putchar((char) 25);
 		// else if(external image does not exists)
 		// fill=(char)0;
@@ -386,9 +350,6 @@ public class DirectFile$ extends ImageFile$ {
 		ENDFILE$= LOC$ > lastloc();
 		locate(LOC$ + 1);
 		while (more())	image.putchar(fill);
-		//Util.BREAK("END:Directfile: inimage() OPEN$="+OPEN$+", location="+location()+", lastloc="+lastloc());
-		//Util.BREAK("END:Directfile: inimage() location="+LOC$+", image="+image);
-		
 		setpos(nextSetpos);
 	}
 
@@ -467,27 +428,6 @@ public class DirectFile$ extends ImageFile$ {
 		locate(LOC$ + 1);
 		return (true);
 
-	}
-
-	/**
-	 * <pre>
-	 * character procedure inchar;
-	 *            begin
-	 *               while not more do inimage;
-	 *               inchar:= image.getchar
-	 *            end inchar;
-	 * </pre>
-	 * 
-	 * Note: Inchar skips all unwritten images.
-	 * 
-	 * @return
-	 */
-	public char inchar() {
-		//Util.BREAK("INCHAR-1:");
-		while (!more())
-			inimage();
-		//Util.BREAK("INCHAR-2:");
-		return (image.getchar());
 	}
 
 	/**
@@ -622,169 +562,6 @@ public class DirectFile$ extends ImageFile$ {
 			}
 		LOCKED$ = false;
 		return (result);
-	}
-
-	/**
-	 * <pre>
-	 * Boolean procedure lastitem;
-	 *      begin character c;
-	 *         c := ' ';
-	 *         while not ENDFILE and then (c=' ' or else c='!9!')
-	 *         do c := inchar;
-	 *         lastitem := ENDFILE;
-	 *         if c <> ' ' then setpos(pos-1)
-	 *      end lastitem;
-	 * </pre>
-	 * 
-	 * The purpose of the procedure "lastitem" is to skip past all SP and HT
-	 * characters (ISOrank 32 and 9 respectively). The process of scanning may
-	 * involve the transfer of several successive external images. If the file
-	 * contains no further non-space, non-tab characters the value true is returned.
-	 * 
-	 * @return
-	 */
-//	public boolean lastitem1() {
-//		Util.BREAK("Directfile: lastitem()");
-//		char c;
-//		c = ' ';
-//		// ENDFILE is maintained by the underlying file system.
-//		while ((!endfile())) {
-//			c = inchar();
-//			Util.BREAK("LASTITEM: NOT Endfile, c="+c);
-//		}
-//		if (c != ' ') {
-//			setpos(pos() - 1);
-//		}
-//		// ENDFILE is maintained by the underlying file system.
-//		boolean result=endfile();
-//		Util.BREAK("Directfile: lastitem() result="+result);
-//		return(result);
-//	}
-	public boolean lastitem() {
-		char c = ' ';
-		//Util.BREAK("LASTITEM:");
-		while (!endfile() && (c == ' ' || c == '\t'))
-		{
-			c = inchar();
-			//Util.BREAK("LASTITEM: NOT Endfile, c="+c);
-		}
-		//Util.BREAK("LASTITEM: AFTER WHILE, c="+c);
-		if (c != ' ') setpos(pos() - 1);
-		return (endfile());
-	}
-
-	
-	public int inint() {
-		//Util.BREAK("Directfile: inint: location="+LOC$+", pos="+pos()+", length="+length()+", image="+image.edText());
-		TXT$ T;
-		if (lastitem())
-			throw new RuntimeException("Attempt to read past EOF");
-		T = image.sub(pos(), length() - pos() + 1);
-		//Util.BREAK("ININT: pos="+pos()+", length="+length()+", T="+T.edText());
-		//Util.BREAK("ININT: T="+T);
-		int result = (T.getint());
-		//Util.BREAK("ININT: T.pos="+T.pos()+", T.length="+T.length()+", T="+T.edText());
-		setpos(pos() + T.pos() - 1);
-		//Util.BREAK("ININT: pos="+pos()+", length="+length()+", T="+T.edText());
-		//Util.BREAK("Directfile: inint() result="+result);
-		return (result);
-	}
-
-	public double inreal() {
-		TXT$ T;
-		if (lastitem())
-			throw new RuntimeException("Attempt to read past EOF");
-		T = image.sub(pos(), length() - pos() + 1);
-		double result = T.getreal();
-		setpos(pos() + T.pos() - 1);
-		return (result);
-	}
-
-	public int infrac() {
-		TXT$ T;
-		if (lastitem())
-			throw new RuntimeException("Attempt to read past EOF");
-		T = image.sub(pos(), length() - pos() + 1);
-		//Util.BREAK("INFRAC: pos="+pos()+", length="+length()+", T="+T.edText());
-		int result = T.getfrac();
-		setpos(pos() + T.pos() - 1);
-		return (result);
-	}
-
-	public TXT$ intext(int w) {
-		TXT$ t;
-		t = blanks(w);
-		while (t.more()) {
-			t.putchar(inchar());
-		}
-		return (t);
-	}
-
-	public void outchar(char c) {
-		if ((!more())) {
-			outimage();
-		}
-		image.putchar(c);
-	}
-
-	public TXT$ FIELD_(int w) {
-		if (w <= 0 | w > length()) {
-			throw new RuntimeException(
-					"Illegal field width in output operation");
-		}
-		if (pos() + w - 1 > length()) {
-			outimage();
-		}
-		TXT$ result = image.sub(pos(), w);
-		setpos(pos() + w);
-		return (result);
-	}
-
-	public void outint(int i, int w) {
-		//Util.BREAK("Directfile: outint("+i+','+w+")");
-		FIELD_(w).putint(i);
-	}
-
-	public void outfix(double r, int n, int w) {
-		FIELD_(w).putfix(r, n);
-	}
-
-	public void outfix(float r, int n, int w) {
-		FIELD_(w).putfix(r, n);
-	}
-
-	public void outreal(double r, int n, int w) {
-		FIELD_(w).putreal(r, n);
-	}
-
-	public void outreal(float r, int n, int w) {
-		FIELD_(w).putreal(r, n);
-	}
-
-	public void outfrac(int i, int n, int w) {
-		FIELD_(w).putfrac(i, n);
-	}
-
-	/**
-	 * <pre>
-	 * procedure outtext(t); text t;
-	 * begin
-	 *    if pos>1 and then t.length>length-pos+1 then outimage;
-	 *    t.setpos(1);
-	 *    while t.more do outchar(t.getchar);
-	 * end outtext;
-	 * </pre>
-	 * 
-	 * @param T
-	 */
-	public void outtext(TXT$ t) {
-		//Util.BREAK("Outtext: image="+image);
-		if ((pos() > 1) && (t.length() > length() - pos() + 1))
-			outimage();
-		t.setpos(1);
-		while (t.more())
-			outchar(t.getchar());
-		//Util.BREAK("END:Outtext: image="+image);
 	}
 
 }

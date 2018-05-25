@@ -66,7 +66,7 @@ public class RunFullTestBatch {
 		names.add("simtst33.sim"); // OK:  Test call by reference
 		names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		names.add("simtst35.sim"); // OK:  Type procedures as parameters.
-		//names.add("simtst36.sim"); // err: Jensens Device - call by name. TRENGER FIN-TESTING
+		names.add("simtst36.sim"); // OK:  Jensens Device - call by name. TRENGER FIN-TESTING
 		names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 		//names.add("simtst39.sim"); // err: Check that a formal parameter is global to the procedure body.
@@ -124,7 +124,7 @@ public class RunFullTestBatch {
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example. TRENGER FINTEST 
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.
-		//names.add("simtst89.sim"); // ERR: Test inbytefile and outbytefile.
+		names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
 		names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.

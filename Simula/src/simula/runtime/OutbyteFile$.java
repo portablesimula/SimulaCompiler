@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import simula.compiler.utilities.Util;
+
 
 /**
  * The class "outbytefile".
@@ -67,7 +69,10 @@ public class OutbyteFile$ extends ByteFile$ {
 	public void outbyte(int b) {
 		if (!OPEN$)
 			throw new RuntimeException("file closed");
-		if (b < 0 || b >= (2 ^ BYTESIZE$))
+//		Util.BREAK("OutbyteFile.outByte: b="+b);
+//		Util.BREAK("OutbyteFile.outByte: BYTESIZE$="+BYTESIZE$);
+//		Util.BREAK("OutbyteFile.outByte: 2 ** BYTESIZE$="+Math.pow(2,BYTESIZE$));
+		if (b < 0 || b >= (Math.pow(2,BYTESIZE$)))
 			throw new RuntimeException("Illegal byte value");
 		try {
 			outputStream.write(b);

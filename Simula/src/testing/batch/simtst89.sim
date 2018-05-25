@@ -12,30 +12,29 @@
 % ==============================================================================
 begin text src,dst; integer b,bb; boolean errorFound;
       ref(inbytefile) inpt,inoupt; ref(outbytefile) oupt;
+      Text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/inputByteFile";
+      Text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/outputByteFile";
+      
 
       outtext("--- START Simula a.s. TEST 89"); outimage;
-      while inpt == none do
-      begin outtext("Input file: "); breakoutimage;
-         inimage; src:-copy(sysin.image.strip);
-         outtext("Trying: " & src);
-         inpt:-new inbytefile(src); if not inpt.open then
-         begin outtext("Can't open " & src); outimage; inpt:-none; end;
-      end;   
-
-L2:   outtext("Output file: "); breakoutimage;
-      inimage; dst:-copy(sysin.image.strip);
-      oupt:-new outbytefile(dst); if not oupt.open then
-      begin outtext("Can't open " & dst); outimage; goto L2 end;
+      inpt:-new inbytefile(inptFileName);
+      if not inpt.open then error("Can't open " & inptFileName);
+      oupt:-new outbytefile(ouptFileName);
+      if not oupt.open then error("Can't open " & ouptFileName);
 
       inpt.close; inpt.open;
 %     for b:=inpt.inbyte while b <> 26 do oupt.outbyte(b);
 
       b:=inpt.inbyte;
-      while not inpt.endfile do begin
-            oupt.outbyte(b); b:=inpt.inbyte; end;
+      while not inpt.endfile do
+      begin
+         oupt.outbyte(b); b:=inpt.inbyte;
+      end;
       inpt.close; oupt.close;
+      
       inoupt:-new inbytefile(oupt.filename); oupt:-none;
-      inpt.open; inoupt.open;
+      if not inpt.open then error("Can't re-open " & inpt.FileName);
+      if not inoupt.open then error("Can't re-open " & inoupt.FileName);
       b:=inpt.inbyte; bb:=inoupt.inbyte;
       while not inpt.endfile do begin
             if not b=bb then begin errorFound:=true;
