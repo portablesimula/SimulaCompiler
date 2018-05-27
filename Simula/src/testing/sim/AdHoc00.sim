@@ -1,17 +1,53 @@
 BEGIN
+   Boolean found_error;
 
-   real r;
-   long real q;
-   
-   r:= -3.14 / 1000000
-   q:= -3.14 / 1000000
-   
-   outchar(']'); outreal(r,3,-20); outchar('['); outimage;
-   outchar(']'); outreal(r,3,20); outchar('['); outimage;
-   outchar(']'); outreal(r,3,0); outchar('['); outimage;
-   
-   outchar(']'); outreal(q,3,-20); outchar('['); outimage;
-   outchar(']'); outreal(q,3,20); outchar('['); outimage;
-   outchar(']'); outreal(q,3,0); outchar('['); outimage;
+   Procedure check(expectedVai,expextedVbi,msg); integer expectedVai,expextedVbi; text msg; 
+   begin
+      if xb.vai = expectedVai and xb.vbi = expextedVbi then
+      else
+      begin
+         Outtext("*** error in " & msg & ": Visibility of protected attribute."); Outimage;
+         Outtext("            Erroneus values : vai = "); Outint(xb.vai, 4); Outimage;
+         Outtext("                              vbi = "); Outint(xb.vbi, 4); Outimage;
+         found_error := true
+      end;
+   end;
 
-END of program;
+   Class A;
+   begin integer i;
+         integer procedure vai; vai := i;
+   end;
+
+   A Class B; Protected i;
+   begin integer i;
+         integer procedure vbi; vbi := i;
+         procedure p; xb.i := 17;
+   end;
+
+   ref(B) xb;
+
+   Outtext("--- START Simula a.s. TEST 60");
+   Outimage;
+   Outtext("--- Test visibility of protected attributes.");
+   Outimage; Outimage;
+
+   xb :- new B;
+   xb.p;
+   check(17,0,"Test 1");
+   
+   xb.i := 5;
+   check(5,0,"Test 2");
+   
+   inspect xb do i := 7;
+   check(7,0,"Test 3");
+
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext("--- NO ERRORS FOUND IN THIS TEST");
+      Outimage
+   END;
+
+   Outtext("--- END Simula a.s. TEST 60");
+   Outimage
+ END

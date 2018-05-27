@@ -745,6 +745,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
     System.out.println(indent+beg); 
+    if(!hiddenList.isEmpty()) System.out.println(indent+"   HIDDEN"+hiddenList);
+    if(!protectedList.isEmpty()) System.out.println(indent+"   PROTECTED"+protectedList);
     for(Declaration decl:declarationList) decl.print(indent+"   ",";");
     for(Statement stm:statements) stm.print(indent+"   ",";");
 	System.out.println(indent+"end["+edScopeChain()+']'+tail); 

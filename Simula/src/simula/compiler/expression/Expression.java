@@ -82,7 +82,8 @@ public abstract class Expression extends SyntaxClass
 
   private static Expression parseUnaryOperation()
   { // Parser.TRACE("Expression: parseUnaryOperation");
-    Expression expr=new UnaryOperation(Parser.prevToken.getKeyWord(),parsePrimaryExpression());
+//  Expression expr=new UnaryOperation(Parser.prevToken.getKeyWord(),parsePrimaryExpression());
+    Expression expr=new UnaryOperation(Parser.prevToken.getKeyWord(),parseBinaryOperation(4));  // 5,6
     return(expr);
   }
   

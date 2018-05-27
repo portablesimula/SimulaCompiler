@@ -198,7 +198,16 @@ public class Variable extends Expression {
 	  
 	  if(meaning.variableKind==VariableKind.connectedAttribute)
 	  { Expression inspectedVariable=((ConnectionBlock)meaning.declaredIn).getInspectedVariable();
-	    id=inspectedVariable.toJavaCode()+"."+id;
+	  
+	    //id=inspectedVariable.toJavaCode()+"."+id;
+	    Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
+
+	    if(meaning.foundBehindProtected)
+	    { String remoteCast=meaning.foundIn.getJavaIdentifier();
+		  id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
+	    } else id=inspectedVariable.toJavaCode()+"."+id;
+
+	    
 	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockKind.Method)) {
 	    String cast=meaning.declaredIn.getJavaIdentifier();
 		if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !

@@ -38,6 +38,7 @@ public class BinaryOperation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public Expression rhs;
+  private  Meaning remoteAttribute; // Set by doChecking
   private boolean textValueAssignment=false; // Set by doChecking
   private BlockDeclaration callRemoteProcedure=null; 
   private boolean accessRemoteArray=false; // Set by doChecking
@@ -228,13 +229,14 @@ public class BinaryOperation extends Expression
 	  String ident=var.identifier;
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(5a) findAttribute("+ident+")  Search in "+decl);
 	  
-	  Meaning remote=objType.getQual().findMeaning(ident);	  	  
+//	  Meaning remoteAttribute=objType.getQual().findMeaning(ident);	  	  
+	  remoteAttribute=objType.getQual().findRemoteAttributeMeaning(ident);	  
 	  
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(5) findAttribute("+ident+")  ==> "+remote);
-	  if(remote==null) Util.error("BinaryOperation.doRemoteTextChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
-	  var.setRemotelyAccessed(remote);
-	  if(remote.declaredAs instanceof Parameter)
-	  { Parameter par=(Parameter)remote.declaredAs;
+	  if(remoteAttribute==null) Util.error("BinaryOperation.doRemoteTextChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
+	  var.setRemotelyAccessed(remoteAttribute);
+	  if(remoteAttribute.declaredAs instanceof Parameter)
+	  { Parameter par=(Parameter)remoteAttribute.declaredAs;
 //	    Util.BREAK("BinaryOperation.doRemoteChecking: DOT par="+par);
 //	    Util.BREAK("BinaryOperation.doRemoteChecking: DOT par'kind="+par.kind);
 		  if(par.kind==ParameterKind.Array) accessRemoteArray=true;
@@ -242,15 +244,15 @@ public class BinaryOperation extends Expression
 	  //Util.EXIT();
 	  
 	  
-	  if(remote.declaredAs instanceof ArrayDeclaration) // Array // TODO: NEW ARRAY CODE
+	  if(remoteAttribute.declaredAs instanceof ArrayDeclaration) // Array // TODO: NEW ARRAY CODE
 	  { if(var instanceof SubscriptedVariable) accessRemoteArray=true;
 		  
 	  }
-	  else if(remote.declaredAs instanceof BlockDeclaration) // Procedure (or Class ?)
+	  else if(remoteAttribute.declaredAs instanceof BlockDeclaration) // Procedure (or Class ?)
 	  { //Util.BREAK("BinaryOperation.doRemoteChecking: Call Remote Procedure "+remote+", qual="+remote.getClass().getSimpleName());
-		callRemoteProcedure=(BlockDeclaration)remote.declaredAs; 
+		callRemoteProcedure=(BlockDeclaration)remoteAttribute.declaredAs; 
 	  }
-	  result=remote.declaredAs.type;
+	  result=remoteAttribute.declaredAs.type;
 	  //Util.BREAK("BinaryOperation.doRemoteChecking("+toString()+").doChecking(6) - attr="+attr+", attr.Type="+result);
 	}
 	else 
@@ -344,7 +346,16 @@ public class BinaryOperation extends Expression
 		  return(CallProcedure.remote(lhs,callRemoteProcedure,(Variable)rhs,backLink));
 	    }
 	    else if(accessRemoteArray) return(doAccessRemoteArray(lhs,(SubscriptedVariable)rhs));
-	    String result=lhs.get()+opr.toJavaCode()+rhs.get();
+	  
+	    Util.BREAK("BinaryOperation.toJavaCode: DOT - remoteAttribute="+remoteAttribute);
+//	    String result=lhs.get()+opr.toJavaCode()+rhs.get();
+	    String result;
+	    if(remoteAttribute.foundBehindProtected)
+//	    { String remoteCast=remoteAttribute.declaredIn.getJavaIdentifier();
+	    { String remoteCast=remoteAttribute.foundIn.getJavaIdentifier();
+		  result="(("+remoteCast+")("+lhs.get()+"))."+rhs.get();
+	    } else result=lhs.get()+opr.toJavaCode()+rhs.get();
+	  
 	    //Util.BREAK("BinaryOperation.toJavaCode: DOT result="+result);
 	    return(result);
 	  }

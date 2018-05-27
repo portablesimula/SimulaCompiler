@@ -89,9 +89,17 @@ public abstract class BlockParser extends SyntaxClass
     { // ProtectionPart = ProtectionParameter { ; ProtectionParameter }
       //	ProtectionParameter = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
       //							| PROTECTED IdentifierList | PROTECTED HIDDEN IdentifierList
-      if(Parser.accept(KeyWord.HIDDEN)||Parser.accept(KeyWord.PROTECTED))
-      { Util.NOT_IMPLEMENTED("Protection-part"); Util.EXIT();	}
-
+      while(true)
+      { if(Parser.accept(KeyWord.HIDDEN))
+        { if(Parser.accept(KeyWord.PROTECTED)) expectHiddenProtectedList(block,true,true);
+          expectHiddenProtectedList(block,true,false);
+        }
+        else if(Parser.accept(KeyWord.PROTECTED))
+        { if(Parser.accept(KeyWord.HIDDEN)) expectHiddenProtectedList(block,true,true);
+          expectHiddenProtectedList(block,false,true);
+        }
+        else break;
+      }
       // VirtualPart = VIRTUAL: virtual-specification-part
       //	VirtualParameterPart = VirtualParameter ; { VirtualParameter ; }
       //		VirtualParameter = VirtualSpecifier IdentifierList
@@ -174,6 +182,20 @@ public abstract class BlockParser extends SyntaxClass
     return(true);
   }
   
+  private static boolean expectHiddenProtectedList(BlockDeclaration block,boolean hidden,boolean prtected)
+  { Util.BREAK("BlockParser.expectHiddenProtectedList: Hidden="+hidden+", Protected="+prtected);
+    do
+    { String identifier=expectIdentifier();
+      if(hidden) block.hiddenList.add(identifier);
+      if(prtected) block.protectedList.add(identifier);
+    } while(Parser.accept(KeyWord.COMMA));  
+    Util.BREAK("BlockParser.expectHiddenProtectedList: HiddenList="+block.hiddenList);
+    Util.BREAK("BlockParser.expectHiddenProtectedList: ProtectedList="+block.protectedList);
+    Parser.expect(KeyWord.SEMICOLON); 
+	//Util.EXIT();
+    return(true);
+  }
+
   private static boolean acceptVirtualSpecifications(BlockDeclaration block)
   {	// VirtualParameter = VirtualSpecifier IdentifierList
 	// VirtualSpecifier = [ Type ] PROCEDURE | LABEL | SWITCH

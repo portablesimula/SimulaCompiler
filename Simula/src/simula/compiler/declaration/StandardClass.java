@@ -818,6 +818,20 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 //    if(result!=null) Util.TRACE("END StandardClass.findAttribute("+ident+"): result="+result.getEnclosureName()+'.'+result);   
     return(null);
   }
+  
+  public Meaning findRemoteAttributeMeaning(String ident)
+  {return(findRemoteAttributeMeaning(ident,false)); } 
+  public Meaning findRemoteAttributeMeaning(String ident,boolean behindProtected)
+  { //Util.BREAK("StandardClass("+this.identifier+").findAttribute("+ident+"): scope="+declaredIn+", chain="+edScopeChain());
+    for(Declaration declaration:declarationList)
+    	if(ident.equalsIgnoreCase(declaration.identifier))
+    	   	  return(new Meaning(VariableKind.standardAttribute,declaration,this));
+    BlockDeclaration prfx=getPrefix();
+    if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident,behindProtected));
+    
+//    if(result!=null) Util.TRACE("END StandardClass.findAttribute("+ident+"): result="+result.getEnclosureName()+'.'+result);   
+    return(null);
+  }
 
   private void addStandardClass(StandardClass standardClass)
   {	standardClass.declaredIn=this;

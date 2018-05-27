@@ -92,7 +92,7 @@ public class RunFullTestBatch {
 		names.add("simtst57.sim"); // OK: Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
 		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
-		//names.add("simtst60.sim"); // ERR: Visibility of protected attributes.
+		names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // ERR: Remote access to attributes which are protected.
 		names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.

@@ -27,6 +27,8 @@ public abstract class DeclarationScope extends Declaration {
   public Vector<Parameter> parameterList=new Vector<Parameter>();
   public Vector<Declaration> declarationList=new Vector<Declaration>();
   public Vector<Virtual> virtualList=new Vector<Virtual>();
+  public Vector<String> hiddenList=new Vector<String>();
+  public Vector<String> protectedList=new Vector<String>();
   public Vector<LabelDeclaration> labelList=new Vector<LabelDeclaration>();
 
   Virtual findVirtual(String ident) { return(null); }  // Needs redefinition
@@ -66,6 +68,67 @@ public abstract class DeclarationScope extends Declaration {
     BlockDeclaration prfx=getPrefix();
     if(prfx!=null)
     { Meaning meaning=prfx.findAttributeMeaning(ident);
+      if(meaning!=null) meaning.declaredIn=this;
+      return(meaning);
+    }
+    return(null);
+  }
+
+  // ***********************************************************************************************
+  // *** Utility: findVisibleAttributeMeaning
+  // ***********************************************************************************************
+  public Meaning findVisibleAttributeMeaning(String ident,boolean hiddenSeen)
+  { //Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+    for(String hdn:hiddenList) if(ident.equalsIgnoreCase(hdn)) { hiddenSeen=true; break; }
+    for(Parameter parameter:parameterList)
+        if(ident.equalsIgnoreCase(parameter.identifier))
+        { if(hiddenSeen) hiddenSeen=false;
+          else return(new Meaning(VariableKind.parameter,parameter,this));
+        }
+    for(Declaration declaration:declarationList)
+	    if(ident.equalsIgnoreCase(declaration.identifier)) return(new Meaning(VariableKind.attribute,declaration,this));
+    for(LabelDeclaration label:labelList)
+	    if(ident.equalsIgnoreCase(label.identifier)) return(new Meaning(VariableKind.label,label,this));
+    for(Virtual virtual:virtualList)
+	    if(ident.equalsIgnoreCase(virtual.identifier)) return(new Meaning(VariableKind.virtual,virtual,this)); 
+    BlockDeclaration prfx=getPrefix();
+    if(prfx!=null)
+    { Meaning meaning=prfx.findVisibleAttributeMeaning(ident,hiddenSeen);
+      if(meaning!=null) meaning.declaredIn=this;
+      return(meaning);
+    }
+    return(null);
+  }
+
+  // ***********************************************************************************************
+  // *** Utility: findRemoteAttributeMeaning
+  // ***********************************************************************************************
+  public Meaning findRemoteAttributeMeaning(String ident)
+  {return(findRemoteAttributeMeaning(ident,false)); } 
+  
+  public Meaning findRemoteAttributeMeaning(String ident,boolean behindProtected)
+  { Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+	boolean prtected=false;
+    for(String prct:protectedList)
+    	if(ident.equalsIgnoreCase(prct)) { behindProtected=prtected=true; break; }
+    if(!prtected)
+    { for(Parameter parameter:parameterList)
+        if(ident.equalsIgnoreCase(parameter.identifier))
+        	return(new Meaning(VariableKind.parameter,parameter,this,this,behindProtected));
+      for(Declaration declaration:declarationList)
+	    if(ident.equalsIgnoreCase(declaration.identifier))
+	    	return(new Meaning(VariableKind.attribute,declaration,this,this,behindProtected));
+      for(LabelDeclaration label:labelList)
+	    if(ident.equalsIgnoreCase(label.identifier))
+	    	return(new Meaning(VariableKind.label,label,this,this,behindProtected));
+      for(Virtual virtual:virtualList)
+	    if(ident.equalsIgnoreCase(virtual.identifier))
+	    	return(new Meaning(VariableKind.virtual,virtual,this,this,behindProtected)); 
+    }
+    Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+    BlockDeclaration prfx=getPrefix();
+    if(prfx!=null)
+    { Meaning meaning=prfx.findRemoteAttributeMeaning(ident,behindProtected);
       if(meaning!=null) meaning.declaredIn=this;
       return(meaning);
     }
