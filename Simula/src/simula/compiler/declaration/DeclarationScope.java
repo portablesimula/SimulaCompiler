@@ -81,10 +81,13 @@ public abstract class DeclarationScope extends Declaration {
   {return(findRemoteAttributeMeaning(ident,false)); } 
   
   public Meaning findRemoteAttributeMeaning(String ident,boolean behindProtected)
-  { Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+  { //Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
 	boolean prtected=false;
     for(String prct:protectedList)
-    	if(ident.equalsIgnoreCase(prct)) { behindProtected=prtected=true; break; }
+    	if(ident.equalsIgnoreCase(prct))
+   	    { if(!withinScope(this)) behindProtected=prtected=true;
+   	      break;
+    	}
     if(!prtected)
     { for(Parameter parameter:parameterList)
         if(ident.equalsIgnoreCase(parameter.identifier))
@@ -107,6 +110,20 @@ public abstract class DeclarationScope extends Declaration {
       return(meaning);
     }
     return(null);
+  }
+  
+  private static boolean withinScope(DeclarationScope otherScope)
+  { DeclarationScope scope=Global.currentScope;
+	while(scope!=null)
+	{ if(scope==otherScope) return(true);
+	  BlockDeclaration prfx=scope.getPrefix();
+	  while(prfx!=null)
+	  { if(prfx==otherScope) return(true);
+	    prfx=prfx.getPrefix();
+	  }
+	  scope=scope.declaredIn;
+	}
+	return(false);
   }
   
   // ***********************************************************************************************

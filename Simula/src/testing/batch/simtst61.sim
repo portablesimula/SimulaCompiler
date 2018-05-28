@@ -34,8 +34,8 @@ BEGIN
    Outimage ; Outimage ;
 
    x :- new B ;
-   x.p ;
-   x.i := 2 ;
+   x.p ;      ! i.e. B'i := 1 ;
+   x.i := 2 ; ! i.e. A'i := 2 ;
 
    if x.vai = 2 and x.vbi = 1 then
    else

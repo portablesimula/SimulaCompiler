@@ -41,13 +41,13 @@ BEGIN
 
    xb :- new B;
    xb.p;
-   check(17,0,"Test 1");
+   check(0,17,"Test 1");
    
    xb.i := 5;
-   check(5,0,"Test 2");
+   check(5,17,"Test 2");
    
    inspect xb do i := 7;
-   check(7,0,"Test 3");
+   check(7,17,"Test 3");
 
    IF found_error THEN
    ELSE
