@@ -183,16 +183,15 @@ public abstract class BlockParser extends SyntaxClass
   }
   
   private static boolean expectHiddenProtectedList(BlockDeclaration block,boolean hidden,boolean prtected)
-  { Util.BREAK("BlockParser.expectHiddenProtectedList: Hidden="+hidden+", Protected="+prtected);
+  { //Util.BREAK("BlockParser.expectHiddenProtectedList: Hidden="+hidden+", Protected="+prtected);
     do
     { String identifier=expectIdentifier();
       if(hidden) block.hiddenList.add(identifier);
       if(prtected) block.protectedList.add(identifier);
     } while(Parser.accept(KeyWord.COMMA));  
-    Util.BREAK("BlockParser.expectHiddenProtectedList: HiddenList="+block.hiddenList);
-    Util.BREAK("BlockParser.expectHiddenProtectedList: ProtectedList="+block.protectedList);
+    //Util.BREAK("BlockParser.expectHiddenProtectedList: HiddenList="+block.hiddenList);
+    //Util.BREAK("BlockParser.expectHiddenProtectedList: ProtectedList="+block.protectedList);
     Parser.expect(KeyWord.SEMICOLON); 
-	//Util.EXIT();
     return(true);
   }
 

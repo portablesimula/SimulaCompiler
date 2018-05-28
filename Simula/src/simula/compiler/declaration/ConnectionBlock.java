@@ -54,16 +54,15 @@ public class ConnectionBlock extends DeclarationScope
   { this.statement=statement; }
 
   public Meaning findMeaning(String identifier)
-//  {	Meaning result=classDeclaration.findAttributeMeaning(identifier);
   {	Meaning result=classDeclaration.findRemoteAttributeMeaning(identifier);
     //Util.BREAK("ConnectionBlock.findMeaning("+identifier+") ==> "+result);
     if(result!=null)
         result=new Meaning(VariableKind.connectedAttribute
-        		,result.declaredAs,this,result.foundIn,result.foundBehindProtected);
+        		,result.declaredAs,this,result.foundIn,result.foundBehindInvisible);
     else if(declaredIn!=null) result=declaredIn.findMeaning(identifier);
 	if(result==null) Util.error("Undefined variable: "+identifier);
 	
-	if(result!=null && result.foundBehindProtected)
+	if(result!=null && result.foundBehindInvisible)
 	    Util.BREAK("ConnectionBlock.findMeaning("+identifier+") ==> "+result);
 		
     return(result);

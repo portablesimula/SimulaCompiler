@@ -19,10 +19,10 @@ import simula.compiler.expression.Expression;
  */
 public class Meaning {
 	public VariableKind variableKind;
-	public boolean foundBehindProtected;
+	public boolean foundBehindInvisible; // Behind hidden/protected
 	public Declaration declaredAs;
-	public DeclarationScope declaredIn; // Search started here
-	public DeclarationScope foundIn;    // Search ended here
+	public DeclarationScope declaredIn;  // Search started here
+	public DeclarationScope foundIn;     // Search ended here
 	
 	
 	public Meaning(VariableKind variableKind,Declaration declaredAs,DeclarationScope declaredIn)
@@ -31,10 +31,10 @@ public class Meaning {
 	  this.declaredIn=declaredIn;
 	}
 	public Meaning(VariableKind variableKind,Declaration declaredAs,DeclarationScope declaredIn
-			      ,DeclarationScope foundIn,boolean foundBehindProtected)
+			      ,DeclarationScope foundIn,boolean foundBehindInvisible)
 	{ this(variableKind,declaredAs,declaredIn);
 	  this.foundIn=foundIn;
-	  this.foundBehindProtected=foundBehindProtected;
+	  this.foundBehindInvisible=foundBehindInvisible;
     }
 	public Meaning(VariableKind variableKind) // Used by: ConnectedAttribute
 	{ this.variableKind=variableKind;
@@ -68,7 +68,7 @@ public class Meaning {
 	}
 	
 	public String toString()
-	{ return(variableKind.toString()+' '+declaredAs+", foundBehindProtected="+foundBehindProtected
-			+"  (blockLevel="+declaredIn.blockLevel+",declaredIn="+declaredIn+')');
+	{ return(variableKind.toString()+' '+declaredAs+", foundBehindInvisible="+foundBehindInvisible
+			+"  (blockLevel="+declaredIn.blockLevel+",declaredIn="+declaredIn+",foundIn="+foundIn+')');
 	}
 }

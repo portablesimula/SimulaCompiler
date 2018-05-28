@@ -94,7 +94,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
-		names.add("simtst61.sim"); // ERR: Remote access to attributes which are protected.
+		//names.add("simtst61.sim"); // ERR: Remote access to attributes which are protected.
 		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
@@ -136,7 +136,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		//names.add("simtst99.sim"); // ERR:
-		//names.add("simtst00.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
+		//names.add("simtst100.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
+		names.add("simtst101.sim"); // OK: Visibility of Hidden attributes.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

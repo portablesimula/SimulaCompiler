@@ -350,7 +350,7 @@ public class BinaryOperation extends Expression
 	    Util.BREAK("BinaryOperation.toJavaCode: DOT - remoteAttribute="+remoteAttribute);
 //	    String result=lhs.get()+opr.toJavaCode()+rhs.get();
 	    String result;
-	    if(remoteAttribute.foundBehindProtected)
+	    if(remoteAttribute.foundBehindInvisible)
 //	    { String remoteCast=remoteAttribute.declaredIn.getJavaIdentifier();
 	    { String remoteCast=remoteAttribute.foundIn.getJavaIdentifier();
 		  result="(("+remoteCast+")("+lhs.get()+"))."+rhs.get();

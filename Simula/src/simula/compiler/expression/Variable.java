@@ -202,15 +202,17 @@ public class Variable extends Expression {
 	    //id=inspectedVariable.toJavaCode()+"."+id;
 	    Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
 
-	    if(meaning.foundBehindProtected)
+	    if(meaning.foundBehindInvisible)
 	    { String remoteCast=meaning.foundIn.getJavaIdentifier();
 		  id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
 	    } else id=inspectedVariable.toJavaCode()+"."+id;
 
 	    
 	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockKind.Method)) {
+		  
 	    String cast=meaning.declaredIn.getJavaIdentifier();
-		if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !
+	    if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
+	    else if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !
 	    id="(("+cast+")"+Global.currentScope.edCTX(n)+")."+id;
 	  }
 	  return(id);

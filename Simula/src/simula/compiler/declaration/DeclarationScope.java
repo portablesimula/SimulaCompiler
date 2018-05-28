@@ -46,59 +46,33 @@ public abstract class DeclarationScope extends Declaration {
   // ***********************************************************************************************
   public Meaning findMeaning(String identifier)
   {	//Util.BREAK("DeclarationScope("+identifier+").findDefinition("+identifier+"): scope="+declaredIn);
-	Meaning meaning=findAttributeMeaning(identifier);
+	Meaning meaning=findVisibleAttributeMeaning(identifier);
 	if(meaning==null && declaredIn!=null) meaning=declaredIn.findMeaning(identifier);
 	if(meaning==null) Util.error("Undefined variable: "+identifier);
     return(meaning);
   }
 
-  // ***********************************************************************************************
-  // *** Utility: findAttributeMeaning
-  // ***********************************************************************************************
-  public Meaning findAttributeMeaning(String ident)
-  { //Util.BREAK("DeclarationScope("+identifier+").findAttribute("+ident+"): scope="+declaredIn);
-    for(Parameter parameter:parameterList)
-        if(ident.equalsIgnoreCase(parameter.identifier)) return(new Meaning(VariableKind.parameter,parameter,this));
-    for(Declaration declaration:declarationList)
-	    if(ident.equalsIgnoreCase(declaration.identifier)) return(new Meaning(VariableKind.attribute,declaration,this));
-    for(LabelDeclaration label:labelList)
-	    if(ident.equalsIgnoreCase(label.identifier)) return(new Meaning(VariableKind.label,label,this));
-    for(Virtual virtual:virtualList)
-	    if(ident.equalsIgnoreCase(virtual.identifier)) return(new Meaning(VariableKind.virtual,virtual,this)); 
-    BlockDeclaration prfx=getPrefix();
-    if(prfx!=null)
-    { Meaning meaning=prfx.findAttributeMeaning(ident);
-      if(meaning!=null) meaning.declaredIn=this;
-      return(meaning);
-    }
-    return(null);
-  }
-
-  // ***********************************************************************************************
-  // *** Utility: findVisibleAttributeMeaning
-  // ***********************************************************************************************
-  public Meaning findVisibleAttributeMeaning(String ident,boolean hiddenSeen)
-  { //Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
-    for(String hdn:hiddenList) if(ident.equalsIgnoreCase(hdn)) { hiddenSeen=true; break; }
-    for(Parameter parameter:parameterList)
-        if(ident.equalsIgnoreCase(parameter.identifier))
-        { if(hiddenSeen) hiddenSeen=false;
-          else return(new Meaning(VariableKind.parameter,parameter,this));
-        }
-    for(Declaration declaration:declarationList)
-	    if(ident.equalsIgnoreCase(declaration.identifier)) return(new Meaning(VariableKind.attribute,declaration,this));
-    for(LabelDeclaration label:labelList)
-	    if(ident.equalsIgnoreCase(label.identifier)) return(new Meaning(VariableKind.label,label,this));
-    for(Virtual virtual:virtualList)
-	    if(ident.equalsIgnoreCase(virtual.identifier)) return(new Meaning(VariableKind.virtual,virtual,this)); 
-    BlockDeclaration prfx=getPrefix();
-    if(prfx!=null)
-    { Meaning meaning=prfx.findVisibleAttributeMeaning(ident,hiddenSeen);
-      if(meaning!=null) meaning.declaredIn=this;
-      return(meaning);
-    }
-    return(null);
-  }
+//  // ***********************************************************************************************
+//  // *** Utility: findAttributeMeaning
+//  // ***********************************************************************************************
+//  public Meaning findAttributeMeaning_OLD(String ident)
+//  { //Util.BREAK("DeclarationScope("+identifier+").findAttribute("+ident+"): scope="+declaredIn);
+//    for(Parameter parameter:parameterList)
+//        if(ident.equalsIgnoreCase(parameter.identifier)) return(new Meaning(VariableKind.parameter,parameter,this));
+//    for(Declaration declaration:declarationList)
+//	    if(ident.equalsIgnoreCase(declaration.identifier)) return(new Meaning(VariableKind.attribute,declaration,this));
+//    for(LabelDeclaration label:labelList)
+//	    if(ident.equalsIgnoreCase(label.identifier)) return(new Meaning(VariableKind.label,label,this));
+//    for(Virtual virtual:virtualList)
+//	    if(ident.equalsIgnoreCase(virtual.identifier)) return(new Meaning(VariableKind.virtual,virtual,this)); 
+//    BlockDeclaration prfx=getPrefix();
+//    if(prfx!=null)
+//    { Meaning meaning=prfx.findAttributeMeaning(ident);
+//      if(meaning!=null) meaning.declaredIn=this;
+//      return(meaning);
+//    }
+//    return(null);
+//  }
 
   // ***********************************************************************************************
   // *** Utility: findRemoteAttributeMeaning
@@ -133,6 +107,82 @@ public abstract class DeclarationScope extends Declaration {
       return(meaning);
     }
     return(null);
+  }
+  
+  // ***********************************************************************************************
+  // *** Utility: findVisibleAttributeMeaning
+  // ***********************************************************************************************
+  public Meaning findVisibleAttributeMeaning(String ident)
+  { //if(ident.equalsIgnoreCase("i"))
+	//Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+	boolean searchBehindHidden=false;
+	DeclarationScope scope=this;
+	SEARCH:while(scope!=null)
+	{ //Util.BREAK("DeclarationScope("+scope+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+	  for(Parameter parameter:scope.parameterList)
+      if(ident.equalsIgnoreCase(parameter.identifier))
+        { DeclarationScope hiddenScope=scope.getHidden(ident);
+          if(hiddenScope==null) return(new Meaning(VariableKind.parameter,parameter,this,scope,searchBehindHidden));
+          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
+        }
+      for(Declaration declaration:scope.declarationList)
+	    if(ident.equalsIgnoreCase(declaration.identifier))
+	    { DeclarationScope hiddenScope=scope.getHidden(ident);
+          if(hiddenScope==null) return(new Meaning(VariableKind.attribute,declaration,this,scope,searchBehindHidden));
+          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
+	    }
+      for(LabelDeclaration label:scope.labelList)
+	    if(ident.equalsIgnoreCase(label.identifier))
+	    { DeclarationScope hiddenScope=scope.getHidden(ident);
+          if(hiddenScope==null)	return(new Meaning(VariableKind.label,label,this,scope,searchBehindHidden));
+          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
+	    }
+      for(Virtual virtual:scope.virtualList)
+	    if(ident.equalsIgnoreCase(virtual.identifier))
+	    { DeclarationScope hiddenScope=scope.getHidden(ident);
+          if(hiddenScope==null)	return(new Meaning(VariableKind.virtual,virtual,this,scope,searchBehindHidden));
+          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
+	    }
+      if(scope.getHidden(ident)==null) scope=scope.getPrefix();
+      else { scope=scope.getScopeBehindHidden(ident); searchBehindHidden=true; }
+	}
+    return(null);
+  }
+
+  // ***********************************************************************************************
+  // *** Utility: getHidden  --  Used by findVisibleAttributeMeaning
+  // ***********************************************************************************************
+  // Search backwards through prefix chain - find hidden
+  // then return the scope where it was specified hidden.
+  // If no HIDDEN was found - return null
+  public DeclarationScope getHidden(String ident)
+  { BlockDeclaration prfx=getPrefix();
+    //Util.BREAK("DeclarationScope("+identifier+").getHidden("+ident+"): scope="+this+", prefix="+prfx);
+	if(prfx==null) return(null);
+    for(String hdn:prfx.hiddenList) if(ident.equalsIgnoreCase(hdn))
+    { //Util.BREAK("DeclarationScope("+identifier+").getHidden("+ident+"): FOUND - scope="+prfx);
+      return(prfx);
+    }
+    return(prfx.getHidden(ident));
+  }
+
+  // ***********************************************************************************************
+  // *** Utility: getScopeBehindHidden  --  Used by findVisibleAttributeMeaning
+  // ***********************************************************************************************
+  // Search for protected backwards through prefix chain starting with this scope
+  // - find corresponding protected
+  // then return the scope prefix to where it was specified protected.
+  // If no PROTECTED was found - Runtime Error
+  private DeclarationScope getScopeBehindHidden(String ident)
+  { DeclarationScope scope=this;
+    //Util.BREAK("DeclarationScope("+identifier+").getScopeBehindHidden("+ident+"): scope="+scope);
+    while(scope!=null)
+	{ BlockDeclaration prfx=scope.getPrefix();
+      for(String ptc:scope.protectedList) if(ident.equalsIgnoreCase(ptc)) return(prfx);
+      scope=prfx;
+      //Util.BREAK("DeclarationScope("+identifier+").getScopeBehindHidden("+ident+"): scope="+scope);
+	}
+	throw new RuntimeException(ident+" is specified HIDDEN without being PROTECTED");
   }
     
   // ***********************************************************************************************

@@ -136,7 +136,8 @@ public class RunFullTestBatch {
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		//names.add("simtst99.sim"); // ERR:
-		//names.add("simtst00.sim"); // ERR: Test that put-get-put delivers the identity.
+		//names.add("simtst000.sim"); // ERR: Test that put-get-put delivers the identity.
+		names.add("simtst101.sim"); // OK: Visibility of Hidden attributes.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

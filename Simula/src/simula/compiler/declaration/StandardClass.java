@@ -807,13 +807,13 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     spec.setMode(mode); return(spec);
   }
   
-  public Meaning findAttributeMeaning(String ident)
+  public Meaning findVisibleAttributeMeaning(String ident)
   { //Util.BREAK("StandardClass("+this.identifier+").findAttribute("+ident+"): scope="+declaredIn+", chain="+edScopeChain());
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
     	   	  return(new Meaning(VariableKind.standardAttribute,declaration,this));
     BlockDeclaration prfx=getPrefix();
-    if(prfx!=null) return(prfx.findAttributeMeaning(ident));
+    if(prfx!=null) return(prfx.findVisibleAttributeMeaning(ident));
     
 //    if(result!=null) Util.TRACE("END StandardClass.findAttribute("+ident+"): result="+result.getEnclosureName()+'.'+result);   
     return(null);
