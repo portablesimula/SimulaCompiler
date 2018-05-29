@@ -347,7 +347,7 @@ public class BinaryOperation extends Expression
 	    }
 	    else if(accessRemoteArray) return(doAccessRemoteArray(lhs,(SubscriptedVariable)rhs));
 	  
-	    Util.BREAK("BinaryOperation.toJavaCode: DOT - remoteAttribute="+remoteAttribute);
+	    //Util.BREAK("BinaryOperation.toJavaCode: DOT - remoteAttribute="+remoteAttribute);
 //	    String result=lhs.get()+opr.toJavaCode()+rhs.get();
 	    String result;
 	    if(remoteAttribute.foundBehindInvisible)

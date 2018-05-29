@@ -31,8 +31,13 @@ BEGIN
       OK := true ;
 
       for i := 1 step 1 until n do
-      if facit (i) <> lines (i) then OK := false ;
-
+      if facit (i) <> lines (i) then 
+      begin
+         outtext("Lines "); outint(i,0); outtext("="); outchar('"'); outtext(lines(i)); outchar('"'); outimage;
+         outtext("Facit "); outint(i,0); outtext("="); outchar('"'); outtext(facit(i)); outchar('"'); outimage;
+         OK := false ;
+      end;
+      
       if not OK then
       begin
          Outtext ("*** error : Value of attributes (") ;

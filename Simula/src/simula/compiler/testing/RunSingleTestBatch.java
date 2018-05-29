@@ -94,11 +94,11 @@ public class RunSingleTestBatch {
 		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
-		names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
+		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
 		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
-		//names.add("simtst65.sim"); // err: Parameter transmission by reference to classes.
+		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
 		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES - GÅR I HENG
@@ -118,7 +118,7 @@ public class RunSingleTestBatch {
 
 		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
-		//names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
+		names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
 		//names.add("simtst85.sim"); // OK: Test Directfile.   DIRECTFILE NOT FULLY IMPLEMENTED
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.

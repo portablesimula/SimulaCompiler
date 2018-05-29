@@ -102,7 +102,7 @@ public abstract class DeclarationScope extends Declaration {
 	    if(ident.equalsIgnoreCase(virtual.identifier))
 	    	return(new Meaning(VariableKind.virtual,virtual,this,this,behindProtected)); 
     }
-    Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+    //Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
     BlockDeclaration prfx=getPrefix();
     if(prfx!=null)
     { Meaning meaning=prfx.findRemoteAttributeMeaning(ident,behindProtected);

@@ -20,6 +20,7 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
+import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -129,9 +130,21 @@ public class ObjectGenerator extends Expression {
 		s.append("new ").append(classIdent).append('(');
 	    s.append(meaning.edStaticLink());
 
+//		for (Expression par:checkedParams) {
+//			s.append(',').append(par.toJavaCode());
+//		}
+	    BlockDeclaration cls = (BlockDeclaration)meaning.declaredAs;
+	    Iterator<Parameter> formalIterator = cls.parameterIterator();
 		for (Expression par:checkedParams) {
-			s.append(',').append(par.toJavaCode());
+			Parameter formalParameter = formalIterator.next();
+			if(formalParameter.mode==ParameterMode.value)
+			{ if(par.type==Type.Text) s.append(",copy(").append(par.toJavaCode()).append(')');
+			  else if(formalParameter.kind==ParameterKind.Array) s.append(",(").append(par.toJavaCode()).append(").COPY()");
+			  else s.append(',').append(par.toJavaCode());
+			}
+			else s.append(',').append(par.toJavaCode());
 		}
+		
 		s.append(')');
 		if(((BlockDeclaration)meaning.declaredAs).isDetachUsed()) 
 			 s.append(".START()");

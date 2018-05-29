@@ -1,24 +1,16 @@
 BEGIN
+   Text txt;
+   Ref(A) ra;
 
-   Class A;
-   begin
-     integer i;
-   end;
 
-   A Class B; Protected i;
-   begin
-     integer i;
-   end;
+   Class A(navn);  VALUE navn;  Text navn;
+   BEGIN
+   END of class A;
 
-   B Class C; Hidden i;
-   begin 
-     ... 
-   end;
-   
-   C begin
-   
-     i := 34;
-   
-   end;
+   txt :- Copy("ABRACADAB");
+   ra  :- New A(txt);
+   outtext(ra.navn); outimage;
+   txt := "ADABRA";
+   outtext(ra.navn); outimage;
 
- END
+    END
