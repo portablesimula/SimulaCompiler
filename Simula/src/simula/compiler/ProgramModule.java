@@ -9,6 +9,7 @@ package simula.compiler;
 
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
+
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.StandardClass;
 import simula.compiler.expression.SubscriptedVariable;

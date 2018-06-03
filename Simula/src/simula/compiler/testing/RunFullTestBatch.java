@@ -69,7 +69,7 @@ public class RunFullTestBatch {
 		names.add("simtst36.sim"); // OK:  Jensens Device - call by name. TRENGER FIN-TESTING
 		names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		names.add("simtst38.sim"); // OK:  Test the value of type procedures.
-		//names.add("simtst39.sim"); // err: Check that a formal parameter is global to the procedure body.
+		names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
 		//names.add("simtst40.sim"); // err: Test separate compilation of procedures.
 
 		//names.add("simtst41.sim"); // err: Name parameter in external procedure.

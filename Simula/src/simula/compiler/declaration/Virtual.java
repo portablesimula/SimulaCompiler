@@ -15,7 +15,7 @@ import simula.compiler.utilities.Util;
 public class Virtual extends Declaration {
 	// String identifier; // Inherited
 	// Type type; // Inherited: Procedure's type if any
-	ParameterKind kind; // Simple | Procedure
+	public ParameterKind kind; // Simple | Procedure
     public BlockDeclaration match; // Set during coChecking
 
 	public Virtual(String identifier, Type type, ParameterKind kind) {

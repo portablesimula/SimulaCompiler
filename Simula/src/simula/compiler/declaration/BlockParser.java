@@ -68,7 +68,7 @@ public abstract class BlockParser extends SyntaxClass
 	if(Parser.accept(KeyWord.BEGPAR))
 	{ if(Parser.accept(KeyWord.ENDPAR)) { Parser.expect(KeyWord.ENDPAR); return; }
 	  do //ParameterPart = Parameter ; { Parameter ; }
-	  { block.parameterList.add(new Parameter(expectIdentifier()));
+	  { block.addParameter(new Parameter(expectIdentifier()));
 	  } while(Parser.accept(KeyWord.COMMA));  
 	  Parser.expect(KeyWord.ENDPAR); Parser.expect(KeyWord.SEMICOLON);
 	  // ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]

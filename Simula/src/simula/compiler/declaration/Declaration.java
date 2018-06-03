@@ -104,4 +104,5 @@ public class Declaration extends SyntaxClass
 	return(((BlockDeclaration)other).isSubClassOf((BlockDeclaration)this));
   }
 
+
 }

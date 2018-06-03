@@ -122,6 +122,9 @@ public class SimulaCompiler {
 			      	Util.LIST(module.javaOutputFileName);
 			}
 			
+			if (Option.verbose) Util.BREAK("*** BEGIN Possible Generate AttributeFile");
+			AttributeFile.write(program);
+			
 			// ***************************************************************
 			// *** CALL JAVAC COMPILER
 			// ***************************************************************

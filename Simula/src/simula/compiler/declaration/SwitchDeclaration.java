@@ -42,7 +42,8 @@ public class SwitchDeclaration extends BlockDeclaration //Declaration
 	Parser.expect(KeyWord.ASSIGNVALUE);
 	do { switchList.add(Expression.parseExpression()); } while( Parser.accept(KeyWord.COMMA) );      
 	if(Option.TRACE_PARSE) Parser.TRACE("Parse SwitchDeclaration(3), switchList="+switchList);
-    this.parameterList.add(new Parameter("$SW",Type.Integer,ParameterKind.Simple));
+//    this.parameterList.add(new Parameter("$SW",Type.Integer,ParameterKind.Simple));
+    this.addParameter(new Parameter("$SW",Type.Integer,ParameterKind.Simple));
     Global.currentScope=declaredIn;
   }
 

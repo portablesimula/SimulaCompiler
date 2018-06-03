@@ -11,7 +11,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 public class LabelDeclaration extends TypeDeclaration {
-    int index; // set by doChecking
+    public int index; // set by doChecking
     
 	public LabelDeclaration(String identifier) {
 		super(Type.Label,identifier);

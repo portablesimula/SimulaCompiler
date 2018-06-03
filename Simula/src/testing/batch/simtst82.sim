@@ -1067,4 +1067,4 @@ else begin
 Outtext ("--- END Simula a.s. TEST 82");
 Outimage
 
-end of program
+end of program;

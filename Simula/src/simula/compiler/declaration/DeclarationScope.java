@@ -40,6 +40,16 @@ public abstract class DeclarationScope extends Declaration {
   { super(ident);
 	declaredIn=Global.currentScope; Global.currentScope=this;
   }
+  
+  // ***********************************************************************************************
+  // *** Utility: addParameter
+  // ***********************************************************************************************
+  public void addParameter(Parameter parameter)
+  { for(Parameter par:parameterList)
+	   	if(par.identifier.equalsIgnoreCase(parameter.identifier))
+           { Util.error("Parameter already defined: "+identifier); return; }
+    parameterList.add(parameter);
+  }
   	  
   // ***********************************************************************************************
   // *** Utility: findMeaning
@@ -112,6 +122,10 @@ public abstract class DeclarationScope extends Declaration {
     return(null);
   }
   
+  
+  // ***********************************************************************************************
+  // *** Utility: withinScope -- Used by findRemoteAttributeMeaning
+  // ***********************************************************************************************
   private static boolean withinScope(DeclarationScope otherScope)
   { DeclarationScope scope=Global.currentScope;
 	while(scope!=null)

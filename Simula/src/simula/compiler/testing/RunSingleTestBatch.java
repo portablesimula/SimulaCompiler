@@ -66,11 +66,11 @@ public class RunSingleTestBatch {
 		//names.add("simtst33.sim"); // OK:  Test call by reference
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.
-		//names.add("simtst36.sim"); // OK:  Jensens Device - call by name. TRENGER FIN-TESTING
+		//names.add("simtst36.sim"); // OK:  Jensens Device - call by name.
 		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		//names.add("simtst38.sim"); // OK:  Test the value of type procedures.
-		//names.add("simtst39.sim"); // err: Check that a formal parameter is global to the procedure body.
-		//names.add("simtst40.sim"); // err: Test separate compilation of procedures.
+		//names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
+		names.add("simtst40.sim"); // err: Test separate compilation of procedures.
 
 		//names.add("simtst41.sim"); // err: Name parameter in external procedure.
 		//names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
@@ -118,9 +118,9 @@ public class RunSingleTestBatch {
 
 		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
-		names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
+		//names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
-		//names.add("simtst85.sim"); // OK: Test Directfile.   DIRECTFILE NOT FULLY IMPLEMENTED
+		//names.add("simtst85.sim"); // OK:  Test Directfile.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
 		//names.add("simtst88.sim"); // OK?: Checking coroutines.

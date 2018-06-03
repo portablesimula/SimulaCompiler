@@ -19,22 +19,22 @@ public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
   { super(ident); this.declaredIn=declaredIn; this.type=type; this.blockKind=BlockKind.Method; }
 
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter param)
-  { this(declaredIn,type,ident); parameterList.add(param); }
+  { this(declaredIn,type,ident); addParameter(param); }
 
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2)
-  { this(declaredIn,type,ident,p1); parameterList.add(p2); }
+  { this(declaredIn,type,ident,p1); addParameter(p2); }
 
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3)
-  { this(declaredIn,type,ident,p1,p2); parameterList.add(p3); }
+  { this(declaredIn,type,ident,p1,p2); addParameter(p3); }
 
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4)
-  { this(declaredIn,type,ident,p1,p2,p3); parameterList.add(p4); }
+  { this(declaredIn,type,ident,p1,p2,p3); addParameter(p4); }
 
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5)
-  { this(declaredIn,type,ident,p1,p2,p3,p4); parameterList.add(p5); }
+  { this(declaredIn,type,ident,p1,p2,p3,p4); addParameter(p5); }
 
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
-  { this(declaredIn,type,ident,p1,p2,p3,p4,p5); parameterList.add(p6); }
+  { this(declaredIn,type,ident,p1,p2,p3,p4,p5); addParameter(p6); }
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;

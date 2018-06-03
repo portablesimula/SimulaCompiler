@@ -1,7 +1,12 @@
+Class B(t,i,r); value t; Text t; integer i; real r;
 BEGIN
    Text txt;
    Ref(A) ra;
-
+   
+   Procedure P(t,i,r); value t; name r; text t; integer i; real r;
+   Begin 
+      integer ukjent;
+   end;    
 
    Class A(navn);  VALUE navn;  Text navn;
    BEGIN
@@ -13,4 +18,4 @@ BEGIN
    txt := "ADABRA";
    outtext(ra.navn); outimage;
 
-    END
+END

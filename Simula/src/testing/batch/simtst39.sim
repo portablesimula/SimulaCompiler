@@ -1,20 +1,25 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 39
 %
 %  PURPOSE:     Check that a formal parameter is global to the procedure body.
 %
-%  WRITTEN BY:  BEH   23/07-86
+%  MYH-NOTE: DEVIATIONS FROM 'SIMULA STANDARD':
+%               Parameters and declarations at the outmost level in classes and
+%               procedures form a common namespace. This means that a local
+%               declared can not have the same name as a parameter.
+%               The reason is that Java has the same restriction.
+%
+%  WRITTEN BY:  BEH   23/07-86, MODIFIED:  MYH  30/5-2018
 % ==============================================================================
 BEGIN
    Boolean found_error ;
 
    integer i ;
 
-   procedure P (i) ;
-     name i ;
-     integer i ;
+   procedure P (pi) ;
+     name pi ;
+     integer pi ;
    begin
      Integer i ;
      i := 5 ;

@@ -788,12 +788,12 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 	
   public StandardClass(String prefix,String className,Parameter p1)
   { this(prefix,className);
-	parameterList.add(p1);
+	addParameter(p1);
   }
 	
   public StandardClass(String className,Parameter p1)
   { this(className);
-	parameterList.add(p1);
+	addParameter(p1);
   }
   
   private static Parameter parameter(String ident,Type type)
