@@ -1,21 +1,36 @@
-Class B(t,i,r); value t; Text t; integer i; real r;
 BEGIN
-   Text txt;
-   Ref(A) ra;
-   
-   Procedure P(t,i,r); value t; name r; text t; integer i; real r;
-   Begin 
-      integer ukjent;
-   end;    
+BOOLEAN            result; !To contain the result of the;
+                           ! various boolean expressions;
+BOOLEAN          b1,b2,b3; ! b1-b3 always TRUE  ;
+BOOLEAN          b4,b5,b6; ! b4-b6 always FALSE ;
 
-   Class A(navn);  VALUE navn;  Text navn;
-   BEGIN
-   END of class A;
+BOOLEAN       found_error;  ! set TRUE if error found;
 
-   txt :- Copy("ABRACADAB");
-   ra  :- New A(txt);
-   outtext(ra.navn); outimage;
-   txt := "ADABRA";
-   outtext(ra.navn); outimage;
+outtext ("--- START Simula a.s. TEST 2");
+Outimage;
+outtext ("--- Test Boolean operators");
+outimage; Outimage;
+
+b1 := TRUE;
+b2 := IF b1 THEN b1 ELSE FALSE;
+b3 := IF b2 THEN b1 ELSE FALSE;
+
+result := b1 and then b6;
+
+if result then
+begin
+   outtext ("*** error : 'and then' (2).");
+   outimage;
+   found_error := true
+end;
+
+result := b4 and then b2;
+
+if result then
+begin
+   outtext ("*** error : 'and then' (3).");
+   outimage;
+   found_error := true
+end;
 
 END

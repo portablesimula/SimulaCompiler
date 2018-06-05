@@ -7,7 +7,7 @@
  */
 package simula.compiler.statement;
 
-import simula.compiler.expression.BinaryOperation;
+import simula.compiler.expression.Assignment;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
@@ -22,7 +22,10 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   Statement = Expression | AssignmentStatement
+ *   StandaloneStatement = Expression | AssignmentStatement
+ *
+ *   AssignmentStatement
+ *        =  Expression { AssignmentOperator  Expression }
  *
  * </pre>
  * 
@@ -35,13 +38,25 @@ public class StandaloneExpression extends Statement {
 		this.expression = expression;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW StandaloneExpression: " + toString());
 		
-		if (Parser.accept(KeyWord.ASSIGNVALUE)
-				|| Parser.accept(KeyWord.ASSIGNREF))
-		{ Util.BREAK("NEW StandaloneExpression: Dette er ikke MULIG ! "+this);
-			this.expression = new BinaryOperation(expression, Parser.prevToken.getKeyWord(),
-					Expression.parseExpression());
+		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF))
+		{ 
+//		  this.expression = new Assignment(this.expression, Parser.prevToken.getKeyWord(),Expression.parseExpression());
+		  this.expression = new Assignment(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
+		  Util.BREAK("NEW StandaloneExpression: "+this);
 		}
 	}
+
+	  //  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
+	  private static Expression parseStandaloneExpression() { 
+		 Util.BREAK("Expression.parseStandaloneExpression");
+		 Expression retExpr=Expression.parseExpression();
+		 while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
+		      KeyWord opr=Parser.prevToken.getKeyWord();
+//	          retExpr=new Assignment(retExpr,opr,Expression.parseExpression());
+	          retExpr=new Assignment(retExpr,opr,parseStandaloneExpression());
+		 }
+		 return retExpr;
+	  }
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;

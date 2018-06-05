@@ -43,7 +43,7 @@ BEGIN
    t2 :- t1.sub (2,2);
 
    if 
-%         t1.pos = 3   // USIKKER PÅ SEMANTIKKEN HER - MYH 26/3-2018
+%         t1.pos = 3   // USIKKER Pï¿½ SEMANTIKKEN HER - MYH 26/3-2018
 %     and
           t1 = "ab3de"
       and t3 = "ab3de"

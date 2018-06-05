@@ -34,12 +34,15 @@ public class ConditionalStatement extends Statement {
 	Statement elseStatement = null;
 
 	public ConditionalStatement() {
+		Util.BREAK("BEGIN ConditionalStatement:");
 		condition = Expression.parseExpression();
-//		condition = BooleanExpression.parseBooleanExpression();
+		Util.BREAK("BEGIN ConditionalStatement: condition="+condition);
 		Parser.expect(KeyWord.THEN);
 		thenStatement = Statement.doParse();
+		Util.BREAK("BEGIN ConditionalStatement: thenStatement="+thenStatement);
 		if (Parser.accept(KeyWord.ELSE))
 			elseStatement = Statement.doParse();
+		Util.BREAK("BEGIN ConditionalStatement: elseStatement="+elseStatement);
 	}
 
 	public void print(String indent, String tail) {

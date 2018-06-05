@@ -16,7 +16,6 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -46,11 +45,11 @@ public class BinaryOperation extends Expression
   
   public BinaryOperation(Expression lhs,KeyWord opr,Expression rhs)
   { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-    //Util.BREAK("new BinaryOperation: lhs="+lhs);
-    //Util.BREAK("new BinaryOperation: opr="+opr);
-    //Util.BREAK("new BinaryOperation: rhs="+rhs);
+    Util.BREAK("new BinaryOperation: lhs="+lhs);
+    Util.BREAK("new BinaryOperation: opr="+opr);
+    Util.BREAK("new BinaryOperation: rhs="+rhs);
     lhs.backLink=rhs.backLink=this;
-	//Util.BREAK("NEW BinaryOperation: "+toString());
+	Util.BREAK("NEW BinaryOperation: "+toString());
   }
 
   
@@ -287,30 +286,6 @@ public class BinaryOperation extends Expression
 	}
 	return(result);
   }
-
-	private static BlockDeclaration getQualification(Expression simpleObjectExpression) {
-		String refIdent=simpleObjectExpression.type.getRefIdent();
-		Declaration objDecl = Global.currentScope.findMeaning(refIdent).declaredAs;
-		if(objDecl instanceof BlockDeclaration)	return((BlockDeclaration)objDecl);
-		Util.error("Illegal ref(" + refIdent + "): " + refIdent + " is not a class");
-		return(null);
-	}
-	  
-	public static BlockDeclaration getQualification(String classIdentifier) {
-		Declaration classDecl=Global.currentScope.findMeaning(classIdentifier).declaredAs;
-		if(classDecl instanceof BlockDeclaration) return((BlockDeclaration)classDecl);
-			Util.error("Illegal: " + classIdentifier + " is not a class");
-		return(null);
-	}
-	  
-	public static boolean checkCompatability(Expression simpleObjectExpression,String classIdentifier) {
-		BlockDeclaration objDecl=getQualification(simpleObjectExpression);
-		BlockDeclaration quaDecl=getQualification(classIdentifier);
-		if(quaDecl==objDecl) Util.warning("Unneccessary QUA "+ classIdentifier);
-		else if(quaDecl==null) Util.error("Illegal QUA -- " + classIdentifier + " is not a class");
-		else if(!(objDecl.isCompatibleClasses(quaDecl))) return(false);
-		return(true);
-	}
 	  
   public String toJavaCode()
   { //Util.BREAK("BinaryOperation.toJavaCode: "+this);

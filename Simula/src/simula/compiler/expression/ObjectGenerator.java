@@ -33,6 +33,15 @@ import simula.compiler.utilities.Util;
  * 
  * ObjectGenerator = NEW ClassIdentifier [ ( ActualParameterList ) ]
  * 
+ * ActualParameterList
+ *         =  "("  ActualParameter  {  ,  ActualParameter  }  ")"
+ *
+ *    ActualParameter
+ *        =  expression
+ *        |  array-identifier-1
+ *        |  switch-identifier
+ *        |  procedure-identifier-1
+ * 
  * </pre>
  * 
  * @author Øystein Myhre Andersen
@@ -60,7 +69,8 @@ public class ObjectGenerator extends Expression {
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			if (!Parser.accept(KeyWord.ENDPAR)) {
-				do { params.add(parseSimpleExpression());
+//				do { params.add(parseSimpleExpression());
+				do { params.add(parseExpression());
 				} while (Parser.accept(KeyWord.COMMA));
 				Parser.expect(KeyWord.ENDPAR);
 			}

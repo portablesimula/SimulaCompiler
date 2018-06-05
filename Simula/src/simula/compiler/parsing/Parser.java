@@ -83,17 +83,40 @@ public class Parser {
 		return(accept(s1) || accept(s2) || accept(s3));
 	}
 	
-	public static boolean acceptValueRelationalOperator()
+	public static boolean acceptPostfixOprator()
+	{ //   DOT | IS | IN | QUA
+	  if(accept(KeyWord.DOT)) return(true);
+	  if(accept(KeyWord.IS)) return(true);
+	  if(accept(KeyWord.IN)) return(true);
+	  if(accept(KeyWord.QUA)) return(true);
+	  return(false);
+	}
+	
+	public static boolean acceptRelationalOperator()
 	{ // value-relational-operator
-	  //     =  <  |  <=  |  =  |  >=  |  >  |  <>
+	  //     =  <  |  <=  |  =  |  >=  |  >  |  <> | == | =/=
 	  if(accept(KeyWord.LT)) return(true);
 	  if(accept(KeyWord.LE)) return(true);
 	  if(accept(KeyWord.EQ)) return(true);
 	  if(accept(KeyWord.GE)) return(true);
 	  if(accept(KeyWord.GT)) return(true);
 	  if(accept(KeyWord.NE)) return(true);
+	  if(accept(KeyWord.NER)) return(true);
+	  if(accept(KeyWord.EQR)) return(true);
 	  return(false);
 	}
+	
+//	public static boolean acceptValueRelationalOperator()
+//	{ // value-relational-operator
+//	  //     =  <  |  <=  |  =  |  >=  |  >  |  <>
+//	  if(accept(KeyWord.LT)) return(true);
+//	  if(accept(KeyWord.LE)) return(true);
+//	  if(accept(KeyWord.EQ)) return(true);
+//	  if(accept(KeyWord.GE)) return(true);
+//	  if(accept(KeyWord.GT)) return(true);
+//	  if(accept(KeyWord.NE)) return(true);
+//	  return(false);
+//	}
 
 	public static boolean acceptBinaryOperator(int level) {
 		// TRACE("SimulaParser.acceptBinaryOperator(" + level + ")");
