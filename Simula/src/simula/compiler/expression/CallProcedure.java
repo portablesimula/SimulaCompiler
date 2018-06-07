@@ -10,16 +10,13 @@ package simula.compiler.expression;
 import java.util.Iterator;
 
 import simula.compiler.SyntaxClass;
-import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
-import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
@@ -233,8 +230,9 @@ public class CallProcedure {
 	{ //return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).STM()");
 	  String ident=obj.get()+'.'+virtual.getJavaIdentifier()+"()";
 	  
-	  Util.BREAK("CallProcedure.remoteVirtual: ident="+ident);
-	  Util.BREAK("CallProcedure.remoteVirtual: variable="+variable);
+	  //Util.BREAK("CallProcedure.remoteVirtual: ident="+ident);
+	  //Util.BREAK("CallProcedure.remoteVirtual: variable="+variable);
+	  //Util.BREAK("CallProcedure.remoteVirtual: backLink="+backLink);
 	  //Util.BREAK("CallProcedure.remoteVirtual: variable.meaning="+variable.meaning);
 	  //Util.BREAK("CallProcedure.remoteVirtual: virtual="+virtual);
 	  //Util.BREAK("CallProcedure.remoteVirtual: staticLink="+variable.meaning.edStaticLink());
@@ -274,23 +272,20 @@ public class CallProcedure {
 	  }
 	  if(variable.type!=null && variable.backLink!=null)
 	  { boolean partOfExpression=true;
-	    if(variable.backLink instanceof BinaryOperation)
-	    { BinaryOperation binOper=(BinaryOperation)variable.backLink;
-//	      Util.BREAK("CallProcedure.codeCPF: binOper="+binOper);
-//	      Util.BREAK("CallProcedure.codeCPF: binOper.opr="+binOper.opr);
-//	      Util.BREAK("CallProcedure.codeCPF: binOper.backLink="+binOper.backLink);
+	    if(variable.backLink instanceof RemoteVariable)
+	    { RemoteVariable binOper=(RemoteVariable)variable.backLink;
+	      //Util.BREAK("CallProcedure.codeCPF: binOper="+binOper);
+	      //Util.BREAK("CallProcedure.codeCPF: binOper.backLink="+binOper.backLink);
 	      // NOTE: Standalone <expression>.<function> should not be casted
-	      if(binOper.backLink==null && binOper.opr==KeyWord.DOT) partOfExpression=false;
+	      if(binOper.backLink==null) partOfExpression=false;
 	    }
 	    if(partOfExpression)
 		{ s.append(".$result()");
 	      String callVirtual=s.toString();
-	      //s=new StringBuilder();
 	      String cast=variable.type.toJavaType();
-	      //s.append("((").append(cast).append(")(").append(callVirtual).append("))");
 		  if(variable.type.isArithmeticType())
 			   return(cast+"Value("+callVirtual+")");
-		  else return("(("+cast+")("+callVirtual+"))");  // NYLIG RETTA
+		  else return("(("+cast+")("+callVirtual+"))");
 		}
 	  }
 	  return(s.toString());
@@ -383,13 +378,7 @@ public class CallProcedure {
 		    }
 		    else  // Simple Type/Ref/Text by Name
 		    { String javaTypeClass=formalType.toJavaTypeClass();
-		    
-		      Variable writeableVariable=null;
-		      if(actualParameter instanceof Variable
-		      || actualParameter.isRemoteVariable()
-		      || actualParameter instanceof TypeConversion)
-		    	  writeableVariable=actualParameter.getVariable();
-
+		      Variable writeableVariable=actualParameter.getWriteableVariable();
 		      if(writeableVariable!=null)
 		      {	s.append("new $NAME<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
@@ -459,13 +448,13 @@ public class CallProcedure {
 	  // Reference Type:  by          Reference - Name
 	  //Util.BREAK("CallProcedure.doArrayParameter: actualParameter="+actualParameter);
 	  //Util.BREAK("CallProcedure.doArrayParameter: actualParameter'QUAL="+actualParameter.getClass().getSimpleName());
-	  if(actualParameter instanceof Variable)
-	  { Variable var=(Variable)actualParameter;
-	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'meaning="+var.meaning);
-	  	Declaration decl=var.meaning.declaredAs;
-	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs="+decl);
-	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs'QUAL="+decl.getClass().getSimpleName());
-	  }
+//	  if(actualParameter instanceof Variable)
+//	  { Variable var=(Variable)actualParameter;
+//	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'meaning="+var.meaning);
+//	  	Declaration decl=var.meaning.declaredAs;
+//	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs="+decl);
+//	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs'QUAL="+decl.getClass().getSimpleName());
+//	  }
 	  if(mode==ParameterMode.value) {
 	    Util.warning("Array-Parameter by value is not (fully) implemented");
 	    s.append(actualParameter.toJavaCode()).append(".COPY()");
@@ -489,15 +478,13 @@ public class CallProcedure {
 	  
 	  String staticLink=null;
 	  String procIdent=null;
-   	  { if(actualParameter instanceof BinaryOperation)
+   	  { if(actualParameter instanceof RemoteVariable)
    	    { // Check for <ObjectExpression> DOT <Variable>
-   		  BinaryOperation binaryOperation=(BinaryOperation)actualParameter;
-   	      if(binaryOperation.opr==KeyWord.DOT)
-   	      { staticLink=binaryOperation.lhs.toJavaCode();
-   	        if(binaryOperation.rhs instanceof Variable)
-   	        { procIdent=((Variable)binaryOperation.rhs).meaning.declaredAs.getJavaIdentifier();
-   	        	
-   	        }
+   		  RemoteVariable dotOperation=(RemoteVariable)actualParameter;
+   	      { staticLink=dotOperation.lhs.toJavaCode();
+   	        if(dotOperation.rhs instanceof Variable)
+   	             procIdent=((Variable)dotOperation.rhs).meaning.declaredAs.getJavaIdentifier();
+   	        else Util.FATAL_ERROR("Impossible");
    	      }
    	    } else if(actualParameter instanceof Variable)
 	   	{ procIdent=((Variable)actualParameter).meaning.declaredAs.getJavaIdentifier();

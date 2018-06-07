@@ -9,64 +9,52 @@ package simula.compiler.expression;
 
 import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Parameter;
-import simula.compiler.declaration.StandardClass;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * Binary Operation.
+ * Assignment Operation.
  * 
  * <pre>
  * 
  * Syntax:
  * 
- *   Assignment = Expression  operator  Expression
+ *   AssignmentOperation = Expression  AssignmentOperator  Expression
+ *   
+ *		AssignmentOperator =  :=  |  :-
  *   
  * </pre>
  * 
  * @author Øystein Myhre Andersen
  */
-public class Assignment extends Expression
+public class AssignmentOperation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public Expression rhs;
   private boolean textValueAssignment=false; // Set by doChecking
 
   
-  public Assignment(Expression lhs,KeyWord opr,Expression rhs)
+  public AssignmentOperation(Expression lhs,KeyWord opr,Expression rhs)
   { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-    //Util.BREAK("new Assignment: lhs="+lhs);
-    //Util.BREAK("new Assignment: opr="+opr);
-    //Util.BREAK("new Assignment: rhs="+rhs);
     lhs.backLink=rhs.backLink=this;
-	//Util.BREAK("NEW Assignment: "+toString());
   }
 
   
-  public boolean isRemoteVariable()
-  { if(opr==KeyWord.DOT)
-    { if(rhs instanceof Variable) return(true);	}
-  	return(false);
-  }
-  
-  public Variable getVariable()
-  { if(opr==KeyWord.DOT)
-    { if(rhs instanceof Variable) return((Variable)rhs);	}
-  	return(null);
-  }
+//  public Variable getWriteableVariable()
+//  { if(opr==KeyWord.DOT)
+//    { if(rhs instanceof Variable) return((Variable)rhs);	}
+//  	return(null);
+//  }
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
    	Util.setLine(lineNumber);
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	//Util.BREAK("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 	doAssignmentChecking(opr);
 	SET_SEMANTICS_CHECKED();
   }
@@ -80,7 +68,7 @@ public class Assignment extends Expression
 	if(keyWord==KeyWord.ASSIGNVALUE) this.textValueAssignment=(toType==Type.Text);
 	rhs=(Expression)TypeConversion.testAndCreate(toType,rhs);
 	this.type=toType;
-	Util.BREAK("doAssignmentChecking: CHECKED("+toString()+").doChecking - Result type="+this.type+"("+toType+' '+keyWord+' '+fromType+")");
+	//Util.BREAK("doAssignmentChecking: CHECKED("+toString()+").doChecking - Result type="+this.type+"("+toType+' '+keyWord+' '+fromType+")");
 	if(this.type==null) Util.error("doAssignmentChecking: Illegal types: "+toType+" := "+fromType);
   }
 
@@ -113,7 +101,7 @@ public class Assignment extends Expression
   
 
   // ***********************************************************************
-  // *** CODE: doCodeAssignment   -- FJERNES / RETTES // TODO: NEW ARRAY CODE
+  // *** CODE: doCodeAssignment   -- TODO: FJERNES / RETTES // 
   // ***********************************************************************
   private String doCodeAssignment()
   { StringBuilder s=new StringBuilder();
@@ -169,13 +157,15 @@ public class Assignment extends Expression
 	  //     <Expression-1> . ARRAY.put(x1,x2,<Expression-2>) ;
 	  //     OBJECT . ARRAY.A[x+9- OBJECT.ARRAY.LB[0]]=134;
 	  // -------------------------------------------------------------------------
-	  if(lhs instanceof Assignment && ((Assignment)lhs).opr==KeyWord.DOT)    // TODO: NEW ARRAY CODE
-	  { Expression afterDot=((Assignment)lhs).rhs;
+//	  if(lhs instanceof Assignment && ((Assignment)lhs).opr==KeyWord.DOT)
+//	  { Expression afterDot=((Assignment)lhs).rhs;
+	  if(lhs instanceof RemoteVariable)
+	  { Expression afterDot=((RemoteVariable)lhs).rhs;
 		//Util.BREAK("Assignment.doCodeAssignment: afterDot="+afterDot+", qual="+afterDot.getClass().getSimpleName());
 		if(afterDot instanceof SubscriptedVariable)
 		{ Declaration decl=((SubscriptedVariable)afterDot).meaning.declaredAs;
 		  //Util.BREAK("Assignment.doCodeAssignment30: decl="+decl+", qual="+decl.getClass().getSimpleName());
- 	      Expression beforeDot=((Assignment)lhs).lhs;
+ 	      Expression beforeDot=((RemoteVariable)lhs).lhs;
 		  if(decl instanceof ArrayDeclaration) return(assignToRemoteArray(beforeDot,(SubscriptedVariable)afterDot,rhs));
 		  else if(decl instanceof Parameter)
 		  { Parameter par=(Parameter)decl;
@@ -193,7 +183,7 @@ public class Assignment extends Expression
   
   
   // ***********************************************************************
-  // *** CODE: assignToRemoteArray      // TODO: NEW ARRAY CODE
+  // *** CODE: assignToRemoteArray
   // ***********************************************************************
   private String assignToRemoteArray(Expression beforeDot,SubscriptedVariable array,Expression rhs)
   { String lhs=doAccessRemoteArray(beforeDot,(SubscriptedVariable)array);
@@ -213,7 +203,7 @@ public class Assignment extends Expression
     StringBuilder ixs=new StringBuilder();
     String dimBrackets="";
 	for(Expression ix:array.checkedParams) {
-		String index="["+ix.toJavaCode()+"-"+remoteIdent+".LB["+(nDim++)+"]]"; // TODO: NEW ARRAY CODE
+		String index="["+ix.toJavaCode()+"-"+remoteIdent+".LB["+(nDim++)+"]]";
 		ixs.append(index);
 		dimBrackets=dimBrackets+"[]";
 	}

@@ -7,7 +7,7 @@
  */
 package simula.compiler.statement;
 
-import simula.compiler.expression.Assignment;
+import simula.compiler.expression.AssignmentOperation;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
@@ -41,19 +41,19 @@ public class StandaloneExpression extends Statement {
 		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF))
 		{ 
 //		  this.expression = new Assignment(this.expression, Parser.prevToken.getKeyWord(),Expression.parseExpression());
-		  this.expression = new Assignment(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
-		  Util.BREAK("NEW StandaloneExpression: "+this);
+		  this.expression = new AssignmentOperation(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
+		  //Util.BREAK("NEW StandaloneExpression: "+this);
 		}
 	}
 
 	  //  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
 	  private static Expression parseStandaloneExpression() { 
-		 Util.BREAK("Expression.parseStandaloneExpression");
+		 //Util.BREAK("Expression.parseStandaloneExpression");
 		 Expression retExpr=Expression.parseExpression();
 		 while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
 		      KeyWord opr=Parser.prevToken.getKeyWord();
 //	          retExpr=new Assignment(retExpr,opr,Expression.parseExpression());
-	          retExpr=new Assignment(retExpr,opr,parseStandaloneExpression());
+	          retExpr=new AssignmentOperation(retExpr,opr,parseStandaloneExpression());
 		 }
 		 return retExpr;
 	  }

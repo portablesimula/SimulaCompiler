@@ -14,7 +14,7 @@ import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.TypeDeclaration;
-import simula.compiler.expression.BinaryOperation;
+import simula.compiler.expression.AssignmentOperation;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
@@ -43,7 +43,7 @@ public class ConnectionStatement extends Statement
 { Expression objectExpression;
   Variable inspectedVariable;
   TypeDeclaration inspectVariableDeclaration;
-  BinaryOperation assignment;
+  AssignmentOperation assignment;
   Vector<DoPart> connectionPart=new Vector<DoPart>();
   Statement otherwise;
   boolean hasWhenPart;
@@ -97,7 +97,7 @@ public class ConnectionStatement extends Statement
 	
 //	currentScope.declaredIn.declarationList.add(inspectVariableDeclaration);
 	scope.declarationList.add(inspectVariableDeclaration);
-	assignment=new BinaryOperation(var,KeyWord.ASSIGNREF,objectExpression);
+	assignment=new AssignmentOperation(var,KeyWord.ASSIGNREF,objectExpression);
 	return(var);
   }
 
@@ -116,7 +116,7 @@ public class ConnectionStatement extends Statement
 	  refIdentifier=type.getRefIdent();
       //Util.BREAK("ConnectionStatement.DoPart.doChecking: ");
 	  if(refIdentifier==null) Util.error("The Variable "+inspectedVariable+" is not ref() type");
-	  connectionBlock.setClassDeclaration(BinaryOperation.getQualification(refIdentifier));	
+	  connectionBlock.setClassDeclaration(AssignmentOperation.getQualification(refIdentifier));	
 	  connectionBlock.doChecking();
 	  SET_SEMANTICS_CHECKED();
 	}
@@ -152,10 +152,10 @@ public class ConnectionStatement extends Statement
 	  }
       //Util.BREAK("ConnectionStatement.WhenPart.doChecking: ");
 	  if(classIdentifier!=null)
-	  {	classDeclaration=BinaryOperation.getQualification(classIdentifier);
+	  {	classDeclaration=AssignmentOperation.getQualification(classIdentifier);
 		connectionBlock.setClassDeclaration(classDeclaration);
 	  }
-	  if(!BinaryOperation.checkCompatability(objectExpression,classIdentifier))
+	  if(!AssignmentOperation.checkCompatability(objectExpression,classIdentifier))
 	  { Util.warning("Impossible When Part: "+objectExpression+" is not compatible with "+classIdentifier);
 	    impossibleWhenPart=true;
 	  }

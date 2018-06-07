@@ -1,36 +1,13 @@
 BEGIN
-BOOLEAN            result; !To contain the result of the;
-                           ! various boolean expressions;
-BOOLEAN          b1,b2,b3; ! b1-b3 always TRUE  ;
-BOOLEAN          b4,b5,b6; ! b4-b6 always FALSE ;
 
-BOOLEAN       found_error;  ! set TRUE if error found;
+   Boolean bool;
 
-outtext ("--- START Simula a.s. TEST 2");
-Outimage;
-outtext ("--- Test Boolean operators");
-outimage; Outimage;
+   Procedure P (a); name a; Boolean a;
+   begin Boolean bool;
+         a := not a;
+   end;
 
-b1 := TRUE;
-b2 := IF b1 THEN b1 ELSE FALSE;
-b3 := IF b2 THEN b1 ELSE FALSE;
+   P(bool);
 
-result := b1 and then b6;
 
-if result then
-begin
-   outtext ("*** error : 'and then' (2).");
-   outimage;
-   found_error := true
-end;
-
-result := b4 and then b2;
-
-if result then
-begin
-   outtext ("*** error : 'and then' (3).");
-   outimage;
-   found_error := true
-end;
-
-END
+ END

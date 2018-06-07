@@ -21,37 +21,36 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   BinaryOperation = Expression  operator  Expression
+ *   Operation_IS_IN_QUA = Expression  operator  Expression
  *   
  * </pre>
  * 
  * @author Øystein Myhre Andersen
  */
-public class BinaryISINQUAOperation extends Expression
+public class Operation_IS_IN_QUA extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public String classIdentifier;
   BlockDeclaration classDeclaration; // Set by doChecking
 
   
-  public BinaryISINQUAOperation(Expression lhs,KeyWord opr,String classIdentifier)
+  public Operation_IS_IN_QUA(Expression lhs,KeyWord opr,String classIdentifier)
   { this.lhs=lhs; this.opr=opr; this.classIdentifier=classIdentifier;
-    //Util.BREAK("new BinaryOperation: lhs="+lhs);
-    //Util.BREAK("new BinaryOperation: opr="+opr);
-    //Util.BREAK("new BinaryOperation: rhs="+rhs);
+    //Util.BREAK("new Operation_IS_IN_QUA: lhs="+lhs);
+    //Util.BREAK("new Operation_IS_IN_QUA: opr="+opr);
+    //Util.BREAK("new Operation_IS_IN_QUA: rhs="+rhs);
     lhs.backLink=this;
-	//Util.BREAK("NEW BinaryOperation: "+toString());
+	//Util.BREAK("NEW Operation_IS_IN_QUA: "+toString());
   }
 
   
-  public boolean isRemoteVariable() { return(false); }
-  public Variable getVariable() { return(null); }
+//  public Variable getWriteableVariable() { return(null); }
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
    	Util.setLine(lineNumber);
-	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN BinaryOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	//Util.BREAK("BEGIN BinaryOperation"+toString()+".doChecking - Current Scope Chain: "+currentScope.edScopeChain());
+	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Operation_IS_IN_QUA"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
+	//Util.BREAK("BEGIN Operation_IS_IN_QUA"+toString()+".doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 
 	classDeclaration=getQualification(classIdentifier);
 
@@ -59,20 +58,20 @@ public class BinaryISINQUAOperation extends Expression
 	{
 	  case IS: case IN:
 	  { // Object IS ClassIdentifier   |   Object IN ClassIdentifier
-		//Util.BREAK("BinaryOperation.doChecking:"+lhs+" "+opr+" "+rhs);
+		//Util.BREAK("Operation_IS_IN_QUA.doChecking:"+lhs+" "+opr+" "+rhs);
 		lhs.doChecking(); 
 		Type type1=lhs.type;
 	    String refIdent=type1.getRefIdent();
 	    if(refIdent==null)
-	    	Util.error("BinaryOperation.doChecking: The Variable "+lhs+" is not ref() type");
+	    	Util.error("Operation_IS_IN_QUA.doChecking: The Variable "+lhs+" is not ref() type");
 	    
-	    //Util.BREAK("BinaryOperation.doChecking: lhs="+lhs+", Qual="+lhs.getClass().getSimpleName());
-	    //Util.BREAK("BinaryOperation.doChecking: rhs="+rhs+", Qual="+rhs.getClass().getSimpleName());
+	    //Util.BREAK("Operation_IS_IN_QUA.doChecking: lhs="+lhs+", Qual="+lhs.getClass().getSimpleName());
+	    //Util.BREAK("Operation_IS_IN_QUA.doChecking: rhs="+rhs+", Qual="+rhs.getClass().getSimpleName());
 		
 		if(!checkCompatability(lhs,classIdentifier))
 			   Util.warning("IS/IN is always FALSE -- " + classIdentifier	+ " is not compatible with " + refIdent);
 		this.type=Type.Boolean;
-		//  Debug.BREAK("BinaryOperation.doChecking: "+oprCode);
+		//  Debug.BREAK("Operation_IS_IN_QUA.doChecking: "+oprCode);
 		break;
 	  }
 	  case QUA:
@@ -83,21 +82,21 @@ public class BinaryISINQUAOperation extends Expression
 		break;
 	  }
 	  default:
-			Util.NOT_IMPLEMENTED("BinaryOperation -- Util.error(Something went wrong) opr="+opr);
+			Util.NOT_IMPLEMENTED("Operation_IS_IN_QUA -- Util.error(Something went wrong) opr="+opr);
 			this.type=lhs.type;  // TODO  TEMP
 	}
-	if(Option.TRACE_CHECKER) Util.TRACE("END BinaryOperation"+toString()+".doChecking - Result type="+this.type);
+	if(Option.TRACE_CHECKER) Util.TRACE("END Operation_IS_IN_QUA"+toString()+".doChecking - Result type="+this.type);
 	SET_SEMANTICS_CHECKED();
   }
 
 
   public String toJavaCode()
-  { //Util.BREAK("BinaryOperation.toJavaCode: "+this);
+  { //Util.BREAK("Operation_IS_IN_QUA.toJavaCode: "+this);
 	ASSERT_SEMANTICS_CHECKED(this);
 	switch(opr)
 	{ case QUA:
 	  { String result="((" + classDeclaration.getJavaIdentifier() + ")(" + lhs.get() + "))";
-	    // Util.BREAK("BinaryOperation.toJavaCode: "+this+", ==> "+result);
+	    // Util.BREAK("Operation_IS_IN_QUA.toJavaCode: "+this+", ==> "+result);
 	    return(result);
 	  }
 	  case IN:

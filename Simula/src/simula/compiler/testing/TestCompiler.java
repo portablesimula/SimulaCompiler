@@ -121,8 +121,8 @@ public class TestCompiler {
 			Option.TRACE_CODING=true;
 
 			// Java Compiler and Jar-tool Trace Options
-			Option.TRACE_JAVAC=true;
-			Option.TRACE_JAVAC_OUTPUT=true;
+			Option.TRACE_JAVAC=false;//true;
+			Option.TRACE_JAVAC_OUTPUT=false;//true;
 			Option.TRACE_JARING=true;//false;//true;
 
 //		Option.keepJava="C:/WorkSpaces/SimulaCompiler/Simula/src/testing";

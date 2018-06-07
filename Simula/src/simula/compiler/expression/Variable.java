@@ -83,6 +83,9 @@ public class Variable extends Expression {
 		return(var);
 	}
 
+	// Is redefined in Variable, RemoteVariable and TypeConversion
+	public Variable getWriteableVariable() { return(this); }
+
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Util.setLine(lineNumber);

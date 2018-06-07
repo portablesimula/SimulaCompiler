@@ -63,8 +63,10 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		default: return (false);
 		}
 	}
-	  public Variable getVariable() // Is redefined in (Variable and) BinaryOperation(DOT)
-	  {	return(expression.getVariable()); }
+	
+	// Is redefined in Variable, RemoteVariable and TypeConversion
+	public Variable getWriteableVariable()
+	{	return(expression.getWriteableVariable()); }
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())

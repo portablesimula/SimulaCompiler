@@ -7,9 +7,7 @@
  */
 package simula.compiler.expression;
 
-import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;

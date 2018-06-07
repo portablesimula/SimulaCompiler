@@ -104,126 +104,117 @@ public abstract class Expression extends SyntaxClass
    *        
    * @return Expression or null if no expression is found.
    */
-  protected static Expression parseSimpleExpression()
-  { //Parser.BREAK("Expression: parseSimpleExpression");   
-	  Expression retExpr = parseANDTHEN();
+  protected static Expression parseSimpleExpression()  {   
+	  Expression expr = parseANDTHEN();
       while(Parser.accept(KeyWord.OR_ELSE))  {
-    	  retExpr=new BinaryOperation(retExpr,KeyWord.OR_ELSE,parseANDTHEN());
+    	  expr=new BooleanOperation(expr,KeyWord.OR_ELSE,parseANDTHEN());
       }
-      return retExpr;
+      return(expr);
   }
 
-  //BooleanTertiary =  Equivalence  { AND THEN  Equivalence }
-  private static Expression parseANDTHEN() {   // Metode-form 9: Kan ha en eller flere operander, tolkes venstreassos.
-	 Util.BREAK("Expression.parseANDTHEN");
-     Expression retExpr = parseEQV();
-     while(Parser.accept(KeyWord.AND_THEN))  {
-          retExpr=new BinaryOperation(retExpr,KeyWord.AND_THEN,parseEQV());
-     }
-     return retExpr;
+  // BooleanTertiary =  Equivalence  { AND THEN  Equivalence }
+  private static Expression parseANDTHEN() {
+     Expression expr = parseEQV();
+     while(Parser.accept(KeyWord.AND_THEN))
+          expr=new BooleanOperation(expr,KeyWord.AND_THEN,parseEQV());
+     return(expr);
   }
 
-  //  Equivalence  =  Implication  { EQV  Implication }
-  private static Expression parseEQV() {   // Metode-form 2: Kan ha EN eller TO operander
-	 Util.BREAK("Expression.parseEQV");
-	 Expression retExpr=parseIMP();
-//   if  -- MYH: Måtte bytte denne til While !!
-     while(Parser.accept(KeyWord.EQV)) {
-          retExpr=new BinaryOperation(retExpr,KeyWord.EQV,parseIMP());
-	 }
-	 return retExpr;
+  // Equivalence  =  Implication  { EQV  Implication }
+  private static Expression parseEQV() { 
+	 Expression expr=parseIMP();
+     while(Parser.accept(KeyWord.EQV))
+          expr=new BooleanOperation(expr,KeyWord.EQV,parseIMP());
+	 return(expr);
   }
 
   // Implication =  BooleanTerm  { IMP  BooleanTerm }
-  private static Expression parseIMP() {   // Metode-form 2: Kan ha EN eller TO operander
-	 Util.BREAK("Expression.parseIMP");
-	 Expression retExpr=parseOR();
-//     if  -- MYH: Måtte bytte denne til While !!
-     while
-     (Parser.accept(KeyWord.IMP)) {
-          retExpr=new BinaryOperation(retExpr,KeyWord.IMP,parseOR());
-	 }
-	 return retExpr;
+  private static Expression parseIMP() {
+	 Expression expr=parseOR();
+     while(Parser.accept(KeyWord.IMP))
+          expr=new BooleanOperation(expr,KeyWord.IMP,parseOR());
+	 return(expr);
   }
 
   // BooleanTerm  =  BooleanFactor  { OR  BooleanFactor }
-  private static Expression parseOR() {   // Metode-form 9: Kan ha en eller flere operander, tolkes venstreassos.
-	 Expression retExpr=parseAND();
-     while(Parser.accept(KeyWord.OR)) {
-          retExpr=new BinaryOperation(retExpr,KeyWord.OR,parseAND());
-	 }
-	 return retExpr;
+  private static Expression parseOR() {
+	 Expression expr=parseAND();
+     while(Parser.accept(KeyWord.OR))
+          expr=new BooleanOperation(expr,KeyWord.OR,parseAND());
+	 return(expr);
   }
 
   // BooleanFactor =  BooleanSecondary  { AND  BooleanSecondary }
-  private static Expression parseAND() {   // Metode-form 9: Kan ha en eller flere operander, tolkes venstreassos.
-	 Expression retExpr=parseNOT();
-     while(Parser.accept(KeyWord.AND)) {
-          retExpr=new BinaryOperation(retExpr,KeyWord.AND,parseNOT());
-	 }
-	 return retExpr;
+  private static Expression parseAND() {
+	 Expression expr=parseNOT();
+     while(Parser.accept(KeyWord.AND))
+          expr=new BooleanOperation(expr,KeyWord.AND,parseNOT());
+	 return(expr);
   }
 
   // BooleanSecondary  =  [ NOT ]  BooleanPrimary
-  private static Expression  parseNOT() {   // Metode-form 1:  Unær prefiks-operasjon, EN operand
-	 Expression retExpr;
+  private static Expression  parseNOT() {
+	 Expression expr;
      if(Parser.accept(KeyWord.NOT)) {
-          retExpr=new UnaryOperation(KeyWord.NOT,parseREL());
-     } else {
-          retExpr = parseREL();
-     }
-     return retExpr;
+          expr=new UnaryOperation(KeyWord.NOT,parseREL());
+     } else expr = parseREL();
+     return(expr);
   }
 
   // BooleanPrimary =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
-  //  RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
+  //    RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
   private static Expression parseREL() {   // Metode-form      
-	 Expression retExpr = parseADDSUB();
-	 if(Parser.acceptRelationalOperator())   {  // Om det er en av relasjons-operasjonene
+	 Expression expr = parseAdditiveOperation();
+	 if(Parser.acceptRelationalOperator())   { 
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-	      retExpr=new BinaryOperation(retExpr,opr,parseADDSUB());
+	      expr=new RelationalOperation(expr,opr,parseAdditiveOperation());
 	 }
-	 return retExpr;
+	 return(expr);
   }
 
   // SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
-  private static Expression parseADDSUB() {   // Metode-form 9: Kan ha en eller flere operander, tolkes venstreassos.
-	 Expression retExpr=parseUNIADDSUB();
-     while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS,KeyWord.CONC)) {  // MYH: Måtte legge til  CONC
+  private static Expression parseAdditiveOperation() {
+	 Expression expr=parseUNIADDSUB();
+     while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          retExpr=new BinaryOperation(retExpr,opr,parseUNIADDSUB());
+          expr=new ArithmeticOperation(expr,opr,parseUNIADDSUB());
 	 }
-	 return retExpr;
+	 return(expr);
   }
 
-  private static Expression parseUNIADDSUB() {   // Metode-form 1:  Unær prefiks-operasjon, EN operand
-	 Expression retExpr;
+  private static Expression parseUNIADDSUB() {
+	 Expression expr;
      if(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) {
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          retExpr=new UnaryOperation(opr,parseMULDIV());
-     } else {
-          retExpr = parseMULDIV();
-     }
-     return retExpr;
+          expr=new UnaryOperation(opr,parseMULDIV());
+     } else expr = parseMULDIV();
+     return(expr);
   }
 
   // Term  =  Factor  {  ( * | / | // )  Factor }
-  private static Expression parseMULDIV() {   // Metode-form 9: Kan ha en eller flere operander, tolkes venstreassos.
-	 Expression retExpr=parseEXPON();
+  private static Expression parseMULDIV() {
+	 Expression expr=parseEXPON();
      while(Parser.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          retExpr=new BinaryOperation(retExpr,opr,parseEXPON());
+          expr=new ArithmeticOperation(expr,opr,parseEXPON());
 	 }
-	 return retExpr;
+	 return(expr);
   }
 
   // Factor  =  BasicExpression  { **  BasicExpression }
-  private static Expression parseEXPON() {   // Metode-form 9: Kan ha en eller flere operander, tolkes venstreassos.
-	 Expression retExpr=parseBASICEXPR();
-     while(Parser.accept(KeyWord.EXP)) {
-          retExpr=new BinaryOperation(retExpr,KeyWord.EXP,parseBASICEXPR());
-	 }
-	 return retExpr;
+  private static Expression parseEXPON() {
+	 Expression expr=parseTEXTCONC();
+     while(Parser.accept(KeyWord.EXP))
+    	 expr=new ArithmeticOperation(expr,KeyWord.EXP,parseTEXTCONC());
+	 return(expr);
+  }
+
+  // SimpleTextExpression  =  TextPrimary  { & TextPrimary }
+  private static Expression parseTEXTCONC() {
+	 Expression expr=parseBASICEXPR();
+     while(Parser.accept(KeyWord.CONC))
+    	 expr=new TextOperation(expr,parseBASICEXPR());
+	 return(expr);
   }
   
   
@@ -249,19 +240,19 @@ public abstract class Expression extends SyntaxClass
   private static Expression parseBASICEXPR() {      // Dette er vel kanskje det samme som “primary”?
 	 // Merk: Alt som kan stå foran et postfix (DOT, IS, IN og QUA) må være et BASICEXPR
      if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression");
-	 Expression retExpr=null;
-	 if(Parser.accept(KeyWord.BEGPAR)) { retExpr = parseExpression(); Parser.expect(KeyWord.ENDPAR); }
-	 else if(Parser.accept(KeyWord.INTEGERKONST)) retExpr = new Constant(Type.Integer,Parser.prevToken.getValue());
-	 else if(Parser.accept(KeyWord.REALKONST)) retExpr = Constant.createRealType(Parser.prevToken.getValue());
-	 else if(Parser.accept(KeyWord.BOOLEANKONST)) retExpr = new Constant(Type.Boolean,Parser.prevToken.getValue());
-	 else if(Parser.accept(KeyWord.CHARACTERKONST)) retExpr = new Constant(Type.Character,Parser.prevToken.getValue());
-	 else if(Parser.accept(KeyWord.TEXTKONST)) retExpr = new Constant(Type.Text,Parser.prevToken.getValue());
-	 else if(Parser.accept(KeyWord.NONE)) retExpr = new Constant(Type.Ref,null);
-	 else if(Parser.accept(KeyWord.NOTEXT)) retExpr = new Constant(Type.Text,null);
-     else if(Parser.accept(KeyWord.NEW)) retExpr =ObjectGenerator.parse();
-     else if(Parser.accept(KeyWord.THIS)) retExpr =LocalObject.acceptThisIdentifier(); 
+	 Expression expr=null;
+	 if(Parser.accept(KeyWord.BEGPAR)) { expr = parseExpression(); Parser.expect(KeyWord.ENDPAR); }
+	 else if(Parser.accept(KeyWord.INTEGERKONST)) expr = new Constant(Type.Integer,Parser.prevToken.getValue());
+	 else if(Parser.accept(KeyWord.REALKONST)) expr = Constant.createRealType(Parser.prevToken.getValue());
+	 else if(Parser.accept(KeyWord.BOOLEANKONST)) expr = new Constant(Type.Boolean,Parser.prevToken.getValue());
+	 else if(Parser.accept(KeyWord.CHARACTERKONST)) expr = new Constant(Type.Character,Parser.prevToken.getValue());
+	 else if(Parser.accept(KeyWord.TEXTKONST)) expr = new Constant(Type.Text,Parser.prevToken.getValue());
+	 else if(Parser.accept(KeyWord.NONE)) expr = new Constant(Type.Ref,null);
+	 else if(Parser.accept(KeyWord.NOTEXT)) expr = new Constant(Type.Text,null);
+     else if(Parser.accept(KeyWord.NEW)) expr =ObjectGenerator.parse();
+     else if(Parser.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
 	 else { String ident=acceptIdentifier();
-	        if(ident!=null) retExpr=Variable.parse(ident);
+	        if(ident!=null) expr=Variable.parse(ident);
 	        else { if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: NULL");
 	    	       return(null);
 	        }
@@ -270,28 +261,26 @@ public abstract class Expression extends SyntaxClass
 	 while (Parser.acceptPostfixOprator()) {
 	      KeyWord opr=Parser.prevToken.getKeyWord(); // opr == DOT || opr== IS || opr == IN || opr == QUA
 	      if (opr == KeyWord.DOT ) 
-	           retExpr=new BinaryOperation(retExpr,KeyWord.DOT,parseVARARRCALL());
+	           expr=new RemoteVariable(expr,parseVARARRCALL());
 	      else {  // Vet at opr == IS or opr == IN or opr == QUA.  Alle skal ha et klassenavn etter seg
 	    	   String classIdentifier=expectIdentifier();
-	           retExpr=new BinaryISINQUAOperation(retExpr,opr,classIdentifier);
+	           expr=new Operation_IS_IN_QUA(expr,opr,classIdentifier);
 	      }
 	 }
-     if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: "+retExpr);
-	 return(retExpr);
+     if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: "+expr);
+	 return(expr);
   }
   
-  private static Expression parseVARARRCALL() { 
+  private static Variable parseVARARRCALL() { 
 	  // Et navn med valgfri argument-parentes etter.  Er også det som kan stå etter DOT
 	  // Altså: Enkelt-variabel, array-aksess eller prosedyre-kall. 
 	  String ident=expectIdentifier();
       return(Variable.parse(ident));
   }
   
-  public boolean isRemoteVariable() { return(false); }  // Is redefined in BinaryOperation(DOT)
-  public Variable getVariable() // { return(null); } // Is redefined in (Variable and) BinaryOperation(DOT)
-  { if(this instanceof Variable) return((Variable)this);
-	return(null);
-  }
+  
+  // Is redefined in Variable, RemoteVariable and TypeConversion
+  public Variable getWriteableVariable() { return(null); } 
 
   private static BlockDeclaration getQualification(Expression simpleObjectExpression) {
 		String refIdent=simpleObjectExpression.type.getRefIdent();
