@@ -28,7 +28,6 @@ import simula.compiler.utilities.Util;
  * Expression  =  SimpleExpression
  *	           |  IF  BooleanExpression  THEN  SimpleExpression  ELSE  Expression
  *
- *
  *  SimpleExpression  =  BooleanTertiary  { OR ELSE  BooleanTertiary }
  *  BooleanTertiary   =  Equivalence  { AND THEN  Equivalence }
  *  Equivalence       =  Implication  { EQV  Implication }
@@ -36,7 +35,8 @@ import simula.compiler.utilities.Util;
  *  BooleanTerm       =  BooleanFactor  { OR  BooleanFactor }
  *  BooleanFactor     =  BooleanSecondary  { AND  BooleanSecondary }
  *  BooleanSecondary  =  [ NOT ]  BooleanPrimary
- *  BooleanPrimary    =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
+ *  BooleanPrimary    =  TextPrimary  { & TextPrimary }
+ *  TextPrimary       =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
  *       RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
  *  SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
  *  Term    =  Factor  {  ( * | / | // )  Factor }
@@ -95,7 +95,8 @@ public abstract class Expression extends SyntaxClass
    *  BooleanTerm       =  BooleanFactor  { OR  BooleanFactor }
    *  BooleanFactor     =  BooleanSecondary  { AND  BooleanSecondary }
    *  BooleanSecondary  =  [ NOT ]  BooleanPrimary
-   *  BooleanPrimary    =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
+   *  BooleanPrimary    =  TextPrimary  { & TextPrimary }
+   *  TextPrimary       =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
    *       RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
    *  SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
    *  Term    =  Factor  {  ( * | / | // )  Factor }
@@ -156,12 +157,20 @@ public abstract class Expression extends SyntaxClass
   private static Expression  parseNOT() {
 	 Expression expr;
      if(Parser.accept(KeyWord.NOT)) {
-          expr=new UnaryOperation(KeyWord.NOT,parseREL());
-     } else expr = parseREL();
+         expr=new UnaryOperation(KeyWord.NOT,parseTEXTCONC());
+    } else expr = parseTEXTCONC();
      return(expr);
   }
+  
+  // BooleanPrimary  =  TextPrimary  { & TextPrimary }
+  private static Expression parseTEXTCONC() {
+	 Expression expr=parseREL();
+     while(Parser.accept(KeyWord.CONC))
+    	 expr=new TextOperation(expr,parseREL());
+	 return(expr);
+  }
 
-  // BooleanPrimary =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
+  // TextPrimary =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
   //    RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
   private static Expression parseREL() {   // Metode-form      
 	 Expression expr = parseAdditiveOperation();
@@ -203,17 +212,9 @@ public abstract class Expression extends SyntaxClass
 
   // Factor  =  BasicExpression  { **  BasicExpression }
   private static Expression parseEXPON() {
-	 Expression expr=parseTEXTCONC();
-     while(Parser.accept(KeyWord.EXP))
-    	 expr=new ArithmeticOperation(expr,KeyWord.EXP,parseTEXTCONC());
-	 return(expr);
-  }
-
-  // SimpleTextExpression  =  TextPrimary  { & TextPrimary }
-  private static Expression parseTEXTCONC() {
 	 Expression expr=parseBASICEXPR();
-     while(Parser.accept(KeyWord.CONC))
-    	 expr=new TextOperation(expr,parseBASICEXPR());
+     while(Parser.accept(KeyWord.EXP))
+    	 expr=new ArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
 	 return(expr);
   }
   

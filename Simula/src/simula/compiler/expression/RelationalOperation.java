@@ -34,11 +34,7 @@ public class RelationalOperation extends Expression
   
   public RelationalOperation(Expression lhs,KeyWord opr,Expression rhs)
   { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-    //Util.BREAK("new RelationalOperation: lhs="+lhs);
-    //Util.BREAK("new RelationalOperation: opr="+opr);
-    //Util.BREAK("new RelationalOperation: rhs="+rhs);
     lhs.backLink=rhs.backLink=this;
-	//Util.BREAK("NEW RelationalOperation: "+toString());
   }
 
   
@@ -46,7 +42,6 @@ public class RelationalOperation extends Expression
   { if(IS_SEMANTICS_CHECKED()) return;
    	Util.setLine(lineNumber);
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN RelationalOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	//Util.BREAK("BEGIN RelationalOperation"+toString()+".doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 	switch(opr)
 	{ case LT: case LE: case EQ: case NE: case GE: case GT:
 	  {	lhs.doChecking(); rhs.doChecking(); 
