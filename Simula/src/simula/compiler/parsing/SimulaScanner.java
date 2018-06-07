@@ -10,7 +10,6 @@ package simula.compiler.parsing;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.Precedence;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
 
@@ -91,13 +90,13 @@ public final class SimulaScanner
     { if(token.getKeyWord()==KeyWord.AND)
       { Token maybeThen=scanToken();
         if(maybeThen.getKeyWord()==KeyWord.THEN)
-           return(new Token(KeyWord.AND_THEN,Precedence.LEVEL_AND_THEN));
+            return(new Token(KeyWord.AND_THEN));
         savedToken=maybeThen;
       }
       else if(token.getKeyWord()==KeyWord.OR)
       { Token maybeElse=scanToken();
         if(maybeElse.getKeyWord()==KeyWord.ELSE)
-           return(new Token(KeyWord.OR_ELSE,Precedence.LEVEL_OR_ELSE));
+            return(new Token(KeyWord.OR_ELSE));
         savedToken=maybeElse;
       }
     }
@@ -119,33 +118,33 @@ public final class SimulaScanner
 	{ if(Character.isLetter(getNext())) return(scanIdentifier());
 	  switch(current)
 	  { case '=':
-		  if(getNext() == '=')   return(new Token(KeyWord.EQR,Precedence.LEVEL_EQR));
+		  if(getNext() == '=')   return(new Token(KeyWord.EQR));
 		  if(current == '/')
-		  if(getNext() == '=')   return(new Token(KeyWord.NER,Precedence.LEVEL_NER));
+		  if(getNext() == '=')   return(new Token(KeyWord.NER));
 		  else Util.error("Illegal character combination ="+(char)current);
-		  pushBack(current);     return(new Token(KeyWord.EQ,Precedence.LEVEL_EQ));
+		  pushBack(current);     return(new Token(KeyWord.EQ));
 	    case '>':
-		  if(getNext() == '=')   return(new Token(KeyWord.GE,Precedence.LEVEL_GE));
-		  pushBack(current);     return(new Token(KeyWord.GT,Precedence.LEVEL_GT));
+		  if(getNext() == '=')   return(new Token(KeyWord.GE));
+		  pushBack(current);     return(new Token(KeyWord.GT));
 	    case '<':
-	      if(getNext() == '=')   return(new Token(KeyWord.LE,Precedence.LEVEL_LE));
-		  if(current == '>')     return(new Token(KeyWord.NE,Precedence.LEVEL_NE));
-		  pushBack(current);     return(new Token(KeyWord.LT,Precedence.LEVEL_LT));
-	    case '+':                return(new Token(KeyWord.PLUS,Precedence.LEVEL_ADD));
-	    case '-':	             return(new Token(KeyWord.MINUS,Precedence.LEVEL_SUB));
+	      if(getNext() == '=')   return(new Token(KeyWord.LE));
+		  if(current == '>')     return(new Token(KeyWord.NE));
+		  pushBack(current);     return(new Token(KeyWord.LT));
+	    case '+':                return(new Token(KeyWord.PLUS));
+	    case '-':	             return(new Token(KeyWord.MINUS));
 	    case '*':
-		  if(getNext() == '*')   return(new Token(KeyWord.EXP,Precedence.LEVEL_EXP));
-		  pushBack(current); 	 return(new Token(KeyWord.MUL,Precedence.LEVEL_MUL));
+		  if(getNext() == '*')   return(new Token(KeyWord.EXP));
+		  pushBack(current); 	 return(new Token(KeyWord.MUL));
 	    case '/':
-		  if(getNext() == '/')   return(new Token(KeyWord.INTDIV,Precedence.LEVEL_INTDIV));
-		  pushBack(current); 	 return(new Token(KeyWord.DIV,Precedence.LEVEL_DIV));
+		  if(getNext() == '/')   return(new Token(KeyWord.INTDIV));
+		  pushBack(current); 	 return(new Token(KeyWord.DIV));
 	    case '.':
 		  if(Character.isDigit(getNext())) { return(scanDotDigit(new StringBuilder())); }
-		  pushBack(current); return(new Token(KeyWord.DOT,Precedence.LEVEL_DOT));
+		  pushBack(current); return(new Token(KeyWord.DOT));
 	    case ',':	         return(new Token(KeyWord.COMMA));
 	    case ':':
-		  if(getNext() == '=')               return(new Token(KeyWord.ASSIGNVALUE,Precedence.LEVEL_ASSIGN));
-		  if(current == '-' && pardepth == 0) return(new Token(KeyWord.ASSIGNREF,Precedence.LEVEL_ASSIGN));
+		  if(getNext() == '=')               return(new Token(KeyWord.ASSIGNVALUE));
+		  if(current == '-' && pardepth == 0) return(new Token(KeyWord.ASSIGNREF));
 		  pushBack(current);           return(new Token(KeyWord.COLON));
 	    case ';':	pardepth=0; return(new Token(KeyWord.SEMICOLON));
 	    case '(':	pardepth++; return(new Token(KeyWord.BEGPAR));
@@ -158,8 +157,7 @@ public final class SimulaScanner
 		  || current=='+'
 		  || Character.isDigit(current)) { return(scanDigitsExp(null)); }
 		    
-//		  pushBack(current); return(new Token(KeyWord.CONC));
-		  pushBack(current); return(new Token(KeyWord.CONC,Precedence.LEVEL_ADD));
+		  pushBack(current); return(new Token(KeyWord.CONC));
 	    case '!': scanComment(); break;
 	    case '\'': return(scanCharacterConstant());
 	    case '\"': return(scanTextConstant());
@@ -218,8 +216,8 @@ public final class SimulaScanner
 	  { case 'A':
 		  if(name.equalsIgnoreCase("ACTIVATE"))   return(new Token(KeyWord.ACTIVATE));
 		  if(name.equalsIgnoreCase("AFTER"))	  return(new Token(KeyWord.AFTER));
-		  if(name.equalsIgnoreCase("AND"))		  return(new Token(KeyWord.AND,Precedence.LEVEL_AND));
-		  if(name.equalsIgnoreCase("AND_THEN"))	  return(new Token(KeyWord.AND_THEN,Precedence.LEVEL_AND_THEN));
+		  if(name.equalsIgnoreCase("AND"))		  return(new Token(KeyWord.AND));
+		  if(name.equalsIgnoreCase("AND_THEN"))	  return(new Token(KeyWord.AND_THEN));
 		  if(name.equalsIgnoreCase("ARRAY"))	  return(new Token(KeyWord.ARRAY));
 		  if(name.equalsIgnoreCase("AT"))		  return(new Token(KeyWord.AT));
 		  break;
@@ -240,8 +238,8 @@ public final class SimulaScanner
 		case 'E':
 		  if(name.equalsIgnoreCase("ELSE"))       return(new Token(KeyWord.ELSE));
 		  if(name.equalsIgnoreCase("END"))   	  return(scanEndComment());
-		  if(name.equalsIgnoreCase("EQ"))	      return(new Token(KeyWord.EQ,Precedence.LEVEL_EQ));
-		  if(name.equalsIgnoreCase("EQV"))	      return(new Token(KeyWord.EQV,Precedence.LEVEL_EQV));
+		  if(name.equalsIgnoreCase("EQ"))	      return(new Token(KeyWord.EQ));
+		  if(name.equalsIgnoreCase("EQV"))	      return(new Token(KeyWord.EQV));
 		  if(name.equalsIgnoreCase("EXTERNAL"))   return(new Token(KeyWord.EXTERNAL));
 		  break;
 		case 'F':
@@ -249,40 +247,40 @@ public final class SimulaScanner
 		  if(name.equalsIgnoreCase("FOR"))    return(new Token(KeyWord.FOR));
 		  break;
 		case 'G':
-		  if(name.equalsIgnoreCase("GE"))     return(new Token(KeyWord.GE,Precedence.LEVEL_GE));
+		  if(name.equalsIgnoreCase("GE"))     return(new Token(KeyWord.GE));
 		  if(name.equalsIgnoreCase("GO"))     return(new Token(KeyWord.GO));
 		  if(name.equalsIgnoreCase("GOTO"))   return(new Token(KeyWord.GOTO));
-		  if(name.equalsIgnoreCase("GT"))     return(new Token(KeyWord.GT,Precedence.LEVEL_GT));
+		  if(name.equalsIgnoreCase("GT"))     return(new Token(KeyWord.GT));
 		  break;
 		case 'H':
 		  if(name.equalsIgnoreCase("HIDDEN")) return(new Token(KeyWord.HIDDEN));
 		  break;
 		case 'I':
 		  if(name.equalsIgnoreCase("IF"))      return(new Token(KeyWord.IF));
-		  if(name.equalsIgnoreCase("IMP"))     return(new Token(KeyWord.IMP,Precedence.LEVEL_IMP));
-		  if(name.equalsIgnoreCase("IN"))      return(new Token(KeyWord.IN,Precedence.LEVEL_IN));
+		  if(name.equalsIgnoreCase("IMP"))     return(new Token(KeyWord.IMP));
+		  if(name.equalsIgnoreCase("IN"))      return(new Token(KeyWord.IN));
 		  if(name.equalsIgnoreCase("INNER"))   return(new Token(KeyWord.INNER));
 		  if(name.equalsIgnoreCase("INSPECT")) return(new Token(KeyWord.INSPECT));
 		  if(name.equalsIgnoreCase("INTEGER")) return(new Token(KeyWord.INTEGER));
-		  if(name.equalsIgnoreCase("IS"))      return(new Token(KeyWord.IS,Precedence.LEVEL_IS));
+		  if(name.equalsIgnoreCase("IS"))      return(new Token(KeyWord.IS));
 		  break;
 		case 'L':
 		  if(name.equalsIgnoreCase("LABEL")) return(new Token(KeyWord.LABEL));
-		  if(name.equalsIgnoreCase("LE"))    return(new Token(KeyWord.LE,Precedence.LEVEL_LE));
+		  if(name.equalsIgnoreCase("LE"))    return(new Token(KeyWord.LE));
 		  if(name.equalsIgnoreCase("LONG"))  return(new Token(KeyWord.LONG));
-		  if(name.equalsIgnoreCase("LT"))    return(new Token(KeyWord.LT,Precedence.LEVEL_LT));
+		  if(name.equalsIgnoreCase("LT"))    return(new Token(KeyWord.LT));
 		  break;
 		case 'N':
 		  if(name.equalsIgnoreCase("NAME"))   return(new Token(KeyWord.NAME));
-		  if(name.equalsIgnoreCase("NE"))     return(new Token(KeyWord.NE,Precedence.LEVEL_NE));
+		  if(name.equalsIgnoreCase("NE"))     return(new Token(KeyWord.NE));
 		  if(name.equalsIgnoreCase("NEW"))    return(new Token(KeyWord.NEW));
 		  if(name.equalsIgnoreCase("NONE"))   return(new Token(KeyWord.NONE));
-		  if(name.equalsIgnoreCase("NOT"))    return(new Token(KeyWord.NOT,Precedence.LEVEL_NOT));
+		  if(name.equalsIgnoreCase("NOT"))    return(new Token(KeyWord.NOT));
 		  if(name.equalsIgnoreCase("NOTEXT")) return(new Token(KeyWord.NOTEXT));
 		  break;
 		case 'O':
-		  if(name.equalsIgnoreCase("OR"))         return(new Token(KeyWord.OR,Precedence.LEVEL_OR));
-		  if(name.equalsIgnoreCase("OR_ELSE"))    return(new Token(KeyWord.OR_ELSE,Precedence.LEVEL_OR_ELSE));
+		  if(name.equalsIgnoreCase("OR"))         return(new Token(KeyWord.OR));
+		  if(name.equalsIgnoreCase("OR_ELSE"))    return(new Token(KeyWord.OR_ELSE));
 		  if(name.equalsIgnoreCase("OTHERWISE"))  return(new Token(KeyWord.OTHERWISE));
 		  break;
 		case 'P':
@@ -291,7 +289,7 @@ public final class SimulaScanner
 		  if(name.equalsIgnoreCase("PROTECTED"))  return(new Token(KeyWord.PROTECTED));
 		  break;
 		case 'Q':
-		  if(name.equalsIgnoreCase("QUA"))        return(new Token(KeyWord.QUA,Precedence.LEVEL_QUA));
+		  if(name.equalsIgnoreCase("QUA"))        return(new Token(KeyWord.QUA));
 		  break;
 		case 'R':
 		  if(name.equalsIgnoreCase("REACTIVATE")) return(new Token(KeyWord.REACTIVATE));
@@ -307,7 +305,6 @@ public final class SimulaScanner
 		  if(name.equalsIgnoreCase("TEXT"))   return(new Token(KeyWord.TEXT));
 		  if(name.equalsIgnoreCase("THEN"))   return(new Token(KeyWord.THEN));
 		  if(name.equalsIgnoreCase("THIS"))   return(new Token(KeyWord.THIS));
-//		  if(name.equalsIgnoreCase("THIS"))   return(new Token(KeyWord.THIS,Precedence.LEVEL_THIS));
 		  if(name.equalsIgnoreCase("TO"))     return(new Token(KeyWord.TO));
 		  if(name.equalsIgnoreCase("true"))   return(new Token(KeyWord.BOOLEANKONST,true));
 		  break;

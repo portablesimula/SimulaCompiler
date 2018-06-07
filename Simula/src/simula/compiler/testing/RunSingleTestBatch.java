@@ -33,7 +33,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
-		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
 		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
@@ -64,7 +64,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst31.sim"); // ERR: Labels and switches as parameters to procedures
 		//names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
 		//names.add("simtst33.sim"); // OK:  Test call by reference
-		names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
+		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
 		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.
 		//names.add("simtst36.sim"); // OK:  Jensens Device - call by name.
 		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion

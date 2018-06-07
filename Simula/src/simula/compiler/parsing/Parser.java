@@ -8,7 +8,6 @@
 package simula.compiler.parsing;
 
 import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.Precedence;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
 
@@ -106,63 +105,6 @@ public class Parser {
 	  return(false);
 	}
 	
-//	public static boolean acceptValueRelationalOperator()
-//	{ // value-relational-operator
-//	  //     =  <  |  <=  |  =  |  >=  |  >  |  <>
-//	  if(accept(KeyWord.LT)) return(true);
-//	  if(accept(KeyWord.LE)) return(true);
-//	  if(accept(KeyWord.EQ)) return(true);
-//	  if(accept(KeyWord.GE)) return(true);
-//	  if(accept(KeyWord.GT)) return(true);
-//	  if(accept(KeyWord.NE)) return(true);
-//	  return(false);
-//	}
-
-	public static boolean acceptBinaryOperator(int level) {
-		// TRACE("SimulaParser.acceptBinaryOperator(" + level + ")");
-		Object val = Parser.currentToken.getValue();
-		if (val != null && val instanceof Precedence) {
-			int operatorLevel = ((Precedence) val).getValue();
-			if (operatorLevel == level) {
-				nextSymb();
-				// TRACE("acceptOperator("+Parser.currentToken+','+level+") SUCCESS");
-				return (true);
-			}
-		}
-		// TRACE("acceptOperator("+Parser.currentToken+','+level+") FAILED");
-		return (false);
-	}
-
-	public static boolean acceptOperatorLevel(int level) {
-		// TRACE("SimulaParser.acceptBinaryOperator(" + level + ")");
-		Object val = Parser.currentToken.getValue();
-		if (val != null && val instanceof Precedence) {
-			int operatorLevel = ((Precedence) val).getValue();
-			if (operatorLevel == level) {
-				nextSymb();
-				//TRACE("acceptOperator("+Parser.currentToken+','+level+") SUCCESS");
-				return (true);
-			}
-		}
-		//TRACE("acceptOperator("+Parser.currentToken+','+level+") FAILED");
-		return (false);
-	}
-
-	public static boolean acceptUnaryOperator(int level) {
-		//TRACE("SimulaParser.acceptUnaryOperator(" + level + ")");
-		Object val = Parser.currentToken.getValue();
-		if (val != null && val instanceof Precedence) {
-			Precedence precedence=(Precedence) val;
-			int operatorLevel = precedence.getValue();
-			if (precedence.unary && operatorLevel == level) {
-				nextSymb();
-				//TRACE("acceptUnaryOperator("+Parser.currentToken+','+level+") SUCCESS");
-				return (true);
-			}
-		}
-		//TRACE("acceptUnaryOperator("+Parser.currentToken+','+level+") FAILED");
-		return (false);
-	}
 
 	public static boolean expect(KeyWord s) {
 		if (accept(s))

@@ -1,13 +1,11 @@
 BEGIN
 
-   Boolean bool;
-
-   Procedure P (a); name a; Boolean a;
-   begin Boolean bool;
-         a := not a;
-   end;
-
-   P(bool);
+IF         i1 EQ 0  AND NOT i1 <  i2
+   AND     i1 <= i2 AND NOT i1 >  i2
+   AND      0 >= i2 AND NOT i1 <> i2
+   
+     THEN
+ELSE  err("INT.1 (comparing INTEGERs)");
 
 
  END
