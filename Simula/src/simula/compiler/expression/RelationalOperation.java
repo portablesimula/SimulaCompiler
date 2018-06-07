@@ -7,16 +7,9 @@
  */
 package simula.compiler.expression;
 
-import simula.compiler.declaration.ArrayDeclaration;
-import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.BlockDeclaration;
-import simula.compiler.declaration.Parameter;
-import simula.compiler.declaration.StandardClass;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -37,10 +30,6 @@ public class RelationalOperation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public Expression rhs;
-  private  Meaning remoteAttribute; // Set by doChecking
-  private boolean textValueAssignment=false; // Set by doChecking
-  private BlockDeclaration callRemoteProcedure=null; 
-  private boolean accessRemoteArray=false; // Set by doChecking
 
   
   public RelationalOperation(Expression lhs,KeyWord opr,Expression rhs)

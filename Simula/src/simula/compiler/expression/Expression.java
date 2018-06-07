@@ -253,25 +253,36 @@ public abstract class Expression extends SyntaxClass
      else if(Parser.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
 	 else { String ident=acceptIdentifier();
 	        if(ident!=null) expr=Variable.parse(ident);
-	        else { if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: NULL");
-	    	       return(null);
+	        else {
+	        	if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: NULL");
+	    	    return(null);
 	        }
 	 }
 	 // Så kan det komme en sekvens av postfikser, som bygger tre “oppover mot høyre”
 	 while (Parser.acceptPostfixOprator()) {
 	      KeyWord opr=Parser.prevToken.getKeyWord(); // opr == DOT || opr== IS || opr == IN || opr == QUA
 	      if (opr == KeyWord.DOT ) 
-	           expr=new RemoteVariable(expr,parseVARARRCALL());
+	           expr=new RemoteVariable(expr,parseVariable());
 	      else {  // Vet at opr == IS or opr == IN or opr == QUA.  Alle skal ha et klassenavn etter seg
 	    	   String classIdentifier=expectIdentifier();
-	           expr=new Operation_IS_IN_QUA(expr,opr,classIdentifier);
+	    	   if(opr==KeyWord.QUA)
+	                expr=new QualifiedObject(expr,classIdentifier);
+	    	   else expr=new ObjectRelation(expr,opr,classIdentifier);
 	      }
 	 }
      if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: "+expr);
 	 return(expr);
   }
   
-  private static Variable parseVARARRCALL() { 
+  /**
+   * <pre>
+   * Variable  =  Identifier  |  SubscriptedVariable
+   *	SubscriptedVariable  =  Identifier  "("  Expression  {  ,  Expression  }  ")"
+   * </pre>
+   * NOTE: That a SubscriptedVariable may be an subscripted array or a function designator.
+   * @return
+   */
+  private static Variable parseVariable() { 
 	  // Et navn med valgfri argument-parentes etter.  Er også det som kan stå etter DOT
 	  // Altså: Enkelt-variabel, array-aksess eller prosedyre-kall. 
 	  String ident=expectIdentifier();

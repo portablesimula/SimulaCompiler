@@ -44,13 +44,6 @@ public class AssignmentOperation extends Expression
     lhs.backLink=rhs.backLink=this;
   }
 
-  
-//  public Variable getWriteableVariable()
-//  { if(opr==KeyWord.DOT)
-//    { if(rhs instanceof Variable) return((Variable)rhs);	}
-//  	return(null);
-//  }
-  
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
    	Util.setLine(lineNumber);
