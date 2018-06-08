@@ -10,6 +10,7 @@ package simula.compiler;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -40,12 +41,17 @@ public class AttributeFile {
 	{ this.attributeFileName=attributeFileName; }
 	
 	public static void write(ProgramModule program) throws IOException
-	{ String attributeFileName;
-	  if(program.module.blockKind==BlockKind.Class)
-		     attributeFileName=Global.tempClassFileDir+"CLASS.attr";
-	  else if(program.module.blockKind==BlockKind.Procedure)
-		     attributeFileName=Global.tempClassFileDir+"PROCEDURE.attr";
-	  else return;
+	{ 
+//	  String attributeFileName;
+//	  if(program.module.blockKind==BlockKind.Class)
+//		     attributeFileName=Global.tempClassFileDir+Global.packetName+"/CLASS.AF";
+//	  else if(program.module.blockKind==BlockKind.Procedure)
+//		     attributeFileName=Global.tempClassFileDir+Global.packetName+"/PROCEDURE.AF";
+//	  else return;
+	
+	  String relativeAttributeFileName=program.getRelativeAttributeFileName();
+      if(relativeAttributeFileName==null) return;
+      String attributeFileName=Global.tempClassFileDir+relativeAttributeFileName;
 	  if (Option.verbose) Util.BREAK("*** BEGIN Generate SimulaAttributeFile: "+attributeFileName);
 	  AttributeFile attributeFile=new AttributeFile(attributeFileName);
 	  attributeFile.write((BlockDeclaration)program.module);
@@ -69,6 +75,21 @@ public class AttributeFile {
 	  BlockKind blockKind=readBlockKind();
 	  BlockDeclaration blockDeclaration=readBlockDeclaration(blockKind);
 	  inpt.close();
+	  if (Option.verbose)
+	  { Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
+		blockDeclaration.print("","");
+	  }
+	  return(blockDeclaration);
+	}
+	
+
+	public static BlockDeclaration readAttributeFile(InputStream inputStream,String attributeFileName) throws IOException
+	{ AttributeFile attributeFile=new AttributeFile(attributeFileName);
+	  attributeFile.inpt=new ObjectInputStream(inputStream);
+	  if(!attributeFile.checkVersion()) Util.error("Malformed SimulaAttributeFile: "+attributeFileName);
+	  BlockKind blockKind=attributeFile.readBlockKind();
+	  BlockDeclaration blockDeclaration=attributeFile.readBlockDeclaration(blockKind);
+	  attributeFile.inpt.close();
 	  if (Option.verbose)
 	  { Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
 		blockDeclaration.print("","");

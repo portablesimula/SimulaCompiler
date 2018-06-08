@@ -16,6 +16,7 @@ import simula.compiler.expression.SubscriptedVariable;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.Statement;
+import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -46,6 +47,18 @@ public class ProgramModule extends Statement
 { Declaration module;
   SubscriptedVariable sysin;
   SubscriptedVariable sysout;
+  
+  public String getRelativeAttributeFileName()
+  { if(module.blockKind==BlockKind.Class) return(Global.packetName+"/CLASS.AF");
+	if(module.blockKind==BlockKind.Procedure) return(Global.packetName+"/PROCEDURE.AF");
+	else return(null);
+  }
+  
+  public boolean isExecutable()
+  { if(module.blockKind==BlockKind.SimulaProgram) return(true);
+	if(module.blockKind==BlockKind.PrefixedBlock) return(true);
+	else return(false);
+  }
 
   public ProgramModule()
   { try

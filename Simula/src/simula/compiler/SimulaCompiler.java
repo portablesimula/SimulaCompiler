@@ -143,14 +143,14 @@ public class SimulaCompiler {
 			// ***************************************************************
 			// *** CRERATE .jar FILE  INLINE
 			// ***************************************************************
-			String jarFile=createJarFile();
+			String jarFile=createJarFile(program);
 			if(Option.TRACE_JARING) listJarFile(jarFile);
 			
 			// ***************************************************************
 			// *** EXECUTE .jar FILE
 			// ***************************************************************
 			// java -jar C:/WorkSpaces/SimulaCompiler/Simula/bin/adHoc00.jar
-			if(Option.noexec) { if(Option.verbose) Util.TRACE("No Execution of .jar File"); }
+			if(!program.isExecutable() || Option.noexec) { if(Option.verbose) Util.TRACE("No Execution of .jar File: "+jarFile); }
 			else
 			{ if(Option.verbose) Util.TRACE("Execute .jar File");
 			  String opt="";
@@ -240,8 +240,8 @@ public class SimulaCompiler {
 	// ***************************************************************
 	// *** CREATE .jar FILE
 	// ***************************************************************
-//	public String createJarFile(ProgramModule program) throws IOException
-	public String createJarFile() throws IOException
+	public String createJarFile(ProgramModule program) throws IOException
+//	public String createJarFile() throws IOException
 	{ if(Option.verbose) Util.BREAK("*** BEGIN Create .jar File");
 	  //String main=program.getIdentifier();
 	  String main=Global.sourceName;
@@ -251,8 +251,9 @@ public class SimulaCompiler {
 	  mainEntry=mainEntry.replace('/', '.');
 	  if(Option.verbose) Util.TRACE("Output "+jarFile+" MANIFEST'mainEntry="+mainEntry);
 	  manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-	  manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS,mainEntry);
-//	  manifest.getMainAttributes().put(Attributes.Name.CLASS_PATH,"C:/Simula");
+	  String relativeAttributeFileName=program.getRelativeAttributeFileName();
+	  if(relativeAttributeFileName!=null) manifest.getMainAttributes().putValue("SIMULA-INFO",relativeAttributeFileName);
+	  else manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS,mainEntry);
 	  JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 	  add(target,new File(Global.tempClassFileDir+Global.packetName),Global.tempClassFileDir.length());
 	  if(Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR)
@@ -261,7 +262,7 @@ public class SimulaCompiler {
 	    add(target,new File(Global.simulaRtsLib+"simula/compiler/utilities/Option.class"),Global.simulaRtsLib.length());
 	  }
 	  target.close();
-	  if(Option.verbose) Util.BREAK("*** END Create .jar File.");
+	  if(Option.verbose) Util.BREAK("*** END Create .jar File: "+jarFile);
 	  return(jarFile);
 	}
 

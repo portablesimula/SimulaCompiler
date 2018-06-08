@@ -1,7 +1,5 @@
 
-%INCLUDE_QPS
-%QUALIFIEDNAMES
-
+Class Separat(i); integer i;
 begin
    Text t;
    Integer nA,nB;
