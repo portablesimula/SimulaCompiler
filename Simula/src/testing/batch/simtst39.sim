@@ -4,22 +4,16 @@
 %
 %  PURPOSE:     Check that a formal parameter is global to the procedure body.
 %
-%  MYH-NOTE: DEVIATIONS FROM 'SIMULA STANDARD':
-%               Parameters and declarations at the outmost level in classes and
-%               procedures form a common namespace. This means that a local
-%               declared can not have the same name as a parameter.
-%               The reason is that Java has the same restriction.
-%
-%  WRITTEN BY:  BEH   23/07-86, MODIFIED:  MYH  30/5-2018
+%  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
 BEGIN
    Boolean found_error ;
 
    integer i ;
 
-   procedure P (pi) ;
-     name pi ;
-     integer pi ;
+   procedure P (i) ;
+     name i ;
+     integer i ;
    begin
      Integer i ;
      i := 5 ;
@@ -36,7 +30,7 @@ BEGIN
 
    if i <> 0 then
    begin
-      Outtext ("*** error : Wrong variable used in procedure body.") ;
+      Outtext ("*** ERROR : Wrong variable used in procedure body.") ;
       Outimage ;
       found_error := true
    end ;

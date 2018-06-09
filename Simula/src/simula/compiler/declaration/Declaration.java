@@ -37,10 +37,11 @@ import simula.compiler.utilities.Util;
  */
 public class Declaration extends SyntaxClass
 { public String identifier; // Simula Identifier from Source Text
+  public String externalIdent; // External Identifier set by doChecking
   public DeclarationScope declaredIn;  // The DeclarationScope in which this Declaration is defined.
   public BlockKind blockKind;
 
-  public String getJavaIdentifier() { return(identifier); }  // May be redefined
+  public final String getJavaIdentifier() { return(this.externalIdent); }  // May be redefined
 
   public void modifyIdentifier(String newIdentifier)
   { //Util.BREAK("Declaration.modifyIdentifier: "+identifier+" ==> "+newIdentifier);
@@ -53,6 +54,7 @@ public class Declaration extends SyntaxClass
   // ***********************************************************************************************
   public Declaration(String identifier)
   { this.identifier=identifier;
+    this.externalIdent=identifier; // May be overwritten in doChecking()
     declaredIn=Global.currentScope;
     checkAlreadyDefined();
   }

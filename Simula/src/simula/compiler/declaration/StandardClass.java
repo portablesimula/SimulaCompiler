@@ -20,7 +20,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 {
   public BlockKind getBlockKind() { return(BlockKind.StandardClass); }
   public String edJavaClassName() { return(identifier); }
-  public String getJavaIdentifier() { return(identifier+"$"); }
+//  public String getJavaIdentifier() { return(identifier+"$"); }
   
   // ******************************************************************
   // *** The Type TXT
@@ -775,6 +775,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 	
   public StandardClass(String className)
   { super(className);
+    this.externalIdent=className+"$";
 	this.blockKind=BlockKind.StandardClass;
 	this.type=Type.Ref(className);
 	//  Util.BREAK("NEW StandardClass "+this);

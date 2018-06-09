@@ -35,7 +35,7 @@ public class AttributeFile {
 	String attributeFileName;
 	ObjectOutputStream oupt;
 	ObjectInputStream inpt;
-	boolean verbose=false;//true;
+	boolean verbose=true; //false;//true;
 	
 	public AttributeFile(String attributeFileName) 
 	{ this.attributeFileName=attributeFileName; }
@@ -132,6 +132,7 @@ public class AttributeFile {
 	  if(verbose) System.out.println("ATTR OUTPUT: BEGIN Write Block: "+blk.identifier);
 	  oupt.writeUTF(""+blk.blockKind);
 	  writeString("Identifier",blk.identifier);
+	  oupt.writeUTF("BlockType"); writeType(blk.type);
 	  writeInt("BlockLevel",blk.blockLevel);
 	  for(Parameter par:blk.parameterList) writeParameter(par);
 	    
@@ -158,6 +159,7 @@ public class AttributeFile {
 	    //Util.BREAK("BlockDeclaration.doReadAttributeInfo: label="+label);
 	    if(label.equalsIgnoreCase("BlockKind")) decl.blockKind=readBlockKind();
 		else if(label.equalsIgnoreCase("Identifier")) decl.identifier=readString();
+		else if(label.equalsIgnoreCase("BlockType")) decl.type=readType();
 		else if(label.equalsIgnoreCase("BlockLevel")) decl.blockLevel=readInt();
 		else if(label.equalsIgnoreCase("Parameter")) decl.parameterList.add(readParameter());
 	    else if(label.equalsIgnoreCase("Prefix")) decl.prefix=readString();
@@ -228,6 +230,7 @@ public class AttributeFile {
 	private void writeType(Type type) throws IOException
 	{ if(verbose) System.out.println("ATTR: "+type);
 	  if(type==Type.Text) oupt.writeUTF("TEXT");
+	  else if(type==null) oupt.writeUTF("NULLTYPE");
 	  else if(type.isReferenceType()) oupt.writeUTF(type.getRefIdent());
 	  else oupt.writeUTF(""+type);
 	}
@@ -244,6 +247,7 @@ public class AttributeFile {
 	  if(tp.equalsIgnoreCase("Procedure")) return(Type.Procedure);
 	  if(tp.equalsIgnoreCase("Label")) return(Type.Label);
 	  if(tp.equalsIgnoreCase("LabelQuantity")) return(Type.LabelQuantity);
+	  if(tp.equalsIgnoreCase("NULLTYPE")) return(null);
 	  return(new Type(tp));
 	}
 

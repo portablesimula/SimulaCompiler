@@ -20,6 +20,7 @@ public class Virtual extends Declaration {
 
 	public Virtual(String identifier, Type type, ParameterKind kind) {
 		super(identifier);
+	 	this.externalIdent=identifier;
 		this.type=type;
 		this.kind = kind;
 		this.blockKind=BlockKind.Procedure; // TODO: For TEST !!!

@@ -56,7 +56,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		// String name=Global.packetName+"/sim/adHoc00.sim";
+		 String name=Global.packetName+"/sim/adHoc00.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
@@ -94,7 +94,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/SepCompiled.sim";
 		// String name=Global.packetName+"/sim/Simtest1.sim";
 		// String name=Global.packetName+"/sim/SubClassTest.sim";
-		 String name=Global.packetName+"/sim/UseExtClass.sim";
+		// String name=Global.packetName+"/sim/UseExtClass.sim";
 		// String name=Global.packetName+"/sim/TextSamples.sim";
 		// String name=Global.packetName+"/sim/VariableByName.sim";
 		// String name=Global.packetName+"/sim/VirtualSample.sim";

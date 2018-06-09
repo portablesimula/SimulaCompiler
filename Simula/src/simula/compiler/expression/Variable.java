@@ -197,22 +197,17 @@ public class Variable extends Expression {
 	  }
 	  // VANLIG VARIABEL/PARAMETER ...
 	  //Util.BREAK("VANLIG VARIABEL/PARAMETER ...");
+	  //Util.BREAK("VANLIG VARIABEL/PARAMETER: id="+id);
 	  if(remotelyAccessed) return(id);
 	  
 	  if(meaning.variableKind==VariableKind.connectedAttribute)
 	  { Expression inspectedVariable=((ConnectionBlock)meaning.declaredIn).getInspectedVariable();
-	  
-	    //id=inspectedVariable.toJavaCode()+"."+id;
-	    Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
-
+	    //Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
 	    if(meaning.foundBehindInvisible)
 	    { String remoteCast=meaning.foundIn.getJavaIdentifier();
 		  id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
 	    } else id=inspectedVariable.toJavaCode()+"."+id;
-
-	    
 	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockKind.Method)) {
-		  
 	    String cast=meaning.declaredIn.getJavaIdentifier();
 	    if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
 	    else if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !

@@ -52,11 +52,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 
   
   
-  public String getJavaIdentifier()
-  { if(blockKind==BlockKind.Method) return(identifier);
-	if(Option.useQualifiedNames) return(edJavaClassName());
-    return(identifier);
-  }
+//  public String getJavaIdentifier()
+//  { if(blockKind==BlockKind.Method) return(identifier);
+//	if(Option.useQualifiedNames) return(edJavaClassName());
+//    return(identifier);
+//  }
     
   
   // ***********************************************************************************************
@@ -313,6 +313,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
  	Util.setLine(lineNumber);
+ 	
+ 	// Set External Identifier  TODO: USE_EXTERNAL_IDENTIFIER
+ 	// this.externalIdent=this.getJavaIdentifier();
+ 	if(blockKind==BlockKind.Method) externalIdent=this.identifier;
+ 	else externalIdent=edJavaClassName();
+
 	if(blockKind!=BlockKind.CompoundStatement)
     { currentBlockLevel++;
 	  blockLevel=currentBlockLevel;
@@ -488,7 +494,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	boolean hasParameter=false;
 	for(Parameter par:parameterList)
 	{ String tp=par.toJavaType(); hasParameter=true;
-	  Util.code(indent+"   public "+tp+' '+par.identifier+';');
+//	  Util.code(indent+"   public "+tp+' '+par.identifier+';');
+	  Util.code(indent+"   public "+tp+' '+par.externalIdent+';');
 	}
 	if(!labelList.isEmpty())
 	{ Util.code(indent+"   // Declare local labels");
@@ -534,7 +541,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	} else Util.code(indent+"      "+"super(staticLink);");
 	Util.code(indent+"      // Parameter assignment to locals");
 	for(Parameter par:parameterList)
-	 	  Util.code(indent+"      this."+par.identifier+" = par$"+par.identifier+';');	
+//	 	  Util.code(indent+"      this."+par.identifier+" = par$"+par.identifier+';');	
+		  Util.code(indent+"      this."+par.externalIdent+" = par$"+par.identifier+';');	
+//	 	  Util.code(indent+"      this."+par.externalIdent+" = "+par.externalIdent+';');	
 	
 	Util.code(indent+"      // Declaration Code");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+"   ");
@@ -570,7 +579,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   	  else if(par.type.isArithmeticType()) typeValue=(tp+"Value(param)");
 //  	  else typeValue=("("+tp+")param");
   	  else typeValue=("("+tp+")objectValue(param)");
-  	  Util.code(indent+" 	      case "+(npar++)+": "+par.identifier+"="+typeValue+"; break;");
+//  	  Util.code(indent+" 	      case "+(npar++)+": "+par.identifier+"="+typeValue+"; break;");
+  	  Util.code(indent+" 	      case "+(npar++)+": "+par.externalIdent+"="+typeValue+"; break;");
     }
   	Util.code(indent+" 	      default: throw new RuntimeException(\"Wrong number of parameters\");");
   	Util.code(indent+"     } } catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+$npar+\" \"+param,e);}");
@@ -660,6 +670,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   { StringBuilder s=new StringBuilder(); s.append("(staticLink");
     for(Parameter par:new ClassParameterIterator())  // Iterates through prefix-chain
         s.append(',').append("par$").append(par.identifier);
+//        s.append(',').append(par.externalIdent);
     s.append(");"); //runtimeBlockKind=getRTBlockKind();
     return(s.toString());
   }
@@ -727,6 +738,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
       s.append(' ');
       if(!isMethod) s.append("par$");
       s.append(par.identifier);
+//      s.append(par.externalIdent);
     }
     s.append(") {");
     return(s.toString());

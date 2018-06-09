@@ -150,18 +150,24 @@ public abstract class DeclarationScope extends Declaration {
 	DeclarationScope scope=this;
 	SEARCH:while(scope!=null)
 	{ //Util.BREAK("DeclarationScope("+scope+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
-	  for(Parameter parameter:scope.parameterList)
-      if(ident.equalsIgnoreCase(parameter.identifier))
-        { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null) return(new Meaning(VariableKind.parameter,parameter,this,scope,searchBehindHidden));
-          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
-        }
+//	  for(Parameter parameter:scope.parameterList)
+//      if(ident.equalsIgnoreCase(parameter.identifier))
+//        { DeclarationScope hiddenScope=scope.getHidden(ident);
+//          if(hiddenScope==null) return(new Meaning(VariableKind.parameter,parameter,this,scope,searchBehindHidden));
+//          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
+//        }
       for(Declaration declaration:scope.declarationList)
 	    if(ident.equalsIgnoreCase(declaration.identifier))
 	    { DeclarationScope hiddenScope=scope.getHidden(ident);
           if(hiddenScope==null) return(new Meaning(VariableKind.attribute,declaration,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
+	  for(Parameter parameter:scope.parameterList)
+	      if(ident.equalsIgnoreCase(parameter.identifier))
+	        { DeclarationScope hiddenScope=scope.getHidden(ident);
+	          if(hiddenScope==null) return(new Meaning(VariableKind.parameter,parameter,this,scope,searchBehindHidden));
+	          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
+	        }
       for(LabelDeclaration label:scope.labelList)
 	    if(ident.equalsIgnoreCase(label.identifier))
 	    { DeclarationScope hiddenScope=scope.getHidden(ident);

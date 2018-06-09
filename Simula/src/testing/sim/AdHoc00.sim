@@ -1,11 +1,8 @@
 BEGIN
-
-IF         i1 EQ 0  AND NOT i1 <  i2
-   AND     i1 <= i2 AND NOT i1 >  i2
-   AND      0 >= i2 AND NOT i1 <> i2
+   Procedure P(i,T); integer i; Text T;
+   begin
+      i:=T.pos;
+   end;
    
-     THEN
-ELSE  err("INT.1 (comparing INTEGERs)");
-
-
+   P(4,"");   
  END

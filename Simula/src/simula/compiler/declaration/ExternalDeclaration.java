@@ -58,6 +58,8 @@ public class ExternalDeclaration extends Declaration {
 //	Token identifier;
 	/** The external identification. Normally a file-name. */
 	Token externalIdentifier;
+	
+	BlockDeclaration externalBlock;
 
 	public ExternalDeclaration(String identifier,Type type,Token kind,Token externalIdentifier) {
 	    super(identifier);
@@ -68,7 +70,7 @@ public class ExternalDeclaration extends Declaration {
 		String jarFile=externalIdentifier.getIdentifier();
 		try { readJarFile(jarFile); } catch(IOException e) { e.printStackTrace(); }
 		Util.NOT_IMPLEMENTED("ExternalDeclaration");
-		Util.EXIT();
+		//Util.EXIT();
 	}
 	
 	private void readJarFile1(String jarFileName) throws IOException
@@ -104,6 +106,7 @@ public class ExternalDeclaration extends Declaration {
 	  Util.BREAK("ExternalDeclaration.readJarFile: inputStream="+inputStream);
 	  
 	  BlockDeclaration decl=AttributeFile.readAttributeFile(inputStream,simulaInfo);
+	  externalBlock=decl;
 
 	  external.close();
 	}
@@ -111,7 +114,8 @@ public class ExternalDeclaration extends Declaration {
 	 * Create and parse a new External Declaration.
 	 *
 	 */
-	public static ExternalDeclaration doParse() {
+//	public static ExternalDeclaration doParse() {
+	public static BlockDeclaration doParse() {
 		Type type = acceptType();
 		Token kind = Parser.currentToken;
 		if (!(Parser.accept(KeyWord.CLASS) || Parser.accept(KeyWord.PROCEDURE)))
@@ -122,7 +126,8 @@ public class ExternalDeclaration extends Declaration {
 			externalIdentifier = Parser.currentToken;
 			Parser.expect(KeyWord.TEXTKONST);
 		}
-		return(new ExternalDeclaration(identifier,type,kind,externalIdentifier));
+		ExternalDeclaration externalDeclaration=new ExternalDeclaration(identifier,type,kind,externalIdentifier);
+		return(externalDeclaration.externalBlock);
 	}
 
 	/**

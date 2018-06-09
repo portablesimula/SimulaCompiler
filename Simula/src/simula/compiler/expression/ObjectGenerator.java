@@ -90,7 +90,7 @@ public class ObjectGenerator extends Expression {
 		if (meaning == null) Util.error("Undefined variable: " + classIdentifier);
 		Declaration declaredAs=meaning.declaredAs;
 		if (declaredAs instanceof BlockDeclaration) // Declared Procedure/Class ...
-		{	BlockDeclaration cls = (BlockDeclaration)declaredAs;
+		{	BlockDeclaration cls = (BlockDeclaration)declaredAs;		    
 			Util.ASSERT(this.type.equals(cls.type),"Umulig situasjon ?");
 			// Check parameters
 			Iterator<Parameter> formalIterator = cls.parameterIterator();

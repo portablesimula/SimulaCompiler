@@ -79,7 +79,11 @@ public class ConnectionBlock extends DeclarationScope
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
    	Util.setLine(lineNumber);
-   	Global.currentScope=this;	
+	
+    // Set External Identifier  TODO: USE_EXTERNAL_IDENTIFIER
+ 	externalIdent=inspectedVariable.toJavaCode();
+
+ 	Global.currentScope=this;	
     //Util.BREAK("Begin Checking of "+getScopeName()+" BlockLevel="+getBlockLevel()+" - Current Scope Chain: "+edScopeChain());
 	inspectedVariable.doChecking();
 	statement.doChecking();
@@ -97,7 +101,10 @@ public class ConnectionBlock extends DeclarationScope
 //	Util.code(indent+'}');
   }
   
-  public String getJavaIdentifier()
+//  public String getJavaIdentifier()
+//  {	return(inspectedVariable.toJavaCode()); }
+  
+  public String toJavaCode()
   {	return(inspectedVariable.toJavaCode()); }
   
   

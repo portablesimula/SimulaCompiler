@@ -8,7 +8,6 @@
 package simula.compiler.declaration;
 
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
@@ -25,7 +24,11 @@ public class Parameter extends Declaration
   { super(identifier); }
   
   public Parameter(String identifier,Type type,ParameterKind kind)
-  { super(identifier); this.type=type; this.kind=kind; }
+  { super(identifier);
+//	externalIdent="p$"+identifier;
+    this.type=type; this.kind=kind;
+    //Util.BREAK("NEW Parameter: "+this);
+  }
   
   public void setMode(ParameterMode mode)
   {	if(this.mode!=null)
@@ -39,7 +42,9 @@ public class Parameter extends Declaration
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
     Util.setLine(lineNumber);
-	//Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+currentScope.edScopeChain());
+	externalIdent="p$"+identifier;
+    Util.BREAK("CHECKING Parameter: "+this);
+ 	//Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+currentScope.edScopeChain());
 	//Util.BREAK("Parameter("+this.toString()+").doChecking: type="+type);
     if(type!=null) type.doChecking(Global.currentScope.declaredIn);
     if(!legalTransmitionMode())
@@ -115,7 +120,8 @@ public class Parameter extends Declaration
   }
   
   public String toJavaCode()
-  { return(toJavaType() + ' ' + identifier); }
+//  { return(toJavaType() + ' ' + identifier); }
+  { return(toJavaType() + ' ' + externalIdent); }
 
   public String toString()
   {	String s="";
@@ -123,7 +129,7 @@ public class Parameter extends Declaration
     if(mode!=null) s=""+mode+" "+type;
     if(kind==null) s=s+" NOKIND";
     else if(kind!=ParameterKind.Simple) s=s+" "+kind;
-  	return(s+' '+identifier);
+  	return(s+' '+identifier+"("+externalIdent+')');
   }
 
 }

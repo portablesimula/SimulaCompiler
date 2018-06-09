@@ -43,6 +43,7 @@ public class CallProcedure {
 	 */
 	public static String normal(Variable variable)
     { StringBuilder s=new StringBuilder();
+	  //Util.BREAK("CallProcedure.normal: variable="+variable);
 	  Meaning meaning=variable.meaning;
 	  Declaration decl=meaning.declaredAs;
 	  BlockDeclaration procedure = (BlockDeclaration) decl;
@@ -143,7 +144,8 @@ public class CallProcedure {
 	  
 	  String methodCall=meaning.declaredAs.getJavaIdentifier()+params;
 	  if(meaning.variableKind==VariableKind.connectedAttribute)
-	  {	String connID=meaning.declaredIn.getJavaIdentifier();
+//	  {	String connID=meaning.declaredIn.getJavaIdentifier();  
+	  {	String connID=meaning.declaredIn.toJavaCode();   // TODO: CORR TO_JAVA_CODE
 		return(connID+'.'+methodCall);
 	  }
 	  //Util.BREAK("CallProcedure.asNormalMethod: "+methodCall);
@@ -205,7 +207,8 @@ public class CallProcedure {
 	  //Util.BREAK("CallProcedure.virtual: staticLink="+variable.meaning.edStaticLink());
 	  //Util.BREAK("CHECK DETTE TILFELLET(CallProcedure.virtual)"); System.exit(-1);
 	  if(variable.meaning.variableKind==VariableKind.connectedAttribute)
-	  { String conn=variable.meaning.declaredIn.getJavaIdentifier();
+//	  { String conn=variable.meaning.declaredIn.getJavaIdentifier();
+	  { String conn=variable.meaning.declaredIn.toJavaCode();   // TODO: CORR TO_JAVA_CODE
 	    ident=conn+"."+ident;
 	  } else if(!remotelyAccessed) {
 		  String staticLink=variable.meaning.edStaticLink();
