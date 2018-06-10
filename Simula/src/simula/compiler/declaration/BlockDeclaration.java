@@ -317,7 +317,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
  	// Set External Identifier  TODO: USE_EXTERNAL_IDENTIFIER
  	// this.externalIdent=this.getJavaIdentifier();
  	if(blockKind==BlockKind.Method) externalIdent=this.identifier;
- 	else externalIdent=edJavaClassName();
+// 	else externalIdent=edJavaClassName();
+ 	else if(blockKind!=BlockKind.External) externalIdent=edJavaClassName();
 
 	if(blockKind!=BlockKind.CompoundStatement)
     { currentBlockLevel++;
@@ -394,7 +395,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   { //Util.BREAK("BlockDeclaration.doJavaCoding: "+identifier+", BlockKind="+blockKind);
 	ASSERT_SEMANTICS_CHECKED(this);
 	switch(blockKind)
-    { case SimulaProgram:
+    { case External: break; // DO NOTHING
+      case SimulaProgram:
     	    doBlockJavaCoding(indent); break;
       case CompoundStatement:
     	    doSubBlockJavaCoding(indent); break;
@@ -753,6 +755,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     s.append('[').append(blockLevel).append("] ");
     if(prefix!=null) s.append(prefix).append(' ');
     s.append(blockKind).append(' ').append(identifier);
+    s.append('[').append(externalIdent).append("] ");
     s.append(editParameterList());
     System.out.println(s.toString());
 	String beg="begin["+edScopeChain()+']';

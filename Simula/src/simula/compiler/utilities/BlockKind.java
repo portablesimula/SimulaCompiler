@@ -15,6 +15,7 @@ package simula.compiler.utilities;
  *
  */
 public enum BlockKind {
+	External,
 	StandardClass,
 	ConnectionBlock,
 	CompoundStatement,

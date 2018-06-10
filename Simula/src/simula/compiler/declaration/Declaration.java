@@ -86,7 +86,8 @@ public class Declaration extends SyntaxClass
     else if(Parser.accept(KeyWord.PROCEDURE)) declarationList.add(BlockDeclaration.doParseProcedureDeclaration(null));
     else if(Parser.accept(KeyWord.CLASS)) declarationList.add(BlockDeclaration.doParseClassDeclaration(null));
     else if(Parser.accept(KeyWord.SWITCH)) declarationList.add(new SwitchDeclaration());
-    else if(Parser.accept(KeyWord.EXTERNAL)) declarationList.add(ExternalDeclaration.doParse());
+//    else if(Parser.accept(KeyWord.EXTERNAL)) declarationList.add(ExternalDeclaration.doParse());
+    else if(Parser.accept(KeyWord.EXTERNAL)) ExternalDeclaration.doParse(declarationList);
     else
     { Type type=acceptType(); if(type==null) return(false);
       TypeDeclaration.parse(type,declarationList);

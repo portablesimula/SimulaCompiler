@@ -7,6 +7,7 @@
  */
 package simula.compiler;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,7 +61,12 @@ public class AttributeFile {
 	}
 	
 	private void write(BlockDeclaration module) throws IOException
-	{ FileOutputStream fileOutputStream=new FileOutputStream(attributeFileName);
+	{ File attributeFile=new File(attributeFileName);
+	  Util.BREAK("AttributeFile.write: attributeFile="+attributeFile);
+	  Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
+//	  attributeFile.mkdirs();
+//	  FileOutputStream fileOutputStream=new FileOutputStream(attributeFileName);
+	  FileOutputStream fileOutputStream=new FileOutputStream(attributeFile);
 	  oupt=new ObjectOutputStream(fileOutputStream);
 	  writeVersion();	
 	  doWriteAttributeInfo(module); 
@@ -132,6 +138,7 @@ public class AttributeFile {
 	  if(verbose) System.out.println("ATTR OUTPUT: BEGIN Write Block: "+blk.identifier);
 	  oupt.writeUTF(""+blk.blockKind);
 	  writeString("Identifier",blk.identifier);
+	  writeString("ExtIdentifier",blk.externalIdent);
 	  oupt.writeUTF("BlockType"); writeType(blk.type);
 	  writeInt("BlockLevel",blk.blockLevel);
 	  for(Parameter par:blk.parameterList) writeParameter(par);
@@ -159,6 +166,7 @@ public class AttributeFile {
 	    //Util.BREAK("BlockDeclaration.doReadAttributeInfo: label="+label);
 	    if(label.equalsIgnoreCase("BlockKind")) decl.blockKind=readBlockKind();
 		else if(label.equalsIgnoreCase("Identifier")) decl.identifier=readString();
+		else if(label.equalsIgnoreCase("ExtIdentifier")) decl.externalIdent=readString();
 		else if(label.equalsIgnoreCase("BlockType")) decl.type=readType();
 		else if(label.equalsIgnoreCase("BlockLevel")) decl.blockLevel=readInt();
 		else if(label.equalsIgnoreCase("Parameter")) decl.parameterList.add(readParameter());

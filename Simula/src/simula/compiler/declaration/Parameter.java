@@ -43,7 +43,7 @@ public class Parameter extends Declaration
   { if(IS_SEMANTICS_CHECKED()) return;
     Util.setLine(lineNumber);
 	externalIdent="p$"+identifier;
-    Util.BREAK("CHECKING Parameter: "+this);
+    //Util.BREAK("CHECKING Parameter: "+this);
  	//Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+currentScope.edScopeChain());
 	//Util.BREAK("Parameter("+this.toString()+").doChecking: type="+type);
     if(type!=null) type.doChecking(Global.currentScope.declaredIn);
