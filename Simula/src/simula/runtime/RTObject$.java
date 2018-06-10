@@ -18,6 +18,7 @@ import simula.compiler.utilities.Util;
 */
 public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	private static final boolean DEBUG=true;
+	private static final boolean USE_CONTEXT_VECTOR=false; // Check same switch in Compiler: Global.
 	protected static boolean BLOCK_TRACING=false;//true;
 	protected static boolean THREAD_TRACING=false;//true;
 	private static final boolean CTX_TRACING=false; //true; //false; //true;
@@ -54,7 +55,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	 * This is a pointer to the object of the nearest textually enclosing block
 	 * instance, also called 'static link'.
 	 */
-	protected RTObject$ SL$; // Static Link
+	public RTObject$ SL$; // Static Link
 
 	/**
 	 * If this block instance is attached this is a pointer to the
@@ -420,6 +421,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	 * deleted and therefore no action is necessary at all.
 	 */
 	public static void updateContextVector() {
+		if(!USE_CONTEXT_VECTOR) return;
 		if(DEBUG) for(int i=0;i<CV$.length;i++) CV$[i]=null;
 		CV$[0]=CTX$;
 		RTObject$ x = CUR$;
@@ -761,7 +763,8 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	}
 	
 	public static void printContextVector()
-	{ System.out.println("CURRENT CONTEXT VECTOR - CURRENT = "+((CUR$==null)?"null":CUR$.edString()));		  
+	{ if(!USE_CONTEXT_VECTOR) return;
+	  System.out.println("CURRENT CONTEXT VECTOR - CURRENT = "+((CUR$==null)?"null":CUR$.edString()));		  
 	  for(int j=0;j<50;j++) if(CV$[j]!=null) System.out.println("  - CV$["+j+"]="+CV$[j].edString());
 	  System.out.println("-------------------");
 	}

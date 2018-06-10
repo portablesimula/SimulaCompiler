@@ -17,6 +17,7 @@ import simula.compiler.utilities.VariableKind;
 
 public abstract class DeclarationScope extends Declaration {
 	
+  protected static int currentBlockLevel=0; // Used during doChecking
   public int blockLevel;
 
   public boolean hasLocalClasses=false;
@@ -257,7 +258,21 @@ public abstract class DeclarationScope extends Declaration {
   public String edCTX(int blockLevel)
   { if(blockLevel==0) return("CTX$");
     if(blockLevel==1) return("PRG$");
-    return("CV$["+blockLevel+"]");
+    if(Global.USE_CONTEXT_VECTOR)
+    { if(blockLevel==Global.currentScope.blockLevel) return("CUR$"); // DENNE ER NY
+      return("CV$["+blockLevel+"]");
+    } else {
+        int curLevel=Global.currentScope.blockLevel;
+        Util.BREAK("DeclarationScope.edCTX: Current="+Global.currentScope);
+        Util.BREAK("DeclarationScope.edCTX: Current'Qual="+Global.currentScope.getClass().getSimpleName());
+        Util.BREAK("DeclarationScope.edCTX: Current'BlockLevel="+curLevel);
+        Util.BREAK("DeclarationScope.edCTX: Current'Enc'BlockLevel="+Global.currentScope.declaredIn.blockLevel);
+        Util.ASSERT(curLevel >= Global.currentScope.declaredIn.blockLevel,"Invariant");
+        if(blockLevel==curLevel) return("CUR$");
+        String ret="CUR$";
+        while(blockLevel<(curLevel--)) ret=ret+".SL$";
+    	return("("+ret+')');
+    }
   }
 
   // ***********************************************************************************************

@@ -56,10 +56,13 @@ public class Meaning {
       if(connectedObject!=null)
     	   staticLink=connectedObject.toJavaCode();
       else
-      { staticLink=Global.currentScope.edCTX(declaredIn.blockLevel); // TEST !!!!!
+      {
+//        Util.BREAK("Meaning.edStaticLink: Meaning="+this);
+//        Util.BREAK("Meaning.edStaticLink: Meaning'declaredIn.blockLevel="+declaredIn.blockLevel);
+//        Util.BREAK("Meaning.edStaticLink: Current="+Global.currentScope);
+//        Util.BREAK("Meaning.edStaticLink: Current'BlockLevel="+Global.currentScope.blockLevel);
+    	staticLink=Global.currentScope.edCTX(declaredIn.blockLevel);
 	    String cast=declaredIn.getJavaIdentifier();
-	    String moduleIdent=declaredIn.getJavaIdentifier();
-	    Util.ASSERT(moduleIdent.equals(cast),"Invariant ?");
 	    staticLink="(("+cast+")"+staticLink+')';  // Unnecessary Cast for debugging purposes
       }
       

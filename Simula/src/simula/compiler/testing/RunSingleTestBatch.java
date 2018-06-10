@@ -97,7 +97,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
 		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
-		names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
+		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
 		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
@@ -130,7 +130,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
 		//names.add("simtst92.sim"); // ERR: Test virtual labels and procedures.
 		//names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
-		//names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
+		names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
 		//names.add("simtst96.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.

@@ -152,20 +152,20 @@ public class ExternalDeclaration extends Declaration {
 	private void readJarFile(String jarFileName) throws IOException
 	{ Util.BREAK("ExternalDeclaration.readJarFile: "+jarFileName);
 	  JarFile external=new JarFile(jarFileName);
-	  Util.BREAK("ExternalDeclaration.readJarFile: "+jarFileName);
+//	  Util.BREAK("ExternalDeclaration.readJarFile: "+jarFileName);
 		
 	  Manifest manifest=external.getManifest();
-	  Util.BREAK("ExternalDeclaration.readJarFile: manifest="+manifest);
+//	  Util.BREAK("ExternalDeclaration.readJarFile: manifest="+manifest);
 	  Attributes mainAttributes=manifest.getMainAttributes();
-	  Util.BREAK("ExternalDeclaration.readJarFile: MainAttributes="+mainAttributes);
+//	  Util.BREAK("ExternalDeclaration.readJarFile: MainAttributes="+mainAttributes);
 	  String simulaInfo=mainAttributes.getValue("SIMULA-INFO");
-	  Util.BREAK("ExternalDeclaration.readJarFile: simulaInfo="+simulaInfo);
+//	  Util.BREAK("ExternalDeclaration.readJarFile: simulaInfo="+simulaInfo);
 	  JarEntry entry=external.getJarEntry(simulaInfo);
-	  Util.BREAK("ExternalDeclaration.readJarFile: entry="+entry);
+//	  Util.BREAK("ExternalDeclaration.readJarFile: entry="+entry);
 	  ZipEntry zipEntry=external.getEntry(simulaInfo);
-	  Util.BREAK("ExternalDeclaration.readJarFile: ZipEntry="+zipEntry);
+//	  Util.BREAK("ExternalDeclaration.readJarFile: ZipEntry="+zipEntry);
 	  InputStream inputStream=external.getInputStream(zipEntry);
-	  Util.BREAK("ExternalDeclaration.readJarFile: inputStream="+inputStream);
+//	  Util.BREAK("ExternalDeclaration.readJarFile: inputStream="+inputStream);
 	  
 	  BlockDeclaration decl=AttributeFile.readAttributeFile(inputStream,simulaInfo);
 	  externalBlock=decl;

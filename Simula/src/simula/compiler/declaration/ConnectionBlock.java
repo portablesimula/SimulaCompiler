@@ -80,10 +80,11 @@ public class ConnectionBlock extends DeclarationScope
   { if(IS_SEMANTICS_CHECKED()) return;
    	Util.setLine(lineNumber);
 	
-    // Set External Identifier  TODO: USE_EXTERNAL_IDENTIFIER
+    // Set External Identifier
  	externalIdent=inspectedVariable.toJavaCode();
 
  	Global.currentScope=this;	
+    blockLevel=currentBlockLevel;
     //Util.BREAK("Begin Checking of "+getScopeName()+" BlockLevel="+getBlockLevel()+" - Current Scope Chain: "+edScopeChain());
 	inspectedVariable.doChecking();
 	statement.doChecking();

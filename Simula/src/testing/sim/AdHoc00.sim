@@ -1,8 +1,33 @@
-BEGIN
-   Procedure P(i,T); integer i; Text T;
-   begin
-      i:=T.pos;
-   end;
-   
-   P(4,"");   
- END
+begin
+
+class testmatlib;
+begin
+
+
+
+    long real procedure ipower (b, j); long real b; integer j;
+    begin
+    end of procedure ipower;
+
+    procedure testipower (b, e); integer b, e;
+    begin
+       long real x;
+%       Boolean n;
+
+       begin
+
+          x:= ipower (b, e);
+       end
+    end of procedure testipower;
+
+
+end of class testmatlib;
+
+
+
+testmatlib
+begin integer i, j;
+        testipower (i, j);
+ 
+end of prefixed block;
+end of program;

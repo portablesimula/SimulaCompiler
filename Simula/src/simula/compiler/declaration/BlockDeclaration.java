@@ -32,10 +32,8 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public class BlockDeclaration extends DeclarationScope // Declaration implements Scope
-{ private static int currentBlockLevel=0; // Used during doChecking
-  public boolean isMainModule;  // If true; this is the outermost Subblock or Prefixed Block.
+{ public boolean isMainModule;  // If true; this is the outermost Subblock or Prefixed Block.
   public boolean isContextFree; // If true; all member methods are independent of context
-//	Variable blockPrefix; // Block Prefix in case of Prefixed Block.
   public Virtual myVirtual; // Set during doChecking
   public Vector<Statement> statements=new Vector<Statement>();
   
@@ -320,14 +318,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 // 	else externalIdent=edJavaClassName();
  	else if(blockKind!=BlockKind.External) externalIdent=edJavaClassName();
 
-	if(blockKind!=BlockKind.CompoundStatement)
-    { currentBlockLevel++;
-	  blockLevel=currentBlockLevel;
-	  //Util.BREAK("BlockDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-	  //Util.BREAK("BlockDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-    }
+	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel++;
+    blockLevel=currentBlockLevel;
+	//Util.BREAK("BlockDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
+	//Util.BREAK("BlockDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
     //Util.BREAK("BlockDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
-    //Util.BREAK("Begin Checking of "+this.getJavaIdentifier()+" BlockLevel="+blockLevel+" - Current Scope Chain: "+edScopeChain());
 
     if(blockPrefix!=null)
     { Global.currentScope=this.declaredIn;
