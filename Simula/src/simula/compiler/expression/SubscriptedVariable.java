@@ -100,7 +100,7 @@ public class SubscriptedVariable extends Variable {
 	
 	public void doChecking()
     { if(IS_SEMANTICS_CHECKED()) return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking");
 		super.doChecking();
 		

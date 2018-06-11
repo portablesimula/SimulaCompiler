@@ -63,7 +63,7 @@ public class QualifiedObject extends Expression
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN QualifiedObject"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	classDeclaration=getQualification(classIdentifier);
 	lhs.doChecking();

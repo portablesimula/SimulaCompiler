@@ -60,7 +60,7 @@ public class StandaloneExpression extends Statement {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER) Util.TRACE("StandaloneExpression("+expression+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		expression.doChecking();
 		if (Option.TRACE_CHECKER) Util.TRACE("END StandaloneExpression(" + expression+ ").doChecking: type=" + type);
@@ -69,7 +69,7 @@ public class StandaloneExpression extends Statement {
 	}
 	
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		Util.code(indent + toJavaCode() + ';');
 	}
 

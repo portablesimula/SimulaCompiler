@@ -1,33 +1,49 @@
 begin
+  integer array A(1:45,4:27);
+  Text T,U="abraCadab";
+  Integer i,ci=16R6E4;
+  Boolean b;
+  Character c;
+  real r,x,y;
+  long real w,q;
+  
+  Infile class MyInfile;
+  Begin
+     integer procedure inRom;
+     Begin 
+     end;
+  end;
+  
+  i := i+4;
+  
+  b := T.constant;
+  
+  outtext(if b then "true" else "false"); outimage;
+  
+  c := decimalmark(',');
+  T :- upcase(T);
+  T :- lowcase(T);
+  r := arctan2(y,x); 
+  
+  i := sourceline+47;
 
-class testmatlib;
-begin
+  w := maxlongreal;
+  q := minlongreal;
 
+  x := maxreal;
+  y := minreal;
 
+  i := maxrank;
+  i := maxint;
+  i := minint;
 
-    long real procedure ipower (b, j); long real b; integer j;
-    begin
-    end of procedure ipower;
+  T :- simulaid; 
 
-    procedure testipower (b, e); integer b, e;
-    begin
-       long real x;
-%       Boolean n;
+  i := lowerbound(A,1);
+  i:=  upperbound(A,2);
+  
+  ci := rem(i,4); 
 
-       begin
-
-          x:= ipower (b, e);
-       end
-    end of procedure testipower;
-
-
-end of class testmatlib;
-
-
-
-testmatlib
-begin integer i, j;
-        testipower (i, j);
- 
-end of prefixed block;
+  error("AbRaCadeb");
+  
 end of program;

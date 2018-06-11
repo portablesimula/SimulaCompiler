@@ -40,7 +40,7 @@ public class RelationalOperation extends Expression
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN RelationalOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	switch(opr)
 	{ case LT: case LE: case EQ: case NE: case GE: case GT:

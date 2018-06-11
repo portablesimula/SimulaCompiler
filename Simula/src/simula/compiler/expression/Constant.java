@@ -45,7 +45,7 @@ public class Constant extends Expression {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		this.type.doChecking(Global.currentScope);
 		SET_SEMANTICS_CHECKED();
 	}

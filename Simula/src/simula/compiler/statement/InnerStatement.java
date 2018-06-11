@@ -1,5 +1,6 @@
 package simula.compiler.statement;
 
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 /**
@@ -22,12 +23,12 @@ public class InnerStatement extends Statement {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		SET_SEMANTICS_CHECKED();
 	}
 	
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		Util.code(indent + "if(inner!=null) inner.STM();");
 	}
 

@@ -169,9 +169,8 @@ public final class SimulaScanner
 	      return(null);
 	    	  
 	    case '\n':			/* NL (LF) */
-//	      checkFullLineComment();
 	      int lineNumber=Global.sourceLineNumber;
-	      if(lineNumber>prevLineNumber) { prevLineNumber=lineNumber; return(new Token(KeyWord.NEWLINE,lineNumber)); }
+	      if(lineNumber>prevLineNumber) { prevLineNumber=lineNumber; }
 	    case ' ':
 	    case '\b':			/* BS */
 	    case '\t':			/* HT */
@@ -187,20 +186,6 @@ public final class SimulaScanner
 	  }
 	}
   }
-	
-  //********************************************************************************
-  //**	                                                      checkFullLineComment 
-  //********************************************************************************
-//  private void checkFullLineComment()  // TODO: Denne skal fjernes n�r Directiv behandles i PreProcessor
-//  { if(getNext()!='%') pushBack(current);
-//    else 
-//    { String line=SourceInput.readUntilEndOfLine();
-//	  if(TRACE_COMMENTS) Util.TRACE("COMMENT Line:\"%"+line+"\" Skipped");
-//	  Util.BREAK("SimulaScanner.checkFullLineComment: "+line);
-//    }
-//  }
-	
-  
   
   
   //********************************************************************************

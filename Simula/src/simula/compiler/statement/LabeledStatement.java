@@ -9,6 +9,7 @@ package simula.compiler.statement;
 
 import java.util.Vector;
 
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 /**
@@ -42,7 +43,7 @@ public class LabeledStatement extends Statement {
 	}
 
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		for (String label:labels) {
 			String line = label + "=new LABEL(\"" + label + "\");";

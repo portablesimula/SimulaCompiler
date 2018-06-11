@@ -10,8 +10,10 @@ package simula.compiler.expression;
 import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
+import simula.compiler.declaration.TypeDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
+import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
@@ -46,7 +48,7 @@ public class AssignmentOperation extends Expression
 
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	doAssignmentChecking(opr);
 	SET_SEMANTICS_CHECKED();
@@ -55,6 +57,14 @@ public class AssignmentOperation extends Expression
 
   public void doAssignmentChecking(KeyWord keyWord)
   { lhs.doChecking(); Type toType=lhs.type;
+    if(lhs instanceof Variable)
+    { Variable var=(Variable)lhs;
+      Meaning meaning=var.getMeaning();
+      if(meaning.declaredAs instanceof TypeDeclaration)
+      { TypeDeclaration dcl=(TypeDeclaration)meaning.declaredAs;
+        if(dcl.isConstant()) Util.error("Assignment to Constant: '"+lhs+"' is Illegal");
+      }
+    }
     rhs.doChecking(); Type fromType=rhs.type;
 	//if(DEBUG) Util.log("doAssignmentChecking("+toString()+").doChecking - ("+toType+' '+keyWord+' '+fromType+")");
 	//if(DEBUG) Util.log("doAssignmentChecking: operator: "+keyWord);

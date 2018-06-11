@@ -68,7 +68,7 @@ public class LocalObject extends Expression {
 
 	public void doChecking() { 
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		Meaning meaning=Global.currentScope.findMeaning(classIdentifier);

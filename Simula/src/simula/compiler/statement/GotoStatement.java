@@ -44,7 +44,7 @@ public class GotoStatement extends Statement {
 	}
 
 	public void doJavaCoding(String indent) {
-	Util.setLine(lineNumber);
+	Global.sourceLineNumber=lineNumber;
 	//Util.BREAK("GotoStatement.doJavaCoding: label="+label+", qual="+label.getClass().getSimpleName());
 	ASSERT_SEMANTICS_CHECKED(this);
 	if(Option.standardClass)

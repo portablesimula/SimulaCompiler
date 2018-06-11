@@ -17,7 +17,6 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
-import simula.compiler.utilities.Util;
 
 /**
  * Simple Variable Declaration.
@@ -58,10 +57,8 @@ public class TypeDeclaration extends Declaration {
 		//Util.BREAK("TypeDeclaration: new "+type+" "+identifier);
 	}
 	
-	public boolean isConstant() // TODO: Should be used to prevent assignment of new value
-	{
-		return(constantElement!=null);
-	}
+	public boolean isConstant() // Is used to prevent assignment of new value
+	{ return(constantElement!=null); }
 	   
 	public static void parse(Type type,Vector<Declaration> declarationList)
 	  { // identifier-list = identifier { , identifier }
@@ -86,7 +83,7 @@ public class TypeDeclaration extends Declaration {
 	public void doChecking() {
 		//Util.BREAK("TypeDeclaration.doChecking("+this+")");
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		type.doChecking(Global.currentScope);
 		if(constantElement!=null)
 		{ constantElement.doChecking();
@@ -100,6 +97,7 @@ public class TypeDeclaration extends Declaration {
 		//Util.BREAK("TypeDeclaration.toJavaCode: scope="+scope.getClass().getName());
 		String modifier = "";
 		if (Global.currentScope.blockKind==BlockKind.Class) modifier = "public ";
+		if (this.isConstant()) modifier = modifier+"final ";
 		String value=(constantElement!=null)?constantElement.toJavaCode():type.edDefaultValue();
 		return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + '=' + value + ';');
 	}

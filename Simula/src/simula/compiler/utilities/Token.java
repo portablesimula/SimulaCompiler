@@ -77,7 +77,6 @@ public class Token
 	  case TEXTKONST: return("TEXTKONST("+(String)value+")");
 	  case BOOLEANKONST: return("BOOLEANKONST("+(Boolean)value+")");
 	  case IDENTIFIER: return(""+value);
-	  case NEWLINE: return("NEWLINE("+value+")");
 
 	  case INTEGER: case REAL:  // Possible SHORT  or  LONG  in value part
 	       { String res=keyWord.toString(); if(value!=null) res=value.toString()+' '+res; return(res); } 

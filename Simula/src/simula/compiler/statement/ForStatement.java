@@ -76,7 +76,7 @@ public class ForStatement extends Statement
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
     controlVariable.doChecking();
     this.type=controlVariable.type; // Type of control variable
     Declaration decl=controlVariable.meaning.declaredAs;
@@ -102,7 +102,7 @@ public class ForStatement extends Statement
     //	          // Statements ...
     //	}
     // ------------------------------------------------------------
-	Util.setLine(lineNumber);
+	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
 	boolean refType=controlVariable.type.isReferenceType();
 	String CB="CB$"+lineNumber;

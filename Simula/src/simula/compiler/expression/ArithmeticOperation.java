@@ -94,7 +94,7 @@ public class ArithmeticOperation extends Expression
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ArithmeticOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	switch(opr)
 	{ case PLUS: case MINUS: case MUL:

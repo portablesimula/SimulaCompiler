@@ -78,7 +78,7 @@ public class ConnectionBlock extends DeclarationScope
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
 	
     // Set External Identifier
  	externalIdent=inspectedVariable.toJavaCode();
@@ -93,7 +93,7 @@ public class ConnectionBlock extends DeclarationScope
   }
   
   public void doJavaCoding(String indent) {
-	Util.setLine(lineNumber);
+	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
 //	Util.code(indent+'{');
 //	Util.code(indent+"   BCON("+inspectedVariable.toJavaCode()+");");

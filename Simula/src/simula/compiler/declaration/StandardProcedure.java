@@ -38,7 +38,7 @@ public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
   	String name=this.getClass().getSimpleName();
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN "+name+".doChecking");
 	Global.currentScope=declaredIn;
@@ -47,7 +47,7 @@ public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
   }
   
   public void doJavaCoding(String indent)
-  {	Util.setLine(lineNumber);
+  {	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
 	Global.currentScope=this;
     

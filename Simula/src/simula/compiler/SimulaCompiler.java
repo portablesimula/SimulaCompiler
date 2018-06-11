@@ -38,6 +38,7 @@ public class SimulaCompiler {
 	String inputFileName;
 
 	public SimulaCompiler(String inputFileName) {
+		Global.initiate();
 		this.inputFileName = inputFileName;
 		if (!inputFileName.toLowerCase().endsWith(".sim"))
 			Util.error("Illegal File Name: " + inputFileName);
@@ -96,7 +97,6 @@ public class SimulaCompiler {
 
 	public void doCompile() {
 		try {
-			Global.sourceLineNumber=0;
 			Global.javaModules=new Vector<JavaModule>();
 			
 			Parser.open(inputFileName);

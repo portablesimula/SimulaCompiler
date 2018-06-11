@@ -8,6 +8,7 @@
 package simula.compiler.declaration;
 
 import simula.compiler.utilities.BlockKind;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -40,7 +41,7 @@ public class Virtual extends Declaration {
 	
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		// Util.BREAK("Virtual("+this+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		// TODO: ??? hva checker vi ?
 		SET_SEMANTICS_CHECKED();

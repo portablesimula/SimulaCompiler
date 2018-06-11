@@ -84,7 +84,7 @@ public class TextOperation extends Expression
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN TextOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	// TEXT  &  TEXT
 	lhs.doChecking(); rhs.doChecking();

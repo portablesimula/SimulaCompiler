@@ -79,7 +79,7 @@ public class ObjectRelation extends Expression
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-   	Util.setLine(lineNumber);
+   	Global.sourceLineNumber=lineNumber;
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ObjectRelation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	classDeclaration=getQualification(classIdentifier);
 	// Object IS ClassIdentifier   |   Object IN ClassIdentifier

@@ -9,6 +9,7 @@ package simula.compiler.statement;
 
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -73,7 +74,7 @@ public class ConditionalStatement extends Statement {
 	}
 
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		Util.code(indent + "if(" + condition.toJavaCode() + ") {");
 		thenStatement.doJavaCoding(indent + "   ");

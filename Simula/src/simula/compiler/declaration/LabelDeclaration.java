@@ -7,6 +7,7 @@
  */
 package simula.compiler.declaration;
 
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -18,7 +19,7 @@ public class LabelDeclaration extends TypeDeclaration {
 	}
 
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
 		Util.code(indent+"LABEL "+ident+"=null; // Local Label #"+index);
 	}

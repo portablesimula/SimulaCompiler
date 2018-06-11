@@ -55,14 +55,22 @@ public class ENVIRONMENT$ {
 	 *   <prog>:    Identification of the executing task or program
 	 * </pre>
 	 */
-	TXT$ simulaid;
-
-	// TODO: Complete the implementation according
-	// to Simula Standard Definition.
+	public final String simid="Portable SIMULA 2018";
+	public final String siteid="";
+	public final String OS="";
+	public final String CPU="";
+	public final String user="";
+	public final String job="";
+	public final String acc="";
+	public final String prog="";
+	public final String simulaIdent=simid+"!!!"+siteid+"!!!"+OS+"!!!"+CPU+"!!!"+user+"!!!"+job+"!!!"+acc+"!!!"+prog;
+//	public TXT$ simulaid;
+	public TXT$ simulaid() { return(new TXT$(simulaIdent)); }
 
 	// Constructor
 	public ENVIRONMENT$() {
 		//super(null, null);
+		//simulaid=new TXT$(simulaIdent);
 	}
 	
 	// ************************************************************
@@ -688,6 +696,7 @@ public class ENVIRONMENT$ {
 	 * @return
 	 */
 	public TXT$ upcase(TXT$ t) {
+		if(t==null) t=NOTEXT;
 		t.setpos(1);
 		while (t.more()) {
 			char c = t.getchar();
@@ -713,6 +722,7 @@ public class ENVIRONMENT$ {
 	 * @return
 	 */
 	public TXT$ lowcase(TXT$ t) {
+		if(t==null) t=NOTEXT;
 		t.setpos(1);
 		while (t.more()) {
 			char c = t.getchar();

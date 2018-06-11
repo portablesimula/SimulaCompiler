@@ -310,7 +310,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
- 	Util.setLine(lineNumber);
+ 	Global.sourceLineNumber=lineNumber;
  	
  	// Set External Identifier  TODO: USE_EXTERNAL_IDENTIFIER
  	// this.externalIdent=this.getJavaIdentifier();
@@ -419,7 +419,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // *** Coding: SUBBLOCK as Java Subblock
   // ***********************************************************************************************
   private void doSubBlockJavaCoding(String indent)
-  {	Util.setLine(lineNumber);
+  {	Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doSubBlockJavaCoding: "+identifier);
   	ASSERT_SEMANTICS_CHECKED(this);
   	Global.currentScope=this;
@@ -437,7 +437,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // Generate Inline Method code for Procedure.
   private void doMethodJavaCoding(String indent)
-  { Util.setLine(lineNumber);
+  { Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doMethodJavaCoding: "+identifier);
   	ASSERT_SEMANTICS_CHECKED(this);
   	Global.currentScope=this;
@@ -463,7 +463,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // Output .java file for Class, Procedure, SubBlock and Prefixed Block.
   private void doBlockJavaCoding(String indent)
-  {	Util.setLine(lineNumber);
+  {	Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doBlockJavaCoding: "+identifier);
 	ASSERT_SEMANTICS_CHECKED(this);
 	JavaModule javaModule=new JavaModule(this);
@@ -540,7 +540,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	for(Parameter par:parameterList)
 //	 	  Util.code(indent+"      this."+par.identifier+" = par$"+par.identifier+';');	
 		  Util.code(indent+"      this."+par.externalIdent+" = par$"+par.identifier+';');	
-//	 	  Util.code(indent+"      this."+par.externalIdent+" = "+par.externalIdent+';');	
 	
 	Util.code(indent+"      // Declaration Code");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+"   ");
@@ -730,7 +729,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     if(!isMethod) { s.append("RTObject$ staticLink"); withparams=true; }
     for(Declaration par:new ClassParameterIterator())  // Iterates through prefix-chain
     { if(withparams) s.append(','); withparams=true;
-//      s.append(par.toJavaCode());
       s.append(((Parameter)par).toJavaType());
       s.append(' ');
       if(!isMethod) s.append("par$");

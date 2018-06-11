@@ -37,7 +37,7 @@ public class UnaryOperation extends Expression {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN UnaryOperation" + toString()
 					+ ".doChecking - Current Scope Chain: "

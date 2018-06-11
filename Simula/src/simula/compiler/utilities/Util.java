@@ -20,9 +20,6 @@ import java.lang.reflect.Type;
  */
 public class Util
 { 
-  private static int line;
-  public static void setLine(int line) { Util.line=line; }
-
   private static Writer writer;
   public static Writer setWriter(Writer _writer)
   { Writer prevWriter=writer;
@@ -31,12 +28,12 @@ public class Util
   }
   
   public static void error(String msg)
-  { System.err.println("Line "+line+" Error: "+msg);
+  { System.err.println("Line "+Global.sourceLineNumber+" Error: "+msg);
     BREAK("");
   }
 
   public static void FATAL_ERROR(String s)
-  { String msg="LINE "+line+": FATAL error - "+s;
+  { String msg="LINE "+Global.sourceLineNumber+": FATAL error - "+s;
     System.err.println(msg);
     try { throw new RuntimeException("FATAL error"); }
     catch(Exception e) { e.printStackTrace(); }
@@ -44,23 +41,33 @@ public class Util
   }
   
   public static void warning(String msg)
-  { if(Option.WARNINGS) System.err.println("LINE "+line+": WARNING: "+msg); }
+  { if(Option.WARNINGS) System.err.println("LINE "+Global.sourceLineNumber+": WARNING: "+msg); }
 
+  private static int prevLineNumber=0;
   public static void code(String s) { 
-	  if(Option.TRACE_CODING) println("CODE "+line+": "+s);
+	  ASSERT(Global.sourceLineNumber>0,"Invariant");
+	  String s0=null;
+	  if(prevLineNumber!=Global.sourceLineNumber)
+	  { String leadingBlanks="                          ";
+	    s0=leadingBlanks+"// SourceLine "+Global.sourceLineNumber;
+	    if(Option.TRACE_CODING) println("LINE "+Global.sourceLineNumber+s0);
+	  }
+	  if(Option.TRACE_CODING) println("CODE "+Global.sourceLineNumber+": "+s);
 	  ASSERT(writer!=null,"Can't Output Code - writer==null"); 
-	  try { writer.write(s+'\n'); }
+	  try { if(s0!=null) writer.write(s0+'\n');
+	        writer.write(s+'\n'); }
 	  catch (IOException e) {
 			System.out.println("Error Reading File");
 			e.printStackTrace();
 	  }
+	  prevLineNumber=Global.sourceLineNumber;
   }
 
   public static void LIST(String msg) { TRACE("LIST",msg); }
   public static void TRACE(String msg) { TRACE("TRACE",msg); }
   
   public static void TRACE(String id,String msg)
-  { if(Option.TRACING) println(id+" "+line+": "+msg); }
+  { if(Option.TRACING) println(id+" "+Global.sourceLineNumber+": "+msg); }
   
   public static void NOT_IMPLEMENTED(String s)
   { System.err.println("*** NOT IMPLEMENTED: "+s);
@@ -84,7 +91,7 @@ public class Util
   public static void BREAK(String title) { BREAK("BREAK",title); }
   public static void BREAK(String id,String title)
   { if(Option.BREAKING)
-    { System.err.println(id+" "+line+": "+title+": <");
+    { System.err.println(id+" "+Global.sourceLineNumber+": "+title+": <");
       { try
         { char c=(char)System.in.read();
           //System.err.println("INPUT "+c+"  "+(int)c);

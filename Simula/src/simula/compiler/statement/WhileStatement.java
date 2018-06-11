@@ -3,6 +3,7 @@ package simula.compiler.statement;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -35,7 +36,7 @@ public class WhileStatement extends Statement {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		// Util.BREAK("BEGIN WhileStatement("+condition+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		condition.doChecking();
 		if (condition.type != Type.Boolean)
@@ -45,7 +46,7 @@ public class WhileStatement extends Statement {
 	}
 
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		Util.code(indent + "while(" + condition.toJavaCode() + ") {");
 		doStatement.doJavaCoding(indent + "   ");

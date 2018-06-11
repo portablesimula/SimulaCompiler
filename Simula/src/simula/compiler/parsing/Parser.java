@@ -23,7 +23,6 @@ public class Parser {
 	// *** Parser Utilities
 	// *********************************************************************************
 
-	private static int currenLineNumber = 0;
 	private static Token savedToken = null; // Used by 'pushBack'
 	public static Token prevToken = null;
 	public static Token currentToken = null;
@@ -31,14 +30,8 @@ public class Parser {
 	private static void nextSymb() {
 		Parser.prevToken = Parser.currentToken;
 		if (savedToken == null) {
-			while ((Parser.currentToken = simulaScanner.nextToken()) != null) {
-				// Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
-				if (Parser.currentToken.getKeyWord() != KeyWord.NEWLINE)
-					return;
-				// Util.BREAK("TOKEN:'" + Parser.currentToken + "' SKIPPED");
-				currenLineNumber = (int) Parser.currentToken.getValue();
-				Util.setLine(currenLineNumber);
-			}
+			Parser.currentToken = simulaScanner.nextToken();
+			// Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
 		} else {
 			Parser.currentToken = savedToken;
 			savedToken = null;
@@ -53,10 +46,6 @@ public class Parser {
 		Parser.currentToken = Parser.prevToken;
 		Parser.prevToken = null;
 		// Util.BREAK("SAVED TOKEN:'" + savedToken);
-	}
-
-	public static int getLineNumber() {
-		return (currenLineNumber);
 	}
 
 	public static void error(String msg) {

@@ -9,6 +9,7 @@ package simula.compiler;
 
 import simula.compiler.declaration.Declaration;
 import simula.compiler.parsing.Parser;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
@@ -52,7 +53,7 @@ public abstract class SyntaxClass
   public void print(String indent,String tail) { System.out.println(indent+this+tail); } 
 
   protected SyntaxClass()
-  { lineNumber=Parser.getLineNumber();
+  { lineNumber=Global.sourceLineNumber;
     //Util.BREAK(this.getClass().getName()+": Got LineNumber="+lineNumber);
   }
 
@@ -90,15 +91,14 @@ public abstract class SyntaxClass
 
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-  	Util.setLine(lineNumber);
+  	Global.sourceLineNumber=lineNumber;
     String name=this.getClass().getSimpleName();
     Util.NOT_IMPLEMENTED(""+name+".doChecking");
   }
 
   // Should be called from all doChecking,put,get methods to signal that semantic checking is done.
   protected void SET_SEMANTICS_CHECKED() { CHECKED=true; }
-  protected boolean IS_SEMANTICS_CHECKED()
-  { return(CHECKED); }
+  protected boolean IS_SEMANTICS_CHECKED() { return(CHECKED); }
 
   protected	void ASSERT_SEMANTICS_CHECKED(Object obj)
   { if(!CHECKED)
@@ -112,12 +112,12 @@ public abstract class SyntaxClass
   public void doDeclarationCoding(String indent) { }
 
   public void doJavaCoding(String indent) {
-	Util.setLine(lineNumber);
+	Global.sourceLineNumber=lineNumber; Global.sourceLineNumber=lineNumber;
 	Util.code(indent+toJavaCode());
   }
 
   public void doJVMCoding() {
-	Util.setLine(lineNumber);  // TEMP
+	Global.sourceLineNumber=lineNumber;  // TEMP
 	Util.code("JVM:"+toJavaCode()); // TEMP
   }
   

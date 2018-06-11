@@ -7,6 +7,7 @@
  */
 package simula.compiler.expression;
 
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -41,7 +42,7 @@ public class ConditionalExpression extends Expression {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		//Util.warning("ConditionalExpression in this Context is not Supported - Rewrite program");
 		condition.doChecking();
 		condition.backLink=this; // To ensure $result from functions

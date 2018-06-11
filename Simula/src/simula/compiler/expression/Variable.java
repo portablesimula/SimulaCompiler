@@ -88,15 +88,17 @@ public class Variable extends Expression {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		//Util.BREAK("BEGIN Variable("+identifier+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		this.type=getMeaning().declaredAs.type;
 		//Util.BREAK("END Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
-		if(identifier.equalsIgnoreCase("detach"))
+//		if(identifier.equalsIgnoreCase("detach"))
+		if(meaning.declaredAs instanceof StandardProcedure)
 		{ //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
 		  //Util.BREAK("Variable("+identifier+").doChecking: Declared as'Qual: "+meaning.declaredAs.getClass().getSimpleName());
 		  //Util.BREAK("Variable("+identifier+").doChecking: Declared in'Qual: "+meaning.declaredIn.getClass().getSimpleName());
-		  if(meaning.declaredAs instanceof StandardProcedure)
+//		  if(meaning.declaredAs instanceof StandardProcedure)
+		  if(identifier.equalsIgnoreCase("detach"))
 		  { //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning.declaredAs);
 		    //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared in: "+meaning.declaredIn);
 			meaning.declaredIn.detachUsed=true;
@@ -191,7 +193,10 @@ public class Variable extends Expression {
 		}
 		else if(blockKind==BlockKind.Method)
 		{ //Util.BREAK("Variable.getDisplayedIdentifier2m("+id+"): decl="+decl+", qual="+decl.getClass().getSimpleName());
-	      id=CallProcedure.asNormalMethod(this);
+			if(meaning.declaredAs instanceof StandardProcedure) {
+				if(identifier.equalsIgnoreCase("sourceline"))
+			  		return(""+Global.sourceLineNumber);	}
+			id=CallProcedure.asNormalMethod(this);
 		}
 		return(id);
 	  }

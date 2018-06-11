@@ -102,7 +102,7 @@ public abstract class Statement extends SyntaxClass {
 	}
 
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		Util.code(indent + toJavaCode() + ';');
 	}

@@ -31,14 +31,13 @@ public final class PreProcessor
   private static PreProcessor currentSource;
   private static Reader currentReader() { return(currentSource.reader); }
   private static Stack<Character> puchBackStack=new Stack<Character>();
-  private static boolean newline=true; // Last character read was a NEWLINE character \n
+  private static boolean newline=true; // Last character read was a newline character \n
   private static boolean incrementLineNumber=true;
   private static boolean selector[]=new boolean[256];
   private static String currentTitle="";
   private static StringBuilder listingLine=new StringBuilder();
 
   public static final int EOF=-1;           // used to denote end-of-input
-//  public static int getLineNumber() { return(sourceLineNumber); }
   
   // Attributes
   private String fileName;    //! source file name;
@@ -103,7 +102,6 @@ public final class PreProcessor
     { currentCharacter=currentReader().read();
 	  if(currentCharacter=='\n')
 	  { if(incrementLineNumber) Global.sourceLineNumber++;
-	    Util.setLine(Global.sourceLineNumber);
 	    if(Option.verbose) Util.LIST(listingLine.toString());
 	    listingLine=new StringBuilder();
 	  } 

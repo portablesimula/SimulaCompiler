@@ -103,6 +103,8 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     ENVIRONMENT.addStandardAttribute(Type.Integer,"maxrank");  
     ENVIRONMENT.addStandardAttribute(Type.Integer,"maxint");  
     ENVIRONMENT.addStandardAttribute(Type.Integer,"minint");  
+//    ENVIRONMENT.addStandardAttribute(Type.Text,"simulaid");
+    ENVIRONMENT.addStandardProcedure(Type.Text,"simulaid");
     ENVIRONMENT.addStandardProcedure(Type.Integer,"sourceline");
     
 //    Basic operations ........................................ 9.1

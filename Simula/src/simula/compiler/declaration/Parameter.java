@@ -41,7 +41,7 @@ public class Parameter extends Declaration
 
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-    Util.setLine(lineNumber);
+    Global.sourceLineNumber=lineNumber;
 	externalIdent="p$"+identifier;
     //Util.BREAK("CHECKING Parameter: "+this);
  	//Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+currentScope.edScopeChain());

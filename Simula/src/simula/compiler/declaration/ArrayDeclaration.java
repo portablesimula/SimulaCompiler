@@ -14,6 +14,7 @@ import java.util.Vector;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -166,7 +167,7 @@ public class ArrayDeclaration extends Declaration {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		if (type == null) type=Type.Real;
 		for (Iterator<BoundPair> it = boundPairList.iterator(); it.hasNext();) {
 			it.next().doChecking();
@@ -175,7 +176,7 @@ public class ArrayDeclaration extends Declaration {
 	}
 
     public void doJavaCoding(String indent) // TODO: NEW ARRAY CODE
-	{ Util.setLine(lineNumber);
+	{ Global.sourceLineNumber=lineNumber;
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
 	  // public $ARRAY<float[]> Tab=null;
@@ -189,7 +190,7 @@ public class ArrayDeclaration extends Declaration {
 	}
 
     public void doDeclarationCoding(String indent) // TODO: NEW ARRAY CODE
-	{ Util.setLine(lineNumber);
+	{ Global.sourceLineNumber=lineNumber;
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
 	  // integer array A(1:4,4:6,6:12);

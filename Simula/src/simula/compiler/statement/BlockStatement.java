@@ -12,6 +12,7 @@ import simula.compiler.expression.Expression;
 import simula.compiler.expression.SubscriptedVariable;
 import simula.compiler.expression.Variable;
 import simula.compiler.utilities.BlockKind;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 /**
@@ -38,7 +39,7 @@ public class BlockStatement extends Statement {
 	}
 
 	public void doJavaCoding(String indent) {
-		Util.setLine(lineNumber);
+		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 
 		//Util.BREAK("BlockStatement.doJavaCoding: blockKind="+blockDeclaration.blockKind);

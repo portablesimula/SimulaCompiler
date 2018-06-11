@@ -184,7 +184,7 @@ public class ConnectionStatement extends Statement
 
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
-    Util.setLine(lineNumber);
+    Global.sourceLineNumber=lineNumber;
     if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ConnectionStatement("+toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 
     objectExpression.doChecking();
@@ -203,7 +203,7 @@ public class ConnectionStatement extends Statement
   }
   
   public void doJavaCoding(String indent)
-  {	Util.setLine(lineNumber);
+  {	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
     if(assignment!=null) Util.code(indent+assignment.toJavaCode()+';');	
     if(hasWhenPart) Util.code(indent+"//"+"INSPECT "+inspectedVariable);
