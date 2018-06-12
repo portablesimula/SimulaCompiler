@@ -11,11 +11,9 @@ import java.util.Vector;
 
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 
 /**
@@ -36,14 +34,14 @@ public class SwitchDeclaration extends BlockDeclaration //Declaration
 { Vector<Expression> switchList=new Vector<Expression>();
 
   public SwitchDeclaration()
-  { super(expectIdentifier(),BlockKind.Switch);
+  { super(expectIdentifier(),BlockDeclaration.Kind.Switch);
 	if(Option.TRACE_PARSE) Parser.TRACE("Parse SwitchDeclaration");
 	this.type=Type.LabelQuantity;
 	Parser.expect(KeyWord.ASSIGNVALUE);
 	do { switchList.add(Expression.parseExpression()); } while( Parser.accept(KeyWord.COMMA) );      
 	if(Option.TRACE_PARSE) Parser.TRACE("Parse SwitchDeclaration(3), switchList="+switchList);
-//    this.parameterList.add(new Parameter("$SW",Type.Integer,ParameterKind.Simple));
-    this.addParameter(new Parameter("$SW",Type.Integer,ParameterKind.Simple));
+//    this.parameterList.add(new Parameter("$SW",Type.Integer,Parameter.Kind.Simple));
+    this.addParameter(new Parameter("$SW",Type.Integer,Parameter.Kind.Simple));
     Global.currentScope=declaredIn;
   }
 

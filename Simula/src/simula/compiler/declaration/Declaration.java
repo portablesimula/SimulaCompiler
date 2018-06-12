@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import simula.compiler.SyntaxClass;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -39,7 +38,7 @@ public class Declaration extends SyntaxClass
 { public String identifier; // Simula Identifier from Source Text
   public String externalIdent; // External Identifier set by doChecking
   public DeclarationScope declaredIn;  // The DeclarationScope in which this Declaration is defined.
-  public BlockKind blockKind;
+  public BlockDeclaration.Kind blockKind;
 
   public final String getJavaIdentifier() { return(this.externalIdent); }  // May be redefined
 

@@ -127,11 +127,11 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../simula/compiler/utilities/ParameterKind.html" title="enum in simula.compiler.utilities">ParameterKind</a></code></td>
+<td class="colFirst"><code><a href="../../../simula/compiler/utilities/Parameter.Kind.html" title="enum in simula.compiler.utilities">Parameter.Kind</a></code></td>
 <td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#kind">kind</a></strong></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../simula/compiler/utilities/ParameterMode.html" title="enum in simula.compiler.utilities">ParameterMode</a></code></td>
+<td class="colFirst"><code><a href="../../../simula/compiler/utilities/Parameter.Mode.html" title="enum in simula.compiler.utilities">Parameter.Mode</a></code></td>
 <td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#mode">mode</a></strong></code>&nbsp;</td>
 </tr>
 </table>
@@ -166,9 +166,9 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <td class="colOne"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#Parameter(java.lang.String)">Parameter</a></strong>(java.lang.String&nbsp;identifier)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#Parameter(java.lang.String,%20simula.compiler.utilities.Type,%20simula.compiler.utilities.ParameterKind)">Parameter</a></strong>(java.lang.String&nbsp;identifier,
+<td class="colOne"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#Parameter(java.lang.String,%20simula.compiler.utilities.Type,%20simula.compiler.utilities.Parameter.Kind)">Parameter</a></strong>(java.lang.String&nbsp;identifier,
          <a href="../../../simula/compiler/utilities/Type.html" title="class in simula.compiler.utilities">Type</a>&nbsp;type,
-         <a href="../../../simula/compiler/utilities/ParameterKind.html" title="enum in simula.compiler.utilities">ParameterKind</a>&nbsp;kind)</code>&nbsp;</td>
+         <a href="../../../simula/compiler/utilities/Parameter.Kind.html" title="enum in simula.compiler.utilities">Parameter.Kind</a>&nbsp;kind)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -197,12 +197,12 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#setMode(simula.compiler.utilities.ParameterMode)">setMode</a></strong>(<a href="../../../simula/compiler/utilities/ParameterMode.html" title="enum in simula.compiler.utilities">ParameterMode</a>&nbsp;mode)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#setMode(simula.compiler.utilities.Parameter.Mode)">setMode</a></strong>(<a href="../../../simula/compiler/utilities/Parameter.Mode.html" title="enum in simula.compiler.utilities">Parameter.Mode</a>&nbsp;mode)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#setTypeAndKind(simula.compiler.utilities.Type,%20simula.compiler.utilities.ParameterKind)">setTypeAndKind</a></strong>(<a href="../../../simula/compiler/utilities/Type.html" title="class in simula.compiler.utilities">Type</a>&nbsp;type,
-              <a href="../../../simula/compiler/utilities/ParameterKind.html" title="enum in simula.compiler.utilities">ParameterKind</a>&nbsp;kind)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/Parameter.html#setTypeAndKind(simula.compiler.utilities.Type,%20simula.compiler.utilities.Parameter.Kind)">setTypeAndKind</a></strong>(<a href="../../../simula/compiler/utilities/Type.html" title="class in simula.compiler.utilities">Type</a>&nbsp;type,
+              <a href="../../../simula/compiler/utilities/Parameter.Kind.html" title="enum in simula.compiler.utilities">Parameter.Kind</a>&nbsp;kind)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
@@ -258,7 +258,7 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <ul class="blockList">
 <li class="blockList">
 <h4>mode</h4>
-<pre>public&nbsp;<a href="../../../simula/compiler/utilities/ParameterMode.html" title="enum in simula.compiler.utilities">ParameterMode</a> mode</pre>
+<pre>public&nbsp;<a href="../../../simula/compiler/utilities/Parameter.Mode.html" title="enum in simula.compiler.utilities">Parameter.Mode</a> mode</pre>
 </li>
 </ul>
 <a name="kind">
@@ -267,7 +267,7 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <ul class="blockListLast">
 <li class="blockList">
 <h4>kind</h4>
-<pre>public&nbsp;<a href="../../../simula/compiler/utilities/ParameterKind.html" title="enum in simula.compiler.utilities">ParameterKind</a> kind</pre>
+<pre>public&nbsp;<a href="../../../simula/compiler/utilities/Parameter.Kind.html" title="enum in simula.compiler.utilities">Parameter.Kind</a> kind</pre>
 </li>
 </ul>
 </li>
@@ -287,7 +287,7 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <pre>public&nbsp;Parameter(java.lang.String&nbsp;identifier)</pre>
 </li>
 </ul>
-<a name="Parameter(java.lang.String, simula.compiler.utilities.Type, simula.compiler.utilities.ParameterKind)">
+<a name="Parameter(java.lang.String, simula.compiler.utilities.Type, simula.compiler.utilities.Parameter.Kind)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -295,7 +295,7 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <h4>Parameter</h4>
 <pre>public&nbsp;Parameter(java.lang.String&nbsp;identifier,
          <a href="../../../simula/compiler/utilities/Type.html" title="class in simula.compiler.utilities">Type</a>&nbsp;type,
-         <a href="../../../simula/compiler/utilities/ParameterKind.html" title="enum in simula.compiler.utilities">ParameterKind</a>&nbsp;kind)</pre>
+         <a href="../../../simula/compiler/utilities/Parameter.Kind.html" title="enum in simula.compiler.utilities">Parameter.Kind</a>&nbsp;kind)</pre>
 </li>
 </ul>
 </li>
@@ -306,23 +306,23 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="setMode(simula.compiler.utilities.ParameterMode)">
+<a name="setMode(simula.compiler.utilities.Parameter.Mode)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setMode</h4>
-<pre>public&nbsp;void&nbsp;setMode(<a href="../../../simula/compiler/utilities/ParameterMode.html" title="enum in simula.compiler.utilities">ParameterMode</a>&nbsp;mode)</pre>
+<pre>public&nbsp;void&nbsp;setMode(<a href="../../../simula/compiler/utilities/Parameter.Mode.html" title="enum in simula.compiler.utilities">Parameter.Mode</a>&nbsp;mode)</pre>
 </li>
 </ul>
-<a name="setTypeAndKind(simula.compiler.utilities.Type, simula.compiler.utilities.ParameterKind)">
+<a name="setTypeAndKind(simula.compiler.utilities.Type, simula.compiler.utilities.Parameter.Kind)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setTypeAndKind</h4>
 <pre>public&nbsp;void&nbsp;setTypeAndKind(<a href="../../../simula/compiler/utilities/Type.html" title="class in simula.compiler.utilities">Type</a>&nbsp;type,
-                  <a href="../../../simula/compiler/utilities/ParameterKind.html" title="enum in simula.compiler.utilities">ParameterKind</a>&nbsp;kind)</pre>
+                  <a href="../../../simula/compiler/utilities/Parameter.Kind.html" title="enum in simula.compiler.utilities">Parameter.Kind</a>&nbsp;kind)</pre>
 </li>
 </ul>
 <a name="doChecking()">

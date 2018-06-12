@@ -11,6 +11,7 @@ import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.expression.Expression;
+import simula.compiler.expression.Variable;
 
 /**
  * 
@@ -18,30 +19,30 @@ import simula.compiler.expression.Expression;
  *
  */
 public class Meaning {
-	public VariableKind variableKind;
+	public Variable.Kind variableKind;
 	public boolean foundBehindInvisible; // Behind hidden/protected
 	public Declaration declaredAs;
 	public DeclarationScope declaredIn;  // Search started here
 	public DeclarationScope foundIn;     // Search ended here
 	
 	
-	public Meaning(VariableKind variableKind,Declaration declaredAs,DeclarationScope declaredIn)
+	public Meaning(Variable.Kind variableKind,Declaration declaredAs,DeclarationScope declaredIn)
 	{ this.variableKind=variableKind;
 	  this.declaredAs=declaredAs;
 	  this.declaredIn=declaredIn;
 	}
-	public Meaning(VariableKind variableKind,Declaration declaredAs,DeclarationScope declaredIn
+	public Meaning(Variable.Kind variableKind,Declaration declaredAs,DeclarationScope declaredIn
 			      ,DeclarationScope foundIn,boolean foundBehindInvisible)
 	{ this(variableKind,declaredAs,declaredIn);
 	  this.foundIn=foundIn;
 	  this.foundBehindInvisible=foundBehindInvisible;
     }
-	public Meaning(VariableKind variableKind) // Used by: ConnectedAttribute
+	public Meaning(Variable.Kind variableKind) // Used by: ConnectedAttribute
 	{ this.variableKind=variableKind;
 	}
 	
 	public Expression getInspectedVariable() {
-		if(variableKind!=VariableKind.connectedAttribute) return(null);
+		if(variableKind!=Variable.Kind.connectedAttribute) return(null);
 		return(((ConnectionBlock)declaredIn).getInspectedVariable());
 	}
 	  

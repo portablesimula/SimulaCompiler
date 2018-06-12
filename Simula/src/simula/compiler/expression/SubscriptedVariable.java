@@ -16,13 +16,10 @@ import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.OverLoad;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -163,19 +160,19 @@ public class SubscriptedVariable extends Variable {
 			
     	} else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
 		{ Parameter spec=(Parameter) decl;
-    	  ParameterKind kind=spec.kind;
+    	  Parameter.Kind kind=spec.kind;
     	  //Util.BREAK("SubscriptedVariable.doChecking: kind="+kind);
-    	  Util.ASSERT(kind==ParameterKind.Array || kind==ParameterKind.Procedure,"Invariant ?");
+    	  Util.ASSERT(kind==Parameter.Kind.Array || kind==Parameter.Kind.Procedure,"Invariant ?");
     	  {	this.type=spec.type;
 //    	    Util.warning("SubscriptedVariable("+identifier+") - Parameter Checking is postponed to Runtime");
     	    Iterator<Expression> actualIterator=params.iterator();
     	    while(actualIterator.hasNext())
     	    { Expression actualParameter=actualIterator.next();
     	      actualParameter.doChecking();
-    	      if(kind==ParameterKind.Array && !actualParameter.type.isArithmeticType()) Util.error("Illegal index-type");
+    	      if(kind==Parameter.Kind.Array && !actualParameter.type.isArithmeticType()) Util.error("Illegal index-type");
     	      
     		  //checkedParams.add(actualParameter);
-    	      if(kind==ParameterKind.Array)
+    	      if(kind==Parameter.Kind.Array)
   			  { Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
   			    checkedParameter.backLink=this;
   			    checkedParams.add(checkedParameter);
@@ -231,13 +228,13 @@ public class SubscriptedVariable extends Variable {
 	  else
 	  if(decl instanceof BlockDeclaration) // Declared Procedure
 	  {	BlockDeclaration procedure = (BlockDeclaration) decl;
-	    BlockKind blockKind=decl.blockKind;
+	    BlockDeclaration.Kind blockKind=decl.blockKind;
 	    //Util.BREAK("SubscriptedVariable3("+identifier+").get: blockKind="+blockKind);
-	    if(blockKind==BlockKind.Method) // Standard Procedure
+	    if(blockKind==BlockDeclaration.Kind.Method) // Standard Procedure
 	       s.append(CallProcedure.asNormalMethod(this));
 	    else if(procedure.myVirtual!=null)
 	       s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
-	    else if(blockKind==BlockKind.Procedure || blockKind==BlockKind.Switch)
+	    else if(blockKind==BlockDeclaration.Kind.Procedure || blockKind==BlockDeclaration.Kind.Switch)
 	       s.append(CallProcedure.normal(this));
 	    else Util.FATAL_ERROR("Umulig å komme hit ??");
 	    
@@ -245,13 +242,13 @@ public class SubscriptedVariable extends Variable {
 	  else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
 	  {	//if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
 	    Parameter par=(Parameter)decl;
-		ParameterKind kind=par.kind;  
-		if(kind==ParameterKind.Array) // Parameter Array
+		Parameter.Kind kind=par.kind;  
+		if(kind==Parameter.Kind.Array) // Parameter Array
 		{ int nDim=0;
 		  //if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
 	      String var=edVariable(false);
 		  if(connectedObject!=null) var=connectedObject.toJavaCode()+'.'+var;
-	  	  if(par.mode==ParameterMode.name) var=var+".get()";
+	  	  if(par.mode==Parameter.Mode.name) var=var+".get()";
 	  	  StringBuilder ixs=new StringBuilder();
 	  	  String dimBrackets="";
 	  	  for(Expression ix:checkedParams) {
@@ -264,9 +261,9 @@ public class SubscriptedVariable extends Variable {
 	  	  String castedVar="(("+cast+")"+var+")";
 	  	  s.append(castedVar).append(".Elt").append(ixs);
 		}
-		else if(kind==ParameterKind.Procedure) // Parameter Procedure
+		else if(kind==Parameter.Kind.Procedure) // Parameter Procedure
 	    { if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
-		  if(par.mode==ParameterMode.value)
+		  if(par.mode==Parameter.Mode.value)
 	          Util.error("Parameter "+this+" by Value is not allowed - Rewrite Program");
 		  else // Procedure By Reference or Name.
 	      	  s.append(CallProcedure.formal(this,par)); 

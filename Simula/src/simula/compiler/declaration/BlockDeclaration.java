@@ -17,11 +17,8 @@ import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.BlockStatement;
 import simula.compiler.statement.Statement;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -37,6 +34,20 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   public Virtual myVirtual; // Set during doChecking
   public Vector<Statement> statements=new Vector<Statement>();
   
+  public enum Kind {
+		External,
+		StandardClass,
+		ConnectionBlock,
+		CompoundStatement,
+	    SubBlock,
+	    Procedure,
+	    Method, // Procedure coded as a Java Method. 
+	    Class,
+	    PrefixedBlock,
+	    SimulaProgram,
+	    Switch
+	}
+
   // ***********************************************************************************************
   // *** Utility: findVirtual
   // ***********************************************************************************************
@@ -51,7 +62,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   
   
 //  public String getJavaIdentifier()
-//  { if(blockKind==BlockKind.Method) return(identifier);
+//  { if(blockKind==BlockDeclaration.Kind.Method) return(identifier);
 //	if(Option.useQualifiedNames) return(edJavaClassName());
 //    return(identifier);
 //  }
@@ -63,7 +74,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // Used by parseMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
   public BlockDeclaration(String identifier) { super(identifier); } 
   // Used by ClassDeclaration and ProcedureDeclaration
-  public BlockDeclaration(String identifier,BlockKind blockKind)
+  public BlockDeclaration(String identifier,BlockDeclaration.Kind blockKind)
   { super(identifier); this.blockKind=blockKind; } 
 
   public void setStatement(Statement statement)
@@ -78,9 +89,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   public static BlockDeclaration createMaybeBlock(Variable blockPrefix,String blockIdentifier)
   {	BlockDeclaration module=new BlockDeclaration(Global.sourceName);
 	module.isMainModule=true;
-	module.blockKind=BlockKind.SimulaProgram;
+	module.blockKind=BlockDeclaration.Kind.SimulaProgram;
 	module.blockPrefix=blockPrefix;
-	if(blockPrefix!=null) module.blockKind=BlockKind.PrefixedBlock;
+	if(blockPrefix!=null) module.blockKind=BlockDeclaration.Kind.PrefixedBlock;
 	if(blockPrefix!=null) module.prefix=blockPrefix.identifier;
 //	else module.prefix="BASICIO";
 	else module.prefix="RTObject";
@@ -124,26 +135,59 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     while(!Parser.accept(KeyWord.END))
     { stm=Statement.doParse(); if(stm!=null) statements.add(stm); }
 
-	if(blockKind!=BlockKind.SimulaProgram)
+	if(blockKind!=BlockDeclaration.Kind.SimulaProgram)
 	{ if(blockPrefix!=null)
-	  { blockKind=BlockKind.PrefixedBlock;
+	  { blockKind=BlockDeclaration.Kind.PrefixedBlock;
 	    if(!isMainModule) modifyIdentifier(""+blockPrefix.identifier+"$Block"+lineNumber);
 	  }
 	  else if(!declarationList.isEmpty())
-	  { blockKind=BlockKind.SubBlock;
+	  { blockKind=BlockDeclaration.Kind.SubBlock;
 	    modifyIdentifier("SubBlock"+lineNumber);
 	  }
 	  else
-	  { blockKind=BlockKind.CompoundStatement;
+	  { blockKind=BlockDeclaration.Kind.CompoundStatement;
 	    modifyIdentifier("CompoundStatement"+lineNumber);
 	  }
 	}
 	//declarationMap.print("END Block: "+blockName);
 	//Debug.BREAK("END Block: "+this.edScopeChain());
-	//Util.BREAK("BlockDeclaration.parseMaybeBlock: BlockPrefix="+blockPrefix+", BlockKind="+blockKind);
+	//Util.BREAK("BlockDeclaration.parseMaybeBlock: BlockPrefix="+blockPrefix+", BlockDeclaration.Kind="+blockKind);
 	
 	Global.currentScope=declaredIn;
 	return(new BlockStatement(this));
+  }
+  
+
+//***********************************************************************************************
+//*** Parsing: doParseProcedureSpecification
+//***********************************************************************************************
+/**
+ * Procedure Specification.
+ * <pre>
+ * Syntax:
+ * 
+ * ProcedureSpecification
+ *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead EmptyBody
+ *     
+ * ProcedureHead
+ *     = [ FormalParameterPart ; [ ModePart ]
+ *         specification-part  ] ;
+ *         
+ * ProcedureBody = Statement
+ * ProcedureIdentifier = Identifier
+ * </pre>
+ */
+  public static ProcedureSpecification doParseProcedureSpecification(Type type)
+  {	BlockDeclaration.Kind blockKind=(Option.standardClass)?BlockDeclaration.Kind.Method:BlockDeclaration.Kind.Procedure;
+   	BlockDeclaration block=new BlockDeclaration(null,blockKind);
+    block.type=type;  
+    if(Option.TRACE_PARSE) Parser.TRACE("Parse ProcedureDeclaration, type="+type);
+	BlockParser.doParse(block,false);
+    if(Option.TRACE_PARSE) Util.TRACE("END ProcedureDeclaration: "+block);
+	//Debug.BREAK("END ProcedureDeclaration: ");
+    Global.currentScope=block.declaredIn;
+    ProcedureSpecification procedureSpecification=new ProcedureSpecification(block.identifier,type,block.parameterList);
+	return(procedureSpecification);
   }
   
 
@@ -167,11 +211,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
  * </pre>
  */
   public static BlockDeclaration doParseProcedureDeclaration(Type type)
-  {	BlockKind blockKind=(Option.standardClass)?BlockKind.Method:BlockKind.Procedure;
+  {	BlockDeclaration.Kind blockKind=(Option.standardClass)?BlockDeclaration.Kind.Method:BlockDeclaration.Kind.Procedure;
    	BlockDeclaration block=new BlockDeclaration(null,blockKind);
     block.type=type;  
-	BlockParser.doParse(block,false);
     if(Option.TRACE_PARSE) Parser.TRACE("Parse ProcedureDeclaration, type="+type);
+	BlockParser.doParse(block,false);
     if(Option.TRACE_PARSE) Util.TRACE("END ProcedureDeclaration: "+block);
 	//Debug.BREAK("END ProcedureDeclaration: ");
     Global.currentScope=block.declaredIn;
@@ -220,7 +264,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
  * </pre>
  */
   public static BlockDeclaration doParseClassDeclaration(String prefix)
-  { BlockDeclaration block=new BlockDeclaration(null,BlockKind.Class);
+  { BlockDeclaration block=new BlockDeclaration(null,BlockDeclaration.Kind.Class);
 	block.prefix=prefix;
 	block.declaredIn.hasLocalClasses=true;
 	//Util.BREAK("BlockDeclaration.doParseClassDeclaration: set hasLocalClasses in="+block.declaredIn);
@@ -314,11 +358,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
  	
  	// Set External Identifier  TODO: USE_EXTERNAL_IDENTIFIER
  	// this.externalIdent=this.getJavaIdentifier();
- 	if(blockKind==BlockKind.Method) externalIdent=this.identifier;
+ 	if(blockKind==BlockDeclaration.Kind.Method) externalIdent=this.identifier;
 // 	else externalIdent=edJavaClassName();
- 	else if(blockKind!=BlockKind.External) externalIdent=edJavaClassName();
+ 	else if(blockKind!=BlockDeclaration.Kind.External) externalIdent=edJavaClassName();
 
-	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel++;
+	if(blockKind!=BlockDeclaration.Kind.CompoundStatement) currentBlockLevel++;
     blockLevel=currentBlockLevel;
 	//Util.BREAK("BlockDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
 	//Util.BREAK("BlockDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
@@ -346,7 +390,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
       else ((BlockDeclaration)declaredIn).virtualList.add(myVirtual=new Virtual(this)); 
     }
     Global.currentScope=declaredIn;
-	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel--;
+	if(blockKind!=BlockDeclaration.Kind.CompoundStatement) currentBlockLevel--;
     SET_SEMANTICS_CHECKED();
   }
 
@@ -371,7 +415,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   private void doPrototypeCoding(String indent)
   {	//String packetName=SimulaCompiler.packetName;
-	Util.code(indent+"// BlockKind="+blockKind+", BlockLevel="+blockLevel
+	Util.code(indent+"// BlockDeclaration.Kind="+blockKind+", BlockLevel="+blockLevel
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 		      +", detachUsed="+((detachUsed)?"true":"false"));
@@ -387,7 +431,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // *** Coding: doJavaCoding
   // ***********************************************************************************************
   public void doJavaCoding(String indent)
-  { //Util.BREAK("BlockDeclaration.doJavaCoding: "+identifier+", BlockKind="+blockKind);
+  { //Util.BREAK("BlockDeclaration.doJavaCoding: "+identifier+", BlockDeclaration.Kind="+blockKind);
 	ASSERT_SEMANTICS_CHECKED(this);
 	switch(blockKind)
     { case External: break; // DO NOTHING
@@ -476,12 +520,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	
 	Util.code(indent+line+" {");
 	doPrototypeCoding(indent+"   ");
-	if(blockKind==BlockKind.Procedure  && type!=null)
+	if(blockKind==BlockDeclaration.Kind.Procedure  && type!=null)
 	{ Util.code(indent+"   // Declare return value as attribute");
 	  Util.code(indent+"   public "+type.toJavaType()+' '+"$result;");
 	  Util.code(indent+"   public Object $result() { return($result); }");
 	}
-	else if(blockKind==BlockKind.Switch)
+	else if(blockKind==BlockDeclaration.Kind.Switch)
 	{ Util.code(indent+"   // Declare return value as attribute");
 	  Util.code(indent+"   public $LABQNT $result;");
 	  Util.code(indent+"   public Object $result() { return($result); }");
@@ -504,7 +548,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	
     for(Virtual virtual:virtualList) virtual.doJavaCoding(indent+"   ");
 	
-	if(blockKind==BlockKind.Procedure && hasParameter) doCodePrepareFormal(indent);
+	if(blockKind==BlockDeclaration.Kind.Procedure && hasParameter) doCodePrepareFormal(indent);
 	
 	doCodeConstructor(indent);
 
@@ -567,11 +611,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   	for(Parameter par:parameterList)
   	{ String tp=par.toJavaType();
   	  String typeValue;
-  	  if(par.mode==ParameterMode.name) typeValue=("("+tp+")param");
-//  	  else if(par.kind==ParameterKind.Array) typeValue=("("+tp+")param");
-  	  else if(par.kind==ParameterKind.Array) typeValue=("arrayValue(param)");
-  	  else if(par.kind==ParameterKind.Procedure) typeValue=("procValue(param)");
-  	  else if(par.kind!=ParameterKind.Simple) typeValue=("("+tp+")param");
+  	  if(par.mode==Parameter.Mode.name) typeValue=("("+tp+")param");
+//  	  else if(par.kind==Parameter.Kind.Array) typeValue=("("+tp+")param");
+  	  else if(par.kind==Parameter.Kind.Array) typeValue=("arrayValue(param)");
+  	  else if(par.kind==Parameter.Kind.Procedure) typeValue=("procValue(param)");
+  	  else if(par.kind!=Parameter.Kind.Simple) typeValue=("("+tp+")param");
   	  else if(par.type.isArithmeticType()) typeValue=(tp+"Value(param)");
 //  	  else typeValue=("("+tp+")param");
   	  else typeValue=("("+tp+")objectValue(param)");
@@ -782,6 +826,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   }
 
   public String toString()
-  { return(""+identifier+", BlockKind="+blockKind+", BlockPrefix="+blockPrefix); }
+  { return(""+identifier+", BlockDeclaration.Kind="+blockKind+", BlockPrefix="+blockPrefix); }
 
 }

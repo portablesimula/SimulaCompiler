@@ -7,7 +7,7 @@ begin
   real r,x,y;
   long real w,q;
   
-  Infile class MyInfile;
+  Infile class MyInfile; virtual: ref(FILE) Procedure pvirt is ref(FILE) Procedure actual(i); integer i;;
   Begin
      integer procedure inRom;
      Begin 

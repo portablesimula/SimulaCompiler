@@ -85,7 +85,7 @@ public class RunSingleTestBatch {
 
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'
-		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
+		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
@@ -130,7 +130,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
 		//names.add("simtst92.sim"); // ERR: Test virtual labels and procedures.
 		//names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
-		names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
+		//names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
 		//names.add("simtst96.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.

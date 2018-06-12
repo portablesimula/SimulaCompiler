@@ -19,8 +19,6 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -121,8 +119,8 @@ public class ObjectGenerator extends Expression {
 		} else if (declaredAs instanceof Parameter) // Parameter Procedure
 		{	Parameter spec = (Parameter) declaredAs;
 			Util.ASSERT(this.type.equals(spec.type),"Umulig situasjon ?");
-			ParameterKind kind = spec.kind;
-			if (kind != ParameterKind.Procedure)
+			Parameter.Kind kind = spec.kind;
+			if (kind != Parameter.Kind.Procedure)
 				Util.error("ObjectGenerator("+classIdentifier+") is matched to a parameter "+kind);
 			Util.warning("ObjectGenerator("+classIdentifier+") - Parameter Checking is postponed to Runtime");
 		}
@@ -147,9 +145,9 @@ public class ObjectGenerator extends Expression {
 	    Iterator<Parameter> formalIterator = cls.parameterIterator();
 		for (Expression par:checkedParams) {
 			Parameter formalParameter = formalIterator.next();
-			if(formalParameter.mode==ParameterMode.value)
+			if(formalParameter.mode==Parameter.Mode.value)
 			{ if(par.type==Type.Text) s.append(",copy(").append(par.toJavaCode()).append(')');
-			  else if(formalParameter.kind==ParameterKind.Array) s.append(",(").append(par.toJavaCode()).append(").COPY()");
+			  else if(formalParameter.kind==Parameter.Kind.Array) s.append(",(").append(par.toJavaCode()).append(").COPY()");
 			  else s.append(',').append(par.toJavaCode());
 			}
 			else s.append(',').append(par.toJavaCode());

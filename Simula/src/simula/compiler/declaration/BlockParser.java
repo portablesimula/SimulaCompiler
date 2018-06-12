@@ -17,8 +17,6 @@ import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -74,10 +72,10 @@ public abstract class BlockParser extends SyntaxClass
 	  // ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
 	  //   ValuePart = VALUE IdentifierList ;
 	  //   NamePart  = NAME  IdentifierList ;
-      if(Parser.accept(KeyWord.VALUE)) { expectModeList(block,ParameterMode.value); Parser.expect(KeyWord.SEMICOLON); }
+      if(Parser.accept(KeyWord.VALUE)) { expectModeList(block,Parameter.Mode.value); Parser.expect(KeyWord.SEMICOLON); }
       if(!inClass) // Parameter by NAME is not defined for Classes
-      { if(Parser.accept(KeyWord.NAME))  { expectModeList(block,ParameterMode.name); Parser.expect(KeyWord.SEMICOLON); }
-        if(Parser.accept(KeyWord.VALUE)) { expectModeList(block,ParameterMode.value); Parser.expect(KeyWord.SEMICOLON); }
+      { if(Parser.accept(KeyWord.NAME))  { expectModeList(block,Parameter.Mode.name); Parser.expect(KeyWord.SEMICOLON); }
+        if(Parser.accept(KeyWord.VALUE)) { expectModeList(block,Parameter.Mode.value); Parser.expect(KeyWord.SEMICOLON); }
       }
       // ParameterPart = Parameter ; { Parameter ; }
       //	Parameter = Specifier IdentifierList
@@ -104,12 +102,7 @@ public abstract class BlockParser extends SyntaxClass
       //	VirtualParameterPart = VirtualParameter ; { VirtualParameter ; }
       //		VirtualParameter = VirtualSpecifier IdentifierList
       //			VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
-      if(Parser.accept(KeyWord.VIRTUAL))
-      { Parser.expect(KeyWord.COLON);
-        // VirtualParameterPart
-    	//     = VirtualParameter ; { VirtualParameter ; }
-        while(acceptVirtualSpecifications(block)) { Parser.expect(KeyWord.SEMICOLON); } 
-      }
+      if(Parser.accept(KeyWord.VIRTUAL)) Virtual.parseInto(block);
     }
     
     if(Parser.accept(KeyWord.BEGIN)) doParseBody(block,inClass);
@@ -139,7 +132,7 @@ public abstract class BlockParser extends SyntaxClass
     if(inClass && inner!=null) stmList.add(inner); // Implicit INNER
   }
 
-  private static void expectModeList(BlockDeclaration block,ParameterMode mode)
+  private static void expectModeList(BlockDeclaration block,Parameter.Mode mode)
   { do
 	{ String identifier=expectIdentifier();
 	  Parameter parameter=null;
@@ -158,14 +151,14 @@ public abstract class BlockParser extends SyntaxClass
 	// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
 	if(Option.TRACE_PARSE) Parser.TRACE("Parse ParameterSpecifications");
 	Type type;
-	ParameterKind kind=ParameterKind.Simple;
+	Parameter.Kind kind=Parameter.Kind.Simple;
     if(Parser.accept(KeyWord.SWITCH))  type=Type.LabelQuantity; 
     else if(Parser.accept(KeyWord.LABEL)) type=Type.LabelQuantity; 
-    else if(Parser.accept(KeyWord.PROCEDURE)) { type=null; kind=ParameterKind.Procedure; }
+    else if(Parser.accept(KeyWord.PROCEDURE)) { type=null; kind=Parameter.Kind.Procedure; }
     else
     { type=acceptType(); if(type==null) return(false);    	
-      if(Parser.accept(KeyWord.ARRAY)) kind=ParameterKind.Array; 
-      else if(Parser.accept(KeyWord.PROCEDURE)) kind=ParameterKind.Procedure;
+      if(Parser.accept(KeyWord.ARRAY)) kind=Parameter.Kind.Array; 
+      else if(Parser.accept(KeyWord.PROCEDURE)) kind=Parameter.Kind.Procedure;
     }
     do
     { String identifier=expectIdentifier();
@@ -195,34 +188,13 @@ public abstract class BlockParser extends SyntaxClass
     return(true);
   }
 
-  private static boolean acceptVirtualSpecifications(BlockDeclaration block)
-  {	// VirtualParameter = VirtualSpecifier IdentifierList
-	// VirtualSpecifier = [ Type ] PROCEDURE | LABEL | SWITCH
-	//Parser.BREAK("BlockParser.acceptVirtualSpecifications");
-	Type type;
-	ParameterKind kind=ParameterKind.Simple;
-    if(Parser.accept(KeyWord.SWITCH))  type=Type.LabelQuantity; 
-    else if(Parser.accept(KeyWord.LABEL)) type=Type.LabelQuantity; 
-    else
-    { type=acceptType();
-      if(Parser.accept(KeyWord.PROCEDURE)) kind=ParameterKind.Procedure;
-      else return(false);
-    }
-    do
-    { String identifier=expectIdentifier();
-      block.virtualList.add(new Virtual(identifier,type,kind));
-    } while(Parser.accept(KeyWord.COMMA));  
-    
-    return(true);
-  }
-
   public void doChecking(BlockDeclaration block)
   { if(IS_SEMANTICS_CHECKED()) return;
     Global.currentScope=block;
     for(Iterator<Parameter> it=block.parameterIterator();it.hasNext();)
     { Parameter parameter=(Parameter)it.next();
       parameter.doChecking();
-      if(parameter.type==null && parameter.kind!=ParameterKind.Procedure)
+      if(parameter.type==null && parameter.kind!=Parameter.Kind.Procedure)
     	  Util.error("Missing specification of parameter: "+parameter.identifier);
     }
     SET_SEMANTICS_CHECKED();

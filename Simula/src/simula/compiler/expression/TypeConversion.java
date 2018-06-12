@@ -10,7 +10,6 @@ package simula.compiler.expression;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Type.ConversionKind;
 import simula.compiler.utilities.Util;
@@ -104,9 +103,9 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		  if(declaredAs instanceof Parameter)
 		  { Parameter par=(Parameter)declaredAs;
 		    Type type=par.type;
-		    ParameterKind kind=par.kind;
+		    Parameter.Kind kind=par.kind;
 			//Util.BREAK("TypeConversion.toJavaCode: type="+type+", kind="+kind);
-			if(kind==ParameterKind.Procedure)
+			if(kind==Parameter.Kind.Procedure)
 			{ evaluated=par.identifier+".get().CPF().$result()";
 				
 			  if(type.isArithmeticType())

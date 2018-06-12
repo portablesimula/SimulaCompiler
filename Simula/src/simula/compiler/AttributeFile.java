@@ -21,11 +21,8 @@ import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.TypeDeclaration;
 import simula.compiler.declaration.Virtual;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -44,9 +41,9 @@ public class AttributeFile {
 	public static void write(ProgramModule program) throws IOException
 	{ 
 //	  String attributeFileName;
-//	  if(program.module.blockKind==BlockKind.Class)
+//	  if(program.module.blockKind==BlockDeclaration.Kind.Class)
 //		     attributeFileName=Global.tempClassFileDir+Global.packetName+"/CLASS.AF";
-//	  else if(program.module.blockKind==BlockKind.Procedure)
+//	  else if(program.module.blockKind==BlockDeclaration.Kind.Procedure)
 //		     attributeFileName=Global.tempClassFileDir+Global.packetName+"/PROCEDURE.AF";
 //	  else return;
 	
@@ -78,7 +75,7 @@ public class AttributeFile {
 	  FileInputStream fileInputStream=new FileInputStream(attributeFileName);
 	  inpt=new ObjectInputStream(fileInputStream);
 	  if(!checkVersion()) Util.error("Malformed SimulaAttributeFile: "+attributeFileName);
-	  BlockKind blockKind=readBlockKind();
+	  BlockDeclaration.Kind blockKind=readBlockKind();
 	  BlockDeclaration blockDeclaration=readBlockDeclaration(blockKind);
 	  inpt.close();
 	  if (Option.verbose)
@@ -93,7 +90,7 @@ public class AttributeFile {
 	{ AttributeFile attributeFile=new AttributeFile(attributeFileName);
 	  attributeFile.inpt=new ObjectInputStream(inputStream);
 	  if(!attributeFile.checkVersion()) Util.error("Malformed SimulaAttributeFile: "+attributeFileName);
-	  BlockKind blockKind=attributeFile.readBlockKind();
+	  BlockDeclaration.Kind blockKind=attributeFile.readBlockKind();
 	  BlockDeclaration blockDeclaration=attributeFile.readBlockDeclaration(blockKind);
 	  attributeFile.inpt.close();
 	  if (Option.verbose)
@@ -143,7 +140,7 @@ public class AttributeFile {
 	  writeInt("BlockLevel",blk.blockLevel);
 	  for(Parameter par:blk.parameterList) writeParameter(par);
 	    
-	  if(blk.blockKind==BlockKind.Class)
+	  if(blk.blockKind==BlockDeclaration.Kind.Class)
 	  { writeString("Prefix",blk.prefix);
 	    writeBoolean("HasLocalClasses",blk.hasLocalClasses);
 	    writeBoolean("DetachUsed",blk.detachUsed);
@@ -157,14 +154,14 @@ public class AttributeFile {
 	  if(verbose) System.out.println("ATTR OUTPUT: END Write Block: "+blk.identifier);
 	}
 	  
-	public BlockDeclaration readBlockDeclaration(BlockKind blockKind) throws IOException
+	public BlockDeclaration readBlockDeclaration(BlockDeclaration.Kind blockKind) throws IOException
 	{ if(verbose) System.out.println("ATTR INPUT: BEGIN Read Block:");
 	  BlockDeclaration decl=new BlockDeclaration(null);
 	  decl.blockKind=blockKind;
 	  READING:while(true)
 	  { String label=readString();
 	    //Util.BREAK("BlockDeclaration.doReadAttributeInfo: label="+label);
-	    if(label.equalsIgnoreCase("BlockKind")) decl.blockKind=readBlockKind();
+	    if(label.equalsIgnoreCase("BlockDeclaration.Kind")) decl.blockKind=readBlockKind();
 		else if(label.equalsIgnoreCase("Identifier")) decl.identifier=readString();
 		else if(label.equalsIgnoreCase("ExtIdentifier")) decl.externalIdent=readString();
 		else if(label.equalsIgnoreCase("BlockType")) decl.type=readType();
@@ -178,8 +175,8 @@ public class AttributeFile {
 	    else if(label.equalsIgnoreCase("Protected")) decl.protectedList.add(readString());
 	    else if(label.equalsIgnoreCase("Label")) decl.labelList.add(readLabel());
 	    else if(label.equalsIgnoreCase("Variable")) decl.declarationList.add(readTypeDeclaration());
-	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readBlockDeclaration(BlockKind.Class));
-	    else if(label.equalsIgnoreCase("Procedure")) decl.declarationList.add(readBlockDeclaration(BlockKind.Procedure));
+	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readBlockDeclaration(BlockDeclaration.Kind.Class));
+	    else if(label.equalsIgnoreCase("Procedure")) decl.declarationList.add(readBlockDeclaration(BlockDeclaration.Kind.Procedure));
 	    else if(label.equalsIgnoreCase("BLOCKEND")) break READING;
 	    else Util.error("Malformed Attribute File (at "+label+")");
 	  }
@@ -197,8 +194,8 @@ public class AttributeFile {
 	public Parameter readParameter() throws IOException
 	{ String identifier=inpt.readUTF();
 	  Type type=readType();
-	  ParameterKind kind=readParameterKind();
-	  ParameterMode mode=readParameterMode();
+	  Parameter.Kind kind=readParameterKind();
+	  Parameter.Mode mode=readParameterMode();
 	  Parameter par=new Parameter(identifier,type,kind);
 	  par.mode=mode;
 	  if(verbose) System.out.println("ATTR INPUT: Parameter: "+type+' '+identifier+' '+kind+' '+mode);
@@ -208,7 +205,7 @@ public class AttributeFile {
 	private void writeVirtual(Virtual virt) throws IOException
 	{ if(verbose) System.out.println("ATTR: Virtual: "+virt.type+' '+virt.identifier+' '+virt.kind);
 	  oupt.writeUTF("Virtual"); oupt.writeUTF(virt.identifier);
-	  writeType(virt.type); oupt.writeUTF(""+virt.kind);
+	  writeType(virt.type); writeVirtualKind(virt.kind); 
 	}
 	
 	public Virtual readVirtual() throws IOException
@@ -216,8 +213,8 @@ public class AttributeFile {
 	  //Util.BREAK("AttributeInputStream.readVirtual: identifier="+identifier);
 	  Type type=readType();
 	  //Util.BREAK("AttributeInputStream.readVirtual: type="+type);
-	  ParameterKind kind=readParameterKind();
-	  return(new Virtual(identifier,type,kind));
+	  Virtual.Kind kind=readVirtualKind();
+	  return(new Virtual(identifier,type,kind,null));
 	}
 	
 	private void writeLabel(LabelDeclaration lab) throws IOException
@@ -259,40 +256,52 @@ public class AttributeFile {
 	  return(new Type(tp));
 	}
 
-	private void writeParameterKind(ParameterKind kind) throws IOException
+	private void writeParameterKind(Parameter.Kind kind) throws IOException
 	{ if(verbose) System.out.println("ATTR: "+kind);
 	  oupt.writeUTF(""+kind);
 	}
 	
-	private ParameterKind readParameterKind() throws IOException
+	private Parameter.Kind readParameterKind() throws IOException
 	{ String tp=inpt.readUTF();
 	  //Util.BREAK("AttributeInputStream.readParameterKind: tp="+tp);
-	  if(tp.equalsIgnoreCase("Simple")) return(ParameterKind.Simple);
-	  if(tp.equalsIgnoreCase("Procedure")) return(ParameterKind.Procedure);
-	  if(tp.equalsIgnoreCase("Array")) return(ParameterKind.Array);
-	  if(tp.equalsIgnoreCase("Label")) return(ParameterKind.Label);
-	  if(tp.equalsIgnoreCase("Switch")) return(ParameterKind.Switch);
+	  if(tp.equalsIgnoreCase("Procedure")) return(Parameter.Kind.Procedure);
+	  if(tp.equalsIgnoreCase("Label")) return(Parameter.Kind.Label);
+	  if(tp.equalsIgnoreCase("Switch")) return(Parameter.Kind.Switch);
 	  return(null);
 	}
 
-	private void writeParameterMode(ParameterMode mode) throws IOException
+	private void writeVirtualKind(Virtual.Kind kind) throws IOException
+	{ if(verbose) System.out.println("ATTR: "+kind);
+	  oupt.writeUTF(""+kind);
+	}
+	
+	private Virtual.Kind readVirtualKind() throws IOException
+	{ String tp=inpt.readUTF();
+	  //Util.BREAK("AttributeInputStream.readParameterKind: tp="+tp);
+	  if(tp.equalsIgnoreCase("Procedure")) return(Virtual.Kind.Procedure);
+	  if(tp.equalsIgnoreCase("Label")) return(Virtual.Kind.Label);
+	  if(tp.equalsIgnoreCase("Switch")) return(Virtual.Kind.Switch);
+	  return(null);
+	}
+
+	private void writeParameterMode(Parameter.Mode mode) throws IOException
 	{ if(verbose) System.out.println("ATTR: "+mode);
 	  oupt.writeUTF(""+mode);
 	}
 	
-	private ParameterMode readParameterMode() throws IOException
+	private Parameter.Mode readParameterMode() throws IOException
 	{ String tp=inpt.readUTF();
 	  //Util.BREAK("AttributeInputStream.readParameterMode: tp="+tp);
-	  if(tp.equalsIgnoreCase("Value")) return(ParameterMode.value);
-	  if(tp.equalsIgnoreCase("Name")) return(ParameterMode.name);
+	  if(tp.equalsIgnoreCase("Value")) return(Parameter.Mode.value);
+	  if(tp.equalsIgnoreCase("Name")) return(Parameter.Mode.name);
 	  return(null);
 	}
 	
-	public BlockKind readBlockKind() throws IOException
+	public BlockDeclaration.Kind readBlockKind() throws IOException
 	{ String kind=inpt.readUTF();
 	  //Util.BREAK("AttributeInputStream.readBlockKind: kind="+kind);
-	  if(kind.equalsIgnoreCase("Procedure")) return(BlockKind.Procedure);
-	  return(BlockKind.Class);
+	  if(kind.equalsIgnoreCase("Procedure")) return(BlockDeclaration.Kind.Procedure);
+	  return(BlockDeclaration.Kind.Class);
 	}
 	
 	private void writeString(String label,String val) throws IOException

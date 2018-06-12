@@ -12,7 +12,6 @@ import java.util.Vector;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -96,7 +95,7 @@ public class TypeDeclaration extends Declaration {
 		ASSERT_SEMANTICS_CHECKED(this);
 		//Util.BREAK("TypeDeclaration.toJavaCode: scope="+scope.getClass().getName());
 		String modifier = "";
-		if (Global.currentScope.blockKind==BlockKind.Class) modifier = "public ";
+		if (Global.currentScope.blockKind==BlockDeclaration.Kind.Class) modifier = "public ";
 		if (this.isConstant()) modifier = modifier+"final ";
 		String value=(constantElement!=null)?constantElement.toJavaCode():type.edDefaultValue();
 		return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + '=' + value + ';');

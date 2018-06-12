@@ -18,7 +18,6 @@ import java.util.zip.ZipEntry;
 
 import simula.compiler.AttributeFile;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
@@ -169,7 +168,7 @@ public class ExternalDeclaration extends Declaration {
 	  
 	  BlockDeclaration decl=AttributeFile.readAttributeFile(inputStream,simulaInfo);
 	  externalBlock=decl;
-	  externalBlock.blockKind=BlockKind.External;
+	  externalBlock.blockKind=BlockDeclaration.Kind.External;
 	  external.close();
 	}
 

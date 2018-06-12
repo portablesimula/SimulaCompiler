@@ -8,35 +8,57 @@
 package simula.compiler.declaration;
 
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
+import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 public class Parameter extends Declaration
 { 
 //String identifier;  // Inherited
-  public ParameterMode mode;
+  public Parameter.Mode mode;
 //  Type type;  // Inherited 
-  public ParameterKind kind;
+  public Parameter.Kind kind;
+  
+  public enum Mode {
+	    value     // Procedure parameter transfer mode
+	  , name      // Procedure parameter transfer mode
+  }
+
+  public enum Kind {
+	  Simple
+	  , Procedure
+	  , Array
+	  , Label
+	  , Switch
+  }
+
 
   public Parameter(String identifier)
   { super(identifier); }
   
-  public Parameter(String identifier,Type type,ParameterKind kind)
+  public Parameter(String identifier,Type type,Parameter.Kind kind)
   { super(identifier);
 //	externalIdent="p$"+identifier;
     this.type=type; this.kind=kind;
     //Util.BREAK("NEW Parameter: "+this);
   }
   
-  public void setMode(ParameterMode mode)
+  public boolean equals(Object other)
+  {	if(!(other instanceof Parameter)) return(false);
+	Parameter otherPar=(Parameter)other;
+	if(!type.equals(otherPar.type)) return(false);
+	if(kind!=otherPar.kind) return(false);
+	if(mode!=otherPar.mode) return(false);
+	return(true);
+  }
+  
+  public void setMode(Parameter.Mode mode)
   {	if(this.mode!=null)
 	Util.error("Parameter "+identifier+" is already specified by"+this.mode);
 	this.mode=mode;
   }
 
-  public void setTypeAndKind(Type type,ParameterKind kind)
+  public void setTypeAndKind(Type type,Parameter.Kind kind)
   { this.type=type; this.kind=kind; }
 
   public void doChecking()
@@ -82,16 +104,16 @@ public class Parameter extends Declaration
 	  switch(kind)
 	  { case Simple: 
 		  if(type==Type.Text) break; // Simple Text	 
-		  else if(type.isReferenceType()) { if(mode==ParameterMode.value) illegal=true; } // Simple ref(ClassIdentifier)
-		  else if(mode==null) mode=ParameterMode.value; // Simple Type Integer, Real, Character
+		  else if(type.isReferenceType()) { if(mode==Parameter.Mode.value) illegal=true; } // Simple ref(ClassIdentifier)
+		  else if(mode==null) mode=Parameter.Mode.value; // Simple Type Integer, Real, Character
 		  break;
 	    case Array:
-	    	if(type.isReferenceType() && mode==ParameterMode.value) illegal=true;
+	    	if(type.isReferenceType() && mode==Parameter.Mode.value) illegal=true;
 	    	break;
 	    case Procedure:
 	    case Label:
 	    case Switch:
-	    	if(mode==ParameterMode.value) illegal=true;
+	    	if(mode==Parameter.Mode.value) illegal=true;
 	    	break;
 	    default:	
 	  }
@@ -100,7 +122,7 @@ public class Parameter extends Declaration
   
   public String toJavaType()
   { ASSERT_SEMANTICS_CHECKED(this);
-    if(mode==ParameterMode.name)
+    if(mode==Parameter.Mode.name)
     { switch(kind)
       { case Simple:
     	  if(type==Type.Label) return("$NAME<$LABQNT>");
@@ -112,10 +134,10 @@ public class Parameter extends Declaration
     	case Switch:    return("$NAME<$PRCQNT>");
       }
     }
-//    if(kind==ParameterKind.Array) return("$ARRAY<"+type.toJavaType()+"[]>");
-    if(kind==ParameterKind.Array) return("$ARRAY<?>");
-    if(kind==ParameterKind.Procedure) return("$PRCQNT");
-    if(kind==ParameterKind.Label) return("$LABQNT");
+//    if(kind==Parameter.Kind.Array) return("$ARRAY<"+type.toJavaType()+"[]>");
+    if(kind==Parameter.Kind.Array) return("$ARRAY<?>");
+    if(kind==Parameter.Kind.Procedure) return("$PRCQNT");
+    if(kind==Parameter.Kind.Label) return("$LABQNT");
 	return(type.toJavaType());
   }
   
@@ -128,7 +150,7 @@ public class Parameter extends Declaration
     if(type!=null) s=s+type; else s="NOTYPE";
     if(mode!=null) s=""+mode+" "+type;
     if(kind==null) s=s+" NOKIND";
-    else if(kind!=ParameterKind.Simple) s=s+" "+kind;
+    else if(kind!=Parameter.Kind.Simple) s=s+" "+kind;
   	return(s+' '+identifier+"("+externalIdent+')');
   }
 

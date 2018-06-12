@@ -13,7 +13,6 @@ import simula.compiler.expression.Variable;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Util;
-import simula.compiler.utilities.VariableKind;
 
 public abstract class DeclarationScope extends Declaration {
 	
@@ -69,13 +68,13 @@ public abstract class DeclarationScope extends Declaration {
 //  public Meaning findAttributeMeaning_OLD(String ident)
 //  { //Util.BREAK("DeclarationScope("+identifier+").findAttribute("+ident+"): scope="+declaredIn);
 //    for(Parameter parameter:parameterList)
-//        if(ident.equalsIgnoreCase(parameter.identifier)) return(new Meaning(VariableKind.parameter,parameter,this));
+//        if(ident.equalsIgnoreCase(parameter.identifier)) return(new Meaning(Variable.Kind.parameter,parameter,this));
 //    for(Declaration declaration:declarationList)
-//	    if(ident.equalsIgnoreCase(declaration.identifier)) return(new Meaning(VariableKind.attribute,declaration,this));
+//	    if(ident.equalsIgnoreCase(declaration.identifier)) return(new Meaning(Variable.Kind.attribute,declaration,this));
 //    for(LabelDeclaration label:labelList)
-//	    if(ident.equalsIgnoreCase(label.identifier)) return(new Meaning(VariableKind.label,label,this));
+//	    if(ident.equalsIgnoreCase(label.identifier)) return(new Meaning(Variable.Kind.label,label,this));
 //    for(Virtual virtual:virtualList)
-//	    if(ident.equalsIgnoreCase(virtual.identifier)) return(new Meaning(VariableKind.virtual,virtual,this)); 
+//	    if(ident.equalsIgnoreCase(virtual.identifier)) return(new Meaning(Variable.Kind.virtual,virtual,this)); 
 //    BlockDeclaration prfx=getPrefix();
 //    if(prfx!=null)
 //    { Meaning meaning=prfx.findAttributeMeaning(ident);
@@ -102,16 +101,16 @@ public abstract class DeclarationScope extends Declaration {
     if(!prtected)
     { for(Parameter parameter:parameterList)
         if(ident.equalsIgnoreCase(parameter.identifier))
-        	return(new Meaning(VariableKind.parameter,parameter,this,this,behindProtected));
+        	return(new Meaning(Variable.Kind.parameter,parameter,this,this,behindProtected));
       for(Declaration declaration:declarationList)
 	    if(ident.equalsIgnoreCase(declaration.identifier))
-	    	return(new Meaning(VariableKind.attribute,declaration,this,this,behindProtected));
+	    	return(new Meaning(Variable.Kind.attribute,declaration,this,this,behindProtected));
       for(LabelDeclaration label:labelList)
 	    if(ident.equalsIgnoreCase(label.identifier))
-	    	return(new Meaning(VariableKind.label,label,this,this,behindProtected));
+	    	return(new Meaning(Variable.Kind.label,label,this,this,behindProtected));
       for(Virtual virtual:virtualList)
 	    if(ident.equalsIgnoreCase(virtual.identifier))
-	    	return(new Meaning(VariableKind.virtual,virtual,this,this,behindProtected)); 
+	    	return(new Meaning(Variable.Kind.virtual,virtual,this,this,behindProtected)); 
     }
     //Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
     BlockDeclaration prfx=getPrefix();
@@ -154,31 +153,31 @@ public abstract class DeclarationScope extends Declaration {
 //	  for(Parameter parameter:scope.parameterList)
 //      if(ident.equalsIgnoreCase(parameter.identifier))
 //        { DeclarationScope hiddenScope=scope.getHidden(ident);
-//          if(hiddenScope==null) return(new Meaning(VariableKind.parameter,parameter,this,scope,searchBehindHidden));
+//          if(hiddenScope==null) return(new Meaning(Variable.Kind.parameter,parameter,this,scope,searchBehindHidden));
 //          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 //        }
       for(Declaration declaration:scope.declarationList)
 	    if(ident.equalsIgnoreCase(declaration.identifier))
 	    { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null) return(new Meaning(VariableKind.attribute,declaration,this,scope,searchBehindHidden));
+          if(hiddenScope==null) return(new Meaning(Variable.Kind.attribute,declaration,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
 	  for(Parameter parameter:scope.parameterList)
 	      if(ident.equalsIgnoreCase(parameter.identifier))
 	        { DeclarationScope hiddenScope=scope.getHidden(ident);
-	          if(hiddenScope==null) return(new Meaning(VariableKind.parameter,parameter,this,scope,searchBehindHidden));
+	          if(hiddenScope==null) return(new Meaning(Variable.Kind.parameter,parameter,this,scope,searchBehindHidden));
 	          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	        }
       for(LabelDeclaration label:scope.labelList)
 	    if(ident.equalsIgnoreCase(label.identifier))
 	    { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null)	return(new Meaning(VariableKind.label,label,this,scope,searchBehindHidden));
+          if(hiddenScope==null)	return(new Meaning(Variable.Kind.label,label,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
       for(Virtual virtual:scope.virtualList)
 	    if(ident.equalsIgnoreCase(virtual.identifier))
 	    { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null)	return(new Meaning(VariableKind.virtual,virtual,this,scope,searchBehindHidden));
+          if(hiddenScope==null)	return(new Meaning(Variable.Kind.virtual,virtual,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
       if(scope.getHidden(ident)==null) scope=scope.getPrefix();

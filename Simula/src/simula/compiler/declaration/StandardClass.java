@@ -7,18 +7,15 @@
  */
 package simula.compiler.declaration;
 
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.OverLoad;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
-import simula.compiler.utilities.VariableKind;
+import simula.compiler.expression.Variable;
 
 public class StandardClass extends BlockDeclaration //ClassDeclaration
 {
-  public BlockKind getBlockKind() { return(BlockKind.StandardClass); }
+  public BlockDeclaration.Kind getBlockKind() { return(BlockDeclaration.Kind.StandardClass); }
   public String edJavaClassName() { return(identifier); }
 //  public String getJavaIdentifier() { return(identifier+"$"); }
   
@@ -129,7 +126,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 //    Procedures copy, blanks, char, isochar, rank, isorank,
 //      digit, letter, lowten, decimalmark, upcase, lowcase.
 
-    ENVIRONMENT.addStandardProcedure(Type.Text,"copy",parameter("T",ParameterMode.value,Type.Text));
+    ENVIRONMENT.addStandardProcedure(Type.Text,"copy",parameter("T",Parameter.Mode.value,Type.Text));
     ENVIRONMENT.addStandardProcedure(Type.Text,"blanks",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Type.Character,"Char",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Type.Character,"isochar",parameter("n",Type.Integer));
@@ -179,23 +176,23 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     // Array quantities ........................................ 9.8
 //    Procedures upperbound, lowerbound.
 
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"upperbound",parameter("a",null,ParameterKind.Array),parameter("i",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"lowerbound",parameter("a",null,ParameterKind.Array),parameter("i",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"upperbound",parameter("a",null,Parameter.Kind.Array),parameter("i",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"lowerbound",parameter("a",null,Parameter.Kind.Array),parameter("i",Type.Integer));
 
     // Random drawing .......................................... 9.9
 //    Procedures draw, randint, uniform, normal, negexp,
 //      Poisson, Erlang, discrete, linear, histd.
 
-    ENVIRONMENT.addStandardProcedure(Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"discrete",parameter("A",Type.LongReal,ParameterKind.Array),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"linear",parameter("A",Type.LongReal,ParameterKind.Array),parameter("B",Type.LongReal,ParameterKind.Array),parameter("U",ParameterMode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"histd",parameter("A",Type.Real,ParameterKind.Array),parameter("U",ParameterMode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array),parameter("B",Type.LongReal,Parameter.Kind.Array),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array),parameter("U",Parameter.Mode.name,Type.Integer));
 
 //    Calendar and timing utilities ........................... 9.10
 //    Procedures datetime, cputime, clocktime.
@@ -207,10 +204,10 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 //    Miscellaneous utilities ................................. 9.11
 //    Procedure histo.
 
-    ENVIRONMENT.addStandardProcedure(null,"histo",parameter("A",Type.Real,ParameterKind.Array),parameter("B",Type.Real,ParameterKind.Array)
+    ENVIRONMENT.addStandardProcedure(null,"histo",parameter("A",Type.Real,Parameter.Kind.Array),parameter("B",Type.Real,Parameter.Kind.Array)
     		                                     ,parameter("c",Type.Real),parameter("d",Type.Real));
-    ENVIRONMENT.addStandardProcedure(null,"accum",parameter("a",ParameterMode.name,Type.Real),parameter("b",ParameterMode.name,Type.Real)
-                                                 ,parameter("c",ParameterMode.name,Type.Real),parameter("d",Type.Real));
+    ENVIRONMENT.addStandardProcedure(null,"accum",parameter("a",Parameter.Mode.name,Type.Real),parameter("b",Parameter.Mode.name,Type.Real)
+                                                 ,parameter("c",Parameter.Mode.name,Type.Real),parameter("d",Type.Real));
   }
   
   // ******************************************************************
@@ -778,7 +775,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   public StandardClass(String className)
   { super(className);
     this.externalIdent=className+"$";
-	this.blockKind=BlockKind.StandardClass;
+	this.blockKind=BlockDeclaration.Kind.StandardClass;
 	this.type=Type.Ref(className);
 	//  Util.BREAK("NEW StandardClass "+this);
   }
@@ -800,13 +797,13 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   }
   
   private static Parameter parameter(String ident,Type type)
-  { return(new Parameter(ident,type,ParameterKind.Simple)); }
+  { return(new Parameter(ident,type,Parameter.Kind.Simple)); }
   
-  private static Parameter parameter(String ident,Type type,ParameterKind kind)
+  private static Parameter parameter(String ident,Type type,Parameter.Kind kind)
   { return(new Parameter(ident,type,kind)); }
   
-  private static Parameter parameter(String ident,ParameterMode mode,Type type)
-  { Parameter spec=new Parameter(ident,type,ParameterKind.Simple);
+  private static Parameter parameter(String ident,Parameter.Mode mode,Type type)
+  { Parameter spec=new Parameter(ident,type,Parameter.Kind.Simple);
     spec.setMode(mode); return(spec);
   }
   
@@ -814,7 +811,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   { //Util.BREAK("StandardClass("+this.identifier+").findAttribute("+ident+"): scope="+declaredIn+", chain="+edScopeChain());
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
-    	   	  return(new Meaning(VariableKind.standardAttribute,declaration,this));
+    	   	  return(new Meaning(Variable.Kind.standardAttribute,declaration,this));
     BlockDeclaration prfx=getPrefix();
     if(prfx!=null) return(prfx.findVisibleAttributeMeaning(ident));
     
@@ -828,7 +825,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   { //Util.BREAK("StandardClass("+this.identifier+").findAttribute("+ident+"): scope="+declaredIn+", chain="+edScopeChain());
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
-    	   	  return(new Meaning(VariableKind.standardAttribute,declaration,this));
+    	   	  return(new Meaning(Variable.Kind.standardAttribute,declaration,this));
     BlockDeclaration prfx=getPrefix();
     if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident,behindProtected));
     

@@ -72,7 +72,7 @@ public class Type
 	    //Util.BREAK("Type.doChecking("+this+"): RefIdent'declaredAs="+decl);
 	    if(decl instanceof BlockDeclaration)
 	    { qual=(BlockDeclaration)decl;
-	      if(qual.blockKind!=BlockKind.Class && qual.blockKind!=BlockKind.StandardClass)  
+	      if(qual.blockKind!=BlockDeclaration.Kind.Class && qual.blockKind!=BlockDeclaration.Kind.StandardClass)  
 	    	  Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 	    }
 	  }

@@ -15,7 +15,6 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -90,7 +89,7 @@ public class RemoteVariable extends Expression
 	  { Parameter par=(Parameter)remoteAttribute.declaredAs;
 //	    Util.BREAK("RemoteVariable.doRemoteChecking: DOT par="+par);
 //	    Util.BREAK("RemoteVariable.doRemoteChecking: DOT par'kind="+par.kind);
-		  if(par.kind==ParameterKind.Array) accessRemoteArray=true;
+		  if(par.kind==Parameter.Kind.Array) accessRemoteArray=true;
 	  }
 	  //Util.EXIT();
 	  

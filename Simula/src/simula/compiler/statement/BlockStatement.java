@@ -11,7 +11,6 @@ import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.SubscriptedVariable;
 import simula.compiler.expression.Variable;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
@@ -43,7 +42,7 @@ public class BlockStatement extends Statement {
 		ASSERT_SEMANTICS_CHECKED(this);
 
 		//Util.BREAK("BlockStatement.doJavaCoding: blockKind="+blockDeclaration.blockKind);
-		if(blockDeclaration.blockKind!=BlockKind.CompoundStatement)
+		if(blockDeclaration.blockKind!=BlockDeclaration.Kind.CompoundStatement)
 		{ //String staticLink="this"; // TODO: Usikker p� dette
 		  String staticLink=blockDeclaration.edCTX(blockDeclaration.blockLevel-1);
 		  Variable blockPrefix=blockDeclaration.blockPrefix;

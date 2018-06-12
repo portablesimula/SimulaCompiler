@@ -14,16 +14,12 @@ import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.StandardProcedure;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.parsing.Parser;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.compiler.utilities.VariableKind;
 
 /**
  * Variable.
@@ -50,6 +46,10 @@ public class Variable extends Expression {
 	public String identifier;
 	public Meaning meaning;
 	public boolean remotelyAccessed;
+	
+	public enum Kind {
+		parameter,attribute,label,virtual,standardAttribute,connectedAttribute
+	}
 	
 	public String getJavaIdentifier()
 	{ return(meaning.declaredAs.getJavaIdentifier());	}
@@ -118,7 +118,7 @@ public class Variable extends Expression {
 		//Util.BREAK("Variable("+result+").put("+rightPart+")");
 		ASSERT_SEMANTICS_CHECKED(this);
 		if(meaning.declaredAs instanceof Parameter
-				&& ((Parameter)meaning.declaredAs).mode == ParameterMode.name) {
+				&& ((Parameter)meaning.declaredAs).mode == Parameter.Mode.name) {
 				result = result + ".put(" + rightPart + ')';
 		} else
 			result = result + '=' + rightPart;
@@ -137,8 +137,8 @@ public class Variable extends Expression {
 //		Util.BREAK("Variable("+result+").get() DeclaredAs="+meaning.declaredAs);
 		if(meaning.declaredAs instanceof Parameter)
 		{ Parameter par=(Parameter)meaning.declaredAs;
-		  if(par.mode == ParameterMode.name) result = result + ".get()";
-		  if(par.kind == ParameterKind.Procedure)
+		  if(par.mode == Parameter.Mode.name) result = result + ".get()";
+		  if(par.kind == Parameter.Kind.Procedure)
 		  {	//result = result + ".CPF().STM()";
 			Type type=par.type;
 			if(type!=null)
@@ -156,12 +156,12 @@ public class Variable extends Expression {
 	protected String edVariable(boolean destination)
 	{ Declaration decl=meaning.declaredAs;
 	  String id=decl.getJavaIdentifier();
-	  BlockKind blockKind=decl.blockKind;
+	  BlockDeclaration.Kind blockKind=decl.blockKind;
 	  //Util.BREAK("Variable.edVariable("+id+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
-	  //Util.BREAK("Variable.edVariable("+id+"): decl="+decl+", BlockKind="+blockKind+", qual="+decl.getClass().getSimpleName());
+	  //Util.BREAK("Variable.edVariable("+id+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
 	  int n=meaning.declaredIn.blockLevel;
 
-	  if(blockKind==BlockKind.Procedure || blockKind==BlockKind.Method)
+	  if(blockKind==BlockDeclaration.Kind.Procedure || blockKind==BlockDeclaration.Kind.Method)
 	  { // This Variable is a Procedure-Identifier.
 		// When 'destination' it is a variable used to carry the resulting value until the final return.
 		// otherwise; it is a no-parameter-procedure/method-call.
@@ -178,7 +178,7 @@ public class Variable extends Expression {
 		  if(decl instanceof Virtual) id=id+".CPF()";
 		  return(id);
 		}
-		if(blockKind==BlockKind.Procedure)
+		if(blockKind==BlockDeclaration.Kind.Procedure)
 		{ //Util.BREAK("Variable.edVariable("+id+"): decl="+decl+", qual="+decl.getClass().getSimpleName());
 		  if(decl instanceof Virtual)
 		  { Virtual virtual=(Virtual)decl;
@@ -191,7 +191,7 @@ public class Variable extends Expression {
 		    else id=CallProcedure.normal(this);
 		  }
 		}
-		else if(blockKind==BlockKind.Method)
+		else if(blockKind==BlockDeclaration.Kind.Method)
 		{ //Util.BREAK("Variable.getDisplayedIdentifier2m("+id+"): decl="+decl+", qual="+decl.getClass().getSimpleName());
 			if(meaning.declaredAs instanceof StandardProcedure) {
 				if(identifier.equalsIgnoreCase("sourceline"))
@@ -205,14 +205,14 @@ public class Variable extends Expression {
 	  //Util.BREAK("VANLIG VARIABEL/PARAMETER: id="+id);
 	  if(remotelyAccessed) return(id);
 	  
-	  if(meaning.variableKind==VariableKind.connectedAttribute)
+	  if(meaning.variableKind==Variable.Kind.connectedAttribute)
 	  { Expression inspectedVariable=((ConnectionBlock)meaning.declaredIn).getInspectedVariable();
 	    //Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
 	    if(meaning.foundBehindInvisible)
 	    { String remoteCast=meaning.foundIn.getJavaIdentifier();
 		  id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
 	    } else id=inspectedVariable.toJavaCode()+"."+id;
-	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockKind.Method)) {
+	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockDeclaration.Kind.Method)) {
 	    String cast=meaning.declaredIn.getJavaIdentifier();
 	    if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
 	    else if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !

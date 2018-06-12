@@ -7,30 +7,97 @@
  */
 package simula.compiler.declaration;
 
-import simula.compiler.utilities.BlockKind;
+import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.ParameterKind;
+import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
+/**
+ * Virtual Quantities.
+ * <pre>
+ *    VirtualPart  =  VIRTUAL  :  VirtualSpec  ;  {  VirtualSpec  ;  }
+ *    VirtualSpec  =  VirtualSpecifier  IdentifierList
+ *        |  PROCEDURE  ProcedureIdentifier  IS  ProcedureDeclaration
+ *        
+ *   	VirtualSpecifier =  [ type ] PROCEDURE  |  LABEL  |  SWITCH
+ *    	IdentifierList  =  Identifier  { , Identifier }
+ *
+ * </pre>
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class Virtual extends Declaration {
 	// String identifier; // Inherited
 	// Type type; // Inherited: Procedure's type if any
-	public ParameterKind kind; // Simple | Procedure
+	
+//	public Parameter.Kind kind; // Simple | Procedure
+	public Virtual.Kind kind; // Simple | Procedure
+	
+	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
     public BlockDeclaration match; // Set during coChecking
 
-	public Virtual(String identifier, Type type, ParameterKind kind) {
+    public enum Kind { Procedure, Label, Switch }
+
+	public Virtual(String identifier, Type type, Virtual.Kind kind,ProcedureSpecification procedureSpec) {
 		super(identifier);
 	 	this.externalIdent=identifier;
 		this.type=type;
 		this.kind = kind;
-		this.blockKind=BlockKind.Procedure; // TODO: For TEST !!!
+		this.procedureSpec=procedureSpec;
+		this.blockKind=BlockDeclaration.Kind.Procedure; // TODO: For TEST !!!
 		Util.BREAK("NEW Virtual: "+this);
 	}
+	
+	// VirtualPart  =  VIRTUAL  :  VirtualSpec  ;  {  VirtualSpec  ;  }
+	//    VirtualSpec  =  VirtualSpecifier  IdentifierList
+	//                 |  PROCEDURE  ProcedureIdentifier  IS  ProcedureDeclaration
+	//        
+	//   	VirtualSpecifier =  [ type ] PROCEDURE  |  LABEL  |  SWITCH
+	//    	IdentifierList  =  Identifier  { , Identifier }
+	public static void parseInto(BlockDeclaration block)
+	{ Parser.expect(KeyWord.COLON);
+      LOOP:while(true) {
+		  Parser.BREAK("Virtual.parse");
+		  Type type;
+	      if(Parser.accept(KeyWord.SWITCH))	  parseSimpleSpecList(block,Type.LabelQuantity,Virtual.Kind.Switch);
+	      else if(Parser.accept(KeyWord.LABEL)) parseSimpleSpecList(block,Type.LabelQuantity,Virtual.Kind.Label);
+	      else {
+	    	  type=acceptType();
+		      Parser.BREAK("Virtual.parse: type="+type);
+	          if(!Parser.accept(KeyWord.PROCEDURE)) break LOOP;
+	          Virtual.Kind kind=Virtual.Kind.Procedure;
+	      
+	          String identifier=expectIdentifier();
+		      Parser.BREAK("Virtual.parse: identifier="+identifier);
+		      ProcedureSpecification procedureSpec=null;
+	          if(Parser.accept(KeyWord.IS)) {
+	        	  Type procedureType=acceptType(); Parser.expect(KeyWord.PROCEDURE);
+		          Parser.BREAK("Virtual.parse: IS procedureType="+procedureType); 
+		          procedureSpec=BlockDeclaration.doParseProcedureSpecification(procedureType); 
+		          Parser.BREAK("Virtual.parse: IS procedureSpec="+procedureSpec);
+		          block.virtualList.add(new Virtual(identifier,type,kind,procedureSpec));
+	          } else {
+	        	  block.virtualList.add(new Virtual(identifier,type,kind,null));
+	    	      if(Parser.accept(KeyWord.COMMA)) parseSimpleSpecList(block,type,kind);
+	    	      Parser.expect(KeyWord.SEMICOLON);
+	          }
+	      }
+	  }
+      //Parser.expect(KeyWord.SEMICOLON);
+    }
+	
+	private static void parseSimpleSpecList(BlockDeclaration block,Type type,Virtual.Kind kind)
+	{ do { String identifier=expectIdentifier();
+	       block.virtualList.add(new Virtual(identifier,type,kind,null));
+	  } while(Parser.accept(KeyWord.COMMA));  
+	}
 
+	
 	public Virtual(BlockDeclaration match) {
 		// NOTE: Called during Checking
-		this(match.identifier,match.type,ParameterKind.Procedure);
+		this(match.identifier,match.type,Virtual.Kind.Procedure,null);
 		this.match=match;
 		Util.BREAK("NEW Extra-Virtual: "+this);
 		SET_SEMANTICS_CHECKED();
@@ -60,9 +127,9 @@ public class Virtual extends Declaration {
 	public String toString()
 	{ String s="";
 	  if(type!=null) s=s+type; else s="NOTYPE";
-	  if(kind==null) s=s+" NOKIND";
-	  else if(kind!=ParameterKind.Simple) s=s+" "+kind;
-	  return(s+' '+identifier);
+	  s=s+" "+kind+' '+identifier;
+	  if(procedureSpec!=null) s=s+'='+procedureSpec;
+	  return(s);
 	}
 
 }

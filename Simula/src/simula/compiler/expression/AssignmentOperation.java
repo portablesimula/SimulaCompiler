@@ -15,7 +15,6 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.ParameterKind;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -173,7 +172,7 @@ public class AssignmentOperation extends Expression
 		  else if(decl instanceof Parameter)
 		  { Parameter par=(Parameter)decl;
 			//Util.BREAK("Assignment.doCodeAssignment31: par="+par+", qual="+par.getClass().getSimpleName());
-			if(par.kind==ParameterKind.Array) return(assignToRemoteArray(beforeDot,(SubscriptedVariable)afterDot,rhs));
+			if(par.kind==Parameter.Kind.Array) return(assignToRemoteArray(beforeDot,(SubscriptedVariable)afterDot,rhs));
 		  }
 		  
 		}

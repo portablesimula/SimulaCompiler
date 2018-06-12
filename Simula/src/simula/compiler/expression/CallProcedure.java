@@ -14,14 +14,11 @@ import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.Virtual;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
-import simula.compiler.utilities.ParameterKind;
-import simula.compiler.utilities.ParameterMode;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.compiler.utilities.VariableKind;
+import simula.compiler.expression.Variable;
 
 /**
  * 
@@ -75,7 +72,7 @@ public class CallProcedure {
 	  { // Call Remote Virtual Procedure
 		return(remoteVirtual(obj,func,procedure.myVirtual,backLink));
 	  }
-	  else if(procedure.blockKind==BlockKind.Method)
+	  else if(procedure.blockKind==BlockDeclaration.Kind.Method)
 	  { // Call Remote Method
 		return(asRemoteMethod(obj,procedure,func,backLink));
 	  }
@@ -143,7 +140,7 @@ public class CallProcedure {
 	  String params=edProcedureParameters(variable,null,procedure);
 	  
 	  String methodCall=meaning.declaredAs.getJavaIdentifier()+params;
-	  if(meaning.variableKind==VariableKind.connectedAttribute)
+	  if(meaning.variableKind==Variable.Kind.connectedAttribute)
 //	  {	String connID=meaning.declaredIn.getJavaIdentifier();  
 	  {	String connID=meaning.declaredIn.toJavaCode();   // TODO: CORR TO_JAVA_CODE
 		return(connID+'.'+methodCall);
@@ -183,7 +180,7 @@ public class CallProcedure {
 	public static String formal(Variable variable,Parameter par)
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).STM()");
 	  String ident=par.getJavaIdentifier();
-	  if(par.mode==ParameterMode.name) ident=ident+".get()";
+	  if(par.mode==Parameter.Mode.name) ident=ident+".get()";
 	  return(codeCPF(ident,variable));
 	}
 
@@ -206,7 +203,7 @@ public class CallProcedure {
 	  //Util.BREAK("CallProcedure.virtual: virtual="+virtual);
 	  //Util.BREAK("CallProcedure.virtual: staticLink="+variable.meaning.edStaticLink());
 	  //Util.BREAK("CHECK DETTE TILFELLET(CallProcedure.virtual)"); System.exit(-1);
-	  if(variable.meaning.variableKind==VariableKind.connectedAttribute)
+	  if(variable.meaning.variableKind==Variable.Kind.connectedAttribute)
 //	  { String conn=variable.meaning.declaredIn.getJavaIdentifier();
 	  { String conn=variable.meaning.declaredIn.toJavaCode();   // TODO: CORR TO_JAVA_CODE
 	    ident=conn+"."+ident;
@@ -256,7 +253,7 @@ public class CallProcedure {
 	    { actualParameter.backLink=actualParameter;  // To ensure $result from functions
 	      s.append(".setPar(");
 		  Type formalType=actualParameter.type;
-		  ParameterKind kind=ParameterKind.Simple;            // TODO: USIKKER På DETTE !!!
+		  Parameter.Kind kind=Parameter.Kind.Simple;            // TODO: USIKKER På DETTE !!!
 		  //Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
 		  if((actualParameter instanceof Variable) && !(actualParameter instanceof SubscriptedVariable))
 		  { Variable var=(Variable)actualParameter;
@@ -265,9 +262,9 @@ public class CallProcedure {
 //		    Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs'Qual="+var.meaning.declaredAs.getClass().getSimpleName());
 		    Declaration decl=var.meaning.declaredAs;
 		    if(decl instanceof Parameter) kind=((Parameter)decl).kind;  // TODO: Flere sånne tilfeller ???
-		    if(decl instanceof BlockDeclaration) kind=ParameterKind.Procedure;  // TODO: Flere sånne tilfeller ???
+		    if(decl instanceof BlockDeclaration) kind=Parameter.Kind.Procedure;  // TODO: Flere sånne tilfeller ???
 		  }
-		  ParameterMode mode=ParameterMode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
+		  Parameter.Mode mode=Parameter.Mode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
 		  s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
 		  s.append(')');
 	    }
@@ -312,8 +309,8 @@ public class CallProcedure {
 		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Formal Parameter: " + formalParameter);
 		  if(prevPar) s.append(','); prevPar=true;
 		  Type formalType=formalParameter.type;
-		  ParameterKind kind=formalParameter.kind;  
-		  ParameterMode mode=formalParameter.mode;
+		  Parameter.Kind kind=formalParameter.kind;  
+		  Parameter.Mode mode=formalParameter.mode;
 		  s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
 	    }
 	  }
@@ -325,7 +322,7 @@ public class CallProcedure {
 	// ********************************************************************
 	// *** doParameterTransmition
 	// ********************************************************************
-	private static String doParameterTransmition(Type formalType,ParameterKind kind,ParameterMode mode,Expression actualParameter)
+	private static String doParameterTransmition(Type formalType,Parameter.Kind kind,Parameter.Mode mode,Expression actualParameter)
 	{ StringBuilder s = new StringBuilder();
 	  //Util.BREAK("CallProcedure.doParameterTransmition: FORMAL "+kind+' '+type+' '+formalParameter.identifier+" by "+((mode!=null)?mode:"default"));
 	  //Util.BREAK("CallProcedure.doParameterTransmition: ACTUAL "+actualParameter);
@@ -338,7 +335,7 @@ public class CallProcedure {
 	    case Label:
 	   	    String staticLink=edStaticLink(actualParameter);
 	    	String labQuant="new $LABQNT("+staticLink+","+actualParameter.toJavaCode()+")";
-	    	if(mode==ParameterMode.name) {
+	    	if(mode==Parameter.Mode.name) {
 		    	  s.append("new $NAME<$LABQNT>()");
 			      s.append("{ public $LABQNT get() { return("+labQuant+"); }");
 			      s.append(" }");
@@ -357,14 +354,14 @@ public class CallProcedure {
 	// ********************************************************************
 	// *** doSimpleParameter -- Simple Variable as Actual Parameter
 	// ********************************************************************
-	private static void doSimpleParameter(StringBuilder s,Type formalType,ParameterMode mode,Expression actualParameter)
+	private static void doSimpleParameter(StringBuilder s,Type formalType,Parameter.Mode mode,Expression actualParameter)
 	{ //Util.BREAK("CallProcedure.doSimpleParameter: FORMAL "+kind+' '+type+' '+formalParameter.identifier+" by "+((mode!=null)?mode:"default"));
 	  //Util.BREAK("CallProcedure.doSimpleParameter: ACTUAL "+actualParameter);
 	  //Util.BREAK("CallProcedure.doSimpleParameter: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
 	  
 		    if(mode==null) // Simple Type/Ref/Text by Default
 		    	s.append(actualParameter.toJavaCode());
-		    else if(mode==ParameterMode.value)  // Simple Type/Ref/Text by Value
+		    else if(mode==Parameter.Mode.value)  // Simple Type/Ref/Text by Value
 		    { if(formalType==Type.Text)
 		    	   s.append("copy(").append(actualParameter.toJavaCode()).append(')');
 		      else s.append(actualParameter.toJavaCode());
@@ -372,7 +369,7 @@ public class CallProcedure {
 		    else if(formalType==Type.Label) {
 		   	    String staticLink=edStaticLink(actualParameter);
 		    	String labQuant="new $LABQNT("+staticLink+","+actualParameter.toJavaCode()+")";
-		    	if(mode==ParameterMode.name) {
+		    	if(mode==Parameter.Mode.name) {
 			    	  s.append("new $NAME<$LABQNT>()");
 				      s.append("{ public $LABQNT get() { return("+labQuant+"); }");
 				      s.append(" }");
@@ -443,7 +440,7 @@ public class CallProcedure {
 	// ********************************************************************
 	// *** doArrayParameter -- Array as Actual Parameter
 	// ********************************************************************
-	private static void doArrayParameter(StringBuilder s,Type formalType,ParameterMode mode,Expression actualParameter)
+	private static void doArrayParameter(StringBuilder s,Type formalType,Parameter.Mode mode,Expression actualParameter)
 	{ //Util.BREAK("CallProcedure.doArrayParameter: FORMAL "+kind+' '+type+' '+formalParameter.identifier+" by "+((mode!=null)?mode:"default"));
 	  //Util.BREAK("CallProcedure.doArrayParameter: ACTUAL "+actualParameter);
 	  //Util.BREAK("CallProcedure.doArrayParameter: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
@@ -458,11 +455,11 @@ public class CallProcedure {
 //	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs="+decl);
 //	  	//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'declaredAs'QUAL="+decl.getClass().getSimpleName());
 //	  }
-	  if(mode==ParameterMode.value) {
+	  if(mode==Parameter.Mode.value) {
 	    Util.warning("Array-Parameter by value is not (fully) implemented");
 	    s.append(actualParameter.toJavaCode()).append(".COPY()");
 	  }
-	  else if(mode==ParameterMode.name) {
+	  else if(mode==Parameter.Mode.name) {
 //	    String arrObj="$ARRAY<"+formalType.toJavaType()+"[]>";  // TODO: NEW ARRAY CODE  FEIL: BARE ONE-DIMENSIONAL !!!!
 	    String arrObj="$ARRAY<?>";
 		s.append("new $NAME<"+arrObj+">()");
@@ -474,7 +471,7 @@ public class CallProcedure {
 	// ********************************************************************
 	// *** doProcedureParameter -- Procedure as Actual Parameter
 	// ********************************************************************
-	private static void doProcedureParameter(StringBuilder s,Type formalType,ParameterMode mode,Expression actualParameter)
+	private static void doProcedureParameter(StringBuilder s,Type formalType,Parameter.Mode mode,Expression actualParameter)
 	{ //Util.BREAK("CallProcedure.doProcedureParameter: FORMAL "+kind+' '+type+' '+formalParameter.identifier+" by "+((mode!=null)?mode:"default"));
 	  //Util.BREAK("CallProcedure.doProcedureParameter: ACTUAL "+actualParameter);
 	  //Util.BREAK("CallProcedure.doProcedureParameter: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
@@ -510,10 +507,10 @@ public class CallProcedure {
 		  if(var.meaning.declaredAs instanceof Parameter)
 		  { Parameter par=(Parameter)var.meaning.declaredAs;
 			procQuant=((Variable) actualParameter).getJavaIdentifier();
-			if(par.mode==ParameterMode.name) procQuant=procQuant+".get()";  // TODO:SE OVER EN GANG TIL !
+			if(par.mode==Parameter.Mode.name) procQuant=procQuant+".get()";  // TODO:SE OVER EN GANG TIL !
 		  }
 		}
-	    if(mode==ParameterMode.name)
+	    if(mode==Parameter.Mode.name)
 		{ // --- EXAMPLE -------------------------------------------------------------------------
 	      //	r = new ParamSample$Q(this, new $NAME<$PRCQNT>() {
 	      //		public $PRCQNT get() {

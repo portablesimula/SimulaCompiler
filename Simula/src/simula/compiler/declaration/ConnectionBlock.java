@@ -11,13 +11,11 @@ import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.expression.Variable;
 import simula.compiler.statement.Statement;
-import simula.compiler.utilities.BlockKind;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.compiler.utilities.VariableKind;
 
 public class ConnectionBlock extends DeclarationScope 
 { BlockDeclaration classDeclaration;
@@ -35,7 +33,7 @@ public class ConnectionBlock extends DeclarationScope
   
   public ConnectionBlock(Variable inspectedVariable)
   { super("Inspect:"+inspectedVariable);
-	blockKind=BlockKind.ConnectionBlock;
+	blockKind=BlockDeclaration.Kind.ConnectionBlock;
 	this.inspectedVariable=inspectedVariable;
 	//Util.BREAK("BEGIN ConnectionBlock: "+this+", Scope="+this.edScopeChain());
 	//Util.BREAK("BEGIN ConnectionBlock: inspectedVariable="+inspectedVariable+", Type="+inspectedVariable.type);
@@ -57,7 +55,7 @@ public class ConnectionBlock extends DeclarationScope
   {	Meaning result=classDeclaration.findRemoteAttributeMeaning(identifier);
     //Util.BREAK("ConnectionBlock.findMeaning("+identifier+") ==> "+result);
     if(result!=null)
-        result=new Meaning(VariableKind.connectedAttribute
+        result=new Meaning(Variable.Kind.connectedAttribute
         		,result.declaredAs,this,result.foundIn,result.foundBehindInvisible);
     else if(declaredIn!=null) result=declaredIn.findMeaning(identifier);
 	if(result==null) Util.error("Undefined variable: "+identifier);
