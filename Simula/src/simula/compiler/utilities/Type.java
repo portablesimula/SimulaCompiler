@@ -56,6 +56,7 @@ public class Type
 	if(key.getKeyWord()==KeyWord.REF)
 	{ if(key.getValue()==null) return("RTObject$");
 	  if(!CHECKED) this.doChecking(Global.currentScope);
+	  if(qual==null) return("UNKNOWN");
 	  return(qual.getJavaIdentifier());
 	}
 	return(null); 
@@ -74,7 +75,7 @@ public class Type
 	    { qual=(BlockDeclaration)decl;
 	      if(qual.blockKind!=BlockDeclaration.Kind.Class && qual.blockKind!=BlockDeclaration.Kind.StandardClass)  
 	    	  Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
-	    }
+	    } else Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 	  }
 	}
     CHECKED=true;

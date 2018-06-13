@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.utilities.Type;
+import simula.compiler.utilities.Util;
 
 /**
  * Procedure Specification.
@@ -42,10 +43,23 @@ public class ProcedureSpecification
   { this.identifier=identifier; this.type=type; this.parameterList=parameterList; } 
   
   // ***********************************************************************************************
+  // *** Utility: doChecking 
+  // ***********************************************************************************************
+  public void doChecking(DeclarationScope scope)
+  { //Util.BREAK("ProcedureSpecification.checkCompatible: this Type="+type);
+	if(type!=null) type.doChecking(scope);
+	// Check parameters
+	for(Parameter par:parameterList) par.doChecking();
+  }
+  
+  // ***********************************************************************************************
   // *** Utility: checkCompatible  -- 
   // ***********************************************************************************************
   public boolean checkCompatible(BlockDeclaration proc)
-  { if(!type.equals(proc.type)) return(false);
+  { //Util.BREAK("ProcedureSpecification.checkCompatible: this Type="+type);
+    //Util.BREAK("ProcedureSpecification.checkCompatible: othr Type="+proc.type);
+    //Util.BREAK("ProcedureSpecification.checkCompatible: TypeEquals="+type.equals(proc.type));
+	if(type!=null && !type.equals(proc.type)) return(false);
 	// Check parameters
 	Iterator<Parameter> formalIterator = parameterList.iterator();
 	Iterator<Parameter> actualIterator = proc.parameterList.iterator();
@@ -53,11 +67,11 @@ public class ProcedureSpecification
 	while (actualIterator.hasNext()) {
 		if (!formalIterator.hasNext()) return(false); //Util.error("Wrong number of parameters to " + block);
 		Parameter formalParameter = (Parameter)formalIterator.next();
+	    //Util.BREAK("ProcedureSpecification.checkCompatible: formalParameter="+formalParameter);
 		Parameter actualParameter = actualIterator.next();
+	    //Util.BREAK("ProcedureSpecification.checkCompatible: actualParameter="+actualParameter);
+	    //Util.BREAK("ProcedureSpecification.checkCompatible: TypeEquals="+formalParameter.equals(actualParameter));
 		if(!formalParameter.equals(actualParameter)) return(false);
-		//Util.BREAK("Actual Parameter: " + actualParameter);
-		actualParameter.doChecking();
-		//Util.BREAK("Actual Parameter: " + actualParameter.type + " "	+ actualParameter + ", Actual Type=" + actualParameter.type);
 	}
 	if (formalIterator.hasNext()) return(false); //Util.error("Wrong number of parameters to " + block);
     return(true);

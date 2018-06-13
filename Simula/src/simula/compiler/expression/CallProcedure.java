@@ -13,6 +13,7 @@ import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
+import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
@@ -181,7 +182,7 @@ public class CallProcedure {
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).STM()");
 	  String ident=par.getJavaIdentifier();
 	  if(par.mode==Parameter.Mode.name) ident=ident+".get()";
-	  return(codeCPF(ident,variable));
+	  return(codeCPF(ident,variable,null));
 	}
 
 	// ********************************************************************
@@ -211,7 +212,7 @@ public class CallProcedure {
 		  String staticLink=variable.meaning.edStaticLink();
 	      ident=staticLink+"."+ident;
 	  }
-	  return(codeCPF(ident,variable));
+	  return(codeCPF(ident,variable,virtual.procedureSpec));
 	}
 
 	// ********************************************************************
@@ -237,38 +238,41 @@ public class CallProcedure {
 	  //Util.BREAK("CallProcedure.remoteVirtual: virtual="+virtual);
 	  //Util.BREAK("CallProcedure.remoteVirtual: staticLink="+variable.meaning.edStaticLink());
 	  
-	  return(codeCPF(ident,variable));
+	  return(codeCPF(ident,variable,virtual.procedureSpec));
 	}
 	
 	// ********************************************************************
 	// *** codeCPF
 	// ********************************************************************
-	private static String codeCPF(String ident,Variable variable)
+	private static String codeCPF(String ident,Variable variable,ProcedureSpecification procedureSpec)
 	{ StringBuilder s=new StringBuilder();
 	  //Util.BREAK("CallProcedure.codeCPF: ident="+ident);
-	  s.append(ident).append(".CPF()");
-	  if(variable instanceof SubscriptedVariable)
-	  { SubscriptedVariable func=(SubscriptedVariable)variable;
-	    for(Expression actualParameter:func.checkedParams)
-	    { actualParameter.backLink=actualParameter;  // To ensure $result from functions
-	      s.append(".setPar(");
-		  Type formalType=actualParameter.type;
-		  Parameter.Kind kind=Parameter.Kind.Simple;            // TODO: USIKKER På DETTE !!!
-		  //Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
-		  if((actualParameter instanceof Variable) && !(actualParameter instanceof SubscriptedVariable))
-		  { Variable var=(Variable)actualParameter;
-//		    Util.BREAK("CallProcedure.codeCPF: actualParameter'meaning="+var.meaning);
-//		    Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs="+var.meaning.declaredAs);
-//		    Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs'Qual="+var.meaning.declaredAs.getClass().getSimpleName());
-		    Declaration decl=var.meaning.declaredAs;
-		    if(decl instanceof Parameter) kind=((Parameter)decl).kind;  // TODO: Flere sånne tilfeller ???
-		    if(decl instanceof BlockDeclaration) kind=Parameter.Kind.Procedure;  // TODO: Flere sånne tilfeller ???
-		  }
-		  Parameter.Mode mode=Parameter.Mode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
-		  s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
-		  s.append(')');
+	  if(procedureSpec!=null) s.append(codeCSVP(ident,variable,procedureSpec));
+	  else
+	  { s.append(ident).append(".CPF()");
+	    if(variable instanceof SubscriptedVariable)
+	    { SubscriptedVariable func=(SubscriptedVariable)variable;
+	      for(Expression actualParameter:func.checkedParams)
+	      { actualParameter.backLink=actualParameter;  // To ensure $result from functions
+	        s.append(".setPar(");
+		    Type formalType=actualParameter.type;
+		    Parameter.Kind kind=Parameter.Kind.Simple;            // TODO: USIKKER På DETTE !!!
+		    //Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
+		    if((actualParameter instanceof Variable) && !(actualParameter instanceof SubscriptedVariable))
+		    { Variable var=(Variable)actualParameter;
+//		      Util.BREAK("CallProcedure.codeCPF: actualParameter'meaning="+var.meaning);
+//		      Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs="+var.meaning.declaredAs);
+//		      Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs'Qual="+var.meaning.declaredAs.getClass().getSimpleName());
+		      Declaration decl=var.meaning.declaredAs;
+		      if(decl instanceof Parameter) kind=((Parameter)decl).kind;  // TODO: Flere sånne tilfeller ???
+		      if(decl instanceof BlockDeclaration) kind=Parameter.Kind.Procedure;  // TODO: Flere sånne tilfeller ???
+		    }
+		    Parameter.Mode mode=Parameter.Mode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
+		    s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
+		    s.append(')');
+	      }
+		  s.append(".STM()"); // Only when any parameter
 	    }
-		s.append(".STM()"); // Only when any parameter
 	  }
 	  if(variable.type!=null && variable.backLink!=null)
 	  { boolean partOfExpression=true;
@@ -287,6 +291,33 @@ public class CallProcedure {
 			   return(cast+"Value("+callVirtual+")");
 		  else return("(("+cast+")("+callVirtual+"))");
 		}
+	  }
+	  return(s.toString());
+	}
+	
+	// ********************************************************************
+	// *** codeCSVP  -- Call Specified Virtual Procedure
+	// ********************************************************************
+	private static String codeCSVP(String ident,Variable variable,ProcedureSpecification procedureSpec)
+	{ StringBuilder s=new StringBuilder();
+	  //Util.BREAK("CallProcedure.codeCPF: ident="+ident);
+	  s.append(ident).append(".CPF()");
+	  if(variable instanceof SubscriptedVariable)
+	  { Iterator<Parameter> formalIterator = procedureSpec.parameterList.iterator(); // If class also over prefix-chain
+		Iterator<Expression> actualIterator = ((SubscriptedVariable)variable).checkedParams.iterator();
+		while(actualIterator.hasNext())
+		{ Expression actualParameter = actualIterator.next();
+		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Actual Parameter: " + actualParameter);
+		  Parameter formalParameter = (Parameter)formalIterator.next();
+		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Formal Parameter: " + formalParameter);
+	      s.append(".setPar(");
+		  Type formalType=formalParameter.type;
+		  Parameter.Kind kind=formalParameter.kind;  
+		  Parameter.Mode mode=formalParameter.mode;
+		  s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
+		  s.append(')');
+		}
+		s.append(".STM()"); // Only when any parameter
 	  }
 	  return(s.toString());
 	}

@@ -85,7 +85,7 @@ public class RunSingleTestBatch {
 
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'
-		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
+		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
@@ -138,6 +138,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst99.sim"); // ERR:
 		//names.add("simtst100.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK: Visibility of Hidden attributes.
+		names.add("simtst102.sim"); // OK: Specification of Virtual Procedures.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

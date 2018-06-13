@@ -826,6 +826,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   }
 
   public String toString()
-  { return(""+identifier+", BlockDeclaration.Kind="+blockKind+", BlockPrefix="+blockPrefix); }
+  { return(""+identifier+'['+externalIdent+"] BlockDeclaration.Kind="+blockKind+", BlockPrefix="+blockPrefix); }
 
 }

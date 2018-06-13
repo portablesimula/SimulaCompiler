@@ -46,6 +46,9 @@ public class Parameter extends Declaration
   public boolean equals(Object other)
   {	if(!(other instanceof Parameter)) return(false);
 	Parameter otherPar=(Parameter)other;
+    //Util.BREAK("Parameter.equals: This type="+type);
+    //Util.BREAK("Parameter.equals: Othr type="+otherPar.type);
+    //Util.BREAK("Parameter.equals: TypeEquals="+type.equals(otherPar.type));
 	if(!type.equals(otherPar.type)) return(false);
 	if(kind!=otherPar.kind) return(false);
 	if(mode!=otherPar.mode) return(false);

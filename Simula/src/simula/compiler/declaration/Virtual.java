@@ -31,8 +31,6 @@ import simula.compiler.utilities.Util;
 public class Virtual extends Declaration {
 	// String identifier; // Inherited
 	// Type type; // Inherited: Procedure's type if any
-	
-//	public Parameter.Kind kind; // Simple | Procedure
 	public Virtual.Kind kind; // Simple | Procedure
 	
 	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
@@ -47,7 +45,7 @@ public class Virtual extends Declaration {
 		this.kind = kind;
 		this.procedureSpec=procedureSpec;
 		this.blockKind=BlockDeclaration.Kind.Procedure; // TODO: For TEST !!!
-		Util.BREAK("NEW Virtual: "+this);
+		//Util.BREAK("NEW Virtual: "+this);
 	}
 	
 	// VirtualPart  =  VIRTUAL  :  VirtualSpec  ;  {  VirtualSpec  ;  }
@@ -59,24 +57,24 @@ public class Virtual extends Declaration {
 	public static void parseInto(BlockDeclaration block)
 	{ Parser.expect(KeyWord.COLON);
       LOOP:while(true) {
-		  Parser.BREAK("Virtual.parse");
+		  //Parser.BREAK("Virtual.parse");
 		  Type type;
 	      if(Parser.accept(KeyWord.SWITCH))	  parseSimpleSpecList(block,Type.LabelQuantity,Virtual.Kind.Switch);
 	      else if(Parser.accept(KeyWord.LABEL)) parseSimpleSpecList(block,Type.LabelQuantity,Virtual.Kind.Label);
 	      else {
 	    	  type=acceptType();
-		      Parser.BREAK("Virtual.parse: type="+type);
+		      //Parser.BREAK("Virtual.parse: type="+type);
 	          if(!Parser.accept(KeyWord.PROCEDURE)) break LOOP;
 	          Virtual.Kind kind=Virtual.Kind.Procedure;
 	      
 	          String identifier=expectIdentifier();
-		      Parser.BREAK("Virtual.parse: identifier="+identifier);
+		      //Parser.BREAK("Virtual.parse: identifier="+identifier);
 		      ProcedureSpecification procedureSpec=null;
 	          if(Parser.accept(KeyWord.IS)) {
 	        	  Type procedureType=acceptType(); Parser.expect(KeyWord.PROCEDURE);
-		          Parser.BREAK("Virtual.parse: IS procedureType="+procedureType); 
+		          //Parser.BREAK("Virtual.parse: IS procedureType="+procedureType); 
 		          procedureSpec=BlockDeclaration.doParseProcedureSpecification(procedureType); 
-		          Parser.BREAK("Virtual.parse: IS procedureSpec="+procedureSpec);
+		          //Parser.BREAK("Virtual.parse: IS procedureSpec="+procedureSpec);
 		          block.virtualList.add(new Virtual(identifier,type,kind,procedureSpec));
 	          } else {
 	        	  block.virtualList.add(new Virtual(identifier,type,kind,null));
@@ -85,7 +83,6 @@ public class Virtual extends Declaration {
 	          }
 	      }
 	  }
-      //Parser.expect(KeyWord.SEMICOLON);
     }
 	
 	private static void parseSimpleSpecList(BlockDeclaration block,Type type,Virtual.Kind kind)
@@ -99,23 +96,32 @@ public class Virtual extends Declaration {
 		// NOTE: Called during Checking
 		this(match.identifier,match.type,Virtual.Kind.Procedure,null);
 		this.match=match;
-		Util.BREAK("NEW Extra-Virtual: "+this);
+		//Util.BREAK("NEW Extra-Virtual: "+this);
 		SET_SEMANTICS_CHECKED();
 	}
 
 	public void setMatch(BlockDeclaration match)
-	{ this.match=match;	}
+	{ this.match=match;
+	  //Util.BREAK("Virtual.setMatch: "+match);
+	  if(procedureSpec!=null)
+	  { if(!procedureSpec.checkCompatible(match))
+	    { Util.error("Virtual "+identifier+" is not compatible with Virtual Specification");
+		  
+	    }
+	  }
+	}
 	
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		// Util.BREAK("Virtual("+this+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		// TODO: ??? hva checker vi ?
+		if(procedureSpec!=null) procedureSpec.doChecking(this.declaredIn);
 		SET_SEMANTICS_CHECKED();
 	}
 
 	public void doJavaCoding(String indent)
-	{ Util.BREAK("Virtual.doJavaCoding: "+identifier);
+	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
   	  // public $PRCQNT P() { return(new $PRCQNT(this,VirtualSample$SubBlock9$P.class)); }
 	  String quantity=(type==Type.Label)?"$LABQNT ":"$PRCQNT ";
