@@ -159,7 +159,6 @@ public class Variable extends Expression {
 	  BlockDeclaration.Kind blockKind=decl.blockKind;
 	  //Util.BREAK("Variable.edVariable("+id+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
 	  //Util.BREAK("Variable.edVariable("+id+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
-	  int n=meaning.declaredIn.blockLevel;
 
 	  if(blockKind==BlockDeclaration.Kind.Procedure || blockKind==BlockDeclaration.Kind.Method)
 	  { // This Variable is a Procedure-Identifier.
@@ -171,7 +170,8 @@ public class Variable extends Expression {
 		    int k=proc.blockLevel;
 			if(k==Global.currentScope.blockLevel) return("$result");
 		    String cast=proc.getJavaIdentifier();
-		    return("(("+cast+")"+Global.currentScope.edCTX(k)+").$result");
+//		    return("(("+cast+")"+Global.currentScope.edCTX(k)+").$result");
+		    return("(("+cast+")"+proc.edCTX()+").$result");
 		}
 		if(remotelyAccessed)
 		{ id=id+"()";
@@ -214,9 +214,11 @@ public class Variable extends Expression {
 	    } else id=inspectedVariable.toJavaCode()+"."+id;
 	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockDeclaration.Kind.Method)) {
 	    String cast=meaning.declaredIn.getJavaIdentifier();
+		int n=meaning.declaredIn.blockLevel;
 	    if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
 	    else if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !
-	    id="(("+cast+")"+Global.currentScope.edCTX(n)+")."+id;
+//	    id="(("+cast+")"+Global.currentScope.edCTX(n)+")."+id;
+	    id="(("+cast+")"+meaning.declaredIn.edCTX()+")."+id;
 	  }
 	  return(id);
     }

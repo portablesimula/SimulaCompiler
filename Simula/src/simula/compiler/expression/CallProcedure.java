@@ -12,6 +12,7 @@ import java.util.Iterator;
 import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.Virtual;
@@ -161,7 +162,8 @@ public class CallProcedure {
 		String castIdent=meaning.declaredIn.getJavaIdentifier();
 	    int n=meaning.declaredIn.blockLevel;
 		if(n!=currentModule.blockLevel)
-               methodCall="(("+castIdent+")"+Global.currentScope.edCTX(n)+")."+methodCall;
+//          methodCall="(("+castIdent+")"+Global.currentScope.edCTX(n)+")."+methodCall;
+            methodCall="(("+castIdent+")"+meaning.declaredIn.edCTX()+")."+methodCall;
 	  }
 	  //Util.BREAK("CallProcedure.asNormalMethod: Result="+methodCall);
 	  return(methodCall);
@@ -179,7 +181,7 @@ public class CallProcedure {
 	 */
 //	public static String formal(Variable variable,Type type,String ident)
 	public static String formal(Variable variable,Parameter par)
-	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).STM()");
+	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT()");
 	  String ident=par.getJavaIdentifier();
 	  if(par.mode==Parameter.Mode.name) ident=ident+".get()";
 	  return(codeCPF(ident,variable,null));
@@ -196,7 +198,7 @@ public class CallProcedure {
 	 * @return
 	 */
 	public static String virtual(Variable variable,Virtual virtual,boolean remotelyAccessed)
-	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).STM()");
+	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT()");
 	  String ident=virtual.getJavaIdentifier()+"()";
 	  //Util.BREAK("CallProcedure.virtual: ident="+ident);
 	  //Util.BREAK("CallProcedure.virtual: variable="+variable);
@@ -228,7 +230,7 @@ public class CallProcedure {
 	 * @return
 	 */
 	public static String remoteVirtual(Expression obj,Variable variable,Virtual virtual,SyntaxClass backLink)
-	{ //return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).STM()");
+	{ //return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).ENT()");
 	  String ident=obj.get()+'.'+virtual.getJavaIdentifier()+"()";
 	  
 	  //Util.BREAK("CallProcedure.remoteVirtual: ident="+ident);
@@ -271,7 +273,7 @@ public class CallProcedure {
 		    s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
 		    s.append(')');
 	      }
-		  s.append(".STM()"); // Only when any parameter
+		  s.append(".ENT()"); // Only when any parameter
 	    }
 	  }
 	  if(variable.type!=null && variable.backLink!=null)
@@ -317,7 +319,7 @@ public class CallProcedure {
 		  s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
 		  s.append(')');
 		}
-		s.append(".STM()"); // Only when any parameter
+		s.append(".ENT()"); // Only when any parameter
 	  }
 	  return(s.toString());
 	}
@@ -562,10 +564,11 @@ public class CallProcedure {
 	// *** edStaticLink
 	// ********************************************************************
 	private static String edStaticLink(Expression actualParameter)
-	{ //Util.BREAK("SubscriptedVariable.edStaticLink: actualParameter="+actualParameter+", qual="+actualParameter.getClass().getSimpleName());
+	{ Util.BREAK("CallProcedure.edStaticLink: actualParameter="+actualParameter+", qual="+actualParameter.getClass().getSimpleName());
       if(actualParameter instanceof Variable)
       {	Variable apar=(Variable)actualParameter;
-    	return(apar.meaning.edStaticLink());
+        //Global.currentScope=???  // TODO:
+        return(apar.meaning.edStaticLink());
       }
       Util.error("Actual parameter "+actualParameter+" is not implemented");
 	  return("UNKNOWN.this");   // TEMP !!!!!!!

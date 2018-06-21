@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.utilities.Type;
-import simula.compiler.utilities.Util;
 
 /**
  * Procedure Specification.

@@ -53,22 +53,24 @@ public class Meaning {
 	{ // Edit staticLink reference
 	  String staticLink;
 	  Expression connectedObject=getInspectedVariable();
-      //Util.BREAK("Meaning.edStaticLink: connectedObject="+connectedObject);
-      if(connectedObject!=null)
-    	   staticLink=connectedObject.toJavaCode();
-      else
-      {
-//        Util.BREAK("Meaning.edStaticLink: Meaning="+this);
-//        Util.BREAK("Meaning.edStaticLink: Meaning'declaredIn.blockLevel="+declaredIn.blockLevel);
-//        Util.BREAK("Meaning.edStaticLink: Current="+Global.currentScope);
-//        Util.BREAK("Meaning.edStaticLink: Current'BlockLevel="+Global.currentScope.blockLevel);
-    	staticLink=Global.currentScope.edCTX(declaredIn.blockLevel);
+    //Util.BREAK("Meaning.edStaticLink: connectedObject="+connectedObject);
+    if(connectedObject!=null)
+  	   staticLink=connectedObject.toJavaCode();
+    else
+    {
+//      Util.BREAK("Meaning.edStaticLink: Meaning="+this);
+//      Util.BREAK("Meaning.edStaticLink: Meaning'declaredIn.blockLevel="+declaredIn.blockLevel);
+//      Util.BREAK("Meaning.edStaticLink: Current="+Global.currentScope);
+//      Util.BREAK("Meaning.edStaticLink: Current'BlockLevel="+Global.currentScope.blockLevel);
+
+//    	staticLink=Global.currentScope.edCTX(declaredIn.blockLevel);
+    	staticLink=declaredIn.edCTX();
 	    String cast=declaredIn.getJavaIdentifier();
 	    staticLink="(("+cast+")"+staticLink+')';  // Unnecessary Cast for debugging purposes
-      }
-      
-      //Util.BREAK("Meaning.edStaticLink: staticLink="+staticLink);
-      return(staticLink);
+    }
+    
+    //Util.BREAK("Meaning.edStaticLink: staticLink="+staticLink);
+    return(staticLink);
 	}
 	
 	public String toString()

@@ -252,11 +252,12 @@ public abstract class DeclarationScope extends Declaration {
   }
 
   // ***********************************************************************************************
-  // *** Coding Utility: edCTX(blockLevel)
+  // *** Coding Utility: edCTX(contextLevel)
   // ***********************************************************************************************
-  public String edCTX(int blockLevel)
-  { if(blockLevel==0) return("CTX$");
-    if(blockLevel==1) return("PRG$");
+  public String edCTX()
+  {
+	if(blockLevel==0) return("CTX$");
+//    if(blockLevel==1) return("PRG$");  // TODO: Eget navn for hver separat kompilering -- eller ???
     if(Global.USE_CONTEXT_VECTOR)
     { if(blockLevel==Global.currentScope.blockLevel) return("CUR$"); // DENNE ER NY
       return("CV$["+blockLevel+"]");

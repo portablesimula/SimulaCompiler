@@ -129,6 +129,12 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 		  
 	}
 	
+	public RTObject$ ENT() // Enter Formal Procedure
+	{ BBLK(); STM();
+	  return(this);
+	}
+	
+	
 	public $ARRAY<?> arrayValue(Object par)
 	{ //Util.BREAK("RTObject.arrayValue: par="+par);
 	  //Util.BREAK("RTObject.arrayValue: par'Qual="+par.getClass().getSimpleName());

@@ -14,11 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Vector;
 
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
+import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.TypeDeclaration;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.utilities.Global;
@@ -58,8 +60,14 @@ public class AttributeFile {
 	}
 	
 	private void write(BlockDeclaration module) throws IOException
-	{ File attributeFile=new File(attributeFileName);
+	{ File attributeDir=new File(Global.tempClassFileDir+Global.packetName);
+	  Util.BREAK("AttributeFile.write: attributeDir="+attributeDir);
+	  Util.BREAK("AttributeFile.write: attributeDir'canWrite="+attributeDir.canWrite());
+	  attributeDir.mkdirs();
+	  File attributeFile=new File(attributeFileName);
 	  Util.BREAK("AttributeFile.write: attributeFile="+attributeFile);
+	  Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
+	  attributeFile.createNewFile();
 	  Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
 //	  attributeFile.mkdirs();
 //	  FileOutputStream fileOutputStream=new FileOutputStream(attributeFileName);
@@ -182,6 +190,7 @@ public class AttributeFile {
 	  }
 	  if(verbose) System.out.println("ATTR INPUT: Block: "+decl);
 	  //decl.print("","");
+	  Global.currentScope=decl.declaredIn;
 	  return(decl);
 	}
 	
@@ -206,6 +215,7 @@ public class AttributeFile {
 	{ if(verbose) System.out.println("ATTR: Virtual: "+virt.type+' '+virt.identifier+' '+virt.kind);
 	  oupt.writeUTF("Virtual"); oupt.writeUTF(virt.identifier);
 	  writeType(virt.type); writeVirtualKind(virt.kind); 
+	  writeVirtProcedureSpec(virt.procedureSpec);
 	}
 	
 	public Virtual readVirtual() throws IOException
@@ -214,7 +224,34 @@ public class AttributeFile {
 	  Type type=readType();
 	  //Util.BREAK("AttributeInputStream.readVirtual: type="+type);
 	  Virtual.Kind kind=readVirtualKind();
-	  return(new Virtual(identifier,type,kind,null));
+	  ProcedureSpecification procedureSpec=readVirtProcedureSpec();
+	  return(new Virtual(identifier,type,kind,procedureSpec));
+	}
+	
+	private void writeVirtProcedureSpec(ProcedureSpecification procedureSpec) throws IOException
+	{ if(procedureSpec==null) { oupt.writeUTF("NOSPEC"); return; }
+	  if(verbose) System.out.println("ATTR: ProcedureSpecification: "+procedureSpec.type+' '+procedureSpec.identifier);
+	  oupt.writeUTF("ProcedureSpec"); oupt.writeUTF(procedureSpec.identifier); writeType(procedureSpec.type);
+	  for(Parameter par:procedureSpec.parameterList) writeParameter(par);
+	  oupt.writeUTF("PROCEND");
+	}
+	
+	public ProcedureSpecification readVirtProcedureSpec() throws IOException
+	{ String label=readString(); if(label.equalsIgnoreCase("NOSPEC")) return(null);
+      if(!label.equalsIgnoreCase("ProcedureSpec")) Util.error("Malformed Attribute File (at "+label+")");
+	  String identifier=inpt.readUTF();
+	  //Util.BREAK("AttributeInputStream.readVirtual: identifier="+identifier);
+	  Type type=readType();
+	  //Util.BREAK("AttributeInputStream.readVirtual: type="+type);
+	  Vector<Parameter> parameterList=new Vector<Parameter>();
+	  READING:while(true)
+	  { label=readString();
+	    //Util.BREAK("BlockDeclaration.doReadAttributeInfo: label="+label);
+	    if(label.equalsIgnoreCase("Parameter"))	parameterList.add(readParameter());
+	    else if(label.equalsIgnoreCase("PROCEND")) break READING;
+	    else Util.error("Malformed Attribute File (at "+label+")");
+	  }
+	  return(new ProcedureSpecification(identifier,type,parameterList));
 	}
 	
 	private void writeLabel(LabelDeclaration lab) throws IOException
@@ -262,11 +299,13 @@ public class AttributeFile {
 	}
 	
 	private Parameter.Kind readParameterKind() throws IOException
-	{ String tp=inpt.readUTF();
-	  //Util.BREAK("AttributeInputStream.readParameterKind: tp="+tp);
-	  if(tp.equalsIgnoreCase("Procedure")) return(Parameter.Kind.Procedure);
-	  if(tp.equalsIgnoreCase("Label")) return(Parameter.Kind.Label);
-	  if(tp.equalsIgnoreCase("Switch")) return(Parameter.Kind.Switch);
+	{ String kind=inpt.readUTF();
+	  //Util.BREAK("AttributeInputStream.readParameterKind: kind="+kind);
+	  if(kind.equalsIgnoreCase("Simple")) return(Parameter.Kind.Simple);
+	  if(kind.equalsIgnoreCase("Array")) return(Parameter.Kind.Array);
+	  if(kind.equalsIgnoreCase("Procedure")) return(Parameter.Kind.Procedure);
+	  if(kind.equalsIgnoreCase("Label")) return(Parameter.Kind.Label);
+	  if(kind.equalsIgnoreCase("Switch")) return(Parameter.Kind.Switch);
 	  return(null);
 	}
 

@@ -585,6 +585,22 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 //	 	  Util.code(indent+"      this."+par.identifier+" = par$"+par.identifier+';');	
 		  Util.code(indent+"      this."+par.externalIdent+" = par$"+par.identifier+';');	
 	
+	switch(blockKind)
+	{ case Class:
+	  case PrefixedBlock:
+		  { if(this.isMainModule)
+			  Util.code(indent+"      "+"BPRG(\""+identifier+"\");");
+		    else if(hasNoRealPrefix())
+			  Util.code(indent+"      BBLK(); // Iff no prefix");
+            break;
+          }
+//	  case Switch: break;
+	  case SubBlock:
+	  case Procedure:    Util.code(indent+"      "+"BBLK();");
+		
+	  default: // Nothing
+	}
+
 	Util.code(indent+"      // Declaration Code");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+"   ");
 	switch(blockKind)
@@ -680,7 +696,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeSubBlockCode(String indent)
   {	Util.code(indent+"   // SubBlock Statements");
 	Util.code(indent+"   public RTObject$ STM() {");
-    Util.code(indent+"      "+"BBLK();");
+//    Util.code(indent+"      "+"BBLK();");
     doCodeLabelSwitch(indent+"      "); // Prepare for goto-engineering.
     for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
     Util.code(indent+"      "+"EBLK();");
@@ -694,7 +710,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeProcedureBody(String indent)
   {	Util.code(indent+"   // Procedure Statements");
     Util.code(indent+"   public "+getJavaIdentifier()+" STM() {");
-    Util.code(indent+"      "+"BBLK();");
+//    Util.code(indent+"      "+"BBLK();");
     doCodeLabelSwitch(indent+"      "); // Prepare for goto-engineering.
     for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
     Util.code(indent+"      "+"EBLK();");
@@ -722,10 +738,10 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   {	Util.code(indent+"// Create Class Body");
 	Util.code(indent+"CODE$=new ClassBody(CODE$,this) {");
 	Util.code(indent+"   public void STM() {");
-	if(this.isMainModule)
-		Util.code(indent+"      "+"BPRG(\""+identifier+"\");");
-	else if(hasNoRealPrefix())
-		  Util.code(indent+"      BBLK(); // Iff no prefix");
+//	if(this.isMainModule)
+//		Util.code(indent+"      "+"BPRG(\""+identifier+"\");");
+//	else if(hasNoRealPrefix())
+//		  Util.code(indent+"      BBLK(); // Iff no prefix");
     for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
 	if(hasNoRealPrefix())
 		  Util.code(indent+"      EBLK(); // Iff no prefix");

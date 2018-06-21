@@ -71,8 +71,8 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/DisplaySamples.sim";
 		// String name=Global.packetName+"/sim/Editing.sim";
 		// String name=Global.packetName+"/sim/Expressions.sim";
-		 String name=Global.packetName+"/sim/ExternalClass1.sim";
-		// String name=Global.packetName+"/sim/ExternalClass2.sim";
+		// String name=Global.packetName+"/sim/ExternalClass1.sim";
+		 String name=Global.packetName+"/sim/ExternalClass2.sim";
 		// String name=Global.packetName+"/sim/FileSamples.sim";
 		// String name=Global.packetName+"/sim/FittingRoom.sim";
 		// String name=Global.packetName+"/sim/ForWhileSamples.sim";

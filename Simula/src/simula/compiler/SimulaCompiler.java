@@ -13,17 +13,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 import org.apache.bcel.classfile.JavaClass;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
+import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -128,9 +132,12 @@ public class SimulaCompiler {
 			// ***************************************************************
 			// *** CALL JAVAC COMPILER
 			// ***************************************************************
+			String classPath=Global.simulaRtsLib;
+			for(ExternalJarFile jf:ExternalJarFile.ExternalJarFiles)
+				  classPath=classPath+";"+jf.jarFileName;
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			if(compiler!=null) callJavaSystemCompiler(compiler);
-			else callJavacCompiler();
+			if(compiler!=null) callJavaSystemCompiler(compiler,classPath);
+			else callJavacCompiler(classPath);
 			
 			if(Option.TRACE_JAVAC_OUTPUT)
 			{ for(JavaModule module:Global.javaModules)
@@ -172,12 +179,12 @@ public class SimulaCompiler {
 	// ***************************************************************
 	// *** CALL JAVA SYSTEM COMPILER
 	// ***************************************************************
-	private void callJavaSystemCompiler(JavaCompiler compiler) throws IOException
-	{ if(Option.verbose) Util.TRACE("Call Java Compiler");
+	private void callJavaSystemCompiler(JavaCompiler compiler,String classPath) throws IOException
+	{ if(Option.verbose) Util.TRACE("Call Java System Compiler");
 	  Vector<String> arguments=new Vector<String>();
 	  if(Option.TRACE_JAVAC) {  arguments.add("-version"); arguments.add("-verbose"); }
-//	  arguments.add("-classpath"); arguments.add(Global.simulaRtsPath);
-	  arguments.add("-classpath"); arguments.add(Global.simulaRtsLib);
+	  Util.BREAK("SimulaCompiler.callJavaSystemCompiler: classPath="+classPath);
+	  arguments.add("-classpath"); arguments.add(classPath);
 	  arguments.add("-d"); arguments.add(Global.tempClassFileDir); // Specifies output directory.
 	  if(Option.nowarn) arguments.add("-nowarn");
 	  //arguments.add("-Xlint:unchecked");
@@ -205,16 +212,14 @@ public class SimulaCompiler {
 	// https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html
 	// https://docs.oracle.com/javase/10/tools/tools-and-command-reference.htm
 	// ***************************************************************
-	private void callJavacCompiler() throws IOException
-	{ if(Option.verbose) Util.TRACE("Call Java Compiler");
+	private void callJavacCompiler(String classPath) throws IOException
+	{ if(Option.verbose) Util.TRACE("Call Java CommandLine Compiler");
 	  StringBuilder source=new StringBuilder();;
       for(JavaModule module:Global.javaModules) source.append(' ').append(module.javaOutputFileName);
       if(Option.verbose) Util.BREAK("SimulaCompiler.doCompile: source="+source);
 	  String javac=Global.javaDir+"javac.exe";
-	
-	  //String classPath=" -classpath "+Global.tempClassFileDir;
-//	  String classPath=" -classpath "+Global.simulaRtsPath;
-	  String classPath=" -classpath "+Global.simulaRtsLib;
+	  Util.BREAK("SimulaCompiler.callJavacCompiler: classPath="+classPath);
+	  classPath=" -classpath "+classPath;
 	  
 	  // *** TODO: Hvis tempClassFileDir ikke finnes - CREATE !
 	  String classOutputDir=" -d "+Global.tempClassFileDir; 
@@ -256,6 +261,10 @@ public class SimulaCompiler {
 	  else manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS,mainEntry);
 	  JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 	  add(target,new File(Global.tempClassFileDir+Global.packetName),Global.tempClassFileDir.length());
+	  // Add External Jar Files
+	  for(ExternalJarFile jf:ExternalJarFile.ExternalJarFiles)
+		  addExternalJar(target,jf.jarFileName);
+	  
 	  if(Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR)
 	  { add(target,new File(Global.simulaRtsLib+"simula/runtime"),Global.simulaRtsLib.length());
 	    add(target,new File(Global.simulaRtsLib+"simula/compiler/utilities/Util.class"),Global.simulaRtsLib.length());
@@ -297,6 +306,85 @@ public class SimulaCompiler {
 	  } finally { if(inpt!=null) inpt.close(); }
 	}
 	
+	private void addExternalJar(JarOutputStream target,String jarFileName)
+	{ Util.BREAK("SimulaCompiler.addExternalJar: jarFileName="+jarFileName);
+	
+	  try { JarFile jarFile=new JarFile(jarFileName);
+//      Util.BREAK("SimulaCompiler.addExternalJar: "+jarFileName);
+	
+        Manifest manifest=jarFile.getManifest();
+//      Util.BREAK("SimulaCompiler.addExternalJar: manifest="+manifest);
+        Attributes mainAttributes=manifest.getMainAttributes();
+//      Util.BREAK("SimulaCompiler.addExternalJar: MainAttributes="+mainAttributes);
+        String simulaInfo=mainAttributes.getValue("SIMULA-INFO");
+//      Util.BREAK("SimulaCompiler.addExternalJar: simulaInfo="+simulaInfo);
+        JarEntry entry1=jarFile.getJarEntry(simulaInfo);
+//      Util.BREAK("SimulaCompiler.addExternalJar: entry="+entry);
+        ZipEntry zipEntry=jarFile.getEntry(simulaInfo);
+//      Util.BREAK("SimulaCompiler.addExternalJar: ZipEntry="+zipEntry);
+//        InputStream inputStream=jarFile.getInputStream(zipEntry);
+//      Util.BREAK("SimulaCompiler.addExternalJar: inputStream="+inputStream);
+        
+        Enumeration<JarEntry> entries=jarFile.entries();
+	    LOOP:while (entries.hasMoreElements()) {
+          JarEntry entry=entries.nextElement();
+          //Util.BREAK("SimulaCompiler.addExternalJar: LOOP entry="+entry);
+          String name=entry.getName();
+//          if(name.startsWith("simula/runtime")) continue LOOP;
+//          if(name.startsWith("simula/compiler")) continue LOOP;
+          if(!name.startsWith(Global.packetName)) continue LOOP;
+          if(!name.endsWith(".class")) continue LOOP;
+          Util.BREAK("SimulaCompiler.addExternalJar: TREAT entry="+entry);
+          InputStream inputStream = jarFile.getInputStream(entry);
+     	 
+          target.putNextEntry(entry);
+          //create a new entry to avoid ZipException: invalid entry compressed size
+//          target.putNextEntry(new JarEntry(entry.getName()));
+          byte[] buffer = new byte[4096];
+          int bytesRead = 0;
+          while ((bytesRead = inputStream.read(buffer)) != -1) {
+       	   target.write(buffer, 0, bytesRead);
+          }
+          inputStream.close();
+          target.flush();
+          target.closeEntry();
+          
+        }
+
+        jarFile.close();
+
+	  } catch(IOException e) { e.printStackTrace(); }
+	
+	  //Util.EXIT();
+	}
+	 
+	   public static void copyJarFile(JarFile jarFile, File destDir) throws IOException {
+	       String fileName = jarFile.getName();
+	       String fileNameLastPart = fileName.substring(fileName.lastIndexOf(File.separator));
+	       File destFile = new File(destDir, fileNameLastPart);
+	 
+	       JarOutputStream target = new JarOutputStream(new FileOutputStream(destFile));
+	       Enumeration<JarEntry> entries = jarFile.entries();
+	 
+	       while (entries.hasMoreElements()) {
+	           JarEntry entry = entries.nextElement();
+	           InputStream is = jarFile.getInputStream(entry);
+	 
+	           //jos.putNextEntry(entry);
+	           //create a new entry to avoid ZipException: invalid entry compressed size
+	           target.putNextEntry(new JarEntry(entry.getName()));
+	           byte[] buffer = new byte[4096];
+	           int bytesRead = 0;
+	           while ((bytesRead = is.read(buffer)) != -1) {
+	        	   target.write(buffer, 0, bytesRead);
+	           }
+	           is.close();
+	           target.flush();
+	           target.closeEntry();
+	       }
+	       target.close();
+	   }
+		
 	// ***************************************************************
 	// *** LIST .jar FILE
 	// ***************************************************************

@@ -44,7 +44,8 @@ public class BlockStatement extends Statement {
 		//Util.BREAK("BlockStatement.doJavaCoding: blockKind="+blockDeclaration.blockKind);
 		if(blockDeclaration.blockKind!=BlockDeclaration.Kind.CompoundStatement)
 		{ //String staticLink="this"; // TODO: Usikker p� dette
-		  String staticLink=blockDeclaration.edCTX(blockDeclaration.blockLevel-1);
+//		  String staticLink=blockDeclaration.edCTX(blockDeclaration.blockLevel-1);
+		  String staticLink=blockDeclaration.declaredIn.edCTX();
 		  Variable blockPrefix=blockDeclaration.blockPrefix;
 		  StringBuilder s = new StringBuilder();
 		  s.append("new ").append(getJavaIdentifier()).append('(');

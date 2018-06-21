@@ -90,7 +90,8 @@ public class LocalObject extends Expression {
 		}
 		BlockDeclaration classDeclaration=(BlockDeclaration)declarationScope;
 		if(classDeclaration.blockLevel!=Global.currentScope.blockLevel)
-			 return ("(("+cast+")"+Global.currentScope.edCTX(classDeclaration.blockLevel)+")");
+//			 return ("(("+cast+")"+Global.currentScope.edCTX(classDeclaration.blockLevel)+")");
+			 return ("(("+cast+")"+classDeclaration.edCTX()+")");
 		else return ("("+cast+".this)");
 	}
 

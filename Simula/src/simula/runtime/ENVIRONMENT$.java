@@ -11,6 +11,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
+import simula.compiler.utilities.Util;
+
 /**
  * The Class ENVIRONMENT.
  * <p>
@@ -91,6 +93,12 @@ public class ENVIRONMENT$ {
 	// *** Name-Parameters in Java Coding.
 	// ****************************************************
 	public abstract class $NAME<T> {
+//		public RTObject$ THE$; // Thunk Environment
+//		public $NAME() { THE$=RTObject$.CUR$; }
+		public RTObject$ CUR$; // Thunk Environment
+		public $NAME() { CUR$=RTObject$.CUR$;
+//		Util.BREAK("NEW THUNK: CUR$="+CUR$+", Qual="+CUR$.getClass().getSimpleName());
+		}
 		public abstract T get();
 		public T put(T x) { throw new RuntimeException("Illegal assignment. Name parameter is not a variable"); }
 	}

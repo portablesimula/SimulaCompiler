@@ -15,6 +15,18 @@ begin
    begin OutText(msg); Outimage; end;
    Ref (A) x;
    Ref (B) y;
+ 
+  Infile class MyInfile; virtual: ref(FILE) Procedure pvirt is ref(FILE) Procedure actual(i,j); integer i,j;;
+  Begin
+     ref(FILE) Procedure pvirt(i,j); integer i,j;
+     begin i:=34;
+     end;
+     integer procedure inRom;
+     Begin 
+        ref(FILE) myFile;
+        myFile :- pvirt(4,3);
+     end;
+  end;
 
    Class A;
    Begin Real array X(P:1);

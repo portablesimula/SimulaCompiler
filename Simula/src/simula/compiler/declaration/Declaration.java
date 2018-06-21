@@ -68,7 +68,7 @@ public class Declaration extends SyntaxClass
     	if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}
     for(Declaration decl:declaredIn.declarationList)
     	if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}
-    if(illegal) Util.error(identifier+" is alrerady defined in "+declaredIn);
+    if(illegal) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
   }
   
   public static boolean parseDeclaration(Vector<Declaration> declarationList)
