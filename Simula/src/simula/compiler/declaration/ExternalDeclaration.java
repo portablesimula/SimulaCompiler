@@ -10,6 +10,7 @@ package simula.compiler.declaration;
 import java.util.Vector;
 import simula.compiler.ExternalJarFile;
 import simula.compiler.parsing.Parser;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
@@ -117,6 +118,7 @@ public class ExternalDeclaration extends Declaration {
 			  externalIdentifier = Parser.currentToken;
 			  Parser.expect(KeyWord.TEXTKONST);
 		  }
+		  
 		  ExternalDeclaration externalDeclaration=new ExternalDeclaration(identifier,type,kind,externalIdentifier);
 		  declarationList.add(externalDeclaration.externalBlock);
 		  if(Parser.accept(KeyWord.IS))
@@ -124,8 +126,10 @@ public class ExternalDeclaration extends Declaration {
 			Util.NOT_IMPLEMENTED("External non-Simula Procedure");
 			break LOOP;
 		  }
-		  identifier=acceptIdentifier();
-		  if(identifier==null) break LOOP;
+		  if(!Parser.accept(KeyWord.COMMA)) break LOOP;
+		  identifier=expectIdentifier();
+//		  identifier=acceptIdentifier();
+//		  if(identifier==null) break LOOP;
 		}
 	}
 
@@ -136,7 +140,10 @@ public class ExternalDeclaration extends Declaration {
 	    this.kind=kind;
 	    this.externalIdentifier=externalIdentifier;
 		Util.BREAK("END NEW ExternalDeclaration: " + toString());
-		String jarFileName=externalIdentifier.getIdentifier();
+		String jarFileName;
+		if(externalIdentifier==null)
+			 jarFileName=Global.outputDir+identifier+".jar ";
+		else jarFileName=externalIdentifier.getIdentifier();
 		ExternalJarFile externalJarFile=new ExternalJarFile(jarFileName); 
 //		try { readJarFile(jarFileName); } catch(IOException e) { e.printStackTrace(); }
 		

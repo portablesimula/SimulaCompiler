@@ -52,7 +52,7 @@ public class ConnectionBlock extends DeclarationScope
   { this.statement=statement; }
 
   public Meaning findMeaning(String identifier)
-  {	Meaning result=classDeclaration.findRemoteAttributeMeaning(identifier);
+  { Meaning result=classDeclaration.findRemoteAttributeMeaning(identifier);
     //Util.BREAK("ConnectionBlock.findMeaning("+identifier+") ==> "+result);
     if(result!=null)
         result=new Meaning(Variable.Kind.connectedAttribute

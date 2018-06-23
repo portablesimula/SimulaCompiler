@@ -70,9 +70,13 @@ public class RunSingleTestBatch {
 		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		//names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 		//names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
-		//names.add("simtst40.sim"); // err: Test separate compilation of procedures.
+		//names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
+		//names.add("p40a.sim");     // OK:  Precompile this for Simtst 40.
+		//names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
+		//names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
 
-		//names.add("simtst41.sim"); // err: Name parameter in external procedure.
+		//names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
+		//names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
 		//names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
 		//names.add("simtst43.sim"); // OK:  Compute "n-fac", using recursion.
 		//names.add("simtst44.sim"); // OK:  Test text procedure.
@@ -139,6 +143,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst100.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK: Visibility of Hidden attributes.
 		//names.add("simtst102.sim"); // OK: Specification of Virtual Procedures.
+		names.add("Separat.sim");   // OK:  Precompile this for Simtst 103.
+		names.add("simtst103.sim"); // OK:  Test separate compilation of Class.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

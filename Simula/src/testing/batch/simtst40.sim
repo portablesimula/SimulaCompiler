@@ -16,6 +16,12 @@
 %                   compile simtest-40
 %                   execute simtest-40
 %
+%                   compile sourcefile p40b into objectfile pb
+%                   compile sourcefile p40a into objectfile pa
+%                   recompile sourcefile p40c into objectfile pb
+%                   compile simtest-40
+%                   execute simtest-40
+%
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
 BEGIN

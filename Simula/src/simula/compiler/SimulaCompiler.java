@@ -112,6 +112,7 @@ public class SimulaCompiler {
 			}
 			
 			if (Option.verbose)	Util.BREAK("*** BEGIN Semantic Checker");
+			//program.print("", ";");
 			program.doChecking();
 			if (Option.verbose) {
 				Util.BREAK("*** END Semantic Checker: "+program);
@@ -248,9 +249,13 @@ public class SimulaCompiler {
 	public String createJarFile(ProgramModule program) throws IOException
 //	public String createJarFile() throws IOException
 	{ if(Option.verbose) Util.BREAK("*** BEGIN Create .jar File");
-	  //String main=program.getIdentifier();
-	  String main=Global.sourceName;
+	  String main=program.getIdentifier();
+	  String main1=Global.sourceName;
+	  Util.BREAK("SimulaCompiler.createJarFile: main1="+main1);
+	  Util.BREAK("SimulaCompiler.createJarFile: main="+main);
 	  String jarFile=Global.outputDir+main+".jar ";
+	  if(!program.isExecutable())
+		  Util.warning("Separate Compiled Module is written to: "+jarFile);
 	  Manifest manifest=new Manifest();
 	  String mainEntry=Global.packetName+'/'+main;
 	  mainEntry=mainEntry.replace('/', '.');
@@ -261,9 +266,9 @@ public class SimulaCompiler {
 	  else manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS,mainEntry);
 	  JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 	  add(target,new File(Global.tempClassFileDir+Global.packetName),Global.tempClassFileDir.length());
-	  // Add External Jar Files
-	  for(ExternalJarFile jf:ExternalJarFile.ExternalJarFiles)
-		  addExternalJar(target,jf.jarFileName);
+//	  // Add External Jar Files
+//	  for(ExternalJarFile jf:ExternalJarFile.ExternalJarFiles)
+//		  addExternalJar(target,jf.jarFileName);
 	  
 	  if(Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR)
 	  { add(target,new File(Global.simulaRtsLib+"simula/runtime"),Global.simulaRtsLib.length());
@@ -305,85 +310,6 @@ public class SimulaCompiler {
 	    target.closeEntry();
 	  } finally { if(inpt!=null) inpt.close(); }
 	}
-	
-	private void addExternalJar(JarOutputStream target,String jarFileName)
-	{ Util.BREAK("SimulaCompiler.addExternalJar: jarFileName="+jarFileName);
-	
-	  try { JarFile jarFile=new JarFile(jarFileName);
-//      Util.BREAK("SimulaCompiler.addExternalJar: "+jarFileName);
-	
-        Manifest manifest=jarFile.getManifest();
-//      Util.BREAK("SimulaCompiler.addExternalJar: manifest="+manifest);
-        Attributes mainAttributes=manifest.getMainAttributes();
-//      Util.BREAK("SimulaCompiler.addExternalJar: MainAttributes="+mainAttributes);
-        String simulaInfo=mainAttributes.getValue("SIMULA-INFO");
-//      Util.BREAK("SimulaCompiler.addExternalJar: simulaInfo="+simulaInfo);
-        JarEntry entry1=jarFile.getJarEntry(simulaInfo);
-//      Util.BREAK("SimulaCompiler.addExternalJar: entry="+entry);
-        ZipEntry zipEntry=jarFile.getEntry(simulaInfo);
-//      Util.BREAK("SimulaCompiler.addExternalJar: ZipEntry="+zipEntry);
-//        InputStream inputStream=jarFile.getInputStream(zipEntry);
-//      Util.BREAK("SimulaCompiler.addExternalJar: inputStream="+inputStream);
-        
-        Enumeration<JarEntry> entries=jarFile.entries();
-	    LOOP:while (entries.hasMoreElements()) {
-          JarEntry entry=entries.nextElement();
-          //Util.BREAK("SimulaCompiler.addExternalJar: LOOP entry="+entry);
-          String name=entry.getName();
-//          if(name.startsWith("simula/runtime")) continue LOOP;
-//          if(name.startsWith("simula/compiler")) continue LOOP;
-          if(!name.startsWith(Global.packetName)) continue LOOP;
-          if(!name.endsWith(".class")) continue LOOP;
-          Util.BREAK("SimulaCompiler.addExternalJar: TREAT entry="+entry);
-          InputStream inputStream = jarFile.getInputStream(entry);
-     	 
-          target.putNextEntry(entry);
-          //create a new entry to avoid ZipException: invalid entry compressed size
-//          target.putNextEntry(new JarEntry(entry.getName()));
-          byte[] buffer = new byte[4096];
-          int bytesRead = 0;
-          while ((bytesRead = inputStream.read(buffer)) != -1) {
-       	   target.write(buffer, 0, bytesRead);
-          }
-          inputStream.close();
-          target.flush();
-          target.closeEntry();
-          
-        }
-
-        jarFile.close();
-
-	  } catch(IOException e) { e.printStackTrace(); }
-	
-	  //Util.EXIT();
-	}
-	 
-	   public static void copyJarFile(JarFile jarFile, File destDir) throws IOException {
-	       String fileName = jarFile.getName();
-	       String fileNameLastPart = fileName.substring(fileName.lastIndexOf(File.separator));
-	       File destFile = new File(destDir, fileNameLastPart);
-	 
-	       JarOutputStream target = new JarOutputStream(new FileOutputStream(destFile));
-	       Enumeration<JarEntry> entries = jarFile.entries();
-	 
-	       while (entries.hasMoreElements()) {
-	           JarEntry entry = entries.nextElement();
-	           InputStream is = jarFile.getInputStream(entry);
-	 
-	           //jos.putNextEntry(entry);
-	           //create a new entry to avoid ZipException: invalid entry compressed size
-	           target.putNextEntry(new JarEntry(entry.getName()));
-	           byte[] buffer = new byte[4096];
-	           int bytesRead = 0;
-	           while ((bytesRead = is.read(buffer)) != -1) {
-	        	   target.write(buffer, 0, bytesRead);
-	           }
-	           is.close();
-	           target.flush();
-	           target.closeEntry();
-	       }
-	       target.close();
-	   }
 		
 	// ***************************************************************
 	// *** LIST .jar FILE

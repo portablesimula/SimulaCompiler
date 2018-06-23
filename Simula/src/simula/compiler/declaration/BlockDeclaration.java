@@ -31,11 +31,13 @@ import simula.compiler.utilities.Util;
 public class BlockDeclaration extends DeclarationScope // Declaration implements Scope
 { public boolean isMainModule;  // If true; this is the outermost Subblock or Prefixed Block.
   public boolean isContextFree; // If true; all member methods are independent of context
+  public boolean isPreCompiled; // If true; this Class/Procedure is Pre-Compiled
   public Virtual myVirtual; // Set during doChecking
   public Vector<Statement> statements=new Vector<Statement>();
   
   public enum Kind {
-		External,
+//		ExternalClass,
+//		ExternalProcedure,
 		StandardClass,
 		ConnectionBlock,
 		CompoundStatement,
@@ -133,7 +135,10 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	{ Parser.accept(KeyWord.SEMICOLON); }
 
     while(!Parser.accept(KeyWord.END))
-    { stm=Statement.doParse(); if(stm!=null) statements.add(stm); }
+    { stm=Statement.doParse();
+//      Util.BREAK("BlockDeclaration.parseMaybeBlock: stm="+stm);
+      if(stm!=null) statements.add(stm);
+    }
 
 	if(blockKind!=BlockDeclaration.Kind.SimulaProgram)
 	{ if(blockPrefix!=null)
@@ -360,7 +365,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
  	// this.externalIdent=this.getJavaIdentifier();
  	if(blockKind==BlockDeclaration.Kind.Method) externalIdent=this.identifier;
 // 	else externalIdent=edJavaClassName();
- 	else if(blockKind!=BlockDeclaration.Kind.External) externalIdent=edJavaClassName();
+// 	else if(blockKind!=BlockDeclaration.Kind.External) externalIdent=edJavaClassName();
+ 	else if(externalIdent==null) externalIdent=edJavaClassName();
 
 	if(blockKind!=BlockDeclaration.Kind.CompoundStatement) currentBlockLevel++;
     blockLevel=currentBlockLevel;
@@ -433,9 +439,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   public void doJavaCoding(String indent)
   { //Util.BREAK("BlockDeclaration.doJavaCoding: "+identifier+", BlockDeclaration.Kind="+blockKind);
 	ASSERT_SEMANTICS_CHECKED(this);
+	if(this.isPreCompiled) return;
 	switch(blockKind)
-    { case External: break; // DO NOTHING
-      case SimulaProgram:
+    { case SimulaProgram:
     	    doBlockJavaCoding(indent); break;
       case CompoundStatement:
     	    doSubBlockJavaCoding(indent); break;

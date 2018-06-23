@@ -33,25 +33,15 @@ begin
          Integer ord;
          Text procedure idA; begin idA:-edIdent('A',ord); end;
          ord:=nA:=nA+1;
-         Print("Event A-1: Just Before First Detach in " & idA);
-         Detach;
-          Print ("B");
-         Print("Event A-2: Just Before Second Detach in " & edIdent('A',ord));
-         Detach;
-          Print ("F");
-         Print("Event A-3: Just Before Final-END in " & edIdent('A',ord));
+         Print("Event A-1: " & idA);
    End;
 
-   Class B;
+   A Class B;
    Begin Real array X(P:1);
          Integer ord;
          Text procedure idB; begin idB:-edIdent('B',ord); end;
          ord:=nB:=nB+1;
-         Print("Event B-1: Just Before First Detach in " & idB);
-         Detach; Print ("G");
-         Print("Event B-2: Just Before Second Detach in " & edIdent('B',ord));
-         Detach; Print ("H");
-         Print("Event B-3: Just Before Final-END in " & edIdent('B',ord));
+         Print("Event B-1: " & idB);
    End;
 
    Real Procedure P;
@@ -61,31 +51,9 @@ begin
          Outtext(" y="); outtext(if y=/= none then y.idB else "none");
          Outimage;
          
-         If x=/=none then
-         begin
-            Print("Event P-2: Just Before First Resume: " & x.idA);
-            Resume(x);
-         end;
-         Print ("C");
-         If y=/=none then
-         begin
-            Print("Event P-3: Just Before Second Resume: " & y.idB);
-            Resume(y);
-         end;
-         Print ("D");
-   End;
+    End;
 
-   Print("--- Test resume and detach.") ;
+   Print("--- Start Statements of Class Separat") ;
    nA:=0; nB:=0;
-
-   Print("Event 1: Just Before New A");
-   x:- New A;
-   Print("Event 2: Just Before New B(1)");
-   y:- New B;
-   Print("Event 1: Just Before New B(2)");
-   y:- New B;
-   x:- none; x:- New A;
-   Print("Event 1: Just Before Resume(y)");
-   Resume(y);
 
 end;

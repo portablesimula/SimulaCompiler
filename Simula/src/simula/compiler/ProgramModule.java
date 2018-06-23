@@ -86,6 +86,8 @@ public class ProgramModule extends Statement
 	  { Type type=acceptType();
 	    if(Parser.expect(KeyWord.PROCEDURE)) module=BlockDeclaration.doParseProcedureDeclaration(type);
 	  }
+	  StandardClass.BASICIO.declarationList.add(module);
+
 	  if(Option.verbose) Util.TRACE("ProgramModule: END NEW SimulaProgram: "+toString());
     } catch(Throwable e) { e.printStackTrace();  /*System.exit(-1);*/ }
   }	

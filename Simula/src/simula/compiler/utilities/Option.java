@@ -23,6 +23,8 @@ public class Option {
 
 	// Parser Trace Options
 	public static boolean TRACE_PARSE=false;//true;
+	public static boolean TRACE_ATTRIBUTE_OUTPUT=false;//true;
+	public static boolean TRACE_ATTRIBUTE_INPUT=false;//true;
 
 	// Checker Trace Options
 	public static boolean TRACE_CHECKER=false;//true;

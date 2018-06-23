@@ -40,6 +40,12 @@ public class AttributeFile {
 	public AttributeFile(String attributeFileName) 
 	{ this.attributeFileName=attributeFileName; }
 	
+	private void TRACE_OUTPUT(String msg)
+	{ if(Option.TRACE_ATTRIBUTE_OUTPUT) System.out.println("ATTR OUTPUT: "+msg); }
+	
+	private void TRACE_INPUT(String msg)
+	{ if(Option.TRACE_ATTRIBUTE_INPUT) System.out.println("ATTR INPUT: "+msg); }
+	
 	public static void write(ProgramModule program) throws IOException
 	{ 
 //	  String attributeFileName;
@@ -55,7 +61,7 @@ public class AttributeFile {
 	  if (Option.verbose) Util.BREAK("*** BEGIN Generate SimulaAttributeFile: "+attributeFileName);
 	  AttributeFile attributeFile=new AttributeFile(attributeFileName);
 	  attributeFile.write((BlockDeclaration)program.module);
-	  if(Option.verbose) attributeFile.readAttributeFile(attributeFileName);
+	  if(Option.TRACE_ATTRIBUTE_OUTPUT) attributeFile.readAttributeFile(attributeFileName);
 	  if (Option.verbose) Util.BREAK("*** ENDOF Generate SimulaAttributeFile: "+attributeFileName);
 	}
 	
@@ -88,7 +94,7 @@ public class AttributeFile {
 	  inpt.close();
 	  if (Option.verbose)
 	  { Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
-		blockDeclaration.print("","");
+		if(Option.TRACE_ATTRIBUTE_INPUT) blockDeclaration.print("","");
 	  }
 	  return(blockDeclaration);
 	}
@@ -103,7 +109,7 @@ public class AttributeFile {
 	  attributeFile.inpt.close();
 	  if (Option.verbose)
 	  { Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
-		blockDeclaration.print("","");
+	    if(Option.TRACE_ATTRIBUTE_INPUT) blockDeclaration.print("","");
 	  }
 	  return(blockDeclaration);
 	}
@@ -127,20 +133,20 @@ public class AttributeFile {
 	}
 	  
 	private void writeTypeDeclaration(TypeDeclaration dcl) throws IOException
-	{ if(verbose) System.out.println("ATTR OUTPUT: Variable: "+dcl.type+' '+dcl.identifier);
+	{ TRACE_OUTPUT("Variable: "+dcl.type+' '+dcl.identifier);
 	  oupt.writeUTF("Variable"); oupt.writeUTF(dcl.identifier); writeType(dcl.type);
 	}
 	
 	public TypeDeclaration readTypeDeclaration() throws IOException
 	{ String identifier=inpt.readUTF();
 	  Type type=readType();
-	  if(verbose) System.out.println("ATTR INPUT: Variable: "+type+' '+identifier);
+	  TRACE_INPUT("Variable: "+type+' '+identifier);
 	  return(new TypeDeclaration(type,identifier));
 	}
 	  
 	private void doWriteBlockDeclaration(BlockDeclaration blk) throws IOException
 	{ //Util.BREAK("BlockDeclaration.doWriteAttributeInfo: blk="+blk);
-	  if(verbose) System.out.println("ATTR OUTPUT: BEGIN Write Block: "+blk.identifier);
+	  TRACE_OUTPUT("BEGIN Write Block: "+blk.identifier);
 	  oupt.writeUTF(""+blk.blockKind);
 	  writeString("Identifier",blk.identifier);
 	  writeString("ExtIdentifier",blk.externalIdent);
@@ -159,11 +165,11 @@ public class AttributeFile {
 	    for(Declaration dcl:blk.declarationList) doWriteAttributeInfo(dcl);
 	  }
 	  oupt.writeUTF("BLOCKEND");
-	  if(verbose) System.out.println("ATTR OUTPUT: END Write Block: "+blk.identifier);
+	  TRACE_OUTPUT("END Write Block: "+blk.identifier);
 	}
 	  
 	public BlockDeclaration readBlockDeclaration(BlockDeclaration.Kind blockKind) throws IOException
-	{ if(verbose) System.out.println("ATTR INPUT: BEGIN Read Block:");
+	{ TRACE_INPUT("BEGIN Read Block:");
 	  BlockDeclaration decl=new BlockDeclaration(null);
 	  decl.blockKind=blockKind;
 	  READING:while(true)
@@ -188,14 +194,14 @@ public class AttributeFile {
 	    else if(label.equalsIgnoreCase("BLOCKEND")) break READING;
 	    else Util.error("Malformed Attribute File (at "+label+")");
 	  }
-	  if(verbose) System.out.println("ATTR INPUT: Block: "+decl);
+	  TRACE_INPUT("Block: "+decl);
 	  //decl.print("","");
 	  Global.currentScope=decl.declaredIn;
 	  return(decl);
 	}
 	
 	private void writeParameter(Parameter par) throws IOException
-	{ if(verbose) System.out.println("ATTR: Parameter: "+par.type+' '+par.identifier+' '+par.kind+' '+par.mode);
+	{ TRACE_OUTPUT("Parameter: "+par.type+' '+par.identifier+' '+par.kind+' '+par.mode);
 	  oupt.writeUTF("Parameter"); oupt.writeUTF(par.identifier);
 	  writeType(par.type); writeParameterKind(par.kind); writeParameterMode(par.mode);
 	}
@@ -207,12 +213,12 @@ public class AttributeFile {
 	  Parameter.Mode mode=readParameterMode();
 	  Parameter par=new Parameter(identifier,type,kind);
 	  par.mode=mode;
-	  if(verbose) System.out.println("ATTR INPUT: Parameter: "+type+' '+identifier+' '+kind+' '+mode);
+	  TRACE_INPUT("Parameter: "+type+' '+identifier+' '+kind+' '+mode);
 	  return(par);
 	}
 	
 	private void writeVirtual(Virtual virt) throws IOException
-	{ if(verbose) System.out.println("ATTR: Virtual: "+virt.type+' '+virt.identifier+' '+virt.kind);
+	{ TRACE_OUTPUT("Virtual: "+virt.type+' '+virt.identifier+' '+virt.kind);
 	  oupt.writeUTF("Virtual"); oupt.writeUTF(virt.identifier);
 	  writeType(virt.type); writeVirtualKind(virt.kind); 
 	  writeVirtProcedureSpec(virt.procedureSpec);
@@ -230,7 +236,7 @@ public class AttributeFile {
 	
 	private void writeVirtProcedureSpec(ProcedureSpecification procedureSpec) throws IOException
 	{ if(procedureSpec==null) { oupt.writeUTF("NOSPEC"); return; }
-	  if(verbose) System.out.println("ATTR: ProcedureSpecification: "+procedureSpec.type+' '+procedureSpec.identifier);
+	  TRACE_OUTPUT("ProcedureSpecification: "+procedureSpec.type+' '+procedureSpec.identifier);
 	  oupt.writeUTF("ProcedureSpec"); oupt.writeUTF(procedureSpec.identifier); writeType(procedureSpec.type);
 	  for(Parameter par:procedureSpec.parameterList) writeParameter(par);
 	  oupt.writeUTF("PROCEND");
@@ -255,7 +261,7 @@ public class AttributeFile {
 	}
 	
 	private void writeLabel(LabelDeclaration lab) throws IOException
-	{ if(verbose) System.out.println("ATTR: Label: "+lab.index);
+	{ TRACE_OUTPUT("Label: "+lab.index);
 	  oupt.writeUTF("Label"); oupt.writeUTF(lab.identifier); oupt.writeInt(lab.index);
 	}
 	
@@ -270,7 +276,7 @@ public class AttributeFile {
 	}
 
 	private void writeType(Type type) throws IOException
-	{ if(verbose) System.out.println("ATTR: "+type);
+	{ TRACE_OUTPUT("Type="+type);
 	  if(type==Type.Text) oupt.writeUTF("TEXT");
 	  else if(type==null) oupt.writeUTF("NULLTYPE");
 	  else if(type.isReferenceType()) oupt.writeUTF(type.getRefIdent());
@@ -294,7 +300,7 @@ public class AttributeFile {
 	}
 
 	private void writeParameterKind(Parameter.Kind kind) throws IOException
-	{ if(verbose) System.out.println("ATTR: "+kind);
+	{ TRACE_OUTPUT("Kind="+kind);
 	  oupt.writeUTF(""+kind);
 	}
 	
@@ -310,7 +316,7 @@ public class AttributeFile {
 	}
 
 	private void writeVirtualKind(Virtual.Kind kind) throws IOException
-	{ if(verbose) System.out.println("ATTR: "+kind);
+	{ TRACE_OUTPUT("Kind="+kind);
 	  oupt.writeUTF(""+kind);
 	}
 	
@@ -324,7 +330,7 @@ public class AttributeFile {
 	}
 
 	private void writeParameterMode(Parameter.Mode mode) throws IOException
-	{ if(verbose) System.out.println("ATTR: "+mode);
+	{ TRACE_OUTPUT("Mode="+mode);
 	  oupt.writeUTF(""+mode);
 	}
 	
@@ -344,7 +350,7 @@ public class AttributeFile {
 	}
 	
 	private void writeString(String label,String val) throws IOException
-	{ if(verbose) System.out.println("ATTR: "+label+": "+val);
+	{ TRACE_OUTPUT("String: "+label+": "+val);
 	  oupt.writeUTF(label); oupt.writeUTF(val);
 	}
 
@@ -352,7 +358,7 @@ public class AttributeFile {
 	{ return(inpt.readUTF());	}
 	
 	private void writeInt(String label,int val) throws IOException
-	{ if(verbose) System.out.println("ATTR: "+label+": "+val);
+	{ TRACE_OUTPUT("Int: "+label+": "+val);
 	  oupt.writeUTF(label); oupt.writeInt(val);
 	}
 	
@@ -363,7 +369,7 @@ public class AttributeFile {
 	}
 	
 	private void writeBoolean(String label,boolean val) throws IOException
-	{ if(verbose) System.out.println("ATTR: "+label+": "+val);
+	{ TRACE_OUTPUT("Boolean: "+label+": "+val);
 	  oupt.writeUTF(label); oupt.writeBoolean(val);
 	}
 	

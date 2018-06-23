@@ -144,12 +144,11 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findVisibleAttributeMeaning
   // ***********************************************************************************************
   public Meaning findVisibleAttributeMeaning(String ident)
-  { //if(ident.equalsIgnoreCase("i"))
-	//Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+  { //if(ident.equalsIgnoreCase("pa"))Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
 	boolean searchBehindHidden=false;
 	DeclarationScope scope=this;
 	SEARCH:while(scope!=null)
-	{ //Util.BREAK("DeclarationScope("+scope+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+    { //if(ident.equalsIgnoreCase("pa")) Util.BREAK("DeclarationScope("+scope+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
 //	  for(Parameter parameter:scope.parameterList)
 //      if(ident.equalsIgnoreCase(parameter.identifier))
 //        { DeclarationScope hiddenScope=scope.getHidden(ident);
