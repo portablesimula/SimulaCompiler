@@ -350,10 +350,12 @@ public class TXT$ {
 			int lastDigPos=T.POS;
 			c = T.OBJ.MAIN[T.START + T.POS];
 			if(Character.isDigit(c)); //OK
-			else if(c=='.'); // OK
+//			else if(c=='.'); // OK
+			else if(c==ENVIRONMENT$.CURRENTDECIMALMARK) c='.'; // OK
 			else if(c=='+'); // OK
 			else if(c=='-'); // OK
-			else if(c=='&') c='E'; // OK
+//			else if(c=='&') c='E'; // OK
+			else if(c==ENVIRONMENT$.CURRENTLOWTEN) c='E'; // OK
 			else { T.POS=lastDigPos-1; break; }	
 			sb.append(c); lastDigPos=T.POS;
 			//Util.BREAK("TEXT$.getRealItem3: POS=" + POS + " Add c=" + c);
@@ -409,7 +411,8 @@ public class TXT$ {
 		while (T.POS < T.LENGTH) { // KEEP DIGITS
 			c = T.OBJ.MAIN[T.START + T.POS];
 			if(Character.isDigit(c)) { sb.append(c); lastDigPos=T.POS; } //OK
-			else if(c=='.'); // OK  NOTE: THIS WAS WRONG IN PC-SIMULA
+//			else if(c=='.'); // OK  NOTE: THIS WAS WRONG IN PC-SIMULA
+			else if(c==ENVIRONMENT$.CURRENTDECIMALMARK); // OK  NOTE: THIS WAS WRONG IN PC-SIMULA
 			else if(c==' '); // OK
 			else break;
 			//Util.BREAK("TEXT$.getFracItem3: POS=" + T.POS + " Add c=" + c);
@@ -424,6 +427,12 @@ public class TXT$ {
 	public static int getfrac(TXT$ T) {
 		return(Integer.parseInt(getFracItem(T)));
 	}
+
+    private static void putRealResult(TXT$ T,String output)
+    { if(ENVIRONMENT$.CURRENTDECIMALMARK!=',')
+    	 output=output.replace(',',ENVIRONMENT$.CURRENTDECIMALMARK);
+      putResult(T,output);
+    }
 
 	/**
 	 * If the text frame is too short to contain the resulting
@@ -444,7 +453,8 @@ public class TXT$ {
 			int m=c.length-1;
 			for (int j = T.LENGTH-1; j >= 0; j = j - 1) {
 				char k = (m>=0) ? c[m--] : ' ';
-				if(Character.toUpperCase(k)=='E') k='&';
+//				if(Character.toUpperCase(k)=='E') k='&';
+				if(Character.toUpperCase(k)=='E') k=ENVIRONMENT$.CURRENTLOWTEN;
 				if(k==160) k=' '; // String formatted with NumberFormat
 				                  // may have non-breaking space
 				                  // (hexa code : A0 and unicode 160). 
@@ -490,9 +500,10 @@ public class TXT$ {
 		while((n--)>0) pattern.append('0');
 		//Util.BREAK("TXTREF.putfix: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
-		if(r== -0.0) r=0.0; // NOTE: Java har b�de +0.0 og -0.0
+		if(r== -0.0) r=0.0; // NOTE: Java har både +0.0 og -0.0
 	    String output = myFormatter.format(r);
-	    putResult(T,output.replace(',','.'));
+//	    putResult(T,output.replace(',','.'));
+	    putRealResult(T,output);
 	}
 
 	/**
@@ -534,7 +545,8 @@ public class TXT$ {
 //		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
 	    output=addPlussExponent(output);
-	    putResult(T,output.replace(',','.'));
+//	    putResult(T,output.replace(',','.'));
+	    putRealResult(T,output);
 	}
 	public void putreal(float r, int n) { putreal(this,r,n); }
 	public static void putreal(TXT$ T,float r, int n) {
@@ -564,7 +576,8 @@ public class TXT$ {
 //		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
 	    output=addPlussExponent(output);
-	    putResult(T,output.replace(',','.'));
+//	    putResult(T,output.replace(',','.'));
+	    putRealResult(T,output);
 	}
 	
 	private static String addPlussExponent(String s)

@@ -8,10 +8,7 @@
 package simula.runtime;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Random;
-
-import simula.compiler.utilities.Util;
 
 /**
  * The Class ENVIRONMENT.
@@ -654,9 +651,10 @@ public class ENVIRONMENT$ {
 	 */
 	public char lowten(char c) {
 		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
+		// to Simula Standard Definition
 		char lowten = CURRENTLOWTEN;
-		CURRENTLOWTEN = c;
+//		CURRENTLOWTEN = c;
+		CURRENTLOWTEN = Character.toUpperCase(c);
 		return (lowten);
 	}
 
@@ -671,9 +669,10 @@ public class ENVIRONMENT$ {
 	 * end decimalmark;
 	 * </pre>
 	 * 
-	 * Changes the value of the decimal point character used by the text
-	 * (de)editing procedures (cf. 8.7 and 8.8). The previous value is returned.
-	 * The only legal parameter values are dot and comma.
+	 * Changes the value of the decimal point character used by the text (de)editing
+	 * procedures (cf. 8.7 and 8.8). See the TXT$ methods: getreal, getfrac, putfix,
+	 * putreal and putfrac. The previous value is returned. The only legal parameter
+	 * values are dot and comma.
 	 * 
 	 * @param c
 	 * @return
