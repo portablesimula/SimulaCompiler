@@ -9,7 +9,9 @@ package simula.compiler.statement;
 
 import java.util.Vector;
 
+import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Util;
 
 /**
@@ -39,6 +41,11 @@ public class LabeledStatement extends Statement {
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		statement.doChecking();
+		for (String label:labels) {
+			Meaning meaning = Global.currentScope.findMeaning(label);
+			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
+			decl.doChecking();
+		}
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -46,9 +53,12 @@ public class LabeledStatement extends Statement {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		for (String label:labels) {
-			String line = label + "=new LABEL(\"" + label + "\");";
-			//Util.BREAK("Statement.doLabelCoding: " + line);
-			Util.code(indent + line);
+			Meaning meaning = Global.currentScope.findMeaning(label);
+			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
+//			String line = label + "=new LABEL("+decl.index+",\"" + label + "\");";
+//			//Util.BREAK("Statement.doLabelCoding: " + line);
+//			Util.code(indent + line);
+			Util.code(indent + "LABEL("+decl.index+"); // "+decl.identifier);
 		}
 		statement.doJavaCoding(indent);
 	}

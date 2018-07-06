@@ -59,8 +59,8 @@ public class Virtual extends Declaration {
       LOOP:while(true) {
 		  //Parser.BREAK("Virtual.parse");
 		  Type type;
-	      if(Parser.accept(KeyWord.SWITCH))	  parseSimpleSpecList(block,Type.LabelQuantity,Virtual.Kind.Switch);
-	      else if(Parser.accept(KeyWord.LABEL)) parseSimpleSpecList(block,Type.LabelQuantity,Virtual.Kind.Label);
+	      if(Parser.accept(KeyWord.SWITCH))	  parseSimpleSpecList(block,Type.Label,Virtual.Kind.Switch);
+	      else if(Parser.accept(KeyWord.LABEL)) parseSimpleSpecList(block,Type.Label,Virtual.Kind.Label);
 	      else {
 	    	  type=acceptType();
 		      //Parser.BREAK("Virtual.parse: type="+type);
@@ -79,7 +79,7 @@ public class Virtual extends Declaration {
 	          } else {
 	        	  block.virtualList.add(new Virtual(identifier,type,kind,null));
 	    	      if(Parser.accept(KeyWord.COMMA)) parseSimpleSpecList(block,type,kind);
-	    	      Parser.expect(KeyWord.SEMICOLON);
+	    	      else Parser.expect(KeyWord.SEMICOLON);
 	          }
 	      }
 	  }
@@ -89,6 +89,7 @@ public class Virtual extends Declaration {
 	{ do { String identifier=expectIdentifier();
 	       block.virtualList.add(new Virtual(identifier,type,kind,null));
 	  } while(Parser.accept(KeyWord.COMMA));  
+      Parser.expect(KeyWord.SEMICOLON);	
 	}
 
 	
@@ -124,7 +125,8 @@ public class Virtual extends Declaration {
 	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
   	  // public $PRCQNT P() { return(new $PRCQNT(this,VirtualSample$SubBlock9$P.class)); }
-	  String quantity=(type==Type.Label)?"$LABQNT ":"$PRCQNT ";
+//	  String quantity=(type==Type.Label)?"$LABQNT ":"$PRCQNT ";
+	  String quantity=(kind==Kind.Label)?"$LABQNT ":"$PRCQNT ";
 	  String matchCode="{ throw new RuntimeException(\"No Virtual Match\"); }";
 	  if(match!=null) matchCode="{ return(new $PRCQNT(this,"+match.getJavaIdentifier()+".class)); }";
 	  Util.code(indent+"public "+quantity+getJavaIdentifier()+"() "+matchCode);

@@ -158,26 +158,27 @@ public class SubscriptedVariable extends Variable {
 			  this.type=overloadedType;
 			}
 			
-    	} else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
+    	} else if (decl instanceof Parameter) // Parameter Array, Procedure, Switch   TODO: , ... ???
 		{ Parameter spec=(Parameter) decl;
     	  Parameter.Kind kind=spec.kind;
+    	  //Util.BREAK("SubscriptedVariable.doChecking: type="+type);
     	  //Util.BREAK("SubscriptedVariable.doChecking: kind="+kind);
+//    	  Util.ASSERT(kind==Parameter.Kind.Array || kind==Parameter.Kind.Procedure || kind==Parameter.Kind.Switch,"Invariant ?");
     	  Util.ASSERT(kind==Parameter.Kind.Array || kind==Parameter.Kind.Procedure,"Invariant ?");
-    	  {	this.type=spec.type;
-//    	    Util.warning("SubscriptedVariable("+identifier+") - Parameter Checking is postponed to Runtime");
-    	    Iterator<Expression> actualIterator=params.iterator();
-    	    while(actualIterator.hasNext())
-    	    { Expression actualParameter=actualIterator.next();
-    	      actualParameter.doChecking();
-    	      if(kind==Parameter.Kind.Array && !actualParameter.type.isArithmeticType()) Util.error("Illegal index-type");
+    	  this.type=spec.type;
+//    	  Util.warning("SubscriptedVariable("+identifier+") - Parameter Checking is postponed to Runtime");
+    	  Iterator<Expression> actualIterator=params.iterator();
+    	  while(actualIterator.hasNext())
+    	  { Expression actualParameter=actualIterator.next();
+    	    actualParameter.doChecking();
+    	    if(kind==Parameter.Kind.Array && !actualParameter.type.isArithmeticType()) Util.error("Illegal index-type");
     	      
-    		  //checkedParams.add(actualParameter);
-    	      if(kind==Parameter.Kind.Array)
-  			  { Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
-  			    checkedParameter.backLink=this;
-  			    checkedParams.add(checkedParameter);
-  			  } else checkedParams.add(actualParameter);
-    	    }
+    		//checkedParams.add(actualParameter);
+    	    if(kind==Parameter.Kind.Array)
+  			{ Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
+  			  checkedParameter.backLink=this;
+  			  checkedParams.add(checkedParameter);
+  			} else checkedParams.add(actualParameter);
     	  }
     	} else if (decl instanceof Virtual) // Parameter Array, Procedure, ... ???
 		{ Virtual spec=(Virtual) decl;
@@ -234,12 +235,13 @@ public class SubscriptedVariable extends Variable {
 	       s.append(CallProcedure.asNormalMethod(this));
 	    else if(procedure.myVirtual!=null)
 	       s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
-	    else if(blockKind==BlockDeclaration.Kind.Procedure || blockKind==BlockDeclaration.Kind.Switch)
+//	    else if(blockKind==BlockDeclaration.Kind.Procedure || blockKind==BlockDeclaration.Kind.Switch)
+	    else if(blockKind==BlockDeclaration.Kind.Procedure)
 	       s.append(CallProcedure.normal(this));
 	    else Util.FATAL_ERROR("Umulig å komme hit ??");
 	    
 	  }
-	  else if (decl instanceof Parameter) // Parameter Array, Procedure, ... ???
+	  else if (decl instanceof Parameter) // Parameter Array, Procedure, Switch  TODO: ... ???
 	  {	//if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
 	    Parameter par=(Parameter)decl;
 		Parameter.Kind kind=par.kind;  
@@ -268,6 +270,16 @@ public class SubscriptedVariable extends Variable {
 		  else // Procedure By Reference or Name.
 	      	  s.append(CallProcedure.formal(this,par)); 
 		}
+//		else if(kind==Parameter.Kind.Switch) // Parameter Switch
+//	    { if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
+//		  if(par.mode==Parameter.Mode.value)
+//	          Util.error("Parameter "+this+" by Value is not allowed - Rewrite Program");
+//		  else // Procedure By Reference or Name.
+//	      	  s.append(CallProcedure.SWITCH(this,par)); 
+//		  
+//		  Util.BREAK("CODE SWITCH: s="+s);
+//		  //Util.EXIT();
+//		}
 	  }
 	  else if (decl instanceof Virtual) // Virtual Procedure
 	       s.append(CallProcedure.virtual(this,(Virtual)decl,remotelyAccessed));

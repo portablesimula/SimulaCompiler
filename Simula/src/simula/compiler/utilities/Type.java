@@ -23,8 +23,7 @@ public class Type
   public static final Type Ref=new Type(new Token(KeyWord.REF));
   public static final Type Ref(String className) { return(new Type(className)); }
   public static final Type Procedure=new Type(new Token(KeyWord.PROCEDURE));
-  public static final Type Label=new Type(new Token(KeyWord.LABEL,KeyWord.SHORT));
-  public static final Type LabelQuantity=new Type(new Token(KeyWord.LABEL,KeyWord.LONG));
+  public static final Type Label=new Type(new Token(KeyWord.LABEL));
 
   private BlockDeclaration qual; // Qual in case of ref(Qual) type; Set by doChecking
   public BlockDeclaration getQual()
@@ -119,7 +118,6 @@ public class Type
     if(to==null) result=ConversionKind.Illegal;
     else if(this.equals(to)) result=ConversionKind.DirectAssignable;
     else if(this.isArithmeticType()&&to.isArithmeticType()) result=ConversionKind.ConvertValue;
-    else if(this==Type.Label && to==Type.LabelQuantity) result=ConversionKind.ConvertValue;
     else if(this.isSubReferenceOf(to)) result=ConversionKind.DirectAssignable;  
     else if(to.isSubReferenceOf(this)) result=ConversionKind.ConvertRef; // Needs Runtime-Check
     else result=ConversionKind.Illegal;
@@ -152,8 +150,7 @@ public class Type
   }
   
   public static Type commonTypeConversion(Type type1,Type type2)
-  {	if(type1==Type.Label || type2==Type.Label) return(Type.LabelQuantity);
-	if(type1.equals(type2)) return(type1);
+  {	if(type1.equals(type2)) return(type1);
 	Type atype=arithmeticTypeConversion(type1,type2);
 	if(atype!=null) return(atype);
 	if(type1.isReferenceType() && type2.isReferenceType())
@@ -221,8 +218,7 @@ public class Type
 	if(this.equals(Character)) return("char");
 	if(this.equals(Text)) return("TXT$");
 	if(this.equals(Procedure)) return("$PRCQNT");
-	if(this.equals(Label)) return("LABEL");
-	if(this.equals(LabelQuantity)) return("$LABQNT");
+	if(this.equals(Label)) return("$LABQNT");
 	return(this.toString());
   }
  
@@ -245,7 +241,6 @@ public class Type
 	if(key.getKeyWord()==KeyWord.REF) return("Ref("+key.getValue()+')');
 	if(this.equals(ShortInteger)) return("SHORT INTEGER");
 	if(this.equals(LongReal)) return("LONG REAL"); 
-	if(this.equals(LabelQuantity)) return("$LABQNT");
 	return(key.toString());
   }
 }

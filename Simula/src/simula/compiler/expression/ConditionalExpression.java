@@ -56,6 +56,8 @@ public class ConditionalExpression extends Expression {
 		Type expectedType=Type.commonTypeConversion(thenExpression.type,elseExpression.type);
 		thenExpression = TypeConversion.testAndCreate(expectedType, thenExpression);
 		elseExpression = TypeConversion.testAndCreate(expectedType, elseExpression);
+		thenExpression.doChecking(); // In case TypeConversion was added
+		elseExpression.doChecking(); // In case TypeConversion was added
 		this.type=expectedType;
 		// Util.BREAK("END ConditionalExpression" + toString() + ".doChecking - Result type=" + this.type);
 		SET_SEMANTICS_CHECKED();

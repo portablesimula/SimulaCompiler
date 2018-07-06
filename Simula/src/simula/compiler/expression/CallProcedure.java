@@ -366,8 +366,7 @@ public class CallProcedure {
 	    case Procedure: doProcedureParameter(s,formalType,mode,actualParameter); break;
 	    case Array: doArrayParameter(s,formalType,mode,actualParameter); break;
 	    case Label:
-	   	    String staticLink=edStaticLink(actualParameter);
-	    	String labQuant="new $LABQNT("+staticLink+","+actualParameter.toJavaCode()+")";
+	    	String labQuant=actualParameter.toJavaCode();
 	    	if(mode==Parameter.Mode.name) {
 		    	  s.append("new $NAME<$LABQNT>()");
 			      s.append("{ public $LABQNT get() { return("+labQuant+"); }");
@@ -375,9 +374,6 @@ public class CallProcedure {
 		    }
 		    else s.append(labQuant);
 		    break;
-	    case Switch:
-	    	s.append(actualParameter.toJavaCode());
-	    	break;
 	    default:	
 	  }
 	  return(s.toString());
@@ -400,8 +396,7 @@ public class CallProcedure {
 		      else s.append(actualParameter.toJavaCode());
 		    }
 		    else if(formalType==Type.Label) {
-		   	    String staticLink=edStaticLink(actualParameter);
-		    	String labQuant="new $LABQNT("+staticLink+","+actualParameter.toJavaCode()+")";
+		    	String labQuant=actualParameter.toJavaCode();
 		    	if(mode==Parameter.Mode.name) {
 			    	  s.append("new $NAME<$LABQNT>()");
 				      s.append("{ public $LABQNT get() { return("+labQuant+"); }");
@@ -571,7 +566,9 @@ public class CallProcedure {
         return(apar.meaning.edStaticLink());
       }
       Util.error("Actual parameter "+actualParameter+" is not implemented");
-	  return("UNKNOWN.this");   // TEMP !!!!!!!
+//	  return("UNKNOWN.this");   // TEMP !!!!!!!
+//	  return(Global.currentScope.toJavaCode());   // TEMP !!!!!!!
+	  return("("+Global.currentScope.externalIdent+")CUR$");   // TEMP !!!!!!!
 	}
 
 

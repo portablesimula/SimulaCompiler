@@ -20,6 +20,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	private static final boolean DEBUG=true;
 	private static final boolean USE_CONTEXT_VECTOR=false; // Check same switch in Compiler: Global.
 	protected static boolean BLOCK_TRACING=false;//true;
+	protected static boolean GOTO_TRACING=true;
 	protected static boolean THREAD_TRACING=false;//true;
 	private static final boolean CTX_TRACING=false; //true; //false; //true;
 	protected static final boolean QPS_TRACING=false; //true;
@@ -37,8 +38,8 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	public PrintFile$ sysout() { return (SYSOUT$); }
 
 	// QPS
-	enum OperationalState { detached,resumed,attached,terminated }
-	protected OperationalState STATE$;
+	public enum OperationalState { detached,resumed,attached,terminated }
+	public OperationalState STATE$;
 	private Thread THREAD$;
 	protected ClassBody CODE$;
 	
@@ -129,8 +130,11 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 		  
 	}
 	
-	public RTObject$ ENT() // Enter Formal Procedure
-	{ BBLK(); STM();
+	public RTObject$ ENT()  // Enter Formal Procedure
+	{ //Util.BREAK("RTObject.ENT: CUR="+CUR$);
+	  BBLK();
+	  //Util.BREAK("RTObject.ENT: CUR="+CUR$);
+	  STM();
 	  return(this);
 	}
 	
@@ -359,58 +363,151 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	// ************************************************************
 	// *** lOCAL label  - Meant for Byte-Code Engineering
 	// ************************************************************
-	public class LABEL
-	{ String ident;
-	  public int index; // I.e. ordinal number of the labeled statement.
-	  public LABEL(String ident) { this.ident=ident; }
+//	public class LABEL
+//	{ String ident;
+//	  public int index; // I.e. ordinal number of the labeled statement.
+//	  public LABEL(int index,String ident) { this.index=index; this.ident=ident; }
+//	  public String toString()
+//	  { return("LABEL:"+ident+"#"+index); }
+//	}
+	
+	public static void LABEL(int labelIndex) {} // Local LABEL - Needs ByteCode Engineering.
+	public static void JUMP(int labelIndex) // Local GOTO - Needs ByteCode Engineering.
+	{ String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";
+	  System.out.println("NOTE: "+msg);
+	  throw new RuntimeException(msg);
 	}
 	
-	public void GOTO(LABEL L) {} // Local GOTO - Needs ByteCode Engineering.
-
 	
 	
 	// ************************************************************
 	// *** FRAMEWORK for NonLocal Label-Parameters in Java Coding
 	// ************************************************************
-	public class $LABQNT
-	{ RTObject$ SL; // Static link, i.e. the block in which the label is defined.
-	  LABEL L;     // Local Label Identifier within its Scope(staticLink).
+	public class $LABQNT extends RuntimeException
+	{ static final long serialVersionUID = 42L;
+	  public RTObject$ SL$; // Static link, i.e. the block in which the label is defined.
+	  public int index; // I.e. ordinal number of the Label within its Scope(staticLink).
 	  
-	  // Constructor
-	  public $LABQNT(RTObject$ staticLink,LABEL L)
-	  { this.SL=staticLink; this.L=L; }
-
-	  public void GOTO() // GOTO Non-Local Label
-	  { //Util.BREAK("GOTO: $LABQNT="+this);
-	    RTObject$ dl;     // Temporary to 'CUR$.dl'.
-//	    RTObject main;   // The head of the main component and also
-//	                     // the head of the quasi-parallel system.
-
-	    while(CUR$!=this.SL) // follow operating chain, instance by instance.
-	    { //  If we are jumping somewhere we shouldn't, report the error.
-	      if(CUR$==null) throw new RuntimeException("Illegal goto destination.");
-	      if(CUR$.STATE$==OperationalState.attached)
-	      { dl=CUR$.DL$; CUR$.STATE$=OperationalState.terminated;
-	        CUR$.DL$=null; CUR$=dl;
-	  //-      elsif CUR$.sort = S_RES                    //- REMOVED 4/10-84 //-
-	  //-      then //  Terminate this component head, enter the main component.
-	  //-           CUR$.sort:=S_TRM; main:=CUR$.sl; // Behave as if DETACH.
-	  //-           //-  Ignore any temporary(aStack) objects.
-	  //-           repeat while main.dl.$LSC = nowhere
-	  //-           do main:=main.dl endrepeat;
-	  //-           //-  The main component becomes the operating component.
-	  //-           dl:=CUR$.dl; CUR$.dl:=none;
-	  //-           CUR$:=main.dl; main.dl:=dl;
-	      } else CUR$=CUR$.DL$;
-	    }
-
-	    // Have updated current instance. Goto local label.
-	    CUR$.GOTO(L);
+	  // Constructors
+	  public $LABQNT(RTObject$ SL$,int index)
+	  { this.SL$=SL$; this.index=index;
+	    //Util.ASSERT(this.index>0,"Invariant");
+	    //Util.BREAK("NEW LABQNT: SL="+SL$+", index="+index);
 	  }
 	  
-	  public String toString()
-	  { return("$LABQNT("+SL+','+L+')'); }
+	  // Constructors
+	  public $LABQNT(RTObject$ SL$,$LABQNT lab)
+	  { //Util.ASSERT(lab!=null,"Invariant");
+		this.SL$=SL$; this.index=lab.index;
+	    //Util.ASSERT(this.index>0,"Invariant");
+	    //Util.BREAK("NEW(2) LABQNT: SL="+SL$+", index="+index);
+	  }
+
+//	  public void GOTO() // GOTO Non-Local Label
+//	  { //Util.BREAK("GOTO: $LABQNT="+this);
+//	    RTObject$ dl;     // Temporary to 'CUR$.dl'.
+////	    RTObject main;   // The head of the main component and also
+////	                     // the head of the quasi-parallel system.
+//
+//	    while(CUR$!=this.SL) // follow operating chain, instance by instance.
+//	    { //  If we are jumping somewhere we shouldn't, report the error.
+//	      if(CUR$==null) throw new RuntimeException("Illegal goto destination.");
+//	      if(CUR$.STATE$==OperationalState.attached)
+//	      { dl=CUR$.DL$; CUR$.STATE$=OperationalState.terminated;
+//	        CUR$.DL$=null; CUR$=dl;
+//	  //-      elsif CUR$.sort = S_RES                    //- REMOVED 4/10-84 //-
+//	  //-      then //  Terminate this component head, enter the main component.
+//	  //-           CUR$.sort:=S_TRM; main:=CUR$.sl; // Behave as if DETACH.
+//	  //-           //-  Ignore any temporary(aStack) objects.
+//	  //-           repeat while main.dl.$LSC = nowhere
+//	  //-           do main:=main.dl endrepeat;
+//	  //-           //-  The main component becomes the operating component.
+//	  //-           dl:=CUR$.dl; CUR$.dl:=none;
+//	  //-           CUR$:=main.dl; main.dl:=dl;
+//	      } else CUR$=CUR$.DL$;
+//	    }
+//
+//	    // Have updated current instance. Goto local label.
+//	    CUR$.GOTO(L);
+//	  }
 	  
+	  public String toString()
+	  { return("$LABQNT("+SL$+", LABEL#"+index+')'); }
+	  
+	}
+
+	// ************************************************************
+	// *** GOTO -- To avoid Java-error: "Unreachable code" after GOTO
+	// ************************************************************
+    public void GOTO($LABQNT q)
+    { //Util.BREAK("RTObject$.GOTO: "+q);
+      throw(q);
+    }
+
+//	// ************************************************************
+//	// *** TRACING:  TRACE_LOCAL_GOTO
+//	// ************************************************************
+//    public void TRACE_LOCAL_GOTO(int index,String ident)
+//    { String s="LOCAL GOTO "+ident+"=LABEL#"+index;
+//      TRACE(s);
+//      //Util.BREAK("END RTObject$.TRACE_LOCAL_GOTO");
+//    }
+
+	// ************************************************************
+	// *** TRACING:  TRACE_GOTO
+	// ************************************************************
+    public void TRACE_GOTO(String msg,$LABQNT q)
+    { String s=msg+" GOTO "+q;
+      TRACE(s);
+      //Util.BREAK("END RTObject$.TRACE_GOTO");
+    }
+
+	// ************************************************************
+	// *** TESTING:  Statement Code
+	// ************************************************************
+    private void statementCode()
+    {
+    	TestSTM();
+    }
+    
+	// ************************************************************
+	// *** TESTING:  Throw GOTO 
+	// ************************************************************
+	private void TestSTM()
+	{ int $LX=0;
+      //LABEL L1=null; // Local Label #1
+      //LABEL L2=null; // Local Label #2
+      //LABEL L3=null; // Local Label #3
+
+	  LOOP:while($LX>=0)
+	  { try
+	    { switch($LX)
+		  { case 0: break;
+		    case 1: CUR$.JUMP(1); // One Case per.local.label
+		    case 2: CUR$.JUMP(2);
+		    case 3: CUR$.JUMP(3);
+		  }
+	      // Statement code
+	      if(CUR$==null) { $LX=3; continue LOOP; } // EG. Local GOTO L3 
+	      // Statement code
+	      LABEL(1);//,"L1");
+	      // Statement code
+	      LABEL(2);//,"L2");
+	      // Statement code
+	      LABEL(3);//,"L3");
+	      // Statement code
+	      statementCode();
+	      // Statement code
+		  break LOOP;
+	    }
+	    catch($LABQNT q)
+	    { if(q.SL$!=RTObject$.this)
+	      { CUR$.STATE$=OperationalState.terminated;
+	    	throw(q);
+	      }
+	      $LX=q.index; continue LOOP; // EG. GOTO Lx 
+	    }
+	  }
 	}
 
 	// ************************************************************
@@ -719,12 +816,24 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
    * This default version is suitable for classes.
    * @return
    */
-    public RTObject$ STM() { return(CODE$.EXEC$()); }
+    public RTObject$ STM()
+    { Util.BREAK("RTObject.STM: CUR="+CUR$);
+      Util.BREAK("RTObject.STM: CODE$="+CODE$);
+      Util.ASSERT(CODE$!=null,"Invariant");
+      return(CODE$.EXEC$());
+    }
 
 
 //    // Runnable Body
     public RTObject$ START() { START(this); return(this); }
-    public void run() { STM(); }
+    public void run()
+    { try {	STM(); }
+      catch($LABQNT q)
+      {
+    	throw new RuntimeException("NOT IMPLEMENTED: GOTO "+q);  
+      }
+   	}
+    
 	public void START(RTObject$ ins)
 	{ // Start Object in a new Thread
 //	  this.THREAD$=Thread.currentThread(); 

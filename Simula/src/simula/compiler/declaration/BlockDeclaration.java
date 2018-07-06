@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
-import simula.compiler.expression.Expression;
-import simula.compiler.expression.TypeConversion;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.BlockStatement;
@@ -47,7 +45,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	    Class,
 	    PrefixedBlock,
 	    SimulaProgram,
-	    Switch
+//	    Switch
 	}
 
   // ***********************************************************************************************
@@ -381,12 +379,15 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     }
     Global.currentScope=this;
     
+    int prfx=prefixLevel();
+    //Util.BREAK("BlockDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
+    for(Parameter par:this.parameterList) par.setExternalIdentifier(prfx);
     for(Declaration par:new ClassParameterIterator()) par.doChecking();
     for(Virtual vrt:virtualList) vrt.doChecking();
     for(Declaration dcl:declarationList) dcl.doChecking();
     for(Statement stm:statements) stm.doChecking();
-    int nLab=1;
-	for(LabelDeclaration label:labelList) label.index=nLab++;
+    int labelIndex=1;
+	for(LabelDeclaration label:labelList) label.index=labelIndex++;
 
     myVirtual=declaredIn.findVirtual(identifier);
     //Util.BREAK("BlockDeclaration("+identifier+").doChecking: myVirtual="+myVirtual);
@@ -400,7 +401,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     SET_SEMANTICS_CHECKED();
   }
 
-  
+  private int prefixLevel()
+  { if(hasNoRealPrefix()) return(0);
+	BlockDeclaration prfx=getPrefix();
+    if(prfx!=null) return(prfx.prefixLevel()+1);
+	return(-1);  
+  }
   // ***********************************************************************************************
   // *** Coding: hasNoRealPrefix
   // ***********************************************************************************************
@@ -411,7 +417,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	{ noPrefix=false;
 	  String prfxString=prfx.identifier;
 	  if(prfxString.equalsIgnoreCase("CLASS")) noPrefix=true;
-	  // Util.BREAK("BlockDeclaration("+prfxString+").hasNoRealPrefix("+identifier+"): "+noPrefix);
 	} 
 	return(noPrefix);
   }
@@ -455,8 +460,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   	  case Procedure:
 		    doBlockJavaCoding(indent); break;
       case Class:
-    		doBlockJavaCoding(indent); break;
-      case Switch:
     		doBlockJavaCoding(indent); break;
       case ConnectionBlock:
 //    	    Util.NOT_IMPLEMENTED("JavaCoding of ConnectionBlock");
@@ -509,7 +512,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 
   
   // ***********************************************************************************************
-  // *** Coding: CLASS, PROCEDURE, SUBBLOCK, PREFIXED BLOCK  ==>  .java file  QPSystem
+  // *** Coding: CLASS, PROCEDURE, SWITCH, SUBBLOCK, PREFIXED BLOCK  ==>  .java file  QPSystem
   // ***********************************************************************************************
   // Output .java file for Class, Procedure, SubBlock and Prefixed Block.
   private void doBlockJavaCoding(String indent)
@@ -531,11 +534,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	  Util.code(indent+"   public "+type.toJavaType()+' '+"$result;");
 	  Util.code(indent+"   public Object $result() { return($result); }");
 	}
-	else if(blockKind==BlockDeclaration.Kind.Switch)
-	{ Util.code(indent+"   // Declare return value as attribute");
-	  Util.code(indent+"   public $LABQNT $result;");
-	  Util.code(indent+"   public Object $result() { return($result); }");
-	}
+//	else if(blockKind==BlockDeclaration.Kind.Switch)
+//	{ Util.code(indent+"   // Declare return value as attribute");
+//	  Util.code(indent+"   public $LABQNT $result;");
+//	  Util.code(indent+"   public Object $result() { return($result); }");
+//	}
 	
 	Util.code(indent+"   // Declare parameters as attributes");
 	boolean hasParameter=false;
@@ -555,6 +558,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     for(Virtual virtual:virtualList) virtual.doJavaCoding(indent+"   ");
 	
 	if(blockKind==BlockDeclaration.Kind.Procedure && hasParameter) doCodePrepareFormal(indent);
+//	if(blockKind==BlockDeclaration.Kind.Switch) doCodePrepareFormal(indent);
 	
 	doCodeConstructor(indent);
 
@@ -564,7 +568,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	{ Util.code(indent+"");
 	  Util.code(indent+"   public static void main(String[] args) {");
 //	  Util.code(indent+"     System.out.println(\"Start Execution of "+getJavaIdentifier()+"\");");
-	  Util.code(indent+"     new "+getJavaIdentifier()+"(CTX$).STM();");
+	  Util.code(indent+"     try { new "+getJavaIdentifier()+"(CTX$).STM(); }");
+	  Util.code(indent+"     catch($LABQNT q) { System.err.println(\"ERROR: Illegal GOTO \"+q); q.printStackTrace(); }");
+	  Util.code(indent+"     catch(Throwable t) { System.err.println(\"ERROR: \"+t.getMessage()); t.printStackTrace(); }");
 //	  Util.code(indent+"     System.out.println(\""+getJavaIdentifier()+" Terminates Normally\");");
 	  Util.code(indent+"   }"); // End of main
 	}
@@ -588,8 +594,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	} else Util.code(indent+"      "+"super(staticLink);");
 	Util.code(indent+"      // Parameter assignment to locals");
 	for(Parameter par:parameterList)
-//	 	  Util.code(indent+"      this."+par.identifier+" = par$"+par.identifier+';');	
-		  Util.code(indent+"      this."+par.externalIdent+" = par$"+par.identifier+';');	
+//		  Util.code(indent+"      this."+par.externalIdent+" = par$"+par.identifier+';');
+		  Util.code(indent+"      this."+par.externalIdent+" = s"+par.externalIdent+';');	
 	
 	switch(blockKind)
 	{ case Class:
@@ -600,7 +606,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 			  Util.code(indent+"      BBLK(); // Iff no prefix");
             break;
           }
-//	  case Switch: break;
 	  case SubBlock:
 	  case Procedure:    Util.code(indent+"      "+"BBLK();");
 		
@@ -612,7 +617,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	switch(blockKind)
 	{ case Class:
 	  case PrefixedBlock: doCodeCreateClassBody(indent+"      "); break;
-	  case Switch: doCodeSwitchBody(indent+"      "); break;
 	  case Procedure: Util.code(indent+"      "+"STM();");		
 	  default: // Nothing
 	}
@@ -661,11 +665,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	{ case SubBlock:  codeSubBlockCode(indent); break;
 	  case Procedure: codeProcedureBody(indent); break;
 	  case Class: codeClassStatements(indent); break;
-//	  case PrefixedBlock: codeSubBlockCode(indent); break;
 	  case PrefixedBlock: break; // USES DEFAULT VERSION OF  STM()
 	  case SimulaProgram: codeProgramCode(indent); break;
-//	  case Switch: doCodeSwitchBody(indent+"      "); break;
-	  case Switch: break;
 	  default: Util.FATAL_ERROR("Impossible");
 	}  
   }
@@ -688,10 +689,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeProgramCode(String indent)
   {	Util.code(indent+"   // SimulaProgram Statements");
 	Util.code(indent+"   public RTObject$ STM() {");
-	Util.code(indent+"      "+"BPRG(\""+identifier+"\");");
-	doCodeLabelSwitch(indent+"      "); // Prepare for goto/label-engineering.
-	for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
-	Util.code(indent+"      "+"EBLK();");
+	Util.code(indent+"      BPRG(\""+identifier+"\");");
+  
+   	codeSTMBody(indent);
+    Util.code(indent+"      EBLK();");
+  
 	Util.code(indent+"      "+"return(null);");
 	Util.code(indent+"   }"); // End of SimulaProgram Statements
   }
@@ -702,26 +704,68 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeSubBlockCode(String indent)
   {	Util.code(indent+"   // SubBlock Statements");
 	Util.code(indent+"   public RTObject$ STM() {");
-//    Util.code(indent+"      "+"BBLK();");
-    doCodeLabelSwitch(indent+"      "); // Prepare for goto-engineering.
-    for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
-    Util.code(indent+"      "+"EBLK();");
-	Util.code(indent+"      "+"return(null);");
+    codeSTMBody(indent);
+    Util.code(indent+"      EBLK();");
+	Util.code(indent+"      return(null);");
     Util.code(indent+"   }"); // End of SubBlock Statements
 	}
   
   // ***********************************************************************************************
-  // *** Coding Utility: codeProcedureBody
+  // *** Coding Utility: codeProcedureBody  -- Redefined in SwitchDeclaration
   // ***********************************************************************************************
-  private void codeProcedureBody(String indent)
+  public void codeProcedureBody(String indent)
   {	Util.code(indent+"   // Procedure Statements");
     Util.code(indent+"   public "+getJavaIdentifier()+" STM() {");
-//    Util.code(indent+"      "+"BBLK();");
-    doCodeLabelSwitch(indent+"      "); // Prepare for goto-engineering.
-    for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
-    Util.code(indent+"      "+"EBLK();");
+   	codeSTMBody(indent);
+    Util.code(indent+"      EBLK();");
     Util.code(indent+"      return(this);");
-    Util.code(indent+"   }"); // End of Procedure BODY
+    Util.code(indent+"   } // End of Procedure BODY");
+   	}
+  
+  // ***********************************************************************************************
+  // *** Coding Utility: doCodeCreateClassBody
+  // ***********************************************************************************************
+  public void doCodeCreateClassBody(String indent)
+  {	Util.code(indent+"// Create Class Body");
+	Util.code(indent+"CODE$=new ClassBody(CODE$,this) {");
+	Util.code(indent+"   public void STM() {");
+	
+//    for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
+   	codeSTMBody(indent);
+    
+	if(hasNoRealPrefix())
+		  Util.code(indent+"      EBLK(); // Iff no prefix");
+	else if(this.isMainModule)
+		Util.code(indent+"      "+"EBLK();");
+	Util.code(indent+"}};");  
+  }
+
+  // ***********************************************************************************************
+  // *** Coding Utility: codeSTMBody
+  // ***********************************************************************************************
+  private void codeSTMBody(String indent)
+  {	if(!labelList.isEmpty())
+	{ Util.code(indent+"       "+externalIdent+" THIS$=("+externalIdent+")CUR$;");
+      Util.code(indent+"       LOOP$:while($LX>=0)");
+      Util.code(indent+"       { try {");
+	}
+    doCodeJumpTable(indent+"         "); // Prepare for goto-engineering.
+    for(Statement stm:statements) stm.doJavaCoding(indent+"         ");
+	if(!labelList.isEmpty())
+    { Util.code(indent+"         break LOOP$;");
+      Util.code(indent+"       }");
+      Util.code(indent+"       catch($LABQNT q) {");
+      Util.code(indent+"           CUR$=THIS$;");
+      Util.code(indent+"           if(q.SL$!=CUR$)");
+      Util.code(indent+"           { CUR$.STATE$=OperationalState.terminated;");
+      Util.code(indent+"             if(GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
+      Util.code(indent+"             throw(q);");
+      Util.code(indent+"           }");
+      Util.code(indent+"           if(GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
+      Util.code(indent+"           $LX=q.index; continue LOOP$; // EG. GOTO Lx"); 
+      Util.code(indent+"       }");
+      Util.code(indent+"     }");
+    }
   }
   
     
@@ -731,59 +775,26 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private String edSuperParameterList()
   { StringBuilder s=new StringBuilder(); s.append("(staticLink");
     for(Parameter par:new ClassParameterIterator())  // Iterates through prefix-chain
-        s.append(',').append("par$").append(par.identifier);
-//        s.append(',').append(par.externalIdent);
+        s.append(",s").append(par.externalIdent); // s to indicate Specified Parameter
     s.append(");"); //runtimeBlockKind=getRTBlockKind();
     return(s.toString());
   }
 
   // ***********************************************************************************************
-  // *** Coding Utility: doCodeCreateClassBody
+  // *** Coding Utility: doCodeJumpTable
   // ***********************************************************************************************
-  public void doCodeCreateClassBody(String indent)
-  {	Util.code(indent+"// Create Class Body");
-	Util.code(indent+"CODE$=new ClassBody(CODE$,this) {");
-	Util.code(indent+"   public void STM() {");
-//	if(this.isMainModule)
-//		Util.code(indent+"      "+"BPRG(\""+identifier+"\");");
-//	else if(hasNoRealPrefix())
-//		  Util.code(indent+"      BBLK(); // Iff no prefix");
-    for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
-	if(hasNoRealPrefix())
-		  Util.code(indent+"      EBLK(); // Iff no prefix");
-	else if(this.isMainModule)
-		Util.code(indent+"      "+"EBLK();");
-	Util.code(indent+"}};");  
-  }
-  // ***********************************************************************************************
-  // *** Coding Utility: doCodeLabelSwitch
-  // ***********************************************************************************************
-  public void doCodeLabelSwitch(String indent)
+  public void doCodeJumpTable(String indent)
   {	if(labelList.isEmpty()) return;
 	Util.code(indent+"switch($LX) {");
 	for(LabelDeclaration label:labelList)
-		Util.code(indent+"   case "+label.index+": /* Label:"+label.identifier+" */ break;");
+//		Util.code(indent+"   case "+label.index+": /* Label:"+label.identifier+" */ break;");
+//		Util.code(indent+"   case "+label.index+": JUMP("+label.index+','+label.identifier+"); break;");
+//		Util.code(indent+"   case "+label.index+": JUMP("+label.index+','+label.index+"); break;");
+		Util.code(indent+"   case "+label.index+": JUMP("+label.index+"); break;");
 	Util.code(indent+"   default:");
 	Util.code(indent+"}"); // End of main
   }
   
-
-  // ***********************************************************************************************
-  // *** Coding Utility: doCodeSwitchBody
-  // ***********************************************************************************************
-  private void doCodeSwitchBody(String indent)
-  { Util.code(indent+"switch($SW-1)");
-    Util.code(indent+"{");
-    int n=0;
-    for(Expression expr:((SwitchDeclaration)this).switchList)
-    { //Util.BREAK("BlockDeclaration.doCodeSwitchBody: expr="+expr+", Type="+expr.type+", Qual="+expr.getClass().getSimpleName());
-	  Expression labQuant=TypeConversion.testAndCreate(Type.LabelQuantity,expr);
-	  labQuant.doChecking();
-      Util.code(indent+"  case "+(n++)+": $result="+labQuant.toJavaCode()+"; return;");
-    }
-    Util.code(indent+"  default: throw new RuntimeException(\"Illegal switch index: \"+$SW);");
-    Util.code(indent+"}");
-  }
 
   // ***********************************************************************************************
   // *** Coding Utility: edFormalParameterList
@@ -797,9 +808,10 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     { if(withparams) s.append(','); withparams=true;
       s.append(((Parameter)par).toJavaType());
       s.append(' ');
-      if(!isMethod) s.append("par$");
-      s.append(par.identifier);
-//      s.append(par.externalIdent);
+//      if(!isMethod) s.append("par$");
+//      s.append(par.identifier);
+      if(isMethod) s.append(par.identifier);
+      else s.append('s').append(par.externalIdent); // s to indicate Specified Parameter
     }
     s.append(") {");
     return(s.toString());

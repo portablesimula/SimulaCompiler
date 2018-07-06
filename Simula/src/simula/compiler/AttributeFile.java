@@ -294,7 +294,6 @@ public class AttributeFile {
 	  if(tp.equalsIgnoreCase("Text")) return(Type.Text);
 	  if(tp.equalsIgnoreCase("Procedure")) return(Type.Procedure);
 	  if(tp.equalsIgnoreCase("Label")) return(Type.Label);
-	  if(tp.equalsIgnoreCase("LabelQuantity")) return(Type.LabelQuantity);
 	  if(tp.equalsIgnoreCase("NULLTYPE")) return(null);
 	  return(new Type(tp));
 	}
@@ -311,7 +310,6 @@ public class AttributeFile {
 	  if(kind.equalsIgnoreCase("Array")) return(Parameter.Kind.Array);
 	  if(kind.equalsIgnoreCase("Procedure")) return(Parameter.Kind.Procedure);
 	  if(kind.equalsIgnoreCase("Label")) return(Parameter.Kind.Label);
-	  if(kind.equalsIgnoreCase("Switch")) return(Parameter.Kind.Switch);
 	  return(null);
 	}
 

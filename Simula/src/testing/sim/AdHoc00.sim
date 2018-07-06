@@ -1,54 +1,10 @@
 begin
-  integer array A(1:45,4:27);
-  Text T,U="abraCadab";
-  Integer i,ci=16R6E4;
-  Boolean b;
-  Character c;
-  real r,x,y;
-  long real w,q;
-  
-  Infile class MyInfile; virtual: ref(FILE) Procedure pvirt is ref(FILE) Procedure actual(i,j); integer i,j;;
-  Begin
-     ref(FILE) Procedure pvirt(i,j); integer i,j;
-     begin i:=34;
-     end;
-     integer procedure inRom;
-     Begin 
-        ref(FILE) myFile;
-        myFile :- pvirt(4,3);
-     end;
-  end;
-  
-  i := i+4;
-  
-  b := T.constant;
-  
-  outtext(if b then "true" else "false"); outimage;
-  
-  c := decimalmark(',');
-  T :- upcase(T);
-  T :- lowcase(T);
-  r := arctan2(y,x); 
-  
-  i := sourceline+47;
-
-  w := maxlongreal;
-  q := minlongreal;
-
-  x := maxreal;
-  y := minreal;
-
-  i := maxrank;
-  i := maxint;
-  i := minint;
-
-  T :- simulaid; 
-
-  i := lowerbound(A,1);
-  i:=  upperbound(A,2);
-  
-  ci := rem(i,4); 
-
-  error("AbRaCadeb");
-  
+   Class A (L, I); Integer L,I;
+   begin L:=56; end;
+   A Class B (L, I); Integer L,I;
+   begin L:=78; end;
+   B Class C (L, I); Integer L,I;
+   begin L:=78; end;
+   
+   new C(1,2,3,4,5,6);
 end of program;

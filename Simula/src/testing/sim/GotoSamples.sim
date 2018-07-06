@@ -1,16 +1,18 @@
-
-%QUALIFIEDNAMES
-
 begin
    integer lsc;
-   procedure p(b); boolean b;
+   procedure p(b,k); boolean b; integer k;
    begin
       M:N:
-      if b then goto M else goto L;
-      outtext("");
-      goto if b then N else M;
+      if k>0 then p(not b,k-1) else
+      begin
+         if b then goto L;
+         outtext("");
+         if k>4 then
+            goto if b then N else M;
+      end;   
    end;
    L: 
-   outtext("");
+   outtext("Outer LOOP");
+   p(false,3);
    goto L;
 end;   

@@ -12,6 +12,7 @@ import java.util.Vector;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.runtime.RTObject$.$LABQNT;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -61,7 +62,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst29.sim"); // OK:  Procedure parameters by value
 		//names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 
-		//names.add("simtst31.sim"); // ERR: Labels and switches as parameters to procedures
+		//names.add("simtst31.sim"); // err: Labels and switches as parameters to procedures
 		//names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
 		//names.add("simtst33.sim"); // OK:  Test call by reference
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
@@ -95,7 +96,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
-		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
+		//names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
+		names.add("simtst59.sim"); // ERR: Virtual label in external class.
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
@@ -143,8 +145,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst100.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK: Visibility of Hidden attributes.
 		//names.add("simtst102.sim"); // OK: Specification of Virtual Procedures.
-		names.add("Separat.sim");   // OK:  Precompile this for Simtst 103.
-		names.add("simtst103.sim"); // OK:  Test separate compilation of Class.
+		//names.add("Separat.sim");   // OK:  Precompile this for Simtst 103.
+		//names.add("simtst103.sim"); // OK:  Test separate compilation of Class.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
@@ -184,8 +186,11 @@ public class RunSingleTestBatch {
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/batch/"+name;
-		  SimulaCompiler compiler = new SimulaCompiler(fileName);
-		  compiler.doCompile();
+	      try { SimulaCompiler compiler = new SimulaCompiler(fileName);
+		        compiler.doCompile();
+		  }
+	      catch($LABQNT q) { q.printStackTrace(); }
+		  catch(Throwable t) { System.err.println("ERROR: "+t.getMessage()); t.printStackTrace(); }
 		}
 	}
 

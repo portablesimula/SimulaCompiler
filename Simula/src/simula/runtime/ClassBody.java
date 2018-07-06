@@ -1,5 +1,7 @@
 package simula.runtime;
 
+import simula.runtime.RTObject$.$LABQNT;
+
 /**
 * 
 * @author Øystein Myhre Andersen

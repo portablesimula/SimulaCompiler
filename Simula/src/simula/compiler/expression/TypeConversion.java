@@ -8,6 +8,7 @@
 package simula.compiler.expression;
 
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
@@ -21,8 +22,7 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		//Util.BREAK("new TypeConversion("+type+','+expression+") qual="+expression.getClass().getSimpleName());
 		this.type=type;
 		this.expression = expression; expression.backLink=this;
-		if(type!=Type.LabelQuantity)
-		    this.doChecking();
+	    this.doChecking();
 	}
 
 	// Test if a TypeConversion is necessary and then do it.
@@ -87,12 +87,14 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		
 		String evaluated=expression.toJavaCode();
 		
-		if(type==Type.LabelQuantity)
+		if(type==Type.Label)
 		{ Util.ASSERT(expression instanceof Variable,"Invariant");
 		  Util.ASSERT(expression.type==Type.Label,"Invariant");
 		  Variable lab=(Variable)expression;
 		  String staticLink=lab.meaning.edStaticLink();
-		  return("new $LABQNT("+staticLink+","+evaluated+")");
+		  LabelDeclaration decl=(LabelDeclaration)lab.meaning.declaredAs;
+		  Util.BREAK("Dette MÅ Sjekkes !!!"); Util.EXIT();  // TODO: DETTE MÅ SJEKKES
+		  return("new $LABQNT("+staticLink+","+decl.index+")");
 		}
 		
 		String cast=type.toJavaType();

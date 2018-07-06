@@ -12,16 +12,28 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 public class LabelDeclaration extends TypeDeclaration {
-    public int index; // set by doChecking
+    public int index; // set by BlockDeclaration.doChecking
     
 	public LabelDeclaration(String identifier) {
 		super(Type.Label,identifier);
 	}
 
+	public void doChecking() {
+		//Util.BREAK("TypeDeclaration.doChecking("+this+")");
+		if (IS_SEMANTICS_CHECKED())	return;
+		Global.sourceLineNumber=lineNumber;
+		type.doChecking(Global.currentScope);
+//		if(constantElement!=null)
+//		{ constantElement.doChecking();
+//	      constantElement=TypeConversion.testAndCreate(type,constantElement);
+//		}
+		SET_SEMANTICS_CHECKED();
+	}
+
 	public void doJavaCoding(String indent) {
 		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
-		Util.code(indent+"LABEL "+ident+"=null; // Local Label #"+index);
+		Util.code(indent+"final $LABQNT "+ident+"=new $LABQNT(this,"+index+"); // Local Label #"+index+'='+ident);
 	}
 
 }

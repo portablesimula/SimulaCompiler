@@ -8,7 +8,6 @@
 package simula.compiler.declaration;
 
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -29,7 +28,7 @@ public class Parameter extends Declaration
 	  , Procedure
 	  , Array
 	  , Label
-	  , Switch
+//	  , Switch
   }
 
 
@@ -38,9 +37,8 @@ public class Parameter extends Declaration
   
   public Parameter(String identifier,Type type,Parameter.Kind kind)
   { super(identifier);
-//	externalIdent="p$"+identifier;
     this.type=type; this.kind=kind;
-    //Util.BREAK("NEW Parameter: "+this);
+    if(type==Type.Label) Util.BREAK("NEW Parameter: "+this);
   }
   
   public boolean equals(Object other)
@@ -57,17 +55,23 @@ public class Parameter extends Declaration
   
   public void setMode(Parameter.Mode mode)
   {	if(this.mode!=null)
-	Util.error("Parameter "+identifier+" is already specified by"+this.mode);
+	Util.error("Parameter "+identifier+" is already specified by "+this.mode);
 	this.mode=mode;
   }
 
   public void setTypeAndKind(Type type,Parameter.Kind kind)
   { this.type=type; this.kind=kind; }
+  
+  public void setExternalIdentifier(int prefixLevel)
+  { //Util.BREAK("Parameter.modifyIdentifier: identifier="+identifier);
+	if(prefixLevel>0) externalIdent="p"+prefixLevel+'$'+identifier;
+	else externalIdent="p$"+identifier;
+    //Util.BREAK("Parameter.modifyIdentifier: identifier="+identifier+" ==> "+externalIdent);
+  }
 
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
     Global.sourceLineNumber=lineNumber;
-	externalIdent="p$"+identifier;
     //Util.BREAK("CHECKING Parameter: "+this);
  	//Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+currentScope.edScopeChain());
 	//Util.BREAK("Parameter("+this.toString()+").doChecking: type="+type);
@@ -115,7 +119,6 @@ public class Parameter extends Declaration
 	    	break;
 	    case Procedure:
 	    case Label:
-	    case Switch:
 	    	if(mode==Parameter.Mode.value) illegal=true;
 	    	break;
 	    default:	
@@ -134,7 +137,7 @@ public class Parameter extends Declaration
     	case Label:     return("$NAME<$LABQNT>");
 //    	case Array:		return("$NAME<$ARRAY<"+type.toJavaType()+"[]>>");
     	case Array:		return("$NAME<$ARRAY<?>>");
-    	case Switch:    return("$NAME<$PRCQNT>");
+//    	case Switch:    return("$NAME<$PRCQNT>");
       }
     }
 //    if(kind==Parameter.Kind.Array) return("$ARRAY<"+type.toJavaType()+"[]>");

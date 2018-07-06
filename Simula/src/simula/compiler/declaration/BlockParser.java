@@ -152,8 +152,9 @@ public abstract class BlockParser extends SyntaxClass
 	if(Option.TRACE_PARSE) Parser.TRACE("Parse ParameterSpecifications");
 	Type type;
 	Parameter.Kind kind=Parameter.Kind.Simple;
-    if(Parser.accept(KeyWord.SWITCH))  type=Type.LabelQuantity; 
-    else if(Parser.accept(KeyWord.LABEL)) type=Type.LabelQuantity; 
+//    if(Parser.accept(KeyWord.SWITCH)) { type=Type.Label; kind=Parameter.Kind.Switch; } 
+    if(Parser.accept(KeyWord.SWITCH)) { type=Type.Label; kind=Parameter.Kind.Procedure; } 
+    else if(Parser.accept(KeyWord.LABEL)) type=Type.Label; 
     else if(Parser.accept(KeyWord.PROCEDURE)) { type=null; kind=Parameter.Kind.Procedure; }
     else
     { type=acceptType(); if(type==null) return(false);    	
