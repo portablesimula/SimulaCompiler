@@ -73,16 +73,16 @@ public class ConditionalStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		Util.code(indent + "if(" + condition.toJavaCode() + ") {");
-		thenStatement.doJavaCoding(indent + "   ");
+		Util.code(indent,"if(" + condition.toJavaCode() + ") {");
+		thenStatement.doJavaCoding(indent+1);
 		if (elseStatement != null) {
-			Util.code(indent + "} else");
-			elseStatement.doJavaCoding(indent + "   ");
+			Util.code(indent,"} else");
+			elseStatement.doJavaCoding(indent+1);
 		} else
-			Util.code(indent + "}");
+			Util.code(indent,"}");
 	}
 
 	public String toString() {

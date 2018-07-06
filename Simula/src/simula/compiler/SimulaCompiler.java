@@ -120,7 +120,7 @@ public class SimulaCompiler {
 			}
 
 			if (Option.verbose) Util.BREAK("*** BEGIN Generate .java Output Code"); 
-			program.doJavaCoding("");
+			program.doJavaCoding(0);
 			if (Option.verbose)
 			{ Util.BREAK("*** END Generate .java Output Code");
 			    for(JavaModule module:Global.javaModules)

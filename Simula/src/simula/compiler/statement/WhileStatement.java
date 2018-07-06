@@ -45,16 +45,16 @@ public class WhileStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		Util.code(indent + "while(" + condition.toJavaCode() + ") {");
-		doStatement.doJavaCoding(indent + "   ");
+		Util.code(indent,"while(" + condition.toJavaCode() + ") {");
+		doStatement.doJavaCoding(indent+1);
 		
 		if(isWhileTrueDo())
-			Util.code(indent + "   if(CODE$==null) break; // Ad'Hoc to prevent JAVAC error'terminate");
+			Util.code(indent,"   if(CODE$==null) break; // Ad'Hoc to prevent JAVAC error'terminate");
 		
-		Util.code(indent + '}');
+		Util.code(indent,"}");
 	}
 	
 	private boolean isWhileTrueDo()

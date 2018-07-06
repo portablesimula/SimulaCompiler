@@ -90,7 +90,7 @@ public class ForStatement extends Statement
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(String indent)
+  public void doJavaCoding(int indent)
   {	// ------------------------------------------------------------
     //	for(boolean CB$:new ForList(
     //			 new SingleElt<Number>(n1)
@@ -105,7 +105,7 @@ public class ForStatement extends Statement
 	ASSERT_SEMANTICS_CHECKED(this);
 	boolean refType=controlVariable.type.isReferenceType();
 	String CB="CB$"+lineNumber;
-    Util.code(indent+"for(boolean "+CB+":new ForList(");
+    Util.code(indent,"for(boolean "+CB+":new ForList(");
     char del=' ';
     for(ForListElement elt:forList)
     { String classIdent=(refType)?elt.expr1.type.getJavaRefIdent():"Number";
@@ -116,12 +116,12 @@ public class ForStatement extends Statement
 //        if(assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)
 //        	Util.NOT_IMPLEMENTED("For-Statement with text value assignment (:=)");
       }
-      Util.code(indent+"   "+del+elt.edCode(classIdent));
+      Util.code(indent,"   "+del+elt.edCode(classIdent));
       del=',';
     }
-    Util.code(indent+"   )) { if(!"+CB+") continue;");
-    doStatement.doJavaCoding(indent+"   ");
-    Util.code(indent+'}');
+    Util.code(indent,"   )) { if(!"+CB+") continue;");
+    doStatement.doJavaCoding(indent+1);
+    Util.code(indent,"}");
   } 
   
   private String edControlVariableByName(String classIdent)

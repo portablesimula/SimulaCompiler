@@ -46,11 +46,11 @@ public class JavaModule
 		if (Option.verbose) Util.TRACE("Output: " + outputFile.getCanonicalPath());
 		writer = new FileWriter(outputFile);
 		prevWriter=Util.setWriter(writer);
-		Util.code("package "+Global.packetName+";"); 
-		Util.code("// "+Global.simulaID+" Compiled at " + new Date());
+		Util.code(0,"package "+Global.packetName+";"); 
+		Util.code(0,"// "+Global.simulaID+" Compiled at " + new Date());
 		
 		// Output Dependencies
-		Util.code("import simula.runtime.*;");
+		Util.code(0,"import simula.runtime.*;");
 	  } catch (IOException e) {
 		throw new RuntimeException("Writing .java output failed",e);
 	  }

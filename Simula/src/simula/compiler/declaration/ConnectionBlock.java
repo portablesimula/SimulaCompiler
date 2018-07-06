@@ -90,12 +90,12 @@ public class ConnectionBlock extends DeclarationScope
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(String indent) {
+  public void doJavaCoding(int indent) {
 	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
 //	Util.code(indent+'{');
 //	Util.code(indent+"   BCON("+inspectedVariable.toJavaCode()+");");
-	statement.doJavaCoding(indent+"   ");  
+	statement.doJavaCoding(indent+1);  
 //	Util.code(indent+"   ECON();");
 //	Util.code(indent+'}');
   }

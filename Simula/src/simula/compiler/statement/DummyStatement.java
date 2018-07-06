@@ -30,7 +30,7 @@ public class DummyStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent) { /* No Coding */
+	public void doJavaCoding(int indent) { /* No Coding */
 		ASSERT_SEMANTICS_CHECKED(this);
 	}
 

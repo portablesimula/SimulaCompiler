@@ -175,7 +175,7 @@ public class ArrayDeclaration extends Declaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
-    public void doJavaCoding(String indent) // TODO: NEW ARRAY CODE
+    public void doJavaCoding(int indent) // TODO: NEW ARRAY CODE
 	{ Global.sourceLineNumber=lineNumber;
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
@@ -186,10 +186,10 @@ public class ArrayDeclaration extends Declaration {
 	  for(int i=0;i<nDim;i++) arrType=arrType+"[]";
 	  String arrayIdent=this.getJavaIdentifier();
 	  arrType="$ARRAY<"+arrType+'>';
-	  Util.code(indent+"public "+arrType+""+arrayIdent+"=null;");
+	  Util.code(indent,"public "+arrType+""+arrayIdent+"=null;");
 	}
 
-    public void doDeclarationCoding(String indent) // TODO: NEW ARRAY CODE
+    public void doDeclarationCoding(int indent) // TODO: NEW ARRAY CODE
 	{ Global.sourceLineNumber=lineNumber;
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
@@ -205,7 +205,7 @@ public class ArrayDeclaration extends Declaration {
 	  String arrType=this.type.toJavaType();
 	  String arrGen=arrType;
 	  int nDim=boundPairList.size();
-	  Util.code(indent+"   int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
+	  Util.code(indent+1,"int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
 	  int n=0;
 	  for(BoundPair boundPair:boundPairList)
 	  {	arrType=arrType+"[]";
@@ -213,10 +213,10 @@ public class ArrayDeclaration extends Declaration {
 	    String UBid=arrayIdent+"$UB["+(n++)+"]";
 		String size=UBid+"-"+LBid+"+1";
 		arrGen=arrGen+'['+size+']';
-		Util.code(indent+"   "+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
+		Util.code(indent+1,""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
 	  }	
 	  arrType="$ARRAY<"+arrType+'>';
-	  Util.code(indent+"   "+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
+	  Util.code(indent+1,""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
 	}
 
 	public String toString() {

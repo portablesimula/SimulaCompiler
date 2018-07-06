@@ -45,7 +45,7 @@ public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
     SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(String indent)
+  public void doJavaCoding(int indent)
   {	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
 	Global.currentScope=this;
@@ -58,7 +58,7 @@ public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
 	
     String line=modifier+((type==null)?"void":type.toJavaType());
 	line=line+' '+identifier+' '+edFormalParameterList(true); // Treat as Method
-	Util.code(indent+line);
+	Util.code(indent,line);
 	Global.currentScope=declaredIn;
   }
 

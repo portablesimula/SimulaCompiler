@@ -121,7 +121,7 @@ public class ConnectionStatement extends Statement
 	  SET_SEMANTICS_CHECKED();
 	}
 	
-	public void doCoding(String indent,boolean first)
+	public void doCoding(int indent,boolean first)
 	{ ASSERT_SEMANTICS_CHECKED(this);
 	  connectionBlock.doJavaCoding(indent);
 	}
@@ -162,15 +162,15 @@ public class ConnectionStatement extends Statement
 	  connectionBlock.doChecking();
 	}
 	
-	public void doCoding(String indent,boolean first)
+	public void doCoding(int indent,boolean first)
 	{ //Util.BREAK("ConnectionStatement.WhenPart.doCoding: statement="+statement.getClass().getName());
 	  ASSERT_SEMANTICS_CHECKED(this);
-	  String prfx=(first)?indent:indent+"else ";
+	  String prfx=(first)?"":"else ";
 	  String cid=classDeclaration.getJavaIdentifier();
 	  if(!impossibleWhenPart)
-	  { Util.code(prfx+"if("+inspectedVariable.toJavaCode()+" instanceof "+cid+") // WHEN "+cid+" DO ");
+	  { Util.code(indent,prfx+"if("+inspectedVariable.toJavaCode()+" instanceof "+cid+") // WHEN "+cid+" DO ");
 	    connectionBlock.doJavaCoding(indent);
-	  } else Util.code(prfx+"// WHEN "+cid+" DO -- IMPOSSIBLE REMOVED");
+	  } else Util.code(indent,prfx+"// WHEN "+cid+" DO -- IMPOSSIBLE REMOVED");
 	}
 	
 	public void print(String indent)
@@ -202,21 +202,21 @@ public class ConnectionStatement extends Statement
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(String indent)
+  public void doJavaCoding(int indent)
   {	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
-    if(assignment!=null) Util.code(indent+assignment.toJavaCode()+';');	
-    if(hasWhenPart) Util.code(indent+"//"+"INSPECT "+inspectedVariable);
-    else Util.code(indent+"if("+inspectedVariable.toJavaCode()+"!=null) //"+"INSPECT "+inspectedVariable);
+    if(assignment!=null) Util.code(indent,assignment.toJavaCode()+';');	
+    if(hasWhenPart) Util.code(indent,"//"+"INSPECT "+inspectedVariable);
+    else Util.code(indent,"if("+inspectedVariable.toJavaCode()+"!=null) //"+"INSPECT "+inspectedVariable);
     boolean first=true;
     for(Enumeration<DoPart> e=connectionPart.elements(); e.hasMoreElements();)
     { e.nextElement().doCoding(indent,first); first=false; }
     if(otherwise!=null)
-    { Util.code(indent+"   else // OTHERWISE ");
-      otherwise.doJavaCoding(indent+"      ");
-      Util.code(indent+"   // END OTHERWISE ");
+    { Util.code(indent,"   else // OTHERWISE ");
+      otherwise.doJavaCoding(indent+2);
+      Util.code(indent,"   // END OTHERWISE ");
     }
-    Util.code(indent+"// END INSPECTION ");
+    Util.code(indent,"// END INSPECTION ");
   }
   
   // ***********************************************************************************************

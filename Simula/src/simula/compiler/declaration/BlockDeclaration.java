@@ -424,16 +424,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // *** Coding: doPrototypeCoding  --  This code instead of traditional Prototype
   // ***********************************************************************************************
-  private void doPrototypeCoding(String indent)
+  private void doPrototypeCoding(int indent)
   {	//String packetName=SimulaCompiler.packetName;
-	Util.code(indent+"// BlockDeclaration.Kind="+blockKind+", BlockLevel="+blockLevel
+	Util.code(indent,"// BlockDeclaration.Kind="+blockKind+", BlockLevel="+blockLevel
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 		      +", detachUsed="+((detachUsed)?"true":"false"));
 	if(isQPSystemBlock())
-	Util.code(indent+"public boolean isQPSystemBlock() { return(true); }");
+	Util.code(indent,"public boolean isQPSystemBlock() { return(true); }");
 	if(isDetachUsed())
-	Util.code(indent+"public boolean isDetachUsed() { return(true); }");
+	Util.code(indent,"public boolean isDetachUsed() { return(true); }");
   }
   
 
@@ -441,7 +441,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // *** Coding: doJavaCoding
   // ***********************************************************************************************
-  public void doJavaCoding(String indent)
+  public void doJavaCoding(int indent)
   { //Util.BREAK("BlockDeclaration.doJavaCoding: "+identifier+", BlockDeclaration.Kind="+blockKind);
 	ASSERT_SEMANTICS_CHECKED(this);
 	if(this.isPreCompiled) return;
@@ -471,16 +471,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // *** Coding: SUBBLOCK as Java Subblock
   // ***********************************************************************************************
-  private void doSubBlockJavaCoding(String indent)
+  private void doSubBlockJavaCoding(int indent)
   {	Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doSubBlockJavaCoding: "+identifier);
   	ASSERT_SEMANTICS_CHECKED(this);
   	Global.currentScope=this;
-    Util.code(indent+'{');
-	for(Declaration decl:labelList) decl.doJavaCoding(indent+"   ");
+    Util.code(indent,"{");
+	for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
     for(Iterator<Declaration> it=declarationList.iterator();it.hasNext();) it.next().doJavaCoding(indent);
     for(Statement stm:statements) stm.doJavaCoding(indent);
-    Util.code(indent+'}');
+    Util.code(indent,"}");
     Global.currentScope=declaredIn;
   }
 
@@ -489,24 +489,24 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // *** Coding: METHOD  --   Generate Inline Method code for Procedure.
   // ***********************************************************************************************
   // Generate Inline Method code for Procedure.
-  private void doMethodJavaCoding(String indent)
+  private void doMethodJavaCoding(int indent)
   { Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doMethodJavaCoding: "+identifier);
   	ASSERT_SEMANTICS_CHECKED(this);
   	Global.currentScope=this;
     String line="public "+((type==null)?"void":type.toJavaType());
   	line=line+' '+getJavaIdentifier()+' '+edFormalParameterList(true);
-  	Util.code(indent+line);
+  	Util.code(indent,line);
   	if(type!=null)
-	{ Util.code(indent+"   // Declare return value as variable");
-	  Util.code(indent+"   "+type.toJavaType()+' '+"$result"+'='+type.edDefaultValue()+';');
+	{ Util.code(indent,"   // Declare return value as variable");
+	  Util.code(indent,"   "+type.toJavaType()+' '+"$result"+'='+type.edDefaultValue()+';');
 	}
   	
-	for(Declaration decl:labelList) decl.doJavaCoding(indent+"   ");
-    for(Declaration decl:declarationList) decl.doJavaCoding(indent+"   ");
-    for(Statement stm:statements) stm.doJavaCoding(indent+"   ");
-  	if(type!=null) Util.code(indent+"   return($result);");
-  	Util.code(indent+'}');
+	for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
+    for(Declaration decl:declarationList) decl.doJavaCoding(indent+1);
+    for(Statement stm:statements) stm.doJavaCoding(indent+1);
+  	if(type!=null) Util.code(indent,"   return($result);");
+  	Util.code(indent,"}");
   	Global.currentScope=declaredIn;
     }
 
@@ -515,7 +515,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // *** Coding: CLASS, PROCEDURE, SWITCH, SUBBLOCK, PREFIXED BLOCK  ==>  .java file  QPSystem
   // ***********************************************************************************************
   // Output .java file for Class, Procedure, SubBlock and Prefixed Block.
-  private void doBlockJavaCoding(String indent)
+  private void doBlockJavaCoding(int indent)
   {	Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doBlockJavaCoding: "+identifier);
 	ASSERT_SEMANTICS_CHECKED(this);
@@ -527,35 +527,29 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	if(prefix!=null) line=line+" extends "+getPrefix().getJavaIdentifier();
 	else line=line+" extends RTObject$";
 	
-	Util.code(indent+line+" {");
-	doPrototypeCoding(indent+"   ");
+	Util.code(indent,line+" {");
+	doPrototypeCoding(indent+1);
 	if(blockKind==BlockDeclaration.Kind.Procedure  && type!=null)
-	{ Util.code(indent+"   // Declare return value as attribute");
-	  Util.code(indent+"   public "+type.toJavaType()+' '+"$result;");
-	  Util.code(indent+"   public Object $result() { return($result); }");
+	{ Util.code(indent,"   // Declare return value as attribute");
+	  Util.code(indent,"   public "+type.toJavaType()+' '+"$result;");
+	  Util.code(indent,"   public Object $result() { return($result); }");
 	}
-//	else if(blockKind==BlockDeclaration.Kind.Switch)
-//	{ Util.code(indent+"   // Declare return value as attribute");
-//	  Util.code(indent+"   public $LABQNT $result;");
-//	  Util.code(indent+"   public Object $result() { return($result); }");
-//	}
-	
-	Util.code(indent+"   // Declare parameters as attributes");
+
+	Util.code(indent,"   // Declare parameters as attributes");
 	boolean hasParameter=false;
 	for(Parameter par:parameterList)
 	{ String tp=par.toJavaType(); hasParameter=true;
-//	  Util.code(indent+"   public "+tp+' '+par.identifier+';');
-	  Util.code(indent+"   public "+tp+' '+par.externalIdent+';');
+	  Util.code(indent,"   public "+tp+' '+par.externalIdent+';');
 	}
 	if(!labelList.isEmpty())
-	{ Util.code(indent+"   // Declare local labels");
-	  Util.code(indent+"   public int $LX;");
-	  for(Declaration decl:labelList) decl.doJavaCoding(indent+"   ");
+	{ Util.code(indent,"   // Declare local labels");
+	  Util.code(indent,"   public int $LX;");
+	  for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
 	}
-	Util.code(indent+"   // Declare locals as attributes");
-	for(Declaration decl:declarationList) decl.doJavaCoding(indent+"   ");
+	Util.code(indent,"   // Declare locals as attributes");
+	for(Declaration decl:declarationList) decl.doJavaCoding(indent+1);
 	
-    for(Virtual virtual:virtualList) virtual.doJavaCoding(indent+"   ");
+    for(Virtual virtual:virtualList) virtual.doJavaCoding(indent+1);
 	
 	if(blockKind==BlockDeclaration.Kind.Procedure && hasParameter) doCodePrepareFormal(indent);
 //	if(blockKind==BlockDeclaration.Kind.Switch) doCodePrepareFormal(indent);
@@ -565,16 +559,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	doCodeStatements(indent);
 	
 	if(this.isMainModule)
-	{ Util.code(indent+"");
-	  Util.code(indent+"   public static void main(String[] args) {");
-//	  Util.code(indent+"     System.out.println(\"Start Execution of "+getJavaIdentifier()+"\");");
-	  Util.code(indent+"     try { new "+getJavaIdentifier()+"(CTX$).STM(); }");
-	  Util.code(indent+"     catch($LABQNT q) { System.err.println(\"ERROR: Illegal GOTO \"+q); q.printStackTrace(); }");
-	  Util.code(indent+"     catch(Throwable t) { System.err.println(\"ERROR: \"+t.getMessage()); t.printStackTrace(); }");
-//	  Util.code(indent+"     System.out.println(\""+getJavaIdentifier()+" Terminates Normally\");");
-	  Util.code(indent+"   }"); // End of main
+	{ Util.code(indent,"");
+	  Util.code(indent,"   public static void main(String[] args) {");
+//	  Util.code(indent,"     System.out.println(\"Start Execution of "+getJavaIdentifier()+"\");");
+	  Util.code(indent,"     try { new "+getJavaIdentifier()+"(CTX$).STM(); }");
+	  Util.code(indent,"     catch($LABQNT q) { System.err.println(\"ERROR: Illegal GOTO \"+q); q.printStackTrace(); }");
+	  Util.code(indent,"     catch(Throwable t) { System.err.println(\"ERROR: \"+t.getMessage()); t.printStackTrace(); }");
+//	  Util.code(indent,"     System.out.println(\""+getJavaIdentifier()+" Terminates Normally\");");
+	  Util.code(indent,"   }"); // End of main
 	}
-	Util.code(indent+'}'); // End of Class
+	Util.code(indent,"}"); // End of Class
 	
 	Global.currentScope=declaredIn;
 	javaModule.closeJavaOutput();
@@ -584,55 +578,55 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // *** Coding Utility: doCodeConstructor
   // ***********************************************************************************************
-  private void doCodeConstructor(String indent)
-  {	Util.code(indent+"   // Normal Constructor");
+  private void doCodeConstructor(int indent)
+  {	Util.code(indent,"   // Normal Constructor");
 	String line="public "+getJavaIdentifier()+edFormalParameterList(false);
-	Util.code(indent+"   "+line);
+	Util.code(indent,"   "+line);
 	if(prefix!=null) 
 	{ BlockDeclaration prefixClass=this.getPrefix();
-	  Util.code(indent+"      "+"super"+prefixClass.edSuperParameterList());
-	} else Util.code(indent+"      "+"super(staticLink);");
-	Util.code(indent+"      // Parameter assignment to locals");
+	  Util.code(indent,"      "+"super"+prefixClass.edSuperParameterList());
+	} else Util.code(indent,"      "+"super(staticLink);");
+	Util.code(indent,"      // Parameter assignment to locals");
 	for(Parameter par:parameterList)
-//		  Util.code(indent+"      this."+par.externalIdent+" = par$"+par.identifier+';');
-		  Util.code(indent+"      this."+par.externalIdent+" = s"+par.externalIdent+';');	
+//		  Util.code(indent,"      this."+par.externalIdent+" = par$"+par.identifier+';');
+		  Util.code(indent,"      this."+par.externalIdent+" = s"+par.externalIdent+';');	
 	
 	switch(blockKind)
 	{ case Class:
 	  case PrefixedBlock:
 		  { if(this.isMainModule)
-			  Util.code(indent+"      "+"BPRG(\""+identifier+"\");");
+			  Util.code(indent,"      "+"BPRG(\""+identifier+"\");");
 		    else if(hasNoRealPrefix())
-			  Util.code(indent+"      BBLK(); // Iff no prefix");
+			  Util.code(indent,"      BBLK(); // Iff no prefix");
             break;
           }
 	  case SubBlock:
-	  case Procedure:    Util.code(indent+"      "+"BBLK();");
+	  case Procedure:    Util.code(indent,"      "+"BBLK();");
 		
 	  default: // Nothing
 	}
 
-	Util.code(indent+"      // Declaration Code");
-	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+"   ");
+	Util.code(indent,"      // Declaration Code");
+	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+1);
 	switch(blockKind)
 	{ case Class:
-	  case PrefixedBlock: doCodeCreateClassBody(indent+"      "); break;
-	  case Procedure: Util.code(indent+"      "+"STM();");		
+	  case PrefixedBlock: doCodeCreateClassBody(indent+2); break;
+	  case Procedure: Util.code(indent,"      "+"STM();");		
 	  default: // Nothing
 	}
-	Util.code(indent+"   "+'}'); // End of Constructor
+	Util.code(indent,"   "+'}'); // End of Constructor
   }
   
   
   // ***********************************************************************************************
   // *** Coding Utility: doCodePrepareFormal
   // ***********************************************************************************************
-  private void doCodePrepareFormal(String indent)
-  { Util.code(indent+"   // Parameter Transmission in case of Formal/Virtual Procedure Call");
-  	Util.code(indent+"   private int $npar=0; // Number of actual parameters transmitted.");
-  	Util.code(indent+"   public "+getJavaIdentifier()+" setPar(Object param)");
-  	Util.code(indent+"   { //Util.BREAK(\"CALL "+getJavaIdentifier()+".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$npar+\", staticLink=\"+SL$);");
-  	Util.code(indent+"     try { switch($npar++) {");
+  private void doCodePrepareFormal(int indent)
+  { Util.code(indent,"   // Parameter Transmission in case of Formal/Virtual Procedure Call");
+  	Util.code(indent,"   private int $npar=0; // Number of actual parameters transmitted.");
+  	Util.code(indent,"   public "+getJavaIdentifier()+" setPar(Object param)");
+  	Util.code(indent,"   { //Util.BREAK(\"CALL "+getJavaIdentifier()+".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$npar+\", staticLink=\"+SL$);");
+  	Util.code(indent,"     try { switch($npar++) {");
   	int npar=0;
   	for(Parameter par:parameterList)
   	{ String tp=par.toJavaType();
@@ -645,22 +639,22 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   	  else if(par.type.isArithmeticType()) typeValue=(tp+"Value(param)");
 //  	  else typeValue=("("+tp+")param");
   	  else typeValue=("("+tp+")objectValue(param)");
-//  	  Util.code(indent+" 	      case "+(npar++)+": "+par.identifier+"="+typeValue+"; break;");
-  	  Util.code(indent+" 	      case "+(npar++)+": "+par.externalIdent+"="+typeValue+"; break;");
+//  	  Util.code(indent," 	      case "+(npar++)+": "+par.identifier+"="+typeValue+"; break;");
+  	  Util.code(indent," 	      case "+(npar++)+": "+par.externalIdent+"="+typeValue+"; break;");
     }
-  	Util.code(indent+" 	      default: throw new RuntimeException(\"Wrong number of parameters\");");
-  	Util.code(indent+"     } } catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+$npar+\" \"+param,e);}");
-  	Util.code(indent+"     return(this);");
-  	Util.code(indent+"   }");
-  	Util.code(indent+"   // Constructor in case of Formal/Virtual Procedure Call");
-  	Util.code(indent+"   public "+getJavaIdentifier()+"(RTObject$ staticLink)");
-  	Util.code(indent+"   { super(staticLink); }");
+  	Util.code(indent," 	      default: throw new RuntimeException(\"Wrong number of parameters\");");
+  	Util.code(indent,"     } } catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+$npar+\" \"+param,e);}");
+  	Util.code(indent,"     return(this);");
+  	Util.code(indent,"   }");
+  	Util.code(indent,"   // Constructor in case of Formal/Virtual Procedure Call");
+  	Util.code(indent,"   public "+getJavaIdentifier()+"(RTObject$ staticLink)");
+  	Util.code(indent,"   { super(staticLink); }");
   }
 
   // ***********************************************************************************************
   // *** Coding Utility: doCodeStatements
   // ***********************************************************************************************
-  private void doCodeStatements(String indent)
+  private void doCodeStatements(int indent)
   {	switch(blockKind)
 	{ case SubBlock:  codeSubBlockCode(indent); break;
 	  case Procedure: codeProcedureBody(indent); break;
@@ -674,11 +668,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // *** Coding Utility: codeClassStatements
   // ***********************************************************************************************
-  private void codeClassStatements(String indent)
-  {	Util.code(indent+"   // Class Statements");
+  private void codeClassStatements(int indent)
+  {	Util.code(indent,"   // Class Statements");
   String classID=this.getJavaIdentifier();
-  Util.code(indent+"   public "+classID+" STM() { return(("+classID+")CODE$.EXEC$()); }");
-  Util.code(indent+"   public "+classID+" START() { START(this); return(this); }");
+  Util.code(indent,"   public "+classID+" STM() { return(("+classID+")CODE$.EXEC$()); }");
+  Util.code(indent,"   public "+classID+" START() { START(this); return(this); }");
   
 
   }
@@ -686,85 +680,85 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // *** Coding Utility: codeProgramCode
   // ***********************************************************************************************
-  private void codeProgramCode(String indent)
-  {	Util.code(indent+"   // SimulaProgram Statements");
-	Util.code(indent+"   public RTObject$ STM() {");
-	Util.code(indent+"      BPRG(\""+identifier+"\");");
+  private void codeProgramCode(int indent)
+  {	Util.code(indent,"   // SimulaProgram Statements");
+	Util.code(indent,"   public RTObject$ STM() {");
+	Util.code(indent,"      BPRG(\""+identifier+"\");");
   
    	codeSTMBody(indent);
-    Util.code(indent+"      EBLK();");
+    Util.code(indent,"      EBLK();");
   
-	Util.code(indent+"      "+"return(null);");
-	Util.code(indent+"   }"); // End of SimulaProgram Statements
+	Util.code(indent,"      "+"return(null);");
+	Util.code(indent,"   }"); // End of SimulaProgram Statements
   }
   
   // ***********************************************************************************************
   // *** Coding Utility: codeSubBlockCode
   // ***********************************************************************************************
-  private void codeSubBlockCode(String indent)
-  {	Util.code(indent+"   // SubBlock Statements");
-	Util.code(indent+"   public RTObject$ STM() {");
+  private void codeSubBlockCode(int indent)
+  {	Util.code(indent,"   // SubBlock Statements");
+	Util.code(indent,"   public RTObject$ STM() {");
     codeSTMBody(indent);
-    Util.code(indent+"      EBLK();");
-	Util.code(indent+"      return(null);");
-    Util.code(indent+"   }"); // End of SubBlock Statements
+    Util.code(indent,"      EBLK();");
+	Util.code(indent,"      return(null);");
+    Util.code(indent,"   }"); // End of SubBlock Statements
 	}
   
   // ***********************************************************************************************
   // *** Coding Utility: codeProcedureBody  -- Redefined in SwitchDeclaration
   // ***********************************************************************************************
-  public void codeProcedureBody(String indent)
-  {	Util.code(indent+"   // Procedure Statements");
-    Util.code(indent+"   public "+getJavaIdentifier()+" STM() {");
+  public void codeProcedureBody(int indent)
+  {	Util.code(indent,"   // Procedure Statements");
+    Util.code(indent,"   public "+getJavaIdentifier()+" STM() {");
    	codeSTMBody(indent);
-    Util.code(indent+"      EBLK();");
-    Util.code(indent+"      return(this);");
-    Util.code(indent+"   } // End of Procedure BODY");
+    Util.code(indent,"      EBLK();");
+    Util.code(indent,"      return(this);");
+    Util.code(indent,"   } // End of Procedure BODY");
    	}
   
   // ***********************************************************************************************
   // *** Coding Utility: doCodeCreateClassBody
   // ***********************************************************************************************
-  public void doCodeCreateClassBody(String indent)
-  {	Util.code(indent+"// Create Class Body");
-	Util.code(indent+"CODE$=new ClassBody(CODE$,this) {");
-	Util.code(indent+"   public void STM() {");
+  public void doCodeCreateClassBody(int indent)
+  {	Util.code(indent,"// Create Class Body");
+	Util.code(indent,"CODE$=new ClassBody(CODE$,this) {");
+	Util.code(indent,"   public void STM() {");
 	
 //    for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
    	codeSTMBody(indent);
     
 	if(hasNoRealPrefix())
-		  Util.code(indent+"      EBLK(); // Iff no prefix");
+		  Util.code(indent,"      EBLK(); // Iff no prefix");
 	else if(this.isMainModule)
-		Util.code(indent+"      "+"EBLK();");
-	Util.code(indent+"}};");  
+		Util.code(indent,"      "+"EBLK();");
+	Util.code(indent,"}};");  
   }
 
   // ***********************************************************************************************
   // *** Coding Utility: codeSTMBody
   // ***********************************************************************************************
-  private void codeSTMBody(String indent)
+  private void codeSTMBody(int indent)
   {	if(!labelList.isEmpty())
-	{ Util.code(indent+"       "+externalIdent+" THIS$=("+externalIdent+")CUR$;");
-      Util.code(indent+"       LOOP$:while($LX>=0)");
-      Util.code(indent+"       { try {");
+	{ Util.code(indent,"       "+externalIdent+" THIS$=("+externalIdent+")CUR$;");
+      Util.code(indent,"       LOOP$:while($LX>=0)");
+      Util.code(indent,"       { try {");
 	}
-    doCodeJumpTable(indent+"         "); // Prepare for goto-engineering.
-    for(Statement stm:statements) stm.doJavaCoding(indent+"         ");
+    doCodeJumpTable(indent+3); // Prepare for goto-engineering.
+    for(Statement stm:statements) stm.doJavaCoding(indent+3);
 	if(!labelList.isEmpty())
-    { Util.code(indent+"         break LOOP$;");
-      Util.code(indent+"       }");
-      Util.code(indent+"       catch($LABQNT q) {");
-      Util.code(indent+"           CUR$=THIS$;");
-      Util.code(indent+"           if(q.SL$!=CUR$)");
-      Util.code(indent+"           { CUR$.STATE$=OperationalState.terminated;");
-      Util.code(indent+"             if(GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
-      Util.code(indent+"             throw(q);");
-      Util.code(indent+"           }");
-      Util.code(indent+"           if(GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
-      Util.code(indent+"           $LX=q.index; continue LOOP$; // EG. GOTO Lx"); 
-      Util.code(indent+"       }");
-      Util.code(indent+"     }");
+    { Util.code(indent,"         break LOOP$;");
+      Util.code(indent,"       }");
+      Util.code(indent,"       catch($LABQNT q) {");
+      Util.code(indent,"           CUR$=THIS$;");
+      Util.code(indent,"           if(q.SL$!=CUR$)");
+      Util.code(indent,"           { CUR$.STATE$=OperationalState.terminated;");
+      Util.code(indent,"             if(GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
+      Util.code(indent,"             throw(q);");
+      Util.code(indent,"           }");
+      Util.code(indent,"           if(GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
+      Util.code(indent,"           $LX=q.index; continue LOOP$; // EG. GOTO Lx"); 
+      Util.code(indent,"       }");
+      Util.code(indent,"     }");
     }
   }
   
@@ -783,16 +777,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   // *** Coding Utility: doCodeJumpTable
   // ***********************************************************************************************
-  public void doCodeJumpTable(String indent)
+  public void doCodeJumpTable(int indent)
   {	if(labelList.isEmpty()) return;
-	Util.code(indent+"switch($LX) {");
+	Util.code(indent,"switch($LX) {");
 	for(LabelDeclaration label:labelList)
-//		Util.code(indent+"   case "+label.index+": /* Label:"+label.identifier+" */ break;");
-//		Util.code(indent+"   case "+label.index+": JUMP("+label.index+','+label.identifier+"); break;");
-//		Util.code(indent+"   case "+label.index+": JUMP("+label.index+','+label.index+"); break;");
-		Util.code(indent+"   case "+label.index+": JUMP("+label.index+"); break;");
-	Util.code(indent+"   default:");
-	Util.code(indent+"}"); // End of main
+//		Util.code(indent,"   case "+label.index+": /* Label:"+label.identifier+" */ break;");
+//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.identifier+"); break;");
+//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.index+"); break;");
+		Util.code(indent,"   case "+label.index+": JUMP("+label.index+"); break;");
+	Util.code(indent,"   default:");
+	Util.code(indent,"}"); // End of main
   }
   
 

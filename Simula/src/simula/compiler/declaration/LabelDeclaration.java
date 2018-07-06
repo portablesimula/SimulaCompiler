@@ -30,10 +30,10 @@ public class LabelDeclaration extends TypeDeclaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
-		Util.code(indent+"final $LABQNT "+ident+"=new $LABQNT(this,"+index+"); // Local Label #"+index+'='+ident);
+		Util.code(indent,"final $LABQNT "+ident+"=new $LABQNT(this,"+index+"); // Local Label #"+index+'='+ident);
 	}
 
 }

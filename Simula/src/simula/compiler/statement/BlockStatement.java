@@ -37,7 +37,7 @@ public class BlockStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 
@@ -60,7 +60,7 @@ public class BlockStatement extends Statement {
 		  if(blockDeclaration.isDetachUsed()) 
 			   s.append(".START();");
 		  else s.append(".STM();");
-		  Util.code(indent+s.toString());
+		  Util.code(indent,s.toString());
 		}
 		blockDeclaration.doJavaCoding(indent);
 	}

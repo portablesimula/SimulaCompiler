@@ -64,22 +64,22 @@ public class SwitchDeclaration extends BlockDeclaration // Declaration
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeSwitchBody
 	// ***********************************************************************************************
-	public void codeProcedureBody(String indent) {
-		Util.code(indent + "   // Switch Body");
-		Util.code(indent + "   public " + getJavaIdentifier() + " STM() {");
-		Util.code(indent + "      switch(p$$SW-1) {");
+	public void codeProcedureBody(int indent) {
+		Util.code(indent,"   // Switch Body");
+		Util.code(indent,"   public " + getJavaIdentifier() + " STM() {");
+		Util.code(indent,"      switch(p$$SW-1) {");
 		int n = 0;
 		for (Expression expr : ((SwitchDeclaration) this).switchList) {
 			// Util.BREAK("BlockDeclaration.doCodeSwitchBody: expr="+expr+", Type="+expr.type+", Qual="+expr.getClass().getSimpleName());
 			Expression labQuant = TypeConversion.testAndCreate(Type.Label, expr); // TODO: MÅ SJEKKES - ER DETTE NØDVENDIG ?
 			labQuant.doChecking();
-			Util.code(indent + "        case " + (n++) + ": $result=" + labQuant.toJavaCode() + "; break;");
+			Util.code(indent,"        case " + (n++) + ": $result=" + labQuant.toJavaCode() + "; break;");
 		}
-		Util.code(indent + "        default: throw new RuntimeException(\"Illegal switch index: \"+p$$SW);");
-		Util.code(indent + "      }");
-		Util.code(indent + "      EBLK();");
-		Util.code(indent + "      return(this);");
-		Util.code(indent + "   } // End of Switch BODY");
+		Util.code(indent,"        default: throw new RuntimeException(\"Illegal switch index: \"+p$$SW);");
+		Util.code(indent,"      }");
+		Util.code(indent,"      EBLK();");
+		Util.code(indent,"      return(this);");
+		Util.code(indent,"   } // End of Switch BODY");
 	}
 
 	public String toString() {

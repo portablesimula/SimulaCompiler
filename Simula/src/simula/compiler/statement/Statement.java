@@ -101,10 +101,10 @@ public abstract class Statement extends SyntaxClass {
 		return(new DummyStatement());
 	}
 
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		Util.code(indent + toJavaCode() + ';');
+		Util.code(indent,toJavaCode() + ';');
 	}
 
 }

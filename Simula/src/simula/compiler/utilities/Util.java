@@ -44,9 +44,10 @@ public class Util
   { if(Option.WARNINGS) System.err.println("LINE "+Global.sourceLineNumber+": WARNING: "+msg); }
 
   private static int prevLineNumber=0;
-  public static void code(String s) { 
+  public static void code(int indent,String line) {
 	  ASSERT(Global.sourceLineNumber>0,"Invariant");
 	  String s0=null;
+	  String s=edIndent(indent)+line;
 	  if(prevLineNumber!=Global.sourceLineNumber)
 	  { String leadingBlanks="                          ";
 	    s0=leadingBlanks+"// SourceLine "+Global.sourceLineNumber;
@@ -61,6 +62,11 @@ public class Util
 			e.printStackTrace();
 	  }
 	  prevLineNumber=Global.sourceLineNumber;
+  }
+  private static String edIndent(int indent)
+  { String s="";
+	while((indent--)>0) s=s+"    ";
+	return(s);  
   }
 
   public static void LIST(String msg) { TRACE("LIST",msg); }

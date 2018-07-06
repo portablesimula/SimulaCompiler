@@ -42,17 +42,17 @@ public class GotoStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber = lineNumber;
 		//Util.BREAK("GotoStatement.doJavaCoding: label=" + label + ", qual=" + label.getClass().getSimpleName());
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (Option.standardClass) {
-			Util.code(indent + "GOTO(" + label + "); // GOTO QUASI LABEL");
+			Util.code(indent,"GOTO(" + label + "); // GOTO QUASI LABEL");
 			return;
 		}
 		Type type = label.type;
 		Util.ASSERT(type == Type.Label, "Invariant");
-		Util.code(indent + "GOTO(" + label.toJavaCode() + "); // GOTO EVALUATED LABEL");
+		Util.code(indent,"GOTO(" + label.toJavaCode() + "); // GOTO EVALUATED LABEL");
 	}
 
 	public String toString() {

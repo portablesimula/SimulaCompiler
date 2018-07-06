@@ -68,9 +68,9 @@ public class StandaloneExpression extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 	
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
-		Util.code(indent + toJavaCode() + ';');
+		Util.code(indent,toJavaCode() + ';');
 	}
 
 	public String toJavaCode() {

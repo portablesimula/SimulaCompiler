@@ -49,16 +49,13 @@ public class LabeledStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		for (String label:labels) {
 			Meaning meaning = Global.currentScope.findMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-//			String line = label + "=new LABEL("+decl.index+",\"" + label + "\");";
-//			//Util.BREAK("Statement.doLabelCoding: " + line);
-//			Util.code(indent + line);
-			Util.code(indent + "LABEL("+decl.index+"); // "+decl.identifier);
+			Util.code(indent,"LABEL("+decl.index+"); // "+decl.identifier);
 		}
 		statement.doJavaCoding(indent);
 	}

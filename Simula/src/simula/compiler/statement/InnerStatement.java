@@ -18,18 +18,15 @@ import simula.compiler.utilities.Util;
  */
 public class InnerStatement extends Statement {
 
-//	public InnerStatement() {
-//	}
-
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		SET_SEMANTICS_CHECKED();
 	}
 	
-	public void doJavaCoding(String indent) {
+	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
-		Util.code(indent + "if(inner!=null) inner.STM();");
+		Util.code(indent,"if(inner!=null) inner.STM();");
 	}
 
 	public void print(String indent, String tail) {

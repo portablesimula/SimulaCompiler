@@ -121,7 +121,7 @@ public class Virtual extends Declaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(String indent)
+	public void doJavaCoding(int indent)
 	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
   	  // public $PRCQNT P() { return(new $PRCQNT(this,VirtualSample$SubBlock9$P.class)); }
@@ -129,7 +129,7 @@ public class Virtual extends Declaration {
 	  String quantity=(kind==Kind.Label)?"$LABQNT ":"$PRCQNT ";
 	  String matchCode="{ throw new RuntimeException(\"No Virtual Match\"); }";
 	  if(match!=null) matchCode="{ return(new $PRCQNT(this,"+match.getJavaIdentifier()+".class)); }";
-	  Util.code(indent+"public "+quantity+getJavaIdentifier()+"() "+matchCode);
+	  Util.code(indent,"public "+quantity+getJavaIdentifier()+"() "+matchCode);
 	}
 	
 	public String toString()

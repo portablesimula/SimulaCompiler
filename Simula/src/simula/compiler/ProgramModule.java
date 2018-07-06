@@ -100,7 +100,7 @@ public class ProgramModule extends Statement
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(String indent) { module.doJavaCoding(indent); }
+  public void doJavaCoding(int indent) { module.doJavaCoding(indent); }
   public void doJVMCoding() { module.doJVMCoding(); }
   public void print(String indent,String tail) { module.print("",tail); }
   public String toString() { return(""+module); }
