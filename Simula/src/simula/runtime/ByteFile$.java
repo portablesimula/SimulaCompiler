@@ -40,9 +40,12 @@ public class ByteFile$ extends FILE$ {
 	// Constructor
     public ByteFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
+ 	  TRACE_BEGIN_DCL$();
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
+       	    TRACE_BEGIN_STM$(inner);
             if(inner!=null) inner.STM();
+            TRACE_END_STM$();
       }};
     }
     // Class Statements

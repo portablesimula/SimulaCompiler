@@ -104,7 +104,6 @@ public abstract class CLASS$ extends RTObject$ {
 		    dl=ins.DL$; ins.DL$=CUR$; CUR$=dl;
 		}
 		Util.ASSERT(CUR$.DL$!=CUR$,"Invariant");
-		updateContextVector();
 	    if(QPS_TRACING) TRACE("END DETACH "+edString());
 	    swapThreads(ins.DL$);
 	  }

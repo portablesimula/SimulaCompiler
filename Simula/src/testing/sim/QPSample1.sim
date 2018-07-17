@@ -1,7 +1,3 @@
-
-%INCLUDE_QPS
-%QUALIFIEDNAMES
-
 begin
    ref(C)  x;
 
@@ -9,7 +5,7 @@ begin
    begin
       x:-new C();
       ! - - - ;
-      outtext("In Procedure Q - Just Before first Resume(x)"); Outimage;
+      outtext("In Procedure P - Just Before first Resume(x)"); Outimage;
       resume(x);
    end;
 
@@ -30,6 +26,22 @@ begin
       ! - - - ;
    end;
    ! - - - ;
+   
+   outtext("-----------------------------------------"); outimage;
+   outtext("Simple QPS-Sample1 -- Expected Output:"); outimage;
+   outtext("-----------------------------------------"); outimage;
+   outtext("In Block - Just Before call procedure P"); Outimage;
+   outtext("In Procedure Q - Just Before first Detach"); outimage;
+   outtext("In Procedure P - Just Before first Resume(x)"); Outimage;
+   outtext("In Procedure Q - Just Before second Detach"); outimage;
+   outtext("In Block - Just Before final END"); Outimage;
+   outtext("-----------------------------------------"); outimage;
+   outtext("Simple QPS-Sample1 -- Actual Output:"); outimage;
+   outtext("-----------------------------------------"); outimage;
+   
+   
+   outtext("In Block - Just Before call procedure P"); Outimage;
    P;
    ! - - - ;
+   outtext("In Block - Just Before final END"); Outimage;
 end;

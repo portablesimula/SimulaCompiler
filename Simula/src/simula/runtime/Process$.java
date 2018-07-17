@@ -7,6 +7,8 @@
  */
 package simula.runtime;
 
+import simula.compiler.utilities.Util;
+
 /**
  * <pre>
  * link class process;
@@ -76,14 +78,15 @@ public class Process$ extends Link$ {
 	// Constructor
 	public Process$(RTObject$ staticLink) {
 		super(staticLink);
+		TRACE_BEGIN_DCL$();
 		sequ = SEQU++;
 		CODE$ = new ClassBody(CODE$, this) {
 			public void STM() {
-				// Util.BREAK("Process$ Before INNER");
+				TRACE_BEGIN_STM$(inner);
 				detach();
 				if (inner != null)
 					inner.STM();
-				// Util.BREAK("Process$ After INNER");
+				TRACE_END_STM$();
 				TERMINATED$ = true;
 				((Simulation$) SL$).passivate();
 				throw new RuntimeException("INTERNAL error:  Process passes through final end.");

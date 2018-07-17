@@ -56,10 +56,13 @@ public class InFile$ extends ImageFile$ {
 	// Constructor
    public InFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
+ 	  TRACE_BEGIN_DCL$();
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
+       	    TRACE_BEGIN_STM$(inner);
             ENDFILE$=true;
             if(inner!=null) inner.STM();
+            TRACE_END_STM$();
       }};
    }
    // Class Statements

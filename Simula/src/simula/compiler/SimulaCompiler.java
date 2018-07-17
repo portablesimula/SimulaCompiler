@@ -13,21 +13,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 
 import org.apache.bcel.classfile.JavaClass;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
-import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;

@@ -52,15 +52,18 @@ public class FILE$ extends CLASS$ {
 	// Constructor
    public FILE$(RTObject$ staticLink,TXT$ FILENAME$) {
       super(staticLink);
+      BBLK(); // Iff no prefix
+ 	  TRACE_BEGIN_DCL$();
       this.FILENAME$ = FILENAME$;
       // Create Class Body
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
-            BBLK(); // Iff no prefix
+       	    TRACE_BEGIN_STM$(inner);
             if(FILENAME$==null) {
     			throw new RuntimeException("Illegal File Name");
             }
             if(inner!=null) inner.STM();
+            TRACE_END_STM$();
             EBLK(); // Iff no prefix
       }};
    }

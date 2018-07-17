@@ -39,7 +39,7 @@ Begin
       Trace("NEW "&ident&" BEGIN",15);
    End;
 
-   Procedure P(msg,y); Name y; text msg Ref(A)y;
+   Procedure P(msg,y); Name y; text msg; Ref(A)y;
    Begin
    Trace("P("&msg&") BEGIN",2);
     Q("y.i",y.i)

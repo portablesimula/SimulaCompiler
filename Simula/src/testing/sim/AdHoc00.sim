@@ -1,10 +1,19 @@
-begin
-   Class A (L, I); Integer L,I;
-   begin L:=56; end;
-   A Class B (L, I); Integer L,I;
-   begin L:=78; end;
-   B Class C (L, I); Integer L,I;
-   begin L:=78; end;
-   
-   new C(1,2,3,4,5,6);
-end of program;
+BEGIN
+
+   procedure trace(t); value t; text t; begin
+      outtext(t); outimage;
+   end trace;
+
+
+   ref(Y) yy;
+
+   class Y; begin
+      trace("new Y");        detach;
+   end Y;
+
+
+   Outtext ("--- START AD'HOC 00"); Outimage;
+
+   yy :- new Y;
+
+ END

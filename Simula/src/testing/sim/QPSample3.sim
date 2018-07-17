@@ -1,81 +1,54 @@
-
-%INCLUDE_QPS
-%QUALIFIEDNAMES
-
 begin
-   Text t;
-   Integer nA,nB;
-   
-   Text Procedure edIdent(id,n); Character id; Integer n;
-   begin Text t; t:-Copy("(Xn)");
-         t.sub(2,1).putChar(id);
-         t.sub(3,1).putChar(Char(Rank('0')+n));
-         edIdent:-t;
-   end;
 
    Procedure Print (msg); Text msg;
    begin OutText(msg); Outimage; end;
-   Ref (A) x;
-   Ref (B) y;
+   
+   Ref (A) x,y;
 
-   Class A;
-   Begin Real array X(P:1);
-         Integer ord;
-         Text procedure id; begin id:-edIdent('A',ord); end;
-         ord:=nA:=nA+1;
-         Print("Event A-1: Just Before First Detach in " & id);
+   Class A(id); text id;
+   Begin Print("Event A(" & id & ")-1: Just Before First Detach");
          Detach;
-          Print ("B");
-         Print("Event A-2: Just Before Second Detach in " & edIdent('A',ord));
+         Print("Event A(" & id & ")-2: Just Before Second Detach");
          Detach;
-          Print ("F");
-         Print("Event A-3: Just Before Final-END in " & edIdent('A',ord));
-   End;
-
-   Class B;
-   Begin Real array X(P:1);
-         Integer ord;
-         Text procedure id; begin id:-edIdent('B',ord); end;
-         ord:=nB:=nB+1;
-         Print("Event B-1: Just Before First Detach in " & id);
-         Detach; Print ("G");
-         Print("Event B-2: Just Before Second Detach in " & edIdent('B',ord));
-         Detach; Print ("H");
-         Print("Event B-3: Just Before Final-END in " & edIdent('B',ord));
-   End;
-
-   Real Procedure P;
-   Begin 
-         Outtext("Event P-1: Just Before First Resume: ");
-         Outtext(" x="); outtext(if x=/= none then x.id else "none");
-         Outtext(" y="); outtext(if y=/= none then y.id else "none");
-         Outimage;
-         
-         If x=/=none then
+         if(y=/=none) then
          begin
-            Print("Event P-2: Just Before First Resume: " & x.id);
-            Resume(x);
+            Print("Event A(" & id & ")-3: Just Before Resume(y)");
+            resume(y);
          end;
-         Print ("C");
-         If y=/=none then
-         begin
-            Print("Event P-3: Just Before Second Resume: " & y.id);
-            Resume(y);
-         end;
-         Print ("D");
+         Print("Event A(" & id & ")-4: Just Before Final-END");
    End;
 
+
+   Print("--------------------------------------") ;
    Print("--- Test resume and detach.") ;
-   nA:=0; nB:=0;
+   Print("--------------------------------------") ;
+   Print("Expected Output:") ;
+   Print("--------------------------------------") ;
+   Print("Event 1: Just Before x:-New A") ;
+   Print("Event A(x)-1: Just Before First Detach") ;
+   Print("Event 2: Just Before y:-New A") ;
+   Print("Event A(y)-1: Just Before First Detach") ;
+   Print("Event 3: Just Before first Resume(x)") ;
+   Print("Event A(x)-2: Just Before Second Detach") ;
+   Print("Event 4: Just Before second Resume(x)") ;
+   Print("Event A(x)-3: Just Before Resume(y)") ;
+   Print("Event A(y)-2: Just Before Second Detach") ;
+   Print("Event x: Just Before final END") ;
+   Print("--------------------------------------") ;
+   Print("Actual Output:") ;
+   Print("--------------------------------------") ;
 
-   Print("Event 1: Just Before New A");
-   x:- New A;
-   Print("Event 2: Just Before New B(1)");
-   y:- New B;
-   Print("Event 1: Just Before New B(2)");
-   y:- New B;
-   x:- none; x:- New A;
-   Print("Event 1: Just Before Resume(y)");
-   Resume(y);
+
+
+   Print("Event 1: Just Before x:-New A");
+   x:- New A("x");
+   Print("Event 2: Just Before y:-New A");
+   y:- New A("y");
+   Print("Event 3: Just Before first Resume(x)");
+   Resume(x);
+   Print("Event 4: Just Before second Resume(x)");
+   Resume(x);
+   Print("Event x: Just Before final END");
+   Print("--------------------------------------") ;
 
 end;

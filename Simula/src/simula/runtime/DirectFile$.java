@@ -100,10 +100,13 @@ public class DirectFile$ extends ImageFile$ {
 	// Constructor
     public DirectFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
+   	  TRACE_BEGIN_DCL$();
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
+          	TRACE_BEGIN_STM$(inner);
     		// ENDFILE$ = true; // ENDFILE is maintained by the underlying file system.
             if(inner!=null) inner.STM();
+            TRACE_END_STM$();
       }};
     }
     // Class Statements

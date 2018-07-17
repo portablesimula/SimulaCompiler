@@ -19,6 +19,7 @@ BEGIN
    procedure trace(t); value t; text t; begin
       seqi := seqi + 1;
       seq (seqi) :- t;
+%      outtext(t); outimage;
    end trace;
 
 

@@ -79,7 +79,8 @@ public class ConnectionBlock extends DeclarationScope
    	Global.sourceLineNumber=lineNumber;
 	
     // Set External Identifier
- 	externalIdent=inspectedVariable.toJavaCode();
+// 	externalIdent=inspectedVariable.toJavaCode();
+ 	externalIdent=inspectedVariable.identifier+'$'+lineNumber;
 
  	Global.currentScope=this;	
     blockLevel=currentBlockLevel;

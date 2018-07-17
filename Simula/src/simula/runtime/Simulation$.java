@@ -99,15 +99,19 @@ public class Simulation$ extends Simset$ {
 	// Constructor
 	public Simulation$(RTObject$ staticLink) {
 		super(staticLink);
+		TRACE_BEGIN_DCL$();
 		// Create Class Body
 		CODE$ = new ClassBody(CODE$, this) {
 			public void STM() {
+				TRACE_BEGIN_STM$(inner);
 				SQS = (Head$) new Head$(Simulation$.this).STM();
 				main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START();
-				main.EVENT = new EVENT_NOTICE$((Simulation$) CUR$, 0, main);
+				main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM();
+	        	//Util.BREAK("GOT NEW EVENT_NOTICE: "+main.EVENT);
 				main.EVENT.into(SQS);
 				if (inner != null)
 					inner.STM();
+				TRACE_END_STM$();
 			}
 		};
 	}
@@ -195,7 +199,7 @@ public class Simulation$ extends Simset$ {
 			else if (X.EVENT != null)
 				return;
 			z = current();
-			X.EVENT = new EVENT_NOTICE$(this, (float) time(), X);
+			X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) time(), X).STM();
 			X.EVENT.precede(FIRSTEV());
 			if (EV != null) {
 				EV.out();
@@ -229,7 +233,7 @@ public class Simulation$ extends Simset$ {
 			z = current();
 			if (T < time())
 				T = time();
-			X.EVENT = new EVENT_NOTICE$(this, (float) T, X);
+			X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) T, X).STM();
 			if (T == time() && PRIO)
 				X.EVENT.precede(FIRSTEV());
 			else
@@ -275,7 +279,7 @@ public class Simulation$ extends Simset$ {
 			else {
 				if (X == Y)
 					return; // reactivate X before/after X;
-				X.EVENT = new EVENT_NOTICE$(this, (float) Y.EVENT.EVTIME, X);
+				X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) Y.EVENT.EVTIME, X).STM();
 				if (BEFORE)
 					X.EVENT.precede(Y.EVENT);
 				else

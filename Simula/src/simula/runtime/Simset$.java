@@ -42,12 +42,13 @@ public class Simset$ extends CLASS$ {
 	// Constructor
     public Simset$(RTObject$ staticLink) {
       super(staticLink);
+      BBLK(); // Iff no prefix
+ 	  TRACE_BEGIN_DCL$();
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
-            BBLK(); // Iff no prefix
-        	//Util.BREAK("Simset$ Before INNER");
+       	    TRACE_BEGIN_STM$(inner);
             if(inner!=null) inner.STM();
-        	//Util.BREAK("Simset$ After INNER");
+            TRACE_END_STM$();
             EBLK(); // Iff no prefix
       }};
     }

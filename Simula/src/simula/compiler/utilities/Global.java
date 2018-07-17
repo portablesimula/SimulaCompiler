@@ -38,7 +38,6 @@ public class Global {
 //	public static String packetName = "simula.test";
 	public static String packetName = "testing";
 	
-	public static boolean USE_CONTEXT_VECTOR=false;//true;  // Check same switch in RTObject$
 	public static boolean OVERLOADING=true; // TODO: Temp implementation of Overloading
 	public static boolean ROUNDING=true;//false; // TODO: Temp implementation of real to integer rounding
 

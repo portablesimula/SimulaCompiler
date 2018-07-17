@@ -55,9 +55,11 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findMeaning
   // ***********************************************************************************************
   public Meaning findMeaning(String identifier)
-  {	//Util.BREAK("DeclarationScope("+identifier+").findDefinition("+identifier+"): scope="+declaredIn);
+  { //if(identifier.equalsIgnoreCase("adHoc00"))  Util.BREAK("DeclarationScope("+identifier+").findMeaning("+identifier+"): scope="+declaredIn);
 	Meaning meaning=findVisibleAttributeMeaning(identifier);
+	//if(identifier.equalsIgnoreCase("adHoc00"))  Util.BREAK("DeclarationScope("+identifier+").findMeaning("+identifier+"): meaning1="+meaning);
 	if(meaning==null && declaredIn!=null) meaning=declaredIn.findMeaning(identifier);
+	//if(identifier.equalsIgnoreCase("adHoc00"))  Util.BREAK("DeclarationScope("+identifier+").findMeaning("+identifier+"): meaning1="+meaning);
 	if(meaning==null) Util.error("Undefined variable: "+identifier);
     return(meaning);
   }
@@ -98,6 +100,7 @@ public abstract class DeclarationScope extends Declaration {
    	    { if(!withinScope(this)) behindProtected=prtected=true;
    	      break;
     	}
+    //Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): prtected="+prtected);
     if(!prtected)
     { for(Parameter parameter:parameterList)
         if(ident.equalsIgnoreCase(parameter.identifier))
@@ -112,7 +115,7 @@ public abstract class DeclarationScope extends Declaration {
 	    if(ident.equalsIgnoreCase(virtual.identifier))
 	    	return(new Meaning(Variable.Kind.virtual,virtual,this,this,behindProtected)); 
     }
-    //Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+    Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
     BlockDeclaration prfx=getPrefix();
     if(prfx!=null)
     { Meaning meaning=prfx.findRemoteAttributeMeaning(ident,behindProtected);
@@ -144,11 +147,11 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findVisibleAttributeMeaning
   // ***********************************************************************************************
   public Meaning findVisibleAttributeMeaning(String ident)
-  { //if(ident.equalsIgnoreCase("pa"))Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+  { //if(ident.equalsIgnoreCase("adHoc00"))Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
 	boolean searchBehindHidden=false;
 	DeclarationScope scope=this;
 	SEARCH:while(scope!=null)
-    { //if(ident.equalsIgnoreCase("pa")) Util.BREAK("DeclarationScope("+scope+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+    { //if(ident.equalsIgnoreCase("adHoc00")) Util.BREAK("DeclarationScope("+scope+").findVisibleAttributeMeaning("+ident+"): scope="+scope);
 //	  for(Parameter parameter:scope.parameterList)
 //      if(ident.equalsIgnoreCase(parameter.identifier))
 //        { DeclarationScope hiddenScope=scope.getHidden(ident);
@@ -179,6 +182,7 @@ public abstract class DeclarationScope extends Declaration {
           if(hiddenScope==null)	return(new Meaning(Variable.Kind.virtual,virtual,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
+      
       if(scope.getHidden(ident)==null) scope=scope.getPrefix();
       else { scope=scope.getScopeBehindHidden(ident); searchBehindHidden=true; }
 	}
@@ -257,21 +261,17 @@ public abstract class DeclarationScope extends Declaration {
   {
 	if(blockLevel==0) return("CTX$");
 //    if(blockLevel==1) return("PRG$");  // TODO: Eget navn for hver separat kompilering -- eller ???
-    if(Global.USE_CONTEXT_VECTOR)
-    { if(blockLevel==Global.currentScope.blockLevel) return("CUR$"); // DENNE ER NY
-      return("CV$["+blockLevel+"]");
-    } else {
-        int curLevel=Global.currentScope.blockLevel;
-//        Util.BREAK("DeclarationScope.edCTX: Current="+Global.currentScope);
-//        Util.BREAK("DeclarationScope.edCTX: Current'Qual="+Global.currentScope.getClass().getSimpleName());
-//        Util.BREAK("DeclarationScope.edCTX: Current'BlockLevel="+curLevel);
-//        Util.BREAK("DeclarationScope.edCTX: Current'Enc'BlockLevel="+Global.currentScope.declaredIn.blockLevel);
-        Util.ASSERT(curLevel >= Global.currentScope.declaredIn.blockLevel,"Invariant");
-        if(blockLevel==curLevel) return("CUR$");
-        String ret="CUR$";
-        while(blockLevel<(curLevel--)) ret=ret+".SL$";
-    	return("("+ret+')');
-    }
+	
+    int curLevel=Global.currentScope.blockLevel;
+//    Util.BREAK("DeclarationScope.edCTX: Current="+Global.currentScope);
+//    Util.BREAK("DeclarationScope.edCTX: Current'Qual="+Global.currentScope.getClass().getSimpleName());
+//    Util.BREAK("DeclarationScope.edCTX: Current'BlockLevel="+curLevel);
+//    Util.BREAK("DeclarationScope.edCTX: Current'Enc'BlockLevel="+Global.currentScope.declaredIn.blockLevel);
+    Util.ASSERT(curLevel >= Global.currentScope.declaredIn.blockLevel,"Invariant");
+    if(blockLevel==curLevel) return("CUR$");
+    String ret="CUR$";
+    while(blockLevel<(curLevel--)) ret=ret+".SL$";
+    return("("+ret+')');
   }
 
   // ***********************************************************************************************
@@ -291,9 +291,10 @@ public abstract class DeclarationScope extends Declaration {
   // *** Coding: isDetachUsed  -- If the 'detach' attribute is used
   // ***********************************************************************************************
   /**
-   * Ta utgangspunkt i hvilke klasser man har kalt "detach" i, alts� kvalifikasjonen av de X som er
-   * brukt i "X.detach".  Men da m� man jo ogs� holde greie p� hvilke slike som har forekommet i
-   * eksterne "moduler" (som f.eks. SIMULATION), uten at det burde v�re problematisk. 
+   * KOMMENTAR FRA Stein:
+   * Ta utgangspunkt i hvilke klasser man har kalt "detach" i, altså kvalifikasjonen av de X som er
+   * brukt i "X.detach".  Men da må man jo også holde greie på hvilke slike som har forekommet i
+   * eksterne "moduler" (som f.eks. SIMULATION), uten at det burde være problematisk. 
    *  
    * @return
    */
@@ -329,7 +330,7 @@ public abstract class DeclarationScope extends Declaration {
       }
       scope=scope.declaredIn;
     }
-    //Util.BREAK("DeclarationScope.edJavaClassName("+identifier+") ==> "+id);
+    Util.BREAK("DeclarationScope.edJavaClassName("+identifier+") ==> "+id);
     return(id);
   }
 

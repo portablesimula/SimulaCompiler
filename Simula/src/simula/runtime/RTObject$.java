@@ -17,14 +17,14 @@ import simula.compiler.utilities.Util;
 * @author Øystein Myhre Andersen
 */
 public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
-	private static final boolean DEBUG=true;
-	private static final boolean USE_CONTEXT_VECTOR=false; // Check same switch in Compiler: Global.
+	protected static boolean CODE_STEP_TRACING=false;//true;
 	protected static boolean BLOCK_TRACING=false;//true;
 	protected static boolean GOTO_TRACING=true;
 	protected static boolean THREAD_TRACING=false;//true;
-	private static final boolean CTX_TRACING=false; //true; //false; //true;
 	protected static final boolean QPS_TRACING=false; //true;
 	protected static final boolean SML_TRACING=false; //true;
+
+	protected static final boolean USE_DEPRECATED_QPS_METHODS=false; //true;
 
 	public static void warning(String msg) { System.err.println("Warning: "+msg); }
 	
@@ -40,13 +40,12 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	// QPS
 	public enum OperationalState { detached,resumed,attached,terminated }
 	public OperationalState STATE$;
-	private Thread THREAD$;
+	public Thread THREAD$;
 	protected ClassBody CODE$;
 	
 	// RTS
 	public static BASICIO$ CTX$=new BASICIO$(null);
 	public static RTObject$ PRG$; // Current Program
-	public static RTObject$[] CV$=new RTObject$[50]; // Context Vector
 	public static RTObject$ CUR$=CTX$; // Current Block Instance
 
 	public boolean isQPSystemBlock() { return(false); } // Needs Redefinition
@@ -71,6 +70,8 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	 */
 	int BL$;
 
+    private static int objSEQU=0; // Used by TRACE-methods
+    private int SEQU;             // Used by TRACE-methods
 	// ************************************************************
 	// *** Constructor
 	// ************************************************************
@@ -79,7 +80,12 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	 * @param SL Static Link, may be null when creating CONTEXT, TEXTOBJ and TXTREF
 	 */
 	public RTObject$(RTObject$ SL)
-	{ if(SL!=null) { this.BL$=SL.BL$+1; this.SL$=SL; }	}
+	{ if(SL!=null)
+	  { this.BL$=SL.BL$+1; this.SL$=SL;
+		this.THREAD$=Thread.currentThread();
+	    this.SEQU=objSEQU++;      // Used by TRACE-methods
+	  }
+	}
 
 	
 	// *********************************************************************
@@ -333,44 +339,11 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  }
 	}
 	
-//	int cv;
-//	private void TEST()
-//	{ int gg=0;
-//	
-//	  $NAME<Number> cvn1=new $NAME<Number>()
-//	  { public Number put(Number x){cv=(int)x; return(cv);};
-//	    public Number get(){return(cv); }
-//	  };
-//
-//	  $NAME<Number> n1=new $NAME<Number>() { public Number get(){return(1); }};
-//	  $NAME<Number> n2=new $NAME<Number>() { public Number get(){return(2); }};
-//	  $NAME<Number> n3=new $NAME<Number>() { public Number get(){return(3); }};
-//	  $NAME<Number> n4=new $NAME<Number>() { public Number get(){return(4); }};
-//	  $NAME<Number> n5=new $NAME<Number>() { public Number get(){return(5); }};
-//	  $NAME<Number> n201=new $NAME<Number>() { public Number get(){return(201); }};
-//	  $NAME<Boolean> b1=new $NAME<Boolean>() { public Boolean get(){return(2>01); }};
-//	  for(boolean CB$:new ForList(
-//			 new SingleElt<Number>(cvn1,n1)
-//			,new SingleElt<Number>(cvn1,n3)
-//			,new StepUntil(cvn1,n5,n3,n201)
-//			,new WhileElt<Number>(cvn1,n4,b1) ))
-//	  { if(!CB$) continue;
-//	    // Statements ...
-//	  }
-//	}
 	
 
 	// ************************************************************
-	// *** lOCAL label  - Meant for Byte-Code Engineering
+	// *** lOCAL JUMP/LABEL  - Meant for Byte-Code Engineering
 	// ************************************************************
-//	public class LABEL
-//	{ String ident;
-//	  public int index; // I.e. ordinal number of the labeled statement.
-//	  public LABEL(int index,String ident) { this.index=index; this.ident=ident; }
-//	  public String toString()
-//	  { return("LABEL:"+ident+"#"+index); }
-//	}
-	
 	public static void LABEL(int labelIndex) {} // Local LABEL - Needs ByteCode Engineering.
 	public static void JUMP(int labelIndex) // Local GOTO - Needs ByteCode Engineering.
 	{ String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";
@@ -402,34 +375,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	    //Util.ASSERT(this.index>0,"Invariant");
 	    //Util.BREAK("NEW(2) LABQNT: SL="+SL$+", index="+index);
 	  }
-
-//	  public void GOTO() // GOTO Non-Local Label
-//	  { //Util.BREAK("GOTO: $LABQNT="+this);
-//	    RTObject$ dl;     // Temporary to 'CUR$.dl'.
-////	    RTObject main;   // The head of the main component and also
-////	                     // the head of the quasi-parallel system.
-//
-//	    while(CUR$!=this.SL) // follow operating chain, instance by instance.
-//	    { //  If we are jumping somewhere we shouldn't, report the error.
-//	      if(CUR$==null) throw new RuntimeException("Illegal goto destination.");
-//	      if(CUR$.STATE$==OperationalState.attached)
-//	      { dl=CUR$.DL$; CUR$.STATE$=OperationalState.terminated;
-//	        CUR$.DL$=null; CUR$=dl;
-//	  //-      elsif CUR$.sort = S_RES                    //- REMOVED 4/10-84 //-
-//	  //-      then //  Terminate this component head, enter the main component.
-//	  //-           CUR$.sort:=S_TRM; main:=CUR$.sl; // Behave as if DETACH.
-//	  //-           //-  Ignore any temporary(aStack) objects.
-//	  //-           repeat while main.dl.$LSC = nowhere
-//	  //-           do main:=main.dl endrepeat;
-//	  //-           //-  The main component becomes the operating component.
-//	  //-           dl:=CUR$.dl; CUR$.dl:=none;
-//	  //-           CUR$:=main.dl; main.dl:=dl;
-//	      } else CUR$=CUR$.DL$;
-//	    }
-//
-//	    // Have updated current instance. Goto local label.
-//	    CUR$.GOTO(L);
-//	  }
 	  
 	  public String toString()
 	  { return("$LABQNT("+SL$+", LABEL#"+index+')'); }
@@ -444,15 +389,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
       throw(q);
     }
 
-//	// ************************************************************
-//	// *** TRACING:  TRACE_LOCAL_GOTO
-//	// ************************************************************
-//    public void TRACE_LOCAL_GOTO(int index,String ident)
-//    { String s="LOCAL GOTO "+ident+"=LABEL#"+index;
-//      TRACE(s);
-//      //Util.BREAK("END RTObject$.TRACE_LOCAL_GOTO");
-//    }
-
 	// ************************************************************
 	// *** TRACING:  TRACE_GOTO
 	// ************************************************************
@@ -461,82 +397,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
       TRACE(s);
       //Util.BREAK("END RTObject$.TRACE_GOTO");
     }
-
-	// ************************************************************
-	// *** TESTING:  Statement Code
-	// ************************************************************
-    private void statementCode()
-    {
-    	TestSTM();
-    }
-    
-	// ************************************************************
-	// *** TESTING:  Throw GOTO 
-	// ************************************************************
-	private void TestSTM()
-	{ int $LX=0;
-      //LABEL L1=null; // Local Label #1
-      //LABEL L2=null; // Local Label #2
-      //LABEL L3=null; // Local Label #3
-
-	  LOOP:while($LX>=0)
-	  { try
-	    { switch($LX)
-		  { case 0: break;
-		    case 1: CUR$.JUMP(1); // One Case per.local.label
-		    case 2: CUR$.JUMP(2);
-		    case 3: CUR$.JUMP(3);
-		  }
-	      // Statement code
-	      if(CUR$==null) { $LX=3; continue LOOP; } // EG. Local GOTO L3 
-	      // Statement code
-	      LABEL(1);//,"L1");
-	      // Statement code
-	      LABEL(2);//,"L2");
-	      // Statement code
-	      LABEL(3);//,"L3");
-	      // Statement code
-	      statementCode();
-	      // Statement code
-		  break LOOP;
-	    }
-	    catch($LABQNT q)
-	    { if(q.SL$!=RTObject$.this)
-	      { CUR$.STATE$=OperationalState.terminated;
-	    	throw(q);
-	      }
-	      $LX=q.index; continue LOOP; // EG. GOTO Lx 
-	    }
-	  }
-	}
-
-	// ************************************************************
-	// *** Update Context Vector.
-	// ************************************************************
-	/**
-	 * Update Context Vector.
-	 * <p>
-	 * The Context Vector must be updated whenever the value of CUR$ is changed.
-	 * In general this is done by calling the updateContextVector routine. In certain
-	 * cases (e.g. begin sub-block, enter normal procedure) this is simply a
-	 * matter of adding a new level and is done by inline coding. In other cases
-	 * (e.g. exit from a sub-block or prefixed block) the current level is simply
-	 * deleted and therefore no action is necessary at all.
-	 */
-	public static void updateContextVector() {
-		if(!USE_CONTEXT_VECTOR) return;
-		if(DEBUG) for(int i=0;i<CV$.length;i++) CV$[i]=null;
-		CV$[0]=CTX$;
-		RTObject$ x = CUR$;
-		//Util.BREAK("updateContextVector: CUR$="+CUR$.edString());
-		if(x!=null) 
-		do {
-			//Util.BREAK("updateContextVector: ["+x.BL$+"] ==> "+x.edString());
-			CV$[x.BL$] = x;
-			x = x.SL$;
-		} while (x!=null && x.BL$ > 0);
-		if(CTX_TRACING) printContextVector();
-	}
 
 
 	// ************************************************************
@@ -547,6 +407,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	 * routine. It will initiate the global data in the runtime system.
 	 */
 	public void BPRG(String ident) {
+		CTX$.THREAD$=Thread.currentThread();
 		if(BLOCK_TRACING) TRACE("Begin Execution of Simula Program: "+ident);
 		if(SYSIN$==null)
 		{ SYSIN$ = new InFile$(this,new TXT$("SYSIN"));
@@ -554,8 +415,10 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 		  SYSIN$.open(blanks(INPUT_LINELENGTH_));
 		  SYSOUT$.open(blanks(OUTPUT_LINELENGTH_));
 		}
-		PRG$=this; CUR$=CTX$;
-		BBLK();
+		PRG$=this;
+//		CUR$=CTX$;// TODO: Check Konsekvenser av å fjerne denne
+		CUR$=this;// TODO: Check Konsekvenser av å fjerne denne
+		//BBLK();   // TODO: Check Konsekvenser av å fjerne denne
 	}
 	
 	// ************************************************************
@@ -581,7 +444,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	    STATE$=OperationalState.attached;
 		if(BLOCK_TRACING) TRACE("BEGIN "+edString());
 		Util.ASSERT(SL$!=null,"Invariant");
-		updateContextVector();
 	}
 
 	// *********************************************************************
@@ -625,14 +487,13 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	                    // enclosing the resumed object ('CUR$').
 	    RTObject$ main; // The head of the main component and also
 	                    // the head of the quasi-parallel system.
-	    //Util.BREAK("ECB "+edString());
 	    if(BLOCK_TRACING) TRACE("END BLOCK(1) "+edString());
 	    // Treat the attached case first, it is probably most common.
 	    if(CUR$.STATE$==OperationalState.attached) {
 	    	CUR$.STATE$=OperationalState.terminated;
 	        //  Make the dynamic enclosure the new current instance.
 	        CUR$=CUR$.DL$;
-		    if(BLOCK_TRACING) TRACE("END BLOCK "+edString());
+		    if(BLOCK_TRACING) TRACE("END ATTACHED BLOCK "+edString());
 	    } else if(CUR$.STATE$==OperationalState.resumed) {
 	    	// Treat the case of a resumed and operating object.
 	        //  It is the head of an object component. The class
@@ -653,20 +514,24 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 //	        CUR$=CUR$.DL$;
 //		    if(BLOCK_TRACING) TRACE("END PREFIXED BLOCK "+edString());
 	    }
+	    if(BLOCK_TRACING) TRACE("END BLOCK(2) "+CUR$);
 	    if(CUR$==null || CUR$==CTX$) {
+//	    if(CUR$==null) {
 	       //SYSIN$.close();
 		   //SYSOUT$.close();
 	       SYSOUT$.outimage();
 		   //Util.BREAK("PROGRAM PASSES THROUGH FINAL END "+edString());
 		   if(BLOCK_TRACING) TRACE("PROGRAM PASSES THROUGH FINAL END "+edString());
-		   if(CTX_TRACING) printContextVector();
 		   if(THREAD_TRACING) printThreadList(); 
 		   System.exit(0);
 	    } else {
-		   updateContextVector();
 	       if(this.THREAD$!=CUR$.THREAD$)
 	       { if(QPS_TRACING) TRACE("Resume "+CUR$.THREAD$);
-	         CUR$.THREAD$.resume();
+	       
+	         if(USE_DEPRECATED_QPS_METHODS)
+	        	  CUR$.THREAD$.resume();
+	         else CUR$.resume();
+	         
 	         if(QPS_TRACING) TRACE("Terminate "+this.THREAD$);
 	         this.THREAD$=null; // Leave it to the GarbageCollector
 	       }
@@ -727,7 +592,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  // From now on the object is in attached state.
 	  // It is no longer a component head.
 	  ins.STATE$=OperationalState.attached;
-	  updateContextVector(); // TODO: ???
 	  if(QPS_TRACING) TRACE("END CALL "+ins.edString());
 	  swapThreads(ins.DL$);
 	}
@@ -804,7 +668,6 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	    //  <ins.DL$,comp.DL$,CUR$>=<comp.DL$,CUR$,ins.DL$>
 	    comp.DL$=CUR$; CUR$=ins.DL$; ins.DL$=mainSL;
 	    ins.STATE$=OperationalState.resumed;
-		updateContextVector(); // TODO: ???
 		if(QPS_TRACING) TRACE("END RESUME "+ins.edString());
 	    swapThreads(comp.DL$);
 	  }
@@ -834,18 +697,77 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
       }
    	}
     
-	public void START(RTObject$ ins)
+//    private static int SEQU$=1;
+	public void OLD_START(RTObject$ ins)
 	{ // Start Object in a new Thread
 //	  this.THREAD$=Thread.currentThread(); 
 //	  Util.ASSERT(Thread.currentThread()==this.THREAD$,"Invariant");
-      THREAD$=new Thread(ins,ins.getClass().getSimpleName());
+//    THREAD$=new Thread(ins,ins.getClass().getSimpleName()+'#'+(SEQU$++));
+      THREAD$=new Thread(ins,ins.edObjectIdent());
       if(THREAD_TRACING) TRACE("Start "+THREAD$);
       THREAD$.start();
-      if(THREAD_TRACING) TRACE("Suspend "+Thread.currentThread());
+      if(THREAD_TRACING) TRACE("START:Suspend "+Thread.currentThread());
       Thread.currentThread().suspend();
 	}
+	public void START(RTObject$ ins)
+    { if(USE_DEPRECATED_QPS_METHODS) { OLD_START(ins); return; }
+      if(THREAD_TRACING) TRACE("START: ins="+ins.edString());
+      //if(THREAD_TRACING) TRACE("START: CUR$="+CUR$.edString());
+      RTObject$ CALLER=CUR$.DL$;
+      if(THREAD_TRACING) TRACE("START: CALLER="+CALLER.edString());
+	  Util.ASSERT(CUR$.THREAD$==Thread.currentThread(),"Invariant");
+	  // Start Object in a new Thread
+      ins.THREAD$=new Thread(ins,ins.edObjectIdent());
+      if(THREAD_TRACING) TRACE("Start "+ins.THREAD$);
+      ins.THREAD$.start();
+      if(THREAD_TRACING) TRACE("START:Suspend "+Thread.currentThread());
+//	  System.out.println("START: THIS="+this.edString());
+//	  System.out.println("START: CUR$="+CUR$.edString());
+//	  System.out.println("START: CUR$.DL$="+CUR$.DL$.edString());
+//	  System.out.println("START: CUR$.DL$.THREAD$="+CUR$.DL$.THREAD$);
+	  CALLER.suspend();
+	}
+	
+	private boolean OPERATING$=true;
+	public void suspend()
+	{ if(THREAD_TRACING) TRACE("suspend:Suspend BEGIN "+THREAD$);
+	  if(THREAD_TRACING) printThreadList(); 
+	  if(THREAD$!=Thread.currentThread())
+	  {
+//		  System.out.println("\n\nOBS-OBS-OBS-OBS: THREAD$="+THREAD$+", CurrentThread="+Thread.currentThread()+"\n\n");
+//		  System.out.println("Suspent: THIS="+this);
+//		  System.out.println("Suspend: CUR$="+CUR$);
+		  TRACE("\n\nOBS-OBS-OBS-OBS: THREAD$="+THREAD$+", CurrentThread="+Thread.currentThread()+"\n\n");
+		  TRACE("Suspent: THIS="+this.edString());
+		  TRACE("Suspend: CUR$="+CUR$.edString());
+		  if(THREAD$==null) THREAD$=Thread.currentThread();
+	  }
+	  Util.ASSERT(THREAD$==Thread.currentThread(),"Invariant");
+//	  synchronized(this) {
+	  synchronized(CTX$) {
+		 OPERATING$=false; }
+//	     while (STATE$==OperationalState.detached)
+		 while (!OPERATING$)
+			try {
+//				System.out.println("Suspend: THREAD$="+THREAD$+", CurrentThread="+Thread.currentThread());
+//				THREAD$.wait();
+//				THREAD$.yield();
+				THREAD$.sleep(20);
+//			} catch (InterruptedException e) {
+			} catch (Throwable e) {
+			e.printStackTrace();
+			}
+	  //}
+	  if(THREAD_TRACING) TRACE("suspend:Suspend END "+THREAD$);
+	  if(THREAD_TRACING) printThreadList(); 
+	}
+	public void resume()
+	{ if(THREAD_TRACING) TRACE("RTObject$.resume: CUR$="+CUR$.edString());
+	  synchronized(CTX$) {
+	     CUR$.OPERATING$=true; }
+	}
 		
-	protected void swapThreads(RTObject$ prev)
+	protected void OLD_swapThreads(RTObject$ prev)
 	{ Util.ASSERT(Thread.currentThread()==prev.THREAD$,"Invariant");
 //      TRACE("Resume "+CUR$.THREAD$);
 	  if(THREAD_TRACING) TRACE("swapThreads:Resume "+CUR$.edString());
@@ -854,42 +776,104 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  if(THREAD_TRACING) TRACE("swapThreads:Suspend "+prev.edString());
 	  prev.THREAD$.suspend();
 	}
+	
+    protected void swapThreads(RTObject$ prev)
+    { if(USE_DEPRECATED_QPS_METHODS) { OLD_swapThreads(prev); return; }
+      Util.ASSERT(Thread.currentThread()==prev.THREAD$,"Invariant");
+      //  TRACE("Resume "+CUR$.THREAD$);
+      if(THREAD_TRACING) TRACE("swapThreads:Resume "+CUR$.edString());
+      this.resume();
+      //  TRACE("Suspend "+prev.THREAD$);
+      if(THREAD_TRACING) TRACE("swapThreads:Suspend "+prev.edString());
+      prev.suspend();
+    }
 
 	
 	// *********************************************************************
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
 	
+    private void BCODE$(int simulaSourceLine,String msg)
+    { if(!CODE_STEP_TRACING) return;
+      StackTraceElement elt=Thread.currentThread().getStackTrace()[4];
+      String line;
+      if(simulaSourceLine<=1)
+           line="J"+elt.getLineNumber();
+      else line="S"+simulaSourceLine;
+      System.out.println(elt.getFileName()+" LINE "+line+": "+msg);    	
+      printStaticContextChain();
+    }
+	
+    public void TRACE_BEGIN_DCL$() { TRACE_BEGIN_DCL$(-1); }
+    public void TRACE_BEGIN_DCL$(int simulaSourceLine)
+    { BCODE$(simulaSourceLine,"BEGIN  DCL");  }
+	
+    public void TRACE_BEGIN_STM$() { TRACE_BEGIN_STM$(-1,null); }
+    public void TRACE_BEGIN_STM$(int simulaSourceLine) { TRACE_BEGIN_STM$(simulaSourceLine,null); }
+    public void TRACE_BEGIN_STM$(ClassBody inner) { TRACE_BEGIN_STM$(-1,inner); }
+    public void TRACE_BEGIN_STM$(int simulaSourceLine,ClassBody inner)
+    { BCODE$(simulaSourceLine,"BEGIN  STM, inner="+inner);  }
+	
+    public void TRACE_END_STM$() { TRACE_END_STM$(-1); }
+    public void TRACE_END_STM$(int simulaSourceLine)
+    { BCODE$(simulaSourceLine,"END  STM");  }
+    
 	public void TRACE(String msg)
 	{ Thread THREAD$=Thread.currentThread(); 
 	  System.out.println(THREAD$.toString()+": "+msg);
+	  //printStaticContextChain();
+	  //Util.BREAK("CTX$="+CTX$.edString());
+	  //Util.ASSERT(CTX$.THREAD$!=null,"CTX$.THREAD$==null");
 	}
 	
+	public String edObjectIdent()
+	{ StringBuilder s=new StringBuilder();
+	  s.append(this.getClass().getSimpleName());
+      if(SEQU>0) s.append('#').append(SEQU);	
+      return(s.toString());
+	}
 	
 	public String edString()
 	{ StringBuilder s=new StringBuilder();
-	  s.append(this.getClass().getSimpleName());
+	  s.append(edObjectIdent());
 	  s.append(" BlockLevel=").append(BL$);
-	  s.append(" SL=").append((SL$==null)?"null":SL$.getClass().getSimpleName());
-	  s.append(" DL=").append((DL$==null)?"null":DL$.getClass().getSimpleName());
+	  s.append(" SL=").append((SL$==null)?"null":SL$.edObjectIdent());
+	  s.append(" DL=").append((DL$==null)?"null":DL$.edObjectIdent());
 	  s.append(" STATE=").append(STATE$);
 	  s.append(" THREAD=").append(THREAD$);
+	  s.append(" OPERATING=").append(this.OPERATING$);
+	  s.append(" CUR=").append(CUR$);
 	  return(s.toString());
 	}
 	
-	public static void printContextVector()
-	{ if(!USE_CONTEXT_VECTOR) return;
-	  System.out.println("CURRENT CONTEXT VECTOR - CURRENT = "+((CUR$==null)?"null":CUR$.edString()));		  
-	  for(int j=0;j<50;j++) if(CV$[j]!=null) System.out.println("  - CV$["+j+"]="+CV$[j].edString());
-	  System.out.println("-------------------");
+	public synchronized void printStaticContextChain()
+	{
+	  RTObject$ x=this;
+	  System.out.println("STATIC CONTEXT CHAIN:");
+	  while(x!=null)
+	  {
+    	System.out.println("  - "+x.edString());
+		  x=x.SL$;
+	  }
 	}
 	
-	public void printThreadList()
+	public synchronized void printThreadList()
 	{ Thread[] t=new Thread[50];
 	  int i=Thread.enumerate(t);
 	  System.out.println("ACTIVE THREAD LIST:");
-      for(int j=0;j<i;j++) System.out.println("  - "+t[j]);
+      for(int j=0;j<i;j++) {
+    	  Thread T=t[j];
+    	  System.out.print("  - "+T);
+    	  if(T==Thread.currentThread()) System.out.print(" = CurrentThread");
+    	  if(T==THREAD$) System.out.print(" = THREAD$");
+    	  System.out.println();
+      }
 	  System.out.println("-------------------");
+	}
+	
+	public String toString()
+	{
+		return(edObjectIdent());
 	}
 
 }

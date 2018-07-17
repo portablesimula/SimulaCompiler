@@ -7,6 +7,8 @@
  */
 package simula.runtime;
 
+import simula.compiler.utilities.Util;
+
 /**
  * The Class "link"
  * <p>
@@ -58,9 +60,12 @@ public class Link$ extends Linkage$ {
 	// Constructor
     public Link$(RTObject$ staticLink) {
        super(staticLink);
+       TRACE_BEGIN_DCL$();
        CODE$=new ClassBody(CODE$,this) {
           public void STM() {
+        	 TRACE_BEGIN_STM$(inner);
              if(inner!=null) inner.STM();
+             TRACE_END_STM$();
        }};
     }
     public Link$ STM() { return((Link$)CODE$.EXEC$()); }

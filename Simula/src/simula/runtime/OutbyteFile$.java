@@ -95,10 +95,13 @@ public class OutbyteFile$ extends ByteFile$ {
 	// Constructor
     public OutbyteFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
+ 	  TRACE_BEGIN_DCL$();
       // Create Class Body
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
-            if(inner!=null) inner.STM();
+        	 TRACE_BEGIN_STM$(inner);
+             if(inner!=null) inner.STM();
+             TRACE_END_STM$();
       }};
     }
     // Class Statements

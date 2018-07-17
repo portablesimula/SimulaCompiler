@@ -14,11 +14,13 @@ COMMENT DATA data96;
 
 Boolean found_error;
 
+Text fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/data96";
+
 outtext("--- START Simula a.s. TEST 96"); outimage;
 outtext("    Test of Simulation - reads from infile ""data96"".");
 Outimage; Outimage;
 
-inspect new infile("data96") do
+inspect new infile(fileName) do
 simulation begin
 comment
 ************************************************************************
@@ -149,7 +151,15 @@ comment
       begin t:-blanks(100);
             for ch:=inchar while ch ne ' 'do t.putchar(ch);
             t.setpos(1);
+            outtext("LOAD: " & copy(t)); outimage;
       end ;
+      
+      real procedure readReal;
+      begin real r;
+            r:=inint;
+            outtext("REAL: "); outreal(r,4,18); outimage;
+            readReal:=r;
+      end;
 
       ref (head)towns,h;
       ref (town)r,destination;
@@ -191,7 +201,7 @@ comment
             for ch:=inchar while ch ne '}' do
             begin setpos(pos-1);
                   load;
-                  activate new car(r,((towns.first) qua town).find(t.strip),inreal);
+                  activate new car(r,((towns.first) qua town).find(t.strip),readReal);
                   scan;
             end ;
             scan;

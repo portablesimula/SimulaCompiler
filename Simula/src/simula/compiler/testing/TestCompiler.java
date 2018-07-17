@@ -56,7 +56,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		 String name=Global.packetName+"/sim/adHoc00.sim";
+		// String name=Global.packetName+"/sim/adHoc00.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
@@ -75,7 +75,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/ExternalClass1.sim";
 		// String name=Global.packetName+"/sim/ExternalClass2.sim";
 		// String name=Global.packetName+"/sim/FileSamples.sim";
-		// String name=Global.packetName+"/sim/FittingRoom.sim";
+		 String name=Global.packetName+"/sim/FittingRoom.sim";
 		// String name=Global.packetName+"/sim/ForWhileSamples.sim";
 		// String name=Global.packetName+"/sim/FunctionCall.sim";
 		// String name=Global.packetName+"/sim/Gauss.sim";
@@ -90,9 +90,11 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/ParamSample2.sim";
 		// String name=Global.packetName+"/sim/PrfxBlockSamples.sim";
 		// String name=Global.packetName+"/sim/ProcedureSample.sim";
+		// String name=Global.packetName+"/sim/QPSample0.sim";
 		// String name=Global.packetName+"/sim/QPSample1.sim";
 		// String name=Global.packetName+"/sim/QPSample2.sim";
 		// String name=Global.packetName+"/sim/QPSample3.sim";
+		// String name=Global.packetName+"/sim/QPSample4.sim";
 		// String name=Global.packetName+"/sim/RemoteProcedure.sim";
 		// String name=Global.packetName+"/sim/Simtest1.sim";
 		// String name=Global.packetName+"/sim/SubClassTest.sim";

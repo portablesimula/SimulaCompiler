@@ -55,6 +55,8 @@ Simulation Begin
    Integer u;
    Ref (FittingRoom) fittingRoom1;
 
+   outtext("BEGIN FittingRoom Simulation"); outimage;
+
    fittingRoom1:- New FittingRoom;
    Activate New Person ("Sam");
    Activate New Person ("Sally");
@@ -65,4 +67,6 @@ Simulation Begin
    Activate New Person ("Robert");
    Activate New Person ("John");
    Hold (100);
+   
+   outtext("Normal END of Simulation"); outimage;
 End;

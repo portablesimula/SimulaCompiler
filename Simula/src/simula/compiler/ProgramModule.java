@@ -77,10 +77,10 @@ public class ProgramModule extends Statement
 	    else
 	    { Variable prefix=Variable.parse(ident);	
 	  	  Parser.expect(KeyWord.BEGIN);
-	  	  module=BlockDeclaration.createMaybeBlock(prefix,Global.sourceName); 
+	  	  module=BlockDeclaration.createMaybeBlock(prefix); 
 	    }
 	  }
-	  else if(Parser.accept(KeyWord.BEGIN)) module=BlockDeclaration.createMaybeBlock(null,Global.sourceName); 
+	  else if(Parser.accept(KeyWord.BEGIN)) module=BlockDeclaration.createMaybeBlock(null); 
 	  else if(Parser.accept(KeyWord.CLASS)) module=BlockDeclaration.doParseClassDeclaration(null);
 	  else
 	  { Type type=acceptType();

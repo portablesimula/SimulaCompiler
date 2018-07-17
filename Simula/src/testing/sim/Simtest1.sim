@@ -1,44 +1,52 @@
 Simulation Begin
    Integer u;
    ref(Car) bil1,bil2;
-   ref(Head) queue;
   
    Procedure report (message); Text message; Begin
       OutFix (Time, 2, 0); OutText (": " & message); OutImage;
-      reportQueue;
    End;
-   
-   Procedure reportQueue;
-   begin
-      ref(Link) elt;
-      OutFix (Time, 2, 0); OutText (": FittingRoom Queue: ");
-      elt:-queue.first();
-      while elt =/= none
-      begin
-         OutText(" " & (elt qua Car).pname);
-         elt:-elt.suc();
-      end;   
-      OutImage;
-   end;
 
    Process Class Car(pname); Text pname;
    Begin
-         report(pname & " is created");
-         while true
+         report(pname & " is initiating");
+         while true do
          begin
             report(pname & " is active 1");
             Hold (4);
             report(pname & " is active 2");
-        
-%           Hold (12);
 		 end;
    End;
 
-   queue :- New Head;
-   bil1:- New Car("Bil1");
-   bil2:- New Car("Bil2");
-   report(bil1.pname & " is queued");
+   outtext("--------------------------------"); outimage;
+   outtext("BEGIN A VERY Simple Simulation"); outimage;
+   outtext("--------------------------------"); outimage;
+   outtext("Expected output:"); outimage;
+   outtext("--------------------------------"); outimage;
+   outtext("0.00: START Simtest1"); outimage;
+   outtext("0.00: Bil 1 is scheduled for 4.0"); outimage;
+   outtext("0.00: Bil 2 is scheduled for 6.0"); outimage;
+   outtext("4.00: Bil 1 is initiating"); outimage;
+   outtext("4.00: Bil 1 is active 1"); outimage;
+   outtext("6.00: Bil 2 is initiating"); outimage;
+   outtext("6.00: Bil 2 is active 1"); outimage;
+   outtext("8.00: Bil 1 is active 2"); outimage;
+   outtext("8.00: Bil 1 is active 1"); outimage;
+   outtext("10.00: Bil 2 is active 2"); outimage;
+   outtext("10.00: Bil 2 is active 1"); outimage;
+   outtext("12.00: Final END of Simulation"); outimage;
+   outtext("--------------------------------"); outimage;
+   outtext("Actual output:"); outimage;
+   outtext("--------------------------------"); outimage;
+
+   report("START Simtest1");
+   bil1:- New Car("Bil 1");
+   bil2:- New Car("Bil 2");
+   report(bil1.pname & " is scheduled for 4.0");
    Activate bil1 at 4.0;
+   report(bil2.pname & " is scheduled for 6.0");
    Activate bil2 at 6.0;
-   Hold (20);
+   Hold (12);
+   
+   report("Final END of Simulation");
+   outtext("--------------------------------"); outimage;
 End;

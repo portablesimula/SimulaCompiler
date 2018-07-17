@@ -86,7 +86,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   //*** createMaybeBlock
   //***********************************************************************************************
   // Used by ProgramModule
-  public static BlockDeclaration createMaybeBlock(Variable blockPrefix,String blockIdentifier)
+//  public static BlockDeclaration createMaybeBlock(Variable blockPrefix,String blockIdentifier)
+  public static BlockDeclaration createMaybeBlock(Variable blockPrefix)
   {	BlockDeclaration module=new BlockDeclaration(Global.sourceName);
 	module.isMainModule=true;
 	module.blockKind=BlockDeclaration.Kind.SimulaProgram;
@@ -141,7 +142,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	if(blockKind!=BlockDeclaration.Kind.SimulaProgram)
 	{ if(blockPrefix!=null)
 	  { blockKind=BlockDeclaration.Kind.PrefixedBlock;
-	    if(!isMainModule) modifyIdentifier(""+blockPrefix.identifier+"$Block"+lineNumber);
+	    //modifyIdentifier(""+blockPrefix.identifier+"$Block"+lineNumber);
+	    modifyIdentifier(""+Global.sourceName+"$PBLK"+lineNumber);
+	    this.externalIdent=this.identifier;
 	  }
 	  else if(!declarationList.isEmpty())
 	  { blockKind=BlockDeclaration.Kind.SubBlock;
@@ -477,9 +480,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   	ASSERT_SEMANTICS_CHECKED(this);
   	Global.currentScope=this;
     Util.code(indent,"{");
+	Util.code(indent,"   TRACE_BEGIN_DCL$("+Global.sourceLineNumber+");");
 	for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
     for(Iterator<Declaration> it=declarationList.iterator();it.hasNext();) it.next().doJavaCoding(indent);
+	Util.code(indent,"   TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
     for(Statement stm:statements) stm.doJavaCoding(indent);
+	Util.code(indent,"   TRACE_END_STM$("+Global.sourceLineNumber+");");
     Util.code(indent,"}");
     Global.currentScope=declaredIn;
   }
@@ -502,9 +508,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	  Util.code(indent,"   "+type.toJavaType()+' '+"$result"+'='+type.edDefaultValue()+';');
 	}
   	
+	Util.code(indent,"   TRACE_BEGIN_DCL$("+Global.sourceLineNumber+");");
 	for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
     for(Declaration decl:declarationList) decl.doJavaCoding(indent+1);
+	Util.code(indent,"   TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
     for(Statement stm:statements) stm.doJavaCoding(indent+1);
+	Util.code(indent,"   TRACE_END_STM$("+Global.sourceLineNumber+");");
   	if(type!=null) Util.code(indent,"   return($result);");
   	Util.code(indent,"}");
   	Global.currentScope=declaredIn;
@@ -600,6 +609,10 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 			  Util.code(indent,"      BBLK(); // Iff no prefix");
             break;
           }
+	  case SimulaProgram:
+			Util.code(indent,"      BBLK();");
+			Util.code(indent,"      BPRG(\""+identifier+"\");");
+			break;
 	  case SubBlock:
 	  case Procedure:    Util.code(indent,"      "+"BBLK();");
 		
@@ -607,6 +620,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	}
 
 	Util.code(indent,"      // Declaration Code");
+    Util.code(indent,"      TRACE_BEGIN_DCL$("+Global.sourceLineNumber+");");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+1);
 	switch(blockKind)
 	{ case Class:
@@ -670,11 +684,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   private void codeClassStatements(int indent)
   {	Util.code(indent,"   // Class Statements");
-  String classID=this.getJavaIdentifier();
-  Util.code(indent,"   public "+classID+" STM() { return(("+classID+")CODE$.EXEC$()); }");
-  Util.code(indent,"   public "+classID+" START() { START(this); return(this); }");
-  
-
+    String classID=this.getJavaIdentifier();
+    Util.code(indent,"   public "+classID+" STM() { return(("+classID+")CODE$.EXEC$()); }");
+    Util.code(indent,"   public "+classID+" START() { START(this); return(this); }");
   }
   
   // ***********************************************************************************************
@@ -683,9 +695,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeProgramCode(int indent)
   {	Util.code(indent,"   // SimulaProgram Statements");
 	Util.code(indent,"   public RTObject$ STM() {");
-	Util.code(indent,"      BPRG(\""+identifier+"\");");
-  
+//	Util.code(indent,"      BPRG(\""+identifier+"\");");
+//	Util.code(indent,"      BBLK();");
+	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
    	codeSTMBody(indent);
+	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
     Util.code(indent,"      EBLK();");
   
 	Util.code(indent,"      "+"return(null);");
@@ -698,7 +712,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeSubBlockCode(int indent)
   {	Util.code(indent,"   // SubBlock Statements");
 	Util.code(indent,"   public RTObject$ STM() {");
+	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
     codeSTMBody(indent);
+	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
     Util.code(indent,"      EBLK();");
 	Util.code(indent,"      return(null);");
     Util.code(indent,"   }"); // End of SubBlock Statements
@@ -710,7 +726,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   public void codeProcedureBody(int indent)
   {	Util.code(indent,"   // Procedure Statements");
     Util.code(indent,"   public "+getJavaIdentifier()+" STM() {");
+	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
    	codeSTMBody(indent);
+	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
     Util.code(indent,"      EBLK();");
     Util.code(indent,"      return(this);");
     Util.code(indent,"   } // End of Procedure BODY");
@@ -723,9 +741,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   {	Util.code(indent,"// Create Class Body");
 	Util.code(indent,"CODE$=new ClassBody(CODE$,this) {");
 	Util.code(indent,"   public void STM() {");
-	
-//    for(Statement stm:statements) stm.doJavaCoding(indent+"      ");
+	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+",inner);");
    	codeSTMBody(indent);
+	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
     
 	if(hasNoRealPrefix())
 		  Util.code(indent,"      EBLK(); // Iff no prefix");
@@ -738,7 +756,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // *** Coding Utility: codeSTMBody
   // ***********************************************************************************************
   private void codeSTMBody(int indent)
-  {	if(!labelList.isEmpty())
+  { if(!labelList.isEmpty())
 	{ Util.code(indent,"       "+externalIdent+" THIS$=("+externalIdent+")CUR$;");
       Util.code(indent,"       LOOP$:while($LX>=0)");
       Util.code(indent,"       { try {");

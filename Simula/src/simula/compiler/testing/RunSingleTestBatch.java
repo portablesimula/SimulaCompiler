@@ -97,11 +97,11 @@ public class RunSingleTestBatch {
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
 		//names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
-		names.add("simtst59.sim"); // ERR: Virtual label in external class.
+		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
-		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
+		names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
@@ -138,7 +138,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
 		//names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
-		//names.add("simtst96.sim"); // ERR: Test SIMULATION, complex example.
+		//names.add("simtst96.sim"); // err: Test SIMULATION, complex example.
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		//names.add("simtst99.sim"); // ERR:

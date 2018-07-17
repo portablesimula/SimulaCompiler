@@ -41,6 +41,10 @@ public class JavaModule
 	{ enclosingJavaModule=Global.currentJavaModule;
 	  Global.currentJavaModule=this;
 	  javaOutputFileName = Global.tempJavaFileDir + blockDeclaration.getJavaIdentifier() + ".java";
+	  
+//	  Util.BREAK("JavaModule.openJavaOutput: javaOutputFileName="+javaOutputFileName);
+//	  Util.BREAK("JavaModule.openJavaOutput: blockDeclaration.identifier="+blockDeclaration.identifier);
+//	  Util.BREAK("JavaModule.openJavaOutput: blockDeclaration.externalIdent="+blockDeclaration.externalIdent);
 	  try {
 		File outputFile = new File(javaOutputFileName);
 		if (Option.verbose) Util.TRACE("Output: " + outputFile.getCanonicalPath());

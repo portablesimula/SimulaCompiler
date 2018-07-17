@@ -54,13 +54,13 @@ public class Head$ extends Linkage$ {
 	 */
     public Head$(RTObject$ staticLink) {
        super(staticLink);
-       //BC(blockLevel);
-       // Parameter assignment to locals
-       // Create Class Body
+   	   TRACE_BEGIN_DCL$();
        CODE$=new ClassBody(CODE$,this) {
           public void STM() {
+         	 TRACE_BEGIN_STM$(inner);
              SUC=PRED=(Linkage$)CUR$;
              if(inner!=null) inner.STM();
+             TRACE_END_STM$();
        }};
     }
     

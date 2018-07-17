@@ -1,7 +1,3 @@
-
-%INCLUDE_QPS
-%QUALIFIEDNAMES
-
 begin
    ref(A) x;
    class A;
@@ -14,6 +10,21 @@ begin
       outtext("A: State 3(Terminating)"); outimage;
    end A;
    
+   outtext("-----------------------------------------"); outimage;
+   outtext("CoroutineSample -- Expected Output:"); outimage;
+   outtext("-----------------------------------------"); outimage;
+      outtext("Main: Before new A"); outimage;
+      outtext("A: State 1(Initiating)"); outimage;
+      outtext("Main: Before first call"); outimage;
+      outtext("A: State 2"); outimage;
+      outtext("Main: Before second call"); outimage;
+      outtext("A: State 3(Terminating)"); outimage;
+      outtext("Main: Before third call"); outimage;
+   outtext("ERROR: Call(x): x is not in detached state."); Outimage;
+   outtext("-----------------------------------------"); outimage;
+   outtext("CoroutineSample -- Actual Output:"); outimage;
+   outtext("-----------------------------------------"); outimage;
+   
    begin
       outtext("Main: Before new A"); outimage;
       x:-new A();
@@ -22,8 +33,6 @@ begin
       outtext("Main: Before second call"); outimage;
       call(x);
       outtext("Main: Before third call"); outimage;
-      outtext("Main: Expected result:"); outimage;
-      outtext("Call(x): x is not in detached state."); outimage;
       call(x);
    end subBlock;
    

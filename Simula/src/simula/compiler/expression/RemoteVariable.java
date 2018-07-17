@@ -77,12 +77,9 @@ public class RemoteVariable extends Expression
 	if(attr instanceof Variable) // Covers FunctionDesignator and SubscriptedVariable since they are subclasses
 	{ Variable var=(Variable)attr;
 	  String ident=var.identifier;
-	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5a) findAttribute("+ident+")  Search in "+decl);
-	  
-//	  Meaning remoteAttribute=objType.getQual().findMeaning(ident);	  	  
+	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5a) findRemoteAttributeMeaning("+ident+")  Search in "+objType.getQual());
 	  remoteAttribute=objType.getQual().findRemoteAttributeMeaning(ident);	  
-	  
-	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5) findAttribute("+ident+")  ==> "+remote);
+	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5) findRemoteAttributeMeaning("+ident+")  ==> "+remoteAttribute);
 	  if(remoteAttribute==null) Util.error("RemoteVariable.doRemoteTextChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
 	  var.setRemotelyAccessed(remoteAttribute);
 	  if(remoteAttribute.declaredAs instanceof Parameter)

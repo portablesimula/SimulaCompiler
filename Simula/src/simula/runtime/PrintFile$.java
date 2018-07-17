@@ -75,16 +75,19 @@ public class PrintFile$ extends OutFile$ {
 	int LINES_PER_PAGE$;
 	int SPACING$;
 	int LINE$;
-	int PAGE$;
+	int PAGE$; // TODO:
 
 	// Constructor
     public PrintFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
+ 	  TRACE_BEGIN_DCL$();
       CODE$=new ClassBody(CODE$,this) {
          public void STM() {
+       	    TRACE_BEGIN_STM$(inner);
             LINES_PER_PAGE$=132;
             SPACING$=1;
             if(inner!=null) inner.STM();
+            TRACE_END_STM$();
       }};
     }
     // Class Statements
@@ -292,7 +295,7 @@ public class PrintFile$ extends OutFile$ {
 		if (pos() != 1)
 			outimage();
 		SPACING$ = 1;
-		//eject(LINES_PER_PAGE$);
+		//eject(LINES_PER_PAGE$); // TODO:
 		LINES_PER_PAGE$ = 0;
 		LINE$ = 0;
 		image = null; // image :- NOTEXT;
