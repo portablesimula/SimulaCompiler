@@ -8,6 +8,7 @@
 package simula.runtime;
 
 import simula.compiler.utilities.Util;
+import simula.runtime.RTObject$.OperationalState;
 
 /**
  * <pre>
@@ -71,7 +72,7 @@ public class Process$ extends Link$ {
 	}
 
 	public EVENT_NOTICE$ EVENT = null;
-	public boolean TERMINATED$ = false;
+//	public boolean TERMINATED$ = false;
 	private static int SEQU = 0; // Used by SIM_TRACE
 	private int sequ = 0; // Used by SIM_TRACE
 
@@ -87,7 +88,9 @@ public class Process$ extends Link$ {
 				if (inner != null)
 					inner.STM();
 				TRACE_END_STM$();
-				TERMINATED$ = true;
+				//TERMINATED$ = true;
+				CUR$.STATE$=OperationalState.terminated;
+				//Util.BREAK("Process$.CODE$: Terminate "+this);
 				((Simulation$) SL$).passivate();
 				throw new RuntimeException("INTERNAL error:  Process passes through final end.");
 			}
@@ -108,7 +111,8 @@ public class Process$ extends Link$ {
 	}
 
 	public boolean terminated() {
-		return (TERMINATED$);
+//		return (TERMINATED$);
+		return (CUR$.STATE$==OperationalState.terminated);
 	}
 
 	public double evtime() {
@@ -131,7 +135,7 @@ public class Process$ extends Link$ {
 	}
 
 	public String toString() {
-		return ("Process$(" + this.getClass().getSimpleName() + ") TERMINATED$=" + TERMINATED$);
+		return ("Process$(" + this.getClass().getSimpleName() + ") TERMINATED$=" + terminated());
 	}
 
 }

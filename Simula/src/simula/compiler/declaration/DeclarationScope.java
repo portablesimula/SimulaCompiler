@@ -330,7 +330,7 @@ public abstract class DeclarationScope extends Declaration {
       }
       scope=scope.declaredIn;
     }
-    Util.BREAK("DeclarationScope.edJavaClassName("+identifier+") ==> "+id);
+    //Util.BREAK("DeclarationScope.edJavaClassName("+identifier+") ==> "+id);
     return(id);
   }
 

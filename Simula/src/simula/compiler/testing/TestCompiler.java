@@ -67,7 +67,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/ClassGlyph.sim";
 		// String name=Global.packetName+"/sim/ClassGlyph2.sim";
 		// String name=Global.packetName+"/sim/CoroutineSample.sim";
-		// String name=Global.packetName+"/sim/DetachSamples.sim"; 
+		 String name=Global.packetName+"/sim/DetachSamples.sim"; 
 		// String name=Global.packetName+"/sim/DecimalEdit.sim"; 
 		// String name=Global.packetName+"/sim/DisplaySamples.sim";
 		// String name=Global.packetName+"/sim/Editing.sim";
@@ -75,7 +75,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/ExternalClass1.sim";
 		// String name=Global.packetName+"/sim/ExternalClass2.sim";
 		// String name=Global.packetName+"/sim/FileSamples.sim";
-		 String name=Global.packetName+"/sim/FittingRoom.sim";
+		// String name=Global.packetName+"/sim/FittingRoom.sim";
 		// String name=Global.packetName+"/sim/ForWhileSamples.sim";
 		// String name=Global.packetName+"/sim/FunctionCall.sim";
 		// String name=Global.packetName+"/sim/Gauss.sim";
@@ -98,7 +98,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/QPSample3.sim";
 		// String name=Global.packetName+"/sim/QPSample4.sim";
 		// String name=Global.packetName+"/sim/RemoteProcedure.sim";
-		// String name=Global.packetName+"/sim/Simtest1.sim";
+		// String name=Global.packetName+"/sim/SmlTest1.sim";
 		// String name=Global.packetName+"/sim/SubClassTest.sim";
 		// String name=Global.packetName+"/sim/TextSamples.sim";
 		// String name=Global.packetName+"/sim/VariableByName.sim";
