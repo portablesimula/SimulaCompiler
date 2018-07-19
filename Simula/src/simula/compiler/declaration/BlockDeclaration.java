@@ -571,9 +571,13 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	{ Util.code(indent,"");
 	  Util.code(indent,"   public static void main(String[] args) {");
 //	  Util.code(indent,"     System.out.println(\"Start Execution of "+getJavaIdentifier()+"\");");
-	  Util.code(indent,"     try { new "+getJavaIdentifier()+"(CTX$).STM(); }");
-	  Util.code(indent,"     catch($LABQNT q) { System.err.println(\"ERROR: Illegal GOTO \"+q); q.printStackTrace(); }");
-	  Util.code(indent,"     catch(Throwable t) { System.err.println(\"ERROR: \"+t.getMessage()); t.printStackTrace(); }");
+	  
+//	  Util.code(indent,"     try { new "+getJavaIdentifier()+"(CTX$).STM(); }");
+//	  Util.code(indent,"     catch($LABQNT q) { System.err.println(\"ERROR: Illegal GOTO \"+q); q.printStackTrace(); }");
+//	  Util.code(indent,"     catch(Throwable t) { System.err.println(\"ERROR: \"+t.getMessage()); t.printStackTrace(); }");
+
+	  Util.code(indent,"     new "+getJavaIdentifier()+"(CTX$).STM();");
+	  
 //	  Util.code(indent,"     System.out.println(\""+getJavaIdentifier()+" Terminates Normally\");");
 	  Util.code(indent,"   }"); // End of main
 	}
@@ -602,10 +606,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	
 	switch(blockKind)
 	{ case Class:
-	  case PrefixedBlock:
-		  { if(this.isMainModule)
-			  Util.code(indent,"      "+"BPRG(\""+identifier+"\");");
-		    else if(hasNoRealPrefix())
+		  { 
+//			if(this.isMainModule)
+//			  Util.code(indent,"      "+"BPRG(\""+identifier+"\");");
+//		    else
+		    if(hasNoRealPrefix())
 			  Util.code(indent,"      BBLK(); // Iff no prefix");
             break;
           }
@@ -613,6 +618,13 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 			Util.code(indent,"      BBLK();");
 			Util.code(indent,"      BPRG(\""+identifier+"\");");
 			break;
+	  case PrefixedBlock:
+	  { if(this.isMainModule)
+		  Util.code(indent,"      "+"BPRG(\""+identifier+"\");");
+//	    else if(hasNoRealPrefix())
+//		  Util.code(indent,"      BBLK(); // Iff no prefix"); // ER VEL UMULIG ???
+        break;
+      }
 	  case SubBlock:
 	  case Procedure:    Util.code(indent,"      "+"BBLK();");
 		

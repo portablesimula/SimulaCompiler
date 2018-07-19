@@ -79,6 +79,8 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/ForWhileSamples.sim";
 		// String name=Global.packetName+"/sim/FunctionCall.sim";
 		// String name=Global.packetName+"/sim/Gauss.sim";
+		// String name=Global.packetName+"/sim/GotoSample.sim";
+		// String name=Global.packetName+"/sim/GotoSample2.sim";
 		// String name=Global.packetName+"/sim/GotoSamples.sim";
 		// String name=Global.packetName+"/sim/HashingExample.sim";
 		// String name=Global.packetName+"/sim/HelloWord.sim";
