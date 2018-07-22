@@ -1,8 +1,11 @@
 begin
-   integer lsc;
+   integer lsc,count;
    procedure p(b,k); boolean b; integer k;
    begin
-      M:N:
+      M:N:count:=count+1;
+      if count>6 then goto EXIT;
+%      M: outtext("At Label M"); outimage;
+%      N: outtext("At Label N"); outimage;
       if k>0 then p(not b,k-1) else
       begin
          if b then goto L;
@@ -12,7 +15,9 @@ begin
       end;   
    end;
    L: 
-   outtext("Outer LOOP");
+   outtext("Outer LOOP"); outimage;
    p(false,3);
+   count:=count+1;
+   if count>6 then goto EXIT;
    goto L;
-end;   
+EXIT:end;   

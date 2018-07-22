@@ -62,7 +62,7 @@ public class MAIN_PROGRAM$ extends Process$ {
 	}
 
 	public String toString() {
-		return ("MAIN_PROGRAM$ TERMINATED$=" + TERMINATED$);
+		return ("MAIN_PROGRAM$ TERMINATED$=" + terminated());
 	}
 
 }

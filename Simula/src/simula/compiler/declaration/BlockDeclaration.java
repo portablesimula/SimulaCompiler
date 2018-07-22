@@ -529,6 +529,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     //Util.BREAK("BlockDeclaration.doBlockJavaCoding: "+identifier);
 	ASSERT_SEMANTICS_CHECKED(this);
 	JavaModule javaModule=new JavaModule(this);
+	Util.BREAK("Global.javaModules.add: "+javaModule); 
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
@@ -809,14 +810,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   public void doCodeJumpTable(int indent)
   {	if(labelList.isEmpty()) return;
-	Util.code(indent,"switch($LX) {");
-	for(LabelDeclaration label:labelList)
-//		Util.code(indent,"   case "+label.index+": /* Label:"+label.identifier+" */ break;");
-//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.identifier+"); break;");
-//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.index+"); break;");
-		Util.code(indent,"   case "+label.index+": JUMP("+label.index+"); break;");
-	Util.code(indent,"   default:");
-	Util.code(indent,"}"); // End of main
+//	Util.code(indent,"switch($LX) {");
+//	for(LabelDeclaration label:labelList)
+//    //		Util.code(indent,"   case "+label.index+": /* Label:"+label.identifier+" */ break;");
+//	//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.identifier+"); break;");
+//	//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.index+"); break;");
+//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+"); break;");
+//	Util.code(indent,"   default:");
+//	Util.code(indent,"}"); // End of main
+	
+	Util.code(indent,"   JUMP$($LX); // For ByteCode Engineering");
   }
   
 

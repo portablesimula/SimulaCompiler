@@ -115,7 +115,7 @@ public abstract class DeclarationScope extends Declaration {
 	    if(ident.equalsIgnoreCase(virtual.identifier))
 	    	return(new Meaning(Variable.Kind.virtual,virtual,this,this,behindProtected)); 
     }
-    Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+    //Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
     BlockDeclaration prfx=getPrefix();
     if(prfx!=null)
     { Meaning meaning=prfx.findRemoteAttributeMeaning(ident,behindProtected);
@@ -147,7 +147,7 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findVisibleAttributeMeaning
   // ***********************************************************************************************
   public Meaning findVisibleAttributeMeaning(String ident)
-  { //if(ident.equalsIgnoreCase("adHoc00"))Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+  { //if(ident.equalsIgnoreCase("adHoc00")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
 	boolean searchBehindHidden=false;
 	DeclarationScope scope=this;
 	SEARCH:while(scope!=null)

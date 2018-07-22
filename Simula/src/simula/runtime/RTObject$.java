@@ -345,13 +345,19 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	// ************************************************************
 	// *** lOCAL JUMP/LABEL  - Meant for Byte-Code Engineering
 	// ************************************************************
-	public static void LABEL(int labelIndex) {} // Local LABEL - Needs ByteCode Engineering.
-	public static void JUMP(int labelIndex) // Local GOTO - Needs ByteCode Engineering.
-	{ String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";
+	public static void LABEL$(int labelIndex) {} // Local LABEL - Needs ByteCode Engineering.
+//	public static void JUMP(int labelIndex) // Local GOTO - Needs ByteCode Engineering.
+//	{ String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";
+//	  System.out.println("NOTE: "+msg);
+//	  throw new RuntimeException(msg);
+//	}
+	public static void JUMP$(int labelIndex) // Local GOTO - Needs ByteCode Engineering.
+	{ if(labelIndex==0) return;
+	  String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";
 	  System.out.println("NOTE: "+msg);
 	  throw new RuntimeException(msg);
 	}
-	
+
 	
 	
 	// ************************************************************
@@ -386,7 +392,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	// *** GOTO -- To avoid Java-error: "Unreachable code" after GOTO
 	// ************************************************************
     public void GOTO($LABQNT q)
-    { //Util.BREAK("RTObject$.GOTO: "+q);
+    { if(GOTO_TRACING) TRACE("RTObject$.GOTO: "+q);
       throw(q);
     }
 

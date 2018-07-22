@@ -36,7 +36,10 @@ public class JavaModule
 	public String getClassOutputFileName()
 	{ return(Global.tempClassFileDir+Global.packetName+'/'+blockDeclaration.getJavaIdentifier()+".class"); }
 
+	public int getNumberOfLabels()
+	{ return(blockDeclaration.labelList.size()); }
 
+	
 	public void openJavaOutput() 
 	{ enclosingJavaModule=Global.currentJavaModule;
 	  Global.currentJavaModule=this;
@@ -71,5 +74,8 @@ public class JavaModule
 	Global.currentJavaModule=enclosingJavaModule;
 	enclosingJavaModule=null;
   }
+	
+	public String toString()
+	{ return("JavaModule "+blockDeclaration); }
 
 }

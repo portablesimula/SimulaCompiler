@@ -143,6 +143,21 @@ public class SimulaCompiler {
 			    ClassFileUtilities.list(module.javaOutputFileName,javaClass);
 			  }
 			}
+			
+			// ***************************************************************
+			// *** POSSIBLE -- DO BYTE_CODE_ENGINEERING
+			// ***************************************************************
+			for(JavaModule module:Global.javaModules)
+			{ int nLab=module.getNumberOfLabels();
+			  if(nLab>0) new ByteCodeEngineering(module,nLab).doRepairByteCode();
+			}
+			if(Option.TRACE_BYTECODE_OUTPUT)
+			{ for(JavaModule module:Global.javaModules)
+			  {	String classFile=module.getClassOutputFileName();
+			    JavaClass javaClass=ClassFileUtilities.load(classFile);
+			    ClassFileUtilities.list(module.javaOutputFileName,javaClass);
+			  }
+			}
 
 			// ***************************************************************
 			// *** CRERATE .jar FILE  INLINE

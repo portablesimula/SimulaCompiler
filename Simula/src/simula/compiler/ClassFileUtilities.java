@@ -39,7 +39,8 @@ public class ClassFileUtilities {
      */
 //    public void list(String name) {
     public static void list(String name,JavaClass javaClass)
-    { try
+    { Util.BREAK("ClassFileUtilities.list");
+      try
       { if(nocontents)
              System.out.println(javaClass.getClassName());
         else System.out.println(javaClass);             // Dump the contents

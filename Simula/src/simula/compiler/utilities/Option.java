@@ -9,7 +9,7 @@ package simula.compiler.utilities;
 
 public class Option {
 	
-	public static boolean verbose = false;//true;// 
+	public static boolean verbose = true;//false;//true;// 
 	public static boolean WARNINGS=true;
 
 	// Overall TRACING Options
@@ -36,6 +36,7 @@ public class Option {
 	// Java Compiler and Jar-tool Trace Options
 	public static boolean TRACE_JAVAC=false;//true;
 	public static boolean TRACE_JAVAC_OUTPUT=false;//true;
+	public static boolean TRACE_BYTECODE_OUTPUT=false;
 	public static boolean TRACE_JARING=false;//true;
 	public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;//true;
 

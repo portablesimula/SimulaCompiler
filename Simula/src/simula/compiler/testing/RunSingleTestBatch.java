@@ -91,7 +91,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels
+		names.add("simtst54.sim"); // ERR: Test virtual switches and labels
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
@@ -101,7 +101,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
-		names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
+		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.

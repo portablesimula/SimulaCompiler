@@ -41,7 +41,9 @@ public class LabeledStatement extends Statement {
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		statement.doChecking();
+		Util.BREAK("LabeledStatement.doChecking: labels="+labels);
 		for (String label:labels) {
+			Util.BREAK("LabeledStatement.doChecking: label="+label);
 			Meaning meaning = Global.currentScope.findMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
 			decl.doChecking();
@@ -55,7 +57,7 @@ public class LabeledStatement extends Statement {
 		for (String label:labels) {
 			Meaning meaning = Global.currentScope.findMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-			Util.code(indent,"LABEL("+decl.index+"); // "+decl.identifier);
+			Util.code(indent,"LABEL$("+decl.index+"); // "+decl.identifier);
 		}
 		statement.doJavaCoding(indent);
 	}
