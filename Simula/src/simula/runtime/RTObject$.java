@@ -10,6 +10,8 @@ package simula.runtime;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 
+import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
@@ -19,7 +21,7 @@ import simula.compiler.utilities.Util;
 public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	protected static boolean CODE_STEP_TRACING=false;//true;
 	protected static boolean BLOCK_TRACING=false;//true;
-	protected static boolean GOTO_TRACING=false;//true;
+	protected static boolean GOTO_TRACING=true;//false;//true;
 	protected static boolean THREAD_TRACING=false;//true;
 	protected static boolean THREADSWAP_TRACING=false;//true;
 	protected static final boolean QPS_TRACING=false; //true;
@@ -345,13 +347,8 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	// ************************************************************
 	// *** lOCAL JUMP/LABEL  - Meant for Byte-Code Engineering
 	// ************************************************************
-	public static void LABEL$(int labelIndex) {} // Local LABEL - Needs ByteCode Engineering.
-//	public static void JUMP(int labelIndex) // Local GOTO - Needs ByteCode Engineering.
-//	{ String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";
-//	  System.out.println("NOTE: "+msg);
-//	  throw new RuntimeException(msg);
-//	}
-	public static void JUMP$(int labelIndex) // Local GOTO - Needs ByteCode Engineering.
+	public static void LABEL$(int labelIndex) {}  // Local LABEL - Needs ByteCode Engineering.
+	public static void JUMPTABLE$(int labelIndex) // Local GOTO  - Needs ByteCode Engineering.
 	{ if(labelIndex==0) return;
 	  String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";
 	  System.out.println("NOTE: "+msg);
@@ -366,25 +363,26 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	public class $LABQNT extends RuntimeException
 	{ static final long serialVersionUID = 42L;
 	  public RTObject$ SL$; // Static link, i.e. the block in which the label is defined.
+	  public int prefixLevel; // PrefixLevel for classes, zero otherwise.
 	  public int index; // I.e. ordinal number of the Label within its Scope(staticLink).
 	  
 	  // Constructors
-	  public $LABQNT(RTObject$ SL$,int index)
-	  { this.SL$=SL$; this.index=index;
+	  public $LABQNT(RTObject$ SL$,int prefixLevel,int index)
+	  { this.SL$=SL$; this.prefixLevel=prefixLevel; this.index=index;
 	    //Util.ASSERT(this.index>0,"Invariant");
 	    //Util.BREAK("NEW LABQNT: SL="+SL$+", index="+index);
 	  }
 	  
-	  // Constructors
-	  public $LABQNT(RTObject$ SL$,$LABQNT lab)
-	  { //Util.ASSERT(lab!=null,"Invariant");
-		this.SL$=SL$; this.index=lab.index;
-	    //Util.ASSERT(this.index>0,"Invariant");
-	    //Util.BREAK("NEW(2) LABQNT: SL="+SL$+", index="+index);
-	  }
+//	  // Constructors
+//	  public $LABQNT(RTObject$ SL$,$LABQNT lab)
+//	  { //Util.ASSERT(lab!=null,"Invariant");
+//		this.SL$=SL$; this.index=lab.index;
+//	    //Util.ASSERT(this.index>0,"Invariant");
+//	    //Util.BREAK("NEW(2) LABQNT: SL="+SL$+", index="+index);
+//	  }
 	  
 	  public String toString()
-	  { return("$LABQNT("+SL$+", LABEL#"+index+')'); }
+	  { return("$LABQNT("+SL$+",prefixLevel="+prefixLevel+", LABEL#"+index+')'); }
 	  
 	}
 
@@ -738,14 +736,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 
 //    // Runnable Body
     public RTObject$ START() { START(this); return(this); }
-    public void run()
-//    { try {	STM(); }
-//      catch($LABQNT q)
-//      {
-//    	throw new RuntimeException("NOT IMPLEMENTED: GOTO "+q);  
-//      }
-//   	}
-    { STM(); }
+    public void run() { STM(); }
     
 //    private static int SEQU$=1;
 	public void OLD_START(RTObject$ ins)
@@ -879,8 +870,14 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
       if(simulaSourceLine<=1)
            line="J"+elt.getLineNumber();
       else line="S"+simulaSourceLine;
-      System.out.println(elt.getFileName()+" LINE "+line+": "+msg);    	
-      printStaticContextChain();
+//      System.out.println(elt.getFileName()+" LINE "+line+": "+msg);    	
+      RT_BREAK(elt.getFileName()+" LINE "+line+": "+msg);    	
+//      printStaticContextChain();
+    }
+    
+    public static void RT_BREAK(String msg)
+    { System.err.println(msg+": <");
+      try {Thread.sleep(2000); } catch(Exception e) {}
     }
 	
     public void TRACE_BEGIN_DCL$() { TRACE_BEGIN_DCL$(-1); }

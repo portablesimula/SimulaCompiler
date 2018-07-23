@@ -390,7 +390,18 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     for(Declaration dcl:declarationList) dcl.doChecking();
     for(Statement stm:statements) stm.doChecking();
     int labelIndex=1;
-	for(LabelDeclaration label:labelList) label.index=labelIndex++;
+	for(LabelDeclaration label:labelList)
+	{ label.prefixLevel=prfx; label.index=labelIndex++;
+      label.myVirtual=findVirtual(label.identifier);
+      //Util.BREAK("BlockDeclaration("+identifier+").doChecking: Find Virtual Label("+label.identifier+")="+label.myVirtual);
+      if(label.myVirtual!=null)
+      { DeclarationScope scope=label.myVirtual.declaredIn;
+        //Util.BREAK("BlockDeclaration("+identifier+").doChecking: Find Virtual Label("+label.identifier+"): scope="+scope);
+        //Util.BREAK("BlockDeclaration("+identifier+").doChecking: Find Virtual Label("+label.identifier+"): label.declaredIn="+label.declaredIn);
+        if(scope==label.declaredIn) label.myVirtual.setLabelMatch(label);
+        else ((BlockDeclaration)label.declaredIn).virtualList.add(myVirtual=new Virtual(label)); 
+      }
+	}
 
     myVirtual=declaredIn.findVirtual(identifier);
     //Util.BREAK("BlockDeclaration("+identifier+").doChecking: myVirtual="+myVirtual);
@@ -429,7 +440,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   private void doPrototypeCoding(int indent)
   {	//String packetName=SimulaCompiler.packetName;
-	Util.code(indent,"// BlockDeclaration.Kind="+blockKind+", BlockLevel="+blockLevel
+	Util.code(indent,"// BlockDeclaration.Kind="+blockKind+", BlockLevel="+blockLevel+", PrefixLevel="+prefixLevel()
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 		      +", detachUsed="+((detachUsed)?"true":"false"));
@@ -529,7 +540,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     //Util.BREAK("BlockDeclaration.doBlockJavaCoding: "+identifier);
 	ASSERT_SEMANTICS_CHECKED(this);
 	JavaModule javaModule=new JavaModule(this);
-	Util.BREAK("Global.javaModules.add: "+javaModule); 
+	//Util.BREAK("Global.javaModules.add: "+javaModule); 
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
@@ -773,15 +784,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	{ Util.code(indent,"       "+externalIdent+" THIS$=("+externalIdent+")CUR$;");
       Util.code(indent,"       LOOP$:while($LX>=0)");
       Util.code(indent,"       { try {");
+	  Util.code(indent,"            JUMPTABLE$($LX); // For ByteCode Engineering");
 	}
-    doCodeJumpTable(indent+3); // Prepare for goto-engineering.
     for(Statement stm:statements) stm.doJavaCoding(indent+3);
 	if(!labelList.isEmpty())
-    { Util.code(indent,"         break LOOP$;");
+    { Util.code(indent,"            break LOOP$;");
       Util.code(indent,"       }");
       Util.code(indent,"       catch($LABQNT q) {");
       Util.code(indent,"           CUR$=THIS$;");
-      Util.code(indent,"           if(q.SL$!=CUR$)");
+//      Util.code(indent,"           if(q.SL$!=CUR$)");
+      Util.code(indent,"           if(q.SL$!=CUR$ || q.prefixLevel!="+prefixLevel()+")");
       Util.code(indent,"           { CUR$.STATE$=OperationalState.terminated;");
       Util.code(indent,"             if(GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
       Util.code(indent,"             throw(q);");
@@ -803,23 +815,6 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
         s.append(",s").append(par.externalIdent); // s to indicate Specified Parameter
     s.append(");"); //runtimeBlockKind=getRTBlockKind();
     return(s.toString());
-  }
-
-  // ***********************************************************************************************
-  // *** Coding Utility: doCodeJumpTable
-  // ***********************************************************************************************
-  public void doCodeJumpTable(int indent)
-  {	if(labelList.isEmpty()) return;
-//	Util.code(indent,"switch($LX) {");
-//	for(LabelDeclaration label:labelList)
-//    //		Util.code(indent,"   case "+label.index+": /* Label:"+label.identifier+" */ break;");
-//	//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.identifier+"); break;");
-//	//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+','+label.index+"); break;");
-//		Util.code(indent,"   case "+label.index+": JUMP("+label.index+"); break;");
-//	Util.code(indent,"   default:");
-//	Util.code(indent,"}"); // End of main
-	
-	Util.code(indent,"   JUMP$($LX); // For ByteCode Engineering");
   }
   
 

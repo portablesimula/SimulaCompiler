@@ -147,10 +147,11 @@ public class SimulaCompiler {
 			// ***************************************************************
 			// *** POSSIBLE -- DO BYTE_CODE_ENGINEERING
 			// ***************************************************************
-			for(JavaModule module:Global.javaModules)
-			{ int nLab=module.getNumberOfLabels();
-			  if(nLab>0) new ByteCodeEngineering(module,nLab).doRepairByteCode();
-			}
+//			for(JavaModule module:Global.javaModules)
+//			{ int nLab=module.getNumberOfLabels();
+//			  if(nLab>0) new ByteCodeEngineering().doRepairByteCode();
+//			}
+			new ByteCodeEngineering().doRepairByteCode();
 			if(Option.TRACE_BYTECODE_OUTPUT)
 			{ for(JavaModule module:Global.javaModules)
 			  {	String classFile=module.getClassOutputFileName();

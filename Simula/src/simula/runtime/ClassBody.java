@@ -1,6 +1,5 @@
 package simula.runtime;
 
-import simula.runtime.RTObject$.$LABQNT;
 
 /**
 * 

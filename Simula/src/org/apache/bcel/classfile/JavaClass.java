@@ -232,7 +232,7 @@ public class JavaClass extends AccessFlags implements Cloneable, Node, Comparabl
      * @throws IOException
      */
     public void dump(final File file) throws IOException {
-    	Util.BREAK("JavaClass.dump file="+file);
+    	//Util.BREAK("JavaClass.dump file="+file);
     	//Util.BREAK("JavaClass.dump file="+file.getAbsolutePath());
         final String parent = file.getParent();
         if (parent != null) {

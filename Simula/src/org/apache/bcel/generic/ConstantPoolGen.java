@@ -96,7 +96,7 @@ public class ConstantPoolGen {
      * @param cs array of given constants, new ones will be appended
      */
     public ConstantPoolGen(final Constant[] cs) {
-        Util.BREAK("NEW ConstantPoolGen");
+        //Util.BREAK("NEW ConstantPoolGen");
         final StringBuilder sb = new StringBuilder(DEFAULT_BUFFER_SIZE);
 
         size = Math.max(DEFAULT_BUFFER_SIZE, cs.length + 64);

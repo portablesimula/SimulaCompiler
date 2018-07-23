@@ -47,35 +47,41 @@ public class ByteCodeEngineering {
 	Vector<LabelHandle> labels;
 	String currentClassFileName;
 	
-	public ByteCodeEngineering(JavaModule module, int nLab) {
-		//Util.BREAK("NEW ByteCodeEngineering: nLab=" + nLab);
-//		this.module = module;
-//		this.label = new InstructionHandle[nLab];
+	public ByteCodeEngineering() {
 	}
 
     public void doRepairByteCode() {
         try {
-        	scanFiles(new File(Global.tempClassFileDir+Global.packetName),Global.tempClassFileDir.length());  // TEST
+//        	listFiles(new File(Global.tempClassFileDir+Global.packetName));  // TEST
+        	scanFiles(new File(Global.tempClassFileDir+Global.packetName));
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-	private void scanFiles(File source,int pathSize ) throws IOException
-	{ BufferedInputStream inpt=null;
-	  try
-	  { if(source.isDirectory())
-	    {
-	      for(File nestedFile:source.listFiles())
-	    	  scanFiles(nestedFile,pathSize);
-	      return;
-	    }
-        String classFileName=source.getPath().replace("\\", "/");
-        if(classFileName.endsWith(".class")) doRepairSingleByteCode(classFileName);
-	  } finally { if(inpt!=null) inpt.close(); }
+//	private void listFiles(File source) throws IOException {
+//		if (source.isDirectory()) {
+//			for (File nestedFile : source.listFiles())
+//				listFiles(nestedFile);
+//			return;
+//		}
+//		String classFileName = source.getPath().replace("\\", "/");
+//		if (classFileName.endsWith(".class"))
+//			System.out.println(classFileName);
+//	}
+
+	private void scanFiles(File source) throws IOException {
+		if (source.isDirectory()) {
+			for (File nestedFile : source.listFiles())
+				scanFiles(nestedFile);
+			return;
+		}
+		String classFileName = source.getPath().replace("\\", "/");
+		if (classFileName.endsWith(".class"))
+			doRepairSingleByteCode(classFileName);
 	}
 
     private void doRepairSingleByteCode(String classFileName) {
         try {
-            Util.BREAK("ByteCodeEngineering.doRepairByteCode: Load "+classFileName);
+            //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Load "+classFileName);
             currentClassFileName=classFileName;
             JavaClass javaClass=ClassFileUtilities.load(classFileName);
             
@@ -92,7 +98,7 @@ public class ByteCodeEngineering {
                 if (!(methods[i].isAbstract() || methods[i].isNative())) {
                 	
               	    String name=methods[i].getName();
-                    Util.BREAK("ByteCodeEngineering.doRepairByteCode: Method "+name);
+                    //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Method "+name);
 
                     if(name.equals("STM"))
                     { MethodGen methodGen = new MethodGen(methods[i], javaClass.getClassName(), constantPoolGen);
@@ -133,7 +139,7 @@ public class ByteCodeEngineering {
         	Instruction ins=handle.getInstruction();
             if(ins instanceof INVOKESTATIC) {
             	String methodName=getMethodName((INVOKESTATIC)ins, constantPool);
-                if(methodName.equals("JUMP$")) treatJUMP(instructionList,handle);
+                if(methodName.equals("JUMPTABLE$")) treatJUMPTABLE(instructionList,handle);
             }
         }
         
@@ -216,7 +222,7 @@ public class ByteCodeEngineering {
 	 * <pre>
 	 *    PREV-INSTRUCTION
 	 *    GETFIELD $LX
-	 *    INVOKESTATIC JUMP$
+	 *    INVOKESTATIC JUMPTABLE$
 	 *    NEXT-INSTRUCTION
 	 * </pre>
 	 * Replace it by:
@@ -227,16 +233,16 @@ public class ByteCodeEngineering {
 	 *    NEXT-INSTRUCTION
 	 * </pre>
 	 */
-	private void treatJUMP(InstructionList instructionList,InstructionHandle invokeStatic)
-    { // Util.BREAK("ByteCodeEngineering.treatJUMP: GOT JUMP -- InstructionHandle "+invokeStatic);
+	private void treatJUMPTABLE(InstructionList instructionList,InstructionHandle invokeStatic)
+    { // Util.BREAK("ByteCodeEngineering.treatJUMPTABLE: GOT JUMP -- InstructionHandle "+invokeStatic);
       InstructionHandle getfield=invokeStatic.getPrev();  
       Instruction maybeGetfieldInstruction=getfield.getInstruction();
 	  if(maybeGetfieldInstruction instanceof GETFIELD)
 	  { //GETFIELD getfieldInstruction=(GETFIELD)maybeGetfieldInstruction;
-		// Util.BREAK("ByteCodeEngineering.treatJUMP: GOT JUMP -- InstructionHandle "+invokeStatic);
+		// Util.BREAK("ByteCodeEngineering.treatJUMPTABLE: GOT JUMP -- InstructionHandle "+invokeStatic);
 		InstructionHandle PREV=getfield.getPrev();
 		InstructionHandle NEXT=invokeStatic.getNext();
-		if(TRACE_REPAIRING) listInstructionSequence("ByteCodeEngineering.treatJUMP: GOT ",PREV,8);
+		if(TRACE_REPAIRING) listInstructionSequence("ByteCodeEngineering.treatJUMPTABLE: GOT ",PREV,8);
 		
 //		int nLab=label.length;
 		int nLab=labels.size();
@@ -245,8 +251,8 @@ public class ByteCodeEngineering {
 
 		int[] match=new int[nLab];
 		for(int i=0;i<nLab;i++) match[i]=i+1;
-//		for(int i=0;i<nLab;i++)System.out.println("ByteCodeEngineering.treatJUMP: MATCH["+i+"] ="+match[i]);
-//		for(int i=0;i<nLab;i++)System.out.println("ByteCodeEngineering.treatJUMP: LABEL["+i+"] ="+label[i]);
+//		for(int i=0;i<nLab;i++)System.out.println("ByteCodeEngineering.treatJUMPTABLE: MATCH["+i+"] ="+match[i]);
+//		for(int i=0;i<nLab;i++)System.out.println("ByteCodeEngineering.treatJUMPTABLE: LABEL["+i+"] ="+label[i]);
 		TABLESWITCH tableSwitch=new TABLESWITCH(match,label,NEXT);
 		if(TRACE_REPAIRING) exploreTableswitch(tableSwitch);
 
@@ -263,9 +269,9 @@ public class ByteCodeEngineering {
         }
 
 		instructionList.setPositions(); // Give all instructions their position number (offset in byte stream), i.e., make the list ready to be dumped.
-		if(TRACE_REPAIRING) listInstructionSequence("ByteCodeEngineering.treatJUMP: NEW ",PREV,8);
+		if(TRACE_REPAIRING) listInstructionSequence("ByteCodeEngineering.treatJUMPTABLE: NEW ",PREV,8);
 		if(TRACE_REPAIRING) exploreTableswitch(tableSwitch);
-	  } else Util.NOT_IMPLEMENTED("ByteCodeEngineering.treatJUMP: Unknown Instruction Sequence");
+	  } else Util.NOT_IMPLEMENTED("ByteCodeEngineering.treatJUMPTABLE: Unknown Instruction Sequence");
 	}
 
 	private void exploreTableswitch(TABLESWITCH tableSwitch) {

@@ -34,7 +34,8 @@ public class Virtual extends Declaration {
 	public Virtual.Kind kind; // Simple | Procedure
 	
 	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
-    public BlockDeclaration match; // Set during coChecking
+//    public BlockDeclaration match; // Set during coChecking
+    public Declaration match; // Set during coChecking - Label or Block Declaration
 
     public enum Kind { Procedure, Label, Switch }
 
@@ -100,6 +101,14 @@ public class Virtual extends Declaration {
 		//Util.BREAK("NEW Extra-Virtual: "+this);
 		SET_SEMANTICS_CHECKED();
 	}
+	
+	public Virtual(LabelDeclaration match) {
+		// NOTE: Called during Checking
+		this(match.identifier,match.type,Virtual.Kind.Label,null);
+		this.match=match;
+		//Util.BREAK("NEW Extra-Virtual: "+this);
+		SET_SEMANTICS_CHECKED();
+	}
 
 	public void setMatch(BlockDeclaration match)
 	{ this.match=match;
@@ -110,6 +119,11 @@ public class Virtual extends Declaration {
 		  
 	    }
 	  }
+	}
+
+	public void setLabelMatch(LabelDeclaration match)
+	{ this.match=match;
+	  //Util.BREAK("Virtual.setMatch: Label "+match);
 	}
 	
 	public void doChecking() {
@@ -124,11 +138,20 @@ public class Virtual extends Declaration {
 	public void doJavaCoding(int indent)
 	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
-  	  // public $PRCQNT P() { return(new $PRCQNT(this,VirtualSample$SubBlock9$P.class)); }
-//	  String quantity=(type==Type.Label)?"$LABQNT ":"$PRCQNT ";
 	  String quantity=(kind==Kind.Label)?"$LABQNT ":"$PRCQNT ";
 	  String matchCode="{ throw new RuntimeException(\"No Virtual Match\"); }";
-	  if(match!=null) matchCode="{ return(new $PRCQNT(this,"+match.getJavaIdentifier()+".class)); }";
+	  if(match!=null)
+	  { if(kind==Kind.Label)
+	    { // public $LABQNT L() { return(new $LABQNT(this,prefixLevel,index); // Local Label #1=L
+		  LabelDeclaration label=(LabelDeclaration)match;
+		  matchCode="{ return(new $LABQNT(this,"+label.prefixLevel+','+label.index+")); } // Local Label #"+label.index+'='+label.identifier;
+		  
+	    } else
+	    { // public $PRCQNT P() { return(new $PRCQNT(this,VirtualSample$SubBlock9$P.class)); }
+		  matchCode="{ return(new $PRCQNT(this,"+match.getJavaIdentifier()+".class)); }";
+	    }
+	  }
+  	  
 	  Util.code(indent,"public "+quantity+getJavaIdentifier()+"() "+matchCode);
 	}
 	

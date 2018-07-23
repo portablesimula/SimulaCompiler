@@ -1,19 +1,50 @@
 BEGIN
 
-   procedure trace(t); value t; text t; begin
-      outtext(t); outimage;
-   end trace;
+   Class A (L, S, I);
+      Boolean L, S;
+      Integer I;
+      Virtual: Label L1, L2;
+               Switch S1, S2;
+   BEGIN
+      Switch S1 := L1, L2;
+
+      If L then Goto L1;
+      If S then Goto S1 (I);
+
+      Goto OutA;
+
+      L1: Outtext (" A.L1 "); Goto OutA;
+      L2: Outtext (" A.L2 *****************************************************************************************************************"); outimage; Goto OutA;
+      L3: Outtext (" A.L3 "); Goto OutA;
+
+     OutA:
+   END;
 
 
-   ref(Y) yy;
+   A Class B (L, S, I);
+      Boolean L, S;
+      Integer I;
+      Virtual: Label L3;
+   BEGIN
+      Switch S2 := L3, L4;
 
-   class Y; begin
-      trace("new Y");        detach;
-   end Y;
+      If L then Goto L2;
+      If S then Goto S2 (I);
+
+      Goto OutB;
+
+      L2: Outtext (" B.L2 "); Goto OutB;
+      L3: Outtext (" B.L3 "); Goto OutB;
+      L4: Outtext (" B.L4 "); Goto OutB;
+
+     OutB:
+   END;
 
 
-   Outtext ("--- START AD'HOC 00"); Outimage;
+   Ref (A) RA;
+   Ref (B) RB;
 
-   yy :- new Y;
+   RA :- New A (false, true, 2);
+   RB :- New B (true, false, 0, false, true, 1);
 
  END

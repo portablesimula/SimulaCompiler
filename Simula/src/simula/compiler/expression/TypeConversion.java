@@ -8,7 +8,6 @@
 package simula.compiler.expression;
 
 import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
@@ -87,15 +86,16 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		
 		String evaluated=expression.toJavaCode();
 		
-		if(type==Type.Label)
-		{ Util.ASSERT(expression instanceof Variable,"Invariant");
-		  Util.ASSERT(expression.type==Type.Label,"Invariant");
-		  Variable lab=(Variable)expression;
-		  String staticLink=lab.meaning.edStaticLink();
-		  LabelDeclaration decl=(LabelDeclaration)lab.meaning.declaredAs;
-		  Util.BREAK("Dette MÅ Sjekkes !!!"); Util.EXIT();  // TODO: DETTE MÅ SJEKKES
-		  return("new $LABQNT("+staticLink+","+decl.index+")");
-		}
+//		if(type==Type.Label) // BRUKES IKKE MER ???
+//		{ Util.ASSERT(expression instanceof Variable,"Invariant");
+//		  Util.ASSERT(expression.type==Type.Label,"Invariant");
+//		  Variable lab=(Variable)expression;
+//		  String staticLink=lab.meaning.edStaticLink();
+//		  LabelDeclaration decl=(LabelDeclaration)lab.meaning.declaredAs;
+//		  System.out.println("Dette MÅ Sjekkes !!!");
+//		  Util.BREAK("Dette MÅ Sjekkes !!!"); Util.EXIT();  // TODO: DETTE MÅ SJEKKES
+//		  return("new $LABQNT("+staticLink+",0,"+decl.index+")");
+//		}
 		
 		String cast=type.toJavaType();
 		if(expression instanceof Variable)

@@ -10,6 +10,7 @@ package simula.compiler.expression;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.StandardProcedure;
 import simula.compiler.declaration.Virtual;
@@ -199,6 +200,12 @@ public class Variable extends Expression {
 			id=CallProcedure.asNormalMethod(this);
 		}
 		return(id);
+	  }
+	  else if(decl instanceof LabelDeclaration)
+	  { //Util.BREAK("LABEL DECLARATION: "+decl);
+	    LabelDeclaration label=(LabelDeclaration)decl;
+	    //Util.BREAK("LABEL DECLARATION: myVirtual="+label.myVirtual);
+	    if(label.myVirtual!=null) id=id+"()"; // Access Virtual Label as Method
 	  }
 	  // VANLIG VARIABEL/PARAMETER ...
 	  //Util.BREAK("VANLIG VARIABEL/PARAMETER ...");

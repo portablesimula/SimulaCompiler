@@ -23,7 +23,7 @@ public class ClassFileUtilities {
     static boolean nocontents=false;//true;
     
     public static JavaClass load(String fileName)
-    { Util.BREAK("Load: "+fileName);
+    { //Util.BREAK("Load: "+fileName);
       JavaClass javaClass=null;
       try 
       { javaClass = new ClassParser(fileName).parse(); } // May throw IOException
@@ -39,7 +39,7 @@ public class ClassFileUtilities {
      */
 //    public void list(String name) {
     public static void list(String name,JavaClass javaClass)
-    { Util.BREAK("ClassFileUtilities.list");
+    { //Util.BREAK("ClassFileUtilities.list");
       try
       { if(nocontents)
              System.out.println(javaClass.getClassName());
