@@ -56,13 +56,13 @@ public class RunSingleTestBatch {
 		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
-		//names.add("simtst26.sim"); // err: Designational expressions, goto statement and switch declaration.
+		//names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
 		//names.add("simtst27.sim"); // OK:  Test while-loops.
 		//names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
 		//names.add("simtst29.sim"); // OK:  Procedure parameters by value
 		//names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 
-		//names.add("simtst31.sim"); // err: Labels and switches as parameters to procedures
+		//names.add("simtst31.sim"); // OK:  Labels and switches as parameters to procedures
 		//names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
 		//names.add("simtst33.sim"); // OK:  Test call by reference
 		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
@@ -91,17 +91,17 @@ public class RunSingleTestBatch {
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		names.add("simtst54.sim"); // ERR: Test virtual switches and labels
+		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
-		//names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
-		//names.add("simtst59.sim"); // ERR: Virtual label in external class.
+		names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
+		names.add("simtst59.sim"); // ERR: Virtual label in external class.  ERROR - GOTO VIRTUAL LABEL IN INNER PART
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
-		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.
+		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.  Re-trow
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.

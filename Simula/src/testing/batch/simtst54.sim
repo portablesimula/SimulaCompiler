@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =====================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 54
 %
@@ -9,8 +8,30 @@
 % ====================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=TRUE;
 
    text t;
+
+   Text PROCEDURE edInt(i,n); integer i,n;
+   begin Text e; e:-blanks(n); e.putint(i);
+         edInt:-e;
+   end;
+   
+   Text PROCEDURE edBool(b); Boolean b;
+   begin edBool:-if b then "TRUE" else "FALSE"; end;
+   
+   PROCEDURE trace(msg); text msg;
+   begin
+      if verbose then
+      begin
+         Text img=copy(sysout.image.strip);
+         sysout.image.setpos (1);
+         sysout.image := notext ;
+         outtext(msg & " - PATH=" & img);
+         outimage;
+         outtext(img);
+      end;   
+   end;
 
    Class A (L, S, I);
       Boolean L, S;
@@ -20,8 +41,11 @@ BEGIN
    BEGIN
       Switch S1 := L1, L2;
 
+      trace("IN A JUST BEFORE: If L then Goto L1; - L = " & edBool(L));
       If L then Goto L1;
-      If S then Goto S1 (I);
+
+      trace("IN A JUST BEFORE: If S then Goto S1(I); - I=" & edInt(i,2) & ", S=" & edBool(S));
+      If S then Goto S1(I);
 
       Goto OutA;
 
@@ -38,8 +62,12 @@ BEGIN
       Virtual: Label L3;
    BEGIN
       Switch S2 := L3, L4;
+      
 
+      trace("IN B JUST BEFORE: If L then Goto L2; - L=" & (if L then "TRUE" else "FALSE"));
       If L then Goto L2;
+
+      trace("IN B JUST BEFORE: If S then Goto S2(I); - I=" & edInt(i,2) & ", S=" & edBool(S));
       If S then Goto S2 (I);
 
       Goto OutB;

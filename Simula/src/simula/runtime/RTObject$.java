@@ -417,15 +417,19 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
         public void uncaughtException(Thread thread, Throwable e) {
         	String who="Thread:"+thread.getName()+'['+obj+']';
         	if(GOTO_TRACING) System.out.println(who + " throws exception: " + e);
+            if(GOTO_TRACING) e.printStackTrace(); 
             if(e instanceof $LABQNT) {
             	if(GOTO_TRACING) System.err.println("POSSIBLE GOTO OUT OF COMPONENT "+obj.edString());
+            	if(GOTO_TRACING) System.out.println("POSSIBLE GOTO OUT OF COMPONENT "+obj.edString());
             	RTObject$ DL=obj.DL$;
             	if(DL!=null && DL!=CTX$)
             	{ if(GOTO_TRACING) System.err.println("DL="+DL.edString());
+            	  if(GOTO_TRACING) System.out.println("DL="+DL.edString());
             	  DL.PENDING_EXCEPTION$=(RuntimeException)e;
             	  DL.resumeThread();
             	} else {
             		System.err.println(who+": SIMULA RUNTIME ERROR: Illegal GOTO "+e); e.printStackTrace();
+            		System.out.println(who+": SIMULA RUNTIME ERROR: Illegal GOTO "+e); e.printStackTrace();
             	    shutDown(-1);
             	}
             }

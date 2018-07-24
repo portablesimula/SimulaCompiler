@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 59
 %
@@ -20,8 +19,10 @@ BEGIN
    Outimage ; Outimage ;
 
    c59 begin
+      trace("AT BEGIN Simtst59");
       i := 3 ;
    L :
+      trace("AT LABEL L IN Simtst59");
       if i <> 1 then
       begin
          Outtext ("*** error : Value of i : ") ;

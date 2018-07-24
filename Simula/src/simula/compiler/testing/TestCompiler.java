@@ -84,7 +84,8 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/GotoSample2.sim";
 		// String name=Global.packetName+"/sim/GotoSample3.sim";   // ERROR 
 		// String name=Global.packetName+"/sim/GotoSample4.sim";
-		 String name=Global.packetName+"/sim/GotoSample5.sim";
+		// String name=Global.packetName+"/sim/GotoSample5.sim";
+		 String name=Global.packetName+"/sim/GotoSample6.sim";   // ERROR
 		// String name=Global.packetName+"/sim/HashingExample.sim";
 		// String name=Global.packetName+"/sim/HelloWord.sim";
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";

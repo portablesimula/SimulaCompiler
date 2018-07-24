@@ -245,6 +245,7 @@ public class ImageFile$ extends FILE$ {
 	 */
 	public void outtext(String s) { outtext(new TXT$(s)); }
 	public void outtext(TXT$ t) {
+		if(t==null) return;
 		if ((pos() > 1) && (t.length() > length() - pos() + 1))	outimage();
 		t.setpos(1);
 		while (t.more()) outchar(t.getchar());
