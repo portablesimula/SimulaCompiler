@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import simula.compiler.utilities.Util;
-
 /**
  * The Class OutFile.
  * <p>
@@ -53,13 +51,13 @@ public class OutFile$ extends ImageFile$ {
 	// Constructor
    public OutFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$();
+ 	  TRACE_BEGIN_DCL$("OutFile$");
       // Create Class Body
-      CODE$=new ClassBody(CODE$,this) {
+      CODE$=new ClassBody(CODE$,this,2) {
          public void STM() {
-        	 TRACE_BEGIN_STM$(inner);
+        	 TRACE_BEGIN_STM$("OutFile$",inner);
              if(inner!=null) inner.STM();
-             TRACE_END_STM$();
+             TRACE_END_STM$("OutFile$");
       }};
    }
    // Class Statements
@@ -174,7 +172,7 @@ public class OutFile$ extends ImageFile$ {
 	 * indicator is set to 1.
 	 */
 	public void outimage() {
-		Util.BREAK("OutFile.outimage(), image=" + image);
+		//Util.BREAK("OutFile.outimage(), image=" + image);
 		if (!OPEN$)
 			throw new RuntimeException("File not opened");
 		try {

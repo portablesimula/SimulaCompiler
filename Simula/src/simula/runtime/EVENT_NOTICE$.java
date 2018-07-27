@@ -7,8 +7,6 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-
 /**
 * 
 * @author SIMULA Standards Group
@@ -22,15 +20,15 @@ public class EVENT_NOTICE$ extends Link$ {
 	// Constructor
     public EVENT_NOTICE$(Simulation$ staticLink,float EVTIME,Process$ PROC) {
        super(staticLink);
-       TRACE_BEGIN_DCL$();
+       TRACE_BEGIN_DCL$("EVENT_NOTICE$");
 	   SIMULATION=staticLink;
        this.EVTIME = EVTIME;
        this.PROC = PROC;
-       CODE$=new ClassBody(CODE$,this) {
+       CODE$=new ClassBody(CODE$,this,2) {
           public void STM() {
-        	 TRACE_BEGIN_STM$(inner);
+        	 TRACE_BEGIN_STM$("EVENT_NOTICE$",inner);
              if(inner!=null) inner.STM();
-             TRACE_END_STM$();
+             TRACE_END_STM$("EVENT_NOTICE$");
        }};
     }
 	

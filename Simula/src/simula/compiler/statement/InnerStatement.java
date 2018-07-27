@@ -26,7 +26,10 @@ public class InnerStatement extends Statement {
 	
 	public void doJavaCoding(int indent) {
 		Global.sourceLineNumber=lineNumber;
-		Util.code(indent,"if(inner!=null) inner.STM();");
+		Util.code(indent,"if(inner!=null) {");
+		Util.code(indent,"   inner.STM();");
+		Util.code(indent,"   TRACE_BEGIN_STM_AFTER_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
+		Util.code(indent,"}");
 	}
 
 	public void print(String indent, String tail) {

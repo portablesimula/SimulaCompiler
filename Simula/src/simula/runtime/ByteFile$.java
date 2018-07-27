@@ -7,7 +7,6 @@
  */
 package simula.runtime;
 
-
 /**
  * The class bytefile is the common prefix class for all byte-oriented files.
  * 
@@ -40,12 +39,12 @@ public class ByteFile$ extends FILE$ {
 	// Constructor
     public ByteFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$();
-      CODE$=new ClassBody(CODE$,this) {
+ 	  TRACE_BEGIN_DCL$("ByteFile$");
+      CODE$=new ClassBody(CODE$,this,1) {
          public void STM() {
-       	    TRACE_BEGIN_STM$(inner);
+       	    TRACE_BEGIN_STM$("ByteFile$",inner);
             if(inner!=null) inner.STM();
-            TRACE_END_STM$();
+            TRACE_END_STM$("ByteFile$");
       }};
     }
     // Class Statements

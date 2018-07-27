@@ -7,8 +7,6 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-
 /**
  * The class file.
  * <p>
@@ -53,17 +51,17 @@ public class FILE$ extends CLASS$ {
    public FILE$(RTObject$ staticLink,TXT$ FILENAME$) {
       super(staticLink);
       BBLK(); // Iff no prefix
- 	  TRACE_BEGIN_DCL$();
+ 	  TRACE_BEGIN_DCL$("FILE$");
       this.FILENAME$ = FILENAME$;
       // Create Class Body
-      CODE$=new ClassBody(CODE$,this) {
+      CODE$=new ClassBody(CODE$,this,0) {
          public void STM() {
-       	    TRACE_BEGIN_STM$(inner);
+       	    TRACE_BEGIN_STM$("FILE$",inner);
             if(FILENAME$==null) {
     			throw new RuntimeException("Illegal File Name");
             }
             if(inner!=null) inner.STM();
-            TRACE_END_STM$();
+            TRACE_END_STM$("FILE$");
             EBLK(); // Iff no prefix
       }};
    }

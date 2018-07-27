@@ -7,8 +7,6 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-
 /**
  * <pre>
  *  process class MAIN_PROGRAM;
@@ -41,11 +39,11 @@ public class MAIN_PROGRAM$ extends Process$ {
 	// Constructor
 	public MAIN_PROGRAM$(RTObject$ staticLink) {
 		super(staticLink);
-		TRACE_BEGIN_DCL$();
+		TRACE_BEGIN_DCL$("MAIN_PROGRAM$");
 		// Create Class Body
-		CODE$ = new ClassBody(CODE$, this) {
+		CODE$ = new ClassBody(CODE$, this,3) {
 			public void STM() {
-				TRACE_BEGIN_STM$(inner);
+				TRACE_BEGIN_STM$("MAIN_PROGRAM$",inner);
 				while (true)
 					detach();
 			}

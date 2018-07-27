@@ -7,8 +7,6 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-
 /**
  * 
  * The system class "simulation" may be considered an "application package"
@@ -99,11 +97,11 @@ public class Simulation$ extends Simset$ {
 	// Constructor
 	public Simulation$(RTObject$ staticLink) {
 		super(staticLink);
-		TRACE_BEGIN_DCL$();
+		TRACE_BEGIN_DCL$("Simulation$");
 		// Create Class Body
-		CODE$ = new ClassBody(CODE$, this) {
+		CODE$ = new ClassBody(CODE$, this,1) {
 			public void STM() {
-				TRACE_BEGIN_STM$(inner);
+				TRACE_BEGIN_STM$("Simulation$",inner);
 				SQS = (Head$) new Head$(Simulation$.this).STM();
 				main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START();
 				main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM();
@@ -111,7 +109,7 @@ public class Simulation$ extends Simset$ {
 				main.EVENT.into(SQS);
 				if (inner != null)
 					inner.STM();
-				TRACE_END_STM$();
+				TRACE_END_STM$("Simulation$");
 			}
 		};
 	}

@@ -151,14 +151,18 @@ public class SimulaCompiler {
 //			{ int nLab=module.getNumberOfLabels();
 //			  if(nLab>0) new ByteCodeEngineering().doRepairByteCode();
 //			}
+		    //ClassFileUtilities.list("C:/Users/YSTEIN~1/AppData/Local/Temp/GotoSample6Classes/testing/GotoSample6$B$1.class"); // AD'HOC
 			new ByteCodeEngineering().doRepairByteCode();
+		    //ClassFileUtilities.list("C:/Users/YSTEIN~1/AppData/Local/Temp/GotoSample6Classes/testing/GotoSample6$B$1.class"); // AD'HOC
 			if(Option.TRACE_BYTECODE_OUTPUT)
 			{ for(JavaModule module:Global.javaModules)
 			  {	String classFile=module.getClassOutputFileName();
-			    JavaClass javaClass=ClassFileUtilities.load(classFile);
-			    ClassFileUtilities.list(module.javaOutputFileName,javaClass);
+//			    JavaClass javaClass=ClassFileUtilities.load(classFile);
+//			    ClassFileUtilities.list(module.javaOutputFileName,javaClass);
+			    ClassFileUtilities.list(classFile);
 			  }
 			}
+			
 
 			// ***************************************************************
 			// *** CRERATE .jar FILE  INLINE

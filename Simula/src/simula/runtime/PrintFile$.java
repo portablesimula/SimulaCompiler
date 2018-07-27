@@ -80,14 +80,14 @@ public class PrintFile$ extends OutFile$ {
 	// Constructor
     public PrintFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$();
-      CODE$=new ClassBody(CODE$,this) {
+ 	  TRACE_BEGIN_DCL$("PrintFile$");
+      CODE$=new ClassBody(CODE$,this,3) {
          public void STM() {
-       	    TRACE_BEGIN_STM$(inner);
+       	    TRACE_BEGIN_STM$("PrintFile$",inner);
             LINES_PER_PAGE$=132;
             SPACING$=1;
             if(inner!=null) inner.STM();
-            TRACE_END_STM$();
+            TRACE_END_STM$("PrintFile$");
       }};
     }
     // Class Statements

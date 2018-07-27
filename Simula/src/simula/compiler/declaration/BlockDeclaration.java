@@ -20,6 +20,7 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
+import simula.runtime.RTObject$.$LABQNT;
 
 /**
  * </pre>
@@ -444,6 +445,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 		      +", detachUsed="+((detachUsed)?"true":"false"));
+//	Util.code(indent,"public final int prefixLevel="+prefixLevel()+";");
+	Util.code(indent,"public int prefixLevel() { return("+prefixLevel()+"); }");
 	if(isQPSystemBlock())
 	Util.code(indent,"public boolean isQPSystemBlock() { return(true); }");
 	if(isDetachUsed())
@@ -491,12 +494,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   	ASSERT_SEMANTICS_CHECKED(this);
   	Global.currentScope=this;
     Util.code(indent,"{");
-	Util.code(indent,"   TRACE_BEGIN_DCL$("+Global.sourceLineNumber+");");
+	Util.code(indent,"   TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
 	for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
     for(Iterator<Declaration> it=declarationList.iterator();it.hasNext();) it.next().doJavaCoding(indent);
-	Util.code(indent,"   TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"   TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     for(Statement stm:statements) stm.doJavaCoding(indent);
-	Util.code(indent,"   TRACE_END_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"   TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     Util.code(indent,"}");
     Global.currentScope=declaredIn;
   }
@@ -519,12 +522,12 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	  Util.code(indent,"   "+type.toJavaType()+' '+"$result"+'='+type.edDefaultValue()+';');
 	}
   	
-	Util.code(indent,"   TRACE_BEGIN_DCL$("+Global.sourceLineNumber+");");
+	Util.code(indent,"   TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
 	for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
     for(Declaration decl:declarationList) decl.doJavaCoding(indent+1);
-	Util.code(indent,"   TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"   TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     for(Statement stm:statements) stm.doJavaCoding(indent+1);
-	Util.code(indent,"   TRACE_END_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"   TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
   	if(type!=null) Util.code(indent,"   return($result);");
   	Util.code(indent,"}");
   	Global.currentScope=declaredIn;
@@ -564,7 +567,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	}
 	if(!labelList.isEmpty())
 	{ Util.code(indent,"   // Declare local labels");
-	  Util.code(indent,"   public int $LX;");
+	  //Util.code(indent,"   public int JTX$;"); // Moved to RTObject$
 	  for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
 	}
 	Util.code(indent,"   // Declare locals as attributes");
@@ -644,7 +647,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	}
 
 	Util.code(indent,"      // Declaration Code");
-    Util.code(indent,"      TRACE_BEGIN_DCL$("+Global.sourceLineNumber+");");
+    Util.code(indent,"      TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent+1);
 	switch(blockKind)
 	{ case Class:
@@ -721,9 +724,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	Util.code(indent,"   public RTObject$ STM() {");
 //	Util.code(indent,"      BPRG(\""+identifier+"\");");
 //	Util.code(indent,"      BBLK();");
-	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"      TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
    	codeSTMBody(indent);
-	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"      TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     Util.code(indent,"      EBLK();");
   
 	Util.code(indent,"      "+"return(null);");
@@ -736,9 +739,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeSubBlockCode(int indent)
   {	Util.code(indent,"   // SubBlock Statements");
 	Util.code(indent,"   public RTObject$ STM() {");
-	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"      TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     codeSTMBody(indent);
-	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"      TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     Util.code(indent,"      EBLK();");
 	Util.code(indent,"      return(null);");
     Util.code(indent,"   }"); // End of SubBlock Statements
@@ -750,9 +753,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   public void codeProcedureBody(int indent)
   {	Util.code(indent,"   // Procedure Statements");
     Util.code(indent,"   public "+getJavaIdentifier()+" STM() {");
-	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"      TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
    	codeSTMBody(indent);
-	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"      TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     Util.code(indent,"      EBLK();");
     Util.code(indent,"      return(this);");
     Util.code(indent,"   } // End of Procedure BODY");
@@ -763,11 +766,11 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   // ***********************************************************************************************
   public void doCodeCreateClassBody(int indent)
   {	Util.code(indent,"// Create Class Body");
-	Util.code(indent,"CODE$=new ClassBody(CODE$,this) {");
+	Util.code(indent,"CODE$=new ClassBody(CODE$,this,"+prefixLevel()+") {");
 	Util.code(indent,"   public void STM() {");
-	Util.code(indent,"      TRACE_BEGIN_STM$("+Global.sourceLineNumber+",inner);");
+	Util.code(indent,"      TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+",inner);");
    	codeSTMBody(indent);
-	Util.code(indent,"      TRACE_END_STM$("+Global.sourceLineNumber+");");
+	Util.code(indent,"      TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     
 	if(hasNoRealPrefix())
 		  Util.code(indent,"      EBLK(); // Iff no prefix");
@@ -782,9 +785,9 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
   private void codeSTMBody(int indent)
   { if(!labelList.isEmpty())
 	{ Util.code(indent,"       "+externalIdent+" THIS$=("+externalIdent+")CUR$;");
-      Util.code(indent,"       LOOP$:while($LX>=0)");
+      Util.code(indent,"       LOOP$:while(JTX$>=0)");
       Util.code(indent,"       { try {");
-	  Util.code(indent,"            JUMPTABLE$($LX); // For ByteCode Engineering");
+	  Util.code(indent,"            JUMPTABLE$(JTX$); // For ByteCode Engineering");
 	}
     for(Statement stm:statements) stm.doJavaCoding(indent+3);
 	if(!labelList.isEmpty())
@@ -799,12 +802,50 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
       Util.code(indent,"             throw(q);");
       Util.code(indent,"           }");
       Util.code(indent,"           if(GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
-      Util.code(indent,"           $LX=q.index; continue LOOP$; // EG. GOTO Lx"); 
+      Util.code(indent,"           JTX$=q.index; continue LOOP$; // EG. GOTO Lx"); 
       Util.code(indent,"       }");
       Util.code(indent,"     }");
     }
   }
-  
+
+  // ***********************************************************************************************
+  // *** Coding Utility: codeSTMBody
+  // ***********************************************************************************************
+  private void NEW_codeSTMBody(int indent)
+  { if(!labelList.isEmpty())
+	{ Util.code(indent,"       "+externalIdent+" THIS$=("+externalIdent+")CUR$;");
+      Util.code(indent,"       LOOP$:while(JTX$>=0)");
+      Util.code(indent,"       { try {");
+      Util.code(indent,"            JUMPTABLE$(JTX$); // For ByteCode Engineering");
+    }
+
+    for(Statement stm:statements) stm.doJavaCoding(indent+3);
+	if(!labelList.isEmpty())
+    { Util.code(indent,"            break LOOP$;");
+      Util.code(indent,"       }");
+      Util.code(indent,"       catch($LABQNT q) {");
+      Util.code(indent,"           CUR$=THIS$;");
+      
+//      Util.code(indent,"           System.out.println(\"CUR$=\"+CUR$);");
+//      Util.code(indent,"           System.out.println(\"q.SL$=\"+q.SL$);");
+//      Util.code(indent,"           System.out.println(\"q.prefixLevel=\"+q.prefixLevel);");
+//      Util.code(indent,"           System.out.println(\"prefixLevel=\"+prefixLevel());");
+      
+      Util.code(indent,"           if(q.SL$==CUR$ && q.prefixLevel==prefixLevel)");
+      Util.code(indent,"           { System.out.println(\"SITUASJON 1: prefixLevel=\"+prefixLevel);");
+      Util.code(indent,"               if(GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
+      Util.code(indent,"               JTX$=q.index; continue LOOP$; // EG. GOTO Lx"); 
+      Util.code(indent,"           }");
+      
+      Util.code(indent,"           System.out.println(\"SITUASJON 2: prefixLevel=\"+prefixLevel);");
+      
+      Util.code(indent,"           CUR$.STATE$=OperationalState.terminated;");
+      Util.code(indent,"           if(GOTO_TRACING) TRACE_GOTO(\"ABRA NON-LOCAL\",q);");
+      Util.code(indent,"           throw(q);");
+      Util.code(indent,"       }");
+      Util.code(indent,"     }");
+    }
+  }  
     
   // ***********************************************************************************************
   // *** Coding Utility: edSuperParameterList

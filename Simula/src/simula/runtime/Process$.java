@@ -7,9 +7,6 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-import simula.runtime.RTObject$.OperationalState;
-
 /**
  * <pre>
  * link class process;
@@ -79,15 +76,15 @@ public class Process$ extends Link$ {
 	// Constructor
 	public Process$(RTObject$ staticLink) {
 		super(staticLink);
-		TRACE_BEGIN_DCL$();
+		TRACE_BEGIN_DCL$("Process$");
 		sequ = SEQU++;
-		CODE$ = new ClassBody(CODE$, this) {
+		CODE$ = new ClassBody(CODE$, this,2) {
 			public void STM() {
-				TRACE_BEGIN_STM$(inner);
+				TRACE_BEGIN_STM$("Process$",inner);
 				detach();
 				if (inner != null)
 					inner.STM();
-				TRACE_END_STM$();
+				TRACE_END_STM$("Process$");
 				//TERMINATED$ = true;
 				CUR$.STATE$=OperationalState.terminated;
 				//Util.BREAK("Process$.CODE$: Terminate "+this);

@@ -12,8 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import simula.compiler.utilities.Util;
-
 
 /**
  * The class "outbytefile".
@@ -95,13 +93,13 @@ public class OutbyteFile$ extends ByteFile$ {
 	// Constructor
     public OutbyteFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$();
+ 	  TRACE_BEGIN_DCL$("OutbyteFile$");
       // Create Class Body
-      CODE$=new ClassBody(CODE$,this) {
+      CODE$=new ClassBody(CODE$,this,2) {
          public void STM() {
-        	 TRACE_BEGIN_STM$(inner);
+        	 TRACE_BEGIN_STM$("OutbyteFile$",inner);
              if(inner!=null) inner.STM();
-             TRACE_END_STM$();
+             TRACE_END_STM$("OutbyteFile$");
       }};
     }
     // Class Statements

@@ -47,6 +47,7 @@ public class Virtual extends Declaration {
 		this.procedureSpec=procedureSpec;
 		this.blockKind=BlockDeclaration.Kind.Procedure; // TODO: For TEST !!!
 		//Util.BREAK("NEW Virtual: "+this);
+		if(kind==Virtual.Kind.Label) Util.warning("Goto Virtual label "+identifier+" is not fully implemented, may result in Runtime ERROR");
 	}
 	
 	// VirtualPart  =  VIRTUAL  :  VirtualSpec  ;  {  VirtualSpec  ;  }

@@ -10,8 +10,6 @@ package simula.runtime;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 
-import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
@@ -21,7 +19,7 @@ import simula.compiler.utilities.Util;
 public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	protected static boolean CODE_STEP_TRACING=false;//true;
 	protected static boolean BLOCK_TRACING=false;//true;
-	protected static boolean GOTO_TRACING=true;//false;//true;
+	protected static boolean GOTO_TRACING=false;//true;
 	protected static boolean THREAD_TRACING=false;//true;
 	protected static boolean THREADSWAP_TRACING=false;//true;
 	protected static final boolean QPS_TRACING=false; //true;
@@ -50,6 +48,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	public static BASICIO$ CTX$=new BASICIO$(null);
 	public static RTObject$ PRG$; // Current Program
 	public static RTObject$ CUR$=CTX$; // Current Block Instance
+	public int JTX$; // Jump Table Index used by STM()
 
 	public boolean isQPSystemBlock() { return(false); } // Needs Redefinition
 	public boolean isDetachable() { return(false); } // Needs Redefinition
@@ -397,7 +396,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	// ************************************************************
 	// *** TRACING:  TRACE_GOTO
 	// ************************************************************
-    public void TRACE_GOTO(String msg,$LABQNT q)
+    public static void TRACE_GOTO(String msg,$LABQNT q)
     { String s=msg+" GOTO "+q;
       TRACE(s);
       //Util.BREAK("END RTObject$.TRACE_GOTO");
@@ -472,6 +471,7 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 		//BBLK();   // TODO: Check Konsekvenser av å fjerne denne
 	}
 	
+		
 	// ************************************************************
 	// *** BBLK - Begin Block
 	// ************************************************************
@@ -867,6 +867,18 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
 	
+    public static void PrintStackTrace(int start)
+    { StackTraceElement StackTraceElement[]=Thread.currentThread().getStackTrace();
+      int n=StackTraceElement.length;
+      for(int i=start;i<n;i++)
+      { int line=StackTraceElement[i].getLineNumber();
+        //String className=StackTraceElement[i].getClassName();
+        String fileName=StackTraceElement[i].getFileName();
+        String methodName=StackTraceElement[i].getMethodName();
+        System.out.println("    IN "+methodName+' '+fileName+"(line "+line+")");//+className);
+      }
+    }
+    
     private void BCODE$(int simulaSourceLine,String msg)
     { if(!CODE_STEP_TRACING) return;
       StackTraceElement elt=Thread.currentThread().getStackTrace()[4];
@@ -875,28 +887,32 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
            line="J"+elt.getLineNumber();
       else line="S"+simulaSourceLine;
 //      System.out.println(elt.getFileName()+" LINE "+line+": "+msg);    	
-      RT_BREAK(elt.getFileName()+" LINE "+line+": "+msg);    	
+      RT_BREAK("  STEP_TRACE  "+elt.getFileName()+" LINE "+line+": "+msg);    	
 //      printStaticContextChain();
+      PrintStackTrace(2); // TESTING
     }
     
     public static void RT_BREAK(String msg)
-    { System.err.println(msg+": <");
+//    { System.err.println(msg+": <");
+    { System.out.println(msg+": <");
       try {Thread.sleep(2000); } catch(Exception e) {}
     }
 	
-    public void TRACE_BEGIN_DCL$() { TRACE_BEGIN_DCL$(-1); }
-    public void TRACE_BEGIN_DCL$(int simulaSourceLine)
-    { BCODE$(simulaSourceLine,"BEGIN  DCL");  }
+    public void TRACE_BEGIN_DCL$(String ident) { TRACE_BEGIN_DCL$(ident,-1); }
+    public void TRACE_BEGIN_DCL$(String ident,int simulaSourceLine)
+    { BCODE$(simulaSourceLine,"BEGIN  "+ident+".DCL");  }
 	
-    public void TRACE_BEGIN_STM$() { TRACE_BEGIN_STM$(-1,null); }
-    public void TRACE_BEGIN_STM$(int simulaSourceLine) { TRACE_BEGIN_STM$(simulaSourceLine,null); }
-    public void TRACE_BEGIN_STM$(ClassBody inner) { TRACE_BEGIN_STM$(-1,inner); }
-    public void TRACE_BEGIN_STM$(int simulaSourceLine,ClassBody inner)
-    { BCODE$(simulaSourceLine,"BEGIN  STM, inner="+inner);  }
+    public void TRACE_BEGIN_STM$(String ident) { TRACE_BEGIN_STM$(ident,-1,null); }
+    public void TRACE_BEGIN_STM$(String ident,int simulaSourceLine) { TRACE_BEGIN_STM$(ident,simulaSourceLine,null); }
+    public void TRACE_BEGIN_STM$(String ident,ClassBody inner) { TRACE_BEGIN_STM$(ident,-1,inner); }
+    public void TRACE_BEGIN_STM$(String ident,int simulaSourceLine,ClassBody inner)
+    { BCODE$(simulaSourceLine,"BEGIN  "+ident+".STM, inner="+inner);  }
+    public void TRACE_BEGIN_STM_AFTER_INNER$(String ident,int simulaSourceLine)
+    { BCODE$(simulaSourceLine,"BEGIN  "+ident+".STM(After inner)");  }
 	
-    public void TRACE_END_STM$() { TRACE_END_STM$(-1); }
-    public void TRACE_END_STM$(int simulaSourceLine)
-    { BCODE$(simulaSourceLine,"END  STM");  }
+    public void TRACE_END_STM$(String ident) { TRACE_END_STM$(ident,-1); }
+    public void TRACE_END_STM$(String ident,int simulaSourceLine)
+    { BCODE$(simulaSourceLine,"END  "+ident+".STM");  }
     
 	public static void TRACE(String msg)
 	{ Thread THREAD$=Thread.currentThread(); 

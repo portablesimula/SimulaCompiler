@@ -33,6 +33,12 @@ public class ClassFileUtilities {
 	  }
       return(javaClass);
     }
+    
+    public static void list(String classFileName)
+	{ JavaClass javaClass=ClassFileUtilities.load(classFileName);
+	  ClassFileUtilities.list(classFileName,javaClass);
+	}
+
 
     /**
      * Print the given class on standard output

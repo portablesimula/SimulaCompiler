@@ -96,8 +96,8 @@ public class RunSingleTestBatch {
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
-		names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
-		names.add("simtst59.sim"); // ERR: Virtual label in external class.  ERROR - GOTO VIRTUAL LABEL IN INNER PART
+		//names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
+		//names.add("simtst59.sim"); // ERR: Virtual label in external class.  ERROR - GOTO VIRTUAL LABEL IN INNER PART
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
@@ -105,7 +105,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
-		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
+		names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
 		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES - GÅR I HENG
 		//names.add("simtst69.sim"); // ERR: Test complex use of detach, call and resume.

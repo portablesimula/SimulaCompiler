@@ -90,13 +90,13 @@ public class RunFullTestBatch {
 		names.add("simtst51.sim"); // OK:  Test 'inner'.
 		names.add("simtst52.sim"); // OK:  Test 'inner'
 		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		//names.add("simtst54.sim"); // err: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
+		names.add("simtst54.sim"); // err: Test virtual switches and labels  NOT IMPLEMENTED - GOTO VIRTUAL LABEL IN INNER PART
 		names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		names.add("simtst57.sim"); // OK: Virtual procedure - different number of parameters
 		names.add("simtst58.sim"); // err: Goto from within a connection into otherwise
 		names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
-		names.add("simtst59.sim"); // err: Virtual label in external class.
+		names.add("simtst59.sim"); // err: Virtual label in external class.  NOT IMPLEMENTED - GOTO VIRTUAL LABEL IN INNER PART
 		names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.

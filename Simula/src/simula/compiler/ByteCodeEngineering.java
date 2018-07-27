@@ -221,14 +221,14 @@ public class ByteCodeEngineering {
 	 * Locate the instruction sequence:
 	 * <pre>
 	 *    PREV-INSTRUCTION
-	 *    GETFIELD $LX
+	 *    GETFIELD JTX$
 	 *    INVOKESTATIC JUMPTABLE$
 	 *    NEXT-INSTRUCTION
 	 * </pre>
 	 * Replace it by:
 	 * <pre>
 	 *    PREV-INSTRUCTION
-	 *    GETFIELD $LX
+	 *    GETFIELD JTX$
 	 *    TABLESWITCH ...
 	 *    NEXT-INSTRUCTION
 	 * </pre>
