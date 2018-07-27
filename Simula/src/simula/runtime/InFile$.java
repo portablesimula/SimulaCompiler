@@ -195,22 +195,25 @@ public class InFile$ extends ImageFile$ {
 	 * the value true constitutes a run-time error.
 	 */
 	public void inimage() {
-		if (!OPEN$ || ENDFILE$)
+		if (!OPEN$ || ENDFILE$) {
+			//System.out.println("throw new RuntimeException(\"File not opened or attempt to read past EOF\")");
 			throw new RuntimeException(
 					"File not opened or attempt to read past EOF");
+		}
 		try {
 			String line = lineReader.readLine();
 			if (line != null) {
 				if (line.length() > image.length())
 					throw new RuntimeException("image too short");
 				ASGSTR$(image,line);
-			} else
+			} else {
 				ASGSTR$(image,"" + (char) 25);
+				ENDFILE$=true;
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("Inimage failed",e);
 		}
-		while (more())
-			image.putchar(' ');
+//		while (more())	image.putchar(' ');
 		setpos(1);
 	}
 

@@ -104,7 +104,7 @@ public class RunFullTestBatch {
 		names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
-		//names.add("simtst66.sim"); // ERR: Test corutines and two infiles which read from the same file.
+		names.add("simtst66.sim"); // OK:  Test corutines and two infiles which read from the same file.
 		names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
 		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - M� FINTESTES
 		//names.add("simtst69.sim"); // ERR: Test complex use of detach, call and resume.

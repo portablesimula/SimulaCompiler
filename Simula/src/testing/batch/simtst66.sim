@@ -11,6 +11,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=FALSE;
    
    Text   fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any66";
 
@@ -25,6 +26,17 @@ BEGIN
       text array linjer (1:200) ;
 
 
+      PROCEDURE trace(msg); text msg;
+      begin
+         if verbose then
+         begin
+            outtext(msg & " - NAVN=" & navn & " - a,lnr=");
+            outint(a,3); outint(lnr,3);
+            outimage;
+         end;   
+      end;
+
+
       fil :- new infile (navn) ;
       if not fil.open (blanks (100)) then
       begin outtext("The file does not exist,");
@@ -33,9 +45,12 @@ BEGIN
             Error("Can't open infile: " & navn);
       end;
 
+      trace("RETT FØR FØRSTE DETACH I INFILE: ");
       detach ;
 
+      trace("RETT FØR FØRSTE INIMAGE I INFILE: ");
       fil.inimage ;
+      trace("RETT ETTER FØRSTE INIMAGE(" & copy(fil.image) & ") I INFILE: ");
 
       while not fil.ENDfile do
       BEGIN
@@ -43,6 +58,7 @@ BEGIN
          BEGIN
             linjer (lnr) :- copy (fil.image) ;
             fil.inimage ;
+            trace("RETT ETTER NESTE INIMAGE(" & copy(fil.image) & ") I INFILE: ");
          END ;
 
          resume (neste)
@@ -69,6 +85,8 @@ BEGIN
    Outimage ;
    Outtext ("--- from the same file simultanously.") ;
    Outimage ; Outimage ;
+   
+   
 
    fil1 :- new Innfil (new Innfil (none, fileName, 5), fileName, 13) ;
    fil2 :- fil1.neste ;
