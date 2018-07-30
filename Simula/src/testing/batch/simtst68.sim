@@ -11,6 +11,7 @@
 % ==============================================================================
 Begin
    Boolean found_error ;
+   Boolean verbose=FALSE;
 
    Text array lines, facit (1:20) ;
    Integer lnr ;
@@ -67,14 +68,31 @@ Begin
 
    Character c1, c2 ;
 
+   PROCEDURE trace(msg); text msg;
+   begin
+      if verbose then
+      begin
+         outtext(msg & " - C1="); outchar(c1);
+         outtext(", C2="); outchar(c2);
+         outimage;
+      end;   
+   end;
+
+
    Class Coroutine ;
+   begin
+      trace("In Coroutine: Just before Detach");
       detach ;
+      trace("In Coroutine: Just after Detach");
+   end;
 
    Coroutine Class Reader ;
    While true do
    Begin
       c1 := inchar ;
+      trace("In Reader: Just before Detach");
       Detach ;
+      trace("In Reader: Just after Detach");
    End ;
 
    Coroutine Class Changer ;
@@ -101,29 +119,24 @@ Begin
    Coroutine Class Writer ;
    Begin
       Integer i ;
-      Boolean gotoR; ! MYH ;
-      gotoR:=false;  ! MYH ;
 
       While true do
       Begin
          for i := 1 step 1 until 15 do
-         if not gotoR then ! MYH ;
          Begin
             if c2 = '!' then
             Begin
                Saveline ;
                detach ;
-%               Goto R
-               gotoR:=true;
+               Goto R
             End else
             Begin
                outchar(c2) ;
                Resume (c)
             End ;
          End ;
-         if not gotoR then ! MYH ;
          Saveline ;
-%       R :
+       R:
       End ;
    End ;
 
@@ -134,8 +147,11 @@ Begin
    Outtext ("--- Test coroutines.") ;
    Outimage ; Outimage ;
 
+   trace("Before new Reader");
    r :- New Reader ;
+   trace("Before new Changer");
    c :- New Changer ;
+   trace("Before new Write");
    w :- New Writer ;
 
    sysin.image := "|lhkjdfjg*fdgh*98dsgh**kjdk*sgjfhgh***kljhasdg*kfhgs!ksdf" ;

@@ -72,9 +72,14 @@ public class Parameter extends Declaration
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
     Global.sourceLineNumber=lineNumber;
-    //Util.BREAK("CHECKING Parameter: "+this);
- 	//Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+currentScope.edScopeChain());
-	//Util.BREAK("Parameter("+this.toString()+").doChecking: type="+type);
+//    Util.BREAK("CHECKING Parameter: "+this);
+//	Util.BREAK("Parameter: "+kind+' '+type+' '+identifier+" by "+((mode!=null)?mode:"default"));
+// 	Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+Global.currentScope.edScopeChain());
+//	Util.BREAK("Parameter("+this.toString()+").doChecking: type="+type);
+	if(kind==null) {
+		Util.error("Parameter "+identifier+" is not specified -- assumed Simple Integer");
+		kind=Kind.Simple; type=Type.Integer;
+	}
     if(type!=null) type.doChecking(Global.currentScope.declaredIn);
     if(!legalTransmitionMode())
   	   Util.error("Illegal transmission mode: "+mode+' '+kind+' '
@@ -106,7 +111,7 @@ public class Parameter extends Declaration
   */
   private boolean legalTransmitionMode()
   { 
-	  //Util.BREAK("Parameter: "+kind+' '+type+' '+formalParameter.identifier+" by "+((mode!=null)?mode:"default"));
+	//Util.BREAK("Parameter: "+kind+' '+type+" by "+((mode!=null)?mode:"default"));
     boolean illegal=false;
 	  switch(kind)
 	  { case Simple: 

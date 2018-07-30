@@ -1,98 +1,86 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
-
-% ====================================   Main   program  ===========
-%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 87
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 87
 %
-%  PURPOSE: Test SIMULATION, simple example.
+%  PURPOSE:     Test Specification of Virtual Procedures.
 %
-%  METHOD:
-%
-%  WRITTEN BY:
-% ==================================================================
-begin integer kunder,servm,servs,U1,U2; 
-      real ankomst; Boolean grund;
-      integer i;
+%  WRITTEN BY:  MYH  13/06-2018
+% ==============================================================================
+BEGIN
+   Boolean found_error;
+   integer pval;
+   ref(A) ra;
+   ref(B) rb;
+   ref(FILE) test;
+   
+   Procedure checkPval(n,val); integer n,val;
+   Begin if pval = val then
+     else
+     begin
+         Outtext("*** error in test "); Outint(n,0); Outtext(": Test Specification of Virtual Procedures."); Outimage;
+         Outtext("            Erroneus values: val = "); Outint(pval, 0); Outimage;
+         Outtext("            --------- Facit: val = "); Outint(val, 0); Outimage;
+         found_error := true
+     end;
+   end;
 
-      outtext("--- START Simula a.s. TEST 87"); outimage;
-      outtext("--- Test Simulation, simple example");
-      Outimage; Outimage;
+   Class A; virtual: ref(FILE) Procedure myFile is ref(FILE) Procedure actual(i,j); integer i,j;;
+                     Procedure virt2 is Procedure act2(j); integer j;;
+                     Integer Procedure virt3 is Procedure act3;;
+                     Procedure virt4 is Procedure act4;;
+   begin integer i;
+     ref(FILE) Procedure myFile(i,j); integer i,j;
+     begin pval:=i+j; end;
+     
+     integer procedure pA;
+     Begin 
+        ref(FILE) f;
+        f :- myFile(4,3);
+        pA := pval;
+     end;
+   end;
 
-      ankomst:=1/30; servm:=90; servs:=30;
-      kunder:=20; U1:=99999; U2:=12345;
-      outtext("Konfiguration medel  total"); outimage;
+   A Class B;
+   begin integer i;
+     ref(FILE) Procedure myFile(i,j); integer i,j;
+     begin pval:=2*i+j; end;
+     Procedure virt4;
+     begin pval:=4567; end;
+     
+     integer procedure pB;
+     Begin 
+        ref(FILE) f;
+        f :- myFile(14,13);
+        pB := pval;
+     end;
+   end;
 
-%     for grund := true,false do
+   Outtext("--- START TEST 87"); Outimage;
+   Outtext("--- Test Specification of Virtual Procedures.");
+   Outimage; Outimage;
+   
+   ra :- new A();
+   rb :- new B();
+  
+   test :- ra.myFile(7,21);
+   checkPval(1,7+21);
+  
+   test :- rb.myFile(17,210);
+   checkPval(2,2*17+210);
+   
+   rb.virt4;
+   checkPval(3,4567);
+  
+   
  
-      for i:=0 step 1 until 1 do
-      begin grund := not grund;
-            outtext(if grund then " grund      " else " alternativ ");
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext("--- NO ERRORS FOUND IN THIS TEST");
+      Outimage
+   END;
 
-            SIMULATION
-            begin integer i,klara; real tid,slut;
-                  ref(head) array kundq(1:4),statq(1:2);
-                  ref(station) array stat(3:4);
+   Outtext("--- END TEST 87");
+   Outimage
 
-                  process class kund;
-                  begin integer efter; real intid; array servtid(1:2);
-                        servtid(1):=normal(servs,servm,U2);
-                        servtid(2):=normal(servs,servm,U2);
-                        intid:=time;
-                        activate statq(1).first delay 0;
-                        wait(kundq(1));
-                        activate if grund then stat(efter)
-                                          else statq(2).first delay 0;
-                        wait(kundq(efter));
-                        tid:=tid+time-intid; klara:=klara+1;
-                        if klara=kunder then activate main;
-                  end;
-
-                  process class station(nr,position);
-                  integer nr,position;
-                  while true do inspect kundq(nr).first when kund do
-                  begin out; efter:=nr+2;
-                        hold(servtid(position));
-                        activate this kund delay 0;
-                  end
-                  otherwise begin wait(statq(position)); out end;
-
-                  kundq(1):-kundq(2):-new head;
-                  if kundq(1)==none then 
-                  begin outtext("error-1");outimage; end;
-                  if kundq(2)==none then 
-                  begin outtext("error-2");outimage; end;
-                  kundq(3):-new head;
-                  if kundq(3)==none then 
-                  begin outtext("error-3");outimage; end;
-
-                  kundq(4):-if grund then new head else kundq(3);
-                  if kundq(4)==none then 
-                  begin outtext("error-4");outimage; end;
-
-%                  for i:=1,2 do
-                  for i:=1 step 1 until 2 do
-                  begin statq(i):-new head;
-                        activate new station(i,1) delay 0;
-                  end;
-
-%                  for i:=3,4 do
-                  for i:=3 step 1 until 4 do
-                  begin stat(i):-new station(I,2);
-                        activate stat(i) delay 0;
-                  end;
-
-                  for i:=1 step 1 until kunder do
-                  begin hold(negexp(ankomst,U1));
-                        activate new kund delay 0;
-                  end;
-
-                  passivate;
-
-                  outfix(tid/kunder,1,8); outfix(time,1,8); outimage;
-
-            end;
-      end;
-      Outimage; Outtext("--- END Simula a.s. TEST 87"); outimage;
-end; 
+ END

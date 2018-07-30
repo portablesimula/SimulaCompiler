@@ -52,6 +52,7 @@ public class GotoStatement extends Statement {
 		}
 		Type type = label.type;
 		Util.ASSERT(type == Type.Label, "Invariant");
+		//Util.BREAK("GotoStatement.doJavaCoding: label="+label+", QUAL="+label.getClass().getSimpleName());
 		Util.code(indent,"GOTO(" + label.toJavaCode() + "); // GOTO EVALUATED LABEL");
 	}
 

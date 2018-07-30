@@ -105,18 +105,18 @@ public class RunSingleTestBatch {
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
-		names.add("simtst66.sim"); // OK:  Test corutines and two infiles which read from the same file.
+		//names.add("simtst66.sim"); // OK:  Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // ERR: Test of coroutines. VIRKER 'NESTEN' - MÅ FINTESTES - GÅR I HENG
-		//names.add("simtst69.sim"); // ERR: Test complex use of detach, call and resume.
+		//names.add("simtst68.sim"); // OK:  Test of coroutines.
+		//names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
 		//names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
 		//names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
-		//names.add("simtst72.sim"); // err: Test of formal procedures. TRENGER FIN-TESTING
+		//names.add("simtst72.sim"); // OK: Test of formal procedures.
 		//names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst74.sim"); // OK:  Test resume and detach.
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
-		//names.add("simtst76.sim"); // ERR: Test of detach and resume in SIMSET.
+		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
 		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
 		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
@@ -124,17 +124,18 @@ public class RunSingleTestBatch {
 
 		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
-		//names.add("simtst83.sim"); // ok:  Type procedures as attributes to class, and dot access.
+		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
 		//names.add("simtst85.sim"); // OK:  Test Directfile.
+		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		//names.add("simtst87.sim"); // OK:  Test SIMULATION, simple example.
-		//names.add("simtst88.sim"); // OK?: Checking coroutines.
+		//names.add("simtst87.sim"); // OK: Specification of Virtual Procedures.
+		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
 		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
-		//names.add("simtst92.sim"); // ERR: Test virtual labels and procedures.
+		//names.add("simtst92.sim"); // OK:  Test virtual labels and procedures. ERROR NOT IMPLEMENTED
 		//names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
 		//names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
@@ -143,10 +144,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		//names.add("simtst99.sim"); // ERR:
 		//names.add("simtst100.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
-		//names.add("simtst101.sim"); // OK: Visibility of Hidden attributes.
-		//names.add("simtst102.sim"); // OK: Specification of Virtual Procedures.
-		//names.add("Separat.sim");   // OK:  Precompile this for Simtst 103.
-		//names.add("simtst103.sim"); // OK:  Test separate compilation of Class.
+		names.add("simtst101.sim"); // ERR: Test Standard Procedure 'sourceline'.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

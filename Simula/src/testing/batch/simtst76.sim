@@ -8,13 +8,15 @@
 %  PURPOSE:     Test of detach and resume in SIMSET.
 %
 %  WRITTEN BY:  BEH   25/08-86
+%  MODIFIED BY: MYH   28/07-2018  According to (new) Simula Standard
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=FALSE;
    Text t;
 
    Procedure Print(t); Value t; Text t;
-         Outtext(t);
+   begin Outtext(t); if verbose then outimage; end; 
 
    Outtext ("--- START Simula a.s. TEST 76") ;
    Outimage ;
@@ -81,22 +83,24 @@ SIMSET Begin
                      Print("I"); Resume(Y);
                      Detach
                End;
-               Print("L");
+               Print("K");
+               detach;
+               Print("M");
           End;
 
           x:- New A;
           Print("B"); Resume(x);
           Print("G"); Resume(x);
-          Print("K"); Resume(x);
-          Print("M");
+          Print("L"); Resume(x);
+          Print("N");
 
           t:- Copy (sysout.image.strip);
           sysout.setpos (1);
           sysout.image:= notext;
 
-         if t = "ABCDEFGHIJKLM" then
+         if t = "ABCDEFGHIJKLMN" then
          else
-         begin Outtext ("*** error : Detach - resume (1).") ;
+         begin Outtext ("*** error : Detach - resume (2).") ;
                Outimage ;
                Outtext ("             Erroneus sequencing: ") ;
                Outtext (t) ;

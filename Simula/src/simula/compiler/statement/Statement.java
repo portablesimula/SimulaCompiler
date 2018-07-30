@@ -59,6 +59,11 @@ public abstract class Statement extends SyntaxClass {
 			labels.add(ident);
 			LabelDeclaration label=new LabelDeclaration(ident);
 			//currentScope.declarationList.add(label);
+			
+//			Util.BREAK("Statement.doParse: currentScope="+Global.currentScope);
+//			Util.BREAK("Statement.doParse: currentScope'QUAL="+Global.currentScope.getClass().getSimpleName());
+//			Util.BREAK("Statement.doParse: currentScope'identifier="+Global.currentScope.identifier);
+//			Util.BREAK("Statement.doParse: currentScope'add Label="+label);
 			Global.currentScope.labelList.add(label);
 			ident = acceptIdentifier();
 		}

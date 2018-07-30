@@ -15,6 +15,7 @@ import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureSpecification;
+import simula.compiler.declaration.StandardProcedure;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
@@ -266,8 +267,15 @@ public class CallProcedure {
 //		      Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs="+var.meaning.declaredAs);
 //		      Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs'Qual="+var.meaning.declaredAs.getClass().getSimpleName());
 		      Declaration decl=var.meaning.declaredAs;
-		      if(decl instanceof Parameter) kind=((Parameter)decl).kind;  // TODO: Flere sånne tilfeller ???
-		      if(decl instanceof BlockDeclaration) kind=Parameter.Kind.Procedure;  // TODO: Flere sånne tilfeller ???
+		      
+			  if(decl instanceof StandardProcedure) {
+				  if(decl.identifier.equalsIgnoreCase("sourceline")) {
+					  actualParameter=new Constant(Type.Integer,Global.sourceLineNumber);
+					  actualParameter.doChecking();
+				  }
+			  }
+			  else if(decl instanceof Parameter) kind=((Parameter)decl).kind;  // TODO: Flere sånne tilfeller ???  sourceline ????
+			  else if(decl instanceof BlockDeclaration) kind=Parameter.Kind.Procedure;  // TODO: Flere sånne tilfeller ???
 		    }
 		    Parameter.Mode mode=Parameter.Mode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
 		    s.append(doParameterTransmition(formalType,kind,mode,actualParameter));

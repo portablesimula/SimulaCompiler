@@ -183,7 +183,10 @@ public class Variable extends Expression {
 		{ //Util.BREAK("Variable.edVariable("+id+"): decl="+decl+", qual="+decl.getClass().getSimpleName());
 		  if(decl instanceof Virtual)
 		  { Virtual virtual=(Virtual)decl;
-	         id=CallProcedure.virtual(this,virtual,remotelyAccessed); 
+		    //Util.BREAK("Variable.edVariable("+id+"): virtual="+virtual);
+		    //Util.BREAK("Variable.edVariable("+id+"): virtual'kind="+virtual.kind);
+		    if(virtual.kind==Virtual.Kind.Label) id=id+"()";
+		    else id=CallProcedure.virtual(this,virtual,remotelyAccessed); 
 		  }
 		  else 
 		  { BlockDeclaration procedure=(BlockDeclaration)decl;

@@ -445,6 +445,7 @@ public class ENVIRONMENT$ {
 	    if(T==null) T=NOTEXT;
 		int fromLength = 0;
 		if (s != null) fromLength = s.length();
+		if(fromLength > T.LENGTH) throw(new RuntimeException("RHS too long in text value assignment"));
 		for (int i = 0; i < fromLength; i++)
 			T.OBJ.MAIN[T.START+i] = s.charAt(i);
 		for (int i = fromLength; i < T.LENGTH; i++)
@@ -455,9 +456,8 @@ public class ENVIRONMENT$ {
 	public TXT$ ASGTXT$(TXT$ T,TXT$ U) {
 	    if(T==null) T=NOTEXT;
 	    if(U==null) U=NOTEXT;
-		int fromLength = 0;
-		if (U != null)
-			fromLength = U.LENGTH;
+		int fromLength = U.LENGTH;
+		if(fromLength > T.LENGTH) throw(new RuntimeException("RHS too long in text value assignment"));
 		for (int i = 0; i < fromLength; i++)
 			T.OBJ.MAIN[T.START+i] = U.OBJ.MAIN[U.START+i];
 		for (int i = fromLength; i < T.LENGTH; i++)

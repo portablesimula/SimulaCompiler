@@ -88,11 +88,14 @@ public class LocalObject extends Expression {
 //		  return ("(("+cast+")"+connectionBlock.inspectedVariable.getJavaIdentifier()+")");
 		  return ("(("+cast+")"+connectionBlock.inspectedVariable.toJavaCode()+")");
 		}
-		BlockDeclaration classDeclaration=(BlockDeclaration)declarationScope;
-		if(classDeclaration.blockLevel!=Global.currentScope.blockLevel)
+		BlockDeclaration scopeDeclaration=(BlockDeclaration)declarationScope;
+//		Util.BREAK("LocalObject.toJavaCode: classDeclaration="+classDeclaration);
+//		Util.BREAK("LocalObject.toJavaCode: scopeDeclaration="+scopeDeclaration);
+//		Util.BREAK("LocalObject.toJavaCode: Global.currentScope="+Global.currentScope);
+//		if(scopeDeclaration!=null && scopeDeclaration.blockLevel!=Global.currentScope.blockLevel)
 //			 return ("(("+cast+")"+Global.currentScope.edCTX(classDeclaration.blockLevel)+")");
-			 return ("(("+cast+")"+classDeclaration.edCTX()+")");
-		else return ("("+cast+".this)");
+			 return ("(("+cast+")"+scopeDeclaration.edCTX()+")");
+//		else return ("("+cast+".this)");
 	}
 
 	public String toString() {

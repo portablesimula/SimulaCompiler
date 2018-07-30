@@ -196,7 +196,6 @@ public class InFile$ extends ImageFile$ {
 	 */
 	public void inimage() {
 		if (!OPEN$ || ENDFILE$) {
-			//System.out.println("throw new RuntimeException(\"File not opened or attempt to read past EOF\")");
 			throw new RuntimeException(
 					"File not opened or attempt to read past EOF");
 		}

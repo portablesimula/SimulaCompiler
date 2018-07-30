@@ -1,121 +1,17 @@
-
-% =====================================   Main   program =============
-%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 54
-%
-%  PURPOSE:     Test virtual switches and labels
-%
-%  REWRITTEN BY:  BEH   01/08-86
-% ====================================================================
 BEGIN
-   Boolean found_error;
-   Boolean verbose=TRUE;
 
-   text t;
+   ref(A) x;
 
-   Text PROCEDURE edInt(i,n); integer i,n;
-   begin Text e; e:-blanks(n); e.putint(i);
-         edInt:-e;
+   Class A; virtual: procedure P;
+   begin integer i;
+      Procedure P(line); integer line;
+      Begin
+            outtext("Call P -- Line="); outint(line,0); outimage;
+      End;
+      i:=sourceline;
    end;
    
-   Text PROCEDURE edBool(b); Boolean b;
-   begin edBool:-if b then "TRUE" else "FALSE"; end;
-   
-   PROCEDURE trace(msg); text msg;
-   begin
-      if verbose then
-      begin
-         Text img=copy(sysout.image.strip);
-         sysout.image.setpos (1);
-         sysout.image := notext ;
-         outtext(msg & " - PATH=" & img);
-         outimage;
-         outtext(img);
-      end;   
-   end;
+   x:-new A;
+   x.P(sourceline);
 
-   Class A (L, S, I);
-      Boolean L, S;
-      Integer I;
-      Virtual: Label L1, L2;
-               Switch S1, S2;
-   BEGIN
-      Switch S1 := L1, L2;
-
-      trace("IN A JUST BEFORE: If L then Goto L1; - L = " & edBool(L));
-      If L then Goto L1;
-
-      trace("IN A JUST BEFORE: If S then Goto S1(I); - I=" & edInt(i,2) & ", S=" & edBool(S));
-      If S then Goto S1(I);
-
-      Goto OutA;
-
-      L1: Outtext (" A.L1 "); Goto OutA;
-      L2: Outtext (" A.L2 "); Goto OutA;
-      L3: Outtext (" A.L3 "); Goto OutA;
-
-     OutA:
-   END;
-
-   A Class B (L, S, I);
-      Boolean L, S;
-      Integer I;
-      Virtual: Label L3;
-   BEGIN
-      Switch S2 := L3, L4;
-      
-
-      trace("IN B JUST BEFORE: If L then Goto L2; - L=" & (if L then "TRUE" else "FALSE"));
-      If L then Goto L2;
-
-      trace("IN B JUST BEFORE: If S then Goto S2(I); - I=" & edInt(i,2) & ", S=" & edBool(S));
-      If S then Goto S2 (I);
-
-      Goto OutB;
-
-      L2: Outtext (" B.L2 "); Goto OutB;
-      L3: Outtext (" B.L3 "); Goto OutB;
-      L4: Outtext (" B.L4 "); Goto OutB;
-
-     OutB:
-   END;
-
-   Ref (A) RA;
-   Ref (B) RB;
-
-   Outtext ("--- START Simula a.s. ADHOC'TEST 54");
-   Outimage;
-   Outtext ("--- Test virtual switches and labels.");
-   Outimage; Outimage;
-
-   RA :- New A (false, true, 2);
-   RB :- New B (true, false, 0, false, true, 1);
-   RB :- New B (false, true, 2, false, true, 2);
-
-   t :- copy(sysout.image.strip);
-   sysout.image.setpos (1);
-   sysout.image := notext ;
-
-   if t = " A.L2  A.L1  B.L3  B.L2  C.L6  C.L1  C.L3" then
-   else
-   begin
-      Outtext ("*** error : Wrong sequence of statements (1).");
-      Outimage;
-      Outtext ("            Erroneus output :");
-      Outimage;
-      Outtext ("            ");
-      Outtext (t);
-      Outimage;
-      found_error := true
-   end;
-
-
-   If found_error then
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
-   END;
-
-   Outtext ("--- END Simula a.s. TEST 54");
-   Outimage
- END
+END

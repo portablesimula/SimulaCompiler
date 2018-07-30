@@ -147,7 +147,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	    modifyIdentifier(""+Global.sourceName+"$PBLK"+lineNumber);
 	    this.externalIdent=this.identifier;
 	  }
-	  else if(!declarationList.isEmpty())
+	  else if(!declarationList.isEmpty() || !labelList.isEmpty()) // Label is also declaration
 	  { blockKind=BlockDeclaration.Kind.SubBlock;
 	    modifyIdentifier("SubBlock"+lineNumber);
 	  }

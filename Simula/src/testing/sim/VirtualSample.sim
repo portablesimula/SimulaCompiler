@@ -1,6 +1,4 @@
 
-%QUALIFIEDNAMES
-
 begin
    real x;
    class A; virtual: Procedure P,Q; Label L; Switch S;
@@ -9,7 +7,7 @@ begin
       procedure P(x,i,r); ref(A) x; integer i; real r;
       begin end;
       
-      L1:P(new B(),3.5,7.9);
+      L1:P(new B(),sourceline,7.9);
       L2:Q(x+y);
       goto S(2);
    end;

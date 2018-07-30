@@ -41,6 +41,11 @@ public abstract class DeclarationScope extends Declaration {
 	declaredIn=Global.currentScope; Global.currentScope=this;
   }
   
+//  public String toString()
+//  { return("SCOPE: "+identifier);
+//	  
+//  }
+  
   // ***********************************************************************************************
   // *** Utility: addParameter
   // ***********************************************************************************************
@@ -246,12 +251,27 @@ public abstract class DeclarationScope extends Declaration {
   // ***********************************************************************************************
   // *** Utility: findThis
   // ***********************************************************************************************
+//  private DeclarationScope OLD_findThis(String identifier)
+//  { DeclarationScope result=null;
+//   	Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
+//	if(identifier.equalsIgnoreCase(this.identifier)) result=this;
+//    else if(declaredIn!=null) result=declaredIn.findThis(identifier);
+//    return(result);
+//  }
   public DeclarationScope findThis(String identifier)
-  { DeclarationScope result=null;
-   	//Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
-	if(identifier.equalsIgnoreCase(this.identifier)) result=this;
-    else if(declaredIn!=null) result=declaredIn.findThis(identifier);
-    return(result);
+  { 
+//   	Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
+//   	Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+this);
+	if(identifier.equalsIgnoreCase(this.identifier)) return(this);
+	
+	DeclarationScope x=this;
+	while((x=x.getPrefix())!=null)
+	{
+//	   	Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
+		if(identifier.equalsIgnoreCase(x.identifier)) return(x);
+	}	
+    if(declaredIn!=null) return(declaredIn.findThis(identifier));
+    return(null);
   }
 
   // ***********************************************************************************************
