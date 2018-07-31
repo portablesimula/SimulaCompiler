@@ -823,11 +823,11 @@ public class ENVIRONMENT$ {
 	 * @param y
 	 * @return
 	 */
-	public double max(double x, double y) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		return (Math.max(x, y));
-	}
+	public double max(double x, double y) {	return (Math.max(x, y)); }
+	public float max(float x, float y) { return (Math.max(x, y)); }
+	public int max(int x, int y) { return (Math.max(x, y)); }
+	public char max(char x, char y) { return((char)Math.max((int)x, (int)y)); }
+	// TODO: Complete the implementation according to Simula Standard Definition.
 
 	/**
 	 * <pre>
@@ -844,11 +844,11 @@ public class ENVIRONMENT$ {
 	 * @param y
 	 * @return
 	 */
-	public double min(double x, double y) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		return (Math.min(x, y));
-	}
+	public double min(double x, double y) {	return (Math.min(x, y)); }
+	public float min(float x, float y) { return (Math.min(x, y)); }
+	public int min(int x, int y) { return (Math.min(x, y)); }
+	public char min(char x, char y) { return((char)Math.min((int)x, (int)y)); }
+	// TODO: Complete the implementation according to Simula Standard Definition.
 
 	// *****************************************
 	// *** Environmental enquiries ***

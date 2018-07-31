@@ -256,6 +256,8 @@ public abstract class Expression extends SyntaxClass
 	        if(ident!=null) expr=Variable.parse(ident);
 	        else {
 	        	if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: NULL");
+	    		Parser.skipAnyKeyWordExcept(KeyWord.ELSE); // Ad'Hoc
+
 	    	    return(null);
 	        }
 	 }

@@ -232,4 +232,4 @@ BEGIN
 
    Outtext("--- END Simula a.s. TEST 26");
    Outimage;
- END
+ END;

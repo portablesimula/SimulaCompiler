@@ -55,16 +55,18 @@ public abstract class Statement extends SyntaxClass {
 			Util.TRACE("Parse Statement, current=" + Parser.currentToken + ", prev=" + Parser.prevToken);
 		String ident = acceptIdentifier();
 		while (Parser.accept(KeyWord.COLON)) {
-			if (labels == null)	labels = new Vector<String>();
-			labels.add(ident);
-			LabelDeclaration label=new LabelDeclaration(ident);
-			//currentScope.declarationList.add(label);
+			if(ident!=null)
+			{ if (labels == null)	labels = new Vector<String>();
+			  labels.add(ident);
+			  LabelDeclaration label=new LabelDeclaration(ident);
+			  //currentScope.declarationList.add(label);
 			
-//			Util.BREAK("Statement.doParse: currentScope="+Global.currentScope);
-//			Util.BREAK("Statement.doParse: currentScope'QUAL="+Global.currentScope.getClass().getSimpleName());
-//			Util.BREAK("Statement.doParse: currentScope'identifier="+Global.currentScope.identifier);
-//			Util.BREAK("Statement.doParse: currentScope'add Label="+label);
-			Global.currentScope.labelList.add(label);
+//			  Util.BREAK("Statement.doParse: currentScope="+Global.currentScope);
+//			  Util.BREAK("Statement.doParse: currentScope'QUAL="+Global.currentScope.getClass().getSimpleName());
+//			  Util.BREAK("Statement.doParse: currentScope'identifier="+Global.currentScope.identifier);
+//			  Util.BREAK("Statement.doParse: currentScope'add Label="+label);
+			  Global.currentScope.labelList.add(label);
+		    } else Util.error("Misplaced ':'");
 			ident = acceptIdentifier();
 		}
 		if(ident!=null) Parser.saveCurrentToken(); // Not Label Pushback

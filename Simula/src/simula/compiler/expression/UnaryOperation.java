@@ -30,8 +30,14 @@ public class UnaryOperation extends Expression {
 	private Expression operand;
 
 	public UnaryOperation(KeyWord oprator, Expression operand) {
+		Util.BREAK("NEW UnaryOperation: "+oprator+' '+operand);
 		this.oprator = oprator;
-		this.operand = operand; operand.backLink=this;
+		this.operand = operand;
+		if(this.operand==null)
+		{ Util.error("Missing operand after unary "+oprator);
+		  this.operand=new Variable("UNKNOWN$");
+		}
+		this.operand.backLink=this;
 		//Util.BREAK("NEW UnaryOperation: "+toString());
 	}
 

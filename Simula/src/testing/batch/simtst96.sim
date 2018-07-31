@@ -76,7 +76,7 @@ comment
 *                                                                      *
 ************************************************************************
 ;
-      text array answer,ut(1:50); integer utnr,i;
+      text array answer,ut(1:500); integer utnr,i;
 
       procedure Outimage;
       begin utnr:=utnr+1;

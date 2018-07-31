@@ -194,4 +194,4 @@ BEGIN
       Outtext("--- NO ERRORS FOUND IN THIS TEST"); outimage; end;
    Outtext("--- END Simula a.s. TEST 29");
    Outimage;
- END
+ END;

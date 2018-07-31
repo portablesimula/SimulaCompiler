@@ -1,6 +1,4 @@
 
-%QUALIFIEDNAMES
-
 begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
        boolean errfound;
        real x,y; long real lx,ly; text t,tx,ty,tlx,tly;
@@ -29,7 +27,8 @@ begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
        modres(-4, 3):= 2;  remres(-4, 3):=-1;
        modres(-4,-3):=-1;  remres(-4,-3):=-1;
 
-       for i:=4,-4 do for j:=3,-3 do begin
+       for i:=4,-4 do
+        for j:=3,-3 do begin
            if mod(i,j)<>modres(i,j) then error("mod",i,j,mod(i,j));
            if rem(i,j)<>remres(i,j) then error("rem",i,j,rem(i,j));
        end;

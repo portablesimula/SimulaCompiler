@@ -897,4 +897,4 @@ BEGIN
    Outtext("--- END Simula a.s. TEST 23");
    Outimage;
 
-END
+END;

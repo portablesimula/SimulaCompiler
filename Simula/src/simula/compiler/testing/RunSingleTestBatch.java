@@ -141,10 +141,10 @@ public class RunSingleTestBatch {
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
 		//names.add("simtst96.sim"); // err: Test SIMULATION, complex example.
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
-		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
-		//names.add("simtst99.sim"); // ERR:
-		//names.add("simtst100.sim"); // ERR: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
-		names.add("simtst101.sim"); // ERR: Test Standard Procedure 'sourceline'.
+		names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
+		//names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
+		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
+		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

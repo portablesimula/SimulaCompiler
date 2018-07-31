@@ -97,6 +97,7 @@ public class SimulaCompiler {
 
 	public void doCompile() {
 		try {
+			Util.nError=0;
 			Global.javaModules=new Vector<JavaModule>();
 			
 			Parser.open(inputFileName);
@@ -104,9 +105,13 @@ public class SimulaCompiler {
 //			createTempFiles(program);
 			if (Option.verbose) {
 				Util.BREAK("*** END Parsing, resulting Program: "+program);
-				//if (program != null) program.print("", ";");
+				if (Option.TRACE_PARSE && program != null) program.print("", ";");
 			}
 			
+			if(Util.nError>0) 
+			{ System.err.println("Compiler terminated after "+Util.nError+" errors during parsing");
+			  System.exit(-Util.nError);
+			}
 			if (Option.verbose)	Util.BREAK("*** BEGIN Semantic Checker");
 			//program.print("", ";");
 			program.doChecking();

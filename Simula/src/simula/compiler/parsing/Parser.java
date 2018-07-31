@@ -26,12 +26,18 @@ public class Parser {
 	private static Token savedToken = null; // Used by 'pushBack'
 	public static Token prevToken = null;
 	public static Token currentToken = null;
+	private static boolean endOfFileErrorGiven=false;
 
 	private static void nextSymb() {
 		Parser.prevToken = Parser.currentToken;
 		if (savedToken == null) {
 			Parser.currentToken = simulaScanner.nextToken();
-			// Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
+			//Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
+			if(Parser.currentToken==null)
+		    { if(!endOfFileErrorGiven) Util.warning("Scanning past END-OF-FILE -- Adding extra END Symbol");
+		      endOfFileErrorGiven=true;
+		      Parser.currentToken = new Token(KeyWord.END);
+		    }
 		} else {
 			Parser.currentToken = savedToken;
 			savedToken = null;
@@ -54,6 +60,26 @@ public class Parser {
 
 	public static boolean accept(KeyWord s) {
 		if (Parser.currentToken.getKeyWord() == s) {
+			nextSymb();
+			return (true);
+		}
+		return (false);
+	}
+
+	public static boolean skipKeyWord(KeyWord s) {
+		if (Parser.currentToken.getKeyWord() == s) {
+			Util.error("Missplaced symbol: "+s+" -- Ignored");
+			nextSymb();
+			return (true);
+		}
+		return (false);
+	}
+
+	public static boolean skipAnyKeyWordExcept(KeyWord s) {
+		KeyWord keyWord=Parser.currentToken.getKeyWord();
+		//Util.BREAK("Parser.skipAnyKeyWordExcept("+s+"): keyWord="+keyWord);
+		if (keyWord != null && keyWord != s) {
+			Util.error("Missplaced symbol: "+keyWord+" -- Ignored");
 			nextSymb();
 			return (true);
 		}

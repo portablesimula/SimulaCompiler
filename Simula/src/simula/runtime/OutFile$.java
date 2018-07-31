@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import simula.compiler.utilities.Util;
+
 /**
  * The Class OutFile.
  * <p>
@@ -176,7 +178,13 @@ public class OutFile$ extends ImageFile$ {
 		if (!OPEN$)
 			throw new RuntimeException("File not opened");
 		try {
-			writer.write(image.strip().edText() + '\n');
+//			Util.BREAK("OutFile.outimage(), image=" + image);
+//			Util.BREAK("OutFile.outimage(), image.strip()=" + image.strip());
+			
+//			writer.write(image.strip().edText() + '\n');
+			TXT$ img=image.strip();
+			String str=(img==null)?"":(img.edText());
+			writer.write(str + '\n');
 			writer.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Outimage failed",e);

@@ -2,8 +2,14 @@ BEGIN
 
    ref(A) x;
 
-   Class A; virtual: procedure P;
-   begin integer i;
+   Class A;
+    hidden a;
+    protected b;
+    hidden protected c;
+    protected hidden d;
+   
+    virtual: procedure P;
+   begin integer i,a,b,c,d;
       Procedure P(line); integer line;
       Begin
             outtext("Call P -- Line="); outint(line,0); outimage;

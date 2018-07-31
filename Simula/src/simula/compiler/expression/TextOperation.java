@@ -79,7 +79,16 @@ public class TextOperation extends Expression
   
   public TextOperation(Expression lhs,Expression rhs)
   { this.lhs=lhs; this.rhs=rhs;
-    lhs.backLink=rhs.backLink=this;
+//    lhs.backLink=rhs.backLink=this;
+	if(this.lhs==null)
+	{ Util.error("Missing operand before &");
+	  this.lhs=new Variable("UNKNOWN$");
+	}
+	if(this.rhs==null)
+	{ Util.error("Missing operand after &");
+	  this.rhs=new Variable("UNKNOWN$");
+	}
+    this.lhs.backLink=this.rhs.backLink=this;
   }
   
   public void doChecking()

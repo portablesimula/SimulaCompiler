@@ -20,7 +20,6 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.runtime.RTObject$.$LABQNT;
 
 /**
  * </pre>
@@ -147,13 +146,30 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	    modifyIdentifier(""+Global.sourceName+"$PBLK"+lineNumber);
 	    this.externalIdent=this.identifier;
 	  }
-	  else if(!declarationList.isEmpty() || !labelList.isEmpty()) // Label is also declaration
+//	  else if(!declarationList.isEmpty() || !labelList.isEmpty()) // Label is also declaration
+	  else if(!declarationList.isEmpty())
 	  { blockKind=BlockDeclaration.Kind.SubBlock;
 	    modifyIdentifier("SubBlock"+lineNumber);
 	  }
 	  else
 	  { blockKind=BlockDeclaration.Kind.CompoundStatement;
 	    modifyIdentifier("CompoundStatement"+lineNumber);
+		if(!labelList.isEmpty()) // Label is also declaration
+		{ // Special case: Label in a Compound Statement.
+		  // Move Label Declaration to nearest enclosing 
+          // Block (with other declarations)
+			
+		  //Util.BREAK("BlockDeclaration.parseMaybeBlock: declaredIn="+declaredIn);
+		  DeclarationScope enc=declaredIn;
+		  while(enc.declarationList.isEmpty()) enc=enc.declaredIn;
+		  //Util.BREAK("BlockDeclaration.parseMaybeBlock: Label is moved to enc="+enc);
+		  for(LabelDeclaration lab:labelList) enc.labelList.add(lab);
+		  
+		  //System.out.println("Resulting Label-List:");
+		  //for(LabelDeclaration lab:enc.labelList) System.out.println(lab);
+		  
+		  labelList.clear();
+		}
 	  }
 	}
 	//declarationMap.print("END Block: "+blockName);
@@ -393,6 +409,7 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
     int labelIndex=1;
 	for(LabelDeclaration label:labelList)
 	{ label.prefixLevel=prfx; label.index=labelIndex++;
+      //Util.BREAK("BlockDeclaration("+identifier+").doChecking: Treat Label("+label.identifier+")="+label);
       label.myVirtual=findVirtual(label.identifier);
       //Util.BREAK("BlockDeclaration("+identifier+").doChecking: Find Virtual Label("+label.identifier+")="+label.myVirtual);
       if(label.myVirtual!=null)

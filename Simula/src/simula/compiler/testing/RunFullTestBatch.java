@@ -141,8 +141,8 @@ public class RunFullTestBatch {
 		//names.add("simtst96.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
-		//names.add("simtst99.sim"); // ERR:
-		//names.add("simtst000.sim"); // ERR: Test that put-get-put delivers the identity.
+		names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
+		names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.
 		names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;

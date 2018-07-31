@@ -90,11 +90,11 @@ public abstract class BlockParser extends SyntaxClass
       while(true)
       { if(Parser.accept(KeyWord.HIDDEN))
         { if(Parser.accept(KeyWord.PROTECTED)) expectHiddenProtectedList(block,true,true);
-          expectHiddenProtectedList(block,true,false);
+          else expectHiddenProtectedList(block,true,false);
         }
         else if(Parser.accept(KeyWord.PROTECTED))
         { if(Parser.accept(KeyWord.HIDDEN)) expectHiddenProtectedList(block,true,true);
-          expectHiddenProtectedList(block,false,true);
+          else expectHiddenProtectedList(block,false,true);
         }
         else break;
       }

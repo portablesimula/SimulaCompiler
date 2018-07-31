@@ -89,7 +89,16 @@ public class ArithmeticOperation extends Expression
   
   public ArithmeticOperation(Expression lhs,KeyWord opr,Expression rhs)
   { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-    lhs.backLink=rhs.backLink=this;
+    //lhs.backLink=rhs.backLink=this;
+	if(this.lhs==null)
+	{ Util.error("Missing operand before "+opr);
+	  this.lhs=new Variable("UNKNOWN$");
+	}
+	if(this.rhs==null)
+	{ Util.error("Missing operand after "+opr);
+	  this.rhs=new Variable("UNKNOWN$");
+	}
+    this.lhs.backLink=this.rhs.backLink=this;
   }
   
   public void doChecking()

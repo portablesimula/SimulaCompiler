@@ -165,9 +165,13 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 //    Extremum functions ...................................... 9.5
 //    Procedures max, min.
 
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"min",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"max",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
-
+    if(Global.OVERLOADING)
+    { ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"min",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
+      ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"max",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
+    } else
+    { ENVIRONMENT.addStandardProcedure(Type.LongReal,"min",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
+      ENVIRONMENT.addStandardProcedure(Type.LongReal,"max",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
+    }
 //    Error control ........................................... 9.7
 //    Procedure error.
 

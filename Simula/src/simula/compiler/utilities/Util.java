@@ -27,8 +27,10 @@ public class Util
 	return(prevWriter);  
   }
   
+  public static int nError;
   public static void error(String msg)
   { System.err.println("Line "+Global.sourceLineNumber+" Error: "+msg);
+    nError++;
     BREAK("");
   }
 
@@ -73,7 +75,9 @@ public class Util
   public static void TRACE(String msg) { TRACE("TRACE",msg); }
   
   public static void TRACE(String id,String msg)
-  { if(Option.TRACING) println(id+" "+Global.sourceLineNumber+": "+msg); }
+  { if(Option.TRACING) println(id+" "+Global.sourceLineNumber+": "+msg);
+    //Util.BREAK("");
+  }
   
   public static void NOT_IMPLEMENTED(String s)
   { System.err.println("*** NOT IMPLEMENTED: "+s);

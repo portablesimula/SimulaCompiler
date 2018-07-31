@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =======================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 100
 %
@@ -21,7 +20,10 @@
 % =====================================================================
 %
 
-begin  integer signpos=17;  !***  number of sign. digits in long real;
+begin
+       Boolean verbose=FALSE;
+     
+       integer signpos=17;  !***  number of sign. digits in long real;
        integer signpos1=signpos+1;
        integer iterationcount = 1000; !*** number of tests made ***;
 % *********************************************************************
@@ -80,6 +82,11 @@ begin  integer signpos=17;  !***  number of sign. digits in long real;
                    !*** put.get.put must be the identity ***;
              end;
 
+			 if verbose then
+			 begin outtext("Test PutGet: "); outreal(prevr,4,12); 
+			       outimage;
+			 end;      
+
              significance:=signpos;
              prevt.putreal(prevr,signpos1);
              heading:=prevt;
@@ -128,10 +135,14 @@ begin  integer signpos=17;  !***  number of sign. digits in long real;
        outimage; outimage;
 
        min_signif:=signpos; max_signif:=0;
-       putget:-new outfile("out100");
-       if not putget.open(blanks(80)) then begin
-          outtext("error: CAN'T OPEN FILE ""out100"""); outimage;
-          goto EXIT end;
+       
+       if verbose then putget:-sysout() else
+       begin
+          putget:-new outfile("out100");
+          if not putget.open(blanks(80)) then begin
+             outtext("error: CAN'T OPEN FILE ""out100"""); outimage;
+             goto EXIT end;
+       end;   
        heading:-blanks(signpos+15);
        t:-blanks(signpos+8);
        prevt:-blanks(signpos+8); st:-blanks(signpos+8);
@@ -158,6 +169,7 @@ EXIT:
             outtext(" Number of significant digits varies between");
             outint(min_signif,3); outtext(" and"); outint(max_signif,3);
        end;
-       putget.outtext(sysout.image); putget.outimage;  putget.close;
+       putget.outtext(sysout.image); putget.outimage;
+       if not verbose then putget.close;
        outimage;
 end

@@ -431,4 +431,4 @@ PROCEDURE Setvariables ;
 
    Outtext ("--- END Simula a.s. TEST 30") ;
    Outimage
- END
+ END;

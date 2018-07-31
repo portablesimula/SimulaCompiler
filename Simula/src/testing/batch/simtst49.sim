@@ -108,4 +108,4 @@ BEGIN
 
    Outtext ("--- END Simula a.s. TEST 49") ;
    Outimage
- END
+ END;
