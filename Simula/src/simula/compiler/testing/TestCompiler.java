@@ -55,9 +55,12 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/FEC_Errmsg.sim";
 		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
 
+		// *** SIMULA PROGRAMMER
+		// String name=Global.packetName+"/simprogs/Matte.sim";
+
 		// *** SIMULA ERROR-TEST PROGRAMMER
 		// String name=Global.packetName+"/err/simerr01.sim";
-		 String name=Global.packetName+"/err/simerr02.sim";
+		// String name=Global.packetName+"/err/simerr02.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";
@@ -70,6 +73,7 @@ public class TestCompiler {
 		 
 		// String name=Global.packetName+"/sim/ClassGlyph.sim";
 		// String name=Global.packetName+"/sim/ClassGlyph2.sim";
+		 String name=Global.packetName+"/sim/ClockTimeTest.sim";
 		// String name=Global.packetName+"/sim/CoroutineSample.sim";
 		// String name=Global.packetName+"/sim/DetachSamples.sim"; 
 		// String name=Global.packetName+"/sim/DecimalEdit.sim"; 

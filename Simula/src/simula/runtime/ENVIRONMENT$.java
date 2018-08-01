@@ -8,6 +8,10 @@
 package simula.runtime;
 
 import java.lang.reflect.Array;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 /**
@@ -1421,13 +1425,20 @@ public class ENVIRONMENT$ {
 	// *****************************************
 	// *** Calendar and timing utilities ***
 	// *****************************************
-
+	/**
+	 * <pre>
+	 * text procedure datetime;   datetime :- Copy("...");
+	 * </pre>
+	 * The value is a text frame containing the current date and time
+     * in the form    YYYY-MM-DD HH:MM:SS.sss.... The number of
+     * decimals in the field for seconds is implementation-defined.
+     * 
+	 * @return
+	 */
 	public TXT$ datetime() {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		TXT$ datetime = null;
-		datetime = copy(new TXT$("..."));
-		return (datetime);
+		DateTimeFormatter form=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+		String datim=LocalDateTime.now().format(form);
+		return(new TXT$(datim));
 	}
 
 	/**
@@ -1445,11 +1456,20 @@ public class ENVIRONMENT$ {
 		return (cputime / 1000);
 	}
 
+	/**
+	 * <pre>
+	 * long real procedure clocktime;
+	 * </pre>
+	 * @return The value is the number of seconds since midnight.
+	 */
 	public double clocktime() {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//return (0.0);
-		throw new RuntimeException("ENVIRONMENT$ -- clocktime is not implemented");
+		LocalTime localTime = LocalTime.now();
+		int hour=localTime.getHour();
+		int minute=localTime.getMinute();
+		int second=localTime.getSecond();
+		//System.out.println("ClockTime: Hour="+hour+", Minute="+minute+", Second="+second);
+		double time=((hour*60)+minute)*60+second;
+		return(time);
 	}
 
 	// *****************************************
