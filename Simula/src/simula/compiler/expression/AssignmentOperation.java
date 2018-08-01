@@ -82,6 +82,13 @@ public class AssignmentOperation extends Expression
 	if(this.type==null) Util.error("doAssignmentChecking: Illegal types: "+toType+" := "+fromType);
   }
 
+
+  // Returns true if this expression may be used as a statement.
+  public boolean maybeStatement()
+  {	ASSERT_SEMANTICS_CHECKED(this);
+	return(true);  
+  }
+
 	  
   public String toJavaCode()
   { //Util.BREAK("Assignment.toJavaCode: "+this);

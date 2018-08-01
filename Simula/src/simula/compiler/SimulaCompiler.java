@@ -119,6 +119,11 @@ public class SimulaCompiler {
 				Util.BREAK("*** END Semantic Checker: "+program);
 				if (Option.TRACE_CHECKER_OUTPUT && program != null) program.print("", ";");
 			}
+			
+			if(Util.nError>0) 
+			{ System.err.println("Compiler terminated after "+Util.nError+" errors during semantic checking");
+			  System.exit(-Util.nError);
+			}
 
 			if (Option.verbose) Util.BREAK("*** BEGIN Generate .java Output Code"); 
 			program.doJavaCoding(0);

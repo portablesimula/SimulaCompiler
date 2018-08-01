@@ -56,7 +56,8 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
-		 String name=Global.packetName+"/err/simerr01.sim";
+		// String name=Global.packetName+"/err/simerr01.sim";
+		 String name=Global.packetName+"/err/simerr02.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";

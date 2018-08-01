@@ -7,12 +7,15 @@
  */
 package simula.compiler.expression;
 
+import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.ExternalDeclaration;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.StandardProcedure;
+import simula.compiler.declaration.SwitchDeclaration;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
@@ -108,6 +111,22 @@ public class Variable extends Expression {
 		}
 		SET_SEMANTICS_CHECKED();
 	}
+
+	  // Returns true if this expression may be used as a statement.
+	  public boolean maybeStatement()
+	  {	ASSERT_SEMANTICS_CHECKED(this);
+		Declaration declaredAs=meaning.declaredAs;
+		BlockDeclaration.Kind blockKind=declaredAs.blockKind;
+		//Util.BREAK("Variable.maybeStatement("+identifier+"): meaning="+meaning);
+		//Util.BREAK("Variable.maybeStatement("+identifier+"): declaredAs="+declaredAs+", BlockDeclaration.Kind="+blockKind+", qual="+declaredAs.getClass().getSimpleName());
+		if(blockKind==BlockDeclaration.Kind.Procedure) return(true);
+		if(blockKind==BlockDeclaration.Kind.Method) return(true);
+		if(declaredAs instanceof Parameter)
+		{ Parameter par=(Parameter)declaredAs;
+		  if(par.kind==Parameter.Kind.Procedure) return(true);
+		}
+		return(false); // Variable, Parameter, Array, Class, Switch
+	  }
 
 	// ******************************************************************
 	// *** Coding: put

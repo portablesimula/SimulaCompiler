@@ -130,6 +130,12 @@ public class BooleanOperation extends Expression
 	if(Option.TRACE_CHECKER) Util.TRACE("END BooleanOperation"+toString()+".doChecking - Result type="+this.type);
 	SET_SEMANTICS_CHECKED();
   }
+
+  // Returns true if this expression may be used as a statement.
+  public boolean maybeStatement()
+  {	ASSERT_SEMANTICS_CHECKED(this);
+	return(false);  
+  }
   
   public String toJavaCode()
   { ASSERT_SEMANTICS_CHECKED(this);

@@ -12,7 +12,6 @@ import java.util.Iterator;
 import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.StandardProcedure;

@@ -131,6 +131,12 @@ public class ObjectGenerator extends Expression {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	  // Returns true if this expression may be used as a statement.
+	  public boolean maybeStatement()
+	  {	ASSERT_SEMANTICS_CHECKED(this);
+		return(true);  
+	  }
+
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		StringBuilder s = new StringBuilder();

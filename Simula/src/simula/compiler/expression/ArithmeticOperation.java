@@ -155,6 +155,13 @@ public class ArithmeticOperation extends Expression
   }
 
   
+  // Returns true if this expression may be used as a statement.
+  public boolean maybeStatement()
+  {	ASSERT_SEMANTICS_CHECKED(this);
+	return(false);  
+  }
+
+  
   public String toJavaCode()
   { //Util.BREAK("ArithmeticOperation.toJavaCode: "+this);
 	ASSERT_SEMANTICS_CHECKED(this);

@@ -7,8 +7,11 @@
  */
 package simula.compiler.statement;
 
+import simula.compiler.expression.ArithmeticOperation;
 import simula.compiler.expression.AssignmentOperation;
+import simula.compiler.expression.BooleanOperation;
 import simula.compiler.expression.Expression;
+import simula.compiler.expression.RelationalOperation;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -63,6 +66,9 @@ public class StandaloneExpression extends Statement {
 		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER) Util.TRACE("StandaloneExpression("+expression+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		expression.doChecking();
+//		Util.BREAK("StandaloneExpression.doChecking: expression="+expression);
+//		Util.BREAK("StandaloneExpression.doChecking: expression'QUAL="+expression.getClass().getSimpleName());
+		if(!expression.maybeStatement()) Util.error("Illegal/Missplaced Expression: "+expression);
 		if (Option.TRACE_CHECKER) Util.TRACE("END StandaloneExpression(" + expression+ ").doChecking: type=" + type);
 		// Debug.BREAK("END StandaloneExpression");
 		SET_SEMANTICS_CHECKED();

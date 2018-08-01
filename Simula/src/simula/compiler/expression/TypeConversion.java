@@ -79,6 +79,12 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		SET_SEMANTICS_CHECKED();
 	}
 
+	  // Returns true if this expression may be used as a statement.
+	  public boolean maybeStatement()
+	  {	ASSERT_SEMANTICS_CHECKED(this);
+		return(false);  
+	  }
+
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		//Util.BREAK("TypeConversion.toJavaCode: "+expression.type+" ==> "+type);

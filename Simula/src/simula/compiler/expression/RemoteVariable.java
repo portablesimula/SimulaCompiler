@@ -9,6 +9,7 @@ package simula.compiler.expression;
 
 import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.StandardClass;
 import simula.compiler.utilities.Global;
@@ -133,6 +134,12 @@ public class RemoteVariable extends Expression
 	  result=attr.type;
 	}
 	return(result);
+  }
+
+  // Returns true if this expression may be used as a statement.
+  public boolean maybeStatement()
+  {	ASSERT_SEMANTICS_CHECKED(this);
+    return(rhs.maybeStatement());
   }
 	  
   public String toJavaCode()

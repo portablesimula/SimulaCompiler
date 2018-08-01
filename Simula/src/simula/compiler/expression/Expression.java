@@ -319,6 +319,9 @@ public abstract class Expression extends SyntaxClass
 		else if(!(objDecl.isCompatibleClasses(quaDecl))) return(false);
 		return(true);
   }
+
+  // Returns true if this expression may be used as a statement.
+  public abstract boolean maybeStatement();
   
   // Generate code for getting the value of this Expression
   public String get()
@@ -327,5 +330,4 @@ public abstract class Expression extends SyntaxClass
   // Generate code for putting the value into this Expression
   public String put(String evaluated)
   { return(this.toJavaCode()+'='+evaluated); }
-
 }
