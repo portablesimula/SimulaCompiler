@@ -39,6 +39,10 @@ public abstract class DeclarationScope extends Declaration {
   public DeclarationScope(String ident)
   { super(ident);
 	declaredIn=Global.currentScope; Global.currentScope=this;
+	
+//	if(this instanceof StandardClass
+//	|| this instanceof StandardProcedure);
+//	else Util.BREAK("NEW DeclarationScope("+ident+")="+this.getClass().getSimpleName()+", ScopeChain="+edScopeChain());
   }
   
 //  public String toString()
@@ -60,11 +64,13 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findMeaning
   // ***********************************************************************************************
   public Meaning findMeaning(String identifier)
-  { //if(identifier.equalsIgnoreCase("adHoc00"))  Util.BREAK("DeclarationScope("+identifier+").findMeaning("+identifier+"): scope="+declaredIn);
+  { //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): scope="+this);
 	Meaning meaning=findVisibleAttributeMeaning(identifier);
-	//if(identifier.equalsIgnoreCase("adHoc00"))  Util.BREAK("DeclarationScope("+identifier+").findMeaning("+identifier+"): meaning1="+meaning);
+//	if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning1="+meaning);
+//	if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): declaredIn="+declaredIn);
+//	if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): ScopeChain="+edScopeChain());
 	if(meaning==null && declaredIn!=null) meaning=declaredIn.findMeaning(identifier);
-	//if(identifier.equalsIgnoreCase("adHoc00"))  Util.BREAK("DeclarationScope("+identifier+").findMeaning("+identifier+"): meaning1="+meaning);
+//	if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning2="+meaning);
 	if(meaning==null) Util.error("Undefined variable: "+identifier);
     return(meaning);
   }
@@ -98,7 +104,7 @@ public abstract class DeclarationScope extends Declaration {
   {return(findRemoteAttributeMeaning(ident,false)); } 
   
   public Meaning findRemoteAttributeMeaning(String ident,boolean behindProtected)
-  { //Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+  { //if(ident.equalsIgnoreCase("ln"))Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+this);
 	boolean prtected=false;
     for(String prct:protectedList)
     	if(ident.equalsIgnoreCase(prct))
@@ -121,6 +127,7 @@ public abstract class DeclarationScope extends Declaration {
 	    	return(new Meaning(Variable.Kind.virtual,virtual,this,this,behindProtected)); 
     }
     //Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
+    if( ((BlockDeclaration)this).hasNoRealPrefix()) return(null);  // TODO: SIKKER PÅ DETTE ?
     BlockDeclaration prfx=getPrefix();
     if(prfx!=null)
     { Meaning meaning=prfx.findRemoteAttributeMeaning(ident,behindProtected);
@@ -152,7 +159,8 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findVisibleAttributeMeaning
   // ***********************************************************************************************
   public Meaning findVisibleAttributeMeaning(String ident)
-  { //if(ident.equalsIgnoreCase("adHoc00")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+declaredIn);
+  { //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
+    //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
 	boolean searchBehindHidden=false;
 	DeclarationScope scope=this;
 	SEARCH:while(scope!=null)

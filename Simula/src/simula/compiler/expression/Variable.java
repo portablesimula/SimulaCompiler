@@ -7,15 +7,12 @@
  */
 package simula.compiler.expression;
 
-import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.ExternalDeclaration;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.StandardProcedure;
-import simula.compiler.declaration.SwitchDeclaration;
 import simula.compiler.declaration.Virtual;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;

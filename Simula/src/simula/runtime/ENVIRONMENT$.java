@@ -8,7 +8,6 @@
 package simula.runtime;
 
 import java.lang.reflect.Array;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -1392,7 +1391,8 @@ public class ENVIRONMENT$ {
 	 * @param U
 	 * @return
 	 */
-	public int histd($ARRAY<double[]> A, $NAME<Integer> U) {
+//	public int histd($ARRAY<double[]> A, $NAME<Integer> U) {
+	public int histd($ARRAY<float[]> A, $NAME<Integer> U) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		//import ref(rea_arr_1) a; name(integer) u; export integer i;
