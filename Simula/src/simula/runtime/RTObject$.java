@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 
@@ -16,7 +17,8 @@ import simula.compiler.utilities.Util;
 * 
 * @author Øystein Myhre Andersen
 */
-public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
+//public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
+public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	protected static boolean CODE_STEP_TRACING=false;//true;
 	protected static boolean BLOCK_TRACING=false;//true;
 	protected static boolean GOTO_TRACING=false;//true;
@@ -144,6 +146,93 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	  //Util.BREAK("RTObject.ENT: CUR="+CUR$);
 	  STM();
 	  return(this);
+	}
+
+	
+	// ****************************************************
+	// *** The Abstract Generic Class $NAME<T> supporting
+	// *** Name-Parameters in Java Coding.
+	// ****************************************************
+	public abstract class $NAME<T> {
+//		public RTObject$ THE$; // Thunk Environment
+//		public $NAME() { THE$=RTObject$.CUR$; }
+		public RTObject$ CUR$; // Thunk Environment
+		public $NAME() { CUR$=RTObject$.CUR$;
+//		Util.BREAK("NEW THUNK: CUR$="+CUR$+", Qual="+CUR$.getClass().getSimpleName());
+		}
+		public abstract T get();
+		public T put(T x) { throw new RuntimeException("Illegal assignment. Name parameter is not a variable"); }
+	}
+
+
+	// ************************************************************
+	// *** ARRAY OBJECTS
+	// ************************************************************
+	static final String arrayError="Illegal use of array";
+	public int[] IX$(int...ix) { return(ix); }
+
+	public class $ARRAY<T>
+	{ public T Elt;
+	  public int[] LB;
+	  public int[] UB;
+	  public $ARRAY(T Elt,int[] LB,int[] UB)
+	  { this.Elt=Elt; this.LB=LB; this.UB=UB; }
+	  public $ARRAY<T> COPY()
+	  {	
+//		T AA=(T)copyMultiArrayObject(Elt);
+		T AA=copyMultiArray(Elt);
+		$ARRAY<T> to=new $ARRAY<T>(AA,LB,UB);  // TODO
+		return(to);
+	  }
+	  public int size()
+	  { int s=1;
+		int nDim=LB.length;
+		for(int i=0;i<nDim;i++)
+		{ int length=UB[i]-LB[i]+1;
+		  s=s*length;
+		}
+		return(s);
+	  }
+	  public String toString()
+	  { int nDim=LB.length;
+		StringBuilder s=new StringBuilder();
+		if(nDim==1)
+		{ s.append("$ARRAY(").append(LB[0]).append(':').append(UB[0]).append("), ");
+		  int length=UB[0]-LB[0]+1;
+		  s.append("LENGTH=").append(length);
+		}
+		return(s.toString());
+	  }
+//	  public Object putElt(int[] ix,Object val)
+//	  {
+//		  return(val);
+//	  }
+//	  public Object getElt(int[] ix)
+//	  {
+//		  return(null);
+//	  }
+	}
+
+	// *******************************************************************************
+	// *** Utility: Multidimensional Array Copy
+	// Taken from: https://coderanch.com/t/378421/java/Multidimensional-array-copy
+	// *******************************************************************************
+	@SuppressWarnings("unchecked")
+	public static <T> T copyMultiArray(T arr) {
+	    return (T) copyMultiArrayObject(arr);
+	}
+	private static Object copyMultiArrayObject(Object arr) {
+	    Class clazz = arr.getClass();
+	    if (!clazz.isArray())
+	        throw new IllegalArgumentException("not an array: " + arr);
+	    Class componentType = clazz.getComponentType();
+	    int length = Array.getLength(arr);
+	    Object copy = Array.newInstance(componentType, length);
+	    if (componentType.isArray())
+	        for (int i = 0; i < length; i++)
+	            Array.set(copy, i, copyMultiArrayObject(Array.get(arr, i)));
+	    else System.arraycopy(arr, 0, copy, 0, length);
+	    return copy;
 	}
 	
 	
@@ -342,6 +431,179 @@ public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
 	}
 	
 	
+
+	// *****************************************
+	// *** Text utilities ***
+	// *****************************************
+    public final static TXT$ NOTEXT=new TXT$();
+
+	/**
+	 * <pre>
+	 * text procedure copy(T); text T;
+	 *            if T =/= notext
+	 *            then begin text U;
+	 *               U.OBJ    :- new TEXTOBJ(T.LENGTH,false);
+	 *               U.START  := 1;
+	 *               U.LENGTH := T.LENGTH;
+	 *               U.POS    := 1;
+	 *               U        := T;
+	 *               copy     :- U
+	 *            end copy;
+	 * </pre>
+	 * 
+	 * "copy(T)", with T =/= notext, references a new alterable main frame which
+	 * contains a text value identical to that of T.
+	 * 
+	 * @param U
+	 * @return
+	 */
+	public TXT$ copy(TXT$ T) {
+		if (T == null) return (null);
+		TXT$ U = blanks(T.LENGTH);
+		ASGTXT$(U,T);
+		return (U);
+	}
+	
+	/**
+	 * The operator & permits text concatenation. 
+	 * @param T1
+	 * @param T2
+	 * @return
+	 */
+    public TXT$ CONC (TXT$ T1,TXT$ T2) {
+       if(T1==null) T1=NOTEXT;
+       if(T2==null) T2=NOTEXT;
+       TXT$ U=blanks(T1.length()+T2.length());
+       ASGTXT$(U.sub(1,T1.length()),T1);
+       ASGTXT$(U.sub(1+T1.length(),T2.length()),T2);
+       return(U);
+    }
+
+
+	/**
+	 * <pre>
+	 * text procedure blanks(n); integer n;
+	 *            if        n < 0 then error("..." ! Parm. to blanks < 0;)
+	 *            else if   n > 0
+	 *            then begin text T;
+	 *               T.OBJ    :- new TEXTOBJ(n,false);
+	 *               T.START  := 1;
+	 *               T.LENGTH := n;
+	 *               T.POS    := 1;
+	 *               T        := notext;    ! blank-fill, see 4.1.2;
+	 *               blanks   :- T
+	 *            end blanks;
+	 * </pre>
+	 * 
+	 * "blanks(n)", with n > 0, references a new alterable main frame of length
+	 * n, containing only blank characters. "blanks(0)" references notext.
+	 * 
+	 * @param n
+	 * @return
+	 */
+	public TXT$ blanks(int n) {
+		if (n < 0)
+			throw new RuntimeException("Parmameter to blanks < 0");
+		if (n == 0)
+			return (NOTEXT);
+		TXT$ textRef = new TXT$();
+		TEXTOBJ textObj = new TEXTOBJ(n, false);
+		textObj.fill(' ');
+		textRef.START = 0; // Note: Counting from zero in this implementation
+		textRef.LENGTH = n;
+		textRef.POS = 0; // Note: Counting from zero in this implementation
+		textRef.OBJ = textObj;
+		return (textRef);
+	}
+
+	public TXT$ ASGTXT$(TXT$ T,TXT$ U) {
+	    if(T==null) T=NOTEXT;
+	    if(U==null) U=NOTEXT;
+		int fromLength = U.LENGTH;
+		if(fromLength > T.LENGTH) throw(new RuntimeException("RHS too long in text value assignment"));
+		for (int i = 0; i < fromLength; i++)
+			T.OBJ.MAIN[T.START+i] = U.OBJ.MAIN[U.START+i];
+		for (int i = fromLength; i < T.LENGTH; i++)
+			T.OBJ.MAIN[T.START+i] = ' ';
+		return(T);
+	}
+
+	public TXT$ ASGSTR$(TXT$ T,String s) {
+	    if(T==null) T=NOTEXT;
+		int fromLength = 0;
+		if (s != null) fromLength = s.length();
+		if(fromLength > T.LENGTH) throw(new RuntimeException("RHS too long in text value assignment"));
+		for (int i = 0; i < fromLength; i++)
+			T.OBJ.MAIN[T.START+i] = s.charAt(i);
+		for (int i = fromLength; i < T.LENGTH; i++)
+			T.OBJ.MAIN[T.START+i] = ' ';
+		return(T);
+	}
+	
+	//**************************************************************
+	//*** TXTREL - Text value relations
+	//**************************************************************
+	public boolean TXTREL$LT(TXT$ left,TXT$ right) { return(TXTREL(left,right,1)); }
+	public boolean TXTREL$EQ(TXT$ left,TXT$ right) { return(TXTREL(left,right,2)); }
+	public boolean TXTREL$LE(TXT$ left,TXT$ right) { return(TXTREL(left,right,3)); }
+	public boolean TXTREL$GT(TXT$ left,TXT$ right) { return(TXTREL(left,right,4)); }
+	public boolean TXTREL$NE(TXT$ left,TXT$ right) { return(TXTREL(left,right,5)); }
+	public boolean TXTREL$GE(TXT$ left,TXT$ right) { return(TXTREL(left,right,6)); }
+	private boolean TXTREL(TXT$ left,TXT$ right,int code)
+	{ int i;      // Loop index.
+	  int dif;    // Difference between lengths.
+	  int lng;    // Length of common parts.
+	  if(left==null) left=NOTEXT;
+	  if(right==null) right=NOTEXT;
+	  //Util.BREAK("ENVIRONMENT.TXTREL("+code+") Left= \""+left.edText()+'"');
+	  //Util.BREAK("ENVIRONMENT.TXTREL("+code+") Right=\""+right.edText()+'"');
+	  lng=right.LENGTH; dif=lng-left.LENGTH;
+	  //Util.BREAK("ENVIRONMENT.TXTREL("+code+") dif="+dif);
+	  if(dif!=0)
+	  { if(code==2) return(false);
+	    if(code==5) return(true);
+	    if(dif>0) lng=left.LENGTH;
+	  }
+	  i=0;
+	  while(i<lng)
+	  {	int rightChar=right.OBJ.MAIN[right.START+i];     
+	    int leftChar=left.OBJ.MAIN[left.START+i];  
+	    if(rightChar!=leftChar)
+	    {
+	  	  //Util.BREAK("ENVIRONMENT.TXTREL("+code+") pos="+i);
+	  	  //Util.BREAK("ENVIRONMENT.TXTREL("+code+") leftChar="+(char)leftChar+", code="+leftChar);
+	  	  //Util.BREAK("ENVIRONMENT.TXTREL("+code+") rightChar="+(char)rightChar+", code="+rightChar);
+	      dif=rightChar-leftChar; break;
+	    }
+	    i=i + 1;
+	  };
+	  //Util.BREAK("ENVIRONMENT.TXTREL("+code+") dif="+dif);
+	  switch(code)
+	  { case 1: return(0 <  dif);
+	    case 2: return(0 == dif);
+	    case 3: return(0 <= dif);
+	    case 4: return(0 >  dif);
+	    case 5: return(0 != dif);
+	    case 6: return(0 >= dif);
+	    default: throw new RuntimeException("Internal Error");
+	  }
+	}
+
+	//**************************************************************
+	//*** TXTREL - Text reference relations. ==  =/=
+	//**************************************************************
+	public boolean TRF_EQ(TXT$ left,TXT$ right)
+	{ //Util.BREAK("TRF_EQ: left="+left);
+	  //Util.BREAK("TRF_EQ: right="+right);
+	  if(left==null) left=NOTEXT;
+	  if(right==null) right=NOTEXT;
+	  if(left.LENGTH!=right.LENGTH) return(false);
+	  if(left.START!=right.START) return(false);
+	  if(left.OBJ!=right.OBJ) return(false);
+	  return(true);
+	}
+	public boolean TRF_NE(TXT$ left,TXT$ right)
+	{ return(!TRF_EQ(left,right)); }
 
 	// ************************************************************
 	// *** lOCAL JUMP/LABEL  - Meant for Byte-Code Engineering

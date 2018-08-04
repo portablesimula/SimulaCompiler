@@ -68,7 +68,8 @@ public class TestCompiler {
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
-	     String name=Global.packetName+"/sim/AnimationTest.sim";
+	    // String name=Global.packetName+"/sim/AnimationTest.sim";
+	     String name=Global.packetName+"/sim/AnimationTest2.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
 

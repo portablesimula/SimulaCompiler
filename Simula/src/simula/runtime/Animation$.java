@@ -8,13 +8,26 @@
 package simula.runtime;
 
 import java.awt.BasicStroke;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
+import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JWindow;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+
+import simula.runtime.Drawing$.DrawElement;
+import simula.runtime.Drawing$.Drawing;
 
 /**
  * 
@@ -112,7 +125,8 @@ public class Animation$ extends Simset$ {
 	public static final int blue =      0x0000ff; // Color blue:       R=0,   G=0,   B=255.
 
 	JFrame frame;
-	JWindow window;
+	Drawing canvas;
+	BufferStrategy strategy;
 	public Head$ SQS = null;
     Color currentBackgroundColor=Color.WHITE;
     Color currentDrawColor=Color.BLACK;
@@ -122,6 +136,11 @@ public class Animation$ extends Simset$ {
 
 	interface Animable
 	{ public void paint(Graphics2D g); }
+	
+	public void repaintMe()
+//	{ frame.repaint(); }
+//	{ canvas.repaint(); }
+	{ canvas.render(); }
 	
 	/*
 	 * style - the style constant for the Font The style argument is an integer
@@ -182,7 +201,7 @@ public class Animation$ extends Simset$ {
 	
 
 	// Constructor
-	public Animation$(RTObject$ staticLink) {
+	public Animation$(RTObject$ staticLink,TXT$ title) {
 		super(staticLink);
 		TRACE_BEGIN_DCL$("Animation$");
 		// Create Class Body
@@ -190,8 +209,8 @@ public class Animation$ extends Simset$ {
 			public void STM() {
 				TRACE_BEGIN_STM$("Animation$",inner);
 				SQS = (Head$) new Head$(Animation$.this).STM();
-				if (inner != null)
-					inner.STM();
+	        	init(title.edText());
+				if (inner != null) inner.STM();
 				TRACE_END_STM$("Animation$");
 			}
 		};
@@ -205,5 +224,71 @@ public class Animation$ extends Simset$ {
 		START(this);
 		return (this);
 	}
+    
+    class Drawing extends Canvas {
+    	static final long serialVersionUID=123;
+    	public void paint1(Graphics g1) {
+    		Graphics2D g=(Graphics2D)g1;
+    		this.setBackground(currentBackgroundColor);
+    		
+//            for(DrawElement elt:elements) elt.paint(g);
+    		Link$ lnk=SQS.first();
+    		while(lnk!=null) 
+    		{ if(lnk instanceof Animation$.Animable)
+    			((Animation$.Animable)lnk).paint(g);
+    		  lnk=lnk.suc();
+    		}
+        }
+    	
+    	public void paint(Graphics g) { render(); }
+    	public void render()
+    	{ Graphics graphics = strategy.getDrawGraphics();
+    	  Graphics2D g=(Graphics2D)graphics;
+    	  g.setBackground(Color.WHITE);
+    	  Rectangle bnd=this.getBounds();
+    	  g.clearRect(bnd.x,bnd.y,bnd.width,bnd.height);
+          // Render to graphics
+		  Link$ lnk=SQS.first();
+		  while(lnk!=null) 
+		  { if(lnk instanceof Animation$.Animable)
+			  ((Animation$.Animable)lnk).paint(g);
+		    lnk=lnk.suc();
+		  }
+   	      graphics.dispose();
+   	      strategy.show();
+    	}
+    }
+    
+    private void init(String title)
+    { frame = new JFrame(title);
+      canvas = new Drawing();
+      canvas.setSize(400, 400);
+      currentFont=new Font(Font.SANS_SERIF,12,Font.PLAIN);
+	  //System.out.println("Init: Current Font="+currentFont);
+        frame.add(canvas);
+        frame.pack();
+        frame.setVisible(true);  
+        canvas.createBufferStrategy(2);
+        strategy = canvas.getBufferStrategy();        
+        frame.setAlwaysOnTop(true); // VIRKER
+//        frame.moveToFront(); //VIRKER IKKE !!!
+        
+//        frame.addWindowStateListener(new WindowStateListener() {
+//			public void windowStateChanged(WindowEvent e) {
+//				System.out.println("windowStateChanged:WindowsEvent: "+e);
+//				
+//			}});
+        frame.addWindowListener(new WindowListener() {
+			public void windowOpened(WindowEvent e) { System.out.println("windowOpened.WindowsEvent: "+e); }
+			public void windowClosing(WindowEvent e) { System.out.println("windowClosing.WindowsEvent: "+e);
+				if(e.getID()==WindowEvent.WINDOW_CLOSING) System.exit(0);
+			}
+			public void windowClosed(WindowEvent e) { System.out.println("windowClosed.WindowsEvent: "+e); }
+			public void windowIconified(WindowEvent e) { System.out.println("windowIconified.WindowsEvent: "+e); }
+			public void windowDeiconified(WindowEvent e) { System.out.println("windowDeiconified.WindowsEvent: "+e); }
+			public void windowActivated(WindowEvent e) { System.out.println("windowActivated.WindowsEvent: "+e); }
+			public void windowDeactivated(WindowEvent e) { System.out.println("windowClosing.WindowsEvent: "+e);
+			}});
+    }
 
 }

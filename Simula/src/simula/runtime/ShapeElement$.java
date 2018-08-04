@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.RectangularShape;
 
 /**
  * <pre>
@@ -34,14 +35,25 @@ public class ShapeElement$ extends Link$ implements Animation$.Animable {
 
     public void drawEllipse(double x,double y,double width,double height)
     { shape=new Ellipse2D.Double(x,y,width,height);
-      drawColor=((Animation$)(this.DL$)).currentDrawColor;
+      drawColor=((Animation$)(this.SL$)).currentDrawColor;
       //elements.add(elt);
     }
 
     public void fillEllipse(double x,double y,double width,double height)
     { shape=new Ellipse2D.Double(x,y,width,height);
-      fillColor=((Animation$)(this.DL$)).currentFillColor;
+      fillColor=((Animation$)(this.SL$)).currentFillColor;
       //elements.add(elt);
+      
+    }
+    
+    public void moveTo(double x,double y)
+    { if(shape instanceof RectangularShape)
+      { RectangularShape rect=((RectangularShape)shape);
+        System.out.println("Move "+shape.getClass().getSimpleName()+" to x="+x+", y="+y);
+        rect.setFrame(x,y,rect.getWidth(),rect.getHeight());
+      }
+      try {Thread.sleep(1);}catch(Exception e) {}
+      ((Animation$)(this.SL$)).repaintMe();
     }
 
 	// Constructor

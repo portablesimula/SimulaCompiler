@@ -30,7 +30,7 @@ public class UnaryOperation extends Expression {
 	private Expression operand;
 
 	public UnaryOperation(KeyWord oprator, Expression operand) {
-		Util.BREAK("NEW UnaryOperation: "+oprator+' '+operand);
+		//Util.BREAK("NEW UnaryOperation: "+oprator+' '+operand);
 		this.oprator = oprator;
 		this.operand = operand;
 		if(this.operand==null)

@@ -94,6 +94,8 @@ public class Drawing$ extends CLASS$ {
 	// Constructor
     public Drawing$(RTObject$ staticLink,TXT$ title) {
        super(staticLink);
+//  public Drawing$(ENVIRONMENT$ staticLink,TXT$ title) {
+//     super((RTObject$)staticLink);
        BBLK(); // Iff no prefix
        TRACE_BEGIN_DCL$("Drawing$");
        CODE$=new ClassBody(CODE$,this,0) {

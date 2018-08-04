@@ -96,7 +96,9 @@ public class Simulation$ extends Simset$ {
 
 	// Constructor
 	public Simulation$(RTObject$ staticLink) {
-		super(staticLink);
+	super(staticLink);
+//	public Simulation$(ENVIRONMENT$ staticLink) {
+//	    super((RTObject$)staticLink);
 		TRACE_BEGIN_DCL$("Simulation$");
 		// Create Class Body
 		CODE$ = new ClassBody(CODE$, this,1) {

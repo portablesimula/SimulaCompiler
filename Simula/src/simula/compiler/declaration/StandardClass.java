@@ -69,7 +69,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass RTObject=new StandardClass("RTObject");
   static
-  { UNIVERSE.addStandardClass(RTObject);
+  { UNIVERSE.addStandardClass(RTObject); // Declared in UNIVERSE
     RTObject.isContextFree=true;
 //    RTObject.addStandardProcedure(null,"detach");
 //    RTObject.addStandardProcedure(null,"call",parameter("obj",Type.Ref("RTObject")));
@@ -85,7 +85,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  
   public static StandardClass ENVIRONMENT=new StandardClass("RTObject","ENVIRONMENT");
   static
-  { UNIVERSE.addStandardClass(ENVIRONMENT);
+  { UNIVERSE.addStandardClass(ENVIRONMENT); // Declared in UNIVERSE
     ENVIRONMENT.isContextFree=true; // This class is a Context i.e. all members are static
     
 //    Environmental enquiries ................................. 9.6
@@ -245,9 +245,13 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  STOP: SYSIN.close;
   //        SYSOUT.close
   //  end BASICIO;
-  public static StandardClass BASICIO=new StandardClass("ENVIRONMENT","BASICIO");
+  
+//  public static StandardClass BASICIO=new StandardClass("ENVIRONMENT","BASICIO");
+//  static
+//  { UNIVERSE.addStandardClass(BASICIO); // Declared in UNIVERSE
+  public static StandardClass BASICIO=new StandardClass("RTObject","BASICIO");  // CORR-PREFIX
   static
-  { UNIVERSE.addStandardClass(BASICIO);
+  { ENVIRONMENT.addStandardClass(BASICIO); // Declared in ENVIRONMENT
     BASICIO.isContextFree=true;
     BASICIO.addStandardProcedure(Type.Ref("InFile"),"sysin");  
 	BASICIO.addStandardProcedure(Type.Ref("PrintFile"),"sysout");  
@@ -269,9 +273,13 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
    * </pre>
    * Thus every class object or instance of a prefixed block has this attribute.
    */
-  public static StandardClass CLASS=new StandardClass("BASICIO","CLASS");
+  
+//  public static StandardClass CLASS=new StandardClass("BASICIO","CLASS");
+//  static
+//  { UNIVERSE.addStandardClass(CLASS);  // Declared in UNIVERSE
+  public static StandardClass CLASS=new StandardClass("RTObject","CLASS");  // CORR-PREFIX
   static
-  { UNIVERSE.addStandardClass(CLASS);
+  { ENVIRONMENT.addStandardClass(CLASS);  // Declared in ENVIRONMENT
 	CLASS.addStandardProcedure(null,"detach");
   }
   
@@ -289,7 +297,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end FILE_;      
   public static StandardClass FILE=new StandardClass("RTObject","FILE",parameter("FILENAME",Type.Text));
   static
-  { BASICIO.addStandardClass(FILE);
+  { BASICIO.addStandardClass(FILE);  // Declared in BASICIO
     //FILE.isContextFree=true;
     FILE.addStandardAttribute(Type.Boolean,"OPEN$");  
     FILE.addStandardProcedure(Type.Text,"filename");
@@ -308,7 +316,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end imagefile;
   public static StandardClass ImageFile=new StandardClass("FILE","ImageFile");
   static
-  { BASICIO.addStandardClass(ImageFile);
+  { BASICIO.addStandardClass(ImageFile);  // Declared in BASICIO
     //ImageFile.isContextFree=true;
     ImageFile.addStandardAttribute(Type.Text,"image");  
     ImageFile.addStandardProcedure(null,"setpos",parameter("i",Type.Integer));  
@@ -338,7 +346,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end infile;
   public static StandardClass InFile=new StandardClass("ImageFile","InFile");
   static
-  { BASICIO.addStandardClass(InFile);
+  { BASICIO.addStandardClass(InFile);  // Declared in BASICIO
     //InFile.isContextFree=true;
     InFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
     InFile.addStandardProcedure(Type.Boolean,"endfile");  
@@ -376,7 +384,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // end outfile;
   public static StandardClass OutFile=new StandardClass("ImageFile","OutFile");
   static
-  { BASICIO.addStandardClass(OutFile);
+  { BASICIO.addStandardClass(OutFile);  // Declared in BASICIO
     //OutFile.isContextFree=true;
     OutFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
     OutFile.addStandardProcedure(Type.Boolean,"close");  
@@ -436,7 +444,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end directfile;
   public static StandardClass DirectFile=new StandardClass("ImageFile","DirectFile");
   static
-  { BASICIO.addStandardClass(DirectFile);
+  { BASICIO.addStandardClass(DirectFile);  // Declared in BASICIO
     //DirectFile.isContextFree=true;
     DirectFile.addStandardAttribute(Type.Integer,"LOC_");  
     DirectFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
@@ -499,7 +507,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end printfile;
   public static StandardClass PrintFile=new StandardClass("OutFile","PrintFile");
   static
-  { BASICIO.addStandardClass(PrintFile);
+  { BASICIO.addStandardClass(PrintFile);  // Declared in BASICIO
     //PrintFile.isContextFree=true;
     PrintFile.addStandardAttribute(Type.Integer,"LINE_");  
     PrintFile.addStandardAttribute(Type.Integer,"LINES_PER_PAGE_");  
@@ -525,7 +533,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end bytefile;
   public static StandardClass ByteFile=new StandardClass("FILE","ByteFile");
   static
-  { BASICIO.addStandardClass(ByteFile);
+  { BASICIO.addStandardClass(ByteFile);  // Declared in BASICIO
     //ByteFile.isContextFree=true;
     ByteFile.addStandardAttribute(Type.ShortInteger,"BYTESIZE_");  
     ByteFile.addStandardProcedure(Type.ShortInteger,"bytesize");  
@@ -546,7 +554,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end inbytefile;
   public static StandardClass InbyteFile=new StandardClass("ByteFile","InbyteFile");
   static
-  { BASICIO.addStandardClass(InbyteFile);
+  { BASICIO.addStandardClass(InbyteFile);  // Declared in BASICIO
     //InbyteFile.isContextFree=true;
     InbyteFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
     InbyteFile.addStandardProcedure(Type.Boolean,"endfile");  
@@ -601,7 +609,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   //  end directbytefile;
   public static StandardClass DirectByteFile=new StandardClass("ByteFile","DirectByteFile");
   static
-  { BASICIO.addStandardClass(DirectByteFile);
+  { BASICIO.addStandardClass(DirectByteFile);  // Declared in BASICIO
     //DirectByteFile.isContextFree=true;
     DirectByteFile.addStandardAttribute(Type.Integer,"LOC_");  
     DirectByteFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
@@ -629,7 +637,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Simset=new StandardClass("CLASS","Simset");
   static
-  { ENVIRONMENT.addStandardClass(Simset);
+  { ENVIRONMENT.addStandardClass(Simset);  // Declared in ENVIRONMENT
   }  
   
   // ******************************************************************
@@ -637,7 +645,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Linkage=new StandardClass("CLASS","Linkage");
   static
-  { Simset.addStandardClass(Linkage);
+  { Simset.addStandardClass(Linkage);  // Declared in Simset
 //  ref(link) procedure suc;
 //  ref(link) procedure pred;
     Linkage.addStandardProcedure(Type.Ref("Link"),"suc");  
@@ -650,7 +658,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Head=new StandardClass("Linkage","Head");
   static
-  { Simset.addStandardClass(Head);
+  { Simset.addStandardClass(Head);  // Declared in Simset
 //  ref(link) procedure first;
 //  ref(link) procedure last;
 //  Boolean procedure empty;
@@ -668,7 +676,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Link=new StandardClass("Linkage","Link");
   static
-  { Simset.addStandardClass(Link);
+  { Simset.addStandardClass(Link);  // Declared in Simset
 //  procedure out;
 //  procedure follow(X); ref(linkage) X;
 //  procedure precede(X); ref(linkage) X;
@@ -684,7 +692,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Simulation=new StandardClass("Simset","Simulation");
   static
-  { ENVIRONMENT.addStandardClass(Simulation);
+  { ENVIRONMENT.addStandardClass(Simulation);  // Declared in ENVIRONMENT
     Simulation.detachUsed=true;
     Simulation.addStandardAttribute(Type.Ref("Head"),"SQS");  
     Simulation.addStandardAttribute(Type.Ref("MAIN_PROGRAM"),"main");  
@@ -728,7 +736,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass EVENT_NOTICE=new StandardClass("Link","EVENT_NOTICE");
   static
-  { Simulation.addStandardClass(EVENT_NOTICE);
+  { Simulation.addStandardClass(EVENT_NOTICE);  // Declared in Simulation
 //  ref(EVENT_NOTICE) procedure suc;
 //  ref(EVENT_NOTICE) procedure pred;
 //  procedure RANK(BEFORE_); Boolean BEFORE_;
@@ -742,7 +750,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Process=new StandardClass("Link","Process");
   static
-  { Simulation.addStandardClass(Process);
+  { Simulation.addStandardClass(Process);  // Declared in Simulation
     Process.detachUsed=true;
 //  ref(EVENT_NOTICE) EVENT;
 //  Boolean TERMINATED_;
@@ -763,7 +771,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass MAIN_PROGRAM=new StandardClass("Process","MAIN_PROGRAM");
   static
-  { Simulation.addStandardClass(MAIN_PROGRAM);
+  { Simulation.addStandardClass(MAIN_PROGRAM);   // Declared in Simulation
 //  Process class MAIN_PROGRAM;
 //  begin
 //     L: detach; goto L
@@ -776,8 +784,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Drawing=new StandardClass("CLASS","Drawing",parameter("Title",Type.Text));
   static
-//  { ENVIRONMENT.addStandardClass(Drawing);
-  { RTObject.addStandardClass(Drawing);
+  { ENVIRONMENT.addStandardClass(Drawing);  // Declared in ENVIRONMENT
     Drawing.addStandardAttribute(Type.Integer,"white");  
     Drawing.addStandardAttribute(Type.Integer,"lightGray");  
     Drawing.addStandardAttribute(Type.Integer,"gray");  
@@ -815,8 +822,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass Animation=new StandardClass("Simset","Animation",parameter("Title",Type.Text));
   static
-  { ENVIRONMENT.addStandardClass(Animation);
-//  { RTObject.addStandardClass(Animation);
+  { ENVIRONMENT.addStandardClass(Animation);  // Declared in ENVIRONMENT
     Animation.addStandardAttribute(Type.Integer,"white");  
     Animation.addStandardAttribute(Type.Integer,"lightGray");  
     Animation.addStandardAttribute(Type.Integer,"gray");  
@@ -850,9 +856,10 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass ShapeElement=new StandardClass("Link","ShapeElement");
   static
-  { Animation.addStandardClass(ShapeElement);
+  { Animation.addStandardClass(ShapeElement);  // Declared in Animation
     ShapeElement.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
     ShapeElement.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
   }
   
   // ******************************************************************
@@ -860,7 +867,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass TextElement=new StandardClass("Link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
   static
-  { Animation.addStandardClass(TextElement);
+  { Animation.addStandardClass(TextElement);  // Declared in Animation
   }
   
   // ******************************************************************

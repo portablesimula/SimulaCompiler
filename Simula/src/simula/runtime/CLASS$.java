@@ -7,7 +7,8 @@ import simula.compiler.utilities.Util;
 * @author SIMULA Standards Group
 * @author Øystein Myhre Andersen
 */
-public abstract class CLASS$ extends RTObject$ {
+//public abstract class CLASS$ extends RTObject$ {
+public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 
 	// Constructor
 	public CLASS$(RTObject$ staticLink) {

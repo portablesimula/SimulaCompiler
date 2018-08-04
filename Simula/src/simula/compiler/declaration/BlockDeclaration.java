@@ -94,8 +94,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	module.blockPrefix=blockPrefix;
 	if(blockPrefix!=null) module.blockKind=BlockDeclaration.Kind.PrefixedBlock;
 	if(blockPrefix!=null) module.prefix=blockPrefix.identifier;
-//	else module.prefix="BASICIO";
-	else module.prefix="RTObject";
+	else module.prefix="BASICIO";  // CORR-PREFIX
+//	else module.prefix="RTObject";
 	module.parseMaybeBlock(blockPrefix); 
     return(module);
   }
@@ -566,7 +566,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	Global.currentScope=this;
     String line="public class "+getJavaIdentifier();
 	if(prefix!=null) line=line+" extends "+getPrefix().getJavaIdentifier();
-	else line=line+" extends RTObject$";
+//	else line=line+" extends RTObject$";
+	else line=line+" extends BASICIO$";  // CORR-PREFIX
 	
 	Util.code(indent,line+" {");
 	doPrototypeCoding(indent+1);

@@ -1,16 +1,6 @@
 BEGIN
    ref(Drawing) Drw; 
-   integer ln;
-
-   class Drawing;
-   begin
-   end;
-
-   
-   inspect Drw do
-   begin
-      integer i;
-      i:=ln;
-   end;
-
+   ref(Simulation) Sml;
+   Drw:-new Drawing("TEST");
+   Sml:-new Simulation;
 END
