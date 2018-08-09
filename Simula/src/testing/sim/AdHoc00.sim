@@ -1,6 +1,29 @@
-BEGIN
-   ref(Drawing) Drw; 
-   ref(Simulation) Sml;
-   Drw:-new Drawing("TEST");
-   Sml:-new Simulation;
-END
+Simulation Begin
+   Integer u;
+   ref(Car) bil1,bil2;
+  
+   Procedure report (message); Text message; Begin
+      OutFix (Time, 2, 0); OutText (": " & message); OutImage;
+   End;
+
+   Process Class Car;
+   Begin
+      report(objectTraceIdentifier & " is initiating");
+      Hold(1);
+      report(objectTraceIdentifier & " is active again");
+      Hold(3);
+      report(objectTraceIdentifier & " is terminating");
+   End;
+
+   report("START Simtest1");
+   bil1:- New Car;
+   bil2:- New Car;
+   report(bil1.objectTraceIdentifier & " is scheduled for 4.0");
+   Activate bil1 at 4.0;
+   report(bil2.objectTraceIdentifier & " is scheduled for 6.0");
+   Activate bil2 at 6.0;
+   Hold (12);
+   
+   report("Final END of Simulation");
+   outtext("--------------------------------"); outimage;
+End;

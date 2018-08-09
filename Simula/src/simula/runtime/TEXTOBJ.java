@@ -7,8 +7,6 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
-
 /**
  * The Text Object.
  * <p>
@@ -88,7 +86,7 @@ public class TEXTOBJ extends RTObject$ {
 		// Class Body
 		MAIN = new char[SIZE];
 		fill(' ');
-		// Util.BREAK("new "+this);
+		// RT.BREAK("new "+this);
 	}
 
 	// Constructor
@@ -97,12 +95,12 @@ public class TEXTOBJ extends RTObject$ {
 		CONST = true;
 		MAIN = s.toCharArray();
 		SIZE = MAIN.length;
-		// Util.BREAK("new "+this);
+		// RT.BREAK("new "+this);
 	}
 
 	// Utility
 	public void fill(char c) {
-		// Util.BREAK("TEXTOBJ.fill(" + c + ')' + ", MAIN=" + MAIN.length);
+		// RT.BREAK("TEXTOBJ.fill(" + c + ')' + ", MAIN=" + MAIN.length);
 		for (int i = 0; i < SIZE; i++)
 			MAIN[i] = c;
 	}

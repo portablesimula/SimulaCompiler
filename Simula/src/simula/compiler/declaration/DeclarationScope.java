@@ -303,18 +303,32 @@ public abstract class DeclarationScope extends Declaration {
   }
 
   // ***********************************************************************************************
+  // *** Coding: isBlockWithLocalClasses
+  // ***********************************************************************************************
+  public boolean isBlockWithLocalClasses()
+  {	if(this.hasLocalClasses) return(true);
+	DeclarationScope prfx=getPrefix();
+	if(prfx!=null) return(prfx.isBlockWithLocalClasses());
+	return(false); 
+  }
+
+
+  // ***********************************************************************************************
   // *** Coding: isQPSystemBlock  -- QPS System is any block with local class(es)
   // ***********************************************************************************************
   public boolean isQPSystemBlock()
   {	switch(blockKind)
 	{ case SimulaProgram:
 	  case SubBlock:
+		        return(hasLocalClasses);
 	  case PrefixedBlock:
-		       return(hasLocalClasses);
+		  		if(this.hasLocalClasses) return(true);
+		  		DeclarationScope prfx=getPrefix();
+		  		if(prfx!=null) return(prfx.isBlockWithLocalClasses());
+		  		return(false);
 	  default: return(false);
 	}  
   }
-
   // ***********************************************************************************************
   // *** Coding: isDetachUsed  -- If the 'detach' attribute is used
   // ***********************************************************************************************

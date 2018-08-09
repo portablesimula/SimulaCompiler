@@ -85,13 +85,13 @@ public class InbyteFile$ extends ByteFile$ {
 			inputStream = new FileInputStream(FILENAME$.edText());
 		} catch (FileNotFoundException e) {
 			OPEN$=false;
-			//Util.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
+			//RT.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 			return (false);
 		}
 		OPEN$ = true;
 		BYTESIZE$ = (short) 8;
 		ENDFILE$ = false;
-		//Util.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
+		//RT.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 		return (true);
 	}
 

@@ -1,6 +1,5 @@
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
 
 /**
 * 
@@ -73,8 +72,8 @@ public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 	  RTObject$ main;  //  The head of the main component and also
 		               //  the head of the quasi-parallel system.
 	  ins=this;
-	  if(QPS_TRACING) TRACE("BEGIN DETACH "+edString());
-	  Util.ASSERT(CUR$.DL$!=CUR$,"Invariant");
+	  if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
+	  RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
 	  //  Detach on a prefixed block is a no-operation.
 	  if(!CUR$.isQPSystemBlock())
 	  { // Make sure that the object is on the operating chain.
@@ -98,14 +97,14 @@ public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 		    // <main.DL$,ins.DL$,CUR$>:=<ins.DL$,CUR$,main.DL$>
 		    dl=main.DL$; main.DL$=ins.DL$; ins.DL$=CUR$; CUR$=dl;
 		} else {
-		    Util.ASSERT(ins.STATE$==OperationalState.attached,"Invariant");
+		    RT.ASSERT(ins.STATE$==OperationalState.attached,"Invariant");
 		    ins.STATE$=OperationalState.detached;
 		    // Swap the contents of object's 'DL$' and 'CUR$'.
 		    // <ins.DL$,CUR$>:=<CUR$,ins.DL$>
 		    dl=ins.DL$; ins.DL$=CUR$; CUR$=dl;
 		}
-		Util.ASSERT(CUR$.DL$!=CUR$,"Invariant");
-	    if(QPS_TRACING) TRACE("END DETACH "+edString());
+		RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
+	    if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
 	    swapThreads(ins.DL$);
 	  }
 	}

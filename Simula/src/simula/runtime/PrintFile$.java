@@ -238,7 +238,7 @@ public class PrintFile$ extends OutFile$ {
 		ASGTXT$(image,null); // image := NOTEXT; ???
 		setpos(1);
 		OutputStream outputStream;
-		//Util.BREAK("OutFile.open: Filename=" + FILENAME$);
+		//RT.BREAK("OutFile.open: Filename=" + FILENAME$);
 		if (FILENAME$.edText().equalsIgnoreCase("sysout"))
 			outputStream = System.out;
 		else {
@@ -337,7 +337,7 @@ public class PrintFile$ extends OutFile$ {
 	 * are updated.
 	 */
 	public void outimage() {
-		//Util.BREAK("PrintFile.outimage(), image="+image);
+		//RT.BREAK("PrintFile.outimage(), image="+image);
 		if (!OPEN$)
 			throw new RuntimeException("File not opened");
 		if (LINE$ > LINES_PER_PAGE$)

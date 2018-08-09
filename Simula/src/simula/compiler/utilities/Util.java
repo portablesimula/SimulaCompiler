@@ -85,7 +85,8 @@ public class Util
   }
   
   public static void EXIT()
-  { BREAK("FORCED EXIT");
+  { System.out.println("FORCED EXIT");
+    BREAK("FORCED EXIT");
     System.exit(-1);
   }
   

@@ -74,6 +74,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 //    RTObject.addStandardProcedure(null,"detach");
 //    RTObject.addStandardProcedure(null,"call",parameter("obj",Type.Ref("RTObject")));
 //    RTObject.addStandardProcedure(null,"resume",parameter("obj",Type.Ref("RTObject")));
+    RTObject.addStandardProcedure(Type.Text,"objectTraceIdentifier");
   }
   
   // ******************************************************************
@@ -81,7 +82,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   // TODO: Rettes slik at alle genererte metoder blir static.
   //       Ta med et flag (enten i klassen eller i alle procedurene
-  //       Dettte svarer til diskusjonen om innf�ring av 'context class'
+  //       Dettte svarer til diskusjonen om innføring av 'context class'
   //  
   public static StandardClass ENVIRONMENT=new StandardClass("RTObject","ENVIRONMENT");
   static
@@ -211,7 +212,9 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     ENVIRONMENT.addStandardProcedure(null,"histo",parameter("A",Type.Real,Parameter.Kind.Array),parameter("B",Type.Real,Parameter.Kind.Array)
     		                                     ,parameter("c",Type.Real),parameter("d",Type.Real));
     ENVIRONMENT.addStandardProcedure(null,"accum",parameter("a",Parameter.Mode.name,Type.Real),parameter("b",Parameter.Mode.name,Type.Real)
-                                                 ,parameter("c",Parameter.Mode.name,Type.Real),parameter("d",Type.Real));
+                                                 ,parameter("c",Parameter.Mode.name,Type.Real),parameter("d",Type.Real));    
+//    ENVIRONMENT.addStandardProcedure(Type.Text,"objectTraceIdentifier");
+
   }
   
   // ******************************************************************
@@ -813,8 +816,18 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     Drawing.addStandardProcedure(Type.Real,"getFontSize");  
 
     Drawing.addStandardProcedure(null,"drawText",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+//    Drawing.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+//    Drawing.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+
+    Drawing.addStandardProcedure(null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
     Drawing.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(null,"drawRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    												      ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
     Drawing.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(null,"FillerRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(null,"fillRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    													  ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
   }  
   
   // ******************************************************************
@@ -849,6 +862,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     Animation.addStandardProcedure(null,"setFontStyleBoldItalic");  
     Animation.addStandardProcedure(null,"setFontSize",parameter("size",Type.Real));  
     Animation.addStandardProcedure(Type.Real,"getFontSize");  
+    Animation.addStandardProcedure(null,"waitSomeTime",parameter("millies",Type.Integer));  // Utility
   }
   
   // ******************************************************************
@@ -857,9 +871,17 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   public static StandardClass ShapeElement=new StandardClass("Link","ShapeElement");
   static
   { Animation.addStandardClass(ShapeElement);  // Declared in Animation
+    ShapeElement.addStandardProcedure(null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
     ShapeElement.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(null,"drawRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
     ShapeElement.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+    ShapeElement.addStandardProcedure(null,"fillRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(null,"fillRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
+    ShapeElement.addStandardProcedure(null,"instantMoveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+    ShapeElement.addStandardProcedure(null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("speed",Type.LongReal));  
   }
   
   // ******************************************************************
@@ -868,6 +890,8 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   public static StandardClass TextElement=new StandardClass("Link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
   static
   { Animation.addStandardClass(TextElement);  // Declared in Animation
+    TextElement.addStandardProcedure(null,"instantMoveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+    TextElement.addStandardProcedure(null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("speed",Type.LongReal));  
   }
   
   // ******************************************************************
@@ -944,14 +968,15 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   {	standardClass.declaredIn=this;
     //standardClass.blockLevel=blockLevel+1;
    	//Util.BREAK("StandardClass.addStandardClass("+standardClass+") to "+this+": scope="+getScopeName()+", chain="+standardClass.edScopeChain());
+    standardClass.declaredIn.hasLocalClasses=true;
     declarationList.add(standardClass);
   }
 
   private void addStandardAttribute(Type type,String ident)
   { declarationList.add(new TypeDeclaration(type,ident)); }
 
-//  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
-//  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3,p4,p5,p6)); }
+  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
+  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3,p4,p5,p6)); }
 //
 //  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5)
 //  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3,p4,p5)); }

@@ -60,6 +60,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
+		 String name=Global.packetName+"/err/forShort.sim";
 		// String name=Global.packetName+"/err/simerr01.sim";
 		// String name=Global.packetName+"/err/simerr02.sim";
 		// String name=Global.packetName+"/err/simerr03.sim";
@@ -67,9 +68,10 @@ public class TestCompiler {
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";
+		// String name=Global.packetName+"/sim/adHoc01.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
-	     String name=Global.packetName+"/sim/AnimationTest2.sim";
+	    // String name=Global.packetName+"/sim/AnimationTest2.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
 

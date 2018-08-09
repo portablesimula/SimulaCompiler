@@ -107,7 +107,7 @@ public class Simulation$ extends Simset$ {
 				SQS = (Head$) new Head$(Simulation$.this).STM();
 				main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START();
 				main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM();
-	        	//Util.BREAK("GOT NEW EVENT_NOTICE: "+main.EVENT);
+	        	//RT.BREAK("GOT NEW EVENT_NOTICE: "+main.EVENT);
 				main.EVENT.into(SQS);
 				if (inner != null)
 					inner.STM();
@@ -134,6 +134,11 @@ public class Simulation$ extends Simset$ {
 		return (FIRSTEV);
 	}
 
+	/*
+	 * <pre>
+	 * ref (process) procedure current; current :- FIRSTEV.PROC;
+	 * </pre>
+	 */
 	public Process$ current() {
 		return (FIRSTEV().PROC);
 	}
@@ -155,17 +160,53 @@ public class Simulation$ extends Simset$ {
 		}
 	}
 
-	public void passivate() {
-		SIM_TRACE("Passivate");
+	/*
+	 * <pre>
+	 * procedure passivate;
+     * begin
+     *    inspect current do begin  EVENT.out; EVENT :- none  end;
+     *    if SQS.empty then error("...") else resume(current)
+     * end passivate;
+     * </pre>
+	 */
+	public void passivate() { passivate(false); }
+
+	public void passivate(boolean terminatingProcess) {
 		Process$ cur = current();
+		SIM_TRACE("Passivate " + cur.edObjectIdent());
+		// System.out.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
 		if (cur != null) {
 			cur.EVENT.out();
 			cur.EVENT = null;
 		}
 		if (SQS.empty())
 			throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
-		resume(current());
+		Process$ nxtcur = current();
+		// System.out.println("END Passivate: next current="+nxtcur.edObjectIdent()+",
+		// SQS="+this.edSQS());
+		SIM_TRACE("END Passivate Resume[" + nxtcur.edObjectIdent() + ']');
+		resume(nxtcur, terminatingProcess);
+		SIM_TRACE("END Passivate AFTER Resume[" + nxtcur.edObjectIdent() + ']');
+		// RT.BREAK("Passivate: AFTER Resume(next)");
 	}
+
+//	public void terminate() {
+//		Process$ cur = current();
+//		SIM_TRACE("Terminate "+cur.edObjectIdent());
+//		//System.out.println("Terminate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
+//		if (cur != null) {
+//			cur.EVENT.out();
+//			cur.EVENT = null;
+//		}
+//		if (SQS.empty())
+//			throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
+//		Process$ nxtcur=current();
+//		//System.out.println("END Terminate: next current="+nxtcur.edObjectIdent()+", SQS="+this.edSQS());
+//		SIM_TRACE("END Terminate Resume["+nxtcur.edObjectIdent()+']');
+//		resume(nxtcur,true);
+//		SIM_TRACE("END Terminate AFTER Resume["+nxtcur.edObjectIdent()+']');
+//		//RT.BREAK("Terminate: AFTER Resume(next)");
+//	}
 
 	public void wait(Head$ S) {
 		SIM_TRACE("Wait in Queue " + S);
@@ -191,7 +232,7 @@ public class Simulation$ extends Simset$ {
 		else if (X.EVENT != null && !REAC)
 			TRACE_ACTIVATE(REAC, "scheduled process");
 		else {
-			TRACE_ACTIVATE(REAC, X.toSimpleString());
+			TRACE_ACTIVATE(REAC, X.edObjectIdent());
 			Process$ z;
 			EVENT_NOTICE$ EV = null;
 			if (REAC)
@@ -223,7 +264,7 @@ public class Simulation$ extends Simset$ {
 		else if (X.EVENT != null && !REAC)
 			TRACE_ACTIVATE(REAC, "scheduled process");
 		else {
-			TRACE_ACTIVATE(REAC, X.toSimpleString() + " at " + T + ((PRIO) ? "prior" : ""));
+			TRACE_ACTIVATE(REAC, X.edObjectIdent() + " at " + T + ((PRIO) ? "prior" : ""));
 			Process$ z;
 			EVENT_NOTICE$ EV = null;
 			if (REAC)
@@ -258,15 +299,15 @@ public class Simulation$ extends Simset$ {
 
 	private void ACTIVATE3(boolean REAC, Process$ X, boolean BEFORE, Process$ Y) {
 		if (X == null)
-			TRACE_ACTIVATE(REAC, "none");
+			TRACE_ACTIVATE(REAC, " none");
 		else if (X.STATE$ == OperationalState.terminated)
-			TRACE_ACTIVATE(REAC, "terminated process");
+			TRACE_ACTIVATE(REAC, " terminated process");
 		else if (X.EVENT != null && !REAC)
-			TRACE_ACTIVATE(REAC, "scheduled process");
+			TRACE_ACTIVATE(REAC, " scheduled process");
 		else if (X == Y)
-			TRACE_ACTIVATE(REAC, "befor/after itself");
+			TRACE_ACTIVATE(REAC, " before/after itself");
 		else {
-			TRACE_ACTIVATE(REAC, X.toSimpleString() + ((BEFORE) ? "BEFORE" : "AFTER") + Y.toSimpleString());
+			TRACE_ACTIVATE(REAC, X.edObjectIdent() + ((BEFORE) ? " BEFORE " : " AFTER ") + Y.edObjectIdent());
 			Process$ z;
 			EVENT_NOTICE$ EV = null;
 			if (REAC)
@@ -291,7 +332,11 @@ public class Simulation$ extends Simset$ {
 					throw new RuntimeException("(Re)Activate empties SQS.");
 			}
 			if (z != current())
-				resume(current());
+			{ Process$ nxtcur=current();
+			    SIM_TRACE("END ACTIVATE3 Resume["+nxtcur.edObjectIdent()+']');
+				resume(nxtcur);
+			} else SIM_TRACE("END ACTIVATE3 Continue["+z.edObjectIdent()+']');
+
 		}
 	}
 
@@ -306,19 +351,35 @@ public class Simulation$ extends Simset$ {
 	}
 
 	public void SIM_TRACE(String msg) {
-		if (SML_TRACING) {
+		//checkSQS();
+		if (RT.Option.SML_TRACING) {
 			Thread thread = Thread.currentThread();
-			System.out.println(thread.toString() + ": Time=" + time() + "  " + msg + edSQS());
+			System.out.println(thread.toString() + ": Time=" + time() + "  " + msg +", SQS="+ edSQS());
 		}
 	}
 
-	private String edSQS() {
+	private String checkSQS() {
 		StringBuilder s = new StringBuilder();
 		Link$ x = SQS.first();
 		s.append(", SQS =");
 		while (x != null) {
 			EVENT_NOTICE$ ev = (EVENT_NOTICE$) x;
-			s.append(' ').append(ev.PROC.toSimpleString()).append('[').append(ev.EVTIME).append(']');
+			if(ev.PROC.STATE$==OperationalState.terminated)
+				throw new RuntimeException("SQS CONTAIN TERMINATED ELEMENT: "+ev.PROC);
+			x = x.suc();
+		}
+		return (s.toString());
+	}
+
+	private String edSQS() {
+		//checkSQS();
+		StringBuilder s = new StringBuilder();
+		Link$ x = SQS.first();
+		if(x==null) s.append("EMPTY");
+		while (x != null) {
+			EVENT_NOTICE$ ev = (EVENT_NOTICE$) x;
+			s.append(' ').append(ev.PROC.edObjectIdent()).append('[').append(ev.EVTIME).append(']');
+//			s.append('\n');
 			x = x.suc();
 		}
 		return (s.toString());

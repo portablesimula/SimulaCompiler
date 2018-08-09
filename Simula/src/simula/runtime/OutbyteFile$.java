@@ -67,9 +67,9 @@ public class OutbyteFile$ extends ByteFile$ {
 	public void outbyte(int b) {
 		if (!OPEN$)
 			throw new RuntimeException("file closed");
-//		Util.BREAK("OutbyteFile.outByte: b="+b);
-//		Util.BREAK("OutbyteFile.outByte: BYTESIZE$="+BYTESIZE$);
-//		Util.BREAK("OutbyteFile.outByte: 2 ** BYTESIZE$="+Math.pow(2,BYTESIZE$));
+//		RT.BREAK("OutbyteFile.outByte: b="+b);
+//		RT.BREAK("OutbyteFile.outByte: BYTESIZE$="+BYTESIZE$);
+//		RT.BREAK("OutbyteFile.outByte: 2 ** BYTESIZE$="+Math.pow(2,BYTESIZE$));
 		if (b < 0 || b >= (Math.pow(2,BYTESIZE$)))
 			throw new RuntimeException("Illegal byte value");
 		try {

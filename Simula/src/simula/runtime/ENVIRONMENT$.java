@@ -7,7 +7,6 @@
  */
 package simula.runtime;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -83,10 +82,10 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	public boolean IS$(Object ob1,Object ob2)
 	{ if(ob1!=null)
 	  { ob1=ob1.getClass();
-	    //Util.BREAK("IS$ ob1="+ob1+", Qual="+ob1.getClass().getSimpleName());
+	    //RT.BREAK("IS$ ob1="+ob1+", Qual="+ob1.getClass().getSimpleName());
 	  }
-	  //Util.BREAK("IS$ ob2="+ob2+", Qual="+ob2.getClass().getSimpleName());
-	  //Util.BREAK("IS$ Result="+((ob1==ob2)?"true":"false"));
+	  //RT.BREAK("IS$ ob2="+ob2+", Qual="+ob2.getClass().getSimpleName());
+	  //RT.BREAK("IS$ Result="+((ob1==ob2)?"true":"false"));
 	  return(ob1==ob2);
 	}
 	

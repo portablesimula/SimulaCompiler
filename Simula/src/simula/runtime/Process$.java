@@ -81,17 +81,33 @@ public class Process$ extends Link$ {
 		CODE$ = new ClassBody(CODE$, this,2) {
 			public void STM() {
 				TRACE_BEGIN_STM$("Process$",inner);
+				//System.out.println("Process.STM: Just BEFORE Detach["+Process$.this.edObjectIdent()+']');
 				detach();
+				//System.out.println("Process.STM: Just AFTER Detach["+Process$.this.edObjectIdent()+']');
 				if (inner != null)
 					inner.STM();
 				TRACE_END_STM$("Process$");
 				//TERMINATED$ = true;
-				CUR$.STATE$=OperationalState.terminated;
-				//Util.BREAK("Process$.CODE$: Terminate "+this);
-				((Simulation$) SL$).passivate();
-				throw new RuntimeException("INTERNAL error:  Process passes through final end.");
+
+//				Process$.this.STATE$=OperationalState.terminated;
+//				((Simulation$) SL$).passivate();
+//				throw new RuntimeException("INTERNAL error:  Process passes through final end.");
+				terminate();
 			}
 		};
+	}
+	
+	private void terminate()
+	{ // Simula Standard ch. 12.1 states:
+	  // Although the process state "terminated" is not strictly equivalent to the
+	  // corresponding basic concept defined in chapter 7, an implementation may treat
+	  // a terminated process object as terminated in the strict sense.
+
+	  //RT.BREAK("Process$.TERMINATE(1): "+this.edObjectAttributes());
+	  ((Simulation$) SL$).passivate(true);
+	  // Signal special action in RTObject$.EBLK
+	  Process$.this.STATE$=OperationalState.terminatingProcess;
+	  //RT.BREAK("Process$.TERMINATE(2): "+this.edObjectAttributes());
 	}
 
 	public Process$ STM() {
@@ -109,7 +125,8 @@ public class Process$ extends Link$ {
 
 	public boolean terminated() {
 //		return (TERMINATED$);
-		return (CUR$.STATE$==OperationalState.terminated);
+//		return (CUR$.STATE$==OperationalState.terminated);
+		return (STATE$==OperationalState.terminated);
 	}
 
 	public double evtime() {
@@ -127,12 +144,8 @@ public class Process$ extends Link$ {
 		return (suc.PROC);
 	}
 
-	public String toSimpleString() {
-		return (this.getClass().getSimpleName() + "#" + sequ);
-	}
-
 	public String toString() {
-		return ("Process$(" + this.getClass().getSimpleName() + ") TERMINATED$=" + terminated());
+		return ("Process$"+sequ+"(" + this.edObjectIdent() + ") STATE$="+this.STATE$+", TERMINATED$=" + terminated());
 	}
 
 }

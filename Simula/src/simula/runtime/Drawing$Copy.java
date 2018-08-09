@@ -49,7 +49,7 @@ import javax.swing.JWindow;
  * @author Øystein Myhre Andersen
  *
  */
-public class Drawing$ extends CLASS$ {
+public class Drawing$Copy extends CLASS$ {
 	
 	public static final int white =     0xffffff; // Color white:      R=255, G=255, B=255.
 	public static final int lightGray = 0xc0c0c0; // Color light gray: R=192, G=192, B=192.
@@ -66,7 +66,7 @@ public class Drawing$ extends CLASS$ {
 	public static final int blue =      0x0000ff; // Color blue:       R=0,   G=0,   B=255.
 //	JFrame frame;
 	private Frame frame;
-	private Canvas canvas;
+	private JWindow window;
     Color currentBackgroundColor=Color.WHITE;
     Color currentDrawColor=Color.BLACK;
     Color currentFillColor=Color.GRAY;
@@ -94,18 +94,8 @@ public class Drawing$ extends CLASS$ {
     
     Vector<DrawElement> elements=new Vector<DrawElement>();
 
-	private void listElements(String title) {
-		System.out.println("LIST ELEMENTS: "+title);
-		for (Enumeration<DrawElement> e = elements.elements(); e.hasMoreElements();) {
-			DrawElement nxt = e.nextElement();
-			// RT.BREAK("CANVAS.PAINT nxt"+nxt);
-			System.out.println("Elt: " + nxt);
-		}
-		RT.BREAK("");
-	}
-
 	// Constructor
-    public Drawing$(RTObject$ staticLink,TXT$ title) {
+    public Drawing$Copy(RTObject$ staticLink,TXT$ title) {
        super(staticLink);
 //  public Drawing$(ENVIRONMENT$ staticLink,TXT$ title) {
 //     super((RTObject$)staticLink);
@@ -120,8 +110,8 @@ public class Drawing$ extends CLASS$ {
              EBLK(); // Iff no prefix
        }};
     }
-    public Drawing$ STM() { return((Drawing$)CODE$.EXEC$()); }
-    public Drawing$ START() { START(this); return(this); }
+    public Drawing$Copy STM() { return((Drawing$Copy)CODE$.EXEC$()); }
+    public Drawing$Copy START() { START(this); return(this); }
 
 	public void setBackgroundColor(int color)	{ currentBackgroundColor=new Color(color); }
 	public void setDrawColor(int color)	{ currentDrawColor=new Color(color); }
@@ -172,19 +162,14 @@ public class Drawing$ extends CLASS$ {
       Font font;
       public TextElement(String str,double x,double y)
       { this.str=str; this.x=x; this.y=y;
-        RT.BREAK("NEW TextElement str="+str);
         this.color=currentDrawColor;
-        this.color=Color.BLACK; // TEMP !!!
         this.font=currentFont; }
       public void paint(Graphics2D g)
       { g.setStroke(stroke);
         g.setColor(color);
         g.setFont(font);
-        RT.BREAK("PAINT TextElement str="+str);
         g.drawString(str,(float)x,(float)y);
       }
-      public String toString()
-      { return("TextElement str="+str); }
     }
     
     class ShapeElement extends DrawElement
@@ -199,8 +184,6 @@ public class Drawing$ extends CLASS$ {
     	if(fillColor!=null)	{ g.setColor(fillColor); g.fill(shape); }
         if(drawColor!=null)	{ g.setColor(drawColor); g.draw(shape); }
       }
-      public String toString()
-      { return("ShapeElement"); }
     }
 
     
@@ -212,28 +195,14 @@ public class Drawing$ extends CLASS$ {
     		Graphics2D g=(Graphics2D)g1;
     		this.setBackground(currentBackgroundColor);
             //for(DrawElement elt:elements) elt.paint(g);
-    		listElements("Canvas.paint");
-//    		for (Enumeration<DrawElement> e = elements.elements(); e.hasMoreElements();)
-//    		{ DrawElement nxt=e.nextElement();
-//              RT.BREAK("CANVAS.PAINT nxt="+nxt+", nElt="+elements.size());
-//    		  nxt.paint(g);
-//    		}
-//    		DrawElement[] elts=(DrawElement[])elements.toArray();
-    		int n=elements.size();
-            RT.BREAK("CANVAS.PAINT nElt="+n);
-    		for(int i=0;i<n;i++)
-    		{ DrawElement elt=elements.elementAt(i);
-              //RT.BREAK("CANVAS.PAINT ext="+elt+", nElt="+elements.size());
-              System.out.println("CANVAS.PAINT ext="+elt+", nElt="+n);
-      		  elt.paint(g);
-    			
-    		}
+    		for (Enumeration<DrawElement> e = elements.elements(); e.hasMoreElements();)
+    		       e.nextElement().paint(g);
         }    	
     }
     private void init(String title)
 //    { frame = new JFrame(title);
     { frame = new Frame(title);
-      canvas = new Drawing();
+      Canvas canvas = new Drawing();
       canvas.setSize(400, 400);
       currentFont=new Font(Font.SANS_SERIF,12,Font.PLAIN);
 	  //System.out.println("Init: Current Font="+currentFont);
@@ -276,13 +245,9 @@ public class Drawing$ extends CLASS$ {
     }
     public void fillRoundRectangle(double x, double y, double width, double height, double arcWidth, double arcHeight) {}
     public void fillEllipse(double x,double y,double width,double height)
-    { //ShapeElement elt=new ShapeElement(new Ellipse2D.Double(x,y,width,height));
-      ShapeElement elt=new ShapeElement(new Rectangle2D.Double(x,y,width,height));
+    { ShapeElement elt=new ShapeElement(new Ellipse2D.Double(x,y,width,height));
       elt.fillColor=currentFillColor;
-      elements.add(elt);
-      listElements("Just adding "+elt);
-      canvas.repaint();
-//      frame.repaint();
+      elements.add(elt); frame.repaint();
     }
     public void fillArc​(double x, double y, double width, double height, double startAngle, double arcAngle) {}
     
@@ -292,21 +257,19 @@ public class Drawing$ extends CLASS$ {
     { TextElement elt=new TextElement(str,x,y);
     	
       elements.add(elt);
-      listElements("Just adding text "+elt);
-      canvas.repaint();
     }
     
     public static void main(String[] args) {
-    	Drawing$ drawing=new Drawing$(null,new TXT$("Simula Drawing"));
+    	Drawing$Copy drawing=new Drawing$Copy(null,new TXT$("Simula Drawing"));
     	drawing.init("Testing Drawing");
-    	drawing.setDrawColor(Drawing$.red);
-    	drawing.setFillColor(Drawing$.magenta);
+    	drawing.setDrawColor(Drawing$Copy.red);
+    	drawing.setFillColor(Drawing$Copy.magenta);
     	
     	drawing.fillEllipse(100, 100, 200, 50);
-    	drawing.setDrawColor(Drawing$.black);
+    	drawing.setDrawColor(Drawing$Copy.black);
     	drawing.drawEllipse(200, 200, 200, 50);
     	drawing.setFontSize(24.0f);
-    	drawing.setDrawColor(Drawing$.orange);
+    	drawing.setDrawColor(Drawing$Copy.orange);
     	drawing.drawText("Abracadabra",200,200);
     }
 

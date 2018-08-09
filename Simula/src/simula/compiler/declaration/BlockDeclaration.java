@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
+import simula.compiler.expression.Expression;
+import simula.compiler.expression.SubscriptedVariable;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.BlockStatement;
@@ -20,6 +22,7 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
+import simula.runtime.RT;
 
 /**
  * </pre>
@@ -603,13 +606,16 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	if(this.isMainModule)
 	{ Util.code(indent,"");
 	  Util.code(indent,"   public static void main(String[] args) {");
-//	  Util.code(indent,"     System.out.println(\"Start Execution of "+getJavaIdentifier()+"\");");
-	  
-//	  Util.code(indent,"     try { new "+getJavaIdentifier()+"(CTX$).STM(); }");
-//	  Util.code(indent,"     catch($LABQNT q) { System.err.println(\"ERROR: Illegal GOTO \"+q); q.printStackTrace(); }");
-//	  Util.code(indent,"     catch(Throwable t) { System.err.println(\"ERROR: \"+t.getMessage()); t.printStackTrace(); }");
+	  StringBuilder s=new StringBuilder();
+	  s.append("new "+getJavaIdentifier()+"(CTX$");
+	  if(blockPrefix instanceof SubscriptedVariable)
+	  {	for (Expression par:((SubscriptedVariable)blockPrefix).checkedParams) {
+		   s.append(',').append(par.toJavaCode());
+	    }
+	  }
+	  s.append(").STM();");
+	  Util.code(indent,"     "+s);
 
-	  Util.code(indent,"     new "+getJavaIdentifier()+"(CTX$).STM();");
 	  
 //	  Util.code(indent,"     System.out.println(\""+getJavaIdentifier()+" Terminates Normally\");");
 	  Util.code(indent,"   }"); // End of main
@@ -816,10 +822,10 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 //      Util.code(indent,"           if(q.SL$!=CUR$)");
       Util.code(indent,"           if(q.SL$!=CUR$ || q.prefixLevel!="+prefixLevel()+")");
       Util.code(indent,"           { CUR$.STATE$=OperationalState.terminated;");
-      Util.code(indent,"             if(GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
+      Util.code(indent,"             if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
       Util.code(indent,"             throw(q);");
       Util.code(indent,"           }");
-      Util.code(indent,"           if(GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
+      Util.code(indent,"           if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
       Util.code(indent,"           JTX$=q.index; continue LOOP$; // EG. GOTO Lx"); 
       Util.code(indent,"       }");
       Util.code(indent,"     }");
@@ -851,14 +857,14 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
       
       Util.code(indent,"           if(q.SL$==CUR$ && q.prefixLevel==prefixLevel)");
       Util.code(indent,"           { System.out.println(\"SITUASJON 1: prefixLevel=\"+prefixLevel);");
-      Util.code(indent,"               if(GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
+      Util.code(indent,"               if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
       Util.code(indent,"               JTX$=q.index; continue LOOP$; // EG. GOTO Lx"); 
       Util.code(indent,"           }");
       
       Util.code(indent,"           System.out.println(\"SITUASJON 2: prefixLevel=\"+prefixLevel);");
       
       Util.code(indent,"           CUR$.STATE$=OperationalState.terminated;");
-      Util.code(indent,"           if(GOTO_TRACING) TRACE_GOTO(\"ABRA NON-LOCAL\",q);");
+      Util.code(indent,"           if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"ABRA NON-LOCAL\",q);");
       Util.code(indent,"           throw(q);");
       Util.code(indent,"       }");
       Util.code(indent,"     }");

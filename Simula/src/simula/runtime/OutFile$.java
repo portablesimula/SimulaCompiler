@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import simula.compiler.utilities.Util;
-
 /**
  * The Class OutFile.
  * <p>
@@ -93,7 +91,7 @@ public class OutFile$ extends ImageFile$ {
 		image = IMAGE_;
 		setpos(1);
 		OutputStream outputStream;
-		//Util.BREAK("OutFile.open: Filename=" + FILENAME$);
+		//RT.BREAK("OutFile.open: Filename=" + FILENAME$);
 		if (FILENAME$.edText().equalsIgnoreCase("sysout"))
 			outputStream = System.out;
 		else {
@@ -174,12 +172,12 @@ public class OutFile$ extends ImageFile$ {
 	 * indicator is set to 1.
 	 */
 	public void outimage() {
-		//Util.BREAK("OutFile.outimage(), image=" + image);
+		//RT.BREAK("OutFile.outimage(), image=" + image);
 		if (!OPEN$)
 			throw new RuntimeException("File not opened");
 		try {
-//			Util.BREAK("OutFile.outimage(), image=" + image);
-//			Util.BREAK("OutFile.outimage(), image.strip()=" + image.strip());
+//			RT.BREAK("OutFile.outimage(), image=" + image);
+//			RT.BREAK("OutFile.outimage(), image.strip()=" + image.strip());
 			
 //			writer.write(image.strip().edText() + '\n');
 			TXT$ img=image.strip();

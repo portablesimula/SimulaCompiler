@@ -74,7 +74,7 @@ public class FILE$ extends CLASS$ {
 	}
 
 	public boolean isopen() {
-		//Util.BREAK("ISOPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
+		//RT.BREAK("ISOPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 		return (OPEN$);
 	}
 
@@ -110,8 +110,8 @@ public class FILE$ extends CLASS$ {
 	public boolean setaccess(TXT$ mode) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		warning("FILE$("+FILENAME$.edText()+").setaccess("+mode.edText()+") -- is not implemented: ");
-		//Util.NOT_IMPLEMENTED("FILE$(FILENAME$).setaccess: "+mode.edText());
+		RT.warning("FILE$("+FILENAME$.edText()+").setaccess("+mode.edText()+") -- is not implemented: ");
+		//RT.NOT_IMPLEMENTED("FILE$(FILENAME$).setaccess: "+mode.edText());
 		return (false);
 	}
 

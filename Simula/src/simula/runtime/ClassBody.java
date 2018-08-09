@@ -1,6 +1,5 @@
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
 import simula.runtime.RTObject$.$LABQNT;
 import simula.runtime.RTObject$.OperationalState;
 
@@ -18,7 +17,7 @@ public abstract class ClassBody {
 	{ this.outer=outer; this.object=object; this.prefixLevel=prefixLevel;
       if(outer!=null)
       { outer.inner=this;
-        Util.ASSERT(this.prefixLevel==outer.prefixLevel+1, "Prefix Invariant");
+        RT.ASSERT(this.prefixLevel==outer.prefixLevel+1, "Prefix Invariant");
       }
 	}
 	
@@ -26,9 +25,9 @@ public abstract class ClassBody {
 	{ // Execute Concatenated Sequence of Class Statements
 	  // Start with Statements before INNER in outermost Class
 	  if(outer!=null) outer.EXEC$();
-	  else { //Util.BREAK("ClassBody.EXEC$: CALL STM: "+object);
+	  else { //RT.BREAK("ClassBody.EXEC$: CALL STM: "+object);
 		     STM();
-		     //Util.BREAK("ClassBody.EXEC$: ENDE STM: "+object);
+		     //RT.BREAK("ClassBody.EXEC$: ENDE STM: "+object);
 	  } return(object);
 	}
 	
@@ -37,18 +36,18 @@ public abstract class ClassBody {
 		// Start with Statements before INNER in outermost Class
 		if (outer != null) outer.EXEC$();
 		else { try {
-					if (RTObject$.GOTO_TRACING) System.out.println("RTObject$.ClassBody.EXEC$: CALL STM: "+object);
+					if (RT.Option.GOTO_TRACING) System.out.println("RTObject$.ClassBody.EXEC$: CALL STM: "+object);
 					STM();
-					if (RTObject$.GOTO_TRACING) System.out.println("RTObject$.EXEC$: ENDE STM: "+object);
+					if (RT.Option.GOTO_TRACING) System.out.println("RTObject$.EXEC$: ENDE STM: "+object);
 				} catch ($LABQNT q) {
 					if (q.SL$ != RTObject$.CUR$) {
 						RTObject$.CUR$.STATE$ = OperationalState.terminated;
-						if (RTObject$.GOTO_TRACING)
+						if (RT.Option.GOTO_TRACING)
 							RTObject$.TRACE_GOTO("NON-LOCAL", q);
 
 						throw (q);
 					}
-					if (RTObject$.GOTO_TRACING)
+					if (RT.Option.GOTO_TRACING)
 					{ RTObject$.TRACE_GOTO("ClassBody: GOTO VIRTUAL", q);
 					  System.out.println("RTObject$.EXEC$: GOTO VIRTUAL ? " + q);
 					  System.out.println("RTObject$.EXEC$: GOTO VIRTUAL ? q.index=" + q.index);
@@ -56,7 +55,7 @@ public abstract class ClassBody {
 					  System.out.println("RTObject$.EXEC$: GOTO VIRTUAL ? RTObject$.CUR$=" + RTObject$.CUR$);
 					}
 					System.out.println("NOT IMPLEMENTED: Goto Virtual Label "+q);
-					RTObject$.PrintStackTrace(2);
+					RT.printStackTrace(2);
 					//q.printStackTrace();
 					
 					throw(new RuntimeException("NOT IMPLEMENTED: Goto Virtual Label ",q));

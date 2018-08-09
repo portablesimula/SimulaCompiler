@@ -138,8 +138,6 @@ public class Animation$ extends Simset$ {
 	{ public void paint(Graphics2D g); }
 	
 	public void repaintMe()
-//	{ frame.repaint(); }
-//	{ canvas.repaint(); }
 	{ canvas.render(); }
 	
 	/*
@@ -198,7 +196,12 @@ public class Animation$ extends Simset$ {
 	  return(-1);
 	}
 
-	
+	public void waitSomeTime(int millies)
+    { System.out.println("Animation Sleep: "+millies);
+	  try {Thread.sleep(millies);}catch(Exception e) { e.printStackTrace();}
+	  System.out.println("Animation Awake after: "+millies);
+	}
+
 
 	// Constructor
 	public Animation$(RTObject$ staticLink,TXT$ title) {
@@ -262,9 +265,11 @@ public class Animation$ extends Simset$ {
     private void init(String title)
     { frame = new JFrame(title);
       canvas = new Drawing();
-      canvas.setSize(400, 400);
+      canvas.setSize(900, 900);
       currentFont=new Font(Font.SANS_SERIF,12,Font.PLAIN);
-	  //System.out.println("Init: Current Font="+currentFont);
+	  System.out.println("Init: Current Font="+currentFont);
+	  setFontSize(12);
+	  System.out.println("Init: Current Font="+currentFont);
         frame.add(canvas);
         frame.pack();
         frame.setVisible(true);  
