@@ -255,8 +255,9 @@ public abstract class Expression extends SyntaxClass
 	 else { String ident=acceptIdentifier();
 	        if(ident!=null) expr=Variable.parse(ident);
 	        else {
-	        	if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: NULL");
-	    		Parser.skipAnyKeyWordExcept(KeyWord.ELSE); // Ad'Hoc
+	        	if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBASICEXPR returns: NULL");
+//	    		Parser.skipAnyKeyWordExcept(KeyWord.ELSE); // Ad'Hoc
+	        	if(Parser.prevToken.getKeyWord()==KeyWord.SEMICOLON) Parser.skipCurrentSymbol(); // Ad'Hoc
 
 	    	    return(null);
 	        }

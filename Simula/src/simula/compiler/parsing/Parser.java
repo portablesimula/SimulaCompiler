@@ -66,24 +66,30 @@ public class Parser {
 		return (false);
 	}
 
-	public static boolean skipKeyWord(KeyWord s) {
-		if (Parser.currentToken.getKeyWord() == s) {
-			Util.error("Missplaced symbol: "+s+" -- Ignored");
-			nextSymb();
-			return (true);
-		}
-		return (false);
-	}
+//	public static boolean skipKeyWord(KeyWord s) {
+//		if (Parser.currentToken.getKeyWord() == s) {
+//			Util.error("Missplaced symbol: "+s+" -- Ignored");
+//			nextSymb();
+//			return (true);
+//		}
+//		return (false);
+//	}
+//
+//	public static boolean skipAnyKeyWordExcept(KeyWord s) {
+//		KeyWord keyWord=Parser.currentToken.getKeyWord();
+//		//Util.BREAK("Parser.skipAnyKeyWordExcept("+s+"): keyWord="+keyWord);
+////		if (keyWord != null && keyWord != s) {
+//		if (keyWord != null) {
+//			Util.error("Missplaced symbol: "+keyWord+" -- Ignored");
+//			nextSymb();
+//			return (true);
+//		}
+//		return (false);
+//	}
 
-	public static boolean skipAnyKeyWordExcept(KeyWord s) {
-		KeyWord keyWord=Parser.currentToken.getKeyWord();
-		//Util.BREAK("Parser.skipAnyKeyWordExcept("+s+"): keyWord="+keyWord);
-		if (keyWord != null && keyWord != s) {
-			Util.error("Missplaced symbol: "+keyWord+" -- Ignored");
-			nextSymb();
-			return (true);
-		}
-		return (false);
+	public static void skipCurrentSymbol() {
+		Util.error("Missplaced symbol: "+Parser.currentToken+" -- Ignored");
+		nextSymb();
 	}
 	
 	public static KeyWord lastKeyWord()

@@ -11,6 +11,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.Type;
+import simula.compiler.expression.Constant;
 import simula.compiler.expression.Variable;
 
 public class StandardClass extends BlockDeclaration //ClassDeclaration
@@ -75,6 +76,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 //    RTObject.addStandardProcedure(null,"call",parameter("obj",Type.Ref("RTObject")));
 //    RTObject.addStandardProcedure(null,"resume",parameter("obj",Type.Ref("RTObject")));
     RTObject.addStandardProcedure(Type.Text,"objectTraceIdentifier");
+    RTObject.addStandardProcedure(Type.Text,"waitSomeTime",parameter("millies",Type.Integer));
   }
   
   // ******************************************************************
@@ -780,89 +782,51 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 //     L: detach; goto L
 //  end MAIN_PROGRAM;
   }  
-	
   
   // ******************************************************************
   // *** The Standard Class Drawing
   // ******************************************************************
-  public static StandardClass Drawing=new StandardClass("CLASS","Drawing",parameter("Title",Type.Text));
+  public static StandardClass Drawing=new StandardClass("Simset","Drawing",parameter("Title",Type.Text),parameter("width",Type.Integer),parameter("height",Type.Integer)); 
   static
   { ENVIRONMENT.addStandardClass(Drawing);  // Declared in ENVIRONMENT
-    Drawing.addStandardAttribute(Type.Integer,"white");  
-    Drawing.addStandardAttribute(Type.Integer,"lightGray");  
-    Drawing.addStandardAttribute(Type.Integer,"gray");  
-    Drawing.addStandardAttribute(Type.Integer,"darkGray");  
-    Drawing.addStandardAttribute(Type.Integer,"black");  
-    Drawing.addStandardAttribute(Type.Integer,"red");  
-    Drawing.addStandardAttribute(Type.Integer,"pink");  
-    Drawing.addStandardAttribute(Type.Integer,"orange");  
-    Drawing.addStandardAttribute(Type.Integer,"yellow");  
-    Drawing.addStandardAttribute(Type.Integer,"green");  
-    Drawing.addStandardAttribute(Type.Integer,"magenta");  
-    Drawing.addStandardAttribute(Type.Integer,"cyan");  
-    Drawing.addStandardAttribute(Type.Integer,"blue");  
+    Drawing.addStandardAttribute(Type.Integer,"white",    0xffffff); // Color white:      R=255, G=255, B=255.
+    Drawing.addStandardAttribute(Type.Integer,"lightGray",0xc0c0c0); // Color light gray: R=192, G=192, B=192.  
+    Drawing.addStandardAttribute(Type.Integer,"gray",     0x808080); // Color gray:       R=128, G=128, B=128. 
+    Drawing.addStandardAttribute(Type.Integer,"darkGray", 0x404040); // Color dark gray:  R=64,  G=64,  B=64.
+    Drawing.addStandardAttribute(Type.Integer,"black",    0x000000); // Color black:      R=0,   G=0,   B=0.  
+    Drawing.addStandardAttribute(Type.Integer,"red",      0xff0000); // Color red:        R=255, G=0,   B=0. 
+    Drawing.addStandardAttribute(Type.Integer,"pink",     0xffafaf); // Color pink:       R=255, G=175, B=175.
+    Drawing.addStandardAttribute(Type.Integer,"orange",   0xffc800); // Color orange:     R=255, G=200, B=0. 
+    Drawing.addStandardAttribute(Type.Integer,"yellow",   0xffff00); // Color yellow:     R=255, G=255, B=0. 
+    Drawing.addStandardAttribute(Type.Integer,"green",    0x00ff00); // Color green:      R=0,   G=255, B=0.
+    Drawing.addStandardAttribute(Type.Integer,"magenta",  0xff00ff); // Color magenta:    R=255, G=0,   B=255.
+    Drawing.addStandardAttribute(Type.Integer,"cyan",     0x00ffff); // Color cyan:       R=0,   G=255, B=255.
+    Drawing.addStandardAttribute(Type.Integer,"blue",     0x0000ff); // Color blue:       R=0,   G=0,   B=255.
     Drawing.addStandardProcedure(Type.Integer,"color",parameter("r",Type.Integer),parameter("g",Type.Integer),parameter("b",Type.Integer));  
-    Drawing.addStandardProcedure(Type.Integer,"color",parameter("colorName",Type.Text));  
     Drawing.addStandardProcedure(null,"setBackgroundColor",parameter("color",Type.Integer));  
     Drawing.addStandardProcedure(null,"setDrawColor",parameter("color",Type.Integer));  
     Drawing.addStandardProcedure(null,"setFillColor",parameter("color",Type.Integer));  
     Drawing.addStandardProcedure(null,"setStroke",parameter("width",Type.Real));  
 
+    Drawing.addStandardProcedure(Type.Ref("Head"),"renderingSet");  
     Drawing.addStandardProcedure(null,"setFontStylePlain");  
     Drawing.addStandardProcedure(null,"setFontStyleBold");  
     Drawing.addStandardProcedure(null,"setFontStyleItalic");  
     Drawing.addStandardProcedure(null,"setFontStyleBoldItalic");  
     Drawing.addStandardProcedure(null,"setFontSize",parameter("size",Type.Real));  
     Drawing.addStandardProcedure(Type.Real,"getFontSize");  
-
-    Drawing.addStandardProcedure(null,"drawText",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
-//    Drawing.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-//    Drawing.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-
+    Drawing.addStandardProcedure(null,"waitSomeTime",parameter("millies",Type.Integer));  // Utility
+    
+    Drawing.addStandardProcedure(null,"drawText",parameter("t",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
     Drawing.addStandardProcedure(null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
     Drawing.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
     Drawing.addStandardProcedure(null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
     Drawing.addStandardProcedure(null,"drawRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
-    												      ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
+    														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
     Drawing.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"FillerRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(null,"fillRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
     Drawing.addStandardProcedure(null,"fillRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
-    													  ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
-  }  
-  
-  // ******************************************************************
-  // *** The Standard Class Animation
-  // ******************************************************************
-  public static StandardClass Animation=new StandardClass("Simset","Animation",parameter("Title",Type.Text));
-  static
-  { ENVIRONMENT.addStandardClass(Animation);  // Declared in ENVIRONMENT
-    Animation.addStandardAttribute(Type.Integer,"white");  
-    Animation.addStandardAttribute(Type.Integer,"lightGray");  
-    Animation.addStandardAttribute(Type.Integer,"gray");  
-    Animation.addStandardAttribute(Type.Integer,"darkGray");  
-    Animation.addStandardAttribute(Type.Integer,"black");  
-    Animation.addStandardAttribute(Type.Integer,"red");  
-    Animation.addStandardAttribute(Type.Integer,"pink");  
-    Animation.addStandardAttribute(Type.Integer,"orange");  
-    Animation.addStandardAttribute(Type.Integer,"yellow");  
-    Animation.addStandardAttribute(Type.Integer,"green");  
-    Animation.addStandardAttribute(Type.Integer,"magenta");  
-    Animation.addStandardAttribute(Type.Integer,"cyan");  
-    Animation.addStandardAttribute(Type.Integer,"blue");  
-    Animation.addStandardProcedure(Type.Integer,"color",parameter("r",Type.Integer),parameter("g",Type.Integer),parameter("b",Type.Integer));  
-    Animation.addStandardProcedure(Type.Integer,"color",parameter("colorName",Type.Text));  
-    Animation.addStandardProcedure(null,"setBackgroundColor",parameter("color",Type.Integer));  
-    Animation.addStandardProcedure(null,"setDrawColor",parameter("color",Type.Integer));  
-    Animation.addStandardProcedure(null,"setFillColor",parameter("color",Type.Integer));  
-    Animation.addStandardProcedure(null,"setStroke",parameter("width",Type.Real));  
-
-    Animation.addStandardProcedure(null,"setFontStylePlain");  
-    Animation.addStandardProcedure(null,"setFontStyleBold");  
-    Animation.addStandardProcedure(null,"setFontStyleItalic");  
-    Animation.addStandardProcedure(null,"setFontStyleBoldItalic");  
-    Animation.addStandardProcedure(null,"setFontSize",parameter("size",Type.Real));  
-    Animation.addStandardProcedure(Type.Real,"getFontSize");  
-    Animation.addStandardProcedure(null,"waitSomeTime",parameter("millies",Type.Integer));  // Utility
+    														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
   }
   
   // ******************************************************************
@@ -870,7 +834,8 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass ShapeElement=new StandardClass("Link","ShapeElement");
   static
-  { Animation.addStandardClass(ShapeElement);  // Declared in Animation
+  { Drawing.addStandardClass(ShapeElement);  // Declared in Drawing
+    ShapeElement.addStandardProcedure(null,"setColor",parameter("color",Type.Integer));  
     ShapeElement.addStandardProcedure(null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
     ShapeElement.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
     ShapeElement.addStandardProcedure(null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
@@ -889,7 +854,17 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   // ******************************************************************
   public static StandardClass TextElement=new StandardClass("Link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
   static
-  { Animation.addStandardClass(TextElement);  // Declared in Animation
+  { Drawing.addStandardClass(TextElement);  // Declared in Drawing
+    TextElement.addStandardProcedure(null,"setColor",parameter("color",Type.Integer));  
+    TextElement.addStandardProcedure(null,"setStroke",parameter("width",Type.Real));  
+    TextElement.addStandardProcedure(null,"setFontStylePlain");  
+    TextElement.addStandardProcedure(null,"setFontStyleBold");  
+    TextElement.addStandardProcedure(null,"setFontStyleItalic");  
+    TextElement.addStandardProcedure(null,"setFontStyleBoldItalic");  
+    TextElement.addStandardProcedure(null,"setFontSize",parameter("size",Type.Real));  
+    TextElement.addStandardProcedure(Type.Real,"getFontSize");  
+
+    TextElement.addStandardProcedure(null,"setText",parameter("t",Type.Text));  
     TextElement.addStandardProcedure(null,"instantMoveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
     TextElement.addStandardProcedure(null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("speed",Type.LongReal));  
   }
@@ -974,6 +949,9 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
 
   private void addStandardAttribute(Type type,String ident)
   { declarationList.add(new TypeDeclaration(type,ident)); }
+
+  private void addStandardAttribute(Type type,String ident,int iValue)
+  { declarationList.add(new TypeDeclaration(type,ident,new Constant(Type.Integer,(Integer)iValue))); }
 
   private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
   {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3,p4,p5,p6)); }

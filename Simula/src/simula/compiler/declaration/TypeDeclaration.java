@@ -9,6 +9,7 @@ package simula.compiler.declaration;
 
 import java.util.Vector;
 
+import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
@@ -53,6 +54,12 @@ public class TypeDeclaration extends Declaration {
 	public TypeDeclaration(Type type, String identifier) {
 		super(identifier);
 		this.type=type;
+		//Util.BREAK("TypeDeclaration: new "+type+" "+identifier);
+	}
+
+	public TypeDeclaration(Type type, String identifier, Constant constant) {
+		this(type,identifier);
+		this.constantElement=constant;
 		//Util.BREAK("TypeDeclaration: new "+type+" "+identifier);
 	}
 	

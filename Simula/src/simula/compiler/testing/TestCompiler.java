@@ -57,21 +57,21 @@ public class TestCompiler {
 
 		// *** SIMULA PROGRAMMER
 		// String name=Global.packetName+"/simprogs/Matte.sim";
-		// String name=Global.packetName+"/simprogs/Docking.sim";
+		 String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
-		 String name=Global.packetName+"/err/forShort.sim";
+		// String name=Global.packetName+"/err/forShort.sim";  // IKKE FERDIG BEHANDLET
 		// String name=Global.packetName+"/err/simerr01.sim";
 		// String name=Global.packetName+"/err/simerr02.sim";
-		// String name=Global.packetName+"/err/simerr03.sim";
-		// String name=Global.packetName+"/err/simerr04.sim";
+		// String name=Global.packetName+"/err/simerr03.sim";  // IKKE FERDIG BEHANDLET
+		// String name=Global.packetName+"/err/simerr04.sim";  // IKKE FERDIG BEHANDLET
+		// String name=Global.packetName+"/err/simerr05.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";
 		// String name=Global.packetName+"/sim/adHoc01.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
-	    // String name=Global.packetName+"/sim/AnimationTest2.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
 		// String name=Global.packetName+"/sim/Assignments.sim";
 
@@ -143,11 +143,11 @@ public class TestCompiler {
 			Option.TRACE_COMMENTS=false;//true;
 
 			// Parser Trace Options
-			Option.TRACE_PARSE=true;//false;//true;
+			Option.TRACE_PARSE=false;//true;
 
 			// Checker Trace Options
 			Option.TRACE_CHECKER=false;//true;
-			Option.TRACE_CHECKER_OUTPUT=true;//false;//true;
+			Option.TRACE_CHECKER_OUTPUT=false;//true;
 
 			// Coder Trace Options
 			Option.TRACE_CODING=true;

@@ -1194,6 +1194,12 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 		double time=((hour*60)+minute)*60+second;
 		return(time);
 	}
+	
+	public void waitSomeTime(int millies)
+    { //System.out.println("ENVIRONMENT.waitSomeTime: sleep="+millies);
+	  try {Thread.sleep(millies);}catch(Exception e) { e.printStackTrace();}
+	  //System.out.println("ENVIRONMENT.waitSomeTime: awake="+millies);
+	}
 
 	// *****************************************
 	// *** Miscellaneous utilities ***
