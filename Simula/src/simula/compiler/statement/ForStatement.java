@@ -77,6 +77,12 @@ public class ForStatement extends Statement
   { if(IS_SEMANTICS_CHECKED()) return;
    	Global.sourceLineNumber=lineNumber;
     controlVariable.doChecking();
+    
+    if(controlVariable.type==Type.ShortInteger) {
+    	Util.error("Short Integer Control Variable in For-Statement is not allowed in this implementation.");
+    	controlVariable.type=Type.Integer;
+    }
+    
     this.type=controlVariable.type; // Type of control variable
     Declaration decl=controlVariable.meaning.declaredAs;
     if(decl instanceof Parameter && ((Parameter)decl).mode==Parameter.Mode.name)

@@ -133,19 +133,26 @@ public class SubscriptedVariable extends Variable {
 			Iterator<Parameter> formalIterator = block.parameterIterator();
 			Iterator<Expression> actualIterator = params.iterator();
 			//Util.BREAK("SubscriptedVariable("+identifier+").doChecking: Params="+params);
-			while (actualIterator.hasNext()) {
-				if (!formalIterator.hasNext()) Util.error("Wrong number of parameters to " + block);
+			LOOP:while (actualIterator.hasNext()) {
+				if (!formalIterator.hasNext()) {
+					Util.error("Wrong number of parameters to " + block);
+					break LOOP;
+				}
 				Parameter formalParameter = (Parameter)formalIterator.next();
 				Type formalType = formalParameter.type;
-				//Util.BREAK("Formal Parameter: " + formalParameter + ", Formal Type=" + formalType);
+				//Util.BREAK("Formal Parameter: " + formalParameter + ", Formal Type=" + formalType + ", Formal Kind=" + formalParameter.kind);
 				Expression actualParameter = actualIterator.next();
 				//Util.BREAK("Actual Parameter: " + actualParameter);
 				actualParameter.doChecking();
-				//Util.BREAK("Actual Parameter: " + actualParameter.type + " "	+ actualParameter + ", Actual Type=" + actualParameter.type);
+				//Util.BREAK("Actual Parameter: " + actualParameter.type + " " + actualParameter + ", Actual Type=" + actualParameter.type);
 				if(Global.OVERLOADING && formalType instanceof OverLoad)
 				{ //Util.BREAK("SubscriptedVariable.doChecking(1): "+this);
 				  formalType=actualParameter.type; // TODO: AD'HOC for add/subepsilon
 				  overloadedType=formalType;
+				}
+				if(formalParameter.kind==Parameter.Kind.Array)
+				{ if(formalType!=actualParameter.type && formalType.isArithmeticType())
+					Util.error("Parameter Array "+actualParameter+" must be of Type "+formalType);
 				}
 				Expression checkedParameter=TypeConversion.testAndCreate(formalType,actualParameter);
 				checkedParameter.backLink=this;

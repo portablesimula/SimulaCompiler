@@ -57,14 +57,14 @@ public class TestCompiler {
 
 		// *** SIMULA PROGRAMMER
 		// String name=Global.packetName+"/simprogs/Matte.sim";
-		 String name=Global.packetName+"/simprogs/Docking.sim";
+		// String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
-		// String name=Global.packetName+"/err/forShort.sim";  // IKKE FERDIG BEHANDLET
+		// String name=Global.packetName+"/err/forShort.sim"; 
 		// String name=Global.packetName+"/err/simerr01.sim";
 		// String name=Global.packetName+"/err/simerr02.sim";
-		// String name=Global.packetName+"/err/simerr03.sim";  // IKKE FERDIG BEHANDLET
-		// String name=Global.packetName+"/err/simerr04.sim";  // IKKE FERDIG BEHANDLET
+		 String name=Global.packetName+"/err/simerr03.sim";  // IKKE FERDIG BEHANDLET
+		// String name=Global.packetName+"/err/simerr04.sim";
 		// String name=Global.packetName+"/err/simerr05.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
