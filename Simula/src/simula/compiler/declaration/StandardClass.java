@@ -540,8 +540,8 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   static
   { BASICIO.addStandardClass(ByteFile);  // Declared in BASICIO
     //ByteFile.isContextFree=true;
-    ByteFile.addStandardAttribute(Type.ShortInteger,"BYTESIZE_");  
-    ByteFile.addStandardProcedure(Type.ShortInteger,"bytesize");  
+    ByteFile.addStandardAttribute(Type.Integer,"BYTESIZE_");  
+    ByteFile.addStandardProcedure(Type.Integer,"bytesize");  
   }  
   // ******************************************************************
   // *** The Standard ByteFile Class InbyteFile
@@ -565,7 +565,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     InbyteFile.addStandardProcedure(Type.Boolean,"endfile");  
     InbyteFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
     InbyteFile.addStandardProcedure(Type.Boolean,"close");  
-    InbyteFile.addStandardProcedure(Type.ShortInteger,"inbyte");  
+    InbyteFile.addStandardProcedure(Type.Integer,"inbyte");  
     InbyteFile.addStandardProcedure(Type.Text,"intext",parameter("t",Type.Text));  
   }  
   // ******************************************************************
@@ -586,7 +586,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     //OutbyteFile.isContextFree=true;
     OutbyteFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
     OutbyteFile.addStandardProcedure(Type.Boolean,"close");  
-    OutbyteFile.addStandardProcedure(null,"outbyte",parameter("x",Type.ShortInteger));   
+    OutbyteFile.addStandardProcedure(null,"outbyte",parameter("x",Type.Integer));   
     OutbyteFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));  
     OutbyteFile.addStandardProcedure(Type.Boolean,"checkpoint");  
   }  
@@ -627,8 +627,8 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     DirectByteFile.addStandardProcedure(Type.Boolean,"close");      
     DirectByteFile.addStandardProcedure(Type.Integer,"lastloc");  
     DirectByteFile.addStandardProcedure(null,"locate",parameter("i",Type.Integer));  
-    DirectByteFile.addStandardProcedure(Type.ShortInteger,"inbyte");  
-    DirectByteFile.addStandardProcedure(null,"outbyte",parameter("x",Type.ShortInteger));   
+    DirectByteFile.addStandardProcedure(Type.Integer,"inbyte");  
+    DirectByteFile.addStandardProcedure(null,"outbyte",parameter("x",Type.Integer));   
     DirectByteFile.addStandardProcedure(Type.Boolean,"checkpoint");  
     DirectByteFile.addStandardProcedure(Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
     DirectByteFile.addStandardProcedure(Type.Boolean,"unlock");  

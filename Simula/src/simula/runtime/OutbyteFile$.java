@@ -52,7 +52,7 @@ public class OutbyteFile$ extends ByteFile$ {
 			}
 		}
 		OPEN$ = true;
-		BYTESIZE$ = ((short) (8));
+		BYTESIZE$ =8;
 		return (true);
 	}
 

@@ -286,7 +286,6 @@ public class AttributeFile {
 	private Type readType() throws IOException
 	{ String tp=inpt.readUTF();
 	  if(tp.equalsIgnoreCase("Integer")) return(Type.Integer);
-	  if(tp.equalsIgnoreCase("ShortInteger")) return(Type.ShortInteger);
 	  if(tp.equalsIgnoreCase("Real")) return(Type.Real);
 	  if(tp.equalsIgnoreCase("LongReal")) return(Type.LongReal);
 	  if(tp.equalsIgnoreCase("Boolean")) return(Type.Boolean);

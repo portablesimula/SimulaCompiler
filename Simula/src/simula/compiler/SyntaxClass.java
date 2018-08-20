@@ -77,7 +77,7 @@ public abstract class SyntaxClass
 	if(Parser.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
 	else if(Parser.accept(KeyWord.CHARACTER)) type=Type.Character;
 	else if(Parser.accept(KeyWord.INTEGER)) type=Type.Integer;
-	else if(Parser.accept(KeyWord.SHORT)) { Parser.expect(KeyWord.INTEGER); type=Type.ShortInteger; }
+	else if(Parser.accept(KeyWord.SHORT)) { Parser.expect(KeyWord.INTEGER); type=Type.Integer; }
 	else if(Parser.accept(KeyWord.REAL)) type=Type.Real;
 	else if(Parser.accept(KeyWord.LONG)) { Parser.expect(KeyWord.REAL); type=Type.LongReal; }
 	else if(Parser.accept(KeyWord.TEXT)) type=Type.Text;

@@ -28,7 +28,7 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 	public static String mayBeConvert(Type fromType,Type toType,String expr) {
 		if(Global.ROUNDING)
 		{ if(fromType==Type.Real || fromType==Type.LongReal)
-		  { if(toType==Type.Integer || toType==Type.ShortInteger)
+		  { if(toType==Type.Integer)
 //	            return("=("+toType.toJavaType()+")("+expr+"+0.5);");
                 return("=Math.round("+expr+");");
 		  }
@@ -123,7 +123,7 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		}
 		
 		if(Global.ROUNDING)
-		{ if(type==Type.Integer || type==Type.ShortInteger)
+		{ if(type==Type.Integer)
 		  { Type fromType=expression.type;
 		    if(fromType==Type.Real || fromType==Type.LongReal)
 //			    evaluated="(("+evaluated+")+0.5)";

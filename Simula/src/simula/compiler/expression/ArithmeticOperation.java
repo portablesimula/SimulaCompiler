@@ -133,10 +133,9 @@ public class ArithmeticOperation extends Expression
 	  }
 	  case INTDIV: // Integer Division
 	  {	lhs.doChecking(); rhs.doChecking();
-		Type type1=lhs.type; Type type2=rhs.type;
-		if(type1==Type.ShortInteger || type1==Type.Integer)
-	    { if(type2==Type.ShortInteger || type2==Type.Integer)  this.type=Type.Integer; }
-		if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
+		if(lhs.type!=Type.Integer || rhs.type!=Type.Integer)
+			Util.error("Incompatible types in binary operation: "+toString());
+		this.type=Type.Integer;
 		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
 		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
 	    break; 

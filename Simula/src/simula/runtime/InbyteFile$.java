@@ -89,7 +89,7 @@ public class InbyteFile$ extends ByteFile$ {
 			return (false);
 		}
 		OPEN$ = true;
-		BYTESIZE$ = (short) 8;
+		BYTESIZE$ = 8;
 		ENDFILE$ = false;
 		//RT.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 		return (true);
@@ -132,7 +132,7 @@ public class InbyteFile$ extends ByteFile$ {
 	 * 
 	 * @return
 	 */
-	public short inbyte() {
+	public int inbyte() {
 		if (ENDFILE$)
 			throw new RuntimeException(
 					"File not opened or attempt to read past EOF");
@@ -144,7 +144,7 @@ public class InbyteFile$ extends ByteFile$ {
 				ENDFILE$ = true;
 				return (0);
 			}
-			return ((short) b);
+			return(b);
 		} catch (IOException e) {
 			throw new RuntimeException("Inbyte failed", e);
 		}

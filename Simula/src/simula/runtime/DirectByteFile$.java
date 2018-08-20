@@ -164,7 +164,7 @@ public class DirectByteFile$ extends ByteFile$ {
 			return (false);
 		}
 		MAXLOC$ = maxint - 1;
-		BYTESIZE$ = ((short) (8));
+		BYTESIZE$ = 8;
 		OPEN$ = true;
 		return (true);
 	}
@@ -281,14 +281,14 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * 
 	 * @return
 	 */
-	public short inbyte() {
+	public int inbyte() {
 		if (!OPEN$)
 			throw new RuntimeException("file closed");
 		// LOC is maintained by the underlying file system.
 		// if (LOC$ <= lastloc())
 
 		try {
-			return ((short) randomAccessFile.read());
+			return (randomAccessFile.read());
 		} catch (EOFException e) {
 			return (0);
 
@@ -321,7 +321,7 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * 
 	 * @param x
 	 */
-	public void outbyte(short x) {
+	public void outbyte(int x) {
 		if (!OPEN$)
 			throw new RuntimeException("file closed");
 		if (x < 0 || x >= (2 ^ BYTESIZE$))
@@ -518,7 +518,7 @@ public class DirectByteFile$ extends ByteFile$ {
 	public void outtext(TXT$ t) {
 		t.setpos(1);
 		while (t.more()) {
-			outbyte((short) t.getchar());
+			outbyte((int) t.getchar());
 		}
 	}
 

@@ -14,7 +14,6 @@ import simula.compiler.declaration.BlockDeclaration;
 public class Type
 {
   public static final Type Integer=new Type(new Token(KeyWord.INTEGER));
-  public static final Type ShortInteger=new Type(new Token(KeyWord.INTEGER,KeyWord.SHORT));
   public static final Type Real=new Type(new Token(KeyWord.REAL));
   public static final Type LongReal=new Type(new Token(KeyWord.REAL,KeyWord.LONG));
   public static final Type Boolean=new Type(new Token(KeyWord.BOOLEAN));
@@ -84,9 +83,7 @@ public class Type
   }
 
   public boolean isArithmeticType()
-  {	return(this==Type.ShortInteger||this==Type.Integer
-         ||this==Type.Real||this==Type.LongReal);
-  }
+  {	return(this==Type.Integer||this==Type.Real||this==Type.LongReal); }
   
   public boolean isReferenceType()
   { if(key.getKeyWord()==KeyWord.REF) return(true);
@@ -167,27 +164,18 @@ public class Type
   }
   
   public static Type arithmeticTypeConversion(Type type1,Type type2)
-  {	if(type1==Type.ShortInteger)
-	{ if(type2==Type.ShortInteger)  return(Type.Integer); 
-	  else if(type2==Type.Integer)  return(Type.Integer); 
-	  else if(type2==Type.Real)     return(Type.Real);
-	  else if(type2==Type.LongReal) return(Type.LongReal);
-	}
-	else if(type1==Type.Integer)
-	{ if(type2==Type.ShortInteger)  return(Type.Integer); 
-	  else if(type2==Type.Integer)  return(Type.Integer); 
+  {	if(type1==Type.Integer)
+	{ if(type2==Type.Integer)  return(Type.Integer); 
 	  else if(type2==Type.Real)     return(Type.Real);
 	  else if(type2==Type.LongReal) return(Type.LongReal);
 	}
 	else if(type1==Type.Real)
-	{ if(type2==Type.ShortInteger)  return(Type.Real); 
-	  else if(type2==Type.Integer)  return(Type.Real); 
+	{ if(type2==Type.Integer)  return(Type.Real); 
 	  else if(type2==Type.Real)     return(Type.Real);
 	  else if(type2==Type.LongReal) return(Type.LongReal);
 	}
 	else if(type1==Type.LongReal)
-	{ if(type2==Type.ShortInteger)  return(Type.LongReal); 
-	  else if(type2==Type.Integer)  return(Type.LongReal); 
+	{ if(type2==Type.Integer)  return(Type.LongReal); 
 	  else if(type2==Type.Real)     return(Type.LongReal);
 	  else if(type2==Type.LongReal) return(Type.LongReal);
 	}
@@ -198,7 +186,6 @@ public class Type
   { if(key==null) return("void");
 	if(key.getKeyWord()==KeyWord.IDENTIFIER) return(null);
 	if(key.getKeyWord()==KeyWord.REF) return("null");
-	if(this.equals(ShortInteger)) return("0");
 	if(this.equals(LongReal)) return("0.0d");
 	if(this.equals(Real)) return("0.0f");
 	if(this.equals(Integer)) return("0");
@@ -213,7 +200,6 @@ public class Type
   { if(key==null) return("void");
     //if(this.equals(Array)) return("array"); // ARRAY Elements 
 	if(key.getKeyWord()==KeyWord.REF) return(getJavaRefIdent());
-	if(this.equals(ShortInteger)) return("short");
 	if(this.equals(LongReal)) return("double");
 	if(this.equals(Real)) return("float");
 	if(this.equals(Integer)) return("int");
@@ -229,7 +215,6 @@ public class Type
   { if(key==null) return("void");
     //Util.BREAK("Type.toJavaTypeClass: key="+key);
 	if(key.getKeyWord()==KeyWord.REF) return(getJavaRefIdent());
-	if(this.equals(ShortInteger)) return("Short");
 	if(this.equals(LongReal)) return("Double");
 	if(this.equals(Real)) return("Float");
 	if(this.equals(Integer)) return("Integer");
@@ -242,7 +227,6 @@ public class Type
   public String toString()
   { if(key==null) return("null");
 	if(key.getKeyWord()==KeyWord.REF) return("Ref("+key.getValue()+')');
-	if(this.equals(ShortInteger)) return("SHORT INTEGER");
 	if(this.equals(LongReal)) return("LONG REAL"); 
 	return(key.toString());
   }

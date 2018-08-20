@@ -274,19 +274,8 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
 	  if(par instanceof Float) return((int)par);
 	  if(par instanceof Double) return((int)(double)par);
-	  if(par instanceof Short) return((int)(short)par);
 	  if(par instanceof Integer) return((int)par);
 	  throw new ClassCastException("Incompatible Types: int,"+par.getClass().getSimpleName());
-	}
-	
-	public short shortValue(Object par)
-	{ if(par instanceof $NAME<?>) par=(($NAME<?>)par).get();
-	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
-	  if(par instanceof Float) return((short)(float)par);
-	  if(par instanceof Double) return((short)(double)par);
-	  if(par instanceof Short) return((short)par);
-	  if(par instanceof Integer) return((short)(int)par);
-	  throw new ClassCastException("Incompatible Types: short,"+par.getClass().getSimpleName());
 	}
 	
 	public float floatValue(Object par)
@@ -294,7 +283,6 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
 	  if(par instanceof Float) return((float)par);
 	  if(par instanceof Double) return((float)(double)par);
-	  if(par instanceof Short) return((float)(short)par);
 	  if(par instanceof Integer) return((float)(int)par);
 	  throw new ClassCastException("Incompatible Types: float,"+par.getClass().getSimpleName());
 	}
@@ -304,7 +292,6 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
 	  if(par instanceof Float) return((double)(float) par);
 	  if(par instanceof Double) return((double)(double)par);
-	  if(par instanceof Short) return((double)(short)par);
 	  if(par instanceof Integer) return((double)(int)par);
 	  throw new ClassCastException("Incompatible Types: double,"+par.getClass().getSimpleName());
 	}

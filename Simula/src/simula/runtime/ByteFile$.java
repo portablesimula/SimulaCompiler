@@ -30,9 +30,9 @@ package simula.runtime;
  *
  */
 public class ByteFile$ extends FILE$ {
-	public short BYTESIZE$;
+	public int BYTESIZE$;
 
-	public short bytesize() {
+	public int bytesize() {
 		return (BYTESIZE$);
 	}
 
