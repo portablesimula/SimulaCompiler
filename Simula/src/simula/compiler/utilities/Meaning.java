@@ -45,6 +45,8 @@ public class Meaning {
 		if(variableKind!=Variable.Kind.connectedAttribute) return(null);
 		return(((ConnectionBlock)declaredIn).getInspectedVariable());
 	}
+	
+	public boolean isNO_MEANING() {	return(declaredAs==null); }
 	  
 	// ***************************************************************************************
 	// *** CODING: edStaticLink
@@ -74,7 +76,19 @@ public class Meaning {
 	}
 	
 	public String toString()
-	{ return(variableKind.toString()+' '+declaredAs+", foundBehindInvisible="+foundBehindInvisible
+	{ if(declaredAs==null) return("NO MEANING");
+	  return(variableKind.toString()+' '+declaredAs+", foundBehindInvisible="+foundBehindInvisible
 			+"  (blockLevel="+declaredIn.blockLevel+",declaredIn="+declaredIn+",foundIn="+foundIn+')');
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

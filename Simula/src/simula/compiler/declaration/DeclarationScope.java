@@ -71,7 +71,11 @@ public abstract class DeclarationScope extends Declaration {
 //	if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): ScopeChain="+edScopeChain());
 	if(meaning==null && declaredIn!=null) meaning=declaredIn.findMeaning(identifier);
 //	if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning2="+meaning);
-	if(meaning==null) Util.error("Undefined variable: "+identifier);
+	if(meaning==null) {
+	    //if(identifier.equalsIgnoreCase("L"))Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+") ==> UNDEFINED");
+		Util.error("Undefined variable: "+identifier);
+		meaning=new Meaning(null,null,null); // Error Recovery: No Meaning
+	}
     return(meaning);
   }
 

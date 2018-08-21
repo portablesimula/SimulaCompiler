@@ -63,9 +63,10 @@ public class Variable extends Expression {
 	}
 
 	public Meaning getMeaning() {
+	  //Util.BREAK("BEGIN Variable("+identifier+").getMeaning - meaning="+meaning);
 	  if (meaning == null)
 		  meaning = Global.currentScope.findMeaning(identifier);
-	  Util.ASSERT(meaning.declaredIn!=null,"Invariant");
+	  Util.ASSERT(meaning.isNO_MEANING() || meaning.declaredIn!=null,"Invariant");
 	  return (meaning);
     }
 
@@ -91,9 +92,9 @@ public class Variable extends Expression {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		//Util.BREAK("BEGIN Variable("+identifier+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
-		this.type=getMeaning().declaredAs.type;
+		Declaration declaredAs=getMeaning().declaredAs;
+		if(declaredAs!=null) this.type=declaredAs.type;
 		//Util.BREAK("END Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
-//		if(identifier.equalsIgnoreCase("detach"))
 		if(meaning.declaredAs instanceof StandardProcedure)
 		{ //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
 		  //Util.BREAK("Variable("+identifier+").doChecking: Declared as'Qual: "+meaning.declaredAs.getClass().getSimpleName());

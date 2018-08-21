@@ -59,6 +59,9 @@ public class SwitchDeclaration extends BlockDeclaration // Declaration
 			expr.doChecking();
 			expr.backLink = this; // To ensure $result from functions
 		}
+		// Switch attributes are implicit specified 'protected'
+		if(declaredIn.blockKind==BlockDeclaration.Kind.Class)
+			declaredIn.protectedList.add(identifier);
 	}
 
 	// ***********************************************************************************************

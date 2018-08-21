@@ -85,7 +85,11 @@ public class ObjectGenerator extends Expression {
 					+ ").doChecking - Current Scope Chain: "
 					+ Global.currentScope.edScopeChain());
 		meaning = Global.currentScope.findMeaning(classIdentifier);
-		if (meaning == null) Util.error("Undefined variable: " + classIdentifier);
+		if (meaning == null) {
+		    //if(classIdentifier.equalsIgnoreCase("L"))Util.BREAK("ObjectGenerator.doChecking: findMeaning("+classIdentifier+") ==> UNDEFINED");
+			Util.error("Undefined variable: " + classIdentifier);
+			meaning=new Meaning(null,null,null); // Error Recovery: No Meaning
+		}
 		Declaration declaredAs=meaning.declaredAs;
 		if (declaredAs instanceof BlockDeclaration) // Declared Procedure/Class ...
 		{	BlockDeclaration cls = (BlockDeclaration)declaredAs;		    

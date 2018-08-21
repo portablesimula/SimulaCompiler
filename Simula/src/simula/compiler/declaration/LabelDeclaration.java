@@ -24,11 +24,11 @@ public class LabelDeclaration extends TypeDeclaration {
 		//Util.BREAK("TypeDeclaration.doChecking("+this+")");
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
-		type.doChecking(Global.currentScope);
-//		if(constantElement!=null)
-//		{ constantElement.doChecking();
-//	      constantElement=TypeConversion.testAndCreate(type,constantElement);
-//		}
+		DeclarationScope declaredIn=Global.currentScope;
+		type.doChecking(declaredIn);
+		// Label attributes are implicit specified 'protected'
+		if(declaredIn.blockKind==BlockDeclaration.Kind.Class)
+			declaredIn.protectedList.add(identifier);
 		SET_SEMANTICS_CHECKED();
 	}
 

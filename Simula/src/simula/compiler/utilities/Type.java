@@ -137,7 +137,8 @@ public class Type
 	else
 	{ BlockDeclaration thisDecl=(BlockDeclaration)Global.currentScope.findMeaning(thisRef).declaredAs;
 	  BlockDeclaration otherDecl=(BlockDeclaration)Global.currentScope.findMeaning(otherRef).declaredAs;
-	  result=thisDecl.isSubClassOf(otherDecl);
+	  if(thisDecl==null) result=false; // Error Recovery
+	  else result=thisDecl.isSubClassOf(otherDecl);
 	}
     //Util.BREAK("Type("+this+").isSubReferenceOf("+other+") -- Result="+result);
 	return(result); 

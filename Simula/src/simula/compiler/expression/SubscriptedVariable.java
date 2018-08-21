@@ -199,7 +199,7 @@ public class SubscriptedVariable extends Variable {
       	    }
       	  }
 		}
-	    else Util.FATAL_ERROR("Umulig å komme hit ??");
+	    else if(!meaning.isNO_MEANING()) Util.FATAL_ERROR("Umulig å komme hit ??");
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END SubscriptedVariable(" + identifier+ ").doChecking: type=" + type);
 	    //Util.BREAK("END SubscriptedVariable("+identifier+").doChecking: type=" + type+", checkedParams="+checkedParams);
