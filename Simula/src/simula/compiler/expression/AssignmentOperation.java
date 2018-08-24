@@ -127,46 +127,6 @@ public class AssignmentOperation extends Expression
 	{ //Util.BREAK("Assignment.doCodeAssignment: lhs="+lhs+", qual="+lhs.getClass().getSimpleName());
 	  //Util.BREAK("Assignment.doCodeAssignment: rhs="+rhs+", qual="+rhs.getClass().getSimpleName());
 	  
-//	  // -------------------------------------------------------------------------
-//	  // CHECK FOR SPECIAL CASE:
-//	  //     <Array> := <Expression-2> ;
-//	  // SHOULD BE CODED AS:
-//	  //     ARRAY.put(x1,x2,<Expression-2>) ;
-//	  // -------------------------------------------------------------------------
-//	  //Util.BREAK("Assignment.doCodeAssignment: afterDot="+afterDot+", qual="+afterDot.getClass().getSimpleName());
-//	  if(lhs instanceof SubscriptedVariable)
-//	  { Declaration decl=((SubscriptedVariable)lhs).declaredAs;
-//	    Util.BREAK("Assignment.doCodeAssignment20: decl="+decl+", qual="+decl.getClass().getSimpleName());
-//	    if(decl instanceof ArrayDeclaration) return(doCodeArrayAssignment((SubscriptedVariable)lhs,false));
-//	    else if(decl instanceof Parameter)
-//	    { Parameter par=(Parameter)decl;
-//		  Util.BREAK("Assignment.doCodeAssignment21: par="+par+", qual="+par.getClass().getSimpleName());
-//		  if(par.kind==Kind.Array) return(doCodeArrayAssignment((SubscriptedVariable)lhs,par.mode==Mode.name));
-//	    }
-//	  }
-	  
-	  
-//	  // -------------------------------------------------------------------------
-//	  // CHECK FOR SPECIAL CASE:
-//	  //     <Expression-1> DOT <Array> := <Expression-2> ;
-//	  // SHOULD BE CODED AS:
-//	  //     <Expression-1> . ARRAY.put(x1,x2,<Expression-2>) ;
-//	  // -------------------------------------------------------------------------
-//	  if(lhs instanceof Assignment && ((Assignment)lhs).opr==KeyWord.DOT)
-//	  { Expression afterDot=((Assignment)lhs).rhs;
-//		//Util.BREAK("Assignment.doCodeAssignment: afterDot="+afterDot+", qual="+afterDot.getClass().getSimpleName());
-//		if(afterDot instanceof SubscriptedVariable)
-//		{ Declaration decl=((SubscriptedVariable)afterDot).declaredAs;
-//		  Util.BREAK("Assignment.doCodeAssignment30: decl="+decl+", qual="+decl.getClass().getSimpleName());
-// 	      Expression beforeDot=((Assignment)lhs).lhs;
-//		  if(decl instanceof ArrayDeclaration) return(doRemoteArrayAssignment(beforeDot,(SubscriptedVariable)afterDot,false));
-//		  else if(decl instanceof Parameter)
-//		  { Parameter par=(Parameter)decl;
-//			Util.BREAK("Assignment.doCodeAssignment31: par="+par+", qual="+par.getClass().getSimpleName());
-//			if(par.kind==Kind.Array) return(doRemoteArrayAssignment(beforeDot,(SubscriptedVariable)afterDot,par.mode==Mode.name));
-//		  }
-//		}
-//	  }
 	  // -------------------------------------------------------------------------
 	  // CHECK FOR SPECIAL CASE:
 	  //     OBJECT DOT ARRAY(x1,x2,...) := Expression ;
@@ -174,20 +134,18 @@ public class AssignmentOperation extends Expression
 	  //     <Expression-1> . ARRAY.put(x1,x2,<Expression-2>) ;
 	  //     OBJECT . ARRAY.A[x+9- OBJECT.ARRAY.LB[0]]=134;
 	  // -------------------------------------------------------------------------
-//	  if(lhs instanceof Assignment && ((Assignment)lhs).opr==KeyWord.DOT)
-//	  { Expression afterDot=((Assignment)lhs).rhs;
 	  if(lhs instanceof RemoteVariable)
 	  { Expression afterDot=((RemoteVariable)lhs).rhs;
 		//Util.BREAK("Assignment.doCodeAssignment: afterDot="+afterDot+", qual="+afterDot.getClass().getSimpleName());
-		if(afterDot instanceof SubscriptedVariable)
-		{ Declaration decl=((SubscriptedVariable)afterDot).meaning.declaredAs;
+		if(afterDot instanceof Variable &&  ((Variable)afterDot).hasArguments())
+		{ Declaration decl=((Variable)afterDot).meaning.declaredAs;
 		  //Util.BREAK("Assignment.doCodeAssignment30: decl="+decl+", qual="+decl.getClass().getSimpleName());
  	      Expression beforeDot=((RemoteVariable)lhs).lhs;
-		  if(decl instanceof ArrayDeclaration) return(assignToRemoteArray(beforeDot,(SubscriptedVariable)afterDot,rhs));
+		  if(decl instanceof ArrayDeclaration) return(assignToRemoteArray(beforeDot,(Variable)afterDot,rhs));
 		  else if(decl instanceof Parameter)
 		  { Parameter par=(Parameter)decl;
 			//Util.BREAK("Assignment.doCodeAssignment31: par="+par+", qual="+par.getClass().getSimpleName());
-			if(par.kind==Parameter.Kind.Array) return(assignToRemoteArray(beforeDot,(SubscriptedVariable)afterDot,rhs));
+			if(par.kind==Parameter.Kind.Array) return(assignToRemoteArray(beforeDot,(Variable)afterDot,rhs));
 		  }
 		  
 		}
@@ -202,8 +160,8 @@ public class AssignmentOperation extends Expression
   // ***********************************************************************
   // *** CODE: assignToRemoteArray
   // ***********************************************************************
-  private String assignToRemoteArray(Expression beforeDot,SubscriptedVariable array,Expression rhs)
-  { String lhs=doAccessRemoteArray(beforeDot,(SubscriptedVariable)array);
+  private String assignToRemoteArray(Expression beforeDot,Variable array,Expression rhs)
+  { String lhs=doAccessRemoteArray(beforeDot,array);
 	String asg=lhs+'='+rhs.toJavaCode();
 	return(asg);
   }
@@ -211,12 +169,12 @@ public class AssignmentOperation extends Expression
   // ***********************************************************************
   // *** CODE: doAccessRemoteArray 
   // ***********************************************************************
-  private String doAccessRemoteArray(Expression beforeDot,SubscriptedVariable array)
+  private String doAccessRemoteArray(Expression beforeDot,Variable array)
   { StringBuilder s=new StringBuilder();
 	int nDim=0;
 	// Generate: obj.M.A[6-obj.M.LB[1]];
 	String obj=beforeDot.toJavaCode();
-    String remoteIdent=obj+'.'+array.edVariable(true);
+    String remoteIdent=obj+'.'+array.edIdentifierAccess(true);
     StringBuilder ixs=new StringBuilder();
     String dimBrackets="";
 	for(Expression ix:array.checkedParams) {

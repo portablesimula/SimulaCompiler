@@ -81,7 +81,7 @@ public class RemoteVariable extends Expression
 	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5a) findRemoteAttributeMeaning("+ident+")  Search in "+objType.getQual());
 	  remoteAttribute=objType.getQual().findRemoteAttributeMeaning(ident);	  
 	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5) findRemoteAttributeMeaning("+ident+")  ==> "+remoteAttribute);
-	  if(remoteAttribute==null) Util.error("RemoteVariable.doRemoteTextChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
+	  if(remoteAttribute==null) Util.error("RemoteVariable.doRemoteChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
 	  var.setRemotelyAccessed(remoteAttribute);
 	  if(remoteAttribute.declaredAs instanceof Parameter)
 	  { Parameter par=(Parameter)remoteAttribute.declaredAs;
@@ -93,7 +93,7 @@ public class RemoteVariable extends Expression
 	  
 	  
 	  if(remoteAttribute.declaredAs instanceof ArrayDeclaration) // Array // TODO: NEW ARRAY CODE
-	  { if(var instanceof SubscriptedVariable) accessRemoteArray=true;
+	  { if(var.hasArguments()) accessRemoteArray=true;
 		  
 	  }
 	  else if(remoteAttribute.declaredAs instanceof BlockDeclaration) // Procedure (or Class ?)
@@ -148,7 +148,7 @@ public class RemoteVariable extends Expression
     if(callRemoteProcedure!=null)
     	 return(CallProcedure.remote(lhs,callRemoteProcedure,(Variable)rhs,backLink));    
 	else if(accessRemoteArray)
-		 return(doAccessRemoteArray(lhs,(SubscriptedVariable)rhs));
+		 return(doAccessRemoteArray(lhs,(Variable)rhs));
 	//Util.BREAK("RemoteVariable.toJavaCode: DOT - remoteAttribute="+remoteAttribute);
 	String result;
 	if(remoteAttribute.foundBehindInvisible)
@@ -164,12 +164,12 @@ public class RemoteVariable extends Expression
   // ***********************************************************************
   // *** CODE: doAccessRemoteArray 
   // ***********************************************************************
-  private String doAccessRemoteArray(Expression beforeDot,SubscriptedVariable array)
+  private String doAccessRemoteArray(Expression beforeDot,Variable array)
   { StringBuilder s=new StringBuilder();
 	int nDim=0;
 	// Generate: obj.M.A[6-obj.M.LB[1]];
 	String obj=beforeDot.toJavaCode();
-    String remoteIdent=obj+'.'+array.edVariable(true);
+    String remoteIdent=obj+'.'+array.edIdentifierAccess(true);
     StringBuilder ixs=new StringBuilder();
     String dimBrackets="";
 	for(Expression ix:array.checkedParams) {

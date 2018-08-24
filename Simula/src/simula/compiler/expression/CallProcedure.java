@@ -176,13 +176,15 @@ public class CallProcedure {
 	 * CallProcedure.formal
 	 * 
 	 * @param variable
-	 * @param par
+	 * @param par declared as parameter 'par'
 	 * @return
 	 */
 //	public static String formal(Variable variable,Type type,String ident)
 	public static String formal(Variable variable,Parameter par)
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT()");
-	  String ident=par.getJavaIdentifier();
+	  String ident=variable.edIdentifierAccess(false);
+	  //Util.BREAK("CallProcedure.formal: variable="+variable);
+	  //Util.BREAK("CallProcedure.formal: ident="+ident);
 	  if(par.mode==Parameter.Mode.name) ident=ident+".get()";
 	  return(codeCPF(ident,variable,null));
 	}
@@ -207,8 +209,7 @@ public class CallProcedure {
 	  //Util.BREAK("CallProcedure.virtual: staticLink="+variable.meaning.edStaticLink());
 	  //Util.BREAK("CHECK DETTE TILFELLET(CallProcedure.virtual)"); System.exit(-1);
 	  if(variable.meaning.variableKind==Variable.Kind.connectedAttribute)
-//	  { String conn=variable.meaning.declaredIn.getJavaIdentifier();
-	  { String conn=variable.meaning.declaredIn.toJavaCode();   // TODO: CORR TO_JAVA_CODE
+	  { String conn=variable.meaning.declaredIn.toJavaCode();
 	    ident=conn+"."+ident;
 	  } else if(!remotelyAccessed) {
 		  String staticLink=variable.meaning.edStaticLink();
@@ -252,15 +253,14 @@ public class CallProcedure {
 	  if(procedureSpec!=null) s.append(codeCSVP(ident,variable,procedureSpec));
 	  else
 	  { s.append(ident).append(".CPF()");
-	    if(variable instanceof SubscriptedVariable)
-	    { SubscriptedVariable func=(SubscriptedVariable)variable;
-	      for(Expression actualParameter:func.checkedParams)
+	    if(variable.hasArguments())
+	    { for(Expression actualParameter:variable.checkedParams)
 	      { actualParameter.backLink=actualParameter;  // To ensure $result from functions
 	        s.append(".setPar(");
 		    Type formalType=actualParameter.type;
 		    Parameter.Kind kind=Parameter.Kind.Simple;            // TODO: USIKKER På DETTE !!!
 		    //Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
-		    if((actualParameter instanceof Variable) && !(actualParameter instanceof SubscriptedVariable))
+		    if((actualParameter instanceof Variable) && !(((Variable)actualParameter).hasArguments()))
 		    { Variable var=(Variable)actualParameter;
 //		      Util.BREAK("CallProcedure.codeCPF: actualParameter'meaning="+var.meaning);
 //		      Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs="+var.meaning.declaredAs);
@@ -311,9 +311,9 @@ public class CallProcedure {
 	{ StringBuilder s=new StringBuilder();
 	  //Util.BREAK("CallProcedure.codeCPF: ident="+ident);
 	  s.append(ident).append(".CPF()");
-	  if(variable instanceof SubscriptedVariable)
+	  if(variable.hasArguments())
 	  { Iterator<Parameter> formalIterator = procedureSpec.parameterList.iterator(); // If class also over prefix-chain
-		Iterator<Expression> actualIterator = ((SubscriptedVariable)variable).checkedParams.iterator();
+		Iterator<Expression> actualIterator = variable.checkedParams.iterator();
 		while(actualIterator.hasNext())
 		{ Expression actualParameter = actualIterator.next();
 		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Actual Parameter: " + actualParameter);
@@ -339,9 +339,9 @@ public class CallProcedure {
 	  boolean prevPar=false;
 	  s.append('(');
 	  if(staticLink!=null)  { s.append(staticLink); prevPar=true; }
-	  if(variable instanceof SubscriptedVariable)
+	  if(variable.hasArguments())
 	  { Iterator<Parameter> formalIterator = procedure.parameterIterator(); // If class also over prefix-chain
-	    Iterator<Expression> actualIterator = ((SubscriptedVariable)variable).checkedParams.iterator();
+	    Iterator<Expression> actualIterator = variable.checkedParams.iterator();
 	    while(actualIterator.hasNext())
 	    { Expression actualParameter = actualIterator.next();
 		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Actual Parameter: " + actualParameter);
@@ -566,7 +566,7 @@ public class CallProcedure {
 	// *** edStaticLink
 	// ********************************************************************
 	private static String edStaticLink(Expression actualParameter)
-	{ Util.BREAK("CallProcedure.edStaticLink: actualParameter="+actualParameter+", qual="+actualParameter.getClass().getSimpleName());
+	{ //Util.BREAK("CallProcedure.edStaticLink: actualParameter="+actualParameter+", qual="+actualParameter.getClass().getSimpleName());
       if(actualParameter instanceof Variable)
       {	Variable apar=(Variable)actualParameter;
         //Global.currentScope=???  // TODO:

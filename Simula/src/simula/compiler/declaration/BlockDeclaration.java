@@ -12,7 +12,6 @@ import java.util.Vector;
 
 import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
-import simula.compiler.expression.SubscriptedVariable;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.BlockStatement;
@@ -22,7 +21,6 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.runtime.RT;
 
 /**
  * </pre>
@@ -608,8 +606,8 @@ public class BlockDeclaration extends DeclarationScope // Declaration implements
 	  Util.code(indent,"   public static void main(String[] args) {");
 	  StringBuilder s=new StringBuilder();
 	  s.append("new "+getJavaIdentifier()+"(CTX$");
-	  if(blockPrefix instanceof SubscriptedVariable)
-	  {	for (Expression par:((SubscriptedVariable)blockPrefix).checkedParams) {
+	  if(blockPrefix!=null && blockPrefix.hasArguments())
+	  {	for (Expression par:blockPrefix.checkedParams) {
 		   s.append(',').append(par.toJavaCode());
 	    }
 	  }

@@ -9,7 +9,6 @@ package simula.compiler.statement;
 
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.expression.Expression;
-import simula.compiler.expression.SubscriptedVariable;
 import simula.compiler.expression.Variable;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
@@ -51,8 +50,8 @@ public class BlockStatement extends Statement {
 		  s.append("new ").append(getJavaIdentifier()).append('(');
 		  s.append(staticLink);
 
-		  if(blockPrefix instanceof SubscriptedVariable)
-		  {	for (Expression par:((SubscriptedVariable)blockPrefix).checkedParams) {
+		  if(blockPrefix!=null && blockPrefix.hasArguments())
+		  {	for (Expression par:blockPrefix.checkedParams) {
 			   s.append(',').append(par.toJavaCode());
 		    }
 		  }

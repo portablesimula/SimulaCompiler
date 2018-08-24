@@ -65,10 +65,10 @@ public class TestCompiler {
 		// String name=Global.packetName+"/err/simerr03.sim"; 
 		// String name=Global.packetName+"/err/simerr04.sim";
 		// String name=Global.packetName+"/err/simerr05.sim";
-		 String name=Global.packetName+"/err/simerr06.sim";
+		// String name=Global.packetName+"/err/simerr06.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		// String name=Global.packetName+"/sim/adHoc00.sim";
+		 String name=Global.packetName+"/sim/adHoc00.sim";
 		// String name=Global.packetName+"/sim/adHoc01.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
@@ -87,7 +87,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/DisplaySamples.sim";
 		// String name=Global.packetName+"/sim/DrawingTest.sim";
 		// String name=Global.packetName+"/sim/Editing.sim";
-		// String name=Global.packetName+"/sim/Expressions.sim";
+		// String name=Global.packetName+"/sim/Expressions.sim";          // MÅ SJEKKES
 		// String name=Global.packetName+"/sim/ExternalClass1.sim";
 		// String name=Global.packetName+"/sim/ExternalClass2.sim";
 		// String name=Global.packetName+"/sim/FileSamples.sim";
@@ -99,14 +99,14 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/GotoSample1.sim";
 		// String name=Global.packetName+"/sim/GotoSample2.sim";
 		// String name=Global.packetName+"/sim/GotoSample3.sim";   // ERROR 
-		// String name=Global.packetName+"/sim/GotoSample4.sim";
+		// String name=Global.packetName+"/sim/GotoSample4.sim";           // MÅ SJEKKES
 		// String name=Global.packetName+"/sim/GotoSample5.sim";
 		// String name=Global.packetName+"/sim/GotoSample6.sim";   // ERROR
 		// String name=Global.packetName+"/sim/GotoSample7.sim";
 		// String name=Global.packetName+"/sim/HashingExample.sim";
 		// String name=Global.packetName+"/sim/HelloWord.sim";
 		// String name=Global.packetName+"/sim/InfileSample.sim";
-		// String name=Global.packetName+"/sim/InspectionSamples.sim";
+		// String name=Global.packetName+"/sim/InspectionSamples.sim";  // FORTSETT HERFRA
 		// String name=Global.packetName+"/sim/JensensDevice.sim";
 		// String name=Global.packetName+"/sim/LocalObject.sim";
 		// String name=Global.packetName+"/sim/MathSample.sim";

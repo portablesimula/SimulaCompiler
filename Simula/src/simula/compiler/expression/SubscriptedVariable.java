@@ -72,16 +72,16 @@ import simula.compiler.utilities.Util;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class SubscriptedVariable extends Variable {
+public class SubscriptedVariable extends OLD_Variable {
 	Vector<Expression> params = new Vector<Expression>();
 	public Vector<Expression> checkedParams; // Set by doChecking
 
-	public SubscriptedVariable(String identifier)
+	private SubscriptedVariable(String identifier)
 	{ super(identifier);
 	  //Util.BREAK("NEW SubscriptedVariable: " + identifier);
 	}
 	
-	public static SubscriptedVariable doParse(String identifier) {
+	private static SubscriptedVariable doParse(String identifier) {
 		SubscriptedVariable subscriptedVariable=new SubscriptedVariable(identifier);
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse SubscriptedVariable, current=" + Parser.currentToken+ ", prev=" + Parser.prevToken);

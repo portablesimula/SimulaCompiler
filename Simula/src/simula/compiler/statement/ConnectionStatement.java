@@ -54,7 +54,8 @@ public class ConnectionStatement extends Statement
     
     if(objectExpression.getClass() == Variable.class) // objectExpression IS Variable
          inspectedVariable=(Variable)objectExpression;
-    else inspectedVariable=createInspectVariable(objectExpression);
+    else
+    	inspectedVariable=createInspectVariable(objectExpression);
     
     if(Parser.accept(KeyWord.DO))
     { ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable);

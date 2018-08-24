@@ -12,7 +12,6 @@ import simula.compiler.declaration.Declaration;
 
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.StandardClass;
-import simula.compiler.expression.SubscriptedVariable;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.Statement;
@@ -44,8 +43,8 @@ import simula.compiler.utilities.Util;
  */
 public class ProgramModule extends Statement
 { Declaration module;
-  SubscriptedVariable sysin;
-  SubscriptedVariable sysout;
+  Variable sysin;
+  Variable sysout;
   
   public String getRelativeAttributeFileName()
   { if(module.blockKind==BlockDeclaration.Kind.Class) return(Global.packetName+"/CLASS.AF");
@@ -65,10 +64,10 @@ public class ProgramModule extends Statement
 //	  SimpleParser.nextSymb();  // Flytta til SimpleParse.open
 	
 	  Global.currentScope=StandardClass.BASICIO;     // BASICIO Begin
-	  sysin=new SubscriptedVariable("sysin");
+	  sysin=new Variable("sysin");
 	  new ConnectionBlock(sysin)                     //    Inspect sysin do
 	     .setClassDeclaration(StandardClass.InFile);
-	  sysout=new SubscriptedVariable("sysout");
+	  sysout=new Variable("sysout");
 	  new ConnectionBlock(sysout)                    //    Inspect sysout do
 	     .setClassDeclaration(StandardClass.PrintFile);
 	  String ident=acceptIdentifier();

@@ -29,7 +29,7 @@ public class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -101,7 +101,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
-		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.  Re-trow
+		names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.  Re-trow
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
