@@ -68,6 +68,10 @@ public class RT
 //    System.exit(-1);
 //  }
   
+  public static void NoneCheck(Object x)
+  { if(x==null) throw new RuntimeException("NONE-CHECK FAILED"); }
+
+  
   public static void ASSERT(boolean test,String msg)
   { if(!test)
     { try { throw new RuntimeException("ASSERT("+msg+") -- FAILED"); }

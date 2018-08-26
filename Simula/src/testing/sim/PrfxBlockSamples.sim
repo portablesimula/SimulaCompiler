@@ -1,6 +1,4 @@
 
-%QUALIFIEDNAMES
-
 begin
    !*** Prefixed Block Samples ***;
    
@@ -15,4 +13,4 @@ begin
        i:=77;
       end; 
    
-end of program 
+end of program;

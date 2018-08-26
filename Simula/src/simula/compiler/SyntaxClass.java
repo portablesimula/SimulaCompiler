@@ -97,7 +97,7 @@ public abstract class SyntaxClass
   }
 
   // Should be called from all doChecking,put,get methods to signal that semantic checking is done.
-  protected void SET_SEMANTICS_CHECKED() { CHECKED=true; }
+  public void SET_SEMANTICS_CHECKED() { CHECKED=true; }
   protected boolean IS_SEMANTICS_CHECKED() { return(CHECKED); }
 
   protected	void ASSERT_SEMANTICS_CHECKED(Object obj)

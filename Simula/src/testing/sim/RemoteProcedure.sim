@@ -1,6 +1,4 @@
 
-%QUALIFIEDNAMES
-
 begin
    ref(A) x;
    real r;
@@ -24,8 +22,6 @@ begin
       
    end;
    
-   r:=x.F(r);
-   
    inspect x do r:=F(r);
    
    inspect x do y:-new B();
@@ -33,5 +29,8 @@ begin
    inspect x do E;
    
    inspect x do r:=V(3.14);
+
+   x:-new A;   
+   r:=x.F(r);
 
 end;

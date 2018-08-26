@@ -101,7 +101,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
-		names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.  Re-trow
+		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.  Re-trow
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
@@ -126,7 +126,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
-		//names.add("simtst85.sim"); // OK:  Test Directfile.
+		names.add("simtst85.sim"); // OK:  Test Directfile.
 		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK: Specification of Virtual Procedures.

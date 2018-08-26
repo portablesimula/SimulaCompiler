@@ -80,13 +80,12 @@ public class ConnectionBlock extends DeclarationScope
    	Global.sourceLineNumber=lineNumber;
 	
     // Set External Identifier
-// 	externalIdent=inspectedVariable.toJavaCode();
  	externalIdent=inspectedVariable.identifier+'$'+lineNumber;
 
  	Global.currentScope=this;	
     blockLevel=currentBlockLevel;
     //Util.BREAK("Begin Checking of "+getScopeName()+" BlockLevel="+getBlockLevel()+" - Current Scope Chain: "+edScopeChain());
-	inspectedVariable.doChecking();
+    inspectedVariable.doChecking();	
 	statement.doChecking();
 	Global.currentScope=declaredIn;
 	SET_SEMANTICS_CHECKED();
@@ -95,11 +94,7 @@ public class ConnectionBlock extends DeclarationScope
   public void doJavaCoding(int indent) {
 	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
-//	Util.code(indent+'{');
-//	Util.code(indent+"   BCON("+inspectedVariable.toJavaCode()+");");
 	statement.doJavaCoding(indent+1);  
-//	Util.code(indent+"   ECON();");
-//	Util.code(indent+'}');
   }
   
 //  public String getJavaIdentifier()

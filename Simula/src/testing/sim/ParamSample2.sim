@@ -1,9 +1,8 @@
 
-%QUALIFIEDNAMES
 begin
    ! --------------------------------------------------------- ;
-   ! -- Eksempel på en Procedure 'F' by Name hvor man på    -- ;
-   ! -- brukstedet, linje 15, mener verdien av kall på 'F'  -- ;
+   ! -- Eksempel pÃ¥ en Procedure 'F' by Name hvor man pÃ¥    -- ;
+   ! -- brukstedet, linje 15, mener verdien av kall pÃ¥ 'F'  -- ;
    ! --------------------------------------------------------- ;
    real r;
 

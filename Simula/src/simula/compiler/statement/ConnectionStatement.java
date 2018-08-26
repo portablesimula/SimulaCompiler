@@ -51,11 +51,7 @@ public class ConnectionStatement extends Statement
   public ConnectionStatement()
   { if(Option.TRACE_PARSE) Parser.TRACE("Parse ConnectionStatement");
     objectExpression=Expression.parseExpression();
-    
-    if(objectExpression.getClass() == Variable.class) // objectExpression IS Variable
-         inspectedVariable=(Variable)objectExpression;
-    else
-    	inspectedVariable=createInspectVariable(objectExpression);
+   	inspectedVariable=createInspectVariable(objectExpression);
     
     if(Parser.accept(KeyWord.DO))
     { ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable);
@@ -86,17 +82,21 @@ public class ConnectionStatement extends Statement
     Variable var=new Variable(ident);
 	inspectVariableDeclaration=new TypeDeclaration(Type.Ref("RTObject"),ident);
 
-	//Util.BREAK("ConnectionStatement.createInspectVariable: "+inspectVariableDeclaration);
-	//Util.BREAK("ConnectionStatement.createInspectVariable: ADD IT TO "+Global.currentScope);
 	DeclarationScope scope=Global.currentScope;
-	//Util.BREAK("ConnectionStatement.createInspectVariable: QUAL "+scope.getClass().getSimpleName());
-	
-	while(scope instanceof ConnectionBlock)
+//	Util.BREAK("ConnectionStatement.createInspectVariable: scope="+scope.edScopeChain());
+//	Util.BREAK("ConnectionStatement.createInspectVariable: scope.identifier="+scope.identifier);
+//	Util.BREAK("ConnectionStatement.createInspectVariable: scope.blockKind="+scope.blockKind);
+//	Util.BREAK("ConnectionStatement.createInspectVariable: QUAL "+scope.getClass().getSimpleName());
+
+//	while(scope instanceof ConnectionBlock)
+	while(scope.blockKind==null || scope instanceof ConnectionBlock) // TODO: Sjekke dette når BlockDeclaration er delt opp
 	{ scope=scope.declaredIn;
-	  Util.BREAK("ConnectionStatement.createInspectVariable: QUAL "+scope.getClass().getSimpleName());
+//	  Util.BREAK("ConnectionStatement.createInspectVariable: scope="+scope.edScopeChain());
+//	  Util.BREAK("ConnectionStatement.createInspectVariable: scope.identifier="+scope.identifier);
+//	  Util.BREAK("ConnectionStatement.createInspectVariable: scope.blockKind="+scope.blockKind);
+//	  Util.BREAK("ConnectionStatement.createInspectVariable: QUAL "+scope.getClass().getSimpleName());
 	}
-	
-//	currentScope.declaredIn.declarationList.add(inspectVariableDeclaration);
+//	Util.BREAK("ConnectionStatement.createInspectVariable("+inspectVariableDeclaration+"): ADD IT TO "+scope);
 	scope.declarationList.add(inspectVariableDeclaration);
 	assignment=new AssignmentOperation(var,KeyWord.ASSIGNREF,objectExpression);
 	return(var);
@@ -206,18 +206,19 @@ public class ConnectionStatement extends Statement
   public void doJavaCoding(int indent)
   {	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
-    if(assignment!=null) Util.code(indent,assignment.toJavaCode()+';');	
-    if(hasWhenPart) Util.code(indent,"//"+"INSPECT "+inspectedVariable);
-    else Util.code(indent,"if("+inspectedVariable.toJavaCode()+"!=null) //"+"INSPECT "+inspectedVariable);
+    Util.code(indent,"{ // BEGIN INSPECTION ");
+    if(assignment!=null) Util.code(indent+1,assignment.toJavaCode()+';');	
+    if(hasWhenPart) Util.code(indent+1,"//"+"INSPECT "+inspectedVariable);
+    else Util.code(indent+1,"if("+inspectedVariable.toJavaCode()+"!=null) //"+"INSPECT "+inspectedVariable);
     boolean first=true;
     for(Enumeration<DoPart> e=connectionPart.elements(); e.hasMoreElements();)
-    { e.nextElement().doCoding(indent,first); first=false; }
+    { e.nextElement().doCoding(indent+1,first); first=false; }
     if(otherwise!=null)
-    { Util.code(indent,"   else // OTHERWISE ");
+    { Util.code(indent+1,"   else // OTHERWISE ");
       otherwise.doJavaCoding(indent+2);
-      Util.code(indent,"   // END OTHERWISE ");
+      Util.code(indent+1,"   // END OTHERWISE ");
     }
-    Util.code(indent,"// END INSPECTION ");
+    Util.code(indent,"} // END INSPECTION ");
   }
   
   // ***********************************************************************************************

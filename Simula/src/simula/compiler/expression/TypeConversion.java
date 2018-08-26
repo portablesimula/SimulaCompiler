@@ -30,7 +30,7 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		{ if(fromType==Type.Real || fromType==Type.LongReal)
 		  { if(toType==Type.Integer)
 //	            return("=("+toType.toJavaType()+")("+expr+"+0.5);");
-                return("=Math.round("+expr+");");
+                return("=(int)Math.round("+expr+");");
 		  }
 	    }
         return("=("+toType.toJavaType()+")("+expr+");");
@@ -114,7 +114,8 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		    Parameter.Kind kind=par.kind;
 			//Util.BREAK("TypeConversion.toJavaCode: type="+type+", kind="+kind);
 			if(kind==Parameter.Kind.Procedure)
-			{ evaluated=par.identifier+".get().CPF().$result()";
+//			{ evaluated=par.identifier+".get().CPF().$result()";
+			{ evaluated=par.externalIdent+".get().CPF().$result()";
 				
 			  if(type.isArithmeticType())
 				  return(cast+"Value("+evaluated+")"); // NYLIG RETTA
@@ -127,7 +128,7 @@ public class TypeConversion extends Expression { // Type type; // Inherited
 		  { Type fromType=expression.type;
 		    if(fromType==Type.Real || fromType==Type.LongReal)
 //			    evaluated="(("+evaluated+")+0.5)";
-		        evaluated="Math.round("+evaluated+")";
+		        evaluated="(int)Math.round("+evaluated+")";
 		  }
 		}
 		return ("((" + cast + ")(" + evaluated + "))");

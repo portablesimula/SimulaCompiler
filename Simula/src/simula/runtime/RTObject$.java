@@ -741,7 +741,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 		this.THREAD$=Thread.currentThread(); 
 	    STATE$=OperationalState.attached;
 		if(RT.Option.BLOCK_TRACING) RT.TRACE("BEGIN "+edObjectAttributes());
-		RT.ASSERT(SL$!=null,"Invariant");
+		RT.NoneCheck(SL$); // In case of Remote Call on Procedure  x.Func, x==none
 	}
 
 	// *********************************************************************

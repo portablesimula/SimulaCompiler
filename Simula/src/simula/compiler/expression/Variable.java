@@ -348,7 +348,7 @@ public class Variable extends Expression {
 	{ Declaration decl=meaning.declaredAs;
 	  BlockDeclaration.Kind blockKind=decl.blockKind;
 	  //Util.BREAK("Variable.edVariable("+identifier+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
-	  Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
+	  //Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  Expression connectedObject=meaning.getInspectedVariable();
 	  

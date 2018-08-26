@@ -1,17 +1,17 @@
 
 begin
-   !*** Inspection Samples ***;
+   ref(A) x;
+   real r;
    
-   class A; begin integer i; i:=aa; end;
-   A class B; begin integer m; m:=i; end;
-   ref(A) procedure F(g); integer g;
-   begin F:=if(g>15) then x else y; end;
+   class A;
+   begin
       
-   ref(A) x; ref(B) y;
-   integer aa;
-   boolean bb;
+      real procedure F(x); real x; begin end;
+       
+   end;
    
-   inspect F(54)
-      do i:=y.i+1 otherwise aa:=4;
+   r:=x.F(r);
    
-end;  
+   inspect x do r:=F(r);
+
+end;
