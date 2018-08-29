@@ -32,12 +32,12 @@ import simula.compiler.utilities.Util;
  * @see simula.compiler.expression.ConditionalExpression
  * @author Øystein Myhre Andersen
  */
-public class SwitchDeclaration extends BlockDeclaration // Declaration
+public class SwitchDeclaration extends ProcedureDeclaration // Declaration
 {
 	Vector<Expression> switchList = new Vector<Expression>();
 
 	public SwitchDeclaration() {
-		super(expectIdentifier(), BlockDeclaration.Kind.Procedure);
+		super(expectIdentifier(),BlockKind.Procedure);
 		if (Option.TRACE_PARSE)
 			Parser.TRACE("Parse SwitchDeclaration");
 		this.type = Type.Label;
@@ -60,29 +60,29 @@ public class SwitchDeclaration extends BlockDeclaration // Declaration
 			expr.backLink = this; // To ensure $result from functions
 		}
 		// Switch attributes are implicit specified 'protected'
-		if(declaredIn.blockKind==BlockDeclaration.Kind.Class)
-			declaredIn.protectedList.add(identifier);
+		if(declaredIn.blockKind==BlockKind.Class)
+			((ClassDeclaration)declaredIn).protectedList.add(identifier);
 	}
 
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeSwitchBody
 	// ***********************************************************************************************
 	public void codeProcedureBody(int indent) {
-		Util.code(indent,"   // Switch Body");
-		Util.code(indent,"   public " + getJavaIdentifier() + " STM() {");
-		Util.code(indent,"      switch(p$$SW-1) {");
+		Util.code(indent,"// Switch Body");
+		Util.code(indent,"public " + getJavaIdentifier() + " STM() {"); indent++;
+		Util.code(indent,"switch(p$$SW-1) {"); indent++;
 		int n = 0;
 		for (Expression expr : ((SwitchDeclaration) this).switchList) {
 			// Util.BREAK("BlockDeclaration.doCodeSwitchBody: expr="+expr+", Type="+expr.type+", Qual="+expr.getClass().getSimpleName());
 			Expression labQuant = TypeConversion.testAndCreate(Type.Label, expr); // TODO: MÅ SJEKKES - ER DETTE NØDVENDIG ?
 			labQuant.doChecking();
-			Util.code(indent,"        case " + (n++) + ": $result=" + labQuant.toJavaCode() + "; break;");
+			Util.code(indent,"case " + (n++) + ": $result=" + labQuant.toJavaCode() + "; break;");
 		}
-		Util.code(indent,"        default: throw new RuntimeException(\"Illegal switch index: \"+p$$SW);");
-		Util.code(indent,"      }");
-		Util.code(indent,"      EBLK();");
-		Util.code(indent,"      return(this);");
-		Util.code(indent,"   } // End of Switch BODY");
+		Util.code(indent,"default: throw new RuntimeException(\"Illegal switch index: \"+p$$SW);");
+		indent--; Util.code(indent,"}");
+		Util.code(indent,"EBLK();");
+		Util.code(indent,"return(this);");
+		indent--; Util.code(indent,"} // End of Switch BODY");
 	}
 
 	public String toString() {

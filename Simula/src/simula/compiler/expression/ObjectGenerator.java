@@ -10,8 +10,8 @@ package simula.compiler.expression;
 import java.util.Iterator;
 import java.util.Vector;
 
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
@@ -90,10 +90,9 @@ public class ObjectGenerator extends Expression {
 			Util.error("Undefined variable: " + classIdentifier);
 			meaning=new Meaning(null,null,null); // Error Recovery: No Meaning
 		}
-		Declaration declaredAs=meaning.declaredAs;
-		if (declaredAs instanceof BlockDeclaration) // Declared Procedure/Class ...
-		{	BlockDeclaration cls = (BlockDeclaration)declaredAs;		    
-			Util.ASSERT(this.type.equals(cls.type),"Umulig situasjon ?");
+		if(!(meaning.declaredAs instanceof ClassDeclaration))
+			Util.error("NEW "+classIdentifier+": Not a Class");
+		ClassDeclaration cls=(ClassDeclaration)meaning.declaredAs;
 			// Check parameters
 			Iterator<Parameter> formalIterator = cls.parameterIterator();
 			Iterator<Expression> actualIterator = params.iterator();
@@ -120,14 +119,14 @@ public class ObjectGenerator extends Expression {
 			}
 			if (formalIterator.hasNext())
 				Util.error("Wrong number of parameters to " + cls);
-		} else if (declaredAs instanceof Parameter) // Parameter Procedure
-		{	Parameter spec = (Parameter) declaredAs;
-			Util.ASSERT(this.type.equals(spec.type),"Umulig situasjon ?");
-			Parameter.Kind kind = spec.kind;
-			if (kind != Parameter.Kind.Procedure)
-				Util.error("ObjectGenerator("+classIdentifier+") is matched to a parameter "+kind);
-			Util.warning("ObjectGenerator("+classIdentifier+") - Parameter Checking is postponed to Runtime");
-		}
+//		} else if (declaredAs instanceof Parameter) // Parameter Procedure  // TODO: BARE TULL ?
+//		{	Parameter spec = (Parameter) declaredAs;
+//			Util.ASSERT(this.type.equals(spec.type),"Umulig situasjon ?");
+//			Parameter.Kind kind = spec.kind;
+//			if (kind != Parameter.Kind.Procedure)
+//				Util.error("ObjectGenerator("+classIdentifier+") is matched to a parameter "+kind);
+//			Util.warning("ObjectGenerator("+classIdentifier+") - Parameter Checking is postponed to Runtime");
+//		}
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END ObjectGenerator(" + classIdentifier
 					+ ").doChecking: type=" + type);
@@ -151,7 +150,7 @@ public class ObjectGenerator extends Expression {
 //		for (Expression par:checkedParams) {
 //			s.append(',').append(par.toJavaCode());
 //		}
-	    BlockDeclaration cls = (BlockDeclaration)meaning.declaredAs;
+	    ClassDeclaration cls = (ClassDeclaration)meaning.declaredAs;
 	    Iterator<Parameter> formalIterator = cls.parameterIterator();
 		for (Expression par:checkedParams) {
 			Parameter formalParameter = formalIterator.next();
@@ -164,7 +163,8 @@ public class ObjectGenerator extends Expression {
 		}
 		
 		s.append(')');
-		if(((BlockDeclaration)meaning.declaredAs).isDetachUsed()) 
+//		if(((ClassDeclaration)meaning.declaredAs).isDetachUsed()) 
+		if(cls.isDetachUsed()) 
 			 s.append(".START()");
 		else s.append(".STM()");
 

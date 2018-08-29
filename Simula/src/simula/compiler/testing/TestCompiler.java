@@ -69,7 +69,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/err/simerr07.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		 String name=Global.packetName+"/sim/adHoc00.sim";
+		// String name=Global.packetName+"/sim/adHoc00.sim";
 		// String name=Global.packetName+"/sim/adHoc01.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
@@ -79,7 +79,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/Blocks.sim";
 		// String name=Global.packetName+"/sim/Blocks2.sim";
 		 
-		// String name=Global.packetName+"/sim/ClassGlyph.sim";
+		// String name=Global.packetName+"/sim/ClassGlyph.sim"; 
 		// String name=Global.packetName+"/sim/ClassGlyph2.sim";
 		// String name=Global.packetName+"/sim/ClockTimeTest.sim";
 		// String name=Global.packetName+"/sim/CoroutineSample.sim";
@@ -109,7 +109,7 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/InfileSample.sim";
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 		// String name=Global.packetName+"/sim/JensensDevice.sim";
-		// String name=Global.packetName+"/sim/LocalObject.sim";
+		 String name=Global.packetName+"/sim/LocalObject.sim";
 		// String name=Global.packetName+"/sim/MathSample.sim"; 
 		// String name=Global.packetName+"/sim/MultiAssignments.sim";
 		// String name=Global.packetName+"/sim/ParamSample.sim";

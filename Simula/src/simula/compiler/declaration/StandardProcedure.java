@@ -12,10 +12,10 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
-public class StandardProcedure extends BlockDeclaration// ProcedureDeclaration
+public class StandardProcedure extends ProcedureDeclaration
 { public boolean overloaded;
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident)
-  { super(ident); this.declaredIn=declaredIn; this.type=type; this.blockKind=BlockDeclaration.Kind.Method; }
+  { super(ident,BlockKind.Method); this.declaredIn=declaredIn; this.type=type; }
 
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter param)
   { this(declaredIn,type,ident); addParameter(param); }

@@ -10,8 +10,8 @@ package simula.compiler.statement;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
-import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.TypeDeclaration;
 import simula.compiler.expression.AssignmentOperation;
@@ -137,7 +137,7 @@ public class ConnectionStatement extends Statement
 
   class WhenPart extends DoPart
   { String classIdentifier;
-    BlockDeclaration classDeclaration; // Set during checking.
+    ClassDeclaration classDeclaration; // Set during checking.
     boolean impossibleWhenPart; // Set by doChecking
 	public WhenPart(String classIdentifier,ConnectionBlock connectionBlock,Statement statement)
 	{ super(connectionBlock,statement);

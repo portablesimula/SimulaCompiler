@@ -18,10 +18,10 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 public class ConnectionBlock extends DeclarationScope 
-{ BlockDeclaration classDeclaration;
+{ ClassDeclaration classDeclaration;
   public Variable inspectedVariable;
   Statement statement;
-  public BlockDeclaration getClassDeclaration() { return(classDeclaration); } 
+  public ClassDeclaration getClassDeclaration() { return(classDeclaration); } 
   
   
   public Expression getInspectedVariable()
@@ -33,7 +33,7 @@ public class ConnectionBlock extends DeclarationScope
   
   public ConnectionBlock(Variable inspectedVariable)
   { super("Inspect:"+inspectedVariable);
-	blockKind=BlockDeclaration.Kind.ConnectionBlock;
+	blockKind=BlockKind.ConnectionBlock;
 	this.inspectedVariable=inspectedVariable;
 	//Util.BREAK("BEGIN ConnectionBlock: "+this+", Scope="+this.edScopeChain());
 	//Util.BREAK("BEGIN ConnectionBlock: inspectedVariable="+inspectedVariable+", Type="+inspectedVariable.type);
@@ -45,7 +45,7 @@ public class ConnectionBlock extends DeclarationScope
     Global.currentScope=declaredIn;
   }
 
-  public void setClassDeclaration(BlockDeclaration classDeclaration)
+  public void setClassDeclaration(ClassDeclaration classDeclaration)
   { this.classDeclaration=classDeclaration; }
   
   public void setStatement(Statement statement)
@@ -67,13 +67,13 @@ public class ConnectionBlock extends DeclarationScope
     return(result);
   }
 
-  public DeclarationScope findThis(String identifier)
-  { DeclarationScope result=null;
- 	//Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
-	if(identifier.equalsIgnoreCase(classDeclaration.identifier)) return(this);
-    else if(declaredIn!=null) result=declaredIn.findThis(identifier);
-    return(result);
-  }
+//  public DeclarationScope findThis(String identifier)
+//  { DeclarationScope result=null;
+// 	//Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
+//	if(identifier.equalsIgnoreCase(classDeclaration.identifier)) return(this);
+//    else if(declaredIn!=null) result=declaredIn.findThis(identifier);
+//    return(result);
+//  }
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
@@ -110,7 +110,6 @@ public class ConnectionBlock extends DeclarationScope
   public void print(String indent,String tail)
   { StringBuilder s=new StringBuilder(indent);
     s.append('[').append(blockLevel).append("] ");
-    if(prefix!=null) s.append(prefix).append(' ');
     s.append(blockKind).append(' ').append(identifier);
     System.out.println(s.toString());
 	String beg="begin["+edScopeChain()+']';

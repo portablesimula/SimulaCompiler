@@ -11,11 +11,13 @@ import java.util.Iterator;
 
 import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
+import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.StandardProcedure;
-import simula.compiler.declaration.Virtual;
+import simula.compiler.declaration.VirtualSpecification;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Type;
@@ -45,7 +47,7 @@ public class CallProcedure {
 	  //Util.BREAK("CallProcedure.normal: variable="+variable);
 	  Meaning meaning=variable.meaning;
 	  Declaration decl=meaning.declaredAs;
-	  BlockDeclaration procedure = (BlockDeclaration) decl;
+	  ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
 	  s.append("new ").append(decl.getJavaIdentifier());
 	  String staticLink=meaning.edStaticLink();
       // Generate Parameter Transmission
@@ -66,7 +68,7 @@ public class CallProcedure {
 	 * @param func Function Designator, may be subscripted
 	 * @return
 	 */
-	public static String remote(Expression obj,BlockDeclaration procedure,Variable func,SyntaxClass backLink)
+	public static String remote(Expression obj,ProcedureDeclaration procedure,Variable func,SyntaxClass backLink)
 	{ //Util.BREAK("CallProcedure.remote: obj="+obj);
 	  //Util.BREAK("CallProcedure.procedure: procedure="+procedure);
 	  //Util.BREAK("CallProcedure.procedure: procedure.myVirtual="+procedure.myVirtual);
@@ -74,7 +76,7 @@ public class CallProcedure {
 	  { // Call Remote Virtual Procedure
 		return(remoteVirtual(obj,func,procedure.myVirtual,backLink));
 	  }
-	  else if(procedure.blockKind==BlockDeclaration.Kind.Method)
+	  else if(procedure.blockKind==BlockKind.Method)
 	  { // Call Remote Method
 		return(asRemoteMethod(obj,procedure,func,backLink));
 	  }
@@ -102,7 +104,7 @@ public class CallProcedure {
 	 * @param func Function Designator, may be subscripted
 	 * @return
 	 */
-	private static String asRemoteMethod(Expression obj,BlockDeclaration procedure,Variable func,SyntaxClass backLink)
+	private static String asRemoteMethod(Expression obj,ProcedureDeclaration procedure,Variable func,SyntaxClass backLink)
 	{ //Util.BREAK("CallProcedure.asRemoteMethod: obj="+obj);
 	  //Util.BREAK("CallProcedure.asRemoteMethod: procedure="+procedure);
 	  //Util.BREAK("CallProcedure.asRemoteMethod: procedure.declaredIn="+procedure.declaredIn);
@@ -137,7 +139,7 @@ public class CallProcedure {
 	public static String asNormalMethod(Variable variable)
 	{ 
 	  Meaning meaning=variable.meaning;
-	  BlockDeclaration procedure = (BlockDeclaration) meaning.declaredAs;
+	  ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
 	  //Util.BREAK("CallProcedure.asNormalMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
 	  String params=edProcedureParameters(variable,null,procedure);
 	  
@@ -162,7 +164,6 @@ public class CallProcedure {
 		String castIdent=meaning.declaredIn.getJavaIdentifier();
 	    int n=meaning.declaredIn.blockLevel;
 		if(n!=currentModule.blockLevel)
-//          methodCall="(("+castIdent+")"+Global.currentScope.edCTX(n)+")."+methodCall;
             methodCall="(("+castIdent+")"+meaning.declaredIn.edCTX()+")."+methodCall;
 	  }
 	  //Util.BREAK("CallProcedure.asNormalMethod: Result="+methodCall);
@@ -199,7 +200,7 @@ public class CallProcedure {
 	 * @param ident
 	 * @return
 	 */
-	public static String virtual(Variable variable,Virtual virtual,boolean remotelyAccessed)
+	public static String virtual(Variable variable,VirtualSpecification virtual,boolean remotelyAccessed)
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT()");
 	  String ident=virtual.getJavaIdentifier()+"()";
 	  //Util.BREAK("CallProcedure.virtual: ident="+ident);
@@ -230,7 +231,7 @@ public class CallProcedure {
 	 * @param remotelyAccessed
 	 * @return
 	 */
-	public static String remoteVirtual(Expression obj,Variable variable,Virtual virtual,SyntaxClass backLink)
+	public static String remoteVirtual(Expression obj,Variable variable,VirtualSpecification virtual,SyntaxClass backLink)
 	{ //return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).ENT()");
 	  String ident=obj.get()+'.'+virtual.getJavaIdentifier()+"()";
 	  
@@ -274,7 +275,7 @@ public class CallProcedure {
 				  }
 			  }
 			  else if(decl instanceof Parameter) kind=((Parameter)decl).kind;  // TODO: Flere sånne tilfeller ???  sourceline ????
-			  else if(decl instanceof BlockDeclaration) kind=Parameter.Kind.Procedure;  // TODO: Flere sånne tilfeller ???
+			  else if(decl instanceof ProcedureDeclaration) kind=Parameter.Kind.Procedure;  // TODO: Flere sånne tilfeller ???
 		    }
 		    Parameter.Mode mode=Parameter.Mode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
 		    s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
@@ -334,13 +335,13 @@ public class CallProcedure {
 	// ********************************************************************
 	// *** edProcedureParameters
 	// ********************************************************************
-	private static String edProcedureParameters(Variable variable,String staticLink,BlockDeclaration procedure)
+	private static String edProcedureParameters(Variable variable,String staticLink,ProcedureDeclaration procedure)
 	{ StringBuilder s = new StringBuilder();
 	  boolean prevPar=false;
 	  s.append('(');
 	  if(staticLink!=null)  { s.append(staticLink); prevPar=true; }
 	  if(variable.hasArguments())
-	  { Iterator<Parameter> formalIterator = procedure.parameterIterator(); // If class also over prefix-chain
+	  { Iterator<Parameter> formalIterator = procedure.parameterList.iterator();
 	    Iterator<Expression> actualIterator = variable.checkedParams.iterator();
 	    while(actualIterator.hasNext())
 	    { Expression actualParameter = actualIterator.next();

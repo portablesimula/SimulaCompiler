@@ -12,13 +12,16 @@ import java.util.Vector;
 
 import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.BlockKind;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
+import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.StandardProcedure;
 import simula.compiler.declaration.TypeDeclaration;
-import simula.compiler.declaration.Virtual;
+import simula.compiler.declaration.VirtualSpecification;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -155,11 +158,11 @@ public class Variable extends Expression {
 		{ //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
 		  //Util.BREAK("Variable("+identifier+").doChecking: Declared as'Qual: "+meaning.declaredAs.getClass().getSimpleName());
 		  //Util.BREAK("Variable("+identifier+").doChecking: Declared in'Qual: "+meaning.declaredIn.getClass().getSimpleName());
-//		  if(meaning.declaredAs instanceof StandardProcedure)
 		  if(identifier.equalsIgnoreCase("detach"))
 		  { //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning.declaredAs);
 		    //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared in: "+meaning.declaredIn);
-			meaning.declaredIn.detachUsed=true;
+			Util.ASSERT(meaning.declaredIn instanceof ClassDeclaration,"Invariant");
+			((ClassDeclaration)meaning.declaredIn).detachUsed=true;
 			//Util.BREAK("Variable("+identifier+").doChecking: (Class "+meaning.declaredIn.identifier+").detachUsed=true");
 		  }
 		}
@@ -173,6 +176,7 @@ public class Variable extends Expression {
 		checkedParams = new Vector<Expression>();
 		Declaration decl=meaning.declaredAs;
 		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking: meaning="+meaning);
+		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking: QUAL="+decl.getClass().getSimpleName());
 		
 		if(decl instanceof ArrayDeclaration) // Declared Array
 		{ ArrayDeclaration array=(ArrayDeclaration)decl;
@@ -194,19 +198,25 @@ public class Variable extends Expression {
 		  if(formalIterator.hasNext()) Util.error("Wrong number of indices to "+array);
 		}
 		
-		else if(decl instanceof BlockDeclaration) // Declared Procedure or Prefix class or Prefixed Block
-		{	BlockDeclaration block = (BlockDeclaration) decl;
+		else if(decl instanceof BlockDeclaration) // Declared Procedure or Class 
+		{	//ProcedureDeclaration block = (ProcedureDeclaration) decl;
 			//Util.BREAK("SubscriptedVariable("+identifier+") blockHead="+blockHead);
-			this.type=block.type;
+			this.type=decl.type;
 			Type overloadedType=this.type;
-			Iterator<Parameter> formalIterator = block.parameterIterator();
+//			Iterator<Parameter> formalIterator = block.parameterIterator();
+			Iterator<Parameter> formalIterator;
+			if(decl instanceof ClassDeclaration) formalIterator = ((ClassDeclaration)decl).parameterList.iterator();
+			else formalIterator = ((ProcedureDeclaration)decl).parameterList.iterator();
+			
+			
+			
 			if(params!=null) {
 				// Check parameters
 				Iterator<Expression> actualIterator = params.iterator();
 				//Util.BREAK("SubscriptedVariable("+identifier+").doChecking: Params="+params);
 				LOOP:while (actualIterator.hasNext()) {
 					if (!formalIterator.hasNext()) {
-						Util.error("Wrong number of parameters to " + block);
+						Util.error("Wrong number of parameters to " + decl);
 						break LOOP;
 					}
 					Parameter formalParameter = (Parameter)formalIterator.next();
@@ -232,7 +242,7 @@ public class Variable extends Expression {
 					//Util.BREAK("SubscriptedVariable("+identifier+").doChecking().addCheckedParam: "+checkedParams);
 				}
 			}
-			if (formalIterator.hasNext()) Util.error("Wrong number of parameters to " + block);
+			if (formalIterator.hasNext()) Util.error("Wrong number of parameters to " + decl);
 			if(Global.OVERLOADING && type instanceof OverLoad)
 			{ //Util.BREAK("SubscriptedVariable.doChecking(2): "+this);
 			  this.type=overloadedType;
@@ -262,8 +272,8 @@ public class Variable extends Expression {
   			  checkedParams.add(checkedParameter);
   			} else checkedParams.add(actualParameter);
     	  }
-    	} else if (decl instanceof Virtual) // Parameter Array, Procedure, ... ???
-		{ Virtual spec=(Virtual) decl;
+    	} else if (decl instanceof VirtualSpecification) // Parameter Array, Procedure, ... ???
+		{ VirtualSpecification spec=(VirtualSpecification) decl;
       	  { this.type=spec.type;
       	    //Util.warning("Virtual Procedure: "+identifier+" - Parameter Checking is postponed to Runtime");
       	    Iterator<Expression> actualIterator=params.iterator();
@@ -287,11 +297,11 @@ public class Variable extends Expression {
 	  public boolean maybeStatement()
 	  {	ASSERT_SEMANTICS_CHECKED(this);
 		Declaration declaredAs=meaning.declaredAs;
-		BlockDeclaration.Kind blockKind=declaredAs.blockKind;
+		BlockKind blockKind=declaredAs.blockKind;
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): meaning="+meaning);
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): declaredAs="+declaredAs+", BlockDeclaration.Kind="+blockKind+", qual="+declaredAs.getClass().getSimpleName());
-		if(blockKind==BlockDeclaration.Kind.Procedure) return(true);
-		if(blockKind==BlockDeclaration.Kind.Method) return(true);
+		if(blockKind==BlockKind.Procedure) return(true);
+		if(blockKind==BlockKind.Method) return(true);
 		if(declaredAs instanceof Parameter)
 		{ Parameter par=(Parameter)declaredAs;
 		  if(par.kind==Parameter.Kind.Procedure) return(true);
@@ -346,7 +356,7 @@ public class Variable extends Expression {
 	// ******************************************************************
 	private String editVariable(boolean destination)
 	{ Declaration decl=meaning.declaredAs;
-	  BlockDeclaration.Kind blockKind=decl.blockKind;
+	  BlockKind blockKind=decl.blockKind;
 	  //Util.BREAK("Variable.edVariable("+identifier+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
 	  //Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
 	  ASSERT_SEMANTICS_CHECKED(this);
@@ -369,24 +379,24 @@ public class Variable extends Expression {
 		  return(result);
 	  }
 	  
-	  else if (decl instanceof Virtual) { // Virtual Procedure/Label
+	  else if (decl instanceof VirtualSpecification) { // Virtual Procedure/Label
 		  //s.append(CallProcedure.virtual(this,(Virtual)decl,remotelyAccessed));
-		  Virtual virtual=(Virtual)decl;
+		  VirtualSpecification virtual=(VirtualSpecification)decl;
 		  //Util.BREAK("Variable.edVariable("+id+"): virtual="+virtual);
 		  //Util.BREAK("Variable.edVariable("+id+"): virtual'kind="+virtual.kind);
 		  StringBuilder s = new StringBuilder();
-		  if(virtual.kind==Virtual.Kind.Label) s.append(decl.getJavaIdentifier()).append("()");
+		  if(virtual.kind==VirtualSpecification.Kind.Label) s.append(decl.getJavaIdentifier()).append("()");
 		  else s.append(CallProcedure.virtual(this,virtual,remotelyAccessed)); 
 		  String result=s.toString();
 		  return(result);
 	  }
 	  
-	  else if(decl instanceof BlockDeclaration) { // Declared Procedure
-		  BlockDeclaration procedure = (BlockDeclaration) decl;
+	  else if(decl instanceof ProcedureDeclaration) { // Declared Procedure
+		  ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
 //	      BlockDeclaration.Kind blockKind=decl.blockKind;
 	      StringBuilder s = new StringBuilder();
 	      //Util.BREAK("SubscriptedVariable3("+identifier+").get: blockKind="+blockKind);
-	      if(blockKind==BlockDeclaration.Kind.Method) { // Standard Procedure
+	      if(blockKind==BlockKind.Method) { // Standard Procedure
 			  //if(meaning.declaredAs instanceof StandardProcedure) {
 				  if(identifier.equalsIgnoreCase("sourceline"))
 			  		  return(""+Global.sourceLineNumber);
@@ -396,12 +406,12 @@ public class Variable extends Expression {
 	      
 //	      else if(procedure.myVirtual!=null)
 //	         s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
-	      else if(blockKind==BlockDeclaration.Kind.Procedure) {
+	      else if(blockKind==BlockKind.Procedure) {
 	    	  // This Variable is a Procedure-Identifier.
 	    	  // When 'destination' it is a variable used to carry the resulting value until the final return.
 	    	  // otherwise; it is a ordinary procedure-call.
 	    	  if(destination) { // return("$result");
-	    		  BlockDeclaration proc=(BlockDeclaration)meaning.declaredAs;
+	    		  ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
 	    		  if(proc.blockLevel==Global.currentScope.blockLevel) return("$result");
 	    	      String cast=proc.getJavaIdentifier();
 	    	      return("(("+cast+")"+proc.edCTX()+").$result");
@@ -410,7 +420,7 @@ public class Variable extends Expression {
 			       s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
 		      else s.append(CallProcedure.normal(this));
 	      }
-	      else if(blockKind==BlockDeclaration.Kind.Class) {
+	      else if(blockKind==BlockKind.Class) {
 	    	  Util.error("Illegal use of class identifier: "+identifier);
 	      }
 	      else Util.FATAL_ERROR("Umulig å komme hit ??");
@@ -499,7 +509,7 @@ public class Variable extends Expression {
 	    { String remoteCast=meaning.foundIn.getJavaIdentifier();
 		  id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
 	    } else id=inspectedVariable.toJavaCode()+"."+id;
-	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockDeclaration.Kind.Method)) {
+	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockKind.Method)) {
 	    String cast=meaning.declaredIn.getJavaIdentifier();
 		int n=meaning.declaredIn.blockLevel;
 	    if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();

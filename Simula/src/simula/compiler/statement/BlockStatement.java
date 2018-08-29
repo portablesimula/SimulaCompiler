@@ -8,6 +8,9 @@
 package simula.compiler.statement;
 
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.BlockKind;
+import simula.compiler.declaration.ClassDeclaration;
+import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
 import simula.compiler.utilities.Global;
@@ -40,23 +43,28 @@ public class BlockStatement extends Statement {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 
-		//Util.BREAK("BlockStatement.doJavaCoding: blockKind="+blockDeclaration.blockKind);
-		if(blockDeclaration.blockKind!=BlockDeclaration.Kind.CompoundStatement)
-		{ //String staticLink="this"; // TODO: Usikker p� dette
-//		  String staticLink=blockDeclaration.edCTX(blockDeclaration.blockLevel-1);
-		  String staticLink=blockDeclaration.declaredIn.edCTX();
-		  Variable blockPrefix=blockDeclaration.blockPrefix;
+		//Util.BREAK("BlockStatement.doJavaCoding: blockKind="+blockDeclaration.blockKind+", QUAL="+blockDeclaration.getClass().getSimpleName());
+		if(blockDeclaration.blockKind!=BlockKind.CompoundStatement)
+		{ String staticLink=blockDeclaration.declaredIn.edCTX();
 		  StringBuilder s = new StringBuilder();
 		  s.append("new ").append(getJavaIdentifier()).append('(');
 		  s.append(staticLink);
 
-		  if(blockPrefix!=null && blockPrefix.hasArguments())
-		  {	for (Expression par:blockPrefix.checkedParams) {
+//		  if(blockPrefix!=null && blockPrefix.hasArguments())
+//		  {	for (Expression par:blockPrefix.checkedParams) {
+//			   s.append(',').append(par.toJavaCode());
+//		    }
+//		  }
+
+		  if(blockDeclaration instanceof PrefixedBlockDeclaration)
+		  { Variable blockPrefix=((PrefixedBlockDeclaration)blockDeclaration).blockPrefix;
+			if(blockPrefix.hasArguments())
+			  for (Expression par:blockPrefix.checkedParams) {
 			   s.append(',').append(par.toJavaCode());
 		    }
 		  }
 		  s.append(')');
-		  if(blockDeclaration.isDetachUsed()) 
+		  if(blockDeclaration instanceof ClassDeclaration && ((ClassDeclaration)blockDeclaration).isDetachUsed())  // TODO: ER DETTE MULIG ?
 			   s.append(".START();");
 		  else s.append(".STM();");
 		  Util.code(indent,s.toString());

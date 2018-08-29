@@ -7,10 +7,13 @@
  */
 package simula.compiler;
 
+import simula.compiler.declaration.BlockKind;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
-
-import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.MaybeBlockDeclaration;
+import simula.compiler.declaration.PrefixedBlockDeclaration;
+import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.StandardClass;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
@@ -47,14 +50,14 @@ public class ProgramModule extends Statement
   Variable sysout;
   
   public String getRelativeAttributeFileName()
-  { if(module.blockKind==BlockDeclaration.Kind.Class) return(Global.packetName+"/CLASS.AF");
-	if(module.blockKind==BlockDeclaration.Kind.Procedure) return(Global.packetName+"/PROCEDURE.AF");
+  { if(module.blockKind==BlockKind.Class) return(Global.packetName+"/CLASS.AF");
+	if(module.blockKind==BlockKind.Procedure) return(Global.packetName+"/PROCEDURE.AF");
 	else return(null);
   }
   
   public boolean isExecutable()
-  { if(module.blockKind==BlockDeclaration.Kind.SimulaProgram) return(true);
-	if(module.blockKind==BlockDeclaration.Kind.PrefixedBlock) return(true);
+  { if(module.blockKind==BlockKind.SimulaProgram) return(true);
+	if(module.blockKind==BlockKind.PrefixedBlock) return(true);
 	else return(false);
   }
 
@@ -72,18 +75,18 @@ public class ProgramModule extends Statement
 	     .setClassDeclaration(StandardClass.PrintFile);
 	  String ident=acceptIdentifier();
 	  if(ident!=null)
-	  { if(Parser.accept(KeyWord.CLASS)) module=BlockDeclaration.doParseClassDeclaration(ident);
+	  { if(Parser.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(ident);
 	    else
-	    { Variable prefix=Variable.parse(ident);	
+	    { Variable blockPrefix=Variable.parse(ident);	
 	  	  Parser.expect(KeyWord.BEGIN);
-	  	  module=BlockDeclaration.createMaybeBlock(prefix); 
+	  	  module=PrefixedBlockDeclaration.createPrefixedBlock(blockPrefix); 
 	    }
 	  }
-	  else if(Parser.accept(KeyWord.BEGIN)) module=BlockDeclaration.createMaybeBlock(null); 
-	  else if(Parser.accept(KeyWord.CLASS)) module=BlockDeclaration.doParseClassDeclaration(null);
+	  else if(Parser.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMaybeBlock(); 
+	  else if(Parser.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(null);
 	  else
 	  { Type type=acceptType();
-	    if(Parser.expect(KeyWord.PROCEDURE)) module=BlockDeclaration.doParseProcedureDeclaration(type);
+	    if(Parser.expect(KeyWord.PROCEDURE)) module=ProcedureDeclaration.doParseProcedureDeclaration(type);
 	  }
 	  StandardClass.BASICIO.declarationList.add(module);
 

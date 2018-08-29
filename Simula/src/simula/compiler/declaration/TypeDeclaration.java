@@ -69,7 +69,7 @@ public class TypeDeclaration extends Declaration {
 	public static void parse(Type type,Vector<Declaration> declarationList)
 	  { // identifier-list = identifier { , identifier }
 	    if(Option.TRACE_PARSE) Parser.TRACE("Parse IdentifierList");
-	    if(Parser.accept(KeyWord.PROCEDURE)) declarationList.add(BlockDeclaration.doParseProcedureDeclaration(type));
+	    if(Parser.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));
 	    else if(Parser.accept(KeyWord.ARRAY)) ArrayDeclaration.parse(type,declarationList);
 	    else
 	    { do
@@ -102,7 +102,7 @@ public class TypeDeclaration extends Declaration {
 		ASSERT_SEMANTICS_CHECKED(this);
 		//Util.BREAK("TypeDeclaration.toJavaCode: scope="+scope.getClass().getName());
 		String modifier = "";
-		if (Global.currentScope.blockKind==BlockDeclaration.Kind.Class) modifier = "public ";
+		if (Global.currentScope.blockKind==BlockKind.Class) modifier = "public ";
 		if (this.isConstant()) modifier = modifier+"final ";
 		String value=(constantElement!=null)?constantElement.toJavaCode():type.edDefaultValue();
 		return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + '=' + value + ';');

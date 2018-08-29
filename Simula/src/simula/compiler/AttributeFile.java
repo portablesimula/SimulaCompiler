@@ -17,12 +17,15 @@ import java.io.ObjectOutputStream;
 import java.util.Vector;
 
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.BlockKind;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
+import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.TypeDeclaration;
-import simula.compiler.declaration.Virtual;
+import simula.compiler.declaration.VirtualSpecification;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -89,7 +92,7 @@ public class AttributeFile {
 	  FileInputStream fileInputStream=new FileInputStream(attributeFileName);
 	  inpt=new ObjectInputStream(fileInputStream);
 	  if(!checkVersion()) Util.error("Malformed SimulaAttributeFile: "+attributeFileName);
-	  BlockDeclaration.Kind blockKind=readBlockKind();
+	  BlockKind blockKind=readBlockKind();
 	  BlockDeclaration blockDeclaration=readBlockDeclaration(blockKind);
 	  inpt.close();
 	  if (Option.verbose)
@@ -104,7 +107,7 @@ public class AttributeFile {
 	{ AttributeFile attributeFile=new AttributeFile(attributeFileName);
 	  attributeFile.inpt=new ObjectInputStream(inputStream);
 	  if(!attributeFile.checkVersion()) Util.error("Malformed SimulaAttributeFile: "+attributeFileName);
-	  BlockDeclaration.Kind blockKind=attributeFile.readBlockKind();
+	  BlockKind blockKind=attributeFile.readBlockKind();
 	  BlockDeclaration blockDeclaration=attributeFile.readBlockDeclaration(blockKind);
 	  attributeFile.inpt.close();
 	  if (Option.verbose)
@@ -117,7 +120,8 @@ public class AttributeFile {
 	  
 	private void doWriteAttributeInfo(Declaration dcl) throws IOException
 	{ //Util.BREAK("BlockDeclaration.doWriteAttributeInfo: dcl="+dcl);
-	  if(dcl instanceof BlockDeclaration) doWriteBlockDeclaration((BlockDeclaration)dcl);
+	  if(dcl instanceof ClassDeclaration) doWriteClassDeclaration((ClassDeclaration)dcl);
+	  if(dcl instanceof ProcedureDeclaration) doWriteProcedureDeclaration((ProcedureDeclaration)dcl);
 	  else if(dcl instanceof TypeDeclaration) writeTypeDeclaration((TypeDeclaration)dcl);
 	}
 	  
@@ -144,7 +148,7 @@ public class AttributeFile {
 	  return(new TypeDeclaration(type,identifier));
 	}
 	  
-	private void doWriteBlockDeclaration(BlockDeclaration blk) throws IOException
+	private void doWriteClassDeclaration(ClassDeclaration blk) throws IOException
 	{ //Util.BREAK("BlockDeclaration.doWriteAttributeInfo: blk="+blk);
 	  TRACE_OUTPUT("BEGIN Write Block: "+blk.identifier);
 	  oupt.writeUTF(""+blk.blockKind);
@@ -153,25 +157,41 @@ public class AttributeFile {
 	  oupt.writeUTF("BlockType"); writeType(blk.type);
 	  writeInt("BlockLevel",blk.blockLevel);
 	  for(Parameter par:blk.parameterList) writeParameter(par);
-	    
-	  if(blk.blockKind==BlockDeclaration.Kind.Class)
-	  { writeString("Prefix",blk.prefix);
-	    writeBoolean("HasLocalClasses",blk.hasLocalClasses);
-	    writeBoolean("DetachUsed",blk.detachUsed);
-	    for(Virtual vrt:blk.virtualList) writeVirtual(vrt);
-	    for(String hdn:blk.hiddenList) writeString("Hidden",hdn);
-	    for(String prt:blk.protectedList) writeString("Protected",prt);
-	    for(LabelDeclaration lab:blk.labelList) writeLabel(lab);
-	    for(Declaration dcl:blk.declarationList) doWriteAttributeInfo(dcl);
-	  }
+	  writeString("Prefix",blk.prefix);
+	  writeBoolean("HasLocalClasses",blk.hasLocalClasses);
+	  writeBoolean("DetachUsed",blk.detachUsed);
+	  for(VirtualSpecification vrt:blk.virtualList) writeVirtual(vrt);
+	  for(String hdn:blk.hiddenList) writeString("Hidden",hdn);
+	  for(String prt:blk.protectedList) writeString("Protected",prt);
+	  for(LabelDeclaration lab:blk.labelList) writeLabel(lab);
+	  for(Declaration dcl:blk.declarationList) doWriteAttributeInfo(dcl);
 	  oupt.writeUTF("BLOCKEND");
 	  TRACE_OUTPUT("END Write Block: "+blk.identifier);
 	}
 	  
-	public BlockDeclaration readBlockDeclaration(BlockDeclaration.Kind blockKind) throws IOException
+	private void doWriteProcedureDeclaration(ProcedureDeclaration blk) throws IOException
+	{ //Util.BREAK("BlockDeclaration.doWriteAttributeInfo: blk="+blk);
+	  TRACE_OUTPUT("BEGIN Write Block: "+blk.identifier);
+	  oupt.writeUTF(""+blk.blockKind);
+	  writeString("Identifier",blk.identifier);
+	  writeString("ExtIdentifier",blk.externalIdent);
+	  oupt.writeUTF("BlockType"); writeType(blk.type);
+	  writeInt("BlockLevel",blk.blockLevel);
+	  for(Parameter par:blk.parameterList) writeParameter(par);
+	  oupt.writeUTF("BLOCKEND");
+	  TRACE_OUTPUT("END Write Block: "+blk.identifier);
+	}
+	  
+	public BlockDeclaration readBlockDeclaration(BlockKind blockKind) throws IOException
+	{ if(blockKind==BlockKind.Class)
+		   return(readClassDeclaration());
+	  else return(readProcedureDeclaration());
+	}
+	  
+	public ClassDeclaration readClassDeclaration() throws IOException
 	{ TRACE_INPUT("BEGIN Read Block:");
-	  BlockDeclaration decl=new BlockDeclaration(null);
-	  decl.blockKind=blockKind;
+	  ClassDeclaration decl=new ClassDeclaration(null);
+	  decl.blockKind=BlockKind.Class;
 	  READING:while(true)
 	  { String label=readString();
 	    //Util.BREAK("BlockDeclaration.doReadAttributeInfo: label="+label);
@@ -189,8 +209,40 @@ public class AttributeFile {
 	    else if(label.equalsIgnoreCase("Protected")) decl.protectedList.add(readString());
 	    else if(label.equalsIgnoreCase("Label")) decl.labelList.add(readLabel());
 	    else if(label.equalsIgnoreCase("Variable")) decl.declarationList.add(readTypeDeclaration());
-	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readBlockDeclaration(BlockDeclaration.Kind.Class));
-	    else if(label.equalsIgnoreCase("Procedure")) decl.declarationList.add(readBlockDeclaration(BlockDeclaration.Kind.Procedure));
+	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readClassDeclaration());
+	    else if(label.equalsIgnoreCase("Procedure")) decl.declarationList.add(readProcedureDeclaration());
+	    else if(label.equalsIgnoreCase("BLOCKEND")) break READING;
+	    else Util.error("Malformed Attribute File (at "+label+")");
+	  }
+	  TRACE_INPUT("Block: "+decl);
+	  //decl.print("","");
+	  Global.currentScope=decl.declaredIn;
+	  return(decl);
+	}
+	  
+	public ProcedureDeclaration readProcedureDeclaration() throws IOException
+	{ TRACE_INPUT("BEGIN Read Block:");
+	ProcedureDeclaration decl=new ProcedureDeclaration(null,BlockKind.Procedure);
+	  decl.blockKind=BlockKind.Procedure;
+	  READING:while(true)
+	  { String label=readString();
+	    //Util.BREAK("BlockDeclaration.doReadAttributeInfo: label="+label);
+	    if(label.equalsIgnoreCase("BlockDeclaration.Kind")) decl.blockKind=readBlockKind();
+		else if(label.equalsIgnoreCase("Identifier")) decl.identifier=readString();
+		else if(label.equalsIgnoreCase("ExtIdentifier")) decl.externalIdent=readString();
+		else if(label.equalsIgnoreCase("BlockType")) decl.type=readType();
+		else if(label.equalsIgnoreCase("BlockLevel")) decl.blockLevel=readInt();
+		else if(label.equalsIgnoreCase("Parameter")) decl.parameterList.add(readParameter());
+//	    else if(label.equalsIgnoreCase("Prefix")) decl.prefix=readString();
+	    else if(label.equalsIgnoreCase("HasLocalClasses")) decl.hasLocalClasses=readBoolean();
+//	    else if(label.equalsIgnoreCase("DetachUsed")) decl.detachUsed=readBoolean();
+//	    else if(label.equalsIgnoreCase("Virtual")) decl.virtualList.add(readVirtual());
+//	    else if(label.equalsIgnoreCase("Hidden")) decl.hiddenList.add(readString());
+//	    else if(label.equalsIgnoreCase("Protected")) decl.protectedList.add(readString());
+	    else if(label.equalsIgnoreCase("Label")) decl.labelList.add(readLabel());
+	    else if(label.equalsIgnoreCase("Variable")) decl.declarationList.add(readTypeDeclaration());
+	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readClassDeclaration());
+	    else if(label.equalsIgnoreCase("Procedure")) decl.declarationList.add(readProcedureDeclaration());
 	    else if(label.equalsIgnoreCase("BLOCKEND")) break READING;
 	    else Util.error("Malformed Attribute File (at "+label+")");
 	  }
@@ -217,21 +269,21 @@ public class AttributeFile {
 	  return(par);
 	}
 	
-	private void writeVirtual(Virtual virt) throws IOException
+	private void writeVirtual(VirtualSpecification virt) throws IOException
 	{ TRACE_OUTPUT("Virtual: "+virt.type+' '+virt.identifier+' '+virt.kind);
 	  oupt.writeUTF("Virtual"); oupt.writeUTF(virt.identifier);
 	  writeType(virt.type); writeVirtualKind(virt.kind); 
 	  writeVirtProcedureSpec(virt.procedureSpec);
 	}
 	
-	public Virtual readVirtual() throws IOException
+	public VirtualSpecification readVirtual() throws IOException
 	{ String identifier=inpt.readUTF();
 	  //Util.BREAK("AttributeInputStream.readVirtual: identifier="+identifier);
 	  Type type=readType();
 	  //Util.BREAK("AttributeInputStream.readVirtual: type="+type);
-	  Virtual.Kind kind=readVirtualKind();
+	  VirtualSpecification.Kind kind=readVirtualKind();
 	  ProcedureSpecification procedureSpec=readVirtProcedureSpec();
-	  return(new Virtual(identifier,type,kind,procedureSpec));
+	  return(new VirtualSpecification(identifier,type,kind,procedureSpec));
 	}
 	
 	private void writeVirtProcedureSpec(ProcedureSpecification procedureSpec) throws IOException
@@ -312,17 +364,17 @@ public class AttributeFile {
 	  return(null);
 	}
 
-	private void writeVirtualKind(Virtual.Kind kind) throws IOException
+	private void writeVirtualKind(VirtualSpecification.Kind kind) throws IOException
 	{ TRACE_OUTPUT("Kind="+kind);
 	  oupt.writeUTF(""+kind);
 	}
 	
-	private Virtual.Kind readVirtualKind() throws IOException
+	private VirtualSpecification.Kind readVirtualKind() throws IOException
 	{ String tp=inpt.readUTF();
 	  //Util.BREAK("AttributeInputStream.readParameterKind: tp="+tp);
-	  if(tp.equalsIgnoreCase("Procedure")) return(Virtual.Kind.Procedure);
-	  if(tp.equalsIgnoreCase("Label")) return(Virtual.Kind.Label);
-	  if(tp.equalsIgnoreCase("Switch")) return(Virtual.Kind.Switch);
+	  if(tp.equalsIgnoreCase("Procedure")) return(VirtualSpecification.Kind.Procedure);
+	  if(tp.equalsIgnoreCase("Label")) return(VirtualSpecification.Kind.Label);
+	  if(tp.equalsIgnoreCase("Switch")) return(VirtualSpecification.Kind.Switch);
 	  return(null);
 	}
 
@@ -339,11 +391,11 @@ public class AttributeFile {
 	  return(null);
 	}
 	
-	public BlockDeclaration.Kind readBlockKind() throws IOException
+	public BlockKind readBlockKind() throws IOException
 	{ String kind=inpt.readUTF();
 	  //Util.BREAK("AttributeInputStream.readBlockKind: kind="+kind);
-	  if(kind.equalsIgnoreCase("Procedure")) return(BlockDeclaration.Kind.Procedure);
-	  return(BlockDeclaration.Kind.Class);
+	  if(kind.equalsIgnoreCase("Procedure")) return(BlockKind.Procedure);
+	  return(BlockKind.Class);
 	}
 	
 	private void writeString(String label,String val) throws IOException

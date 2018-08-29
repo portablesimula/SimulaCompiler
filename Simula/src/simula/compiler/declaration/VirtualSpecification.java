@@ -28,10 +28,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public class Virtual extends Declaration {
+public class VirtualSpecification extends Declaration {
 	// String identifier; // Inherited
 	// Type type; // Inherited: Procedure's type if any
-	public Virtual.Kind kind; // Simple | Procedure
+	public VirtualSpecification.Kind kind; // Simple | Procedure
 	
 	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
 //    public BlockDeclaration match; // Set during coChecking
@@ -39,15 +39,15 @@ public class Virtual extends Declaration {
 
     public enum Kind { Procedure, Label, Switch }
 
-	public Virtual(String identifier, Type type, Virtual.Kind kind,ProcedureSpecification procedureSpec) {
+	public VirtualSpecification(String identifier, Type type, VirtualSpecification.Kind kind,ProcedureSpecification procedureSpec) {
 		super(identifier);
 	 	this.externalIdent=identifier;
 		this.type=type;
 		this.kind = kind;
 		this.procedureSpec=procedureSpec;
-		this.blockKind=BlockDeclaration.Kind.Procedure; // TODO: For TEST !!!
+		this.blockKind=BlockKind.Procedure; // TODO: For TEST !!!
 		//Util.BREAK("NEW Virtual: "+this);
-		if(kind==Virtual.Kind.Label) Util.warning("Goto Virtual label "+identifier+" is not fully implemented, may result in Runtime ERROR");
+		if(kind==VirtualSpecification.Kind.Label) Util.warning("Goto Virtual label "+identifier+" is not fully implemented, may result in Runtime ERROR");
 	}
 	
 	// VirtualPart  =  VIRTUAL  :  VirtualSpec  ;  {  VirtualSpec  ;  }
@@ -56,18 +56,18 @@ public class Virtual extends Declaration {
 	//        
 	//   	VirtualSpecifier =  [ type ] PROCEDURE  |  LABEL  |  SWITCH
 	//    	IdentifierList  =  Identifier  { , Identifier }
-	public static void parseInto(BlockDeclaration block)
+	public static void parseInto(ClassDeclaration block)
 	{ Parser.expect(KeyWord.COLON);
       LOOP:while(true) {
 		  //Parser.BREAK("Virtual.parse");
 		  Type type;
-	      if(Parser.accept(KeyWord.SWITCH))	  parseSimpleSpecList(block,Type.Label,Virtual.Kind.Switch);
-	      else if(Parser.accept(KeyWord.LABEL)) parseSimpleSpecList(block,Type.Label,Virtual.Kind.Label);
+	      if(Parser.accept(KeyWord.SWITCH))	  parseSimpleSpecList(block,Type.Label,VirtualSpecification.Kind.Switch);
+	      else if(Parser.accept(KeyWord.LABEL)) parseSimpleSpecList(block,Type.Label,VirtualSpecification.Kind.Label);
 	      else {
 	    	  type=acceptType();
 		      //Parser.BREAK("Virtual.parse: type="+type);
 	          if(!Parser.accept(KeyWord.PROCEDURE)) break LOOP;
-	          Virtual.Kind kind=Virtual.Kind.Procedure;
+	          VirtualSpecification.Kind kind=VirtualSpecification.Kind.Procedure;
 	      
 	          String identifier=expectIdentifier();
 		      //Parser.BREAK("Virtual.parse: identifier="+identifier);
@@ -75,11 +75,11 @@ public class Virtual extends Declaration {
 	          if(Parser.accept(KeyWord.IS)) {
 	        	  Type procedureType=acceptType(); Parser.expect(KeyWord.PROCEDURE);
 		          //Parser.BREAK("Virtual.parse: IS procedureType="+procedureType); 
-		          procedureSpec=BlockDeclaration.doParseProcedureSpecification(procedureType); 
+		          procedureSpec=ProcedureSpecification.doParseProcedureSpecification(procedureType); 
 		          //Parser.BREAK("Virtual.parse: IS procedureSpec="+procedureSpec);
-		          block.virtualList.add(new Virtual(identifier,type,kind,procedureSpec));
+		          block.virtualList.add(new VirtualSpecification(identifier,type,kind,procedureSpec));
 	          } else {
-	        	  block.virtualList.add(new Virtual(identifier,type,kind,null));
+	        	  block.virtualList.add(new VirtualSpecification(identifier,type,kind,null));
 	    	      if(Parser.accept(KeyWord.COMMA)) parseSimpleSpecList(block,type,kind);
 	    	      else Parser.expect(KeyWord.SEMICOLON);
 	          }
@@ -87,31 +87,31 @@ public class Virtual extends Declaration {
 	  }
     }
 	
-	private static void parseSimpleSpecList(BlockDeclaration block,Type type,Virtual.Kind kind)
+	private static void parseSimpleSpecList(ClassDeclaration block,Type type,VirtualSpecification.Kind kind)
 	{ do { String identifier=expectIdentifier();
-	       block.virtualList.add(new Virtual(identifier,type,kind,null));
+	       block.virtualList.add(new VirtualSpecification(identifier,type,kind,null));
 	  } while(Parser.accept(KeyWord.COMMA));  
       Parser.expect(KeyWord.SEMICOLON);	
 	}
 
 	
-	public Virtual(BlockDeclaration match) {
+	public VirtualSpecification(ProcedureDeclaration match) {
 		// NOTE: Called during Checking
-		this(match.identifier,match.type,Virtual.Kind.Procedure,null);
+		this(match.identifier,match.type,VirtualSpecification.Kind.Procedure,null);
 		this.match=match;
 		//Util.BREAK("NEW Extra-Virtual: "+this);
 		SET_SEMANTICS_CHECKED();
 	}
 	
-	public Virtual(LabelDeclaration match) {
+	public VirtualSpecification(LabelDeclaration match) {
 		// NOTE: Called during Checking
-		this(match.identifier,match.type,Virtual.Kind.Label,null);
+		this(match.identifier,match.type,VirtualSpecification.Kind.Label,null);
 		this.match=match;
 		//Util.BREAK("NEW Extra-Virtual: "+this);
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void setMatch(BlockDeclaration match)
+	public void setMatch(ProcedureDeclaration match)
 	{ this.match=match;
 	  //Util.BREAK("Virtual.setMatch: "+match);
 	  if(procedureSpec!=null)

@@ -7,7 +7,7 @@
  */
 package simula.compiler.expression;
 
-import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -69,7 +69,7 @@ public class ObjectRelation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public String classIdentifier;
-  BlockDeclaration classDeclaration; // Set by doChecking
+  ClassDeclaration classDeclaration; // Set by doChecking
 
   
   public ObjectRelation(Expression lhs,KeyWord opr,String classIdentifier)

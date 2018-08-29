@@ -14,9 +14,9 @@ import simula.compiler.utilities.Type;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Variable;
 
-public class StandardClass extends BlockDeclaration //ClassDeclaration
+public class StandardClass extends ClassDeclaration
 {
-  public BlockDeclaration.Kind getBlockKind() { return(BlockDeclaration.Kind.StandardClass); }
+  public OLD_BlockDeclaration.Kind getBlockKind() { return(OLD_BlockDeclaration.Kind.StandardClass); }
   public String edJavaClassName() { return(identifier); }
 //  public String getJavaIdentifier() { return(identifier+"$"); }
   
@@ -876,7 +876,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   public StandardClass(String className)
   { super(className);
     this.externalIdent=className+"$";
-	this.blockKind=BlockDeclaration.Kind.StandardClass;
+	this.blockKind=BlockKind.StandardClass;
 	this.type=Type.Ref(className);
 	//  Util.BREAK("NEW StandardClass "+this);
   }
@@ -918,7 +918,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
     	   	  return(new Meaning(Variable.Kind.standardAttribute,declaration,this));
-    BlockDeclaration prfx=getPrefix();
+    ClassDeclaration prfx=getPrefixClass();
     if(prfx!=null) return(prfx.findVisibleAttributeMeaning(ident));
     
 //    if(result!=null) Util.TRACE("END StandardClass.findAttribute("+ident+"): result="+result.getEnclosureName()+'.'+result);   
@@ -932,7 +932,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
     	   	  return(new Meaning(Variable.Kind.standardAttribute,declaration,this));
-    BlockDeclaration prfx=getPrefix();
+    ClassDeclaration prfx=getPrefixClass();
     if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident,behindProtected));
     
 //    if(result!=null) Util.TRACE("END StandardClass.findAttribute("+ident+"): result="+result.getEnclosureName()+'.'+result);   
@@ -943,7 +943,7 @@ public class StandardClass extends BlockDeclaration //ClassDeclaration
   {	standardClass.declaredIn=this;
     //standardClass.blockLevel=blockLevel+1;
    	//Util.BREAK("StandardClass.addStandardClass("+standardClass+") to "+this+": scope="+getScopeName()+", chain="+standardClass.edScopeChain());
-    standardClass.declaredIn.hasLocalClasses=true;
+    ((ClassDeclaration)standardClass.declaredIn).hasLocalClasses=true;
     declarationList.add(standardClass);
   }
 

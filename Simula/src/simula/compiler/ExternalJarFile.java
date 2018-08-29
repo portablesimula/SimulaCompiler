@@ -81,10 +81,10 @@ public class ExternalJarFile {
 //	           if(name.startsWith("simula/compiler")) continue LOOP;
 	           if(!name.startsWith(Global.packetName)) continue LOOP;
 	           if(!name.endsWith(".class")) continue LOOP;
-	           Util.BREAK("ExternalJarFile.expandJarEntries: entry'name="+entry.getName());
-	           Util.BREAK("ExternalJarFile.expandJarEntries: TREAT entry="+entry);
+	           //Util.BREAK("ExternalJarFile.expandJarEntries: entry'name="+entry.getName());
+	           //Util.BREAK("ExternalJarFile.expandJarEntries: TREAT entry="+entry);
 		       File destFile = new File(destDir,entry.getName());
-	           Util.BREAK("ExternalJarFile.expandJarEntries: destFile="+destFile);
+	           //Util.BREAK("ExternalJarFile.expandJarEntries: destFile="+destFile);
 		       OutputStream outputStream=new FileOutputStream(destFile);	 
 	           byte[] buffer = new byte[4096];
 	           int bytesRead = 0;

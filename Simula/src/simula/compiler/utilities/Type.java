@@ -7,9 +7,11 @@
  */
 package simula.compiler.utilities;
 
+import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.BlockKind;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
-import simula.compiler.declaration.BlockDeclaration;
 
 public class Type
 {
@@ -24,8 +26,8 @@ public class Type
   public static final Type Procedure=new Type(new Token(KeyWord.PROCEDURE));
   public static final Type Label=new Type(new Token(KeyWord.LABEL));
 
-  private BlockDeclaration qual; // Qual in case of ref(Qual) type; Set by doChecking
-  public BlockDeclaration getQual()
+  private ClassDeclaration qual; // Qual in case of ref(Qual) type; Set by doChecking
+  public ClassDeclaration getQual()
   { Util.ASSERT(CHECKED,"Type is not Checked");
 	return(qual);
   }
@@ -69,13 +71,13 @@ public class Type
 	  if(!refIdent.equals("$LABQNT") && !refIdent.equals("$UNKNOWN"))  // ARRAY ?
 	  { Declaration decl=scope.findMeaning(refIdent).declaredAs;
 	    //Util.BREAK("Type.doChecking("+this+"): RefIdent'declaredAs="+decl);
-	    if(decl instanceof BlockDeclaration)
-	    { qual=(BlockDeclaration)decl;
+	    if(decl instanceof ClassDeclaration)
+	    { qual=(ClassDeclaration)decl;
 	      //Util.BREAK("Type.doChecking("+this+"): qual="+qual);
-	      if( ! ( qual.blockKind==BlockDeclaration.Kind.Class
-	    	   || qual.blockKind==BlockDeclaration.Kind.PrefixedBlock
-	    	   || qual.blockKind==BlockDeclaration.Kind.StandardClass) ) 
-	    	  Util.error("Illegal XType: "+this.toString()+" - "+refIdent+" is not a Class");
+//	      if( ! ( qual.blockKind==BlockKind.Class
+//	    	   || qual.blockKind==BlockKind.PrefixedBlock
+//	    	   || qual.blockKind==BlockKind.StandardClass) ) 
+//	    	  Util.error("Illegal XType: "+this.toString()+" - "+refIdent+" is not a Class");
 	    } else Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 	  }
 	}
@@ -138,7 +140,7 @@ public class Type
 	{ BlockDeclaration thisDecl=(BlockDeclaration)Global.currentScope.findMeaning(thisRef).declaredAs;
 	  BlockDeclaration otherDecl=(BlockDeclaration)Global.currentScope.findMeaning(otherRef).declaredAs;
 	  if(thisDecl==null) result=false; // Error Recovery
-	  else result=thisDecl.isSubClassOf(otherDecl);
+	  else result=((ClassDeclaration)thisDecl).isSubClassOf((ClassDeclaration)otherDecl);
 	}
     //Util.BREAK("Type("+this+").isSubReferenceOf("+other+") -- Result="+result);
 	return(result); 

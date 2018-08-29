@@ -1,17 +1,14 @@
 
 begin
-   ref(A) x;
-   real r;
-   
-   class A;
-   begin
-      
-      real procedure F(x); real x; begin end;
-       
-   end;
-   
-   r:=x.F(r);
-   
-   inspect x do r:=F(r);
+   Class A;
+       Virtual: Procedure P;
+   Begin
+   End;
+
+   A Class B;
+   Begin
+      Procedure P; begin end;
+      P;
+   End;
 
 end;

@@ -12,7 +12,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 public class LabelDeclaration extends TypeDeclaration {
-    public Virtual myVirtual; // Set during doChecking
+    public VirtualSpecification myVirtual; // Set during doChecking
     public int index; // set by BlockDeclaration.doChecking
     public int prefixLevel; // set by BlockDeclaration.doChecking
     
@@ -27,8 +27,8 @@ public class LabelDeclaration extends TypeDeclaration {
 		DeclarationScope declaredIn=Global.currentScope;
 		type.doChecking(declaredIn);
 		// Label attributes are implicit specified 'protected'
-		if(declaredIn.blockKind==BlockDeclaration.Kind.Class)
-			declaredIn.protectedList.add(identifier);
+		if(declaredIn.blockKind==BlockKind.Class)
+			((ClassDeclaration)declaredIn).protectedList.add(identifier);
 		SET_SEMANTICS_CHECKED();
 	}
 

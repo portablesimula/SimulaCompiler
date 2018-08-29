@@ -10,6 +10,7 @@ package simula.compiler.expression;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
@@ -48,7 +49,7 @@ import simula.compiler.utilities.Util;
  */
 public class LocalObject extends Expression {
 	private String classIdentifier;
-	private BlockDeclaration classDeclaration; // Set by doChecking
+	private ClassDeclaration classDeclaration; // Set by doChecking
 	private DeclarationScope declarationScope; // Set by doChecking
 
 	private LocalObject(String classIdentifier) {
@@ -73,7 +74,7 @@ public class LocalObject extends Expression {
 			Util.TRACE("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		Meaning meaning=Global.currentScope.findMeaning(classIdentifier);
 		Declaration decl = meaning.declaredAs;
-		if (decl instanceof BlockDeclaration) classDeclaration=(BlockDeclaration)decl;
+		if (decl instanceof ClassDeclaration) classDeclaration=(ClassDeclaration)decl;
 		else Util.error("LocalObject("+this+") "+classIdentifier+" is not a class");
 		declarationScope=Global.currentScope.findThis(classIdentifier);
 		if(declarationScope==null) Util.error("This "+classIdentifier+" -- Is not on static chain.");

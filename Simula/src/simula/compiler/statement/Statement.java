@@ -10,8 +10,9 @@ package simula.compiler.statement;
 import java.util.Vector;
 
 import simula.compiler.SyntaxClass;
-import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.LabelDeclaration;
+import simula.compiler.declaration.MaybeBlockDeclaration;
+import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
@@ -79,7 +80,7 @@ public abstract class Statement extends SyntaxClass {
 	private static Statement doUnlabeledStatement() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Statement.doUnlabeledStatement, current=" + Parser.currentToken	+ ", prev=" + Parser.prevToken);
-		if (Parser.accept(KeyWord.BEGIN)) return (new BlockDeclaration(null).parseMaybeBlock(null));
+		if (Parser.accept(KeyWord.BEGIN)) return (new MaybeBlockDeclaration(null).parseMaybeBlock());
 		if (Parser.accept(KeyWord.IF))	return (new ConditionalStatement());
 		if (Parser.accept(KeyWord.GOTO)) return (new GotoStatement());
 		if (Parser.accept(KeyWord.GO)) {
@@ -101,7 +102,7 @@ public abstract class Statement extends SyntaxClass {
 		  if(expr!=null)
 		  { //Util.BREAK("Statement.doUnlabeledStatement: expr="+expr+", QUAL="+expr.getClass().getSimpleName());
 		    if(expr instanceof Variable)
-		    { if (Parser.accept(KeyWord.BEGIN)) return (new BlockDeclaration(null).parseMaybeBlock((Variable)expr)); }
+		    { if (Parser.accept(KeyWord.BEGIN)) return (new PrefixedBlockDeclaration(null).parsePrefixedBlock((Variable)expr)); }
 			return (new StandaloneExpression(expr));
 		  }
 		}

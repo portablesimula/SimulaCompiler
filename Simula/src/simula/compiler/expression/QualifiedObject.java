@@ -7,7 +7,7 @@
  */
 package simula.compiler.expression;
 
-import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -53,7 +53,7 @@ import simula.compiler.utilities.Util;
 public class QualifiedObject extends Expression
 { public Expression lhs;
   public String classIdentifier;
-  BlockDeclaration classDeclaration; // Set by doChecking
+  ClassDeclaration classDeclaration; // Set by doChecking
 
   
   public QualifiedObject(Expression lhs,String classIdentifier)

@@ -91,7 +91,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
+		names.add("simtst54.sim"); // ERR: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
@@ -126,7 +126,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
-		names.add("simtst85.sim"); // OK:  Test Directfile.
+		//names.add("simtst85.sim"); // OK:  Test Directfile.
 		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK: Specification of Virtual Procedures.

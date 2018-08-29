@@ -8,7 +8,7 @@
 package simula.compiler.expression;
 
 import simula.compiler.SyntaxClass;
-import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
@@ -297,24 +297,24 @@ public abstract class Expression extends SyntaxClass
   // Is redefined in Variable, RemoteVariable and TypeConversion
   public Variable getWriteableVariable() { return(null); } 
 
-  private static BlockDeclaration getQualification(Expression simpleObjectExpression) {
+  private static ClassDeclaration getQualification(Expression simpleObjectExpression) {
 		String refIdent=simpleObjectExpression.type.getRefIdent();
 		Declaration objDecl = Global.currentScope.findMeaning(refIdent).declaredAs;
-		if(objDecl instanceof BlockDeclaration)	return((BlockDeclaration)objDecl);
+		if(objDecl instanceof ClassDeclaration)	return((ClassDeclaration)objDecl);
 		Util.error("Illegal ref(" + refIdent + "): " + refIdent + " is not a class");
 		return(null);
   }
 	  
-  public static BlockDeclaration getQualification(String classIdentifier) {
+  public static ClassDeclaration getQualification(String classIdentifier) {
 		Declaration classDecl=Global.currentScope.findMeaning(classIdentifier).declaredAs;
-		if(classDecl instanceof BlockDeclaration) return((BlockDeclaration)classDecl);
+		if(classDecl instanceof ClassDeclaration) return((ClassDeclaration)classDecl);
 			Util.error("Illegal: " + classIdentifier + " is not a class");
 		return(null);
   }
 	  
   public static boolean checkCompatability(Expression simpleObjectExpression,String classIdentifier) {
-		BlockDeclaration objDecl=getQualification(simpleObjectExpression);
-		BlockDeclaration quaDecl=getQualification(classIdentifier);
+		ClassDeclaration objDecl=getQualification(simpleObjectExpression);
+		ClassDeclaration quaDecl=getQualification(classIdentifier);
 		if(quaDecl==objDecl) Util.warning("Unneccessary QUA "+ classIdentifier);
 		else if(quaDecl==null) Util.error("Illegal QUA -- " + classIdentifier + " is not a class");
 		else if(!(objDecl.isCompatibleClasses(quaDecl))) return(false);

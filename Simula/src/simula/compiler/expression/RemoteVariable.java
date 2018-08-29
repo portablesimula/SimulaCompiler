@@ -8,9 +8,9 @@
 package simula.compiler.expression;
 
 import simula.compiler.declaration.ArrayDeclaration;
-import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
+import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.StandardClass;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -35,8 +35,8 @@ import simula.compiler.utilities.Util;
 public class RemoteVariable extends Expression
 { public Expression lhs;
   public Variable rhs;
-  private  Meaning remoteAttribute; // Set by doChecking
-  private BlockDeclaration callRemoteProcedure=null; 
+  private Meaning remoteAttribute; // Set by doChecking
+  private ProcedureDeclaration callRemoteProcedure=null; 
   private boolean accessRemoteArray=false; // Set by doChecking
 
   
@@ -96,9 +96,9 @@ public class RemoteVariable extends Expression
 	  { if(var.hasArguments()) accessRemoteArray=true;
 		  
 	  }
-	  else if(remoteAttribute.declaredAs instanceof BlockDeclaration) // Procedure (or Class ?)
+	  else if(remoteAttribute.declaredAs instanceof ProcedureDeclaration) // Procedure 
 	  { //Util.BREAK("RemoteVariable.doRemoteChecking: Call Remote Procedure "+remote+", qual="+remote.getClass().getSimpleName());
-		callRemoteProcedure=(BlockDeclaration)remoteAttribute.declaredAs; 
+		callRemoteProcedure=(ProcedureDeclaration)remoteAttribute.declaredAs; 
 	  }
 	  result=remoteAttribute.declaredAs.type;
 	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(6) - attr="+attr+", attr.Type="+result);
@@ -123,7 +123,7 @@ public class RemoteVariable extends Expression
 	  //Util.BREAK("RemoteVariable.doRemoteTextChecking: remote="+remote);
 	  if(remote==null) Util.error("RemoteVariable.doRemoteTextChecking: "+ident+" is not a Text attribute");
 	  var.setRemotelyAccessed(remote);
-	  callRemoteProcedure=(BlockDeclaration)remote.declaredAs; 
+	  callRemoteProcedure=(ProcedureDeclaration)remote.declaredAs; 
 	  result=remote.declaredAs.type;
 
 	}
