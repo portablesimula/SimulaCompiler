@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FASTORE extends ArrayInstruction implements StackConsumer {
+public final class FASTORE extends ArrayInstruction implements StackConsumer {
 
     /** Store float into array
      */

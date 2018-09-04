@@ -54,7 +54,7 @@ import org.apache.bcel.classfile.Utility;
  * @deprecated 6.0 Do not use - does not work
  */
 @Deprecated
-public class ClassLoader extends java.lang.ClassLoader {
+public final class ClassLoader extends java.lang.ClassLoader {
 
     private static final String BCEL_TOKEN = "$$BCEL$$";
 

@@ -28,7 +28,7 @@ import org.apache.bcel.Const;
  *
  * @since 6.0
  */
-public class EnclosingMethod extends Attribute {
+public final class EnclosingMethod extends Attribute {
 
     // Pointer to the CONSTANT_Class_info structure representing the
     // innermost class that encloses the declaration of the current class.

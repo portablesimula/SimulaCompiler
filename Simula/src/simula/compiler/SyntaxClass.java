@@ -109,16 +109,16 @@ public abstract class SyntaxClass
     }
   }
 
-  public void doDeclarationCoding(int indent) { }
+  public void doDeclarationCoding() { }
 
-  public void doJavaCoding(int indent) {
+  public void doJavaCoding() {
 	Global.sourceLineNumber=lineNumber; Global.sourceLineNumber=lineNumber;
-	Util.code(indent,toJavaCode());
+	JavaModule.code(toJavaCode());
   }
 
   public void doJVMCoding() {
 	Global.sourceLineNumber=lineNumber;  // TEMP
-	Util.code(0,"JVM:"+toJavaCode()); // TEMP
+	JavaModule.code("JVM:"+toJavaCode()); // TEMP
   }
   
   public String toJavaCode() { return(toString()); }

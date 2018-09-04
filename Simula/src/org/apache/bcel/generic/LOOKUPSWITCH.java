@@ -28,7 +28,7 @@ import org.apache.bcel.util.ByteSequence;
  * @version $Id$
  * @see SWITCH
  */
-public class LOOKUPSWITCH extends Select {
+public final class LOOKUPSWITCH extends Select {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

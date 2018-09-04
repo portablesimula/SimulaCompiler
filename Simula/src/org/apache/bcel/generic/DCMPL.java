@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DCMPL extends Instruction implements TypedInstruction, StackProducer, StackConsumer {
+public final class DCMPL extends Instruction implements TypedInstruction, StackProducer, StackConsumer {
 
     public DCMPL() {
         super(org.apache.bcel.Const.DCMPL, (short) 1);

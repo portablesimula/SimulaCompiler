@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class MONITORENTER extends Instruction implements ExceptionThrower, StackConsumer {
+public final class MONITORENTER extends Instruction implements ExceptionThrower, StackConsumer {
 
     public MONITORENTER() {
         super(org.apache.bcel.Const.MONITORENTER, (short) 1);

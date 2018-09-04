@@ -30,7 +30,7 @@ import org.apache.bcel.classfile.LocalVariable;
  * @see     LocalVariable
  * @see     MethodGen
  */
-public class LocalVariableGen implements InstructionTargeter, NamedAndTyped, Cloneable {
+public final class LocalVariableGen implements InstructionTargeter, NamedAndTyped, Cloneable {
 
     private int index;
     private String name;

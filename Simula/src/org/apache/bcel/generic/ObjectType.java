@@ -26,7 +26,7 @@ import org.apache.bcel.classfile.JavaClass;
  *
  * @version $Id$
  */
-public class ObjectType extends ReferenceType {
+public final class ObjectType extends ReferenceType {
 
     private final String class_name; // Class name of type
 

@@ -7,12 +7,13 @@
  */
 package simula.compiler.declaration;
 
+import simula.compiler.JavaModule;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
-public class StandardProcedure extends ProcedureDeclaration
+public final class StandardProcedure extends ProcedureDeclaration
 { public boolean overloaded;
   public StandardProcedure(DeclarationScope declaredIn,Type type, String ident)
   { super(ident,BlockKind.Method); this.declaredIn=declaredIn; this.type=type; }
@@ -45,7 +46,7 @@ public class StandardProcedure extends ProcedureDeclaration
     SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(int indent)
+  public void doJavaCoding()
   {	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
 	Global.currentScope=this;
@@ -58,7 +59,7 @@ public class StandardProcedure extends ProcedureDeclaration
 	
     String line=modifier+((type==null)?"void":type.toJavaType());
 	line=line+' '+identifier+' '+edFormalParameterList(true); // Treat as Method
-	Util.code(indent,line);
+	JavaModule.code(line);
 	Global.currentScope=declaredIn;
   }
 

@@ -27,7 +27,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class GOTO_W extends GotoInstruction {
+public final class GOTO_W extends GotoInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

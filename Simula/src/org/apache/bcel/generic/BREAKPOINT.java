@@ -22,7 +22,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class BREAKPOINT extends Instruction {
+public final class BREAKPOINT extends Instruction {
 
     public BREAKPOINT() {
         super(org.apache.bcel.Const.BREAKPOINT, (short) 1);

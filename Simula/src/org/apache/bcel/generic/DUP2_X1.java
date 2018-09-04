@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DUP2_X1 extends StackInstruction {
+public final class DUP2_X1 extends StackInstruction {
 
     public DUP2_X1() {
         super(org.apache.bcel.Const.DUP2_X1);

@@ -22,7 +22,7 @@ import simula.runtime.RTObject$.$LABQNT;
  * @author Øystein Myhre Andersen
  *
  */
-public class RunSingleTestBatch {
+public final class RunSingleTestBatch {
 
 	public static void main(String[] args) {
 		Vector<String> names=new Vector<String>();
@@ -56,7 +56,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
-		//names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
+		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
 		//names.add("simtst27.sim"); // OK:  Test while-loops.
 		//names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
 		//names.add("simtst29.sim"); // OK:  Procedure parameters by value
@@ -91,7 +91,7 @@ public class RunSingleTestBatch {
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		names.add("simtst54.sim"); // ERR: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
+		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters

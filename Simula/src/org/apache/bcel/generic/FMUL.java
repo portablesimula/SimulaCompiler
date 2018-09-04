@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FMUL extends ArithmeticInstruction {
+public final class FMUL extends ArithmeticInstruction {
 
     /** Multiply floats
      */

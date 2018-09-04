@@ -29,7 +29,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class SIPUSH extends Instruction implements ConstantPushInstruction {
+public final class SIPUSH extends Instruction implements ConstantPushInstruction {
 
     private short b;
 

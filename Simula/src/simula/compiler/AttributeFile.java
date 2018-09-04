@@ -31,7 +31,7 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
-public class AttributeFile {
+public final class AttributeFile {
 	private final String MAGIC="428-348"; // Platon lived ca. 428 through 348 BC.
 	private final String VERSION="1.0";
 

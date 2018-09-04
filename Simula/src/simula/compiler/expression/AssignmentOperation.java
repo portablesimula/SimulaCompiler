@@ -33,7 +33,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class AssignmentOperation extends Expression
+public final class AssignmentOperation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public Expression rhs;

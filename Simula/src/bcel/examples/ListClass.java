@@ -81,7 +81,7 @@ import simula.compiler.utilities.Util;
  *         <a href="mailto:twheeler@objectspace.com">Thomas Wheeler</A>
  * @version $Id$
  */
-public class ListClass {
+public final class ListClass {
 
     boolean code;
     boolean constants;

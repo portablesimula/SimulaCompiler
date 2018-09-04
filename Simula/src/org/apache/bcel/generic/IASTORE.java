@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IASTORE extends ArrayInstruction implements StackConsumer {
+public final class IASTORE extends ArrayInstruction implements StackConsumer {
 
     /**
      * Store into int array

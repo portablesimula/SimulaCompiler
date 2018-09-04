@@ -27,7 +27,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class JSR_W extends JsrInstruction {
+public final class JSR_W extends JsrInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FRETURN extends ReturnInstruction {
+public final class FRETURN extends ReturnInstruction {
 
     /** Return float from method
      */

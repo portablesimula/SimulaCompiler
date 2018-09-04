@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
@@ -82,7 +83,7 @@ import simula.compiler.utilities.Util;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class ArrayDeclaration extends Declaration {
+public final class ArrayDeclaration extends Declaration {
 	// Type type; inherited
 	Vector<BoundPair> boundPairList;
 	public int nDim() { return(boundPairList.size()); }
@@ -174,7 +175,7 @@ public class ArrayDeclaration extends Declaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
-    public void doJavaCoding(int indent) // TODO: NEW ARRAY CODE
+    public void doJavaCoding() // TODO: NEW ARRAY CODE
 	{ Global.sourceLineNumber=lineNumber;
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
@@ -185,10 +186,10 @@ public class ArrayDeclaration extends Declaration {
 	  for(int i=0;i<nDim;i++) arrType=arrType+"[]";
 	  String arrayIdent=this.getJavaIdentifier();
 	  arrType="$ARRAY<"+arrType+'>';
-	  Util.code(indent,"public "+arrType+""+arrayIdent+"=null;");
+	  JavaModule.code("public "+arrType+""+arrayIdent+"=null;");
 	}
 
-    public void doDeclarationCoding(int indent) // TODO: NEW ARRAY CODE
+    public void doDeclarationCoding() // TODO: NEW ARRAY CODE
 	{ Global.sourceLineNumber=lineNumber;
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
@@ -204,7 +205,7 @@ public class ArrayDeclaration extends Declaration {
 	  String arrType=this.type.toJavaType();
 	  String arrGen=arrType;
 	  int nDim=boundPairList.size();
-	  Util.code(indent+1,"int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
+	  JavaModule.code("int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
 	  int n=0;
 	  for(BoundPair boundPair:boundPairList)
 	  {	arrType=arrType+"[]";
@@ -212,10 +213,10 @@ public class ArrayDeclaration extends Declaration {
 	    String UBid=arrayIdent+"$UB["+(n++)+"]";
 		String size=UBid+"-"+LBid+"+1";
 		arrGen=arrGen+'['+size+']';
-		Util.code(indent+1,""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
+		JavaModule.code(""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
 	  }	
 	  arrType="$ARRAY<"+arrType+'>';
-	  Util.code(indent+1,""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
+	  JavaModule.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
 	}
 
 	public String toString() {

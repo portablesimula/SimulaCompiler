@@ -26,7 +26,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ConditionalExpression extends Expression {
+public final class ConditionalExpression extends Expression {
 	Expression condition;
 	Expression thenExpression;
 	Expression elseExpression;

@@ -11,7 +11,7 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
 
-public class Parser {
+public final class Parser {
 	static SimulaScanner simulaScanner;
 
 	public static void open(String fileName) {

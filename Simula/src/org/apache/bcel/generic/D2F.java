@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class D2F extends ConversionInstruction {
+public final class D2F extends ConversionInstruction {
 
     /** Convert double to float
      */

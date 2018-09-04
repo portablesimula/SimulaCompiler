@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DMUL extends ArithmeticInstruction {
+public final class DMUL extends ArithmeticInstruction {
 
     /** Multiply doubles
      */

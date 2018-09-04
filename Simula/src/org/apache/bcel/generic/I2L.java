@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class I2L extends ConversionInstruction {
+public final class I2L extends ConversionInstruction {
 
     /** Convert int to long
      */

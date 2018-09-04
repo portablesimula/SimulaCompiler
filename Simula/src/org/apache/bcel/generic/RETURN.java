@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class RETURN extends ReturnInstruction {
+public final class RETURN extends ReturnInstruction {
 
     public RETURN() {
         super(org.apache.bcel.Const.RETURN);

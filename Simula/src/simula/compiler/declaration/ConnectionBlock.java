@@ -17,7 +17,7 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
-public class ConnectionBlock extends DeclarationScope 
+public final class ConnectionBlock extends DeclarationScope 
 { ClassDeclaration classDeclaration;
   public Variable inspectedVariable;
   Statement statement;
@@ -91,10 +91,10 @@ public class ConnectionBlock extends DeclarationScope
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(int indent) {
+  public void doJavaCoding() {
 	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
-	statement.doJavaCoding(indent+1);  
+	statement.doJavaCoding();  
   }
   
 //  public String getJavaIdentifier()

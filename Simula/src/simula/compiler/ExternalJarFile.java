@@ -25,7 +25,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 
-public class ExternalJarFile {
+public final class ExternalJarFile {
 	String jarFileName;
 	public static Vector<ExternalJarFile> ExternalJarFiles=new Vector<ExternalJarFile>();
 	

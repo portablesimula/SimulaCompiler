@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FREM extends ArithmeticInstruction {
+public final class FREM extends ArithmeticInstruction {
 
     /** Remainder of floats
      */

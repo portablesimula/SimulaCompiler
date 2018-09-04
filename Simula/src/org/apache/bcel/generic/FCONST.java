@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FCONST extends Instruction implements ConstantPushInstruction {
+public final class FCONST extends Instruction implements ConstantPushInstruction {
 
     private float value;
 

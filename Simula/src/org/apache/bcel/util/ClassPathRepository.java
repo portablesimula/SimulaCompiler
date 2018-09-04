@@ -31,7 +31,7 @@ import org.apache.bcel.classfile.JavaClass;
  *
  * @see org.apache.bcel.Repository
  */
-public class ClassPathRepository implements Repository {
+public final class ClassPathRepository implements Repository {
 
     private ClassPath _path = null;
     private final Map<String, JavaClass> _loadedClasses = new HashMap<>(); // CLASSNAME X JAVACLASS

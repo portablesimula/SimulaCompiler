@@ -9,6 +9,7 @@ package simula.compiler.declaration;
 
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
@@ -32,7 +33,7 @@ import simula.compiler.utilities.Util;
  * @see simula.compiler.expression.ConditionalExpression
  * @author Øystein Myhre Andersen
  */
-public class SwitchDeclaration extends ProcedureDeclaration // Declaration
+public final class SwitchDeclaration extends ProcedureDeclaration
 {
 	Vector<Expression> switchList = new Vector<Expression>();
 
@@ -57,6 +58,7 @@ public class SwitchDeclaration extends ProcedureDeclaration // Declaration
 		externalIdent = edJavaClassName();
 		for (Expression expr : switchList) {
 			expr.doChecking();
+			if(expr.type!=Type.Label) Util.error("Switch element "+expr+" is not a Label");
 			expr.backLink = this; // To ensure $result from functions
 		}
 		// Switch attributes are implicit specified 'protected'
@@ -67,22 +69,19 @@ public class SwitchDeclaration extends ProcedureDeclaration // Declaration
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeSwitchBody
 	// ***********************************************************************************************
-	public void codeProcedureBody(int indent) {
-		Util.code(indent,"// Switch Body");
-		Util.code(indent,"public " + getJavaIdentifier() + " STM() {"); indent++;
-		Util.code(indent,"switch(p$$SW-1) {"); indent++;
+	public void codeProcedureBody() {
+		JavaModule.code("// Switch Body");
+		JavaModule.code("public " + getJavaIdentifier() + " STM() {");
+		JavaModule.code("switch(p$$SW-1) {");
 		int n = 0;
 		for (Expression expr : ((SwitchDeclaration) this).switchList) {
-			// Util.BREAK("BlockDeclaration.doCodeSwitchBody: expr="+expr+", Type="+expr.type+", Qual="+expr.getClass().getSimpleName());
-			Expression labQuant = TypeConversion.testAndCreate(Type.Label, expr); // TODO: MÅ SJEKKES - ER DETTE NØDVENDIG ?
-			labQuant.doChecking();
-			Util.code(indent,"case " + (n++) + ": $result=" + labQuant.toJavaCode() + "; break;");
+			JavaModule.code("case " + (n++) + ": $result=" + expr.toJavaCode() + "; break;");
 		}
-		Util.code(indent,"default: throw new RuntimeException(\"Illegal switch index: \"+p$$SW);");
-		indent--; Util.code(indent,"}");
-		Util.code(indent,"EBLK();");
-		Util.code(indent,"return(this);");
-		indent--; Util.code(indent,"} // End of Switch BODY");
+		JavaModule.code("default: throw new RuntimeException(\"Illegal switch index: \"+p$$SW);");
+		JavaModule.code("}");
+		JavaModule.code("EBLK();");
+		JavaModule.code("return(this);");
+		JavaModule.code("} // End of Switch BODY");
 	}
 
 	public String toString() {

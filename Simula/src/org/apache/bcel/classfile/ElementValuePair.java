@@ -28,7 +28,7 @@ import org.apache.bcel.Const;
  * @version $Id: ElementValuePair
  * @since 6.0
  */
-public class ElementValuePair
+public final class ElementValuePair
 {
     private final ElementValue elementValue;
 

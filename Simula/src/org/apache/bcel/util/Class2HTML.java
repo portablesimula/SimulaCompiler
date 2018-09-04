@@ -54,7 +54,7 @@ import org.apache.bcel.classfile.Utility;
  *
  * @version $Id$
  */
-public class Class2HTML implements Constants {
+public final class Class2HTML implements Constants {
 
     private final JavaClass java_class; // current class object
     private final String dir;

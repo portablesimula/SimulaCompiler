@@ -7,7 +7,6 @@
  */
 package simula.compiler;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
@@ -34,7 +33,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
-public class ByteCodeEngineering {
+public final class ByteCodeEngineering {
 	private static final boolean LIST_RESULTING_INSTRUCTION_LIST=false;
 	private static final boolean TRACE_REPAIRING=false;
 	

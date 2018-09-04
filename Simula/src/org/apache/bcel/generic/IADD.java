@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IADD extends ArithmeticInstruction {
+public final class IADD extends ArithmeticInstruction {
 
     /** Add ints
      */

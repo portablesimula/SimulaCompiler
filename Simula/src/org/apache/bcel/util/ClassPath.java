@@ -40,7 +40,7 @@ import java.util.zip.ZipFile;
  *
  * @version $Id$
  */
-public class ClassPath {
+public final class ClassPath {
 
     public static final ClassPath SYSTEM_CLASS_PATH = new ClassPath(getClassPath());
 

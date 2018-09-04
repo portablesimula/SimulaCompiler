@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IALOAD extends ArrayInstruction implements StackProducer {
+public final class IALOAD extends ArrayInstruction implements StackProducer {
 
     /**
      * Load int from array

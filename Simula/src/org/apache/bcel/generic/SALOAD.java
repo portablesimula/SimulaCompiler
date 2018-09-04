@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class SALOAD extends ArrayInstruction implements StackProducer {
+public final class SALOAD extends ArrayInstruction implements StackProducer {
 
     public SALOAD() {
         super(org.apache.bcel.Const.SALOAD);

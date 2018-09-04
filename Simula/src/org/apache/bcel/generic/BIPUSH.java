@@ -29,7 +29,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class BIPUSH extends Instruction implements ConstantPushInstruction {
+public final class BIPUSH extends Instruction implements ConstantPushInstruction {
 
     private byte b;
 

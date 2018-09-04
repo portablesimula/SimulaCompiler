@@ -10,6 +10,7 @@ package simula.compiler.statement;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.DeclarationScope;
@@ -39,7 +40,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ConnectionStatement extends Statement
+public final class ConnectionStatement extends Statement
 { Expression objectExpression;
   Variable inspectedVariable;
   TypeDeclaration inspectVariableDeclaration;
@@ -122,9 +123,9 @@ public class ConnectionStatement extends Statement
 	  SET_SEMANTICS_CHECKED();
 	}
 	
-	public void doCoding(int indent,boolean first)
+	public void doCoding(boolean first)
 	{ ASSERT_SEMANTICS_CHECKED(this);
-	  connectionBlock.doJavaCoding(indent);
+	  connectionBlock.doJavaCoding();
 	}
 	
 	public void print(String indent)
@@ -163,15 +164,15 @@ public class ConnectionStatement extends Statement
 	  connectionBlock.doChecking();
 	}
 	
-	public void doCoding(int indent,boolean first)
+	public void doCoding(boolean first)
 	{ //Util.BREAK("ConnectionStatement.WhenPart.doCoding: statement="+statement.getClass().getName());
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  String prfx=(first)?"":"else ";
 	  String cid=classDeclaration.getJavaIdentifier();
 	  if(!impossibleWhenPart)
-	  { Util.code(indent,prfx+"if("+inspectedVariable.toJavaCode()+" instanceof "+cid+") // WHEN "+cid+" DO ");
-	    connectionBlock.doJavaCoding(indent);
-	  } else Util.code(indent,prfx+"// WHEN "+cid+" DO -- IMPOSSIBLE REMOVED");
+	  { JavaModule.code(prfx+"if("+inspectedVariable.toJavaCode()+" instanceof "+cid+") // WHEN "+cid+" DO ");
+	    connectionBlock.doJavaCoding();
+	  } else JavaModule.code(prfx+"// WHEN "+cid+" DO -- IMPOSSIBLE REMOVED");
 	}
 	
 	public void print(String indent)
@@ -203,22 +204,22 @@ public class ConnectionStatement extends Statement
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(int indent)
+  public void doJavaCoding()
   {	Global.sourceLineNumber=lineNumber;
 	ASSERT_SEMANTICS_CHECKED(this);
-    Util.code(indent,"{ // BEGIN INSPECTION ");
-    if(assignment!=null) Util.code(indent+1,assignment.toJavaCode()+';');	
-    if(hasWhenPart) Util.code(indent+1,"//"+"INSPECT "+inspectedVariable);
-    else Util.code(indent+1,"if("+inspectedVariable.toJavaCode()+"!=null) //"+"INSPECT "+inspectedVariable);
+    JavaModule.code("{ // BEGIN INSPECTION ");
+    if(assignment!=null) JavaModule.code(assignment.toJavaCode()+';');	
+    if(hasWhenPart) JavaModule.code("//"+"INSPECT "+inspectedVariable);
+    else JavaModule.code("if("+inspectedVariable.toJavaCode()+"!=null) //"+"INSPECT "+inspectedVariable);
     boolean first=true;
     for(Enumeration<DoPart> e=connectionPart.elements(); e.hasMoreElements();)
-    { e.nextElement().doCoding(indent+1,first); first=false; }
+    { e.nextElement().doCoding(first); first=false; }
     if(otherwise!=null)
-    { Util.code(indent+1,"   else // OTHERWISE ");
-      otherwise.doJavaCoding(indent+2);
-      Util.code(indent+1,"   // END OTHERWISE ");
+    { JavaModule.code("   else // OTHERWISE ");
+      otherwise.doJavaCoding();
+      JavaModule.code("   // END OTHERWISE ");
     }
-    Util.code(indent,"} // END INSPECTION ");
+    JavaModule.code("} // END INSPECTION ");
   }
   
   // ***********************************************************************************************

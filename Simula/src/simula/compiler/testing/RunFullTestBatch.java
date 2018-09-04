@@ -21,7 +21,7 @@ import simula.compiler.utilities.Option;
  * @author Øystein Myhre Andersen
  *
  */
-public class RunFullTestBatch {
+public final class RunFullTestBatch {
 
 	public static void main(String[] args) {
 		Vector<String> names=new Vector<String>();

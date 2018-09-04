@@ -23,7 +23,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class MaybeBlockDeclaration extends BlockDeclaration
+public final class MaybeBlockDeclaration extends BlockDeclaration
 { 
     
   // ***********************************************************************************************
@@ -159,34 +159,34 @@ public class MaybeBlockDeclaration extends BlockDeclaration
   // ***********************************************************************************************
   // *** Coding: doJavaCoding
   // ***********************************************************************************************
-  public void doJavaCoding(int indent)
+  public void doJavaCoding()
   { //Util.BREAK("BlockDeclaration.doJavaCoding: "+identifier+", BlockDeclaration.Kind="+blockKind);
 	ASSERT_SEMANTICS_CHECKED(this);
 	if(this.isPreCompiled) return;
 	if(blockKind==BlockKind.CompoundStatement)
-    	 doCompoundStatementCoding(indent);
-	else doSubBlockCoding(indent);
+    	 doCompoundStatementCoding();
+	else doSubBlockCoding();
   }
 
   // ***********************************************************************************************
   // *** Coding: CompoundStatement as Java Subblock
   // ***********************************************************************************************
-  private void doCompoundStatementCoding(int indent)
+  private void doCompoundStatementCoding()
   {	Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doSubBlockJavaCoding: "+identifier);
   	ASSERT_SEMANTICS_CHECKED(this);
   	Util.ASSERT(declarationList.isEmpty(),"Invariant");
     Util.ASSERT(labelList.isEmpty(),"Invariant");
   	Global.currentScope=this;
-    Util.code(indent,"{"); indent++;
+    JavaModule.code("{");
     
-//	Util.code(indent,"TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
+//	JavaModule.code("TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
 //	for(Declaration decl:labelList) decl.doJavaCoding(indent+1);
     
-	Util.code(indent,"TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
-    for(Statement stm:statements) stm.doJavaCoding(indent);
-	Util.code(indent,"TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
-    indent--; Util.code(indent,"}");
+	JavaModule.code("TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
+    for(Statement stm:statements) stm.doJavaCoding();
+	JavaModule.code("TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
+    JavaModule.code("}");
     Global.currentScope=declaredIn;
   }
 
@@ -195,7 +195,7 @@ public class MaybeBlockDeclaration extends BlockDeclaration
   // *** Coding: SUBBLOCK  ==>  .java file 
   // ***********************************************************************************************
   // Output .java file for Class, Procedure, SubBlock and Prefixed Block.
-  private void doSubBlockCoding(int indent)
+  private void doSubBlockCoding()
   {	Global.sourceLineNumber=lineNumber;
     //Util.BREAK("BlockDeclaration.doBlockJavaCoding: "+identifier);
 	ASSERT_SEMANTICS_CHECKED(this);
@@ -204,25 +204,23 @@ public class MaybeBlockDeclaration extends BlockDeclaration
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
-	int savedIndent=indent; indent=0;
-	Util.code(indent,"public class "+getJavaIdentifier()+" extends BASICIO$"+" {"); indent++;
-	doPrototypeCoding(indent);
+	JavaModule.code("public final class "+getJavaIdentifier()+" extends BASICIO$"+" {");
+	doPrototypeCoding();
 	if(!labelList.isEmpty())
-	{ Util.code(indent,"// Declare local labels");
-	  for(Declaration decl:labelList) decl.doJavaCoding(indent);
+	{ JavaModule.code("// Declare local labels");
+	  for(Declaration decl:labelList) decl.doJavaCoding();
 	}
-	Util.code(indent,"// Declare locals as attributes");
-	for(Declaration decl:declarationList) decl.doJavaCoding(indent);
-	doCodeConstructor(indent);
-	doCodeStatements(indent);
+	JavaModule.code("// Declare locals as attributes");
+	for(Declaration decl:declarationList) decl.doJavaCoding();
+	doCodeConstructor();
+	doCodeStatements();
 	if(this.isMainModule)
-	{ Util.code(indent,"");
-	  Util.code(indent,"public static void main(String[] args) {"); indent++;
-	  Util.code(indent,"new "+getJavaIdentifier()+"(CTX$).STM();");
-	  indent--; Util.code(indent,"}"); // End of main
+	{ JavaModule.code("");
+	  JavaModule.code("public static void main(String[] args) {");
+	  JavaModule.code("new "+getJavaIdentifier()+"(CTX$).STM();");
+	  JavaModule.code("}"); // End of main
 	}
-	indent--; Util.code(indent,"}"); // End of SubBlock
-	indent=savedIndent;	
+	JavaModule.code("}"); // End of SubBlock
 	Global.currentScope=declaredIn;
 	javaModule.closeJavaOutput();
   }
@@ -230,45 +228,45 @@ public class MaybeBlockDeclaration extends BlockDeclaration
   // ***********************************************************************************************
   // *** Coding: doPrototypeCoding  --  This code instead of traditional Prototype
   // ***********************************************************************************************
-  private void doPrototypeCoding(int indent)
+  private void doPrototypeCoding()
   {	//String packetName=SimulaCompiler.packetName;
-	Util.code(indent,"// SubBlock: BlockKind="+blockKind+", BlockLevel="+blockLevel
+	JavaModule.code("// SubBlock: BlockKind="+blockKind+", BlockLevel="+blockLevel
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false") );
-	Util.code(indent,"public int prefixLevel() { return(0); }");
+	JavaModule.code("public int prefixLevel() { return(0); }");
 	if(isQPSystemBlock())
-	Util.code(indent,"public boolean isQPSystemBlock() { return(true); }");
+	JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
   }
   
   
   // ***********************************************************************************************
   // *** Coding Utility: doCodeConstructor
   // ***********************************************************************************************
-  private void doCodeConstructor(int indent)
-  {	Util.code(indent,"// Normal Constructor");
-    Util.code(indent,"public "+getJavaIdentifier()+"(RTObject$ staticLink) {"); indent++;
-	Util.code(indent,"super(staticLink);");
-    Util.code(indent,"BBLK();");
+  private void doCodeConstructor()
+  {	JavaModule.code("// Normal Constructor");
+    JavaModule.code("public "+getJavaIdentifier()+"(RTObject$ staticLink) {");
+	JavaModule.code("super(staticLink);");
+    JavaModule.code("BBLK();");
 	if(blockKind==BlockKind.SimulaProgram)
-			Util.code(indent,"BPRG(\""+identifier+"\");");
-	Util.code(indent,"// Declaration Code");
-    Util.code(indent,"TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
-	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent);
-	indent--; Util.code(indent,"} // End of Constructor");
+			JavaModule.code("BPRG(\""+identifier+"\");");
+	JavaModule.code("// Declaration Code");
+    JavaModule.code("TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
+	for(Declaration decl:declarationList) decl.doDeclarationCoding();
+	JavaModule.code("} // End of Constructor");
   }
 
   // ***********************************************************************************************
   // *** Coding Utility: doCodeStatements
   // ***********************************************************************************************
-  private void doCodeStatements(int indent)
-  {	Util.code(indent,"// "+blockKind+" Statements");
-	Util.code(indent,"public RTObject$ STM() {"); indent++;
-	Util.code(indent,"TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
-    codeSTMBody(indent);
-	Util.code(indent,"TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
-    Util.code(indent,"EBLK();");
-	Util.code(indent,"return(null);");
-    indent--; Util.code(indent,"} // End of "+blockKind+" Statements");
+  private void doCodeStatements()
+  {	JavaModule.code("// "+blockKind+" Statements");
+	JavaModule.code("public RTObject$ STM() {");
+	JavaModule.code("TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
+    codeSTMBody();
+	JavaModule.code("TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
+    JavaModule.code("EBLK();");
+	JavaModule.code("return(null);");
+    JavaModule.code("} // End of "+blockKind+" Statements");
   }
 
 

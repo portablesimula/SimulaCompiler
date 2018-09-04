@@ -27,7 +27,7 @@ import org.apache.bcel.classfile.JavaClass;
  * @version $Id$
  * @see Stack
  */
-public class ClassStack {
+public final class ClassStack {
 
     private final Stack<JavaClass> stack = new Stack<>();
 

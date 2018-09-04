@@ -1,7 +1,7 @@
 package simula.compiler.statement;
 
+import simula.compiler.JavaModule;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Util;
 
 /**
  * Inner Statement.
@@ -16,7 +16,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class InnerStatement extends Statement {
+public final class InnerStatement extends Statement {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
@@ -24,12 +24,12 @@ public class InnerStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 	
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-		Util.code(indent,"if(inner!=null) {");
-		Util.code(indent,"   inner.STM();");
-		Util.code(indent,"   TRACE_BEGIN_STM_AFTER_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
-		Util.code(indent,"}");
+		JavaModule.code("if(inner!=null) {");
+		JavaModule.code("inner.STM();");
+		JavaModule.code("TRACE_BEGIN_STM_AFTER_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
+		JavaModule.code("}");
 	}
 
 	public void print(String indent, String tail) {

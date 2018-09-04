@@ -31,7 +31,7 @@ import org.apache.bcel.Const;
  * @see     Code
  * @see LocalVariable
  */
-public class LocalVariableTable extends Attribute {
+public final class LocalVariableTable extends Attribute {
 
     private LocalVariable[] local_variable_table; // variables
 

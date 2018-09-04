@@ -30,7 +30,7 @@ import java.util.List;
  * @version $Id: ParameterAnnotationEntry
  * @since 6.0
  */
-public class ParameterAnnotationEntry implements Node {
+public final class ParameterAnnotationEntry implements Node {
 
     private final AnnotationEntry[] annotation_table;
 

@@ -27,7 +27,7 @@ import org.apache.bcel.classfile.LineNumber;
  * @see     LineNumber
  * @see     MethodGen
  */
-public class LineNumberGen implements InstructionTargeter, Cloneable {
+public final class LineNumberGen implements InstructionTargeter, Cloneable {
 
     private InstructionHandle ih;
     private int src_line;

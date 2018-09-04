@@ -27,7 +27,7 @@ import org.apache.bcel.classfile.EnumElementValue;
 /**
  * @since 6.0
  */
-public class EnumElementValueGen extends ElementValueGen
+public final class EnumElementValueGen extends ElementValueGen
 {
     // For enum types, these two indices point to the type and value
     private int typeIdx;

@@ -27,7 +27,7 @@ import org.apache.bcel.classfile.ElementValuePair;
 /**
  * @since 6.0
  */
-public class ElementValuePairGen
+public final class ElementValuePairGen
 {
     private int nameIdx;
 

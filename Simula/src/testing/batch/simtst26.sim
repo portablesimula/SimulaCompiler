@@ -27,12 +27,7 @@ BEGIN
       end;   
    end;
 
-   Outtext("--- START Simula a.s. TEST 26");
-   Outimage;
-   Outtext("--- Test designational expressions, goto statement");
-   Outimage;
-   Outtext("--- and complex switch declaration");
-   Outimage;
+   Outtext("--- START Simula a.s. TEST 26"); Outimage;
 
    i := 5;
 

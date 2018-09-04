@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LCMP extends Instruction implements TypedInstruction, StackProducer, StackConsumer {
+public final class LCMP extends Instruction implements TypedInstruction, StackProducer, StackConsumer {
 
     public LCMP() {
         super(org.apache.bcel.Const.LCMP, (short) 1);

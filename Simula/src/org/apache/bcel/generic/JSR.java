@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * @version $Id$
  */
-public class JSR extends JsrInstruction implements VariableLengthInstruction {
+public final class JSR extends JsrInstruction implements VariableLengthInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

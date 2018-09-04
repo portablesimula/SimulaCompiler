@@ -26,7 +26,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class LDIV extends ArithmeticInstruction implements ExceptionThrower {
+public final class LDIV extends ArithmeticInstruction implements ExceptionThrower {
 
     public LDIV() {
         super(org.apache.bcel.Const.LDIV);

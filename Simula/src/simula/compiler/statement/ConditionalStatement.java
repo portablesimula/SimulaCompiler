@@ -7,6 +7,7 @@
  */
 package simula.compiler.statement;
 
+import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
@@ -29,7 +30,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ConditionalStatement extends Statement {
+public final class ConditionalStatement extends Statement {
 	Expression condition;
 	Statement thenStatement;
 	Statement elseStatement = null;
@@ -73,16 +74,16 @@ public class ConditionalStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		Util.code(indent,"if(" + condition.toJavaCode() + ") {");
-		thenStatement.doJavaCoding(indent+1);
+		JavaModule.code("if(" + condition.toJavaCode() + ") {");
+		thenStatement.doJavaCoding();
 		if (elseStatement != null) {
-			Util.code(indent,"} else");
-			elseStatement.doJavaCoding(indent+1);
+			JavaModule.code("} else");
+			elseStatement.doJavaCoding();
 		} else
-			Util.code(indent,"}");
+			JavaModule.code("}");
 	}
 
 	public String toString() {

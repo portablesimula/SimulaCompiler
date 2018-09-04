@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class NEW extends CPInstruction implements LoadClass, AllocationInstruction,
+public final class NEW extends CPInstruction implements LoadClass, AllocationInstruction,
         ExceptionThrower, StackProducer {
 
     /**

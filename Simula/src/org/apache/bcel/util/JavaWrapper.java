@@ -34,7 +34,7 @@ import java.lang.reflect.Modifier;
  * @version $Id$
  * @see ClassLoader
  */
-public class JavaWrapper {
+public final class JavaWrapper {
 
     private final java.lang.ClassLoader loader;
 

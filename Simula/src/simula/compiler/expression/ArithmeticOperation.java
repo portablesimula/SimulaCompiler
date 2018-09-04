@@ -82,7 +82,7 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public class ArithmeticOperation extends Expression
+public final class ArithmeticOperation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public Expression rhs;

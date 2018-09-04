@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class ARRAYLENGTH extends Instruction implements ExceptionThrower, StackProducer, StackConsumer /* since 6.0 */ {
+public final class ARRAYLENGTH extends Instruction implements ExceptionThrower, StackProducer, StackConsumer /* since 6.0 */ {
 
     /** Get length of array
      */

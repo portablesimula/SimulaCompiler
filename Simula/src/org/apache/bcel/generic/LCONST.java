@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LCONST extends Instruction implements ConstantPushInstruction {
+public final class LCONST extends Instruction implements ConstantPushInstruction {
 
     private long value;
 

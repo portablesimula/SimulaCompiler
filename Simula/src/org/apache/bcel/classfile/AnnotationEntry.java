@@ -32,7 +32,7 @@ import org.apache.bcel.Const;
  * @version $Id: AnnotationEntry
  * @since 6.0
  */
-public class AnnotationEntry implements Node {
+public final class AnnotationEntry implements Node {
 
     private final int type_index;
     private final ConstantPool constant_pool;

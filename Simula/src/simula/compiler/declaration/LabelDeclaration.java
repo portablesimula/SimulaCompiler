@@ -7,11 +7,11 @@
  */
 package simula.compiler.declaration;
 
+import simula.compiler.JavaModule;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
-import simula.compiler.utilities.Util;
 
-public class LabelDeclaration extends TypeDeclaration {
+public final class LabelDeclaration extends TypeDeclaration {
     public VirtualSpecification myVirtual; // Set during doChecking
     public int index; // set by BlockDeclaration.doChecking
     public int prefixLevel; // set by BlockDeclaration.doChecking
@@ -32,11 +32,11 @@ public class LabelDeclaration extends TypeDeclaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
 		if(myVirtual==null)
-		   Util.code(indent,"final $LABQNT "+ident+"=new $LABQNT(this,"+prefixLevel+','+index+"); // Local Label #"+index+'='+ident);
+		   JavaModule.code("final $LABQNT "+ident+"=new $LABQNT(this,"+prefixLevel+','+index+"); // Local Label #"+index+'='+ident);
 	}
 
 }

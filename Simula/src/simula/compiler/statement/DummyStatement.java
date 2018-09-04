@@ -20,7 +20,7 @@ package simula.compiler.statement;
  * 
  * @author Øystein Myhre Andersen
  */
-public class DummyStatement extends Statement {
+public final class DummyStatement extends Statement {
 	public DummyStatement() {
 	}
 
@@ -30,7 +30,7 @@ public class DummyStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent) { /* No Coding */
+	public void doJavaCoding() { /* No Coding */
 		ASSERT_SEMANTICS_CHECKED(this);
 	}
 

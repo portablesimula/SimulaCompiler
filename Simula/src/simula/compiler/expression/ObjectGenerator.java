@@ -44,7 +44,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ObjectGenerator extends Expression {
+public final class ObjectGenerator extends Expression {
 	private String classIdentifier;
 	private Meaning meaning;
 	private Vector<Expression> params;

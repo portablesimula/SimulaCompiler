@@ -7,8 +7,6 @@
  */
 package simula.compiler.utilities;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -18,14 +16,8 @@ import java.lang.reflect.Type;
  * @author Øystein Myhre Andersen
  *
  */
-public class Util
+public final class Util
 { 
-  private static Writer writer;
-  public static Writer setWriter(Writer _writer)
-  { Writer prevWriter=writer;
-	writer=_writer;
-	return(prevWriter);  
-  }
   
   public static int nError;
   public static void error(String msg)
@@ -45,31 +37,6 @@ public class Util
   public static void warning(String msg)
   { if(Option.WARNINGS) System.err.println("LINE "+Global.sourceLineNumber+": WARNING: "+msg); }
 
-  private static int prevLineNumber=0;
-  public static void code(int indent,String line) {
-	  ASSERT(Global.sourceLineNumber>0,"Invariant");
-	  String s0=null;
-	  String s=edIndent(indent)+line;
-	  if(prevLineNumber!=Global.sourceLineNumber)
-	  { String leadingBlanks="                          ";
-	    s0=leadingBlanks+"// SourceLine "+Global.sourceLineNumber;
-	    if(Option.TRACE_CODING) println("LINE "+Global.sourceLineNumber+s0);
-	  }
-	  if(Option.TRACE_CODING) println("CODE "+Global.sourceLineNumber+": "+s);
-	  ASSERT(writer!=null,"Can't Output Code - writer==null"); 
-	  try { if(s0!=null) writer.write(s0+'\n');
-	        writer.write(s+'\n'); }
-	  catch (IOException e) {
-			System.out.println("Error Reading File");
-			e.printStackTrace();
-	  }
-	  prevLineNumber=Global.sourceLineNumber;
-  }
-  private static String edIndent(int indent)
-  { String s="";
-	while((indent--)>0) s=s+"    ";
-	return(s);  
-  }
 
   public static void LIST(String msg) { TRACE("LIST",msg); }
   public static void TRACE(String msg) { TRACE("TRACE",msg); }

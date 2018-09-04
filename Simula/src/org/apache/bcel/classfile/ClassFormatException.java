@@ -24,7 +24,7 @@ package org.apache.bcel.classfile;
  *
  * @version $Id$
  */
-public class ClassFormatException extends RuntimeException {
+public final class ClassFormatException extends RuntimeException {
 
     private static final long serialVersionUID = -3569097343160139969L;
 

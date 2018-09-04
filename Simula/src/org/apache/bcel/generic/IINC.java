@@ -27,7 +27,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class IINC extends LocalVariableInstruction {
+public final class IINC extends LocalVariableInstruction {
 
     private boolean wide;
     private int c;

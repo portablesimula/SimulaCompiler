@@ -44,7 +44,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ProgramModule extends Statement
+public final class ProgramModule extends Statement
 { Declaration module;
   Variable sysin;
   Variable sysout;
@@ -102,7 +102,7 @@ public class ProgramModule extends Statement
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(int indent) { module.doJavaCoding(indent); }
+  public void doJavaCoding() { module.doJavaCoding(); }
   public void doJVMCoding() { module.doJVMCoding(); }
   public void print(String indent,String tail) { module.print("",tail); }
   public String toString() { return(""+module); }

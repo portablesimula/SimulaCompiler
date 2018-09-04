@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IXOR extends ArithmeticInstruction {
+public final class IXOR extends ArithmeticInstruction {
 
     public IXOR() {
         super(org.apache.bcel.Const.IXOR);

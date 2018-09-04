@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class CALOAD extends ArrayInstruction implements StackProducer {
+public final class CALOAD extends ArrayInstruction implements StackProducer {
 
     /** Load char from array
      */

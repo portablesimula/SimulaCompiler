@@ -29,7 +29,7 @@ import org.apache.bcel.Const;
  * @version $Id: RuntimeInvisibleParameterAnnotations
  * @since 6.0
  */
-public class RuntimeInvisibleParameterAnnotations extends ParameterAnnotations {
+public final class RuntimeInvisibleParameterAnnotations extends ParameterAnnotations {
 
     /**
      * @param name_index Index pointing to the name <em>Code</em>

@@ -18,7 +18,7 @@ import simula.compiler.declaration.DeclarationScope;
  * @author Øystein Myhre Andersen
  *
  */
-public class Global {
+public final class Global {
 	public static final String gitURL="https://github.com/portablesimula";
     public static final String simulaID="Simula Beta(0.2)";
 	public static final String javaDir="C:/Programfiler/Java/jdk1.8.0_73/bin/";

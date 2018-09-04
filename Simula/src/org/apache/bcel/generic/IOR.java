@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IOR extends ArithmeticInstruction {
+public final class IOR extends ArithmeticInstruction {
 
     public IOR() {
         super(org.apache.bcel.Const.IOR);

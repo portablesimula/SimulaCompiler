@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class I2B extends ConversionInstruction {
+public final class I2B extends ConversionInstruction {
 
     /** Convert int to byte
      */

@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DNEG extends ArithmeticInstruction {
+public final class DNEG extends ArithmeticInstruction {
 
     public DNEG() {
         super(org.apache.bcel.Const.DNEG);

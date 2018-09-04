@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FSUB extends ArithmeticInstruction {
+public final class FSUB extends ArithmeticInstruction {
 
     /** Substract floats
      */

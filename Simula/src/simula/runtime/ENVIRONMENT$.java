@@ -25,7 +25,7 @@ import java.util.Random;
  * @author Øystein Myhre Andersen
  *
  */
-//public class ENVIRONMENT$ {
+//public final class ENVIRONMENT$ {
 public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	static long START_TIME = System.currentTimeMillis();
 	static char CURRENTLOWTEN = '&';

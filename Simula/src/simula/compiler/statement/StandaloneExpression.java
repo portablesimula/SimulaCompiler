@@ -7,11 +7,9 @@
  */
 package simula.compiler.statement;
 
-import simula.compiler.expression.ArithmeticOperation;
+import simula.compiler.JavaModule;
 import simula.compiler.expression.AssignmentOperation;
-import simula.compiler.expression.BooleanOperation;
 import simula.compiler.expression.Expression;
-import simula.compiler.expression.RelationalOperation;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -34,7 +32,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class StandaloneExpression extends Statement {
+public final class StandaloneExpression extends Statement {
 	private Expression expression;
 
 	public StandaloneExpression(Expression expression) {
@@ -74,9 +72,9 @@ public class StandaloneExpression extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 	
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-		Util.code(indent,toJavaCode() + ';');
+		JavaModule.code(toJavaCode() + ';');
 	}
 
 	public String toJavaCode() {

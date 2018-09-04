@@ -12,7 +12,7 @@ package simula.compiler.statement;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ErrorStatement extends Statement {
+public final class ErrorStatement extends Statement {
 	Throwable exception;
 
 	public ErrorStatement(Throwable exception) {

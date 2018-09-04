@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DDIV extends ArithmeticInstruction {
+public final class DDIV extends ArithmeticInstruction {
 
     /** Divide doubles
      */

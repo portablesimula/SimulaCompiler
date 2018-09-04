@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class ISHL extends ArithmeticInstruction {
+public final class ISHL extends ArithmeticInstruction {
 
     public ISHL() {
         super(org.apache.bcel.Const.ISHL);

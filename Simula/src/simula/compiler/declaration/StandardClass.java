@@ -14,9 +14,9 @@ import simula.compiler.utilities.Type;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Variable;
 
-public class StandardClass extends ClassDeclaration
+public final class StandardClass extends ClassDeclaration
 {
-  public OLD_BlockDeclaration.Kind getBlockKind() { return(OLD_BlockDeclaration.Kind.StandardClass); }
+  public BlockKind getBlockKind() { return(BlockKind.StandardClass); }
   public String edJavaClassName() { return(identifier); }
 //  public String getJavaIdentifier() { return(identifier+"$"); }
   

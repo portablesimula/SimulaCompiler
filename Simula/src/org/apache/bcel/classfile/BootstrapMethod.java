@@ -33,7 +33,7 @@ import org.apache.bcel.Const;
  * The class File Format : The BootstrapMethods Attribute</a>
  * @since 6.0
  */
-public class BootstrapMethod implements Cloneable {
+public final class BootstrapMethod implements Cloneable {
 
     /** Index of the CONSTANT_MethodHandle_info structure in the constant_pool table */
     private int bootstrap_method_ref;

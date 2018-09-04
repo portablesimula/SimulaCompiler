@@ -22,7 +22,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class NOP extends Instruction {
+public final class NOP extends Instruction {
 
     public NOP() {
         super(org.apache.bcel.Const.NOP, (short) 1);

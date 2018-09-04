@@ -15,7 +15,7 @@ import simula.compiler.utilities.Option;
  * @author Øystein Myhre Andersen
  *
  */
-public class TestBatch {
+public final class TestBatch {
 
 	static String[] TEST_PROGRAMS={
 

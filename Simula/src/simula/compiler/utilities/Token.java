@@ -12,7 +12,7 @@ package simula.compiler.utilities;
  * @author Øystein Myhre Andersen
  *
  */
-public class Token
+public final class Token
 { private KeyWord keyWord;
   private Object value;
   

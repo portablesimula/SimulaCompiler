@@ -26,7 +26,7 @@ import org.apache.bcel.classfile.ElementValue;
 /**
  * @since 6.0
  */
-public class AnnotationElementValueGen extends ElementValueGen
+public final class AnnotationElementValueGen extends ElementValueGen
 {
     // For annotation element values, this is the annotation
     private final AnnotationEntryGen a;

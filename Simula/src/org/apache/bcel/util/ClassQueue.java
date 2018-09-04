@@ -27,7 +27,7 @@ import org.apache.bcel.classfile.JavaClass;
  *
  * @version $Id$
  */
-public class ClassQueue {
+public final class ClassQueue {
 
     /**
      * @deprecated (since 6.0) will be made private; do not access

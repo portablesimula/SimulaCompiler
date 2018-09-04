@@ -7,7 +7,7 @@
  */
 package simula.compiler.utilities;
 
-public class Option {
+public final class Option {
 	
 	public static boolean verbose = true;//false;//true;// 
 	public static boolean WARNINGS=true;

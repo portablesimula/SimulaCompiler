@@ -18,7 +18,7 @@ import simula.compiler.expression.Variable;
  * @author Øystein Myhre Andersen
  *
  */
-public class Meaning {
+public final class Meaning {
 	public Variable.Kind variableKind;
 	public boolean foundBehindInvisible; // Behind hidden/protected
 	public Declaration declaredAs;

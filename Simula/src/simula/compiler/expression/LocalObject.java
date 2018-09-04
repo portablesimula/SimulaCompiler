@@ -47,7 +47,7 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public class LocalObject extends Expression {
+public final class LocalObject extends Expression {
 	private String classIdentifier;
 	private ClassDeclaration classDeclaration; // Set by doChecking
 	private DeclarationScope declarationScope; // Set by doChecking

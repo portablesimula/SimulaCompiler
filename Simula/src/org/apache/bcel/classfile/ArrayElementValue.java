@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * @since 6.0
  */
-public class ArrayElementValue extends ElementValue
+public final class ArrayElementValue extends ElementValue
 {
     // For array types, this is the array
     private final ElementValue[] evalues;

@@ -43,7 +43,7 @@ import simula.compiler.utilities.Util;
  * <PRE>
  * import java.io.*;
  *
- * public class HelloWorld {
+ * public final class HelloWorld {
  *     public static void main(String[] argv) {
  *         BufferedReader in   = new BufferedReader(new InputStreamReader(System.in));
  *         String name = null;
@@ -63,7 +63,7 @@ import simula.compiler.utilities.Util;
  *
  * @version $Id$
  */
-public class HelloWorldBuilder {
+public final class HelloWorldBuilder {
     public static void main(String[] argv) {
     	Util.BREAK("BEGIN HelloWorldBuilder argv="+argv);
         ClassGen cg = new ClassGen("HelloWorld", "java.lang.Object",

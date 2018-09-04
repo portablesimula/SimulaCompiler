@@ -103,7 +103,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-//public class BASICIO$ extends RTObject$ {
+//public final class BASICIO$ extends RTObject$ {
 public class BASICIO$ extends ENVIRONMENT$ {  // CORR-PREFIX
 //	static final int INPUT_LINELENGTH_ = 80;
 //	static final int OUTPUT_LINELENGTH_ = 132;

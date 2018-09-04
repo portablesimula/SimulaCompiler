@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class ACONST_NULL extends Instruction implements PushInstruction, TypedInstruction {
+public final class ACONST_NULL extends Instruction implements PushInstruction, TypedInstruction {
 
     /**
      * Push null reference

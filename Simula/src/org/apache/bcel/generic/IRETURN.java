@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IRETURN extends ReturnInstruction {
+public final class IRETURN extends ReturnInstruction {
 
     /** Return int from method
      */

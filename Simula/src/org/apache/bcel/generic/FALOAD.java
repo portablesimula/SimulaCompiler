@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FALOAD extends ArrayInstruction implements StackProducer {
+public final class FALOAD extends ArrayInstruction implements StackProducer {
 
     /** Load float from array
      */

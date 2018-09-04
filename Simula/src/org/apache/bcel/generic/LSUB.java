@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LSUB extends ArithmeticInstruction {
+public final class LSUB extends ArithmeticInstruction {
 
     public LSUB() {
         super(org.apache.bcel.Const.LSUB);

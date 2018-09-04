@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LAND extends ArithmeticInstruction {
+public final class LAND extends ArithmeticInstruction {
 
     public LAND() {
         super(org.apache.bcel.Const.LAND);

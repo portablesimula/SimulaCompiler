@@ -12,9 +12,7 @@ import org.apache.bcel.classfile.ConstantUtf8;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 
-import simula.compiler.utilities.Util;
-
-public class ClassFileUtilities {
+public final class ClassFileUtilities {
 
     static boolean code=true;
     static boolean constants=true;

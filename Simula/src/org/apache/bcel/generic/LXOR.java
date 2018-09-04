@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LXOR extends ArithmeticInstruction {
+public final class LXOR extends ArithmeticInstruction {
 
     public LXOR() {
         super(org.apache.bcel.Const.LXOR);

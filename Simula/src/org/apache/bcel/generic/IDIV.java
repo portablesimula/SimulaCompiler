@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class IDIV extends ArithmeticInstruction implements ExceptionThrower {
+public final class IDIV extends ArithmeticInstruction implements ExceptionThrower {
 
     /** Divide ints
      */

@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class MONITOREXIT extends Instruction implements ExceptionThrower, StackConsumer {
+public final class MONITOREXIT extends Instruction implements ExceptionThrower, StackConsumer {
 
     public MONITOREXIT() {
         super(org.apache.bcel.Const.MONITOREXIT, (short) 1);

@@ -9,6 +9,7 @@ package simula.compiler.statement;
 
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.MaybeBlockDeclaration;
@@ -109,10 +110,10 @@ public abstract class Statement extends SyntaxClass {
 		return(new DummyStatement());
 	}
 
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		Util.code(indent,toJavaCode() + ';');
+		JavaModule.code(toJavaCode() + ';');
 	}
 
 }

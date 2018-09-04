@@ -29,7 +29,7 @@ import org.apache.bcel.Const;
  * @version $Id: AnnotationDefault 1 2005-02-13 03:15:08Z dbrosius $
  * @since 6.0
  */
-public class AnnotationDefault extends Attribute {
+public final class AnnotationDefault extends Attribute {
 
     private ElementValue default_value;
 

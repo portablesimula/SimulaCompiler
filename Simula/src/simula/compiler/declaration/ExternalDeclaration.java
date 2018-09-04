@@ -80,7 +80,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ExternalDeclaration extends Declaration {
+public final class ExternalDeclaration extends Declaration {
 	/**
 	 * The optional type of an external procedure. For external classes this
 	 * field has no meaning.

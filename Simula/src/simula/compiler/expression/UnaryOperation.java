@@ -25,7 +25,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class UnaryOperation extends Expression {
+public final class UnaryOperation extends Expression {
 	private KeyWord oprator;
 	private Expression operand;
 

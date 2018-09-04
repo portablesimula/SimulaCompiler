@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DCONST extends Instruction implements ConstantPushInstruction {
+public final class DCONST extends Instruction implements ConstantPushInstruction {
 
     private double value;
 

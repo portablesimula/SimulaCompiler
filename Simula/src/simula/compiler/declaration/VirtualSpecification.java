@@ -7,6 +7,7 @@
  */
 package simula.compiler.declaration;
 
+import simula.compiler.JavaModule;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -28,7 +29,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public class VirtualSpecification extends Declaration {
+public final class VirtualSpecification extends Declaration {
 	// String identifier; // Inherited
 	// Type type; // Inherited: Procedure's type if any
 	public VirtualSpecification.Kind kind; // Simple | Procedure
@@ -136,7 +137,7 @@ public class VirtualSpecification extends Declaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent)
+	public void doJavaCoding()
 	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
 	  String quantity=(kind==Kind.Label)?"$LABQNT ":"$PRCQNT ";
@@ -152,8 +153,7 @@ public class VirtualSpecification extends Declaration {
 		  matchCode="{ return(new $PRCQNT(this,"+match.getJavaIdentifier()+".class)); }";
 	    }
 	  }
-  	  
-	  Util.code(indent,"public "+quantity+getJavaIdentifier()+"() "+matchCode);
+	  JavaModule.code("public "+quantity+getJavaIdentifier()+"() "+matchCode);
 	}
 	
 	public String toString()

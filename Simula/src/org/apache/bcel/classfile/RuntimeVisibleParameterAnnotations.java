@@ -29,7 +29,7 @@ import org.apache.bcel.Const;
  * @version $Id: RuntimeVisibleParameterAnnotations
  * @since 6.0
  */
-public class RuntimeVisibleParameterAnnotations extends ParameterAnnotations {
+public final class RuntimeVisibleParameterAnnotations extends ParameterAnnotations {
 
     /**
      * @param name_index Index pointing to the name <em>Code</em>

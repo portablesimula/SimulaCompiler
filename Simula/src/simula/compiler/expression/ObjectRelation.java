@@ -65,7 +65,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ObjectRelation extends Expression
+public final class ObjectRelation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public String classIdentifier;

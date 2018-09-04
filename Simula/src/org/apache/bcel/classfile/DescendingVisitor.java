@@ -26,7 +26,7 @@ import java.util.Stack;
  *
  * @version $Id$
  */
-public class DescendingVisitor implements Visitor
+public final class DescendingVisitor implements Visitor
 {
     private final JavaClass clazz;
 

@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DREM extends ArithmeticInstruction {
+public final class DREM extends ArithmeticInstruction {
 
     /** Remainder of doubles
      */

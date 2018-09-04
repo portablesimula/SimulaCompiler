@@ -12,7 +12,7 @@ package simula.runtime;
 * @author SIMULA Standards Group
 * @author Øystein Myhre Andersen
 */
-public class EVENT_NOTICE$ extends Link$ {
+public final class EVENT_NOTICE$ extends Link$ {
 	public double EVTIME;
 	public Process$ PROC;
 	public Simulation$ SIMULATION;

@@ -34,7 +34,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public class SimulaCompiler {
+public final class SimulaCompiler {
 	String inputFileName;
 
 	public SimulaCompiler(String inputFileName) {
@@ -126,7 +126,7 @@ public class SimulaCompiler {
 			}
 
 			if (Option.verbose) Util.BREAK("*** BEGIN Generate .java Output Code"); 
-			program.doJavaCoding(0);
+			program.doJavaCoding();
 			if (Option.verbose)
 			{ Util.BREAK("*** END Generate .java Output Code");
 			    for(JavaModule module:Global.javaModules)

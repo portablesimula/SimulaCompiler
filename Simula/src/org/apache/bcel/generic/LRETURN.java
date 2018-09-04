@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LRETURN extends ReturnInstruction {
+public final class LRETURN extends ReturnInstruction {
 
     public LRETURN() {
         super(org.apache.bcel.Const.LRETURN);

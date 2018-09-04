@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DRETURN extends ReturnInstruction {
+public final class DRETURN extends ReturnInstruction {
 
     /** Return double from method
      */

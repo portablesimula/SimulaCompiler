@@ -8,7 +8,6 @@
 package simula.compiler.expression;
 
 import simula.compiler.declaration.ArrayDeclaration;
-import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.StandardClass;
@@ -32,7 +31,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class RemoteVariable extends Expression
+public final class RemoteVariable extends Expression
 { public Expression lhs;
   public Variable rhs;
   private Meaning remoteAttribute; // Set by doChecking

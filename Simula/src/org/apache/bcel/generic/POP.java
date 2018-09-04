@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class POP extends StackInstruction implements PopInstruction {
+public final class POP extends StackInstruction implements PopInstruction {
 
     public POP() {
         super(org.apache.bcel.Const.POP);

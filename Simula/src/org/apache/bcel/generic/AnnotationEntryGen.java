@@ -38,7 +38,7 @@ import org.apache.bcel.classfile.RuntimeVisibleParameterAnnotations;
 /**
  * @since 6.0
  */
-public class AnnotationEntryGen {
+public final class AnnotationEntryGen {
     private int typeIndex;
 
     private List<ElementValuePairGen> evs;

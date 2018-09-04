@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class F2L extends ConversionInstruction {
+public final class F2L extends ConversionInstruction {
 
     /** Convert float to long
      */

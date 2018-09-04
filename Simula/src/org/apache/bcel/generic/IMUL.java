@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IMUL extends ArithmeticInstruction {
+public final class IMUL extends ArithmeticInstruction {
 
     /** Multiply ints
      */

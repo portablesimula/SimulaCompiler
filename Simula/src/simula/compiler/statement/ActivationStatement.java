@@ -38,7 +38,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ActivationStatement extends Statement
+public final class ActivationStatement extends Statement
 { boolean REAC;
   boolean beforeAfter;
   Expression object1;

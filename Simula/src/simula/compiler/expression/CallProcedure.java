@@ -31,7 +31,7 @@ import simula.compiler.expression.Variable;
  * @author Øystein Myhre Andersen
  *
  */
-public class CallProcedure {
+public final class CallProcedure {
 	
 	// ********************************************************************
 	// *** CallProcedure.normal

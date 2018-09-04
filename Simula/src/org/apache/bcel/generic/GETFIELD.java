@@ -28,7 +28,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class GETFIELD extends FieldInstruction implements ExceptionThrower, StackConsumer,
+public final class GETFIELD extends FieldInstruction implements ExceptionThrower, StackConsumer,
         StackProducer {
 
     /**

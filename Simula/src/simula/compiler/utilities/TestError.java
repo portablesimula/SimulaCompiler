@@ -1,6 +1,6 @@
 package simula.compiler.utilities;
 
-public class TestError {
+public final class TestError {
 
 	public static void main(String[] args) {
 		new TestError().TEST();

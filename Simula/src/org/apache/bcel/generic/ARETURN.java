@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class ARETURN extends ReturnInstruction {
+public final class ARETURN extends ReturnInstruction {
 
     /**
      * Return reference from method

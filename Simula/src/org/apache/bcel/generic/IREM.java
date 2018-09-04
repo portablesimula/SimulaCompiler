@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class IREM extends ArithmeticInstruction implements ExceptionThrower {
+public final class IREM extends ArithmeticInstruction implements ExceptionThrower {
 
     /** Remainder of ints
      */

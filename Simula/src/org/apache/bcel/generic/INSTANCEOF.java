@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class INSTANCEOF extends CPInstruction implements LoadClass, ExceptionThrower,
+public final class INSTANCEOF extends CPInstruction implements LoadClass, ExceptionThrower,
         StackProducer, StackConsumer {
 
     /**

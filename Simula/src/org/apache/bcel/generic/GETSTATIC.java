@@ -28,7 +28,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class GETSTATIC extends FieldInstruction implements PushInstruction, ExceptionThrower {
+public final class GETSTATIC extends FieldInstruction implements PushInstruction, ExceptionThrower {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * @since 6.0
  */
-public class AnnotationElementValue extends ElementValue
+public final class AnnotationElementValue extends ElementValue
 {
         // For annotation element values, this is the annotation
         private final AnnotationEntry annotationEntry;

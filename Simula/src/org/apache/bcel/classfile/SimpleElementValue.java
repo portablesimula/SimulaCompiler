@@ -25,7 +25,7 @@ import org.apache.bcel.Const;
 /**
  * @since 6.0
  */
-public class SimpleElementValue extends ElementValue
+public final class SimpleElementValue extends ElementValue
 {
     private int index;
 

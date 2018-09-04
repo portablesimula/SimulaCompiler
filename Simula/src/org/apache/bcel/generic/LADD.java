@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LADD extends ArithmeticInstruction {
+public final class LADD extends ArithmeticInstruction {
 
     public LADD() {
         super(org.apache.bcel.Const.LADD);

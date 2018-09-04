@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class INEG extends ArithmeticInstruction {
+public final class INEG extends ArithmeticInstruction {
 
     public INEG() {
         super(org.apache.bcel.Const.INEG);

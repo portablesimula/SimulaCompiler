@@ -52,7 +52,7 @@ import simula.compiler.utilities.Util;
  * @version $Id$
  * @see Constant
  */
-public class ConstantPoolGen {
+public final class ConstantPoolGen {
 
     private static final int DEFAULT_BUFFER_SIZE = 256;
 

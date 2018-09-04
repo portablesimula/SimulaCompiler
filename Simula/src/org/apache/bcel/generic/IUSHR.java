@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IUSHR extends ArithmeticInstruction {
+public final class IUSHR extends ArithmeticInstruction {
 
     public IUSHR() {
         super(org.apache.bcel.Const.IUSHR);

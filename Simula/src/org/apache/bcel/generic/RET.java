@@ -29,7 +29,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class RET extends Instruction implements IndexedInstruction, TypedInstruction {
+public final class RET extends Instruction implements IndexedInstruction, TypedInstruction {
 
     private boolean wide;
     private int index; // index to local variable containg the return address

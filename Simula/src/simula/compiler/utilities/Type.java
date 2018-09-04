@@ -8,7 +8,6 @@
 package simula.compiler.utilities;
 
 import simula.compiler.declaration.BlockDeclaration;
-import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;

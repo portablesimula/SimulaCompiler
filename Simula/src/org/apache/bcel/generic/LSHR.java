@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LSHR extends ArithmeticInstruction {
+public final class LSHR extends ArithmeticInstruction {
 
     public LSHR() {
         super(org.apache.bcel.Const.LSHR);

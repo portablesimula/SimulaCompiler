@@ -30,7 +30,7 @@ import org.apache.bcel.Const;
  * The class File Format : The MethodParameters Attribute</a>
  * @since 6.0
  */
-public class MethodParameter implements Cloneable {
+public final class MethodParameter implements Cloneable {
 
     /** Index of the CONSTANT_Utf8_info structure in the constant_pool table representing the name of the parameter */
     private int name_index;

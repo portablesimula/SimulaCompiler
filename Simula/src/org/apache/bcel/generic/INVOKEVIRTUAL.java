@@ -33,7 +33,7 @@ import org.apache.bcel.ExceptionConst;
  * <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.invokevirtual">
  * The invokevirtual instruction in The Java Virtual Machine Specification</a>
  */
-public class INVOKEVIRTUAL extends InvokeInstruction {
+public final class INVOKEVIRTUAL extends InvokeInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

@@ -27,7 +27,7 @@ import org.apache.bcel.classfile.ElementValue;
 /**
  * @since 6.0
  */
-public class ClassElementValueGen extends ElementValueGen
+public final class ClassElementValueGen extends ElementValueGen
 {
     // For primitive types and string type, this points to the value entry in
     // the cpool

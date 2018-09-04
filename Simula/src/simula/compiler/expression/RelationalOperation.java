@@ -26,7 +26,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class RelationalOperation extends Expression
+public final class RelationalOperation extends Expression
 { public Expression lhs;
   public KeyWord opr;
   public Expression rhs;

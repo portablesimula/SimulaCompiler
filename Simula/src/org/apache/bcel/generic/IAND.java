@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IAND extends ArithmeticInstruction {
+public final class IAND extends ArithmeticInstruction {
 
     public IAND() {
         super(org.apache.bcel.Const.IAND);

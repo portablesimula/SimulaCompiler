@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class SWAP extends StackInstruction implements StackConsumer, StackProducer {
+public final class SWAP extends StackInstruction implements StackConsumer, StackProducer {
 
     public SWAP() {
         super(org.apache.bcel.Const.SWAP);

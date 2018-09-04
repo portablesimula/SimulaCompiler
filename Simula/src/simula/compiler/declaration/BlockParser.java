@@ -7,14 +7,12 @@
  */
 package simula.compiler.declaration;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.SyntaxClass;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.InnerStatement;
 import simula.compiler.statement.Statement;
-import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;

@@ -30,7 +30,7 @@ import org.apache.bcel.Const;
  * The class File Format : The MethodParameters Attribute</a>
  * @since 6.0
  */
-public class MethodParameters extends Attribute {
+public final class MethodParameters extends Attribute {
 
     private MethodParameter[] parameters = new MethodParameter[0];
 

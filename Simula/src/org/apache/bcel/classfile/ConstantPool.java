@@ -35,7 +35,7 @@ import org.apache.bcel.Const;
  * @see     Constant
  * @see     org.apache.bcel.generic.ConstantPoolGen
  */
-public class ConstantPool implements Cloneable, Node {
+public final class ConstantPool implements Cloneable, Node {
 
     private Constant[] constant_pool;
 

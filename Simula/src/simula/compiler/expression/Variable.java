@@ -89,7 +89,7 @@ import simula.compiler.utilities.Util;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class Variable extends Expression {
+public final class Variable extends Expression {
 	public String identifier;
 	public Meaning meaning;
 	public boolean remotelyAccessed;

@@ -64,7 +64,7 @@ import org.apache.bcel.generic.InstructionList;
  * @see org.apache.bcel.generic.Instruction
  * @see InstructionList
  */
-public class InstructionFinder {
+public final class InstructionFinder {
 
     private static final int OFFSET = 32767; // char + OFFSET is outside of LATIN-1
     private static final int NO_OPCODES = 256; // Potential number, some are not used

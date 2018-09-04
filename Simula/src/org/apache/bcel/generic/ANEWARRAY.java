@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class ANEWARRAY extends CPInstruction implements LoadClass, AllocationInstruction,
+public final class ANEWARRAY extends CPInstruction implements LoadClass, AllocationInstruction,
         ExceptionThrower, StackConsumer, StackProducer {
 
     /**

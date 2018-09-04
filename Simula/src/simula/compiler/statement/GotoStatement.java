@@ -7,6 +7,7 @@
  */
 package simula.compiler.statement;
 
+import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -27,7 +28,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class GotoStatement extends Statement {
+public final class GotoStatement extends Statement {
 	private Expression label;
 
 	public GotoStatement() {
@@ -38,22 +39,22 @@ public class GotoStatement extends Statement {
 		if (IS_SEMANTICS_CHECKED())
 			return;
 		label.doChecking();
+		if (label.type != Type.Label)
+			Util.error("Goto " + label + ", " + label + " is not a Label");
 		label.backLink = this; // To ensure $result from functions
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
-		//Util.BREAK("GotoStatement.doJavaCoding: label=" + label + ", qual=" + label.getClass().getSimpleName());
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (Option.standardClass) {
-			Util.code(indent,"GOTO(" + label + "); // GOTO QUASI LABEL");
+			JavaModule.code("GOTO(" + label + "); // GOTO QUASI LABEL");
 			return;
 		}
 		Type type = label.type;
 		Util.ASSERT(type == Type.Label, "Invariant");
-		//Util.BREAK("GotoStatement.doJavaCoding: label="+label+", QUAL="+label.getClass().getSimpleName());
-		Util.code(indent,"GOTO(" + label.toJavaCode() + "); // GOTO EVALUATED LABEL");
+		JavaModule.code("GOTO(" + label.toJavaCode() + "); // GOTO EVALUATED LABEL");
 	}
 
 	public String toString() {

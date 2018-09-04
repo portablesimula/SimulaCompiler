@@ -23,7 +23,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class PrefixedBlockDeclaration extends ClassDeclaration // BlockDeclaration
+public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDeclaration
 { 
   public Variable blockPrefix; // Block Prefix in case of Prefixed Block.
     
@@ -157,7 +157,7 @@ public class PrefixedBlockDeclaration extends ClassDeclaration // BlockDeclarati
   // ***********************************************************************************************
   // *** Coding: doJavaCoding
   // ***********************************************************************************************
-  public void doJavaCoding(int indent)
+  public void doJavaCoding()
   {	Global.sourceLineNumber=lineNumber;
     //Util.BREAK("PrefixedBlockDeclaration.doJavaCoding: "+identifier);
 	ASSERT_SEMANTICS_CHECKED(this);
@@ -166,30 +166,29 @@ public class PrefixedBlockDeclaration extends ClassDeclaration // BlockDeclarati
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
-	int savedIndent=indent; indent=0;
-    String line="public class "+getJavaIdentifier();
+    String line="public final class "+getJavaIdentifier();
 	if(prefix!=null) line=line+" extends "+getPrefixClass().getJavaIdentifier();
 	else line=line+" extends BASICIO$";
-	Util.code(indent,line+" {"); indent++;
-	doPrototypeCoding(indent);
-	Util.code(indent,"// Declare parameters as attributes");
+	JavaModule.code(line+" {");
+	doPrototypeCoding();
+	JavaModule.code("// Declare parameters as attributes");
 	for(Parameter par:parameterList)
 	{ String tp=par.toJavaType(); 
-	  Util.code(indent,"public "+tp+' '+par.externalIdent+';');
+	  JavaModule.code("public "+tp+' '+par.externalIdent+';');
 	}
 	if(!labelList.isEmpty())
-	{ Util.code(indent,"// Declare local labels");
-	  //Util.code(indent,"   public int JTX$;"); // Moved to RTObject$
-	  for(Declaration decl:labelList) decl.doJavaCoding(indent);
+	{ JavaModule.code("// Declare local labels");
+	  //JavaModule.code("   public int JTX$;"); // Moved to RTObject$
+	  for(Declaration decl:labelList) decl.doJavaCoding();
 	}
-	Util.code(indent,"// Declare locals as attributes");
-	for(Declaration decl:declarationList) decl.doJavaCoding(indent);
-    for(VirtualSpecification virtual:virtualList) virtual.doJavaCoding(indent);
-	doCodeConstructor(indent);
+	JavaModule.code("// Declare locals as attributes");
+	for(Declaration decl:declarationList) decl.doJavaCoding();
+    for(VirtualSpecification virtual:virtualList) virtual.doJavaCoding();
+	doCodeConstructor();
 	//doCodeStatements(indent); // PrefixedBlock: USES DEFAULT VERSION OF  STM()
 	if(this.isMainModule)
-	{ Util.code(indent,"");
-	  Util.code(indent,"public static void main(String[] args) {"); indent++;
+	{ JavaModule.code("");
+	  JavaModule.code("public static void main(String[] args) {");
 	  StringBuilder s=new StringBuilder();
 	  s.append("new "+getJavaIdentifier()+"(CTX$");
 	  if(blockPrefix!=null && blockPrefix.hasArguments())
@@ -198,11 +197,10 @@ public class PrefixedBlockDeclaration extends ClassDeclaration // BlockDeclarati
 	    }
 	  }
 	  s.append(").STM();");
-	  Util.code(indent,""+s);
-	  indent--; Util.code(indent,"}"); // End of main
+	  JavaModule.code(""+s);
+	  JavaModule.code("}"); // End of main
 	}
-	indent--; Util.code(indent,"}"); // End of Class
-	indent=savedIndent;	
+	JavaModule.code("}"); // End of Class
 	Global.currentScope=declaredIn;
 	javaModule.closeJavaOutput();
   }
@@ -211,39 +209,39 @@ public class PrefixedBlockDeclaration extends ClassDeclaration // BlockDeclarati
   // ***********************************************************************************************
   // *** Coding: doPrototypeCoding  --  This code instead of traditional Prototype
   // ***********************************************************************************************
-  private void doPrototypeCoding(int indent)
+  private void doPrototypeCoding()
   {	//String packetName=SimulaCompiler.packetName;
-	Util.code(indent,"// PrefixedBlockDeclaration: BlockKind="+blockKind+", BlockLevel="+blockLevel
+	JavaModule.code("// PrefixedBlockDeclaration: BlockKind="+blockKind+", BlockLevel="+blockLevel
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 		      +", detachUsed="+((detachUsed)?"true":"false"));
-	Util.code(indent,"public int prefixLevel() { return(0); }");
+	JavaModule.code("public int prefixLevel() { return(0); }");
 	if(isQPSystemBlock())
-	Util.code(indent,"public boolean isQPSystemBlock() { return(true); }");
+	JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
 	if(isDetachUsed())
-	Util.code(indent,"public boolean isDetachUsed() { return(true); }");
+	JavaModule.code("public boolean isDetachUsed() { return(true); }");
   }
   
   
   // ***********************************************************************************************
   // *** Coding Utility: doCodeConstructor
   // ***********************************************************************************************
-  private void doCodeConstructor(int indent)
-  {	Util.code(indent,"// Normal Constructor");
-	Util.code(indent,"public "+getJavaIdentifier()+edFormalParameterList(false)); indent++;
+  private void doCodeConstructor()
+  {	JavaModule.code("// Normal Constructor");
+	JavaModule.code("public "+getJavaIdentifier()+edFormalParameterList(false));
 	if(prefix!=null) 
 	{ ClassDeclaration prefixClass=this.getPrefixClass();
-	  Util.code(indent,"super"+prefixClass.edSuperParameterList());
-	} else Util.code(indent,"super(staticLink);");
-	Util.code(indent,"// Parameter assignment to locals");
+	  JavaModule.code("super"+prefixClass.edSuperParameterList());
+	} else JavaModule.code("super(staticLink);");
+	JavaModule.code("// Parameter assignment to locals");
 	for(Parameter par:parameterList)
-		  Util.code(indent,"this."+par.externalIdent+" = s"+par.externalIdent+';');	
-	if(this.isMainModule) Util.code(indent,"BPRG(\""+identifier+"\");");
-	Util.code(indent,"// Declaration Code");
-    Util.code(indent,"TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
-	for(Declaration decl:declarationList) decl.doDeclarationCoding(indent);
-	doCodeCreateClassBody(indent);
-	indent--; Util.code(indent,"   "+"} // End of Constructor");
+		  JavaModule.code("this."+par.externalIdent+" = s"+par.externalIdent+';');	
+	if(this.isMainModule) JavaModule.code("BPRG(\""+identifier+"\");");
+	JavaModule.code("// Declaration Code");
+    JavaModule.code("TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
+	for(Declaration decl:declarationList) decl.doDeclarationCoding();
+	doCodeCreateClassBody();
+	JavaModule.code("   "+"} // End of Constructor");
   }
 
 

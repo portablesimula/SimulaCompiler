@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class ClassGenException extends RuntimeException {
+public final class ClassGenException extends RuntimeException {
 
     private static final long serialVersionUID = 7247369755051242791L;
 

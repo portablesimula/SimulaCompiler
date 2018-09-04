@@ -25,7 +25,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class CHECKCAST extends CPInstruction implements LoadClass, ExceptionThrower, StackProducer,
+public final class CHECKCAST extends CPInstruction implements LoadClass, ExceptionThrower, StackProducer,
         StackConsumer {
 
     /**

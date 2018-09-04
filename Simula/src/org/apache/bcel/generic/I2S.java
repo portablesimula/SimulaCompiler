@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class I2S extends ConversionInstruction {
+public final class I2S extends ConversionInstruction {
 
     public I2S() {
         super(org.apache.bcel.Const.I2S);

@@ -1,5 +1,6 @@
 package simula.compiler.statement;
 
+import simula.compiler.JavaModule;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
@@ -22,7 +23,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class WhileStatement extends Statement {
+public final class WhileStatement extends Statement {
 	Expression condition;
 	Statement doStatement;
 
@@ -45,16 +46,16 @@ public class WhileStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		Util.code(indent,"while(" + condition.toJavaCode() + ") {");
-		doStatement.doJavaCoding(indent+1);
+		JavaModule.code("while(" + condition.toJavaCode() + ") {");
+		doStatement.doJavaCoding();
 		
 		if(isWhileTrueDo())
-			Util.code(indent,"   if(CODE$==null) break; // Ad'Hoc to prevent JAVAC error'terminate");
+			JavaModule.code("   if(CODE$==null) break; // Ad'Hoc to prevent JAVAC error'terminate");
 		
-		Util.code(indent,"}");
+		JavaModule.code("}");
 	}
 	
 	private boolean isWhileTrueDo()

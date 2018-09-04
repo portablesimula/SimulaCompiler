@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class ISUB extends ArithmeticInstruction {
+public final class ISUB extends ArithmeticInstruction {
 
     /** Substract ints
      */

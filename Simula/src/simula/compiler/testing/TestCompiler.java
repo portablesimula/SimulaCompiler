@@ -16,7 +16,7 @@ import simula.compiler.utilities.Option;
  * @author Øystein Myhre Andersen
  *
  */
-public class TestCompiler {
+public final class TestCompiler {
 
 	public static void main(String[] args) {
 		// String name=Global.packetName+"/sim/old/ClassGlyph.sim";
@@ -70,7 +70,7 @@ public class TestCompiler {
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";
-		// String name=Global.packetName+"/sim/adHoc01.sim";
+		 String name=Global.packetName+"/sim/adHoc01.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
@@ -104,12 +104,13 @@ public class TestCompiler {
 		// String name=Global.packetName+"/sim/GotoSample5.sim";
 		// String name=Global.packetName+"/sim/GotoSample6.sim";   // ERROR
 		// String name=Global.packetName+"/sim/GotoSample7.sim";
+		// String name=Global.packetName+"/sim/GotoSample8.sim";
 		// String name=Global.packetName+"/sim/HashingExample.sim";
 		// String name=Global.packetName+"/sim/HelloWord.sim";
 		// String name=Global.packetName+"/sim/InfileSample.sim";
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 		// String name=Global.packetName+"/sim/JensensDevice.sim";
-		 String name=Global.packetName+"/sim/LocalObject.sim";
+		// String name=Global.packetName+"/sim/LocalObject.sim";
 		// String name=Global.packetName+"/sim/MathSample.sim"; 
 		// String name=Global.packetName+"/sim/MultiAssignments.sim";
 		// String name=Global.packetName+"/sim/ParamSample.sim";

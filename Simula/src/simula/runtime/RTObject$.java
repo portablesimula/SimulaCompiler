@@ -109,7 +109,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	// *******************************************************
 	// *** FRAMEWORK for Procedure-Parameters in Java Coding
 	// *******************************************************
-	public class $PRCQNT
+	public final class $PRCQNT
 	{ RTObject$ staticLink;
 	  Class<?> procedure;
 		  
@@ -169,7 +169,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	static final String arrayError="Illegal use of array";
 	public int[] IX$(int...ix) { return(ix); }
 
-	public class $ARRAY<T>
+	public final class $ARRAY<T>
 	{ public T Elt;
 	  public int[] LB;
 	  public int[] UB;
@@ -301,14 +301,14 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	// *** FRAMEWORK for for-list iteration 
 	// *******************************************************
 	
-	public class ForList implements Iterable<Boolean>
+	public final class ForList implements Iterable<Boolean>
 	{ ForListIterator forListIterator;
 	  public ForList(ForElt... forElt)
 	  {	forListIterator=new ForListIterator(forElt);  }
 	  public Iterator<Boolean> iterator() { return(forListIterator); }
 	}
 
-	public class ForListIterator implements Iterator<Boolean>
+	public final class ForListIterator implements Iterator<Boolean>
 	{ ForElt[] forElt; int i;
 	  public ForListIterator(ForElt... forElt)
 	  { this.forElt=forElt; }
@@ -326,7 +326,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  public boolean hasNext() {return(more); }
 	}
 	
-	public class SingleElt<T> extends ForElt
+	public final class SingleElt<T> extends ForElt
 	{ $NAME<T> cvar,nextValue; //boolean more;
 	  public SingleElt($NAME<T> cvar,$NAME<T> init)
 	  { this.cvar=cvar; this.nextValue=init; more=true; }
@@ -340,7 +340,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  }
 	}
 	
-	public class SingleTValElt extends ForElt
+	public final class SingleTValElt extends ForElt
 	{ // For t:= <TextExpr>  // Text Value Assignment
 	  $NAME<TXT$> cvar,nextValue; //boolean more;
 	  public SingleTValElt($NAME<TXT$> cvar,$NAME<TXT$> init)
@@ -356,7 +356,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  }
 	}
 	
-	public class StepUntil extends ForElt
+	public final class StepUntil extends ForElt
 	{ $NAME<Number> cvar,init,step,until;
 	  Number nextValue;
 	  public StepUntil($NAME<Number> cvar,$NAME<Number> init,$NAME<Number> step,$NAME<Number> until)
@@ -387,7 +387,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  }
 	}
 	
-	public class WhileElt<T> extends ForElt
+	public final class WhileElt<T> extends ForElt
 	{ $NAME<T> cvar,expr; $NAME<Boolean> cond;
 	  public WhileElt($NAME<T> cvar,$NAME<T> expr,$NAME<Boolean> cond)
 	  { this.cvar=cvar; this.expr=expr; this.cond=cond; }
@@ -400,7 +400,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  }
 	}
 	
-	public class WhileTValElt extends ForElt
+	public final class WhileTValElt extends ForElt
 	{ // For t:= <TextExpr> while <Cond>  // Text Value Assignment
 	  $NAME<TXT$> cvar,expr; $NAME<Boolean> cond;
 	  public WhileTValElt($NAME<TXT$> cvar,$NAME<TXT$> expr,$NAME<Boolean> cond)
@@ -606,7 +606,7 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	// ************************************************************
 	// *** FRAMEWORK for NonLocal Label-Parameters in Java Coding
 	// ************************************************************
-	public class $LABQNT extends RuntimeException
+	public final class $LABQNT extends RuntimeException
 	{ static final long serialVersionUID = 42L;
 	  public RTObject$ SL$; // Static link, i.e. the block in which the label is defined.
 	  public int prefixLevel; // PrefixLevel for classes, zero otherwise.

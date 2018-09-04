@@ -31,7 +31,7 @@ import org.apache.bcel.classfile.JavaClass;
  * @version $Id$
  * @see ClassStack
  */
-public class ClassSet {
+public final class ClassSet {
 
     private final Map<String, JavaClass> map = new HashMap<>();
 

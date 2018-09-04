@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class L2D extends ConversionInstruction {
+public final class L2D extends ConversionInstruction {
 
     public L2D() {
         super(org.apache.bcel.Const.L2D);

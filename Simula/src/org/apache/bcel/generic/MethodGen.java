@@ -57,7 +57,7 @@ import org.apache.bcel.util.BCELComparator;
  * @see     InstructionList
  * @see     Method
  */
-public class MethodGen extends FieldGenOrMethodGen {
+public final class MethodGen extends FieldGenOrMethodGen {
 
     private String class_name;
     private Type[] arg_types;

@@ -22,7 +22,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IMPDEP2 extends Instruction {
+public final class IMPDEP2 extends Instruction {
 
     public IMPDEP2() {
         super(org.apache.bcel.Const.IMPDEP2, (short) 1);

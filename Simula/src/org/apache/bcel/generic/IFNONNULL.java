@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IFNONNULL extends IfInstruction {
+public final class IFNONNULL extends IfInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

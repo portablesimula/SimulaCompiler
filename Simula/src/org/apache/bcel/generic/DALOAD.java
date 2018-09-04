@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DALOAD extends ArrayInstruction implements StackProducer {
+public final class DALOAD extends ArrayInstruction implements StackProducer {
 
     /** Load double from array
      */

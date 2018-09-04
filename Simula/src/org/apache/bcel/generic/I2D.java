@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class I2D extends ConversionInstruction {
+public final class I2D extends ConversionInstruction {
 
     /** Convert int to double
      */

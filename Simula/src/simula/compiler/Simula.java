@@ -33,7 +33,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public class Simula {
+public final class Simula {
 
 	static void help() {
 		System.out.println(Global.simulaID+" See: https://github.com/portablesimula\n\n");

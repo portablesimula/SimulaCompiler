@@ -25,7 +25,7 @@ import org.apache.bcel.Const;
  * see vmspec2 �3.3.3
  * @version $Id$
  */
-public class ReturnaddressType extends Type {
+public final class ReturnaddressType extends Type {
 
     public static final ReturnaddressType NO_TARGET = new ReturnaddressType();
     private InstructionHandle returnTarget;

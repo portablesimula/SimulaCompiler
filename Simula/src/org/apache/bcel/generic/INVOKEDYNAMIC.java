@@ -38,7 +38,7 @@ import org.apache.bcel.util.ByteSequence;
  * The invokedynamic instruction in The Java Virtual Machine Specification</a>
  * @since 6.0
  */
-public class INVOKEDYNAMIC extends InvokeInstruction {
+public final class INVOKEDYNAMIC extends InvokeInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

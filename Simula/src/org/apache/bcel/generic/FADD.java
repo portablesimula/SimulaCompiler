@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FADD extends ArithmeticInstruction {
+public final class FADD extends ArithmeticInstruction {
 
     /** Add floats
      */

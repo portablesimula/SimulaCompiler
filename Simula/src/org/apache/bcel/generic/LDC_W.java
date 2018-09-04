@@ -28,7 +28,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class LDC_W extends LDC {
+public final class LDC_W extends LDC {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

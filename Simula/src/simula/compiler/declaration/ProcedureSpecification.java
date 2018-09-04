@@ -34,7 +34,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ProcedureSpecification
+public final class ProcedureSpecification
 { public String identifier;
   public Type type;  
   public Vector<Parameter> parameterList=new Vector<Parameter>();

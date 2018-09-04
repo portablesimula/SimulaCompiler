@@ -28,7 +28,7 @@ import org.apache.bcel.classfile.ElementValue;
 /**
  * @since 6.0
  */
-public class ArrayElementValueGen extends ElementValueGen
+public final class ArrayElementValueGen extends ElementValueGen
 {
     // J5TODO: Should we make this an array or a list? A list would be easier to
     // modify ...

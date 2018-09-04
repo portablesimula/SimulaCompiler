@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class IFEQ extends IfInstruction {
+public final class IFEQ extends IfInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

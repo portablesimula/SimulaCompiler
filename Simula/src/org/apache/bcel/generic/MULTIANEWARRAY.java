@@ -30,7 +30,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class MULTIANEWARRAY extends CPInstruction implements LoadClass, AllocationInstruction,
+public final class MULTIANEWARRAY extends CPInstruction implements LoadClass, AllocationInstruction,
         ExceptionThrower {
 
     private short dimensions;

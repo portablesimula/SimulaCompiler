@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class ASTORE extends StoreInstruction {
+public final class ASTORE extends StoreInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

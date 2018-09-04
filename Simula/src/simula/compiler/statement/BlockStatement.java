@@ -7,6 +7,7 @@
  */
 package simula.compiler.statement;
 
+import simula.compiler.JavaModule;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
@@ -14,14 +15,13 @@ import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Util;
 
 /**
  * 
  * @author Øystein Myhre Andersen
  *
  */
-public class BlockStatement extends Statement {
+public final class BlockStatement extends Statement {
 	public BlockDeclaration blockDeclaration;
 
 	public String getJavaIdentifier() {
@@ -39,7 +39,7 @@ public class BlockStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 
@@ -67,9 +67,9 @@ public class BlockStatement extends Statement {
 		  if(blockDeclaration instanceof ClassDeclaration && ((ClassDeclaration)blockDeclaration).isDetachUsed())  // TODO: ER DETTE MULIG ?
 			   s.append(".START();");
 		  else s.append(".STM();");
-		  Util.code(indent,s.toString());
+		  JavaModule.code(s.toString());
 		}
-		blockDeclaration.doJavaCoding(indent);
+		blockDeclaration.doJavaCoding();
 	}
 
 	public void print(String indent, String tail) {

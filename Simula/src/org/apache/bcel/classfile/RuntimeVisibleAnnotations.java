@@ -30,7 +30,7 @@ import org.apache.bcel.Const;
  * @version $Id: RuntimeVisibleAnnotations
  * @since 6.0
  */
-public class RuntimeVisibleAnnotations extends Annotations
+public final class RuntimeVisibleAnnotations extends Annotations
 {
     /**
      * @param name_index

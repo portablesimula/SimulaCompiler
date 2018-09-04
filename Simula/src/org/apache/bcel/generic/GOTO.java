@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * @version $Id$
  */
-public class GOTO extends GotoInstruction implements VariableLengthInstruction {
+public final class GOTO extends GotoInstruction implements VariableLengthInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

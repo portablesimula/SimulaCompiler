@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class CASTORE extends ArrayInstruction implements StackConsumer {
+public final class CASTORE extends ArrayInstruction implements StackConsumer {
 
     /** Store char into array
      */

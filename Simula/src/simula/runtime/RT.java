@@ -12,7 +12,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class RT
+public final class RT
 { 
   private static final boolean BREAKING=true;//false;//true;
   private static final boolean TRACING=true;//false;//true;

@@ -7,7 +7,7 @@
  */
 package simula.compiler.utilities;
 
-public class OverLoad extends Type {
+public final class OverLoad extends Type {
 	Type[] type;
 	
 	public OverLoad(Type... type)

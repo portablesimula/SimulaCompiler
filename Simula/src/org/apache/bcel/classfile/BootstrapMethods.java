@@ -30,7 +30,7 @@ import org.apache.bcel.Const;
  * The class File Format : The BootstrapMethods Attribute</a>
  * @since 6.0
  */
-public class BootstrapMethods extends Attribute {
+public final class BootstrapMethods extends Attribute {
 
     private BootstrapMethod[] bootstrap_methods;  // TODO this could be made final (setter is not used)
 

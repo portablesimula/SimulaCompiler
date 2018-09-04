@@ -34,7 +34,7 @@ import org.apache.bcel.ExceptionConst;
  * <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.invokespecial">
  * The invokespecial instruction in The Java Virtual Machine Specification</a>
  */
-public class INVOKESPECIAL extends InvokeInstruction {
+public final class INVOKESPECIAL extends InvokeInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

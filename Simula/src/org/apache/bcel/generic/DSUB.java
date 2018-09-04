@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DSUB extends ArithmeticInstruction {
+public final class DSUB extends ArithmeticInstruction {
 
     /** Substract doubles
      */

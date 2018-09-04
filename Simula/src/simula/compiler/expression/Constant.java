@@ -28,7 +28,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  * @see simula.compiler.parsing.SimulaScanner
  */
-public class Constant extends Expression {
+public final class Constant extends Expression {
 	public Object value;
 
 	public Constant(Type type, Object value) {

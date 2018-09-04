@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class LDC2_W extends CPInstruction implements PushInstruction {
+public final class LDC2_W extends CPInstruction implements PushInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

@@ -50,7 +50,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class QualifiedObject extends Expression
+public final class QualifiedObject extends Expression
 { public Expression lhs;
   public String classIdentifier;
   ClassDeclaration classDeclaration; // Set by doChecking

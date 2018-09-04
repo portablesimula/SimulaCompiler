@@ -43,7 +43,7 @@ import simula.compiler.utilities.Util;
  * @see JavaClass
  * @version $Id$
  */
-public class ClassGen extends AccessFlags implements Cloneable {
+public final class ClassGen extends AccessFlags implements Cloneable {
 
     /* Corresponds to the fields found in a JavaClass object.
      */

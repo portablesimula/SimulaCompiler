@@ -9,10 +9,10 @@ package simula.compiler.statement;
 
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
-import simula.compiler.utilities.Util;
 
 /**
  * Labeled Statement.
@@ -29,7 +29,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class LabeledStatement extends Statement {
+public final class LabeledStatement extends Statement {
 	private Vector<String> labels;
 	private Statement statement;
 
@@ -51,15 +51,15 @@ public class LabeledStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void doJavaCoding(int indent) {
+	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		for (String label:labels) {
 			Meaning meaning = Global.currentScope.findMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-			Util.code(indent,"LABEL$("+decl.index+"); // "+decl.identifier);
+			JavaModule.code("LABEL$("+decl.index+"); // "+decl.identifier);
 		}
-		statement.doJavaCoding(indent);
+		statement.doJavaCoding();
 	}
 
 	public String toString() {

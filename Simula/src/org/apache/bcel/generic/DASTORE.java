@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DASTORE extends ArrayInstruction implements StackConsumer {
+public final class DASTORE extends ArrayInstruction implements StackConsumer {
 
     /** Store double into array
      */

@@ -59,7 +59,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class TEXTOBJ extends RTObject$ {
+public final class TEXTOBJ extends RTObject$ {
 	// Declare parameters as attributes
 	public int SIZE;
 	public boolean CONST;

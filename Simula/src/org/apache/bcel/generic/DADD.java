@@ -24,7 +24,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class DADD extends ArithmeticInstruction {
+public final class DADD extends ArithmeticInstruction {
 
     /** Add doubles
      */

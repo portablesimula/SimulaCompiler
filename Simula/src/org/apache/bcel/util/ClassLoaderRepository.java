@@ -36,7 +36,7 @@ import org.apache.bcel.classfile.JavaClass;
  *
  * @version $Id$
  */
-public class ClassLoaderRepository implements Repository {
+public final class ClassLoaderRepository implements Repository {
 
     private final java.lang.ClassLoader loader;
     private final Map<String, JavaClass> loadedClasses = new HashMap<>(); // CLASSNAME X JAVACLASS

@@ -48,7 +48,7 @@ import simula.compiler.utilities.Util;
  * @version $Id$
  * @see org.apache.bcel.generic.ClassGen
  */
-public class JavaClass extends AccessFlags implements Cloneable, Node, Comparable<JavaClass> {
+public final class JavaClass extends AccessFlags implements Cloneable, Node, Comparable<JavaClass> {
 
     private String file_name;
     private String package_name;

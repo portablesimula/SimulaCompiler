@@ -10,6 +10,7 @@ package simula.compiler.statement;
 import java.util.Iterator;
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.expression.Expression;
@@ -45,7 +46,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ForStatement extends Statement
+public final class ForStatement extends Statement
 { Variable controlVariable;
   Token assignmentOperator; //  :=   or   :-
   Vector<ForListElement> forList=new Vector<ForListElement>();
@@ -90,7 +91,7 @@ public class ForStatement extends Statement
 	SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding(int indent)
+  public void doJavaCoding()
   {	// ------------------------------------------------------------
     //	for(boolean CB$:new ForList(
     //			 new SingleElt<Number>(n1)
@@ -105,7 +106,7 @@ public class ForStatement extends Statement
 	ASSERT_SEMANTICS_CHECKED(this);
 	boolean refType=controlVariable.type.isReferenceType();
 	String CB="CB$"+lineNumber;
-    Util.code(indent,"for(boolean "+CB+":new ForList(");
+    JavaModule.code("for(boolean "+CB+":new ForList(");
     char del=' ';
     for(ForListElement elt:forList)
     { String classIdent=(refType)?elt.expr1.type.getJavaRefIdent():"Number";
@@ -116,12 +117,12 @@ public class ForStatement extends Statement
 //        if(assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)
 //        	Util.NOT_IMPLEMENTED("For-Statement with text value assignment (:=)");
       }
-      Util.code(indent,"   "+del+elt.edCode(classIdent));
+      JavaModule.code("   "+del+elt.edCode(classIdent));
       del=',';
     }
-    Util.code(indent,"   )) { if(!"+CB+") continue;");
-    doStatement.doJavaCoding(indent+1);
-    Util.code(indent,"}");
+    JavaModule.code("   )) { if(!"+CB+") continue;");
+    doStatement.doJavaCoding();
+    JavaModule.code("}");
   } 
   
   private String edControlVariableByName(String classIdent)

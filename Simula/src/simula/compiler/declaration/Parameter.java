@@ -11,7 +11,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
-public class Parameter extends Declaration
+public final class Parameter extends Declaration
 { 
 //String identifier;  // Inherited
   public Parameter.Mode mode;

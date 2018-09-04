@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class ILOAD extends LoadInstruction {
+public final class ILOAD extends LoadInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

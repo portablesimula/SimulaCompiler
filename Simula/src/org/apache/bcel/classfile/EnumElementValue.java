@@ -25,7 +25,7 @@ import org.apache.bcel.Const;
 /**
  * @since 6.0
  */
-public class EnumElementValue extends ElementValue
+public final class EnumElementValue extends ElementValue
 {
     // For enum types, these two indices point to the type and value
     private final int typeIdx;

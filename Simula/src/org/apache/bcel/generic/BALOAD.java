@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class BALOAD extends ArrayInstruction implements StackProducer {
+public final class BALOAD extends ArrayInstruction implements StackProducer {
 
     /** Load byte or boolean from array
      */

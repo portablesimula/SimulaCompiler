@@ -44,7 +44,7 @@ import org.apache.bcel.generic.Type;
  *
  * @version $Id$
  */
-public class BCELifier extends org.apache.bcel.classfile.EmptyVisitor {
+public final class BCELifier extends org.apache.bcel.classfile.EmptyVisitor {
 
     /**
      * Enum corresponding to flag source.

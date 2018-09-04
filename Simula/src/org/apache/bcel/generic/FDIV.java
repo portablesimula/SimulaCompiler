@@ -23,7 +23,7 @@ package org.apache.bcel.generic;
  *
  * @version $Id$
  */
-public class FDIV extends ArithmeticInstruction {
+public final class FDIV extends ArithmeticInstruction {
 
     /** Divide floats
      */

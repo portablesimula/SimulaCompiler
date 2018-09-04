@@ -25,7 +25,7 @@ import org.apache.bcel.Const;
 /**
  * @since 6.0
  */
-public class ClassElementValue extends ElementValue
+public final class ClassElementValue extends ElementValue
 {
     // For primitive types and string type, this points to the value entry in
     // the cpool

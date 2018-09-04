@@ -45,7 +45,7 @@ import java.text.DecimalFormat;
  * @author Øystein Myhre Andersen
  *
  */
-public class TXT$ {
+public final class TXT$ {
 	TEXTOBJ OBJ;
 	int START; // Start index of OBJ.MAIN[], counting from zero.
 				// Note this differ from Simula Definition.

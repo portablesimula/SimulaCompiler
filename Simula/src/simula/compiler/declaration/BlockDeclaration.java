@@ -9,8 +9,8 @@ package simula.compiler.declaration;
 
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.statement.Statement;
-import simula.compiler.utilities.Util;
 
 /**
  * </pre>
@@ -58,13 +58,8 @@ public class BlockDeclaration extends DeclarationScope
   {	switch(blockKind)
 	{ case SimulaProgram:
 	  case SubBlock:
-//		        return(hasLocalClasses);
 	  case PrefixedBlock:
-//		  		if(this.hasLocalClasses) return(true);
-//		  		ClassDeclaration prfx=((PrefixedBlockDeclaration)this).getPrefixClass();
-//		  		if(prfx!=null) return(prfx.isBlockWithLocalClasses());
-//		  		return(false);
-		  		return(isBlockWithLocalClasses());
+		  	   return(isBlockWithLocalClasses());
 	  default: return(false);
 	}  
   }
@@ -72,28 +67,28 @@ public class BlockDeclaration extends DeclarationScope
   // ***********************************************************************************************
   // *** Coding Utility: codeSTMBody
   // ***********************************************************************************************
-  protected void codeSTMBody(int indent)
+  protected void codeSTMBody()
   { if(!labelList.isEmpty())
-	{ Util.code(indent,externalIdent+" THIS$=("+externalIdent+")CUR$;");
-      Util.code(indent,"LOOP$:while(JTX$>=0) {"); indent++;
-      Util.code(indent,"try {"); indent++;
-	  Util.code(indent,"JUMPTABLE$(JTX$); // For ByteCode Engineering");
+	{ JavaModule.code(externalIdent+" THIS$=("+externalIdent+")CUR$;");
+      JavaModule.code("LOOP$:while(JTX$>=0) {");
+      JavaModule.code("try {");
+	  JavaModule.code("JUMPTABLE$(JTX$); // For ByteCode Engineering");
 	}
-    for(Statement stm:statements) stm.doJavaCoding(indent);
+    for(Statement stm:statements) stm.doJavaCoding();
 	if(!labelList.isEmpty())
-    { Util.code(indent,"break LOOP$;");
-      indent--; Util.code(indent,"}");
-      Util.code(indent,"catch($LABQNT q) {"); indent++;
-      Util.code(indent,"CUR$=THIS$;");
-      Util.code(indent,"if(q.SL$!=CUR$ || q.prefixLevel!="+prefixLevel()+") {"); indent++;
-      Util.code(indent,"CUR$.STATE$=OperationalState.terminated;");
-      Util.code(indent,"if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
-      Util.code(indent,"throw(q);");
-      indent--; Util.code(indent,"}");
-      Util.code(indent,"if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
-      Util.code(indent,"JTX$=q.index; continue LOOP$; // EG. GOTO Lx"); 
-      indent--; Util.code(indent,"}");
-      indent--; Util.code(indent,"}");
+    { JavaModule.code("break LOOP$;");
+      JavaModule.code("}");
+      JavaModule.code("catch($LABQNT q) {");
+      JavaModule.code("CUR$=THIS$;");
+      JavaModule.code("if(q.SL$!=CUR$ || q.prefixLevel!="+prefixLevel()+") {");
+      JavaModule.code("CUR$.STATE$=OperationalState.terminated;");
+      JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
+      JavaModule.code("throw(q);");
+      JavaModule.code("}");
+      JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
+      JavaModule.code("JTX$=q.index; continue LOOP$; // EG. GOTO Lx"); 
+      JavaModule.code("}");
+      JavaModule.code("}");
     }
   }
 

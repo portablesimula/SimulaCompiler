@@ -28,7 +28,7 @@ import org.apache.bcel.ExceptionConst;
  *
  * @version $Id$
  */
-public class PUTFIELD extends FieldInstruction implements PopInstruction, ExceptionThrower {
+public final class PUTFIELD extends FieldInstruction implements PopInstruction, ExceptionThrower {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.

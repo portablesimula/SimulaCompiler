@@ -73,7 +73,7 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public class TextOperation extends Expression
+public final class TextOperation extends Expression
 { public Expression lhs;
   public Expression rhs;
   

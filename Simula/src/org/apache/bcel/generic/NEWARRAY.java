@@ -30,7 +30,7 @@ import org.apache.bcel.util.ByteSequence;
  *
  * @version $Id$
  */
-public class NEWARRAY extends Instruction implements AllocationInstruction, ExceptionThrower,
+public final class NEWARRAY extends Instruction implements AllocationInstruction, ExceptionThrower,
         StackProducer {
 
     private byte type;
