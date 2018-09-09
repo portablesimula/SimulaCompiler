@@ -166,6 +166,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
+	JavaModule.code("@SuppressWarnings(\"unchecked\")");
     String line="public final class "+getJavaIdentifier();
 	if(prefix!=null) line=line+" extends "+getPrefixClass().getJavaIdentifier();
 	else line=line+" extends BASICIO$";

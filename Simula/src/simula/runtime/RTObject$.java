@@ -15,8 +15,8 @@ import java.util.Iterator;
 * 
 * @author Øystein Myhre Andersen
 */
-//public abstract class RTObject$ extends ENVIRONMENT$  implements Runnable {
-public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
+@SuppressWarnings("unchecked")
+public abstract class RTObject$  implements Runnable {
 //	protected static boolean CODE_STEP_TRACING=false;//true;
 //	protected static boolean BLOCK_TRACING=false;//true;
 //	protected static boolean GOTO_TRACING=false;//true;
@@ -176,12 +176,14 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 	  public $ARRAY(T Elt,int[] LB,int[] UB)
 	  { this.Elt=Elt; this.LB=LB; this.UB=UB; }
 	  public $ARRAY<T> COPY()
-	  {	
-//		T AA=(T)copyMultiArrayObject(Elt);
-		T AA=copyMultiArray(Elt);
-		$ARRAY<T> to=new $ARRAY<T>(AA,LB,UB);  // TODO
+	  {	T CPY=copyMultiArray(Elt);
+	    //RT.BREAK("ARRAY.COPY: Elt="+Elt.getClass().getName()+" at "+Elt);
+	    //RT.BREAK("ARRAY.COPY: CPY="+CPY.getClass().getName()+" at "+CPY);
+		$ARRAY<T> to=new $ARRAY<T>(CPY,LB,UB);  // TODO: DETTE MÅ SJEKKES
+	    //RT.BREAK("ARRAY.COPY: to="+to.getClass().getSimpleName()+" == "+to);
 		return(to);
 	  }
+	  public int nDim() { return(LB.length); }
 	  public int size()
 	  { int s=1;
 		int nDim=LB.length;
@@ -201,21 +203,12 @@ public abstract class RTObject$  implements Runnable {   // CORR-PREFIX
 		}
 		return(s.toString());
 	  }
-//	  public Object putElt(int[] ix,Object val)
-//	  {
-//		  return(val);
-//	  }
-//	  public Object getElt(int[] ix)
-//	  {
-//		  return(null);
-//	  }
 	}
 
 	// *******************************************************************************
 	// *** Utility: Multidimensional Array Copy
 	// Taken from: https://coderanch.com/t/378421/java/Multidimensional-array-copy
 	// *******************************************************************************
-	@SuppressWarnings("unchecked")
 	public static <T> T copyMultiArray(T arr) {
 	    return (T) copyMultiArrayObject(arr);
 	}

@@ -80,7 +80,10 @@ public final class RemoteVariable extends Expression
 	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5a) findRemoteAttributeMeaning("+ident+")  Search in "+objType.getQual());
 	  remoteAttribute=objType.getQual().findRemoteAttributeMeaning(ident);	  
 	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5) findRemoteAttributeMeaning("+ident+")  ==> "+remoteAttribute);
-	  if(remoteAttribute==null) Util.error("RemoteVariable.doRemoteChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
+	  if(remoteAttribute==null) {
+		  Util.error("RemoteVariable.doRemoteChecking: "+ident+" is not an attribute of "+objType.getRefIdent());
+		  return(Type.Integer); // Error Recovery
+	  }
 	  var.setRemotelyAccessed(remoteAttribute);
 	  if(remoteAttribute.declaredAs instanceof Parameter)
 	  { Parameter par=(Parameter)remoteAttribute.declaredAs;

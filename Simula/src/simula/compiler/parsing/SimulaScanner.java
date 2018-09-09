@@ -632,6 +632,7 @@ public final class SimulaScanner
 			int value=(((firstchar - '0')*10+secondchar-'0')*10+thirdchar-'0');
 			if(Option.TRACE_SCAN) Util.TRACE("scanPossibleIsoCode:Got three digits: "+(char)firstchar+(char)secondchar+(char)thirdchar+" value="+value);
 			if(value<256) return(value);
+			Util.warning("ISO-Code "+value+" is out of range (0:255)");
 			pushBack(current); pushBack(thirdchar); pushBack(secondchar); pushBack(firstchar);
 			return('!');
 		  }

@@ -11,7 +11,6 @@ import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.expression.Expression;
-import simula.compiler.expression.Variable;
 
 /**
  * 
@@ -19,31 +18,29 @@ import simula.compiler.expression.Variable;
  *
  */
 public final class Meaning {
-	public Variable.Kind variableKind;
 	public boolean foundBehindInvisible; // Behind hidden/protected
 	public Declaration declaredAs;
 	public DeclarationScope declaredIn;  // Search started here
 	public DeclarationScope foundIn;     // Search ended here
 	
-	
-	public Meaning(Variable.Kind variableKind,Declaration declaredAs,DeclarationScope declaredIn)
-	{ this.variableKind=variableKind;
-	  this.declaredAs=declaredAs;
+	public Meaning(Declaration declaredAs,DeclarationScope declaredIn)
+	{ this.declaredAs=declaredAs;
 	  this.declaredIn=declaredIn;
 	}
-	public Meaning(Variable.Kind variableKind,Declaration declaredAs,DeclarationScope declaredIn
+	public Meaning(Declaration declaredAs,DeclarationScope declaredIn
 			      ,DeclarationScope foundIn,boolean foundBehindInvisible)
-	{ this(variableKind,declaredAs,declaredIn);
+	{ this(declaredAs,declaredIn);
 	  this.foundIn=foundIn;
 	  this.foundBehindInvisible=foundBehindInvisible;
     }
-	public Meaning(Variable.Kind variableKind) // Used by: ConnectedAttribute
-	{ this.variableKind=variableKind;
-	}
+	public Meaning() {} // Used by: ConnectionBlock
+	
+	public boolean isConnected()
+	{ return(declaredIn instanceof ConnectionBlock); }
 	
 	public Expression getInspectedVariable() {
-		if(variableKind!=Variable.Kind.connectedAttribute) return(null);
-		return(((ConnectionBlock)declaredIn).getInspectedVariable());
+		if(isConnected()) return(((ConnectionBlock)declaredIn).getInspectedVariable());
+		else return(null);
 	}
 	
 	public boolean isNO_MEANING() {	return(declaredAs==null); }
@@ -77,7 +74,7 @@ public final class Meaning {
 	
 	public String toString()
 	{ if(declaredAs==null) return("NO MEANING");
-	  return(variableKind.toString()+' '+declaredAs+", foundBehindInvisible="+foundBehindInvisible
+	  return("DeclaredAs "+declaredAs+", foundBehindInvisible="+foundBehindInvisible
 			+"  (blockLevel="+declaredIn.blockLevel+",declaredIn="+declaredIn+",foundIn="+foundIn+')');
 	}
 	

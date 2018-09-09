@@ -17,6 +17,7 @@ public final class Parameter extends Declaration
   public Parameter.Mode mode;
 //  Type type;  // Inherited 
   public Parameter.Kind kind;
+  public int nDim= -1; // Array Param's nDim. Set during doChecking
   
   public enum Mode {
 	    value     // Procedure parameter transfer mode
@@ -36,10 +37,10 @@ public final class Parameter extends Declaration
   { super(identifier); }
   
   public Parameter(String identifier,Type type,Parameter.Kind kind)
-  { super(identifier);
-    this.type=type; this.kind=kind;
-    if(type==Type.Label) Util.BREAK("NEW Parameter: "+this);
-  }
+  { this(identifier); this.type=type; this.kind=kind; }
+  
+  public Parameter(String identifier,Type type,Parameter.Kind kind,int nDim)
+  { this(identifier,type,kind); this.nDim=nDim; }
   
   public boolean equals(Object other)
   {	if(!(other instanceof Parameter)) return(false);
@@ -161,6 +162,7 @@ public final class Parameter extends Declaration
     if(type!=null) s=s+type; else s="NOTYPE";
     if(mode!=null) s=""+mode+" "+type;
     if(kind==null) s=s+" NOKIND";
+    if(nDim>0) s=s+" "+nDim+"-Dimentional";
     else if(kind!=Parameter.Kind.Simple) s=s+" "+kind;
   	return(s+' '+identifier+"("+externalIdent+')');
   }

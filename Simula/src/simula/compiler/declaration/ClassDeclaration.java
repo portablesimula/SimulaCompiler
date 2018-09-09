@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
-import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
@@ -243,16 +242,16 @@ public class ClassDeclaration extends BlockDeclaration
     if(!prtected)
     { for(Parameter parameter:parameterList)
         if(ident.equalsIgnoreCase(parameter.identifier))
-        	return(new Meaning(Variable.Kind.parameter,parameter,this,this,behindProtected));
+        	return(new Meaning(parameter,this,this,behindProtected));
       for(Declaration declaration:declarationList)
 	    if(ident.equalsIgnoreCase(declaration.identifier))
-	    	return(new Meaning(Variable.Kind.attribute,declaration,this,this,behindProtected));
+	    	return(new Meaning(declaration,this,this,behindProtected));
       for(LabelDeclaration label:labelList)
 	    if(ident.equalsIgnoreCase(label.identifier))
-	    	return(new Meaning(Variable.Kind.label,label,this,this,behindProtected));
+	    	return(new Meaning(label,this,this,behindProtected));
       for(VirtualSpecification virtual:virtualList)
 	    if(ident.equalsIgnoreCase(virtual.identifier))
-	    	return(new Meaning(Variable.Kind.virtual,virtual,this,this,behindProtected)); 
+	    	return(new Meaning(virtual,this,this,behindProtected)); 
     }
     //Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
     
@@ -306,25 +305,25 @@ public class ClassDeclaration extends BlockDeclaration
       for(Declaration declaration:scope.declarationList)
 	    if(ident.equalsIgnoreCase(declaration.identifier))
 	    { ClassDeclaration hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null) return(new Meaning(Variable.Kind.attribute,declaration,this,scope,searchBehindHidden));
+          if(hiddenScope==null) return(new Meaning(declaration,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
 	  for(Parameter parameter:scope.parameterList)
 	      if(ident.equalsIgnoreCase(parameter.identifier))
 	        { DeclarationScope hiddenScope=scope.getHidden(ident);
-	          if(hiddenScope==null) return(new Meaning(Variable.Kind.parameter,parameter,this,scope,searchBehindHidden));
+	          if(hiddenScope==null) return(new Meaning(parameter,this,scope,searchBehindHidden));
 	          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	        }
       for(LabelDeclaration label:scope.labelList)
 	    if(ident.equalsIgnoreCase(label.identifier))
 	    { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null)	return(new Meaning(Variable.Kind.label,label,this,scope,searchBehindHidden));
+          if(hiddenScope==null)	return(new Meaning(label,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
       for(VirtualSpecification virtual:scope.virtualList)
 	    if(ident.equalsIgnoreCase(virtual.identifier))
 	    { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null)	return(new Meaning(Variable.Kind.virtual,virtual,this,scope,searchBehindHidden));
+          if(hiddenScope==null)	return(new Meaning(virtual,this,scope,searchBehindHidden));
           scope=scope.getScopeBehindHidden(ident); continue SEARCH;
 	    }
       
@@ -469,6 +468,7 @@ public Iterator<Parameter> parameterIterator()
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
+	JavaModule.code("@SuppressWarnings(\"unchecked\")");
     String line="public class "+getJavaIdentifier();
 	if(prefix!=null) line=line+" extends "+getPrefixClass().getJavaIdentifier();
 	else line=line+" extends BASICIO$";

@@ -132,7 +132,6 @@ public final class VirtualSpecification extends Declaration {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		// Util.BREAK("Virtual("+this+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
-		// TODO: ??? hva checker vi ?
 		if(procedureSpec!=null) procedureSpec.doChecking(this.declaredIn);
 		SET_SEMANTICS_CHECKED();
 	}

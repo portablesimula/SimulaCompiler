@@ -8,7 +8,6 @@
 package simula.compiler.declaration;
 
 import simula.compiler.JavaModule;
-import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.BlockStatement;
 import simula.compiler.statement.Statement;
@@ -148,10 +147,10 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
     //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
     for(Declaration declaration:declarationList)
 	  if(ident.equalsIgnoreCase(declaration.identifier))
-	     return(new Meaning(Variable.Kind.attribute,declaration,this,this,false));
+	     return(new Meaning(declaration,this,this,false));
     for(LabelDeclaration label:labelList)
 	  if(ident.equalsIgnoreCase(label.identifier))
-	     return(new Meaning(Variable.Kind.label,label,this,this,false));
+	     return(new Meaning(label,this,this,false));
     return(null);
   }
   
@@ -204,6 +203,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
+	JavaModule.code("@SuppressWarnings(\"unchecked\")");
 	JavaModule.code("public final class "+getJavaIdentifier()+" extends BASICIO$"+" {");
 	doPrototypeCoding();
 	if(!labelList.isEmpty())

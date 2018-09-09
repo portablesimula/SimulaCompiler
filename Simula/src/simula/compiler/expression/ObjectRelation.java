@@ -87,14 +87,17 @@ public final class ObjectRelation extends Expression
 	lhs.doChecking(); 
 	Type type1=lhs.type;
     String refIdent=type1.getRefIdent();
-    if(refIdent==null)
-    	Util.error("ObjectRelation.doChecking: The Variable "+lhs+" is not ref() type");
-	    
-    //Util.BREAK("ObjectRelation.doChecking: lhs="+lhs+", Qual="+lhs.getClass().getSimpleName());
-    //Util.BREAK("ObjectRelation.doChecking: rhs="+rhs+", Qual="+rhs.getClass().getSimpleName());
+    if(refIdent==null) {
+//    	Util.BREAK("ObjectRelation.doChecking: type1="+type1);
+//    	Util.BREAK("ObjectRelation.doChecking: type1'keyWord="+type1.getKeyWord());
+	    Util.warning("NONE IS/IN "+classIdentifier+" -- Rewrite program");
+    } else {  
+        //Util.BREAK("ObjectRelation.doChecking: lhs="+lhs+", Qual="+lhs.getClass().getSimpleName());
+        //Util.BREAK("ObjectRelation.doChecking: rhs="+rhs+", Qual="+rhs.getClass().getSimpleName());
 		
-	if(!checkCompatability(lhs,classIdentifier))
-		   Util.warning("IS/IN is always FALSE -- " + classIdentifier	+ " is not compatible with " + refIdent);
+	    if(!checkCompatability(lhs,classIdentifier))
+		       Util.warning("IS/IN is always FALSE -- " + classIdentifier	+ " is not compatible with " + refIdent);
+    }
 	this.type=Type.Boolean;
 	//  Debug.BREAK("ObjectRelation.doChecking: "+oprCode);
 	if(Option.TRACE_CHECKER) Util.TRACE("END ObjectRelation"+toString()+".doChecking - Result type="+this.type);
@@ -111,6 +114,8 @@ public final class ObjectRelation extends Expression
   public String toJavaCode()
   { //Util.BREAK("ObjectRelation.toJavaCode: "+this);
 	ASSERT_SEMANTICS_CHECKED(this);
+	String refIdent=lhs.type.getRefIdent();
+	if(refIdent==null) return("false"); // NONE IS/IN Any is always FALSE
 	if(opr==KeyWord.IN)	{
 		if(!checkCompatability(lhs,classIdentifier)) return("false"); // warning("IS/IN is always FALSE
 	    return(lhs.get()+opr.toJavaCode()+classDeclaration.getJavaIdentifier());

@@ -10,7 +10,6 @@ package simula.compiler.declaration;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
-import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
@@ -106,7 +105,7 @@ public class ProcedureDeclaration extends BlockDeclaration
 //	if(declaredIn.blockKind==BlockKind.Class)
 	if(declaredIn instanceof ClassDeclaration)
     { myVirtual=((ClassDeclaration)declaredIn).findVirtualSpecification(identifier);
-      Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: myVirtual="+myVirtual);
+      //Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: myVirtual="+myVirtual);
       if(myVirtual!=null)
       { DeclarationScope scope=myVirtual.declaredIn;
         if(scope==declaredIn) myVirtual.setMatch(this);
@@ -127,13 +126,13 @@ public class ProcedureDeclaration extends BlockDeclaration
     //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
     for(Declaration declaration:declarationList)
 	  if(ident.equalsIgnoreCase(declaration.identifier))
-	     return(new Meaning(Variable.Kind.attribute,declaration,this,this,false));
+	     return(new Meaning(declaration,this,this,false));
 	for(Parameter parameter:parameterList)
 	  if(ident.equalsIgnoreCase(parameter.identifier))
-	     return(new Meaning(Variable.Kind.parameter,parameter,this,this,false));
+	     return(new Meaning(parameter,this,this,false));
     for(LabelDeclaration label:labelList)
 	  if(ident.equalsIgnoreCase(label.identifier))
-	     return(new Meaning(Variable.Kind.label,label,this,this,false));
+	     return(new Meaning(label,this,this,false));
     return(null);
   }
 
@@ -214,6 +213,7 @@ public class ProcedureDeclaration extends BlockDeclaration
 	Global.javaModules.add(javaModule); 
 	javaModule.openJavaOutput();
 	Global.currentScope=this;
+	JavaModule.code("@SuppressWarnings(\"unchecked\")");
 	JavaModule.code("public final class "+getJavaIdentifier()+" extends BASICIO$ {");
 	doPrototypeCoding();
 	if(blockKind==BlockKind.Procedure  && type!=null)
@@ -297,7 +297,10 @@ public class ProcedureDeclaration extends BlockDeclaration
   	{ String tp=par.toJavaType();
   	  String typeValue;
   	  if(par.mode==Parameter.Mode.name) typeValue=("("+tp+")param");
-  	  else if(par.kind==Parameter.Kind.Array) typeValue=("arrayValue(param)");
+  	  else if(par.kind==Parameter.Kind.Array) {
+  		  typeValue=("arrayValue(param)");
+  		  if(par.mode==Parameter.Mode.value) typeValue=typeValue+".COPY()";
+  	  }
   	  else if(par.kind==Parameter.Kind.Procedure) typeValue=("procValue(param)");
   	  else if(par.kind!=Parameter.Kind.Simple) typeValue=("("+tp+")param");
   	  else if(par.type.isArithmeticType()) typeValue=(tp+"Value(param)");

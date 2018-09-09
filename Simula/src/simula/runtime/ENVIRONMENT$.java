@@ -25,23 +25,22 @@ import java.util.Random;
  * @author Øystein Myhre Andersen
  *
  */
-//public final class ENVIRONMENT$ {
-public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
+// public final class ENVIRONMENT$ {
+public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	static long START_TIME = System.currentTimeMillis();
 	static char CURRENTLOWTEN = '&';
 	static char CURRENTDECIMALMARK = '.';
-	public final double maxlongreal=Double.MAX_VALUE;
-	public final double minlongreal= -maxlongreal;//Double.MIN_VALUE;
-	public final float maxreal=Float.MAX_VALUE;
-	public final float minreal= -maxreal;//Float.MIN_VALUE;
-	public final int maxrank=256; // Character.???;
-	public final int maxint=Integer.MAX_VALUE;
-	public final int minint=Integer.MIN_VALUE;
-
+	public final double maxlongreal = Double.MAX_VALUE;
+	public final double minlongreal = -maxlongreal;// Double.MIN_VALUE;
+	public final float maxreal = Float.MAX_VALUE;
+	public final float minreal = -maxreal;// Float.MIN_VALUE;
+	public final int maxrank = 256; // Character.???;
+	public final int maxint = Integer.MAX_VALUE;
+	public final int minint = Integer.MIN_VALUE;
 
 	/**
-	 * The value of "simulaid" is an implementation defined string of the
-	 * following general format:
+	 * The value of "simulaid" is an implementation defined string of the following
+	 * general format:
 	 * 
 	 * <pre>
 	 *     <simid>!!!<siteid>!!!<OS>!!!<CPU>!!!<user>!!!<job>!!!<acc>!!!<prog>
@@ -56,39 +55,32 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *   <prog>:    Identification of the executing task or program
 	 * </pre>
 	 */
-	public final String simid="Portable SIMULA 2018";
-	public final String siteid="";
-	public final String OS="";
-	public final String CPU="";
-	public final String user="";
-	public final String job="";
-	public final String acc="";
-	public final String prog="";
-	public final String simulaIdent=simid+"!!!"+siteid+"!!!"+OS+"!!!"+CPU+"!!!"+user+"!!!"+job+"!!!"+acc+"!!!"+prog;
-//	public TXT$ simulaid;
-	public TXT$ simulaid() { return(new TXT$(simulaIdent)); }
+	public final String simid = "Portable SIMULA 2018";
+	public final String siteid = "";
+	public final String OS = "";
+	public final String CPU = "";
+	public final String user = "";
+	public final String job = "";
+	public final String acc = "";
+	public final String prog = "";
+	public final String simulaIdent = simid + "!!!" + siteid + "!!!" + OS + "!!!" + CPU + "!!!" + user + "!!!" + job
+			+ "!!!" + acc + "!!!" + prog;
+
+	public TXT$ simulaid() {
+		return (new TXT$(simulaIdent));
+	}
 
 	// Constructor
-//	public ENVIRONMENT$() {
-//		//super(null, null);
-//		//simulaid=new TXT$(simulaIdent);
 	public ENVIRONMENT$(RTObject$ staticLink) {
 		super(staticLink);
 	}
-	
+
 	// ************************************************************
-	// *** object IS classIdentifier - Kan optimaliseres
+	// *** object IS classIdentifier
 	// ************************************************************
-	public boolean IS$(Object ob1,Object ob2)
-	{ if(ob1!=null)
-	  { ob1=ob1.getClass();
-	    //RT.BREAK("IS$ ob1="+ob1+", Qual="+ob1.getClass().getSimpleName());
-	  }
-	  //RT.BREAK("IS$ ob2="+ob2+", Qual="+ob2.getClass().getSimpleName());
-	  //RT.BREAK("IS$ Result="+((ob1==ob2)?"true":"false"));
-	  return(ob1==ob2);
+	public boolean IS$(Object obj, Class<?> cls) {
+		return((obj == null)?false:(obj.getClass() == cls));
 	}
-	
 
 	// *****************************************
 	// *** Basic operations ***
@@ -187,22 +179,44 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * end entier;
 	 * </pre>
 	 * 
-	 * The result is the integer "floor" of a real type item, the value always
-	 * being less than or equal to the parameter. Thus, entier(1.8) returns the
-	 * value 1, while entier(-1.8) returns -2.
+	 * The result is the integer "floor" of a real type item, the value always being
+	 * less than or equal to the parameter. Thus, entier(1.8) returns the value 1,
+	 * while entier(-1.8) returns -2.
 	 * 
 	 * @param d
 	 * @return
 	 */
 	public int entier(double d) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
 		int j = (int) d;
 		return ((((float) j) > d) ? (j - 1) : (j));
 	}
 
 	/**
+	 * Integer Power: b ** x
+	 * 
+	 * @param b
+	 * @param x
+	 * @return
+	 */
+	public int IPOW$(int b, int x) {
+		// System.out.println("IPOW("+b+','+x+')');
+		if (x == 0) {
+			if (b == 0)
+				throw new RuntimeException("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
+			return (1); // any ** 0 ==> 1
+		} else if (x < 0)
+			throw new RuntimeException("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
+		else if (b == 0)
+			return (0); // 0 ** non_zero ==> 0
+		int v = b;
+		while ((--x) > 0)
+			v = v * b;
+		return (v);
+	}
+
+	/**
 	 * Overloaded versions of 'addepsilon'.
+	 * 
 	 * <pre>
 	 * <type of e> procedure addepsilon(e);   <real-type> e;
 	 *     addepsilon := e + ... ; ! see below;
@@ -210,9 +224,9 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * <p>
 	 * The result type is that of the parameter. The result is the value of the
 	 * parameter incremented (addepsilon) or decremented (subepsilon) by the
-	 * smallest positive value, such that the result is not equal to the
-	 * parameter within the precision of the implementation. Thus, for all
-	 * positive values of "eps",
+	 * smallest positive value, such that the result is not equal to the parameter
+	 * within the precision of the implementation. Thus, for all positive values of
+	 * "eps",
 	 * 
 	 * <pre>
 	 * E - eps &lt;= subepsilon(E) &lt; E &lt; addepsilon(E) &lt;= E + eps
@@ -224,12 +238,14 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	public float addepsilon(float x) {
 		return (Math.nextUp(x));
 	}
+
 	public double addepsilon(double x) {
 		return (Math.nextUp(x));
 	}
 
 	/**
 	 * Overloaded versions of 'subepsilon'.
+	 * 
 	 * <pre>
 	 * <type of e> procedure subepsilon(e);   <real-type> e;
 	 *     subepsilon := e - ... ; ! see below;
@@ -237,9 +253,9 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * <p>
 	 * The result type is that of the parameter. The result is the value of the
 	 * parameter incremented (addepsilon) or decremented (subepsilon) by the
-	 * smallest positive value, such that the result is not equal to the
-	 * parameter within the precision of the implementation. Thus, for all
-	 * positive values of "eps",
+	 * smallest positive value, such that the result is not equal to the parameter
+	 * within the precision of the implementation. Thus, for all positive values of
+	 * "eps",
 	 * 
 	 * <pre>
 	 * E - eps &lt;= subepsilon(E) &lt; E &lt; addepsilon(E) &lt;= E + eps
@@ -251,22 +267,20 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	public float subepsilon(float x) {
 		return (Math.nextDown(x));
 	}
+
 	public double subepsilon(double x) {
 		return (Math.nextDown(x));
 	}
 
-
-	
-	
 	/**
 	 * <pre>
 	 * character procedure char(i);  integer i;
 	 *    char := ... ;
 	 * </pre>
 	 * 
-	 * The result is the character obtained by converting the parameter
-	 * according to the implementation-defined coding of characters. The
-	 * parameter must be in the range 0..maxrank.
+	 * The result is the character obtained by converting the parameter according to
+	 * the implementation-defined coding of characters. The parameter must be in the
+	 * range 0..maxrank.
 	 * 
 	 * @param i
 	 * @return
@@ -281,9 +295,9 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *    isochar := ... ;
 	 * </pre>
 	 * 
-	 * The result is the character obtained by converting the parameter
-	 * according to the ISO 2022 standard character code. The parameter must be
-	 * in the range 0..255.
+	 * The result is the character obtained by converting the parameter according to
+	 * the ISO 2022 standard character code. The parameter must be in the range
+	 * 0..255.
 	 * 
 	 * @param n
 	 * @return
@@ -298,8 +312,8 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *    rank := ... ;
 	 * </pre>
 	 * 
-	 * The result is the integer obtained by converting the parameter according
-	 * to the implementation-defined character code.
+	 * The result is the integer obtained by converting the parameter according to
+	 * the implementation-defined character code.
 	 * 
 	 * @param c
 	 * @return
@@ -314,8 +328,8 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *    isorank := ... ;
 	 * </pre>
 	 * 
-	 * The result is the integer obtained by converting the parameter according
-	 * to the ISO 2022 standard character code.
+	 * The result is the integer obtained by converting the parameter according to
+	 * the ISO 2022 standard character code.
 	 * 
 	 * @param c
 	 * @return
@@ -345,8 +359,8 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *    letter := ... ;
 	 * </pre>
 	 * 
-	 * The result is true if the parameter is a letter of the English alphabet
-	 * ('a' ... 'z', 'A' ... 'Z').
+	 * The result is true if the parameter is a letter of the English alphabet ('a'
+	 * ... 'z', 'A' ... 'Z').
 	 * 
 	 * @param c
 	 * @return
@@ -365,23 +379,48 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *                    end lowten;
 	 * </pre>
 	 * 
-	 * Changes the value of the current lowten character to that of the
-	 * parameter. The previous value is returned. Illegal parameters are
+	 * Changes the value of the current lowten character to that of the parameter.
+	 * The previous value is returned. Illegal parameters are
 	 * <p>
-	 * digits, plus ("+"), minus ("-"), dot ("."), comma (","), control
-	 * characters (i.e. ISO code<32), DEL (ISO code 127), and all characters
-	 * with ISO code greater than 127.
+	 * digits, plus ("+"), minus ("-"), dot ("."), comma (","), control characters
+	 * (i.e. ISO code<32), DEL (ISO code 127), and all characters with ISO code
+	 * greater than 127.
 	 * 
 	 * @param c
 	 * @return
 	 */
 	public char lowten(char c) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition
+		if (illegalLowten(c))
+			throw new RuntimeException("Illegal LOWTEN Character: " + c + "  Code=" + (int) c);
 		char lowten = CURRENTLOWTEN;
-//		CURRENTLOWTEN = c;
+		// CURRENTLOWTEN = c;
 		CURRENTLOWTEN = Character.toUpperCase(c);
 		return (lowten);
+	}
+
+	private boolean illegalLowten(char c) {
+		if (c <= 32)
+			return (true); // SPACE is also Illegal in this implementation
+		if (c >= 127)
+			return (true);
+		switch (c) {
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case '+':
+		case '-':
+		case '.':
+		case ',':
+			return (true);
+		}
+		return (false);
 	}
 
 	/**
@@ -406,7 +445,7 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	public char decimalmark(char c) {
 		char decimalmark = 0;
 		if (c != '.' && c != ',') {
-			throw new RuntimeException("Decimalmark error");
+			throw new RuntimeException("Decimalmark error: "+c);
 		} else {
 			decimalmark = CURRENTDECIMALMARK;
 			CURRENTDECIMALMARK = c;
@@ -420,8 +459,8 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *    begin  t.setpos(1); upcase:- t;  ... end;
 	 * </pre>
 	 * 
-	 * Convert the letters in the text parameter to their upper case
-	 * representation. Only letters of the English alphabet are converted.
+	 * Convert the letters in the text parameter to their upper case representation.
+	 * Only letters of the English alphabet are converted.
 	 * <p>
 	 * The result is a reference to the parameter.
 	 * 
@@ -429,14 +468,15 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * @return
 	 */
 	public TXT$ upcase(TXT$ t) {
-		if(t==null) t=NOTEXT;
+		if (t == null)
+			t = NOTEXT;
 		t.setpos(1);
 		while (t.more()) {
 			char c = t.getchar();
 			t.setpos(t.pos() - 1);
 			t.putchar(Character.toUpperCase(c));
 		}
-		t.setpos(1); // TODO: Sjekk dette mot SIMULA Standard.
+		t.setpos(1);
 		return (t);
 	}
 
@@ -446,8 +486,8 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *                begin  t.setpos(1); lowcase:- t; ... end;
 	 * </pre>
 	 * 
-	 * Convert the letters in the text parameter to their lower case
-	 * representation. Only letters of the English alphabet are converted.
+	 * Convert the letters in the text parameter to their lower case representation.
+	 * Only letters of the English alphabet are converted.
 	 * <p>
 	 * The result is a reference to the parameter.
 	 * 
@@ -455,14 +495,15 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * @return
 	 */
 	public TXT$ lowcase(TXT$ t) {
-		if(t==null) t=NOTEXT;
+		if (t == null)
+			t = NOTEXT;
 		t.setpos(1);
 		while (t.more()) {
 			char c = t.getchar();
 			t.setpos(t.pos() - 1);
 			t.putchar(Character.toLowerCase(c));
 		}
-		t.setpos(1); // TODO: Sjekk dette mot SIMULA Standard.
+		t.setpos(1);
 		return (t);
 	}
 
@@ -539,62 +580,67 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * <type> procedure max(i1,i2); <type> i1; <type> i2;
 	 * </pre>
 	 * 
-	 * The value is the greater of the two parameter values. Legal parameter
-	 * types are text, character, real type and integer type.
+	 * The value is the greater of the two parameter values. Legal parameter types
+	 * are text, character, real type and integer type.
 	 * <p>
-	 * The type of the result conforms to the rules of 3.3.1. in Simula
-	 * Standard.
+	 * The type of the result conforms to the rules of 3.3.1. in Simula Standard.
 	 * 
 	 * @param x
 	 * @param y
 	 * @return
 	 */
-	public double max(double x, double y) {	return (Math.max(x, y)); }
-	public float max(float x, float y) { return (Math.max(x, y)); }
-	public int max(int x, int y) { return (Math.max(x, y)); }
-	public char max(char x, char y) { return((char)Math.max((int)x, (int)y)); }
-	// TODO: Complete the implementation according to Simula Standard Definition.
+	public double max(double x, double y) {
+		return (Math.max(x, y));
+	}
+
+	public float max(float x, float y) {
+		return (Math.max(x, y));
+	}
+
+	public int max(int x, int y) {
+		return (Math.max(x, y));
+	}
+
+	public char max(char x, char y) {
+		return ((char) Math.max((int) x, (int) y));
+	}
+
+	public TXT$ max(TXT$ x, TXT$ y) {
+		return (TXTREL$LT(x, y) ? y : x);
+	}
 
 	/**
 	 * <pre>
 	 * <type> procedure min(i1,i2); <type> i1; <type> i2;
 	 * </pre>
 	 * 
-	 * The value is the lesser of the two parameter values. Legal parameter
-	 * types are text, character, real type and integer type.
+	 * The value is the lesser of the two parameter values. Legal parameter types
+	 * are text, character, real type and integer type.
 	 * <p>
-	 * The type of the result conforms to the rules of 3.3.1. in Simula
-	 * Standard.
+	 * The type of the result conforms to the rules of 3.3.1. in Simula Standard.
 	 * 
 	 * @param x
 	 * @param y
 	 * @return
 	 */
-	public double min(double x, double y) {	return (Math.min(x, y)); }
-	public float min(float x, float y) { return (Math.min(x, y)); }
-	public int min(int x, int y) { return (Math.min(x, y)); }
-	public char min(char x, char y) { return((char)Math.min((int)x, (int)y)); }
-	// TODO: Complete the implementation according to Simula Standard Definition.
+	public double min(double x, double y) {
+		return (Math.min(x, y));
+	}
 
-	// *****************************************
-	// *** Environmental enquiries ***
-	// *****************************************
+	public float min(float x, float y) {
+		return (Math.min(x, y));
+	}
 
-	/**
-	 * <pre>
-	 * integer procedure sourceline;
-	 * </pre>
-	 * 
-	 * The value indicates the line on which the procedure call occurs. The
-	 * interpretation of this number is implementation-defined.
-	 * 
-	 * @return
-	 */
-	public int sourceline() {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//return (0);
-		throw new RuntimeException("ENVIRONMENT$ -- sourceline is not implemented");
+	public int min(int x, int y) {
+		return (Math.min(x, y));
+	}
+
+	public char min(char x, char y) {
+		return ((char) Math.min((int) x, (int) y));
+	}
+
+	public TXT$ min(TXT$ x, TXT$ y) {
+		return (TXTREL$LT(x, y) ? x : y);
 	}
 
 	// *****************************************
@@ -631,21 +677,21 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *                <type> array a; integer i;
 	 * </pre>
 	 * 
-	 * The procedure "lowerbound" returns the lower bound of the dimension of
-	 * the given array corresponding to the given index. The first dimension has
-	 * index one, the next two, etc. An index less than one or greater than the
-	 * number of dimensions of the given array constitutes a run time error.
+	 * The procedure "lowerbound" returns the lower bound of the dimension of the
+	 * given array corresponding to the given index. The first dimension has index
+	 * one, the next two, etc. An index less than one or greater than the number of
+	 * dimensions of the given array constitutes a run time error.
 	 * 
 	 * @param a
 	 * @param i
 	 * @return
 	 */
-	public int lowerbound ($ARRAY<?> a,int i) { return(a.LB[i-1]); }
-	public int lowerbound(float[] a, int i) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//return (0);
-		throw new RuntimeException("ENVIRONMENT$ -- lowerbound is not implemented");
+	public int lowerbound($ARRAY<?> a, int i) {
+		try {
+			return (a.LB[i - 1]);
+		} catch (RuntimeException e) {
+			throw new RuntimeException("Wrong number of dimensions", e);
+		}
 	}
 
 	/**
@@ -657,92 +703,39 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 *                <type> array a; integer i;
 	 * </pre>
 	 * 
-	 * The procedure "upperbound" returns the upper bound of the dimension of
-	 * the given array corresponding to the given index. The first dimension has
-	 * index one, the next two, etc. An index less than one or greater than the
-	 * number of dimensions of the given array constitutes a run time error.
+	 * The procedure "upperbound" returns the upper bound of the dimension of the
+	 * given array corresponding to the given index. The first dimension has index
+	 * one, the next two, etc. An index less than one or greater than the number of
+	 * dimensions of the given array constitutes a run time error.
 	 * 
 	 * @param a
 	 * @param i
 	 * @return
 	 */
-    public int upperbound ($ARRAY<?> a,int i) { return(a.UB[i-1]); }
-	public int upperbound(float[] a, int i) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//return (0);
-		throw new RuntimeException("ENVIRONMENT$ -- upperbound is not implemented");
+	public int upperbound($ARRAY<?> a, int i) {
+		try {
+			return (a.UB[i - 1]);
+		} catch (RuntimeException e) {
+			throw new RuntimeException("Wrong number of dimensions", e);
+		}
 	}
 
-	// *****************************************
+	// *********************************************************************
 	// *** Random drawing ***
-	// *****************************************
+	// *********************************************************************
 
-	/**
-	 * Random drawing
-	 * <p>
-	 * All random drawing procedures of SIMULA are based on the technique of
-	 * obtaining "basic drawings" from the uniform distribution in the interval
-	 * <0,1>.
-	 * <p>
-	 * Pseudo-random number streams
-	 * <p>
-	 * A basic drawing replaces the value of a specified integer variable, say
-	 * U, by a new value according to an implementation-defined algorithm.
-	 * <p>
-	 * As an example, the following algorithm may be suitable for binary
-	 * computers:
-	 * 
-	 * <pre>
-	 *                    U(i+1) = remainder ((U(i) * 5**(2*p+1)) // 2**n)
-	 * </pre>
-	 * 
-	 * where U(i) is the i'th value of U, n is an integer related to the size of
-	 * a computer word and p is a positive integer. It can be proved that, if
-	 * U(0) is a positive odd integer, the same is true for all U(i) and the
-	 * sequence U(0), U(1), U(2), ... is cyclic with period 2**n-2. (The last
-	 * two bits of U remain constant, while the other n-2 take on all possible
-	 * combinations). Thus there are two sequences - one in the range (1:2**n-3)
-	 * and the other in (3:2**n-1).
-	 * <p>
-	 * It is a property of this algorithm that any successor to a stream number
-	 * U(i), e.g. U(i+m), can be computed using modular arithmetic in log2(m)
-	 * steps.
-	 * <p>
-	 * The real numbers u(i) = U(i) * 2**(-n) are fractions in the range <0,1>.
-	 * The sequence u(1), u(2), ... is called a "stream" of pseudo- random
-	 * numbers, and u(i) (i = l,2, ...) is the result of the i'th basic drawing
-	 * in the stream U. A stream is completely determined by the initial value
-	 * U(0) of the corresponding integer variable. Nevertheless, it is a
-	 * "good approximation" to a sequence of truly random drawings.
-	 * <p>
-	 * By reversing the sign of the non-zero initial value U(0) of a stream
-	 * variable, the antithetic drawings 1-u(1), 1-u(2), ... should be obtained.
-	 * In certain situations it can be proved that means obtained from samples
-	 * based on antithetic drawings have a smaller variance than those obtained
-	 * from uncorrelated streams. This can be used to reduce the sample size
-	 * required to obtain reliable estimates.
-	 * 
-	 * 
-	 * @param U
-	 * @return
-	 */
-//	private static int basicDrawing(int U) {
-//		// TODO: Complete the implementation according
-//		// to Simula Standard Definition.
-//		int n = 3;
-//		return (U * 2 ^ (-n));
-//	}
-	//**********************************************************************
-	//*** Basic Drawing - Temporary solution using default Java-Seed.
-	//**********************************************************************
-	Random random=new Random();
-	private double basicDRAW($NAME<Integer> U)
-	{ return(random.nextDouble()); }
+	// **********************************************************************
+	// *** Basic Drawing - Implementation using default Java-Seed.
+	// **********************************************************************
+	Random random = new Random();
 
-	//**********************************************************************
+	private double basicDRAW($NAME<Integer> U) {
+		return (random.nextDouble());
+	}
+
+	// **********************************************************************
 	// *** Random drawing: Procedure draw
-	//**********************************************************************
+	// **********************************************************************
 	/**
 	 * <pre>
 	 *  Boolean procedure draw (a,U);
@@ -751,397 +744,428 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * 
 	 * The value is true with the probability a, false with the probability 1 - a.
 	 * It is always true if a >= 1 and always false if a <= 0.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
 	 * 
 	 * @param a
 	 * @param U
 	 * @return
 	 */
-//	public boolean draw(float a, $NAME<Integer> U) {
-//		// TODO: Complete the implementation according
-//		// to Simula Standard Definition.
-//		boolean draw = false;
-//		int nextU = basicDrawing(U.get());
-//		U.put(nextU);
-//		return (draw);
-//	}
 	public boolean draw(float a, $NAME<Integer> U) {
-	// import real a; name(integer) u; export boolean val;
 		boolean val;
-	    if(a >= 1.0) val= true;
-	    else if( a <= 0.0) val= false;
-	    else
-//	    	val:= if a >= envir_DRAW(u) then true else false;
-	    	val= a >= basicDRAW(U);
-	    return(val);
+		if (a >= 1.0)
+			val = true;
+		else if (a <= 0.0)
+			val = false;
+		else
+			val = a >= basicDRAW(U);
+		return (val);
 	}
 
-	 
-	 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure randint
-	//**********************************************************************
-    /**
-     * <pre>
-     *  integer procedure randint (a,b,U);
-     *		          name U; integer a,b,U;
-     * </pre>
-     * 
-     * The value is one of the integers a, a+1, ..., b-1, b with equal
-     * probability. If b < a, the call constitutes an error.
-     *          
-     * @param a
-     * @param b
-     * @param U
-     * @return
-     */
+	// **********************************************************************
+	/**
+	 * <pre>
+	 *  integer procedure randint (a,b,U);
+	 *		          name U; integer a,b,U;
+	 * </pre>
+	 * 
+	 * The value is one of the integers a, a+1, ..., b-1, b with equal probability.
+	 * If b < a, the call constitutes an error.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
+	 * 
+	 * @param a
+	 * @param b
+	 * @param U
+	 * @return
+	 */
 	public int randint(int a, int b, $NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-//	 import integer a,b; name(integer) u; export integer val;
-	    if(b<a) throw new RuntimeException("Randint(a,b,u):  b < a");
-//	       val:=RENTIER(envir_DRAW(u) * ((b-a+1) qua real)) + a;
-	    int val=entier(basicDRAW(U) * ((b-a+1))) + a;
-	    return(val);
+		if (b < a)
+			throw new RuntimeException("Randint(a,b,u):  b < a");
+		int val = entier(basicDRAW(U) * ((b - a + 1))) + a;
+		return (val);
 	}
 
-	
-	
-	
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure uniform
-	//**********************************************************************
-    /**
-     * <pre>
-     * long real procedure uniform (a,b,U);
-     *          name U; long real a,b; integer U;
-     * </pre>
-     * 
-     * The value is uniformly distributed in the interval a <= u < b.
-     * If b < a, the call constitutes an error.
+	// **********************************************************************
+	/**
+	 * <pre>
+	 * long real procedure uniform (a,b,U);
+	 *          name U; long real a,b; integer U;
+	 * </pre>
+	 * 
+	 * The value is uniformly distributed in the interval a <= u < b. If b < a, the
+	 * call constitutes an error.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
 	 *
-     * @param a
-     * @param b
-     * @param U
-     * @return
-     */
+	 * @param a
+	 * @param b
+	 * @param U
+	 * @return
+	 */
 	public double uniform(double a, double b, $NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-//		 import real a,b; name(integer) u; export real val;
-	    if(b<a) throw new RuntimeException("Uniform(a,b,u): b < a");
-		double val=a+((b-a)*basicDRAW(U));
-		return(val);
+		if (b < a)
+			throw new RuntimeException("Uniform(a,b,u): b < a");
+		double val = a + ((b - a) * basicDRAW(U));
+		return (val);
 	}
 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure normal
-	//**********************************************************************
- 	/**
- 	 * <pre>
- 	 * long real procedure normal (a,b,U);
-     *         name U; long real a,b; integer U;
- 	 * </pre>
- 	 * 
- 	 * The value is normally distributed with mean a and standard
-     * deviation b. An approximation formula may be used for the normal
-     * distribution function.
-     *
- 	 * @param a
- 	 * @param b
- 	 * @param U
- 	 * @return
- 	 */
+	// **********************************************************************
+	/**
+	 * <pre>
+	 * long real procedure normal (a,b,U);
+	 *         name U; long real a,b; integer U;
+	 * </pre>
+	 * 
+	 * The value is normally distributed with mean a and standard deviation b. An
+	 * approximation formula may be used for the normal distribution function.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
+	 * 
+	 * @param a
+	 * @param b
+	 * @param U
+	 * @return
+	 */
 	public double normal(double a, double b, $NAME<Integer> U) {
-			// TODO: Complete the implementation according
-			// to Simula Standard Definition.
-	       double t,p,q,v,x; boolean z;
-	       if(b<0.0) throw new RuntimeException("Normal(a,b,u):  b <= 0.");//(ENO_DRW_8);
-	       v= basicDRAW(U);
-	       if(v>0.5) { z=true; v=1.0f-v; } else z= false;
-	       t= Math.log(v); // log is natural logarithm (base e) in Java
-	       t= Math.sqrt(-t-t);
-	       p= 2.515517f + (t * (0.802853f + (t*0.010328f)));
-	       q= 1.0f + (t * (1.432788f + (t * (0.189269f + (t*0.001308f)))));
-	       x= b * (t-(p/q));
-	       double val= a + ( (z)? x : -x );
-	       return(val);
+		double t, p, q, v, x;
+		boolean z;
+		if (b < 0.0)
+			throw new RuntimeException("Normal(a,b,u):  b <= 0.");
+		v = basicDRAW(U);
+		if (v > 0.5) {
+			z = true;
+			v = 1.0f - v;
+		} else
+			z = false;
+		t = Math.log(v); // log is natural logarithm (base e) in Java
+		t = Math.sqrt(-t - t);
+		p = 2.515517f + (t * (0.802853f + (t * 0.010328f)));
+		q = 1.0f + (t * (1.432788f + (t * (0.189269f + (t * 0.001308f)))));
+		x = b * (t - (p / q));
+		double val = a + ((z) ? x : -x);
+		return (val);
 	}
 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure negexp
-	//**********************************************************************
+	// **********************************************************************
 	/**
 	 * <pre>
 	 * long real procedure negexp (a,U);
-     *          name U; long real a; integer U;
+	 *          name U; long real a; integer U;
 	 * </pre>
 	 * 
-	 * The value is a drawing from the negative exponential distribution
-     * with mean 1/a, defined by -ln(u)/a, where u is a basic drawing.
-     * This is the same as a random "waiting time" in a Poisson
-     * distributed arrival pattern with expected number of arrivals per
-     * time unit equal to a. If a is non-positive, a runtime error occurs.
-     * 
+	 * The value is a drawing from the negative exponential distribution with mean
+	 * 1/a, defined by -ln(u)/a, where u is a basic drawing. This is the same as a
+	 * random "waiting time" in a Poisson distributed arrival pattern with expected
+	 * number of arrivals per time unit equal to a. If a is non-positive, a runtime
+	 * error occurs.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
+	 * 
 	 * @param a
 	 * @param U
 	 * @return
 	 */
 	public double negexp(double a, $NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-	    if(a <= 0.0) throw new RuntimeException("Negexp(a,u): a <= 0");
-	    double v=basicDRAW(U);
-	    double val= - Math.log(v) / a;
-	    return (val);
+		if (a <= 0.0)
+			throw new RuntimeException("Negexp(a,u): a <= 0");
+		double v = basicDRAW(U);
+		double val = -Math.log(v) / a;
+		return (val);
 	}
 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure Poisson
-	//**********************************************************************
+	// **********************************************************************
 	/**
 	 * <pre>
 	 * integer procedure Poisson (a,U);
-     *          name U; long real a; integer U;
+	 *          name U; long real a; integer U;
 	 * </pre>
-	 * The value is a drawing from the Poisson distribution with
-     * parameter a. It is obtained by n+1 basic drawings, u(i), where n
-     * is the function value. n is defined as the smallest non-negative
-     * integer for which
-     * <p>
-     *        u(0) * u(1) * ... * u(n)  <  e**(-a)
-     * <p>
-     * The validity of the formula follows from the equivalent condition
-     * <p>
-     *      -ln(u(0)) - ln(u(1)) - ... - ln(u(n))  >  1
-     * <p>
-     * where the left hand side is seen to be a sum of "waiting times"
-     * drawn from the corresponding negative exponential distribution.
-     * <p>
-     * When the parameter a is greater than some implementation-defined
-     * value, for instance 20.0, the value may be approximated by
-     * entier(normal(a,sqrt(a),U) + 0.5) or, when this is negative, by zero.
+	 * 
+	 * The value is a drawing from the Poisson distribution with parameter a. It is
+	 * obtained by n+1 basic drawings, u(i), where n is the function value. n is
+	 * defined as the smallest non-negative integer for which
+	 * <p>
+	 * u(0) * u(1) * ... * u(n) < e**(-a)
+	 * <p>
+	 * The validity of the formula follows from the equivalent condition
+	 * <p>
+	 * -ln(u(0)) - ln(u(1)) - ... - ln(u(n)) > 1
+	 * <p>
+	 * where the left hand side is seen to be a sum of "waiting times" drawn from
+	 * the corresponding negative exponential distribution.
+	 * <p>
+	 * When the parameter a is greater than some implementation-defined value, for
+	 * instance 20.0, the value may be approximated by entier(normal(a,sqrt(a),U) +
+	 * 0.5) or, when this is negative, by zero.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
 	 * 
 	 * @param a
 	 * @param U
 	 * @return
 	 */
 	public int Poisson(double a, $NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		int val; double acc,xpa,sqa;
-		if(a <= 0.0) val=0;
-		else if(a > 20.0)
-		{ // entier(normal(a,sqrt(a),U) + 0.5)
-		  sqa=Math.sqrt(a);
-		  val=entier(normal(a,sqa,U)+0.5);
-	    } else {
-	    	acc=1.0; val=0;
-	        xpa=Math.exp(-a);
-//		    repeat acc= acc * basicDRAW(U);
-//		    while(acc >= xpa) val= val + 1.0;
-		    do { acc= acc * basicDRAW(U); val= val+1; }
-		    while(acc >= xpa); val=val-1;
-	    }
+		int val;
+		double acc, xpa, sqa;
+		if (a <= 0.0)
+			val = 0;
+		else if (a > 20.0) { // entier(normal(a,sqrt(a),U) + 0.5)
+			sqa = Math.sqrt(a);
+			val = entier(normal(a, sqa, U) + 0.5);
+		} else {
+			acc = 1.0;
+			val = 0;
+			xpa = Math.exp(-a);
+			do {
+				acc = acc * basicDRAW(U);
+				val = val + 1;
+			} while (acc >= xpa);
+			val = val - 1;
+		}
 		return (val);
 	}
 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure Erlang
-	//**********************************************************************
+	// **********************************************************************
 	/**
 	 * <pre>
 	 * long real procedure Erlang (a,b,U);
-     *          name U; long real a,b; integer U;
-     * </pre>
-     * 
-     * The value is a drawing from the Erlang distribution with mean 1/a
-     * and standard deviation 1/(a*sqrt(b)). It is defined by b basic
-     * drawings u(i), if b is an integer value,
+	 *          name U; long real a,b; integer U;
+	 * </pre>
+	 * 
+	 * The value is a drawing from the Erlang distribution with mean 1/a and
+	 * standard deviation 1/(a*sqrt(b)). It is defined by b basic drawings u(i), if
+	 * b is an integer value,
 	 * <p>
-     *     - ( ln(u(1)) + ln(u(2)) + ... + ln(u(b)) )  /  (a*b)
+	 * - ( ln(u(1)) + ln(u(2)) + ... + ln(u(b)) ) / (a*b)
 	 * <p>
-     * and by c+1 basic drawings u(i) otherwise, where c is equal to
-     * entier(b),
+	 * and by c+1 basic drawings u(i) otherwise, where c is equal to entier(b),
 	 * <p>
-     *     - ( ln(u(1)) + ... + ln(u(c)) + (b-c)*ln(u(c+1)) ) / (a*b)
+	 * - ( ln(u(1)) + ... + ln(u(c)) + (b-c)*ln(u(c+1)) ) / (a*b)
 	 * <p>
-     * Both a and b must be greater than zero.
+	 * Both a and b must be greater than zero.
 	 * <p>
-     * The last formula represents an approximation.
-     *          
+	 * The last formula represents an approximation.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
+	 * 
 	 * @param a
 	 * @param b
 	 * @param U
 	 * @return
 	 */
 	public double Erlang(double a, double b, $NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		// import real a,b; name(integer) u; export real val;
-		int c; double val,bc,ab,z,v;
-		if(a <= 0.0 || b <= 0.0) throw
-		   new RuntimeException("Erlang(a,b,u):  a <= 0  or  b <= 0");
-		val=0; c=entier(b);
-		bc= b - c; ab= a * b;
-		while((c--) > 0)
-		{ v=basicDRAW(U); z=Math.log(v);
-		  val= val - (z/ab);
+		int c;
+		double val, bc, ab, z, v;
+		if (a <= 0.0 || b <= 0.0)
+			throw new RuntimeException("Erlang(a,b,u):  a <= 0  or  b <= 0");
+		val = 0;
+		c = entier(b);
+		bc = b - c;
+		ab = a * b;
+		while ((c--) > 0) {
+			v = basicDRAW(U);
+			z = Math.log(v);
+			val = val - (z / ab);
 		}
-		if(bc > 0.0)
-		{ v=basicDRAW(U); z=Math.log(v);
-		  val= val - ((bc*z) / ab );
+		if (bc > 0.0) {
+			v = basicDRAW(U);
+			z = Math.log(v);
+			val = val - ((bc * z) / ab);
 		}
-		return(val);
+		return (val);
 	}
 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure discrete
-	//**********************************************************************
+	// **********************************************************************
 	/**
 	 * <pre>
-     *  integer procedure discrete (A,U);
-               name U; <real-type> array A; integer U;
-   	 * </pre>
+	 *  integer procedure discrete (A,U);
+	           name U; <real-type> array A; integer U;
+	 * </pre>
 	 * 
-	 * The one-dimensional array A, augmented by the element 1 to the
-     * right, is interpreted as a step function of the subscript,
-     * defining a discrete (cumulative) distribution function.
-     * <p>
-     * The function value satisfies
-     * <p>
-     *      lowerbound(A,1) <= discrete(A,U) <= upperbound(A,1)+1.
-     * <p>
-     * It is defined as the smallest i such that A(i) > u, where u is a
-     * basic drawing and A(upperbound(A,1)+1) = 1.
-     *
+	 * The one-dimensional array A, augmented by the element 1 to the right, is
+	 * interpreted as a step function of the subscript, defining a discrete
+	 * (cumulative) distribution function.
+	 * <p>
+	 * The function value satisfies
+	 * <p>
+	 * lowerbound(A,1) <= discrete(A,U) <= upperbound(A,1)+1.
+	 * <p>
+	 * It is defined as the smallest i such that A(i) > u, where u is a basic
+	 * drawing and A(upperbound(A,1)+1) = 1.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
+	 *
 	 * @param A
 	 * @param U
 	 * @return
 	 */
 	public int discrete($ARRAY<double[]> A, $NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		int result,j,nelt; double v;
-		int lb=A.LB[0]; int ub=A.UB[0];
-		v=basicDRAW(U); nelt=ub-lb+1; result=ub+1; j=0;
-		do
-		{ if( A.Elt[j] > v) { result=lb+j; nelt=0; }
-		  j= j + 1;
-		} while(j < nelt);
+		int result, j, nelt;
+		double v;
+		int lb = A.LB[0];
+		int ub = A.UB[0];
+		v = basicDRAW(U);
+		nelt = ub - lb + 1;
+		result = ub + 1;
+		j = 0;
+		do {
+			if (A.Elt[j] > v) {
+				result = lb + j;
+				nelt = 0;
+			}
+			j = j + 1;
+		} while (j < nelt);
 		return (result);
 	}
 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Random drawing: Procedure linear
-	//**********************************************************************
+	// **********************************************************************
 	/**
 	 * <pre>
 	 *  long real procedure linear (A,B,U);
-     *       name U; <real-type> array A,B; integer U;
-     * </pre>
-     * 
-	 * The value is a drawing from a (cumulative) distribution function F,
-     * which is obtained by linear interpolation in a non-equidistant
-     * table defined by A and B, such that A(i) = F(B(i)).
-     * <p>
-     * It is assumed that A and B are one-dimensional arrays of the
-     * same length, that the first and last elements of A are equal
-     * to 0 and 1 respectively and that A(i) >= A(j) and B(i) > B(j)
-     * for i>j. If any of these conditions are not satisfied, the effect
-     * is implementation-defined.
-     * <p>
-     * The steps in the function evaluation are:
-     * <p>
-     *    l. draw a uniform <0,1> random number, u.
-     * <p>
-     *    2. determine the lowest value of i, for which
-     * <p>
-     *            A(i-1) <= u <= A(i)
-     * <p>
-     *    3. compute D = A(i) - A(i-1)
-     * <p>
-     *    4. if D = 0:  linear = B(i-1)
-     *       if D <> 0: linear = B(i-1) + (B(i) - B(i-1))*(u-A(i-1))/D
-     *       
+	 *       name U; <real-type> array A,B; integer U;
+	 * </pre>
+	 * 
+	 * The value is a drawing from a (cumulative) distribution function F, which is
+	 * obtained by linear interpolation in a non-equidistant table defined by A and
+	 * B, such that A(i) = F(B(i)).
+	 * <p>
+	 * It is assumed that A and B are one-dimensional arrays of the same length,
+	 * that the first and last elements of A are equal to 0 and 1 respectively and
+	 * that A(i) >= A(j) and B(i) > B(j) for i>j. If any of these conditions are not
+	 * satisfied, the effect is implementation-defined.
+	 * <p>
+	 * The steps in the function evaluation are:
+	 * <p>
+	 * l. draw a uniform <0,1> random number, u.
+	 * <p>
+	 * 2. determine the lowest value of i, for which
+	 * <p>
+	 * A(i-1) <= u <= A(i)
+	 * <p>
+	 * 3. compute D = A(i) - A(i-1)
+	 * <p>
+	 * 4. if D = 0: linear = B(i-1) if D <> 0: linear = B(i-1) + (B(i) -
+	 * B(i-1))*(u-A(i-1))/D
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
+	 * 
 	 * @param A
 	 * @param B
 	 * @param U
 	 * @return
 	 */
-	public double linear($ARRAY<double[]> A,$ARRAY<double[]> B,$NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//import ref(rea_arr_1) a,b; name(integer) u; export real val;
-		int i,nelt; double val,a_val,a_lag,a_dif,b_val,b_lag,v;
+	public double linear($ARRAY<double[]> A, $ARRAY<double[]> B, $NAME<Integer> U) {
+		int i, nelt;
+		double val, a_val, a_lag, a_dif, b_val, b_lag, v;
 
-		int lb=A.LB[0]; int ub=A.UB[0];
-		
-		nelt=ub-lb+1;
-		if(nelt!=(B.UB[0]-B.LB[0]+1)) throw new
-		   RuntimeException("Linear(A,B,U): The number of elements in A and B are different.");
-		v=basicDRAW(U); i= 0;
-		while(A.Elt[i] < v) i=i+1;
-		if(i == 0)
-		{ if(v==0.0 && A.Elt[i]==0.0) i= 1;
-		  else throw new
-		    RuntimeException("Linear(A,B,U): The array a does not satisfy the stated assumptions.");
-		} else if(i >= nelt) throw new
-		    RuntimeException("Linear(A,B,U): The array a does not satisfy the stated assumptions.");
+		int lb = A.LB[0];
+		int ub = A.UB[0];
 
-		a_val=A.Elt[i]; a_lag=A.Elt[i-1]; a_dif= a_val - a_lag;
-		if(a_dif==0.0) val= B.Elt[i-1];
-		else
-		{ b_val= B.Elt[i]; b_lag=B.Elt[i-1];
-		  val= (((b_val-b_lag)/a_dif) * (v-a_lag)) + b_lag;
+		nelt = ub - lb + 1;
+		if (nelt != (B.UB[0] - B.LB[0] + 1))
+			throw new RuntimeException("Linear(A,B,U): The number of elements in A and B are different.");
+		v = basicDRAW(U);
+		i = 0;
+		while (A.Elt[i] < v)
+			i = i + 1;
+		if (i == 0) {
+			if (v == 0.0 && A.Elt[i] == 0.0)
+				i = 1;
+			else
+				throw new RuntimeException("Linear(A,B,U): The array a does not satisfy the stated assumptions.");
+		} else if (i >= nelt)
+			throw new RuntimeException("Linear(A,B,U): The array a does not satisfy the stated assumptions.");
+
+		a_val = A.Elt[i];
+		a_lag = A.Elt[i - 1];
+		a_dif = a_val - a_lag;
+		if (a_dif == 0.0)
+			val = B.Elt[i - 1];
+		else {
+			b_val = B.Elt[i];
+			b_lag = B.Elt[i - 1];
+			val = (((b_val - b_lag) / a_dif) * (v - a_lag)) + b_lag;
 		}
-		return(val);
+		return (val);
 	}
 
-	//**********************************************************************
+	// **********************************************************************
 	// *** Utility: Procedure histd
-	//**********************************************************************
+	// **********************************************************************
 	/**
 	 * <pre>
 	 * integer procedure histd (A,U);
-     *          name U; <real-type> array A; integer U;
+	 *          name U; <real-type> array A; integer U;
 	 * </pre>
-	 * The value is an integer in the range (lsb,usb), where lsb and
-     * usb are the lower and upper subscript bounds of the
-     * one-dimensional array A. The latter is interpreted as a
-     * histogram defining the relative frequencies of the values.
+	 * 
+	 * The value is an integer in the range (lsb,usb), where lsb and usb are the
+	 * lower and upper subscript bounds of the one-dimensional array A. The latter
+	 * is interpreted as a histogram defining the relative frequencies of the
+	 * values.
+	 * <p>
+	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
+	 * in the Java Library is used.
 	 * 
 	 * @param A
 	 * @param U
 	 * @return
 	 */
-//	public int histd($ARRAY<double[]> A, $NAME<Integer> U) {
 	public int histd($ARRAY<float[]> A, $NAME<Integer> U) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//import ref(rea_arr_1) a; name(integer) u; export integer i;
-		int result=0;
-		int j;       //  Array index.
-		int nelt;    //  Number of array elements.
-		double sum;  //  Sum of all array element values.
-		double wsum; //  Weighted sum of all array element values.
-		double tmp;  //  Temporary variabel.
-		      
-		int lb=A.LB[0]; int ub=A.UB[0];
-		nelt=ub-lb+1;
-		j= 0; sum= 0.0;
-		do
-		{ tmp=A.Elt[j];
-		  if(tmp < 0.0) throw new
-		     RuntimeException("Histd(a,u):  An element of the array a is negative");
-		  sum= sum + tmp; j= j + 1;
-		} while(j < nelt);
-		wsum= sum * basicDRAW(U); // Make  0 <= wsum < sum
-		j= 0; sum= 0.0;
-		do
-		{ sum= sum + A.Elt[j];
-		  if(sum >= wsum) { result= lb+j; nelt=0; } // We will do this once and only once.
-		  j= j + 1;
-		} while(j < nelt);
+		int result = 0;
+		int j; // Array index.
+		int nelt; // Number of array elements.
+		double sum; // Sum of all array element values.
+		double wsum; // Weighted sum of all array element values.
+		double tmp; // Temporary variabel.
+
+		int lb = A.LB[0];
+		int ub = A.UB[0];
+		nelt = ub - lb + 1;
+		j = 0;
+		sum = 0.0;
+		do {
+			tmp = A.Elt[j];
+			if (tmp < 0.0)
+				throw new RuntimeException("Histd(a,u):  An element of the array a is negative");
+			sum = sum + tmp;
+			j = j + 1;
+		} while (j < nelt);
+		wsum = sum * basicDRAW(U); // Make 0 <= wsum < sum
+		j = 0;
+		sum = 0.0;
+		do {
+			sum = sum + A.Elt[j];
+			if (sum >= wsum) {
+				result = lb + j;
+				nelt = 0;
+			} // We will do this once and only once.
+			j = j + 1;
+		} while (j < nelt);
 		return (result);
 	}
 
@@ -1152,16 +1176,17 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * <pre>
 	 * text procedure datetime;   datetime :- Copy("...");
 	 * </pre>
-	 * The value is a text frame containing the current date and time
-     * in the form    YYYY-MM-DD HH:MM:SS.sss.... The number of
-     * decimals in the field for seconds is implementation-defined.
-     * 
+	 * 
+	 * The value is a text frame containing the current date and time in the form
+	 * YYYY-MM-DD HH:MM:SS.sss.... The number of decimals in the field for seconds
+	 * is implementation-defined.
+	 * 
 	 * @return
 	 */
 	public TXT$ datetime() {
-		DateTimeFormatter form=DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-		String datim=LocalDateTime.now().format(form);
-		return(new TXT$(datim));
+		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+		String datim = LocalDateTime.now().format(form);
+		return (new TXT$(datim));
 	}
 
 	/**
@@ -1169,8 +1194,7 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * long real procedure cputime;
 	 * </pre>
 	 * 
-	 * The value is the number of processor seconds spent by the calling
-	 * program.
+	 * The value is the number of processor seconds spent by the calling program.
 	 * 
 	 * @return
 	 */
@@ -1183,41 +1207,73 @@ public class ENVIRONMENT$ extends RTObject$ {   // CORR-PREFIX
 	 * <pre>
 	 * long real procedure clocktime;
 	 * </pre>
+	 * 
 	 * @return The value is the number of seconds since midnight.
 	 */
 	public double clocktime() {
 		LocalTime localTime = LocalTime.now();
-		int hour=localTime.getHour();
-		int minute=localTime.getMinute();
-		int second=localTime.getSecond();
-		//System.out.println("ClockTime: Hour="+hour+", Minute="+minute+", Second="+second);
-		double time=((hour*60)+minute)*60+second;
-		return(time);
+		int hour = localTime.getHour();
+		int minute = localTime.getMinute();
+		int second = localTime.getSecond();
+		// System.out.println("ClockTime: Hour="+hour+", Minute="+minute+",
+		// Second="+second);
+		double time = ((hour * 60) + minute) * 60 + second;
+		return (time);
 	}
-	
-	public void waitSomeTime(int millies)
-    { //System.out.println("ENVIRONMENT.waitSomeTime: sleep="+millies);
-	  try {Thread.sleep(millies);}catch(Exception e) { e.printStackTrace();}
-	  //System.out.println("ENVIRONMENT.waitSomeTime: awake="+millies);
+
+	public void waitSomeTime(int millies) { // System.out.println("ENVIRONMENT.waitSomeTime: sleep="+millies);
+		try {
+			Thread.sleep(millies);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// System.out.println("ENVIRONMENT.waitSomeTime: awake="+millies);
 	}
 
 	// *****************************************
 	// *** Miscellaneous utilities ***
 	// *****************************************
 
-	public void histo(float[] A, float[] B, float c, float d) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		throw new RuntimeException("ENVIRONMENT$ -- histo is not implemented");
-
-	}
-
-	public void accum($NAME<Float> a,
-			$NAME<Float> b, $NAME<Float> c, float d) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		throw new RuntimeException("ENVIRONMENT$ -- accum is not implemented");
-
+	/**
+	 * <pre>
+	 * procedure histo(A,B,c,d);
+	          real array A,B; real c,d;
+	 * </pre>
+	 * 
+	 * Procedure statement "histo(A,B,c,d)" updates a histogram defined by the
+	 * one-dimensional arrays A and B according to the observation c with the weight
+	 * d. A(lba+i) is increased by d, where i is the smallest integer such that c <=
+	 * B(lbb+i) and lba and lbb are the lower bounds of A and B respectively. If the
+	 * length of A is not one greater than that of B the effect is
+	 * implementation-defined. The last element of A corresponds to those
+	 * observations which are greater than all elements of B.
+	 * 
+	 * @param A
+	 * @param B
+	 * @param c
+	 * @param d
+	 */
+	public void histo($ARRAY<?> A, $ARRAY<?> B, float c, float d) {
+		if(A.nDim()!=1) 
+			throw new RuntimeException("histo(A,B,c,d) - A is not one-dimensional");
+		if(B.nDim()!=1) 
+			throw new RuntimeException("histo(A,B,c,d) - B is not one-dimensional");
+		int nelt = B.UB[0] - B.LB[0] + 1;
+		if (nelt >= (A.UB[0] - A.LB[0] + 1))
+			throw new RuntimeException("histo(A,B,c,d) - A'length <= B'length");
+		try {
+			$ARRAY<float[]> AA=($ARRAY<float[]>)A;
+			$ARRAY<float[]> BB=($ARRAY<float[]>)B;
+			int i=0;
+			EX: do {
+				if (BB.Elt[i] >= c)
+					break EX;
+				i = i + 1;
+			} while (i < nelt);
+			AA.Elt[i] = AA.Elt[i] + d;
+		} catch(Exception e) { 	
+			throw new RuntimeException("histo(A,B,c,d) - Internal Error",e);
+		}
 	}
 
 }

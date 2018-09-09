@@ -56,7 +56,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
 		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
 		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
-		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
+		//names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
 		//names.add("simtst27.sim"); // OK:  Test while-loops.
 		//names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
 		//names.add("simtst29.sim"); // OK:  Procedure parameters by value
@@ -145,6 +145,8 @@ public final class RunSingleTestBatch {
 		//names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
+		//names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
+		//names.add("simtst103.sim"); // OK: Test 2-dim Array by value.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

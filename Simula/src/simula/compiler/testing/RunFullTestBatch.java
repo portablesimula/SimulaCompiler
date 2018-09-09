@@ -143,7 +143,9 @@ public final class RunFullTestBatch {
 		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.
-		names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
+		names.add("simtst101.sim"); // OK: Test Standard Procedure 'sourceline'.
+		names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
+		names.add("simtst103.sim"); // OK: Test 2-dim Array by value.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

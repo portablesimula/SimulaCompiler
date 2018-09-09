@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
-import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;

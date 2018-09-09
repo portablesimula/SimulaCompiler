@@ -12,7 +12,6 @@ import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.Type;
 import simula.compiler.expression.Constant;
-import simula.compiler.expression.Variable;
 
 public final class StandardClass extends ClassDeclaration
 {
@@ -197,9 +196,9 @@ public final class StandardClass extends ClassDeclaration
     ENVIRONMENT.addStandardProcedure(Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
     ENVIRONMENT.addStandardProcedure(Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
     ENVIRONMENT.addStandardProcedure(Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array),parameter("B",Type.LongReal,Parameter.Kind.Array),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
 
 //    Calendar and timing utilities ........................... 9.10
 //    Procedures datetime, cputime, clocktime.
@@ -211,10 +210,8 @@ public final class StandardClass extends ClassDeclaration
 //    Miscellaneous utilities ................................. 9.11
 //    Procedure histo.
 
-    ENVIRONMENT.addStandardProcedure(null,"histo",parameter("A",Type.Real,Parameter.Kind.Array),parameter("B",Type.Real,Parameter.Kind.Array)
+    ENVIRONMENT.addStandardProcedure(null,"histo",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("B",Type.Real,Parameter.Kind.Array,1)
     		                                     ,parameter("c",Type.Real),parameter("d",Type.Real));
-    ENVIRONMENT.addStandardProcedure(null,"accum",parameter("a",Parameter.Mode.name,Type.Real),parameter("b",Parameter.Mode.name,Type.Real)
-                                                 ,parameter("c",Parameter.Mode.name,Type.Real),parameter("d",Type.Real));    
 //    ENVIRONMENT.addStandardProcedure(Type.Text,"objectTraceIdentifier");
 
   }
@@ -708,6 +705,8 @@ public final class StandardClass extends ClassDeclaration
     Simulation.addStandardProcedure(null,"passivate");  
     Simulation.addStandardProcedure(null,"wait",parameter("S",Type.Ref("Head")));  
     Simulation.addStandardProcedure(null,"cancel",parameter("x",Type.Ref("Process")));  
+    Simulation.addStandardProcedure(null,"accum",parameter("a",Parameter.Mode.name,Type.LongReal),parameter("b",Parameter.Mode.name,Type.LongReal)
+            ,parameter("c",Parameter.Mode.name,Type.LongReal),parameter("d",Type.LongReal));    
     Simulation.addStandardProcedure(null,"ActivateDirect"
     		,parameter("REAC",Type.Boolean)
     		,parameter("X",Type.Ref("Process"))
@@ -908,6 +907,9 @@ public final class StandardClass extends ClassDeclaration
   private static Parameter parameter(String ident,Type type,Parameter.Kind kind)
   { return(new Parameter(ident,type,kind)); }
   
+  private static Parameter parameter(String ident,Type type,Parameter.Kind kind,int nDim)
+  { return(new Parameter(ident,type,kind,nDim)); }
+  
   private static Parameter parameter(String ident,Parameter.Mode mode,Type type)
   { Parameter spec=new Parameter(ident,type,Parameter.Kind.Simple);
     spec.setMode(mode); return(spec);
@@ -917,7 +919,7 @@ public final class StandardClass extends ClassDeclaration
   { //Util.BREAK("StandardClass("+this.identifier+").findAttribute("+ident+"): scope="+declaredIn+", chain="+edScopeChain());
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
-    	   	  return(new Meaning(Variable.Kind.standardAttribute,declaration,this));
+    	   	  return(new Meaning(declaration,this));
     ClassDeclaration prfx=getPrefixClass();
     if(prfx!=null) return(prfx.findVisibleAttributeMeaning(ident));
     
@@ -931,7 +933,7 @@ public final class StandardClass extends ClassDeclaration
   { //Util.BREAK("StandardClass("+this.identifier+").findAttribute("+ident+"): scope="+declaredIn+", chain="+edScopeChain());
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
-    	   	  return(new Meaning(Variable.Kind.standardAttribute,declaration,this));
+    	   	  return(new Meaning(declaration,this));
     ClassDeclaration prfx=getPrefixClass();
     if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident,behindProtected));
     

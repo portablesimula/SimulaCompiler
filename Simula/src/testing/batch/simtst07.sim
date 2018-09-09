@@ -312,7 +312,7 @@ Testmatlib begin
               begin
               i := RANDINT (-Ipowblim, Ipowblim, u1) ;
               j := RANDINT ( 0, Ipowelim, u2) ;
-              Testipower (i, j) ;
+              if i<>0 and j<>0 then Testipower (i, j) ;
               x := UNIFORM (0.0, powblim, u1) ;
               y := UNIFORM (-powelim, powelim, u2) ;
               Testrpower (x, y) ;

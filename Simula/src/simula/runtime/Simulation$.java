@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+
 /**
  * 
  * The system class "simulation" may be considered an "application package"
@@ -224,6 +225,31 @@ public class Simulation$ extends Simset$ {
 		}
 	}
 
+	/**
+	 * <pre>
+	 * procedure accum (a,b,c,d);  name a,b,c;  long real a,b,c,d;
+	       begin
+	          a:= a+c * (time-b);  b:= time;  c:= c + d
+	       end accum;
+	 * </pre>
+	 * 
+	 * A statement of the form "accum (A,B,C,D)" may be used to accumulate the
+	 * "system time integral" of the variable C, interpreted as a step function of
+	 * system time. The integral is accumulated in the variable A. The variable B
+	 * contains the system time at which the variables were last updated. The value
+	 * of D is the current increment of the step function.
+	 * 
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param d
+	 */
+	public void accum($NAME<Double> a, $NAME<Double> b, $NAME<Double> c, double d) {
+		a.put(a.get() + (c.get() * (time() - b.get())));
+		b.put(time());
+		c.put(c.get() + d);
+	}
+
 	public void ActivateDirect(boolean REAC, Process$ X) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
@@ -358,18 +384,18 @@ public class Simulation$ extends Simset$ {
 		}
 	}
 
-	private String checkSQS() {
-		StringBuilder s = new StringBuilder();
-		Link$ x = SQS.first();
-		s.append(", SQS =");
-		while (x != null) {
-			EVENT_NOTICE$ ev = (EVENT_NOTICE$) x;
-			if(ev.PROC.STATE$==OperationalState.terminated)
-				throw new RuntimeException("SQS CONTAIN TERMINATED ELEMENT: "+ev.PROC);
-			x = x.suc();
-		}
-		return (s.toString());
-	}
+//	private String checkSQS() {
+//		StringBuilder s = new StringBuilder();
+//		Link$ x = SQS.first();
+//		s.append(", SQS =");
+//		while (x != null) {
+//			EVENT_NOTICE$ ev = (EVENT_NOTICE$) x;
+//			if(ev.PROC.STATE$==OperationalState.terminated)
+//				throw new RuntimeException("SQS CONTAIN TERMINATED ELEMENT: "+ev.PROC);
+//			x = x.suc();
+//		}
+//		return (s.toString());
+//	}
 
 	private String edSQS() {
 		//checkSQS();

@@ -68,7 +68,9 @@ public abstract class Statement extends SyntaxClass {
 //			  Util.BREAK("Statement.doParse: currentScope'identifier="+Global.currentScope.identifier);
 //			  Util.BREAK("Statement.doParse: currentScope'add Label="+label);
 			  Global.currentScope.labelList.add(label);
-		    } else Util.error("Misplaced ':'");
+		    } else {
+		    	Util.error("Misplaced ':'");
+		    }
 			ident = acceptIdentifier();
 		}
 		if(ident!=null) Parser.saveCurrentToken(); // Not Label Pushback

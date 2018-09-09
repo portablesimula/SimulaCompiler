@@ -96,10 +96,6 @@ public final class Variable extends Expression {
 
 	Vector<Expression> params;
 	public Vector<Expression> checkedParams; // Set by doChecking
-
-	public enum Kind {
-		parameter,attribute,label,virtual,standardAttribute,connectedAttribute
-	}
 	
 	public boolean hasArguments() {
 		return(params!=null);
@@ -175,8 +171,8 @@ public final class Variable extends Expression {
 		
 		checkedParams = new Vector<Expression>();
 		Declaration decl=meaning.declaredAs;
-		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking: meaning="+meaning);
-		//Util.BREAK("BEGIN SubscriptedVariable("+identifier+").doChecking: QUAL="+decl.getClass().getSimpleName());
+		//Util.BREAK("BEGIN Variable("+identifier+").doChecking: meaning="+meaning);
+		//Util.BREAK("BEGIN Variable("+identifier+").doChecking: QUAL="+decl.getClass().getSimpleName());
 		
 		if(decl instanceof ArrayDeclaration) // Declared Array
 		{ ArrayDeclaration array=(ArrayDeclaration)decl;
@@ -200,7 +196,7 @@ public final class Variable extends Expression {
 		
 		else if(decl instanceof BlockDeclaration) // Declared Procedure or Class 
 		{	//ProcedureDeclaration block = (ProcedureDeclaration) decl;
-			//Util.BREAK("SubscriptedVariable("+identifier+") blockHead="+blockHead);
+			//Util.BREAK("Variable("+identifier+") blockHead="+blockHead);
 			this.type=decl.type;
 			Type overloadedType=this.type;
 //			Iterator<Parameter> formalIterator = block.parameterIterator();
@@ -213,7 +209,7 @@ public final class Variable extends Expression {
 			if(params!=null) {
 				// Check parameters
 				Iterator<Expression> actualIterator = params.iterator();
-				//Util.BREAK("SubscriptedVariable("+identifier+").doChecking: Params="+params);
+				//Util.BREAK("Variable("+identifier+").doChecking: Params="+params);
 				LOOP:while (actualIterator.hasNext()) {
 					if (!formalIterator.hasNext()) {
 						Util.error("Wrong number of parameters to " + decl);
@@ -227,8 +223,8 @@ public final class Variable extends Expression {
 					actualParameter.doChecking();
 					//Util.BREAK("Actual Parameter: " + actualParameter.type + " " + actualParameter + ", Actual Type=" + actualParameter.type);
 					if(Global.OVERLOADING && formalType instanceof OverLoad)
-					{ //Util.BREAK("SubscriptedVariable.doChecking(1): "+this);
-						formalType=actualParameter.type; // TODO: AD'HOC for add/subepsilon
+					{ //Util.BREAK("Variable.doChecking(1): "+this);
+						formalType=actualParameter.type; // AD'HOC for add/subepsilon
 						overloadedType=formalType;
 					}
 					if(formalParameter.kind==Parameter.Kind.Array)
@@ -239,26 +235,31 @@ public final class Variable extends Expression {
 					Expression checkedParameter=TypeConversion.testAndCreate(formalType,actualParameter);
 					checkedParameter.backLink=this;
 					checkedParams.add(checkedParameter);
-					//Util.BREAK("SubscriptedVariable("+identifier+").doChecking().addCheckedParam: "+checkedParams);
+					//Util.BREAK("Variable("+identifier+").doChecking().addCheckedParam: "+checkedParams);
 				}
 			}
 			if (formalIterator.hasNext()) Util.error("Wrong number of parameters to " + decl);
 			if(Global.OVERLOADING && type instanceof OverLoad)
-			{ //Util.BREAK("SubscriptedVariable.doChecking(2): "+this);
+			{ //Util.BREAK("Variable.doChecking(2): "+this);
 			  this.type=overloadedType;
 			}
 			
     	}
 		
-		else if (decl instanceof Parameter) // Parameter Simple, Array, Procedure, Label   TODO: , ... ???
+		else if (decl instanceof Parameter) // Parameter Simple, Array, Procedure, Label
 		{ Parameter spec=(Parameter) decl;
     	  Parameter.Kind kind=spec.kind;
-    	  //Util.BREAK("SubscriptedVariable.doChecking: type="+type);
-    	  //Util.BREAK("SubscriptedVariable.doChecking: kind="+kind);
+    	  //Util.BREAK("Variable.doChecking: type="+type);
+    	  //Util.BREAK("Variable.doChecking: kind="+kind);
 //    	  Util.ASSERT(kind==Parameter.Kind.Array || kind==Parameter.Kind.Procedure || kind==Parameter.Kind.Switch,"Invariant ?");
     	  Util.ASSERT(kind==Parameter.Kind.Array || kind==Parameter.Kind.Procedure,"Invariant ?");
     	  this.type=spec.type;
-//    	  Util.warning("SubscriptedVariable("+identifier+") - Parameter Checking is postponed to Runtime");
+//    	  Util.warning("Variable("+identifier+") - Parameter Checking is postponed to Runtime");
+    	  if(kind==Parameter.Kind.Array) {
+        	  Util.BREAK("Variable("+identifier+").doChecking: kind="+kind);
+    		  spec.nDim=params.size();
+        	  Util.BREAK("Variable("+identifier+").doChecking: nDim="+spec.nDim);
+    	  }
     	  Iterator<Expression> actualIterator=params.iterator();
     	  while(actualIterator.hasNext())
     	  { Expression actualParameter=actualIterator.next();
@@ -286,8 +287,8 @@ public final class Variable extends Expression {
 		}
 //	    else if(!meaning.isNO_MEANING()) Util.FATAL_ERROR("Umulig å komme hit ??");
 		if (Option.TRACE_CHECKER)
-			Util.TRACE("END SubscriptedVariable(" + identifier+ ").doChecking: type=" + type);
-	    //Util.BREAK("END SubscriptedVariable("+identifier+").doChecking: type=" + type+", checkedParams="+checkedParams);
+			Util.TRACE("END Variable(" + identifier+ ").doChecking: type=" + type);
+	    //Util.BREAK("END Variable("+identifier+").doChecking: type=" + type+", checkedParams="+checkedParams);
 		
 		
 		SET_SEMANTICS_CHECKED();
@@ -296,6 +297,7 @@ public final class Variable extends Expression {
 	  // Returns true if this expression may be used as a statement.
 	  public boolean maybeStatement()
 	  {	ASSERT_SEMANTICS_CHECKED(this);
+	    if(meaning==null) return(false); // Error Recovery
 		Declaration declaredAs=meaning.declaredAs;
 		BlockKind blockKind=declaredAs.blockKind;
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): meaning="+meaning);
@@ -364,7 +366,7 @@ public final class Variable extends Expression {
 	  
 	  if(decl instanceof ArrayDeclaration) { // Declared Array
 		  //ArrayDeclaration array=(ArrayDeclaration)decl;
-	      //Util.BREAK("SubscriptedVariable("+identifier+").get: ArrayDeclaration="+array);
+	      //Util.BREAK("Variable("+identifier+").get: ArrayDeclaration="+array);
 		  StringBuilder s = new StringBuilder();
 	      s.append(edIdentifierAccess(false));
 	      if(this.hasArguments()) { // Array Element Access
@@ -395,7 +397,7 @@ public final class Variable extends Expression {
 		  ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
 //	      BlockDeclaration.Kind blockKind=decl.blockKind;
 	      StringBuilder s = new StringBuilder();
-	      //Util.BREAK("SubscriptedVariable3("+identifier+").get: blockKind="+blockKind);
+	      //Util.BREAK("Variable3("+identifier+").get: blockKind="+blockKind);
 	      if(blockKind==BlockKind.Method) { // Standard Procedure
 			  //if(meaning.declaredAs instanceof StandardProcedure) {
 				  if(identifier.equalsIgnoreCase("sourceline"))
@@ -489,6 +491,12 @@ public final class Variable extends Expression {
 		  return(edIdentifierAccess(destination));
 	  }
 	  
+	  else if(decl instanceof ClassDeclaration) {
+		  //Util.BREAK("Variable.editVariable: ClassDeclaration: "+decl);
+		  Util.error("Illegal use of Class "+decl.identifier);
+		  return(edIdentifierAccess(destination));
+	  }
+	  
 	  Util.FATAL_ERROR("Umulig å komme hit ??");
 	  return(null);
     }
@@ -501,8 +509,7 @@ public final class Variable extends Expression {
 	{ Declaration decl=meaning.declaredAs;
 	  String id=decl.getJavaIdentifier();
 	  if(remotelyAccessed) return(id);
-	  
-	  if(meaning.variableKind==Variable.Kind.connectedAttribute)
+	  if(meaning.isConnected())
 	  { Expression inspectedVariable=((ConnectionBlock)meaning.declaredIn).getInspectedVariable();
 	    //Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
 	    if(meaning.foundBehindInvisible)

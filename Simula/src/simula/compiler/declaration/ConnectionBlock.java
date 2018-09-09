@@ -55,14 +55,15 @@ public final class ConnectionBlock extends DeclarationScope
   { //if(identifier.equalsIgnoreCase("L"))Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+")");
 	Meaning result=classDeclaration.findRemoteAttributeMeaning(identifier);
     //if(identifier.equalsIgnoreCase("L"))Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+") ==> "+result);
-    if(result!=null)
-        result=new Meaning(Variable.Kind.connectedAttribute
-        		,result.declaredAs,this,result.foundIn,result.foundBehindInvisible);
+    if(result!=null) {
+        //result=new Meaning(result.declaredAs,this,result.foundIn,result.foundBehindInvisible);  //CHECK DETTE
+        result.declaredIn=this;
+    }
     else if(declaredIn!=null) result=declaredIn.findMeaning(identifier);
 	if(result==null) {
 	    //if(identifier.equalsIgnoreCase("L"))Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+") ==> UNDEFINED");
 		Util.error("Undefined variable: "+identifier);
-		result=new Meaning(null,null,null); // Error Recovery: No Meaning
+		result=new Meaning(null,null); // Error Recovery: No Meaning
 	}
     return(result);
   }

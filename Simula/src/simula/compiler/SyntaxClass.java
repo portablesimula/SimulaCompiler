@@ -102,7 +102,7 @@ public abstract class SyntaxClass
 
   protected	void ASSERT_SEMANTICS_CHECKED(Object obj)
   { if(!CHECKED)
-	  Util.error("FATAL error - Semantic checker not called: "+obj.getClass().getName());
+	  Util.error("FATAL error - Semantic checker not called: "+obj.getClass().getName()+", "+obj);
     if(this instanceof Declaration)
     { Declaration decl=(Declaration)this;
       if(decl.externalIdent==null) Util.FATAL_ERROR("External Identifier is not set");

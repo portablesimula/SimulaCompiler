@@ -142,9 +142,11 @@ public final class ArithmeticOperation extends Expression
 	  }
 	  case EXP:
 	  {	lhs.doChecking(); rhs.doChecking();
-    	this.type=Type.LongReal; // Deviation from Simula Standard
-		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
+	    if(lhs.type!=Type.Integer || rhs.type!=Type.Integer)
+    	{ this.type=Type.LongReal; // Deviation from Simula Standard
+		  lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
+		  rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
+    	} else this.type=Type.Integer;
 	    break; 
 	  }
 	  default: Util.FATAL_ERROR("Impossible");
@@ -165,7 +167,11 @@ public final class ArithmeticOperation extends Expression
   { //Util.BREAK("ArithmeticOperation.toJavaCode: "+this);
 	ASSERT_SEMANTICS_CHECKED(this);
 	switch(opr)
-	{ case EXP: return("Math.pow("+lhs.get()+','+rhs.get()+')');
+	{ case EXP:
+		  { if(this.type==Type.Integer)
+			   return("IPOW$("+lhs.get()+','+rhs.get()+')');
+		  else return("Math.pow("+lhs.get()+','+rhs.get()+')');
+		  }
       default:
     	  { if(this.backLink==null)
     		     return(lhs.get()+opr.toJavaCode()+'('+rhs.get()+')');

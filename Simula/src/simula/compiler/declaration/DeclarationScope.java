@@ -51,7 +51,7 @@ public abstract class DeclarationScope extends Declaration {
     if(meaning==null) {
       //if(identifier.equalsIgnoreCase("L"))Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+") ==> UNDEFINED");
 	  Util.error("Undefined variable: "+identifier);
-	  meaning=new Meaning(null,null,null); // Error Recovery: No Meaning
+	  meaning=new Meaning(null,null); // Error Recovery: No Meaning
     }
     return(meaning);
   }

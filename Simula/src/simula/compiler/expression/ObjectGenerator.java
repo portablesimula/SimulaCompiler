@@ -52,13 +52,11 @@ public final class ObjectGenerator extends Expression {
 
 	public ObjectGenerator(String classIdentifier, Vector<Expression> params) {
 		this.classIdentifier = classIdentifier;
-		this.type=Type.Ref(classIdentifier);
+		this.type = Type.Ref(classIdentifier);
 		this.params = params;
-		if (Option.TRACE_PARSE)	Util.TRACE("NEW ObjectGenerator: " + toString());
+		if (Option.TRACE_PARSE)
+			Util.TRACE("NEW ObjectGenerator: " + toString());
 	}
-	
-//	public Type getType()
-//	{ return(Type.Ref(classIdentifier)); }
 
 	public static Expression parse() {
 		if (Option.TRACE_PARSE)
@@ -67,113 +65,104 @@ public final class ObjectGenerator extends Expression {
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			if (!Parser.accept(KeyWord.ENDPAR)) {
-//				do { params.add(parseSimpleExpression());
-				do { params.add(parseExpression());
+				// do { params.add(parseSimpleExpression());
+				do {
+					params.add(parseExpression());
 				} while (Parser.accept(KeyWord.COMMA));
 				Parser.expect(KeyWord.ENDPAR);
 			}
 		}
 		Expression expr = new ObjectGenerator(classIdentifier, params);
-		return(expr);
+		return (expr);
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
-		Global.sourceLineNumber=lineNumber;
+		if (IS_SEMANTICS_CHECKED())
+			return;
+		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
-			Util.TRACE("BEGIN ObjectGenerator(" + classIdentifier
-					+ ").doChecking - Current Scope Chain: "
+			Util.TRACE("BEGIN ObjectGenerator(" + classIdentifier + ").doChecking - Current Scope Chain: "
 					+ Global.currentScope.edScopeChain());
 		meaning = Global.currentScope.findMeaning(classIdentifier);
 		if (meaning == null) {
-		    //if(classIdentifier.equalsIgnoreCase("L"))Util.BREAK("ObjectGenerator.doChecking: findMeaning("+classIdentifier+") ==> UNDEFINED");
+			// if(classIdentifier.equalsIgnoreCase("L"))Util.BREAK("ObjectGenerator.doChecking:
+			// findMeaning("+classIdentifier+") ==> UNDEFINED");
 			Util.error("Undefined variable: " + classIdentifier);
-			meaning=new Meaning(null,null,null); // Error Recovery: No Meaning
+			meaning = new Meaning(null, null); // Error Recovery: No Meaning
 		}
-		if(!(meaning.declaredAs instanceof ClassDeclaration))
-			Util.error("NEW "+classIdentifier+": Not a Class");
-		ClassDeclaration cls=(ClassDeclaration)meaning.declaredAs;
-			// Check parameters
-			Iterator<Parameter> formalIterator = cls.parameterIterator();
-			Iterator<Expression> actualIterator = params.iterator();
-			while (actualIterator.hasNext()) {
-				if (!formalIterator.hasNext())
-					Util.error("Wrong number of parameters to " + cls);
-				Declaration formalParameter = formalIterator.next();
-				Type formalType = formalParameter.type;
-				if (Option.TRACE_CHECKER)
-					Util.TRACE("Formal Parameter: " + formalParameter
-							+ ", Formal Type=" + formalType);
-				Expression actualParameter = actualIterator.next();
-				actualParameter.doChecking();
-				// Util.BREAK("ObjectGenerator.doChecking Parameter  "+formalParameter+" := "+actualParameter);
-
-				Type actualType = actualParameter.type;
-				if (Option.TRACE_CHECKER)
-					Util.TRACE("Actual Parameter: " + actualType + " "
-							+ actualParameter + ", Actual Type=" + actualType);
-				Expression checkedParameter=TypeConversion.testAndCreate(formalType,actualParameter);
-				checkedParameter.backLink=this;
-				checkedParams.add(checkedParameter);
-
-			}
-			if (formalIterator.hasNext())
+		if (!(meaning.declaredAs instanceof ClassDeclaration))
+			Util.error("NEW " + classIdentifier + ": Not a Class");
+		ClassDeclaration cls = (ClassDeclaration) meaning.declaredAs;
+		// Check parameters
+		Iterator<Parameter> formalIterator = cls.parameterIterator();
+		Iterator<Expression> actualIterator = params.iterator();
+		while (actualIterator.hasNext()) {
+			if (!formalIterator.hasNext())
 				Util.error("Wrong number of parameters to " + cls);
-//		} else if (declaredAs instanceof Parameter) // Parameter Procedure  // TODO: BARE TULL ?
-//		{	Parameter spec = (Parameter) declaredAs;
-//			Util.ASSERT(this.type.equals(spec.type),"Umulig situasjon ?");
-//			Parameter.Kind kind = spec.kind;
-//			if (kind != Parameter.Kind.Procedure)
-//				Util.error("ObjectGenerator("+classIdentifier+") is matched to a parameter "+kind);
-//			Util.warning("ObjectGenerator("+classIdentifier+") - Parameter Checking is postponed to Runtime");
-//		}
+			Declaration formalParameter = formalIterator.next();
+			Type formalType = formalParameter.type;
+			if (Option.TRACE_CHECKER)
+				Util.TRACE("Formal Parameter: " + formalParameter + ", Formal Type=" + formalType);
+			Expression actualParameter = actualIterator.next();
+			actualParameter.doChecking();
+			// Util.BREAK("ObjectGenerator.doChecking Parameter "+formalParameter+" := "+actualParameter);
+
+			Type actualType = actualParameter.type;
+			if (Option.TRACE_CHECKER)
+				Util.TRACE("Actual Parameter: " + actualType + " " + actualParameter + ", Actual Type=" + actualType);
+			Expression checkedParameter = TypeConversion.testAndCreate(formalType, actualParameter);
+			checkedParameter.backLink = this;
+			checkedParams.add(checkedParameter);
+
+		}
+		if (formalIterator.hasNext())
+			Util.error("Wrong number of parameters to " + cls);
 		if (Option.TRACE_CHECKER)
-			Util.TRACE("END ObjectGenerator(" + classIdentifier
-					+ ").doChecking: type=" + type);
+			Util.TRACE("END ObjectGenerator(" + classIdentifier + ").doChecking: type=" + type);
 		// Debug.BREAK("END ObjectGenerator");
 		SET_SEMANTICS_CHECKED();
 	}
 
-	  // Returns true if this expression may be used as a statement.
-	  public boolean maybeStatement()
-	  {	ASSERT_SEMANTICS_CHECKED(this);
-		return(true);  
-	  }
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (true);
+	}
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		StringBuilder s = new StringBuilder();
-		String classIdent=meaning.declaredAs.getJavaIdentifier();
+		String classIdent = meaning.declaredAs.getJavaIdentifier();
 		s.append("new ").append(classIdent).append('(');
-	    s.append(meaning.edStaticLink());
+		s.append(meaning.edStaticLink());
 
-//		for (Expression par:checkedParams) {
-//			s.append(',').append(par.toJavaCode());
-//		}
-	    ClassDeclaration cls = (ClassDeclaration)meaning.declaredAs;
-	    Iterator<Parameter> formalIterator = cls.parameterIterator();
-		for (Expression par:checkedParams) {
+		ClassDeclaration cls = (ClassDeclaration) meaning.declaredAs;
+		Iterator<Parameter> formalIterator = cls.parameterIterator();
+		for (Expression par : checkedParams) {
 			Parameter formalParameter = formalIterator.next();
-			if(formalParameter.mode==Parameter.Mode.value)
-			{ if(par.type==Type.Text) s.append(",copy(").append(par.toJavaCode()).append(')');
-			  else if(formalParameter.kind==Parameter.Kind.Array) s.append(",(").append(par.toJavaCode()).append(").COPY()");
-			  else s.append(',').append(par.toJavaCode());
-			}
-			else s.append(',').append(par.toJavaCode());
+			if (formalParameter.mode == Parameter.Mode.value) {
+				if (par.type == Type.Text)
+					s.append(",copy(").append(par.toJavaCode()).append(')');
+				else if (formalParameter.kind == Parameter.Kind.Array)
+					s.append(",(").append(par.toJavaCode()).append(").COPY()");
+				else
+					s.append(',').append(par.toJavaCode());
+			} else
+				s.append(',').append(par.toJavaCode());
 		}
-		
+
 		s.append(')');
-//		if(((ClassDeclaration)meaning.declaredAs).isDetachUsed()) 
-		if(cls.isDetachUsed()) 
-			 s.append(".START()");
-		else s.append(".STM()");
+		// if(((ClassDeclaration)meaning.declaredAs).isDetachUsed())
+		if (cls.isDetachUsed())
+			s.append(".START()");
+		else
+			s.append(".STM()");
 
 		return (s.toString());
 	}
 
 	public String toString() {
-		return (("NEW " + classIdentifier + checkedParams).replace('[', '(')
-				.replace(']', ')'));
+		return (("NEW " + classIdentifier + checkedParams).replace('[', '(').replace(']', ')'));
 	}
 
 }

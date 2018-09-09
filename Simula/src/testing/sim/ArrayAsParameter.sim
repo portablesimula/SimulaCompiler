@@ -1,6 +1,4 @@
 
-%QUALIFIEDNAMES
-
 begin
    ref(CC) array R(1:312);
    integer array A(7:89);
