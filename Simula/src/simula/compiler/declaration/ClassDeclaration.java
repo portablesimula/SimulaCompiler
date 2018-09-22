@@ -476,8 +476,8 @@ public Iterator<Parameter> parameterIterator()
 	doPrototypeCoding();
 	if(blockKind==BlockKind.Procedure  && type!=null)
 	{ JavaModule.code("// Declare return value as attribute");
-	  JavaModule.code("public "+type.toJavaType()+' '+"$result;");
-	  JavaModule.code("public Object $result() { return($result); }");
+	  JavaModule.code("public "+type.toJavaType()+' '+"RESULT$;");
+	  JavaModule.code("public Object RESULT$() { return(RESULT$); }");
 	}
 	JavaModule.code("// Declare parameters as attributes");
 	for(Parameter par:parameterList)

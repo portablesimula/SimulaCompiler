@@ -62,7 +62,7 @@ public final class ConditionalStatement extends Statement {
 		if (IS_SEMANTICS_CHECKED())
 			return;
 		condition.doChecking();
-		condition.backLink=this; // To ensure $result from functions
+		condition.backLink=this; // To ensure RESULT$ from functions
 		//Util.BREAK("ConditionalStatement.doChecking: condition="+condition);
 		//Util.BREAK("ConditionalStatement.doChecking: condition.type="+condition.type);
 		if (!condition.type.equals(Type.Boolean))

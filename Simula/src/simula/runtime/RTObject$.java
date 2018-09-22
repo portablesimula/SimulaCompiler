@@ -104,17 +104,17 @@ public abstract class RTObject$  implements Runnable {
 	 * This method is virtual and must be redefined in all type procedure blocks
      * @return
      */
-    public Object $result() { return(null); }
+    public Object RESULT$() { return(null); }
     
 	// *******************************************************
 	// *** FRAMEWORK for Procedure-Parameters in Java Coding
 	// *******************************************************
-	public final class $PRCQNT
+	public final class PRCQNT$
 	{ RTObject$ staticLink;
 	  Class<?> procedure;
 		  
 	  // Constructor
-	  public $PRCQNT(RTObject$ staticLink,Class<?> procedure)
+	  public PRCQNT$(RTObject$ staticLink,Class<?> procedure)
 	  { this.staticLink=staticLink; this.procedure=procedure; }
 			  
 	  public RTObject$ CPF()
@@ -134,11 +134,11 @@ public abstract class RTObject$  implements Runnable {
 	  }
 		  
 	  public String toString()
-	  { return("Simula $PRCQNT("+staticLink+','+procedure+')'); }
+	  { return("Simula PRCQNT$("+staticLink+','+procedure+')'); }
 		  
 	}
 	
-	public RTObject$ ENT()  // Enter Formal Procedure
+	public RTObject$ ENT$()  // Enter Formal Procedure
 	{ //RT.BREAK("RTObject.ENT: CUR="+CUR$);
 	  BBLK();
 	  //RT.BREAK("RTObject.ENT: CUR="+CUR$);
@@ -148,16 +148,12 @@ public abstract class RTObject$  implements Runnable {
 
 	
 	// ****************************************************
-	// *** The Abstract Generic Class $NAME<T> supporting
+	// *** The Abstract Generic Class NAME$<T> supporting
 	// *** Name-Parameters in Java Coding.
 	// ****************************************************
-	public abstract class $NAME<T> {
-//		public RTObject$ THE$; // Thunk Environment
-//		public $NAME() { THE$=RTObject$.CUR$; }
+	public abstract class NAME$<T> {
 		public RTObject$ CUR$; // Thunk Environment
-		public $NAME() { CUR$=RTObject$.CUR$;
-//		RT.BREAK("NEW THUNK: CUR$="+CUR$+", Qual="+CUR$.getClass().getSimpleName());
-		}
+		public NAME$() { CUR$=RTObject$.CUR$; }
 		public abstract T get();
 		public T put(T x) { throw new RuntimeException("Illegal assignment. Name parameter is not a variable"); }
 	}
@@ -169,17 +165,17 @@ public abstract class RTObject$  implements Runnable {
 	static final String arrayError="Illegal use of array";
 	public int[] IX$(int...ix) { return(ix); }
 
-	public final class $ARRAY<T>
+	public final class ARRAY$<T>
 	{ public T Elt;
 	  public int[] LB;
 	  public int[] UB;
-	  public $ARRAY(T Elt,int[] LB,int[] UB)
+	  public ARRAY$(T Elt,int[] LB,int[] UB)
 	  { this.Elt=Elt; this.LB=LB; this.UB=UB; }
-	  public $ARRAY<T> COPY()
+	  public ARRAY$<T> COPY()
 	  {	T CPY=copyMultiArray(Elt);
 	    //RT.BREAK("ARRAY.COPY: Elt="+Elt.getClass().getName()+" at "+Elt);
 	    //RT.BREAK("ARRAY.COPY: CPY="+CPY.getClass().getName()+" at "+CPY);
-		$ARRAY<T> to=new $ARRAY<T>(CPY,LB,UB);  // TODO: DETTE MÅ SJEKKES
+		ARRAY$<T> to=new ARRAY$<T>(CPY,LB,UB);  // TODO: DETTE MÅ SJEKKES
 	    //RT.BREAK("ARRAY.COPY: to="+to.getClass().getSimpleName()+" == "+to);
 		return(to);
 	  }
@@ -197,7 +193,7 @@ public abstract class RTObject$  implements Runnable {
 	  { int nDim=LB.length;
 		StringBuilder s=new StringBuilder();
 		if(nDim==1)
-		{ s.append("$ARRAY(").append(LB[0]).append(':').append(UB[0]).append("), ");
+		{ s.append("ARRAY$(").append(LB[0]).append(':').append(UB[0]).append("), ");
 		  int length=UB[0]-LB[0]+1;
 		  s.append("LENGTH=").append(length);
 		}
@@ -227,35 +223,34 @@ public abstract class RTObject$  implements Runnable {
 	}
 	
 	
-	public $ARRAY<?> arrayValue(Object par)
+	public ARRAY$<?> arrayValue(Object par)
 	{ //RT.BREAK("RTObject.arrayValue: par="+par);
 	  //RT.BREAK("RTObject.arrayValue: par'Qual="+par.getClass().getSimpleName());
-	  if(par instanceof $NAME<?>) return((($NAME<$ARRAY<?>>)par).get());
-	  return(($ARRAY<?>)par);
+	  if(par instanceof NAME$<?>) return(((NAME$<ARRAY$<?>>)par).get());
+	  return((ARRAY$<?>)par);
 	}
 	
-	public $PRCQNT procValue(Object par)
+	public PRCQNT$ procValue(Object par)
 	{ //RT.BREAK("RTObject.arrayValue: par="+par);
 	  //RT.BREAK("RTObject.arrayValue: par'Qual="+par.getClass().getSimpleName());
-	  if(par instanceof $NAME<?>) return((($NAME<$PRCQNT>)par).get());
-	  return(($PRCQNT)par);
+	  if(par instanceof NAME$<?>) return(((NAME$<PRCQNT$>)par).get());
+	  return((PRCQNT$)par);
 	}
 	
 //	public TXT$ TXT$Value(Object par)
 //	{ RT.BREAK("RTObject.TXT$Value: par="+par);
 //	  RT.BREAK("RTObject.TXT$Value: par'Qual="+par.getClass().getSimpleName());
 //	  RT.BREAK("RTObject.TXT$Value: par'super'Qual="+par.getClass().getSuperclass().getSimpleName());
-//	  if(par instanceof $NAME<?>) par=(($NAME<TXT$>)par).get();
-//	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
+//	  if(par instanceof NAME$<?>) par=((NAME$<TXT$>)par).get();
+//	  if(par instanceof PRCQNT$) par=((PRCQNT$)par).CPF().RESULT$();
 //	  return((TXT$)par);
 //	}
 	
 	public Object objectValue(Object par)
 	{ //RT.BREAK("RTObject.objectValue: par="+par);
 	  //RT.BREAK("RTObject.objectValue: par'Qual="+par.getClass().getSimpleName());
-//	  if(par instanceof $NAME<?>) return((($NAME<?>)par).get());
-	  if(par instanceof $NAME<?>) par=(($NAME<?>)par).get();
-	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
+	  if(par instanceof NAME$<?>) par=((NAME$<?>)par).get();
+	  if(par instanceof PRCQNT$) par=((PRCQNT$)par).CPF().RESULT$();
 	  return(par);
 	}
 	
@@ -263,8 +258,8 @@ public abstract class RTObject$  implements Runnable {
 	{ //RT.BREAK("RTObject.intValue: par="+par);
 	  //RT.BREAK("RTObject.intValue: par'Qual="+par.getClass().getSimpleName());
 	  //RT.BREAK("RTObject.intValue: par'super'Qual="+par.getClass().getSuperclass().getSimpleName());
-	  if(par instanceof $NAME<?>) par=(($NAME<?>)par).get();
-	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
+	  if(par instanceof NAME$<?>) par=((NAME$<?>)par).get();
+	  if(par instanceof PRCQNT$) par=((PRCQNT$)par).CPF().RESULT$();
 	  if(par instanceof Float) return((int)par);
 	  if(par instanceof Double) return((int)(double)par);
 	  if(par instanceof Integer) return((int)par);
@@ -272,8 +267,8 @@ public abstract class RTObject$  implements Runnable {
 	}
 	
 	public float floatValue(Object par)
-	{ if(par instanceof $NAME<?>) par=(($NAME<?>)par).get();
-	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
+	{ if(par instanceof NAME$<?>) par=((NAME$<?>)par).get();
+	  if(par instanceof PRCQNT$) par=((PRCQNT$)par).CPF().RESULT$();
 	  if(par instanceof Float) return((float)par);
 	  if(par instanceof Double) return((float)(double)par);
 	  if(par instanceof Integer) return((float)(int)par);
@@ -281,8 +276,8 @@ public abstract class RTObject$  implements Runnable {
 	}
 	
 	public double doubleValue(Object par)
-	{ if(par instanceof $NAME<?>) par=(($NAME<?>)par).get();
-	  if(par instanceof $PRCQNT) par=(($PRCQNT)par).CPF().$result();
+	{ if(par instanceof NAME$<?>) par=((NAME$<?>)par).get();
+	  if(par instanceof PRCQNT$) par=((PRCQNT$)par).CPF().RESULT$();
 	  if(par instanceof Float) return((double)(float) par);
 	  if(par instanceof Double) return((double)(double)par);
 	  if(par instanceof Integer) return((double)(int)par);
@@ -320,8 +315,8 @@ public abstract class RTObject$  implements Runnable {
 	}
 	
 	public final class SingleElt<T> extends ForElt
-	{ $NAME<T> cvar,nextValue; //boolean more;
-	  public SingleElt($NAME<T> cvar,$NAME<T> init)
+	{ NAME$<T> cvar,nextValue; //boolean more;
+	  public SingleElt(NAME$<T> cvar,NAME$<T> init)
 	  { this.cvar=cvar; this.nextValue=init; more=true; }
 	  public boolean hasNext() {return(nextValue!=null); }
 	  public Boolean next()
@@ -335,8 +330,8 @@ public abstract class RTObject$  implements Runnable {
 	
 	public final class SingleTValElt extends ForElt
 	{ // For t:= <TextExpr>  // Text Value Assignment
-	  $NAME<TXT$> cvar,nextValue; //boolean more;
-	  public SingleTValElt($NAME<TXT$> cvar,$NAME<TXT$> init)
+	  NAME$<TXT$> cvar,nextValue; //boolean more;
+	  public SingleTValElt(NAME$<TXT$> cvar,NAME$<TXT$> init)
 	  { this.cvar=cvar; this.nextValue=init; more=true; }
 	  public boolean hasNext() {return(nextValue!=null); }
 	  public Boolean next()
@@ -350,9 +345,9 @@ public abstract class RTObject$  implements Runnable {
 	}
 	
 	public final class StepUntil extends ForElt
-	{ $NAME<Number> cvar,init,step,until;
+	{ NAME$<Number> cvar,init,step,until;
 	  Number nextValue;
-	  public StepUntil($NAME<Number> cvar,$NAME<Number> init,$NAME<Number> step,$NAME<Number> until)
+	  public StepUntil(NAME$<Number> cvar,NAME$<Number> init,NAME$<Number> step,NAME$<Number> until)
 	  { this.cvar=cvar; this.init=init; this.step=step; this.until=until; }
 	  public Boolean next()
 	  { if(nextValue==null) { nextValue=init.get(); cvar.put(nextValue); return(true); } // First value
@@ -381,8 +376,8 @@ public abstract class RTObject$  implements Runnable {
 	}
 	
 	public final class WhileElt<T> extends ForElt
-	{ $NAME<T> cvar,expr; $NAME<Boolean> cond;
-	  public WhileElt($NAME<T> cvar,$NAME<T> expr,$NAME<Boolean> cond)
+	{ NAME$<T> cvar,expr; NAME$<Boolean> cond;
+	  public WhileElt(NAME$<T> cvar,NAME$<T> expr,NAME$<Boolean> cond)
 	  { this.cvar=cvar; this.expr=expr; this.cond=cond; }
 	  public Boolean next()
 	  { T val=expr.get();
@@ -395,8 +390,8 @@ public abstract class RTObject$  implements Runnable {
 	
 	public final class WhileTValElt extends ForElt
 	{ // For t:= <TextExpr> while <Cond>  // Text Value Assignment
-	  $NAME<TXT$> cvar,expr; $NAME<Boolean> cond;
-	  public WhileTValElt($NAME<TXT$> cvar,$NAME<TXT$> expr,$NAME<Boolean> cond)
+	  NAME$<TXT$> cvar,expr; NAME$<Boolean> cond;
+	  public WhileTValElt(NAME$<TXT$> cvar,NAME$<TXT$> expr,NAME$<Boolean> cond)
 	  { this.cvar=cvar; this.expr=expr; this.cond=cond; }
 	  public Boolean next()
 	  { TXT$ val=expr.get();
@@ -599,36 +594,28 @@ public abstract class RTObject$  implements Runnable {
 	// ************************************************************
 	// *** FRAMEWORK for NonLocal Label-Parameters in Java Coding
 	// ************************************************************
-	public final class $LABQNT extends RuntimeException
+	public final class LABQNT$ extends RuntimeException
 	{ static final long serialVersionUID = 42L;
 	  public RTObject$ SL$; // Static link, i.e. the block in which the label is defined.
 	  public int prefixLevel; // PrefixLevel for classes, zero otherwise.
 	  public int index; // I.e. ordinal number of the Label within its Scope(staticLink).
 	  
 	  // Constructors
-	  public $LABQNT(RTObject$ SL$,int prefixLevel,int index)
+	  public LABQNT$(RTObject$ SL$,int prefixLevel,int index)
 	  { this.SL$=SL$; this.prefixLevel=prefixLevel; this.index=index;
 	    //RT.ASSERT(this.index>0,"Invariant");
 	    //RT.BREAK("NEW LABQNT: SL="+SL$+", index="+index);
 	  }
 	  
-//	  // Constructors
-//	  public $LABQNT(RTObject$ SL$,$LABQNT lab)
-//	  { //RT.ASSERT(lab!=null,"Invariant");
-//		this.SL$=SL$; this.index=lab.index;
-//	    //RT.ASSERT(this.index>0,"Invariant");
-//	    //RT.BREAK("NEW(2) LABQNT: SL="+SL$+", index="+index);
-//	  }
-	  
 	  public String toString()
-	  { return("$LABQNT("+SL$+",prefixLevel="+prefixLevel+", LABEL#"+index+')'); }
+	  { return("LABQNT$("+SL$+",prefixLevel="+prefixLevel+", LABEL#"+index+')'); }
 	  
 	}
 
 	// ************************************************************
 	// *** GOTO -- To avoid Java-error: "Unreachable code" after GOTO
 	// ************************************************************
-    public void GOTO($LABQNT q)
+    public void GOTO(LABQNT$ q)
     { if(RT.Option.GOTO_TRACING) RT.TRACE("RTObject$.GOTO: "+q);
       throw(q);
     }
@@ -636,7 +623,7 @@ public abstract class RTObject$  implements Runnable {
 	// ************************************************************
 	// *** TRACING:  TRACE_GOTO
 	// ************************************************************
-    public static void TRACE_GOTO(String msg,$LABQNT q)
+    public static void TRACE_GOTO(String msg,LABQNT$ q)
     { String s=msg+" GOTO "+q;
       RT.TRACE(s);
       //RT.BREAK("END RTObject$.TRACE_GOTO");
@@ -657,7 +644,7 @@ public abstract class RTObject$  implements Runnable {
         	String who="Thread:"+thread.getName()+'['+obj+']';
         	if(RT.Option.GOTO_TRACING) System.out.println(who + " throws exception: " + e);
             if(RT.Option.GOTO_TRACING) e.printStackTrace(); 
-            if(e instanceof $LABQNT) {
+            if(e instanceof LABQNT$) {
             	if(RT.Option.GOTO_TRACING) System.err.println("POSSIBLE GOTO OUT OF COMPONENT "+obj.edObjectAttributes());
             	if(RT.Option.GOTO_TRACING) System.out.println("POSSIBLE GOTO OUT OF COMPONENT "+obj.edObjectAttributes());
             	RTObject$ DL=obj.DL$;

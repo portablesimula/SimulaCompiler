@@ -244,7 +244,7 @@ public class Simulation$ extends Simset$ {
 	 * @param c
 	 * @param d
 	 */
-	public void accum($NAME<Double> a, $NAME<Double> b, $NAME<Double> c, double d) {
+	public void accum(NAME$<Double> a, NAME$<Double> b, NAME$<Double> c, double d) {
 		a.put(a.get() + (c.get() * (time() - b.get())));
 		b.put(time());
 		c.put(c.get() + d);

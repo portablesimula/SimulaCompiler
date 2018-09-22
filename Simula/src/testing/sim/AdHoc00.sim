@@ -1,26 +1,6 @@
 BEGIN
 
-   class A; virtual: procedure P;
-   begin real array REM(1:45); end;
+   L:
    
-   A class B;
-   begin
-      procedure P(FA); real array FA;
-      begin
-         histo(FA, RB, s, t);
-      end;
-   end;
-   
-   real array RA(1:71);
-   real array RB(1:70);
-   real array RA2(1:8,9:14);
-   real s,t;
-   ref(A) x;
-   
-   x:-new B;
-   histo(RA, x.REM, s, t);
-   histo(RA, RB, s, t);
-   x.P(RA);
-   x.P(RA2);
-   
+    goto L;   
 END;

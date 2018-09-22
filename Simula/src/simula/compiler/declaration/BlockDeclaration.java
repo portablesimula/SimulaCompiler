@@ -78,7 +78,7 @@ public class BlockDeclaration extends DeclarationScope
 	if(!labelList.isEmpty())
     { JavaModule.code("break LOOP$;");
       JavaModule.code("}");
-      JavaModule.code("catch($LABQNT q) {");
+      JavaModule.code("catch(LABQNT$ q) {");
       JavaModule.code("CUR$=THIS$;");
       JavaModule.code("if(q.SL$!=CUR$ || q.prefixLevel!="+prefixLevel()+") {");
       JavaModule.code("CUR$.STATE$=OperationalState.terminated;");

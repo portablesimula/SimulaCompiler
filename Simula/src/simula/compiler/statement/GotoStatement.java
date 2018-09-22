@@ -41,7 +41,7 @@ public final class GotoStatement extends Statement {
 		label.doChecking();
 		if (label.type != Type.Label)
 			Util.error("Goto " + label + ", " + label + " is not a Label");
-		label.backLink = this; // To ensure $result from functions
+		label.backLink = this; // To ensure RESULT$ from functions
 		SET_SEMANTICS_CHECKED();
 	}
 

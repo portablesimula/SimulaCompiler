@@ -100,7 +100,7 @@ public final class TypeConversion extends Expression {
 				Parameter.Kind kind = par.kind;
 				// Util.BREAK("TypeConversion.toJavaCode: type="+type+", kind="+kind);
 				if (kind == Parameter.Kind.Procedure) {
-					evaluated = par.externalIdent + ".get().CPF().$result()";
+					evaluated = par.externalIdent + ".get().CPF().RESULT$()";
 					if (type.isArithmeticType())
 						return (cast + "Value(" + evaluated + ")");
 				}

@@ -166,7 +166,7 @@ public class ProcedureDeclaration extends BlockDeclaration
   	JavaModule.code(line);
   	if(type!=null)
 	{ JavaModule.code("   // Declare return value as variable");
-	  JavaModule.code("   "+type.toJavaType()+' '+"$result"+'='+type.edDefaultValue()+';');
+	  JavaModule.code("   "+type.toJavaType()+' '+"RESULT$"+'='+type.edDefaultValue()+';');
 	}
   	
 	JavaModule.code("   TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
@@ -175,7 +175,7 @@ public class ProcedureDeclaration extends BlockDeclaration
 	JavaModule.code("   TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     for(Statement stm:statements) stm.doJavaCoding();
 	JavaModule.code("   TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
-  	if(type!=null) JavaModule.code("   return($result);");
+  	if(type!=null) JavaModule.code("   return(RESULT$);");
   	JavaModule.code("}");
   	Global.currentScope=declaredIn;
     }
@@ -218,8 +218,8 @@ public class ProcedureDeclaration extends BlockDeclaration
 	doPrototypeCoding();
 	if(blockKind==BlockKind.Procedure  && type!=null)
 	{ JavaModule.code("// Declare return value as attribute");
-	  JavaModule.code("public "+type.toJavaType()+' '+"$result;");
-	  JavaModule.code("public Object $result() { return($result); }");
+	  JavaModule.code("public "+type.toJavaType()+' '+"RESULT$;");
+	  JavaModule.code("public Object RESULT$() { return(RESULT$); }");
 	}
 
 	JavaModule.code("// Declare parameters as attributes");

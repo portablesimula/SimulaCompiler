@@ -137,19 +137,19 @@ public final class Parameter extends Declaration
     if(mode==Parameter.Mode.name)
     { switch(kind)
       { case Simple:
-    	  if(type==Type.Label) return("$NAME<$LABQNT>");
-    	  return("$NAME<"+type.toJavaTypeClass()+">");
-        case Procedure: return("$NAME<$PRCQNT>");
-    	case Label:     return("$NAME<$LABQNT>");
-//    	case Array:		return("$NAME<$ARRAY<"+type.toJavaType()+"[]>>");
-    	case Array:		return("$NAME<$ARRAY<?>>");
-//    	case Switch:    return("$NAME<$PRCQNT>");
+    	  if(type==Type.Label) return("NAME$<LABQNT$>");
+    	  return("NAME$<"+type.toJavaTypeClass()+">");
+        case Procedure: return("NAME$<PRCQNT$>");
+    	case Label:     return("NAME$<LABQNT$>");
+//    	case Array:		return("NAME$<ARRAY$<"+type.toJavaType()+"[]>>");
+    	case Array:		return("NAME$<ARRAY$<?>>");
+//    	case Switch:    return("NAME$<PRCQNT$>");
       }
     }
-//    if(kind==Parameter.Kind.Array) return("$ARRAY<"+type.toJavaType()+"[]>");
-    if(kind==Parameter.Kind.Array) return("$ARRAY<?>");
-    if(kind==Parameter.Kind.Procedure) return("$PRCQNT");
-    if(kind==Parameter.Kind.Label) return("$LABQNT");
+//    if(kind==Parameter.Kind.Array) return("ARRAY$<"+type.toJavaType()+"[]>");
+    if(kind==Parameter.Kind.Array) return("ARRAY$<?>");
+    if(kind==Parameter.Kind.Procedure) return("PRCQNT$");
+    if(kind==Parameter.Kind.Label) return("LABQNT$");
 	return(type.toJavaType());
   }
   

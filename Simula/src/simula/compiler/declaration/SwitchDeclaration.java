@@ -58,7 +58,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration
 		for (Expression expr : switchList) {
 			expr.doChecking();
 			if(expr.type!=Type.Label) Util.error("Switch element "+expr+" is not a Label");
-			expr.backLink = this; // To ensure $result from functions
+			expr.backLink = this; // To ensure RESULT$ from functions
 		}
 		// Switch attributes are implicit specified 'protected'
 		if(declaredIn.blockKind==BlockKind.Class)
@@ -74,7 +74,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration
 		JavaModule.code("switch(p$$SW-1) {");
 		int n = 0;
 		for (Expression expr : ((SwitchDeclaration) this).switchList) {
-			JavaModule.code("case " + (n++) + ": $result=" + expr.toJavaCode() + "; break;");
+			JavaModule.code("case " + (n++) + ": RESULT$=" + expr.toJavaCode() + "; break;");
 		}
 		JavaModule.code("default: throw new RuntimeException(\"Illegal switch index: \"+p$$SW);");
 		JavaModule.code("}");

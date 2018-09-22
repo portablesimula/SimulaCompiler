@@ -12,7 +12,7 @@ import java.util.Vector;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.runtime.RTObject$.$LABQNT;
+import simula.runtime.RTObject$.LABQNT$;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -34,7 +34,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
-		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
 		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
@@ -189,7 +189,7 @@ public final class RunSingleTestBatch {
 	      try { SimulaCompiler compiler = new SimulaCompiler(fileName);
 		        compiler.doCompile();
 		  }
-	      catch($LABQNT q) { q.printStackTrace(); }
+	      catch(LABQNT$ q) { q.printStackTrace(); }
 		  catch(Throwable t) { System.err.println("ERROR: "+t.getMessage()); t.printStackTrace(); }
 		}
 	}

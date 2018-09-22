@@ -128,7 +128,7 @@ public final class ForStatement extends Statement
   private String edControlVariableByName(String classIdent)
   { String cv=controlVariable.toJavaCode();
     String cast=controlVariable.type.toJavaType();
-	String cvName="new $NAME<"+classIdent+">()"+
+	String cvName="new NAME$<"+classIdent+">()"+
             "{ public "+classIdent+" put("+classIdent+" x$){"+cv+"=("+cast+")x$; return(x$);};"+
 			"  public "+classIdent+" get(){return(("+classIdent+")"+cv+"); }	}";
 	return(cvName);
@@ -160,7 +160,7 @@ public final class ForStatement extends Statement
 	public String edCode(String classIdent)
 	{ String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 	  return("new Single"+forElt+"("+edControlVariableByName(classIdent)
-	    +",new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
+	    +",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
 	}
 	public String toString() { return(""+expr1); }
   }
@@ -180,8 +180,8 @@ public final class ForStatement extends Statement
 	public String edCode(String classIdent)
 	{ String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 	  return("new While"+forElt+"("+edControlVariableByName(classIdent)
-	  			+",new $NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
-	  			+",new $NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
+	  			+",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
+	  			+",new NAME$<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 	}
 	public String toString() { return(""+expr1+" while "+expr2); }
   }
@@ -200,13 +200,13 @@ public final class ForStatement extends Statement
 	  expr3.doChecking(); expr3=TypeConversion.testAndCreate(controlVariable.type,expr3);
 	}
 	public String edCode(String classIdent)
-	{ expr1.backLink=ForStatement.this; // To ensure $result from functions
-	  expr2.backLink=ForStatement.this; // To ensure $result from functions
-	  expr3.backLink=ForStatement.this; // To ensure $result from functions
+	{ expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
+	  expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
+	  expr3.backLink=ForStatement.this; // To ensure RESULT$ from functions
   	  return("new StepUntil("+edControlVariableByName(classIdent)
-  	                     +",new $NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
-  	                     +",new $NAME<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
-  	                     +",new $NAME<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
+  	                     +",new NAME$<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
+  	                     +",new NAME$<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
+  	                     +",new NAME$<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
       
 	}
 	public String toString() { return(""+expr1+" step "+expr2+ " until "+expr3); }

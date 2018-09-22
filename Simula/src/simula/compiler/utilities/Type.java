@@ -67,7 +67,7 @@ public class Type
 	String refIdent=getRefIdent();
 	if(refIdent!=null)
 	{ //Util.BREAK("Type.doChecking("+this+"): RefIdent="+refIdent);
-	  if(!refIdent.equals("$LABQNT") && !refIdent.equals("$UNKNOWN"))  // ARRAY ?
+	  if(!refIdent.equals("LABQNT$") && !refIdent.equals("$UNKNOWN"))  // ARRAY ?
 	  { Declaration decl=scope.findMeaning(refIdent).declaredAs;
 	    //Util.BREAK("Type.doChecking("+this+"): RefIdent'declaredAs="+decl);
 	    if(decl instanceof ClassDeclaration)
@@ -208,8 +208,8 @@ public class Type
 	if(this.equals(Boolean)) return("boolean");
 	if(this.equals(Character)) return("char");
 	if(this.equals(Text)) return("TXT$");
-	if(this.equals(Procedure)) return("$PRCQNT");
-	if(this.equals(Label)) return("$LABQNT");
+	if(this.equals(Procedure)) return("PRCQNT$");
+	if(this.equals(Label)) return("LABQNT$");
 	return(this.toString());
   }
  

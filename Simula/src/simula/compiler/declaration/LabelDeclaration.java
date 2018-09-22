@@ -36,7 +36,7 @@ public final class LabelDeclaration extends TypeDeclaration {
 		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
 		if(myVirtual==null)
-		   JavaModule.code("final $LABQNT "+ident+"=new $LABQNT(this,"+prefixLevel+','+index+"); // Local Label #"+index+'='+ident);
+		   JavaModule.code("final LABQNT$ "+ident+"=new LABQNT$(this,"+prefixLevel+','+index+"); // Local Label #"+index+'='+ident);
 	}
 
 }

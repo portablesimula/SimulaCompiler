@@ -686,7 +686,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param i
 	 * @return
 	 */
-	public int lowerbound($ARRAY<?> a, int i) {
+	public int lowerbound(ARRAY$<?> a, int i) {
 		try {
 			return (a.LB[i - 1]);
 		} catch (RuntimeException e) {
@@ -712,7 +712,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param i
 	 * @return
 	 */
-	public int upperbound($ARRAY<?> a, int i) {
+	public int upperbound(ARRAY$<?> a, int i) {
 		try {
 			return (a.UB[i - 1]);
 		} catch (RuntimeException e) {
@@ -729,7 +729,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	// **********************************************************************
 	Random random = new Random();
 
-	private double basicDRAW($NAME<Integer> U) {
+	private double basicDRAW(NAME$<Integer> U) {
 		return (random.nextDouble());
 	}
 
@@ -752,7 +752,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public boolean draw(float a, $NAME<Integer> U) {
+	public boolean draw(float a, NAME$<Integer> U) {
 		boolean val;
 		if (a >= 1.0)
 			val = true;
@@ -783,7 +783,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int randint(int a, int b, $NAME<Integer> U) {
+	public int randint(int a, int b, NAME$<Integer> U) {
 		if (b < a)
 			throw new RuntimeException("Randint(a,b,u):  b < a");
 		int val = entier(basicDRAW(U) * ((b - a + 1))) + a;
@@ -810,7 +810,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double uniform(double a, double b, $NAME<Integer> U) {
+	public double uniform(double a, double b, NAME$<Integer> U) {
 		if (b < a)
 			throw new RuntimeException("Uniform(a,b,u): b < a");
 		double val = a + ((b - a) * basicDRAW(U));
@@ -837,7 +837,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double normal(double a, double b, $NAME<Integer> U) {
+	public double normal(double a, double b, NAME$<Integer> U) {
 		double t, p, q, v, x;
 		boolean z;
 		if (b < 0.0)
@@ -879,7 +879,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double negexp(double a, $NAME<Integer> U) {
+	public double negexp(double a, NAME$<Integer> U) {
 		if (a <= 0.0)
 			throw new RuntimeException("Negexp(a,u): a <= 0");
 		double v = basicDRAW(U);
@@ -920,7 +920,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int Poisson(double a, $NAME<Integer> U) {
+	public int Poisson(double a, NAME$<Integer> U) {
 		int val;
 		double acc, xpa, sqa;
 		if (a <= 0.0)
@@ -972,7 +972,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double Erlang(double a, double b, $NAME<Integer> U) {
+	public double Erlang(double a, double b, NAME$<Integer> U) {
 		int c;
 		double val, bc, ab, z, v;
 		if (a <= 0.0 || b <= 0.0)
@@ -1021,7 +1021,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int discrete($ARRAY<double[]> A, $NAME<Integer> U) {
+	public int discrete(ARRAY$<double[]> A, NAME$<Integer> U) {
 		int result, j, nelt;
 		double v;
 		int lb = A.LB[0];
@@ -1079,7 +1079,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double linear($ARRAY<double[]> A, $ARRAY<double[]> B, $NAME<Integer> U) {
+	public double linear(ARRAY$<double[]> A, ARRAY$<double[]> B, NAME$<Integer> U) {
 		int i, nelt;
 		double val, a_val, a_lag, a_dif, b_val, b_lag, v;
 
@@ -1135,7 +1135,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int histd($ARRAY<float[]> A, $NAME<Integer> U) {
+	public int histd(ARRAY$<float[]> A, NAME$<Integer> U) {
 		int result = 0;
 		int j; // Array index.
 		int nelt; // Number of array elements.
@@ -1253,7 +1253,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @param d
 	 */
-	public void histo($ARRAY<?> A, $ARRAY<?> B, float c, float d) {
+	public void histo(ARRAY$<?> A, ARRAY$<?> B, float c, float d) {
 		if(A.nDim()!=1) 
 			throw new RuntimeException("histo(A,B,c,d) - A is not one-dimensional");
 		if(B.nDim()!=1) 
@@ -1262,8 +1262,8 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 		if (nelt >= (A.UB[0] - A.LB[0] + 1))
 			throw new RuntimeException("histo(A,B,c,d) - A'length <= B'length");
 		try {
-			$ARRAY<float[]> AA=($ARRAY<float[]>)A;
-			$ARRAY<float[]> BB=($ARRAY<float[]>)B;
+			ARRAY$<float[]> AA=(ARRAY$<float[]>)A;
+			ARRAY$<float[]> BB=(ARRAY$<float[]>)B;
 			int i=0;
 			EX: do {
 				if (BB.Elt[i] >= c)

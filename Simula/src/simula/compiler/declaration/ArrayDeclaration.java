@@ -179,13 +179,13 @@ public final class ArrayDeclaration extends Declaration {
 	{ Global.sourceLineNumber=lineNumber;
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  // --------------------------------------------------------------------
-	  // public $ARRAY<float[]> Tab=null;
+	  // public ARRAY$<float[]> Tab=null;
 	  // --------------------------------------------------------------------
 	  String arrType=this.type.toJavaType();
 	  int nDim=boundPairList.size();
 	  for(int i=0;i<nDim;i++) arrType=arrType+"[]";
 	  String arrayIdent=this.getJavaIdentifier();
-	  arrType="$ARRAY<"+arrType+'>';
+	  arrType="ARRAY$<"+arrType+'>';
 	  JavaModule.code("public "+arrType+""+arrayIdent+"=null;");
 	}
 
@@ -199,7 +199,7 @@ public final class ArrayDeclaration extends Declaration {
 	  // A$LB[0]=1; A$UB[0]=4;
 	  // A$LB[1]=4; A$UB[1]=6;
 	  // A$LB[2]=6; A$UB[2]=12;
-	  // A=new $ARRAY<int[][][]>(new int[A$UB[0]-A$LB[0]+1][A$UB[1]-A$LB[1]+1][A$UB[2]-A$LB[2]+1],A$LB,A$UB);
+	  // A=new ARRAY$<int[][][]>(new int[A$UB[0]-A$LB[0]+1][A$UB[1]-A$LB[1]+1][A$UB[2]-A$LB[2]+1],A$LB,A$UB);
 	  // --------------------------------------------------------------------
 	  String arrayIdent=this.getJavaIdentifier();
 	  String arrType=this.type.toJavaType();
@@ -215,7 +215,7 @@ public final class ArrayDeclaration extends Declaration {
 		arrGen=arrGen+'['+size+']';
 		JavaModule.code(""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
 	  }	
-	  arrType="$ARRAY<"+arrType+'>';
+	  arrType="ARRAY$<"+arrType+'>';
 	  JavaModule.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
 	}
 

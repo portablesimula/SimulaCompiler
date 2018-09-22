@@ -139,17 +139,17 @@ public final class VirtualSpecification extends Declaration {
 	public void doJavaCoding()
 	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
-	  String quantity=(kind==Kind.Label)?"$LABQNT ":"$PRCQNT ";
+	  String quantity=(kind==Kind.Label)?"LABQNT$ ":"PRCQNT$ ";
 	  String matchCode="{ throw new RuntimeException(\"No Virtual Match\"); }";
 	  if(match!=null)
 	  { if(kind==Kind.Label)
-	    { // public $LABQNT L() { return(new $LABQNT(this,prefixLevel,index); // Local Label #1=L
+	    { // public LABQNT$ L() { return(new LABQNT$(this,prefixLevel,index); // Local Label #1=L
 		  LabelDeclaration label=(LabelDeclaration)match;
-		  matchCode="{ return(new $LABQNT(this,"+label.prefixLevel+','+label.index+")); } // Local Label #"+label.index+'='+label.identifier;
+		  matchCode="{ return(new LABQNT$(this,"+label.prefixLevel+','+label.index+")); } // Local Label #"+label.index+'='+label.identifier;
 		  
 	    } else
-	    { // public $PRCQNT P() { return(new $PRCQNT(this,VirtualSample$SubBlock9$P.class)); }
-		  matchCode="{ return(new $PRCQNT(this,"+match.getJavaIdentifier()+".class)); }";
+	    { // public PRCQNT$ P() { return(new PRCQNT$(this,VirtualSample$SubBlock9$P.class)); }
+		  matchCode="{ return(new PRCQNT$(this,"+match.getJavaIdentifier()+".class)); }";
 	    }
 	  }
 	  JavaModule.code("public "+quantity+getJavaIdentifier()+"() "+matchCode);

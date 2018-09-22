@@ -69,8 +69,8 @@ public final class TestCompiler {
 		// String name=Global.packetName+"/err/simerr07.sim";
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		 String name=Global.packetName+"/sim/adHoc00.sim";
-		// String name=Global.packetName+"/sim/adHoc01.sim";
+		// String name=Global.packetName+"/sim/adHoc00.sim";
+		 String name=Global.packetName+"/sim/adHoc01.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";

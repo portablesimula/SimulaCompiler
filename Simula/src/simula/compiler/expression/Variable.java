@@ -412,11 +412,11 @@ public final class Variable extends Expression {
 	    	  // This Variable is a Procedure-Identifier.
 	    	  // When 'destination' it is a variable used to carry the resulting value until the final return.
 	    	  // otherwise; it is a ordinary procedure-call.
-	    	  if(destination) { // return("$result");
+	    	  if(destination) { // return("RESULT$");
 	    		  ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
-	    		  if(proc.blockLevel==Global.currentScope.blockLevel) return("$result");
+	    		  if(proc.blockLevel==Global.currentScope.blockLevel) return("RESULT$");
 	    	      String cast=proc.getJavaIdentifier();
-	    	      return("(("+cast+")"+proc.edCTX()+").$result");
+	    	      return("(("+cast+")"+proc.edCTX()+").RESULT$");
 	    	  }
 		      if(procedure.myVirtual!=null)
 			       s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
@@ -450,7 +450,7 @@ public final class Variable extends Expression {
 					  dimBrackets=dimBrackets+"[]";
 				  }
 				  String eltType=type.toJavaType();
-				  String cast="$ARRAY<"+eltType+dimBrackets+">";
+				  String cast="ARRAY$<"+eltType+dimBrackets+">";
 				  String castedVar="(("+cast+")"+var+")";
 				  s.append(castedVar).append(".Elt").append(ixs);
 			  } else s.append(var);

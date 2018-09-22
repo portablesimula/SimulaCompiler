@@ -180,7 +180,7 @@ public final class RemoteVariable extends Expression
 		dimBrackets=dimBrackets+"[]";
 	}
 	String eltType=type.toJavaType();
-	String cast="$ARRAY<"+eltType+dimBrackets+">";
+	String cast="ARRAY$<"+eltType+dimBrackets+">";
 	String castedVar="(("+cast+")"+remoteIdent+")";
 	s.append(castedVar).append(".Elt").append(ixs);
 

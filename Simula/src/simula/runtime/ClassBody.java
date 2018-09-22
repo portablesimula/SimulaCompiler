@@ -1,6 +1,6 @@
 package simula.runtime;
 
-import simula.runtime.RTObject$.$LABQNT;
+import simula.runtime.RTObject$.LABQNT$;
 import simula.runtime.RTObject$.OperationalState;
 
 /**
@@ -39,7 +39,7 @@ public abstract class ClassBody {
 					if (RT.Option.GOTO_TRACING) System.out.println("RTObject$.ClassBody.EXEC$: CALL STM: "+object);
 					STM();
 					if (RT.Option.GOTO_TRACING) System.out.println("RTObject$.EXEC$: ENDE STM: "+object);
-				} catch ($LABQNT q) {
+				} catch (LABQNT$ q) {
 					if (q.SL$ != RTObject$.CUR$) {
 						RTObject$.CUR$.STATE$ = OperationalState.terminated;
 						if (RT.Option.GOTO_TRACING)

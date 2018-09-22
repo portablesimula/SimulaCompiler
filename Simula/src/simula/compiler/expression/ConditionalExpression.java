@@ -45,7 +45,7 @@ public final class ConditionalExpression extends Expression {
 		Global.sourceLineNumber=lineNumber;
 		//Util.warning("ConditionalExpression in this Context is not Supported - Rewrite program");
 		condition.doChecking();
-		condition.backLink=this; // To ensure $result from functions
+		condition.backLink=this; // To ensure RESULT$ from functions
 		//Util.BREAK("ConditionalExpression.doChecking(): Condition: "+condition);
 		Type cType = condition.type;
 		if (cType != Type.Boolean)
