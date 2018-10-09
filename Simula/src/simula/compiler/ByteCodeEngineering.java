@@ -30,7 +30,6 @@ import org.apache.bcel.generic.TABLESWITCH;
 import org.apache.bcel.generic.TargetLostException;
 
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 public final class ByteCodeEngineering {
@@ -131,7 +130,7 @@ public final class ByteCodeEngineering {
         if(labels.size()==0)
         { //if(Option.verbose) System.out.println("ByteCodeEngineering: No label found in "+currentClassFileName);
           return(null);
-        } else if(Option.verbose) System.out.println("ByteCodeEngineering: "+labels.size()+" label found in "+currentClassFileName);
+        } else if(TRACE_REPAIRING) System.out.println("ByteCodeEngineering: "+labels.size()+" label found in "+currentClassFileName);
         
         if(TRACE_REPAIRING) System.out.println("*** PASS 2 - FIND AND TREAT JUMP$ ***");
         for(InstructionHandle handle:instructionList) {

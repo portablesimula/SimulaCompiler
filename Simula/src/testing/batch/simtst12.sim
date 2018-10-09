@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 12
 %
@@ -12,13 +11,15 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
    text t1, t2 ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 12") ;
    Outimage ;
    Outtext ("--- Test the text value and reference relations.") ;
    Outimage; Outimage;
-
+   end;
                                                 !******************************;
                                                 ! Test of text value relations ;
                                                 !******************************;
@@ -142,10 +143,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 12") ;
    END ;
 
-   Outtext ("--- END Simula a.s. TEST 12") ;
-   Outimage
+   if verbose then begin
+      Outtext ("--- END Simula a.s. TEST 12") ;
+      Outimage;
+   end;
  END;

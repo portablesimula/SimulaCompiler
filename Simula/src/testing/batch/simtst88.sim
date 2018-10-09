@@ -8,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
    integer pval;
 
    Class A;
@@ -33,9 +34,11 @@ BEGIN
          integer procedure P; P:=1;
    end;
 
+   if verbose then begin
    Outtext("--- START TEST 88"); Outimage;
    Outtext("--- Test visibility of Hidden attributes.");
    Outimage; Outimage;
+   end;
    
    C begin
    
@@ -75,11 +78,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext("--- NO ERRORS FOUND IN TEST 88");
    END;
 
+   if verbose then begin
    Outtext("--- END TEST 88");
    Outimage
-
+   end
+   
  END

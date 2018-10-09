@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 85
 %
@@ -11,10 +10,13 @@
 %  WRITTEN BY:
 % ==========================================================
 BEGIN BOOLEAN  errorfound;
+BOOLEAN verbose;
 
+if verbose then begin
 outtext("--- START Simula a.s. TEST 85 (test DIRECTFILE)"); outimage;
 outtext("    - does 'new directfile(""direct85"")'.open(blanks(12)");
 outimage; outimage;
+end;
 
 INSPECT NEW DIRECTFILE("direct85") DO BEGIN
 
@@ -293,8 +295,15 @@ INSPECT NEW DIRECTFILE("direct85") DO BEGIN
 
 
 END of INSPECT DIRECTFILE;
-outtext("--- END Simula a.s. TEST 85");
-IF NOT errorfound THEN Outtext(" (NO ERRORS FOUND)");
-OUTIMAGE;
+
+   IF errorfound THEN ELSE
+   Begin
+      Outtext("--- NO ERRORS FOUND IN TEST 85"); 
+   End;
+   if verbose then begin
+   Outtext("--- END Simula a.s. TEST 85") ;
+   Outimage;
+   end;
+
 
 END of program;

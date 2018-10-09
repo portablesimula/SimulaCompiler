@@ -423,37 +423,45 @@ public boolean isDetachUsed()
 }
 
 
-// ***********************************************************************************************
-// *** Utility: ClassParameterIterator - // Iterates through prefix-chain
-// ***********************************************************************************************
-public final class ClassParameterIterator implements Iterator<Parameter>,Iterable<Parameter>
-{ Iterator<Parameter> prefixIterator;
-  Iterator<Parameter> localIterator;
-  public ClassParameterIterator()
-  { ClassDeclaration prefix=getPrefixClass();
-    if(prefix!=null) prefixIterator=prefix.parameterIterator();
-	  localIterator = parameterList.iterator();
-  }
-	public boolean hasNext()
-	{ if(prefixIterator!=null)
-	  { if(prefixIterator.hasNext()) return(true);
-	    prefixIterator=null;
-	  }
-	  return(localIterator.hasNext());
-	}
-	public Parameter next()
-	{ if(!hasNext()) return(null);
-	  if(prefixIterator!=null) return(prefixIterator.next());
-	  return(localIterator.next());
-	} 
-	
-	public Iterator<Parameter> iterator()
-	{ return(new ClassParameterIterator()); }
-}
+	// ***********************************************************************************************
+	// *** Utility: ClassParameterIterator - // Iterates through prefix-chain
+	// ***********************************************************************************************
+	public final class ClassParameterIterator implements Iterator<Parameter>, Iterable<Parameter> {
+		Iterator<Parameter> prefixIterator;
+		Iterator<Parameter> localIterator;
 
-public Iterator<Parameter> parameterIterator()
-{ return(new ClassParameterIterator()); }
-  
+		public ClassParameterIterator() {
+			ClassDeclaration prefix = getPrefixClass();
+			if (prefix != null)
+				prefixIterator = prefix.parameterIterator();
+			localIterator = parameterList.iterator();
+		}
+
+		public boolean hasNext() {
+			if (prefixIterator != null) {
+				if (prefixIterator.hasNext())
+					return (true);
+				prefixIterator = null;
+			}
+			return (localIterator.hasNext());
+		}
+
+		public Parameter next() {
+			if (!hasNext())
+				return (null);
+			if (prefixIterator != null)
+				return (prefixIterator.next());
+			return (localIterator.next());
+		}
+
+		public Iterator<Parameter> iterator() {
+			return (new ClassParameterIterator());
+		}
+	}
+
+	public Iterator<Parameter> parameterIterator() {
+		return (new ClassParameterIterator());
+	}  
 
   // ***********************************************************************************************
   // *** Coding: doJavaCoding

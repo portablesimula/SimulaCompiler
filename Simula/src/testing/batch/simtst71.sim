@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 71
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    integer i;
 
@@ -28,10 +28,13 @@ BEGIN
 
    Procedure P2; i := 4;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 71") ;
    Outimage ;
    Outtext ("--- Test visibility of identifiers.") ;
    Outimage ; Outimage ;
+   end;
+   
 
    rA :- new B ;
 
@@ -103,10 +106,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 71") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 71") ;
    Outimage
+   end
+   
  END

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 49
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    text t ;
 
@@ -22,10 +22,12 @@ BEGIN
    Ref (A)            ra ;
    Integer            l ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 49") ;
    Outimage ;
    Outtext ("--- Test For statement in connection block.") ;
    Outimage ; Outimage ;
+   end;
 
    ra :- New A ;
 
@@ -102,10 +104,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 49") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 49") ;
    Outimage
+   end
+   
  END;

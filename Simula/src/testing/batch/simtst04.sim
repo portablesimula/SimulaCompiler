@@ -27,6 +27,7 @@
 %  ====================================================================
 BEGIN
 INTEGER            found_error;     ! Set to number of errors found. ;
+BOOLEAN verbose;
 
 TEXT               txt;             ! Text to use the editing and;
                                     ! de-editing procedures on.  ;
@@ -57,10 +58,12 @@ IF result <> expected THEN  !*** NOTE 5 ***;
 end;
 
 
+if verbose then begin
 outtext ("--- START Simula a.s. TEST 4");
 Outimage;
 outtext ("--- Test reading numbers from source text");
 Outimage; Outimage;
+end;
 
 txt :- blanks (30);
 
@@ -390,8 +393,10 @@ test("long real operation (16).",txt,"       -1.797693134862315&+308");
 
 
 IF found_error > 0 THEN Outint(found_error,4) ELSE Outtext ("--- NO");
-Outtext (" ERRORS FOUND IN THIS TEST"); Outimage;
+Outtext (" ERRORS FOUND IN TEST 4");
+if verbose then begin
 outtext ("--- END Simula a.s. TEST 4");
-outimage
+outimage;
+end;
 
 END of program;

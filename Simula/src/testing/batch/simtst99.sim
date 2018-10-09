@@ -1,6 +1,7 @@
 
 begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
        boolean errfound;
+       boolean verbose=false;
        real x,y; long real lx,ly; text t,tx,ty,tlx,tly;
 
        procedure error(func,i,j,res); text func; integer i,j,res;
@@ -19,9 +20,12 @@ begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
              outimage; errfound:=true;
        end;
 
+       if verbose then begin
        outtext("--- START Simula a.s TEST 99");
        outtext("--- Test mod, rem, min, max.");
        outimage;
+       end;
+       
        modres( 4, 3):= 1;  remres( 4, 3):= 1;
        modres( 4,-3):=-2;  remres( 4,-3):= 1;
        modres(-4, 3):= 2;  remres(-4, 3):=-1;
@@ -53,7 +57,11 @@ begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
        if ly<lx then begin outtext("*** error: ly<lx!!!");  outimage;
              errfound:=true end;
 
-       if not errfound then outtext("--- NO ERRORS FOUND IN THIS TEST");
-       outimage;
-       outtext("--- END Simula a.s. TEST 99");
+       if not errfound then begin
+          outtext("--- NO ERRORS FOUND IN TEST 99");
+       end;
+       if verbose then begin
+          outtext("--- END Simula a.s. TEST 99");
+          outimage;
+       end;
 end;

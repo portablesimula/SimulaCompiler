@@ -1,7 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
 % ======================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 67
 %
@@ -11,6 +8,7 @@
 % =====================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    integer array ia(1:10);
    integer i, nri;
@@ -72,10 +70,12 @@ BEGIN
    Ref(A)            ua;
    integer            c;
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 67");
    Outimage;
    Outtext("--- Simple test of detach, call and resume.");
    Outimage; Outimage;
+   end;
 
    i := 1;
    ua :- New A;
@@ -89,10 +89,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext("--- NO ERRORS FOUND IN TEST 67");
    END;
 
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 67");
    Outimage
+   end
+   
  END

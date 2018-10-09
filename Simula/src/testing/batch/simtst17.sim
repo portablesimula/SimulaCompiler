@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ==================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 17
 %
@@ -14,16 +13,18 @@
 % =====k===================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    text t1, t2;
 
+if verbose then begin
    Outtext ("--- START Simula a.s. TEST 17");
    Outimage;
    Outtext ("--- Test the (de-)editing text attributes getint,");
    Outimage;
    Outtext ("--- getreal, getfrac, putint, putfix, putreal and putfrac. ");
    Outimage; Outimage;
-
+end;
                                       !******************************;
                                       ! Test of integer procedure   ;
    begin                              ! getint and procedure putint.;
@@ -159,12 +160,11 @@ BEGIN
                                       ! procedure putreal.          ;
                                       !******************************;
 
-      Outimage;
-      Outtext ("*** Test of long real procedure getreal, procedure putfix ");
-      Outimage;
-      Outtext ("*** and procedure putreal is not implemented.");
-      Outimage;
-      Outimage;
+%      Outimage;
+%      Outtext ("*** Test of long real procedure getreal, procedure putfix ");
+%      Outimage;
+%      Outtext ("*** and procedure putreal is not implemented.");
+%      Outimage; Outimage;
    end;
 
    begin
@@ -242,10 +242,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage;
-      Outtext ("--- Two edit overflows should be signaled."); Outimage;
+      Outtext ("--- NO ERRORS FOUND IN TEST 17");
+      Outtext (" --- Two edit overflows should be signaled.");
    END;
 
-   Outtext ("--- END Simula a.s. TEST 17");
-   Outimage
+   if verbose then begin
+      Outtext ("--- END Simula a.s. TEST 17");
+      Outimage; 
+   end;
  END;

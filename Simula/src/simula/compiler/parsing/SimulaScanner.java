@@ -511,6 +511,7 @@ public final class SimulaScanner
   { if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant, "+edcurrent());
 	StringBuilder text=new StringBuilder();
 	int firstLine=Global.sourceLineNumber;
+	int lastLine=firstLine;
 	while(true)
     { // Scan simple-string:
       while(getNext() != '"')
@@ -523,7 +524,11 @@ public final class SimulaScanner
         }
         else text.append((char)current);
       }
-      if(getNext() == '"') text.append('"');
+      lastLine=Global.sourceLineNumber;
+      if(getNext() == '"') {
+    	  text.append('"');
+          lastLine=Global.sourceLineNumber;
+      }
       else
       { // Skip string-separator
     	while(currentIsTokenSeparator()) getNext();
@@ -531,8 +536,9 @@ public final class SimulaScanner
         if(current!='"')
         { pushBack(current);
 		  String result=text.toString(); text=null;
-	  	  if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant: Result=\""+result+"\", "+edcurrent());
-		  if(firstLine<Global.sourceLineNumber) Util.warning("Text constant span mutiple source lines");
+	  	  if(Option.TRACE_SCAN); Util.TRACE("scanTextConstant: Result=\""+result+"\", "+edcurrent());
+//		  if(firstLine<Global.sourceLineNumber) Util.warning("Text constant span mutiple source lines");
+		  if(firstLine<lastLine) Util.warning("Text constant span mutiple source lines");
 		  return(new Token(KeyWord.TEXTKONST,result));
 	    }
       }
@@ -699,26 +705,28 @@ public final class SimulaScanner
   { StringBuilder skipped=new StringBuilder();
 	if(Option.TRACE_SCAN) Util.TRACE("scanEndComment, "+edcurrent());
 	int firstLine=Global.sourceLineNumber;
+	int lastLine=firstLine;
     while(getNext()!=PreProcessor.EOF)
-    { if(!isWhiteSpace(current)) skipped.append((char)current);
+    { //if(!isWhiteSpace(current)) skipped.append((char)current);
       if(current==';')
       { if(Option.TRACE_COMMENTS) Util.TRACE("ENDCOMMENT:\""+skipped+'"');
-	    if(firstLine<Global.sourceLineNumber) Util.warning("END-Comment span mutiple source lines");
+	    if(firstLine<lastLine && (skipped.length()>0)) Util.warning("END-Comment span mutiple source lines");
         pushBack(current); return(new Token(KeyWord.END));
       }
-      if(Character.isLetter(current))
+      else if(Character.isLetter(current))
       { String name=scanName();
 		if(name.equalsIgnoreCase("END")
 		|| name.equalsIgnoreCase("ELSE")
 		|| name.equalsIgnoreCase("WHEN")
 		|| name.equalsIgnoreCase("OTHERWISE"))
 		{ pushBack(name);
-		  if(Option.TRACE_COMMENTS) Util.TRACE("ENDCOMMENT:\""+skipped+'"');
-		  if(firstLine<Global.sourceLineNumber) Util.warning("END-Comment span mutiple source lines");
+		  if(Option.TRACE_COMMENTS) Util.TRACE("END-COMMENT:\""+skipped+'"');
+		  if(firstLine<lastLine && (skipped.length()>0)) Util.warning("END-Comment span mutiple source lines");
 		  return(new Token(KeyWord.END));
 		}
-		skipped.append(name);
-      }
+		skipped.append(name); //lastLine=Global.sourceLineNumber;
+      } else if(!isWhiteSpace(current))
+      { skipped.append((char)current); lastLine=Global.sourceLineNumber; }
     }
     if(skipped.length()>0) Util.error("END-Comment is not terminated");
     if(Option.TRACE_COMMENTS) Util.TRACE("ENDCOMMENT:\""+skipped+'"');

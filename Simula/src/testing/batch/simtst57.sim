@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 57
 %
@@ -11,6 +10,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Text t ;
 
@@ -55,6 +55,7 @@ BEGIN
 
    Ref (A) rA ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 57") ;
    Outimage ;
    Outtext ("--- Test virtual procedure - different number of parameters") ;
@@ -63,6 +64,7 @@ BEGIN
    Outimage ;
    Outtext ("--- other) of the prefix class which contains the virtual part.");
    Outimage ; Outimage ;
+   end;
 
    rA :- New AA ;
    rA.Emit ;
@@ -105,10 +107,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 57") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 57") ;
    Outimage
+   end
+   
 END

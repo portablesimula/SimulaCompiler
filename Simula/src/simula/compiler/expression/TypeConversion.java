@@ -26,12 +26,10 @@ public final class TypeConversion extends Expression {
 
 	// Test if a TypeConversion is necessary and then do it.
 	public static String mayBeConvert(Type fromType,Type toType,String expr) {
-		if(Global.ROUNDING)
-		{ if(fromType==Type.Real || fromType==Type.LongReal)
-		  { if(toType==Type.Integer)
-                return("=(int)Math.round("+expr+");");
-		  }
-	    }
+		if(fromType==Type.Real || fromType==Type.LongReal)
+		{ if(toType==Type.Integer)
+              return("=(int)Math.round("+expr+");");
+		}
         return("=("+toType.toJavaType()+")("+expr+");");
 	}
 
@@ -106,12 +104,10 @@ public final class TypeConversion extends Expression {
 				}
 			}
 		}
-		if (Global.ROUNDING) {
-			if (type == Type.Integer) {
-				Type fromType = expression.type;
-				if (fromType == Type.Real || fromType == Type.LongReal)
-					evaluated = "(int)Math.round(" + evaluated + ")";
-			}
+		if (type == Type.Integer) {
+			Type fromType = expression.type;
+			if (fromType == Type.Real || fromType == Type.LongReal)
+				evaluated = "(int)Math.round(" + evaluated + ")";
 		}
 		return ("((" + cast + ")(" + evaluated + "))");
 	}

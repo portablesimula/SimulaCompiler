@@ -558,8 +558,7 @@ startup;
    end
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      sysout.Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 97") ;
    END ;
 
    Outtext ("--- END OF Simula a.s - SIMULA TEST NO 97 ") ;

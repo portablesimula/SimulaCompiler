@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 25
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    short integer si, sj ;
    integer i, j ;
@@ -18,10 +18,12 @@ BEGIN
    real eps ;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 25") ;
    Outimage ;
    Outtext ("--- Test multiple arithmetic assignment.") ;
    Outimage ; Outimage;
+   end;
 
    eps := 0.001 ;
 
@@ -143,10 +145,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 25") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 25") ;
    Outimage
+   end
+   
  END;

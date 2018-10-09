@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ====================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 84
 %
@@ -111,6 +110,6 @@ INSPECT myfile DO
    CLOSE;
    END;
 
-   Outimage; outtext("--- END Simula a.s. TEST 84"); outimage;
+   Outimage; outtext("--- END Simula a.s. TEST 84"); 
 
 END of program;

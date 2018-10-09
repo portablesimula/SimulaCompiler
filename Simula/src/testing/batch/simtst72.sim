@@ -68,10 +68,12 @@ Begin
       TEST("AFTER ii:=ii+2");
    End;
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 72") ;
    Outimage ;
    Outtext("--- Test of formal procedures.") ;
    Outimage ; Outimage ;
+   end;
 
    x:- New A;
    P(x.Z);
@@ -79,8 +81,7 @@ Begin
 
    IF x.i = 9 and v.i = 7 THEN
    Begin
-      Outtext("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext("--- NO ERRORS FOUND IN TEST 72") ;
    End Else
    Begin
       Outtext ("*** error : Procedure calls.") ;
@@ -100,6 +101,9 @@ Begin
       Outimage
    End;
 
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 72") ;
    Outimage
+   end
+   
  End

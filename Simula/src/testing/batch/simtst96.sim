@@ -1,7 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
 % =======================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 96
 %
@@ -243,7 +240,7 @@ comment
       close;
 EXIT:
 end ;
-outtext("--- END Simula a.s. TEST 96"); outimage;
+outtext("--- END Simula a.s. TEST 96");
 if not found_error then Outtext(" (NO ERRORS FOUND)");
 sysout.outimage;
 end

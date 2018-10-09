@@ -1,7 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 76
 %
@@ -18,10 +15,13 @@ BEGIN
    Procedure Print(t); Value t; Text t;
    begin Outtext(t); if verbose then outimage; end; 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 76") ;
    Outimage ;
    Outtext ("--- Test of detach and resume.") ;
    Outimage ; Outimage ;
+   end;
+   
 
 SIMSET Begin
          Ref(A) x;
@@ -52,7 +52,9 @@ SIMSET Begin
          sysout.image:= notext;
 
          if t = "AAABCDEFGAB" then
-         begin Outtext("--- NO ERRORS IN PART 1"); outimage; end
+         begin
+           if verbose then begin Outtext("--- NO ERRORS IN PART 1"); outimage; end
+         end  
          else
          begin Outtext ("*** error : Detach - resume (1).") ;
                Outimage ;
@@ -112,10 +114,12 @@ SIMSET Begin
    IF found_error tHEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 76") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 76") ;
    Outimage
+   end
+   
  END

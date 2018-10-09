@@ -1,8 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
-
 % ==================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 62
 %
@@ -12,6 +8,7 @@
 % =================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    text array seq (1:30);
    integer seqi;
@@ -76,10 +73,12 @@ BEGIN
 
       trace("terminate X");  end X;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 62");
    Outimage;
    Outtext ("--- Test complex use of detach and resume.");
    Outimage; Outimage;
+   end;
 
    yy :- new Y;   xx :- new X;
 
@@ -106,8 +105,7 @@ BEGIN
       and seq (19) = "terminate X"
       and seq (20) == notext and seqi = 19 then
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 62");
    END else
    begin
       integer i;
@@ -122,6 +120,9 @@ BEGIN
       end;
    end;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 62");
    Outimage
+   end
+   
  END

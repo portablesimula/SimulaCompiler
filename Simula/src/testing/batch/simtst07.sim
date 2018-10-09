@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ==========================================   Main   program   ================
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 7
 %
@@ -21,6 +20,7 @@ class Testmatlib ;
    begin
 
    Boolean  found_error;
+   Boolean verbose=false;
 
    procedure Error (t) ;  value t ;  text t ;
       begin
@@ -279,18 +279,21 @@ class Testmatlib ;
       end procedure testepsilon;
 
 
+   if verbose then begin
    outtext ("--- START Simula a.s. TEST 7") ;
    Outimage;
    outtext ("--- Test math. functions") ;
    outimage; Outimage;
-
+	end;
    INNER ;
 
    IF found_error THEN  ELSE
-      begin Outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage; end;
+      begin Outtext ("--- NO ERRORS FOUND IN TEST 7");  end;
+   if verbose then begin
    outtext ("--- END Simula a.s. TEST 7");
    outimage;
-
+   end;
+   
 END of class Testmatlib ;
 
 

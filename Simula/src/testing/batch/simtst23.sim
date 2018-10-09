@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ======================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 23
 %
@@ -13,6 +12,7 @@
 % =====f]============================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    real eps;
 
@@ -20,12 +20,14 @@ BEGIN
    real r;
    long real lr;
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 23");
    Outimage;
    outtext("--- Test all possible type conversions in connection with");
    outimage;
    Outtext("--- step-until");
    Outimage; Outimage;
+   end;
 
    eps := 0.01;
 
@@ -890,11 +892,12 @@ BEGIN
 
    if not found_error then
    begin
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage;
+      Outtext("--- NO ERRORS FOUND IN TEST 23");
    end;
 
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 23");
    Outimage;
+   end;
 
 END;

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 51
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    CLASS A ;
    BEGIN
@@ -122,10 +122,12 @@ BEGIN
       end ;
    end  pros. check ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 51") ;
    Outimage ;
    Outtext ("--- Test 'inner'") ;
    Outimage ; Outimage ;
+   end;
 
    ra :- NEW A ;
    Check (sysout.image.strip, " L1  L2", 1) ;
@@ -172,10 +174,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 51") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 51") ;
    Outimage
+   end
+   
  End ;

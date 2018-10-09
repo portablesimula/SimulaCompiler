@@ -8,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
 %  external class Separat="C:\GitHub\SimulaCompiler\Simula/src/testing/bin/ExternalClass1.jar";
   external class Separat;
@@ -26,21 +27,24 @@ BEGIN
        end;
      end;
   
+     if verbose then begin
      Outtext("--- START TEST 86"); Outimage;
      Outtext("--- Simple Test of Separately Compiled Class.");
      Outimage; Outimage;
+     end;
   
      x :- new B();
  
      IF found_error THEN
      ELSE
      BEGIN
-        Outtext("--- NO ERRORS FOUND IN THIS TEST");
-        Outimage
+        Outtext("--- NO ERRORS FOUND IN TEST 86");
      END;
 
+     if verbose then begin
      Outtext("--- END TEST 86");
      Outimage
+     end
   
   end;
   

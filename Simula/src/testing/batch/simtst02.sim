@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ======================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 2
 %
@@ -18,11 +17,12 @@ BOOLEAN          b1,b2,b3; ! b1-b3 always TRUE  ;
 BOOLEAN          b4,b5,b6; ! b4-b6 always FALSE ;
 
 BOOLEAN       found_error;  ! set TRUE if error found;
+BOOLEAN verbose=false;
 
-outtext ("--- START Simula a.s. TEST 2");
-Outimage;
-outtext ("--- Test Boolean operators");
-outimage; Outimage;
+if verbose then begin
+outtext ("--- START Simula a.s. TEST 2"); Outimage;
+outtext ("--- Test Boolean operators"); outimage; Outimage;
+end;
 
 b1 := TRUE;
 b2 := IF b1 THEN b1 ELSE FALSE;
@@ -501,8 +501,10 @@ begin
 end;
 
 IF found_error THEN  ELSE
-   begin outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage; end;
+   begin outtext ("--- NO ERRORS FOUND IN TEST 2"); end;
+if verbose then begin
 outtext ("--- END Simula a.s. TEST 2");
-outimage
+outimage;
+end;
 
 END of program;

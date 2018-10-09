@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 47
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Ref(A) ra1, ra2, ra3 ;
 
@@ -28,10 +28,12 @@ BEGIN
 
    END;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 47") ;
    Outimage ;
    Outtext ("--- Test of this.") ;
    Outimage ; Outimage ;
+   end;
 
    ra1 :- new a ;
    ra1 :- ra1.z ;
@@ -58,10 +60,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 47") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 47") ;
    Outimage
+   end
+   
  END;

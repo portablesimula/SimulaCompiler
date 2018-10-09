@@ -9,7 +9,7 @@ package simula.compiler.utilities;
 
 public final class Option {
 	
-	public static boolean verbose = true;//false;//true;// 
+	public static boolean verbose = false; 
 	public static boolean WARNINGS=true;
 
 	// Overall TRACING Options
@@ -48,24 +48,6 @@ public final class Option {
 	 */
 	public static boolean standardClass = false;
 
-//	/**
-//	 * Used by Java-Coding to generate indirect access to variables in enclosing
-//	 * blocks. See Variable.java
-//	 */
-//	public static boolean useDisplayAccess = true;
-
-	/**
-	 * Used by Java-Coding to generate fully qualified class/procedure names.
-	 * <p>
-	 * Consider a class A with local class B, then the 'qualified name' B is 'A$B<number>'
-	 * where <number> is added to make the name 'A$B<number>.java' unique within the file directory.
-	 * <p>
-	 * NOTE: The <number> part is not yet implemented.
-	 * <p>
-	 * The initial value is false.
-	 * See BlockDeclaration.java
-	 */
-	public static boolean useQualifiedNames = true;//false;
 	
 	/**
 	 * Used by Java-Coding to save the generated .java files.

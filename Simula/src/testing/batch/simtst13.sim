@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 13
 %
@@ -11,14 +10,16 @@
 % ==============================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    text t1, t2;
 
+if verbose then begin
    Outtext ("--- START Simula a.s. TEST 13");
    Outimage;
    Outtext ("--- Test text value and text reference assigment.");
    Outimage; Outimage;
-
+end;
                                                 !******************************;
    t1 :- blanks (3) ;                           ! Test text value assignment.  ;
    t1 := "abc" ;                                !******************************;
@@ -93,10 +94,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 13");
    END;
 
-   Outtext ("--- END SIMULA a.s. TEST 13");
-   Outimage
+   if verbose then begin
+      Outtext ("--- END SIMULA a.s. TEST 13");
+      Outimage;
+   end;
  END;

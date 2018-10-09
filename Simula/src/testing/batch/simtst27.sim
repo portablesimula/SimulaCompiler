@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 27
 %
@@ -9,15 +8,18 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    text t ;
    integer i, j, n;
    Boolean b ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 27") ;
    Outimage ;
    Outtext ("--- Test of while-loops.") ;
    Outimage ; Outimage ;
+   end;
 
 
    while b do n := n+1 ;
@@ -119,10 +121,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 27") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 27") ;
    Outimage
+   end
+   
  END;

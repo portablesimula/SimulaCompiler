@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =======================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 98
 %
@@ -20,6 +19,8 @@
 begin integer i,j,k,globali,globalj,globalk;
       boolean trace; !*** set TRUE if output is wanted ***;
       boolean errorFound;
+      boolean verbose=false;
+      
       text programpoint;
       boolean ablock,bblock,cblock,dblock,eblock,fblock;
 
@@ -312,9 +313,12 @@ begin integer i,j,k,globali,globalj,globalk;
 
 %     ************   Initialisations   **************
 
+      if verbose then begin
       outtext(
          "--- START Simula a.s test 98 (attribute protection test)");
       outimage;
+      end;
+      
       !*** for test purpose, insert this: ***     trace:=true;
       globali:=i:=2; globalj:=j:=3; globalk:=k:=4; outerout;
 
@@ -416,7 +420,12 @@ L:
 %   new y.virtproc(sourceline,"global"," NEW y.virt");    !source error;
 %   goto xa.L;                                            !source error;
 
-      outtext("--- END Simula a.s TEST 98");
-      if not errorFound then outtext(" (NO ERRORS FOUND)");
-      outimage;
+       if not errorfound then begin
+          outtext("--- NO ERRORS FOUND IN TEST 98");
+       end;
+       if verbose then begin
+          outtext("--- END Simula a.s. TEST 98");
+          outimage;
+       end;
+
 end

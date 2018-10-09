@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 46
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Class A ;
    begin
@@ -29,10 +29,12 @@ BEGIN
    ref (A) procedure rP (ra) ; ref (A) ra ;
       rP :- ra ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 46") ;
    Outimage ;
    Outtext ("--- Test qualification of function designators.") ;
    Outimage ; Outimage ;
+   end;
 
    rb :- new B ;
 
@@ -55,10 +57,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 46") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 46") ;
    Outimage
+   end
+   
  END;

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =======================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 64
 %
@@ -9,6 +8,7 @@
 % ======================================================================
 Begin
    Boolean found_error;
+   Boolean verbose=false;
 
    text array lines, facit (1:20);
    integer lnr;
@@ -182,10 +182,12 @@ Begin
    REF (A13) ra13;
    REF (A14) ra14;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 64");
    Outimage;
    Outtext ("--- Test parameter transmission by value to classes.");
    Outimage; Outimage;
+   end;
 
    ra1 :- New A1 (false);
 
@@ -362,10 +364,12 @@ Begin
    If found_error then
    else
    Begin
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 64");
    End;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 64");
    Outimage
+   end
+   
  End

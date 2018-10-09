@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =====================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 81
 %
@@ -12,6 +11,7 @@
 BEGIN
    Ref(File) xf;
    Boolean found_error ;
+   boolean verbose=false;
    
    Text   fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any8189";
 
@@ -21,6 +21,7 @@ BEGIN
          if abort then error("Abort requested");
    end;
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 81 (Test 'open' and 'close')");
    Outimage ;
    Outtext("    file ""any8189"" is opened as infile and inbytefile");
@@ -32,6 +33,7 @@ BEGIN
    Outimage;
    Outtext("    file ""sxcvz3"" is opened as directbytefile");
    Outimage;
+   end;
 
    xf:- New Infile(fileName);
 
@@ -198,9 +200,10 @@ BEGIN
 
 TERMINATE:
 
-   Outtext ("--- END Simula a.s. TEST 81") ;
-   IF found_error THEN
-   ELSE Outtext (" (no errors found)");
-   Outimage
+   if not found_error then
+   begin outtext("--- NO ERRORS FOUND IN TEST 81"); end;
+   if verbose then begin
+      outtext("--- END Simula a.s. TEST 81"); outimage;
+   end;
 
 END

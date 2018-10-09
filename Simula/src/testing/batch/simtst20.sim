@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 20
 %
@@ -16,16 +15,19 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    integer i,j ;
    short integer si, sj ;
 
+if verbose then begin
    Outtext ("--- START Simula a.s. TEST 20") ;
    Outimage ;
    Outtext ("--- Test the relational operators <, <=, =, >=, > ") ;
    Outimage ;
    Outtext ("--- and <> on integers.") ;
    Outimage ; Outimage ;
+end;
 
    i := 5 ;
    si := 3 ;
@@ -93,10 +95,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 20") ;
    END ;
 
+if verbose then begin
    Outtext ("--- END Simula a.s. TEST 20") ;
-   Outimage
+   Outimage;
+   end;
  END;

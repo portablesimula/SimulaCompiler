@@ -53,7 +53,7 @@ public final class JavaModule {
 		if (Option.verbose) Util.TRACE("Output: " + outputFile.getCanonicalPath());
 		writer = new FileWriter(outputFile);
 		JavaModule.code("package "+Global.packetName+";"); 
-		JavaModule.code("// "+Global.simulaID+" Compiled at " + new Date());
+		JavaModule.code("// "+Global.simulaReleaseID+" Compiled at " + new Date());
 		
 		// Output Dependencies
 		JavaModule.code("import simula.runtime.*;");

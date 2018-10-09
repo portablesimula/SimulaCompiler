@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =====================================   Main   program =============
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 28
 %
@@ -12,6 +11,7 @@
 % ====================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    BOOLEAN       ARRAY ba1 (0:2), ba3 (0:2, 0:1, 0:2);
    CHARACTER     ARRAY ca1 (0:2), ca3 (0:2, 0:1, 0:2);
@@ -53,6 +53,7 @@ BEGIN
       END of procedure Pr1;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 28");
    Outimage;
    Outtext ("--- Test parameter transmission of value types and");
@@ -61,6 +62,7 @@ BEGIN
    Outimage;
    Outtext ("--- value (except text array).");
    Outimage; Outimage;
+   end;
 
    Pr1 (TRUE, 'X', 99, 123, 100.1, 200.2&-5, "PRDL TO YOU TOO.");
 
@@ -266,10 +268,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 28");
    END;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 28");
    Outimage
+   end
+   
 END;

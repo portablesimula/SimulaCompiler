@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =======================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 31
 %
@@ -104,9 +103,11 @@ RETURN:
 
 START:
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 31");
    Outtext(" (labels/switches as procedure parameters)");
    Outimage;
+   end;
 
    path :- blanks(20);
    j := 1;
@@ -197,11 +198,13 @@ C12:
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext("--- NO ERRORS FOUND IN TEST 31");
    END;
 
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 31");
    Outimage
+   end
+   
 
 END of program;

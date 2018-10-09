@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ================================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 91
 %
@@ -12,6 +11,7 @@
 begin ref(A) x; text timage;
       text array ta(0:3); integer ti;
       boolean found_error;
+      boolean verbose=false;
 
       Procedure Test;
       if timage <> ta(ti) then
@@ -42,9 +42,12 @@ begin ref(A) x; text timage;
       ta(2):- "Ref.  text: og dette var bra !!!!          ";
       ta(3):- "Value text: og til slutt var dette bra !!!!";
 
+      if verbose then begin
       outtext("--- START Simula a.s. TEST 91"); outimage;
       outtext("--- Test simple virtual procedures");
       outimage; outimage;
+      end;
+      
       x:-new A;
       x.P1("dette var bra !!!!");
       x.P2("dette var ogs} bra !!!!");
@@ -52,8 +55,9 @@ begin ref(A) x; text timage;
       x.P2(copy("og til slutt var dette bra !!!!"));
 
       if not found_error then
-      begin outtext("--- NO ERRORS FOUND IN THIS TEST");
-            outimage;
+      begin outtext("--- NO ERRORS FOUND IN TEST 91");
       end;
-      outtext("--- END Simula a.s. TEST 91"); outimage;
+      if verbose then begin
+         outtext("--- END Simula a.s. TEST 91"); outimage;
+      end;   
 END of program;

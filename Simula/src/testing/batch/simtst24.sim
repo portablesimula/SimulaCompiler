@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 24
 %
@@ -18,11 +17,14 @@ BEGIN
 
    BOOLEAN            found_error ;              ! Set to true when errors are ;
                                                  ! found.                      ;
+   BOOLEAN verbose=false;
 
+   if verbose then begin
    outtext ("--- START Simula a.s. TEST 24") ;
    outimage ;
    outtext ("--- Test conditional statements.") ;
    outimage ; Outimage;
+   end;
                                                  !*****************************;
    b1 := TRUE ;                                  ! b1-b3 have the value true   ;
    b2 := IF b1 THEN b1 ELSE FALSE ;              ! and b4-b6 have the value    ;
@@ -440,11 +442,12 @@ BEGIN
    IF found_error THEN
    ELSE
       BEGIN
-      outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      outimage
+      outtext ("--- NO ERRORS FOUND IN TEST 24") ;
       END ;
 
+   if verbose then begin
    outtext ("--- END Simula a.s. TEST 24") ;
    outimage
-
+   end
+   
 END of program;

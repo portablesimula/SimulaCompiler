@@ -1,7 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 74
 %
@@ -11,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Text t;
 
@@ -37,10 +35,13 @@ BEGIN
          If y=/=none then Resume(y); Sjekk ('D');
    End;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 74") ;
    Outimage ;
    Outtext ("--- Test resume and detach.") ;
    Outimage ; Outimage ;
+   end;
+   
 
    x:- New A;
    y:- New B;
@@ -54,8 +55,7 @@ BEGIN
 
    IF t = "CDABCDEFCGDECGDAH" THEN
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 74") ;
    END ELSE
    Begin
       Outtext ("*** error : Resume - Detach.");
@@ -65,6 +65,9 @@ BEGIN
       Outimage; Outimage
    End;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 74") ;
    Outimage
+   end
+   
  END

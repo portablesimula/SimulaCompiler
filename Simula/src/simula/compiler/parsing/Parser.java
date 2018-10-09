@@ -34,7 +34,9 @@ public final class Parser {
 			Parser.currentToken = simulaScanner.nextToken();
 			//Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
 			if(Parser.currentToken==null)
-		    { if(!endOfFileErrorGiven) Util.warning("Scanning past END-OF-FILE -- Adding extra END Symbol");
+		    { if(!endOfFileErrorGiven) {
+		    	Util.warning("Possible scanning past END-OF-FILE");
+		      }
 		      endOfFileErrorGiven=true;
 		      Parser.currentToken = new Token(KeyWord.END);
 		    }

@@ -209,10 +209,10 @@ public abstract class RTObject$  implements Runnable {
 	    return (T) copyMultiArrayObject(arr);
 	}
 	private static Object copyMultiArrayObject(Object arr) {
-	    Class clazz = arr.getClass();
+	    Class<?> clazz = arr.getClass();
 	    if (!clazz.isArray())
 	        throw new IllegalArgumentException("not an array: " + arr);
-	    Class componentType = clazz.getComponentType();
+	    Class<?> componentType = clazz.getComponentType();
 	    int length = Array.getLength(arr);
 	    Object copy = Array.newInstance(componentType, length);
 	    if (componentType.isArray())
@@ -613,9 +613,9 @@ public abstract class RTObject$  implements Runnable {
 	}
 
 	// ************************************************************
-	// *** GOTO -- To avoid Java-error: "Unreachable code" after GOTO
+	// *** GOTO$ -- To avoid Java-error: "Unreachable code" after GOTO
 	// ************************************************************
-    public void GOTO(LABQNT$ q)
+    public void GOTO$(LABQNT$ q)
     { if(RT.Option.GOTO_TRACING) RT.TRACE("RTObject$.GOTO: "+q);
       throw(q);
     }

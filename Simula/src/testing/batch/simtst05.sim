@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ==============================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 5
 %
@@ -23,6 +22,7 @@
 BEGIN
 BOOLEAN            found_error;       ! Set to true when errors are;
                                        ! found.                     ;
+BOOLEAN verbose=false;
 INTEGER            i1;                ! To be compared by the relops;
 INTEGER            i2;                ! To be compared by the relops;
 SHORT INTEGER      s1;                ! To be compared by the relops;
@@ -51,10 +51,12 @@ begin sysout.setpos(1);
       found_error:=true;
 end;
 
+if verbose then begin
 Outtext ("--- START Simula a.s TEST 5");
 Outimage;
 Outtext ("--- Test arithm. relations");
 Outimage; Outimage;
+end;
 
                                        !********* NOTE 1 ************;
 maxpint :=  maxint;                   ! Fill in max positiv AND    ;
@@ -379,8 +381,10 @@ IF     NOT l1 =  l2   AND     -2222 <  l2
 ELSE  err("MAX.3 (comparing LONG REALs)");
 
 IF found_error THEN  ELSE
-   begin Outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage; end;
+   begin Outtext ("--- NO ERRORS FOUND IN TEST 5"); end;
+if verbose then begin
 outtext ("--- END Simula a.s. TEST 5");
-outimage
+outimage;
+end;
 
 END of program;

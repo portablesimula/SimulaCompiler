@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ======================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 19
 %
@@ -11,13 +10,16 @@
 % ==============================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    text t1, t2, t3;
 
+if verbose then begin
    Outtext ("--- START Simula a.s. TEST 19");
    Outimage;
    Outtext ("--- Test text concatenation and text expression evaluation.");
    Outimage; Outimage;
+end;
 
    t1 :- "abcde";
    t2 :- "123"&t1&t3&"456"&t1.sub (3,3);
@@ -93,10 +95,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 19");
    END;
 
-   Outtext ("--- END Simula a.s. TEST 19");
-   Outimage
+   if verbose then begin
+      Outtext ("--- END Simula a.s. TEST 19");
+      Outimage;
+   end;
  END;

@@ -1,6 +1,4 @@
-BEGIN
+begin
+  L: goto L; 
 
-   L:
-   
-    goto L;   
 END;

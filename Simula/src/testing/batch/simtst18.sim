@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ================================================   Main   program  ===========
 %  PROGRAM NAME:  SIMULA A/S - SIMULA TEST  NO 18
 %
@@ -20,6 +19,7 @@
 BEGIN
 BOOLEAN            found_error ;                 ! Set to true when errors are ;
                                                  ! found.                      ;
+BOOLEAN verbose=false;
 TEXT               txt ;                         ! To use the put- and get-    ;
                                                  ! procedures on.              ;
 INTEGER            intr ;                         ! To be used in the put- and  ;
@@ -30,10 +30,12 @@ LONG REAL          lon ;                         !         -"-                 ;
 INTEGER            maxtext ;                     ! To contain max legal text   ;
                                                  ! length.                     ;
 
+if verbose then begin
 outtext ("--- START Simula a.s. TEST 18") ;
 outimage ;
 outtext ("--- Test the put- and get-procedures of text") ;
 outimage ;
+end;
 
 maxtext := 32000 ;                               !********* NOTE 2 ************;
 
@@ -560,12 +562,13 @@ IF txt <> "      1.00" THEN
 IF found_error THEN
 ELSE
    BEGIN
-   Outtext ("--- NO ERRORS FOUND IN THIS TEST") ; Outimage;
-   Outtext ("--- Six text edit overflows should be signaled.");
-   Outimage;
+   Outtext ("--- NO ERRORS FOUND IN TEST 18");
+   Outtext (" --- Six text edit overflows should be signaled.");
    END ;
 
-outtext ("--- END Simula a.s. TEST 18") ;
-outimage
+if verbose then begin
+   outtext ("--- END Simula a.s. TEST 18") ;
+   outimage;
+end;
 
 END of program;

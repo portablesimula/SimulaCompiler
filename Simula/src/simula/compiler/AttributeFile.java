@@ -61,11 +61,11 @@ public final class AttributeFile {
 	  String relativeAttributeFileName=program.getRelativeAttributeFileName();
       if(relativeAttributeFileName==null) return;
       String attributeFileName=Global.tempClassFileDir+relativeAttributeFileName;
-	  if (Option.verbose) Util.BREAK("*** BEGIN Generate SimulaAttributeFile: "+attributeFileName);
+	  if (Option.verbose) Util.TRACE("*** BEGIN Generate SimulaAttributeFile: "+attributeFileName);
 	  AttributeFile attributeFile=new AttributeFile(attributeFileName);
 	  attributeFile.write((BlockDeclaration)program.module);
 	  if(Option.TRACE_ATTRIBUTE_OUTPUT) attributeFile.readAttributeFile(attributeFileName);
-	  if (Option.verbose) Util.BREAK("*** ENDOF Generate SimulaAttributeFile: "+attributeFileName);
+	  if (Option.verbose) Util.TRACE("*** ENDOF Generate SimulaAttributeFile: "+attributeFileName);
 	}
 	
 	private void write(BlockDeclaration module) throws IOException
@@ -88,7 +88,7 @@ public final class AttributeFile {
 	}
 
 	private BlockDeclaration readAttributeFile(String attributeFileName) throws IOException
-	{ if (Option.verbose) Util.BREAK("*** BEGIN Read SimulaAttributeFile: "+attributeFileName);
+	{ if (Option.verbose) Util.TRACE("*** BEGIN Read SimulaAttributeFile: "+attributeFileName);
 	  FileInputStream fileInputStream=new FileInputStream(attributeFileName);
 	  inpt=new ObjectInputStream(fileInputStream);
 	  if(!checkVersion()) Util.error("Malformed SimulaAttributeFile: "+attributeFileName);

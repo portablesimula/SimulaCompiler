@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =====================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 8
 %
@@ -12,15 +11,18 @@
 BEGIN
 BOOLEAN            found_error;        ! Set to true when errors are ;
                                        ! found.                      ;
+                                       BOOLEAN verbose=false;
 INTEGER            isum;               ! To contain control sum.     ;
 REAL               rsum;               ! To contain control sum.     ;
 TEXT               txt;                ! Used in controlling real    ;
                                        ! controll sum.               ;
 
+if verbose then begin
 Outtext ("--- START Simula a.s. TEST 8");
 Outimage;
 Outtext ("--- Simple scope test");
 Outimage; Outimage;
+end;
 
    BEGIN
    INTEGER            intr;
@@ -189,8 +191,10 @@ IF found_error THEN
    END;
 
 if not found_error then
-   begin Outtext("--- NO ERRORS FOUND IN THIS TEST"); Outimage; end;
+   begin Outtext("--- NO ERRORS FOUND IN TEST 8");  end;
+if verbose then begin
 outtext ("--- END Simula a.s. TEST 8");
 outimage;
+end;
 
 END of program;

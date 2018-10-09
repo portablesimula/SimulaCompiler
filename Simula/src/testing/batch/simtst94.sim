@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =====
 %  PROGRAM NAME:   Simula a.s - SIMULA TEST NO 94
 %
@@ -14,6 +13,7 @@
 Begin
 
    Boolean found_error ;
+   Boolean verbose=false;
 
    SIMSET Begin
           Link Class Bead(i); Integer i;;
@@ -34,11 +34,13 @@ Begin
           Ref(A) Ar;
           Ref(Head) chain; Integer j; Ref(Bead) r,s; Ref(Linkage) x;
 
+          if verbose then begin
           Outtext ("--- START Simula a.s TEST 94"); Outimage;
           Outtext ("--- Test Simset - first, last, empty,");
           Outtext (" cardinal and clear.");
           Outimage ; Outimage ;
-
+		  end;
+		  
           chain:-New Head;
           if chain.first == none and
              chain.last  == none and
@@ -208,10 +210,11 @@ Begin
      IF found_error then
      ELSE
      Begin
-           Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-           Outimage
+           Outtext ("--- NO ERRORS FOUND IN TEST 94") ;
      End ;
 
-     Outtext ("--- END Simula a.s TEST 94") ;
-     Outimage
+     if verbose then begin
+        Outtext ("--- END Simula a.s TEST 94") ;
+        Outimage;
+     end;
 End

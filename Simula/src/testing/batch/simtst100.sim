@@ -125,15 +125,17 @@ begin
              if max_signif<significance then max_signif:=significance;
        end;
 
-       outtext("START Simula a.s test 100");
-       outimage;
-       outtext("    Test monotoneity of putreal and getreal.");
-       outimage;
-       outtext("    Test that put-get-put delivers the identity.");
-       outimage;
-       outtext("    - report on outfile ""out100""");
-       outimage; outimage;
-
+       if verbose then begin
+          outtext("START Simula a.s test 100");
+          outimage;
+          outtext("    Test monotoneity of putreal and getreal.");
+          outimage;
+          outtext("    Test that put-get-put delivers the identity.");
+          outimage;
+          outtext("    - report on outfile ""out100""");
+          outimage; outimage;
+       end;
+       
        min_signif:=signpos; max_signif:=0;
        
        if verbose then putget:-sysout() else
@@ -162,14 +164,14 @@ begin
        r:=10&&30; testputget(r,up);
        r:=10&&40; testputget(r,up);
 EXIT:
-       outtext("..END Simula a.s test 100");
+       if verbose then outtext("..END Simula a.s test 100");
        if min_signif=signpos
-       then outtext(" (no significant deviations found) ")
+       then  outtext("--- NO ERRORS FOUND IN TEST 100") ! no significant deviations found;
        else begin outimage;  putget.outimage;
             outtext(" Number of significant digits varies between");
             outint(min_signif,3); outtext(" and"); outint(max_signif,3);
        end;
        putget.outtext(sysout.image); putget.outimage;
        if not verbose then putget.close;
-       outimage;
+%       outimage;
 end

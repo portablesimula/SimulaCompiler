@@ -1,7 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 66
 %
@@ -79,12 +76,14 @@ BEGIN
       OK := f1.linjer (l) = f2.linjer (l) and OK (f1, f2, l+1) ;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 66") ;
    Outimage ;
    Outtext ("--- Test corutines and two instances of infile which read ") ;
    Outimage ;
    Outtext ("--- from the same file simultanously.") ;
    Outimage ; Outimage ;
+   end;
    
    
 
@@ -118,13 +117,14 @@ BEGIN
    IF found_error THEN outimage
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 66") ;
    END ;
 
    fil1.fil.close; fil2.fil.close;
 
 % slutt:
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 66") ;
    Outimage
+   end
  END

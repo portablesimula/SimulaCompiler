@@ -34,7 +34,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
-		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
 		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
@@ -89,7 +89,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
 
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
-		//names.add("simtst52.sim"); // OK:  Test 'inner'
+		//names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
@@ -147,6 +147,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 		//names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
 		//names.add("simtst103.sim"); // OK: Test 2-dim Array by value.
+		names.add("simtst104.sim"); // OK: A VERY Simple Simulation
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

@@ -36,7 +36,7 @@ import simula.compiler.utilities.Util;
 public final class Simula {
 
 	static void help() {
-		System.out.println(Global.simulaID+" See: https://github.com/portablesimula\n\n");
+		System.out.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n\n");
 		System.out.println("SIMULA_HOME="+System.getenv("SIMULA_HOME")+"\n\n");
 		System.out.println("JAVA_HOME="+System.getenv("JAVA_HOME")+"\n\n");
 		System.out.println("Usage: java Simula [options] sourceFile \n\n"
@@ -58,6 +58,11 @@ public final class Simula {
 	public static void main(String[] argv) {
 		String fileName = null;
 		String SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
+		//System.out.println("SYSTEM: java.class.path="+System.getProperty("java.class.path"));
+		
+		// Set default options.
+		Option.verbose=false;
+		Option.WARNINGS=true;
 
 		// Parse command line arguments.
 		for(int i=0;i<argv.length;i++) {
@@ -83,39 +88,11 @@ public final class Simula {
 //		fileName=SIMULA_HOME+"/tst/FittingRoom.sim"; // TEMP !!!!!
 		
 		if (fileName == null) error("No input files specified");
-//		// Set DEBUG OPTIONS
-//
-//		// Set options and tracing.
-//		Option.verbose = true;// false;
-//		Option.WARNINGS=true;
-//
-//		// Overall TRACING Options
-//		Option.TRACING=true;//false;//true;
-//		Option.BREAKING=true;//false; //true; 
-//
-//		// Scanner Trace Options
-//		Option.TRACE_PREPROCESSOR=false;//true;
-//		Option.TRACE_SCAN=false;//true;
-//		Option.TRACE_COMMENTS=false;//true;
-//
-//		// Parser Trace Options
-//		Option.TRACE_PARSE=true;//false;//true;
-//
-//		// Checker Trace Options
-//		Option.TRACE_CHECKER=false;//true;
-//		Option.TRACE_CHECKER_OUTPUT=false;//true;
-//
-//		// Coder Trace Options
-//		Option.TRACE_CODING=true;
-//
-//		// Java Compiler and Jar-tool Trace Options
-//		Option.TRACE_JAVAC=true;
-//		Option.TRACE_JAVAC_OUTPUT=true;
-//		Option.TRACE_JARING=true;
 		
 		Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;
 //		Global.simulaRtsLib=SIMULA_HOME+"/Simula.jar";  // TODO: Later  /RTS.jar
-		Global.simulaRtsLib=SIMULA_HOME+"/rts/";        // TODO: Later  /RTS.jar
+//		Global.simulaRtsLib=SIMULA_HOME+"/rts/";        // TODO: Later  /RTS.jar
+		Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/";        // TODO: Later  /RTS.jar
 	
 		// Start compiler ....
 		new SimulaCompiler(fileName).doCompile();
@@ -132,7 +109,7 @@ public final class Simula {
      */
     private static String getSimulaHome(String dir)
     { String SIMULA_HOME=dir;
-      Util.BREAK("SIMULA_HOME: "+SIMULA_HOME);
+      Util.TRACE("SIMULA_HOME: "+SIMULA_HOME);
       // TODO: Check dir legal directory name
       return(SIMULA_HOME);
     }
@@ -142,7 +119,7 @@ public final class Simula {
      */
     private static void setKeepJava(String dir)
     { Option.keepJava=dir;
-      Util.BREAK("KEEP_JAVA: "+Option.keepJava);
+      Util.TRACE("KEEP_JAVA: "+Option.keepJava);
       // TODO: Check dir legal directory name
     }
 
@@ -151,7 +128,7 @@ public final class Simula {
      */
     private static void setOutputDir(String dir)
     { Option.outputDir=dir;
-      Util.BREAK("OUTPUT_DIR: "+Option.keepJava);
+      Util.TRACE("OUTPUT_DIR: "+Option.keepJava);
       // TODO: Check dir legal directory name
     }
 

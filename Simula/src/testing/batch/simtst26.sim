@@ -27,7 +27,9 @@ BEGIN
       end;   
    end;
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 26"); Outimage;
+   end;
 
    i := 5;
 
@@ -221,10 +223,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage;
+      Outtext("--- NO ERRORS FOUND IN TEST 26");
    END;
 
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 26");
    Outimage;
+   end;
+   
  END;

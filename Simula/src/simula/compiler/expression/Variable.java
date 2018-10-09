@@ -222,7 +222,7 @@ public final class Variable extends Expression {
 					//Util.BREAK("Actual Parameter: " + actualParameter);
 					actualParameter.doChecking();
 					//Util.BREAK("Actual Parameter: " + actualParameter.type + " " + actualParameter + ", Actual Type=" + actualParameter.type);
-					if(Global.OVERLOADING && formalType instanceof OverLoad)
+					if(formalType instanceof OverLoad)
 					{ //Util.BREAK("Variable.doChecking(1): "+this);
 						formalType=actualParameter.type; // AD'HOC for add/subepsilon
 						overloadedType=formalType;
@@ -239,7 +239,7 @@ public final class Variable extends Expression {
 				}
 			}
 			if (formalIterator.hasNext()) Util.error("Wrong number of parameters to " + decl);
-			if(Global.OVERLOADING && type instanceof OverLoad)
+			if(type instanceof OverLoad)
 			{ //Util.BREAK("Variable.doChecking(2): "+this);
 			  this.type=overloadedType;
 			}
@@ -289,8 +289,6 @@ public final class Variable extends Expression {
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END Variable(" + identifier+ ").doChecking: type=" + type);
 	    //Util.BREAK("END Variable("+identifier+").doChecking: type=" + type+", checkedParams="+checkedParams);
-		
-		
 		SET_SEMANTICS_CHECKED();
 	}
 

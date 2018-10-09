@@ -60,10 +60,12 @@ BEGIN
       
       
       
+      if verbose then begin
       Outtext ("--- START Simula a.s. TEST 69") ;
       Outimage ;
       Outtext ("--- Test complex use of detach, call and resume.") ;
       Outimage ; Outimage ;
+      end;
 
       
       prt("--------------------------------------------------------");
@@ -96,8 +98,9 @@ BEGIN
       Begin
          Outtext ("*** ERROR: Program sequencing. RERUN WITH 'verbose' set TRUE !");
       End ELSE
-      BEGIN Outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage END;
+      BEGIN Outtext ("--- NO ERRORS FOUND IN TEST 69");  END;
 
-      Outtext ("--- END Simula a.s. TEST 69"); Outimage
+      if verbose then begin
+      Outtext ("--- END Simula a.s. TEST 69"); Outimage end
       
 end S1;

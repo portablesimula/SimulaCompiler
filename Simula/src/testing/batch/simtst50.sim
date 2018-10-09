@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 50
 %
@@ -10,6 +9,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    integer j;
 
@@ -29,6 +29,7 @@ BEGIN
    ref (D) rd;
    ref (E) re;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 50");
    Outimage;
    Outtext ("--- Test binding of when-clause and otherwise-clause in ");
@@ -36,6 +37,7 @@ BEGIN
    Outtext ("--- statement, and qualification of the ");
    Outtext ("connection block.");
    Outimage; Outimage;
+   end;
 
    rb :- new B;
    ra :- new A;
@@ -166,10 +168,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 50");
    END;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 50");
    Outimage
+   end
+   
  END;

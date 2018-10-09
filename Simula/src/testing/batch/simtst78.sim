@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 78
 %
@@ -17,6 +16,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Character array C (1:45);
 
@@ -55,10 +55,12 @@ BEGIN
    End pros. Test;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 78") ;
    Outimage ;
    Outtext ("--- Test the attribute 'filename' of class file.") ;
    Outimage ; Outimage ;
+   end;
 
    C(1):= 'A'; C(2):= 'B'; C(3):= 'C';
    C(4):= 'D'; C(5):= 'E'; C(6):= 'F';
@@ -90,10 +92,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 78") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 78") ;
    Outimage
+   end
+   
  END

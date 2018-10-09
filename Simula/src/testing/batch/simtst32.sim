@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 32
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    CLASS A ;
    BEGIN
@@ -140,21 +140,24 @@ BEGIN
 
    END of procedure P ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 32");
    Outimage ;
    Outtext ("--- Simple test of formal procedures");
    Outimage; Outimage;
+   end;
 
    P (ap) ;
 
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 32") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 32") ;
    Outimage
+   end
 
 END of program;

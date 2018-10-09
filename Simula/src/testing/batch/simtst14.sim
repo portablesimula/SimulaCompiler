@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 14
 %
@@ -12,15 +11,18 @@
 % ==============================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    text t1, t2;
 
+if verbose then begin
    Outtext ("--- START Simula a.s. TEST 14");
    Outimage;
    Outtext ("--- Test the text attributes pos, setpos, more,");
    Outimage;
    Outtext ("--- getchar and putchar.");
    Outimage; Outimage;
+end;
 
    if t1.pos = 1 then
    else
@@ -119,10 +121,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 14");
    END;
 
-   Outtext ("--- END Simula a.s. TEST 14");
-   Outimage
+   if verbose then begin
+      Outtext ("--- END Simula a.s. TEST 14");
+      Outimage;
+   end;
  END;

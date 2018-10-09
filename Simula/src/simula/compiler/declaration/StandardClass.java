@@ -40,18 +40,9 @@ public final class StandardClass extends ClassDeclaration
   	typeText.addStandardProcedure(Type.LongReal,"getreal");  
   	typeText.addStandardProcedure(Type.Integer,"getfrac");  
   	typeText.addStandardProcedure(null,"putint",parameter("i",Type.Integer));  
-//  	typeText.addStandardProcedure(null,"putfix",parameter("r",Type.LongReal),parameter("n",Type.Integer));
-//  	typeText.addStandardProcedure(null,"putreal",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
   	typeText.addStandardProcedure(null,"putfrac",parameter("i",Type.Integer),parameter("n",Type.Integer));  
-  	
-    if(Global.OVERLOADING)
-    { typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
-      typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
-    } else {
-      typeText.addStandardProcedure(null,"putfix",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
-      typeText.addStandardProcedure(null,"putreal",parameter("r",Type.LongReal),parameter("n",Type.Integer));  
-    }
-
+    typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
+    typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
   }
   
   // ******************************************************************
@@ -115,14 +106,8 @@ public final class StandardClass extends ClassDeclaration
     ENVIRONMENT.addStandardProcedure(Type.LongReal,"abs",parameter("e",Type.LongReal));
     ENVIRONMENT.addStandardProcedure(Type.Integer,"sign",parameter("e",Type.LongReal));
     ENVIRONMENT.addStandardProcedure(Type.Integer,"entier",parameter("e",Type.LongReal));
-    
-    if(Global.OVERLOADING)
-    { ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"addepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
-      ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"subepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
-    } else {
-      ENVIRONMENT.addStandardProcedure(Type.LongReal,"addepsilon",parameter("e",Type.LongReal));
-      ENVIRONMENT.addStandardProcedure(Type.LongReal,"subepsilon",parameter("e",Type.LongReal));
-    }
+    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"addepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
+    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"subepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
 
 //    Text utilities .......................................... 9.2
 //    Procedures copy, blanks, char, isochar, rank, isorank,
@@ -167,13 +152,9 @@ public final class StandardClass extends ClassDeclaration
 //    Extremum functions ...................................... 9.5
 //    Procedures max, min.
 
-    if(Global.OVERLOADING)
-    { ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"min",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
-      ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"max",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
-    } else
-    { ENVIRONMENT.addStandardProcedure(Type.LongReal,"min",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
-      ENVIRONMENT.addStandardProcedure(Type.LongReal,"max",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
-    }
+    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"min",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
+    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"max",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
+
 //    Error control ........................................... 9.7
 //    Procedure error.
 
@@ -399,13 +380,8 @@ public final class StandardClass extends ClassDeclaration
     OutFile.addStandardProcedure(Type.Text,"FIELD_",parameter("w",Type.Integer));  
     OutFile.addStandardProcedure(null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
     OutFile.addStandardProcedure(null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-    if(Global.OVERLOADING)
-    { OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-      OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-    } else {
-      OutFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-      OutFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-    }
+    OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
   }  
   
   // ******************************************************************
@@ -476,16 +452,9 @@ public final class StandardClass extends ClassDeclaration
     DirectFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));   
     DirectFile.addStandardProcedure(Type.Text,"FIELD_",parameter("w",Type.Integer));  
     DirectFile.addStandardProcedure(null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
-//    DirectFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-//    DirectFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
     DirectFile.addStandardProcedure(null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-    if(Global.OVERLOADING)
-    { DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-      DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-    } else {
-      DirectFile.addStandardProcedure(null,"outfix",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-      DirectFile.addStandardProcedure(null,"outreal",parameter("r",Type.LongReal),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-    }
+    DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
   }  
   
   // ******************************************************************

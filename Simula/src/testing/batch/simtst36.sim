@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =====================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 36
 %
@@ -9,6 +8,7 @@
 % ====================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    real eps;
 
@@ -34,10 +34,13 @@ BEGIN
    REAL               innerp, simpson;
 
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 36");
    Outimage;
    Outtext("--- Test Jensen's Device - Call by name.");
    Outimage; Outimage;
+   end;
+   
 
    eps:= 0.001;
 
@@ -70,11 +73,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext("--- NO ERRORS FOUND IN TEST 36");
    END;
 
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 36");
    Outimage
+   end
 
 END of program;

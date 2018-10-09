@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 22
 %
@@ -11,6 +10,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    class c;
    begin ref(c)next; end c;
@@ -18,10 +18,12 @@ BEGIN
    integer i,j,n;
    ref(c)cp;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 22") ;
    Outimage ;
    Outtext ("--- Test for-loops with various for-list elements.") ;
    Outimage ; Outimage ;
+   end;
 
    n := 1 ;
 
@@ -266,10 +268,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 22") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 22") ;
    Outimage
+   end
  END;

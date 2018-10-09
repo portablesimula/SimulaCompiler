@@ -8,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    Procedure check(expectedVai,expextedVbi,msg); integer expectedVai,expextedVbi; text msg; 
    begin
@@ -34,10 +35,12 @@ BEGIN
 
    ref(B) xb;
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 60");
    Outimage;
    Outtext("--- Test visibility of protected attributes.");
    Outimage; Outimage;
+   end;
 
    xb :- new B;
    xb.p;
@@ -52,10 +55,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext("--- NO ERRORS FOUND IN TEST 60");
    END;
 
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 60");
    Outimage
+   end
  END

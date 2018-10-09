@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ================================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 90
 %
@@ -13,9 +12,12 @@ begin text s,t,u; integer i,j;
       text array th(0:29); integer ti;
       text timage;
       boolean found_error;
+      boolean verbose=false;
 
+      if verbose then begin
       outtext("--- START Simula a.s. TEST 90"); outimage;
       outtext("--- Test getfrac/putfrac"); outimage; outimage;
+      end;
 
 th(0):- "ab           1 234 567wx  1234567/21  1234567/21  1234567/21";
 th(1):- "ab           123 456.7wx  1234567/21  1234567/21  1234567/21";
@@ -76,6 +78,8 @@ timage:- blanks(60);
             ti:= ti + 1; timage:= notext;
       end;
       if not found_error then
-      begin outtext("--- NO ERRORS FOUND IN THIS TEST"); outimage; end;
+      begin outtext("--- NO ERRORS FOUND IN TEST 90"); end;
+      if verbose then begin
       outtext("--- END Simula a.s. TEST 90"); outimage;
+      end;
 end

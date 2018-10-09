@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 75
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Ref(A) x;
    Real ar, br;
@@ -28,10 +28,13 @@ BEGIN
    Begin Real Procedure Q; Q:=2; End;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 75") ;
    Outimage ;
    Outtext ("--- Test of name parameters and virtual procedures.");
    Outimage ; Outimage ;
+   end;
+   
 
    x:- New B; S(x.T, x.Q);
 
@@ -68,10 +71,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 75") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 75") ;
    Outimage
+   end
+   
  END

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 52
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    LONG REAL          a ;
    REAL               b ;
@@ -30,10 +30,12 @@ BEGIN
 
    REF (C)            g ;
 
-   Outtext ("--- START Simula a.s. TEST 52") ;
-   Outimage ;
-   Outtext ("--- Test 'inner'.") ;
-   Outimage ; Outimage ;
+   if verbose then begin
+      Outtext ("--- START Simula a.s. TEST 52") ;
+      Outimage ;
+      Outtext ("--- Test 'inner'.") ;
+      Outimage ; Outimage ;
+   end;
 
    a := b := 5.45;
 
@@ -76,10 +78,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 52") ;
    END ;
 
-   Outtext ("--- END Simula a.s. TEST 52") ;
-   Outimage
+   if verbose then begin
+      Outtext ("--- END Simula a.s. TEST 52") ;
+      Outimage
+   end
+   
  END

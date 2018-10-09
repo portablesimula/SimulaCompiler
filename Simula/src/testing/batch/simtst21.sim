@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 21
 %
@@ -19,13 +18,16 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    integer i, j ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 21") ;
    Outimage ;
    Outtext ("--- Test arrays of simple types and text.") ;
    Outimage ; Outimage ;
+   end;
 
    begin
 %      integer lb;
@@ -211,10 +213,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 21") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 21") ;
    Outimage
+   end
  END;

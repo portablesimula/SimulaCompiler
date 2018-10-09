@@ -130,14 +130,16 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
  	Global.sourceLineNumber=lineNumber;
 	if(externalIdent==null) externalIdent=edJavaClassName();
 	currentBlockLevel++; blockLevel=currentBlockLevel;
-	//Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-	//Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-    //Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
+//	Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: blockPrefix="+blockPrefix);
+//	Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
+//	Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
+//  Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
 
     if(blockPrefix!=null)
     { Global.currentScope=this.declaredIn;
       blockPrefix.doChecking();
       this.prefix=blockPrefix.identifier;
+      this.getPrefixClass().doChecking();
     }
     Global.currentScope=this;
     Util.ASSERT(parameterList.isEmpty(),"Invariant");

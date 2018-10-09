@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ========================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 82
 %
@@ -20,6 +19,7 @@
 begin
 Boolean            found_error ;        ! Set to true when errors are ;
                                         ! found.                      ;
+Boolean verbose=false;                                        
 
 integer            i1 ;                 ! To use in the expressions.  ;
 integer            i2 ;                 ! To use in the expressions.  ;
@@ -50,10 +50,12 @@ text WASEXP  = "' was expected.";
 
 
 
+if verbose then begin
 Outtext ("--- START Simula a.s. TEST 82");
 Outimage;
 Outtext ("--- Do a simple test of the operations +, -, *, / and //.");
 Outimage; Outimage;
+end;
 
                                         !********* NOTE 1 ************;
 realprecision := 6 ;                    ! Fill in expected precision  ;
@@ -1060,11 +1062,12 @@ if result <> facit then begin
 
 if found_error then
 else begin
-   Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-   Outimage
+   Outtext ("--- NO ERRORS FOUND IN TEST 82");
    end;
 
+if verbose then begin 
 Outtext ("--- END Simula a.s. TEST 82");
-Outimage
+Outimage;
+end;
 
 end of program;

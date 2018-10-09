@@ -1,7 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 68
 %
@@ -142,10 +139,12 @@ Begin
 
    Ref (Coroutine) r, c, w ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 68") ;
    Outimage ;
    Outtext ("--- Test coroutines.") ;
    Outimage ; Outimage ;
+   end;
 
    trace("Before new Reader");
    r :- New Reader ;
@@ -181,10 +180,11 @@ Begin
    IF found_error THEN
    ELSE
    Begin
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 68") ;
    End ;
 
+   if verbose then begin
    OutText ("--- END Simula a.s. TEST 68") ;
    Outimage
+   end
  End

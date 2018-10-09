@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 77
 %
@@ -10,6 +9,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
    
    Text   fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any77";
 
@@ -69,22 +69,26 @@ BEGIN
          Sammenlign;
    End;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 77") ;
    Outimage ;
    Outtext ("--- Test infile using two infile objects reading from the") ;
    Outimage ;
    Outtext ("--- same external file: " & fileName) ;
    Outimage ; Outimage ;
+   end;
 
    Resume (New Les(3, New Les(7, none)));
 
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 77") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 77") ;
    Outimage
+   end
+   
  END

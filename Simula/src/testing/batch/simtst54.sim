@@ -8,7 +8,7 @@
 % ====================================================================
 BEGIN
    Boolean found_error;
-   Boolean verbose=TRUE;
+   Boolean verbose=false;
 
    text t;
 
@@ -142,10 +142,12 @@ BEGIN
    Ref (D) RD;
    Ref (E) RE;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 54");
    Outimage;
    Outtext ("--- Test virtual switches and labels.");
    Outimage; Outimage;
+   end;
 
    RA :- New A (false, true, 2);
    RB :- New B (true, false, 0, false, true, 1);
@@ -199,10 +201,12 @@ BEGIN
    If found_error then
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 54");
    END;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 54");
    Outimage
+   end
+   
  END

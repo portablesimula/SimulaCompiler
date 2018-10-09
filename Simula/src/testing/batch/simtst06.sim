@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =================================   Main   Program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 6
 %
@@ -21,6 +20,7 @@ class testmatlib;
 begin
 
     Boolean found_error;
+    Boolean verbose=false;
     long real maxlongdig;
 
     procedure error (t); value t; text t;
@@ -276,17 +276,21 @@ begin
 
     maxlongdig:= 10.0&&17;
 
+    if verbose then begin
     Outtext ("--- START Simula a.s. TEST 6");
     Outimage;
     Outtext ("--- Test of math. functions");
     Outimage; Outimage;
-
+	end;
+	
     inner;
 
     IF found_error THEN  ELSE
-       begin Outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage; end;
+       begin Outtext ("--- NO ERRORS FOUND IN TEST 6");  end;
+    if verbose then begin   
     outtext ("--- END Simula a.s. TEST 6");
     outimage;
+    end;
 
 end of class testmatlib;
 

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 65
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Text array lines, facit (1:50) ;
    Integer lnr ;
@@ -233,10 +233,13 @@ BEGIN
       Outtext ("        -- and to Class B") ;
       SaveLine ;
    END ;
+   
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 65") ;
    Outimage ;
    Outtext ("--- Test parameter transmission by reference to classes.") ;
    Outimage ; Outimage ;
+   end;
 
                                    Comment  First initialise vairables
                                             from without ;
@@ -365,10 +368,11 @@ BEGIN
    If found_error then
    else
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 65") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 65") ;
    Outimage
+   end
  END

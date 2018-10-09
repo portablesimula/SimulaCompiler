@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 53
 %
@@ -10,6 +9,7 @@
 %  WRITTEN BY:  BEH   31/07-86
 % ==============================================================================
 BEGIN
+   Boolean verbose=false;
    Class A ;
       Virtual : procedure P1 ;
    begin
@@ -27,9 +27,15 @@ BEGIN
       Procedure P ;;
    end ;
 
+   if verbose then begin
    outtext("--- START Simula a.s. TEST 53"); Outimage;
    outtext("--- Test simple virtual"); Outimage; Outimage;
+   end;
+   
    C begin P1; end;
-   outtext("--- NO ERRORS FOUND IN THIS TEST"); Outimage;
+   
+   outtext("--- NO ERRORS FOUND IN TEST 53");
+   if verbose then begin
    outtext("--- END Simula a.s. TEST 53"); Outimage;
+   end;
 END

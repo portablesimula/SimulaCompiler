@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ====================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 30
 %
@@ -10,6 +9,7 @@
 % ===================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    procedure testvalue (bt, ct, jt, rt, tt, rat, rbt,
                         bv, cv, jv, rv, tv, rav, rbv, errnr) ;
@@ -399,12 +399,14 @@ PROCEDURE Setvariables ;
    REF (B)   ARRAY rbva1 (0:0);
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 30") ;
    Outimage ;
    Outtext ("--- Test transmission by name - value types, text, object") ;
    Outimage ;
    Outtext ("--- reference type and arrays of these types.") ;
    Outimage ; Outimage ;
+   end;
 
    Setvariables ;
 
@@ -425,10 +427,12 @@ PROCEDURE Setvariables ;
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 30") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 30") ;
    Outimage
+   end
+   
  END;

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 35
 %
@@ -13,6 +12,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    integer i, j ;
    Boolean b ;
@@ -38,10 +38,12 @@ BEGIN
       a := f ;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 35") ;
    Outimage ;
    Outtext ("--- Test type procedures as parameters");
    Outimage; Outimage;
+   end;
 
    i := 2 ;
 
@@ -106,10 +108,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 35") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 35") ;
    Outimage
+   end
+   
  END;

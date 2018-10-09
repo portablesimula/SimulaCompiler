@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===========================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 9
 %
@@ -15,14 +14,17 @@
 BEGIN
 BOOLEAN            found_error;        ! Set to true when errors are ;
                                        ! found.                      ;
+                                       BOOLEAN verbose=false;
 CHARACTER          c1;                 ! To be compared by the relops;
 CHARACTER          c2;                 ! To be compared by the relops;
 
 
+if verbose then begin
 Outtext ("--- START Simula a.s. TEST 9");
 Outimage;
 Outtext ("--- Character relations etc.");
 Outimage; Outimage;
+end;
                                        !*****************************;
                                        ! Start testing of rel-ops.   ;
                                        !*****************************;
@@ -171,8 +173,10 @@ IF   char (rank (c1)) <> c1
 
 
 IF found_error THEN  ELSE
-   begin Outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage; end;
+   begin Outtext ("--- NO ERRORS FOUND IN TEST 9");  end;
+if verbose then begin
 outtext ("--- END Simula a.s. TEST 9");
 outimage
+end;
 
 END of program;

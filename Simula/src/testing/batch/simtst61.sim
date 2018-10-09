@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 61
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Class A ;
    begin
@@ -28,10 +28,12 @@ BEGIN
 
    ref (B) x ;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 61") ;
    Outimage ;
    Outtext ("--- Test remote access to attributes which are protected.") ;
    Outimage ; Outimage ;
+   end;
 
    x :- new B ;
    x.p ;      ! i.e. B'i := 1 ;
@@ -73,10 +75,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 61") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 61") ;
    Outimage
+   end
+   
  END

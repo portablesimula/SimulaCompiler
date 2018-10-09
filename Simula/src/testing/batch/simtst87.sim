@@ -8,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
    integer pval;
    ref(A) ra;
    ref(B) rb;
@@ -55,9 +56,11 @@ BEGIN
      end;
    end;
 
+   if verbose then begin
    Outtext("--- START TEST 87"); Outimage;
    Outtext("--- Test Specification of Virtual Procedures.");
    Outimage; Outimage;
+   end;
    
    ra :- new A();
    rb :- new B();
@@ -76,11 +79,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext("--- NO ERRORS FOUND IN THIS TEST");
-      Outimage
+      Outtext("--- NO ERRORS FOUND IN TEST 87");
    END;
 
+   if verbose then begin
    Outtext("--- END TEST 87");
    Outimage
-
+   end
+   
  END

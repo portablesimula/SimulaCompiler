@@ -28,7 +28,7 @@ public final class RunFullTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements
 		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -146,6 +146,7 @@ public final class RunFullTestBatch {
 		names.add("simtst101.sim"); // OK: Test Standard Procedure 'sourceline'.
 		names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
 		names.add("simtst103.sim"); // OK: Test 2-dim Array by value.
+		names.add("simtst104.sim"); // OK: A VERY Simple Simulation
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ======================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 79
 %
@@ -25,6 +24,7 @@
 % =====================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    Ref(file) xf;
 
@@ -48,10 +48,12 @@ BEGIN
          End;
    End pros. test;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 79") ;
    Outimage ;
    Outtext ("--- Test the attribute 'IsOpen' of class file.");
    Outimage ;
+   end;
 
    xf:- New Infile("sxcvzf");             !***** NOTE 1, NOTE 2 *****;
    Test(xf.Isopen, false, 1);
@@ -142,10 +144,12 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 79") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 79") ;
    Outimage
+   end
+   
  END

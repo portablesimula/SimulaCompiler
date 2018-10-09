@@ -250,7 +250,6 @@ public static void scanDirectiveLine() throws IOException
   else if(u.equalsIgnoreCase("SPORT")) sport();
   else if(u.equalsIgnoreCase("STANDARDCLASS")) setStandardClass();
   else if(u.equalsIgnoreCase("TITLE")) setTitle();
-  else if(u.equalsIgnoreCase("QUALIFIEDNAMES")) setUseQualifiedNames();
 
   else if( u.equalsIgnoreCase("IMPLEMENTATION")) {
     	//then begin recomp:=true;definition:=false end
@@ -274,7 +273,7 @@ public static void scanDirectiveLine() throws IOException
     	//	                       call(scanner); !to terminate possible END-comment;
     	//	               end otherwise goto DIRWARN;
   }
-  else warning("Unknown Compiler Directive: %"+u);    
+  else if(u.trim().length()>0) warning("Unknown Compiler Directive: %"+u);    
 } //end directive;
 
 private static void warning(String msg)
@@ -574,24 +573,6 @@ private static void setStandardClass()
 private static void setTitle() throws IOException
 { currentTitle=lineRest();
   Util.BREAK("TITLE: "+currentTitle);
-}
-
-
-/**
- * %QUALIFIEDNAMES
- * <p>
- * Used by Java-Coding to generate fully qualified class/procedure names.
- * <p>
- * Consider a class A with local class B, then the 'qualified name' B is
- * 'A$B<number>' where <number> is added to make the name 'A$B<number>.java'
- * unique within the file directory.
- * <p>
- * The initial value is false.
- * See BlockDeclaration.java
- */
-private static void setUseQualifiedNames()
-{ warning("Compiler Directive: %QUALIFIEDNAMES sets Option.useQualifiedNames=true");
-  Option.useQualifiedNames=true;
 }
 
 

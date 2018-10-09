@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ======================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 29
 %
@@ -11,6 +10,7 @@
 % =====================================================================
 BEGIN
    Boolean found_error;
+   Boolean verbose=false;
 
    Boolean b;
    character c;
@@ -105,6 +105,7 @@ BEGIN
 
 
 
+   if verbose then begin
    Outtext("--- START Simula a.s. TEST 29");
    Outimage;
    Outtext("--- Test that transmission of parameters by value to");
@@ -113,6 +114,7 @@ BEGIN
    Outimage;
    Outtext("--- that the formal parameters get the rigth values. ");
    Outimage; Outimage;
+   end;
 
 
    c := 'a';
@@ -191,7 +193,10 @@ BEGIN
    end;
 
    IF found_error THEN else begin
-      Outtext("--- NO ERRORS FOUND IN THIS TEST"); outimage; end;
+      Outtext("--- NO ERRORS FOUND IN TEST 29"); end;
+   if verbose then begin
    Outtext("--- END Simula a.s. TEST 29");
    Outimage;
+   end;
+   
  END;

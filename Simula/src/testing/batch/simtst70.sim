@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ======================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 70
 %
@@ -18,6 +17,7 @@
 BEGIN
 BOOLEAN         found_error;    ! Set to true when errors are ;
                                 ! found.                      ;
+BOOLEAN verbose=false;
 TEXT            txt1;           ! To have its attribu. tested.;
 TEXT            txt2;           ! To have its attribu. tested.;
 CHARACTER       cha;
@@ -26,6 +26,7 @@ INTEGER         maxtext;        ! To contain the max legal    ;
                                 ! text length on your         ;
                                 ! implementation.             ;
 
+if verbose then begin
 outtext ("--- START Simula a.s. TEST 70") ;
 outimage ;
 outtext ("--- Test the text attributes length, pos, main, setpos,") ;
@@ -35,6 +36,7 @@ outtext ("comparators");
 outimage ;
 outtext ("--- == and =/=.") ;
 outimage ; outimage ;
+end;
 
 maxtext := 32000 ;              !********* NOTE 1 ************;
                                 ! Fill in max length of text  ;
@@ -327,11 +329,12 @@ txt1 :- "1234567890   " ;       !*****************************;
 if found_error then
 ELSE
    BEGIN
-   outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-   outimage
+   outtext ("--- NO ERRORS FOUND IN TEST 70") ;
    END ;
 
+if verbose then begin
 outtext ("--- END Simula a.s. TEST 70") ;
 outimage
+end
 
 END of program;

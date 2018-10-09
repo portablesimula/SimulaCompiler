@@ -1,7 +1,4 @@
 
-%  STANDARDCLASS
-%DISPLAY ON 
-%QUALIFIEDNAMES
 begin
 	long real v;
 	long real x;

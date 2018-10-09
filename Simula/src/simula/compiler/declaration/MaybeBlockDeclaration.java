@@ -63,7 +63,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
   public BlockStatement parseMaybeBlock()
   { Statement stm;
 	//Debug.BREAK("BEGIN Block: "+this.edScopeChain());
-	//Util.BREAK("BlockDeclaration.parseMaybeBlock: BlockPrefix="+blockPrefix);
 	if(Option.TRACE_PARSE) Parser.TRACE("Parse MayBeBlock");
 	while(Declaration.parseDeclaration(declarationList))
 //	{ Parser.expect(KeyWord.SEMICOLON); }
@@ -103,7 +102,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 	}
 	//declarationMap.print("END Block: "+blockName);
 	//Debug.BREAK("END Block: "+this.edScopeChain());
-	//Util.BREAK("BlockDeclaration.parseMaybeBlock: BlockPrefix="+blockPrefix+", BlockDeclaration.Kind="+blockKind);
 	
 	Global.currentScope=declaredIn;
 	return(new BlockStatement(this));

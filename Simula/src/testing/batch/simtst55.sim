@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGrAM NAME:   Simula a.s. - SIMULA TEST NO 55
 %
@@ -9,6 +8,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Class A ;
       Virtual:        Procedure P ;
@@ -77,10 +77,12 @@ BEGIN
    end pros. check ;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 55") ;
    Outimage ;
    Outtext ("--- Test virtual procedures.") ;
    Outimage ; Outimage ;
+   end;
 
    rA :- rB :- NEW B ;
    rC :- NEW C ;
@@ -153,11 +155,13 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 55") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 55") ;
    Outimage
+   end
+   
  END
 

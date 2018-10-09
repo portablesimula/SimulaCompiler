@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % =======================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 80
 %
@@ -17,16 +16,19 @@
 % ======================================================================
 BEGIN
    Boolean errorFound ;
+   Boolean verbose=false;
    
    Text   fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any8089";
 
    Ref(imagefile) f1, f2;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 80") ;
    Outimage ;
    Outtext ("--- Test the attribute 'IsOpen' of class file") ;
    Outtext (" uses infile " & fileName) ;
    Outimage ; Outimage ;
+   end;
 
    f1:- New Infile(fileName);                  !**** NOTE 1 ****;
    f2:- New Infile(fileName);                  !**** NOTE 1 ****;
@@ -52,8 +54,11 @@ BEGIN
 
    If not f1 qua Infile.Close then begin errorFound:=true;
       outtext("error: cannot close infile"); outimage; end;
-
-   Outtext ("--- END Simula a.s. TEST 80") ;
-   if not errorFound then Outtext (" (NO ERRORS FOUND)") ;
-   Outimage
+   
+   if not errorfound then
+   begin outtext("--- NO ERRORS FOUND IN TEST 80"); end;
+   if verbose then begin
+      outtext("--- END Simula a.s. TEST 80"); outimage;
+   end;
+   
  END

@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ========================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST  NO 3
 %
@@ -24,11 +23,14 @@ BOOLEAN            found_error;        ! Set to true when errors are ;
                                        ! found.                      ;
 INTEGER            maxtext;            ! To contain the maximum text ;
                                        ! constant length.            ;
+BOOLEAN verbose=false;
 
+if verbose then begin
 outtext ("--- START Simula a.s. TEST 3");
 Outimage;
 outtext ("--- Test text value relations");
 Outimage; Outimage;
+end;
 
 maxtext := 32000;                      !********* NOTE 1 ************;
                                        ! Max text constant length    ;
@@ -381,8 +383,11 @@ ELSE
 
 
 IF found_error THEN  ELSE
-   begin outtext ("--- NO ERRORS FOUND IN THIS TEST"); Outimage; end;
+   begin outtext ("--- NO ERRORS FOUND IN TEST 3"); end;
+
+if verbose then begin
 outtext ("--- END Simula a.s. TEST 3");
-outimage
+outimage;
+end;
 
 END of program;

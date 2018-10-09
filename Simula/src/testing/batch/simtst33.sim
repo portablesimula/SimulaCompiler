@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 33
 %
@@ -15,6 +14,7 @@
 % ==============================================================================
 BEGIN
    Boolean found_error ;
+   Boolean verbose=false;
 
    Boolean array        Ba1 (0:0), Ba3 (0:0,1:2,2:2) ;
    character array      ca1 (0:0), ca3 (0:0,1:2,2:2) ;
@@ -305,12 +305,14 @@ BEGIN
    end pros. P4 ;
 
 
+   if verbose then begin
    Outtext ("--- START Simula a.s. TEST 33") ;
    Outimage ;
    Outtext ("--- Test call by reference for object reference type, text,") ;
    Outimage ;
    Outtext ("--- value type array and reference type array.") ;
    Outimage ; Outimage ;
+   end;
 
    InitVariables ;
 
@@ -445,10 +447,11 @@ BEGIN
    IF found_error THEN
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage
+      Outtext ("--- NO ERRORS FOUND IN TEST 33") ;
    END ;
 
+   if verbose then begin
    Outtext ("--- END Simula a.s. TEST 33") ;
    Outimage
+   end
  END;

@@ -1,7 +1,4 @@
 
-%INCLUDE_QPS
-
-%QUALIFIEDNAMES
 % =============================================   Main   program =====
 %  PROGRAM NAME:   Simula a.s - SIMULA TEST NO 95
 %
@@ -14,6 +11,7 @@
 BEGIN
 
    Boolean found_error ;
+   Boolean verbose=false;
 
    Procedure obs(i); integer i;
    Begin nr:=nr+1; seq(nr):=i end;
@@ -78,10 +76,12 @@ BEGIN
          obs(22);
    End class b1;
 
+   if verbose then begin
    Outtext ("--- START Simula a.s TEST 95"); Outimage ;
    Outtext ("--- Test nested declaration of classes and prefixing.") ;
    Outimage ; Outimage ;
-
+   end;
+   
    New A1(false);
 
    for i:=1 step 1 until nr do if seq(i)<>i then found_error:=false;
@@ -101,10 +101,12 @@ BEGIN
     end
    ELSE
    BEGIN
-      Outtext ("--- NO ERRORS FOUND IN THIS TEST") ;
-      Outimage;
+      Outtext ("--- NO ERRORS FOUND IN TEST 95") ;
    END ;
 
-   Outtext ("--- END Simula a.s TEST 95") ;
-   Outimage;
+   if verbose then begin
+      Outtext ("--- END Simula a.s TEST 95") ;
+      Outimage;
+   end;
+   
  END
