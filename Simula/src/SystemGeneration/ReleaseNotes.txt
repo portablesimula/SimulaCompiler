@@ -1,0 +1,66 @@
+
+
+This directory contains a Simula System ready for use. 
+
+You may download or map it to your own file system.
+
+Suppose <git> is the super directory into which you put the 'Binaries'
+then you should have a directory tree like this:
+
+  <git>
+        - Binaries
+              - Release-Beta-02
+                    - rts
+                             ....
+                    - tst
+                             ....
+                    - simula.jar
+                    - ReleaseNotes.txt
+                    - RunCompilerTest.bat
+                    - RunCompilerTest.sh
+
+You should set the environment-variable  SIMULA_HOME = <git>/Binaries
+
+Then you can run RunCompilerTest.bat or .sh depending on your operating system.
+
+=====================================================================================
+
+Synopsis: java simula.jar  [options]  sourceFile 
+
+      possible options include:
+        -help                      Print this synopsis of standard options
+        -noexec                    Don't execute generated .jar file
+        -nowarn                    Generate no warnings
+        -verbose                   Output messages about what the compiler is doing
+        -SIMULA_HOME <directory>   Specify where to find the Simula Runtime-System
+                                   Default: Taken from the Environment variable SIMULA_HOME
+        -keepJava <directory>      Specify where to place generated .java files
+                                   Default: Temp directory which is deleted upon exit
+        -output <directory>        Specify where to place generated executable .jar file
+                                   Default: Same directory as source file
+
+      sourceFile      Simula Source File
+
+=====================================================================================
+
+Deviations from 'Simula Standard'
+
+The current version of this SIMULA system differs from the Simula Standard in some areas.
+Following the chapters of  Simula Standard, this is a complete list:
+
+4   Virtual labels are not fully implemented. In certain rare cases goto such
+    labels may result in Runtime errors.
+
+6   External non-SIMULA procedures are NOT IMPLEMENTED.
+
+9   The name specified parameter to the random drawing procedures is not used. 
+    Instead, the default seed in the Java Library is used.
+
+    This is not a real deviation since Simula Standard says BasicDrawing is
+    implementation defined.
+
+    The <real-type> parameter to the 'histd' procedure must be type real.
+    
+10  The File procedure setaccess is not implemented
+
+

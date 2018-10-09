@@ -58,12 +58,13 @@ public final class MakeCompiler {
 		}
 		try {
 //			printSystemProperties();
+			
 			makeSimulaCompiler();
-			copySimulaRuntimeSystem();
+//			copySimulaRuntimeSystem();
 			dummyExecuteSimulaCompiler();
-			copySimulaReleaseTests();
+//			copySimulaReleaseTests();
 			copySimulaReleaseTestBats();
-			compileAndExecuteSimulaPrograms();
+//			compileAndExecuteSimulaPrograms();
 		} catch(Exception e) { e.printStackTrace(); }
 	}
 	
@@ -117,10 +118,11 @@ public final class MakeCompiler {
 	// ***************************************************************
 	private static void copySimulaReleaseTestBats() throws IOException	{
 		printHeading("Copy Simula Test .bat's into "+RELEASE_HOME);
-		copyBatFile("RunCompilerTest.bat");
-		copyBatFile("RunCompilerTest.sh");
+		copyTxtFile("ReleaseNotes.txt");
+		copyTxtFile("RunCompilerTest.bat");
+		copyTxtFile("RunCompilerTest.sh");
 	}
-	private static void copyBatFile(String batName) throws IOException	{
+	private static void copyTxtFile(String batName) throws IOException	{
 		File source=new File(ECLIPSE_ROOT+"\\src\\SystemGeneration\\"+batName);
 		File target=new File(RELEASE_HOME+"\\"+batName);
 		target.mkdirs();

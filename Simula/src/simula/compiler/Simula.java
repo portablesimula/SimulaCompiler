@@ -36,10 +36,10 @@ import simula.compiler.utilities.Util;
 public final class Simula {
 
 	static void help() {
-		System.out.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n\n");
-		System.out.println("SIMULA_HOME="+System.getenv("SIMULA_HOME")+"\n\n");
+		System.out.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
+		System.out.println("SIMULA_HOME="+System.getenv("SIMULA_HOME")+"\n");
 		System.out.println("JAVA_HOME="+System.getenv("JAVA_HOME")+"\n\n");
-		System.out.println("Usage: java Simula [options] sourceFile \n\n"
+		System.out.println("Usage: java simula.jar  [options]  sourceFile \n\n"
 				+ "possible options include:\n"
 				+ "  -help                      Print this synopsis of standard options\n"
 				+ "  -noexec                    Don't execute generated .jar file\n"
