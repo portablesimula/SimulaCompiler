@@ -65,19 +65,28 @@ public final class Constant extends Expression {
           val=encode(val);
 		  return("new TXT$(\""+val+"\")");
 		}
-		if(type==Type.Character) return("'"+value+"'");
+		if(type==Type.Character) {
+			//Util.BREAK("Constant.toJavaCode: value="+value+", QUAL="+value.getClass().getSimpleName());
+			char charValue=((Character)value).charValue();
+			int intValue=(int)charValue;
+//			return("'"+value+"'");
+//			return(""+intValue);
+			if(intValue!='\'' && intValue>32 && intValue<127) return("'"+value+"'");
+			return("((char)"+intValue+')');
+		}
 		if(type==Type.Real) return (""+value+'f');
 		if(type==Type.LongReal) return (""+value+'d');
 		return (""+value);
 	}
 	
-	private String encode(String s)
-	{ StringBuilder b=new StringBuilder();
-	  for(char c:s.toCharArray())
-	  { if(c=='"') b.append('\\');
-		b.append(c);		  
-	  }
-	  return(b.toString());
+	private String encode(String s) {
+		StringBuilder b = new StringBuilder();
+		for (char c : s.toCharArray()) {
+			if (c == '"') b.append('\\');
+			else if (c == '\\') b.append('\\');
+			b.append(c);
+		}
+		return (b.toString());
 	}
 
 	public String toString() {

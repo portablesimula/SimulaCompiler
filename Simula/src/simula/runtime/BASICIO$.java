@@ -103,42 +103,15 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-//public final class BASICIO$ extends RTObject$ {
-public class BASICIO$ extends ENVIRONMENT$ {  // CORR-PREFIX
-//	static final int INPUT_LINELENGTH_ = 80;
-//	static final int OUTPUT_LINELENGTH_ = 132;
-//    static InFile$ SYSIN_;
-//
-//	public InFile$ sysin() {
-//		return (SYSIN_);
-//	}
-//
-//	public static PrintFile$ SYSOUT_;
-//
-//	public PrintFile$ sysout() {
-//		return (SYSOUT_);
-//	}
+public class BASICIO$ extends ENVIRONMENT$ { 
 
 	// Constructor
 	public BASICIO$(RTObject$ staticLink) {
 		super(staticLink);
-//		if(SYSIN_==null)
-//		{ SYSIN_ = new InFile$(this,new TEXT$("SYSIN"));
-//		  SYSOUT_ = new PrintFile$(this,new TEXT$("SYSOUT"));
-//		  SYSIN_.open(blanks(INPUT_LINELENGTH_));
-//		  SYSOUT_.open(blanks(OUTPUT_LINELENGTH_));
-//		}
 	}
-
-//	protected void finalize() throws Throwable {
-//		SYSIN_.close();
-//		SYSOUT_.close();
-//		super.finalize();
-//	}
 	
     
     public String toString()
-//    { return("Simula BASICIO("+SL+')'); }
     { return("Simula "+this.getClass().getSimpleName()); }
 
 

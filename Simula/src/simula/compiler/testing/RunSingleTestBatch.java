@@ -91,13 +91,12 @@ public final class RunSingleTestBatch {
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		//names.add("simtst54.sim"); // ERR: Test virtual switches and labels  ERROR - GOTO VIRTUAL LABEL IN INNER PART
+		//names.add("simtst54.sim");  // OK: A VERY Simple Simulation
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
-		//names.add("c59.sim");      // OK:  Precompile this for Simtst 59.
-		//names.add("simtst59.sim"); // ERR: Virtual label in external class.  ERROR - GOTO VIRTUAL LABEL IN INNER PART
+		//names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
 		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
@@ -107,12 +106,12 @@ public final class RunSingleTestBatch {
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
 		//names.add("simtst66.sim"); // OK:  Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // OK:  Test of coroutines.
+		names.add("simtst68.sim"); // OK:  Test of coroutines.
 		//names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
 		//names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
 		//names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
-		//names.add("simtst72.sim"); // OK: Test of formal procedures.
+		//names.add("simtst72.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst74.sim"); // OK:  Test resume and detach.
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
@@ -129,25 +128,23 @@ public final class RunSingleTestBatch {
 		//names.add("simtst85.sim"); // OK:  Test Directfile.
 		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		//names.add("simtst87.sim"); // OK: Specification of Virtual Procedures.
+		//names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
 		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
 		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
-		//names.add("simtst92.sim"); // OK:  Test virtual labels and procedures. ERROR NOT IMPLEMENTED
+		//names.add("simtst92.sim"); // OK: Test 1-dim Array by value.
 		//names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
 		//names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
 		//names.add("simtst96.sim"); // err: Test SIMULATION, complex example.
 		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
-		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
+		names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
 		//names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 		//names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
-		//names.add("simtst103.sim"); // OK: Test 2-dim Array by value.
-		names.add("simtst104.sim"); // OK: A VERY Simple Simulation
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
@@ -161,7 +158,6 @@ public final class RunSingleTestBatch {
 		Option.BREAKING=true;//false; //true; 
 
 		// Scanner Trace Options
-		Option.TRACE_PREPROCESSOR=false;//true;
 		Option.TRACE_SCAN=false;//true;
 		Option.TRACE_COMMENTS=false;//true;
 

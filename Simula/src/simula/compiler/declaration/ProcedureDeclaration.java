@@ -69,6 +69,7 @@ public class ProcedureDeclaration extends BlockDeclaration
     block.type=type;  
     if(Option.TRACE_PARSE) Parser.TRACE("Parse ProcedureDeclaration, type="+type);
 	BlockParser.doParse(block);
+	block.lastLineNumber=Global.sourceLineNumber;
     if(Option.TRACE_PARSE) Util.TRACE("END ProcedureDeclaration: "+block);
 	//Debug.BREAK("END ProcedureDeclaration: ");
     Global.currentScope=block.declaredIn;
@@ -238,6 +239,7 @@ public class ProcedureDeclaration extends BlockDeclaration
 	if(blockKind==BlockKind.Procedure && hasParameter) doCodePrepareFormal();
 	doCodeConstructor();
 	codeProcedureBody();
+	javaModule.codeProgramInfo();
 	JavaModule.code("}"); // End of Procedure
 	Global.currentScope=declaredIn;
 	javaModule.closeJavaOutput();
@@ -250,6 +252,7 @@ public class ProcedureDeclaration extends BlockDeclaration
   private void doPrototypeCoding()
   {	//String packetName=SimulaCompiler.packetName;
 	JavaModule.code("// ProcedureDeclaration: BlockKind="+blockKind+", BlockLevel="+blockLevel
+			  +", firstLine="+lineNumber+", lastLine="+lastLineNumber
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 //		      +", detachUsed="+((detachUsed)?"true":"false")
@@ -277,7 +280,7 @@ public class ProcedureDeclaration extends BlockDeclaration
 	JavaModule.code("// Declaration Code");
     JavaModule.code("TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding();
-	JavaModule.code("STM();");		
+	JavaModule.code("STM$();");		
 	JavaModule.code("} // End of Constructor");
   }
   
@@ -323,7 +326,7 @@ public class ProcedureDeclaration extends BlockDeclaration
   // ***********************************************************************************************
   public void codeProcedureBody()
   {	JavaModule.code("// Procedure Statements");
-    JavaModule.code("public "+getJavaIdentifier()+" STM() {");
+    JavaModule.code("public "+getJavaIdentifier()+" STM$() {");
 	JavaModule.code("TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
    	codeSTMBody();
 	JavaModule.code("TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");

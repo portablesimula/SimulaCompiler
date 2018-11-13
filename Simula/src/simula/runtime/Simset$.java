@@ -45,14 +45,16 @@ public class Simset$ extends CLASS$ {
       BBLK(); // Iff no prefix
  	  TRACE_BEGIN_DCL$("Simset$");
       CODE$=new ClassBody(CODE$,this,0) {
-         public void STM() {
+         public void STM$() {
+     	    RT.ASSERT_CUR$(Simset$.this,"Simset$:invariant-1");
        	    TRACE_BEGIN_STM$("Simset$",inner);
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("Simset$");
+    	    RT.ASSERT_CUR$(Simset$.this,"Simset$:invariant-2");
             EBLK(); // Iff no prefix
       }};
     }
-    public Simset$ STM() { return((Simset$)CODE$.EXEC$()); }
+    public Simset$ STM$() { return((Simset$)CODE$.EXEC$()); }
     public Simset$ START() { START(this); return(this); }
 
 }

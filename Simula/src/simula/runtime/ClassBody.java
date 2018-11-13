@@ -25,9 +25,9 @@ public abstract class ClassBody {
 	{ // Execute Concatenated Sequence of Class Statements
 	  // Start with Statements before INNER in outermost Class
 	  if(outer!=null) outer.EXEC$();
-	  else { //RT.BREAK("ClassBody.EXEC$: CALL STM: "+object);
-		     STM();
-		     //RT.BREAK("ClassBody.EXEC$: ENDE STM: "+object);
+	  else { //RT.BREAK("ClassBody.EXEC$: CALL STM$: "+object);
+		     STM$();
+		     //RT.BREAK("ClassBody.EXEC$: ENDE STM$: "+object);
 	  } return(object);
 	}
 	
@@ -36,9 +36,9 @@ public abstract class ClassBody {
 		// Start with Statements before INNER in outermost Class
 		if (outer != null) outer.EXEC$();
 		else { try {
-					if (RT.Option.GOTO_TRACING) System.out.println("RTObject$.ClassBody.EXEC$: CALL STM: "+object);
-					STM();
-					if (RT.Option.GOTO_TRACING) System.out.println("RTObject$.EXEC$: ENDE STM: "+object);
+					if (RT.Option.GOTO_TRACING) RT.println("RTObject$.ClassBody.EXEC$: CALL STM$: "+object);
+					STM$();
+					if (RT.Option.GOTO_TRACING) RT.println("RTObject$.EXEC$: ENDE STM$: "+object);
 				} catch (LABQNT$ q) {
 					if (q.SL$ != RTObject$.CUR$) {
 						RTObject$.CUR$.STATE$ = OperationalState.terminated;
@@ -49,22 +49,22 @@ public abstract class ClassBody {
 					}
 					if (RT.Option.GOTO_TRACING)
 					{ RTObject$.TRACE_GOTO("ClassBody: GOTO VIRTUAL", q);
-					  System.out.println("RTObject$.EXEC$: GOTO VIRTUAL ? " + q);
-					  System.out.println("RTObject$.EXEC$: GOTO VIRTUAL ? q.index=" + q.index);
-					  System.out.println("RTObject$.EXEC$: GOTO VIRTUAL ? object=" + object);
-					  System.out.println("RTObject$.EXEC$: GOTO VIRTUAL ? RTObject$.CUR$=" + RTObject$.CUR$);
+					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? " + q);
+					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? q.index=" + q.index);
+					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? object=" + object);
+					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? RTObject$.CUR$=" + RTObject$.CUR$);
 					}
-					System.out.println("NOT IMPLEMENTED: Goto Virtual Label "+q);
-					RT.printStackTrace(2);
+					RT.println("NOT IMPLEMENTED: Goto Label "+q);
+					ENVIRONMENT$.printStackTrace(2);
 					//q.printStackTrace();
 					
-					throw(new RuntimeException("NOT IMPLEMENTED: Goto Virtual Label ",q));
+					throw(new RuntimeException("NOT IMPLEMENTED: Goto Label ",q));
 				}
 			}
 		
 		return (object);
 	}
 	
-	public abstract void STM();
+	public abstract void STM$();
 
 }

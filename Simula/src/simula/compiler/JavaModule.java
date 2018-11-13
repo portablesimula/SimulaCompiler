@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Date;
+import java.util.Vector;
 
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.utilities.Global;
@@ -28,6 +29,7 @@ public final class JavaModule {
 	public BlockDeclaration blockDeclaration;
 	private Writer writer;
 	public String javaOutputFileName;
+	public Vector<Integer> lineMap=new Vector<Integer>();
 	
 	public JavaModule(BlockDeclaration blockDeclaration)
 	{ this.blockDeclaration=blockDeclaration; }
@@ -79,15 +81,20 @@ public final class JavaModule {
 	public static void code(String line)
 	{ Global.currentJavaModule.write(line); }
 
+	private int currentJavaLineNumber=0;
+	
 	private static int prevLineNumber=0;
 	private int indent;
 	public void write(String line) {
-		  Util.ASSERT(Global.sourceLineNumber>0,"Invariant");
-		  try {
+		Util.ASSERT(Global.sourceLineNumber>0,"Invariant");
+		try { currentJavaLineNumber++;
 			  if(prevLineNumber!=Global.sourceLineNumber) {
-				  String s0=edIndent()+"// SourceLine "+Global.sourceLineNumber;
+//				  String s0=edIndent()+"// SourceLine "+Global.sourceLineNumber;
+				  String s0=edIndent()+"// JavaLine "+currentJavaLineNumber+" ==> SourceLine "+Global.sourceLineNumber;
+				  appendLine(currentJavaLineNumber,Global.sourceLineNumber);
 				  if(Option.TRACE_CODING) Util.println("CODE "+Global.sourceLineNumber+": "+s0);
-				  if(s0!=null) writer.write(s0+'\n');
+				  currentJavaLineNumber++;
+				  writer.write(s0+'\n');
 			  }
 			  if(line.startsWith("}")) indent--;
 			  String s=edIndent()+line;
@@ -95,20 +102,47 @@ public final class JavaModule {
 			  if(Option.TRACE_CODING) Util.println("CODE "+Global.sourceLineNumber+": "+s);
 			  Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 			  writer.write(s+'\n');
-		  }
-		  catch (IOException e) {
-				System.out.println("Error Writing File: "+javaOutputFileName);
-				e.printStackTrace();
-		  }
-		  prevLineNumber=Global.sourceLineNumber;
-	  }
-	  private String edIndent()
-	  { int i=indent; String s="";
+		} catch (IOException e) {
+			System.out.println("Error Writing File: "+javaOutputFileName);
+			e.printStackTrace();
+		}
+		prevLineNumber=Global.sourceLineNumber;
+	}
+	
+	private String edIndent() {
+		int i=indent; String s="";
 		while((i--)>0) s=s+"    ";
 		return(s);  
-	  }
+	}
 
-
+	public void appendLine(int javaLine,int simulaLine) {
+	    lineMap.add(javaLine); lineMap.addElement(simulaLine);
+	}
+	  
+	public void codeProgramInfo() {
+		appendLine(currentJavaLineNumber,blockDeclaration.lastLineNumber);
+		// public static PROGINFO$ INFO$=new PROGINFO$("file.sim","MainProgram",1,4,12,5,14,12,32,14,37,16);
+		StringBuilder s=new StringBuilder();
+		s.append(edIndent()+"public static PROGINFO$ INFO$=new PROGINFO$(\"");
+		s.append(Global.sourceFileName);
+		s.append("\",\"");
+		s.append(blockDeclaration.blockKind+" "+blockDeclaration.identifier);
+		s.append('"');
+		for(Integer i:lineMap) { s.append(','); s.append(""+i); }
+		s.append(");");
+		writeCode(s.toString());
+	}
+	
+	private void writeCode(String s) {
+		if(Option.TRACE_CODING) Util.println("CODE "+Global.sourceLineNumber+": "+s);
+		Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
+		try { writer.write(s.toString()+'\n');
+		} catch (IOException e) {
+			System.out.println("Error Writing File: "+javaOutputFileName);
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public String toString()
 	{ return("JavaModule "+blockDeclaration+", javaOutputFileName="+javaOutputFileName); }

@@ -36,13 +36,19 @@ public final class ConditionalStatement extends Statement {
 	Statement elseStatement = null;
 
 	public ConditionalStatement() {
-		//Util.BREAK("BEGIN ConditionalStatement:");
+//		Util.BREAK("BEGIN ConditionalStatement:");
 		condition = Expression.parseExpression();
-		//Util.BREAK("BEGIN ConditionalStatement: condition="+condition);
+//		Util.BREAK("BEGIN ConditionalStatement: condition="+condition);
 		Parser.expect(KeyWord.THEN); thenStatement = Statement.doParse();
-		//Util.BREAK("BEGIN ConditionalStatement: thenStatement="+thenStatement);
-		if (Parser.accept(KeyWord.ELSE)) elseStatement = Statement.doParse();
-		//Util.BREAK("BEGIN ConditionalStatement: elseStatement="+elseStatement);
+//		Util.BREAK("BEGIN ConditionalStatement: thenStatement="+thenStatement);
+		if (Parser.accept(KeyWord.ELSE)) {
+			elseStatement = Statement.doParse();
+//			Util.BREAK("BEGIN ConditionalStatement: elseStatement="+elseStatement);
+		}
+//		if (Parser.accept(KeyWord.THEN)) Util.error("Missplaced keyword: THEN");
+//		if (Parser.accept(KeyWord.STEP)) Util.error("Missplaced keyword: STEP");
+		Parser.skipMissplacedSymbol(KeyWord.THEN);
+		Parser.skipMissplacedSymbol(KeyWord.STEP);
 	}
 
 	public void print(String indent, String tail) {

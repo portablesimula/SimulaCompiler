@@ -18,7 +18,8 @@ import simula.compiler.statement.Statement;
  * @author Øystein Myhre Andersen
  */
 public class BlockDeclaration extends DeclarationScope
-{ public boolean isMainModule;  // If true; this is the outermost Subblock or Prefixed Block.
+{ public int lastLineNumber;
+  public boolean isMainModule;  // If true; this is the outermost Subblock or Prefixed Block.
   public boolean isContextFree; // If true; all member methods are independent of context
   public boolean isPreCompiled; // If true; this Class/Procedure is Pre-Compiled
   public Vector<Statement> statements=new Vector<Statement>();

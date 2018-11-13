@@ -21,10 +21,11 @@ import simula.compiler.utilities.Util;
  *    VirtualSpec  =  VirtualSpecifier  IdentifierList
  *        |  PROCEDURE  ProcedureIdentifier  IS  ProcedureDeclaration
  *        
- *   	VirtualSpecifier =  [ type ] PROCEDURE  |  LABEL  |  SWITCH
+ *   	VirtualSpecifier =  [ type ] PROCEDURE
  *    	IdentifierList  =  Identifier  { , Identifier }
  *
  * </pre>
+ * NOTE: Virtual labels and switches are not part of this implementation of Simula Standard.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -32,43 +33,35 @@ import simula.compiler.utilities.Util;
 public final class VirtualSpecification extends Declaration {
 	// String identifier; // Inherited
 	// Type type; // Inherited: Procedure's type if any
-	public VirtualSpecification.Kind kind; // Simple | Procedure
-	
 	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
-//    public BlockDeclaration match; // Set during coChecking
-    public Declaration match; // Set during coChecking - Label or Block Declaration
+    public ProcedureDeclaration match; // Set during doChecking
 
-    public enum Kind { Procedure, Label, Switch }
-
-	public VirtualSpecification(String identifier, Type type, VirtualSpecification.Kind kind,ProcedureSpecification procedureSpec) {
+	public VirtualSpecification(String identifier, Type type, ProcedureSpecification procedureSpec) {
 		super(identifier);
 	 	this.externalIdent=identifier;
 		this.type=type;
-		this.kind = kind;
 		this.procedureSpec=procedureSpec;
-		this.blockKind=BlockKind.Procedure; // TODO: For TEST !!!
+		this.blockKind=BlockKind.Procedure;
 		//Util.BREAK("NEW Virtual: "+this);
-		if(kind==VirtualSpecification.Kind.Label) Util.warning("Goto Virtual label "+identifier+" is not fully implemented, may result in Runtime ERROR");
 	}
 	
-	// VirtualPart  =  VIRTUAL  :  VirtualSpec  ;  {  VirtualSpec  ;  }
-	//    VirtualSpec  =  VirtualSpecifier  IdentifierList
-	//                 |  PROCEDURE  ProcedureIdentifier  IS  ProcedureDeclaration
-	//        
-	//   	VirtualSpecifier =  [ type ] PROCEDURE  |  LABEL  |  SWITCH
-	//    	IdentifierList  =  Identifier  { , Identifier }
 	public static void parseInto(ClassDeclaration block)
 	{ Parser.expect(KeyWord.COLON);
       LOOP:while(true) {
 		  //Parser.BREAK("Virtual.parse");
 		  Type type;
-	      if(Parser.accept(KeyWord.SWITCH))	  parseSimpleSpecList(block,Type.Label,VirtualSpecification.Kind.Switch);
-	      else if(Parser.accept(KeyWord.LABEL)) parseSimpleSpecList(block,Type.Label,VirtualSpecification.Kind.Label);
+	      if(Parser.accept(KeyWord.SWITCH)) {
+	    	  Util.error("Virtual Switch is not part of this Implementation");
+	    	  skipSimpleSpecList();
+	      }
+	      else if(Parser.accept(KeyWord.LABEL)) {
+	    	  Util.error("Virtual Label is not part of this Implementation");
+	    	  skipSimpleSpecList();
+	      }
 	      else {
 	    	  type=acceptType();
 		      //Parser.BREAK("Virtual.parse: type="+type);
 	          if(!Parser.accept(KeyWord.PROCEDURE)) break LOOP;
-	          VirtualSpecification.Kind kind=VirtualSpecification.Kind.Procedure;
 	      
 	          String identifier=expectIdentifier();
 		      //Parser.BREAK("Virtual.parse: identifier="+identifier);
@@ -78,19 +71,24 @@ public final class VirtualSpecification extends Declaration {
 		          //Parser.BREAK("Virtual.parse: IS procedureType="+procedureType); 
 		          procedureSpec=ProcedureSpecification.doParseProcedureSpecification(procedureType); 
 		          //Parser.BREAK("Virtual.parse: IS procedureSpec="+procedureSpec);
-		          block.virtualList.add(new VirtualSpecification(identifier,type,kind,procedureSpec));
+		          block.virtualList.add(new VirtualSpecification(identifier,type,procedureSpec));
 	          } else {
-	        	  block.virtualList.add(new VirtualSpecification(identifier,type,kind,null));
-	    	      if(Parser.accept(KeyWord.COMMA)) parseSimpleSpecList(block,type,kind);
+	        	  block.virtualList.add(new VirtualSpecification(identifier,type,null));
+	    	      if(Parser.accept(KeyWord.COMMA)) parseSimpleSpecList(block,type);
 	    	      else Parser.expect(KeyWord.SEMICOLON);
 	          }
 	      }
 	  }
     }
 	
-	private static void parseSimpleSpecList(ClassDeclaration block,Type type,VirtualSpecification.Kind kind)
+	private static void skipSimpleSpecList()
+	{ do { expectIdentifier(); } while(Parser.accept(KeyWord.COMMA));  
+      Parser.expect(KeyWord.SEMICOLON);	
+	}
+	
+	private static void parseSimpleSpecList(ClassDeclaration block,Type type)
 	{ do { String identifier=expectIdentifier();
-	       block.virtualList.add(new VirtualSpecification(identifier,type,kind,null));
+	       block.virtualList.add(new VirtualSpecification(identifier,type,null));
 	  } while(Parser.accept(KeyWord.COMMA));  
       Parser.expect(KeyWord.SEMICOLON);	
 	}
@@ -98,15 +96,7 @@ public final class VirtualSpecification extends Declaration {
 	
 	public VirtualSpecification(ProcedureDeclaration match) {
 		// NOTE: Called during Checking
-		this(match.identifier,match.type,VirtualSpecification.Kind.Procedure,null);
-		this.match=match;
-		//Util.BREAK("NEW Extra-Virtual: "+this);
-		SET_SEMANTICS_CHECKED();
-	}
-	
-	public VirtualSpecification(LabelDeclaration match) {
-		// NOTE: Called during Checking
-		this(match.identifier,match.type,VirtualSpecification.Kind.Label,null);
+		this(match.identifier,match.type,null);
 		this.match=match;
 		//Util.BREAK("NEW Extra-Virtual: "+this);
 		SET_SEMANTICS_CHECKED();
@@ -122,11 +112,6 @@ public final class VirtualSpecification extends Declaration {
 	    }
 	  }
 	}
-
-	public void setLabelMatch(LabelDeclaration match)
-	{ this.match=match;
-	  //Util.BREAK("Virtual.setMatch: Label "+match);
-	}
 	
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
@@ -139,26 +124,16 @@ public final class VirtualSpecification extends Declaration {
 	public void doJavaCoding()
 	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
-	  String quantity=(kind==Kind.Label)?"LABQNT$ ":"PRCQNT$ ";
 	  String matchCode="{ throw new RuntimeException(\"No Virtual Match\"); }";
 	  if(match!=null)
-	  { if(kind==Kind.Label)
-	    { // public LABQNT$ L() { return(new LABQNT$(this,prefixLevel,index); // Local Label #1=L
-		  LabelDeclaration label=(LabelDeclaration)match;
-		  matchCode="{ return(new LABQNT$(this,"+label.prefixLevel+','+label.index+")); } // Local Label #"+label.index+'='+label.identifier;
-		  
-	    } else
-	    { // public PRCQNT$ P() { return(new PRCQNT$(this,VirtualSample$SubBlock9$P.class)); }
 		  matchCode="{ return(new PRCQNT$(this,"+match.getJavaIdentifier()+".class)); }";
-	    }
-	  }
-	  JavaModule.code("public "+quantity+getJavaIdentifier()+"() "+matchCode);
+	  JavaModule.code("public PRCQNT$ "+getJavaIdentifier()+"() "+matchCode);
 	}
 	
 	public String toString()
 	{ String s="";
 	  if(type!=null) s=s+type; else s="NOTYPE";
-	  s=s+" "+kind+' '+identifier;
+	  s=s+" "+' '+identifier;
 	  if(procedureSpec!=null) s=s+'='+procedureSpec;
 	  return(s);
 	}

@@ -103,21 +103,23 @@ public class Simulation$ extends Simset$ {
 		TRACE_BEGIN_DCL$("Simulation$");
 		// Create Class Body
 		CODE$ = new ClassBody(CODE$, this,1) {
-			public void STM() {
+			public void STM$() {
+	    	    RT.ASSERT_CUR$(Simulation$.this,"Simulation$:invariant-1");
 				TRACE_BEGIN_STM$("Simulation$",inner);
-				SQS = (Head$) new Head$(Simulation$.this).STM();
+				SQS = (Head$) new Head$(Simulation$.this).STM$();
 				main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START();
-				main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM();
+				main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();
 	        	//RT.BREAK("GOT NEW EVENT_NOTICE: "+main.EVENT);
 				main.EVENT.into(SQS);
 				if (inner != null)
-					inner.STM();
+					inner.STM$();
+	    	    RT.ASSERT_CUR$(Simulation$.this,"Simulation$:invariant-2");
 				TRACE_END_STM$("Simulation$");
 			}
 		};
 	}
 
-	public Simulation$ STM() {
+	public Simulation$ STM$() {
 		return ((Simulation$) CODE$.EXEC$());
 	}
 
@@ -175,7 +177,7 @@ public class Simulation$ extends Simset$ {
 	public void passivate(boolean terminatingProcess) {
 		Process$ cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());
-		// System.out.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
+		// RT.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
 		if (cur != null) {
 			cur.EVENT.out();
 			cur.EVENT = null;
@@ -183,7 +185,7 @@ public class Simulation$ extends Simset$ {
 		if (SQS.empty())
 			throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
 		Process$ nxtcur = current();
-		// System.out.println("END Passivate: next current="+nxtcur.edObjectIdent()+",
+		// RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+",
 		// SQS="+this.edSQS());
 		SIM_TRACE("END Passivate Resume[" + nxtcur.edObjectIdent() + ']');
 		resume(nxtcur, terminatingProcess);
@@ -194,7 +196,7 @@ public class Simulation$ extends Simset$ {
 //	public void terminate() {
 //		Process$ cur = current();
 //		SIM_TRACE("Terminate "+cur.edObjectIdent());
-//		//System.out.println("Terminate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
+//		//RT.println("Terminate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
 //		if (cur != null) {
 //			cur.EVENT.out();
 //			cur.EVENT = null;
@@ -202,7 +204,7 @@ public class Simulation$ extends Simset$ {
 //		if (SQS.empty())
 //			throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
 //		Process$ nxtcur=current();
-//		//System.out.println("END Terminate: next current="+nxtcur.edObjectIdent()+", SQS="+this.edSQS());
+//		//RT.println("END Terminate: next current="+nxtcur.edObjectIdent()+", SQS="+this.edSQS());
 //		SIM_TRACE("END Terminate Resume["+nxtcur.edObjectIdent()+']');
 //		resume(nxtcur,true);
 //		SIM_TRACE("END Terminate AFTER Resume["+nxtcur.edObjectIdent()+']');
@@ -266,7 +268,7 @@ public class Simulation$ extends Simset$ {
 			else if (X.EVENT != null)
 				return;
 			z = current();
-			X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) time(), X).STM();
+			X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) time(), X).STM$();
 			X.EVENT.precede(FIRSTEV());
 			if (EV != null) {
 				EV.out();
@@ -300,7 +302,7 @@ public class Simulation$ extends Simset$ {
 			z = current();
 			if (T < time())
 				T = time();
-			X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) T, X).STM();
+			X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) T, X).STM$();
 			if (T == time() && PRIO)
 				X.EVENT.precede(FIRSTEV());
 			else
@@ -346,7 +348,7 @@ public class Simulation$ extends Simset$ {
 			else {
 				if (X == Y)
 					return; // reactivate X before/after X;
-				X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) Y.EVENT.EVTIME, X).STM();
+				X.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$(this, (float) Y.EVENT.EVTIME, X).STM$();
 				if (BEFORE)
 					X.EVENT.precede(Y.EVENT);
 				else
@@ -380,7 +382,7 @@ public class Simulation$ extends Simset$ {
 		//checkSQS();
 		if (RT.Option.SML_TRACING) {
 			Thread thread = Thread.currentThread();
-			System.out.println(thread.toString() + ": Time=" + time() + "  " + msg +", SQS="+ edSQS());
+			RT.println(thread.toString() + ": Time=" + time() + "  " + msg +", SQS="+ edSQS());
 		}
 	}
 

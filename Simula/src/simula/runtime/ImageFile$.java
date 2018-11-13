@@ -79,14 +79,14 @@ public class ImageFile$ extends FILE$ {
       super(staticLink,FILENAME);
  	  TRACE_BEGIN_DCL$("ImageFile$");
       CODE$=new ClassBody(CODE$,this,1) {
-         public void STM() {
+         public void STM$() {
         	 TRACE_BEGIN_STM$("ImageFile$",inner);
-             if(inner!=null) inner.STM();
+             if(inner!=null) inner.STM$();
              TRACE_END_STM$("ImageFile$");
       }};
    }
    // Class Statements
-   public ImageFile$ STM() { return((ImageFile$)CODE$.EXEC$()); }
+   public ImageFile$ STM$() { return((ImageFile$)CODE$.EXEC$()); }
    public ImageFile$ START() { START(this); return(this); }
    
    

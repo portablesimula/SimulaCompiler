@@ -58,15 +58,15 @@ public class InFile$ extends ImageFile$ {
       super(staticLink,FILENAME);
  	  TRACE_BEGIN_DCL$("InFile$");
       CODE$=new ClassBody(CODE$,this,2) {
-         public void STM() {
+         public void STM$() {
        	    TRACE_BEGIN_STM$("InFile$",inner);
             ENDFILE$=true;
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("InFile$");
       }};
    }
    // Class Statements
-   public InFile$ STM() { return((InFile$)CODE$.EXEC$()); }
+   public InFile$ STM$() { return((InFile$)CODE$.EXEC$()); }
    public InFile$ START() { START(this); return(this); }
 
 	/**

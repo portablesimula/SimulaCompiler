@@ -105,7 +105,7 @@ public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 		}
 		RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
 	    if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
-	    swapThreads(ins.DL$);
+	    swapThreads(CUR$.THREAD$);
 	  }
 	}
 

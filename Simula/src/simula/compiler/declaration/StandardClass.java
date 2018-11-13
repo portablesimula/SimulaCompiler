@@ -7,7 +7,6 @@
  */
 package simula.compiler.declaration;
 
-import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.Type;
@@ -116,6 +115,7 @@ public final class StandardClass extends ClassDeclaration
     ENVIRONMENT.addStandardProcedure(Type.Text,"copy",parameter("T",Parameter.Mode.value,Type.Text));
     ENVIRONMENT.addStandardProcedure(Type.Text,"blanks",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Type.Character,"Char",parameter("n",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Type.Character,"char$",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Type.Character,"isochar",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Type.Integer,"rank",parameter("c",Type.Character));
     ENVIRONMENT.addStandardProcedure(Type.Integer,"isorank",parameter("c",Type.Character));
@@ -195,6 +195,13 @@ public final class StandardClass extends ClassDeclaration
     		                                     ,parameter("c",Type.Real),parameter("d",Type.Real));
 //    ENVIRONMENT.addStandardProcedure(Type.Text,"objectTraceIdentifier");
 
+    // **************************************
+    // *** Additional Standard Procedures ***
+    // **************************************
+    ENVIRONMENT.addStandardProcedure(Type.Boolean,"setSeed",parameter("seed",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(null,"waitSomeTime",parameter("millies",Type.Integer)); 
+    ENVIRONMENT.addStandardProcedure(null,"printThreadList",parameter("withStackTrace",Type.Boolean));
+    
   }
   
   // ******************************************************************
@@ -783,7 +790,6 @@ public final class StandardClass extends ClassDeclaration
     Drawing.addStandardProcedure(null,"setFontStyleBoldItalic");  
     Drawing.addStandardProcedure(null,"setFontSize",parameter("size",Type.Real));  
     Drawing.addStandardProcedure(Type.Real,"getFontSize");  
-    Drawing.addStandardProcedure(null,"waitSomeTime",parameter("millies",Type.Integer));  // Utility
     
     Drawing.addStandardProcedure(null,"drawText",parameter("t",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
     Drawing.addStandardProcedure(null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  

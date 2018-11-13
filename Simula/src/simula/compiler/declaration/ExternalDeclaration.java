@@ -139,7 +139,7 @@ public final class ExternalDeclaration extends Declaration {
 	    this.type=type;
 	    this.kind=kind;
 	    this.externalIdentifier=externalIdentifier;
-		Util.BREAK("END NEW ExternalDeclaration: " + toString());
+		//Util.BREAK("END NEW ExternalDeclaration: " + toString());
 		String jarFileName;
 		if(externalIdentifier==null)
 			 jarFileName=Global.outputDir+identifier+".jar ";

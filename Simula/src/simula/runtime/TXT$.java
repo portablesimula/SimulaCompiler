@@ -78,6 +78,15 @@ public final class TXT$ {
 	}
 
 	// Utility
+	public String edStripedText() {
+		//RT.BREAK("TXTREF.edText: "+this);
+		if(OBJ==null) return("");
+		TXT$ stp=this.strip();
+		if(stp==null) return("");
+		return (stp.OBJ.edText(START, LENGTH));
+	}
+
+	// Utility
 	public String edTextToPos() {
 		return (OBJ.edText(START, POS + 1));
 	}
@@ -445,7 +454,8 @@ public final class TXT$ {
 		if(T==null) T=ENVIRONMENT$.NOTEXT;
 		char[] c = s.toCharArray();
 		if (c.length > T.LENGTH) {
-			RT.warning("Edit Overflow Occured");
+			//RT.warning("Edit Overflow Occured");
+		    RT.numberOfEditOverflows++;
 			for (int j = 0; j < T.LENGTH; j = j + 1)
 				T.OBJ.MAIN[T.START + j] = '*';
 		} else {
@@ -623,7 +633,8 @@ public final class TXT$ {
 	          if(val<0) item[p--]='-';
 	          while(p>=0) item[p--]=' ';
 	    } catch(ArrayIndexOutOfBoundsException e)
-	    { RT.warning("Edit Overflow Occured");
+	    { //RT.warning("Edit Overflow Occured");
+	      RT.numberOfEditOverflows++;
 		  for(int i=0;i<item.length;i++) item[i]='*';
 	    }
 	    for(int i=0;i<item.length;i++) T.OBJ.MAIN[T.START+i]=item[i];

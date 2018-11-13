@@ -11,6 +11,7 @@ import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.StandardClass;
+import simula.compiler.declaration.VirtualSpecification;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
@@ -36,6 +37,8 @@ public final class RemoteVariable extends Expression
   public Variable rhs;
   private Meaning remoteAttribute; // Set by doChecking
   private ProcedureDeclaration callRemoteProcedure=null; 
+  private VirtualSpecification callRemoteVirtual=null; 
+
   private boolean accessRemoteArray=false; // Set by doChecking
 
   
@@ -62,7 +65,7 @@ public final class RemoteVariable extends Expression
   private Type doRemoteChecking(Expression obj,Expression attr)
   {	Global.sourceLineNumber=lineNumber;
     Type result;
-	//Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
+	//Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 	obj.doChecking(); Type objType=obj.type;
 	//if(DEBUG) Util.log("BEGIN doRemoteChecking("+toString()+").doChecking(2) - objType="+objType+", obj="+obj);
 	if(objType==Type.Text) return(doRemoteTextChecking(obj,attr));
@@ -85,6 +88,8 @@ public final class RemoteVariable extends Expression
 		  return(Type.Integer); // Error Recovery
 	  }
 	  var.setRemotelyAccessed(remoteAttribute);
+	  
+	  //Util.BREAK("RemoteVariable.doRemoteChecking: RemoteAttribute'QUAL="+remoteAttribute.declaredAs.getClass().getSimpleName());
 	  if(remoteAttribute.declaredAs instanceof Parameter)
 	  { Parameter par=(Parameter)remoteAttribute.declaredAs;
 //	    Util.BREAK("RemoteVariable.doRemoteChecking: DOT par="+par);
@@ -101,6 +106,10 @@ public final class RemoteVariable extends Expression
 	  else if(remoteAttribute.declaredAs instanceof ProcedureDeclaration) // Procedure 
 	  { //Util.BREAK("RemoteVariable.doRemoteChecking: Call Remote Procedure "+remote+", qual="+remote.getClass().getSimpleName());
 		callRemoteProcedure=(ProcedureDeclaration)remoteAttribute.declaredAs; 
+	  }
+	  else if(remoteAttribute.declaredAs instanceof VirtualSpecification) // Virtual Procedure 
+	  { //Util.BREAK("RemoteVariable.doRemoteChecking: Call Remote Virtual Procedure "+remoteAttribute+", qual="+remoteAttribute.getClass().getSimpleName());
+		callRemoteVirtual=(VirtualSpecification)remoteAttribute.declaredAs; 
 	  }
 	  result=remoteAttribute.declaredAs.type;
 	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(6) - attr="+attr+", attr.Type="+result);
@@ -149,6 +158,8 @@ public final class RemoteVariable extends Expression
 	ASSERT_SEMANTICS_CHECKED(this);
     if(callRemoteProcedure!=null)
     	 return(CallProcedure.remote(lhs,callRemoteProcedure,(Variable)rhs,backLink));    
+    else if(callRemoteVirtual!=null)
+    	 return(CallProcedure.remoteVirtual(lhs, (Variable)rhs, callRemoteVirtual));    
 	else if(accessRemoteArray)
 		 return(doAccessRemoteArray(lhs,(Variable)rhs));
 	//Util.BREAK("RemoteVariable.toJavaCode: DOT - remoteAttribute="+remoteAttribute);

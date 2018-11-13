@@ -96,13 +96,13 @@ public class OutbyteFile$ extends ByteFile$ {
  	  TRACE_BEGIN_DCL$("OutbyteFile$");
       // Create Class Body
       CODE$=new ClassBody(CODE$,this,2) {
-         public void STM() {
+         public void STM$() {
         	 TRACE_BEGIN_STM$("OutbyteFile$",inner);
-             if(inner!=null) inner.STM();
+             if(inner!=null) inner.STM$();
              TRACE_END_STM$("OutbyteFile$");
       }};
     }
     // Class Statements
-    public OutbyteFile$ STM() { return((OutbyteFile$)CODE$.EXEC$()); }
+    public OutbyteFile$ STM$() { return((OutbyteFile$)CODE$.EXEC$()); }
     public OutbyteFile$ START() { START(this); return(this); }
 }

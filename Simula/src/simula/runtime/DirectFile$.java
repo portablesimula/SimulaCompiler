@@ -102,15 +102,15 @@ public class DirectFile$ extends ImageFile$ {
       super(staticLink,FILENAME);
    	  TRACE_BEGIN_DCL$("DirectFile$");
       CODE$=new ClassBody(CODE$,this,2) {
-         public void STM() {
+         public void STM$() {
           	TRACE_BEGIN_STM$("DirectFile$",inner);
     		// ENDFILE$ = true; // ENDFILE is maintained by the underlying file system.
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("DirectFile$");
       }};
     }
     // Class Statements
-    public DirectFile$ STM() { return((DirectFile$)CODE$.EXEC$()); }
+    public DirectFile$ STM$() { return((DirectFile$)CODE$.EXEC$()); }
     public DirectFile$ START() { START(this); return(this); }
 
 	/**

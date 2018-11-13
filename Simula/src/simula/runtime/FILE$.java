@@ -55,18 +55,18 @@ public class FILE$ extends CLASS$ {
       this.FILENAME$ = FILENAME$;
       // Create Class Body
       CODE$=new ClassBody(CODE$,this,0) {
-         public void STM() {
+         public void STM$() {
        	    TRACE_BEGIN_STM$("FILE$",inner);
             if(FILENAME$==null) {
     			throw new RuntimeException("Illegal File Name");
             }
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("FILE$");
             EBLK(); // Iff no prefix
       }};
    }
    // Class Statements
-   public FILE$ STM() { return((FILE$)CODE$.EXEC$()); }
+   public FILE$ STM$() { return((FILE$)CODE$.EXEC$()); }
    public FILE$ START() { START(this); return(this); }
 
 	public TXT$ filename() {

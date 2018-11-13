@@ -90,8 +90,10 @@ public final class ObjectGenerator extends Expression {
 			Util.error("Undefined variable: " + classIdentifier);
 			meaning = new Meaning(null, null); // Error Recovery: No Meaning
 		}
-		if (!(meaning.declaredAs instanceof ClassDeclaration))
+		if (!(meaning.declaredAs instanceof ClassDeclaration)) {
 			Util.error("NEW " + classIdentifier + ": Not a Class");
+			return;
+		}
 		ClassDeclaration cls = (ClassDeclaration) meaning.declaredAs;
 		// Check parameters
 		Iterator<Parameter> formalIterator = cls.parameterIterator();
@@ -156,7 +158,7 @@ public final class ObjectGenerator extends Expression {
 		if (cls.isDetachUsed())
 			s.append(".START()");
 		else
-			s.append(".STM()");
+			s.append(".STM$()");
 
 		return (s.toString());
 	}

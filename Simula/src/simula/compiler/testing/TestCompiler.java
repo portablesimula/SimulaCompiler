@@ -57,6 +57,7 @@ public final class TestCompiler {
 
 		// *** SIMULA PROGRAMMER FOR VIDERE UTVIKLING
 		// String name=Global.packetName+"/simprogs/Matte.sim";
+		// String name=Global.packetName+"/simprogs/HegnaNRK.sim";
 		// String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
@@ -66,17 +67,26 @@ public final class TestCompiler {
 		// String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
-		// String name=Global.packetName+"/err/simerr01.sim";
-		// String name=Global.packetName+"/err/simerr02.sim";
-		// String name=Global.packetName+"/err/simerr03.sim"; 
-		// String name=Global.packetName+"/err/simerr04.sim";
-		// String name=Global.packetName+"/err/simerr05.sim";
-		// String name=Global.packetName+"/err/simerr06.sim";
-		// String name=Global.packetName+"/err/simerr07.sim";
+		// String name=Global.packetName+"/err/simerr01.sim"; // Syntax errors
+		// String name=Global.packetName+"/err/simerr02.sim"; // Syntax errors
+		// String name=Global.packetName+"/err/simerr03.sim"; // Wrong Number of parameters  
+		// String name=Global.packetName+"/err/simerr04.sim"; // Type checking of Parameter Array 
+		// String name=Global.packetName+"/err/simerr05.sim"; // Syntax error - Semicolon before 'else' 
+		// String name=Global.packetName+"/err/simerr06.sim"; // Label invisible through inspection 
+		// String name=Global.packetName+"/err/simerr07.sim"; // None-check failed 
+		// String name=Global.packetName+"/err/simerr08.sim"; // Local Connected Object 
+		// String name=Global.packetName+"/err/simerr09.sim"; // Character and Java keyword char 
+		// String name=Global.packetName+"/err/simerr10.sim"; // Java keywords as Identifiers 
+		// String name=Global.packetName+"/err/PrecompiledClass.sim"; // Used by simerr11 
+		// String name=Global.packetName+"/err/simerr11.sim"; // Division by Zero in Precompiled Class 
+		// String name=Global.packetName+"/err/PrecompiledProcedure.sim"; // Used by simerr12 
+		// String name=Global.packetName+"/err/simerr12.sim"; // Division by Zero in Precompiled Procedure 
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";
-		 String name=Global.packetName+"/sim/adHoc01.sim";
+		// String name=Global.packetName+"/sim/adHoc01.sim";
+//		 String name=Global.packetName+"/sim/adHoc02.sim";
+		 String name=Global.packetName+"/sim/adHoc03.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
@@ -144,7 +154,6 @@ public final class TestCompiler {
 			Option.BREAKING=true;//false; //true; 
 
 			// Scanner Trace Options
-			Option.TRACE_PREPROCESSOR=false;//true;
 			Option.TRACE_SCAN=false;//true;
 			Option.TRACE_COMMENTS=false;//true;
 

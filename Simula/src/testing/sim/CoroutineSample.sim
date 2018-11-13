@@ -1,13 +1,19 @@
 begin
    ref(A) x;
+   
+   procedure trace(msg); text msg;
+   begin
+      outtext(msg); outimage; printThreadList;
+   end;
+   
    class A;
    begin
       integer i;
-      outtext("A: State 1(Initiating)"); outimage;
+      trace("A: State 1(Initiating)");
       detach;     
-      outtext("A: State 2"); outimage;
+      trace("A: State 2");
       detach;
-      outtext("A: State 3(Terminating)"); outimage;
+      trace("A: State 3(Terminating)");
    end A;
    
    outtext("-----------------------------------------"); outimage;
@@ -26,13 +32,13 @@ begin
    outtext("-----------------------------------------"); outimage;
    
    begin
-      outtext("Main: Before new A"); outimage;
+      trace("Main: Before new A");
       x:-new A();
-      outtext("Main: Before first call"); outimage;
+      trace("Main: Before first call");
       call(x);
-      outtext("Main: Before second call"); outimage;
+      trace("Main: Before second call");
       call(x);
-      outtext("Main: Before third call"); outimage;
+      trace("Main: Before third call");
       call(x);
    end subBlock;
    

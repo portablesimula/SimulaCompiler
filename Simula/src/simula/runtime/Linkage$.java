@@ -52,14 +52,14 @@ public class Linkage$ extends CLASS$ {
        BBLK(); // Iff no prefix
        TRACE_BEGIN_DCL$("Linkage$");
        CODE$=new ClassBody(CODE$,this,0) {
-          public void STM() {
+          public void STM$() {
         	 TRACE_BEGIN_STM$("Linkage$",inner);
-             if(inner!=null) inner.STM();
+             if(inner!=null) inner.STM$();
              TRACE_END_STM$("Linkage$");
              EBLK(); // Iff no prefix
        }};
     }
-    public Linkage$ STM() { return((Linkage$)CODE$.EXEC$()); }
+    public Linkage$ STM$() { return((Linkage$)CODE$.EXEC$()); }
     public Linkage$ START() { START(this); return(this); }
 
 	public Link$ suc() {

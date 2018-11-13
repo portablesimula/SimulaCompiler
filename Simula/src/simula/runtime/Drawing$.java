@@ -25,9 +25,8 @@ import javax.swing.JFrame;
 
 /**
  * 
- * The system class "Drawing" may be considered an "application package"
- * oriented towards graphical drawing and animation. It has the class "simset" as prefix,
- * and set-handling facilities are thus immediately available.
+ * The additional system class "Drawing" introduce basic graphical capabilities.
+ * It has the class "simset" as prefix, so set-handling facilities are thus immediately available.
  * 
  * <pre>
  * Simset class Drawing(title,width,height); Value title; Text title; Integer width,height;
@@ -50,7 +49,6 @@ import javax.swing.JFrame;
  *          
  *       Procedure setFontSize(size); Real size; CURRENT_FONT :- CURRENT_FONT.deriveFont(size); 
  *       Real Procedure getFontSize; getFontSize := CURRENT_FONT.getSize2D;
- *       Procedure waitSomeTime(millies); Integer millies; ... Utility
  *
  *       Link class ShapeElement; ...
  *       Link class TextElement; ...
@@ -147,7 +145,7 @@ public class Drawing$ extends Simset$ {
      * FontSize usually 12.0 ?
      */
     public void setFontSize(float size)
-    { System.out.println("SetFontSize: size="+size+", OldFont="+currentFont);
+    { RT.println("SetFontSize: size="+size+", OldFont="+currentFont);
     	currentFont=currentFont.deriveFont(size);
     }
     public float getFontSize() { return(currentFont.getSize2D()); }
@@ -169,35 +167,29 @@ public class Drawing$ extends Simset$ {
 	  return(value);
 	}
 
-//	public void waitSomeTime(int millies)
-//    { //System.out.println("Drawing Sleep: "+millies);
-//	  try {Thread.sleep(millies);}catch(Exception e) { e.printStackTrace();}
-//	  //System.out.println("Drawing Awake after: "+millies);
-//	}
-
 	public TextElement$ drawText(TXT$ t,double x,double y)
-	{ return(new TextElement$(this,t,x,y).STM()); }
+	{ return(new TextElement$(this,t,x,y).STM$()); }
 	   
 	public ShapeElement$ drawLine(double x1,double y1,double x2,double y2)
-	{ ShapeElement$ elt=new ShapeElement$(this).STM(); elt.drawLine(x1,y1,x2,y2); return(elt); }
+	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawLine(x1,y1,x2,y2); return(elt); }
 	   
 	public ShapeElement$ drawEllipse(double x,double y,double width,double height)
-	{ ShapeElement$ elt=new ShapeElement$(this).STM(); elt.drawEllipse(x,y,width,height); return(elt); }
+	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawEllipse(x,y,width,height); return(elt); }
 
 	public ShapeElement$ drawRectangle(double x,double y,double width,double height)
-	{ ShapeElement$ elt=new ShapeElement$(this).STM(); elt.drawRectangle(x,y,width,height); return(elt); }
+	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawRectangle(x,y,width,height); return(elt); }
 	   
 	public ShapeElement$ drawRoundRectangle(double x,double y,double width,double height, double arcw, double arch)
-	{ ShapeElement$ elt=new ShapeElement$(this).STM(); elt.drawRoundRectangle(x,y,width,height,arcw,arch); return(elt); }
+	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawRoundRectangle(x,y,width,height,arcw,arch); return(elt); }
 	   
 	public ShapeElement$ fillEllipse(double x,double y,double width,double height)
-	{ ShapeElement$ elt=new ShapeElement$(this).STM(); elt.fillEllipse(x,y,width,height); return(elt); }
+	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.fillEllipse(x,y,width,height); return(elt); }
  
 	public ShapeElement$ fillRectangle(double x,double y,double width,double height)
-	{ ShapeElement$ elt=new ShapeElement$(this).STM(); elt.fillRectangle(x,y,width,height); return(elt); }
+	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.fillRectangle(x,y,width,height); return(elt); }
 	   
     public ShapeElement$ fillRoundRectangle(double x,double y,double width,double height, double arcw, double arch)
-    { ShapeElement$ elt=new ShapeElement$(this).STM(); elt.fillRoundRectangle(x,y,width,height,arcw,arch); return(elt); }
+    { ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.fillRoundRectangle(x,y,width,height,arcw,arch); return(elt); }
 
     
     class Drawing extends Canvas {
@@ -228,11 +220,11 @@ public class Drawing$ extends Simset$ {
 		TRACE_BEGIN_DCL$("Drawing$");
 		// Create Class Body
 		CODE$ = new ClassBody(CODE$, this,1) {
-			public void STM() {
+			public void STM$() {
 				TRACE_BEGIN_STM$("Drawing$",inner);
-				RENDERING_SET = (Head$) new Head$(Drawing$.this).STM();
+				RENDERING_SET = (Head$) new Head$(Drawing$.this).STM$();
 	        	init(title.edText(),width,height);
-				if (inner != null) inner.STM();
+				if (inner != null) inner.STM$();
 				TRACE_END_STM$("Drawing$");
 			}
 		};
@@ -251,9 +243,9 @@ public class Drawing$ extends Simset$ {
 
 //      currentFont=new Font(Font.SERIF,currentFont.getSize(),currentFont.getStyle());
 
-      System.out.println("Init: Current Font="+currentFont);
+      RT.println("Init: Current Font="+currentFont);
 	  setFontSize(12);
-	  System.out.println("Init: Current Font="+currentFont);
+	  RT.println("Init: Current Font="+currentFont);
         frame.add(canvas);
         frame.pack();
         frame.setVisible(true);  
@@ -264,19 +256,22 @@ public class Drawing$ extends Simset$ {
         
 //        frame.addWindowStateListener(new WindowStateListener() {
 //			public void windowStateChanged(WindowEvent e) {
-//				System.out.println("windowStateChanged:WindowsEvent: "+e);
+//				RT.println("windowStateChanged:WindowsEvent: "+e);
 //				
 //			}});
         frame.addWindowListener(new WindowListener() {
-			public void windowOpened(WindowEvent e) { System.out.println("windowOpened.WindowsEvent: "+e); }
-			public void windowClosing(WindowEvent e) { System.out.println("windowClosing.WindowsEvent: "+e);
-				if(e.getID()==WindowEvent.WINDOW_CLOSING) System.exit(0);
+			public void windowOpened(WindowEvent e) { RT.println("windowOpened.WindowsEvent: "+e); }
+			public void windowClosing(WindowEvent e) { RT.println("windowClosing.WindowsEvent: "+e);
+				if(e.getID()==WindowEvent.WINDOW_CLOSING) {
+					printThreadList(true);
+					System.exit(0);
+				}
 			}
-			public void windowClosed(WindowEvent e) { System.out.println("windowClosed.WindowsEvent: "+e); }
-			public void windowIconified(WindowEvent e) { System.out.println("windowIconified.WindowsEvent: "+e); }
-			public void windowDeiconified(WindowEvent e) { System.out.println("windowDeiconified.WindowsEvent: "+e); }
-			public void windowActivated(WindowEvent e) { System.out.println("windowActivated.WindowsEvent: "+e); }
-			public void windowDeactivated(WindowEvent e) { System.out.println("windowClosing.WindowsEvent: "+e);
+			public void windowClosed(WindowEvent e) { RT.println("windowClosed.WindowsEvent: "+e); }
+			public void windowIconified(WindowEvent e) { RT.println("windowIconified.WindowsEvent: "+e); }
+			public void windowDeiconified(WindowEvent e) { RT.println("windowDeiconified.WindowsEvent: "+e); }
+			public void windowActivated(WindowEvent e) { RT.println("windowActivated.WindowsEvent: "+e); }
+			public void windowDeactivated(WindowEvent e) { RT.println("windowClosing.WindowsEvent: "+e);
 			}});
         
 //        frame.setFocusable(true);
@@ -285,18 +280,18 @@ public class Drawing$ extends Simset$ {
         canvas.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {
 				char c=e.getKeyChar();
-				System.out.println("KEY "+c+" TYPED");
+				RT.println("KEY "+c+" TYPED");
 				if(c=='x') System.exit(0);
 			}
 			public void keyPressed(KeyEvent e) {
-				System.out.println("KEY "+e.getKeyChar()+" PRESSED");
+				RT.println("KEY "+e.getKeyChar()+" PRESSED");
 			}
 			public void keyReleased(KeyEvent e) {
-				System.out.println("KEY "+e.getKeyChar()+" RELEASE");
+				RT.println("KEY "+e.getKeyChar()+" RELEASE");
 			}});
     }
 
-	public Drawing$ STM() {
+	public Drawing$ STM$() {
 		return ((Drawing$) CODE$.EXEC$());
 	}
 
@@ -307,9 +302,9 @@ public class Drawing$ extends Simset$ {
     
 	public void listRenderingSet()
 	{ Link$ lnk=RENDERING_SET.first();
-	  System.out.println("RENDERING SET: first="+lnk);
+	  RT.println("RENDERING SET: first="+lnk);
 	  while(lnk!=null) 
-	  { System.out.println(" - "+lnk.getClass().getSimpleName());
+	  { RT.println(" - "+lnk.getClass().getSimpleName());
 	    lnk=lnk.suc();
 	  }
 	}

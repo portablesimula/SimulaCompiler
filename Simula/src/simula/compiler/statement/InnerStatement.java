@@ -27,7 +27,7 @@ public final class InnerStatement extends Statement {
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		JavaModule.code("if(inner!=null) {");
-		JavaModule.code("inner.STM();");
+		JavaModule.code("inner.STM$();");
 		JavaModule.code("TRACE_BEGIN_STM_AFTER_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
 		JavaModule.code("}");
 	}

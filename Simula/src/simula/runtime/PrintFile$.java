@@ -82,16 +82,16 @@ public class PrintFile$ extends OutFile$ {
       super(staticLink,FILENAME);
  	  TRACE_BEGIN_DCL$("PrintFile$");
       CODE$=new ClassBody(CODE$,this,3) {
-         public void STM() {
+         public void STM$() {
        	    TRACE_BEGIN_STM$("PrintFile$",inner);
             LINES_PER_PAGE$=132;
             SPACING$=1;
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("PrintFile$");
       }};
     }
     // Class Statements
-    public PrintFile$ STM() { return((PrintFile$)CODE$.EXEC$()); }
+    public PrintFile$ STM$() { return((PrintFile$)CODE$.EXEC$()); }
     public PrintFile$ START() { START(this); return(this); }
 
 	public int line() {
@@ -237,19 +237,18 @@ public class PrintFile$ extends OutFile$ {
 		this.image = image;
 		ASGTXT$(image,null); // image := NOTEXT; ???
 		setpos(1);
-		OutputStream outputStream;
 		//RT.BREAK("OutFile.open: Filename=" + FILENAME$);
-		if (FILENAME$.edText().equalsIgnoreCase("sysout"))
-			outputStream = System.out;
-		else {
+		if (FILENAME$.edText().equalsIgnoreCase("sysout")) {
+            writer = new OutputStreamWriter(System.out);
+		} else {
 			try {
-				outputStream = new FileOutputStream(FILENAME$.edText());
+				OutputStream outputStream = new FileOutputStream(FILENAME$.edText());
+				writer = new OutputStreamWriter(outputStream);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				return (false);
 			}
 		}
-		writer = new OutputStreamWriter(outputStream);
 		eject(1);
 		return (true);
 	}
@@ -305,7 +304,7 @@ public class PrintFile$ extends OutFile$ {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			return (false);
-		}
+		} //else console.close();
 		OPEN$ = false;
 		return (true);
 	}
@@ -343,10 +342,8 @@ public class PrintFile$ extends OutFile$ {
 		if (LINE$ > LINES_PER_PAGE$)
 			eject(1);
 		try {
-			TXT$ img = image.strip();
-			if (img != null)
-				writer.write(img.edText());
-			writer.write('\n');
+			String s=(image==null)?"\n":(image.edStripedText()+'\n');
+			writer.write(s);
 			writer.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Outimage failed", e);
@@ -354,7 +351,6 @@ public class PrintFile$ extends OutFile$ {
 		LINE$ = LINE$ + SPACING$;
 		ASGTXT$(image,null); // image := NOTEXT;
 		setpos(1);
-
 	}
 
 	/**
@@ -376,16 +372,14 @@ public class PrintFile$ extends OutFile$ {
 	 * 
 	 */
 	public void outrecord() {
-		if (!OPEN$)
-			throw new RuntimeException("File not opened");
-		if (LINE$ > LINES_PER_PAGE$)
-			eject(1);
+		if (!OPEN$)	throw new RuntimeException("File not opened");
+		if (LINE$ > LINES_PER_PAGE$) eject(1);
 		try {
-			// TODO: Without line-feed \n ???
-			writer.write(image.edTextToPos() + '\n');
+			String s=image.edTextToPos() + '\n'; // TODO: Without line-feed \n ???
+			writer.write(s);
 			writer.flush();
 		} catch (IOException e) {
-			throw new RuntimeException("Outimage failed");
+			throw new RuntimeException("Outrecord failed");
 		}
 		LINE$ = LINE$ + SPACING$;
 		setpos(1);

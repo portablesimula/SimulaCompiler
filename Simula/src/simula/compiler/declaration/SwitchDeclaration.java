@@ -70,7 +70,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration
 	// ***********************************************************************************************
 	public void codeProcedureBody() {
 		JavaModule.code("// Switch Body");
-		JavaModule.code("public " + getJavaIdentifier() + " STM() {");
+		JavaModule.code("public " + getJavaIdentifier() + " STM$() {");
 		JavaModule.code("switch(p$$SW-1) {");
 		int n = 0;
 		for (Expression expr : ((SwitchDeclaration) this).switchList) {

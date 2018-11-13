@@ -47,15 +47,15 @@ public class InbyteFile$ extends ByteFile$ {
       super(staticLink,FILENAME);
  	  TRACE_BEGIN_DCL$("InbyteFile$");
       CODE$=new ClassBody(CODE$,this,2) {
-         public void STM() {
+         public void STM$() {
        	    TRACE_BEGIN_STM$("InbyteFile$",inner);
             ENDFILE$=true;
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("InbyteFile$");
       }};
     }
     // Class Statements
-    public InbyteFile$ STM() { return((InbyteFile$)CODE$.EXEC$()); }
+    public InbyteFile$ STM$() { return((InbyteFile$)CODE$.EXEC$()); }
     public InbyteFile$ START() { START(this); return(this); }
 
 	/**

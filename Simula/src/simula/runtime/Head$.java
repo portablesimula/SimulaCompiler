@@ -55,15 +55,15 @@ public class Head$ extends Linkage$ {
        super(staticLink);
    	   TRACE_BEGIN_DCL$("Head$");
        CODE$=new ClassBody(CODE$,this,1) {
-          public void STM() {
+          public void STM$() {
          	 TRACE_BEGIN_STM$("Head$",inner);
              SUC=PRED=(Linkage$)CUR$;
-             if(inner!=null) inner.STM();
+             if(inner!=null) inner.STM$();
              TRACE_END_STM$("Head$");
        }};
     }
     
-    public Head$ STM() { return((Head$)CODE$.EXEC$()); }
+    public Head$ STM$() { return((Head$)CODE$.EXEC$()); }
     public Head$ START() { START(this); return(this); }
 
 

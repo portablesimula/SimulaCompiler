@@ -69,7 +69,7 @@ public abstract class Statement extends SyntaxClass {
 //			  Util.BREAK("Statement.doParse: currentScope'add Label="+label);
 			  Global.currentScope.labelList.add(label);
 		    } else {
-		    	Util.error("Misplaced ':'");
+		    	Util.error("Missplaced ':'");
 		    }
 			ident = acceptIdentifier();
 		}
@@ -83,6 +83,7 @@ public abstract class Statement extends SyntaxClass {
 	private static Statement doUnlabeledStatement() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Statement.doUnlabeledStatement, current=" + Parser.currentToken	+ ", prev=" + Parser.prevToken);
+		//Util.BREAK("Statement.doUnlabeledStatement, current=" + Parser.currentToken	+ ", prev=" + Parser.prevToken);
 		if (Parser.accept(KeyWord.BEGIN)) return (new MaybeBlockDeclaration(null).parseMaybeBlock());
 		if (Parser.accept(KeyWord.IF))	return (new ConditionalStatement());
 		if (Parser.accept(KeyWord.GOTO)) return (new GotoStatement());
@@ -100,7 +101,11 @@ public abstract class Statement extends SyntaxClass {
 		{ Parser.saveCurrentToken(); // Pushback
 		  return (new DummyStatement()); // Dummy Statement
 		}
-		else
+//		if (Parser.accept(KeyWord.ENDBRACKET)) Util.error("Missplaced symbol: ]");
+//		if (Parser.accept(KeyWord.ENDPAR)) Util.error("Missplaced symbol: )");
+		Parser.skipMissplacedSymbol(KeyWord.ENDPAR);
+		Parser.skipMissplacedSymbol(KeyWord.ENDBRACKET);
+//		else
 		{ Expression expr = Expression.parseExpression();
 		  if(expr!=null)
 		  { //Util.BREAK("Statement.doUnlabeledStatement: expr="+expr+", QUAL="+expr.getClass().getSimpleName());

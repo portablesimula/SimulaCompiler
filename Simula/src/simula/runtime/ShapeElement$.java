@@ -78,7 +78,7 @@ public class ShapeElement$ extends Link$ implements Drawing$.Animable {
 
     public void fillEllipse(double x,double y,double width,double height)
     { shape=new Ellipse2D.Double(x,y,width,height);
-      System.out.println("ShapeElement.fillEllipse: "+shape);
+      //RT.println("ShapeElement.fillEllipse: "+shape);
       fillColor=drawing.currentFillColor;
       drawing.repaintMe();
     }
@@ -106,7 +106,7 @@ public class ShapeElement$ extends Link$ implements Drawing$.Animable {
     public void instantMoveTo(double x,double y)
     { if(shape instanceof RectangularShape)
       { RectangularShape rect=((RectangularShape)shape);
-        //System.out.println("Move "+shape.getClass().getSimpleName()+" to x="+x+", y="+y);
+        //RT.println("Move "+shape.getClass().getSimpleName()+" to x="+x+", y="+y);
         rect.setFrame(x,y,rect.getWidth(),rect.getHeight());
       }
       drawing.repaintMe();
@@ -137,18 +137,18 @@ public class ShapeElement$ extends Link$ implements Drawing$.Animable {
 		TRACE_BEGIN_DCL$("ShapeElement$");
 		drawing=(Drawing$)staticLink;
 		CODE$ = new ClassBody(CODE$, this,2) {
-			public void STM() {
+			public void STM$() {
 				TRACE_BEGIN_STM$("ShapeElement$",inner);
 				ShapeElement$.this.stroke=drawing.currentStroke;
-				System.out.println("New ShapeElement: into "+drawing.RENDERING_SET);
+				//RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
 				ShapeElement$.this.into(drawing.RENDERING_SET);
-				if (inner != null) inner.STM();
+				if (inner != null) inner.STM$();
 				TRACE_END_STM$("ShapeElement$");
 			}
 		};
 	}
 
-	public ShapeElement$ STM() {
+	public ShapeElement$ STM$() {
 		return ((ShapeElement$) CODE$.EXEC$());
 	}
 

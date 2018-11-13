@@ -1,54 +1,76 @@
 
-% =====================================   Main   program =============
-%  PROGRAM NAME:   Simula a.s - SIMULA TEST NO 92
-%
-%  PURPOSE:   Test virtual labels and procedures.
-%
-%
-%  COMPILED SUCCESSFULLY: YES
-%
-%  REWRITTEN BY:  BEH   05/01-87
-%
-% ====================================================================
-BEGIN Boolean found_error;
-      Boolean verbose;
+BEGIN
+   Boolean verbose=FALSE;
+   Boolean found_error ;
 
-      class C;
-      virtual: procedure P1,P2;
-               label EOP;
-               text procedure Q1,Q2;
-      begin  procedure P2;
-             begin found_error:=true; Outtext("*** error (1).");
-                   outimage end;
-
-             text procedure Q2;
-             begin found_error:=true; Q2:-copy("*** error (2).") end;
-
-             P2; outtext(Q2);
-             if sysout.image.strip<>"P2Q2" then begin
-                outimage; found_error:=true end
-             else sysout.setpos(1);
-             goto EOP;
+   procedure fillArray(RA,v1); integer array RA; integer v1;
+   begin integer i;
+      for i:=lowerbound(RA,1) step 1 until upperbound(RA,1) do
+      begin
+         RA(i):=v1; v1:=v1+1;
       end;
+   end;
 
-      if verbose then begin
-      Outtext ("--- START Simula a.s TEST 92"); Outimage;
-      Outtext ("--- Test of virtual labels and procedures");
-      Outimage; Outimage;
-      end;
-
-    C begin procedure P2;outtext("P2");
-            text procedure Q2;Q2:-"Q2";
+   procedure checkArray(msg,RA,v1); text msg; integer array RA; integer v1;
+   begin integer i;
+      for i:=lowerbound(RA,1) step 1 until upperbound(RA,1) do
+      begin
+         if RA(i) ne v1 then
+         begin
             found_error:=true;
-            Outtext("*** error (3)."); Outimage;
-      EOP:
+            if verbose then
+            begin
+               outtext("*** ERROR " & msg & " at index "); outint(i,0);
+               outtext(", RA="); outint(RA(i),0);
+               outtext(", Facit="); outint(v1,0);
+               outimage;
+            end;
+         end;
+         v1:=v1+1;
       end;
+   end;
 
-      if not found_error then
-      begin Outtext("--- NO ERRORS FOUND IN TEST 92");
+   class A; virtual: procedure P;
+   begin 
+      procedure P(FA); value FA; integer array FA;
+      begin
+         fillArray(FA,654);
       end;
-      if verbose then begin
-         Outtext("--- END Simula a.s TEST 92");
-         Outimage;
+   end;
+   
+   A class B(PA); value PA; integer array PA;
+   begin
+      procedure Q(VA); value VA; integer array VA;
+      begin
+         fillArray(VA,987);
       end;
-end;
+      
+      fillArray(PA,321);
+      
+   end;   
+   
+   integer array RA(1:23);
+   ref(B) x;
+
+   if verbose then begin
+      Outtext ("--- START Simula TEST 92"); Outimage;
+      Outtext ("--- Test array by value."); Outimage; Outimage;
+   end;
+   
+   fillArray(RA,123);
+   x:-new B(RA);
+   checkArray("After new B(RA)",RA,123);
+   
+   fillArray(RA,456);
+   x.P(RA);
+   checkArray("After Virtual: x.P(RA)",RA,456);
+
+   fillArray(RA,789);
+   x.Q(RA);
+   checkArray("After Normal: x.Q(RA)",RA,789);
+   
+   IF found_error THEN
+        Outtext ("*** ERRORS: Occur. RERUN WITH 'verbose' set TRUE !")
+   ELSE Outtext ("--- NO ERRORS FOUND IN TEST 92");
+   
+END;

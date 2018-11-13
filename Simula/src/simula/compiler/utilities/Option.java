@@ -17,7 +17,6 @@ public final class Option {
 	public static boolean BREAKING=true;//false; //true; 
 
 	// Scanner Trace Options
-	public static boolean TRACE_PREPROCESSOR=false;//true;
 	public static boolean TRACE_SCAN=false;//true;
 	public static boolean TRACE_COMMENTS=false;//true;
 

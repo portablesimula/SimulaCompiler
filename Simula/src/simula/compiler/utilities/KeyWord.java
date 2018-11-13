@@ -42,7 +42,7 @@ public enum KeyWord
   IDENTIFIER,BOOLEANKONST,INTEGERKONST,CHARACTERKONST,REALKONST,TEXTKONST,
   OR_ELSE,
   AND_THEN,
-  DOT;
+  DOT,NEWLINE;
   
   public String toJavaCode()
   { switch (this)

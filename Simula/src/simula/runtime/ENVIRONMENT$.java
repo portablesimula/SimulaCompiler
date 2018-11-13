@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -199,7 +200,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @return
 	 */
 	public int IPOW$(int b, int x) {
-		// System.out.println("IPOW("+b+','+x+')');
+		// RT.println("IPOW("+b+','+x+')');
 		if (x == 0) {
 			if (b == 0)
 				throw new RuntimeException("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
@@ -286,6 +287,9 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @return
 	 */
 	public char Char(int i) {
+		return ((char) i);
+	}
+	public char char$(int i) {
 		return ((char) i);
 	}
 
@@ -727,12 +731,12 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	// **********************************************************************
 	// *** Basic Drawing - Implementation using default Java-Seed.
 	// **********************************************************************
-	Random random = new Random();
+	static final Random random = new Random();
 
 	private double basicDRAW(NAME$<Integer> U) {
 		return (random.nextDouble());
 	}
-
+	
 	// **********************************************************************
 	// *** Random drawing: Procedure draw
 	// **********************************************************************
@@ -1215,19 +1219,10 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 		int hour = localTime.getHour();
 		int minute = localTime.getMinute();
 		int second = localTime.getSecond();
-		// System.out.println("ClockTime: Hour="+hour+", Minute="+minute+",
+		// RT.println("ClockTime: Hour="+hour+", Minute="+minute+",
 		// Second="+second);
 		double time = ((hour * 60) + minute) * 60 + second;
 		return (time);
-	}
-
-	public void waitSomeTime(int millies) { // System.out.println("ENVIRONMENT.waitSomeTime: sleep="+millies);
-		try {
-			Thread.sleep(millies);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		// System.out.println("ENVIRONMENT.waitSomeTime: awake="+millies);
 	}
 
 	// *****************************************
@@ -1262,7 +1257,9 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 		if (nelt >= (A.UB[0] - A.LB[0] + 1))
 			throw new RuntimeException("histo(A,B,c,d) - A'length <= B'length");
 		try {
+			@SuppressWarnings("unchecked")
 			ARRAY$<float[]> AA=(ARRAY$<float[]>)A;
+			@SuppressWarnings("unchecked")
 			ARRAY$<float[]> BB=(ARRAY$<float[]>)B;
 			int i=0;
 			EX: do {
@@ -1275,5 +1272,129 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 			throw new RuntimeException("histo(A,B,c,d) - Internal Error",e);
 		}
 	}
+
+	// **********************************************************************
+	// *** Additional Standard Procedures
+	// **********************************************************************
+	
+
+	// **********************************************************************
+	// *** Random drawing: Procedure setSeed
+	// **********************************************************************
+	public void setSeed(long seed) {
+		random.setSeed(seed);
+	}
+
+
+	// **********************************************************************
+	// *** Utility: Procedure waitSomeTime
+	// **********************************************************************
+	public void waitSomeTime(int millies) {
+		// RT.println("ENVIRONMENT.waitSomeTime: sleep="+millies);
+		try {
+			Thread.sleep(millies);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// RT.println("ENVIRONMENT.waitSomeTime: awake="+millies);
+	}
+
+	public static synchronized void checkMaxOneRunableSimulaThread() {
+		Thread[] t = new Thread[50];
+		Thread[] runnable=new Thread[50];
+		int i = Thread.enumerate(t);
+		int nRun=0;
+		for (int j = 0; j < i; j++) {
+			Thread T = t[j];
+			if(T.getState()==Thread.State.RUNNABLE) {
+				runnable[nRun]=T;
+				nRun++;
+			}
+		}
+		if(nRun!=1) {
+			RT.println("*** CHECKING MAX ONE RUNABLE SIMULA THREAD: ***");
+			RT.println("IMPOSSIBLE SITUATION: Number of RUNNABLE SimulaTherads = "+nRun);
+			for(int k=0;k<nRun;k++)
+			{ Thread T=runnable[k];
+				String msg="  - " + T;
+				if (T == Thread.currentThread())
+					msg=msg+" = CurrentThread";
+				if (T == RTObject$.CUR$.THREAD$)
+					msg=msg+" = CUR$.THREAD$";
+				RT.println(msg+"   STATE="+T.getState());
+				
+			}
+			printThreadList(true);
+			//Util.BREAK("IMPOSSIBLE SITUATION: Number of RUNNABLE SimulaTherads = "+nRun);
+			System.exit(-1);
+		}
+		RT.ASSERT(Thread.currentThread()==CUR$.THREAD$,"Invariant: Thread.currentThread()==CUR$.THREAD$");
+	}  
+
+	
+	// **********************************************************************
+	// *** Debugging utility: Procedure printThreadList
+	// **********************************************************************
+	public static void printThreadList() {
+		printThreadList(false);
+	}
+	public static synchronized void printThreadList(boolean withStackTrace) {
+		Thread[] t = new Thread[50];
+		int i = Thread.enumerate(t);
+		RT.println("ACTIVE THREAD LIST:");
+		for (int j = 0; j < i; j++) {
+			Thread T = t[j];
+			String msg="  - " + T;
+			if (T == Thread.currentThread())
+				msg=msg+" = CurrentThread";
+			if (T == RTObject$.CUR$.THREAD$)
+				msg=msg+" = CUR$.THREAD$";
+			RT.println(msg+"   STATE="+T.getState());
+			if(withStackTrace) {
+				printStackTrace(T,0);
+				RT.println("");
+			}
+		}
+		RT.ASSERT(Thread.currentThread()==CUR$.THREAD$,"Invariant: Thread.currentThread()==CUR$.THREAD$");
+		RT.println("----------------------------------------");
+	}  
+	
+	public static void printStackTrace(Thread thread,int start) {
+		StackTraceElement stackTraceElement[] = thread.getStackTrace();
+		int n = stackTraceElement.length;
+		for (int i = start; i < n; i++)
+			printSimulaLineInfo(stackTraceElement[i]);
+	}
+	
+	public static void printStackTrace(int start) {
+		printStackTrace(Thread.currentThread(),start);
+	}
+
+	
+	public static void printStackTrace(Throwable e,int start) {
+		StackTraceElement stackTraceElement[] = e.getStackTrace();
+		int n = stackTraceElement.length;
+		for (int i = start; i < n; i++)
+			printSimulaLineInfo(stackTraceElement[i]);
+	}
+
+	public static void printSimulaLineInfo(StackTraceElement elt)
+	{ try { 
+		    Class<?> cls=Class.forName(elt.getClassName());
+		    //RT.println("ENVIRONMENT$.getSimulaLineNumber: cls="+cls);
+		    Field field=cls.getField("INFO$");
+		    //RT.println("ENVIRONMENT$.getSimulaLineNumber: field="+field);
+		    PROGINFO$ info=(PROGINFO$)field.get(null);
+		    int[] lineMap=info.LINEMAP$;
+	        int x=0; int javaLineNumber=elt.getLineNumber();
+	        try { while(lineMap[x]<javaLineNumber) x=x+2;
+	              //return(lineMap[x-1]);
+	        	  RT.println("IN "+info.ident+'('+elt.getFileName()+':'+elt.getLineNumber()+" "+elt.getMethodName()+") at Simula Source Line "+lineMap[x-1]+"["+info.file+"]");
+	        } catch(Throwable t) { }
+	    } catch (Exception e) {
+	    	//e.printStackTrace();
+	    }
+	}
+
 
 }

@@ -42,7 +42,7 @@ public final class MAIN_PROGRAM$ extends Process$ {
 		TRACE_BEGIN_DCL$("MAIN_PROGRAM$");
 		// Create Class Body
 		CODE$ = new ClassBody(CODE$, this,3) {
-			public void STM() {
+			public void STM$() {
 				TRACE_BEGIN_STM$("MAIN_PROGRAM$",inner);
 				while (true)
 					detach();
@@ -50,7 +50,7 @@ public final class MAIN_PROGRAM$ extends Process$ {
 		};
 	}
 
-	public MAIN_PROGRAM$ STM() {
+	public MAIN_PROGRAM$ STM$() {
 		return ((MAIN_PROGRAM$) CODE$.EXEC$());
 	}
 

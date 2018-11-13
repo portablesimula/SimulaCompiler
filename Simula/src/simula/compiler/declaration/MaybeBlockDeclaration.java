@@ -100,6 +100,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 		}
 	  }
 	}
+	this.lastLineNumber=Global.sourceLineNumber;
 	//declarationMap.print("END Block: "+blockName);
 	//Debug.BREAK("END Block: "+this.edScopeChain());
 	
@@ -215,9 +216,10 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 	if(this.isMainModule)
 	{ JavaModule.code("");
 	  JavaModule.code("public static void main(String[] args) {");
-	  JavaModule.code("new "+getJavaIdentifier()+"(CTX$).STM();");
+	  JavaModule.code("new "+getJavaIdentifier()+"(CTX$).STM$();");
 	  JavaModule.code("}"); // End of main
 	}
+	javaModule.codeProgramInfo();
 	JavaModule.code("}"); // End of SubBlock
 	Global.currentScope=declaredIn;
 	javaModule.closeJavaOutput();
@@ -229,6 +231,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
   private void doPrototypeCoding()
   {	//String packetName=SimulaCompiler.packetName;
 	JavaModule.code("// SubBlock: BlockKind="+blockKind+", BlockLevel="+blockLevel
+			  +", firstLine="+lineNumber+", lastLine="+lastLineNumber
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false") );
 	JavaModule.code("public int prefixLevel() { return(0); }");
@@ -258,7 +261,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
   // ***********************************************************************************************
   private void doCodeStatements()
   {	JavaModule.code("// "+blockKind+" Statements");
-	JavaModule.code("public RTObject$ STM() {");
+	JavaModule.code("public RTObject$ STM$() {");
 	JavaModule.code("TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     codeSTMBody();
 	JavaModule.code("TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");

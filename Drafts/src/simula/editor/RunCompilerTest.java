@@ -5,16 +5,10 @@
  * You find a copy of the License on the following
  * page: https://creativecommons.org/licenses/by/4.0/
  */
-package simula.compiler.testing;
+package simula.editor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Vector;
-
-import simula.compiler.SimulaCompiler;
-import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Option;
-import simula.compiler.utilities.Util;
 
 /**
  * @author Øystein Myhre Andersen
@@ -46,8 +40,8 @@ public final class RunCompilerTest {
 //		pause
 		
 		String SIMULA_SGEN="C:\\GitHub\\SimulaCompiler\\Simula\\src\\SystemGeneration";
-		String SIMULA_COMP="C:\\GitHub\\SimulaCompiler\\Simula";
-		String SIMULA_HOME="C:\\GitHub\\Binaries\\UnderConstruction";
+//		String SIMULA_COMP="C:\\GitHub\\SimulaCompiler\\Simula";
+//		String SIMULA_HOME="C:\\GitHub\\Binaries\\UnderConstruction";
 		
 //		try { execute("java -cp "+SIMULA_HOME+"\\simula.jar -jar "+SIMULA_HOME+"\\simula.jar .\\src\\testing\\sim\\HelloWord.sim");
 		

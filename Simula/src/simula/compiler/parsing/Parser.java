@@ -7,6 +7,9 @@
  */
 package simula.compiler.parsing;
 
+import java.io.FileReader;
+import java.io.IOException;
+
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
@@ -15,7 +18,14 @@ public final class Parser {
 	static SimulaScanner simulaScanner;
 
 	public static void open(String fileName) {
-		simulaScanner = new SimulaScanner(fileName);
+		FileReader reader=null;
+		try { reader=new FileReader(fileName);
+		} catch (IOException e) {
+		System.out.println("Error Opening File: "+fileName);
+		e.printStackTrace();
+		Util.error("can't open "+fileName);
+	}
+		simulaScanner = new SimulaScanner(reader);
 		nextSymb();
 	}
 
@@ -68,15 +78,14 @@ public final class Parser {
 		return (false);
 	}
 
-//	public static boolean skipKeyWord(KeyWord s) {
-//		if (Parser.currentToken.getKeyWord() == s) {
-//			Util.error("Missplaced symbol: "+s+" -- Ignored");
-//			nextSymb();
-//			return (true);
-//		}
-//		return (false);
-//	}
-//
+	public static boolean skipMissplacedSymbol(KeyWord s) {
+		if (Parser.accept(s)) {
+			Util.error("Missplaced symbol: "+s+" -- Ignored");
+			return (true);
+		}
+		return (false);
+	}
+
 //	public static boolean skipAnyKeyWordExcept(KeyWord s) {
 //		KeyWord keyWord=Parser.currentToken.getKeyWord();
 //		//Util.BREAK("Parser.skipAnyKeyWordExcept("+s+"): keyWord="+keyWord);

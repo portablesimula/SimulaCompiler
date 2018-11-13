@@ -5,16 +5,12 @@
  * You find a copy of the License on the following
  * page: https://creativecommons.org/licenses/by/4.0/
  */
-package simula.compiler.parsing;
+package simula.editor;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Stack;
-
-import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Option;
-import simula.compiler.utilities.Util;
 
 //*************************************************************************************
 //**                                                                 CLASS PreProcessor
@@ -133,7 +129,7 @@ public final class PreProcessor
   { puchBackStack.push((char)chr); }
 
   // put given value back into the input stream
-  static void pushBack(String s) 
+  public static void pushBack(String s) 
   { int i=s.length();
 	while((i--)>0) pushBack(s.charAt(i));
   }

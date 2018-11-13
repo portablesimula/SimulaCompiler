@@ -54,14 +54,14 @@ public class OutFile$ extends ImageFile$ {
  	  TRACE_BEGIN_DCL$("OutFile$");
       // Create Class Body
       CODE$=new ClassBody(CODE$,this,2) {
-         public void STM() {
+         public void STM$() {
         	 TRACE_BEGIN_STM$("OutFile$",inner);
-             if(inner!=null) inner.STM();
+             if(inner!=null) inner.STM$();
              TRACE_END_STM$("OutFile$");
       }};
    }
    // Class Statements
-   public OutFile$ STM() { return((OutFile$)CODE$.EXEC$()); }
+   public OutFile$ STM$() { return((OutFile$)CODE$.EXEC$()); }
    public OutFile$ START() { START(this); return(this); }
 
 	/**
@@ -144,7 +144,7 @@ public class OutFile$ extends ImageFile$ {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			return (false);
-		}
+		} //else console.close();
 		OPEN$ = false;
 		return (true);
 	}
@@ -172,17 +172,11 @@ public class OutFile$ extends ImageFile$ {
 	 * indicator is set to 1.
 	 */
 	public void outimage() {
-		//RT.BREAK("OutFile.outimage(), image=" + image);
 		if (!OPEN$)
 			throw new RuntimeException("File not opened");
 		try {
-//			RT.BREAK("OutFile.outimage(), image=" + image);
-//			RT.BREAK("OutFile.outimage(), image.strip()=" + image.strip());
-			
-//			writer.write(image.strip().edText() + '\n');
-			TXT$ img=image.strip();
-			String str=(img==null)?"":(img.edText());
-			writer.write(str + '\n');
+			String s=(image==null)?"\n":(image.edStripedText()+'\n');
+			writer.write(s);
 			writer.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Outimage failed",e);
@@ -210,8 +204,8 @@ public class OutFile$ extends ImageFile$ {
 		if (!OPEN$)
 			throw new RuntimeException("File not opened");
 		try {
-			// TODO: Without line-feed \n ???
-			writer.write(image.edTextToPos()+'\n');
+			String s=(image==null)?"\n":(image.edTextToPos()+'\n');
+			writer.write(s);
 			writer.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Outrecord failed", e);
@@ -246,8 +240,9 @@ public class OutFile$ extends ImageFile$ {
 		if ((!OPEN$))
 			throw new RuntimeException("File not opened");
 		try {
-			writer.write(image.edTextToPos());
-			writer.flush();
+			String s=(image==null)?"":(image.edTextToPos());
+		    writer.write(s);
+		    writer.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Breakoutimage failed", e);
 		}

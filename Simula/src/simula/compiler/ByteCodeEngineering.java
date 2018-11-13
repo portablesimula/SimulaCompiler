@@ -98,7 +98,7 @@ public final class ByteCodeEngineering {
               	    String name=methods[i].getName();
                     //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Method "+name);
 
-                    if(name.equals("STM"))
+                    if(name.equals("STM$"))
                     { MethodGen methodGen = new MethodGen(methods[i], javaClass.getClassName(), constantPoolGen);
                       Method modified = treatSTM_Method(methodGen,constantPool);
                       if (modified != null) methods[i] = modified; // Overwrite with modified method
@@ -245,7 +245,9 @@ public final class ByteCodeEngineering {
 //		int nLab=label.length;
 		int nLab=labels.size();
 		InstructionHandle[] label=new InstructionHandle[nLab];
-		for(LabelHandle h:labels) label[h.index]=h.target;
+		for(LabelHandle h:labels) {
+			label[h.index]=h.target;
+		}
 
 		int[] match=new int[nLab];
 		for(int i=0;i<nLab;i++) match[i]=i+1;

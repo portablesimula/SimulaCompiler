@@ -1,4 +1,17 @@
-begin
-  L: goto L; 
+%OPTION ABC
+begin integer tull;
+   boolean likhet;
+   ref(verdi) pverdi,felt;
+   integer i;
+         
+   class verdi; virtual: boolean procedure test_verdilikhet;
+   begin
+      integer k;
+      pverdi.k:=56;
+   end;
+   
+   new verdi();
+   i:=i//0;
+   likhet:=pverdi.test_verdilikhet(felt) ;
 
 END;

@@ -22,7 +22,6 @@ import java.util.zip.ZipEntry;
 
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Util;
 
 
 public final class ExternalJarFile {
@@ -33,7 +32,7 @@ public final class ExternalJarFile {
 	{ this.jarFileName=jarFileName;	}
 	
 	public BlockDeclaration readJarFile() //throws IOException
-	{ Util.BREAK("ExternalDeclaration.readJarFile: "+jarFileName);
+	{ //Util.BREAK("ExternalDeclaration.readJarFile: "+jarFileName);
 	  try { JarFile jarFile=new JarFile(jarFileName);
 //	        Util.BREAK("ExternalDeclaration.readJarFile: "+jarFileName);
 		

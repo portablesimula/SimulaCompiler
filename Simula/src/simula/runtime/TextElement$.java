@@ -66,7 +66,7 @@ public class TextElement$ extends Link$ implements Drawing$.Animable {
 		TRACE_BEGIN_DCL$("TextElement$");
 		animation=(Drawing$)staticLink;
 		CODE$ = new ClassBody(CODE$, this,2) {
-			public void STM() {
+			public void STM$() {
 				TRACE_BEGIN_STM$("TextElement$",inner);
 				TextElement$.this.str=str; TextElement$.this.x=x; TextElement$.this.y=y;
 				TextElement$.this.color=((Drawing$)(staticLink)).currentDrawColor;
@@ -74,13 +74,13 @@ public class TextElement$ extends Link$ implements Drawing$.Animable {
 				TextElement$.this.font=((Drawing$)(staticLink)).currentFont;
 			    into(((Drawing$)(staticLink)).RENDERING_SET);
 			      animation.repaintMe();
-				if (inner != null) inner.STM();
+				if (inner != null) inner.STM$();
 				TRACE_END_STM$("TextElement$");
 			}
 		};
 	}
 
-	public TextElement$ STM() {
+	public TextElement$ STM$() {
 		return ((TextElement$) CODE$.EXEC$());
 	}
 

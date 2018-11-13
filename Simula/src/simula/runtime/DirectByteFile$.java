@@ -79,14 +79,14 @@ public class DirectByteFile$ extends ByteFile$ {
       super(staticLink,FILENAME);
   	  TRACE_BEGIN_DCL$("DirectByteFile$");
       CODE$=new ClassBody(CODE$,this,2) {
-         public void STM() {
+         public void STM$() {
         	TRACE_BEGIN_STM$("DirectByteFile$",inner);
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("DirectByteFile$");
       }};
     }
     // Class Statements
-    public DirectByteFile$ STM() { return((DirectByteFile$)CODE$.EXEC$()); }
+    public DirectByteFile$ STM$() { return((DirectByteFile$)CODE$.EXEC$()); }
     public DirectByteFile$ START() { START(this); return(this); }
 
 	/**

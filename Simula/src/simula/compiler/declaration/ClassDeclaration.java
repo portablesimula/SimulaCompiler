@@ -101,6 +101,7 @@ public class ClassDeclaration extends BlockDeclaration
 	if(block.prefix==null) block.prefix=StandardClass.CLASS.identifier;
 
 	BlockParser.doParse(block);
+	block.lastLineNumber=Global.sourceLineNumber;
     
 	//Util.BREAK("ClassDeclaration.doParseClassDeclaration: set Type="+Type.Ref(block.identifier));
 	block.type=Type.Ref(block.identifier);
@@ -182,17 +183,6 @@ public class ClassDeclaration extends BlockDeclaration
 	  int labelIndex=1;
 	  for(LabelDeclaration label:labelList)	{
 		  label.prefixLevel=prfx; label.index=labelIndex++;
-	      //Util.BREAK("ClassDeclaration("+identifier+").doChecking: Treat Label("+label.identifier+")="+label);
-	      label.myVirtual=findVirtualSpecification(label.identifier);
-	      //Util.BREAK("ClassDeclaration("+identifier+").doChecking: Find Virtual Label("+label.identifier+")="+label.myVirtual);
-	      if(label.myVirtual!=null) {
-	    	  DeclarationScope scope=label.myVirtual.declaredIn;
-	          //Util.BREAK("ClassDeclaration("+identifier+").doChecking: Find Virtual Label("+label.identifier+"): scope="+scope);
-	          //Util.BREAK("ClassDeclaration("+identifier+").doChecking: Find Virtual Label("+label.identifier+"): label.declaredIn="+label.declaredIn);
-	          if(scope==label.declaredIn) label.myVirtual.setLabelMatch(label);
-	          else ((ClassDeclaration)label.declaredIn).virtualList.add(new VirtualSpecification(label)); 
-	          
-	      }
 	  }
   }
 
@@ -502,6 +492,7 @@ public boolean isDetachUsed()
     for(VirtualSpecification virtual:virtualList) virtual.doJavaCoding();
 	doCodeConstructor();
 	codeClassStatements();
+	javaModule.codeProgramInfo();
 	JavaModule.code("}"); // End of Class
 	Global.currentScope=declaredIn;
 	javaModule.closeJavaOutput();
@@ -513,6 +504,7 @@ public boolean isDetachUsed()
   private void doPrototypeCoding()
   {	//String packetName=SimulaCompiler.packetName;
 	JavaModule.code("// ClassDeclaration: BlockKind="+blockKind+", BlockLevel="+blockLevel+", PrefixLevel="+prefixLevel()
+			  +", firstLine="+lineNumber+", lastLine="+lastLineNumber
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 		      +", detachUsed="+((detachUsed)?"true":"false"));
@@ -547,7 +539,7 @@ public boolean isDetachUsed()
 	switch(blockKind)
 	{ case Class:
 	  case PrefixedBlock: doCodeCreateClassBody(); break;
-	  case Procedure: JavaModule.code("STM();");		
+	  case Procedure: JavaModule.code("STM$();");		
 	  default: // Nothing
 	}
 	JavaModule.code("} // End of Constructor");
@@ -581,15 +573,15 @@ public boolean isDetachUsed()
   public void doCodeCreateClassBody()
   {	JavaModule.code("// Create Class Body");
 	JavaModule.code("CODE$=new ClassBody(CODE$,this,"+prefixLevel()+") {");
-	JavaModule.code("public void STM() {");
+	JavaModule.code("public void STM$() {");
 	JavaModule.code("TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+",inner);");
    	codeSTMBody();
 	JavaModule.code("TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
     
 	if(hasNoRealPrefix())
 		  JavaModule.code("EBLK(); // Iff no prefix");
-	else if(this.isMainModule)
-		JavaModule.code("EBLK();");
+	else if(this.isMainModule && !(this instanceof PrefixedBlockDeclaration))
+		JavaModule.code("EBLK(); // Main Module");
 	JavaModule.code("}");  
 	JavaModule.code("};");
   }
@@ -601,7 +593,7 @@ public boolean isDetachUsed()
   private void codeClassStatements()
   {	JavaModule.code("// Class Statements");
     String classID=this.getJavaIdentifier();
-    JavaModule.code("public "+classID+" STM() { return(("+classID+")CODE$.EXEC$()); }");
+    JavaModule.code("public "+classID+" STM$() { return(("+classID+")CODE$.EXEC$()); }");
     JavaModule.code("public "+classID+" START() { START(this); return(this); }");
   }
     

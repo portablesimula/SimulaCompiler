@@ -113,6 +113,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 		}
 	  }
 	}
+	this.lastLineNumber=Global.sourceLineNumber;
 	//declarationMap.print("END Block: "+blockName);
 	//Debug.BREAK("END Block: "+this.edScopeChain());
 	//Util.BREAK("PrefixedBlockDeclaration.parseMaybeBlock: BlockPrefix="+blockPrefix+", BlockKind="+blockKind);
@@ -188,7 +189,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 	for(Declaration decl:declarationList) decl.doJavaCoding();
     for(VirtualSpecification virtual:virtualList) virtual.doJavaCoding();
 	doCodeConstructor();
-	//doCodeStatements(indent); // PrefixedBlock: USES DEFAULT VERSION OF  STM()
+	//doCodeStatements(indent); // PrefixedBlock: USES DEFAULT VERSION OF  STM$()
 	if(this.isMainModule)
 	{ JavaModule.code("");
 	  JavaModule.code("public static void main(String[] args) {");
@@ -199,10 +200,11 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 		   s.append(',').append(par.toJavaCode());
 	    }
 	  }
-	  s.append(").STM();");
+	  s.append(").STM$();");
 	  JavaModule.code(""+s);
 	  JavaModule.code("}"); // End of main
 	}
+	javaModule.codeProgramInfo();
 	JavaModule.code("}"); // End of Class
 	Global.currentScope=declaredIn;
 	javaModule.closeJavaOutput();
@@ -215,6 +217,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
   private void doPrototypeCoding()
   {	//String packetName=SimulaCompiler.packetName;
 	JavaModule.code("// PrefixedBlockDeclaration: BlockKind="+blockKind+", BlockLevel="+blockLevel
+			  +", firstLine="+lineNumber+", lastLine="+lastLineNumber
 			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
 	          +", System="+((isQPSystemBlock())?"true":"false")
 		      +", detachUsed="+((detachUsed)?"true":"false"));
@@ -244,7 +247,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
     JavaModule.code("TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
 	for(Declaration decl:declarationList) decl.doDeclarationCoding();
 	doCodeCreateClassBody();
-	JavaModule.code("   "+"} // End of Constructor");
+	JavaModule.code("} // End of Constructor");
   }
 
 

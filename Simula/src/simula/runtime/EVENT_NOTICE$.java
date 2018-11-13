@@ -25,9 +25,9 @@ public final class EVENT_NOTICE$ extends Link$ {
        this.EVTIME = EVTIME;
        this.PROC = PROC;
        CODE$=new ClassBody(CODE$,this,2) {
-          public void STM() {
+          public void STM$() {
         	 TRACE_BEGIN_STM$("EVENT_NOTICE$",inner);
-             if(inner!=null) inner.STM();
+             if(inner!=null) inner.STM$();
              TRACE_END_STM$("EVENT_NOTICE$");
        }};
     }

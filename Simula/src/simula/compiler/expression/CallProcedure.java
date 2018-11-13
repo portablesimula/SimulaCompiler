@@ -78,7 +78,8 @@ public final class CallProcedure {
 	  //Util.BREAK("CallProcedure.procedure: procedure.myVirtual="+procedure.myVirtual);
 	  if(procedure.myVirtual!=null)
 	  { // Call Remote Virtual Procedure
-		return(remoteVirtual(obj,func,procedure.myVirtual,backLink));
+//		return(remoteVirtual(obj,func,procedure.myVirtual,backLink));
+		return(remoteVirtual(obj,func,procedure.myVirtual));
 	  }
 	  else if(procedure.blockKind==BlockKind.Method)
 	  { // Call Remote Method
@@ -206,7 +207,7 @@ public final class CallProcedure {
 	public static String virtual(Variable variable,VirtualSpecification virtual,boolean remotelyAccessed)
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
 	  String ident=virtual.getJavaIdentifier()+"()";
-	  //Util.BREAK("CallProcedure.virtual: ident="+ident);
+	  //Util.BREAK("CallProcedure.virtual: ident="+ident+", remotelyAccessed="+remotelyAccessed);
 	  //Util.BREAK("CallProcedure.virtual: variable="+variable);
 	  //Util.BREAK("CallProcedure.virtual: variable.meaning="+variable.meaning);
 	  //Util.BREAK("CallProcedure.virtual: virtual="+virtual);
@@ -219,7 +220,9 @@ public final class CallProcedure {
 		  String staticLink=variable.meaning.edStaticLink();
 	      ident=staticLink+"."+ident;
 	  }
-	  return(codeCPF(ident,variable,virtual.procedureSpec));
+	  String result=codeCPF(ident,variable,virtual.procedureSpec);
+	  //Util.BREAK("CallProcedure.virtual: result="+result);
+	  return(result);
 	}
 
 	// ********************************************************************
@@ -234,7 +237,8 @@ public final class CallProcedure {
 	 * @param remotelyAccessed
 	 * @return
 	 */
-	public static String remoteVirtual(Expression obj,Variable variable,VirtualSpecification virtual,SyntaxClass backLink)
+//	public static String remoteVirtual(Expression obj,Variable variable,VirtualSpecification virtual,SyntaxClass backLink)
+	public static String remoteVirtual(Expression obj,Variable variable,VirtualSpecification virtual)
 	{ //return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
 	  String ident=obj.get()+'.'+virtual.getJavaIdentifier()+"()";
 	  

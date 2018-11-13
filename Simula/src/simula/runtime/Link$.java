@@ -60,13 +60,13 @@ public class Link$ extends Linkage$ {
        super(staticLink);
        TRACE_BEGIN_DCL$("Link$");
        CODE$=new ClassBody(CODE$,this,1) {
-          public void STM() {
+          public void STM$() {
         	 TRACE_BEGIN_STM$("Link$",inner);
-             if(inner!=null) inner.STM();
+             if(inner!=null) inner.STM$();
              TRACE_END_STM$("Link$");
        }};
     }
-    public Link$ STM() { return((Link$)CODE$.EXEC$()); }
+    public Link$ STM$() { return((Link$)CODE$.EXEC$()); }
     public Link$ START() { START(this); return(this); }
 
 	/**

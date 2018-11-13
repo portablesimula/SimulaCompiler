@@ -21,8 +21,9 @@ public final class Util
   
   public static int nError;
   public static void error(String msg)
-  { System.err.println("Line "+Global.sourceLineNumber+" Error: "+msg);
+  { String err="Line "+Global.sourceLineNumber+" Error: "+msg;
     nError++;
+    System.err.println(err);
     BREAK("");
   }
 
@@ -86,7 +87,8 @@ public final class Util
   }
 
   public static void println(String s)
-  { s=s.replace('\r',(char)0);
+  { 
+	s=s.replace('\r',(char)0);
     s=s.replace('\n',(char)0);
     System.out.println(s);
   }

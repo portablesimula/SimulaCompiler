@@ -256,9 +256,9 @@ public final class Variable extends Expression {
     	  this.type=spec.type;
 //    	  Util.warning("Variable("+identifier+") - Parameter Checking is postponed to Runtime");
     	  if(kind==Parameter.Kind.Array) {
-        	  Util.BREAK("Variable("+identifier+").doChecking: kind="+kind);
+        	  //Util.BREAK("Variable("+identifier+").doChecking: kind="+kind);
     		  spec.nDim=params.size();
-        	  Util.BREAK("Variable("+identifier+").doChecking: nDim="+spec.nDim);
+        	  //Util.BREAK("Variable("+identifier+").doChecking: nDim="+spec.nDim);
     	  }
     	  Iterator<Expression> actualIterator=params.iterator();
     	  while(actualIterator.hasNext())
@@ -382,11 +382,12 @@ public final class Variable extends Expression {
 	  else if (decl instanceof VirtualSpecification) { // Virtual Procedure/Label
 		  //s.append(CallProcedure.virtual(this,(Virtual)decl,remotelyAccessed));
 		  VirtualSpecification virtual=(VirtualSpecification)decl;
-		  //Util.BREAK("Variable.edVariable("+id+"): virtual="+virtual);
-		  //Util.BREAK("Variable.edVariable("+id+"): virtual'kind="+virtual.kind);
+//		  Util.BREAK("Variable.edVariable("+identifier+"): virtual="+virtual);
+//		  Util.BREAK("Variable.edVariable("+identifier+"): virtual'kind="+virtual.kind);
 		  StringBuilder s = new StringBuilder();
-		  if(virtual.kind==VirtualSpecification.Kind.Label) s.append(decl.getJavaIdentifier()).append("()");
-		  else s.append(CallProcedure.virtual(this,virtual,remotelyAccessed)); 
+//		  if(virtual.kind==VirtualSpecification.Kind.Label) s.append(decl.getJavaIdentifier()).append("()");
+//		  else
+		  s.append(CallProcedure.virtual(this,virtual,remotelyAccessed)); 
 		  String result=s.toString();
 		  return(result);
 	  }
@@ -473,15 +474,9 @@ public final class Variable extends Expression {
 	  }
 	  
 	  else if(decl instanceof LabelDeclaration) {
-		  //Util.BREAK("LABEL DECLARATION: "+decl);
-		  LabelDeclaration label=(LabelDeclaration)decl;
-		  StringBuilder s = new StringBuilder();
-//		  s.append(decl.getJavaIdentifier());
-		  s.append(this.edIdentifierAccess(false));
-		  //Util.BREAK("LABEL DECLARATION: myVirtual="+label.myVirtual);
-		  if(label.myVirtual!=null) s.append("()"); // Access Virtual Label as Method
-		  String result=s.toString();
-		  return(result);
+		  //Util.BREAK("Variable.editVariable: TypeDeclaration: "+decl);
+//		  return(edIdentifierAccess(false));
+		  return(edIdentifierAccess(destination));
 	  }
 	  
 	  else if(decl instanceof TypeDeclaration) {

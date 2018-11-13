@@ -79,13 +79,13 @@ public class Process$ extends Link$ {
 		TRACE_BEGIN_DCL$("Process$");
 		sequ = SEQU++;
 		CODE$ = new ClassBody(CODE$, this,2) {
-			public void STM() {
+			public void STM$() {
 				TRACE_BEGIN_STM$("Process$",inner);
-				//System.out.println("Process.STM: Just BEFORE Detach["+Process$.this.edObjectIdent()+']');
+				//System.out.println("Process.STM$: Just BEFORE Detach["+Process$.this.edObjectIdent()+']');
 				detach();
-				//System.out.println("Process.STM: Just AFTER Detach["+Process$.this.edObjectIdent()+']');
+				//System.out.println("Process.STM$: Just AFTER Detach["+Process$.this.edObjectIdent()+']');
 				if (inner != null)
-					inner.STM();
+					inner.STM$();
 				TRACE_END_STM$("Process$");
 				//TERMINATED$ = true;
 
@@ -110,7 +110,7 @@ public class Process$ extends Link$ {
 	  //RT.BREAK("Process$.TERMINATE(2): "+this.edObjectAttributes());
 	}
 
-	public Process$ STM() {
+	public Process$ STM$() {
 		return ((Process$) CODE$.EXEC$());
 	}
 

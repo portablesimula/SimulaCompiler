@@ -70,16 +70,14 @@ public final class AttributeFile {
 	
 	private void write(BlockDeclaration module) throws IOException
 	{ File attributeDir=new File(Global.tempClassFileDir+Global.packetName);
-	  Util.BREAK("AttributeFile.write: attributeDir="+attributeDir);
-	  Util.BREAK("AttributeFile.write: attributeDir'canWrite="+attributeDir.canWrite());
+	  //Util.BREAK("AttributeFile.write: attributeDir="+attributeDir);
+	  //Util.BREAK("AttributeFile.write: attributeDir'canWrite="+attributeDir.canWrite());
 	  attributeDir.mkdirs();
 	  File attributeFile=new File(attributeFileName);
-	  Util.BREAK("AttributeFile.write: attributeFile="+attributeFile);
-	  Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
+	  //Util.BREAK("AttributeFile.write: attributeFile="+attributeFile);
+	  //Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
 	  attributeFile.createNewFile();
-	  Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
-//	  attributeFile.mkdirs();
-//	  FileOutputStream fileOutputStream=new FileOutputStream(attributeFileName);
+	  //Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
 	  FileOutputStream fileOutputStream=new FileOutputStream(attributeFile);
 	  oupt=new ObjectOutputStream(fileOutputStream);
 	  writeVersion();	
@@ -96,8 +94,11 @@ public final class AttributeFile {
 	  BlockDeclaration blockDeclaration=readBlockDeclaration(blockKind);
 	  inpt.close();
 	  if (Option.verbose)
-	  { Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
-		if(Option.TRACE_ATTRIBUTE_INPUT) blockDeclaration.print("","");
+	  { //Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
+		if(Option.TRACE_ATTRIBUTE_INPUT) {
+			Util.TRACE("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
+			blockDeclaration.print("","");
+		}
 	  }
 	  return(blockDeclaration);
 	}
@@ -111,7 +112,7 @@ public final class AttributeFile {
 	  BlockDeclaration blockDeclaration=attributeFile.readBlockDeclaration(blockKind);
 	  attributeFile.inpt.close();
 	  if (Option.verbose)
-	  { Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
+	  { Util.TRACE("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
 	    if(Option.TRACE_ATTRIBUTE_INPUT) blockDeclaration.print("","");
 	  }
 	  return(blockDeclaration);
@@ -270,9 +271,9 @@ public final class AttributeFile {
 	}
 	
 	private void writeVirtual(VirtualSpecification virt) throws IOException
-	{ TRACE_OUTPUT("Virtual: "+virt.type+' '+virt.identifier+' '+virt.kind);
+	{ TRACE_OUTPUT("Virtual: "+virt.type+' '+virt.identifier);
 	  oupt.writeUTF("Virtual"); oupt.writeUTF(virt.identifier);
-	  writeType(virt.type); writeVirtualKind(virt.kind); 
+	  writeType(virt.type);
 	  writeVirtProcedureSpec(virt.procedureSpec);
 	}
 	
@@ -281,9 +282,8 @@ public final class AttributeFile {
 	  //Util.BREAK("AttributeInputStream.readVirtual: identifier="+identifier);
 	  Type type=readType();
 	  //Util.BREAK("AttributeInputStream.readVirtual: type="+type);
-	  VirtualSpecification.Kind kind=readVirtualKind();
 	  ProcedureSpecification procedureSpec=readVirtProcedureSpec();
-	  return(new VirtualSpecification(identifier,type,kind,procedureSpec));
+	  return(new VirtualSpecification(identifier,type,procedureSpec));
 	}
 	
 	private void writeVirtProcedureSpec(ProcedureSpecification procedureSpec) throws IOException
@@ -361,20 +361,6 @@ public final class AttributeFile {
 	  if(kind.equalsIgnoreCase("Array")) return(Parameter.Kind.Array);
 	  if(kind.equalsIgnoreCase("Procedure")) return(Parameter.Kind.Procedure);
 	  if(kind.equalsIgnoreCase("Label")) return(Parameter.Kind.Label);
-	  return(null);
-	}
-
-	private void writeVirtualKind(VirtualSpecification.Kind kind) throws IOException
-	{ TRACE_OUTPUT("Kind="+kind);
-	  oupt.writeUTF(""+kind);
-	}
-	
-	private VirtualSpecification.Kind readVirtualKind() throws IOException
-	{ String tp=inpt.readUTF();
-	  //Util.BREAK("AttributeInputStream.readParameterKind: tp="+tp);
-	  if(tp.equalsIgnoreCase("Procedure")) return(VirtualSpecification.Kind.Procedure);
-	  if(tp.equalsIgnoreCase("Label")) return(VirtualSpecification.Kind.Label);
-	  if(tp.equalsIgnoreCase("Switch")) return(VirtualSpecification.Kind.Switch);
 	  return(null);
 	}
 

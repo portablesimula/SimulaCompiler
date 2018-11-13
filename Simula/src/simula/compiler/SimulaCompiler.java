@@ -47,6 +47,7 @@ public final class SimulaCompiler {
 		
 		// Create Output File Path
 		String name = inputFile.getName();
+		Global.sourceFileName=name;
 		Global.sourceName = name.substring(0, name.length() - 4);
 		Global.sourceFileDir=inputFile.getParent()+"/";
 		
@@ -62,8 +63,11 @@ public final class SimulaCompiler {
 
 		// Create Temp .java-Files Directory:
 		String main=Global.sourceName;
+		String systmp=System.getProperty("java.io.tmpdir");
+		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+		if(!(systmp.endsWith("/") || systmp.endsWith("\\"))) systmp=systmp+'/';
 		if(Option.keepJava==null)
-		{ String tmpJavaDirName=System.getProperty("java.io.tmpdir")+main+"Java";
+		{ String tmpJavaDirName=systmp+main+"Java";
 		  File tmpJavaDir=new File(tmpJavaDirName);
 		  tmpJavaDir.mkdirs();
 		  tmpJavaDir.deleteOnExit();
@@ -71,7 +75,8 @@ public final class SimulaCompiler {
 		} else Global.tempJavaFileDir=Option.keepJava+'/';
 		
 		// Create Temp .class-Files Directory:
-		String tmpClassDirName=System.getProperty("java.io.tmpdir")+main+"Classes";
+//		String tmpClassDirName=System.getProperty("java.io.tmpdir")+main+"Classes";
+		String tmpClassDirName=systmp+main+"Classes";
 		File tmpClassDir=new File(tmpClassDirName);
 		tmpClassDir.mkdirs();
 		tmpClassDir.deleteOnExit();
@@ -178,7 +183,10 @@ public final class SimulaCompiler {
 			// *** CRERATE .jar FILE  INLINE
 			// ***************************************************************
 			String jarFile=createJarFile(program);
-			if(Option.TRACE_JARING) listJarFile(jarFile);
+			if(Option.TRACE_JARING) {
+				System.out.println("List .jar File: "+jarFile);
+			    execute("jar.exe -tvf "+jarFile);
+			}
 			
 			// ***************************************************************
 			// *** EXECUTE .jar FILE
@@ -244,8 +252,10 @@ public final class SimulaCompiler {
 	  StringBuilder source=new StringBuilder();;
       for(JavaModule module:Global.javaModules) source.append(' ').append(module.javaOutputFileName);
       if(Option.verbose) System.out.println("SimulaCompiler.doCompile: source="+source);
-	  String javac=Global.javaDir+"javac.exe";
-	  System.out.println("SimulaCompiler.callJavacCompiler: classPath="+classPath);
+//	  String javac=Global.javaDir+"javac.exe";
+//	  String javac=Global.javaHome+"javac.exe";
+	  String javac="javac.exe";
+	  //System.out.println("SimulaCompiler.callJavacCompiler: classPath="+classPath);
 	  classPath=" -classpath "+classPath;
 	  
 	  // *** TODO: Hvis tempClassFileDir ikke finnes - CREATE !
@@ -276,8 +286,11 @@ public final class SimulaCompiler {
 //	public String createJarFile() throws IOException
 	{ if(Option.verbose) System.out.println("*** BEGIN Create .jar File");
 	  String jarFile=Global.outputDir+Global.sourceName+".jar ";
-	  if(!program.isExecutable())
+	  if(!program.isExecutable()) {
+		  //Util.BREAK("SimulaCompiler.createJarFile: program="+program);
+		  jarFile=Global.outputDir+program.getIdentifier()+".jar ";
 		  Util.warning("Separate Compiled Module is written to: "+jarFile);
+	  }
 	  Manifest manifest=new Manifest();
 	  String mainEntry=Global.packetName+'/'+program.getIdentifier();
 	  mainEntry=mainEntry.replace('/', '.');
@@ -331,16 +344,6 @@ public final class SimulaCompiler {
 	    }
 	    target.closeEntry();
 	  } finally { if(inpt!=null) inpt.close(); }
-	}
-		
-	// ***************************************************************
-	// *** LIST .jar FILE
-	// ***************************************************************
-	// jar -tvf C:/WorkSpaces/SimulaCompiler/Simula/bin/adHoc00.jar : <
-	private void listJarFile(String jarFile) throws IOException
-	{ if(Option.TRACE_JARING) System.out.println("List .jar File: "+jarFile);
-	  String jar=Global.javaDir+"jar.exe";
-	  if(Option.TRACE_JARING) execute(jar+" -tvf "+jarFile);
 	}
 	
 	// ***************************************************************

@@ -66,7 +66,7 @@ public final class BlockStatement extends Statement {
 		  s.append(')');
 		  if(blockDeclaration instanceof ClassDeclaration && ((ClassDeclaration)blockDeclaration).isDetachUsed())  // TODO: ER DETTE MULIG ?
 			   s.append(".START();");
-		  else s.append(".STM();");
+		  else s.append(".STM$();");
 		  JavaModule.code(s.toString());
 		}
 		blockDeclaration.doJavaCoding();

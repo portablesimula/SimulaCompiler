@@ -41,13 +41,13 @@ public class ByteFile$ extends FILE$ {
       super(staticLink,FILENAME);
  	  TRACE_BEGIN_DCL$("ByteFile$");
       CODE$=new ClassBody(CODE$,this,1) {
-         public void STM() {
+         public void STM$() {
        	    TRACE_BEGIN_STM$("ByteFile$",inner);
-            if(inner!=null) inner.STM();
+            if(inner!=null) inner.STM$();
             TRACE_END_STM$("ByteFile$");
       }};
     }
     // Class Statements
-    public ByteFile$ STM() { return((ByteFile$)CODE$.EXEC$()); }
+    public ByteFile$ STM$() { return((ByteFile$)CODE$.EXEC$()); }
     public ByteFile$ START() { START(this); return(this); }
 }

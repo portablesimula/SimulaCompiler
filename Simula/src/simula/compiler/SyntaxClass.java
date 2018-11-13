@@ -115,11 +115,6 @@ public abstract class SyntaxClass
 	Global.sourceLineNumber=lineNumber; Global.sourceLineNumber=lineNumber;
 	JavaModule.code(toJavaCode());
   }
-
-  public void doJVMCoding() {
-	Global.sourceLineNumber=lineNumber;  // TEMP
-	JavaModule.code("JVM:"+toJavaCode()); // TEMP
-  }
   
   public String toJavaCode() { return(toString()); }
 

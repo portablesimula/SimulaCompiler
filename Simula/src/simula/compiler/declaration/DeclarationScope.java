@@ -59,17 +59,26 @@ public abstract class DeclarationScope extends Declaration {
   //***********************************************************************************************
   //*** Utility: findThis  --  Follow Static Chain Looking for a Class named 'identifier'
   //***********************************************************************************************
-  public ClassDeclaration findThis(String identifier)
+//  public ClassDeclaration findThis(String identifier)
+  public DeclarationScope findThis(String identifier)
   { // Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
     // Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+this);
-	if(this instanceof ClassDeclaration)
-	{ ClassDeclaration x=(ClassDeclaration)this;
-	  if(identifier.equalsIgnoreCase(x.identifier)) return(x);
-	  while((x=x.getPrefixClass())!=null)
-	  {
-//	   	Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
-		if(identifier.equalsIgnoreCase(x.identifier)) return(x);
-	  }
+    //Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+this+", QUAL="+this.getClass().getSimpleName());
+	if (this instanceof ClassDeclaration) {
+		ClassDeclaration x = (ClassDeclaration) this;
+		if (identifier.equalsIgnoreCase(x.identifier)) return (x);
+		while ((x = x.getPrefixClass()) != null) {
+			// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
+			if (identifier.equalsIgnoreCase(x.identifier)) return (x);
+		}
+	} else if (this instanceof ConnectionBlock) {
+		ConnectionBlock z = (ConnectionBlock)this;
+		ClassDeclaration x = (ClassDeclaration) z.classDeclaration;
+		if (identifier.equalsIgnoreCase(x.identifier)) return (z);
+		while ((x = x.getPrefixClass()) != null) {
+			// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
+			if (identifier.equalsIgnoreCase(x.identifier)) return (z);
+		}
 	}
     if(declaredIn!=null) return(declaredIn.findThis(identifier));
     return(null);

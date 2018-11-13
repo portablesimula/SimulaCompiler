@@ -12,7 +12,6 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 
 public final class LabelDeclaration extends TypeDeclaration {
-    public VirtualSpecification myVirtual; // Set during doChecking
     public int index; // set by BlockDeclaration.doChecking
     public int prefixLevel; // set by BlockDeclaration.doChecking
     
@@ -35,8 +34,7 @@ public final class LabelDeclaration extends TypeDeclaration {
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
-		if(myVirtual==null)
-		   JavaModule.code("final LABQNT$ "+ident+"=new LABQNT$(this,"+prefixLevel+','+index+"); // Local Label #"+index+'='+ident);
+		JavaModule.code("final LABQNT$ "+ident+"=new LABQNT$(this,"+prefixLevel+','+index+"); // Local Label #"+index+'='+ident);
 	}
 
 }

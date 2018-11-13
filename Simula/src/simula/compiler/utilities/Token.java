@@ -13,16 +13,61 @@ package simula.compiler.utilities;
  *
  */
 public final class Token
-{ private KeyWord keyWord;
+{ //private String text;
+  private KeyWord keyWord;
   private Object value;
   
-  public Token(KeyWord keyWord,Object value)
-  { this.keyWord=keyWord;
-    this.value=value;
-  }
+  public enum StyleCode {regular,keyword,comment};
+
+//  public Token(String text,KeyWord keyWord,Object value)
+//  { this.text=text;
+//    this.keyWord=keyWord;
+//    this.value=value;
+////	Util.BREAK("NEW ITEM:'" + this + "'  KeyWord="+keyWord);
+//  }
+//  
+//  public Token(String text,KeyWord keyWord)
+//  { this(text,keyWord,null); }
+//  
+//  public Token(KeyWord keyWord,Object value)
+//  { this(null,keyWord,value); }
+public Token(KeyWord keyWord,Object value)
+{ //this.text=text;
+  this.keyWord=keyWord;
+  this.value=value;
+//	Util.BREAK("NEW ITEM:'" + this + "'  KeyWord="+keyWord);
+}
   
   public Token(KeyWord keyWord)
   { this(keyWord,null); }
+  
+//  public String getText() {
+//	  if(text==null) return(toString());
+//	  return(text);
+//  }
+  public StyleCode getStyleCode() {
+	  switch(keyWord) {
+	     case ASSIGNVALUE: case ASSIGNREF:
+	     case COMMA: case COLON: case SEMICOLON:
+	     case BEGPAR: case ENDPAR: case BEGBRACKET: case ENDBRACKET:
+	     //case EQR: case NER:
+	     case PLUS: case MINUS: case MUL: case DIV:
+	     case INTDIV: case EXP:
+	     case IDENTIFIER:
+	     case BOOLEANKONST:
+	     case INTEGERKONST:
+	     case CHARACTERKONST:
+	     case REALKONST:
+	     case TEXTKONST:
+	     //case OR_ELSE:
+	     //case AND_THEN:
+	     case DOT:
+	    	 return(Token.StyleCode.regular);
+	     case COMMENT:
+	    	 return(Token.StyleCode.comment);
+	     default: return(Token.StyleCode.keyword);
+	  }
+  }
 
   public KeyWord getKeyWord() { return(keyWord); }
   public int getKeyWordCode() { return(keyWord.ordinal()); }

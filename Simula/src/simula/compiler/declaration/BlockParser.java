@@ -51,6 +51,8 @@ import simula.compiler.utilities.Util;
  *				VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
  * </pre>
  * 
+ * NOTE: Virtual labels and switches are not part of this implementation of Simula Standard.
+ * 
  * @author Øystein Myhre Andersen
  */
 public abstract class BlockParser extends SyntaxClass
