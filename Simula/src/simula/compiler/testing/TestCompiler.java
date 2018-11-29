@@ -58,13 +58,12 @@ public final class TestCompiler {
 		// *** SIMULA PROGRAMMER FOR VIDERE UTVIKLING
 		// String name=Global.packetName+"/simprogs/Matte.sim";
 		// String name=Global.packetName+"/simprogs/HegnaNRK.sim";
-		// String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
 		// String name=Global.packetName+"/simprogs/HelloWorld.sim";
 		// String name=Global.packetName+"/simprogs/FittingRoom.sim";
 		// String name=Global.packetName+"/simprogs/JensensDevice.sim";
-		// String name=Global.packetName+"/simprogs/Docking.sim";
+		 String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
 		// String name=Global.packetName+"/err/simerr01.sim"; // Syntax errors
@@ -85,8 +84,10 @@ public final class TestCompiler {
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/adHoc00.sim";
 		// String name=Global.packetName+"/sim/adHoc01.sim";
-//		 String name=Global.packetName+"/sim/adHoc02.sim";
-		 String name=Global.packetName+"/sim/adHoc03.sim";
+		// String name=Global.packetName+"/sim/adHoc02.sim";
+		// String name=Global.packetName+"/sim/adHoc03.sim";
+		// String name=Global.packetName+"/sim/adHoc04.sim";
+		// String name=Global.packetName+"/sim/adHoc05.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
@@ -162,7 +163,7 @@ public final class TestCompiler {
 
 			// Checker Trace Options
 			Option.TRACE_CHECKER=false;//true;
-			Option.TRACE_CHECKER_OUTPUT=false;//true;
+			Option.TRACE_CHECKER_OUTPUT=true;//false;//true;
 
 			// Coder Trace Options
 			Option.TRACE_CODING=true;

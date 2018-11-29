@@ -263,7 +263,7 @@ public class Drawing$ extends Simset$ {
 			public void windowOpened(WindowEvent e) { RT.println("windowOpened.WindowsEvent: "+e); }
 			public void windowClosing(WindowEvent e) { RT.println("windowClosing.WindowsEvent: "+e);
 				if(e.getID()==WindowEvent.WINDOW_CLOSING) {
-					printThreadList(true);
+					//printThreadList(true);
 					System.exit(0);
 				}
 			}

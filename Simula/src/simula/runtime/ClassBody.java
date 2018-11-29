@@ -44,21 +44,20 @@ public abstract class ClassBody {
 						RTObject$.CUR$.STATE$ = OperationalState.terminated;
 						if (RT.Option.GOTO_TRACING)
 							RTObject$.TRACE_GOTO("NON-LOCAL", q);
-
 						throw (q);
 					}
 					if (RT.Option.GOTO_TRACING)
-					{ RTObject$.TRACE_GOTO("ClassBody: GOTO VIRTUAL", q);
-					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? " + q);
-					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? q.index=" + q.index);
-					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? object=" + object);
-					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? RTObject$.CUR$=" + RTObject$.CUR$);
+					{ RTObject$.TRACE_GOTO("ClassBody: GOTO", q);
+//					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? " + q);
+//					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? q.index=" + q.index);
+//					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? object=" + object);
+//					  RT.println("RTObject$.EXEC$: GOTO VIRTUAL ? RTObject$.CUR$=" + RTObject$.CUR$);
 					}
-					RT.println("NOT IMPLEMENTED: Goto Label "+q);
-					ENVIRONMENT$.printStackTrace(2);
-					//q.printStackTrace();
+//					RT.println("NOT IMPLEMENTED: Goto Label "+q);
+//					ENVIRONMENT$.printStackTrace(2);
+//					//q.printStackTrace();
 					
-					throw(new RuntimeException("NOT IMPLEMENTED: Goto Label ",q));
+					throw(new RuntimeException("Illegal Goto Label ",q));
 				}
 			}
 		

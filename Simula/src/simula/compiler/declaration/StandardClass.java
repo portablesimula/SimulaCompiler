@@ -903,14 +903,15 @@ public final class StandardClass extends ClassDeclaration
   }
   
   public Meaning findRemoteAttributeMeaning(String ident)
-  {return(findRemoteAttributeMeaning(ident,false)); } 
-  public Meaning findRemoteAttributeMeaning(String ident,boolean behindProtected)
+//  {return(findRemoteAttributeMeaning(ident,false)); } 
+//  public Meaning findRemoteAttributeMeaning(String ident,boolean behindProtected)
   { //Util.BREAK("StandardClass("+this.identifier+").findAttribute("+ident+"): scope="+declaredIn+", chain="+edScopeChain());
     for(Declaration declaration:declarationList)
     	if(ident.equalsIgnoreCase(declaration.identifier))
     	   	  return(new Meaning(declaration,this));
     ClassDeclaration prfx=getPrefixClass();
-    if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident,behindProtected));
+//    if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident,behindProtected));
+    if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident));
     
 //    if(result!=null) Util.TRACE("END StandardClass.findAttribute("+ident+"): result="+result.getEnclosureName()+'.'+result);   
     return(null);

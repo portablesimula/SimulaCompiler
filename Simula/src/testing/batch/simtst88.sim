@@ -31,7 +31,7 @@ BEGIN
    begin 
          integer procedure vci; vci := i;
          integer procedure vcA; vcA := H(5);
-         integer procedure P; P:=1;
+%         integer procedure P; P:=1;
    end;
 
    if verbose then begin

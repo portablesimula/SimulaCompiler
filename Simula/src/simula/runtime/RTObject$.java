@@ -666,11 +666,22 @@ public abstract class RTObject$  implements Runnable {
             else if(e instanceof RuntimeException)
             { String msg=e.getMessage();
               if(e instanceof NullPointerException) msg="NONE-CHECK Failed";
-              RT.println(who+": SIMULA RUNTIME ERROR: "+msg);
-              //ENVIRONMENT$.printStackTrace(2);
-              ENVIRONMENT$.printStackTrace(e,0);
-              e.printStackTrace();
-              shutDown(-1);  
+              if(SHUTING_DOWN$) {
+            	  if(RT.Option.VERBOSE) {
+                	  msg=msg+" -- DURING SHUTDOWN";
+                	  RT.println(who+": SIMULA RUNTIME ERROR: "+msg);
+                	  //ENVIRONMENT$.printStackTrace(2);
+                	  ENVIRONMENT$.printStackTrace(e,0);
+                	  e.printStackTrace();
+                	  shutDown(-1);             		  
+            	  }
+              } else {
+            	  RT.println(who+": SIMULA RUNTIME ERROR: "+msg);
+            	  //ENVIRONMENT$.printStackTrace(2);
+            	  ENVIRONMENT$.printStackTrace(e,0);
+            	  e.printStackTrace();
+            	  shutDown(-1);  
+              }
             }
             else { RT.println(who+": UNCAUGHT EXCEPTION: "+e.getMessage()); e.printStackTrace(); shutDown(-1); }
             if(RT.Option.GOTO_TRACING) ENVIRONMENT$.printThreadList(); 

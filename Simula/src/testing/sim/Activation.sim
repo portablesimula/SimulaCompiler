@@ -1,6 +1,4 @@
 
-%INCLUDE_QPS
-%QUALIFIEDNAMES
 Simulation Begin
    Integer u;
    ref(Car) bil,bil1,bil2;
@@ -20,17 +18,18 @@ Simulation Begin
      ref(town)procedure find(code);text code; begin find:-none; end;
    end;
 
-   for r:-r.suc while r is town do r.gone:=false ;
+%   for r:-r.suc while r is town do r.gone:=false ;
    
    
    bil:-new car(r.find(t));
    
    Activate bil;
 
-
-%   bil1:- New Car();
+   bil1:-new car(none);
    Activate bil1;
    Hold (100);
+   bil1:-new car(none);
+   bil2:-new car(none);
    Activate bil2 at 7.45;
    Activate bil2 at 7.45 prior;
    Activate bil2 delay 1.23;

@@ -27,7 +27,7 @@ public final class LabelDeclaration extends TypeDeclaration {
 		type.doChecking(declaredIn);
 		// Label attributes are implicit specified 'protected'
 		if(declaredIn.blockKind==BlockKind.Class)
-			((ClassDeclaration)declaredIn).protectedList.add(identifier);
+			((ClassDeclaration)declaredIn).protectedList.add(new ProtectedSpecification((ClassDeclaration)declaredIn,identifier));
 		SET_SEMANTICS_CHECKED();
 	}
 

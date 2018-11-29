@@ -207,8 +207,11 @@ public abstract class BlockParser extends SyntaxClass
   { //Util.BREAK("BlockParser.expectHiddenProtectedList: Hidden="+hidden+", Protected="+prtected);
     do
     { String identifier=expectIdentifier();
-      if(hidden) block.hiddenList.add(identifier);
-      if(prtected) block.protectedList.add(identifier);
+      if(hidden) block.hiddenList.add(new HiddenSpecification(block,identifier));
+      if(prtected) {
+    	  block.protectedList.add(new ProtectedSpecification(block,identifier));
+    	  //Util.BREAK("Class "+block.identifier+" PROTECTED-LIST="+block.protectedList);
+      }
     } while(Parser.accept(KeyWord.COMMA));  
     //Util.BREAK("BlockParser.expectHiddenProtectedList: HiddenList="+block.hiddenList);
     //Util.BREAK("BlockParser.expectHiddenProtectedList: ProtectedList="+block.protectedList);

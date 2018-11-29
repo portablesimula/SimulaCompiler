@@ -297,6 +297,7 @@ public final class Variable extends Expression {
 	  {	ASSERT_SEMANTICS_CHECKED(this);
 	    if(meaning==null) return(false); // Error Recovery
 		Declaration declaredAs=meaning.declaredAs;
+	    if(declaredAs==null) return(false); // Error Recovery
 		BlockKind blockKind=declaredAs.blockKind;
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): meaning="+meaning);
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): declaredAs="+declaredAs+", BlockDeclaration.Kind="+blockKind+", qual="+declaredAs.getClass().getSimpleName());
@@ -413,12 +414,16 @@ public final class Variable extends Expression {
 	    	  // otherwise; it is a ordinary procedure-call.
 	    	  if(destination) { // return("RESULT$");
 	    		  ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
+	    		  //Util.BREAK("Variable.editVariable("+identifier+"): meaning="+meaning);
+	    		  //Util.BREAK("Variable.editVariable("+identifier+"): proc'blockLevel="+proc.blockLevel);
+	    		  //Util.BREAK("Variable.editVariable("+identifier+"): currentScope'blockLevel="+Global.currentScope.blockLevel);
 	    		  if(proc.blockLevel==Global.currentScope.blockLevel) return("RESULT$");
 	    	      String cast=proc.getJavaIdentifier();
 	    	      return("(("+cast+")"+proc.edCTX()+").RESULT$");
 	    	  }
+		      //Util.BREAK("Variable4("+identifier+").get: blockKind="+blockKind+", myVirtual="+procedure.myVirtual);
 		      if(procedure.myVirtual!=null)
-			       s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
+			       s.append(CallProcedure.virtual(this,procedure.myVirtual.virtualSpec,remotelyAccessed));
 		      else s.append(CallProcedure.normal(this));
 	      }
 	      else if(blockKind==BlockKind.Class) {

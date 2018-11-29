@@ -20,11 +20,14 @@ import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.HiddenSpecification;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.ProcedureSpecification;
+import simula.compiler.declaration.ProtectedSpecification;
 import simula.compiler.declaration.TypeDeclaration;
+import simula.compiler.declaration.VirtualMatch;
 import simula.compiler.declaration.VirtualSpecification;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -161,11 +164,13 @@ public final class AttributeFile {
 	  writeString("Prefix",blk.prefix);
 	  writeBoolean("HasLocalClasses",blk.hasLocalClasses);
 	  writeBoolean("DetachUsed",blk.detachUsed);
-	  for(VirtualSpecification vrt:blk.virtualList) writeVirtual(vrt);
-	  for(String hdn:blk.hiddenList) writeString("Hidden",hdn);
-	  for(String prt:blk.protectedList) writeString("Protected",prt);
+	  for(VirtualSpecification vrt:blk.virtualSpecList) writeVirtualSpec(vrt);
+//	  for(VirtualMatch mth:blk.virtualMatchList) writeVirtualMatch(mth);
+	  for(HiddenSpecification hdn:blk.hiddenList) writeString("Hidden",hdn.identifier);
+	  for(ProtectedSpecification prt:blk.protectedList) writeString("Protected",prt.identifier);
 	  for(LabelDeclaration lab:blk.labelList) writeLabel(lab);
 	  for(Declaration dcl:blk.declarationList) doWriteAttributeInfo(dcl);
+	  for(VirtualMatch mth:blk.virtualMatchList) writeVirtualMatch(mth);
 	  oupt.writeUTF("BLOCKEND");
 	  TRACE_OUTPUT("END Write Block: "+blk.identifier);
 	}
@@ -205,9 +210,10 @@ public final class AttributeFile {
 	    else if(label.equalsIgnoreCase("Prefix")) decl.prefix=readString();
 	    else if(label.equalsIgnoreCase("HasLocalClasses")) decl.hasLocalClasses=readBoolean();
 	    else if(label.equalsIgnoreCase("DetachUsed")) decl.detachUsed=readBoolean();
-	    else if(label.equalsIgnoreCase("Virtual")) decl.virtualList.add(readVirtual());
-	    else if(label.equalsIgnoreCase("Hidden")) decl.hiddenList.add(readString());
-	    else if(label.equalsIgnoreCase("Protected")) decl.protectedList.add(readString());
+	    else if(label.equalsIgnoreCase("VirtualSpec")) decl.virtualSpecList.add(readVirtualSpec(decl));
+	    else if(label.equalsIgnoreCase("VirtualMatch")) decl.virtualMatchList.add(readVirtualMatch(decl));
+	    else if(label.equalsIgnoreCase("Hidden")) decl.hiddenList.add(new HiddenSpecification(decl,readString()));
+	    else if(label.equalsIgnoreCase("Protected")) decl.protectedList.add(new ProtectedSpecification(decl,readString()));
 	    else if(label.equalsIgnoreCase("Label")) decl.labelList.add(readLabel());
 	    else if(label.equalsIgnoreCase("Variable")) decl.declarationList.add(readTypeDeclaration());
 	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readClassDeclaration());
@@ -270,20 +276,45 @@ public final class AttributeFile {
 	  return(par);
 	}
 	
-	private void writeVirtual(VirtualSpecification virt) throws IOException
-	{ TRACE_OUTPUT("Virtual: "+virt.type+' '+virt.identifier);
-	  oupt.writeUTF("Virtual"); oupt.writeUTF(virt.identifier);
-	  writeType(virt.type);
+	private void writeVirtualSpec(VirtualSpecification virt) throws IOException
+	{ TRACE_OUTPUT("VirtualSpec: "+virt.type+' '+virt.identifier);
+	  oupt.writeUTF("VirtualSpec");
+//	  oupt.writeInt(virt.prefixLevel);
+	  oupt.writeUTF(virt.identifier); writeType(virt.type);
 	  writeVirtProcedureSpec(virt.procedureSpec);
 	}
 	
-	public VirtualSpecification readVirtual() throws IOException
-	{ String identifier=inpt.readUTF();
+	public VirtualSpecification readVirtualSpec(ClassDeclaration specifiedIn) throws IOException
+	{ //int prefixLevel=inpt.readInt();
+	  String identifier=inpt.readUTF();
 	  //Util.BREAK("AttributeInputStream.readVirtual: identifier="+identifier);
 	  Type type=readType();
 	  //Util.BREAK("AttributeInputStream.readVirtual: type="+type);
 	  ProcedureSpecification procedureSpec=readVirtProcedureSpec();
-	  return(new VirtualSpecification(identifier,type,procedureSpec));
+//	  return(new VirtualSpecification(prefixLevel,identifier,type,procedureSpec));
+	  return(new VirtualSpecification(specifiedIn,identifier,type,procedureSpec));
+	}
+	
+	private void writeVirtualMatch(VirtualMatch match) throws IOException
+	{ TRACE_OUTPUT("VirtualMatch: "+match.identifier);
+	  oupt.writeUTF("VirtualMatch");
+	  oupt.writeUTF(match.identifier);
+	}
+	
+	public VirtualMatch readVirtualMatch(ClassDeclaration decl) throws IOException
+	{ //int prefixLevel=inpt.readInt();
+	  String identifier=inpt.readUTF();
+	  //Util.BREAK("AttributeInputStream.readVirtualMatch: Search="+decl);
+	  //Util.BREAK("AttributeInputStream.readVirtualMatch: identifier="+identifier);
+	  ProcedureDeclaration proc=decl.findLocalProcedure(identifier);
+	  //Util.BREAK("AttributeInputStream.readVirtualMatch: proc="+proc);
+	  if(proc!=null) {
+		  VirtualSpecification virtualSpec=proc.getVirtualSpecification();
+		  //Util.BREAK("AttributeInputStream.readVirtualMatch: virtualSpec="+virtualSpec);
+	  	  if(virtualSpec!=null) return(new VirtualMatch(virtualSpec,proc));
+	  }
+  	  Util.error("Malformed Attribute File (at VirtualMatch "+identifier+")");
+  	  return(null); // Error Recovery
 	}
 	
 	private void writeVirtProcedureSpec(ProcedureSpecification procedureSpec) throws IOException

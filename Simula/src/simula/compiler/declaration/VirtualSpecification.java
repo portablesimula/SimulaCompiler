@@ -33,16 +33,19 @@ import simula.compiler.utilities.Util;
 public final class VirtualSpecification extends Declaration {
 	// String identifier; // Inherited
 	// Type type; // Inherited: Procedure's type if any
-	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
-    public ProcedureDeclaration match; // Set during doChecking
 
-	public VirtualSpecification(String identifier, Type type, ProcedureSpecification procedureSpec) {
+	public ClassDeclaration specifiedIn;  // Class containing Virtual: specification
+	
+	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
+    public boolean hasDefaultMatch; // Set during doChecking
+
+	public VirtualSpecification(ClassDeclaration specifiedIn,String identifier, Type type, ProcedureSpecification procedureSpec) {
 		super(identifier);
+		this.specifiedIn=specifiedIn;
 	 	this.externalIdent=identifier;
 		this.type=type;
 		this.procedureSpec=procedureSpec;
 		this.blockKind=BlockKind.Procedure;
-		//Util.BREAK("NEW Virtual: "+this);
 	}
 	
 	public static void parseInto(ClassDeclaration block)
@@ -71,9 +74,11 @@ public final class VirtualSpecification extends Declaration {
 		          //Parser.BREAK("Virtual.parse: IS procedureType="+procedureType); 
 		          procedureSpec=ProcedureSpecification.doParseProcedureSpecification(procedureType); 
 		          //Parser.BREAK("Virtual.parse: IS procedureSpec="+procedureSpec);
-		          block.virtualList.add(new VirtualSpecification(identifier,type,procedureSpec));
+		          block.virtualSpecList.add(new VirtualSpecification(block,identifier,type,procedureSpec));
+		    	  //Util.BREAK("Class "+block.identifier+" VIRTUAL-LIST="+block.virtualSpecList);
 	          } else {
-	        	  block.virtualList.add(new VirtualSpecification(identifier,type,null));
+	        	  block.virtualSpecList.add(new VirtualSpecification(block,identifier,type,null));
+		    	  //Util.BREAK("Class "+block.identifier+" VIRTUAL-LIST="+block.virtualSpecList);
 	    	      if(Parser.accept(KeyWord.COMMA)) parseSimpleSpecList(block,type);
 	    	      else Parser.expect(KeyWord.SEMICOLON);
 	          }
@@ -88,29 +93,10 @@ public final class VirtualSpecification extends Declaration {
 	
 	private static void parseSimpleSpecList(ClassDeclaration block,Type type)
 	{ do { String identifier=expectIdentifier();
-	       block.virtualList.add(new VirtualSpecification(identifier,type,null));
+	       block.virtualSpecList.add(new VirtualSpecification(block,identifier,type,null));
+	       //Util.BREAK("Class "+block.identifier+" VIRTUAL-LIST="+block.virtualSpecList);
 	  } while(Parser.accept(KeyWord.COMMA));  
       Parser.expect(KeyWord.SEMICOLON);	
-	}
-
-	
-	public VirtualSpecification(ProcedureDeclaration match) {
-		// NOTE: Called during Checking
-		this(match.identifier,match.type,null);
-		this.match=match;
-		//Util.BREAK("NEW Extra-Virtual: "+this);
-		SET_SEMANTICS_CHECKED();
-	}
-
-	public void setMatch(ProcedureDeclaration match)
-	{ this.match=match;
-	  //Util.BREAK("Virtual.setMatch: "+match);
-	  if(procedureSpec!=null)
-	  { if(!procedureSpec.checkCompatible(match))
-	    { Util.error("Virtual "+identifier+" is not compatible with Virtual Specification");
-		  
-	    }
-	  }
 	}
 	
 	public void doChecking() {
@@ -121,21 +107,26 @@ public final class VirtualSpecification extends Declaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	public String getVirtualIdentifier() {
+		return (getJavaIdentifier() + '$' + specifiedIn.prefixLevel());
+	}
+
 	public void doJavaCoding()
 	{ //Util.BREAK("Virtual.doJavaCoding: "+identifier);
   	  ASSERT_SEMANTICS_CHECKED(this);
 	  String matchCode="{ throw new RuntimeException(\"No Virtual Match\"); }";
-	  if(match!=null)
-		  matchCode="{ return(new PRCQNT$(this,"+match.getJavaIdentifier()+".class)); }";
-	  JavaModule.code("public PRCQNT$ "+getJavaIdentifier()+"() "+matchCode);
+	  JavaModule.code("public PRCQNT$ "+getVirtualIdentifier()+"() "+matchCode);
 	}
 	
 	public String toString()
-	{ String s="";
-	  if(type!=null) s=s+type; else s="NOTYPE";
-	  s=s+" "+' '+identifier;
-	  if(procedureSpec!=null) s=s+'='+procedureSpec;
-	  return(s);
+	{ StringBuilder s=new StringBuilder();
+	  if(type!=null) s.append(type).append(' '); 
+	  s.append("PROCEDURE ").append(identifier);
+	  if(specifiedIn!=null) {
+		  s.append("[Specified in ").append(specifiedIn.identifier).append(']');
+	  }
+	  if(procedureSpec!=null) s.append('=').append(procedureSpec);
+	  return(s.toString());
 	}
 
 }

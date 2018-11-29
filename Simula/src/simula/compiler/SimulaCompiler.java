@@ -98,6 +98,20 @@ public final class SimulaCompiler {
 //		System.out.println("SYSTEM: path.separator="+System.getProperty("path.separator"));
 //		System.out.println("SYSTEM: User working directory="+System.getProperty("user.dir"));
 //		System.out.println("SYSTEM: User home directory="+System.getProperty("user.home"));
+		emptyTempClassFileDir();
+	}
+	
+	private void emptyTempClassFileDir() {
+		try { // Try to Clean Global.tempClassFileDir
+			  File tmpClass = new File(Global.tempClassFileDir + '/' + Global.packetName);
+			  // System.out.println("tmpClass: "+tmpClass);
+			  File[] elt = tmpClass.listFiles();
+			  // System.out.println("Elements: "+elt);
+			  for (File f : elt) {
+				  // System.out.println("Delete: "+f);
+				  f.delete();
+			  }
+		} catch (Exception e) {	}
 	}
 
 	public void doCompile() {
@@ -205,6 +219,8 @@ public final class SimulaCompiler {
 			     System.out.println("*** END Execute .jar File. Exit value="+exitValue3);
 			}
 
+			emptyTempClassFileDir();
+			
 		} catch (IOException e) {
 			System.out.println("Compiler Error: "+e);
 			e.printStackTrace();

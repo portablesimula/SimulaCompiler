@@ -24,8 +24,9 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public class ProcedureDeclaration extends BlockDeclaration
-{ public VirtualSpecification myVirtual; // Set during doChecking
+{ public VirtualMatch myVirtual; // Set during doChecking
   public Vector<Parameter> parameterList=new Vector<Parameter>();
+
   
   // ***********************************************************************************************
   // *** CONSTRUCTORS
@@ -44,25 +45,25 @@ public class ProcedureDeclaration extends BlockDeclaration
     parameterList.add(parameter);
   }
 
-//***********************************************************************************************
-//*** Parsing: doParseProcedureDeclaration
-//***********************************************************************************************
-/**
- * Procedure Declaration.
- * <pre>
- * Syntax:
- * 
- * ProcedureDeclaration
- *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead ProcedureBody
- *     
- * ProcedureHead
- *     = [ FormalParameterPart ; [ ModePart ]
- *         specification-part  ] ;
- *         
- * ProcedureBody = Statement
- * ProcedureIdentifier = Identifier
- * </pre>
- */
+  //***********************************************************************************************
+  //*** Parsing: doParseProcedureDeclaration
+  //***********************************************************************************************
+  /**
+  * Procedure Declaration.
+  * <pre>
+  * Syntax:
+  * 
+  * ProcedureDeclaration
+  *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead ProcedureBody
+  *     
+  * ProcedureHead
+  *     = [ FormalParameterPart ; [ ModePart ]
+  *         specification-part  ] ;
+  *         
+  * ProcedureBody = Statement
+  * ProcedureIdentifier = Identifier
+  * </pre>
+  */
   public static ProcedureDeclaration doParseProcedureDeclaration(Type type)
   {	BlockKind blockKind=(Option.standardClass)?BlockKind.Method:BlockKind.Procedure;
    	ProcedureDeclaration block=new ProcedureDeclaration(null,blockKind);
@@ -77,7 +78,6 @@ public class ProcedureDeclaration extends BlockDeclaration
   }
 
 
-
   // ***********************************************************************************************
   // *** Checking
   // ***********************************************************************************************
@@ -88,9 +88,9 @@ public class ProcedureDeclaration extends BlockDeclaration
  	else if(externalIdent==null) externalIdent=edJavaClassName();
 
 	currentBlockLevel++; blockLevel=currentBlockLevel;
-	//Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-	//Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-    //Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
+//	Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
+//	Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
+//  Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
     Global.currentScope=this;
     
     int prfx=0;//prefixLevel();
@@ -102,41 +102,68 @@ public class ProcedureDeclaration extends BlockDeclaration
     int labelIndex=1;
 	for(LabelDeclaration label:labelList)
 	{ label.prefixLevel=prfx; label.index=labelIndex++;	}
-
-//	if(declaredIn.blockKind==BlockKind.Class)
-	if(declaredIn instanceof ClassDeclaration)
-    { myVirtual=((ClassDeclaration)declaredIn).findVirtualSpecification(identifier);
-      //Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: myVirtual="+myVirtual);
-      if(myVirtual!=null)
-      { DeclarationScope scope=myVirtual.declaredIn;
-        if(scope==declaredIn) myVirtual.setMatch(this);
-        else ((ClassDeclaration)declaredIn).virtualList.add(myVirtual=new VirtualSpecification(this)); 
-      }
-    }
-    
+	VirtualSpecification virtualSpec = getVirtualSpecification();
+	if(virtualSpec!=null) // This Procedure is a Virtual Match
+	{ myVirtual=new VirtualMatch(virtualSpec,this);
+	  ClassDeclaration decl=(ClassDeclaration)declaredIn;
+	  decl.virtualMatchList.add(myVirtual); 
+	  if(decl==virtualSpec.specifiedIn) virtualSpec.hasDefaultMatch=true;
+	}
     Global.currentScope=declaredIn;
 	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel--;
     SET_SEMANTICS_CHECKED();
   }
   
-  // ***********************************************************************************************
-  // *** Utility: findVisibleAttributeMeaning
-  // ***********************************************************************************************
-  public Meaning findVisibleAttributeMeaning(String ident)
-  { //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
-    //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
-    for(Declaration declaration:declarationList)
-	  if(ident.equalsIgnoreCase(declaration.identifier))
-	     return(new Meaning(declaration,this,this,false));
-	for(Parameter parameter:parameterList)
-	  if(ident.equalsIgnoreCase(parameter.identifier))
-	     return(new Meaning(parameter,this,this,false));
-    for(LabelDeclaration label:labelList)
-	  if(ident.equalsIgnoreCase(label.identifier))
-	     return(new Meaning(label,this,this,false));
-    return(null);
-  }
+    // ***********************************************************************************************
+    // *** Utility: getVirtualSpecification
+    // ***********************************************************************************************
+	public VirtualSpecification getVirtualSpecification() {
+		//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification:");
+		if (declaredIn instanceof ClassDeclaration) {
+			ClassDeclaration scope=(ClassDeclaration) declaredIn;
+			VirtualSpecification virtSpec = scope.searchVirtualSpecList(identifier);
+			if (virtSpec != null) {
+				//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: result=" + virtSpec);
+				return (virtSpec);
+			}
+			scope = scope.getPrefixClass();
 
+			SEARCH: while (scope != null) {
+				HiddenSpecification hdn = scope.searchHiddenList(identifier);
+				//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: hdn=" + hdn);
+				if (hdn != null) {
+					scope = hdn.getScopeBehindHidden();
+					continue SEARCH;
+				}
+				virtSpec = scope.searchVirtualSpecList(identifier);
+				if (virtSpec != null) {
+					//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: result=" + virtSpec);
+					return (virtSpec);
+				}
+				scope = scope.getPrefixClass();
+			}
+		}
+		//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: NOT FOUND");
+		return (null);
+	}
+  
+    // ***********************************************************************************************
+    // *** Utility: findVisibleAttributeMeaning
+    // ***********************************************************************************************
+	public Meaning findVisibleAttributeMeaning(String ident) {
+//		if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
+//		if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
+		for (Declaration declaration : declarationList)
+			if (ident.equalsIgnoreCase(declaration.identifier))
+				return (new Meaning(declaration, this, this, false));
+		for (Parameter parameter : parameterList)
+			if (ident.equalsIgnoreCase(parameter.identifier))
+				return (new Meaning(parameter, this, this, false));
+		for (LabelDeclaration label : labelList)
+			if (ident.equalsIgnoreCase(label.identifier))
+				return (new Meaning(label, this, this, false));
+		return (null);
+	}
 
   // ***********************************************************************************************
   // *** Coding: doJavaCoding
@@ -370,7 +397,15 @@ public class ProcedureDeclaration extends BlockDeclaration
     return(s.toString());
   }
 
-  public String toString()
-  { return(""+identifier+'['+externalIdent+"] BlockKind="+blockKind); }
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		s.append(identifier).append('[').append(externalIdent).append("] BlockKind=").append(blockKind);
+		if (isProtected != null) {
+			s.append(", Protected by ").append(isProtected.identifier);
+			s.append(" defined in ");
+			s.append((isProtected.definedIn != null) ? isProtected.definedIn.identifier : "MISSING");
+		}
+		return (s.toString());
+	}
 
 }

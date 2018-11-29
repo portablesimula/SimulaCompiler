@@ -144,7 +144,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
     }
     Global.currentScope=this;
     Util.ASSERT(parameterList.isEmpty(),"Invariant");
-    Util.ASSERT(virtualList.isEmpty(),"Invariant");
+    Util.ASSERT(virtualSpecList.isEmpty(),"Invariant");
     Util.ASSERT(hiddenList.isEmpty(),"Invariant");
     Util.ASSERT(protectedList.isEmpty(),"Invariant");
     
@@ -187,7 +187,8 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 	}
 	JavaModule.code("// Declare locals as attributes");
 	for(Declaration decl:declarationList) decl.doJavaCoding();
-    for(VirtualSpecification virtual:virtualList) virtual.doJavaCoding();
+//    for(VirtualSpecification virtual:virtualSpecList) virtual.doJavaCoding();
+    for(VirtualMatch match:virtualMatchList) match.doJavaCoding();
 	doCodeConstructor();
 	//doCodeStatements(indent); // PrefixedBlock: USES DEFAULT VERSION OF  STM$()
 	if(this.isMainModule)

@@ -47,6 +47,20 @@ public class Declaration extends SyntaxClass
 	this.identifier=newIdentifier;
     checkAlreadyDefined();
   }
+  
+  public ProtectedSpecification isProtected; // Set during Checking
+  public ProtectedSpecification getProtected() { return(isProtected); } // NOTE: Redefined in ProcedureDeclaration
+//  public boolean isProtected() {
+//	  if(declaredIn instanceof ClassDeclaration) {
+//		  ClassDeclaration cls=(ClassDeclaration)declaredIn;
+//		  for(String pct:cls.protectedList) if(identifier.equalsIgnoreCase(pct))
+//		    { //Util.BREAK("ClassDeclaration("+identifier+").findProtected("+ident+"): FOUND in "+this);
+//		      return(true);
+//		    }
+//	  }
+//	  //Util.BREAK("ClassDeclaration("+identifier+").findProtected("+ident+"): NOT FOUND");
+//	  return(false);
+//  }
     
   // ***********************************************************************************************
   // *** Constructor

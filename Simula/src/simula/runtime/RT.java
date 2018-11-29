@@ -22,6 +22,7 @@ public final class RT
   public static TerminateException EXIT_EXCEPTION$ = new TerminateException("EXIT");
 
 	public static class Option {
+		public static boolean VERBOSE = false;//true;
 		public static boolean CODE_STEP_TRACING = false;// true;
 		public static boolean BLOCK_TRACING = false;// true;
 		public static boolean GOTO_TRACING = false;// true;

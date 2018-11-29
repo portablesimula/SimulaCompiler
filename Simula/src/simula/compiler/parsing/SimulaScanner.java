@@ -250,7 +250,7 @@ public final class SimulaScanner
 	    case '�': // See PushBack
 		  break;
 	    default: Util.error("Illegal character: "+(char)current+", Value="+(int)current);
-	    Util.BREAK("");
+//	    Util.BREAK("");
 //	    Util.EXIT();
 		  break;
 	  }

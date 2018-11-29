@@ -106,7 +106,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
 		//names.add("simtst66.sim"); // OK:  Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		names.add("simtst68.sim"); // OK:  Test of coroutines.
+		//names.add("simtst68.sim"); // OK:  Test of coroutines.
 		//names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
 		//names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
@@ -138,13 +138,15 @@ public final class RunSingleTestBatch {
 		//names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
 		//names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
-		//names.add("simtst96.sim"); // err: Test SIMULATION, complex example.
-		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
-		names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
+		//names.add("simtst96.sim"); // OK:  Test hidden, protected attributes.
+		//names.add("simtst97.sim"); // OK:  Test nested hidden and protected.
+		names.add("simtst98.sim"); // OK:  Test attribute protection - complex example. Test visibility of labels.
 		//names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 		//names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
+		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
+		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
@@ -166,7 +168,7 @@ public final class RunSingleTestBatch {
 
 		// Checker Trace Options
 		Option.TRACE_CHECKER=true;//false;//true;
-		Option.TRACE_CHECKER_OUTPUT=false;//true;
+		Option.TRACE_CHECKER_OUTPUT=true;//false;//true;
 
 		// Coder Trace Options
 		Option.TRACE_CODING=true;

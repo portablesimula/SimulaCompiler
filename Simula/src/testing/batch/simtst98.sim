@@ -174,8 +174,8 @@ begin integer i,j,k,globali,globalj,globalk;
             outc(sourceline);
             inner;
             virtproc(sourceline,"c.virtproc","***VIRTPROC***");
-            inspect this a
-            do virtproc(sourceline,"c.virtproc","***INSP THIS A*c*");
+%           inspect this a do virtproc(sourceline,"c.virtproc","***INSP THIS A*c*");  ! MYH ;
+            inspect this a do virtproc(sourceline,"b.virtproc","***INSP THIS A*c*");  ! MYH ;
             avirt(sourceline,"b.virtproc","***AVIRT FROM c***");
             bvirt(sourceline,"b.virtproc","***BVIRT FROM c***");
       end;
@@ -271,8 +271,8 @@ begin integer i,j,k,globali,globalj,globalk;
 
             if this y is y
             then virtproc(sourceline,"y.virtproc","***THIS Y IS Y*** ");
-            inspect this a
-            do virtproc(sourceline,"y.virtproc","***INSP THIS A*y*");
+%           inspect this a do virtproc(sourceline,"y.virtproc","***INSP THIS A*y*");  ! MYH;
+            inspect this a do virtproc(sourceline,"b.virtproc","***INSP THIS A*y*");  ! MYH;
             avirt(sourceline,"b.virtproc","***AVIRT FROM y***");
             bvirt(sourceline,"b.virtproc","***BVIRT FROM y***");
       end;
@@ -294,8 +294,8 @@ begin integer i,j,k,globali,globalj,globalk;
             end;
 
             virtproc(sourceline,"z.virtproc","***VIRTPROC***");
-            inspect this a
-            do virtproc(sourceline,"z.virtproc","***INSP THIS A*z*");
+%           inspect this a do virtproc(sourceline,"z.virtproc","***INSP THIS A*z*");  ! MYH;
+            inspect this a do virtproc(sourceline,"b.virtproc","***INSP THIS A*z*");  ! MYH;
             avirt(sourceline,"b.virtproc","***AVIRT FROM z***");
             bvirt(sourceline,"b.virtproc","***BVIRT FROM z***");
             cvirt(sourceline,"c.virtproc","***CVIRT FROM z***");
@@ -395,10 +395,8 @@ L:
 
       outline("***   inspect new y   ***");
       inspect new y do begin
-              virtproc(sourceline,"c.virtproc",
-                                  "***INSP NEW y ... virtproc***");
-                 yvirt(sourceline,"y.virtproc",
-                                  "***INSP NEW y ... yvirt***");
+              virtproc(sourceline,"c.virtproc","***INSP NEW y ... virtproc***");  ! testen er riktig ;
+                 yvirt(sourceline,"y.virtproc","***INSP NEW y ... yvirt***");
       end;
 
       outline("***   inspect new z   ***");
@@ -423,7 +421,7 @@ L:
        if not errorfound then begin
           outtext("--- NO ERRORS FOUND IN TEST 98");
        end;
-       if verbose then begin
+       if verbose or errorfound then begin
           outtext("--- END Simula a.s. TEST 98");
           outimage;
        end;

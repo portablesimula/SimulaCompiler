@@ -29,9 +29,11 @@ public class ClassDeclaration extends BlockDeclaration
   public String prefix; // Class Prefix in case of a SubClass or Prefixed Block.
   public boolean detachUsed=false; // Set true when attribute procedure 'detach' is used in/on this class.
   public Vector<Parameter> parameterList=new Vector<Parameter>();
-  public Vector<VirtualSpecification> virtualList=new Vector<VirtualSpecification>();
-  public Vector<String> hiddenList=new Vector<String>();
-  public Vector<String> protectedList=new Vector<String>();
+  public Vector<VirtualSpecification> virtualSpecList=new Vector<VirtualSpecification>();
+  public Vector<VirtualMatch> virtualMatchList=new Vector<VirtualMatch>();
+//  public Vector<String> hiddenList=new Vector<String>();
+  public Vector<ProtectedSpecification> protectedList=new Vector<ProtectedSpecification>();
+  public Vector<HiddenSpecification> hiddenList=new Vector<HiddenSpecification>();
   
   // ***********************************************************************************************
   // *** CONSTRUCTORS
@@ -162,18 +164,41 @@ public class ClassDeclaration extends BlockDeclaration
 	//Util.BREAK("ClassDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
     //Util.BREAK("ClassDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
     Global.currentScope=this;
-    
+
+//    checkProtectedList();
+//    checkHiddenList();
+
     int prfx=prefixLevel();
     //Util.BREAK("ClassDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
     for(Parameter par:this.parameterList) par.setExternalIdentifier(prfx);
     for(Declaration par:new ClassParameterIterator()) par.doChecking();
-    for(VirtualSpecification vrt:virtualList) vrt.doChecking();
+    for(VirtualSpecification vrt:virtualSpecList) vrt.doChecking();
     for(Declaration dcl:declarationList) dcl.doChecking();
     for(Statement stm:statements) stm.doChecking();
+    checkProtectedList();
+    checkHiddenList();
 	checkLabelList(prfx);
     Global.currentScope=declaredIn;
 	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel--;
     SET_SEMANTICS_CHECKED();
+//    print("","");
+  }
+  
+  // ***********************************************************************************************
+  // *** Utility: checkHiddenList
+  // ***********************************************************************************************
+  private void checkHiddenList() {
+	  for(HiddenSpecification hdn:hiddenList)
+		  hdn.doChecking();
+  }
+  
+  // ***********************************************************************************************
+  // *** Utility: checkProtectedList
+  // ***********************************************************************************************
+  private void checkProtectedList() {
+	  for(ProtectedSpecification pct:protectedList) {
+		  pct.doChecking();
+	  }
   }
 
   // ***********************************************************************************************
@@ -187,22 +212,20 @@ public class ClassDeclaration extends BlockDeclaration
   }
 
   // ***********************************************************************************************
-  // *** Utility: findVirtualSpecification
+  // *** Utility: searchVirtualSpecList  --    -  Search VirtualSpec-list for 'ident'
   // ***********************************************************************************************
-  public VirtualSpecification findVirtualSpecification(String ident)
-  { //Util.BREAK("ClassDeclaration("+identifier+").findVirtualSpecification("+ident+"):");
-	for(VirtualSpecification virtual:virtualList)
+  public VirtualSpecification searchVirtualSpecList(String ident)
+  { //Util.BREAK("ClassDeclaration("+identifier+").searchVirtualSpecList("+ident+"):");
+	for(VirtualSpecification virtual:virtualSpecList)
         if(ident.equalsIgnoreCase(virtual.identifier)) {
-            //Util.BREAK("ClassDeclaration("+identifier+").findVirtualSpecification("+ident+"): Result="+virtual);
+            //Util.BREAK("ClassDeclaration("+identifier+").searchVirtualSpecList("+ident+"): Result="+virtual);
         	return(virtual);
         }
-    ClassDeclaration prfx=getPrefixClass();
-    //Util.BREAK("ClassDeclaration("+identifier+").findVirtualSpecification("+ident+"): prfx="+prfx);
-    if(prfx!=null) return(prfx.findVirtualSpecification(ident));
-    //Util.BREAK("ClassDeclaration("+identifier+").findVirtualSpecification("+ident+"): NOT FOUND");
+    //Util.BREAK("ClassDeclaration("+identifier+").searchVirtualSpecList("+ident+"): NOT FOUND");
     return(null); 
   }
 
+  
   // ***********************************************************************************************
   // *** Utility: prefixLevel
   // ***********************************************************************************************
@@ -213,46 +236,116 @@ public class ClassDeclaration extends BlockDeclaration
 	return(-1);  
   }
   
-
+  // ***********************************************************************************************
+  // *** Utility: findClassAttribute
+  // ***********************************************************************************************
+  public Declaration findClassAttribute(String ident) {
+	  ClassDeclaration scope=this;
+	  while(scope!=null) {
+		  Declaration atr=scope.findLocalAttribute(ident);
+		  if(atr!=null) return(atr);
+		  scope=scope.getPrefixClass();
+	  }
+	  return(null);
+  }
+  
+  // ***********************************************************************************************
+  // *** Utility: findLocalAttribute
+  // ***********************************************************************************************
+  public Declaration findLocalAttribute(String ident) {
+	  //if(ident.equalsIgnoreCase("P")) Util.BREAK("ClassDeclaration("+identifier+").findLocalAttribute("+ident+"): scope="+this);
+	  for(Parameter parameter:parameterList)
+	        if(ident.equalsIgnoreCase(parameter.identifier))  	return(parameter);
+	  for(Declaration declaration:declarationList)
+		    if(ident.equalsIgnoreCase(declaration.identifier)) 	return(declaration);
+	  for(LabelDeclaration label:labelList)
+		    if(ident.equalsIgnoreCase(label.identifier)) return(label);
+	  for(VirtualMatch match:virtualMatchList)
+		    if(ident.equalsIgnoreCase(match.identifier)) {
+		  	    //if(ident.equalsIgnoreCase("P")) Util.BREAK("ClassDeclaration("+identifier+").findLocalAttribute("+ident+"): FOUND MATCH="+match);
+		    	return(match); 
+		    }
+	  for(VirtualSpecification virtual:virtualSpecList)
+		    if(ident.equalsIgnoreCase(virtual.identifier)) return(virtual); 
+	  //if(ident.equalsIgnoreCase("P")) Util.BREAK("ClassDeclaration("+identifier+").findLocalAttribute("+ident+"): NOT FOUND");
+	  return(null);
+  }
+  
+  // ***********************************************************************************************
+  // *** Utility: findLocalProcedure
+  // ***********************************************************************************************
+  public ProcedureDeclaration findLocalProcedure(String ident) {
+	  //if(ident.equalsIgnoreCase("P")) Util.BREAK("ClassDeclaration("+identifier+").findLocalProcedure("+ident+"): scope="+this);
+	  for(Declaration decl:declarationList)
+		    if(ident.equalsIgnoreCase(decl.identifier)) {
+		    	if(decl instanceof ProcedureDeclaration) return((ProcedureDeclaration)decl);
+		    	else return(null);
+		    }
+	  return(null);
+  }
+  
   // ***********************************************************************************************
   // *** Utility: findRemoteAttributeMeaning
   // ***********************************************************************************************
-  public Meaning findRemoteAttributeMeaning(String ident)
-  {return(findRemoteAttributeMeaning(ident,false)); } 
+  public Meaning findRemoteAttributeMeaning(String ident) {
+	  //if(ident.equalsIgnoreCase("P"))Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+this);
   
-  public Meaning findRemoteAttributeMeaning(String ident,boolean behindProtected)
-  { //if(ident.equalsIgnoreCase("detach"))Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+this);
-	boolean prtected=false;
-    for(String prct:protectedList)
-    	if(ident.equalsIgnoreCase(prct))
-   	    { if(!withinScope(this)) behindProtected=prtected=true;
-   	      break;
-    	}
-    //Util.BREAK("DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): prtected="+prtected);
-    if(!prtected)
-    { for(Parameter parameter:parameterList)
-        if(ident.equalsIgnoreCase(parameter.identifier))
-        	return(new Meaning(parameter,this,this,behindProtected));
-      for(Declaration declaration:declarationList)
-	    if(ident.equalsIgnoreCase(declaration.identifier))
-	    	return(new Meaning(declaration,this,this,behindProtected));
-      for(LabelDeclaration label:labelList)
-	    if(ident.equalsIgnoreCase(label.identifier))
-	    	return(new Meaning(label,this,this,behindProtected));
-      for(VirtualSpecification virtual:virtualList)
-	    if(ident.equalsIgnoreCase(virtual.identifier))
-	    	return(new Meaning(virtual,this,this,behindProtected)); 
+	  boolean behindProtected=false;
+	  ClassDeclaration scope=this;
+	  
+	  Declaration decl=scope.findLocalAttribute(ident);
+	  if(decl!=null) {
+		  boolean prtected=decl.isProtected!=null;
+		  //Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): protected="+prtected);
+		  if(decl instanceof ProcedureDeclaration) {
+			  VirtualSpecification virtSpec=((ProcedureDeclaration)decl).getVirtualSpecification();
+			  if(virtSpec!=null && virtSpec.isProtected!=null) prtected=true;
+		  }
+		  if(!prtected) {
+			  Meaning meaning=new Meaning(decl,this,scope,behindProtected); 
+			  //Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): DIRECT RESULT="+meaning);
+			  return(meaning);
+		  }
+	  }
+	  
+	  SEARCH:while(scope!=null) {
+		  HiddenSpecification hdn = scope.searchHiddenList(ident);
+		  //Util.BREAK("ClassDeclaration(" + identifier + ").findRemoteAttributeMeaning: hdn=" + hdn);
+		  if (hdn != null) {
+			  scope = hdn.getScopeBehindHidden();
+			  behindProtected=true;
+			  continue SEARCH;
+		  }
+		  Declaration decl2=scope.findLocalAttribute(ident);
+		  if(decl2!=null) {
+			  boolean prtected=decl2.isProtected!=null;
+			  //Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): protected="+prtected);
+			  if(withinScope(scope)) {
+				  //Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): protected=null for local attribute");
+				  prtected=false;  
+			  }
+			  if(!prtected) {
+				  Meaning meaning=new Meaning(decl2,this,scope,behindProtected); 
+				  //Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): RESULT="+meaning);
+				  return(meaning);
+			  }
+			  behindProtected=true;
+		  }
+		  scope=scope.getPrefixClass();
+	  }
+	  return(null);
+  }
+  
+  // ***********************************************************************************************
+  // *** Utility: searchProtectedList  -  Search Protected-list for 'ident'
+  // ***********************************************************************************************
+  public ProtectedSpecification searchProtectedList(String ident)
+  { //Util.BREAK("ClassDeclaration("+identifier+").searchProtectedList("+ident+"): protectedList="+protectedList);
+	for(ProtectedSpecification pct:protectedList) if(ident.equalsIgnoreCase(pct.identifier))
+    { //Util.BREAK("ClassDeclaration("+identifier+").searchProtectedList("+ident+"): FOUND in "+this);
+      return(pct);
     }
-    //Util.BREAK("NOT FOUND - DeclarationScope("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+declaredIn);
-    
-//    if( ((BlockDeclaration)this).hasNoRealPrefix()) return(null);  // TODO: SIKKER PÅ DETTE ?
-    
-    ClassDeclaration prfx=getPrefixClass();
-    if(prfx!=null)
-    { Meaning meaning=prfx.findRemoteAttributeMeaning(ident,behindProtected);
-      if(meaning!=null) meaning.declaredIn=this;
-      return(meaning);
-    }
+    //Util.BREAK("ClassDeclaration("+identifier+").searchProtectedList("+ident+"): NOT FOUND");
     return(null);
   }
   
@@ -280,94 +373,58 @@ public class ClassDeclaration extends BlockDeclaration
   // *** Utility: findVisibleAttributeMeaning
   // ***********************************************************************************************
   public Meaning findVisibleAttributeMeaning(String ident)
-  { //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
-    //if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
+  { //if(ident.equalsIgnoreCase("p")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
 	boolean searchBehindHidden=false;
 	ClassDeclaration scope=this;
-	SEARCH:while(scope!=null)
-    { //if(ident.equalsIgnoreCase("adHoc00")) Util.BREAK("DeclarationScope("+scope+").findVisibleAttributeMeaning("+ident+"): scope="+scope);
-//	  for(Parameter parameter:scope.parameterList)
-//      if(ident.equalsIgnoreCase(parameter.identifier))
-//        { DeclarationScope hiddenScope=scope.getHidden(ident);
-//          if(hiddenScope==null) return(new Meaning(Variable.Kind.parameter,parameter,this,scope,searchBehindHidden));
-//          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
-//        }
-      for(Declaration declaration:scope.declarationList)
-	    if(ident.equalsIgnoreCase(declaration.identifier))
-	    { ClassDeclaration hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null) return(new Meaning(declaration,this,scope,searchBehindHidden));
-          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
-	    }
-	  for(Parameter parameter:scope.parameterList)
-	      if(ident.equalsIgnoreCase(parameter.identifier))
-	        { DeclarationScope hiddenScope=scope.getHidden(ident);
-	          if(hiddenScope==null) return(new Meaning(parameter,this,scope,searchBehindHidden));
-	          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
-	        }
-      for(LabelDeclaration label:scope.labelList)
-	    if(ident.equalsIgnoreCase(label.identifier))
-	    { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null)	return(new Meaning(label,this,scope,searchBehindHidden));
-          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
-	    }
-      for(VirtualSpecification virtual:scope.virtualList)
-	    if(ident.equalsIgnoreCase(virtual.identifier))
-	    { DeclarationScope hiddenScope=scope.getHidden(ident);
-          if(hiddenScope==null)	return(new Meaning(virtual,this,scope,searchBehindHidden));
-          scope=scope.getScopeBehindHidden(ident); continue SEARCH;
-	    }
-      
-      if(scope.getHidden(ident)==null) scope=scope.getPrefixClass();
-      else { scope=scope.getScopeBehindHidden(ident); searchBehindHidden=true; }
-	}
+    Declaration decl=scope.findLocalAttribute(ident);
+    if(decl!=null) {
+		  Meaning meaning=new Meaning(decl,this,scope,searchBehindHidden);
+		  //if(ident.equalsIgnoreCase("p")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): FOUND DIRECT meaning="+meaning+", scope="+scope);
+		  return(meaning);    	
+    }
+    scope=scope.getPrefixClass();
+    
+    SEARCH:while(scope!=null)
+    { HiddenSpecification hdn = scope.searchHiddenList(ident);
+	  //Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: hdn=" + hdn);
+	  if (hdn != null) {
+		  scope = hdn.getScopeBehindHidden();
+		  searchBehindHidden=true;
+		  continue SEARCH;
+	  }
+      decl=scope.findLocalAttribute(ident);
+      if(decl!=null) {
+  		  Meaning meaning=new Meaning(decl,this,scope,searchBehindHidden);
+  		  //if(ident.equalsIgnoreCase("p")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): FOUND meaning="+meaning+", scope="+scope);
+  		  return(meaning);    	
+      }
+      scope=scope.getPrefixClass();
+    }
+	//if(ident.equalsIgnoreCase("p")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): NOT FOUND");
     return(null);
   }
-
+  
+  
   // ***********************************************************************************************
-  // *** Utility: getHidden  --  Used by findVisibleAttributeMeaning
+  // *** Utility: searchHiddenList -- Search Hidden-list for 'ident'
   // ***********************************************************************************************
-  // Search backwards through prefix chain - find hidden
-  // then return the scope where it was specified hidden.
-  // If no HIDDEN was found - return null
-  public ClassDeclaration getHidden(String ident)
-  { ClassDeclaration prfx=getPrefixClass();
-    //Util.BREAK("DeclarationScope("+identifier+").getHidden("+ident+"): scope="+this+", prefix="+prfx);
-	if(prfx==null) return(null);
-    for(String hdn:prfx.hiddenList) if(ident.equalsIgnoreCase(hdn))
-    { //Util.BREAK("DeclarationScope("+identifier+").getHidden("+ident+"): FOUND - scope="+prfx);
-      return(prfx);
+  HiddenSpecification searchHiddenList(String ident)
+  { for(HiddenSpecification hdn:hiddenList) if(ident.equalsIgnoreCase(hdn.identifier))
+    { //Util.BREAK("ClassDeclaration("+identifier+").searchHiddenList("+ident+"): FOUND="+hdn);
+      return(hdn);
     }
-    return(prfx.getHidden(ident));
-  }
-
-  // ***********************************************************************************************
-  // *** Utility: getScopeBehindHidden  --  Used by findVisibleAttributeMeaning
-  // ***********************************************************************************************
-  // Search for protected backwards through prefix chain starting with this scope
-  // - find corresponding protected
-  // then return the scope prefix to where it was specified protected.
-  // If no PROTECTED was found - Runtime Error
-  private ClassDeclaration getScopeBehindHidden(String ident)
-  { ClassDeclaration scope=this;
-    //Util.BREAK("DeclarationScope("+identifier+").getScopeBehindHidden("+ident+"): scope="+scope);
-    while(scope!=null)
-	{ ClassDeclaration prfx=scope.getPrefixClass();
-      for(String ptc:scope.protectedList) if(ident.equalsIgnoreCase(ptc)) return(prfx);
-      scope=prfx;
-      //Util.BREAK("DeclarationScope("+identifier+").getScopeBehindHidden("+ident+"): scope="+scope);
-	}
-	throw new RuntimeException(ident+" is specified HIDDEN without being PROTECTED");
+    return(null);
   }
   
 // ***********************************************************************************************
 // *** Utility: getPrefixClass
 // ***********************************************************************************************
 public ClassDeclaration getPrefixClass()
-{ //Util.BREAK("DeclarationScope.getPrefixClass: "+prefix);
+{ //Util.BREAK("ClassDeclaration.getPrefixClass: "+prefix);
 	if(prefix==null) return(null);
-  //Util.BREAK("DeclarationScope.getPrefixClass("+prefix+") Search in "+declaredIn);
+  //Util.BREAK("ClassDeclaration.getPrefixClass("+prefix+") Search in "+declaredIn);
   Meaning meaning=declaredIn.findMeaning(prefix);
-  //Util.BREAK("DeclarationScope.getPrefixClass("+prefix+") Search in "+declaredIn+", Result="+meaning);
+  //Util.BREAK("ClassDeclaration.getPrefixClass("+prefix+") Search in "+declaredIn+", Result="+meaning);
   if(meaning==null) Util.error("Undefined prefix: "+prefix);
   Declaration decl=meaning.declaredAs;
   if(decl==this) Util.error("Class prefix chain loops");
@@ -489,7 +546,12 @@ public boolean isDetachUsed()
 	}
 	JavaModule.code("// Declare locals as attributes");
 	for(Declaration decl:declarationList) decl.doJavaCoding();
-    for(VirtualSpecification virtual:virtualList) virtual.doJavaCoding();
+	
+    for(VirtualSpecification virtual:virtualSpecList) {
+    	if(!virtual.hasDefaultMatch) virtual.doJavaCoding();
+    }
+	
+    for(VirtualMatch match:virtualMatchList) match.doJavaCoding();
 	doCodeConstructor();
 	codeClassStatements();
 	javaModule.codeProgramInfo();
@@ -620,15 +682,16 @@ public boolean isDetachUsed()
     s.append('[').append(externalIdent).append("] ");
     s.append(editParameterList());
     System.out.println(s.toString());
+    if(!virtualSpecList.isEmpty()) System.out.println(indent+"    VIRTUAL-SPEC"+virtualSpecList);
+    if(!virtualMatchList.isEmpty()) System.out.println(indent+"    VIRTUAL-MATCH"+virtualMatchList);
+    if(!hiddenList.isEmpty()) System.out.println(indent+"    HIDDEN"+hiddenList);
+    if(!protectedList.isEmpty()) System.out.println(indent+"    PROTECTED"+protectedList);
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
     System.out.println(indent+beg); 
-    if(!hiddenList.isEmpty()) System.out.println(indent+"   HIDDEN"+hiddenList);
-    if(!protectedList.isEmpty()) System.out.println(indent+"   PROTECTED"+protectedList);
     for(Declaration decl:declarationList) decl.print(indent+"   ",";");
     for(Statement stm:statements) stm.print(indent+"   ",";");
 	System.out.println(indent+"end["+edScopeChain()+']'+tail); 
-	//Util.BREAK("ClassDeclaration.print DONE");
   }
   
   // ***********************************************************************************************
@@ -640,12 +703,6 @@ public boolean isDetachUsed()
     for(Parameter par:parameterList)
     { if(!first) s.append(','); s.append(par); first=false; }
     s.append(')');
-    if(!virtualList.isEmpty())
-    { s.append(" VIRTUAL: ");
-      first=true;
-      for(Declaration virt:virtualList)
-      { if(!first) s.append(','); s.append(virt); first=false; }
-    }
     s.append(';');
     return(s.toString());
   }

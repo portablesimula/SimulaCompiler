@@ -41,7 +41,7 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findMeaning
   // ***********************************************************************************************
   public Meaning findMeaning(String identifier)
-  { //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): scope="+this);
+  { //if(identifier.equalsIgnoreCase("X"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): scope="+this);
     Meaning meaning=findVisibleAttributeMeaning(identifier);
     //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning1="+meaning);
     //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): declaredIn="+declaredIn);

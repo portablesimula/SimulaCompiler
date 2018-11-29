@@ -127,7 +127,7 @@ public final class RunFullTestBatch {
 		names.add("simtst85.sim"); // OK:  Test Directfile.
 		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		names.add("simtst86.sim"); // OK:  Test separate compilation of Class.
-		names.add("simtst87.sim"); // OK: Specification of Virtual Procedures.
+		names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
 		names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
 		names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
 		names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
@@ -137,12 +137,14 @@ public final class RunFullTestBatch {
 		names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
 		names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
-		//names.add("simtst96.sim"); // ERR: Test SIMULATION, complex example.
-		//names.add("simtst97.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
-		//names.add("simtst98.sim"); // ERR: Test attribute protection. Test visibility of labels.
+		names.add("simtst96.sim"); // OK:  Test hidden, protected attributes.
+		names.add("simtst97.sim"); // OK:  Test nested hidden and protected.
+		names.add("simtst98.sim"); // OK:  Test attribute protection - complex example. Test visibility of labels.
 		names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.
 		names.add("simtst101.sim"); // OK: Test Standard Procedure 'sourceline'.
+		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
+		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
 //		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;

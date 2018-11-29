@@ -79,7 +79,7 @@ public final class CallProcedure {
 	  if(procedure.myVirtual!=null)
 	  { // Call Remote Virtual Procedure
 //		return(remoteVirtual(obj,func,procedure.myVirtual,backLink));
-		return(remoteVirtual(obj,func,procedure.myVirtual));
+		return(remoteVirtual(obj,func,procedure.myVirtual.virtualSpec));
 	  }
 	  else if(procedure.blockKind==BlockKind.Method)
 	  { // Call Remote Method
@@ -206,7 +206,8 @@ public final class CallProcedure {
 	 */
 	public static String virtual(Variable variable,VirtualSpecification virtual,boolean remotelyAccessed)
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
-	  String ident=virtual.getJavaIdentifier()+"()";
+//	  String ident=virtual.getJavaIdentifier()+"()";
+	  String ident=virtual.getVirtualIdentifier()+"()";
 	  //Util.BREAK("CallProcedure.virtual: ident="+ident+", remotelyAccessed="+remotelyAccessed);
 	  //Util.BREAK("CallProcedure.virtual: variable="+variable);
 	  //Util.BREAK("CallProcedure.virtual: variable.meaning="+variable.meaning);
@@ -238,9 +239,11 @@ public final class CallProcedure {
 	 * @return
 	 */
 //	public static String remoteVirtual(Expression obj,Variable variable,VirtualSpecification virtual,SyntaxClass backLink)
+//	public static String remoteVirtual(Expression obj,Variable variable,VirtualSpecification virtual)
 	public static String remoteVirtual(Expression obj,Variable variable,VirtualSpecification virtual)
 	{ //return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
-	  String ident=obj.get()+'.'+virtual.getJavaIdentifier()+"()";
+//	  String ident=obj.get()+'.'+virtual.getJavaIdentifier()+"()";
+	  String ident=obj.get()+'.'+virtual.getVirtualIdentifier()+"()";
 	  
 	  //Util.BREAK("CallProcedure.remoteVirtual: ident="+ident);
 	  //Util.BREAK("CallProcedure.remoteVirtual: variable="+variable);

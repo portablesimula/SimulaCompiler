@@ -62,7 +62,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration
 		}
 		// Switch attributes are implicit specified 'protected'
 		if(declaredIn.blockKind==BlockKind.Class)
-			((ClassDeclaration)declaredIn).protectedList.add(identifier);
+			((ClassDeclaration)declaredIn).protectedList.add(new ProtectedSpecification((ClassDeclaration)Global.currentScope,identifier));
 	}
 
 	// ***********************************************************************************************
