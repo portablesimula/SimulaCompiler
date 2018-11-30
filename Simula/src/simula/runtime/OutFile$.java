@@ -84,9 +84,8 @@ public class OutFile$ extends ImageFile$ {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(TXT$ IMAGE_) {
-		if (OPEN$)
-			return (false); // File already opened
-		// TODO: Access mode actions ...
+		if (OPEN$) return (false); // File already opened
+		doCreateAction();
 		OPEN$ = true;
 		image = IMAGE_;
 		setpos(1);
@@ -146,6 +145,7 @@ public class OutFile$ extends ImageFile$ {
 			return (false);
 		} //else console.close();
 		OPEN$ = false;
+		doPurgeAction();
 		return (true);
 	}
 

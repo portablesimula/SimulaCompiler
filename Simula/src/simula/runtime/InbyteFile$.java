@@ -79,8 +79,8 @@ public class InbyteFile$ extends ByteFile$ {
 	 * @return
 	 */
 	public boolean open() {
-		if (OPEN$)
-			return (false);
+		if (OPEN$) return (false);
+		doCreateAction();
 		try {
 			inputStream = new FileInputStream(FILENAME$.edText());
 		} catch (FileNotFoundException e) {
@@ -111,6 +111,7 @@ public class InbyteFile$ extends ByteFile$ {
 		if (OPEN$) {
 			OPEN$ = false;
 			ENDFILE$ = true;
+			doPurgeAction();
 			return (true);
 		}
 		return (false);

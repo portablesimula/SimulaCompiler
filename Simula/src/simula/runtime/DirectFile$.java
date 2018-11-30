@@ -101,6 +101,7 @@ public class DirectFile$ extends ImageFile$ {
     public DirectFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
    	  TRACE_BEGIN_DCL$("DirectFile$");
+  	  CREATE$=CreateAction$.noCreate; // Default for Direct-type files
       CODE$=new ClassBody(CODE$,this,2) {
          public void STM$() {
           	TRACE_BEGIN_STM$("DirectFile$",inner);
@@ -160,6 +161,8 @@ public class DirectFile$ extends ImageFile$ {
 	 */
 	public boolean open(TXT$ IMAGE$) {
 		if (OPEN$) return (false);
+//		System.out.println("DirectFile$.open: CREATE$="+CREATE$+" on "+FILENAME$.edText());
+		doCreateAction();
 		LOC$ = 1;
 		MAXLOC$ = maxint - 1;
 		image = IMAGE$;
@@ -206,6 +209,7 @@ public class DirectFile$ extends ImageFile$ {
 		}
 		OPEN$ = false;
 		ENDFILE$=true;
+		doPurgeAction();
 		return (true);
 	}
 

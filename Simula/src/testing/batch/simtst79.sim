@@ -27,10 +27,11 @@ BEGIN
    Boolean verbose=false;
 
    Ref(file) xf;
+   Integer i;
 
-   Procedure Test(open, B, nr); Boolean open, B; Integer nr;
+   Procedure Test(line,open, B, nr); Integer line; Boolean open, B; Integer nr;
    Begin If not open eqv B then
-         Begin Outtext("*** error : Attribute 'IsOpen' of ");
+         Begin Outtext("Line "); outint(line,0); Outtext(": *** error : Attribute 'IsOpen' of ");
                If xf in infile         then Outtext("infile")        
           else If xf is outfile        then Outtext("outfile")       
           else If xf in printfile      then Outtext("printfile")     
@@ -54,92 +55,100 @@ BEGIN
    Outtext ("--- Test the attribute 'IsOpen' of class file.");
    Outimage ;
    end;
+   
+   !***** PREPARE sxcvzf to be used as Infile below *****;
+   xf:-New Outfile("sxcvzf");
+   xf qua Outfile.open(blanks(10));
+   for i:=0 step 1 until 30 do xf qua Outfile.outint(i,4);
+   xf qua Outfile.outimage;
+   xf qua Outfile.close;
 
    xf:- New Infile("sxcvzf");             !***** NOTE 1, NOTE 2 *****;
-   Test(xf.Isopen, false, 1);
+   Test(sourceline,xf.Isopen, false, 1);
 
    xf qua Infile.open(blanks(10));
-   Test(xf.Isopen, true, 2);
+   Test(sourceline,xf.Isopen, true, 2);
 
    xf:- New Infile("sxcvzg");             !***** NOTE 1, NOTE 3 *****;
-   Test(xf.Isopen, false, 3);
+   Test(sourceline,xf.Isopen, false, 3);
 
    if not xf qua Infile.open(blanks(80))
-   then Test(xf.Isopen, false, 4)
-   else Test(xf.Isopen, true, 5);
+   then Test(sourceline,xf.Isopen, false, 4)
+   else Test(sourceline,xf.Isopen, true, 5);
 
    xf qua Infile.close;
-   Test(xf.Isopen, false, 6);
+   Test(sourceline,xf.Isopen, false, 6);
 
    xf:- New Inbytefile("sxcvzfb");         !***** NOTE 1, NOTE 2 *****;
-   Test(xf.Isopen, false, 7);
+   Test(sourceline,xf.Isopen, false, 7);
 
    xf qua Inbytefile.Open;
-   Test(xf.Isopen, false, 8);
+   Test(sourceline,xf.Isopen, false, 8);
 
    xf:- New Inbytefile("sxcvzgb");         !***** NOTE 1, NOTE 3 *****;
-   Test(xf.Isopen, false, 9);
+   Test(sourceline,xf.Isopen, false, 9);
 
    if not xf qua Inbytefile.Open
-   then Test(xf.Isopen, false, 10)
-   else Test(xf.Isopen, true, 11);
+   then Test(sourceline,xf.Isopen, false, 10)
+   else Test(sourceline,xf.Isopen, true, 11);
 
    xf qua Inbytefile.Close;
-   Test(xf.Isopen, false, 12);
+   Test(sourceline,xf.Isopen, false, 12);
 
 
    xf:- New Outfile("sxcvz1");            !***** NOTE 1, NOTE 4 *****;
-   Test(xf.Isopen, false, 13);
+   Test(sourceline,xf.Isopen, false, 13);
 
    if not xf qua Outfile.Open(blanks(80))
-   then Test(xf.Isopen, false, 14)
-   else Test(xf.Isopen, true, 15);
+   then Test(sourceline,xf.Isopen, false, 14)
+   else Test(sourceline,xf.Isopen, true, 15);
 
    xf qua Outfile.Close;
-   Test(xf.Isopen, false, 16);
+   Test(sourceline,xf.Isopen, false, 16);
 
 
    xf:- New Outbytefile("sxcvz2");        !***** NOTE 1, NOTE 4 *****;
-   Test(xf.Isopen, false, 17);
+   Test(sourceline,xf.Isopen, false, 17);
 
    if not xf qua Outbytefile.Open
-   then Test(xf.Isopen, false, 18)
-   else Test(xf.Isopen, true, 19);
+   then Test(sourceline,xf.Isopen, false, 18)
+   else Test(sourceline,xf.Isopen, true, 19);
 
    xf qua Outbytefile.Close;
-   Test(xf.Isopen, false, 20);
+   Test(sourceline,xf.Isopen, false, 20);
 
 
    xf:- New Directfile("sxcvz3");         !***** NOTE 1, NOTE 4 *****;
-   Test(xf.Isopen, false, 21);
+   Test(sourceline,xf.Isopen, false, 21);
 
    if not xf qua Directfile.Open(blanks(10))
-   then Test(xf.Isopen, false, 22)
-   else Test(xf.Isopen, true, 23);
+   then Test(sourceline,xf.Isopen, false, 22)
+   else Test(sourceline,xf.Isopen, true, 23);
 
    xf qua Directfile.Close;
-   Test(xf.Isopen, false, 24);
+   Test(sourceline,xf.Isopen, false, 24);
 
 
    xf:- New Directbytefile("sxcvz4");     !***** NOTE 1, NOTE 4 *****;
-   Test(xf.Isopen, false, 25);
+   xf.setaccess("CREATE");                ! MYH
+   Test(sourceline,xf.Isopen, false, 25);
 
    if not xf qua Directbytefile.Open
-   then Test(xf.Isopen, false, 26)
-   else Test(xf.Isopen, true, 27);
+   then Test(sourceline,xf.Isopen, false, 26)
+   else Test(sourceline,xf.Isopen, true, 27);
 
    xf qua Directbytefile.Close;
-   Test(xf.Isopen, false, 28);
+   Test(sourceline,xf.Isopen, false, 28);
 
    xf:- New Printfile("sxcvz5");          !***** NOTE 1, NOTE 4 *****;
-   Test(xf.Isopen, false, 29);
+   Test(sourceline,xf.Isopen, false, 29);
 
    if not xf qua Printfile.Open(blanks(136))
-   then Test(xf.Isopen, false, 30)
-   else Test(xf.Isopen, true, 31);
+   then Test(sourceline,xf.Isopen, false, 30)
+   else Test(sourceline,xf.Isopen, true, 31);
 
    xf qua Printfile.Close;
-   Test(xf.Isopen, false, 32);
+   Test(sourceline,xf.Isopen, false, 32);
 
    IF found_error THEN
    ELSE

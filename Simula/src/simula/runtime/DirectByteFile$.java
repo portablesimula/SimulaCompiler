@@ -78,6 +78,7 @@ public class DirectByteFile$ extends ByteFile$ {
     public DirectByteFile$(RTObject$ staticLink,TXT$ FILENAME) {
       super(staticLink,FILENAME);
   	  TRACE_BEGIN_DCL$("DirectByteFile$");
+  	  CREATE$=CreateAction$.noCreate; // Default for Direct-type files
       CODE$=new ClassBody(CODE$,this,2) {
          public void STM$() {
         	TRACE_BEGIN_STM$("DirectByteFile$",inner);
@@ -153,8 +154,8 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * @return
 	 */
 	public boolean open() {
-		if (OPEN$)
-			return (false);
+		if (OPEN$) return (false);
+		doCreateAction();
 		// LOC$ = 1; // LOC is maintained by the underlying file system.
 		//RT.BREAK("DirectByteFile.open: Filename=" + FILENAME$);
 		try {
@@ -182,8 +183,7 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * @return
 	 */
 	public boolean close() {
-		if (!OPEN$)
-			return (false);
+		if (!OPEN$)	return (false);
 		MAXLOC$ = 0;
 		OPEN$ = false;
 		try {
@@ -192,6 +192,7 @@ public class DirectByteFile$ extends ByteFile$ {
 		} catch (IOException e) {
 			throw new RuntimeException("I/O Error on file",e);
 		}
+		doPurgeAction();
 		return (true);
 	}
 

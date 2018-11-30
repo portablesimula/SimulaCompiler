@@ -124,7 +124,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
-		//names.add("simtst84.sim"); // OK:  Test Printfile.
+		names.add("simtst84.sim"); // OK:  Test Printfile.
 		//names.add("simtst85.sim"); // OK:  Test Directfile.
 		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
@@ -140,7 +140,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
 		//names.add("simtst96.sim"); // OK:  Test hidden, protected attributes.
 		//names.add("simtst97.sim"); // OK:  Test nested hidden and protected.
-		names.add("simtst98.sim"); // OK:  Test attribute protection - complex example. Test visibility of labels.
+		//names.add("simtst98.sim"); // OK:  Test attribute protection - complex example. Test visibility of labels.
 		//names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.

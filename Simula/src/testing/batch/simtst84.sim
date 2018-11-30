@@ -9,6 +9,10 @@
 %  WRITTEN BY:
 % ====================================================================
 BEGIN
+
+boolean verbose=false; !true;
+boolean foundError;
+
 REF (PRINTFILE)   myfile;
 BOOLEAN           save;
 
@@ -18,17 +22,20 @@ PROCEDURE Check (b1, b2);   BOOLEAN b1, b2;
 %  myfile.OUTIMAGE
 %  END of procedure Check;
    BEGIN
-   IF b1 EQV b2 THEN OUTTEXT ("OK ") ELSE OUTTEXT ("error");
-   OUTIMAGE
+   IF b1 EQV b2 THEN ELSE
+   BEGIN OUTTEXT ("error"); OUTIMAGE; foundError:=true; END;
    END of procedure Check;
 
-outtext("--- START Simula a.s. TEST 84 (test PRINTFILE)"); outimage;
-outtext("    The program prints on ""new printfile(print84)"",");
-outimage;
-outtext("    compare that output to program source after exec.");
-outimage;
-outtext("    In addition, ""OK"" is printed 5 times on sysout.");
-outimage; Outimage;
+if verbose then
+begin outtext("--- START Simula a.s. TEST 84 (test PRINTFILE)"); outimage;
+      outtext("    The program prints on ""new printfile(print84)"",");
+      outimage;
+      outtext("    compare that output to program source after exec.");
+      outimage;
+      outtext("    In addition, ""OK"" is printed 5 times on sysout.");
+      outimage; Outimage;
+end;
+
 myfile:-NEW PRINTFILE ("print84");
 save:= myfile.LINE=0;
 Check (save, TRUE);
@@ -110,6 +117,11 @@ INSPECT myfile DO
    CLOSE;
    END;
 
-   Outimage; outtext("--- END Simula a.s. TEST 84"); 
+      IF foundError THEN 
+      begin if verbose then begin
+                outtext ("--- END Simula TEST 84 WITH ERROR(S)");
+            end;
+      end ELSE Outtext ("--- NO ERRORS FOUND IN TEST 84");
+
 
 END of program;

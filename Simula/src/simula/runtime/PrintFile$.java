@@ -229,9 +229,8 @@ public class PrintFile$ extends OutFile$ {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(TXT$ image) {
-		if (OPEN$)
-			return (false); // File already opened
-		// TODO: Access mode actions ...
+		if (OPEN$) return (false); // File already opened
+		doCreateAction();
 		PAGE$ = 0;
 		OPEN$ = true;
 		this.image = image;
@@ -306,6 +305,7 @@ public class PrintFile$ extends OutFile$ {
 			return (false);
 		} //else console.close();
 		OPEN$ = false;
+		doPurgeAction();
 		return (true);
 	}
 

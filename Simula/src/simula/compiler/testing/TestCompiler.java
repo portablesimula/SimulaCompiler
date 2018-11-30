@@ -63,7 +63,7 @@ public final class TestCompiler {
 		// String name=Global.packetName+"/simprogs/HelloWorld.sim";
 		// String name=Global.packetName+"/simprogs/FittingRoom.sim";
 		// String name=Global.packetName+"/simprogs/JensensDevice.sim";
-		 String name=Global.packetName+"/simprogs/Docking.sim";
+		// String name=Global.packetName+"/simprogs/Docking.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
 		// String name=Global.packetName+"/err/simerr01.sim"; // Syntax errors
@@ -87,7 +87,7 @@ public final class TestCompiler {
 		// String name=Global.packetName+"/sim/adHoc02.sim";
 		// String name=Global.packetName+"/sim/adHoc03.sim";
 		// String name=Global.packetName+"/sim/adHoc04.sim";
-		// String name=Global.packetName+"/sim/adHoc05.sim";
+		 String name=Global.packetName+"/sim/adHoc05.sim";
 	    // String name=Global.packetName+"/sim/Activation.sim";
 	    // String name=Global.packetName+"/sim/AnimationTest.sim";
 	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";

@@ -7,6 +7,9 @@
  */
 package simula.runtime;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * The class file.
  * <p>
@@ -46,6 +49,52 @@ public class FILE$ extends CLASS$ {
 	// Declare locals as attributes
 	public TXT$ image;
 	protected boolean OPEN$;
+	
+	/**
+	 * 
+	 * The default values of the access modes are given in table 10.1, where "NA"
+	 * means "not applicable" (i.e. ignored for this file kind) and "*" means that
+	 * the value is implementation-defined. Files of kind
+	 * 
+	 * <pre>
+	 *                       Files of kind
+	 *  Mode:        In-        Out-        Direct-   Takes effect at
+	 *  SHARED       shared     noshared    noshared     open
+	 *  APPEND       NA         noappend    noappend     open
+	 *  CREATE       NA         anycreate   nocreate     open
+	 *  READWRITE    NA         NA          readwrite    open
+	 *  BYTESIZE:x   *          *           *            open
+	 *  REWIND       norewind   norewind    NA           open,close
+	 *  PURGE        nopurge    nopurge     nopurge      close
+	 * </pre>
+	 */
+	
+	/**
+	 * CREATE: Action is performed at 'open'
+	 * <p>
+	 * If the value is "create", the external file associated with FILENAME
+	 * must not exist at "open" (if it does, "open" returns false); a new file is
+	 * created by the environment. If the value is "nocreate", the associated file
+	 * must exist at "open". The value "anycreate" implies that if the file does
+	 * exist at "open" the file is opened, otherwise a new file is created.
+	 */
+	protected enum CreateAction$ {NA, noCreate, create, anyCreate};
+	protected CreateAction$ CREATE$=CreateAction$.NA; // May be Redefined
+	
+	/**
+	 * PURGE: Action is performed at 'close'
+	 * <p>
+	 * The value "purge" implies that the external file may be deleted by the
+	 * environment when it is closed (in the sense that it becomes inaccessible to
+	 * further program access). The value "nopurge" implies no such deletion.
+	 */
+	protected boolean PURGE$=false; // True:purge, False:noPurge
+	
+	//	protected boolean SHARED$;
+//	protected boolean APPEND$;
+//	protected boolean READWRITE$;
+//	protected boolean BYTESIZE$;
+//	protected boolean REWIND$;
 
 	// Constructor
    public FILE$(RTObject$ staticLink,TXT$ FILENAME$) {
@@ -110,9 +159,76 @@ public class FILE$ extends CLASS$ {
 	public boolean setaccess(TXT$ mode) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
-		RT.warning("FILE$("+FILENAME$.edText()+").setaccess("+mode.edText()+") -- is not implemented: ");
+//		System.out.println("FILE$(FILENAME$).setaccess: "+mode.edText());
+		//RT.BREAK("FILE$(FILENAME$).setaccess: "+mode.edText());
 		//RT.NOT_IMPLEMENTED("FILE$(FILENAME$).setaccess: "+mode.edText());
-		return (false);
+		String id=mode.edText().trim();
+		boolean notImplemented=false;
+		if(id.equalsIgnoreCase("CREATE")) CREATE$=CreateAction$.create; 
+		else if(id.equalsIgnoreCase("NOCREATE")) CREATE$=CreateAction$.noCreate; 
+		else if(id.equalsIgnoreCase("ANYCREATE")) CREATE$=CreateAction$.anyCreate; 
+		else if(id.equalsIgnoreCase("PURGE")) PURGE$=true; 
+		else if(id.equalsIgnoreCase("NOPURGE")) PURGE$=false; 
+//		else if(id.equalsIgnoreCase(FileAccess.SHARED.name())) notImplemented=true; 
+//		else if(id.equalsIgnoreCase(FileAccess.APPEND.name())) notImplemented=true; 
+//		else if(id.equalsIgnoreCase(FileAccess.READWRITE.name())) notImplemented=true; 
+//		else if(id.equalsIgnoreCase(FileAccess.BYTESIZE.name())) notImplemented=true; 
+//		else if(id.equalsIgnoreCase(FileAccess.REWIND.name())) notImplemented=true; 
+		else notImplemented=true;
+		if(notImplemented) {
+			RT.warning("FILE$("+FILENAME$.edText()+").setaccess("+id+") -- is undefined or not implemented: ");			
+		}
+		return (!notImplemented);
+	}
+
+
+	protected void doCreateAction() {
+		try {
+		File file = new File(FILENAME$.edText().trim());
+//			  System.out.println("FILE$.doCreateAction: "+CREATE$+" on "+file);
+//			  RT.BREAK("FILE$.doCreateAction: "+CREATE$+" on "+file);
+			  switch(CREATE$) {
+			      case NA: {
+					  //System.out.println("FILE$.doCreateAction: NA on "+file);
+			    	  //throw new RuntimeException("File access mode=NA - Can't open file");
+			    	  break;
+			      }
+			      case noCreate:{
+					  //System.out.println("FILE$.doCreateAction: noCreate on "+file);
+			    	  // If the value is "nocreate", the associated file must exist at "open".
+			    	  if(!file.exists()) throw new RuntimeException("File access mode=noCreate but File does not exist");
+			    	  break;
+			      }
+			      case create:{
+					  //System.out.println("FILE$.doCreateAction: Create on "+file);
+			    	  // If the value is "create", the external file associated with FILENAME
+			    	  // must not exist at "open" (if it does, "open" returns false);
+			    	  // a new file is created by the environment.
+			    	  if(!file.exists()) {
+				    	  boolean success=file.createNewFile();
+				    	  if(!success) throw new RuntimeException("File access mode=Create but couldn't create a new empty file");
+			    	  }
+			    	  break;
+			      }
+			      case anyCreate:{
+					  //System.out.println("FILE$.doCreateAction: anyCreate on "+file);
+			    	  // The value "anycreate" implies that if the file does exist
+			    	  // at "open" the file is opened, otherwise a new file is created.
+			    	  boolean success=file.createNewFile();
+					  System.out.println("FILE$.doCreateAction: Create on "+file+", success="+success);
+			    	  if(!success) throw new RuntimeException("File access mode=anyCreate but couldn't create a new empty file: "+file);
+			    	  break;
+			      }
+			  }
+		} catch (IOException e) {	}
+	}
+
+	protected void doPurgeAction() {
+		try { File file = new File(FILENAME$.edText().trim());
+//			  System.out.println("FILE$.doPURGEAction: "+PURGE$+" on "+file);
+//			  RT.BREAK("FILE$.doPURGEAction: "+PURGE$+" on "+file);
+			  if(PURGE$) file.delete();  
+		} catch (Exception e) {	}
 	}
 
 }

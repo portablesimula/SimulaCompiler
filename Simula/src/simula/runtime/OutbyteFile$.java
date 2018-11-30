@@ -39,11 +39,11 @@ public class OutbyteFile$ extends ByteFile$ {
 	OutputStream outputStream;
 
 	public boolean open() {
-		if (OPEN$)
-			return (false);
+		if (OPEN$) return (false);
 		if (FILENAME$.edText().equalsIgnoreCase("sysout"))
 			outputStream = System.out;
 		else {
+			doCreateAction();
 			try {
 				outputStream = new FileOutputStream(FILENAME$.edText());
 			} catch (FileNotFoundException e) {
@@ -59,6 +59,7 @@ public class OutbyteFile$ extends ByteFile$ {
 	public boolean close() {
 		if (OPEN$) {
 			OPEN$ = false;
+			doPurgeAction();
 			return (true);
 		}
 		return (false);

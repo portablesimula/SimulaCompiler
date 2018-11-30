@@ -107,12 +107,14 @@ public class InFile$ extends ImageFile$ {
 		if (FILENAME$.edText().equalsIgnoreCase("sysin"))
 			inputStream = System.in;
 		else {
+			doCreateAction();
 			try {
 				inputStream = new FileInputStream(FILENAME$.edText());
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				OPEN$=false;
-				//RT.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
+//				RT.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
+//				System.out.println("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 				return (false);
 			}
 		}
@@ -158,6 +160,7 @@ public class InFile$ extends ImageFile$ {
 		image = null; // image :- NOTEXT;
 		OPEN$ = false;
 		ENDFILE$ = true;
+		doPurgeAction();
 		return (true);
 	}
 
