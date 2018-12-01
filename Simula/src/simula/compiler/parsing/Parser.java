@@ -14,68 +14,60 @@ import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
 
+/**
+ * All static utilities for parsing Simula Syntax
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public final class Parser {
-	static SimulaScanner simulaScanner;
+	public static Token prevToken;
+	public static Token currentToken;
+	private static Token savedToken; // Used by 'pushBack'
+	private static boolean endOfFileErrorGiven;
+	private static SimulaScanner simulaScanner;
 
-	public static void open(String fileName) {
-		FileReader reader=null;
-		try { reader=new FileReader(fileName);
+	// *********************************************************************************
+	// *** Open
+	// *********************************************************************************
+	public static void open(final String fileName) {
+		FileReader reader = null;
+		try {
+			reader = new FileReader(fileName);
 		} catch (IOException e) {
-		System.out.println("Error Opening File: "+fileName);
-		e.printStackTrace();
-		Util.error("can't open "+fileName);
-	}
+			//System.out.println("Error Opening File: " + fileName);
+			//e.printStackTrace();
+			Util.error("can't open " + fileName);
+		}
 		simulaScanner = new SimulaScanner(reader);
+		prevToken = null;
+		currentToken = null;
+		savedToken = null; // Used by 'pushBack'
+		endOfFileErrorGiven=false;
+
 		nextSymb();
 	}
-	
+
+	// *********************************************************************************
+	// *** Close
+	// *********************************************************************************
 	public static void close() {
 		simulaScanner.close();
-		simulaScanner=null;
+		simulaScanner = null;
 	}
 
 	// *********************************************************************************
 	// *** Parser Utilities
 	// *********************************************************************************
-
-	private static Token savedToken = null; // Used by 'pushBack'
-	public static Token prevToken = null;
-	public static Token currentToken = null;
-	private static boolean endOfFileErrorGiven=false;
-
-	private static void nextSymb() {
-		Parser.prevToken = Parser.currentToken;
-		if (savedToken == null) {
-			Parser.currentToken = simulaScanner.nextToken();
-			//Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
-			if(Parser.currentToken==null)
-		    { if(!endOfFileErrorGiven) {
-		    	Util.warning("Possible scanning past END-OF-FILE");
-		      }
-		      endOfFileErrorGiven=true;
-		      Parser.currentToken = new Token(KeyWord.END);
-		    }
-		} else {
-			Parser.currentToken = savedToken;
-			savedToken = null;
-			// Util.BREAK("SAVED TOKEN:'" + Parser.currentToken + "'");
-		}
-	}
-
 	public static void saveCurrentToken() {
-		if (savedToken != null)
-			error("saveCurrentToken: Already called");
+		if (savedToken != null) Util.FATAL_ERROR("saveCurrentToken: Already called");
 		savedToken = Parser.currentToken;
 		Parser.currentToken = Parser.prevToken;
 		Parser.prevToken = null;
 		// Util.BREAK("SAVED TOKEN:'" + savedToken);
 	}
 
-	public static void error(String msg) {
-		Util.error(msg);
-	}
-
-	public static boolean accept(KeyWord s) {
+	public static boolean accept(final KeyWord s) {
 		if (Parser.currentToken.getKeyWord() == s) {
 			nextSymb();
 			return (true);
@@ -83,7 +75,7 @@ public final class Parser {
 		return (false);
 	}
 
-	public static boolean skipMissplacedSymbol(KeyWord s) {
+	public static boolean skipMissplacedSymbol(final KeyWord s) {
 		if (Parser.accept(s)) {
 			Util.error("Missplaced symbol: "+s+" -- Ignored");
 			return (true);
@@ -91,19 +83,7 @@ public final class Parser {
 		return (false);
 	}
 
-//	public static boolean skipAnyKeyWordExcept(KeyWord s) {
-//		KeyWord keyWord=Parser.currentToken.getKeyWord();
-//		//Util.BREAK("Parser.skipAnyKeyWordExcept("+s+"): keyWord="+keyWord);
-////		if (keyWord != null && keyWord != s) {
-//		if (keyWord != null) {
-//			Util.error("Missplaced symbol: "+keyWord+" -- Ignored");
-//			nextSymb();
-//			return (true);
-//		}
-//		return (false);
-//	}
-
-	public static void skipCurrentSymbol() {
+	public static void skipMissplacedCurrentSymbol() {
 		Util.error("Missplaced symbol: "+Parser.currentToken+" -- Ignored");
 		nextSymb();
 	}
@@ -111,11 +91,11 @@ public final class Parser {
 	public static KeyWord lastKeyWord()
 	{ return(Parser.prevToken.getKeyWord()); }
 
-	public static boolean accept(KeyWord s1,KeyWord s2) {
+	public static boolean accept(final KeyWord s1,final KeyWord s2) {
 		return(accept(s1) || accept(s2));
 	}
 
-	public static boolean accept(KeyWord s1,KeyWord s2,KeyWord s3) {
+	public static boolean accept(final KeyWord s1,final KeyWord s2,final KeyWord s3) {
 		return(accept(s1) || accept(s2) || accept(s3));
 	}
 	
@@ -143,18 +123,36 @@ public final class Parser {
 	}
 	
 
-	public static boolean expect(KeyWord s) {
-		if (accept(s))
-			return (true);
-		error("Got symbol '" + Parser.currentToken + "' while expecting Symbol " + s);
+	public static boolean expect(final KeyWord s) {
+		if (accept(s)) return (true);
+		Util.error("Got symbol '" + Parser.currentToken + "' while expecting Symbol " + s);
 		return (false);
 	}
 	
-	public static void TRACE(String msg)
+	public static void TRACE(final String msg)
 	{ Util.TRACE(msg+", current="+Parser.currentToken+", prev="+Parser.prevToken); }
 	
-	public static void BREAK(String msg)
+	public static void BREAK(final String msg)
 	{ Util.BREAK(msg+", current="+Parser.currentToken+", prev="+Parser.prevToken); }
 
+	
+	private static void nextSymb() {
+		Parser.prevToken = Parser.currentToken;
+		if (savedToken == null) {
+			Parser.currentToken = simulaScanner.nextToken();
+			//Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
+			if(Parser.currentToken==null)
+		    { if(!endOfFileErrorGiven) {
+		    	Util.warning("Possible scanning past END-OF-FILE");
+		      }
+		      endOfFileErrorGiven=true;
+		      Parser.currentToken = new Token(KeyWord.END);
+		    }
+		} else {
+			Parser.currentToken = savedToken;
+			savedToken = null;
+			// Util.BREAK("SAVED TOKEN:'" + Parser.currentToken + "'");
+		}
+	}
 
 }

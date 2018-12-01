@@ -124,7 +124,7 @@ public final class SimulaCompiler {
 //			createTempFiles(program);
 			if (Option.verbose) {
 				System.out.println("*** END Parsing, resulting Program: "+program);
-				if (Option.TRACE_PARSE && program != null) program.print("", ";");
+				if (Option.TRACE_PARSE && program != null) program.print("");
 			}
 			Parser.close();
 			
@@ -133,11 +133,11 @@ public final class SimulaCompiler {
 			  System.exit(-Util.nError);
 			}
 			if (Option.verbose)	System.out.println("*** BEGIN Semantic Checker");
-			//program.print("", ";");
+			//program.print("");
 			program.doChecking();
 			if (Option.verbose) {
 				System.out.println("*** END Semantic Checker: "+program);
-				if (Option.TRACE_CHECKER_OUTPUT && program != null) program.print("", ";");
+				if (Option.TRACE_CHECKER_OUTPUT && program != null) program.print("");
 			}
 			
 			if(Util.nError>0) 

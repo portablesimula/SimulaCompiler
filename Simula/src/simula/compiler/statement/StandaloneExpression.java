@@ -84,8 +84,8 @@ public final class StandaloneExpression extends Statement {
 		return (result);
 	}
 
-	public void print(String indent, String tail) {
-		expression.print(indent, tail);
+	public void print(String indent) {
+		expression.print(indent);
 	}
 
 	public String toString() {

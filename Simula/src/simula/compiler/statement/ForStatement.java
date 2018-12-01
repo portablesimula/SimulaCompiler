@@ -134,10 +134,10 @@ public final class ForStatement extends Statement
 	return(cvName);
   }
   
-  public void print(String indent,String tail)
+  public void print(String indent)
   { String fl=forList.toString().replace('[',' ').replace(']',' ');
     System.out.println(indent+"FOR "+controlVariable+" "+assignmentOperator+fl+"DO");
-    if(doStatement!=null) doStatement.print(indent,";"); }
+    if(doStatement!=null) doStatement.print(indent); }
   
   public String toString()
   { String fl=forList.toString().replace('[',' ').replace(']',' ');

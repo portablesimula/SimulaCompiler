@@ -52,7 +52,7 @@ public final class SimulaScanner {
 	 * 
 	 * @param reader The character source to scan
 	 */
-	public SimulaScanner(Reader reader) {
+	SimulaScanner(final Reader reader) {
 		lineNumberReader = new LineNumberReader(reader);
 		Global.sourceLineNumber=0;
 		readNextLine();
@@ -61,7 +61,7 @@ public final class SimulaScanner {
     //********************************************************************************
     //*** Close
     //********************************************************************************
-	public void close() {
+	void close() {
 		SEARCH:while(!EOF()) {
 			int c=readNextCharacter();
 			if(!EOF() && !isWhiteSpace(c)) {
@@ -77,7 +77,7 @@ public final class SimulaScanner {
     //********************************************************************************
     //**	                                                                 nextToken 
     //********************************************************************************
-	public Token nextToken() {
+	Token nextToken() {
 		if (savedToken != null) {
 			Token saved = savedToken;
 			savedToken = null;
@@ -847,23 +847,23 @@ public final class SimulaScanner {
 	    return(c);
 	}
 
-    private void pushBack(int chr) {
+    private void pushBack(final int chr) {
 	    // push given value back into the input stream
 	    puchBackStack.push((char)chr);
 	    current='�';
     }
   
-    private void pushBack(String s) {
+    private void pushBack(final String s) {
 	    // put given value back into the input stream
 	    int i=s.length();
 		while((i--)>0) pushBack(s.charAt(i));
     }
   
-	private Token newItem(KeyWord keyWord, Object value) {
+	private Token newItem(final KeyWord keyWord, final Object value) {
 		return (new Token(keyWord, value));
 	}
 
-	private Token newItem(KeyWord keyWord) {
+	private Token newItem(final KeyWord keyWord) {
 		return (newItem(keyWord, null));
 	}
 
@@ -873,7 +873,7 @@ public final class SimulaScanner {
 		return ("Current='" + (char) current + "' value=" + current);
 	}
 	
-    private boolean isHexDigit(int c) {
+    private boolean isHexDigit(final int c) {
 	    switch(c) {
 	        case '0':case '1':case '2':case '3':case '4':
 	        case '5':case '6':case '7':case '8':case '9':
@@ -883,13 +883,13 @@ public final class SimulaScanner {
 	    }
     }
 	
-	private boolean isPrintable(int c) {
+	private boolean isPrintable(final int c) {
 		if (c < 32) return (false);
 		if (c > 126) return (false);
 		return (true);
 	}
 
-	private boolean isWhiteSpace(int c) {
+	private boolean isWhiteSpace(final int c) {
 		switch(c) {
 		    case '\n':	/* NL (LF) */
 		    case 32:      /* SPACE */

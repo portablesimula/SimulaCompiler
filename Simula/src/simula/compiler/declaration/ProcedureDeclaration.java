@@ -366,7 +366,7 @@ public class ProcedureDeclaration extends BlockDeclaration
   // ***********************************************************************************************
   // *** Printing Utility: print
   // ***********************************************************************************************
-  public void print(String indent,String tail)
+  public void print(String indent)
   { StringBuilder s=new StringBuilder(indent);
     s.append('[').append(blockLevel).append("] ");
     s.append(blockKind).append(' ').append(identifier);
@@ -378,9 +378,9 @@ public class ProcedureDeclaration extends BlockDeclaration
     System.out.println(indent+beg); 
 //    if(!hiddenList.isEmpty()) System.out.println(indent+"   HIDDEN"+hiddenList);
 //    if(!protectedList.isEmpty()) System.out.println(indent+"   PROTECTED"+protectedList);
-    for(Declaration decl:declarationList) decl.print(indent+"   ",";");
-    for(Statement stm:statements) stm.print(indent+"   ",";");
-	System.out.println(indent+"end["+edScopeChain()+']'+tail); 
+    for(Declaration decl:declarationList) decl.print(indent+"   ");
+    for(Statement stm:statements) stm.print(indent+"   ");
+	System.out.println(indent+"end["+edScopeChain()+']'); 
 	//Util.BREAK("ProcedureDeclaration.print DONE");
   }
   

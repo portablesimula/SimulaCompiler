@@ -51,17 +51,17 @@ public final class ConditionalStatement extends Statement {
 		Parser.skipMissplacedSymbol(KeyWord.STEP);
 	}
 
-	public void print(String indent, String tail) {
+	public void print(String indent) {
 		StringBuilder s = new StringBuilder(indent);
 		s.append("IF ").append(condition);
 		System.out.println(s.toString());
 		System.out.println(indent + "THEN ");
 		if (elseStatement != null) {
-			thenStatement.print(indent + "    ", "");
+			thenStatement.print(indent + "    ");
 			System.out.println(indent + "ELSE ");
-			elseStatement.print(indent + "     ", ";");
+			elseStatement.print(indent + "     ");
 		} else
-			thenStatement.print(indent + "    ", ";");
+			thenStatement.print(indent + "    ");
 	}
 
 	public void doChecking() {

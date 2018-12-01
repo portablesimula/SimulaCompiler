@@ -100,7 +100,7 @@ public final class AttributeFile {
 	  { //Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
 		if(Option.TRACE_ATTRIBUTE_INPUT) {
 			Util.TRACE("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
-			blockDeclaration.print("","");
+			blockDeclaration.print("");
 		}
 	  }
 	  return(blockDeclaration);
@@ -116,7 +116,7 @@ public final class AttributeFile {
 	  attributeFile.inpt.close();
 	  if (Option.verbose)
 	  { Util.TRACE("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
-	    if(Option.TRACE_ATTRIBUTE_INPUT) blockDeclaration.print("","");
+	    if(Option.TRACE_ATTRIBUTE_INPUT) blockDeclaration.print("");
 	  }
 	  return(blockDeclaration);
 	}
@@ -222,7 +222,7 @@ public final class AttributeFile {
 	    else Util.error("Malformed Attribute File (at "+label+")");
 	  }
 	  TRACE_INPUT("Block: "+decl);
-	  //decl.print("","");
+	  //decl.print("");
 	  Global.currentScope=decl.declaredIn;
 	  return(decl);
 	}
@@ -254,7 +254,7 @@ public final class AttributeFile {
 	    else Util.error("Malformed Attribute File (at "+label+")");
 	  }
 	  TRACE_INPUT("Block: "+decl);
-	  //decl.print("","");
+	  //decl.print("");
 	  Global.currentScope=decl.declaredIn;
 	  return(decl);
 	}

@@ -103,7 +103,7 @@ public final class ProgramModule extends Statement
   }
   
   public void doJavaCoding() { module.doJavaCoding(); }
-  public void print(String indent,String tail) { module.print("",tail); }
+  public void print(String indent) { module.print(""); }
   public String toString() { return(""+module); }
   public String getIdentifier() { return(module.identifier); }
 }

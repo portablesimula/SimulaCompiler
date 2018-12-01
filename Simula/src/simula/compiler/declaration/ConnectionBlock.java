@@ -108,7 +108,7 @@ public final class ConnectionBlock extends DeclarationScope
   // ***********************************************************************************************
   // *** Printing Utility: print
   // ***********************************************************************************************
-  public void print(String indent,String tail)
+  public void print(String indent)
   { StringBuilder s=new StringBuilder(indent);
     s.append('[').append(blockLevel).append("] ");
     s.append(blockKind).append(' ').append(identifier);
@@ -116,9 +116,9 @@ public final class ConnectionBlock extends DeclarationScope
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
     System.out.println(indent+beg); 
-    for(Declaration decl:declarationList) decl.print(indent+"   ",";");
-    statement.print(indent+"   ",";");
-	System.out.println(indent+"end["+edScopeChain()+']'+tail); 
+    for(Declaration decl:declarationList) decl.print(indent+"   ");
+    statement.print(indent+"   ");
+	System.out.println(indent+"end["+edScopeChain()+']'); 
 	//Util.BREAK("ConnectionBlock.print DONE");
   }
 

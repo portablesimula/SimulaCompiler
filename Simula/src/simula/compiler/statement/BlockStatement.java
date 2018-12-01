@@ -72,8 +72,8 @@ public final class BlockStatement extends Statement {
 		blockDeclaration.doJavaCoding();
 	}
 
-	public void print(String indent, String tail) {
-		blockDeclaration.print(indent, tail);
+	public void print(String indent) {
+		blockDeclaration.print(indent);
 	}
 
 	public String toString() {

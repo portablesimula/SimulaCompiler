@@ -130,7 +130,7 @@ public final class ConnectionStatement extends Statement
 	
 	public void print(String indent)
 	{ System.out.println(indent+"DO ");
-	  connectionBlock.print(indent,";");
+	  connectionBlock.print(indent);
 	}
 
 	public String toString() { return(connectionBlock.toString()); }
@@ -177,7 +177,7 @@ public final class ConnectionStatement extends Statement
 	
 	public void print(String indent)
 	{ System.out.println(indent+"WHEN "+classIdentifier+" DO ");
-	  connectionBlock.print(indent,";");
+	  connectionBlock.print(indent);
 	}
 	
 	public String toString()
@@ -225,7 +225,7 @@ public final class ConnectionStatement extends Statement
   // ***********************************************************************************************
   // *** Printing Utility: print
   // ***********************************************************************************************
-  public void print(String indent,String tail)
+  public void print(String indent)
   { System.out.println(indent+"INSPECT "+inspectedVariable);
     for(DoPart doPart:connectionPart) doPart.print(indent);
     if(otherwise!=null)

@@ -674,7 +674,7 @@ public boolean isDetachUsed()
   // ***********************************************************************************************
   // *** Printing Utility: print
   // ***********************************************************************************************
-  public void print(String indent,String tail)
+  public void print(String indent)
   { StringBuilder s=new StringBuilder(indent);
     s.append('[').append(blockLevel).append("] ");
     if(prefix!=null) s.append(prefix).append(' ');
@@ -689,9 +689,9 @@ public boolean isDetachUsed()
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
     System.out.println(indent+beg); 
-    for(Declaration decl:declarationList) decl.print(indent+"   ",";");
-    for(Statement stm:statements) stm.print(indent+"   ",";");
-	System.out.println(indent+"end["+edScopeChain()+']'+tail); 
+    for(Declaration decl:declarationList) decl.print(indent+"   ");
+    for(Statement stm:statements) stm.print(indent+"   ");
+	System.out.println(indent+"end["+edScopeChain()+']'); 
   }
   
   // ***********************************************************************************************

@@ -34,7 +34,7 @@ public final class DummyStatement extends Statement {
 		ASSERT_SEMANTICS_CHECKED(this);
 	}
 
-	public void print(String indent, String tail) {
+	public void print(String indent) {
 	}
 
 	public String toString() {
