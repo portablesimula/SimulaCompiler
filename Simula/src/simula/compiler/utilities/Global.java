@@ -24,7 +24,7 @@ public final class Global {
 	
 	public static Vector<JavaModule> javaModules;
 
-	public static int sourceLineNumber=1;
+	public static int sourceLineNumber; //=1;
 //	public static String sourceFilePath; 
 	public static String sourceFileDir; 
 	public static String sourceFileName;
@@ -45,7 +45,7 @@ public final class Global {
 	
 	public static void initiate()
 	{
-		sourceLineNumber=1;
+//		sourceLineNumber=1;
 	}
 
 	

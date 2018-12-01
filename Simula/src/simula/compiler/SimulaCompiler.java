@@ -126,6 +126,7 @@ public final class SimulaCompiler {
 				System.out.println("*** END Parsing, resulting Program: "+program);
 				if (Option.TRACE_PARSE && program != null) program.print("", ";");
 			}
+			Parser.close();
 			
 			if(Util.nError>0) 
 			{ System.err.println("Compiler terminated after "+Util.nError+" errors during parsing");

@@ -21,7 +21,7 @@ public final class Option {
 	public static boolean TRACE_COMMENTS=false;//true;
 
 	// Parser Trace Options
-	public static boolean TRACE_PARSE=false;//true;
+	public static boolean TRACE_PARSE=true;//false;//true;
 	public static boolean TRACE_ATTRIBUTE_OUTPUT=false;//true;
 	public static boolean TRACE_ATTRIBUTE_INPUT=false;//true;
 

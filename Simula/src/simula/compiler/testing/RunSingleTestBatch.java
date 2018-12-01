@@ -29,7 +29,7 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -124,7 +124,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
-		names.add("simtst84.sim"); // OK:  Test Printfile.
+		//names.add("simtst84.sim"); // OK:  Test Printfile.
 		//names.add("simtst85.sim"); // OK:  Test Directfile.
 		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
@@ -164,7 +164,7 @@ public final class RunSingleTestBatch {
 		Option.TRACE_COMMENTS=false;//true;
 
 		// Parser Trace Options
-		Option.TRACE_PARSE=false;//true;
+		Option.TRACE_PARSE=true;//false;//true;
 
 		// Checker Trace Options
 		Option.TRACE_CHECKER=true;//false;//true;

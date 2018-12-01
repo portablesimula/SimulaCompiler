@@ -1,4 +1,7 @@
 %OPTION ABC
+% Dette er en kommentar
+%
+% og en til
 begin integer tull;
    boolean likhet;
    ref(verdi) pverdi,felt;
@@ -14,4 +17,6 @@ begin integer tull;
    i:=i//0;
    likhet:=pverdi.test_verdilikhet(felt) ;
 
-END;
+END og dette er en kommentar etter final ende;
+
+og dette er hvafornoe

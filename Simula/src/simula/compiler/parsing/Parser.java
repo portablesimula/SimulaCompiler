@@ -28,6 +28,11 @@ public final class Parser {
 		simulaScanner = new SimulaScanner(reader);
 		nextSymb();
 	}
+	
+	public static void close() {
+		simulaScanner.close();
+		simulaScanner=null;
+	}
 
 	// *********************************************************************************
 	// *** Parser Utilities
