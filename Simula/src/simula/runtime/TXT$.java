@@ -88,7 +88,8 @@ public final class TXT$ {
 
 	// Utility
 	public String edTextToPos() {
-		return (OBJ.edText(START, POS + 1));
+//		return (OBJ.edText(START, POS + 1));
+		return (OBJ.edText(START, POS)); 
 	}
 
 	public boolean constant() { return( constant(this)); }

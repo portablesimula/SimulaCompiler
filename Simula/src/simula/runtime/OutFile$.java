@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 /**
  * The Class OutFile.
@@ -46,7 +47,8 @@ import java.io.OutputStreamWriter;
  *
  */
 public class OutFile$ extends ImageFile$ {
-	protected OutputStreamWriter writer;
+//	protected OutputStreamWriter writer;
+	protected Writer writer;
 
 	// Constructor
    public OutFile$(RTObject$ staticLink,TXT$ FILENAME) {

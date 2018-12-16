@@ -11,6 +11,7 @@ import java.util.Vector;
 
 import simula.compiler.JavaModule;
 import simula.compiler.declaration.DeclarationScope;
+import simula.compiler.editor.ConsolePanel;
 
 /**
  * Global Variables 
@@ -21,6 +22,7 @@ import simula.compiler.declaration.DeclarationScope;
 public final class Global {
 	public static final String gitURL="https://github.com/portablesimula";
     public static final String simulaReleaseID="Release-Beta-0.3";
+	public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	
 	public static Vector<JavaModule> javaModules;
 
@@ -32,6 +34,8 @@ public final class Global {
 	public static String simulaRtsLib;      // The simula runtime system  (rts.jar - later)
 	public static String outputDir;         // Where to put resulting .jar
 
+	public static String sampleSourceDir;   // Where to find ...put resulting .jar
+
 	public static String tempJavaFileDir;   // Temp dir for .java  files
 	public static String tempClassFileDir;  // Temp dir for .class  files
 	
@@ -42,10 +46,13 @@ public final class Global {
 	public static DeclarationScope currentScope=null; // Current Scope. Maintained during Checking and Coding
 	  
 	public static JavaModule currentJavaModule; // Current Java output Module. Maintained by JavaModule during Java Coding
+
+	public static ConsolePanel console;
 	
 	public static void initiate()
 	{
-//		sourceLineNumber=1;
+//		sourceLineNumber=0;
+		//console=new Console();
 	}
 
 	

@@ -39,7 +39,7 @@ public final class MakeCompiler {
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Release-1.0";
 
 	private final static String RELEASE_HOME=SIMULA_HOME+"\\"+RELEASE_ID;
-//	private final static String RELEASE_TST=RELEASE_HOME+"\\tst";
+	private final static String RELEASE_TST=RELEASE_HOME+"\\tst";
 
 	private final static String ECLIPSE_ROOT="C:\\GitHub\\SimulaCompiler\\Simula";
 	private final static String COMPILER_BIN=ECLIPSE_ROOT+"\\bin";
@@ -55,11 +55,12 @@ public final class MakeCompiler {
 			
 			makeSimulaCompiler();
 //			copySimulaRuntimeSystem();
-			dummyExecuteSimulaCompiler();
-//			copySimulaReleaseTests();
+//			dummyExecuteSimulaCompiler();
 			copySimulaReleaseTestBats();
 //			compileAndExecuteSimulaPrograms();
-		} catch(Exception e) { e.printStackTrace(); }
+			copySimulaReleaseTests();
+			executeSimulaCompilerEditor();
+			} catch(Exception e) { e.printStackTrace(); }
 	}
 	
 	// ***************************************************************
@@ -92,22 +93,6 @@ public final class MakeCompiler {
 //	}
 	
 	// ***************************************************************
-	// *** DUMMY EXECUTE SIMULA COMPILER JAR
-	// ***************************************************************
-	private static void dummyExecuteSimulaCompiler() throws IOException	{
-		printHeading("Dummy Execute SimulaCompiler: "+RELEASE_HOME+"\\simula.jar");
-		execute("java -jar "+RELEASE_HOME+"\\simula.jar");
-	}
-	
-//	// ***************************************************************
-//	// *** COPY SIMULA RELEASE TEST PROGRAMS
-//	// ***************************************************************
-//	private static void copySimulaReleaseTests() throws IOException	{
-//		printHeading("Copy Simula TestPrograms into "+RELEASE_TST);
-//		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\testing\\tst "+RELEASE_TST+" /E");
-//	}
-	
-	// ***************************************************************
 	// *** COPY SIMULA RELEASE TEST BATCH FILES
 	// ***************************************************************
 	private static void copySimulaReleaseTestBats() throws IOException	{
@@ -123,6 +108,30 @@ public final class MakeCompiler {
 		System.out.println("source="+source);
 		System.out.println("target="+target);
 		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
+	}
+	
+	// ***************************************************************
+	// *** COPY SIMULA RELEASE TEST PROGRAMS
+	// ***************************************************************
+	private static void copySimulaReleaseTests() throws IOException	{
+		printHeading("Copy Simula TestPrograms into "+RELEASE_TST);
+		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\testing\\samples "+RELEASE_TST+" /E");
+	}
+	
+//	// ***************************************************************
+//	// *** DUMMY EXECUTE SIMULA COMPILER JAR
+//	// ***************************************************************
+//	private static void dummyExecuteSimulaCompiler() throws IOException	{
+//		printHeading("Dummy Execute SimulaCompiler: "+RELEASE_HOME+"\\simula.jar");
+//		execute("java -jar "+RELEASE_HOME+"\\simula.jar");
+//	}
+	
+	// ***************************************************************
+	// *** EXECUTE SIMULA COMPILER EDITOR
+	// ***************************************************************
+	private static void executeSimulaCompilerEditor() throws IOException	{
+		printHeading("Execute SimulaCompilerEditor: "+RELEASE_HOME+"\\simula.jar");
+		execute("java -jar "+RELEASE_HOME+"\\simula.jar");
 	}
 	
 	// ***************************************************************

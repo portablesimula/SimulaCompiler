@@ -104,6 +104,6 @@ public final class ProgramModule extends Statement
   
   public void doJavaCoding() { module.doJavaCoding(); }
   public void print(String indent) { module.print(""); }
-  public String toString() { return(""+module); }
+  public String toString() { return(""+module.externalIdent); }
   public String getIdentifier() { return(module.identifier); }
 }

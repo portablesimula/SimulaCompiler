@@ -17,12 +17,15 @@ public final class RT
   private static final boolean BREAKING=true;//false;//true;
   private static final boolean TRACING=true;//false;//true;
   
+  public static RTConsole console;
+  
   public static int numberOfEditOverflows;
 
   public static TerminateException EXIT_EXCEPTION$ = new TerminateException("EXIT");
 
 	public static class Option {
 		public static boolean VERBOSE = false;//true;
+		public static boolean USE_CONSOLE=false;//true;
 		public static boolean CODE_STEP_TRACING = false;// true;
 		public static boolean BLOCK_TRACING = false;// true;
 		public static boolean GOTO_TRACING = false;// true;
@@ -32,6 +35,36 @@ public final class RT
 		public static boolean SML_TRACING = false; // true;
 	}
 	  
+	public static void setRuntimeOptions(String[] args) {
+		System.setProperty("file.encoding","UTF-8");	// TODO: Via args	
+
+		for(int i=0;i<args.length;i++) {
+			System.out.println("RT.setRuntimeOptions: arg="+args[i]);
+			String arg=args[i];
+			if(arg.equalsIgnoreCase("-VERBOSE")) Option.VERBOSE=true;
+			if(arg.equalsIgnoreCase("-USE_CONSOLE")) Option.USE_CONSOLE=true;
+			if(arg.equalsIgnoreCase("-CODE_STEP_TRACING")) Option.CODE_STEP_TRACING=true;
+			if(arg.equalsIgnoreCase("-BLOCK_TRACING")) Option.BLOCK_TRACING=true;
+			if(arg.equalsIgnoreCase("-GOTO_TRACING")) Option.GOTO_TRACING=true;
+			if(arg.equalsIgnoreCase("-THREAD_TRACING")) Option.THREAD_TRACING=true;
+			if(arg.equalsIgnoreCase("-THREADSWAP_TRACING")) Option.THREADSWAP_TRACING=true;
+			if(arg.equalsIgnoreCase("-QPS_TRACING")) Option.QPS_TRACING=true;
+			if(arg.equalsIgnoreCase("-SML_TRACING")) Option.SML_TRACING=true;
+		}
+		//listRuntimeOptions();
+	}
+		  
+	public static void listRuntimeOptions() {
+		System.out.println("VERBOSE="+Option.VERBOSE);
+		System.out.println("USE_CONSOLE="+Option.USE_CONSOLE);
+		System.out.println("CODE_STEP_TRACING="+Option.CODE_STEP_TRACING);
+		System.out.println("BLOCK_TRACING="+Option.BLOCK_TRACING);
+		System.out.println("GOTO_TRACING="+Option.GOTO_TRACING);
+		System.out.println("THREAD_TRACING="+Option.THREAD_TRACING);
+		System.out.println("THREADSWAP_TRACING="+Option.THREADSWAP_TRACING);
+		System.out.println("QPS_TRACING="+Option.QPS_TRACING);
+		System.out.println("SML_TRACING="+Option.SML_TRACING);
+	}
 	
     
 	// ************************************************************
@@ -44,6 +77,7 @@ public final class RT
 
 	public static void println(String s) {
 		System.out.println(s);
+		if(console!=null) console.write(s+'\n');
 	}
 	
 	public static void warning(String msg) {
@@ -68,7 +102,7 @@ public final class RT
 	}
 
 	public static void NoneCheck(Object x) {
-		if (x == null)
+		if (x == null && !RTObject$.SHUTING_DOWN$)
 			throw new RuntimeException("NONE-CHECK FAILED");
 	}
   

@@ -7,6 +7,8 @@
  */
 package simula.compiler;
 
+import simula.compiler.editor.OptionMenu;
+import simula.compiler.editor.SimulaEditor;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -58,8 +60,7 @@ public final class Simula {
 	public static void main(String[] argv) {
 		String fileName = null;
 		String SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
-		//System.out.println("SYSTEM: java.class.path="+System.getProperty("java.class.path"));
-		
+		System.setProperty("file.encoding","UTF-8");		
 		// Set default options.
 		Option.verbose=false;
 		Option.WARNINGS=true;
@@ -69,8 +70,8 @@ public final class Simula {
 			String arg=argv[i];
 			if (arg.charAt(0) == '-') { // command line option
 				if (arg.equals("-help")) help();
-				else if (arg.equals("-noexec")) Option.noexec=true;
-				else if (arg.equals("-nowarn")) { Option.nowarn=true; Option.WARNINGS=false; }
+				else if (arg.equals("-noexec")) Option.noExecution=true;
+				else if (arg.equals("-nowarn")) { Option.noJavacWarnings=true; Option.WARNINGS=false; }
 				else if (arg.equals("-verbose")) Option.verbose=true;
 				else if (arg.equals("-standardClass")) Option.standardClass=true;
 				else if (arg.equals("-SIMULA_HOME")) SIMULA_HOME=getSimulaHome(argv[++i]);
@@ -83,19 +84,19 @@ public final class Simula {
 		if(SIMULA_HOME==null)
 			error("Environment Variable 'SIMULA_HOME' is not defined");
 		
-//		fileName=SIMULA_HOME+"/tst/HelloWord.sim"; // TEMP !!!!!
-//		fileName=SIMULA_HOME+"/tst/JensenDevice.sim"; // TEMP !!!!!
-//		fileName=SIMULA_HOME+"/tst/FittingRoom.sim"; // TEMP !!!!!
-		
-		if (fileName == null) error("No input files specified");
-		
-		Option.INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;
-//		Global.simulaRtsLib=SIMULA_HOME+"/Simula.jar";  // TODO: Later  /RTS.jar
-//		Global.simulaRtsLib=SIMULA_HOME+"/rts/";        // TODO: Later  /RTS.jar
-		Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/";        // TODO: Later  /RTS.jar
+		if (fileName == null) {
+			//error("No input files specified");
+			Global.sampleSourceDir=SIMULA_HOME+'/'+Global.simulaReleaseID+"/tst";
+	    	OptionMenu.InitRuntimeOptions();
+	    	OptionMenu.InitCompilerOptions();
+	    	SimulaEditor editor=new SimulaEditor();
+	    	editor.setVisible(true);
+		} else {
+		    Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
 	
-		// Start compiler ....
-		new SimulaCompiler(fileName).doCompile();
+		    // Start compiler ....
+		    new SimulaCompiler(fileName).doCompile();
+		}
 	}
 	
 	private static void error(String msg)

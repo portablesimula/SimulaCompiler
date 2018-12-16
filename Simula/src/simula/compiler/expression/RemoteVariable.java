@@ -115,7 +115,7 @@ public final class RemoteVariable extends Expression
 	  //Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(6) - attr="+attr+", attr.Type="+result);
 	}
 	else 
-	{ //Util.BREAK("RemoteVariable.doRemoteChecking -- Usikker p� dette !!!");		
+	{ //Util.BREAK("RemoteVariable.doRemoteChecking -- Usikker på dette !!!");		
 	  //Util.BREAK("RemoteVariable.doRemoteChecking: attr="+attr.getClass().getName());
 	  Util.error("Illegal attribute("+attr+") in remote access");
 	  result=attr.type;
@@ -139,7 +139,7 @@ public final class RemoteVariable extends Expression
 
 	}
 	else 
-	{ //Util.BREAK("RemoteVariable.doRemoteTextChecking -- Usikker p� dette !!!");		
+	{ //Util.BREAK("RemoteVariable.doRemoteTextChecking -- Usikker på dette !!!");		
 	  //Util.BREAK("RemoteVariable.doRemoteTextChecking: attr="+attr.getClass().getName());
 	  Util.error("Illegal attribute("+attr+") in remote access");
 	  result=attr.type;

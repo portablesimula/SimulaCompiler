@@ -1,22 +1,4 @@
-%OPTION ABC
-% Dette er en kommentar
-%
-% og en til
-begin integer tull;
-   boolean likhet;
-   ref(verdi) pverdi,felt;
-   integer i;
-         
-   class verdi; virtual: boolean procedure test_verdilikhet;
-   begin
-      integer k;
-      pverdi.k:=56;
-   end;
-   
-   new verdi();
-   i:=i//0;
-   likhet:=pverdi.test_verdilikhet(felt) ;
-
-END og dette er en kommentar etter final ende;
-
-og dette er hvafornoe
+begin integer array A(1:5);
+      integer i;
+      i:=A(0);
+end;

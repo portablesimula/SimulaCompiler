@@ -666,13 +666,17 @@ public abstract class RTObject$  implements Runnable {
             else if(e instanceof RuntimeException)
             { String msg=e.getMessage();
               if(e instanceof NullPointerException) msg="NONE-CHECK Failed";
+              else if(e instanceof ArrayIndexOutOfBoundsException) msg="ArrayIndexOutOfBounds";
+              else {
+            	  msg=e.getClass().getSimpleName()+" "+msg;
+              }
               if(SHUTING_DOWN$) {
             	  if(RT.Option.VERBOSE) {
                 	  msg=msg+" -- DURING SHUTDOWN";
                 	  RT.println(who+": SIMULA RUNTIME ERROR: "+msg);
                 	  //ENVIRONMENT$.printStackTrace(2);
                 	  ENVIRONMENT$.printStackTrace(e,0);
-                	  e.printStackTrace();
+                	  //e.printStackTrace();
                 	  shutDown(-1);             		  
             	  }
               } else {
@@ -708,7 +712,8 @@ public abstract class RTObject$  implements Runnable {
 		CTX$.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
 		if(RT.Option.BLOCK_TRACING) RT.TRACE("Begin Execution of Simula Program: "+ident);
 		if(SYSIN$==null)
-		{ SYSIN$ = new InFile$(this,new TXT$("SYSIN"));
+		{ if(RT.Option.USE_CONSOLE) RT.console=new RTConsole();
+		  SYSIN$ = new InFile$(this,new TXT$("SYSIN"));
 		  SYSOUT$ = new PrintFile$(this,new TXT$("SYSOUT"));
 		  SYSIN$.open(blanks(INPUT_LINELENGTH_));
 		  SYSOUT$.open(blanks(OUTPUT_LINELENGTH_));
@@ -1046,7 +1051,7 @@ public abstract class RTObject$  implements Runnable {
 
 	
 	
-	private static boolean SHUTING_DOWN$=false;
+	static boolean SHUTING_DOWN$=false;
 	private static RuntimeException PENDING_EXCEPTION$=null;
 
 
@@ -1061,8 +1066,8 @@ public abstract class RTObject$  implements Runnable {
 		if (PENDING_EXCEPTION$ != null) {
 			RuntimeException t = PENDING_EXCEPTION$;
 			PENDING_EXCEPTION$ = null;
-			if (RT.Option.GOTO_TRACING) RT.TRACE("RTObject$.suspendThread: Re-trow " + t);
-			throw (t);
+			if (RT.Option.GOTO_TRACING) RT.TRACE("RTObject$.suspendThread: Re-throw " + t);
+			if(t!=null) throw (t);
 		}
 		if (RT.Option.THREAD_TRACING)	RT.TRACE("RTObject$.suspendThread: END " + thread);
 		if (RT.Option.THREAD_TRACING)	ENVIRONMENT$.printThreadList();
@@ -1092,7 +1097,7 @@ public abstract class RTObject$  implements Runnable {
 			}
 		}
 		if(RT.numberOfEditOverflows>0) RT.println("End program: WARNING "+RT.numberOfEditOverflows+" EditOverflows");
-		System.exit(exitValue);
+		if(RT.console==null) System.exit(exitValue);
 	}		
 	
 	

@@ -238,7 +238,8 @@ public class PrintFile$ extends OutFile$ {
 		setpos(1);
 		//RT.BREAK("OutFile.open: Filename=" + FILENAME$);
 		if (FILENAME$.edText().equalsIgnoreCase("sysout")) {
-            writer = new OutputStreamWriter(System.out);
+			if(RT.console!=null) writer=RT.console.getWriter();
+			else writer = new OutputStreamWriter(System.out);
 		} else {
 			try {
 				OutputStream outputStream = new FileOutputStream(FILENAME$.edText());

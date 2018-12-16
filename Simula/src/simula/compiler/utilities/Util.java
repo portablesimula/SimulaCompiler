@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
+ * A set of all static Utility Methods
  * 
  * @author Øystein Myhre Andersen
  *
@@ -20,14 +21,15 @@ public final class Util
 { 
   
   public static int nError;
-  public static void error(String msg)
+  public static void error(final String msg)
   { String err="Line "+Global.sourceLineNumber+" Error: "+msg;
     nError++;
     System.err.println(err);
-    BREAK("");
+    if(Global.console!=null) Global.console.writeError(err+'\n');
+    BREAK("Continue ?");
   }
 
-  public static void FATAL_ERROR(String s)
+  public static void FATAL_ERROR(final String s)
   { String msg="LINE "+Global.sourceLineNumber+": FATAL error - "+s;
     System.err.println(msg);
     try { throw new RuntimeException("FATAL error"); }
@@ -35,19 +37,27 @@ public final class Util
     System.exit(-1);
   }
   
-  public static void warning(String msg)
-  { if(Option.WARNINGS) System.err.println("LINE "+Global.sourceLineNumber+": WARNING: "+msg); }
-
-
-  public static void LIST(String msg) { TRACE("LIST",msg); }
-  public static void TRACE(String msg) { TRACE("TRACE",msg); }
+  public static void warning(final String msg) {
+	  String line="LINE "+Global.sourceLineNumber+": WARNING: "+msg;
+	  if(Option.WARNINGS) System.err.println(line);
+	    if(Global.console!=null) Global.console.writeWarning(line+'\n');
+  }
   
-  public static void TRACE(String id,String msg)
+  public static void message(final String msg) {
+	  if(Option.WARNINGS) System.err.println(msg);
+	    if(Global.console!=null) Global.console.write(msg+'\n');
+  }
+
+
+  public static void LIST(final String msg) { TRACE("LIST",msg); }
+  public static void TRACE(final String msg) { TRACE("TRACE",msg); }
+  
+  public static void TRACE(final String id,String msg)
   { if(Option.TRACING) println(id+" "+Global.sourceLineNumber+": "+msg);
     //Util.BREAK("");
   }
   
-  public static void NOT_IMPLEMENTED(String s)
+  public static void NOT_IMPLEMENTED(final String s)
   { System.err.println("*** NOT IMPLEMENTED: "+s);
     BREAK("Continue ?");
   }
@@ -58,7 +68,7 @@ public final class Util
     System.exit(-1);
   }
   
-  public static void ASSERT(boolean test,String msg)
+  public static void ASSERT(final boolean test,final String msg)
   { if(!test)
     { try { throw new RuntimeException("ASSERT("+msg+") -- FAILED"); }
       catch(Exception e) { e.printStackTrace(); }
@@ -67,8 +77,8 @@ public final class Util
     }
   }
 
-  public static void BREAK(String title) { BREAK("BREAK",title); }
-  public static void BREAK(String id,String title)
+  public static void BREAK(final String title) { BREAK("BREAK",title); }
+  public static void BREAK(final String id,final String title)
   { if(Option.BREAKING)
     { System.err.println(id+" "+Global.sourceLineNumber+": "+title+": <");
       { try
@@ -86,11 +96,10 @@ public final class Util
     }
   }
 
-  public static void println(String s)
-  { 
-	s=s.replace('\r',(char)0);
-    s=s.replace('\n',(char)0);
-    System.out.println(s);
+  public static void println(final String s)
+  { String u=s.replace('\r',(char)0);
+    u=u.replace('\n',(char)0);
+    System.out.println(u);
   }
   
   
@@ -99,23 +108,23 @@ public final class Util
   //*******************************************************************************
   
 	
-	public static void listClass(Class<?> c)
+	public static void listClass(final Class<?> c)
 	{ listConstructors(c);
 	  listMethods(c);	
 	}
 	
-	public static void listMethods(Class<?> c)
+	public static void listMethods(final Class<?> c)
 	{ Method[] allMethods = c.getDeclaredMethods();
 		for(Method m:allMethods) listMethod(m);
 	}
 	
-	public static void listConstructors(Class<?> c)
+	public static void listConstructors(final Class<?> c)
 	{ Constructor<?>[] allConstructors = c.getConstructors();
 		for (Constructor<?> constructor : allConstructors)
 			listConstructor(constructor);
 	}
 	
-	public static void listConstructor(Constructor<?> m)
+	public static void listConstructor(final Constructor<?> m)
 	{ System.out.format("%s%n", m.toGenericString());
 	  String  fmt = "%24s: %s%n";
 	  Class<?>[] pType  = m.getParameterTypes();
@@ -132,7 +141,7 @@ public final class Util
 	  }
 	}
 	
-	public static void listMethod(Method m)
+	public static void listMethod(final Method m)
 	{ System.out.format("%s%n", m.toGenericString());
 	  String  fmt = "%24s: %s%n";
 

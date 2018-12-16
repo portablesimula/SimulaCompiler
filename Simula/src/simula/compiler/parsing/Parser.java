@@ -7,8 +7,7 @@
  */
 package simula.compiler.parsing;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.Reader;
 
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
@@ -30,16 +29,8 @@ public final class Parser {
 	// *********************************************************************************
 	// *** Open
 	// *********************************************************************************
-	public static void open(final String fileName) {
-		FileReader reader = null;
-		try {
-			reader = new FileReader(fileName);
-		} catch (IOException e) {
-			//System.out.println("Error Opening File: " + fileName);
-			//e.printStackTrace();
-			Util.error("can't open " + fileName);
-		}
-		simulaScanner = new SimulaScanner(reader);
+	public static void open(final Reader reader) {
+		simulaScanner = new SimulaScanner(reader,false);
 		prevToken = null;
 		currentToken = null;
 		savedToken = null; // Used by 'pushBack'

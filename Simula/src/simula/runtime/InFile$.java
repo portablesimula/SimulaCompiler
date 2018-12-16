@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 /**
  * The Class Infile.
@@ -103,13 +104,16 @@ public class InFile$ extends ImageFile$ {
 		ASGTXT$(image,null); // image := NOTEXT;
 		setpos(length() + 1);
 
-		InputStream inputStream;
-		if (FILENAME$.edText().equalsIgnoreCase("sysin"))
-			inputStream = System.in;
+		Reader reader;
+		if (FILENAME$.edText().equalsIgnoreCase("sysin")) {
+			if(RT.console!=null) reader=RT.console.getReader();
+			else reader=new InputStreamReader(System.in);
+		}
 		else {
 			doCreateAction();
 			try {
-				inputStream = new FileInputStream(FILENAME$.edText());
+				InputStream inputStream = new FileInputStream(FILENAME$.edText());
+				reader = new InputStreamReader(inputStream);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				OPEN$=false;
@@ -118,7 +122,6 @@ public class InFile$ extends ImageFile$ {
 				return (false);
 			}
 		}
-		InputStreamReader reader = new InputStreamReader(inputStream);
 		lineReader = new BufferedReader(reader);
 		OPEN$ = true;
 		//RT.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);

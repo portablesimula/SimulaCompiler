@@ -17,6 +17,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
+import simula.runtime.RT;
 
 /**
  * </pre>
@@ -194,6 +195,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 	if(this.isMainModule)
 	{ JavaModule.code("");
 	  JavaModule.code("public static void main(String[] args) {");
+	  JavaModule.code("RT.setRuntimeOptions(args);");
 	  StringBuilder s=new StringBuilder();
 	  s.append("new "+getJavaIdentifier()+"(CTX$");
 	  if(blockPrefix!=null && blockPrefix.hasArguments())

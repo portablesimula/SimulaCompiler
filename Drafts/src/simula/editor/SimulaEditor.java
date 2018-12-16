@@ -16,7 +16,7 @@ import javax.swing.text.DefaultEditorKit;
 public class SimulaEditor extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    public static final boolean RENDER_LINE_NUMBERS=false;//true;
+    public static final boolean RENDER_LINE_NUMBERS=true;//false;//true;
 //  ImageIcon simulaIcon = new ImageIcon("icons/simula.png");
 //  ImageIcon simulaIcon = new ImageIcon("icons/sim.jpg");
     public static final ImageIcon simulaIcon = new ImageIcon("icons/sim2.png");

@@ -90,12 +90,12 @@ public final class RunFullTestBatch {
 		names.add("simtst51.sim"); // OK:  Test 'inner'.
 		names.add("simtst52.sim"); // OK:  Test 'inner'
 		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		names.add("simtst54.sim");  // OK: A VERY Simple Simulation
+		names.add("simtst54.sim"); // OK:  A VERY Simple Simulation
 		names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		names.add("simtst56.sim"); // OK:  Test virtual procedures.
-		names.add("simtst57.sim"); // OK: Virtual procedure - different number of parameters
+		names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 		names.add("simtst58.sim"); // err: Goto from within a connection into otherwise
-		names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
+		names.add("simtst59.sim"); // OK:  Test 2-dim Array by value.
 		names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 
 		names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
@@ -109,7 +109,7 @@ public final class RunFullTestBatch {
 		names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
 		names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
-		names.add("simtst71.sim"); // OK:   Test visibility of identifiers.
+		names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
 		names.add("simtst72.sim"); // OK:  Test of formal procedures.
 		names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		names.add("simtst74.sim"); // OK:  Test resume and detach.
@@ -120,7 +120,7 @@ public final class RunFullTestBatch {
 		names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 		names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
-		names.add("simtst81.sim"); // OK: Test the value of close.
+		names.add("simtst81.sim"); // OK:  Test the value of close.
 		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 		names.add("simtst84.sim"); // OK:  Test Printfile.
@@ -133,7 +133,7 @@ public final class RunFullTestBatch {
 		names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
-		names.add("simtst92.sim"); // OK: Test 1-dim Array by value.
+		names.add("simtst92.sim"); // OK:  Test 1-dim Array by value.
 		names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
 		names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
 		names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.

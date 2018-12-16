@@ -12,6 +12,7 @@ import org.apache.bcel.classfile.ConstantUtf8;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 
+@SuppressWarnings("deprecation")
 public final class ClassFileUtilities {
 
     static boolean code=true;

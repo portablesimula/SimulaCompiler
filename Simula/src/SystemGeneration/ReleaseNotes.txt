@@ -9,7 +9,7 @@ then you should have a directory tree like this:
 
   <git>
         - Binaries
-              - Release-Beta-02
+              - Release-Beta-03
                     - rts
                              ....
                     - tst

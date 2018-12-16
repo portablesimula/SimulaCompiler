@@ -150,7 +150,7 @@ public final class ArrayDeclaration extends Declaration {
 		}
 
 		public void doChecking() {
-			// TODO: Hvis konstante grenser s� eveluerer vi her !
+			// TODO: Hvis konstante grenser så eveluerer vi her !
 			LB.doChecking();
 			UB.doChecking();
 			//Util.warning("Only Arrays with lower bound zero is fully supported");

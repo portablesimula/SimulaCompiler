@@ -29,7 +29,7 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -40,7 +40,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
 		//names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
 
-		//names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
+		names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
 		//names.add("simtst12.sim"); // OK:  Text value and reference relations.
 		//names.add("simtst13.sim"); // OK:  Text value assignment and text reference assigment.
 		//names.add("simtst14.sim"); // OK:  Text attributes: pos, setpos, more, getchar and putchar.
