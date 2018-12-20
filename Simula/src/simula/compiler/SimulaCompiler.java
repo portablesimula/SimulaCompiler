@@ -239,7 +239,7 @@ public final class SimulaCompiler {
 			  
 			  String cmd="java "+opt+" -jar "+jarFile+arg;
 			  
-			  Util.BREAK("SimulaCompiler.doCompile: EXECUTE cmd="+cmd);
+			  //Util.BREAK("SimulaCompiler.doCompile: EXECUTE cmd="+cmd);
 			  int exitValue3=execute(cmd);
 			  if (Option.verbose)
 			     Util.message("END Execute .jar File. Exit value="+exitValue3);

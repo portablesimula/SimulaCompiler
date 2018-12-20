@@ -1,4 +1,9 @@
 begin integer array A(1:5);
-      integer i;
+      integer i; text t;
+      t:-"En lang" ! Første string;
+         " text over" comment andre string ;
+%+G      " mere tekst innimellom ?"
+         " flere linjer";
+      outtext(t); outimage;
       i:=A(0);
 end;

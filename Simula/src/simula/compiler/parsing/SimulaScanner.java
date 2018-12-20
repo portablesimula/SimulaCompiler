@@ -9,8 +9,8 @@ package simula.compiler.parsing;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.LinkedList;
 import java.util.Stack;
-import java.util.StringTokenizer;
 
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Token;
@@ -26,13 +26,15 @@ import simula.compiler.utilities.Util;
  */
 public final class SimulaScanner { 
     private static final int EOF_MARK=25; // ISO EM(EndMedia) character used to denote end-of-input
-    public boolean EOF_SEEN=false;       // Set 'true' when EOF-character ( -1 ) was read.
+    public boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
     private Reader reader;                // The source file reader;
     private Stack<Character> puchBackStack=new Stack<Character>();
-    private Token savedToken;   // Used by nextToken only
+    private boolean selector[]=new boolean[256];
     
     private StringBuilder accum;
     private boolean editorMode;
+
+    private LinkedList<Token> tokenQueue=new LinkedList<Token>();
 
 
 	/**
@@ -57,7 +59,6 @@ public final class SimulaScanner {
 		this.reader=reader;
 		this.editorMode=editorMode;
 		Global.sourceLineNumber=1;
-//		readNextLine();
 	}
 
     //********************************************************************************
@@ -80,12 +81,10 @@ public final class SimulaScanner {
     //**	                                                                 nextToken 
     //********************************************************************************
 	public Token nextToken() {
-		if (savedToken != null) {
-			Token saved = savedToken;
-			savedToken = null;
-			return (saved);
-		}
-		Token token = scanToken();
+    	Token token;
+		if(tokenQueue.size()>0) { 
+		    token=tokenQueue.remove();
+		} else token = scanToken();
 
 		if (token != null) {
 			if (token.getKeyWord() == KeyWord.AND) {
@@ -95,7 +94,7 @@ public final class SimulaScanner {
 					andThen.setText(token.getText()+maybeThen.getText());
 					return(andThen);
 				}
-				savedToken = maybeThen;
+				tokenQueue.add(maybeThen);
 			} else if (token.getKeyWord() == KeyWord.OR) {
 				Token maybeElse = scanToken();
 				if (maybeElse.getKeyWord() == KeyWord.ELSE) {
@@ -103,7 +102,7 @@ public final class SimulaScanner {
 					orElse.setText(token.getText()+maybeElse.getText());
 					return(orElse);
 				}
-				savedToken = maybeElse;
+				tokenQueue.add(maybeElse);
 			}
 		}
 		if (Option.TRACE_SCAN) Util.TRACE("Item.nextToken, " + edcurrent());
@@ -122,7 +121,7 @@ public final class SimulaScanner {
   			  token = scanBasic();    
   	  } else {
   		do token = scanBasic();
-  		while (token!=null && token.getKeyWord() == KeyWord.COMMENT);
+  		while (token!=null && ( token.getKeyWord() == KeyWord.COMMENT || token.getKeyWord() == KeyWord.STRING ));
   	  }
   	  return(token);
     }
@@ -468,7 +467,6 @@ public final class SimulaScanner {
     	result=number.toString(); number=null;
     	if(Option.TRACE_SCAN) Util.TRACE("scanDigitsExp, result='"+result);
     	pushBack(current);
-    	//	Util.BREAK("SimulaScanner.scanDigitsExp: doubleAmpersand="+doubleAmpersand);
     	if(doubleAmpersand) return(newToken(KeyWord.REALKONST,new Double(result)));
     	return(newToken(KeyWord.REALKONST,new Float(result)));
     }
@@ -556,42 +554,47 @@ public final class SimulaScanner {
     //********************************************************************************
     private Token scanTextConstant() {
     	if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant, "+edcurrent());
-    	StringBuilder text=new StringBuilder();
+    	StringBuilder accumulatedTextConstant=new StringBuilder();
     	int firstLine=Global.sourceLineNumber;
     	int lastLine=firstLine;
-    	while(true) {
+    	LOOP:while(true) {
     		// Scan simple-string:
     		while(getNext() != '"') {
-    			if(current=='!') text.append((char)scanPossibleIsoCode());
+    			if(current=='!') accumulatedTextConstant.append((char)scanPossibleIsoCode());
     			else if(current == EOF_MARK) {
     				Util.error("Text constant is not terminated.");
-    				String result=text.toString(); text=null;
+    				String result=accumulatedTextConstant.toString(); accumulatedTextConstant=null;
     				if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant(1): Result=\""+result+"\", "+edcurrent());
-    				return(newToken(KeyWord.TEXTKONST,result));
-    			} else text.append((char)current);
+    				tokenQueue.add(newToken(KeyWord.TEXTKONST,result));
+    				break LOOP;
+    			} else accumulatedTextConstant.append((char)current);
     		}
+    		if(editorMode) tokenQueue.add(newToken(KeyWord.STRING));
     		lastLine=Global.sourceLineNumber;
     		if(getNext() == '"') {
-    			text.append('"');
+    			accumulatedTextConstant.append('"');
     			lastLine=Global.sourceLineNumber;
     		} else {
     			// Skip string-separator
-    			while(currentIsItemSeparator()) getNext();
+    			while(currentIsStringSeparator()) getNext();
     			if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant(2): "+edcurrent());
     			if(current!='"') {
     				pushBack(current);
-    				String result=text.toString(); text=null;
+    				String result=accumulatedTextConstant.toString(); accumulatedTextConstant=null;
     				if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant(2): Result=\""+result+"\", "+edcurrent());
     				if(firstLine<lastLine) Util.warning("Text constant span mutiple source lines");
     				result=result.replace("\n","\\n");
-    				return(newToken(KeyWord.TEXTKONST,result));
+    				tokenQueue.add(newToken(KeyWord.TEXTKONST,result));
+    				break LOOP;
     			}
     		}
     	}
+    	Token result=tokenQueue.remove();
+    	return(result);
     }
 	
     //********************************************************************************
-  	//**	                                                   currentIsItemSeparator
+  	//**	                                                  currentIsStringSeparator
     //********************************************************************************
     //**  Reference-Syntax:
     //**      string-separator
@@ -605,23 +608,25 @@ public final class SimulaScanner {
     //** End-Condition: current is last character of construct
     //**                getNext will return first character after construct
     //********************************************************************************
-    private boolean currentIsItemSeparator() {
-    	if(Option.TRACE_SCAN) Util.TRACE("isStringSeparator: "+edcurrent());    	
+    private boolean currentIsStringSeparator() {
     	if(current=='!') {
-    		scanComment();
-    		if(Option.TRACE_SCAN) Util.TRACE("isStringSeparator(2): "+edcurrent()); 
+    		Token cc=scanComment();
+    		if(editorMode) tokenQueue.add(cc);
     		current=' '; return(true);
     	} else if(Character.isLetter((char)current)) {
     		String name=scanName();
-    		if(Option.TRACE_SCAN) Util.TRACE("isStringSeparator(3): "+edcurrent());
     		if(name.equalsIgnoreCase("COMMENT")) {
-    			scanComment();
-    			if(Option.TRACE_SCAN) Util.TRACE("isStringSeparator(2): "+edcurrent()); 
+        		Token cc=scanComment();
+        		if(editorMode) tokenQueue.add(cc);
     			current=' '; return(true);
     		} else pushBack(name);
-    		if(Option.TRACE_SCAN) Util.TRACE("isStringSeparator(4): "+edcurrent());
     		return(false);
-    	}
+    	} else if(current=='%' && prevChar=='\n') {
+			// Directive inside Text-Constant
+    		Token cc=scanDirectiveLine();
+    		if(editorMode) tokenQueue.add(cc);
+			current=' '; return(true);
+		}
     	return(isWhiteSpace(current));
     }
   
@@ -697,58 +702,86 @@ public final class SimulaScanner {
     //**                getNext will return first character after construct
     //********************************************************************************
 	private Token scanDirectiveLine() {
-	  	String directive=this.readLine();
-	  	if(editorMode) accum.append(directive);
-	  	directive="%"+directive;
-		//Util.BREAK("SimulaScanner.scanDirectiveLine: directive=\""+directive+'"');
-		StringTokenizer tokenizer = new StringTokenizer(directive, " ,");// ,true);
-		if (tokenizer.hasMoreTokens()) {
-			String id = tokenizer.nextToken();
-			//Util.BREAK("SimulaScanner.doTreatDirective: id="+id);
-			if (id.equalsIgnoreCase("%"));                  // Nothing
-			else if (id.equalsIgnoreCase("%\n"));           // Nothing
-			else if (id.equalsIgnoreCase("%\r\n"));           // Nothing
-			else if (id.equalsIgnoreCase("%OPTION"))		setOption();
-			else if (id.equalsIgnoreCase("%STANDARDCLASS"))	setStandardClass();
-			else if (id.equalsIgnoreCase("%KEEP_JAVA"))		setKeepJava(tokenizer);
-			else Util.warning("Unknown Compiler Directive: " + directive);
+		getNext();
+		if(current==' ') {
+			readUntilEndofLine(); // Skip comment line
+		    return (newToken(KeyWord.COMMENT));
+		} else if(current=='+' || current=='-') {
+			if(!lineSelected()) {
+				//System.out.println("SimulaScanner.scanDirectiveLine: NOT SELECTED char="+(char)current);
+				readUntilEndofLine();
+		    }
+			//System.out.println("SimulaScanner.scanDirectiveLine: RETURN char="+(char)current);
+		    return (newToken(KeyWord.COMMENT));
+		} else if(Character.isLetter(current)) {
+			String id=scanName();
+			if (id.equalsIgnoreCase("OPTION"))				Directive.setOption();
+			else if (id.equalsIgnoreCase("SELECT"))			setSelectors();
+			else if (id.equalsIgnoreCase("STANDARDCLASS"))	Directive.setStandardClass();
+			else if (id.equalsIgnoreCase("TITLE"))			Directive.setTitle(readUntilEndofLine());
+			else if (id.equalsIgnoreCase("PAGE"))			Directive.page();
+			else if (id.equalsIgnoreCase("KEEP_JAVA"))		Directive.setKeepJava(readUntilEndofLine());
+			else Util.warning("Unknown Compiler Directive: " + id);
 		}
+		readUntilEndofLine();
 	    return (newToken(KeyWord.COMMENT));
 	}
-  
-    /**
-     * %OPTION  name  value
-     * <p>
-     * Will set compiler switch 'name' to the value 'value'.
-     * The facility is intended for compiler maitenance,
-     * and is not explained further.
-     */
-    private static void setOption() {
-    	Util.warning("NOT IMPLEMENTED: Compiler Directive: %OPTION");
-    }
-    
-    /**
-     * %STANDARDCLASS
-     * <p>
-     * Used to compile 'standard classes' to indicate simplified block structure.
-     * In addition all 'procedures' will be treated as Java Methods.
-     * <p>
-     * The initial value is false.
-     * See BlockDeclaration.java
-     */
-    private static void setStandardClass() {
-    	Util.warning("Compiler Directive: %STANDARDCLASS sets Option.standardClass=true");
-    	Option.standardClass=true;
-    }
+	
+	private String readUntilEndofLine() {
+		StringBuilder line=new StringBuilder();
+		while(getNext()!='\n') {
+		    //System.out.println("SimulaScanner.readUntilEndofLine: SKIP char="+(char)current);
+			line.append((char)current);
+		}
+		pushBack('\n');
+		return(line.toString());
+	}
 
     /**
-     * %KEEP_JAVA directory-string
+     * %SELECT select-character { select-character }
+     * <p>
+     * Set selectors for conditional compilation.
      */
-    private static void setKeepJava(StringTokenizer tokenizer) {
-    	if(tokenizer.hasMoreTokens()) Option.keepJava=tokenizer.nextToken();
-    	else Util.warning("Missing directory in KEEP_JAVA directive");	
-    	Util.BREAK("KEEP_JAVA: "+Option.keepJava);
+    private void setSelectors() {
+    	for(int i=0;i<255;i++) selector[i]=false;
+    	getNext();
+    	while(current==' ') getNext();
+    	while(current!=' ' && current!='\n') {
+    		selector[current]=true;
+    		//System.out.println("PreProcessor.select: selector["+(char)current+"]=true");
+    		getNext();
+    	}
     }
+    
+	private boolean lineSelected() {
+		//System.out.println("SimulaScanner.lineSelected: c="+(char)current);
+		while (true) {
+			if (current == '+') {
+				getNext();
+				//System.out.println("SimulaScanner.lineSelected(+): c="+(char)current);
+				while (Character.isLetter(current)) {
+					if (!selector[current])
+						return (false); // then SKIPLINE;
+					getNext();
+					//System.out.println("SimulaScanner.lineSelected(2+): c="+(char)current);
+				}
+			} else if (current == '-') {
+				getNext();
+				//System.out.println("SimulaScanner.lineSelected(-): c="+(char)current);
+				while (Character.isLetter(current)) {
+					if (selector[current])
+						return (false); // then SKIPLINE;
+					getNext();
+					//System.out.println("SimulaScanner.lineSelected(2-): c="+(char)current);
+				}
+			} else
+				break;
+		}
+		while (current == ' ') getNext();
+		pushBack(current);
+		//System.out.println("SimulaScanner.lineSelected(end): c="+(char)current);
+		return (true); // Return to scan remainder part of line.
+	}
   
 	// ********************************************************************************
 	// ** scanComment
@@ -769,7 +802,7 @@ public final class SimulaScanner {
 		if (current == ';')
 			current = ' '; // getNext();
 		else {
-			Util.error("Comments are not terminated with ';'.");
+			Util.error("Comment is not terminated with ';'.");
 			pushBack(current);
 		}
 		if (Option.TRACE_SCAN) Util.TRACE("END scanComment: " + edcurrent() + "  skipped=\"" + skipped + '"');
@@ -791,29 +824,33 @@ public final class SimulaScanner {
 	// ** getNext will return first character after construct
 	// ********************************************************************************
 	private Token scanEndComment() {
+		//System.out.println("SimulaScanner.scanEndComment");
+		tokenQueue.add(newToken(KeyWord.END));				   
 		StringBuilder skipped = new StringBuilder();
 		if (Option.TRACE_SCAN) Util.TRACE("scanEndComment, " + edcurrent());
 		int firstLine = Global.sourceLineNumber;
 		int lastLine = firstLine;
-		while (getNext() != EOF_MARK) {
+   LOOP:while (getNext() != EOF_MARK) {
+			if(current=='%' && prevChar=='\n') {
+				// Directive inside END-Comment
+				Token cc=scanDirectiveLine();
+				if(editorMode) tokenQueue.add(cc);				   
+			}
 			if (current == ';') {
-				if (Option.TRACE_COMMENTS)
-					Util.TRACE("ENDCOMMENT:\"" + skipped + '"');
+				if (Option.TRACE_COMMENTS) Util.TRACE("ENDCOMMENT:\"" + skipped + '"');
 				if (firstLine < lastLine && (skipped.length() > 0))
 					Util.warning("END-Comment span mutiple source lines");
-				pushBack(current);
-				return (newToken(KeyWord.END));
+				tokenQueue.add(newToken(KeyWord.SEMICOLON)); break LOOP;  
 			} else if (Character.isLetter(current)) {
 				String name = scanName();
 				if (name.equalsIgnoreCase("END") || name.equalsIgnoreCase("ELSE")
 						|| name.equalsIgnoreCase("WHEN")
 						|| name.equalsIgnoreCase("OTHERWISE")) {
 					pushBack(name);
-					if (Option.TRACE_COMMENTS)
-						Util.TRACE("END-COMMENT:\"" + skipped + '"');
+					if (Option.TRACE_COMMENTS) Util.TRACE("END-COMMENT:\"" + skipped + '"');
 					if (firstLine < lastLine && (skipped.length() > 0))
 						Util.warning("END-Comment span mutiple source lines");
-					return (newToken(KeyWord.END));
+					if(editorMode) tokenQueue.add(newToken(KeyWord.COMMENT)); break LOOP;		   
 				}
 				skipped.append(name); // lastLine=Global.sourceLineNumber;
 			} else if (!isWhiteSpace(current)) {
@@ -821,19 +858,22 @@ public final class SimulaScanner {
 				lastLine = Global.sourceLineNumber;
 			}
 		}
-		if (skipped.length() > 0)
+		if (skipped.length() > 0 && current==EOF_MARK)
 			Util.error("END-Comment is not terminated: Skipped="+skipped);
 		if (Option.TRACE_COMMENTS)
 			Util.TRACE("ENDCOMMENT:\"" + skipped + '"');
-		return (newToken(KeyWord.END));
+		Token res=tokenQueue.remove();
+		return(res);
 	}
 
 	
     //********************************************************************************
     //**	                                                                 UTILITIES 
     //********************************************************************************
+    private int prevChar;
     private int current;
     private int getNext() {
+    	prevChar=current;
 	    current=readNextCharacter();
 	    if(editorMode) {
 	        if(accum==null) accum=new StringBuilder();
@@ -843,21 +883,6 @@ public final class SimulaScanner {
 	    }
 	    return(current);
     }
-	
-	private String readLine() {
-		StringBuilder line=new StringBuilder();
-		try { int c=reader.read();
-		      if(c<0) { EOF_SEEN=true; return(null); }
-			  line.append((char)c);
-			  READING:while(c!='\n') {
-			      c=reader.read();
-				  if(c<0) { EOF_SEEN=true; break READING; }
-			      line.append((char)c);
-			  }
-		} catch(IOException e) { e.printStackTrace(); }
-		Global.sourceLineNumber++;
-		return(line.toString());
-	}
 
     private int readNextCharacter() {
     	if(!puchBackStack.empty()) return(puchBackStack.pop());
@@ -872,7 +897,10 @@ public final class SimulaScanner {
 
     private void pushBack(final int chr) {
 	    // push given value back into the input stream
-    	if(editorMode) accum.deleteCharAt(accum.length()-1);
+    	if(editorMode) {
+    		if(accum.length()>0)
+    		accum.deleteCharAt(accum.length()-1);
+    	}
 	    puchBackStack.push((char)chr);
 	    current=' ';
     }

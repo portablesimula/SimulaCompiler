@@ -64,6 +64,7 @@ public final class Token
 	     case CHARACTERKONST:
 	     case REALKONST:
 	     case TEXTKONST:
+	     case STRING:
 	    	 return(Token.StyleCode.constant);
 	     case COMMENT:
 	    	 return(Token.StyleCode.comment);

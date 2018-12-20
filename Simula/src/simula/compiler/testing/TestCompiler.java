@@ -58,6 +58,7 @@ public final class TestCompiler {
 		// *** SIMULA PROGRAMMER FOR VIDERE UTVIKLING
 		// String name=Global.packetName+"/simprogs/Matte.sim";
 		// String name=Global.packetName+"/simprogs/HegnaNRK.sim";
+		 String name=Global.packetName+"/simprogs/HexDump.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
 		// String name=Global.packetName+"/simprogs/HelloWorld.sim";
@@ -82,7 +83,7 @@ public final class TestCompiler {
 		// String name=Global.packetName+"/err/simerr12.sim"; // Division by Zero in Precompiled Procedure 
 
 		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		 String name=Global.packetName+"/sim/adHoc00.sim";
+		// String name=Global.packetName+"/sim/adHoc00.sim";
 		// String name=Global.packetName+"/sim/adHoc01.sim";
 		// String name=Global.packetName+"/sim/adHoc02.sim";
 		// String name=Global.packetName+"/sim/adHoc03.sim";

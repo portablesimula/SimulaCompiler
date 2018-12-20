@@ -80,6 +80,7 @@ public final class ByteCodeEngineering {
     private void doRepairSingleByteCode(String classFileName) {
         try {
             //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Load "+classFileName);
+            if(TRACE_REPAIRING) System.out.println("ByteCodeEngineering.doRepairByteCode: Load "+classFileName);
             currentClassFileName=classFileName;
             JavaClass javaClass=ClassFileUtilities.load(classFileName);
             
@@ -92,23 +93,32 @@ public final class ByteCodeEngineering {
             ConstantPool constantPool=javaClass.getConstantPool();
             ConstantPoolGen constantPoolGen = new ConstantPoolGen(constantPool);
 
-            for (int i = 0; i < methods.length; i++) {
+            LOOP:for (int i = 0; i < methods.length; i++) {
                 if (!(methods[i].isAbstract() || methods[i].isNative())) {
                 	
               	    String name=methods[i].getName();
-                    //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Method "+name);
+                    //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Method "+name+" IN "+classFileName);
+                    //System.out.println("ByteCodeEngineering.doRepairByteCode: Methods["+i+"]="+name+" IN "+classFileName);
 
                     if(name.equals("STM$"))
                     { MethodGen methodGen = new MethodGen(methods[i], javaClass.getClassName(), constantPoolGen);
                       Method modified = treatSTM_Method(methodGen,constantPool);
-                      if (modified != null) methods[i] = modified; // Overwrite with modified method
-                      else return; // No changes
+                      if (modified != null) {
+                    	  methods[i] = modified; // Overwrite with modified method
+                          if(TRACE_REPAIRING) System.out.println("ByteCodeEngineering.doRepairByteCode: Methods["+i+"] = IS MODIFIED IN "+classFileName);
+                          break LOOP;
+                      }
+                      else {
+                          if(TRACE_REPAIRING) System.out.println("ByteCodeEngineering.doRepairByteCode: NO CHANGE IN "+classFileName);
+                    	  return; // No changes
+                      }
                     }
                 }
             }
 
             // Dump the class to <classFileName>
             javaClass.setConstantPool(constantPoolGen.getFinalConstantPool());
+            if(TRACE_REPAIRING) System.out.println("ByteCodeEngineering.doRepairByteCode: Dump "+classFileName);
             javaClass.dump(classFileName);
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -118,7 +128,7 @@ public final class ByteCodeEngineering {
 		InstructionList instructionList=methodGen.getInstructionList();
 		labels=new Vector<LabelHandle>();
         
-        if(TRACE_REPAIRING) System.out.println("*** PASS 1 - FIND AND TREAT ALL LABELS ***");
+        if(TRACE_REPAIRING) System.out.println("*** PASS 1 - FIND AND TREAT ALL LABELS IN "+currentClassFileName+" ***");
         for(InstructionHandle handle:instructionList) {
         	Instruction ins=handle.getInstruction();
             if(ins instanceof INVOKESTATIC) {

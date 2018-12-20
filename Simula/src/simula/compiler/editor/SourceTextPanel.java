@@ -30,7 +30,6 @@ import java.util.StringTokenizer;
 
 public class SourceTextPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-    private static final int EOF_MARK= 25;    // ISO EM(EndMedia) character used to denote end-of-input
 
 	private JTextPane textPane;
 	public File sourceFile;
@@ -108,28 +107,21 @@ public class SourceTextPanel extends JPanel {
         addStylesToDocument(doc);
         doc.putProperty(DefaultEditorKit.EndOfLineStringProperty,"\n");
         SimulaScanner preScanner=new SimulaScanner(reader,true);
-        
-//        String lastStringInserted="";
-//        Token lastToken=null;
-        
 		try {
 			Token token;
 			if(SimulaEditor.RENDER_LINE_NUMBERS) {
 				int lineNumber=1;
 				doc.insertString(doc.getLength(),edLineNumber(lineNumber++),styleLineNumber);
-//				while((token=preScanner.nextToken())!=null) {
 				Token next=preScanner.nextToken();
 				LOOP:while((token=next)!=null) {
-//					lastToken=token;
 					next=preScanner.nextToken();
 					String text=token.getText();
 					Style style=getStyle(token.getStyleCode());
-					if(token.getKeyWord()==KeyWord.END) {
-						String[] split=splitEndComment(text);
-						doc.insertString(doc.getLength(), split[0], style);
-						text=split[1]; style=styleComment;
+					
+					if(token.getKeyWord()==KeyWord.COMMENT) {
+						System.out.println("SourceTextPanel.fillTextPane: COMMENT, TEXT=\""+text+'"');
 					}
-					//System.out.println("SourceTextPanel.fillTextPane: NEXT="+next+" TEXT=\""+text+'"');
+
 					if(next==null && text.equals("\n")) break LOOP;
 					StringTokenizer tokenizer=new StringTokenizer(text,"\n",true);
 					while(tokenizer.hasMoreTokens()) {
@@ -155,11 +147,6 @@ public class SourceTextPanel extends JPanel {
 		} catch (BadLocationException ble) {
 			System.err.println("Couldn't insert text into text pane.");
 		}
-		
-//		System.out.println("SourceTextPanel.fillTextPane: LAST TOKEN READ=\""+lastToken+'"');
-//		System.out.println("SourceTextPanel.fillTextPane: LAST STRING INSERTED=\""+lastStringInserted+'"');
-		
-		//System.out.println("SourceTextPanel.fillTextPane: Create Document: END");
 		textPane.setStyledDocument(doc);
 //		doc.addDocumentListener(new DocumentListener() {
 //			public void insertUpdate(DocumentEvent e) {
@@ -174,23 +161,6 @@ public class SourceTextPanel extends JPanel {
 //				System.out.println("DocumentListener: changedUpdate'event="+e);				
 //			}});
 		doc.addDocumentListener(documentListener);
-    }
-   
-    private String[] splitEndComment(String text) {
-    	String[] res=new String[2];
-    	for(int i=0;i<text.length();i++) {
-    		//System.out.println("SimulaEditor.splitEndComment: i="+i);
-    		//System.out.println("SimulaEditor.splitEndComment: text.substring(i,i+3)="+text.substring(i,i+3));
-    		if(text.substring(i,i+3).equalsIgnoreCase("end")) {
-    			res[0]=text.substring(0, i+3);
-    			res[1]=text.substring(i+3);
-    			res[1]=res[1].replaceAll(""+(char)EOF_MARK,"");
-    			
-    			return(res);
-    		}
-    	}
-    	res[0]=text; res[1]="";
-    	return(res);
     }
 
     
@@ -216,7 +186,7 @@ public class SourceTextPanel extends JPanel {
 	private String removeLineNumbers(String txt) {
 		StringBuilder result=new StringBuilder();
 		LineNumberReader reader=new LineNumberReader(new StringReader(txt));
-		System.out.println("SourceTextPanel.removeLineNumbers:");
+		//System.out.println("SourceTextPanel.removeLineNumbers:");
 		try {
 			String nextLine=reader.readLine();
 			String line;
