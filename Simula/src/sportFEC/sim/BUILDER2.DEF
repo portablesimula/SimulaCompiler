@@ -1,0 +1,1727 @@
+external class BUILDER1;
+
+BUILDER1 class BUILDER2;
+
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---                  B u i l d e r  -  P a r t  2.            ---
+%      ---                                                           ---
+%      --- Selection switches: DKPIZ                                 ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      --- Option P: dump from alloc, Q: dump from connectcopy       ---
+%      ---                                                           ---
+%      --- Remember: change value of 'layoutindex' when appropriate  ---
+%      -----------------------------------------------------------------
+
+%SELECT Z
+
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scope.mne
+
+%title ***  LOGICAL Format of attribute files  ***
+ 
+%       <...>1B means one byte with the indicated content
+%       <...>I  means doublebyte representing a short integer
+%       "..."   means a string (see procedure puttext for format)
+%       'x'     means one byte with the specified character (ISO!!!)
+%        ?      this part occurs only under the given condition
+
+%      "checkcode"   "modid"  "S-port yyy.x"  <layout index=!1!>1B
+%       -- yyy is release, x is subvers, the dot may be ':' (sysattr)
+%  ?   <quantity descriptor>*  -- one for each external in module head
+%      mainKey  <quantity descriptor>
+%      mainKey  <number of external tags>I
+%      mainKey  "timestamp"
+%
+%      The format of a quantity descriptor is
+%
+%      <kind*8 + categ>1B  -- NOTE: this byte must be less than lowKey
+%      <type + (if prefix or qual then 128 else 0)>1B
+%      if prefix/qual marked then "qualification identifier"
+%      <clf + (if procedure parameter then 128 else 0)>1B
+%  if NOT standard procedure parameter then
+%    ? if sysattrfile then <RTStagbase of quantity + 1>I
+%    ? else                <exttag of quantity + 1>I
+%  endif
+%  if NOT procedure parameter then
+%    ? "identifier of this quant" --- may be empty, i.e. <0>1B
+%   --- marked part: ---
+%    ?     forcMark -- forced creation of this quantity
+%    ?     protMark -- this quantity is protected
+%    ?     dimMark <dim>1B  -- cannot occur together w/xMark or yMark
+%    ?     overMark <overload indicator>1B
+%    ?     specMark <special>1B  ( <value>1B ! "value" )
+%    ?            constant attribute or array lb. on attr.file:
+%    ?               -- if special > 128:
+%    ?               arithmetic +
+%    ?               text<>notext:            <value string>
+%    ?               -- otherwise:
+%    ?               character                <1 byte rank>
+%    ?               TRUE/FALSE/NONE/NOTEXT:  <1 byte index>
+%    ?        NOTE: if kind=K_rep then special layout for infix array
+%    ?     xMark "modid" "checkcode" "language" "external ident."
+%    ?     yMark                     "language" "external ident."
+%    ?      -- only one of xMark or yMark can occur  --
+%    ?     <connest>1B
+%    ?     thisMark <0,thisused,hasCode,0,0,isGlobal,inrtag,0>1B
+%    ?               -- bit packed
+%    ?   ( hidMark  "identifier" )*
+%   --- end of marked part, terminated by 
+%         1. a key not mentioned above (must be begList,endList,mainKey)
+%         2. a character < lowKey (start of next quant)
+%  end NOT procedure parameter
+%
+%  if not special and then
+%     ( descr is brecord and (virt-list or fpar-list is non-empty) )
+%     or else this is descr of virt proc w/binding
+%  then --- list of the relevant quantities follows:
+%       --- (this list is empty for virt proc w/binding and no param)
+%    ?    begList
+%    ?    <quantity descriptor>* -- for each new virtual in virt-list
+%    ?                           -- NOTE: the virtuals MUST be first
+%    ?    <quantity descriptor>* -- for each elt in fpar-list for which:
+%    ?                   --  descr is not extbrecord OR descr.status='S'
+%    ?    endList
+%  end output of local quantity descriptors
+%title ***  PHYSICAL Format of attribute files  ***
+
+% The attribute file is split into a number of buffers. The format
+% of this buffering is superimposed upon the logical format as follows:
+
+%   Each buffer or "very long string" is output as
+%   - a marker byte (longSwap,bufSwap) followed by the length of the
+%     buffer or string (short integer packed into 2 bytes)
+
+%   A buffer may be output
+%   - at the beginning of outquantwlist
+%   - whenever a string (as defined under the logical layout) is output
+%   - whenever a key is output
+
+%   During reading, the buffers are skewed so that the length bytes
+%   of the FOLLOWING buffer is included as the last bytes of any
+%   buffer read. This means that after reading the first two length
+%   bytes, all reading is done thru 'intext', with the following
+%   exception:
+
+%   Very long strings (of length larger than the buffer size) are
+%   output just as buffers. They will almost certainly cause the
+%   buffer sizes to vary far from the ideal, if they occur. S-port
+%   does, however, permit text constants of up to 32000 bytes in
+%   length as attributes to separately compiled classes. Therefore
+%   this facility must be included. On input, such strings will
+%   of necessity cause inbyte to be called to get in phase again.
+
+% NOTES: All output procedures are local to (normal) outquantwlist,
+%        since no writing is performed elsewhere.
+
+%        All input procedures must be global (in this module) because
+%        they are called both from expandexternal and from
+%        recompattrfile.
+%title ******   FILLEXTQUANTITY  (normalattrfile)   ******
+
+      ref(normalattrfile) Afile;
+%+R   long real timeAttr;
+
+      attrfile class normalattrfile;
+      begin ! This procedure contains the algorithm which goes through ;
+            ! the declaration structure of a module and produces the   ;
+            ! attribute file.                                          ;
+            ! When changing this algorithm or the format of the        ;
+            ! attribute file, note that the algorithm in recompattrfile;
+            ! is changed correspondingly.                              ;
+      text t; ref(quantity) q;
+
+         procedure expxerr(ch); character ch;
+         begin diag(0):-blanks(1); diag(0).putchar(ch);
+               diag(1):-CURF.filename; fatal0(428);
+         end;
+
+% PQ     prior
+         procedure fillextquantity(xq); ref(extquantity)xq;
+         begin ref(brecord)xb;
+%+S         Freq(75):=Freq(75)+1;
+            if xident == none then begin
+               simsymbol:-xidentstring; DEFIDENT;
+               xq.symb:-boxof(hashhi,hashlo) end
+            else xq.symb:-xident;
+%+E         if option(rank('E'))<>NUL then inspect sysout do begin
+%+E            outtext("     fill:");
+%+E            outtext(xq.symb.symbol); outimage; end;
+            xq.type:=xtype; xq.kind:=xkind; xq.categ:=xcateg;
+            xq.visible:=NUL; xq.protect:=xprotect;
+            xq.line:=-rank(xprefqhi)*256-rank(xprefqlo);
+            xq.plev:=one;
+            xq.ftag:=xftag;
+            xq.clf:=xclf;
+            xq.longindic:=xlongindic;
+            if xcateg = C_extnal then begin
+               xq.dim:=xlanguage; !*** zero if no language;
+               xq.virtno:=xextident; ! DEFCONST("?") if no extident;
+               if xq.descr is extbrecord then
+               begin
+                  xb:-xq.descr;
+                  xb.kind:=xkind;
+                  xb.thisused:=xthisused;
+%+Z               xb.connests:=rank(xconnests);
+%-Z               xb.connests:=xconnests;
+%+K               if xinrtag>='!4!' then begin xb.isGlobal:=true;
+%+K                  xb.inrtag:=char(rank(xinrtag)-4); end else
+                  xb.inrtag:=xinrtag;   xb.hasCode:=xhasCode;
+                  xb qua extbrecord.modulhi:=xmodulhi;
+                  xb qua extbrecord.modullo:=xmodullo;
+                  xb qua extbrecord.checkhi:=xcheckhi;
+                  xb qua extbrecord.checklo:=xchecklo;
+                  xb.hidlist:-xhidlist;
+               end;
+            end else
+            xq.dim:=xdim;
+            xq.special:=xspecial;
+            if xq.special <> NUL
+               or else xq.kind=K_rep
+            then begin
+               xb:-new brecord;
+%+D            if xq.descr=/=none then internerr('!7!',sourceline);
+               xb.declquant:-xq; xq.descr:-xb;
+               xb.blnohi:=xarrhi; xb.blnolo:=xarrlo;
+               if xq.kind=K_rep then begin
+                  xb.line1:=xlanguage; xb.npar:=xextident;
+               end;
+            end;
+         end fillextquantity;
+
+%title ******   SKIPLIST / EXPANDEXTLIST  (normalattrfile)   ******
+
+         procedure skipList;
+         begin
+%+E         if option(rank('E'))<>NUL then inspect sysout do begin
+%+E            outtext("  --> skip list"); outimage end;
+%           key:=isochar(CURF.inbyte); !*** 'L' is read, get next key;
+            nextKey;
+%           while key='Q' do begin !*** skip this quantity;
+            while key < lowKey do begin !*** skip this quantity;
+                  fetchquant;
+                  if key=begList then skipList;
+                  !*** skip local list and then continue with this;
+            end;
+%  EXIT:    if key <> 'E' then expxerr('E');
+   EXIT:    if key <> endList then expxerr('E');
+            nextKey;
+%+E         if option(rank('E'))<>NUL then inspect sysout do begin
+%+E            outtext(" <-- skip list"); outimage end;
+         end;
+
+         procedure expandextlist(module,encl);
+               ref(extbrecord)module; ref(brecord)encl;
+         begin ref(extquantity)cq,lq; short integer overload;
+               boolean genqnt;
+%+S            Freq(76):=Freq(76)+1;
+%+E            if option(rank('E'))<>NUL then inspect sysout do begin
+%+E               outtext("  --> expandextlist"); outimage end;
+
+%           key:=isochar(CURF.inbyte); !*** 'L' is read, get next key;
+            nextKey;
+            overload:=0;
+%           while key='Q' do begin
+            while key < lowKey do begin
+               genqnt:=fetchquant;
+               if overload>0
+               then begin overload:=overload-1; goto GENOQ end;
+               if genqnt then begin
+          GENQ:   if xlongindic<>NUL  then begin
+                     overload:=rank(xlongindic);
+                     if overload>10 then overload:=overload -
+                        (if overload>20 then 20 else 10);
+                     if xclf=Clf005
+                     then overload:=overload+overload+1;
+                  end
+                  else if xclf=Clf005 then overload:=1;
+          GENOQ:  cq:-if xcateg=C_extnal and then xclf <> Clf001
+                  then newextquantbrec(encl.blev,encl.rtblev,
+                                      'B',module.declquant)
+                  else new extquantity(module);
+                  fillextquantity(cq);
+                  cq.encl:-encl;
+                  if cq.categ <> C_virt then begin
+                     if encl.fpar==none then encl.fpar:-lq:-cq
+                else if lq=/=none then lq:-lq.next:-cq;
+                     !lq==none: quantity is declquant of virt.descr.,
+                                should not be inserted in fpar-list;
+                     if cq.categ<>C_local and then cq.categ<>C_extnal
+%                    if cq.categ < C_local
+                     then encl.npar:=encl.npar+1;
+                     if cq.kind=K_class then encl.localclasses:=true;
+                  end
+             else begin
+                     if encl.favirt==none then encl.favirt:-lq:-cq
+                     else lq:-lq.next:-cq;
+%                    if key='L' then goto expDescr;
+                     if key = begList then goto expDescr;
+                  end;
+
+                  if (cq.categ=C_local or else
+                      (cq.categ=C_extnal and then cq.descr==none))
+                     and then (cq.kind=K_proc or else cq.kind=K_class)
+                  then
+        ExpDescr: inspect new brecord do begin
+                       blev:=char(rank(encl.  blev)+1);
+                     rtblev:=char(rank(encl.rtblev)+1);
+                     cq.descr:-this brecord; declquant:-cq; kind:=xkind;
+                     thisused:=xthisused;
+%+K                  if xinrtag>='!4!' then begin isGlobal:=true;
+%+K                     xinrtag:=char(rank(xinrtag)-4); end;
+                     inrtag:=xinrtag; hasCode:=xhasCode;
+%                    if key='L'
+                     if key = begList
+                     then expandextlist(module,this brecord);
+                  end;
+               end ***genbrec***
+%         else if key='L' then expandextlist(none,none,true)
+          else if key = begList then skipList;
+            end reading quants in list;
+%  EXIT:    if key <> 'E' then expxerr('E');
+   EXIT:    if key <> endList then expxerr('E');
+            nextKey;
+%+E         if option(rank('E'))<>NUL then inspect sysout do begin
+%+E            outtext(" <-- exp.list"); outimage end;
+         end of expandextlist;
+
+%title ******   EXPANDEXTERNALS  (normalattrfile)   ******
+
+      procedure expandexternals(b); ref(brecord)b;
+      begin
+         ref(extbrecord)eb; ref(quantity)q,qe,qx,qq;
+         ref(extmodule) currentextmodule;
+         text t;
+         boolean markermade; ! False as long as no marker made;
+         boolean generate;   ! True if quantlist must be expanded;
+
+%+S if b.fpar==none then Freq(73):=Freq(73)+1 else Freq(74):=Freq(74)+1;
+         q:-b.fpar;
+restartloop:
+         while q=/=none do begin                !*** main loop;
+            if q.descr is extbrecord then begin !*** another module;
+               eb:-q.descr;
+               if eb.status <> 'M' then  begin  !*** not marker;
+%+R               if realCap then timeAttr:=cputime;
+                  openattributefile(q);
+                  if not sysattrfile then inspect new extmodule do begin
+                     if firstextmodule==none
+                     then currentextmodule:-firstextmodule:-
+                                            this extmodule
+                else begin currentextmodule:-firstextmodule;
+                        while currentextmodule.next =/= none
+                        do currentextmodule:-currentextmodule.next;
+                        currentextmodule.next:-this extmodule;
+                     end;
+                     noofextmodules:=noofextmodules+1;
+                     qty:-q; checkhi:=attrckhi; checklo:=attrcklo;
+                  end;
+
+                  if eb.status='S' then begin
+                    if eb.checkhi=NUL then begin
+                       eb.checkhi:=attrckhi; eb.checklo:=attrcklo end
+               else if attrcklo<>eb.checklo or else attrckhi<>eb.checkhi
+                    then begin messageLinenr:=q.line;
+                         error2quants(406,q,eb.cause) end;
+                  end *** The status is 'B' or 'H':
+             else if attrcklo<>eb.checklo or else attrckhi<>eb.checkhi
+                  then errQTN(q,416,eb.cause);
+
+                  !*** Treat external head;
+                  nextKey;
+%                 while key='Q' do begin
+                  while key < lowKey do begin
+                     generate:=fetchquant;
+                     if xident == none then begin
+                        simsymbol:-xidentstring; DEFIDENT;
+                        xident:-boxof(hashhi,hashlo) end;
+                     !*** Search for ident in prefix chain;
+                     qx:-b.declquant;
+      nextplev:      qe:-qx.descr.fpar;
+                     while qe=/=none do begin
+                        if qe.symb == xident then goto found;
+                        qe:-qe.next;
+                     end;
+                     if qx.plev>one then begin
+                        qx:-qx.prefqual; goto nextplev end;
+
+                     !*** We know xident not in prefix chain;
+                     if xkind=K_class then goto newhead;
+                     qe:-meaningof(xident);
+                     if qe == none
+                     then qe:-newnotseen(xident);
+                     if qe.categ = C_unknwn then begin
+                        if xclf=Clf001 then goto addnewnature;
+                        goto newhead end;
+
+       found:        if qe.encl=/=b then begin
+                        if xclf=Clf001 then goto addnewnature;
+                        if not qe.descr is extbrecord then goto newhead;
+                        if xchecklo<>qe.descr qua extbrecord.checklo and
+                          then xcheckhi<>qe.descr qua extbrecord.checkhi
+                        then goto newhead;
+                        markermade:=true; !*** new marker;
+                        qq:-newextquantbrec(b.blev,b.rtblev,'M',qe);
+                        goto littned;
+                     end;
+                     !*** Local name conflict;
+                     if xclf=Clf001 then begin
+                           if qe.categ<>C_extnal then errQTN(qe,417,q)
+                      else if qe qua extquantity.clf<>Clf001 or else
+                              qe.virtno <> xextident or else
+                              qe.dim <> xlanguage
+                           then errQTN(qe,418,q);
+%                          if key='L' then begin !*** skip parameters;
+                           if key=begList then begin !skip parameters;
+                              nextKey;
+%                             while key='Q' do begin
+                              while key < lowKey do fetchquant;
+%                             if key <> 'E' then expxerr('E');
+                              if key <> endList then expxerr('E');
+                              nextKey;
+                           end;
+                     end
+                else if not qe.descr is extbrecord then errQTN(qe,417,q)
+                else
+%-Z %IMPLNONE OFF
+                     inspect qe.descr qua extbrecord do begin
+                        if checkhi<>NUL and then
+                          (checkhi<>xcheckhi or else checklo<>xchecklo)
+                        then errQTN(qe,418,q)
+                        else begin !*** Status is 'S';
+                           checkhi:=xcheckhi; checklo:=xchecklo;
+                           cause:-q;
+                        end;
+                     end;
+                     goto nonew;
+
+                     !*** external procedure with binding, xclf=Clf001;
+      addnewnature:  if generate then begin
+                        qq:-new extquantity(none); fillextquantity(qq);
+                        qq.encl:-b;
+                        qq.next:-q.next; q.next:-qq;
+                        inspect new brecord do begin
+                             blev:=char(rank(b.  blev)+1);
+                           rtblev:=char(rank(b.rtblev)+1);
+                           qq.descr:-this brecord; declquant:-qq end;
+                        q.descr.kind:=K_proc;  !***  qq.descr. ... ???;
+                     end;
+%                    if key='L'
+                     if key = begList then begin
+                        if generate then expandextlist(none,qq.descr)
+                        else skiplist end;
+                     goto nonew;
+
+      newhead:       qq:-newextquantbrec(b.blev,b.rtblev,'H',q);
+                     ! not used b.nloc:=b.nloc+1;
+                     if qq.kind=K_class then b.localclasses:=true;
+      littned:       qq.encl:-b;
+                     qq.next:-q.next; q.next:-qq;
+                     fillextquantity(qq);
+      nonew:      end treatment of external head qantities;
+
+%                 if key <> 'M' then expxerr('M');
+%+D               if key <> mainKey then expxerr('M');
+                  nextKey;
+%                 if key <> 'Q' then expxerr('Q');
+                  if key >= lowKey then expxerr('Q');
+                  generate:=fetchquant;
+                  if q.symb =/= xident then errQT(q,327);
+                  xextident:=q.virtno; ! ext.name of main not from file;
+                  xmodulhi:=attrmodhi; xmodullo:=attrmodlo;
+                  xcheckhi:=attrckhi; xchecklo:=attrcklo;
+                  xcateg:=C_extnal; ! main has old categ on attr.file ;
+                  fillextquantity(q);
+%                 if key = 'L'
+                  if key = begList then expandextlist(q.descr,q.descr);
+%                 if key<>'T' then expxerr('T');
+%+D               if key<>mainKey then expxerr('T');
+                  xtagnum:=nextNumber;
+                  eb.exttagnum:=xtagnum;
+                  if option(rank('O'))<>NUL
+                  then inspect sysout do begin
+                     outtext(" - end attr. file ");
+                     t:-CURF.filename; outtext(t);
+%+R                  if RealCap then begin outtext(", time used: ");
+%+R                     outreal(cputime-timeAttr,4,0) end;
+                     outimage end;
+                  CURF.close; CURF:-none;
+               end not marker;
+            end another module;
+   nextq:   q:-q.next;
+         end main loop;
+
+         !*** Remove markers if any. First is never marker;
+         if markermade then begin
+            q:-b.fpar; qe:-q.next;
+            while qe=/=none do
+            begin
+               if qe.descr is extbrecord and then
+                  qe.descr qua extbrecord.status='M'
+               then       q.next:-qe:-qe.next
+               else begin q:-qe; qe:-q.next; end;
+            end;
+         end;
+      end expandexternals;
+
+%+PQ  prior
+      procedure storebyte(ch); character ch;
+      begin storechar(ch,attrbuffer,p); p:=p+1 end;
+
+      procedure putstring(hi,lo); character hi,lo;
+      begin puttext(nameof(hi,lo)) end;
+
+%     procedure outindexx(index); short integer index; !TEMP;
+%        putstring(char(index//256),char(mod(index,256)));
+
+      procedure puttext(t); text t;
+      begin short integer tlength;
+            tlength:=t.length;
+            if tlength=0 then storebyte(NUL)
+            else begin
+               if p+tlength > bufmax then begin
+                  if tlength>bufmax then begin
+                     storebyte(longSwap); putNumber(tlength);
+                     swapObuffer; AOF.outtext(t); goto EX end;
+                  swapObuffer;
+               end;
+               if tlength>=rank(lowkey) then begin
+                  storebyte(longText); putnumber(tlength) end
+               else storebyte(char(tlength));
+               attrbuffer.sub(p+1,tlength):=t; p:=p+tlength;
+%+D            if p > bufsize then internerr('!7!',sourceline);
+           end;
+  EX: end;
+
+      procedure putNumber(i); short integer i;
+      begin storechar(char(    i//256),attrbuffer,p  );
+            storechar(char(mod(i,256)),attrbuffer,p+1); p:=p+2;
+      end;
+
+      procedure swapObuffer;
+      begin storebyte(bufSwap);
+            storechar(char(    p//256),attrbuffer,0);
+            storechar(char(mod(p,256)),attrbuffer,1);
+            AOF.outtext(attrbuffer.sub(1,p));
+            p:=2; !leave room for actual size;
+      end;
+
+      procedure outquantwlist(q); !*** recursive ***;
+      ref(quantity)q;
+      begin character ch,clf; boolean inrflag;
+            character quallength,idlength; !length of identifier, <72;
+            short integer k,l,xtag,overload;
+%+Z         short integer basetag; text u;
+            ref(quantity)qq; ref(idpack)cvis;
+
+      inspect q do begin
+         xtag:=exttag(this quantity)+1;
+                         ! NOTE: +1 to take care of exttag=-1 !!!;
+         if xtag>=0 then begin !*** OutputQuant: ***;
+%+E         if option(rank('E'))<>NUL then inspect sysout do begin
+%+E            outtext("OUTQUANT: " & symb.symbol & " - exttag: "
+%+E                                 &leftint(k-1)); outimage end;
+%           p:=0; storebyte('Q');
+
+            if prefqual=/=none and then (kind<>K_class or else plev>one)
+            then quallength:=char(prefqual.symb.symbol.length+1);
+
+            if encl.kind=K_proc and then categ<C_local
+            then !procedure parameter - no identifier out;
+            else idlength:=char(
+%+Z              !symbols starting with a single underline are skipped ;
+%+Z                        if kind <> K_Class and then
+%+Z                           loadchar(symb.symbol,1)<> '_' and then
+%+Z                           loadchar(symb.symbol,0) = '_' then 1 else
+                           (symb.symbol.length+1) );
+
+            !*** check that the basic descriptor may be output ***;
+            if p + rank(idlength) + rank(quallength) > bufmax-5
+            then swapObuffer;
+
+            !*** basic quantity descriptor, size computed above ***;
+            ! - assume that categ <8 and kind < 16  ALWAYS ***;
+            storebyte(char( rank(kind)*8 + rank(categ) ));
+
+            ! - assume that type < 128 ALWAYS ***;
+            if quallength <> NUL then begin
+               storebyte(char(rank(type)+128));
+               puttext(prefqual.symb.symbol)
+            end else storebyte(type);
+
+%           ! - assume that clf < 128 ALWAYS ***;
+
+%+Z         if sysattrfile and then
+%+Z            categ<>C_virt and then categ<>C_extnal
+%+Z         then begin !set overload and inrflag, read basetag;
+%+Z            permt:-nameof(char(virtno//256),char(rem(virtno,256)));
+%+Z            permt.setpos(1);
+%+Z            clf:=permt.getchar;
+%+Z            if idlength = NUL then begin !procedure parameter;
+%+Z               storebyte(char(rank(clf)+128)); goto SPECX end;
+%+Z            k:=nextitemoft.getint;
+%+Z            if k<0 then begin
+%+Z               overload:=-k; k:=nextitemoft.getint end;
+%+Z            if k=3 then inrflag:=true;
+%+Z            inspect coder qua visiblegenerator do begin
+%+Z               if k>0 then begin
+%+Z                  u:-lowcase(nextitemoft);
+%+Z                  l:=      if u = "rt"   then   1
+%+Z                     else  if u = "knwn" then   2
+%+Z                     else  if u = "cent" then   3
+%+Z                     else  if u = "cint" then   4
+%+Z                     else  if u = "arr"  then   5
+%+Z                     else  if u = "fil"  then   6
+%+Z                     else  if u = "edit" then   7
+%+Z                     else  if u = "form" then   8
+%+Z                     else  if u = "libr" then   9
+%+Z                     else  if u = "smst" then  10
+%+Z                     else  if u = "sml"  then  11
+%+Z                     else  if u = "mntr" then  12
+%+Z                     else  10000; !WILL ENSURE INDEX TRAP BELOW;
+%+Z                  basetag:=moduletab(l).basetag;
+%+Z                  xtag:=basetag+nextitemoft.getint+1;
+%+Z               end else xtag:=1;
+%+Z            end;
+%+Z         end else
+            clf:=if this quantity is extquantity
+                 then this quantity qua extquantity.clf else Clf000;
+            if idlength = NUL then begin
+               storebyte(char(rank(clf)+128)); putNumber(xtag);
+               goto SPECX; end;
+            storebyte(clf); putNumber(xtag);
+
+%+Z         if idlength = '!1!' then storebyte(NUL) else
+            puttext(symb.symbol);
+
+            !******* specially marked output ********************;
+%+Z         if overload <> 0 then begin
+%+Z            storebyte(overMark); storebyte(char(overload)); end;
+
+            if protect<>'!0!' then begin
+               storebyte(protMark); storebyte(protect) end;
+
+            if categ=C_extnal then begin
+               if descr is extbrecord
+               then begin storebyte(xMark);
+%-Z %IMPLNONE OFF
+                  inspect descr qua extbrecord do begin
+                     putstring(modulhi,modullo);
+                     putstring(checkhi,checklo);
+                  end
+               end else storebyte(yMark);
+%              outindexx(dim); outindexx(virtno);
+               putstring(char(dim//256),char(rem(dim,256)));
+               putstring(char(virtno//256),char(rem(virtno,256)));
+            end
+            else begin !categ <> C_extnal;
+               if encl=/=none and then
+                  (categ<>C_local or else
+                   (match=/=none and then match.categ=C_virt))
+               then storebyte(forcMark);
+
+               if dim > 0 then begin
+                  storebyte(dimMark); storebyte(char(dim)) end;
+            end;
+
+            if special <> NUL
+               or else kind=K_rep
+            then begin
+               !*** output of const value, see 'checkinconst';
+               storebyte(specMark);
+               if kind=K_rep then begin
+                  putNumber(descr.line1); !number of elements;
+                  putNumber(descr.npar);  !lower bound;
+               end else begin
+                  if descr.blnohi <> NUL
+                  then begin !const not BOOL/CHAR/notext;
+                     storebyte(special);
+                     putstring(descr.blnohi,descr.blnolo) end
+                  else begin
+                     storebyte(char(rank(special)+128));
+                     storebyte(descr.blnolo);
+                  end;
+               end not K_rep;
+               goto SPECX;
+            end;
+
+%+Z         if not sysattrfile then begin !for/con-nests, THIS not in
+%+Z                    system quants, INNER,hasCode marked implicitly;
+             inspect descr do begin
+               if connests<>zero then begin
+                  storebyte(nestMark);
+%+Z               storebyte(char(connests));
+%-Z               storebyte(connests);
+               end;
+               if thisused        then k:=  64  else k:=0;
+               if hasCode         then k:=k+32;
+%+K            if isGlobal        then k:=k+ 4;
+               if inrtag <> NUL then k:=k+ 2;
+               if k<>0 then begin
+                  storebyte(thisMark); storebyte(char(k)) end;
+             end;
+%+Z         end not sysattrfile
+%+Z    else if (clf=Clf004 or else clf=Clf009) and then inrflag
+%+Z         then begin !set inrtag for sys class;
+%+Z            storebyte(thisMark); storebyte('!02!') end;
+
+            if descr is brecord then begin if special=NUL then begin
+               if descr.kind=K_class then begin
+                  cvis:-descr.hidlist;
+                  while cvis =/= none do begin
+                     if cvis.line>0 then begin
+                        storebyte(hidMark); !*** key, not marker;
+                        putstring(cvis.idhi,cvis.idlo);
+                     end;
+                     cvis:-cvis.next;
+                  end;
+               end;
+              !*** end of OutputQuant ***;
+
+              l:=k:=0;
+              if categ=C_virt and then kind=K_proc then begin
+                 !*** output descriptor ***;
+% D              if descr.declquant.categ=C_virt then sqrt(-1);
+                 qq:-descr.fpar;
+                 if qq=/=none then begin k:=1; goto UTP end;
+                 !*** output empty list ***;
+                 storebyte(begList); l:=1;
+              end
+              else begin
+                 !***     output "local list", if any     ***;
+                 !    To avoid occurrences of empty lists,   ;
+                 !    l=0 signals 'L' not generated.         ;
+                 !    k=1: scanning fpar, k=0: scanning virts;
+                 ! extbrecords are not copied;
+
+                 qq:-descr.favirt; !virts must be first;
+            UTQ: while qq=/=none do begin
+                    if (     if k=0 then qq.dim>0 !new virt;
+                        else if qq.descr is extbrecord
+                             then qq.descr qua extbrecord.status='S'
+                             else true)
+                    then begin
+            UTP:         if l=0 then begin
+                            storebyte(begList); l:=1 end;
+                         outquantwlist(qq);
+                    end;
+                    if qq=/=none then qq:-qq.next;
+                 end;
+                 if k=0 then begin qq:-descr.fpar; k:=1; goto UTQ end;
+              end;
+              if l<>0 then storebyte(endList);
+            end special=0 end descr is brecord;
+   SPECX: end exttag>-2;
+         end inspect
+%+D      otherwise internerr('!7!',sourceline);
+         ;
+%         if loadchar(attrbuf,0)<>NUL then begin
+%           !*** output empty list - spec virt proc, no param;
+%           AOF.outbyte(132); storechar(NUL,attrbuf,0) end;
+      end of outquantwlist;
+
+            detach;
+            AOF:-new outbytefile(attrfilename);
+            if not AOF.open then openerror(attrfilename);
+            AOF.outbyte(rank(layoutindex));
+%+D         if sportid.length<>12 then internerr('!7!',sourceline);
+%+Z         sysattrfile:=(mainqnt.virtno <> 0);
+%+Z         if sysattrfile then begin
+%+Z            t:-copy(sportid); t.sub(11,1):=":"; end else
+            t:-sportid; attrbuffer.sub(3,12):=t; p:=14;
+%           storebyte(layoutindex);
+            puttext(checkcode); puttext(moduleident);
+
+            !***********  output external head  ****************;
+            nextexttag:=0; q:-display(6).fpar;
+            while q=/=none do
+            begin if q.categ=C_extnal and then
+                     ( q.descr is brecord or else
+                       q.descr qua extbrecord.status='S' )
+                  then outquantwlist(q);
+                  q:-q.next;
+            end;
+
+            !***********  output main w/locals and tag count  ****;
+            storebyte(mainKey); outquantwlist(mainqnt);
+            storebyte(mainKey); putNumber(nextexttag);
+            storebyte(mainKey); !*** terminates reading ***;
+            swapObuffer; !output last buffer;
+            !*** at least two bytes MUST follow the last buffer,
+                 - see the handling of input buffers ;
+            AOF.outtext(timestamp); AOF.close; AOF:-none;
+      end of normalattrfile;
+
+%title ***  R E C O M P A T T R F I L E  ***
+
+      attrfile class recompattrfile;
+      begin
+            ! called if the separate compilation is a recompilation ;
+            ! the old attribute file is CURF;
+
+
+         procedure outquantwlist(q); ref(quantity)q;
+         begin
+
+         ! this is a copy of the procedure which produces an attribute;
+         ! file, but writing is substituted by a corresponding reading;
+         ! from the old attributefile and comparing it with what would;
+         ! have been written on an attribute file;
+
+%+PQ        prior
+            procedure recomperr(n);short integer n;
+            begin diag(0):-q.symb.symbol; fatal0(n); end;
+%             begin
+% %+P            short integer errcount;
+%                inspect q do begin
+% %+P                 if errcount<5 then begin
+%                        messageLinenr:=this quantity.line;
+%                        error1id(n,symb); StopScode;
+% %+P                 end; errcount:=errcount+1;
+% %+D                 dump;
+%             end end;
+
+%+PQ        prior
+            procedure recompwarn(n); short integer n;
+                  errQT(q,-n);
+
+            ref(quantity)qq; text u; short integer k,l;
+            ref(idpack) cvis,pvis,xvis;
+
+       !*****   main program of recomp'outquantwlist  *****;
+
+       ! this is a simulation of an attribute file generation  ;
+
+       inspect q do begin
+          k:=exttag(this quantity);
+          if k > -2 then begin !TEMP;
+
+%           if key <> 'Q' then recomperr(370);
+            if key >= lowKey then recomperr(370);
+
+            fetchquant; 
+            !*********  check common part  ***************;
+            if symb =/= xident and then
+               (encl.kind<>K_proc or else categ>=C_local) then l:=388
+       else if xprotect <> protect then l:=385
+       else if xtype <> type then l:=371
+       else if xkind  <> kind  then l:=372
+       else if xcateg <> categ then l:=373
+       else if xclf <> (if this quantity is extquantity
+               then this quantity qua extquantity.clf else Clf000)
+            then l:=378
+       else if k <> xftag then l:=379
+            else l:=0;
+            if l<>0 then begin recomperr(l); l:=0; end;
+            !**********  end common part  *****************************;
+
+            if categ<>C_extnal then begin
+               if xdim <> dim and then dim>=0
+               then error1id(375,symb) end;
+            !**********  end common-dependent part  *******************;
+
+%           if (prefqual=/=none and then (kind<>K_class or else plev>1)
+%               and then (xprefqbox == none or else prefqual.symb =/=
+%                       boxof(xprefqbox.oldinsp,xprefqbox.lowbyte)) )
+%              or else xprefqbox =/=none
+%           then error1id(374,symb);
+
+            if ( if prefqual=/=none
+                 then( (kind<>K_class or else plev>one) and then
+                       prefqual.symb =/= boxof(xprefqhi,xprefqlo) )
+                 else( xprefqhi<>NUL or else xprefqlo<>NUL )
+               )
+            then error1id(374,symb);
+
+            if xspecial <> special or else
+               (special<>NUL and then
+                (xarrhi<>descr.blnohi or else xarrlo<>descr.blnolo))
+            then error1id(384,symb);
+
+            if categ=C_extnal then begin
+               if xlanguage <> dim then recompwarn(389);
+               if xextident <> virtno then recompwarn(390);
+               if descr is extbrecord then
+%-Z %IMPLNONE OFF
+                  inspect descr qua extbrecord do begin
+                  if xmodulhi <> modulhi or else xmodullo <> modullo
+                  then recompwarn(391);
+                  if xchecklo <> checklo or else xcheckhi <> checkhi
+                  then recomperr(377);
+               end;
+            end;
+
+            inspect descr do begin
+               if thisused and then not xthisused then recomperr(376);
+               !tolerate dropping THIS - but it is still in attr.file;
+%+Z            if xconnests <> char(connests) then recomperr(387);
+%-Z            if xconnests <> connests then recomperr(387);
+% temp         if xinrtag <> inrtag then !recomperr(???);;
+% temp         if xhasCode <> hasCode then !recomperr(???);;
+               if hidlist==none then begin
+                  if xhidlist=/=none then recompwarn(385) end
+% temp         else begin
+% temp            cvis:-hidlist;
+% temp            while cvis=/=none do inspect cvis do begin
+% temp               pvis:-xhidlist;
+% temp               while pvis.next=/=none do begin
+% temp                  xvis:-pvis.next;
+% temp                  if xvis.idlo=idlo and then xvis.idhi=idhi
+% temp                  then goto XF;
+% temp                  pvis:-xvis
+% temp               end;
+% temp               recomperr(385); goto XITH;
+% temp     XF:       cvis:-next; pvis.next:-xvis.next;
+% temp            end;
+% temp            if xhidlist=/=none then recomperr(385);
+% temp   XITH: end;
+            end *** descr=/=none ***;
+            !**************  end marked part  ************************;
+
+            if special=NUL and then descr is brecord then begin
+               l:=k:=0;
+               if categ=C_virt and then kind=K_proc then begin
+                  !*** output descriptor ***;
+                  qq:-descr.fpar;
+%                 if qq=/=none then begin k:=1; goto UTP; end;
+                                          k:=1; goto UTP;
+               end
+               else begin
+                  !***     output "local list", if any     ***;
+                  !    To avoid occurrences of empty lists,   ;
+                  !    l=0 signals 'L' not generated.         ;
+                  !    k=1: scanning fpar, k=0: scanning virts;
+                  ! extbrecords are not copied               ;
+
+                  qq:-descr.favirt; !virts must be first;
+          UTQ:    while qq=/=none do begin
+                     if (     if k=0 then qq.dim<>0 !new virt;
+                         else if qq.descr is extbrecord
+                              then qq.descr qua extbrecord.status='S'
+                              else true )
+                     then begin
+          UTP:            if l=0 then begin nextKey; l:=1 end;
+                          outquantwlist(qq);
+                     end;
+                     if qq =/= none then qq:-qq.next;
+                  end;
+                  if k=0 then begin qq:-descr.fpar; k:=1; goto UTQ end;
+                  if l<>0 then begin
+%                    if key <> 'E' then recompwarn(370) else
+                     if key <> endList then recompwarn(370) else
+                     nextKey;
+                  end;
+               end not descr of virtual procedure;
+            end special=0 and descr is brecord;
+          end exttag > -2
+         end inspect q;
+
+         end of outquantwlist;
+
+
+            !******  main program of recompattrfile  ********;
+            ref(quantity)q;
+
+            detach; attrbuffer:-Afile.attrbuffer;
+            openattributefile(none); !*** simsymbol==moduleidentifier;
+            if simsymbol <> moduleident
+            then error2(401,simsymbol,moduleident);
+%           if sysattrfile or
+%              readattrlayout<>layoutindex then wrongLayout;
+            if sysattrfile then wrongLayout;
+            !*** SYSTEM ATTR CANNOT BE RECOMPILED;
+            nextKey;
+            nextexttag:=0; q:-display(6).fpar;
+            while q=/=none do
+            begin if q.categ=C_extnal and then
+                     (q.descr is brecord or else
+                      q.descr qua extbrecord.status='S')
+                  then outquantwlist(q);
+                  q:-q.next;
+            end;
+
+%           if key<>'M' then wrongLayout;
+            if key<>mainKey then wrongLayout;
+            nextKey; outquantwlist(mainqnt);
+%           testint:=OAF.in2byte;
+%           if key<>'T' or testint<>nextexttag then wrongLayout;
+            if key<>mainKey or else nextNumber<>nextexttag
+            then wrongLayout;
+            !*** if/when attr files are changed to directbytefiles,
+                 a new timestamp should be output here;
+            CURF.close; CURF:-none;
+
+      end of recompattrfile;
+
+%title ***   Procedure   A L L O C A T E   ***
+
+precheck0 class prechecker;
+begin
+
+      text oldcheckcode; ! check code of recompiled attr. file;
+      boolean B2out;
+
+      ref(quantity) blockpref;
+
+%+PQ  prior
+      procedure allocate;   ! (blhi,bllo,blockpref);
+      !*** blockpref and lastblhi,lastbllo are implicit parameters;
+      !*** This procedure is called by the semantic-checker
+           whenever a block other than a class is entered (that
+           is when IDCLP, IBLKB, IBPRF or IBEGI is read in L2).
+           The parameter blno is the number received with
+           the last IBLNO-instr., and blockpref is only
+           given for prefixed blocks. Then blockpref is
+           the given prefix, and it has been be tested that
+           it really is a class and that parameters are OK. If
+           not OK then none is given, and the block is
+           later treated as a simple block. ;
+
+      !*** allocate is not recursive, while the two "passes"
+           alloc1 and alloc2 are ;
+      begin ref(brecord)B1; ref(quantity)Q,TUchain; ref(brecord)brc;
+
+%title ***   Procedure ALLOC1 of allocate   ***
+      procedure alloc1(brc); ref(brecord) brc;
+      begin !*** This procedure is used as first
+                 pass of allocate. This pass will make a copy of
+                 the relevant brec/quant structure, and will
+                 check the local quantity lists for double occurences
+                 and consistency in type/kind/categ. ;
+            ref(quantity)Q,QP; ref(quantity)QN,QX;
+            ref(brctab2) tab2;
+            boolean extbinding; ! True if this is brecord of the binding
+                                  of an external non-Simula procedure ;
+
+%           ref(extquantity) procedure newextquant(clfic);
+%           character clfic;
+%           begin ref(extquantity) QX,qty;
+%                 newextquant:-QX:-new extquantity(none);
+%                 copyfromto(Q,QX);
+%                 QX.clf:=clfic; QX.next:-Q.next;
+%                 if QP == none then brc.fpar:-QX
+%                 else QP.next:-QX;
+%           end;
+
+            procedure allocDescriptor;
+%-Z %IMPLNONE OFF
+            inspect (if Q.descr==none then brctab(0).val(0)
+                     else Q.descr)
+            do begin
+               QN.descr:-this brecord; declquant:-QN;
+                 blev:=char(rank(brc.  blev)+1);
+               rtblev:=char(rank(brc.rtblev)+1);
+               !****************;
+                alloc1(this brecord);
+               !****************;
+            end;
+
+%+S    Freq(60):=Freq(60)+1;
+            if rank(brc.blev)>maxblev then fatal0(299); !blev overflow;
+            extbinding:= brc.declquant is extquantity;
+            Q:-brc.fpar;  ! QP:-none ;
+            while Q=/=none do begin
+               if extbinding then begin
+                  ! Q represents a parameter of the binding;
+                  QX:-new extquantity(none);
+                  QX qua extquantity.clf:=Clf002;
+                  goto copytoext;
+               end;
+               if Q.categ <> C_extnal then QX:-Q
+          else if Q.descr == none then begin
+                  ! categ=C_extnal: external Simula quantity;
+                  QX:-newextquantbrec(brc.blev,brc.rtblev,'S',none);
+                  copyfromto(Q,QX); QX.next:-Q.next;
+                  if QP == none then QP:-brc.fpar:-QX
+                  else QP.next:-QX;
+               end
+               else begin
+                  ! Q represents external with binding ;
+                  QX:-new extquantity(none);
+                  QX qua extquantity.clf:=Clf001;
+    copytoext:    copyfromto(Q,QX);
+                  QX.next:-Q.next;
+                  if QP == none then brc.fpar:-QX
+                  else QP.next:-QX;
+               end;
+
+               QN:-QX; QX:-QX.next;
+               while QX=/=none do begin
+                  !*** scan remainder of list for double declaration;
+                  if QX.symb==QN.symb then errQTN(QX,411,QN);
+                  QX:-QX.next;
+               end;
+               QN.encl:-brc;
+               if QN.kind=K_unknwn then begin
+                  errQT(QN,319); QN.type:=IELSE; QN.kind:=K_error end
+               else begin
+                  switch(NUL:C_max) QN.categ begin
+                  when C_local do begin
+                     ! nloc:=nloc+1 ;
+                     if Q.descr=/=brc then begin
+                        if QN.kind=K_proc or else QN.kind=K_class
+                                          or else QN.kind=K_record
+                        then allocDescriptor end
+                  end;
+                  when C_unspec do begin
+                     if brc.kind=K_class
+%+K                     or else (brc.kind=K_proc and brc.thisused)
+                     then begin
+                        if QN.kind=K_proc or QN.type=ILABE
+                        then errQT(QN,320);
+                     end
+                else if extbinding then begin
+                        if QN.kind=K_proc or QN.kind=K_switch
+%  TEMP                 then errQT(QN,321);
+                        then error1id(-321,QN.symb);
+                     end;
+                     brc.npar:=brc.npar+1;
+                  end;
+                  when C_value do begin
+                     if (QN.type<=ILONG or else QN.type=IELSE)
+                   and then (QN.kind=K_ident or else QN.kind=K_array)
+                     then begin
+                       if QN.kind=K_ident then QN.categ:=C_unspec end
+                else if QN.type<>ITEXT or else QN.kind<>K_ident
+                     then errQT(QN,322);
+                     brc.npar:=brc.npar+1;
+                  end;
+                  when C_name do begin
+                     if brc.kind=K_class
+%+K                                or (brc.kind=K_proc and brc.thisused)
+                     then errQT(QN,323)
+                else if extbinding then begin
+%                       if QN.type=ILABE or QN.kind=K_proc
+                        if QN.type=ILABE !*** allow procedure parameters;
+                        then errQT(QN,321) end;
+                     brc.npar:=brc.npar+1;
+                  end;
+                  when C_extnal do begin !QN is extquantity;
+                     !Externals with binding are handled here.;
+                     !External Simula quantities are left to  ;
+                     !'expandexternals' called from alloc2.;
+                     if q.descr =/= none
+                     then begin !QN is extq copy of q;
+                        if QN.dim=0 then errQT(Q,324);
+                           ! encodes the language;
+%  type REF ok now      if QN.type=IREF then errQT(Q,325);
+                        allocDescriptor;
+                     end;
+                     ! nloc:=nloc+1 ;
+                  end;
+                  when NONE do
+                     internerr('!7!',sourceline); !mysterious categ;
+                  end case;
+               end;
+               if QN.kind=K_class then brc.localclasses:=true;
+               QP:-QN; Q:-Q.next;
+            end while;
+
+            !*** Now make copy of virtuals;
+            Q:-brc.favirt;
+            while Q=/=none do begin
+               Q.encl:-brc;
+                  if Q.descr =/= none
+                     !*** specified virtual ***;
+                  then begin QN:-Q; allocDescriptor end;
+               Q:-Q.next;
+            end;
+            !*** All checks of virtuals are done in alloc2;
+
+      end of alloc1;
+%title ***   Procedure ALLOC2 of allocate   ***
+      procedure alloc2(brc); ref(brecord) brc;
+      begin !*** This procedure represent pass 2 of allocate. the
+                 main purpose of this is to check and set the prefix
+                 chains, and to set and check the qualification in the
+                 quantities where the type is ref (both are put in
+                 prefqual).
+                 Also checks and binds virtuals, and expands externals ;
+            ref(quantity)Q,QX,VA,VB,VC; ref(brecord)B; ref(idpack)fvis;
+            short integer VNO;
+
+            procedure checkhid(cq); ref(quantity) cq;
+            !*** check legality of 'hidden' ***;
+            begin ref(idpack) cvis;
+%+S    Freq(61):=Freq(61)+1;
+%-Z %IMPLNONE OFF
+               inspect brc do
+               while hidlist=/=none and then cq=/=none do begin
+                  if cq.visible=NUL then begin
+                     cvis:-hidlist;
+                     while cvis=/=none do begin
+                        if cq.symb == boxof(cvis.idhi,cvis.idlo)
+                        then begin
+                           if cvis.line>0 then begin
+                              if cq.protect='!1!' then begin
+                                 cvis.line:=-cvis.line; goto NXT end;
+                              removeVis(this brecord,cvis,369)
+                           end
+                        end;
+                        cvis:-cvis.next;
+                     end;
+                  end;
+             NXT: cq:-cq.next
+               end;
+            end ***checkhid***;
+
+            procedure setprefix(subq); ref(quantity) subq;  ! recursive;
+            comment: This procedure is used within alloc2 to assure
+                     that the prefix of this class is properly set.
+                     It should only be called when:
+                     kind=K_class/record and prefqual(=prefix)==none and
+                     ftag or line (= prefid) < 0;
+            begin ref(quantity)PQ,smlblk;
+                  ref(symbolbox) symx; short integer i;
+%+S    Freq(62):=Freq(62)+1;
+%+D            if (subq.kind<>K_class and subq.kind<>K_record)
+%+D              or subq.prefqual=/=none 
+%+D            then internerr('!7!',sourceline) else
+               begin
+                  subq.match:-setprefgoing;
+                  if subq.line < 0
+                  then begin i:=-subq.line; subq.line:=0 end
+                  else begin i:=-subq.ftag; subq.ftag:=0 end;
+                  symx:-getBox(i); PQ:-meaningof(symx);
+                  if PQ == none then PQ:-newnotseen(symx);
+                  if PQ.categ=C_unknwn
+                    or (PQ.kind<>K_class and PQ.kind<>K_record)
+                  then errQTN(subq,409,PQ)
+             else if PQ.encl.blev<>subq.encl.blev then begin
+                     !*** test for system class prefix;
+%-Z %IMPLNONE OFF
+                     if PQ is quantity then goto PrefErr;
+                     if PQ qua extquantity.clf=Clf009 then begin
+                        !special test of PROCESS used as prefix,
+                         static encloser must be SIMULATION block;
+                        smlblk:-subq.encl.declquant;
+                        while smlblk.plev>2 do smlblk:-smlblk.prefqual;
+                        if smlblk.symb=/=none then begin
+                           if smlblk.symb.symbol="simulation"
+                           then goto setPref end;
+             PrefErr:   errQTN(subq,410,PQ);
+                      end
+                 else if PQ qua extquantity.clf<>Clf004
+                      !*** test for system class prefix;
+                     then goto PrefErr;
+                     goto setPref;
+                     !also if error - to avoid spurious messages;
+                  end
+             else if PQ.match==setprefgoing
+                  then errQT(subq,318)
+                  else begin
+      setPref:       if PQ.prefqual==none then begin
+                        if PQ.ftag < 0 or PQ.line < 0 !???;
+                        then setprefix(PQ) end;
+                     subq.prefqual:-PQ; subq.plev:=PQ.plev+1;
+                     goto out;
+                  end;
+                    
+                  subq.prefqual:-none;
+                  subq.plev:= if subq.kind=K_class then one else zero;
+            out:  subq.match:-none;
+               end
+            end of procedure setprefix;
+
+            ref(quantity)procedure setprefqual(Q,param);
+            ref(quantity)Q; boolean param;
+            begin ref(quantity)QX; ref(symbolbox) symx;
+                  short integer i;
+%+S    Freq(63):=Freq(63)+1;
+                  while Q =/= none do begin
+                     if param then begin
+                        if Q.categ=C_local then goto out;
+                        if Q.categ=C_extnal then goto out end;
+                     if Q.type=IREF
+                     then begin !Set qualification;
+                        if Q.line < 0
+                        then begin i:=-Q.line; Q.line:=0 end
+                        else begin i:=-Q.ftag; Q.ftag:=0 end;
+                        symx:-getBox(i);
+                        QX:-meaningof(symx);
+                        if QX==none then QX:-newnotseen(symx);
+                        if QX.categ=C_unknwn then begin
+                           !*** extquant: qualification is hidd.prot.;
+                           if Q is quantity then begin
+                              errQTN(Q,412,QX); Q.type:=IELSE end
+                      else if QX.kind=K_record then Q.type:=IPTR;
+                           Q.prefqual:-QX;
+                        end
+                   else if QX.kind <> K_class then begin
+                          if QX.kind = K_record then begin
+                             Q.prefqual:-QX; Q.type:=IPTR end
+                          else begin errQTN(Q,413,QX); Q.type:=IELSE end
+                        end
+                        else Q.prefqual:-QX;
+                        Q.plev:=one;
+                     end;
+
+                     if Q.kind=K_class or else Q.kind=K_record
+                     then begin
+                        if Q.prefqual==none then begin
+                           if Q.ftag<0 or Q.line<0 then setprefix(Q);
+                     end end;
+                     Q:-Q.next;
+                  end;
+             out: setprefqual:-Q;
+            end of setprefqual;
+
+%+S    Freq(64):=Freq(64)+1;
+            !If plev>0: assure that alloc2 is first called for prefixes;
+            !else:      add prefix level 0 with attribute 'detach'    ;
+            if brc.kind=K_class or else brc.kind=K_record then begin
+               brc.declquant.match:-alloc2called;
+               if brc.declquant.plev>one then begin
+                  B:-brc.declquant.prefqual.descr;
+                  if B.declquant.match=/=alloc2called then alloc2(B);
+                  brc.localclasses:=brc.localclasses or B.localclasses;
+                  brc.npar:=brc.npar+B.npar; !no used nloc:=nloc+B.nloc;
+               end else
+               begin
+                  q:-new quantity; ! Prefix level 0, never extquantity;
+                  makeequalto(brc.declquant,q);
+                              !Works even if declquant is extquantity;
+                  q.plev:=zero;
+                  brc.declquant.prefqual:-q;
+                  B:-new brecord;
+                  q.descr:-B; B.declquant:-q; B.kind:=brc.kind;
+                  B.blnohi:=lastblhi; B.blnolo:=lastbllo;
+                  B.blev:=brc.blev; B.rtblev:=brc.rtblev;
+                  B.hasCode:=brc.declquant.descr.hasCode;
+%+K               B.isGlobal:=brc.declquant.descr.isGlobal;
+                  if detachquant=/=none then begin
+                     if brc.kind=K_class then begin
+                        qx:-new extquantity(none);
+                        makeequalto(detachquant,qx);
+                        qx.plev:=zero; ! not used B.nloc:=1;
+                        B.fpar:-qx; qx.encl:-B;
+                     end;
+                  end;
+               end;
+            end;
+
+            if brc.fpar=/=none then begin
+               Afile.expandexternals(brc);
+%+D            if option(rank('P'))<>NUL
+%+D            then dump("- after exp.externals");
+            end;
+            !*** Now test and accumulate virtuals if any;
+
+            if brc.kind=K_class or else brc.kind=K_prefbl then begin
+               if brc.declquant.plev>one then
+               begin !*** We now make a copy of the accumulated
+                          virtual list of the prefix into (VA to VB);
+                  if brc.declquant.prefqual.descr.hasCode
+                  then brc.hasCode:=true;
+%+K               if brc.declquant.prefqual.descr.isGlobal
+%+K               then brc.isGlobal:=true;
+                  hide(brc.declquant.prefqual,false);
+                  VC:-brc.declquant.prefqual.descr.favirt;
+                  while VC=/= none do begin
+%-Z %IMPLNONE OFF
+                        QX:-if VC is quantity then new quantity
+                            else new extquantity(none);
+                        if VA==none then VA:-VB:-QX
+                                    else VB:-VB.next:-QX;
+                        makeequalto(VC,VB);
+                        VB.encl:-brc;
+                        VB.dim:=0; !*** Mark as "old" virtual;
+                        VC:-VC.next;
+                     end;
+               end;
+               QX:-brc.favirt;  ! For later scan of new virtuals;
+               if VA=/=none or else QX=/=none then begin
+                  VC:-brc.favirt;
+                  if VA=/=none then begin
+                     VB.next:-brc.favirt; brc.favirt:-VA;
+                     VNO:=VB.virtno end
+                  else VNO:=0;
+                  !*** Now check new virtuals with respect to double
+                           specification and legality of kind ;
+                  while VC=/=none do
+                  begin
+                     VA:-brc.favirt;
+                     while VA=/=VC and then VA.symb=/=VC.symb do
+            NXTVA:         VA:-VA.next;
+                     if VA=/=VC then begin
+                        if VA.visible<>NUL then goto NXTVA;
+                        ! *** skip hidden protected virtual ***;
+                        errQTN(VC,414,VA);
+                        !*** Take VC out;
+                        while VA.next=/=VC do VA:-VA.next;
+                        VA.next:-VC.next; VC:-VA;
+                     end
+                else if VC.kind <> K_proc
+                        and then VC.type <> ILABE
+                     then begin errQT(VC,326);
+                          VC.type:=IELSE; VC.kind:=K_error;
+                     end;
+                     VNO:=VNO+1; VC.virtno:=VNO;
+                     VC.dim:=1; !*** Mark as "new" virtual;
+                     VC:-VC.next;
+                  end check of new virtuals;
+                  brc.navirt:=VNO;
+               end else brc.navirt:=0;
+            end of kind=K_class/prefbl;
+
+            ! Set qualification or prefix for all relevant quantities;
+            Q:-brc.fpar;
+            if Q=/=none then begin
+               Q:-setprefqual(Q,true); ! PARAMETERS;
+            end;
+            if brc.kind=K_labbl or else brc.kind=K_record then
+            begin ! A special 'enterstmt';
+               ! ??? display(rank(cblev)):-brc;
+               visChain(brc.fpar,VC);
+            end else
+            begin ! A special 'enterblock' ;
+              cblev:=char(rank(cblev)+1);crtblev:=char(rank(crtblev)+1);
+              if rank(cblev) > maxblev then fatal0(299);
+              makevisblock(brc);
+            end;
+
+            if QX=/=none then setprefqual(QX,false); ! NEW VIRTUALS;
+            if Q=/=none then setprefqual(Q,false); ! LOCALS;
+
+            !*** Now do and check binding of virtuals;
+            VC:-brc.favirt;
+            while true do inspect VC do begin
+               if visible=NUL then begin
+                  VA:-brc.fpar;
+                  while VA=/=none and then VA.symb=/=symb
+                     do VA:-VA.next;
+                  if VA=/=none then begin
+                     if      (type=IELSE and then
+                              (VA.kind=K_proc or else VA.type=ILABE))
+                     or else (kind=K_proc and then
+                              VA.kind=K_proc and then VA.categ<>C_extnal
+                              and then subordinate(VA,this quantity))
+                     or else (kind=K_label  and then VA.kind=K_label)
+                     or else (kind=K_switch and then VA.kind=K_switch)
+                     then begin
+                          inspect descr do begin
+                             ! check match against specification ;
+                             ref(quantity) specPar,actPar;
+                             if declquant.type<>VA.type or else
+                                declquant.prefqual=/=VA.prefqual
+                             then errQT(VA,445);
+                             ! actual function type differ from spec;
+%  nei - IKKE dette          actPar:-VA.descr.fpar;
+%  nei - IKKE dette          if actPar=/=none then
+%  nei - IKKE dette             setprefqual(actPar,true);
+%  nei - IKKE dette          ! PARAMETERS - but no locals;
+                             specPar:-fpar; actPar:-VA.descr.fpar;
+                             while specPar=/=none do begin
+                                if actPar==none then goto Actcnt;
+                                !too few parameters;
+                                if specPar.type<>actPar.type or else
+                                   specPar.kind<>actPar.kind or else
+                                   specPar.categ<>actPar.categ or else
+                                   specPar.prefqual=/=actPar.prefqual
+                                then begin errQT(actPar,447);
+                                     goto NoMoreChck end;
+                                ! inconsistent actual param ;
+                                specPar:-specPar.next;
+                                actPar:-actPar.next;
+                             end;
+                             if actpar=/=none !too many parameters; then
+                Actcnt:         errQT(VA,446);
+            NoMoreChck:   end *** checking of specified virt proc ***;
+                          VA.match:-this quantity; match:-VA;
+                            !match refers the other;
+                          type:=VA.type; prefqual:-VA.prefqual;
+                          VA.protect:=protect;
+                     end else errQTN(VA,415,this quantity);
+                  end
+               end;
+               VC:-next;
+            end of binding of virtuals
+            otherwise goto EXBIND;  EXBIND:
+
+%+D         if option(rank('P'))<>NUL then dump("- after VIRT binding");
+
+            !*** Set detachquant, if necessary and possible;
+            if detachquant==none and then brc.blev='!2!' then begin
+               detachquant:-boxof(NUL,detachident)
+                            qua identsymbol.curmeaning;
+               if detachquant == none
+               then detachquant:-newnotseen(boxof(NUL,detachident));
+            end;
+
+            !*** Call alloc2 for all local procedures, classes and
+                 records in local list, and for (new) virt descriptors;
+            Q:-brc.fpar;
+            while Q =/= none do begin
+%              if Q.descr =/= none then
+               switch(NUL:K_max) Q.kind begin
+               when K_proc do
+                    if Q.categ=C_local or else Q.categ=C_extnal
+                    then alloc2(Q.descr);
+               when K_class, K_record do
+                    if Q.match=/=alloc2called then alloc2(Q.descr);
+               end;
+               Q:-Q.next;
+            end;
+            switch(NUL:K_max) brc.kind begin
+% ??             when K_labbl do
+% ?? %-Z %IMPLNONE OFF
+% ??                  inspect display(rank(cblev)) do begin
+% ??                     q:-fpar; invischain(q);
+% ??                     display(rank(cblev)):-declquant.prefqual.descr;
+% ??                  end;
+            when K_labbl, K_record do begin
+                 q:-brc.fpar; invischain(q); end;
+            when K_class do begin
+% DONE ALREADY   if declquant.plev>1 then hide(declquant.prefqual);
+                 if brc.hidlist=/=none then begin
+                    unprotect(brc.declquant); B:-brc;
+                    checkhid(brc.favirt);
+         CH:        checkhid(B.fpar);
+                    if B.declquant.plev>one then begin
+                       B:-B.declquant.prefqual.descr;
+                       unprotect(B.declquant); goto CH
+                    end;
+                    fvis:-brc.hidlist;
+                    while fvis =/= none do begin
+                       if fvis.line>0 then removeVis(brc,fvis,368)
+                       else fvis.line:= -fvis.line;
+                       fvis:-fvis.next
+                    end;
+                 end ***hidlist=/=none***;
+                 goto LBL end;
+            when NONE do LBL: leaveblock; !*** performs protect;
+            end;
+      end of alloc2;
+%title ******   Procedure  L A Y O U T  of allocate   ******
+      procedure LAYOUT(brc); ref(brecord) brc;
+
+%     ! Gives value to the tag-attributes of this brecord.declquant
+%       and of the quantities in the fpar-list . Further, for local
+%       classes and procedures, LAYOUT is called recursively for
+%       their describing (descr) brecords. For new virtual procedures
+%       with specification, LAYOUT is called for the descriptor ;
+%     ! Tags allocated for different kinds of block-quantities  ;
+% +K  ! ( xwb means external non-Simuletta with binding)        ;
+
+%     ! Kind       No Use                                       ;
+
+%     ! subblk     3  record-descriptor, prototype, cnt-label   ;
+%     ! proc.head  3  record-descriptor, prototype, start-label ;
+%     ! proc.body  1  record-descriptor                         ;
+%     ! class (max)5  record-descriptor, prototype,             ;
+%     !               dcl- /stm- /cnt_inr-label                 ;
+%     ! pref.blk   < the same as for class >                    ;
+%     ! record     2  record-descriptor, prototype              ;
+%     ! quantity   1  attribute tag - except for a constant elt ;
+%                     which gets a tag only when a class attr. (oct. 86)
+%     ! name param 2  attribute tag and attribute descr         ;
+% +K  ! quick head 4  record, prototype, start-label, instref   ;
+% +K  ! quick body 1  record body                               ;
+%     ! xwb notype 3  profile, body, context-parameter          ;
+%     ! xwb type   4  profile, body, context-parameter, export  ;
+
+      begin ref(quantity)q; ref(extquantity)exq;
+%+S    Freq(65):=Freq(65)+1;
+            if brc.kind<>K_labbl then begin
+             if brc.kind<>K_extnal !outermost only; then begin
+%-Z %IMPLNONE OFF
+               if brc.declquant is quantity then begin
+                  brc.declquant.ftag:=newTag;
+%+K               if brc.kind=K_proc and brc.thisused then begin
+%+K                  if brc.declquant.plev=2 then !no tag;
+%+K                  else newTags(3) !four tags;
+%+K               end else
+                  if brc.kind=K_proc and then brc.declquant.plev=2 then
+                        ! No more tags for this;
+             else if brc.kind=K_class or else brc.kind=K_prefbl or else
+                     brc.kind=K_record
+                  then begin
+                    newTags(if brc.inrtag<>NUL then isorank(brc.inrtag)
+                       else if brc.stmtag<>NUL then isorank(brc.stmtag)
+                       else if brc.dcltag<>NUL then isorank(brc.dcltag)
+                            else 1);
+                     goto SIMOBTAG;
+                  end
+                  else begin
+                     if brc.kind=K_subbl or else brc.kind=K_proc
+                     then newTags(2);
+         SIMOBTAG:   if simob_descr then begin
+                        if brc.kind=K_class or else brc.kind=K_proc
+                        then begin     ! bcnt- and sequ-tag;
+                           newTag;
+                             !       lastusedtag:=lastusedtag+2;
+                           brc.declquant.ftag:=brc.declquant.ftag+1;
+                             !       declquant.ftag:=declquant.ftag+2;
+                             ! adjusting of base;
+                        end
+                     end
+                  end;
+                  newTags(brc.connests);
+               end else ! declquant is extquantity;
+               if brc.declquant qua extquantity.module==none then begin
+                  !  external procedure with binding in this module;
+                  brc.declquant.ftag:=lastusedtag+1;
+                  newTags(if brc.declquant.type <> INOTY then 4 else 3);
+%                   if brc.declquant.dim > Pascalindex
+%                   then newTag; !context param.;
+               end
+            end end;
+
+            q:-brc.fpar;
+            while q=/=none do begin
+%-Z %IMPLNONE OFF
+                  if q is extquantity then begin
+                     if q qua extquantity.clf <= Clf002 then begin
+                        if q.descr is extbrecord then begin
+                           ! Allocate tags to external Simula module;
+                           q.descr qua extbrecord.ftag:=lastusedtag+1;
+                           newTags(q.descr qua extbrecord.exttagnum);
+                        end;
+                        if q qua extquantity.module=/=none
+                              !(external) tag read from attrfile is    ;
+                              !increased by basetag allocated to module;
+                        then q.ftag:=q.ftag
+                                   + q qua extquantity.module.ftag
+                   else if q qua extquantity.clf = Clf002
+                        then q.ftag:=newTag;
+                        if q.special=NUL then begin
+                           if q.descr=/=none then LAYOUT(q.descr) end;
+                     end
+                  end
+             else if (q.kind=K_proc and then q.categ=C_local)
+                     or else q.kind=K_rep
+                     or else q.kind=K_class
+                     or else q.kind=K_record
+                  then LAYOUT(q.descr)
+             else if q.special > '!1!' and then q.type<>ITEXT then
+                     ! constant - NOTE: text const gets one tag;
+                  else begin q.ftag:=newTag;
+                       if q.categ=C_name then newTag;
+                  end;
+                  q:-q.next;
+            end;
+      end LAYOUT;
+
+%title ******   main program of allocate   ******
+
+            brc:-getBrc(lastblhi,lastbllo);
+            if brc.kind=K_labbl then begin
+               brc.blev:=cblev; brc.rtblev:=crtblev end
+            else begin
+               brc.  blev:=char(rank(  cblev)+1);
+               brc.rtblev:=char(rank(crtblev)+1) end;
+            ! ****************;
+              alloc1(brc);
+            ! ****************;
+            Q:-brc.declquant:-new quantity; Q.descr:-brc;
+            Q.kind:=brc.kind; Q.line:=brc.line1; Q.plev:=one;
+            Q.encl:-unknowns; ! All quantities must have an encloser;
+
+%+D         if option(rank('P'))<>NUL then brc.dump("ALLOCATE");
+            switch(NUL:K_max) brc.kind begin
+            when K_prefbl do begin
+               if blockpref==none then brc.kind:=Q.kind:=K_subbl
+               else inspect blockpref.descr do begin
+                    TUchain:-declquant;
+                    while TUchain.plev>one do begin
+                       if TUchain.descr.thisused then error0(151);
+                       TUchain:-TUchain.prefqual; end;
+%+PQ                TUchain:-none;
+                    if blev <> brc.blev then begin
+                       !*** check that blockpref is not system class;
+%-Z %IMPLNONE OFF
+                       if blockpref is  extquantity and then
+                          blockpref qua extquantity.clf=Clf004
+                       then  !OK;  else error1qlin(331,blockpref);
+                    end;
+                    Q.prefqual:-blockpref; Q.plev:=blockpref.plev+1;
+                    blockpref:-none;
+                    brc.npar:=npar;
+                    !not used brc.nloc:=nloc+brc.nloc;
+                    if localclasses then brc.localclasses:=true;
+               end;
+            end of treatment of pref.block;
+
+            when K_proc do begin
+               ! this is body of procedure - prefid is blno of head ;
+               Q.prefqual:-getBrc(brc.hidlist.idhi,brc.hidlist.idlo)
+                           .declquant;
+               brc.hidlist:-none;
+               Q.plev:=2;
+               Q.symb:-Q.prefqual.symb;
+               Q.type:=Q.prefqual.type; Q.categ:=Q.prefqual.categ;
+               brc.npar:=Q.prefqual.descr.npar;
+% not used     Q.prefqual.descr.line2:=brc.line2; !never properly set;
+%+K            if Q.prefqual.descr.thisused then brc.thisused:=true;
+            end of proc-body treatment;
+
+            when K_labbl do begin
+               !*** This is body of for or inspect;
+               !*** It gets current block as prefix;
+               B1:-display(rank(cblev));
+               Q.prefqual:-B1.declquant; Q.plev:=Q.prefqual.plev+1;
+               Q.categ:=C_block; Q.type:=INOTY;
+               brc.npar:=B1.npar; ! not used brc.nloc:=brc.nloc+B1.nloc;
+               ! In case of inspection: update brecord'connests in the
+                 connection copies representing the connection block: ;
+               Q:-Q.prefqual;
+               if Q.descr.inspected<>NUL then begin
+                  Q.descr.connests:=brc.connests;
+                  while Q.plev <> zero do begin
+                     Q:-Q.prefqual; Q.descr.connests:=brc.connests; end;
+               end;
+%+PQ           B1:-none;
+            end for/inspect block;
+            end case;
+%+D         if option(rank('P'))<>NUL then brc.dump("- before ALLOC2");
+            ! *******************************************************;
+            alloc2(brc); !*** Set prefix and qualification, treat and
+                              bind virtuals and check externals ;
+            ! *******************************************************;
+%+D         if option(rank('P'))<>NUL then brc.dump("- after ALLOC2");
+            LAYOUT(brc);
+%+PQ        brc:-none; q:-none; !*** GC ***;
+      end of allocate;
+
+%title ****** COPY from quant  -  getcheckcode   ******
+
+% PQ  prior
+      procedure copyfromto(Q,qnt); ref(quantity)Q;  ref(quantity) qnt;
+      begin
+%+S    Freq(66):=Freq(66)+1;
+            qnt.symb:-Q.symb;
+            qnt.type:=Q.type; qnt.kind:=Q.kind; qnt.categ:=Q.categ;
+            qnt.protect:=Q.protect;
+            qnt.special:=Q.special; qnt.virtno:=Q.virtno;
+            qnt.dim:=Q.dim; qnt.plev:=Q.plev;
+%-Z %IMPLNONE OFF
+            if Q.ftag<0 and then qnt is extquantity
+            then qnt.line:=Q.ftag else
+%-Z %IMPLNONE OFF
+            if Q.line<0 and then qnt is quantity then qnt.ftag:=Q.line
+            else begin qnt.ftag:=Q.ftag; qnt.line:=Q.line end;
+% PQ        Q:-qnt:-none;
+      end of copyfrom;
+
+%  insert attrfile here if needed    TEMP
+
+end prechecker;
+
+end BUILDER2;

@@ -1,0 +1,7 @@
+begin text input; ! testing Prompting ;
+      while (input == none) or else (input ne "X") do
+      begin outtext("Input: "); breakoutimage;
+            inimage; input:-sysin.image.strip;
+            outtext("Got: " & input); outimage;
+      end;
+end;

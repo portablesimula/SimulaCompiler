@@ -45,16 +45,20 @@ public class SourceTextPanel extends JPanel {
 
     DocumentListener documentListener=new DocumentListener() {
 		public void insertUpdate(DocumentEvent e) {
-			System.out.println("DocumentListener: insertUpdate'event="+e);	
+			//System.out.println("DocumentListener: insertUpdate'event="+edDocumentEvent(e));	
 			fileChanged=true; refreshNeeded=true;
 		}
 		public void removeUpdate(DocumentEvent e) {
-			System.out.println("DocumentListener: removeUpdate'event="+e);	
+			//System.out.println("DocumentListener: removeUpdate'event="+edDocumentEvent(e));	
 			fileChanged=true; refreshNeeded=true;
 		}
 		public void changedUpdate(DocumentEvent e) {
-			System.out.println("DocumentListener: changedUpdate'event="+e);				
+			//System.out.println("DocumentListener: changedUpdate'event="+edDocumentEvent(e));	
 	}};
+	
+//	private String edDocumentEvent(DocumentEvent e) {
+//		return("DocumentEvent: "+e.getType()+'['+e.getOffset()+':'+e.getLength()+']');
+//	}
 	
     public SourceTextPanel(File sourceFile) {
     	this.sourceFile=sourceFile;
@@ -76,10 +80,10 @@ public class SourceTextPanel extends JPanel {
     }
 	
     void saveFile() {
-		System.out.println("SourceTextPanel.saveFile: sourceFile="+sourceFile+", fileChanged="+fileChanged);
+		//System.out.println("SourceTextPanel.saveFile: sourceFile="+sourceFile+", fileChanged="+fileChanged);
     	if(fileChanged)	try {
     		//simulaEditor.setTitle(sourceFile.getName() + " - " + "SimulaEditor");
-    		System.out.println("SourceTextPanel.saveFile: DO IT - sourceFile="+sourceFile);
+    		//System.out.println("SourceTextPanel.saveFile: DO IT - sourceFile="+sourceFile);
     		BufferedWriter out = new BufferedWriter(new FileWriter(sourceFile.getPath()));
     		String text=getPureText();
     		//System.out.println(text);
@@ -117,11 +121,6 @@ public class SourceTextPanel extends JPanel {
 					next=preScanner.nextToken();
 					String text=token.getText();
 					Style style=getStyle(token.getStyleCode());
-					
-					if(token.getKeyWord()==KeyWord.COMMENT) {
-						System.out.println("SourceTextPanel.fillTextPane: COMMENT, TEXT=\""+text+'"');
-					}
-
 					if(next==null && text.equals("\n")) break LOOP;
 					StringTokenizer tokenizer=new StringTokenizer(text,"\n",true);
 					while(tokenizer.hasMoreTokens()) {
@@ -148,18 +147,6 @@ public class SourceTextPanel extends JPanel {
 			System.err.println("Couldn't insert text into text pane.");
 		}
 		textPane.setStyledDocument(doc);
-//		doc.addDocumentListener(new DocumentListener() {
-//			public void insertUpdate(DocumentEvent e) {
-//				System.out.println("DocumentListener: insertUpdate'event="+e);	
-//				fileChanged=true; refreshNeeded=true;
-//			}
-//			public void removeUpdate(DocumentEvent e) {
-//				System.out.println("DocumentListener: removeUpdate'event="+e);	
-//				fileChanged=true; refreshNeeded=true;
-//			}
-//			public void changedUpdate(DocumentEvent e) {
-//				System.out.println("DocumentListener: changedUpdate'event="+e);				
-//			}});
 		doc.addDocumentListener(documentListener);
     }
 
@@ -178,8 +165,18 @@ public class SourceTextPanel extends JPanel {
 	    String txt=textPane.getText();
 	    txt=removeLineNumbers(txt);
 	    fillTextPane(new StringReader(txt));
-	    int count=countNewlines(textPane.getText(),pos);
+	    int count=countExtraControlCharacters(textPane.getText(),pos);
 	    textPane.setCaretPosition(pos+count);
+	}
+	
+	private int countExtraControlCharacters(String s,int pos) {
+		int count=0;
+		for(int i=0;i<pos;i++) {
+//			if(s.charAt(i)=='\n') { count++; pos++; }
+			if(s.charAt(i)=='\r') { count++; pos++; }
+			if(s.charAt(i)<' ' && s.charAt(i)!='\n' && s.charAt(i)!='\r') System.out.println("ControlCharacter: "+(int)s.charAt(i));
+		}
+		return(count);
 	}
 
 	
@@ -222,17 +219,6 @@ public class SourceTextPanel extends JPanel {
 			}
 		}
 		return (line); // Unchanged
-	}
-	
-	private int countNewlines(String s,int pos) {
-		int count=0;
-//		for(int i=0;i<s.length();i++) if(s.charAt(i)=='\n') count++;
-		for(int i=0;i<pos;i++) {
-//			if(s.charAt(i)=='\n') { count++; pos++; }
-			if(s.charAt(i)=='\r') { count++; pos++; }
-			if(s.charAt(i)<' ' && s.charAt(i)!='\n' && s.charAt(i)!='\r') System.out.println("ControlCharacter: "+(int)s.charAt(i));
-		}
-		return(count);
 	}
     
     private Style getStyle(Token.StyleCode code) {

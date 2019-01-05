@@ -1,0 +1,80 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 96
+%
+%  PURPOSE:     Test hidden, protected attributes.
+%
+%  WRITTEN BY:  MYH   14/11-2018
+% ==============================================================================
+begin
+      boolean verbose=false; !true;
+      boolean foundError;
+
+      integer X=9999;
+
+      class a; protected X,V;
+               virtual: procedure V;
+      begin integer X=1111;
+            procedure V(line,n); integer line,n;
+            begin check(line,"CALL A'V: ",n,1111); end;  
+            check(sourceline,"LOCAL(A):   X=",X,1111);
+            if this a is a then V(sourceline,1111)
+            else if this a is b then V(sourceline,2222)
+            else if this a is c then V(sourceline,2222)
+      end;
+
+    a class b; hidden X,V;          ! no more matching;
+      begin integer X=2222;
+            procedure V(line,n); integer line,n;
+            begin check(line,"CALL B'V: ",n,2222); end;  
+            check(sourceline,"LOCAL(A):   X=",X,2222);
+            if this b is b then V(sourceline,2222)
+            else if this b is c then V(sourceline,2222)
+       end;
+ 
+    b class c;
+      begin integer X=3333;
+            procedure V(line,n); integer line,n;
+            begin check(line,"CALL C'V: ",n,3333); end;  
+            check(sourceline,"LOCAL(C):   X=",X,3333);
+            V(sourceline,3333);
+      end;
+      
+      procedure check(line,msg,res,facit); text msg; integer line,res,facit;
+      begin if res ne facit then
+         begin outtext("LINE: "); outint(line,0); outtext(" ERROR: " & msg); outint(res,0);
+               outtext(" not equal facit:"); outint(facit,0);
+               outimage; foundError:=true;
+         end else if verbose then
+         begin outtext("LINE: "); outint(line,0); outtext(" CHECKING: " & msg); outint(res,0);
+               outtext(" equal "); outint(facit,0);
+               outimage;
+         end;
+      end; 
+
+      ref(a) ra; ref(b) rb; ref(c) rc;
+      
+      if verbose then begin
+		  Outtext ("--- START Simula a.s TEST 96"); Outimage;
+		  Outtext ("--- Test hidden, protected attributes"); Outimage; Outimage;
+	  end;
+      
+      rc:-new c; rb:-new b; ra:-new a;
+      
+      check(sourceline,"GLOBAL:   X=",X,9999);
+      
+      check(sourceline,"REMOTE: RC.X=",rc.X,3333);
+      check(sourceline,"REMOTE: RC qua B.X=",rc qua b.X,2222);
+%     check(sourceline,"REMOTE: RC qua A.X=",rc qua a.X,2222); ! Compiler error: X is not an attribute of A;
+
+      inspect rc do check(sourceline,"INSPECT RC: X=",X,3333);
+      inspect rb do check(sourceline,"INSPECT RB: X=",X,2222);
+      inspect ra do check(sourceline,"INSPECT RA: X=",X,9999);
+
+      IF foundError THEN 
+      begin if verbose then begin
+                outtext ("--- END Simula TEST 96 WITH ERROR(S)");
+            end;
+      end ELSE Outtext ("--- NO ERRORS FOUND IN TEST 96");
+
+end

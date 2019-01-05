@@ -57,13 +57,7 @@ public final class AssignmentOperation extends Expression
   { if(IS_SEMANTICS_CHECKED()) return;
    	Global.sourceLineNumber=lineNumber;
 	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	doAssignmentChecking(opr);
-	SET_SEMANTICS_CHECKED();
-  }
-
-
-  public void doAssignmentChecking(KeyWord keyWord)
-  { lhs.doChecking(); Type toType=lhs.type;
+    lhs.doChecking(); Type toType=lhs.type;
     if(lhs instanceof Variable)
     { Variable var=(Variable)lhs;
       Meaning meaning=var.getMeaning();
@@ -75,11 +69,12 @@ public final class AssignmentOperation extends Expression
     rhs.doChecking(); Type fromType=rhs.type;
 	//if(DEBUG) Util.log("doAssignmentChecking("+toString()+").doChecking - ("+toType+' '+keyWord+' '+fromType+")");
 	//if(DEBUG) Util.log("doAssignmentChecking: operator: "+keyWord);
-	if(keyWord==KeyWord.ASSIGNVALUE) this.textValueAssignment=(toType==Type.Text);
+	if(opr==KeyWord.ASSIGNVALUE) this.textValueAssignment=(toType==Type.Text);
 	rhs=(Expression)TypeConversion.testAndCreate(toType,rhs);
 	this.type=toType;
 	//Util.BREAK("doAssignmentChecking: CHECKED("+toString()+").doChecking - Result type="+this.type+"("+toType+' '+keyWord+' '+fromType+")");
 	if(this.type==null) Util.error("doAssignmentChecking: Illegal types: "+toType+" := "+fromType);
+	SET_SEMANTICS_CHECKED();
   }
 
 

@@ -25,6 +25,7 @@ public final class Global {
 	public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	
 	public static Vector<JavaModule> javaModules;
+	public static Vector<String> externalJarFiles=new Vector<String>();
 
 	public static int sourceLineNumber; //=1;
 //	public static String sourceFilePath; 
@@ -40,17 +41,19 @@ public final class Global {
 	public static String tempClassFileDir;  // Temp dir for .class  files
 	
 //	public static String packetName = "simula.test";
-	public static String packetName = "testing";
+//	public static String packetName = "testing";
+	public static String packetName = "simprog"; // NOTE: Must be a single identifier
 
 
 	public static DeclarationScope currentScope=null; // Current Scope. Maintained during Checking and Coding
+	public static boolean duringParsing; // True while Parsing
 	  
 	public static JavaModule currentJavaModule; // Current Java output Module. Maintained by JavaModule during Java Coding
 
 	public static ConsolePanel console;
 	
 	public static void initiate()
-	{
+	{ duringParsing=true;
 //		sourceLineNumber=0;
 		//console=new Console();
 	}

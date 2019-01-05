@@ -1,0 +1,22 @@
+set -kv
+diff builder1.def ../fec/builder1.def
+diff builder2.def ../fec/builder2.def
+diff checker1.def ../fec/checker1.def
+diff checker2.def ../fec/checker2.def
+diff common.def ../fec/common.def
+diff errmsg.def ../fec/errmsg.def
+diff fecmain.def ../fec/fecmain.def
+diff parser.def ../fec/parser.def
+diff pas1init.def ../fec/pas1init.def
+diff pas2init.def ../fec/pas2init.def
+diff predef.def ../fec/predef.def
+diff scaninp.def ../fec/scaninp.def
+diff scanner.def ../fec/scanner.def
+diff scoder0.def ../fec/scoder0.def
+diff scoder1.def ../fec/scoder1.def
+diff scoder1e.def ../fec/scoder1e.def
+diff scoder2.def ../fec/scoder2.def
+diff scoder3.def ../fec/scoder3.def
+diff scoder4.def ../fec/scoder4.def
+diff scodmain.def ../fec/scodmain.def
+diff symtable.def ../fec/symtable.def

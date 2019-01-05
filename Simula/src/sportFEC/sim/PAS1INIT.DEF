@@ -1,0 +1,259 @@
+%-A external class PARSER;
+
+%-A PARSER class PAS1INIT;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---        P a s s   1   -   i n i t i a l i s a t i o n      ---
+%      ---                                                           ---
+%      ---  Selection switches: DKPI                                 ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+%SELECT Z
+
+%-A hidden protected i,cs,t,listname;
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+      integer i; character cs; text t,listname,feoptions;
+%title ******   Initialise COMMON   ******
+
+%     ******   R e a d  C o m p i l e r   P a r a m e t e r s   ******
+
+      L2name:-gettextinfo(7); nscodename:-gettextinfo(4);
+
+%+R   RealCap := getintinfo(43) <= 0;
+%+R   if RealCap then starttime:=cputime;
+      recomp:=getintinfo(22)=1;
+      GenerateScode:=getintinfo(1)=1;
+
+      timestamp:-datetime;
+      maxerrno:=getintinfo(4);            ! How many errors allowed?;
+      GiveNotes:= getintinfo(5)=0;        ! "NOTEs" to be output?;
+      simob_level:=getintinfo(30);
+      simob_descr:=  simob_level>0;
+      simob_entity:= simob_level>=2; simob_const:=simob_level>=3;
+% %-A %+Z   simsetname:-gettextinfo(20); simulaname:-gettextinfo(21);
+
+%     ********* Open listing file ***********
+
+      listname:-gettextinfo(2);  listlength:=sysout.image.length;
+      if listname=/=notext then begin
+         t:-copy(listname); t:-lowcase(t);
+         if t = "sysout" then listfile:-sysout
+         else inspect new printfile(listname) do begin
+              listlength:=getintinfo(7); t:-blanks(listlength);
+              if not open(t) then begin
+                 listlength:=0; error1(-366,listname) end
+              else listfile:-this printfile;
+         end;
+      end;
+      listingon:=listfile=/=none;
+
+%     !*** set options and selectors as given to environment ***;
+
+      t:-gettextinfo(16);
+      while t.more do if t.getchar=':' then begin
+          if t.more then feoptions:-copy(t.sub(t.pos,t.length-t.pos+1));
+          t:-t.sub(1,t.pos-2); goto SETem;
+      end;
+      SETem: SetSelectors(t,0);
+             while feoptions.more do setopt(feoptions.getchar,'1');
+
+      termstatus:='3';
+      currentpass:='1';  ! in pass 1;
+      !***** remember below: digits + sign + ONE SPACE *****;
+      !lefttxtbuf:-blanks(35); !*** enough to hold long real ***;
+      leftintbuf :-blanks(12); !*** enough to hold 32-bits integer ***;
+      leftsintbuf:-blanks( 7); !*** enough to hold 16-bits integer ***;
+
+%+A  end *** ignore warning!!! *** skipping FEC-part ***;
+%+A %EOF
+
+% INSERT $SIMSRC/fec/common.ini
+%INSERT C:/GitHub/SimulaCompiler/Simula/src/sportFEC/sim/common.ini
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/parser.mne
+
+      predefname:-gettextinfo(19);
+
+%+Z   dummygen:=false;    !*** DO NOT generate blocks for insp-varibles;
+%-Z   dummygen:=true;     !*** generate blocks for insp-varibles;
+
+%title ******   Initialise PARSER   ******
+
+      inspect new grammer do begin
+
+            parser:- this component;
+
+            symboltype(rank(IBOOL)):=declsymbol;
+            symboltype(rank(ICHAR)):=declsymbol;
+            symboltype(rank(ISHOR)):=declsymbol;
+            symboltype(rank(IINTG)):=declsymbol;
+            symboltype(rank(IREAL)):=declsymbol;
+            symboltype(rank(ILONG)):=declsymbol;
+            symboltype(rank(IREF )):=declsymbol;
+            symboltype(rank(ITEXT)):=declsymbol;
+            symboltype(rank(IPROC)):=declsymbol;
+            symboltype(rank(IARRA)):=declsymbol;
+            symboltype(rank(ICLAS)):=declsymbol;
+            symboltype(rank(IRCRD)):=declsymbol;
+            symboltype(rank(ISWIT)):=declsymbol;
+            symboltype(rank(IEXTR)):=declsymbol;
+%           for cs:=IARRA,IBOOL,ICHAR,ICLAS,IEXTR,IINTG,ILONG,
+%                   IREAL,IREF,ISHOR,ISWIT,ITEXT,IPROC
+%            do symboltype(rank(cs)):=declsymbol;
+
+            symboltype(rank(IROPD)):=exprtermin; !*** must be error ***;
+            symboltype(rank(IAFTR)):=exprtermin;
+            symboltype(rank(ITHEN)):=exprtermin;
+            symboltype(rank(IAT  )):=exprtermin;
+            symboltype(rank(IUNTI)):=exprtermin;
+            symboltype(rank(IBEFO)):=exprtermin;
+            symboltype(rank(IWHEN)):=exprtermin;
+            symboltype(rank(IDELA)):=exprtermin;
+            symboltype(rank(ISMCL)):=exprtermin;
+            symboltype(rank(IDENO)):=exprtermin;
+            symboltype(rank(IEOP )):=exprtermin;
+            symboltype(rank(IDO  )):=exprtermin;
+            symboltype(rank(IEND )):=exprtermin;
+            symboltype(rank(IELSE)):=exprtermin;
+            symboltype(rank(IRGPA)):=exprtermin;
+            symboltype(rank(IOTHW)):=exprtermin;
+            symboltype(rank(ICOMA)):=exprtermin;
+            symboltype(rank(IPRIO)):=exprtermin;
+            symboltype(rank(ICL  )):=exprtermin;
+            symboltype(rank(ISTEP)):=exprtermin;
+            symboltype(rank(IASSG)):=exprtermin;
+%           for cs:=IAFTR,IAT,IBEFO,IDELA,IDENO,IDO,IELSE,IOTHW,
+%                   IPRIO,ISTEP,ITHEN,IUNTI,IWHEN,ISMCL,IEOP,
+%                   IEND,IRGPA,ICOMA,ICL,IASSG
+%            do symboltype(rank(cs)):=exprtermin;
+%              !*** this set should only be used in simple treatment
+%                       of expression. "IBEGI" should not occur here
+%                       as "P begin" should be sent as "IBPRE-P";
+
+            symboltype(rank(IPLUS)):=arithop;
+            symboltype(rank(IPOWE)):=arithop;
+            symboltype(rank(IMINU)):=arithop;
+            symboltype(rank(IIDIV)):=arithop;
+            symboltype(rank(IMULT)):=arithop;
+            symboltype(rank(ICONC)):=arithop;
+            symboltype(rank(ISLAS)):=arithop;
+%           for cs:=IPLUS,IMINU,IMULT,ISLAS,IPOWE,IIDIV,ICONC
+%            do symboltype(rank(cs)):=arithop;
+
+            symboltype(rank(IEQ  )):=relop;
+            symboltype(rank(ILT  )):=relop;
+            symboltype(rank(IGE  )):=relop;
+            symboltype(rank(INE  )):=relop;
+            symboltype(rank(IGT  )):=relop;
+            symboltype(rank(IRFEQ)):=relop;
+            symboltype(rank(ILE  )):=relop;
+            symboltype(rank(IRFNE)):=relop;
+%           for cs:=IEQ,IGE,IGT,ILE,ILT,INE,IRFEQ,IRFNE
+%            do symboltype(rank(cs)):=relop;
+
+            symboltype(rank(IAND )):=logop;
+            symboltype(rank(IOR  )):=logop;
+            symboltype(rank(IEQV )):=logop;
+            symboltype(rank(ICAND)):=logop;
+            symboltype(rank(IIMP )):=logop;
+            symboltype(rank(ICOR )):=logop;
+%           for cs:=IAND,IEQV,IIMP,IOR,ICAND,ICOR
+%            do symboltype(rank(cs)):=logop;
+
+      end ***new grammer***;
+
+      call(parser);   !*** i.e. NEXTSYMBOL'detach;
+
+%title ******   initialise RECOGNIZER   ******
+
+%+M   EOFline:-new MacroLine; EOFline.line:-"%eof!7!"; EOFline.par:=-1;
+
+      inspect new recognizer do begin
+            lexScanner:-scanner:-this component; hashbuf:-blanks(80);
+
+            for i:=35 step 1 until 255 do InputClass(i):=Graphic_cl;
+
+            InputClass(0):=InputClass(127):=Skip_cl;
+
+            for i:=  1 step 1 until  7 do InputClass(i):=Illegal_cl;
+            for i:= 14 step 1 until 31 do InputClass(i):=Illegal_cl;
+
+            for i:=  8 step 1 until 13 do InputClass(i):=Format_cl;
+            InputClass(32):=Format_cl;
+
+            InputClass(33):=Exclam_cl;
+
+            InputClass(34):=Basic_cl;
+            for i:= 38 step 1 until 47 do InputClass(i):=Basic_cl;
+            for i:= 58 step 1 until 62 do InputClass(i):=Basic_cl;
+
+            for i:= 48 step 1 until  57 do InputClass(i):=Digit_cl;
+
+            for i:= 65 step 1 until  90 do InputClass(i):=Letter_cl;
+            for i:= 97 step 1 until 122 do InputClass(i):=Letter_cl;
+
+            InputClass(67):=InputClass(99):=LetterC_cl; ! COMMENT ;
+
+            InputClass(95):=Uscore_cl;
+
+            idScanner :- new identifierScanner;
+            unsignedint :- new unsignedInteger;
+
+      end ***inspect new recognizer***;
+
+%     *********  Open source file  *********
+
+      signiflength:=     255      ;    ! - of source input;
+      cursource:-new SourceElt(false,gettextinfo(1));
+      incrlnr:=true;
+
+%title ******   initialise L2CODER   ******
+
+      if L2name==notext then openerror(" *** SCRATCH FILE (L2) ***");
+      inspect new L2CODER(L2name) do begin
+            P1coder:-this L2CODER; coder:-P1coder;
+
+%           *****   allocation of the outermost blocklevel   *****
+%             This Brec plays the role as the enclosure of PREDEF.
+            brctab(0):-new brctab2;
+%+Z         if not option(rank('F'))<>NUL then begin
+               inspect new brecord do begin
+                  kind:=K_extnal; brctab(0).val(0):-this brecord;
+                  inspect new quantity do begin
+                     fpar:-this quantity;
+                     plev:=one;
+                     type:=INOTY; kind:=K_class;
+                     categ:=C_extnal;
+                          ! Is given special treatment in 'allocate',
+                            thus 'extname' is not needed ;
+%                    descr:-this brecord;  !???;
+                     symb:-boxof(NUL,predefindex);
+                  end;
+               end;
+%+Z         end;
+
+%           *****   allocation of the module block   *****
+%                Note that cbrec was not set above!!!
+            nextbllo:='!1!';  ! -- nextblhi:=NUL;
+            brecinit(K_extnal);     !*** blno := 1 ***;
+
+      end ***inspect new L2coder***;
+
+end of PAS1INIT;

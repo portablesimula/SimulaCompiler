@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Vector;
 
+import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
@@ -26,9 +27,11 @@ import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.ProtectedSpecification;
+import simula.compiler.declaration.StandardClass;
 import simula.compiler.declaration.TypeDeclaration;
 import simula.compiler.declaration.VirtualMatch;
 import simula.compiler.declaration.VirtualSpecification;
+import simula.compiler.expression.Constant;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -67,7 +70,7 @@ public final class AttributeFile {
 	  if (Option.verbose) Util.TRACE("*** BEGIN Generate SimulaAttributeFile: "+attributeFileName);
 	  AttributeFile attributeFile=new AttributeFile(attributeFileName);
 	  attributeFile.write((BlockDeclaration)program.module);
-	  if(Option.TRACE_ATTRIBUTE_OUTPUT) attributeFile.readAttributeFile(attributeFileName);
+	  if(Option.TRACE_ATTRIBUTE_OUTPUT) attributeFile.listAttributeFile(attributeFileName);
 	  if (Option.verbose) Util.TRACE("*** ENDOF Generate SimulaAttributeFile: "+attributeFileName);
 	}
 	
@@ -84,11 +87,29 @@ public final class AttributeFile {
 	  FileOutputStream fileOutputStream=new FileOutputStream(attributeFile);
 	  oupt=new ObjectOutputStream(fileOutputStream);
 	  writeVersion();	
+	  writeDependencies();
+	  if (Option.verbose) Util.TRACE("***       Write External "+module.blockKind+' '+module.identifier+'['+module.externalIdent+']');
 	  doWriteAttributeInfo(module); 
 	  oupt.flush(); oupt.close(); oupt=null;
 	}
 
-	private BlockDeclaration readAttributeFile(String attributeFileName) throws IOException
+	private void writeDependencies() throws IOException {
+		//Util.BREAK("AttributeFile.write: BEGIN WRITING DEPENDENCIES");
+		for(Declaration dcl:StandardClass.ENVIRONMENT.declarationList) {
+			//Util.BREAK("AttributeFile.write: DCL: "+dcl,", QUAL="+dcl.getClass().getSimpleName());
+			if(dcl instanceof BlockDeclaration) {
+				BlockDeclaration ext=(BlockDeclaration)dcl;
+				if(ext.isPreCompiled) {
+					//Util.BREAK("AttributeFile.write: BLK="+ext.identifier+", isPreCompiled="+ext.isPreCompiled);   
+					if (Option.verbose) Util.TRACE("***       Write External "+ext.blockKind+' '+ext.identifier+'['+ext.externalIdent+']');
+					doWriteAttributeInfo(ext);
+				}
+			}
+		}
+		//Util.BREAK("AttributeFile.write: END WRITING DEPENDENCIES");
+	}
+	
+	private BlockDeclaration listAttributeFile(String attributeFileName) throws IOException
 	{ if (Option.verbose) Util.TRACE("*** BEGIN Read SimulaAttributeFile: "+attributeFileName);
 	  FileInputStream fileInputStream=new FileInputStream(attributeFileName);
 	  inpt=new ObjectInputStream(fileInputStream);
@@ -106,27 +127,42 @@ public final class AttributeFile {
 	  return(blockDeclaration);
 	}
 	
+	  
+	public BlockDeclaration readBlockDeclaration(BlockKind blockKind) throws IOException
+	{ if(blockKind==BlockKind.Class)
+		   return(readClassDeclaration());
+	  else return(readProcedureDeclaration());
+	}
 
-	public static BlockDeclaration readAttributeFile(InputStream inputStream,String attributeFileName) throws IOException
+	public static void readAttributeFile(InputStream inputStream,String attributeFileName,Vector<Declaration> declarationList) throws IOException
 	{ AttributeFile attributeFile=new AttributeFile(attributeFileName);
+	  if (Option.verbose) Util.TRACE("*** BEGIN Read SimulaAttributeFile: "+attributeFileName);
 	  attributeFile.inpt=new ObjectInputStream(inputStream);
 	  if(!attributeFile.checkVersion()) Util.error("Malformed SimulaAttributeFile: "+attributeFileName);
-	  BlockKind blockKind=attributeFile.readBlockKind();
-	  BlockDeclaration blockDeclaration=attributeFile.readBlockDeclaration(blockKind);
-	  attributeFile.inpt.close();
-	  if (Option.verbose)
-	  { Util.TRACE("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
-	    if(Option.TRACE_ATTRIBUTE_INPUT) blockDeclaration.print("");
+	  
+	  LOOP:while(true) {
+		  BlockKind blockKind=attributeFile.readBlockKind();
+		  BlockDeclaration module=null;//attributeFile.readBlockDeclaration(blockKind);
+		  if(blockKind==BlockKind.Procedure)  module=attributeFile.readProcedureDeclaration();
+		  else if(blockKind==BlockKind.Class) module=attributeFile.readClassDeclaration();
+		  else break LOOP;
+		  module.isPreCompiled=true;
+		  declarationList.add(module);
+		  if (Option.verbose) Util.TRACE("***       Read External "+module.blockKind+' '+module.identifier+'['+module.externalIdent+']');
+		  if(Option.TRACE_ATTRIBUTE_INPUT) module.print("");
 	  }
-	  return(blockDeclaration);
+	  
+	  attributeFile.inpt.close();
+	  if (Option.verbose) Util.TRACE("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
 	}
 	
 	  
 	private void doWriteAttributeInfo(Declaration dcl) throws IOException
 	{ //Util.BREAK("BlockDeclaration.doWriteAttributeInfo: dcl="+dcl);
 	  if(dcl instanceof ClassDeclaration) doWriteClassDeclaration((ClassDeclaration)dcl);
-	  if(dcl instanceof ProcedureDeclaration) doWriteProcedureDeclaration((ProcedureDeclaration)dcl);
+	  else if(dcl instanceof ProcedureDeclaration) doWriteProcedureDeclaration((ProcedureDeclaration)dcl);
 	  else if(dcl instanceof TypeDeclaration) writeTypeDeclaration((TypeDeclaration)dcl);
+	  else if(dcl instanceof ArrayDeclaration) writeArrayDeclaration((ArrayDeclaration)dcl);
 	}
 	  
 	private void writeVersion() throws IOException
@@ -141,15 +177,56 @@ public final class AttributeFile {
 	}
 	  
 	private void writeTypeDeclaration(TypeDeclaration dcl) throws IOException
-	{ TRACE_OUTPUT("Variable: "+dcl.type+' '+dcl.identifier);
+	{ TRACE_OUTPUT("Variable: "+dcl.type+' '+dcl.identifier+", const="+dcl.constantElement);
 	  oupt.writeUTF("Variable"); oupt.writeUTF(dcl.identifier); writeType(dcl.type);
+	  writeConstant(dcl.constantElement);
 	}
 	
 	public TypeDeclaration readTypeDeclaration() throws IOException
 	{ String identifier=inpt.readUTF();
 	  Type type=readType();
-	  TRACE_INPUT("Variable: "+type+' '+identifier);
-	  return(new TypeDeclaration(type,identifier));
+	  Constant constantElement=readConstant();
+	  TRACE_INPUT("Variable: "+type+' '+identifier+", const="+constantElement);
+	  return(new TypeDeclaration(type,identifier,constantElement));
+	}
+	
+	private void writeConstant(Constant cnst) throws IOException {
+		if(cnst!=null) {
+			oupt.writeUTF("Constant"); writeType(cnst.type);
+			//Util.BREAK("AttributeFile.writeConstant: "+cnst+", value="+cnst.value);
+			oupt.writeUTF(cnst.value.toString());
+		} else oupt.writeUTF("NoConstant");
+	}
+	
+	private Constant readConstant() throws IOException {
+		String kind=inpt.readUTF();
+		if(kind.equalsIgnoreCase("NoConstant")) return(null);
+		Type type=readType();
+		String val=inpt.readUTF();
+		//Util.BREAK("AttributeFile.readConstant: type="+type+", value="+val);
+		Object value;
+		if(type==Type.Boolean)        value=Boolean.parseBoolean(val);
+		else if(type==Type.Character) value=val.charAt(0);
+		else if(type==Type.Text)      value=val;
+		else if(type==Type.Integer)	  value=Integer.parseInt(val);
+		else if(type==Type.Real)	  value=Float.parseFloat(val);
+		else if(type==Type.LongReal)  value=Double.parseDouble(val);
+		else { Util.FATAL_ERROR("Impossible"); return(null); }
+		
+		return(new Constant(type,value)); // TEMP !!!!!
+	}
+	  
+	private void writeArrayDeclaration(ArrayDeclaration dcl) throws IOException
+	{ TRACE_OUTPUT("Array: "+dcl.type+' '+dcl.identifier+", nDim="+dcl.nDim);
+	  oupt.writeUTF("Array"); oupt.writeUTF(dcl.identifier); writeType(dcl.type);
+	  oupt.writeInt(dcl.nDim);
+	}
+	
+	public ArrayDeclaration readArrayDeclaration() throws IOException
+	{ String identifier=inpt.readUTF();
+	  Type type=readType(); int nDim=inpt.readInt();
+	  TRACE_INPUT("Array: "+type+' '+identifier+", nDim="+nDim);
+	  return(new ArrayDeclaration(identifier,type,nDim));
 	}
 	  
 	private void doWriteClassDeclaration(ClassDeclaration blk) throws IOException
@@ -188,12 +265,6 @@ public final class AttributeFile {
 	  TRACE_OUTPUT("END Write Block: "+blk.identifier);
 	}
 	  
-	public BlockDeclaration readBlockDeclaration(BlockKind blockKind) throws IOException
-	{ if(blockKind==BlockKind.Class)
-		   return(readClassDeclaration());
-	  else return(readProcedureDeclaration());
-	}
-	  
 	public ClassDeclaration readClassDeclaration() throws IOException
 	{ TRACE_INPUT("BEGIN Read Block:");
 	  ClassDeclaration decl=new ClassDeclaration(null);
@@ -216,6 +287,7 @@ public final class AttributeFile {
 	    else if(label.equalsIgnoreCase("Protected")) decl.protectedList.add(new ProtectedSpecification(decl,readString()));
 	    else if(label.equalsIgnoreCase("Label")) decl.labelList.add(readLabel());
 	    else if(label.equalsIgnoreCase("Variable")) decl.declarationList.add(readTypeDeclaration());
+	    else if(label.equalsIgnoreCase("Array")) decl.declarationList.add(readArrayDeclaration());
 	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readClassDeclaration());
 	    else if(label.equalsIgnoreCase("Procedure")) decl.declarationList.add(readProcedureDeclaration());
 	    else if(label.equalsIgnoreCase("BLOCKEND")) break READING;
@@ -248,6 +320,7 @@ public final class AttributeFile {
 //	    else if(label.equalsIgnoreCase("Protected")) decl.protectedList.add(readString());
 	    else if(label.equalsIgnoreCase("Label")) decl.labelList.add(readLabel());
 	    else if(label.equalsIgnoreCase("Variable")) decl.declarationList.add(readTypeDeclaration());
+	    else if(label.equalsIgnoreCase("Array")) decl.declarationList.add(readArrayDeclaration());
 	    else if(label.equalsIgnoreCase("Class")) decl.declarationList.add(readClassDeclaration());
 	    else if(label.equalsIgnoreCase("Procedure")) decl.declarationList.add(readProcedureDeclaration());
 	    else if(label.equalsIgnoreCase("BLOCKEND")) break READING;
@@ -261,17 +334,18 @@ public final class AttributeFile {
 	
 	private void writeParameter(Parameter par) throws IOException
 	{ TRACE_OUTPUT("Parameter: "+par.type+' '+par.identifier+' '+par.kind+' '+par.mode);
-	  oupt.writeUTF("Parameter"); oupt.writeUTF(par.identifier);
+	  oupt.writeUTF("Parameter"); oupt.writeUTF(par.identifier); oupt.writeUTF(par.externalIdent);
 	  writeType(par.type); writeParameterKind(par.kind); writeParameterMode(par.mode);
 	}
 	
 	public Parameter readParameter() throws IOException
 	{ String identifier=inpt.readUTF();
+	  String externalIdent=inpt.readUTF();
 	  Type type=readType();
 	  Parameter.Kind kind=readParameterKind();
 	  Parameter.Mode mode=readParameterMode();
 	  Parameter par=new Parameter(identifier,type,kind);
-	  par.mode=mode;
+	  par.externalIdent=externalIdent; par.mode=mode;
 	  TRACE_INPUT("Parameter: "+type+' '+identifier+' '+kind+' '+mode);
 	  return(par);
 	}
@@ -408,11 +482,15 @@ public final class AttributeFile {
 	  return(null);
 	}
 	
-	public BlockKind readBlockKind() throws IOException
-	{ String kind=inpt.readUTF();
-	  //Util.BREAK("AttributeInputStream.readBlockKind: kind="+kind);
-	  if(kind.equalsIgnoreCase("Procedure")) return(BlockKind.Procedure);
-	  return(BlockKind.Class);
+	public BlockKind readBlockKind() //throws IOException
+	{ try { String kind=inpt.readUTF();
+	        //Util.BREAK("AttributeInputStream.readBlockKind: kind="+kind);
+	        if(kind.equalsIgnoreCase("Procedure")) return(BlockKind.Procedure);
+	        return(BlockKind.Class);
+	  } catch(IOException e) {
+	        //Util.BREAK("AttributeInputStream.readBlockKind: END-OF-AF");
+		    return(null);
+	  }
 	}
 	
 	private void writeString(String label,String val) throws IOException

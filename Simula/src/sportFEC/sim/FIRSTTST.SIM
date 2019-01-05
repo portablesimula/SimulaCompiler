@@ -1,0 +1,9 @@
+SIMULATION
+begin  integer i=26+2**2; ! = 30;
+       integer j=i-10, k=-i+10;
+       procedure p(i,j); text i,j;  i:-j; !re-declaration check;
+       begin integer i; end;              !re-declaration check;
+       outtext("result must be: "); outimage;
+       outtext("30 20 -20 - OK ok !"); outimage; outimage;
+       outint(i,2); outint(j,3); outint(k,4); outtext(" - OK ok !");
+end;

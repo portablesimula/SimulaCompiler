@@ -17,7 +17,6 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
-import simula.runtime.RT;
 
 /**
  * </pre>

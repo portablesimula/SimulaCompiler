@@ -92,7 +92,8 @@ public final class SimulaCompiler {
 		Global.tempClassFileDir=tmpClassDir.toString()+'/';
 
 		if(Option.verbose)
-		{ Util.message("SourceFile Name: "+Global.sourceName);
+		{ Util.message("Package Name:    "+Global.packetName);
+		  Util.message("SourceFile Name: "+Global.sourceName);
 		  Util.message("SourceFile Dir:  "+Global.sourceFileDir);
 		  Util.message("TempDir .Java:   "+Global.tempJavaFileDir);
 		  Util.message("TempDir .Class:  "+Global.tempClassFileDir);
@@ -143,7 +144,7 @@ public final class SimulaCompiler {
 				Util.message("END Parsing, resulting Program: "+program);
 				if (Option.TRACE_PARSE && program != null) program.print("");
 			}
-			Parser.close();
+			Parser.close(); Global.duringParsing=false;
 			
 			if(Util.nError>0) 
 			{ Util.message("Compiler terminated after "+Util.nError+" errors during parsing");
@@ -179,8 +180,8 @@ public final class SimulaCompiler {
 			// *** CALL JAVAC COMPILER
 			// ***************************************************************
 			String classPath=Global.simulaRtsLib;
-			for(ExternalJarFile jf:ExternalJarFile.ExternalJarFiles)
-				  classPath=classPath+";"+jf.jarFileName;
+			for(String jarFileName:Global.externalJarFiles)
+				  classPath=classPath+";"+jarFileName;
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			if(compiler!=null) callJavaSystemCompiler(compiler,classPath);
 			else callJavacCompiler(classPath);
@@ -325,14 +326,16 @@ public final class SimulaCompiler {
 	// *** CREATE .jar FILE
 	// ***************************************************************
 	public String createJarFile(ProgramModule program) throws IOException
-//	public String createJarFile() throws IOException
 	{ if(Option.verbose) Util.message("BEGIN Create .jar File");
-	  String jarFile=Global.outputDir+Global.sourceName+".jar ";
+	  String jarFileName=Global.outputDir+Global.sourceName+".jar ";
+	  
 	  if(!program.isExecutable()) {
 		  //Util.BREAK("SimulaCompiler.createJarFile: program="+program);
-		  jarFile=Global.outputDir+program.getIdentifier()+".jar ";
-		  Util.warning("Separate Compiled Module is written to: "+jarFile);
+		  jarFileName=Global.outputDir+program.getIdentifier()+".jar ";
+		  Util.warning("Separate Compiled Module is written to: "+jarFileName);
 	  }
+	  File jarFile=new File(jarFileName);
+	  jarFile.getParentFile().mkdirs();
 	  Manifest manifest=new Manifest();
 	  String mainEntry=Global.packetName+'/'+program.getIdentifier();
 	  mainEntry=mainEntry.replace('/', '.');
@@ -354,7 +357,7 @@ public final class SimulaCompiler {
 	  }
 	  target.close();
 	  if(Option.verbose) Util.message("END Create .jar File: "+jarFile);
-	  return(jarFile);
+	  return(jarFile.toString());
 	}
 
 	private void add(JarOutputStream target,File source,int pathSize ) throws IOException

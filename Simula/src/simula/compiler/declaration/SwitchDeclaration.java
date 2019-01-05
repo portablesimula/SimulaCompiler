@@ -36,8 +36,9 @@ public final class SwitchDeclaration extends ProcedureDeclaration
 {
 	Vector<Expression> switchList = new Vector<Expression>();
 
-	public SwitchDeclaration() {
-		super(expectIdentifier(),BlockKind.Procedure);
+	public SwitchDeclaration(String ident) {
+//		super(expectIdentifier(),BlockKind.Procedure);
+		super(ident,BlockKind.Procedure);
 		if (Option.TRACE_PARSE)
 			Parser.TRACE("Parse SwitchDeclaration");
 		this.type = Type.Label;

@@ -1,0 +1,1114 @@
+Class COMMON;
+
+hidden protected EXC_NUMBER;
+
+virtual: procedure COMMONerror
+         is procedure COMMONerror(n); short integer n;
+         ;
+         procedure ENDCOMP
+         is procedure ENDCOMP;
+         ;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---                   C l a s s    C o m m o n                ---
+%      ---                                                           ---
+%      --- Selection switches: DPI                                   ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'M' Enable %MACRO and %DEFINE capability               ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      ---    'U' Unified quant and quantity version                 ---
+%      -----------------------------------------------------------------
+
+%SELECT Z
+
+% INSERT $SIMSRC/fec/symtable.def
+%INSERT C:/GitHub/SimulaCompiler/Simula/src/sportFEC/sim/SYMTABLE.DEF
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+% INSERT sportid.def
+%INSERT C:/GitHub/SimulaCompiler/Simula/src/sportFEC/sim/SPORTID.DEF
+
+
+%   **********   capacity parameters   ****************
+
+%+Z integer   maxasd       =   30   ,! maximum depth of assembly stack ;
+%+Z           maxplev      =   63   ,! maximum prefix level ;
+%+Z           maxblev      =   250  ,! maximum block  level ;
+%+Z           maxdepth     =   100  ,! maximum depth of operator stack ;
+%+Z           maxcalldepth =   15   ,! maximum nesting in expressions ;
+%+Z           maxjumpdepth =   100  ;! maximum nesting of inspect etc.;
+
+%-Z character maxasd       = '!30!' ,! maximum depth of assembly stack ;
+%-Z           maxplev      = '!63!' ,! maximum prefix level ;
+%-Z           maxblev      = '!250!',! maximum block  level ;
+%-Z           maxdepth     = '!100!',! maximum depth of operator stack ;
+%-Z           maxcalldepth = '!15!' ,! maximum nesting in expressions ;
+%-Z           maxjumpdepth = '!100!';! maximum nesting of inspect etc.;
+
+    integer   SbufferMax   =   750;  ! length of S-code buffer;
+    integer   L2max        =   256;  ! length of L2buf ;
+    integer   RepeatMax    =   256;  ! max size of repetition;
+
+% INSERT $SIMSRC/fec/common.mne
+%INSERT C:/GitHub/SimulaCompiler/Simula/src/sportFEC/sim/COMMON.MNE
+
+% ****** to avoid numerous type conversions ******;
+%+Z integer   zero =   0  , one =   1   ;
+%-Z character zero = '!0!', one = '!1!' ;
+
+%title ***   c a t e g    c o d e s   ***
+
+    character
+               C_unspec=  '!0!',  !corresponds to RTS 'm_ref';
+               C_value =  '!1!',  !corresponds to RTS 'm_value';
+               C_name  =  '!2!',  !corresponds to RTS 'm_name';
+               C_local =  '!3!',  !corresponds to RTS 'm_local';
+               C_extnal=  '!4!',  !corresponds to RTS 'm_extr';
+               C_unknwn=  '!5!',
+               C_virt  =  '!6!',
+               C_block =  '!7!',
+
+               C_max   =  '!7!';  !NB *** must be < 8;
+
+%+D  text procedure C_code(k); character k;
+%+D  begin 
+%+D        if k = C_unknwn then C_code:-"default" else
+%+D        if k = C_local  then C_code:-"local" else
+%+D        if k = C_value  then C_code:-"value" else
+%+D        if k = C_name   then C_code:-"name" else
+%+D        if k = C_unspec then C_code:-"unspec" else
+%+D        if k = C_virt   then C_code:-"virt" else
+%+D        if k = C_extnal then C_code:-"extnal" else
+%+D        if k = C_block  then C_code:-"block" else
+%+D                             C_code:-"illegal";
+%+D  end;
+
+%title ***   k i n d    c o d e s   ***
+
+     character
+               K_ident = '!00!',  !corresponds to RTS 'k_smp';
+               K_proc  = '!01!',  !corresponds to RTS 'k_pro';
+               K_array = '!02!',  !corresponds to RTS 'k_arr';
+               K_label = '!03!',  !corresponds to RTS 'k_lab';
+               K_switch= '!04!',  !corresponds to RTS 'k_swt';
+               K_class = '!05!',  !corresponds to RTS 'k_cla';
+               K_rep   = '!06!',  !corresponds to RTS 'k_rep';
+               K_record= '!07!',  !corresponds to RTS 'k_rec';
+               K_subbl = '!08!',
+               K_prefbl= '!09!',
+               K_error = '!10!',
+               K_labbl = '!11!',
+               K_unknwn= '!12!',
+               K_extnal= '!13!',
+
+               K_max   = '!13!';  !NB *** must be < 16 ;
+
+%+D  text procedure K_code(k); character k;
+%+D  begin 
+%+D        if k = K_error  then K_code:-"unknwn" else
+%+D        if k = K_ident  then K_code:-"ident" else
+%+D        if k = K_array  then K_code:-"array" else
+%+D        if k = K_rep    then K_code:-"infix array" else
+%+D        if k = K_proc   then K_code:-"proc" else
+%+D        if k = K_class  then K_code:-"class" else
+%+D        if k = K_label  then K_code:-"label" else
+%+D        if k = K_switch then K_code:-"switch" else
+%+D        if k = K_subbl  then K_code:-"subbl" else
+%+D        if k = K_prefbl then K_code:-"prefbl" else
+%+D        if k = K_record then K_code:-"record" else
+%+D        if k = K_labbl  then K_code:-"labbl" else
+%+D        if k = K_unknwn then K_code:-"unknwn" else
+%+D        if k = K_extnal then K_code:-"predef" else
+%+D                             K_code:-"illegal";
+%+D  end;
+
+%title ***   c l a s s i f i c    c o d e s   ***
+
+     character
+         Clf000 ='!00!', !Normal userdefined declaration, used when
+                        it comes from a usual external declaration.;
+         Clf001 ='!01!', !External procedure with binding;
+         Clf002 ='!02!', !parameters to external procedure with binding.
+
+                        The rest is only used in system attr. files;
+
+         Clf003 ='!03!', !Is used when it is of no specific interest.;
+         Clf004 ='!04!', !Used for system classes.;
+                         --  Procedures implemented by routines:
+         Clf005 ='!05!', !Used for procedure which is attribute of text
+                        ( accessed as <text expr>.<procedure> ). Should
+                        be called as a routine with an extra first GADDR
+                        parameter (address of text variable).  If the
+                        <text expr> is not a variable, this routine
+                        should not be called. Instead its successor in
+                        the declaration list of 'class _text' should be
+                        called. This is assumed to be classified with U;
+         Clf006 ='!06!', !Used for procedure which is attribute of text
+                        ( accessed as <text expr>.<procedure> ).  Should
+                        be called as a routine with an extra first text
+                        quantity parameter (as a value).;
+         Clf007 ='!07!', !Used for procedures local in classes that must
+                        have a reference to the object as an extra first
+                        parameter.;
+         Clf008 ='!08!', !- as '7', but the routine may lead to garbage
+                        collection.  Thus SAVE-RESTORE must possibly
+                        enclose the call.  Except for 'setacces', these
+                        are all of type text, and the text reference is
+                        delivered on TOS. If the procedure is remotely
+                        accessed, the extra first parameter has to be
+                        kept in TMP.PNT during a possible save.;
+         Clf009 ='!09!', !Used for class process of SIMULATION.
+                        Enables checking of encloser as simulation
+                        block;
+         Clf010 ='!10!', !Used for procedures that are translated to
+                        routines with no special treatment.;
+
+         Clf011 ='!11!', !- as '10', but the routine may lead to garbage
+                        collection.  Thus SAVE-RESTORE must possibly
+                        enclose the call.  These are all procedures of
+                        type text, and the text reference is delivered
+                        on TOS.;
+         Clf012 ='!12!', !Used for procedure in class file which is an
+                        operation on the image. Image of the actual file
+                        should be given as extra first parameter, as a
+                        GADDR (corresponding to '5' above).;
+         Clf013 ='!13!', !Used for standard procedures which should be
+                        translated to a direct fetch from a RTS variable
+                        (max/min functions, simulaid).;
+         Clf014 ='!14!', !Used for type procedures local in classes that
+                        should be translated to fetching a value
+                        directely from an attribute (certain attributes
+                        of FILE and SIMULATION). Is translated to
+                        code for OADDR of the enclosure followed by a
+                        REMOTEV.;
+         Clf015 ='!15!', !Used for type procedures local in classes that
+                        should be translated to fetching a value from an
+                        attribute through one level of indirection.  Is
+                        translated to code for OADDR followed by two
+                        REMOTEV's.  Currently used for Simulation'time
+                        only.;
+                        -- Classification of parameters:
+         Clf016 ='!16!', !Used for parameters to procedures that must be
+                        translated to usual parameters to routines.;
+%                       === Special classification codes ===
+%                       These codes enable the compiler to recognize
+%                       inline coded procedures, etc.
+         Clf017 ='!17!', !- as '16', but parameter checking suppressed;
+         Clf018 ='!18!', !Used for parameters to routines class. > 19;
+         Clf019 ='!19!', !Used for text parameters of loadchar/storechar
+                         - prepare for (S-code) index;
+         ----- Inline coded procedures:
+         Clf020 ='!20!', !rem;
+         Clf021 ='!21!', !int abs;
+         Clf022 ='!22!', !real abs;
+         Clf023 ='!23!', !lreal abs;
+         Clf024 ='!24!', !int sign;
+         Clf025 ='!25!', !real sign;
+         Clf026 ='!26!', !lreal sign;
+         Clf027 ='!27!', !char;
+         Clf028 ='!28!', !isochar;
+         Clf029 ='!29!', !rank;
+         Clf030 ='!30!', !isorank;
+         Clf031 ='!31!', !loadchar;
+         Clf032 ='!32!', !storechar;
+         Clf033 ='!33!', !sint min;
+         Clf034 ='!34!', !int min;
+         Clf035 ='!35!', !real min;
+         Clf036 ='!36!', !lreal min;
+         Clf037 ='!37!', !sint max;
+         Clf038 ='!38!', !int max;
+         Clf039 ='!39!', !rela max;
+         Clf040 ='!40!', !lreal max;
+         Clf041 ='!41!', !sourceline;
+         Clf042 ='!42!', !text'more;
+         Clf043 ='!43!', !imagefile'more;
+         Clf044 ='!44!', !text'pos;
+         Clf045 ='!45!', !imagefile'pos;
+         Clf046 ='!46!', !text'length;
+         Clf047 ='!47!', !imagefile'length;
+         Clf048 ='!48!', !text'start;
+
+         Clfmax ='!48!';
+
+%+D  text procedure Cl_code(k); character k;
+%+D  begin text t;
+%+D        if k<=Clfmax then begin
+%+D           Cl_code:-t:- blanks(if rank(k)<10 then 1 else
+%+D                               if rank(k)<100 then 2 else 3);
+%+D           t.putint(rank(k));
+%+D        end else Cl_code:-"illegal"
+%+D  end;
+
+%title ******   Call statistics variables (%+S)   ******
+
+%+S   integer array Freq(0:200);  !call freq. count for procedures;
+%+S %+R   long real array TQ(0:200);  !accum. time spent;
+%+S   integer array L2Freq(0:150); !L2coder called with this symbol;
+%+S   integer array PaFreq(0:150); !Parser  called with this symbol;
+%+S   integer array SrcLine(0:90); !#lines of this length;
+%+S   integer array L3Freq(0:150); !Scodmain called with this symbol;
+%+S %+R   long real array TL3(0:150);  !accum. time for this symbol;
+
+%title *** VARIABLES FOR PARAMETERS TO COMPILER ***
+
+      short integer numerrfound;
+%     short integer maxdepth;         ! max nesting of statements;
+%     short integer maxconst;
+      short integer simob_level;
+      short integer linelength,signiflength,listlength;
+      short integer maxnumoftags;     ! Pass 1: block nesting;
+      character nextblhi,nextbllo;
+      boolean simob_descr, simob_entity, simob_const;
+      boolean RealCap; !*** true if processor has real capability ***;
+      boolean definition;        ! set at %DEFINITION;
+      boolean recomp;            ! set if recompilation;
+      boolean separatecomp;      ! set if separate compilation;
+      boolean listingon,GiveNotes;
+      boolean SportOK;           ! enables special features;
+      boolean Simuletta;         ! enables simuletta features;
+      boolean GenerateScode;     ! true: generate even if errors found;
+
+      character opt,opn,optx,    ! operator/operand communication;
+                opdhi,opdlo;
+      character ltype,rtype;     ! temp ;
+      character     currentpass; ! number of current pass;
+      character     termstatus;  ! Reported to env. at termination;
+
+      ref(printfile) listfile;
+      ref(outbytefile) L2OUPT;
+      ref(inbytefile)  L2INPT;
+      ref(component) scanner,parser;
+      ref(outcodefile) coder;
+
+      ref(quantity) setprefgoing,alloc2called;
+      ref(brecord)  unknowns;
+
+      integer linenr;
+      integer messageLinenr;     ! line number for diagnostic message;
+      integer EXC_NUMBER;        ! used by EXCEPTION-HANDLER;
+
+
+      text listpart;             ! 'sub' of source input (pass 1);
+      text line;                 ! current source line (pass 1);
+      text L2NAME, nscodename;   ! file names;
+      text timestamp;            ! Date and time for this compilation;
+      text progheadstring;       ! - for S-code;
+      text L2codebuffer;         ! L2 first buffer ;
+      text predefname;
+%+Z   text simsetname,simulaname;
+      text attrfilename, moduleident, checkcode;
+      !*** set by parser, used in builder ***;
+      text leftintbuf;  !*** blanks(12) ***;
+      text leftsintbuf; !*** blanks( 7) ***;
+%+Z   text permt;       ! buffer for '== strings';
+%+R   long real starttime;
+%+R   long real timer;      !*** timing the compilation;
+
+%+Z   ref(brctab2)  array brctab(0:127);
+%+Z   ref(quantity) array prefixchain(0:64 !maxplev+1; );
+%+Z   ref(brecord)  array display(0:maxplev);
+%+Z   text          array diag(0:5);
+%-Z   ref(brctab2)        brctab(127);
+%-Z   ref(quantity)       prefixchain(64 !maxplev+1; );
+%-Z   ref(brecord)        display(64);
+%-Z   text                diag(5);
+
+      class brctab2;
+      begin
+%+Z         ref(brecord) array val(0:255);
+%-Z         ref(brecord)       val(  255);
+      end;
+
+%+D   text array DB(0:256); ! contains text repr. of the I-symbols;
+
+      text procedure leftint(i); integer i;
+      begin leftintbuf.putint(i); i:=11;
+            while loadchar(leftintbuf,i)<>' ' do i:=i-1;
+            leftint:-copy(leftintbuf.sub(i+2,11-i));
+      end;
+
+%title ***   B R E C O R D   ***
+
+      class brecord; ! 40 bytes ;
+      begin
+         character     blnohi, blnolo, blev,  rtblev;
+         character dcltag,stmtag,inrtag;
+         character kind;          ! - for coding, see below;
+%+K      boolean isGlobal;
+         boolean thisused;        ! - also marks prior procedure;
+         boolean localclasses;
+         boolean descriptorpr;    ! descriptor for this class produced;
+         boolean hasCode;         ! - see below;
+         character inspected;     ! <>0: this class is inspected;
+%+Z      short integer connests;
+%-Z      character     connests;
+         short integer npar;      ! Accumulated in pref.chain;
+% not used short integer nloc;
+         short integer navirt;
+         short integer line1;     ! not used : line2;
+         ref(quantity) declquant;
+         ref(quantity) fpar;
+         ref(quantity) favirt;
+         ref(idpack)  hidlist;   ! Contains blno of par-brec
+                                    when this is procedure body-brec;
+%+N      ref(idpack)   formals;   !formal parameter list, or ident seen;
+         ref(stackedb) preinsp;   ! stacked at INSPECT;
+   
+%       KIND:             class:                         K_class
+%                         procedure:                     K_proc
+%                         simp.block:                    K_subbl
+%                         pref.block:                    K_prefbl
+%                         'record':                      K_record
+%                         brecord for labels of
+%                         for- and inspect-statements:   K_labbl
+%                         simple variable                K_ident
+%                         array                          K_array
+%                         repetition                     K_rep
+%                         label                          K_label
+%                         switch                         K_switch
+%                         undecl. identifier             K_unknwn
+%                         erroneous declaration          K_error
+   
+%       HASCODE    - significant for class brecords.
+%                  For a class, a value <> NUL indicates that the
+%                  class contains code (declaration and/or actions).
+
+%       - in addition, a brecord descriptor of arrays and constants
+%         may be generated:
+%         array with clb: (blnohi,blnolo) is lower bound index
+%         - infix array in addition: line1 is no of elements
+%         - const array in addition: fpar-list = values (not impl)
+%         named const:    (blnohi,blnolo) is const (string) index
+
+%page
+%+D      procedure outblno;
+%+D      begin sysout.outint(rank(blnohi)*256+rank(blnolo),4) end;
+
+%+D      procedure dump(dmpmess); text dmpmess;
+%+D      begin ref(quantity)q; ref(extbrecord) extbrc;
+%+D            outtext("**********  "); outtext(dmpmess);
+%+D            outtext("  **********  "); outimage;
+%+D            inspect declquant do begin
+%+D               outtext(if kind=K_subbl then "BLOCK" else
+%+D                       if kind=K_prefbl then "PREFB" else
+%+D                       if symb==none then "NOSYMB" else
+%+D                       if symb.symbol==notext then "NONAME"
+%+D                       else symb.symbol);
+%+D               if prefqual=/=none and then prefqual=/=this quantity
+%+D               then begin
+%+D                  q:-prefqual.descr.declquant;
+%+D                  outchar(':');
+%+D                  if q=/=none and then symb=/=none
+%+D                  then outtext(q.symb.symbol)
+%+D                  else prefqual.descr.outblno;
+%+D            end end otherwise outtext("??????");
+%+D            outblno; outint(rank(blev),4);
+%+D            outint(rank(rtblev),4); outtext(" ");
+%+D            outtext(K_code(kind));
+%+D            outint(line1,5); ! not used  outint(line2,5);
+%+D            if npar<>0 then begin
+%+D               outtext(",NPAR:"); outint(npar,4); end;
+% D            if nloc<>0 then begin
+% D               outtext(",NLOC:"); outint(nloc,4); end;
+%+D            if navirt<>0 then begin
+%+D               outtext(",NVIR:"); outint(navirt,4); end;
+%+D            if connests<>0 then begin
+%+D               outtext(",Ncon:"); outint(connests,4); end;
+%+D            if localclasses then outtext(" LC");
+%+D            if thisused then outtext(" TU");
+%+D            if dcltag>'!0!' then outtext(" D");
+%+D            if stmtag>'!0!' then outtext(" S");
+%+D            if inrtag>'!0!' then outtext(" I");
+%+D            if this brecord is extbrecord then begin
+%+D               extbrc:-this brecord; outimage; outtext("  EXTB " &
+%+D                       nameof(extbrc.checkhi,extbrc.checklo) & "  ");
+%+D               outchar(extbrc.status); outtext("  ");
+%+D               inspect extbrc.cause do outtext(symb.symbol);
+%+D            end;
+%+D            if fpar=/=none then begin outimage;
+%+D               outtext("*** PAR:"); q:-fpar;
+%+D               while q=/=none do begin q.dump; q:-q.next end;
+%+D            end;
+%+D            if favirt=/=none then begin outimage;
+%+D               outtext("*** VIR:"); q:-favirt;
+%+D               while q=/=none do begin q.dump; q:-q.next end;
+%+D            end;
+%+D            outtext(" *** END " & dmpmess); outimage;
+%+D      end of brecord-dump;
+   
+      end of class brecord;
+%title ***   Q U A N T I T Y   ***
+
+      sembox class quantity;  ! 44 bytes ;
+      begin character type,kind,categ,special;        ! - see below;
+            character protect;                        ! - see below;
+            character visible;                        ! - see below;
+%+Z         short integer plev;
+%-Z         character     plev;
+            short integer dim;                        ! - see below;
+            short integer virtno;                     ! - see below;
+            short integer ftag;                       ! - see below;
+            short integer line;                       ! - see below;
+            ref(symbolbox) symb;
+            ref(brecord)encl;     ! In virtuals the encloser of  ???????
+                                    where it was specified as virtual;
+            ref(brecord)descr;
+            ref(quantity)prefqual;! For prefix or qualification;
+            ref(quantity)match;
+   
+%       TYPE:           notype            : INOTY
+%                       integer           : IINTG
+%                       short integer     : ISHOR
+%                       real              : IREAL
+%                       long real         : ILONG
+%                       boolean           : IBOOL
+%                       character         : ICHAR
+%                       label (switch)    : ILABE
+%                       text              : ITEXT
+%                       ref               : IREF
+%                       pointer to record : IPTR
+%                       universal         : IELSE
+%
+%       KIND:           class:                         K_class
+%                       procedure:                     K_proc
+%                       simp.block:                    K_subbl
+%                       pref.block:                    K_prefbl
+%                       'record':                      K_record
+%                       declquant for labels of
+%                       for- and inspect-statements:   K_labbl
+%                       simple variable                K_ident
+%                       array (standard)               K_array
+%                       repetition                     K_rep
+%                       label                          K_label
+%                       switch (type=ILABE)            K_switch
+%                       unspecified parameter          K_unknwn
+%                       erroneous declaration          K_error
+
+%       CATEG:          local attribute   : C_local
+%                       default parameter : C_unspec
+%                       value parameter   : C_value
+%                       name parameter    : C_name
+%                       virtual           : C_virt
+%                       external          : C_extnal
+%                       unknown identifier: C_unknwn
+%
+%       SPECIAL:        1.dim clb array   : 1 (kind=K_array)
+%                       const array       : 2 (kind=K_array)
+%                       constant element  : 3 (kind=K_ident)
+%                       uninit. const.    : 4
+%                       - descr points to a special brecord which
+%                         describes the array/constant
+%
+%       PROTECT:        1: attribute is protected
+%                       2: attribute is read only (cannot be both)
+%                       0: attribute is neither
+%
+%       VISIBLE:        '0' if the context permits use of this attr.
+%
+%       INSPECTED:      = insp.blev when attr visible thru inspection
+%                       NB: (inspected,plev) prefid/qualid during alloc
+%
+%       DIM:            - Dimension of array/switch.
+%                       - "language" of external.
+%                       - if categ=C_unknwn: number of times seen.
+%                       - if categ=C_virt: dim<>0 means that the virtual
+%                         is specified at current prefix level;
+%                       - if categ=C_local and kind=K_proc: dim<>0 means
+%                         that this is a descriptor of a virtual
+%                  For an external non-SIMULA procedure it codes the
+%                  external kind, which controls code generation for
+%                  calls of this procedure:
+%                         1: coded according to SDG C-interface.
+%                         2: S-port conventions, but no context param.
+%                         3: S-port conventions, incl. context param.
+%                   (1)   C                              Cindex
+%                   (1)   Pascal                         Pascalindex
+%                   (2)   library                        libraryIndex
+%                   (3)   - none of above                >Pascalindex
+
+%       VIRTNO:         - categ=C_virt: Seq. no. in accum. virtual list
+%                       - categ=C_extnal: External name of external
+%                       - categ=C_unknwn: its seq. nmbr of unknown id's
+%                       - Otherwise, virtno<>0 indicates a special decl.
+%                         that was attached a text value after the
+%                         identifier, virtno gives the index in 'symtab'
+ 
+%       FTAG:           - if <0 then index of prefix/qualification from
+%                         pass 1 to allocate, otherwise the first tag
+
+%       LINE:           - line number. For extquantity it carries
+%                         prefix/qualification from expandext to alloc
+%                         (ftag cannot be used in this case)
+
+%       MATCH:          - categ=C_virt: Matching quantity (if any)
+%                       - categ=C_class: variable refering to certain
+%                                   objects indicate different states.
+
+%page
+            !*********    procedure DUMP of quantity   ********;
+
+%+D         procedure dump;
+%+D         begin procedure outblno(brc); ref(brecord) brc;
+%+D               if brc=/=none then begin outtext("#");
+%+D                     brc.outblno;
+%+D               end;
+%+D               procedure NL;
+%+D               if linesh and pos>70 then begin
+%+D                  outimage; outtext("            "); linesh:=false;
+%+D               end;
+%+D               boolean linesh; linesh:=true;
+%+D               outtext(if kind=K_subbl then "BLOCK" else
+%+D                       if kind=K_prefbl then "PREFB" else
+%+D                       if symb==none then "NOSYMB" else
+%+D                       if symb.symbol==notext then "NONAME"
+%+D                       else symb.symbol);
+%+D               if prefqual=/=none then begin outtext(":");
+%+D                  if prefqual.symb=/=none
+%+D                  then outtext(prefqual.symb.symbol)
+%+D                  else outblno(prefqual.encl);
+%+D               end;
+%+D               outtext(" l."); outint(line,0); outblno(encl);
+%+D               outchar(' '); outtext(DB(rank(type )));
+%+D               outtext(" " & K_code(kind) & " " & C_code(categ));
+%+D               if plev<>0 then begin
+%+D                  outtext(" plev:"); outint(plev,0); end;
+%+D               if ftag<>0 then begin
+%+D                  outtext(" tag:"); outint(ftag,0); end;
+%+D               if dim<>0 then begin
+%+D                  outtext(" dim:"); outint(dim,0); end;
+%+D               if virtno<>0 then begin
+%+D                  outtext(" vir:"); outint(virtno,0); end;
+%+D               if protect='!1!' then outtext(" P");
+%+D               if visible<>'!0!' then begin
+%+D                  if protect='!0!' then outtext(" V");
+%+D                  outint(rank(visible),0) end;
+%+D               if match=/=none then begin NL;
+%+D                     outtext(" MATCH:"); if match.encl=/=none
+%+D                        and then match.encl.declquant=/=none
+%+D                     then outtext(match.encl.declquant.symb.symbol)
+%+D                     else outblno(match.encl);
+%+D               end;
+%+D               if descr=/=none then begin
+%+D                  if special<>'!0!' then outtext(" SPECIAL ");
+%+D                  if kind<>K_proc and kind<>K_class
+%+D                  then descr.dump(" DESCR ") else outblno(descr);
+%+D               end;
+%+D               inspect this quantity when extquantity do begin NL;
+%+D                     if module=/=none
+%+D                     then outtext(" MODUL:" &
+%+D                                  module.declquant.symb.symbol);
+%+D                     outtext(" Clf:" & Cl_code(clf));
+%+D                     if longindic<>'!0!' then begin outtext(" LIX:");
+%+D                        outint(rank(longindic),0) end;
+%+D               end;
+%+D               outimage;
+%+D         end of quantity-dump;
+   
+%+S         Freq(44):=Freq(44)+1;
+%           visible:=true; !*** all quantities are born visible;
+
+      end of quantity;
+%title ***   E X T B R E C O R D  -  E X T Q U A N T I T Y   ***
+
+      brecord class extbrecord;
+      begin ref(extquantity)cause; ! The meaning depends on status:
+                        'S':  If=/=none then an implicit ext dcl is
+                              identified with this decl, and its
+                              checkcode is given here.
+                        'M':  The ext decl it is identified to at a
+                              prefix level.
+                        'B':  The first treated external declaration
+                              that brougt this ext declaration in.
+                        'H':  Same as 'B'.  ;
+            short integer exttagnum; ! The number of external tags in
+                                       this module.
+                                       Set during expand-externals;
+            short integer ftag; ! The first internal tag for this module
+                                  in the program bringing in the module;
+            character checkhi,checklo; ! If not zero, then checkcode
+                                         identifying compilation;
+            character modulhi,modullo; ! Module identifier (in symtab);
+            character status; ! Can have the following values:
+                           'S'(source)   Stems from an explicit external
+                                         declaration in the source
+                                         program.
+                           'H'(head)     Stems only from the external
+                                         head of one or more included
+                                         modules.
+                           'B'(body)     Stems from explicit external
+                                         declaration in the body of a
+                                         directely or indirectely
+                                         included module.
+                           'M'(marker)   Marks that an external decl
+                                         that is implicitely included
+                                         at this prefix level is iden-
+                                         tified with an external decl
+                                         at an earlier prefix level. ;
+      end extbrecord;
+
+
+      quantity class extquantity(module); ref(extbrecord)module;
+%     comment: Module is the module to which it is local.  All locals
+%              in separate modules are represented by extquantities,
+%              also the declquant of the extbrecord itself, in which
+%              case module==descr.        ;
+      begin character clf;        ! "classific", see sortcodes ;
+            character longindic;
+   
+%     LONGINDIC:   The rank of this variable is not zero if this is
+%                  a procedure that is overloaded on the parameter type.
+%                  -- see CHECKER1 for usage --
+%                  It is given after "classific" to attributefile,
+%                  as a negative number in front of "number of tags". ;
+   
+      end of extquantity;
+
+
+%     **************   Redeclaration objects   ****************
+
+      !*** save quant-info when redeclared (INSPECT) ***;
+      sembox class stackedi(rehi,relo);
+            character rehi,relo;
+      ;
+
+      class stackedb(oldblev,oldrtblev,oldconnests,oldinsp,prev);
+            character     oldblev;
+            character     oldrtblev;
+%+Z         short integer oldconnests;
+%-Z         character     oldconnests;
+            character     oldinsp;
+            ref(stackedb) prev;
+      begin ref(stackedi) redeclChain; end;
+
+%title ***  TEXTUALLY BLOCK AND DECLARATION REPRESENTATION  ***
+
+%page
+
+%-I %+PQ  prior
+%-I       ref(brecord) procedure getBrc(blnohi,blnolo);
+%-I             character blnohi,blnolo;
+%-I       begin
+%-I %+S         Freq(5):=Freq(5)+1;
+%-I             getbrc:-brctab(rank(blnohi)).val(rank(blnolo));
+%-I       end getBrc;
+
+
+%page
+      class idpack;
+      begin character idhi,idlo;
+            short integer line;
+            ref(idpack) next;
+
+%+D         procedure dump;
+%+D         begin outtext("**IDPACK: ");
+%+D            outtext(nameof(idhi,idlo)); outint(line,6); outimage;
+%+D         end of vispack-dump;
+
+      end;
+
+      class component;           !*** common QPS component prefix;
+      begin character cs; boolean getopt;
+            !*** note: attributes used only by parser ***;
+      end;
+
+      outbytefile class outcodefile;  !*** byte output file ***;
+      begin ref(quantity) opq;
+      end;
+
+%title ***   attribute file   ***
+
+     class attrfile;
+     begin character layoutindex = '!2!'; !change if attr file changed;
+
+           integer bufsize= 2048, bufmax = bufsize - 25;
+           !*** bufsize-bufmax must allow for max number of bytes to be
+                output from a quantity descriptor without strings ;
+
+           character
+                longSwap = '!255!',   !*** very long string (>bufsize);
+                bufSwap  = '!254!',   !*** read next buffer;
+                longText = '!253!',   !*** long string (>= lowkey);
+                mainKey  = '!252!',   !*** separator between main items;
+                begList  = '!251!',   !*** start quantity list;
+                endlist  = '!250!',   !*** end   quantity list;
+                protMark = '!249!',   !*** quantity is protected;
+                hidMark  = '!248!',   !*** hidden pack;
+                nestMark = '!247!',   !*** for/conn nesting;
+                xMark    = '!246!',
+                yMark    = '!245!',
+                specMark = '!244!',   !*** const or const lb array;
+                overMark = '!243!',   !*** overloading mark ***;
+                dimMark  = '!242!',   !*** dimension (array/switch);
+                forcMark = '!241!',   !*** quantity must be created;
+                thisMark = '!240!',   !*** thisused,hasCode,inrTag ***;
+                lowKey='!240!', hikey='!255!';
+
+           boolean sysattrfile;
+           boolean xthisused,xhascode;
+           character xprotect,xtype,xkind,xcateg,xspecial,xclf,xlongindic;
+           character xinrtag,xconnests,xprefqhi,xprefqlo;
+           character xarrhi,xarrlo,xcheckhi,xchecklo,attrckhi,attrcklo;
+           character xmodulhi,xmodullo,attrmodhi,attrmodlo;
+           character key;  !, readattrlayout;
+           short integer xdim, xlanguage, xextident;
+           short integer xtagnum;
+           short integer xftag;
+           short integer p;
+           ref(inbytefile) CURF;
+           ref(outbytefile) AOF;
+           ref(idpack) xhidlist;
+           ref(symbolbox) xident;
+           ref(quantity) mainqnt;
+           text xidentstring;
+           text attrbuffer;
+
+           procedure wrongLayout; ! - on current input attr file ;
+           begin diag(0):-CURF.filename; COMMONerror(308) end;
+
+           procedure openattributefile(q); ref(quantity) q;
+           !*** returns: moduleident in attrmodhi,lo and in simsymbol,
+                         checkcode   in attrckhi,lo ;
+           begin text t,id,xid,simsepmod; short integer firstbufsize;
+                 inspect q do begin
+                    id :-symb.symbol;
+                    xid:-getBox(virtno).symbol;
+                    if id="_predefmodule" then t:-copy(predefname)
+%+Z            else if id="simset" and then (xid="!63!" or xid=notext)
+%+Z                 then t:-copy(simsetname)
+%+Z            else if id="simulation" and (xid="!63!" or xid=notext)
+%+Z                 then t:-copy(simulaname)
+                    else begin
+                       givetextinfo(2,id);
+                       givetextinfo(3,if xid="!63!"
+                                      then notext else xid);
+                       t:-gettextinfo(12);
+                    end;
+                 end otherwise t:-attrfilename;
+                 inspect new inbytefile(t) do begin
+                    setaccess("%nobuffer");
+                    if not open then begin diag(0):-t; COMMONerror(336) end;
+                    CURF:-this inbytefile;
+%                   readattrlayout:=inbyte;
+%                   if readattrlayout <>layoutindex
+                    if char(inbyte) <> layoutindex
+                    then wrongLayout;
+                    firstbufsize:=in2byte;
+                    intext(attrbuffer.sub(1,firstbufsize));
+                 end;
+                 !must start "S-port 108.1x" where 'x' is layout index;
+                 if attrbuffer.sub(1,7) <> "S-port " then wrongLayout;
+                 sysattrfile:=loadchar(attrbuffer,10) = ':';
+%                readattrlayout:=loadchar(attrbuffer,12); p:=13;
+                                                          p:=12;
+                 gettext; DEFCONST;
+                 attrckhi:=hashhi; attrcklo:=hashlo;
+                 gettext; DEFCONST;
+                 attrmodhi:=hashhi; attrmodlo:=hashlo;
+          end openattrfile;
+
+
+%+PQ      prior
+          procedure gettext;
+          begin short integer tlength;
+          REP:  nextKey;
+                if key < lowkey then begin
+                   simsymbol:-attrbuffer.sub(p+1,rank(key));
+                   p:=p+rank(key);
+% D                if p > bufsize then internerr('!7!',sourceline);
+%+D                if key > '!40!' then inspect sysout do begin
+%+D                   outtext("???"); outimage end;
+                end
+                else ! if key >= lowkey then ; begin
+% impossible       if key = bufSwap then begin
+% impossible          swapIbuffer; goto REP end;
+                   if key=longText then begin
+                      tlength:=nextNumber;
+                      simsymbol:-attrbuffer.sub(p+1,tlength);
+                      p:=p+tlength;
+% D                   if p > bufsize then internerr('!7!',sourceline);
+                   end
+              else if key=longSwap then begin
+%-Z %IMPLNONE OFF
+                    inspect CURF do begin
+                      tlength:=nextNumber; simsymbol:-blanks(tlength);
+                      simsymbol:-intext(simsymbol);
+                      tlength:=inbyte*256 + inbyte;
+                      intext(attrbuffer.sub(1,tlength)); p:=0;
+                   end end
+                   else wrongLayout;
+                end;
+          end;
+
+          procedure swapIbuffer;
+          begin short integer bufsize;
+                xidentstring:-copy(xidentstring);
+                !*** because it is buf.sub ***;
+%-Z %IMPLNONE OFF
+                inspect CURF do begin
+                   if endfile then begin
+                      diag(0):-filename; COMMONerror(307) end;
+                   bufsize:=nextNumber;
+                   intext(attrbuffer.sub(1,bufsize)); p:=0;
+                end;
+          end;
+
+%+PQ      prior
+          procedure nextKey;
+          begin REP: key:=loadchar(attrbuffer,p); p:=p+1;
+                if key = bufSwap then begin
+                   swapIbuffer; goto REP end;
+          end;
+
+%+PQ      prior
+          short integer procedure nextNumber;
+          begin nextNumber:=rank(loadchar(attrbuffer,p  ))*256 +
+                            rank(loadchar(attrbuffer,p+1)); p:=p+2;
+          end;
+
+%+Z       text procedure nextitemoft;
+%+Z       begin short integer i,j;
+%+Z             while permt.more do if permt.getchar <> ' ' then goto ubl;
+%+Z             nextitemoft:-notext; goto E;
+%+Z        ubl: i:=permt.pos-1; j:=1;
+%+Z             while permt.more
+%+Z             do if permt.getchar=' ' then goto bl else j:=j+1;
+%+Z         bl: nextitemoft:-permt.sub(i,j);
+%+Z             if permt.sub(i,j) = "*" then nextitemoft:-notext;
+%+Z   E:  end of nextitemoft;
+%title ********   procedure  FETCHQUANT   *******
+
+%      Read one quantity-description from attribute file.
+%      The result is true if the quantity-identifier did occur in source
+%      or if the force-mark is read.
+%      The resulting descriptor is stored in the "x-variables".
+%      Since the procedure is called both from normal- and from
+%      recompattrfile, all direct reading must be done from CURF
+
+%+PQ  prior
+      boolean procedure fetchquant;
+      begin boolean seen;
+%+D         boolean forced;
+            character nxtc;
+            character t0,tn;
+            ref(idpack) cvis;
+            text t;
+
+%+S         Freq(70):=Freq(70)+1;
+%+D         forced:=
+            fetchquant:=xthisused:=xhascode:=false;
+            xftag:=xdim:=xlanguage:=xextident:=0;
+            xprotect:=
+            xspecial:=xconnests:=xarrhi:=xarrlo:=
+            xcheckhi:=xchecklo:=xmodulhi:=xmodullo:=
+            xprefqhi:=xprefqlo:=
+            xinrtag:=xlongindic:=NUL;
+            xhidlist:-none;
+%           xprefqbox:-none;
+
+            xcateg:=key;
+            if xcateg >= '!8!' then begin !*** not simple;
+               xkind:=char(rank(key)//8);
+               xcateg:=char(mod(rank(key),8));
+            end else xkind:=NUL;
+
+            xtype:= loadchar(attrbuffer,p); p:=p+1;
+            if xtype >= '!128!'  then begin !*** prefix;
+               xtype:=char(rank(xtype)-128);
+               key:=loadchar(attrbuffer,p);
+               simsymbol:-attrbuffer.sub(p+2,rank(key)); DEFIDENT;
+               p:=p+1+rank(key);
+               xprefqhi:=hashhi; xprefqlo:=hashlo;
+            end;
+
+            xclf := loadchar(attrbuffer,p); p:=p+1;
+
+            if xclf>='!128!' then begin !*** procedure parameter;
+%+D            forced:=
+                       fetchquant:=true;
+               xclf:=char(rank(xclf)-128);
+               if sysattrfile then  !no proc param tags;
+               else xftag:=nextNumber-1;
+               goto SETDID;
+            end;
+
+            xftag:=nextNumber-1;
+
+            key:=loadchar(attrbuffer,p); p:=p+1;
+            if key<>NUL then begin
+               simsymbol:-xidentstring:-attrbuffer.sub(p+1,rank(key));
+               p:=p+rank(key);
+               if xkind=K_class then begin
+                  if xclf=Clf004 or xclf=Clf009 then xhasCode:=true;
+                             !system class has code always;
+%+D               forced:=true;
+                  DEFIDENT; goto SETID end;
+               if LOOKUPid then begin
+                  !*** true if identifier referenced in source module ;
+%+D               seen:=true;
+      SETID:      fetchquant:=true; xident:-boxof(hashhi,hashlo);
+               end
+               else begin xident:-none; ! fetchquant:= false; end;
+            end else
+      SETDID:     xident:-dummybox; !xidentstring unch.;
+
+  CHCKMARK: key:=loadchar(attrbuffer,p); p:=p+1;
+            if key>=lowkey then begin
+               switch(lowkey:hikey) key  begin
+               when forcMark do begin !*** force creation ***;
+%+D               forced:=
+                          fetchquant:=true;
+                  goto CHCKMARK;
+               end;
+
+               when protMark do begin !*** force creation ***;
+                  xprotect:=loadchar(attrbuffer,p); p:=p+1;
+                  goto CHCKMARK;
+               end;
+
+               when dimMark do begin !*** dim ***;
+                  xdim:=rank(loadchar(attrbuffer,p)); p:=p+1;
+                  goto CHCKMARK;
+               end;
+
+               when overMark do begin !*** overloaded ***;
+                  xlongindic:=loadchar(attrbuffer,p); p:=p+1;
+                  goto CHCKMARK;
+                  end;
+
+               when specMark do begin !*** special ***;
+                  if xkind=K_rep then begin
+                     xlanguage:=nextNumber; xextident:=nextNumber;
+                     goto CHCKMARK;
+                  end;
+                  xspecial:=loadchar(attrbuffer,p); p:=p+1;
+                  if xspecial > '!128!' then begin
+                     xspecial:=char(rank(xspecial)-128);
+                     xarrlo:=loadchar(attrbuffer,p); p:=p+1 end
+                  else begin
+           GETARR:   gettext; DEFCONST;
+                     xarrhi:=hashhi; xarrlo:=hashlo end;
+                  goto CHCKMARK;
+               end;
+
+               when xMark do begin
+                       ! moduleid: never notext when of interest;
+                  gettext; DEFCONST;
+                  xmodulhi:=hashhi; xmodullo:=hashlo;
+                       ! checkcode: never notext when of interest;
+                  gettext; DEFCONST;
+                  xcheckhi:=hashhi; xchecklo:=hashlo;
+     xyMark:   ! language: zero if no language (i.e. SIMULA for main);
+                  gettext; DEFIDENT;
+                  xlanguage:=rank(hashhi)*256+rank(hashlo);
+                       ! extident: DEFCONST("?") if no extident;
+                  gettext; DEFCONST;
+                  xextident:=rank(hashhi)*256+rank(hashlo);
+                  goto CHCKMARK;
+               end;
+
+               when yMark do begin
+                  goto xyMark;
+               end;
+
+               when nestMark do begin !*** for/connect vars ;
+                  xconnests:=loadchar(attrbuffer,p); p:=p+1;
+                  goto CHCKMARK;
+               end;
+
+               when thisMark do begin !*** inr, hasCode, thisused ;
+                  nxtc:=loadchar(attrbuffer,p); p:=p+1;
+                  if nxtc >= '!64!' then begin
+                     xthisused:=true; nxtc:=char(rank(nxtc)-64) end;
+                  if nxtc >= '!32!' then begin
+                     xhasCode :=true; nxtc:=char(rank(nxtc)-32); end;
+                ! if nxtc <> '!00!' then xinrtag:='!2!';
+                  xinrtag:=nxtc; !NOTE - also isGlobal !!!;
+                  goto CHCKMARK;
+               end;
+
+               when bufSwap do begin !*** buffer swap ;
+                  swapIbuffer; goto CHCKMARK;
+               end;
+
+               when hidMark do begin !*** hidden list;
+                  cvis:-xhidlist:-new idpack;
+                  while key=hidmark do begin
+                     cvis:-cvis.next:-new idpack;
+                     gettext; DEFIDENT;
+                     cvis.idhi:=hashhi; cvis.idlo:=hashlo;
+                     cvis.line:=1; !*** must be non-zero;
+                     nextKey;
+                  end hidmarks;
+                  xhidlist:-xhidlist.next;
+                  ! goto NOMORE;
+               end;
+
+               when NONE do
+                  ! goto NOMORE; ;;
+
+               end case;
+            end key>=lowkey;
+
+     NOMORE: !*** next key has been read ***;
+%+E         if option(rank('E'))<>NUL then inspect sysout do begin
+%+E            outint(rank(key),3);
+%+E            outtext(" ...fetch");
+%+E            outtext(if seen then "(ref'd) "
+%+E                    else if forced then "(force) " else "(unkwn) ");
+%+E            outtext( xidentstring &
+%+E                    " " & K_code(Xkind) & "/" & C_code(xcateg) &
+%+E                    "/" & Cl_code(xclf) & "/" & db(rank(xtype)) );
+%+E            if xprefqhi<>NUL or xprefqlo<>NUL
+%+E            then outtext("(" & nameOf(xprefqhi,xprefqlo) & ")" );
+%+E            if xlongindic<>NUL then begin
+%+E               outtext(", lin:"); outint(rank(xlongindic),2); end;
+%+E            if xprotect='!1!' then outtext(" P"); outimage;
+%+E            if xhidlist=/=none then begin cvis:-xhidlist;
+%+E               while cvis=/=none do begin  outtext("    HIDDEN: ");
+%+E                  cvis.dump; cvis:-cvis.next end;
+%+E            end;
+%+E         end;
+      end fetchquant;
+
+      end class attrfile;
+
+%     INSERT $SIMSRC/fec/normalattr
+
+     ! ******************************************* ;
+     procedure StandardException;
+       DEFEXCEPTION(EXCEPTION_HANDLER,EXC_NUMBER);
+     ! ******************************************* ;
+
+       if false then begin
+     EXCEPTION_HANDLER:
+          outimage;
+          if EXC_NUMBER = 22 or else EXC_NUMBER = 31 or else
+             EXC_NUMBER = 32 
+           ! ********   REFER TO RTS ERROR NUMBERS   *********** ;
+
+          then begin
+          !*** NOTE: we cannot call any procedures from here, all that
+                     may be done is to print a message on SYSOUT!!!;
+               outtext("*** NOT ENOUGH STORAGE AVAILABLE ***");
+               terminate_program; ! CANNOT STOP IN ANY OTHER WAY! ;
+          end;
+          COMMONerror(-EXC_NUMBER);
+       end;
+
+       giveIntInfo(1,6);   !*** prepare fatal error/abort ***;
+       StandardException;
+
+ end class COMMON;

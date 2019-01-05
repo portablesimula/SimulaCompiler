@@ -1,0 +1,38 @@
+begin
+   character c;
+   integer i,p;
+   real r,s;
+   Text T,U;
+ 
+   Outimage; Outtext("*** Putfix,Putreal,Getreal test case:"); Outimage;
+ 
+   for c:='e','t','&' do
+   begin lowten(c);
+ 
+      decimalmark('.'); T:-blanks(12); T.Putfix(3.14,2);
+      decimalmark(','); U:-blanks(12); U.Putfix(3.14,2);
+ 
+      Outtext("T=]" & T & "["); outimage;
+      Outtext("U=]" & U & "["); outimage;
+
+      decimalmark('.'); T.setpos(1); r:=T.getreal; U.setpos(1); s:=U.getreal;
+      Outtext("T="); outreal(r,3,12); outtext(", "); outreal(s,3,12); outimage;
+
+      decimalmark(','); T.setpos(1); r:=T.getreal; U.setpos(1); s:=U.getreal;
+      Outtext("T="); outreal(r,3,12); outtext(", "); outreal(s,3,12); outimage;
+
+   end;
+ 
+ 
+   Outimage; Outtext("*** Getfrac,Putfrac test case:"); Outimage;
+ 
+   for c:=',','.' do
+   begin
+      decimalmark(c);
+      T:-copy("34 678 89.23"); U:-blanks(12);
+      i := T.getfrac;
+      U.setpos(1); U.putfrac(i,3);
+
+      Outtext("T=" & T & ", getfrac="); outint(i,0); outtext(", putfrac=" & U); outimage;
+   end; 
+end;

@@ -23,6 +23,7 @@ public class SimulaEditor extends JFrame {
 
     private static final long serialVersionUID = 1L;
     public static boolean RENDER_LINE_NUMBERS=true;
+    public static boolean AUTO_REFRESH=false;
     public static final ImageIcon simulaIcon = new ImageIcon("icons/sim2.png");
     
     JTabbedPane tabbedPane; 
@@ -103,7 +104,7 @@ public class SimulaEditor extends JFrame {
         splitPane1.setDividerLocation(topHeight);
         getContentPane().add(splitPane1);
 
-//        new Refresher().start();
+        new Refresher().start();
 
         // Set the Menus
         JMenuItem aboutMenu = new JMenuItem("About");
@@ -165,11 +166,13 @@ public class SimulaEditor extends JFrame {
 		public void run() {
 			while(!stop) {
 				try {sleep(1000); } catch(InterruptedException e) {}
+				try {
 				SourceTextPanel current=getCurrentTextPanel();
-				if(current.refreshNeeded) {
+				if(AUTO_REFRESH && current!=null && current.refreshNeeded) {
 					current.refreshNeeded=false;
 					current.doRefresh();
 				}
+				} catch(Throwable t) {}
 			}
 		}
 	}

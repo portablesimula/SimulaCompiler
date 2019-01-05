@@ -24,24 +24,24 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass typeText=new StandardClass("TXT");
   static // Define attribute procedures to Type TXT
   {	typeText.isContextFree=true;
-	typeText.addStandardProcedure(Type.Boolean,"constant");  
-  	typeText.addStandardProcedure(Type.Integer,"start");  
-  	typeText.addStandardProcedure(Type.Integer,"length");  
-  	typeText.addStandardProcedure(Type.Text,"main");  
-  	typeText.addStandardProcedure(Type.Integer,"pos");  
-  	typeText.addStandardProcedure(null,"setpos",parameter("i",Type.Integer));  
-  	typeText.addStandardProcedure(Type.Boolean,"more");  
-  	typeText.addStandardProcedure(Type.Character,"getchar");  
-  	typeText.addStandardProcedure(null,"putchar",parameter("c",Type.Character));  
-  	typeText.addStandardProcedure(Type.Text,"sub",parameter("i",Type.Integer),parameter("n",Type.Integer));  
-  	typeText.addStandardProcedure(Type.Text,"strip");  
-  	typeText.addStandardProcedure(Type.Integer,"getint");  
-  	typeText.addStandardProcedure(Type.LongReal,"getreal");  
-  	typeText.addStandardProcedure(Type.Integer,"getfrac");  
-  	typeText.addStandardProcedure(null,"putint",parameter("i",Type.Integer));  
-  	typeText.addStandardProcedure(null,"putfrac",parameter("i",Type.Integer),parameter("n",Type.Integer));  
-    typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
-    typeText.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"putreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
+	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"constant");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"start");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"length");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"main");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"pos");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,null,"setpos",parameter("i",Type.Integer));  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"more");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Character,"getchar");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,null,"putchar",parameter("c",Type.Character));  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"sub",parameter("i",Type.Integer),parameter("n",Type.Integer));  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"strip");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"getint");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.LongReal,"getreal");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"getfrac");  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,null,"putint",parameter("i",Type.Integer));  
+  	typeText.addStandardProcedure(BlockKind.MemberMethod,null,"putfrac",parameter("i",Type.Integer),parameter("n",Type.Integer));  
+    typeText.addStandardProcedure(BlockKind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"putfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
+    typeText.addStandardProcedure(BlockKind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"putreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer)); 
   }
   
   // ******************************************************************
@@ -61,11 +61,11 @@ public final class StandardClass extends ClassDeclaration
   static
   { UNIVERSE.addStandardClass(RTObject); // Declared in UNIVERSE
     RTObject.isContextFree=true;
-//    RTObject.addStandardProcedure(null,"detach");
-//    RTObject.addStandardProcedure(null,"call",parameter("obj",Type.Ref("RTObject")));
-//    RTObject.addStandardProcedure(null,"resume",parameter("obj",Type.Ref("RTObject")));
-    RTObject.addStandardProcedure(Type.Text,"objectTraceIdentifier");
-    RTObject.addStandardProcedure(Type.Text,"waitSomeTime",parameter("millies",Type.Integer));
+//    RTObject.addStandardProcedure(BlockKind.MemberMethod,null,"detach");
+//    RTObject.addStandardProcedure(BlockKind.MemberMethod,null,"call",parameter("obj",Type.Ref("RTObject")));
+//    RTObject.addStandardProcedure(BlockKind.MemberMethod,null,"resume",parameter("obj",Type.Ref("RTObject")));
+    RTObject.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"objectTraceIdentifier");
+    RTObject.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"waitSomeTime",parameter("millies",Type.Integer));
   }
   
   // ******************************************************************
@@ -93,38 +93,38 @@ public final class StandardClass extends ClassDeclaration
     ENVIRONMENT.addStandardAttribute(Type.Integer,"maxint");  
     ENVIRONMENT.addStandardAttribute(Type.Integer,"minint");  
 //    ENVIRONMENT.addStandardAttribute(Type.Text,"simulaid");
-    ENVIRONMENT.addStandardProcedure(Type.Text,"simulaid");
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"sourceline");
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"simulaid");
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"sourceline");
     
 //    Basic operations ........................................ 9.1
 //    Procedures mod, rem, abs, sign, entier,
 //      addepsilon, subepsilon.
     
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"mod",parameter("i",Type.Integer),parameter("j",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"rem",parameter("i",Type.Integer),parameter("j",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"abs",parameter("e",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"sign",parameter("e",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"entier",parameter("e",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"addepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
-    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"subepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"mod",parameter("i",Type.Integer),parameter("j",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"rem",parameter("i",Type.Integer),parameter("j",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"abs",parameter("e",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"sign",parameter("e",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"entier",parameter("e",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,new OverLoad(Type.Real,Type.LongReal),"addepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,new OverLoad(Type.Real,Type.LongReal),"subepsilon",parameter("e",new OverLoad(Type.Real,Type.LongReal)));
 
 //    Text utilities .......................................... 9.2
 //    Procedures copy, blanks, char, isochar, rank, isorank,
 //      digit, letter, lowten, decimalmark, upcase, lowcase.
 
-    ENVIRONMENT.addStandardProcedure(Type.Text,"copy",parameter("T",Parameter.Mode.value,Type.Text));
-    ENVIRONMENT.addStandardProcedure(Type.Text,"blanks",parameter("n",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Character,"Char",parameter("n",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Character,"char$",parameter("n",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Character,"isochar",parameter("n",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"rank",parameter("c",Type.Character));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"isorank",parameter("c",Type.Character));
-    ENVIRONMENT.addStandardProcedure(Type.Boolean,"digit",parameter("c",Type.Character));
-    ENVIRONMENT.addStandardProcedure(Type.Boolean,"letter",parameter("c",Type.Character));
-    ENVIRONMENT.addStandardProcedure(Type.Character,"lowten",parameter("c",Type.Character));
-    ENVIRONMENT.addStandardProcedure(Type.Character,"decimalmark",parameter("c",Type.Character));
-    ENVIRONMENT.addStandardProcedure(Type.Text,"upcase",parameter("t",Type.Text));
-    ENVIRONMENT.addStandardProcedure(Type.Text,"lowcase",parameter("t",Type.Text));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"copy",parameter("T",Parameter.Mode.value,Type.Text));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"blanks",parameter("n",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Character,"Char",parameter("n",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Character,"char$",parameter("n",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Character,"isochar",parameter("n",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"rank",parameter("c",Type.Character));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"isorank",parameter("c",Type.Character));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Boolean,"digit",parameter("c",Type.Character));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Boolean,"letter",parameter("c",Type.Character));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Character,"lowten",parameter("c",Type.Character));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Character,"decimalmark",parameter("c",Type.Character));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"upcase",parameter("t",Type.Text));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"lowcase",parameter("t",Type.Text));
     
 //    Scheduling .............................................. 9.3
 //    Procedures call (7.3.2), resume (7.3.3).
@@ -133,74 +133,91 @@ public final class StandardClass extends ClassDeclaration
 //    Procedures sqrt, sin, cos, tan, cotan, arcsin, arccos,
 //      arctan, arctan2, sinh, cosh, tanh, ln, log10, exp.
 
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"sqrt",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"sin",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"cos",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"tan",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"cotan",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"arcsin",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"arccos",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"arctan",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"arctan2",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"sinh",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"cosh",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"tanh",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"ln",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"log10",parameter("x",Type.LongReal));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"exp",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"sqrt",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"sin",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"cos",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"tan",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"cotan",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"arcsin",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"arccos",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"arctan",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"arctan2",parameter("x",Type.LongReal),parameter("y",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"sinh",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"cosh",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"tanh",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"ln",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"log10",parameter("x",Type.LongReal));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"exp",parameter("x",Type.LongReal));
 
 //    Extremum functions ...................................... 9.5
 //    Procedures max, min.
 
-    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"min",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
-    ENVIRONMENT.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"max",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,new OverLoad(Type.Real,Type.LongReal),"min",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,new OverLoad(Type.Real,Type.LongReal),"max",parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("y",new OverLoad(Type.Real,Type.LongReal)));
 
 //    Error control ........................................... 9.7
 //    Procedure error.
 
-    ENVIRONMENT.addStandardProcedure(null,"error",parameter("msg",Type.Text));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"error",parameter("msg",Type.Text));
 
     // Array quantities ........................................ 9.8
 //    Procedures upperbound, lowerbound.
 
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"upperbound",parameter("a",null,Parameter.Kind.Array),parameter("i",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"lowerbound",parameter("a",null,Parameter.Kind.Array),parameter("i",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"upperbound",parameter("a",null,Parameter.Kind.Array),parameter("i",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"lowerbound",parameter("a",null,Parameter.Kind.Array),parameter("i",Type.Integer));
 
     // Random drawing .......................................... 9.9
 //    Procedures draw, randint, uniform, normal, negexp,
 //      Poisson, Erlang, discrete, linear, histd.
 
-    ENVIRONMENT.addStandardProcedure(Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
 
 //    Calendar and timing utilities ........................... 9.10
 //    Procedures datetime, cputime, clocktime.
 
-    ENVIRONMENT.addStandardProcedure(Type.Text,"datetime");
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"cputime");
-    ENVIRONMENT.addStandardProcedure(Type.LongReal,"clocktime");
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"datetime");
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"cputime");
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"clocktime");
     
 //    Miscellaneous utilities ................................. 9.11
 //    Procedure histo.
 
-    ENVIRONMENT.addStandardProcedure(null,"histo",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("B",Type.Real,Parameter.Kind.Array,1)
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"histo",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("B",Type.Real,Parameter.Kind.Array,1)
     		                                     ,parameter("c",Type.Real),parameter("d",Type.Real));
-//    ENVIRONMENT.addStandardProcedure(Type.Text,"objectTraceIdentifier");
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"objectTraceIdentifier");
 
     // **************************************
     // *** Additional Standard Procedures ***
     // **************************************
-    ENVIRONMENT.addStandardProcedure(Type.Boolean,"setSeed",parameter("seed",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(null,"waitSomeTime",parameter("millies",Type.Integer)); 
-    ENVIRONMENT.addStandardProcedure(null,"printThreadList",parameter("withStackTrace",Type.Boolean));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Boolean,"setSeed",parameter("seed",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"waitSomeTime",parameter("millies",Type.Integer)); 
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"printThreadList",parameter("withStackTrace",Type.Boolean));
+
+    // **************************************
+    // *** Additional S-Port Procedures   ***
+    // **************************************
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"DEFEXCEPTION",parameter("erh",Type.Label),parameter("eno",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Character,"loadChar",parameter("t",Type.Text),parameter("i",Type.Integer)); 
+    
+    // storechar(EOL,line,linlen);
+    //ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"storeChar",parameter("t",Type.Text),parameter("i",Type.Integer),parameter("c",Type.Character)); 
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"storeChar",parameter("c",Type.Character),parameter("t",Type.Text),parameter("i",Type.Integer)); 
+
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Text,"getTextInfo",parameter("i",Type.Integer)); 
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"giveTextInfo",parameter("i",Type.Integer),parameter("t",Type.Text)); 
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"getIntInfo",parameter("i",Type.Integer)); 
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"giveIntInfo",parameter("i",Type.Integer),parameter("val",Type.Integer)); 
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"rts_utility",parameter("index",Type.Integer),parameter("level",Type.Integer)); 
     
   }
   
@@ -243,12 +260,12 @@ public final class StandardClass extends ClassDeclaration
   static
   { ENVIRONMENT.addStandardClass(BASICIO); // Declared in ENVIRONMENT
     BASICIO.isContextFree=true;
-    BASICIO.addStandardProcedure(Type.Ref("InFile"),"sysin");  
-	BASICIO.addStandardProcedure(Type.Ref("PrintFile"),"sysout");  
-	BASICIO.addStandardProcedure(null,"terminate_program");  
-//	BASICIO.addStandardProcedure(null,"detach");
-	BASICIO.addStandardProcedure(null,"call",parameter("obj",Type.Ref("RTObject")));
-	BASICIO.addStandardProcedure(null,"resume",parameter("obj",Type.Ref("RTObject")));
+    BASICIO.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("InFile"),"sysin");  
+	BASICIO.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("PrintFile"),"sysout");  
+	BASICIO.addStandardProcedure(BlockKind.MemberMethod,null,"terminate_program");  
+//	BASICIO.addStandardProcedure(BlockKind.MemberMethod,null,"detach");
+	BASICIO.addStandardProcedure(BlockKind.MemberMethod,null,"call",parameter("obj",Type.Ref("RTObject")));
+	BASICIO.addStandardProcedure(BlockKind.MemberMethod,null,"resume",parameter("obj",Type.Ref("RTObject")));
   }
 
   // ******************************************************************
@@ -270,7 +287,7 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass CLASS=new StandardClass("RTObject","CLASS");  // CORR-PREFIX
   static
   { ENVIRONMENT.addStandardClass(CLASS);  // Declared in ENVIRONMENT
-	CLASS.addStandardProcedure(null,"detach");
+	CLASS.addStandardProcedure(BlockKind.MemberMethod,null,"detach");
   }
   
   // ******************************************************************
@@ -285,14 +302,14 @@ public final class StandardClass extends ClassDeclaration
   //  
   //     if FILENAME_ = notext then error("Illegal File Name");
   //  end FILE_;      
-  public static StandardClass FILE=new StandardClass("RTObject","FILE",parameter("FILENAME",Type.Text));
+  public static StandardClass FILE=new StandardClass("RTObject","FILE",parameter("FILENAME$",Type.Text));
   static
   { BASICIO.addStandardClass(FILE);  // Declared in BASICIO
     //FILE.isContextFree=true;
     FILE.addStandardAttribute(Type.Boolean,"OPEN$");  
-    FILE.addStandardProcedure(Type.Text,"filename");
-    FILE.addStandardProcedure(Type.Boolean,"isopen");
-    FILE.addStandardProcedure(Type.Boolean,"setaccess",parameter("mode",Type.Text));  
+    FILE.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"filename");
+    FILE.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"isopen");
+    FILE.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"setaccess",parameter("mode",Type.Text));  
   }  
   // ******************************************************************
   // *** The Standard FILE Class ImageFile
@@ -309,10 +326,10 @@ public final class StandardClass extends ClassDeclaration
   { BASICIO.addStandardClass(ImageFile);  // Declared in BASICIO
     //ImageFile.isContextFree=true;
     ImageFile.addStandardAttribute(Type.Text,"image");  
-    ImageFile.addStandardProcedure(null,"setpos",parameter("i",Type.Integer));  
-    ImageFile.addStandardProcedure(Type.Integer,"pos");  
-    ImageFile.addStandardProcedure(Type.Boolean,"more");  
-    ImageFile.addStandardProcedure(Type.Integer,"length");   
+    ImageFile.addStandardProcedure(BlockKind.MemberMethod,null,"setpos",parameter("i",Type.Integer));  
+    ImageFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"pos");  
+    ImageFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"more");  
+    ImageFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"length");   
   }  
   // ******************************************************************
   // *** The Standard ImageFile Class InFile
@@ -339,17 +356,17 @@ public final class StandardClass extends ClassDeclaration
   { BASICIO.addStandardClass(InFile);  // Declared in BASICIO
     //InFile.isContextFree=true;
     InFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
-    InFile.addStandardProcedure(Type.Boolean,"endfile");  
-    InFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
-    InFile.addStandardProcedure(Type.Boolean,"close");  
-    InFile.addStandardProcedure(null,"inimage");  
-    InFile.addStandardProcedure(Type.Boolean,"inrecord");  
-    InFile.addStandardProcedure(Type.Character,"inchar");  
-    InFile.addStandardProcedure(Type.Boolean,"lastitem");  
-    InFile.addStandardProcedure(Type.Text,"intext",parameter("w",Type.Integer));  
-    InFile.addStandardProcedure(Type.Integer,"inint");  
-    InFile.addStandardProcedure(Type.LongReal,"inreal");  
-    InFile.addStandardProcedure(Type.Integer,"infrac");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"endfile");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,null,"inimage");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"inrecord");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Character,"inchar");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"lastitem");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"intext",parameter("w",Type.Integer));  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"inint");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.LongReal,"inreal");  
+    InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"infrac");  
   }  
   // ******************************************************************
   // *** The Standard ImageFile Class OutFile
@@ -376,19 +393,19 @@ public final class StandardClass extends ClassDeclaration
   static
   { BASICIO.addStandardClass(OutFile);  // Declared in BASICIO
     //OutFile.isContextFree=true;
-    OutFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
-    OutFile.addStandardProcedure(Type.Boolean,"close");  
-    OutFile.addStandardProcedure(null,"outimage");  
-    OutFile.addStandardProcedure(null,"outrecord");  
-    OutFile.addStandardProcedure(null,"breakoutimage");  
-    OutFile.addStandardProcedure(Type.Boolean,"checkpoint");  
-    OutFile.addStandardProcedure(null,"outchar",parameter("c",Type.Character));  
-    OutFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));  
-    OutFile.addStandardProcedure(Type.Text,"FIELD_",parameter("w",Type.Integer));  
-    OutFile.addStandardProcedure(null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
-    OutFile.addStandardProcedure(null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-    OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-    OutFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"outimage");  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"outrecord");  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"breakoutimage");  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"checkpoint");  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"outchar",parameter("c",Type.Character));  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    OutFile.addStandardProcedure(BlockKind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
   }  
   
   // ******************************************************************
@@ -435,33 +452,33 @@ public final class StandardClass extends ClassDeclaration
     DirectFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
     DirectFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
     DirectFile.addStandardAttribute(Type.Boolean,"LOCKED_");  
-    DirectFile.addStandardProcedure(Type.Integer,"location");  
-    DirectFile.addStandardProcedure(Type.Boolean,"endfile");  
-    DirectFile.addStandardProcedure(Type.Boolean,"locked");  
-    DirectFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
-    DirectFile.addStandardProcedure(Type.Boolean,"close");      
-    DirectFile.addStandardProcedure(Type.Integer,"lastloc");  
-    DirectFile.addStandardProcedure(Type.Integer,"maxloc");  
-    DirectFile.addStandardProcedure(null,"locate",parameter("i",Type.Integer));  
-    DirectFile.addStandardProcedure(null,"inimage");  
-    DirectFile.addStandardProcedure(null,"outimage");  
-    DirectFile.addStandardProcedure(Type.Boolean,"deleteimage");  
-    DirectFile.addStandardProcedure(Type.Character,"inchar");  
-    DirectFile.addStandardProcedure(Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
-    DirectFile.addStandardProcedure(Type.Boolean,"unlock");  
-    DirectFile.addStandardProcedure(Type.Boolean,"checkpoint");  
-    DirectFile.addStandardProcedure(Type.Boolean,"lastitem");  
-    DirectFile.addStandardProcedure(Type.Text,"intext",parameter("w",Type.Integer));  
-    DirectFile.addStandardProcedure(Type.Integer,"inint");  
-    DirectFile.addStandardProcedure(Type.LongReal,"inreal");  
-    DirectFile.addStandardProcedure(Type.Integer,"infrac");  
-    DirectFile.addStandardProcedure(null,"outchar",parameter("c",Type.Character));  
-    DirectFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));   
-    DirectFile.addStandardProcedure(Type.Text,"FIELD_",parameter("w",Type.Integer));  
-    DirectFile.addStandardProcedure(null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
-    DirectFile.addStandardProcedure(null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-    DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-    DirectFile.addStandardProcedure(new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"location");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"endfile");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"locked");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");      
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"lastloc");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"maxloc");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,null,"locate",parameter("i",Type.Integer));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,null,"inimage");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,null,"outimage");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"deleteimage");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Character,"inchar");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"unlock");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"checkpoint");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"lastitem");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"intext",parameter("w",Type.Integer));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"inint");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.LongReal,"inreal");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"infrac");  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,null,"outchar",parameter("c",Type.Character));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,null,"outtext",parameter("t",Type.Text));   
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+    DirectFile.addStandardProcedure(BlockKind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
   }  
   
   // ******************************************************************
@@ -491,15 +508,15 @@ public final class StandardClass extends ClassDeclaration
     PrintFile.addStandardAttribute(Type.Integer,"LINES_PER_PAGE_");  
     PrintFile.addStandardAttribute(Type.Integer,"SPACING_");  
     PrintFile.addStandardAttribute(Type.Integer,"PAGE_");  
-    PrintFile.addStandardProcedure(Type.Integer,"line"); 
-    PrintFile.addStandardProcedure(Type.Integer,"page");  
-    PrintFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
-    PrintFile.addStandardProcedure(Type.Boolean,"close");  
-    PrintFile.addStandardProcedure(Type.Integer,"linesperpage",parameter("n",Type.Integer));  
-    PrintFile.addStandardProcedure(null,"spacing",parameter("n",Type.Integer));  
-    PrintFile.addStandardProcedure(null,"eject",parameter("n",Type.Integer));  
-    PrintFile.addStandardProcedure(null,"outimage");  
-    PrintFile.addStandardProcedure(null,"outrecord");  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"line"); 
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"page");  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"linesperpage",parameter("n",Type.Integer));  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,null,"spacing",parameter("n",Type.Integer));  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,null,"eject",parameter("n",Type.Integer));  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,null,"outimage");  
+    PrintFile.addStandardProcedure(BlockKind.MemberMethod,null,"outrecord");  
   }  
   // ******************************************************************
   // *** The Standard FILE Class ByteFile
@@ -514,7 +531,7 @@ public final class StandardClass extends ClassDeclaration
   { BASICIO.addStandardClass(ByteFile);  // Declared in BASICIO
     //ByteFile.isContextFree=true;
     ByteFile.addStandardAttribute(Type.Integer,"BYTESIZE_");  
-    ByteFile.addStandardProcedure(Type.Integer,"bytesize");  
+    ByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"bytesize");  
   }  
   // ******************************************************************
   // *** The Standard ByteFile Class InbyteFile
@@ -535,11 +552,12 @@ public final class StandardClass extends ClassDeclaration
   { BASICIO.addStandardClass(InbyteFile);  // Declared in BASICIO
     //InbyteFile.isContextFree=true;
     InbyteFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
-    InbyteFile.addStandardProcedure(Type.Boolean,"endfile");  
-    InbyteFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
-    InbyteFile.addStandardProcedure(Type.Boolean,"close");  
-    InbyteFile.addStandardProcedure(Type.Integer,"inbyte");  
-    InbyteFile.addStandardProcedure(Type.Text,"intext",parameter("t",Type.Text));  
+    InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"endfile");  
+    InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+    InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");  
+    InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"inbyte");  
+    InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"in2byte");  // TODO: Extension to Simula Standard
+    InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
   }  
   // ******************************************************************
   // *** The Standard ByteFile Class OutbyteFile
@@ -557,11 +575,11 @@ public final class StandardClass extends ClassDeclaration
   static
   { BASICIO.addStandardClass(OutbyteFile);
     //OutbyteFile.isContextFree=true;
-    OutbyteFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
-    OutbyteFile.addStandardProcedure(Type.Boolean,"close");  
-    OutbyteFile.addStandardProcedure(null,"outbyte",parameter("x",Type.Integer));   
-    OutbyteFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));  
-    OutbyteFile.addStandardProcedure(Type.Boolean,"checkpoint");  
+    OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+    OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");  
+    OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
+    OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
+    OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"checkpoint");  
   }  
   // ******************************************************************
   // *** The Standard ByteFile Class DirectByteFile
@@ -592,22 +610,22 @@ public final class StandardClass extends ClassDeclaration
     DirectByteFile.addStandardAttribute(Type.Integer,"LOC_");  
     DirectByteFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
     DirectByteFile.addStandardAttribute(Type.Boolean,"LOCKED_");  
-    DirectByteFile.addStandardProcedure(Type.Boolean,"endfile");  
-    DirectByteFile.addStandardProcedure(Type.Integer,"location");  
-    DirectByteFile.addStandardProcedure(Type.Integer,"maxloc");  
-    DirectByteFile.addStandardProcedure(Type.Boolean,"locked");  
-    DirectByteFile.addStandardProcedure(Type.Boolean,"open",parameter("fileimage",Type.Text));  
-    DirectByteFile.addStandardProcedure(Type.Boolean,"close");      
-    DirectByteFile.addStandardProcedure(Type.Integer,"lastloc");  
-    DirectByteFile.addStandardProcedure(null,"locate",parameter("i",Type.Integer));  
-    DirectByteFile.addStandardProcedure(Type.Integer,"inbyte");  
-    DirectByteFile.addStandardProcedure(null,"outbyte",parameter("x",Type.Integer));   
-    DirectByteFile.addStandardProcedure(Type.Boolean,"checkpoint");  
-    DirectByteFile.addStandardProcedure(Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
-    DirectByteFile.addStandardProcedure(Type.Boolean,"unlock");  
-    DirectByteFile.addStandardProcedure(Type.Text,"intext",parameter("t",Type.Text));  
-    DirectByteFile.addStandardProcedure(null,"outtext",parameter("t",Type.Text));  
-    DirectByteFile.addStandardProcedure(Type.Boolean,"checkpoint");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"endfile");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"location");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"maxloc");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"locked");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");      
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"lastloc");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,null,"locate",parameter("i",Type.Integer));  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"inbyte");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"checkpoint");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"unlock");  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
+    DirectByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"checkpoint");  
   }  
   
   // ******************************************************************
@@ -626,9 +644,9 @@ public final class StandardClass extends ClassDeclaration
   { Simset.addStandardClass(Linkage);  // Declared in Simset
 //  ref(link) procedure suc;
 //  ref(link) procedure pred;
-    Linkage.addStandardProcedure(Type.Ref("Link"),"suc");  
-    Linkage.addStandardProcedure(Type.Ref("Link"),"pred");  
-    Linkage.addStandardProcedure(Type.Ref("Linkage"),"prev");  
+    Linkage.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"suc");  
+    Linkage.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"pred");  
+    Linkage.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Linkage"),"prev");  
   }  
   
   // ******************************************************************
@@ -642,11 +660,11 @@ public final class StandardClass extends ClassDeclaration
 //  Boolean procedure empty;
 //  Integer procedure cardinal;
 //  procedure clear;
-    Head.addStandardProcedure(Type.Ref("Link"),"first");  
-    Head.addStandardProcedure(Type.Ref("Link"),"last");  
-    Head.addStandardProcedure(Type.Boolean,"empty");  
-    Head.addStandardProcedure(Type.Integer,"cardinal");  
-    Head.addStandardProcedure(null,"clear");  
+    Head.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"first");  
+    Head.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"last");  
+    Head.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"empty");  
+    Head.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"cardinal");  
+    Head.addStandardProcedure(BlockKind.MemberMethod,null,"clear");  
   }  
   
   // ******************************************************************
@@ -659,10 +677,10 @@ public final class StandardClass extends ClassDeclaration
 //  procedure follow(X); ref(linkage) X;
 //  procedure precede(X); ref(linkage) X;
 //  procedure into(S); ref(head) S;
-    Link.addStandardProcedure(null,"out");  
-    Link.addStandardProcedure(null,"follow",parameter("X",Type.Ref("Linkage")));  
-    Link.addStandardProcedure(null,"precede",parameter("X",Type.Ref("Linkage")));  
-    Link.addStandardProcedure(null,"into",parameter("S",Type.Ref("Head")));  
+    Link.addStandardProcedure(BlockKind.MemberMethod,null,"out");  
+    Link.addStandardProcedure(BlockKind.MemberMethod,null,"follow",parameter("X",Type.Ref("Linkage")));  
+    Link.addStandardProcedure(BlockKind.MemberMethod,null,"precede",parameter("X",Type.Ref("Linkage")));  
+    Link.addStandardProcedure(BlockKind.MemberMethod,null,"into",parameter("S",Type.Ref("Head")));  
   }  
   
   // ******************************************************************
@@ -674,37 +692,37 @@ public final class StandardClass extends ClassDeclaration
     Simulation.detachUsed=true;
     Simulation.addStandardAttribute(Type.Ref("Head"),"SQS");  
     Simulation.addStandardAttribute(Type.Ref("MAIN_PROGRAM"),"main");  
-    Simulation.addStandardProcedure(Type.LongReal,"time");  
-    Simulation.addStandardProcedure(Type.Ref("EVENT_NOTICE"),"FIRSTEV");  
-    Simulation.addStandardProcedure(Type.Ref("Process"),"current");  
-    Simulation.addStandardProcedure(null,"hold",parameter("T",Type.LongReal));  
-    Simulation.addStandardProcedure(null,"passivate");  
-    Simulation.addStandardProcedure(null,"wait",parameter("S",Type.Ref("Head")));  
-    Simulation.addStandardProcedure(null,"cancel",parameter("x",Type.Ref("Process")));  
-    Simulation.addStandardProcedure(null,"accum",parameter("a",Parameter.Mode.name,Type.LongReal),parameter("b",Parameter.Mode.name,Type.LongReal)
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,Type.LongReal,"time");  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("EVENT_NOTICE"),"FIRSTEV");  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Process"),"current");  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"hold",parameter("T",Type.LongReal));  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"passivate");  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"wait",parameter("S",Type.Ref("Head")));  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"cancel",parameter("x",Type.Ref("Process")));  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"accum",parameter("a",Parameter.Mode.name,Type.LongReal),parameter("b",Parameter.Mode.name,Type.LongReal)
             ,parameter("c",Parameter.Mode.name,Type.LongReal),parameter("d",Type.LongReal));    
-    Simulation.addStandardProcedure(null,"ActivateDirect"
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"ActivateDirect"
     		,parameter("REAC",Type.Boolean)
     		,parameter("X",Type.Ref("Process"))
     		);  
-    Simulation.addStandardProcedure(null,"ActivateAt"
-    		,parameter("REAC",Type.Boolean)
-    		,parameter("X",Type.Ref("Process"))
-    		,parameter("T",Type.LongReal)
-    		,parameter("PRIO",Type.Boolean)
-    		);  
-    Simulation.addStandardProcedure(null,"ActivateDelay"
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"ActivateAt"
     		,parameter("REAC",Type.Boolean)
     		,parameter("X",Type.Ref("Process"))
     		,parameter("T",Type.LongReal)
     		,parameter("PRIO",Type.Boolean)
     		);  
-    Simulation.addStandardProcedure(null,"ActivateBefore"
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"ActivateDelay"
+    		,parameter("REAC",Type.Boolean)
+    		,parameter("X",Type.Ref("Process"))
+    		,parameter("T",Type.LongReal)
+    		,parameter("PRIO",Type.Boolean)
+    		);  
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"ActivateBefore"
     		,parameter("REAC",Type.Boolean)
     		,parameter("X",Type.Ref("Process"))
     		,parameter("Y",Type.Ref("Process"))
     		);  
-    Simulation.addStandardProcedure(null,"ActivateAfter"
+    Simulation.addStandardProcedure(BlockKind.MemberMethod,null,"ActivateAfter"
     		,parameter("REAC",Type.Boolean)
     		,parameter("X",Type.Ref("Process"))
     		,parameter("Y",Type.Ref("Process"))
@@ -720,9 +738,9 @@ public final class StandardClass extends ClassDeclaration
 //  ref(EVENT_NOTICE) procedure suc;
 //  ref(EVENT_NOTICE) procedure pred;
 //  procedure RANK(BEFORE_); Boolean BEFORE_;
-    EVENT_NOTICE.addStandardProcedure(Type.Ref("EVENT_NOTICE"),"suc");  
-    EVENT_NOTICE.addStandardProcedure(Type.Ref("EVENT_NOTICE"),"pred");  
-    EVENT_NOTICE.addStandardProcedure(null,"RANK",parameter("BEFORET",Type.Boolean));  
+    EVENT_NOTICE.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("EVENT_NOTICE"),"suc");  
+    EVENT_NOTICE.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("EVENT_NOTICE"),"pred");  
+    EVENT_NOTICE.addStandardProcedure(BlockKind.MemberMethod,null,"RANK",parameter("BEFORET",Type.Boolean));  
   }  
   
   // ******************************************************************
@@ -740,10 +758,10 @@ public final class StandardClass extends ClassDeclaration
 //  ref(Process) procedure nextev;
     Process.addStandardAttribute(Type.Ref("EVENT_NOTICE"),"EVENT");  
     Process.addStandardAttribute(Type.Boolean,"TERMINATED_");  
-    Process.addStandardProcedure(Type.Boolean,"idle");  
-    Process.addStandardProcedure(Type.Boolean,"terminated");  
-    Process.addStandardProcedure(Type.LongReal,"evtime");  
-    Process.addStandardProcedure(Type.Ref("Process"),"nextev");  
+    Process.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"idle");  
+    Process.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"terminated");  
+    Process.addStandardProcedure(BlockKind.MemberMethod,Type.LongReal,"evtime");  
+    Process.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Process"),"nextev");  
   }  
   
   // ******************************************************************
@@ -777,29 +795,29 @@ public final class StandardClass extends ClassDeclaration
     Drawing.addStandardAttribute(Type.Integer,"magenta",  0xff00ff); // Color magenta:    R=255, G=0,   B=255.
     Drawing.addStandardAttribute(Type.Integer,"cyan",     0x00ffff); // Color cyan:       R=0,   G=255, B=255.
     Drawing.addStandardAttribute(Type.Integer,"blue",     0x0000ff); // Color blue:       R=0,   G=0,   B=255.
-    Drawing.addStandardProcedure(Type.Integer,"color",parameter("r",Type.Integer),parameter("g",Type.Integer),parameter("b",Type.Integer));  
-    Drawing.addStandardProcedure(null,"setBackgroundColor",parameter("color",Type.Integer));  
-    Drawing.addStandardProcedure(null,"setDrawColor",parameter("color",Type.Integer));  
-    Drawing.addStandardProcedure(null,"setFillColor",parameter("color",Type.Integer));  
-    Drawing.addStandardProcedure(null,"setStroke",parameter("width",Type.Real));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"color",parameter("r",Type.Integer),parameter("g",Type.Integer),parameter("b",Type.Integer));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setBackgroundColor",parameter("color",Type.Integer));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setDrawColor",parameter("color",Type.Integer));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setFillColor",parameter("color",Type.Integer));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setStroke",parameter("width",Type.Real));  
 
-    Drawing.addStandardProcedure(Type.Ref("Head"),"renderingSet");  
-    Drawing.addStandardProcedure(null,"setFontStylePlain");  
-    Drawing.addStandardProcedure(null,"setFontStyleBold");  
-    Drawing.addStandardProcedure(null,"setFontStyleItalic");  
-    Drawing.addStandardProcedure(null,"setFontStyleBoldItalic");  
-    Drawing.addStandardProcedure(null,"setFontSize",parameter("size",Type.Real));  
-    Drawing.addStandardProcedure(Type.Real,"getFontSize");  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Head"),"renderingSet");  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStylePlain");  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStyleBold");  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStyleItalic");  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStyleBoldItalic");  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"setFontSize",parameter("size",Type.Real));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,Type.Real,"getFontSize");  
     
-    Drawing.addStandardProcedure(null,"drawText",parameter("t",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"drawRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"drawText",parameter("t",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"drawRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
     														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"fillRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    Drawing.addStandardProcedure(null,"fillRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"fillRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    Drawing.addStandardProcedure(BlockKind.MemberMethod,null,"fillRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
     														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
   }
   
@@ -809,18 +827,18 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass ShapeElement=new StandardClass("Link","ShapeElement");
   static
   { Drawing.addStandardClass(ShapeElement);  // Declared in Drawing
-    ShapeElement.addStandardProcedure(null,"setColor",parameter("color",Type.Integer));  
-    ShapeElement.addStandardProcedure(null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"drawRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"setColor",parameter("color",Type.Integer));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"drawRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"drawRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
     														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"fillRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"fillRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"fillEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"fillRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"fillRoundRectangle",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal)
     														   ,parameter("height",Type.LongReal),parameter("arcw",Type.LongReal),parameter("arch",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"instantMoveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
-    ShapeElement.addStandardProcedure(null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("speed",Type.LongReal));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"instantMoveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+    ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("speed",Type.LongReal));  
   }
   
   // ******************************************************************
@@ -829,18 +847,18 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass TextElement=new StandardClass("Link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
   static
   { Drawing.addStandardClass(TextElement);  // Declared in Drawing
-    TextElement.addStandardProcedure(null,"setColor",parameter("color",Type.Integer));  
-    TextElement.addStandardProcedure(null,"setStroke",parameter("width",Type.Real));  
-    TextElement.addStandardProcedure(null,"setFontStylePlain");  
-    TextElement.addStandardProcedure(null,"setFontStyleBold");  
-    TextElement.addStandardProcedure(null,"setFontStyleItalic");  
-    TextElement.addStandardProcedure(null,"setFontStyleBoldItalic");  
-    TextElement.addStandardProcedure(null,"setFontSize",parameter("size",Type.Real));  
-    TextElement.addStandardProcedure(Type.Real,"getFontSize");  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setColor",parameter("color",Type.Integer));  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setStroke",parameter("width",Type.Real));  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStylePlain");  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStyleBold");  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStyleItalic");  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setFontStyleBoldItalic");  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setFontSize",parameter("size",Type.Real));  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,Type.Real,"getFontSize");  
 
-    TextElement.addStandardProcedure(null,"setText",parameter("t",Type.Text));  
-    TextElement.addStandardProcedure(null,"instantMoveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
-    TextElement.addStandardProcedure(null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("speed",Type.LongReal));  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"setText",parameter("t",Type.Text));  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"instantMoveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+    TextElement.addStandardProcedure(BlockKind.MemberMethod,null,"moveTo",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("speed",Type.LongReal));  
   }
   
   // ******************************************************************
@@ -931,26 +949,26 @@ public final class StandardClass extends ClassDeclaration
   private void addStandardAttribute(Type type,String ident,int iValue)
   { declarationList.add(new TypeDeclaration(type,ident,new Constant(Type.Integer,(Integer)iValue))); }
 
-  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
-  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3,p4,p5,p6)); }
+  private void addStandardProcedure(BlockKind kind,Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
+  {	declarationList.add(new StandardProcedure(this,kind,type,ident,p1,p2,p3,p4,p5,p6)); }
 //
-//  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5)
-//  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3,p4,p5)); }
+//  private void addStandardProcedure(BlockKind kind,Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5)
+//  {	declarationList.add(new StandardProcedure(this,kind,type,ident,p1,p2,p3,p4,p5)); }
 
-  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4)
-  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3,p4)); }
+  private void addStandardProcedure(BlockKind kind,Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4)
+  {	declarationList.add(new StandardProcedure(this,kind,type,ident,p1,p2,p3,p4)); }
 
-  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2,Parameter p3)
-  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2,p3)); }
+  private void addStandardProcedure(BlockKind kind,Type type,String ident,Parameter p1,Parameter p2,Parameter p3)
+  {	declarationList.add(new StandardProcedure(this,kind,type,ident,p1,p2,p3)); }
 
-  private void addStandardProcedure(Type type,String ident,Parameter p1,Parameter p2)
-  {	declarationList.add(new StandardProcedure(this,type,ident,p1,p2)); }
+  private void addStandardProcedure(BlockKind kind,Type type,String ident,Parameter p1,Parameter p2)
+  {	declarationList.add(new StandardProcedure(this,kind,type,ident,p1,p2)); }
 
-  private void addStandardProcedure(Type type,String ident,Parameter param)
-  {	declarationList.add(new StandardProcedure(this,type,ident,param)); }
+  private void addStandardProcedure(BlockKind kind,Type type,String ident,Parameter param)
+  {	declarationList.add(new StandardProcedure(this,kind,type,ident,param)); }
 
-  private void addStandardProcedure(Type type,String ident)
-  {	declarationList.add(new StandardProcedure(this,type,ident)); }
+  private void addStandardProcedure(BlockKind kind,Type type,String ident)
+  {	declarationList.add(new StandardProcedure(this,kind,type,ident)); }
 
 }
 

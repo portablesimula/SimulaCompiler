@@ -1,0 +1,114 @@
+
+%STANDARDCLASS
+
+begin
+
+class TEXTOBJ_(SIZE,CONST); integer SIZE; Boolean CONST;
+begin character array MAIN(1:SIZE); end;
+
+class TEXTREF_;
+begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
+
+   Boolean procedure constant;
+   constant := (OBJ_ == NONE) or_else OBJ_.CONST;
+    
+   procedure ASSIGN(U); ref(TEXTREF_) U;
+   begin !*** Text value assignment ***;
+   
+   end ASSIGN;
+   
+   integer procedure start; start := START_;
+   integer procedure length; length := LENGTH_;
+   
+   ref(TEXTREF_) procedure main;
+   if(OBJ_ =/= NONE)
+   then begin ref(TEXTREF_) T;
+      T :- new TEXTREF_();
+      T.OBJ_ :- OBJ_;
+      T.START_ := 1;
+      T.LENGTH_ := OBJ_.SIZE;
+      T.POS_ := 1;
+      main :- T;
+   end main;
+   
+   integer procedure pos; pos := POS_;
+   
+   procedure setpos(i); integer i;
+   POS_ := if ( (i<1) or (i>LENGTH_+1) )
+          then LENGTH_+1 else i;
+
+   Boolean procedure more; more := POS_ <= LENGTH_;
+   
+   character procedure getchar;
+   if POS_ > LENGTH_
+   then error("..." ! Pos out of range;)
+   else begin
+        getchar := OBJ_.MAIN(START_+POS_-1);
+        POS_ := POS_ + 1;
+   end getchar; 
+   
+   procedure putchar(c); character c;
+   begin
+%   if (OBJ_ == none or else OBJ_.CONST or else POS_ > LENGTH_) then error("...")
+   if (OBJ_ == none) then error("...");
+   if (OBJ_.CONST) then error("...");
+   if (POS_ > LENGTH_) then error("...");
+%   else
+   begin 
+       OBJ_.MAIN(START_+POS_-1) := c;
+        POS_ := POS_ + 1;
+   end putchar;
+   end;
+   
+   ref(TEXTREF_) procedure blanks_(n); integer n;
+   if n<0 then error("..." ! Parm. to blanks_<0;)
+   else
+   if n>0
+   then begin ref(TEXTREF_) T;
+      T :- new TEXTREF_();
+      T.OBJ_ :- new TEXTOBJ_(n,false);
+      T.START_ := 1;
+      T.LENGTH_ := n;
+      T.POS_ := 1;
+      T.ASSIGN(NOTEXT); ! T:=NOTEXT I.e. blank-fill;
+      blanks_ :- T
+   end blanks_;   
+           
+   ref(TEXTREF_) procedure copy(T); ref(TEXTREF_) T;
+   if T =/= NOTEXT
+   then begin ref(TEXTREF_) U;
+      U :- new TEXTREF_();
+      U.OBJ_ :- new TEXTOBJ_(T.LENGTH_,false);
+      U.START_ := 1;
+      U.LENGTH_ := T.LENGTH_;
+      U.POS_ := 1
+      U.ASSIGN(T); ! U:=T  I.e. text value assignment;
+      copy :- U
+   end copy;  
+   
+   ref(TEXTREF_) procedure sub(i,n); integer i,n;
+%   if i<0 or n<0 or i+n > LENGTH_+1
+%   then error("..." ! Sub out of frame;)
+%   else
+         if n>0
+   then begin ref(TEXTREF_) T;
+      T :- new TEXTREF_();
+      T.OBJ_ :- OBJ_;
+      T.START_ := START_ + i - 1;
+      T.LENGTH_ := n;
+      T.POS_ := 1;
+      sub :- T
+   end sub;   
+   
+   ref(TEXTREF_) procedure strip; begin end;
+   
+   integer procedure getint;  begin end;
+   real procedure getreal;  begin end;
+   integer procedure getfrac; begin end;
+   procedure putint(i); integer i;  begin end;
+   procedure putfix(r,n); real r; integer n;  begin end;
+   procedure putreal(r,n); real r; integer n;  begin end;
+   procedure putfrac(i,n); integer i,n;  begin end;
+end;
+
+end;

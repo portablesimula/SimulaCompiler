@@ -1,0 +1,36 @@
+%      -----------------------------------------------------------------------
+%      ---                                                                 ---
+%      ---  COPYRIGHT 1987 by                                              ---
+%      ---  Simula a.s.                                                    ---
+%      ---  Oslo, Norway                                                   ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                 P O R T A B L E     S I M U L A                 ---
+%      ---                                                                 ---
+%      ---              F R O N T - E N D    C O M P I L E R               ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      ---                C h e c k e r - M n e m o n i c s                ---
+%      ---                                                                 ---
+%      ---                                                                 ---
+%      -----------------------------------------------------------------------
+
+%MACRO build_scope:
+       allocate(*/1,none)
+%ENDMACRO
+
+%MACRO build_pref_scope:
+       allocate(*/1,*/2)
+%ENDMACRO
+
+%MACRO enter_stmt:
+       enterstmt(*/1)
+%ENDMACRO
+
+%MACRO leave_stmt:
+       leavestmt
+%ENDMACRO
+
+% END OF FILE: (FEC-105)CHECKER:MNE

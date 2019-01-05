@@ -52,6 +52,12 @@ public final class Option {
 	
 	
 	/** 
+	 * Enables/disables special S-Port Simula features,
+	 * such as inclusion of the S-Port Library.
+	 */
+	public static boolean sport = true;
+	
+	/** 
 	 * Used to compile 'standard classes' to indicate simplified block structure.
 	 * In addition all 'procedures' will be treated as Java Methods.
 	 */

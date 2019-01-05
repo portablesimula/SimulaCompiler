@@ -178,20 +178,29 @@ public final class Variable extends Expression {
 		{ ArrayDeclaration array=(ArrayDeclaration)decl;
 		  this.type=array.type;
 		  // Check parameters
-		  Iterator<ArrayDeclaration.BoundPair> formalIterator=array.getBoundPairList().iterator();
-		  Iterator<Expression> actualIterator=params.iterator();
-		  while(actualIterator.hasNext())
-		  { if(!formalIterator.hasNext()) Util.error("Wrong number of indices to "+array);
-		    ArrayDeclaration.BoundPair formalParameter=formalIterator.next();
-//		    Type formalType=Type.Integer;
-		    if(Option.TRACE_CHECKER) Util.TRACE("Formal Parameter: "+formalParameter);
-		    Expression actualParameter=actualIterator.next();
-		    actualParameter.doChecking();
-			Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
-			checkedParameter.backLink=this;
-			checkedParams.add(checkedParameter);
+//		  Iterator<ArrayDeclaration.BoundPair> formalIterator=array.getBoundPairList().iterator();
+//		  Iterator<Expression> actualIterator=params.iterator();
+//		  while(actualIterator.hasNext())
+//		  { if(!formalIterator.hasNext()) Util.error("Wrong number of indices to "+array);
+//		    ArrayDeclaration.BoundPair formalParameter=formalIterator.next();
+//            // Type formalType=Type.Integer;
+//		    if(Option.TRACE_CHECKER) Util.TRACE("Formal Parameter: "+formalParameter);
+//		    Expression actualParameter=actualIterator.next();
+//		    actualParameter.doChecking();
+//			Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
+//			checkedParameter.backLink=this;
+//			checkedParams.add(checkedParameter);
+//		  }
+//		  if(formalIterator.hasNext()) Util.error("Wrong number of indices to "+array);
+		  
+		  if(params.size()!=array.nDim) Util.error("Wrong number of indices to "+array);
+		  for(Expression actualParameter:params) {
+			    actualParameter.doChecking();
+				Expression checkedParameter=TypeConversion.testAndCreate(Type.Integer,actualParameter);
+				checkedParameter.backLink=this;
+				checkedParams.add(checkedParameter);
+			  
 		  }
-		  if(formalIterator.hasNext()) Util.error("Wrong number of indices to "+array);
 		}
 		
 		else if(decl instanceof BlockDeclaration) // Declared Procedure or Class 
@@ -201,7 +210,8 @@ public final class Variable extends Expression {
 			Type overloadedType=this.type;
 //			Iterator<Parameter> formalIterator = block.parameterIterator();
 			Iterator<Parameter> formalIterator;
-			if(decl instanceof ClassDeclaration) formalIterator = ((ClassDeclaration)decl).parameterList.iterator();
+//			if(decl instanceof ClassDeclaration) formalIterator = ((ClassDeclaration)decl).parameterList.iterator();
+			if(decl instanceof ClassDeclaration) formalIterator = ((ClassDeclaration)decl).new ClassParameterIterator();
 			else formalIterator = ((ProcedureDeclaration)decl).parameterList.iterator();
 			
 			
@@ -302,7 +312,9 @@ public final class Variable extends Expression {
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): meaning="+meaning);
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): declaredAs="+declaredAs+", BlockDeclaration.Kind="+blockKind+", qual="+declaredAs.getClass().getSimpleName());
 		if(blockKind==BlockKind.Procedure) return(true);
-		if(blockKind==BlockKind.Method) return(true);
+		if(blockKind==BlockKind.ContextFreeMethod) return(true);
+		if(blockKind==BlockKind.StaticMethod) return(true);
+		if(blockKind==BlockKind.MemberMethod) return(true);
 		if(declaredAs instanceof Parameter)
 		{ Parameter par=(Parameter)declaredAs;
 		  if(par.kind==Parameter.Kind.Procedure) return(true);
@@ -361,7 +373,7 @@ public final class Variable extends Expression {
 	  //Util.BREAK("Variable.edVariable("+identifier+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
 	  //Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
 	  ASSERT_SEMANTICS_CHECKED(this);
-	  Expression connectedObject=meaning.getInspectedVariable();
+	  Expression inspectedVariable=meaning.getInspectedVariable();
 	  
 	  if(decl instanceof ArrayDeclaration) { // Declared Array
 		  //ArrayDeclaration array=(ArrayDeclaration)decl;
@@ -398,16 +410,21 @@ public final class Variable extends Expression {
 //	      BlockDeclaration.Kind blockKind=decl.blockKind;
 	      StringBuilder s = new StringBuilder();
 	      //Util.BREAK("Variable3("+identifier+").get: blockKind="+blockKind);
-	      if(blockKind==BlockKind.Method) { // Standard Procedure
-			  //if(meaning.declaredAs instanceof StandardProcedure) {
+	      if(blockKind==BlockKind.ContextFreeMethod) {
+	    	  // Standard Library Procedure
 				  if(identifier.equalsIgnoreCase("sourceline"))
 			  		  return(""+Global.sourceLineNumber);
-			  // }
+		      if(destination) return("RESULT$");
+	          s.append(CallProcedure.asStaticMethod(this,true));
+	      }
+	      else if(blockKind==BlockKind.StaticMethod) { // TODO: CHECK DETTE
+		      if(destination) return("RESULT$");
+	          s.append(CallProcedure.asStaticMethod(this,false));
+	      }
+	      else if(blockKind==BlockKind.MemberMethod) { // TODO: CHECK DETTE
+		      if(destination) return("RESULT$");
 	          s.append(CallProcedure.asNormalMethod(this));
 	      }
-	      
-//	      else if(procedure.myVirtual!=null)
-//	         s.append(CallProcedure.virtual(this,procedure.myVirtual,remotelyAccessed));
 	      else if(blockKind==BlockKind.Procedure) {
 	    	  // This Variable is a Procedure-Identifier.
 	    	  // When 'destination' it is a variable used to carry the resulting value until the final return.
@@ -429,7 +446,7 @@ public final class Variable extends Expression {
 	      else if(blockKind==BlockKind.Class) {
 	    	  Util.error("Illegal use of class identifier: "+identifier);
 	      }
-	      else Util.FATAL_ERROR("Umulig å komme hit ??");
+	      else Util.FATAL_ERROR("Impossible: BlockKind="+blockKind);
 		  String result=s.toString();
 		  return(result);	    
 	  }
@@ -442,7 +459,7 @@ public final class Variable extends Expression {
 			  int nDim=0;
 			  String var=edIdentifierAccess(false);
 			  //Util.BREAK("Variable.editVariable'Parameter'Array: var="+var);;
-			  if(connectedObject!=null) var=connectedObject.toJavaCode()+'.'+var;
+			  if(inspectedVariable!=null) var=inspectedVariable.toJavaCode()+'.'+var;
 			  if(par.mode==Parameter.Mode.name) var=var+".get()";
 			  if(this.hasArguments()) {
 //				  if(par.mode==Parameter.Mode.name) var=var+".get()";
@@ -460,7 +477,7 @@ public final class Variable extends Expression {
 			  } else s.append(var);
 			  break;
 		  case Procedure: // Parameter Procedure
-			  if(connectedObject!=null) s.append(connectedObject.toJavaCode()).append('.');
+			  if(inspectedVariable!=null) s.append(inspectedVariable.toJavaCode()).append('.');
 			  if(par.mode==Parameter.Mode.value)
 				  Util.error("Parameter "+this+" by Value is not allowed - Rewrite Program");
 			  else // Procedure By Reference or Name.
@@ -514,7 +531,12 @@ public final class Variable extends Expression {
 	    { String remoteCast=meaning.foundIn.getJavaIdentifier();
 		  id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
 	    } else id=inspectedVariable.toJavaCode()+"."+id;
-	  } else if(!(Option.standardClass && meaning.declaredIn.blockKind==BlockKind.Method)) {
+	    
+	  } else if(!(Option.standardClass &&
+			 (    meaning.declaredIn.blockKind==BlockKind.ContextFreeMethod // TODO: CHECK DETTE
+			   || meaning.declaredIn.blockKind==BlockKind.StaticMethod
+			   || meaning.declaredIn.blockKind==BlockKind.MemberMethod
+			 ))) {
 	    String cast=meaning.declaredIn.getJavaIdentifier();
 		int n=meaning.declaredIn.blockLevel;
 	    if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();

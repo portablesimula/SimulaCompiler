@@ -1,0 +1,230 @@
+%      ----------------------------------------------------------------
+%      ---                                                          ---
+%      ---  COPYRIGHT 1987 by                    common:mne         ---
+%      ---  Simula a.s.                                             ---
+%      ---  Oslo, Norway                                            ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                 P O R T A B L E     S I M U L A          ---
+%      ---                                                          ---
+%      ---              F R O N T - E N D    C O M P I L E R        ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                 C o m m o n  -  M a c r o e s            ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ----------------------------------------------------------------
+%
+
+%-I character
+%+I %define
+         IBOOL              =   '!1!'  ,  !boolean;
+         ICHAR              =   '!2!'  ,  !character;
+         ISHOR              =   '!3!'  ,  !short;
+         IINTG              =   '!4!'  ,  !integer;
+         IREAL              =   '!5!'  ,  !real;
+         ILONG              =   '!6!'  ,  !long;
+         IREF               =   '!7!'  ,  !ref;
+         ITEXT              =   '!8!'  ,  !text;
+         IPTR               =   '!9!'  ,  !_pointer;
+         IVALU              =  '!10!'  ,  !value;
+         ILABE              =  '!11!'  ,  !label;
+         IPROC              =  '!12!'  ,  !procedure;
+         IARRA              =  '!13!'  ,  !array;
+         INOTY              =  '!14!'  ,  !no type;
+         IELSE              =  '!15!'  ,  !else;
+         IEND               =  '!16!'  ,  !end;
+         IEQV               =  '!17!'  ,  !eqv;
+         IEXTR              =  '!18!'  ,  !external;
+         IFOR               =  '!19!'  ,  !for;
+         IGO                =  '!20!'  ,  !go;
+         IGOTO              =  '!21!'  ,  !goto;
+         IHIDD              =  '!22!'  ,  !hidden;
+         IIF                =  '!23!'  ,  !if;
+         IIMP               =  '!24!'  ,  !imp;
+         IIN                =  '!25!'  ,  !in;
+         IINNE              =  '!26!'  ,  !inner;
+         IINSP              =  '!27!'  ,  !inspect;
+         IDO                =  '!28!'  ,  !do;
+         IIS                =  '!29!'  ,  !is;
+         ICLAS              =  '!30!'  ,  !class;
+         IRCRD              =  '!31!'  ,  !record - nonstandard;
+         IBEGI              =  '!32!'  ,  !begin;
+         INAME              =  '!33!'  ,  !name;
+         INEW               =  '!34!'  ,  !new;
+         INOT               =  '!35!'  ,  !not;
+         IOR                =  '!36!'  ,  !or;
+         IOTHW              =  '!37!'  ,  !otherwise;
+         IPRIO              =  '!38!'  ,  !prior;
+         IDELA              =  '!39!'  ,  !delay;
+         IPRTC              =  '!40!'  ,  !protected;
+         IQUA               =  '!41!'  ,  !qua;
+         IREAC              =  '!42!'  ,  !reactivate;
+         IAT                =  '!43!'  ,  !at;
+         IBEFO              =  '!44!'  ,  !before;
+         IAND               =  '!45!'  ,  !and;
+         ISTEP              =  '!46!'  ,  !step;
+         ISWIT              =  '!47!'  ,  !switch;
+         IACTV              =  '!48!'  ,  !activate;
+         ITHEN              =  '!49!'  ,  !then;
+         ITHIS              =  '!50!'  ,  !this;
+         ITO                =  '!51!'  ,  !to;
+         IUNTI              =  '!52!'  ,  !until;
+         IAFTR              =  '!53!'  ,  !after;
+         IVIRT              =  '!54!'  ,  !virtual;
+         IWHEN              =  '!55!'  ,  !when;
+         IWHIL              =  '!56!'  ,  !while;
+         ILT                =  '!57!'  ,  !lt;
+         IEQ                =  '!58!'  ,  !eq;
+         ILE                =  '!59!'  ,  !le;
+         IGT                =  '!60!'  ,  !gt;
+         INE                =  '!61!'  ,  !ne;
+         IGE                =  '!62!'  ,  !ge;
+         ICOMN              =  '!63!'  ,  !comment;
+         INONE              =  '!64!'  ,  !none;
+         INOTE              =  '!65!'  ,  !notext;
+         ITRUE              =  '!66!'  ,  !true;
+         IFALS              =  '!67!'  ,  !false;
+
+         detachident        =  '!68!'  ,
+         printfileindex     =  '!69!'  ,
+         infileindex        =  '!70!'  ,
+         errorident         =  '!71!'  ,
+         textclassindex     =  '!72!'  ,
+         predefindex        =  '!73!'  ,
+         alloc2index        =  '!74!'  ,
+         recordindex        =  '!75!'  ,
+         Cindex             =  '!76!'  ,
+         Pascalindex        =  '!77!'  ,
+         Libraryindex       =  '!78!'  ,
+
+         IRFEQ              =  '!68!'  ,
+         IRFNE              =  '!69!'  ,
+         IPLUS              =  '!70!'  ,
+         IMINU              =  '!71!'  ,
+         IMULT              =  '!72!'  ,
+         ISLAS              =  '!73!'  ,
+         IPOWE              =  '!74!'  ,
+         IIDIV              =  '!75!'  ,
+         IDOT               =  '!76!'  ,
+         ICL                =  '!77!'  ,
+         ICOMA              =  '!78!'  ,
+         ISMCL              =  '!79!'  ,
+         ILFPA              =  '!80!'  ,
+         IRGPA              =  '!81!'  ,
+         IASSG              =  '!82!'  ,
+         IDENO              =  '!83!'  ,
+         ICONC              =  '!84!'  ,
+         ICAND              =  '!85!'  ,
+         ICOR               =  '!86!'  ,
+         ICASE              =  '!87!'  ,
+         IEOP               =  '!88!'  ,
+         IROPD              =  '!89!'  ,
+         IIDN               =  '!90!'  ,
+         ICONS              =  '!91!'  ,
+
+%  ----- end of possible symbols scanner => parser ------
+
+         IBLKB              =  '!92!'  ,
+         IBPRF              =  '!93!'  ,
+         IDCLI              =  '!94!'  ,
+         IFRMP              =  '!95!'  ,
+         IABTE              =  '!96!'  ,
+         IACTE              =  '!97!'  ,
+         IARGE              =  '!98!'  ,
+         IARDE              =  '!99!'  ,
+         IASGE              = '!100!'  ,
+         IBLNO              = '!101!'  ,
+         IBNDE              = '!102!'  ,
+         IBREC              = '!103!'  ,
+         ICAPE              = '!104!'  ,
+         ICONB              = '!105!'  ,
+         ICONE              = '!106!'  ,
+         ICPRF              = '!107!'  ,
+         ICSPC              = '!108!'  ,
+         IDCLA              = '!109!'  ,
+         IDCLC              = '!110!'  ,
+         IDCLE              = '!111!'  ,
+         IDCLP              = '!112!'  ,
+         IDCLS              = '!113!'  ,
+         IDIME              = '!114!'  ,
+         IDOTP              = '!115!'  ,
+         IEEXP              = '!116!'  ,
+         IECWI              = '!117!'  ,
+         IELME              = '!118!'  ,
+         IELSB              = '!119!'  ,
+         IEPRM              = '!120!'  ,
+         IEREC              = '!121!'  ,
+         IESTM              = '!122!'  ,
+         IEXNM              = '!123!'  ,
+         IFASG              = '!124!'  ,
+         IFDNO              = '!125!'  ,
+         IFORE              = '!126!'  ,
+         IFWHN              = '!127!'  ,
+         IGOE               = '!128!'  ,
+         IIDNP              = '!129!'  ,
+         IIFSB              = '!130!'  ,
+         IIFSE              = '!131!'  ,
+         ILANG              = '!132!'  ,
+         ILINE              = '!133!'  ,
+         INEWP              = '!134!'  ,
+         IOTHE              = '!135!'  ,
+         IPRHI              = '!136!'  ,
+         IPSPC              = '!137!'  ,
+         ISCST              = '!138!'  ,
+         ISIDN              = '!139!'  ,
+         ISIMU              = '!140!'  ,
+         ISSWA              = '!141!'  ,
+         ISSWB              = '!142!'  ,
+         ISWDE              = '!143!'  ,
+         ISWEE              = '!144!'  ,
+         ITHSB              = '!145!'  ,
+         IUMNS              = '!146!'  ,
+         IUPLS              = '!147!'  ,
+         IVSPC              = '!148!'  ,
+         IMXMX              = '!148!'  ,
+         zerohi             = '!127!'  ,
+         zerolo             = '!255!'  ;
+
+% %MACRO DEFIDENT:
+%        begin simsymbol:- */1 ; if not LOOKUPid then new identsymbol
+%        end
+% %ENDMACRO
+
+% %MACRO DEFCONST:
+%        begin simsymbol:- */1 ; if not LOOKUPconst then new constsymbol
+%        end
+% %ENDMACRO
+
+%+I %MACRO boxof:
+%+I        symtab( rank(*/1) ).val( rank(*/2) )
+%+I %ENDMACRO
+
+%+I %MACRO nameof:
+%+I        symtab( rank(*/1) ).val( rank(*/2) ).symbol
+%+I %ENDMACRO
+
+%+I %MACRO getBox:
+%+I        symtab(*/1 // 256 ).val( rem(*/1 , 256) )
+%+I %ENDMACRO
+
+%+I %MACRO getBrc:
+%+I        brctab(rank( */1 )).val(rank( */2 ))
+%+I %ENDMACRO
+
+%    *****   Following macros NOT to be used in Pass 1   *****
+
+%+I %MACRO meaningof:
+%+I        */1 qua identsymbol.curmeaning
+%+I %ENDMACRO
+
+%+I %MACRO newTag:
+%+I        lastusedtag:=lastusedtag+1
+%+I %ENDMACRO
+
+%+I %MACRO newTags:
+%+I        lastusedtag:=lastusedtag + ( */1 )
+%+I %ENDMACRO
+
+% FILE: common.mne  is inserted.

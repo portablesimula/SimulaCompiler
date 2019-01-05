@@ -1,0 +1,808 @@
+% DEFINITION
+Class _PREDEFMODULE=="!03! 0";
+begin
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---                                                           ---
+%      ---   D e f i n i t o n   o f   ' C l a s s '    P r e d e f  ---
+%      ---                                                           ---
+%      ---                                                           ---
+%      --- FECOPT S:  Make SIMULA Standard version                   ---
+%      -----------------------------------------------------------------
+%
+%
+%       --- Classification codes ---
+%
+%         '!00!', !Normal userdefined declaration, used when
+%                it comes from a usual external declaration.;
+%         '!01!', !External procedure with binding
+%         '!02!', !parameters to external procedure with binding.
+
+%   The rest are only used in system attr. files;
+
+%         '!03!', !Is used when it is of no specific interest.;
+%         '!04!', !Used for system classes.;
+%                 --  Procedures implemented by routines:
+%         '!05!', !Used for procedure which is attribute of text
+%                ( accessed as <text expr>.<procedure> ). Should
+%                be called as a routine with an extra first GADDR
+%                parameter (address of text variable).  If the
+%                <text expr> is not a variable, this routine
+%                should not be called. Instead its successor in
+%                the declaration list of 'class _text' should be
+%                called. This is assumed to be classified with U;
+%         '!06!', !Used for procedure which is attribute of text
+%                ( accessed as <text expr>.<procedure> ).  Should
+%                be called as a routine with an extra first text
+%                quantity parameter (as a value).;
+%         '!07!', !Used for procedures local in classes that must
+%                have a reference to the object as an extra first
+%                parameter.;
+%         '!08!', !- as 7, but the routine may lead to garbage
+%                collection.  Thus SAVE-RESTORE must possibly
+%                enclose the call.  Except for 'setacces'/'open', these
+%                are all of type text, and the text reference is
+%                delivered on TOS. If the procedure is remotely
+%                accessed, the extra first parameter has to be
+%                kept in TMP.PNT during a possible save.;
+%         '!09!', !class PROCESS - necessary because the encloser
+%                of subclasses MUST be a simulation block/class;
+%         '!10!', !Used for procedures that are translated to
+%                routines with no special treatment - can't dotaccess.;
+
+%         '!11!', !- as 'R', but the routine may lead to garbage
+%                collection.  Thus SAVE-RESTORE must possibly
+%                enclose the call.  These are all procedures of
+%                type text, and the text reference is delivered
+%                on TOS.;
+%         '!12!', !Used for procedure in class file which is an
+%                operation on the image. Image of the actual file
+%                should be given as extra first parameter, as a
+%                GADDR (corresponding to 'T' above).;
+%         '!13!', !Used for standard procedures which should be
+%                translated to a direct fetch from a RTS variable
+%                (max/min functions, simulaid).;
+%         '!14!', !Used for type procedures local in classes that
+%                should be translated to fetching a value
+%                directely from an attribute (certain attributes
+%                of FILE and SIMULATION). Is translated to
+%                code for OADDR of the enclosure followed by a
+%                REMOTEV.;
+%         '!15!', !Used for type procedures local in classes that
+%                should be translated to fetching a value from an
+%                attribute through one level of indirection.  Is
+%                translated to code for OADDR followed by two
+%                REMOTEV's.  Currently used for Simulation'time
+%                only.;
+%                -- Classification of parameters:
+%         '!16!', !Used for parameters to procedures that must be
+%                translated to usual parameters to routines.;
+%                === Special classification codes ===
+%                These codes enable the compiler to recognize
+%                inline coded procedures, etc.
+%         '!17!', !- as P, but parameter checking suppressed;
+%         '!18!', !Used for parameters to routines classified I;
+%         '!19!', !Used for text parameters of loadchar/storechar
+%                 - prepare for (S-code) index;
+%        ----- Inline coded procedures:
+%         '!20!', !rem;
+%         '!21!', !int abs;
+%         '!22!', !real abs;
+%         '!23!', !lreal abs;
+%         '!24!', !int sign;
+%         '!25!', !real sign;
+%         '!26!', !lreal sign;
+%         '!27!', !char;
+%         '!28!', !isochar;
+%         '!29!', !rank;
+%         '!30!', !isorank;
+%         '!31!', !loadchar;
+%         '!32!', !storechar;
+%         '!33!', !sint min;
+%         '!34!', !int min;
+%         '!35!', !real min;
+%         '!36!', !lreal min;
+%         '!37!', !sint max;
+%         '!38!', !int max;
+%         '!39!', !rela max;
+%         '!40!', !lreal max;
+%         '!41!', !sourceline;
+%         '!42!', !text'more;
+%         '!43!', !imagefile'more;
+%         '!44!', !text'pos;
+%         '!45!', !imagefile'pos;
+%         '!46!', !text'length;
+%         '!47!', !imagefile'length;
+%         '!48!', !text'start;
+
+%title --- T h e    T y p e    T e x t  ---
+   class _text=="!03! 0";
+   begin
+         boolean procedure constant==
+              "!06! 2 *T_CONSTANT1 *T_CONSTANT2"; ;
+         integer procedure start=="!48! 0"; ;
+         integer procedure length=="!46! 0"; ;
+         text procedure main=="!06! 2 *T_MAIN1 *T_MAIN2"; ;
+         integer procedure pos=="!44! 0"; ;
+         procedure setpos=="!05! 2 *T_SETPOS1 *T_SETPOS2"
+              (_i=="!16! 0"); integer _i; ;
+         procedure _s=="!06! 2 *T_SETPOSV1 *T_SETPOSV2"; ;
+         boolean procedure more=="!42! 0"; ;
+         character procedure getchar=="!05! 2 *T_GETCHAR1  *T_GETCHAR2";
+              ;
+         character          _g     =="!06! 2 *T_GETCHARV1 *T_GETCHARV2";
+         procedure putchar=="!05! 2 *T_PUTCHAR1  *T_PUTCHAR2"
+              (_c=="!16! 0"); character _c; ;
+         procedure _p     =="!06! 2 *T_PUTCHARV1 *T_PUTCHARV2"; ;
+         text procedure sub=="!05! 2 *T_SUB1  *T_SUB2"
+              (_i=="!16! 0",_j=="!16! 0"); integer _i,_j; ;
+         text procedure _b =="!06! 2 *T_SUBV1 *T_SUBV2"; ;
+         text procedure strip=="!06! 2 *T_STRIP1 *T_STRIP2"; ;
+         integer procedure getint=="!05! 2 *T_GETINT1  *T_GETINT2"; ;
+         integer           _gi==   "!06! 2 *T_GETINTV1 *T_GETINTV2";
+         long real procedure getreal=="!05! 2 *T_GETREAL1  *T_GETREAL2";
+              ;
+         long real          _gl    =="!06! 2 *T_GETREALV1 *T_GETREALV2";
+         integer procedure getfrac=="!05! 2 *T_GETFRAC1  *T_GETFRAC2"; ;
+         integer             _gf  =="!06! 2 *T_GETFRACV1 *T_GETFRACV2";
+         procedure putint=="!05! 2 *T_PUTINT1  *T_PUTINT2"
+              (_i=="!16! 0"); integer _i; ;
+         procedure _pi   =="!06! 2 *T_PUTINTV1 *T_PUTINTV2"; ;
+         procedure putfix=="!05! -1 2 *T_PUTFIX1   *T_PUTFIX2"
+              (_r=="!16! 0",_i=="!16! 0"); real _r; integer _i; ;
+         procedure _pf   =="!06!    2 *T_PUTFIXV1  *T_PUTFIXV2"; ;
+         procedure _px   =="!05!    2 *T_PUTLFIX1  *T_PUTLFIX2"
+              (_r=="!16! 0",_i=="!16! 0"); long real _r; integer _i; ;
+         procedure _pxv  =="!06!    2 *T_PUTLFIXV1 *T_PUTLFIXV2"; ;
+         procedure putreal=="!05! -1 2 *T_PUTREAL1   *T_PUTREAL2"
+              (_r=="!16! 0",_i=="!16! 0"); real _r; integer _i; ;
+         procedure _pr    =="!06!    2 *T_PUTREALV1  *T_PUTREALV2"; ;
+         procedure _pl    =="!05!    2 *T_PUTLREAL1  *T_PUTLREAL2"
+              (_r=="!16! 0",_i=="!16! 0"); long real _r; integer _i; ;
+         procedure _plv   =="!06!    2 *T_PUTLREALV1 *T_PUTLREALV2"; ;
+         procedure putfrac=="!05! 2 *T_PUTFRAC1  *T_PUTFRAC2"
+              (_i=="!16! 0",_j=="!16! 0"); integer _i,_j; ;
+         procedure _pa    =="!06! 2 *T_PUTFRACV1 *T_PUTFRACV2"; ;
+   end class _text;
+
+%      ---  E r r o r   H a n d l e r  ---
+
+% --  class errorHandler=='!03! 2 E_HANDLE_DESCR E_HANDLE_PROT';
+% --  virtual: procedure RTSerror
+% --  is procedure RTSerror(eno); short integer eno; ;
+% --  begin
+% --        procedure RTSerror=='!00! 2 R_ERR_DESC R_ERR_PROT'
+% --           (_eno=='!16! 0'); short integer _eno;
+% --        ;
+% --  end;
+%title ---  F i l e    C l a s s e s  ---
+
+% Note: the classes must be specified in REVERSE prefix order!!!!!
+
+   imagefile class infile=="!04! 2 *F_IF_DESC *F_IF_PROT";
+   begin
+         boolean procedure open== "!08! 2 *F_OPEN1 *F_OPEN2"
+              (_t=="!16! 0"); text _t; ;
+         boolean procedure close=="!07! 2 *F_CLOSE1 *F_CLOSE2"; ;
+         procedure inimage=="!07! 2 *F_INIMAGE1 *F_INIMAGE2"; ;
+         boolean procedure inrecord=="!07! 2 *F_INRECORD1 *F_INRECORD2";
+              ;
+         boolean procedure endfile=="!14! 1 *F_ENDFILE"; ;
+         character procedure inchar=="!07! 2 *F_INCHAR1 *F_INCHAR2"; ;
+         boolean procedure lastitem=="!07! 2 *F_LASTITEM1 *F_LASTITEM2";
+              ;
+         integer procedure inint=="!07! 2 *F_ININT1 *F_ININT2"; ;
+         long real procedure inreal=="!07! 2 *F_INREAL1 *F_INREAL2"; ;
+         integer procedure infrac=="!07! 2 *F_INFRAC1 *F_INFRAC2"; ;
+         text procedure intext=="!08! 2 *F_INTEXT1 *F_INTEXT2"
+              (_w=="!16! 0"); integer _w; ;
+   end infile;
+
+
+   outfile class printfile=="!04! 2 *F_PF_DESC *F_PF_PROT";
+   begin integer procedure line=="!14! 1 *F_LINE"; ;
+         integer procedure page=="!14! 1 *F_PAGE"; ;
+         integer procedure linesperpage
+                               == "!07! 2 *F_LINESPP1 *F_LINESPP2"
+              (_n=="!16! 0");integer _n; ;
+         procedure spacing=="!07! 2 *F_SPACING1 *F_SPACING2"
+              (_n=="!16! 0"); integer _n; ;
+         procedure eject=="!07! 2 *F_EJECT1 *F_EJECT2"
+              (_n=="!16! 0"); integer _n; ;
+   end printfile;
+
+%page
+
+   imagefile class outfile=="!04! 2 *F_OF_DESC *F_OF_PROT";
+   begin
+         boolean procedure open=="!08! 2 *F_OPEN1 *F_OPEN2"
+              (_t=="!16! 0"); text _t; ;
+         boolean procedure close=="!07! 2 *F_CLOSE1 *F_CLOSE2"; ;
+         procedure outimage=="!07! 2 *F_OUTIMAGE1 *F_OUTIMAGE2"; ;
+         procedure outrecord=="!07! 2 *F_OUTRECORD1 *F_OUTRECORD2"; ;
+         procedure breakoutimage=="!07! 2 *F_BREAKOUT1 *F_BREAKOUT2"; ;
+         boolean procedure checkpoint=="!07! 2 *F_CHKPNT1 *F_CHKPNT2"; ;
+         procedure outchar=="!07! 2 *F_OUTCHAR1 *F_OUTCHAR2"
+              (_c=="!16! 0"); character _c; ;
+         procedure outint=="!07! 2 *F_OUTINT1 *F_OUTINT2"
+              (_i=="!16! 0",_w=="!16! 0"); integer _i,_w; ;
+         procedure outfix=="!07! -1  2 *F_OUTFIX1  *F_OUTFIX2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              real _r; integer _n,_w; ;
+         procedure _ox   =="!07!     2 *F_OUTLFIX1 *F_OUTLFIX2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              long real _r;integer _n,_w;;
+         procedure outreal=="!07! -1 2 *F_OUTREAL1  *F_OUTREAL2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              real _r; integer _n,_w; ;
+         procedure _ol    =="!07!    2 *F_OUTLREAL1 *F_OUTLREAL2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              long real _r;integer _n,_w;;
+         procedure outfrac=="!07! 2 *F_OUTFRAC1 *F_OUTFRAC2"
+              (_i=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              integer _i,_n,_w; ;
+         procedure outtext=="!07! 2 *F_OUTTEXT1 *F_OUTTEXT2"
+              (_t=="!16! 0"); text _t; ;
+   end outfile;
+%page
+
+   imagefile class directfile=="!04! 2 *F_DF_DESC *F_DF_PROT";
+   begin boolean procedure open== "!08! 2 *F_OPEN1 *F_OPEN2"
+              (_t=="!16! 0"); text _t; ;
+         boolean procedure close=="!07! 2 *F_CLOSE1 *F_CLOSE2"; ;
+         integer procedure location=="!14! 1 *F_LOCATION";;
+         integer procedure lastloc=="!07! 2 *F_LASTLOC1 *F_LASTLOC2"; ;
+         integer procedure maxloc=="!07! 2 *F_MAXLOC1 *F_MAXLOC2"; ;
+         procedure locate=="!07! 2 *F_LOCATE1 *F_LOCATE2"
+              (_i=="!16! 0"); integer _i; ;
+         procedure inimage=="!07! 2 *F_INIMAGE1 *F_INIMAGE2"; ;
+         procedure outimage=="!07! 2 *F_OUTIMAGE1 *F_OUTIMAGE2"; ;
+         boolean procedure endfile=="!14! 1 *F_ENDFILE"; ;
+         boolean procedure locked=="!14! 1 *F_LOCKED"; ;
+         boolean procedure unlock=="!07! 2 *F_UNLOCK1 *F_UNLOCK2"; ;
+         boolean procedure checkpoint=="!07! 2 *F_CHKPNT1 *F_CHKPNT2"; ;
+         boolean procedure deleteimage==
+              "!07! 2 *F_DELIMAGE1 *F_DELIMAGE2"; ;
+         integer procedure lock=="!07! 2 *F_LOCK1 *F_LOCK2"
+              (_t=="!16! 0",_i=="!16! 0",_j=="!16! 0");
+              real _t; integer _i,_j; ;
+         character procedure inchar=="!07! 2 *F_INCHAR1 *F_INCHAR2"; ;
+         boolean procedure lastitem=="!07! 2 *F_LASTITEM1 *F_LASTITEM2";
+              ;
+         integer procedure inint=="!07! 2 *F_ININT1 *F_ININT2"; ;
+         long real procedure inreal=="!07! 2 *F_INREAL1 *F_INREAL2"; ;
+         integer procedure infrac=="!07! 2 *F_INFRAC1 *F_INFRAC2"; ;
+         text procedure intext=="!08! 2 *F_INTEXT1 *F_INTEXT2"
+              (_w=="!16! 0"); integer _w; ;
+         procedure outchar=="!07! 2 *F_OUTCHAR1 *F_OUTCHAR2"
+              (_c=="!16! 0"); character _c; ;
+         procedure outint=="!07! 2 *F_OUTINT1 *F_OUTINT2"
+              (_i=="!16! 0",_w=="!16! 0"); integer _i,_w; ;
+         procedure outfix=="!07! -1  2 *F_OUTFIX1 *F_OUTFIX2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              real _r; integer _n,_w; ;
+         procedure _ox=="!07! 2 *F_OUTLFIX1 *F_OUTLFIX2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              long real _r;integer _n,_w;;
+         procedure outreal=="!07! -1 2 *F_OUTREAL1 *F_OUTREAL2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              real _r; integer _n,_w; ;
+         procedure _ol=="!07! 2 *F_OUTLREAL1 *F_OUTLREAL2"
+              (_r=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              long real _r;integer _n,_w;;
+         procedure outfrac=="!07! 2 *F_OUTFRAC1 *F_OUTFRAC2"
+              (_i=="!16! 0",_n=="!16! 0",_w=="!16! 0");
+              integer _i,_n,_w; ;
+         procedure outtext=="!07! 2 *F_OUTTEXT1 *F_OUTTEXT2"
+              (_t=="!16! 0"); text _t; ;
+   end directfile;
+
+%page
+
+   bytefile class outbytefile=="!04! 2 *F_OB_DESC *F_OB_PROT";
+   begin boolean procedure open=="!08! 2 *B_OPEN1 *B_OPEN2"; ;
+         boolean procedure close=="!07! 2 *F_CLOSE1 *F_CLOSE2"; ;
+         boolean procedure checkpoint=="!07! 2 *F_CHKPNT1 *F_CHKPNT2"; ;
+         procedure outbyte=="!07! 2 *B_OUTBYTE1 *B_OUTBYTE2"
+              (_i=="!16! 0"); short integer _i; ;
+%-S      procedure out2byte=="!07! 2 *B_OUT2BYTE1 *B_OUT2BYTE2"
+%-S           (_i=="!16! 0"); integer _i; ;
+         procedure outtext=="!07! 2 *B_OUTTEXT1 *B_OUTTEXT2"
+              (_t=="!16! 0"); text _t; ;
+
+   end outbytefile;
+
+
+   bytefile class inbytefile=="!04! 2 *F_IB_DESC *F_IB_PROT";
+   begin
+         boolean procedure open=="!08! 2 *B_OPEN1 *B_OPEN2"; ;
+         boolean procedure close=="!07! 2 *F_CLOSE1 *F_CLOSE2"; ;
+         short integer procedure inbyte==
+              "!07! 2 *B_INBYTE1 *B_INBYTE2"; ;
+%-S      integer procedure in2byte=="!07! 2 *B_IN2BYTE1 *B_IN2BYTE2"; ;
+         text procedure intext=="!07! 2 *B_INTEXT1 *B_INTEXT2"
+              (_t=="!16! 0"); text _t; ;
+         boolean procedure endfile=="!14! 1 *F_ENDFILE";;
+   end inbytefile;
+
+%page
+
+   bytefile class directbytefile=="!04! 2 *F_DBF_DESC *F_DBF_PROT";
+   begin boolean procedure open=="!08! 2 *B_OPEN1 *B_OPEN2"; ;
+         boolean procedure close=="!07! 2 *F_CLOSE1 *F_CLOSE2"; ;
+         integer procedure location=="!14! 1 *F_LOCATION";;
+         integer procedure lastloc=="!07! 2 *F_LASTLOC1 *F_LASTLOC2"; ;
+         integer procedure maxloc=="!07! 2 *F_MAXLOC1 *F_MAXLOC2"; ;
+         procedure locate=="!07! 2 *F_LOCATE1 *F_LOCATE2"
+              (_i=="!16! 0"); integer _i; ;
+         boolean procedure endfile=="!07! 2 *B_DBENDF1 *B_DBENDF2"; ;
+         boolean procedure locked=="!14! 1 *F_LOCKED"; ;
+         integer procedure lock=="!07! 2 *F_LOCK1 *F_LOCK2"
+              (_t=="!16! 0",_i=="!16! 0",_j=="!16! 0");
+              real _t; integer _i,_j; ;
+         boolean procedure unlock=="!07! 2 *F_UNLOCK1 *F_UNLOCK2"; ;
+         boolean procedure checkpoint=="!07! 2 *F_CHKPNT1 *F_CHKPNT2"; ;
+         procedure outbyte=="!07! 2 *B_DOUTBYTE1 *B_DOUTBYTE2"
+              (_i=="!16! 0"); short integer _i; ;
+%-S      procedure out2byte=="!07! 2 *B_DOUT2BYTE1 *B_DOUT2BYTE2"
+%-S           (_i=="!16! 0"); integer _i; ;
+         procedure outtext=="!07! 2 *B_OUTTEXT1 *B_OUTTEXT2"
+              (_t=="!16! 0"); text _t; ;
+         short integer procedure inbyte==
+              "!07! 2 *B_DINBYTE1 *B_DINBYTE2"; ;
+%-S      integer procedure in2byte=="!07! 2 *B_DIN2BYTE1 *B_DIN2BYTE2";;
+         text procedure intext=="!07! 2 *B_INTEXT1 *B_INTEXT2"
+              (_t=="!16! 0"); text _t; ;
+
+   end directbytefile;
+
+%page
+
+   file class imagefile=="!04! 2 *F_IMF_DESC *F_IMF_PROT";
+   begin text image=="!03! 1 *F_IMAGE";
+
+         procedure setpos=="!12! 2 *T_SETPOS1 *T_SETPOS2"
+              (_i=="!16! 0"); integer _i; ;
+         integer procedure pos=="!45! 0"; ;
+         boolean procedure more=="!43! 0"; ;
+         integer procedure length=="!47! 0"; ;
+   end imagefile;
+
+
+   file class bytefile=="!04! 2 *F_BF_DESC *F_BF_PROT";
+   begin
+         short integer procedure bytesize=="!14! 1 *B_BSIZE"; ;
+
+   end bytefile;
+
+
+   class file=="!04! 2 *F_FI_DESC *F_FI_PROT"
+         (_filename=="!03! 1 *F_NAME");
+         value _filename; text _filename;
+   begin
+         text procedure filename=="!08! 2 *F_FILNAM1 *F_FILNAM2"; ;
+%-S      text procedure datasetname=="!08! 2 *F_FILSET1 *F_FILSET2"; ;
+         boolean procedure isopen=="!07! 2 *F_ISOPEN1 *F_ISOPEN2"; ;
+
+         boolean procedure setaccess==
+           "!08! 2 *F_SETACC1 *F_SETACC2"(_t=="!16! 0"); text _t; ;
+   end file;
+
+
+%title ---   S I M U L A T I O N  and  S I M S E T   ---
+
+   class simset== "!04! 2 *S_SMST_DESC *S_SMST_PROT";
+%+S      protected linkage,link,head;
+   begin
+
+         linkage class link=="!04! 2 *S_LINK_DESC *S_LINK_PROT";
+         begin
+               procedure out=="!07! 2 *S_LINK_OUT1 *S_LINK_OUT2";  ;
+               procedure follow=="!07! 2 *S_LINK_FOLW1 *S_LINK_FOLW2"
+                               (_x=="!16! 0"); ref(linkage)_x;  ;
+               procedure  precede=="!07! 2 *S_LINK_PREC1 *S_LINK_PREC2"
+                               (_x=="!16! 0"); ref(linkage)_x;  ;
+               procedure into=="!07! 2 *S_LINK_INTO1 *S_LINK_INTO2"
+                               (_s=="!16! 0"); ref(head)_s;  ;
+         end;
+
+         linkage class head=="!04! 2 *S_HEAD_DESC *S_HEAD_PROT";
+         begin
+               ref(link)procedure first==
+                             "!07! 2 *S_HEAD_FIRS1 *S_HEAD_FIRS2";  ;
+               ref(link)procedure last==
+                             "!07! 2 *S_HEAD_LAST1 *S_HEAD_LAST2";  ;
+               boolean procedure empty==
+                             "!07! 2 *S_HEAD_EMPT1 *S_HEAD_EMPT2";  ;
+               integer procedure cardinal==
+                             "!07! 2 *S_HEAD_CARD1 *S_HEAD_CARD2";  ;
+               procedure clear=="!07! 2 *S_HEAD_CLEA1 *S_HEAD_CLEA2";  ;
+         end;
+
+         class linkage=="!04! 2 *S_LAGE_DESC *S_LAGE_PROT";
+         begin
+               ref(link)procedure suc==
+                               "!07! 2 *S_LAGE_SUC1 *S_LAGE_SUC2";  ;
+               ref(link)procedure pred==
+                               "!07! 2 *S_LAGE_PRED1 *S_LAGE_PRED2"; ;
+               ref(linkage) procedure prev==
+                               "!07! 2 *S_LAGE_PREV1 *S_LAGE_PREV2"; ;
+         end linkage;
+
+   end simset;
+
+
+   simset class simulation== "!04! 2 *S_SMLN_DESC *S_SMLN_PROT";
+%+S      protected main,current,time,process,hold,passivate,wait,cancel,
+%+S                accum,__1,__2,__3,_mainprogram,_ranking;
+   begin
+
+         ref(process)procedure current=="!14! 1 *S_CURRENT"; ;
+
+         long real procedure time=="!15! 0"; ;
+
+         procedure hold=="!07! 2 *S_HOLD1 *S_HOLD2"
+                         (_t=="!16! 0"); long real _t; ;
+
+         procedure passivate=="!07! 2 *S_PASSIVATE1 *S_PASSIVATE2";  ;
+
+         procedure wait=="!07! 2 *S_WAIT1 *S_WAIT2"
+                         (_s=="!16! 0"); ref(head)_s;  ;
+
+         procedure cancel=="!07! 2 *S_CANCEL1 *S_CANCEL2"
+                         (_x=="!16! 0"); ref(process)_x;  ;
+
+%        ------   a c t i v a t e  1,2,3   ------
+         procedure __1=="!10! 2 *S_ACT11 *S_ACT12"
+           (_x=="!16! 0",_reac=="!16! 0",_code=="!16! 0",_y=="!16! 0");
+            ref(process)_x,_y; boolean _reac,_code;  ;
+
+         procedure __2=="!10! 2 *S_ACT21 *S_ACT22"
+           (_x=="!16! 0",_reac=="!16! 0",_code=="!16! 0",
+            _t=="!16! 0",_pri=="!16! 0");
+            ref(process)_x; boolean _reac, _code, _pri; long real _t; ;
+
+         procedure __3=="!10! 2 *S_ACT31 *S_ACT32"
+           (_x=="!16! 0",_reac=="!16! 0");
+            ref(process)_x; boolean _reac; ;
+
+         procedure accum=="!07! 2 *S_ACCUM1 *S_ACCUM2"
+           (_a=="!16! 0",_b=="!16! 0",_c=="!16! 0",_d=="!16! 0");
+            name _a,_b,_c; long real _a,_b,_c,_d;  ;
+
+         ref(_mainprogram)main=="!14! 1 *S_MAIN";
+
+         process class _mainprogram=="!03! 0";  ;
+
+         _ranking class process==
+                  "!09! 3 *S_PROC_DESC *S_PROC_PROT *S_PROC_TAIL";
+         begin
+               boolean procedure idle==
+                             "!07! 2 *S_PROC_IDLE1 *S_PROC_IDLE2"; ;
+               boolean procedure terminated==
+                             "!07! 2 *S_PROC_TERM1 *S_PROC_TERM2"; ;
+               long real procedure evtime==
+                             "!07! 2 *S_PROC_EVTM1 *S_PROC_EVTM2"; ;
+               ref(process)procedure nextev==
+                             "!07! 2 *S_PROC_NXEV1 *S_PROC_NXEV2"; ;
+         end process;
+
+         link class _ranking== "!03! 2 *S_RNK_DESC *S_RNK_PROT"; ;
+
+   end simulation;
+%title ---  S t a n d a r d    P r o c e d u r e s
+
+%     !------------  BASIC OPERATIONS  ------------;
+
+      integer procedure mod=="!10! 2 *P_MOD1 *P_MOD2"
+           (_i=="!16! 0",_j=="!16! 0"); integer _i,_j; ;
+
+      integer procedure rem=="!20! 0"
+           (_i=="!18! 0",_j=="!18! 0"); integer _i,_j; ;
+
+      integer   procedure abs=="!21! -2 0"(_x=="!18! 0"); integer _x; ;
+      real      procedure _ar=="!22!    0"(_x=="!18! 0"); real    _x; ;
+      long real procedure _al=="!23!    0"(_x=="!18! 0"); long real _x;;
+
+      integer procedure sign=="!24! -2 0"(_x=="!18! 0"); integer   _x; ;
+      integer procedure _sr =="!25!    0"(_x=="!18! 0"); real      _x; ;
+      integer procedure _sl =="!26!    0"(_x=="!18! 0"); long real _x; ;
+
+      integer procedure entier=="!10! -1 2 *P_RENTIER1 *P_RENTIER2"
+           (_x=="!16! 0"); real _x; ;
+      integer procedure _el   =="!10!    2 *P_DENTIER1 *P_DENTIER2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure addepsilon=="!10! -1 2 *P_RADDEPS1 *P_RADDEPS2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _adl=="!10!     2 *P_DADDEPS1 *P_DADDEPS2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure subepsilon=="!10! -1 2 *P_RSUBEPS1 *P_RSUBEPS2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _sbl=="!10! 2 *P_DSUBEPS1 *P_DSUBEPS2"
+           (_x=="!16! 0"); long real _x; ;
+
+
+%     !------------  TEXT UTILITIES  ------------;
+      text procedure copy=="!11! 2 *T_COPY1 *T_COPY2"
+           (_t=="!16! 0"); text _t; ;
+
+      text procedure blanks=="!11! 2 *T_BLANKS1 *T_BLANKS2"
+           (_i=="!16! 0"); integer _i; ;
+
+      character procedure char=="!27! 0"(_i=="!18! 0"); integer _i; ;
+      character procedure isochar=="!28! 0"(_i=="!18! 0"); integer _i; ;
+      integer procedure rank=="!29! 0" (_c=="!18! 0"); character _c; ;
+      integer procedure isorank== "!30! 0"(_c=="!18! 0"); character _c;;
+
+%-S   character procedure loadchar=="!31! 0"
+%-S        (_t=="!19! 0",_i=="!18! 0"); text _t; short integer _i; ;
+%-S   procedure storechar=="!32! 0"
+%-S        (_c=="!18! 0",_t=="!19! 0",_i=="!18! 0");
+%-S        character _c; text _t; short integer _i; ;
+
+      boolean procedure digit=="!10! 2 *P_DIGIT1 *P_DIGIT2"
+           (_c=="!16! 0"); character _c; ;
+
+      boolean procedure letter=="!10! 2 *P_LETTER1 *P_LETTER2"
+           (_c=="!16! 0"); character _c; ;
+
+      character procedure lowten=="!10! 2 *T_LOWTEN1 *T_LOWTEN2"
+           (_c=="!16! 0"); character _c; ;
+
+      character procedure decimalmark=="!10! 2 *T_DCMARK1 *T_DCMARK2"
+           (_c=="!16! 0"); character _c; ;
+
+      text procedure upcase=="!10! 2 *T_UPTX1 *T_UPTX2"
+           (_t=="!16! 0"); text _t; ;
+
+      text procedure lowcase=="!10! 2 *T_LWTX1 *T_LWTX2"
+           (_t=="!16! 0"); text _t; ;
+
+%     !------------  SCHEDULING  ------------;
+
+      procedure detach=="!07! 2 *Q_DETACH1 *Q_DETACH2"; ;
+
+      procedure resume=="!10! 2 *Q_RESUME1 *Q_RESUME2"
+           (_x=="!16! 0"); ref(_text)_x; ;
+
+      procedure call=="!10! 2 *Q_CALL1 *Q_CALL2"
+           (_x=="!16! 0"); ref(_text)_x; ;
+
+%     !------------  MATHEMATICAL FUNCTIONS  ------------;
+
+      real procedure sqrt=="!10! -1 2 *P_RSQRT1 *P_RSQRT2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _ql=="!10! 2 *P_DSQRT1 *P_DSQRT2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure sin=="!10! -1 2 *P_RSIN1 *P_RSIN2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _si=="!10! 2 *P_DSIN1 *P_DSIN2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure cos=="!10! -1 2 *P_RCOS1 *P_RCOS2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _co=="!10! 2 *P_DCOS1 *P_DCOS2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure tan=="!10! -1 2 *P_RTAN1 *P_RTAN2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _ta=="!10! 2 *P_DTAN1 *P_DTAN2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure cotan=="!10! -1 2 *P_RCOTAN1 *P_RCOTAN2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _cot=="!10! 2 *P_DCOTAN1 *P_DCOTAN2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure arcsin=="!10! -1 2 *P_RARCSIN1 *P_RARCSIN2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _as=="!10! 2 *P_DARCSIN1 *P_DARCSIN2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure arccos=="!10! -1 2 *P_RARCCOS1 *P_RARCCOS2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _ac=="!10! 2 *P_DARCCOS1 *P_DARCCOS2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure arctan=="!10! -1 2 *P_RARCTAN1 *P_RARCTAN2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _at=="!10! 2 *P_DARCTAN1 *P_DARCTAN2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure arctan2== "!10! -11 2 *P_RATAN21 *P_RATAN22"
+           (_y=="!16! 0",_x=="!16! 0"); real _y,_x; ;
+      long real procedure _a2== "!10! 2 *P_DATAN21 *P_DATAN22"
+           (_y=="!16! 0",_x=="!16! 0"); long real _y,_x; ;
+
+      real procedure sinh=="!10! -1 2 *P_RSINH1 *P_RSINH2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _sh=="!10! 2 *P_DSINH1 *P_DSINH2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure cosh=="!10! -1 2 *P_RCOSH1 *P_RCOSH2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _ch=="!10! 2 *P_DCOSH1 *P_DCOSH2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure tanh=="!10! -1 2 *P_RTANH1 *P_RTANH2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _th=="!10! 2 *P_DTANH1 *P_DTANH2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure ln=="!10! -1 2 *P_RLN1 *P_RLN2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _ln=="!10! 2 *P_DLN1 *P_DLN2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure log10=="!10! -1 2 *P_RLOG1 *P_RLOG2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _l1=="!10! 2 *P_DLOG1 *P_DLOG2"
+           (_x=="!16! 0"); long real _x; ;
+
+      real procedure exp=="!10! -1 2 *P_REXP1 *P_REXP2"
+           (_x=="!16! 0"); real _x; ;
+      long real procedure _x=="!10! 2 *P_DEXP1 *P_DEXP2"
+           (_x=="!16! 0"); long real _x; ;
+
+%     !------------  EXTREMUM FUNCTIONS  ------------;
+
+      character procedure min =="!33! -14 0"
+           (_x=="!18! 0",_y=="!18! 0"); character _x,_y; ;
+      integer   procedure _mni=="!34!     0"
+           (_x=="!18! 0",_y=="!18! 0"); integer   _x,_y; ;
+      real      procedure _mnr=="!35!     0"
+           (_x=="!18! 0",_y=="!18! 0"); real      _x,_y; ;
+      long real procedure _mnl=="!36!     0"
+           (_x=="!18! 0",_y=="!18! 0"); long real _x,_y; ;
+      text      procedure _mnt=="!10!  2 *P_TMIN1 *P_TMIN2"
+           (_x=="!16! 0",_y=="!16! 0"); text _x,_y; ;
+
+      character procedure max =="!37! -14 0"
+           (_x=="!18! 0",_y=="!18! 0"); character _x,_y; ;
+      integer   procedure _mxi=="!38!     0"
+           (_x=="!18! 0",_y=="!18! 0"); integer   _x,_y; ;
+      real      procedure _mxr=="!39!     0"
+           (_x=="!18! 0",_y=="!18! 0"); real      _x,_y; ;
+      long real procedure _mxl=="!40!     0"
+           (_x=="!18! 0",_y=="!18! 0"); long real _x,_y; ;
+      text      procedure _mxt=="!10!  2 *P_TMAX1 *P_TMAX2"
+           (_x=="!16! 0",_y=="!16! 0"); text _x,_y; ;
+
+%     !------------  ENVIRONMENTAL ENQUIRIES  ------------;
+
+      integer procedure sourceline=="!41!  0"; ;
+
+      ref(infile)procedure sysin=="!14! 1 *G_SYSINVAR"; ;
+
+      ref(printfile)procedure sysout=="!14! 1 *G_SYSOUTVAR"; ;
+
+      long real procedure maxlongreal=="!13! 1 *G_MAXLREAL"; ;
+      long real procedure minlongreal=="!13! 1 *G_MINLREAL"; ;
+      real procedure maxreal=="!13! 1 *G_MAXREAL"; ;
+      real procedure minreal=="!13! 1 *G_MINREAL"; ;
+      integer procedure maxrank=="!13! 1 *G_MAXRANK"; ;
+      integer procedure maxint=="!13! 1 *G_MAXINT"; ;
+      integer procedure minint=="!13! 1 *G_MININT"; ;
+      text procedure simulaid=="!14! 1 *G_SIMID"; ;
+
+%     !------------  TERMINATION CONTROL  ------------;
+
+      procedure terminate_program=="!10! 2 *P_TRMP1 *P_TRMP2"; ;
+
+      procedure error=="!10! 2 *P_ERRX1 *P_ERRX2"
+           (_t=="!16! 0"); text _t; ;
+
+%     !------------  ARRAY QUANTITIES  ------------;
+
+%     Note: array parameter specified as integer, should be "anytype"
+%           type checking is suppressed by classification '!17!'
+
+      integer procedure lowerbound=="!10! 2 *P_LOWBND1 *P_LOWBND2"
+           (_a=="!17! 0",_i=="!16! 0"); integer array _a; integer _i; ;
+
+      integer procedure upperbound=="!10! 2 *P_UPPBND1 *P_UPPBND2"
+           (_a=="!17! 0",_i=="!16! 0"); integer array _a; integer _i; ;
+
+%-S   short integer procedure dimensions=="!10! 2 *P_ARRDIM1 *P_ARRDIM2"
+%-S        (_a=="!17! 0"); integer array _a; ;
+
+%     !------------  RANDOM DRAWING  ------------;
+
+      boolean procedure draw=="!10! 2 *D_DRAW1 *D_DRAW2"
+           (_a=="!16! 0",_u=="!16! 0");
+           name _u; long real _a; integer _u; ;
+
+      integer procedure randint=="!10! 2 *D_RANDINT1 *D_RANDINT2"
+           (_a=="!16! 0",_b=="!16! 0",_u=="!16! 0");
+           name _u; integer _a,_b,_u; ;
+
+      long real procedure uniform=="!10! 2 *D_UNIFORM1 *D_UNIFORM2"
+           (_a=="!16! 0",_b=="!16! 0",_u=="!16! 0");
+           name _u; long real _a,_b; integer _u; ;
+
+      long real procedure normal=="!10! 2 *D_NORMAL1 *D_NORMAL2"
+           (_a=="!16! 0",_b=="!16! 0",_u=="!16! 0");
+           name _u; long real _a,_b; integer _u; ;
+
+      real procedure negexp=="!10! 2 *D_NEGEXP1 *D_NEGEXP2"
+           (_a=="!16! 0",_u=="!16! 0");
+           name _u; long real _a; integer _u; ;
+
+      long real procedure poisson=="!10! 2 *D_POISSON1 *D_POISSON2"
+           (_a=="!16! 0",_u=="!16! 0");
+           name _u; long real _a; integer _u; ;
+
+      long real procedure erlang=="!10! 2 *D_ERLANG1 *D_ERLANG2"
+           (_a=="!16! 0",_b=="!16! 0",_u=="!16! 0");
+           name _u; long real _a,_b; integer _u; ;
+
+      integer procedure discrete=="!10! -1 2 *D_DISCRETE1 *D_DISCRETE2"
+           (_a=="!16! 0",_u=="!16! 0");
+           name _u; real array _a; integer _u; ;
+      integer procedure _discret=="!10!  2 *D_DDISCRETE1 *D_DDISCRETE2"
+           (_a=="!16! 0",_u=="!16! 0");
+           name _u; long real array _a; integer _u; ;
+
+      long real procedure linear=="!10! -11 2 *D_LINEAR1 *D_LINEAR2"
+           (_a=="!16! 0",_b=="!16! 0",_u=="!16! 0");
+           name _u; real array _a,_b; integer _u; ;
+      long real procedure _linea=="!10!  2 *D_DLINEAR1 *D_DLINEAR2"
+           (_a=="!16! 0",_b=="!16! 0",_u=="!16! 0");
+           name _u; long real array _a,_b; integer _u; ;
+
+      integer procedure histd=="!10! -1 2 *D_HISTD1 *D_HISTD2"
+           (_a=="!16! 0",_u=="!16! 0");
+           name _u; real array _a; integer _u; ;
+      integer procedure _hist=="!10!  2 *D_DHISTD1 *D_DHISTD2"
+           (_a=="!16! 0",_u=="!16! 0");
+           name _u; long real array _a; integer _u; ;
+
+%     !------------  CALENDAR AND TIMING  ------------;
+
+%-S   text procedure date_time=="!11! 2 *U_DANDT1 *U_DANDT2"; ;
+      text procedure datetime=="!11! 2 *U_DANDT1 *U_DANDT2"; ;
+
+      long real procedure cputime=="!10! 2 *U_TIMEUSED1 *U_TIMEUSED2"; ;
+
+      long real procedure clocktime=="!10! 2 *U_CLOCKTIME1 *U_CLOCKTIME2";
+           ;
+
+%     !------------  MISCELLANEOUS  ------------;
+
+      procedure histo=="!10! 2 *D_HISTO1 *D_HISTO2"
+           (_a=="!16! 0",_b=="!16! 0",_c=="!16! 0",_d=="!16! 0");
+           real array _a,_b; real _c,_d; ;
+
+%-S   integer procedure getintinfo=="!10! 2 *E_GETIINF1 *E_GETIINF2"
+%-S        (_i=="!16! 0"); integer _i; ;
+
+%-S   text procedure gettextinfo=="!11! 2 *E_GETTINF1 *E_GETTINF2"
+%-S        (_i=="!16! 0"); integer _i; ;
+
+%-S   character
+%-S   procedure giveintinfo=="!10! 2 *E_GIVEIINF1 *E_GIVEIINF2"
+%-S        (_i=="!16! 0",_j=="!16! 0"); integer _i,_j; ;
+
+%-S   character
+%-S   procedure givetextinfo=="!10! 2 *E_GIVETINF1 *E_GIVETINF2"
+%-S        (_i=="!16! 0",_t=="!16! 0"); integer _i; text _t; ;
+
+%-S   short integer procedure hash=="!10! 2 *E_HASH1 *E_HASH2"
+%-S        (_t=="!16! 0"); text _t; ;
+
+%-S   procedure RTS_Utility=="!10! 2 *R_RTS_UTIL1 *R_RTS_UTIL2"
+%-S        (_code=="!16! 0",_val=="!16! 0");integer _code,_val; ;
+
+%-S   procedure DEFEXCEPTION=="!10! 2 *R_ERR_LAB1 *R_ERR_LAB2"
+%-S        (_erh=="!16! 0",_eno=="!16! 0");
+%-S        name _eno; label _erh; integer _eno; ;
+
+end of PREDEFMODULE;

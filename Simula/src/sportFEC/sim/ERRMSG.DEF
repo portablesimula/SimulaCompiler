@@ -1,0 +1,1002 @@
+% External class COMMON; 
+External class COMMON="C:\GitHub\SimulaCompiler\Simula/src/sportFEC/bin/COMMON.jar"; 
+
+% This Module is written to: C:\GitHub\SimulaCompiler\Simula/src/testing/bin/ERRMSG.jar 
+
+COMMON class ERRMSG;
+
+hidden protected uplim,messlength,
+                 printDiag,diagmerge,GiveMessage,abortCompilation,
+                 lasterrpos,lasterrmess,lasterrline;
+
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---                  E r r o r   M e s s a g e s              ---
+%      ---                                                           ---
+%      --- Selection switches: KI                                    ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+%SELECT Z
+
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+
+      short integer numwarnfound;! number of warnings              ;
+      short integer maxerrno;
+      integer uplim=450;     !*** index of last message     ***;
+
+      ref(directfile) ERRORFILE; boolean ERRnotopen;
+%     ref(directbytefile) ERRORFILE; boolean ERRnotopen;
+      integer messlength=50; !*** length of largest message ***;
+
+%title ******   General Diagnostic Routines   ******
+
+% P   prior
+      procedure printDiag(t); text t; !*** print message ***;
+      if t =/= notext then
+      begin outtext(t); outimage;       !    - on SYSOUT;
+            if listfile=/=sysout then inspect listfile do begin
+               outtext(t); outimage;    !and on listfile, if any;
+            end;
+      end;
+
+% P   prior
+      procedure GiveMessage(ec,index); character ec;short integer index;
+      begin short integer i; text t,tout;
+         if messageLinenr<=0 then messageLinenr:=linenr;
+         t:-  if ec=NUL then "Note!: " else if ec='!1!' then "Warn.: "
+         else if ec='!2!' then "ERROR: " else              "FATAL: ";
+         if (currentpass>'1' or ec>='!3!') and then messageLinenr>0
+         then begin
+            tout:-leftint(messageLinenr); t:- t & "(l. " & tout & ") " ;
+         end;
+         messageLinenr:=0; i:=t.length+1;
+
+         tout:-diagMerge(index); t:- t & tout;
+
+         while t.length > 78 do begin !*** break message;
+               t.setpos(79);
+               while t.getchar <> ' ' do t.setpos(t.pos-2);
+               tout:-t.sub(1,t.pos-2); t:-t.sub(t.pos,t.length-t.pos+1);
+               printDiag(tout);
+         end;
+
+         printDiag(t);
+         if ec='!1!' then numwarnfound:=numwarnfound+1;
+         if ec='!2!' then begin
+            numerrfound:=numerrfound+1;
+            if termstatus<'5' then termstatus:='5';
+%+D         giveintinfo(1,rank(termstatus)-rank('0'));
+         end;
+%+Z      RTS_utility(1,0);
+         if numerrfound>maxerrno or ec>'!2!' then AbortCompilation;
+      end;
+%page
+      text procedure diagmerge(n); short integer n;
+      begin text result,t,t2; short integer i;
+            diagmerge:-t:-errmsg(n);
+            if diag(0) =/= notext then begin
+               while diag(i) =/= notext do begin
+                  if loadchar(diag(i),0)='_' and then 
+                     loadchar(diag(i),1)='_'
+                  then begin
+                     if n=337 then begin
+                        diagmerge:-errmsg(168); goto EX end;
+                     if n=427 then begin
+                        diagmerge:-errmsg(358); goto EX end;
+                     if n=426 then begin
+                        diagmerge:-errmsg(234); goto EX end;
+                     diag(i):-"ACTIVATE";
+                  end;
+                  while t.more do
+                     if t.getchar='?' then begin
+                        t2:-t.sub(1,t.pos-2);
+                        t:-t.sub(t.pos,t.length-t.pos+1);
+                        goto CONCAT;
+                     end;
+                  t2:-t; t:-notext;
+      CONCAT:
+                  result:-result & t2 & diag(i) ;
+                  diag(i):-notext; i:=i+1;
+               end;
+               diagmerge:-result & t ;
+            end;
+  EX: end;
+
+
+      text procedure errmsg(i); short integer i;
+      begin text t;
+            if i=0 then  !errmsg:-notext;
+       else if ERRnotopen then begin
+      SETNUM:  errmsg:-t:-copy(" ERROR ... "); t.sub(8,3).putint(i);
+            end
+       else if i > 0 and then i <= uplim then begin
+               if ERRORFILE==none then begin
+                  t:-gettextinfo(22);
+                  if t==notext then t:-"FECERROR";   ! WHAT ELSE ?;
+%                 ERRORFILE:-new directbytefile(t);
+%                 ERRORFILE.setaccess("nocreate");
+%                 if not ERRORFILE.open then begin
+                  ERRORFILE:-new directfile(t);
+                  ERRORFILE.setaccess("READONLY");
+               end;
+               if not ERRnotopen then begin
+                  t:-blanks(50);
+                  if not ERRORFILE.open(t) then begin
+                     printDiag("*** CAN'T OPEN DIAGNOSTICS FILE ***");
+                     ERRnotopen:=true; goto SETNUM;
+                  end;
+%                   ERRORFILE.locate(i+i+i);
+%                   i:=ERRORFILE.in2byte*256+ERRORFILE.inbyte;
+%                   length:=ERRORFILE.in2byte*256+ERRORFILE.inbyte-i;
+%                   ERRORFILE.locate(i); errmsg:-t:-blanks(length);
+%                   ERRORFILE.intext(t);
+                  ERRORFILE.locate(i); ERRORFILE.inimage;
+                  if ERRORFILE.endfile then begin
+                     printDiag("*** INCOMPATIBLE DIAGNOSTICS FILE ***");
+                     goto SETNUM;
+                  end;
+                  errmsg:-copy(ERRORFILE.image.strip);
+                  ERRORFILE.close;
+               end;
+            end
+            else begin errmsg:-t:-copy("*** DIAGNOSTIC ERROR: .....");
+                       t.sub(23,5).putint(i) end;
+      end;
+%title ******   Pass 1 Error Routines   ******
+
+      short integer lasterrpos,lasterrmess,errloop;
+            integer lasterrline;
+
+% P   prior
+      procedure outP1message(where,message,code);
+      short integer where,message; character code;
+      begin text marker,utlin; short integer tabcor;
+            character ISOtab='!9!';
+            if lasterrline=linenr and then
+               (lasterrpos>=where or lasterrmess=message)
+            then begin
+               errloop:=errloop+1;
+               if errloop>4 then fatal0(0);
+                  ! stop possible looping - this is a FIX;
+               goto NOMESS;
+            end;
+            errloop:=0;
+            lasterrmess:=message;
+%           utlin:-line.sub(1,if linelength<listlength
+%                                then linelength else listlength);
+            utlin:-line;
+            if lasterrline<>linenr then begin !test for listing;
+               if not listingon or else listfile=/=sysout
+               then begin
+                  outint(linenr,6); outtext(": "); outtext(utlin);
+                  outimage;
+               end;
+            end;
+            if lasterrpos<>where or lasterrline<>linenr then begin
+               tabcor:=where+7; utlin.setpos(1);
+               !*** TAB expand according to DOS/UNIX standard ***;
+               while utlin.more do if utlin.getchar=ISOtab then
+                     tabcor:=tabcor + 8 - rem(7,utlin.pos);
+               marker:-blanks(tabcor);
+               marker.setpos(9);
+               while marker.pos<tabcor do marker.putchar('=');
+               marker.putchar('I'); printDiag(marker);
+            end;
+            lasterrline:=linenr; lasterrpos:=where;
+            GiveMessage(code,message);
+      NOMESS:
+      end;
+
+% P   prior
+      procedure parserMessage(errpos,n1,n2); short integer errpos,n1,n2;
+      begin if n2<>0 then begin
+               diag(0):-errmsg(n2); diag(0):-" - " & diag(0) end;
+            outP1message(errpos,n1,'!2!') end;
+
+      procedure COMMONerror(EXC_NUMBER); short integer EXC_NUMBER;
+      !*** virtual match ***;
+      if EXC_NUMBER>0 then fatal0(EXC_NUMBER)
+      else begin EXC_NUMBER:=-EXC_NUMBER;
+          if EXC_NUMBER = 106 then begin
+             ! here we can only try to give a message on SYSOUT !!!!! ;
+             outtext("*** NO MORE DISK or FILE SPACE ***");
+          end
+          else begin
+             if EXC_NUMBER = 11 then begin
+                outtext("*** COMPILATION KILLED");
+             end
+             else begin
+                if numerrfound=0 then begin
+	          outtext("*** INTERNAL ERROR (RTS error #");
+                  outint(EXC_NUMBER,0); outtext(")");
+                end
+                else outtext("*** Compiler cannot recover, ABORT");
+                if linenr > 0 then begin
+                   outtext(" at source line "); outint(linenr,0);
+                end;
+%+Z             outtext(if currentpass='1' then " (Pass1) ***"
+%+Z                                        else " (Pass2) ***");
+             end;
+             if listfile=/=none and then listfile=/=sysout then begin
+                listfile.outtext(sysout.image.strip); listfile.outimage;
+             end;
+          end;
+          outimage;
+%+Z       RTS_Utility(1,0);
+          ENDCOMP;
+      end;
+%title ******   Pass 2 Error Routines   ******
+
+      text procedure qlin(r); ref(quantity) r;
+      begin text ltxt;
+         if r=/=none then begin
+            if r.line > 0 then begin
+               ltxt:-leftint(r.line); ltxt:-"(l. " & ltxt & ")"; end
+            else ltxt:-"(ext.)";
+            qlin:-r.symb.symbol & ltxt;
+         end;
+      end;
+
+% %+P   prior
+      procedure errQT(q,n); ref(quantity) q; short integer n;
+      if q=/=none then
+      begin messageLinenr:=q.line; error1id(n,q.symb);
+% %+P         q:-none; !*** GC ***;
+      end;
+
+% %+P   prior
+      procedure errQTN(q,n,qt); ref(quantity) q,qt; short integer n;
+      begin diag(1):-qlin(qt); errQT(q,n);
+% %+P         q:-qt:-none; !*** GC ***;
+      end;
+
+% P   prior
+      procedure error1qlin(n,q); short integer n; ref(quantity) q;
+      begin diag(0):-qlin(q); error0(n);
+% P         q:-none; !*** GC ***;
+      end;
+
+% P   prior
+      procedure error2quants(n,q,qt);short integer n;ref(quantity) q,qt;
+      begin diag(1):-qlin(qt); error1id(n,q.symb);
+% P         q:-none; !*** GC ***;
+      end;
+
+      procedure notimp(t); text t;
+      begin diag(0):-t; fatal0(309); end;
+
+% %+P   prior
+      ref(quantity)procedure newnotseen(symx); ref(symbolbox) symx;
+      begin ref(quantity)q;
+         inspect new quantity do begin
+            q:-unknowns.fpar;
+            if q==none then
+            begin unknowns.fpar:-this quantity; virtno:=1 end
+       else begin while q.next=/=none do q:-q.next;
+                  q.next:-this quantity;
+                  virtno:=q.virtno+1;
+            end;
+            symb:-symx;
+            categ:=C_unknwn; kind:=K_error; type:=IELSE; plev:=one;
+            line:=linenr; dim:=1; encl:-unknowns;
+            ! not used unknowns.nloc:=unknowns.nloc+1;
+            ! prevmeaning:-symx qua identsymbol.curmeaning;
+            newnotseen:- symb qua identsymbol.curmeaning:-this quantity;
+         end inspect;
+% %+P      q:-none;    !*** GC ***;
+% %+P      symx:-none; !*** GC ***;
+      end of newnotseen;
+
+%title ******   D I A G N O S T I C   P R O C E D U R E S   *****
+
+% P   prior
+      procedure note0(n); short integer n;     GiveMessage(NUL,n);
+
+
+% %+P   prior
+      procedure error0(n); short integer n;
+      if n<0 then GiveMessage('!1!',-n) else GiveMessage('!2!',n);
+
+
+% %+P   prior
+      procedure fatal0(n); short integer n;    GiveMessage('!3!',n);
+
+
+% %+P   prior
+      procedure internerr(module,lnr);
+      character module; short integer lnr;
+      begin text modname;
+         if numerrfound=0 then inspect sysout do begin
+            outimage;
+            switch(NUL:'!18!') module begin
+            when '!00!' do modname:-"COMMON";
+            when '!01!' do modname:-"ERRMSG";
+            when '!02!' do modname:-"SCANNER";
+            when '!03!' do modname:-"SCANINP";
+            when '!04!' do modname:-"PARSER";
+            when '!05!' do modname:-"PAS1INIT";
+            when '!06!' do modname:-"BUILDER1";
+            when '!07!' do modname:-"BUILDER2";
+            when '!08!' do modname:-"CHECKER1";
+            when '!09!' do modname:-"CHECKER2";
+            when '!10!' do modname:-"SCODER0";
+            when '!11!' do modname:-"SCODER1";
+            when '!12!' do modname:-"SCODER1E";
+            when '!13!' do modname:-"SCODER2";
+            when '!14!' do modname:-"SCODER3";
+            when '!15!' do modname:-"SCODER4";
+            when '!16!' do modname:-"PAS2INIT";
+            when '!17!' do modname:-"SCODMAIN";
+            when '!18!' do modname:-"FECMAIN";
+            end case;
+            modname:-"*** Internal error in " & modname & ", line ";
+            outtext(modname); outint(lnr,0);
+            outtext(", compiling source line "); outint(linenr,0);
+            outimage;
+         end;
+         abortCompilation;
+      end;
+
+
+% P   prior
+      procedure note1(n,t); short integer n; text t;
+      begin diag(0):-t; note0(n) end;
+
+
+% P   prior
+      procedure note1id(n,symb); short integer n; ref(symbolbox) symb;
+      begin diag(0):-symb.symbol; note0(n) end;
+
+
+% P   prior
+      procedure removeVis(brc,visp,err);
+      ref(brecord) brc; ref(idpack) visp; short integer err;
+            !*** NOTE: visp IS in hidlist, brc =/= none;
+      begin ref(idpack) prev,cur;
+            messageLinenr:=visp.line;
+            diag(0):-boxOf(visp.idhi,visp.idlo).symbol; error0(-err);
+            cur:-brc.hidlist;  ! prev:-none ;
+            while cur=/=visp do begin prev:-cur; cur:-cur.next end;
+            if prev==none then brc.hidlist:-visp.next
+            else prev.next:-visp.next;
+      end;
+
+
+% P   prior
+      procedure error1(n,t); short integer n; text t;
+      begin diag(0):-t; error0(n) end;
+
+
+% %+P   prior
+      procedure error1id(n,symb); short integer n; ref(symbolbox) symb;
+      begin diag(0):-symb.symbol; error0(n) end;
+%page
+
+% P   prior
+      procedure openerror(fname);  text fname;
+      begin diag(0):-fname; fatal0(336) end;
+
+
+% P   prior
+      procedure error2(n,t1,t2); short integer n; text t1,t2;
+      begin diag(0):-t1; diag(1):-t2; error0(n); end;
+
+
+% %+P   prior
+      procedure error2xx(n1,n2,n3); short integer n1; character n2,n3;
+      if n2 <> IELSE then
+      begin diag(0):-errmsg(rank(n2)); diag(1):-errmsg(rank(n3));
+            error0(n1) end;
+
+
+% P   prior
+%     procedure error3xxx(n1,n2,n3,n4);
+%     short integer n1; character n2,n3,n4;
+%     begin diag(0):-errmsg(rank(n2)); diag(1):-errmsg(rank(n3));
+%           diag(2):-errmsg(rank(n4)); error0(n1);
+%     end;
+
+%title ***  E r r o r    M e s s a g e s  ***
+% E begin  !*****  this is the message-generating program   *****;
+% %
+% %     ---  Create a directfile with all messages as records ---
+% %
+% %          The following internal error messages may be given:
+% %
+% %          Any unused entry will be "*** FEC ERROR nnn" (nnn integer)
+% %          - if such a message ever occurs we are in deep trouble!!!
+% %
+% %          Messages of the type "*** SYSTEM ERROR nnn" (nnn integer)
+% %          are emitted by redundancy-checking in FEC. They also should
+% %          never occur (but at least they identify the cause!).
+% %
+% %          In addition, treatment of exceptions may lead to additional
+% %          messages from FEC. These are (except for storage overflow)
+% %          also symptoms of a sick system!!!
+% %
+% %          Except for STORAGE NOT AVAILABLE, all such messages should
+% %          be reported so that the error can be fixed!
+% %
+% %          NOTE!!! - the constant 'uplim' must NOT be changed
+% %
+% %    About the diagnostic messages:
+% %    =============================
+% %
+% %          The messages are largely self-explaining. The aim has been
+% %          to keep the message within one line, but still convey
+% %          enough information about the diagnosed problem. This is not
+% %          always possible - and in that case a more extensive expla-
+% %          nation is given below the message in question.
+% %
+% %          Each message is prefixed with a severity code in the list
+% %          below. Note that this code expands to a more sensible text
+% %          when the message is printed, so that N stands for Notes,
+% %          W for Warnings, E for Errors and F for Fatal errors.
+% %
+% %          The messages are read from file as they are needed. If for
+% %          some reason this message file cannot be read, the compiler
+% %          will print out a message to that effect, and report by the
+% %          message number as given below, followed (if applicable) by
+% %          the texts to be inserted.
+% %
+% %          Within the messages as given below, a question mark
+% %          indicates that some additional information will be inserted
+% %          during message processing, such as e.g. the name of an
+% %          identifier.
+% %
+% %
+% E     text fname; integer i;
+% E     ref(ERRORTEXT) errtxt;
+% E     integer messlength=50; !*** length of largest message ***;
+% E     integer uplim=450;     !*** leave a bit space in file ***;
+% %
+% E    class ERRORTEXT;
+% E    begin
+% E          text array msg(1:uplim);
+% E          short integer i;
+% %
+% E          !******  KEYWORDS  ******;
+% %  These should never occur as messages per se, but are used as
+% %  phrases when building a diagnostic message (e.g. in
+% %INSERT $SIMSRC/fec/common.mne
+% E          msg(rank(IBOOL) ):-"BOOLEAN";
+% E          msg(rank(ICHAR) ):-"CHARACTER";
+% E          msg(rank(ISHOR) ):-"SHORT INTEGER";
+% E          msg(rank(IINTG) ):-"INTEGER";
+% E          msg(rank(IREAL) ):-"REAL";
+% E          msg(rank(ILONG) ):-"LONG REAL";
+% E          msg(rank(IREF ) ):-"REF";
+% E          msg(rank(IPTR ) ):-"pointer";
+% E          msg(rank(ITEXT) ):-"TEXT";
+% E          msg(rank(IVALU) ):-"parameter";
+% E          msg(rank(ILABE) ):-"LABEL";
+% E          msg(rank(IPROC) ):-"PROCEDURE";
+% E          msg(rank(IARRA) ):-"ARRAY";
+% E          msg(rank(INOTY) ):-"no-type";
+% E          msg(rank(IELSE) ):-"ELSE";
+% E          msg(rank(IEQV ) ):-"EQV";
+% E          msg(rank(IEXTR) ):-"EXTERNAL";
+% E          msg(rank(IIMP ) ):-"IMP";
+% E          msg(rank(ICLAS) ):-"CLASS";
+% E          msg(rank(IRCRD) ):-"RECORD";
+% E          msg(rank(INAME) ):-"parameter";
+% E          msg(rank(INOT ) ):-"NOT";
+% E          msg(rank(IOR  ) ):-"OR";
+% E          msg(rank(IPRIO) ):-"PRIOR";
+% E          msg(rank(IDELA) ):-"DELAY";
+% E          msg(rank(IREAC) ):-"REACTIVATE";
+% E          msg(rank(IAT  ) ):-"AT";
+% E          msg(rank(IBEFO) ):-"BEFORE";
+% E          msg(rank(IAND ) ):-"AND";
+% E          msg(rank(IACTV) ):-"ACTIVATE";
+% E          msg(rank(ITO  ) ):-"target";
+% E          msg(rank(IAFTR) ):-"AFTER";
+% E          msg(rank(IVIRT) ):-"VIRTUAL";
+% E          msg(rank(ILT  ) ):-"<";
+% E          msg(rank(IEQ  ) ):-"=";
+% E          msg(rank(ILE  ) ):-"<=";
+% E          msg(rank(IGE  ) ):-">=";
+% E          msg(rank(INE  ) ):-"<>";
+% E          msg(rank(IGT  ) ):-">";
+% E          msg(rank(IRFEQ) ):-"==";
+% E          msg(rank(IRFNE) ):-"=/=";
+% E          msg(rank(IPLUS) ):-"+";
+% E          msg(rank(IMINU) ):-"-";
+% E          msg(rank(IMULT) ):-"*";
+% E          msg(rank(ISLAS) ):-"/";
+% E          msg(rank(IPOWE) ):-"**";
+% E          msg(rank(IIDIV) ):-"//";
+% E          msg(rank(IASSG) ):-":=";
+% E          msg(rank(IDENO) ):-":-";
+% E          msg(rank(ICONC) ):-"&";
+% E          msg(rank(ICAND) ):-"AND THEN";
+% E          msg(rank(ICOR ) ):-"OR ELSE";
+% E          msg(rank(IIDN ) ):-"simple";
+% E          msg(rank(IFRMP) ):-"parameter";
+% E          msg(rank(IACTE) ):-"actual";
+% E          msg(rank(IEEXP) ):-"expression";
+% E          msg(rank(IFASG) ):-":=";
+% E          msg(rank(IFDNO) ):-":-";
+% E          msg(rank(ISCST) ):-"text constant";
+% E          msg(rank(IUMNS) ):-"-";
+% E          msg(rank(IUPLS) ):-"+";
+% %
+% %          --- 149 is last currently, use 150 as first message ---
+% %
+% %    error0:
+% E         msg(150):-"illegal destination for :=";
+% E         msg(151):-"THIS used in prefix of pref.block";
+% % h                 If "this" is used within a class, that class
+% % h                 cannot be used for block prefixing (4.10.1(1))
+% E         msg(152):-"constant left of :=";
+% E         msg(153):-"non-reference expression preceding IN";
+% E         msg(154):-"non-reference expression preceding IS";
+% E         msg(155):-"text concatenation operand not type TEXT";
+% E         msg(156):-"reference left of :=";
+% E         msg(157):-"reference right of :=";
+% E         msg(158):-"expression in parentheses left of :=";
+% % h                 Left hand side of assignment is an expression
+% % h                 in parentheses - this is legal only for TEXT
+% E         msg(159):-"assignment operator incompatible with type";
+% % h                 Left and right hand sides of an assignment are
+% % h                 of compatible types, but the operator is wrong.
+% % h                 ':=' is replaced by ':-', or vice versa.
+% E         msg(160):-"illegal destination for :-";
+% E         msg(161):-"non-boolean expr. after IF"; !if-expr;
+% E         msg(162):-"expression before dot must be REF or TEXT";
+% E         msg(163):-"improper reference expression before dot";
+% E         msg(164):-"switch element must be designational expr.";
+% E         msg(165):-"non-boolean expr. after WHILE";
+% E         msg(166):-"non-arithmetic expr. after STEP";
+% E         msg(167):-"non-arithmetic expr. after UNTIL";
+% E         msg(168):-"(RE)ACTIVATE illegal in this context";
+% % h                 e.g. used outside of a SIMULATION block.
+% E         msg(169):-"non-reference expr. after (RE)ACTIVATE";
+% E         msg(170):-"... ? = expression: expr. cannot be evaluated";
+% % h                 The constant element expression cannot be
+% % h                 computed by the compiler, probably because non-
+% % h                 constant identifiers are included.
+% E         msg(171):-"non-designational expr. after GOTO";
+% E         msg(172):-"non-boolean expr. after IF or WHILE";
+% E         msg(173):-"misplaced expression";
+% E         msg(174):-"non-reference expr. after INSPECT";
+% E         msg(175):-" *** SYSTEM ERROR - saved stacks";
+% E         msg(176):-" *** SYSTEM ERROR - asdzero";
+% E         msg(177):-" *** SYSTEM ERROR - asdequal";
+% E         msg(178):-"constant transmitted by address";
+% % h                 Constant as actual parameter to an EXTERNAL non-
+% % h                 Simula procedure, and the formal is NAME-specified
+% E         msg(179):-"expression transmitted by address";
+% % h                 Expr. as actual parameter to an EXTERNAL non-
+% % h                 Simula procedure, and the formal is NAME-specified
+% E         msg(180):-"controlled variable is NAME-parameter";
+% E         msg(181):-"invalid numerical constant";
+% E         msg(182):-"misplaced character quote skipped";
+% E         msg(183):-"illegal digit in radix-number";
+% E         msg(184):-"no specifier after VIRTUAL: (PROCEDURE assumed)";
+% E         msg(185):-"identifier expected";
+% E         msg(186):-"')' or ',' expected (param-list or array decl.)";
+% E         msg(187):-"'(' or ',' expected in array decl.";
+% E         msg(188):-"invalid expr. (in array or constant decl.)";
+% E         msg(189):-"':' expected in array bound-pair";
+% E         msg(190):-"':=' expected after SWITCH identifier";
+% E         msg(191):-"invalid designational expr.";
+% E         msg(192):-"invalid external declaration";
+% E         msg(193):-"external identification string missing";
+% E         msg(194):-"CLASS parameters cannot be NAME";
+% E         msg(195):-"multiple NAME specification not allowed";
+% E         msg(196):-"multiple VALUE specification not allowed";
+% E         msg(197):-"invalid blockprefix";
+% E         msg(198):-"power (**) is undefined";
+% E         msg(199):-"invalid expression as right part of :=";
+% E         msg(200):-"invalid destination for denote (:-)";
+% E         msg(201):-"invalid right hand side of denote (:-)";
+% E         msg(202):-"invalid statement";
+% E         msg(203):-"multiple INNER not allowed";
+% E         msg(204):-"END or ';' expected";
+% E         msg(205):-"invalid expression: ";
+% E         msg(206):-"DO expected";
+% E         msg(207):-"THEN expected";
+% E         msg(208):-"ELSE is not allowed here";
+% E         msg(209):-"no assignment to ctrl. variable (FOR-statement)";
+% E         msg(210):-"UNTIL missing in FOR-STEP construction";
+% E         msg(211):-"DO or WHEN expected";
+% E         msg(212):-"illegal outermost statement";
+% % h                 A source module must be a class or procedure
+% % h                 declaration, or a main program (which must be
+% % h                 either a block or a compound statement).
+% E         msg(213):-"IF-statement illegal after THEN";
+% % h                 Since the IF-statement is not closed, it is not
+% % h                 legal with constructions like:
+% % h                    if B then if C then S1 else S2
+% % h                 S-port will issue this warning and assume that
+% % h                 ELSE (if any) is tied to the nearest preceding IF.
+% E         msg(214):-"virtual procedure - illegal after IS";
+% E         msg(215):-"misplaced or illegal declaration ignored";
+% E         msg(216):-"ARRAY or SWITCH declaration before first BEGIN";
+% E         msg(217):-"misplaced VALUE or NAME";
+% E         msg(218):-"declaration before class body";
+% E         msg(219):-"IS is not allowed here";
+% E         msg(220):-"nonempty body in procedure spec.";
+% E         msg(221):-"PROCEDURE expected"; !proc.spec.;
+% E         msg(222):-"non-Simula procedure in external head";
+% E         msg(223):-"'?' is not a parameter";
+% E         msg(224):-"parameter '?' has double specification";
+% E         msg(225):-"IF is not allowed here";
+% E         msg(226):-"ELSE expected (if-expr.)";
+% E         msg(227):-"'(' illegal here - assumed missing ARRAY";
+% % h                 While scanning the declaration part of some
+% % h                 block, the compiler found eg. "text a(". It is
+% % h                 assumed that this is the beginning of an
+% % h                 incomplete ARRAY declaration, ie. "text ARRAY a("
+% % h                 was intended.
+% E         msg(228):-"operand expected";
+% E         msg(229):-"incomplete expression";
+% E         msg(230):-"- case selection expression";
+% E         msg(231):-"- when-value of case statement";
+% E         msg(232):-"assignment operator assumed ('=' illegal)";
+% E         msg(233):-"double dash deletes rest of line";
+% % h                 This is a special feature of S-port systems.
+% E         msg(234):-"expr after BEFORE/AFTER/DELAY/AT: wrong type";
+% E         msg(235):-"FOR variable not followed by := or :-";
+% E         msg(236):-"misplaced identifier";
+% E         msg(237):-"file ? is open - circular %INSERT/COPY?";
+% E         msg(238):-"MACRO ? is called without parameters";
+% E         msg(239):-"MACRO ? is called with too few parameters";
+% E         msg(240):-"RECORD cannot have parameters";
+% E         msg(241):-"dubious usage of QUA ?";
+% E         msg(242):-" *** SYSTEM ERROR 242";
+% E         msg(243):-"illegal use of IN/IS ?";
+% E         msg(244):-"""VALUE ?;"" assumed in C/Pascal proc. ?";
+% E         msg(245):-"text constant transmitted by address";
+% E         msg(246):-"too complicated structure";
+% % h                 Stack overflow - simplify the statement/expression
+% % h                 nesting structure.
+% E         msg(247):-"too complicated program";
+% % h                 Stack overflow - the program structure is too
+% % h                 complicated.
+% E         msg(248):-"""NAME ?;"" assumed in C/Pascal proc. ?";
+% E         msg(249):-"too complicated program structure";
+% % h                 More than 256 implicit labels, i.e. too deep
+% % h                 nesting of if/for/while constructions and/or
+% % h                 too many inspect-branches.
+% E         msg(250):-"array indexing or call nesting too deep";
+% % h                 Very complicated nested procedure call and/or
+% % h                 nested array indexing and/or switch indexing.
+% % h                 Stack overflow - simplify the expression.
+% E         msg(251):-"C/Pascal REF param.: No attributes";
+% % h                 The qualification has no data attributes.
+% E         msg(252):-"procedure ? is illegal parameter to C/Pascal";
+% % h                 The actual parameter is either a typed procedure,
+% % h                 or it is a procedure with parameters. Neither may
+% % h                 used as "call-back" argument to C or Pascal.
+% E         msg(253):-"? is READONLY - illegal use!";
+% % h                 An attribute which is read only, cannot occur
+% % h                 as a target in an assignment except in its local
+% % h                 block. Neither may it be used as actual for a
+% % h                 NAME specified parameter.
+% E         msg(254):-":=/:- illegal - attribute treated as READONLY";
+% E         msg(255):-"... ? = expression: incompatible types";
+% % h                 The declared type and the expression type are
+% % h                 incompatible (e.g. integer i=3.1416).
+% E         msg(256):-notext; !not used "*** SYSTEM ERROR 256";
+% E         msg(257):-notext; !not used "*** SYSTEM ERROR 257";
+% E         msg(258):-notext; !not used "*** SYSTEM ERROR 258";
+% E         msg(259):-notext; !not used "*** SYSTEM ERROR 259";
+% E         msg(260):-notext; !not used "*** SYSTEM ERROR 260";
+% E         msg(261):-"too deep INSPECT and/or FOR nesting";
+% E         msg(262):-notext; !not used "*** SYSTEM ERROR 262";
+% E         msg(263):-notext; !not used "*** SYSTEM ERROR 263";
+% E         msg(264):-notext; !not used "UNTIL-identifier of wrong kind";
+% E         msg(265):-notext; !not used "*** SYSTEM ERROR 265";
+% E         msg(266):-notext; !not used "*** SYSTEM ERROR 266";
+% E         msg(267):-notext; !not used "*** SYSTEM ERROR 267";
+% %
+% %    warning0:
+% E         msg(268):-"division by zero";
+% E         msg(269):-"Optimisation failed 269";
+% E         msg(270):-"STEP-expression is zero: infinite loop";
+% E         msg(271):-"FOR-statement - but no iteration";
+% E         msg(272):-"misplaced PRIOR ignored";
+% E         msg(273):-"=/= assumed";
+% E         msg(274):-"missing character quote inserted";
+% E         msg(275):-"missing text quote - inserted here";
+% E         msg(276):-"illegal character '!?!' skipped";
+% E         msg(277):-"more than 255 characters in line (truncated)";
+% E         msg(278):-"invalid compiler directive ignored";
+% E         msg(279):-"TO illegal (GOTO assumed)";
+% E         msg(280):-"SHORT illegal (SHORT INTEGER assumed)";
+% E         msg(281):-"LONG illegal (LONG REAL assumed)";
+% E         msg(282):-"missing '(' after REF";
+% E         msg(283):-"missing ':' after VIRTUAL";
+% E         msg(284):-"GO illegal (GOTO assumed)";
+% E         msg(285):-"missing ')'";
+% E         msg(286):-"expected ';'";
+% E         msg(287):-"misplaced INNER ignored";
+% E         msg(288):-"text after final END";
+% E         msg(289):-"declaration after statement";
+% E         msg(290):-"(HIDDEN) PROTECTED ? ignored - not local";
+% % h                 (Hidden) protected VAR is legal only in the
+% % h                 head of the class, in which VAR is an attribute.
+% E         msg(291):-"protection part must come before virtual part";
+% E         msg(292):-"illegal syntax for MACRO head";
+% E         msg(293):-"MACRO ? redefines MACRO or LITERAL";
+% %
+% %    note0:
+% E         msg(294):-"function call assumed for standard procedure";
+% % h                 Standard procedures cannot be transmitted as
+% % h                 procedure parameters.
+% E         msg(295):-"Parameter count (formal/virtual proc.) differ";
+% % h                 A formal or virtual procedure is called several
+% % h                 times, with different numbers of parameters.
+% %
+% %    fatal0:
+% E         msg(296):-"the compiler is out of date!";
+% % h                 An attribute file has a more recent compiler
+% % h                 identification. Use the newer compiler.
+% E         msg(297):-"DICTIONARY OVERFLOW (literals and identifiers)";
+% % h                 The compiler will not handle more than a total of
+% % h                 32767 identifiers and constants. The program must
+% % h                 be modularised.
+% E         msg(298):-"RTS MODULES NOT FOUND";
+% E         msg(299):-"DISPLAY OVERFLOW (block nesting too deep)";
+% % h                 Blocks cannot be nested deeper than to a level of
+% % h                 250. Simplify the program's block structure.
+% %
+% %    error1:
+% E         msg(300):-"';' or ',' expected in declaration";
+% E         msg(301):-"non-arithmetic expression after ?";
+% E         msg(302):-"? type left operand to //";
+% E         msg(303):-"? type right operand to //";
+% E         msg(304):-"? type left of :-";
+% E         msg(305):-"? type right of :-";
+% E         msg(306):-"controlled variable ? is not simple";
+% E         msg(307):-"attribute file '?' is empty";  !fatal0;
+% E         msg(308):-"'?' is not a correct attribute file";
+% % h                 The layout of the attribute file is wrong.
+% % h                 Maybe it stems from a previous release.
+% E         msg(309):-"SORRY, ? IS NOT IMPLEMENTED";
+% E         msg(310):-"cannot open scratch file ?";
+% %
+% %    error1id:
+% E         msg(311):-"'THIS ?' out of place";
+% E         msg(312):-"virtual '?' used in array bound";
+% E         msg(313):-"'QUA ?' not preceded by reference expression";
+% E         msg(314):-"illegal 'THIS ?' in array bound";
+% E         msg(315):-"'THIS ?' within prefixed block";
+% E         msg(316):-"local attribute '?' used in array bound";
+% E         msg(317):-"non-class identifier '?' after WHEN";
+% E         msg(318):-"'?' has circular prefix chain";
+% E         msg(319):-"'?' is unspecified parameter";
+% E         msg(320):-"'?' is illegal CLASS parameter";
+% E         msg(321):-"'?' is illegal parameter to ext.bound.proc";
+% E         msg(322):-"'?' cannot be passed by value";
+% E         msg(323):-"'?' is NAME-parameter to class";
+% E         msg(324):-"'?' is ext. bound proc. without language";
+% E         msg(325):-"'?' is ext.bound proc with illegal type REF";
+% E         msg(326):-"'?' is illegal virtual";
+% E         msg(327):-"'?' has another identifier on attr. file";
+% E         msg(328):-"non-class identifier in 'THIS ?'";
+% E         msg(329):-"label parameter as parameter to external ?";
+% E         msg(330):-"non-local label as parameter to external ?";
+% %
+% %    error1qlin:
+% E         msg(331):-"prefix ? has wrong level";
+% E         msg(332):-"constant ? used before it's definition";
+% E         msg(333):-"invalid prefix ?";
+% E         msg(334):-"missing NEW before ?";
+% E         msg(335):-"non-class identifier ?";
+% %
+% %    openerror:
+% E         msg(336):-"the file '?' cannot be opened";
+% %
+% %    error1qlin(cted):
+% E         msg(337):-"undeclared identifier ?";
+% E         msg(338):-"notype procedure identifier ? left of :=";
+% E         msg(339):-"? of illegal kind PROCEDURE left of :=";
+% E         msg(340):-"? of illegal kind ARRAY left of :=";
+% E         msg(341):-"? of illegal kind LABEL left of :=";
+% E         msg(342):-"? of illegal kind SWITCH left of :=";
+% E         msg(343):-"? of illegal kind CLASS left of :=";
+% E         msg(344):-"? of illegal kind left of :=";
+% E         msg(345):-"? notype procedure identifier left of :-";
+% E         msg(346):-"? of illegal kind PROCEDURE left of :-";
+% E         msg(347):-"? of illegal kind ARRAY left of :-";
+% E         msg(348):-"? of illegal kind LABEL left of :-";
+% E         msg(349):-"? of illegal kind SWITCH left of :-";
+% E         msg(350):-"? of illegal kind CLASS left of :-";
+% E         msg(351):-"? of illegal kind left of :-";
+% E         msg(352):-"? missing actual parameters";
+% E         msg(353):-"? missing indices";
+% E         msg(354):-"dot-access to label ?";
+% E         msg(355):-"dot-access to switch ?";
+% E         msg(356):-"? missing arguments";
+% E         msg(357):-"? should not have arguments";
+% E         msg(358):-"object expression is not qualified by PROCESS";
+% E         msg(359):-"dimension of ? greater than 10";
+% E         msg(360):-"misplaced array identifier ?";
+% E         msg(361):-"misplaced switch identifier ?";
+% E         msg(362):-"misplaced simple variable ?";
+% E         msg(363):-"misplaced label identifier ?";
+% E         msg(364):-"misplaced subscripted variable ?";
+% E         msg(365):-"misplaced switch designator ?";
+% %
+% %    warning1:
+% E         msg(366):-"cannot open file '?' - LISTING SUPPRESSED";
+% E         msg(367):-"? END(s) inserted after source text";
+% E         msg(368):-"HIDDEN ? ignored - no such attribute";
+% E         msg(369):-"HIDDEN ? ignored, not PROTECTED";
+% %
+% %    recomperr:
+% E         msg(370):-"RECOMP ? - wrong format on attribute file";
+% E         msg(371):-"RECOMP - the type of ? changed";
+% E         msg(372):-"RECOMP - the kind of ? changed";
+% E         msg(373):-"RECOMP - the category of ? changed";
+% % h                 The category describes whether the identifier is
+% % h                 a local quantity, a virtual quantity, an external
+% % h                 quantity, a NAME parameter, a VALUE parameter or
+% % h                 a parameter transmitted by default mode.
+% E         msg(374):-"RECOMP - prefix of ? changed";
+% E         msg(375):-"RECOMP - dimension of ? changed";
+% E         msg(376):-"RECOMP - THIS used in class ?, but not in old";
+% E         msg(377):-"RECOMP - wrong checkcode in ?";
+% E         msg(378):-"RECOMP - wrong classification of ?";
+% E         msg(379):-"RECOMP ? - different external tags";
+% E         msg(380):-notext; !not used "*** SYSTEM ERROR 380 (?)";
+% E         msg(381):-notext; !not used "*** SYSTEM ERROR 381 (?)";
+% E         msg(382):-notext; !not used "*** SYSTEM ERROR 382 (?)";
+% E         msg(383):-notext; !not used "*** SYSTEM ERROR 383 (?)";
+% E         msg(384):-"RECOMP - changed array bounds/constant (?)";
+% E         msg(385):-"RECOMP - attribute protection changed";
+% E         msg(386):-"RECOMP ? - changed FOR-statement nesting";
+% E         msg(387):-"RECOMP ? - changed INSPECT-statement nesting";
+% %
+% %    recompwarn:
+% E         msg(388):-"RECOMP - different identifier ?";
+% % h                 An attribute has been added or deleted
+% E         msg(389):-"different language for EXTERNAL ?";
+% E         msg(390):-"different external identification in ?";
+% E         msg(391):-"different module identifier in ?";
+% %
+% %    note1id:
+% E         msg(392):-"'IN ?' will always be false";
+% E         msg(393):-"'IS ?' will always be false";
+% E         msg(394):-"'... IN ?' always true except for ... == NONE";
+% E         msg(395):-"'QUA ?' will be equal to none test only";
+% E         msg(396):-"'WHEN ?'-branch will never be executed";
+% E         msg(397):-"Attribute file name ? used as module-id";
+% %
+% E         msg(398):-"? is too large - replaced by zero";
+% % h                 Integer overflow detected during constant folding.
+% E         msg(399):-"INNER in new version - not in old";
+% % h                 Insertion of "inner" causes recompilation to be
+% % h                 incompatible, due to optimisations across the
+% % h                 separately compiled classes.
+% %
+% %    error3xxx:
+% E         msg(400):-"? and ? are incompatible in ?";
+% %
+% %    error2:
+% E         msg(401):-"old module ident was '?', new is '?'";
+% E         msg(402):-"? has illegal qualification ?";
+% E         msg(403):-"REF(?) :- REF(?), illegal qualification";
+% E         msg(404):-"? no prefix in common with ? (cond. ref-expr.)";
+% E         msg(405):-"? not attribute of ?";
+% E         msg(406):-"? and implicit from ? has different timestamps";
+% % h                 An imcompatible recompilation has been done in
+% % h                 the module structure.
+% E         msg(407):-"? has too many arguments (? expected)";
+% E         msg(408):-"? has too few arguments (? expected)";
+% E         msg(409):-"? has unusable or undefined prefix ?";
+% E         msg(410):-"? and ? are at different block levels";
+% E         msg(411):-"? is an illegal redeclaration of ?";
+% E         msg(412):-"? has unknown qualification ?";
+% E         msg(413):-"? has illegal qualification ?";
+% E         msg(414):-"? is virtual respec. of ?";
+% E         msg(415):-"? is not legal match for ?";
+% E         msg(416):-"? incompatibly compiled after ? was compiled";
+% E         msg(417):-"? collides with implicit ext. decl. in ?";
+% E         msg(418):-"? collides with ext. decl. in ?";
+% E         msg(419):-"non-arithmetic expression in array ?";
+% E         msg(420):-"? of ? is a standard procedure";
+% E         msg(421):-"? of ? is of wrong kind";
+% E         msg(422):-"? of ? has wrong array type";
+% E         msg(423):-"? of ? is not subordinate to formal type";
+% E         msg(424):-"? of ? has no type";
+% E         msg(425):-"? of ? has type, formal has no type";
+% E         msg(426):-"? of ? is incompatible with formal type";
+% E         msg(427):-"? of ? has incompatible qualification";
+% E         msg(428):-"Layout error ? on attribute file ?";
+% %
+% %    error2xx:
+% E         msg(429):-"type-incompatible operand - ? left of ?";
+% E         msg(430):-"type-incompatible operand - ? right of ?";
+% E         msg(431):-"illegal type ? left of ?";
+% E         msg(432):-"illegal type ? right of ?";
+% E         msg(433):-"? of ? must be a simple variable";
+% E         msg(434):-"? of ? is of wrong type";
+% % h                 An actual parameter, corresponding to a NAME
+% % h                 specified formal parameter of a standard
+% % h                 procedure, must be a simple variable of exactly
+% % h                 the formal type.
+% % h                 Example of error: uniform(1,20,10).
+% E         msg(435):-"missing BEGIN in case statement";
+% E         msg(436):-"missing END in case statement";
+% E         msg(437):-"when-value out of range";
+% E         msg(438):-"when-value has already been given";
+% E         msg(439):-"inconsistent bounds of when-range";
+% E         msg(440):-"case interval has more than 32767 elements";
+% E         msg(441):-"expression must be CHARACTER or INTEGER";
+% E         msg(442):-"expressions in case pairs must be of same type";
+% E         msg(443):-"when value not of case interval type";
+% E         msg(444):-"type of ? cannot occur before IS";
+% % h                 An IS-specified virtual procedure can have its
+% % h                 type only after IS.
+% % h                 Example of error: virtual: text procedure t is ...
+% E         msg(445):-"virtual match ? has wrong type or qualification";
+% % h                 IS-specified type and type of match differ.
+% E         msg(446):-"virtual match ? has wrong number of parameters";
+% E         msg(447):-"parameter ? does not match specification";
+% %
+% E         for i:=1 step 1 until uplim do begin
+% E             if msg(i)==notext then begin
+% E                msg(i):-copy(" *** FEC ERROR ...");
+% E                msg(i).sub(15,3).putint(i); end;
+% E         end;
+% %
+% E   end ERRORTEXT;
+% %
+% E   !****************************************************************;
+% %
+% E                        fname:-copy("FECERROR");
+% %
+% E   !*** CHANGE NAME AS NEEDED - read as gettextinfo(22) by FEC   ***;
+% E   !*** "FECERROR" used if gettextinfo(22) returns status<>0     ***;
+% E   !****************************************************************;
+% %
+% E   begin ref(directfile) efile; efile:- new directfile(fname);
+% E           efile.setaccess("create");
+% E           if not efile.open(blanks(messlength))
+% E           then error("can't open ERRORFILE");
+% E           errtxt:-new ERRORTEXT;
+% E           for i:=1 step 1 until uplim do begin
+% E               efile.outtext(errtxt.msg(i)); efile.outimage;
+% E           end;
+% E           efile.close;
+% E   end;
+% %
+% E end FECERROR;
+%title *****   A B O R T   -   E X C E P T I O N S   *****
+
+      procedure AbortCompilation;
+      begin
+%+D         giveintinfo(1,6);  !*** ensure that back-end is informed;
+            termstatus:='6';
+            printDiag(if numerrfound>maxerrno
+                      then "*** COMPILATION STOPPED: Too many errors ***"
+                 else if numerrfound = 0
+                      then "*** COMPILATION ABORTED ***"
+                      else "*** COMPILATION CANNOT CONTINUE ***");
+%+Z         RTS_Utility(1,0);
+%+D         if option(rank('T'))<>NUL then sqrt(-1);
+            ENDCOMP;
+     end;
+
+end ERRMSG;

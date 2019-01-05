@@ -156,12 +156,13 @@ public final class RunFullTestBatch {
 		
 		String userDir=System.getProperty("user.dir");
 		Global.simulaRtsLib=userDir+"/bin/";
-		Option.outputDir=userDir+"/src/testing/bin/";
+
+		Global.packetName="simulaTestBatch";
+//		Option.keepJava=userDir+"/src/"+Global.packetName;
+		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 		
 		for(String name:names)
-		{ 
-//			String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
-		  String fileName = userDir+"/src/"+Global.packetName+"/batch/"+name;
+		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
 		  SimulaCompiler compiler = new SimulaCompiler(fileName);
 		  compiler.doCompile();
 		}

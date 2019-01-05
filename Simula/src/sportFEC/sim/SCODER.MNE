@@ -1,0 +1,147 @@
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1985,86 by                                     ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---              S - C o d e r  -  M n e m o n i c s          ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+%title ***  Correspondence with mnemonics of RTS  ***
+
+           !*** attribute kind codes ***;
+%-I integer
+%+I %DEFINE
+           k_smp  = 0, k_pro  = 1, k_arr  = 2,
+           k_lab  = 3, k_swt  = 4, k_cla  = 5;
+
+%          k_rep  = 6, defined in COMMON.DEF as character
+
+           !*** attribute mode codes ***;
+%-I integer
+%+I %DEFINE
+           m_ref   = 0, m_value = 1, m_name  = 2,
+           m_local = 3, m_lit   = 5;
+
+           !*** attribute type codes ***;
+%-I integer
+%+I %DEFINE
+           t_notype = 0,
+           t_boo    = 1, t_cha    = 2, t_sin    = 3, t_int    = 4,
+           t_rea    = 5, t_lrl    = 6, t_ref    = 7, t_txt    = 8,
+           t_ptr    = 9;
+
+           !*** entity sort codes ***;
+%-I integer
+%+I %DEFINE
+           s_txtent = 12;
+
+           !*** actual parameter descriptor codes ***;
+%-I integer
+%+I %DEFINE
+           par_qnt_lit = 0, par_qnt_nas = 1, par_qnt_ass = 2,
+           par_thk_nas = 3, par_thk_ass = 4;
+
+%  *********  S - I N S T R U C T I O N S *********
+
+%+I %INSERT $SIMSRC/fec/s-instr.ini
+
+%  *********   Displacements relative to some base tag   ******
+
+%-I integer
+%+I %DEFINE
+           quantdisp      = 0,
+           descriptordisp = 0,
+           prototypedisp  = 1,
+           cntdisp        = 2,            ! For subblock ;
+           startdisp      = 2,            ! For procedure ;
+           dcldisp        = 2,            ! For class/pref.block;
+           stmdisp        = 3,
+           cnt_inrdisp    = 4,
+           profiledisp    = 0,        ! For routine procedure ;
+           bodydisp       = 1,
+           contextdisp    = 2,
+           exportdisp     = 3,
+           indirectdisp   = 1,       ! For predefined with clf='W' ;
+%+K        instrefdisp    = 3,       ! allocated procedure ;
+           atrdesdisp     = 1;
+
+ integer   sequdisp       =-1;       ! cannot be DEFINE'd ;
+
+%-I %eof
+
+%MACRO pushjump:
+       begin curjump:=curjump+1; jumpstack(curjump):= */1 end
+%ENDMACRO
+
+%MACRO checkasdzero:
+% ***  Called from outeseg, outempty, outendskip, outlabeldef,
+% ***  outgoto, outfjumipif, outfdest, outbdest, outbjump, expandrestore
+       if asd <> 0 then asderror(176)
+%ENDMACRO
+
+%MACRO checkasdequal:
+% ***  Called from outendif
+       if asd <> asdstack(curasd) then asderror(177)
+%ENDMACRO
+
+%MACRO pushasd:
+       begin curasd:=curasd+1; asdstack(curasd):=asd end
+%ENDMACRO
+
+%MACRO popasd:
+       begin asd:=asdstack(curasd); curasd:=curasd-1 end
+%ENDMACRO
+
+%MACRO checkequalandpop:
+       begin
+%            if asd<>asdstack(curasd) then asderror(177);
+             popasd end
+%ENDMACRO
+
+%MACRO getnewindex:
+       begin
+%            if freeindex='!0!' then StopScode_1(249) else begin
+                curindex:=freeindex; freeindex:=indexused(curindex)
+%            end
+       end
+%ENDMACRO
+
+%MACRO releaseIndex:
+       begin indexused(*/1):=freeindex; freeindex:=*/1 end
+%ENDMACRO
+
+%MACRO pushtag:
+       begin tagstack(tagstackdepth):=tagstacktop;
+             tagstackdepth:=tagstackdepth+1;
+       end
+%ENDMACRO
+
+%MACRO poptag:
+       begin tagstackdepth:=tagstackdepth-1;
+             tagstacktop:=tagstack(tagstackdepth)
+       end
+%ENDMACRO
+
+%MACRO outtag:
+       out2byte( */1 )
+%ENDMACRO
+
+%MACRO outfdest:
+       begin outbyte(vfdest); outbyte(*/1); releaseindex(*/1) end
+%ENDMACRO
+
+%MACRO setbdest:
+       begin getnewindex;
+             bdeststack(curbdest):=curindex; curbdest:=curbdest+1;
+             outbyte(vbdest); outbyte(curindex);
+       end
+%ENDMACRO
+
+%MACRO outbjump:
+       begin outbyte(vbjump); outbyte(*/1); releaseindex(*/1) end
+%ENDMACRO
+
+% END-OF-FILE: (FEC-105)SCODER:MNE

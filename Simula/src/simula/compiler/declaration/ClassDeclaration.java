@@ -179,7 +179,7 @@ public class ClassDeclaration extends BlockDeclaration
     checkHiddenList();
 	checkLabelList(prfx);
     Global.currentScope=declaredIn;
-	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel--;
+    currentBlockLevel--;
     SET_SEMANTICS_CHECKED();
 //    print("","");
   }
@@ -430,7 +430,7 @@ public ClassDeclaration getPrefixClass()
   if(decl==this) Util.error("Class prefix chain loops");
   if(decl instanceof ClassDeclaration) return((ClassDeclaration)decl); 
   if(decl instanceof StandardClass) return((ClassDeclaration)decl); 
-  Util.error("Prefix "+prefix+" is not a Class, but "+decl.getClass().getSimpleName());
+  Util.error("Prefix "+prefix+" is not a Class");
   return(null);
 }
 

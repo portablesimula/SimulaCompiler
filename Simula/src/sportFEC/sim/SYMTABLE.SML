@@ -1,0 +1,231 @@
+module symtab("symtab");
+begin insert rt,cent;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1990 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      --- Selection switches: DPI                                   ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'M' Enable %MACRO and %DEFINE capability               ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      ---    'U' Unified quant and quantity version                 ---
+%      -----------------------------------------------------------------
+
+      character NUL = '!0!';
+
+      character identhi,identlo,consthi,constlo;
+      character hashhi,hashlo;
+      infix(txtqnt) simsymbol;
+
+%title ******   S Y M B O L   T A B L E   ******
+
+      ref(symbolgroup) symtab(127);
+
+      ref(symbolbox) hashtab(255);
+
+      ref(symbolgroup) dummyGroup; ref(identsymbol) dummyBox;
+      !*** all entries of symtab are init. to ref dummyGroup, and  ***;
+      !*** all symbolgroup entries are init. to refer dummyBox -   ***;
+      !***   this speeds up idname by returning notext for undef.  ***;
+      !***   (thus none-tests are unnecessary in "idname")         ***;
+      !***   but it uses some storage (2 K bytes on PC)            ***;
+
+      record symbolgroup:inst;
+      begin ref(symbolbox) val(255); end;
+
+      record symbolbox:inst;
+      begin character idhi,idlo;   ! internal repr. of symbol (index);
+%-A         short integer idtag;   !*** used in pass 2 if SIMOBinfo;
+%+A         ref(linkage) curmeaning;
+            ref(symbolbox) next;   ! hashkey chain NB: hashlo=hashkey;
+            character(0) symbol;   ! textual repr. of symbol;
+      end;
+
+      record constsymbol:symbolbox;
+      begin end;
+
+      record identsymbol:symbolbox;
+      begin ref(sembox) curmeaning;
+      end;
+
+      record sembox:inst;
+      begin ref(sembox) prevmeaning;
+            ref(sembox) next;
+      end;
+
+%            Hashtab points to a chain of symbolboxes w/same hashkey
+%            Symtab(...).val(...) points to one symbolbox, holding
+%            the texttual representation of the symbol, and for
+%            identifiers in addition a pointer to its current meaning.
+
+%            NOTE: keywords have predefined indices from one up
+%            The same string as id and const must have different
+%            indices. lastid < lastconst always.
+%            The structure is a compromise between storage flexibility
+%            and reasonable access times
+%title *****   S Y M B O L   L O O K U P   *****
+
+      record index;
+      begin variant short integer i;
+            variant range(0:255) hi,lo;
+      end;
+
+      macro getbox(1);
+      begin symtab(%1 .hi).val(%1 .lo) endmacro;
+
+      macro nameof(1);
+      begin symtab(%1 .hi).val(%1 .lo).symbol endmacro;
+
+%-I   ref(symbolbox) procedure boxof(hi,lo); character hi,lo;
+%-I         boxof :-symtab(rank(hi)).val(rank(lo));
+
+%+P   prior
+      boolean procedure LOOKUPid;
+      begin character idlen; ref(symbolbox) cursym;
+            if simsymbol==notext
+            then begin LOOKUPid:=true; hashhi:=hashlo:=NUL end
+            else begin
+               ! idlen:=char(simsymbol.length);
+               ! simsymbol:-lowcase(simsymbol);
+               hashlo:=char(hash(lowcase(simsymbol)));
+               cursym:-hashtab(rank(hashlo));
+               if cursym=/=none then begin
+                  while ! idlen<>char(cursym.symbol.length) or else ;
+                        cursym.symbol<>simsymbol
+                  do begin
+                     if cursym.next==none then goto F;
+                     cursym:-cursym.next;
+                  end;
+                  hashhi:=cursym.idhi; hashlo:=cursym.idlo;
+                  LOOKUPid:=true;
+               end
+               else F: begin hashhi:=NUL; LOOKUPid:=false end;
+            end;
+      end;
+
+%     boolean procedure LOOKUPconst;
+%     begin character idlen; ref(symbolbox) cursym;
+%           if simsymbol==notext
+%           then begin LOOKUPconst:=true; hashhi:=hashlo:=NUL end
+%           else begin
+% S            Freq(1):=Freq(1)+1;
+%              ! idlen:=char(simsymbol.length);
+%              hashlo:=char(hash(simsymbol));
+%              hashlo:= if hashlo>='!203!' then char(rank(hashlo)-203)
+%                       else char(rank(hashlo)+53);
+%              cursym:-hashtab(rank(hashlo));
+%              if cursym=/=none then begin
+%                 while ! idlen<>char(cursym.symbol.length) or else ;
+%                       cursym.symbol<>simsymbol
+%                 do begin
+%                    if cursym.next==none then goto F;
+%                    cursym:-cursym.next;
+%                 end;
+%                 hashhi:=cursym.idhi; hashlo:=cursym.idlo;
+%                 LOOKUPconst:=true;
+%              end
+%              else F: begin hashhi:=NUL; LOOKUPconst:=false end;
+%              hashid:-cursym;
+%           end;
+%     end;
+
+
+%+P   prior
+      procedure DEFIDENT;
+      begin ref(symbolgroup) symhi; short integer i;
+            ref(symbolbox) cursym;
+            if simsymbol==notext then hashhi:=hashlo:=NUL
+            else begin
+               hashlo:=char(hash(lowcase(simsymbol)));
+               cursym:-hashtab(rank(hashlo));
+               if cursym=/=none then begin
+                  while cursym.symbol<>simsymbol
+                  do begin
+                     if cursym.next==none then goto F;
+                     cursym:-cursym.next;
+                  end;
+                  hashhi:=cursym.idhi; hashlo:=cursym.idlo;
+               end
+               else F: inspect new identsymbol do begin
+                  symbol:-copy(simsymbol);
+                  next:-hashtab(rank(hashlo));
+                  hashtab(rank(hashlo)):-this symbolbox;
+                  if identlo='!255!' then begin
+                     idlo:=identlo:=hashlo:=NUL;
+                     idhi:=hashhi:=identhi:=char(rank(identhi)+1) end
+                  else begin
+                     idlo:=hashlo:=identlo:=char(rank(identlo)+1);
+                     idhi:=hashhi:=identhi end;
+                  if idhi = consthi and then idlo >= constlo
+%+A               then FATAL_ERROR("Symbol table overflow");
+%-A               then CommonError(297);
+                  symhi:-symtab(rank(idhi));
+                  if symhi==dummyGroup then begin
+                     symhi:-new symbolgroup;
+                     for i:=0 step 1 until 255 do symhi.val(i):-dummyBox;
+                     symtab(rank(idhi)):-symhi end;
+                  symhi.val(rank(idlo)):- this symbolbox;
+               end;
+            end;
+      end;
+
+
+%+P   prior
+      procedure DEFCONST;
+      begin short integer i; ref(symbolgroup) symhi;
+            ref(symbolbox) cursym;
+            if simsymbol==notext then hashhi:=hashlo:=NUL
+            else begin
+               hashlo:=char(hash(simsymbol));
+               hashlo:= if hashlo>='!203!' then char(rank(hashlo)-203)
+                        else char(rank(hashlo)+53);
+               cursym:-hashtab(rank(hashlo));
+               if cursym=/=none then begin
+                  while cursym.symbol<>simsymbol
+                  do begin
+                     if cursym.next==none then goto F;
+                     cursym:-cursym.next;
+                  end;
+                  hashhi:=cursym.idhi; hashlo:=cursym.idlo;
+               end
+               else F: inspect new constsymbol do begin
+                  symbol:-copy(simsymbol);
+                  next:-hashtab(rank(hashlo));
+                  hashtab(rank(hashlo)):-this symbolbox;
+                  if constlo=NUL then begin
+                     idlo:=hashlo:=constlo:='!255!';
+                     idhi:=hashhi:=consthi:=char(rank(consthi)-1) end
+                  else begin
+                     idlo:=hashlo:=constlo:=char(rank(constlo)-1);
+                     idhi:=hashhi:=consthi end;
+                  if idhi = identhi and then idlo <= identlo
+%+A               then FATAL_ERROR("Symbol table overflow");
+%-A               then CommonError(297);
+                  symhi:-symtab(rank(idhi));
+                  if symhi==dummyGroup then begin
+                     symhi:-new symbolgroup;
+                     for i:=0 step 1 until 255 do symhi.val(i):-dummyBox;
+                     symtab(rank(idhi)):-symhi end;
+                  symhi.val(rank(idlo)):- this symbolbox;
+               end;
+            end;
+      end;
+
+%title ******   Additional facilities   ******
+
+%+Z   character array option(0:95);
+%-Z %RECORD ON
+%-Z   character       option(  95);
+%-Z %RECORD OFF
+
+      procedure setopt(ch,val); character ch,val;
+      if ch<'!128!' then begin
+         if ch > '!95!' then ch:=char(rank(ch)-32); !case-insensitive;
+         option(rank(ch)):=val;
+      end;

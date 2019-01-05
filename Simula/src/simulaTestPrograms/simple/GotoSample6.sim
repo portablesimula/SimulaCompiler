@@ -1,0 +1,32 @@
+% ------------------------------------------
+% GOTO VIRTUAL LABEL
+% Expected Output:
+%  A.L1  B.L1  B.L1  ...
+% ------------------------------------------
+BEGIN
+
+   integer n;
+
+   Class A; virtual: Label L1;
+   BEGIN
+
+      L1: Outtext (" A.L1 "); outimage; n:=n+1;
+          if n < 4 then
+          begin
+              Outtext (" JUST BEFORE GOTO L1 - B.L1, n = "); outint(n,2);  outimage;
+              goto L1;
+          end;
+   END;
+
+   A Class B;
+   BEGIN
+      BEGIN_B: Outtext (" BEGIN B "); outimage;
+      L1: Outtext (" B.L1 "); outimage; n:=n+1;
+     
+   END;
+   
+   Outtext (" BEGIN PROGRAM"); outimage;
+   new B;
+   Outtext (" END PROGRAM"); outimage;
+   
+END;   

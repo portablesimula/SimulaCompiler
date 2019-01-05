@@ -1,0 +1,23 @@
+begin integer i;
+
+      class a; protected i;
+      begin integer i=12; end;
+
+    a class d; protected i;
+      begin integer i=24; end;
+ 
+    d class e;
+      hidden i; ! hide d'i - making a'i visible;
+      begin  end;
+ 
+    e class f;
+      hidden i; ! hide a'i - making the global i visible;
+      begin outtext("In Class F: i="); outint(i,0); outimage;  end;
+ 
+    i:=5678; ! Initial Global i ;
+    f begin 
+         i:=1234; ! Assign to Global i ;
+      end;
+
+      outtext("Global i="); outint(i,0); outimage;
+end

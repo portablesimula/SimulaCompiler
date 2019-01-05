@@ -1,0 +1,21 @@
+begin
+   text t1,t2;
+   integer signpos,ndigits,significance;
+   boolean ident;
+   ref(CC) x;
+   
+   class CC(module); ref(CC)module;
+   begin
+      ref(elt) last;
+      class elt; virtual: procedure recover is boolean procedure recover;;
+      begin
+         boolean procedure recover2; begin end;
+      end;      
+    
+      while not last.recover do
+      begin
+      end
+   end;
+   
+   x qua CC.module:-none;
+end;

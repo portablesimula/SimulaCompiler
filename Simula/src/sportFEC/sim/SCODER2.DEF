@@ -1,0 +1,1090 @@
+External class SCODER1E;
+
+SCODER1E class SCODER2;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  2.     ---
+%      ---                                                           ---
+%      --- Selection switches: DKPIZ                                 ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scoder.mne
+%+I %INSERT $SPORTLIB/rtsinit.mne
+
+codegenerator1e class codegenerator2;
+begin short integer ll1,ll2;
+
+
+%title ***  Procedure PROFILEGENERATOR  ***
+      procedure profilegenerator(extq);ref(extquantity)extq;
+      ! This procedure produces the routine profile corresponding
+        to the declaration of an external non-Simula procedure;
+      begin ref(quantity)qty,q; text it;
+            short integer idlength,index,ttag;
+            short integer language; boolean CP; character qtyp;
+            
+%-c         procedure invert; !*** invert the fpar list for C-procs;
+%-c         begin ref(quantity) lastq, firstq, cq;
+%-c               firstq:-extq.descr.fpar;
+%-c               while lastq=/=firstq do begin
+%-c                  cq:-firstq;
+%-c                  while cq.next=/=lastq do cq:-cq.next;
+%-c                  if lastq==none then extq.descr.fpar:-lastq:-cq
+%-c                                 else lastq:-lastq.next:-cq;
+%-c                  cq.next:-none;
+%-c               end;
+%-c         end;
+
+            language:=extq.dim;
+            CP:= language=rank(Cindex) or else
+                 language=rank(Pascalindex);
+            if extq.module==none then begin
+               outbyte(vprofile);
+               outtag(extq.ftag+profiledisp);
+               outtext( s_external & "!0!!0!" );
+               outtag(extq.ftag+bodydisp);
+               it:-extq.symb.symbol;
+               outbyte(it.length); outtext(it);
+               it:-getBox(language).symbol;
+               outbyte(it.length); outtext(it);
+               it:-getBox(extq.virtno).symbol;
+               outbyte(it.length); outtext(it);
+               if language > rank(Libraryindex)
+               then begin
+                  !*** context parameter for Simuletta routines ***;
+                  it:-copy("xxx _CONTEXT");
+                  storechar(char(48 !rank('0'); + t_ref),it,0);
+                                 !rtstypecode(rank(IREF)));
+                  storechar(char(48 !rank('0'); + k_smp),it,1);
+                  storechar(char(48 !rank('0'); + m_ref),it,2);
+                  outtext( s_import & "!0!!0!" );
+                  outtag(extq.ftag+contextdisp);
+                  outbyte(it.length); outtext(it);
+                  out2byte(ptoaddr);
+               end context parameter;
+%-c            if language=rank(Cindex) then invert;
+               qty:-extq.descr.fpar;
+               while qty =/= none do begin
+                  inspect qty.symb do begin
+                     idlength:=symbol.length;
+                     if CP and then
+                        (qty.kind=K_array or else qty.type=ITEXT)
+                     then it:-"700 " & symbol
+                     else begin
+                        it:-blanks(4);
+                        storechar(char(48 + rank(qty.type)), it,0);
+                                 !rtstypecode(rank(type));
+                        storechar(char(48 + rank(qty.kind)), it,1);
+                        storechar(char(48 + rank(qty.categ)),it,2);
+                        it:-it & symbol;
+                     end;
+                     outtext( s_import & "!0!!0!" );outtag(qty.ftag);
+                     outbyte(it.length); outtext(it);
+                     out2byte(if qty.kind= K_proc then ptraddr
+                         else if qty.categ=C_name then ptgaddr
+                         else if CP and then qty.categ=C_value and then
+                                 (qty.type=ITEXT or else qty.type=IREF
+                                  or else qty.kind=K_array)
+                              then ptoaddr
+                         else if qty.type= IREF or qty.type= IPTR
+                               or qty.kind= K_array then ptoaddr
+                         else if qty.kind= K_label then ptpaddr
+                         else typetag(rank(qty.type))
+                             );
+                  end;
+                  qty:-qty.next;
+               end;
+%-c            if language=rank(Cindex) then invert;
+               if extq.type <> INOTY then begin
+                  outbyte(vexport); outtag(extq.ftag+exportdisp);
+                  out2byte(if CP and then extq.type=ITEXT
+                           !*** C-routines export text as addr(chars) ;
+                           then ptoaddr else typetag(rank(extq.type)));
+               end;
+               outbyte(vendprofile);
+            end;
+      end profilegenerator ;
+%title ***  Procedure DESCRIPTORGENERATOR  ***
+
+      procedure descriptorgenerator(q);ref(quantity)q;
+      begin ref(quantity)qty;
+            short integer ttag,firstnesttag,lastnesttag,repcnt;
+
+            ! 'Descriptorgenerator' is called for each block, with q== ;
+            ! declquant of the block. The purpose is to generate the   ;
+            ! record descriptor for the block.                         ;
+            begin outbyte(vrecord); out2byte(q.ftag+descriptordisp);
+                  if q.plev>one then begin
+                     outbyte(vprefix);
+                     outtag(q.prefqual.ftag+descriptordisp)
+                  end
+             else if q.kind <> K_record then begin
+                     outbyte(vprefix);
+                     out2byte(if q.kind=K_proc and then q.type<>INOTY
+                     ! ??????  and then type <> IELSE ;
+                       then type_pro_tag(rank(q.type)) else Z_inst);
+                  end;
+                  qty:-q.descr.fpar;
+                  while qty =/= none do begin
+                     ttag:=getTypeTag(qty);
+                     if ttag <> 0 then begin
+                        outbyte(vattr); out2byte(qty.ftag+quantdisp);
+                        out2byte(ttag);
+                        if qty.kind=K_rep then begin
+                           outbyte(vrep); out2byte(qty.descr.line1);
+                        end;
+                     end;
+                     qty:-qty.next;
+                  end;
+
+                  ! Production of connests attributes of type OADDR;
+                  ! For a procedure body connests will be zero,
+                    it is counted in the procedure head;
+
+                  lastnesttag:=q.descr.connests;
+                  if lastnesttag <> 0 then begin
+                     firstnesttag:=firstcontag(q);
+                     lastnesttag:=lastnesttag+firstnesttag-1;
+                     while firstnesttag <= lastnesttag do begin
+                        outbyte(vattr);
+                        out2byte(firstnesttag); out2byte(ptoaddr);
+                        firstnesttag:=firstnesttag+1 end;
+                  end;
+
+                  if simob_descr then GenerateSequPPtags(q);
+%+K               qty:-q.descr.fpar;
+%+K               while qty=/=none do
+%+K               begin if qty.kind=K_proc and then qty.categ=C_local
+%+K                            and then qty.descr.thisused then begin
+%+K                        outbyte(vattr); outtag(qty.ftag+instrefdisp);
+%+K                        out2byte(ptoaddr) end;
+%+K                     qty:-qty.next;
+%+K               end;
+                  outbyte(vendrecord);
+            end inspect SCF;
+      end descriptorgenerator;
+%title ***  Procedure PROTOTYPEGENERATOR  ***
+
+      short integer noofprototypes;
+            ! Counts total number of blocks for which a prototype is
+              generated in the current S-Code module.  Is used to give
+              each block a unique index into the resource-info vector
+              of the module;
+
+      procedure outprototypes(q);ref(quantity)q;
+      ! Is called at block end for all blocks except classes.
+        Is called  recursively for local classes.  Is also called at
+        block end for a separately compiled class ;
+      begin ref(quantity)qty,pqty;
+            ref(brecord) lastC; !last removed const;
+            qty:-q.descr.fpar;
+            while qty =/= none do begin
+
+            ! temporarily remove constants (if any) in order to
+              simplify the prototype generator.
+              The brecord of the constant is used as follows:
+              - declquant == quantity of const
+              - fpar      == quantity preceding const (in fpar list)
+                             or NONE if the quantity is first
+              - favirt    == quantity of the previous const removed
+                             (i.e. chains the list of removed consts)
+              Note that no changes are made in the quantities (except
+              that remaining quantities may have their next-field chg.)
+            ;
+                  if qty.special = '!2!'  ! and then kind=K_ident ;
+                  then begin
+                     ! *** remove from fpar-list *** ;
+                     if pqty==none then q.descr.fpar:-qty.next
+                     else pqty.next:-qty.next;
+                     !*** insert into rem-list ***;
+                     inspect qty.descr do begin
+                        fpar:-pqty;
+                        favirt:- if lastC=/=none then lastC.declquant
+                                 else none;
+                        lastC:-this brecord;
+                     end;
+                  end
+                  else begin
+                       if qty.categ=C_local then begin
+                        if qty.kind=K_class then outprototypes(qty) end;
+                       pqty:-qty;
+                  end;
+                  qty:-qty.next;
+            end;
+            prototypegenerator(q);
+            ! *** now regenerate fpar-list in SAME ORDER as before *** ;
+            while lastC=/=none do begin
+                  inspect lastC.fpar do next:-lastC.declquant
+                  otherwise q.descr.fpar:-lastC.declquant;
+                  inspect lastC.favirt do lastC:-descr
+                  otherwise lastC:-none;
+            end;
+      end outprototypes;
+
+      procedure prototypegenerator(q);ref(quantity)q;
+      begin !*** Called from outprototypes only. Is called for each
+            !*** block and generates the prototype etc. For a procedure,
+            !*** it is called with the body as parameter. ;
+
+            ref(quantity)qty;
+      short integer navirt,       ! number of virtuals;
+                    npnt,         ! no.of pointers ;
+                    reppnt,       ! no. of repeated TEXT or REF ;
+                    nrep,         ! total no. of repetitions ;
+                    pntvec,       ! tag of pointer vector ;
+                    rptvec,       ! tag of repeat vector ;
+                    atrvirvec,    ! tag of attribute or virtual vector ;
+                    ttag,         ! temp for tag evaluation;
+                    pl;           ! for-variable for pref-level;
+%+Z   short integer nconn;        ! connest ;
+%-Z   character     nconn;        ! connest ;
+
+% PQ        prior
+            boolean procedure pointer(qty);ref(quantity)qty;
+                  ! Return true if qty has to be represented
+                    in the pointer vector of its enclosure ;
+            if qty.categ=C_name then pointer:=true
+            else begin
+                  switch(NUL:K_max) qty.kind begin
+                  when K_array do pointer:=true;
+                  when K_ident do
+                       pointer:= qty.type=IREF or else qty.type=ITEXT;
+                  when K_proc,K_label,K_switch do
+                       pointer:= qty.categ=C_unspec
+%+K                  or else (qty.kind=K_proc and then qty.categ=C_local
+%+K                           and then qty.descr.thisused)
+                       ;
+% PQ              when NONE do pointer:=false; !includes K_rep;
+                  end case;
+% PQ              else pointer:=false;
+% PQ              qty:-none;
+            end;
+%page
+% PQ  prior
+      procedure count(qty);ref(quantity)qty;
+      begin ref(quantity)q; boolean isnohead; short integer pct;
+%           qty denotes the decl quantity, for a procedure called
+%           first with qty == quantity of the body, then 
+%           again for the head.  For a quick procedure called
+%           only once, with qty==head.
+%           Count number of elements in pointer vector and
+%           in entity_list (simob info) by updating the
+%           global variables npnt and nent.
+% %+K       Also counts infixes by updating nrep and reppnt
+
+      REP:  npnt:=npnt+qty.descr.connests;
+            isnohead:=
+                 if qty.kind=K_proc and then qty.plev<2 !Head quantity;
+                 then false else simob_entity;
+
+            q:-qty.descr.fpar;
+            while q=/=none do begin
+               if isnohead then nent:=nent+1;
+               if q.kind = K_rep then begin
+                  nrep:=nrep+1;
+                  if q.type=IREF
+                     or else q.type=ITEXT then reppnt:=reppnt+1;
+               end else
+               if pointer(q) then npnt:=npnt+1;
+               q:-q.next;
+            end while;
+
+            if qty.kind=K_proc then begin if qty.plev=2 !body quantity ;
+            then begin
+                  if simob_entity then begin if qty.type <> INOTY
+                  then nent:=nent+1 end;
+                  if qty.type=IREF
+                     or else qty.type=ITEXT then npnt:=npnt+1;
+                  qty:-qty.prefqual; goto REP;
+            end end;
+% PQ        qty:-none;  !*** GC ***;
+      end count;
+%page
+      procedure pntlist(qty); ref(quantity)qty;
+      begin ref(quantity)q; short integer t,i,firstconntag,lastconntag;
+            !*** Produce all AADDR-elements in the ptnvec of qty:
+            !*** candidates are locals and parameters, connect pointers,
+            !*** and the possible result attribute of a type procedure.
+            !*** Connection pointers must be first in pntvec ***;
+            !*** Repetitions are NOT registered here (but in repvec);
+
+            begin
+
+               ! ptnvec elements for connection pointers: ;
+               ! (for procedures connests are counted in the
+                  procedure head, and not in the body) ;
+               if qty.descr.connests <> zero then begin
+                  firstconntag:=firstcontag(qty);
+                  lastconntag:=firstconntag+qty.descr.connests-1;
+                  while firstconntag <= lastconntag do begin
+                      outbyte(vc_aaddr); out2byte(firstconntag);
+                      firstconntag:=firstconntag+1 end;
+               end;
+
+               if qty.kind=K_proc then begin if qty.plev=2 !body ;
+               then begin ! Treat the procedure head first: ;
+                  pntlist(qty.prefqual);
+                  if qty.type=IREF
+                  then outtext( s_c_aaddr & RTS_refPro_val )
+             else if qty.type=ITEXT
+                  then outtext( s_c_dot   & RTS_txtPro_val  &
+                                s_c_aaddr & RTS_txtqnt_ent  );
+               end end treatment of procedure body ;
+
+               q:-qty.descr.fpar;
+               while q =/= none do begin
+                  if q.kind=K_rep then !skip repetitions; else
+%+K               if (if q.kind=K_proc and q.categ=C_local then
+%+K                             q.descr.thisused else false)
+%+K                  ! quick proc, called with head quantity ;
+%+K                  ! describe its instref as a ref attribute;
+%+K               then begin outbyte(vc_aaddr);
+%+K                    outtag(q.ftag+instrefdisp) end
+%+K               else
+                  if pointer(q) then begin
+                     if q.categ <> C_name and then
+                        (q.kind=K_array or else
+                        (q.kind=K_ident and then q.type=IREF)  )
+                     then begin outbyte(vc_aaddr);
+                           outtag(q.ftag+quantdisp) end
+                     else begin
+                        outbyte(vc_dot); out2byte(q.ftag+quantdisp);
+                        if q.categ=C_name
+                        then outtext( s_c_aaddr & RTS_parqnt_ent )
+                      else if q.kind=K_ident      ! type=ITEXT ;
+                        then outtext( s_c_aaddr & RTS_txtqnt_ent )
+                      else if q.categ=C_unspec
+                        then outtext( if q.kind=K_proc
+                             then   ( s_c_aaddr & RTS_proqnt_sl )
+                                 else if q.kind=K_label
+                             then   ( s_c_aaddr & RTS_labqnt_sl )
+                             else   ( s_c_aaddr & RTS_swtqnt_sl ) );
+                     end;
+                  end pointer;
+                  q:-q.next;
+               end;
+            end inspect SCF;
+      end pntlist;
+
+      procedure replist(qty); ref(quantity) qty;
+      begin ref(quantity)q; short integer i;
+            !*** Produce all repdes-elements in the rptvec of qty:
+            !*** candidates are locals (and parameters, not implemented)
+            !*** REF and TEXT infixes must be first in rptvec ***;
+            !*** - because these are treated by GC            ***;
+
+            procedure outRepdesConst(q); ref(quantity) q;
+            begin
+                outtext( s_c_record  & RTS_repdes        &
+                             s_attr  & RTS_repdes_nelt   &
+                                       tag_int & s_c_int );
+%+D             if q.descr==none or else q.descr.line1<=0
+%+D             then internerr('!13!',sourceline);
+                outinteger(q.descr.line1-1); !must be max index here!!!;
+                outtext(     s_attr  & RTS_repdes_type   &
+                                       tag_int & s_c_int );
+                outsint(rank(q.type));
+                outtext(     s_attr  & RTS_repdes_fld    &
+                                       tag_aaddr & s_c_aaddr );
+                out2byte(q.ftag+quantdisp);
+                outbyte( vendrecord );
+            end;
+            !*** first extract REF and TXT repetitions (for GC) ***;
+            q:-qty.descr.fpar;
+%+D         i:=0;
+            while q =/= none do begin
+               if q.kind=K_rep then begin
+                  if q.type=ITEXT or else q.type=IREF then begin
+%+D                  i:=i+1;
+                     outRepdesConst(q);
+               end end;
+               q:-q.next;
+            end;
+%+D         if i<>reppnt then internerr('!13!',sourceline);
+            !*** now include all other repetitions (for SIMOB) ***;
+            q:-qty.descr.fpar;
+            while q =/= none do begin
+               if q.kind=K_rep then begin
+                  if q.type=ITEXT or else q.type=IREF then !nothing;
+                  else begin
+%+D                  i:=i+1;
+                     outRepdesConst(q);
+               end end;
+               q:-q.next;
+            end;
+%+D         if i<>nrep then internerr('!13!',sourceline);
+      end replist;
+%page
+% P   prior
+      procedure paramspeclist(q); ref(quantity) q;
+      begin short integer i,ttag;
+            short integer array atrdestag(0:npar); !zero never used;
+            ref(quantity) qty;
+
+            !*** Generate Parameter Vector: first (ref)atrdes      ***;
+            !*** constants for all parameters, then an atrvec      ***;
+            !*** constant refering to these.                       ***;
+            !***                                                   ***;
+            !*** We are in the procedure body: the parameters are  ***;
+            !*** recorded in the procedure head (its fpar list     ***;
+            !*** contains the parameters, and nothing but the      ***;
+            !*** parameters).                                      ***;
+         begin
+            if simob_entity then SetParamTags(q);
+            qty:-q.prefqual.descr.fpar; ! Get parameter list;
+            i:= 1;
+            while i<=npar do begin
+                  if qty.categ<>C_name then atrdestag(i):=newTag
+                  else atrdestag(i):=qty.ftag+atrdesdisp;
+                  outbyte(vconst); out2byte(atrdestag(i));
+                  outtext( if qty.type=IREF or else qty.type=IPTR
+                  then   ( RTS_refdes &
+                              s_c_record & RTS_refdes     &
+                                  s_attr & RTS_atrdes_ident &
+                                               tag_oaddr  )
+                  else   ( RTS_atrdes &
+                              s_c_record & RTS_atrdes     &
+                                  s_attr & RTS_atrdes_ident &
+                                               tag_oaddr  ) );
+
+                  if simob_entity then begin
+                     outbyte(vc_oaddr); out2byte(qty.symb.idtag); end
+                  else outbyte(vonone);
+
+                  outtext( s_attr & RTS_atrdes_fld &
+                        tag_aaddr & s_c_aaddr );
+                  out2byte(qty.ftag+quantdisp);
+
+                  outtext( s_attr & RTS_atrdes_mode &
+                           tag_int & s_c_int & "!1!" );
+                  outbyte(rank(qty.categ)+48);
+
+                  outtext( s_attr & RTS_atrdes_kind &
+                           tag_int & s_c_int & "!1!" );
+%+D               if qty.kind > K_record then internerr('!13!',sourceline);
+                  outbyte(rank(qty.kind)+48);
+
+                  outtext( s_attr & RTS_atrdes_type   &
+                           tag_int & s_c_int & "!1!" );
+                  outbyte(if qty.type>=IVALU then 48 else rank(qty.type)+48);
+                  if qty.type=IREF or else qty.type=IPTR then begin
+                     ! refatrdes attributes describing prefqual;
+                     ! First comes (rbl,con) which are intended
+                       for transplantation check.  The enclosure
+                       of the qualifying class (prefqual.encl)
+                       is of interest. rbl is its run time block
+                       level relative to the procedure of which
+                       qty is a parameter (encl) ;
+%  *******  dropped - no transplantation check implemented *********
+%  dropped           outtext(
+%  dropped                 s_attr & RTS_refdes_rbl &
+%  dropped                 tag_int & s_c_int );
+%  dropped           outsint(rank(encl.rtblev)
+%  dropped                    - rank(prefqual.encl.rtblev));
+
+%  dropped           outtext( s_attr & RTS_refdes_con & tag_aaddr);
+%  dropped           if prefqual.encl.inspected<>NUL
+%  dropped           then begin
+%  dropped              outbyte(vc_aaddr);
+%  dropped              ttag:=conpointtag(prefqual.encl); out2byte(ttag)
+%  dropped           end else outbyte(vanone);
+
+                     outtext( s_attr & RTS_refdes_qal &
+                              tag_oaddr & s_c_oaddr  );
+                     outtag(qty.prefqual.ftag+prototypedisp);
+                  end qty.type=IREF;
+                  outbyte(vendrecord);       ! end (ref)atrdes ;
+
+                  qty:-qty.next;
+                  i:=i+1;
+            end while;
+
+            ! Generation of Attribute Vector for the parameters;
+            atrvirvec:=newTag;
+
+             outbyte(vconst); out2byte(atrvirvec);
+             if npar=0 then
+                outtext( RTS_atrvec & s_fixrep & "!0!!0!" &
+                         s_c_record & RTS_atrvec &
+                         s_attr & RTS_atrvec_natr &
+                         tag_int & s_c_int & "!1!0" &
+                         s_attr & RTS_atrvec_atr & tag_oaddr  )
+             else begin
+                outtext( RTS_atrvec & s_fixrep );     out2byte(npar);
+                outtext( s_c_record & RTS_atrvec &
+                         s_attr & RTS_atrvec_natr &
+                         tag_int & s_c_int       );
+                outsint(npar);
+                outtext( s_attr & RTS_atrvec_atr & tag_oaddr  );
+             end;
+
+             for i:=1 step 1 until npar do begin
+                 outbyte(vc_oaddr); out2byte(atrdestag(i)) end;
+             outbyte(vendrecord);         ! end atrvec ;
+          end inspect SCF;
+      end paramspeclist;
+%page
+
+      noofprototypes:=noofprototypes+1;
+
+      begin
+         nconn:= if q.kind=K_proc and then q.plev=2 !proc.body, use head;
+                 then q.prefqual.descr.connests else q.descr.connests;
+         npar:=q.descr.npar; navirt:=q.descr.navirt;
+         npnt:=nent:=reppnt:=nrep:=0; count(q);
+
+         xpp_tag:=0;
+         if simob_descr then GenerateExtPP(q);
+
+         if npnt > 0 then begin !*** Generation of pointer vector ***;
+            pntvec:=newTag;
+            outbyte(vconst); out2byte(pntvec);
+            outtext( RTS_pntvec & s_fixrep ); out2byte(npnt);
+            if nconn = zero then
+               outtext( s_c_record & RTS_pntvec        &
+                            s_attr & RTS_pntvec_ncon   &
+                            tag_int & s_c_int & "!1!0" &
+                            s_attr & RTS_pntvec_npnt   &
+                            tag_int & s_c_int          )
+            else begin
+               outtext( s_c_record & RTS_pntvec        &
+                            s_attr & RTS_pntvec_ncon   &
+                            tag_int & s_c_int          );
+               outsint(nconn);
+               outtext(     s_attr & RTS_pntvec_npnt   &
+                            tag_int & s_c_int          );
+            end;
+            outsint(npnt);
+            outtext(     s_attr & RTS_pntvec_pnt & tag_aaddr);
+              pntlist(q);
+            outbyte(vendrecord);
+         end generation of pointer vector;
+
+         if nrep > 0 then begin !*** Generation of repeat vector ***;
+            rptvec:=newTag;
+            outbyte(vconst); out2byte(rptvec);
+            outtext( RTS_rptvec & s_fixrep ); out2byte(nrep);
+            outtext( s_c_record & RTS_rptvec      &
+                         s_attr & RTS_rptvec_npnt &
+                         tag_int & s_c_int        ); outinteger(reppnt);
+            outtext(     s_attr & RTS_rptvec_nrep &
+                         tag_int & s_c_int        ); outinteger(nrep);
+            outtext(     s_attr & RTS_rptvec_rep  & RTS_repdes );
+              replist(q);
+            outbyte(vendrecord);
+         end generation of repeat vector;
+
+         if q.kind=K_proc and then npar > 0
+         then paramspeclist(q)
+
+    else if navirt > 0 then begin !*** Generation of Virtual Vector ***;
+            atrvirvec:=newTag;
+            outbyte(vconst); out2byte(atrvirvec);
+            outtext( RTS_virvec & s_fixrep ); out2byte(navirt);
+            outtext( s_c_record & RTS_virvec     &
+                         s_attr & RTS_virvec_nvir &
+                         tag_int & s_c_int       );
+            outsint(navirt);
+            outtext(     s_attr & RTS_virvec_vir & RTS_virdes );
+            qty:-q.descr.favirt;
+            while qty =/= none do begin
+               outtext( s_c_record & RTS_virdes  );
+               switch(NUL:K_max) qty.kind begin
+               when K_proc do begin
+                  outtext( s_attr & RTS_virdes_ppp & tag_oaddr  );
+                  if qty.match==none then outbyte(vonone)
+                  else begin outbyte(vc_oaddr);
+                       outtag(qty.match.ftag+prototypedisp) end;
+                  outtext( s_attr & RTS_virdes_qal & tag_oaddr  );
+                  if qty.match==none or else qty.type <> IREF then
+                       outbyte(vonone)
+                  else begin outbyte(vc_oaddr);
+                       outtag(qty.match.prefqual.ftag+prototypedisp)
+                  end
+                  end;
+               when K_label do begin
+                  outtext( s_attr & RTS_virdes_pad & tag_paddr  );
+                  if qty.match==none then outbyte(vnowhere)
+                  else begin outbyte(vc_paddr);
+                       outtag(qty.match.ftag+quantdisp) end;
+                  end;
+               when K_switch do begin
+                  outtext( s_attr & RTS_virdes_des & tag_oaddr  );
+                  if qty.match==none then outbyte(vonone)
+                  else begin outbyte(vc_oaddr);
+                       outtag(qty.match.ftag+quantdisp) end;
+                  end;
+               when NONE do StopScode_1('!13!',sourceline); !wrong virtual;
+               end case;
+
+               qty:-qty.next;
+               outbyte(vendrecord);    ! end virdes;
+            end;
+            outbyte(vendrecord);       ! end virvec;
+         end;
+
+         ! Generate record of appropriate prototype ;
+
+         outbyte(vconst);
+         if q.kind=K_proc then begin
+            out2byte(q.prefqual.ftag+prototypedisp);
+            outtext( RTS_proPtp & s_c_record & RTS_proPtp  &
+                         s_attr & RTS_ptp_refVec & tag_oaddr  )
+         end
+         else begin
+            out2byte(q.ftag+prototypedisp);
+            if q.kind=K_subbl then
+               outtext( RTS_subPtp &
+                        s_c_record & RTS_subPtp  &
+                            s_attr & RTS_ptp_refVec & tag_oaddr  )
+            else begin ! kind=K_class/prefbl ;
+               outtext( RTS_claPtp & s_fixrep ); out2byte(q.plev+1);
+               outtext( s_c_record & RTS_claPtp  &
+                            s_attr & RTS_ptp_refVec & tag_oaddr );
+            end;
+         end;
+
+         if npnt<>0
+         then begin outbyte(vc_oaddr); out2byte(pntvec) end
+         else outbyte(vonone);
+
+         if nrep<>0 then begin
+            outtext( s_attr & RTS_ptp_repvec & tag_oaddr );
+            outbyte(vc_oaddr); out2byte(rptvec);
+            outtext( s_attr & RTS_ptp_xpp & tag_oaddr  );
+         end else
+
+         outtext( s_attr & RTS_ptp_repvec & tag_oaddr & s_onone &
+                  s_attr & RTS_ptp_xpp & tag_oaddr  );
+         if simob_descr
+         then begin outbyte(vc_oaddr); out2byte(xpp_tag) end
+         else outbyte(vonone);
+
+         outtext( s_attr & RTS_ptp_lng & tag_size & s_c_size );
+         out2byte(q.ftag+descriptordisp);
+
+         if q.kind=K_subbl then begin
+            outtext( s_attr & RTS_subPtp_cnt &
+                     tag_paddr & s_c_paddr ); out2byte(q.ftag+cntdisp);
+         end
+    else if q.kind=K_proc then begin
+            outtext( s_attr & RTS_proPtp_start &
+                     tag_paddr & s_c_paddr   );
+            out2byte(q.prefqual.ftag+startdisp);
+
+            outtext( s_attr & RTS_proPtp_parVec & tag_oaddr  );
+            if npar > 0
+            then begin outbyte(vc_oaddr); out2byte(atrvirvec) end
+            else outbyte(vonone);
+         end else begin
+         ! kind=K_class/prefbl - NBNB: this depends on the values
+           of dcl/stm/inr disp constants as x/x+1/x+2;
+            outtext( s_attr & RTS_claPtp_plv &
+                         tag_int & s_c_int  );
+            outsint(q.plev-1);
+
+            if q.descr.dcltag <> NUL then begin
+             outtext( s_attr    & RTS_claPtp_dcl &
+                      tag_paddr & s_c_paddr );
+             outtag(q.ftag+dcldisp) end
+            else begin
+             outtext( s_attr    & RTS_claPtp_dcl &
+                      tag_paddr & s_nowhere );
+            end;
+            if q.descr.stmtag <> NUL then begin
+               outtext( s_attr    & RTS_claPtp_stm &
+                        tag_paddr & s_c_paddr     );
+               outtag(q.ftag+isorank(q.descr.stmtag)) end
+            else outtext( s_attr    & RTS_claPtp_stm &
+                          tag_paddr & s_nowhere );
+
+            outtext( s_attr    & RTS_claPtp_cntInr &
+                     tag_paddr & s_c_paddr     );
+            if q.descr.inrtag <> NUL then begin
+               outtag(q.ftag+isorank(q.descr.inrtag)) end
+            else outINRtag(q);
+
+            if navirt>0 then begin
+               outtext( s_attr    & RTS_claPtp_virts &
+                        tag_oaddr & s_c_oaddr     );
+               out2byte(atrvirvec) end
+            else
+               outtext( s_attr    & RTS_claPtp_virts &
+                        tag_oaddr & s_onone       );
+
+            outtext( s_attr & RTS_claPtp_prefix & tag_oaddr  );
+
+            ! Prefix chain generation ;
+            ttag:=q.plev-1; !temp use of ttag;
+            if ttag<>0 then begin
+               qty:-q.prefqual;
+               while qty.plev>one do begin
+                     prefixchain(qty.plev):-qty;
+                     qty:-qty.prefqual; end;
+               outbyte(vc_oaddr);
+               outtag(qty.ftag+prototypedisp);
+               for pl:=2 step 1 until ttag do begin
+                   outbyte(vc_oaddr);
+                   outtag(prefixchain(pl).ftag+prototypedisp);
+                   prefixchain(pl):-none;
+               end;
+            end plev>0;
+            outbyte(vc_oaddr); out2byte(q.ftag+prototypedisp);
+            outbyte(vonone);
+
+         end ICLAS or IBPRF;
+
+         outbyte(vendrecord);        ! end prototype ;
+
+      end inspect SCF;
+
+   end prototypegenerator;
+
+%title ***  Procedure OUTDESCRIPTORS  ***
+
+      !*** recursive ***;
+      procedure outdescriptors(q);ref(quantity)q;
+%           ! This procedure is called at "block begin" for all kinds of
+%           brecords, except for classes and procedure heads.
+%           It generates descriptors for all quantities which has to be
+%           defined when code for the body of the brecord is generated ;
+
+%           ! First outdescriptors is called recursively for a possible
+%           prefix class, if it is not done yet.  Then the descriptors
+%           for q are generated, including recursive calls on
+%           outdescriptors for classes and procedure heads local to q ;
+
+%           ! If q is external quantity then a routine profile is generated.
+%           Otherwise the descriptors produced for q are:
+%              - record descriptor for q.
+%              - specifications of labels and switches local to q. These
+%                are not represented by an attribute of the record
+%                descriptor for q.  Labelspecs are generated for the
+%                labels (including the labels which are contained in the
+%                prototype: cnt/start/dcl/smt/cnt_inr).  Constspecs are
+%                generated for the switch descriptors
+%                NOTE june 88 pj: dcl/stm labels are not 'speced.
+%              - specification of text entities of named text constants;
+
+%               ! Generate constspecs for the prototype and its
+%                 label attributes,if not external. The reason is:   ;
+%               ! Prototypes are first generated at "block end" and
+%                 the labels are first defined when the statements
+%                 of the block is being compiled;
+       
+      begin ref(quantity)qty; text txt;
+            if q.categ=C_extnal then begin
+               if q qua extquantity.clf=Clf000 then begin
+                  ! external SIMULA quantity ;
+                  outbyte(vinsert);
+%-Z %IMPLNONE OFF
+                  inspect q qua extquantity.module do begin
+                     txt:-nameof(modulhi,modullo);
+                     outbyte(txt.length); outtext(txt);
+                     txt:-nameof(checkhi,checklo);
+                     outbyte(txt.length); outtext(txt);
+                     txt:-if q.virtno<>0 then getBox(q.virtno).symbol
+                          else "?";
+                     !*** extid - if none, output ? ;
+                     outbyte(txt.length); outtext(txt);
+                     out2byte(ftag);
+                     out2byte(ftag + exttagnum-1 );
+                  end
+               end
+          else if q qua extquantity.clf=Clf001 then
+                  ! external non-SIMULA quantity             ;
+                  profilegenerator(q);
+            end
+       else switch(NUL:K_max) q.kind begin
+            when K_subbl do begin
+               descriptorgenerator(q);
+               outbyte(vconstspec); out2byte(q.ftag+prototypedisp);
+               outtext( RTS_subPtp & s_labelspec );
+               out2byte(q.ftag+cntdisp);
+            end;
+            when K_proc  do begin
+               descriptorgenerator(q);
+               if q.plev<2 then begin
+                  outbyte(vconstspec); out2byte(q.ftag+prototypedisp);
+%  not used?      outtext( RTS_pptp & s_labelspec );
+%  not used?      outtag(q.ftag+startdisp);
+                  out2byte(Z_proPtp);
+
+                  ! generate constspecs for name params   ;
+                  ! to this procedures, as they are used  ;
+                  ! when calling the procedure            ;
+                  qty:-q.descr.fpar;
+                  while qty =/= none do begin
+                     if qty.categ=C_name then begin
+                        outbyte(vconstspec);
+                        out2byte(qty.ftag+prototypedisp);
+                        out2byte(if qty.type=IREF or else qty.type=IPTR
+                                 then Z_refdes else Z_atrdes);
+                     end;
+                     qty:-qty.next;
+                  end;
+               end;
+            end;
+            when K_class, K_record do begin
+               q.descr.descriptorpr:=true;
+               if q.plev>one then begin
+%-Z %IMPLNONE OFF
+                if q.prefqual is quantity then begin
+                 if not q.prefqual.descr.descriptorpr
+                 then outdescriptors(q.prefqual) end end;
+
+   DESCRGEN:   descriptorgenerator(q);
+               outbyte(vconstspec); out2byte(q.ftag+prototypedisp);
+               outtext( RTS_claPtp & s_fixrep );
+               out2byte(q.plev+1);
+               if q.descr.inrtag <> NUL then begin
+                  outbyte(vlabelspec);
+                  out2byte(q.ftag+isorank(q.descr.inrtag));
+               end;
+            end;
+            when K_prefbl do
+               goto DESCRGEN;
+            end case;
+
+            q:-q.descr.fpar;
+            while q =/= none do begin
+               if q.kind=K_class and then q.descr.descriptorpr
+               then !nothing; else
+%-Z %IMPLNONE OFF
+               if q is extquantity and then q.categ<>C_extnal
+               then !nothing;
+          else if (q.kind=K_proc or else q.kind=K_class or else
+                   q.kind=K_record) and then
+                  (q.categ=C_local or else q.categ=C_extnal)
+               then outdescriptors(q)
+          else if q.categ=C_local then begin
+                  if q.kind=K_label then begin
+                     if q.dim=0 then begin !no spec for forvar;
+                        outbyte(vlabelspec); out2byte(q.ftag+quantdisp);
+                     end;
+                  end
+             else if q.kind=K_switch then begin
+                     outbyte(vconstspec); out2byte(q.ftag+quantdisp);
+                     outtext( RTS_swtdes & s_fixrep );
+                     out2byte(q.dim+1);
+                  end
+             else if q.special<>NUL then begin if q.kind=K_ident
+                     then begin if q.type=ITEXT
+                  then begin
+                     outbyte(vconstspec); out2byte(q.ftag);
+                     out2byte(Z_txtqnt);
+                       !specify const addr of text entity;
+                  end end end;
+               end;
+               q:-q.next;
+            end;
+      end outdescriptors;
+
+%title *****   forwardGOTO   *****
+
+%+PQ  prior
+      procedure forwardGOTO;
+      begin
+         if nonewindex then begin !lay out stepping stone;
+%+D         if option(rank('Y'))<>NUL then outtrace("step GOTO");
+            while opq.dim > 0 do
+             inspect opq.prevmeaning do begin
+                opq.prevmeaning:-prevmeaning;
+%-Z             outfdest(     this sembox qua stackedi.rehi );
+%+Z             outfdest(rank(this sembox qua stackedi.rehi));
+                opq.dim:=opq.dim-1 end;
+         end;
+         getnewindex; opq.dim:=opq.dim+1;
+         outbyte(vfjump); outbyte(curindex);
+%-Z      inspect new stackedi(     curindex ,NUL) do begin
+%+Z      inspect new stackedi(char(curindex),NUL) do begin
+           prevmeaning:-opq.prevmeaning; opq.prevmeaning:-this stackedi;
+         end;
+      end;
+
+%title ***   addr/update/selectPARQNT - addrNAMEQNT   ***
+
+%+PQ  prior
+      procedure addrPARQNT; !*** opq implicit parameter;
+                            ! opq.categ=C_name ;
+      begin staticencl;
+            outbyte(vremote);
+            outtag(opq.ftag+quantdisp);
+      end addrPARQNT;
+
+
+%+PQ  prior
+      procedure addrNAMEQNT; !*** opq implicit parameter;
+      begin boolean save_emitted;
+            if asd <> 0 then begin
+%+D            if option(rank('Y'))<>NUL then outtrace("save-FNP_ACC");
+               outtext( saveScheme  ); save_emitted:=true end
+            else save_emitted:=false;
+            addrPARQNT;
+            outtext( if save_emitted
+              then ( s_deref   &
+                     s_asscall & RTS_b_fnp_acc1  &
+                     s_call    & RTS_b_fnp_acc2  &            !-1;
+                     restoreScheme               )
+              else ( s_deref   &
+                     s_asscall & RTS_b_fnp_acc1  &
+                     s_call    & RTS_b_fnp_acc2  ) );         !-1;
+            asd:=asd-1;
+            addrPARQNT;
+      end;
+
+
+%+PQ  prior
+      procedure update_PARQNT(att); short integer att;
+      begin short integer basetag;
+            basetag:=curpar.ftag;
+            outtext( s_dup & s_remote );         !+1;
+            outtag(basetag+quantdisp);
+            outtext( s_select & RTS_parqnt_fp &
+                     s_pushc  & s_c_oaddr     ); !+1;
+            outtag(basetag+atrdesdisp);
+            outtext( s_assign &                  !-2;
+                     s_dup    & s_remote );      !+1;
+            outtag(basetag+quantdisp);
+            outbyte(vselect); out2byte(att);
+            asd:=asd+1;
+      end;
+
+%title ******   GET_LABQNT, GET_SWTQNT   ******
+
+%+PQ     prior
+         procedure get_LABQNT; !*** opq is implicit parameter;
+         ! opq.kind=K_label ;
+         ! push LABQNT on TOS i.e. stack is asd:=asd+1;
+         begin
+%+Z            short integer conlvl;
+%-Z            character     conlvl;
+%-Z %IMPLNONE OFF
+            inspect opq do begin
+               switch(NUL:C_max) categ begin
+                when C_local do begin
+                  staticencl;
+                  ! If label is inside an inspect statement, this
+                    gives a reference to the enclosing 'proper' block;
+                  outtext( s_push    & RTS_tmp       &
+                           s_select  & RTS_quant_lab &
+                           s_select  & RTS_labqnt_sl &
+                           s_rupdate & s_pop         &
+                           s_pushc   & s_c_paddr     );
+                  outtag(ftag+quantdisp);
+                  outtext( s_push    & RTS_tmp       &
+                           s_select  & RTS_quant_lab &
+                           s_select  & RTS_labqnt_pad&
+                           s_rupdate & s_pop         &
+                           s_pushc   & s_c_int       );
+                  conlvl:=conlevel(this quantity); outsint(conlvl);
+                  outtext( s_push    & RTS_tmp       &
+                           s_select  & RTS_quant_lab &
+                           s_select  & RTS_labqnt_clv&
+                           s_rupdate & s_pop         &
+                           s_push    & RTS_tmp       &
+                           s_selectv & RTS_quant_lab );
+
+%                 outtext( s_asscall & RTS_make_lab1 &
+%                          s_pushc & s_c_paddr       );   !+1;
+%                 outtag(ftag+quantdisp);
+%                 outtext( s_asspar                  &
+%                          s_pushc & s_c_int         );   !00;
+%                 outinteger(conlevel(this quantity));
+%                 outtext( s_asspar                  &    !-1;
+%                          s_call    & RTS_make_lab2 );   !0;
+               end;
+               when C_unspec do begin
+                  staticencl;
+                  outbyte(vremotev); outtag(ftag+quantdisp);
+               end;
+               when C_virt do begin
+                  staticencl;
+                  outtext( s_asscall & RTS_mkVlab1 &
+                           s_pushc   & s_c_int     );   !+1;
+                  outsint(virtno-1);
+                  outtext( s_asspar                &    !-1;
+                           s_call    & RTS_mkVlab2 );   !0;
+               end;
+               when C_name do begin
+                  addrNAMEQNT;
+                  outtext( s_deref   &
+                           s_asscall & RTS_EncLab1  &
+                           s_call    & RTS_EncLab2  );           !0;
+               end;
+              end case;
+            end inspect opq;
+         end get_LABQNT;
+
+
+         procedure get_SWTQNT; !*** opq is implicit parameter;
+         ! opq.kind=K_switch ;
+         ! push SWTQNT on TOS , i.e. stack is asd:=asd+1;
+         begin
+%-Z %IMPLNONE OFF
+            inspect opq do begin
+               switch(NUL:C_max) categ begin
+                when C_local do begin
+                  staticencl;
+                  outtext( s_push    & RTS_tmp       &
+                           s_select  & RTS_quant_swt &
+                           s_select  & RTS_swtqnt_sl &
+                           s_rupdate & s_pop         &
+                           s_pushc   & s_c_oaddr     );
+                  outtag(ftag+quantdisp);
+                  outtext( s_push    & RTS_tmp       &
+                           s_select  & RTS_quant_swt &
+                           s_select  & RTS_swtqnt_des&
+                           s_rupdate & s_pop         &
+                           s_push    & RTS_tmp       &
+                           s_selectv & RTS_quant_swt );
+
+%                 outtext( s_asscall & RTS_make_swt1 &
+%                          s_pushc   & s_c_oaddr     );   !+1;
+%                 outtag(ftag+quantdisp);
+%                 outtext( s_asspar                 &     !-1;
+%                          s_call   & RTS_make_swt2 );    !0;
+               end;
+               when C_unspec do begin
+                  staticencl;
+                  outbyte(vremotev); outtag(ftag+quantdisp);
+               end;
+               when C_virt do begin
+                  staticencl;
+                  outtext( s_asscall & RTS_mkVswt1 &
+                           s_pushc   & s_c_int     );   !+1;
+                  outsint(virtno-1);
+                  outtext( s_asspar                &     !-1;
+                           s_call    & RTS_mkVswt2 );    !0;
+               end;
+               when C_name do begin
+                  addrNAMEQNT;
+                  outtext( s_deref   &
+                           s_asscall & RTS_EncSwt1 &
+                           s_call    & RTS_EncSwt2 );            !0;
+               end;
+              end case;
+            end inspect opq;
+         end get_SWTQNT;
+
+end codegenerator2;
+
+end SCODER2;

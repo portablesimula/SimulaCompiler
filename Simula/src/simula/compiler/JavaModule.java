@@ -52,6 +52,7 @@ public final class JavaModule {
 //	  Util.BREAK("JavaModule.openJavaOutput: blockDeclaration.externalIdent="+blockDeclaration.externalIdent);
 	  try {
 		File outputFile = new File(javaOutputFileName);
+		outputFile.getParentFile().mkdirs();
 		if (Option.verbose) Util.TRACE("Output: " + outputFile.getCanonicalPath());
 		writer = new FileWriter(outputFile);
 		JavaModule.code("package "+Global.packetName+";"); 

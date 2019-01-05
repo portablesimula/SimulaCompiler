@@ -1,0 +1,16 @@
+
+% Testing NONE-CHECK
+begin
+   ref(A) x;
+   real r;
+   
+   class A;
+   begin
+      real procedure F(x); real x; begin end;
+   end;
+   
+   inspect x do r:=F(r);
+   
+   r:=x.F(r);
+
+end;

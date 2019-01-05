@@ -66,7 +66,7 @@ public final class ProcedureSpecification
  * </pre>
  */
   public static ProcedureSpecification doParseProcedureSpecification(Type type)
-  {	BlockKind blockKind=(Option.standardClass)?BlockKind.Method:BlockKind.Procedure;
+  {	BlockKind blockKind=(Option.standardClass)?BlockKind.MemberMethod:BlockKind.Procedure; // TODO: CHECK DETTE
     ProcedureDeclaration block=new ProcedureDeclaration(null,blockKind);
     block.type=type;  
     if(Option.TRACE_PARSE) Parser.TRACE("Parse ProcedureDeclaration, type="+type);

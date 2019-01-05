@@ -8,7 +8,6 @@
 package simula.compiler.declaration;
 
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
@@ -85,8 +84,9 @@ import simula.compiler.utilities.Util;
  */
 public final class ArrayDeclaration extends Declaration {
 	// Type type; inherited
+	public int nDim;
 	Vector<BoundPair> boundPairList;
-	public int nDim() { return(boundPairList.size()); }
+//	public int nDim() { return(boundPairList.size()); }
 
 	public Vector<BoundPair> getBoundPairList() {
 		return (boundPairList);
@@ -97,6 +97,15 @@ public final class ArrayDeclaration extends Declaration {
 		super(identifier);
 		this.type=type;
 		this.boundPairList = boundPairList;
+		this.nDim=boundPairList.size();
+		if (Option.TRACE_PARSE)
+			Util.TRACE("END NEW ArrayDeclaration: " + toString());
+	}
+
+	public ArrayDeclaration(String identifier, Type type,int nDim) {
+		super(identifier);
+		this.type=type;
+		this.nDim = nDim;
 		if (Option.TRACE_PARSE)
 			Util.TRACE("END NEW ArrayDeclaration: " + toString());
 	}
@@ -169,9 +178,8 @@ public final class ArrayDeclaration extends Declaration {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if (type == null) type=Type.Real;
-		for (Iterator<BoundPair> it = boundPairList.iterator(); it.hasNext();) {
-			it.next().doChecking();
-		}
+		if(boundPairList!=null)
+			for(BoundPair it:boundPairList) it.doChecking();
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -214,13 +222,14 @@ public final class ArrayDeclaration extends Declaration {
 		String size=UBid+"-"+LBid+"+1";
 		arrGen=arrGen+'['+size+']';
 		JavaModule.code(""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
+		JavaModule.code("BOUND_CHECK$("+LBid+','+UBid+");");
 	  }	
 	  arrType="ARRAY$<"+arrType+'>';
 	  JavaModule.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
 	}
 
 	public String toString() {
-		String s = "ARRAY " + identifier + boundPairList;
+		String s = "ARRAY " + identifier + ((boundPairList==null)?"(?)":boundPairList);
 		if (type != null)
 			s = type.toString() + " " + s;
 		return (s);

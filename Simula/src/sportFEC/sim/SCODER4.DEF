@@ -1,0 +1,477 @@
+External class SCODER3;
+
+SCODER3 class SCODER4;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  3.     ---
+%      ---                                                           ---
+%      --- Selection switches: PIZ                                   ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scoder.mne
+%+I %INSERT $SPORTLIB/rtsinit.mne
+
+codegenerator3 class codegenerator4;
+begin
+
+! ******************************************************************** ;
+! This file mainly contains the parts of the coder considered with     ;
+! switch treatment + assign to name + proc.parameter to non-SIMULA     ;
+! ******************************************************************** ;
+
+%  %+PQ     prior
+%           procedure outconvert(type); character type;
+%           begin outbyte(vconvert); out2byte(typetag(rank(type)));
+%           end;
+
+%title   *****   Switch declaration - ref. to switch design.   *****
+
+      procedure procLISWIT; !*** declaration of switch;
+%-Z %IMPLNONE OFF
+      inspect opq do
+      begin ! (switch element which requires thunk is not yet properly
+              handled): ;
+%+D        plev:=rank(        opilo); !plain switch: 1, not plain: opi;
+%-D        plev:=rank(checker.opilo); !plain switch: 1, not plain: opi;
+            inswitchdecl:=true;
+            notinconditional:=true;
+            pushcall; ! Switch pushed on callstack ;
+            outbyte(vconst); outtag(ftag+quantdisp);
+            outtext( RTS_swtdes & s_fixrep ); out2byte(dim+1);
+            outtext( s_c_record & RTS_swtdes &
+                         s_attr & RTS_swtdes_nelt &
+                         tag_int & s_c_int       ); outinteger(dim);
+            outtext( s_attr & RTS_swtdes_elt & RTS_swtelt &
+            ! The first, dummy switch element:  ;
+                  s_c_record & RTS_swtelt &
+                      s_attr & RTS_swtelt_pad & tag_paddr & s_nowhere &
+                      s_attr & RTS_swtelt_fld & tag_aaddr & s_anone   &
+                      s_attr & RTS_swtelt_rbl & tag_int               &
+                                                s_c_int & "!1!0"      &
+                      s_attr & RTS_swtelt_clv & tag_int               &
+                                                s_c_int & "!1!0"      &
+                      s_attr & RTS_swtelt_thk & tag_bool  & s_false   &
+                      s_endrecord  );
+      end;
+
+      boolean optmSwitch; !*** true if in opt. case of switch access;
+
+%title ************   term_switch   *************
+
+% P   prior
+      procedure term_switch; ! Termination of switch designator ;
+      begin
+%+Z         short integer xxx;
+%-Z         character     xxx;
+%-Z %IMPLNONE OFF
+         inspect checker do begin
+            opq:-curcall;
+            if optmSwitch then begin ! Optimised case ;
+               optmSwitch:=false;
+               outtext( s_dup     & s_push           );   !+2;
+               outtag(curcall.ftag+quantdisp);
+               outtext( s_selectv & RTS_swtdes_nelt  &
+                        s_skipif  & s_le             &    !-2;
+                        s_precall & RTS_errswt1      &
+                        s_call    & RTS_errswt2      &
+                        s_popall  ); outbyte(asd);
+               outtext( s_endskip &
+                        s_dup                        &    !+1;
+                        s_pushc   & s_c_int & "!1!0" &    !+1;
+                        s_skipif  & s_gt             &    !-2;
+                        s_precall & RTS_errswt1      &
+                        s_call    & RTS_errswt2      &
+                        s_popall  ); outbyte(asd);
+               outtext( s_endskip &
+                        s_index                      &    !-1;
+                        s_selectv & RTS_swtelt_pad   &
+                        s_goto                       );   !-1;
+               asd:=asd-2;
+%+D            checkasdzero;
+            end
+            else begin ! Push a LABQNT on TOS ;
+               generalgoto:=ingotostmt;
+               ! the index expression is on the stack;
+%+D            if option(rank('Y'))<>NUL
+%+D            then outtrace("save-SWT_LAB");
+               outtext( s_push    & RTS_tmp         &   !+1;
+                        s_select  & RTS_quant_int   &
+                        s_rupdate                   &   !-1;
+                        saveScheme                  &
+                        s_push    & RTS_tmp         &   !+1;
+                        s_selectv & RTS_quant_int   &
+                        s_asscall & RTS_b_s2la1     );
+               get_SWTQNT;
+               outtext( s_asspar                   &   !-1;
+                        s_call    & RTS_b_s2la2    &   !-1;
+                        restoreScheme              &
+                        s_asscall & RTS_e_s2la1    );
+               asd:=asd-2;
+
+               ! the original index expression is on the stack ;
+               get_SWTQNT;
+               outtext( s_asspar                   &   !-1;
+                        s_call    & RTS_e_s2la2    );  !0;
+               if curcall is extquantity then begin
+                  if curcall qua extquantity.clf=Clf001 then begin
+                     notimp("general actual label parameter to non-Simula");
+%                    ! Switch designator as actual to label
+%                      parameter to non-Simula procedure ;
+%                    ! a label quant is on the stack, a paddr is
+%                      to be delivered to the routine;
+%                    ! It must be tested at run time that the label is local
+%                      to the current Simula block, i.e. that its sl is curins,
+%                      and that it is at current connection level.  (???)
+%                      The following test is not good enough ;
+%                      outtext( s_push    & RTS_tmp            &   !+1;
+%                               s_select  & RTS_quant_lab      &
+%                               s_rupdate & RTS_pop            &   !-2;
+%                               s_push    & RTS_tmp            &   !+1;
+%                               s_select  & RTS_quant_lab      &
+%                               s_dup                          &   !+1;
+%                               s_select  & RTS_labqnt_sl      &
+%                               s_push    & RTS_curins         &   !+1;
+%                               s_skipif  & s_eq               &   !-2;
+%                               s_pushc   & s_c_int & "!3!126" &   !+1;
+%                               s_asscall & RTS_error1         &
+%                               s_call    & RTS_error2         &   !-1;
+%                               s_endskip                      &
+%                               s_select  & RTS_labqnt_pad     );
+                  end;
+               end;
+            end;
+            popcall;
+         end inspect checker;
+      end term_switch;
+%title ***  PROCEDURE SWTELTCONST  ***
+
+     procedure swteltconst(thk,pad,rbl,fld,clv);
+     boolean thk; short integer pad,rbl,fld;
+%+Z  short integer clv;
+%-Z  character     clv;
+     begin ! Generate a constant of record 'swtelt' ;
+           ! Called from procLIIDNlab ;
+           ! pad and fld will be 0 if nowhere/anone is wanted,
+             otherwise they will be tag-values ;
+           outtext( s_c_record & RTS_swtelt                 &
+                        s_attr & RTS_swtelt_pad & tag_paddr );
+           if pad=0 then outbyte(vnowhere)
+           else begin outbyte(vc_paddr); outtag(pad) end;
+           outtext(     s_attr & RTS_swtelt_fld & tag_aaddr );
+           if fld=0 then outbyte(vanone)
+           else begin outbyte(vc_aaddr); outtag(fld) end;
+           outtext(     s_attr & RTS_swtelt_rbl &
+                        tag_int & s_c_int       );
+           outsint(rbl); ! If not significant, it will not be used ;
+           outtext(     s_attr & RTS_swtelt_clv &
+                        tag_int & s_c_int       );
+           outsint(clv); ! If not significant, not used ;
+           outtext(     s_attr & RTS_swtelt_thk & tag_bool  );
+           outbyte(if thk then vtrue else vfalse);
+           outbyte(vendrecord);
+     end swteltconst;
+
+%title    ******************   procLIIDNlab   ******************
+
+        procedure procLIIDNlab;
+%       ! In the general case, the reference to a label will result in
+%         a LABQNT on TOS.  However, two cases are specially handled:
+%         1) Goto single label, where label is local and is not a
+%            parameter or a virtual.  Then E_GOTO is not required.
+%         2) Single label as switch element, where the label is not
+%            virtual or a name parameter.  Then thunk code is not
+%            required.
+%         The boolean notinconditional tells us whether or not the label
+%         is part of a conditional expression.
+%
+%+Z     begin short integer lablevel,conlev;
+%-Z     begin character     lablevel,conlev;
+%-Z %IMPLNONE OFF
+           inspect opq do begin
+              if inswitchdecl and then notinconditional and then
+                 categ<>C_virt and then categ<>C_name
+              then begin
+                  lablevel:=rank(curcall.encl.rtblev)-rank(encl.rtblev);
+                     ! curcall is the switch being declared ;
+                  if categ=C_local then begin
+                     conlev:=conlevel(this quantity);
+                     swteltconst(false, ftag+quantdisp,lablevel,0,
+                                 conlev);
+                  end
+                  else ! categ=C_unspec ;
+                     swteltconst(false,0,lablevel,ftag+quantdisp,0);
+              end
+         else if curcall is extquantity then begin
+                 if curcall qua extquantity.clf=Clf001 then begin
+                       if categ <> C_local then begin
+                            error1id(329,getBox(curcall.dim));
+%                           goto STOPSC;
+                       end
+                  else if encl.blev <> cblev then begin
+                            error1id(330,getBox(curcall.dim));
+%                  STOPSC:  StopScode;
+                       end
+                       else begin
+                            outtext( s_pushc & s_c_paddr );
+                            asd:=asd+1;
+                            outtag(ftag+quantdisp) end
+                 end
+                 else goto generallabel;
+              end ***curcall-in-extquantity***
+              else begin
+  generallabel:
+                 if ingotostmt then generalgoto:=true
+            else if inswitchdecl
+                 then notimp("switch element requiring thunk");
+                 ! *** else label in actual parameter expression:  ;
+                 get_LABQNT;
+              end;
+
+           end inspect opq;
+        end procLIIDNlab;
+
+%title   ******************   procLISCST   ******************
+
+      procedure procLISCST;
+      ! Single non-text or notext const to name/unspec ;
+      begin short integer jjj;
+%-Z %IMPLNONE OFF
+         inspect checker do begin
+            if curpar is extquantity then begin
+             if curpar qua extquantity.clf=Clf002 then begin
+              if opt=ITEXT or else opt=IREF then begin
+                 !*** notext/none to non-simula routine ***;
+                 outtext( s_pushc & s_gnone );
+                 curpar:-none; goto EXIT;
+            end end end;
+            jjj:=newTag;
+            outbyte( vconst ); outtag( jjj );
+            switch(NUL:ITEXT) opt begin
+            when ITEXT do !must be notext;
+              outtext( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!8" &
+              s_attr & RTS_litPar_txt &
+                            tag_oaddr & s_c_oaddr & RTS_notext &
+              s_endrecord );
+            when IBOOL do
+              outtext( if opilo = ITRUE then
+                     ( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!1" &
+              s_attr & RTS_litPar_boo & tag_bool & s_true &
+              s_endrecord )                 else
+                     ( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!1" &
+              s_attr & RTS_litPar_boo & tag_bool & s_false &
+              s_endrecord ) );
+            when IREF  do !must be none;
+              outtext( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!7" &
+              s_attr & RTS_litPar_ref & tag_oaddr & s_onone &
+              s_endrecord );
+            when ICHAR do begin
+              outtext( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!2" &
+              s_attr & RTS_litPar_cha & tag_char & s_c_char );
+              outbyte( rank(opilo) ); outbyte(vendrecord );
+            end;
+            when ISHOR do begin
+              outtext( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!3" &
+              s_attr & RTS_litPar_sin & tag_sint & s_c_int );
+              goto outLitPar;
+            end;
+            when IINTG do begin
+              outtext( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!4" &
+              s_attr & RTS_litPar_int & tag_int & s_c_int );
+ outLitPar:
+              literal:-nameof(opihi,opilo);
+              outbyte(literal.length); outtext(literal);
+              outbyte(vendrecord );
+            end;
+            when IREAL do begin
+              outtext( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!5" &
+              s_attr & RTS_litPar_rea & tag_real & s_c_real );
+              goto outLitPar;
+            end;
+            when ILONG do begin
+              outtext( RTS_litPar    &
+          s_c_record & RTS_litPar    &
+              s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+              s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!6" &
+              s_attr & RTS_litPar_lrl & tag_lreal & s_c_lreal );
+              goto outLitPar;
+            end;
+            end case;
+
+            if curpar==none then begin        ! actual to unspecified ;
+               outtext( s_dup     & s_asscall    );                !+1;
+               outtag  (fpt_profile(rank(opt)));
+               outtext( s_pushc   & s_c_int      );                !+1;
+               outsint(curparno-1);
+               outtext( s_asspar                 &                 !-1;
+                        s_pushc   & s_c_oaddr    );                !+1;
+               outtag  (jjj);
+               outtext( s_asspar                 &                 !-1;
+                        s_pushc   & s_c_oaddr    );                !+1;
+               outtag  (jjj);
+               outtext( s_asspar                 &                 !-1;
+                        s_pushc   & s_c_aaddr    );                !+1;
+               outtag  (litpardesvarianttag(rank(opt)));
+               outtext( if opilo=INONE and then opihi=NUL
+               then   ( s_asspar           &           !-1;
+                        s_pushc  & s_onone &           !+1;
+                        s_asspar & s_call  )           !-2;
+               else   ( s_asspar & s_call  ) );        !..;
+               outtag  (fpt_body(rank(opt)));
+            end
+            else begin
+               update_PARQNT(Z_parqnt_ap);
+               outtext( s_pushc & s_c_oaddr );  !+1;
+               outtag  (jjj);
+               outbyte(vassign); asd:=asd-1;
+            end;
+   EXIT:  end inspect checker;
+       end procLISCST;
+
+%title ******   procedure parameter to non-SIMULA   ******
+
+        short integer Ptag,Btag,Etag;
+
+        procedure StartProcPar;
+        !*** procedure parameter to formal procedure of external
+             non-simula procedure. actqty denotes actual procedure.
+             Generate interface routine if actqty is simula procedure,
+             and transmit bodytag as actual parameter
+         ***;
+        inspect checker.actqty do begin
+              if not this quantity is extquantity or else
+                 this quantity qua extquantity.clf=Clf000
+              then begin !actual is SIMULA procedure;
+                 newtags(3); Etag:=lastusedtag; Btag:=Etag-1; Ptag:=Btag-1;
+                 outtext( s_bseg   & s_profile ); outtag(Ptag);
+                 outbyte( vexit ); outtag(Etag);
+                 outtext( s_endprofile & s_routine ); outtag(Btag);
+                 outtag(Ptag);
+                 outbyte( vpushv ); outtag(Etag);
+                 outtext( s_pushv & RTS_curins &
+                          s_remote & RTS_inst_lsc &
+                          s_rupdate & s_pop );
+                 pushasd; asd:=0;
+              end
+              else begin Etag:=0; Btag:=ftag+bodydisp end;
+        end;
+
+        Procedure TermProcPar;
+        inspect opq do begin
+%             if not this quantity is extquantity or else clf=Clf000
+%             then begin !curpar is SIMULA procedure;
+              if Etag<>0 then begin
+                 if type<>INOTY then begin
+                    error1qlin(252,this quantity); StopScode;
+                    goto EX end;
+%+D              if         opc=ISSWA then staticencl;
+%-D              if checker.opc=ISSWA then staticencl;
+                 if categ=C_virt then begin
+                    outtext( s_asscall & RTS_A_cvir1 &
+                             s_pushc   & s_c_int    );
+                    outsint(virtno-1);
+                    outtext( s_asspar  &
+                             s_call    & RTS_A_cvir2 &
+                             s_push    );
+                 end
+                 else begin
+                    outtext( s_asscall & RTS_A_cpro1 &
+                             s_pushc   & s_c_oaddr  );
+                             outtag(ftag+prototypedisp);
+                    outtext( s_asspar  &
+                             s_call    & RTS_A_cpro2 &
+                             s_push    );
+                 end;
+                 outtag(Etag);
+                 outtext( s_rupdate & s_pop &
+                           s_endroutine & s_eseg );
+                 popasd;
+              end;
+              outtext( s_pushc & s_c_raddr ); outtag(Btag);
+              outbyte( vasspar ); curpar:-none;
+   EX:  end;  
+                 
+%title ******   gen_quick_instances   ******
+
+%+K      procedure gen_quick_instances(q);ref(quantity)q;
+%+K      begin
+%+K         ! q denotes the head of a block. The procedure generates
+%+K           code to generate the instances of quick procedures within
+%+K           the block q ;
+%+K
+%+K         ref(quantity)qty;
+%+K
+%+K         qty:-q.descr.fpar;
+%+K         while qty=/=none do
+%+K         begin
+%+K            if qty.kind=K_proc and then qty.descr.thisused then begin
+%+K               ! curins is the block enclosing the quick
+%+K                 procedures  ;
+%+K
+%+K               outtext( s_pushc   & s_c_oaddr  );   !+1;
+%+K               outtag(qty.ftag+prototypedisp);
+%+K               outtext( s_asscall & RTS_a_local1 &
+%+K                        s_call    & RTS_a_local2 &
+%+K                        s_push    & RTS_curins   &  !+1;
+%+K                        s_remote               );
+%+K               outtag(qty.ftag+instrefdisp);
+%+K               outtext( s_rupdate & s_pop      );   !-2;
+%+K            end;
+%+K            qty:-qty.next;
+%+K         end;
+%+K      end gen_quick_instances;
+
+end codegenerator4;
+
+
+end SCODER4;

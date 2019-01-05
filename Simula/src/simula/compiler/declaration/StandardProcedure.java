@@ -15,26 +15,27 @@ import simula.compiler.utilities.Util;
 
 public final class StandardProcedure extends ProcedureDeclaration
 { public boolean overloaded;
-  public StandardProcedure(DeclarationScope declaredIn,Type type, String ident)
-  { super(ident,BlockKind.Method); this.declaredIn=declaredIn; this.type=type; }
+  public StandardProcedure(DeclarationScope declaredIn,BlockKind kind,Type type, String ident)
+//  { super(ident,BlockKind.Method); this.declaredIn=declaredIn; this.type=type; }
+  { super(ident,kind); this.declaredIn=declaredIn; this.type=type; }
 
-  public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter param)
-  { this(declaredIn,type,ident); addParameter(param); }
+  public StandardProcedure(DeclarationScope declaredIn,BlockKind kind,Type type, String ident,Parameter param)
+  { this(declaredIn,kind,type,ident); addParameter(param); }
 
-  public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2)
-  { this(declaredIn,type,ident,p1); addParameter(p2); }
+  public StandardProcedure(DeclarationScope declaredIn,BlockKind kind,Type type, String ident,Parameter p1,Parameter p2)
+  { this(declaredIn,kind,type,ident,p1); addParameter(p2); }
 
-  public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3)
-  { this(declaredIn,type,ident,p1,p2); addParameter(p3); }
+  public StandardProcedure(DeclarationScope declaredIn,BlockKind kind,Type type, String ident,Parameter p1,Parameter p2,Parameter p3)
+  { this(declaredIn,kind,type,ident,p1,p2); addParameter(p3); }
 
-  public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4)
-  { this(declaredIn,type,ident,p1,p2,p3); addParameter(p4); }
+  public StandardProcedure(DeclarationScope declaredIn,BlockKind kind,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4)
+  { this(declaredIn,kind,type,ident,p1,p2,p3); addParameter(p4); }
 
-  public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5)
-  { this(declaredIn,type,ident,p1,p2,p3,p4); addParameter(p5); }
+  public StandardProcedure(DeclarationScope declaredIn,BlockKind kind,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5)
+  { this(declaredIn,kind,type,ident,p1,p2,p3,p4); addParameter(p5); }
 
-  public StandardProcedure(DeclarationScope declaredIn,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
-  { this(declaredIn,type,ident,p1,p2,p3,p4,p5); addParameter(p6); }
+  public StandardProcedure(DeclarationScope declaredIn,BlockKind kind,Type type, String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
+  { this(declaredIn,kind,type,ident,p1,p2,p3,p4,p5); addParameter(p6); }
   
   public void doChecking()
   { if(IS_SEMANTICS_CHECKED()) return;
@@ -46,22 +47,28 @@ public final class StandardProcedure extends ProcedureDeclaration
     SET_SEMANTICS_CHECKED();
   }
   
-  public void doJavaCoding()
-  {	Global.sourceLineNumber=lineNumber;
-	ASSERT_SEMANTICS_CHECKED(this);
-	Global.currentScope=this;
-    
-	String modifier="public ";
-	// Test om dette er en 'static' metode
-	// TODO: Gjør dette litt mere elegant !
-	StandardClass stdc=(StandardClass)declaredIn;
-	if(stdc.isContextFree) modifier="public static ";
-	
-    String line=modifier+((type==null)?"void":type.toJavaType());
-	line=line+' '+identifier+' '+edFormalParameterList(true); // Treat as Method
-	JavaModule.code(line);
-	Global.currentScope=declaredIn;
-  }
+//  public void REMOVED_doJavaCoding()
+//  {	Global.sourceLineNumber=lineNumber;
+//	ASSERT_SEMANTICS_CHECKED(this);
+//	Global.currentScope=this;
+//    
+//	String modifier="public ";
+//	// Test om dette er en 'static' metode
+//	// TODO: Gjør dette litt mere elegant !
+//	StandardClass stdc=(StandardClass)declaredIn;
+//	if(stdc.isContextFree) modifier="public static ";
+//	
+//    String line=modifier+((type==null)?"void":type.toJavaType());
+//    boolean isInlineMethod=true; boolean addStaticLink=!stdc.isContextFree;
+//    
+//    if(blockKind==BlockKind.ContextFreeMethod) { modifier="public static "; addStaticLink=false; }
+//    if(blockKind==BlockKind.MemberMethod)  { modifier="public "; addStaticLink=false; }
+//    if(blockKind==BlockKind.StaticMethod)  { modifier="public static "; addStaticLink=true; }
+//    
+//	line=line+' '+identifier+' '+edFormalParameterList(isInlineMethod,addStaticLink); // Treat as Method
+//	JavaModule.code(line);
+//	Global.currentScope=declaredIn;
+//  }
 
   public String toString()
   { String pfx=""; if(type!=null) pfx=type.toString()+" ";

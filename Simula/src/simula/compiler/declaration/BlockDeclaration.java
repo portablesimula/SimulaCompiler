@@ -23,7 +23,6 @@ public class BlockDeclaration extends DeclarationScope
   public boolean isContextFree; // If true; all member methods are independent of context
   public boolean isPreCompiled; // If true; this Class/Procedure is Pre-Compiled
   public Vector<Statement> statements=new Vector<Statement>();
-    
   
   // ***********************************************************************************************
   // *** CONSTRUCTORS

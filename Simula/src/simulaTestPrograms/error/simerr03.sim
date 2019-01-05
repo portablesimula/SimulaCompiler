@@ -1,0 +1,8 @@
+
+% Number of parameters
+BEGIN
+   real x,y;
+   x:=ln;
+   y:=ln(x,y);
+
+end of program;

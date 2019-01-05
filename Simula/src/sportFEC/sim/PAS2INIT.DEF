@@ -1,0 +1,621 @@
+External class SCODER4;
+
+SCODER4 class PAS2INIT;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---          S C O D E R    i n i t i a l i s a t i o n s     ---
+%      ---                                                           ---
+%      --- Selection switches: IZ                                    ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'M' Included always when macro capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scoder.mne
+%+I %INSERT $SIMSRC/fec/scope.mne
+%+I %INSERT $SPORTLIB/rtsinit.mne
+
+
+codegenerator4 class codegeneratorinit;
+begin text txt; short integer iii;
+
+      ref(quantity) qq;
+
+      !*** recursive ***;
+      procedure generatetagindexlist(qqq);ref(quantity)qqq;
+      begin short integer et;
+%           Outputs (internal tag, external tag) for the quantity
+%           qqq. For a class/procedure it outputs the list for the
+%           parameters and the local quantities (for procedures only
+%           for the parameters). Is called first time with qqq being
+%           the declquant of class/procedure being sep.comp.;
+
+%-Z %IMPLNONE OFF
+        inspect checker do begin
+            et:=exttag(qqq);
+            if et >= 0 then begin
+%+E            if option(rank('E'))<>NUL then begin sysout.
+%+E               outtext("GENTAG: " & symb.symbol & " xtag "
+%+E                                  & leftint(et)); sysout.outimage;
+%+E            end;
+              if qqq.categ=C_extnal and then not qqq.descr is extbrecord
+               then begin ! ext. non-Simula procedure with binding ;
+                   !No external numbers allocated for parameter tags;
+                   outbyte(vtag);
+                   outtag(qqq.ftag+profiledisp); out2byte(et);
+                   outbyte(vtag);
+                   outtag(qqq.ftag+bodydisp); out2byte(et+1);
+               end
+          else if (qqq.kind=K_proc or else qqq.kind=K_class) and then
+                  qqq.categ=C_local
+               then begin
+                  outbyte(vtag);
+                  outtag(qqq.ftag+descriptordisp); out2byte(et);
+                  outbyte(vtag);
+                  outtag(qqq.ftag+prototypedisp); out2byte(et+1);
+                  inspect qqq.descr do begin
+                     if qqq.kind=K_class then begin
+                        if inrtag<>NUL then begin
+                           outbyte(vtag);
+                           outtag(qqq.ftag+isorank(inrtag));
+                           out2byte(et+2);
+                        end
+%+K                  end else begin ! kind=K_proc ;
+%+K                     if thisused then begin
+%+K                        outbyte(vtag); outtag(qqq.ftag+instrefdisp);
+%+K                        out2byte(et+2) end;
+                     end;
+                     qqq:-fpar;
+                     while qqq=/=none do begin
+                        generatetagindexlist(qqq); qqq:-qqq.next end;
+                  end;
+               end
+          else if qqq.special > '!1!' and then qqq.type<>ITEXT
+               then  !named const - no tag;
+               else begin !NOTE text const one tag;
+                  outbyte(vtag); outtag(qqq.ftag); out2byte(et);
+                  if qqq.categ=C_name then begin
+                     outbyte(vtag);
+                     outtag(qqq.ftag+atrdesdisp); out2byte(et+1);
+                  end;
+               end;
+            end;
+         end inspect checker;
+      end generatetagindexlist;
+
+      reuseProc:=true;
+
+
+%      ******   init_RTS   ******
+
+         followSL(5):- s_pushv   & RTS_curins    &
+                       s_remotev & RTS_entity_sl &
+                       s_remotev & RTS_entity_sl &
+                       s_remotev & RTS_entity_sl &
+                       s_remotev & RTS_entity_sl &
+                       s_remotev & RTS_entity_sl ;
+
+         freeindex:=0;
+         for curindex:=0 step 1 until 4 do begin
+             freeindex:=freeindex+3;
+             followSL(curindex):-followSL(5).sub(1,freeindex); end;
+
+      curindex:=255; !*** never zero - used as marker ***;
+      while curindex<>1 do begin
+            curindex:=curindex-1;
+            indexused(curindex):=curindex+1;
+      end;
+      freeindex:=1; !*** never zero - used as marker ***;
+      ! lastindtag:=lowindtag-1;
+      coder:-this outcodefile;
+
+%    ********   former procedure "initialize"   *********
+
+            NoneCheck:=BoundCheck:= getintinfo(9)=0;
+%-Z         QuaCheck:=true;
+%+Z         QuaCheck:=false; !no qua-test generated default in compiler;
+            maxtagstack:=125; !maxblev//2;
+                         ! - an arbitrary (but reasonable?) limit;
+
+      begin !*** initialise RTS module table ***;
+
+            ! the procedure regnewmodule is called from rtsinit.ini
+              only, and only if D selected.
+              Initialisation of lastusedtag is also done there;
+
+%+D         short integer nxtindex;
+%+D         ref(module)
+%+D         procedure regnewmodule(n,cc,numtag);
+%+D         text n,cc; short integer numtag;
+%+D         begin
+%+D               short integer i;
+%+D               i:=1;
+%+D               while i <= nxtindex do begin
+%+D                     if moduletab(i).rtsmoduleid = n
+%+D                     then fatal0(242);
+%+D                     i:=i+1;
+%+D               end;
+%+D               nxtindex:=nxtindex+1;
+%+D               regnewmodule:-moduletab(nxtindex):-
+%+D                         new module(n,cc,numtag,lastusedtag+1);
+%+D               newTags(numtag);
+%+D         end;
+
+%INSERT $SPORTLIB/rtsinit.ini
+
+       end;
+
+       !*** Tags of the record attributes <type>_arr_<dim>'elt ***;
+
+       arr1elttag(rank(ISHOR)):=Z_sinAr1_elt;
+       arr1elttag(rank(IINTG)):=Z_intAr1_elt;
+       arr1elttag(rank(IREAL)):=Z_reaAr1_elt;
+       arr1elttag(rank(ILONG)):=Z_lrlAr1_elt;
+       arr1elttag(rank(IBOOL)):=Z_booAr1_elt;
+       arr1elttag(rank(ICHAR)):=Z_chaAr1_elt;
+       arr1elttag(rank(IREF )):=Z_refAr1_elt;
+       arr1elttag(rank(IPTR )):=Z_ptrAr1_elt;
+       arr1elttag(rank(ITEXT)):=Z_txtAr1_elt;
+
+       arr2elttag(rank(ISHOR)):=Z_sinAr2_elt;
+       arr2elttag(rank(IINTG)):=Z_intAr2_elt;
+       arr2elttag(rank(IREAL)):=Z_reaAr2_elt;
+       arr2elttag(rank(ILONG)):=Z_lrlAr2_elt;
+       arr2elttag(rank(IBOOL)):=Z_booAr2_elt;
+       arr2elttag(rank(ICHAR)):=Z_chaAr2_elt;
+       arr2elttag(rank(IREF )):=Z_refAr2_elt;
+       arr2elttag(rank(IPTR )):=Z_ptrAr2_elt;
+       arr2elttag(rank(ITEXT)):=Z_txtAr2_elt;
+ 
+       arr3elttag(rank(ISHOR)):=Z_sinArr_elt;
+       arr3elttag(rank(IINTG)):=Z_intArr_elt;
+       arr3elttag(rank(IREAL)):=Z_reaArr_elt;
+       arr3elttag(rank(ILONG)):=Z_lrlArr_elt;
+       arr3elttag(rank(IBOOL)):=Z_booArr_elt;
+       arr3elttag(rank(ICHAR)):=Z_chaArr_elt;
+       arr3elttag(rank(IREF )):=Z_refArr_elt;
+       arr3elttag(rank(IPTR )):=Z_ptrArr_elt;
+       arr3elttag(rank(ITEXT)):=Z_txtArr_elt;
+
+       typetag(rank(ISHOR)):=ptsint;
+       typetag(rank(IINTG)):=ptint;
+       typetag(rank(IREAL)):=ptreal;
+       typetag(rank(ILONG)):=ptlreal;
+       typetag(rank(IBOOL)):=ptbool;
+       typetag(rank(ICHAR)):=ptchar;
+       typetag(rank(IREF )):=ptoaddr;
+       typetag(rank(IPTR )):=ptoaddr;
+       typetag(rank(ITEXT)):=Z_txtqnt;
+       typetag(rank(IVALU)):=ptaaddr;
+
+       type_pro_tag(rank(ISHOR)):=Z_sinPro;
+       type_pro_tag(rank(IINTG)):=Z_intPro;
+       type_pro_tag(rank(IREAL)):=Z_reaPro;
+       type_pro_tag(rank(ILONG)):=Z_lrlPro;
+       type_pro_tag(rank(IBOOL)):=Z_booPro;
+       type_pro_tag(rank(ICHAR)):=Z_chaPro;
+       type_pro_tag(rank(IREF )):=Z_refPro;
+       type_pro_tag(rank(IPTR )):=Z_ptrPro;
+       type_pro_tag(rank(ITEXT)):=Z_txtPro;
+
+       e_fnp_ass1(rank(ISHOR)):=Z_Enpsin1;
+       e_fnp_ass2(rank(ISHOR)):=Z_Enpsin2;
+       e_fnp_ass1(rank(IINTG)):=Z_Enpint1;
+       e_fnp_ass2(rank(IINTG)):=Z_Enpint2;
+       e_fnp_ass1(rank(IREAL)):=Z_Enprea1;
+       e_fnp_ass2(rank(IREAL)):=Z_Enprea2;
+       e_fnp_ass1(rank(ILONG)):=Z_Enplrl1;
+       e_fnp_ass2(rank(ILONG)):=Z_Enplrl2;
+       e_fnp_ass1(rank(IBOOL)):=Z_Enpboo1;
+       e_fnp_ass2(rank(IBOOL)):=Z_Enpboo2;
+       e_fnp_ass1(rank(ICHAR)):=Z_Enpcha1;
+       e_fnp_ass2(rank(ICHAR)):=Z_Enpcha2;
+       e_fnp_ass1(rank(IREF )):=Z_Enpref1;
+       e_fnp_ass2(rank(IREF )):=Z_Enpref2;
+       e_fnp_ass1(rank(IPTR )):=Z_EnpPtr1;
+       e_fnp_ass2(rank(IPTR )):=Z_EnpPtr2;
+       e_fnp_ass1(rank(ITEXT)):=Z_Enptxt1;
+       e_fnp_ass2(rank(ITEXT)):=Z_Enptxt2;
+
+       fnp_pro_1(rank(ISHOR)):=Z_npPsin1;
+       fnp_pro_2(rank(ISHOR)):=Z_npPsin2;
+       fnp_pro_1(rank(IINTG)):=Z_npPint1;
+       fnp_pro_2(rank(IINTG)):=Z_npPint2;
+       fnp_pro_1(rank(IREAL)):=Z_npPrea1;
+       fnp_pro_2(rank(IREAL)):=Z_npPrea2;
+       fnp_pro_1(rank(ILONG)):=Z_npPlrl1;
+       fnp_pro_2(rank(ILONG)):=Z_npPlrl2;
+
+       e_fnp_acc1(rank(IBOOL)):=Z_Encboo1;
+       e_fnp_acc2(rank(IBOOL)):=Z_Encboo2;
+       e_fnp_acc1(rank(ICHAR)):=Z_Enccha1;
+       e_fnp_acc2(rank(ICHAR)):=Z_Enccha2;
+       e_fnp_acc1(rank(IINTG)):=Z_Encint1;
+       e_fnp_acc2(rank(IINTG)):=Z_Encint2;
+       e_fnp_acc1(rank(ISHOR)):=Z_Encsin1;
+       e_fnp_acc2(rank(ISHOR)):=Z_Encsin2;
+       e_fnp_acc1(rank(IREAL)):=Z_Encrea1;
+       e_fnp_acc2(rank(IREAL)):=Z_Encrea2;
+       e_fnp_acc1(rank(ILONG)):=Z_Enclrl1;
+       e_fnp_acc2(rank(ILONG)):=Z_Enclrl2;
+       e_fnp_acc1(rank(IREF )):=Z_Encref1;
+       e_fnp_acc2(rank(IREF )):=Z_Encref2;
+       e_fnp_acc1(rank(IPTR )):=Z_EncPtr1;
+       e_fnp_acc2(rank(IPTR )):=Z_EncPtr2;
+       e_fnp_acc1(rank(ITEXT)):=Z_Enctxt1;
+       e_fnp_acc2(rank(ITEXT)):=Z_Enctxt2;
+
+       resulttag(rank(ISHOR)):=Z_sinPro_val;
+       resulttag(rank(IINTG)):=Z_intPro_val;
+       resulttag(rank(IREAL)):=Z_reaPro_val;
+       resulttag(rank(ILONG)):=Z_lrlPro_val;
+       resulttag(rank(IBOOL)):=Z_booPro_val;
+       resulttag(rank(ICHAR)):=Z_chaPro_val;
+       resulttag(rank(IREF )):=Z_refPro_val;
+       resulttag(rank(IPTR )):=Z_ptrPro_val;
+       resulttag(rank(ITEXT)):=Z_txtPro_val;
+ 
+       quantvarianttag(rank(IINTG)):= Z_quant_int;
+       quantvarianttag(rank(IPROC)):= Z_quant_pro;
+       quantvarianttag(rank(IREF )):= Z_quant_pnt;
+       quantvarianttag(rank(IPTR )):= Z_quant_ptr;
+       quantvarianttag(rank(ITEXT)):= Z_quant_txt;
+       quantvarianttag(rank(IBOOL)):= Z_quant_boo;
+       quantvarianttag(rank(ICHAR)):= Z_quant_cha;
+       quantvarianttag(rank(ISHOR)):= Z_quant_sin;
+       quantvarianttag(rank(IREAL)):= Z_quant_rea;
+       quantvarianttag(rank(ILONG)):= Z_quant_lrl;
+       quantvarianttag(rank(ILABE)):= Z_quant_lab;
+       quantvarianttag(rank(IARRA)):= Z_quant_arr;
+
+       litpardesvarianttag(rank(IINTG)):= Z_litPar_int;
+       litpardesvarianttag(rank(IREAL)):= Z_litPar_rea;
+       litpardesvarianttag(rank(IBOOL)):= Z_litPar_boo;
+       litpardesvarianttag(rank(ICHAR)):= Z_litPar_cha;
+       litpardesvarianttag(rank(ITEXT)):= Z_litPar_txt;
+       litpardesvarianttag(rank(IREF )):= Z_litPar_ref;
+       litpardesvarianttag(rank(IPTR )):= Z_litPar_ptr;
+       litpardesvarianttag(rank(ISHOR)):= Z_litPar_sin;
+       litpardesvarianttag(rank(ILONG)):= Z_litPar_lrl;
+
+       fpt_profile(rank(IBOOL)):=Z_FPTBOO1;
+       fpt_body   (rank(IBOOL)):=Z_FPTBOO2;
+       fpt_profile(rank(ICHAR)):=Z_FPTCHA1;
+       fpt_body   (rank(ICHAR)):=Z_FPTCHA2;
+       fpt_profile(rank(ISHOR)):=Z_FPTSIN1;
+       fpt_body   (rank(ISHOR)):=Z_FPTSIN2;
+       fpt_profile(rank(IINTG)):=Z_FPTINT1;
+       fpt_body   (rank(IINTG)):=Z_FPTINT2;
+       fpt_profile(rank(IREAL)):=Z_FPTREA1;
+       fpt_body   (rank(IREAL)):=Z_FPTREA2;
+       fpt_profile(rank(ILONG)):=Z_FPTLRL1;
+       fpt_body   (rank(ILONG)):=Z_FPTLRL2;
+       fpt_profile(rank(IREF )):=Z_FPTREF1;
+       fpt_body   (rank(IREF )):=Z_FPTREF2;
+       fpt_profile(rank(IPTR )):=Z_FPTPTR1;
+       fpt_body   (rank(IPTR )):=Z_FPTPTR2;
+       fpt_profile(rank(ITEXT)):=Z_FPTTXT1;
+       fpt_body   (rank(ITEXT)):=Z_FPTTXT2;
+
+      SportOK:=false;
+      opt:=opn:=NUL;
+%title ***   B U I L D E R I N I T   ***
+
+%+R   begin long real initP2time;
+      inspect new semchecker do begin
+%+D      text t,feoptions; short integer i;
+         checker0:-checker:- this semchecker;
+         L2buf:-L2codebuffer;
+         implNone:=true;
+
+%+D         t:-gettextinfo(16);
+%+D         for i:=0 step 1 until 95 do option(i):=NUL;
+%+D         while t.more do begin
+%+D            if t.getchar=':' then begin
+%+D               while t.more do setopt(t.getchar,'1') end;
+%+D         end;
+
+         Afile:-new normalattrfile;
+         Afile.attrbuffer:-blanks(Afile.bufsize);
+         ! initial allocation of the outermost blocklevel;
+%+ZD     if option(rank('F')) = NUL then begin
+              !*** ensure that sysin and sysout are defined ***;
+               !Create corresponding Brecord/(Ext)Quantity structure,
+                including reading of attribute file for PREDEF   ;
+               ! cblev:=0;
+%+D         if option(rank('P'))<>NUL and option(rank('Q'))=NUL
+%+D         then begin option(rank('P')):=NUL;
+%+D            allocate;
+%+D            option(rank('P')):='1' end else
+            allocate;
+            ! Put the enclosure on display: ;
+            ! cblev:=1;
+            display(1):-brctab(0).val(0); brctab(0).val(0):-none;
+            ! The 'BASICIO begin' block (PREDEF) is entered ;
+            ! exactly the same as if 'enterblock' had been called;
+            cblev:='!2!';
+            inspect display(1).fpar.descr do makevisblock(this brecord);
+
+            !*** 'inspect sysin' ***;
+            enterconn( meaningof(boxof(NUL,infileindex)) );
+
+            !*** 'inspect sysout' ***;
+            enterconn( meaningof(boxof(NUL,printfileindex)) );
+
+%+Z      end else
+%+Z      begin cblev:='!1!';
+%+Z           enterconn(none); enterconn(none);
+%+Z           enterconn(none);
+%+Z      end;
+         if separatecomp then enterconn(none);
+            !Adjust block level   Not needed any more ???;
+         crtblev:=cblev;
+
+         lastbllo:='!1!'; allocate;
+%                    !Allocates the fictious block enclosing
+%                       the external head. Corresponds to the
+%                       special "brecinit(new BREC(IEXTR))"
+%                       at the start of 'declextraction' ;
+         enterblock; lastblhi:=lastbllo:=NUL;
+
+         ! (cblev=if separatecomp then 6 else 5)
+           and (display(cblev)==enclosure of external head) ;
+
+%title   ******   C H E C K E R I N I T   ******
+
+!*** former procedure checkerinit ***;
+         constantelt:-new ConstEltChecker;
+         true_const:-new boolconst(none,ICONS);
+         true_const.type:=true_const.ctype:=IBOOL;
+         true_const.cl:=IEEXPcl; true_const qua const.ixlo:=ITRUE; 
+         false_const:-new boolconst(none,ICONS);
+         false_const.type:=false_const.ctype:=IBOOL;
+         false_const.cl:=IEEXPcl;false_const qua const.ixlo:=IFALS; 
+         notext_const:-new textconst(none,ICONS);
+         notext_const qua const.ixlo:=INOTE;
+         notext_const.type:=notext_const.ctype:=ITEXT;
+         notext_const.qual:-textclass; notext_const.cl:=IEEXPcl;
+         dummytxtop:-new textoperand(notext_const);
+
+%        inspect new boolconst(none,ICONS) do begin
+%           true_const :-this boolconst; ixlo:=ITRUE; 
+%           type:=ctype:=IBOOL; cl:=IEEXPcl end;
+%        inspect new boolconst(none,ICONS) do begin
+%           false_const:-this boolconst; ixlo:=IFALS;
+%           type:=ctype:=IBOOL; cl:=IEEXPcl end;
+%        inspect new textconst(none,ICONS) do begin
+%           ixlo:=INOTE; type:=ctype:=ITEXT; qual:-textclass; cl:=IEEXPcl;
+%           dummytxtop:-new textoperand(this textconst);
+%           notext_const:-this textconst;
+%        end;
+
+%        noneSymb:-boxof(NUL,INONE);
+         expexptop(0):-exptop:-new rockBottom(none,INOTY);
+                            ! dummy element of expression stack;
+         exptop.pred:-exptop; !avoid stack underflow;
+         exptop.cl:=IEEXP; exptop.type:=IELSE;
+         lastnap:-new nextargumentproducer; lastnap.pred:-lastnap;
+
+%         recunstackstop( 93!rank(IFRMP);):=true;
+%         recunstackstop( 13!rank(INOTY);):=true;
+%         recunstackstop(111!rank(IDCLS);):=true;
+%         recunstackstop( 44!rank(ISTEP);):=true;
+%         recunstackstop(128!rank(IIFSB);):=true;
+%         recunstackstop( 50!rank(IUNTI);):=true;
+%         recunstackstop( 20!rank(IGOTO);):=true;
+%         recunstackstop( 54!rank(IWHIL);):=true;
+%         recunstackstop(149!rank(IWSTB);):=true;
+%           for c:=IFRMP,INOTY,IDCLS,IIFSB,IGOTO,IWSTB,IFASG,IFDNO,
+%            ISTEP,IUNTI,IWHIL !,IACTV,IREAC,IAT,IAFTR,IBEFO,IDELA;
+%            do    recunstackstop(rank(c)):=true;
+
+  inspect new unstack do begin
+         ust:-this unstack;
+         optstack(0):=INOTY;! op'tor with lowest priority;
+  priority(rank(INOTY)):= NUL; ! lowest priority;
+
+  priority(rank(ICASE)):= '!1!';
+  priority(rank(IPSPC)):= '!1!';
+  priority(rank(IIFSB)):= '!1!';
+  priority(rank(IVSPC)):= '!2!';
+  priority(rank(ILABE)):= '!2!';
+  priority(rank(IDCLI)):= '!2!';
+                                 comprior(rank(IPSPC)):= '!2!';
+                                 comprior(rank(IVSPC)):= '!2!';
+                                 comprior(rank(ICSPC)):= '!2!';
+                                 comprior(rank(ICPRF)):= '!2!';
+                                 comprior(rank(ITHSB)):= '!2!';
+                                 comprior(rank(IDCLI)):= '!3!';
+  priority(rank(IFRMP)):= '!1!';
+  priority(rank(IGOTO)):= '!1!';
+                                 comprior(rank(IGOE )):= '!2!';
+  priority(rank(IINSP)):= '!1!';
+  priority(rank(IWHEN)):= '!1!';
+  priority(rank(IOTHW)):= '!1!';
+  priority(rank(ICONB)):= '!1!'; comprior(rank(ICONB)):= '!2!';
+                                 comprior(rank(IFWHN)):= '!2!';
+                                 comprior(rank(IBEGI)):= '!2!';
+                                 comprior(rank(IBNDE)):= '!2!';
+                                 comprior(rank(IDIME)):= '!2!';
+                                 comprior(rank(IARDE)):= '!2!';
+                                 comprior(rank(ICOMA)):= '!2!';
+                                 comprior(rank(IARGE)):= '!2!';
+                                 comprior(rank(ICAPE)):= '!2!';
+                                 comprior(rank(ISWEE)):= '!2!';
+                                 comprior(rank(IELME)):= '!5!';
+  priority(rank(ILFPA)):= '!2!';
+                                 comprior(rank(IRGPA)):= '!3!';
+  priority(rank(IWHIL)):= '!4!'; comprior(rank(IWHIL)):= '!5!';
+  priority(rank(IUNTI)):= '!4!'; comprior(rank(IUNTI)):= '!6!';
+  priority(rank(ISTEP)):= '!5!'; comprior(rank(ISTEP)):= '!5!';
+                                 comprior(rank(IDO  )):= '!5!';
+  priority(rank(IIF)):= '!5!';
+  priority(rank(ITHEN)):= '!5!'; comprior(rank(ITHEN)):= '!6!';
+  priority(rank(IELSE)):= '!6!'; comprior(rank(IELSE)):= '!6!';
+                                 comprior(rank(IEEXP)):= '!6!';
+% priority(rank(IAT  )):= '!5!'; comprior(rank(IAT  )):= '!6!';
+% priority(rank(IDELA)):= '!5!'; comprior(rank(IDELA)):= '!6!';
+% priority(rank(IBEFO)):= '!5!'; comprior(rank(IBEFO)):= '!6!';
+% priority(rank(IAFTR)):= '!5!'; comprior(rank(IAFTR)):= '!6!';
+% priority(rank(IACTV)):= '!5!';
+% priority(rank(IREAC)):= '!5!';
+  priority(rank(IASSG)):= '!5!'; comprior(rank(IASSG)):= '!5!';
+  priority(rank(IDENO)):= '!5!'; comprior(rank(IDENO)):= '!5!';
+  priority(rank(IFASG)):= '!5!'; comprior(rank(IFASG)):= '!5!';
+  priority(rank(IFDNO)):= '!5!'; comprior(rank(IFDNO)):= '!5!';
+  priority(rank(ITO  )):= '!5!'; comprior(rank(ITO  )):= '!5!'; 
+                                 comprior(rank(IASGE)):= '!2!';
+                                 comprior(rank(ISMCL)):= '!2!';
+%                                comprior(rank(IACTE)):= '!6!';
+%                                comprior(rank(IPRIO)):= '!6!';
+  priority(rank(ICONC)):= '!6!'; comprior(rank(ICONC)):= '!6!';
+  priority(rank(ICOR )):= '!6!'; comprior(rank(ICOR )):= '!6!';
+  priority(rank(ICAND)):= '!7!'; comprior(rank(ICAND)):= '!7!';
+  priority(rank(IEQV )):= '!8!'; comprior(rank(IEQV )):= '!8!';
+  priority(rank(IIMP )):= '!9!'; comprior(rank(IIMP )):= '!9!';
+  priority(rank(IOR  )):='!10!'; comprior(rank(IOR  )):= '!10!';
+  priority(rank(IAND )):='!11!'; comprior(rank(IAND )):= '!11!';
+  priority(rank(INOT )):='!12!'; comprior(rank(INOT )):= '!12!';
+%     for c:=IEQ,ILE,ILT,IGE,IGT,INE,IRFNE,IRFEQ do
+% priority(rank(c)):=            comprior(rank(c))    := '!13!';
+  priority(rank(IEQ  )):='!13!'; comprior(rank(IEQ  )):= '!13!';
+  priority(rank(ILE  )):='!13!'; comprior(rank(ILE  )):= '!13!';
+  priority(rank(ILT  )):='!13!'; comprior(rank(ILT  )):= '!13!';
+  priority(rank(IGE  )):='!13!'; comprior(rank(IGE  )):= '!13!';
+  priority(rank(IGT  )):='!13!'; comprior(rank(IGT  )):= '!13!';
+  priority(rank(INE  )):='!13!'; comprior(rank(INE  )):= '!13!';
+  priority(rank(IRFNE)):='!13!'; comprior(rank(IRFNE)):= '!13!';
+  priority(rank(IRFEQ)):='!13!'; comprior(rank(IRFEQ)):= '!13!';
+
+  priority(rank(IPLUS)):='!14!'; comprior(rank(IPLUS)):= '!14!';
+  priority(rank(IMINU)):='!14!'; comprior(rank(IMINU)):= '!14!';
+%     for c:=IMULT,ISLAS,IIDIV,IUMNS do   !not IUPLS;
+% priority(rank(c)):=            comprior(rank(c)):=     '!15!';
+  priority(rank(IMULT)):='!15!'; comprior(rank(IMULT)):= '!15!';
+  priority(rank(ISLAS)):='!15!'; comprior(rank(ISLAS)):= '!15!';
+  priority(rank(IIDIV)):='!15!'; comprior(rank(IIDIV)):= '!15!';
+  priority(rank(IUMNS)):='!15!'; comprior(rank(IUMNS)):= '!15!';
+
+  priority(rank(IPOWE)):='!16!'; comprior(rank(IPOWE)):= '!16!';
+  end inspect new unstack;
+
+%+ZD if option(rank('F'))=NUL then 
+     textclass:-meaningof(boxof(NUL,textclassindex));
+
+%+R  if option(rank('O'))<>NUL and then RealCap then begin
+%+R     outtext(" *** END INIT PASS 2 *** - time used:");
+%+R     initP2time:=cputime; outreal(initP2time-timer,4,0); outimage;
+%+R     timer:=initP2time;
+%+R  end;  end inspect;
+
+  end procedure checkerinit;
+
+% -- end builderinit;
+
+      if not open then begin txt:-filename; openerror(txt) end;
+      SCF:-this outbytefile;
+
+%   ********   end of "initialize"   ************************
+
+%     *****************************
+      detach; ! Wait for first opc;
+%     *****************************
+
+%title ***   (former procedure:)  SCODESTART   ***
+
+      inspect coder do 
+      begin !*** The initial S-Code of a Module ***;
+            !    - always output, even if no scode should be generated;
+            outbyte(vprogram); outbyte(progheadstring.length);
+            outtext(progheadstring);
+            if separatecomp then begin
+%-Z %IMPLNONE OFF
+               inspect checker do begin
+                  if recomp then begin !former procedure getcheckcode;
+                     inspect new inbytefile(attrfilename) do begin
+                        if not open then openerror(attrfilename);
+                        in2byte; !skip buffer length;
+                        txt:-blanks(sportid.length+1);
+                        intext(txt); !skip it;
+                        txt:-blanks(inbyte);
+                        txt:-oldcheckcode:-intext(txt);
+                        close;
+                     end
+                  end
+                  else txt:-checkcode;
+                  outbyte(vmodule);
+                  outbyte(moduleident.length); outtext(moduleident);
+                  outbyte(txt.length); outtext(txt);
+               end inspect checker;
+            end else outbyte(vmain);
+
+            !*****   output inserts for RTS modules : ***********;
+            iii:=1;
+            while true do inspect moduletab(iii) do begin
+                  outbyte(vsysinsert);
+                  outbyte(rtsmoduleid.length);
+                  outtext(rtsmoduleid);
+                  outbyte(checkcode.length); outtext(checkcode);
+                  outtext("!1!?");
+                  out2byte(basetag);
+                  out2byte(basetag+numoftags-1); iii:=iii+1;
+            end otherwise goto EXMTAB;  EXMTAB:
+
+            if simob_descr then
+            begin prototinfo:=newTag;
+                  outbyte(vconstspec); out2byte(prototinfo);
+                  out2byte(Z_modinf);
+            end;
+
+%title ***  separatecomp + Procedure GENERATETAGINDEXLIST  ***
+
+%-Z %IMPLNONE OFF
+      inspect checker do begin
+       if separatecomp then begin
+         inspect display(6 !sepcomplevel; ) do begin
+            qq:-fpar;
+            while qq.categ=C_extnal do qq:-qq.next;
+            !qq denotes the declquant for the class/procedure being
+              separately compiled;
+            if qq.kind=K_class then attrhide(qq);
+            outdescriptors(declquant);
+            ! generates inserts for the external head and record
+              descriptors for the class/procedure                ;
+            nextexttag:=0; generatetagindexlist(qq);
+            if qq.kind=K_class then resethide(qq);
+            outtext( s_body                       &
+                     s_line         & "!0!!1!"    );
+         end inspect display;
+       end else
+       begin outdescriptors(display(5).declquant);
+            outtext( s_line         & "!0!!1!"    &
+                     s_precall      & RTS_b_prog1 &   !+1;
+            !        s_pushc        & s_c_oaddr   &   !+1;
+            !        RTS_basicioptp & s_asspar    &   !-1;
+                     s_call         & RTS_b_prog2 );  !-1;
+       end
+      end;
+      linenr:=1;
+      if not GenerateScode and then numerrfound <> 0 then StopScode;
+
+end SCODESTART;
+
+end of codegeneratorinit;
+
+end PAS2INIT;

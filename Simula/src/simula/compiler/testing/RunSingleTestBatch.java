@@ -40,7 +40,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
 		//names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
 
-		names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
+		//names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
 		//names.add("simtst12.sim"); // OK:  Text value and reference relations.
 		//names.add("simtst13.sim"); // OK:  Text value assignment and text reference assigment.
 		//names.add("simtst14.sim"); // OK:  Text attributes: pos, setpos, more, getchar and putchar.
@@ -119,7 +119,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
 		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
 		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
-		//names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
+		names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
 		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
@@ -180,11 +180,14 @@ public final class RunSingleTestBatch {
 
 		String userDir=System.getProperty("user.dir");
 		Global.simulaRtsLib=userDir+"/bin/";
-		Option.keepJava=userDir+"/src/testing";
-		Option.outputDir=userDir+"/src/testing/bin/";
+
+		Global.packetName="simulaTestBatch";
+		Option.keepJava=userDir+"/src/"+Global.packetName;
+		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
+
 
 		for(String name:names)
-		{ String fileName = userDir+"/src/"+Global.packetName+"/batch/"+name;
+		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
 	      try { SimulaCompiler compiler = new SimulaCompiler(fileName);
 		        compiler.doCompile();
 		  }

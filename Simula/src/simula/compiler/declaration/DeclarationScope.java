@@ -41,7 +41,7 @@ public abstract class DeclarationScope extends Declaration {
   // *** Utility: findMeaning
   // ***********************************************************************************************
   public Meaning findMeaning(String identifier)
-  { //if(identifier.equalsIgnoreCase("X"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): scope="+this);
+  { //if(identifier.equalsIgnoreCase("ELT"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): scope="+this);
     Meaning meaning=findVisibleAttributeMeaning(identifier);
     //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning1="+meaning);
     //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): declaredIn="+declaredIn);
@@ -49,8 +49,10 @@ public abstract class DeclarationScope extends Declaration {
     if(meaning==null && declaredIn!=null) meaning=declaredIn.findMeaning(identifier);
     //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning2="+meaning);
     if(meaning==null) {
-      //if(identifier.equalsIgnoreCase("L"))Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+") ==> UNDEFINED");
-	  Util.error("Undefined variable: "+identifier);
+      if(identifier.equalsIgnoreCase("ELT"))Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+") ==> UNDEFINED");
+    	
+	  if(!Global.duringParsing) Util.error("Undefined variable: "+identifier);
+    	
 	  meaning=new Meaning(null,null); // Error Recovery: No Meaning
     }
     return(meaning);

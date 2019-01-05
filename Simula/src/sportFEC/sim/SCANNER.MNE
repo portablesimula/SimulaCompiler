@@ -1,0 +1,36 @@
+%      ----------------------------------------------------------------
+%      ---                                                          ---
+%      ---  COPYRIGHT 1985,86 by                                    ---
+%      ---  Simula a.s.                                             ---
+%      ---  Oslo, Norway                                            ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                 P O R T A B L E   S I M U L A            ---
+%      ---                                                          ---
+%      ---              F R O N T - E N D   C O M P I L E R         ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---               S c a n n e r   M n e m o n i c s          ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ----------------------------------------------------------------
+
+character EOL='!7!';
+short integer upcorr=32;
+
+% ********  Input Class Mnemonics: Values are important!  ************
+
+character Skip_cl   = '!9!';
+character Illegal_cl= '!8!';
+character Graphic_cl= '!7!';
+character Format_cl = '!6!';
+character Exclam_cl = '!5!';
+character Basic_cl  = '!4!';
+character Uscore_cl = '!3!';
+character Digit_cl  = '!2!';
+character LetterC_cl= '!1!';
+character Letter_cl = '!0!';
+
+% END-OF-FILE: (FEC-105)SCANNER:MNE

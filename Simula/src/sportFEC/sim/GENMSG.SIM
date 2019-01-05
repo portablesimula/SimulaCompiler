@@ -1,0 +1,23 @@
+begin ref(infile) inp; ref(outfile) outp;
+      inimage;
+      inp:-new infile(sysin.image.strip);
+      outp:-new outfile("generr.sim");
+      inspect inp do begin
+         if not open(blanks(90)) then error("Can't open errmsg.def");
+         if not outp.open(inp.image.sub(3,80))
+         then error("Can't open generr.sim");
+         inimage;
+         while not endfile do begin
+               if loadchar(image,0)='%' then begin
+                  if loadchar(image,1)=' ' then begin
+                     if loadchar(image,2)='E' then begin
+                        storechar(' ',image,2); outp.outimage end
+                else if loadchar(image,2)='%' then outp.outimage;
+                  end;
+               end;
+               inimage;
+         end;
+         close;
+      end;
+      outp.close;
+end;

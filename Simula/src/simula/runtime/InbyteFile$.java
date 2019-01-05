@@ -150,6 +150,13 @@ public class InbyteFile$ extends ByteFile$ {
 			throw new RuntimeException("Inbyte failed", e);
 		}
 	}
+	
+    
+    public int in2byte() {
+    	RT.NOT_IMPLEMENTED("in2byte"); // TODO: Implement it
+    	return(0);
+    }
+
 
 	/**
 	 * <pre>

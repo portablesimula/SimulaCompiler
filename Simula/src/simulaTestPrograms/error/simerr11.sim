@@ -1,0 +1,12 @@
+begin
+%  external class SeparatClass="C:\GitHub\SimulaCompiler\Simula/src/testing/bin/PrecompiledClass.jar";
+%  external class SeparatClass="C:\GitHub\SimulaCompiler\Simula/src/testing/bin/PrecompiledClass.jar";
+  external class SeparatClass;
+  
+  SeparatClass(5) begin
+     x :- new A();
+     x.proc1;
+  
+  end;
+  
+end;

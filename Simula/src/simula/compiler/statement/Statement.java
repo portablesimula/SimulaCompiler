@@ -94,6 +94,7 @@ public abstract class Statement extends SyntaxClass {
 		if (Parser.accept(KeyWord.FOR)) return (new ForStatement());
 		if (Parser.accept(KeyWord.WHILE)) return (new WhileStatement());
 		if (Parser.accept(KeyWord.INSPECT)) return (new ConnectionStatement());
+		if (Parser.accept(KeyWord.SWITCH)) return (new SwitchStatement());
 		if (Parser.accept(KeyWord.ACTIVATE)) return (new ActivationStatement());
 		if (Parser.accept(KeyWord.REACTIVATE))	return (new ActivationStatement());
 		if (Parser.accept(KeyWord.SEMICOLON)) return (new DummyStatement()); // Dummy Statement
@@ -105,8 +106,16 @@ public abstract class Statement extends SyntaxClass {
 //		if (Parser.accept(KeyWord.ENDPAR)) Util.error("Missplaced symbol: )");
 		Parser.skipMissplacedSymbol(KeyWord.ENDPAR);
 		Parser.skipMissplacedSymbol(KeyWord.ENDBRACKET);
+//		Parser.skipMissplacedSymbol(KeyWord.INTEGER);
+//		Parser.skipMissplacedSymbol(KeyWord.REAL);
+//		Parser.skipMissplacedSymbol(KeyWord.CHARACTER);
+//		Parser.skipMissplacedSymbol(KeyWord.TEXT);
+//		Parser.skipMissplacedSymbol(KeyWord.REF);
+//		Parser.skipMissplacedSymbol(KeyWord.LONG);
+//		Parser.skipMissplacedSymbol(KeyWord.CLASS);
 //		else
 		{ Expression expr = Expression.parseExpression();
+		  //Util.BREAK("Statement.doUnlabeledStatement: expr="+expr);
 		  if(expr!=null)
 		  { //Util.BREAK("Statement.doUnlabeledStatement: expr="+expr+", QUAL="+expr.getClass().getSimpleName());
 		    if(expr instanceof Variable)

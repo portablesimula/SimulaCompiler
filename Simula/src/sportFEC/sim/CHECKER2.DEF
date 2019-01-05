@@ -1,0 +1,1666 @@
+External class CHECKER1;
+
+CHECKER1 class CHECKER2;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---      S e m a n t i c    C h e c k e r     P a r t  2.     ---
+%      ---                                                           ---
+%      --- Selection switches: DIZ                                   ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---    'X' Do NOT include constant folding                    ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+%SELECT Z
+
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scope.mne
+
+semchecker1 class semchecker;
+hidden protected caseexp,
+                 checkclb,curswitch,curswitchel,
+                 l2p;
+begin
+      boolean checkclb; ! check 1-dim. array decl for const lower bound;
+      character unstop; ! unstacked operator if expr-error (IABTE) ;
+      short integer L2p;
+      short integer opi;
+      text L2buf;
+
+      ref(switchdef) curswitch;
+      ref(switchelement) curswitchel;
+
+      ref(unstack)ust;
+      ref(ConstEltChecker) constantelt;
+
+%       boolean array recunstackstop(0:150);  ! zero never used;
+%       ! the symbols which should stop unstacking in case of
+%         abnormal termination of expressions;
+
+%+Z   ref(exp) array expexptop(0:maxdepth);
+%-Z   ref(exp)       expexptop(  100     );
+      ! for error recovery only ;
+
+%title ******   enterstmt - check_block   ******
+
+      ref(quantity) visq; !*** used by enterstmt ***;
+
+%-I   procedure enterstmt;
+%-I      ! NB: When this procedure is changed, the special 'enterstmt'
+%-I            in brecord'alloc2 must be changed correspondingly ;
+%-I   begin allocate;
+%-IZ %IMPLNONE OFF
+%-I      inspect getBrc(lastblhi,lastbllo) do begin
+%-I         display(rank(cblev)):-this brecord;
+%-I         brctab(rank(lastblhi)).val(rank(lastbllo)):-none;
+%-I         visChain(fpar,visq);
+%-I      end;
+%-I   end enterstmt;
+
+%+N   procedure check_block;
+%+N   begin short integer check; boolean equal;
+%+N         ref(formal) form; ref(actualuse) act;
+%+N         form:-display(rank(cblev).formals;
+%+N         while form=/=none do begin
+%+N               equal:=true; check:=form.actuals.noofactuals;
+%+N               act:-form.actuals;
+%+N               while act=/=none do begin
+%+N                   if act.noofactuals<>check then equal:=false;
+%+N                   act:-act.next end;
+%+N               if not equal then note0(295); form:-form.next;
+%+N         end;
+%+N   end check_block;
+
+%title ***   Procedure ENTERCONN   ***
+%REUSE OFF
+%+Z         short integer lowpl =   0  ; !here because of error in 107;
+%+PQ  prior
+      procedure enterconn(classq); ref(quantity)classq;
+      begin boolean inlocals; ref(stackedi) chain;
+% %+Z         short integer lowpl =   0;
+%-Z         character     lowpl = NUL;
+            ref(quantity)qz,q; ref(brecord)brc;
+
+%+S         Freq(100):=Freq(100)+1;
+            cblev:=char(rank(cblev)+1);
+                   ! NOTE: only cblev, not crtblev increased ;
+            if rank(cblev) > maxblev then fatal0(299);
+            if classq==none then begin
+               !*** bad expression after inspect,
+               !*** or from "enterconn(none)" in PAS2INIT ;
+               !*** A dummy subblock is returned ;
+     BADBLOCK: brc:-new brecord;
+               brc.blev:=cblev; brc.rtblev:=crtblev;
+               qz:-new quantity; qz.plev:=one;
+               qz.kind:=brc.kind:=K_subbl; qz.categ:=C_block;
+               qz.type:=INOTY;
+               brc.declquant:-qz; qz.descr:-brc; qz.encl:-unknowns;
+               makevisblock(brc);
+%+PQ           brc:-none;
+               goto copyleave;
+            end of special case;
+            inspect classq.descr do begin
+       ! *** make all protected attributes invisible ***;
+               q:-declquant;
+       REP:    qz:-q.descr.fpar; inlocals:=true;
+       REP1:   while qz=/=none do begin
+                     if qz.protect='!1!' then begin
+                        qz.visible:=char(rank(qz.visible)+1);
+                      if not inlocals then begin if qz.match=/=none then
+                       qz.match.visible:=char(rank(qz.match.visible)+1);
+                      end;
+                     end;
+                     qz:-qz.next;
+               end;
+               if inlocals then begin
+                  inlocals:=false; qz:-q.descr.favirt; goto REP1 end;
+               if q.plev > one then begin q:-q.prefqual; goto REP end;
+       ! end ***protect***;
+% %+D         if option(rank('Q'))<>NUL then begin ... dump ... end;
+
+               display(rank(cblev)):-this brecord;
+               q:-declquant;
+               while q=/=none do begin
+                  !*** save and set levels of brecords ***;
+%-Z %IMPLNONE OFF
+                  inspect q.descr do begin
+                    preinsp:-new stackedb(blev,rtblev,connests,
+                                          inspected,preinsp);
+                    inspected:=cblev;
+                    blev:=cblev; rtblev:=crtblev;
+                  end;
+                  q:-q.prefqual;
+               end;
+
+               qz:-fpar; inlocals:=true;
+      SCANL:   while qz=/=none do begin
+                  if qz.visible=NUL then
+                     inspect qz.symb qua identsymbol do begin
+                        inspect new stackedi(idhi,idlo) do begin
+                           prevmeaning:-curmeaning; next:-chain;
+                           chain:-this stackedi;
+                        end;
+                        curmeaning:-qz;
+                  end;
+                  qz:-qz.next;
+               end;
+               if inlocals then begin if favirt=/=none then begin
+                  qz:-favirt; inlocals:=false; goto SCANL end end;
+               !*** virts must be last ***;
+%page
+               q:-declquant;
+               while q.plev>lowpl do begin
+                  q:-q.prefqual;
+                  qz:-q.descr.fpar;
+                  while qz=/=none do begin
+                     inspect qz.symb qua identsymbol do begin
+                        if qz.visible=NUL
+                        then begin
+                           if curmeaning==none or else
+%                             curmeaning==qz   or else
+                              (curmeaning qua quantity.encl.blev<>blev
+                               ! redeclarations on inner prefix levels
+                                 should not be overridden ;
+ !%+K;                        and curmeaning qua quantity.encl
+                                  =/=qz.encl !???;
+                              )
+                           then begin
+                              inspect new stackedi(idhi,idlo) do begin
+                                 prevmeaning:-curmeaning; next:-chain;
+                                 chain:-this stackedi;
+                              end;
+                              curmeaning:-qz;
+                           end;
+                        end;
+                     end;
+                     qz:-qz.next;
+                  end;
+               end;
+               preinsp.redeclChain:-chain;
+%+PQ           chain:-none; classq:-q:-none;
+            end inspect classq.descr
+            otherwise goto BADBLOCK; !*** classq.descr==none ***;
+   copyleave:
+      end enterconn;
+%REUSE ON
+%title ***   Procedure LEAVECONN   ***
+
+%+PQ  prior
+      procedure leaveConn; ! Used to leave connection blocks ;
+      begin ref(quantity) q,qz; ref(stackedi) chain;
+%-Z         character     lowpl = NUL;
+%+Z         integer   opi,opimax;
+%-Z         character opi,opimax;
+
+%-Z %IMPLNONE OFF
+            inspect display(rank(cblev)) do begin
+               q:-fpar; invisChain(q); !*** leavestmt ***;
+               if declquant.prefqual=/=none then begin
+%-Z %IMPLNONE OFF
+               inspect declquant.prefqual.descr do begin
+                  if kind=K_subbl then begin !*** leave dummy block ***;
+                     leaveblock;
+                  end
+                  else begin
+                     inspect preinsp do begin
+                        chain:-redeclChain;
+                        while chain=/=none do begin
+                          boxof(chain.rehi,chain.relo) qua identsymbol
+                               .curmeaning:-chain.prevmeaning;
+                          chain:-chain.next;
+                        end;
+                     end;
+                     prefixchain(1):-q:-declquant; opimax:=one;
+                     while opimax<declquant.plev
+                     do begin opimax:=opimax+1;
+                        prefixchain(opimax):-q:-q.prefqual;
+                     end;
+                     q:-declquant;
+                     while q=/=none do begin
+                        !*** reset levels ***;
+%-Z %IMPLNONE OFF
+                        inspect q.descr do if preinsp=/=none then begin
+                           blev:=preinsp.oldblev;
+                           rtblev:=preinsp.oldrtblev;
+                           connests:=preinsp.oldconnests;
+                           inspected:=preinsp.oldinsp;
+                           preinsp:-preinsp.prev;
+                        end;
+                        q:-q.prefqual;
+                     end;
+
+                     ! *** undo special protect *** ;
+                     opi:=opimax;
+                     while opi <> zero do begin
+                        q:-prefixchain(opi); prefixchain(opi):-none;
+                        qz:-q.descr.favirt;
+                        while qz=/=none do begin
+                          if qz.protect='!1!' then begin if qz.visible<>NUL
+                          then begin
+                             qz.visible:=char(rank(qz.visible)-1);
+                             if qz.match=/=none
+                             then qz.match.visible:=
+                                  char(rank(qz.match.visible)-1);
+                          end end;
+                          qz:-qz.next;
+                        end;
+                        qz:-q.descr.fpar;
+                        while qz=/=none do begin
+                          if qz.protect='!1!' then begin if qz.visible<>NUL
+                          then qz.visible:=char(rank(qz.visible)-1) end;
+                          qz:-qz.next;
+                        end;
+                        opi:=opi-1;
+                     end ***unprotect***;
+                     display(rank(cblev)):-none;
+                     cblev:=char(rank(cblev)-1);
+                  end;
+               end end;
+            end;
+      end leaveConn;
+
+%title ***   C a s e   s t a t e m e n t   *****
+
+      exp class caseexp(lb,ub,casetype);
+      integer lb,ub; character casetype;
+      begin !ch=ICASE, lb and ub are bounds, casetype is IINTG or ICHAR;
+            boolean array seen(0:ub-lb); !for checking multiple entries;
+
+            procedure emit;
+            begin othwise;
+                  opc:=IDELA; call(coder);
+            end;
+
+            procedure outsdest(i); integer i;
+            begin seen(i):=true;
+                  opihi:=char(i//256); opilo:=char(rem(i,256));
+                  opc:=IACTE; call(coder);
+            end;
+
+            procedure whenvalue(i); integer i;
+            if casetype<>IELSE then
+            begin if i<lb or ub<i then error0(437)
+                  else begin i:=i-lb;
+                     if seen(i) then error0(438) else outsdest(i);
+                  end;
+            end;
+
+            procedure whenrange(l,u); integer l,u;
+            if casetype<>IELSE then
+            begin if u<l or l<lb or ub<u then error0(439)
+                  else while l<=u do begin whenvalue(l); l:=l+1 end;
+            end;
+
+            procedure othwise;
+            begin short integer i;
+                  i:=ub-lb;
+                  while i>=0 do begin
+                        if not seen(i) then outsdest(i); i:=i-1;
+                  end;
+            end;
+
+            if ub-lb>=32768 then begin
+               error0(440); ub:=lb+32767; type:=IELSE end;
+            curcase:-new casedescr(ub-lb+1,lb,ub,curcase,casetype);
+            opc:=ICASE; call(coder);
+            
+      end caseexp;
+%title ***   Constant Element Evaluation   ***
+
+%  OLD COMMENT - but remember SIDE EFFECTS!!!
+%  In addition, code will be issued for an appropriate assignment, if
+%  identifier is a class attribute. This will take care of dot access
+%  and inspect in a proper manner (side effects of dot expr/inspect new)
+%  Note that the attribute is marked constant so it will normally be
+%  replaced by the expression value, e.g. in the class body;
+
+      class ConstEltChecker;
+      begin ref(quantity) meaning;     ! meaning of identifier declared;
+%+I         ref(symbolbox) gBox;
+            character     type;        ! type of same;
+            character    etype;        ! type of exptop;
+
+            procedure Cerror(n); short integer n;
+            begin errQT(meaning,n); meaning.special:=NUL; end;
+
+  REP:   while true do begin
+           detach;
+         ! *******  => wait until '=' in const elt is rec'ved;
+
+         meaning:-meaningof(opdSymb); type:=meaning.type;
+%+D      if meaning.special<>'!3!' then internerr('!9!',sourceline);
+%+D      if meaning==none then internerr('!9!',sourceline);
+
+           detach;
+         ! *******  => wait until expression is on top of stack;
+
+         if exptop.ch <> ICONS then begin Cerror(170); goto EXIT end;
+         etype:=exptop.type;
+         if type<>etype then begin
+            if (type=ISHOR and etype=IINTG)
+%              **** real type cannot currently occur,
+%              **** they are treated as read-only instead !!!
+%              or else (type=ILONG and etype=IREAL) 
+%              or else (type=IREAL and etype=ILONG) 
+            then !ok;
+            else begin !typing error; Cerror(255); goto EXIT end;
+         end;
+%+D      if meaning.descr=/=none then internerr('!9!',sourceline);
+         meaning.special:='!2!';
+         inspect new brecord do begin
+             meaning.descr:-this brecord; declquant:-meaning;
+             blnohi:=exptop qua const.ixhi;
+             blnolo:=exptop qua const.ixlo;
+         end;
+         if type=ITEXT then begin
+            if exptop qua const.ixhi<>NUL
+            then begin
+               opihi:=exptop qua const.ixhi;
+               opilo:=exptop qua const.ixlo;
+               opc:=INEW; coder.opq:-meaning; call(coder);
+%           ! for named texts, code for allocation of the (tagged)
+%             text object must be generated at the constant
+%             definition - see SCODMAIN, LIDENO and LINEW;
+         end end;
+  EXIT:  popExpStack; ! pop off const expr ;
+       end reuse loop;
+
+      end ConstEltChecker;
+%title ***  C l a s s   U n s t a c k  ***
+
+      class unstack;  !****  only one reusable object generated  ****;
+      hidden protected lhi,rhi,lhs,rhs,lht,rht,lhb,rhb,lhc,copt,
+                       caseSingle,casePair,sos,tos;
+      begin integer   lhi, rhi;  !*** these variables are used;
+            integer   lhs, rhs;
+            text      lht, rht;  !    during constant folding ;
+            boolean   lhb, rhb;
+            character lhc,copt,contype;
+            ref(exp) sos,tos,tmp;
+
+%+Z         character array optstack(0:maxdepth);
+%-Z         character       optstack(  100     );
+            ! operator stack - opttop is top;
+
+%+Z         character array priority(0:150);
+%+Z         character array comprior(0:150);
+%-Z         character       priority(  150);
+%-Z         character       comprior(  150);
+            ! priorities and comparative priorities of operators;
+
+%-X %+PQ    prior
+%-X         procedure ReplaceByConst(val);
+%-X         !*** replace sos and exptop by "val";
+%-X         integer val;      !const value;
+%-X         begin short integer i;
+%-X %+S           Freq(105):=Freq(105)+1;
+%-X               leftintbuf.putint(val);
+%-X               i:=11; while loadchar(leftintbuf,i)<>' ' do i:=i-1;
+%-X               simsymbol:-leftintbuf.sub(i+2,11-i); DEFCONST;
+%-X               exptop:-new arithconst(sos.pred,ICONS);
+%-X               exptop qua arithconst.ixhi:=hashhi;
+%-X               exptop qua arithconst.ixlo:=hashlo;
+%-X               exptop.type:=exptop.ctype:=IINTG; exptop.cl:=IEEXPcl;
+%-X         end;
+
+            procedure caseSingle;
+            begin
+%-Z %IMPLNONE OFF
+                  if exptop is arithconst then begin
+                     rhi:=getSAFEint(exptop qua arithconst.ixhi,
+                                     exptop qua arithconst.ixlo);
+                     lhc:=IINTG end
+                  else
+%-Z %IMPLNONE OFF
+                  if exptop is charconst then begin
+                     rhi:=rank(exptop qua charconst.ixlo);
+                     lhc:=ICHAR end
+                  else begin error0(441); lhc:=IELSE end;
+%           begin inspect exptop
+%                    when arithconst do begin
+%                         rhi:=constvalue(this arithconst);
+%                         lhc:=IINTG end
+%                    when charconst  do begin
+%                         rhi:=rank(ixlo); lhc:=ICHAR end
+%                 otherwise begin error0(441); lhc:=IELSE end;
+                  popExpStack;
+            end;
+
+            procedure casePair;
+            begin character rht;
+                  caseSingle; lhi:=rhi; rht:=lhc; caseSingle;
+                  if rht<>lhc then error0(442);
+            end casePair;
+
+
+       detach;
+       while true do begin
+%+S         Freq(104):=Freq(104)+1;
+
+            copt:=optstack(opttop);
+
+%+D         if option(rank('S'))<>NUL then inspect sysout do
+%+D         begin outimage; outtext("-->UST, insymbol= ");
+%+D               outtext(DB(rank(opn))); outtext(":comprior:");
+%+D               outint(rank(comprior(rank(opn))),0);
+%+D               outtext(", opttop= ");
+%+D               outtext(DB(rank(copt))); outtext(":prior:");
+%+D               outint(rank(priority(rank(copt))),0);
+%+D               outtext(", srcline "); outint(linenr,0); outimage;
+%+D               tos:-exptop; sos:-tos.pred;
+%+D               while sos=/=none and then sos.pred=/=none do begin
+%+D                  if tos==sos then internerr('!9!',sourceline);
+%+D                  tos.dump; tos:-sos; sos:-tos.pred end;
+%+D               outtext("---- end stackdump"); outimage;
+%+D         end;
+
+            while priority(rank(copt)) >= comprior(rank(opn))
+            do begin 
+%+S            Freq(106):=Freq(106)+1;
+               tos:-exptop; sos:-tos.pred;
+
+%+D            if option(rank('S'))<>NUL then inspect sysout do
+%+D            begin outtext("  try pop ");
+%+D                  outtext(DB(rank(copt))); outtext(", prior:");
+%+D                  outint(rank(priority(rank(copt))),0); outimage;
+%+D            end;
+
+      switch(NUL:IMXMX) copt begin
+
+      when
+      IVSPC do begin ! case-head termination: tos:-upper, sos:-lower;
+               casePair;
+               exptop:-new caseexp(exptop,ICASE,rhi,lhi,lhc); end;
+
+      when
+      ILABE do begin  ! case-when-value;
+               caseSingle;
+%+D          if not(exptop is caseexp) then internerr('!9!',sourceline);
+               if lhc<>exptop qua caseexp.casetype then error0(443);
+               exptop qua caseexp.whenvalue(rhi);
+               goto REPEAT; end;
+               
+      when
+      IDCLI do begin ! colon of case-when-pair;
+               casePair;
+%+D          if not(exptop is caseexp) then internerr('!9!',sourceline);
+               if lhc<>exptop qua caseexp.casetype then error0(443);
+               exptop qua caseexp.whenrange(rhi,lhi);
+               goto REPEAT; end;
+
+      when
+      IELSE,         ! else in conditional expression;
+      IEEXP do begin ! end of conditional expression; !??????;
+%-Z %IMPLNONE OFF
+               inspect sos.pred do
+%+Z            if ctype=IBOOL then begin
+%+Z               if this exp qua boolconst.ixlo = ITRUE
+%+Z               then exptop:-sos;
+%+Z               exptop.pred:-pred
+%+Z            end else
+                  exptop:-new ifexp(pred,IELSE,sos,tos,this exp);
+            end;
+
+      when
+      IMINU, IPLUS, IMULT do begin
+%-X            if sos.ctype=IINTG
+%-X            then begin
+%-X               if tos.ctype=IINTG then begin
+%-X                  lhs:=getSAFEint(sos qua arithconst.ixhi,
+%-X                                  sos qua arithconst.ixlo);
+%-X                  rhs:=getSAFEint(tos qua arithconst.ixhi,
+%-X                                  tos qua arithconst.ixlo);
+%-X                  ReplaceByConst(     if copt=IPLUS then lhs+rhs
+%-X                                 else if copt=IMINU then lhs-rhs
+%-X                                      else lhs*rhs);
+%-X                  goto popoperator;
+%-X               end;
+%-X               if sos qua const.ixlo=zerolo and
+%-X                  sos qua const.ixhi=zerohi
+%-X               then begin
+%-X                  if copt=IMULT then exptop:-sos ! replace by zero;
+%-X             else if copt=IMINU then             ! negate exptop;
+%-X                     exptop:-new unary(sos.pred,IUMNS,tos,tos)
+%-X                  else tos.pred:-sos.pred;       ! drop zero;
+%-X                  goto popoperator;
+%-X               end;
+%-X            end
+%-X       else if tos.ctype=IINTG then begin
+%-X               if tos qua const.ixlo=zerolo then begin
+%-X                if tos qua const.ixhi=zerohi then begin
+%-X                  if copt<>IMULT then exptop:-sos ! drop zero;
+%-X                  else tos.pred:-sos.pred;        ! replace by zero;
+%-X                  goto popoperator;
+%-X               end end;
+%-X            end;
+               exptop:-new arithop(sos.pred,copt,sos,tos);
+               end;
+
+      when
+      IUMNS do begin
+%-X %-Z %IMPLNONE OFF
+%-X            if tos is arithconst then begin !invert sign;
+%-X               lht:-boxof(tos qua const.ixhi,tos qua const.ixlo)
+%-X                    .symbol;
+%-X               simsymbol:- if loadchar(lht,0)='-'
+%-X                           then lht.sub(2,lht.length-1)
+%-X                           else ("-" & lht);
+%-X               DEFCONST;
+%-X               tos qua const.ixhi:=hashhi;tos qua const.ixlo:=hashlo;
+%-X            end else
+                  exptop:-new unary(sos,IUMNS,tos,tos);
+            end;
+
+      when
+      IIDIV do begin
+%+Z            if sos.ctype=IINTG and then tos.ctype=IINTG
+%+Z            then begin
+%+Z               lhi:=getSAFEint(sos qua arithconst.ixhi,
+%+Z                               sos qua arithconst.ixlo);
+%+Z               rhi:=getSAFEint(tos qua arithconst.ixhi,
+%+Z                               tos qua arithconst.ixlo);
+%+Z               if rhi=0 then error0(-268) !div. by zero not folded;
+%+Z               else begin
+%+Z                    ReplaceByConst(lhi//rhi); goto popoperator;
+%+Z               end;
+%+Z            end;
+               exptop:-new integerdivide(sos.pred,IIDIV,sos,tos);
+            end;
+
+      when
+      ISLAS do begin
+               exptop:-new divide(sos.pred,ISLAS,sos,tos); end;
+
+      when
+      IPOWE do begin !***  sos**top  ***;
+%-X            if sos.ctype=IINTG then begin if tos.ctype=IINTG
+%-X            then begin
+%-X               lhs:=getSAFEint(sos qua arithconst.ixhi,
+%-X                               sos qua arithconst.ixlo);
+%-X               rhs:=getSAFEint(tos qua arithconst.ixhi,
+%-X                               tos qua arithconst.ixlo);
+%-X               if rhs<0 or else (lhs=0 and rhs=0)
+%-X               then error0(-198) !power undef. - not folded;
+%-X               else begin
+%-X                  ReplaceByConst(lhs**rhs); goto popoperator end;
+%-X            end end;
+               exptop:-new power(sos.pred,IPOWE,sos,tos); end;
+
+      when
+      IRFEQ, IRFNE do begin ! reference comparators ==,=/=;
+%-X            if tos.ctype=ITEXT then begin
+%-X               if tos qua textconst.ixhi=NUL then begin
+%-X  refcom1:        exptop:-new refrel(sos.pred,copt,none,sos);
+%-X                  goto popoperator end end;
+%-X            if sos.ctype=ITEXT then begin
+%-X               if sos qua textconst.ixhi=NUL then begin
+%-X  refcom2:        exptop:-new refrel(sos.pred,copt,none,tos);
+%-X                  goto popoperator end end;
+               exptop:-new refrel(sos.pred,copt,sos,tos);
+            end;
+
+      when
+      IEQ,INE do begin !check for comp. w/notext;
+%-X            if tos.ctype=ITEXT then begin
+%-X             if tos qua textconst.ixhi=NUL then begin
+%-X               copt:=if copt=IEQ then IRFEQ else IRFNE;
+%-X               goto refcom1 end end;
+%-X            if sos.ctype=ITEXT then begin
+%-X             if sos qua textconst.ixhi=NUL then begin
+%-X               copt:=if copt=IEQ then IRFEQ else IRFNE;
+%-X               goto refcom2 end end;
+               goto valcom; end;
+
+      when
+      IGE,IGT,ILE,ILT do begin ! value comparators;
+       valcom:
+%-X            if sos.ctype=IINTG and then tos.ctype=IINTG
+%-X            then begin
+%-X               lhs:=getSAFEint(sos qua arithconst.ixhi,
+%-X                               sos qua arithconst.ixlo);
+%-X               rhs:=getSAFEint(tos qua arithconst.ixhi,
+%-X                               tos qua arithconst.ixlo);
+%-X        SETX:  lhc := if   (copt=IEQ and then lhs =rhs) or else
+%-X                           (copt=INE and then lhs<>rhs) or else
+%-X                           (copt=ILE and then lhs<=rhs) or else
+%-X                           (copt=IGE and then lhs>=rhs) or else
+%-X                           (copt=ILT and then lhs <rhs) or else
+%-X                           (copt=IGT and then lhs >rhs)
+%-X                      then ITRUE else IFALS;
+%-X        CONX:  exptop:-new boolconst(sos.pred,ICONS);
+%-X %-Z %IMPLNONE OFF
+%-X               inspect exptop qua const do begin
+%-X                  ixhi:=NUL; ixlo:=lhc; type:=ctype:=IBOOL;
+%-X                  cl:=IEEXPcl end;
+%-X            end
+%-X
+%-X       else if sos.ctype=ITEXT and then tos.ctype=ITEXT
+%-X            then begin
+%-X               lht:-if sos qua textconst.ixhi=NUL then notext
+%-X                    else nameof(sos qua textconst.ixhi,
+%-X                                sos qua textconst.ixlo);
+%-X               rht:-if tos qua textconst.ixhi=NUL then notext
+%-X                    else nameof(tos qua textconst.ixhi,
+%-X                                tos qua textconst.ixlo);
+%-X               lhc := if   (copt=IEQ and then lht =rht) or else
+%-X                           (copt=INE and then lht<>rht) or else
+%-X                           (copt=ILE and then lht<=rht) or else
+%-X                           (copt=IGE and then lht>=rht) or else
+%-X                           (copt=ILT and then lht <rht) or else
+%-X                           (copt=IGT and then lht >rht)
+%-X                      then ITRUE else IFALS;
+%-X               goto CONX
+%-X            end
+%-X
+%-X       else if sos.ctype=ICHAR and then exptop.ctype=ICHAR
+%-X            then begin
+%-X               lhs:=rank(sos qua charconst.ixlo);
+%-X               rhs:=rank(tos qua charconst.ixlo);
+%-X               goto SETX;
+%-X            end
+%-X            else
+       VALRELX:  if valrelList==none
+                 then new valuerel(sos.pred,copt,sos,tos)
+                 else begin valrelList.ch:=copt; call(valrelList) end;
+            end;
+
+      when
+      ICAND,          ! conditional (boolean) and-then;
+      ICOR,           ! conditional (boolean) or-else;
+      IAND,IEQV,IIMP,IOR do begin  ! boolean operators;
+%-X            if sos.ctype=IBOOL then begin
+%-X               lhb:= sos qua boolconst.ixlo=ITRUE;
+%-X               if copt=(if lhb then ICOR else ICAND)
+%-X               then exptop:-sos !no evaluation of exptop;
+%-X          else if tos.ctype=IBOOL then begin
+%-X                  rhb:= tos qua boolconst.ixlo=ITRUE;
+%-X                  if ((copt=IAND  and then(lhb and rhb))or else
+%-X                      (copt=IOR   and then(lhb  or rhb))or else
+%-X                      ((copt=ICAND or copt=ICOR)and rhb)or else
+%-X                      (copt=IEQV  and then(lhb eqv rhb))or else
+%-X                      (copt=IIMP  and then(lhb imp rhb))
+%-X                     ) eqv lhb then exptop:-sos
+%-X                  else begin
+%-X                    lhc := if rhb then IFALS else ITRUE;
+%-X                    goto CONX;
+%-X                  end
+%-X               end  else goto GEN
+%-X            end  else
+         GEN:  if copt=ICOR or else copt=ICAND then begin
+                  tos:- new ifexp(sos.pred,IELSE,
+                             if copt=ICAND then tos else true_const,
+                             if copt=ICAND then false_const else tos,
+                             sos);
+                  exptop:-new expinparantes(sos.pred,IRGPA,none,tos) end
+               else if copt=IEQV then begin
+                  if tos.type<>IBOOL then begin
+                     error2xx(432,tos.type,IEQV); tos.type:=IELSE end;
+                  if sos.type<>IBOOL then begin
+                     error2xx(431,sos.type,IEQV);
+                     tos.type:=sos.type:=IELSE end;
+                  goto VALRELX;
+               end
+               else exptop:-new boolop(sos.pred,copt,sos,tos);
+            end;
+
+      when
+      INOT  do begin ! unary not;
+%-X            if tos.ctype=IBOOL then begin
+%-X               lhc:= if tos qua boolconst.ixlo=ITRUE
+%-X                     then IFALS else ITRUE; sos:-tos; goto CONX end;
+% -- subst. relation   new boolop(sos,copt,exptop,none);
+               if tos.type<>IBOOL then begin
+                  error2xx(432,tos.type,copt);
+                  tos.type:=IELSE end;
+               new valuerel(sos,IEQV,tos,false_const);
+            end;
+
+      when
+      ICONC do begin ! text concatenator ;
+%-X            if sos.ctype=ITEXT then begin
+%-X               if sos qua textconst.ixhi = NUL then begin
+%-X                  tos.pred:-sos.pred; goto popoperator end;
+%-X               if tos.ctype=ITEXT then begin
+%-X                  if tos qua textconst.ixhi <> NUL
+%-X                  then begin
+%-X                     simsymbol:-nameof(sos qua textconst.ixhi,
+%-X                                       sos qua textconst.ixlo) &
+%-X                                nameof(tos qua textconst.ixhi,
+%-X                                       tos qua textconst.ixlo);
+%-X                     DEFCONST;
+%-X                     sos qua textconst.ixhi:=hashhi;
+%-X                     sos qua textconst.ixlo:=hashlo;
+%-X                     sos qua textconst.type:=ITEXT;
+%-X                     sos qua textconst.id:-none; !NB - not named !!!;
+%-X                  end;
+%-X                  exptop:-sos; goto popoperator;
+%-X               end;
+%-X            end;
+%-X            if tos.ctype=ITEXT then begin
+%-X               if tos qua textconst.ixhi=NUL then begin
+%-X                  exptop:-sos; goto popoperator end end;
+%-X %-Z %IMPLNONE OFF
+%-X            if sos is textconc then begin
+%-X               sos qua textconc.insert;
+%-X               exptop:-sos; goto popoperator end;
+               inspect new textconc(sos.pred,ICONC) do begin
+                  first:-last:-new textoperand(sos);
+                  type:=ITEXT; qual:-textclass; ntext:=1; insert;
+                  exptop:-this textconc;
+               end;
+            end;
+
+%        when
+%        IABTE do begin ! abnormal termination of expression;
+%                internerr('!9!',sourceline);
+%                ! abnormal termination of expr in unstack;
+%              end;
+
+      when
+      IASSG do begin ! := ;
+               if valassList==none
+               then new valassign(sos.pred,IASSG,sos,tos)
+               else call(valassList) end;
+
+      when
+      IDENO do begin ! :- ;
+               if refassList==none
+               then new refassign(sos.pred,IDENO,sos,tos)
+               else call(refassList) end;
+
+% V   LISIMU:  begin
+% V   when
+% V   ISIMU do begin ! repeated const - evaluation of element;
+%            call(constantelt); end;
+% V            goto popoperator;
+
+      when
+      ITO   do begin ! constant elt - evaluation;
+             call(constantelt); end;
+
+%       when
+%       IFASG do begin
+%               new valassign(sos,IFASG,sos qua forlist.cvar,exptop);
+%               goto REPEAT; end;
+
+%       when
+%       IFDNO do begin
+%               new refassign(sos,IFDNO,sos qua forlist.cvar,exptop);
+%               goto REPEAT; end;
+
+      when  NONE do
+
+% V   LINEW:  LINEWP: LICL:   LIFRMP: LIDCLE: LIDCLS: LISWEE: LISWDE:
+% V   LIDCLA: LIBNDE: LIDIME: LIARDE: LIDCLP: LIBLKB:
+% V           LIPSPC: LIEPRM: LICPRF: LIVALU: LICSPC:
+% V   LIHIDD: LIPRTC: LIPRHI:         LINOTY: LIPROC:
+% V   LIDCLC: LIECWI: LIEND:  LIEXTR: LIEXNM: LISIMU: LILANG:
+% V   LISIDN: LIIDN:  LIIDNP: LIDOT:  LIDOTP: LISCST: LICONS: LIIF:
+% V   LILFPA: LIRGPA: LIIN:   LIIS:   LIQUA:  LITHIS: LITHEN:
+% V   LIIFSB: LIGOTO: LIWSTB: LIINSP: LITHSB: LIWHDO: LIGOE:
+% V   LIELSB: LIIFSE: LIWHSE: LIASGE: LICOMA:
+% V   LIARGE: LICAPE: LIBEGI: LIBPRF: LIESTM: LICONB: LIFWHN:
+% V   LIWHEN: LIOTHW: LICONE: LIOTHE: LIINNE: LIFOR:  LIWHIL:
+% V   LISTEP: LIUNTI: LIDO:   LIELME: LIFORE: LIACTV: LIREAC:
+% V   LIBEFO: LIAFTR: LIAT:   LIDELA: LIPRIO: LIACTE: LIBLNO: LIEOP:
+% V   LIBOOL: LICLAS: LICHAR: LIINTG:         LILONG: LINAME:
+% V   LIREAL: LIREF:  LISHOR: LITEXT: LIVIRT: LISSWA: LISSWB:
+% V   LIARRA: LIGO:   LICOMN: LINOTE: LISWIT: LITRUE:
+% V   LIINE:  LINONE: LIFALS: LIROPD: LIBREC: LIEREC: LISMCL: LIUPLS:
+% V   LICASE: LILINE: LIFASG: LIFDNO:
+% V   LIABTE:
+             internerr('!9!',sourceline); !wrong operator to unstack ;
+
+      end ****** case-switch on copt ******;
+
+     popoperator: ! pop the top operator from operatorstack;
+%+D               if option(rank('S'))<>NUL and tos=/=exptop
+%+D               then inspect sysout do begin
+%+D                  outtext(" *stack* "); exptop.dump; end;
+                  if opttop>0 then begin
+                     expexptop(opttop):-none; opttop:=opttop-1;
+                  end else internerr('!9!',sourceline);
+                  copt:=optstack(opttop);
+            end while;
+REPEAT:     tos:-sos:-none;
+%-Z %setopt +D
+            detach;
+%-Z %setopt -D
+       end unstack loop;
+      end unstack;
+%title ***  S e m c h e c k e r  -  M a i n   P a r t  ***
+
+%-I %+PQ  prior
+%-I       procedure getOpd;
+%-I       begin opdhi:=loadchar(L2buf,L2p);opdlo:=loadchar(L2buf,L2p+1);
+%-I             opdSymb:-boxof(opdhi,opdlo); L2p:=L2p+2;
+%-I %+D         if option(rank('R'))<>NUL then inspect sysout do begin
+%-I %+D            outtext(", opd: "); outtext(opdSymb.symbol) end;
+%-I       end;
+
+%-I %+PQ  prior
+%-I       procedure getlastblno;
+%-I       begin lastblhi:=loadchar(L2buf,L2p);
+%-I             lastbllo:=loadchar(L2buf,L2p+1);
+%-I             L2p:=L2p+2;
+%-I %+D         if option(rank('R'))<>NUL then inspect sysout do begin
+%-I %+D            outtext(":");
+%-I %+D            outint(rank(lastblhi)*256+rank(lastbllo),5) end;
+%-I       end;
+
+      detach;    !*** perform initialisations ***;
+
+   ! inspect L2INPT do ; begin
+
+
+      while true do begin
+
+   NEXTOPN:
+
+%+D    if exptop==none then internerr('!9!',sourceline);
+%+D    if option(rank('S'))<>NUL then inspect sysout do
+%+D    begin if option(rank('T'))<>NUL then
+%+D          begin ref(exp)expv; short integer i;
+%+D                outtext("  exp-stack:");outimage;
+%+D                for expv:-exptop,expv.pred while expv=/=none
+%+D                 do expv.dump;
+%+D                outtext("operator-stack:");outimage;
+%+D                for i:=opttop step -1 until 0 do begin
+%+D                   outtext(DB(rank(ust.optstack(i)))); outimage end;
+%+D          end;
+%+D    end;
+
+       opn:=loadchar(L2buf,L2p); L2p:=L2p+1;
+
+%+D    if option(rank('R'))<>NUL then inspect sysout do
+%+D    begin outimage; outtext("opn: "); outtext(DB(rank(opn)));
+%+D          outint(rank(opn),4); outtext(", L2p:"); outint(L2p,0) end;
+
+    switch(NUL:IMXMX) opn begin
+
+    when
+    ISIDN,                       ! single identifier;
+    IIDN do begin                ! identifier;
+         getOpd;
+         if simpleList==none then new simpleIdent(exptop,IIDN)
+         else begin simpleList.ch:=IIDN; call(simpleList) end;
+         goto NEXTOPN;
+    end; !do not distinguish;
+
+    when
+    IDOT,                        ! remote identifier;
+    IDOTP do begin               ! remote identifier with arguments;
+         getOpd;
+         new dotIdent(exptop.pred,opn,exptop);
+         if opn=IDOT then goto NEXTOPN;
+         goto gennap;
+    end;
+
+    when
+    INEWP do begin             ! new - object generator with parameters;
+         getOpd;
+         exptop:-new newIdent(exptop,INEWP);
+         goto gennap; end;
+
+    when
+    IIDNP do begin             ! identifier with arguments;
+         getOpd;
+         if simpleList==none then new simpleIdent(exptop,IIDNP)
+         else begin simpleList.ch:=IIDNP; call(simpleList) end;
+ gennap: if lastnap.inuse then begin
+            if lastnap.suc==none
+            then lastnap.suc:-new nextargumentproducer;
+            lastnap:-lastnap.suc;
+%           if lastnap.suc==none then begin
+%              inspect new nextargumentproducer do begin
+%                 pred:-lastnap;
+%                 lastnap:-lastnap.suc:-this nextargumentproducer;
+%              end
+%           end
+%           else lastnap:-lastnap.suc;
+         end;
+         call(lastnap);
+         opn:=IFRMP; goto STACK; end;
+
+    when
+    IPLUS,IMINU,ISLAS,IMULT,IIDIV,IPOWE, ! arithmetic operators;
+    IEQ,INE,IGE,IGT,ILE,ILT,             ! value comparators;
+    ICAND,ICOR,IAND,IEQV,IIMP,IOR,       ! boolean operators;
+    IRFEQ,IRFNE,                         ! reference comparators ==,=/=;
+    IUMNS,INOT,                          ! unary operators;
+    ICONC do begin                       ! text concatenation ;
+         call(ust); goto STACK; end;
+
+    when
+    ILABE,                       ! when or comma in case-statement;
+    ICASE,                       ! "case" in case-statement;
+    IIF,                         ! if in conditional expression;
+    ILFPA,                       ! left paranthesis "(" ;
+    IASSG,IDENO do begin ! :=/:- ;
+
+STACK:   !*** stack the current input symbol;
+         opttop:=opttop+1;
+%+D      if opttop>maxdepth then fatal0(246);
+REPLACE: ust.optstack(opttop):=opn; expexptop(opttop):-exptop;
+    end;
+
+    when
+    ICOMN,         ! Start of declaration (S-code DECL) ;
+    IROPD do begin ! Start of statement (S-code STMT) ;
+         opi:=rank(loadchar(L2buf,L2p  ))*256 +
+              rank(loadchar(L2buf,L2p+1));      L2p:=L2p+2;
+         if option(rank('L'))<>NUL
+%+D         or option(rank('R'))<>NUL
+         then begin sysout.outchar('/'); sysout.outint(opi,4) end;
+         if opi > linenr then linenr:=opi;
+         goto OPNOUT; end;
+
+    when
+%+K     IBLNO,                   ! set global inst ;
+    IELSB,                       ! else in if-statement ;
+    IIFSE,                       ! end of if-stmt;
+    ITRUE,                       ! set bdest;
+    IFALS,                       ! bjump bdest;
+    IDO,                         ! fjump fdest;
+    IFDNO,                       ! set fdest;
+    IUNTI,                       ! end complex for;
+    IOTHE do begin               ! end of inspect (otherwise present);
+    OPNOUT:
+% Z %setopt +C
+         opc:=opn; call(coder);
+% Z %setopt -C
+         goto NEXTOPN;
+    end;
+%title ***  Declarations  ***
+    when
+    IREAC do begin               ! record declaration;
+         getlastblno;
+         !*** record descr etc. output by encloser ***;
+         !*** a special enterstmt follows (no allocate!!!) ***;
+         inspect getBrc(lastblhi,lastbllo) do begin
+            visq:-declquant;
+            while visq.plev>one do visq:-visq.prefqual;
+            visq.prefqual:-display(rank(cblev)).declquant;
+            display(rank(cblev)):-this brecord;
+            brctab(rank(lastblhi)).val(rank(lastbllo)):-none;
+            vischain(fpar,visq);
+         end;
+    end;
+
+    when
+    IDCLC do begin               ! class declaration;
+         getlastblno; goto outbb; end;
+
+    when
+    IDCLP,                       ! procedure declaration;
+    IBLKB,                       ! block begin;
+    IBREC do begin               ! dummy virtual match begin ;
+         getlastblno;
+         if opn=IBLKB then
+%-Z %IMPLNONE OFF
+         inspect getBrc(lastblhi,lastbllo) do begin
+            !NOTE: not yet allocated brecord, i.e. in pass1-format;
+            if kind=K_proc !procedure body brec; then
+            inspect getBrc(hidlist.idhi,hidlist.idlo).declquant.match do
+            begin if descr=/=none then begin
+                  hidlist.idhi:=descr.blnohi;hidlist.idlo:=descr.blnolo;
+               end;
+            end;
+         end;
+
+         allocate;
+ outbb:  opc:= if opn=IBREC then IBREC else IBLKB;
+         coder.opq:-getBrc(lastblhi,lastbllo).declquant;
+         call(coder);
+         enterblock;
+         end;
+
+    when
+    IECWI,                       ! end class body without inner;
+    IEREC,                       ! end dummy virtual match ;
+    IEND  do begin               ! block end;
+          coder.opq:-display(rank(cblev)).declquant;
+          opc:=opn; call(coder);
+%+N       if GiveNotes then check_block;
+          leaveblock;
+    end;
+
+    when
+    ICL   do begin               ! label declaration;
+         getOpd;
+         opc:=ILABE;
+         coder.opq:-meaningof(opdSymb);
+         inspect coder.opq do
+            if categ=C_virt then begin if match=/=none
+            then coder.opq:-match end
+         otherwise coder.opq:-newnotseen(opdSymb);
+         call(coder);
+    end;
+
+%title ***  Expression Operators  ***
+    when
+% V ISIMU,                       ! comma in repeated const;
+    ITO   do begin               ! start of constant decl;
+         getOpd;
+         call(constantelt); goto STACK; end;
+
+    when
+    IFASG do begin               ! start of readonly attr. rhs;
+         readonly:-exptop qua identifier.meaning;
+         !is set to none by assignment checking;
+         end;
+
+    when
+    INEW  do begin               ! new - object generator;
+         getOpd;
+         exptop:-new newIdent(exptop,INEW);
+    end;
+
+    when
+    IBOOL do begin               ! single constant;
+%+D      if option(rank('R'))<>NUL then inspect sysout do begin
+%+D         outtext(", opd: "); outtext(DB(rank(loadchar(L2buf,L2p))));
+%+D      end;
+         exptop:-new boolconst(exptop,ICONS);
+         goto SetCo1 end;
+
+    when
+    ICHAR do begin               ! single constant;
+%+D      if option(rank('R'))<>NUL then inspect sysout do begin
+%+D         outtext(", opd: "); outint(rank(loadchar(L2buf,L2p)),3) end;
+         exptop:-new charconst(exptop,ICONS);
+         goto SetCo1 end;
+
+    when
+    ISHOR do begin !*** cannot occur ***;
+         opn:=IINTG; goto aCon; end;
+
+    when
+    IINTG, IREAL, ILONG do begin
+   Acon:
+         if aconstList=/=none then begin
+            aconstlist.pred:-exptop; aconstList.ch:=ICONS;
+            exptop:-aconstList; aconstList:-none; !all(exptop); end else
+         exptop:-new arithconst(exptop,ICONS);
+ SetCon:
+%+D      if option(rank('R'))<>NUL
+%+D      then inspect sysout do begin outtext(", opd: ");
+%+D         outtext(nameof(loadchar(L2buf,L2p),loadchar(L2buf,L2p+1)));
+%+D      end;
+         exptop qua const.ixhi:=loadchar(L2buf,L2p); L2p:=L2p+1;
+ SetCo1: exptop qua const.ixlo:=loadchar(L2buf,L2p); L2p:=L2p+1;
+ SetCo2: exptop.type:=exptop.ctype:=opn; exptop.cl:=IEEXPcl;
+    end;
+
+    when
+    ITEXT do begin               ! single constant;
+         exptop:-new textconst(exptop,ICONS);
+         exptop.qual:-textclass; goto SetCon; end;
+
+    when
+    IREF  do begin               ! single constant;
+         exptop:-new refconst(exptop,ICONS);
+         exptop qua const.ixlo:=INONE;
+         goto SetCo2 end;
+
+    when
+    IIN,IIS do begin             ! in/is - class comparators;
+         getOpd;
+         exptop:-new classcomparator(exptop.pred,opn,none,exptop);
+         end;
+
+    when
+    IQUA do begin                ! qua - instantanous qualification;
+         getOpd;
+         exptop:-new instqual(exptop.pred,IQUA,none,exptop);
+         end;
+
+    when
+    ITHIS do begin               ! this - local object;
+         getOpd;
+         exptop:-new localobject(exptop,ITHIS,none,true_const);
+                     ! dummy last param =/= none and identifier;
+         end;
+
+    when
+    IFRMP do begin ! colon of case-when-range            swap w/ILABE;
+         opn:=IDCLI; goto swap; !*** TEMP ***; end;
+
+    when
+    IPSPC,         ! case-bound-pair colon               swap w/ICASE;
+    ITHEN,         ! then in conditional expression      swap w/IIF  ;
+    IVSPC,         ! end case-bound-pair                 swap w/IPSPC;
+    IELSE do begin ! else in conditional expression      swap w/ITHEN;
+  swap:  call(ust); goto REPLACE; end;
+
+    when
+    ICSPC do begin               ! case-statement: end bound-pair;
+         if exptop.ctype=IIDN then checkasexp(exptop qua identifier);
+         exptop.cl:=IEEXPcl; exptop.emit;
+         if exptop.type=ICHAR then begin
+            opc:=IPRHI; opt:=IINTG; call(coder) end
+    else if exptop.type<>IINTG then begin if exptop.type<>ISHOR
+         then error0(441) end;
+         popExpStack; ! to get bounds on top;
+         call(ust);
+    end;  ! generate caseexpr in unstack'VSPC;
+
+    when
+    ISMCL,                       ! end of constant decl;
+    IEEXP do begin               ! end of conditional expression;
+         call(ust);
+    end;
+
+    when
+    IRGPA do begin               ! right paranthesis ")" ;
+         call(ust);
+         exptop:-new expinparantes(exptop.pred,IRGPA,none,exptop);
+   POPEXPEXP:
+         if opttop>0 then begin
+            expexptop(opttop):-none; opttop:=opttop-1 end;
+    end;
+
+    when
+    ICPRF do begin               ! terminate case-when-range;
+         call(ust);
+         goto POPEXPEXP;
+    end;
+
+    when
+    ISWIT do begin               ! terminate case-when-branch;
+         if !last;opc<>IGOE then begin
+            opn:=IPRIO; goto OPNOUT end;
+         end;
+
+    when
+    INONE do begin               ! "when none" in case-statement;
+%+D      if not(exptop is caseexp) then internerr('!9!',sourceline);
+         exptop qua caseexp.othwise;
+    end;
+
+    when
+    IVALU do begin               ! case-otherwise;
+         opn:=IREAC; goto OPNOUT;
+    end;
+
+    when
+    IEPRM do begin               ! terminate case-statement;
+%+D      if not(exptop is caseexp) then internerr('!9!',sourceline);
+         exptop.emit;
+         popExpStack; ! discard case expression;
+    end;
+
+    when
+    IABTE do begin               ! abnormal termination of expression;
+  repu:  unstop:=ust.optstack(opttop); exptop:-expexptop(opttop); 
+         if unstop=INOTY then goto NEXTOPN;
+         if unstop=IFRMP or unstop=IGOTO or
+            unstop=IDCLS or unstop=IIFSB
+%                        or unstop=IUNTI or
+%           unstop=IWHIL or unstop=ISTEP or
+%           unstop=IWSTB  
+         then begin !*** generate dummy expression;
+            exptop:-new exp(exptop,IELSE); exptop.type:=IELSE; end
+         else begin
+            expexptop(opttop):-none; opttop:=opttop-1; goto repu end;
+
+%        while not recunstackstop(rank(ust.optstack(opttop)))
+%        do begin expexptop(opttop):-none; opttop:=opttop-1 end;
+%        exptop:-expexptop(opttop); 
+%        if unstop                     <>      INOTY  then begin
+%        if rank(ust.optstack(opttop)) <> rank(INOTY) then begin
+%           !*** generate dummy expression;
+%           exptop:-new exp(exptop,IELSE); exptop.type:=IELSE; end;
+         end;
+%title ***  Statement symbols  ***
+    when
+    IGOTO do begin               ! start of goto-statement;
+         ingotostmt:=notinconditional:=true;
+         !last;opc:=IGOTO; goto STACK; end;
+
+    when
+    IIFSB do begin               ! start of if-statement;
+         ! Only lastop's need to be set here, op's are untouched
+           since last coder call;
+         !last;opc:=IIFSB; goto STACK; end;
+
+%     when
+%     IWSTB do begin               ! start of while-statement;
+%          opc:=ITRUE; call(coder); goto STACK; end;
+
+% V LIWHDO:
+    when
+% V IWHDO,                 ! do in while-stmt;
+    ITHSB do begin         ! then in if-stmt;
+         call(ust);
+         if exptop.type <> IBOOL then begin if exptop.type <> IELSE
+         then error0(172) end;
+         exptop.cl:=IEEXPcl;
+         if exptop.ctype=IIDN then checkasexp(exptop qua identifier)
+    else if exptop.ctype=IEQ then exptop.cl:=IIFSBcl;
+         !L3 exp output; exptop.emit;
+         !last;opc:=opn;
+         if exptop.ctype<>IEQ then call(coder);
+         popExpStack; goto POPEXPEXP;
+    end;
+
+    when
+    IGOE do begin                ! end of goto-stmt;
+         call(ust);
+         if exptop.type <> ILABE then begin if exptop.type <> IELSE
+         then error0(171) end;
+         exptop.cl:=IEEXPcl;
+         if exptop.ctype=IIDN then checkasexp(exptop qua identifier);
+         !L3 exp output; exptop.emit;
+         opc:=IGOE; call(coder);
+         popExpStack; goto POPEXPEXP;
+    end;
+
+    when
+    IINSP do begin
+         ! We know that none of the op-variables have been changed
+           since last coder call, so only lastop's must be set here;
+         !last;opc:=IINSP;
+         end;
+
+    when
+    ISTEP do begin               ! end of ctrl.var (FOR) assign;
+         opn:=IASGE; getOpd; call(ust);
+%+D      if not(exptop is valassign) then internerr('!9!',sourceline);
+         if exptop qua valassign.source.type > IINTG then begin
+%-Z %IMPLNONE OFF
+            inspect opdSymb qua identsymbol do
+                if curmeaning qua quantity.symb==this identsymbol
+                then begin
+                   curmeaning:-curmeaning.next;
+                   exptop qua valassign.target.meaning:-curmeaning;
+                   exptop qua valassign.target.type:=
+                   exptop qua valassign.type:=ILONG;
+                end
+            ;
+         end;
+         goto Eass;
+         end;
+
+    when
+    IASGE do begin               ! end of assignment statement;
+         call(ust);
+   Eass: !L3 exp output; exptop.emit;
+         ! a whole multiple assignment is treated by unstack;
+         popExpStack;
+         !last;opc:=IASGE;
+%+D      call(coder);
+    end;
+
+    when
+    ICOMA do begin               ! comma between argument expressions;
+         call(ust); ! getting the actual exp as exptop;
+         call(lastnap); ! generates next argument;
+    end;
+
+    when
+    IBEGI do begin
+         getlastblno;
+         goto LIARGE end;
+
+    when
+    IARGE,ICAPE do begin   ! end of argument list;
+ LIARGE: call(ust);
+         call(lastnap); ! generates next argument;
+         lastnap.inuse:=false;
+         call(lastnap); ! brings lastnap back to be used again;
+            ! exptop denotes the identifier of the call;
+         exptop:-new argumented(exptop.pred,
+                                if opn=IBEGI then IBPRF else IARGE,
+                                exptop,
+                                lastnap.firstarg.nextarg,
+                                lastnap.noofexpargs,
+                                lastnap.argno);
+         lastnap:-lastnap.pred;
+         if opn=IBEGI then begin exptop.emit; popExpStack end;
+         goto POPEXPEXP; ! removes IFRMP from stack;
+    end;
+
+    when
+    IBPRF do begin               ! prefixed block without parameters;
+         getlastblno;
+         getOpd;
+         new prefIdent(exptop,IBPRF).emit;
+%        exptop.emit; exptop:-exptop.pred;
+         end;
+
+    when
+    IESTM do begin               ! end of expression "callorobjgen";
+         if exptop.ctype = IIDN then begin
+            switch(NUL:K_max) exptop.kind begin
+            when K_error do ;
+            when K_proc do begin
+                 checkasexp(exptop qua identifier);
+%+N              if GiveNotes then inspect exptop.meaning do begin
+%+N                 if categ<>C_local and categ<>C_extnal and 
+%+N                    categ<>C_unknwn  and
+%+N                   (categ<>C_virt or descr==none)
+%+N                    ! virtual or formal procedure call;
+%+N                 then recordactualuse(this quantity,0);
+            end;
+            when K_class do checkasexp(exptop qua identifier);
+            when K_array,K_rep do exptop qua identifier.identError(360);
+            when K_switch do exptop qua identifier.identError(361);
+            when K_ident do exptop qua identifier.identError(362);
+            when K_label do exptop qua identifier.identError(363);
+            when NONE do  KERR1: coder qua visiblegenerator.
+                      StopScode_1('!9!',sourceline);
+            end case
+    %+D     otherwise goto KERR1;
+         end
+    else if exptop.ctype = IIDNP then begin
+%-Z %IMPLNONE OFF
+            inspect exptop qua argumented.ident do begin
+               switch(NUL:K_max) kind begin
+                 when K_error,K_proc do ;
+                 when K_class do begin
+                   if ch=IIDNP then identError(334);
+                       ! For a legal class generator with parameters, ch
+                        will be INEWP ;
+                       ! This test is for class id with arguments if
+                         opttop=0: Could possibly be a block prefix. The
+                         class identifier test is for all other cases ;
+                 end;
+                 when K_array,K_rep do identError(364);
+                 when K_switch      do identError(365);
+                 when NONE do  KERR2: coder qua visiblegenerator.
+                      StopScode_1('!9!',sourceline);
+               end case
+    %+D        otherwise goto KERR2;
+            end
+         end
+         else error0(173);
+         exptop.cl:=IEEXPcl; exptop.emit; popExpStack;
+         goto OPNOUT; end;
+
+    when
+    ICONB,IFWHN do begin         ! do/first when in inspect-statement;
+         getlastblno;
+         call(ust);
+         if exptop.type <> IREF then begin
+            if exptop.type <> IELSE then error0(174) end;
+         if exptop.ctype=IIDN then checkasexp(exptop qua identifier);
+         exptop.cl:=IEEXPcl; exptop.emit;
+         !******  T E M P *******;
+         simpleList:-none; ! *** exp stack is NOT popped after emit;
+         !******  T E M P *******;
+%-Z %IMPLNONE OFF
+         if exptop is newIdent then implNone:=false else
+%-Z %IMPLNONE OFF
+         if exptop is argumented then begin
+            if exptop qua argumented.ident is newIdent
+            then implNone:=false end;
+         if opn=ICONB then begin enterconn(exptop.qual); goto bscp end;
+         goto LIWHEN1 end;
+
+    when
+    IWHEN do begin
+         getlastblno;
+         leaveConn;
+LIWHEN1: getOpd;
+         cquant:-meaningof(opdSymb    );
+         if cquant == none then cquant:-newnotseen(opdSymb    );
+         if cquant.kind <> K_class and then cquant.categ <> C_unknwn
+         then begin error1id(317,cquant.symb); enterconn(none); end
+    else begin if exptop.qual=/=none then
+               begin if not ( subclass(exptop.qual,cquant) or else
+                              subclass(cquant,exptop.qual) )
+                     then note1id(396,opdSymb);
+               end;
+            enterconn(if cquant.kind=K_class then cquant else none);
+         end;
+         cquant:-none; !*** GC ***;
+  bscp:  enterstmt;
+         coder.opq:-display(rank(cblev)).declquant.prefqual;
+         opc:=opn; call(coder);
+         end;
+
+    when
+    IOTHW,                       ! otherwise in inspect-statement;
+    ICONE do begin               ! end of inspect-stat. (no otherwise);
+         leaveConn;
+         popExpStack;
+         goto OPNOUT; end;
+
+    when
+    IFOR  do begin                ! for-statement ;
+         getlastblno;
+         enterstmt;
+         getOpd;
+         q:-meaningof(opdSymb);
+         inspect q do begin
+            if categ=C_name then error0(-180);
+            if kind<>K_ident then begin
+               if kind<>K_error then error1id(306,symb) end;
+         end;
+         goto opqout;
+         end;
+
+    when
+%+K     IDCLE,                       ! declaration end;
+        IINNE do begin               ! inner statement;
+     opqout: coder.opq:-display(rank(cblev)).declquant;
+             goto OPNOUT; end;
+
+%-K     when
+%-K     IDCLE do begin               ! declaration end;
+%-K          opc:=IDCLE;
+%-K %-Z %IMPLNONE OFF
+%-K          inspect display(rank(cblev)).declquant do
+%-K             if kind=K_class or else kind=K_prefbl then begin
+%-K                coder.opq:-this quantity; call(coder);
+%-K          end;
+%-K      end;
+
+    when
+    IWHIL,                       ! declare FOR variable ;
+    IELME do begin               ! comma between for-elements;
+         getOpd; coder.opq:-meaningof(opdSymb    );
+         goto OPNOUT;
+         end;
+
+    when
+    IAFTR do begin               ! end of record declaration;
+         inspect display(rank(cblev)) do begin
+            coder.opq:-declquant; opc:=IEND; call(coder);
+            visq:-fpar; invischain(visq);
+            visq:-declquant;
+            while visq.plev>one do visq:-visq.prefqual;
+            display(rank(cblev)):-visq.prefqual.descr;
+            visq.prefqual:-none;
+         end;
+         end;
+
+    when
+    IFORE do begin               ! end of for-statement;
+   LIFORE:
+%-Z %IMPLNONE OFF
+         inspect display(rank(cblev)) do begin
+            visq:-fpar; invischain(visq);
+            display(rank(cblev)):-declquant.prefqual.descr;
+         end;
+%        goto OPNOUT; ! no output ;
+         end;
+
+    when
+    IDCLS do begin               ! switch declaration begin;
+         opttop:=opttop+1; if opttop>maxdepth then fatal0(246);
+         ust.optstack(opttop):=IDCLS; expexptop(opttop):-exptop;
+         getOpd;
+         exptop:-curswitch:-new switchdef(exptop,INOTY);
+         curswitch.sw:-meaningof(opdSymb);
+         if curswitch.sw==none then curswitch.sw:-newnotseen(opdSymb);
+         end;
+
+    when
+    ISWEE do begin               ! switch element comma;
+         call(ust);
+         inspect new switchelement(exptop) do begin
+            if curswitchel==none
+            then curswitch.elements:-curswitchel:-this switchelement
+            else curswitchel:-curswitchel.next:-  this switchelement;
+         end;
+         popExpStack;
+    end;
+
+    when
+    ISWDE do begin               ! switch declaration end;
+         curswitch.checkplainswitch;
+         curswitch:-none; curswitchel:-none;
+         exptop.emit; popExpStack; goto POPEXPEXP;
+    end;
+
+    when
+    IDCLA do begin               ! array declaration begin;
+         inarraybound:=true;
+         getOpd;
+         q:-meaningof(opdSymb);
+         if q == none then q:-newnotseen(opdSymb);
+         checkclb:=q.dim=1; !check for poss. const. lower bound;
+         if q.dim>10
+         then error1qlin(359,q)  !'maxdim' fixed in RTS;
+         ;
+         coder.opq:-q; goto OPNOUT; end;
+
+    when
+    IBNDE do begin
+         call(ust);
+         if checkclb then begin checkclb:=false;
+%-Z %IMPLNONE OFF
+            if exptop is arithconst then begin
+               if inarraybound then begin
+                  !set constant lower bound - q:-array quantity;
+%+D                  if q.descr=/=none then internerr('!9!',sourceline);
+                     inspect new brecord do begin
+                        blnohi:=exptop qua const.ixhi;
+                        blnolo:=exptop qua const.ixlo;
+                        declquant:-q; q.descr:-this brecord;
+                     end;
+                     q.special:='!1!';
+               end;
+            end;
+         end;
+         goto bnde1; end;
+
+    when
+    IARDE,                 ! array bound pair end;
+    IDIME do begin         ! array bound pair colon/comma;
+         call(ust);
+ bnde1:
+         switch(NUL:IELSE) exptop.type begin
+%+Z      when ICHAR,ISHOR,IINTG,IREAL,ILONG,IELSE do;
+%-Z      when       ISHOR,IINTG,IREAL,ILONG,IELSE do;
+         when NONE do begin
+              messageLinenr:=q.line; error1id(419,q.symb) end;
+         end case;
+         if exptop.ctype=IIDN then checkasexp(exptop qua identifier);
+         exptop.cl:=IEEXPcl;
+         !L3 exp output; exptop.emit;
+         if exptop.type <> IINTG then MaybeConvert(IINTG,exptop.type);
+         popExpStack;
+         if opn=IARDE then begin inarraybound:=false; q:-none end;
+         goto OPNOUT; end;
+
+    when
+    INOTE do begin               ! external procedure w/binding;
+         getlastblno;
+         end;
+
+    when
+    ILINE do begin ! Line shift (for error reporting) ;
+         linenr:=rank(loadchar(L2buf,L2p  ))*256 +
+                 rank(loadchar(L2buf,L2p+1));
+         L2p:=L2p+2;
+         if option(rank('L'))<>NUL
+%+D         or option(rank('R') )<>NUL
+         then begin sysout.outchar('!'); sysout.outint(linenr,4) end;
+         end;
+
+    when
+    ISSWA do begin
+         ssnuma:=rank(loadchar(L2buf,L2p  ))*256 +
+                 rank(loadchar(L2buf,L2p+1)); L2p:=L2p+2;
+         opdhi:=loadchar(L2buf,L2p); opdlo:=loadchar(L2buf,L2p+1);
+         getOpd;
+%        array bounds checking: ssnuma=256, opi=0/1 (off=0)  ;
+%        none checking:         ssnuma=257, opi=0/1 (off=0)  ;
+%         qua checking:         ssnuma=258, opi=0/1 (off=0)  ;
+%        reuse proc. act. rec.: ssnuma=259, opi=0/1 (off=0)  ;
+%        impl.none-check:       ssnuma=260, opi=0/1 (off=0)  ;
+%        enable spec. features: ssnuma=261, opi=0/1 (off=0)  ;
+%        unknown directives:    ssnuma=987, opi=symtab-index of text;
+         if ssnuma=256 then BoundCheck:= opdlo<>NUL else
+         if ssnuma=257 then NoneCheck := opdlo<>NUL else
+         if ssnuma=258 then QuaCheck  := opdlo<>NUL else
+         if ssnuma=259 then ReuseProc := opdlo<>NUL else
+%+Z      if ssnuma=260 then implNone  := opdlo<>NUL else
+         if ssnuma=261 then SportOK   := opdlo<>NUL
+         else begin opc:=ISSWB; call(coder); end;
+         end;
+
+%+D     when
+%+D     ISSWB do begin ! new options from %SETOPT ; text t;
+%+D      getOpd; t:-opdSymb.symbol;
+%+D      while t.more do option(t.pos-1):=t.getchar;
+%+D      end;
+
+    when
+    IEOP  do begin ! end of program;
+         opc:=IEOP; call(coder); ! ??? ENDCOMP;
+%+D      sysout.outtext(" EOP: coder did not terminate"); outimage;
+         ENDCOMP;
+         end;
+
+    when
+    IEXNM do begin ! end of record mark;
+         L2INPT.intext(L2buf); L2p:=0;
+    end;
+
+    when NONE do
+
+% IBLNO:
+% ISSWB: ISCST:
+% IDCLI: IEXTR: ILANG: ISCST:
+% IHIDD: IPRTC: IPRHI: INOTY: IPROC:
+% ICLAS: INAME: ICONS:
+% IARRA: ISIMU: IUPLS:
+!*** following also in scanner ***;
+% IVIRT: IGO: IPTR:
+% IACTV: IREAC: IBEFO: IAFTR: IAT: IDELA: IPRIO: IACTE:
+
+
+%+D      if option(rank('5'))<>NUL then inspect sysout do begin
+%+D         outtext("DUMMY to Pass2: "); outtext(DB(rank(opn)));
+%+D         outimage end
+%-D      internerr('!9!',sourceline)
+         ;
+
+    end ****** case-switch ******;
+
+end ****** eternal loop ****** ;
+
+       end inspect L2INPT
+%      otherwise ENDCOMP;
+      end class semchecker;
+end CHECKER2;

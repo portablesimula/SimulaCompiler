@@ -1,0 +1,44 @@
+begin 
+      class a; protected V;
+               virtual: procedure V;
+      begin 
+            procedure V(n); integer n;
+            begin end;
+      end;
+
+    a class b; hidden V;          ! no more matching;
+      begin 
+            procedure V(n); integer n;
+            begin end;  
+       end;
+ 
+    b class c;
+      begin procedure V(n); integer n;
+            begin end;  
+          
+            V(3333);
+      end;
+      
+    c class x; protected V;
+               virtual: procedure V;
+      begin 
+            procedure V(n); integer n;
+            begin end;
+            
+            V(4444);
+      end;
+
+    x class y; hidden V;          ! no more matching;
+      begin 
+            procedure V(n); integer n;
+            begin end;  
+            
+            inspect this a
+            do V(6666);
+      end;
+
+      ref(a) ra; ref(b) rb; ref(c) rc;
+
+      rc:-new c; rb:-new b; ra:-new a;
+
+end

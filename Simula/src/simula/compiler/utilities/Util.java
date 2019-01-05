@@ -102,6 +102,32 @@ public final class Util
     System.out.println(u);
   }
   
+
+    //*******************************************************************************
+    //*** IPOW - Integer Power: b ** x
+    //*******************************************************************************
+	/**
+	 * Integer Power: b ** x
+	 * 
+	 * @param b
+	 * @param x
+	 * @return
+	 */
+	public static int IPOW(int b, int x) {
+		// RT.println("IPOW("+b+','+x+')');
+		if (x == 0) {
+			if (b == 0)
+				error("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
+			return (1); // any ** 0 ==> 1
+		} else if (x < 0)
+			error("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
+		else if (b == 0)
+			return (0); // 0 ** non_zero ==> 0
+		int v = b;
+		while ((--x) > 0)
+			v = v * b;
+		return (v);
+	}
   
   //*******************************************************************************
   //*** Reflection Utilities

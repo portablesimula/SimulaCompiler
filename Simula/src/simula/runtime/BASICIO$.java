@@ -110,6 +110,11 @@ public class BASICIO$ extends ENVIRONMENT$ {
 		super(staticLink);
 	}
 	
+	  //        procedure terminate_program;
+	  //        begin ... ;  goto STOP  end terminate_program;
+	public void terminate_program() {
+		System.exit(0);
+	}
     
     public String toString()
     { return("Simula "+this.getClass().getSimpleName()); }

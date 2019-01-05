@@ -1,0 +1,22 @@
+% ------------------------------------------
+% Local Object  --  THIS A
+% ------------------------------------------
+BEGIN
+   class A;
+   begin
+   end;
+   
+   A class B;
+   begin
+      class C;
+      begin
+         inspect this a do
+         begin
+      end;
+      end;
+      
+      inspect this a do
+      begin
+      end;
+   end;
+ END

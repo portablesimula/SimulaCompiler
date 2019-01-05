@@ -1,0 +1,9 @@
+set -kv
+date
+tar cv ./builder1.def ./builder2.def ./checker.mne ./checker1.def \
+ ./checker2.def ./common.def ./common.ini ./common.mne \
+ ./errmsg.def ./fecmain.def ./firsttst.sim ./genmsg.sim ./parser.def \
+ ./parser.mne ./pas1init.def ./pas2init.def ./predef.def ./s-instr.ini \
+ ./scaninp.def ./scanner.def ./scanner.mne ./scoder.mne ./scoder0.def \
+ ./scoder1.def ./scoder1e.def ./scoder2.def ./scoder3.def \
+ ./scoder4.def ./scodmain.def ./scope.mne ./symtable.def

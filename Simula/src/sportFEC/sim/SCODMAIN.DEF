@@ -1,0 +1,3057 @@
+External class PAS2INIT;
+%-Z %setopt +D
+PAS2INIT class SCODMAIN;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  4.     ---
+%      ---                                                           ---
+%      --- Selection Switches: DKIZ                                  ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+begin
+
+%SPORT ON
+%REUSE OFF
+%-Z %RECORD ON
+%-Z %BOUNDCHECK OFF
+%-Z %QUACHECK OFF
+%-Z %NONECHECK OFF
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scoder.mne
+%+I %INSERT $SPORTLIB/rtsinit.mne
+
+codegeneratorinit class codegenerator;
+    hidden protected specVirt,lastLINEnr,jjj,xxx,txtrc,clf,
+                     ttag,itag,st_rblev,nameconst,tmpasd,narr,
+                     main,fdi;
+begin boolean specVirt,nameconst,localproc,insp;
+      character clf;
+%+Z   short integer fdi;
+%-Z   character     fdi;
+      short integer st_rblev;
+      short integer narr;
+      short integer tmpasd;
+      short integer txtconcpar, txtconctotal; !*** used only in LICONC;
+      short integer lastLINEnr,jjj,xxx,txtrc,ttag,itag;
+      ref(quantity) main; !*** used in IEND ***;
+      text constr;
+
+%     procedure markLine;
+%     if linenr > lastLINEnr then inspect SCF do begin
+%        lastLINEnr:=linenr; outbyte(vstmt); out2byte(lastLINEnr);
+%     end;
+
+
+%-Z %IMPLNONE OFF
+    inspect checker do begin
+    goto opcloop;
+
+  while true do begin
+
+NXT:  !lastopc:=opc;
+
+dummynext:
+%+D   if option(rank('Z'))<>NUL then afterdump;
+
+%  opc:=
+% +D     optx:=
+   !opt:=IVIRT; opq:-none; ! opiSymb:-none;
+   opihi:=opilo:=NUL;
+%  ***********************************
+    this codegenerator.detach; ! Get next opc from checker;
+%  ***********************************
+
+    opcloop:
+
+%+S   L3Freq(rank(opc)):=L3Freq(rank(opc))+1;
+
+%+D   if option(rank('Z'))<>NUL then beforeDump;
+
+    switch(NUL:IMXMX) opc begin
+
+%title ******   Direct identifier reference IDN   ******
+    when
+    ISIDN,
+    IIDN    do begin ! A normal direct reference to opq;
+      switch(NUL:K_max) opq.kind begin
+         when K_rep do begin !categ cannot be C_name;
+           staticencl; outbyte(vremote); outtag(opq.ftag+quantdisp);
+           ! an inline array reference is on the stack;
+           goto PUSJ; end;
+      when K_proc,K_class do begin !defer code until PARAM-BEGIN;
+           if calldepth=0 then begin
+              calldepth:=1; curcall:-opq; goto NXT end;
+           pushcall;
+           goto NXT;
+           end;
+      when K_array do begin ! an array reference is on the stack;
+           if calldepth=0 then begin
+              calldepth:=1; curcall:-opq; goto IIDNsimple; end;
+           pushcall;
+           goto IIDNsimple;
+           end;
+      when K_ident do begin
+    IIDNsimple:
+           if opq.categ=C_name then begin
+              if opq.kind=K_ident then fnp_acc_smp else fnp_acc_arr;
+              goto NXT;
+           end;
+           ! simple local/global/by value parameter;
+% -Z %IMPLNONE OFF
+%          inspect opq.encl do begin
+%             if preinsp=/=none then staticencl
+%        else if blev < '!5!' then begin
+%                if checker.getClass(declquant,'!5!')=/=none
+%                then begin !attribute of system class used as prefix;
+%                   st_rblev:=rank(crtblev)-rank(checker.enclLevel);
+%                   goto pushSMP end;
+%                if blev='!4!' then outtext(
+%                      s_push    & RTS_bio        &           !+1!;
+%                      s_selectv & RTS_bio_sysout )
+%           else if blev='!3!' then outtext(
+%                      s_push    & RTS_bio        &           !..;
+%                      s_selectv & RTS_bio_sysin )
+%                else outtext(
+%                      s_pushv   & RTS_bioref );
+%                asd:=asd+1;
+%             end
+%             else begin
+%                st_rblev:=rank(crtblev) - rank(rtblev);
+%     pushSMP:    
+% +K             if isGlobal and then st_rblev<>0 then outtext(
+% +K                      s_push    & RTS_bio    &           !+1!;
+% +K                      s_selectv & RTS_global )
+% +K             else
+%                if st_rblev <= 5 then outtext(followSL(st_rblev))
+%                else begin
+%                   outtext( s_pushv   & RTS_curins    &
+%                            s_remotev & RTS_entity_sl &
+%                            s_remotev & RTS_entity_sl &
+%                            s_remotev & RTS_entity_sl &
+%                            s_remotev & RTS_entity_sl &
+%                            s_remotev & RTS_entity_sl &
+%                            s_remotev & RTS_entity_sl );
+%                   while st_rblev <> 6 do begin
+%                      outtext( s_remotev & RTS_entity_sl );
+%                      st_rblev:=st_rblev-1 end;
+%                end not global and not opt;
+%                asd:=asd+1;
+%             end ;
+%          end inspect opq.encl;
+           staticencl;
+           outbyte(vremotev); outtag(opq.ftag+quantdisp);
+           goto NXT;
+           end simple kind;
+      when K_label do begin
+           if ingotostmt and then notinconditional and then
+              opq.encl.blev=cblev and then opq.categ=C_local
+           then begin !*** optimise goto local label ***;
+              if opq.dim>=0 !undefined, i.e. forward jump;
+              then forwardGOTO
+         else if opq.plev>one then begin
+               inspect opq.prevmeaning do begin
+%-Z              outbjump(     this sembox qua stackedi.rehi );
+%+Z              outbjump(rank(this sembox qua stackedi.rehi));
+                 opq.prevmeaning:-prevmeaning; opq.plev:=opq.plev-1;
+               end
+              end
+              else begin
+%+D              if option(rank('Y'))<>NUL
+%+D              then outtrace("GOTO " & opq.symb.symbol);
+                 outtext( s_pushc & s_c_paddr ); !+1;
+                 outtag(opq.ftag+quantdisp);
+                 outbyte(vgoto);                 !-1;
+              end;
+%+D           checkasdzero;
+           end else procLIIDNLAB;
+           goto NXT;
+           end;
+      when K_switch do begin
+%          ! Switch identifier as start of switch designator
+%            (switch identifier as actual parameter always
+%            occurs as SINGLE-ACTUAL);
+%          ! Goto plain, local switch designator is given special
+%            treatment;
+           if ingotostmt then begin if notinconditional then begin
+              if opq.plev=one !plain; then begin
+              if opq.encl.blev=cblev !local;
+           then begin
+                optmSwitch:=true;  ! Indicates optimised case ;
+                outbyte(vpush); outtag(opq.ftag+quantdisp); asd:=asd+1;
+                outtext( s_select & RTS_swtdes_elt );
+%          end
+%          else begin
+%               ! general switch designator ;
+%               ! the index is to be first parameter to the routine
+%                 so nothing is done here ;
+           end end end end;
+           goto PUSJ; end;
+      when NONE do
+           StopScode_1('!17!',sourceline); !LIIDN;
+      end case;
+ end;
+%title   ******   C o n s t a n t s   ******
+
+%   Text constants are received as follows
+
+%                   NOTEXT    named const<>notext    other (string)
+%    name/unsp.      SCST            CONS                CONS
+%    other contxt    TEXT            DENO                EXNM
+
+%   Other constants are output as follows:
+
+%    SCST, opt=type, opi=index   parameter to formal name or unspec
+%    <type>,         opi=index   in other contexts
+
+    when
+    ICHAR do begin
+      outtext( s_pushc & s_c_char ); outbyte(rank(opilo));
+      asd:=asd+1;
+ end;
+
+    when
+    IREAL,ILONG do begin
+      outtext( if opc=IREAL then ( s_pushc & s_c_real  )
+                            else ( s_pushc & s_c_lreal ) );
+      goto constout;
+ end;
+
+    when
+    ISHOR,
+    IINTG do begin
+      outtext( s_pushc & s_c_int );
+  constout:
+      literal:-nameof(opihi,opilo);
+      outbyte(literal.length); outtext(literal); asd:=asd+1;
+ end;
+
+    when
+    IBOOL do begin
+      outtext( if opilo = ITRUE
+               then ( s_pushc & s_true ) else ( s_pushc & s_false ) );
+      asd:=asd+1;
+ end;
+
+    when
+    ITEXT do begin !must be notext;
+      outtext( s_pushv & RTS_notext ); asd:=asd+1;
+ end;
+
+    when
+    IREF  do begin !must be none;
+      outtext( s_pushc & s_onone ); asd:=asd+1;
+ end;
+
+    when
+    ISCST do begin ! Single non-text or notext const to name/unspec ;
+      procLISCST;
+ end;
+
+    when
+    IDENO do begin ! Named text constant <> notext, opq:-meaning, ;
+                   ! not as param to formal name/unspec ;
+      outbyte(vpushv); outtag(opq.ftag); asd:=asd+1;
+ end;
+
+    when
+    INEW  do begin ! Named text const definition, generate text object;
+      jjj:=newTag; outTextEntity(jjj);
+      nameconst:= false;
+      txtrc:=opq.ftag; goto TXTQCOMMON; !save some code here;
+ end;
+
+    when
+    ICONS,         ! text param <>notext to formal name or unspecified;
+    IEXNM do begin ! text <>notext in all ather contexts;
+      nameconst:=opc=ICONS;
+      ! Generate tagged constant of record txtent;
+      jjj:=newTag; outTextEntity(jjj);
+      if nameconst then begin ! Single text constant to name/unspec.;
+         if curpar is extquantity then begin
+            if curpar qua extquantity.clf=Clf002 then begin
+               !*** text const by name to non-simula routine ***;
+               outbyte(vpush); outtag(jjj);
+               outtext( s_select & RTS_txtent_cha &
+                        s_deref  & s_asspar );
+               curpar:-none; goto NXT;
+            end;
+         end;
+         txtrc:=newTag;
+TXTQCOMMON: outbyte( vconst ); outtag  ( txtrc );
+         outtext(       RTS_txtqnt &
+           s_c_record & RTS_txtqnt &
+               s_attr & RTS_txtqnt_ent & tag_oaddr & s_c_oaddr );
+      end
+      else begin !text constant anywhere else: Push const. txtqnt;
+         outtext( s_pushc &
+           s_c_record & RTS_txtqnt &                             !+1;
+               s_attr & RTS_txtqnt_ent & tag_oaddr & s_c_oaddr );
+         asd:=asd+1;
+      end;
+
+      ! common to text constant in both cases;
+      outtag  (jjj);
+      outtext( s_attr & RTS_txtqnt_cp & tag_int & s_c_int & "!1!0" &
+               s_attr & RTS_txtqnt_sp & tag_int & s_c_int & "!1!0" &
+               s_attr & RTS_txtqnt_lp & tag_int & s_c_int          );
+      !*** litleng set by outTextEntity;
+      outsint(litleng);
+      outbyte(vendrecord);
+
+      if not nameconst then goto NXT;
+
+      !*** make PARDES constant ***;
+
+      jjj:=newTag;
+      outbyte( vconst ); outtag  ( jjj );
+      outtext(      RTS_litPar      &
+       s_c_record & RTS_litPar      &
+           s_attr & RTS_pardes_code & tag_int & s_c_int & "!1!0" &
+           s_attr & RTS_pardes_kind & tag_int & s_c_int & "!1!0" &
+           s_attr & RTS_pardes_type & tag_int & s_c_int & "!1!8" &
+           s_attr & RTS_litPar_txt  & tag_oaddr & s_c_oaddr      );
+      outtag  (txtrc);
+      outbyte(vendrecord);
+
+      if curpar==none then begin
+         ! text constant to formal unspecified ;
+         outtext( s_dup                    &              !+1;
+                  s_asscall & RTS_fptTxt1  &
+                  s_pushc   & s_c_int      );             !+1;
+         outsint(curparno-1);
+         outtext( s_asspar                 &              !-1;
+                  s_pushc   & s_c_oaddr    );             !+1;
+         outtag  (jjj);
+         outtext( s_asspar                 &              !-1;
+                  s_pushc   & s_c_oaddr    );             !+1;
+         outtag  (jjj);
+         outtext( s_asspar                           &    !-1;
+                  s_pushc  & s_c_aaddr & RTS_litPar_txt  & !+1;
+                  s_asspar                              & !-1;
+                  s_call   & RTS_fptTxt2                );!-1;
+         goto NXT;
+      end;
+      ! text constant to formal name ;
+      update_PARQNT(Z_parqnt_ap);
+      outtext( s_pushc  & s_c_oaddr ); !+1;
+      outtag  (jjj);
+      outbyte(vassign); asd:=asd-1;
+ end;
+
+%title ******   Normal dot identifier reference  DOT   ******
+
+    when
+    IDOT do begin ! A normal dot reference to opq;
+%     ! opq is a remotely accessed attribute of a class, thus
+%       - opq.kind cannot be K_label/switch
+%       - opq.categ cannot be C_name (classes cannot have name
+%         parameters).
+%       - if opq.kind=K_proc, opq.categ cannot be C_value/unspec/name
+%         (classes cannot have procedure parameters) ;
+%       - if opq.kind=K_rep, opq.categ must be C_local
+%         (infixed arrays cannot be parameters) ;
+
+         switch(NUL:K_max) opq.kind begin
+         when K_array do begin
+              if calldepth=0 then begin
+                 calldepth:=1; curcall:-opq; goto OUTID; end;
+              pushcall;
+              goto OUTID end;
+         when K_ident do begin
+      OUTID:  outbyte(vremotev); outtag(opq.ftag+quantdisp);
+            goto NXT;
+            end;
+         when K_rep do begin
+            outbyte(vremote); outtag(opq.ftag+quantdisp);
+            ! an inline array reference is on the stack;
+            goto PUSJ end;
+         when K_proc do begin
+            ! Code deferred until PARAM-BEGIN which will always occur;
+      PUSJ: if calldepth=0 then begin
+               calldepth:=1; curcall:-opq; goto NXT; end;
+            pushcall;
+            goto NXT;
+            end;
+         when NONE do
+            StopScode_1('!17!',sourceline);
+         end case;
+      goto NXT;
+ end;
+
+    when
+    IDOTP do begin ! Remote variable preceding := or :- (DOT-VAR);
+                   ! single no-name text variable 
+                     preceding .<procedure> or := ;
+      outbyte(vremote); outtag(opq.ftag+quantdisp);
+      outbyte(veval);
+ end;
+
+    when
+    INOTY,         ! Text-var-dot;
+    INOTE do begin ! Text-exp-dot,opq denotes text attribute procedure;
+      if calldepth=0 then begin
+         calldepth:=1; curcall:-opq; goto NXT; end;
+      pushcall;
+      ! Code gen. for the procedure call deferred until PARAM-BEGIN ;
+ end;
+
+    when
+    IDCLP do begin
+      !  RESULT - The result variable of text procedure opq (is head!);
+      ! (as target in a text value assignment to procedure) ;
+      ! Cannot be inspected!!!;
+      outtext( s_pushv  &  RTS_curins );     !+1;
+      st_rblev:=rank(crtblev) - rank(opq.descr.rtblev);
+      while st_rblev <> 0 do begin
+         outtext( s_remotev & RTS_entity_sl );
+         st_rblev:=st_rblev-1 end;
+      outtext( s_remote &  RTS_txtPro_val );
+      asd:=asd+1;
+ end;
+
+%title *********   Text concatenate   ***********
+    when
+    ICONC do begin !  opihi<>0: prefix, opilo=0: infix, else: postfix;
+
+      ! txtconcpar   number of parameters transmitted (current call);
+      ! txtconctotal number of remainding parameters (next call);
+
+      if opihi<>NUL then begin !*** prefix op., number of operands;
+         txtconcpar:=0;
+         if opihi>'!10!' then begin
+            txtconctotal:=rank(opihi)-10; opihi:='!10!' end
+         else txtconctotal:=0;
+            
+         saveindex:=saveindex+1;
+         if asd <> 0 then begin
+%+D         if option(rank('Y'))<>NUL then outtrace("save-TXT_CONC");
+% ****** Problem: SAVE may be generated during text conc parameter
+% ******            evaluation, before any object generation
+% ****** TEMP FIX: the call on COPY forces a GC  *****************;
+            outtext( saveScheme             &
+                     s_precall & RTS_copy1  &
+                     s_pushv   & RTS_notext & s_asspar &
+                     s_call    & RTS_copy2  & s_pop    );
+% *****  END OF TEMP FIX  ****************************************;
+            pushasd; saveemitted(saveindex):=true;
+            asd:=0;
+         end;
+         outtext( s_pushc   & s_c_int       );
+         asd:=asd+1;
+         outsint(rank(opihi));
+         outtext( s_asscall & RTS_concat1 );
+     end
+     else begin
+        txtconcpar:=txtconcpar+1;
+        outbyte(vfetch); !*** make operand VAL;
+        if opilo=NUL then begin  !*** infix op., one more to come;
+           if txtconcpar=10
+           then begin        !*** terminate call, start new call ***;
+              outtext( s_assrep  & "!10!"      &   !-10;
+                       s_call    & RTS_concat2 &   !0;
+                       s_push    & RTS_txttmp  &   !+1;
+                       s_rupdate & s_pop       &   !-2;
+                       s_pushc   & s_c_int     );  !+1;
+              outsint(if txtconctotal>10-1
+                         then 10 else txtconctotal+1);
+              outtext( s_asscall & RTS_concat1 &
+                       s_pushv   & RTS_txttmp  );  !+1;
+              txtconcpar:=1; txtconctotal:=txtconctotal-(10-1);
+              asd:=asd-9;
+           end;
+        end
+        else begin                    !*** postfix op., terminate;
+           outbyte(vassrep); outbyte(txtconcpar); !---;
+           if saveemitted(saveindex) then begin
+              outtext( s_call    & RTS_concat2 &
+                       s_push    & RTS_txttmp  &   !+1;
+                       s_rupdate & s_pop       &   !-2;
+                       restoreScheme           &
+                       s_pushv   & RTS_txttmp  );  !+1;
+              popasd; saveemitted(saveindex):=false;
+              asd:=asd+1; !NB popasd in restore;
+           end
+           else begin
+              outtext( s_call    & RTS_concat2 );
+              asd:=asd-txtconcpar;
+           end;
+           saveindex:=saveindex-1;
+        end;
+      end;
+ end;
+%title ******   Local reference  THIS   ******
+
+    when
+    ITHIS do begin ! Local reference to (may be inspected) class opq;
+%-Z %IMPLNONE OFF
+      inspect opq.descr do begin
+         ! Test corresponding to the one in 'staticencl' :
+           opq may be one of the connectcopies corresponding to
+           the inspections of sysin and sysout ;
+         if preinsp=/=none then begin
+            jjj:=rank(cblev);
+            while jjj <> 0 do begin
+               main:-display(jjj).declquant;
+               while main=/=none do begin
+                  if main.descr==this brecord then begin
+                     if jjj < 5 then goto BIOob;
+                     st_rblev:=rank(crtblev)-rank(display(jjj).rtblev);
+                     goto pushit;
+                  end;
+                  main:-main.prefqual;
+               end;
+               jjj:=jjj-1;
+            end;
+            internerr('!17!',sourceline);
+         end;
+         jjj := rank(blev);
+         if jjj < 5 then begin
+            if getClass(declquant,'!5!')=/=none
+            then begin st_rblev:=rank(crtblev) - rank(enclLevel);
+                 goto pushit end;
+     BIOob: outtext( if jjj=4
+               then ( s_push    & RTS_bio         &     !+1;
+                      s_selectv & RTS_bio_sysout  )
+               else ( s_push    & RTS_bio         &     !+1;
+                      s_selectv & RTS_bio_sysin   ));
+         end
+         else begin
+            st_rblev:=rank(crtblev) - rank(rtblev);
+   pushit:  if st_rblev > 5 then begin
+               outtext( s_pushv & RTS_curins );              !+1;
+               while st_rblev <> 0 do begin
+                  outtext( s_remotev & RTS_entity_sl );
+                  st_rblev:=st_rblev-1 end;
+            end else outtext(followSL(st_rblev));
+            if jjj = rank(inspected) then begin
+               ttag:=conpointtag(this brecord);
+               outbyte(vremotev); outtag  (ttag);
+            end
+         end
+      end;
+      asd:=asd+1;
+ end;
+%title ****** Reference to name or unspec.  IDNP/SSWA/LFPA   ******
+
+    when
+    IIDNP do begin 
+      ! (SINGLE-VAR) Single name variable preceding := or :- ;
+      if opq.categ <> C_name then
+      begin ! text variable, not name, preceding .<procedure> or := ;
+            staticencl;
+            outbyte(vremote); outtag(opq.ftag+quantdisp);
+            goto NXT;
+      end;
+      procLIIDNPname;
+ end;
+
+    when
+    ILFPA, ! Remote identifier as actual param to name or unspec,
+             or remote procedure or array as such (DOT-ACTUAL);
+    ISSWA do begin
+      if (curcall.dim = rank(Cindex) or else
+          curcall.dim = rank(Pascalindex) )   and then
+               !*** procedure by name to non-simula routine ***;
+         curpar.kind=K_proc then TermProcPar
+      else if opc=ISSWA then procLISSWA else procLILFPA;
+ end;
+
+%      when
+%      ILFPA do begin
+%       ! Remote identifier as actual param to name or unspec,
+%         or remote procedure or array as such (DOT-ACTUAL);
+%        procLILFPA;
+%   end;
+
+%title ******   label or switch  LABE/SWIT/SWDE   ******
+    when
+    ISWIT do begin ! Declaration of switch;
+      procLISWIT;
+ end;
+
+    when
+    ILABE do begin ! Declaration of label;
+      outbyte(vlabel); outtag(opq.ftag+quantdisp);
+      checkasdzero;
+      while opq.dim > 0 do begin
+         inspect opq.prevmeaning do begin
+            opq.prevmeaning:-prevmeaning;
+%-Z         outfdest(     this sembox qua stackedi.rehi   );
+%+Z         outfdest(rank(this sembox qua stackedi.rehi  ));
+         end;
+         opq.dim:=opq.dim-1;
+      end;
+      opq.dim:=-1; st_rblev:=opq.plev;
+      while st_rblev>1 do begin
+         getnewindex; outbyte(vbdest); outbyte(curindex);
+%-Z      inspect new stackedi(     curindex ,NUL) do begin
+%+Z      inspect new stackedi(char(curindex),NUL) do begin
+           prevmeaning:-opq.prevmeaning; opq.prevmeaning:-this stackedi;
+         end;
+         st_rblev:=st_rblev-1 end;
+ end;
+
+    when
+    ISWDE do begin ! End of switch declaration;
+      outtext( s_endrecord & s_empty );          ! end swtdes ;
+      inswitchdecl:=false;
+      if asd <> 0 then notimp("complex switch element");
+      !***checkasdzero; popcall;
+ end;
+
+%title ******   Declare array start  DCLA/BNDE/DIME   ******
+
+    when
+    IDCLA do begin ! Declaration of array;
+      if calldepth=0 then begin
+         calldepth:=1; curcall:-opq; !pushcall;
+         outtext( s_pushc & s_c_int & "!1!" );
+         asd:=asd+1;
+         outbyte(rank(opq.type)+48); !*** cannot be NOTY or LABE;
+         outtext(
+         if opq.dim=1 then ( s_asscall & RTS_ar1new1 ) else
+         if opq.dim=2 then ( s_asscall & RTS_ar2new1 ) else
+                           ( s_asscall & RTS_argnew1 &
+                             s_pushc   & s_c_int        ) ); !+1;
+         if opq.dim>2 then begin
+            outsint(opq.dim); outbyte(vasspar) end;       !-1;
+      end
+      else narr:=narr+1;
+          ! if there are more than one array being declared
+            simultaneously, narr will count them;
+ end;
+
+    when
+    IBNDE,         ! Colon between bounds;
+    IDIME do begin ! End of bound-pair;
+      if curcall.dim < 3 then begin
+         outbyte(vasspar); asd:=asd-1;
+      end;
+ end;
+%title ******   Declare array end  ARDE   ******
+
+    when
+    IARDE do begin ! End of array decl;
+      if curcall.dim=1 then begin
+         outtext( s_asspar                  &    !-1;
+                  s_call  & RTS_ar1new2  &    !0;
+                  s_pushv & RTS_curins      &    !+1;
+                  s_remote                  );
+      end
+ else if curcall.dim=2 then begin
+         outtext( s_asspar                  &    !-1;
+                  s_call  & RTS_ar2new2  &    !0;
+                  s_pushv & RTS_curins      &    !+1;
+                  s_remote                  );
+      end
+      else begin
+         outbyte(vassrep); outbyte(curcall.dim+curcall.dim);
+         outtext( s_call  & RTS_argnew2  &    !0;
+                  s_pushv & RTS_curins      &    !+1;
+                  s_remote                  );
+         asd:=asd+1-curcall.dim-curcall.dim;
+      end;
+      ttag:=curcall.ftag+quantdisp;
+      outtag  (ttag);
+      outtext( s_rupdate & s_pop );                 !-2;
+      asd:=asd-2;
+      ! narr>0 indicates multiple array declaration;
+      while narr <> 0 do begin
+         narr:=narr-1;
+         outtext( s_pushc   & s_c_aaddr      );  !+1;
+         outtag  (ttag);
+         outtext( s_asscall & RTS_arAcop1 );
+         curcall:-curcall.next;
+         ttag:=curcall.ftag+quantdisp;
+         outtext( s_pushc   & s_c_aaddr      );  !+1;
+         outtag  (ttag);
+         outtext( s_asspar                   &   !-1;
+                  s_call    & RTS_arAcop2 );  !-1;
+      end;
+%+D   outbyte(vempty);
+      checkasdzero; popcall;
+ end;
+%title ******   Array indexing  SWEE/CAPE/COMA   ******
+
+    when
+    ISWEE do begin ! Begin of infix array index (SUBSCRIPT-BEGIN) ;
+               ! an array reference is on the stack ;
+               ! opi = 1 ;
+      curparno:=1;
+      end;
+
+    when
+    ICAPE do begin ! Begin of array indices (SUBSCRIPT-BEGIN) ;
+               ! an array reference is on the stack ;
+               ! opi = actual no of indices ;
+%+Z   curparno:=rank(opilo);
+%-Z   curparno:=     opilo ;
+      if opilo='!1!' then begin
+         if BoundCheck then !nothing special;
+    else if curcall.special<>NUL then begin
+            outbyte(vremote);
+            outtag  (arr1elttag(rank(curcall.type)));
+            goto NXT end;
+         outtext( s_dup                      &    !+1;
+                  s_asscall & RTS_ar1ind1 )
+      end
+ else if opilo='!2!' then
+         outtext( s_dup                      &    !+1;
+                  s_asscall & RTS_ar2ind1 )
+      else begin
+         outtext( s_dup                       &   !+1;
+                  s_remote  & RTS_arbody_head &
+                  s_asscall & RTS_argind1  &
+                  s_pushc   & s_c_int         );  !+1;
+         outsint(rank(opilo));
+         outbyte(vasspar);                        !-1;
+      end;
+      asd:=asd+1;
+end;
+
+    when
+    ICOMA do begin ! Comma between array access indices;
+%+Z   if curparno >=  3   then goto NXT;
+%-Z   if curparno >='!3!' then goto NXT;
+      outbyte(vasspar); asd:=asd-1;
+ end;
+%title ******   Index end  NEWP/ARGE/ARRA/AFTR   ******
+
+    when
+    INEWP do begin ! End of subsc. var before := or :- (SUBSCRIPT-VAR);
+      endsubscription; outtext( s_index  & s_eval); asd:=asd-1;
+      popcall;
+ end;
+
+
+    when
+    IARGE do begin ! End of array access indices (SUBSCRIPT-END);
+      endsubscription; outtext( s_indexv & s_eval); asd:=asd-1;
+      popcall;
+ end;
+
+
+    when
+    IARRA do begin ! (SUBSCRIPT-ACTUAL);
+      ! End of subscripted var as actual parameter to name or unspec;
+      procLIARRA;
+ end;
+
+
+    when
+    IAFTR do begin ! End of switch index (SUBSCRIPT-END), opi=n.args;
+      term_switch;
+ end;
+%title ******   Begin prefixbl. parameter list  BEFO/BEGI   ******
+
+    when
+    IBEFO do begin ! PARAM-BEGIN pref.block, opi=number of parameters;
+      outtext( s_pushc & s_c_oaddr );         !+1;
+      outtag(curcall.ftag+prototypedisp);
+      if opilo <> NUL then begin
+         asd:=asd+1;
+         outtext( s_asscall & RTS_a_pre1  &
+                  s_call    & RTS_a_pre2  );  !0;
+         goto NXT;
+      end;
+      outtext( s_asscall & RTS_b_pre1  &
+               s_call    & RTS_b_pre2  );  !-1;
+      goto ENDPREFPAR;
+ end;
+
+
+    when
+    IBEGI do begin ! (END-PREF-PAR) End of parameters to pref. block;
+      if curpar=/=none then begin
+         ! There has been parameters, terminate trans of the last;
+         termpar;
+         outtext( s_asscall & RTS_i_pre1 &
+                  s_call    & RTS_i_pre2 );      !-1;
+         asd:=asd-1;
+      end;
+ENDPREFPAR:
+      if curcall.descr.dcltag <> NUL then begin
+         outbyte(vlabel); outtag(curcall.ftag+dcldisp) end;
+      checkasdzero; popcall;
+ end;
+%title ******   Begin class parameter list  AT   ******
+
+    when
+    IAT   do begin ! PARAM-BEGIN class, opi param-count;
+      saveindex:=saveindex+1;
+      if asd <> 0 then begin
+         outtext( saveScheme );
+         pushasd; saveemitted(saveindex):=true;
+         asd:=0;
+%+D      if option(rank('Y'))<>NUL then outtrace(
+%+D         if opilo=NUL then "save-B_CLA" else "save-A_CLA");
+      end;
+      opq:-curcall; staticencl;
+      ttag:=curcall.ftag+prototypedisp;
+      if curcall.descr.hasCode then begin
+         if opilo = NUL then begin
+            outtext( s_asscall & RTS_b_cla1 &
+                     s_pushc   & s_c_oaddr  );   !+1;
+            outtag  (ttag);
+            outtext( s_asspar               &    !-1;
+                     s_call    & RTS_b_cla2 );   !-1;
+            goto ENDCLPAR;
+         end;
+         outtext( s_asscall & RTS_a_cla1 &
+                  s_pushc   & s_c_oaddr  );   !+1;
+         outtag  (ttag);
+         outtext( s_asspar               &    !-1;
+                  s_call   & RTS_a_cla2 );    !0;
+      end 
+      else begin !generate terminated object;
+% Y      if option(rank('Y'))<>NUL then outtrace("B_REC");
+         outtext(    s_asscall & RTS_b_rec1 &
+                     s_pushc   & s_c_oaddr  );   !+1;
+         outtag  (ttag);
+         if saveemitted(saveindex) then begin
+            outtext( s_asspar                  & !-1;
+                     s_call    & RTS_b_rec2    & !0;
+                     s_push    & RTS_tmp       & !+1;
+                     s_select  & RTS_quant_pnt &
+                     s_rupdate & s_pop         & !-2;
+                     restoreScheme             &
+                     s_push    & RTS_tmp       & !+1;
+                     s_selectv & RTS_quant_pnt &
+                     s_eval                    );
+            popasd; saveemitted(saveindex):=false;
+            asd:=asd+1;
+         end else
+            outtext( s_asspar               &       !-1;
+                     s_call    & RTS_b_rec2 );      !0;
+         saveindex:=saveindex-1;
+         if opilo=NUL then popcall;
+      end;
+ end;
+%title ******   End class parameter list  ACTV   ******
+
+    when
+    IACTV do begin ! End of checked actual parameter list to class;
+      if curcall.descr.hasCode then begin
+         if curpar=/=none then begin ! Terminate last parameter ;
+            termpar;
+            outtext( s_asscall & RTS_i_cla1  &
+                     s_call    & RTS_i_cla2  );   !-1;
+   ENDCLPAR:
+            asd:=asd-1;
+         end;
+         if saveemitted(saveindex) then begin
+            outtext( restoreScheme             &
+                     s_push    & RTS_tmp       &     !+1;
+                     s_selectv & RTS_quant_pnt &
+                     s_eval                    );
+            popasd; saveemitted(saveindex):=false;
+         end else
+            outtext( s_push    & RTS_tmp       &     !+1;
+                     s_selectv & RTS_quant_pnt &
+                     s_eval                    );
+         saveindex:=saveindex-1;
+         asd:=asd+1;
+      end hasCode
+      else if curpar=/=none then termpar;
+      popcall;
+ end;
+%title ******   Begin parameter list procedure  PROC   ******
+
+    when     
+    IPROC do begin ! PARAM-BEGIN procedure, opi=number of parameters;
+      opq:-curcall;
+%+K   if opq.categ=C_local and then opq.descr.thisused then goto BPriPro;
+%-Z %IMPLNONE OFF
+      switch(NUL:Clfmax) if opq is extquantity then
+              opq qua extquantity.clf else Clf000 begin
+      when Clf000 do begin ! Normal Simula procedure ;
+%+K   BPriPro:
+         saveindex:=saveindex+1;
+         if opq.categ=C_local or else opq.categ=C_extnal
+         then begin
+   TestTOS: if lastopc=IDOT then begin ! Object reference on TOS;
+               if asd > 1 then begin ! Save required ;
+%+D               if option(rank('Y'))<>NUL
+%+D               then outtrace("save-A/B_PRO(DOT)");
+                  outtext( s_push    & RTS_tmp        &    !+1;
+                           s_select  & RTS_quant_pnt  &
+                           s_rupdate & s_pop          &    !-2;
+                           saveScheme                 &
+                           s_push    & RTS_tmp        &    !+1;
+                           s_selectv & RTS_quant_pnt  );
+                  asd:=asd-1; !before SAVE!!!;
+                  pushasd; saveemitted(saveindex):=true;
+                  asd:=1; !SAVE just done;
+               end;
+            end remotely accessed
+            else begin
+               if asd <> 0 then begin
+%+D               if option(rank('Y'))<>NUL
+%+D               then outtrace("save-A/B_PRO");
+                  outtext( saveScheme );
+                  pushasd; saveemitted(saveindex):=true;
+                  asd:=0;
+               end;
+%+K            if opq.categ=C_local and then opq.descr.thisused
+%+K            then staticencl else
+               ! *** recognize curins as static encloser in cases
+                     that matters ***;
+%-Z %IMPLNONE OFF
+               inspect opq.encl do begin
+                  if crtblev=rtblev and then
+%                    (opilo<>NUL or else specVirt) and then
+                     blev>='!5!' and then inspected=NUL
+                  then localproc:=true
+                  else staticencl;
+               end;
+            end;
+            ttag:=opq.ftag+prototypedisp;
+            if opq.categ<>C_virt then begin
+%+K            if opq.categ=C_local and then opq.descr.thisused then begin
+%+K               if saveemitted(saveindex) then begin
+%+K                  error0(-269); opilo:=char(rank(opilo)+1) end
+%+K               else begin !*** SAVE not emitted - fast call ***;
+%+K                  outbyte(vremotev);
+%+K  !temp fix ;     if curcall is extquantity
+%+K  !temp fix ;     then outtag(curcall.ftag+instrefdisp-1) else
+%+K                  outtag(curcall.ftag+instrefdisp);
+%+K                  goto EPRIPRO end
+%+K            end;
+               if localProc then begin
+% Y              if option(rank('Y'))<>NUL then outtrace
+% Y                 (if opilo=NUL then "B_LCL" else "A_LCL");
+                  outtext( s_pushc   & s_c_oaddr  );       !+1;
+                  outtag  (ttag);
+                  if opilo = NUL then
+                     outtext( s_asscall & RTS_b_local1 &       
+                              s_call    & RTS_b_local2 )   !-1;
+                  else begin
+                     asd:=asd+1;
+                     outtext( s_asscall & RTS_a_local1 &       
+                              s_call    & RTS_a_local2 );  !00;
+                  end;
+                  localProc:=false;
+               end
+          else if opilo=NUL then begin
+                  outtext( s_asscall & RTS_b_pro1 &
+                           s_pushc   & s_c_oaddr  );   !+1;
+                  outtag  (ttag);
+                  outtext( s_asspar               &    !-1;
+                           s_call    & RTS_b_pro2 );   !-1;
+                  asd:=asd-1;
+               end
+               else begin
+                  outtext( s_asscall & RTS_a_pro1 &
+                           s_pushc   & s_c_oaddr  );   !+1;
+                  outtag  (ttag);
+                  outtext( s_asspar               &    !-1;
+                           s_call    & RTS_a_pro2 );   !0;
+               end;
+%+K            if opq.categ=C_local and then opq.descr.thisused
+%+K            then opilo:=char(rank(opilo)-1);
+%+K EPRIPRO:
+            end C_local/extnal
+       else if specVirt then begin
+               if localproc then begin
+%+D              if option(rank('Y'))<>NUL then outtrace
+%+D              (if opilo=NUL then "spec virt B" else "spec virt A");
+                  outtext( s_pushv   & RTS_curins     &       !+1;
+                           s_remotev & RTS_entity_pp  &
+                           s_remotev & RTS_claPtp_virts &
+                           s_remote  & RTS_virvec_vir &
+                           s_pushc   & s_c_int          );    !+1;
+                  outsint(iii);
+                  outtext( if opilo=NUL
+                    then ( s_index   &                        !-1;
+                           s_selectv & RTS_virdes_ppp &
+                           s_asscall & RTS_b_local1   &
+                           s_call    & RTS_b_local2   )       !-1;
+                    else ( s_index   &                        !-1;
+                           s_selectv & RTS_virdes_ppp &
+                           s_asscall & RTS_a_local1   &
+                           s_call    & RTS_a_local2   ) );    !00;
+                  localproc:=false; asd:=asd+1;
+               end
+               else begin
+                  if lastopc<>IDOT or else not saveemitted(saveindex)
+                  then outtext( s_push   & RTS_tmp       &    !+1;
+                                s_select & RTS_quant_pnt &
+                                s_rupdate                );   !-1;
+                                ! object on TOS and in tmp;
+                  outtext( if opilo=NUL
+                    then ( s_asscall & RTS_b_pro1     &
+                           s_push    & RTS_tmp        &       !+1;
+                           s_selectv & RTS_quant_pnt  &
+                           s_remotev & RTS_entity_pp  &
+                           s_remotev & RTS_claPtp_virts &
+                           s_remote  & RTS_virvec_vir &
+                           s_pushc   & s_c_int        )       !+1;
+                    else ( s_asscall & RTS_a_pro1     &
+                           s_push    & RTS_tmp        &       !+1;
+                           s_selectv & RTS_quant_pnt  &
+                           s_remotev & RTS_entity_pp  &
+                           s_remotev & RTS_claPtp_virts &
+                           s_remote  & RTS_virvec_vir &
+                           s_pushc   & s_c_int        ) );    !+1;
+                  outsint(iii);
+                  outtext( if opilo=NUL
+                    then ( s_index   &                        !-1;
+                           s_selectv & RTS_virdes_ppp &
+                           s_asspar  &                        !-1;
+                           s_call    & RTS_b_pro2     )       !-1;
+                    else ( s_index   &                        !-1;
+                           s_selectv & RTS_virdes_ppp &
+                           s_asspar  &                        !-1;
+                           s_call    & RTS_a_pro2     ) );    !00;
+               end;
+               if opilo=NUL then asd:=asd-1;
+               specVirt:=false;
+            end
+            else begin !*** unspecified virtual procedure ***;
+               if localproc then begin
+                  staticencl; localproc:=false;
+               end;
+               if opilo=NUL then begin
+                  outtext( s_asscall & RTS_b_virt1 &
+                           s_pushc   & s_c_int     );   !+1;
+                  outsint(iii);
+                  outtext( s_asspar                &     !-1;
+                           s_call    & RTS_b_virt2 );    !-1;
+                  asd:=asd-1;
+               end
+               else begin
+                  outtext( s_asscall & RTS_a_virt1 &
+                           s_pushc   & s_c_int     );   !+1;
+                  outsint(iii);
+                  outtext( s_asspar                &
+                           s_pushc   & s_c_int     );   !00;
+                  outsint(rank(opilo));  ! number of actuals ;
+                  outtext( s_asspar                &     !-1;
+                           s_call    & RTS_a_virt2 );    !0;
+               end;
+            end
+         end C_local/etxnal(/virt)
+    else if opq.categ=C_virt then begin
+            specVirt:=opq.descr=/=none; iii:=opq.virtno-1;
+            goto TestTOS end
+         else procLIPROCformal;
+         goto NXT;
+      end Normal Simula procedure;
+      when Clf001 do begin ! External non-SIMULA (with binding),
+                             must have context as first parameter if
+                             not C (pascal) routine.
+                             (may be dot accessed, but not in _text) ;
+         if curcall.dim <= rank(Libraryindex)
+         then begin ! get rid of context ;
+            if lastopc = IDOT then begin ! get rid of context ;
+               outbyte( vpop ); asd:=asd-1; end;
+            goto nosavepprec end;
+         goto atpro;
+      end;
+      when Clf007 do begin ! System class attribute procedures, that
+                             must have an obj.ref. as first parameter
+                             (may be dot accessed, but not in _text):
+                             Detach + file- and simset/smltn-attributes;
+%+K      if option(rank('D'))<>NUL and then curcall.symb.symbol="detach"
+%+K      then !inline code for QPS call; goto NXT;
+  atpro: if lastopc<>IDOT !INOTY and INOTE not possible;
+         then staticencl; ! Extra first parameter ;
+         goto nosavepassc;
+      end;
+      when Clf005 do begin
+           ! text attribute procedures (1): always explicit dot ;
+         saveindex:=saveindex+1; ! saveemitted(saveindex):=false;
+         if lastopc=INOTE then begin !TEXT-EXP-DOT - VAL on stack;
+            curcall:-opq.next;
+            outbyte(vasscall);
+            outtag(curcall.ftag+profiledisp); !NB curcall;
+            goto NXT;
+         end;
+         if lastopc=INOTY then begin !TEXT-VAR-DOT - REF on stack;
+            outbyte(vderef);
+         end;
+         goto passc;
+      end;
+      when Clf008 do begin ! file: filename, setaccess +           ;
+                           ! infile: intext. Text generating.      ;
+                           ! (may be dot-accessed, but not in text);
+         saveindex:=saveindex+1;
+         if lastopc=IDOT then begin
+            ! Remotely accessed: object reference on TOS ;
+            if asd <= 1 then goto passc;
+%+D         if option(rank('Y'))<>NUL
+%+D         then outtrace("save-filetxt(DOT)");
+            ! Possible garbage collection and object reference is
+             not the only element on the stack: save is required;
+            outtext( s_push    & RTS_tmp        &       !+1;
+                     s_select  & RTS_quant_pnt  &
+                     s_rupdate & s_pop          &       !-2;
+                     saveScheme                 &
+                     s_push    & RTS_tmp        &       !+1;
+                     s_selectv & RTS_quant_pnt  );
+            asd:=asd-1; !before SAVE!!!;
+            pushasd; saveemitted(saveindex):=true;
+            asd:=1; !SAVE just done;
+         end
+         else begin
+            if asd <> 0 then begin
+%+D            if option(rank('Y'))<>NUL then outtrace("save-fileTXT");
+               outtext( saveScheme );
+               pushasd; saveemitted(saveindex):=true;
+               asd:=0;
+            end;
+            staticencl; ! Extra first parameter ;
+         end;
+         goto passc;
+      end;
+      when Clf011 do begin ! text generating procedures:        ;
+                           ! (cannot be dot-accessed)           ;
+                           ! blanks, copy, datetime, gettextinfo;
+         saveindex:=saveindex+1;
+         if asd <> 0 then begin
+%+D         if option(rank('Y'))<>NUL then outtrace("save-TXT");
+            outtext( saveScheme );
+            pushasd; saveemitted(saveindex):=true;
+         end;
+         asd:=1; !precall at pprec;
+         goto pprec;
+      end;
+      when Clf012 do begin ! imagefile setpos:                  ;
+                           ! GADDR of file.image is first param ;
+                           ! (may be dot-accessed)              ;
+         if lastopc=IDOT then begin
+            ! Remotely accessed: object reference on TOS ;
+            outtext( s_remote  & RTS_filent_img & s_deref );
+         end 
+    else if lastopc<>INOTY then begin if lastopc<>INOTE
+         then begin
+            ! Extra first parameter ;
+            staticencl;
+            outtext( s_remote  & RTS_filent_img & s_deref );
+         end end;
+         goto nosavepassc;
+      end;
+      when Clf013 do begin ! procedure value is fetched directly   ;
+                           ! from RTS. NO PARAMETERS.      ;
+                           ! (cannot be dot-accessed);
+         asd:=asd+1;
+         outbyte(vpushv); outtag(opq.ftag+quantdisp);
+         goto NXT;
+      end;
+      when Clf014 do begin ! procedure value is fetched directly   ;
+                           ! from some object. NO PARAMETERS.      ;
+                           ! (may be dot-accessed, but not in text);
+         if lastopc<>IDOT then staticencl;
+         outbyte(vremotev); outtag(opq.ftag+quantdisp);
+         goto NXT;
+      end;
+      when Clf015 do begin ! simulation: time. Fetch value thru
+                             one level of indirect addr.
+                             (may be dot-accessed, but not in text);
+         if lastopc<>IDOT then staticencl;
+         outtext( s_remotev & RTS_time1 & s_remotev & RTS_time2 );
+         goto NXT;
+      end;
+      when Clf043,  !*** imagefile'more;
+           Clf045,  !*** imagefile'pos ;
+           Clf047   !*** imagefile'length; do begin
+           ! image is param. (may be dot-accessed but not in text);
+         if lastopc <> IDOT then staticencl;
+            ! Remotely accessed: object reference on TOS ;
+         outtext( s_remotev & RTS_filent_img );
+            ! TOS is first extra parameter: ;
+         goto NXT;
+      end;
+      when Clf006 do begin
+         if lastopc=IDOT !Remotely accessed: obj.ref. on TOS; or else
+            lastopc=INOTY !TEXT-VAR-DOT - REF on stack;  or else
+            lastopc=INOTE !TEXT-EXP-DOT - VAL on stack;
+         then begin
+  nosavepassc: saveindex:=saveindex+1; ! saveemitted(saveindex):=false;
+        passc: outbyte(vasscall); outtag(opq.ftag+profiledisp);
+               goto NXT;
+         end;
+         goto nosavepprec;
+      end;
+      when Clf010 do begin
+% K        if option(rank('C'))<>NUL and then curcall.symb.symbol="call"
+% K        then begin
+% K           !inline code for QPS call;
+% K        end else begin
+  nosavepprec: saveindex:=saveindex+1; ! saveemitted(saveindex):=false;
+               asd:=asd+1;
+        pprec: outbyte(vprecall); outtag(opq.ftag+profiledisp);
+% K        end;
+      end;
+      when NONE do ; ! Remainding inline coded procedures;
+      end case;
+ end;
+%title ******   Parameter  FRMP/DCLS/DCLI/RGPA   ******
+
+    when
+    IFRMP do begin
+      ! Start of checked actual parameter to formal value or
+        default. Formal parameter in opq  (WEAK-PAR);
+      if curpar=/=none then termpar; ! Terminates previous parameter;
+      curpar:-opq;       ! Start transfer of specified parameter
+                           opq to procedure, class or prefixed block;
+%-Z %IMPLNONE OFF
+      if opq is quantity then goto pppar;
+      if
+%+K      (opq.encl.kind=K_proc and then opq.encl.thisused) or else
+         (opq qua extquantity.clf < Clf016 and then
+          opq qua extquantity.clf<> Clf002) or else
+          opq qua extquantity.clf > Clf019
+      then begin
+     pppar:
+         outtext( s_dup & s_remote ); outtag(opq.ftag);
+         asd:=asd+1;
+      end;
+end;
+
+    when
+    IDCLI,         ! Start of actual parameter consisting of more than ;
+                   ! a single, to formal name or unspec  (EXP-STRONG) ;
+                   ! We know that thunk is required ??? ;
+    IDCLS do begin ! Start of actual parameter consisting of a single  ;
+       ! identifier or const, to formal name or unspec (SINGLE-STRONG) ;
+      curparno:=curparno+1;
+      if opq=/=none then begin
+         if curpar=/=none then termpar;
+         curpar:-opq;
+         if (curcall.dim = rank(Cindex) or else
+             curcall.dim = rank(Pascalindex) )   and then
+            curpar.kind=K_proc
+                  !*** procedure by name to non-simula routine ***;
+         then StartProcPar
+         else if opc=IDCLI then begin
+            if (if curpar is extquantity
+                then curpar qua extquantity.Clf=Clf000
+                else true)
+            then new thunk;
+         end;
+      end
+      else if opc=IDCLI then new thunk;
+end;
+
+%      when
+%      IDCLI do begin ! Start of actual parameter consisting of more than ;
+%         ! a single, to formal name or unspec  (EXP-STRONG) ;
+%         ! We know that thunk is required ??? ;
+%        procLIDCLI;
+%  end;
+
+
+    when
+    IRGPA do begin ! Termination of actual expression    (EXP-STRONG) ;
+               ! and expression not terminated by itself (EXP-ACTUAL) ;
+      procLIRGPA;
+ end;
+%title ******   End procedure parameter list  EPRM   ******
+
+    when
+    IEPRM do begin ! End of checked actual parameter list to procedure;
+% %+K   if curcall is extquantity and then
+% %+K      option(rank('C'))<>NUL and then
+% %+K      curcall qua extquantity.clf=Clf010 and then
+% %+K      curcall.symb.symbol="call"
+% %+K   then begin
+% %+K     newtag; outbyte(vlabelspec); outtag(lastusedtag);
+% %+K     outtext( s_dup     &                     !+1;
+% %+K              s_remote  & RTS_entity_sort  &
+% %+K              s_pushc   & s_c_int & "!1!3" &  !+1;
+% %+K              s_assign  &                     !-2;
+% %+K              s_remote  & RTS_inst_dl    &
+% %+K              s_dup     &                     !+1;
+% %+K              s_push    & RTS_tmp        &    !+1;
+% %+K              s_select  & RTS_quant_pnt  &
+% %+K              s_rupdate & s_pop          &    !-2;
+% %+K              s_pushv   & RTS_curins     &    !+1;
+% %+K              s_assign  &                     !-2;
+% %+K              s_pushc   & s_c_paddr      );   !+1;
+% %+K     outtag(lastusedtag);
+% %+K     outtext( s_pushv   & RTS_curins     &    !+1;
+% %+K              s_remote  & RTS_inst_lsc   &
+% %+K              s_rupdate & s_pop          &    !-2;
+% %+K              s_push    & RTS_tmp        &    !+1;
+% %+K              s_selectv & RTS_quant_pnt  &
+% %+K              s_push    & RTS_curins     &    !+1;
+% %+K              s_rupdate &                     !-2;
+% %+K              s_remotev & RTS_inst_lsc   &
+% %+K              s_goto    & s_label        );   !-1;
+
+% %+K     outtag(lastusedtag); asd:=asd-1;
+% %+K   end else
+
+%+K   if curcall is extquantity and then
+%+K      option(rank('D'))<>NUL and then
+%+K      curcall qua extquantity.clf=Clf007 and then
+%+K      curcall.symb.symbol="detach"
+%+K   then begin !inline code for detach - NB: ins==curins==TOS;
+%+K     if asd=1 then begin outbyte(vpop); asd:=0 end;
+%+K     newtag; outbyte(vlabelspec); outtag(lastusedtag);
+%+K     outtext( s_pushc   & s_c_int        & "!1!4" &              !+1;
+%+K              s_pushv   & RTS_curins     &                       !+1;
+%+K              s_remote  & RTS_entity_sort &
+%+K              s_rupdate & s_pop          &  !ins.sort:=S_DET;    !-2;
+% - not now      s_pushv   & RTS_curins     &                       !+1;
+% - not now      s_push    & RTS_tmp        &                       !+1;
+% - not now      s_select  & RTS_quant_pnt  &
+% - not now      s_rupdate & s_pop          &  !tmp.pnt:=curins;    !-2;
+%+K              s_pushc   & s_c_paddr      ); outtag(lastusedtag); !+1;
+%+K     outtext( s_pushv   & RTS_curins     &                       !+1;
+%+K              s_remote  & RTS_inst_lsc   &
+%+K              s_rupdate & s_pop          &  !curins.lsc:=psc;    !-2;
+%+K              s_pushv   & RTS_curins     &                       !+1;
+%+K              s_remotev & RTS_inst_dl    &  !push(curins.dl);
+%+K              s_pushv   & RTS_curins     &                       !+1;
+%+K              s_pushv   & RTS_curins     &                       !+1;
+%+K              s_remote  & RTS_inst_dl    &
+%+K              s_rupdate & s_pop          &  !curins.dl:=curins;  !-2;
+%+K              s_push    & RTS_curins     &                       !+1;
+%+K              s_rupdate &                   !curins:=pop;        !-1;
+%+K              s_remotev & RTS_inst_lsc   & s_goto &              !-1;
+%+K              s_label   ); outtag(lastusedtag);
+%+K   end else begin
+      if curpar=/=none then termpar;
+%-Z %IMPLNONE OFF
+      switch(NUL:Clfmax) if curcall is extquantity
+             then curcall qua extquantity.clf else Clf000 begin
+        when Clf000 do begin !*** normal simula procedure;
+         if curpar =/= none
+%+K         or else (curcall.categ=C_local and curcall.descr.thisused)
+         then begin ! Terminate call with parameters ;
+%           if simob_level=0 and then type=INOTY and then asd=1 and then
+%              (categ<>C_virt or else descr=/=none)
+%           then begin !inline code; newtag;
+% Y              if option(rank('Y'))<>NUL then inspect sysout do begin
+% Y                 outint(linenr,5);
+% Y                 outtext(": I_PRO " & symb.symbol);
+% Y                 outimage end;
+%              outbyte( vlabelspec );  outtag(lastusedtag);
+%              outtext( s_pushc   & s_c_paddr );            !+1;
+%              outtag(  lastusedtag );
+%              outtext( s_pushv   & RTS_curins            & !+1;
+%                       s_remote  & RTS_inst_lsc          &
+%  !curins.lsc:=psc;    s_rupdate & s_pop                 & !-2;
+%                       s_dup                             & !+1;
+%                       s_remote  & RTS_inst_dl           &
+%  !ins.dl:=curins;     s_pushv   & RTS_curins & s_assign & !+1-2;
+%  !curins:=ins;        s_push    & RTS_curins & s_rupdate& !+1-1;
+%                       s_remote  & RTS_entity_pp         &
+%                       s_remotev & RTS_proPtp_start      &
+%  !goto ins.start;     s_goto    & s_label               );!-1;
+%              outtag(lastusedtag);
+%              outbyte( vdelete ); outtag(lastusedtag);
+%           end else
+            outtext( s_asscall & RTS_i_pro1 &
+                     s_call    & RTS_i_pro2 );    !-1;
+            asd:=asd-1;
+         end;
+         if saveemitted(saveindex) then begin
+            outtext( restoreScheme );
+            popasd; saveemitted(saveindex):=false;
+         end;
+         saveindex:=saveindex-1;
+         if curcall.type <> INOTY then begin
+            outtext( s_push    & RTS_tmp       &  !+1;
+                     s_selectv & RTS_quant_pnt &
+                     s_remotev                 );
+            outtag  (resulttag(rank(curcall.type)));
+            outbyte(veval);
+            asd:=asd+1;
+         end end;
+        when Clf013,Clf014,Clf015,Clf016,Clf017,Clf018,Clf019 do ;
+        when Clf020 do begin  !*** rem;
+             asd:=asd-1;
+             outbyte(vrem); end;
+        when Clf021 do !*** abs(INT);
+             outtext
+                ( s_fetch & s_dup   &                     !+2;
+                  s_pushc & s_c_int & "!1!0" &
+                  s_if    & s_lt    & s_neg  & s_endif ); !-2;
+        when Clf022 do !*** abs(REAL);
+             outtext
+                ( s_fetch & s_dup    &                     !+2;
+                  s_pushc & s_c_real & "!1!0" &
+                  s_if    & s_lt     & s_neg  & s_endif ); !-2;
+        when Clf023 do !*** abs(LREAL);
+             outtext
+                ( s_fetch & s_dup     &                     !+2;
+                  s_pushc & s_c_lreal & "!1!0" &
+                  s_if    & s_lt      & s_neg  & s_endif ); !-2;
+        when Clf024 do !*** sign(INT);
+             outtext
+                ( s_fetch & s_dup              &  !+1;
+                  s_pushc & s_c_int & "!1!0"   &  !+1;
+                  s_if    & s_ne               &  !-2;
+                  s_pushc & s_c_int & "!1!0"   &  !+1;
+                  s_if    & s_lt               &  !-2;
+                  s_pushc & s_c_int & "!2!-1"  &  !+1;
+                  s_else                       &
+                  s_pushc & s_c_int & "!1!1"   &  !..;
+                  s_endif                      &  !--;
+                  s_endif                      ); !--;
+        when Clf025 do !*** sign(REAL);
+             outtext
+                ( s_fetch & s_dup              &  !+1;
+                  s_pushc & s_c_real & "!1!0"  &  !+1;
+                  s_if    & s_ne               &  !-2;
+                  s_pushc & s_c_real & "!1!0"  &  !+1;
+                  s_if    & s_lt               &  !-2;
+                  s_pushc & s_c_int & "!2!-1"  &  !+1;
+                  s_else                       &
+                  s_pushc & s_c_int & "!1!1"   &  !..;
+                  s_endif                      &  !--;
+                  s_else                       &
+                  s_convert & tag_int          &  ! 0;
+                  s_endif                      ); !--;
+        when Clf026 do !*** sign(LREAL);
+%            outtext
+%               ( s_fetch & s_dup              &  !+1;
+%                 s_pushc & s_c_lreal & "!1!0" &  !+1;
+%                 s_if    & s_lt               &  !-2;
+%                 s_pop                        &  !-1;
+%                 s_pushc & s_c_int & "!2!-1"  &  !+1;
+%                 s_else                       &
+%                 s_pushc & s_c_lreal & "!1!0" &  !+1;
+%                 s_if    & s_ne               &  !-2;
+%                 s_pushc & s_c_int & "!1!1"   &  !..;
+%                 s_else                       &
+%                 s_pushc & s_c_int & "!1!0"   &  !..;
+%                 s_endif                      &  !--;
+%                 s_endif                      ); !--;
+             outtext
+                ( s_fetch & s_dup              &  !+1;
+                  s_pushc & s_c_lreal & "!1!0" &  !+1;
+                  s_if    & s_ne               &  !-2;
+                  s_pushc & s_c_lreal & "!1!0" &  !+1;
+                  s_if    & s_lt               &  !-2;
+                  s_pushc & s_c_int & "!2!-1"  &  !+1;
+                  s_else                       &
+                  s_pushc & s_c_int & "!1!1"   &  !..;
+                  s_endif                      &  !--;
+                  s_else                       &
+                  s_convert & tag_int          &  ! 0;
+                  s_endif                      ); !--;
+        when Clf027,   !*** char;
+             Clf028 do !*** isochar;
+             outtext
+                ( s_convert & tag_char );
+        when Clf029,   !*** rank;
+             Clf030 do !*** isorank;
+             outtext
+                ( s_convert & tag_int );
+        when Clf031 do begin !*** loadchar;
+%+Z          outbyte(              vindexv );  asd:=asd-1;  end;
+%-Z          outtext( s_add     & s_indexv );  asd:=asd-2;  end;
+        when Clf032 do begin !*** storechar;
+%+Z          outtext(             s_index  &   !-1;
+%+Z                   s_rupdate & s_pop    );  asd:=asd-3;  end;
+%-Z          outtext( s_add     & s_index  &   !-2;
+%-Z                   s_rupdate & s_pop    );  asd:=asd-4;  end;
+        when Clf033 do begin !*** min(CHAR);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_cha &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_cha &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_cha &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_gt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_cha &
+                  s_endif                   ); end;
+        when Clf034 do begin !*** min(INT);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_int &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_int &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_int &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_gt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_int &
+                  s_endif                   ); end;
+        when Clf035 do begin !*** min(REAL);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_rea &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_rea &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_rea &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_gt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_rea &
+                  s_endif                   ); end;
+        when Clf036 do begin !*** min(LREAL);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_lrl &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_lrl &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_lrl &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_gt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_lrl &
+                  s_endif                   ); end;
+        when Clf037 do begin !*** max(CHAR);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_cha &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_cha &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_cha &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_lt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_cha &
+                  s_endif                   ); end;
+        when '!38!' do begin !*** max(INT);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_int &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_int &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_int &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_lt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_int &
+                  s_endif                   ); end;
+        when Clf039 do begin !*** max(REAL);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_rea &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_rea &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_rea &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_lt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_rea &
+                  s_endif                   ); end;
+        when Clf040 do begin !*** max(LREAL);
+             asd:=asd-1;
+             outtext
+                ( s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_lrl &
+                  s_rupdate & s_pop         &  !-2;
+                  s_fetch   & s_dup         &  !+1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_lrl &
+                  s_push    & RTS_tmp       &  !+1;
+                  s_select  & RTS_quant_lrl &
+                  s_rupdate                 &  !-1;
+                  s_if      & s_lt          &  !-2;
+                  s_pop                     &  !-1;
+                  s_push    & RTS_tmp       &  !+1;
+                  s_selectv & RTS_quant_lrl &
+                  s_endif                   ); end;
+        when Clf041 do begin !*** sourceline;
+             asd:=asd+1;
+             outtext( s_pushc & s_c_int ); outinteger(linenr); end;
+        when Clf042,Clf043 do !*** more;
+%            if simpleText then begin
+%               staticencl;
+%               outbyte( vremote ); outtag( opq.ftag+qntdisp );
+%               outtext( s_selectv & cp );
+%               staticencl;
+%               outbyte( vremote ); outtag( opq.ftag+qntdisp );
+%               outtext( s_selectv & lp & s_compare & s_lt ) end else
+             outtext
+                ( s_fetch   &
+                  s_push    & RTS_txttmp    &
+                  s_rupdate & s_pop         &
+                  s_push    & RTS_txttmp    &
+                  s_selectv & RTS_txtqnt_cp &
+                  s_push    & RTS_txttmp    &
+                  s_selectv & RTS_txtqnt_lp &
+                  s_compare & s_lt          );
+        when Clf044,Clf045 do !*** pos;
+%            if simpleText then begin
+%               staticencl;
+%               outbyte( vremote ); outtag( opq.ftag+qntdisp );
+%               outtext( s_selectv & cp );
+%               staticencl;
+%               outbyte( vremote ); outtag( opq.ftag+qntdisp );
+%               outtext( s_selectv & sp & s_sub &
+%                        s_pushc   & s_c_int & "!1!1" &
+%                        s_add                     ) end else
+             outtext
+                ( s_fetch   &
+                  s_push    & RTS_txttmp    &
+                  s_rupdate & s_pop         &
+                  s_push    & RTS_txttmp    &
+                  s_selectv & RTS_txtqnt_cp &
+                  s_push    & RTS_txttmp    &
+                  s_selectv & RTS_txtqnt_sp &
+                  s_sub     &
+                  s_pushc   & s_c_int & "!1!1" &
+                  s_add                     );
+        when Clf046,Clf047 do !*** length;
+%            if simpleText then begin
+%               staticencl;
+%               outbyte( vremote ); outtag( opq.ftag+qntdisp );
+%               outtext( s_selectv & lp );
+%               staticencl;
+%               outbyte( vremote ); outtag( opq.ftag+qntdisp );
+%               outtext( s_selectv & sp & s_sub ) end else
+             outtext
+                ( s_fetch   &
+                  s_push    & RTS_txttmp    &
+                  s_rupdate & s_pop         &
+                  s_push    & RTS_txttmp    &
+                  s_selectv & RTS_txtqnt_lp &
+                  s_push    & RTS_txttmp    &
+                  s_selectv & RTS_txtqnt_sp &
+                  s_sub                     );
+        when Clf048 do !*** start;
+%            if simpleText then begin
+%               staticencl;
+%               outbyte( vremote ); outtag( opq.ftag+qntdisp );
+%               outtext( s_selectv & sp &
+%                        s_pushc   & s_c_int & "!1!1" & s_add ) end else
+             outtext
+                ( s_fetch   &
+                  s_push    & RTS_txttmp       &
+                  s_rupdate & s_pop            &
+                  s_push    & RTS_txttmp       &
+                  s_selectv & RTS_txtqnt_sp    &
+                  s_pushc   & s_c_int & "!1!1" &
+                  s_add                        );
+%         when Clf049 do !*** main;
+%              outtext
+%                 ( s_fetch &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_rupdate & s_pop &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_selectv & RTS_txtqnt_lp &
+%                   s_pushc & s_c_int & "!1!0" &
+%                   s_if & s_ne &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_select & RTS_txtqnt_ent &
+%                   s_selectv & RTS_txtent_ncha &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_select & RTS_txtqnt_lp &
+%                   s_rupdate & s_pop &
+%                   s_endif &
+%                   s_pushc & s_c_int & "!1!0" &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_select & RTS_txtqnt_sp &
+%                   s_rupdate &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_select & RTS_txtqnt_cp &
+%                   s_rupdate & s_pop &
+%                   s_pushv & RTS_tmp & s_select & RTS_quant_txt );
+%         when Clf050 do !*** constant;
+%              outtext
+%                 ( s_fetch &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_rupdate & s_pop &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_selectv & RTS_txtqnt_lp &
+%                   s_pushc & s_c_int & "!1!0" &
+%                   s_if & s_eq & s_pushc & s_true &
+%                   s_else &
+%                   s_push & RTS_tmp & s_select & RTS_quant_txt &
+%                   s_select & RTS_txtqnt_ent &
+%                   s_selectv & RTS_inst_gcl  &
+%                   s_pushc & s_onone & s_compare & s_eq & s_endif );
+        when NONE do begin ! terminate routine procedure call;
+             outbyte(vcall); outtag(curcall.ftag+bodydisp);
+             if curcall.type=INOTY then asd:=asd-1;
+             if saveemitted(saveindex) then begin ! must restore ;
+                ! A text or boolean quantity on TOS;
+                outtext( if curcall.type=IBOOL
+                  then ( s_push    & RTS_tmp       &
+                         s_select  & RTS_quant_boo &
+                         s_rupdate & s_pop         &  !+1-2;
+                         restoreScheme             &
+                         s_push    & RTS_tmp       &  !+1;
+                         s_selectv & RTS_quant_boo &
+                         s_eval                    )
+--- not this RTS  else   if curcall.type=ICHAR
+---               then ( s_push    & RTS_tmp       &
+---                      s_select  & RTS_quant_cha &
+---                      s_rupdate & s_pop         &  !+1-2;
+---                      restoreScheme             &
+---                      s_push    & RTS_tmp       &  !+1;
+---                      s_selectv & RTS_quant_cha &
+---                      s_eval                    )
+---               else   if curcall.type=ISINT
+---               then ( s_push    & RTS_tmp       &
+---                      s_select  & RTS_quant_sin &
+---                      s_rupdate & s_pop         &  !+1-2;
+---                      restoreScheme             &
+---                      s_push    & RTS_tmp       &  !+1;
+---                      s_selectv & RTS_quant_sin &
+---                      s_eval                    )
+---               else   if curcall.type=IINT 
+---               then ( s_push    & RTS_tmp       &
+---                      s_select  & RTS_quant_int &
+---                      s_rupdate & s_pop         &  !+1-2;
+---                      restoreScheme             &
+---                      s_push    & RTS_tmp       &  !+1;
+---                      s_selectv & RTS_quant_int &
+---                      s_eval                    )
+---               else   if curcall.type=IREAL
+---               then ( s_push    & RTS_tmp       &
+---                      s_select  & RTS_quant_rea &
+---                      s_rupdate & s_pop         &  !+1-2;
+---                      restoreScheme             &
+---                      s_push    & RTS_tmp       &  !+1;
+---                      s_selectv & RTS_quant_rea &
+---                      s_eval                    )
+---               else   if curcall.type=ILONG
+---               then ( s_push    & RTS_tmp       &
+---                      s_select  & RTS_quant_lrl &
+---                      s_rupdate & s_pop         &  !+1-2;
+---                      restoreScheme             &
+---                      s_push    & RTS_tmp       &  !+1;
+---                      s_selectv & RTS_quant_lrl &
+---                      s_eval                    )
+---               else   if curcall.type=IREF or else curcall.type=IPTR
+---                      or else (curcall.descr.hascode and then
+---                               curcall.type=ITEXT)
+---               then ( s_push    & RTS_tmp       &
+---                      s_select  & RTS_quant_pnt &
+---                      s_rupdate & s_pop         &  !+1-2;
+---                      restoreScheme             &
+---                      s_push    & RTS_tmp       &  !+1;
+---                      s_selectv & RTS_quant_pnt &
+---                      s_eval                    )
+                  else ( s_push    & RTS_txttmp    &
+                         s_rupdate & s_pop         &  !+1-2;
+                         restoreScheme             &
+                         s_pushv   & RTS_txttmp    &  !+1;
+                         s_eval                    ) );
+                popasd; saveemitted(saveindex):=false;
+                asd:=asd+1;
+             end;
+             saveindex:=saveindex-1;
+
+             if curcall.descr=/=none then begin
+              if curcall.dim = rank(Cindex) or else
+                 curcall.dim = rank(Pascalindex)
+              then begin
+               if curcall.type=ITEXT then begin
+                  !*** copy result into text object ***;
+                if asd > one then begin
+%+D                if option(rank('Y'))<>NUL
+%+D                then outtrace("save:C text proc");
+                   ! Possible garbage collection and object reference is
+                    not the only element on the stack: save is required;
+                   outtext( s_push    & RTS_tmp       &  !+1;
+                            s_select  & RTS_quant_pnt &
+                            s_rupdate & s_pop         &  !-2;
+                            saveScheme                &
+                            s_push    & RTS_tmp       &  !+1;
+                            s_selectv & RTS_quant_pnt &
+                            s_asscall & RTS_c2valt1   &
+                            s_call    & RTS_c2valt2   &
+                            s_push    & RTS_txttmp    &
+                            s_rupdate & s_pop         &  !+1-2;
+                            restoreScheme             &
+                            s_pushv   & RTS_txttmp    )  !+1;
+                end else
+                   outtext( s_asscall & RTS_c2valt1   &
+                            s_call    & RTS_c2valt2   );
+               end
+               else if curcall.type=IREF then
+                  outtext( s_pushc & s_c_size & RTS_inst & s_deco );
+             end end;
+        end routine procedure call;
+      end case;
+%+K   end not CALL/DETACH;
+      popcall;
+ end;
+
+
+    when
+    IUPLS do begin ! End of unchecked proc. param list (UCH-PARAM-END) ;
+         ! curcall is a formal/virtual procedure. If there has actually
+           been no parameters, code to call B_FML/VIR_PRO has been
+           completed (at PARAM-BEGIN). If there has been parameters,
+           the transmission is ended and I_PRO should be called ;
+      if opilo <> NUL then begin
+         ! one or more actual parameters have been transmitted;
+         outtext( s_asscall & RTS_i_pro1  &
+                  s_call    & RTS_i_pro2  );     !-1;
+         asd:=asd-1;
+      end;
+      if saveemitted(saveindex) then begin
+         outtext( restoreScheme );
+         popasd; saveemitted(saveindex):=false;
+      end;
+      saveindex:=saveindex-1;
+      if curcall.type <> INOTY then begin
+         if curcall.categ=C_name and then  !arithm. type;
+            ISHOR<=curcall.type and then curcall.type<=ILONG
+         then begin
+            opq:-curcall; addrPARQNT;
+            outtext( s_selectv & RTS_parqnt_ap   &
+                     s_remotev & RTS_pardes_type &
+                     s_asscall                   );
+            out2byte(fnp_pro_1(rank(curcall.type)));
+            outbyte(vcall);
+            out2byte(fnp_pro_2(rank(curcall.type)));
+         end
+         else begin
+            outtext( s_push    & RTS_tmp         &    !+1;
+                     s_selectv & RTS_quant_pnt   &
+                     s_remotev                   );
+            asd:=asd+1;
+            out2byte(resulttag(rank(curcall.type)));
+            outbyte(veval);
+         end;
+      end type <> INOTY;
+      popcall;
+ end;
+%title
+
+    when
+    IUMNS do begin ! Unary minus, type in opt;
+      outbyte(vneg);
+ end;
+
+%     when
+%     INOT  do begin ! Logical not;
+%       ! *** not: EQV FALSE  outbyte(vnot);
+% %+D   error0(500);
+%  end;
+%title ******   IS  -  IN  -  QUA   ******
+
+    when
+    IIN   do begin ! In-relation, opq is given class, opilo as for IIS;
+%+Z   iii:=     opq.plev -1;
+%-Z   iii:=rank(opq.plev)-1;
+      outtext(
+%+Z     if not implNone
+%+Z     then ( s_remotev & RTS_entity_pp  &
+%+Z            s_dup     &                   !+1;
+%+Z            s_remotev & RTS_claPtp_plv &
+%+Z            s_pushc   & s_c_int        )  !+1; else
+             ( s_dup     &                   !+1;
+               s_pushc   & s_onone        &  !+1;
+               s_if      & s_ne           &  !-2;
+               s_remotev & RTS_entity_pp  &
+               s_dup     &                   !+1;
+               s_remotev & RTS_claPtp_plv &
+               s_pushc   & s_c_int       )); !+1;
+      outsint(iii);
+      outtext( s_if      & s_gt           &
+               s_remote  & RTS_claPtp_prefix &   !-2;
+               s_pushc   & s_c_int       );  !+1;
+      outsint(iii);
+      outtext(
+%+Z     if not implNone
+%+Z     then ( s_indexv  &                   !-1;
+%+Z            s_endif   &
+%+Z            s_pushc   & s_c_oaddr     )   !+1; else
+             ( s_indexv  &                   !-1;
+               s_endif   & s_endif       & 
+               s_pushc   & s_c_oaddr     )); !+1;
+      goto InIsTest;
+ end;
+
+    when
+    IIS   do begin ! Is-relation, opq is given class;
+                   ! opilo IIFcl: if-expr, IIFSBcl: expr of if-stmt;
+  IsTest:
+      outtext(
+               if not implNone !generate no none-test;
+        then ( s_remotev & RTS_entity_pp  &
+               s_pushc   & s_c_oaddr      )    !+1; else
+             ( s_dup     &
+               s_pushc   & s_onone        &   !+2;
+               s_if      & s_ne           &   !-2;
+               s_remotev & RTS_entity_pp  &
+               s_endif                    &
+               s_pushc   & s_c_oaddr      )); !+1;
+  InIsTest:
+      implNone:=true; !*** make SURE!!! ***;
+      outtag(opq.ftag+prototypedisp);
+      if opilo=IIFSBcl then begin
+           outtext( s_fjumpif & s_ne      );  !-2;
+           pushnewjump;
+           outbyte(curindex); asd:=asd-1;
+      end
+ else if opilo=IIFcl then begin
+           asd:=asd-1; pushasd;
+           outtext( s_if      & s_eq      );  !-2;
+      end
+      else outtext( s_compare & s_eq      );  !-1;
+ end;
+
+    when
+    IQUA  do begin
+      ! Explicit qua, qualifying class in opq. If opq==none
+        then qualification by superclass resulting in nonetest;
+      if NoneCheck then begin
+%+D      if asd=0 then internerr('!17!',sourceline);
+         outtext( prenoneScheme ); outbyte(asd);
+         outbyte( vendskip );
+      end nonetest;
+      if opq =/= none then quatest; ! (opq);
+ end;
+
+    when
+    INONE do begin ! Implicit qua, qualification in opq;
+      outtext( s_dup              &    !+1;
+               s_pushc & s_onone  &    !+1;
+               s_if    & s_ne     );   !-2;
+      quatest; ! (opq);
+      outbyte(vendif);
+ end;
+%title ******   If-expression  THEN/ELSE/EEXP   ******
+
+    when
+    ITHEN do begin ! Then in expression;
+      outtext( s_pushc & s_false &    !+1;
+               s_if    & s_ne    );   !-2;
+      asd:=asd-1; pushasd;
+ end;
+
+    when
+    IELSE do begin ! Else in expression;
+      outbyte(velse); ! -- exchasd;
+      tmpasd:=asdstack(curasd); asdstack(curasd):=asd; asd:=tmpasd;
+ end;
+
+    when
+    IEEXP do begin ! End of if-then-else expression;
+      outbyte(vendif); checkequalandpop;
+ end;
+%title *****   exponentiation operator   *****
+
+    when
+    IPOWE do begin
+
+%      optx(base type)           opt(exp type):routine
+%           int         int:iipower - real:rrpower - long:ddpower
+%           real        int:ripower - real:rrpower - long:rdpower
+%           long        int:dipower - real:drpower - long:ddpower
+
+      if opilo='!1!' then outtext( ! infix power ;
+            if opt<IREAL then (
+                  if optx<IREAL then ( s_asscall & RTS_iipowr1 )
+             else if optx=IREAL then ( s_asscall & RTS_ripowr1 )
+             else        !ILONG;     ( s_asscall & RTS_dipowr1 ) )
+       else if opt=IREAL then (
+                  if optx<IREAL then ( s_convert & tag_real &
+                                       s_asscall & RTS_rrpowr1 )
+             else if optx=IREAL then ( s_asscall & RTS_rrpowr1 )
+             else        !ILONG;     ( s_asscall & RTS_drpowr1 ) )
+       else        !ILONG;
+                  if optx<IREAL then ( s_convert & tag_real &
+                                       s_asscall & RTS_rdpowr1 )
+             else if optx=IREAL then ( s_asscall & RTS_rdpowr1 )
+             else        !ILONG;     ( s_asscall & RTS_ddpowr1 )   )
+
+      else begin outtext(   ! postfix power;
+            if opt<IREAL then (
+                  if optx<IREAL then ( s_asspar  &
+                                       s_call    & RTS_iipowr2 )
+             else if optx=IREAL then ( s_asspar  &
+                                       s_call    & RTS_ripowr2 )
+             else        !ILONG;     ( s_asspar  &
+                                       s_call    & RTS_dipowr2 ) )
+       else if opt=IREAL then (
+                 if optx<=IREAL then ( s_asspar  &
+                                       s_call    & RTS_rrpowr2 )
+                 else    !ILONG;     ( s_asspar  &
+                                       s_call    & RTS_drpowr2 ) )
+        else      !ILONG;
+                 if optx<=IREAL then ( s_asspar  &
+                                       s_call    & RTS_rdpowr2 )
+                 else    !ILONG;     ( s_asspar  &
+                                       s_call    & RTS_ddpowr2 ) );
+         asd:=asd-1; !*** asspar;
+     end;
+%+D  optx:=IVIRT;
+ end;
+%title ******   non-text Relations   ******
+
+    when
+    ILT do begin
+       if opilo=IIFSBcl then begin
+            outtext( s_fjumpif & s_ge );
+            goto relPjmp; end;
+       if opilo=IIFcl then begin
+            outtext( s_if & s_lt );
+%           goto relPasd; end;
+            asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( s_compare & s_lt ); asd:=asd-1;
+  end;
+
+    when
+    ILE do begin
+       if opilo=IIFSBcl then begin
+            outtext( s_fjumpif & s_gt );
+            goto relPjmp; end;
+       if opilo=IIFcl then begin
+            outtext( s_if & s_le );
+            asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( s_compare & s_le ); asd:=asd-1;
+  end;
+
+    when
+    IGE do begin
+       if opilo=IIFSBcl then begin
+            outtext( s_fjumpif & s_lt );
+            goto relPjmp; end;
+       if opilo=IIFcl then begin
+            outtext( s_if & s_ge );
+            asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( s_compare & s_ge ); asd:=asd-1;
+  end;
+
+    when
+    IGT do begin
+       if opilo=IIFSBcl then begin
+            outtext( s_fjumpif & s_le );
+            goto relPjmp; end;
+       if opilo=IIFcl then begin
+            outtext( s_if & s_gt );
+            asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( s_compare & s_gt ); asd:=asd-1;
+  end;
+
+    when
+    INE, IRFNE do begin
+       if opilo=IIFSBcl then begin
+            outtext( s_fjumpif & s_eq );
+            goto relPjmp; end;
+       if opilo=IIFcl then begin
+            outtext( s_if & s_ne );
+            asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( s_compare & s_ne ); asd:=asd-1;
+  end;
+
+    when
+    IEQ, IRFEQ do begin
+       if opilo=IIFSBcl then begin
+            outtext( s_fjumpif & s_ne );
+   relPjmp: pushnewjump; outbyte(curindex);
+%+D         outbyte(vempty); if asd <> 2 then asderror(176);
+            asd:=0;
+            goto NXT end;
+       if opilo=IIFcl then begin
+            outtext( s_if & s_eq );
+   relPasd: asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( s_compare & s_eq ); asd:=asd-1;
+  end;
+
+%title ******   TEXT Relations   ******
+
+    when
+    IPSPC do begin ! text ref.rel postfix, opihi=relation;
+                   ! note: FALSE: ==   as param to trfrel;
+       if opilo=IIFSBcl then begin
+            outtext( if opihi=IRFNE
+              then ( s_asspar                & !-1;
+                     s_pushc   & s_true      & !+1;
+                     s_asspar                & !-1;
+                     s_call    & RTS_trfrel2 & 
+                     s_pushc   & s_false     & !+1;
+                     s_fjumpif & s_eq        ) !-2;
+              else ( s_asspar                & !-1;
+                     s_pushc   & s_false     & !+1;
+                     s_asspar                & !-1;
+                     s_call    & RTS_trfrel2 & 
+                     s_pushc   & s_false     & !+1;
+                     s_fjumpif & s_eq        ) );!-2;
+            goto relPjmp; end;
+       if opilo=IIFcl then begin
+            outtext( if opihi=IRFNE
+              then ( s_asspar                & !-1;
+                     s_pushc   & s_true      & !+1;
+                     s_asspar                & !-1;
+                     s_call    & RTS_trfrel2 & 
+                     s_pushc   & s_false     & !+1;
+                     s_if      & s_ne        ) !-2;
+              else ( s_asspar                & !-1;
+                     s_pushc   & s_false     & !+1;
+                     s_asspar                & !-1;
+                     s_call    & RTS_trfrel2 & 
+                     s_pushc   & s_false     & !+1;
+                     s_if      & s_ne        ) );!-2;
+            asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( if opihi=IRFNE
+         then ( s_asspar                &  !-1;
+                s_pushc   & s_true      &  !+1;
+                s_asspar                &  !-1;
+                s_call    & RTS_trfrel2 )
+         else ( s_asspar                &  !-1;
+                s_pushc   & s_false     &  !+1;
+                s_asspar                &  !-1;
+                s_call    & RTS_trfrel2 ) );
+       asd:=asd-1;
+  end;
+
+    when
+    ISMCL do begin ! text value rel postfix, opihi=rel.operator ;
+       outtext( s_asspar                    &  !-1;
+                s_pushc & s_c_int & "!1!"   ); !+1;
+       outbyte(rank(opihi)-rank(ILT)+1+48);
+       if opilo=IIFSBcl then begin
+            outtext( s_asspar                & !-1;
+                     s_call    & RTS_txtrel2 & 
+                     s_pushc   & s_false     & !+1;
+                     s_fjumpif & s_eq        );!-2;
+            goto relPjmp; end;
+       if opilo=IIFcl then begin
+            outtext( s_asspar                & !-1;
+                     s_call    & RTS_txtrel2 & 
+                     s_pushc   & s_false     & !+1;
+                     s_if      & s_ne        );!-2;
+            asd:=asd-2; pushasd;
+            goto NXT end;
+       outtext( s_asspar                & !-1;
+                s_call   & RTS_txtrel2  );
+       asd:=asd-1;
+  end;
+
+    when
+    IGO do begin   ! text refrel notext, optx=0:VAL, opihi=relation;
+       if opilo=IIFSBcl then begin
+            outtext( if optx = NUL
+              then ( s_push    & RTS_txttmp      &        !+1;
+                     s_rupdate & s_pop           &        !-2;
+                     s_push    & RTS_txttmp      &        !+1;
+                     s_selectv & RTS_txtqnt_ent  &
+                     s_pushc   & s_onone         &        !+1;
+                     s_fjumpif                   )        !-2;
+              else ( s_select  & RTS_quant_txt   &
+                     s_selectv & RTS_txtqnt_ent  &
+                     s_pushc   & s_onone         &        !+1;
+                     s_fjumpif                   ) );     !-2;
+            outbyte( if opihi=IRFNE then veq else vne );
+            pushnewjump; outbyte(curindex);
+%+D         if asd <> 1 then asderror(176);
+            asd:=0;
+            goto NXT;
+       end;
+       if opilo=IIFcl then begin
+            outtext( if optx = NUL
+              then ( s_push    & RTS_txttmp      &        !+1;
+                     s_rupdate & s_pop           &        !-2;
+                     s_push    & RTS_txttmp      &        !+1;
+                     s_selectv & RTS_txtqnt_ent  &
+                     s_pushc   & s_onone         &        !+1;
+                     s_if                        )        !-2;
+              else ( s_select  & RTS_quant_txt   &
+                     s_selectv & RTS_txtqnt_ent  &
+                     s_pushc   & s_onone         &        !+1;
+                     s_if                        ) );     !-2;
+            asd:=asd-1; pushasd;
+       end
+       else outtext( if optx = NUL
+              then ( s_push    & RTS_txttmp      &        !+1;
+                     s_rupdate & s_pop           &        !-2;
+                     s_push    & RTS_txttmp      &        !+1;
+                     s_selectv & RTS_txtqnt_ent  &
+                     s_pushc   & s_onone         &        !+1;
+                     s_compare                   )        !-1;
+              else ( s_select  & RTS_quant_txt   &
+                     s_selectv & RTS_txtqnt_ent  &
+                     s_pushc   & s_onone         &        !+1;
+                     s_compare                   ) );     !-1;
+       outbyte( if opihi=IRFNE then vne else veq );
+  end;
+
+    when
+    IVSPC do begin ! text ref.rel infix ;
+       outtext( s_asscall & RTS_trfrel1 );
+  end;
+
+    when
+    ICL do begin ! text value rel infix ;
+       outtext( s_asscall & RTS_txtrel1 );
+  end;
+%title ******   Assignment   ******
+
+    when
+    IPRHI,         ! Convert in connection with assignment;
+    IPRTC do begin ! Convert top of stack to type opt;
+      outbyte(vconvert); outtag  (typetag(rank(opt)));
+ end;
+
+    when
+    IASSG do begin ! ASSIGN, type in opt;
+      if opilo=NUL then begin ! Final assignment;
+         outbyte(vassign); asd:=asd-2 end
+      else begin outtext( s_eval & s_update );
+         asd:=asd-1 end;
+ end;
+
+    when
+    INAME do begin ! ASS-TO-NAME, form par in opq;
+            addrPARQNT;
+            outtext( s_selectv & RTS_parqnt_sem  &
+                     s_pushc   & s_false         &        !+1;
+                     s_if      & s_ne            );       !-2;
+            tmpasd:=
+            asd:=asd-1; pushasd;
+            addrPARQNT;
+            outtext( s_selectv & RTS_parqnt_ent  );
+            addrPARQNT;
+            outtext( s_selectv & RTS_parqnt_fld  &
+                     s_locate  & s_refer         );       !-1;
+            outtag  (typetag(rank(opq.type)));
+            outtext( s_rupdate                   &        !-1;
+                     s_else                      &        !..;
+                     s_dup     & s_asscall       );       !+1;
+            outtag  (e_fnp_ass1(rank(opq.type)));
+            !tmpasd:=asdstack(curasd); asdstack(curasd):=asd-2;
+            asd:=tmpasd;
+            addrPARQNT;
+            outtext( s_deref & s_asspar &                 !-1;
+                     s_call             );                !-1;
+            outtag  (e_fnp_ass2(rank(opq.type)));
+            asd:=asd-1; !NB +1-1-1;
+            outbyte(vendif); checkequalandpop;
+%+D         if         opilo=NUL then begin  ! Final assignment;
+%-D         if checker.opilo=NUL then begin  ! Final assignment;
+               outbyte(vpop); asd:=asd-1 end;
+ end;
+
+    when
+    IEXTR do begin ! END-EXPR-TARGET -
+               ! ppfix := in case of text value assignment;
+               ! opt=INOTE/INOTY meaning target is general expr./var.;
+      if opilo='!1!' then begin
+         outtext( if opt=INOTY
+           then ( s_deref & s_dup & s_asscall & RTS_txtass1)
+           else (           s_dup & s_asscall & RTS_txtasT1) );
+         asd:=asd+1
+      end else
+         outtext( if opt=INOTY
+           then ( s_deref &         s_asscall & RTS_txtass1)
+           else (                   s_asscall & RTS_txtasT1) );
+ end;
+
+    when
+    IVALU do begin ! TEXT-VAL-ASS, opt=INOTE/INOTY;
+      ! postfix := in case of text value assignment;
+      outtext(if opt=INOTY then(
+         if asd > 2   then ( s_asspar & s_call & RTS_txtass2 &
+                             s_refer  & RTS_txtqnt           )
+                      else ( s_asspar & s_call & RTS_txtass2 ))
+        else               ( s_asspar & s_call & RTS_txtasT2 ) );
+      asd:=asd-2;
+ end;
+
+%+D     when
+%+D     IASGE do begin ! End of assignment statement;
+%+DS      L3Freq(rank(opc)):=L3Freq(rank(opc))-1;
+%+D       outbyte(vempty); checkasdzero;
+%+D  end;
+
+    when
+    IDCLC do begin
+      ! RESULT-ASS: Simple assignment to result variable of procedure
+        opq (is head!). opi=0: final assign, opi=1:sub assign;
+      ! cannot be inspected!!!;
+      st_rblev:=rank(crtblev)-rank(opq.descr.rtblev);
+      outtext( s_pushv & RTS_curins );
+      while st_rblev <> 0 do begin
+         outtext( s_remotev & RTS_entity_sl );
+         st_rblev:=st_rblev-1 end;
+      asd:=asd+1;
+      outbyte(vremote); outtag  (resulttag(rank(opq.type)));
+      goto RUPDPOP;
+ end;
+
+    when
+    ISIMU do begin ! SIMPLE-ASS opq opt;
+% -Z %IMPLNONE OFF
+%     inspect opq.encl do begin
+%        if preinsp=/=none then staticencl
+%   else if blev < '!5!' then begin
+%           if checker.getClass(declquant,'!5!')=/=none
+%           then begin !attribute of system class used as prefix;
+%              st_rblev:=rank(crtblev)-rank(checker.enclLevel);
+%              goto pushDEST end;
+%           if blev='!4!' then outtext(
+%                    s_push    & RTS_bio        &           !+1!;
+%                    s_selectv & RTS_bio_sysout )
+%      else if blev='!3!' then outtext(
+%                    s_push    & RTS_bio        &           !..;
+%                    s_selectv & RTS_bio_sysin )
+%           else outtext(
+%                    s_pushv   & RTS_bioref );
+%           asd:=asd+1;
+%        end
+%        else begin
+%           st_rblev:=rank(crtblev) - rank(rtblev);
+%     pushDEST:    
+% +K         if isGlobal and then st_rblev<>0 then outtext(
+% +K                  s_push    & RTS_bio    &           !+1!;
+% +K                  s_selectv & RTS_global )
+% +K         else
+%           if st_rblev <= 5
+%           then outtext(followSL(st_rblev))
+%           else begin
+%               outtext( s_pushv   & RTS_curins    &
+%                        s_remotev & RTS_entity_sl &
+%                        s_remotev & RTS_entity_sl &
+%                        s_remotev & RTS_entity_sl &
+%                        s_remotev & RTS_entity_sl &
+%                        s_remotev & RTS_entity_sl &
+%                        s_remotev & RTS_entity_sl );
+%               while st_rblev <> 6 do begin outtext(
+%                        s_remotev & RTS_entity_sl );
+%                  st_rblev:=st_rblev-1 end;
+%           end not global and not opt;
+%           asd:=asd+1;
+%        end ;
+%     end inspect opq.encl;
+      staticencl;
+      outbyte(vremote); outtag(opq.ftag+quantdisp);
+      goto RUPDPOP;
+ end;
+
+    when
+    ITO   do begin ! termination of simple assignment ;
+RUPDPOP:
+      if opilo=NUL then begin ! Final assignment;
+         outtext( s_rupdate & s_pop ); asd:=asd-2; goto NXT; end;
+      outbyte(vrupdate); asd:=asd-1;
+ end;
+
+%title *********   Block begin   *********
+    when
+    IBREC,         ! Decl of dummy virtual match;
+    IBLKB do begin ! (BLOCK) Begin of (pref.) block, proc. or class;
+                   ! If procedure then opq is body qnt. else qnt.;
+         ! ********** Generate Record Descriptors ********* ;
+         if opq.kind<>K_class then outdescriptors(opq);
+         switch(NUL:K_max) opq.kind begin
+         when K_class do begin
+            pushasd; asd:=0; !*** redundant if no code;
+%-Z %IMPLNONE OFF
+            inspect opq.descr do if hasCode then begin
+               if dcltag <> NUL then begin
+                  outtext( s_bseg & s_label); outtag  (opq.ftag+dcldisp)
+               end
+          else if stmtag <> NUL or else
+                  inrtag <> NUL then outbyte(vbseg);
+            end;
+            goto NXT;
+         end;
+         when K_proc do begin
+            outtext( s_bseg & s_label );
+            outtag  (opq.prefqual.ftag+startdisp);
+            pushasd; asd:=0;
+            ! opq is body, get head:  ;
+            goto NXT;
+         end;
+         when K_subbl do begin
+            outtext( s_pushc   & s_c_oaddr  );  !+1;
+            outtag  (opq.ftag+prototypedisp);
+            outtext( s_asscall & RTS_b_sub1 &
+                     s_call    & RTS_b_sub2 );  !-1;
+            goto NXT;
+         end;
+         when K_prefbl do begin
+            if calldepth=0 then begin
+               calldepth:=1; curcall:-opq; goto NXT; end;
+            pushcall;
+            ! Code generation deferred until PARAM-BEGIN ;
+            goto NXT;
+         end;
+         when NONE do
+            StopScode_1('!17!',sourceline);
+        end case;
+ end;
+
+    when
+    IDCLE do begin ! End of declarations, opq has in which block;
+%+K   gen_quick_instances(opq);
+      if cblev <> '!5!' then begin !5: outermost level;
+         if opq.kind = K_class then begin
+            if opq.descr.dcltag <> NUL then begin
+               !*** terminate declcode ;
+               outtext( s_pushc & s_c_int );         !+1;
+               outsint(opq.plev);
+               outtext( s_asscall & RTS_nxtDcl1 &
+                        s_call    & RTS_nxtDcl2 );  !-1;
+            end;
+         end
+    else if opq.kind = K_prefbl then begin !terminate declcode of prefblock;
+            outtext( s_pushc   & s_c_int & "!1!0" &   !+1;
+                     s_asscall & RTS_nxtStm1     &
+                     s_call    & RTS_nxtStm2     );  !-1;
+         end
+         else goto NXT;
+         if opq.descr.stmtag <> NUL then begin
+            outbyte(vlabel); outtag(opq.ftag+rank(opq.descr.stmtag));
+         end;
+         checkasdzero;
+      end K_class/prefbl;
+ end;
+
+    when
+    IESTM do begin ! End of proc. call or class gen. as statement;
+      if asd = 0 then goto NXT;
+      if asd = 1 then begin
+         outtext( s_pop & s_empty ); asd:=0; goto NXT end;
+      asderror(176);
+ end;
+
+    when
+    IINNE,         ! Inner in class and opq gives class;
+    IECWI do begin ! End of class body without inner;
+      if opq.descr.stmtag <> NUL then begin
+         outtext( s_pushc & s_c_int );         !+1;
+         outsint(opq.plev);
+         outtext( s_asscall & RTS_nxtStm1 &
+                  s_call    & RTS_nxtStm2 );  !-1;
+      end;
+      if opc = IINNE then begin
+         outbyte(vlabel); outtag(opq.ftag+rank(opq.descr.inrtag));
+         checkasdzero; goto NXT end;
+      goto LIEND;
+ end;
+
+%title ************   procLIEND   **************
+    when
+    IEREC do begin ! End of dummy virtual match;
+         outtext( s_pushc   & s_c_int & "!2!43" &
+                  s_asscall & RTS_error1 &
+                  s_call    & RTS_error2 &
+                  s_eseg    & s_empty    );
+         goto erecx; !continue as with normal proc.;
+ end;
+
+    when
+    IEND  do begin ! End of block, prefixed block, class or procedure;
+LIEND:
+      switch(NUL:K_max) opq.kind begin
+      when K_class do begin
+         if opq.descr.hasCode then begin
+%            if linenr > lastLINEnr then begin lastLINEnr:=linenr;
+%               outbyte(vstmt); out2byte(lastLINEnr);
+%            end;
+             if opq.descr.inrtag<>NUL then begin
+                outtext( s_pushc   & s_c_paddr       );       !+1;
+                outINRtag(opq);
+                outtext( s_goto    & s_eseg & s_empty );      !-1;
+             end
+        else if opq.descr.stmtag<>NUL or else opq.descr.dcltag<>NUL
+             then outtext( s_eseg & s_empty ); 
+         end;
+         popasd; -- checkasdzero; !*** empty test;
+      end;
+
+      when K_record do goto OUTPTP;
+
+      when K_proc do begin
+%        if linenr > lastLINEnr then begin lastLINEnr:=linenr;
+%           outbyte(vstmt); out2byte(lastLINEnr);
+%        end;
+         outtext(
+%+K      if opq.prefqual.descr.thisused then (
+%+K         if opq.type = INOTY then
+%+K %+p            ( s_pushc   & s_c_paddr       & RTS_eppro &
+%+K %-p            ( s_pushv   & RTS_curins      &
+%+K %-p              s_remotev & RTS_inst_dl     &
+%+K %-p              s_pushc   & s_onone         &
+%+K %-p              s_pushv   & RTS_curins      &
+%+K %-p              s_remote  & RTS_inst_dl     &
+%+K %-p              s_rupdate & s_pop           &
+%+K %-p              s_push    & RTS_curins      &
+%+K %-p              s_rupdate &
+%+K %-p              s_remotev & RTS_inst_lsc    &
+%+K                  s_goto    & s_eseg & s_empty )
+%+K         else
+%+K %+p            ( s_pushc   & s_c_paddr       & RTS_epprv &
+%+K %-p            ( s_pushv   & RTS_curins      &
+%+K %-p              s_push    & RTS_tmp         &
+%+K %-p              s_select  & RTS_quant_pnt   &
+%+K %-p              s_rupdate &
+%+K %-p              s_remotev & RTS_inst_dl     &
+%+K %-p              s_pushc   & s_onone         &
+%+K %-p              s_pushv   & RTS_curins      &
+%+K %-p              s_remote  & RTS_inst_dl     &
+%+K %-p              s_rupdate & s_pop           &
+%+K %-p              s_push    & RTS_curins      &
+%+K %-p              s_rupdate &
+%+K %-p              s_remotev & RTS_inst_lsc    &
+%+K                  s_goto    & s_eseg & s_empty ) )
+%+K      else
+         if ReuseProc then (
+            if opq.type = INOTY
+            then   ( s_precall & RTS_e_pro1  &      !+1;
+                     s_call    & RTS_e_pro2  &      !-1;
+                     s_eseg    & s_empty     )
+            else   ( s_precall & RTS_e_type_p1 &    !+1;
+                     s_call    & RTS_e_type_p2 &    !-1;
+                     s_eseg    & s_empty     ) )
+         else
+            if opq.type <> INOTY
+           then    ( s_pushv   & RTS_curins      &       !+1;
+                     s_push    & RTS_tmp         &       !+1;
+                     s_select  & RTS_quant_pnt   &
+                     s_rupdate                   &       !-1;
+                     s_remotev & RTS_inst_dl     &
+                     s_push    & RTS_curins      &       !+1;
+                     s_rupdate                   &       !-1;
+                     s_remotev & RTS_inst_lsc    &
+                     s_goto                      &       !-1;
+                     s_eseg    & s_empty         )
+           else    ( s_pushv   & RTS_curins      &       !+1;
+                     s_remotev & RTS_inst_dl     &
+                     s_push    & RTS_curins      &       !+1;
+                     s_rupdate                   &       !-1;
+                     s_remotev & RTS_inst_lsc    &
+                     s_goto                      &       !-1;
+                     s_eseg    & s_empty         )
+         ); !*** outtext ***;
+     erecx:
+%+D                 checkasdzero; !*** eseg test;
+         popasd; -- checkasdzero; !*** empty test;
+      end ***IPROC***;
+
+      when K_subbl do begin
+%        if linenr > lastLINEnr then begin lastLINEnr:=linenr;
+%           outbyte(vstmt); out2byte(lastLINEnr);
+%        end;
+         outtext( if ReuseProc
+           then ( s_precall & RTS_e_pro1     &    !+1;
+                  s_call    & RTS_e_pro2     )    !-1;
+           else ( s_pushv   & RTS_curins     &         !+1;
+                  s_remotev & RTS_inst_dl    &
+                  s_push    & RTS_curins     &         !+1;
+                  s_rupdate & s_pop          ));       !-2;
+         outbyte(vlabel); outtag  (opq.ftag+cntdisp); -- checkasdzero;
+      end IBLKB;
+
+      when K_prefbl do begin
+%        if linenr > lastLINEnr then begin lastLINEnr:=linenr;
+%           outbyte(vstmt); out2byte(lastLINEnr);
+%        end;
+         outtext( s_pushc & s_c_paddr ); !+1;
+         outINRtag(opq);
+         outtext( s_goto    & s_label ); !-1;
+         outtag  (opq.ftag+isorank(opq.descr.inrtag)); -- checkasdzero;
+      end;
+      when NONE do
+         StopScode_1('!17!',sourceline);
+     end case;
+
+%+D   checkasdzero;
+      if separatecomp then begin if cblev = '!7!' !=sepcomplev+1;
+      then begin
+%        ! Produce attribute file in case of separate compilation  ;
+%        ! and pass2 or passB, but don't destroy if errors!!! ;
+         main:-opq;
+         if main.kind=K_proc then main:-main.prefqual
+         else attrhide(main);
+            ! perform special hide to avoid writing
+              hidden protected attributes to AT-file;
+         if numerrfound=0 or else
+           (GenerateScode and then not recomp)
+         then inspect(if recomp then new recompattrfile
+            else Afile)
+         do begin mainqnt:-main; call(this attrfile); end;
+         if main.kind=K_class then resethide(main);
+         goto OUTPTP
+      end end;
+      if opq.kind<>K_class then
+   OUTPTP:  outprototypes(opq);
+
+      if lastusedtag>maxnumoftags then maxnumoftags:=lastusedtag;
+      if opq.kind <> K_class then begin
+         if option(rank('L'))<>NUL then begin
+            if lastusedtag>maxusedtag
+            then inspect sysout do begin maxusedtag:=lastusedtag;
+                  outimage; outtext(" ** Highest tag:");
+                  outint(maxusedtag,5); outimage;
+         end end;
+
+%+K      if opq.kind<>K_proc or else not opq.descr.thisused then begin
+            if lastidenttag > opq.ftag-1 then !no delete ; else
+            begin
+               if simob_level > 0 and then
+                  (opq.kind=K_subbl or else opq.kind=K_prefbl)
+               then  lastusedtag:=opq.ftag+1
+               else  lastusedtag:=opq.ftag-1;
+
+               outbyte(vdelete); outtag  (lastusedtag+1);
+               tmpasd:=0;
+               while tmpasd<curasd do begin tmpasd:=tmpasd+1;
+                    if asdstack(tmpasd)<>zero then asderror(175)
+               end;
+            end
+%+K      end
+      end LIEND;
+ end;
+%title *****   c a s e    s t a t e m e n t   *****
+
+    when
+    ICASE do begin ! start of case-statement;
+      startcase;
+ end;
+
+    when
+    IPRIO do begin ! terminate case-when;
+      termcasewhen;
+end;
+
+    when
+    IACTE do begin ! when-branch in case-statement, opi=which;
+      outbyte(vsdest); outtag  (curcase.tag);
+      outbyte(rank(opihi)); outbyte(rank(opilo));
+ end;
+
+    when
+    IREAC do begin ! case out of range part;
+      if curcase.errortag<>0 then begin
+         outbyte( vlabel ); outtag  (curcase.errortag);
+         curcase.errortag:=0;
+      end;
+end;
+
+    when
+    IDELA do begin !terminate case-statement;
+      termcase;
+end;
+%title ******   While - If - Goto statement   ******
+
+    when
+    ITRUE do begin ! set bdest (e.g. at start of while-stmt);
+      getnewindex; bdeststack(curbdest):=curindex;
+      curbdest:=curbdest+1;
+      outbyte(vbdest); outbyte(curindex);
+ end;
+
+    when
+    ITHSB do begin ! Then in if-statement;
+      pushnewjump; -- getnewindex; pushjump(curindex);
+      outtext( s_pushc   & s_false &                       !+1;
+               s_fjumpif & s_eq    ); outbyte(curindex);   !-2;
+%+D   outbyte(vempty);
+      if asd <> 1 then asderror(176); asd:=0;
+ end;
+
+    when
+    IELSB do begin ! Else in if-statement;
+      getnewindex;
+      outbyte(vfjump); outbyte(curindex);
+      xxx:=jumpstack(curjump); jumpstack(curjump):=curindex;
+      outfdest(xxx);
+ end;
+
+    when
+    IGOE  do begin ! End of goto-statement;
+      if generalgoto then begin ! labelquant on the stack ;
+%+D      if option(rank('Y'))<>NUL then outtrace("E_GOTO");
+         outtext( s_asscall & RTS_e_goto1 &
+                  s_call    & RTS_e_goto2 & s_empty );     !-1;
+         asd:=asd-1;
+         generalgoto:=false;
+      end;
+      ingotostmt:=false; checkasdzero;
+ end;
+
+    when
+    IFALS do begin ! jump back (e.g. to while true do ...);
+      curbdest:=curbdest-1; curindex:=bdeststack(curbdest);
+      outbjump(curindex);
+%     if opc<>IWHSE then goto NXT;
+%     goto fdestout;
+ end;
+
+    when
+    IIFSE,         ! End of if-statement;
+    IFDNO do begin ! generate fdest ;
+  fdestout:
+      iii:=jumpstack(curjump); curjump:=curjump-1;
+      outfdest(iii);
+end;
+
+%title *****   f o r   s t a t e m e n t   *****
+
+    when
+    IUNTI do begin ! end ctrl. stmt and complex for;
+      outtext( s_pushv & RTS_curins & s_remotev ); outtag(tagstacktop);
+      poptag;
+      outbyte( vgoto ); goto fdestout;
+end;
+
+    when
+    IFOR  do begin ! begin simple for statement;
+      outdescriptors(opq); ! spec of labels local to for-body ;
+%+D   outbyte(vempty); checkasdzero;
+end;
+
+    when
+    IWHIL do begin ! declare FOR variable ;
+      pushtag; tagstacktop:=opq.ftag;
+end;
+
+    when
+    IELME do begin ! FOR-ELEM-COMMA, opq:-statlabel;
+      !generate index for fjump and chain to opq (i.e. GOTO stmt);
+      newtag;
+      outbyte( vlabelspec           ); outtag(lastusedtag);
+      outtext( s_pushc & s_c_paddr  ); outtag(lastusedtag);
+      outtext( s_pushv & RTS_curins &
+               s_remote             ); outtag(tagstacktop);
+      outtext( s_rupdate & s_pop    );
+      forwardGOTO;
+      outbyte( vlabel    ); outtag(lastusedtag);
+%     *** the tag is deleted at END for-block;
+%     *** outbyte( vdelete              ); outtag(lastusedtag);
+end;
+
+    when
+    IDO do begin ! fjump newdest (i.e. start ctrl. stmt.);
+      pushnewjump;
+      outbyte(vfjump); outbyte(curindex);
+end;
+
+%title *****   i n s p e c t   s t a t e m e n t   *****
+
+%   jumpstack during inspect-when:
+%      TOP:  term inspect-when fdest
+%            next when fdest
+%            none fdest
+
+    when
+    IFWHN do begin ! The first "when" in insp. , opq is connectcopy ;
+      pushnewjump;   ! none fdest;
+      outtext( s_dup     &                              !+1;
+               s_pushc   & s_onone &                    !+1;
+               s_fjumpif & s_eq    ); outbyte(curindex);!-2;
+      pushtag; tagstacktop:=conpointtag(opq.descr);
+      outtext( s_pushv   & RTS_curins &                 !+1;
+               s_remote               ); outtag(tagstacktop);
+      outtext( s_rupdate & s_pop      );                !-2;
+      pushnewjump;   ! next when fdest;
+      pushjump(zero);   ! terminate fdest - is dummy for first when;
+      asd:=asd-1; !- see outwhn below;
+      goto outwhn;
+end;
+
+    when
+    IWHEN do begin
+      ! 2nd or later inspect-When, opq has connect-copy of given class;
+      fdi:=jumpstack(curjump); !terminate fdest;
+      if fdi=zero then begin ! second WHEN;
+         getnewindex; fdi:=jumpstack(curjump):=curindex end
+      else begin          ! third or later WHEN;
+         outbyte(vfdest); outbyte(fdi) end; !- makes fdi reusable;
+      !*** now terminate fdest is stacked ***;
+
+      outbyte(vfjump); outbyte(fdi);  ! jump to end-and-reset conpoint;
+
+      outbyte(vfdest); outbyte(jumpstack(curjump-1));
+      !*** now next when fdest is stacked ***;
+
+outwhn:  ! inline: whentest;
+          ! opq is class quantity of a when-clause ;
+          ! TOS is the object reference which is to be tested
+            against opq;
+          ! Net effect on the stack is to pop TOS;
+%+Z   xxx:=     opq.plev -1;
+%-Z   xxx:=rank(opq.plev)-1;
+      outtext( s_pushv   & RTS_curins &                   !+1;
+               s_remotev              ); outtag(tagstacktop);
+      outtext( s_remotev & RTS_entity_pp  & s_dup  &      !+1;
+               s_remotev & RTS_claPtp_plv          &
+               s_pushc   & s_c_int                 );     !+1;
+      outsint(xxx);
+      outtext( s_if & s_gt  & s_remote & RTS_claPtp_prefix &  !-2;
+               s_pushc      & s_c_int                   ); !+1;
+      outsint(xxx);
+      outtext( s_indexv  & s_endif   &                    !-1;
+               s_pushc   & s_c_oaddr );                   !+1;
+      outtag(opq.ftag+prototypedisp);
+      outtext( s_fjumpif & s_ne      );                   !-2;
+      outbyte(jumpstack(curjump-1));
+         ! spec of labels local to connection block;
+      outdescriptors(display(rank(cblev)).declquant);
+end;
+
+    when
+    ICONB do begin ! The do in insp. without when, opq is conn. copy;
+      if implNone then begin ! generate none-test;
+         getnewindex; fdi:=curindex;
+         outtext( s_dup     &
+                  s_pushc   & s_onone &
+                  s_fjumpif & s_eq    ); outbyte(fdi);
+      end
+      else begin fdi:=zero; implNone:=true end;
+                 ! no NONE-test, or start of 'inspect new ... do' ;
+      pushjump(fdi);
+      pushjump(zero); pushjump(zero);
+      !*** no term fdest, no next when fdest ***;
+      pushtag; tagstacktop:=conpointtag(opq.descr);
+      outtext( s_pushv   & RTS_curins &
+               s_remote               ); outtag(tagstacktop);
+      outtext( s_rupdate & s_pop      );
+      asd:=asd-1;
+         ! spec of labels local to connection block;
+      outdescriptors(display(rank(cblev)).declquant);
+end;
+
+    when
+    IOTHW do begin ! Otherwise in insp. statement;
+      fdi:=jumpstack(curjump); !terminate fdest;
+      if fdi=zero then begin ! there has been only one WHEN;
+         getnewindex; fdi:=jumpstack(curjump):=curindex end
+      else begin outbyte(vfdest); outbyte(fdi) end;
+      !*** now terminate fdest is stacked ***;
+
+      ! *** reset conpoint *** ;
+      outtext( s_pushc   & s_onone    & !+1;
+               s_pushv   & RTS_curins & !+1;
+               s_remote               ); outtag(tagstacktop);
+      outtext( s_rupdate & s_pop      & !-2;
+               s_fjump                ); outbyte(fdi);
+
+      fdi:=jumpstack(curjump-1);
+      if fdi<>zero then outfdest(fdi); !next WHEN fdest - is released;
+
+      ! *** reset conpoint *** ;
+      outtext( s_pushc   & s_onone    & !+1;
+               s_pushv   & RTS_curins & !+1;
+               s_remote               ); outtag(tagstacktop);
+      outtext( s_rupdate & s_pop      );!-2;
+      fdi:=jumpstack(curjump-2);
+      if fdi<>zero then outfdest(fdi); !NONE fdest - is released;
+      poptag;
+end;
+
+    when
+    IOTHE do begin ! End of otherwise clause of inspect statement;
+      fdi:=jumpstack(curjump);
+      curjump:=curjump-3; !NBNBNB - unstack all destinations NBNBNB;
+      outfdest(fdi);
+end;
+
+    when
+    ICONE do begin ! End of insp. statement without otherwise;
+      fdi:=jumpstack(curjump  );
+      if fdi <> zero then outfdest(fdi); ! terminate when fdest;
+      fdi:=jumpstack(curjump-1);
+      if fdi <> zero then outfdest(fdi); ! next when fdest;
+      ! *** reset conpoint *** ;
+      outtext( s_pushc   & s_onone    &
+               s_pushv   & RTS_curins &
+               s_remote               ); outtag(tagstacktop);
+      outtext( s_rupdate & s_pop      );
+      fdi:=jumpstack(curjump-2); curjump:=curjump-3;
+      if fdi <> zero then outfdest(fdi);   ! none fdest;
+      poptag;
+end;
+
+%title *****   SSWB - LINE - COMN - ROPD - EOP   *****
+
+    when
+    ISSWB do begin ! Setswitch, first in ssnuma and second in opd ;
+      if ssnuma=987 then begin outbyte(vinfo);
+         constr:-opdSymb.symbol;
+         outbyte(constr.length); outtext(constr) end
+      else begin
+         outbyte(vsetswitch); outbyte(ssnuma); outbyte(rank(opdlo)) end;
+      goto dummynext;
+end;
+
+    when
+    ILINE do begin ! Start of linenr ;
+%+D   if option(rank('Z'))<>NUL then afterDump;
+      jjj:=vline ! - may be changed below; ;
+      goto lineout end;
+
+    when
+    ICOMN do begin ! Start of declaration linenr;
+%+D   if option(rank('Z'))<>NUL then afterDump;
+      jjj:=vdecl ! - may be changed below; ;
+      goto lineout end;
+
+    when
+    IROPD do begin ! Start of statement linenr  ;
+%+D   if option(rank('Z'))<>NUL then afterDump;
+      while opc=IROPD or else opc=ICOMN or else opc=ILINE do begin
+         if opc=IROPD then jjj:=vstmt; !vstmt has priority;
+         ! opihi:=opilo:=NUL;
+ lineout: iii:=linenr;
+%   **************************
+    this codegenerator.detach; ! Get next opc from checker;
+%   **************************
+%+D      if option(rank('Z'))<>NUL and then
+%+D         (opc=IROPD or else opc=ICOMN or else opc=ILINE)
+%+D      then begin sysout.outtext(" --------> " & DB(rank(opc)) );
+%+D                 sysout.outint(linenr,5); sysout.outimage end;
+      end;
+      if iii > lastLINEnr then begin
+         lastLINEnr:=iii;
+         outbyte( jjj ); out2byte(iii); end;
+      goto opcloop;
+end;
+
+%+K     when
+%+K     IBLNO do begin ! Set global instance;
+%+K   outtext( s_pushv   & RTS_curins &
+%+K            s_push    & RTS_bio    &
+%+K            s_select  & RTS_global &
+%+K            s_rupdate & s_pop      );
+%+K   goto dummynext;
+%+K end;
+
+    when
+    IEOP  do begin ! End of program;
+      if simob_descr then moduleinfogeneration;
+      outtext( if separatecomp
+      then   ( s_endmodule & s_endprogram )
+      else   ( s_precall & RTS_e_prog1      &    !+1;
+               s_pushc   & s_c_int & "!1!0" &    !+1;
+               s_asspar                     &    !-1;
+               s_pushv   & RTS_nostring     &    !+1;
+               s_asspar                     &    !-1;
+               s_call    & RTS_e_prog2      &    !-1;
+               s_endprogram                 ) );
+      if termstatus<'4' then termstatus:='0';
+      if option(rank('O'))<>NUL then begin
+         sysout.outtext(" *** END PASS 2 *** ");
+%+R      if RealCap then begin
+%+R         sysout.outtext("CPUtime: ");
+%+R         sysout.outreal(cputime-timer,4,0); end;
+         sysout.outimage;
+      end;
+
+      ENDCOMP;
+end;
+
+%title ******   b i n a r y   o p e r a t o r s   ******
+
+    when
+    IEQV do begin   ! Binary equivalence;
+      outbyte(veqv); asd:=asd-1;
+ end;
+
+    when
+    IIMP do begin   ! Binary implication;
+      outbyte(vimp); asd:=asd-1;
+ end;
+
+    when
+    IIDIV,          ! Binary integer division;
+    ISLAS do begin  ! Binary real division;
+      outbyte(vdiv); asd:=asd-1;
+ end;
+
+    when
+    IMULT do begin  ! Binary multiplication;
+      outbyte(vmult); asd:=asd-1;
+ end;
+
+    when
+    IAND do begin   ! Binary and;
+      outbyte(vand); asd:=asd-1;
+ end;
+
+    when
+    IOR do begin    ! Binary or;
+      outbyte(vor); asd:=asd-1;
+ end;
+
+    when
+    IMINU do begin  ! Binary minus;
+      outbyte(vsub); asd:=asd-1;
+ end;
+
+    when
+    IPLUS do begin  ! Binary plus;
+      outbyte(vadd); asd:=asd-1;
+ end;
+
+    when
+    IINSP do begin  ! infix assignment of type "i := i + 1" ;
+      outbyte( vdup ); asd:=asd+1;
+ end;
+
+    when NONE do
+
+% V LIIF:   LIIFSB: LICAND: LICOR:
+% V LICLAS: LIHIDD: LINOT:
+% V LIABTE: LILANG: LICSPC: LIGOTO:
+% V LISTEP: LIBPRF: LIFORE: LICPRF:
+!*** following also in both scanner and checker ***;
+% V         LIVIRT: LIFASG:
+
+         goto dummynext;
+
+    end switch on opc;
+
+
+    end eternal loop;
+    end inspect checker;
+
+internerr('!17!',sourceline); !coder shall never terminate this way;
+
+end of codegenerator;
+
+end SCODMAIN;

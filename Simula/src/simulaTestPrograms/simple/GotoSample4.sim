@@ -1,0 +1,28 @@
+% ------------------------------------------
+% GOTO LABEL IN SUPER CLASS
+% Expected Output:
+%  A.L1  B.L2  A.L1  B.L2
+% ------------------------------------------
+BEGIN
+
+   integer n;
+
+   Class A;
+   BEGIN
+
+      L1: Outtext (" A.L1 "); outimage; n:=n+1;
+      
+   END;
+
+   A Class B;
+   BEGIN
+
+      L2: Outtext (" B.L2 "); outimage; n:=n+1;
+     
+      if n < 4 then goto L1;
+     
+   END;
+   
+   new B;
+   
+END;   

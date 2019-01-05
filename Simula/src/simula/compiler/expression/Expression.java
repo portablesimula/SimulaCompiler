@@ -186,7 +186,8 @@ public abstract class Expression extends SyntaxClass
 	 Expression expr=parseUNIADDSUB();
      while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          expr=new ArithmeticOperation(expr,opr,parseUNIADDSUB());
+          //expr=new ArithmeticOperation(expr,opr,parseUNIADDSUB());
+          expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseUNIADDSUB());
 	 }
 	 return(expr);
   }
@@ -205,7 +206,8 @@ public abstract class Expression extends SyntaxClass
 	 Expression expr=parseEXPON();
      while(Parser.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          expr=new ArithmeticOperation(expr,opr,parseEXPON());
+          //expr=new ArithmeticOperation(expr,opr,parseEXPON());
+          expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseEXPON());
 	 }
 	 return(expr);
   }
@@ -214,7 +216,8 @@ public abstract class Expression extends SyntaxClass
   private static Expression parseEXPON() {
 	 Expression expr=parseBASICEXPR();
      while(Parser.accept(KeyWord.EXP))
-    	 expr=new ArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
+    	 //expr=new ArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
+         expr=ArithmeticOperation.newArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
 	 return(expr);
   }
   

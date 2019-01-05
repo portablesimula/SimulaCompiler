@@ -11,12 +11,12 @@ import java.util.Vector;
 
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
-import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
+import simula.compiler.utilities.Util;
 
 /**
  * Simple Variable Declaration.
@@ -49,7 +49,7 @@ import simula.compiler.utilities.Type;
  */
 public class TypeDeclaration extends Declaration {
 	// Type type;
-	Expression constantElement;
+	public Constant constantElement;
 
 	public TypeDeclaration(Type type, String identifier) {
 		super(identifier);
@@ -76,8 +76,9 @@ public class TypeDeclaration extends Declaration {
 	      { String ident=expectIdentifier();
 	        TypeDeclaration typeDeclaration=new TypeDeclaration(type,ident);
 	        if(Parser.accept(KeyWord.EQ))
-	        {
-	          typeDeclaration.constantElement=Expression.parseExpression();
+	        { Expression cnst=Expression.parseExpression();
+	          if(cnst instanceof Constant) typeDeclaration.constantElement=(Constant)cnst;
+	          else Util.error("Can't evaluate ConstantElement while parsing");
 	          //typeDeclaration.constantElement=TypeConversion.testAndCreate(type,Expression.parseExpression());
 	        }
 	        
@@ -93,7 +94,9 @@ public class TypeDeclaration extends Declaration {
 		type.doChecking(Global.currentScope);
 		if(constantElement!=null)
 		{ constantElement.doChecking();
-	      constantElement=TypeConversion.testAndCreate(type,constantElement);
+//	      constantElement=TypeConversion.testAndCreate(type,constantElement);
+//		  Util.BREAK("TypeDeclaration.doChecking("+this+") - Constant'type="+constantElement.type+" --> "+type);
+	      constantElement.type=type;
 		}
 		SET_SEMANTICS_CHECKED();
 	}

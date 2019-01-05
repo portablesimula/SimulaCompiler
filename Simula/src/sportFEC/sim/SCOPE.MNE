@@ -1,0 +1,93 @@
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1987 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                                                           ---
+%      ---              P O R T A B L E     S I M U L A              ---
+%      ---           F R O N T - E N D    C O M P I L E R            ---
+%      ---                                                           ---
+%      ---                 S C O P E    M A C R O S                  ---
+%      -----------------------------------------------------------------
+%MACRO popExpStack:
+       begin exptop:-exptop.pred end
+%ENDMACRO
+
+%MACRO visChain:
+      begin  */2 :- */1 ;
+            while  */2 =/= none do begin
+               if  */2 .visible='!0!'
+               then inspect  */2 .symb qua identsymbol do begin
+                  if curmeaning=/=none
+%                    or else  */2 .prevmeaning=/=none
+                  then inspect new sembox do begin
+                     prevmeaning:- */2 .prevmeaning; next:-curmeaning;
+                     */2 .prevmeaning:-this sembox;
+                  end;
+                  curmeaning:- */2 ;
+               end;
+               */2 :- */2 .next;
+            end;
+%+S         Freq(47):=Freq(47)+1;
+      end
+%ENDMACRO
+
+%MACRO invischain:
+      begin
+            while */1 =/= none do begin
+               inspect */1 .symb qua identsymbol do begin
+                  if curmeaning == */1  then begin
+                     inspect curmeaning.prevmeaning do begin
+                        curmeaning.prevmeaning:-prevmeaning;
+                        curmeaning:-next;
+                     end
+                     otherwise curmeaning:-none;
+                  end;
+               end;
+               */1 :- */1 .next
+            end;
+      end
+%ENDMACRO
+
+% %MACRO makevisstmt:
+%        begin if */1 =/= none then vischain( */1 ) end
+% %ENDMACRO
+
+% %MACRO remvisstmt:
+%        invischain(*/1 .descr.fpar)
+% %ENDMACRO
+
+%MACRO build_scope:
+       allocate(*/1,*/2,none)
+%ENDMACRO
+
+%MACRO build_pref_scope:
+       allocate(*/1,*/2,*/3)
+%ENDMACRO
+
+%MACRO getOpd:
+       begin
+%            opdhi:=loadchar(L2buf,L2p); opdlo:=loadchar(L2buf,L2p+1);
+%            opdSymb:-boxof(opdhi,opdlo);
+             opdsymb:-boxof(loadchar(L2buf,L2p),loadchar(L2buf,L2p+1));
+             L2p:=L2p+2;
+       end
+%ENDMACRO
+
+%MACRO getlastblno:
+       begin lastblhi:=loadchar(L2buf,L2p);
+             lastbllo:=loadchar(L2buf,L2p+1); L2p:=L2p+2; end
+%ENDMACRO
+
+%MACRO enterstmt:
+      begin allocate;
+%IMPLNONE OFF
+            inspect getBrc(lastblhi,lastbllo) do begin
+               display(rank(cblev)):-this brecord;
+               brctab(rank(lastblhi)).val(rank(lastbllo)):-none;
+               visChain(fpar,visq);
+            end;
+      end
+%ENDMACRO
+
+% END OF FILE: (FEC-105)SCOPE:MNE

@@ -56,7 +56,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 *   <prog>:    Identification of the executing task or program
 	 * </pre>
 	 */
-	public final String simid = "Portable SIMULA 2018";
+	public final String simid = "Portable SIMULA 2019";
 	public final String siteid = "";
 	public final String OS = "";
 	public final String CPU = "";
@@ -1299,6 +1299,54 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 		// RT.println("ENVIRONMENT.waitSomeTime: awake="+millies);
 	}
 
+
+	// **********************************************************************
+	// *** Additional S-Port Procedures
+	// **********************************************************************
+    public void DEFEXCEPTION(RTObject$.LABQNT$ EXCEPTION_HANDLER,NAME$<Integer> eno) {
+    	RT.NOT_IMPLEMENTED("DEFEXCEPTION"); // TODO: Implement it
+    }
+
+    public int hash(TXT$ t) {
+    	RT.NOT_IMPLEMENTED("hash"); // TODO: Implement it
+    	return(0);
+    }
+   
+    public char loadChar(TXT$ t,int i) {
+    	RT.NOT_IMPLEMENTED("loadChar"); // TODO: Implement it
+    	return(' ');
+    }
+    
+    public void storeChar(char c,TXT$ t,int i) {
+    	RT.NOT_IMPLEMENTED("storeChar"); // TODO: Implement it
+    }
+    
+    public TXT$ getTextInfo(int i) {
+    	RT.NOT_IMPLEMENTED("getTextInfo"); // TODO: Implement it
+    	return(null);
+    }
+    
+    public void giveTextInfo(int i,TXT$ t) {
+    	RT.NOT_IMPLEMENTED("giveTextInfo"); // TODO: Implement it
+    }
+    
+    public int getIntInfo(int i) {
+    	RT.NOT_IMPLEMENTED("getIntInfo"); // TODO: Implement it
+    	return(0);
+    }
+    
+    public void giveIntInfo(int i,int val) {
+    	RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
+    }
+    
+    public void rts_utility(int index,int level) {
+    	RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
+    }
+
+
+	// **********************************************************************
+	// *** Debugging utility: checkMaxOneRunableSimulaThread
+	// **********************************************************************
 	public static synchronized void checkMaxOneRunableSimulaThread() {
 		Thread[] t = new Thread[50];
 		Thread[] runnable=new Thread[50];

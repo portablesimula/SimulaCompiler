@@ -1,0 +1,41 @@
+begin
+  ref(Link) x;
+  ref(Process) y;
+  ref(Storage) z;
+  
+  class Link;
+  begin
+     ! Ingen detach her ;
+  end;
+
+  Link class Process;
+  begin
+     detach;
+  end;
+
+  Link class Storage;
+  begin
+     ! Ingen detach her ;
+  end;
+  
+  x:-new Process();
+  x.detach;
+  
+  z:-new Storage();
+  
+  Simulation begin
+    ref(Link) x;
+    ref(Process) y;
+    ref(Storage) z;
+
+    Link class Storage;
+    begin
+       ! Ingen detach her ;
+    end;
+  
+    x:-new Process();
+    x.detach;
+  
+    z:-new Storage();
+  end;
+end;

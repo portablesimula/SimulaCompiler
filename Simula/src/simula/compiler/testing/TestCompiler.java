@@ -19,133 +19,123 @@ import simula.compiler.utilities.Option;
 public final class TestCompiler {
 
 	public static void main(String[] args) {
-		// String name=Global.packetName+"/sim/old/ClassGlyph.sim";
-		// String name=Global.packetName+"/sim/old/SubClassSample.sim";
-		// String name=Global.packetName+"/sim/old/Sample6.sim";
-		// String name=Global.packetName+"/sim/old/Sample7.sim";
-		// String name=Global.packetName+"/sim/old/Sample10.sim";
-		// String name=Global.packetName+"/sim/old/Sample11.sim";
-		// String name=Global.packetName+"/sim/old/NewObject.sim";
-		// String name=Global.packetName+"/sim/old/RemoteAccess.sim";
-		// String name=Global.packetName+"/sim/old/TypeConversionSamples.sim";
-		// String name=Global.packetName+"/sim/old/Scopes.sim";
-		// String name=Global.packetName+"/sim/old/SimsetSamples.sim";
-		// String name=Global.packetName+"/sim/old/InOutSamples.sim";
-		// String name=Global.packetName+"/sim/old/PointPolarSamples.sim";
-		// String name=Global.packetName+"/sim/old/MyFileSample.sim";
 
 		// *** STANDARD CLASSES
-		// String name=Global.packetName+"/rts/Text.sim";
-		// String name=Global.packetName+"/rts/ENVIRONMENT.sim";
-		// String name=Global.packetName+"/rts/BASICIO.sim";
-		// String name=Global.packetName+"/rts/FILE.sim";
-		// String name=Global.packetName+"/rts/ImageFile.sim";
-		// String name=Global.packetName+"/rts/InFile.sim";
-		// String name=Global.packetName+"/rts/OutFile.sim";
-		// String name=Global.packetName+"/rts/PrintFile.sim";
-		// String name=Global.packetName+"/rts/DirectFile.sim";
-		// String name=Global.packetName+"/rts/ByteFile.sim";
-		// String name=Global.packetName+"/rts/InbyteFile.sim";
-		// String name=Global.packetName+"/rts/OutbyteFile.sim";
-		// String name=Global.packetName+"/rts/DirectByteFile.sim";
-		// String name=Global.packetName+"/rts/Simset.sim";
-		// String name=Global.packetName+"/rts/Simulation.sim";
-
-		// *** S-PORT MODULER SOM TEST PROGRAMMER
-		// String name=Global.packetName+"/sim/FEC_Errmsg.sim";
-		// String name=Global.packetName+"/sim/FEC_Scanner.sim";
+		// String name="/rts/Text.sim";
+		// String name="/rts/ENVIRONMENT.sim";
+		// String name="/rts/BASICIO.sim";
+		// String name="/rts/FILE.sim";
+		// String name="/rts/ImageFile.sim";
+		// String name="/rts/InFile.sim";
+		// String name="/rts/OutFile.sim";
+		// String name="/rts/PrintFile.sim";
+		// String name="/rts/DirectFile.sim";
+		// String name="/rts/ByteFile.sim";
+		// String name="/rts/InbyteFile.sim";
+		// String name="/rts/OutbyteFile.sim";
+		// String name="/rts/DirectByteFile.sim";
+		// String name="/rts/Simset.sim";
+		// String name="/rts/Simulation.sim";
 
 		// *** SIMULA PROGRAMMER FOR VIDERE UTVIKLING
-		// String name=Global.packetName+"/simprogs/Matte.sim";
-		// String name=Global.packetName+"/simprogs/HegnaNRK.sim";
-		 String name=Global.packetName+"/simprogs/HexDump.sim";
+		// String name="/simprogs/Matte.sim";
+		// String name="/simprogs/HexDump.sim";
+		// String name="/simprogs/LIFT90.sim";
+		// String name="/simprogs/TRAFFIC.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
-		// String name=Global.packetName+"/simprogs/HelloWorld.sim";
-		// String name=Global.packetName+"/simprogs/FittingRoom.sim";
-		// String name=Global.packetName+"/simprogs/JensensDevice.sim";
-		// String name=Global.packetName+"/simprogs/Docking.sim";
+		// String name="/samples/Docking.sim";
+		// String name="/samples/FittingRoom.sim";
+		// String name="/samples/HegnaNRK.sim";
+		// String name="/samples/HelloWorld.sim";
+		// String name="/samples/JensensDevice.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
-		// String name=Global.packetName+"/err/simerr01.sim"; // Syntax errors
-		// String name=Global.packetName+"/err/simerr02.sim"; // Syntax errors
-		// String name=Global.packetName+"/err/simerr03.sim"; // Wrong Number of parameters  
-		// String name=Global.packetName+"/err/simerr04.sim"; // Type checking of Parameter Array 
-		// String name=Global.packetName+"/err/simerr05.sim"; // Syntax error - Semicolon before 'else' 
-		// String name=Global.packetName+"/err/simerr06.sim"; // Label invisible through inspection 
-		// String name=Global.packetName+"/err/simerr07.sim"; // None-check failed 
-		// String name=Global.packetName+"/err/simerr08.sim"; // Local Connected Object 
-		// String name=Global.packetName+"/err/simerr09.sim"; // Character and Java keyword char 
-		// String name=Global.packetName+"/err/simerr10.sim"; // Java keywords as Identifiers 
-		// String name=Global.packetName+"/err/PrecompiledClass.sim"; // Used by simerr11 
-		// String name=Global.packetName+"/err/simerr11.sim"; // Division by Zero in Precompiled Class 
-		// String name=Global.packetName+"/err/PrecompiledProcedure.sim"; // Used by simerr12 
-		// String name=Global.packetName+"/err/simerr12.sim"; // Division by Zero in Precompiled Procedure 
+		// String name="/error/simerr01.sim"; // Syntax errors
+		// String name="/error/simerr02.sim"; // Syntax errors
+		// String name="/error/simerr03.sim"; // Wrong Number of parameters  
+		// String name="/error/simerr04.sim"; // Type checking of Parameter Array 
+		// String name="/error/simerr05.sim"; // Syntax error - Semicolon before 'else' 
+		// String name="/error/simerr06.sim"; // Label invisible through inspection 
+		// String name="/error/simerr07.sim"; // None-check failed 
+		// String name="/error/simerr08.sim"; // Local Connected Object 
+		// String name="/error/simerr09.sim"; // Character and Java keyword char 
+		// String name="/error/simerr10.sim"; // Java keywords as Identifiers 
+		// String name="/error/PrecompiledClass.sim"; // Used by simerr11 
+		// String name="/error/simerr11.sim"; // Division by Zero in Precompiled Class 
+		// String name="/error/PrecompiledProcedure.sim"; // Used by simerr12 
+		// String name="/error/simerr12.sim"; // Division by Zero in Precompiled Procedure 
+		// String name="/error/simerr13.sim"; // Nested Connections 
+		// String name="/error/simerr14.sim"; // Goto ???
+		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 
-		// *** SIMULA TEST PROGRAMMER TIL EKSEKVERING
-		// String name=Global.packetName+"/sim/adHoc00.sim";
-		// String name=Global.packetName+"/sim/adHoc01.sim";
-		// String name=Global.packetName+"/sim/adHoc02.sim";
-		// String name=Global.packetName+"/sim/adHoc03.sim";
-		// String name=Global.packetName+"/sim/adHoc04.sim";
-		// String name=Global.packetName+"/sim/adHoc05.sim";
-	    // String name=Global.packetName+"/sim/Activation.sim";
-	    // String name=Global.packetName+"/sim/AnimationTest.sim";
-	    // String name=Global.packetName+"/sim/ArrayAsParameter.sim";
-		// String name=Global.packetName+"/sim/Assignments.sim";
+		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
+		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc01.sim";
+		// String name="/simple/adHoc02.sim";
+		// String name="/simple/adHoc03.sim";
+		// String name="/simple/adHoc04.sim";
+		// String name="/simple/adHoc05.sim";
+	    // String name="/simple/Activation.sim";
+	    // String name="/simple/AnimationTest.sim";
+	    // String name="/simple/ArrayAsParameter.sim";
+		// String name="/simple/Assignments.sim";
 
-		// String name=Global.packetName+"/sim/Blocks.sim";
-		// String name=Global.packetName+"/sim/Blocks2.sim";
+		// String name="/simple/Blocks.sim";
+		// String name="/simple/Blocks2.sim";
 		 
-		// String name=Global.packetName+"/sim/ClassGlyph.sim"; 
-		// String name=Global.packetName+"/sim/ClassGlyph2.sim";
-		// String name=Global.packetName+"/sim/ClockTimeTest.sim";
-		// String name=Global.packetName+"/sim/CoroutineSample.sim";
-		// String name=Global.packetName+"/sim/DetachSamples.sim"; 
-		// String name=Global.packetName+"/sim/DecimalEdit.sim"; 
-		// String name=Global.packetName+"/sim/DisplaySamples.sim";
-		// String name=Global.packetName+"/sim/DrawingTest.sim";
-		// String name=Global.packetName+"/sim/Editing.sim";
-		// String name=Global.packetName+"/sim/Expressions.sim";          // MÅ SJEKKES  UNARY  + - + operand
-		// String name=Global.packetName+"/sim/ExternalClass1.sim";
-		// String name=Global.packetName+"/sim/ExternalClass2.sim";
-		// String name=Global.packetName+"/sim/FileSamples.sim";
-		// String name=Global.packetName+"/sim/FittingRoom.sim";
-		// String name=Global.packetName+"/sim/ForWhileSamples.sim";
-		// String name=Global.packetName+"/sim/FunctionCall.sim";
-		// String name=Global.packetName+"/sim/Gauss.sim";
-		// String name=Global.packetName+"/sim/GotoSample0.sim";
-		// String name=Global.packetName+"/sim/GotoSample1.sim";
-		// String name=Global.packetName+"/sim/GotoSample2.sim";
-		// String name=Global.packetName+"/sim/GotoSample3.sim";   // ERROR 
-		// String name=Global.packetName+"/sim/GotoSample4.sim";           // MÅ SJEKKES
-		// String name=Global.packetName+"/sim/GotoSample5.sim";
-		// String name=Global.packetName+"/sim/GotoSample6.sim";   // ERROR
-		// String name=Global.packetName+"/sim/GotoSample7.sim";
-		// String name=Global.packetName+"/sim/GotoSample8.sim";
-		// String name=Global.packetName+"/sim/HashingExample.sim";
-		// String name=Global.packetName+"/sim/HelloWord.sim";
-		// String name=Global.packetName+"/sim/InfileSample.sim";
-		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		// String name=Global.packetName+"/sim/JensensDevice.sim";
-		// String name=Global.packetName+"/sim/LocalObject.sim";
-		// String name=Global.packetName+"/sim/MathSample.sim"; 
-		// String name=Global.packetName+"/sim/MultiAssignments.sim";
-		// String name=Global.packetName+"/sim/ParamSample.sim";
-		// String name=Global.packetName+"/sim/ParamSample2.sim";
-		// String name=Global.packetName+"/sim/ParamSample3.sim";
-		// String name=Global.packetName+"/sim/PrfxBlockSamples.sim";
-		// String name=Global.packetName+"/sim/ProcedureSample.sim";
-		// String name=Global.packetName+"/sim/QPSample0.sim";
-		// String name=Global.packetName+"/sim/QPSample1.sim";
-		// String name=Global.packetName+"/sim/QPSample2.sim";
-		// String name=Global.packetName+"/sim/QPSample3.sim";
-		// String name=Global.packetName+"/sim/QPSample4.sim";
-		// String name=Global.packetName+"/sim/RemoteProcedure.sim";
-		// String name=Global.packetName+"/sim/SubClassTest.sim";
-		// String name=Global.packetName+"/sim/TextSamples.sim";
-		// String name=Global.packetName+"/sim/VariableByName.sim";
-		// String name=Global.packetName+"/sim/VirtualSample.sim";
+		// String name="/simple/ClassGlyph.sim"; 
+		// String name="/simple/ClassGlyph2.sim";
+		// String name="/simple/ClockTimeTest.sim";
+		// String name="/simple/CoroutineSample.sim";
+		// String name="/simple/DetachSamples.sim"; 
+		// String name="/simple/DecimalEdit.sim"; 
+		// String name="/simple/DisplaySamples.sim";
+		// String name="/simple/DrawingTest.sim";
+		// String name="/simple/Editing.sim";
+		// String name="/simple/Expressions.sim";          // MÅ SJEKKES  UNARY  + - + operand
+		// String name="/simple/ExternalClass1.sim";
+		// String name="/simple/ExternalClass2.sim";
+		// String name="/simple/ExternalClass3.sim";
+		// String name="/simple/FileSamples.sim";
+		// String name="/simple/FittingRoom.sim";
+		// String name="/simple/ForWhileSamples.sim";
+		// String name="/simple/FunctionCall.sim";
+		// String name="/simple/Gauss.sim";
+		// String name="/simple/GotoSample0.sim";
+		// String name="/simple/GotoSample1.sim";
+		// String name="/simple/GotoSample2.sim";
+		// String name="/simple/GotoSample3.sim";   // ERROR 
+		// String name="/simple/GotoSample4.sim";           // MÅ SJEKKES
+		// String name="/simple/GotoSample5.sim";
+		// String name="/simple/GotoSample6.sim";   // ERROR
+		// String name="/simple/GotoSample7.sim";
+		// String name="/simple/GotoSample8.sim";
+		// String name="/simple/HashingExample.sim";
+		// String name="/simple/HelloWord.sim";
+		// String name="/simple/InfileSample.sim";
+		// String name="/simple/InspectionSamples.sim";
+		// String name="/simple/JensensDevice.sim";
+		// String name="/simple/LocalObject.sim";
+		// String name="/simple/MathSample.sim"; 
+		// String name="/simple/MultiAssignments.sim";
+		// String name="/simple/ParamSample.sim";
+		// String name="/simple/ParamSample2.sim";
+		// String name="/simple/ParamSample3.sim";
+		// String name="/simple/PrfxBlockSamples.sim";
+		// String name="/simple/PriorProcedure.sim";
+		// String name="/simple/ProcedureSample.sim";
+		// String name="/simple/QPSample0.sim";
+		// String name="/simple/QPSample1.sim";
+		// String name="/simple/QPSample2.sim";
+		// String name="/simple/QPSample3.sim";
+		// String name="/simple/QPSample4.sim";
+		// String name="/simple/RemoteProcedure.sim";
+		// String name="/simple/SubClassTest.sim";
+		// String name="/simple/SwitchStatement.sim";
+		// String name="/simple/TextSamples.sim";
+		// String name="/simple/VariableByName.sim";
+		// String name="/simple/VirtualSample.sim";
 
 			// Set options and tracing.
 			Option.verbose = true;// false;
@@ -160,7 +150,7 @@ public final class TestCompiler {
 			Option.TRACE_COMMENTS=false;//true;
 
 			// Parser Trace Options
-			Option.TRACE_PARSE=false;//true;
+			Option.TRACE_PARSE=true;//false;//true;
 
 			// Checker Trace Options
 			Option.TRACE_CHECKER=false;//true;
@@ -180,10 +170,10 @@ public final class TestCompiler {
 			String userDir=System.getProperty("user.dir");
 			Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
 
-			Option.keepJava=userDir+"/src/testing";
-//			Option.outputDir=userDir+"/bin/";
-			Option.outputDir=userDir+"/src/testing/bin/";
-			String fileName=userDir+"/src/" + name;
+			Global.packetName="simulaTestPrograms";
+			Option.keepJava=userDir+"/src/"+Global.packetName;
+			Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
+			String fileName=userDir+"/src/"+Global.packetName + name;
 
 		SimulaCompiler compiler = new SimulaCompiler(fileName);
 		compiler.doCompile();

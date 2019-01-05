@@ -1,0 +1,25 @@
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1985,86 by                                     ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E   S I M U L A             ---
+%      ---              F R O N T - E N D   C O M P I L E R          ---
+%      ---                                                           ---
+%      ---                P a r s e r   M n e m o n i c s            ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+% %MACRO NEXTSYMBOL:
+%        begin if getopt then begin cs:=opt; getopt:=false end
+%              else this grammer.detach
+%        end
+% %ENDMACRO
+
+% %MACRO new_elt:
+%        begin inspect new elt do begin opnn:= */1;
+%                 next:-curelt.next; curelt:-curelt.next:-this elt end;
+%        end
+% %ENDMACRO
+
+% END-OF-FILE: (FEC-105)PARSER:MNE

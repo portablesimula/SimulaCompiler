@@ -38,13 +38,14 @@ public final class StandaloneExpression extends Statement {
 	public StandaloneExpression(Expression expression) {
 		this.expression = expression;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW StandaloneExpression: " + toString());
+		//Util.BREAK("NEW StandaloneExpression: " + toString());
 		
 		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF))
 		{ 
 //		  this.expression = new Assignment(this.expression, Parser.prevToken.getKeyWord(),Expression.parseExpression());
 		  this.expression = new AssignmentOperation(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
 		  //Util.BREAK("NEW StandaloneExpression: "+this);
-		}
+		}		
 	}
 
 	  //  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }

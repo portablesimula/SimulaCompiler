@@ -86,8 +86,10 @@ public class Declaration extends SyntaxClass
     if(parameterList!=null)
     for(Declaration decl:parameterList)
     	if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}
-    for(Declaration decl:declaredIn.declarationList)
-    	if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}
+    for(Declaration decl:declaredIn.declarationList) {
+    	if(decl==null) return; // Error recovery
+    	if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}    	
+    }
     if(illegal) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
   }
   
@@ -103,9 +105,22 @@ public class Declaration extends SyntaxClass
     }  
     else if(Parser.accept(KeyWord.ARRAY)) ArrayDeclaration.parse(Type.Real,declarationList);  // Default type real for arrays
     else if(Parser.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(null));
+    else if(Parser.accept(KeyWord.PRIOR)) {
+    	Util.warning("Keyword 'prior' ignored - prior procedure is not implemented");
+    	Type type=acceptType();
+    	Parser.expect(KeyWord.PROCEDURE);
+    	declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));
+    }
     else if(Parser.accept(KeyWord.CLASS)) declarationList.add(ClassDeclaration.doParseClassDeclaration(null));
-    else if(Parser.accept(KeyWord.SWITCH)) declarationList.add(new SwitchDeclaration());
-//    else if(Parser.accept(KeyWord.EXTERNAL)) declarationList.add(ExternalDeclaration.doParse());
+    else if(Parser.accept(KeyWord.SWITCH)) {
+        String ident=acceptIdentifier();
+        if(ident==null) {
+    		// Switch Statement
+    		Parser.saveCurrentToken(); //?? PushBack ??
+    		return(false);
+    	}
+    	declarationList.add(new SwitchDeclaration(ident));
+    }
     else if(Parser.accept(KeyWord.EXTERNAL)) ExternalDeclaration.doParse(declarationList);
     else
     { Type type=acceptType(); if(type==null) return(false);

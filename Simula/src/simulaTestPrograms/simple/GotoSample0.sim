@@ -1,0 +1,34 @@
+% ------------------------------------------
+% VERY LOCAL GOTO SAMPLE
+% ------------------------------------------
+BEGIN
+   boolean b;
+   integer i;
+  
+   Outtext ("--- START VERY LOCAL GOTO SAMPLE"); Outimage;
+   i:=2;
+   
+STARTING: outtext("At START"); outimage;
+
+   b:= not b;
+   
+   if b then goto STARTING;
+   
+%   if i=2 then
+    outtext("Before GOTO LAB2"); outimage;
+    goto LAB2;
+   
+LAB1:outtext("At LAB1"); outimage;
+LAB2:outtext("At LAB2"); outimage;
+LAB3:outtext("At LAB3"); outimage;
+LAB4:outtext("At LAB4"); outimage;
+LAB5:outtext("At LAB5"); outimage;
+     goto LAB8;
+LAB6:outtext("At LAB6"); outimage;
+LAB7:outtext("At LAB7"); outimage;
+LAB8:outtext("At LAB8"); outimage;
+LAB9:outtext("At LAB9"); outimage;
+   
+   outtext("At EXIT"); outimage;
+
+ END

@@ -7,8 +7,20 @@
  */
 package simula.compiler.declaration;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.Vector;
-import simula.compiler.ExternalJarFile;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+
+import simula.compiler.AttributeFile;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -81,25 +93,8 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ExternalDeclaration extends Declaration {
-	/**
-	 * The optional type of an external procedure. For external classes this
-	 * field has no meaning.
-	 */
-	private Type type;
-	/** Indicates Procedure or Class. */
-	private String kind;
-	/** The Class or Procedure identifier */
-//	Token identifier;
-	/** The external identification. Normally a file-name. */
-	Token externalIdentifier;
-	
-	BlockDeclaration externalBlock;
-	
-	/**
-	 * Create and parse a new External Declaration.
-	 *
-	 */
-//	public static ExternalDeclaration doParse() {
+	private ExternalDeclaration() {super(null);}
+
 	public static void doParse(Vector<Declaration> declarationList) {
         //= EXTERNAL  CLASS  ExternalList
         //= EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
@@ -112,51 +107,87 @@ public final class ExternalDeclaration extends Declaration {
 			Util.error("parseExternalDeclaration: Expecting CLASS or PROCEDURE");
 		
 		String identifier = expectIdentifier();
-		LOOP:while(true)
-		{ Token externalIdentifier = null;
-		  if (Parser.accept(KeyWord.EQ)) {
-			  externalIdentifier = Parser.currentToken;
-			  Parser.expect(KeyWord.TEXTKONST);
-		  }
+		LOOP:while(true) {
+			Token externalIdentifier = null;
+			if (Parser.accept(KeyWord.EQ)) {
+				externalIdentifier = Parser.currentToken;
+				Parser.expect(KeyWord.TEXTKONST);
+			}
+			String jarFileName;
+			if(externalIdentifier==null)
+				 jarFileName=Global.outputDir+identifier+".jar ";
+			else jarFileName=externalIdentifier.getIdentifier();
+			readAttributeFile(jarFileName,declarationList);
 		  
-		  ExternalDeclaration externalDeclaration=new ExternalDeclaration(identifier,type,kind,externalIdentifier);
-		  declarationList.add(externalDeclaration.externalBlock);
-		  if(Parser.accept(KeyWord.IS))
-		  { // ...
-			Util.NOT_IMPLEMENTED("External non-Simula Procedure");
-			break LOOP;
-		  }
-		  if(!Parser.accept(KeyWord.COMMA)) break LOOP;
-		  identifier=expectIdentifier();
-//		  identifier=acceptIdentifier();
-//		  if(identifier==null) break LOOP;
+			if(Parser.accept(KeyWord.IS)) {
+				// ...
+				Util.NOT_IMPLEMENTED("External non-Simula Procedure");
+				break LOOP;
+			}
+			if(!Parser.accept(KeyWord.COMMA)) break LOOP;
+			identifier=expectIdentifier();
 		}
 	}
 
 
-	private ExternalDeclaration(String identifier,Type type,String kind,Token externalIdentifier) {
-	    super(identifier);
-	    this.type=type;
-	    this.kind=kind;
-	    this.externalIdentifier=externalIdentifier;
-		//Util.BREAK("END NEW ExternalDeclaration: " + toString());
-		String jarFileName;
-		if(externalIdentifier==null)
-			 jarFileName=Global.outputDir+identifier+".jar ";
-		else jarFileName=externalIdentifier.getIdentifier();
-		ExternalJarFile externalJarFile=new ExternalJarFile(jarFileName); 
-//		try { readJarFile(jarFileName); } catch(IOException e) { e.printStackTrace(); }
+	private static void readAttributeFile(String jarFileName,Vector<Declaration> declarationList) {
+		File file=new File(jarFileName);
+		if(!(file.exists() && file.canRead())) {
+			Util.error("Can't read attribute file: "+file);	return;
+	    }
+//	    Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
+	    try { JarFile jarFile=new JarFile(jarFileName);
+//	        Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
 		
-		externalBlock=externalJarFile.readJarFile();
+	        Manifest manifest=jarFile.getManifest();
+//	        Util.BREAK("ExternalDeclaration.readAttributeFile: manifest="+manifest);
+	        Attributes mainAttributes=manifest.getMainAttributes();
+//	        Util.BREAK("ExternalDeclaration.readAttributeFile: MainAttributes="+mainAttributes);
+	        String simulaInfo=mainAttributes.getValue("SIMULA-INFO");
+//	        Util.BREAK("ExternalDeclaration.readAttributeFile: simulaInfo="+simulaInfo);
+//	        JarEntry entry=external.getJarEntry(simulaInfo);
+//	        Util.BREAK("ExternalDeclaration.readAttributeFile: entry="+entry);
+	        ZipEntry zipEntry=jarFile.getEntry(simulaInfo);
+//	        Util.BREAK("ExternalDeclaration.readAttributeFile: ZipEntry="+zipEntry);
+	        InputStream inputStream=jarFile.getInputStream(zipEntry);
+//	        Util.BREAK("ExternalDeclaration.readAttributeFile: inputStream="+inputStream);
+	        AttributeFile.readAttributeFile(inputStream,simulaInfo,declarationList);
+	        inputStream.close();
+	        
+	        File destDir=new File(Global.tempClassFileDir);
+	        expandJarEntries(jarFile,destDir);
+	        inputStream.close();
+	        jarFile.close();
+	        Global.externalJarFiles.add(jarFileName);
+	    } catch(IOException e) { e.printStackTrace(); }
 	}
 
-	/**
-	 * Redefinition of the toString method.
-	 * 
-	 * @return The string representation of this External Declaration.
-	 */
-	public String toString() {
-		return ("EXTERNAL " + type + ' ' + kind + ' ' + identifier + " = "
-				+ externalIdentifier);
+	private static void expandJarEntries(JarFile jarFile, File destDir) throws IOException {
+		new File(destDir,Global.packetName).mkdirs(); // Create directories
+		Enumeration<JarEntry> entries = jarFile.entries();
+		LOOP:while (entries.hasMoreElements()) {
+			JarEntry entry = entries.nextElement();
+			InputStream inputStream = jarFile.getInputStream(entry);
+	           
+			String name=entry.getName();
+//	           if(name.startsWith("simula/runtime")) continue LOOP;
+//	           if(name.startsWith("simula/compiler")) continue LOOP;
+			if(!name.startsWith(Global.packetName)) continue LOOP;
+			if(!name.endsWith(".class")) continue LOOP;
+			//Util.BREAK("ExternalDeclaration.expandJarEntries: entry'name="+entry.getName());
+			//Util.BREAK("ExternalDeclaration.expandJarEntries: TREAT entry="+entry);
+			File destFile = new File(destDir,entry.getName());
+			//Util.BREAK("ExternalDeclaration.expandJarEntries: destFile="+destFile);
+			OutputStream outputStream=new FileOutputStream(destFile);	 
+			byte[] buffer = new byte[4096];
+			int bytesRead = 0;
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outputStream.write(buffer, 0, bytesRead);
+			}
+			inputStream.close();
+			outputStream.flush();
+			outputStream.close();
+		}
 	}
+
 }

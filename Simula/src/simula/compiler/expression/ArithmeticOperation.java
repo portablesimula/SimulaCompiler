@@ -87,7 +87,24 @@ public final class ArithmeticOperation extends Expression
   public KeyWord opr;
   public Expression rhs;
   
-  public ArithmeticOperation(Expression lhs,KeyWord opr,Expression rhs)
+  public static Expression newArithmeticOperation(Expression lhs,KeyWord opr,Expression rhs) {
+//	  Util.BREAK("ArithmeticOperation.NEW: lhs="+lhs+", QUAL="+lhs.getClass().getSimpleName());
+//	  Util.BREAK("ArithmeticOperation.NEW: opr="+opr);
+//	  Util.BREAK("ArithmeticOperation.NEW: rhs="+rhs+", QUAL="+rhs.getClass().getSimpleName());
+	  Number lhn=Constant.getNumber(lhs);
+	  if(lhn!=null) {
+		  //Util.BREAK("ArithmeticOperation.NEW: lhn="+lhn+", QUAL="+lhn.getClass().getSimpleName());
+		  Number rhn=Constant.getNumber(rhs);
+		  if(rhn!=null) {
+			  //Util.BREAK("ArithmeticOperation.NEW: rhn="+rhn+", QUAL="+rhn.getClass().getSimpleName());
+			  //Util.BREAK("ArithmeticOperation.Evaluate: "+lhs+' '+opr+' '+rhs);
+			  return(Constant.evaluate(lhn,opr,rhn));
+		  }		  
+	  }
+	  return(new ArithmeticOperation(lhs,opr,rhs));
+  }
+  
+  private ArithmeticOperation(Expression lhs,KeyWord opr,Expression rhs)
   { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
     //lhs.backLink=rhs.backLink=this;
 	if(this.lhs==null)

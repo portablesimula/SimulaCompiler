@@ -1,0 +1,77 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 101
+%
+%  PURPOSE:     Test Standard Procedure 'sourceline'.
+%
+%  WRITTEN BY:  MYH   30/07-2018
+% ==============================================================================
+BEGIN
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+
+   ref(A) x;
+   integer traceCase;
+   text array facit(0:3);
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(2); t.putint(i); edint:-t; end;
+   
+   procedure trace(line,msg); integer line; text msg;
+   begin
+      text case1;
+      case1:-"LINE " & edint(line) & ": " & msg;
+      if verbose then begin outtext(case1); outimage; end;
+      if case1 NE facit(traceCase) then
+      begin
+         outtext("ERROR in Trace Case "); outint(traceCase,0); outtext(" at line "); outint(line,0); outimage;
+         outtext("Trace Case: " & case1); outimage;
+         outtext("     Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   procedure Q(line); integer line;
+   Begin
+         trace(line,"Call Q");
+   End;
+
+   Class A(line); integer line;
+                  virtual: procedure P;
+   begin integer i;
+      Procedure P(line); integer line;
+      Begin
+            trace(line,"Call P");
+      End;
+      trace(line,"NEW A");
+      i:=sourceline;
+      trace(i+1,"END A");
+   end;
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 101"); Outimage ;
+   Outtext("--- Test Standard Procedure 'sourceline'.");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"LINE 62: NEW A";
+   facit(1):-"LINE 48: END A";
+   facit(2):-"LINE 63: Call P";
+   facit(3):-"LINE 64: Call Q";
+   
+   x:-new A(sourceline);
+   x.P(sourceline);
+   Q(sourceline);
+
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 101") ;
+   END ;
+
+   if verbose then begin
+   Outtext ("--- END SIMULA TEST 101") ;
+   Outimage;
+   end;
+
+END

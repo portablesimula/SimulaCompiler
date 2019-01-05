@@ -1,0 +1,1214 @@
+External class SCODER2;
+
+SCODER2 class SCODER3;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  3.     ---
+%      ---                                                           ---
+%      --- Selection switches: PIZ                                   ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+begin
+
+%  NOTE:  no prior procedures in this module (avoid DOS swapping)
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scoder.mne
+%+I %INSERT $SPORTLIB/rtsinit.mne
+
+codegenerator2 class codegenerator3;
+hidden protected thunklabel,PDC,constPARDES,GADDRval,
+                 select_PARQNT,get_PROQNT;
+begin
+
+! ******************************************************************** ;
+! This file mainly contains the parts of the coder considered with     ;
+! transmission of parameters  to formal name or unspecified.           ;
+! ******************************************************************** ;
+
+%title ******   beginthunk - endthunk   ******
+
+      short integer thunklev;   !--- VI TROR AT DETTE ER LURT ----;
+      short integer thunklabel;
+      ref(thunk) lastThunk;
+
+      class thunk;
+      begin ref(thunk) prev; short integer tlabel;
+            procedure endthunk;
+            begin outtext( s_precall & RTS_e_thk1 &          !+1;
+                           s_call    & RTS_e_thk2 &          !-1;
+                           s_eseg                 );
+%+D               checkasdzero;
+                  popasd;
+                  thunklev:=thunklev-1;
+                  if thunklev=0 then crtblev:=char(rank(crtblev)-1);
+                  thunklabel:=tlabel;
+                  lastThunk:-prev;
+            end;
+
+            prev:-lastThunk; lastThunk:-this thunk;
+            newTag; tlabel:=lastusedtag;
+            outtext( s_bseg & s_label ); out2byte(lastusedtag);
+            pushasd; asd:=0;
+            if thunklev=0 then crtblev:=char(rank(crtblev)+1);
+            thunklev:=thunklev+1;
+      end;
+
+      procedure thunktounspecified(type,q);
+      character type; ref(quantity)q;
+      begin ref(quantity) oldopq;
+         ! type is the type of the expression which the thunk ends
+           up with, in case of IREF q denotes the qualifying class   ;
+         ! generates code to call FPT with a thunk PARQNT ;
+         ! OADDR of parameter instance on top of stack;
+
+         outtext( s_asscall & RTS_b_fpt1  &
+                  s_pushv   & RTS_curins  &            !+1;
+                  s_asspar                &            !-1;
+                  s_pushc   & s_c_oaddr   );           !+1;
+         out2byte(PDC);
+         outtext( s_asspar                &
+                  s_pushc   & s_c_int     );           !00;
+         outsint(curparno-1);
+         outtext( s_asspar  &                          !-1;
+                  s_call    & RTS_b_fpt2  &            !-1;
+                  s_pushc   & s_c_int     );           !+1;
+         outsint(curparno-1);
+         outtext( s_asscall & RTS_e_fpt1  &
+                  s_pushc   & s_c_oaddr   );           !+1;
+         out2byte(PDC);
+         outtext( s_asscall & RTS_thk2pq1 &
+                  s_call    & RTS_thk2pq2 &        !0;
+                  s_asspar                );       !-1;
+         if type=IREF then begin
+            oldopq:-opq; opq:-q; staticencl; opq:-oldopq;
+            asd:=asd-1 end
+         else outtext( s_pushc & s_onone );            !+1;
+         outtext( s_asspar              &              !-1;
+                  s_call   & RTS_e_fpt2 );             !0;
+      end thunktounspecified;
+
+%title  *************     GADDRval      ****************
+
+     procedure GADDRval; !*** opq implicit parameter;
+     ! Push address of the quantity described by opq on TOS,
+       as a GADDR value.  Used in connection of transmission by address,
+       i.e. by name transmission to non-Simula procedure, and in
+       connection with text name variable preceding := or .<procedure> ;
+     ! Called from procLISSWA (SINGLE-ACTUAL) and from LIIDNP
+       (SINGLE-VAR) ;
+     begin boolean saveEmit;
+%-Z %IMPLNONE OFF
+        inspect opq do begin
+           addrPARQNT;
+
+           if categ<>C_name then outbyte(vderef)
+           else begin
+              outtext( s_selectv & RTS_parqnt_sem  &
+                       s_pushc   & s_true          &    !+1;
+                       s_if      & s_eq            );   !-2;
+              addrPARQNT;
+              outtext( s_selectv & RTS_parqnt_ent );
+              addrPARQNT;
+              outtext( s_selectv & RTS_parqnt_fld &
+                       s_locate                   &    !-1;
+                       s_else                     );
+              ! deferred: asd:=asd-2;
+              if kind=K_ident and then type=ITEXT then begin
+                 if asd >   2   then begin
+%+D                 if option(rank('Y'))<>NUL
+%+D                 then outtrace("save-npTA");
+                    outtext( saveScheme  ); saveEmit:=true end;
+                 addrPARQNT;
+                 outtext( if saveEmit
+                 then   ( s_deref   &
+                          s_asscall & RTS_b_npTA1 &
+                          s_call    & RTS_b_npTA2 &  !-1;
+                          restoreScheme           )
+                 else   ( s_deref   &
+                          s_asscall & RTS_b_npTA1 &
+                          s_call    & RTS_b_npTA2 ));!-1;
+                 addrPARQNT;
+                 outtext( s_deref   &
+                          s_asscall & RTS_e_npTA1 &
+                          s_call    & RTS_e_npTA2 &   !-1;
+                          s_endif                 );
+              end simple text
+              else begin
+                 addrPARQNT;
+                 outtext( s_selectv & RTS_parqnt_ap    &
+                          s_remotev & RTS_pardes_code  &
+                          s_pushc   & s_c_int & "!1!4" &           !+1;
+                          s_if      & s_ne             );          !-2;
+                 asd:=asd-1;
+                 if asd >   2   then begin
+%+D                 if option(rank('Y'))<>NUL
+%+D                 then outtrace("save-FNP_ASS");
+                    outtext( saveScheme  ); saveEmit:=true end;
+                 addrPARQNT;
+%page
+                 outtext( if saveEmit
+                 then   ( s_deref   &
+                          s_asscall & RTS_b_fnp_ass1   &
+                          s_call    & RTS_b_fnp_ass2   &     !-1;
+                          restoreScheme                &
+                          s_pushc   & s_onone          &     !+1;
+                          s_else                       &
+                          s_pushc   & s_onone          &     !..;
+                          s_endif   & s_pop            )      !-1;
+                 else   ( s_deref   &
+                          s_asscall & RTS_b_fnp_ass1   &  !-1;
+                          s_call    & RTS_b_fnp_ass2   &
+                          s_pushc   & s_onone          &  !+1;
+                          s_else                       &
+                          s_pushc   & s_onone          &  !..;
+                          s_endif   & s_pop        )   ); !.. -1;
+                 addrPARQNT;
+                 outtext( s_deref   &
+                          s_asscall & RTS_e_fnp_adr1   &
+                          s_call    & RTS_e_fnp_adr2   &   !-1;
+                          s_endif                      );
+              end;
+              ! deferred: asd:=asd-2;
+              asd:=asd-4;
+           end;
+        end inspect opq;
+     end GADDRval;
+
+%title ******   select_PARQNT - get_PROQNT   ******
+
+      procedure select_PARQNT(att); short integer att; !*** res.tag;
+      begin
+            outtext( s_dup & s_remote ); asd:=asd+1;
+            outtag(curpar.ftag+quantdisp);
+            outbyte(vselect); out2byte(att);
+      end;
+
+      procedure get_PROQNT(callmode); !*** opq implicit parameter;
+         boolean callmode; !short integer callmode;
+%-Z %IMPLNONE OFF
+      inspect opq do begin
+         ! opq.kind=K_proc
+           pushes a procedure quant on the stack ;
+         ! callmode true:precall - or false:asscall;
+           switch(NUL:C_max) categ begin
+             when C_local, C_extnal do begin
+               if callmode !=precall; then  staticencl;
+
+               outtext( s_push & RTS_tmp &
+                        s_select & RTS_quant_pro &
+                        s_select & RTS_proqnt_sl &
+                        s_rupdate & s_pop &
+                        s_pushc   & s_c_oaddr    );
+               outtag(ftag+prototypedisp);
+               outtext( s_push    & RTS_tmp        &
+                        s_select  & RTS_quant_pro  &
+                        s_select  & RTS_proqnt_ppp &
+                        s_rupdate & s_pop          );
+               if type=IREF then begin
+                  outtext( s_pushc & s_c_oaddr    );  !+1;
+                  outtag(prefqual.ftag+prototypedisp);
+                  outtext( s_push    & RTS_tmp        &
+                           s_select  & RTS_quant_pro  &
+                           s_select  & RTS_proqnt_qal &
+                           s_rupdate & s_pop          &
+                           s_push    & RTS_tmp        &
+                           s_selectv & RTS_quant_pro  );
+               end else
+                  outtext( s_pushc   & s_onone        &   !+1;
+                           s_push    & RTS_tmp        &
+                           s_select  & RTS_quant_pro  &
+                           s_select  & RTS_proqnt_qal &
+                           s_rupdate & s_pop          &
+                           s_push    & RTS_tmp        &
+                           s_selectv & RTS_quant_pro  );
+             end;
+
+             when C_virt do begin
+               if callmode !=precall; then  staticencl;
+               outtext( s_asscall & RTS_mkVpro1 &
+                        s_pushc   & s_c_int     ); !+1;
+               outsint(virtno-1);
+               outtext( s_asspar                &   !-1;
+                        s_call    & RTS_mkVpro2 );  !0;
+             end;
+
+             when C_unspec do begin
+               staticencl;
+               outbyte(vremotev);
+               outtag(ftag+quantdisp);
+            end;
+
+             when C_name do begin
+               addrNAMEQNT;
+               outtext( s_deref   &
+                        s_asscall & RTS_EncPro1  &
+                        s_call    & RTS_EncPro2  );        !0;
+             end;
+           end case;
+      end get_PROQNT;
+
+%title ***   constPARDES   ***
+
+      short integer PDC;  !*** comm. between routines ***;
+      !*** always set in constPARDES ***;
+
+      procedure constPARDES(code,kind,type,q,pad);
+      character kind,type; ref(quantity)q; !qualification;
+      short integer code;     ! PAR_ ...           ;
+      short integer pad;      ! tag of thunk label ;
+      begin
+%+D      if kind=K_rep then internerr('!13!',sourceline);
+         PDC:=newTag;
+         if code=par_qnt_lit then
+         begin
+         end par_qnt_lit  else
+         if code=par_qnt_nas or else code=par_qnt_ass then
+         begin
+            outbyte(vconst); out2byte(PDC);
+            outtext( if type=IREF
+            then   ( RTS_refPar & s_c_record & RTS_refPar  &
+                          s_attr & RTS_pardes_code &
+                          tag_int & s_c_int       )
+            else   ( RTS_pardes  & s_c_record & RTS_pardes  &
+                          s_attr & RTS_pardes_code &
+                          tag_int & s_c_int       ) );
+            outsint(code);
+            outtext( s_attr & RTS_pardes_kind &
+                     tag_int & s_c_int       );
+            outsint(rank(kind));
+            if type=IREF then begin
+               outtext( s_attr & RTS_pardes_type &
+                        tag_int & s_c_int & "!1!7" &
+                        s_attr & RTS_refPar_qal &
+                        tag_oaddr & s_c_oaddr   );
+               outtag(q.ftag+prototypedisp);
+            end
+            else begin
+               outtext( s_attr & RTS_pardes_type &
+                        tag_int & s_c_int & "!1!" );
+               outbyte(if type>IVALU then 48 else rank(type)+48);
+            end;
+
+         end par_qnt_nas or par_qnt_ass  else
+
+         if code=par_thk_nas  or else code=par_thk_ass then
+         begin
+            outbyte(vconst); out2byte(PDC);
+            outtext( if type=IREF
+            then   ( RTS_refThk & s_c_record & RTS_refThk  &
+                          s_attr & RTS_pardes_code &
+                          tag_int & s_c_int       )
+            else   ( RTS_thkPar  & s_c_record & RTS_thkPar  &
+                          s_attr & RTS_pardes_code &
+                          tag_int & s_c_int       ) );
+            outsint(code);
+            outtext( s_attr & RTS_pardes_kind &
+                     tag_int & s_c_int       );
+            outsint(rank(kind));
+            if type=IREF then begin
+               outtext( s_attr & RTS_pardes_type &
+                        tag_int & s_c_int & "!1!7" &
+                        s_attr & RTS_refPar_qal &
+                        tag_oaddr & s_c_oaddr   );
+               outtag(q.ftag+prototypedisp);
+               outtext( s_attr & RTS_refThk_pad &
+                        tag_paddr & s_c_paddr    );
+            end
+            else begin
+               outtext( s_attr & RTS_pardes_type &
+                        tag_int & s_c_int & "!1!" );
+               outbyte(if type>IVALU then 48 else rank(type)+48);
+               outtext( s_attr & RTS_thkPar_pad  &
+                        tag_paddr & s_c_paddr    );
+            end;
+            outtag(pad);
+
+         end par_thk_nas or par_thk_ass  else  ;
+         outbyte(vendrecord);
+% PQ     q:-none;
+      end;
+
+%title   ******************   procLISSWA   ******************
+
+%        !  Single identifier as actual parameter to name or
+%           unspecified formal parameter;
+%      procedure,array or switch as such as actual parameter
+%      to formal not name parameter of same kind:
+%      --- extends to about line 490 ---
+
+        procedure procLISSWA; ! (SINGLE-ACTUAL - SINGLE-STRONG) ;
+        begin short integer ttag; boolean saveEmit;
+%-Z %IMPLNONE OFF
+           inspect checker do
+%-Z %IMPLNONE OFF
+           inspect opq do begin
+              if lastopc=IDCLS !SINGLE-STRONG; then begin
+                 if curpar==none then begin
+                   ! SCHEMES 9.4.2 Parameter transfer to formal or
+                                   virtual procedure                ;
+
+                   if categ=C_name then begin
+                      !*** NOTE: asd-changes acc. at end of NAME-branch;
+                      outtext( s_asscall & RTS_b_fpt1 );
+                      addrPARQNT;
+                      outtext( s_selectv & RTS_parqnt_ent  &
+                               s_asspar                    );   !-1;
+                      addrPARQNT;
+                      outtext( s_selectv & RTS_parqnt_ap   &
+                               s_asspar  & s_pushc & s_c_int);  !00;
+                      outsint(curparno-1);
+                      outtext( s_asspar                    &    !-1;
+                               s_call    & RTS_b_fpt2      &    !-1;
+                               s_pushc   & s_c_int         );   !+1;
+                      outsint(curparno-1);
+                      outtext( s_asscall & RTS_e_fpt1  );
+                      staticencl;
+                      outbyte(vremotev); outtag(ftag+quantdisp);
+                      if type=IREF then begin
+                         outbyte(vasspar);                      !-1;
+                         opq:-prefqual; staticencl; opq:-this quantity;
+                         outtext( s_asspar                &     !-1;
+                                  s_call    & RTS_e_fpt2  );    !0;
+                         asd:=asd-1;
+                      end
+                      else begin
+                         outtext( s_asspar                &     !-1;
+                                  s_pushc   & s_onone     &     !+1;
+                                  s_asspar                &     !-1;
+                                  s_call    & RTS_e_fpt2  );    !0;
+                      end;
+                      asd:=asd-3;  !*** accum. asd-changes ;
+
+                   end  categ=C_name
+                   else begin
+                      ttag:=ftag+quantdisp;
+                      if  categ = C_virt  or else
+                        ( kind=K_proc and then type<>INOTY and then 
+                          (categ=C_local or else categ=C_extnal)
+                          and then descr.npar=0 )
+                      then begin
+                          ! virtual procedure,label or switch ,
+                            or type procedure without parameters,
+                            thunk code to be generated           ;
+
+                          new thunk;
+
+                          if kind=K_proc then begin
+                             get_PROQNT(true !precall; );
+                             if categ = C_virt or else
+                               (type <> INOTY and then descr.npar=0)
+                             then begin
+                                outtext( s_pushv   & RTS_curins     & !+1;
+                                         s_remotev & RTS_thunk_simple &
+                                         s_pushc   & s_true         & !+1;
+                                         s_skipif  & s_ne           & !-2;
+% *** dubious use of skipif - terminates however in a jump - ***
+                                         s_asscall & RTS_b_form1    &
+                                         s_call    & RTS_b_form2    );!-1;
+                                pushasd; asd:=asd-1;
+
+                                if categ = C_unspec and then
+                                   (ISHOR<=type and then
+                                                 type<=ILONG)
+                                then begin
+                                   addrPARQNT;
+                                   outtext( s_selectv & RTS_parqnt_ap  &
+                                            s_remotev & RTS_pardes_type &
+                                            s_asscall                  );
+                                   out2byte(fnp_pro_1(rank(type)));
+                                   outbyte(vcall);
+                                   out2byte(fnp_pro_2(rank(type)));
+                                end
+                                else begin
+                                   outtext( s_push    & RTS_tmp       &
+                                            s_selectv & RTS_quant_pnt );
+                                   asd:=asd+1;
+                                   outbyte(vremotev);
+                                   out2byte(resulttag(rank(type)));
+                                              !type_pro_tag;
+                                end;
+
+                                outtext( s_pushv  & RTS_curins    &   !+1;
+                                         s_remote & RTS_thunk_val &
+                                         s_select                 );
+                                out2byte(quantvarianttag(rank(type)));
+                                outtext( s_rupdate & s_pop &          !-2;
+                                         s_fjump           );
+                                getnewindex; ll2:=curindex;
+                                outbyte(curindex);
+                                outbyte(vendskip);
+%+D                             asd:=asd-1; checkasdzero;
+                                popasd;
+                             end;
+
+                             ! the procedure shall be transmitted as
+                               such, is on the stack;
+
+                             outtext( s_pushv   & RTS_curins     &   !+1;
+                                      s_remote  & RTS_thunk_val  &
+                                      s_select  & RTS_quant_pro  &
+                                      s_rupdate & s_pop          );  !-2;
+                             asd:=asd-1;
+
+                             if categ =  C_virt or else
+                               (type  <> INOTY and then descr.npar=0)
+                             then outfdest(ll2);
+                          end
+
+                          else begin
+                             if kind=K_label then begin
+                                get_LABQNT;
+                                outtext( s_pushv   & RTS_curins    &  !+1;
+                                         s_remote  & RTS_thunk_val &
+                                         s_select  & RTS_quant_lab &
+                                         s_rupdate & s_pop         ); !-2;
+                             end
+                             else begin !*** kind=K_switch;
+                                get_SWTQNT;
+                                outtext( s_pushv   & RTS_curins    &  !+1;
+                                         s_remote  & RTS_thunk_val &
+                                         s_select  & RTS_quant_swt &
+                                         s_rupdate & s_pop         ); !-2;
+                             end;
+                             asd:=asd-1;
+                          end;
+
+                          lastThunk.endthunk;
+                          constPARDES(par_thk_nas,kind,type,prefqual,
+                                      thunklabel);
+
+                          thunktounspecified(type,prefqual);
+
+                       end ***case-requiring-thunk***
+                       else begin
+                          constPARDES(if kind=K_ident then PAR_QNT_ASS
+                                      else PAR_QNT_NAS,
+                                      ! par_qnt_lit will be issued at
+                                                         SINGLE-CONST ;
+                                      kind,type,prefqual,
+                                      0);
+                          switch(NUL:K_max) kind begin
+                          when K_ident do begin
+                             if type=ITEXT
+                             then begin !*** generate SAVE ***;
+                                !only nec. for value param, but alas!;
+                                saveEmit:=true;
+                                outtext( s_dup       &
+                                         s_push      & RTS_tmp &
+                                         s_select    & RTS_quant_pnt &
+                                         s_rupdate   & s_pop &
+                                         saveScheme  &
+                                         s_push      & RTS_tmp &
+                                         s_selectv   & RTS_quant_pnt &
+                                         s_asscall );
+                             end
+                             else outtext( s_dup & s_asscall );
+                             out2byte(fpt_profile(rank(type)))
+                             end;
+                          when K_array do begin
+                             !*** generate SAVE ***;
+                             !only nec. for value param, but alas!;
+                             saveEmit:=true;
+                             outtext( s_dup       &
+                                      s_push      & RTS_tmp &
+                                      s_select    & RTS_quant_pnt &
+                                      s_rupdate   & s_pop &
+                                      saveScheme  &
+                                      s_push      & RTS_tmp &
+                                      s_selectv   & RTS_quant_pnt &
+                                      s_asscall & RTS_fptArr1);
+                             end;
+                          when K_proc do begin
+                             outtext( s_dup & s_asscall & RTS_fptPro1)
+                             end;
+                          when K_label do begin
+                             outtext( s_dup & s_asscall & RTS_fptLab1)
+                             end;
+                          when K_switch do begin
+                             outtext( s_dup & s_asscall & RTS_fptSwt1)
+                             end;
+                          when NONE do
+                             asd:=asd-1;
+                          end ***case***;
+
+                          outtext( s_pushc  & s_c_int   ); !+1;
+                          outsint(curparno-1);
+                          outtext( s_asspar             &  !-1;
+                                   s_pushc  & s_c_oaddr ); !+1;
+                          out2byte(PDC);
+                          outbyte(vasspar);                !-1;
+                          switch(NUL:K_max) kind begin
+                          when K_ident do begin
+                             ! simple assignable attribute;
+                             staticencl;
+                             outtext( s_asspar             &  !-1;
+                                      s_pushc  & s_c_aaddr ); !+1;
+                             out2byte(ttag); !***;
+                             outbyte(vasspar);                !-1;
+                             if type=IREF then begin
+                                opq:-prefqual; staticencl;
+                                opq:-this quantity;
+                                outbyte(vasspar);
+                                asd:=asd-1 end;
+                             outbyte(vcall);                  !-1;
+                             out2byte(fpt_body(rank(type)));
+                             if saveEmit then outtext( restoreScheme );
+                          end;
+                          when K_proc do begin
+                             if type=IREF then begin
+                                opq:-prefqual; staticencl;
+                                opq:-this quantity;
+                                asd:=asd-1 !NBNB; end
+                             else outtext( s_pushc & s_onone );
+                             outbyte(vasspar);                  !-1;
+                             get_PROQNT(true !precall; );
+                             outtext( s_asspar                & !-1;
+                                      s_call   & RTS_fptPro2 );!-1;
+                          end;
+                          when K_array do begin
+                             if type=IREF then begin
+                                opq:-prefqual; staticencl;
+                                opq:-this quantity;asd:=asd-1 !NBNB; end
+                             else outtext( s_pushc & s_onone );
+                             outbyte(vasspar);                   !-1;
+                             staticencl;
+                             outbyte(vremotev); out2byte(ttag);
+                             outtext( s_asspar                &  !-1;
+                                      s_call   & RTS_fptArr2 ); !-1;
+                             if saveEmit then outtext( restoreScheme );
+                          end;
+                          when K_label do begin
+                             get_LABQNT;
+                             outtext( s_asspar                &  !-1;
+                                      s_call   & RTS_fptLab2 ); !-1;
+                          end;
+                          when K_switch do begin
+                             get_SWTQNT;
+                             outtext( s_asspar                &  !-1;
+                                      s_call   & RTS_fptSwt2 ); !-1;
+                          end;
+                          when NONE do
+                             asd:=asd+2;
+                          end ***case***;
+                          asd:=asd-1;
+                       end no thunk;
+                    end;
+
+                 end curpar==none
+                 else begin
+                      ! single actual to formal name, opq denotes actual
+                        curpar denotes formal parameter ;
+                      ! SCHEMES 9.4.1 Transfer to formal name parameter ;
+
+%-Z %IMPLNONE OFF
+                    if curcall is extquantity and then
+                       curcall qua extquantity.clf <> Clf000
+                    then ! By address (i.e. by name to non-Simula procedure) ;
+                         GADDRval
+                    else begin
+                       if categ=C_name then begin
+                          outtext( s_dup & s_remote );          !+1;
+                          ttag:=curpar.ftag+quantdisp; outtag(ttag);
+                          staticencl;
+                          outbyte(vremote); outtag(ftag+quantdisp);
+                          outbyte(vassign);                     !-2;
+                          update_PARQNT(Z_parqnt_sem);
+                          if kind=K_ident and then curpar.kind=K_ident
+                             and then type=curpar.type and then
+                             (if type=IREF
+                              then prefqual==curpar.prefqual else true)
+                          then outtext( s_dup              &    !+1;
+                                        s_pushc & s_true   &    !+1;
+                                        s_and   & s_assign )    !-3;
+                          else outtext( s_dup              &    !+1;
+                                        s_pushc & s_false  &    !+1;
+                                        s_and   & s_assign );   !-3;
+                          asd:=asd-2;
+                       end
+                  else if categ=C_virt then begin
+                          ! virtual procedure or label or switch,
+                            thunk has to be generated             ;
+   
+                          new thunk;   ! allocates thunklabel tag ;
+   
+                          if kind=K_proc then begin
+                             get_PROQNT(true);
+                             outtext( s_pushv   & RTS_curins    &    !+1;
+                                      s_remote  & RTS_thunk_val &
+                                      s_select  & RTS_quant_pro &
+                                      s_rupdate & s_pop         );   !-2;
+                          end
+                     else if kind=K_label then begin
+                             get_LABQNT;
+                             outtext( s_pushv   & RTS_curins    &    !+1;
+                                      s_remote  & RTS_thunk_val &
+                                      s_select  & RTS_quant_lab &
+                                      s_rupdate & s_pop         );   !-2;
+                          end
+                     else !if kind=K_switch then; begin
+                             get_SWTQNT;
+                             outtext( s_pushv   & RTS_curins    &    !+1;
+                                      s_remote  & RTS_thunk_val &
+                                      s_select  & RTS_quant_swt &
+                                      s_rupdate & s_pop         );   !-2;
+                          end;
+                          asd:=asd-1;
+
+                          lastThunk.endthunk;
+                          constPARDES(par_thk_nas,
+                                      kind,type,prefqual,
+                                      thunklabel);
+
+                          update_PARQNT(Z_parqnt_ap);
+                          outtext( s_pushc & s_c_oaddr );       !+1;
+                          out2byte(PDC);
+                          outbyte(vassign); asd:=asd-2;
+                          select_PARQNT(Z_parqnt_ent);
+                          outtext( s_pushv & RTS_curins  &      !+1;
+                                   s_assign              );     !-2;
+                       end
+
+                       else begin
+   
+                          constPARDES(if kind=K_ident then par_qnt_ass
+                                      else par_qnt_nas,
+                                           ! par_qnt_lit will be issued
+                                             at SINGLE-CONST ;
+                                      kind,type,prefqual,
+                                      0);
+
+                          update_PARQNT(Z_parqnt_ap);
+                          outtext( s_pushc & s_c_oaddr ); !+1;
+                          out2byte(PDC);
+                          outbyte(vassign);               !-2;
+                          asd:=asd-1;
+
+                          switch(NUL:K_max) kind begin
+                          when K_ident do begin
+                             select_PARQNT(Z_parqnt_ent);
+                             staticencl;
+                             outbyte(vassign);               !-2;
+   
+                             if curpar.kind=K_ident and then
+                                curpar.type=type and then
+                                (if type=IREF
+                                 then prefqual==curpar.prefqual else true)
+                             then begin
+                                select_PARQNT(Z_parqnt_sem);
+                                outtext( s_pushc & s_true & s_assign );
+                                asd:=asd-1;
+                             end;
+                             select_PARQNT(Z_parqnt_fld);
+                             outtext( s_pushc & s_c_aaddr ); !+1;
+                             outtag(ftag+quantdisp);
+                             outbyte(vassign);               !-2;
+                             asd:=asd-3;
+                          end;
+
+                          when K_array do begin
+                             select_PARQNT(Z_parqnt_ent);
+                             staticencl;
+                             outbyte(vremote); outtag(ftag+quantdisp);
+                             outbyte(vassign); asd:=asd-2;
+                          end;
+
+                          when K_proc do begin
+                             if categ=C_unspec then begin
+                                !*** asd mod. accum. at end of IFRMP;
+                                select_PARQNT(Z_parqnt_ent);
+                                staticencl;
+                                outbyte(vremote); outtag(ftag+quantdisp);
+                                outtext( s_selectv & RTS_proqnt_sl &
+                                         s_assign                  ); !-2;
+
+                                select_PARQNT(Z_parqnt_ppp);
+                                staticencl;
+                                outbyte(vremote); outtag(ftag+quantdisp);
+                                outtext( s_selectv & RTS_proqnt_ppp &
+                                         s_assign                   );!-2;
+
+                                select_PARQNT(Z_parqnt_qal);
+                                staticencl;
+                                outbyte(vremote); outtag(ftag+quantdisp);
+                                outtext( s_selectv & RTS_proqnt_qal &
+                                         s_assign                   );!-2;
+                                asd:=asd-6; !*** accum. ;
+                             end categ=C_unspec
+                             else begin
+                                select_PARQNT(Z_parqnt_ent);
+                                staticencl;
+                                outbyte(vassign);               !-2;
+                                select_PARQNT(Z_parqnt_ppp);
+                                outtext( s_pushc & s_c_oaddr ); !+1;
+                                outtag(ftag+prototypedisp);
+                                outbyte(vassign);               !-2;
+                                asd:=asd-3;
+                                if type=IREF then begin
+                                   select_PARQNT(Z_parqnt_qal);
+                                   outtext( s_pushc & s_c_oaddr );  !+1;
+                                   outtag(prefqual.ftag+prototypedisp);
+                                   outbyte(vassign);                !-2;
+                                   asd:=asd-1;
+                                end;
+                             end;
+                          end;
+
+                          when K_label do begin
+                             if categ=C_unspec then begin
+                                !*** asd-mod's accum. at end;
+                                select_PARQNT(Z_parqnt_ent);
+                                staticencl;
+                                outbyte(vremote); outtag(ftag);
+                                outtext( s_select & RTS_labqnt_sl  &
+                                         s_assign                  ); !-2;
+
+                                select_PARQNT(Z_parqnt_pad);
+                                staticencl;
+                                outbyte(vremote); outtag(ftag);
+                                outtext( s_select & RTS_labqnt_pad &
+                                         s_assign                  ); !-2;
+
+                                select_PARQNT(Z_parqnt_clv);
+                                staticencl;
+                                outbyte(vremote); outtag(ftag);
+                                outtext( s_select & RTS_labqnt_clv &
+                                         s_assign                  ); !-2;
+                                asd:=asd-6; !***accumulated;
+                             end
+                             else begin
+                                select_PARQNT(Z_parqnt_ent);
+                                staticencl;
+                                outbyte(vassign);                   !-2;
+                                select_PARQNT(Z_parqnt_pad);
+                                outtext( s_pushc & s_c_paddr );     !+1;
+                                outtag(ftag+quantdisp);
+                                outbyte(vassign);                   !-2;
+                                select_PARQNT(Z_parqnt_clv);
+                                outtext( s_pushc & s_c_int   );     !+1;
+                                ttag:=conlevel(this quantity);
+                                outsint(ttag);
+                                outbyte(vassign);                   !-2;
+                                asd:=asd-4;
+                             end;
+                          end;
+
+                          when K_switch do ;
+                          end ***case***;
+                       end;
+
+                    end;
+                 end;
+              end
+         else if kind=K_proc
+              then get_PROQNT(true !precall; )
+         else if kind=K_array then begin  ! get_ARRPNT(opq) ;
+                 if categ=C_name then fnp_acc_arr
+                 else begin
+                      staticencl;
+                      ! not used by remote access;
+                      outbyte(vremotev); outtag(ftag+quantdisp);
+                 end
+              end
+         else if kind=K_switch then get_SWTQNT
+              else StopScode_1('!14!',sourceline); !ill actual param;
+              lastopc:=ISSWA;
+           end inspect checker and opq;
+        end procLISSWA;
+
+%title **********   procLIIDNPname   ************
+
+      procedure procLIIDNPname;  !***  name variable  ***;
+      begin boolean saveEmit;
+%+D         if         opilo='!1!' and then opq.type=ITEXT then
+%-D         if checker.opilo='!1!' and then opq.type=ITEXT then
+            begin ! text name in front of .<procedure> or := ;
+                  GADDRval;
+                  outtext( s_refer & RTS_txtqnt );
+            end else
+            begin ! name variable (including text) preceding :-,
+                    or name variable (not text) preceding := ;
+                  saveEmit:= asd > 0;
+                  addrPARQNT;
+                  outtext( s_selectv & RTS_parqnt_ap     &
+                           s_remotev & RTS_pardes_code   &
+                           s_pushc   & s_c_int & "!1!4"  &   !+1;
+                           s_skipif  & s_ne              );  !-2;
+% ***************************************************************
+% This use of skipif-endskip is incorrect S-code - must be changed
+% pje mar 92
+% ****************************************************************
+                  if saveEmit then outtext( saveScheme  );
+%+D               if saveEmit and then option(rank('Y'))<>NUL
+%+D               then outtrace("save-FNP_ASS");
+                    addrPARQNT;
+                    outtext( if saveEmit
+                    then   ( s_deref   &
+                             s_asscall & RTS_b_fnp_ass1  &
+                             s_call    & RTS_b_fnp_ass2  &   !-1;
+                             restoreScheme               &
+                             s_endskip                   )
+                    else   ( s_deref   &
+                             s_asscall & RTS_b_fnp_ass1  &
+                             s_call    & RTS_b_fnp_ass2  &   !-1;
+                             s_endskip )                 );
+                    asd:=asd-2; !*** accum. asd-mod;
+            end;
+      end;
+%title   ****************   procLILFPA   ******************
+
+      procedure procLILFPA;       ! (DOT-ACTUAL) ;
+             ! remote actual to formal name or unspecified,
+               actual expression is started by EXP-STRONG;
+             ! opq.kind=K_proc/ident/array ;
+      begin
+            if curpar==none or else curpar.categ=C_name then begin
+%-Z %IMPLNONE OFF
+             inspect opq do begin
+               if curpar is extquantity and then
+                  curpar qua extquantity.clf <> Clf000
+               then begin
+                  ! By address (i.e. by name to non-Simula procedure) ;
+                  outbyte(vremote); outtag(ftag+quantdisp);
+                  outbyte(vderef);
+               end
+               else begin
+                    ! Thunk has been started, here follows
+                      last part of the thunk code ;
+
+                  if kind=K_ident then begin
+                     ! remote assignable expression ;
+
+                     outtext( s_pushv   & RTS_curins    &   !+1;
+                              s_remote  & RTS_thunk_val &
+                              s_select  & RTS_quant_ins &
+                              s_rupdate & s_pop         &   !-2;
+                              s_pushv   & RTS_curins    &   !+1;
+                              s_remote  & RTS_thunk_val &
+                              s_select  & RTS_quant_fld &
+                              s_pushc   & s_c_aaddr     );  !+1;
+                     outtag(ftag+quantdisp);
+                     outbyte(vassign);                      !-2;
+                     asd:=asd-1;
+                  end
+
+             else if kind=K_array then begin
+                     ! remote array ;
+   !remote v added;  outbyte(vremotev); outtag(ftag+quantdisp);
+                     outtext( s_pushv   & RTS_curins    &   !+1;
+                              s_remote  & RTS_thunk_val &
+                              s_select  & RTS_quant_arr &
+                              s_rupdate & s_pop         );  !-2;
+                     asd:=asd-1;
+
+                  end
+
+             else if kind=K_proc then begin
+%                    ! remote procedure  r.p.   r is on the stack,
+%                    ! test whether the procedure is to be called;
+%                    ! or transferred as such ;
+                     get_PROQNT(false !asscall; );
+
+                     if type <> INOTY and then
+                        (if categ=C_virt and then match=/=none
+                         then match.descr.npar=0 else descr.npar=0)
+                     then begin
+                        outtext( s_pushv   & RTS_curins     &   !+1;
+                                 s_remotev & RTS_thunk_simple &
+                                 s_pushc   & s_true         &   !+1;
+                                 s_skipif  & s_ne           &   !-2;
+% *** dubious use of skipif - terminates however in a jump - ***
+                                 s_asscall & RTS_b_form1    &
+                                 s_call    & RTS_b_form2    );  !-1;
+                        pushasd; asd:=asd-1;
+
+                        if (categ=C_unspec or else categ=C_name)
+                           and then (ISHOR<=type and then
+                                                   type<=ILONG)
+                        then begin
+                           addrPARQNT;
+                           outtext( s_selectv & RTS_parqnt_ap  &
+                                    s_remotev & RTS_pardes_type &
+                                    s_asscall                  );
+                           out2byte(fnp_pro_1(rank(type)));
+                           outbyte(vcall);
+                           out2byte(fnp_pro_2(rank(type)));
+                        end
+                        else begin
+                           outtext( s_push    & RTS_tmp       &   !+1;
+                                    s_selectv & RTS_quant_pnt &
+                                    s_remotev                 );
+                           asd:=asd+1;
+                           out2byte(!type_pro_tag;resulttag(rank(type)));
+                        end;
+
+                        outtext( s_pushv  & RTS_curins    &   !+1;
+                                 s_remote & RTS_thunk_val &
+                                 s_select                 );
+                        out2byte(quantvarianttag(rank(type)));
+                        outtext( s_rupdate & s_pop &          !-2;
+                                 s_fjump           );
+                        getnewindex; ll2:=curindex;
+                        outbyte(curindex);
+                        outbyte(vendskip);
+%+D                     asd:=asd-1; checkasdzero;
+                        popasd;
+                     end;
+
+                     ! the procedure shall be transmitted as such, is
+                       on the stack;
+
+                     outtext( s_pushv   & RTS_curins    &     !+1;
+                              s_remote  & RTS_thunk_val &
+                              s_select  & RTS_quant_pro &
+                              s_rupdate & s_pop         );    !-2;
+                     asd:=asd-1;
+
+                     if type <> INOTY and then
+                        (if categ=C_virt and then match=/=none
+                         then match.descr.npar=0 else descr.npar=0)
+                     then outfdest(ll2);
+
+                  end;
+
+                  lastThunk.endthunk;
+                  constPARDES(if kind=K_ident then par_thk_ass
+                              else par_thk_nas ,
+                              kind,type,prefqual,
+                              thunklabel);
+
+                  if curpar=/=none then begin
+                     ! remote actual to formal name ;
+
+                     update_PARQNT(Z_parqnt_ap);
+                     outtext( s_pushc & s_c_oaddr );          !+1;
+                     out2byte(PDC);
+                     outbyte(vassign);                        !-2;
+
+                     select_PARQNT(Z_parqnt_ent);
+                     outtext( s_pushv & RTS_curins &          !+1;
+                              s_assign             );         !-2;
+                     asd:=asd-2;
+                  end
+                  else begin
+                       !actual parameter to formal unspecified;
+
+                     thunktounspecified(type,prefqual);
+                  end;
+               end;
+            end inspect opq
+           end
+
+%          remote actual to formal specified not name and of the
+%          same kind as the actual:
+
+      else if curpar.kind=K_proc then get_PROQNT(false !asscall;)
+      else if curpar.kind=K_array then begin
+              outbyte(vremotev);
+              outtag(opq.ftag+quantdisp);
+           end
+           else StopScode_1('!14!',sourceline);
+      end procLILFPA;
+%title ******   procLIPROCformal   ******
+
+      procedure procLIPROCformal; !*** opq implicit parameter;
+%-Z %IMPLNONE OFF
+      inspect checker do
+      begin ! Formal procedure: cannot be remotely accessed;
+            if asd <> 0 then begin
+%+D            if option(rank('Y'))<>NUL then outtrace("save-FML_PRO");
+               outtext( saveScheme  );
+               pushasd; saveemitted(saveindex):=true;
+               asd:=0;
+            end;
+            get_PROQNT(true !precall; );
+            if opilo=NUL then begin
+               outtext( s_asscall & RTS_b_form1 &
+                        s_call    & RTS_b_form2 );  !-1;
+               asd:=asd-1;
+            end
+            else begin
+               outtext( s_asscall & RTS_a_form1 &
+                        s_pushc   & s_c_int     );  !+1;
+               outsint(rank(opilo));  ! number of actuals ;
+               outtext( s_asspar                &   !-1;
+                        s_call    & RTS_a_form2 );  !0;
+            end;
+      end formal procedure;
+%title   ******************   procLIARRA   ******************
+
+      procedure procLIARRA;    ! (SUBSCRIPT-ACTUAL) ;
+                               ! Has been started with EXP-STRONG;
+      begin character ccc; ref(quantity) qqq;
+            if callstack(calldepth-1) is extquantity and then
+               callstack(calldepth-1) qua extquantity.clf <> Clf000
+            then begin
+                 ! By address (i.e. by name to non-Simula procedure) ;
+               endsubscription;
+               outtext( s_index & s_eval & s_deref ); asd:=asd-1;
+               popcall;  ! for the subscription; 
+            end
+            else begin ! A thunk has been started;
+               if curcall.kind=K_switch then begin
+                  ! switch designator termination. The code for the 
+                    switch access and the index expression  generated ;
+               end
+               else  begin !array access;
+                  endsubscription;
+                  outtext( s_index   & s_eval         &    !-1;
+                           s_deref                    &
+                           s_dup                      &    !+1;
+                           s_convert & tag_oaddr      &
+                           s_pushv   & RTS_curins     &    !+1;
+                           s_remote  & RTS_thunk_val  &
+                           s_select  & RTS_quant_ins  &
+                           s_rupdate & s_pop          &    !-2;
+                           s_convert & tag_aaddr      &
+                           s_pushv   & RTS_curins     &    !+1;
+                           s_remote  & RTS_thunk_val  &
+                           s_select  & RTS_quant_fld  &
+                           s_rupdate & s_pop          );   !-2;
+                  asd:=asd-2;
+               end;
+               lastThunk.endthunk;
+               qqq:-curcall.prefqual; ccc:=curcall.type;
+               popcall;  ! for the subscription;
+               constPARDES(par_thk_ass,K_ident,ccc,qqq,thunklabel);
+               if curpar==none then begin
+                  !actual subscript to formal unspecified;
+                  thunktounspecified(ccc,qqq);
+               end
+               else  begin !actual subscript to formal name ;
+                  update_PARQNT(Z_parqnt_ap);
+                  outtext( s_pushc & s_c_oaddr );               !+1;
+                  out2byte(PDC);
+                  outbyte(vassign);                             !-2;
+                  select_PARQNT(Z_parqnt_ent);
+                  outtext( s_pushv & RTS_curins & s_assign );   !+1-2;
+                  asd:=asd-2;
+               end;
+            end;
+      end procLIARRA;
+%title   ******************   procLIRGPA   ******************
+
+      procedure procLIRGPA; ! (EXP-ACTUAL) ;
+%-Z %IMPLNONE OFF
+      inspect checker do begin ! trailing part of thunk code:    ;
+            if opt=ILABE then begin
+                 ! assumes that label quantity on the stack;
+               outtext( s_pushv   & RTS_curins    &    !+1;
+                        s_remote  & RTS_thunk_val &
+                        s_select  & RTS_quant_lab &
+                        s_rupdate & s_pop         );   !-2;
+            end
+            else begin
+                 ! non-assignable expression of simple kind. All other
+                   kinds of expressions are terminated by DOT-ACTUAL or
+                   SUBSCRIPT-ACTUAL   ;
+               outtext( s_pushv   & RTS_curins    &    !+1;
+                        s_remote  & RTS_thunk_val &
+                        s_select                  );
+               out2byte(quantvarianttag(rank(opt)));
+               outtext( s_rupdate & s_pop         );   !-2;
+            end;
+            asd:=asd-1;
+            lastThunk.endthunk;
+            constPARDES(par_thk_nas, K_ident, opt, opq, thunklabel);
+
+            if curpar==none then  ! expression to formal unspecified ;
+               thunktounspecified(opt,opq)
+            else begin            ! expression to formal name ;
+               update_PARQNT(Z_parqnt_ap);
+               outtext( s_pushc & s_c_oaddr );         !+1;
+               out2byte(PDC);
+               outbyte(vassign);                       !-2;
+               select_PARQNT(Z_parqnt_ent);
+               outtext( s_pushv   & RTS_curins    &    !+1;
+                        s_assign                  );   !-2;
+               asd:=asd-2;
+            end;
+
+      end procLIRGPA;
+
+%title ******   fnp_acc_smp/arr   ******
+
+      procedure fnp_acc_smp;
+      ! Called from LIIDN:/LISIDN:  ;
+      ! opq.categ=C_name ;
+      ! Access of simple name parameter in opq ;
+      begin boolean saveEmit;
+            short integer tmpasd;
+%-Z %IMPLNONE OFF
+         inspect opq do begin
+            addrPARQNT;
+            outtext( s_selectv & RTS_parqnt_sem  &
+                     s_pushc   & s_true          &  !+1;
+                     s_if      & s_eq            ); !-2;
+            asd:=asd-1; pushasd;
+            addrPARQNT;
+            outtext( s_selectv & RTS_parqnt_ent  ); !select v added;
+            addrPARQNT;
+            outtext( s_selectv & RTS_parqnt_fld  &
+                     s_locate  & s_refer         );    !-1;
+            out2byte(typetag(rank(type)));  ! this is formal type ;
+            ! -- asd:=asd-1;
+            ! -- exchasd; !of s_else, but before setting saveEmit:;
+            tmpasd:=asdstack(curasd); asdstack(curasd):=asd-1;
+            asd:=tmpasd;
+            saveEmit:=asd > 0;
+%+D               if saveEmit and then option(rank('Y'))<>NUL
+%+D               then outtrace("save-FNP_ACC");
+            outtext( if saveEmit
+              then ( s_fetch & s_else &
+                     saveScheme       )
+              else ( s_fetch & s_else ) );
+            addrPARQNT;
+            outtext( if saveEmit
+              then ( s_deref   &
+                     s_asscall & RTS_b_fnp_acc1  &
+                     s_call    & RTS_b_fnp_acc2  &
+                     restoreScheme               )
+              else ( s_deref   &
+                     s_asscall & RTS_b_fnp_acc1  &
+                     s_call    & RTS_b_fnp_acc2  ) );  !-1;
+            asd:=asd-1;
+            addrPARQNT;
+            outtext( s_deref & s_asscall );
+            out2byte(e_fnp_acc1(rank(type)));
+            outbyte(vcall);
+            out2byte(e_fnp_acc2(rank(type)));
+            outbyte(vendif); checkequalandpop;
+         end inspect opq;
+      end fnp_acc_smp;
+
+
+      procedure fnp_acc_arr;
+      ! Called from LIIDN:/LISIDN:  ;
+      ! opq.categ=C_name ;
+      ! Access of array name parameter in opq ;
+      begin
+            addrNAMEQNT;
+            outtext( s_deref   &
+                     s_asscall & RTS_EncArr1  &
+                     s_call    & RTS_EncArr2  );    !0;
+      end fnp_acc_arr;
+
+end codegenerator3;
+
+
+end SCODER3;

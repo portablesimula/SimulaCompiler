@@ -162,6 +162,13 @@ public abstract class RTObject$  implements Runnable {
 
 
 	// ************************************************************
+	// *** ARRAY BOUND CHECKING
+	// ************************************************************
+	public void BOUND_CHECK$(int lb,int ub) {
+		if(lb>ub) throw new RuntimeException("ARRAY("+lb+':'+ub+") - BOUND-CHECK FAILED");
+	}
+
+	// ************************************************************
 	// *** ARRAY OBJECTS
 	// ************************************************************
 	static final String arrayError="Illegal use of array";
@@ -698,6 +705,14 @@ public abstract class RTObject$  implements Runnable {
 	class TerminateException extends RuntimeException
 	{ static final long serialVersionUID=1234;
 	  public TerminateException(String msg) { super(msg); }
+	}
+	
+	// ************************************************************
+	// *** Procedure terminate_program;
+	// *** begin ... ;  goto STOP  end terminate_program;
+	// ************************************************************
+	public void terminate_program() {
+		System.exit(0);
 	}
     
 	// ************************************************************

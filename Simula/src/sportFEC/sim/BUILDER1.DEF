@@ -1,0 +1,695 @@
+External class PAS1INIT;
+
+PAS1INIT class BUILDER1;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---                   B u i l d e r    P a r t  1.            ---
+%      ---                                                           ---
+%      ---  Selection switches: DKPIN                                ---
+%      ---                                                           ---
+%      ---    'D' - Debug only (included only with Z)                ---
+%      ---    'K' - Quick procedures may be compiled                 ---
+%      ---    'P' - Quick procedures of compiler used                ---
+%      ---    'I' - Inserted mnemonics used                          ---
+%      ---    'N' - Notes are given (pedagogic compiler)             ---
+%      ---    'Z' - ZIM: intermediate version only                   ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+%SELECT Z
+
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scope.mne
+
+      procedure StopScode;
+      begin inspect coder when visiblegenerator do begin
+               coder:-new dummygenerator("$dum$");
+               coder qua visiblegenerator.SCF:-SCF;
+%  output info til backend om feil???????
+            end;
+            termstatus:='!6!';
+      end;
+
+%title ******    MAIN DECLARATIONS   ********
+
+      boolean BoundCheck, NoneCheck, QuaCheck, ReuseProc;
+      boolean ingotostmt;    ! true between GOTO and end-GOTO;
+      boolean inswitchdecl;  ! true between switch-DECL and switch-END;
+      boolean generalgoto;   ! true if ingotostmt and genral des. expr.;
+      boolean notinconditional; ! significant between the pairs:
+                                  (GOTO,end-GOTO) (DECL,switch-comma)
+                                  (switch-comma,switch-end)
+                                  true if not in a cond. design. expr.;
+%+D   character opc;
+      character     cblev;          ! Current blev in display;
+      character     crtblev; ! Current RT-blev. Keeps track of the
+                        insertion of instances at the static chain ;
+      character     qblev;
+%+D   character stepfasthi,stepfastlo,opihi,opilo;
+%-D   character stepfasthi,stepfastlo            ;
+
+      short integer ssnuma; comment: Number received by ISSWA;
+      short integer lastusedtag; comment: For coder use only;
+      short integer noofextmodules;
+
+      ref(extmodule)firstextmodule;
+      ref(casedescr) curcase;
+
+      class casedescr(ndests,lb,ub,prev,type);
+            short integer ndests;     ! set by CHECKER;
+            integer lb,ub;            ! set by CHECKER;
+            ref(casedescr) prev;      ! set by CHECKER;
+            character type;           ! set by CHECKER;
+      begin short integer tag,jumptag,! set by SCODER;
+                          errortag;   ! set by SCODER;
+            ref(indexelt) firstelt;   ! set by SCODER;
+      end;
+
+      class indexelt; !for saving an index or a tag;
+      begin short integer index;   ! is tag if > 255;
+            ref(indexelt) next;
+      end;
+
+%title ***  Visiblegenerator  ***
+
+%-I   short integer procedure newTag;
+%-I         newtag:=lastusedtag:=lastusedtag+1;
+
+%-I   procedure newTags(incr); short integer incr;
+%-I         lastusedtag:=lastusedtag+incr;
+
+%+N   idpack class formal(kind,actuals);
+%+N          character kind; ref(actualuse)actuals; ;
+
+%+N   class actualuse(line,noofactuals); short integer line,noofactuals;
+%+N   begin ref(actualuse)next; end;
+
+      outcodefile class visiblegenerator;
+      begin
+            short integer asd,curasd;
+%+Z         short integer curjump,saveindex;
+%-Z         character     curjump,saveindex;
+            boolean array saveemitted(0:50);
+            !*** for dump use only: ;
+%+D         short integer lastasd,lastcurasd;
+%+DZ        short integer lastjmp,lastsav;
+%+D %-Z     character     lastjmp,lastsav;
+
+            ref(outbytefile) SCF;          ! S-code output file;
+
+%+Z         ref(module)array moduletab(0:20 !maxmodules;);
+%-Z         ref(module)      moduletab(  20 !maxmodules;);
+
+            class module(rtsmoduleid,checkcode,numoftags,basetag);
+                  text rtsmoduleid,checkcode;
+                  short integer numoftags,basetag;
+            ;
+
+%+PQ        prior
+            procedure StopScode_1(m,n); character m; short integer n;
+            begin if numerrfound=0 then internerr(m,n);
+                  StopScode;
+            end;
+
+%+PQ        prior
+            procedure asderror(n); short integer n;
+            begin if numerrfound=0 then error0(n); StopScode; end;
+
+%+D         procedure beforeDump;
+%+D         inspect sysout do inspect checker0 do
+%+D         begin if opc=ILINE or opc=IROPD or opc=ICOMN then begin
+%+D                  outimage; outtext(" ScodMain: ");
+%+D                  outtext(DB(rank(opc))); outint(linenr,5) end
+%+D               else begin
+%+D                  outtext(" ScodMain: ");
+%+D                  outtext(DB(rank(opc)));
+%+D                  if opt<>IVIRT then begin outtext(", opt=");
+%+D                     outtext(DB(rank(opt))) end;
+%+D                  if optx<>IVIRT then begin outtext(", optx=");
+%+D                     outtext(DB(rank(optx))) end;
+%+D                  if opihi<>NUL or else opilo<>NUL then begin
+%+D                     outtext(", opi=");outint(rank(opihi),0);
+%+D                     outchar(','); outint(rank(opilo),0) end;
+%+D                  inspect opq do if opq.symb=/=none then begin
+%+D                     if kind<>K_subbl and kind<>K_prefbl then begin
+%+D                        outtext(", opq:-" & opq.symb.symbol); end;
+%+D               end end;
+%+D         end;
+
+%+D         procedure afterDump;
+%+D         inspect sysout do begin
+%+D            if asd<>lastasd then begin
+%+D               outtext(" asd => "); outint(asd,0); lastasd:=asd end;
+%+D            if curasd<>lastcurasd then begin
+%+D               outtext(" curasd => "); outint(curasd,0);
+%+D               lastcurasd:=curasd end;
+%+D            if saveindex<>lastsav then begin
+%+D               outtext(if saveemitted(saveindex) then "SAVE: "
+%+D                       else " sav: "); outint(saveindex,0);
+%+D               lastsav:=saveindex end;
+%+D            if curjump<>lastjmp then begin
+%+D               outtext(" jmp: "); outint(curjump,0);
+%+D               lastjmp:=curjump end;
+%+D            outimage end;
+
+      end visiblegenerator;
+
+      visiblegenerator class dummygenerator;
+      !**** for use in case S-code production breaks down ***;
+      begin procedure outbyte(i); short integer i;;
+            procedure out2byte(i); integer i;;
+            procedure outtext(t); text t;;
+            while true do begin
+%              ***********************************
+               detach; ! Get next opc from checker;
+%              ***********************************
+               if SCF=/=none then begin SCF.close; SCF:-none end;
+%+D            if option(rank('Z'))<>NUL
+%+D            then begin beforeDump; afterDump end;
+               opq:-none;
+%+D            opihi:=opilo:=NUL;
+%-D            checker0.opihi:=checker0.opilo:=NUL;
+            end;
+      end;
+
+%title ***   getSAFEint - meaningof   ***
+
+%+PQ prior
+     integer procedure getSAFEint(hi,lo); character hi,lo;
+     begin integer EXC_NUMBER; ref(symbolbox) symx;
+%+S         Freq(46):=Freq(46)+1;
+           DEFEXCEPTION(IOFLO,EXC_NUMBER);
+           symx:-boxof(hi,lo);
+           getSAFEint:=symx.symbol.getint;
+           if false then   IOFLO: error1id(398,symx);
+           StandardException;
+%+PQ       symx:-none; !*** GC ***;
+     end;
+
+%-I %+PQ prior
+%-I   ref(quantity) procedure meaningof(symb); ref(symbolbox) symb;
+%-I    meaningof:-symb qua identsymbol.curmeaning;
+
+% *****************   start precheck0   ********************
+
+  ref(precheck0) checker0;
+
+  class precheck0;
+  begin
+      ref(quantity)detachquant; ! A free detach-quantity used
+                                  again and again (in globmeaning);
+      character lastblhi,lastbllo; ! lastblno - Is written from checker;
+%-D   character     opc,opt,optx,opihi,opilo;
+      character lastopc;
+      short integer lowplev;
+
+
+%-I %+PQ  prior
+%-I   procedure vischain(q,visq);  ref(quantity) q,visq;
+%-I   begin !*** do not call from enterConn ***;
+%-I         visq:-q;
+%-I         while visq=/=none do begin
+%-I            if visq.visible=NUL
+%-I            then inspect visq.symb qua identsymbol do begin
+% I               if curmeaning=/=none or else visq.prevmeaning=/=none
+%-I               if curmeaning=/=none or else visq==curmeaning
+%-I               then inspect new sembox do begin
+%-I                  prevmeaning:-visq.prevmeaning; next:-curmeaning;
+%-I                  visq.prevmeaning:-this sembox;
+%-I               end;
+%-I               curmeaning:-visq;
+%-I            end;
+%-I            visq:-visq.next;
+%-I         end;
+%-I %+S     Freq(47):=Freq(47)+1;
+%-I   end ***vischain***;
+
+
+%-I %+PQ  prior
+%-I   procedure invischain(q);  ref(quantity) q;
+%-I   begin !*** do not call from leaveConn ***;
+%-I         while q=/=none do begin
+%-I            inspect q.symb qua identsymbol do begin
+%-I               if curmeaning==q !and then q.visible; then begin
+%-I                  inspect curmeaning.prevmeaning do begin
+%-I                     curmeaning.prevmeaning:-prevmeaning;
+%-I                     curmeaning:-next;
+%-I                  end
+%-I                  otherwise curmeaning:-none;
+%-I               end;
+%-I            end;
+%-I            q:-q.next
+%-I         end;
+%-I %+S     Freq(48):=Freq(48)+1;
+%-I   end ***invischain***;
+
+%title ******   getClass   ******
+
+      character     enclLevel; !additional result from getClass;
+
+%+PQ  prior
+      ref(quantity) procedure getClass(qty,foundblev);
+      ref(quantity) qty;
+      character     foundblev;
+        ! result none: qty not found on display. Called from
+          localobject(checker1) and staticencl(scoder1);
+      begin ref(quantity) cqt;
+            character     bl;
+% ???       ref(stackedb) prevbrec;
+%+S         Freq(55):=Freq(55)+1;
+%+PQ     getClass:-none;
+         bl:=cblev;
+         while bl>=foundblev do begin
+%-Z %IMPLNONE OFF
+            inspect display(rank(bl)) do begin
+               if kind=K_proc then else if kind=K_subbl then
+                      ! no actions, get next block level in bl;
+               else begin ! kind=C_class/prefbl/insp/labbl;
+                   cqt:-declquant;
+                   ! try to find a matching class identifier,
+                     including the prefix classes;
+          LOOP:    if cqt.symb =/= qty.symb then begin
+                      if cqt.plev > one then begin
+                         cqt:-cqt.prefqual; goto LOOP end;
+                      goto nextbl; !not found;
+                   end;
+                   getClass:-cqt;
+                   !*** get correct rtblev ***;
+% ???              if preinsp=/=none then begin
+% ???                 prevbrec:-preinsp;
+% ???                 while prevbrec.prev=/=none
+% ???                    do prevbrec:-prevbrec.prev;
+% ???                 enclLevel:=prevbrec.rtblev;
+% ???              end else
+                   enclLevel:=rtblev;
+                   bl:=foundblev; ! i.e. terminate loop;
+               end;
+    nextbl: end;
+            bl:=char(rank(bl)-1);
+         end;
+%+PQ     qty:-cqt:-none;
+      end getClass;
+%title ******   MAKEVISBLOCK   ******
+
+%+PQ  prior
+      procedure makevisblock(brc);
+            ref(brecord) brc;
+      begin ! Called from enterblock, enterconn and alloc2;
+            ref(quantity) qz,q;
+%+Z         short integer lowpl;
+%-Z         character     lowpl;
+            character     qblev;
+%+S         Freq(49):=Freq(49)+1;
+            display(rank(cblev)):-brc;
+            q:-brc.declquant; qblev:=brc.blev;
+            if q.kind=K_class then lowpl:=zero else
+            if q.kind=K_prefbl then lowpl:=zero else lowpl:=one;
+            vischain(brc.favirt,qz);
+     enter: qz:-q.descr.fpar;
+            while qz=/=none do begin
+               if qz.visible=NUL then inspect qz.symb qua identsymbol
+               do begin
+                  if curmeaning==none then begin
+                     curmeaning:-qz;
+                  end
+                  else begin
+                     if (curmeaning qua quantity.encl.blev<>qblev
+                         ! redeclarations on inner prefix levels
+                           should not be overridden ;
+%+K                     and curmeaning qua quantity.encl=/=qz.encl
+%+K                     ! cm.encl==qz.encl mean that they occured in  ;
+%+K                     ! the fpar-list of the same brecord. How is ;
+%+K                     ! that possible when cm.ident=qz.ident ???? ;
+                        )
+                        or else curmeaning==qz
+                     then begin
+             STACK:       inspect new sembox do begin
+                             prevmeaning:-qz.prevmeaning;
+                             next:-curmeaning;
+                             qz.prevmeaning:-this sembox;
+                          end;
+                          curmeaning:-qz;
+                     end;
+                  end;
+               end;
+               qz:-qz.next;
+            end;
+            if q.plev>lowpl then begin
+               q:-q.prefqual; goto enter end;
+%+PQ        q:-none; brc:-none; !*** GC ***;
+      end makevisblock;
+
+
+% %-I %+PQ  prior
+% %-I       procedure makevisstmt(q); ref(quantity)q;
+% %-I                 vischain(q);
+
+% %-I %+PQ  prior
+% %-I       procedure remvisstmt(q); ref(quantity)q;
+% %-I                 invischain(q);
+
+%title ***   LEAVEBLOCK  -  LEAVESTMT   ***
+
+%+PQ  prior
+      procedure leaveblock;
+      ! Not used to leave connection blocks ;
+      begin ref(quantity) q,visq;
+%+Z         short integer insp,lowpl;
+%-Z         character     insp,lowpl;
+            boolean invirts;
+%+S         Freq(50):=Freq(50)+1;
+%-Z %IMPLNONE OFF
+         inspect display(rank(cblev)) do begin
+            q:-declquant;
+            if q.kind=K_class then lowpl:=zero else
+            if q.kind=K_prefbl then lowpl:=zero else lowpl:=one;
+            crtblev:=char(rank(crtblev)-1);
+            invirts:=true; visq:-favirt;
+    enter: 
+            invischain(visq);
+            if invirts then begin
+               invirts:=false; visq:-fpar; goto enter end;
+            if q.plev>lowpl then begin
+               ! q.plev=lowpl: q is outermost prefix ;
+               q:-q.prefqual; visq:-q.descr.fpar; goto enter end;
+
+            if kind=K_class  then protect(declquant)
+       else if kind=K_prefbl then protect(declquant.prefqual);
+         end;
+         display(rank(cblev)):-none; cblev:=char(rank(cblev)-1);
+%+PQ     q:-none; !*** GC ***;
+      end leaveblock;
+
+
+%     procedure leavestmt;
+%     inspect display(rank(cblev)) do begin
+% S         Freq(51):=Freq(51)+1;
+%           remvisstmt(this quantity);
+%           invischain(fpar);
+%           display(rank(cblev)):-declquant.prefqual.descr;
+%     end leavestmt;
+
+%title ***   SUBCLASS  -  SUBORDINATE   ***
+
+% PQ  prior
+      boolean procedure subclass(qx,qy); ref(quantity)qx,qy;
+      !*** Is true if qx is a subclass of qy. ;
+      ! NBNB:  THE PARAMETERS MUST NOT BE EQUAL TO NONE !! ;
+      begin
+%+S         Freq(52):=Freq(52)+1;
+            while qx.plev>qy.plev do qx:-qx.prefqual;
+            if qx==qy or else
+               qx.kind=K_error or else qy.kind=K_error
+            then subclass:=true else subclass:=false;
+      end of subclass;
+
+
+      boolean procedure subordinate(qa,qb); ref(quantity)qa,qb;
+      begin
+%+S         Freq(53):=Freq(53)+1;
+            if qa.type = qb.type then begin
+               if qa.type = IREF or else qa.type = IPTR
+               then subordinate:=subclass(qa.prefqual,qb.prefqual)
+               else subordinate:=true;
+            end
+            else subordinate:= qb.type=INOTY;
+      end of subordinate;
+%title      *** COPY from quantity ***
+
+% PQ  prior
+      procedure makeequalto(q,qnt); ref(quantity)q,qnt;
+      begin qnt.symb:-q.symb;
+            qnt.encl:-q.encl;        qnt.descr:-q.descr;
+            qnt.type:=q.type;        qnt.kind:=q.kind;
+            qnt.categ:=q.categ;      qnt.prefqual:-q.prefqual;
+            qnt.plev:=q.plev;        qnt.dim:=q.dim;
+            qnt.protect:=q.protect;  qnt.visible:=q.visible;
+!???;       if qnt.visible<>NUL then qnt.visible:='!1!';
+            qnt.virtno:=q.virtno;    qnt.match:-q.match;
+            qnt.special:=q.special;
+            comment: "next" is not copied  ;
+%           qnt.ftag:=q.ftag;
+            if q.line<0 and then qnt is quantity then qnt.ftag:=q.line
+            else begin qnt.line:=q.line; qnt.ftag:=q.ftag end;
+            if qnt is extquantity then begin
+             if q.ftag<0 then begin qnt.line:=q.ftag; qnt.ftag:=0 end;
+             qnt qua extquantity.module   :-q qua extquantity.module;
+             qnt qua extquantity.clf      :=q qua extquantity.clf      ;
+             qnt qua extquantity.longindic:=q qua extquantity.longindic;
+            end;
+%+S         Freq(54):=Freq(54)+1;
+% PQ        qnt:-q:-none; !*** GC ***;
+      end;
+
+%title   ******   Attribute protection subroutines   ******
+       ref(ignore) curhp;
+       class ignore(hp,q); ref(idpack) hp; ref(quantity) q;
+       begin ref(ignore) prev;
+             prev:-curhp; curhp:-this ignore;
+             q.protect:='!0!';
+       end;
+
+
+       procedure resethide(q); ref(quantity) q;
+       !*** called after hide(...,true) ***;
+       begin procedure reprtct(q); ref(quantity) q;
+             begin ref(quantity) qty;
+                   qty:-q.descr.fpar;
+                   while qty=/=none do begin
+                      if qty.kind=K_class then reprtct(qty);
+                      qty:-qty.next;
+                   end;
+                   protect(q);
+             end reprtct;
+
+             while curhp =/= none do
+%-Z %IMPLNONE OFF
+                inspect curhp do begin
+                     q.protect:='!1!'; q.visible:=NUL;
+                     hp.line:=-hp.line;
+                     curhp:-prev;
+                end;
+             reprtct(q);
+       end;
+
+       procedure attrhide(qty); ref(quantity) qty;
+       begin ref(ignore) ignp;
+             ref(ignore) curp; curp:-curhp;
+             hide(qty,true);
+             ignp:-curhp; while ignp=/=curp do begin
+%+D             if ignp.hp.line>0 then
+                ignp.hp.line:=-ignp.hp.line
+%+D             else sysout.outtext("??? attrhide ???");
+                ;
+                ignp:-ignp.prev end;
+             qty:-qty.descr.fpar;
+             while qty=/=none do begin
+                   if qty.kind=K_class then attrhide(qty);
+                   qty:-qty.next;
+             end;
+       end;
+%page
+%+PQ   prior
+       procedure hide(q,attrHide); ref(quantity) q; boolean attrHide;
+       ! *** attrHide indicates whether this is normal hide or the
+             output 'hide' called before attr.file and Scode tag
+             output: will mark hidden protected attributes with
+             visible=protected=false (cannot occur otherwise).
+             Otherwise (attrHide false) all hid.prot. attr. are hidden;
+       begin ref(quantity) qz; ref(idpack) cvis, fvis;
+             short integer nhid; boolean inlocals;
+%+Z          short integer curplev;
+%-Z          character     curplev;
+
+%+S         Freq(56):=Freq(56)+1;
+             prefixchain(1):-qz:-q; curplev:=one;
+             while curplev < q.plev do begin
+              curplev:=curplev+1; prefixchain(curplev):-qz:-qz.prefqual;
+             end;
+
+             while curplev <> zero do begin
+                   q:-prefixchain(curplev);  prefixchain(curplev):-none;
+                   curplev:=curplev-1;
+                   unprotect(q);
+                   fvis:-q.descr.hidlist;
+                   if fvis==none then goto NXTP;
+                   cvis:-fvis; nhid:=0;
+                   while cvis =/= none do begin !count packs;
+                         nhid:=nhid+1; cvis:-cvis.next end;
+
+             REP:  qz:-q.descr.fpar; inlocals:=true;
+             SCAN: while qz=/=none do begin
+                      if qz.visible=NUL then begin
+                         cvis:-fvis;
+                         while cvis=/=none do begin
+                            if cvis.line >= 0 then begin
+                               !*** else marked ***;
+                               if boxof(cvis.idhi,cvis.idlo) == qz.symb
+                               then begin !found;
+                                  if attrHide and !then;
+                                    (qz.categ=C_local
+                                     or !else; qz.categ=C_virt)
+                                  then new ignore(cvis,qz);
+                                  qz.visible:='!1!';
+                                  if inlocals then begin
+                                     !*** test for virt. match ***;
+                                     if qz.match==none or else
+                                        qz.match.categ=C_virt
+                                     then begin
+                            SETM:       cvis.line:=-cvis.line; !mark;
+                                        nhid:=nhid-1;
+                                        if nhid=0 then goto REMM;
+                                        !*** hidlist exhausted ***;
+                                     end
+                                  end
+                                  else if qz.dim=1 then goto SETM;
+                                  goto NEXTATTR;
+                               end;
+                            end;
+                            cvis:-cvis.next;
+                         end;
+                      end;
+          NEXTATTR:   qz:-qz.next;
+                   end;
+                   if inlocals then begin  !*** hide virtuals;
+                      inlocals:=false; qz:-q.descr.favirt;goto SCAN end;
+
+                   if q.plev > one then begin
+                      q:-q.prefqual; goto REP end;
+                   ! scan backwards in prefix chain for rem. matches ;
+
+          REMM:    cvis:-fvis;
+                   while cvis=/=none do begin
+                      if cvis.line<0 then cvis.line:=-cvis.line;
+                      cvis:-cvis.next end;
+       NXTP: end prefixchain;
+%+PQ         q:-none; fvis:-none; !*** GC ***;
+       end ***hide***;
+%page
+%+PQ   prior
+       procedure protect(q); ref(quantity) q;
+       ! *** make all protected attributes invisible ***;
+
+       begin ref(quantity) qz;
+%+S         Freq(57):=Freq(57)+1;
+       REP:  qz:-q.descr.fpar;
+             while qz=/=none do begin
+                   if qz.protect='!1!' then qz.visible:='!1!';
+                   qz:-qz.next;
+             end;
+             qz:-q.descr.favirt;
+             while qz=/=none do begin
+                   if qz.protect='!1!' then begin qz.visible:='!1!';
+                      if qz.match=/=none then qz.match.visible:='!1!';
+                   end;
+                   qz:-qz.next;
+             end;
+
+             if q.plev > one then begin q:-q.prefqual; goto REP end;
+%+PQ         q:-none; !*** GC ***;
+       end ***protect***;
+
+
+%+PQ   prior
+       procedure unprotect(q); ref(quantity) q;
+       ! *** make all local quantities of q visible ***;
+
+       inspect q.descr do begin
+%+S         Freq(58):=Freq(58)+1;
+          q:-favirt;
+          while q=/=none do begin !NB: only local virts (dim=1);
+                if q.dim=1 then   q.visible:=NUL; q:-q.next end;
+          q:-fpar;
+          while q=/=none do begin q.visible:=NUL; q:-q.next end;
+
+       end ***unprotect***;
+  end ****** precheck0 ****** ;
+
+%title ***  Procedure EXTTAG  ***
+
+      short integer nextexttag; ! Next external tag to be given;
+
+      short integer procedure exttag(q);ref(quantity)q;
+      begin
+%+D         short integer oldxtag; oldxtag:=nextexttag;
+%+S         Freq(45):=Freq(45)+1;
+      if q.visible=NUL or else q.protect='!1!' then
+      begin ! Delivers the external tag by which q is associated,
+              -1 if no external tag should be given to  q,
+              -2 if q should not go to attribute file (hidden prot.);
+            ! Called from 'normalattrfile', 'recompattrfile' (Builder2)
+              and 'generatetagindexlist' (coder2) ;
+
+            exttag:=nextexttag; ! Is overwritten if no tag is given;
+
+            if q.categ=C_virt then exttag:=-1
+       else if q.categ=C_extnal then begin
+               if q.descr is extbrecord then exttag:=-1
+               else !procedure with binding: profile- and bodytag;
+                    nextexttag:=nextexttag+2;
+            end
+       else if q is extquantity and then q qua extquantity.clf=Clf002
+            then ! parameter to external non-Simula procedure ;
+                 exttag:=-1
+       else if q.special > '!1!' and then q.type<>ITEXT
+               ! named constant, same check as in LAYOUT ;
+               ! text const get one tag: const addr of txtent;
+               ! const array get one tag: tag of first elt;
+            then exttag:=-1
+       else if q.kind=K_class and then q.categ=C_local
+            then nextexttag:=nextexttag +
+                             (if q.descr.inrtag<>NUL then 3 else 2)
+       else if q.kind=K_proc and then q.categ=C_local
+            then nextexttag:=nextexttag + 2
+%+K                + (if q.descr.thisused then 1 else 0)
+       else if q.encl.declquant.categ=C_virt
+               ! parameter to specification of virt proc ;
+            then exttag:=-1
+            else nextexttag:=nextexttag
+                   + (if q.categ=C_name then 2 else 1 );
+      end ***exttag*** else exttag:=-2;
+%+E   if oldxtag<>nextexttag and then option(rank('E'))<>NUL
+%+E   then inspect sysout do begin
+%+E      outtext("EXTTAG: " & q.symb.symbol & " "
+%+E                         & leftint(oldxtag) & " "
+%+E                         & leftint(nextexttag)); outimage end;
+      end;
+
+%title
+%REUSE OFF
+
+      ref(extquantity)procedure newextquantbrec(blv,rtblv,stat,caus);
+            character stat,blv,rtblv;
+            ref(extquantity)caus;
+      begin ref(extquantity)qe;
+%+S         Freq(59):=Freq(59)+1;
+            inspect new extbrecord do begin
+               blev:=char(rank(blv)+1); rtblev:=char(rank(rtblv)+1);
+               newextquantbrec:-qe:-new extquantity(this extbrecord);
+               qe.descr:-this extbrecord;
+               declquant:-qe; status:=stat; cause:-caus;
+            end;
+      end;
+
+      class extmodule;
+      begin ref(quantity) qty;   !declquantity of external;
+            ref(extmodule)next;
+            short integer pptag, !tag of prototype for sep.class/proc ;
+                      attrlayout;!layout index (108 is 0);
+            character checkhi,   !index of checkcode found on attr.file;
+                      checklo;
+      end;
+
+
+end BUILDER1;

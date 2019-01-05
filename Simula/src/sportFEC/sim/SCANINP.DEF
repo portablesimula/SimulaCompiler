@@ -1,0 +1,90 @@
+external class SCANNER;
+
+SCANNER class SCANINP;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---                   S o u r c e   I n p u t                 ---
+%      ---                                                           ---
+%      --- Selection switches: DKIPMRZ                               ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'I' Included to make compiler use inserted mnemonic    ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'M' Included always when macro capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'R' Included if full REAL capability wanted            ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+%SELECT Z
+
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+
+integer procedure Pass1;
+begin ! the main program reading and treating full program lines;
+      ! return number of lines read;
+      character c;
+      short integer i,j,l;
+      text t;
+
+      call(scanner); !*** start analysis ***;
+
+      optx:=opdhi:=opdlo:=optx:=NUL;
+      Pass1:= linenr;
+      line:-listpart:-"-- after Source End-of-File --";
+      linelength:=30;
+      if maxnumoftags > 0 then begin
+         t:-leftint(maxnumoftags); error1(-367,t);
+         while maxnumoftags>0 do begin maxnumoftags:=maxnumoftags-1;
+               parser.cs:=opt:=IEND; parser.getopt:=false; call(parser);
+               optx:=opdhi:=opdlo:=optx:=NUL end;
+      end;
+      parser.cs:=opt:=IEOP; parser.getopt:=false; call(parser);
+      !*** Scanner is bypassed ***;
+
+      ClosePass1;
+      if option(rank('O'))<>NUL then
+      begin outimage; outtext("*** END PASS 1 *** - ");
+            outint(linenr,6); outtext(" lines");
+%+R         if RealCap then begin timer:=cputime;
+%+R            outtext(", time used: "); outreal(timer-starttime,4,0) end;
+            outimage;
+      end;
+      if L2OUPT =/= none then inspect new inbytefile(L2name) do begin
+      !*** NOTE: L2OUPT==none if nothing output, i.e. incore;
+         setaccess("%NOBUFFER");
+         if not open then begin
+            L2name:-  "PASS 2 Input: " & L2name; openerror(L2name) end;
+         L2INPT:- this inbytefile; intext(L2codebuffer);
+      end;
+      L2OUPT:-none;
+      currentpass:='2'; linenr:=0;
+      if nscodename == notext
+      then openerror(" *** SCRATCH FILE (S-code) ***");
+      unknowns:-new brecord;
+      unknowns.kind:=K_subbl;
+      setprefgoing:-new quantity; alloc2called:-new quantity;
+      setprefgoing.symb:-
+      alloc2called.symb:-boxof(NUL,alloc2index);
+      setprefgoing.encl:-alloc2called.encl:-unknowns;
+      !*** unknowns must have a declquant ***;
+      unknowns.declquant:-setprefgoing; setprefgoing.descr:-unknowns;
+      !*** Form full program head string ***;
+      progheadstring:- gettextinfo(13);
+      progheadstring:- timestamp.sub(1,23) & sportid & progheadstring;
+
+end   ******  PASS 1  ******;
+
+end SCANINP;

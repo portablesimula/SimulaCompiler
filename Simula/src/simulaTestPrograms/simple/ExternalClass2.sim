@@ -1,0 +1,12 @@
+
+%  external class Separat="C:\GitHub\SimulaCompiler\Simula/src/testing/bin/ExternalClass1.jar"; 
+  external class Separat; 
+   
+Separat class SubSep;
+begin 
+   integer ICHR=IINT+4;
+
+     Procedure PP; begin end;
+     x :- new B(); 
+   
+end;

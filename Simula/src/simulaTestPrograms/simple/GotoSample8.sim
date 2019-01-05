@@ -1,0 +1,35 @@
+% ------------------------------------------
+% GOTO SIMPLE SWITCH
+% Expected Output:
+%  A.L1  B.L1  B.L1  ...
+% ------------------------------------------
+BEGIN
+
+   integer n;
+
+   Class A; virtual: Label L1; Procedure P;
+   BEGIN
+      Switch S1 := L1, L3, L6;
+
+      L1: Outtext (" A.L1 "); outimage; n:=n+1;
+      
+      L3: Outtext (" A.L3 "); outimage;
+      L6: Outtext (" A.L6 "); outimage;
+   END;
+
+   A Class B;
+   BEGIN
+      Procedure P; BEGIN END;
+      BEGIN_B: Outtext (" BEGIN B "); outimage;
+      L1: Outtext (" B.L1 "); outimage; n:=n+1;
+     
+      if n < 4 then
+      BEGIN
+         Outtext (" JUST BEFORE GOTO S(1) - B.L1"); outimage;
+         goto S1(1);
+      END;
+   END;
+   
+   new B;
+   
+END;   

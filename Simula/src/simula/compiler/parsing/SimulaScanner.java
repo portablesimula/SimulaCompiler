@@ -7,7 +7,6 @@
  */
 package simula.compiler.parsing;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -27,12 +26,12 @@ import simula.compiler.utilities.Util;
 public final class SimulaScanner { 
     private static final int EOF_MARK=25; // ISO EM(EndMedia) character used to denote end-of-input
     public boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
-    private Reader reader;                // The source file reader;
+    private SourceFileReader sourceFileReader;      // The source file reader;
     private Stack<Character> puchBackStack=new Stack<Character>();
     private boolean selector[]=new boolean[256];
     
     private StringBuilder accum;
-    private boolean editorMode;
+    private final boolean editorMode;
 
     private LinkedList<Token> tokenQueue=new LinkedList<Token>();
 
@@ -56,9 +55,16 @@ public final class SimulaScanner {
 	 * @param reader The character source to scan
 	 */
 	public SimulaScanner(final Reader reader,final boolean editorMode) {
-		this.reader=reader;
+		this.sourceFileReader=new SourceFileReader(reader);
 		this.editorMode=editorMode;
 		Global.sourceLineNumber=1;
+	}
+
+    //********************************************************************************
+    //*** Insert
+    //********************************************************************************
+	void insert(Reader reader) {
+		this.sourceFileReader.insert(reader);
 	}
 
     //********************************************************************************
@@ -72,9 +78,8 @@ public final class SimulaScanner {
 				break SEARCH;
 			}
 		}
-		try { reader.close(); }
-		catch(IOException e) { e.printStackTrace(); }
-		reader=null;
+		sourceFileReader.close();
+		sourceFileReader=null;
 	}
 
     //********************************************************************************
@@ -148,7 +153,9 @@ public final class SimulaScanner {
 		            if(current == '>')     return(newToken(KeyWord.NE));
 		            pushBack(current);     return(newToken(KeyWord.LT));
 	            case '+':                  return(newToken(KeyWord.PLUS));
-	            case '-':	               return(newToken(KeyWord.MINUS));
+	            case '-':
+	            	if(getNext() == '-')   return(scanCommentToEndOfLine());
+	                pushBack(current); 	   return(newToken(KeyWord.MINUS));
 	            case '*':
 		            if(getNext() == '*')   return(newToken(KeyWord.EXP));
 		            pushBack(current); 	   return(newToken(KeyWord.MUL));
@@ -715,15 +722,18 @@ public final class SimulaScanner {
 		    return (newToken(KeyWord.COMMENT));
 		} else if(Character.isLetter(current)) {
 			String id=scanName();
-			if (id.equalsIgnoreCase("OPTION"))				Directive.setOption();
-			else if (id.equalsIgnoreCase("SELECT"))			setSelectors();
-			else if (id.equalsIgnoreCase("STANDARDCLASS"))	Directive.setStandardClass();
-			else if (id.equalsIgnoreCase("TITLE"))			Directive.setTitle(readUntilEndofLine());
-			else if (id.equalsIgnoreCase("PAGE"))			Directive.page();
-			else if (id.equalsIgnoreCase("KEEP_JAVA"))		Directive.setKeepJava(readUntilEndofLine());
-			else Util.warning("Unknown Compiler Directive: " + id);
+//			if (id.equalsIgnoreCase("OPTION"))				Directive.setOption();
+//			else if (id.equalsIgnoreCase("INSERT"))			Directive.insert(this,readUntilEndofLine());
+//			else if (id.equalsIgnoreCase("SELECT"))			setSelectors();
+//			else if (id.equalsIgnoreCase("STANDARDCLASS"))	Directive.setStandardClass();
+//			else if (id.equalsIgnoreCase("TITLE"))			Directive.setTitle(readUntilEndofLine());
+//			else if (id.equalsIgnoreCase("PAGE"))			Directive.page();
+//			else if (id.equalsIgnoreCase("KEEP_JAVA"))		Directive.setKeepJava(readUntilEndofLine());
+//			else { Util.warning("Unknown Compiler Directive: " + id); readUntilEndofLine();	}
+			if (id.equalsIgnoreCase("SELECT")) setSelectors();
+			else Directive.treatDirectiveLine(this,id,readUntilEndofLine());
 		}
-		readUntilEndofLine();
+		//readUntilEndofLine();
 	    return (newToken(KeyWord.COMMENT));
 	}
 	
@@ -734,7 +744,7 @@ public final class SimulaScanner {
 			line.append((char)current);
 		}
 		pushBack('\n');
-		return(line.toString());
+		return(line.toString().trim());
 	}
 
     /**
@@ -748,7 +758,7 @@ public final class SimulaScanner {
     	while(current==' ') getNext();
     	while(current!=' ' && current!='\n') {
     		selector[current]=true;
-    		//System.out.println("PreProcessor.select: selector["+(char)current+"]=true");
+    		System.out.println("PreProcessor.select: selector["+(char)current+"]=true");
     		getNext();
     	}
     }
@@ -809,6 +819,27 @@ public final class SimulaScanner {
 		if (Option.TRACE_COMMENTS) Util.TRACE("COMMENT:\"" + skipped + "\" Skipped and replaced with a SPACE");
 		return (newToken(KeyWord.COMMENT));
 	}
+	  
+		// ********************************************************************************
+		// ** scanCommentToEndOfLine
+		// ********************************************************************************
+		// ** Reference-Syntax:
+		// ** comment
+		// ** = -- { any character until end-of-line }
+		// ********************************************************************************
+		// ** End-Condition: current is last character of construct CHECKED
+		// ** getNext will return first character after construct
+		// ********************************************************************************
+		private Token scanCommentToEndOfLine() {
+			StringBuilder skipped = new StringBuilder();
+			if (Option.TRACE_SCAN) Util.TRACE("BEGIN scanCommentToEndOfLine, " + edcurrent());
+			while ((getNext() != '\n') && current != EOF_MARK)
+				skipped.append((char) current);
+			skipped.append((char) current);
+			if (Option.TRACE_SCAN) Util.TRACE("END scanCommentToEndOfLine: " + edcurrent() + "  skipped=\"" + skipped + '"');
+			if (Option.TRACE_COMMENTS) Util.TRACE("COMMENT:\"" + skipped + "\" Skipped and replaced with a SPACE");
+			return (newToken(KeyWord.COMMENT));
+		}
 	
 	// ********************************************************************************
 	// ** scanEndComment
@@ -886,13 +917,12 @@ public final class SimulaScanner {
 
     private int readNextCharacter() {
     	if(!puchBackStack.empty()) return(puchBackStack.pop());
-		try { int c=reader.read();
-		   if(c<0) { EOF_SEEN=true; return(EOF_MARK); }
-		   if(c=='\n') Global.sourceLineNumber++;
+		int c=sourceFileReader.read();
+		if(c<0) { EOF_SEEN=true; return(EOF_MARK); }
+		if(c=='\n') Global.sourceLineNumber++;
 		
-		   if(c<32 && c!='\n') c=' '; // Whitespace
-		   return(c);
-		} catch(IOException e) { e.printStackTrace(); return(-1); }
+		if(c<32 && c!='\n') c=' '; // Whitespace
+		return(c);
 	}
 
     private void pushBack(final int chr) {

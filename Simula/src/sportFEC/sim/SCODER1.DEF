@@ -1,0 +1,807 @@
+External class SCODER0;
+
+SCODER0 class SCODER1;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  1.     ---
+%      ---                                                           ---
+%      --- Selection switches: DKPIZ                                 ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scoder.mne
+%+I %INSERT $SPORTLIB/rtsinit.mne
+
+      codegenerator0 class codegenerator1;
+      begin
+
+%-I %INSERT $SIMSRC/fec/s-instr.ini
+
+%+D      procedure outTrace(t); text t; inspect sysout do
+%+D      begin outint(linenr,5); outtext(":" & t); outimage end;
+
+         text saveScheme    = s_pushlen &
+                              s_asscall & RTS_presav1 &
+                              s_call    & RTS_presav2 & s_save ;
+                            !*** asd change: none ***;
+
+         text restoreScheme = s_precall & RTS_restor1 &
+                              s_call    & RTS_restor2 &
+                              s_push    & RTS_rstr    & s_restore &
+                              s_precall & RTS_presto1 &
+                              s_call    & RTS_presto2 ;
+                            !*** asd change: none ***;
+
+         text prenoneScheme = s_dup     &
+                              s_pushc   & s_onone     &
+                              s_skipif  & s_ne        &
+                              s_precall & RTS_errnon1 &
+                              s_call    & RTS_errnon2 & s_popall ;
+                           !*** asd change: none ***;
+
+         short integer maxusedtag; ! The highest tag ever used;
+
+         !********* S T A T U S  V A R I A B L E S   E.T.C. *********;
+
+         short integer prototinfo;   ! Tag of modinfo, in prototypes;
+         text prototinfotext     ;
+               !*** set in SCODESTART, used by prototypegenerator ***;
+         text literal; short integer litleng;
+
+         ref(quantity)qty;
+
+%title ******   out inner-tag   ******
+
+      procedure outINRtag(q); ref(quantity) q;
+      begin short integer inrtag;
+%+S         Freq(109):=Freq(109)+1;
+            while q.plev>one do begin
+                  q:-q.prefqual; inrtag:=rank(q.descr.inrtag);
+                  if inrtag<>0 then begin
+                     inrtag:=q.ftag+inrtag;
+%                    if inrtag<0 then inrtag:=dirtag(-inrtag);
+                     goto found end;
+            end;
+            inrtag:=Z_e_object;
+      found:
+            out2byte(inrtag);
+      end;
+
+%title ******   Stack for nested calls/indexing   *******
+
+%+Z      ref(quantity) array callstack  (0:maxcalldepth);
+%+Z      ref(quantity) array parstack   (0:maxcalldepth);
+%+Z      short integer array parnostack (0:maxcalldepth);
+%-Z      ref(quantity)       callstack  (  15          );
+%-Z      ref(quantity)       parstack   (  15          );
+%-Z      character           parnostack (  15          );
+         short integer calldepth; !*** pointer to first free ***;
+% Z      character     calldepth; !*** pointer to first free ***;
+         !*** the following variables contain top of stack ***;
+%+Z      short integer curparno;
+%-Z      character     curparno;
+         ref(quantity) curcall, curpar;
+
+%+PQ     prior
+         procedure pushcall; !*** opq implicit parameter ***;
+         if calldepth > maxcalldepth then fatal0(247) ! overflow;
+         else begin ! curpar is nullified;
+%+S           Freq(116):=Freq(116)+1;
+%             if calldepth<>0 then begin
+                 callstack  (calldepth):- curcall;
+                 parstack   (calldepth):- curpar;
+                 parnostack (calldepth):= curparno;
+%             end;
+              calldepth:=calldepth+1;
+              curcall:-opq; curpar:-none; curparno:=zero;
+         end of pushcall;
+
+%+PQ     prior
+         procedure popcall;
+%+D      if calldepth=0 then internerr('!11!',sourceline)  else
+         begin calldepth:=calldepth-1;
+              if calldepth<>0 then begin
+                 curcall:-   callstack  (calldepth);
+                 curpar:-    parstack   (calldepth);
+!???;            parstack(calldepth):-none;
+!???;            callstack(calldepth):-none;
+                 curparno:=  parnostack (calldepth);
+              end
+              else begin
+                 curcall:- curpar:- none;
+                 curparno:=zero;
+              end;
+         end;
+
+%title ******   fjump/bjump handling   ******
+
+%+Z      short integer array bdeststack(0:maxjumpdepth);
+%-Z      character           bdeststack(  100         );
+
+%+Z      short integer curbdest; !top of stack pointer;
+%-Z      character     curbdest; !top of stack pointer;
+
+%        'jumpstack' is used for destination indices of fjump/fjumpif
+%        instructions. In the coding of inspect-statements some indices
+%        will be pushed on the stack as zeroes, indicating that the
+%        corresponding jump was never generated (thus a fdest should
+%        not occur).
+
+%+Z      short integer array jumpstack(0:maxjumpdepth); !0 never used;
+%-Z      character           jumpstack(  100         ); !0 never used;
+         ! - in visiblegenerator: short integer curjump;
+         comment: Top of stack pointer;
+
+%-I %+PQ prior
+%-I      procedure outfdest(dest); short integer dest;
+%-I      begin outbyte(vfdest); outbyte(dest);
+%-I            releaseindex(dest);
+%-I      end;
+
+%-I %+PQ prior
+%-I      procedure outbjump(dest); short integer dest;
+%-I      begin outbyte(vbjump); outbyte(dest);
+%-I %          indexused(dest):=false; ! no checkasdzero, check follows;
+%-I            releaseindex(dest);
+%-I      end;
+
+%-I %+PQ     prior
+%-I          procedure pushjump(index); short integer index;
+%-I          begin curjump:=curjump+1;
+%-I %+D            if curjump>maxjumpdepth then fatal0(250) else
+%-I                jumpstack(curjump):=index;
+%-I          end;
+
+%+PQ     prior
+         procedure pushnewjump;
+         begin getnewindex; curjump:=curjump+1;
+%+S         Freq(117):=Freq(117)+1;
+%+D            if curjump>maxjumpdepth then fatal0(250) else
+               jumpstack(curjump):=curindex;
+         end;
+
+% %+P      prior
+%          short integer procedure popjump;
+%          begin popjump:=jumpstack(curjump); curjump:=curjump-1 end;
+
+
+%-I %+PQ prior
+%-I      procedure setbdest;
+%-I      begin getnewindex;
+%-I            bdeststack(curbdest):=curindex; curbdest:=curbdest+1;
+%-I            outbyte(vbdest); outbyte(curindex);
+%-I      end;
+
+%title *****   TERMPAR and GETTYPETAG   *****
+
+         short integer procedure getTypeTag(qty); ref(quantity) qty;
+         begin
+               if qty.categ=C_name  then getTypeTag:=Z_parqnt
+          else if qty.kind= K_array then getTypeTag:=ptoaddr
+               ! array, local or by value/reference parameter;
+          else if qty.kind= K_ident
+               ! simple kind (including text), constant,
+                 local or by value/reference parameter;
+                  or else qty.kind=K_rep
+               then getTypeTag:= if qty.special=NUL
+                     then typetag(rank(qty.type)) else 0
+          else if qty.kind= K_label and then qty.dim<>0
+               then getTypeTag:=ptpaddr ! label variable ;
+          else ! For the remaining kinds only parameters are
+                 represented in the instance record. By ref. is
+                 the only possible transmission mode (INAME 
+                 treated above): ;
+               if qty.categ=C_unspec then begin
+                     if qty.kind=K_proc   then getTypeTag:=Z_proqnt
+                else if qty.kind=K_label  then getTypeTag:=Z_labqnt
+                else if qty.kind=K_switch then getTypeTag:=Z_swtqnt
+                     else                      getTypeTag:=0
+               end
+               else getTypeTag:=0;
+         end;
+
+         short integer procedure getFirstAttr; ! - of curpar ;
+         begin ref(quantity) dq, cur, first;
+               dq:-curpar.prefqual; !qualification declquant;
+               while dq=/=none do begin
+                  cur:-dq.descr.fpar;
+                  while cur=/=none do begin
+                     if getTypeTag(cur)<>0
+                     then begin first:-cur; goto super end;
+                     cur:-cur.next;
+                  end;
+%  DUBIOUS        if dq.descr.connests<>0 then begin
+%  DUBIOUS           getFirstAttr:=firstcontag(dq); first:-none end;
+         super:   dq:-dq.prefqual
+              end;
+              if first=/=none then getFirstAttr:=first.ftag+quantdisp;
+         end;
+
+%title ******   termpar (terminate parameter transmission)   ******
+
+%+PQ     prior
+         procedure termpar;  !parameter on stack - but not nec. profile;
+         begin boolean saveEmit; short integer ttag;
+%+S         Freq(110):=Freq(110)+1;
+%-Z %IMPLNONE OFF
+            inspect curpar do begin
+               switch(NUL:Clfmax) if this quantity is extquantity
+                then this quantity qua extquantity.clf else NUL begin
+                when Clf002 do begin
+                  if curcall.dim <> rank(Cindex)      and then
+                     curcall.dim <> rank(Pascalindex) then goto normal;
+                  !*** special code generation for C/pascal calls;
+                  switch(NUL:C_max) categ begin
+                  when C_value,C_unspec do
+                     if kind=K_array then
+                  O2C:  outtext( s_asscall  & RTS_obj2c1  &
+                                 s_call     & RTS_obj2c2  )
+                else if type=IREF then begin 
+                        if getFirstAttr<>0 then goto O2C;
+                        error0(-251); !no attributes;
+                        outtext( s_pop      &
+                                 s_pushc    & s_onone    )
+                     end
+                else if type=ITEXT then
+                        outtext( s_asscall  & RTS_txt2c1  &
+                                 s_call     & RTS_txt2c2  );
+                  when C_name do
+                     if kind=K_array then
+                        outtext( s_asscall  & RTS_objN2c1  &
+                                 s_call     & RTS_objN2c2  )
+                else if type=IREF then begin 
+                        ttag:=getFirstAttr;
+                        if ttag <> 0 then begin
+                           if NoneCheck then begin
+                             outtext( s_refer       & tag_oaddr & s_fetch &
+                                      prenoneScheme ); outbyte(asd);
+                             outtext( s_endskip     &
+                                      s_pushc       & s_c_aaddr );
+                           end else
+                             outtext( s_refer       & tag_oaddr & s_fetch &
+                                      s_pushc       & s_c_aaddr );
+                           outtag(ttag); outbyte(vlocate);
+                        end else begin
+                           error0(-251); !no attributes;
+                           outtext( s_pop   &
+                                    s_pushc & s_gnone )
+                        end;
+                     end
+                else if type=ITEXT then !NOTE: not text const, see scodmain;
+                        outtext( if NoneCheck
+                          then ( s_dup      &
+                                 s_refer    & RTS_txtqnt     &
+                                 s_selectv  & RTS_txtqnt_ent &
+                                 s_pushc    & s_onone        &
+                                 s_if       & s_eq           &
+                                 s_pop      & s_pushc        & s_gnone &
+                                 s_else     &
+                                 s_refer    & RTS_txtqnt     & s_fetch &
+                                 s_push     & RTS_txttmp     &
+                                 s_rupdate  & s_pop          &
+                                 s_push     & RTS_txttmp     &
+                                 s_selectv  & RTS_txtqnt_ent &
+                                 s_remote   & RTS_txtent_cha &
+                                 s_push     & RTS_txttmp     &
+                                 s_selectv  & RTS_txtqnt_sp  &
+                                 s_index    & s_deref        &
+                                 s_endif                     )
+                          else ( s_refer    & RTS_txtqnt     & s_fetch &
+                                 s_push     & RTS_txttmp     &
+                                 s_rupdate  & s_pop          &
+                                 s_push     & RTS_txttmp     &
+                                 s_selectv  & RTS_txtqnt_ent &
+                                 s_remote   & RTS_txtent_cha &
+                                 s_push     & RTS_txttmp     &
+                                 s_selectv  & RTS_txtqnt_sp  &
+                                 s_index    & s_deref        ) );
+                  end case categ;
+                  outbyte(vasspar); asd:=asd-1;
+               end;
+                when Clf018 do; !nothing;
+                when Clf016,Clf017 do begin
+          normal: ! Parameter value on TOS (GADDR in case of by name);
+                  ! replace by copy, i.e. no asd-change;
+                  if categ=C_value then begin
+                     ! Scheme MakeValueCopies: ;
+                     saveEmit := asd > 1; !*** note ***;
+                     if kind=K_array then begin
+%+D                      if option(rank('Y'))<>NUL and saveEmit
+%+D                      then outtrace("save-ARR_COPY");
+                         outtext( if saveEmit
+                           then ( s_push    & RTS_tmp       &   !+1;
+                                  s_select  & RTS_quant_arr &
+                                  s_rupdate & s_pop         &   !-2;
+                                  saveScheme                &
+                                  s_precall & RTS_arTcop1   &
+                                  s_call    & RTS_arTcop2   &  !-1;
+                                  restoreScheme             &
+                                  s_push    & RTS_tmp       &  !+1;
+                                  s_selectv & RTS_quant_arr )
+                           else ( s_push    & RTS_tmp       &   !+1;
+                                  s_select  & RTS_quant_arr &
+                                  s_rupdate & s_pop         &   !-2;
+                                  s_precall & RTS_arTcop1   &
+                                  s_call    & RTS_arTcop2   &  !-1;
+                                  s_push    & RTS_tmp       &  !+1;
+                                  s_selectv & RTS_quant_arr )
+                        );
+                     end array by value
+                else if type=ITEXT then begin  !must be simple kind;
+%+D                      if option(rank('Y'))<>NUL and saveEmit
+%+D                      then outtrace("save-COPY");
+                         outtext( if saveEmit
+                           then ( s_push     & RTS_tmp       & !+1;
+                                  s_select   & RTS_quant_txt &
+                                  s_rupdate  & s_pop         & !-2;
+                                  saveScheme                 &
+                                  s_push     & RTS_tmp       & !+1;
+                                  s_selectv  & RTS_quant_txt &
+                                  s_asscall  & RTS_copy1     &
+                                  s_call     & RTS_copy2     & !0;
+                                  s_push     & RTS_tmp       & !+1;
+                                  s_select   & RTS_quant_txt &
+                                  s_rupdate  & s_pop         & !-2;
+                                  restoreScheme              &
+                                  s_push     & RTS_tmp       & !+1;
+                                  s_selectv  & RTS_quant_txt )
+                           else ( s_asscall  & RTS_copy1     &
+                                  s_call     & RTS_copy2     ) !0;
+                     );
+                     end text by value;
+                  end by value;
+                  outbyte(vasspar); asd:=asd-1;
+               end;
+              when Clf019 do begin !load/storechar text param;
+                  !*** INTERIM: text param MUST be main text ***;
+                  !*** use tmp, since it is one-shot in this case;
+%+Z               outtext( s_push    & RTS_tmp        &   !+1;
+%+Z                        s_select  & RTS_quant_txt  &
+%+Z                        s_rupdate & s_pop          &
+%+Z                        s_push    & RTS_tmp        &   !+1;
+%+Z                        s_select  & RTS_quant_txt  &
+%+Z                        s_selectv & RTS_txtqnt_ent &
+%+Z                        s_remote  & RTS_txtent_cha );
+                  !*** PRODUCTION: text may be subtext ***;
+                  !*** txttmp must be used (read twice) ***;
+%-Z               outtext( s_push    & RTS_txttmp     &   !+1;
+%-Z                        s_rupdate & s_pop          &
+%-Z                        s_push    & RTS_txttmp     &   !+1;
+%-Z                        s_selectv & RTS_txtqnt_ent &
+%-Z                        s_remote  & RTS_txtent_cha &
+%-Z                        s_push    & RTS_txttmp     &   !+1;
+%-Z                        s_selectv & RTS_txtqnt_sp  );
+%-Z              asd:=asd+1;
+               end;
+              when NONE do begin
+                if categ=C_value then begin
+                  if type=ITEXT and then kind=K_ident then begin
+                     outtext( s_assign                & !-2;
+                              s_asscall & RTS_txtVal1 &
+                              s_pushc   & s_c_aaddr   );!+1;
+                     outtag(ftag+quantdisp);
+                     outtext( s_asspar                & !-1;
+                              s_call    & RTS_txtVal2 ); !0;
+                        asd:=asd-2;
+                  end
+             else if kind=K_array then begin
+                     outtext( s_assign                   & !-2;
+                              s_asscall & RTS_arrVal1 &
+                              s_pushc   & s_c_aaddr  );!+1;
+                     outtag(ftag+quantdisp);
+                     outtext( s_asspar                & !-1;
+                              s_call    & RTS_arrVal2 );!0;
+                     asd:=asd-2;
+                  end
+                end categ=C_value
+           else if categ<>C_name then begin
+                     outbyte(vassign); asd:=asd-2 end;
+                end;
+               end ***case*** ;
+            end inspect curpar;
+         end termpar;
+
+%title ******   static encloser   ******
+
+     text staticEncloser;
+
+%+PQ prior
+     procedure staticencl; !*** opq implicit parameter;
+%    ! For a directly visible attribute opq, push OADDR of static
+%      enclosure on stack ;
+%    ! Corresponds to S-Code scheme StaticEncl, except that
+%      it is not used for remotely accessed quantities ;
+     begin short integer ttag,st_rblev,blevel;
+           ref(quantity) qty;
+%+S     Freq(118):=Freq(118)+1;
+%-Z %IMPLNONE OFF
+        inspect opq.encl do begin
+           if preinsp=/=none then begin
+              blevel:=rank(cblev);
+              while blevel <> 0 do begin
+                 qty:-display(blevel).declquant;
+                 while qty=/=none do begin
+                    if qty.descr==this brecord then begin
+%+PQ                   qty:-none;
+                       if blevel < 5 then goto BIOob;
+                       st_rblev:=rank(crtblev)
+                                -rank(display(blevel).rtblev);
+                       goto pushit;
+                    end;
+                    qty:-qty.prefqual;
+                 end;
+                 blevel:=blevel-1;
+              end;
+              internerr('!11!',sourceline);
+           end;
+           blevel:=rank(blev);
+           if blevel < 5 then begin
+              if checker.getClass(declquant,'!5!')=/=none
+              then begin !attribute of system class used as prefix;
+                 st_rblev:=rank(crtblev)-rank(checker.enclLevel);
+                 goto pushit end;
+       BIOob: if blevel=4 then outtext(
+                       s_push    & RTS_bio        &           !+1!;
+                       s_selectv & RTS_bio_sysout )
+         else if blevel=3 then outtext(
+                       s_push    & RTS_bio        &           !..;
+                       s_selectv & RTS_bio_sysin )
+              else outtext(
+                       s_pushv   & RTS_bioref )
+           end
+           else begin
+              st_rblev:=rank(crtblev) - rank(rtblev);
+      pushit:    
+%+K           if isGlobal and then st_rblev<>0 then outtext(
+%+K                    s_push    & RTS_bio    &           !+1!;
+%+K                    s_selectv & RTS_global )
+%+K           else
+              if st_rblev <= 5
+              then outtext(followSL(st_rblev))
+              else begin
+                 outtext( s_pushv   & RTS_curins );
+                 while st_rblev <> 0 do begin
+                    outtext( s_remotev & RTS_entity_sl );
+                    st_rblev:=st_rblev-1 end;
+              end not global and not opt;
+              ! Check for attribute visible through inspection;
+              ! (Note that this is not concerned with labels local to
+                 a connection.  For these we have kind=K_labbl) ;
+              ! Note also that the inspection must be at this level;
+ !???;        if kind=K_class then begin
+                 if inspected=char(blevel) then begin
+                   ttag:=conpointtag(this brecord);
+                   outbyte(vremotev); out2byte(ttag);
+              end end;
+           end ;
+        end inspect opq.encl
+        otherwise internerr('!11!',sourceline);
+        asd:=asd+1;
+     end staticencl;
+
+%title ******   qua test   ******
+
+         procedure quatest; !*** opq implicit parameter;
+         ! Used for both explicit and implicit qua, appropriate
+           none-test must be generated outside this procedure ;
+         ! NOTE: asd > 0 at entry, viz. dup below;
+         begin short integer plv;
+%+S            Freq(111):=Freq(111)+1;
+               plv:=opq.plev-1;
+               outtext( s_dup                      &      !+1;
+                        s_remotev & RTS_entity_pp  &
+                        s_dup                      &      !+1;
+                        s_remotev & RTS_claPtp_plv &
+                        s_pushc   & s_c_int        );     !+1;
+               outsint(plv);
+               outtext( s_skipif  & s_ge           &      !-2;
+                        s_precall & RTS_errqua1    &      !+1;
+                        s_call    & RTS_errqua2    &      !-1;
+                        s_popall  ); outbyte(asd+1);
+               outtext( s_endskip                  & 
+                        s_remote  & RTS_claPtp_prefix &
+                        s_pushc   & s_c_int        );     !+1;
+               outsint(plv);
+               outtext( s_indexv                   &      !-1;
+                        s_pushc   & s_c_oaddr      );     !+1;
+               outtag(opq.ftag+prototypedisp);
+               outtext( s_skipif  & s_eq           &      !-2;
+                        s_precall & RTS_errqua1    &      !+1;
+                        s_call    & RTS_errqua2    &      !-1;
+                        s_popall  ); outbyte(asd);
+               outbyte(  vendskip );
+         end of quatest;
+
+%title ******   end subscription   ******
+
+%+PQ     prior
+         procedure endsubscription;
+         begin integer alowb;
+            ! produces the last code for subscription ;
+            ! Is called at LIARGE, LINEWP and LIARRA ;
+%+S            Freq(113):=Freq(113)+1;
+          inspect curcall do begin
+%+Z         if curparno=  1   then begin
+%-Z         if curparno='!1!' then begin
+                  if kind=K_rep then begin
+                     alowb:=descr.npar; !must be positive;
+                     goto TRANS;
+                  end;
+                  if BoundCheck then !not inline code;
+             else if special<>NUL !curcall is assumed array;
+                  then begin !special code for 1-dim with constant lb;
+                             !    generate IPLUS for negative const;
+                    alowb:=getSAFEint(descr.blnohi,descr.blnolo);
+                    if alowb<0 then begin
+                       outtext( s_pushc & s_c_int );  !+1;
+                       outinteger(-alowb);
+                       outbyte(vadd);                 !-1;
+                       goto INDEXOUT;
+                    end;
+         TRANS:
+                    if alowb<>0 then begin !must be positive;
+                       outtext( s_pushc & s_c_int );  !+1;
+                       if alowb<10 then out2byte(alowb+304)
+                       else outinteger(alowb);
+                       outbyte(vsub);                 !-1;
+                    end;
+                    goto INDEXOUT;
+                  end;
+                  outtext( s_asspar               &   !-1;
+                           s_call   & RTS_ar1ind2 &   !-1;
+                           s_remote               );
+                  asd:=asd-1; !*** -1 deferred;
+                  outtag  (arr1elttag(rank(type)));
+            end
+%+Z    else if curparno=  2   then begin
+%-Z    else if curparno='!2!' then begin
+                  outtext( s_asspar               &  !-1;
+                           s_call   & RTS_ar2ind2 &  !-1;
+                           s_remote               );
+                  asd:=asd-1; !*** -1 deferred ;
+                  outtag  (arr2elttag(rank(type))) end
+            else begin
+                  outbyte(vassrep); outbyte(curparno);
+                  asd:=asd-curparno;
+                  outtext( s_call   & RTS_arGind2 &  !-1;
+                           s_remote               );
+                  ! asd:=asd-1 deferred;
+                  outtag  (arr3elttag(rank(type)));
+            end;
+            ! TOS=array reference, TMP.INT is linearized index ;
+            outtext( s_push    & RTS_tmp       &        !+1;
+                     s_selectv & RTS_quant_int );
+            ! asd:=asd-1+1 - i.e. no change;
+  INDEXOUT:
+          end inspect SCF;
+         end;
+%title *****   output constant text entity   *****
+
+%+PQ  prior
+      procedure outTextEntity(tag); short integer tag;
+            !*** NOTE: (opihi,opilo) implicit parameter ***;
+      begin text literal; short integer xxx;
+%+S         Freq(119):=Freq(119)+1;
+%-Z %IMPLNONE OFF
+         inspect checker do begin
+            literal:-nameof(opihi,opilo); xxx:=litleng:=literal.length;
+            outbyte( vconst ); outtag  ( tag );
+            outtext( RTS_txtent & s_fixrep); out2byte(xxx);
+            !*** constant, i.e. misc<>0 (constant mark);
+            outtext( s_c_record & RTS_txtent &
+                         s_attr & RTS_entity_sl   &
+                                  tag_oaddr       & s_onone &
+                         s_attr & RTS_entity_sort &
+                                  tag_int         & s_c_int & "!2!12"  &
+                         s_attr & RTS_entity_misc &
+                                  tag_int         & s_c_int & "!1!1"   &
+                         s_attr & RTS_txtent_ncha &
+                                  tag_int         & s_c_int );
+            outsint(xxx);
+            outtext(     s_attr & RTS_txtent_cha  &
+                                  tag_char        & s_text );
+                                  out2byte(xxx); outtext(literal);
+            outbyte(vendrecord);
+         end inspect SCF;
+      end;
+
+%title ***   TAG STACK   ***
+
+   ! The stack is used for tags of connection pointers for each
+     connection level, and for tags of PADDR variables for each
+     complex-for level ;
+
+       short integer tagstacktop;
+            ! Top of stack;
+%+Z    short integer array tagstack(0:125 !maxblev//2; );
+%-Z    short integer       tagstack(  125 !maxblev//2; );
+                                          !maxtagstack-see SCODER0;
+            ! The lower levels of the stack ;
+       short integer tagstackdepth;
+            ! Current stack depth ;
+
+%-I %+PQ   prior
+%-I        procedure pushtag;  !*** push tagstacktop ***;
+%-I %+D    if tagstackdepth>maxtagstack then fatal0(261) else
+%-I           ! Too deep nesting of connection blocks/complex-for ;
+%-I        begin
+%-I             tagstack(tagstackdepth):=tagstacktop;
+%-I             tagstackdepth:=tagstackdepth+1;
+%-I        end pushtag;
+
+%-I %+PQ   prior
+%-I        procedure poptag; ! Called from LIOTHW, LICONE, LIFORE ;
+%-I %+D    if tagstackdepth <= 0 then internerr('!11!',sourceline) else
+%-I        begin
+%-I             tagstackdepth:=tagstackdepth-1;
+%-I             tagstacktop:=tagstack(tagstackdepth);
+%-I        end poptag;
+
+%title ***   connection block utilities   ***
+
+% PQ  prior
+      short integer procedure firstcontag(q); ref(quantity)q; ! >0 ???!;
+      begin short integer incr;
+            ! The following depends on the number of tags allocated to
+              different kinds of blocks in  LAYOUT;
+            ! q must be a proper block (kind K_subbl/proc/class/prefbl).
+              If it is a procedure it must be the procedure head ;
+%+K         if q.kind=K_proc and then q.descr.thisused
+%+K         then firstcontag:=q.ftag+4 else
+            firstcontag:=q.ftag + 3;
+            if q.kind=K_class or else q.kind=K_prefbl then begin
+               inspect q.descr do begin
+                  if inrtag<>NUL then incr:=rank(inrtag)+1
+             else if stmtag<>NUL then incr:=rank(stmtag)+1
+             else if dcltag<>NUL then incr:=rank(dcltag)+1
+                  else incr:=3;
+                  firstcontag:=q.ftag + incr;
+               end;
+            end;
+%        firstcontag:=q.ftag+
+%            (if q.kind=K_class or else q.kind=K_prefbl then 1 + 
+%               (if q.descr.inrtag<>NUL then rank(q.descr.inrtag) else
+%                if q.descr.stmtag<>NUL then rank(q.descr.stmtag) else
+%                if q.descr.dcltag<>NUL then rank(q.descr.dcltag)
+%                else 2)
+% K      else if q.kind=K_proc and then q.descr.thisused  then 4
+%             else 3);
+% PQ     q:-none;
+      end firstcontag;
+
+%+PQ  prior
+      short integer procedure conpointtag(brc); ! > 0 always???! ;
+      ref(brecord)brc;
+      ! Invariant: brc.kind=K_insp,i.e. brc is a connection copy;
+      ! Get tag of corresponding connection pointer, i.e. of the
+        connection pointer corresponding to the connection level of brc
+        which is allocated in the nearest enclosing 'proper' block ;
+
+      begin
+         ref(quantity) q;
+%+S         Freq(122):=Freq(122)+1;
+
+         ! Go down on display the number of block levels corresponding
+           to connection level of brc ;
+         q:-display(rank(brc.blev)-brc.connests).declquant;
+         ! Skip possible for-bodies:    ;
+         while q.kind=K_labbl do q:-q.prefqual;
+         ! In case of procedure: connection pointer is allocated
+           in procedure head ;
+         if q.kind=K_proc then q:-q.prefqual;
+         conpointtag:=firstcontag(q) + brc.connests -1;
+%+PQ     q:-none;
+      end conpointtag;
+
+%+Z   short integer procedure conlevel(q); ref(quantity)q;
+%-Z   character     procedure conlevel(q); ref(quantity)q;
+      ! q.kind=K_label and q.categ=C_local.
+        Return connection level of the label;
+      begin
+%+S      Freq(123):=Freq(123)+1;
+         q:-q.encl.declquant;
+         while q.kind=K_labbl do q:-q.prefqual;
+%        conlevel:=if q.kind=K_insp  then q.descr.connests else 0;
+         inspect q.descr do begin
+            if inspected<>NUL then conlevel:=connests end;
+      end conlevel;
+
+%title ******   Case statement   ******
+
+      procedure startcase;
+      ! start of case-statement;
+%-Z %IMPLNONE OFF
+      inspect curcase do begin
+         if BoundCheck then begin
+            errortag:=newTag;
+            outbyte( vlabelspec ); out2byte(errortag);
+            if type<>ICHAR or else lb<>0 then begin
+               outtext( s_dup                &
+                        s_pushc  & s_c_int   ); outinteger(lb);
+               outtext( s_skipif & s_ge      &
+                        s_pop                &
+                        s_pushc  & s_c_paddr ); out2byte(errortag);
+               outtext( s_goto   & s_endskip );
+            end;
+            if type<>ICHAR or else ub<>255 then begin
+               outtext( s_dup                &
+                        s_pushc  & s_c_int   ); outinteger(ub);
+               outtext( s_skipif & s_le      &
+                        s_pop                &
+                        s_pushc  & s_c_paddr ); out2byte(errortag);
+               outtext( s_goto   & s_endskip );
+            end;
+         end;
+         if lb<>0 then begin !translate to origo zero;
+            outtext( s_pushc  & s_c_int   ); outinteger(lb);
+            outtext( s_sub                ) end;
+         outbyte( vswitch );
+         tag:=newTag; out2byte(tag);
+         out2byte(curcase.ndests);
+         if asd<>1 then asderror(176); asd:=0;
+      end;
+
+      procedure termcase;
+      ! terminate case-statement, generate fjump-destinations;
+%-Z %IMPLNONE OFF
+      inspect curcase do begin
+           while firstelt =/= none do begin
+                 outbyte(vfdest); outbyte(firstelt.index);
+                 releaseIndex(firstelt.index);
+                 firstelt:-firstelt.next;
+           end;
+           if jumptag<>0 then begin
+              outbyte(vlabel); out2byte(jumptag) end;
+           if errortag<>0 then begin
+              outbyte( vlabel ); out2byte(errortag);
+           end;
+           curcase:-prev; !unstack case descriptor;
+      end;
+
+      procedure termcasewhen;
+      ! terminate case-when, generate jump to after case;
+%-Z %IMPLNONE OFF
+      inspect curcase do begin
+            if nonewindex then begin
+               while firstelt =/= none do begin
+                     outbyte(vfdest); outbyte(firstelt.index);
+                     releaseIndex(firstelt.index);
+                     firstelt:-firstelt.next;
+               end;
+               if jumptag=0 then begin
+                  jumptag:=newTag;
+                  outbyte(vlabelspec); out2byte(jumptag);
+               end;
+               outtext( s_pushc & s_c_paddr ); out2byte(jumptag);
+               outbyte(vgoto);
+            end
+            else inspect new indexelt do begin
+                 next:-firstelt; firstelt:-this indexelt;
+                 index:=curindex;
+                 outbyte(vfjump); outbyte(index);
+            end;
+            checkasdzero;
+      end;
+
+
+   end codegenerator1;
+
+
+end SCODER1;

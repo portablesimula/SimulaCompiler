@@ -1,0 +1,231 @@
+% Procedure FECMAIN;
+%      --------------------------------------------------------------
+%      ---                                                        ---
+%      ---  COPYRIGHT 1985,86 by                                  ---
+%      ---  Simula a.s.                                           ---
+%      ---  Oslo, Norway                                          ---
+%      ---                                                        ---
+%      ---                                                        ---
+%      ---              P O R T A B L E     S I M U L A           ---
+%      ---                                                        ---
+%      ---           F R O N T - E N D    C O M P I L E R         ---
+%      ---                                                        ---
+%      ---                 M a i n   P r o g r a m                ---
+%      ---                                                        ---
+%      ---                  R e l e a s e   $SREL                 ---
+%      ---                                                        ---
+%      --------------------------------------------------------------
+begin External class SCODMAIN;
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+
+SCODMAIN
+begin
+      integer numberoflines;
+
+      procedure ENDCOMP; goto FINI;
+
+    !****************   P  A  S  S    1   ****************;
+    !******;                                        !*****;
+    !******;        numberoflines := Pass1;         !*****;
+    !******;                                        !*****;
+    !*****************************************************;
+
+    !****************   P  A  S  S    2   ****************;
+    !*****;                                         !*****;
+    !*****;    new codegenerator(nscodename);       !*****;
+    !*****;        call(checker0);                  !*****;
+    !*****;                                         !*****;
+    !*****************************************************;
+
+
+FINI:
+      if currentpass = '1' then ClosePass1 !*** will close L2OUPT;
+      else begin
+           inspect coder when visiblegenerator do begin
+              if SCF == none then begin
+                 if termstatus<'3' then termstatus:='3' end
+              else SCF.close;
+           end;
+           inspect checker0 when semchecker do inspect Afile do begin
+              if AOF=/=none then AOF.close;
+              if CURF=/=none then CURF.close;
+           end;
+      end;
+
+      if L2INPT=/=none then L2INPT.close;
+      if listfile=/=none then begin if listfile=/=sysout
+      then listfile.close end;
+
+% *******   process generated statistics of program   ********
+
+%+S if option(rank('Y'))<>NUL then
+%+S begin short integer i; integer maxi,mini,midi,n;  long real sum,res;
+%+S   procedure write(t,i); text t; short integer i;
+%+S   begin i:=Freq(i);
+%+S         if i>0 then begin
+%+S            if pos>60 then outimage else
+%+S            if pos>1 then setpos(((pos+15)//15)*15);
+%+S            outtext(t); outchar('/'); outint(i,0);
+%+S         end;
+%+S   end;
+
+%+S   write("getBox",0);   write("lookup=T",1);write("lookup=F",2);
+%+S   write("DEFIDENT",3); write("DEFCONST",4);write("getBrec",5);
+%+S   outimage; outimage;
+%+S   write("nextChar",6); write("storAtom",7);
+%+S   write("scanpast",8); write("scanahed",9);
+%+S   outimage; outimage;
+%+S   write("NewQuant",10);write("Stor3chr",11);write("outbuffr",12);
+%+S   outimage; outimage;
+%+S   write("nextsymb",13);write("Rtype>0",14); write("Rtype=0",15);
+%+S   write("Rprocpar",16);write("Rclaspar",17);write("Rspec",18);
+%+S   write("notBound",19);write("MarkDecl",20);write("MarkLine",21);
+%+S   outimage;
+%+S   write("ex.exp",22);  write("ex:compl",23);
+%+S   Freq(67):=L2Freq(rank(ISIDN))+L2Freq(rank(ISCST));
+%+S   write("ex:simpl",67);
+%+S   outimage;
+%+S   write("IF-stat",24); write("While",25);   write("Inspect",26);
+%+S   write("Case",27);    write("For-stat",28);write("goto",29);
+%+S   write("inner",30);   write("DummySym",32);write("END",33);
+%+S   write("Prefblck",36);write("Subblock",40);
+%+S   write("Compound",41);write("Assignm",37); write("Denote",38);
+%+S   write("call/New",39);write("ProcDecl",34);write("ClaDecl",35);
+%+S   Freq(67):=Freq(43)-Freq(42);
+%+S   write("Stmt gen",42);write("StmtRuse",67);
+%+S   outimage; outimage; Freq(67):=0;
+%+S   write("quantity",44);write("exttag",45);  write("getSAFE",46);
+%+S   write("visChain",47);write("invis",48);   write("makevisB",49);
+%+S   write("leaveBlk",50);write("leaveStm",51);
+%+S   write("subclass",52);write("subord",53);  write("makeEQto",54);
+%+S   write("getClass",55);write("hide",56);    write("protect",57);
+%+S   write("unprot",58);  write("newXQbrec",59);
+%+S   write("ALLOC1",60);  write("ALLOC2",64);  write("-chkhid",61);
+%+S   write("-setprfx",62);write("setprfq",63); write("LAYOUT",65);
+%+S   write("copyfrto",66);write("instrng",68); write("DEFins",69);
+%+S   write("fetchQ",70);  write("-getid",71);  write("-DEFstr",72);
+%+S   outimage;
+%+S   write("expX(-)",73); write("expX+++",74); write("-fillq",75);
+%+S   write("-expL",76);
+%+S   outimage; outimage;
+%+S   write("MaybeCnv",77);write("qualfic",98); write("entBlk",99);
+%+S   outimage;
+%+S   write("XinPar",78);  write("boolop",79);  write("refrel",80);
+%+S   write("valrel",81);  write("aritop",82);  write("intdiv",83);
+%+S   write("div",84);     write("power",85);   write("unary",86);
+%+S   write("in",87);      write("is",88);      write("qua",89);
+%+S   write("this",90);    write("valass",91);  write("refass",92);
+%+S   write("ifexp",93);   write("const",94);   write("ident",95);
+%+S   write("-asExpr",96); write("argmted",97);
+%+S   outimage; outimage;
+%+S   write("entConn",100);! Write("-concp1",101) write("-concp2",102);
+%+S  !write("-concp3",103);Write("UnStack",104);write("-rConst",105);
+%+S   write("-loop",106)  ;
+%+S   outimage;            Write("outsint",107);! write("exchasd",108);
+%+S   write("outINRt",109);Write("termpar",110);write("quatest",111);
+%+S   write("noIndex",112);Write("endIndx",113);write("outstr",114);
+%+S   write("outintg",115);Write("pushcl",116) ;write("pNewjmp",117);
+%+S   write("StaEncl",118);Write("txtEnt",119) ;! write("Xsave--",120);
+%+S   write("fContag",121);Write("conpTag",122);write("conlevl",123);
+%+S   outimage; outimage;
+
+% S   sum:=0.0; for i:=1 step 1 until 90 do begin
+% S       n:=SrcLine(i); maxi:=maxi+n; sum:=sum+n*i; end;
+% S   res:=sum/maxi;
+% S   outtext("Aver. line length "); outreal(res,3,0); sum:=0.0;
+% S   for i:=2 step 1 until 90 do sum:=sum+i*(SrcLine(i)-res)**2;
+% S   outtext(", deviation "); outreal(sqrt(sum/maxi),4,0);
+% S   outimage; outimage;
+
+%+S   for i:=1 step 1 until 150 do Freq(67):=Freq(67)+PaFreq(i);
+%+S   write("Calls on Parser",67); outimage; Freq(67):=0;
+%+S   mini:=0; while mini < 3 do begin mini:=mini+1;
+%+S      for n:=0 step 9 until 63 do begin maxi:=0;
+%+S         for i:=2 step 1 until 150 do
+%+S             if PaFreq(i)>PaFreq(maxi) then maxi:=i;
+%+S         if maxi<=1 then begin outimage; goto PAstop; end;
+%+S         if pos<n then setpos(n);
+%+S         outtext(lowcase(copy(DB(maxi)))); outint(PaFreq(maxi),0);
+%+S         PaFreq(maxi):=0 end;
+%+S      outimage end; PAstop:
+%+S   for i:=1 step 1 until 150 do Freq(67):=Freq(67)+L2Freq(i);
+%+S   write("Calls on L2coder",67); outimage; Freq(67):=0;
+%+S   mini:=0; while mini < 3 do begin mini:=mini+1;
+%+S      for n:=0 step 9 until 63 do begin maxi:=0;
+%+S         for i:=2 step 1 until 150 do
+%+S             if L2Freq(i)>L2Freq(maxi) then maxi:=i;
+%+S         if maxi<=1 then begin outimage; goto L2stop; end;
+%+S         if pos<n then setpos(n);
+%+S         outtext(lowcase(copy(DB(maxi)))); outint(L2Freq(maxi),0);
+%+S         L2Freq(maxi):=0 end;
+%+S      outimage end; L2stop:
+%+S   for i:=1 step 1 until 150 do Freq(67):=Freq(67)+L3Freq(i);
+%+S   write("Calls on Scoder",67); outimage; Freq(67):=0;
+%+S   L3Freq(rank(ICONS)):=L3Freq(rank(ICONS))+L3Freq(rank(ISCST));
+%+S   L3Freq(rank(ISCST)):=0;
+%+S   L3Freq(rank(IIDN )):=L3Freq(rank(IIDN ))+L3Freq(rank(ISIDN));
+%+S   L3Freq(rank(ISIDN)):=0;
+%+S   L3Freq(rank(INOTE)):=L3Freq(rank(INOTE))+L3Freq(rank(INOTY));
+%+S   L3Freq(rank(INOTY)):=0;
+%+S   L3Freq(rank(IDIME)):=L3Freq(rank(IDIME))+L3Freq(rank(IBNDE));
+%+S   L3Freq(rank(IBNDE)):=0;
+%+S   L3Freq(rank(IARGE)):=L3Freq(rank(IARGE))+L3Freq(rank(INEWP));
+%+S   L3Freq(rank(INEWP)):=0;
+%+S   L3Freq(rank(IDCLI)):=L3Freq(rank(IDCLI))+L3Freq(rank(IDCLS));
+%+S   L3Freq(rank(IDCLS)):=0;
+%+S   L3Freq(rank(IBLKB)):=L3Freq(rank(IBLKB))+L3Freq(rank(IBREC));
+%+S   L3Freq(rank(IBREC)):=0;
+%+S   L3Freq(rank(IECWI)):=L3Freq(rank(IECWI))+L3Freq(rank(IINNE));
+%+S   L3Freq(rank(IINNE)):=0;
+%+S   L3Freq(rank(IWSTB)):=L3Freq(rank(IWSTB))+L3Freq(rank(ITRUE));
+%+S   L3Freq(rank(ITRUE)):=0;
+%+S   L3Freq(rank(IWHDO)):=L3Freq(rank(IWHDO))+L3Freq(rank(ITHSB));
+%+S   L3Freq(rank(ITHSB)):=0;
+%+S   L3Freq(rank(IROPD)):=L3Freq(rank(IROPD))+L3Freq(rank(ICOMN));
+%+S   L3Freq(rank(ICOMN)):=0;
+%+S   mini:=0; while mini < 3 do begin mini:=mini+1;
+%+S      for n:=0 step 9 until 63 do begin maxi:=0;
+%+S         for i:=2 step 1 until 150 do
+%+S             if L3Freq(i)>L3Freq(maxi) then maxi:=i;
+%+S         if maxi<=1 then begin outimage; goto SCstop; end;
+%+S         if pos<n then setpos(n);
+%+S         outtext(lowcase(copy(DB(maxi)))); outint(L3Freq(maxi),0);
+%+S         L3Freq(maxi):=0 end;
+%+S      outimage end; SCstop:
+%+S end;
+
+      if numerrfound > 0 then
+      begin outimage; outtext("   NUMBER OF ERRORS:   ");
+            outint(numerrfound,0); outimage;
+            if termstatus<'4' then termstatus:='4';
+      end;
+      if numwarnfound>0 then
+      begin outtext("   NUMBER OF WARNINGS: ");
+            outint(numwarnfound,0); outimage;
+      end;
+
+      ! NOW: termstatus=0 means normal running, and S-code completed,
+             termstatus=3 means normal running, but S-code not produced,
+             termstatus=4 means running, but errors found
+             termstatus=5 means term by testincerr or the like,
+             termstatus=6 means term by internerr ;
+
+      if ERRORFILE =/= none then ERRORFILE.close;
+      ! --- make fec size even number of bytes --- ;
+%     inspect ERRORFILE do close;
+      if listfile=/=none and then listfile=/=sysout
+      then listfile.close;
+
+      giveintinfo(1,rank(termstatus)-48 !rank('0'););
+      giveintinfo(2,maxnumoftags);  giveintinfo(3,numberoflines);
+      giveintinfo(4,numerrfound);
+      !*** now also signal FEC end to environment ***;
+      giveintinfo(5,numwarnfound);
+
+end COMMON-block;
+end of FECMAIN;

@@ -11,6 +11,7 @@ import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.ExternalDeclaration;
 import simula.compiler.declaration.MaybeBlockDeclaration;
 import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.declaration.ProcedureDeclaration;
@@ -73,6 +74,19 @@ public final class ProgramModule extends Statement
 	  sysout=new Variable("sysout");
 	  new ConnectionBlock(sysout)                    //    Inspect sysout do
 	     .setClassDeclaration(StandardClass.PrintFile);
+	  
+	  while(Parser.accept(KeyWord.EXTERNAL)) {
+		  //Vector<Declaration> declarationList=new Vector<Declaration>();
+		  //ExternalDeclaration.doParse(declarationList);
+		  //ExternalDeclaration.doParse(StandardClass.BASICIO.declarationList);
+		  ExternalDeclaration.doParse(StandardClass.ENVIRONMENT.declarationList);
+//		  Util.BREAK("BEGIN PRINT ENVIRONMENT");
+//		  StandardClass.ENVIRONMENT.print("");
+//		  Util.BREAK("END PRINT ENVIRONMENT");
+		  Parser.expect(KeyWord.SEMICOLON);
+	  }
+	  
+	  
 	  String ident=acceptIdentifier();
 	  if(ident!=null)
 	  { if(Parser.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(ident);

@@ -42,7 +42,7 @@ public final class Meaning {
 		if(isConnected()) return(((ConnectionBlock)declaredIn).getInspectedVariable());
 		else return(null);
 	}
-	
+
 	public boolean isNO_MEANING() {	return(declaredAs==null); }
 	  
 	// ***************************************************************************************

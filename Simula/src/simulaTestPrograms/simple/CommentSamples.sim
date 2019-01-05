@@ -1,0 +1,22 @@
+begin boolean b; real r;
+      comment dette er en kommentar
+              som går over
+              flere linjer
+      ;
+  
+      if b then
+      begin text t;
+            t:-"En lang tekst
+                som går over
+                flere linjer";
+            b:= not b;
+      end første sub-block
+          else
+      begin text u;
+            b:=false;
+            r:=1.45&12;
+            if u="abra" then b:=true;
+      end andre sub-block
+          med endcomment 
+          over flere linjer
+end

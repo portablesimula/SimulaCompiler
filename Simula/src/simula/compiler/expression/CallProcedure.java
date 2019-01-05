@@ -81,7 +81,15 @@ public final class CallProcedure {
 //		return(remoteVirtual(obj,func,procedure.myVirtual,backLink));
 		return(remoteVirtual(obj,func,procedure.myVirtual.virtualSpec));
 	  }
-	  else if(procedure.blockKind==BlockKind.Method)
+	  else if(procedure.blockKind==BlockKind.ContextFreeMethod) // TODO: CHECK DETTE
+	  { // Call Remote Method
+		return(asRemoteMethod(obj,procedure,func,backLink));
+	  }
+	  else if(procedure.blockKind==BlockKind.StaticMethod) // TODO: CHECK DETTE
+	  { // Call Remote Method
+		return(asRemoteMethod(obj,procedure,func,backLink));
+	  }
+	  else if(procedure.blockKind==BlockKind.MemberMethod) // TODO: CHECK DETTE
 	  { // Call Remote Method
 		return(asRemoteMethod(obj,procedure,func,backLink));
 	  }
@@ -145,7 +153,8 @@ public final class CallProcedure {
 	{ 
 	  Meaning meaning=variable.meaning;
 	  ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
-	  //Util.BREAK("CallProcedure.asNormalMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
+//	  Util.BREAK("CallProcedure.asNormalMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
+//	  Util.BREAK("CallProcedure.asNormalMethod: "+procedure.blockKind+", DECL="+procedure);
 	  String params=edProcedureParameters(variable,null,procedure);
 	  
 	  String methodCall=meaning.declaredAs.getJavaIdentifier()+params;
@@ -170,7 +179,53 @@ public final class CallProcedure {
 		if(n!=currentModule.blockLevel)
             methodCall="(("+castIdent+")"+meaning.declaredIn.edCTX()+")."+methodCall;
 	  }
-	  //Util.BREAK("CallProcedure.asNormalMethod: Result="+methodCall);
+//	  Util.BREAK("CallProcedure.asNormalMethod: Result="+methodCall);
+	  return(methodCall);
+	}
+	
+	// ********************************************************************
+	// *** CallProcedure.asStaticMethod
+	// ********************************************************************
+	/**
+	 * CallProcedure.asStaticMethod
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public static String asStaticMethod(Variable variable,boolean isContextFree)
+	{ 
+	  Meaning meaning=variable.meaning;
+	  ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
+//	  Util.BREAK("CallProcedure.asStaticMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
+//	  Util.BREAK("CallProcedure.asStaticMethod: "+procedure.blockKind+", DECL="+procedure);
+	  BlockDeclaration staticLink=(BlockDeclaration)meaning.declaredAs.declaredIn;
+	  String staticLinkString=null;
+	  if(!isContextFree)staticLinkString=staticLink.edCTX();
+	  String params=edProcedureParameters(variable,staticLinkString,procedure);
+	  
+	  String methodCall=meaning.declaredAs.getJavaIdentifier()+params;
+	  if(meaning.isConnected())
+	  {	String connID=meaning.declaredIn.toJavaCode();
+		return(connID+'.'+methodCall);
+	  }
+	  //Util.BREAK("CallProcedure.asStaticMethod: "+methodCall);
+//	  BlockDeclaration staticLink=(BlockDeclaration)meaning.declaredAs.declaredIn;
+	  //Util.BREAK("CallProcedure.asStaticMethod: staticLink="+staticLink);
+	  //Util.BREAK("CallProcedure.asStaticMethod: isContextFree="+staticLink.isContextFree);
+	  //Util.BREAK("CallProcedure.asStaticMethod: remotelyAccessed="+variable.remotelyAccessed);
+	  if(!isContextFree)
+	  { //String castIdent=staticLink.getJavaIdentifier();
+	    //Util.BREAK("CallProcedure.asStaticMethod: staticLink.blockLevel="+staticLink.blockLevel);
+		BlockDeclaration currentModule=Global.currentJavaModule.blockDeclaration; // Class, Procedure, ...
+		//Util.BREAK("CallProcedure.asStaticMethod: currentModule.blockLevel="+currentModule.blockLevel);
+		//Util.BREAK("CallProcedure.asStaticMethod: meaning="+meaning);
+		//Util.BREAK("CallProcedure.asStaticMethod: meaning.blockLevel="+meaning.declaredIn.blockLevel);
+		String castIdent=meaning.declaredIn.getJavaIdentifier();
+	    int n=meaning.declaredIn.blockLevel;
+		if(n!=currentModule.blockLevel)
+            methodCall="(("+castIdent+")"+meaning.declaredIn.edCTX()+")."+methodCall;
+	  }
+	  //Util.BREAK("CallProcedure.asStaticMethod: Result="+methodCall);
 	  return(methodCall);
 	}
 
@@ -299,7 +354,11 @@ public final class CallProcedure {
 		  s.append(".ENT$()"); // Only when any parameter
 	    }
 	  }
-	  if(variable.type!=null && variable.backLink!=null)
+	  Type resultType=variable.type;
+      //Util.BREAK("CallProcedure.codeCPF: resultType1="+resultType);
+	  if(procedureSpec!=null) resultType=procedureSpec.type;
+      //Util.BREAK("CallProcedure.codeCPF: resultType2="+resultType);
+	  if(resultType!=null && variable.backLink!=null)
 	  { boolean partOfExpression=true;
 	    if(variable.backLink instanceof RemoteVariable)
 	    { RemoteVariable binOper=(RemoteVariable)variable.backLink;
@@ -311,8 +370,8 @@ public final class CallProcedure {
 	    if(partOfExpression)
 		{ s.append(".RESULT$()");
 	      String callVirtual=s.toString();
-	      String cast=variable.type.toJavaType();
-		  if(variable.type.isArithmeticType())
+	      String cast=resultType.toJavaType();
+		  if(resultType.isArithmeticType())
 			   return(cast+"Value("+callVirtual+")");
 		  else return("(("+cast+")("+callVirtual+"))");
 		}
@@ -396,7 +455,7 @@ public final class CallProcedure {
     		return(par.nDim);    		
     	} else if(meaning.declaredAs instanceof ArrayDeclaration) {
     		ArrayDeclaration aArray=(ArrayDeclaration)meaning.declaredAs;
-    		return(aArray.nDim());
+    		return(aArray.nDim);
     	}
     	return(-1);
     }

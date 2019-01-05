@@ -1,0 +1,362 @@
+External class SCODER1;
+
+SCODER1 class SCODER1E;
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1988 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---              F R O N T - E N D    C O M P I L E R         ---
+%      ---      S - C o d e    G e n e r a t o r     P a r t  1E.    ---
+%      ---          Generation of SIMOB-info  +  End Program         ---
+%      ---                                                           ---
+%      --- Selection switches: DKPIZ                                 ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'K' Included always when quick capability wanted       ---
+%      ---    'P' Included to make compiler use quick procedures     ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'Z' Included at system generation (for "ZIMULA")       ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+begin
+
+%SPORT ON
+%REUSE ON
+%-Z %RECORD ON
+
+%+I %INSERT $SIMSRC/fec/common.mne
+%+I %INSERT $SIMSRC/fec/scoder.mne
+%+I %INSERT $SPORTLIB/rtsinit.mne
+
+codegenerator1 class codegenerator1e;
+begin
+      short integer lastidenttag;
+%          ! last tag used for an identifier constant, as this ;
+%          ! should not be deleted at exit from a block        ;
+
+%title ***********   procedure GenerateSequPPtags   **************
+
+      procedure GenerateSequPPtags(q); ref(quantity) q;
+      !*** called from descriptorgenerator ***;
+      begin ref(quantity) qty; ref(extmodule)eee;
+            if simob_level > 3 then begin
+            ! generate sequ tag (for object identification number) ;
+%+K            if (if q.kind=K_proc and q.categ=C_local then
+%+K                   q.descr.thisused else false) then
+%+K            ! quick procedure, no sequ attribute ;
+%+K            else
+               if q.kind=K_proc and q.plev<2 or q.kind=K_class then begin
+                  outbyte(vattr);
+                  outtag(q.ftag+sequdisp); out2byte(ptint) end;
+            end full simob;
+
+            qty:-q.descr.fpar;
+            while qty=/=none do begin
+%-Z %IMPLNONE OFF
+               if qty is quantity then begin
+                  if simob_level > 3 then begin
+                  ! Generation of instance counters for local blocks, ;
+                  ! in this version only for procedures and classes ;
+                  ! but not for external procedures with binding ;
+                     if ( qty.kind=K_proc and then
+                         (qty.categ=C_local or else qty.categ=C_extnal)
+                        ) or else qty.kind=K_class
+                     then begin newTag;
+                          if simob_descr then begin
+                             outbyte(vattr); out2byte(lastusedtag);
+                             out2byte(ptint) end;
+                     end;
+                  end full simob;
+
+                  if qty.descr is extbrecord  then
+                  begin ! Put prototypetag of this quantity into ;
+                        ! the corresponding extmodule object ;
+
+                        eee:-firstextmodule;
+                        while eee=/=none do begin
+                              if eee.qty=/=qty then eee:-eee.next
+                              else begin
+                                   eee.pptag:=qty.ftag+prototypedisp;
+                                   eee:-none;
+                              end;
+                        end;
+                  end;
+                  qty:-qty.next;
+               end
+               else qty:-none; !*** extquantity: nothing;
+            end qty;
+      end simob_descr;
+
+%title ***********   procedure IDENTIFIERTAG   **************
+
+      short integer procedure identifiertag(symb); ref(symbolbox) symb;
+      begin short integer len;
+         inspect symb do begin
+            if idtag = 0 then begin
+               lastidenttag:= idtag:=newTag;
+               len:=symbol.length;
+               outbyte(vconst); out2byte(idtag);
+               outtext( RTS_idfier & s_fixrep );
+               out2byte(len);
+               outtext( s_c_record   & RTS_idfier      &
+                            s_attr   & RTS_idfier_ncha &
+                            tag_int  & s_c_int         );
+               outsint(len);
+               outtext(     s_attr   & RTS_idfier_cha  &
+                            tag_char & s_text          );
+               out2byte(len); outtext(symbol);
+               outbyte(vendrecord);
+            end;
+            identifiertag:=idtag;
+         end;
+      end identifiertag;
+
+      procedure SetParamTags(qty); ref(quantity) qty;
+      begin short integer i;
+            qty:-qty.prefqual.descr.fpar; ! Get parameter list;
+            for i:= 1 step 1 until npar do begin
+                identifiertag(qty.symb); qty:-qty.next end;
+      end;
+
+%title ***********   procedure GenerateExtPP   **************
+% *** the variables are used in this proc. and prototypegenerator ***
+
+      short integer xpp_tag,         ! tag of prototype extension ;
+                    npar,            ! number of parameters;
+                    nent;            ! no.of entities in entity list ;
+
+      procedure GenerateExtPP(q); ref(quantity) q;
+      !*** called from prototypegenerator ***;
+      begin short integer prototidenttag, !tag of prototype identifier ;
+                          atrvec_tag;     !tag of atrvec ;
+
+            procedure entityspeclist;
+            begin ref(quantity)qty; short integer i,kk;
+                  short integer array atrdestag(0:nent);
+
+                  procedure atrdesHead;
+                  inspect qty do begin
+                        i:=i+1; atrdestag(i):=newTag;
+                        outbyte(vconst); out2byte(lastusedtag);
+                        outtext( if type=IREF or else type=IPTR
+                        then   ( RTS_refdes  &
+                                 s_c_record  & RTS_refdes       &
+                                      s_attr & RTS_atrdes_ident &
+                                   tag_oaddr & s_c_oaddr        )
+                        else   ( RTS_atrdes  &
+                                 s_c_record  & RTS_atrdes       &
+                                      s_attr & RTS_atrdes_ident &
+                                   tag_oaddr & s_c_oaddr        ) );
+                        out2byte(qty.symb.idtag);
+                        outtext( s_attr & RTS_atrdes_fld & tag_aaddr  );
+                  end;
+
+                  procedure atrdesTail;
+                  inspect qty do begin
+%+D                     if kk > rank(K_record)
+%+D                     then internerr('!12!',sourceline);
+                        outtext( s_attr & RTS_atrdes_kind &
+                                 tag_int & s_c_int & "!1!" );
+                        outbyte(kk+48);
+                        outtext( s_attr & RTS_atrdes_type & tag_int   
+                                               & s_c_int & "!1!" );
+                        outbyte(if type>=IVALU then 48
+                                else rank(type)+48);
+                        if qty.type=IREF or else type=IPTR then begin
+                           outtext(
+%  dropped                       s_attr & RTS_refdes_rbl   &
+%  dropped                      tag_int & s_c_int & "!1!0" &
+%  dropped                       s_attr & RTS_refdes_con   &
+%  dropped                    tag_aaddr & s_anone          &
+                                 s_attr & RTS_refdes_qal   &
+                              tag_oaddr );
+                           if prefqual == none then outbyte(vonone)
+                           else begin outbyte(vc_oaddr);
+                                outtag(prefqual.ftag+prototypedisp);
+                           end;
+                        end;
+                        outbyte(vendrecord);
+                  end;
+%-Z %IMPLNONE OFF
+               inspect q do begin
+                  if kind=K_proc and then plev=2 then begin
+                     !*** body quantity ***;
+                     if prefqual.type <> INOTY then begin
+                        ! atrdes for the result attribute ;
+                        identifiertag(symb); qty:-this quantity;
+                        atrdesHead;
+                        outbyte( vc_aaddr );
+                        outtag(resulttag(rank(type)));
+                        outtext(
+                              s_attr & RTS_atrdes_mode & tag_int &
+                                              s_c_int & "!1!3"   );
+                        kk:=rank(kind); atrdesTail;
+                     end;
+                  end atrdes for the result attribute;
+
+                  qty:-descr.fpar;
+                  while qty=/=none do begin
+                        identifiertag(qty.symb); qty:-qty.next;
+                  end;
+
+                  qty:-descr.fpar;
+                  while qty=/=none do begin
+                        atrdesHead;
+                        kk:=rank(qty.kind);
+                        if qty.type=ILABE or else kk=rank(K_class)
+                           or else
+                          (kk=rank(K_proc) and then qty.categ=C_local)
+                        then outbyte(vanone)
+                        else
+%-Z %IMPLNONE OFF
+                        if qty is extquantity
+                        then begin outbyte(vanone); kk:=k_pro end
+                        else begin outbyte(vc_aaddr);
+                             outtag(qty.ftag+quantdisp);
+                        end;
+                        outtext( s_attr & RTS_atrdes_mode &
+                                 tag_int & s_c_int & "!1!" );
+                        outbyte(rank(qty.categ)+48);
+                        atrdesTail;
+                        qty:-qty.next;
+                  end;
+
+                  !*** Generation of Attribute Vector ***;
+                  atrvec_tag:=newTag;
+                  outbyte(vconst); out2byte(atrvec_tag);
+                  outtext( RTS_atrvec & s_fixrep);
+                  out2byte(nent);
+                  outtext( s_c_record & RTS_atrvec     &
+                               s_attr & RTS_atrvec_natr &
+                               tag_int & s_c_int       );
+                  outsint(nent);
+                  outtext( s_attr & RTS_atrvec_atr & tag_oaddr  );
+                  for i:=1 step 1 until nent do begin
+                      outbyte(vc_oaddr); outtag(atrdestag(i)) end;
+                  outbyte(vendrecord);         ! end atrvec ;
+               end inspect q;
+            end entityspeclist;
+
+            if q.kind<>K_subbl then begin if q.kind<>K_prefbl
+            then prototidenttag:=identifiertag(q.symb) end;
+           !else prototidenttag:=0;
+
+            !*** produce the atrvec constant ***;
+           if simob_entity then begin if nent>0 then entityspeclist end;
+
+            !*** Produce the Prototype extension constant ***;
+            xpp_tag:=newTag;
+
+            outbyte(vconst); out2byte(xpp_tag);
+            outtext( RTS_extptp &
+                     s_c_record & RTS_extptp                  &
+                         s_attr & RTS_extptp_idt & tag_oaddr  );
+            if prototidenttag=0 then outbyte(vonone)
+            else begin outbyte(vc_oaddr); out2byte(prototidenttag) end;
+            outtext( s_attr    & RTS_extptp_modulI &
+                     tag_oaddr & s_c_oaddr );
+              out2byte(prototinfo);
+            outtext( s_attr & RTS_extptp_attrV & tag_oaddr  );
+              if nent=0 then outbyte(vonone)
+              else begin outbyte(vc_oaddr); outtag(atrvec_tag) end;
+            outtext(     s_attr & RTS_extptp_blkTyp & tag_int    &
+                                  s_c_int & "!1!");
+            outbyte(      if q.kind = K_class  then 51  ! BLK_CLA ;
+                     else if q.kind = K_prefbl then 52  ! BLK_PRE ;
+                     else if q.kind = K_proc   then   (
+                                     if npar>0 then 50  ! BLK_FNC ;
+                                               else 49) ! BLK_PRO ;
+                     else if q.kind = K_record then 54  ! BLK_REC ;
+                          else 48);                     ! BLK_SUB ;
+            outbyte(vendrecord);   ! extptp ;
+      end GenerateExtPP;
+%title ***  Procedure MODULEINFOGENERATION  ***
+
+      procedure moduleinfogeneration;
+      begin ref(quantity) q; ref(extmodule) em; text srcmod;
+            short integer sim_id_tag,source_tag,mod_id_tag,modvec_tag;
+
+            if separatecomp then begin
+               q:-display(6 !sepcomplev;).fpar;
+               while q.categ=C_extnal do q:-q.next; !skip ext-head;
+               ! q is the sep. compiled proc/class;
+               sim_id_tag:=identifiertag(q.symb);
+            end;
+            simsymbol:-gettextinfo(1);
+            if simsymbol <> "sysin" then begin DEFCONST;
+               source_tag:=identifiertag(boxof(hashhi,hashlo)); end;
+            if separatecomp then begin
+               simsymbol:-moduleident; DEFCONST;
+               mod_id_tag:=identifiertag(boxof(hashhi,hashlo)) end;
+            if noofextmodules>0 then
+            begin modvec_tag:=newTag;
+                  outbyte(vconstspec); out2byte(modvec_tag);
+                  outtext( RTS_modvec & s_fixrep );
+                  out2byte(noofextmodules);
+            end;
+
+            outbyte(vconst); out2byte(prototinfo);
+            outtext( RTS_modinf &
+                     s_c_record & RTS_modinf                    &
+                         s_attr & RTS_modinf_modulV & tag_oaddr );
+              if noofextmodules=0 then outbyte(vonone)
+              else begin outbyte(vc_oaddr); out2byte(modvec_tag) end;
+              outtext(   s_attr & RTS_modinf_simIdt & tag_oaddr );
+              if separatecomp then begin
+                 outbyte(vc_oaddr); out2byte(sim_id_tag) end
+              else outbyte(vonone);
+              outtext(   s_attr & RTS_modinf_source & tag_oaddr );
+                 if source_tag=0 then outbyte(vonone)
+                 else begin outbyte(vc_oaddr); out2byte(source_tag) end;
+              outtext(   s_attr & RTS_modinf_modIdt & tag_oaddr );
+                 if separatecomp then begin
+                    outbyte(vc_oaddr); out2byte(mod_id_tag) end
+                 else outbyte(vonone);
+
+              outtext(   s_attr & RTS_modinf_check & tag_int    &
+                                         s_c_int & "!1!0"       &
+                         s_attr & RTS_modinf_rtsRel & tag_int   &
+                                         s_c_int & "!3!108"     &
+                         s_attr & RTS_modinf_fecRel & tag_int   &
+                                         s_c_int & "!3!108"     &
+                         s_attr & RTS_modinf_obsLvl & tag_int   &
+                                         s_c_int & "!1!"      );
+
+                 outbyte(simob_level+48);
+            outbyte(vendrecord);
+
+            if noofextmodules>0 then
+            begin ! Generate modvec for all ext modules brought in ;
+                  em:-firstextmodule;
+                  while em=/=none do begin
+                     em.pptag:=em.qty.ftag+prototypedisp; em:-em.next;
+                  end;
+
+                  outbyte(vconst); out2byte(modvec_tag);
+                  outtext( RTS_modvec & s_fixrep );
+                  out2byte(noofextmodules);
+                  outtext( s_c_record & RTS_modvec                &
+                               s_attr & RTS_modvec_nmod & tag_int &
+                                         s_c_int                  );
+                  outsint(noofextmodules);
+                  outtext(     s_attr & RTS_modvec_mod & RTS_moddes );
+                  em:-firstextmodule;
+                  while em=/=none do begin
+                     outtext(  s_c_record & RTS_moddes    &
+                                   s_attr & RTS_moddes_pp &
+                                   tag_oaddr & s_c_oaddr  );
+                        outtag(em.pptag);
+                     outtext(      s_attr & RTS_moddes_check &
+                                   tag_int & s_c_int & "!1!0" &
+                               s_endrecord );
+                     em:-em.next;
+                    end;
+                  outbyte(vendrecord);
+            end;
+      end moduleinfogeneration;
+
+end codegenerator1e;
+
+end SCODER1E;
