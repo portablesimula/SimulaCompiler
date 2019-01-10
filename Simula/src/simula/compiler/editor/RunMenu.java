@@ -53,7 +53,8 @@ public class RunMenu extends JMenu {
        	File file=simulaEditor.getCurrentSourceFile();
 		if(file==null) return;
 		String userDir=System.getProperty("user.dir");
-		Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
+//??		Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
+//??		Global.simulaRtsLib=userDir+"/rts/";         // AD'HOC
 		Option.keepJava=userDir+"/src/testing";
 //		Option.outputDir=userDir+"/bin/";
 		Option.outputDir=userDir+"/src/testing/bin/";

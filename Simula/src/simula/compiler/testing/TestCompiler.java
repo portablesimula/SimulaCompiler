@@ -66,11 +66,11 @@ public final class TestCompiler {
 		// String name="/error/PrecompiledProcedure.sim"; // Used by simerr12 
 		// String name="/error/simerr12.sim"; // Division by Zero in Precompiled Procedure 
 		// String name="/error/simerr13.sim"; // Nested Connections 
-		// String name="/error/simerr14.sim"; // Goto ???
+		 String name="/error/simerr14.sim"; // Two consecutive identifiers
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";

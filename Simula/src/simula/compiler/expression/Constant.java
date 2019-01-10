@@ -53,6 +53,32 @@ public final class Constant extends Expression {
     	if(n instanceof Float) return(Type.Real);
     	return(Type.LongReal);
     }
+    
+    public static Constant evaluate(KeyWord opr,Number rhn) { 
+    	Type type=getType(rhn);
+		Number result=null;
+		if(type==Type.Integer) {
+			switch(opr) {
+	        	case PLUS: result=rhn.intValue(); break;
+	        	case MINUS: result= - rhn.intValue(); break;
+	        	default:
+			}
+		} else if(type==Type.Real) {
+			switch(opr) {
+        		case PLUS: result=rhn.floatValue(); break;
+        		case MINUS: result= - rhn.floatValue(); break;
+        		default:
+			}
+		} else if(type==Type.LongReal) {
+			switch(opr) {
+				case PLUS: result=rhn.doubleValue(); break;
+				case MINUS: result= - rhn.doubleValue(); break;
+				default:
+			}
+		}
+		if(result==null) Util.FATAL_ERROR("Impossible");
+		return(new Constant(type,result));
+    }
   
     public static Constant evaluate(Number lhn,KeyWord opr,Number rhn) { 
     	Type type=Type.arithmeticTypeConversion(getType(lhn),getType(rhn));

@@ -28,8 +28,27 @@ import simula.compiler.utilities.Util;
 public final class UnaryOperation extends Expression {
 	private KeyWord oprator;
 	private Expression operand;
+	  
+	  public static Expression newUnaryOperation(KeyWord oprator,Expression operand) {
+//		  Util.BREAK("UnaryOperation.NEW: lhs="+lhs+", QUAL="+lhs.getClass().getSimpleName());
+//		  Util.BREAK("UnaryOperation.NEW: oprator="+oprator);
+//		  Util.BREAK("UnaryOperation.NEW: operand="+operand+", QUAL="+operand.getClass().getSimpleName());
 
-	public UnaryOperation(KeyWord oprator, Expression operand) {
+		  if (oprator == KeyWord.NOT) {
+			  
+		  }
+		  else if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
+			  Number rhn=Constant.getNumber(operand);
+			  if(rhn!=null) {
+				  //Util.BREAK("UnaryOperation.NEW: rhn="+rhn+", QUAL="+rhn.getClass().getSimpleName());
+				  //Util.BREAK("UnaryOperation.Evaluate: "+lhs+' '+oprator+' '+operand);
+				  return(Constant.evaluate(oprator,rhn));
+			  }  
+		  }
+		  return(new UnaryOperation(oprator,operand));
+	  }
+
+	private UnaryOperation(KeyWord oprator, Expression operand) {
 		//Util.BREAK("NEW UnaryOperation: "+oprator+' '+operand);
 		this.oprator = oprator;
 		this.operand = operand;

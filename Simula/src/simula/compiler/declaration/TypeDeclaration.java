@@ -78,7 +78,7 @@ public class TypeDeclaration extends Declaration {
 	        if(Parser.accept(KeyWord.EQ))
 	        { Expression cnst=Expression.parseExpression();
 	          if(cnst instanceof Constant) typeDeclaration.constantElement=(Constant)cnst;
-	          else Util.error("Can't evaluate ConstantElement while parsing");
+	          else Util.error("Can't evaluate ConstantElement while parsing - "+cnst);
 	          //typeDeclaration.constantElement=TypeConversion.testAndCreate(type,Expression.parseExpression());
 	        }
 	        

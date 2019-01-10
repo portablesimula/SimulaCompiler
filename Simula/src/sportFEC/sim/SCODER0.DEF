@@ -30,7 +30,10 @@ begin
 %-Z %RECORD ON
 
 %+I %INSERT $SIMSRC/fec/common.mne
-%INSERT $SIMSRC/fec/scoder.mne
+
+% INSERT $SIMSRC/fec/scoder.mne
+%INSERT C:/GitHub/SimulaCompiler/Simula/src/sportFEC/sim/scoder.mne
+
 %+I %INSERT $SPORTLIB/rtsinit.mne
 
       visiblegenerator class codegenerator0;

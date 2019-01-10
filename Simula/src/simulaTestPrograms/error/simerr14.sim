@@ -1,21 +1,14 @@
 begin
-   text t1,t2;
-   integer signpos,ndigits,significance;
-   boolean ident;
-   ref(CC) x;
-   
-   class CC(module); ref(CC)module;
+    integer s=-1;
+
+%MACRO pushjump:
+       begin curjump:=curjump+1; jumpstack(curjump):= */1 end
+%ENDMACRO
+   integer a,b c;
+   a:=4;
+   a b then
    begin
-      ref(elt) last;
-      class elt; virtual: procedure recover is boolean procedure recover;;
-      begin
-         boolean procedure recover2; begin end;
-      end;      
-    
-      while not last.recover do
-      begin
-      end
-   end;
-   
-   x qua CC.module:-none;
+   end kommentar
+   %F abra
+   else begin end
 end;

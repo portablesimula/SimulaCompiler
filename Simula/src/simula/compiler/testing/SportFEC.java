@@ -37,9 +37,9 @@ public final class SportFEC {
 //		names.add("PAS1INIT.DEF");
 //		names.add("BUILDER1.DEF");
 //		names.add("BUILDER2.DEF");
-		names.add("CHECKER1.DEF");
+//		names.add("CHECKER1.DEF");
 //		names.add("CHECKER2.DEF");
-//		names.add("SCODER0.DEF");
+		names.add("SCODER0.DEF");
 		
 //		names.add("SCANNER.DEF");
 //		names.add("SCANNER.DEF");

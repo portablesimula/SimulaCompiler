@@ -7,6 +7,9 @@
  */
 package simula.compiler;
 
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
+
 import simula.compiler.editor.OptionMenu;
 import simula.compiler.editor.SimulaEditor;
 import simula.compiler.utilities.Global;
@@ -60,7 +63,6 @@ public final class Simula {
 	public static void main(String[] argv) {
 		String fileName = null;
 		String SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
-		System.setProperty("file.encoding","UTF-8");		
 		// Set default options.
 		Option.verbose=false;
 		Option.WARNINGS=true;
@@ -83,10 +85,13 @@ public final class Simula {
 		}
 		if(SIMULA_HOME==null)
 			error("Environment Variable 'SIMULA_HOME' is not defined");
+//		System.setProperty("file.encoding","UTF-8");		
+		setEncoding("UTF-8");		
 		
 		if (fileName == null) {
 			//error("No input files specified");
 			Global.sampleSourceDir=SIMULA_HOME+'/'+Global.simulaReleaseID+"/tst";
+		    Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
 	    	OptionMenu.InitRuntimeOptions();
 	    	OptionMenu.InitCompilerOptions();
 	    	SimulaEditor editor=new SimulaEditor();
@@ -98,6 +103,26 @@ public final class Simula {
 		    new SimulaCompiler(fileName).doCompile();
 		}
 	}
+	
+	private static void setEncoding(String encoding) {
+        dump("Actual system config");
+        System.setProperty("file.encoding",encoding);
+        dump("Config after System.setProperty(\"file.encoding\","+encoding+"\")");
+        try { Field cs = Charset.class.getDeclaredField("defaultCharset");
+              cs.setAccessible(true); cs.set(null, null);
+        } catch(Exception e) {}
+        dump("Config after manipulating defatulCharset field");
+    }
+
+    private static void dump(String msg) {
+    	if(!Option.verbose) return;
+        System.out.println(msg);
+        System.out.println("****************************************************************");
+        System.out.println("file.encoding          = " + System.getProperty("file.encoding"));
+        System.out.println("defaultCharset         = " + Charset.defaultCharset());
+        System.out.println("****************************************************************");
+        System.out.println("");
+    }
 	
 	private static void error(String msg)
 	{ System.err.println("Simula: "+msg+"\n");

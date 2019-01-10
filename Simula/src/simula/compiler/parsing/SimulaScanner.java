@@ -213,57 +213,65 @@ public final class SimulaScanner {
     //** End-Condition: current is last character of construct
     //**                getNext will return first character after construct
     //********************************************************************************
+    private Token javaKeyword(String name) {
+    	return(identifierToken(name+'$'));
+    }
+    private Token identifierToken(String name) {
+    	Token token=newToken(KeyWord.IDENTIFIER,name);
+//    	if(Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) Util.error("Missplaced identifier "+name+" directly after "+Parser.prevToken);
+    	return(token);
+    }
 	private Token scanIdentifier() {
 		String name=scanName();
 	    if(Option.TRACE_SCAN) Util.TRACE("scanIdentifier: name=\""+name+"\"");
 	    switch(name.toUpperCase().charAt(0)) {
 	        case 'A':
-		        if(name.equalsIgnoreCase("ABSTRACT"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+		        if(name.equalsIgnoreCase("ABSTRACT"))	return(javaKeyword(name)); // Java KeyWord
 		        if(name.equalsIgnoreCase("ACTIVATE"))   return(newToken(KeyWord.ACTIVATE));
 		        if(name.equalsIgnoreCase("AFTER"))	    return(newToken(KeyWord.AFTER));
 		        if(name.equalsIgnoreCase("AND"))		return(newToken(KeyWord.AND));
 		        if(name.equalsIgnoreCase("AND_THEN"))	return(newToken(KeyWord.AND_THEN));
 		        if(name.equalsIgnoreCase("ARRAY"))	    return(newToken(KeyWord.ARRAY));
-		        if(name.equalsIgnoreCase("ASSERT"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+		        if(name.equalsIgnoreCase("ASSERT"))	    return(javaKeyword(name)); // Java KeyWord
 		        if(name.equalsIgnoreCase("AT"))		    return(newToken(KeyWord.AT));
 		        break;
 	        case 'B':
 	        	if(name.equalsIgnoreCase("BEFORE"))     return(newToken(KeyWord.BEFORE));
 	        	if(name.equalsIgnoreCase("BEGIN"))      return(newToken(KeyWord.BEGIN));
 	        	if(name.equalsIgnoreCase("BOOLEAN"))    return(newToken(KeyWord.BOOLEAN));
-	        	if(name.equalsIgnoreCase("BREAK"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("BYTE"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("BREAK"))	    return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("BYTE"))	    return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'C':
-	        	if(name.equalsIgnoreCase("CASE"))		return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("CATCH"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("CHAR"))  	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("CASE"))		return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("CATCH"))	    return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("CHAR"))  	    return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("CHARACTER"))  return(newToken(KeyWord.CHARACTER));
 	        	if(name.equalsIgnoreCase("CLASS"))      return(newToken(KeyWord.CLASS));
 	        	if(name.equalsIgnoreCase("COMMENT"))    return(scanComment());
-	        	if(name.equalsIgnoreCase("CONST"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("CONTINUE"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("CONST"))	    return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("CONTINUE"))	return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'D':
-	        	if(name.equalsIgnoreCase("DEFAULT"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("DEFAULT"))	return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("DELAY"))      return(newToken(KeyWord.DELAY));
 	        	if(name.equalsIgnoreCase("DO")) 	    return(newToken(KeyWord.DO));
-	        	if(name.equalsIgnoreCase("DOUBLE"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("DOUBLE"))	    return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'E':
 	        	if(name.equalsIgnoreCase("ELSE"))       return(newToken(KeyWord.ELSE));
 	        	if(name.equalsIgnoreCase("END"))   	    return(scanEndComment());
-	        	if(name.equalsIgnoreCase("ENUM"))		return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("ENUM"))		return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("EQ"))	        return(newToken(KeyWord.EQ));
 	        	if(name.equalsIgnoreCase("EQV"))	    return(newToken(KeyWord.EQV));
-	        	if(name.equalsIgnoreCase("EXTENDS"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("EXTENDS"))	return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("EXTERNAL"))   return(newToken(KeyWord.EXTERNAL));
 	        	break;
 	        case 'F':
 	        	if(name.equalsIgnoreCase("false"))  	return(newToken(KeyWord.BOOLEANKONST,false));
-	        	if(name.equalsIgnoreCase("FINAL"))  	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("FINALLY"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("FLOAT"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("FINAL"))  	return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("FINALLY"))	return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("FLOAT"))	    return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("FOR"))    	return(newToken(KeyWord.FOR));
 	        	break;
 	        case 'G':
@@ -278,15 +286,15 @@ public final class SimulaScanner {
 	        case 'I':
 	        	if(name.equalsIgnoreCase("IF"))	        return(newToken(KeyWord.IF));
 	        	if(name.equalsIgnoreCase("IMP"))   	    return(newToken(KeyWord.IMP));
-	        	if(name.equalsIgnoreCase("IMPLEMENTS")) return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("IMPORT"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("IMPLEMENTS")) return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("IMPORT"))	    return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("IN"))   	    return(newToken(KeyWord.IN));
 	        	if(name.equalsIgnoreCase("INNER"))	    return(newToken(KeyWord.INNER));
 	        	if(name.equalsIgnoreCase("INSPECT")) 	return(newToken(KeyWord.INSPECT));
-	        	if(name.equalsIgnoreCase("INSTANCEOF")) return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("INT"))		return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("INSTANCEOF")) return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("INT"))		return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("INTEGER"))	return(newToken(KeyWord.INTEGER));
-	        	if(name.equalsIgnoreCase("INTERFACE"))  return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("INTERFACE"))  return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("IS"))         return(newToken(KeyWord.IS));
 	        	break;
 	        case 'L':
@@ -297,7 +305,7 @@ public final class SimulaScanner {
 	        	break;
 	        case 'N':
 	        	if(name.equalsIgnoreCase("NAME"))   return(newToken(KeyWord.NAME));
-	        	if(name.equalsIgnoreCase("NATIVE")) return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("NATIVE")) return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("NE"))     return(newToken(KeyWord.NE));
 	        	if(name.equalsIgnoreCase("NEW"))    return(newToken(KeyWord.NEW));
 	        	if(name.equalsIgnoreCase("NONE"))   return(newToken(KeyWord.NONE));
@@ -310,12 +318,12 @@ public final class SimulaScanner {
 	        	if(name.equalsIgnoreCase("OTHERWISE"))  return(newToken(KeyWord.OTHERWISE));
 	        	break;
 	        case 'P':
-	        	if(name.equalsIgnoreCase("PACKAGE"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("PACKAGE"))	return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("PRIOR"))      return(newToken(KeyWord.PRIOR));
-	        	if(name.equalsIgnoreCase("PRIVATE"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("PRIVATE"))	return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("PROCEDURE"))  return(newToken(KeyWord.PROCEDURE));
 	        	if(name.equalsIgnoreCase("PROTECTED"))  return(newToken(KeyWord.PROTECTED));
-	        	if(name.equalsIgnoreCase("PUBLIC"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("PUBLIC"))	    return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'Q':
 	        	if(name.equalsIgnoreCase("QUA"))        return(newToken(KeyWord.QUA));
@@ -324,27 +332,27 @@ public final class SimulaScanner {
 	        	if(name.equalsIgnoreCase("REACTIVATE")) return(newToken(KeyWord.REACTIVATE));
 	        	if(name.equalsIgnoreCase("REAL"))       return(newToken(KeyWord.REAL));
 	        	if(name.equalsIgnoreCase("REF"))        return(newToken(KeyWord.REF));
-	        	if(name.equalsIgnoreCase("RETURN"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("RETURN"))	    return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'S':
 	        	if(name.equalsIgnoreCase("SHORT"))  		return(newToken(KeyWord.SHORT));
-	        	if(name.equalsIgnoreCase("STATIC"))	        return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("STATIC"))	        return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("STEP"))   		return(newToken(KeyWord.STEP));
-	        	if(name.equalsIgnoreCase("STRICTFP"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("SUPER"))	        return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("STRICTFP"))	    return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("SUPER"))	        return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("SWITCH")) 		return(newToken(KeyWord.SWITCH));
-	        	if(name.equalsIgnoreCase("SYNCHRONIZED"))	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("SYNCHRONIZED"))	return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'T':
 	        	if(name.equalsIgnoreCase("TEXT"))  	    return(newToken(KeyWord.TEXT));
 	        	if(name.equalsIgnoreCase("THEN"))  	    return(newToken(KeyWord.THEN));
 	        	if(name.equalsIgnoreCase("THIS"))   	return(newToken(KeyWord.THIS));
-	        	if(name.equalsIgnoreCase("THROW"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("THROWS"))	    return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("THROW"))	    return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("THROWS"))	    return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("TO"))         return(newToken(KeyWord.TO));
-	        	if(name.equalsIgnoreCase("TRANSIENT"))  return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("TRANSIENT"))  return(javaKeyword(name)); // Java KeyWord
 	        	if(name.equalsIgnoreCase("true"))   	return(newToken(KeyWord.BOOLEANKONST,true));
-	        	if(name.equalsIgnoreCase("TRY"))	  	return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("TRY"))	  	return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'U':
 	        	if(name.equalsIgnoreCase("UNTIL"))     return(newToken(KeyWord.UNTIL));
@@ -352,15 +360,16 @@ public final class SimulaScanner {
 	        case 'V':
 	        	if(name.equalsIgnoreCase("VALUE"))     return(newToken(KeyWord.VALUE));
 	        	if(name.equalsIgnoreCase("VIRTUAL"))   return(newToken(KeyWord.VIRTUAL));
-	        	if(name.equalsIgnoreCase("VOID"))	   return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
-	        	if(name.equalsIgnoreCase("VOLATILE"))  return(newToken(KeyWord.IDENTIFIER,name+'$')); // Java KeyWord
+	        	if(name.equalsIgnoreCase("VOID"))	   return(javaKeyword(name)); // Java KeyWord
+	        	if(name.equalsIgnoreCase("VOLATILE"))  return(javaKeyword(name)); // Java KeyWord
 	        	break;
 	        case 'W':
 	        	if(name.equalsIgnoreCase("WHEN"))  return(newToken(KeyWord.WHEN));
 	        	if(name.equalsIgnoreCase("WHILE")) return(newToken(KeyWord.WHILE));
 	        	break;
 	    }
-	    return(newToken(KeyWord.IDENTIFIER,name));
+	    //return(newToken(KeyWord.IDENTIFIER,name));
+	    return(identifierToken(name));
 	}
 	
     //********************************************************************************

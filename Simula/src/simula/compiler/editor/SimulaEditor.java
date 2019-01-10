@@ -42,8 +42,8 @@ public class SimulaEditor extends JFrame {
 //		String userDir = System.getProperty("user.home");
 //		Global.sampleSourceDir=userDir +"/SimulaSource";
 		
-		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/testing/sim";
-//		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/testing/samples";
+//		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/simple";
+		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples";
 
 		SimulaEditor editor=new SimulaEditor();
     	editor.setVisible(true);

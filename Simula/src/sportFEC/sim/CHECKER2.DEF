@@ -1367,7 +1367,7 @@ REPLACE: ust.optstack(opttop):=opn; expexptop(opttop):-exptop;
             when NONE do  KERR1: coder qua visiblegenerator.
                       StopScode_1('!9!',sourceline);
             end case
-    %+D     otherwise goto KERR1;
+%+D         otherwise goto KERR1;
          end
     else if exptop.ctype = IIDNP then begin
 %-Z %IMPLNONE OFF
@@ -1387,7 +1387,7 @@ REPLACE: ust.optstack(opttop):=opn; expexptop(opttop):-exptop;
                  when NONE do  KERR2: coder qua visiblegenerator.
                       StopScode_1('!9!',sourceline);
                end case
-    %+D        otherwise goto KERR2;
+%+D            otherwise goto KERR2;
             end
          end
          else error0(173);

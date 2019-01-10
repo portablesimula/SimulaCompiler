@@ -157,7 +157,7 @@ public abstract class Expression extends SyntaxClass
   private static Expression  parseNOT() {
 	 Expression expr;
      if(Parser.accept(KeyWord.NOT)) {
-         expr=new UnaryOperation(KeyWord.NOT,parseTEXTCONC());
+         expr=UnaryOperation.newUnaryOperation(KeyWord.NOT,parseTEXTCONC());
     } else expr = parseTEXTCONC();
      return(expr);
   }
@@ -196,7 +196,7 @@ public abstract class Expression extends SyntaxClass
 	 Expression expr;
      if(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) {
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          expr=new UnaryOperation(opr,parseMULDIV());
+          expr=UnaryOperation.newUnaryOperation(opr,parseMULDIV());
      } else expr = parseMULDIV();
      return(expr);
   }

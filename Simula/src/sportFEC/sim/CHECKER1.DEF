@@ -872,7 +872,7 @@ EXIT: end localobject;
                     end;
                  when NONE do internerr('!8!',sourceline);
            end case
-    %+D        otherwise internerr('!8!',sourceline);
+%+D        otherwise internerr('!8!',sourceline);
          end
     else if target.ctype=IIDNP then begin
 %-Z %IMPLNONE OFF

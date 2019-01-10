@@ -21,7 +21,10 @@ import simula.compiler.editor.ConsolePanel;
  */
 public final class Global {
 	public static final String gitURL="https://github.com/portablesimula";
+	
+	// NOTE: When updating release id, change version in SimulaExtractor.
     public static final String simulaReleaseID="Release-Beta-0.3";
+    
 	public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	
 	public static Vector<JavaModule> javaModules;

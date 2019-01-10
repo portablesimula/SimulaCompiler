@@ -1,0 +1,197 @@
+NOTE: UNDER CONSTRUCTION !!!
+
+This directory contains a Simula System ready for use. 
+
+You may download or map it to your own file system.
+
+Suppose <git> is the super directory into which you put the 'Binaries'
+then you should have a directory tree like this:
+
+  <git>
+        - Binaries
+              - Release-Beta-03
+                    - rts
+                             ....
+                    - tst
+                             ....
+                    - simula.jar
+                    - ReleaseNotes.txt
+                    - RunCompilerTest.bat
+                    - RunCompilerTest.sh
+
+You should set the environment-variable  SIMULA_HOME = <git>/Binaries
+
+Then you can run RunCompilerTest.bat or .sh depending on your operating system.
+
+=====================================================================================
+
+Synopsis: java simula.jar  [options]  sourceFile 
+
+      possible options include:
+        -help                      Print this synopsis of standard options
+        -noexec                    Don't execute generated .jar file
+        -nowarn                    Generate no warnings
+        -verbose                   Output messages about what the compiler is doing
+        -SIMULA_HOME <directory>   Specify where to find the Simula Runtime-System
+                                   Default: Taken from the Environment variable SIMULA_HOME
+        -keepJava <directory>      Specify where to place generated .java files
+                                   Default: Temp directory which is deleted upon exit
+        -output <directory>        Specify where to place generated executable .jar file
+                                   Default: Same directory as source file
+
+      sourceFile      Simula Source File
+
+=====================================================================================
+
+Deviations from 'Simula Standard'
+
+The current version of this SIMULA system differs from the Simula Standard in some areas.
+Following the chapters of  Simula Standard, this is a complete list:
+
+4   Virtual labels are not fully implemented. In certain rare cases goto such
+    labels may result in Runtime errors.
+
+6   External non-SIMULA procedures are NOT IMPLEMENTED.
+
+9   The name specified parameter to the random drawing procedures is not used. 
+    Instead, the default seed in the Java Library is used.
+
+    This is not a real deviation since Simula Standard says BasicDrawing is
+    implementation defined.
+
+    The <real-type> parameter to the 'histd' procedure must be type real.
+    
+10  The File procedure setaccess is not implemented
+
+=====================================================================================
+
+Additional Standard Procedures
+
+- Procedure setSeed(seed); integer seed; ... ;
+- Procedure waitSomeTime(millies); integer millies; ... ;
+- Procedure printThreadList(withStackTrace); boolean withStackTrace; ... ;
+
+=====================================================================================
+
+Additional Standard Class Drawing
+
+ The additional system class "Drawing" introduce basic graphical capabilities.
+ It has the class "simset" as prefix, so set-handling facilities are thus immediately available.
+ 
+ Simset class Drawing(title,width,height); Value title; Text title; Integer width,height;
+ begin ref(Head) RENDERING_SET;
+ 	   Integer CURRENT_BACKGROUND_COLOR,CURRENT_DRAW_COLOR,CURRENT_FILL_COLOR,CURRENT_STROKE_WIDTH;
+       ref(Font) CURRENT_FONT; ! Java Class Font is not visible in Simula ;
+
+       ref(Head) Procedure renderingSet; renderingSet :- RENDERING_SET;
+       Integer white,lightGray,gray,darkGray,black,red,pink,orange,yellow,green,magenta,cyan,blue;  
+       Integer Procedure color(r,g,b); Integer r,g,b; ...   
+       Procedure setBackgroundColor(color); Integer color; CURRENT_BACKGROUND_COLOR := color;  
+       Procedure setDrawColor(color); Integer color; CURRENT_DRAW_COLOR := color;  
+       Procedure setFillColor(color); Integer color; CURRENT_FILL_COLOR := color;
+       Procedure setStroke(width); Real width; CURRENT_STROKE_WIDTH := width; 
+
+       Procedure setFontStylePlain;      CURRENT_FONT :- CURRENT_FONT.deriveFont(Font.PLAIN);  
+       Procedure setFontStyleBold;       CURRENT_FONT :- CURRENT_FONT.deriveFont(Font.BOLD); 
+       Procedure setFontStyleItalic;     CURRENT_FONT :- CURRENT_FONT.deriveFont(Font.ITALIC); 
+       Procedure setFontStyleBoldItalic; CURRENT_FONT :- CURRENT_FONT.deriveFont(Font.BOLD|Font.ITALIC); 
+          
+       Procedure setFontSize(size); Real size; CURRENT_FONT :- CURRENT_FONT.deriveFont(size); 
+       Real Procedure getFontSize; getFontSize := CURRENT_FONT.getSize2D;
+
+       Link class ShapeElement; ...
+       Link class TextElement; ...
+
+       ref(TextElement) Procedure drawText(t,x,y); Value t; Text t; Long Real x1,y1,x2,y2;
+       begin ref(TextElement) elt; drawText :- elt :- new TextElement(t,x,y); end;
+
+	   ref(ShapeElement) Procedure drawLine(x1,y1,x2,y2); Long Real x1,y1,x2,y2;
+       begin ref(ShapeElement) elt; drawLine :- elt :- new ShapeElement; elt.drawLine(x1,y1,x2,y2); end;
+      
+       ref(ShapeElement) Procedure drawEllipse(x,y,width,height); Long Real x,y,width,height;
+       begin ref(ShapeElement) elt; drawEllipse :- elt :- new ShapeElement; elt.drawEllipse(x,y,width,height); end;
+       
+       ref(ShapeElement) Procedure drawRectangle(double x,double y,double width,double height)
+       begin ref(ShapeElement) elt; drawRectangle :- elt :- new ShapeElement; elt.drawRectangle(x,y,width,height); end;
+       
+       ref(ShapeElement) Procedure drawRoundRectangle(x,y,width,height,arcw,arch); Long Real x,y,width,height,arcw,arch;
+       begin ref(ShapeElement) elt; drawRoundRectangle :- elt :- new ShapeElement; elt.drawRoundRectangle(x,y,width,height,arcw,arch); end;
+      
+       ref(ShapeElement) Procedure fillEllipse(x,y,width,height); Long Real x,y,width,height;
+       begin ref(ShapeElement) elt; fillEllipse :- elt :- new ShapeElement; elt.fillEllipse(x,y,width,height); end;
+       
+       ref(ShapeElement) Procedure fillRectangle(x,y,width,height); Long Real x,y,width,height;
+       begin ref(ShapeElement) elt; fillRectangle :- elt :- new ShapeElement; elt.fillRectangle(x,y,width,height); end;
+       
+       ref(ShapeElement) Procedure fillRoundRectangle(x,y,width,height,arcw,arch); Long Real x,y,width,height,arcw,arch;
+       begin ref(ShapeElement) elt; fillRoundRectangle :- elt :- new ShapeElement; elt.fillRoundRectangle(x,y,width,height,arcw,arch); end;
+
+       RENDERING_SET  :-  new head;
+       CURRENT_BACKGROUND_COLOR := white;
+       CURRENT_DRAW_COLOR=black;
+       CURRENT_FILL_COLOR=gray;
+       CURRENT_STROKE_WIDTH := 2.5;
+       CURRENT_FONT=new Font(Font.SANS_SERIF,12,Font.PLAIN); ! Font size 12 ;
+
+ end Drawing;
+
+=====================================================================================
+
+Additional Standard Class ShapeElement  (local to Drawing)
+
+ Link class ShapeElement;
+ begin Integer COLOR,STROKE;
+       ref(Shape) SHAPE; ! Java Class Shape is not visible in Simula ;
+ 
+       Procedure setColor(rgb); Integer rgb; ... ... ;
+       Procedure setStroke(size); Real size; ... ... ;
+ 
+       Procedure drawLine(x1,y1,x2,y2); Long Real x1,y1,x2,y2; ... ... ;
+       Procedure drawEllipse(x,y,width,height); Long Real x,y,width,height; ... ... ;
+       Procedure drawRectangle(x,y,width,height); Long Real x,y,width,height; ... ... ;
+       Procedure drawRoundRectangle(x,y,width,height,arcw,arch); Long Real x,y,width,height,arcw,arch; ... ... ;
+       Procedure fillEllipse(x,y,width,height); Long Real x,y,width,height; ... ... ;
+       Procedure fillRectangle(x,y,width,height); Long Real x,y,width,height; ... ... ;
+       Procedure fillRoundRectangle(x,y,width,height,arcw,arch); Long Real x,y,width,height,arcw,arch; ... ... ;
+    
+       Procedure instantMoveTo(x,y); Long Real x,y; ... ... ;
+       Procedure moveTo(x,y,speed); Long Real x,y,speed; ... ... ;
+    
+       STROKE := CURRENT_STROKE_WIDTH;
+       into(RENDERING_SET);
+ end;
+
+=====================================================================================
+
+Additional Standard Class TextElement  (local to Drawing)
+
+ Link class TextElement(t,x,y); Value t; Text t; Long Real x,y;
+ begin Integer COLOR,STROKE; Text T; Long Real X,Y;
+       ref(Font) FONT; ! Java Class Font is not visible in Simula ;
+
+       Procedure setColor(color); Integer color; COLOR := color;  
+       Procedure setStroke(width); Real width; CURRENT_STROKE_WIDTH := width; 
+
+       Procedure setFontStylePlain;      FONT :- FONT.deriveFont(Font.PLAIN);  
+       Procedure setFontStyleBold;       FONT :- FONT.deriveFont(Font.BOLD); 
+       Procedure setFontStyleItalic;     FONT :- FONT.deriveFont(Font.ITALIC); 
+       Procedure setFontStyleBoldItalic; FONT :- FONT.deriveFont(Font.BOLD|Font.ITALIC); 
+          
+       Procedure setFontSize(size); Real size; FONT :- FONT.deriveFont(size); 
+       Real Procedure getFontSize; getFontSize := FONT.getSize2D;
+ 
+       Procedure setText(t); Value t; Text t; T :- t;
+       Procedure moveTo(x,y,speed); Long Real x,y,speed; begin X := x; Y := y; ... end;
+       Procedure instantMoveTo(x,y); Long Real x,y; begin X := x; Y := y; end;
+       
+       T :- t; X := x; Y := y;
+       
+       COLOR := CURRENT_DRAW_COLOR;
+       STROKE := CURRENT_STROKE_WIDTH;
+       FONT :- CURRENT_FONT;
+       
+       into(RENDERING_SET);
+
+ end;
+
+

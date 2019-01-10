@@ -38,7 +38,8 @@ public class AboutDialog extends JDialog {
 		b.add(new JLabel("   to be corrected in the byte code."));
 		b.add(new JLabel("               "));
 
-		JLabel link=new JLabel("   More info at https://github.com/portablesimula");
+//		JLabel link=new JLabel("   More info at https://github.com/portablesimula");
+		JLabel link=new JLabel("   More info at https://portablesimula.github.io/github.io/");
 		b.add(link);
 		if(Desktop.isDesktopSupported()) {
 			link.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -46,7 +47,8 @@ public class AboutDialog extends JDialog {
 				public void mouseClicked(MouseEvent e) {
 					if (e.getClickCount() > 0) {
 						Desktop desktop = Desktop.getDesktop();
-						try { desktop.browse(new URI("https://github.com/portablesimula"));
+//						try { desktop.browse(new URI("https://github.com/portablesimula"));
+						try { desktop.browse(new URI("https://portablesimula.github.io/github.io/"));
 						} catch (Exception ex) {}
 					}
 				}

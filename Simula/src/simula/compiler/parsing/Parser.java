@@ -144,6 +144,12 @@ public final class Parser {
 			savedToken = null;
 			// Util.BREAK("SAVED TOKEN:'" + Parser.currentToken + "'");
 		}
+		if(Parser.currentToken.getKeyWord()==KeyWord.IDENTIFIER)
+			if(Parser.prevToken!=null && Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) {
+				Util.error("Missplaced identifier "+Parser.currentToken+" directly after "+Parser.prevToken+" - Ignored");
+		        nextSymb();
+			}
 	}
+	
 
 }
