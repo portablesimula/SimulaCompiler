@@ -18,27 +18,11 @@ import simula.compiler.utilities.Util;
 
 /**
  * 
- * Creating a New Runnable JAR File
- * 
- * Eclipse Help search 'Runnable JAR':
- * To create a new runnable JAR file in the Eclipse Workbench:
- * <ul>
- * <li>1. From the menu bar's File menu, select Export.
- * <li>2. Expand the Java node and select Runnable JAR file. Click Next.
- * <li>3. In the Opens the Runnable JAR export wizard Runnable JAR File
- *        Specification page, select a 'Java Application' launch configuration to use
- *        to create a runnable JAR.
- * <li>4. In the Export destination field, either type or click Browse to select
- *        a location for the JAR file.
- * <li>5. Select an appropriate library handling strategy.
- * <li>6. Optionally, you can also create an ANT script to quickly regenerate a
- *        previously created runnable JAR file.
- * </ul>
- * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class Simula {
+	static String SIMULA_HOME;
 
 	static void help() {
 		System.out.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
@@ -62,9 +46,10 @@ public final class Simula {
 
 	public static void main(String[] argv) {
 		String fileName = null;
-		String SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
+//		SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
+		SIMULA_HOME=Global.getProperty("simula.home",null); // Default, may be null
 		// Set default options.
-		Option.verbose=false;
+		Option.verbose=true;//false;
 		Option.WARNINGS=true;
 
 		// Parse command line arguments.
@@ -76,32 +61,49 @@ public final class Simula {
 				else if (arg.equals("-nowarn")) { Option.noJavacWarnings=true; Option.WARNINGS=false; }
 				else if (arg.equals("-verbose")) Option.verbose=true;
 				else if (arg.equals("-standardClass")) Option.standardClass=true;
-				else if (arg.equals("-SIMULA_HOME")) SIMULA_HOME=getSimulaHome(argv[++i]);
 				else if (arg.equals("-keepJava")) setKeepJava(argv[++i]);
 				else if (arg.equals("-outputJava")) setOutputDir(argv[++i]);
 				else error("Unknown option "+arg);
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
 		}
-		if(SIMULA_HOME==null)
+		if(SIMULA_HOME==null) {
 			error("Environment Variable 'SIMULA_HOME' is not defined");
+		}
 //		System.setProperty("file.encoding","UTF-8");		
-		setEncoding("UTF-8");		
+		setEncoding("UTF-8");	
+		Util.popUpMessage("SIMULA_HOME="+SIMULA_HOME);
 		
 		if (fileName == null) {
 			//error("No input files specified");
 			Global.sampleSourceDir=SIMULA_HOME+'/'+Global.simulaReleaseID+"/tst";
 		    Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
+		    printGlobalList("*** STARTING SIMULA EDITOR ***");
 	    	OptionMenu.InitRuntimeOptions();
 	    	OptionMenu.InitCompilerOptions();
 	    	SimulaEditor editor=new SimulaEditor();
 	    	editor.setVisible(true);
 		} else {
 		    Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
-	
+		    printGlobalList("*** STARTING SIMULA COMPILER ***");
 		    // Start compiler ....
 		    new SimulaCompiler(fileName).doCompile();
 		}
+	}
+	
+	private static void printGlobalList(String msg) {
+		if(Option.verbose)
+		{ Util.message(msg);
+		  Util.message("SIMULA HOME:     "+SIMULA_HOME);
+		  Util.message("Package Name:    "+Global.packetName);
+		  //Util.message("SourceFile Name: "+Global.sourceName);
+		  //Util.message("SourceFile Dir:  "+Global.sourceFileDir);
+		  //Util.message("TempDir .Java:   "+Global.tempJavaFileDir);
+		  //Util.message("TempDir .Class:  "+Global.tempClassFileDir);
+		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
+		  //Util.message("OutputDir:       "+Global.outputDir);
+		}
+
 	}
 	
 	private static void setEncoding(String encoding) {
@@ -126,6 +128,7 @@ public final class Simula {
 	
 	private static void error(String msg)
 	{ System.err.println("Simula: "+msg+"\n");
+	  Util.popUpError(msg);
 	  help();
 	}
 	

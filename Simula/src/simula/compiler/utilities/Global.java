@@ -7,6 +7,10 @@
  */
 package simula.compiler.utilities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Properties;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
@@ -23,7 +27,7 @@ public final class Global {
 	public static final String gitURL="https://github.com/portablesimula";
 	
 	// NOTE: When updating release id, change version in SimulaExtractor.
-    public static final String simulaReleaseID="Release-Beta-0.3";
+    public static final String simulaReleaseID="Simula-Beta-0.3";
     
 	public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	
@@ -61,6 +65,29 @@ public final class Global {
 		//console=new Console();
 	}
 
+    private static File simulaPropertiesFile;
+    private static Properties simulaProperties;
+	public static String getProperty(String key,String defaultValue) {
+		if(simulaProperties==null) loadProperties();
+		return(simulaProperties.getProperty(key,defaultValue));
+	}
 	
+	private static void loadProperties() {
+		String USER_HOME=System.getProperty("user.home");
+		System.out.println("USER_HOME="+USER_HOME);
+		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
+		System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
+		simulaPropertiesDir.mkdirs();
+		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.prop");
+		simulaProperties = new Properties();
+		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
+		} catch(Exception e) {} // e.printStackTrace(); }
+	}
+	
+	private static void storeProperties() {
+		simulaProperties.list(System.out);
+		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
+		} catch(Exception e) { e.printStackTrace(); }
+	}
 
 }

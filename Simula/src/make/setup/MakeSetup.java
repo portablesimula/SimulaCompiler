@@ -37,10 +37,11 @@ import simula.compiler.utilities.Global;
  */
 public final class MakeSetup {
 	
-	private final static String SIMULA_HOME=System.getenv("SIMULA_HOME"); // NOTE: may be null
+//	private final static String SIMULA_HOME=System.getenv("SIMULA_HOME"); // NOTE: may be null
+	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Release-1.0";
 
-	private final static String RELEASE_HOME=SIMULA_HOME+"\\"+RELEASE_ID;
+	private final static String RELEASE_HOME=GIT_BINARIES+"\\"+RELEASE_ID;
 	private final static String RELEASE_TST=RELEASE_HOME+"\\tst";
 
 	private final static String GITHUB_ROOT="C:\\GitHub";
@@ -49,11 +50,7 @@ public final class MakeSetup {
 	private final static String INSTALLER_BIN=ECLIPSE_ROOT+"\\bin";
 
 	public static void main(String[] args) {
-		printHeading("Make Simula Compiler, SIMULA_HOME="+SIMULA_HOME);
-		if(SIMULA_HOME==null) {
-			System.out.println("*** FATAL ERROR: Environment Variable 'SIMULA_HOME' is not defined");
-			System.exit(-1);
-		}
+		printHeading("Make Simula Compiler, GIT_BINARIES="+GIT_BINARIES);
 		setEncoding("UTF-8");		
 		try {
 //			printSystemProperties();
@@ -163,7 +160,7 @@ public final class MakeSetup {
 	// *** MAKE SIMULA INSTALLER JAR
 	// ***************************************************************
 	private static void makeSimulaInstaller() throws IOException	{
-		printHeading("Make Simula Setup.jar in "+SIMULA_HOME);
+		printHeading("Make Simula Setup.jar in "+GIT_BINARIES);
 		File releaseHome=new File(RELEASE_HOME);
 		releaseHome.mkdirs();
 		String SETUP_SRC=ECLIPSE_ROOT+"\\src\\make\\setup";
@@ -177,10 +174,10 @@ public final class MakeSetup {
 		String installerManifest=SETUP_SRC+"\\InstallerManifest.MF";
 		String files=" -C "+RELEASE_HOME+" ."  // Complete Simula Release
 				    +" -C "+INSTALLER_BIN+" ./make/setup";
-		execute("jar cmf "+installerManifest+" "+SIMULA_HOME+"\\setup.jar"+files);
-		printHeading("BEGIN -- List Simula Setup.jar in "+SIMULA_HOME);
-		execute("jar -tvf "+SIMULA_HOME+"\\setup.jar");
-		printHeading("END -- List Simula Setup.jar in "+SIMULA_HOME);
+		execute("jar cmf "+installerManifest+" "+GIT_BINARIES+"\\setup.jar"+files);
+		printHeading("BEGIN -- List Simula Setup.jar in "+GIT_BINARIES);
+		execute("jar -tvf "+GIT_BINARIES+"\\setup.jar");
+		printHeading("END -- List Simula Setup.jar in "+GIT_BINARIES);
 		copySetupJAR();
 	}
 	
@@ -188,7 +185,7 @@ public final class MakeSetup {
 	// *** COPY SIMULA INSTALLER JAR
 	// ***************************************************************
 	private static void copySetupJAR() throws IOException	{
-		File source=new File(SIMULA_HOME+"\\setup.jar");
+		File source=new File(GIT_BINARIES+"\\setup.jar");
 		File target=new File(GITHUB_ROOT+"\\github.io\\setup\\setup.jar");
 		System.out.println("source="+source);
 		System.out.println("target="+target);

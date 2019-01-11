@@ -32,8 +32,6 @@ Synopsis: java simula.jar  [options]  sourceFile
         -noexec                    Don't execute generated .jar file
         -nowarn                    Generate no warnings
         -verbose                   Output messages about what the compiler is doing
-        -SIMULA_HOME <directory>   Specify where to find the Simula Runtime-System
-                                   Default: Taken from the Environment variable SIMULA_HOME
         -keepJava <directory>      Specify where to place generated .java files
                                    Default: Temp directory which is deleted upon exit
         -output <directory>        Specify where to place generated executable .jar file

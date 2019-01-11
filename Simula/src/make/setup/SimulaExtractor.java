@@ -10,6 +10,7 @@ package make.setup;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -52,8 +54,13 @@ public final class SimulaExtractor extends JFrame {
 	private static final boolean DEBUG=true;
 	
 	// NOTE: When updating release id, change version in Global.simulaReleaseID
-	private final String subDirName = "Simula"+File.separatorChar+"Simula-Beta-0.3";
-	private final String programAndVersion = "Simula Beta 0.3";
+    public static final String simulaReleaseID="Simula-Beta-0.3";
+
+    private static File simulaPropertiesFile;
+    private static Properties simulaProperties;
+    private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
+	private static final String programAndVersion = "Simula Beta 0.3";
+	private static String SIMULA_HOME;
 	private final ImageIcon simulaIcon;
 	
 	private String myClassName;
@@ -70,6 +77,7 @@ public final class SimulaExtractor extends JFrame {
 		SimulaExtractor simulaExtractor = new SimulaExtractor();
 		String jarFileName = simulaExtractor.getJarFileName();
 		boolean ok=simulaExtractor.extract(jarFileName);
+//		storeProperties();
 		System.exit(ok ? 0 : 1);
 	}
 	
@@ -79,10 +87,31 @@ public final class SimulaExtractor extends JFrame {
               cs.setAccessible(true); cs.set(null, null);
         } catch(Exception e) {}
     }
-
+	
+	private static void loadProperties() {
+		String USER_HOME=System.getProperty("user.home");
+		System.out.println("USER_HOME="+USER_HOME);
+		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
+		System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
+		simulaPropertiesDir.mkdirs();
+		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.prop");
+		simulaProperties = new Properties();
+		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
+		} catch(Exception e) {} // e.printStackTrace(); }
+	}
+	
+	private static void storeProperties() {
+		simulaProperties.put("simula.version",programAndVersion);
+		simulaProperties.put("simula.home",SIMULA_HOME);
+		simulaProperties.list(System.out);
+		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
+		} catch(Exception e) { e.printStackTrace(); }
+	}
+	
 	SimulaExtractor() {
 		URL url=getClass().getResource("sim.png");
 		simulaIcon=(url==null)?null:new ImageIcon(url);
+		loadProperties();
 	}
 
 	private String getJarFileName() {
@@ -120,7 +149,7 @@ public final class SimulaExtractor extends JFrame {
 		installParentDirectory = System.getProperty("user.home");
 		if(DEBUG) System.out.println("SimulaExtractor.getInstallDir: installParentDirectory="+installParentDirectory); // TODO: MYH
 
-		String msg = "You are about to install a new Simula System on your computer.\n"+"This installer will create the directory  '" + subDirName + "'\n"
+		String msg = "You are about to install a new Simula System on your computer.\n"+"This installer will create the directory  '" + simulaInstallSubdirectory + "'\n"
 				+ "within the Install Directory you select below:\n ";
 
 		// Create a panel with all of the install options
@@ -162,7 +191,7 @@ public final class SimulaExtractor extends JFrame {
 		}
 
 		// Get the values from the dialog box
-		String installDirectory = installDirField.getText() + File.separator + subDirName;
+		String installDirectory = installDirField.getText() + File.separator + simulaInstallSubdirectory;
 
 		File installDirFile = new File(installDirectory);
 		if(installDirFile.exists()) {
@@ -184,6 +213,8 @@ public final class SimulaExtractor extends JFrame {
 				return null; // TBD - should let user try again
 			}
 		}
+		SIMULA_HOME=installDirFile.getParentFile().toString();
+		storeProperties();
 		return installDirFile;
 	}
 

@@ -47,7 +47,7 @@ public final class TestCompiler {
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HegnaNRK.sim";
-		// String name="/samples/HelloWorld.sim";
+		 String name="/samples/HelloWorld.sim";
 		// String name="/samples/JensensDevice.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
@@ -66,7 +66,7 @@ public final class TestCompiler {
 		// String name="/error/PrecompiledProcedure.sim"; // Used by simerr12 
 		// String name="/error/simerr12.sim"; // Division by Zero in Precompiled Procedure 
 		// String name="/error/simerr13.sim"; // Nested Connections 
-		 String name="/error/simerr14.sim"; // Two consecutive identifiers
+		// String name="/error/simerr14.sim"; // Two consecutive identifiers - ERROR - GÅR I LOOP
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER

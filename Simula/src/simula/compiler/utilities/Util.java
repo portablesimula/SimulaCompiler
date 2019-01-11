@@ -11,6 +11,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 /**
  * A set of all static Utility Methods
  * 
@@ -19,6 +22,16 @@ import java.lang.reflect.Type;
  */
 public final class Util
 { 
+	
+	public static void popUpMessage(String msg) {
+        final JFrame parent = new JFrame();
+        JOptionPane.showMessageDialog(parent,msg); 
+	}
+	
+	public static void popUpError(String msg) {
+        final JFrame parent = new JFrame();
+        JOptionPane.showMessageDialog(parent,msg,"ERROR",JOptionPane.ERROR_MESSAGE); 
+	}
   
   public static int nError;
   public static void error(final String msg)

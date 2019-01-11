@@ -101,8 +101,6 @@ public final class SimulaCompiler {
 		  Util.message("OutputDir:       "+Global.outputDir);
 		}
 		// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
-//		System.out.println("SYSTEM: SIMULA_HOME="+System.getenv("SIMULA_HOME"));
-//		System.out.println("SYSTEM: SIMULA_HOME="+Global.SIMULA_HOME);
 //		System.out.println("SYSTEM: java.home="+System.getProperty("java.home"));
 //		System.out.println("SYSTEM: java.class.path="+System.getProperty("java.class.path"));
 //		System.out.println("SYSTEM: path.separator="+System.getProperty("path.separator"));
