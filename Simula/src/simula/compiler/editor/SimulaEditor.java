@@ -35,12 +35,6 @@ public class SimulaEditor extends JFrame {
     public static void main(String[] args) {
     	OptionMenu.InitRuntimeOptions();
     	OptionMenu.InitCompilerOptions();
-
-//		String SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
-//      Global.sampleSourceDir=SIMULA_HOME+'/'+Global.simulaReleaseID+"/tst/";
-
-//		String userDir = System.getProperty("user.home");
-//		Global.sampleSourceDir=userDir +"/SimulaSource";
 		
 //		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/simple";
 		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples";

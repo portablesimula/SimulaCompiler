@@ -63,7 +63,7 @@ public final class SimulaCompiler {
 		if(Option.verbose) Util.message("Compiling: "+inputFileName);
 		
 		if(Option.outputDir==null)
-		     Global.outputDir=Global.sourceFileDir;	
+		     Global.outputDir=Global.sourceFileDir+"bin/";	
 		else Global.outputDir=Option.outputDir;
 		
 //		Global.simulaRtsPath=   "C:/WorkSpaces/SimulaCompiler/Simula/bin/";         // AD'HOC
@@ -71,25 +71,33 @@ public final class SimulaCompiler {
 //		Global.inlineRtsPath=userDir+"/bin/";         // AD'HOC
 
 		// Create Temp .java-Files Directory:
-		String main=Global.sourceName;
-		String systmp=System.getProperty("java.io.tmpdir");
-		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
-		if(!(systmp.endsWith("/") || systmp.endsWith("\\"))) systmp=systmp+'/';
-		if(Option.keepJava==null)
-		{ String tmpJavaDirName=systmp+main+"Java";
-		  File tmpJavaDir=new File(tmpJavaDirName);
-		  tmpJavaDir.mkdirs();
-		  tmpJavaDir.deleteOnExit();
-		  Global.tempJavaFileDir=tmpJavaDir.toString()+'/';
-		} else Global.tempJavaFileDir=Option.keepJava+'/';
+//		String main=Global.sourceName;
+		String simtmp=Option.keepJava;
+		if(simtmp==null) {
+			simtmp=System.getProperty("java.io.tmpdir");
+			// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+			if(!(simtmp.endsWith("/") || simtmp.endsWith("\\"))) simtmp=simtmp+'/';
+			simtmp=simtmp+"simula/";
+		}
 		
 		// Create Temp .class-Files Directory:
-//		String tmpClassDirName=System.getProperty("java.io.tmpdir")+main+"Classes";
-		String tmpClassDirName=systmp+main+"Classes";
+//		String tmpClassDirName=simtmp+"/simula/bin/"+Global.packetName+'/'+main;
+		String tmpClassDirName=simtmp+"/bin/"+Global.packetName;
 		File tmpClassDir=new File(tmpClassDirName);
 		tmpClassDir.mkdirs();
 		tmpClassDir.deleteOnExit();
 		Global.tempClassFileDir=tmpClassDir.toString()+'/';
+		
+//		Option.keepJava=null;
+//		if(Option.keepJava==null)
+//		{
+//		  String tmpJavaDirName=simtmp+"/simula/src/"+Global.packetName+'/'+main;
+		  String tmpJavaDirName=simtmp+"/src/"+Global.packetName;
+		  File tmpJavaDir=new File(tmpJavaDirName);
+		  tmpJavaDir.mkdirs();
+		  tmpJavaDir.deleteOnExit();
+		  Global.tempJavaFileDir=tmpJavaDir.toString()+'/';
+//		} else Global.tempJavaFileDir=Option.keepJava+'/';
 
 		if(Option.verbose)
 		{ Util.message("Package Name:    "+Global.packetName);

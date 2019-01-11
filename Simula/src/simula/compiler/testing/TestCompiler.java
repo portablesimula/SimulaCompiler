@@ -10,6 +10,7 @@ package simula.compiler.testing;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.Util;
 
 /**
  * 
@@ -47,7 +48,7 @@ public final class TestCompiler {
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HegnaNRK.sim";
-		 String name="/samples/HelloWorld.sim";
+		// String name="/samples/HelloWorld.sim";
 		// String name="/samples/JensensDevice.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
@@ -70,7 +71,7 @@ public final class TestCompiler {
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		// String name="/simple/adHoc00.sim";
+		 String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
@@ -164,14 +165,15 @@ public final class TestCompiler {
 			Option.TRACE_JAVAC_OUTPUT=false;//true;
 			Option.TRACE_JARING=true;//false;//true;
 
-//		Option.keepJava="C:/WorkSpaces/SimulaCompiler/Simula/src/testing";
-//		Option.outputDir="C:/WorkSpaces/SimulaCompiler/Simula/bin/";
-//		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
-			String userDir=System.getProperty("user.dir");
+			//String userDir=System.getProperty("user.dir");
+			String userDir="C:/GitHub/SimulaCompiler/Simula";
+			Util.popUpMessage("TestCompiler: userDir="+userDir);
+			
 			Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
 
 			Global.packetName="simulaTestPrograms";
-			Option.keepJava=userDir+"/src/"+Global.packetName;
+//			Option.keepJava=userDir+"/src/"+Global.packetName;
+			Option.keepJava=userDir;
 			Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 			String fileName=userDir+"/src/"+Global.packetName + name;
 

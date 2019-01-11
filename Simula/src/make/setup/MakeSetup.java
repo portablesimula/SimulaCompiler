@@ -23,21 +23,12 @@ import simula.compiler.utilities.Global;
  * <ul>
  * <li> Update Global.simulaReleaseID
  * </li>
- * <li> Set Environment variable  SIMULA_HOME = C:\GitHub\Binaries
- *      - KontrolPanel
- *      - System
- *      - Avanserte Systeminnstillinger
- *      - Miljøvariabler (Environment Variables)
- *      - Definer: SIMULA_HOME = C:\GitHub\Binaries  (Husk: OK OK )
- *      - Restart Eclipse
- * </li>
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class MakeSetup {
 	
-//	private final static String SIMULA_HOME=System.getenv("SIMULA_HOME"); // NOTE: may be null
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Release-1.0";
 

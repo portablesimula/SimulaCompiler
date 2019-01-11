@@ -19,8 +19,6 @@ then you should have a directory tree like this:
                     - RunCompilerTest.bat
                     - RunCompilerTest.sh
 
-You should set the environment-variable  SIMULA_HOME = <git>/Binaries
-
 Then you can run RunCompilerTest.bat or .sh depending on your operating system.
 
 =====================================================================================

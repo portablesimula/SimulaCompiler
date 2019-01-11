@@ -154,11 +154,12 @@ public final class RunFullTestBatch {
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 		
-		String userDir=System.getProperty("user.dir");
+		//String userDir=System.getProperty("user.dir");
+		String userDir="C:/GitHub/SimulaCompiler/Simula";
 		Global.simulaRtsLib=userDir+"/bin/";
 
 		Global.packetName="simulaTestBatch";
-//		Option.keepJava=userDir+"/src/"+Global.packetName;
+//		Option.keepJava=userDir;
 		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 		
 		for(String name:names)

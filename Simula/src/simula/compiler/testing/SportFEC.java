@@ -82,10 +82,10 @@ public final class SportFEC {
 		Option.TRACE_JAVAC_OUTPUT=false;//true;
 		Option.TRACE_JARING=false;//true;
 
-		String userDir=System.getProperty("user.dir");
+		String userDir="C:/GitHub/SimulaCompiler/Simula";
 		Global.simulaRtsLib=userDir+"/bin/";
 		Global.packetName="sportFEC";
-		Option.keepJava=userDir+"/src/"+Global.packetName;
+		//Option.keepJava=userDir;
 		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 
 		for(String name:names)

@@ -22,20 +22,15 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class Simula {
-	static String SIMULA_HOME;
 
 	static void help() {
 		System.out.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
-		System.out.println("SIMULA_HOME="+System.getenv("SIMULA_HOME")+"\n");
-		System.out.println("JAVA_HOME="+System.getenv("JAVA_HOME")+"\n\n");
 		System.out.println("Usage: java simula.jar  [options]  sourceFile \n\n"
 				+ "possible options include:\n"
 				+ "  -help                      Print this synopsis of standard options\n"
 				+ "  -noexec                    Don't execute generated .jar file\n"
 				+ "  -nowarn                    Generate no warnings\n"
 				+ "  -verbose                   Output messages about what the compiler is doing\n"
-				+ "  -SIMULA_HOME <directory>   Specify where to find the Simula Runtime-System\n"
-				+ "                             Default: Taken from the Environment variable SIMULA_HOME\n"
 				+ "  -keepJava <directory>      Specify where to place generated .java files\n"
 				+ "                             Default: Temp directory which is deleted upon exit\n"
 				+ "  -output <directory>        Specify where to place generated executable .jar file\n"
@@ -46,8 +41,8 @@ public final class Simula {
 
 	public static void main(String[] argv) {
 		String fileName = null;
-//		SIMULA_HOME=System.getenv("SIMULA_HOME"); // Default, may be null
-		SIMULA_HOME=Global.getProperty("simula.home",null); // Default, may be null
+		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
+		if(simulaHome==null) error("Simula Property 'simula.home' is not defined");
 		// Set default options.
 		Option.verbose=true;//false;
 		Option.WARNINGS=true;
@@ -66,45 +61,40 @@ public final class Simula {
 				else error("Unknown option "+arg);
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
-		}
-		if(SIMULA_HOME==null) {
-			error("Environment Variable 'SIMULA_HOME' is not defined");
-		}
-//		System.setProperty("file.encoding","UTF-8");		
+		}		
 		setEncoding("UTF-8");	
-		Util.popUpMessage("SIMULA_HOME="+SIMULA_HOME);
+		Util.popUpMessage("SIMULA_HOME="+simulaHome);
 		
 		if (fileName == null) {
 			//error("No input files specified");
-			Global.sampleSourceDir=SIMULA_HOME+'/'+Global.simulaReleaseID+"/tst";
-		    Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
-		    printGlobalList("*** STARTING SIMULA EDITOR ***");
+			Global.sampleSourceDir=simulaHome+'/'+Global.simulaReleaseID+"/tst";
+		    Global.simulaRtsLib=simulaHome+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
+		    //printGlobalList("*** STARTING SIMULA EDITOR ***");
 	    	OptionMenu.InitRuntimeOptions();
 	    	OptionMenu.InitCompilerOptions();
 	    	SimulaEditor editor=new SimulaEditor();
 	    	editor.setVisible(true);
 		} else {
-		    Global.simulaRtsLib=SIMULA_HOME+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
-		    printGlobalList("*** STARTING SIMULA COMPILER ***");
+		    Global.simulaRtsLib=simulaHome+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
+		    //printGlobalList("*** STARTING SIMULA COMPILER ***");
 		    // Start compiler ....
 		    new SimulaCompiler(fileName).doCompile();
 		}
 	}
 	
-	private static void printGlobalList(String msg) {
-		if(Option.verbose)
-		{ Util.message(msg);
-		  Util.message("SIMULA HOME:     "+SIMULA_HOME);
-		  Util.message("Package Name:    "+Global.packetName);
-		  //Util.message("SourceFile Name: "+Global.sourceName);
-		  //Util.message("SourceFile Dir:  "+Global.sourceFileDir);
-		  //Util.message("TempDir .Java:   "+Global.tempJavaFileDir);
-		  //Util.message("TempDir .Class:  "+Global.tempClassFileDir);
-		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
-		  //Util.message("OutputDir:       "+Global.outputDir);
-		}
-
-	}
+//	private static void printGlobalList(String msg) {
+//		if(Option.verbose)
+//		{ Util.message(msg);
+//		  Util.message("Package Name:    "+Global.packetName);
+//		  //Util.message("SourceFile Name: "+Global.sourceName);
+//		  //Util.message("SourceFile Dir:  "+Global.sourceFileDir);
+//		  //Util.message("TempDir .Java:   "+Global.tempJavaFileDir);
+//		  //Util.message("TempDir .Class:  "+Global.tempClassFileDir);
+//		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
+//		  //Util.message("OutputDir:       "+Global.outputDir);
+//		}
+//
+//	}
 	
 	private static void setEncoding(String encoding) {
         dump("Actual system config");
@@ -131,17 +121,6 @@ public final class Simula {
 	  Util.popUpError(msg);
 	  help();
 	}
-	
-
-    /**
-     * Option:  -SIMULA_HOME <directory>   Specify where to find the Compiler and Runtime-System\n"
-     */
-    private static String getSimulaHome(String dir)
-    { String SIMULA_HOME=dir;
-      Util.TRACE("SIMULA_HOME: "+SIMULA_HOME);
-      // TODO: Check dir legal directory name
-      return(SIMULA_HOME);
-    }
 
     /**
      * Option:  -keepJava <directory> Specify where to place generated .java files

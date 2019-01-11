@@ -53,11 +53,19 @@ public class RunMenu extends JMenu {
        	File file=simulaEditor.getCurrentSourceFile();
 		if(file==null) return;
 		String userDir=System.getProperty("user.dir");
+
 //??		Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
 //??		Global.simulaRtsLib=userDir+"/rts/";         // AD'HOC
-		Option.keepJava=userDir+"/src/testing";
+
+//		Option.keepJava=userDir+"/src/testing";
+////		Option.outputDir=userDir+"/bin/";
+//		Option.outputDir=userDir+"/src/testing/bin/";
+
+		//Option.keepJava=userDir;
+		
 //		Option.outputDir=userDir+"/bin/";
-		Option.outputDir=userDir+"/src/testing/bin/";
+//		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
+//		Option.outputDir=userDir+"/bin/"+Global.packetName+'/';
 
 		// Start compiler ....
       	String text=simulaEditor.getCurrentTextPanel().getPureText();
@@ -72,6 +80,7 @@ public class RunMenu extends JMenu {
        	Global.console.clear();
         Global.console.write("Simula Compiler Console:\n");
         Global.console.write("Compiling: "+name+"\n");
+        Global.console.write("Intermediate .java directory: "+Option.keepJava+"\n");
 
 //       	new SimulaCompiler(name,reader).doCompile();
        	new Thread(new Runnable() {

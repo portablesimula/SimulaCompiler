@@ -178,11 +178,12 @@ public final class RunSingleTestBatch {
 		Option.TRACE_JAVAC_OUTPUT=false;//true;
 		Option.TRACE_JARING=true; //false;//true;
 
-		String userDir=System.getProperty("user.dir");
-		Global.simulaRtsLib=userDir+"/bin/";
+		//String userDir=System.getProperty("user.dir");
+		//Global.simulaRtsLib=userDir+"/bin/";
+		String userDir="C:/GitHub/SimulaCompiler/Simula";
 
 		Global.packetName="simulaTestBatch";
-		Option.keepJava=userDir+"/src/"+Global.packetName;
+		Option.keepJava=userDir;
 		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 
 
