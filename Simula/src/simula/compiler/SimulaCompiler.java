@@ -224,7 +224,7 @@ public final class SimulaCompiler {
 			// *** CRERATE .jar FILE  INLINE
 			// ***************************************************************
 			String jarFile=createJarFile(program);
-//			if(Option.TRACE_JARING)
+			if(Option.TRACE_JARING)
 				{
 				System.out.println("List .jar File: "+jarFile);
 			    execute("jar.exe -tvf "+jarFile);

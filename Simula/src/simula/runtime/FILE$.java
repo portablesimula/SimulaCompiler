@@ -196,7 +196,7 @@ public class FILE$ extends CLASS$ {
 			      case noCreate:{
 					  //System.out.println("FILE$.doCreateAction: noCreate on "+file);
 			    	  // If the value is "nocreate", the associated file must exist at "open".
-			    	  if(!file.exists()) throw new RuntimeException("File access mode=noCreate but File does not exist");
+			    	  if(!file.exists()) throw new RuntimeException("File access mode=noCreate but File \""+file+"\" does not exist");
 			    	  break;
 			      }
 			      case create:{
@@ -206,7 +206,7 @@ public class FILE$ extends CLASS$ {
 			    	  // a new file is created by the environment.
 			    	  if(!file.exists()) {
 				    	  boolean success=file.createNewFile();
-				    	  if(!success) throw new RuntimeException("File access mode=Create but couldn't create a new empty file");
+				    	  if(!success) throw new RuntimeException("File access mode=Create but couldn't create a new empty file: "+file);
 			    	  }
 			    	  break;
 			      }

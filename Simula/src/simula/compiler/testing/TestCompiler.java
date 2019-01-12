@@ -71,7 +71,7 @@ public final class TestCompiler {
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
@@ -113,7 +113,7 @@ public final class TestCompiler {
 		// String name="/simple/GotoSample7.sim";
 		// String name="/simple/GotoSample8.sim";
 		// String name="/simple/HashingExample.sim";
-		// String name="/simple/HelloWord.sim";
+		 String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
 		// String name="/simple/InspectionSamples.sim";
 		// String name="/simple/JensensDevice.sim";
@@ -167,14 +167,10 @@ public final class TestCompiler {
 
 			//String userDir=System.getProperty("user.dir");
 			String userDir="C:/GitHub/SimulaCompiler/Simula";
-			Util.popUpMessage("TestCompiler: userDir="+userDir);
-			
-			Global.simulaRtsLib=userDir+"/bin/";         // AD'HOC
-
 			Global.packetName="simulaTestPrograms";
-//			Option.keepJava=userDir+"/src/"+Global.packetName;
-			Option.keepJava=userDir;
+			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
+			Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
 			String fileName=userDir+"/src/"+Global.packetName + name;
 
 		SimulaCompiler compiler = new SimulaCompiler(fileName);

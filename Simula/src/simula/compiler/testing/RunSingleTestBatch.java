@@ -118,8 +118,8 @@ public final class RunSingleTestBatch {
 		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
 		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
-		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
-		names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
+		names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
+		//names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
 		//names.add("simtst81.sim"); // OK:  Test the value of close.
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
@@ -147,9 +147,6 @@ public final class RunSingleTestBatch {
 		//names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
 		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
-
-//		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
-//		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
 
 		// Set options and tracing.
 		Option.verbose = true;// false;
@@ -179,13 +176,11 @@ public final class RunSingleTestBatch {
 		Option.TRACE_JARING=true; //false;//true;
 
 		//String userDir=System.getProperty("user.dir");
-		//Global.simulaRtsLib=userDir+"/bin/";
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
-
 		Global.packetName="simulaTestBatch";
-		Option.keepJava=userDir;
+		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
-
+		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;

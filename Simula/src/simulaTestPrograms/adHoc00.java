@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 4
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri Jan 11 16:03:06 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 10:51:34 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class adHoc00 extends BASICIO$ {

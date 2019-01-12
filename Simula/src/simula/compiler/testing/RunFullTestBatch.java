@@ -146,9 +146,6 @@ public final class RunFullTestBatch {
 		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 
-//		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
-//		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
-
 		// Set options and tracing.
 		Option.BREAKING=false;
 		Option.TRACING=false;
@@ -156,12 +153,11 @@ public final class RunFullTestBatch {
 		
 		//String userDir=System.getProperty("user.dir");
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
-		Global.simulaRtsLib=userDir+"/bin/";
-
 		Global.packetName="simulaTestBatch";
-//		Option.keepJava=userDir;
+		//Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
-		
+		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
 		  SimulaCompiler compiler = new SimulaCompiler(fileName);

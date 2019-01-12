@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 18
 package simulaTestBatch;
-// Release-Beta-0.3 Compiled at Sat Jan 05 09:06:35 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 11:34:57 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class simtst80 extends BASICIO$ {

@@ -26,6 +26,8 @@ BEGIN
    Boolean found_error;
    Boolean verbose=false;
 
+   Text anyExistingDirectfile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingDirectfile";
+
    Ref(file) xf;
    Integer i;
 
@@ -117,8 +119,7 @@ BEGIN
    xf qua Outbytefile.Close;
    Test(sourceline,xf.Isopen, false, 20);
 
-
-   xf:- New Directfile("sxcvz3");         !***** NOTE 1, NOTE 4 *****;
+   xf:- New Directfile(anyExistingDirectfile);         !***** NOTE 1, NOTE 4 *****;
    Test(sourceline,xf.Isopen, false, 21);
 
    if not xf qua Directfile.Open(blanks(10))

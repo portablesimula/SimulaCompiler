@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 2
 package simulaTestPrograms;
-// Release-Beta-0.3 Compiled at Thu Jan 10 17:53:53 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 11:22:06 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HelloWorld extends BASICIO$ {
@@ -18,7 +18,7 @@ public final class HelloWorld extends BASICIO$ {
     // SimulaProgram Statements
     public RTObject$ STM$() {
         TRACE_BEGIN_STM$("HelloWorld",2);
-        sysout().outtext(new TXT$("Hello Word!"));
+        sysout().outtext(new TXT$("Hello World!"));
         // JavaLine 22 ==> SourceLine 3
         sysout().outimage();
         TRACE_END_STM$("HelloWorld",3);
