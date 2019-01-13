@@ -61,6 +61,7 @@ public final class SimulaExtractor extends JFrame {
     private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
 	private static final String programAndVersion = "Simula Beta 0.3";
 	private static String SIMULA_HOME;
+	private static String setupDated;
 	private final ImageIcon simulaIcon;
 	
 	private String myClassName;
@@ -77,7 +78,7 @@ public final class SimulaExtractor extends JFrame {
 		SimulaExtractor simulaExtractor = new SimulaExtractor();
 		String jarFileName = simulaExtractor.getJarFileName();
 		boolean ok=simulaExtractor.extract(jarFileName);
-//		storeProperties();
+		storeProperties();
 		System.exit(ok ? 0 : 1);
 	}
 	
@@ -101,7 +102,10 @@ public final class SimulaExtractor extends JFrame {
 	}
 	
 	private static void storeProperties() {
-		simulaProperties.put("simula.version",programAndVersion);
+
+		simulaProperties.put("simula.setup.dated",setupDated);
+		simulaProperties.put("simula.installed",new Date().toString());
+		simulaProperties.put("simula.version",simulaReleaseID);
 		simulaProperties.put("simula.home",SIMULA_HOME);
 		simulaProperties.list(System.out);
 		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
@@ -214,7 +218,6 @@ public final class SimulaExtractor extends JFrame {
 			}
 		}
 		SIMULA_HOME=installDirFile.getParentFile().toString();
-		storeProperties();
 		return installDirFile;
 	}
 
@@ -262,8 +265,12 @@ public final class SimulaExtractor extends JFrame {
 				ZipEntry entry = (ZipEntry) entries.nextElement();
 				if (entry.isDirectory()) continue;
 				String pathname = entry.getName();
-				if( pathname.startsWith("make/setup") ||
-					pathname.toUpperCase().equals("META-INF/MANIFEST.MF")) {
+//				if(DEBUG) System.out.println("Found File Entry: " + pathname);
+				if( pathname.startsWith("make/setup")) continue;
+				if(	pathname.toUpperCase().equals("META-INF/MANIFEST.MF")) {
+					long lastModificationTime=entry.getTime(); 
+					setupDated=new Date(lastModificationTime).toString();
+					if(DEBUG) System.out.println("Found File Entry: setupDated=" + setupDated);
 					continue;
 				}
 				in = zf.getInputStream(entry);

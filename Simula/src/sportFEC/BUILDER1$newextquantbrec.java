@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 672
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$newextquantbrec extends BASICIO$ {
@@ -18,7 +18,7 @@ public final class BUILDER1$newextquantbrec extends BASICIO$ {
     // JavaLine 18 ==> SourceLine 675
     COMMON$extquantity qe=null;
     // JavaLine 20 ==> SourceLine 677
-    COMMON$extbrecord inspect$677$11=null;
+    COMMON$extbrecord inspect$677$66=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER1$newextquantbrec setPar(Object param) {
@@ -56,21 +56,21 @@ public final class BUILDER1$newextquantbrec extends BASICIO$ {
         TRACE_BEGIN_STM$("newextquantbrec",677);
         {
             // BEGIN INSPECTION 
-            inspect$677$11=new COMMON$extbrecord(((BUILDER1)(CUR$.SL$))).STM$();
-            if(inspect$677$11!=null) //INSPECT inspect$677$11
+            inspect$677$66=new COMMON$extbrecord(((BUILDER1)(CUR$.SL$))).STM$();
+            if(inspect$677$66!=null) //INSPECT inspect$677$66
             // JavaLine 61 ==> SourceLine 678
             {
                 TRACE_BEGIN_STM$("CompoundStatement678",678);
-                inspect$677$11.blev=char$((rank(p$blv)+(1)));
-                inspect$677$11.rtblev=char$((rank(p$rtblv)+(1)));
+                inspect$677$66.blev=char$((rank(p$blv)+(1)));
+                inspect$677$66.rtblev=char$((rank(p$rtblv)+(1)));
                 // JavaLine 66 ==> SourceLine 679
-                RESULT$=qe=new COMMON$extquantity(((BUILDER1)(CUR$.SL$)),((COMMON$extbrecord)inspect$677$11)).STM$();
+                RESULT$=qe=new COMMON$extquantity(((BUILDER1)(CUR$.SL$)),((COMMON$extbrecord)inspect$677$66)).STM$();
                 // JavaLine 68 ==> SourceLine 680
-                qe.descr=((COMMON$extbrecord)inspect$677$11);
+                qe.descr=((COMMON$extbrecord)inspect$677$66);
                 // JavaLine 70 ==> SourceLine 681
-                inspect$677$11.declquant=qe;
-                inspect$677$11.status=p$stat;
-                inspect$677$11.cause=p$caus;
+                inspect$677$66.declquant=qe;
+                inspect$677$66.status=p$stat;
+                inspect$677$66.cause=p$caus;
                 TRACE_END_STM$("CompoundStatement678",681);
             }
         }

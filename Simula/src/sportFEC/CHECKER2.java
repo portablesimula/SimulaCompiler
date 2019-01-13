@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 3
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 12:01:21 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:49 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER2 extends CHECKER1 {

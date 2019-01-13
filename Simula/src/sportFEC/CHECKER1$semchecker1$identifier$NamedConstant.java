@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1354
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:42 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$identifier$NamedConstant extends BASICIO$ {
@@ -14,7 +14,7 @@ public final class CHECKER1$semchecker1$identifier$NamedConstant extends BASICIO
     // JavaLine 14 ==> SourceLine 1356
     CHECKER1$semchecker1$const$ Nconst=null;
     // JavaLine 16 ==> SourceLine 1358
-    COMMON$brecord inspect$1358$11=null;
+    COMMON$brecord inspect$1358$95=null;
     // Normal Constructor
     public CHECKER1$semchecker1$identifier$NamedConstant(RTObject$ SL$) {
         super(SL$);
@@ -38,8 +38,8 @@ public final class CHECKER1$semchecker1$identifier$NamedConstant extends BASICIO
                         TRACE_BEGIN_STM$("CompoundStatement1358",1358);
                         {
                             // BEGIN INSPECTION 
-                            inspect$1358$11=((CHECKER1$semchecker1$identifier)(CUR$.SL$)).meaning.descr;
-                            if(inspect$1358$11!=null) //INSPECT inspect$1358$11
+                            inspect$1358$95=((CHECKER1$semchecker1$identifier)(CUR$.SL$)).meaning.descr;
+                            if(inspect$1358$95!=null) //INSPECT inspect$1358$95
                             // JavaLine 43 ==> SourceLine 1360
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1360",1360);
@@ -72,8 +72,8 @@ public final class CHECKER1$semchecker1$identifier$NamedConstant extends BASICIO
                                 }
                             } // END SWITCH STATEMENT
                             // JavaLine 74 ==> SourceLine 1375
-                            Nconst.ixhi=inspect$1358$11.blnohi;
-                            Nconst.ixlo=inspect$1358$11.blnolo;
+                            Nconst.ixhi=inspect$1358$95.blnohi;
+                            Nconst.ixlo=inspect$1358$95.blnolo;
                             // JavaLine 77 ==> SourceLine 1376
                             Nconst.type=Nconst.ctype=((CHECKER1$semchecker1$identifier)(CUR$.SL$)).type;
                             Nconst.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;

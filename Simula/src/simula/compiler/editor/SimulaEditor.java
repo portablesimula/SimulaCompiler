@@ -33,8 +33,8 @@ public class SimulaEditor extends JFrame {
 //    private File currentFile;
     
     public static void main(String[] args) {
-    	OptionMenu.InitRuntimeOptions();
-    	OptionMenu.InitCompilerOptions();
+    	SettingsMenu.InitRuntimeOptions();
+    	SettingsMenu.InitCompilerOptions();
 		
 //		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/simple";
 		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples";
@@ -108,7 +108,7 @@ public class SimulaEditor extends JFrame {
         menuBar.add(new SourceMenu(this));
         menuBar.add(new EditMenu(this));
         menuBar.add(new RunMenu(this));
-        menuBar.add(new OptionMenu());
+        menuBar.add(new SettingsMenu());
         menuBar.add(aboutMenu);
        
         this.setJMenuBar(menuBar);

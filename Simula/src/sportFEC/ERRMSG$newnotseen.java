@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 286
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:43:34 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:19 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class ERRMSG$newnotseen extends BASICIO$ {
@@ -15,7 +15,7 @@ public final class ERRMSG$newnotseen extends BASICIO$ {
     // JavaLine 15 ==> SourceLine 287
     COMMON$quantity q=null;
     // JavaLine 17 ==> SourceLine 288
-    COMMON$quantity inspect$288$1=null;
+    COMMON$quantity inspect$288$7=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public ERRMSG$newnotseen setPar(Object param) {
@@ -47,8 +47,8 @@ public final class ERRMSG$newnotseen extends BASICIO$ {
         TRACE_BEGIN_STM$("newnotseen",288);
         {
             // BEGIN INSPECTION 
-            inspect$288$1=new COMMON$quantity(((ERRMSG)(CUR$.SL$))).STM$();
-            if(inspect$288$1!=null) //INSPECT inspect$288$1
+            inspect$288$7=new COMMON$quantity(((ERRMSG)(CUR$.SL$))).STM$();
+            if(inspect$288$7!=null) //INSPECT inspect$288$7
             // JavaLine 52 ==> SourceLine 289
             {
                 TRACE_BEGIN_STM$("CompoundStatement289",289);
@@ -58,8 +58,8 @@ public final class ERRMSG$newnotseen extends BASICIO$ {
                     // JavaLine 58 ==> SourceLine 291
                     {
                         TRACE_BEGIN_STM$("CompoundStatement291",291);
-                        ((ERRMSG)(CUR$.SL$)).unknowns.fpar=((COMMON$quantity)inspect$288$1);
-                        inspect$288$1.virtno=1;
+                        ((ERRMSG)(CUR$.SL$)).unknowns.fpar=((COMMON$quantity)inspect$288$7);
+                        inspect$288$7.virtno=1;
                         TRACE_END_STM$("CompoundStatement291",291);
                     }
                 } else
@@ -70,24 +70,24 @@ public final class ERRMSG$newnotseen extends BASICIO$ {
                         q=((COMMON$quantity)(q.next));
                     }
                     // JavaLine 72 ==> SourceLine 293
-                    q.next=((COMMON$quantity)inspect$288$1);
+                    q.next=((COMMON$quantity)inspect$288$7);
                     // JavaLine 74 ==> SourceLine 294
-                    inspect$288$1.virtno=(q.virtno+(1));
+                    inspect$288$7.virtno=(q.virtno+(1));
                     TRACE_END_STM$("CompoundStatement292",294);
                 }
                 // JavaLine 78 ==> SourceLine 296
-                inspect$288$1.symb=p$symx;
+                inspect$288$7.symb=p$symx;
                 // JavaLine 80 ==> SourceLine 297
-                inspect$288$1.categ=((ERRMSG)(CUR$.SL$)).C_unknwn;
-                inspect$288$1.kind=((ERRMSG)(CUR$.SL$)).K_error;
-                inspect$288$1.type=((ERRMSG)(CUR$.SL$)).IELSE;
-                inspect$288$1.plev=((ERRMSG)(CUR$.SL$)).one;
+                inspect$288$7.categ=((ERRMSG)(CUR$.SL$)).C_unknwn;
+                inspect$288$7.kind=((ERRMSG)(CUR$.SL$)).K_error;
+                inspect$288$7.type=((ERRMSG)(CUR$.SL$)).IELSE;
+                inspect$288$7.plev=((ERRMSG)(CUR$.SL$)).one;
                 // JavaLine 85 ==> SourceLine 298
-                inspect$288$1.line=((ERRMSG)(CUR$.SL$)).linenr;
-                inspect$288$1.dim=1;
-                inspect$288$1.encl=((ERRMSG)(CUR$.SL$)).unknowns;
+                inspect$288$7.line=((ERRMSG)(CUR$.SL$)).linenr;
+                inspect$288$7.dim=1;
+                inspect$288$7.encl=((ERRMSG)(CUR$.SL$)).unknowns;
                 // JavaLine 89 ==> SourceLine 301
-                RESULT$=((COMMON$quantity)(((COMMON$identsymbol)(inspect$288$1.symb)).curmeaning=((COMMON$quantity)inspect$288$1)));
+                RESULT$=((COMMON$quantity)(((COMMON$identsymbol)(inspect$288$7.symb)).curmeaning=((COMMON$quantity)inspect$288$7)));
                 TRACE_END_STM$("CompoundStatement289",301);
             }
         }

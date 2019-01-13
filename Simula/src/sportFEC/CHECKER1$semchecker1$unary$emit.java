@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 522
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$unary$emit extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class CHECKER1$semchecker1$unary$emit extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 523
-    CHECKER1$semchecker1$exp inspect$523$4=null;
+    CHECKER1$semchecker1$exp inspect$523$88=null;
     // Normal Constructor
     public CHECKER1$semchecker1$unary$emit(RTObject$ SL$) {
         super(SL$);
@@ -24,14 +24,14 @@ public final class CHECKER1$semchecker1$unary$emit extends BASICIO$ {
         TRACE_BEGIN_STM$("emit",523);
         {
             // BEGIN INSPECTION 
-            inspect$523$4=((CHECKER1$semchecker1$unary)(CUR$.SL$)).p1$left;
-            if(inspect$523$4!=null) //INSPECT inspect$523$4
+            inspect$523$88=((CHECKER1$semchecker1$unary)(CUR$.SL$)).p1$left;
+            if(inspect$523$88!=null) //INSPECT inspect$523$88
             {
                 TRACE_BEGIN_STM$("CompoundStatement523",523);
-                inspect$523$4.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
-                inspect$523$4.emit$0().CPF();
+                inspect$523$88.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
+                inspect$523$88.emit$0().CPF();
                 // JavaLine 33 ==> SourceLine 524
-                if((inspect$523$4.type==(((CHECKER1)(CUR$.SL$.SL$.SL$)).ICHAR))) {
+                if((inspect$523$88.type==(((CHECKER1)(CUR$.SL$.SL$.SL$)).ICHAR))) {
                     // JavaLine 35 ==> SourceLine 525
                     {
                         TRACE_BEGIN_STM$("CompoundStatement525",525);

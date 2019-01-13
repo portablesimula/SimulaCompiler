@@ -118,10 +118,10 @@ public final class RunSingleTestBatch {
 		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
 		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
-		names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
+		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 		//names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
-		//names.add("simtst81.sim"); // OK:  Test the value of close.
+		//names.add("simtst81.sim"); // OK:  Test the value of close.   anyDirectFile
 		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
@@ -130,7 +130,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
 		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
-		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
+		names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
@@ -179,8 +179,13 @@ public final class RunSingleTestBatch {
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
 		Global.packetName="simulaTestBatch";
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
-		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+
+		String simtmp=System.getProperty("java.io.tmpdir");
+		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+		if(!(simtmp.endsWith("/") || simtmp.endsWith("\\"))) simtmp=simtmp+'/';
+		Option.outputDir=simtmp+"simula/bin/";
+		//Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;

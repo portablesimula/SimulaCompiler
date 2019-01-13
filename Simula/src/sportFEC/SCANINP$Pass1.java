@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 35
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:45:10 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:23 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANINP$Pass1 extends BASICIO$ {
@@ -20,7 +20,7 @@ public final class SCANINP$Pass1 extends BASICIO$ {
     // JavaLine 20 ==> SourceLine 40
     TXT$ t=null;
     // JavaLine 22 ==> SourceLine 65
-    InbyteFile$ inspect$65$0=null;
+    InbyteFile$ inspect$65$33=null;
     // Normal Constructor
     public SCANINP$Pass1(RTObject$ SL$) {
         super(SL$);
@@ -49,7 +49,7 @@ public final class SCANINP$Pass1 extends BASICIO$ {
             {
                 TRACE_BEGIN_STM$("CompoundStatement49",49);
                 t=new COMMON$leftint(((SCANINP)(CUR$.SL$)),((SCANINP)(CUR$.SL$)).maxnumoftags).RESULT$;
-                new ERRMSG$error1(((SCANINP)(CUR$.SL$)),(-(367)),t);
+                new ERRMSG$error1(((SCANINP)(CUR$.SL$)),-367,t);
                 // JavaLine 53 ==> SourceLine 50
                 while((((SCANINP)(CUR$.SL$)).maxnumoftags>(0))) {
                     {
@@ -92,14 +92,14 @@ public final class SCANINP$Pass1 extends BASICIO$ {
         if((((SCANINP)(CUR$.SL$)).L2OUPT!=(null))) {
             {
                 // BEGIN INSPECTION 
-                inspect$65$0=new InbyteFile$(((BASICIO$)CTX$),((SCANINP)(CUR$.SL$)).L2NAME).STM$();
-                if(inspect$65$0!=null) //INSPECT inspect$65$0
+                inspect$65$33=new InbyteFile$(((BASICIO$)CTX$),((SCANINP)(CUR$.SL$)).L2NAME).STM$();
+                if(inspect$65$33!=null) //INSPECT inspect$65$33
                 // JavaLine 97 ==> SourceLine 67
                 {
                     TRACE_BEGIN_STM$("CompoundStatement67",67);
-                    inspect$65$0.setaccess(new TXT$("%NOBUFFER"));
+                    inspect$65$33.setaccess(new TXT$("%NOBUFFER"));
                     // JavaLine 101 ==> SourceLine 68
-                    if((!(inspect$65$0.open()))) {
+                    if((!(inspect$65$33.open()))) {
                         // JavaLine 103 ==> SourceLine 69
                         {
                             TRACE_BEGIN_STM$("CompoundStatement69",69);
@@ -109,8 +109,8 @@ public final class SCANINP$Pass1 extends BASICIO$ {
                         }
                     }
                     // JavaLine 111 ==> SourceLine 70
-                    ((SCANINP)(CUR$.SL$)).L2INPT=((InbyteFile$)inspect$65$0);
-                    inspect$65$0.intext(((SCANINP)(CUR$.SL$)).L2codebuffer);
+                    ((SCANINP)(CUR$.SL$)).L2INPT=((InbyteFile$)inspect$65$33);
+                    inspect$65$33.intext(((SCANINP)(CUR$.SL$)).L2codebuffer);
                     TRACE_END_STM$("CompoundStatement67",70);
                 }
             }

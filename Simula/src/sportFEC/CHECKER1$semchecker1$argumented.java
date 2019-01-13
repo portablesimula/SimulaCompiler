@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1785
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:42 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER1$semchecker1$argumented extends CHECKER1$semchecker1$pre_argumented {
@@ -25,9 +25,9 @@ public class CHECKER1$semchecker1$argumented extends CHECKER1$semchecker1$pre_ar
     public COMMON$extquantity q=null;
     public CHECKER1$semchecker1$parameter p=null;
     // JavaLine 27 ==> SourceLine 1834
-    public COMMON$extquantity inspect$1834$15=null;
+    public COMMON$extquantity inspect$1834$99=null;
     // JavaLine 29 ==> SourceLine 1933
-    public COMMON$quantity inspect$1933$16=null;
+    public COMMON$quantity inspect$1933$100=null;
     public PRCQNT$ sameAs$0() { return(new PRCQNT$(this,CHECKER1$semchecker1$argumented$sameAs.class)); }
     // Normal Constructor
     public CHECKER1$semchecker1$argumented(RTObject$ staticLink,CHECKER1$semchecker1$exp sp$pred,char sp$ch,CHECKER1$semchecker1$identifier sp1$ident,CHECKER1$semchecker1$argument sp1$arguments,int sp1$noofexpargs,int sp1$noofactargs) {
@@ -80,21 +80,21 @@ public class CHECKER1$semchecker1$argumented extends CHECKER1$semchecker1$pre_ar
                             // JavaLine 80 ==> SourceLine 1834
                             {
                                 // BEGIN INSPECTION 
-                                inspect$1834$15=((COMMON$extquantity)(meaning));
-                                if(inspect$1834$15!=null) //INSPECT inspect$1834$15
+                                inspect$1834$99=((COMMON$extquantity)(meaning));
+                                if(inspect$1834$99!=null) //INSPECT inspect$1834$99
                                 // JavaLine 85 ==> SourceLine 1844
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1844",1844);
-                                    if((inspect$1834$15.longindic!=(((CHECKER1)(CUR$.SL$.SL$)).NUL))) {
+                                    if((inspect$1834$99.longindic!=(((CHECKER1)(CUR$.SL$.SL$)).NUL))) {
                                         // JavaLine 89 ==> SourceLine 1845
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement1845",1845);
-                                            i=rank(inspect$1834$15.longindic);
+                                            i=rank(inspect$1834$99.longindic);
                                             p=((CHECKER1$semchecker1$parameter)(p1$arguments));
-                                            q=((COMMON$extquantity)(((COMMON$quantity)inspect$1834$15)));
+                                            q=((COMMON$extquantity)(((COMMON$quantity)inspect$1834$99)));
                                             // JavaLine 95 ==> SourceLine 1846
                                             searched=p.p$actual.type;
-                                            symx=inspect$1834$15.symb;
+                                            symx=inspect$1834$99.symb;
                                             // JavaLine 98 ==> SourceLine 1847
                                             if((searched==(((CHECKER1)(CUR$.SL$.SL$)).ISHOR))) {
                                                 searched=((CHECKER1)(CUR$.SL$.SL$)).IINTG;
@@ -249,7 +249,7 @@ public class CHECKER1$semchecker1$argumented extends CHECKER1$semchecker1$pre_ar
                                 // JavaLine 249 ==> SourceLine 1930
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1930",1930);
-                                    if(((inspect$1834$15.clf==(((CHECKER1)(CUR$.SL$.SL$)).Clf010))|((inspect$1834$15.clf==(((CHECKER1)(CUR$.SL$.SL$)).Clf007))))) {
+                                    if(((inspect$1834$99.clf==(((CHECKER1)(CUR$.SL$.SL$)).Clf010))|((inspect$1834$99.clf==(((CHECKER1)(CUR$.SL$.SL$)).Clf007))))) {
                                         // JavaLine 253 ==> SourceLine 1931
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement1931",1931);
@@ -261,12 +261,12 @@ public class CHECKER1$semchecker1$argumented extends CHECKER1$semchecker1$pre_ar
                                                     TRACE_BEGIN_STM$("CompoundStatement1933",1933);
                                                     {
                                                         // BEGIN INSPECTION 
-                                                        inspect$1933$16=p.p1$formal;
-                                                        if(inspect$1933$16!=null) //INSPECT inspect$1933$16
+                                                        inspect$1933$100=p.p1$formal;
+                                                        if(inspect$1933$100!=null) //INSPECT inspect$1933$100
                                                         // JavaLine 266 ==> SourceLine 1934
                                                         {
                                                             TRACE_BEGIN_STM$("CompoundStatement1934",1934);
-                                                            if((inspect$1933$16.categ==(((CHECKER1)(CUR$.SL$.SL$)).C_name))) {
+                                                            if((inspect$1933$100.categ==(((CHECKER1)(CUR$.SL$.SL$)).C_name))) {
                                                                 // JavaLine 270 ==> SourceLine 1935
                                                                 {
                                                                     TRACE_BEGIN_STM$("CompoundStatement1935",1935);
@@ -274,7 +274,7 @@ public class CHECKER1$semchecker1$argumented extends CHECKER1$semchecker1$pre_ar
                                                                         new CHECKER1$semchecker1$argument$errARG(p,433);
                                                                     }
                                                                     // JavaLine 276 ==> SourceLine 1936
-                                                                    if((p.p$actual.type!=(inspect$1933$16.type))) {
+                                                                    if((p.p$actual.type!=(inspect$1933$100.type))) {
                                                                         new CHECKER1$semchecker1$argument$errARG(p,434);
                                                                     }
                                                                     TRACE_END_STM$("CompoundStatement1935",1936);

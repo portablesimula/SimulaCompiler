@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1598
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class SCANNER$L2Coder extends COMMON$outcodefile {
@@ -105,23 +105,23 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
     public COMMON$brecord lastBrec=null;
     public TXT$ L2buf=null;
     // JavaLine 107 ==> SourceLine 1945
-    public COMMON$brecord inspect$1945$14=null;
+    public COMMON$brecord inspect$1945$23=null;
     // JavaLine 109 ==> SourceLine 1947
-    public COMMON$quantity inspect$1947$15=null;
+    public COMMON$quantity inspect$1947$24=null;
     // JavaLine 111 ==> SourceLine 1968
-    public COMMON$idpack inspect$1968$16=null;
+    public COMMON$idpack inspect$1968$25=null;
     // JavaLine 113 ==> SourceLine 2016
-    public COMMON$idpack inspect$2015$17=null;
+    public COMMON$idpack inspect$2015$26=null;
     // JavaLine 115 ==> SourceLine 2116
-    public COMMON$symbolbox inspect$2116$18=null;
+    public COMMON$symbolbox inspect$2116$27=null;
     // JavaLine 117 ==> SourceLine 2130
-    public COMMON$quantity inspect$2130$19=null;
+    public COMMON$quantity inspect$2130$28=null;
     // JavaLine 119 ==> SourceLine 2168
-    public COMMON$quantity inspect$2168$20=null;
+    public COMMON$quantity inspect$2168$29=null;
     // JavaLine 121 ==> SourceLine 2208
-    public COMMON$quantity inspect$2208$21=null;
+    public COMMON$quantity inspect$2208$30=null;
     // JavaLine 123 ==> SourceLine 2227
-    public COMMON$idpack inspect$2227$22=null;
+    public COMMON$idpack inspect$2227$31=null;
     // Normal Constructor
     public SCANNER$L2Coder(RTObject$ staticLink,TXT$ sFILENAME$) {
         super(staticLink,sFILENAME$);
@@ -473,32 +473,32 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                         TRACE_BEGIN_STM$("CompoundStatement1945",1945);
                                         {
                                             // BEGIN INSPECTION 
-                                            inspect$1945$14=cbrec;
-                                            if(inspect$1945$14!=null) //INSPECT inspect$1945$14
+                                            inspect$1945$23=cbrec;
+                                            if(inspect$1945$23!=null) //INSPECT inspect$1945$23
                                             // JavaLine 478 ==> SourceLine 1946
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement1946",1946);
-                                                virq=inspect$1945$14.favirt;
+                                                virq=inspect$1945$23.favirt;
                                                 // JavaLine 482 ==> SourceLine 1947
                                                 while(true) {
                                                     {
                                                         // BEGIN INSPECTION 
-                                                        inspect$1947$15=virq;
-                                                        if(inspect$1947$15!=null) //INSPECT inspect$1947$15
+                                                        inspect$1947$24=virq;
+                                                        if(inspect$1947$24!=null) //INSPECT inspect$1947$24
                                                         // JavaLine 488 ==> SourceLine 1950
                                                         {
                                                             TRACE_BEGIN_STM$("CompoundStatement1950",1950);
-                                                            if((inspect$1947$15.kind!=(((SCANNER)(CUR$.SL$)).K_proc))) {
+                                                            if((inspect$1947$24.kind!=(((SCANNER)(CUR$.SL$)).K_proc))) {
                                                                 GOTO$(NXTVIRT); // GOTO EVALUATED LABEL
                                                             }
                                                             // JavaLine 494 ==> SourceLine 1951
-                                                            pq=((COMMON$quantity)(inspect$1945$14.fpar.next));
+                                                            pq=((COMMON$quantity)(inspect$1945$23.fpar.next));
                                                             // JavaLine 496 ==> SourceLine 1952
                                                             while((pq!=(null))) {
                                                                 // JavaLine 498 ==> SourceLine 1953
                                                                 {
                                                                     TRACE_BEGIN_STM$("CompoundStatement1953",1953);
-                                                                    if((pq.symb==(inspect$1947$15.symb))) {
+                                                                    if((pq.symb==(inspect$1947$24.symb))) {
                                                                         // JavaLine 502 ==> SourceLine 1954
                                                                         GOTO$(NXTVIRT); // GOTO EVALUATED LABEL
                                                                     }
@@ -508,15 +508,15 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                                 }
                                                             }
                                                             // JavaLine 510 ==> SourceLine 1956
-                                                            ctype=inspect$1947$15.type;
+                                                            ctype=inspect$1947$24.type;
                                                             ckind=((SCANNER)(CUR$.SL$)).K_proc;
                                                             // JavaLine 513 ==> SourceLine 1957
                                                             new SCANNER$L2Coder$NewQuant(((SCANNER$L2Coder)CUR$),((SCANNER)(CUR$.SL$)).C_local);
                                                             // JavaLine 515 ==> SourceLine 1958
-                                                            cquant.line=inspect$1947$15.line;
-                                                            cquant.ftag=inspect$1947$15.ftag;
+                                                            cquant.line=inspect$1947$24.line;
+                                                            cquant.ftag=inspect$1947$24.ftag;
                                                             // JavaLine 518 ==> SourceLine 1959
-                                                            cquant.symb=inspect$1947$15.symb;
+                                                            cquant.symb=inspect$1947$24.symb;
                                                             // JavaLine 520 ==> SourceLine 1960
                                                             cquant.dim=78;
                                                             // JavaLine 522 ==> SourceLine 1961
@@ -525,29 +525,29 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                             new SCANNER$L2Coder$brecinit(((SCANNER$L2Coder)CUR$),((SCANNER)(CUR$.SL$)).K_proc);
                                                             xquant.descr=cbrec;
                                                             // JavaLine 527 ==> SourceLine 1963
-                                                            if((inspect$1947$15.descr!=(null))) {
+                                                            if((inspect$1947$24.descr!=(null))) {
                                                                 // JavaLine 529 ==> SourceLine 1964
-                                                                cbrec.fpar.next=inspect$1947$15.descr.fpar;
+                                                                cbrec.fpar.next=inspect$1947$24.descr.fpar;
                                                             }
                                                             // JavaLine 532 ==> SourceLine 1966
                                                             xbrec=cbrec;
-                                                            cbrec.line1=inspect$1947$15.line;
+                                                            cbrec.line1=inspect$1947$24.line;
                                                             new SCANNER$L2Coder$brecterm(((SCANNER$L2Coder)CUR$));
                                                             // JavaLine 536 ==> SourceLine 1967
                                                             new SCANNER$L2Coder$brecinit(((SCANNER$L2Coder)CUR$),((SCANNER)(CUR$.SL$)).K_proc);
-                                                            cbrec.line1=inspect$1947$15.line;
+                                                            cbrec.line1=inspect$1947$24.line;
                                                             // JavaLine 539 ==> SourceLine 1968
                                                             {
                                                                 // BEGIN INSPECTION 
-                                                                inspect$1968$16=new COMMON$idpack(((SCANNER)(CUR$.SL$))).STM$();
-                                                                if(inspect$1968$16!=null) //INSPECT inspect$1968$16
+                                                                inspect$1968$25=new COMMON$idpack(((SCANNER)(CUR$.SL$))).STM$();
+                                                                if(inspect$1968$25!=null) //INSPECT inspect$1968$25
                                                                 // JavaLine 544 ==> SourceLine 1970
                                                                 {
                                                                     TRACE_BEGIN_STM$("CompoundStatement1970",1970);
-                                                                    cbrec.hidlist=((COMMON$idpack)inspect$1968$16);
+                                                                    cbrec.hidlist=((COMMON$idpack)inspect$1968$25);
                                                                     // JavaLine 548 ==> SourceLine 1971
-                                                                    inspect$1968$16.idhi=xbrec.blnohi;
-                                                                    inspect$1968$16.idlo=xbrec.blnolo;
+                                                                    inspect$1968$25.idhi=xbrec.blnohi;
+                                                                    inspect$1968$25.idlo=xbrec.blnolo;
                                                                     TRACE_END_STM$("CompoundStatement1970",1971);
                                                                 }
                                                             }
@@ -564,7 +564,7 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                             }
                                                             // JavaLine 565 ==> SourceLine 1977
                                                             LABEL$(6); // NXTVIRT
-                                                            virq=((COMMON$quantity)(inspect$1947$15.next));
+                                                            virq=((COMMON$quantity)(inspect$1947$24.next));
                                                             TRACE_END_STM$("CompoundStatement1950",1977);
                                                         }
                                                         else // OTHERWISE 
@@ -575,8 +575,8 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                 }
                                                 // JavaLine 576 ==> SourceLine 1980
                                                 LABEL$(9); // EXvloop
-                                                fvis=inspect$1945$14.hidlist;
-                                                inspect$1945$14.hidlist=x=null;
+                                                fvis=inspect$1945$23.hidlist;
+                                                inspect$1945$23.hidlist=x=null;
                                                 // JavaLine 580 ==> SourceLine 1981
                                                 while((fvis!=(null))) {
                                                     // JavaLine 582 ==> SourceLine 1983
@@ -592,7 +592,7 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                                 locals=false;
                                                                 notok=true;
                                                                 // JavaLine 594 ==> SourceLine 1987
-                                                                pq=inspect$1945$14.favirt;
+                                                                pq=inspect$1945$23.favirt;
                                                                 // JavaLine 596 ==> SourceLine 1996
                                                                 LABEL$(7); // L1
                                                                 // JavaLine 598 ==> SourceLine 1988
@@ -625,7 +625,7 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                                     {
                                                                         TRACE_BEGIN_STM$("CompoundStatement1998",1998);
                                                                         locals=true;
-                                                                        pq=((COMMON$quantity)(inspect$1945$14.fpar.next));
+                                                                        pq=((COMMON$quantity)(inspect$1945$23.fpar.next));
                                                                         GOTO$(L1); // GOTO EVALUATED LABEL
                                                                         TRACE_END_STM$("CompoundStatement1998",1998);
                                                                     }
@@ -635,14 +635,14 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                                     // JavaLine 635 ==> SourceLine 2013
                                                                     {
                                                                         TRACE_BEGIN_STM$("CompoundStatement2013",2013);
-                                                                        new ERRMSG$error1id(((SCANNER)(CUR$.SL$)),(-(290)),new COMMON$boxof(((SCANNER)(CUR$.SL$)),iihi,iilo).RESULT$);
+                                                                        new ERRMSG$error1id(((SCANNER)(CUR$.SL$)),-290,new COMMON$boxof(((SCANNER)(CUR$.SL$)),iihi,iilo).RESULT$);
                                                                         // JavaLine 639 ==> SourceLine 2015
                                                                         {
                                                                             // BEGIN INSPECTION 
-                                                                            inspect$2015$17=fvis.next;
-                                                                            if(inspect$2015$17!=null) //INSPECT inspect$2015$17
+                                                                            inspect$2015$26=fvis.next;
+                                                                            if(inspect$2015$26!=null) //INSPECT inspect$2015$26
                                                                             // JavaLine 644 ==> SourceLine 2016
-                                                                            if((((inspect$2015$17.idlo==(iilo))&&((inspect$2015$17.idhi==(iihi))))&&(IS$(((COMMON$idpack)inspect$2015$17),COMMON$idpack.class)))) {
+                                                                            if((((inspect$2015$26.idlo==(iilo))&&((inspect$2015$26.idhi==(iihi))))&&(IS$(((COMMON$idpack)inspect$2015$26),COMMON$idpack.class)))) {
                                                                                 // JavaLine 646 ==> SourceLine 2018
                                                                                 fvis=fvis.next;
                                                                             }
@@ -659,7 +659,7 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                         {
                                                             TRACE_BEGIN_STM$("CompoundStatement2022",2022);
                                                             if((x==(null))) {
-                                                                x=inspect$1945$14.hidlist=fvis;
+                                                                x=inspect$1945$23.hidlist=fvis;
                                                             } else
                                                             // JavaLine 664 ==> SourceLine 2023
                                                             x=x.next=fvis;
@@ -875,9 +875,9 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                 // JavaLine 875 ==> SourceLine 2116
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$2116$18=cquant.symb;
-                                    if(inspect$2116$18!=null) //INSPECT inspect$2116$18
-                                    new SCANNER$L2Coder$store3chars(((SCANNER$L2Coder)CUR$),((SCANNER)(CUR$.SL$)).IDCLA,inspect$2116$18.idhi,inspect$2116$18.idlo);
+                                    inspect$2116$27=cquant.symb;
+                                    if(inspect$2116$27!=null) //INSPECT inspect$2116$27
+                                    new SCANNER$L2Coder$store3chars(((SCANNER$L2Coder)CUR$),((SCANNER)(CUR$.SL$)).IDCLA,inspect$2116$27.idhi,inspect$2116$27.idlo);
                                 }
                                 // JavaLine 882 ==> SourceLine 2117
                                 new SCANNER$L2Coder$store3chars(((SCANNER$L2Coder)CUR$),((SCANNER)(CUR$.SL$)).IINTG,((SCANNER)(CUR$.SL$)).zerohi,((SCANNER)(CUR$.SL$)).zerolo);
@@ -912,13 +912,13 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                 while(true) {
                                     {
                                         // BEGIN INSPECTION 
-                                        inspect$2130$19=firstarr;
-                                        if(inspect$2130$19!=null) //INSPECT inspect$2130$19
+                                        inspect$2130$28=firstarr;
+                                        if(inspect$2130$28!=null) //INSPECT inspect$2130$28
                                         // JavaLine 917 ==> SourceLine 2131
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement2131",2131);
-                                            inspect$2130$19.dim=dimcount;
-                                            firstarr=((COMMON$quantity)(inspect$2130$19.next));
+                                            inspect$2130$28.dim=dimcount;
+                                            firstarr=((COMMON$quantity)(inspect$2130$28.next));
                                             TRACE_END_STM$("CompoundStatement2131",2131);
                                         }
                                         else // OTHERWISE 
@@ -978,22 +978,22 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                 TRACE_BEGIN_STM$("CompoundStatement2168",2168);
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$2168$20=vquant;
-                                    if(inspect$2168$20!=null) //INSPECT inspect$2168$20
+                                    inspect$2168$29=vquant;
+                                    if(inspect$2168$29!=null) //INSPECT inspect$2168$29
                                     // JavaLine 983 ==> SourceLine 2169
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement2169",2169);
-                                        if((inspect$2168$20.type!=(((SCANNER)(CUR$.SL$)).INOTY))) {
-                                            new ERRMSG$error1id(((SCANNER)(CUR$.SL$)),(-(444)),inspect$2168$20.symb);
+                                        if((inspect$2168$29.type!=(((SCANNER)(CUR$.SL$)).INOTY))) {
+                                            new ERRMSG$error1id(((SCANNER)(CUR$.SL$)),-444,inspect$2168$29.symb);
                                         }
                                         // JavaLine 989 ==> SourceLine 2171
-                                        inspect$2168$20.symb=new COMMON$boxof(((SCANNER)(CUR$.SL$)),((SCANNER)(CUR$.SL$)).opdhi,((SCANNER)(CUR$.SL$)).opdlo).RESULT$;
-                                        inspect$2168$20.type=ctype;
+                                        inspect$2168$29.symb=new COMMON$boxof(((SCANNER)(CUR$.SL$)),((SCANNER)(CUR$.SL$)).opdhi,((SCANNER)(CUR$.SL$)).opdlo).RESULT$;
+                                        inspect$2168$29.type=ctype;
                                         // JavaLine 992 ==> SourceLine 2172
-                                        inspect$2168$20.ftag=(-(cqual));
+                                        inspect$2168$29.ftag=(-(cqual));
                                         // JavaLine 994 ==> SourceLine 2173
                                         new SCANNER$L2Coder$brecinit(((SCANNER$L2Coder)CUR$),((SCANNER)(CUR$.SL$)).K_proc);
-                                        inspect$2168$20.descr=cbrec;
+                                        inspect$2168$29.descr=cbrec;
                                         TRACE_END_STM$("CompoundStatement2169",2173);
                                     }
                                 }
@@ -1063,26 +1063,26 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                 // JavaLine 1063 ==> SourceLine 2208
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$2208$21=xquant;
-                                    if(inspect$2208$21!=null) //INSPECT inspect$2208$21
+                                    inspect$2208$30=xquant;
+                                    if(inspect$2208$30!=null) //INSPECT inspect$2208$30
                                     // JavaLine 1068 ==> SourceLine 2209
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement2209",2209);
-                                        if(((inspect$2208$21.symb.idhi!=(((SCANNER)(CUR$.SL$)).opdhi))||((inspect$2208$21.symb.idlo!=(((SCANNER)(CUR$.SL$)).opdlo))))) {
+                                        if(((inspect$2208$30.symb.idhi!=(((SCANNER)(CUR$.SL$)).opdhi))||((inspect$2208$30.symb.idlo!=(((SCANNER)(CUR$.SL$)).opdlo))))) {
                                             // JavaLine 1072 ==> SourceLine 2211
                                             new SCANNER$L2Coder$specErr(((SCANNER$L2Coder)CUR$),223);
                                         } else
-                                        if((inspect$2208$21.kind!=(((SCANNER)(CUR$.SL$)).K_unknwn))) {
+                                        if((inspect$2208$30.kind!=(((SCANNER)(CUR$.SL$)).K_unknwn))) {
                                             // JavaLine 1076 ==> SourceLine 2212
                                             new SCANNER$L2Coder$specErr(((SCANNER$L2Coder)CUR$),224);
                                         } else
                                         // JavaLine 1079 ==> SourceLine 2213
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement2213",2213);
-                                            inspect$2208$21.type=ctype;
-                                            inspect$2208$21.kind=ckind;
+                                            inspect$2208$30.type=ctype;
+                                            inspect$2208$30.kind=ckind;
                                             // JavaLine 1084 ==> SourceLine 2214
-                                            inspect$2208$21.ftag=(-(cqual));
+                                            inspect$2208$30.ftag=(-(cqual));
                                             TRACE_END_STM$("CompoundStatement2213",2214);
                                         }
                                         TRACE_END_STM$("CompoundStatement2209",2214);
@@ -1111,15 +1111,15 @@ public class SCANNER$L2Coder extends COMMON$outcodefile {
                                                 // JavaLine 1111 ==> SourceLine 2227
                                                 {
                                                     // BEGIN INSPECTION 
-                                                    inspect$2227$22=new COMMON$idpack(((SCANNER)(CUR$.SL$))).STM$();
-                                                    if(inspect$2227$22!=null) //INSPECT inspect$2227$22
+                                                    inspect$2227$31=new COMMON$idpack(((SCANNER)(CUR$.SL$))).STM$();
+                                                    if(inspect$2227$31!=null) //INSPECT inspect$2227$31
                                                     // JavaLine 1116 ==> SourceLine 2229
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement2229",2229);
-                                                        cbrec.hidlist=((COMMON$idpack)inspect$2227$22);
+                                                        cbrec.hidlist=((COMMON$idpack)inspect$2227$31);
                                                         // JavaLine 1120 ==> SourceLine 2230
-                                                        inspect$2227$22.idhi=xbrec.blnohi;
-                                                        inspect$2227$22.idlo=xbrec.blnolo;
+                                                        inspect$2227$31.idhi=xbrec.blnohi;
+                                                        inspect$2227$31.idlo=xbrec.blnolo;
                                                         TRACE_END_STM$("CompoundStatement2229",2230);
                                                     }
                                                 }

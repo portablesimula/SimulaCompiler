@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1674
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$L2Coder$brecinit extends BASICIO$ {
@@ -12,7 +12,7 @@ public final class SCANNER$L2Coder$brecinit extends BASICIO$ {
     // JavaLine 12 ==> SourceLine 1675
     COMMON$brctab2 tab2=null;
     // JavaLine 14 ==> SourceLine 1676
-    COMMON$brecord inspect$1676$11=null;
+    COMMON$brecord inspect$1676$20=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public SCANNER$L2Coder$brecinit setPar(Object param) {
@@ -44,16 +44,16 @@ public final class SCANNER$L2Coder$brecinit extends BASICIO$ {
         TRACE_BEGIN_STM$("brecinit",1676);
         {
             // BEGIN INSPECTION 
-            inspect$1676$11=new COMMON$brecord(((SCANNER)(CUR$.SL$.SL$))).STM$();
-            if(inspect$1676$11!=null) //INSPECT inspect$1676$11
+            inspect$1676$20=new COMMON$brecord(((SCANNER)(CUR$.SL$.SL$))).STM$();
+            if(inspect$1676$20!=null) //INSPECT inspect$1676$20
             // JavaLine 49 ==> SourceLine 1677
             {
                 TRACE_BEGIN_STM$("CompoundStatement1677",1677);
-                inspect$1676$11.blnohi=((SCANNER)(CUR$.SL$.SL$)).nextblhi;
-                inspect$1676$11.blnolo=((SCANNER)(CUR$.SL$.SL$)).nextbllo;
+                inspect$1676$20.blnohi=((SCANNER)(CUR$.SL$.SL$)).nextblhi;
+                inspect$1676$20.blnolo=((SCANNER)(CUR$.SL$.SL$)).nextbllo;
                 // JavaLine 54 ==> SourceLine 1678
-                inspect$1676$11.kind=p$breckind;
-                inspect$1676$11.line1=((SCANNER)(CUR$.SL$.SL$)).linenr;
+                inspect$1676$20.kind=p$breckind;
+                inspect$1676$20.line1=((SCANNER)(CUR$.SL$.SL$)).linenr;
                 // JavaLine 57 ==> SourceLine 1679
                 if((((SCANNER)(CUR$.SL$.SL$)).nextbllo==(((char)255)))) {
                     // JavaLine 59 ==> SourceLine 1680
@@ -68,24 +68,24 @@ public final class SCANNER$L2Coder$brecinit extends BASICIO$ {
                 // JavaLine 68 ==> SourceLine 1682
                 ((SCANNER)(CUR$.SL$.SL$)).nextbllo=char$((rank(((SCANNER)(CUR$.SL$.SL$)).nextbllo)+(1)));
                 // JavaLine 70 ==> SourceLine 1683
-                ((SCANNER$L2Coder)(CUR$.SL$)).cquant=inspect$1676$11.fpar=new COMMON$quantity(((SCANNER)(CUR$.SL$.SL$))).STM$();
-                inspect$1676$11.fpar.categ=((SCANNER)(CUR$.SL$.SL$)).C_unknwn;
+                ((SCANNER$L2Coder)(CUR$.SL$)).cquant=inspect$1676$20.fpar=new COMMON$quantity(((SCANNER)(CUR$.SL$.SL$))).STM$();
+                inspect$1676$20.fpar.categ=((SCANNER)(CUR$.SL$.SL$)).C_unknwn;
                 // JavaLine 73 ==> SourceLine 1684
-                inspect$1676$11.fpar.encl=((SCANNER$L2Coder)(CUR$.SL$)).cbrec;
+                inspect$1676$20.fpar.encl=((SCANNER$L2Coder)(CUR$.SL$)).cbrec;
                 // JavaLine 75 ==> SourceLine 1685
-                tab2=((SCANNER)(CUR$.SL$.SL$)).brctab.Elt[rank(inspect$1676$11.blnohi)-((SCANNER)(CUR$.SL$.SL$)).brctab.LB[0]];
+                tab2=((SCANNER)(CUR$.SL$.SL$)).brctab.Elt[rank(inspect$1676$20.blnohi)-((SCANNER)(CUR$.SL$.SL$)).brctab.LB[0]];
                 // JavaLine 77 ==> SourceLine 1686
                 if((tab2==(null))) {
                     // JavaLine 79 ==> SourceLine 1687
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1687",1687);
                         tab2=new COMMON$brctab2(((SCANNER)(CUR$.SL$.SL$))).STM$();
-                        ((SCANNER)(CUR$.SL$.SL$)).brctab.Elt[rank(inspect$1676$11.blnohi)-((SCANNER)(CUR$.SL$.SL$)).brctab.LB[0]]=tab2;
+                        ((SCANNER)(CUR$.SL$.SL$)).brctab.Elt[rank(inspect$1676$20.blnohi)-((SCANNER)(CUR$.SL$.SL$)).brctab.LB[0]]=tab2;
                         TRACE_END_STM$("CompoundStatement1687",1687);
                     }
                 }
                 // JavaLine 87 ==> SourceLine 1688
-                ((ARRAY$<COMMON$brecord[]>)tab2.val).Elt[rank(inspect$1676$11.blnolo)-tab2.val.LB[0]]=((SCANNER$L2Coder)(CUR$.SL$)).cbrec=((COMMON$brecord)inspect$1676$11);
+                ((ARRAY$<COMMON$brecord[]>)tab2.val).Elt[rank(inspect$1676$20.blnolo)-tab2.val.LB[0]]=((SCANNER$L2Coder)(CUR$.SL$)).cbrec=((COMMON$brecord)inspect$1676$20);
                 TRACE_END_STM$("CompoundStatement1677",1688);
             }
         }

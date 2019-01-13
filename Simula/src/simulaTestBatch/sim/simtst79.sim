@@ -10,15 +10,15 @@
 %               with the given filename exists or not.
 %           2 - There shall not exist any file with the filename given
 %               in the line marked with NOTE 2.
-%               (sxcvzf,sxcvfb)
+%               (anyImageFile,anyExitingByteFile)
 %           3 - There shall exist a file with the filename given in
 %               the line marked with NOTE 3.
-%               (sxcvzg,sxcvzgb)
+%               (anyExistingImageFile,anyExitingByteFile)
 %               - if these are changed, change also prep-79 which will
 %                 generate the files.
 %           4 - If a file with this filename exists, the file will only
 %               be opened; if it does not exist, it will be created.
-%               (sxcvz1, sxcvz2, sxcvz3, sxcvz4, sxcvz5)
+%               (anyOutFile, anyOutByteFile, anyDirectByteFile, anyPrintFile, anyExistingDirectfile)
 %
 %  WRITTEN BY:  BEH   27/08-86
 % =====================================================================
@@ -26,7 +26,15 @@ BEGIN
    Boolean found_error;
    Boolean verbose=false;
 
-   Text anyExistingDirectfile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingDirectfile";
+   Text anyExistingDirectfile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingDirectfile79";
+   Text anyImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyImageFile79";
+
+   Text anyExistingImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingImageFile79";
+   Text anyExitingByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingByteFile79";
+   Text anyOutFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOutFile79";
+   Text anyOutByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOutByteFile79";
+   Text anyPrintFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyPrintFile79";
+   Text anyDirectByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectByteFile79";
 
    Ref(file) xf;
    Integer i;
@@ -58,20 +66,20 @@ BEGIN
    Outimage ;
    end;
    
-   !***** PREPARE sxcvzf to be used as Infile below *****;
-   xf:-New Outfile("sxcvzf");
+   !***** PREPARE 'anyImageFile' to be used as Infile below *****;
+   xf:-New Outfile(anyImageFile);
    xf qua Outfile.open(blanks(10));
    for i:=0 step 1 until 30 do xf qua Outfile.outint(i,4);
    xf qua Outfile.outimage;
    xf qua Outfile.close;
 
-   xf:- New Infile("sxcvzf");             !***** NOTE 1, NOTE 2 *****;
+   xf:- New Infile(anyImageFile);             !***** NOTE 1, NOTE 2 *****;
    Test(sourceline,xf.Isopen, false, 1);
 
    xf qua Infile.open(blanks(10));
    Test(sourceline,xf.Isopen, true, 2);
 
-   xf:- New Infile("sxcvzg");             !***** NOTE 1, NOTE 3 *****;
+   xf:- New Infile(anyExistingImageFile);             !***** NOTE 1, NOTE 3 *****;
    Test(sourceline,xf.Isopen, false, 3);
 
    if not xf qua Infile.open(blanks(80))
@@ -87,7 +95,7 @@ BEGIN
    xf qua Inbytefile.Open;
    Test(sourceline,xf.Isopen, false, 8);
 
-   xf:- New Inbytefile("sxcvzgb");         !***** NOTE 1, NOTE 3 *****;
+   xf:- New Inbytefile(anyExitingByteFile);         !***** NOTE 1, NOTE 3 *****;
    Test(sourceline,xf.Isopen, false, 9);
 
    if not xf qua Inbytefile.Open
@@ -98,7 +106,7 @@ BEGIN
    Test(sourceline,xf.Isopen, false, 12);
 
 
-   xf:- New Outfile("sxcvz1");            !***** NOTE 1, NOTE 4 *****;
+   xf:- New Outfile(anyOutFile);            !***** NOTE 1, NOTE 4 *****;
    Test(sourceline,xf.Isopen, false, 13);
 
    if not xf qua Outfile.Open(blanks(80))
@@ -109,7 +117,7 @@ BEGIN
    Test(sourceline,xf.Isopen, false, 16);
 
 
-   xf:- New Outbytefile("sxcvz2");        !***** NOTE 1, NOTE 4 *****;
+   xf:- New Outbytefile(anyOutByteFile);        !***** NOTE 1, NOTE 4 *****;
    Test(sourceline,xf.Isopen, false, 17);
 
    if not xf qua Outbytefile.Open
@@ -130,7 +138,7 @@ BEGIN
    Test(sourceline,xf.Isopen, false, 24);
 
 
-   xf:- New Directbytefile("sxcvz4");     !***** NOTE 1, NOTE 4 *****;
+   xf:- New Directbytefile(anyDirectByteFile);     !***** NOTE 1, NOTE 4 *****;
    xf.setaccess("CREATE");                ! MYH
    Test(sourceline,xf.Isopen, false, 25);
 
@@ -141,7 +149,7 @@ BEGIN
    xf qua Directbytefile.Close;
    Test(sourceline,xf.Isopen, false, 28);
 
-   xf:- New Printfile("sxcvz5");          !***** NOTE 1, NOTE 4 *****;
+   xf:- New Printfile(anyPrintFile);          !***** NOTE 1, NOTE 4 *****;
    Test(sourceline,xf.Isopen, false, 29);
 
    if not xf qua Printfile.Open(blanks(136))

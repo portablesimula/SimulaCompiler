@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 678
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$recognizer$directive extends BASICIO$ {
@@ -33,7 +33,7 @@ public final class SCANNER$recognizer$directive extends BASICIO$ {
     int cswb=0;
     int startpos=0;
     // JavaLine 35 ==> SourceLine 749
-    PrintFile$ inspect$749$5=null;
+    PrintFile$ inspect$749$14=null;
     // Normal Constructor
     public SCANNER$recognizer$directive(RTObject$ SL$) {
         super(SL$);
@@ -150,19 +150,19 @@ public final class SCANNER$recognizer$directive extends BASICIO$ {
                         if(((SCANNER)(CUR$.SL$.SL$)).listingon) {
                             {
                                 // BEGIN INSPECTION 
-                                inspect$749$5=((SCANNER)(CUR$.SL$.SL$)).listfile;
-                                if(inspect$749$5!=null) //INSPECT inspect$749$5
+                                inspect$749$14=((SCANNER)(CUR$.SL$.SL$)).listfile;
+                                if(inspect$749$14!=null) //INSPECT inspect$749$14
                                 // JavaLine 155 ==> SourceLine 750
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement750",750);
-                                    inspect$749$5.eject(1);
-                                    inspect$749$5.outtext(((SCANNER$recognizer)(CUR$.SL$)).curtitle);
+                                    inspect$749$14.eject(1);
+                                    inspect$749$14.outtext(((SCANNER$recognizer)(CUR$.SL$)).curtitle);
                                     // JavaLine 160 ==> SourceLine 751
-                                    inspect$749$5.setpos((((SCANNER)(CUR$.SL$.SL$)).listlength-(5)));
-                                    inspect$749$5.outint(inspect$749$5.page(),5);
+                                    inspect$749$14.setpos((((SCANNER)(CUR$.SL$.SL$)).listlength-(5)));
+                                    inspect$749$14.outint(inspect$749$14.page(),5);
                                     // JavaLine 163 ==> SourceLine 752
-                                    inspect$749$5.outimage();
-                                    inspect$749$5.outimage();
+                                    inspect$749$14.outimage();
+                                    inspect$749$14.outimage();
                                     TRACE_END_STM$("CompoundStatement750",752);
                                 }
                             }

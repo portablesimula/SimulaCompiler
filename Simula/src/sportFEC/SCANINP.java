@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 3
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:45:10 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:23 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class SCANINP extends SCANNER {

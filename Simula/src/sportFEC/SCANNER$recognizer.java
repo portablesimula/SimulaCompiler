@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 562
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class SCANNER$recognizer extends COMMON$component {
@@ -110,11 +110,11 @@ public class SCANNER$recognizer extends COMMON$component {
     // JavaLine 110 ==> SourceLine 975
     public SCANNER$recognizer$unsignedInteger unsignedInt=null;
     // JavaLine 112 ==> SourceLine 1097
-    public COMMON$component inspect$1097$7=null;
+    public COMMON$component inspect$1097$16=null;
     // JavaLine 114 ==> SourceLine 1487
-    public COMMON$component inspect$1487$8=null;
+    public COMMON$component inspect$1487$17=null;
     // JavaLine 116 ==> SourceLine 1560
-    public COMMON$component inspect$1560$9=null;
+    public COMMON$component inspect$1560$18=null;
     // Normal Constructor
     public SCANNER$recognizer(RTObject$ staticLink) {
         super(staticLink);
@@ -154,23 +154,23 @@ public class SCANNER$recognizer extends COMMON$component {
                         // JavaLine 154 ==> SourceLine 1097
                         {
                             // BEGIN INSPECTION 
-                            inspect$1097$7=((SCANNER)(CUR$.SL$)).parser;
-                            if(inspect$1097$7!=null) //INSPECT inspect$1097$7
+                            inspect$1097$16=((SCANNER)(CUR$.SL$)).parser;
+                            if(inspect$1097$16!=null) //INSPECT inspect$1097$16
                             // JavaLine 159 ==> SourceLine 1098
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1098",1098);
-                                inspect$1097$7.getopt=true;
+                                inspect$1097$16.getopt=true;
                                 // JavaLine 163 ==> SourceLine 1099
                                 if((((SCANNER)(CUR$.SL$)).optx==(((SCANNER)(CUR$.SL$)).NUL))) {
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1099",1099);
-                                        inspect$1097$7.cs=((SCANNER)(CUR$.SL$)).opt;
-                                        inspect$1097$7.getopt=false;
+                                        inspect$1097$16.cs=((SCANNER)(CUR$.SL$)).opt;
+                                        inspect$1097$16.getopt=false;
                                         TRACE_END_STM$("CompoundStatement1099",1099);
                                     }
                                 }
                                 // JavaLine 172 ==> SourceLine 1104
-                                call(((COMMON$component)inspect$1097$7));
+                                call(((COMMON$component)inspect$1097$16));
                                 // JavaLine 174 ==> SourceLine 1105
                                 ((SCANNER)(CUR$.SL$)).opt=((SCANNER)(CUR$.SL$)).optx=((SCANNER)(CUR$.SL$)).opdhi=((SCANNER)(CUR$.SL$)).opdlo=((SCANNER)(CUR$.SL$)).NUL;
                                 TRACE_END_STM$("CompoundStatement1098",1105);
@@ -1242,7 +1242,7 @@ public class SCANNER$recognizer extends COMMON$component {
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1434",1434);
                             nxtsym=((SCANNER)(CUR$.SL$)).ITO;
-                            eqopt=(-(284));
+                            eqopt=-284;
                             ((SCANNER)(CUR$.SL$)).opt=((SCANNER)(CUR$.SL$)).IGOTO;
                             TRACE_END_STM$("CompoundStatement1434",1434);
                         }
@@ -1259,7 +1259,7 @@ public class SCANNER$recognizer extends COMMON$component {
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1440",1440);
                             nxtsym=((SCANNER)(CUR$.SL$)).IREAL;
-                            eqopt=(-(281));
+                            eqopt=-281;
                             TRACE_END_STM$("CompoundStatement1440",1440);
                         }
                         case 36: 
@@ -1283,7 +1283,7 @@ public class SCANNER$recognizer extends COMMON$component {
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1449",1449);
                             nxtsym=((SCANNER)(CUR$.SL$)).IINTG;
-                            eqopt=(-(280));
+                            eqopt=-280;
                             TRACE_END_STM$("CompoundStatement1449",1449);
                         }
                         case 51: 
@@ -1365,26 +1365,26 @@ public class SCANNER$recognizer extends COMMON$component {
                                     // JavaLine 1365 ==> SourceLine 1487
                                     {
                                         // BEGIN INSPECTION 
-                                        inspect$1487$8=((SCANNER)(CUR$.SL$)).parser;
-                                        if(inspect$1487$8!=null) //INSPECT inspect$1487$8
+                                        inspect$1487$17=((SCANNER)(CUR$.SL$)).parser;
+                                        if(inspect$1487$17!=null) //INSPECT inspect$1487$17
                                         // JavaLine 1370 ==> SourceLine 1488
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement1488",1488);
-                                            inspect$1487$8.getopt=true;
+                                            inspect$1487$17.getopt=true;
                                             // JavaLine 1374 ==> SourceLine 1489
                                             if((((SCANNER)(CUR$.SL$)).optx==(((SCANNER)(CUR$.SL$)).NUL))) {
                                                 // JavaLine 1376 ==> SourceLine 1490
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement1490",1490);
-                                                    inspect$1487$8.cs=((SCANNER)(CUR$.SL$)).opt;
-                                                    inspect$1487$8.getopt=false;
+                                                    inspect$1487$17.cs=((SCANNER)(CUR$.SL$)).opt;
+                                                    inspect$1487$17.getopt=false;
                                                     TRACE_END_STM$("CompoundStatement1490",1490);
                                                 }
                                             }
                                             // JavaLine 1384 ==> SourceLine 1495
-                                            call(((COMMON$component)inspect$1487$8));
+                                            call(((COMMON$component)inspect$1487$17));
                                             // JavaLine 1386 ==> SourceLine 1496
-                                            inspect$1487$8.cs=((SCANNER)(CUR$.SL$)).opt=((SCANNER)(CUR$.SL$)).optx=((SCANNER)(CUR$.SL$)).opdhi=((SCANNER)(CUR$.SL$)).opdlo=((SCANNER)(CUR$.SL$)).NUL;
+                                            inspect$1487$17.cs=((SCANNER)(CUR$.SL$)).opt=((SCANNER)(CUR$.SL$)).optx=((SCANNER)(CUR$.SL$)).opdhi=((SCANNER)(CUR$.SL$)).opdlo=((SCANNER)(CUR$.SL$)).NUL;
                                             TRACE_END_STM$("CompoundStatement1488",1496);
                                         }
                                     }
@@ -1551,25 +1551,25 @@ public class SCANNER$recognizer extends COMMON$component {
                             TRACE_BEGIN_STM$("CompoundStatement1560",1560);
                             {
                                 // BEGIN INSPECTION 
-                                inspect$1560$9=((SCANNER)(CUR$.SL$)).parser;
-                                if(inspect$1560$9!=null) //INSPECT inspect$1560$9
+                                inspect$1560$18=((SCANNER)(CUR$.SL$)).parser;
+                                if(inspect$1560$18!=null) //INSPECT inspect$1560$18
                                 // JavaLine 1556 ==> SourceLine 1561
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1561",1561);
-                                    inspect$1560$9.getopt=true;
+                                    inspect$1560$18.getopt=true;
                                     // JavaLine 1560 ==> SourceLine 1562
                                     if((((SCANNER)(CUR$.SL$)).optx==(((SCANNER)(CUR$.SL$)).NUL))) {
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement1562",1562);
-                                            inspect$1560$9.cs=((SCANNER)(CUR$.SL$)).opt;
-                                            inspect$1560$9.getopt=false;
+                                            inspect$1560$18.cs=((SCANNER)(CUR$.SL$)).opt;
+                                            inspect$1560$18.getopt=false;
                                             TRACE_END_STM$("CompoundStatement1562",1562);
                                         }
                                     }
                                     // JavaLine 1569 ==> SourceLine 1567
-                                    call(((COMMON$component)inspect$1560$9));
+                                    call(((COMMON$component)inspect$1560$18));
                                     // JavaLine 1571 ==> SourceLine 1568
-                                    inspect$1560$9.cs=((SCANNER)(CUR$.SL$)).opt=((SCANNER)(CUR$.SL$)).optx=((SCANNER)(CUR$.SL$)).opdhi=((SCANNER)(CUR$.SL$)).opdlo=((SCANNER)(CUR$.SL$)).NUL;
+                                    inspect$1560$18.cs=((SCANNER)(CUR$.SL$)).opt=((SCANNER)(CUR$.SL$)).optx=((SCANNER)(CUR$.SL$)).opdhi=((SCANNER)(CUR$.SL$)).opdlo=((SCANNER)(CUR$.SL$)).NUL;
                                     TRACE_END_STM$("CompoundStatement1561",1568);
                                 }
                             }

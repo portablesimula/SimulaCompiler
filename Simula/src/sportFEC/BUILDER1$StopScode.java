@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 35
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$StopScode extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class BUILDER1$StopScode extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 36
-    COMMON$outcodefile inspect$36$0=null;
+    COMMON$outcodefile inspect$36$55=null;
     // Normal Constructor
     public BUILDER1$StopScode(RTObject$ SL$) {
         super(SL$);
@@ -24,15 +24,15 @@ public final class BUILDER1$StopScode extends BASICIO$ {
         TRACE_BEGIN_STM$("StopScode",36);
         {
             // BEGIN INSPECTION 
-            inspect$36$0=((BUILDER1)(CUR$.SL$)).coder;
-            //INSPECT inspect$36$0
-            if(inspect$36$0 instanceof BUILDER1$visiblegenerator) // WHEN BUILDER1$visiblegenerator DO 
+            inspect$36$55=((BUILDER1)(CUR$.SL$)).coder;
+            //INSPECT inspect$36$55
+            if(inspect$36$55 instanceof BUILDER1$visiblegenerator) // WHEN BUILDER1$visiblegenerator DO 
             // JavaLine 30 ==> SourceLine 37
             {
                 TRACE_BEGIN_STM$("CompoundStatement37",37);
                 ((BUILDER1)(CUR$.SL$)).coder=new BUILDER1$dummygenerator(((BUILDER1)(CUR$.SL$)),new TXT$("$dum$")).STM$();
                 // JavaLine 34 ==> SourceLine 38
-                ((BUILDER1$visiblegenerator)(((BUILDER1)(CUR$.SL$)).coder)).SCF=((BUILDER1$visiblegenerator)(inspect$36$0)).SCF;
+                ((BUILDER1$visiblegenerator)(((BUILDER1)(CUR$.SL$)).coder)).SCF=((BUILDER1$visiblegenerator)(inspect$36$55)).SCF;
                 TRACE_END_STM$("CompoundStatement37",38);
             }
         }

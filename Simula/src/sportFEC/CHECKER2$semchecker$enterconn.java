@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 94
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 12:01:21 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:49 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
@@ -28,17 +28,17 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
     COMMON$quantity q=null;
     COMMON$brecord brc=null;
     // JavaLine 30 ==> SourceLine 118
-    COMMON$brecord inspect$118$1=null;
+    COMMON$brecord inspect$118$105=null;
     // JavaLine 32 ==> SourceLine 142
-    COMMON$brecord inspect$142$2=null;
+    COMMON$brecord inspect$142$106=null;
     // JavaLine 34 ==> SourceLine 154
-    COMMON$identsymbol inspect$154$3=null;
+    COMMON$identsymbol inspect$154$107=null;
     // JavaLine 36 ==> SourceLine 155
-    COMMON$stackedi inspect$155$4=null;
+    COMMON$stackedi inspect$155$108=null;
     // JavaLine 38 ==> SourceLine 172
-    COMMON$identsymbol inspect$172$5=null;
+    COMMON$identsymbol inspect$172$109=null;
     // JavaLine 40 ==> SourceLine 184
-    COMMON$stackedi inspect$184$6=null;
+    COMMON$stackedi inspect$184$110=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public CHECKER2$semchecker$enterconn setPar(Object param) {
@@ -110,12 +110,12 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                 // JavaLine 110 ==> SourceLine 118
                 {
                     // BEGIN INSPECTION 
-                    inspect$118$1=p$classq.descr;
-                    if(inspect$118$1!=null) //INSPECT inspect$118$1
+                    inspect$118$105=p$classq.descr;
+                    if(inspect$118$105!=null) //INSPECT inspect$118$105
                     // JavaLine 115 ==> SourceLine 120
                     {
                         TRACE_BEGIN_STM$("CompoundStatement120",120);
-                        q=inspect$118$1.declquant;
+                        q=inspect$118$105.declquant;
                         // JavaLine 119 ==> SourceLine 121
                         LABEL$(2); // REP
                         qz=q.descr.fpar;
@@ -172,9 +172,9 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                             }
                         }
                         // JavaLine 174 ==> SourceLine 137
-                        ((CHECKER2)(CUR$.SL$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$.SL$)).cblev)-((CHECKER2)(CUR$.SL$.SL$)).display.LB[0]]=((COMMON$brecord)inspect$118$1);
+                        ((CHECKER2)(CUR$.SL$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$.SL$)).cblev)-((CHECKER2)(CUR$.SL$.SL$)).display.LB[0]]=((COMMON$brecord)inspect$118$105);
                         // JavaLine 176 ==> SourceLine 138
-                        q=inspect$118$1.declquant;
+                        q=inspect$118$105.declquant;
                         // JavaLine 178 ==> SourceLine 139
                         while((q!=(null))) {
                             // JavaLine 180 ==> SourceLine 142
@@ -182,17 +182,17 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                                 TRACE_BEGIN_STM$("CompoundStatement142",142);
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$142$2=q.descr;
-                                    if(inspect$142$2!=null) //INSPECT inspect$142$2
+                                    inspect$142$106=q.descr;
+                                    if(inspect$142$106!=null) //INSPECT inspect$142$106
                                     // JavaLine 187 ==> SourceLine 143
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement143",143);
-                                        inspect$142$2.preinsp=new COMMON$stackedb(((CHECKER2)(CUR$.SL$.SL$)),inspect$142$2.blev,inspect$142$2.rtblev,inspect$142$2.connests,inspect$142$2.inspected,inspect$142$2.preinsp).STM$();
+                                        inspect$142$106.preinsp=new COMMON$stackedb(((CHECKER2)(CUR$.SL$.SL$)),inspect$142$106.blev,inspect$142$106.rtblev,inspect$142$106.connests,inspect$142$106.inspected,inspect$142$106.preinsp).STM$();
                                         // JavaLine 191 ==> SourceLine 145
-                                        inspect$142$2.inspected=((CHECKER2)(CUR$.SL$.SL$)).cblev;
+                                        inspect$142$106.inspected=((CHECKER2)(CUR$.SL$.SL$)).cblev;
                                         // JavaLine 193 ==> SourceLine 146
-                                        inspect$142$2.blev=((CHECKER2)(CUR$.SL$.SL$)).cblev;
-                                        inspect$142$2.rtblev=((CHECKER2)(CUR$.SL$.SL$)).crtblev;
+                                        inspect$142$106.blev=((CHECKER2)(CUR$.SL$.SL$)).cblev;
+                                        inspect$142$106.rtblev=((CHECKER2)(CUR$.SL$.SL$)).crtblev;
                                         TRACE_END_STM$("CompoundStatement143",146);
                                     }
                                 }
@@ -202,7 +202,7 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                             }
                         }
                         // JavaLine 204 ==> SourceLine 151
-                        qz=inspect$118$1.fpar;
+                        qz=inspect$118$105.fpar;
                         inlocals=true;
                         // JavaLine 207 ==> SourceLine 162
                         LABEL$(4); // SCANL
@@ -215,27 +215,27 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                                     // JavaLine 215 ==> SourceLine 154
                                     {
                                         // BEGIN INSPECTION 
-                                        inspect$154$3=((COMMON$identsymbol)(qz.symb));
-                                        if(inspect$154$3!=null) //INSPECT inspect$154$3
+                                        inspect$154$107=((COMMON$identsymbol)(qz.symb));
+                                        if(inspect$154$107!=null) //INSPECT inspect$154$107
                                         // JavaLine 220 ==> SourceLine 155
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement155",155);
                                             {
                                                 // BEGIN INSPECTION 
-                                                inspect$155$4=new COMMON$stackedi(((CHECKER2)(CUR$.SL$.SL$)),inspect$154$3.idhi,inspect$154$3.idlo).STM$();
-                                                if(inspect$155$4!=null) //INSPECT inspect$155$4
+                                                inspect$155$108=new COMMON$stackedi(((CHECKER2)(CUR$.SL$.SL$)),inspect$154$107.idhi,inspect$154$107.idlo).STM$();
+                                                if(inspect$155$108!=null) //INSPECT inspect$155$108
                                                 // JavaLine 227 ==> SourceLine 156
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement156",156);
-                                                    inspect$155$4.prevmeaning=inspect$154$3.curmeaning;
-                                                    inspect$155$4.next=chain;
+                                                    inspect$155$108.prevmeaning=inspect$154$107.curmeaning;
+                                                    inspect$155$108.next=chain;
                                                     // JavaLine 232 ==> SourceLine 157
-                                                    chain=((COMMON$stackedi)inspect$155$4);
+                                                    chain=((COMMON$stackedi)inspect$155$108);
                                                     TRACE_END_STM$("CompoundStatement156",157);
                                                 }
                                             }
                                             // JavaLine 237 ==> SourceLine 159
-                                            inspect$154$3.curmeaning=qz;
+                                            inspect$154$107.curmeaning=qz;
                                             TRACE_END_STM$("CompoundStatement155",159);
                                         }
                                     }
@@ -249,11 +249,11 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                         if(inlocals) {
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement163",163);
-                                if((inspect$118$1.favirt!=(null))) {
+                                if((inspect$118$105.favirt!=(null))) {
                                     // JavaLine 253 ==> SourceLine 164
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement164",164);
-                                        qz=inspect$118$1.favirt;
+                                        qz=inspect$118$105.favirt;
                                         inlocals=false;
                                         GOTO$(SCANL); // GOTO EVALUATED LABEL
                                         TRACE_END_STM$("CompoundStatement164",164);
@@ -263,7 +263,7 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                             }
                         }
                         // JavaLine 265 ==> SourceLine 167
-                        q=inspect$118$1.declquant;
+                        q=inspect$118$105.declquant;
                         // JavaLine 267 ==> SourceLine 168
                         while((q.plev>(((CHECKER2$semchecker)(CUR$.SL$)).lowpl))) {
                             // JavaLine 269 ==> SourceLine 169
@@ -279,8 +279,8 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                                         TRACE_BEGIN_STM$("CompoundStatement172",172);
                                         {
                                             // BEGIN INSPECTION 
-                                            inspect$172$5=((COMMON$identsymbol)(qz.symb));
-                                            if(inspect$172$5!=null) //INSPECT inspect$172$5
+                                            inspect$172$109=((COMMON$identsymbol)(qz.symb));
+                                            if(inspect$172$109!=null) //INSPECT inspect$172$109
                                             // JavaLine 284 ==> SourceLine 173
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement173",173);
@@ -288,26 +288,26 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                                                     // JavaLine 288 ==> SourceLine 175
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement175",175);
-                                                        if(((inspect$172$5.curmeaning==(null))||(((((COMMON$quantity)(inspect$172$5.curmeaning)).encl.blev!=(inspect$118$1.blev))&((((COMMON$quantity)(inspect$172$5.curmeaning)).encl!=(qz.encl))))))) {
+                                                        if(((inspect$172$109.curmeaning==(null))||(((((COMMON$quantity)(inspect$172$109.curmeaning)).encl.blev!=(inspect$118$105.blev))&((((COMMON$quantity)(inspect$172$109.curmeaning)).encl!=(qz.encl))))))) {
                                                             // JavaLine 292 ==> SourceLine 184
                                                             {
                                                                 TRACE_BEGIN_STM$("CompoundStatement184",184);
                                                                 {
                                                                     // BEGIN INSPECTION 
-                                                                    inspect$184$6=new COMMON$stackedi(((CHECKER2)(CUR$.SL$.SL$)),inspect$172$5.idhi,inspect$172$5.idlo).STM$();
-                                                                    if(inspect$184$6!=null) //INSPECT inspect$184$6
+                                                                    inspect$184$110=new COMMON$stackedi(((CHECKER2)(CUR$.SL$.SL$)),inspect$172$109.idhi,inspect$172$109.idlo).STM$();
+                                                                    if(inspect$184$110!=null) //INSPECT inspect$184$110
                                                                     // JavaLine 299 ==> SourceLine 185
                                                                     {
                                                                         TRACE_BEGIN_STM$("CompoundStatement185",185);
-                                                                        inspect$184$6.prevmeaning=inspect$172$5.curmeaning;
-                                                                        inspect$184$6.next=chain;
+                                                                        inspect$184$110.prevmeaning=inspect$172$109.curmeaning;
+                                                                        inspect$184$110.next=chain;
                                                                         // JavaLine 304 ==> SourceLine 186
-                                                                        chain=((COMMON$stackedi)inspect$184$6);
+                                                                        chain=((COMMON$stackedi)inspect$184$110);
                                                                         TRACE_END_STM$("CompoundStatement185",186);
                                                                     }
                                                                 }
                                                                 // JavaLine 309 ==> SourceLine 188
-                                                                inspect$172$5.curmeaning=qz;
+                                                                inspect$172$109.curmeaning=qz;
                                                                 TRACE_END_STM$("CompoundStatement184",188);
                                                             }
                                                         }
@@ -326,7 +326,7 @@ public final class CHECKER2$semchecker$enterconn extends BASICIO$ {
                             }
                         }
                         // JavaLine 328 ==> SourceLine 195
-                        inspect$118$1.preinsp.redeclChain=chain;
+                        inspect$118$105.preinsp.redeclChain=chain;
                         TRACE_END_STM$("CompoundStatement120",195);
                     }
                     else // OTHERWISE 

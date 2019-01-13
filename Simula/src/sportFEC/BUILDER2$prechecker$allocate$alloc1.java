@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1002
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$prechecker$allocate$alloc1 extends BASICIO$ {
@@ -192,7 +192,7 @@ public final class BUILDER2$prechecker$allocate$alloc1 extends BASICIO$ {
                                         TRACE_BEGIN_STM$("CompoundStatement1091",1091);
                                         if(((QN.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_proc))|((QN.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_switch))))) {
                                             // JavaLine 194 ==> SourceLine 1093
-                                            new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$.SL$)),(-(321)),QN.symb);
+                                            new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$.SL$)),-321,QN.symb);
                                         }
                                         TRACE_END_STM$("CompoundStatement1091",1093);
                                     }

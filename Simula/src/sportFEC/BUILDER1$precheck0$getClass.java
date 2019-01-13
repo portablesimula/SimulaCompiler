@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 262
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$precheck0$getClass extends BASICIO$ {
@@ -23,7 +23,7 @@ public final class BUILDER1$precheck0$getClass extends BASICIO$ {
     // JavaLine 23 ==> SourceLine 268
     char bl=0;
     // JavaLine 25 ==> SourceLine 275
-    COMMON$brecord inspect$275$5=null;
+    COMMON$brecord inspect$275$60=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER1$precheck0$getClass setPar(Object param) {
@@ -68,19 +68,19 @@ public final class BUILDER1$precheck0$getClass extends BASICIO$ {
                         TRACE_BEGIN_STM$("CompoundStatement275",275);
                         {
                             // BEGIN INSPECTION 
-                            inspect$275$5=((BUILDER1)(CUR$.SL$.SL$)).display.Elt[rank(bl)-((BUILDER1)(CUR$.SL$.SL$)).display.LB[0]];
-                            if(inspect$275$5!=null) //INSPECT inspect$275$5
+                            inspect$275$60=((BUILDER1)(CUR$.SL$.SL$)).display.Elt[rank(bl)-((BUILDER1)(CUR$.SL$.SL$)).display.LB[0]];
+                            if(inspect$275$60!=null) //INSPECT inspect$275$60
                             // JavaLine 73 ==> SourceLine 276
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement276",276);
-                                if((inspect$275$5.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_proc))) {
+                                if((inspect$275$60.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_proc))) {
                                 } else
-                                if((inspect$275$5.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_subbl))) {
+                                if((inspect$275$60.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_subbl))) {
                                 } else
                                 // JavaLine 80 ==> SourceLine 279
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement279",279);
-                                    cqt=inspect$275$5.declquant;
+                                    cqt=inspect$275$60.declquant;
                                     // JavaLine 84 ==> SourceLine 286
                                     LABEL$(1); // LOOP
                                     // JavaLine 86 ==> SourceLine 282
@@ -105,7 +105,7 @@ public final class BUILDER1$precheck0$getClass extends BASICIO$ {
                                     // JavaLine 105 ==> SourceLine 287
                                     RESULT$=cqt;
                                     // JavaLine 107 ==> SourceLine 295
-                                    ((BUILDER1$precheck0)(CUR$.SL$)).enclLevel=inspect$275$5.rtblev;
+                                    ((BUILDER1$precheck0)(CUR$.SL$)).enclLevel=inspect$275$60.rtblev;
                                     // JavaLine 109 ==> SourceLine 296
                                     bl=p$foundblev;
                                     TRACE_END_STM$("CompoundStatement279",296);

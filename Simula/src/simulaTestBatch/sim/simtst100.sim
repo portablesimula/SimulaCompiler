@@ -8,10 +8,10 @@
 %  METHOD:   - see procedure testputget:
 %              step from selected values up/down
 %            testing the results of (de)editing.
-%            Deviations are written to file "out100"
+%            Deviations are written to file outputFrom100
 %
 %  NOTE:     Standard procedures add/subepsilon and maxlongreal used
-%            Writes outfile "out100"
+%            Writes outfile outputFrom100
 %            Constants signpos, signpos1 must be set, see below
 %            Constant 'ten' in 'testputget' should be set according to
 %            the internal coding of characters, if diff. from ISO
@@ -22,6 +22,7 @@
 
 begin
        Boolean verbose=FALSE;
+       Text outputFrom100="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputFrom100";
      
        integer signpos=17;  !***  number of sign. digits in long real;
        integer signpos1=signpos+1;
@@ -132,7 +133,7 @@ begin
           outimage;
           outtext("    Test that put-get-put delivers the identity.");
           outimage;
-          outtext("    - report on outfile ""out100""");
+          outtext("    - report on outfile "& outputFrom100);
           outimage; outimage;
        end;
        
@@ -140,9 +141,9 @@ begin
        
        if verbose then putget:-sysout() else
        begin
-          putget:-new outfile("out100");
+          putget:-new outfile(outputFrom100);
           if not putget.open(blanks(80)) then begin
-             outtext("error: CAN'T OPEN FILE ""out100"""); outimage;
+             outtext("error: CAN'T OPEN FILE " & outputFrom100); outimage;
              goto EXIT end;
        end;   
        heading:-blanks(signpos+15);

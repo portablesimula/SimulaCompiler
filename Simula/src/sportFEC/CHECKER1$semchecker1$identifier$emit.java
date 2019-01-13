@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1412
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:42 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$identifier$emit extends BASICIO$ {

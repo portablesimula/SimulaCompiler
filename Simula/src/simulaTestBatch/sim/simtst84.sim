@@ -12,6 +12,7 @@ BEGIN
 
 boolean verbose=false; !true;
 boolean foundError;
+Text print84="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/print84";
 
 REF (PRINTFILE)   myfile;
 BOOLEAN           save;
@@ -36,7 +37,7 @@ begin outtext("--- START Simula a.s. TEST 84 (test PRINTFILE)"); outimage;
       outimage; Outimage;
 end;
 
-myfile:-NEW PRINTFILE ("print84");
+myfile:-NEW PRINTFILE (print84);
 save:= myfile.LINE=0;
 Check (save, TRUE);
 myfile.OPEN (BLANKS (132));

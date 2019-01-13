@@ -10,7 +10,7 @@ package simula.compiler;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 
-import simula.compiler.editor.OptionMenu;
+import simula.compiler.editor.SettingsMenu;
 import simula.compiler.editor.SimulaEditor;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -70,8 +70,8 @@ public final class Simula {
 			Global.sampleSourceDir=simulaHome+'/'+Global.simulaReleaseID+"/tst";
 		    Global.simulaRtsLib=simulaHome+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
 		    //printGlobalList("*** STARTING SIMULA EDITOR ***");
-	    	OptionMenu.InitRuntimeOptions();
-	    	OptionMenu.InitCompilerOptions();
+	    	SettingsMenu.InitRuntimeOptions();
+	    	SettingsMenu.InitCompilerOptions();
 	    	SimulaEditor editor=new SimulaEditor();
 	    	editor.setVisible(true);
 		} else {

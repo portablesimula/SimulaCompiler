@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 89
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:46:13 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:24 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class PARSER$codebuffer$terminate extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class PARSER$codebuffer$terminate extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 94
-    PARSER$codebuffer$elt inspect$94$0=null;
+    PARSER$codebuffer$elt inspect$94$34=null;
     // Normal Constructor
     public PARSER$codebuffer$terminate(RTObject$ SL$) {
         super(SL$);
@@ -33,19 +33,19 @@ public final class PARSER$codebuffer$terminate extends BASICIO$ {
             // JavaLine 33 ==> SourceLine 94
             {
                 // BEGIN INSPECTION 
-                inspect$94$0=((PARSER$codebuffer)(CUR$.SL$)).curelt;
-                if(inspect$94$0!=null) //INSPECT inspect$94$0
+                inspect$94$34=((PARSER$codebuffer)(CUR$.SL$)).curelt;
+                if(inspect$94$34!=null) //INSPECT inspect$94$34
                 // JavaLine 38 ==> SourceLine 95
                 {
                     TRACE_BEGIN_STM$("CompoundStatement95",95);
-                    ((PARSER)(CUR$.SL$.SL$)).opdhi=inspect$94$0.opdhii;
-                    ((PARSER)(CUR$.SL$.SL$)).opdlo=inspect$94$0.opdloo;
+                    ((PARSER)(CUR$.SL$.SL$)).opdhi=inspect$94$34.opdhii;
+                    ((PARSER)(CUR$.SL$.SL$)).opdlo=inspect$94$34.opdloo;
                     // JavaLine 43 ==> SourceLine 96
-                    ((PARSER)(CUR$.SL$.SL$)).optx=inspect$94$0.optxx;
-                    ((PARSER)(CUR$.SL$.SL$)).opn=inspect$94$0.opnn;
+                    ((PARSER)(CUR$.SL$.SL$)).optx=inspect$94$34.optxx;
+                    ((PARSER)(CUR$.SL$.SL$)).opn=inspect$94$34.opnn;
                     call(((PARSER)(CUR$.SL$.SL$)).coder);
                     // JavaLine 47 ==> SourceLine 97
-                    ((PARSER$codebuffer)(CUR$.SL$)).curelt=inspect$94$0.next;
+                    ((PARSER$codebuffer)(CUR$.SL$)).curelt=inspect$94$34.next;
                     TRACE_END_STM$("CompoundStatement95",97);
                 }
             }

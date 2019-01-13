@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 2465
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:42 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$parameter$CompoundStatement2340$CompoundStatement2419$CompoundStatement2440$SubBlock2465 extends BASICIO$ {
@@ -51,7 +51,7 @@ public final class CHECKER1$semchecker1$parameter$CompoundStatement2340$Compound
                                         // JavaLine 51 ==> SourceLine 2485
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement2485",2485);
-                                            new CHECKER1$semchecker1$argument$errARG(((CHECKER1$semchecker1$parameter)(CUR$.SL$)),(-(427)));
+                                            new CHECKER1$semchecker1$argument$errARG(((CHECKER1$semchecker1$parameter)(CUR$.SL$)),-427);
                                             ((CHECKER1$semchecker1$parameter)(CUR$.SL$)).implqua=false;
                                             TRACE_END_STM$("CompoundStatement2485",2485);
                                         }

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 418
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$input$restoreScannerState extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class SCANNER$input$restoreScannerState extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 419
-    SCANNER$recognizer inspect$419$1=null;
+    SCANNER$recognizer inspect$419$10=null;
     // Normal Constructor
     public SCANNER$input$restoreScannerState(RTObject$ SL$) {
         super(SL$);
@@ -24,16 +24,16 @@ public final class SCANNER$input$restoreScannerState extends BASICIO$ {
         TRACE_BEGIN_STM$("restoreScannerState",419);
         {
             // BEGIN INSPECTION 
-            inspect$419$1=((SCANNER)(CUR$.SL$.SL$)).lexScanner;
-            if(inspect$419$1!=null) //INSPECT inspect$419$1
+            inspect$419$10=((SCANNER)(CUR$.SL$.SL$)).lexScanner;
+            if(inspect$419$10!=null) //INSPECT inspect$419$10
             // JavaLine 29 ==> SourceLine 420
             {
                 TRACE_BEGIN_STM$("CompoundStatement420",420);
-                inspect$419$1.linepos=((SCANNER$input)(CUR$.SL$)).lexpos;
-                inspect$419$1.linelength=((SCANNER$input)(CUR$.SL$)).lexlen;
+                inspect$419$10.linepos=((SCANNER$input)(CUR$.SL$)).lexpos;
+                inspect$419$10.linelength=((SCANNER$input)(CUR$.SL$)).lexlen;
                 // JavaLine 34 ==> SourceLine 421
-                inspect$419$1.atom=((SCANNER$input)(CUR$.SL$)).lexatom;
-                inspect$419$1.line=((SCANNER$input)(CUR$.SL$)).lexline;
+                inspect$419$10.atom=((SCANNER$input)(CUR$.SL$)).lexatom;
+                inspect$419$10.line=((SCANNER$input)(CUR$.SL$)).lexline;
                 TRACE_END_STM$("CompoundStatement420",421);
             }
         }

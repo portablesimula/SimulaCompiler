@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 365
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$precheck0$leaveblock extends BASICIO$ {
@@ -20,7 +20,7 @@ public final class BUILDER1$precheck0$leaveblock extends BASICIO$ {
     // JavaLine 20 ==> SourceLine 370
     boolean invirts=false;
     // JavaLine 22 ==> SourceLine 373
-    COMMON$brecord inspect$373$8=null;
+    COMMON$brecord inspect$373$63=null;
     // Normal Constructor
     public BUILDER1$precheck0$leaveblock(RTObject$ SL$) {
         super(SL$);
@@ -39,12 +39,12 @@ public final class BUILDER1$precheck0$leaveblock extends BASICIO$ {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 {
                     // BEGIN INSPECTION 
-                    inspect$373$8=((BUILDER1)(CUR$.SL$.SL$)).display.Elt[rank(((BUILDER1)(CUR$.SL$.SL$)).cblev)-((BUILDER1)(CUR$.SL$.SL$)).display.LB[0]];
-                    if(inspect$373$8!=null) //INSPECT inspect$373$8
+                    inspect$373$63=((BUILDER1)(CUR$.SL$.SL$)).display.Elt[rank(((BUILDER1)(CUR$.SL$.SL$)).cblev)-((BUILDER1)(CUR$.SL$.SL$)).display.LB[0]];
+                    if(inspect$373$63!=null) //INSPECT inspect$373$63
                     // JavaLine 44 ==> SourceLine 374
                     {
                         TRACE_BEGIN_STM$("CompoundStatement374",374);
-                        q=inspect$373$8.declquant;
+                        q=inspect$373$63.declquant;
                         // JavaLine 48 ==> SourceLine 375
                         if((q.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_class))) {
                             lowpl=((BUILDER1)(CUR$.SL$.SL$)).zero;
@@ -58,7 +58,7 @@ public final class BUILDER1$precheck0$leaveblock extends BASICIO$ {
                         ((BUILDER1)(CUR$.SL$.SL$)).crtblev=char$((rank(((BUILDER1)(CUR$.SL$.SL$)).crtblev)-(1)));
                         // JavaLine 59 ==> SourceLine 378
                         invirts=true;
-                        visq=inspect$373$8.favirt;
+                        visq=inspect$373$63.favirt;
                         // JavaLine 62 ==> SourceLine 380
                         LABEL$(1); // enter
                         new BUILDER1$precheck0$invischain(((BUILDER1$precheck0)(CUR$.SL$)),visq);
@@ -68,7 +68,7 @@ public final class BUILDER1$precheck0$leaveblock extends BASICIO$ {
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement382",382);
                                 invirts=false;
-                                visq=inspect$373$8.fpar;
+                                visq=inspect$373$63.fpar;
                                 GOTO$(enter); // GOTO EVALUATED LABEL
                                 TRACE_END_STM$("CompoundStatement382",382);
                             }
@@ -85,12 +85,12 @@ public final class BUILDER1$precheck0$leaveblock extends BASICIO$ {
                             }
                         }
                         // JavaLine 87 ==> SourceLine 387
-                        if((inspect$373$8.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_class))) {
+                        if((inspect$373$63.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_class))) {
                             // JavaLine 89 ==> SourceLine 388
-                            new BUILDER1$precheck0$protect(((BUILDER1$precheck0)(CUR$.SL$)),inspect$373$8.declquant);
+                            new BUILDER1$precheck0$protect(((BUILDER1$precheck0)(CUR$.SL$)),inspect$373$63.declquant);
                         } else
-                        if((inspect$373$8.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_prefbl))) {
-                            new BUILDER1$precheck0$protect(((BUILDER1$precheck0)(CUR$.SL$)),inspect$373$8.declquant.prefqual);
+                        if((inspect$373$63.kind==(((BUILDER1)(CUR$.SL$.SL$)).K_prefbl))) {
+                            new BUILDER1$precheck0$protect(((BUILDER1$precheck0)(CUR$.SL$)),inspect$373$63.declquant.prefqual);
                         }
                         TRACE_END_STM$("CompoundStatement374",388);
                     }

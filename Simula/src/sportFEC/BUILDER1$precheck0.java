@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 208
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class BUILDER1$precheck0 extends CLASS$ {

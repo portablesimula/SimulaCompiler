@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 780
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
@@ -24,11 +24,11 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
     COMMON$idpack pvis=null;
     COMMON$idpack xvis=null;
     // JavaLine 26 ==> SourceLine 812
-    COMMON$quantity inspect$812$9=null;
+    COMMON$quantity inspect$812$76=null;
     // JavaLine 28 ==> SourceLine 863
-    COMMON$extbrecord inspect$863$10=null;
+    COMMON$extbrecord inspect$863$77=null;
     // JavaLine 30 ==> SourceLine 871
-    COMMON$brecord inspect$871$11=null;
+    COMMON$brecord inspect$871$78=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER2$recompattrfile$outquantwlist setPar(Object param) {
@@ -65,14 +65,14 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
                 // JavaLine 65 ==> SourceLine 812
                 {
                     // BEGIN INSPECTION 
-                    inspect$812$9=p$q;
-                    if(inspect$812$9!=null) //INSPECT inspect$812$9
+                    inspect$812$76=p$q;
+                    if(inspect$812$76!=null) //INSPECT inspect$812$76
                     // JavaLine 70 ==> SourceLine 813
                     {
                         TRACE_BEGIN_STM$("CompoundStatement813",813);
-                        k=new BUILDER1$exttag(((BUILDER2)(CUR$.SL$.SL$)),((COMMON$quantity)inspect$812$9)).RESULT$;
+                        k=new BUILDER1$exttag(((BUILDER2)(CUR$.SL$.SL$)),((COMMON$quantity)inspect$812$76)).RESULT$;
                         // JavaLine 74 ==> SourceLine 814
-                        if((k>((-(2))))) {
+                        if((k>(-2))) {
                             // JavaLine 76 ==> SourceLine 817
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement817",817);
@@ -82,28 +82,28 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
                                 // JavaLine 82 ==> SourceLine 819
                                 new COMMON$attrfile$fetchquant(((BUILDER2$recompattrfile)(CUR$.SL$)));
                                 // JavaLine 84 ==> SourceLine 821
-                                if(((inspect$812$9.symb!=(((BUILDER2$recompattrfile)(CUR$.SL$)).xident))&&(((inspect$812$9.encl.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_proc))||((inspect$812$9.categ>=(((BUILDER2)(CUR$.SL$.SL$)).C_local))))))) {
+                                if(((inspect$812$76.symb!=(((BUILDER2$recompattrfile)(CUR$.SL$)).xident))&&(((inspect$812$76.encl.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_proc))||((inspect$812$76.categ>=(((BUILDER2)(CUR$.SL$.SL$)).C_local))))))) {
                                     // JavaLine 86 ==> SourceLine 822
                                     l=388;
                                 } else
                                 // JavaLine 89 ==> SourceLine 823
-                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xprotect!=(inspect$812$9.protect))) {
+                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xprotect!=(inspect$812$76.protect))) {
                                     l=385;
                                 } else
                                 // JavaLine 93 ==> SourceLine 824
-                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xtype!=(inspect$812$9.type))) {
+                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xtype!=(inspect$812$76.type))) {
                                     l=371;
                                 } else
                                 // JavaLine 97 ==> SourceLine 825
-                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xkind!=(inspect$812$9.kind))) {
+                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xkind!=(inspect$812$76.kind))) {
                                     l=372;
                                 } else
                                 // JavaLine 101 ==> SourceLine 826
-                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xcateg!=(inspect$812$9.categ))) {
+                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xcateg!=(inspect$812$76.categ))) {
                                     l=373;
                                 } else
                                 // JavaLine 105 ==> SourceLine 827
-                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xclf!=(((IS$(((COMMON$quantity)inspect$812$9),COMMON$extquantity.class))?(((COMMON$extquantity)(((COMMON$quantity)inspect$812$9))).clf):(((BUILDER2)(CUR$.SL$.SL$)).Clf000))))) {
+                                if((((BUILDER2$recompattrfile)(CUR$.SL$)).xclf!=(((IS$(((COMMON$quantity)inspect$812$76),COMMON$extquantity.class))?(((COMMON$extquantity)(((COMMON$quantity)inspect$812$76))).clf):(((BUILDER2)(CUR$.SL$.SL$)).Clf000))))) {
                                     // JavaLine 107 ==> SourceLine 829
                                     l=378;
                                 } else
@@ -123,55 +123,55 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
                                     }
                                 }
                                 // JavaLine 125 ==> SourceLine 835
-                                if((inspect$812$9.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))) {
+                                if((inspect$812$76.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))) {
                                     // JavaLine 127 ==> SourceLine 836
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement836",836);
-                                        if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xdim!=(inspect$812$9.dim))&&((inspect$812$9.dim>=(0))))) {
+                                        if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xdim!=(inspect$812$76.dim))&&((inspect$812$76.dim>=(0))))) {
                                             // JavaLine 131 ==> SourceLine 837
-                                            new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$)),375,inspect$812$9.symb);
+                                            new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$)),375,inspect$812$76.symb);
                                         }
                                         TRACE_END_STM$("CompoundStatement836",837);
                                     }
                                 }
                                 // JavaLine 137 ==> SourceLine 846
-                                if((((inspect$812$9.prefqual!=(null)))?((((inspect$812$9.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_class))||((inspect$812$9.plev>(((BUILDER2)(CUR$.SL$.SL$)).one))))&&((inspect$812$9.prefqual.symb!=(new COMMON$boxof(((BUILDER2)(CUR$.SL$.SL$)),((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqhi,((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqlo).RESULT$))))):(((((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqhi!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqlo!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))))))) {
+                                if((((inspect$812$76.prefqual!=(null)))?((((inspect$812$76.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_class))||((inspect$812$76.plev>(((BUILDER2)(CUR$.SL$.SL$)).one))))&&((inspect$812$76.prefqual.symb!=(new COMMON$boxof(((BUILDER2)(CUR$.SL$.SL$)),((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqhi,((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqlo).RESULT$))))):(((((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqhi!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xprefqlo!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))))))) {
                                     // JavaLine 139 ==> SourceLine 851
-                                    new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$)),374,inspect$812$9.symb);
+                                    new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$)),374,inspect$812$76.symb);
                                 }
                                 // JavaLine 142 ==> SourceLine 853
-                                if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xspecial!=(inspect$812$9.special))||(((inspect$812$9.special!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))&&(((((BUILDER2$recompattrfile)(CUR$.SL$)).xarrhi!=(inspect$812$9.descr.blnohi))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xarrlo!=(inspect$812$9.descr.blnolo))))))))) {
+                                if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xspecial!=(inspect$812$76.special))||(((inspect$812$76.special!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))&&(((((BUILDER2$recompattrfile)(CUR$.SL$)).xarrhi!=(inspect$812$76.descr.blnohi))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xarrlo!=(inspect$812$76.descr.blnolo))))))))) {
                                     // JavaLine 144 ==> SourceLine 856
-                                    new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$)),384,inspect$812$9.symb);
+                                    new ERRMSG$error1id(((BUILDER2)(CUR$.SL$.SL$)),384,inspect$812$76.symb);
                                 }
                                 // JavaLine 147 ==> SourceLine 858
-                                if((inspect$812$9.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))) {
+                                if((inspect$812$76.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))) {
                                     // JavaLine 149 ==> SourceLine 859
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement859",859);
-                                        if((((BUILDER2$recompattrfile)(CUR$.SL$)).xlanguage!=(inspect$812$9.dim))) {
+                                        if((((BUILDER2$recompattrfile)(CUR$.SL$)).xlanguage!=(inspect$812$76.dim))) {
                                             new BUILDER2$recompattrfile$outquantwlist$recompwarn(((BUILDER2$recompattrfile$outquantwlist)CUR$),389);
                                         }
                                         // JavaLine 155 ==> SourceLine 860
-                                        if((((BUILDER2$recompattrfile)(CUR$.SL$)).xextident!=(inspect$812$9.virtno))) {
+                                        if((((BUILDER2$recompattrfile)(CUR$.SL$)).xextident!=(inspect$812$76.virtno))) {
                                             new BUILDER2$recompattrfile$outquantwlist$recompwarn(((BUILDER2$recompattrfile$outquantwlist)CUR$),390);
                                         }
                                         // JavaLine 159 ==> SourceLine 861
-                                        if(IS$(inspect$812$9.descr,COMMON$extbrecord.class)) {
+                                        if(IS$(inspect$812$76.descr,COMMON$extbrecord.class)) {
                                             // JavaLine 161 ==> SourceLine 863
                                             {
                                                 // BEGIN INSPECTION 
-                                                inspect$863$10=((COMMON$extbrecord)(inspect$812$9.descr));
-                                                if(inspect$863$10!=null) //INSPECT inspect$863$10
+                                                inspect$863$77=((COMMON$extbrecord)(inspect$812$76.descr));
+                                                if(inspect$863$77!=null) //INSPECT inspect$863$77
                                                 // JavaLine 166 ==> SourceLine 864
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement864",864);
-                                                    if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xmodulhi!=(inspect$863$10.modulhi))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xmodullo!=(inspect$863$10.modullo))))) {
+                                                    if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xmodulhi!=(inspect$863$77.modulhi))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xmodullo!=(inspect$863$77.modullo))))) {
                                                         // JavaLine 170 ==> SourceLine 865
                                                         new BUILDER2$recompattrfile$outquantwlist$recompwarn(((BUILDER2$recompattrfile$outquantwlist)CUR$),391);
                                                     }
                                                     // JavaLine 173 ==> SourceLine 866
-                                                    if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xchecklo!=(inspect$863$10.checklo))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xcheckhi!=(inspect$863$10.checkhi))))) {
+                                                    if(((((BUILDER2$recompattrfile)(CUR$.SL$)).xchecklo!=(inspect$863$77.checklo))||((((BUILDER2$recompattrfile)(CUR$.SL$)).xcheckhi!=(inspect$863$77.checkhi))))) {
                                                         // JavaLine 175 ==> SourceLine 867
                                                         new BUILDER2$recompattrfile$outquantwlist$recomperr(((BUILDER2$recompattrfile$outquantwlist)CUR$),377);
                                                     }
@@ -185,20 +185,20 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
                                 // JavaLine 185 ==> SourceLine 871
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$871$11=inspect$812$9.descr;
-                                    if(inspect$871$11!=null) //INSPECT inspect$871$11
+                                    inspect$871$78=inspect$812$76.descr;
+                                    if(inspect$871$78!=null) //INSPECT inspect$871$78
                                     // JavaLine 190 ==> SourceLine 872
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement872",872);
-                                        if((inspect$871$11.thisused&&((!(((BUILDER2$recompattrfile)(CUR$.SL$)).xthisused))))) {
+                                        if((inspect$871$78.thisused&&((!(((BUILDER2$recompattrfile)(CUR$.SL$)).xthisused))))) {
                                             new BUILDER2$recompattrfile$outquantwlist$recomperr(((BUILDER2$recompattrfile$outquantwlist)CUR$),376);
                                         }
                                         // JavaLine 196 ==> SourceLine 874
-                                        if((((BUILDER2$recompattrfile)(CUR$.SL$)).xconnests!=(char$(inspect$871$11.connests)))) {
+                                        if((((BUILDER2$recompattrfile)(CUR$.SL$)).xconnests!=(char$(inspect$871$78.connests)))) {
                                             new BUILDER2$recompattrfile$outquantwlist$recomperr(((BUILDER2$recompattrfile$outquantwlist)CUR$),387);
                                         }
                                         // JavaLine 200 ==> SourceLine 878
-                                        if((inspect$871$11.hidlist==(null))) {
+                                        if((inspect$871$78.hidlist==(null))) {
                                             // JavaLine 202 ==> SourceLine 879
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement879",879);
@@ -213,17 +213,17 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
                                     }
                                 }
                                 // JavaLine 215 ==> SourceLine 898
-                                if(((inspect$812$9.special==(((BUILDER2)(CUR$.SL$.SL$)).NUL))&&(IS$(inspect$812$9.descr,COMMON$brecord.class)))) {
+                                if(((inspect$812$76.special==(((BUILDER2)(CUR$.SL$.SL$)).NUL))&&(IS$(inspect$812$76.descr,COMMON$brecord.class)))) {
                                     // JavaLine 217 ==> SourceLine 899
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement899",899);
                                         l=k=0;
                                         // JavaLine 221 ==> SourceLine 900
-                                        if(((inspect$812$9.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_virt))&&((inspect$812$9.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_proc))))) {
+                                        if(((inspect$812$76.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_virt))&&((inspect$812$76.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_proc))))) {
                                             // JavaLine 223 ==> SourceLine 902
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement902",902);
-                                                qq=inspect$812$9.descr.fpar;
+                                                qq=inspect$812$76.descr.fpar;
                                                 // JavaLine 227 ==> SourceLine 904
                                                 k=1;
                                                 GOTO$(UTP); // GOTO EVALUATED LABEL
@@ -233,7 +233,7 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
                                         // JavaLine 233 ==> SourceLine 913
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement913",913);
-                                            qq=inspect$812$9.descr.favirt;
+                                            qq=inspect$812$76.descr.favirt;
                                             // JavaLine 237 ==> SourceLine 924
                                             LABEL$(2); // UTQ
                                             // JavaLine 239 ==> SourceLine 914
@@ -270,7 +270,7 @@ public final class BUILDER2$recompattrfile$outquantwlist extends BASICIO$ {
                                             if((k==(0))) {
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement925",925);
-                                                    qq=inspect$812$9.descr.fpar;
+                                                    qq=inspect$812$76.descr.fpar;
                                                     k=1;
                                                     GOTO$(UTQ); // GOTO EVALUATED LABEL
                                                     TRACE_END_STM$("CompoundStatement925",925);

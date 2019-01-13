@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 534
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER1$semchecker1$classcomparator extends CHECKER1$semchecker1$relation {
@@ -9,7 +9,7 @@ public class CHECKER1$semchecker1$classcomparator extends CHECKER1$semchecker1$r
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 556
-    public COMMON$quantity inspect$556$5=null;
+    public COMMON$quantity inspect$556$89=null;
     public PRCQNT$ emit$0() { return(new PRCQNT$(this,CHECKER1$semchecker1$classcomparator$emit.class)); }
     // Normal Constructor
     public CHECKER1$semchecker1$classcomparator(RTObject$ staticLink,CHECKER1$semchecker1$exp sp$pred,char sp$ch,CHECKER1$semchecker1$exp sp1$left,CHECKER1$semchecker1$exp sp1$right) {
@@ -48,12 +48,12 @@ public class CHECKER1$semchecker1$classcomparator extends CHECKER1$semchecker1$r
                 // JavaLine 48 ==> SourceLine 556
                 {
                     // BEGIN INSPECTION 
-                    inspect$556$5=p1$right.qual;
-                    if(inspect$556$5!=null) //INSPECT inspect$556$5
+                    inspect$556$89=p1$right.qual;
+                    if(inspect$556$89!=null) //INSPECT inspect$556$89
                     // JavaLine 53 ==> SourceLine 557
                     {
                         TRACE_BEGIN_STM$("CompoundStatement557",557);
-                        if((inspect$556$5.kind==(((CHECKER1)(CUR$.SL$.SL$)).K_record))) {
+                        if((inspect$556$89.kind==(((CHECKER1)(CUR$.SL$.SL$)).K_record))) {
                             // JavaLine 57 ==> SourceLine 558
                             new ERRMSG$error1id(((CHECKER1)(CUR$.SL$.SL$)),243,((CHECKER1$semchecker1)(CUR$.SL$)).opdSymb);
                         } else

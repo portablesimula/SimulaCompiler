@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1150
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$prechecker$allocate$alloc2 extends BASICIO$ {
@@ -29,9 +29,9 @@ public final class BUILDER2$prechecker$allocate$alloc2 extends BASICIO$ {
     // JavaLine 29 ==> SourceLine 1158
     int VNO=0;
     // JavaLine 31 ==> SourceLine 1405
-    COMMON$quantity inspect$1405$14=null;
+    COMMON$quantity inspect$1405$81=null;
     // JavaLine 33 ==> SourceLine 1419
-    COMMON$brecord inspect$1419$15=null;
+    COMMON$brecord inspect$1419$82=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER2$prechecker$allocate$alloc2 setPar(Object param) {
@@ -325,18 +325,18 @@ public final class BUILDER2$prechecker$allocate$alloc2 extends BASICIO$ {
                 while(true) {
                     {
                         // BEGIN INSPECTION 
-                        inspect$1405$14=VC;
-                        if(inspect$1405$14!=null) //INSPECT inspect$1405$14
+                        inspect$1405$81=VC;
+                        if(inspect$1405$81!=null) //INSPECT inspect$1405$81
                         // JavaLine 330 ==> SourceLine 1406
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1406",1406);
-                            if((inspect$1405$14.visible==(((BUILDER2)(CUR$.SL$.SL$.SL$)).NUL))) {
+                            if((inspect$1405$81.visible==(((BUILDER2)(CUR$.SL$.SL$.SL$)).NUL))) {
                                 // JavaLine 334 ==> SourceLine 1407
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1407",1407);
                                     VA=p$brc.fpar;
                                     // JavaLine 338 ==> SourceLine 1408
-                                    while(((VA!=(null))&&((VA.symb!=(inspect$1405$14.symb))))) {
+                                    while(((VA!=(null))&&((VA.symb!=(inspect$1405$81.symb))))) {
                                         // JavaLine 340 ==> SourceLine 1409
                                         VA=((COMMON$quantity)(VA.next));
                                     }
@@ -345,30 +345,30 @@ public final class BUILDER2$prechecker$allocate$alloc2 extends BASICIO$ {
                                         // JavaLine 345 ==> SourceLine 1411
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement1411",1411);
-                                            if((((((inspect$1405$14.type==(((BUILDER2)(CUR$.SL$.SL$.SL$)).IELSE))&&(((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_proc))||((VA.type==(((BUILDER2)(CUR$.SL$.SL$.SL$)).ILABE))))))||(((((inspect$1405$14.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_proc))&&((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_proc))))&&((VA.categ!=(((BUILDER2)(CUR$.SL$.SL$.SL$)).C_extnal))))&&(new BUILDER1$precheck0$subordinate(((BUILDER2$prechecker)(CUR$.SL$.SL$)),VA,((COMMON$quantity)inspect$1405$14)).RESULT$))))||(((inspect$1405$14.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_label))&&((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_label))))))||(((inspect$1405$14.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_switch))&&((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_switch))))))) {
+                                            if((((((inspect$1405$81.type==(((BUILDER2)(CUR$.SL$.SL$.SL$)).IELSE))&&(((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_proc))||((VA.type==(((BUILDER2)(CUR$.SL$.SL$.SL$)).ILABE))))))||(((((inspect$1405$81.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_proc))&&((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_proc))))&&((VA.categ!=(((BUILDER2)(CUR$.SL$.SL$.SL$)).C_extnal))))&&(new BUILDER1$precheck0$subordinate(((BUILDER2$prechecker)(CUR$.SL$.SL$)),VA,((COMMON$quantity)inspect$1405$81)).RESULT$))))||(((inspect$1405$81.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_label))&&((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_label))))))||(((inspect$1405$81.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_switch))&&((VA.kind==(((BUILDER2)(CUR$.SL$.SL$.SL$)).K_switch))))))) {
                                                 // JavaLine 349 ==> SourceLine 1419
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement1419",1419);
                                                     {
                                                         // BEGIN INSPECTION 
-                                                        inspect$1419$15=inspect$1405$14.descr;
-                                                        if(inspect$1419$15!=null) //INSPECT inspect$1419$15
+                                                        inspect$1419$82=inspect$1405$81.descr;
+                                                        if(inspect$1419$82!=null) //INSPECT inspect$1419$82
                                                         // JavaLine 356 ==> SourceLine 1446
                                                         new BUILDER2$prechecker$allocate$alloc2$CompoundStatement1406$CompoundStatement1407$CompoundStatement1411$CompoundStatement1419$SubBlock1421(CUR$).STM$();
                                                     }
                                                     // JavaLine 359 ==> SourceLine 1447
-                                                    VA.match=((COMMON$quantity)inspect$1405$14);
-                                                    inspect$1405$14.match=VA;
+                                                    VA.match=((COMMON$quantity)inspect$1405$81);
+                                                    inspect$1405$81.match=VA;
                                                     // JavaLine 362 ==> SourceLine 1449
-                                                    inspect$1405$14.type=VA.type;
-                                                    inspect$1405$14.prefqual=VA.prefqual;
+                                                    inspect$1405$81.type=VA.type;
+                                                    inspect$1405$81.prefqual=VA.prefqual;
                                                     // JavaLine 365 ==> SourceLine 1450
-                                                    VA.protect=inspect$1405$14.protect;
+                                                    VA.protect=inspect$1405$81.protect;
                                                     TRACE_END_STM$("CompoundStatement1419",1450);
                                                 }
                                             } else
                                             // JavaLine 370 ==> SourceLine 1451
-                                            new ERRMSG$errQTN(((BUILDER2)(CUR$.SL$.SL$.SL$)),VA,415,((COMMON$quantity)inspect$1405$14));
+                                            new ERRMSG$errQTN(((BUILDER2)(CUR$.SL$.SL$.SL$)),VA,415,((COMMON$quantity)inspect$1405$81));
                                             TRACE_END_STM$("CompoundStatement1411",1451);
                                         }
                                     }
@@ -376,7 +376,7 @@ public final class BUILDER2$prechecker$allocate$alloc2 extends BASICIO$ {
                                 }
                             }
                             // JavaLine 378 ==> SourceLine 1454
-                            VC=((COMMON$quantity)(inspect$1405$14.next));
+                            VC=((COMMON$quantity)(inspect$1405$81.next));
                             TRACE_END_STM$("CompoundStatement1406",1454);
                         }
                         else // OTHERWISE 

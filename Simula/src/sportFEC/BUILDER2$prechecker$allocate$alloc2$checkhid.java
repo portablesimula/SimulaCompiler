@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1160
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$prechecker$allocate$alloc2$checkhid extends BASICIO$ {
@@ -15,7 +15,7 @@ public final class BUILDER2$prechecker$allocate$alloc2$checkhid extends BASICIO$
     // JavaLine 15 ==> SourceLine 1162
     COMMON$idpack cvis=null;
     // JavaLine 17 ==> SourceLine 1166
-    COMMON$brecord inspect$1165$13=null;
+    COMMON$brecord inspect$1165$80=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER2$prechecker$allocate$alloc2$checkhid setPar(Object param) {
@@ -52,10 +52,10 @@ public final class BUILDER2$prechecker$allocate$alloc2$checkhid extends BASICIO$
                 // JavaLine 52 ==> SourceLine 1165
                 {
                     // BEGIN INSPECTION 
-                    inspect$1165$13=((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).p$brc;
-                    if(inspect$1165$13!=null) //INSPECT inspect$1165$13
+                    inspect$1165$80=((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).p$brc;
+                    if(inspect$1165$80!=null) //INSPECT inspect$1165$80
                     // JavaLine 57 ==> SourceLine 1166
-                    while(((inspect$1165$13.hidlist!=(null))&&((p$cq!=(null))))) {
+                    while(((inspect$1165$80.hidlist!=(null))&&((p$cq!=(null))))) {
                         // JavaLine 59 ==> SourceLine 1167
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1167",1167);
@@ -63,7 +63,7 @@ public final class BUILDER2$prechecker$allocate$alloc2$checkhid extends BASICIO$
                                 // JavaLine 63 ==> SourceLine 1168
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1168",1168);
-                                    cvis=inspect$1165$13.hidlist;
+                                    cvis=inspect$1165$80.hidlist;
                                     // JavaLine 67 ==> SourceLine 1169
                                     while((cvis!=(null))) {
                                         // JavaLine 69 ==> SourceLine 1170
@@ -87,7 +87,7 @@ public final class BUILDER2$prechecker$allocate$alloc2$checkhid extends BASICIO$
                                                                 }
                                                             }
                                                             // JavaLine 89 ==> SourceLine 1177
-                                                            new ERRMSG$removeVis(((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)),((COMMON$brecord)inspect$1165$13),cvis,369);
+                                                            new ERRMSG$removeVis(((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)),((COMMON$brecord)inspect$1165$80),cvis,369);
                                                             TRACE_END_STM$("CompoundStatement1173",1177);
                                                         }
                                                     }

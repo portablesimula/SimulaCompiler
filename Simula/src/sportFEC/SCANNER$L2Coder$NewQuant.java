@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1642
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$L2Coder$NewQuant extends BASICIO$ {
@@ -10,7 +10,7 @@ public final class SCANNER$L2Coder$NewQuant extends BASICIO$ {
     public char p$qcateg;
     // Declare locals as attributes
     // JavaLine 12 ==> SourceLine 1643
-    COMMON$quantity inspect$1643$10=null;
+    COMMON$quantity inspect$1643$19=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public SCANNER$L2Coder$NewQuant setPar(Object param) {
@@ -42,34 +42,34 @@ public final class SCANNER$L2Coder$NewQuant extends BASICIO$ {
         TRACE_BEGIN_STM$("NewQuant",1643);
         {
             // BEGIN INSPECTION 
-            inspect$1643$10=new COMMON$quantity(((SCANNER)(CUR$.SL$.SL$))).STM$();
-            if(inspect$1643$10!=null) //INSPECT inspect$1643$10
+            inspect$1643$19=new COMMON$quantity(((SCANNER)(CUR$.SL$.SL$))).STM$();
+            if(inspect$1643$19!=null) //INSPECT inspect$1643$19
             // JavaLine 47 ==> SourceLine 1645
             {
                 TRACE_BEGIN_STM$("CompoundStatement1645",1645);
-                inspect$1643$10.type=((SCANNER$L2Coder)(CUR$.SL$)).ctype;
-                inspect$1643$10.kind=((SCANNER$L2Coder)(CUR$.SL$)).ckind;
+                inspect$1643$19.type=((SCANNER$L2Coder)(CUR$.SL$)).ctype;
+                inspect$1643$19.kind=((SCANNER$L2Coder)(CUR$.SL$)).ckind;
                 // JavaLine 52 ==> SourceLine 1646
-                inspect$1643$10.categ=p$qcateg;
-                inspect$1643$10.line=((SCANNER)(CUR$.SL$.SL$)).linenr;
+                inspect$1643$19.categ=p$qcateg;
+                inspect$1643$19.line=((SCANNER)(CUR$.SL$.SL$)).linenr;
                 // JavaLine 55 ==> SourceLine 1647
-                inspect$1643$10.plev=((SCANNER)(CUR$.SL$.SL$)).one;
+                inspect$1643$19.plev=((SCANNER)(CUR$.SL$.SL$)).one;
                 // JavaLine 57 ==> SourceLine 1648
-                inspect$1643$10.ftag=(-(((SCANNER$L2Coder)(CUR$.SL$)).cqual));
+                inspect$1643$19.ftag=(-(((SCANNER$L2Coder)(CUR$.SL$)).cqual));
                 // JavaLine 59 ==> SourceLine 1649
-                inspect$1643$10.symb=new COMMON$boxof(((SCANNER)(CUR$.SL$.SL$)),((SCANNER)(CUR$.SL$.SL$)).opdhi,((SCANNER)(CUR$.SL$.SL$)).opdlo).RESULT$;
+                inspect$1643$19.symb=new COMMON$boxof(((SCANNER)(CUR$.SL$.SL$)),((SCANNER)(CUR$.SL$.SL$)).opdhi,((SCANNER)(CUR$.SL$.SL$)).opdlo).RESULT$;
                 // JavaLine 61 ==> SourceLine 1650
                 if((p$qcateg!=(((SCANNER)(CUR$.SL$.SL$)).C_virt))) {
                     // JavaLine 63 ==> SourceLine 1651
-                    ((SCANNER$L2Coder)(CUR$.SL$)).cquant=((COMMON$quantity)(((SCANNER$L2Coder)(CUR$.SL$)).cquant.next=((COMMON$quantity)inspect$1643$10)));
+                    ((SCANNER$L2Coder)(CUR$.SL$)).cquant=((COMMON$quantity)(((SCANNER$L2Coder)(CUR$.SL$)).cquant.next=((COMMON$quantity)inspect$1643$19)));
                 } else
                 // JavaLine 66 ==> SourceLine 1652
                 if((((SCANNER$L2Coder)(CUR$.SL$)).cbrec.favirt==(null))) {
                     // JavaLine 68 ==> SourceLine 1653
-                    ((SCANNER$L2Coder)(CUR$.SL$)).cbrec.favirt=((SCANNER$L2Coder)(CUR$.SL$)).vquant=((COMMON$quantity)inspect$1643$10);
+                    ((SCANNER$L2Coder)(CUR$.SL$)).cbrec.favirt=((SCANNER$L2Coder)(CUR$.SL$)).vquant=((COMMON$quantity)inspect$1643$19);
                 } else
                 // JavaLine 71 ==> SourceLine 1654
-                ((SCANNER$L2Coder)(CUR$.SL$)).vquant=((COMMON$quantity)(((SCANNER$L2Coder)(CUR$.SL$)).vquant.next=((COMMON$quantity)inspect$1643$10)));
+                ((SCANNER$L2Coder)(CUR$.SL$)).vquant=((COMMON$quantity)(((SCANNER$L2Coder)(CUR$.SL$)).vquant.next=((COMMON$quantity)inspect$1643$19)));
                 TRACE_END_STM$("CompoundStatement1645",1654);
             }
         }

@@ -50,7 +50,7 @@ public final class SimulaCompiler {
 		this.inputFileName = inputFileName;
 		this.reader=reader;
 		if (!inputFileName.toLowerCase().endsWith(".sim"))
-			Util.error("Illegal File Name: " + inputFileName);
+			Util.warning("Simula source file should, by convention be extended by .sim: " + inputFileName);
 
 		File inputFile = new File(inputFileName);
 		

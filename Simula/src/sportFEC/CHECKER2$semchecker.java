@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 35
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 12:01:21 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:49 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
@@ -79,29 +79,29 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
     // JavaLine 79 ==> SourceLine 92
     public final int lowpl=0;
     // JavaLine 81 ==> SourceLine 996
-    public COMMON$brecord inspect$996$15=null;
+    public COMMON$brecord inspect$996$119=null;
     // JavaLine 83 ==> SourceLine 1017
-    public COMMON$brecord inspect$1017$16=null;
+    public COMMON$brecord inspect$1017$120=null;
     // JavaLine 85 ==> SourceLine 1021
-    public COMMON$quantity inspect$1020$17=null;
+    public COMMON$quantity inspect$1020$121=null;
     // JavaLine 87 ==> SourceLine 1050
-    public COMMON$quantity inspect$1049$18=null;
+    public COMMON$quantity inspect$1049$122=null;
     // JavaLine 89 ==> SourceLine 1289
-    public COMMON$identsymbol inspect$1288$19=null;
+    public COMMON$identsymbol inspect$1288$123=null;
     // JavaLine 91 ==> SourceLine 1374
-    public CHECKER1$semchecker1$identifier inspect$1374$20=null;
+    public CHECKER1$semchecker1$identifier inspect$1374$124=null;
     // JavaLine 93 ==> SourceLine 1452
-    public COMMON$quantity inspect$1452$21=null;
+    public COMMON$quantity inspect$1452$125=null;
     // JavaLine 95 ==> SourceLine 1471
-    public COMMON$quantity inspect$1470$22=null;
+    public COMMON$quantity inspect$1470$126=null;
     // JavaLine 97 ==> SourceLine 1485
-    public COMMON$brecord inspect$1485$23=null;
+    public COMMON$brecord inspect$1485$127=null;
     // JavaLine 99 ==> SourceLine 1499
-    public COMMON$brecord inspect$1499$24=null;
+    public COMMON$brecord inspect$1499$128=null;
     // JavaLine 101 ==> SourceLine 1519
-    public CHECKER1$semchecker1$switchelement inspect$1519$25=null;
+    public CHECKER1$semchecker1$switchelement inspect$1519$129=null;
     // JavaLine 103 ==> SourceLine 1555
-    public COMMON$brecord inspect$1555$26=null;
+    public COMMON$brecord inspect$1555$130=null;
     // Normal Constructor
     public CHECKER2$semchecker(RTObject$ staticLink) {
         super(staticLink);
@@ -324,12 +324,12 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                         // JavaLine 324 ==> SourceLine 996
                                         {
                                             // BEGIN INSPECTION 
-                                            inspect$996$15=new COMMON$getBrc(((CHECKER2)(CUR$.SL$)),lastblhi,lastbllo).RESULT$;
-                                            if(inspect$996$15!=null) //INSPECT inspect$996$15
+                                            inspect$996$119=new COMMON$getBrc(((CHECKER2)(CUR$.SL$)),lastblhi,lastbllo).RESULT$;
+                                            if(inspect$996$119!=null) //INSPECT inspect$996$119
                                             // JavaLine 329 ==> SourceLine 997
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement997",997);
-                                                visq=inspect$996$15.declquant;
+                                                visq=inspect$996$119.declquant;
                                                 // JavaLine 333 ==> SourceLine 998
                                                 while((visq.plev>(((CHECKER2)(CUR$.SL$)).one))) {
                                                     visq=visq.prefqual;
@@ -337,11 +337,11 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                                 // JavaLine 337 ==> SourceLine 999
                                                 visq.prefqual=((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]].declquant;
                                                 // JavaLine 339 ==> SourceLine 1000
-                                                ((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]]=((COMMON$brecord)inspect$996$15);
+                                                ((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]]=((COMMON$brecord)inspect$996$119);
                                                 // JavaLine 341 ==> SourceLine 1001
                                                 ((ARRAY$<COMMON$brecord[]>)((CHECKER2)(CUR$.SL$)).brctab.Elt[rank(lastblhi)-((CHECKER2)(CUR$.SL$)).brctab.LB[0]].val).Elt[rank(lastbllo)-((CHECKER2)(CUR$.SL$)).brctab.Elt[rank(lastblhi)-((CHECKER2)(CUR$.SL$)).brctab.LB[0]].val.LB[0]]=null;
                                                 // JavaLine 343 ==> SourceLine 1002
-                                                new BUILDER1$precheck0$vischain(((CHECKER2$semchecker)CUR$),inspect$996$15.fpar,visq);
+                                                new BUILDER1$precheck0$vischain(((CHECKER2$semchecker)CUR$),inspect$996$119.fpar,visq);
                                                 TRACE_END_STM$("CompoundStatement997",1002);
                                             }
                                         }
@@ -367,26 +367,26 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                             // JavaLine 367 ==> SourceLine 1017
                                             {
                                                 // BEGIN INSPECTION 
-                                                inspect$1017$16=new COMMON$getBrc(((CHECKER2)(CUR$.SL$)),lastblhi,lastbllo).RESULT$;
-                                                if(inspect$1017$16!=null) //INSPECT inspect$1017$16
+                                                inspect$1017$120=new COMMON$getBrc(((CHECKER2)(CUR$.SL$)),lastblhi,lastbllo).RESULT$;
+                                                if(inspect$1017$120!=null) //INSPECT inspect$1017$120
                                                 // JavaLine 372 ==> SourceLine 1019
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement1019",1019);
-                                                    if((inspect$1017$16.kind==(((CHECKER2)(CUR$.SL$)).K_proc))) {
+                                                    if((inspect$1017$120.kind==(((CHECKER2)(CUR$.SL$)).K_proc))) {
                                                         // JavaLine 376 ==> SourceLine 1020
                                                         {
                                                             // BEGIN INSPECTION 
-                                                            inspect$1020$17=new COMMON$getBrc(((CHECKER2)(CUR$.SL$)),inspect$1017$16.hidlist.idhi,inspect$1017$16.hidlist.idlo).RESULT$.declquant.match;
-                                                            if(inspect$1020$17!=null) //INSPECT inspect$1020$17
+                                                            inspect$1020$121=new COMMON$getBrc(((CHECKER2)(CUR$.SL$)),inspect$1017$120.hidlist.idhi,inspect$1017$120.hidlist.idlo).RESULT$.declquant.match;
+                                                            if(inspect$1020$121!=null) //INSPECT inspect$1020$121
                                                             // JavaLine 381 ==> SourceLine 1021
                                                             {
                                                                 TRACE_BEGIN_STM$("CompoundStatement1021",1021);
-                                                                if((inspect$1020$17.descr!=(null))) {
+                                                                if((inspect$1020$121.descr!=(null))) {
                                                                     // JavaLine 385 ==> SourceLine 1022
                                                                     {
                                                                         TRACE_BEGIN_STM$("CompoundStatement1022",1022);
-                                                                        inspect$1017$16.hidlist.idhi=inspect$1020$17.descr.blnohi;
-                                                                        inspect$1017$16.hidlist.idlo=inspect$1020$17.descr.blnolo;
+                                                                        inspect$1017$120.hidlist.idhi=inspect$1020$121.descr.blnohi;
+                                                                        inspect$1017$120.hidlist.idlo=inspect$1020$121.descr.blnolo;
                                                                         TRACE_END_STM$("CompoundStatement1022",1022);
                                                                     }
                                                                 }
@@ -437,15 +437,15 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                         // JavaLine 437 ==> SourceLine 1049
                                         {
                                             // BEGIN INSPECTION 
-                                            inspect$1049$18=((CHECKER2)(CUR$.SL$)).coder.opq;
-                                            if(inspect$1049$18!=null) //INSPECT inspect$1049$18
+                                            inspect$1049$122=((CHECKER2)(CUR$.SL$)).coder.opq;
+                                            if(inspect$1049$122!=null) //INSPECT inspect$1049$122
                                             // JavaLine 442 ==> SourceLine 1050
-                                            if((inspect$1049$18.categ==(((CHECKER2)(CUR$.SL$)).C_virt))) {
+                                            if((inspect$1049$122.categ==(((CHECKER2)(CUR$.SL$)).C_virt))) {
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement1050",1050);
-                                                    if((inspect$1049$18.match!=(null))) {
+                                                    if((inspect$1049$122.match!=(null))) {
                                                         // JavaLine 447 ==> SourceLine 1051
-                                                        ((CHECKER2)(CUR$.SL$)).coder.opq=inspect$1049$18.match;
+                                                        ((CHECKER2)(CUR$.SL$)).coder.opq=inspect$1049$122.match;
                                                     }
                                                     TRACE_END_STM$("CompoundStatement1050",1051);
                                                 }
@@ -625,7 +625,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                         }
                                         // JavaLine 626 ==> SourceLine 1155
                                         exptop.cl=IEEXPcl;
-                                        new CHECKER1$semchecker1$exp$emit(exptop);
+                                        exptop.emit$0().CPF();
                                         // JavaLine 629 ==> SourceLine 1156
                                         if((exptop.type==(((CHECKER2)(CUR$.SL$)).ICHAR))) {
                                             // JavaLine 631 ==> SourceLine 1157
@@ -726,7 +726,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                     // JavaLine 726 ==> SourceLine 1205
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1205",1205);
-                                        new CHECKER1$semchecker1$exp$emit(exptop);
+                                        exptop.emit$0().CPF();
                                         // JavaLine 730 ==> SourceLine 1206
                                         new CHECKER1$semchecker1$popExpStack(((CHECKER2$semchecker)CUR$));
                                         TRACE_END_STM$("CompoundStatement1205",1206);
@@ -807,7 +807,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                             exptop.cl=IIFSBcl;
                                         }
                                         // JavaLine 809 ==> SourceLine 1257
-                                        new CHECKER1$semchecker1$exp$emit(exptop);
+                                        exptop.emit$0().CPF();
                                         // JavaLine 811 ==> SourceLine 1258
                                         opc=((CHECKER2)(CUR$.SL$)).opn;
                                         // JavaLine 813 ==> SourceLine 1259
@@ -842,7 +842,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                             new CHECKER1$semchecker1$checkasexp(((CHECKER2$semchecker)CUR$),((CHECKER1$semchecker1$identifier)(exptop)));
                                         }
                                         // JavaLine 844 ==> SourceLine 1270
-                                        new CHECKER1$semchecker1$exp$emit(exptop);
+                                        exptop.emit$0().CPF();
                                         // JavaLine 846 ==> SourceLine 1271
                                         opc=((CHECKER2)(CUR$.SL$)).IGOE;
                                         call(((CHECKER2)(CUR$.SL$)).coder);
@@ -872,16 +872,16 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                                 TRACE_BEGIN_STM$("CompoundStatement1288",1288);
                                                 {
                                                     // BEGIN INSPECTION 
-                                                    inspect$1288$19=((COMMON$identsymbol)(opdSymb));
-                                                    if(inspect$1288$19!=null) //INSPECT inspect$1288$19
+                                                    inspect$1288$123=((COMMON$identsymbol)(opdSymb));
+                                                    if(inspect$1288$123!=null) //INSPECT inspect$1288$123
                                                     // JavaLine 877 ==> SourceLine 1289
-                                                    if((((COMMON$quantity)(inspect$1288$19.curmeaning)).symb==(((COMMON$identsymbol)inspect$1288$19)))) {
+                                                    if((((COMMON$quantity)(inspect$1288$123.curmeaning)).symb==(((COMMON$identsymbol)inspect$1288$123)))) {
                                                         // JavaLine 879 ==> SourceLine 1291
                                                         {
                                                             TRACE_BEGIN_STM$("CompoundStatement1291",1291);
-                                                            inspect$1288$19.curmeaning=inspect$1288$19.curmeaning.next;
+                                                            inspect$1288$123.curmeaning=inspect$1288$123.curmeaning.next;
                                                             // JavaLine 883 ==> SourceLine 1292
-                                                            ((CHECKER1$semchecker1$valassign)(exptop)).p1$target.meaning=((COMMON$quantity)(inspect$1288$19.curmeaning));
+                                                            ((CHECKER1$semchecker1$valassign)(exptop)).p1$target.meaning=((COMMON$quantity)(inspect$1288$123.curmeaning));
                                                             // JavaLine 885 ==> SourceLine 1293
                                                             ((CHECKER1$semchecker1$valassign)(exptop)).p1$target.type=((CHECKER1$semchecker1$valassign)(exptop)).type=((CHECKER2)(CUR$.SL$)).ILONG;
                                                             TRACE_END_STM$("CompoundStatement1291",1293);
@@ -902,7 +902,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                         call(ust);
                                         // JavaLine 903 ==> SourceLine 1304
                                         LABEL$(13); // Eass
-                                        new CHECKER1$semchecker1$exp$emit(exptop);
+                                        exptop.emit$0().CPF();
                                         // JavaLine 906 ==> SourceLine 1306
                                         new CHECKER1$semchecker1$popExpStack(((CHECKER2$semchecker)CUR$));
                                         // JavaLine 908 ==> SourceLine 1307
@@ -948,7 +948,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                         if((((CHECKER2)(CUR$.SL$)).opn==(((CHECKER2)(CUR$.SL$)).IBEGI))) {
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement1336",1336);
-                                                new CHECKER1$semchecker1$exp$emit(exptop);
+                                                exptop.emit$0().CPF();
                                                 new CHECKER1$semchecker1$popExpStack(((CHECKER2$semchecker)CUR$));
                                                 TRACE_END_STM$("CompoundStatement1336",1336);
                                             }
@@ -965,7 +965,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                         // JavaLine 965 ==> SourceLine 1343
                                         new CHECKER2$semchecker$getOpd(((CHECKER2$semchecker)CUR$));
                                         // JavaLine 967 ==> SourceLine 1344
-                                        new CHECKER1$semchecker1$identifier$emit(new CHECKER1$semchecker1$prefIdent(((CHECKER2$semchecker)CUR$),exptop,((CHECKER2)(CUR$.SL$)).IBPRF).STM$());
+                                        new CHECKER1$semchecker1$prefIdent(((CHECKER2$semchecker)CUR$),exptop,((CHECKER2)(CUR$.SL$)).IBPRF).STM$().emit$0().CPF();
                                         TRACE_END_STM$("CompoundStatement1342",1344);
                                     }
                                     case 122: 
@@ -1016,30 +1016,30 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                             TRACE_BEGIN_STM$("CompoundStatement1374",1374);
                                             {
                                                 // BEGIN INSPECTION 
-                                                inspect$1374$20=((CHECKER1$semchecker1$argumented)(exptop)).p1$ident;
-                                                if(inspect$1374$20!=null) //INSPECT inspect$1374$20
+                                                inspect$1374$124=((CHECKER1$semchecker1$argumented)(exptop)).p1$ident;
+                                                if(inspect$1374$124!=null) //INSPECT inspect$1374$124
                                                 // JavaLine 1021 ==> SourceLine 1375
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement1375",1375);
-                                                    switch(inspect$1374$20.kind) { // BEGIN SWITCH STATEMENT
+                                                    switch(inspect$1374$124.kind) { // BEGIN SWITCH STATEMENT
                                                     case 10: 
                                                     case 1: 
                                                     case 5: 
                                                     // JavaLine 1028 ==> SourceLine 1378
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement1378",1378);
-                                                        if((inspect$1374$20.p$ch==(((CHECKER2)(CUR$.SL$)).IIDNP))) {
-                                                            new CHECKER1$semchecker1$identifier$identError(inspect$1374$20,334);
+                                                        if((inspect$1374$124.p$ch==(((CHECKER2)(CUR$.SL$)).IIDNP))) {
+                                                            new CHECKER1$semchecker1$identifier$identError(inspect$1374$124,334);
                                                         }
                                                         TRACE_END_STM$("CompoundStatement1378",1378);
                                                     }
                                                     case 2: 
                                                     case 6: 
                                                     // JavaLine 1038 ==> SourceLine 1385
-                                                    new CHECKER1$semchecker1$identifier$identError(inspect$1374$20,364);
+                                                    new CHECKER1$semchecker1$identifier$identError(inspect$1374$124,364);
                                                     case 4: 
                                                     // JavaLine 1041 ==> SourceLine 1386
-                                                    new CHECKER1$semchecker1$identifier$identError(inspect$1374$20,365);
+                                                    new CHECKER1$semchecker1$identifier$identError(inspect$1374$124,365);
                                                     default:
                                                     // JavaLine 1044 ==> SourceLine 1388
                                                     LABEL$(16); // KERR2
@@ -1055,7 +1055,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 new ERRMSG$error0(((CHECKER2)(CUR$.SL$)),173);
                                 // JavaLine 1056 ==> SourceLine 1394
                                 exptop.cl=IEEXPcl;
-                                new CHECKER1$semchecker1$exp$emit(exptop);
+                                exptop.emit$0().CPF();
                                 new CHECKER1$semchecker1$popExpStack(((CHECKER2$semchecker)CUR$));
                                 // JavaLine 1060 ==> SourceLine 1395
                                 GOTO$(OPNOUT); // GOTO EVALUATED LABEL
@@ -1086,7 +1086,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 }
                                 // JavaLine 1087 ==> SourceLine 1404
                                 exptop.cl=IEEXPcl;
-                                new CHECKER1$semchecker1$exp$emit(exptop);
+                                exptop.emit$0().CPF();
                                 // JavaLine 1090 ==> SourceLine 1406
                                 simpleList=null;
                                 // JavaLine 1092 ==> SourceLine 1409
@@ -1200,21 +1200,21 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 // JavaLine 1200 ==> SourceLine 1452
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$1452$21=q;
-                                    if(inspect$1452$21!=null) //INSPECT inspect$1452$21
+                                    inspect$1452$125=q;
+                                    if(inspect$1452$125!=null) //INSPECT inspect$1452$125
                                     // JavaLine 1205 ==> SourceLine 1453
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1453",1453);
-                                        if((inspect$1452$21.categ==(((CHECKER2)(CUR$.SL$)).C_name))) {
-                                            new ERRMSG$error0(((CHECKER2)(CUR$.SL$)),(-(180)));
+                                        if((inspect$1452$125.categ==(((CHECKER2)(CUR$.SL$)).C_name))) {
+                                            new ERRMSG$error0(((CHECKER2)(CUR$.SL$)),-180);
                                         }
                                         // JavaLine 1211 ==> SourceLine 1454
-                                        if((inspect$1452$21.kind!=(((CHECKER2)(CUR$.SL$)).K_ident))) {
+                                        if((inspect$1452$125.kind!=(((CHECKER2)(CUR$.SL$)).K_ident))) {
                                             // JavaLine 1213 ==> SourceLine 1455
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement1455",1455);
-                                                if((inspect$1452$21.kind!=(((CHECKER2)(CUR$.SL$)).K_error))) {
-                                                    new ERRMSG$error1id(((CHECKER2)(CUR$.SL$)),306,inspect$1452$21.symb);
+                                                if((inspect$1452$125.kind!=(((CHECKER2)(CUR$.SL$)).K_error))) {
+                                                    new ERRMSG$error1id(((CHECKER2)(CUR$.SL$)),306,inspect$1452$125.symb);
                                                 }
                                                 TRACE_END_STM$("CompoundStatement1455",1455);
                                             }
@@ -1244,14 +1244,14 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 // JavaLine 1244 ==> SourceLine 1470
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$1470$22=((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]].declquant;
-                                    if(inspect$1470$22!=null) //INSPECT inspect$1470$22
+                                    inspect$1470$126=((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]].declquant;
+                                    if(inspect$1470$126!=null) //INSPECT inspect$1470$126
                                     // JavaLine 1249 ==> SourceLine 1471
-                                    if(((inspect$1470$22.kind==(((CHECKER2)(CUR$.SL$)).K_class))||((inspect$1470$22.kind==(((CHECKER2)(CUR$.SL$)).K_prefbl))))) {
+                                    if(((inspect$1470$126.kind==(((CHECKER2)(CUR$.SL$)).K_class))||((inspect$1470$126.kind==(((CHECKER2)(CUR$.SL$)).K_prefbl))))) {
                                         // JavaLine 1251 ==> SourceLine 1472
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement1472",1472);
-                                            ((CHECKER2)(CUR$.SL$)).coder.opq=((COMMON$quantity)inspect$1470$22);
+                                            ((CHECKER2)(CUR$.SL$)).coder.opq=((COMMON$quantity)inspect$1470$126);
                                             call(((CHECKER2)(CUR$.SL$)).coder);
                                             TRACE_END_STM$("CompoundStatement1472",1472);
                                         }
@@ -1276,19 +1276,19 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 TRACE_BEGIN_STM$("CompoundStatement1485",1485);
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$1485$23=((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]];
-                                    if(inspect$1485$23!=null) //INSPECT inspect$1485$23
+                                    inspect$1485$127=((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]];
+                                    if(inspect$1485$127!=null) //INSPECT inspect$1485$127
                                     // JavaLine 1281 ==> SourceLine 1486
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1486",1486);
-                                        ((CHECKER2)(CUR$.SL$)).coder.opq=inspect$1485$23.declquant;
+                                        ((CHECKER2)(CUR$.SL$)).coder.opq=inspect$1485$127.declquant;
                                         opc=((CHECKER2)(CUR$.SL$)).IEND;
                                         call(((CHECKER2)(CUR$.SL$)).coder);
                                         // JavaLine 1287 ==> SourceLine 1487
-                                        visq=inspect$1485$23.fpar;
+                                        visq=inspect$1485$127.fpar;
                                         new BUILDER1$precheck0$invischain(((CHECKER2$semchecker)CUR$),visq);
                                         // JavaLine 1290 ==> SourceLine 1488
-                                        visq=inspect$1485$23.declquant;
+                                        visq=inspect$1485$127.declquant;
                                         // JavaLine 1292 ==> SourceLine 1489
                                         while((visq.plev>(((CHECKER2)(CUR$.SL$)).one))) {
                                             visq=visq.prefqual;
@@ -1311,15 +1311,15 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 // JavaLine 1311 ==> SourceLine 1499
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$1499$24=((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]];
-                                    if(inspect$1499$24!=null) //INSPECT inspect$1499$24
+                                    inspect$1499$128=((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]];
+                                    if(inspect$1499$128!=null) //INSPECT inspect$1499$128
                                     // JavaLine 1316 ==> SourceLine 1500
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1500",1500);
-                                        visq=inspect$1499$24.fpar;
+                                        visq=inspect$1499$128.fpar;
                                         new BUILDER1$precheck0$invischain(((CHECKER2$semchecker)CUR$),visq);
                                         // JavaLine 1321 ==> SourceLine 1501
-                                        ((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]]=inspect$1499$24.declquant.prefqual.descr;
+                                        ((CHECKER2)(CUR$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$)).cblev)-((CHECKER2)(CUR$.SL$)).display.LB[0]]=inspect$1499$128.declquant.prefqual.descr;
                                         TRACE_END_STM$("CompoundStatement1500",1501);
                                     }
                                 }
@@ -1356,17 +1356,17 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 // JavaLine 1356 ==> SourceLine 1519
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$1519$25=new CHECKER1$semchecker1$switchelement(((CHECKER2$semchecker)CUR$),exptop).STM$();
-                                    if(inspect$1519$25!=null) //INSPECT inspect$1519$25
+                                    inspect$1519$129=new CHECKER1$semchecker1$switchelement(((CHECKER2$semchecker)CUR$),exptop).STM$();
+                                    if(inspect$1519$129!=null) //INSPECT inspect$1519$129
                                     // JavaLine 1361 ==> SourceLine 1520
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1520",1520);
                                         if((curswitchel==(null))) {
                                             // JavaLine 1365 ==> SourceLine 1521
-                                            curswitch.elements=curswitchel=((CHECKER1$semchecker1$switchelement)inspect$1519$25);
+                                            curswitch.elements=curswitchel=((CHECKER1$semchecker1$switchelement)inspect$1519$129);
                                         } else
                                         // JavaLine 1368 ==> SourceLine 1522
-                                        curswitchel=curswitchel.next=((CHECKER1$semchecker1$switchelement)inspect$1519$25);
+                                        curswitchel=curswitchel.next=((CHECKER1$semchecker1$switchelement)inspect$1519$129);
                                         TRACE_END_STM$("CompoundStatement1520",1522);
                                     }
                                 }
@@ -1383,7 +1383,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                 curswitch=null;
                                 curswitchel=null;
                                 // JavaLine 1385 ==> SourceLine 1531
-                                new CHECKER1$semchecker1$exp$emit(exptop);
+                                exptop.emit$0().CPF();
                                 new CHECKER1$semchecker1$popExpStack(((CHECKER2$semchecker)CUR$));
                                 GOTO$(POPEXPEXP); // GOTO EVALUATED LABEL
                                 TRACE_END_STM$("CompoundStatement1529",1531);
@@ -1434,17 +1434,17 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                                                         TRACE_BEGIN_STM$("CompoundStatement1555",1555);
                                                         {
                                                             // BEGIN INSPECTION 
-                                                            inspect$1555$26=new COMMON$brecord(((CHECKER2)(CUR$.SL$))).STM$();
-                                                            if(inspect$1555$26!=null) //INSPECT inspect$1555$26
+                                                            inspect$1555$130=new COMMON$brecord(((CHECKER2)(CUR$.SL$))).STM$();
+                                                            if(inspect$1555$130!=null) //INSPECT inspect$1555$130
                                                             // JavaLine 1439 ==> SourceLine 1556
                                                             {
                                                                 TRACE_BEGIN_STM$("CompoundStatement1556",1556);
-                                                                inspect$1555$26.blnohi=((CHECKER1$semchecker1$const$)(exptop)).ixhi;
+                                                                inspect$1555$130.blnohi=((CHECKER1$semchecker1$const$)(exptop)).ixhi;
                                                                 // JavaLine 1443 ==> SourceLine 1557
-                                                                inspect$1555$26.blnolo=((CHECKER1$semchecker1$const$)(exptop)).ixlo;
+                                                                inspect$1555$130.blnolo=((CHECKER1$semchecker1$const$)(exptop)).ixlo;
                                                                 // JavaLine 1445 ==> SourceLine 1558
-                                                                inspect$1555$26.declquant=q;
-                                                                q.descr=((COMMON$brecord)inspect$1555$26);
+                                                                inspect$1555$130.declquant=q;
+                                                                q.descr=((COMMON$brecord)inspect$1555$130);
                                                                 TRACE_END_STM$("CompoundStatement1556",1558);
                                                             }
                                                         }
@@ -1495,7 +1495,7 @@ public class CHECKER2$semchecker extends CHECKER1$semchecker1 {
                             // JavaLine 1495 ==> SourceLine 1578
                             exptop.cl=IEEXPcl;
                             // JavaLine 1497 ==> SourceLine 1579
-                            new CHECKER1$semchecker1$exp$emit(exptop);
+                            exptop.emit$0().CPF();
                             // JavaLine 1499 ==> SourceLine 1580
                             if((exptop.type!=(((CHECKER2)(CUR$.SL$)).IINTG))) {
                                 new CHECKER1$semchecker1$MaybeConvert(((CHECKER2$semchecker)CUR$),((CHECKER2)(CUR$.SL$)).IINTG,exptop.type);

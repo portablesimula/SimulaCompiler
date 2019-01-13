@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 230
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$normalattrfile$expandextlist extends BASICIO$ {
@@ -26,7 +26,7 @@ public final class BUILDER2$normalattrfile$expandextlist extends BASICIO$ {
     // JavaLine 26 ==> SourceLine 233
     boolean genqnt=false;
     // JavaLine 28 ==> SourceLine 282
-    COMMON$brecord inspect$282$0=null;
+    COMMON$brecord inspect$282$67=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER2$normalattrfile$expandextlist setPar(Object param) {
@@ -164,27 +164,27 @@ public final class BUILDER2$normalattrfile$expandextlist extends BASICIO$ {
                                     // JavaLine 164 ==> SourceLine 282
                                     {
                                         // BEGIN INSPECTION 
-                                        inspect$282$0=new COMMON$brecord(((BUILDER2)(CUR$.SL$.SL$))).STM$();
-                                        if(inspect$282$0!=null) //INSPECT inspect$282$0
+                                        inspect$282$67=new COMMON$brecord(((BUILDER2)(CUR$.SL$.SL$))).STM$();
+                                        if(inspect$282$67!=null) //INSPECT inspect$282$67
                                         // JavaLine 169 ==> SourceLine 283
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement283",283);
-                                            inspect$282$0.blev=char$((rank(p$encl.blev)+(1)));
+                                            inspect$282$67.blev=char$((rank(p$encl.blev)+(1)));
                                             // JavaLine 173 ==> SourceLine 284
-                                            inspect$282$0.rtblev=char$((rank(p$encl.rtblev)+(1)));
+                                            inspect$282$67.rtblev=char$((rank(p$encl.rtblev)+(1)));
                                             // JavaLine 175 ==> SourceLine 285
-                                            cq.descr=((COMMON$brecord)inspect$282$0);
-                                            inspect$282$0.declquant=cq;
-                                            inspect$282$0.kind=((BUILDER2$normalattrfile)(CUR$.SL$)).xkind;
+                                            cq.descr=((COMMON$brecord)inspect$282$67);
+                                            inspect$282$67.declquant=cq;
+                                            inspect$282$67.kind=((BUILDER2$normalattrfile)(CUR$.SL$)).xkind;
                                             // JavaLine 179 ==> SourceLine 286
-                                            inspect$282$0.thisused=((BUILDER2$normalattrfile)(CUR$.SL$)).xthisused;
+                                            inspect$282$67.thisused=((BUILDER2$normalattrfile)(CUR$.SL$)).xthisused;
                                             // JavaLine 181 ==> SourceLine 289
-                                            inspect$282$0.inrtag=((BUILDER2$normalattrfile)(CUR$.SL$)).xinrtag;
-                                            inspect$282$0.hasCode=((BUILDER2$normalattrfile)(CUR$.SL$)).xhascode;
+                                            inspect$282$67.inrtag=((BUILDER2$normalattrfile)(CUR$.SL$)).xinrtag;
+                                            inspect$282$67.hasCode=((BUILDER2$normalattrfile)(CUR$.SL$)).xhascode;
                                             // JavaLine 184 ==> SourceLine 291
                                             if((((BUILDER2$normalattrfile)(CUR$.SL$)).key==(((BUILDER2$normalattrfile)(CUR$.SL$)).begList))) {
                                                 // JavaLine 186 ==> SourceLine 292
-                                                new BUILDER2$normalattrfile$expandextlist(((BUILDER2$normalattrfile)(CUR$.SL$)),p$module,((COMMON$brecord)inspect$282$0));
+                                                new BUILDER2$normalattrfile$expandextlist(((BUILDER2$normalattrfile)(CUR$.SL$)),p$module,((COMMON$brecord)inspect$282$67));
                                             }
                                             TRACE_END_STM$("CompoundStatement283",292);
                                         }

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 464
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$precheck0$resethide extends BASICIO$ {
@@ -10,7 +10,7 @@ public final class BUILDER1$precheck0$resethide extends BASICIO$ {
     public COMMON$quantity p$q;
     // Declare locals as attributes
     // JavaLine 12 ==> SourceLine 478
-    BUILDER1$precheck0$ignore inspect$478$9=null;
+    BUILDER1$precheck0$ignore inspect$478$64=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER1$precheck0$resethide setPar(Object param) {
@@ -45,17 +45,17 @@ public final class BUILDER1$precheck0$resethide extends BASICIO$ {
             // JavaLine 45 ==> SourceLine 478
             {
                 // BEGIN INSPECTION 
-                inspect$478$9=((BUILDER1$precheck0)(CUR$.SL$)).curhp;
-                if(inspect$478$9!=null) //INSPECT inspect$478$9
+                inspect$478$64=((BUILDER1$precheck0)(CUR$.SL$)).curhp;
+                if(inspect$478$64!=null) //INSPECT inspect$478$64
                 // JavaLine 50 ==> SourceLine 479
                 {
                     TRACE_BEGIN_STM$("CompoundStatement479",479);
-                    inspect$478$9.p$q.protect=((char)1);
-                    inspect$478$9.p$q.visible=((BUILDER1)(CUR$.SL$.SL$)).NUL;
+                    inspect$478$64.p$q.protect=((char)1);
+                    inspect$478$64.p$q.visible=((BUILDER1)(CUR$.SL$.SL$)).NUL;
                     // JavaLine 55 ==> SourceLine 480
-                    inspect$478$9.p$hp.line=(-(inspect$478$9.p$hp.line));
+                    inspect$478$64.p$hp.line=(-(inspect$478$64.p$hp.line));
                     // JavaLine 57 ==> SourceLine 481
-                    ((BUILDER1$precheck0)(CUR$.SL$)).curhp=inspect$478$9.prev;
+                    ((BUILDER1$precheck0)(CUR$.SL$)).curhp=inspect$478$64.prev;
                     TRACE_END_STM$("CompoundStatement479",481);
                 }
             }

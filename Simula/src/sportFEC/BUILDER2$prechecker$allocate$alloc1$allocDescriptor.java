@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1023
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$prechecker$allocate$alloc1$allocDescriptor extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class BUILDER2$prechecker$allocate$alloc1$allocDescriptor extends B
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 1027
-    COMMON$brecord inspect$1025$12=null;
+    COMMON$brecord inspect$1025$79=null;
     // Normal Constructor
     public BUILDER2$prechecker$allocate$alloc1$allocDescriptor(RTObject$ SL$) {
         super(SL$);
@@ -25,19 +25,19 @@ public final class BUILDER2$prechecker$allocate$alloc1$allocDescriptor extends B
         // JavaLine 25 ==> SourceLine 1025
         {
             // BEGIN INSPECTION 
-            inspect$1025$12=(((((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).Q.descr==(null)))?(((ARRAY$<COMMON$brecord[]>)((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.Elt[0-((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.LB[0]].val).Elt[0-((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.Elt[0-((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.LB[0]].val.LB[0]]):(((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).Q.descr));
-            if(inspect$1025$12!=null) //INSPECT inspect$1025$12
+            inspect$1025$79=(((((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).Q.descr==(null)))?(((ARRAY$<COMMON$brecord[]>)((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.Elt[0-((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.LB[0]].val).Elt[0-((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.Elt[0-((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)).brctab.LB[0]].val.LB[0]]):(((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).Q.descr));
+            if(inspect$1025$79!=null) //INSPECT inspect$1025$79
             // JavaLine 30 ==> SourceLine 1028
             {
                 TRACE_BEGIN_STM$("CompoundStatement1028",1028);
-                ((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).QN.descr=((COMMON$brecord)inspect$1025$12);
-                inspect$1025$12.declquant=((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).QN;
+                ((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).QN.descr=((COMMON$brecord)inspect$1025$79);
+                inspect$1025$79.declquant=((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).QN;
                 // JavaLine 35 ==> SourceLine 1029
-                inspect$1025$12.blev=char$((rank(((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).p$brc.blev)+(1)));
+                inspect$1025$79.blev=char$((rank(((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).p$brc.blev)+(1)));
                 // JavaLine 37 ==> SourceLine 1030
-                inspect$1025$12.rtblev=char$((rank(((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).p$brc.rtblev)+(1)));
+                inspect$1025$79.rtblev=char$((rank(((BUILDER2$prechecker$allocate$alloc1)(CUR$.SL$)).p$brc.rtblev)+(1)));
                 // JavaLine 39 ==> SourceLine 1032
-                new BUILDER2$prechecker$allocate$alloc1(((BUILDER2$prechecker$allocate)(CUR$.SL$.SL$)),((COMMON$brecord)inspect$1025$12));
+                new BUILDER2$prechecker$allocate$alloc1(((BUILDER2$prechecker$allocate)(CUR$.SL$.SL$)),((COMMON$brecord)inspect$1025$79));
                 TRACE_END_STM$("CompoundStatement1028",1032);
             }
         }

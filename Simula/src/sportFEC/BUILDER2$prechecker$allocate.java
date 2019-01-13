@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 984
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$prechecker$allocate extends BASICIO$ {
@@ -14,7 +14,7 @@ public final class BUILDER2$prechecker$allocate extends BASICIO$ {
     COMMON$quantity TUchain=null;
     COMMON$brecord brc=null;
     // JavaLine 16 ==> SourceLine 1641
-    COMMON$brecord inspect$1641$16=null;
+    COMMON$brecord inspect$1641$83=null;
     // Normal Constructor
     public BUILDER2$prechecker$allocate(RTObject$ SL$) {
         super(SL$);
@@ -70,12 +70,12 @@ public final class BUILDER2$prechecker$allocate extends BASICIO$ {
             // JavaLine 70 ==> SourceLine 1641
             {
                 // BEGIN INSPECTION 
-                inspect$1641$16=((BUILDER2$prechecker)(CUR$.SL$)).blockpref.descr;
-                if(inspect$1641$16!=null) //INSPECT inspect$1641$16
+                inspect$1641$83=((BUILDER2$prechecker)(CUR$.SL$)).blockpref.descr;
+                if(inspect$1641$83!=null) //INSPECT inspect$1641$83
                 // JavaLine 75 ==> SourceLine 1642
                 {
                     TRACE_BEGIN_STM$("CompoundStatement1642",1642);
-                    TUchain=inspect$1641$16.declquant;
+                    TUchain=inspect$1641$83.declquant;
                     // JavaLine 79 ==> SourceLine 1643
                     while((TUchain.plev>(((BUILDER2)(CUR$.SL$.SL$)).one))) {
                         // JavaLine 81 ==> SourceLine 1644
@@ -90,7 +90,7 @@ public final class BUILDER2$prechecker$allocate extends BASICIO$ {
                         }
                     }
                     // JavaLine 92 ==> SourceLine 1647
-                    if((inspect$1641$16.blev!=(brc.blev))) {
+                    if((inspect$1641$83.blev!=(brc.blev))) {
                         // JavaLine 94 ==> SourceLine 1650
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1650",1650);
@@ -107,9 +107,9 @@ public final class BUILDER2$prechecker$allocate extends BASICIO$ {
                     // JavaLine 107 ==> SourceLine 1655
                     ((BUILDER2$prechecker)(CUR$.SL$)).blockpref=null;
                     // JavaLine 109 ==> SourceLine 1656
-                    brc.npar=inspect$1641$16.npar;
+                    brc.npar=inspect$1641$83.npar;
                     // JavaLine 111 ==> SourceLine 1658
-                    if(inspect$1641$16.localclasses) {
+                    if(inspect$1641$83.localclasses) {
                         brc.localclasses=true;
                     }
                     TRACE_END_STM$("CompoundStatement1642",1658);

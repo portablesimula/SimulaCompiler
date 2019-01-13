@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 306
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$precheck0$makevisblock extends BASICIO$ {
@@ -22,9 +22,9 @@ public final class BUILDER1$precheck0$makevisblock extends BASICIO$ {
     // JavaLine 22 ==> SourceLine 312
     char qblev=0;
     // JavaLine 24 ==> SourceLine 322
-    COMMON$identsymbol inspect$321$6=null;
+    COMMON$identsymbol inspect$321$61=null;
     // JavaLine 26 ==> SourceLine 337
-    COMMON$sembox inspect$337$7=null;
+    COMMON$sembox inspect$337$62=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER1$precheck0$makevisblock setPar(Object param) {
@@ -85,23 +85,23 @@ public final class BUILDER1$precheck0$makevisblock extends BASICIO$ {
                         if((qz.visible==(((BUILDER1)(CUR$.SL$.SL$)).NUL))) {
                             {
                                 // BEGIN INSPECTION 
-                                inspect$321$6=((COMMON$identsymbol)(qz.symb));
-                                if(inspect$321$6!=null) //INSPECT inspect$321$6
+                                inspect$321$61=((COMMON$identsymbol)(qz.symb));
+                                if(inspect$321$61!=null) //INSPECT inspect$321$61
                                 // JavaLine 90 ==> SourceLine 323
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement323",323);
-                                    if((inspect$321$6.curmeaning==(null))) {
+                                    if((inspect$321$61.curmeaning==(null))) {
                                         // JavaLine 94 ==> SourceLine 324
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement324",324);
-                                            inspect$321$6.curmeaning=qz;
+                                            inspect$321$61.curmeaning=qz;
                                             TRACE_END_STM$("CompoundStatement324",324);
                                         }
                                     } else
                                     // JavaLine 101 ==> SourceLine 327
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement327",327);
-                                        if(((((COMMON$quantity)(inspect$321$6.curmeaning)).encl.blev!=(qblev))||((inspect$321$6.curmeaning==(qz))))) {
+                                        if(((((COMMON$quantity)(inspect$321$61.curmeaning)).encl.blev!=(qblev))||((inspect$321$61.curmeaning==(qz))))) {
                                             // JavaLine 105 ==> SourceLine 337
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement337",337);
@@ -110,21 +110,21 @@ public final class BUILDER1$precheck0$makevisblock extends BASICIO$ {
                                                 // JavaLine 110 ==> SourceLine 337
                                                 {
                                                     // BEGIN INSPECTION 
-                                                    inspect$337$7=new COMMON$sembox(((BUILDER1)(CUR$.SL$.SL$))).STM$();
-                                                    if(inspect$337$7!=null) //INSPECT inspect$337$7
+                                                    inspect$337$62=new COMMON$sembox(((BUILDER1)(CUR$.SL$.SL$))).STM$();
+                                                    if(inspect$337$62!=null) //INSPECT inspect$337$62
                                                     // JavaLine 115 ==> SourceLine 338
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement338",338);
-                                                        inspect$337$7.prevmeaning=qz.prevmeaning;
+                                                        inspect$337$62.prevmeaning=qz.prevmeaning;
                                                         // JavaLine 119 ==> SourceLine 339
-                                                        inspect$337$7.next=inspect$321$6.curmeaning;
+                                                        inspect$337$62.next=inspect$321$61.curmeaning;
                                                         // JavaLine 121 ==> SourceLine 340
-                                                        qz.prevmeaning=((COMMON$sembox)inspect$337$7);
+                                                        qz.prevmeaning=((COMMON$sembox)inspect$337$62);
                                                         TRACE_END_STM$("CompoundStatement338",340);
                                                     }
                                                 }
                                                 // JavaLine 126 ==> SourceLine 342
-                                                inspect$321$6.curmeaning=qz;
+                                                inspect$321$61.curmeaning=qz;
                                                 TRACE_END_STM$("CompoundStatement337",342);
                                             }
                                         }

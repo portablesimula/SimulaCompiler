@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 695
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$recognizer$directive$bytefield extends BASICIO$ {
@@ -29,7 +29,7 @@ public final class SCANNER$recognizer$directive$bytefield extends BASICIO$ {
         // JavaLine 29 ==> SourceLine 697
         t=new SCANNER$recognizer$directive$linefield(((SCANNER$recognizer$directive)(CUR$.SL$))).RESULT$;
         // JavaLine 31 ==> SourceLine 698
-        result=(((digit(TXT$.getchar(t))&&((TXT$.length(t)<=(3)))))?(TXT$.getint(t)):((-(1))));
+        result=(((digit(TXT$.getchar(t))&&((TXT$.length(t)<=(3)))))?(TXT$.getint(t)):(-1));
         // JavaLine 33 ==> SourceLine 700
         if(((result<(0))|((result>(255))))) {
             GOTO$(((SCANNER$recognizer$directive)(CUR$.SL$)).DIRWARN); // GOTO EVALUATED LABEL

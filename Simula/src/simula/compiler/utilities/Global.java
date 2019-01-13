@@ -72,6 +72,12 @@ public final class Global {
 		return(simulaProperties.getProperty(key,defaultValue));
 	}
 	
+	public static void setProperty(String key,String value) {
+		if(simulaProperties==null) loadProperties();
+		simulaProperties.setProperty(key,value);
+		storeProperties();
+	}
+	
 	private static void loadProperties() {
 		String USER_HOME=System.getProperty("user.home");
 		System.out.println("USER_HOME="+USER_HOME);

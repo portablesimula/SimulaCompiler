@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1736
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:42 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$pre_argumented$emit extends BASICIO$ {
@@ -12,7 +12,7 @@ public final class CHECKER1$semchecker1$pre_argumented$emit extends BASICIO$ {
     final LABQNT$ LOUT=new LABQNT$(this,0,1); // Local Label #1=LOUT
     // Declare locals as attributes
     // JavaLine 14 ==> SourceLine 1738
-    CHECKER1$semchecker1$identifier inspect$1738$14=null;
+    CHECKER1$semchecker1$identifier inspect$1738$98=null;
     // Normal Constructor
     public CHECKER1$semchecker1$pre_argumented$emit(RTObject$ SL$) {
         super(SL$);
@@ -31,15 +31,15 @@ public final class CHECKER1$semchecker1$pre_argumented$emit extends BASICIO$ {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 {
                     // BEGIN INSPECTION 
-                    inspect$1738$14=((CHECKER1$semchecker1$pre_argumented)(CUR$.SL$)).p1$ident;
-                    if(inspect$1738$14!=null) //INSPECT inspect$1738$14
+                    inspect$1738$98=((CHECKER1$semchecker1$pre_argumented)(CUR$.SL$)).p1$ident;
+                    if(inspect$1738$98!=null) //INSPECT inspect$1738$98
                     // JavaLine 36 ==> SourceLine 1739
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1739",1739);
-                        inspect$1738$14.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
-                        inspect$1738$14.emit$0().CPF();
+                        inspect$1738$98.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
+                        inspect$1738$98.emit$0().CPF();
                         // JavaLine 41 ==> SourceLine 1740
-                        switch(inspect$1738$14.kind) { // BEGIN SWITCH STATEMENT
+                        switch(inspect$1738$98.kind) { // BEGIN SWITCH STATEMENT
                         case 1: 
                         // JavaLine 44 ==> SourceLine 1741
                         {
@@ -84,7 +84,7 @@ public final class CHECKER1$semchecker1$pre_argumented$emit extends BASICIO$ {
                     // JavaLine 84 ==> SourceLine 1756
                     LABEL$(1); // LOUT
                     // JavaLine 86 ==> SourceLine 1754
-                    if(((inspect$1738$14.meaning!=(null))||((((CHECKER1$semchecker1$pre_argumented)(CUR$.SL$)).p$ch!=(((CHECKER1)(CUR$.SL$.SL$.SL$)).IBPRF))))) {
+                    if(((inspect$1738$98.meaning!=(null))||((((CHECKER1$semchecker1$pre_argumented)(CUR$.SL$)).p$ch!=(((CHECKER1)(CUR$.SL$.SL$.SL$)).IBPRF))))) {
                         // JavaLine 88 ==> SourceLine 1756
                         ((CHECKER1$semchecker1$pre_argumented)(CUR$.SL$)).p1$arguments.emit$0().CPF();
                     }

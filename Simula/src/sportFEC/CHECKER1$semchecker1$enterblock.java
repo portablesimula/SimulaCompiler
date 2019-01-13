@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 2618
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:42 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$enterblock extends BASICIO$ {
@@ -9,9 +9,9 @@ public final class CHECKER1$semchecker1$enterblock extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 2621
-    COMMON$brctab2 inspect$2621$18=null;
+    COMMON$brctab2 inspect$2621$102=null;
     // JavaLine 13 ==> SourceLine 2622
-    COMMON$brecord inspect$2622$19=null;
+    COMMON$brecord inspect$2622$103=null;
     // Normal Constructor
     public CHECKER1$semchecker1$enterblock(RTObject$ SL$) {
         super(SL$);
@@ -34,42 +34,42 @@ public final class CHECKER1$semchecker1$enterblock extends BASICIO$ {
         // JavaLine 34 ==> SourceLine 2621
         {
             // BEGIN INSPECTION 
-            inspect$2621$18=((CHECKER1)(CUR$.SL$.SL$)).brctab.Elt[rank(((CHECKER1$semchecker1)(CUR$.SL$)).lastblhi)-((CHECKER1)(CUR$.SL$.SL$)).brctab.LB[0]];
-            if(inspect$2621$18!=null) //INSPECT inspect$2621$18
+            inspect$2621$102=((CHECKER1)(CUR$.SL$.SL$)).brctab.Elt[rank(((CHECKER1$semchecker1)(CUR$.SL$)).lastblhi)-((CHECKER1)(CUR$.SL$.SL$)).brctab.LB[0]];
+            if(inspect$2621$102!=null) //INSPECT inspect$2621$102
             // JavaLine 39 ==> SourceLine 2622
             {
                 TRACE_BEGIN_STM$("CompoundStatement2622",2622);
                 {
                     // BEGIN INSPECTION 
-                    inspect$2622$19=inspect$2621$18.val.Elt[rank(((CHECKER1$semchecker1)(CUR$.SL$)).lastbllo)-inspect$2621$18.val.LB[0]];
-                    if(inspect$2622$19!=null) //INSPECT inspect$2622$19
+                    inspect$2622$103=inspect$2621$102.val.Elt[rank(((CHECKER1$semchecker1)(CUR$.SL$)).lastbllo)-inspect$2621$102.val.LB[0]];
+                    if(inspect$2622$103!=null) //INSPECT inspect$2622$103
                     // JavaLine 46 ==> SourceLine 2623
                     {
                         TRACE_BEGIN_STM$("CompoundStatement2623",2623);
-                        if((inspect$2622$19.kind==(((CHECKER1)(CUR$.SL$.SL$)).K_class))) {
+                        if((inspect$2622$103.kind==(((CHECKER1)(CUR$.SL$.SL$)).K_class))) {
                             // JavaLine 50 ==> SourceLine 2624
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement2624",2624);
-                                if((inspect$2622$19.declquant.plev>(((CHECKER1)(CUR$.SL$.SL$)).one))) {
+                                if((inspect$2622$103.declquant.plev>(((CHECKER1)(CUR$.SL$.SL$)).one))) {
                                     // JavaLine 54 ==> SourceLine 2625
-                                    new BUILDER1$precheck0$hide(((CHECKER1$semchecker1)(CUR$.SL$)),inspect$2622$19.declquant.prefqual,false);
+                                    new BUILDER1$precheck0$hide(((CHECKER1$semchecker1)(CUR$.SL$)),inspect$2622$103.declquant.prefqual,false);
                                 }
                                 // JavaLine 57 ==> SourceLine 2626
-                                new BUILDER1$precheck0$unprotect(((CHECKER1$semchecker1)(CUR$.SL$)),inspect$2622$19.declquant);
+                                new BUILDER1$precheck0$unprotect(((CHECKER1$semchecker1)(CUR$.SL$)),inspect$2622$103.declquant);
                                 TRACE_END_STM$("CompoundStatement2624",2626);
                             }
                         } else
                         // JavaLine 62 ==> SourceLine 2628
-                        if((inspect$2622$19.kind==(((CHECKER1)(CUR$.SL$.SL$)).K_prefbl))) {
-                            new BUILDER1$precheck0$hide(((CHECKER1$semchecker1)(CUR$.SL$)),inspect$2622$19.declquant.prefqual,false);
+                        if((inspect$2622$103.kind==(((CHECKER1)(CUR$.SL$.SL$)).K_prefbl))) {
+                            new BUILDER1$precheck0$hide(((CHECKER1$semchecker1)(CUR$.SL$)),inspect$2622$103.declquant.prefqual,false);
                         }
                         // JavaLine 66 ==> SourceLine 2629
-                        new BUILDER1$precheck0$makevisblock(((CHECKER1$semchecker1)(CUR$.SL$)),((COMMON$brecord)inspect$2622$19));
+                        new BUILDER1$precheck0$makevisblock(((CHECKER1$semchecker1)(CUR$.SL$)),((COMMON$brecord)inspect$2622$103));
                         TRACE_END_STM$("CompoundStatement2623",2629);
                     }
                 }
                 // JavaLine 71 ==> SourceLine 2631
-                inspect$2621$18.val.Elt[rank(((CHECKER1$semchecker1)(CUR$.SL$)).lastbllo)-inspect$2621$18.val.LB[0]]=null;
+                inspect$2621$102.val.Elt[rank(((CHECKER1$semchecker1)(CUR$.SL$)).lastbllo)-inspect$2621$102.val.LB[0]]=null;
                 TRACE_END_STM$("CompoundStatement2622",2631);
             }
         }

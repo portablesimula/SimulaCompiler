@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 323
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:43:34 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:19 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class ERRMSG$internerr extends BASICIO$ {
@@ -13,7 +13,7 @@ public final class ERRMSG$internerr extends BASICIO$ {
     // JavaLine 13 ==> SourceLine 325
     TXT$ modname=null;
     // JavaLine 15 ==> SourceLine 326
-    PrintFile$ inspect$326$2=null;
+    PrintFile$ inspect$326$8=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public ERRMSG$internerr setPar(Object param) {
@@ -48,12 +48,12 @@ public final class ERRMSG$internerr extends BASICIO$ {
         if((((ERRMSG)(CUR$.SL$)).numerrfound==(0))) {
             {
                 // BEGIN INSPECTION 
-                inspect$326$2=sysout();
-                if(inspect$326$2!=null) //INSPECT inspect$326$2
+                inspect$326$8=sysout();
+                if(inspect$326$8!=null) //INSPECT inspect$326$8
                 // JavaLine 53 ==> SourceLine 327
                 {
                     TRACE_BEGIN_STM$("CompoundStatement327",327);
-                    inspect$326$2.outimage();
+                    inspect$326$8.outimage();
                     // JavaLine 57 ==> SourceLine 328
                     switch(p$module) { // BEGIN SWITCH STATEMENT
                     case 0: 
@@ -117,13 +117,13 @@ public final class ERRMSG$internerr extends BASICIO$ {
                 // JavaLine 117 ==> SourceLine 349
                 modname=CONC(CONC(new TXT$("*** Internal error in "),modname),new TXT$(", line "));
                 // JavaLine 119 ==> SourceLine 350
-                inspect$326$2.outtext(modname);
-                inspect$326$2.outint(p$lnr,0);
+                inspect$326$8.outtext(modname);
+                inspect$326$8.outint(p$lnr,0);
                 // JavaLine 122 ==> SourceLine 351
-                inspect$326$2.outtext(new TXT$(", compiling source line "));
-                inspect$326$2.outint(((ERRMSG)(CUR$.SL$)).linenr,0);
+                inspect$326$8.outtext(new TXT$(", compiling source line "));
+                inspect$326$8.outint(((ERRMSG)(CUR$.SL$)).linenr,0);
                 // JavaLine 125 ==> SourceLine 352
-                inspect$326$2.outimage();
+                inspect$326$8.outimage();
                 TRACE_END_STM$("CompoundStatement327",352);
             }
         }

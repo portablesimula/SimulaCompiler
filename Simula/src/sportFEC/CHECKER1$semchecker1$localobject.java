@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 613
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER1$semchecker1$localobject extends CHECKER1$semchecker1$operation {
@@ -14,7 +14,7 @@ public class CHECKER1$semchecker1$localobject extends CHECKER1$semchecker1$opera
     // JavaLine 14 ==> SourceLine 616
     public COMMON$quantity L3opq=null;
     // JavaLine 16 ==> SourceLine 635
-    public COMMON$quantity inspect$634$6=null;
+    public COMMON$quantity inspect$634$90=null;
     public PRCQNT$ emit$0() { return(new PRCQNT$(this,CHECKER1$semchecker1$localobject$emit.class)); }
     // Normal Constructor
     public CHECKER1$semchecker1$localobject(RTObject$ staticLink,CHECKER1$semchecker1$exp sp$pred,char sp$ch,CHECKER1$semchecker1$exp sp1$left,CHECKER1$semchecker1$exp sp1$right) {
@@ -55,8 +55,8 @@ public class CHECKER1$semchecker1$localobject extends CHECKER1$semchecker1$opera
                             TRACE_BEGIN_STM$("CompoundStatement634",634);
                             {
                                 // BEGIN INSPECTION 
-                                inspect$634$6=new BUILDER1$precheck0$getClass(((CHECKER1$semchecker1)(CUR$.SL$)),qual,char$((rank(qual.encl.blev)+(1)))).RESULT$;
-                                if(inspect$634$6!=null) //INSPECT inspect$634$6
+                                inspect$634$90=new BUILDER1$precheck0$getClass(((CHECKER1$semchecker1)(CUR$.SL$)),qual,char$((rank(qual.encl.blev)+(1)))).RESULT$;
+                                if(inspect$634$90!=null) //INSPECT inspect$634$90
                                 // JavaLine 60 ==> SourceLine 637
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement637",637);
@@ -64,7 +64,7 @@ public class CHECKER1$semchecker1$localobject extends CHECKER1$semchecker1$opera
                                         // JavaLine 64 ==> SourceLine 638
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement638",638);
-                                            if((inspect$634$6.descr.blev==(((CHECKER1)(CUR$.SL$.SL$)).cblev))) {
+                                            if((inspect$634$90.descr.blev==(((CHECKER1)(CUR$.SL$.SL$)).cblev))) {
                                                 // JavaLine 68 ==> SourceLine 639
                                                 new ERRMSG$error1id(((CHECKER1)(CUR$.SL$.SL$)),314,((CHECKER1$semchecker1)(CUR$.SL$)).opdSymb);
                                             }
@@ -72,7 +72,7 @@ public class CHECKER1$semchecker1$localobject extends CHECKER1$semchecker1$opera
                                         }
                                     }
                                     // JavaLine 74 ==> SourceLine 640
-                                    L3opq=((CHECKER1)(CUR$.SL$.SL$)).display.Elt[rank(inspect$634$6.descr.blev)-((CHECKER1)(CUR$.SL$.SL$)).display.LB[0]].declquant;
+                                    L3opq=((CHECKER1)(CUR$.SL$.SL$)).display.Elt[rank(inspect$634$90.descr.blev)-((CHECKER1)(CUR$.SL$.SL$)).display.LB[0]].declquant;
                                     // JavaLine 76 ==> SourceLine 641
                                     while((L3opq.kind==(((CHECKER1)(CUR$.SL$.SL$)).K_labbl))) {
                                         L3opq=L3opq.prefqual;
@@ -86,7 +86,7 @@ public class CHECKER1$semchecker1$localobject extends CHECKER1$semchecker1$opera
                                         L3opq.descr.thisused=true;
                                     }
                                     // JavaLine 88 ==> SourceLine 646
-                                    L3opq=((COMMON$quantity)inspect$634$6);
+                                    L3opq=((COMMON$quantity)inspect$634$90);
                                     TRACE_END_STM$("CompoundStatement637",646);
                                 }
                                 else // OTHERWISE 

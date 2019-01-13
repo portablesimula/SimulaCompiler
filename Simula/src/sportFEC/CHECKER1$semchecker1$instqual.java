@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 568
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER1$semchecker1$instqual extends CHECKER1$semchecker1$operation {
@@ -99,7 +99,7 @@ public class CHECKER1$semchecker1$instqual extends CHECKER1$semchecker1$operatio
                                                 TRACE_BEGIN_STM$("CompoundStatement605",605);
                                                 if((!(new BUILDER1$precheck0$subclass(((CHECKER1$semchecker1)(CUR$.SL$)),p1$right.qual,qual).RESULT$))) {
                                                     // JavaLine 101 ==> SourceLine 606
-                                                    new ERRMSG$error1id(((CHECKER1)(CUR$.SL$.SL$)),(-(241)),((CHECKER1$semchecker1)(CUR$.SL$)).opdSymb);
+                                                    new ERRMSG$error1id(((CHECKER1)(CUR$.SL$.SL$)),-241,((CHECKER1$semchecker1)(CUR$.SL$)).opdSymb);
                                                 }
                                                 TRACE_END_STM$("CompoundStatement605",606);
                                             }

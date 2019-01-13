@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 667
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$recognizer$nextLine extends BASICIO$ {
@@ -11,7 +11,7 @@ public final class SCANNER$recognizer$nextLine extends BASICIO$ {
     // JavaLine 11 ==> SourceLine 669
     final LABQNT$ REP=new LABQNT$(this,0,1); // Local Label #1=REP
     // Declare locals as attributes
-    SCANNER$input inspect$669$4=null;
+    SCANNER$input inspect$669$13=null;
     // Normal Constructor
     public SCANNER$recognizer$nextLine(RTObject$ SL$) {
         super(SL$);
@@ -33,10 +33,10 @@ public final class SCANNER$recognizer$nextLine extends BASICIO$ {
                 // JavaLine 33 ==> SourceLine 669
                 {
                     // BEGIN INSPECTION 
-                    inspect$669$4=((SCANNER)(CUR$.SL$.SL$)).cursource;
-                    if(inspect$669$4!=null) //INSPECT inspect$669$4
+                    inspect$669$13=((SCANNER)(CUR$.SL$.SL$)).cursource;
+                    if(inspect$669$13!=null) //INSPECT inspect$669$13
                     // JavaLine 38 ==> SourceLine 670
-                    call(((SCANNER$input)inspect$669$4));
+                    call(((SCANNER$input)inspect$669$13));
                     else // OTHERWISE 
                     ((SCANNER$recognizer)(CUR$.SL$)).detach();
                 }

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 64
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 12:01:21 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:49 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER2$semchecker$enterstmt extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class CHECKER2$semchecker$enterstmt extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 69
-    COMMON$brecord inspect$69$0=null;
+    COMMON$brecord inspect$69$104=null;
     // Normal Constructor
     public CHECKER2$semchecker$enterstmt(RTObject$ SL$) {
         super(SL$);
@@ -27,16 +27,16 @@ public final class CHECKER2$semchecker$enterstmt extends BASICIO$ {
         // JavaLine 27 ==> SourceLine 69
         {
             // BEGIN INSPECTION 
-            inspect$69$0=new COMMON$getBrc(((CHECKER2)(CUR$.SL$.SL$)),((CHECKER2$semchecker)(CUR$.SL$)).lastblhi,((CHECKER2$semchecker)(CUR$.SL$)).lastbllo).RESULT$;
-            if(inspect$69$0!=null) //INSPECT inspect$69$0
+            inspect$69$104=new COMMON$getBrc(((CHECKER2)(CUR$.SL$.SL$)),((CHECKER2$semchecker)(CUR$.SL$)).lastblhi,((CHECKER2$semchecker)(CUR$.SL$)).lastbllo).RESULT$;
+            if(inspect$69$104!=null) //INSPECT inspect$69$104
             // JavaLine 32 ==> SourceLine 70
             {
                 TRACE_BEGIN_STM$("CompoundStatement70",70);
-                ((CHECKER2)(CUR$.SL$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$.SL$)).cblev)-((CHECKER2)(CUR$.SL$.SL$)).display.LB[0]]=((COMMON$brecord)inspect$69$0);
+                ((CHECKER2)(CUR$.SL$.SL$)).display.Elt[rank(((CHECKER2)(CUR$.SL$.SL$)).cblev)-((CHECKER2)(CUR$.SL$.SL$)).display.LB[0]]=((COMMON$brecord)inspect$69$104);
                 // JavaLine 36 ==> SourceLine 71
                 ((ARRAY$<COMMON$brecord[]>)((CHECKER2)(CUR$.SL$.SL$)).brctab.Elt[rank(((CHECKER2$semchecker)(CUR$.SL$)).lastblhi)-((CHECKER2)(CUR$.SL$.SL$)).brctab.LB[0]].val).Elt[rank(((CHECKER2$semchecker)(CUR$.SL$)).lastbllo)-((CHECKER2)(CUR$.SL$.SL$)).brctab.Elt[rank(((CHECKER2$semchecker)(CUR$.SL$)).lastblhi)-((CHECKER2)(CUR$.SL$.SL$)).brctab.LB[0]].val.LB[0]]=null;
                 // JavaLine 38 ==> SourceLine 72
-                new BUILDER1$precheck0$vischain(((CHECKER2$semchecker)(CUR$.SL$)),inspect$69$0.fpar,((CHECKER2$semchecker)(CUR$.SL$)).visq);
+                new BUILDER1$precheck0$vischain(((CHECKER2$semchecker)(CUR$.SL$)),inspect$69$104.fpar,((CHECKER2$semchecker)(CUR$.SL$)).visq);
                 TRACE_END_STM$("CompoundStatement70",72);
             }
         }

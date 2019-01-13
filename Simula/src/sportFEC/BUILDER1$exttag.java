@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 623
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$exttag extends BASICIO$ {
@@ -49,7 +49,7 @@ public final class BUILDER1$exttag extends BASICIO$ {
                 RESULT$=((BUILDER1)(CUR$.SL$)).nextexttag;
                 // JavaLine 50 ==> SourceLine 636
                 if((p$q.categ==(((BUILDER1)(CUR$.SL$)).C_virt))) {
-                    RESULT$=(-(1));
+                    RESULT$=-1;
                 } else
                 // JavaLine 54 ==> SourceLine 637
                 if((p$q.categ==(((BUILDER1)(CUR$.SL$)).C_extnal))) {
@@ -57,7 +57,7 @@ public final class BUILDER1$exttag extends BASICIO$ {
                     {
                         TRACE_BEGIN_STM$("CompoundStatement638",638);
                         if(IS$(p$q.descr,COMMON$extbrecord.class)) {
-                            RESULT$=(-(1));
+                            RESULT$=-1;
                         } else
                         // JavaLine 62 ==> SourceLine 640
                         ((BUILDER1)(CUR$.SL$)).nextexttag=(((BUILDER1)(CUR$.SL$)).nextexttag+(2));
@@ -67,12 +67,12 @@ public final class BUILDER1$exttag extends BASICIO$ {
                 // JavaLine 67 ==> SourceLine 642
                 if((IS$(p$q,COMMON$extquantity.class)&&((((COMMON$extquantity)(p$q)).clf==(((BUILDER1)(CUR$.SL$)).Clf002))))) {
                     // JavaLine 69 ==> SourceLine 644
-                    RESULT$=(-(1));
+                    RESULT$=-1;
                 } else
                 // JavaLine 72 ==> SourceLine 645
                 if(((p$q.special>(((char)1)))&&((p$q.type!=(((BUILDER1)(CUR$.SL$)).ITEXT))))) {
                     // JavaLine 74 ==> SourceLine 649
-                    RESULT$=(-(1));
+                    RESULT$=-1;
                 } else
                 // JavaLine 77 ==> SourceLine 650
                 if(((p$q.kind==(((BUILDER1)(CUR$.SL$)).K_class))&&((p$q.categ==(((BUILDER1)(CUR$.SL$)).C_local))))) {
@@ -87,7 +87,7 @@ public final class BUILDER1$exttag extends BASICIO$ {
                 // JavaLine 87 ==> SourceLine 656
                 if((p$q.encl.declquant.categ==(((BUILDER1)(CUR$.SL$)).C_virt))) {
                     // JavaLine 89 ==> SourceLine 658
-                    RESULT$=(-(1));
+                    RESULT$=-1;
                 } else
                 // JavaLine 92 ==> SourceLine 659
                 ((BUILDER1)(CUR$.SL$)).nextexttag=(((BUILDER1)(CUR$.SL$)).nextexttag+((((p$q.categ==(((BUILDER1)(CUR$.SL$)).C_name)))?(2):(1))));
@@ -95,7 +95,7 @@ public final class BUILDER1$exttag extends BASICIO$ {
             }
         } else
         // JavaLine 97 ==> SourceLine 661
-        RESULT$=(-(2));
+        RESULT$=-2;
         TRACE_END_STM$("exttag",661);
         EBLK();
         return(this);

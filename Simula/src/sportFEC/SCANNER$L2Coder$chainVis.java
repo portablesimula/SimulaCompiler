@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1729
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$L2Coder$chainVis extends BASICIO$ {
@@ -10,7 +10,7 @@ public final class SCANNER$L2Coder$chainVis extends BASICIO$ {
     public boolean p$hidp;
     // Declare locals as attributes
     // JavaLine 12 ==> SourceLine 1731
-    COMMON$idpack inspect$1731$13=null;
+    COMMON$idpack inspect$1731$22=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public SCANNER$L2Coder$chainVis setPar(Object param) {
@@ -42,21 +42,21 @@ public final class SCANNER$L2Coder$chainVis extends BASICIO$ {
         TRACE_BEGIN_STM$("chainVis",1731);
         {
             // BEGIN INSPECTION 
-            inspect$1731$13=((p$hidp)?(new COMMON$idpack(((SCANNER)(CUR$.SL$.SL$))).STM$()):(new SCANNER$protpack(((SCANNER)(CUR$.SL$.SL$))).STM$()));
-            if(inspect$1731$13!=null) //INSPECT inspect$1731$13
+            inspect$1731$22=((p$hidp)?(new COMMON$idpack(((SCANNER)(CUR$.SL$.SL$))).STM$()):(new SCANNER$protpack(((SCANNER)(CUR$.SL$.SL$))).STM$()));
+            if(inspect$1731$22!=null) //INSPECT inspect$1731$22
             // JavaLine 47 ==> SourceLine 1732
             {
                 TRACE_BEGIN_STM$("CompoundStatement1732",1732);
-                inspect$1731$13.line=((SCANNER)(CUR$.SL$.SL$)).linenr;
-                inspect$1731$13.idhi=((SCANNER)(CUR$.SL$.SL$)).opdhi;
-                inspect$1731$13.idlo=((SCANNER)(CUR$.SL$.SL$)).opdlo;
+                inspect$1731$22.line=((SCANNER)(CUR$.SL$.SL$)).linenr;
+                inspect$1731$22.idhi=((SCANNER)(CUR$.SL$.SL$)).opdhi;
+                inspect$1731$22.idlo=((SCANNER)(CUR$.SL$.SL$)).opdlo;
                 // JavaLine 53 ==> SourceLine 1733
                 if((((SCANNER$L2Coder)(CUR$.SL$)).cbrec.hidlist==(null))) {
                     // JavaLine 55 ==> SourceLine 1734
-                    ((SCANNER$L2Coder)(CUR$.SL$)).cvispack=((SCANNER$L2Coder)(CUR$.SL$)).cbrec.hidlist=((COMMON$idpack)inspect$1731$13);
+                    ((SCANNER$L2Coder)(CUR$.SL$)).cvispack=((SCANNER$L2Coder)(CUR$.SL$)).cbrec.hidlist=((COMMON$idpack)inspect$1731$22);
                 } else
                 // JavaLine 58 ==> SourceLine 1735
-                ((SCANNER$L2Coder)(CUR$.SL$)).cvispack=((SCANNER$L2Coder)(CUR$.SL$)).cvispack.next=((COMMON$idpack)inspect$1731$13);
+                ((SCANNER$L2Coder)(CUR$.SL$)).cvispack=((SCANNER$L2Coder)(CUR$.SL$)).cvispack.next=((COMMON$idpack)inspect$1731$22);
                 TRACE_END_STM$("CompoundStatement1732",1735);
             }
         }

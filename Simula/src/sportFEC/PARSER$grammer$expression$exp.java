@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1968
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:46:13 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:25 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class PARSER$grammer$expression$exp extends BASICIO$ {
@@ -47,7 +47,7 @@ public final class PARSER$grammer$expression$exp extends BASICIO$ {
     // JavaLine 47 ==> SourceLine 1972
     int parnum=0;
     // JavaLine 49 ==> SourceLine 2039
-    COMMON$symbolbox inspect$2039$11=null;
+    COMMON$symbolbox inspect$2039$45=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public PARSER$grammer$expression$exp setPar(Object param) {
@@ -209,16 +209,16 @@ public final class PARSER$grammer$expression$exp extends BASICIO$ {
                                 TRACE_BEGIN_STM$("CompoundStatement2039",2039);
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$2039$11=new COMMON$boxof(((PARSER)(CUR$.SL$.SL$.SL$)),((PARSER)(CUR$.SL$.SL$.SL$)).opdhi,((PARSER)(CUR$.SL$.SL$.SL$)).opdlo).RESULT$;
-                                    if(inspect$2039$11!=null) //INSPECT inspect$2039$11
+                                    inspect$2039$45=new COMMON$boxof(((PARSER)(CUR$.SL$.SL$.SL$)),((PARSER)(CUR$.SL$.SL$.SL$)).opdhi,((PARSER)(CUR$.SL$.SL$.SL$)).opdlo).RESULT$;
+                                    if(inspect$2039$45!=null) //INSPECT inspect$2039$45
                                     // JavaLine 214 ==> SourceLine 2040
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement2040",2040);
-                                        if(digit(loadChar(inspect$2039$11.symbol,0))) {
+                                        if(digit(loadChar(inspect$2039$45.symbol,0))) {
                                             // JavaLine 218 ==> SourceLine 2041
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement2041",2041);
-                                                ((PARSER)(CUR$.SL$.SL$.SL$)).simsymbol=CONC(new TXT$("-"),inspect$2039$11.symbol);
+                                                ((PARSER)(CUR$.SL$.SL$.SL$)).simsymbol=CONC(new TXT$("-"),inspect$2039$45.symbol);
                                                 // JavaLine 222 ==> SourceLine 2042
                                                 new COMMON$DEFCONST(((PARSER)(CUR$.SL$.SL$.SL$)));
                                                 ((PARSER)(CUR$.SL$.SL$.SL$)).opdhi=((PARSER)(CUR$.SL$.SL$.SL$)).hashhi;

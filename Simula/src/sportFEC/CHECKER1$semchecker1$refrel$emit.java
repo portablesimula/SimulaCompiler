@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 279
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$refrel$emit extends BASICIO$ {
@@ -9,9 +9,9 @@ public final class CHECKER1$semchecker1$refrel$emit extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 282
-    CHECKER1$semchecker1$exp inspect$282$0=null;
+    CHECKER1$semchecker1$exp inspect$282$84=null;
     // JavaLine 13 ==> SourceLine 300
-    CHECKER1$semchecker1$exp inspect$300$1=null;
+    CHECKER1$semchecker1$exp inspect$300$85=null;
     // Normal Constructor
     public CHECKER1$semchecker1$refrel$emit(RTObject$ SL$) {
         super(SL$);
@@ -29,12 +29,12 @@ public final class CHECKER1$semchecker1$refrel$emit extends BASICIO$ {
         // JavaLine 29 ==> SourceLine 282
         {
             // BEGIN INSPECTION 
-            inspect$282$0=((CHECKER1$semchecker1$refrel)(CUR$.SL$)).p1$left;
-            if(inspect$282$0!=null) //INSPECT inspect$282$0
+            inspect$282$84=((CHECKER1$semchecker1$refrel)(CUR$.SL$)).p1$left;
+            if(inspect$282$84!=null) //INSPECT inspect$282$84
             // JavaLine 34 ==> SourceLine 283
             {
                 TRACE_BEGIN_STM$("CompoundStatement283",283);
-                inspect$282$0.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
+                inspect$282$84.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
                 // JavaLine 38 ==> SourceLine 284
                 if((((CHECKER1$semchecker1$refrel)(CUR$.SL$)).opttype==(((CHECKER1)(CUR$.SL$.SL$.SL$)).ITEXT))) {
                     // JavaLine 40 ==> SourceLine 286
@@ -42,7 +42,7 @@ public final class CHECKER1$semchecker1$refrel$emit extends BASICIO$ {
                         TRACE_BEGIN_STM$("CompoundStatement286",286);
                         ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((CHECKER1$semchecker1$refrel)(CUR$.SL$)).p$ch;
                         // JavaLine 44 ==> SourceLine 287
-                        inspect$282$0.emit$0().CPF();
+                        inspect$282$84.emit$0().CPF();
                         // JavaLine 46 ==> SourceLine 289
                         ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((CHECKER1)(CUR$.SL$.SL$.SL$)).IVSPC;
                         call(((CHECKER1)(CUR$.SL$.SL$.SL$)).coder);
@@ -57,7 +57,7 @@ public final class CHECKER1$semchecker1$refrel$emit extends BASICIO$ {
                 // JavaLine 57 ==> SourceLine 294
                 {
                     TRACE_BEGIN_STM$("CompoundStatement294",294);
-                    inspect$282$0.emit$0().CPF();
+                    inspect$282$84.emit$0().CPF();
                     // JavaLine 61 ==> SourceLine 295
                     ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((CHECKER1$semchecker1$refrel)(CUR$.SL$)).p$ch;
                     // JavaLine 63 ==> SourceLine 296
@@ -72,19 +72,19 @@ public final class CHECKER1$semchecker1$refrel$emit extends BASICIO$ {
             // JavaLine 72 ==> SourceLine 300
             {
                 // BEGIN INSPECTION 
-                inspect$300$1=((CHECKER1$semchecker1$refrel)(CUR$.SL$)).p1$right;
-                if(inspect$300$1!=null) //INSPECT inspect$300$1
+                inspect$300$85=((CHECKER1$semchecker1$refrel)(CUR$.SL$)).p1$right;
+                if(inspect$300$85!=null) //INSPECT inspect$300$85
                 // JavaLine 77 ==> SourceLine 301
                 {
                     TRACE_BEGIN_STM$("CompoundStatement301",301);
-                    if(((inspect$300$1.p$ch==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDN))||((inspect$300$1.p$ch==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDNP))))) {
+                    if(((inspect$300$85.p$ch==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDN))||((inspect$300$85.p$ch==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDNP))))) {
                         // JavaLine 81 ==> SourceLine 302
-                        inspect$300$1.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl;
+                        inspect$300$85.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl;
                     }
                     // JavaLine 84 ==> SourceLine 303
-                    inspect$300$1.emit$0().CPF();
+                    inspect$300$85.emit$0().CPF();
                     // JavaLine 86 ==> SourceLine 304
-                    ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).optx=(((inspect$300$1.cl==(((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl)))?(((char)1)):(((CHECKER1)(CUR$.SL$.SL$.SL$)).NUL));
+                    ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).optx=(((inspect$300$85.cl==(((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl)))?(((char)1)):(((CHECKER1)(CUR$.SL$.SL$.SL$)).NUL));
                     // JavaLine 88 ==> SourceLine 305
                     ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((CHECKER1)(CUR$.SL$.SL$.SL$)).IGO;
                     ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opihi=((CHECKER1$semchecker1$refrel)(CUR$.SL$)).p$ch;

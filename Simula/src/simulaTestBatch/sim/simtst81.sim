@@ -13,7 +13,10 @@ BEGIN
    Boolean found_error ;
    boolean verbose=false;
    
-   Text   anyIntypeFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyIntypeFile";
+   Text anyIntypeFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyIntypeFile81";
+   Text anyOuttypeFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOuttypeFile81";
+   Text anyDirectFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectFile81";
+   Text anyDirectByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectByteFile81";
 
    procedure report(line,t,abort); integer line; text t; boolean abort;
    begin outimage; outtext("Line "); outint(line,0); outtext(": *** report: "); outtext(t); outimage;
@@ -58,51 +61,51 @@ BEGIN
               "(closed infile ""anyIntypeFile"")",false);
 
 
-   xf:- New Outfile("anyOuttypeFile");
+   xf:- New Outfile(anyOuttypeFile);
 
    if xf qua Outfile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(never-opened outfile ""anyOuttypeFile"")",false);
+              "(never-opened outfile " & anyOuttypeFile &")",false);
 
    if not xf qua Outfile.Open(blanks(80))
    then report(sourceline,"'open' returns FALSE "
-              "(never-opened outfile ""anyOuttypeFile"")",true);
+              "(never-opened outfile " & anyOuttypeFile &")",true);
 
    if xf qua Outfile.Open(blanks(80))
    then report(sourceline,"'open' returns TRUE "
-              "(open outfile ""anyOuttypeFile1"")",false);
+              "(open outfile " & anyOuttypeFile &")",false);
 
    if not xf qua Outfile.Close
    then report(sourceline,"'close' returns FALSE "
-              "(open outfile ""anyOuttypeFile"")",false)
+              "(open outfile " & anyOuttypeFile &")",false)
    else
    if xf qua Outfile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(closed outfile ""anyOuttypeFile"")",false);
+              "(closed outfile " & anyOuttypeFile &")",false);
 
 
-   xf:- New Directfile("anyDirectFile");
+   xf:- New Directfile(anyDirectFile);
    xf.SetAccess("CREATE");
 
    if xf qua Directfile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(never-opened directfile ""anyDirectFile"")",false);
+              "(never-opened directfile " & anyDirectFile & ")",false);
 
    if not xf qua Directfile.Open(blanks(80))
    then report(sourceline,"'open' returns FALSE "
-              "(never-opened directfile ""anyDirectFile"")",true);
+              "(never-opened directfile " & anyDirectFile & ")",true);
 
    if xf qua Directfile.Open(blanks(80))
    then report(sourceline,"'open' returns TRUE "
-              "(open directfile ""anyDirectFile"")",false);
+              "(open directfile " & anyDirectFile & ")",false);
 
    if not xf qua Directfile.Close
    then report(sourceline,"'close' returns FALSE "
-              "(open directfile ""anyDirectFile"")",false)
+              "(open directfile " & anyDirectFile & ")",false)
    else
    if xf qua Directfile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(closed directfile ""anyDirectFile"")",false);
+              "(closed directfile " & anyDirectFile & ")",false);
 
 
    xf:- New Inbytefile(anyIntypeFile);
@@ -128,74 +131,74 @@ BEGIN
               "(closed inbytefile ""anyIntypeFile"")",false);
 
 
-   xf:- New Outbytefile("anyOuttypeFile");
+   xf:- New Outbytefile(anyOuttypeFile);
 
    if xf qua Outbytefile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(never-opened outbytefile ""anyOuttypeFile"")",false);
+              "(never-opened outbytefile " & anyOuttypeFile &")",false);
 
    if not xf qua Outbytefile.Open
    then report(sourceline,"'open' returns FALSE "
-              "(never-opened outbytefile ""anyOuttypeFile"")",true);
+              "(never-opened outbytefile " & anyOuttypeFile &")",true);
 
    if xf qua Outbytefile.Open
    then report(sourceline,"'open' returns TRUE "
-              "(on open outbytefile ""anyOuttypeFile"")",false);
+              "(on open outbytefile " & anyOuttypeFile &")",false);
 
    if not xf qua Outbytefile.Close
    then report(sourceline,"'close' returns FALSE "
-              "(open outbytefile ""anyOuttypeFile"")",false)
+              "(open outbytefile " & anyOuttypeFile &")",false)
    else
    if xf qua Outbytefile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(closed outbytefile ""anyOuttypeFile"")",false);
+              "(closed outbytefile " & anyOuttypeFile &")",false);
 
 
-   xf:- New Directbytefile("anyDirectByteFile");
+   xf:- New Directbytefile(anyDirectByteFile);
    xf.SetAccess("CREATE");
 
    if xf qua Directbytefile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(never-opened directbytefile ""anyDirectByteFile"")",false);
+              "(never-opened directbytefile " & anyDirectByteFile & ")",false);
 
    if not xf qua Directbytefile.Open
    then report(sourceline,"'open' returns FALSE "
-              "(never-opened directbytefile ""anyDirectByteFile"")",true);
+              "(never-opened directbytefile " & anyDirectByteFile & ")",true);
 
    if xf qua Directbytefile.Open
    then report(sourceline,"'open' returns TRUE "
-              "(on open directbytefile ""anyDirectByteFile"")",false);
+              "(on open directbytefile " & anyDirectByteFile & ")",false);
 
    if not xf qua Directbytefile.Close
    then report(sourceline,"'close' returns FALSE "
-              "(open directbytefile ""anyDirectByteFile"")",false)
+              "(open directbytefile " & anyDirectByteFile & ")",false)
    else
    if xf qua Directbytefile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(closed directbytefile ""anyDirectFile"")",false);
+              "(closed directbytefile " & anyDirectByteFile & ")",false);
 
 
-   xf:- New Printfile("anyOuttypeFile");
+   xf:- New Printfile(anyOuttypeFile);
 
    if xf qua Printfile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(never-opened printfile ""anyOuttypeFile"")",false);
+              "(never-opened printfile " & anyOuttypeFile &")",false);
 
    if not xf qua Printfile.Open(blanks(80))
    then report(sourceline,"'open' returns FALSE "
-              "(never-opened printfile ""anyOuttypeFile"")",true);
+              "(never-opened printfile " & anyOuttypeFile &")",true);
 
    if xf qua Printfile.Open(blanks(80))
    then report(sourceline,"'open' returns TRUE "
-              "(on open printfile ""anyOuttypeFile"")",false);
+              "(on open printfile " & anyOuttypeFile &")",false);
 
    if not xf qua Printfile.Close
    then report(sourceline,"'close' returns FALSE "
-              "(open printfile ""anyOuttypeFile"")",false)
+              "(open printfile " & anyOuttypeFile &")",false)
    else
    if xf qua Printfile.Close
    then report(sourceline,"'close' returns TRUE "
-              "(closed printfile ""anyOuttypeFile"")",false);
+              "(closed printfile " & anyOuttypeFile &")",false);
 
 % TERMINATE:
 

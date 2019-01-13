@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 43
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:46:13 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:24 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class PARSER$codebuffer extends COMMON$outcodefile {
@@ -26,7 +26,7 @@ public class PARSER$codebuffer extends COMMON$outcodefile {
     // JavaLine 26 ==> SourceLine 52
     public PARSER$codebuffer$elt statlabel=null;
     // JavaLine 28 ==> SourceLine 107
-    public PARSER$codebuffer$elt inspect$107$1=null;
+    public PARSER$codebuffer$elt inspect$107$35=null;
     // Normal Constructor
     public PARSER$codebuffer(RTObject$ staticLink,TXT$ sFILENAME$) {
         super(staticLink,sFILENAME$);
@@ -51,18 +51,18 @@ public class PARSER$codebuffer extends COMMON$outcodefile {
                         TRACE_BEGIN_STM$("CompoundStatement107",107);
                         {
                             // BEGIN INSPECTION 
-                            inspect$107$1=new PARSER$codebuffer$elt(((PARSER$codebuffer)CUR$)).STM$();
-                            if(inspect$107$1!=null) //INSPECT inspect$107$1
+                            inspect$107$35=new PARSER$codebuffer$elt(((PARSER$codebuffer)CUR$)).STM$();
+                            if(inspect$107$35!=null) //INSPECT inspect$107$35
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement107",107);
-                                inspect$107$1.opnn=((PARSER)(CUR$.SL$)).opn;
+                                inspect$107$35.opnn=((PARSER)(CUR$.SL$)).opn;
                                 // JavaLine 59 ==> SourceLine 108
-                                inspect$107$1.opdhii=((PARSER)(CUR$.SL$)).opdhi;
-                                inspect$107$1.opdloo=((PARSER)(CUR$.SL$)).opdlo;
-                                inspect$107$1.optxx=((PARSER)(CUR$.SL$)).optx;
+                                inspect$107$35.opdhii=((PARSER)(CUR$.SL$)).opdhi;
+                                inspect$107$35.opdloo=((PARSER)(CUR$.SL$)).opdlo;
+                                inspect$107$35.optxx=((PARSER)(CUR$.SL$)).optx;
                                 // JavaLine 63 ==> SourceLine 109
-                                inspect$107$1.next=curelt.next;
-                                curelt=curelt.next=((PARSER$codebuffer$elt)inspect$107$1);
+                                inspect$107$35.next=curelt.next;
+                                curelt=curelt.next=((PARSER$codebuffer$elt)inspect$107$35);
                                 TRACE_END_STM$("CompoundStatement107",109);
                             }
                         }

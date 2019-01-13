@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1502
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:46:13 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:25 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class PARSER$grammer$forstat$new_elt extends BASICIO$ {
@@ -10,8 +10,8 @@ public final class PARSER$grammer$forstat$new_elt extends BASICIO$ {
     public char p$opn;
     // Declare locals as attributes
     // JavaLine 12 ==> SourceLine 1504
-    PARSER$codebuffer inspect$1504$4=null;
-    PARSER$codebuffer$elt inspect$1504$5=null;
+    PARSER$codebuffer inspect$1504$38=null;
+    PARSER$codebuffer$elt inspect$1504$39=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public PARSER$grammer$forstat$new_elt setPar(Object param) {
@@ -43,18 +43,18 @@ public final class PARSER$grammer$forstat$new_elt extends BASICIO$ {
         TRACE_BEGIN_STM$("new_elt",1504);
         {
             // BEGIN INSPECTION 
-            inspect$1504$4=((PARSER$grammer$forstat)(CUR$.SL$)).forcoder;
-            if(inspect$1504$4!=null) //INSPECT inspect$1504$4
+            inspect$1504$38=((PARSER$grammer$forstat)(CUR$.SL$)).forcoder;
+            if(inspect$1504$38!=null) //INSPECT inspect$1504$38
             {
                 // BEGIN INSPECTION 
-                inspect$1504$5=new PARSER$codebuffer$elt(inspect$1504$4).STM$();
-                if(inspect$1504$5!=null) //INSPECT inspect$1504$5
+                inspect$1504$39=new PARSER$codebuffer$elt(inspect$1504$38).STM$();
+                if(inspect$1504$39!=null) //INSPECT inspect$1504$39
                 {
                     TRACE_BEGIN_STM$("CompoundStatement1504",1504);
-                    inspect$1504$5.opnn=p$opn;
+                    inspect$1504$39.opnn=p$opn;
                     // JavaLine 55 ==> SourceLine 1505
-                    inspect$1504$5.next=inspect$1504$4.curelt.next;
-                    inspect$1504$4.curelt=inspect$1504$4.curelt.next=((PARSER$codebuffer$elt)inspect$1504$5);
+                    inspect$1504$39.next=inspect$1504$38.curelt.next;
+                    inspect$1504$38.curelt=inspect$1504$38.curelt.next=((PARSER$codebuffer$elt)inspect$1504$39);
                     TRACE_END_STM$("CompoundStatement1504",1505);
                 }
             }

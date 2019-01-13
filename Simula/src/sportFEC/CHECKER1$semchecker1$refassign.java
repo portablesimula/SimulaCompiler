@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 916
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER1$semchecker1$refassign extends CHECKER1$semchecker1$exp {
@@ -19,7 +19,7 @@ public class CHECKER1$semchecker1$refassign extends CHECKER1$semchecker1$exp {
     // JavaLine 19 ==> SourceLine 923
     public boolean implqua=false;
     // JavaLine 21 ==> SourceLine 1062
-    public CHECKER1$semchecker1$argumented inspect$1062$10=null;
+    public CHECKER1$semchecker1$argumented inspect$1062$94=null;
     public PRCQNT$ emit$0() { return(new PRCQNT$(this,CHECKER1$semchecker1$refassign$emit.class)); }
     // Normal Constructor
     public CHECKER1$semchecker1$refassign(RTObject$ staticLink,CHECKER1$semchecker1$exp sp$pred,char sp$ch,CHECKER1$semchecker1$exp sp1$target,CHECKER1$semchecker1$exp sp1$source) {
@@ -56,7 +56,7 @@ public class CHECKER1$semchecker1$refassign extends CHECKER1$semchecker1$exp {
                                     // JavaLine 56 ==> SourceLine 1000
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1000",1000);
-                                        new ERRMSG$error0(((CHECKER1)(CUR$.SL$.SL$)),(-(159)));
+                                        new ERRMSG$error0(((CHECKER1)(CUR$.SL$.SL$)),-159);
                                         // JavaLine 60 ==> SourceLine 1001
                                         if((((CHECKER1$semchecker1)(CUR$.SL$)).valassList==(null))) {
                                             // JavaLine 62 ==> SourceLine 1003
@@ -216,33 +216,33 @@ public class CHECKER1$semchecker1$refassign extends CHECKER1$semchecker1$exp {
                                 TRACE_BEGIN_STM$("CompoundStatement1062",1062);
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$1062$10=((CHECKER1$semchecker1$argumented)(p1$target));
-                                    if(inspect$1062$10!=null) //INSPECT inspect$1062$10
+                                    inspect$1062$94=((CHECKER1$semchecker1$argumented)(p1$target));
+                                    if(inspect$1062$94!=null) //INSPECT inspect$1062$94
                                     // JavaLine 221 ==> SourceLine 1063
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1063",1063);
-                                        ((CHECKER1$semchecker1$refassign)CUR$).issimple=inspect$1062$10.p1$ident.issimple;
+                                        ((CHECKER1$semchecker1$refassign)CUR$).issimple=inspect$1062$94.p1$ident.issimple;
                                         // JavaLine 225 ==> SourceLine 1064
-                                        switch(inspect$1062$10.p1$ident.kind) { // BEGIN SWITCH STATEMENT
+                                        switch(inspect$1062$94.p1$ident.kind) { // BEGIN SWITCH STATEMENT
                                         case 10: 
                                         case 2: 
                                         case 6: 
                                         // JavaLine 230 ==> SourceLine 1066
-                                        if((inspect$1062$10.p1$ident.meaning.protect==(((char)2)))) {
+                                        if((inspect$1062$94.p1$ident.meaning.protect==(((char)2)))) {
                                             // JavaLine 232 ==> SourceLine 1067
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement1067",1067);
-                                                if((((CHECKER1$semchecker1)(CUR$.SL$)).readonly==(inspect$1062$10.p1$ident.meaning))) {
+                                                if((((CHECKER1$semchecker1)(CUR$.SL$)).readonly==(inspect$1062$94.p1$ident.meaning))) {
                                                     ((CHECKER1$semchecker1)(CUR$.SL$)).readonly=null;
                                                 } else
                                                 // JavaLine 238 ==> SourceLine 1068
-                                                new CHECKER1$semchecker1$identifier$identError(inspect$1062$10.p1$ident,253);
+                                                new CHECKER1$semchecker1$identifier$identError(inspect$1062$94.p1$ident,253);
                                                 TRACE_END_STM$("CompoundStatement1067",1068);
                                             }
                                         }
                                         default:
                                         // JavaLine 244 ==> SourceLine 1070
-                                        new CHECKER1$semchecker1$identifier$identError(inspect$1062$10.p1$ident,351);
+                                        new CHECKER1$semchecker1$identifier$identError(inspect$1062$94.p1$ident,351);
                                     } // END SWITCH STATEMENT
                                     TRACE_END_STM$("CompoundStatement1063",1070);
                                 }

@@ -26,19 +26,19 @@ public final class SportFEC {
 
 	public static void main(String[] args) {
 		Vector<String> names=new Vector<String>();
-		//names.add("adHoc00.sim"); // For ad'hoc testing
-		// *** SIMULA TEST BATCH TIL EKSEKVERING
-		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-//		names.add("COMMON.DEF");
-//		names.add("ERRMSG.DEF");
-//		names.add("SCANNER.DEF");
-//		names.add("SCANINP.DEF");
-//		names.add("PARSER.DEF");
-//		names.add("PAS1INIT.DEF");
-//		names.add("BUILDER1.DEF");
-//		names.add("BUILDER2.DEF");
-//		names.add("CHECKER1.DEF");
-//		names.add("CHECKER2.DEF");
+		
+		// *** SIMULA S-PORT COMPILER AS TEST BATCH
+
+		names.add("COMMON.DEF");
+		names.add("ERRMSG.DEF");
+		names.add("SCANNER.DEF");
+		names.add("SCANINP.DEF");
+		names.add("PARSER.DEF");
+		names.add("PAS1INIT.DEF");
+		names.add("BUILDER1.DEF");
+		names.add("BUILDER2.DEF");
+		names.add("CHECKER1.DEF");
+		names.add("CHECKER2.DEF");
 		names.add("SCODER0.DEF");
 		
 //		names.add("SCANNER.DEF");
@@ -51,9 +51,6 @@ public final class SportFEC {
 //		names.add("SCANNER.DEF");
 //		names.add("SCANNER.DEF");
 //		names.add("SCANNER.DEF");
-
-//		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/" + name;
-//		String fileName = "C:/WorkSpaces/SimulaCompiler/Simula/src/"+Global.packetName+"/batch/"+name;
 
 		// Set options and tracing.
 		Option.verbose = true;// false;
@@ -82,11 +79,17 @@ public final class SportFEC {
 		Option.TRACE_JAVAC_OUTPUT=false;//true;
 		Option.TRACE_JARING=false;//true;
 
+		//String userDir=System.getProperty("user.dir");
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
-		Global.simulaRtsLib=userDir+"/bin/";
 		Global.packetName="sportFEC";
-		//Option.keepJava=userDir;
-		Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
+		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+
+		String simtmp=System.getProperty("java.io.tmpdir");
+		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+		if(!(simtmp.endsWith("/") || simtmp.endsWith("\\"))) simtmp=simtmp+'/';
+		Option.outputDir=simtmp+"simula/bin/";
+		//Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;

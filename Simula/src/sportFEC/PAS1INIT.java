@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 3
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:47:53 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:27 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class PAS1INIT extends PARSER {
@@ -19,19 +19,19 @@ public class PAS1INIT extends PARSER {
     public TXT$ listname=null;
     public TXT$ feoptions=null;
     // JavaLine 21 ==> SourceLine 57
-    public PrintFile$ inspect$57$0=null;
+    public PrintFile$ inspect$57$48=null;
     // JavaLine 23 ==> SourceLine 190
-    public COMMON$identsymbol inspect$190$1=null;
+    public COMMON$identsymbol inspect$190$49=null;
     // JavaLine 25 ==> SourceLine 373
-    public PARSER$grammer inspect$373$2=null;
+    public PARSER$grammer inspect$373$50=null;
     // JavaLine 27 ==> SourceLine 462
-    public SCANNER$recognizer inspect$462$3=null;
+    public SCANNER$recognizer inspect$462$51=null;
     // JavaLine 29 ==> SourceLine 504
-    public SCANNER$L2Coder inspect$504$4=null;
+    public SCANNER$L2Coder inspect$504$52=null;
     // JavaLine 31 ==> SourceLine 511
-    public COMMON$brecord inspect$511$5=null;
+    public COMMON$brecord inspect$511$53=null;
     // JavaLine 33 ==> SourceLine 513
-    public COMMON$quantity inspect$513$6=null;
+    public COMMON$quantity inspect$513$54=null;
     // Normal Constructor
     public PAS1INIT(RTObject$ staticLink) {
         super(staticLink);
@@ -83,25 +83,25 @@ public class PAS1INIT extends PARSER {
                                 // JavaLine 83 ==> SourceLine 57
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$57$0=new PrintFile$(((BASICIO$)CTX$),listname).STM$();
-                                    if(inspect$57$0!=null) //INSPECT inspect$57$0
+                                    inspect$57$48=new PrintFile$(((BASICIO$)CTX$),listname).STM$();
+                                    if(inspect$57$48!=null) //INSPECT inspect$57$48
                                     // JavaLine 88 ==> SourceLine 58
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement58",58);
                                         listlength=getIntInfo(7);
                                         t=blanks(listlength);
                                         // JavaLine 93 ==> SourceLine 59
-                                        if((!(inspect$57$0.open(t)))) {
+                                        if((!(inspect$57$48.open(t)))) {
                                             // JavaLine 95 ==> SourceLine 60
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement60",60);
                                                 listlength=0;
                                                 // JavaLine 99 ==> SourceLine 61
-                                                new ERRMSG$error1(((PAS1INIT)CUR$),(-(366)),listname);
+                                                new ERRMSG$error1(((PAS1INIT)CUR$),-366,listname);
                                                 TRACE_END_STM$("CompoundStatement60",61);
                                             }
                                         } else
-                                        listfile=((PrintFile$)inspect$57$0);
+                                        listfile=((PrintFile$)inspect$57$48);
                                         TRACE_END_STM$("CompoundStatement58",61);
                                     }
                                 }
@@ -250,18 +250,18 @@ public class PAS1INIT extends PARSER {
                     // JavaLine 250 ==> SourceLine 190
                     {
                         // BEGIN INSPECTION 
-                        inspect$190$1=new COMMON$identsymbol(((PAS1INIT)CUR$)).STM$();
-                        if(inspect$190$1!=null) //INSPECT inspect$190$1
+                        inspect$190$49=new COMMON$identsymbol(((PAS1INIT)CUR$)).STM$();
+                        if(inspect$190$49!=null) //INSPECT inspect$190$49
                         // JavaLine 255 ==> SourceLine 191
                         {
                             TRACE_BEGIN_STM$("CompoundStatement191",191);
-                            inspect$190$1.symbol=simsymbol;
+                            inspect$190$49.symbol=simsymbol;
                             // JavaLine 259 ==> SourceLine 192
-                            inspect$190$1.idlo=identlo=char$((rank(identlo)+(1)));
+                            inspect$190$49.idlo=identlo=char$((rank(identlo)+(1)));
                             // JavaLine 261 ==> SourceLine 193
-                            inspect$190$1.next=hashtab.Elt[rank(hashlo)-hashtab.LB[0]];
+                            inspect$190$49.next=hashtab.Elt[rank(hashlo)-hashtab.LB[0]];
                             // JavaLine 263 ==> SourceLine 194
-                            ((ARRAY$<COMMON$symbolbox[]>)symtab.Elt[0-symtab.LB[0]].val).Elt[rank(identlo)-symtab.Elt[0-symtab.LB[0]].val.LB[0]]=hashtab.Elt[rank(hashlo)-hashtab.LB[0]]=((COMMON$symbolbox)inspect$190$1);
+                            ((ARRAY$<COMMON$symbolbox[]>)symtab.Elt[0-symtab.LB[0]].val).Elt[rank(identlo)-symtab.Elt[0-symtab.LB[0]].val.LB[0]]=hashtab.Elt[rank(hashlo)-hashtab.LB[0]]=((COMMON$symbolbox)inspect$190$49);
                             TRACE_END_STM$("CompoundStatement191",194);
                         }
                     }
@@ -292,124 +292,124 @@ public class PAS1INIT extends PARSER {
             // JavaLine 292 ==> SourceLine 373
             {
                 // BEGIN INSPECTION 
-                inspect$373$2=new PARSER$grammer(((PAS1INIT)CUR$)).START();
-                if(inspect$373$2!=null) //INSPECT inspect$373$2
+                inspect$373$50=new PARSER$grammer(((PAS1INIT)CUR$)).START();
+                if(inspect$373$50!=null) //INSPECT inspect$373$50
                 // JavaLine 297 ==> SourceLine 375
                 {
                     TRACE_BEGIN_STM$("CompoundStatement375",375);
-                    parser=((COMMON$component)inspect$373$2);
+                    parser=((COMMON$component)inspect$373$50);
                     // JavaLine 301 ==> SourceLine 377
-                    inspect$373$2.symboltype.Elt[rank(IBOOL)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IBOOL)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 303 ==> SourceLine 378
-                    inspect$373$2.symboltype.Elt[rank(ICHAR)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(ICHAR)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 305 ==> SourceLine 379
-                    inspect$373$2.symboltype.Elt[rank(ISHOR)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(ISHOR)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 307 ==> SourceLine 380
-                    inspect$373$2.symboltype.Elt[rank(IINTG)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IINTG)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 309 ==> SourceLine 381
-                    inspect$373$2.symboltype.Elt[rank(IREAL)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IREAL)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 311 ==> SourceLine 382
-                    inspect$373$2.symboltype.Elt[rank(ILONG)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(ILONG)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 313 ==> SourceLine 383
-                    inspect$373$2.symboltype.Elt[rank(IREF)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IREF)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 315 ==> SourceLine 384
-                    inspect$373$2.symboltype.Elt[rank(ITEXT)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(ITEXT)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 317 ==> SourceLine 385
-                    inspect$373$2.symboltype.Elt[rank(IPROC)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IPROC)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 319 ==> SourceLine 386
-                    inspect$373$2.symboltype.Elt[rank(IARRA)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IARRA)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 321 ==> SourceLine 387
-                    inspect$373$2.symboltype.Elt[rank(ICLAS)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(ICLAS)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 323 ==> SourceLine 388
-                    inspect$373$2.symboltype.Elt[rank(IRCRD)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IRCRD)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 325 ==> SourceLine 389
-                    inspect$373$2.symboltype.Elt[rank(ISWIT)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(ISWIT)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 327 ==> SourceLine 390
-                    inspect$373$2.symboltype.Elt[rank(IEXTR)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.declsymbol;
+                    inspect$373$50.symboltype.Elt[rank(IEXTR)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.declsymbol;
                     // JavaLine 329 ==> SourceLine 395
-                    inspect$373$2.symboltype.Elt[rank(IROPD)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IROPD)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 331 ==> SourceLine 396
-                    inspect$373$2.symboltype.Elt[rank(IAFTR)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IAFTR)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 333 ==> SourceLine 397
-                    inspect$373$2.symboltype.Elt[rank(ITHEN)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(ITHEN)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 335 ==> SourceLine 398
-                    inspect$373$2.symboltype.Elt[rank(IAT)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IAT)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 337 ==> SourceLine 399
-                    inspect$373$2.symboltype.Elt[rank(IUNTI)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IUNTI)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 339 ==> SourceLine 400
-                    inspect$373$2.symboltype.Elt[rank(IBEFO)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IBEFO)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 341 ==> SourceLine 401
-                    inspect$373$2.symboltype.Elt[rank(IWHEN)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IWHEN)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 343 ==> SourceLine 402
-                    inspect$373$2.symboltype.Elt[rank(IDELA)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IDELA)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 345 ==> SourceLine 403
-                    inspect$373$2.symboltype.Elt[rank(ISMCL)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(ISMCL)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 347 ==> SourceLine 404
-                    inspect$373$2.symboltype.Elt[rank(IDENO)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IDENO)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 349 ==> SourceLine 405
-                    inspect$373$2.symboltype.Elt[rank(IEOP)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IEOP)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 351 ==> SourceLine 406
-                    inspect$373$2.symboltype.Elt[rank(IDO)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IDO)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 353 ==> SourceLine 407
-                    inspect$373$2.symboltype.Elt[rank(IEND)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IEND)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 355 ==> SourceLine 408
-                    inspect$373$2.symboltype.Elt[rank(IELSE)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IELSE)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 357 ==> SourceLine 409
-                    inspect$373$2.symboltype.Elt[rank(IRGPA)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IRGPA)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 359 ==> SourceLine 410
-                    inspect$373$2.symboltype.Elt[rank(IOTHW)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IOTHW)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 361 ==> SourceLine 411
-                    inspect$373$2.symboltype.Elt[rank(ICOMA)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(ICOMA)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 363 ==> SourceLine 412
-                    inspect$373$2.symboltype.Elt[rank(IPRIO)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IPRIO)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 365 ==> SourceLine 413
-                    inspect$373$2.symboltype.Elt[rank(ICL)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(ICL)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 367 ==> SourceLine 414
-                    inspect$373$2.symboltype.Elt[rank(ISTEP)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(ISTEP)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 369 ==> SourceLine 415
-                    inspect$373$2.symboltype.Elt[rank(IASSG)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.exprtermin;
+                    inspect$373$50.symboltype.Elt[rank(IASSG)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.exprtermin;
                     // JavaLine 371 ==> SourceLine 424
-                    inspect$373$2.symboltype.Elt[rank(IPLUS)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.arithop;
+                    inspect$373$50.symboltype.Elt[rank(IPLUS)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.arithop;
                     // JavaLine 373 ==> SourceLine 425
-                    inspect$373$2.symboltype.Elt[rank(IPOWE)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.arithop;
+                    inspect$373$50.symboltype.Elt[rank(IPOWE)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.arithop;
                     // JavaLine 375 ==> SourceLine 426
-                    inspect$373$2.symboltype.Elt[rank(IMINU)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.arithop;
+                    inspect$373$50.symboltype.Elt[rank(IMINU)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.arithop;
                     // JavaLine 377 ==> SourceLine 427
-                    inspect$373$2.symboltype.Elt[rank(IIDIV)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.arithop;
+                    inspect$373$50.symboltype.Elt[rank(IIDIV)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.arithop;
                     // JavaLine 379 ==> SourceLine 428
-                    inspect$373$2.symboltype.Elt[rank(IMULT)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.arithop;
+                    inspect$373$50.symboltype.Elt[rank(IMULT)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.arithop;
                     // JavaLine 381 ==> SourceLine 429
-                    inspect$373$2.symboltype.Elt[rank(ICONC)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.arithop;
+                    inspect$373$50.symboltype.Elt[rank(ICONC)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.arithop;
                     // JavaLine 383 ==> SourceLine 430
-                    inspect$373$2.symboltype.Elt[rank(ISLAS)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.arithop;
+                    inspect$373$50.symboltype.Elt[rank(ISLAS)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.arithop;
                     // JavaLine 385 ==> SourceLine 434
-                    inspect$373$2.symboltype.Elt[rank(IEQ)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(IEQ)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 387 ==> SourceLine 435
-                    inspect$373$2.symboltype.Elt[rank(ILT)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(ILT)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 389 ==> SourceLine 436
-                    inspect$373$2.symboltype.Elt[rank(IGE)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(IGE)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 391 ==> SourceLine 437
-                    inspect$373$2.symboltype.Elt[rank(INE)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(INE)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 393 ==> SourceLine 438
-                    inspect$373$2.symboltype.Elt[rank(IGT)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(IGT)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 395 ==> SourceLine 439
-                    inspect$373$2.symboltype.Elt[rank(IRFEQ)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(IRFEQ)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 397 ==> SourceLine 440
-                    inspect$373$2.symboltype.Elt[rank(ILE)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(ILE)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 399 ==> SourceLine 441
-                    inspect$373$2.symboltype.Elt[rank(IRFNE)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.relop;
+                    inspect$373$50.symboltype.Elt[rank(IRFNE)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.relop;
                     // JavaLine 401 ==> SourceLine 445
-                    inspect$373$2.symboltype.Elt[rank(IAND)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.logop;
+                    inspect$373$50.symboltype.Elt[rank(IAND)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.logop;
                     // JavaLine 403 ==> SourceLine 446
-                    inspect$373$2.symboltype.Elt[rank(IOR)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.logop;
+                    inspect$373$50.symboltype.Elt[rank(IOR)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.logop;
                     // JavaLine 405 ==> SourceLine 447
-                    inspect$373$2.symboltype.Elt[rank(IEQV)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.logop;
+                    inspect$373$50.symboltype.Elt[rank(IEQV)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.logop;
                     // JavaLine 407 ==> SourceLine 448
-                    inspect$373$2.symboltype.Elt[rank(ICAND)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.logop;
+                    inspect$373$50.symboltype.Elt[rank(ICAND)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.logop;
                     // JavaLine 409 ==> SourceLine 449
-                    inspect$373$2.symboltype.Elt[rank(IIMP)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.logop;
+                    inspect$373$50.symboltype.Elt[rank(IIMP)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.logop;
                     // JavaLine 411 ==> SourceLine 450
-                    inspect$373$2.symboltype.Elt[rank(ICOR)-inspect$373$2.symboltype.LB[0]]=inspect$373$2.logop;
+                    inspect$373$50.symboltype.Elt[rank(ICOR)-inspect$373$50.symboltype.LB[0]]=inspect$373$50.logop;
                     TRACE_END_STM$("CompoundStatement375",450);
                 }
             }
@@ -418,83 +418,83 @@ public class PAS1INIT extends PARSER {
             // JavaLine 418 ==> SourceLine 462
             {
                 // BEGIN INSPECTION 
-                inspect$462$3=new SCANNER$recognizer(((PAS1INIT)CUR$)).START();
-                if(inspect$462$3!=null) //INSPECT inspect$462$3
+                inspect$462$51=new SCANNER$recognizer(((PAS1INIT)CUR$)).START();
+                if(inspect$462$51!=null) //INSPECT inspect$462$51
                 // JavaLine 423 ==> SourceLine 463
                 {
                     TRACE_BEGIN_STM$("CompoundStatement463",463);
-                    lexScanner=((SCANNER$recognizer)(scanner=((COMMON$component)inspect$462$3)));
-                    inspect$462$3.hashbuf=blanks(80);
+                    lexScanner=((SCANNER$recognizer)(scanner=((COMMON$component)inspect$462$51)));
+                    inspect$462$51.hashbuf=blanks(80);
                     // JavaLine 428 ==> SourceLine 465
                     for(boolean CB$465:new ForList(
-                        new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(35); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(255); }})
+                        new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(35); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(255); }})
                        )) { if(!CB$465) continue;
-                    inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Graphic_cl;
+                    inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Graphic_cl;
                 }
                 // JavaLine 434 ==> SourceLine 467
-                inspect$462$3.InputClass.Elt[0-inspect$462$3.InputClass.LB[0]]=inspect$462$3.InputClass.Elt[127-inspect$462$3.InputClass.LB[0]]=Skip_cl;
+                inspect$462$51.InputClass.Elt[0-inspect$462$51.InputClass.LB[0]]=inspect$462$51.InputClass.Elt[127-inspect$462$51.InputClass.LB[0]]=Skip_cl;
                 // JavaLine 436 ==> SourceLine 469
                 for(boolean CB$469:new ForList(
-                    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(7); }})
+                    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(7); }})
                    )) { if(!CB$469) continue;
-                inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Illegal_cl;
+                inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Illegal_cl;
             }
             // JavaLine 442 ==> SourceLine 470
             for(boolean CB$470:new ForList(
-                new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(14); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(31); }})
+                new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(14); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(31); }})
                )) { if(!CB$470) continue;
-            inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Illegal_cl;
+            inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Illegal_cl;
         }
         // JavaLine 448 ==> SourceLine 472
         for(boolean CB$472:new ForList(
-            new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(8); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(13); }})
+            new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(8); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(13); }})
            )) { if(!CB$472) continue;
-        inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Format_cl;
+        inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Format_cl;
     }
     // JavaLine 454 ==> SourceLine 473
-    inspect$462$3.InputClass.Elt[32-inspect$462$3.InputClass.LB[0]]=Format_cl;
+    inspect$462$51.InputClass.Elt[32-inspect$462$51.InputClass.LB[0]]=Format_cl;
     // JavaLine 456 ==> SourceLine 475
-    inspect$462$3.InputClass.Elt[33-inspect$462$3.InputClass.LB[0]]=Exclam_cl;
+    inspect$462$51.InputClass.Elt[33-inspect$462$51.InputClass.LB[0]]=Exclam_cl;
     // JavaLine 458 ==> SourceLine 477
-    inspect$462$3.InputClass.Elt[34-inspect$462$3.InputClass.LB[0]]=Basic_cl;
+    inspect$462$51.InputClass.Elt[34-inspect$462$51.InputClass.LB[0]]=Basic_cl;
     // JavaLine 460 ==> SourceLine 478
     for(boolean CB$478:new ForList(
-        new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(38); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(47); }})
+        new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(38); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(47); }})
        )) { if(!CB$478) continue;
-    inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Basic_cl;
+    inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Basic_cl;
 }
 // JavaLine 466 ==> SourceLine 479
 for(boolean CB$479:new ForList(
-    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(58); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(62); }})
+    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(58); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(62); }})
    )) { if(!CB$479) continue;
-inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Basic_cl;
+inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Basic_cl;
 }
 // JavaLine 472 ==> SourceLine 481
 for(boolean CB$481:new ForList(
-    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(48); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(57); }})
+    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(48); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(57); }})
    )) { if(!CB$481) continue;
-inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Digit_cl;
+inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Digit_cl;
 }
 // JavaLine 478 ==> SourceLine 483
 for(boolean CB$483:new ForList(
-    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(65); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(90); }})
+    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(65); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(90); }})
    )) { if(!CB$483) continue;
-inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Letter_cl;
+inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Letter_cl;
 }
 // JavaLine 484 ==> SourceLine 484
 for(boolean CB$484:new ForList(
-    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){inspect$462$3.i=(int)x$; return(x$);};  public Number get(){return((Number)inspect$462$3.i); }	},new NAME$<Number>() { public Number get(){return(97); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(122); }})
+    new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(97); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(122); }})
    )) { if(!CB$484) continue;
-inspect$462$3.InputClass.Elt[inspect$462$3.i-inspect$462$3.InputClass.LB[0]]=Letter_cl;
+inspect$462$51.InputClass.Elt[i-inspect$462$51.InputClass.LB[0]]=Letter_cl;
 }
 // JavaLine 490 ==> SourceLine 486
-inspect$462$3.InputClass.Elt[67-inspect$462$3.InputClass.LB[0]]=inspect$462$3.InputClass.Elt[99-inspect$462$3.InputClass.LB[0]]=LetterC_cl;
+inspect$462$51.InputClass.Elt[67-inspect$462$51.InputClass.LB[0]]=inspect$462$51.InputClass.Elt[99-inspect$462$51.InputClass.LB[0]]=LetterC_cl;
 // JavaLine 492 ==> SourceLine 488
-inspect$462$3.InputClass.Elt[95-inspect$462$3.InputClass.LB[0]]=Uscore_cl;
+inspect$462$51.InputClass.Elt[95-inspect$462$51.InputClass.LB[0]]=Uscore_cl;
 // JavaLine 494 ==> SourceLine 490
-inspect$462$3.IdScanner=new SCANNER$recognizer$identifierScanner(inspect$462$3).START();
+inspect$462$51.IdScanner=new SCANNER$recognizer$identifierScanner(inspect$462$51).START();
 // JavaLine 496 ==> SourceLine 491
-inspect$462$3.unsignedInt=new SCANNER$recognizer$unsignedInteger(inspect$462$3).START();
+inspect$462$51.unsignedInt=new SCANNER$recognizer$unsignedInteger(inspect$462$51).START();
 TRACE_END_STM$("CompoundStatement463",491);
 }
 }
@@ -511,12 +511,12 @@ new ERRMSG$openerror(((PAS1INIT)CUR$),new TXT$(" *** SCRATCH FILE (L2) ***"));
 // JavaLine 511 ==> SourceLine 504
 {
 // BEGIN INSPECTION 
-inspect$504$4=new SCANNER$L2Coder(((PAS1INIT)CUR$),L2NAME).STM$();
-if(inspect$504$4!=null) //INSPECT inspect$504$4
+inspect$504$52=new SCANNER$L2Coder(((PAS1INIT)CUR$),L2NAME).STM$();
+if(inspect$504$52!=null) //INSPECT inspect$504$52
 // JavaLine 516 ==> SourceLine 505
 {
 TRACE_BEGIN_STM$("CompoundStatement505",505);
-P1coder=((SCANNER$L2Coder)inspect$504$4);
+P1coder=((SCANNER$L2Coder)inspect$504$52);
 coder=P1coder;
 // JavaLine 521 ==> SourceLine 509
 brctab.Elt[0-brctab.LB[0]]=new COMMON$brctab2(((PAS1INIT)CUR$)).STM$();
@@ -527,31 +527,31 @@ if((!((option.Elt[rank('F')-option.LB[0]]!=(NUL))))) {
 TRACE_BEGIN_STM$("CompoundStatement511",511);
 {
 // BEGIN INSPECTION 
-inspect$511$5=new COMMON$brecord(((PAS1INIT)CUR$)).STM$();
-if(inspect$511$5!=null) //INSPECT inspect$511$5
+inspect$511$53=new COMMON$brecord(((PAS1INIT)CUR$)).STM$();
+if(inspect$511$53!=null) //INSPECT inspect$511$53
 // JavaLine 532 ==> SourceLine 512
 {
 TRACE_BEGIN_STM$("CompoundStatement512",512);
-inspect$511$5.kind=K_extnal;
-((ARRAY$<COMMON$brecord[]>)brctab.Elt[0-brctab.LB[0]].val).Elt[0-brctab.Elt[0-brctab.LB[0]].val.LB[0]]=((COMMON$brecord)inspect$511$5);
+inspect$511$53.kind=K_extnal;
+((ARRAY$<COMMON$brecord[]>)brctab.Elt[0-brctab.LB[0]].val).Elt[0-brctab.Elt[0-brctab.LB[0]].val.LB[0]]=((COMMON$brecord)inspect$511$53);
 // JavaLine 537 ==> SourceLine 513
 {
     // BEGIN INSPECTION 
-    inspect$513$6=new COMMON$quantity(((PAS1INIT)CUR$)).STM$();
-    if(inspect$513$6!=null) //INSPECT inspect$513$6
+    inspect$513$54=new COMMON$quantity(((PAS1INIT)CUR$)).STM$();
+    if(inspect$513$54!=null) //INSPECT inspect$513$54
     // JavaLine 542 ==> SourceLine 514
     {
         TRACE_BEGIN_STM$("CompoundStatement514",514);
-        inspect$511$5.fpar=((COMMON$quantity)inspect$513$6);
+        inspect$511$53.fpar=((COMMON$quantity)inspect$513$54);
         // JavaLine 546 ==> SourceLine 515
-        inspect$513$6.plev=one;
+        inspect$513$54.plev=one;
         // JavaLine 548 ==> SourceLine 516
-        inspect$513$6.type=INOTY;
-        inspect$513$6.kind=K_class;
+        inspect$513$54.type=INOTY;
+        inspect$513$54.kind=K_class;
         // JavaLine 551 ==> SourceLine 517
-        inspect$513$6.categ=C_extnal;
+        inspect$513$54.categ=C_extnal;
         // JavaLine 553 ==> SourceLine 521
-        inspect$513$6.symb=new COMMON$boxof(((PAS1INIT)CUR$),NUL,predefindex).RESULT$;
+        inspect$513$54.symb=new COMMON$boxof(((PAS1INIT)CUR$),NUL,predefindex).RESULT$;
         TRACE_END_STM$("CompoundStatement514",521);
     }
 }
@@ -564,7 +564,7 @@ TRACE_END_STM$("CompoundStatement511",521);
 // JavaLine 564 ==> SourceLine 528
 nextbllo=((char)1);
 // JavaLine 566 ==> SourceLine 529
-new SCANNER$L2Coder$brecinit(inspect$504$4,K_extnal);
+new SCANNER$L2Coder$brecinit(inspect$504$52,K_extnal);
 TRACE_END_STM$("CompoundStatement505",529);
 }
 }

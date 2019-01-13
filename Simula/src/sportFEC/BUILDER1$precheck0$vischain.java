@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 219
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$precheck0$vischain extends BASICIO$ {
@@ -11,9 +11,9 @@ public final class BUILDER1$precheck0$vischain extends BASICIO$ {
     public COMMON$quantity p$visq;
     // Declare locals as attributes
     // JavaLine 13 ==> SourceLine 224
-    COMMON$identsymbol inspect$224$1=null;
+    COMMON$identsymbol inspect$224$56=null;
     // JavaLine 15 ==> SourceLine 227
-    COMMON$sembox inspect$227$2=null;
+    COMMON$sembox inspect$227$57=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER1$precheck0$vischain setPar(Object param) {
@@ -56,30 +56,30 @@ public final class BUILDER1$precheck0$vischain extends BASICIO$ {
                     // JavaLine 56 ==> SourceLine 224
                     {
                         // BEGIN INSPECTION 
-                        inspect$224$1=((COMMON$identsymbol)(p$visq.symb));
-                        if(inspect$224$1!=null) //INSPECT inspect$224$1
+                        inspect$224$56=((COMMON$identsymbol)(p$visq.symb));
+                        if(inspect$224$56!=null) //INSPECT inspect$224$56
                         // JavaLine 61 ==> SourceLine 226
                         {
                             TRACE_BEGIN_STM$("CompoundStatement226",226);
-                            if(((inspect$224$1.curmeaning!=(null))||((p$visq==(inspect$224$1.curmeaning))))) {
+                            if(((inspect$224$56.curmeaning!=(null))||((p$visq==(inspect$224$56.curmeaning))))) {
                                 // JavaLine 65 ==> SourceLine 227
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$227$2=new COMMON$sembox(((BUILDER1)(CUR$.SL$.SL$))).STM$();
-                                    if(inspect$227$2!=null) //INSPECT inspect$227$2
+                                    inspect$227$57=new COMMON$sembox(((BUILDER1)(CUR$.SL$.SL$))).STM$();
+                                    if(inspect$227$57!=null) //INSPECT inspect$227$57
                                     // JavaLine 70 ==> SourceLine 228
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement228",228);
-                                        inspect$227$2.prevmeaning=p$visq.prevmeaning;
-                                        inspect$227$2.next=inspect$224$1.curmeaning;
+                                        inspect$227$57.prevmeaning=p$visq.prevmeaning;
+                                        inspect$227$57.next=inspect$224$56.curmeaning;
                                         // JavaLine 75 ==> SourceLine 229
-                                        p$visq.prevmeaning=((COMMON$sembox)inspect$227$2);
+                                        p$visq.prevmeaning=((COMMON$sembox)inspect$227$57);
                                         TRACE_END_STM$("CompoundStatement228",229);
                                     }
                                 }
                             }
                             // JavaLine 81 ==> SourceLine 231
-                            inspect$224$1.curmeaning=p$visq;
+                            inspect$224$56.curmeaning=p$visq;
                             TRACE_END_STM$("CompoundStatement226",231);
                         }
                     }

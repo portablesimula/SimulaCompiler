@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 128
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:46:13 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:24 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class PARSER$grammer extends COMMON$component {
@@ -140,9 +140,9 @@ public class PARSER$grammer extends COMMON$component {
     // JavaLine 140 ==> SourceLine 229
     public int currentPos=0;
     // JavaLine 142 ==> SourceLine 2588
-    public PARSER$grammer$blockOrComp inspect$2588$12=null;
+    public PARSER$grammer$blockOrComp inspect$2588$46=null;
     // JavaLine 144 ==> SourceLine 2623
-    public PARSER$codebuffer inspect$2623$13=null;
+    public PARSER$codebuffer inspect$2623$47=null;
     // Normal Constructor
     public PARSER$grammer(RTObject$ staticLink) {
         super(staticLink);
@@ -1037,19 +1037,19 @@ public class PARSER$grammer extends COMMON$component {
                             TRACE_BEGIN_STM$("CompoundStatement2588",2588);
                             {
                                 // BEGIN INSPECTION 
-                                inspect$2588$12=((PARSER$grammer$blockOrComp)(last));
-                                if(inspect$2588$12!=null) //INSPECT inspect$2588$12
+                                inspect$2588$46=((PARSER$grammer$blockOrComp)(last));
+                                if(inspect$2588$46!=null) //INSPECT inspect$2588$46
                                 // JavaLine 1042 ==> SourceLine 2589
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement2589",2589);
-                                    if(inspect$2588$12.innerseen) {
+                                    if(inspect$2588$46.innerseen) {
                                         // JavaLine 1046 ==> SourceLine 2590
                                         new PARSER$grammer$ParsErr(((PARSER$grammer)CUR$),203);
                                     } else
                                     // JavaLine 1049 ==> SourceLine 2591
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement2591",2591);
-                                        inspect$2588$12.stmttype=basicstmt;
+                                        inspect$2588$46.stmttype=basicstmt;
                                         // JavaLine 1053 ==> SourceLine 2593
                                         if((last.isblocklike&&((last.blockstatus==(stmtnotseen))))) {
                                             // JavaLine 1055 ==> SourceLine 2596
@@ -1066,11 +1066,11 @@ public class PARSER$grammer extends COMMON$component {
                                         ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).IROPD;
                                         call(((PARSER)(CUR$.SL$)).coder);
                                         // JavaLine 1068 ==> SourceLine 2605
-                                        ((PARSER)(CUR$.SL$)).opdlo=((((inspect$2588$12.blockstatus==(lastwasstmt))||(labelused)))?(((char)1)):(((PARSER)(CUR$.SL$)).NUL));
+                                        ((PARSER)(CUR$.SL$)).opdlo=((((inspect$2588$46.blockstatus==(lastwasstmt))||(labelused)))?(((char)1)):(((PARSER)(CUR$.SL$)).NUL));
                                         // JavaLine 1070 ==> SourceLine 2607
                                         ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).IINNE;
                                         call(((PARSER)(CUR$.SL$)).coder);
-                                        inspect$2588$12.innerseen=true;
+                                        inspect$2588$46.innerseen=true;
                                         TRACE_END_STM$("CompoundStatement2591",2607);
                                     }
                                     TRACE_END_STM$("CompoundStatement2589",2607);
@@ -1108,8 +1108,8 @@ public class PARSER$grammer extends COMMON$component {
                     // JavaLine 1108 ==> SourceLine 2623
                     {
                         // BEGIN INSPECTION 
-                        inspect$2623$13=new PARSER$codebuffer(((PARSER)(CUR$.SL$)),new TXT$("$act$")).STM$();
-                        if(inspect$2623$13!=null) //INSPECT inspect$2623$13
+                        inspect$2623$47=new PARSER$codebuffer(((PARSER)(CUR$.SL$)),new TXT$("$act$")).STM$();
+                        if(inspect$2623$47!=null) //INSPECT inspect$2623$47
                         // JavaLine 1113 ==> SourceLine 2624
                         {
                             TRACE_BEGIN_STM$("CompoundStatement2624",2624);
@@ -1125,7 +1125,7 @@ public class PARSER$grammer extends COMMON$component {
                             }
                             // JavaLine 1126 ==> SourceLine 2626
                             ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).IIDNP;
-                            call(((PARSER$codebuffer)inspect$2623$13));
+                            call(((PARSER$codebuffer)inspect$2623$47));
                             // JavaLine 1129 ==> SourceLine 2627
                             ((PARSER$grammer)CUR$).detach();
                             call(ex);
@@ -1135,29 +1135,29 @@ public class PARSER$grammer extends COMMON$component {
                             }
                             // JavaLine 1136 ==> SourceLine 2629
                             ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ICOMA;
-                            call(((PARSER$codebuffer)inspect$2623$13));
+                            call(((PARSER$codebuffer)inspect$2623$47));
                             // JavaLine 1139 ==> SourceLine 2630
                             ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ISCST;
                             ((PARSER)(CUR$.SL$)).opdlo=reac;
                             // JavaLine 1142 ==> SourceLine 2631
                             ((PARSER)(CUR$.SL$)).optx=((PARSER)(CUR$.SL$)).IBOOL;
-                            call(((PARSER$codebuffer)inspect$2623$13));
+                            call(((PARSER$codebuffer)inspect$2623$47));
                             // JavaLine 1145 ==> SourceLine 2632
                             if(((cs==(((PARSER)(CUR$.SL$)).IAT))|((cs==(((PARSER)(CUR$.SL$)).IDELA))))) {
                                 // JavaLine 1147 ==> SourceLine 2633
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement2633",2633);
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ICOMA;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1152 ==> SourceLine 2634
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ISCST;
                                     ((PARSER)(CUR$.SL$)).opdlo=(((cs==(((PARSER)(CUR$.SL$)).IDELA)))?(((PARSER)(CUR$.SL$)).ITRUE):(((PARSER)(CUR$.SL$)).IFALS));
                                     // JavaLine 1155 ==> SourceLine 2635
                                     ((PARSER)(CUR$.SL$)).optx=((PARSER)(CUR$.SL$)).IBOOL;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1158 ==> SourceLine 2636
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ICOMA;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1161 ==> SourceLine 2637
                                     ((PARSER$grammer)CUR$).detach();
                                     call(ex);
@@ -1167,13 +1167,13 @@ public class PARSER$grammer extends COMMON$component {
                                     }
                                     // JavaLine 1168 ==> SourceLine 2639
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ICOMA;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1171 ==> SourceLine 2640
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ISCST;
                                     ((PARSER)(CUR$.SL$)).opdlo=(((cs==(((PARSER)(CUR$.SL$)).IPRIO)))?(((PARSER)(CUR$.SL$)).ITRUE):(((PARSER)(CUR$.SL$)).IFALS));
                                     // JavaLine 1174 ==> SourceLine 2641
                                     ((PARSER)(CUR$.SL$)).optx=((PARSER)(CUR$.SL$)).IBOOL;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1177 ==> SourceLine 2642
                                     ((PARSER)(CUR$.SL$)).simsymbol=new TXT$("__2");
                                     TRACE_END_STM$("CompoundStatement2633",2642);
@@ -1185,16 +1185,16 @@ public class PARSER$grammer extends COMMON$component {
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement2645",2645);
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ICOMA;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1189 ==> SourceLine 2646
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ISCST;
                                     ((PARSER)(CUR$.SL$)).opdlo=(((cs==(((PARSER)(CUR$.SL$)).IAFTR)))?(((PARSER)(CUR$.SL$)).ITRUE):(((PARSER)(CUR$.SL$)).IFALS));
                                     // JavaLine 1192 ==> SourceLine 2647
                                     ((PARSER)(CUR$.SL$)).optx=((PARSER)(CUR$.SL$)).IBOOL;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1195 ==> SourceLine 2648
                                     ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).ICOMA;
-                                    call(((PARSER$codebuffer)inspect$2623$13));
+                                    call(((PARSER$codebuffer)inspect$2623$47));
                                     // JavaLine 1198 ==> SourceLine 2649
                                     ((PARSER$grammer)CUR$).detach();
                                     call(ex);
@@ -1215,12 +1215,12 @@ public class PARSER$grammer extends COMMON$component {
                             }
                             // JavaLine 1216 ==> SourceLine 2656
                             new COMMON$DEFIDENT(((PARSER)(CUR$.SL$)));
-                            inspect$2623$13.curelt=inspect$2623$13.firstelt.next;
+                            inspect$2623$47.curelt=inspect$2623$47.firstelt.next;
                             // JavaLine 1219 ==> SourceLine 2657
-                            inspect$2623$13.curelt.opdhii=((PARSER)(CUR$.SL$)).hashhi;
-                            inspect$2623$13.curelt.opdloo=((PARSER)(CUR$.SL$)).hashlo;
+                            inspect$2623$47.curelt.opdhii=((PARSER)(CUR$.SL$)).hashhi;
+                            inspect$2623$47.curelt.opdloo=((PARSER)(CUR$.SL$)).hashlo;
                             // JavaLine 1222 ==> SourceLine 2658
-                            new PARSER$codebuffer$terminate(inspect$2623$13);
+                            new PARSER$codebuffer$terminate(inspect$2623$47);
                             // JavaLine 1224 ==> SourceLine 2659
                             ((PARSER)(CUR$.SL$)).opn=((PARSER)(CUR$.SL$)).IARGE;
                             call(((PARSER)(CUR$.SL$)).coder);

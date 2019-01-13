@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 240
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$precheck0$invischain extends BASICIO$ {
@@ -10,9 +10,9 @@ public final class BUILDER1$precheck0$invischain extends BASICIO$ {
     public COMMON$quantity p$q;
     // Declare locals as attributes
     // JavaLine 12 ==> SourceLine 243
-    COMMON$identsymbol inspect$243$3=null;
+    COMMON$identsymbol inspect$243$58=null;
     // JavaLine 14 ==> SourceLine 245
-    COMMON$sembox inspect$245$4=null;
+    COMMON$sembox inspect$245$59=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER1$precheck0$invischain setPar(Object param) {
@@ -49,30 +49,30 @@ public final class BUILDER1$precheck0$invischain extends BASICIO$ {
                 TRACE_BEGIN_STM$("CompoundStatement243",243);
                 {
                     // BEGIN INSPECTION 
-                    inspect$243$3=((COMMON$identsymbol)(p$q.symb));
-                    if(inspect$243$3!=null) //INSPECT inspect$243$3
+                    inspect$243$58=((COMMON$identsymbol)(p$q.symb));
+                    if(inspect$243$58!=null) //INSPECT inspect$243$58
                     // JavaLine 54 ==> SourceLine 244
                     {
                         TRACE_BEGIN_STM$("CompoundStatement244",244);
-                        if((inspect$243$3.curmeaning==(p$q))) {
+                        if((inspect$243$58.curmeaning==(p$q))) {
                             // JavaLine 58 ==> SourceLine 245
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement245",245);
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$245$4=inspect$243$3.curmeaning.prevmeaning;
-                                    if(inspect$245$4!=null) //INSPECT inspect$245$4
+                                    inspect$245$59=inspect$243$58.curmeaning.prevmeaning;
+                                    if(inspect$245$59!=null) //INSPECT inspect$245$59
                                     // JavaLine 65 ==> SourceLine 246
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement246",246);
-                                        inspect$243$3.curmeaning.prevmeaning=inspect$245$4.prevmeaning;
+                                        inspect$243$58.curmeaning.prevmeaning=inspect$245$59.prevmeaning;
                                         // JavaLine 69 ==> SourceLine 247
-                                        inspect$243$3.curmeaning=inspect$245$4.next;
+                                        inspect$243$58.curmeaning=inspect$245$59.next;
                                         TRACE_END_STM$("CompoundStatement246",247);
                                     }
                                     else // OTHERWISE 
                                     // JavaLine 74 ==> SourceLine 249
-                                    inspect$243$3.curmeaning=null;
+                                    inspect$243$58.curmeaning=null;
                                 }
                                 TRACE_END_STM$("CompoundStatement245",249);
                             }

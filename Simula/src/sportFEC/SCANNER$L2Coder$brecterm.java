@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1693
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$L2Coder$brecterm extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class SCANNER$L2Coder$brecterm extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 1694
-    COMMON$brecord inspect$1694$12=null;
+    COMMON$brecord inspect$1694$21=null;
     // Normal Constructor
     public SCANNER$L2Coder$brecterm(RTObject$ SL$) {
         super(SL$);
@@ -24,14 +24,14 @@ public final class SCANNER$L2Coder$brecterm extends BASICIO$ {
         TRACE_BEGIN_STM$("brecterm",1694);
         {
             // BEGIN INSPECTION 
-            inspect$1694$12=((SCANNER$L2Coder)(CUR$.SL$)).cbrec;
-            if(inspect$1694$12!=null) //INSPECT inspect$1694$12
+            inspect$1694$21=((SCANNER$L2Coder)(CUR$.SL$)).cbrec;
+            if(inspect$1694$21!=null) //INSPECT inspect$1694$21
             // JavaLine 29 ==> SourceLine 1702
             {
                 TRACE_BEGIN_STM$("CompoundStatement1702",1702);
-                ((SCANNER$L2Coder)(CUR$.SL$)).xquant=inspect$1694$12.fpar;
+                ((SCANNER$L2Coder)(CUR$.SL$)).xquant=inspect$1694$21.fpar;
                 // JavaLine 33 ==> SourceLine 1703
-                inspect$1694$12.fpar=((COMMON$quantity)(inspect$1694$12.fpar.next));
+                inspect$1694$21.fpar=((COMMON$quantity)(inspect$1694$21.fpar.next));
                 // JavaLine 35 ==> SourceLine 1704
                 if((((SCANNER$L2Coder)(CUR$.SL$)).xquant.encl==(null))) {
                     // JavaLine 37 ==> SourceLine 1705
@@ -64,28 +64,28 @@ public final class SCANNER$L2Coder$brecterm extends BASICIO$ {
                     TRACE_END_STM$("CompoundStatement1707",1712);
                 }
                 // JavaLine 66 ==> SourceLine 1715
-                if((((inspect$1694$12.stmtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))||((inspect$1694$12.dcltag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))))||((inspect$1694$12.inrtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))))) {
+                if((((inspect$1694$21.stmtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))||((inspect$1694$21.dcltag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))))||((inspect$1694$21.inrtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))))) {
                     // JavaLine 68 ==> SourceLine 1717
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1717",1717);
-                        inspect$1694$12.hasCode=true;
+                        inspect$1694$21.hasCode=true;
                         // JavaLine 72 ==> SourceLine 1718
-                        if(((inspect$1694$12.stmtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))&&((inspect$1694$12.dcltag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))))) {
+                        if(((inspect$1694$21.stmtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))&&((inspect$1694$21.dcltag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))))) {
                             // JavaLine 74 ==> SourceLine 1719
-                            inspect$1694$12.stmtag=((char)3);
+                            inspect$1694$21.stmtag=((char)3);
                         }
                         // JavaLine 77 ==> SourceLine 1720
-                        if((inspect$1694$12.inrtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))) {
+                        if((inspect$1694$21.inrtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))) {
                             // JavaLine 79 ==> SourceLine 1721
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1721",1721);
-                                if((inspect$1694$12.stmtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))) {
+                                if((inspect$1694$21.stmtag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))) {
                                     // JavaLine 83 ==> SourceLine 1722
-                                    inspect$1694$12.inrtag=char$((rank(inspect$1694$12.stmtag)+(1)));
+                                    inspect$1694$21.inrtag=char$((rank(inspect$1694$21.stmtag)+(1)));
                                 } else
                                 // JavaLine 86 ==> SourceLine 1723
-                                if((inspect$1694$12.dcltag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))) {
-                                    inspect$1694$12.inrtag=((char)3);
+                                if((inspect$1694$21.dcltag!=(((SCANNER)(CUR$.SL$.SL$)).NUL))) {
+                                    inspect$1694$21.inrtag=((char)3);
                                 }
                                 TRACE_END_STM$("CompoundStatement1721",1723);
                             }

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 431
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$arithop$emit extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class CHECKER1$semchecker1$arithop$emit extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 432
-    CHECKER1$semchecker1$exp inspect$432$2=null;
+    CHECKER1$semchecker1$exp inspect$432$86=null;
     // Normal Constructor
     public CHECKER1$semchecker1$arithop$emit(RTObject$ SL$) {
         super(SL$);
@@ -24,17 +24,17 @@ public final class CHECKER1$semchecker1$arithop$emit extends BASICIO$ {
         TRACE_BEGIN_STM$("emit",432);
         {
             // BEGIN INSPECTION 
-            inspect$432$2=((CHECKER1$semchecker1$arithop)(CUR$.SL$)).p1$left;
-            if(inspect$432$2!=null) //INSPECT inspect$432$2
+            inspect$432$86=((CHECKER1$semchecker1$arithop)(CUR$.SL$)).p1$left;
+            if(inspect$432$86!=null) //INSPECT inspect$432$86
             // JavaLine 29 ==> SourceLine 433
             {
                 TRACE_BEGIN_STM$("CompoundStatement433",433);
-                inspect$432$2.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
-                inspect$432$2.emit$0().CPF();
+                inspect$432$86.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
+                inspect$432$86.emit$0().CPF();
                 // JavaLine 34 ==> SourceLine 434
-                if((((CHECKER1$semchecker1$arithop)(CUR$.SL$)).type!=(inspect$432$2.type))) {
+                if((((CHECKER1$semchecker1$arithop)(CUR$.SL$)).type!=(inspect$432$86.type))) {
                     // JavaLine 36 ==> SourceLine 435
-                    new CHECKER1$semchecker1$MaybeConvert(((CHECKER1$semchecker1)(CUR$.SL$.SL$)),((CHECKER1$semchecker1$arithop)(CUR$.SL$)).type,inspect$432$2.type);
+                    new CHECKER1$semchecker1$MaybeConvert(((CHECKER1$semchecker1)(CUR$.SL$.SL$)),((CHECKER1$semchecker1$arithop)(CUR$.SL$)).type,inspect$432$86.type);
                 }
                 TRACE_END_STM$("CompoundStatement433",435);
             }

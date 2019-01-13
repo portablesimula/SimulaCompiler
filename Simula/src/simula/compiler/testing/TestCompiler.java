@@ -10,7 +10,6 @@ package simula.compiler.testing;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.Util;
 
 /**
  * 
@@ -169,8 +168,15 @@ public final class TestCompiler {
 			String userDir="C:/GitHub/SimulaCompiler/Simula";
 			Global.packetName="simulaTestPrograms";
 			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
-			Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
 			Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+			
+			String simtmp=System.getProperty("java.io.tmpdir");
+			// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+			if(!(simtmp.endsWith("/") || simtmp.endsWith("\\"))) simtmp=simtmp+'/';
+			Option.outputDir=simtmp+"simula/bin/";
+			//Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
+
+
 			String fileName=userDir+"/src/"+Global.packetName + name;
 
 		SimulaCompiler compiler = new SimulaCompiler(fileName);

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 407
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SCANNER$input$saveScannerState extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class SCANNER$input$saveScannerState extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 408
-    SCANNER$recognizer inspect$408$0=null;
+    SCANNER$recognizer inspect$408$9=null;
     // Normal Constructor
     public SCANNER$input$saveScannerState(RTObject$ SL$) {
         super(SL$);
@@ -24,16 +24,16 @@ public final class SCANNER$input$saveScannerState extends BASICIO$ {
         TRACE_BEGIN_STM$("saveScannerState",408);
         {
             // BEGIN INSPECTION 
-            inspect$408$0=((SCANNER)(CUR$.SL$.SL$)).lexScanner;
-            if(inspect$408$0!=null) //INSPECT inspect$408$0
+            inspect$408$9=((SCANNER)(CUR$.SL$.SL$)).lexScanner;
+            if(inspect$408$9!=null) //INSPECT inspect$408$9
             // JavaLine 29 ==> SourceLine 409
             {
                 TRACE_BEGIN_STM$("CompoundStatement409",409);
-                ((SCANNER$input)(CUR$.SL$)).lexatom=inspect$408$0.atom;
-                ((SCANNER$input)(CUR$.SL$)).lexline=inspect$408$0.line;
+                ((SCANNER$input)(CUR$.SL$)).lexatom=inspect$408$9.atom;
+                ((SCANNER$input)(CUR$.SL$)).lexline=inspect$408$9.line;
                 // JavaLine 34 ==> SourceLine 410
-                ((SCANNER$input)(CUR$.SL$)).lexpos=inspect$408$0.linepos;
-                ((SCANNER$input)(CUR$.SL$)).lexlen=inspect$408$0.linelength;
+                ((SCANNER$input)(CUR$.SL$)).lexpos=inspect$408$9.linepos;
+                ((SCANNER$input)(CUR$.SL$)).lexlen=inspect$408$9.linelength;
                 // JavaLine 37 ==> SourceLine 411
                 ((SCANNER$input)(CUR$.SL$)).liston=((SCANNER)(CUR$.SL$.SL$)).listingon;
                 // JavaLine 39 ==> SourceLine 412
@@ -44,8 +44,8 @@ public final class SCANNER$input$saveScannerState extends BASICIO$ {
                 ((SCANNER$input)(CUR$.SL$)).prev=((SCANNER)(CUR$.SL$.SL$)).cursource;
                 ((SCANNER)(CUR$.SL$.SL$)).cursource=((SCANNER$input)(CUR$.SL$));
                 // JavaLine 46 ==> SourceLine 415
-                inspect$408$0.atom=((SCANNER)(CUR$.SL$.SL$)).EOL;
-                inspect$408$0.linepos=inspect$408$0.linelength;
+                inspect$408$9.atom=((SCANNER)(CUR$.SL$.SL$)).EOL;
+                inspect$408$9.linepos=inspect$408$9.linelength;
                 TRACE_END_STM$("CompoundStatement409",415);
             }
         }

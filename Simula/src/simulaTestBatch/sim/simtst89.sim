@@ -13,8 +13,8 @@ begin text src,dst; integer b,bb;
       boolean errorFound;
       boolean verbose;
       ref(inbytefile) inpt,inoupt; ref(outbytefile) oupt;
-      Text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/inputByteFile";
-      Text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputByteFile";
+      Text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/inputByteFile89";
+      Text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputByteFile89";
       
 
       if verbose then begin

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 742
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:41 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$valassign$emit extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class CHECKER1$semchecker1$valassign$emit extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 797
-    COMMON$quantity inspect$797$7=null;
+    COMMON$quantity inspect$797$91=null;
     // Normal Constructor
     public CHECKER1$semchecker1$valassign$emit(RTObject$ SL$) {
         super(SL$);
@@ -115,22 +115,22 @@ public final class CHECKER1$semchecker1$valassign$emit extends BASICIO$ {
                     // JavaLine 115 ==> SourceLine 797
                     {
                         // BEGIN INSPECTION 
-                        inspect$797$7=((CHECKER1$semchecker1$valassign)(CUR$.SL$)).p1$target.meaning;
-                        if(inspect$797$7!=null) //INSPECT inspect$797$7
+                        inspect$797$91=((CHECKER1$semchecker1$valassign)(CUR$.SL$)).p1$target.meaning;
+                        if(inspect$797$91!=null) //INSPECT inspect$797$91
                         // JavaLine 120 ==> SourceLine 798
                         {
                             TRACE_BEGIN_STM$("CompoundStatement798",798);
-                            ((CHECKER1)(CUR$.SL$.SL$.SL$)).coder.opq=((COMMON$quantity)inspect$797$7);
+                            ((CHECKER1)(CUR$.SL$.SL$.SL$)).coder.opq=((COMMON$quantity)inspect$797$91);
                             // JavaLine 124 ==> SourceLine 799
-                            if((inspect$797$7.categ==(((CHECKER1)(CUR$.SL$.SL$.SL$)).C_virt))) {
-                                ((CHECKER1)(CUR$.SL$.SL$.SL$)).coder.opq=inspect$797$7.match;
+                            if((inspect$797$91.categ==(((CHECKER1)(CUR$.SL$.SL$.SL$)).C_virt))) {
+                                ((CHECKER1)(CUR$.SL$.SL$.SL$)).coder.opq=inspect$797$91.match;
                             }
                             // JavaLine 128 ==> SourceLine 800
                             if((((CHECKER1$semchecker1$valassign)(CUR$.SL$)).issimple!=(0))) {
                                 // JavaLine 130 ==> SourceLine 801
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement801",801);
-                                    if((inspect$797$7.kind==(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_proc))) {
+                                    if((inspect$797$91.kind==(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_proc))) {
                                         ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((CHECKER1)(CUR$.SL$.SL$.SL$)).IDCLC;
                                     } else
                                     ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((CHECKER1)(CUR$.SL$.SL$.SL$)).ISIMU;
@@ -138,7 +138,7 @@ public final class CHECKER1$semchecker1$valassign$emit extends BASICIO$ {
                                 }
                             } else
                             // JavaLine 140 ==> SourceLine 802
-                            if((inspect$797$7.categ==(((CHECKER1)(CUR$.SL$.SL$.SL$)).C_name))) {
+                            if((inspect$797$91.categ==(((CHECKER1)(CUR$.SL$.SL$.SL$)).C_name))) {
                                 ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((CHECKER1)(CUR$.SL$.SL$.SL$)).INAME;
                             }
                             TRACE_END_STM$("CompoundStatement798",802);

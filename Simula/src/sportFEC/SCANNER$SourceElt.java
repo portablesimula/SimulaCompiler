@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 433
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:44:36 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:21 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class SCANNER$SourceElt extends SCANNER$input {
@@ -24,9 +24,9 @@ public class SCANNER$SourceElt extends SCANNER$input {
     // JavaLine 24 ==> SourceLine 438
     public SCANNER$input inpt=null;
     // JavaLine 26 ==> SourceLine 445
-    public SCANNER$recognizer inspect$445$2=null;
+    public SCANNER$recognizer inspect$445$11=null;
     // JavaLine 28 ==> SourceLine 489
-    public PrintFile$ inspect$489$3=null;
+    public PrintFile$ inspect$489$12=null;
     public PRCQNT$ close$0() { return(new PRCQNT$(this,SCANNER$SourceElt$close.class)); }
     // Normal Constructor
     public SCANNER$SourceElt(RTObject$ staticLink,boolean sp$inserted,TXT$ sp1$fname) {
@@ -46,13 +46,13 @@ public class SCANNER$SourceElt extends SCANNER$input {
                         // JavaLine 46 ==> SourceLine 445
                         {
                             // BEGIN INSPECTION 
-                            inspect$445$2=((SCANNER)(CUR$.SL$)).lexScanner;
-                            if(inspect$445$2!=null) //INSPECT inspect$445$2
+                            inspect$445$11=((SCANNER)(CUR$.SL$)).lexScanner;
+                            if(inspect$445$11!=null) //INSPECT inspect$445$11
                             // JavaLine 51 ==> SourceLine 447
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement447",447);
-                                inspect$445$2.atom=((SCANNER)(CUR$.SL$)).EOL;
-                                inspect$445$2.linepos=inspect$445$2.linelength;
+                                inspect$445$11.atom=((SCANNER)(CUR$.SL$)).EOL;
+                                inspect$445$11.linepos=inspect$445$11.linelength;
                                 TRACE_END_STM$("CompoundStatement447",447);
                             }
                         }
@@ -175,17 +175,17 @@ public class SCANNER$SourceElt extends SCANNER$input {
                                 if(((SCANNER)(CUR$.SL$)).listingon) {
                                     {
                                         // BEGIN INSPECTION 
-                                        inspect$489$3=((SCANNER)(CUR$.SL$)).listfile;
-                                        if(inspect$489$3!=null) //INSPECT inspect$489$3
+                                        inspect$489$12=((SCANNER)(CUR$.SL$)).listfile;
+                                        if(inspect$489$12!=null) //INSPECT inspect$489$12
                                         // JavaLine 180 ==> SourceLine 490
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement490",490);
-                                            inspect$489$3.outint(((SCANNER)(CUR$.SL$)).linenr,6);
-                                            inspect$489$3.outtext(new TXT$(": "));
+                                            inspect$489$12.outint(((SCANNER)(CUR$.SL$)).linenr,6);
+                                            inspect$489$12.outtext(new TXT$(": "));
                                             // JavaLine 185 ==> SourceLine 492
-                                            inspect$489$3.outtext(TXT$.sub(sf.image,1,(((linlen<(((SCANNER)(CUR$.SL$)).listlength)))?(linlen):(((SCANNER)(CUR$.SL$)).listlength))));
+                                            inspect$489$12.outtext(TXT$.sub(sf.image,1,(((linlen<(((SCANNER)(CUR$.SL$)).listlength)))?(linlen):(((SCANNER)(CUR$.SL$)).listlength))));
                                             // JavaLine 187 ==> SourceLine 493
-                                            inspect$489$3.outimage();
+                                            inspect$489$12.outimage();
                                             TRACE_END_STM$("CompoundStatement490",493);
                                         }
                                     }

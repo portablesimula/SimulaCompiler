@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1565
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 11:55:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:42 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class CHECKER1$semchecker1$dotIdent$emit extends BASICIO$ {
@@ -9,9 +9,9 @@ public final class CHECKER1$semchecker1$dotIdent$emit extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 1567
-    CHECKER1$semchecker1$exp inspect$1567$12=null;
+    CHECKER1$semchecker1$exp inspect$1567$96=null;
     // JavaLine 13 ==> SourceLine 1585
-    CHECKER1$semchecker1$exp inspect$1585$13=null;
+    CHECKER1$semchecker1$exp inspect$1585$97=null;
     // Normal Constructor
     public CHECKER1$semchecker1$dotIdent$emit(RTObject$ SL$) {
         super(SL$);
@@ -27,38 +27,38 @@ public final class CHECKER1$semchecker1$dotIdent$emit extends BASICIO$ {
         // JavaLine 27 ==> SourceLine 1567
         {
             // BEGIN INSPECTION 
-            inspect$1567$12=((CHECKER1$semchecker1$dotIdent)(CUR$.SL$)).p2$dotexp;
-            if(inspect$1567$12!=null) //INSPECT inspect$1567$12
+            inspect$1567$96=((CHECKER1$semchecker1$dotIdent)(CUR$.SL$)).p2$dotexp;
+            if(inspect$1567$96!=null) //INSPECT inspect$1567$96
             // JavaLine 32 ==> SourceLine 1568
             {
                 TRACE_BEGIN_STM$("CompoundStatement1568",1568);
-                inspect$1567$12.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
+                inspect$1567$96.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
                 // JavaLine 36 ==> SourceLine 1569
-                if((inspect$1567$12.type==(((CHECKER1)(CUR$.SL$.SL$.SL$)).ITEXT))) {
+                if((inspect$1567$96.type==(((CHECKER1)(CUR$.SL$.SL$.SL$)).ITEXT))) {
                     // JavaLine 38 ==> SourceLine 1570
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1570",1570);
-                        if((inspect$1567$12.ctype==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDNP))) {
+                        if((inspect$1567$96.ctype==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDNP))) {
                             // JavaLine 42 ==> SourceLine 1571
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1571",1571);
-                                if(((((CHECKER1$semchecker1$argumented)(((CHECKER1$semchecker1$exp)inspect$1567$12))).p1$ident.kind==(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_array))|((((CHECKER1$semchecker1$argumented)(((CHECKER1$semchecker1$exp)inspect$1567$12))).p1$ident.kind==(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_rep))))) {
+                                if(((((CHECKER1$semchecker1$argumented)(((CHECKER1$semchecker1$exp)inspect$1567$96))).p1$ident.kind==(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_array))|((((CHECKER1$semchecker1$argumented)(((CHECKER1$semchecker1$exp)inspect$1567$96))).p1$ident.kind==(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_rep))))) {
                                     // JavaLine 46 ==> SourceLine 1573
-                                    inspect$1567$12.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITOcl;
+                                    inspect$1567$96.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITOcl;
                                 }
                                 TRACE_END_STM$("CompoundStatement1571",1573);
                             }
                         } else
                         // JavaLine 52 ==> SourceLine 1575
-                        if((inspect$1567$12.ctype==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDN))) {
+                        if((inspect$1567$96.ctype==(((CHECKER1)(CUR$.SL$.SL$.SL$)).IIDN))) {
                             // JavaLine 54 ==> SourceLine 1576
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1576",1576);
-                                if((inspect$1567$12.kind!=(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_proc))) {
+                                if((inspect$1567$96.kind!=(((CHECKER1)(CUR$.SL$.SL$.SL$)).K_proc))) {
                                     // JavaLine 58 ==> SourceLine 1577
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1577",1577);
-                                        inspect$1567$12.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl;
+                                        inspect$1567$96.cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl;
                                         ((CHECKER1$semchecker1$dotIdent)(CUR$.SL$)).cl=((CHECKER1$semchecker1)(CUR$.SL$.SL$)).IEEXPcl;
                                         TRACE_END_STM$("CompoundStatement1577",1577);
                                     }
@@ -70,7 +70,7 @@ public final class CHECKER1$semchecker1$dotIdent$emit extends BASICIO$ {
                     }
                 }
                 // JavaLine 72 ==> SourceLine 1581
-                inspect$1567$12.emit$0().CPF();
+                inspect$1567$96.emit$0().CPF();
                 TRACE_END_STM$("CompoundStatement1568",1581);
             }
         }
@@ -81,14 +81,14 @@ public final class CHECKER1$semchecker1$dotIdent$emit extends BASICIO$ {
                 TRACE_BEGIN_STM$("CompoundStatement1585",1585);
                 {
                     // BEGIN INSPECTION 
-                    inspect$1585$13=((CHECKER1$semchecker1$dotIdent)(CUR$.SL$)).p2$dotexp;
-                    if(inspect$1585$13!=null) //INSPECT inspect$1585$13
+                    inspect$1585$97=((CHECKER1$semchecker1$dotIdent)(CUR$.SL$)).p2$dotexp;
+                    if(inspect$1585$97!=null) //INSPECT inspect$1585$97
                     // JavaLine 86 ==> SourceLine 1587
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1587",1587);
-                        if((inspect$1585$13.type==(((CHECKER1)(CUR$.SL$.SL$.SL$)).ITEXT))) {
+                        if((inspect$1585$97.type==(((CHECKER1)(CUR$.SL$.SL$.SL$)).ITEXT))) {
                             // JavaLine 90 ==> SourceLine 1588
-                            ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((((inspect$1585$13.cl==(((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITOcl))||((inspect$1585$13.cl==(((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl)))))?(((CHECKER1)(CUR$.SL$.SL$.SL$)).INOTY):(((CHECKER1)(CUR$.SL$.SL$.SL$)).INOTE));
+                            ((CHECKER1$semchecker1)(CUR$.SL$.SL$)).opc=((((inspect$1585$97.cl==(((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITOcl))||((inspect$1585$97.cl==(((CHECKER1$semchecker1)(CUR$.SL$.SL$)).ITEXTcl)))))?(((CHECKER1)(CUR$.SL$.SL$.SL$)).INOTY):(((CHECKER1)(CUR$.SL$.SL$.SL$)).INOTE));
                         } else
                         // JavaLine 93 ==> SourceLine 1593
                         {

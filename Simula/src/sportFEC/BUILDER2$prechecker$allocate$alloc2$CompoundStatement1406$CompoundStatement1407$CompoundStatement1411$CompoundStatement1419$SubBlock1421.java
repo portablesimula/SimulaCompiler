@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1421
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$prechecker$allocate$alloc2$CompoundStatement1406$CompoundStatement1407$CompoundStatement1411$CompoundStatement1419$SubBlock1421 extends BASICIO$ {
@@ -30,12 +30,12 @@ public final class BUILDER2$prechecker$allocate$alloc2$CompoundStatement1406$Com
             try {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 // JavaLine 32 ==> SourceLine 1422
-                if(((((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).inspect$1419$15.declquant.type!=(((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).VA.type))||((((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).inspect$1419$15.declquant.prefqual!=(((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).VA.prefqual))))) {
+                if(((((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).inspect$1419$82.declquant.type!=(((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).VA.type))||((((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).inspect$1419$82.declquant.prefqual!=(((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).VA.prefqual))))) {
                     // JavaLine 34 ==> SourceLine 1424
                     new ERRMSG$errQT(((BUILDER2)(CUR$.SL$.SL$.SL$.SL$)),((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).VA,445);
                 }
                 // JavaLine 37 ==> SourceLine 1430
-                specPar=((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).inspect$1419$15.fpar;
+                specPar=((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).inspect$1419$82.fpar;
                 actPar=((BUILDER2$prechecker$allocate$alloc2)(CUR$.SL$)).VA.descr.fpar;
                 // JavaLine 40 ==> SourceLine 1431
                 while((specPar!=(null))) {

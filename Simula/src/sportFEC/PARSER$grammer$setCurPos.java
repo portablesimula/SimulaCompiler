@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 231
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:46:13 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:24 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class PARSER$grammer$setCurPos extends BASICIO$ {
@@ -9,7 +9,7 @@ public final class PARSER$grammer$setCurPos extends BASICIO$ {
     // Declare parameters as attributes
     // Declare locals as attributes
     // JavaLine 11 ==> SourceLine 235
-    SCANNER$recognizer inspect$235$2=null;
+    SCANNER$recognizer inspect$235$36=null;
     // Normal Constructor
     public PARSER$grammer$setCurPos(RTObject$ SL$) {
         super(SL$);
@@ -27,9 +27,9 @@ public final class PARSER$grammer$setCurPos extends BASICIO$ {
         // JavaLine 27 ==> SourceLine 235
         {
             // BEGIN INSPECTION 
-            inspect$235$2=((PARSER)(CUR$.SL$.SL$)).lexScanner;
-            if(inspect$235$2!=null) //INSPECT inspect$235$2
-            ((PARSER$grammer)(CUR$.SL$)).currentPos=((((((((PARSER)(CUR$.SL$.SL$)).optx!=(((PARSER)(CUR$.SL$.SL$)).NUL))&&(inspect$235$2.getopt))&&((inspect$235$2.opdline==(((PARSER)(CUR$.SL$.SL$)).linenr)))))?(inspect$235$2.opdpos):(inspect$235$2.optpos))+(1));
+            inspect$235$36=((PARSER)(CUR$.SL$.SL$)).lexScanner;
+            if(inspect$235$36!=null) //INSPECT inspect$235$36
+            ((PARSER$grammer)(CUR$.SL$)).currentPos=((((((((PARSER)(CUR$.SL$.SL$)).optx!=(((PARSER)(CUR$.SL$.SL$)).NUL))&&(inspect$235$36.getopt))&&((inspect$235$36.opdline==(((PARSER)(CUR$.SL$.SL$)).linenr)))))?(inspect$235$36.opdpos):(inspect$235$36.optpos))+(1));
         }
         TRACE_END_STM$("setCurPos",235);
         EBLK();

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 333
 package sportFEC;
-// Release-Beta-0.3 Compiled at Mon Jan 07 12:01:21 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:49 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class CHECKER2$semchecker$ConstEltChecker extends CLASS$ {
@@ -21,7 +21,7 @@ public class CHECKER2$semchecker$ConstEltChecker extends CLASS$ {
     // JavaLine 21 ==> SourceLine 337
     public char etype=0;
     // JavaLine 23 ==> SourceLine 366
-    public COMMON$brecord inspect$366$11=null;
+    public COMMON$brecord inspect$366$115=null;
     // Normal Constructor
     public CHECKER2$semchecker$ConstEltChecker(RTObject$ staticLink) {
         super(staticLink);
@@ -83,17 +83,17 @@ public class CHECKER2$semchecker$ConstEltChecker extends CLASS$ {
                                 // JavaLine 83 ==> SourceLine 366
                                 {
                                     // BEGIN INSPECTION 
-                                    inspect$366$11=new COMMON$brecord(((CHECKER2)(CUR$.SL$.SL$))).STM$();
-                                    if(inspect$366$11!=null) //INSPECT inspect$366$11
+                                    inspect$366$115=new COMMON$brecord(((CHECKER2)(CUR$.SL$.SL$))).STM$();
+                                    if(inspect$366$115!=null) //INSPECT inspect$366$115
                                     // JavaLine 88 ==> SourceLine 367
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement367",367);
-                                        meaning.descr=((COMMON$brecord)inspect$366$11);
-                                        inspect$366$11.declquant=meaning;
+                                        meaning.descr=((COMMON$brecord)inspect$366$115);
+                                        inspect$366$115.declquant=meaning;
                                         // JavaLine 93 ==> SourceLine 368
-                                        inspect$366$11.blnohi=((CHECKER1$semchecker1$const$)(((CHECKER2$semchecker)(CUR$.SL$)).exptop)).ixhi;
+                                        inspect$366$115.blnohi=((CHECKER1$semchecker1$const$)(((CHECKER2$semchecker)(CUR$.SL$)).exptop)).ixhi;
                                         // JavaLine 95 ==> SourceLine 369
-                                        inspect$366$11.blnolo=((CHECKER1$semchecker1$const$)(((CHECKER2$semchecker)(CUR$.SL$)).exptop)).ixlo;
+                                        inspect$366$115.blnolo=((CHECKER1$semchecker1$const$)(((CHECKER2$semchecker)(CUR$.SL$)).exptop)).ixlo;
                                         TRACE_END_STM$("CompoundStatement367",369);
                                     }
                                 }

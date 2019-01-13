@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 605
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:26 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER1$precheck0$unprotect extends BASICIO$ {
@@ -10,7 +10,7 @@ public final class BUILDER1$precheck0$unprotect extends BASICIO$ {
     public COMMON$quantity p$q;
     // Declare locals as attributes
     // JavaLine 12 ==> SourceLine 608
-    COMMON$brecord inspect$608$10=null;
+    COMMON$brecord inspect$608$65=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER1$precheck0$unprotect setPar(Object param) {
@@ -42,12 +42,12 @@ public final class BUILDER1$precheck0$unprotect extends BASICIO$ {
         TRACE_BEGIN_STM$("unprotect",608);
         {
             // BEGIN INSPECTION 
-            inspect$608$10=p$q.descr;
-            if(inspect$608$10!=null) //INSPECT inspect$608$10
+            inspect$608$65=p$q.descr;
+            if(inspect$608$65!=null) //INSPECT inspect$608$65
             // JavaLine 47 ==> SourceLine 610
             {
                 TRACE_BEGIN_STM$("CompoundStatement610",610);
-                p$q=inspect$608$10.favirt;
+                p$q=inspect$608$65.favirt;
                 // JavaLine 51 ==> SourceLine 611
                 while((p$q!=(null))) {
                     // JavaLine 53 ==> SourceLine 612
@@ -61,7 +61,7 @@ public final class BUILDER1$precheck0$unprotect extends BASICIO$ {
                     }
                 }
                 // JavaLine 63 ==> SourceLine 613
-                p$q=inspect$608$10.fpar;
+                p$q=inspect$608$65.fpar;
                 // JavaLine 65 ==> SourceLine 614
                 while((p$q!=(null))) {
                     {

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 526
 package sportFEC;
-// Release-Beta-0.3 Compiled at Sat Jan 05 11:48:47 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
@@ -35,13 +35,13 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
     COMMON$quantity qq=null;
     COMMON$idpack cvis=null;
     // JavaLine 37 ==> SourceLine 534
-    COMMON$quantity inspect$534$5=null;
+    COMMON$quantity inspect$534$72=null;
     // JavaLine 39 ==> SourceLine 583
-    BUILDER1$visiblegenerator inspect$583$6=null;
+    BUILDER1$visiblegenerator inspect$583$73=null;
     // JavaLine 41 ==> SourceLine 625
-    COMMON$extbrecord inspect$625$7=null;
+    COMMON$extbrecord inspect$625$74=null;
     // JavaLine 43 ==> SourceLine 667
-    COMMON$brecord inspect$667$8=null;
+    COMMON$brecord inspect$667$75=null;
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public BUILDER2$normalattrfile$outquantwlist setPar(Object param) {
@@ -78,51 +78,51 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                 // JavaLine 78 ==> SourceLine 534
                 {
                     // BEGIN INSPECTION 
-                    inspect$534$5=p$q;
-                    if(inspect$534$5!=null) //INSPECT inspect$534$5
+                    inspect$534$72=p$q;
+                    if(inspect$534$72!=null) //INSPECT inspect$534$72
                     // JavaLine 83 ==> SourceLine 535
                     {
                         TRACE_BEGIN_STM$("CompoundStatement535",535);
-                        xtag=(new BUILDER1$exttag(((BUILDER2)(CUR$.SL$.SL$)),((COMMON$quantity)inspect$534$5)).RESULT$+(1));
+                        xtag=(new BUILDER1$exttag(((BUILDER2)(CUR$.SL$.SL$)),((COMMON$quantity)inspect$534$72)).RESULT$+(1));
                         // JavaLine 87 ==> SourceLine 537
                         if((xtag>=(0))) {
                             // JavaLine 89 ==> SourceLine 543
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement543",543);
-                                if(((inspect$534$5.prefqual!=(null))&&(((inspect$534$5.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_class))||((inspect$534$5.plev>(((BUILDER2)(CUR$.SL$.SL$)).one))))))) {
+                                if(((inspect$534$72.prefqual!=(null))&&(((inspect$534$72.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_class))||((inspect$534$72.plev>(((BUILDER2)(CUR$.SL$.SL$)).one))))))) {
                                     // JavaLine 93 ==> SourceLine 544
-                                    quallength=char$((TXT$.length(inspect$534$5.prefqual.symb.symbol)+(1)));
+                                    quallength=char$((TXT$.length(inspect$534$72.prefqual.symb.symbol)+(1)));
                                 }
                                 // JavaLine 96 ==> SourceLine 546
-                                if(((inspect$534$5.encl.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_proc))&&((inspect$534$5.categ<(((BUILDER2)(CUR$.SL$.SL$)).C_local))))) {
+                                if(((inspect$534$72.encl.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_proc))&&((inspect$534$72.categ<(((BUILDER2)(CUR$.SL$.SL$)).C_local))))) {
                                 } else
                                 // JavaLine 99 ==> SourceLine 548
-                                idlength=char$((((((inspect$534$5.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_class))&&((loadChar(inspect$534$5.symb.symbol,1)!=('_'))))&&((loadChar(inspect$534$5.symb.symbol,0)==('_')))))?(1):((TXT$.length(inspect$534$5.symb.symbol)+(1)))));
+                                idlength=char$((((((inspect$534$72.kind!=(((BUILDER2)(CUR$.SL$.SL$)).K_class))&&((loadChar(inspect$534$72.symb.symbol,1)!=('_'))))&&((loadChar(inspect$534$72.symb.symbol,0)==('_')))))?(1):((TXT$.length(inspect$534$72.symb.symbol)+(1)))));
                                 // JavaLine 101 ==> SourceLine 556
                                 if((((((BUILDER2$normalattrfile)(CUR$.SL$)).p+(rank(idlength)))+(rank(quallength)))>((((BUILDER2$normalattrfile)(CUR$.SL$)).bufmax-(5))))) {
                                     // JavaLine 103 ==> SourceLine 557
                                     new BUILDER2$normalattrfile$swapObuffer(((BUILDER2$normalattrfile)(CUR$.SL$)));
                                 }
                                 // JavaLine 106 ==> SourceLine 561
-                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$(((rank(inspect$534$5.kind)*(8))+(rank(inspect$534$5.categ)))));
+                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$(((rank(inspect$534$72.kind)*(8))+(rank(inspect$534$72.categ)))));
                                 // JavaLine 108 ==> SourceLine 564
                                 if((quallength!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
                                     // JavaLine 110 ==> SourceLine 565
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement565",565);
-                                        new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((rank(inspect$534$5.type)+(128))));
+                                        new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((rank(inspect$534$72.type)+(128))));
                                         // JavaLine 114 ==> SourceLine 567
-                                        new BUILDER2$normalattrfile$puttext(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.prefqual.symb.symbol);
+                                        new BUILDER2$normalattrfile$puttext(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.prefqual.symb.symbol);
                                         TRACE_END_STM$("CompoundStatement565",567);
                                     }
                                 } else
-                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.type);
+                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.type);
                                 // JavaLine 120 ==> SourceLine 571
-                                if(((((BUILDER2$normalattrfile)(CUR$.SL$)).sysattrfile&&((inspect$534$5.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_virt))))&&((inspect$534$5.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))))) {
+                                if(((((BUILDER2$normalattrfile)(CUR$.SL$)).sysattrfile&&((inspect$534$72.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_virt))))&&((inspect$534$72.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))))) {
                                     // JavaLine 122 ==> SourceLine 574
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement574",574);
-                                        ((BUILDER2)(CUR$.SL$.SL$)).permt=new COMMON$nameof(((BUILDER2)(CUR$.SL$.SL$)),char$((inspect$534$5.virtno/(256))),char$(rem(inspect$534$5.virtno,256))).RESULT$;
+                                        ((BUILDER2)(CUR$.SL$.SL$)).permt=new COMMON$nameof(((BUILDER2)(CUR$.SL$.SL$)),char$((inspect$534$72.virtno/(256))),char$(rem(inspect$534$72.virtno,256))).RESULT$;
                                         // JavaLine 126 ==> SourceLine 575
                                         TXT$.setpos(((BUILDER2)(CUR$.SL$.SL$)).permt,1);
                                         // JavaLine 128 ==> SourceLine 576
@@ -156,8 +156,8 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                         // JavaLine 156 ==> SourceLine 583
                                         {
                                             // BEGIN INSPECTION 
-                                            inspect$583$6=((BUILDER1$visiblegenerator)(((BUILDER2)(CUR$.SL$.SL$)).coder));
-                                            if(inspect$583$6!=null) //INSPECT inspect$583$6
+                                            inspect$583$73=((BUILDER1$visiblegenerator)(((BUILDER2)(CUR$.SL$.SL$)).coder));
+                                            if(inspect$583$73!=null) //INSPECT inspect$583$73
                                             // JavaLine 161 ==> SourceLine 584
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement584",584);
@@ -169,7 +169,7 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                                         // JavaLine 169 ==> SourceLine 586
                                                         l=((TXTREL$EQ(u,new TXT$("rt")))?(1):(((TXTREL$EQ(u,new TXT$("knwn")))?(2):(((TXTREL$EQ(u,new TXT$("cent")))?(3):(((TXTREL$EQ(u,new TXT$("cint")))?(4):(((TXTREL$EQ(u,new TXT$("arr")))?(5):(((TXTREL$EQ(u,new TXT$("fil")))?(6):(((TXTREL$EQ(u,new TXT$("edit")))?(7):(((TXTREL$EQ(u,new TXT$("form")))?(8):(((TXTREL$EQ(u,new TXT$("libr")))?(9):(((TXTREL$EQ(u,new TXT$("smst")))?(10):(((TXTREL$EQ(u,new TXT$("sml")))?(11):(((TXTREL$EQ(u,new TXT$("mntr")))?(12):(10000))))))))))))))))))))))));
                                                         // JavaLine 171 ==> SourceLine 599
-                                                        basetag=inspect$583$6.moduletab.Elt[l-inspect$583$6.moduletab.LB[0]].p$basetag;
+                                                        basetag=inspect$583$73.moduletab.Elt[l-inspect$583$73.moduletab.LB[0]].p$basetag;
                                                         // JavaLine 173 ==> SourceLine 600
                                                         xtag=((basetag+(TXT$.getint(new COMMON$attrfile$nextitemoft(((BUILDER2$normalattrfile)(CUR$.SL$))).RESULT$)))+(1));
                                                         TRACE_END_STM$("CompoundStatement585",600);
@@ -184,7 +184,7 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                     }
                                 } else
                                 // JavaLine 186 ==> SourceLine 604
-                                clf=((IS$(((COMMON$quantity)inspect$534$5),COMMON$extquantity.class))?(((COMMON$extquantity)(((COMMON$quantity)inspect$534$5))).clf):(((BUILDER2)(CUR$.SL$.SL$)).Clf000));
+                                clf=((IS$(((COMMON$quantity)inspect$534$72),COMMON$extquantity.class))?(((COMMON$extquantity)(((COMMON$quantity)inspect$534$72))).clf):(((BUILDER2)(CUR$.SL$.SL$)).Clf000));
                                 // JavaLine 188 ==> SourceLine 606
                                 if((idlength==(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
                                     // JavaLine 190 ==> SourceLine 607
@@ -205,7 +205,7 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                     // JavaLine 205 ==> SourceLine 612
                                     new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),((BUILDER2)(CUR$.SL$.SL$)).NUL);
                                 } else
-                                new BUILDER2$normalattrfile$puttext(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.symb.symbol);
+                                new BUILDER2$normalattrfile$puttext(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.symb.symbol);
                                 // JavaLine 209 ==> SourceLine 615
                                 if((overload!=(0))) {
                                     // JavaLine 211 ==> SourceLine 616
@@ -217,21 +217,21 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                     }
                                 }
                                 // JavaLine 219 ==> SourceLine 618
-                                if((inspect$534$5.protect!=(((char)0)))) {
+                                if((inspect$534$72.protect!=(((char)0)))) {
                                     // JavaLine 221 ==> SourceLine 619
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement619",619);
                                         new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),((BUILDER2$normalattrfile)(CUR$.SL$)).protMark);
-                                        new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.protect);
+                                        new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.protect);
                                         TRACE_END_STM$("CompoundStatement619",619);
                                     }
                                 }
                                 // JavaLine 229 ==> SourceLine 621
-                                if((inspect$534$5.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))) {
+                                if((inspect$534$72.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_extnal))) {
                                     // JavaLine 231 ==> SourceLine 622
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement622",622);
-                                        if(IS$(inspect$534$5.descr,COMMON$extbrecord.class)) {
+                                        if(IS$(inspect$534$72.descr,COMMON$extbrecord.class)) {
                                             // JavaLine 235 ==> SourceLine 623
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement623",623);
@@ -239,14 +239,14 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                                 // JavaLine 239 ==> SourceLine 625
                                                 {
                                                     // BEGIN INSPECTION 
-                                                    inspect$625$7=((COMMON$extbrecord)(inspect$534$5.descr));
-                                                    if(inspect$625$7!=null) //INSPECT inspect$625$7
+                                                    inspect$625$74=((COMMON$extbrecord)(inspect$534$72.descr));
+                                                    if(inspect$625$74!=null) //INSPECT inspect$625$74
                                                     // JavaLine 244 ==> SourceLine 626
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement626",626);
-                                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$625$7.modulhi,inspect$625$7.modullo);
+                                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$625$74.modulhi,inspect$625$74.modullo);
                                                         // JavaLine 248 ==> SourceLine 627
-                                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$625$7.checkhi,inspect$625$7.checklo);
+                                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$625$74.checkhi,inspect$625$74.checklo);
                                                         TRACE_END_STM$("CompoundStatement626",627);
                                                     }
                                                 }
@@ -256,67 +256,67 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                         // JavaLine 256 ==> SourceLine 629
                                         new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),((BUILDER2$normalattrfile)(CUR$.SL$)).yMark);
                                         // JavaLine 258 ==> SourceLine 631
-                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((inspect$534$5.dim/(256))),char$(rem(inspect$534$5.dim,256)));
+                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((inspect$534$72.dim/(256))),char$(rem(inspect$534$72.dim,256)));
                                         // JavaLine 260 ==> SourceLine 632
-                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((inspect$534$5.virtno/(256))),char$(rem(inspect$534$5.virtno,256)));
+                                        new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((inspect$534$72.virtno/(256))),char$(rem(inspect$534$72.virtno,256)));
                                         TRACE_END_STM$("CompoundStatement622",632);
                                     }
                                 } else
                                 // JavaLine 265 ==> SourceLine 635
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement635",635);
-                                    if(((inspect$534$5.encl!=(null))&&(((inspect$534$5.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_local))||(((inspect$534$5.match!=(null))&&((inspect$534$5.match.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_virt))))))))) {
+                                    if(((inspect$534$72.encl!=(null))&&(((inspect$534$72.categ!=(((BUILDER2)(CUR$.SL$.SL$)).C_local))||(((inspect$534$72.match!=(null))&&((inspect$534$72.match.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_virt))))))))) {
                                         // JavaLine 269 ==> SourceLine 638
                                         new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),((BUILDER2$normalattrfile)(CUR$.SL$)).forcMark);
                                     }
                                     // JavaLine 272 ==> SourceLine 640
-                                    if((inspect$534$5.dim>(0))) {
+                                    if((inspect$534$72.dim>(0))) {
                                         // JavaLine 274 ==> SourceLine 641
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement641",641);
                                             new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),((BUILDER2$normalattrfile)(CUR$.SL$)).dimMark);
-                                            new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$(inspect$534$5.dim));
+                                            new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$(inspect$534$72.dim));
                                             TRACE_END_STM$("CompoundStatement641",641);
                                         }
                                     }
                                     TRACE_END_STM$("CompoundStatement635",641);
                                 }
                                 // JavaLine 284 ==> SourceLine 644
-                                if(((inspect$534$5.special!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))||((inspect$534$5.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_rep))))) {
+                                if(((inspect$534$72.special!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))||((inspect$534$72.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_rep))))) {
                                     // JavaLine 286 ==> SourceLine 648
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement648",648);
                                         new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),((BUILDER2$normalattrfile)(CUR$.SL$)).specMark);
                                         // JavaLine 290 ==> SourceLine 649
-                                        if((inspect$534$5.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_rep))) {
+                                        if((inspect$534$72.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_rep))) {
                                             // JavaLine 292 ==> SourceLine 650
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement650",650);
-                                                new BUILDER2$normalattrfile$putNumber(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.descr.line1);
+                                                new BUILDER2$normalattrfile$putNumber(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.descr.line1);
                                                 // JavaLine 296 ==> SourceLine 651
-                                                new BUILDER2$normalattrfile$putNumber(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.descr.npar);
+                                                new BUILDER2$normalattrfile$putNumber(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.descr.npar);
                                                 TRACE_END_STM$("CompoundStatement650",651);
                                             }
                                         } else
                                         // JavaLine 301 ==> SourceLine 653
                                         {
                                             TRACE_BEGIN_STM$("CompoundStatement653",653);
-                                            if((inspect$534$5.descr.blnohi!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
+                                            if((inspect$534$72.descr.blnohi!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
                                                 // JavaLine 305 ==> SourceLine 655
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement655",655);
-                                                    new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.special);
+                                                    new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.special);
                                                     // JavaLine 309 ==> SourceLine 657
-                                                    new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.descr.blnohi,inspect$534$5.descr.blnolo);
+                                                    new BUILDER2$normalattrfile$putstring(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.descr.blnohi,inspect$534$72.descr.blnolo);
                                                     TRACE_END_STM$("CompoundStatement655",657);
                                                 }
                                             } else
                                             // JavaLine 314 ==> SourceLine 658
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement658",658);
-                                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((rank(inspect$534$5.special)+(128))));
+                                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$((rank(inspect$534$72.special)+(128))));
                                                 // JavaLine 318 ==> SourceLine 659
-                                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$5.descr.blnolo);
+                                                new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),inspect$534$72.descr.blnolo);
                                                 TRACE_END_STM$("CompoundStatement658",659);
                                             }
                                             TRACE_END_STM$("CompoundStatement653",659);
@@ -333,32 +333,32 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                         TRACE_BEGIN_STM$("CompoundStatement667",667);
                                         {
                                             // BEGIN INSPECTION 
-                                            inspect$667$8=inspect$534$5.descr;
-                                            if(inspect$667$8!=null) //INSPECT inspect$667$8
+                                            inspect$667$75=inspect$534$72.descr;
+                                            if(inspect$667$75!=null) //INSPECT inspect$667$75
                                             // JavaLine 338 ==> SourceLine 668
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement668",668);
-                                                if((inspect$667$8.connests!=(((BUILDER2)(CUR$.SL$.SL$)).zero))) {
+                                                if((inspect$667$75.connests!=(((BUILDER2)(CUR$.SL$.SL$)).zero))) {
                                                     // JavaLine 342 ==> SourceLine 669
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement669",669);
                                                         new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),((BUILDER2$normalattrfile)(CUR$.SL$)).nestMark);
                                                         // JavaLine 346 ==> SourceLine 670
-                                                        new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$(inspect$667$8.connests));
+                                                        new BUILDER2$normalattrfile$storebyte(((BUILDER2$normalattrfile)(CUR$.SL$)),char$(inspect$667$75.connests));
                                                         TRACE_END_STM$("CompoundStatement669",670);
                                                     }
                                                 }
                                                 // JavaLine 351 ==> SourceLine 673
-                                                if(inspect$667$8.thisused) {
+                                                if(inspect$667$75.thisused) {
                                                     k=64;
                                                 } else
                                                 k=0;
                                                 // JavaLine 356 ==> SourceLine 674
-                                                if(inspect$667$8.hasCode) {
+                                                if(inspect$667$75.hasCode) {
                                                     k=(k+(32));
                                                 }
                                                 // JavaLine 360 ==> SourceLine 676
-                                                if((inspect$667$8.inrtag!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
+                                                if((inspect$667$75.inrtag!=(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
                                                     k=(k+(2));
                                                 }
                                                 // JavaLine 364 ==> SourceLine 677
@@ -388,18 +388,18 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                     }
                                 }
                                 // JavaLine 390 ==> SourceLine 685
-                                if(IS$(inspect$534$5.descr,COMMON$brecord.class)) {
+                                if(IS$(inspect$534$72.descr,COMMON$brecord.class)) {
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement685",685);
-                                        if((inspect$534$5.special==(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
+                                        if((inspect$534$72.special==(((BUILDER2)(CUR$.SL$.SL$)).NUL))) {
                                             // JavaLine 395 ==> SourceLine 686
                                             {
                                                 TRACE_BEGIN_STM$("CompoundStatement686",686);
-                                                if((inspect$534$5.descr.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_class))) {
+                                                if((inspect$534$72.descr.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_class))) {
                                                     // JavaLine 399 ==> SourceLine 687
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement687",687);
-                                                        cvis=inspect$534$5.descr.hidlist;
+                                                        cvis=inspect$534$72.descr.hidlist;
                                                         // JavaLine 403 ==> SourceLine 688
                                                         while((cvis!=(null))) {
                                                             // JavaLine 405 ==> SourceLine 689
@@ -426,11 +426,11 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                                 // JavaLine 426 ==> SourceLine 698
                                                 l=k=0;
                                                 // JavaLine 428 ==> SourceLine 699
-                                                if(((inspect$534$5.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_virt))&&((inspect$534$5.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_proc))))) {
+                                                if(((inspect$534$72.categ==(((BUILDER2)(CUR$.SL$.SL$)).C_virt))&&((inspect$534$72.kind==(((BUILDER2)(CUR$.SL$.SL$)).K_proc))))) {
                                                     // JavaLine 430 ==> SourceLine 702
                                                     {
                                                         TRACE_BEGIN_STM$("CompoundStatement702",702);
-                                                        qq=inspect$534$5.descr.fpar;
+                                                        qq=inspect$534$72.descr.fpar;
                                                         // JavaLine 434 ==> SourceLine 703
                                                         if((qq!=(null))) {
                                                             {
@@ -449,7 +449,7 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                                 // JavaLine 449 ==> SourceLine 714
                                                 {
                                                     TRACE_BEGIN_STM$("CompoundStatement714",714);
-                                                    qq=inspect$534$5.descr.favirt;
+                                                    qq=inspect$534$72.descr.favirt;
                                                     // JavaLine 453 ==> SourceLine 726
                                                     LABEL$(2); // UTQ
                                                     // JavaLine 455 ==> SourceLine 715
@@ -489,7 +489,7 @@ public final class BUILDER2$normalattrfile$outquantwlist extends BASICIO$ {
                                                     if((k==(0))) {
                                                         {
                                                             TRACE_BEGIN_STM$("CompoundStatement727",727);
-                                                            qq=inspect$534$5.descr.fpar;
+                                                            qq=inspect$534$72.descr.fpar;
                                                             k=1;
                                                             GOTO$(UTQ); // GOTO EVALUATED LABEL
                                                             TRACE_END_STM$("CompoundStatement727",727);
