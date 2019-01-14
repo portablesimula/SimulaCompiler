@@ -17,6 +17,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
+import simula.compiler.utilities.Util;
 
 
 public class SimulaEditor extends JFrame {
@@ -33,7 +35,18 @@ public class SimulaEditor extends JFrame {
 //    private File currentFile;
     
     public static void main(String[] args) {
-    	SettingsMenu.InitRuntimeOptions();
+       	
+		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
+		if(simulaHome==null) Util.error("Simula Property 'simula.home' is not defined");
+
+		//String userDir=System.getProperty("user.dir");
+		String userDir="C:/GitHub/SimulaCompiler/Simula";
+		Global.packetName="simulaTestPrograms";
+		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+		Option.outputDir=Global.getTempFileDir("simula/bin/");
+
+		SettingsMenu.InitRuntimeOptions();
     	SettingsMenu.InitCompilerOptions();
 		
 //		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/simple";
@@ -82,7 +95,8 @@ public class SimulaEditor extends JFrame {
         setSize(frameWidth, frameHeight);
 
         // Set the title of the window
-        setTitle("Untitled - " + "SimulaEditor");
+        String dated=Global.getProperty("simula.setup.dated","UNKNOWN DATE");
+        setTitle("SimulaEditor ("+Global.simulaReleaseID+ " built "+dated+" )");
 
         // Set the default close operation (exit when it gets closed)
         setDefaultCloseOperation(EXIT_ON_CLOSE);

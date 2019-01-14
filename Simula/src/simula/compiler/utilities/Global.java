@@ -65,6 +65,15 @@ public final class Global {
 		//console=new Console();
 	}
 
+	public static String getTempFileDir(String subDir) {
+		String tmp=System.getProperty("java.io.tmpdir");
+		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+		if(!(tmp.endsWith("/") || tmp.endsWith("\\"))) tmp=tmp+'/';
+		if(subDir.startsWith("/") || subDir.startsWith("\\")) subDir=subDir.substring(1);
+//		Option.outputDir=simtmp+"simula/bin/";
+		return(tmp+subDir);
+	}
+	
     private static File simulaPropertiesFile;
     private static Properties simulaProperties;
 	public static String getProperty(String key,String defaultValue) {

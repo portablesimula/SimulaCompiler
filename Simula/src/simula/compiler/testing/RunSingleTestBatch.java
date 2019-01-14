@@ -180,12 +180,7 @@ public final class RunSingleTestBatch {
 		Global.packetName="simulaTestBatch";
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
-
-		String simtmp=System.getProperty("java.io.tmpdir");
-		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
-		if(!(simtmp.endsWith("/") || simtmp.endsWith("\\"))) simtmp=simtmp+'/';
-		Option.outputDir=simtmp+"simula/bin/";
-		//Option.outputDir=userDir+"/src/"+Global.packetName+"/bin/";
+		Option.outputDir=Global.getTempFileDir("simula/bin/");
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
