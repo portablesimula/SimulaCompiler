@@ -326,7 +326,8 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	public String createJarFile(ProgramModule program) throws IOException
 	{ if(Option.verbose) Util.message("BEGIN Create .jar File");
-	  String jarFileName=Global.outputDir+Global.sourceName+".jar ";
+//	  String jarFileName=Global.outputDir+Global.sourceName+".jar ";
+	  String jarFileName=Global.outputDir+Global.sourceName+".jar";
 	  
 	  if(!program.isExecutable()) {
 		  //Util.BREAK("SimulaCompiler.createJarFile: program="+program);
@@ -395,7 +396,7 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	private int execute(String command) throws IOException
 	{	Runtime runtime = Runtime.getRuntime();
-        if(Option.TRACE_JAVAC) Util.message("SimulaCompiler.execute: EXECUTE command="+command);
+	    if(Option.verbose) Util.message("Execute: "+command);
 	    String cmd=command.trim()+'\n';
 		Process process = runtime.exec(cmd);
 		//try
