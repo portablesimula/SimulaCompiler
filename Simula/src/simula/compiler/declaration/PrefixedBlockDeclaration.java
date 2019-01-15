@@ -194,6 +194,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 	if(this.isMainModule)
 	{ JavaModule.code("");
 	  JavaModule.code("public static void main(String[] args) {");
+	  JavaModule.code("//System.setProperty(\"file.encoding\",\"UTF-8\");");
 	  JavaModule.code("RT.setRuntimeOptions(args);");
 	  StringBuilder s=new StringBuilder();
 	  s.append("new "+getJavaIdentifier()+"(CTX$");

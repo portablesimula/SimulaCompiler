@@ -39,8 +39,6 @@ public final class RT
 	}
 	  
 	public static void setRuntimeOptions(String[] args) {
-		//System.setProperty("file.encoding","UTF-8");	// TODO: Via args	
-		setEncoding("UTF-8");	// TODO: Via args	
 
 		for(int i=0;i<args.length;i++) {
 			System.out.println("RT.setRuntimeOptions: arg="+args[i]);
@@ -59,6 +57,8 @@ public final class RT
 	}
 		  
 	public static void listRuntimeOptions() {
+		System.out.println("file.encoding="+System.getProperty("file.encoding"));
+		System.out.println("defaultCharset="+Charset.defaultCharset());
 		System.out.println("VERBOSE="+Option.VERBOSE);
 		System.out.println("USE_CONSOLE="+Option.USE_CONSOLE);
 		System.out.println("CODE_STEP_TRACING="+Option.CODE_STEP_TRACING);
@@ -69,26 +69,6 @@ public final class RT
 		System.out.println("QPS_TRACING="+Option.QPS_TRACING);
 		System.out.println("SML_TRACING="+Option.SML_TRACING);
 	}
-	
-	private static void setEncoding(String encoding) {
-        dump("Actual system config");
-        System.setProperty("file.encoding",encoding);
-        dump("Config after System.setProperty(\"file.encoding\","+encoding+"\")");
-        try { Field cs = Charset.class.getDeclaredField("defaultCharset");
-              cs.setAccessible(true); cs.set(null, null);
-        } catch(Exception e) {}
-        dump("Config after manipulating defatulCharset field");
-    }
-
-    private static void dump(String msg) {
-    	if(!Option.VERBOSE) return;
-        System.out.println(msg);
-        System.out.println("****************************************************************");
-        System.out.println("file.encoding          = " + System.getProperty("file.encoding"));
-        System.out.println("defaultCharset         = " + Charset.defaultCharset());
-        System.out.println("****************************************************************");
-        System.out.println("");
-    }
 	
     
 	// ************************************************************

@@ -68,9 +68,9 @@ public final class SimulaExtractor extends JFrame {
 	private JTextField installDirField;
 
 	public static void main(String[] args) {
+    	//System.setProperty("file.encoding","UTF-8");
 		if(DEBUG) System.out.println("SimulaExtractor: user.home="+System.getProperty("user.home"));
 		if(DEBUG) System.out.println("SimulaExtractor: user.dir="+System.getProperty("user.dir"));
-		setEncoding("UTF-8");
 		// List UIManager keys: https://thebadprogrammer.com/swing-uimanager-keys/
 		UIManager.put("OptionPane.background", Color.WHITE);
         UIManager.put("OptionPane.messagebackground", Color.WHITE);
@@ -81,13 +81,6 @@ public final class SimulaExtractor extends JFrame {
 		storeProperties();
 		System.exit(ok ? 0 : 1);
 	}
-	
-	private static void setEncoding(String encoding) {
-        System.setProperty("file.encoding",encoding);
-        try { Field cs = Charset.class.getDeclaredField("defaultCharset");
-              cs.setAccessible(true); cs.set(null, null);
-        } catch(Exception e) {}
-    }
 	
 	private static void loadProperties() {
 		String USER_HOME=System.getProperty("user.home");

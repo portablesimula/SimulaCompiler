@@ -10,8 +10,6 @@ package make.setup;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.*;
 
@@ -41,8 +39,8 @@ public final class MakeSetup {
 	private final static String INSTALLER_BIN=ECLIPSE_ROOT+"\\bin";
 
 	public static void main(String[] args) {
+        //System.setProperty("file.encoding","UTF-8");
 		printHeading("Make Simula Compiler, GIT_BINARIES="+GIT_BINARIES);
-		setEncoding("UTF-8");		
 		try {
 //			printSystemProperties();
 			
@@ -57,16 +55,6 @@ public final class MakeSetup {
 			executeSimulaSetup();
 			} catch(Exception e) { e.printStackTrace(); }
 	}
-	
-	private static void setEncoding(String encoding) {
-        //dump("Actual system config");
-        System.setProperty("file.encoding",encoding);
-        //dump("Config after System.setProperty(\"file.encoding\","+encoding+"\")");
-        try { Field cs = Charset.class.getDeclaredField("defaultCharset");
-              cs.setAccessible(true); cs.set(null, null);
-        } catch(Exception e) {}
-        //dump("Config after manipulating defatulCharset field");
-    }
 	
 	// ***************************************************************
 	// *** MAKE SIMULA COMPILER JAR

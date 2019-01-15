@@ -95,6 +95,7 @@ public final class TestBatch {
 		}
 
 	public static void main(String[] args) {
+    	//System.setProperty("file.encoding","UTF-8");
 		Option.BREAKING=false;
 		doCompile(TEST_PROGRAMS);
 //		doCompile(OLDIES);

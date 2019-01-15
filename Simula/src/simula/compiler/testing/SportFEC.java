@@ -25,6 +25,7 @@ import simula.runtime.RTObject$.LABQNT$;
 public final class SportFEC {
 
 	public static void main(String[] args) {
+    	//System.setProperty("file.encoding","UTF-8");
 		Vector<String> names=new Vector<String>();
 		
 		// *** SIMULA S-PORT COMPILER AS TEST BATCH

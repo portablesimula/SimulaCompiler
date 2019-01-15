@@ -7,9 +7,6 @@
  */
 package simula.compiler;
 
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-
 import simula.compiler.editor.SettingsMenu;
 import simula.compiler.editor.SimulaEditor;
 import simula.compiler.utilities.Global;
@@ -40,6 +37,7 @@ public final class Simula {
 	}
 
 	public static void main(String[] argv) {
+        //System.setProperty("file.encoding","UTF-8");
 		String fileName = null;
 		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
 		if(simulaHome==null) error("Simula Property 'simula.home' is not defined");
@@ -62,8 +60,7 @@ public final class Simula {
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
 		}		
-		setEncoding("UTF-8");	
-		Util.popUpMessage("SIMULA_HOME="+simulaHome);
+		//Util.popUpMessage("SIMULA_HOME="+simulaHome);
 		
 		if (fileName == null) {
 			//error("No input files specified");
@@ -95,26 +92,6 @@ public final class Simula {
 //		}
 //
 //	}
-	
-	private static void setEncoding(String encoding) {
-        dump("Actual system config");
-        System.setProperty("file.encoding",encoding);
-        dump("Config after System.setProperty(\"file.encoding\","+encoding+"\")");
-        try { Field cs = Charset.class.getDeclaredField("defaultCharset");
-              cs.setAccessible(true); cs.set(null, null);
-        } catch(Exception e) {}
-        dump("Config after manipulating defatulCharset field");
-    }
-
-    private static void dump(String msg) {
-    	if(!Option.verbose) return;
-        System.out.println(msg);
-        System.out.println("****************************************************************");
-        System.out.println("file.encoding          = " + System.getProperty("file.encoding"));
-        System.out.println("defaultCharset         = " + Charset.defaultCharset());
-        System.out.println("****************************************************************");
-        System.out.println("");
-    }
 	
 	private static void error(String msg)
 	{ System.err.println("Simula: "+msg+"\n");

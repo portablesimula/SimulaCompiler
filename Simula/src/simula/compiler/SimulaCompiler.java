@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -96,6 +97,8 @@ public final class SimulaCompiler {
 		  Util.message("TempDir .Class:  "+Global.tempClassFileDir);
 		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
 		  Util.message("OutputDir:       "+Global.outputDir);
+		  Util.message("file.encoding    "+System.getProperty("file.encoding"));
+		  Util.message("defaultCharset   "+Charset.defaultCharset());
 		}
 		// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
 //		System.out.println("SYSTEM: java.home="+System.getProperty("java.home"));

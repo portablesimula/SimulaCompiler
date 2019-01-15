@@ -1,6 +1,6 @@
 SIMSET
 begin
-comment program for hÃ¥ndtering av enkle databaser ;
+comment -- program for håndtering av enkle databaser ;
     
 comment dimensjonert for
        antall kommandoer:              24
@@ -309,19 +309,19 @@ procedure hilse_melding ;
 outimage ;
 outtext("STORE NORSKE BEREGNINGSKOMPAGNIE") ; outimage ;
 outimage ;
-outtext("Person-sÃ¸ke-system, versjon 29. februar 1984") ;
+outtext("Person-søke-system, versjon 29. februar 1984") ;
 outimage ;
    end hilse_melding ;
     
 procedure slutt_melding ;
    comment skriver aslutning til skjerm ;
    begin
-       outtext("Takk for samvÃ¦ret") ; outimage ;
-       outtext("Velkommen igjen om fire Ã¥r.") ;
+       outtext("Takk for samværet") ; outimage ;
+       outtext("Velkommen igjen om fire år.") ;
    end slutt_melding ;
     
 procedure lede_tekst(tekst) ; text tekst ;
-   comment skriver en ledetekst til skjerm, om nÃ¸dvendig ;
+   comment skriver en ledetekst til skjerm, om nødvendig ;
    begin
        if sysin.image.strip.length < sysin.image.pos then
        begin
@@ -391,7 +391,7 @@ integer procedure finn_type(type) ; character type ;
    end finn_type ;
     
 procedure do_kommando(kommandonr) ; integer kommandonr ;
-   comment foreta kommando i fÃ¸lge kommando-nummer ;
+   comment foreta kommando i følge kommando-nummer ;
    begin
        if kommandonr=1 then definer  else
        if kommandonr=2 then registrer  else
@@ -466,7 +466,7 @@ procedure definer ;
    end definer ;
     
 text procedure les_register ;
-   comment leser navnet pÃ¥ et nytt felt eller quit_felt  ;
+   comment leser navnet på et nytt felt eller quit_felt  ;
    begin text felt, pass ;
        lede_tekst("Registernavn:") ;
        felt:-les_navn ;
@@ -478,7 +478,7 @@ outimage ;
    end les_nytt_feltnavn ;
     
 text procedure les_feltnavn ;
-   comment leser navnet pÃ¥ et kjent felt  ;
+   comment leser navnet på et kjent felt  ;
    begin text felt ;
        lede_tekst("Felt:") ;
        felt:-les_navn ;
@@ -532,19 +532,19 @@ else
 if rest>=10 then
 begin
 outtext("Person-oversikt, geografisk fordeling:") ; outimage ;
-outint(1,3) ; outtext(":  Ã˜stlandet  :") ; outint(34,3) ; outimage ;
-outint(2,3) ; outtext(":  SÃ¸rlandet  :") ; outint(14,3) ; outimage ;
+outint(1,3) ; outtext(":  Østlandet  :") ; outint(34,3) ; outimage ;
+outint(2,3) ; outtext(":  Sørlandet  :") ; outint(14,3) ; outimage ;
 outint(3,3) ; outtext(":  Vestlandet :") ; outint(19,3) ; outimage ;
 outint(4,3) ; outtext(":  Nord-Norge :") ; outint(8 ,3) ; outimage ;
-lede_tekst("Hvilken gruppe Ã¸nsker De,angi nummer:") ;
+lede_tekst("Hvilken gruppe ønsker De,angi nummer:") ;
 i:=inint ; i:=3 ;
 outimage ;
 outtext("Person-oversikt, gruppe 3, Vestlandet:") ; outimage ;
 outint(1,3);outtext(":  Rogaland             :");outint(5,2);outimage;
 outint(2,3);outtext(":  Hordaland og Bergen  :");outint(8,2);outimage;
-outint(3,3);outtext(":  MÃ¸re og Romsdal      :");outint(4,2);outimage;
+outint(3,3);outtext(":  Møre og Romsdal      :");outint(4,2);outimage;
 outint(4,3);outtext(":  Sogn og Fjordane     :");outint(2,2);outimage;
-lede_tekst("Hvilken gruppe Ã¸nsker De, angi nummer:") ;
+lede_tekst("Hvilken gruppe ønsker De, angi nummer:") ;
 i:=inint ; i:=2 ; rest:=8 ;
 outimage ;
 outtext("Person-oversikt, gruppe 3.2, Hordaland og Bergen") ;
@@ -552,20 +552,20 @@ outimage ;
 outtext("Antall personer i gruppen er 8") ; outimage ;
 end ;
 if rest<10 then begin
-outtext("Det er forbudt Ã¥ offentliggjÃ¸re persondata for ") ; outimage;
-outtext("grupper med fÃ¦rre enn 10 personer") ; outimage ;
+outtext("Det er forbudt å offentliggjøre persondata for ") ; outimage;
+outtext("grupper med færre enn 10 personer") ; outimage ;
 outtext("uten spesiell tillatelse fra Datatilsynet.") ; outimage ;
 loop:lede_tekst("Har De slik tillatelse? J/N:") ;
 c:=inchar ; while c=' ' do c:=inchar ;
 if c='J' then
 begin
-outtext("Ã… neida, den gÃ¥r ikke, De lurer ikke meg!") ; outimage ;
-outtext("De stÃ¥r ikke i Datatilsynets spesial-register!") ; outimage ;
-outtext("Svar nÃ¥ Ã¦rlig pÃ¥ spÃ¸rsmÃ¥let!") ; outimage ;
+outtext("Å neida, den går ikke, De lurer ikke meg!") ; outimage ;
+outtext("De står ikke i Datatilsynets spesial-register!") ; outimage ;
+outtext("Svar nå ærlig på spørsmålet!") ; outimage ;
 go to loop ;
 end ;
-outtext("Nei da sÃ¥, ") ;
-outtext("beklager at jeg ikke kan gi Dem den Ã¸nskede utskrift.") ;
+outtext("Nei da så, ") ;
+outtext("beklager at jeg ikke kan gi Dem den ønskede utskrift.") ;
 outimage ;
 end ;
    end registrer ;
@@ -577,7 +577,7 @@ procedure stryk_intern_post ;
    end stryk_intern_post ;
     
 procedure endre_intern_post ;
-   comment legg nye verdier pÃ¥ felter i intern_post ;
+   comment legg nye verdier på felter i intern_post ;
    begin
        feltnavn:-les_feltnavn ;
        while feltnr <> quit_felt do
@@ -626,10 +626,10 @@ if antall_egenskaper=1 then
   rest:=2030552.0
 else
   rest:=rest/divisor(antall_egenskaper) ;
-outtext("SÃ¸ker etter ") ; outtext(egenskap(antall_egenskaper)) ;
+outtext("Søker etter ") ; outtext(egenskap(antall_egenskaper)) ;
 if antall_egenskaper>1 then
 begin
-outtext(" i kombinasjon med fÃ¸lgende egenskaper:") ;
+outtext(" i kombinasjon med følgende egenskaper:") ;
 for i:=1 step 1 until antall_egenskaper-1 do
 begin outimage ;
 outtext(egenskap(i)) ;
@@ -643,7 +643,7 @@ outimage ;
 if antall_egenskaper > 1 and
 divisor(antall_egenskaper)=1 and rest>1 then
 begin
-outtext("Dette er de samme personer som ved forrige sÃ¸k.") ;
+outtext("Dette er de samme personer som ved forrige søk.") ;
 outimage ;
 outtext("Det er fullt samsvar mellom egenskapene ") ; outimage ;
 outtext(egenskap(antall_egenskaper)) ; outtext(" og ") ;
@@ -655,7 +655,7 @@ outtext("Ingen norske personer tilfredstiller alle de oppstilte") ;
 outtext(" krav og egenskaper.") ; outimage ;
 outtext("Jeg er en datamaskin, jeg kan alt og tilfredstiller alle.") ;
 outimage ;
-outtext("Hva kan jeg stÃ¥ til tjeneste med?") ; outimage ;
+outtext("Hva kan jeg stå til tjeneste med?") ; outimage ;
 antall_egenskaper:=0 ;
 end ;
    end finn ;
@@ -676,7 +676,7 @@ procedure finn_og_hent(start) ; integer start ;
    end finn_og_hent ;
     
 integer procedure finn_post(start) ; integer start ;
-   comment finner postnr i fÃ¸lge finne_regel ;
+   comment finner postnr i følge finne_regel ;
    begin integer i,j,pnr ; boolean funnet ;
        i:=0 ; pnr:=start ;
        funnet:=false ;
@@ -758,7 +758,7 @@ procedure fjern ;
    end fjern ;
     
 procedure les_finne_regel ;
-   comment leser et sÃ¸ke-mÃ¸nster ;
+   comment leser et søke-mønster ;
    begin
        stryk_finne_regel ;
        feltnavn:-les_feltnavn ;
@@ -772,13 +772,13 @@ procedure les_finne_regel ;
    end les_finne_regel ;
     
 procedure stryk_finne_regel ;
-   comment fjerner gammelt sÃ¸ke-mÃ¸nster ;
+   comment fjerner gammelt søke-mønster ;
    begin
        finne_regel_antall:=0 ;
    end stryk_finne_regel ;
     
 procedure sett_finne_regel ;
-   comment noterer en part av sÃ¸kemÃ¸nster ;
+   comment noterer en part av søkemønster ;
    begin
        if finne_regel_antall < max_finne_regel then
        begin
@@ -823,7 +823,7 @@ procedure hent_post (pnr) ; integer pnr ;
    end hent_post ;
     
 procedure stryk_aktuell_post ;
-   comment frigjÃ¸r plassen for en post i databasen ;
+   comment frigjør plassen for en post i databasen ;
    begin
        if aktuell <> 0 then
            begin
@@ -835,7 +835,7 @@ procedure stryk_aktuell_post ;
    end stryk_aktuell_post ;
     
 procedure skjerm_intern_post ;
-   comment presenter intern_post pÃ¥ skjerm ;
+   comment presenter intern_post på skjerm ;
    begin integer i ;
        for i:=1 step 1 until felt_antall do
            begin
@@ -935,7 +935,7 @@ procedure definer_format ;
    end definer_format ;
     
 text procedure les_formatnavn ;
-   comment leser et navn og slÃ¥r opp i format_tabell ;
+   comment leser et navn og slår opp i format_tabell ;
    begin text form ;
    lede_tekst("Format:") ;
    form:-les_navn ;
@@ -950,7 +950,7 @@ text procedure les_formatnavn ;
    end les_formatnavn ;
     
 text procedure les_nytt_formatnavn ;
-   comment leser nytt format-navn og slÃ¥r opp i tabell ;
+   comment leser nytt format-navn og slår opp i tabell ;
    begin text form ;
    lede_tekst("Nytt format:") ;
    form:-les_navn ;
@@ -1038,7 +1038,7 @@ boolean procedure number(c) ; character c ;
    number:='0' <= c and c <= '9' ;
     
 procedure datareg ;
-   comment leser et ubegrenset antall poster i fÃ¸lge et format ;
+   comment leser et ubegrenset antall poster i følge et format ;
    begin boolean mer ; integer i ; character c ;
    text test ;
    formatnavn:-les_formatnavn ;
@@ -1070,7 +1070,7 @@ procedure datareg ;
    end datareg ;
     
 procedure rapporter ;
-   comment finner og rapporterer i fÃ¸lge format ;
+   comment finner og rapporterer i følge format ;
    begin boolean mer ; integer funn ;
    formatnavn:-les_formatnavn ;
    les_finne_regel ;
@@ -1089,7 +1089,7 @@ procedure rapporter ;
    end rapporter ;
     
 procedure trykk_rapport(formatnr) ; integer formatnr ;
-   comment trykker intern_-post i fÃ¸lge oppgitt format ;
+   comment trykker intern_-post i følge oppgitt format ;
    begin integer i,k,felt_linje ; boolean funnet ;
    procedure skriv_linje ;
        begin
@@ -1143,7 +1143,7 @@ procedure leggut ;
    end leggut ;
     
 text procedure open_innbase ;
-   comment Ã¥pner database for innlesing ;
+   comment åpner database for innlesing ;
    begin text filnavn ;
        boolean oppe ;
        fil_image:-blanks(fil_image_lengde) ;
@@ -1161,7 +1161,7 @@ text procedure open_innbase ;
    end open_innbase ;
     
 text procedure open_utbase ;
-   comment Ã¥pner database for utskrift ;
+   comment åpner database for utskrift ;
    begin text filnavn ;
        boolean oppe ;
        fil_image:-blanks(fil_image_lengde) ;
@@ -1194,7 +1194,7 @@ procedure lukk_utbase ;
    end lukk_utbase ;
     
 procedure hent_innbase ;
-   comment overfÃ¸rer database fra masselager til internt lager ;
+   comment overfører database fra masselager til internt lager ;
    inspect innbase do if not lastitem then
    begin integer i,j,k,pnr ; text t ; character c ;
    comment feltbeskrivelser ;
@@ -1257,7 +1257,7 @@ procedure hent_innbase ;
    end hent_innbase ;
     
 procedure skriv_utbase ;
-   comment legger database ut pÃ¥ masselager ;
+   comment legger database ut på masselager ;
    inspect utbase do
    begin integer i,j,k,pnr ;
    comment feltbeskrivelser ;
@@ -1374,7 +1374,7 @@ procedure finnmengde ;
    end finnmengde ;
     
 procedure sortermengde ;
-   comment sorter mengde pÃ¥ basis av felt, synkende ;
+   comment sorter mengde på basis av felt, synkende ;
    begin
    if mengde==none then feil(18)
    else
@@ -1394,7 +1394,7 @@ procedure sortermengde ;
    end sortermengde ;
     
 procedure sorter(tabell,key,antall) ;
-   comment sorterer tabell av lengde antall pÃ¥ basis av key-verdier ;
+   comment sorterer tabell av lengde antall på basis av key-verdier ;
    comment metode SHELL-sort benyttes ;
    integer array tabell ; integer antall ;
    ref(verdi)array key ;
@@ -1438,7 +1438,7 @@ procedure sorter(tabell,key,antall) ;
    end sorter ;
     
 procedure rapportermengde ;
-   comment skriver rapport over mengde i fÃ¸lge format ;
+   comment skriver rapport over mengde i følge format ;
    begin integer i ;
    formatnavn:-les_formatnavn ;
    for i:=1 step 1 until mengde.antall do
@@ -1453,7 +1453,7 @@ comment definer kjente begreper ;
 comment kommandoer ;
    kommando_tabell(1):-"KONTAKT" ;
    kommando_tabell(2):-"SKRIV" ;
-   kommando_tabell(3):-"SÃ˜K" ;
+   kommando_tabell(3):-"SØK" ;
    kommando_tabell(4):-"ENDRE" ;
    kommando_tabell(5):-"TRYKK" ;
    kommando_tabell(6):-"FJERN" ;

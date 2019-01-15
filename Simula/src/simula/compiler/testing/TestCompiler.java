@@ -19,6 +19,7 @@ import simula.compiler.utilities.Option;
 public final class TestCompiler {
 
 	public static void main(String[] args) {
+    	//System.setProperty("file.encoding","UTF-8");
 
 		// *** STANDARD CLASSES
 		// String name="/rts/Text.sim";
@@ -70,7 +71,7 @@ public final class TestCompiler {
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		// String name="/simple/adHoc00.sim";
+		 String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
@@ -112,7 +113,7 @@ public final class TestCompiler {
 		// String name="/simple/GotoSample7.sim";
 		// String name="/simple/GotoSample8.sim";
 		// String name="/simple/HashingExample.sim";
-		 String name="/simple/HelloWorld.sim";
+		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
 		// String name="/simple/InspectionSamples.sim";
 		// String name="/simple/JensensDevice.sim";

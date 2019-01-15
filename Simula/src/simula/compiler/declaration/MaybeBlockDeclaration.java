@@ -216,6 +216,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 	if(this.isMainModule)
 	{ JavaModule.code("");
 	  JavaModule.code("public static void main(String[] args) {");
+	  JavaModule.code("//System.setProperty(\"file.encoding\",\"UTF-8\");");
 	  JavaModule.code("RT.setRuntimeOptions(args);");
 	  JavaModule.code("new "+getJavaIdentifier()+"(CTX$).STM$();");
 	  JavaModule.code("}"); // End of main

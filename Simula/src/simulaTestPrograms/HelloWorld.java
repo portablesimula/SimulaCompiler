@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 2
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Mon Jan 14 11:21:01 CET 2019
+// Simula-Beta-0.3 Compiled at Mon Jan 14 20:33:57 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HelloWorld extends BASICIO$ {
@@ -27,8 +27,9 @@ public final class HelloWorld extends BASICIO$ {
     } // End of SimulaProgram Statements
     
     public static void main(String[] args) {
+        System.setProperty("file.encoding","UTF-8");
         RT.setRuntimeOptions(args);
         new HelloWorld(CTX$).STM$();
     }
-    public static PROGINFO$ INFO$=new PROGINFO$("HelloWorld.sim","SimulaProgram HelloWorld",1,2,22,3,32,4);
+    public static PROGINFO$ INFO$=new PROGINFO$("HelloWorld.sim","SimulaProgram HelloWorld",1,2,22,3,33,4);
 }

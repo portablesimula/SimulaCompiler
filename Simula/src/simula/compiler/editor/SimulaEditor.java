@@ -35,6 +35,7 @@ public class SimulaEditor extends JFrame {
 //    private File currentFile;
     
     public static void main(String[] args) {
+    	//System.setProperty("file.encoding","UTF-8");
        	
 		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
 		if(simulaHome==null) Util.error("Simula Property 'simula.home' is not defined");

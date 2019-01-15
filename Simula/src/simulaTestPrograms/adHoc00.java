@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 4
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 10:51:34 CET 2019
+// Simula-Beta-0.3 Compiled at Tue Jan 15 09:52:31 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class adHoc00 extends BASICIO$ {
@@ -24,8 +24,9 @@ public final class adHoc00 extends BASICIO$ {
     } // End of SimulaProgram Statements
     
     public static void main(String[] args) {
+        System.setProperty("file.encoding","UTF-8");
         RT.setRuntimeOptions(args);
         new adHoc00(CTX$).STM$();
     }
-    public static PROGINFO$ INFO$=new PROGINFO$("adHoc00.sim","SimulaProgram adHoc00",1,4,29,4);
+    public static PROGINFO$ INFO$=new PROGINFO$("adHoc00.sim","SimulaProgram adHoc00",1,4,30,4);
 }
