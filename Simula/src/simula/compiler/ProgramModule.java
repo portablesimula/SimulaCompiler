@@ -32,7 +32,7 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  *
- * ProgramModule = SimulaPrpgram | ClassDeclaration | ProcedureDeclaration
+ * ProgramModule = SimulaProgram | ClassDeclaration | ProcedureDeclaration
  * 
  * SimulaProgram = [ BlockPrefix ] Block | [ BlockPrefix ] CompoundStatement
  * 

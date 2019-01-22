@@ -71,7 +71,7 @@ public final class TestCompiler {
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
@@ -88,7 +88,7 @@ public final class TestCompiler {
 		// String name="/simple/ClassGlyph.sim"; 
 		// String name="/simple/ClassGlyph2.sim";
 		// String name="/simple/ClockTimeTest.sim";
-		// String name="/simple/CoroutineSample.sim";
+		 String name="/simple/CoroutineSample.sim";
 		// String name="/simple/DetachSamples.sim"; 
 		// String name="/simple/DecimalEdit.sim"; 
 		// String name="/simple/DisplaySamples.sim";

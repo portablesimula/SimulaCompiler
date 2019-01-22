@@ -42,6 +42,8 @@ public abstract class RTObject$  implements Runnable {
 	public enum OperationalState { detached,resumed,attached,terminated,terminatingProcess }
 	public OperationalState STATE$;
 	public Thread THREAD$;
+	protected static final ContinuationScope continuationScope=new ContinuationScope("QPS System");
+	protected Continuation continuation;
 	protected ClassBody CODE$;
 	
 	// RTS
@@ -858,16 +860,18 @@ public abstract class RTObject$  implements Runnable {
 		   shutDown(0);
 //		   System.exit(0);
 	    } else {
-	       if(this.THREAD$!=CUR$.THREAD$)
-	       { if(RT.Option.QPS_TRACING) RT.TRACE("Resume "+CUR$.THREAD$);
-	       
-//	         CUR$.resumeThread();
-	         resumeThread(CUR$.THREAD$);
-	         
-	         if(RT.Option.QPS_TRACING) RT.TRACE("Terminate "+this.THREAD$);
-	         this.THREAD$=null; // Leave it to the GarbageCollector
-	       }
-	    }
+		    if(RT.USE_QPS_LOOM) {
+		    	// Stop operations and set reactivation point.
+		    	//Continuation.yield(continuationScope);
+			} else {
+				if (this.THREAD$ != CUR$.THREAD$) {
+					if (RT.Option.QPS_TRACING) RT.TRACE("Resume " + CUR$.THREAD$);
+					resumeThread(CUR$.THREAD$);
+					if (RT.Option.QPS_TRACING) RT.TRACE("Terminate " + this.THREAD$);
+					this.THREAD$ = null; // Leave it to the GarbageCollector
+				}
+			}
+		}
 	  }
 
 
@@ -910,23 +914,35 @@ public abstract class RTObject$  implements Runnable {
 	 * @param obj
 	 *            The object to be Called (Coroutine)
 	 */
-	public void call(RTObject$ ins)
-	{ RTObject$ dl;     //  Temporary reference to dynamic enclosure.
-	  if(ins==null) throw new RuntimeException("Call(x): x is none.");
-	  if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN CALL "+ins.edObjectAttributes());
-	  if(ins.STATE$!=OperationalState.detached) throw
+	public void call(RTObject$ ins)	{
+		RTObject$ dl;     //  Temporary reference to dynamic enclosure.
+		if(ins==null) throw new RuntimeException("Call(x): x is none.");
+		if(RT.USE_QPS_LOOM) {
+			System.out.println("BEGIN CALL "+ins.edObjectAttributes());
+			System.out.println("BEGIN CALL CUR$="+CUR$.edObjectAttributes());
+		}
+		if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN CALL "+ins.edObjectAttributes());
+		if(ins.STATE$!=OperationalState.detached) throw
 	        new RuntimeException("Call(x): x is not in detached state.");
-	  // The object to be attached cannot be on the operating chain,
-	  // because then its state would have been resumed and not detached.
+	    // The object to be attached cannot be on the operating chain,
+		// because then its state would have been resumed and not detached.
 
-	  // Swap the contents of 'CUR$' and object's 'dl'.
-	  //  <ins.DL$,CUR$>:=<CUR$,ins.DL$>;
-	  dl=ins.DL$; ins.DL$=CUR$; CUR$=dl;
-	  // From now on the object is in attached state.
-	  // It is no longer a component head.
-	  ins.STATE$=OperationalState.attached;
-	  if(RT.Option.QPS_TRACING) RT.TRACE("END CALL "+ins.edObjectAttributes());
-	  swapThreads(CUR$.THREAD$);
+	    // Swap the contents of 'CUR$' and object's 'dl'.
+		//  <ins.DL$,CUR$>:=<CUR$,ins.DL$>;
+		dl=ins.DL$; ins.DL$=CUR$; CUR$=dl;
+		// From now on the object is in attached state.
+		// It is no longer a component head.
+		ins.STATE$=OperationalState.attached;
+		if(RT.Option.QPS_TRACING) RT.TRACE("END CALL "+ins.edObjectAttributes());
+	    if(RT.USE_QPS_LOOM) {
+			System.out.println("END CALL "+ins.edObjectAttributes());
+			System.out.println("END CALL CUR$="+CUR$.edObjectAttributes());
+	    	// Resume operations at saved reactivation point.
+	    	CUR$.continuation.run();
+	    	// Returns here after a new 'detach'
+	    } else {
+	    	swapThreads(CUR$.THREAD$);
+	    }
 	}
 
 	// *********************************************************************
@@ -1004,9 +1020,15 @@ public abstract class RTObject$  implements Runnable {
 	    comp.DL$=CUR$; CUR$=ins.DL$; ins.DL$=mainSL;
 	    ins.STATE$=OperationalState.resumed;
 		if(RT.Option.QPS_TRACING) RT.TRACE("END RESUME "+ins.edObjectAttributes());
-//	    if(terminatingProcess) CUR$.resumeThread();
-	    if(terminatingProcess) resumeThread(CUR$.THREAD$);
-	    else swapThreads(CUR$.THREAD$);
+	    if(RT.USE_QPS_LOOM) {
+	    	// Resume operations at saved reactivation point.
+	    	CUR$.continuation.run();
+	    	// Returns here after a new 'detach'
+	    } else {
+//	       if(terminatingProcess) CUR$.resumeThread();
+	       if(terminatingProcess) resumeThread(CUR$.THREAD$);
+	       else swapThreads(CUR$.THREAD$);
+	    }
 	  }
 	}
 
@@ -1025,14 +1047,31 @@ public abstract class RTObject$  implements Runnable {
 
 
 //    // Runnable Body
-    public RTObject$ START() { START(this); return(this); }
+    public RTObject$ START() {
+    	START(this); return(this);
+    }
+    
+    public void resumeOperations() { // LOOM ONLY
+    	RT.ASSERT(RT.USE_QPS_LOOM,"Illegal Call on resumeOperations");
+    	throw new RuntimeException("Object is not a Component");
+    }
+    
     public void run()
     { STM$();
       //RT.TRACE("Object TERMINATES: "+this.edObjectAttributes());
       //RT.printThreadList();
     }
     
-	public void START(RTObject$ ins)
+	public void START(RTObject$ ins) {
+		if(RT.USE_QPS_LOOM) START_LOOM(ins);
+		else START_THREAD(ins);
+	}
+    
+	public void START_LOOM(RTObject$ ins) {
+		throw new RuntimeException("Object is not a Component");		
+	}
+    
+	public void START_THREAD(RTObject$ ins)
     { if(RT.Option.THREAD_TRACING) RT.TRACE("START: ins="+ins.edObjectAttributes());
       //if(RT.Option.THREAD_TRACING) RT.TRACE("START: CUR$="+CUR$.edObjectAttributes());
       RTObject$ CALLER=CUR$.DL$;
@@ -1108,7 +1147,8 @@ public abstract class RTObject$  implements Runnable {
 				// RT.BREAK("RTObject$.shutDown: Notify "+T);
 				synchronized (T) { T.notify(); }
 				// Shutting Down Components one at a time:
-			    while(T.getState()==Thread.State.RUNNABLE) Thread.yield();  
+			    //while(T.getState()==Thread.State.RUNNABLE) Thread.yield();  
+			    try { T.join();	} catch (InterruptedException e) { e.printStackTrace();	}
 			}
 		}
 		if(RT.numberOfEditOverflows>0) RT.println("End program: WARNING "+RT.numberOfEditOverflows+" EditOverflows");
@@ -1122,8 +1162,8 @@ public abstract class RTObject$  implements Runnable {
       Thread prev=Thread.currentThread();
 //      RT.TRACE("BEGIN swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
 //      RT.TRACE("BEGIN swapThread: NEXT="+next+", Thread.STATE="+next.getState());
-      RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"Invariant");
-      RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Invariant");
+      RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-1");
+      RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND ?
 
   	  // Resume 'next'	
   	  synchronized (next) { next.notify(); }
@@ -1132,11 +1172,11 @@ public abstract class RTObject$  implements Runnable {
       
 //      RT.TRACE("END swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
 //      RT.TRACE("END swapThread: NEXT="+next+", Thread.STATE="+next.getState());
-      RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"Invariant");
+      RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-3");
       
       while(next.getState()==Thread.State.RUNNABLE) Thread.yield();  
 
-      RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Invariant");
+      RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-4");
 //      ENVIRONMENT$.checkMaxOneRunableSimulaThread();
     }
 

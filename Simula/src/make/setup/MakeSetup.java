@@ -8,9 +8,17 @@
 package make.setup;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.Date;
+import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
 import static java.nio.file.StandardCopyOption.*;
 
 import simula.compiler.utilities.Global;
@@ -43,9 +51,11 @@ public final class MakeSetup {
 		printHeading("Make Simula Compiler, GIT_BINARIES="+GIT_BINARIES);
 		try {
 //			printSystemProperties();
-			
+			updateSetupProperties();
+
 			makeSimulaCompiler();
 			copySimulaRuntimeSystem();
+			copySimulaIconFiles();
 //			dummyExecuteSimulaCompiler();
 			copySimulaReleaseTestBats();
 //			compileAndExecuteSimulaPrograms();
@@ -77,6 +87,24 @@ public final class MakeSetup {
         System.out.println("MakeCompiler.copySimulaRuntimeSystem: RELEASE_HOME="+RELEASE_HOME);
         // *** Copy Current Runtime System
 		execute("Robocopy "+COMPILER_BIN+"\\simula\\runtime "+target+" /E");
+	}
+	
+	// ***************************************************************
+	// *** COPY SIMULA ICON FILES
+	// ***************************************************************
+	private static void copySimulaIconFiles() throws IOException	{
+		printHeading("Copy Simula Icons .png's into "+RELEASE_HOME);
+		copyImageFile("sim.png");
+		copyImageFile("sim2.png");
+		copyImageFile("simula.png");
+	}
+	private static void copyImageFile(String fileName) throws IOException	{
+		File source=new File(ECLIPSE_ROOT+"\\icons\\"+fileName);
+		File target=new File(RELEASE_HOME+"\\icons\\"+fileName);
+		target.mkdirs();
+		System.out.println("source="+source);
+		System.out.println("target="+target);
+		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
 	}
 	
 	// ***************************************************************
@@ -169,7 +197,9 @@ public final class MakeSetup {
 		System.out.println("source="+source);
 		System.out.println("target="+target);
 		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
-	}	
+		//updateSetupProperties();
+	}
+	
 	// ***************************************************************
 	// *** EXECUTE SIMULA SETUP
 	// ***************************************************************
@@ -204,6 +234,70 @@ public final class MakeSetup {
 		System.out.println("********************************************************************************");
 		System.out.println("*** "+heading);
 		System.out.println("********************************************************************************");
+	}
+	
+	
+	// ***************************************************************
+	// *** UPDATE SETUP PROPERTIES
+	// ***************************************************************
+	private static void updateSetupProperties() {
+		String prevRevision=getProperty("simula.revision",null);
+		int revision=0;
+		if(prevRevision!=null) {
+			revision=Integer.parseUnsignedInt(prevRevision)+1;
+		}
+		String setupDated=""+new Date();
+		setProperty("simula.setup.dated",setupDated);
+		setProperty("simula.version",""+Global.simulaReleaseID);
+		setProperty("simula.revision",""+revision);
+		try { // also update 'Simula-Revision' and 'Simula-Setup-Dated' in InstallerManifest.MF
+		   String SETUP_SRC=ECLIPSE_ROOT+"\\src\\make\\setup";
+		   File installerManifestFile=new File(SETUP_SRC+"\\InstallerManifest.MF");
+		   System.out.println("installerManifestFile: "+installerManifestFile);
+		   Manifest manifest=new Manifest();
+		   InputStream inputStream=new FileInputStream(installerManifestFile);
+		   manifest.read(inputStream);
+		   Attributes main=manifest.getMainAttributes();
+		   System.out.println("Main-Class: "+main.getValue("Main-Class"));
+		   System.out.println("Simula-Revision: "+main.getValue("Simula-Revision"));
+		   main.putValue("Simula-Revision",""+revision);
+		   main.putValue("Simula-Setup-Dated",""+setupDated);
+		   System.out.println("Simula-Revision: "+main.getValue("Simula-Revision"));
+		   System.out.println("Simula-Setup-Dated: "+main.getValue("Simula-Setup-Dated"));
+		   OutputStream outputStream=new FileOutputStream(installerManifestFile);
+		   manifest.write(outputStream);
+		} catch(Exception e) { e.printStackTrace(); }
+	}
+    private static File setupPropertiesFile;
+    private static Properties setupProperties;
+	public static String getProperty(String key,String defaultValue) {
+		if(setupPropertiesFile==null) loadProperties();
+		return(setupProperties.getProperty(key,defaultValue));
+	}
+	
+	public static void setProperty(String key,String value) {
+		if(setupPropertiesFile==null) loadProperties();
+		setupProperties.setProperty(key,value);
+		storeProperties();
+	}
+	
+	private static void loadProperties() {
+		String USER_HOME=System.getProperty("user.home");
+		System.out.println("USER_HOME="+USER_HOME);
+//		File setupPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
+		File setupPropertiesDir=new File(GITHUB_ROOT+"\\github.io\\setup");
+		System.out.println("setupPropertiesDir="+setupPropertiesDir);
+		setupPropertiesDir.mkdirs();
+		setupPropertiesFile=new File(setupPropertiesDir,"setupProperties.xml");
+		setupProperties = new Properties();
+		try { setupProperties.loadFromXML(new FileInputStream(setupPropertiesFile));
+		} catch(Exception e) {} // e.printStackTrace(); }
+	}
+	
+	private static void storeProperties() {
+		setupProperties.list(System.out);
+		try { setupProperties.storeToXML(new FileOutputStream(setupPropertiesFile),"Setup Properties");
+		} catch(Exception e) { e.printStackTrace(); }
 	}
 	
 //	private static void printSystemProperties() {

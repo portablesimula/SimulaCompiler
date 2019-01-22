@@ -1,6 +1,5 @@
 package simula.runtime;
 
-
 /**
 * 
 * @author SIMULA Standards Group
@@ -8,11 +7,18 @@ package simula.runtime;
 */
 //public abstract class CLASS$ extends RTObject$ {
 public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
-
 	// Constructor
 	public CLASS$(RTObject$ staticLink) {
 		super(staticLink);
 	}
+	
+    public void START_LOOM(RTObject$ ins) {
+    	System.out.println("CLASS$.START_LOOM: ");
+    	continuation=new Continuation(continuationScope,this,ins.edObjectIdent());
+    	continuation.run();
+    	// Return here when Continuation is Yield
+    	System.out.println("CLASS$.START_LOOM: Continuation RETURNS: "+ins.edObjectIdent());
+    }
 
 	// *********************************************************************
 	// *** DETACH  -  See Simula Standard 7.3.1 Detach
@@ -73,6 +79,10 @@ public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 		               //  the head of the quasi-parallel system.
 	  ins=this;
 	  if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
+	  if(RT.USE_QPS_LOOM) {
+		  System.out.println("BEGIN DETACH "+edObjectAttributes());
+		  System.out.println("BEGIN DETACH CUR$="+CUR$);
+	  }
 	  RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
 	  //  Detach on a prefixed block is a no-operation.
 	  if(!CUR$.isQPSystemBlock())
@@ -105,7 +115,14 @@ public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 		}
 		RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
 	    if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
-	    swapThreads(CUR$.THREAD$);
+	    if(RT.USE_QPS_LOOM) {
+		    System.out.println("END DETACH "+edObjectAttributes());
+		    System.out.println("END DETACH new CUR$="+CUR$);
+	    	// Stop operations and set reactivation point.
+	    	Continuation.yield(continuationScope);
+	    } else {
+	    	swapThreads(CUR$.THREAD$);
+	    }
 	  }
 	}
 

@@ -97,6 +97,7 @@ public final class SimulaCompiler {
 		  Util.message("TempDir .Class:  "+Global.tempClassFileDir);
 		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
 		  Util.message("OutputDir:       "+Global.outputDir);
+		  Util.message("Java version     "+System.getProperty("java.version"));
 		  Util.message("file.encoding    "+System.getProperty("file.encoding"));
 		  Util.message("defaultCharset   "+Charset.defaultCharset());
 		}
@@ -125,6 +126,10 @@ public final class SimulaCompiler {
 	public void doCompile() {
 		try {
 			Util.nError=0;
+			if(!Util.isJavaIdentifier(Global.sourceName)) {
+				Util.error("The source file name '"+Global.sourceName+"' is not a legal identifier. Rename source file");
+			}
+
 			Global.javaModules=new Vector<JavaModule>();
 			
 			if(reader==null) {

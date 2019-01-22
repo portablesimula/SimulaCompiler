@@ -117,6 +117,21 @@ public final class Util
   
 
     //*******************************************************************************
+    //*** isJavaIdentifier - Check if 's' is a legal Java Identifier
+    //*******************************************************************************
+	public static boolean isJavaIdentifier(String s) {
+		if (s.length() == 0 || !Character.isJavaIdentifierStart(s.charAt(0))) {
+			return false;
+		}
+		for (int i = 1; i < s.length(); i++) {
+			if (!Character.isJavaIdentifierPart(s.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+  
+    //*******************************************************************************
     //*** IPOW - Integer Power: b ** x
     //*******************************************************************************
 	/**

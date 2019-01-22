@@ -14,13 +14,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -55,6 +55,7 @@ public final class SimulaExtractor extends JFrame {
 	
 	// NOTE: When updating release id, change version in Global.simulaReleaseID
     public static final String simulaReleaseID="Simula-Beta-0.3";
+    public static String simulaRevisionID="?";
 
     private static File simulaPropertiesFile;
     private static Properties simulaProperties;
@@ -84,9 +85,9 @@ public final class SimulaExtractor extends JFrame {
 	
 	private static void loadProperties() {
 		String USER_HOME=System.getProperty("user.home");
-		System.out.println("USER_HOME="+USER_HOME);
+		if(DEBUG) System.out.println("USER_HOME="+USER_HOME);
 		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
+		if(DEBUG) System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
 		simulaPropertiesDir.mkdirs();
 		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.prop");
 		simulaProperties = new Properties();
@@ -94,15 +95,27 @@ public final class SimulaExtractor extends JFrame {
 		} catch(Exception e) {} // e.printStackTrace(); }
 	}
 	
+	private static void loadManifest(ZipFile zipFile,ZipEntry entry) throws IOException  {
+		Manifest manifest = new Manifest(zipFile.getInputStream(entry));
+		Attributes main=manifest.getMainAttributes();
+		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: Main-Class="+main.getValue("Main-Class"));
+		simulaRevisionID=main.getValue("Simula-Revision");
+		setupDated=main.getValue("Simula-Setup-Dated");
+		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: This Simula-Revision: "+simulaRevisionID);
+		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: This Simula-Setup-Dated: "+setupDated);
+	}
+	
 	private static void storeProperties() {
-
-		simulaProperties.put("simula.setup.dated",setupDated);
-		simulaProperties.put("simula.installed",new Date().toString());
-		simulaProperties.put("simula.version",simulaReleaseID);
-		simulaProperties.put("simula.home",SIMULA_HOME);
-		simulaProperties.list(System.out);
-		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
-		} catch(Exception e) { e.printStackTrace(); }
+		if(simulaProperties!=null) {
+			simulaProperties.put("simula.setup.dated",setupDated);
+			simulaProperties.put("simula.installed",new Date().toString());
+			simulaProperties.put("simula.version",simulaReleaseID);
+			simulaProperties.put("simula.revision",simulaRevisionID);
+			simulaProperties.put("simula.home",SIMULA_HOME);
+			if(DEBUG) simulaProperties.list(System.out);
+			try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
+			} catch(Exception e) { e.printStackTrace(); }
+		}
 	}
 	
 	SimulaExtractor() {
@@ -261,9 +274,7 @@ public final class SimulaExtractor extends JFrame {
 //				if(DEBUG) System.out.println("Found File Entry: " + pathname);
 				if( pathname.startsWith("make/setup")) continue;
 				if(	pathname.toUpperCase().equals("META-INF/MANIFEST.MF")) {
-					long lastModificationTime=entry.getTime(); 
-					setupDated=new Date(lastModificationTime).toString();
-					if(DEBUG) System.out.println("Found File Entry: setupDated=" + setupDated);
+					loadManifest(zf,entry);
 					continue;
 				}
 				in = zf.getInputStream(entry);

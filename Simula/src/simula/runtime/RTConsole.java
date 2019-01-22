@@ -14,6 +14,7 @@ public final class RTConsole {
     private final JFrame frame;
     private final JTextArea textArea;
 	private boolean reading;
+	private Reader consoleReader;
         
     public RTConsole() {
     	frame=new JFrame();
@@ -78,11 +79,17 @@ public final class RTConsole {
 		return(pos);
 	}
 
-    public Reader getReader() { return(new Reader() {
-    	public int read(char[] cbuf, int off, int len) throws IOException {
-    		return(RT.console.read(cbuf,off,len)); }
-    	public void close() throws IOException {}
-    });};
+	public Reader getReader() {
+		if (consoleReader == null) {
+			consoleReader = new Reader() {
+				public int read(char[] cbuf, int off, int len) throws IOException {
+					return (RT.console.read(cbuf, off, len));
+				}
+				public void close() throws IOException {}
+			};
+		}
+		return (consoleReader);
+	};
     
     private KeyListener listener = new KeyListener() {
     	public void keyTyped(KeyEvent event) {}

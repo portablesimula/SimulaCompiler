@@ -7,7 +7,6 @@
  */
 package simula.runtime;
 
-import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 
 /**
@@ -15,16 +14,16 @@ import java.nio.charset.Charset;
  * @author Øystein Myhre Andersen
  *
  */
-public final class RT
-{ 
-  private static final boolean BREAKING=true;//false;//true;
-  private static final boolean TRACING=true;//false;//true;
+public final class RT { 
+	private static final boolean BREAKING=true;//false;//true;
+	private static final boolean TRACING=true;//false;//true;
+	public static final boolean USE_QPS_LOOM=false;//true;//false;
   
-  public static RTConsole console;
+	public static RTConsole console;
   
-  public static int numberOfEditOverflows;
+	public static int numberOfEditOverflows;
 
-  public static TerminateException EXIT_EXCEPTION$ = new TerminateException("EXIT");
+	public static TerminateException EXIT_EXCEPTION$ = new TerminateException("EXIT");
 
 	public static class Option {
 		public static boolean VERBOSE = false;//true;
@@ -101,8 +100,8 @@ public final class RT
   
 	// SIMULA RUNTIME ERROR: NOT IMPLEMENTED:
 	public static void NOT_IMPLEMENTED(String s) {
-		System.err.println("*** NOT IMPLEMENTED: " + s);
-		BREAK("Continue ?");
+		println("*** NOT IMPLEMENTED: " + s);
+		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 	}
 
 	public static void NoneCheck(Object x) {
@@ -112,13 +111,8 @@ public final class RT
   
 	public static void ASSERT(boolean test, String msg) {
 		if (!test) {
-			try {
-				throw new RuntimeException("ASSERT(" + msg + ") -- FAILED");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			BREAK("Continue ?");
-			// System.exit(-1);
+			println("ASSERT(" + msg + ") -- FAILED");
+			BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 		}
 	}
 
@@ -140,26 +134,33 @@ public final class RT
 				} catch (Exception e) {	e.printStackTrace(); }
 				return;
 			}
-			println("BREAK: " + msg + "\nContinue ? -- (NO Response ? - re-run as .java)");
-			try {
-				char c = (char) System.in.read();
-				// System.err.println("INPUT "+c+" "+(int)c);
-				if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
-					try {
-						throw new RuntimeException("QUIT");
-					} catch (Exception e) {
-						e.printStackTrace();
+			println("BREAK: " + msg);
+		    InFile$ sysin=RTObject$.SYSIN$;
+			if(console!=null) {
+//				try {
+				    sysin.inimage();
+				    char c=sysin.inchar();
+					if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
+						println("STACK-TRACE");
+						printStackTrace();
+						ENVIRONMENT$.printStackTrace(2);
 					}
-				}
-				while (System.in.available() > 0)
-					System.in.read();
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(-1);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//					System.exit(-1);
+//				}
 			}
 		}
 	}
 
+	public static void printStackTrace() {
+		StackTraceElement stackTraceElement[] = Thread.currentThread().getStackTrace();
+		int n = stackTraceElement.length;
+		for (int i = 2; i < n; i++)
+			println("   at "+stackTraceElement[i]);
+	}
+
+	
 	// *********************************************************************
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************

@@ -29,7 +29,8 @@ public final class Global {
 	// NOTE: When updating release id, change version in SimulaExtractor.
     public static final String simulaReleaseID="Simula-Beta-0.3";
     
-	public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
+	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
+	public static final boolean USE_QPS_LOOM=false;
 	
 	public static Vector<JavaModule> javaModules;
 	public static Vector<String> externalJarFiles=new Vector<String>();
@@ -76,6 +77,7 @@ public final class Global {
 	
     private static File simulaPropertiesFile;
     private static Properties simulaProperties;
+    
 	public static String getProperty(String key,String defaultValue) {
 		if(simulaProperties==null) loadProperties();
 		return(simulaProperties.getProperty(key,defaultValue));

@@ -179,26 +179,19 @@ public class FileMenu extends JMenu {
 	}
 
 	private int overwriteDialog(File file) {
-        int resp=JOptionPane.showOptionDialog(null,
-        		"The file: \n"+file+"\nAlready exists - Do you want to overwrite it ?"
-        		,"Warning", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
-        return(resp);
+ 		String msg="The file: \n"+file+"\nAlready exists - Do you want to overwrite it ?";
+ 		return(SimulaEditor.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
 	}
 
 	private int noSimTypeDialog(File file) {
-        int resp=JOptionPane.showOptionDialog(null,
-        		"The file name\n"+file+"\nDoes not end with the recomended \".sim\""
-        		,"Warning", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
-        return(resp);
+        String msg="The file name\n"+file+"\nDoes not end with the recomended \".sim\"";
+		return(SimulaEditor.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
 	}
 	
 	private int saveDialog(File file) {
 		String msg=(file==null)?"The source text has unsaved changes.\nDo you want to save it in a file ?"
 		                       :"The file: \n"+file+"\nHas changed - do you want to save it ?";
-		int answer = JOptionPane.showOptionDialog(null,msg,"Question",
-				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-		System.out.println("doClose.saveDialog: answer="+answer);
-		return(answer);
+		return(SimulaEditor.optionDialog(msg,"Question",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE));
 	}
 	
 

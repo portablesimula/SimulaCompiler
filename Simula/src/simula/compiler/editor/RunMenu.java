@@ -69,6 +69,7 @@ public class RunMenu extends JMenu {
         Global.console.write("Compiling: "+name+"\n");
         Global.console.write("Runtime System directory:     "+Global.simulaRtsLib+"\n");
         Global.console.write("Intermediate .java directory: "+Option.keepJava+"\n");
+        Global.console.write("Java version:                 "+System.getProperty("java.version")+"\n");
 
 //       	new SimulaCompiler(name,reader).doCompile();
        	new Thread(new Runnable() {
