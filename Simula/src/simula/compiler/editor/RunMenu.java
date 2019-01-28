@@ -10,7 +10,6 @@ import javax.swing.JMenuItem;
 
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 public class RunMenu extends JMenu {
@@ -27,7 +26,7 @@ public class RunMenu extends JMenu {
         JMenuItem run = new JMenuItem("Run");
         run.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		System.out.println("menuRun.actionPerformed: e="+e);
+        		//System.out.println("menuRun.actionPerformed: e="+e);
         		doRun();
 		}});
         this.add(run);
@@ -52,7 +51,10 @@ public class RunMenu extends JMenu {
 //		if(!simulaEditor.fileMenu.maybeSaveCurrentFile()) return;
 		simulaEditor.fileMenu.maybeSaveCurrentFile();
        	File file=simulaEditor.getCurrentSourceFile();
-//		if(file==null) return;
+		if(file==null) {
+			file=new File(Global.getTempFileDir("simula/tmp/")+"unnamed.sim");
+			file.getParentFile().mkdirs();
+		}
 
 		// Start compiler ....
       	String text=simulaEditor.getCurrentTextPanel().getPureText();
@@ -62,14 +64,14 @@ public class RunMenu extends JMenu {
        		return;
        	}
        	StringReader reader=new StringReader(text);
-       	String name=(file!=null)?file.getPath():"unnamed";
+       	String name=(file!=null)?file.getPath():Global.tempJavaFileDir+"/unnamed.sim";
 
-       	Global.console.clear();
-        Global.console.write("Simula Compiler Console:\n");
-        Global.console.write("Compiling: "+name+"\n");
-        Global.console.write("Runtime System directory:     "+Global.simulaRtsLib+"\n");
-        Global.console.write("Intermediate .java directory: "+Option.keepJava+"\n");
-        Global.console.write("Java version:                 "+System.getProperty("java.version")+"\n");
+//       	Global.console.clear();
+//        Global.console.write("Simula Compiler Console:\n");
+//        Global.console.write("Compiling: "+name+"\n");
+//        Global.console.write("Runtime System directory:     "+Global.simulaRtsLib+"\n");
+//        Global.console.write("Intermediate .java directory: "+Option.keepJava+"\n");
+//        Global.console.write("Java version:                 "+System.getProperty("java.version")+"\n");
 
 //       	new SimulaCompiler(name,reader).doCompile();
        	new Thread(new Runnable() {

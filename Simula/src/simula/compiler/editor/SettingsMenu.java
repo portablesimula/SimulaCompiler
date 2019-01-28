@@ -1,10 +1,8 @@
 package simula.compiler.editor;
 
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.RTOption;
 
@@ -19,11 +17,11 @@ public class SettingsMenu extends JMenu {
         // ****************************************************************
         // *** optionMenu: Compiler Options
         // ****************************************************************
-        JMenuItem info = new JMenu("Info");
-        	  info.add(new JLabel("  Simula Release ID: "+Global.getProperty("simula.version","unknown")));
-              info.add(new JLabel("  Simula Setup was created: "+Global.getProperty("simula.setup.dated","unknown")));
-              info.add(new JLabel("  Installed on this computer:  "+Global.getProperty("simula.installed","unknown")));
-        this.add(info);
+//        JMenuItem info = new JMenu("Info");
+//        	  info.add(new JLabel("  Simula Release ID: "+Global.getProperty("simula.version","unknown")));
+//              info.add(new JLabel("  Simula Setup was created: "+Global.getProperty("simula.setup.dated","unknown")));
+//              info.add(new JLabel("  Installed on this computer:  "+Global.getProperty("simula.installed","unknown")));
+//        this.add(info);
 
         // ****************************************************************
         // *** optionMenu: Compiler Options

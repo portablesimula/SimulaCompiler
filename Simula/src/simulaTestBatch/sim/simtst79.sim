@@ -89,7 +89,7 @@ BEGIN
    xf qua Infile.close;
    Test(sourceline,xf.Isopen, false, 6);
 
-   xf:- New Inbytefile("sxcvzfb");         !***** NOTE 1, NOTE 2 *****;
+   xf:- New Inbytefile("anyNoneExitingFile");         !***** NOTE 1, NOTE 2 *****;
    Test(sourceline,xf.Isopen, false, 7);
 
    xf qua Inbytefile.Open;

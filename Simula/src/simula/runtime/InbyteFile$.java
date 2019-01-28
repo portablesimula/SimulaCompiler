@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -81,8 +82,14 @@ public class InbyteFile$ extends ByteFile$ {
 	public boolean open() {
 		if (OPEN$) return (false);
 		doCreateAction();
+		File file=new File(FILENAME$.edText());
+		if(!file.exists()) {
+			//File selected=popupFileSelector("Can't Open "+file+", select another");
+			File selected=trySelectFile(file.toString());
+			if(selected!=null) file=selected;				
+		}
 		try {
-			inputStream = new FileInputStream(FILENAME$.edText());
+			inputStream = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
 			OPEN$=false;
 			//RT.BREAK("INBYTEFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);

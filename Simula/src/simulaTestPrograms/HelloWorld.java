@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 2
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:40 CET 2019
+// Simula-Beta-0.3 Compiled at Sat Jan 26 17:55:00 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HelloWorld extends BASICIO$ {

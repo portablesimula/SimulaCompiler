@@ -93,11 +93,16 @@ public final class SimulaCompiler {
 		{ Util.message("Package Name:    "+Global.packetName);
 		  Util.message("SourceFile Name: "+Global.sourceName);
 		  Util.message("SourceFile Dir:  "+Global.sourceFileDir);
+		  Util.message("CurrentWorkspace "+Global.currentWorkspace);
 		  Util.message("TempDir .Java:   "+Global.tempJavaFileDir);
 		  Util.message("TempDir .Class:  "+Global.tempClassFileDir);
 		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
 		  Util.message("OutputDir:       "+Global.outputDir);
 		  Util.message("Java version     "+System.getProperty("java.version"));
+		  Util.message("Java vendor      "+System.getProperty("java.vendor"));
+		  Util.message("OS name          "+System.getProperty("os.name"));
+		  Util.message("OS architecture  "+System.getProperty("os.arch"));
+		  Util.message("OS version       "+System.getProperty("os.version"));
 		  Util.message("file.encoding    "+System.getProperty("file.encoding"));
 		  Util.message("defaultCharset   "+Charset.defaultCharset());
 		}
@@ -274,7 +279,7 @@ public final class SimulaCompiler {
 	  
 	  // java.home=C:\Program Files\Java\jre1.8.0_161
 	  if(Option.TRACE_JAVAC) System.out.println("Compiler="+compiler);
-	  if(compiler==null) Util.FATAL_ERROR("SimulaCompiler.callJavaSystemCompiler: ToolProvider.getSystemJavaCompiler() returns null");
+	  if(compiler==null) Util.error("SimulaCompiler.callJavaSystemCompiler: ToolProvider.getSystemJavaCompiler() returns null");
 	  int nArg=arguments.size();
 	  String[] args=new String[nArg];
 			  arguments.toArray(args);

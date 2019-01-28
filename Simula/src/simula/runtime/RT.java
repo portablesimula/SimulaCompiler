@@ -7,7 +7,11 @@
  */
 package simula.runtime;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.charset.Charset;
+import java.util.Properties;
 
 /**
  * 
@@ -79,8 +83,8 @@ public final class RT {
 	}
 
 	public static void println(String s) {
-		System.out.println(s);
 		if(console!=null) console.write(s+'\n');
+		else System.out.println(s);
 	}
 	
 	public static void warning(String msg) {
@@ -89,13 +93,7 @@ public final class RT {
 	}
   
 	public static void TRACE(String msg) {
-		if (TRACING) {
-			Thread THREAD$ = Thread.currentThread();
-			println(THREAD$.toString() + ": " + msg);
-			// printStaticContextChain();
-			// RT.BREAK("CTX$="+CTX$.edString());
-			// RT.ASSERT(CTX$.THREAD$!=null,"CTX$.THREAD$==null");
-		}
+		if (TRACING) println(Thread.currentThread().toString() + ": " + msg);
 	}
   
 	// SIMULA RUNTIME ERROR: NOT IMPLEMENTED:
@@ -118,8 +116,6 @@ public final class RT {
 
 	public static void ASSERT_CUR$(RTObject$ obj, String msg) {
 		if (RTObject$.CUR$ != obj) {
-			// println("RTObject.EBLK: CUR$="+CUR$.edObjectIdent());
-			// println("RTObject.EBLK: this="+this.edObjectIdent());
 			println(msg + ": CUR$=" + RTObject$.CUR$.edObjectAttributes());
 			println(msg + ":  obj=" + obj.edObjectAttributes());
 			RT.ASSERT(RTObject$.CUR$ == obj, msg);
@@ -130,25 +126,24 @@ public final class RT {
 		if (BREAKING) {
 			if (RT.Option.CODE_STEP_TRACING) {
 				println(msg + ": <");
-				try { Thread.sleep(2000);
-				} catch (Exception e) {	e.printStackTrace(); }
+				try {
+					Thread.sleep(2000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				return;
 			}
 			println("BREAK: " + msg);
-		    InFile$ sysin=RTObject$.SYSIN$;
-			if(console!=null) {
-//				try {
-				    sysin.inimage();
-				    char c=sysin.inchar();
-					if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
-						println("STACK-TRACE");
-						printStackTrace();
-						ENVIRONMENT$.printStackTrace(2);
-					}
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//					System.exit(-1);
-//				}
+			InFile$ sysin = RTObject$.SYSIN$;
+//			if (console != null) {
+			if (sysin != null) {
+				sysin.inimage();
+				char c = sysin.inchar();
+				if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
+					println("STACK-TRACE");
+					printStackTrace();
+					ENVIRONMENT$.printStackTrace(2);
+				}
 			}
 		}
 	}
@@ -161,6 +156,44 @@ public final class RT {
 	}
 
 	
+
+	// *********************************************************************
+	// *** SIMULA RUNTIME PROPERTIES
+	// *********************************************************************
+
+    private static File simulaPropertiesFile;
+    private static Properties simulaProperties;
+    
+	public static String getProperty(String key,String defaultValue) {
+		if(simulaProperties==null) loadProperties();
+		return(simulaProperties.getProperty(key,defaultValue));
+	}
+	
+	public static void setProperty(String key,String value) {
+		if(simulaProperties==null) loadProperties();
+		simulaProperties.setProperty(key,value);
+		storeProperties();
+	}
+	
+	private static void loadProperties() {
+		String USER_HOME=System.getProperty("user.home");
+		//System.out.println("USER_HOME="+USER_HOME);
+		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
+		//System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
+		simulaPropertiesDir.mkdirs();
+		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
+		simulaProperties = new Properties();
+		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
+		} catch(Exception e) {}
+	}
+	
+	private static void storeProperties() {
+		System.out.print("RT.storeProperties: SIMULA ");
+		simulaProperties.list(System.out);
+		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
+		} catch(Exception e) { e.printStackTrace(); }
+	}
+
 	// *********************************************************************
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************

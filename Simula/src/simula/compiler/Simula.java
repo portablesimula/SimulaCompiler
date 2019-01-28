@@ -40,7 +40,6 @@ public final class Simula {
         //System.setProperty("file.encoding","UTF-8");
 		String fileName = null;
 		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
-		if(simulaHome==null) error("Simula Property 'simula.home' is not defined");
 		// Set default options.
 		Option.verbose=true;//false;
 		Option.WARNINGS=true;

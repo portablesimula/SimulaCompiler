@@ -14,7 +14,6 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import simula.compiler.parsing.SimulaScanner;
-import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 
 import java.awt.BorderLayout;
@@ -33,7 +32,10 @@ public class SourceTextPanel extends JPanel {
 
 	private JTextPane textPane;
 	public File sourceFile;
-	
+	private boolean isEditable;
+    public boolean RENDER_LINE_NUMBERS=true;
+    public boolean AUTO_REFRESH=false;
+ 	
 	private Style styleRegular;
 	private Style styleKeyword;
 	private Style styleComment;
@@ -42,6 +44,16 @@ public class SourceTextPanel extends JPanel {
 	
     public boolean fileChanged = false;
     public boolean refreshNeeded = false;
+    
+    public String toString() {
+    	String s="SourceTextPanel(";
+        s=s+((sourceFile==null)?"unnamed":sourceFile.getName());
+    	if(this.isEditable) s=s+",isEditable";
+    	if(this.RENDER_LINE_NUMBERS) s=s+",RENDER_LINE_NUMBERS";
+    	if(this.AUTO_REFRESH) s=s+",AUTO_REFRESH";
+    	s=s+')';
+    	return(s);
+    }
 
     DocumentListener documentListener=new DocumentListener() {
 		public void insertUpdate(DocumentEvent e) {
@@ -69,13 +81,32 @@ public class SourceTextPanel extends JPanel {
         this.add(scrollPane);
     }
 
+    public boolean isEditable() {
+    	return(isEditable);
+    }
+
+    public void setEditable(Boolean on) {
+    	this.isEditable=on;
+    	this.RENDER_LINE_NUMBERS= !on;
+    	this.AUTO_REFRESH=on;
+    	textPane.setEditable(on);
+    	doRefresh();
+    }
+    
+    public void updateEditable() {
+		System.out.println("SourceTextPanel.updateEditable: CurrentTextPanel="+this);
+		boolean auto=this.AUTO_REFRESH;
+		setEditable(isEditable);
+    	this.AUTO_REFRESH=auto;
+    }
+
     public JTextPane getTextPane() {
     	return(textPane); 
     }
     
     public String getPureText() {
        	String text=textPane.getText();
-	    if(SimulaEditor.RENDER_LINE_NUMBERS) text=removeLineNumbers(text);
+	    if(RENDER_LINE_NUMBERS) text=removeLineNumbers(text);
 	    return(text);
     }
 	
@@ -104,6 +135,7 @@ public class SourceTextPanel extends JPanel {
 		//System.out.println("SourceTextPanel.fillTextPane: Create Document: END");
 		textPane.setStyledDocument(doc);
 		doc.addDocumentListener(documentListener);
+		setEditable(true);
     }
 
     public void fillTextPane(Reader reader) {
@@ -113,7 +145,7 @@ public class SourceTextPanel extends JPanel {
         SimulaScanner preScanner=new SimulaScanner(reader,true);
 		try {
 			Token token;
-			if(SimulaEditor.RENDER_LINE_NUMBERS) {
+			if(RENDER_LINE_NUMBERS) {
 				int lineNumber=1;
 				doc.insertString(doc.getLength(),edLineNumber(lineNumber++),styleLineNumber);
 				Token next=preScanner.nextToken();

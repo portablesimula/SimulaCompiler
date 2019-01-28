@@ -10,8 +10,11 @@ package simula.compiler.utilities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayDeque;
 import java.util.Properties;
 import java.util.Vector;
+
+import javax.swing.ImageIcon;
 
 import simula.compiler.JavaModule;
 import simula.compiler.declaration.DeclarationScope;
@@ -28,6 +31,9 @@ public final class Global {
 	
 	// NOTE: When updating release id, change version in SimulaExtractor.
     public static final String simulaReleaseID="Simula-Beta-0.3";
+    public static final ImageIcon simulaIcon = new ImageIcon("icons/simula.png");
+    public static final ImageIcon simIcon = new ImageIcon("icons/sim2.png");
+    public static final ImageIcon sIcon = new ImageIcon("icons/sim.png");
     
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	public static final boolean USE_QPS_LOOM=false;
@@ -36,7 +42,6 @@ public final class Global {
 	public static Vector<String> externalJarFiles=new Vector<String>();
 
 	public static int sourceLineNumber; //=1;
-//	public static String sourceFilePath; 
 	public static String sourceFileDir; 
 	public static String sourceFileName;
 	public static String sourceName;
@@ -44,12 +49,12 @@ public final class Global {
 	public static String outputDir;         // Where to put resulting .jar
 
 	public static String sampleSourceDir;   // Where to find ...put resulting .jar
+	public static String currentWorkspace;  // Where to find ...put resulting .jar
+	public static ArrayDeque<String> workspaces;
 
 	public static String tempJavaFileDir;   // Temp dir for .java  files
 	public static String tempClassFileDir;  // Temp dir for .class  files
 	
-//	public static String packetName = "simula.test";
-//	public static String packetName = "testing";
 	public static String packetName = "simprog"; // NOTE: Must be a single identifier
 
 
@@ -71,7 +76,6 @@ public final class Global {
 		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
 		if(!(tmp.endsWith("/") || tmp.endsWith("\\"))) tmp=tmp+'/';
 		if(subDir.startsWith("/") || subDir.startsWith("\\")) subDir=subDir.substring(1);
-//		Option.outputDir=simtmp+"simula/bin/";
 		return(tmp+subDir);
 	}
 	
@@ -91,20 +95,62 @@ public final class Global {
 	
 	private static void loadProperties() {
 		String USER_HOME=System.getProperty("user.home");
-		System.out.println("USER_HOME="+USER_HOME);
+		//System.out.println("USER_HOME="+USER_HOME);
 		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
 		System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
 		simulaPropertiesDir.mkdirs();
-		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.prop");
+		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
 		simulaProperties = new Properties();
 		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
-		} catch(Exception e) {} // e.printStackTrace(); }
+		} catch(Exception e) {
+			Util.popUpError("Can't load: "+simulaPropertiesFile+"\nGot error: "+e );
+			e.printStackTrace();
+		}
+		String simulaHome=Global.getProperty("simula.home",null);
+		if(simulaHome==null) {
+			Util.popUpError("It seems that the system is not properly installed"
+		         +"\nSimula Property 'simula.home' is not defined"
+		         +"\n\nPlease check Simula Property File:\n      "
+		         +simulaPropertiesFile+"\n");
+		}
+
 	}
 	
 	private static void storeProperties() {
+		System.out.print("Global.storeProperties: SIMULA ");
 		simulaProperties.list(System.out);
 		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
 		} catch(Exception e) { e.printStackTrace(); }
 	}
+	
+    public static ArrayDeque<String> loadWorkspaces() {
+    	workspaces=new ArrayDeque<String>();
+    	for(int i=1;i<10;i++) {
+    		String ws=getProperty("simula.workspace."+i,null);
+    		if(ws!=null) workspaces.add(ws);
+    	}
+    	if(workspaces.isEmpty()) {
+    		//String dir=System.getProperty("user.dir",null);
+    		//String dir=getProperty("simula.home",null);
+    		String dir=Global.sampleSourceDir;
+    		dir=dir.replace('/', File.separatorChar).replace('\\', File.separatorChar);
+    		workspaces.add(dir);
+    	}
+    	return(workspaces);
+    }
+	
+	public static void updateCurrentWorkspace(String currentWorkspace) {
+		System.out.println("Global.updateCurrentWorkspace: currentWorkspace="+currentWorkspace);
+		Global.currentWorkspace=currentWorkspace;
+		workspaces.remove(currentWorkspace);
+		workspaces.addFirst(currentWorkspace);
+		int i=1;
+		for(String ws:workspaces) {
+			simulaProperties.setProperty("simula.workspace."+(i++),ws);
+		}
+		storeProperties();
+
+	}
+
 
 }

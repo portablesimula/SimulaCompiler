@@ -42,12 +42,12 @@ public class Directive {
 		    } catch(IOException e) { e.printStackTrace(); }
 		} else Util.error("Can't open "+fileName+" for reading");
 	}
-	private static void CHECK(String fileName) {
-		File file=new File(fileName);
-		System.out.println("Directive.insert: file="+file);
-		System.out.println("Directive.insert: file.exists()="+file.exists());
-		System.out.println("Directive.insert: file.canRead()="+file.canRead());
-	}
+//	private static void CHECK(String fileName) {
+//		File file=new File(fileName);
+//		System.out.println("Directive.insert: file="+file);
+//		System.out.println("Directive.insert: file.exists()="+file.exists());
+//		System.out.println("Directive.insert: file.canRead()="+file.canRead());
+//	}
 
 	/**
 	 * %PAGE

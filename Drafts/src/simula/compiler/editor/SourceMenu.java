@@ -19,8 +19,11 @@ public class SourceMenu extends JMenu {
         JMenuItem findText = new JMenuItem("LineNumbers");
         findText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SimulaEditor.RENDER_LINE_NUMBERS=!SimulaEditor.RENDER_LINE_NUMBERS;
-        		simulaEditor.doRefresh();
+				SourceTextPanel current=simulaEditor.getCurrentTextPanel();
+				if(current!=null) {
+					current.RENDER_LINE_NUMBERS=!current.RENDER_LINE_NUMBERS;
+					simulaEditor.doRefresh();
+				}
 			}});
         this.addSeparator();
         this.add(findText);
@@ -29,8 +32,11 @@ public class SourceMenu extends JMenu {
         showLines.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//System.out.println("SourceMenu.showLines: isSelected="+showLines.isSelected());
-				SimulaEditor.RENDER_LINE_NUMBERS=showLines.isSelected();
-        		simulaEditor.doRefresh();
+				SourceTextPanel current=simulaEditor.getCurrentTextPanel();
+				if(current!=null) {
+					current.RENDER_LINE_NUMBERS=showLines.isSelected();
+					simulaEditor.doRefresh();
+				}
 			}});
         this.add(showLines);
         
@@ -38,8 +44,11 @@ public class SourceMenu extends JMenu {
         autoRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//System.out.println("SourceMenu.autoRefresh: isSelected="+autoRefresh.isSelected());
-				SimulaEditor.AUTO_REFRESH=showLines.isSelected();
-        		//simulaEditor.doRefresh();
+				SourceTextPanel current=simulaEditor.getCurrentTextPanel();
+				if(current!=null) {
+					current.AUTO_REFRESH=autoRefresh.isSelected();
+					//simulaEditor.doRefresh();
+				}
 			}});
         this.add(autoRefresh);
 

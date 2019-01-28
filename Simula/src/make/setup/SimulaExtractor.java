@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Date;
@@ -89,7 +90,7 @@ public final class SimulaExtractor extends JFrame {
 		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
 		if(DEBUG) System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
 		simulaPropertiesDir.mkdirs();
-		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.prop");
+		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
 		simulaProperties = new Properties();
 		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
 		} catch(Exception e) {} // e.printStackTrace(); }
@@ -113,8 +114,12 @@ public final class SimulaExtractor extends JFrame {
 			simulaProperties.put("simula.revision",simulaRevisionID);
 			simulaProperties.put("simula.home",SIMULA_HOME);
 			if(DEBUG) simulaProperties.list(System.out);
-			try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
+			OutputStream out=null;
+			try {
+				out=new FileOutputStream(simulaPropertiesFile);
+				simulaProperties.storeToXML(out,"Simula Properties");
 			} catch(Exception e) { e.printStackTrace(); }
+			finally { if(out!=null) try {out.close(); } catch(IOException e){}   }
 		}
 	}
 	

@@ -1,6 +1,9 @@
 package simula.compiler.editor;
 
 import javax.swing.*;
+
+import simula.compiler.utilities.Global;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -89,7 +92,7 @@ public class Search extends JFrame {
 				Search.this.setVisible(false);
 			}});
 
-        try { setIconImage(SimulaEditor.simulaIcon.getImage()); } 
+        try { setIconImage(Global.simulaIcon.getImage()); } 
         catch (Exception e) { e.printStackTrace(); }
 
         // Set the width and height of the window

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 6
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 17:04:42 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Jan 23 17:07:12 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Queens extends BASICIO$ {

@@ -36,7 +36,7 @@ import simula.compiler.utilities.Global;
 public final class MakeSetup {
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
-	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Release-1.0";
+	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Simula-1.0";
 
 	private final static String RELEASE_HOME=GIT_BINARIES+"\\"+RELEASE_ID;
 	private final static String RELEASE_TST=RELEASE_HOME+"\\tst";

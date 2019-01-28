@@ -10,6 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Util;
 
 public class FileMenu extends JMenu {
 	private static final long serialVersionUID = 1L;
@@ -41,12 +42,18 @@ public class FileMenu extends JMenu {
 //		        String userDir = System.getProperty("user.home");
 //		        System.out.println("OpenFileAction - User Home="+userDir);
 //		        JFileChooser fileChooser = new JFileChooser(userDir +"/SimulaSource");
+		        System.out.println("FileMenu.openFile: System user.home="+System.getProperty("user.home"));
+		        System.out.println("FileMenu.openFile: System user.dir="+System.getProperty("user.dir"));
+		        System.out.println("FileMenu.openFile: Global user.dir="+Global.getProperty("user.dir","?"));
 
+		        
 //				System.out.println("FileMenu.openFile: dir="+Global.sampleSourceDir);
-		        JFileChooser fileChooser = new JFileChooser(Global.sampleSourceDir);
+//		        JFileChooser fileChooser = new JFileChooser(Global.sampleSourceDir);
+		        JFileChooser fileChooser = new JFileChooser(Global.currentWorkspace);
 		        int answer = fileChooser.showOpenDialog(simulaEditor);
 		        if (answer == JFileChooser.APPROVE_OPTION) {
 		        	simulaEditor.doOpenFile(fileChooser.getSelectedFile());
+		        	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
 		        }
 		}});
         this.add(openFile);
@@ -144,13 +151,15 @@ public class FileMenu extends JMenu {
 //        String userDir = System.getProperty("user.home");
 //        JFileChooser fileChooser = new JFileChooser(userDir +"/SimulaSource"); ?
 
-        JFileChooser fileChooser = new JFileChooser(Global.sampleSourceDir);
+//        JFileChooser fileChooser = new JFileChooser(Global.sampleSourceDir);
+        JFileChooser fileChooser = new JFileChooser(Global.currentWorkspace);
         
         int answer = fileChooser.showSaveDialog(simulaEditor);
         if (answer == JFileChooser.APPROVE_OPTION) {
         	//simulaEditor.doOpenFile(fileChooser.getSelectedFile());
         	File file=fileChooser.getSelectedFile();
         	System.out.println("saveAs.APPROVED: "+fileChooser.getSelectedFile());
+        	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
         	if(file.exists()) {
 	            int resp=overwriteDialog(file);
 	        	System.out.println("saveAs.NO_END: response="+resp);
@@ -180,18 +189,18 @@ public class FileMenu extends JMenu {
 
 	private int overwriteDialog(File file) {
  		String msg="The file: \n"+file+"\nAlready exists - Do you want to overwrite it ?";
- 		return(SimulaEditor.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
+ 		return(Util.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
 	}
 
 	private int noSimTypeDialog(File file) {
         String msg="The file name\n"+file+"\nDoes not end with the recomended \".sim\"";
-		return(SimulaEditor.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
+		return(Util.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
 	}
 	
 	private int saveDialog(File file) {
 		String msg=(file==null)?"The source text has unsaved changes.\nDo you want to save it in a file ?"
 		                       :"The file: \n"+file+"\nHas changed - do you want to save it ?";
-		return(SimulaEditor.optionDialog(msg,"Question",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE));
+		return(Util.optionDialog(msg,"Question",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE));
 	}
 	
 

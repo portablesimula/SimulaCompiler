@@ -7,12 +7,13 @@
  */
 package simula.compiler.utilities;
 
+import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  * A set of all static Utility Methods
@@ -23,98 +24,122 @@ import javax.swing.JOptionPane;
 public final class Util
 { 
 	
-	public static void popUpMessage(String msg) {
-        final JFrame parent = new JFrame();
-        JOptionPane.showMessageDialog(parent,msg); 
+//	public static void popUpMessage(String msg) {
+	public static void popUpMessage(Object msg) {
+		Util.optionDialog(msg,"Message",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public static void popUpError(String msg) {
-        final JFrame parent = new JFrame();
-        JOptionPane.showMessageDialog(parent,msg,"ERROR",JOptionPane.ERROR_MESSAGE); 
+		int res=Util.optionDialog(msg+"\nDo you want to continue ?","Error",JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+		if(res!=JOptionPane.YES_OPTION) System.exit(0);
 	}
-  
-  public static int nError;
-  public static void error(final String msg)
-  { String err="Line "+Global.sourceLineNumber+" Error: "+msg;
-    nError++;
-    System.err.println(err);
-    if(Global.console!=null) Global.console.writeError(err+'\n');
-    BREAK("Continue ?");
-  }
 
-  public static void FATAL_ERROR(final String s)
-  { String msg="LINE "+Global.sourceLineNumber+": FATAL error - "+s;
-    System.err.println(msg);
-    try { throw new RuntimeException("FATAL error"); }
-    catch(Exception e) { e.printStackTrace(); }
-    System.exit(-1);
-  }
-  
-  public static void warning(final String msg) {
-	  String line="LINE "+Global.sourceLineNumber+": WARNING: "+msg;
-	  if(Option.WARNINGS) System.err.println(line);
-	    if(Global.console!=null) Global.console.writeWarning(line+'\n');
-  }
-  
-  public static void message(final String msg) {
-	  if(Option.WARNINGS) System.err.println(msg);
-	    if(Global.console!=null) Global.console.write(msg+'\n');
-  }
+	public static int optionDialog(Object msg, String title, int optionType, int messageType) {
+		Object OptionPaneBackground=UIManager.get("OptionPane.background");
+		Object PanelBackground=UIManager.get("Panel.background");
+ 		UIManager.put("OptionPane.background", Color.WHITE);
+        UIManager.put("Panel.background", Color.WHITE);
+		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,Global.sIcon, null, null);
+		//System.out.println("doClose.saveDialog: answer="+answer);
+		UIManager.put("OptionPane.background",OptionPaneBackground);
+        UIManager.put("Panel.background",PanelBackground);
+		return(answer);
+	}
 
+	
+	public static int nError;
 
-  public static void LIST(final String msg) { TRACE("LIST",msg); }
-  public static void TRACE(final String msg) { TRACE("TRACE",msg); }
-  
-  public static void TRACE(final String id,String msg)
-  { if(Option.TRACING) println(id+" "+Global.sourceLineNumber+": "+msg);
-    //Util.BREAK("");
-  }
-  
-  public static void NOT_IMPLEMENTED(final String s)
-  { System.err.println("*** NOT IMPLEMENTED: "+s);
-    BREAK("Continue ?");
-  }
-  
-  public static void EXIT()
-  { System.out.println("FORCED EXIT");
-    BREAK("FORCED EXIT");
-    System.exit(-1);
-  }
-  
-  public static void ASSERT(final boolean test,final String msg)
-  { if(!test)
-    { try { throw new RuntimeException("ASSERT("+msg+") -- FAILED"); }
-      catch(Exception e) { e.printStackTrace(); }
-      BREAK("Continue ?");
-      //System.exit(-1);
-    }
-  }
+	public static void error(final String msg) {
+		String err = "Line " + Global.sourceLineNumber + " Error: " + msg;
+		nError++;
+		println(err);
+		BREAK("Continue ?");
+	}
 
-  public static void BREAK(final String title) { BREAK("BREAK",title); }
-  public static void BREAK(final String id,final String title)
-  { if(Option.BREAKING)
-    { System.err.println(id+" "+Global.sourceLineNumber+": "+title+": <");
-      { try
-        { char c=(char)System.in.read();
-          //System.err.println("INPUT "+c+"  "+(int)c);
-          if(c=='Q'||c=='q')
-          { //System.err.println("QUIT!");
-            try { throw new RuntimeException("QUIT"); }
-            catch(Exception e) { e.printStackTrace(); }
-          }
-          while(System.in.available()>0) System.in.read();
-        }
-        catch(Exception e) { e.printStackTrace();  System.exit(-1);}
-      }
-    }
-  }
+	public static void FATAL_ERROR(final String s) {
+		String msg = "LINE " + Global.sourceLineNumber + ": FATAL error - " + s;
+		System.err.println(msg);
+		println("STACK-TRACE");
+		printStackTrace();
+		System.exit(-1);
+	}
 
-  public static void println(final String s)
-  { String u=s.replace('\r',(char)0);
-    u=u.replace('\n',(char)0);
-    System.out.println(u);
-  }
-  
+	public static void warning(final String msg) {
+		String line = "LINE " + Global.sourceLineNumber + ": WARNING: " + msg;
+		if (Option.WARNINGS) println(line);
+	}
+
+	public static void message(final String msg) {
+		println(msg);
+	}
+
+	public static void LIST(final String msg) {
+		TRACE("LIST", msg);
+	}
+
+	public static void TRACE(final String msg) {
+		TRACE("TRACE", msg);
+	}
+
+	public static void TRACE(final String id, String msg) {
+		if (Option.TRACING)
+			println(id + " " + Global.sourceLineNumber + ": " + msg);
+	}
+
+	public static void NOT_IMPLEMENTED(final String s) {
+		System.err.println("*** NOT IMPLEMENTED: " + s);
+		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
+	}
+
+	public static void EXIT() {
+		System.out.println("FORCED EXIT");
+		BREAK("FORCED EXIT");
+		System.exit(-1);
+	}
+
+	public static void ASSERT(final boolean test, final String msg) {
+		if (!test) {
+			println("ASSERT(" + msg + ") -- FAILED");
+			BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
+		}
+	}
+
+	public static void BREAK(final String title) {
+		BREAK("BREAK", title);
+	}
+
+	public static void BREAK(final String id, final String title) {
+		if (Option.BREAKING) {
+			System.err.println(id + " " + Global.sourceLineNumber + ": " + title + ": <");
+			try {
+				char c = (char) System.in.read();
+				if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
+//					try { throw new RuntimeException("QUIT");
+//					} catch (Exception e) {	e.printStackTrace(); }
+					println("STACK-TRACE");
+					printStackTrace();
+				}
+				while (System.in.available() > 0) System.in.read();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+	}
+
+	public static void printStackTrace() {
+		StackTraceElement stackTraceElement[] = Thread.currentThread().getStackTrace();
+		int n = stackTraceElement.length;
+		for (int i = 2; i < n; i++)
+			println("   at "+stackTraceElement[i]);
+	}
+
+	public static void println(final String s) {
+		String u = s.replace('\r', (char) 0);
+		u = u.replace('\n', (char) 0);
+		if (Global.console != null)	Global.console.write(u + '\n');
+		else System.out.println(u);
+	}  
 
     //*******************************************************************************
     //*** isJavaIdentifier - Check if 's' is a legal Java Identifier

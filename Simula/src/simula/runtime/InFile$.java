@@ -8,6 +8,7 @@
 package simula.runtime;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -111,20 +112,25 @@ public class InFile$ extends ImageFile$ {
 		}
 		else {
 			doCreateAction();
+			File file=new File(FILENAME$.edText());
+			if(!file.exists()) {
+				//File selected=popupFileSelector("Can't Open "+file+", select another");
+				File selected=trySelectFile(file.toString());
+				if(selected!=null) file=selected;				
+			}
 			try {
-				InputStream inputStream = new FileInputStream(FILENAME$.edText());
+				InputStream inputStream = new FileInputStream(file);
 				reader = new InputStreamReader(inputStream);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				OPEN$=false;
 //				RT.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
-//				System.out.println("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
-				return (false);
+				return(false);
 			}
 		}
 		lineReader = new BufferedReader(reader);
 		OPEN$ = true;
-		//RT.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
+//		RT.BREAK("INFILE.OPEN: "+FILENAME$.edText()+", Returns "+OPEN$);
 		return (true);
 	}
 

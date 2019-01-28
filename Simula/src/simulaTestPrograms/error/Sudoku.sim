@@ -1,0 +1,81 @@
+SIMSET begin ref(head) SQchain; 
+  ref(SQ) array SQinst( 1 : 9, 1 : 9 ); 
+   
+  link class SQexit(success); Boolean success; 
+  begin integer i, j; 
+    detach; 
+    if success then begin 
+      outtext("PUZZLE SOLUTION:"); outimage; 
+      for i := 1 step 1 until 9 do begin 
+        for j := 1 step 1 until 9 do  
+          outint( SQinst( i, j ).val, 2 ); 
+        outimage; 
+      end; 
+      outimage; 
+      outtext( "WE DID IT!" ); 
+    end 
+    else Outtext( "The puzzle has no solution!" ); 
+  end; 
+ 
+  link class SQ( row, col, val ); integer row, col, val;  
+  begin 
+    integer next_val; 
+     
+    Boolean procedure legit(val); integer val; 
+    begin 
+      integer i, j, reg_row, reg_col; 
+ 
+      for i := 1 step 1 until 9 do 
+         if SQinst( row, i ).val = val then goto exit; 
+      for i := 1 step 1 until 9 do 
+         if SQinst( i, col ).val = val then goto exit; 
+      ! 3x3 regions ; 
+      reg_row := row - mod( row - 1, 3 ); 
+      reg_col := col - mod( col - 1, 3 ); 
+      for i := reg_row step 1 until reg_row + 2 do   
+      for j := reg_col step 1 until reg_col + 2 do  
+         if SQinst( i, j ).val = val then goto exit;  
+      legit := TRUE; 
+exit:   
+    end; 
+  
+    outint( val, 2 ); 
+    if val = 0 then 
+       into(SQchain); 
+    detach; 
+     
+    while TRUE do begin 
+      for next_val := 1 step 1 until 9 do 
+        if legit(next_val) then begin 
+           val := next_val; 
+           resume(suc); 
+        end; 
+      val := 0; 
+      resume(pred) ! retracing; 
+    end;  
+  end; 
+   
+  procedure get_input; 
+  begin  
+    integer i, j; 
+    
+    outtext( "PUZZLE INPUT:" ); outimage; 
+    inspect new infile( "SudokuDifficult.txt" ) do begin 
+%    inspect new infile( "C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/error/SudokuDifficult.txt" ) do begin 
+      Open( Blanks(80) ); 
+      for i := 1 step 1 until 9 do begin  
+        for j := 1 step 1 until 9 do 
+           SQInst( i, j ) :- new SQ( i, j, inint ); 
+        outimage; 
+      end;  
+      Close; 
+    end; 
+    outimage; 
+  end; 
+      
+  SQchain :- new head; 
+  new SQexit(FALSE).into(SQchain); 
+  get_input; 
+  new SQexit(TRUE).into(SQchain); 
+  resume( SQchain.first.suc ); 
+end

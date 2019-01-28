@@ -7,7 +7,6 @@
  */
 package simula.compiler.declaration;
 
-import simula.compiler.JavaModule;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
