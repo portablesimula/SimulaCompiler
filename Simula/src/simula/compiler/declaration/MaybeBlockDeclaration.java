@@ -93,8 +93,8 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 		  //Util.BREAK("BlockDeclaration.parseMaybeBlock: Label is moved to enc="+enc);
 		  for(LabelDeclaration lab:labelList) enc.labelList.add(lab);
 		  
-		  //System.out.println("Resulting Label-List:");
-		  //for(LabelDeclaration lab:enc.labelList) System.out.println(lab);
+		  //Util.println("Resulting Label-List:");
+		  //for(LabelDeclaration lab:enc.labelList) Util.println(lab);
 		  
 		  labelList.clear();
 		}
@@ -281,15 +281,15 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
     s.append('[').append(blockLevel).append("] ");
     s.append(blockKind).append(' ').append(identifier);
     s.append('[').append(externalIdent).append("] ");
-    System.out.println(s.toString());
+    Util.println(s.toString());
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
-    System.out.println(indent+beg); 
-//    if(!hiddenList.isEmpty()) System.out.println(indent+"   HIDDEN"+hiddenList);
-//    if(!protectedList.isEmpty()) System.out.println(indent+"   PROTECTED"+protectedList);
+    Util.println(indent+beg); 
+//    if(!hiddenList.isEmpty()) Util.println(indent+"   HIDDEN"+hiddenList);
+//    if(!protectedList.isEmpty()) Util.println(indent+"   PROTECTED"+protectedList);
     for(Declaration decl:declarationList) decl.print(indent+"   ");
     for(Statement stm:statements) stm.print(indent+"   ");
-	System.out.println(indent+"end["+edScopeChain()+']'); 
+	Util.println(indent+"end["+edScopeChain()+']'); 
 	//Util.BREAK("BlockDeclaration.print DONE");
   }
 

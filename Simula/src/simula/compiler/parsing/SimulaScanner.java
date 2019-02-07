@@ -724,10 +724,10 @@ public final class SimulaScanner {
 		    return (newToken(KeyWord.COMMENT));
 		} else if(current=='+' || current=='-') {
 			if(!lineSelected()) {
-				//System.out.println("SimulaScanner.scanDirectiveLine: NOT SELECTED char="+(char)current);
+				//Util.println("SimulaScanner.scanDirectiveLine: NOT SELECTED char="+(char)current);
 				readUntilEndofLine();
 		    }
-			//System.out.println("SimulaScanner.scanDirectiveLine: RETURN char="+(char)current);
+			//Util.println("SimulaScanner.scanDirectiveLine: RETURN char="+(char)current);
 		    return (newToken(KeyWord.COMMENT));
 		} else if(Character.isLetter(current)) {
 			String id=scanName();
@@ -749,7 +749,7 @@ public final class SimulaScanner {
 	private String readUntilEndofLine() {
 		StringBuilder line=new StringBuilder();
 		while(getNext()!='\n') {
-		    //System.out.println("SimulaScanner.readUntilEndofLine: SKIP char="+(char)current);
+		    //Util.println("SimulaScanner.readUntilEndofLine: SKIP char="+(char)current);
 			line.append((char)current);
 		}
 		pushBack('\n');
@@ -767,38 +767,38 @@ public final class SimulaScanner {
     	while(current==' ') getNext();
     	while(current!=' ' && current!='\n') {
     		selector[current]=true;
-    		System.out.println("PreProcessor.select: selector["+(char)current+"]=true");
+    		Util.println("PreProcessor.select: selector["+(char)current+"]=true");
     		getNext();
     	}
     }
     
 	private boolean lineSelected() {
-		//System.out.println("SimulaScanner.lineSelected: c="+(char)current);
+		//Util.println("SimulaScanner.lineSelected: c="+(char)current);
 		while (true) {
 			if (current == '+') {
 				getNext();
-				//System.out.println("SimulaScanner.lineSelected(+): c="+(char)current);
+				//Util.println("SimulaScanner.lineSelected(+): c="+(char)current);
 				while (Character.isLetter(current)) {
 					if (!selector[current])
 						return (false); // then SKIPLINE;
 					getNext();
-					//System.out.println("SimulaScanner.lineSelected(2+): c="+(char)current);
+					//Util.println("SimulaScanner.lineSelected(2+): c="+(char)current);
 				}
 			} else if (current == '-') {
 				getNext();
-				//System.out.println("SimulaScanner.lineSelected(-): c="+(char)current);
+				//Util.println("SimulaScanner.lineSelected(-): c="+(char)current);
 				while (Character.isLetter(current)) {
 					if (selector[current])
 						return (false); // then SKIPLINE;
 					getNext();
-					//System.out.println("SimulaScanner.lineSelected(2-): c="+(char)current);
+					//Util.println("SimulaScanner.lineSelected(2-): c="+(char)current);
 				}
 			} else
 				break;
 		}
 		while (current == ' ') getNext();
 		pushBack(current);
-		//System.out.println("SimulaScanner.lineSelected(end): c="+(char)current);
+		//Util.println("SimulaScanner.lineSelected(end): c="+(char)current);
 		return (true); // Return to scan remainder part of line.
 	}
   
@@ -864,7 +864,7 @@ public final class SimulaScanner {
 	// ** getNext will return first character after construct
 	// ********************************************************************************
 	private Token scanEndComment() {
-		//System.out.println("SimulaScanner.scanEndComment");
+		//Util.println("SimulaScanner.scanEndComment");
 		tokenQueue.add(newToken(KeyWord.END));				   
 		StringBuilder skipped = new StringBuilder();
 		if (Option.TRACE_SCAN) Util.TRACE("scanEndComment, " + edcurrent());

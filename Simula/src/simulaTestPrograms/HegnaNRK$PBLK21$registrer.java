@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 522
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$registrer extends BASICIO$ {
@@ -31,7 +31,7 @@ public final class HegnaNRK$PBLK21$registrer extends BASICIO$ {
             try {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 // JavaLine 33 ==> SourceLine 525
-                if((((HegnaNRK$PBLK21)(CUR$.SL$)).rest>(((float)(80))))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).rest>(((float)(80)))))) {
                     // JavaLine 35 ==> SourceLine 527
                     {
                         TRACE_BEGIN_STM$("CompoundStatement527",527);
@@ -45,7 +45,7 @@ public final class HegnaNRK$PBLK21$registrer extends BASICIO$ {
                     }
                 } else
                 // JavaLine 47 ==> SourceLine 532
-                if((((HegnaNRK$PBLK21)(CUR$.SL$)).rest>=(((float)(10))))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).rest>=(((float)(10)))))) {
                     // JavaLine 49 ==> SourceLine 534
                     {
                         TRACE_BEGIN_STM$("CompoundStatement534",534);
@@ -120,7 +120,7 @@ public final class HegnaNRK$PBLK21$registrer extends BASICIO$ {
                     }
                 }
                 // JavaLine 122 ==> SourceLine 554
-                if((((HegnaNRK$PBLK21)(CUR$.SL$)).rest<(((float)(10))))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).rest<(((float)(10)))))) {
                     // JavaLine 124 ==> SourceLine 555
                     {
                         TRACE_BEGIN_STM$("CompoundStatement555",555);
@@ -133,7 +133,7 @@ public final class HegnaNRK$PBLK21$registrer extends BASICIO$ {
                         sysout().outtext(new TXT$("uten spesiell tillatelse fra Datatilsynet."));
                         sysout().outimage();
                         // JavaLine 135 ==> SourceLine 558
-                        LABEL$(1); // loop
+                        LABEL$(1,"loop");
                         new HegnaNRK$PBLK21$lede_tekst(((HegnaNRK$PBLK21)(CUR$.SL$)),new TXT$("Har De slik tillatelse? J/N:"));
                         // JavaLine 138 ==> SourceLine 559
                         c=sysin().inchar();
@@ -141,7 +141,7 @@ public final class HegnaNRK$PBLK21$registrer extends BASICIO$ {
                             c=sysin().inchar();
                         }
                         // JavaLine 143 ==> SourceLine 560
-                        if((c==('J'))) {
+                        if(VALUE$((c==('J')))) {
                             // JavaLine 145 ==> SourceLine 562
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement562",562);

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 114
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:36 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$tekstverdi$les extends BASICIO$ {
@@ -21,7 +21,7 @@ public final class HegnaNRK$PBLK21$tekstverdi$les extends BASICIO$ {
     public HegnaNRK$PBLK21$tekstverdi$les STM$() {
         TRACE_BEGIN_STM$("les",114);
         // JavaLine 23 ==> SourceLine 115
-        if((!(TXT$.more(sysin().image)))) {
+        if(VALUE$((!(TXT$.more(sysin().image))))) {
             sysin().inimage();
         }
         // JavaLine 27 ==> SourceLine 116
@@ -31,20 +31,20 @@ public final class HegnaNRK$PBLK21$tekstverdi$les extends BASICIO$ {
                 TRACE_BEGIN_STM$("CompoundStatement117",117);
                 sysin().inchar();
                 // JavaLine 33 ==> SourceLine 118
-                if((!(TXT$.more(sysin().image)))) {
+                if(VALUE$((!(TXT$.more(sysin().image))))) {
                     sysin().inimage();
                 }
                 TRACE_END_STM$("CompoundStatement117",118);
             }
         }
         // JavaLine 40 ==> SourceLine 120
-        if(TXTREL$EQ(TXT$.sub(sysin().image,TXT$.pos(sysin().image),1),new TXT$("="))) {
+        if(VALUE$(TXTREL$EQ(TXT$.sub(sysin().image,TXT$.pos(sysin().image),1),new TXT$("=")))) {
             // JavaLine 42 ==> SourceLine 122
             {
                 TRACE_BEGIN_STM$("CompoundStatement122",122);
                 sysin().inchar();
                 // JavaLine 46 ==> SourceLine 123
-                if((((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).siste_felt_verdi_lest.Elt[((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).feltnr-((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).siste_felt_verdi_lest.LB[0]]!=(null))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).siste_felt_verdi_lest.Elt[((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).feltnr-((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).siste_felt_verdi_lest.LB[0]]!=(null)))) {
                     // JavaLine 48 ==> SourceLine 124
                     ((HegnaNRK$PBLK21$tekstverdi)(CUR$.SL$)).tekst=copy(copy(((HegnaNRK$PBLK21$tekstverdi)(((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).siste_felt_verdi_lest.Elt[((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).feltnr-((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).siste_felt_verdi_lest.LB[0]])).tekst));
                 } else

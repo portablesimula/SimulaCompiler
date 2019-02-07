@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:52 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:05 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class JensensDevice$Sum extends BASICIO$ {

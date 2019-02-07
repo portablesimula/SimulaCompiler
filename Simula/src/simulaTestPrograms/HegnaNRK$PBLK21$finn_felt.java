@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 368
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$finn_felt extends BASICIO$ {
@@ -53,7 +53,7 @@ public final class HegnaNRK$PBLK21$finn_felt extends BASICIO$ {
                 TRACE_BEGIN_STM$("CompoundStatement374",374);
                 i=(i+(1));
                 // JavaLine 55 ==> SourceLine 375
-                if(TXTREL$EQ(p$felt,((HegnaNRK$PBLK21)(CUR$.SL$)).feltnavn_tabell.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).feltnavn_tabell.LB[0]])) {
+                if(VALUE$(TXTREL$EQ(p$felt,((HegnaNRK$PBLK21)(CUR$.SL$)).feltnavn_tabell.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).feltnavn_tabell.LB[0]]))) {
                     // JavaLine 57 ==> SourceLine 376
                     nr=i;
                 }

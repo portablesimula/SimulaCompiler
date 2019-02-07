@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 168
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:13:52 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:37:33 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Docking$PBLK13$Warehouse$UpdateReport extends BASICIO$ {
@@ -33,7 +33,7 @@ public final class Docking$PBLK13$Warehouse$UpdateReport extends BASICIO$ {
         sysout().outtext(new TXT$("   nVans: "));
         sysout().outint(((Docking$PBLK13$Warehouse)(CUR$.SL$)).Totnr,3);
         // JavaLine 35 ==> SourceLine 173
-        if((((Docking$PBLK13$Warehouse)(CUR$.SL$)).report==(null))) {
+        if(VALUE$((((Docking$PBLK13$Warehouse)(CUR$.SL$)).report==(null)))) {
             // JavaLine 37 ==> SourceLine 175
             {
                 TRACE_BEGIN_STM$("CompoundStatement175",175);

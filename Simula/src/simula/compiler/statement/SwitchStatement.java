@@ -176,13 +176,13 @@ public final class SwitchStatement extends Statement {
 //    	hiIndex=intConstant(hiKey);
 //    	if(lowIndex > hiIndex) Util.error("Switch Statement: "+lowKey+"("+lowIndex+")"+" > "+hiKey+"("+hiIndex+")");
     	switchKey.doChecking();
-		//System.out.println("SwitchStatement.doChecking: switchKey'type="+switchKey.type);
+		//Util.println("SwitchStatement.doChecking: switchKey'type="+switchKey.type);
 		if(switchKey.type==Type.Character) {
 			
 		} else switchKey=TypeConversion.testAndCreate(Type.Integer,switchKey);
 //    	boolean[] used=new boolean[hiIndex-lowIndex+1];
     	for(WhenPart when:switchCases) {
-			//System.out.println("SwitchStatement.doChecking: when="+when);
+			//Util.println("SwitchStatement.doChecking: when="+when);
     		for(CasePair casePair:when.caseKeyList)
 			if(casePair!=null) {
 				casePair.lowCase.doChecking();
@@ -194,42 +194,42 @@ public final class SwitchStatement extends Statement {
     }
 
 	private int intConstant(Expression e) {
-		//System.out.println("SwitchStatement.intConstant: e="+e+", QUAL="+e.getClass().getSimpleName());
+		//Util.println("SwitchStatement.intConstant: e="+e+", QUAL="+e.getClass().getSimpleName());
 		if(e instanceof Constant) {
 			Object value=((Constant)e).value;
-			//System.out.println("SwitchStatement.intConstant: value="+value+", QUAL="+value.getClass().getSimpleName());
+			//Util.println("SwitchStatement.intConstant: value="+value+", QUAL="+value.getClass().getSimpleName());
 			if(value instanceof Number) {
 				int intValue=((Number)value).intValue();
-				//System.out.println("SwitchStatement.intConstant: longValue="+intValue);
+				//Util.println("SwitchStatement.intConstant: longValue="+intValue);
 				return(intValue);
 			} else if(value instanceof Character) {
 				char charValue=((Character)value).charValue();
-				//System.out.println("SwitchStatement.intConstant: charValue="+charValue);
+				//Util.println("SwitchStatement.intConstant: charValue="+charValue);
 				return((int)charValue);
 			}
 		}
 		if(e instanceof Variable) {
 			Variable var=(Variable)e;
 			Meaning meaning=var.meaning;
-			//System.out.println("SwitchStatement.intConstant: meaning="+meaning);
+			//Util.println("SwitchStatement.intConstant: meaning="+meaning);
 			Declaration declaredAs=meaning.declaredAs;
-			//System.out.println("SwitchStatement.intConstant: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());
+			//Util.println("SwitchStatement.intConstant: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());
 			if(declaredAs instanceof TypeDeclaration) {
 				TypeDeclaration tp=(TypeDeclaration)declaredAs;
 				Expression constElt=tp.constantElement;
-				//System.out.println("SwitchStatement.intConstant: constElt="+constElt);
+				//Util.println("SwitchStatement.intConstant: constElt="+constElt);
 				if(constElt!=null) {
-				    //System.out.println("SwitchStatement.intConstant: constElt="+constElt+", QUAL="+constElt.getClass().getSimpleName());
+				    //Util.println("SwitchStatement.intConstant: constElt="+constElt+", QUAL="+constElt.getClass().getSimpleName());
 					if(constElt instanceof Constant) {
 						Object value=((Constant)constElt).value;
-						//System.out.println("SwitchStatement.intConstant: value="+value+", QUAL="+value.getClass().getSimpleName());
+						//Util.println("SwitchStatement.intConstant: value="+value+", QUAL="+value.getClass().getSimpleName());
 						if(value instanceof Number) {
 							int intValue=((Number)value).intValue();
-							//System.out.println("SwitchStatement.intConstant: longValue="+intValue);
+							//Util.println("SwitchStatement.intConstant: longValue="+intValue);
 							return(intValue);
 						} else if(value instanceof Character) {
 							char charValue=((Character)value).charValue();
-							//System.out.println("SwitchStatement.intConstant: charValue="+charValue);
+							//Util.println("SwitchStatement.intConstant: charValue="+charValue);
 							return((int)charValue);
 						}
 					}
@@ -254,10 +254,10 @@ public final class SwitchStatement extends Statement {
     // *** Printing Utility: print
     // ***********************************************************************************************
     public void print(String indent) {
-    	System.out.println(indent+"SWITCH("+lowKey+':'+hiKey+") "+switchKey);
-    	System.out.println(indent+"BEGIN");
+    	Util.println(indent+"SWITCH("+lowKey+':'+hiKey+") "+switchKey);
+    	Util.println(indent+"BEGIN");
     	for(WhenPart when:switchCases) when.print(indent+"   ");
-        System.out.println(indent+"END"); 
+        Util.println(indent+"END"); 
     }
 
     public String toString() {

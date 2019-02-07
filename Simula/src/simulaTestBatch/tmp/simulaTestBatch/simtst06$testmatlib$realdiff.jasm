@@ -1,0 +1,428 @@
+package  simulaTestBatch;
+
+super public final class simtst06$testmatlib$realdiff
+	extends simula/runtime/BASICIO$
+	version 52:0
+{
+
+public Field RESULT$:Z;
+public Field p$x:D;
+public Field p$y:D;
+Field diff:D;
+Field pow:I;
+private Field $npar:I;
+public static Field INFO$:"Lsimula/runtime/PROGINFO$;";
+
+public Method prefixLevel:"()I"
+	stack 1 locals 1
+{
+		iconst_0;
+		ireturn;
+}
+
+public Method RESULT$:"()Ljava/lang/Object;"
+	stack 1 locals 1
+{
+		aload_0;
+		getfield	Field RESULT$:"Z";
+		invokestatic	Method java/lang/Boolean.valueOf:"(Z)Ljava/lang/Boolean;";
+		areturn;
+}
+
+public Method setPar:"(Ljava/lang/Object;)LsimulaTestBatch/simtst06$testmatlib$realdiff;"
+	stack 4 locals 3
+{
+		try t0;
+		aload_0;
+		dup;
+		getfield	Field $npar:"I";
+		dup_x1;
+		iconst_1;
+		iadd;
+		putfield	Field $npar:"I";
+		lookupswitch{ //2
+		0: L36;
+		1: L48;
+		default: L60 };
+	L36:	stack_frame_type same;
+		aload_0;
+		aload_0;
+		aload_1;
+		invokevirtual	Method doubleValue:"(Ljava/lang/Object;)D";
+		putfield	Field p$x:"D";
+		goto	L70;
+	L48:	stack_frame_type same;
+		aload_0;
+		aload_0;
+		aload_1;
+		invokevirtual	Method doubleValue:"(Ljava/lang/Object;)D";
+		putfield	Field p$y:"D";
+		goto	L70;
+	L60:	stack_frame_type same;
+		new	class java/lang/RuntimeException;
+		dup;
+		ldc	String "Wrong number of parameters";
+		invokespecial	Method java/lang/RuntimeException."<init>":"(Ljava/lang/String;)V";
+		athrow;
+		endtry t0;
+	L70:	stack_frame_type same;
+		goto	L114;
+		catch t0 java/lang/ClassCastException;
+		stack_frame_type stack1;
+		stack_map class java/lang/ClassCastException;
+		astore_2;
+		new	class java/lang/RuntimeException;
+		dup;
+		new	class java/lang/StringBuilder;
+		dup;
+		invokespecial	Method java/lang/StringBuilder."<init>":"()V";
+		ldc	String "Wrong type of parameter: ";
+		invokevirtual	Method java/lang/StringBuilder.append:"(Ljava/lang/String;)Ljava/lang/StringBuilder;";
+		aload_0;
+		getfield	Field $npar:"I";
+		invokevirtual	Method java/lang/StringBuilder.append:"(I)Ljava/lang/StringBuilder;";
+		ldc	String " ";
+		invokevirtual	Method java/lang/StringBuilder.append:"(Ljava/lang/String;)Ljava/lang/StringBuilder;";
+		aload_1;
+		invokevirtual	Method java/lang/StringBuilder.append:"(Ljava/lang/Object;)Ljava/lang/StringBuilder;";
+		invokevirtual	Method java/lang/StringBuilder.toString:"()Ljava/lang/String;";
+		aload_2;
+		invokespecial	Method java/lang/RuntimeException."<init>":"(Ljava/lang/String;Ljava/lang/Throwable;)V";
+		athrow;
+	L114:	stack_frame_type same;
+		aload_0;
+		areturn;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;)V"
+	stack 3 locals 2
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		dconst_0;
+		putfield	Field diff:"D";
+		aload_0;
+		iconst_0;
+		putfield	Field pow:"I";
+		aload_0;
+		iconst_0;
+		putfield	Field $npar:"I";
+		return;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;DD)V"
+	stack 3 locals 6
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		dconst_0;
+		putfield	Field diff:"D";
+		aload_0;
+		iconst_0;
+		putfield	Field pow:"I";
+		aload_0;
+		iconst_0;
+		putfield	Field $npar:"I";
+		aload_0;
+		dload_2;
+		putfield	Field p$x:"D";
+		aload_0;
+		dload	4;
+		putfield	Field p$y:"D";
+		aload_0;
+		invokevirtual	Method BBLK:"()V";
+		aload_0;
+		ldc	String "realdiff";
+		bipush	38;
+		invokevirtual	Method TRACE_BEGIN_DCL$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method STM$:"()LsimulaTestBatch/simtst06$testmatlib$realdiff;";
+		pop;
+		return;
+}
+
+public Method STM$:"()LsimulaTestBatch/simtst06$testmatlib$realdiff;"
+	stack 6 locals 1
+{
+		aload_0;
+		ldc	String "realdiff";
+		bipush	38;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		aload_0;
+		aload_0;
+		getfield	Field p$x:"D";
+		dconst_0;
+		dcmpl;
+		ifne	L31;
+		aload_0;
+		getfield	Field p$x:"D";
+		aload_0;
+		getfield	Field p$y:"D";
+		dsub;
+		goto	L45;
+	L31:	stack_frame_type full;
+		locals_map class simtst06$testmatlib$realdiff;
+		stack_map class simtst06$testmatlib$realdiff, class simtst06$testmatlib$realdiff;
+		aload_0;
+		getfield	Field p$x:"D";
+		aload_0;
+		getfield	Field p$y:"D";
+		dsub;
+		aload_0;
+		getfield	Field p$x:"D";
+		ddiv;
+	L45:	stack_frame_type full;
+		locals_map class simtst06$testmatlib$realdiff;
+		stack_map class simtst06$testmatlib$realdiff, class simtst06$testmatlib$realdiff, double;
+		invokevirtual	Method abs:"(D)D";
+		putfield	Field diff:"D";
+		aload_0;
+		getfield	Field diff:"D";
+		ldc2_w	double 1.000000013351432E-10d;
+		dcmpl;
+		ifle	L260;
+		aload_0;
+		ldc	String "CompoundStatement52";
+		bipush	52;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "x=";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field p$x:"D";
+		bipush	16;
+		bipush	23;
+		invokevirtual	Method simula/runtime/PrintFile$.outreal:"(DII)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String ", y=";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field p$y:"D";
+		bipush	16;
+		bipush	23;
+		invokevirtual	Method simula/runtime/PrintFile$.outreal:"(DII)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String ", x-y=";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field p$x:"D";
+		aload_0;
+		getfield	Field p$y:"D";
+		dsub;
+		bipush	16;
+		bipush	23;
+		invokevirtual	Method simula/runtime/PrintFile$.outreal:"(DII)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String ", (x-y)/x=";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field p$x:"D";
+		aload_0;
+		getfield	Field p$y:"D";
+		dsub;
+		aload_0;
+		getfield	Field p$x:"D";
+		ddiv;
+		bipush	16;
+		bipush	23;
+		invokevirtual	Method simula/runtime/PrintFile$.outreal:"(DII)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String " *** rel. error= ";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field diff:"D";
+		bipush	16;
+		bipush	23;
+		invokevirtual	Method simula/runtime/PrintFile$.outreal:"(DII)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		invokevirtual	Method simula/runtime/PrintFile$.outimage:"()V";
+		aload_0;
+		iconst_1;
+		putfield	Field RESULT$:"Z";
+		aload_0;
+		ldc	String "CompoundStatement52";
+		bipush	59;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+	L260:	stack_frame_type same_ex;
+		aload_0;
+		ldc	String "realdiff";
+		bipush	59;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method EBLK:"()V";
+		aload_0;
+		areturn;
+}
+
+public bridge synthetic Method STM$:"()Lsimula/runtime/RTObject$;"
+	stack 1 locals 1
+{
+		aload_0;
+		invokevirtual	Method STM$:"()LsimulaTestBatch/simtst06$testmatlib$realdiff;";
+		areturn;
+}
+
+public bridge synthetic Method setPar:"(Ljava/lang/Object;)Lsimula/runtime/RTObject$;"
+	stack 2 locals 2
+{
+		aload_0;
+		aload_1;
+		invokevirtual	Method setPar:"(Ljava/lang/Object;)LsimulaTestBatch/simtst06$testmatlib$realdiff;";
+		areturn;
+}
+
+static Method "<clinit>":"()V"
+	stack 8 locals 0
+{
+		new	class simula/runtime/PROGINFO$;
+		dup;
+		ldc	String "simtst06.sim";
+		ldc	String "Procedure realdiff";
+		bipush	26;
+		newarray int;
+		dup;
+		iconst_0;
+		iconst_1;
+		iastore;
+		dup;
+		iconst_1;
+		bipush	36;
+		iastore;
+		dup;
+		iconst_2;
+		bipush	16;
+		iastore;
+		dup;
+		iconst_3;
+		bipush	38;
+		iastore;
+		dup;
+		iconst_4;
+		bipush	50;
+		iastore;
+		dup;
+		iconst_5;
+		bipush	48;
+		iastore;
+		dup;
+		bipush	6;
+		bipush	52;
+		iastore;
+		dup;
+		bipush	7;
+		bipush	50;
+		iastore;
+		dup;
+		bipush	8;
+		bipush	54;
+		iastore;
+		dup;
+		bipush	9;
+		bipush	52;
+		iastore;
+		dup;
+		bipush	10;
+		bipush	59;
+		iastore;
+		dup;
+		bipush	11;
+		bipush	53;
+		iastore;
+		dup;
+		bipush	12;
+		bipush	62;
+		iastore;
+		dup;
+		bipush	13;
+		bipush	54;
+		iastore;
+		dup;
+		bipush	14;
+		bipush	65;
+		iastore;
+		dup;
+		bipush	15;
+		bipush	55;
+		iastore;
+		dup;
+		bipush	16;
+		bipush	68;
+		iastore;
+		dup;
+		bipush	17;
+		bipush	56;
+		iastore;
+		dup;
+		bipush	18;
+		bipush	70;
+		iastore;
+		dup;
+		bipush	19;
+		bipush	57;
+		iastore;
+		dup;
+		bipush	20;
+		bipush	72;
+		iastore;
+		dup;
+		bipush	21;
+		bipush	58;
+		iastore;
+		dup;
+		bipush	22;
+		bipush	74;
+		iastore;
+		dup;
+		bipush	23;
+		bipush	59;
+		iastore;
+		dup;
+		bipush	24;
+		bipush	82;
+		iastore;
+		dup;
+		bipush	25;
+		bipush	61;
+		iastore;
+		invokespecial	Method simula/runtime/PROGINFO$."<init>":"(Ljava/lang/String;Ljava/lang/String;[I)V";
+		putstatic	Field INFO$:"Lsimula/runtime/PROGINFO$;";
+		return;
+}
+
+} // end Class simtst06$testmatlib$realdiff

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1358
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$attrfile$nextitemoft extends BASICIO$ {
@@ -39,7 +39,7 @@ public final class COMMON$attrfile$nextitemoft extends BASICIO$ {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 // JavaLine 40 ==> SourceLine 1360
                 while(TXT$.more(((COMMON)(CUR$.SL$.SL$)).permt)) {
-                    if((TXT$.getchar(((COMMON)(CUR$.SL$.SL$)).permt)!=(((char)32)))) {
+                    if(VALUE$((TXT$.getchar(((COMMON)(CUR$.SL$.SL$)).permt)!=(((char)32))))) {
                         GOTO$(ubl); // GOTO EVALUATED LABEL
                     }
                 }
@@ -47,26 +47,26 @@ public final class COMMON$attrfile$nextitemoft extends BASICIO$ {
                 RESULT$=null;
                 GOTO$(E); // GOTO EVALUATED LABEL
                 // JavaLine 49 ==> SourceLine 1362
-                LABEL$(1); // ubl
+                LABEL$(1,"ubl");
                 i=(TXT$.pos(((COMMON)(CUR$.SL$.SL$)).permt)-(1));
                 j=1;
                 // JavaLine 53 ==> SourceLine 1363
                 while(TXT$.more(((COMMON)(CUR$.SL$.SL$)).permt)) {
                     // JavaLine 55 ==> SourceLine 1364
-                    if((TXT$.getchar(((COMMON)(CUR$.SL$.SL$)).permt)==(((char)32)))) {
+                    if(VALUE$((TXT$.getchar(((COMMON)(CUR$.SL$.SL$)).permt)==(((char)32))))) {
                         GOTO$(bl); // GOTO EVALUATED LABEL
                     } else
                     j=(j+(1));
                 }
                 // JavaLine 61 ==> SourceLine 1365
-                LABEL$(2); // bl
+                LABEL$(2,"bl");
                 RESULT$=TXT$.sub(((COMMON)(CUR$.SL$.SL$)).permt,i,j);
                 // JavaLine 64 ==> SourceLine 1366
-                if(TXTREL$EQ(TXT$.sub(((COMMON)(CUR$.SL$.SL$)).permt,i,j),new TXT$("*"))) {
+                if(VALUE$(TXTREL$EQ(TXT$.sub(((COMMON)(CUR$.SL$.SL$)).permt,i,j),new TXT$("*")))) {
                     RESULT$=null;
                 }
                 // JavaLine 68 ==> SourceLine 1367
-                LABEL$(3); // E
+                LABEL$(3,"E");
                 break LOOP$;
             }
             catch(LABQNT$ q) {

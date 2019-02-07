@@ -82,6 +82,8 @@ public final class TestCompiler {
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
+		// String name="/simple/adHoc26.sim";
+		// String name="/simple/adHoc68.sim";
 	    // String name="/simple/Activation.sim";
 	    // String name="/simple/AnimationTest.sim";
 	    // String name="/simple/ArrayAsParameter.sim";

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 146
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:36 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$tekstverdi$les_tegn extends BASICIO$ {
@@ -46,14 +46,14 @@ public final class HegnaNRK$PBLK21$tekstverdi$les_tegn extends BASICIO$ {
         // JavaLine 46 ==> SourceLine 149
         c=p$forrige_tegn;
         // JavaLine 48 ==> SourceLine 150
-        if((c==(((char)32)))) {
+        if(VALUE$((c==(((char)32))))) {
             // JavaLine 50 ==> SourceLine 151
             while((c==(((char)32)))) {
                 c=sysin().inchar();
             }
         } else
         // JavaLine 55 ==> SourceLine 153
-        if((!(TXT$.more(sysin().image)))) {
+        if(VALUE$((!(TXT$.more(sysin().image))))) {
             c=((char)32);
         } else
         // JavaLine 59 ==> SourceLine 154

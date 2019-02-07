@@ -1,0 +1,151 @@
+package  simulaTestBatch;
+
+super public final class simtst26$SubBlock37$SubBlock174$SubBlock175
+	extends simula/runtime/BASICIO$
+	version 52:0
+{
+
+Field c:C;
+public static Field INFO$:"Lsimula/runtime/PROGINFO$;";
+
+public Method prefixLevel:"()I"
+	stack 1 locals 1
+{
+		iconst_0;
+		ireturn;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;)V"
+	stack 3 locals 2
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		iconst_0;
+		putfield	Field c:"C";
+		aload_0;
+		invokevirtual	Method BBLK:"()V";
+		aload_0;
+		ldc	String "SubBlock175";
+		sipush	175;
+		invokevirtual	Method TRACE_BEGIN_DCL$:"(Ljava/lang/String;I)V";
+		return;
+}
+
+public Method STM$:"()Lsimula/runtime/RTObject$;"
+	stack 9 locals 1
+{
+		aload_0;
+		ldc	String "SubBlock175";
+		sipush	175;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		new	class simtst26$trace;
+		dup;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst26;
+		checkcast	class simtst26;
+		aload_0;
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "Should GOTO ";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		new	class simtst26$SubBlock37$Pst;
+		dup;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst26$SubBlock37;
+		checkcast	class simtst26$SubBlock37;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst26;
+		checkcast	class simtst26;
+		getfield	Field simtst26.t:"I";
+		invokespecial	Method simtst26$SubBlock37$Pst."<init>":"(Lsimula/runtime/RTObject$;I)V";
+		getfield	Field simtst26$SubBlock37$Pst.RESULT$:"Lsimula/runtime/TXT$;";
+		invokevirtual	Method CONC:"(Lsimula/runtime/TXT$;Lsimula/runtime/TXT$;)Lsimula/runtime/TXT$;";
+		invokespecial	Method simtst26$trace."<init>":"(Lsimula/runtime/RTObject$;Lsimula/runtime/TXT$;)V";
+		pop;
+		aload_0;
+		new	class simtst26$SubBlock37$st;
+		dup;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst26$SubBlock37;
+		checkcast	class simtst26$SubBlock37;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst26;
+		checkcast	class simtst26;
+		getfield	Field simtst26.t:"I";
+		invokespecial	Method simtst26$SubBlock37$st."<init>":"(Lsimula/runtime/RTObject$;I)V";
+		getfield	Field simtst26$SubBlock37$st.RESULT$:"Lsimula/runtime/RTObject$$LABQNT$;";
+		invokevirtual	Method GOTO$:"(Lsimula/runtime/RTObject$$LABQNT$;)V";
+		aload_0;
+		ldc	String "SubBlock175";
+		sipush	177;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method EBLK:"()V";
+		aconst_null;
+		areturn;
+}
+
+static Method "<clinit>":"()V"
+	stack 8 locals 0
+{
+		new	class simula/runtime/PROGINFO$;
+		dup;
+		ldc	String "simtst26.sim";
+		ldc	String "SubBlock SubBlock175";
+		bipush	8;
+		newarray int;
+		dup;
+		iconst_0;
+		iconst_1;
+		iastore;
+		dup;
+		iconst_1;
+		sipush	175;
+		iastore;
+		dup;
+		iconst_2;
+		bipush	21;
+		iastore;
+		dup;
+		iconst_3;
+		sipush	176;
+		iastore;
+		dup;
+		iconst_4;
+		bipush	23;
+		iastore;
+		dup;
+		iconst_5;
+		sipush	177;
+		iastore;
+		dup;
+		bipush	6;
+		bipush	28;
+		iastore;
+		dup;
+		bipush	7;
+		sipush	178;
+		iastore;
+		invokespecial	Method simula/runtime/PROGINFO$."<init>":"(Ljava/lang/String;Ljava/lang/String;[I)V";
+		putstatic	Field INFO$:"Lsimula/runtime/PROGINFO$;";
+		return;
+}
+
+public final InnerClass LABQNT$=class simula/runtime/RTObject$$LABQNT$ of class simula/runtime/RTObject$;
+
+} // end Class simtst26$SubBlock37$SubBlock174$SubBlock175

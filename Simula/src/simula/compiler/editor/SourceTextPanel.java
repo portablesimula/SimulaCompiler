@@ -15,6 +15,7 @@ import javax.swing.text.StyledDocument;
 
 import simula.compiler.parsing.SimulaScanner;
 import simula.compiler.utilities.Token;
+import simula.compiler.utilities.Util;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -57,15 +58,15 @@ public class SourceTextPanel extends JPanel {
 
     DocumentListener documentListener=new DocumentListener() {
 		public void insertUpdate(DocumentEvent e) {
-			//System.out.println("DocumentListener: insertUpdate'event="+edDocumentEvent(e));	
+			//Util.println("DocumentListener: insertUpdate'event="+edDocumentEvent(e));	
 			fileChanged=true; refreshNeeded=true;
 		}
 		public void removeUpdate(DocumentEvent e) {
-			//System.out.println("DocumentListener: removeUpdate'event="+edDocumentEvent(e));	
+			//Util.println("DocumentListener: removeUpdate'event="+edDocumentEvent(e));	
 			fileChanged=true; refreshNeeded=true;
 		}
 		public void changedUpdate(DocumentEvent e) {
-			//System.out.println("DocumentListener: changedUpdate'event="+edDocumentEvent(e));	
+			//Util.println("DocumentListener: changedUpdate'event="+edDocumentEvent(e));	
 	}};
 	
 //	private String edDocumentEvent(DocumentEvent e) {
@@ -94,7 +95,7 @@ public class SourceTextPanel extends JPanel {
     }
     
     public void updateEditable() {
-		System.out.println("SourceTextPanel.updateEditable: CurrentTextPanel="+this);
+		Util.println("SourceTextPanel.updateEditable: CurrentTextPanel="+this);
 		boolean auto=this.AUTO_REFRESH;
 		setEditable(isEditable);
     	this.AUTO_REFRESH=auto;
@@ -111,13 +112,13 @@ public class SourceTextPanel extends JPanel {
     }
 	
     void saveFile() {
-		//System.out.println("SourceTextPanel.saveFile: sourceFile="+sourceFile+", fileChanged="+fileChanged);
+		//Util.println("SourceTextPanel.saveFile: sourceFile="+sourceFile+", fileChanged="+fileChanged);
     	if(fileChanged)	try {
     		//simulaEditor.setTitle(sourceFile.getName() + " - " + "SimulaEditor");
-    		//System.out.println("SourceTextPanel.saveFile: DO IT - sourceFile="+sourceFile);
+    		//Util.println("SourceTextPanel.saveFile: DO IT - sourceFile="+sourceFile);
     		BufferedWriter out = new BufferedWriter(new FileWriter(sourceFile.getPath()));
     		String text=getPureText();
-    		//System.out.println(text);
+    		//Util.println(text);
     		out.write(text);
     		out.close();
     		fileChanged = false;
@@ -132,7 +133,7 @@ public class SourceTextPanel extends JPanel {
         StyledDocument doc=new DefaultStyledDocument();
         addStylesToDocument(doc);
         doc.putProperty(DefaultEditorKit.EndOfLineStringProperty,"\n");
-		//System.out.println("SourceTextPanel.fillTextPane: Create Document: END");
+		//Util.println("SourceTextPanel.fillTextPane: Create Document: END");
 		textPane.setStyledDocument(doc);
 		doc.addDocumentListener(documentListener);
 		setEditable(true);
@@ -171,7 +172,7 @@ public class SourceTextPanel extends JPanel {
 			    while((token=preScanner.nextToken())!=null) {
 				    String text=token.getText();
 				    Style style=getStyle(token.getStyleCode());
-				    //System.out.println("SourceTextPanel.fillTextPane: INSERT: "+text);
+				    //Util.println("SourceTextPanel.fillTextPane: INSERT: "+text);
 				    doc.insertString(doc.getLength(), text, style);
 			    }
 			}
@@ -206,7 +207,7 @@ public class SourceTextPanel extends JPanel {
 		for(int i=0;i<pos;i++) {
 //			if(s.charAt(i)=='\n') { count++; pos++; }
 			if(s.charAt(i)=='\r') { count++; pos++; }
-			if(s.charAt(i)<' ' && s.charAt(i)!='\n' && s.charAt(i)!='\r') System.out.println("ControlCharacter: "+(int)s.charAt(i));
+			if(s.charAt(i)<' ' && s.charAt(i)!='\n' && s.charAt(i)!='\r') Util.println("ControlCharacter: "+(int)s.charAt(i));
 		}
 		return(count);
 	}
@@ -215,15 +216,15 @@ public class SourceTextPanel extends JPanel {
 	private String removeLineNumbers(String txt) {
 		StringBuilder result=new StringBuilder();
 		LineNumberReader reader=new LineNumberReader(new StringReader(txt));
-		//System.out.println("SourceTextPanel.removeLineNumbers:");
+		//Util.println("SourceTextPanel.removeLineNumbers:");
 		try {
 			String nextLine=reader.readLine();
 			String line;
 			while( (line=nextLine)!=null) {
 				nextLine=reader.readLine();			
-				//System.out.println("SourceTextPanel.removeLineNumbers: INPUT:  \""+line+'"');
+				//Util.println("SourceTextPanel.removeLineNumbers: INPUT:  \""+line+'"');
 				line=removeLineNumber(line);
-				//System.out.println("SourceTextPanel.removeLineNumbers: OUTPUT: \""+line+'"');
+				//Util.println("SourceTextPanel.removeLineNumbers: OUTPUT: \""+line+'"');
 				if(nextLine!=null) result.append(line).append('\n');
 				else if(line.trim().length()>0) result.append(line).append('\n');
 			}

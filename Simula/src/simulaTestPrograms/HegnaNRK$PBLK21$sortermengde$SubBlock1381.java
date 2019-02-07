@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1381
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$sortermengde$SubBlock1381 extends BASICIO$ {
@@ -41,7 +41,7 @@ public final class HegnaNRK$PBLK21$sortermengde$SubBlock1381 extends BASICIO$ {
             // JavaLine 41 ==> SourceLine 1388
             j=new HegnaNRK$PBLK21$finn_intern_feltnr(((HegnaNRK$PBLK21)(CUR$.SL$.SL$)),fnr).RESULT$;
             // JavaLine 43 ==> SourceLine 1389
-            if((j!=(0))) {
+            if(VALUE$((j!=(0)))) {
                 key.Elt[i-key.LB[0]]=((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).intern_felt.Elt[j-((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).intern_felt.LB[0]];
             } else
             // JavaLine 47 ==> SourceLine 1390

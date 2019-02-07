@@ -44,9 +44,9 @@ public class Directive {
 	}
 //	private static void CHECK(String fileName) {
 //		File file=new File(fileName);
-//		System.out.println("Directive.insert: file="+file);
-//		System.out.println("Directive.insert: file.exists()="+file.exists());
-//		System.out.println("Directive.insert: file.canRead()="+file.canRead());
+//		Util.println("Directive.insert: file="+file);
+//		Util.println("Directive.insert: file.exists()="+file.exists());
+//		Util.println("Directive.insert: file.canRead()="+file.canRead());
 //	}
 
 	/**

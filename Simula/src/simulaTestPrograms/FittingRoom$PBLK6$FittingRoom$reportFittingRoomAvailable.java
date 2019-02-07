@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 24
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:12:47 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:33:08 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class FittingRoom$PBLK6$FittingRoom$reportFittingRoomAvailable extends BASICIO$ {
@@ -28,7 +28,7 @@ public final class FittingRoom$PBLK6$FittingRoom$reportFittingRoomAvailable exte
         // JavaLine 28 ==> SourceLine 27
         elt=((FittingRoom$PBLK6$FittingRoom)(CUR$.SL$)).door.first();
         // JavaLine 30 ==> SourceLine 28
-        if((elt==(null))) {
+        if(VALUE$((elt==(null)))) {
             sysout().outtext(new TXT$("Empty"));
         }
         // JavaLine 34 ==> SourceLine 29

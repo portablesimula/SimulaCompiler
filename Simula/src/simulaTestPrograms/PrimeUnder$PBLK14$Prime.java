@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 16
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Thu Jan 24 18:29:54 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:31:35 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class PrimeUnder$PBLK14$Prime extends Process$ {
@@ -32,7 +32,7 @@ public class PrimeUnder$PBLK14$Prime extends Process$ {
                     // JavaLine 32 ==> SourceLine 22
                     {
                         TRACE_BEGIN_STM$("CompoundStatement22",22);
-                        if((nextev().evtime()>((((PrimeUnder$PBLK14)(CUR$.SL$)).time()+(((double)(1))))))) {
+                        if(VALUE$((nextev().evtime()>((((PrimeUnder$PBLK14)(CUR$.SL$)).time()+(((double)(1)))))))) {
                             // JavaLine 36 ==> SourceLine 23
                             ((PrimeUnder$PBLK14)(CUR$.SL$)).ActivateDelay(false,new PrimeUnder$PBLK14$Prime(((PrimeUnder$PBLK14)(CUR$.SL$))).START(),1,false);
                         }

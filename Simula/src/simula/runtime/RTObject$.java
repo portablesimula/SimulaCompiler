@@ -589,10 +589,18 @@ public abstract class RTObject$  implements Runnable {
 	public boolean TRF_NE(TXT$ left,TXT$ right)
 	{ return(!TRF_EQ(left,right)); }
 
+	
+	// **************************************************************
+	// *** USED IN CONDITIONAL STATEMENT TO PREVENT DEAD-CODE REMOVAL
+	// **************************************************************
+    public boolean VALUE$(boolean cond) {
+    	return(cond);
+    }
+
 	// ************************************************************
 	// *** lOCAL JUMP/LABEL  - Meant for Byte-Code Engineering
 	// ************************************************************
-	public static void LABEL$(int labelIndex) {}  // Local LABEL - Needs ByteCode Engineering.
+	public static void LABEL$(int labelIndex,String ident) {}  // Local LABEL - Needs ByteCode Engineering.
 	public static void JUMPTABLE$(int labelIndex) // Local GOTO  - Needs ByteCode Engineering.
 	{ if(labelIndex==0) return;
 	  String msg="Local GOTO LABEL#"+labelIndex+" Needs ByteCode Engineering.";

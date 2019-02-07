@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 869
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$finn_intern_feltnr extends BASICIO$ {
@@ -58,7 +58,7 @@ public final class HegnaNRK$PBLK21$finn_intern_feltnr extends BASICIO$ {
                     new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(((HegnaNRK$PBLK21)(CUR$.SL$)).felt_antall); }})
                    )) { if(!CB$872) continue;
                 // JavaLine 60 ==> SourceLine 873
-                if((((HegnaNRK$PBLK21)(CUR$.SL$)).intern_feltnr.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).intern_feltnr.LB[0]]==(p$feltnr))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).intern_feltnr.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).intern_feltnr.LB[0]]==(p$feltnr)))) {
                     // JavaLine 62 ==> SourceLine 875
                     {
                         TRACE_BEGIN_STM$("CompoundStatement875",875);
@@ -70,7 +70,7 @@ public final class HegnaNRK$PBLK21$finn_intern_feltnr extends BASICIO$ {
                 }
             }
             // JavaLine 72 ==> SourceLine 878
-            LABEL$(1); // out
+            LABEL$(1,"out");
             RESULT$=nr;
             break LOOP$;
         }

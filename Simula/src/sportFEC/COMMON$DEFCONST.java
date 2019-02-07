@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 229
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$DEFCONST extends BASICIO$ {
@@ -35,7 +35,7 @@ public final class COMMON$DEFCONST extends BASICIO$ {
             try {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 // JavaLine 37 ==> SourceLine 232
-                if(TRF_EQ(((COMMON)(CUR$.SL$)).simsymbol,null)) {
+                if(VALUE$(TRF_EQ(((COMMON)(CUR$.SL$)).simsymbol,null))) {
                     ((COMMON)(CUR$.SL$)).hashhi=((COMMON)(CUR$.SL$)).hashlo=((COMMON)(CUR$.SL$)).NUL;
                 } else
                 // JavaLine 41 ==> SourceLine 234
@@ -47,7 +47,7 @@ public final class COMMON$DEFCONST extends BASICIO$ {
                     // JavaLine 47 ==> SourceLine 237
                     cursym=((COMMON)(CUR$.SL$)).hashtab.Elt[rank(((COMMON)(CUR$.SL$)).hashlo)-((COMMON)(CUR$.SL$)).hashtab.LB[0]];
                     // JavaLine 49 ==> SourceLine 238
-                    if((cursym!=(null))) {
+                    if(VALUE$((cursym!=(null)))) {
                         // JavaLine 51 ==> SourceLine 239
                         {
                             TRACE_BEGIN_STM$("CompoundStatement239",239);
@@ -55,7 +55,7 @@ public final class COMMON$DEFCONST extends BASICIO$ {
                                 // JavaLine 55 ==> SourceLine 241
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement241",241);
-                                    if((cursym.next==(null))) {
+                                    if(VALUE$((cursym.next==(null)))) {
                                         GOTO$(F); // GOTO EVALUATED LABEL
                                     }
                                     // JavaLine 61 ==> SourceLine 242
@@ -70,7 +70,7 @@ public final class COMMON$DEFCONST extends BASICIO$ {
                         }
                     } else
                     // JavaLine 72 ==> SourceLine 265
-                    LABEL$(1); // F
+                    LABEL$(1,"F");
                     // JavaLine 74 ==> SourceLine 246
                     {
                         // BEGIN INSPECTION 
@@ -85,7 +85,7 @@ public final class COMMON$DEFCONST extends BASICIO$ {
                             // JavaLine 85 ==> SourceLine 249
                             ((COMMON)(CUR$.SL$)).hashtab.Elt[rank(((COMMON)(CUR$.SL$)).hashlo)-((COMMON)(CUR$.SL$)).hashtab.LB[0]]=((COMMON$symbolbox)inspect$246$1);
                             // JavaLine 87 ==> SourceLine 250
-                            if((((COMMON)(CUR$.SL$)).constlo==(((COMMON)(CUR$.SL$)).NUL))) {
+                            if(VALUE$((((COMMON)(CUR$.SL$)).constlo==(((COMMON)(CUR$.SL$)).NUL)))) {
                                 // JavaLine 89 ==> SourceLine 251
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement251",251);
@@ -104,14 +104,14 @@ public final class COMMON$DEFCONST extends BASICIO$ {
                                 TRACE_END_STM$("CompoundStatement254",255);
                             }
                             // JavaLine 106 ==> SourceLine 256
-                            if(((inspect$246$1.idhi==(((COMMON)(CUR$.SL$)).identhi))&&((inspect$246$1.idlo<=(((COMMON)(CUR$.SL$)).identlo))))) {
+                            if(VALUE$(((inspect$246$1.idhi==(((COMMON)(CUR$.SL$)).identhi))&&((inspect$246$1.idlo<=(((COMMON)(CUR$.SL$)).identlo)))))) {
                                 // JavaLine 108 ==> SourceLine 258
                                 ((COMMON)(CUR$.SL$)).COMMONerror$0().CPF().setPar(297).ENT$();
                             }
                             // JavaLine 111 ==> SourceLine 259
                             symhi=((COMMON)(CUR$.SL$)).symtab.Elt[rank(inspect$246$1.idhi)-((COMMON)(CUR$.SL$)).symtab.LB[0]];
                             // JavaLine 113 ==> SourceLine 260
-                            if((symhi==(((COMMON)(CUR$.SL$)).dummyGroup))) {
+                            if(VALUE$((symhi==(((COMMON)(CUR$.SL$)).dummyGroup)))) {
                                 // JavaLine 115 ==> SourceLine 261
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement261",261);

@@ -74,7 +74,7 @@ public final class MakeSetup {
 		File releaseHome=new File(RELEASE_HOME);
 		releaseHome.mkdirs();
 		String compilerManifest=ECLIPSE_ROOT+"\\src\\make\\setup\\CompilerManifest.MF";
-		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/apache/bcel");
+		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/objectweb/asm");
 		execute("jar -tvf "+RELEASE_HOME+"\\simula.jar");
 	}
 	
@@ -246,6 +246,7 @@ public final class MakeSetup {
 		if(prevRevision!=null) {
 			revision=Integer.parseUnsignedInt(prevRevision)+1;
 		}
+		revision=10; // TODO: Ad'Hoc
 		String setupDated=""+new Date();
 		setProperty("simula.setup.dated",setupDated);
 		setProperty("simula.version",""+Global.simulaReleaseID);

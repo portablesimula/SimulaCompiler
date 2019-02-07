@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 678
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$finn_post extends BASICIO$ {
@@ -65,13 +65,13 @@ public final class HegnaNRK$PBLK21$finn_post extends BASICIO$ {
                     pnr=(pnr+(1));
                 }
                 // JavaLine 67 ==> SourceLine 690
-                if((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[pnr-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]!=(null))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[pnr-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]!=(null)))) {
                     // JavaLine 69 ==> SourceLine 692
                     {
                         TRACE_BEGIN_STM$("CompoundStatement692",692);
                         j=1;
                         // JavaLine 73 ==> SourceLine 693
-                        if((((HegnaNRK$PBLK21)(CUR$.SL$)).finne_regel_antall==(0))) {
+                        if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).finne_regel_antall==(0)))) {
                             // JavaLine 75 ==> SourceLine 694
                             funnet=true;
                         } else

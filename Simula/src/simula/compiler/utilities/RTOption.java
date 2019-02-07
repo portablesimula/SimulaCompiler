@@ -72,12 +72,12 @@ public final class RTOption {
 	public static JCheckBoxMenuItem checkItem(String id) {
         JCheckBoxMenuItem item = new JCheckBoxMenuItem(id);
         item.setSelected(RTOption.getOption(id));
-		//System.out.println("RTOption.checkItem("+id+") Selected="+item.isSelected());
+		//Util.println("RTOption.checkItem("+id+") Selected="+item.isSelected());
         item.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//System.out.println(id+"Item.actionPerformed: e="+e);
+        		//Util.println(id+"Item.actionPerformed: e="+e);
         		RTOption.setOption(id,item.isSelected());
-        		//System.out.println(id+"Item.actionPerformed: Option."+id+"="+RTOption.getOption(id));            		
+        		//Util.println(id+"Item.actionPerformed: Option."+id+"="+RTOption.getOption(id));            		
 		}});
         return(item);
 	}

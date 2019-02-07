@@ -106,13 +106,13 @@ public final class ConnectionBlock extends DeclarationScope {
 		StringBuilder s = new StringBuilder(indent);
 		s.append('[').append(blockLevel).append("] ");
 		s.append(blockKind).append(' ').append(identifier);
-		System.out.println(s.toString());
+		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';
 		indent = indent + "    ";
-		System.out.println(indent + beg);
+		Util.println(indent + beg);
 		for (Declaration decl : declarationList) decl.print(indent + "   ");
 		statement.print(indent + "   ");
-		System.out.println(indent + "end[" + edScopeChain() + ']');
+		Util.println(indent + "end[" + edScopeChain() + ']');
 		// Util.BREAK("ConnectionBlock.print DONE");
 	}
   

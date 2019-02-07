@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 58
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:12:51 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:41:55 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Sudoku$PBLK1$get_input extends BASICIO$ {
@@ -12,7 +12,7 @@ public final class Sudoku$PBLK1$get_input extends BASICIO$ {
     int i=0;
     int j=0;
     // JavaLine 14 ==> SourceLine 63
-    InFile$ inspect$63$1=null;
+    InFile$ inspect$63$0=null;
     // Normal Constructor
     public Sudoku$PBLK1$get_input(RTObject$ SL$) {
         super(SL$);
@@ -31,12 +31,12 @@ public final class Sudoku$PBLK1$get_input extends BASICIO$ {
         // JavaLine 31 ==> SourceLine 63
         {
             // BEGIN INSPECTION 
-            inspect$63$1=new InFile$(((BASICIO$)CTX$),new TXT$("SudokuDifficult.txt")).STM$();
-            if(inspect$63$1!=null) //INSPECT inspect$63$1
+            inspect$63$0=new InFile$(((BASICIO$)CTX$),new TXT$("SudokuDifficult.txt")).STM$();
+            if(inspect$63$0!=null) //INSPECT inspect$63$0
             // JavaLine 36 ==> SourceLine 65
             {
                 TRACE_BEGIN_STM$("CompoundStatement65",65);
-                inspect$63$1.open(blanks(80));
+                inspect$63$0.open(blanks(80));
                 // JavaLine 40 ==> SourceLine 66
                 for(boolean CB$66:new ForList(
                     new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(9); }})
@@ -48,7 +48,7 @@ public final class Sudoku$PBLK1$get_input extends BASICIO$ {
                         new StepUntil(new NAME$<Number>(){ public Number put(Number x$){j=(int)x$; return(x$);};  public Number get(){return((Number)j); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(9); }})
                        )) { if(!CB$67) continue;
                     // JavaLine 50 ==> SourceLine 68
-                    ((Sudoku$PBLK1)(CUR$.SL$)).SQinst.Elt[i-((Sudoku$PBLK1)(CUR$.SL$)).SQinst.LB[0]][j-((Sudoku$PBLK1)(CUR$.SL$)).SQinst.LB[1]]=new Sudoku$PBLK1$SQ(((Sudoku$PBLK1)(CUR$.SL$)),i,j,inspect$63$1.inint()).START();
+                    ((Sudoku$PBLK1)(CUR$.SL$)).SQinst.Elt[i-((Sudoku$PBLK1)(CUR$.SL$)).SQinst.LB[0]][j-((Sudoku$PBLK1)(CUR$.SL$)).SQinst.LB[1]]=new Sudoku$PBLK1$SQ(((Sudoku$PBLK1)(CUR$.SL$)),i,j,inspect$63$0.inint()).START();
                 }
                 // JavaLine 53 ==> SourceLine 69
                 sysout().outimage();
@@ -56,7 +56,7 @@ public final class Sudoku$PBLK1$get_input extends BASICIO$ {
             }
         }
         // JavaLine 58 ==> SourceLine 71
-        inspect$63$1.close();
+        inspect$63$0.close();
         TRACE_END_STM$("CompoundStatement65",71);
     }
 }

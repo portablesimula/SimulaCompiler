@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1396
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$sorter extends BASICIO$ {
@@ -97,14 +97,14 @@ public final class HegnaNRK$PBLK21$sorter extends BASICIO$ {
                 new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(2); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(7); }})
                )) { if(!CB$1411) continue;
             // JavaLine 99 ==> SourceLine 1412
-            if((hs.Elt[i-hs.LB[0]]>(p$antall))) {
+            if(VALUE$((hs.Elt[i-hs.LB[0]]>(p$antall)))) {
                 GOTO$(overogut); // GOTO EVALUATED LABEL
             }
         }
         // JavaLine 104 ==> SourceLine 1413
         i=8;
         // JavaLine 106 ==> SourceLine 1415
-        LABEL$(1); // overogut
+        LABEL$(1,"overogut");
         t=(i-(1));
         // JavaLine 109 ==> SourceLine 1416
         for(boolean CB$1416:new ForList(
@@ -129,15 +129,15 @@ public final class HegnaNRK$PBLK21$sorter extends BASICIO$ {
                 // JavaLine 129 ==> SourceLine 1424
                 n=((ARRAY$<int[]>)p$tabell).Elt[j-p$tabell.LB[0]];
                 // JavaLine 131 ==> SourceLine 1426
-                LABEL$(2); // igjen
+                LABEL$(2,"igjen");
                 // JavaLine 133 ==> SourceLine 1425
-                if((k==(null))) {
+                if(VALUE$((k==(null)))) {
                     bool=true;
                 } else
                 // JavaLine 137 ==> SourceLine 1426
                 bool=((boolean)(k.test_verdi_mindre$0().CPF().setPar(new NAME$<HegnaNRK$PBLK21$verdi>(){ public HegnaNRK$PBLK21$verdi get() { return(((ARRAY$<HegnaNRK$PBLK21$verdi[]>)p$key).Elt[i-p$key.LB[0]]); } public HegnaNRK$PBLK21$verdi put(HegnaNRK$PBLK21$verdi x$) { return(((ARRAY$<HegnaNRK$PBLK21$verdi[]>)p$key).Elt[i-p$key.LB[0]]=(HegnaNRK$PBLK21$verdi)x$); } }).ENT$().RESULT$()));
                 // JavaLine 139 ==> SourceLine 1427
-                if(bool) {
+                if(VALUE$(bool)) {
                     // JavaLine 141 ==> SourceLine 1429
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1429",1429);
@@ -147,7 +147,7 @@ public final class HegnaNRK$PBLK21$sorter extends BASICIO$ {
                         // JavaLine 147 ==> SourceLine 1431
                         i=(i-(h));
                         // JavaLine 149 ==> SourceLine 1432
-                        if((i>(0))) {
+                        if(VALUE$((i>(0)))) {
                             GOTO$(igjen); // GOTO EVALUATED LABEL
                         }
                         TRACE_END_STM$("CompoundStatement1429",1432);

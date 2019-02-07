@@ -8,6 +8,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.text.DefaultEditorKit;
 
+import simula.compiler.utilities.Util;
+
 public class EditMenu extends JMenu {
 	private static final long serialVersionUID = 1L;
 	private JCheckBox enable;
@@ -26,7 +28,7 @@ public class EditMenu extends JMenu {
 	}
 	
 	public void update(SourceTextPanel sourceTextPanel) {
-		System.out.println("EditMenu.update: sourceTextPanel="+sourceTextPanel);
+		Util.println("EditMenu.update: sourceTextPanel="+sourceTextPanel);
 		enable.setSelected(sourceTextPanel.isEditable());
 		autoRefresh.setSelected(sourceTextPanel.AUTO_REFRESH);
 		enableMenuItems(sourceTextPanel.isEditable());
@@ -106,7 +108,7 @@ public class EditMenu extends JMenu {
         JMenuItem refresh = new JMenuItem("Refresh");
         refresh.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//System.out.println("menuRefresh.actionPerformed: e="+e);
+        		//Util.println("menuRefresh.actionPerformed: e="+e);
         		simulaEditor.doRefresh();
 		}});
         this.addSeparator();

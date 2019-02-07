@@ -75,8 +75,8 @@ public class SimulaEditor extends JFrame {
 
     SourceTextPanel getCurrentTextPanel() {
         SourceTextPanel current=(SourceTextPanel)tabbedPane.getSelectedComponent();
-//        System.out.println("SimulaEditor.getCurrentTextPanel - Current Panel: name=" + current.getName());
-//        System.out.println("SimulaEditor.getCurrentTextPanel - Current Panel: sourceFile=" + current.sourceFile);
+//        Util.println("SimulaEditor.getCurrentTextPanel - Current Panel: name=" + current.getName());
+//        Util.println("SimulaEditor.getCurrentTextPanel - Current Panel: sourceFile=" + current.sourceFile);
         return(current);
     }
     
@@ -165,7 +165,7 @@ public class SimulaEditor extends JFrame {
         AboutDialog about=new AboutDialog(this);
         aboutMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("ABOUT");
+				//Util.println("ABOUT");
 				about.setVisible(true);
 			}});
         aboutMenu.setEnabled(true);
@@ -176,13 +176,13 @@ public class SimulaEditor extends JFrame {
     
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-        	//System.out.println("WINDOW CLOSING EVENT");
+        	//Util.println("WINDOW CLOSING EVENT");
         	fileMenu.doExit(); 
         }
     }
 
     void doSelectWorkspace() {
-    	if (Option.verbose) System.out.println("SimulaEditor.doSelectWorkspace: ");
+    	if (Option.verbose) Util.println("SimulaEditor.doSelectWorkspace: ");
     	String text="The Simula Editor uses the directory workspace to "
     			   +"\nretrieve Simula source files and save the results"
     	           +"\n"
@@ -195,11 +195,11 @@ public class SimulaEditor extends JFrame {
     	workspaceChooser.add(browse);
     	workspaceChooser.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-		        //System.out.println("itemStateChanged: "+e);
-		        //System.out.println("Workspace Selected: "+ workspaceChooser.getItem(workspaceChooser.getSelectedIndex()));  
+		        //Util.println("itemStateChanged: "+e);
+		        //Util.println("Workspace Selected: "+ workspaceChooser.getItem(workspaceChooser.getSelectedIndex()));  
 		        String s=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
 		        if(s.equals(browse)) {
-			        //System.out.println("itemStateChanged: CALL FILE CHOOSER on"+e.getItem());  
+			        //Util.println("itemStateChanged: CALL FILE CHOOSER on"+e.getItem());  
 			        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home",Global.currentWorkspace));
 			        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			        int answer = fileChooser.showOpenDialog(SimulaEditor.this);
@@ -221,23 +221,23 @@ public class SimulaEditor extends JFrame {
     	panel.add(textArea,BorderLayout.NORTH);
     	panel.add(workspaceChooser,BorderLayout.CENTER);
 		int result=Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-        //System.out.println("doSelectWorkspace: result="+result);
+        //Util.println("doSelectWorkspace: result="+result);
         if(result!=JOptionPane.OK_OPTION) System.exit(0);
         UIManager.put("Panel.background",PanelBackground);
         String selected=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
     	Global.updateCurrentWorkspace(selected);
-        //System.out.println("doSelectWorkspace: selected="+selected);
+        //Util.println("doSelectWorkspace: selected="+selected);
     }
 
     void doCheckForNewVersion() {
-    	if (Option.verbose) System.out.println("SimulaEditor.doCheckForNewVersion: ");
+    	if (Option.verbose) Util.println("SimulaEditor.doCheckForNewVersion: ");
         try {
         	String thisRevision=Global.getProperty("simula.revision","?");
         	String thisSetupDated=Global.getProperty("simula.setup.dated","?");
 	        String thisReleaseID=Global.simulaReleaseID+'R'+thisRevision;
 
 		    String remoteFileName="https://portablesimula.github.io/github.io/setup/setupProperties.xml";
-		    if (Option.verbose) System.out.println("SimulaEditor.doCheckForNewVersion: Load Remote Properties from: "+remoteFileName);
+		    if (Option.verbose) Util.println("SimulaEditor.doCheckForNewVersion: Load Remote Properties from: "+remoteFileName);
 		    URL remote = new URL(remoteFileName);
             Properties remoteProperties=new Properties();
             remoteProperties.loadFromXML(remote.openStream());
@@ -277,7 +277,7 @@ public class SimulaEditor extends JFrame {
 // 		UIManager.put("OptionPane.background", Color.WHITE);
 //        UIManager.put("Panel.background", Color.WHITE);
 //		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,SimulaEditor.sIcon, null, null);
-//		//System.out.println("doClose.saveDialog: answer="+answer);
+//		//Util.println("doClose.saveDialog: answer="+answer);
 //		UIManager.put("OptionPane.background",OptionPaneBackground);
 //        UIManager.put("Panel.background",PanelBackground);
 //		return(answer);

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 7
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:21:56 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:31:52 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class TQueens$p extends BASICIO$ {
@@ -51,7 +51,7 @@ public final class TQueens$p extends BASICIO$ {
     public TQueens$p STM$() {
         TRACE_BEGIN_STM$("p",7);
         // JavaLine 53 ==> SourceLine 9
-        if((((((ARRAY$<int[]>)p$q).Elt[p$c-p$q.LB[0]]+(((ARRAY$<int[]>)p$u).Elt[(p$r-(p$c))-p$u.LB[0]]))+(((ARRAY$<int[]>)p$d).Elt[(p$r+(p$c))-p$d.LB[0]]))==(0))) {
+        if(VALUE$((((((ARRAY$<int[]>)p$q).Elt[p$c-p$q.LB[0]]+(((ARRAY$<int[]>)p$u).Elt[(p$r-(p$c))-p$u.LB[0]]))+(((ARRAY$<int[]>)p$d).Elt[(p$r+(p$c))-p$d.LB[0]]))==(0)))) {
             // JavaLine 55 ==> SourceLine 10
             {
                 TRACE_BEGIN_STM$("CompoundStatement10",10);
@@ -60,7 +60,7 @@ public final class TQueens$p extends BASICIO$ {
                 for(boolean CB$11:new ForList(
                     new StepUntil(new NAME$<Number>(){ public Number put(Number x$){p$c=(int)x$; return(x$);};  public Number get(){return((Number)p$c); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(8); }})
                    )) { if(!CB$11) continue;
-                if((p$r<(8))) {
+                if(VALUE$((p$r<(8)))) {
                     new TQueens$p(((TQueens)(CUR$.SL$)),(p$r+(1)),p$c,p$q.COPY(),p$u.COPY(),p$d.COPY());
                 } else
                 // JavaLine 66 ==> SourceLine 12
@@ -70,7 +70,7 @@ public final class TQueens$p extends BASICIO$ {
                     sysout().outint(p$c,1);
                     // JavaLine 71 ==> SourceLine 13
                     sysout().outchar(((char)32));
-                    if((p$c==(8))) {
+                    if(VALUE$((p$c==(8)))) {
                         sysout().outimage();
                     }
                     TRACE_END_STM$("CompoundStatement12",13);

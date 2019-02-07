@@ -120,26 +120,26 @@ public final class Constant extends Expression {
     public static Number getNumber(Expression x) {
 	    if(x instanceof Constant) {
 		    Object value=((Constant)x).value;
-		    //System.out.println("ArithmeticOperation.getNumber: value="+value+", QUAL="+value.getClass().getSimpleName());
+		    //Util.println("ArithmeticOperation.getNumber: value="+value+", QUAL="+value.getClass().getSimpleName());
 		    if(value instanceof Number) return((Number)value);
 	    }
 	    if(x instanceof Variable) {
 		    Variable var=(Variable)x;
 //		    Meaning meaning=var.meaning;
 		    Meaning meaning=Global.currentScope.findMeaning(var.identifier);
-//		    //System.out.println("ArithmeticOperation.getNumber: meaning="+meaning);
+//		    //Util.println("ArithmeticOperation.getNumber: meaning="+meaning);
 		    if(meaning==null) return(null);
 		    Declaration declaredAs=meaning.declaredAs;
-		    //System.out.println("ArithmeticOperation.getNumber: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());
+		    //Util.println("ArithmeticOperation.getNumber: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());
 		    if(declaredAs instanceof TypeDeclaration) {
 			    TypeDeclaration tp=(TypeDeclaration)declaredAs;
 			    Expression constElt=tp.constantElement;
-			    //System.out.println("ArithmeticOperation.getNumber: constElt="+constElt);
+			    //Util.println("ArithmeticOperation.getNumber: constElt="+constElt);
 			    if(constElt!=null) {
-				    //System.out.println("ArithmeticOperation.getNumber: constElt="+constElt+", QUAL="+constElt.getClass().getSimpleName());
+				    //Util.println("ArithmeticOperation.getNumber: constElt="+constElt+", QUAL="+constElt.getClass().getSimpleName());
 				    if(constElt instanceof Constant) {
 					    Object value=((Constant)constElt).value;
-					    //System.out.println("ArithmeticOperation.getNumber: value="+value+", QUAL="+value.getClass().getSimpleName());
+					    //Util.println("ArithmeticOperation.getNumber: value="+value+", QUAL="+value.getClass().getSimpleName());
 					    if(value instanceof Number) return((Number)value);
 				    }
 			    }

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 393
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$do_kommando extends BASICIO$ {
@@ -39,79 +39,79 @@ public final class HegnaNRK$PBLK21$do_kommando extends BASICIO$ {
     public HegnaNRK$PBLK21$do_kommando STM$() {
         TRACE_BEGIN_STM$("do_kommando",393);
         // JavaLine 41 ==> SourceLine 396
-        if((p$kommandonr==(1))) {
+        if(VALUE$((p$kommandonr==(1)))) {
             new HegnaNRK$PBLK21$definer(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 45 ==> SourceLine 397
-        if((p$kommandonr==(2))) {
+        if(VALUE$((p$kommandonr==(2)))) {
             new HegnaNRK$PBLK21$registrer(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 49 ==> SourceLine 398
-        if((p$kommandonr==(3))) {
+        if(VALUE$((p$kommandonr==(3)))) {
             new HegnaNRK$PBLK21$finn(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 53 ==> SourceLine 399
-        if((p$kommandonr==(4))) {
+        if(VALUE$((p$kommandonr==(4)))) {
             new HegnaNRK$PBLK21$endre(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 57 ==> SourceLine 400
-        if((p$kommandonr==(5))) {
+        if(VALUE$((p$kommandonr==(5)))) {
             new HegnaNRK$PBLK21$trykk(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 61 ==> SourceLine 401
-        if((p$kommandonr==(6))) {
+        if(VALUE$((p$kommandonr==(6)))) {
             new HegnaNRK$PBLK21$fjern(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 65 ==> SourceLine 402
-        if((p$kommandonr==(7))) {
+        if(VALUE$((p$kommandonr==(7)))) {
             new HegnaNRK$PBLK21$hjelp(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 69 ==> SourceLine 403
-        if((p$kommandonr==(8))) {
+        if(VALUE$((p$kommandonr==(8)))) {
             new HegnaNRK$PBLK21$list(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 73 ==> SourceLine 404
-        if((p$kommandonr==(9))) {
+        if(VALUE$((p$kommandonr==(9)))) {
             new HegnaNRK$PBLK21$listdef(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 77 ==> SourceLine 405
-        if((p$kommandonr==(10))) {
+        if(VALUE$((p$kommandonr==(10)))) {
             new HegnaNRK$PBLK21$neste(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 81 ==> SourceLine 406
-        if((p$kommandonr==(11))) {
+        if(VALUE$((p$kommandonr==(11)))) {
             new HegnaNRK$PBLK21$hent(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 85 ==> SourceLine 407
-        if((p$kommandonr==(12))) {
+        if(VALUE$((p$kommandonr==(12)))) {
             new HegnaNRK$PBLK21$datareg(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 89 ==> SourceLine 408
-        if((p$kommandonr==(13))) {
+        if(VALUE$((p$kommandonr==(13)))) {
             new HegnaNRK$PBLK21$definer_format(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 93 ==> SourceLine 409
-        if((p$kommandonr==(14))) {
+        if(VALUE$((p$kommandonr==(14)))) {
             new HegnaNRK$PBLK21$rapporter(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 97 ==> SourceLine 410
-        if((p$kommandonr==(15))) {
+        if(VALUE$((p$kommandonr==(15)))) {
             new HegnaNRK$PBLK21$tainn(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 101 ==> SourceLine 411
-        if((p$kommandonr==(16))) {
+        if(VALUE$((p$kommandonr==(16)))) {
             new HegnaNRK$PBLK21$leggut(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 105 ==> SourceLine 412
-        if((p$kommandonr==(17))) {
+        if(VALUE$((p$kommandonr==(17)))) {
             new HegnaNRK$PBLK21$finnmengde(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 109 ==> SourceLine 413
-        if((p$kommandonr==(18))) {
+        if(VALUE$((p$kommandonr==(18)))) {
             new HegnaNRK$PBLK21$sortermengde(((HegnaNRK$PBLK21)(CUR$.SL$)));
         } else
         // JavaLine 113 ==> SourceLine 414
-        if((p$kommandonr==(19))) {
+        if(VALUE$((p$kommandonr==(19)))) {
             new HegnaNRK$PBLK21$rapportermengde(((HegnaNRK$PBLK21)(CUR$.SL$)));
         }
         TRACE_END_STM$("do_kommando",414);

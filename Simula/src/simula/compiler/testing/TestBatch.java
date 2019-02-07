@@ -100,7 +100,7 @@ public final class TestBatch {
 		doCompile(TEST_PROGRAMS);
 //		doCompile(OLDIES);
 //		doCompile(STANDARD_CLASSES);
-		System.out.println("*** SIMULA TESTBATCH TERMINATES NORMALLY");
+		Util.println("*** SIMULA TESTBATCH TERMINATES NORMALLY");
 	}
 
 }

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 792
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$skriv_intern_post extends BASICIO$ {
@@ -28,7 +28,7 @@ public final class HegnaNRK$PBLK21$skriv_intern_post extends BASICIO$ {
         // JavaLine 28 ==> SourceLine 795
         post_fri=new HegnaNRK$PBLK21$ledig_post_plass(((HegnaNRK$PBLK21)(CUR$.SL$))).RESULT$;
         // JavaLine 30 ==> SourceLine 796
-        if((post_fri!=(0))) {
+        if(VALUE$((post_fri!=(0)))) {
             // JavaLine 32 ==> SourceLine 798
             {
                 TRACE_BEGIN_STM$("CompoundStatement798",798);

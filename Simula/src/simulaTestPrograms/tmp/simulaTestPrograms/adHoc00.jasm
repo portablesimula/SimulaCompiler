@@ -1,0 +1,333 @@
+package  simulaTestPrograms;
+
+super public final class adHoc00
+	extends simula/runtime/BASICIO$
+	version 52:0
+{
+
+final Field T1:"Lsimula/runtime/RTObject$$LABQNT$;";
+final Field L2:"Lsimula/runtime/RTObject$$LABQNT$;";
+final Field EXIT:"Lsimula/runtime/RTObject$$LABQNT$;";
+Field i:I;
+public static Field INFO$:"Lsimula/runtime/PROGINFO$;";
+
+public Method prefixLevel:"()I"
+	stack 1 locals 1
+{
+		iconst_0;
+		ireturn;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;)V"
+	stack 7 locals 2
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		new	class simula/runtime/RTObject$$LABQNT$;
+		dup;
+		aload_0;
+		aload_0;
+		iconst_0;
+		iconst_1;
+		invokespecial	Method simula/runtime/RTObject$$LABQNT$."<init>":"(Lsimula/runtime/RTObject$;Lsimula/runtime/RTObject$;II)V";
+		putfield	Field T1:"Lsimula/runtime/RTObject$$LABQNT$;";
+		aload_0;
+		new	class simula/runtime/RTObject$$LABQNT$;
+		dup;
+		aload_0;
+		aload_0;
+		iconst_0;
+		iconst_2;
+		invokespecial	Method simula/runtime/RTObject$$LABQNT$."<init>":"(Lsimula/runtime/RTObject$;Lsimula/runtime/RTObject$;II)V";
+		putfield	Field L2:"Lsimula/runtime/RTObject$$LABQNT$;";
+		aload_0;
+		new	class simula/runtime/RTObject$$LABQNT$;
+		dup;
+		aload_0;
+		aload_0;
+		iconst_0;
+		iconst_3;
+		invokespecial	Method simula/runtime/RTObject$$LABQNT$."<init>":"(Lsimula/runtime/RTObject$;Lsimula/runtime/RTObject$;II)V";
+		putfield	Field EXIT:"Lsimula/runtime/RTObject$$LABQNT$;";
+		aload_0;
+		iconst_0;
+		putfield	Field i:"I";
+		aload_0;
+		invokevirtual	Method BBLK:"()V";
+		aload_0;
+		ldc	String "adHoc00";
+		invokevirtual	Method BPRG:"(Ljava/lang/String;)V";
+		aload_0;
+		ldc	String "adHoc00";
+		iconst_3;
+		invokevirtual	Method TRACE_BEGIN_DCL$:"(Ljava/lang/String;I)V";
+		return;
+}
+
+public Method STM$:"()Lsimula/runtime/RTObject$;"
+	stack 4 locals 3
+{
+		aload_0;
+		ldc	String "adHoc00";
+		iconst_3;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		checkcast	class adHoc00;
+		astore_1;
+	L14:	stack_frame_type append;
+		locals_map class adHoc00;
+		aload_0;
+		getfield	Field JTX$:"I";
+		iflt	L201;
+		try t0;
+		aload_0;
+		getfield	Field JTX$:"I";
+  //		invokestatic	Method JUMPTABLE$:"(I)V"; // Removed
+		tableswitch  { // Inserted
+		// Case 0 is fall through -- Inserted
+		        1: DEFAULT$; // Inserted
+		        2: LABEL$2; // Inserted
+		        3: LABEL$3; // Inserted
+		};  // Default is fall through -- Inserted
+		DEFAULT$:	stack_frame_type same; // Inserted
+  // Removed	iconst_1;
+  // Removed	invokestatic	Method LABEL$:"(I)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "AT T1 -- Should GOTO L2";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		invokevirtual	Method simula/runtime/PrintFile$.outimage:"()V";
+		aload_0;
+		aload_0;
+		getfield	Field L2:"Lsimula/runtime/RTObject$$LABQNT$;";
+		invokevirtual	Method GOTO$:"(Lsimula/runtime/RTObject$$LABQNT$;)V";
+		aload_0;
+		bipush	78;
+		putfield	Field i:"I";
+  // Removed	iconst_2;
+  // Removed	invokestatic	Method LABEL$:"(I)V";
+  LABEL$2:	stack_frame_type same_frame_extended; // Inserted
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "AT L2 -- Should GOTO EXIT";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		invokevirtual	Method simula/runtime/PrintFile$.outimage:"()V";
+		aload_0;
+		aload_0;
+		getfield	Field EXIT:"Lsimula/runtime/RTObject$$LABQNT$;";
+		invokevirtual	Method GOTO$:"(Lsimula/runtime/RTObject$$LABQNT$;)V";
+		aload_0;
+		aload_0;
+		getfield	Field i:"I";
+		iconst_1;
+		iadd;
+		putfield	Field i:"I";
+  // Removed	iconst_3;
+  // Removed	invokestatic	Method LABEL$:"(I)V";
+  LABEL$3:	stack_frame_type same_frame_extended; // Inserted
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field i:"I";
+		iconst_0;
+		invokevirtual	Method simula/runtime/PrintFile$.outint:"(II)V";
+		endtry t0;
+		goto	L201;
+		catch t0 simula/runtime/RTObject$$LABQNT$;
+		stack_frame_type stack1_ex;
+		stack_map class simula/runtime/RTObject$$LABQNT$;
+		astore_2;
+		aload_1;
+		putstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		aload_2;
+		getfield	Field simula/runtime/RTObject$$LABQNT$.SL$:"Lsimula/runtime/RTObject$;";
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		if_acmpne	L155;
+		aload_2;
+		getfield	Field simula/runtime/RTObject$$LABQNT$.prefixLevel:"I";
+		ifeq	L178;
+	L155:	stack_frame_type append;
+		locals_map class simula/runtime/RTObject$$LABQNT$;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getstatic	Field simula/runtime/RTObject$$OperationalState.terminated:"Lsimula/runtime/RTObject$$OperationalState;";
+		putfield	Field simula/runtime/RTObject$.STATE$:"Lsimula/runtime/RTObject$$OperationalState;";
+		getstatic	Field simula/runtime/RT$Option.GOTO_TRACING:"Z";
+		ifeq	L176;
+		ldc	String "NON-LOCAL";
+		aload_2;
+		invokestatic	Method TRACE_GOTO:"(Ljava/lang/String;Lsimula/runtime/RTObject$$LABQNT$;)V";
+	L176:	stack_frame_type same;
+		aload_2;
+		athrow;
+	L178:	stack_frame_type same;
+		getstatic	Field simula/runtime/RT$Option.GOTO_TRACING:"Z";
+		ifeq	L190;
+		ldc	String "LOCAL";
+		aload_2;
+		invokestatic	Method TRACE_GOTO:"(Ljava/lang/String;Lsimula/runtime/RTObject$$LABQNT$;)V";
+	L190:	stack_frame_type same;
+		aload_0;
+		aload_2;
+		getfield	Field simula/runtime/RTObject$$LABQNT$.index:"I";
+		putfield	Field JTX$:"I";
+		goto	L14;
+	L201:	stack_frame_type chop1;
+		aload_0;
+		ldc	String "adHoc00";
+		bipush	11;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method EBLK:"()V";
+		aconst_null;
+		areturn;
+}
+
+public static Method main:"([Ljava/lang/String;)V"
+	stack 3 locals 1
+{
+		aload_0;
+		invokestatic	Method simula/runtime/RT.setRuntimeOptions:"([Ljava/lang/String;)V";
+		new	class adHoc00;
+		dup;
+		getstatic	Field CTX$:"Lsimula/runtime/BASICIO$;";
+		invokespecial	Method "<init>":"(Lsimula/runtime/RTObject$;)V";
+		invokevirtual	Method STM$:"()Lsimula/runtime/RTObject$;";
+		pop;
+		return;
+}
+
+static Method "<clinit>":"()V"
+	stack 8 locals 0
+{
+		new	class simula/runtime/PROGINFO$;
+		dup;
+		ldc	String "adHoc00.sim";
+		ldc	String "SimulaProgram adHoc00";
+		bipush	26;
+		newarray int;
+		dup;
+		iconst_0;
+		iconst_1;
+		iastore;
+		dup;
+		iconst_1;
+		iconst_3;
+		iastore;
+		dup;
+		iconst_2;
+		bipush	10;
+		iastore;
+		dup;
+		iconst_3;
+		iconst_5;
+		iastore;
+		dup;
+		iconst_4;
+		bipush	12;
+		iastore;
+		dup;
+		iconst_5;
+		bipush	8;
+		iastore;
+		dup;
+		bipush	6;
+		bipush	14;
+		iastore;
+		dup;
+		bipush	7;
+		bipush	11;
+		iastore;
+		dup;
+		bipush	8;
+		bipush	17;
+		iastore;
+		dup;
+		bipush	9;
+		iconst_3;
+		iastore;
+		dup;
+		bipush	10;
+		bipush	34;
+		iastore;
+		dup;
+		bipush	11;
+		iconst_5;
+		iastore;
+		dup;
+		bipush	12;
+		bipush	38;
+		iastore;
+		dup;
+		bipush	13;
+		bipush	6;
+		iastore;
+		dup;
+		bipush	14;
+		bipush	40;
+		iastore;
+		dup;
+		bipush	15;
+		bipush	7;
+		iastore;
+		dup;
+		bipush	16;
+		bipush	42;
+		iastore;
+		dup;
+		bipush	17;
+		bipush	8;
+		iastore;
+		dup;
+		bipush	18;
+		bipush	46;
+		iastore;
+		dup;
+		bipush	19;
+		bipush	9;
+		iastore;
+		dup;
+		bipush	20;
+		bipush	48;
+		iastore;
+		dup;
+		bipush	21;
+		bipush	10;
+		iastore;
+		dup;
+		bipush	22;
+		bipush	50;
+		iastore;
+		dup;
+		bipush	23;
+		bipush	11;
+		iastore;
+		dup;
+		bipush	24;
+		bipush	75;
+		iastore;
+		dup;
+		bipush	25;
+		bipush	12;
+		iastore;
+		invokespecial	Method simula/runtime/PROGINFO$."<init>":"(Ljava/lang/String;Ljava/lang/String;[I)V";
+		putstatic	Field INFO$:"Lsimula/runtime/PROGINFO$;";
+		return;
+}
+
+public final InnerClass LABQNT$=class simula/runtime/RTObject$$LABQNT$ of class simula/runtime/RTObject$;
+public static final enum InnerClass OperationalState=class simula/runtime/RTObject$$OperationalState of class simula/runtime/RTObject$;
+public static InnerClass Option=class simula/runtime/RT$Option of class simula/runtime/RT;
+
+} // end Class adHoc00

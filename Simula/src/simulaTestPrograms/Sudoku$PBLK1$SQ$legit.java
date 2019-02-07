@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 24
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:12:51 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:41:55 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Sudoku$PBLK1$SQ$legit extends BASICIO$ {
@@ -58,7 +58,7 @@ public final class Sudoku$PBLK1$SQ$legit extends BASICIO$ {
                     new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(9); }})
                    )) { if(!CB$28) continue;
                 // JavaLine 60 ==> SourceLine 29
-                if((((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.Elt[((Sudoku$PBLK1$SQ)(CUR$.SL$)).p2$row-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[0]][i-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[1]].p2$val==(p$val))) {
+                if(VALUE$((((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.Elt[((Sudoku$PBLK1$SQ)(CUR$.SL$)).p2$row-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[0]][i-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[1]].p2$val==(p$val)))) {
                     GOTO$(exit); // GOTO EVALUATED LABEL
                 }
             }
@@ -67,7 +67,7 @@ public final class Sudoku$PBLK1$SQ$legit extends BASICIO$ {
                 new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(9); }})
                )) { if(!CB$30) continue;
             // JavaLine 69 ==> SourceLine 31
-            if((((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.Elt[i-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[0]][((Sudoku$PBLK1$SQ)(CUR$.SL$)).p2$col-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[1]].p2$val==(p$val))) {
+            if(VALUE$((((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.Elt[i-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[0]][((Sudoku$PBLK1$SQ)(CUR$.SL$)).p2$col-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[1]].p2$val==(p$val)))) {
                 GOTO$(exit); // GOTO EVALUATED LABEL
             }
         }
@@ -84,7 +84,7 @@ public final class Sudoku$PBLK1$SQ$legit extends BASICIO$ {
             new StepUntil(new NAME$<Number>(){ public Number put(Number x$){j=(int)x$; return(x$);};  public Number get(){return((Number)j); }	},new NAME$<Number>() { public Number get(){return(reg_col); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return((reg_col+(2))); }})
            )) { if(!CB$36) continue;
         // JavaLine 86 ==> SourceLine 37
-        if((((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.Elt[i-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[0]][j-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[1]].p2$val==(p$val))) {
+        if(VALUE$((((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.Elt[i-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[0]][j-((Sudoku$PBLK1)(CUR$.SL$.SL$)).SQinst.LB[1]].p2$val==(p$val)))) {
             GOTO$(exit); // GOTO EVALUATED LABEL
         }
     }
@@ -92,7 +92,7 @@ public final class Sudoku$PBLK1$SQ$legit extends BASICIO$ {
 // JavaLine 92 ==> SourceLine 38
 RESULT$=true;
 // JavaLine 94 ==> SourceLine 40
-LABEL$(1); // exit
+LABEL$(1,"exit");
 break LOOP$;
 }
 catch(LABQNT$ q) {

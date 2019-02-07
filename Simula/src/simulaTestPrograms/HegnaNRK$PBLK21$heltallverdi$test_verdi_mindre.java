@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 79
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:36 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$heltallverdi$test_verdi_mindre extends BASICIO$ {

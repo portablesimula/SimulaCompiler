@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 15
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:13:52 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:37:33 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Docking$PBLK13$trace extends BASICIO$ {
@@ -39,7 +39,7 @@ public final class Docking$PBLK13$trace extends BASICIO$ {
     public Docking$PBLK13$trace STM$() {
         TRACE_BEGIN_STM$("trace",15);
         // JavaLine 41 ==> SourceLine 16
-        if(((Docking$PBLK13)(CUR$.SL$)).verbose) {
+        if(VALUE$(((Docking$PBLK13)(CUR$.SL$)).verbose)) {
             // JavaLine 43 ==> SourceLine 17
             {
                 TRACE_BEGIN_STM$("CompoundStatement17",17);

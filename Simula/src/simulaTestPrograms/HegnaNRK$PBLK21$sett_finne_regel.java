@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 780
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$sett_finne_regel extends BASICIO$ {
@@ -21,7 +21,7 @@ public final class HegnaNRK$PBLK21$sett_finne_regel extends BASICIO$ {
     public HegnaNRK$PBLK21$sett_finne_regel STM$() {
         TRACE_BEGIN_STM$("sett_finne_regel",780);
         // JavaLine 23 ==> SourceLine 783
-        if((((HegnaNRK$PBLK21)(CUR$.SL$)).finne_regel_antall<(((HegnaNRK$PBLK21)(CUR$.SL$)).max_finne_regel))) {
+        if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).finne_regel_antall<(((HegnaNRK$PBLK21)(CUR$.SL$)).max_finne_regel)))) {
             // JavaLine 25 ==> SourceLine 785
             {
                 TRACE_BEGIN_STM$("CompoundStatement785",785);

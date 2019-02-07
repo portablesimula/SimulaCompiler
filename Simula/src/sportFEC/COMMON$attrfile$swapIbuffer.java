@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1332
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$attrfile$swapIbuffer extends BASICIO$ {
@@ -34,7 +34,7 @@ public final class COMMON$attrfile$swapIbuffer extends BASICIO$ {
             // JavaLine 34 ==> SourceLine 1338
             {
                 TRACE_BEGIN_STM$("CompoundStatement1338",1338);
-                if(inspect$1337$5.endfile()) {
+                if(VALUE$(inspect$1337$5.endfile())) {
                     // JavaLine 38 ==> SourceLine 1339
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1339",1339);

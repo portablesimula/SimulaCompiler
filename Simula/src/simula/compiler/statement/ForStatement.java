@@ -136,7 +136,7 @@ public final class ForStatement extends Statement
   
   public void print(String indent)
   { String fl=forList.toString().replace('[',' ').replace(']',' ');
-    System.out.println(indent+"FOR "+controlVariable+" "+assignmentOperator+fl+"DO");
+    Util.println(indent+"FOR "+controlVariable+" "+assignmentOperator+fl+"DO");
     if(doStatement!=null) doStatement.print(indent); }
   
   public String toString()

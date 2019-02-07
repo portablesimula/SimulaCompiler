@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 162
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:36 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$tekstverdi$test_verdilikhet$SubBlock162 extends BASICIO$ {
@@ -27,7 +27,7 @@ public final class HegnaNRK$PBLK21$tekstverdi$test_verdilikhet$SubBlock162 exten
         // JavaLine 27 ==> SourceLine 165
         j=((TXT$.length(((HegnaNRK$PBLK21$tekstverdi)(((HegnaNRK$PBLK21$tekstverdi$test_verdilikhet)(CUR$.SL$)).p$v)).tekst)-(k))+(1));
         // JavaLine 29 ==> SourceLine 166
-        if((j<(0))) {
+        if(VALUE$((j<(0)))) {
             ((HegnaNRK$PBLK21$tekstverdi$test_verdilikhet)(CUR$.SL$)).RESULT$=false;
         } else
         // JavaLine 33 ==> SourceLine 169

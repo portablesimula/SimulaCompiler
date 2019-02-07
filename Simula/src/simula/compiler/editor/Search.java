@@ -120,9 +120,9 @@ public class Search extends JFrame {
 			startIndex = 0;
 		}
 		int selectEnd = selectStart + textField.getText().length();
-		System.out.println("FindButton: textField="+textField.getText());
-		System.out.println("FindButton: selectStart="+selectStart);
-		System.out.println("FindButton: selectEnd="+selectEnd);
+		Util.println("FindButton: textField="+textField.getText());
+		Util.println("FindButton: selectStart="+selectStart);
+		Util.println("FindButton: selectEnd="+selectEnd);
 		textPane.select(selectStart, selectEnd);		
 	}
 	

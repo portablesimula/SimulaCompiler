@@ -1,0 +1,336 @@
+package  simulaTestBatch;
+
+super public final class simtst06$testmatlib$testsqrt
+	extends simula/runtime/BASICIO$
+	version 52:0
+{
+
+public Field p$x:D;
+Field a:D;
+private Field $npar:I;
+public static Field INFO$:"Lsimula/runtime/PROGINFO$;";
+
+public Method prefixLevel:"()I"
+	stack 1 locals 1
+{
+		iconst_0;
+		ireturn;
+}
+
+public Method setPar:"(Ljava/lang/Object;)LsimulaTestBatch/simtst06$testmatlib$testsqrt;"
+	stack 4 locals 3
+{
+		try t0;
+		aload_0;
+		dup;
+		getfield	Field $npar:"I";
+		dup_x1;
+		iconst_1;
+		iadd;
+		putfield	Field $npar:"I";
+		lookupswitch{ //1
+		0: L28;
+		default: L40 };
+	L28:	stack_frame_type same;
+		aload_0;
+		aload_0;
+		aload_1;
+		invokevirtual	Method doubleValue:"(Ljava/lang/Object;)D";
+		putfield	Field p$x:"D";
+		goto	L50;
+	L40:	stack_frame_type same;
+		new	class java/lang/RuntimeException;
+		dup;
+		ldc	String "Wrong number of parameters";
+		invokespecial	Method java/lang/RuntimeException."<init>":"(Ljava/lang/String;)V";
+		athrow;
+		endtry t0;
+	L50:	stack_frame_type same;
+		goto	L94;
+		catch t0 java/lang/ClassCastException;
+		stack_frame_type stack1;
+		stack_map class java/lang/ClassCastException;
+		astore_2;
+		new	class java/lang/RuntimeException;
+		dup;
+		new	class java/lang/StringBuilder;
+		dup;
+		invokespecial	Method java/lang/StringBuilder."<init>":"()V";
+		ldc	String "Wrong type of parameter: ";
+		invokevirtual	Method java/lang/StringBuilder.append:"(Ljava/lang/String;)Ljava/lang/StringBuilder;";
+		aload_0;
+		getfield	Field $npar:"I";
+		invokevirtual	Method java/lang/StringBuilder.append:"(I)Ljava/lang/StringBuilder;";
+		ldc	String " ";
+		invokevirtual	Method java/lang/StringBuilder.append:"(Ljava/lang/String;)Ljava/lang/StringBuilder;";
+		aload_1;
+		invokevirtual	Method java/lang/StringBuilder.append:"(Ljava/lang/Object;)Ljava/lang/StringBuilder;";
+		invokevirtual	Method java/lang/StringBuilder.toString:"()Ljava/lang/String;";
+		aload_2;
+		invokespecial	Method java/lang/RuntimeException."<init>":"(Ljava/lang/String;Ljava/lang/Throwable;)V";
+		athrow;
+	L94:	stack_frame_type same;
+		aload_0;
+		areturn;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;)V"
+	stack 3 locals 2
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		dconst_0;
+		putfield	Field a:"D";
+		aload_0;
+		iconst_0;
+		putfield	Field $npar:"I";
+		return;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;D)V"
+	stack 3 locals 4
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		dconst_0;
+		putfield	Field a:"D";
+		aload_0;
+		iconst_0;
+		putfield	Field $npar:"I";
+		aload_0;
+		dload_2;
+		putfield	Field p$x:"D";
+		aload_0;
+		invokevirtual	Method BBLK:"()V";
+		aload_0;
+		ldc	String "testsqrt";
+		sipush	149;
+		invokevirtual	Method TRACE_BEGIN_DCL$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method STM$:"()LsimulaTestBatch/simtst06$testmatlib$testsqrt;";
+		pop;
+		return;
+}
+
+public Method STM$:"()LsimulaTestBatch/simtst06$testmatlib$testsqrt;"
+	stack 7 locals 1
+{
+		aload_0;
+		ldc	String "testsqrt";
+		sipush	149;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		aload_0;
+		aload_0;
+		getfield	Field p$x:"D";
+		invokevirtual	Method sqrt:"(D)D";
+		ldc2_w	double 2.0d;
+		invokestatic	Method java/lang/Math.pow:"(DD)D";
+		putfield	Field a:"D";
+		new	class simtst06$testmatlib$realdiff;
+		dup;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst06$testmatlib;
+		checkcast	class simtst06$testmatlib;
+		aload_0;
+		getfield	Field a:"D";
+		aload_0;
+		getfield	Field p$x:"D";
+		invokespecial	Method simtst06$testmatlib$realdiff."<init>":"(Lsimula/runtime/RTObject$;DD)V";
+		getfield	Field simtst06$testmatlib$realdiff.RESULT$:"Z";
+		ifeq	L194;
+		aload_0;
+		ldc	String "CompoundStatement155";
+		sipush	155;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		new	class simtst06$testmatlib$error;
+		dup;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst06$testmatlib;
+		checkcast	class simtst06$testmatlib;
+		aload_0;
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "sqrt";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method copy:"(Lsimula/runtime/TXT$;)Lsimula/runtime/TXT$;";
+		invokespecial	Method simtst06$testmatlib$error."<init>":"(Lsimula/runtime/RTObject$;Lsimula/runtime/TXT$;)V";
+		pop;
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "  x=            ";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field p$x:"D";
+		bipush	16;
+		bipush	23;
+		invokevirtual	Method simula/runtime/PrintFile$.outreal:"(DII)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		invokevirtual	Method simula/runtime/PrintFile$.outimage:"()V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "  sqrt(x)**2=   ";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokevirtual	Method simula/runtime/PrintFile$.outtext:"(Lsimula/runtime/TXT$;)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		aload_0;
+		getfield	Field a:"D";
+		bipush	16;
+		bipush	23;
+		invokevirtual	Method simula/runtime/PrintFile$.outreal:"(DII)V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		invokevirtual	Method simula/runtime/PrintFile$.outimage:"()V";
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		invokevirtual	Method simula/runtime/PrintFile$.outimage:"()V";
+		aload_0;
+		ldc	String "CompoundStatement155";
+		sipush	160;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+	L194:	stack_frame_type same_ex;
+		aload_0;
+		ldc	String "testsqrt";
+		sipush	160;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method EBLK:"()V";
+		aload_0;
+		areturn;
+}
+
+public bridge synthetic Method STM$:"()Lsimula/runtime/RTObject$;"
+	stack 1 locals 1
+{
+		aload_0;
+		invokevirtual	Method STM$:"()LsimulaTestBatch/simtst06$testmatlib$testsqrt;";
+		areturn;
+}
+
+public bridge synthetic Method setPar:"(Ljava/lang/Object;)Lsimula/runtime/RTObject$;"
+	stack 2 locals 2
+{
+		aload_0;
+		aload_1;
+		invokevirtual	Method setPar:"(Ljava/lang/Object;)LsimulaTestBatch/simtst06$testmatlib$testsqrt;";
+		areturn;
+}
+
+static Method "<clinit>":"()V"
+	stack 8 locals 0
+{
+		new	class simula/runtime/PROGINFO$;
+		dup;
+		ldc	String "simtst06.sim";
+		ldc	String "Procedure testsqrt";
+		bipush	22;
+		newarray int;
+		dup;
+		iconst_0;
+		iconst_1;
+		iastore;
+		dup;
+		iconst_1;
+		sipush	147;
+		iastore;
+		dup;
+		iconst_2;
+		bipush	12;
+		iastore;
+		dup;
+		iconst_3;
+		sipush	149;
+		iastore;
+		dup;
+		iconst_4;
+		bipush	43;
+		iastore;
+		dup;
+		iconst_5;
+		sipush	151;
+		iastore;
+		dup;
+		bipush	6;
+		bipush	45;
+		iastore;
+		dup;
+		bipush	7;
+		sipush	153;
+		iastore;
+		dup;
+		bipush	8;
+		bipush	47;
+		iastore;
+		dup;
+		bipush	9;
+		sipush	155;
+		iastore;
+		dup;
+		bipush	10;
+		bipush	51;
+		iastore;
+		dup;
+		bipush	11;
+		sipush	156;
+		iastore;
+		dup;
+		bipush	12;
+		bipush	53;
+		iastore;
+		dup;
+		bipush	13;
+		sipush	157;
+		iastore;
+		dup;
+		bipush	14;
+		bipush	56;
+		iastore;
+		dup;
+		bipush	15;
+		sipush	158;
+		iastore;
+		dup;
+		bipush	16;
+		bipush	58;
+		iastore;
+		dup;
+		bipush	17;
+		sipush	159;
+		iastore;
+		dup;
+		bipush	18;
+		bipush	60;
+		iastore;
+		dup;
+		bipush	19;
+		sipush	160;
+		iastore;
+		dup;
+		bipush	20;
+		bipush	69;
+		iastore;
+		dup;
+		bipush	21;
+		sipush	162;
+		iastore;
+		invokespecial	Method simula/runtime/PROGINFO$."<init>":"(Ljava/lang/String;Ljava/lang/String;[I)V";
+		putstatic	Field INFO$:"Lsimula/runtime/PROGINFO$;";
+		return;
+}
+
+} // end Class simtst06$testmatlib$testsqrt

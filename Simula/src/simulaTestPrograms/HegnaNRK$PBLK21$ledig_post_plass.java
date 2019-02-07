@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 881
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$ledig_post_plass extends BASICIO$ {
@@ -36,7 +36,7 @@ public final class HegnaNRK$PBLK21$ledig_post_plass extends BASICIO$ {
                 // JavaLine 36 ==> SourceLine 884
                 nr=0;
                 // JavaLine 38 ==> SourceLine 885
-                if(((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster<(((HegnaNRK$PBLK21)(CUR$.SL$)).max_antall_poster))&((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[(((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster+(1))-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]==(null))))) {
+                if(VALUE$(((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster<(((HegnaNRK$PBLK21)(CUR$.SL$)).max_antall_poster))&((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[(((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster+(1))-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]==(null)))))) {
                     // JavaLine 40 ==> SourceLine 887
                     nr=(((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster+(1));
                 } else
@@ -45,7 +45,7 @@ public final class HegnaNRK$PBLK21$ledig_post_plass extends BASICIO$ {
                     new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(((HegnaNRK$PBLK21)(CUR$.SL$)).max_antall_poster); }})
                    )) { if(!CB$889) continue;
                 // JavaLine 47 ==> SourceLine 890
-                if((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]==(null))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]==(null)))) {
                     // JavaLine 49 ==> SourceLine 892
                     {
                         TRACE_BEGIN_STM$("CompoundStatement892",892);
@@ -57,8 +57,8 @@ public final class HegnaNRK$PBLK21$ledig_post_plass extends BASICIO$ {
                 }
             }
             // JavaLine 59 ==> SourceLine 895
-            LABEL$(1); // out
-            if((nr==(0))) {
+            LABEL$(1,"out");
+            if(VALUE$((nr==(0)))) {
                 new HegnaNRK$PBLK21$feil(((HegnaNRK$PBLK21)(CUR$.SL$)),4);
             }
             // JavaLine 64 ==> SourceLine 896

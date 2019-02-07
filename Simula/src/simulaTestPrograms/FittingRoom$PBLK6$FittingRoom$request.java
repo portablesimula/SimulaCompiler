@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 10
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:12:47 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:33:08 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class FittingRoom$PBLK6$FittingRoom$request extends BASICIO$ {
@@ -21,7 +21,7 @@ public final class FittingRoom$PBLK6$FittingRoom$request extends BASICIO$ {
     public FittingRoom$PBLK6$FittingRoom$request STM$() {
         TRACE_BEGIN_STM$("request",10);
         // JavaLine 23 ==> SourceLine 11
-        if(((FittingRoom$PBLK6$FittingRoom)(CUR$.SL$)).inUse) {
+        if(VALUE$(((FittingRoom$PBLK6$FittingRoom)(CUR$.SL$)).inUse)) {
             // JavaLine 25 ==> SourceLine 12
             {
                 TRACE_BEGIN_STM$("CompoundStatement12",12);

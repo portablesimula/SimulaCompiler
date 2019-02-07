@@ -54,11 +54,11 @@ public final class ConditionalStatement extends Statement {
 	public void print(String indent) {
 		StringBuilder s = new StringBuilder(indent);
 		s.append("IF ").append(condition);
-		System.out.println(s.toString());
-		System.out.println(indent + "THEN ");
+		Util.println(s.toString());
+		Util.println(indent + "THEN ");
 		if (elseStatement != null) {
 			thenStatement.print(indent + "    ");
-			System.out.println(indent + "ELSE ");
+			Util.println(indent + "ELSE ");
 			elseStatement.print(indent + "     ");
 		} else
 			thenStatement.print(indent + "    ");
@@ -80,10 +80,14 @@ public final class ConditionalStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	
+	// TODO: Kan optimaliseres til å gjenkjenne Label inne i Conditional
+	//       statement grenene. Og bare legge inn  VALUE$(condition)  da !
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		JavaModule.code("if(" + condition.toJavaCode() + ") {");
+//		JavaModule.code("if(" + condition.toJavaCode() + ") {");
+		JavaModule.code("if(VALUE$(" + condition.toJavaCode() + ")) {");
 		thenStatement.doJavaCoding();
 		if (elseStatement != null) {
 			JavaModule.code("} else");

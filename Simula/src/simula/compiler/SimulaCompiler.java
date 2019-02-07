@@ -16,17 +16,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import org.apache.bcel.classfile.JavaClass;
-
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
+import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -75,19 +75,25 @@ public final class SimulaCompiler {
 		String simtmp=Option.keepJava;
 		if(simtmp==null) simtmp=Global.getTempFileDir("simula/");
 		
-		// Create Temp .class-Files Directory:
-		String tmpClassDirName=simtmp+"/bin/"+Global.packetName;
-		File tmpClassDir=new File(tmpClassDirName);
-		tmpClassDir.mkdirs();
-		tmpClassDir.deleteOnExit();
-		Global.tempClassFileDir=tmpClassDir.toString()+'/';
+//		// Create Temp .class-Files Directory:
+//		String tmpClassDirName=simtmp+"/bin/"+Global.packetName;
+//		File tmpClassDir=new File(tmpClassDirName);
+//		tmpClassDir.mkdirs();
+//		tmpClassDir.deleteOnExit();
+//		Global.tempClassFileDir=tmpClassDir.toString()+'/';
 		
 		// Create Temp .java-Files Directory:
 		String tmpJavaDirName=simtmp+"/src/"+Global.packetName;
 		File tmpJavaDir=new File(tmpJavaDirName);
 		tmpJavaDir.mkdirs();
-		tmpJavaDir.deleteOnExit();
+		if(Option.deleteTempFiles) tmpJavaDir.deleteOnExit();
 		Global.tempJavaFileDir=tmpJavaDir.toString()+'/';
+
+		// Create Temp .class-Files Directory:
+		File tmpClassDir=new File(Global.tempJavaFileDir+"/"+Global.sourceName+'_'+"Classes");
+		tmpClassDir.mkdirs();
+		if(Option.deleteTempFiles) tmpClassDir.deleteOnExit();
+		Global.tempClassFileDir=tmpClassDir.toString()+'/';
 
 		if(Option.verbose)
 		{ Util.message("Package Name:    "+Global.packetName);
@@ -107,22 +113,22 @@ public final class SimulaCompiler {
 		  Util.message("defaultCharset   "+Charset.defaultCharset());
 		}
 		// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
-//		System.out.println("SYSTEM: java.home="+System.getProperty("java.home"));
-//		System.out.println("SYSTEM: java.class.path="+System.getProperty("java.class.path"));
-//		System.out.println("SYSTEM: path.separator="+System.getProperty("path.separator"));
-//		System.out.println("SYSTEM: User working directory="+System.getProperty("user.dir"));
-//		System.out.println("SYSTEM: User home directory="+System.getProperty("user.home"));
-		emptyTempClassFileDir();
+//		Util.println("SYSTEM: java.home="+System.getProperty("java.home"));
+//		Util.println("SYSTEM: java.class.path="+System.getProperty("java.class.path"));
+//		Util.println("SYSTEM: path.separator="+System.getProperty("path.separator"));
+//		Util.println("SYSTEM: User working directory="+System.getProperty("user.dir"));
+//		Util.println("SYSTEM: User home directory="+System.getProperty("user.home"));
+		if(Option.deleteTempFiles) emptyTempClassFileDir();
 	}
 	
 	private void emptyTempClassFileDir() {
 		try { // Try to Clean Global.tempClassFileDir
 			  File tmpClass = new File(Global.tempClassFileDir + '/' + Global.packetName);
-			  // System.out.println("tmpClass: "+tmpClass);
+			  // Util.println("tmpClass: "+tmpClass);
 			  File[] elt = tmpClass.listFiles();
-			  // System.out.println("Elements: "+elt);
+			  // Util.println("Elements: "+elt);
 			  for (File f : elt) {
-				  // System.out.println("Delete: "+f);
+				  // Util.println("Delete: "+f);
 				  f.delete();
 			  }
 		} catch (Exception e) {	}
@@ -140,7 +146,7 @@ public final class SimulaCompiler {
 			if(reader==null) {
 				try { reader = new FileReader(inputFileName);
 				} catch (IOException e) {
-					//System.out.println("Error Opening File: " + fileName);
+					//Util.println("Error Opening File: " + fileName);
 					//e.printStackTrace();
 					Util.error("can't open " + inputFileName);
 				}
@@ -197,27 +203,27 @@ public final class SimulaCompiler {
 			if(Option.TRACE_JAVAC_OUTPUT)
 			{ for(JavaModule module:Global.javaModules)
 			  {	String classFile=module.getClassOutputFileName();
-			    JavaClass javaClass=ClassFileUtilities.load(classFile);
-			    ClassFileUtilities.list(module.javaOutputFileName,javaClass);
+			    doListClassFile(classFile);
 			  }
 			}
 			
 			// ***************************************************************
 			// *** POSSIBLE -- DO BYTE_CODE_ENGINEERING
 			// ***************************************************************
-//			for(JavaModule module:Global.javaModules)
-//			{ int nLab=module.getNumberOfLabels();
-//			  if(nLab>0) new ByteCodeEngineering().doRepairByteCode();
-//			}
-		    //ClassFileUtilities.list("C:/Users/YSTEIN~1/AppData/Local/Temp/GotoSample6Classes/testing/GotoSample6$B$1.class"); // AD'HOC
-			new ByteCodeEngineering().doRepairByteCode();
-		    //ClassFileUtilities.list("C:/Users/YSTEIN~1/AppData/Local/Temp/GotoSample6Classes/testing/GotoSample6$B$1.class"); // AD'HOC
+			//Util.println("SimulaCompiler.doCompile: BEGIN BYTE CODE REPAIR: "+Global.tempClassFileDir);
+			File classDir=new File(Global.tempClassFileDir);
+			//repairClassFiles(classDir);
+			ArrayList<String> files=classFiles(classDir,new ArrayList<String>());
+			for(String classFileName:files) {
+				//Util.println("SimulaCompiler.doCompile: Repair: "+classFileName);
+				new ByteCodeEngineering().doRepairSingleByteCode(classFileName);
+			}
+
+		    //doListClassFile("C:/Users/YSTEIN~1/AppData/Local/Temp/GotoSample6Classes/testing/GotoSample6$B$1.class"); // AD'HOC
 			if(Option.TRACE_BYTECODE_OUTPUT)
 			{ for(JavaModule module:Global.javaModules)
 			  {	String classFile=module.getClassOutputFileName();
-//			    JavaClass javaClass=ClassFileUtilities.load(classFile);
-//			    ClassFileUtilities.list(module.javaOutputFileName,javaClass);
-			    ClassFileUtilities.list(classFile);
+			    doListClassFile(classFile);
 			  }
 			}
 			
@@ -228,7 +234,7 @@ public final class SimulaCompiler {
 			String jarFile=createJarFile(program);
 			if(Option.TRACE_JARING)
 				{
-				System.out.println("List .jar File: "+jarFile);
+				Util.println("List .jar File: "+jarFile);
 			    execute("jar.exe -tvf "+jarFile);
 			}
 			
@@ -255,12 +261,53 @@ public final class SimulaCompiler {
 			     Util.message("END Execute .jar File. Exit value="+exitValue3);
 			}
 
-			emptyTempClassFileDir();
+			if(Option.deleteTempFiles) emptyTempClassFileDir();
 			
 		} catch (IOException e) {
 			Util.message("Compiler Error: "+e);
 			e.printStackTrace();
 		}
+	}
+	
+//	// ***************************************************************
+//	// *** REPAIR CLASS FILES
+//	// ***************************************************************
+//	public void repairClassFiles(final File folder) {
+//		for (final File fileEntry : folder.listFiles()) {
+//			if (fileEntry.isDirectory()) {
+//				repairClassFiles(fileEntry);
+//			} else {
+//				String classFileName = fileEntry.getPath();
+//				//Util.println(classFileName);
+//				if(classFileName.endsWith(".class")) {
+//					//Util.println("SimulaCompiler.doCompile: BYTE CODE REPAIR: " + classFileName);
+////					if (Global.USE_OW2_ASMTOOLS)
+//						 new ByteCodeEngineering().doRepairSingleByteCode(classFileName);
+////					else if (Global.USE_OpenJDK_ASMTOOLS)
+////						 new AsmToolEngineering().doRepairSingleByteCode(classFileName);
+////					else new ByteCodeEngineering().doRepairSingleByteCode(classFileName);
+//				}
+//			}
+//		}
+//	}
+	
+	// ***************************************************************
+	// *** CREATE CLASS FILE LIST
+	// ***************************************************************
+	public ArrayList<String> classFiles(final File folder,final ArrayList<String> files) {
+//		ArrayList<String> files=new ArrayList<String>();
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				classFiles(fileEntry,files);
+			} else {
+				String classFileName = fileEntry.getPath();
+				//Util.println(classFileName);
+				if(classFileName.endsWith(".class")) {
+					if(!files.contains(classFileName)) files.add(classFileName);
+				}
+			}
+		}
+		return(files);
 	}
 	
 	// ***************************************************************
@@ -270,7 +317,7 @@ public final class SimulaCompiler {
 	{ if(Option.verbose) Util.message("Call Java System Compiler");
 	  Vector<String> arguments=new Vector<String>();
 	  if(Option.TRACE_JAVAC) {  arguments.add("-version"); arguments.add("-verbose"); }
-	  if(Option.verbose) System.out.println("SimulaCompiler.callJavaSystemCompiler: classPath="+classPath);
+	  if(Option.verbose) Util.println("SimulaCompiler.callJavaSystemCompiler: classPath="+classPath);
 	  arguments.add("-classpath"); arguments.add(classPath);
 	  arguments.add("-d"); arguments.add(Global.tempClassFileDir); // Specifies output directory.
 	  if(Option.noJavacWarnings) arguments.add("-nowarn");
@@ -278,13 +325,13 @@ public final class SimulaCompiler {
       for(JavaModule module:Global.javaModules) arguments.add(module.javaOutputFileName); // Add .jave Files
 	  
 	  // java.home=C:\Program Files\Java\jre1.8.0_161
-	  if(Option.TRACE_JAVAC) System.out.println("Compiler="+compiler);
+	  if(Option.TRACE_JAVAC) Util.println("Compiler="+compiler);
 	  if(compiler==null) Util.error("SimulaCompiler.callJavaSystemCompiler: ToolProvider.getSystemJavaCompiler() returns null");
 	  int nArg=arguments.size();
 	  String[] args=new String[nArg];
 			  arguments.toArray(args);
 			  
-	  if(Option.TRACE_JAVAC) { for(int i=0;i<args.length;i++) System.out.println("Compiler'args["+i+"]="+args[i]); }
+	  if(Option.TRACE_JAVAC) { for(int i=0;i<args.length;i++) Util.println("Compiler'args["+i+"]="+args[i]); }
 
 	  int exitValue = compiler.run(null, null, null, args);
 	  if (Option.verbose)
@@ -307,16 +354,16 @@ public final class SimulaCompiler {
 //	  String javac=Global.javaDir+"javac.exe";
 //	  String javac=Global.javaHome+"javac.exe";
 	  String javac="javac.exe";
-	  //System.out.println("SimulaCompiler.callJavacCompiler: classPath="+classPath);
+	  //Util.println("SimulaCompiler.callJavacCompiler: classPath="+classPath);
 	  classPath=" -classpath "+classPath;
 	  
 	  // *** TODO: Hvis tempClassFileDir ikke finnes - CREATE !
 	  String classOutputDir=" -d "+Global.tempClassFileDir; 
 	
 	  if(Option.TRACE_JAVAC)
-	  { System.out.println("SimulaCompiler.doCompile JAVAC: classPath="+classPath);
-	    System.out.println("SimulaCompiler.doCompile JAVAC: source="+source);
-	    System.out.println("SimulaCompiler.doCompile JAVAC: classOutputDir="+classOutputDir);
+	  { Util.println("SimulaCompiler.doCompile JAVAC: classPath="+classPath);
+	    Util.println("SimulaCompiler.doCompile JAVAC: source="+source);
+	    Util.println("SimulaCompiler.doCompile JAVAC: classOutputDir="+classOutputDir);
 	  }
 	  String opt=(Option.TRACE_JAVAC)?" -verbose":"";
 	  //opt=opt+" -Xlint:unchecked";
@@ -387,24 +434,38 @@ public final class SimulaCompiler {
 	      return;
 	    }
         String entryName=source.getPath().replace("\\", "/");
-	    JarEntry entry = new JarEntry(entryName.substring(pathSize));
-	    entry.setTime(source.lastModified());
-	    target.putNextEntry(entry);
-	    inpt = new BufferedInputStream(new FileInputStream(source));
-	    byte[] buffer=new byte[1024];
-	    while(true)
-	    { int count=inpt.read(buffer);
-	      if(count == -1) break; // EOF
-	      target.write(buffer,0,count);
-	    }
-	    target.closeEntry();
+        //Util.println("SimulaCompiler.add: "+entryName);
+        if(!entryName.endsWith(".jasm")) {
+        	JarEntry entry = new JarEntry(entryName.substring(pathSize));
+        	entry.setTime(source.lastModified());
+        	target.putNextEntry(entry);
+        	inpt = new BufferedInputStream(new FileInputStream(source));
+        	byte[] buffer=new byte[1024];
+        	while(true)	{
+        		int count=inpt.read(buffer);
+        		if(count == -1) break; // EOF
+        		target.write(buffer,0,count);
+        	}
+        	target.closeEntry();
+        }
 	  } finally { if(inpt!=null) inpt.close(); }
 	}
+
 	
+	// ***************************************************************
+	// *** LIST .class file
+	// ***************************************************************
+	public static void doListClassFile(String classFileName) {
+//		String command="javap -c "+fileName;
+		String command="javap -c -l -p -s -verbose "+classFileName;
+		try { execute(command); } catch(IOException e) { e.printStackTrace();
+		}
+	}
+
 	// ***************************************************************
 	// *** EXECUTE OS COMMAND
 	// ***************************************************************
-	private int execute(String command) throws IOException
+	private static int execute(String command) throws IOException
 	{	Runtime runtime = Runtime.getRuntime();
 	    if(Option.verbose) Util.message("Execute: "+command);
 	    String cmd=command.trim()+'\n';

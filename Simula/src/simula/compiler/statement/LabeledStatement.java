@@ -57,7 +57,8 @@ public final class LabeledStatement extends Statement {
 		for (String label:labels) {
 			Meaning meaning = Global.currentScope.findMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-			JavaModule.code("LABEL$("+decl.index+"); // "+decl.identifier);
+//			JavaModule.code("LABEL$("+decl.index+"); // "+decl.identifier);
+			JavaModule.code("LABEL$("+decl.index+",\""+decl.identifier+"\");");
 		}
 		statement.doJavaCoding();
 	}

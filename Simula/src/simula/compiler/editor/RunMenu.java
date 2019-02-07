@@ -26,7 +26,7 @@ public class RunMenu extends JMenu {
         JMenuItem run = new JMenuItem("Run");
         run.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//System.out.println("menuRun.actionPerformed: e="+e);
+        		//Util.println("menuRun.actionPerformed: e="+e);
         		doRun();
 		}});
         this.add(run);
@@ -37,7 +37,7 @@ public class RunMenu extends JMenu {
         JMenuItem debug = new JMenuItem("Debug");
         debug.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		System.out.println("menuDebug.actionPerformed: e="+e);
+        		Util.println("menuDebug.actionPerformed: e="+e);
         		doRun();
 		}});
         debug.setEnabled(false);
@@ -58,7 +58,7 @@ public class RunMenu extends JMenu {
 
 		// Start compiler ....
       	String text=simulaEditor.getCurrentTextPanel().getPureText();
-//      System.out.println("SimulaEditor.doRun: text="+text);
+//      Util.println("SimulaEditor.doRun: text="+text);
        	if(text==null || text.trim().length()==0) {
        		Util.error("No Source Text to Compile, Please Open a File");
        		return;

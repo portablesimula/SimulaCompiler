@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 20
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:12:51 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:41:55 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class Sudoku$PBLK1$SQ extends Link$ {
@@ -30,7 +30,7 @@ public class Sudoku$PBLK1$SQ extends Link$ {
                 // JavaLine 30 ==> SourceLine 42
                 sysout().outint(p2$val,2);
                 // JavaLine 32 ==> SourceLine 43
-                if((p2$val==(0))) {
+                if(VALUE$((p2$val==(0)))) {
                     // JavaLine 34 ==> SourceLine 44
                     into(((Sudoku$PBLK1)(CUR$.SL$)).SQchain);
                 }
@@ -45,7 +45,7 @@ public class Sudoku$PBLK1$SQ extends Link$ {
                             new StepUntil(new NAME$<Number>(){ public Number put(Number x$){next_val=(int)x$; return(x$);};  public Number get(){return((Number)next_val); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(9); }})
                            )) { if(!CB$48) continue;
                         // JavaLine 47 ==> SourceLine 49
-                        if(new Sudoku$PBLK1$SQ$legit(((Sudoku$PBLK1$SQ)CUR$),next_val).RESULT$) {
+                        if(VALUE$(new Sudoku$PBLK1$SQ$legit(((Sudoku$PBLK1$SQ)CUR$),next_val).RESULT$)) {
                             // JavaLine 49 ==> SourceLine 50
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement50",50);

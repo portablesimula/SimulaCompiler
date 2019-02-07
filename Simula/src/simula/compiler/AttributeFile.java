@@ -50,10 +50,10 @@ public final class AttributeFile {
 	{ this.attributeFileName=attributeFileName; }
 	
 	private void TRACE_OUTPUT(String msg)
-	{ if(Option.TRACE_ATTRIBUTE_OUTPUT) System.out.println("ATTR OUTPUT: "+msg); }
+	{ if(Option.TRACE_ATTRIBUTE_OUTPUT) Util.println("ATTR OUTPUT: "+msg); }
 	
 	private void TRACE_INPUT(String msg)
-	{ if(Option.TRACE_ATTRIBUTE_INPUT) System.out.println("ATTR INPUT: "+msg); }
+	{ if(Option.TRACE_ATTRIBUTE_INPUT) Util.println("ATTR INPUT: "+msg); }
 	
 	public static void write(ProgramModule program) throws IOException
 	{ 

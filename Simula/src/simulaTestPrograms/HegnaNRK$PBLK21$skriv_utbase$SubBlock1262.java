@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1262
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$skriv_utbase$SubBlock1262 extends BASICIO$ {
@@ -136,12 +136,12 @@ i=(i+(1));
             // JavaLine 136 ==> SourceLine 1309
             ((HegnaNRK$PBLK21$skriv_utbase)(CUR$.SL$)).inspect$1261$9.outint(k,3);
             // JavaLine 138 ==> SourceLine 1310
-            if((k==(1))) {
+            if(VALUE$((k==(1)))) {
                 // JavaLine 140 ==> SourceLine 1312
                 ((HegnaNRK$PBLK21$skriv_utbase)(CUR$.SL$)).inspect$1261$9.outint(((HegnaNRK$PBLK21$heltallverdi)(((HegnaNRK$PBLK21$skriv_utbase)(CUR$.SL$)).inspect$1299$11.felt.Elt[j-((HegnaNRK$PBLK21$skriv_utbase)(CUR$.SL$)).inspect$1299$11.felt.LB[0]])).tall,8);
             } else
             // JavaLine 143 ==> SourceLine 1313
-            if((k==(2))) {
+            if(VALUE$((k==(2)))) {
                 // JavaLine 145 ==> SourceLine 1339
                 new HegnaNRK$PBLK21$skriv_utbase$SubBlock1262$CompoundStatement1298$CompoundStatement1301$CompoundStatement1307$SubBlock1315(CUR$).STM$();
             }

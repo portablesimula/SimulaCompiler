@@ -33,7 +33,7 @@ public final class InnerStatement extends Statement {
 	}
 
 	public void print(String indent) {
-		System.out.println(indent+"inner"); 
+		Util.println(indent+"inner"); 
 	}
 
 	public String toString() {

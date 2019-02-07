@@ -50,7 +50,7 @@ public abstract class SyntaxClass
   public Type type=null;
   public int lineNumber;
   
-  public void print(String indent) { System.out.println(indent+this); } 
+  public void print(String indent) { Util.println(indent+this); } 
 
   protected SyntaxClass()
   { lineNumber=Global.sourceLineNumber;

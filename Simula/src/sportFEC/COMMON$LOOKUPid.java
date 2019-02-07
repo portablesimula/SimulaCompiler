@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 138
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$LOOKUPid extends BASICIO$ {
@@ -34,7 +34,7 @@ public final class COMMON$LOOKUPid extends BASICIO$ {
             try {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 // JavaLine 36 ==> SourceLine 140
-                if(TRF_EQ(((COMMON)(CUR$.SL$)).simsymbol,null)) {
+                if(VALUE$(TRF_EQ(((COMMON)(CUR$.SL$)).simsymbol,null))) {
                     // JavaLine 38 ==> SourceLine 141
                     {
                         TRACE_BEGIN_STM$("CompoundStatement141",141);
@@ -50,7 +50,7 @@ public final class COMMON$LOOKUPid extends BASICIO$ {
                     // JavaLine 50 ==> SourceLine 146
                     cursym=((COMMON)(CUR$.SL$)).hashtab.Elt[rank(((COMMON)(CUR$.SL$)).hashlo)-((COMMON)(CUR$.SL$)).hashtab.LB[0]];
                     // JavaLine 52 ==> SourceLine 147
-                    if((cursym!=(null))) {
+                    if(VALUE$((cursym!=(null)))) {
                         // JavaLine 54 ==> SourceLine 148
                         {
                             TRACE_BEGIN_STM$("CompoundStatement148",148);
@@ -59,7 +59,7 @@ public final class COMMON$LOOKUPid extends BASICIO$ {
                                 // JavaLine 59 ==> SourceLine 151
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement151",151);
-                                    if((cursym.next==(null))) {
+                                    if(VALUE$((cursym.next==(null)))) {
                                         GOTO$(F); // GOTO EVALUATED LABEL
                                     }
                                     // JavaLine 65 ==> SourceLine 152
@@ -76,7 +76,7 @@ public final class COMMON$LOOKUPid extends BASICIO$ {
                         }
                     } else
                     // JavaLine 78 ==> SourceLine 157
-                    LABEL$(1); // F
+                    LABEL$(1,"F");
                     {
                         TRACE_BEGIN_STM$("CompoundStatement157",157);
                         ((COMMON)(CUR$.SL$)).hashhi=((COMMON)(CUR$.SL$)).NUL;

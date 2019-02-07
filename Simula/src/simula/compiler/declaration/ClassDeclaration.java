@@ -681,17 +681,17 @@ public boolean isDetachUsed()
     s.append(blockKind).append(' ').append(identifier);
     s.append('[').append(externalIdent).append("] ");
     s.append(editParameterList());
-    System.out.println(s.toString());
-    if(!virtualSpecList.isEmpty()) System.out.println(indent+"    VIRTUAL-SPEC"+virtualSpecList);
-    if(!virtualMatchList.isEmpty()) System.out.println(indent+"    VIRTUAL-MATCH"+virtualMatchList);
-    if(!hiddenList.isEmpty()) System.out.println(indent+"    HIDDEN"+hiddenList);
-    if(!protectedList.isEmpty()) System.out.println(indent+"    PROTECTED"+protectedList);
+    Util.println(s.toString());
+    if(!virtualSpecList.isEmpty()) Util.println(indent+"    VIRTUAL-SPEC"+virtualSpecList);
+    if(!virtualMatchList.isEmpty()) Util.println(indent+"    VIRTUAL-MATCH"+virtualMatchList);
+    if(!hiddenList.isEmpty()) Util.println(indent+"    HIDDEN"+hiddenList);
+    if(!protectedList.isEmpty()) Util.println(indent+"    PROTECTED"+protectedList);
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
-    System.out.println(indent+beg); 
+    Util.println(indent+beg); 
     for(Declaration decl:declarationList) decl.print(indent+"   ");
     for(Statement stm:statements) stm.print(indent+"   ");
-	System.out.println(indent+"end["+edScopeChain()+']'); 
+	Util.println(indent+"end["+edScopeChain()+']'); 
   }
   
   // ***********************************************************************************************

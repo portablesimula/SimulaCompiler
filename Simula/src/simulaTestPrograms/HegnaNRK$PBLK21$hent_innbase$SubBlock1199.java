@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1199
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$hent_innbase$SubBlock1199 extends BASICIO$ {
@@ -130,7 +130,7 @@ TRACE_BEGIN_STM$("CompoundStatement1238",1238);
 // JavaLine 130 ==> SourceLine 1239
 k=((HegnaNRK$PBLK21$hent_innbase)(CUR$.SL$)).inspect$1198$6.inint();
 // JavaLine 132 ==> SourceLine 1240
-if((k==(1))) {
+if(VALUE$((k==(1)))) {
     // JavaLine 134 ==> SourceLine 1242
     {
         TRACE_BEGIN_STM$("CompoundStatement1242",1242);
@@ -141,7 +141,7 @@ if((k==(1))) {
     }
 } else
 // JavaLine 143 ==> SourceLine 1246
-if((k==(2))) {
+if(VALUE$((k==(2)))) {
     // JavaLine 145 ==> SourceLine 1248
     {
         TRACE_BEGIN_STM$("CompoundStatement1248",1248);

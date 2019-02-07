@@ -1,0 +1,234 @@
+package  simulaTestBatch;
+
+super public class simtst06$testmatlib
+	extends simula/runtime/CLASS$
+	version 52:0
+{
+
+public Field found_error:Z;
+public final Field verbose:Z	= int 0;
+public Field maxlongdig:D;
+public static Field INFO$:"Lsimula/runtime/PROGINFO$;";
+
+public Method prefixLevel:"()I"
+	stack 1 locals 1
+{
+		iconst_0;
+		ireturn;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;)V"
+	stack 7 locals 2
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/CLASS$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		iconst_0;
+		putfield	Field found_error:"Z";
+		aload_0;
+		iconst_0;
+		putfield	Field verbose:"Z";
+		aload_0;
+		dconst_0;
+		putfield	Field maxlongdig:"D";
+		aload_0;
+		invokevirtual	Method BBLK:"()V";
+		aload_0;
+		ldc	String "testmatlib";
+		sipush	273;
+		invokevirtual	Method TRACE_BEGIN_DCL$:"(Ljava/lang/String;I)V";
+		aload_0;
+		new	class simtst06$testmatlib$1;
+		dup;
+		aload_0;
+		aload_0;
+		getfield	Field CODE$:"Lsimula/runtime/ClassBody;";
+		aload_0;
+		iconst_0;
+		invokespecial	Method simtst06$testmatlib$1."<init>":"(LsimulaTestBatch/simtst06$testmatlib;Lsimula/runtime/ClassBody;Lsimula/runtime/RTObject$;I)V";
+		putfield	Field CODE$:"Lsimula/runtime/ClassBody;";
+		return;
+}
+
+public Method STM$:"()LsimulaTestBatch/simtst06$testmatlib;"
+	stack 1 locals 1
+{
+		aload_0;
+		getfield	Field CODE$:"Lsimula/runtime/ClassBody;";
+		invokevirtual	Method simula/runtime/ClassBody.EXEC$:"()Lsimula/runtime/RTObject$;";
+		checkcast	class simtst06$testmatlib;
+		areturn;
+}
+
+public Method START:"()LsimulaTestBatch/simtst06$testmatlib;"
+	stack 2 locals 1
+{
+		aload_0;
+		aload_0;
+		invokevirtual	Method START:"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		areturn;
+}
+
+public bridge synthetic Method START:"()Lsimula/runtime/RTObject$;"
+	stack 1 locals 1
+{
+		aload_0;
+		invokevirtual	Method START:"()LsimulaTestBatch/simtst06$testmatlib;";
+		areturn;
+}
+
+public bridge synthetic Method STM$:"()Lsimula/runtime/RTObject$;"
+	stack 1 locals 1
+{
+		aload_0;
+		invokevirtual	Method STM$:"()LsimulaTestBatch/simtst06$testmatlib;";
+		areturn;
+}
+
+static Method "<clinit>":"()V"
+	stack 8 locals 0
+{
+		new	class simula/runtime/PROGINFO$;
+		dup;
+		ldc	String "simtst06.sim";
+		ldc	String "Class testmatlib";
+		bipush	32;
+		newarray int;
+		dup;
+		iconst_0;
+		bipush	10;
+		iastore;
+		dup;
+		iconst_1;
+		bipush	22;
+		iastore;
+		dup;
+		iconst_2;
+		bipush	12;
+		iastore;
+		dup;
+		iconst_3;
+		bipush	23;
+		iastore;
+		dup;
+		iconst_4;
+		bipush	14;
+		iastore;
+		dup;
+		iconst_5;
+		bipush	24;
+		iastore;
+		dup;
+		bipush	6;
+		bipush	27;
+		iastore;
+		dup;
+		bipush	7;
+		sipush	277;
+		iastore;
+		dup;
+		bipush	8;
+		bipush	29;
+		iastore;
+		dup;
+		bipush	9;
+		sipush	279;
+		iastore;
+		dup;
+		bipush	10;
+		bipush	31;
+		iastore;
+		dup;
+		bipush	11;
+		sipush	280;
+		iastore;
+		dup;
+		bipush	12;
+		bipush	35;
+		iastore;
+		dup;
+		bipush	13;
+		sipush	281;
+		iastore;
+		dup;
+		bipush	14;
+		bipush	37;
+		iastore;
+		dup;
+		bipush	15;
+		sipush	282;
+		iastore;
+		dup;
+		bipush	16;
+		bipush	39;
+		iastore;
+		dup;
+		bipush	17;
+		sipush	283;
+		iastore;
+		dup;
+		bipush	18;
+		bipush	45;
+		iastore;
+		dup;
+		bipush	19;
+		sipush	277;
+		iastore;
+		dup;
+		bipush	20;
+		bipush	50;
+		iastore;
+		dup;
+		bipush	21;
+		sipush	288;
+		iastore;
+		dup;
+		bipush	22;
+		bipush	53;
+		iastore;
+		dup;
+		bipush	23;
+		sipush	289;
+		iastore;
+		dup;
+		bipush	24;
+		bipush	59;
+		iastore;
+		dup;
+		bipush	25;
+		sipush	290;
+		iastore;
+		dup;
+		bipush	26;
+		bipush	61;
+		iastore;
+		dup;
+		bipush	27;
+		sipush	291;
+		iastore;
+		dup;
+		bipush	28;
+		bipush	65;
+		iastore;
+		dup;
+		bipush	29;
+		sipush	292;
+		iastore;
+		dup;
+		bipush	30;
+		bipush	77;
+		iastore;
+		dup;
+		bipush	31;
+		sipush	295;
+		iastore;
+		invokespecial	Method simula/runtime/PROGINFO$."<init>":"(Ljava/lang/String;Ljava/lang/String;[I)V";
+		putstatic	Field INFO$:"Lsimula/runtime/PROGINFO$;";
+		return;
+}
+
+InnerClass class simtst06$testmatlib$1;
+
+} // end Class simtst06$testmatlib

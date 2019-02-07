@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class COMMON extends CLASS$ {
@@ -686,15 +686,15 @@ public class COMMON extends CLASS$ {
                     try {
                         JUMPTABLE$(JTX$); // For ByteCode Engineering
                         // JavaLine 688 ==> SourceLine 1572
-                        if(false) {
+                        if(VALUE$(false)) {
                             // JavaLine 690 ==> SourceLine 1573
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1573",1573);
                                 // JavaLine 693 ==> SourceLine 1574
-                                LABEL$(1); // EXCEPTION_HANDLER
+                                LABEL$(1,"EXCEPTION_HANDLER");
                                 sysout().outimage();
                                 // JavaLine 696 ==> SourceLine 1575
-                                if((((EXC_NUMBER==(22))||((EXC_NUMBER==(31))))||((EXC_NUMBER==(32))))) {
+                                if(VALUE$((((EXC_NUMBER==(22))||((EXC_NUMBER==(31))))||((EXC_NUMBER==(32)))))) {
                                     // JavaLine 698 ==> SourceLine 1582
                                     {
                                         TRACE_BEGIN_STM$("CompoundStatement1582",1582);

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1346
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$finnmengde extends BASICIO$ {
@@ -55,7 +55,7 @@ public final class HegnaNRK$PBLK21$finnmengde extends BASICIO$ {
         // JavaLine 55 ==> SourceLine 1362
         sysout().outimage();
         // JavaLine 57 ==> SourceLine 1363
-        if((antall==(0))) {
+        if(VALUE$((antall==(0)))) {
             ((HegnaNRK$PBLK21)(CUR$.SL$)).mengde=null;
         } else
         // JavaLine 61 ==> SourceLine 1366

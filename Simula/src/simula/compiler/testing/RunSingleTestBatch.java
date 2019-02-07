@@ -107,7 +107,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
 		//names.add("simtst66.sim"); // OK:  Test corutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // OK:  Test of coroutines.
+		names.add("simtst68.sim"); // OK:  Test of coroutines.
 		//names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
 		//names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
@@ -131,7 +131,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
 		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
-		names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
+		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
 		//names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
 
 		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.

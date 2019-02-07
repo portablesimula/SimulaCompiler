@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 158
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:36 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$tekstverdi$test_verdilikhet extends BASICIO$ {
@@ -42,7 +42,7 @@ public final class HegnaNRK$PBLK21$tekstverdi$test_verdilikhet extends BASICIO$ 
     public HegnaNRK$PBLK21$tekstverdi$test_verdilikhet STM$() {
         TRACE_BEGIN_STM$("test_verdilikhet",158);
         // JavaLine 44 ==> SourceLine 160
-        if((!(p$v instanceof HegnaNRK$PBLK21$tekstverdi))) {
+        if(VALUE$((!(p$v instanceof HegnaNRK$PBLK21$tekstverdi)))) {
             RESULT$=false;
         } else
         // JavaLine 48 ==> SourceLine 177

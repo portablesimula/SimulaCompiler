@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1301
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$attrfile$gettext extends BASICIO$ {
@@ -32,10 +32,10 @@ public final class COMMON$attrfile$gettext extends BASICIO$ {
             try {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
                 // JavaLine 34 ==> SourceLine 1303
-                LABEL$(1); // REP
+                LABEL$(1,"REP");
                 new COMMON$attrfile$nextKey(((COMMON$attrfile)(CUR$.SL$)));
                 // JavaLine 37 ==> SourceLine 1304
-                if((((COMMON$attrfile)(CUR$.SL$)).key<(((COMMON$attrfile)(CUR$.SL$)).lowKey))) {
+                if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).key<(((COMMON$attrfile)(CUR$.SL$)).lowKey)))) {
                     // JavaLine 39 ==> SourceLine 1305
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1305",1305);
@@ -48,7 +48,7 @@ public final class COMMON$attrfile$gettext extends BASICIO$ {
                 // JavaLine 48 ==> SourceLine 1314
                 {
                     TRACE_BEGIN_STM$("CompoundStatement1314",1314);
-                    if((((COMMON$attrfile)(CUR$.SL$)).key==(((COMMON$attrfile)(CUR$.SL$)).longText))) {
+                    if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).key==(((COMMON$attrfile)(CUR$.SL$)).longText)))) {
                         // JavaLine 52 ==> SourceLine 1315
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1315",1315);
@@ -61,7 +61,7 @@ public final class COMMON$attrfile$gettext extends BASICIO$ {
                         }
                     } else
                     // JavaLine 63 ==> SourceLine 1320
-                    if((((COMMON$attrfile)(CUR$.SL$)).key==(((COMMON$attrfile)(CUR$.SL$)).longSwap))) {
+                    if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).key==(((COMMON$attrfile)(CUR$.SL$)).longSwap)))) {
                         // JavaLine 65 ==> SourceLine 1322
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1322",1322);

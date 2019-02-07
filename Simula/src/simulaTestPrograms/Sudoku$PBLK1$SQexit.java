@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 4
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:12:51 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:41:55 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class Sudoku$PBLK1$SQexit extends Link$ {
@@ -27,7 +27,7 @@ public class Sudoku$PBLK1$SQexit extends Link$ {
                 // JavaLine 27 ==> SourceLine 6
                 detach();
                 // JavaLine 29 ==> SourceLine 7
-                if(p2$success) {
+                if(VALUE$(p2$success)) {
                     // JavaLine 31 ==> SourceLine 8
                     {
                         TRACE_BEGIN_STM$("CompoundStatement8",8);

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1258
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$attrfile$openattributefile extends BASICIO$ {
@@ -60,16 +60,16 @@ public final class COMMON$attrfile$openattributefile extends BASICIO$ {
                 // JavaLine 60 ==> SourceLine 1264
                 xid=new COMMON$getBox(((COMMON)(CUR$.SL$.SL$)),inspect$1262$2.virtno).RESULT$.symbol;
                 // JavaLine 62 ==> SourceLine 1265
-                if(TXTREL$EQ(id,new TXT$("_predefmodule"))) {
+                if(VALUE$(TXTREL$EQ(id,new TXT$("_predefmodule")))) {
                     t=copy(copy(((COMMON)(CUR$.SL$.SL$)).predefname));
                 } else
                 // JavaLine 66 ==> SourceLine 1266
-                if((TXTREL$EQ(id,new TXT$("simset"))&&((TXTREL$EQ(xid,new TXT$("?"))|(TXTREL$EQ(xid,null)))))) {
+                if(VALUE$((TXTREL$EQ(id,new TXT$("simset"))&&((TXTREL$EQ(xid,new TXT$("?"))|(TXTREL$EQ(xid,null))))))) {
                     // JavaLine 68 ==> SourceLine 1267
                     t=copy(copy(((COMMON)(CUR$.SL$.SL$)).simsetname));
                 } else
                 // JavaLine 71 ==> SourceLine 1268
-                if((TXTREL$EQ(id,new TXT$("simulation"))&((TXTREL$EQ(xid,new TXT$("?"))|(TXTREL$EQ(xid,null)))))) {
+                if(VALUE$((TXTREL$EQ(id,new TXT$("simulation"))&((TXTREL$EQ(xid,new TXT$("?"))|(TXTREL$EQ(xid,null))))))) {
                     // JavaLine 73 ==> SourceLine 1269
                     t=copy(copy(((COMMON)(CUR$.SL$.SL$)).simulaname));
                 } else
@@ -99,7 +99,7 @@ public final class COMMON$attrfile$openattributefile extends BASICIO$ {
                 TRACE_BEGIN_STM$("CompoundStatement1278",1278);
                 inspect$1277$3.setaccess(new TXT$("%nobuffer"));
                 // JavaLine 101 ==> SourceLine 1279
-                if((!(inspect$1277$3.open()))) {
+                if(VALUE$((!(inspect$1277$3.open())))) {
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1279",1279);
                         ((COMMON)(CUR$.SL$.SL$)).diag.Elt[0-((COMMON)(CUR$.SL$.SL$)).diag.LB[0]]=t;
@@ -110,7 +110,7 @@ public final class COMMON$attrfile$openattributefile extends BASICIO$ {
                 // JavaLine 110 ==> SourceLine 1280
                 ((COMMON$attrfile)(CUR$.SL$)).CURF=((InbyteFile$)inspect$1277$3);
                 // JavaLine 112 ==> SourceLine 1283
-                if((char$(inspect$1277$3.inbyte())!=(((COMMON$attrfile)(CUR$.SL$)).layoutindex))) {
+                if(VALUE$((char$(inspect$1277$3.inbyte())!=(((COMMON$attrfile)(CUR$.SL$)).layoutindex)))) {
                     // JavaLine 114 ==> SourceLine 1284
                     new COMMON$attrfile$wrongLayout(((COMMON$attrfile)(CUR$.SL$)));
                 }
@@ -122,7 +122,7 @@ public final class COMMON$attrfile$openattributefile extends BASICIO$ {
             }
         }
         // JavaLine 124 ==> SourceLine 1289
-        if(TXTREL$NE(TXT$.sub(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,1,7),new TXT$("S-port "))) {
+        if(VALUE$(TXTREL$NE(TXT$.sub(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,1,7),new TXT$("S-port ")))) {
             new COMMON$attrfile$wrongLayout(((COMMON$attrfile)(CUR$.SL$)));
         }
         // JavaLine 128 ==> SourceLine 1290

@@ -46,8 +46,13 @@ public final class Option {
 	// Java Compiler and Jar-tool Trace Options
 	public static boolean TRACE_JAVAC=false;//true;
 	public static boolean TRACE_JAVAC_OUTPUT=false;//true;
-	public static boolean TRACE_BYTECODE_OUTPUT=false;
 	public static boolean TRACE_JARING=false;//true;
+	
+	// Byte code engineering Options
+	public static boolean TRACE_BYTECODE_OUTPUT=false;
+	public static boolean LIST_REPAIRED_INSTRUCTION_LIST=false;
+	public static boolean TRACE_REPAIRING=false;
+
 
 	
 	
@@ -63,6 +68,11 @@ public final class Option {
 	 */
 	public static boolean standardClass = false;
 
+	
+	/**
+	 * Enables/disables deletion of temporary .java .class and .jasm files.
+	 */
+	public static boolean deleteTempFiles = true;
 	
 	/**
 	 * Used by Java-Coding to save the generated .java files.
@@ -148,9 +158,9 @@ public final class Option {
         item.setSelected(Option.getOption(id));
         item.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//System.out.println(id+"Item.actionPerformed: e="+e);
+        		//Util.println(id+"Item.actionPerformed: e="+e);
         		Option.setOption(id,item.isSelected());
-        		//System.out.println(id+"Item.actionPerformed: Option."+id+"="+Option.getOption(id));            		
+        		//Util.println(id+"Item.actionPerformed: Option."+id+"="+Option.getOption(id));            		
 		}});
         return(item);
 	}

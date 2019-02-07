@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 712
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$hent extends BASICIO$ {
@@ -27,7 +27,7 @@ public final class HegnaNRK$PBLK21$hent extends BASICIO$ {
         // JavaLine 27 ==> SourceLine 716
         pnr=new HegnaNRK$PBLK21$sikker_inint(((HegnaNRK$PBLK21)(CUR$.SL$))).RESULT$;
         // JavaLine 29 ==> SourceLine 717
-        if(((pnr<=(0))|((pnr>(((HegnaNRK$PBLK21)(CUR$.SL$)).max_antall_poster))))) {
+        if(VALUE$(((pnr<=(0))|((pnr>(((HegnaNRK$PBLK21)(CUR$.SL$)).max_antall_poster)))))) {
             // JavaLine 31 ==> SourceLine 718
             new HegnaNRK$PBLK21$feil(((HegnaNRK$PBLK21)(CUR$.SL$)),11);
         } else
@@ -36,7 +36,7 @@ public final class HegnaNRK$PBLK21$hent extends BASICIO$ {
             TRACE_BEGIN_STM$("CompoundStatement720",720);
             new HegnaNRK$PBLK21$hent_post(((HegnaNRK$PBLK21)(CUR$.SL$)),pnr);
             // JavaLine 38 ==> SourceLine 721
-            if((((HegnaNRK$PBLK21)(CUR$.SL$)).aktuell!=(pnr))) {
+            if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).aktuell!=(pnr)))) {
                 // JavaLine 40 ==> SourceLine 722
                 new HegnaNRK$PBLK21$feil(((HegnaNRK$PBLK21)(CUR$.SL$)),12);
             } else

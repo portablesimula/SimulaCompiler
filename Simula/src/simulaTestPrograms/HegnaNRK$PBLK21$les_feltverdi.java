@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 592
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$les_feltverdi extends BASICIO$ {
@@ -23,11 +23,11 @@ public final class HegnaNRK$PBLK21$les_feltverdi extends BASICIO$ {
         // JavaLine 23 ==> SourceLine 595
         new HegnaNRK$PBLK21$lede_tekst(((HegnaNRK$PBLK21)(CUR$.SL$)),new TXT$("Verdi:"));
         // JavaLine 25 ==> SourceLine 596
-        if((((HegnaNRK$PBLK21)(CUR$.SL$)).felttype==(1))) {
+        if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).felttype==(1)))) {
             ((HegnaNRK$PBLK21)(CUR$.SL$)).feltverdi=new HegnaNRK$PBLK21$heltallverdi(((HegnaNRK$PBLK21)(CUR$.SL$))).STM$();
         }
         // JavaLine 29 ==> SourceLine 597
-        if((((HegnaNRK$PBLK21)(CUR$.SL$)).felttype==(2))) {
+        if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).felttype==(2)))) {
             ((HegnaNRK$PBLK21)(CUR$.SL$)).feltverdi=new HegnaNRK$PBLK21$tekstverdi(((HegnaNRK$PBLK21)(CUR$.SL$))).STM$();
         }
         // JavaLine 33 ==> SourceLine 598

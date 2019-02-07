@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1315
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$skriv_utbase$SubBlock1262$CompoundStatement1298$CompoundStatement1301$CompoundStatement1307$SubBlock1315 extends BASICIO$ {
@@ -35,7 +35,7 @@ public final class HegnaNRK$PBLK21$skriv_utbase$SubBlock1262$CompoundStatement12
             // JavaLine 35 ==> SourceLine 1323
             {
                 TRACE_BEGIN_STM$("CompoundStatement1323",1323);
-                if((rest<=(rom))) {
+                if(VALUE$((rest<=(rom)))) {
                     // JavaLine 39 ==> SourceLine 1325
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1325",1325);

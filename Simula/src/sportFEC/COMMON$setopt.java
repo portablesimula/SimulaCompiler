@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 276
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$setopt extends BASICIO$ {
@@ -42,11 +42,11 @@ public final class COMMON$setopt extends BASICIO$ {
     public COMMON$setopt STM$() {
         TRACE_BEGIN_STM$("setopt",276);
         // JavaLine 44 ==> SourceLine 277
-        if((p$ch<(((char)128)))) {
+        if(VALUE$((p$ch<(((char)128))))) {
             // JavaLine 46 ==> SourceLine 278
             {
                 TRACE_BEGIN_STM$("CompoundStatement278",278);
-                if((p$ch>('_'))) {
+                if(VALUE$((p$ch>('_')))) {
                     p$ch=char$((rank(p$ch)-(32)));
                 }
                 // JavaLine 52 ==> SourceLine 279

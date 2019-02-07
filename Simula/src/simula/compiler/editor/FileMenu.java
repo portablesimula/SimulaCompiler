@@ -40,14 +40,14 @@ public class FileMenu extends JMenu {
 				//maybeSaveCurrentFile();
 				
 //		        String userDir = System.getProperty("user.home");
-//		        System.out.println("OpenFileAction - User Home="+userDir);
+//		        Util.println("OpenFileAction - User Home="+userDir);
 //		        JFileChooser fileChooser = new JFileChooser(userDir +"/SimulaSource");
-		        System.out.println("FileMenu.openFile: System user.home="+System.getProperty("user.home"));
-		        System.out.println("FileMenu.openFile: System user.dir="+System.getProperty("user.dir"));
-		        System.out.println("FileMenu.openFile: Global user.dir="+Global.getProperty("user.dir","?"));
+		        Util.println("FileMenu.openFile: System user.home="+System.getProperty("user.home"));
+		        Util.println("FileMenu.openFile: System user.dir="+System.getProperty("user.dir"));
+		        Util.println("FileMenu.openFile: Global user.dir="+Global.getProperty("user.dir","?"));
 
 		        
-//				System.out.println("FileMenu.openFile: dir="+Global.sampleSourceDir);
+//				Util.println("FileMenu.openFile: dir="+Global.sampleSourceDir);
 //		        JFileChooser fileChooser = new JFileChooser(Global.sampleSourceDir);
 		        JFileChooser fileChooser = new JFileChooser(Global.currentWorkspace);
 		        int answer = fileChooser.showOpenDialog(simulaEditor);
@@ -146,7 +146,7 @@ public class FileMenu extends JMenu {
 	}
 
 	public void doSaveAs() {
-    	System.out.println("saveAs.CLICKED:");
+    	Util.println("saveAs.CLICKED:");
     	
 //        String userDir = System.getProperty("user.home");
 //        JFileChooser fileChooser = new JFileChooser(userDir +"/SimulaSource"); ?
@@ -158,25 +158,25 @@ public class FileMenu extends JMenu {
         if (answer == JFileChooser.APPROVE_OPTION) {
         	//simulaEditor.doOpenFile(fileChooser.getSelectedFile());
         	File file=fileChooser.getSelectedFile();
-        	System.out.println("saveAs.APPROVED: "+fileChooser.getSelectedFile());
+        	Util.println("saveAs.APPROVED: "+fileChooser.getSelectedFile());
         	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
         	if(file.exists()) {
 	            int resp=overwriteDialog(file);
-	        	System.out.println("saveAs.NO_END: response="+resp);
+	        	Util.println("saveAs.NO_END: response="+resp);
 	        	if(resp==JOptionPane.CANCEL_OPTION) return; // Do Nothing
         		
         	}
         	
         	
         	String name=file.getName().toLowerCase();
-        	System.out.println("saveAs.NAME: "+name);
+        	Util.println("saveAs.NAME: "+name);
         	if(!name.endsWith(".sim")) {
-	        	System.out.println("saveAs.NO_END .sim: ");
+	        	Util.println("saveAs.NO_END .sim: ");
 	            //JOptionPane.showMessageDialog(null,"infoMessage", "InfoBox: ", JOptionPane.WARNING_MESSAGE);
 	            int resp=noSimTypeDialog(file);
-	        	System.out.println("saveAs.NO_END: response="+resp);
-	        	if(resp==JOptionPane.OK_OPTION) System.out.println("saveAs.NO_END: response=OK");
-	        	if(resp==JOptionPane.CANCEL_OPTION) System.out.println("saveAs.NO_END: response=CANCEL");
+	        	Util.println("saveAs.NO_END: response="+resp);
+	        	if(resp==JOptionPane.OK_OPTION) Util.println("saveAs.NO_END: response=OK");
+	        	if(resp==JOptionPane.CANCEL_OPTION) Util.println("saveAs.NO_END: response=CANCEL");
 	        	
 	        	if(resp==JOptionPane.CANCEL_OPTION) return; // Do Nothing
         	}

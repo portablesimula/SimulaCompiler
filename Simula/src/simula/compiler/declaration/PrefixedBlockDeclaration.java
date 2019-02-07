@@ -106,8 +106,8 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
 		  //Util.BREAK("PrefixedBlockDeclaration.parseMaybeBlock: Label is moved to enc="+enc);
 		  for(LabelDeclaration lab:labelList) enc.labelList.add(lab);
 		  
-		  //System.out.println("Resulting Label-List:");
-		  //for(LabelDeclaration lab:enc.labelList) System.out.println(lab);
+		  //Util.println("Resulting Label-List:");
+		  //for(LabelDeclaration lab:enc.labelList) Util.println(lab);
 		  
 		  labelList.clear();
 		}
@@ -264,13 +264,13 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
     s.append(blockKind).append(' ').append(identifier);
     s.append('[').append(externalIdent).append("] ");
     s.append(editParameterList());
-    System.out.println(s.toString());
+    Util.println(s.toString());
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
-    System.out.println(indent+beg); 
+    Util.println(indent+beg); 
     for(Declaration decl:declarationList) decl.print(indent+"   ");
     for(Statement stm:statements) stm.print(indent+"   ");
-	System.out.println(indent+"end["+edScopeChain()+']'); 
+	Util.println(indent+"end["+edScopeChain()+']'); 
 	//Util.BREAK("PrefixedBlockDeclaration.print DONE");
   }
   

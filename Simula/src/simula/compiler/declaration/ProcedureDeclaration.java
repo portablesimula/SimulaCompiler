@@ -390,15 +390,15 @@ public class ProcedureDeclaration extends BlockDeclaration {
     s.append(blockKind).append(' ').append(identifier);
     s.append('[').append(externalIdent).append("] ");
     s.append(editParameterList());
-    System.out.println(s.toString());
+    Util.println(s.toString());
 	String beg="begin["+edScopeChain()+']';
 	indent=indent+"    ";
-    System.out.println(indent+beg); 
-//    if(!hiddenList.isEmpty()) System.out.println(indent+"   HIDDEN"+hiddenList);
-//    if(!protectedList.isEmpty()) System.out.println(indent+"   PROTECTED"+protectedList);
+    Util.println(indent+beg); 
+//    if(!hiddenList.isEmpty()) Util.println(indent+"   HIDDEN"+hiddenList);
+//    if(!protectedList.isEmpty()) Util.println(indent+"   PROTECTED"+protectedList);
     for(Declaration decl:declarationList) decl.print(indent+"   ");
     for(Statement stm:statements) stm.print(indent+"   ");
-	System.out.println(indent+"end["+edScopeChain()+']'); 
+	Util.println(indent+"end["+edScopeChain()+']'); 
 	//Util.BREAK("ProcedureDeclaration.print DONE");
   }
   

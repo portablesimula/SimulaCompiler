@@ -1,0 +1,122 @@
+package  simulaTestPrograms;
+
+super public final class adHoc68
+	extends simula/runtime/BASICIO$
+	version 52:0
+{
+
+Field c2:C;
+public static Field INFO$:"Lsimula/runtime/PROGINFO$;";
+
+public Method prefixLevel:"()I"
+	stack 1 locals 1
+{
+		iconst_0;
+		ireturn;
+}
+
+public Method isQPSystemBlock:"()Z"
+	stack 1 locals 1
+{
+		iconst_1;
+		ireturn;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;)V"
+	stack 3 locals 2
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		iconst_0;
+		putfield	Field c2:"C";
+		aload_0;
+		invokevirtual	Method BBLK:"()V";
+		aload_0;
+		ldc	String "adHoc68";
+		invokevirtual	Method BPRG:"(Ljava/lang/String;)V";
+		aload_0;
+		ldc	String "adHoc68";
+		bipush	9;
+		invokevirtual	Method TRACE_BEGIN_DCL$:"(Ljava/lang/String;I)V";
+		return;
+}
+
+public Method STM$:"()Lsimula/runtime/RTObject$;"
+	stack 3 locals 1
+{
+		aload_0;
+		ldc	String "adHoc68";
+		bipush	9;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		new	class adHoc68$Writer;
+		dup;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		checkcast	class adHoc68;
+		invokespecial	Method adHoc68$Writer."<init>":"(Lsimula/runtime/RTObject$;)V";
+		invokevirtual	Method adHoc68$Writer.STM$:"()LsimulaTestPrograms/adHoc68$Writer;";
+		pop;
+		aload_0;
+		ldc	String "adHoc68";
+		bipush	16;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method EBLK:"()V";
+		aconst_null;
+		areturn;
+}
+
+public static Method main:"([Ljava/lang/String;)V"
+	stack 3 locals 1
+{
+		aload_0;
+		invokestatic	Method simula/runtime/RT.setRuntimeOptions:"([Ljava/lang/String;)V";
+		new	class adHoc68;
+		dup;
+		getstatic	Field CTX$:"Lsimula/runtime/BASICIO$;";
+		invokespecial	Method "<init>":"(Lsimula/runtime/RTObject$;)V";
+		invokevirtual	Method STM$:"()Lsimula/runtime/RTObject$;";
+		pop;
+		return;
+}
+
+static Method "<clinit>":"()V"
+	stack 8 locals 0
+{
+		new	class simula/runtime/PROGINFO$;
+		dup;
+		ldc	String "adHoc68.sim";
+		ldc	String "SimulaProgram adHoc68";
+		bipush	6;
+		newarray int;
+		dup;
+		iconst_0;
+		iconst_1;
+		iastore;
+		dup;
+		iconst_1;
+		iconst_2;
+		iastore;
+		dup;
+		iconst_2;
+		bipush	23;
+		iastore;
+		dup;
+		iconst_3;
+		bipush	16;
+		iastore;
+		dup;
+		iconst_4;
+		bipush	34;
+		iastore;
+		dup;
+		iconst_5;
+		bipush	18;
+		iastore;
+		invokespecial	Method simula/runtime/PROGINFO$."<init>":"(Ljava/lang/String;Ljava/lang/String;[I)V";
+		putstatic	Field INFO$:"Lsimula/runtime/PROGINFO$;";
+		return;
+}
+
+} // end Class adHoc68

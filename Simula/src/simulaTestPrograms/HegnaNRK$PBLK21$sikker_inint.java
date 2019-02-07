@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1004
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$sikker_inint extends BASICIO$ {
@@ -52,7 +52,7 @@ public final class HegnaNRK$PBLK21$sikker_inint extends BASICIO$ {
                     // JavaLine 52 ==> SourceLine 1017
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1017",1017);
-                        if((c==('-'))) {
+                        if(VALUE$((c==('-')))) {
                             tegn=(!(tegn));
                         }
                         // JavaLine 58 ==> SourceLine 1018
@@ -61,7 +61,7 @@ public final class HegnaNRK$PBLK21$sikker_inint extends BASICIO$ {
                     }
                 }
                 // JavaLine 63 ==> SourceLine 1020
-                if((!(tegn))) {
+                if(VALUE$((!(tegn)))) {
                     // JavaLine 65 ==> SourceLine 1022
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1022",1022);
@@ -76,7 +76,7 @@ public final class HegnaNRK$PBLK21$sikker_inint extends BASICIO$ {
                     // JavaLine 76 ==> SourceLine 1027
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1027",1027);
-                        if((i<(((HegnaNRK$PBLK21)(CUR$.SL$)).navne_lengde))) {
+                        if(VALUE$((i<(((HegnaNRK$PBLK21)(CUR$.SL$)).navne_lengde)))) {
                             TXT$.putchar(temp,c);
                         }
                         // JavaLine 82 ==> SourceLine 1028
@@ -89,7 +89,7 @@ public final class HegnaNRK$PBLK21$sikker_inint extends BASICIO$ {
                 // JavaLine 89 ==> SourceLine 1031
                 ok=((c==(((char)32)))&((((i<(6))&(tegn))|(((i<(7))&((!(tegn))))))));
                 // JavaLine 91 ==> SourceLine 1032
-                if((!(ok))) {
+                if(VALUE$((!(ok)))) {
                     new HegnaNRK$PBLK21$feil(((HegnaNRK$PBLK21)(CUR$.SL$)),20);
                 }
                 TRACE_END_STM$("CompoundStatement1010",1032);

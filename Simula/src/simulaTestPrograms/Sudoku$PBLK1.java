@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:12:51 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:41:55 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Sudoku$PBLK1 extends Simset$ {

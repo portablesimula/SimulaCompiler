@@ -36,7 +36,17 @@ public final class Global {
     public static final ImageIcon sIcon = new ImageIcon("icons/sim.png");
     
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
+	public static final boolean USE_OpenJDK_ASMTOOLS=false;//true;
+	public static final boolean USE_OW2_ASMTOOLS=true;
 	public static final boolean USE_QPS_LOOM=false;
+	
+	public static final boolean MODIFY_CLASS_VERSION=false;
+//	public static final int major=49;  // .class file format version's Major
+	public static final int major=52;//50;  // .class file format version's Major
+//	public static final int minor=1;   // .class file format version's Minor
+	public static final int minor=0;   // .class file format version's Minor
+	public static final int classFileVersion=minor<<16 | major;   // .class file format version used by modified .class files
+
 	
 	public static Vector<JavaModule> javaModules;
 	public static Vector<String> externalJarFiles=new Vector<String>();
@@ -95,9 +105,9 @@ public final class Global {
 	
 	private static void loadProperties() {
 		String USER_HOME=System.getProperty("user.home");
-		//System.out.println("USER_HOME="+USER_HOME);
+		//Util.println("USER_HOME="+USER_HOME);
 		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
+		Util.println("simulaPropertiesDir="+simulaPropertiesDir);
 		simulaPropertiesDir.mkdirs();
 		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
 		simulaProperties = new Properties();
@@ -140,7 +150,7 @@ public final class Global {
     }
 	
 	public static void updateCurrentWorkspace(String currentWorkspace) {
-		System.out.println("Global.updateCurrentWorkspace: currentWorkspace="+currentWorkspace);
+		Util.println("Global.updateCurrentWorkspace: currentWorkspace="+currentWorkspace);
 		Global.currentWorkspace=currentWorkspace;
 		workspaces.remove(currentWorkspace);
 		workspaces.addFirst(currentWorkspace);

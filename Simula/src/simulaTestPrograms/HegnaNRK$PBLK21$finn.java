@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 618
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$finn extends BASICIO$ {
@@ -29,7 +29,7 @@ public final class HegnaNRK$PBLK21$finn extends BASICIO$ {
         // JavaLine 29 ==> SourceLine 624
         ((HegnaNRK$PBLK21)(CUR$.SL$)).egenskap.Elt[((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper-((HegnaNRK$PBLK21)(CUR$.SL$)).egenskap.LB[0]]=new HegnaNRK$PBLK21$les_navn(((HegnaNRK$PBLK21)(CUR$.SL$))).RESULT$;
         // JavaLine 31 ==> SourceLine 625
-        if((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper==(1))) {
+        if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper==(1)))) {
             // JavaLine 33 ==> SourceLine 626
             ((HegnaNRK$PBLK21)(CUR$.SL$)).rest=2030552.0f;
         } else
@@ -39,7 +39,7 @@ public final class HegnaNRK$PBLK21$finn extends BASICIO$ {
         sysout().outtext(new TXT$("S�ker etter "));
         sysout().outtext(((HegnaNRK$PBLK21)(CUR$.SL$)).egenskap.Elt[((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper-((HegnaNRK$PBLK21)(CUR$.SL$)).egenskap.LB[0]]);
         // JavaLine 41 ==> SourceLine 630
-        if((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper>(1))) {
+        if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper>(1)))) {
             // JavaLine 43 ==> SourceLine 632
             {
                 TRACE_BEGIN_STM$("CompoundStatement632",632);
@@ -63,7 +63,7 @@ public final class HegnaNRK$PBLK21$finn extends BASICIO$ {
     // JavaLine 63 ==> SourceLine 638
     sysout().outimage();
     // JavaLine 65 ==> SourceLine 639
-    if((((HegnaNRK$PBLK21)(CUR$.SL$)).rest<=(((float)(10))))) {
+    if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).rest<=(((float)(10)))))) {
         ((HegnaNRK$PBLK21)(CUR$.SL$)).rest=((float)(0));
     }
     // JavaLine 69 ==> SourceLine 640
@@ -73,7 +73,7 @@ public final class HegnaNRK$PBLK21$finn extends BASICIO$ {
     // JavaLine 73 ==> SourceLine 642
     sysout().outimage();
     // JavaLine 75 ==> SourceLine 643
-    if((((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper>(1))&((((HegnaNRK$PBLK21)(CUR$.SL$)).divisor.Elt[((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper-((HegnaNRK$PBLK21)(CUR$.SL$)).divisor.LB[0]]==(1))))&((((HegnaNRK$PBLK21)(CUR$.SL$)).rest>(((float)(1))))))) {
+    if(VALUE$((((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper>(1))&((((HegnaNRK$PBLK21)(CUR$.SL$)).divisor.Elt[((HegnaNRK$PBLK21)(CUR$.SL$)).antall_egenskaper-((HegnaNRK$PBLK21)(CUR$.SL$)).divisor.LB[0]]==(1))))&((((HegnaNRK$PBLK21)(CUR$.SL$)).rest>(((float)(1)))))))) {
         // JavaLine 77 ==> SourceLine 646
         {
             TRACE_BEGIN_STM$("CompoundStatement646",646);
@@ -93,7 +93,7 @@ public final class HegnaNRK$PBLK21$finn extends BASICIO$ {
         }
     }
     // JavaLine 95 ==> SourceLine 652
-    if((((HegnaNRK$PBLK21)(CUR$.SL$)).rest<=(((float)(1))))) {
+    if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).rest<=(((float)(1)))))) {
         // JavaLine 97 ==> SourceLine 654
         {
             TRACE_BEGIN_STM$("CompoundStatement654",654);

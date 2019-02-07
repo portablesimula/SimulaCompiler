@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1376
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$sortermengde extends BASICIO$ {
@@ -21,7 +21,7 @@ public final class HegnaNRK$PBLK21$sortermengde extends BASICIO$ {
     public HegnaNRK$PBLK21$sortermengde STM$() {
         TRACE_BEGIN_STM$("sortermengde",1376);
         // JavaLine 23 ==> SourceLine 1379
-        if((((HegnaNRK$PBLK21)(CUR$.SL$)).mengde==(null))) {
+        if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).mengde==(null)))) {
             // JavaLine 25 ==> SourceLine 1380
             new HegnaNRK$PBLK21$feil(((HegnaNRK$PBLK21)(CUR$.SL$)),18);
         } else

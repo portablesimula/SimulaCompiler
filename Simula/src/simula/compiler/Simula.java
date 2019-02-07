@@ -21,8 +21,8 @@ import simula.compiler.utilities.Util;
 public final class Simula {
 
 	static void help() {
-		System.out.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
-		System.out.println("Usage: java simula.jar  [options]  sourceFile \n\n"
+		Util.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
+		Util.println("Usage: java simula.jar  [options]  sourceFile \n\n"
 				+ "possible options include:\n"
 				+ "  -help                      Print this synopsis of standard options\n"
 				+ "  -noexec                    Don't execute generated .jar file\n"

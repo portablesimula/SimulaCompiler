@@ -1,0 +1,109 @@
+package  simulaTestBatch;
+
+super class simtst68$Reader$1
+	extends simula/runtime/ClassBody
+	version 52:0
+{
+
+final synthetic Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+
+Method "<init>":"(LsimulaTestBatch/simtst68$Reader;Lsimula/runtime/ClassBody;Lsimula/runtime/RTObject$;I)V"
+	stack 4 locals 5
+{
+		aload_0;
+		aload_1;
+		putfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		aload_0;
+		aload_2;
+		aload_3;
+		iload	4;
+		invokespecial	Method simula/runtime/ClassBody."<init>":"(Lsimula/runtime/ClassBody;Lsimula/runtime/RTObject$;I)V";
+		return;
+}
+
+public Method STM$:"()V"
+	stack 6 locals 1
+{
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		ldc	String "Reader";
+		bipush	86;
+		aload_0;
+		getfield	Field inner:"Lsimula/runtime/ClassBody;";
+		invokevirtual	Method simtst68$Reader.TRACE_BEGIN_STM$:"(Ljava/lang/String;ILsimula/runtime/ClassBody;)V";
+	L15:	stack_frame_type same;
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		ldc	String "CompoundStatement89";
+		bipush	89;
+		invokevirtual	Method simtst68$Reader.TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		getstatic	Field simula/runtime/RTObject$.CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst68;
+		checkcast	class simtst68;
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		invokevirtual	Method simtst68$Reader.sysin:"()Lsimula/runtime/InFile$;";
+		invokevirtual	Method simula/runtime/InFile$.inchar:"()C";
+		putfield	Field simtst68.c1:"C";
+		new	class simtst68$trace;
+		dup;
+		getstatic	Field simula/runtime/RTObject$.CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst68;
+		checkcast	class simtst68;
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "In Reader: Just before Detach";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokespecial	Method simtst68$trace."<init>":"(Lsimula/runtime/RTObject$;Lsimula/runtime/TXT$;)V";
+		pop;
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		invokevirtual	Method simtst68$Reader.detach:"()V";
+		new	class simtst68$trace;
+		dup;
+		getstatic	Field simula/runtime/RTObject$.CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class simtst68;
+		checkcast	class simtst68;
+		new	class simula/runtime/TXT$;
+		dup;
+		ldc	String "In Reader: Just after Detach";
+		invokespecial	Method simula/runtime/TXT$."<init>":"(Ljava/lang/String;)V";
+		invokespecial	Method simtst68$trace."<init>":"(Lsimula/runtime/RTObject$;Lsimula/runtime/TXT$;)V";
+		pop;
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		ldc	String "CompoundStatement89";
+		bipush	92;
+		invokevirtual	Method simtst68$Reader.TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		invokestatic	Method simtst68$Reader.access$000:"(LsimulaTestBatch/simtst68$Reader;)Lsimula/runtime/ClassBody;";
+		ifnonnull	L15;
+		goto	L140;
+	L140:	stack_frame_type same_ex;
+		aload_0;
+		getfield	Field inner:"Lsimula/runtime/ClassBody;";
+		ifnull	L165;
+		aload_0;
+		getfield	Field inner:"Lsimula/runtime/ClassBody;";
+		invokevirtual	Method simula/runtime/ClassBody.STM$:"()V";
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		ldc	String "Reader";
+		bipush	93;
+		invokevirtual	Method simtst68$Reader.TRACE_BEGIN_STM_AFTER_INNER$:"(Ljava/lang/String;I)V";
+	L165:	stack_frame_type same;
+		aload_0;
+		getfield	Field this$0:"LsimulaTestBatch/simtst68$Reader;";
+		ldc	String "Reader";
+		bipush	93;
+		invokevirtual	Method simtst68$Reader.TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		return;
+}
+
+InnerClass class simtst68$Reader$1;
+
+} // end Class simtst68$Reader$1

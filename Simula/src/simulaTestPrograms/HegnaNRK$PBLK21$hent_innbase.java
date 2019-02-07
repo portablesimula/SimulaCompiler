@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1196
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$hent_innbase extends BASICIO$ {
@@ -31,7 +31,7 @@ public final class HegnaNRK$PBLK21$hent_innbase extends BASICIO$ {
             // BEGIN INSPECTION 
             inspect$1198$6=((HegnaNRK$PBLK21)(CUR$.SL$)).innbase;
             if(inspect$1198$6!=null) //INSPECT inspect$1198$6
-            if((!(inspect$1198$6.lastitem()))) {
+            if(VALUE$((!(inspect$1198$6.lastitem())))) {
                 // JavaLine 35 ==> SourceLine 1257
                 new HegnaNRK$PBLK21$hent_innbase$SubBlock1199(CUR$).STM$();
             }

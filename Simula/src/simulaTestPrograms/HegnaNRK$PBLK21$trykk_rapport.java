@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1091
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$trykk_rapport extends BASICIO$ {
@@ -75,18 +75,18 @@ public final class HegnaNRK$PBLK21$trykk_rapport extends BASICIO$ {
                         }
                     }
                     // JavaLine 77 ==> SourceLine 1111
-                    if(funnet) {
+                    if(VALUE$(funnet)) {
                         // JavaLine 79 ==> SourceLine 1113
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1113",1113);
-                            if((inspect$1099$5.spos.Elt[i-inspect$1099$5.spos.LB[0]]==(0))) {
+                            if(VALUE$((inspect$1099$5.spos.Elt[i-inspect$1099$5.spos.LB[0]]==(0)))) {
                                 // JavaLine 83 ==> SourceLine 1114
                                 sysout().outchar(((char)32));
                             } else
                             // JavaLine 86 ==> SourceLine 1116
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1116",1116);
-                                if((inspect$1099$5.spos.Elt[i-inspect$1099$5.spos.LB[0]]<(TXT$.pos(sysout().image)))) {
+                                if(VALUE$((inspect$1099$5.spos.Elt[i-inspect$1099$5.spos.LB[0]]<(TXT$.pos(sysout().image))))) {
                                     new HegnaNRK$PBLK21$trykk_rapport$skriv_linje(((HegnaNRK$PBLK21$trykk_rapport)CUR$));
                                 }
                                 // JavaLine 92 ==> SourceLine 1117

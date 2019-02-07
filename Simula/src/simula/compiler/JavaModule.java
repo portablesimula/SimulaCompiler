@@ -104,7 +104,7 @@ public final class JavaModule {
 			  Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 			  writer.write(s+'\n');
 		} catch (IOException e) {
-			System.out.println("Error Writing File: "+javaOutputFileName);
+			Util.println("Error Writing File: "+javaOutputFileName);
 			e.printStackTrace();
 		}
 		prevLineNumber=Global.sourceLineNumber;
@@ -139,7 +139,7 @@ public final class JavaModule {
 		Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 		try { writer.write(s.toString()+'\n');
 		} catch (IOException e) {
-			System.out.println("Error Writing File: "+javaOutputFileName);
+			Util.println("Error Writing File: "+javaOutputFileName);
 			e.printStackTrace();
 		}
 		

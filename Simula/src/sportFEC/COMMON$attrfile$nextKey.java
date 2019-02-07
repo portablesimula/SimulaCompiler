@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1346
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$attrfile$nextKey extends BASICIO$ {
@@ -27,11 +27,11 @@ public final class COMMON$attrfile$nextKey extends BASICIO$ {
         LOOP$:while(JTX$>=0) {
             try {
                 JUMPTABLE$(JTX$); // For ByteCode Engineering
-                LABEL$(1); // REP
+                LABEL$(1,"REP");
                 ((COMMON$attrfile)(CUR$.SL$)).key=loadChar(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,((COMMON$attrfile)(CUR$.SL$)).p);
                 ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(1));
                 // JavaLine 33 ==> SourceLine 1348
-                if((((COMMON$attrfile)(CUR$.SL$)).key==(((COMMON$attrfile)(CUR$.SL$)).bufSwap))) {
+                if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).key==(((COMMON$attrfile)(CUR$.SL$)).bufSwap)))) {
                     // JavaLine 35 ==> SourceLine 1349
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1349",1349);

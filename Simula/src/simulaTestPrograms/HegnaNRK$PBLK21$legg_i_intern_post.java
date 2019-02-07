@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 852
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:37 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$legg_i_intern_post extends BASICIO$ {
@@ -25,11 +25,11 @@ public final class HegnaNRK$PBLK21$legg_i_intern_post extends BASICIO$ {
         // JavaLine 25 ==> SourceLine 855
         fnr=new HegnaNRK$PBLK21$finn_intern_feltnr(((HegnaNRK$PBLK21)(CUR$.SL$)),((HegnaNRK$PBLK21)(CUR$.SL$)).feltnr).RESULT$;
         // JavaLine 27 ==> SourceLine 856
-        if((fnr==(0))) {
+        if(VALUE$((fnr==(0)))) {
             // JavaLine 29 ==> SourceLine 858
             {
                 TRACE_BEGIN_STM$("CompoundStatement858",858);
-                if((((HegnaNRK$PBLK21)(CUR$.SL$)).felt_antall>=(((HegnaNRK$PBLK21)(CUR$.SL$)).max_intern_felt))) {
+                if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).felt_antall>=(((HegnaNRK$PBLK21)(CUR$.SL$)).max_intern_felt)))) {
                     // JavaLine 33 ==> SourceLine 859
                     new HegnaNRK$PBLK21$feil(((HegnaNRK$PBLK21)(CUR$.SL$)),8);
                 } else

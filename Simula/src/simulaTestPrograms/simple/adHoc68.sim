@@ -1,0 +1,17 @@
+Begin
+   Character c2;
+
+   Class Writer;
+   Begin
+      Integer i ;
+
+      Begin
+         Begin
+               Goto R
+         End;
+    R:End;
+   End ;
+
+
+    New Writer ;
+ End

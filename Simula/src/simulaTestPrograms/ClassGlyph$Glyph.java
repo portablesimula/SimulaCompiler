@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sat Jan 26 17:56:49 CET 2019
+// Simula-Beta-0.3 Compiled at Tue Feb 05 13:15:10 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class ClassGlyph$Glyph extends CLASS$ {

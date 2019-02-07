@@ -1,0 +1,178 @@
+package  simulaTestPrograms;
+
+super public final class adHoc68$Saveline
+	extends simula/runtime/BASICIO$
+	version 52:0
+{
+
+public static Field INFO$:"Lsimula/runtime/PROGINFO$;";
+
+public Method prefixLevel:"()I"
+	stack 1 locals 1
+{
+		iconst_0;
+		ireturn;
+}
+
+public Method "<init>":"(Lsimula/runtime/RTObject$;)V"
+	stack 3 locals 2
+{
+		aload_0;
+		aload_1;
+		invokespecial	Method simula/runtime/BASICIO$."<init>":"(Lsimula/runtime/RTObject$;)V";
+		aload_0;
+		invokevirtual	Method BBLK:"()V";
+		aload_0;
+		ldc	String "Saveline";
+		bipush	8;
+		invokevirtual	Method TRACE_BEGIN_DCL$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method STM$:"()LsimulaTestPrograms/adHoc68$Saveline;";
+		pop;
+		return;
+}
+
+public Method STM$:"()LsimulaTestPrograms/adHoc68$Saveline;"
+	stack 5 locals 1
+{
+		aload_0;
+		ldc	String "Saveline";
+		bipush	8;
+		invokevirtual	Method TRACE_BEGIN_STM$:"(Ljava/lang/String;I)V";
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class adHoc68;
+		checkcast	class adHoc68;
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class adHoc68;
+		checkcast	class adHoc68;
+		getfield	Field adHoc68.lnr:"I";
+		iconst_1;
+		iadd;
+		putfield	Field adHoc68.lnr:"I";
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class adHoc68;
+		checkcast	class adHoc68;
+		getfield	Field adHoc68.lines:"Lsimula/runtime/RTObject$$ARRAY$;";
+		getfield	Field simula/runtime/RTObject$$ARRAY$.Elt:"Ljava/lang/Object;";
+		checkcast	class "[Lsimula/runtime/TXT$;";
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class adHoc68;
+		checkcast	class adHoc68;
+		getfield	Field adHoc68.lnr:"I";
+		getstatic	Field CUR$:"Lsimula/runtime/RTObject$;";
+		getfield	Field simula/runtime/RTObject$.SL$:"Lsimula/runtime/RTObject$;";
+		checkcast	class adHoc68;
+		checkcast	class adHoc68;
+		getfield	Field adHoc68.lines:"Lsimula/runtime/RTObject$$ARRAY$;";
+		getfield	Field simula/runtime/RTObject$$ARRAY$.LB:"[I";
+		iconst_0;
+		iaload;
+		isub;
+		aload_0;
+		aload_0;
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		getfield	Field simula/runtime/PrintFile$.image:"Lsimula/runtime/TXT$;";
+		invokestatic	Method simula/runtime/TXT$.strip:"(Lsimula/runtime/TXT$;)Lsimula/runtime/TXT$;";
+		invokevirtual	Method copy:"(Lsimula/runtime/TXT$;)Lsimula/runtime/TXT$;";
+		invokevirtual	Method copy:"(Lsimula/runtime/TXT$;)Lsimula/runtime/TXT$;";
+		aastore;
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		getfield	Field simula/runtime/PrintFile$.image:"Lsimula/runtime/TXT$;";
+		iconst_1;
+		invokestatic	Method simula/runtime/TXT$.setpos:"(Lsimula/runtime/TXT$;I)V";
+		aload_0;
+		aload_0;
+		invokevirtual	Method sysout:"()Lsimula/runtime/PrintFile$;";
+		getfield	Field simula/runtime/PrintFile$.image:"Lsimula/runtime/TXT$;";
+		aconst_null;
+		invokevirtual	Method ASGTXT$:"(Lsimula/runtime/TXT$;Lsimula/runtime/TXT$;)Lsimula/runtime/TXT$;";
+		pop;
+		aload_0;
+		ldc	String "Saveline";
+		bipush	13;
+		invokevirtual	Method TRACE_END_STM$:"(Ljava/lang/String;I)V";
+		aload_0;
+		invokevirtual	Method EBLK:"()V";
+		aload_0;
+		areturn;
+}
+
+public bridge synthetic Method STM$:"()Lsimula/runtime/RTObject$;"
+	stack 1 locals 1
+{
+		aload_0;
+		invokevirtual	Method STM$:"()LsimulaTestPrograms/adHoc68$Saveline;";
+		areturn;
+}
+
+static Method "<clinit>":"()V"
+	stack 8 locals 0
+{
+		new	class simula/runtime/PROGINFO$;
+		dup;
+		ldc	String "adHoc68.sim";
+		ldc	String "Procedure Saveline";
+		bipush	12;
+		newarray int;
+		dup;
+		iconst_0;
+		iconst_1;
+		iastore;
+		dup;
+		iconst_1;
+		bipush	8;
+		iastore;
+		dup;
+		iconst_2;
+		bipush	23;
+		iastore;
+		dup;
+		iconst_3;
+		bipush	10;
+		iastore;
+		dup;
+		iconst_4;
+		bipush	25;
+		iastore;
+		dup;
+		iconst_5;
+		bipush	11;
+		iastore;
+		dup;
+		bipush	6;
+		bipush	27;
+		iastore;
+		dup;
+		bipush	7;
+		bipush	12;
+		iastore;
+		dup;
+		bipush	8;
+		bipush	29;
+		iastore;
+		dup;
+		bipush	9;
+		bipush	13;
+		iastore;
+		dup;
+		bipush	10;
+		bipush	34;
+		iastore;
+		dup;
+		bipush	11;
+		bipush	14;
+		iastore;
+		invokespecial	Method simula/runtime/PROGINFO$."<init>":"(Ljava/lang/String;Ljava/lang/String;[I)V";
+		putstatic	Field INFO$:"Lsimula/runtime/PROGINFO$;";
+		return;
+}
+
+public final InnerClass ARRAY$=class simula/runtime/RTObject$$ARRAY$ of class simula/runtime/RTObject$;
+
+} // end Class adHoc68$Saveline

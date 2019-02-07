@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 89
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:13:52 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:37:33 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Docking$PBLK13$Warehouse$Van$VantoPlatform extends BASICIO$ {
@@ -27,7 +27,7 @@ public final class Docking$PBLK13$Warehouse$Van$VantoPlatform extends BASICIO$ {
         // JavaLine 27 ==> SourceLine 92
         new Docking$PBLK13$Warehouse$Van$AnvanceQueue(((Docking$PBLK13$Warehouse$Van)(CUR$.SL$)));
         // JavaLine 29 ==> SourceLine 93
-        if((((Docking$PBLK13$Warehouse)(CUR$.SL$.SL$)).qLength>(0))) {
+        if(VALUE$((((Docking$PBLK13$Warehouse)(CUR$.SL$.SL$)).qLength>(0)))) {
             ((Docking$PBLK13$Warehouse)(CUR$.SL$.SL$)).qLength=(((Docking$PBLK13$Warehouse)(CUR$.SL$.SL$)).qLength-(1));
         }
         // JavaLine 33 ==> SourceLine 95

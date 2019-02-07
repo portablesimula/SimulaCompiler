@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 1378
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sat Jan 12 20:08:17 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$attrfile$fetchquant extends BASICIO$ {
@@ -62,7 +62,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                 // JavaLine 62 ==> SourceLine 1398
                 ((COMMON$attrfile)(CUR$.SL$)).xcateg=((COMMON$attrfile)(CUR$.SL$)).key;
                 // JavaLine 64 ==> SourceLine 1399
-                if((((COMMON$attrfile)(CUR$.SL$)).xcateg>=(((char)8)))) {
+                if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).xcateg>=(((char)8))))) {
                     // JavaLine 66 ==> SourceLine 1400
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1400",1400);
@@ -78,7 +78,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                 ((COMMON$attrfile)(CUR$.SL$)).xtype=loadChar(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,((COMMON$attrfile)(CUR$.SL$)).p);
                 ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(1));
                 // JavaLine 80 ==> SourceLine 1405
-                if((((COMMON$attrfile)(CUR$.SL$)).xtype>=(((char)128)))) {
+                if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).xtype>=(((char)128))))) {
                     // JavaLine 82 ==> SourceLine 1406
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1406",1406);
@@ -100,7 +100,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                 ((COMMON$attrfile)(CUR$.SL$)).xclf=loadChar(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,((COMMON$attrfile)(CUR$.SL$)).p);
                 ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(1));
                 // JavaLine 102 ==> SourceLine 1415
-                if((((COMMON$attrfile)(CUR$.SL$)).xclf>=(((char)128)))) {
+                if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).xclf>=(((char)128))))) {
                     // JavaLine 104 ==> SourceLine 1417
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1417",1417);
@@ -108,7 +108,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                         // JavaLine 108 ==> SourceLine 1418
                         ((COMMON$attrfile)(CUR$.SL$)).xclf=char$((rank(((COMMON$attrfile)(CUR$.SL$)).xclf)-(128)));
                         // JavaLine 110 ==> SourceLine 1419
-                        if(((COMMON$attrfile)(CUR$.SL$)).sysattrfile) {
+                        if(VALUE$(((COMMON$attrfile)(CUR$.SL$)).sysattrfile)) {
                         } else
                         // JavaLine 113 ==> SourceLine 1420
                         ((COMMON$attrfile)(CUR$.SL$)).xftag=(new COMMON$attrfile$nextNumber(((COMMON$attrfile)(CUR$.SL$))).RESULT$-(1));
@@ -123,7 +123,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                 ((COMMON$attrfile)(CUR$.SL$)).key=loadChar(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,((COMMON$attrfile)(CUR$.SL$)).p);
                 ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(1));
                 // JavaLine 125 ==> SourceLine 1427
-                if((((COMMON$attrfile)(CUR$.SL$)).key!=(((COMMON)(CUR$.SL$.SL$)).NUL))) {
+                if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).key!=(((COMMON)(CUR$.SL$.SL$)).NUL)))) {
                     // JavaLine 127 ==> SourceLine 1428
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1428",1428);
@@ -131,11 +131,11 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                         // JavaLine 131 ==> SourceLine 1429
                         ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(rank(((COMMON$attrfile)(CUR$.SL$)).key)));
                         // JavaLine 133 ==> SourceLine 1430
-                        if((((COMMON$attrfile)(CUR$.SL$)).xkind==(((COMMON)(CUR$.SL$.SL$)).K_class))) {
+                        if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).xkind==(((COMMON)(CUR$.SL$.SL$)).K_class)))) {
                             // JavaLine 135 ==> SourceLine 1431
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1431",1431);
-                                if(((((COMMON$attrfile)(CUR$.SL$)).xclf==(((COMMON)(CUR$.SL$.SL$)).Clf004))|((((COMMON$attrfile)(CUR$.SL$)).xclf==(((COMMON)(CUR$.SL$.SL$)).Clf009))))) {
+                                if(VALUE$(((((COMMON$attrfile)(CUR$.SL$)).xclf==(((COMMON)(CUR$.SL$.SL$)).Clf004))|((((COMMON$attrfile)(CUR$.SL$)).xclf==(((COMMON)(CUR$.SL$.SL$)).Clf009)))))) {
                                     ((COMMON$attrfile)(CUR$.SL$)).xhascode=true;
                                 }
                                 // JavaLine 141 ==> SourceLine 1434
@@ -145,11 +145,11 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                             }
                         }
                         // JavaLine 147 ==> SourceLine 1435
-                        if(new COMMON$LOOKUPid(((COMMON)(CUR$.SL$.SL$))).RESULT$) {
+                        if(VALUE$(new COMMON$LOOKUPid(((COMMON)(CUR$.SL$.SL$))).RESULT$)) {
                             // JavaLine 149 ==> SourceLine 1438
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1438",1438);
-                                LABEL$(1); // SETID
+                                LABEL$(1,"SETID");
                                 RESULT$=true;
                                 ((COMMON$attrfile)(CUR$.SL$)).xident=new COMMON$boxof(((COMMON)(CUR$.SL$.SL$)),((COMMON)(CUR$.SL$.SL$)).hashhi,((COMMON)(CUR$.SL$.SL$)).hashlo).RESULT$;
                                 TRACE_END_STM$("CompoundStatement1438",1438);
@@ -165,14 +165,14 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                     }
                 } else
                 // JavaLine 167 ==> SourceLine 1442
-                LABEL$(2); // SETDID
+                LABEL$(2,"SETDID");
                 ((COMMON$attrfile)(CUR$.SL$)).xident=((COMMON)(CUR$.SL$.SL$)).dummyBox;
                 // JavaLine 170 ==> SourceLine 1444
-                LABEL$(3); // CHCKMARK
+                LABEL$(3,"CHCKMARK");
                 ((COMMON$attrfile)(CUR$.SL$)).key=loadChar(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,((COMMON$attrfile)(CUR$.SL$)).p);
                 ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(1));
                 // JavaLine 174 ==> SourceLine 1445
-                if((((COMMON$attrfile)(CUR$.SL$)).key>=(((COMMON$attrfile)(CUR$.SL$)).lowKey))) {
+                if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).key>=(((COMMON$attrfile)(CUR$.SL$)).lowKey)))) {
                     // JavaLine 176 ==> SourceLine 1446
                     {
                         TRACE_BEGIN_STM$("CompoundStatement1446",1446);
@@ -220,7 +220,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                         // JavaLine 220 ==> SourceLine 1469
                         {
                             TRACE_BEGIN_STM$("CompoundStatement1469",1469);
-                            if((((COMMON$attrfile)(CUR$.SL$)).xkind==(((COMMON)(CUR$.SL$.SL$)).K_rep))) {
+                            if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).xkind==(((COMMON)(CUR$.SL$.SL$)).K_rep)))) {
                                 // JavaLine 224 ==> SourceLine 1470
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1470",1470);
@@ -235,7 +235,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                             ((COMMON$attrfile)(CUR$.SL$)).xspecial=loadChar(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,((COMMON$attrfile)(CUR$.SL$)).p);
                             ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(1));
                             // JavaLine 237 ==> SourceLine 1474
-                            if((((COMMON$attrfile)(CUR$.SL$)).xspecial>(((char)128)))) {
+                            if(VALUE$((((COMMON$attrfile)(CUR$.SL$)).xspecial>(((char)128))))) {
                                 // JavaLine 239 ==> SourceLine 1475
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1475",1475);
@@ -249,7 +249,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                             // JavaLine 249 ==> SourceLine 1478
                             {
                                 TRACE_BEGIN_STM$("CompoundStatement1478",1478);
-                                LABEL$(4); // GETARR
+                                LABEL$(4,"GETARR");
                                 new COMMON$attrfile$gettext(((COMMON$attrfile)(CUR$.SL$)));
                                 new COMMON$DEFCONST(((COMMON)(CUR$.SL$.SL$)));
                                 // JavaLine 255 ==> SourceLine 1479
@@ -277,7 +277,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                             ((COMMON$attrfile)(CUR$.SL$)).xcheckhi=((COMMON)(CUR$.SL$.SL$)).hashhi;
                             ((COMMON$attrfile)(CUR$.SL$)).xchecklo=((COMMON)(CUR$.SL$.SL$)).hashlo;
                             // JavaLine 279 ==> SourceLine 1491
-                            LABEL$(5); // xyMark
+                            LABEL$(5,"xyMark");
                             new COMMON$attrfile$gettext(((COMMON$attrfile)(CUR$.SL$)));
                             new COMMON$DEFIDENT(((COMMON)(CUR$.SL$.SL$)));
                             // JavaLine 283 ==> SourceLine 1492
@@ -315,7 +315,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                             nxtc=loadChar(((COMMON$attrfile)(CUR$.SL$)).attrbuffer,((COMMON$attrfile)(CUR$.SL$)).p);
                             ((COMMON$attrfile)(CUR$.SL$)).p=(((COMMON$attrfile)(CUR$.SL$)).p+(1));
                             // JavaLine 317 ==> SourceLine 1510
-                            if((nxtc>=('@'))) {
+                            if(VALUE$((nxtc>=('@')))) {
                                 // JavaLine 319 ==> SourceLine 1511
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1511",1511);
@@ -325,7 +325,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                                 }
                             }
                             // JavaLine 327 ==> SourceLine 1512
-                            if((nxtc>=(((char)32)))) {
+                            if(VALUE$((nxtc>=(((char)32))))) {
                                 // JavaLine 329 ==> SourceLine 1513
                                 {
                                     TRACE_BEGIN_STM$("CompoundStatement1513",1513);
@@ -382,7 +382,7 @@ public final class COMMON$attrfile$fetchquant extends BASICIO$ {
                 }
             }
             // JavaLine 384 ==> SourceLine 1561
-            LABEL$(6); // NOMORE
+            LABEL$(6,"NOMORE");
             break LOOP$;
         }
         catch(LABQNT$ q) {

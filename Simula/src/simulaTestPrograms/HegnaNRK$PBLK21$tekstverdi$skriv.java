@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 185
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue Jan 22 18:13:16 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:32:36 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$tekstverdi$skriv extends BASICIO$ {
@@ -59,11 +59,11 @@ public final class HegnaNRK$PBLK21$tekstverdi$skriv extends BASICIO$ {
                 // JavaLine 59 ==> SourceLine 201
                 l=(k-(i));
                 // JavaLine 61 ==> SourceLine 202
-                if((k==(j))) {
+                if(VALUE$((k==(j)))) {
                     l=(l+(1));
                 }
                 // JavaLine 65 ==> SourceLine 203
-                if(((TXT$.pos(sysout().image)+(l))>(((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).skjerm_image_lengde))) {
+                if(VALUE$(((TXT$.pos(sysout().image)+(l))>(((HegnaNRK$PBLK21)(CUR$.SL$.SL$)).skjerm_image_lengde)))) {
                     // JavaLine 67 ==> SourceLine 205
                     {
                         TRACE_BEGIN_STM$("CompoundStatement205",205);
@@ -76,7 +76,7 @@ public final class HegnaNRK$PBLK21$tekstverdi$skriv extends BASICIO$ {
                 // JavaLine 76 ==> SourceLine 208
                 sysout().outtext(TXT$.sub(((HegnaNRK$PBLK21$tekstverdi)(CUR$.SL$)).tekst,i,l));
                 // JavaLine 78 ==> SourceLine 209
-                if((k<(j))) {
+                if(VALUE$((k<(j)))) {
                     sysout().outchar(((char)32));
                 }
                 // JavaLine 82 ==> SourceLine 210

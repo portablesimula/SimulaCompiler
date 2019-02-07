@@ -112,7 +112,7 @@ public final class ConnectionStatement extends Statement
 	}
 	
 	public void print(String indent)
-	{ System.out.println(indent+"DO ");
+	{ Util.println(indent+"DO ");
 	  connectionBlock.print(indent);
 	}
 
@@ -159,7 +159,7 @@ public final class ConnectionStatement extends Statement
 	}
 	
 	public void print(String indent)
-	{ System.out.println(indent+"WHEN "+classIdentifier+" DO ");
+	{ Util.println(indent+"WHEN "+classIdentifier+" DO ");
 	  connectionBlock.print(indent);
 	}
 	
@@ -212,10 +212,10 @@ public final class ConnectionStatement extends Statement
   // ***********************************************************************************************
   public void print(String indent) { 
 //	  if(assignment!=null) assignment.print(indent);
-	  System.out.println(indent+"INSPECT "+inspectedVariable);
+	  Util.println(indent+"INSPECT "+inspectedVariable);
 	  for(DoPart doPart:connectionPart) doPart.print(indent);
 	  if(otherwise!=null)
-	  { System.out.println(indent+"   OTHERWISE "+otherwise+';'); }
+	  { Util.println(indent+"   OTHERWISE "+otherwise+';'); }
   }
 
   public String toString()

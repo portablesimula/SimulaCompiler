@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 69
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Jan 27 17:13:52 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Feb 06 21:37:33 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class Docking$PBLK13$Warehouse$Van extends Process$ {
@@ -34,7 +34,7 @@ public class Docking$PBLK13$Warehouse$Van extends Process$ {
                 // JavaLine 34 ==> SourceLine 125
                 vanShape=new ShapeElement$(((Docking$PBLK13)(CUR$.SL$.SL$))).STM$();
                 // JavaLine 36 ==> SourceLine 127
-                if((((Docking$PBLK13$Warehouse)(CUR$.SL$)).platforms.first()==(null))) {
+                if(VALUE$((((Docking$PBLK13$Warehouse)(CUR$.SL$)).platforms.first()==(null)))) {
                     // JavaLine 38 ==> SourceLine 129
                     {
                         TRACE_BEGIN_STM$("CompoundStatement129",129);
@@ -74,7 +74,7 @@ public class Docking$PBLK13$Warehouse$Van extends Process$ {
                 // JavaLine 74 ==> SourceLine 145
                 myDock.into(((Docking$PBLK13$Warehouse)(CUR$.SL$)).platforms);
                 // JavaLine 76 ==> SourceLine 146
-                if((((Docking$PBLK13$Warehouse)(CUR$.SL$)).Waiting.first()!=(null))) {
+                if(VALUE$((((Docking$PBLK13$Warehouse)(CUR$.SL$)).Waiting.first()!=(null)))) {
                     // JavaLine 78 ==> SourceLine 147
                     ((Docking$PBLK13$Warehouse)(CUR$.SL$)).ActivateAfter(false,((Process$)(((Docking$PBLK13$Warehouse)(CUR$.SL$)).Waiting.first())),((Docking$PBLK13$Warehouse$Van)CUR$));
                 }
