@@ -3,6 +3,7 @@ package simula.compiler.editor;
 import javax.swing.*;
 
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Util;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

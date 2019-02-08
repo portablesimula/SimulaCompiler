@@ -22,6 +22,8 @@ public final class ConnectionBlock extends DeclarationScope {
 	Statement statement;
 	ClassDeclaration classDeclaration;
 	public ClassDeclaration getClassDeclaration() { return(classDeclaration); } 
+	String whenClassIdentifier;
+	public Declaration whenClassDeclaration; // Set during cheching
   
 	public Expression getInspectedVariable() {
 		Type type = classDeclaration.type;
@@ -32,11 +34,12 @@ public final class ConnectionBlock extends DeclarationScope {
 		return ((Expression) TypeConversion.testAndCreate(type, inspectedVariable));
 	}
 
-	public ConnectionBlock(Variable inspectedVariable) {
+	public ConnectionBlock(Variable inspectedVariable,String whenClassIdentifier) {
 		super("Inspect:" + inspectedVariable);
 		// Global.currentScope=this;
 		blockKind = BlockKind.ConnectionBlock;
 		this.inspectedVariable = inspectedVariable;
+		this.whenClassIdentifier=whenClassIdentifier;
 		// Util.BREAK("BEGIN ConnectionBlock: "+this+", Scope="+this.edScopeChain());
 		// Util.BREAK("BEGIN ConnectionBlock: inspectedVariable="+inspectedVariable+",
 		// Type="+inspectedVariable.type);
@@ -82,6 +85,11 @@ public final class ConnectionBlock extends DeclarationScope {
 		externalIdent = inspectedVariable.identifier + '$' + lineNumber;
 		Global.currentScope = this;
 		blockLevel = currentBlockLevel;
+		if(whenClassIdentifier!=null) {
+			Meaning meaning=findMeaning(whenClassIdentifier);
+			//Util.BREAK("ConnectionBlock("+this.identifier+").doChecking: meaning="+meaning);
+			whenClassDeclaration=meaning.declaredAs;
+		}
 		statement.doChecking();
 		Global.currentScope = declaredIn;
 		SET_SEMANTICS_CHECKED();
@@ -96,7 +104,11 @@ public final class ConnectionBlock extends DeclarationScope {
 	}
 
 	public String toJavaCode() {
-		return (inspectedVariable.toJavaCode());
+//		return (inspectedVariable.toJavaCode());
+		String connID=inspectedVariable.toJavaCode();
+	    Declaration when=whenClassDeclaration;
+	    if(when==null) return(connID);
+	    return("(("+when.getJavaIdentifier()+')'+connID+')');
 	}  
   
 	// ***********************************************************************************************

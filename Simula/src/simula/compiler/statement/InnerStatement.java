@@ -2,6 +2,7 @@ package simula.compiler.statement;
 
 import simula.compiler.JavaModule;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Util;
 
 /**
  * Inner Statement.

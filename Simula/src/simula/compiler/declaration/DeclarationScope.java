@@ -43,11 +43,11 @@ public abstract class DeclarationScope extends Declaration {
   public Meaning findMeaning(String identifier)
   { //if(identifier.equalsIgnoreCase("ELT"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): scope="+this);
     Meaning meaning=findVisibleAttributeMeaning(identifier);
-    //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning1="+meaning);
-    //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): declaredIn="+declaredIn);
-    //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): ScopeChain="+edScopeChain());
+    //if(identifier.equalsIgnoreCase("instantMoveTo"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning1="+meaning);
+    //if(identifier.equalsIgnoreCase("instantMoveTo"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): declaredIn="+declaredIn);
+    //if(identifier.equalsIgnoreCase("instantMoveTo"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): ScopeChain="+edScopeChain());
     if(meaning==null && declaredIn!=null) meaning=declaredIn.findMeaning(identifier);
-    //if(identifier.equalsIgnoreCase("ln"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning2="+meaning);
+    //if(identifier.equalsIgnoreCase("instantMoveTo"))  Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+"): meaning2="+meaning);
     if(meaning==null) {
       if(identifier.equalsIgnoreCase("ELT"))Util.BREAK("DeclarationScope("+this.identifier+").findMeaning("+identifier+") ==> UNDEFINED");
     	

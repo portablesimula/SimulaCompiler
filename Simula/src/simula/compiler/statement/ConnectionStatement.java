@@ -64,7 +64,7 @@ public final class ConnectionStatement extends Statement
 	scope.declarationList.add(inspectVariableDeclaration);
     
     if(Parser.accept(KeyWord.DO))
-    { ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable);
+    { ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable,null);
       Statement statement=Statement.doParse();
       connectionPart.add(new DoPart(connectionBlock,statement));
       connectionBlock.end();
@@ -73,7 +73,7 @@ public final class ConnectionStatement extends Statement
     { while(Parser.accept(KeyWord.WHEN))
       { String classIdentifier=expectIdentifier();
         Parser.expect(KeyWord.DO);
-        ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable);
+        ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable,classIdentifier);
         hasWhenPart=true;
         Statement statement=Statement.doParse();
         connectionPart.add(new WhenPart(classIdentifier,connectionBlock,statement));

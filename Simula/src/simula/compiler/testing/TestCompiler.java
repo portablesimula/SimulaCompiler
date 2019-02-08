@@ -73,7 +73,7 @@ public final class TestCompiler {
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters
-		 String name="/error/Sudoku.sim";  // 
+		// String name="/error/Sudoku.sim";  // 
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
@@ -122,7 +122,7 @@ public final class TestCompiler {
 		// String name="/simple/HashingExample.sim";
 		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
-		// String name="/simple/InspectionSamples.sim";
+		 String name="/simple/InspectionSamples.sim";  
 		// String name="/simple/JensensDevice.sim";
 		// String name="/simple/LocalObject.sim";
 		// String name="/simple/MathSample.sim"; 

@@ -9,8 +9,8 @@
 
 Drawing("Warehouse Simulation",500,300)
 begin 
-       
-   boolean verbose=TRUE;
+   boolean DEBUG=false;
+   boolean verbose=false;
 
    procedure trace(msg); text msg;
    begin if verbose then
@@ -34,6 +34,23 @@ begin
               wPos=200;                  ! car washery;
       integer dLine1 = 75;               ! first dock;
       integer qLength;
+     
+         
+      Procedure RemoveAllVans; begin
+         ref(Link) elt,next;
+%         integer speed=200;
+         elt:-renderingSet.first;
+         while elt =/= none do begin
+            next:-elt.suc;
+            inspect elt when ShapeElement do begin
+               instantMoveTo(5000,5000);
+%               moveTo(5000,5000,speed);
+               out;
+            end;
+            elt:-next;
+         end;  
+      end RemoveAllVans;
+    
     
       procedure FillSquare(line,pos,b,h); long real line,pos,b,h;
       begin new ShapeElement.fillRectangle(pos,line,h,b); end;
@@ -55,15 +72,16 @@ begin
          end for;
          setDrawColor(orange);
          setFontStyleBoldItalic;
-         outtext("dLine1="); outint(dLine1,0); outimage;
-         outtext("pPos="); outint(pPos,0); outimage;
-         outtext("uPos="); outint(uPos,0); outimage;
-         outtext("wPos="); outint(wPos,0); outimage;
+         if DEBUG then begin
+            outtext("dLine1="); outint(dLine1,0); outimage;
+            outtext("pPos="); outint(pPos,0); outimage;
+            outtext("uPos="); outint(uPos,0); outimage;
+            outtext("wPos="); outint(wPos,0); outimage;
+         end;
          drawText("Platform:",pPos,dLine1-15);
          drawText("Unload:",uPos,dLine1-15);
          drawText("Wash:",wPos,dLine1-15);
       end drawMap;
-    
     
 
       Process class Van(load); integer load;
@@ -174,7 +192,7 @@ begin
          begin
             setFontStyleBold;
             setDrawColor(black);
-            report:-new TextElement(sysout.image.strip,50,250);
+            report:-new TextElement(sysout.image.strip,50,200+cnt*15);
          end else report.setText(sysout.image.strip);
          outimage;
       end Report;
@@ -215,7 +233,10 @@ begin
    U1:= 455470314;  U2:= 950423827;
 
    for cnt:= 2 step 1 until 6 do
-       Warehouse(cnt) begin Hold(960.0); end;
+       Warehouse(cnt) begin
+          Hold(960.0);
+          if cnt<6 then RemoveAllVans;
+       end;
    outtext("End of Simulation"); outimage;
     
    while true do begin end; ! Until Window close ;

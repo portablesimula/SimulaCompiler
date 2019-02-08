@@ -98,6 +98,7 @@ import javax.swing.JFrame;
  * @author Øystein Myhre Andersen
  */
 public class Drawing$ extends Simset$ {
+	private static final boolean DEBUG=false;
 	
 	public static final int white =     0xffffff; // Color white:      R=255, G=255, B=255.
 	public static final int lightGray = 0xc0c0c0; // Color light gray: R=192, G=192, B=192.
@@ -145,7 +146,7 @@ public class Drawing$ extends Simset$ {
      * FontSize usually 12.0 ?
      */
     public void setFontSize(float size)
-    { RT.println("SetFontSize: size="+size+", OldFont="+currentFont);
+    { if(DEBUG) RT.println("SetFontSize: size="+size+", OldFont="+currentFont);
     	currentFont=currentFont.deriveFont(size);
     }
     public float getFontSize() { return(currentFont.getSize2D()); }
@@ -243,9 +244,9 @@ public class Drawing$ extends Simset$ {
 
 //      currentFont=new Font(Font.SERIF,currentFont.getSize(),currentFont.getStyle());
 
-      RT.println("Init: Current Font="+currentFont);
+      if(DEBUG) RT.println("Init: Current Font="+currentFont);
 	  setFontSize(12);
-	  RT.println("Init: Current Font="+currentFont);
+	  if(DEBUG) RT.println("Init: Current Font="+currentFont);
         frame.add(canvas);
         frame.pack();
         frame.setVisible(true);  
@@ -260,18 +261,18 @@ public class Drawing$ extends Simset$ {
 //				
 //			}});
         frame.addWindowListener(new WindowListener() {
-			public void windowOpened(WindowEvent e) { RT.println("windowOpened.WindowsEvent: "+e); }
-			public void windowClosing(WindowEvent e) { RT.println("windowClosing.WindowsEvent: "+e);
+			public void windowOpened(WindowEvent e) { if(DEBUG) RT.println("windowOpened.WindowsEvent: "+e); }
+			public void windowClosing(WindowEvent e) { if(DEBUG) RT.println("windowClosing.WindowsEvent: "+e);
 				if(e.getID()==WindowEvent.WINDOW_CLOSING) {
 					//printThreadList(true);
 					System.exit(0);
 				}
 			}
-			public void windowClosed(WindowEvent e) { RT.println("windowClosed.WindowsEvent: "+e); }
-			public void windowIconified(WindowEvent e) { RT.println("windowIconified.WindowsEvent: "+e); }
-			public void windowDeiconified(WindowEvent e) { RT.println("windowDeiconified.WindowsEvent: "+e); }
-			public void windowActivated(WindowEvent e) { RT.println("windowActivated.WindowsEvent: "+e); }
-			public void windowDeactivated(WindowEvent e) { RT.println("windowClosing.WindowsEvent: "+e);
+			public void windowClosed(WindowEvent e) { if(DEBUG) RT.println("windowClosed.WindowsEvent: "+e); }
+			public void windowIconified(WindowEvent e) { if(DEBUG) RT.println("windowIconified.WindowsEvent: "+e); }
+			public void windowDeiconified(WindowEvent e) { if(DEBUG) RT.println("windowDeiconified.WindowsEvent: "+e); }
+			public void windowActivated(WindowEvent e) { if(DEBUG) RT.println("windowActivated.WindowsEvent: "+e); }
+			public void windowDeactivated(WindowEvent e) { if(DEBUG) RT.println("windowClosing.WindowsEvent: "+e);
 			}});
         
 //        frame.setFocusable(true);
@@ -280,14 +281,14 @@ public class Drawing$ extends Simset$ {
         canvas.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {
 				char c=e.getKeyChar();
-				RT.println("KEY "+c+" TYPED");
+				if(DEBUG) RT.println("KEY "+c+" TYPED");
 				if(c=='x') System.exit(0);
 			}
 			public void keyPressed(KeyEvent e) {
-				RT.println("KEY "+e.getKeyChar()+" PRESSED");
+				if(DEBUG) RT.println("KEY "+e.getKeyChar()+" PRESSED");
 			}
 			public void keyReleased(KeyEvent e) {
-				RT.println("KEY "+e.getKeyChar()+" RELEASE");
+				if(DEBUG) RT.println("KEY "+e.getKeyChar()+" RELEASE");
 			}});
     }
 
@@ -300,7 +301,7 @@ public class Drawing$ extends Simset$ {
 		return (this);
 	}
     
-	public void listRenderingSet()
+	private void listRenderingSet()
 	{ Link$ lnk=RENDERING_SET.first();
 	  RT.println("RENDERING SET: first="+lnk);
 	  while(lnk!=null) 

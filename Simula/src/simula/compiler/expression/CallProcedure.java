@@ -15,6 +15,7 @@ import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureDeclaration;
@@ -153,14 +154,15 @@ public final class CallProcedure {
 	{ 
 	  Meaning meaning=variable.meaning;
 	  ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
-//	  Util.BREAK("CallProcedure.asNormalMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
-//	  Util.BREAK("CallProcedure.asNormalMethod: "+procedure.blockKind+", DECL="+procedure);
+//	  if(variable.identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("CallProcedure.asNormalMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
+//	  if(variable.identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("CallProcedure.asNormalMethod: "+procedure.blockKind+", DECL="+procedure);
 	  String params=edProcedureParameters(variable,null,procedure);
 	  
 	  String methodCall=meaning.declaredAs.getJavaIdentifier()+params;
 	  if(meaning.isConnected())
-	  {	String connID=meaning.declaredIn.toJavaCode();
-		return(connID+'.'+methodCall);
+	  {	DeclarationScope declaredIn=meaning.declaredIn;
+	  	String connID=declaredIn.toJavaCode();
+	    return(connID+'.'+methodCall);
 	  }
 	  //Util.BREAK("CallProcedure.asNormalMethod: "+methodCall);
 	  BlockDeclaration staticLink=(BlockDeclaration)meaning.declaredAs.declaredIn;

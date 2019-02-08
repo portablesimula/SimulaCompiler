@@ -113,8 +113,8 @@ public final class MakeSetup {
 	private static void copySimulaReleaseTestBats() throws IOException	{
 		printHeading("Copy Simula Test .bat's into "+RELEASE_HOME);
 		copyTxtFile("ReleaseNotes.txt");
-		copyTxtFile("RunCompilerTest.bat");
-		copyTxtFile("RunCompilerTest.sh");
+//		copyTxtFile("RunCompilerTest.bat");
+//		copyTxtFile("RunCompilerTest.sh");
 	}
 	private static void copyTxtFile(String batName) throws IOException	{
 		File source=new File(ECLIPSE_ROOT+"\\src\\make\\setup\\"+batName);
@@ -246,7 +246,7 @@ public final class MakeSetup {
 		if(prevRevision!=null) {
 			revision=Integer.parseUnsignedInt(prevRevision)+1;
 		}
-		revision=10; // TODO: Ad'Hoc
+		//revision=12; // TODO: Ad'Hoc
 		String setupDated=""+new Date();
 		setProperty("simula.setup.dated",setupDated);
 		setProperty("simula.version",""+Global.simulaReleaseID);

@@ -15,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Date;
@@ -62,7 +64,7 @@ public final class SimulaExtractor extends JFrame {
     private static Properties simulaProperties;
     private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
 	private static final String programAndVersion = "Simula Beta 0.3";
-	private static String SIMULA_HOME;
+	private static String SIMULA_HOME; // e.g. C:\Users\Øystein\Simula
 	private static String setupDated;
 	private final ImageIcon simulaIcon;
 	
@@ -80,8 +82,38 @@ public final class SimulaExtractor extends JFrame {
 		SimulaExtractor simulaExtractor = new SimulaExtractor();
 		String jarFileName = simulaExtractor.getJarFileName();
 		boolean ok=simulaExtractor.extract(jarFileName);
+		writeCompilerBat();
 		storeProperties();
 		System.exit(ok ? 0 : 1);
+	}
+	
+	private static void writeCompilerBat() {
+		boolean windows=(File.separatorChar)=='\\';
+		String path=SIMULA_HOME+File.separatorChar+simulaReleaseID;
+		String text;
+		String fileName;
+		if(windows) {
+			fileName="RunSimulaEditor.bat";
+			text="rem *** Call Simula Editor\r\n" + 
+				 "java -jar "+path+"\\simula.jar\r\n" + 
+				 "pause\r\n";
+		} else {
+			fileName="RunSimulaEditor.sh";
+			text="printf \"*** Call Simula Editor\\n\"\r\n" + 
+				 "java -jar "+path+"/simula.jar\r\n" + 
+				 "read -p \"Press enter to continue\"\r\n";
+		}
+		if(DEBUG) System.out.println("path="+path);
+		if(DEBUG) System.out.println("fileName="+fileName);
+		if(DEBUG) System.out.println("text="+text);
+		if(DEBUG) System.out.println("fullFilePath="+path+'/'+fileName);
+		try {
+			FileOutputStream file=new FileOutputStream(path+'/'+fileName);
+			Writer writer=new OutputStreamWriter(file);
+			writer.write(text);
+			writer.flush();
+			writer.close();
+		} catch(IOException e) { e.printStackTrace(); }
 	}
 	
 	private static void loadProperties() {

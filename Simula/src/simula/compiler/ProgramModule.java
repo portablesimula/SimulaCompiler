@@ -69,10 +69,10 @@ public final class ProgramModule extends Statement
 	
 	  Global.currentScope=StandardClass.BASICIO;     // BASICIO Begin
 	  sysin=new Variable("sysin");
-	  new ConnectionBlock(sysin)                     //    Inspect sysin do
+	  new ConnectionBlock(sysin,null)                     //    Inspect sysin do
 	     .setClassDeclaration(StandardClass.InFile);
 	  sysout=new Variable("sysout");
-	  new ConnectionBlock(sysout)                    //    Inspect sysout do
+	  new ConnectionBlock(sysout,null)                    //    Inspect sysout do
 	     .setClassDeclaration(StandardClass.PrintFile);
 	  
 	  while(Parser.accept(KeyWord.EXTERNAL)) {

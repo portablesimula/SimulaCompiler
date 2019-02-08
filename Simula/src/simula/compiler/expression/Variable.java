@@ -115,6 +115,7 @@ public final class Variable extends Expression {
 	  if (meaning == null)
 		  meaning = Global.currentScope.findMeaning(identifier);
 	  Util.ASSERT(meaning.isNO_MEANING() || meaning.declaredIn!=null,"Invariant");
+	  //if(identifier.equalsIgnoreCase("instantMoveTo"))  Util.BREAK("Variable("+this.identifier+").findMeaning("+identifier+"): meaning1="+meaning);
 	  return (meaning);
     }
 
@@ -370,8 +371,8 @@ public final class Variable extends Expression {
 	private String editVariable(boolean destination)
 	{ Declaration decl=meaning.declaredAs;
 	  BlockKind blockKind=decl.blockKind;
-	  //Util.BREAK("Variable.edVariable("+identifier+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
-	  //Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
+//	  if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable.edVariable("+identifier+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
+//	  if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
 	  ASSERT_SEMANTICS_CHECKED(this);
 	  Expression inspectedVariable=meaning.getInspectedVariable();
 	  
@@ -409,7 +410,7 @@ public final class Variable extends Expression {
 		  ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
 //	      BlockDeclaration.Kind blockKind=decl.blockKind;
 	      StringBuilder s = new StringBuilder();
-	      //Util.BREAK("Variable3("+identifier+").get: blockKind="+blockKind);
+//	      if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable3("+identifier+").get: blockKind="+blockKind);
 	      if(blockKind==BlockKind.ContextFreeMethod) {
 	    	  // Standard Library Procedure
 				  if(identifier.equalsIgnoreCase("sourceline"))

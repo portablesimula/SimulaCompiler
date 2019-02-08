@@ -8,22 +8,17 @@ begin
    begin F:=if(g>15) then x else y; end;
       
    ref(A) x; ref(B) y;
-%   ref(A) z;
    integer aa;
    boolean bb;
    
    inspect F(54)
-%   inspect x
       do i:=y.i+1 otherwise aa:=4;
    
    inspect F(13)  
-%  inspect if bb then x else y
-%   z:- if bb then x else y;
-%   inspect z
    when B do
    begin 
       integer k;
-      k:=i+4;
+      k:=m+4;
    end
    when A do
    begin 
