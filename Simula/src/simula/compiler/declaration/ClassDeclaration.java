@@ -177,7 +177,7 @@ public class ClassDeclaration extends BlockDeclaration
     for(Statement stm:statements) stm.doChecking();
     checkProtectedList();
     checkHiddenList();
-	checkLabelList(prfx);
+	doCheckLabelList(prfx);
     Global.currentScope=declaredIn;
     currentBlockLevel--;
     SET_SEMANTICS_CHECKED();
@@ -198,16 +198,6 @@ public class ClassDeclaration extends BlockDeclaration
   private void checkProtectedList() {
 	  for(ProtectedSpecification pct:protectedList) {
 		  pct.doChecking();
-	  }
-  }
-
-  // ***********************************************************************************************
-  // *** Utility: checkLabelList
-  // ***********************************************************************************************
-  protected void checkLabelList(int prfx) {
-	  int labelIndex=1;
-	  for(LabelDeclaration label:labelList)	{
-		  label.prefixLevel=prfx; label.index=labelIndex++;
 	  }
   }
 

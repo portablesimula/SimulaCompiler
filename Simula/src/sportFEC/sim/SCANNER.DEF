@@ -1,5 +1,5 @@
-% External class ERRMSG;
-External class ERRMSG="C:\GitHub\SimulaCompiler\Simula/src/sportFEC/bin/ERRMSG.jar";
+External class ERRMSG;
+% External class ERRMSG="C:\GitHub\SimulaCompiler\Simula/src/sportFEC/bin/ERRMSG.jar";
 
 ERRMSG class SCANNER;
 %      -----------------------------------------------------------------

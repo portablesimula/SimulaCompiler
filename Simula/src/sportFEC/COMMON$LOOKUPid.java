@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 138
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Wed Feb 06 13:19:01 CET 2019
+// Simula-Beta-0.3 Compiled at Fri Feb 08 19:52:22 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class COMMON$LOOKUPid extends BASICIO$ {

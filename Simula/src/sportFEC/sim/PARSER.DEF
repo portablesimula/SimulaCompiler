@@ -1,5 +1,5 @@
-% external class SCANINP;
-external class SCANINP="C:\GitHub\SimulaCompiler\Simula/src/sportFEC/bin/SCANINP.jar ";
+external class SCANINP;
+% external class SCANINP="C:\GitHub\SimulaCompiler\Simula/src/sportFEC/bin/SCANINP.jar ";
 SCANINP class PARSER;
 
 hidden protected codebuffer;

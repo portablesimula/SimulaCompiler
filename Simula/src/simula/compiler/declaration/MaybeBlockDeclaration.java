@@ -7,6 +7,8 @@
  */
 package simula.compiler.declaration;
 
+import java.util.Vector;
+
 import simula.compiler.JavaModule;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.BlockStatement;
@@ -82,22 +84,8 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 	  else
 	  { blockKind=BlockKind.CompoundStatement;
 	    modifyIdentifier("CompoundStatement"+lineNumber);
-		if(!labelList.isEmpty()) // Label is also declaration
-		{ // Special case: Label in a Compound Statement.
-		  // Move Label Declaration to nearest enclosing 
-          // Block (with other declarations)
-			
-		  //Util.BREAK("BlockDeclaration.parseMaybeBlock: declaredIn="+declaredIn);
-		  DeclarationScope enc=declaredIn;
-		  while(enc.declarationList.isEmpty()) enc=enc.declaredIn;
-		  //Util.BREAK("BlockDeclaration.parseMaybeBlock: Label is moved to enc="+enc);
-		  for(LabelDeclaration lab:labelList) enc.labelList.add(lab);
-		  
-		  //Util.println("Resulting Label-List:");
-		  //for(LabelDeclaration lab:enc.labelList) Util.println(lab);
-		  
-		  labelList.clear();
-		}
+	    if(!labelList.isEmpty()) moveLabelsFrom(this); // Label is also declaration
+	    
 	  }
 	}
 	this.lastLineNumber=Global.sourceLineNumber;
@@ -107,6 +95,23 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
 	Global.currentScope=declaredIn;
 	return(new BlockStatement(this));
   }
+  
+  public static void moveLabelsFrom(DeclarationScope block) {
+	  // Special case: Labels in a CompoundStatement or ConnectionBlock.
+	  // Move Label Declaration to nearest enclosing Block which is not
+	  // a CompoundStatement or ConnectionBlock.
+	  DeclarationScope declaredIn=block.declaredIn;
+	  Vector<LabelDeclaration> labelList=block.labelList;
+//	  if(DEBUG) Util.BREAK("BlockDeclaration.parseMaybeBlock: declaredIn="+declaredIn);
+	  DeclarationScope enc=declaredIn;
+	  while(enc.blockKind==BlockKind.CompoundStatement
+		 && enc.blockKind==BlockKind.ConnectionBlock
+		 && enc.declarationList.isEmpty()) enc=enc.declaredIn;
+//	  if(DEBUG) Util.BREAK("BlockDeclaration.parseMaybeBlock: Labels are moved to enc="+enc);
+	  for(LabelDeclaration lab:labelList) enc.labelList.add(lab);
+	  labelList.clear();
+	}
+
 
 
   // ***********************************************************************************************
@@ -128,11 +133,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration
     //Util.BREAK("BlockDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
     for(Declaration dcl:declarationList) dcl.doChecking();
     for(Statement stm:statements) stm.doChecking();
-    
-    int labelIndex=1;
-	for(LabelDeclaration label:labelList)
-	{ label.prefixLevel=prfx; label.index=labelIndex++;	}
-    
+    doCheckLabelList(prfx);
     Global.currentScope=declaredIn;
 	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel--;
     SET_SEMANTICS_CHECKED();

@@ -90,7 +90,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		String method=AsmUtils.edAccessFlags(mn.access)+' '+methodName+"("+classFileName+")";
         if(labelHandles.size()==0)
         { if(DEBUG) Util.println("RepairSTM_MethodVisitor: No label found in Method "+method);
-          //return(null);
+          return; // ByteCodeEngineering FAILED
         } else if(Option.verbose) Util.println("RepairSTM_MethodVisitor: "+labelHandles.size()+" label found in Method "+method);
         
         if(Option.TRACE_REPAIRING) Util.println("*** PASS 2 - FIND AND TREAT JUMPTABLE$ ***");

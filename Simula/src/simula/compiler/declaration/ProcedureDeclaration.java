@@ -108,9 +108,7 @@ public class ProcedureDeclaration extends BlockDeclaration {
     for(Declaration par:this.parameterList) par.doChecking();
     for(Declaration dcl:declarationList) dcl.doChecking();
     for(Statement stm:statements) stm.doChecking();
-    int labelIndex=1;
-	for(LabelDeclaration label:labelList)
-	{ label.prefixLevel=prfx; label.index=labelIndex++;	}
+    doCheckLabelList(prfx);
 	VirtualSpecification virtualSpec = getVirtualSpecification();
 	if(virtualSpec!=null) // This Procedure is a Virtual Match
 	{ myVirtual=new VirtualMatch(virtualSpec,this);

@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 24
 package simulaTestBatch;
-// Simula-Beta-0.3 Compiled at Wed Feb 06 20:31:42 CET 2019
+// Simula-Beta-0.3 Compiled at Sun Feb 10 12:24:00 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class simtst68$Checklines extends BASICIO$ {

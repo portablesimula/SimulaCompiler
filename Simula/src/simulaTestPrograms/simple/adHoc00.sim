@@ -1,13 +1,15 @@
-
 begin
-   integer i;
-%   if i>0 then goto EXIT;
-   T1: outtext("AT T1 -- Should GOTO L2"); outimage;
-       goto L2;
-       i:=78;
-   L2: outtext("AT L2 -- Should GOTO EXIT"); outimage;
-       goto EXIT;
-   i:=i+1
-   L3: L4: L5:
-EXIT: outint(i,0);
+   integer i,j,N;
+   
+   procedure P;
+   begin integer N;
+      begin
+         if i < 44 then goto N;
+         begin
+            i:=65;
+         N: j:=44;
+         end;   
+      end;    
+   end;
+   
 end;

@@ -151,7 +151,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration // BlockDec
     int prfx=prefixLevel();
     for(Declaration dcl:declarationList) dcl.doChecking();
     for(Statement stm:statements) stm.doChecking();
-	checkLabelList(prfx);
+    doCheckLabelList(prfx);
     Global.currentScope=declaredIn;
 	if(blockKind!=BlockKind.CompoundStatement) currentBlockLevel--;
     SET_SEMANTICS_CHECKED();

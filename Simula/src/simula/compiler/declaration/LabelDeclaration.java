@@ -12,8 +12,8 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 
 public final class LabelDeclaration extends TypeDeclaration {
-    public int index; // set by BlockDeclaration.doChecking
-    public int prefixLevel; // set by BlockDeclaration.doChecking
+    public int index;       // set by BlockDeclaration.doCheckLabelList
+    public int prefixLevel; // set by BlockDeclaration.doCheckLabelList
     
 	public LabelDeclaration(String identifier) {
 		super(Type.Label,identifier);
@@ -35,6 +35,10 @@ public final class LabelDeclaration extends TypeDeclaration {
 		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
 		JavaModule.code("final LABQNT$ "+ident+"=new LABQNT$(this,"+prefixLevel+','+index+"); // Local Label #"+index+'='+ident);
+	}
+
+	public String toString() {
+		return ("LABEL "+identifier+", index="+index+", prefixLevel="+prefixLevel);
 	}
 
 }

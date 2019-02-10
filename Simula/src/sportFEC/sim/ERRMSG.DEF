@@ -1,5 +1,5 @@
-% External class COMMON; 
-External class COMMON="C:\GitHub\SimulaCompiler\Simula/src/sportFEC/bin/COMMON.jar"; 
+External class COMMON; 
+% External class COMMON="C:\GitHub\SimulaCompiler\Simula/src/sportFEC/bin/COMMON.jar"; 
 
 % This Module is written to: C:\GitHub\SimulaCompiler\Simula/src/testing/bin/ERRMSG.jar 
 

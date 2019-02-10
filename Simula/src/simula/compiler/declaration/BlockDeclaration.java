@@ -17,82 +17,106 @@ import simula.compiler.statement.Statement;
  * 
  * @author Øystein Myhre Andersen
  */
-public class BlockDeclaration extends DeclarationScope
-{ public int lastLineNumber;
-  public boolean isMainModule;  // If true; this is the outermost Subblock or Prefixed Block.
-  public boolean isContextFree; // If true; all member methods are independent of context
-  public boolean isPreCompiled; // If true; this Class/Procedure is Pre-Compiled
-  public Vector<Statement> statements=new Vector<Statement>();
-  
-  // ***********************************************************************************************
-  // *** CONSTRUCTORS
-  // ***********************************************************************************************
-  // Used by parseMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
-  public BlockDeclaration(String identifier) { super(identifier); } 
-  // Used by ClassDeclaration and ProcedureDeclaration
-  public BlockDeclaration(String identifier,BlockKind blockKind)
-  { super(identifier); this.blockKind=blockKind; } 
+public class BlockDeclaration extends DeclarationScope {
+	public int lastLineNumber;
+	public boolean isMainModule; // If true; this is the outermost Subblock or Prefixed Block.
+	public boolean isContextFree; // If true; all member methods are independent of context
+	public boolean isPreCompiled; // If true; this Class/Procedure is Pre-Compiled
+	public Vector<Statement> statements = new Vector<Statement>();
 
-  // ***********************************************************************************************
-  // *** Utility: prefixLevel
-  // ***********************************************************************************************
-  protected int prefixLevel() { return(0); } // Needs redefinition for Class and Prefixed Block
-
-  // ***********************************************************************************************
-  // *** Coding: isBlockWithLocalClasses
-  // ***********************************************************************************************
-  public boolean isBlockWithLocalClasses()
-  {	if(this.hasLocalClasses) return(true);
-    if(this instanceof ClassDeclaration)
-	{ ClassDeclaration prfx=((ClassDeclaration)this).getPrefixClass();
-	  if(prfx!=null) return(prfx.isBlockWithLocalClasses());
+	// ***********************************************************************************************
+	// *** CONSTRUCTORS
+	// ***********************************************************************************************
+	// Used by parseMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
+	public BlockDeclaration(String identifier) {
+		super(identifier);
 	}
-	return(false); 
-  }
 
-
-  // ***********************************************************************************************
-  // *** Coding: isQPSystemBlock  -- QPS System is any block with local class(es)
-  // ***********************************************************************************************
-  public boolean isQPSystemBlock()
-  {	switch(blockKind)
-	{ case SimulaProgram:
-	  case SubBlock:
-	  case PrefixedBlock:
-		  	   return(isBlockWithLocalClasses());
-	  default: return(false);
-	}  
-  }
-  
-  // ***********************************************************************************************
-  // *** Coding Utility: codeSTMBody
-  // ***********************************************************************************************
-  protected void codeSTMBody()
-  { if(!labelList.isEmpty())
-	{ JavaModule.code(externalIdent+" THIS$=("+externalIdent+")CUR$;");
-      JavaModule.code("LOOP$:while(JTX$>=0) {");
-      JavaModule.code("try {");
-	  JavaModule.code("JUMPTABLE$(JTX$); // For ByteCode Engineering");
+	// Used by ClassDeclaration and ProcedureDeclaration
+	public BlockDeclaration(String identifier, BlockKind blockKind) {
+		super(identifier);
+		this.blockKind = blockKind;
 	}
-    for(Statement stm:statements) stm.doJavaCoding();
-	if(!labelList.isEmpty())
-    { JavaModule.code("break LOOP$;");
-      JavaModule.code("}");
-      JavaModule.code("catch(LABQNT$ q) {");
-      JavaModule.code("CUR$=THIS$;");
-      JavaModule.code("if(q.SL$!=CUR$ || q.prefixLevel!="+prefixLevel()+") {");
-      JavaModule.code("CUR$.STATE$=OperationalState.terminated;");
-      JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
-      JavaModule.code("throw(q);");
-      JavaModule.code("}");
-      JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
-      JavaModule.code("JTX$=q.index; continue LOOP$; // EG. GOTO Lx"); 
-      JavaModule.code("}");
-      JavaModule.code("}");
-    }
-  }
 
-  public String toString()
-  { return(""+identifier+'['+externalIdent+"] BlockDeclaration.Kind="+blockKind); }
+	// ***********************************************************************************************
+	// *** Utility: prefixLevel
+	// ***********************************************************************************************
+	protected int prefixLevel() {
+		return (0);
+	} // Needs redefinition for Class and Prefixed Block
+
+	// ***********************************************************************************************
+	// *** Checking: doCheckLabelList
+	// ***********************************************************************************************
+	protected void doCheckLabelList(int prefixLevel) {
+		int labelIndex = 1;
+//		Util.println("BlockDeclaration.doCheckLabelList: BEGIN "+identifier);
+		for (LabelDeclaration label : labelList) {
+			label.prefixLevel = prefixLevel;
+			label.index = labelIndex++;
+//			Util.println("BlockDeclaration.doCheckLabelList: "+label);
+		}
+//		if(labelIndex>1) Util.BREAK("BlockDeclaration.doCheckLabelList: END "+identifier);
+	}
+
+	// ***********************************************************************************************
+	// *** Coding: isBlockWithLocalClasses
+	// ***********************************************************************************************
+	public boolean isBlockWithLocalClasses() {
+		if (this.hasLocalClasses)
+			return (true);
+		if (this instanceof ClassDeclaration) {
+			ClassDeclaration prfx = ((ClassDeclaration) this).getPrefixClass();
+			if (prfx != null)
+				return (prfx.isBlockWithLocalClasses());
+		}
+		return (false);
+	}
+
+	// ***********************************************************************************************
+	// *** Coding: isQPSystemBlock -- QPS System is any block with local class(es)
+	// ***********************************************************************************************
+	public boolean isQPSystemBlock() {
+		switch (blockKind) {
+		case SimulaProgram:
+		case SubBlock:
+		case PrefixedBlock:
+			return (isBlockWithLocalClasses());
+		default:
+			return (false);
+		}
+	}
+
+	// ***********************************************************************************************
+	// *** Coding Utility: codeSTMBody
+	// ***********************************************************************************************
+	protected void codeSTMBody() {
+		if (!labelList.isEmpty()) {
+			JavaModule.code(externalIdent + " THIS$=(" + externalIdent + ")CUR$;");
+			JavaModule.code("LOOP$:while(JTX$>=0) {");
+			JavaModule.code("try {");
+			JavaModule.code("JUMPTABLE$(JTX$); // For ByteCode Engineering");
+		}
+		for (Statement stm : statements) stm.doJavaCoding();
+		if (!labelList.isEmpty()) {
+			JavaModule.code("break LOOP$;");
+			JavaModule.code("}");
+			JavaModule.code("catch(LABQNT$ q) {");
+			JavaModule.code("CUR$=THIS$;");
+			JavaModule.code("if(q.SL$!=CUR$ || q.prefixLevel!=" + prefixLevel() + ") {");
+			JavaModule.code("CUR$.STATE$=OperationalState.terminated;");
+			JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
+			JavaModule.code("throw(q);");
+			JavaModule.code("}");
+			JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
+			JavaModule.code("JTX$=q.index; continue LOOP$; // EG. GOTO Lx");
+			JavaModule.code("}");
+			JavaModule.code("}");
+		}
+	}
+
+	public String toString() {
+		return ("" + identifier + '[' + externalIdent + "] BlockDeclaration.Kind=" + blockKind);
+	}
 
 }

@@ -21,10 +21,14 @@ public final class ConnectionBlock extends DeclarationScope {
 	public Variable inspectedVariable;
 	Statement statement;
 	ClassDeclaration classDeclaration;
-	public ClassDeclaration getClassDeclaration() { return(classDeclaration); } 
+
+	public ClassDeclaration getClassDeclaration() {
+		return (classDeclaration);
+	}
+
 	String whenClassIdentifier;
 	public Declaration whenClassDeclaration; // Set during cheching
-  
+
 	public Expression getInspectedVariable() {
 		Type type = classDeclaration.type;
 		// Util.BREAK("ConnectionBlock.getInspectedVariable:
@@ -34,22 +38,25 @@ public final class ConnectionBlock extends DeclarationScope {
 		return ((Expression) TypeConversion.testAndCreate(type, inspectedVariable));
 	}
 
-	public ConnectionBlock(Variable inspectedVariable,String whenClassIdentifier) {
+	public ConnectionBlock(Variable inspectedVariable, String whenClassIdentifier) {
 		super("Inspect:" + inspectedVariable);
 		// Global.currentScope=this;
 		blockKind = BlockKind.ConnectionBlock;
 		this.inspectedVariable = inspectedVariable;
-		this.whenClassIdentifier=whenClassIdentifier;
+		this.whenClassIdentifier = whenClassIdentifier;
 		// Util.BREAK("BEGIN ConnectionBlock: "+this+", Scope="+this.edScopeChain());
 		// Util.BREAK("BEGIN ConnectionBlock: inspectedVariable="+inspectedVariable+",
 		// Type="+inspectedVariable.type);
 	}
-  
+
 	public void end() {
 		if (Option.TRACE_PARSE)	Util.TRACE("END ConnectionBlock: " + this.edScopeChain());
 		// Debug.BREAK("END ConnectionBlock: "+this.edScopeChain());
+	    if(!labelList.isEmpty()) MaybeBlockDeclaration.moveLabelsFrom(this); // Label is also declaration
 		Global.currentScope = declaredIn;
 	}
+	
+	
 
 	public void setClassDeclaration(ClassDeclaration classDeclaration) {
 		// Util.BREAK("ConnectionBlock("+this.identifier+").setClassDeclaration("+classDeclaration.identifier+")");
@@ -61,8 +68,11 @@ public final class ConnectionBlock extends DeclarationScope {
 	}
 
 	public Meaning findMeaning(String identifier) {
-		// if(identifier.equalsIgnoreCase("ELT")) Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+") classDeclaration="+classDeclaration.edScopeChain());
-		if (classDeclaration == null && Global.duringParsing) return (null); // Still in Pass1(Parser)
+		// if(identifier.equalsIgnoreCase("ELT"))
+		// Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+")
+		// classDeclaration="+classDeclaration.edScopeChain());
+		if (classDeclaration == null && Global.duringParsing)
+			return (null); // Still in Pass1(Parser)
 		Meaning result = classDeclaration.findRemoteAttributeMeaning(identifier);
 		// if(identifier.equalsIgnoreCase("L"))Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+") ==> "+result);
 		if (result != null) {
@@ -70,25 +80,26 @@ public final class ConnectionBlock extends DeclarationScope {
 		} else if (declaredIn != null)
 			result = declaredIn.findMeaning(identifier);
 		if (result == null) {
-			if (identifier.equalsIgnoreCase("ELT"))
-				Util.BREAK("ConnectionBlock(" + this.identifier + ").findMeaning(" + identifier + ") ==> UNDEFINED");
+			//if(identifier.equalsIgnoreCase("ELT")) Util.BREAK("ConnectionBlock(" + this.identifier + ").findMeaning(" + identifier + ") ==> UNDEFINED");
 			Util.error("Undefined variable: " + identifier);
 			result = new Meaning(null, null); // Error Recovery: No Meaning
 		}
 		return (result);
 	}
-  
+
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())
+			return;
 		Global.sourceLineNumber = lineNumber;
 		// Set External Identifier
 		externalIdent = inspectedVariable.identifier + '$' + lineNumber;
 		Global.currentScope = this;
 		blockLevel = currentBlockLevel;
-		if(whenClassIdentifier!=null) {
-			Meaning meaning=findMeaning(whenClassIdentifier);
-			//Util.BREAK("ConnectionBlock("+this.identifier+").doChecking: meaning="+meaning);
-			whenClassDeclaration=meaning.declaredAs;
+		if (whenClassIdentifier != null) {
+			Meaning meaning = findMeaning(whenClassIdentifier);
+			// Util.BREAK("ConnectionBlock("+this.identifier+").doChecking:
+			// meaning="+meaning);
+			whenClassDeclaration = meaning.declaredAs;
 		}
 		statement.doChecking();
 		Global.currentScope = declaredIn;
@@ -104,13 +115,14 @@ public final class ConnectionBlock extends DeclarationScope {
 	}
 
 	public String toJavaCode() {
-//		return (inspectedVariable.toJavaCode());
-		String connID=inspectedVariable.toJavaCode();
-	    Declaration when=whenClassDeclaration;
-	    if(when==null) return(connID);
-	    return("(("+when.getJavaIdentifier()+')'+connID+')');
-	}  
-  
+		// return (inspectedVariable.toJavaCode());
+		String connID = inspectedVariable.toJavaCode();
+		Declaration when = whenClassDeclaration;
+		if (when == null)
+			return (connID);
+		return ("((" + when.getJavaIdentifier() + ')' + connID + ')');
+	}
+
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
@@ -122,14 +134,15 @@ public final class ConnectionBlock extends DeclarationScope {
 		String beg = "begin[" + edScopeChain() + ']';
 		indent = indent + "    ";
 		Util.println(indent + beg);
-		for (Declaration decl : declarationList) decl.print(indent + "   ");
+		for (Declaration decl : declarationList)
+			decl.print(indent + "   ");
 		statement.print(indent + "   ");
 		Util.println(indent + "end[" + edScopeChain() + ']');
 		// Util.BREAK("ConnectionBlock.print DONE");
 	}
-  
+
 	public String toString() {
 		return ("Inspect(" + inspectedVariable + ") do " + statement);
 	}
-  
+
 }

@@ -59,8 +59,9 @@ public final class ByteCodeEngineering {
             if(LIST_ASM_CODE) SimulaCompiler.doListClassFile(classFileName);
         } catch (Exception e) {
         	Util.println("ByteCodeEngineering FAILED for "+classFileName);
-        	Util.error("ByteCodeEngineering FAILED for "+classFileName);
+        	Util.error("ByteCodeEngineering FAILED for "+classFileName+", Exception="+e.getClass().getSimpleName()+", msg="+e.getMessage());
         	e.printStackTrace();
+        	Util.BREAK("CONTINUE ?");
         	//System.exit(0);
         }
     }

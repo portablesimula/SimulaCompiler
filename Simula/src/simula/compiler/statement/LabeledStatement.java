@@ -13,6 +13,7 @@ import simula.compiler.JavaModule;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
+import simula.compiler.utilities.Util;
 
 /**
  * Labeled Statement.
@@ -43,10 +44,11 @@ public final class LabeledStatement extends Statement {
 		statement.doChecking();
 		//Util.BREAK("LabeledStatement.doChecking: labels="+labels);
 		for (String label:labels) {
-			//Util.BREAK("LabeledStatement.doChecking: label="+label);
 			Meaning meaning = Global.currentScope.findMeaning(label);
-			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-			decl.doChecking();
+			try {
+			   LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
+			   decl.doChecking();
+			} catch(Exception e) { Util.error("Label "+label+" not found"); }			
 		}
 		SET_SEMANTICS_CHECKED();
 	}
@@ -57,7 +59,6 @@ public final class LabeledStatement extends Statement {
 		for (String label:labels) {
 			Meaning meaning = Global.currentScope.findMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-//			JavaModule.code("LABEL$("+decl.index+"); // "+decl.identifier);
 			JavaModule.code("LABEL$("+decl.index+",\""+decl.identifier+"\");");
 		}
 		statement.doJavaCoding();
