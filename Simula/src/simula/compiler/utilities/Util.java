@@ -52,13 +52,14 @@ public final class Util
 	public static void error(final String msg) {
 		String err = "Line " + Global.sourceLineNumber + " Error: " + msg;
 		nError++;
-		println(err);
+		printError(err);
 		BREAK("Continue ?");
 	}
 
 	public static void FATAL_ERROR(final String s) {
 		String msg = "LINE " + Global.sourceLineNumber + ": FATAL error - " + s;
-		System.err.println(msg);
+//		System.err.println(msg);
+		printError(msg);
 		println("STACK-TRACE");
 		printStackTrace();
 		System.exit(-1);
@@ -139,6 +140,13 @@ public final class Util
 		u = u.replace('\n', (char) 0);
 		if (Global.console != null)	Global.console.write(u + '\n');
 		else System.out.println(u);
+	}  
+
+	public static void printError(final String s) {
+		String u = s.replace('\r', (char) 0);
+		u = u.replace('\n', (char) 0);
+		if (Global.console != null)	Global.console.writeError(u + '\n');
+		else System.err.println(u);
 	}  
 
     //*******************************************************************************

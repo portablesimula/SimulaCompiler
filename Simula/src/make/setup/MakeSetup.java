@@ -246,7 +246,7 @@ public final class MakeSetup {
 		if(prevRevision!=null) {
 			revision=Integer.parseUnsignedInt(prevRevision)+1;
 		}
-		//revision=12; // TODO: Ad'Hoc
+		//revision=xx; // TODO: Ad'Hoc
 		String setupDated=""+new Date();
 		setProperty("simula.setup.dated",setupDated);
 		setProperty("simula.version",""+Global.simulaReleaseID);
