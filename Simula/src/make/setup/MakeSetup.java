@@ -39,7 +39,7 @@ public final class MakeSetup {
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Simula-1.0";
 
 	private final static String RELEASE_HOME=GIT_BINARIES+"\\"+RELEASE_ID;
-	private final static String RELEASE_TST=RELEASE_HOME+"\\tst";
+	private final static String RELEASE_SAMPLES=RELEASE_HOME+"\\samples";
 
 	private final static String GITHUB_ROOT="C:\\GitHub";
 	private final static String ECLIPSE_ROOT="C:\\GitHub\\SimulaCompiler\\Simula";
@@ -129,8 +129,8 @@ public final class MakeSetup {
 	// *** COPY SIMULA RELEASE TEST PROGRAMS
 	// ***************************************************************
 	private static void copySimulaReleaseTests() throws IOException	{
-		printHeading("Copy Simula TestPrograms into "+RELEASE_TST);
-		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples "+RELEASE_TST+" /E");
+		printHeading("Copy Simula TestPrograms into "+RELEASE_SAMPLES);
+		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples "+RELEASE_SAMPLES+" /E");
 	}
 	
 //	// ***************************************************************
@@ -153,11 +153,11 @@ public final class MakeSetup {
 	// *** COMPILE AND EXECUTE SIMULA PROGRAMS
 	// ***************************************************************
 //	private static void compileAndExecuteSimulaPrograms() throws IOException {
-//		printHeading("Compile and Execute TestPrograms from "+RELEASE_TST);
-//		compileAndExecuteSimulaProgram(RELEASE_TST+"\\HelloWord.sim");
-//		compileAndExecuteSimulaProgram(RELEASE_TST+"\\JensensDevice.sim");
-//		compileAndExecuteSimulaProgram(RELEASE_TST+"\\FittingRoom.sim");
-//		compileAndExecuteSimulaProgram(RELEASE_TST+"\\Docking.sim");
+//		printHeading("Compile and Execute TestPrograms from "+RELEASE_SAMPLES);
+//		compileAndExecuteSimulaProgram(RELEASE_SAMPLES+"\\HelloWord.sim");
+//		compileAndExecuteSimulaProgram(RELEASE_SAMPLES+"\\JensensDevice.sim");
+//		compileAndExecuteSimulaProgram(RELEASE_SAMPLES+"\\FittingRoom.sim");
+//		compileAndExecuteSimulaProgram(RELEASE_SAMPLES+"\\Docking.sim");
 //	}
 //	private static void compileAndExecuteSimulaProgram(String source) throws IOException {
 //		execute("java -jar "+RELEASE_HOME+"\\simula.jar "+source);
