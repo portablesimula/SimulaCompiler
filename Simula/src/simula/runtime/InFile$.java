@@ -108,7 +108,7 @@ public class InFile$ extends ImageFile$ {
 		Reader reader;
 		if (FILENAME$.edText().equalsIgnoreCase("sysin")) {
 			if(RT.console!=null) reader=RT.console.getReader();
-			else reader=new InputStreamReader(System.in);
+			else reader=new InputStreamReader(System.in,CHARSET$);
 		}
 		else {
 			doCreateAction();
@@ -120,7 +120,7 @@ public class InFile$ extends ImageFile$ {
 			}
 			try {
 				InputStream inputStream = new FileInputStream(file);
-				reader = new InputStreamReader(inputStream);
+				reader = new InputStreamReader(inputStream,CHARSET$);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				OPEN$=false;
@@ -160,6 +160,7 @@ public class InFile$ extends ImageFile$ {
 	 */
 	public boolean close() {
 		if (!OPEN$)	return (false);
+		if (!FILENAME$.edText().equalsIgnoreCase("sysin"))
 		try {
 			if (lineReader != null)
 				lineReader.close();

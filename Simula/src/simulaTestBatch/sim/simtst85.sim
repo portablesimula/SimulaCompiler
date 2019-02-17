@@ -37,6 +37,7 @@ INSPECT NEW DIRECTFILE("direct85") DO BEGIN
              IMAGE := NOTEXT;        IMAGE.SETPOS(1);
    END of procedure check;
 
+   SETACCESS("CHARSET:UTF-8");
    SETACCESS("CREATE");
    OPEN(BLANKS(12));
 

@@ -46,7 +46,7 @@ public final class RTConsole {
 //	    textArea.repaint();
 		textArea.update(textArea.getGraphics());
 	}
-
+	
     public Writer getWriter() { return(new Writer() {
     	public void write(char[] cbuf, int off, int len) throws IOException {
     		RT.console.write(new String(cbuf,off,len));	}

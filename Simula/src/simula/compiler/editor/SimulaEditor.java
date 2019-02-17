@@ -11,8 +11,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayDeque;
@@ -298,7 +300,11 @@ public class SimulaEditor extends JFrame {
 			Util.popUpError("Can't open file (the file does not exist)\n"+file);
 		} else {
 			SourceTextPanel panel=new SourceTextPanel(file);
-			try { panel.fillTextPane(new FileReader(file)); }
+			try {
+				//Reader reader=new FileReader(file);
+				Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
+				panel.fillTextPane(reader);
+			}
 			catch(IOException e) { e.printStackTrace(); }
 			tabbedPane.addTab(file.getName(), null, panel, "Tool tip ...");
 			// select the last tab

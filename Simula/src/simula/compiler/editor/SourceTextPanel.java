@@ -14,6 +14,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import simula.compiler.parsing.SimulaScanner;
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
 
@@ -21,11 +22,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.util.StringTokenizer;
 
 public class SourceTextPanel extends JPanel {
@@ -116,7 +119,11 @@ public class SourceTextPanel extends JPanel {
     	if(fileChanged)	try {
     		//simulaEditor.setTitle(sourceFile.getName() + " - " + "SimulaEditor");
     		//Util.println("SourceTextPanel.saveFile: DO IT - sourceFile="+sourceFile);
-    		BufferedWriter out = new BufferedWriter(new FileWriter(sourceFile.getPath()));
+    		
+    		//Writer writer = new FileWriter(outputFile);
+    		Writer writer=new OutputStreamWriter(new FileOutputStream(sourceFile.getPath()),Global.CHARSET$);
+    		BufferedWriter out = new BufferedWriter(writer);
+
     		String text=getPureText();
     		//Util.println(text);
     		out.write(text);

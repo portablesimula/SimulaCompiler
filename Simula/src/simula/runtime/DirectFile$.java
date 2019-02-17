@@ -538,7 +538,7 @@ public class DirectFile$ extends ImageFile$ {
 		try {
 			int size = loc2 - loc1 + 1;
 			//fileLock = randomAccessFile.getChannel().lock(loc1, size, true);
-			fileLock = randomAccessFile.getChannel().tryLock(loc1, size, true);
+			fileLock = randomAccessFile.getChannel().tryLock(loc1-1, size, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return (-2);

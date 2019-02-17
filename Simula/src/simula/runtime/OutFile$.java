@@ -102,7 +102,7 @@ public class OutFile$ extends ImageFile$ {
 				return (false);
 			}
 		}
-		writer = new OutputStreamWriter(outputStream);
+		writer = new OutputStreamWriter(outputStream,CHARSET$);
 		return (true);
 	}
 

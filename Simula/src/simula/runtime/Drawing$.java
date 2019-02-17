@@ -301,14 +301,14 @@ public class Drawing$ extends Simset$ {
 		return (this);
 	}
     
-	private void listRenderingSet()
-	{ Link$ lnk=RENDERING_SET.first();
-	  RT.println("RENDERING SET: first="+lnk);
-	  while(lnk!=null) 
-	  { RT.println(" - "+lnk.getClass().getSimpleName());
-	    lnk=lnk.suc();
-	  }
-	}
+//	private void listRenderingSet()
+//	{ Link$ lnk=RENDERING_SET.first();
+//	  RT.println("RENDERING SET: first="+lnk);
+//	  while(lnk!=null) 
+//	  { RT.println(" - "+lnk.getClass().getSimpleName());
+//	    lnk=lnk.suc();
+//	  }
+//	}
 
 
 }

@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -144,7 +145,9 @@ public final class SimulaCompiler {
 			Global.javaModules=new Vector<JavaModule>();
 			
 			if(reader==null) {
-				try { reader = new FileReader(inputFileName);
+				try {
+					//reader = new FileReader(inputFileName);
+					reader=new InputStreamReader(new FileInputStream(inputFileName),Global.CHARSET$);
 				} catch (IOException e) {
 					//Util.println("Error Opening File: " + fileName);
 					//e.printStackTrace();

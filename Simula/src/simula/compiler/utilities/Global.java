@@ -10,6 +10,7 @@ package simula.compiler.utilities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayDeque;
 import java.util.Properties;
 import java.util.Vector;
@@ -41,15 +42,14 @@ public final class Global {
 	public static final boolean USE_QPS_LOOM=false;
 	
 	public static final boolean MODIFY_CLASS_VERSION=false;
-//	public static final int major=49;  // .class file format version's Major
-	public static final int major=52;//50;  // .class file format version's Major
-//	public static final int minor=1;   // .class file format version's Minor
+	public static final int major=52;  // .class file format version's Major
 	public static final int minor=0;   // .class file format version's Minor
 	public static final int classFileVersion=minor<<16 | major;   // .class file format version used by modified .class files
 
 	
 	public static Vector<JavaModule> javaModules;
 	public static Vector<String> externalJarFiles=new Vector<String>();
+	public static Charset CHARSET$=Charset.defaultCharset();
 
 	public static int sourceLineNumber; //=1;
 	public static String sourceFileDir; 

@@ -84,7 +84,7 @@ public class PrintFile$ extends OutFile$ {
       CODE$=new ClassBody(CODE$,this,3) {
          public void STM$() {
        	    TRACE_BEGIN_STM$("PrintFile$",inner);
-            LINES_PER_PAGE$=132;
+            LINES_PER_PAGE$=66;
             SPACING$=1;
             if(inner!=null) inner.STM$();
             TRACE_END_STM$("PrintFile$");
@@ -239,11 +239,11 @@ public class PrintFile$ extends OutFile$ {
 		//RT.BREAK("OutFile.open: Filename=" + FILENAME$);
 		if (FILENAME$.edText().equalsIgnoreCase("sysout")) {
 			if(RT.console!=null) writer=RT.console.getWriter();
-			else writer = new OutputStreamWriter(System.out);
+			else writer = new OutputStreamWriter(System.out,CHARSET$);
 		} else {
 			try {
 				OutputStream outputStream = new FileOutputStream(FILENAME$.edText());
-				writer = new OutputStreamWriter(outputStream);
+				writer = new OutputStreamWriter(outputStream,CHARSET$);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				return (false);
@@ -298,6 +298,7 @@ public class PrintFile$ extends OutFile$ {
 		LINES_PER_PAGE$ = 0;
 		LINE$ = 0;
 		image = null; // image :- NOTEXT;
+		if (!FILENAME$.edText().equalsIgnoreCase("sysout"))
 		try {
 			writer.flush();
 			writer.close();

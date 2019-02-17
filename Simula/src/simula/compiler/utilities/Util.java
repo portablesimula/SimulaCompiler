@@ -58,7 +58,6 @@ public final class Util
 
 	public static void FATAL_ERROR(final String s) {
 		String msg = "LINE " + Global.sourceLineNumber + ": FATAL error - " + s;
-//		System.err.println(msg);
 		printError(msg);
 		println("STACK-TRACE");
 		printStackTrace();

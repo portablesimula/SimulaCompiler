@@ -1,9 +1,12 @@
 package simula.compiler.parsing;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
@@ -38,7 +41,10 @@ public class Directive {
 //		CHECK(fileName);
 		File file=new File(fileName);
 		if(file.exists() && file.canRead()) {
-		    try { scanner.insert(new FileReader(file));
+		    try {
+		    	//scanner.insert(new FileReader(file));
+				Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
+				scanner.insert(reader);
 		    } catch(IOException e) { e.printStackTrace(); }
 		} else Util.error("Can't open "+fileName+" for reading");
 	}

@@ -9,6 +9,7 @@ package simula.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import javax.swing.JFileChooser;
 
@@ -97,6 +98,7 @@ public class FILE$ extends CLASS$ {
 //	protected boolean READWRITE$;
 //	protected boolean BYTESIZE$;
 //	protected boolean REWIND$;
+	protected Charset CHARSET$=Charset.defaultCharset();
 
 	// Constructor
    public FILE$(RTObject$ staticLink,TXT$ FILENAME$) {
@@ -196,23 +198,39 @@ public class FILE$ extends CLASS$ {
 //		System.out.println("FILE$(FILENAME$).setaccess: "+mode.edText());
 		//RT.BREAK("FILE$(FILENAME$).setaccess: "+mode.edText());
 		//RT.NOT_IMPLEMENTED("FILE$(FILENAME$).setaccess: "+mode.edText());
-		String id=mode.edText().trim();
-		boolean notImplemented=false;
-		if(id.equalsIgnoreCase("CREATE")) CREATE$=CreateAction$.create; 
-		else if(id.equalsIgnoreCase("NOCREATE")) CREATE$=CreateAction$.noCreate; 
-		else if(id.equalsIgnoreCase("ANYCREATE")) CREATE$=CreateAction$.anyCreate; 
-		else if(id.equalsIgnoreCase("PURGE")) PURGE$=true; 
-		else if(id.equalsIgnoreCase("NOPURGE")) PURGE$=false; 
-//		else if(id.equalsIgnoreCase(FileAccess.SHARED.name())) notImplemented=true; 
-//		else if(id.equalsIgnoreCase(FileAccess.APPEND.name())) notImplemented=true; 
-//		else if(id.equalsIgnoreCase(FileAccess.READWRITE.name())) notImplemented=true; 
-//		else if(id.equalsIgnoreCase(FileAccess.BYTESIZE.name())) notImplemented=true; 
-//		else if(id.equalsIgnoreCase(FileAccess.REWIND.name())) notImplemented=true; 
-		else notImplemented=true;
-		if(notImplemented) {
-			RT.warning("FILE$("+FILENAME$.edText()+").setaccess("+id+") -- is undefined or not implemented: ");			
+		String id=mode.edText().trim().toUpperCase();
+		boolean unrecognized=false;
+		if(id.equals("CREATE")) CREATE$=CreateAction$.create; 
+		else if(id.equals("NOCREATE")) CREATE$=CreateAction$.noCreate; 
+		else if(id.equals("ANYCREATE")) CREATE$=CreateAction$.anyCreate; 
+		else if(id.equals("PURGE")) PURGE$=true; 
+		else if(id.equals("NOPURGE")) PURGE$=false; 
+//		else if(id.equals(FileAccess.SHARED.name())) notImplemented=true; 
+//		else if(id.equals(FileAccess.APPEND.name())) notImplemented=true; 
+//		else if(id.equals(FileAccess.READWRITE.name())) notImplemented=true; 
+//		else if(id.equals(FileAccess.BYTESIZE.name())) notImplemented=true; 
+//		else if(id.equals(FileAccess.REWIND.name())) notImplemented=true; 
+		else if(id.startsWith("CHARSET")) {
+			String charset=id.substring(7).trim();
+			//RT.println("CHARSET: defaultCharset="+Charset.defaultCharset());
+			if(charset.startsWith(":")) {
+				charset=charset.substring(1).trim();
+				if(Charset.isSupported(charset)) {
+					if(RT.Option.VERBOSE) RT.warning("FILE("+FILENAME$.edText()+").CHARSET Changed from "+CHARSET$+" to "+charset);
+					CHARSET$=Charset.forName(charset);
+					return(true); 
+				} else {
+					RT.warning("FILE("+FILENAME$.edText()+").setaccess: The Charset \""+charset+"\" is not supported");
+					return(false);
+				}
+			}
+			RT.println("CHARSET: CHARSET$="+CHARSET$);
 		}
-		return (!notImplemented);
+		else unrecognized=true;
+		if(unrecognized) {
+			RT.warning("FILE("+FILENAME$.edText()+").setaccess("+id+") -- is unrecognized or not implemented: ");			
+		}
+		return (!unrecognized);
 	}
 
 
