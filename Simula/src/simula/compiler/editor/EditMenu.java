@@ -48,7 +48,7 @@ public class EditMenu extends JMenu {
 //					boolean editable=!current.isEditable();					
 					boolean editable=enable.isSelected();					
 					current.setEditable(editable);
-					autoRefresh.setSelected(editable);
+					//autoRefresh.setSelected(editable);
 					enableMenuItems(editable);
 				}
 			}});
@@ -66,6 +66,7 @@ public class EditMenu extends JMenu {
 					//simulaEditor.doRefresh();
 				}
 			}});
+        autoRefresh.setEnabled(false);
         this.add(autoRefresh);
         this.addSeparator();
 

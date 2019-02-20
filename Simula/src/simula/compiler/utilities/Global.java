@@ -35,6 +35,7 @@ public final class Global {
     public static final ImageIcon simulaIcon = new ImageIcon("icons/simula.png");
     public static final ImageIcon simIcon = new ImageIcon("icons/sim2.png");
     public static final ImageIcon sIcon = new ImageIcon("icons/sim.png");
+    public static final int MAX_WORKSPACE=10;
     
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	public static final boolean USE_OpenJDK_ASMTOOLS=false;//true;
@@ -135,7 +136,7 @@ public final class Global {
 	
     public static ArrayDeque<String> loadWorkspaces() {
     	workspaces=new ArrayDeque<String>();
-    	for(int i=1;i<10;i++) {
+    	for(int i=1;i<=MAX_WORKSPACE;i++) {
     		String ws=getProperty("simula.workspace."+i,null);
     		if(ws!=null) workspaces.add(ws);
     	}
@@ -150,14 +151,22 @@ public final class Global {
     }
 	
 	public static void updateCurrentWorkspace(String currentWorkspace) {
-		Util.println("Global.updateCurrentWorkspace: currentWorkspace="+currentWorkspace);
-		Global.currentWorkspace=currentWorkspace;
+		//Util.println("Global.updateCurrentWorkspace: currentWorkspace="+currentWorkspace);
+		//Global.currentWorkspace=currentWorkspace;
 		workspaces.remove(currentWorkspace);
 		workspaces.addFirst(currentWorkspace);
+		updateWorkspaceList();
+	}
+	
+	public static void updateWorkspaceList() {
+    	for(int i=1;i<=MAX_WORKSPACE;i++) {
+    		simulaProperties.remove("simula.workspace."+i);
+    	}
 		int i=1;
 		for(String ws:workspaces) {
 			simulaProperties.setProperty("simula.workspace."+(i++),ws);
 		}
+		Global.currentWorkspace=workspaces.getFirst();
 		storeProperties();
 
 	}

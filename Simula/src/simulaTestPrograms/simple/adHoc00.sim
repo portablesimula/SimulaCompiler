@@ -1,15 +1,5 @@
+%+3 %SELECT 23
+Class A;
 begin
-   integer i,j,N;
-   
-   procedure P;
-   begin integer N;
-      begin
-         if i < 44 then goto N;
-         begin
-            i:=65;
-         N: j:=44;
-         end;   
-      end;    
-   end;
-   
+   long real L=29.5305883&&0;   
 end;

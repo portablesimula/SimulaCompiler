@@ -1,0 +1,95 @@
+Simula Issues
+
+OPEN Issue 10: Fra Eyvind, Gunnar, Karel ...
+Under utføring av 'store' simuleringer kommer det en feilmelding:
+  Assertion Failed: Invariant-2
+Deretter kan man fortsette ved å trykke [Enter] og programmet
+avslutter fint (for det meste).
+
+Analyse: 
+
+===============================================================================
+
+
+CLOSED Issue 9: Fra Gunnar
+Simula PRM sect. 6.5 sier at bare bokstaver er lovlige 'selectors'.
+I PC Simula tillot vi også siffer.
+
+Tiltak: Simula PRM og Simula Scanner rettes slik at siffer blir lovlig.
+
+===============================================================================
+
+CLOSED Issue 8: Fra Øystein
+Det er umulig å fjerne et Workspace igjen.
+
+Tiltak: En ny knapp i [Settings] [WorkSpaces] innføres for å kunne fjerne 
+        sånne.
+
+===============================================================================
+
+CLOSED Issue 7: Fra Øystein
+Forsøk på å åpne et ferdig kompilert programs .jar file - feiler stort.
+
+Tiltak: Editor rettet: [Open] på en .jar file starter en utføring.
+
+===============================================================================
+
+CLOSED Issue 6: Fra Dag
+Jeg har også en kommentar som går på versjon:
+
+* Gammel Simula skrev ut stjerner når tallverdien i kall på OutInt var for 
+kort. Nyere versjoner utvidet i stedet feltet. Jeg foretrekker det siste.
+
+Analyse: Finner ikke noe sånt i Simula Standard.
+         Outint(value,0) er innført i Simula Standard til å bety noe ala
+         det du beskriver.
+
+Tiltak: Ingen.
+
+===============================================================================
+
+CLOSED Issue 5: Fra Dag
+* Jeg har også prøvd å hente inn eksterne klasser; se de to vedlagte 
+filene. dates.sim lar seg greit kompilere. Når jeg prøver å kompilere 
+testdates.sim, krasjer kompilatoren, editoren og alt.
+
+Analyse: Reproduserer i test-utgaven min. Går feil ved lesing av attr.file
+         Long real constant lagt ut feil i attr.filen
+         Ved senere lesing gikk kompilatoren i FATAL ERROR som i editoren
+         ikke ble synlig fordi en System.exit(-1) lukket alle vinduer.
+         
+Tiltak: 1) Vinduet med FATAL ERROR blir stående
+        2) Skriving av long real constant er retta i attr.file          
+
+===============================================================================
+
+OPEN Issue 4: Fra Dag
+* Editoren henger av og til og jeg får melding om
+   java.lang.OutOfMemoryError: Java heap space. Si fra om du vil
+   ha en full stack trace.
+   
+Analyse: Tror at dette henger sammen med at auto-refresh er ganske ustabil.
+
+Tiltak: Tar vekk auto-refresh intil videre.
+
+===============================================================================
+
+OPEN Issue 3: Fra Dag og Karel
+* Kommentarer etter siste END er ikke lov.
+
+===============================================================================
+
+CLOSED Issue 2: Fra Dag og Gunnar
+* Kompilatoren liker ikke filnavn med bindestrek.
+ Heller ikke filnavn som begynner med et siffer
+ 
+Tiltak: Java class identifier lages fra filnavnet ved å erstatte alle ulovlige
+        tegn med '_'. 
+
+===============================================================================
+
+OPEN Issue 1: Fra Dag
+* Editoren er rar. Plutselig finner den på å hoppe til starten av koden og 
+fjerne omtrent alt. Savnet av en undo er stort.
+
+===============================================================================

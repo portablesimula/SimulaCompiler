@@ -189,18 +189,18 @@ public class FileMenu extends JMenu {
 
 	private int overwriteDialog(File file) {
  		String msg="The file: \n"+file+"\nAlready exists - Do you want to overwrite it ?";
- 		return(Util.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
+ 		return(Util.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE,"Ok","Cancel"));
 	}
 
 	private int noSimTypeDialog(File file) {
         String msg="The file name\n"+file+"\nDoes not end with the recomended \".sim\"";
-		return(Util.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE));
+		return(Util.optionDialog(msg,"Warning",JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE,"Ok","Cancel"));
 	}
 	
 	private int saveDialog(File file) {
 		String msg=(file==null)?"The source text has unsaved changes.\nDo you want to save it in a file ?"
 		                       :"The file: \n"+file+"\nHas changed - do you want to save it ?";
-		return(Util.optionDialog(msg,"Question",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE));
+		return(Util.optionDialog(msg,"Question",JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,"Yes","No","Cancel"));
 	}
 	
 

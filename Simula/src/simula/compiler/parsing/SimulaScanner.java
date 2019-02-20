@@ -778,7 +778,7 @@ public final class SimulaScanner {
 			if (current == '+') {
 				getNext();
 				//Util.println("SimulaScanner.lineSelected(+): c="+(char)current);
-				while (Character.isLetter(current)) {
+				while (Character.isLetter(current) | Character.isDigit(current)) {
 					if (!selector[current])
 						return (false); // then SKIPLINE;
 					getNext();
@@ -787,7 +787,7 @@ public final class SimulaScanner {
 			} else if (current == '-') {
 				getNext();
 				//Util.println("SimulaScanner.lineSelected(-): c="+(char)current);
-				while (Character.isLetter(current)) {
+				while (Character.isLetter(current) | Character.isDigit(current)) {
 					if (selector[current])
 						return (false); // then SKIPLINE;
 					getNext();

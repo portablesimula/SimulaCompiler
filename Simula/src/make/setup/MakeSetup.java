@@ -111,10 +111,9 @@ public final class MakeSetup {
 	// *** COPY SIMULA RELEASE TEST BATCH FILES
 	// ***************************************************************
 	private static void copySimulaReleaseTestBats() throws IOException	{
-		printHeading("Copy Simula Test .bat's into "+RELEASE_HOME);
+		printHeading("Copy Simula Release Info into "+RELEASE_HOME);
 		copyTxtFile("ReleaseNotes.txt");
-//		copyTxtFile("RunCompilerTest.bat");
-//		copyTxtFile("RunCompilerTest.sh");
+		copyTxtFile("Issues.txt");
 	}
 	private static void copyTxtFile(String batName) throws IOException	{
 		File source=new File(ECLIPSE_ROOT+"\\src\\make\\setup\\"+batName);

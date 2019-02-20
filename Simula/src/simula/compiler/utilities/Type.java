@@ -229,7 +229,9 @@ public class Type
   public String toString()
   { if(key==null) return("null");
 	if(key.getKeyWord()==KeyWord.REF) return("Ref("+key.getValue()+')');
-	if(this.equals(LongReal)) return("LONG REAL"); 
+	if(this.equals(LongReal)) {
+		return("LONG REAL"); 
+	}
 	return(key.toString());
   }
 }

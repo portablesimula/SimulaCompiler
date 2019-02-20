@@ -11,7 +11,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -139,7 +138,9 @@ public final class SimulaCompiler {
 		try {
 			Util.nError=0;
 			if(!Util.isJavaIdentifier(Global.sourceName)) {
-				Util.error("The source file name '"+Global.sourceName+"' is not a legal identifier. Rename source file");
+				String sourceName=Global.sourceName; 
+				Global.sourceName=Util.makeJavaIdentifier(sourceName);
+				Util.warning("The source file name '"+sourceName+"' is not a legal class identifier. Modified to: "+Global.sourceName);
 			}
 
 			Global.javaModules=new Vector<JavaModule>();
@@ -468,7 +469,7 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** EXECUTE OS COMMAND
 	// ***************************************************************
-	private static int execute(String command) throws IOException
+	public static int execute(String command) throws IOException
 	{	Runtime runtime = Runtime.getRuntime();
 	    if(Option.verbose) Util.message("Execute: "+command);
 	    String cmd=command.trim()+'\n';

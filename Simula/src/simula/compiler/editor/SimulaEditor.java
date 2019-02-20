@@ -34,6 +34,7 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -222,7 +223,7 @@ public class SimulaEditor extends JFrame {
     	panel.setLayout(new BorderLayout());
     	panel.add(textArea,BorderLayout.NORTH);
     	panel.add(workspaceChooser,BorderLayout.CENTER);
-		int result=Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		int result=Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,"OK","Cancel");
         //Util.println("doSelectWorkspace: result="+result);
         if(result!=JOptionPane.OK_OPTION) System.exit(0);
         UIManager.put("Panel.background",PanelBackground);
@@ -259,7 +260,7 @@ public class SimulaEditor extends JFrame {
  				  	       + "        Dated: "+remoteSetupDated+"\n\n"
     					   
     					   + "   Do you want to download now ?\n";
-    			int result=Util.optionDialog(msg,"Update Notification",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    			int result=Util.optionDialog(msg,"Update Notification",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,"Yes","No");
     			if(result==0) {
 					Desktop desktop = Desktop.getDesktop();
 //					try { desktop.browse(new URI("https://github.com/portablesimula"));
@@ -272,18 +273,6 @@ public class SimulaEditor extends JFrame {
         } catch(Exception e) { e.printStackTrace(); }
         
     }
- 
-//	public static int optionDialog(Object msg, String title, int optionType, int messageType) {
-//		Object OptionPaneBackground=UIManager.get("OptionPane.background");
-//		Object PanelBackground=UIManager.get("Panel.background");
-// 		UIManager.put("OptionPane.background", Color.WHITE);
-//        UIManager.put("Panel.background", Color.WHITE);
-//		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,SimulaEditor.sIcon, null, null);
-//		//Util.println("doClose.saveDialog: answer="+answer);
-//		UIManager.put("OptionPane.background",OptionPaneBackground);
-//        UIManager.put("Panel.background",PanelBackground);
-//		return(answer);
-//	}
 
 	void doNewFile() {
         SourceTextPanel panel=new SourceTextPanel(null);
@@ -299,18 +288,30 @@ public class SimulaEditor extends JFrame {
 		if(!file.exists()) {
 			Util.popUpError("Can't open file (the file does not exist)\n"+file);
 		} else {
-			SourceTextPanel panel=new SourceTextPanel(file);
-			try {
-				//Reader reader=new FileReader(file);
-				Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
-				panel.fillTextPane(reader);
+			if(file.getName().toLowerCase().endsWith(".jar")) doRunJarFile(file);
+			else {
+				SourceTextPanel panel=new SourceTextPanel(file);
+				try {
+					//Reader reader=new FileReader(file);
+					Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
+					panel.fillTextPane(reader);
+				}
+				catch(IOException e) { e.printStackTrace(); }
+				tabbedPane.addTab(file.getName(), null, panel, "Tool tip ...");
+				// select the last tab
+				tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+				panel.fileChanged=false;
 			}
-			catch(IOException e) { e.printStackTrace(); }
-			tabbedPane.addTab(file.getName(), null, panel, "Tool tip ...");
-			// select the last tab
-			tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
-			panel.fileChanged=false;
 		}
+	}
+	
+	private void doRunJarFile(File jarFile) {
+		new Thread(new Runnable() {
+			public void run() {
+				try { SimulaCompiler.execute("java -jar " + jarFile + " -USE_CONSOLE");
+				} catch (IOException e) { e.printStackTrace(); }
+			}
+		}).start();
 	}
 	
 	class Refresher extends Thread {

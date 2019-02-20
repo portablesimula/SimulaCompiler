@@ -26,20 +26,32 @@ public final class Util
 	
 //	public static void popUpMessage(String msg) {
 	public static void popUpMessage(Object msg) {
-		Util.optionDialog(msg,"Message",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		Util.optionDialog(msg,"Message",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, "OK");
 	}
 	
 	public static void popUpError(String msg) {
-		int res=Util.optionDialog(msg+"\nDo you want to continue ?","Error",JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+		int res=Util.optionDialog(msg+"\nDo you want to continue ?","Error",JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, "Yes", "No");
 		if(res!=JOptionPane.YES_OPTION) System.exit(0);
 	}
 
-	public static int optionDialog(Object msg, String title, int optionType, int messageType) {
+//	public static int optionDialog(Object msg, String title, int optionType, int messageType) {
+//		Object OptionPaneBackground=UIManager.get("OptionPane.background");
+//		Object PanelBackground=UIManager.get("Panel.background");
+// 		UIManager.put("OptionPane.background", Color.WHITE);
+//        UIManager.put("Panel.background", Color.WHITE);
+//		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,Global.sIcon, null, null);
+//		//System.out.println("doClose.saveDialog: answer="+answer);
+//		UIManager.put("OptionPane.background",OptionPaneBackground);
+//        UIManager.put("Panel.background",PanelBackground);
+//		return(answer);
+//	}
+
+	public static int optionDialog(Object msg, String title, int optionType, int messageType,String... option) {
 		Object OptionPaneBackground=UIManager.get("OptionPane.background");
 		Object PanelBackground=UIManager.get("Panel.background");
  		UIManager.put("OptionPane.background", Color.WHITE);
         UIManager.put("Panel.background", Color.WHITE);
-		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,Global.sIcon, null, null);
+		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,Global.sIcon, option, option[0]);
 		//System.out.println("doClose.saveDialog: answer="+answer);
 		UIManager.put("OptionPane.background",OptionPaneBackground);
         UIManager.put("Panel.background",PanelBackground);
@@ -58,10 +70,12 @@ public final class Util
 
 	public static void FATAL_ERROR(final String s) {
 		String msg = "LINE " + Global.sourceLineNumber + ": FATAL error - " + s;
+		nError++;
 		printError(msg);
 		println("STACK-TRACE");
 		printStackTrace();
-		System.exit(-1);
+		//System.exit(-1);
+		FORCED_EXIT();
 	}
 
 	public static void warning(final String msg) {
@@ -91,10 +105,10 @@ public final class Util
 		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 	}
 
-	public static void EXIT() {
+	public static void FORCED_EXIT() {
 		System.out.println("FORCED EXIT");
 		BREAK("FORCED EXIT");
-		System.exit(-1);
+		if (Global.console == null) System.exit(-1);
 	}
 
 	public static void ASSERT(final boolean test, final String msg) {
@@ -122,7 +136,8 @@ public final class Util
 				while (System.in.available() > 0) System.in.read();
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(-1);
+				//System.exit(-1);
+				FORCED_EXIT();
 			}
 		}
 	}
@@ -161,6 +176,23 @@ public final class Util
 			}
 		}
 		return true;
+	}
+
+    //*******************************************************************************
+    //*** makeJavaIdentifier - Make 's' a legal Java Identifier
+    //*******************************************************************************
+	public static String makeJavaIdentifier(String s) {
+		StringBuilder sb=new StringBuilder();
+		char c=s.charAt(0);
+		if (s.length() == 0 || !Character.isJavaIdentifierStart(c)) c='_';
+		sb.append(c);
+		
+		for (int i = 1; i < s.length(); i++) {
+			c=s.charAt(i);
+			if (!Character.isJavaIdentifierPart(c)) c='_';
+			sb.append(c);
+		}
+		return(sb.toString());
 	}
   
     //*******************************************************************************

@@ -193,7 +193,7 @@ public final class AttributeFile {
 	private void writeConstant(Constant cnst) throws IOException {
 		if(cnst!=null) {
 			oupt.writeUTF("Constant"); writeType(cnst.type);
-			//Util.BREAK("AttributeFile.writeConstant: "+cnst+", value="+cnst.value);
+			Util.BREAK("AttributeFile.writeConstant: "+cnst+", value="+cnst.value);
 			oupt.writeUTF(cnst.value.toString());
 		} else oupt.writeUTF("NoConstant");
 	}
@@ -435,6 +435,7 @@ public final class AttributeFile {
 	private void writeType(Type type) throws IOException
 	{ TRACE_OUTPUT("Type="+type);
 	  if(type==Type.Text) oupt.writeUTF("TEXT");
+	  else if(type==Type.LongReal) oupt.writeUTF("LongReal");
 	  else if(type==null) oupt.writeUTF("NULLTYPE");
 	  else if(type.isReferenceType()) oupt.writeUTF(type.getRefIdent());
 	  else oupt.writeUTF(""+type);

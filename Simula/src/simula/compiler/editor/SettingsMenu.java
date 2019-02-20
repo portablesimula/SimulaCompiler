@@ -1,10 +1,22 @@
 package simula.compiler.editor;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.RTOption;
+import simula.compiler.utilities.Util;
 
 public class SettingsMenu extends JMenu {
 	private static final long serialVersionUID = 1L;
@@ -22,6 +34,16 @@ public class SettingsMenu extends JMenu {
 //              info.add(new JLabel("  Simula Setup was created: "+Global.getProperty("simula.setup.dated","unknown")));
 //              info.add(new JLabel("  Installed on this computer:  "+Global.getProperty("simula.installed","unknown")));
 //        this.add(info);
+
+        // ****************************************************************
+        // *** FileMenu: New File
+        // ****************************************************************
+        JMenuItem workSpaces = new JMenuItem("Remove WorkSpaces");
+        workSpaces.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				removeWorkspaces();
+			}});
+        this.add(workSpaces);
 
         // ****************************************************************
         // *** optionMenu: Compiler Options
@@ -62,6 +84,36 @@ public class SettingsMenu extends JMenu {
               rtOption.add(RTOption.checkItem("QPS_TRACING"));
               rtOption.add(RTOption.checkItem("SML_TRACING"));
         this.add(rtOption);
+    }
+    
+    private void removeWorkspaces() {
+//    	ArrayDeque<String> workspaces=Global.loadWorkspaces();
+//    	ArrayDeque<String> workspaces=Global.workspaces;
+    	JPanel panel=new JPanel();
+    	panel.setBackground(Color.white);
+    	JLabel label=new JLabel("Check Workspaces to be removed:");
+    	panel.add(label);
+    	ArrayList<JCheckBox> list=new ArrayList<JCheckBox>();
+    	for(String workspace:Global.workspaces) {
+        	JCheckBox checkbox=new JCheckBox(workspace); 
+        	checkbox.setBackground(Color.white);
+        	list.add(checkbox); panel.add(checkbox);  
+    	}
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		int res=Util.optionDialog(panel,"Remove Workspaces (no changes to the file system)"
+				,JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,"Update","Cancel");
+		//Util.println("SettingsMenu.removeWorkspaces: res="+res);
+		if(res==JOptionPane.OK_OPTION) {
+			//Util.println("SettingsMenu.removeWorkspaces: OK res="+res);
+			for(JCheckBox box:list) {
+				//Util.println("SettingsMenu.removeWorkspaces: box="+box.isSelected()+", text="+box.getText());
+				if(box.isSelected()) Global.workspaces.remove(box.getText());
+			}
+//	    	for(String workspace:Global.workspaces) {
+//				Util.println("SettingsMenu.removeWorkspaces: kept="+workspace);
+//	    	}
+	    	Global.updateWorkspaceList();
+		}
     }
 
     public static void InitRuntimeOptions() {

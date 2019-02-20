@@ -69,7 +69,7 @@ public final class TestCompiler {
 		// String name="/error/simerr13.sim"; // Nested Connections 
 		// String name="/error/simerr14.sim"; // Two consecutive identifiers - ERROR - GÅR I LOOP
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
-		// String name="/error/8Queens.sim";  // Illegal Identifier
+		 String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters
@@ -96,6 +96,8 @@ public final class TestCompiler {
 		// String name="/simple/ClassGlyph2.sim";
 		// String name="/simple/ClockTimeTest.sim";
 		// String name="/simple/CoroutineSample.sim";
+		// String name="/simple/dates.sim";
+		// String name="/simple/testdates.sim";
 		// String name="/simple/DetachSamples.sim"; 
 		// String name="/simple/DecimalEdit.sim"; 
 		// String name="/simple/DisplaySamples.sim";
@@ -122,7 +124,7 @@ public final class TestCompiler {
 		// String name="/simple/HashingExample.sim";
 		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
-		 String name="/simple/InspectionSamples.sim";  
+		// String name="/simple/InspectionSamples.sim";  
 		// String name="/simple/JensensDevice.sim";
 		// String name="/simple/LocalObject.sim";
 		// String name="/simple/MathSample.sim"; 

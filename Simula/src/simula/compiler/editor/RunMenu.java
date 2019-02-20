@@ -56,28 +56,33 @@ public class RunMenu extends JMenu {
 			file.getParentFile().mkdirs();
 		}
 
-		// Start compiler ....
-      	String text=simulaEditor.getCurrentTextPanel().getPureText();
-//      Util.println("SimulaEditor.doRun: text="+text);
-       	if(text==null || text.trim().length()==0) {
-       		Util.error("No Source Text to Compile, Please Open a File");
-       		return;
-       	}
-       	StringReader reader=new StringReader(text);
-       	String name=(file!=null)?file.getPath():Global.tempJavaFileDir+"/unnamed.sim";
+		try {
+			// Start compiler ....
+		
+			String text=null;
+			SourceTextPanel source=simulaEditor.getCurrentTextPanel();
+			if(source!=null) text=source.getPureText();
+// 		     Util.println("SimulaEditor.doRun: text="+text);
+			if(text==null || text.trim().length()==0) {
+				Util.popUpError("No Source Text to Compile, Please Open a File");
+				return;
+			}
+			StringReader reader=new StringReader(text);
+			String name=(file!=null)?file.getPath():Global.tempJavaFileDir+"/unnamed.sim";
 
 //       	Global.console.clear();
-//        Global.console.write("Simula Compiler Console:\n");
-//        Global.console.write("Compiling: "+name+"\n");
-//        Global.console.write("Runtime System directory:     "+Global.simulaRtsLib+"\n");
-//        Global.console.write("Intermediate .java directory: "+Option.keepJava+"\n");
-//        Global.console.write("Java version:                 "+System.getProperty("java.version")+"\n");
+//          Global.console.write("Simula Compiler Console:\n");
+//          Global.console.write("Compiling: "+name+"\n");
+//          Global.console.write("Runtime System directory:     "+Global.simulaRtsLib+"\n");
+//          Global.console.write("Intermediate .java directory: "+Option.keepJava+"\n");
+//          Global.console.write("Java version:                 "+System.getProperty("java.version")+"\n");
 
 //       	new SimulaCompiler(name,reader).doCompile();
-       	new Thread(new Runnable() {
-			public void run() {
-		       	new SimulaCompiler(name,reader).doCompile();
-		}}).start();
+			new Thread(new Runnable() {
+				public void run() {
+					new SimulaCompiler(name,reader).doCompile();
+				}}).start();
+		} catch(Exception e) { Util.popUpError("Can't run: "+e);}
 	}
 
 }
