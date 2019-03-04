@@ -88,6 +88,7 @@ public class Declaration extends SyntaxClass
     	if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}
     for(Declaration decl:declaredIn.declarationList) {
     	if(decl==null) return; // Error recovery
+    	if(decl.identifier==null) return; // Error recovery
     	if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}    	
     }
     if(illegal) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);

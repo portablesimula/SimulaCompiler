@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 992
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Feb 17 15:04:13 CET 2019
+// Simula-Beta-0.3 Compiled at Mon Mar 04 20:15:38 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$les_lengde extends BASICIO$ {

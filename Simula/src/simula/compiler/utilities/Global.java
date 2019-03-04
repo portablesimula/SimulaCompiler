@@ -108,7 +108,7 @@ public final class Global {
 		String USER_HOME=System.getProperty("user.home");
 		//Util.println("USER_HOME="+USER_HOME);
 		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		Util.println("simulaPropertiesDir="+simulaPropertiesDir);
+		//Util.println("simulaPropertiesDir="+simulaPropertiesDir);
 		simulaPropertiesDir.mkdirs();
 		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
 		simulaProperties = new Properties();
@@ -128,8 +128,8 @@ public final class Global {
 	}
 	
 	private static void storeProperties() {
-		System.out.print("Global.storeProperties: SIMULA ");
-		simulaProperties.list(System.out);
+//		System.out.print("Global.storeProperties: SIMULA ");
+//		simulaProperties.list(System.out);
 		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
 		} catch(Exception e) { e.printStackTrace(); }
 	}
@@ -151,8 +151,6 @@ public final class Global {
     }
 	
 	public static void updateCurrentWorkspace(String currentWorkspace) {
-		//Util.println("Global.updateCurrentWorkspace: currentWorkspace="+currentWorkspace);
-		//Global.currentWorkspace=currentWorkspace;
 		workspaces.remove(currentWorkspace);
 		workspaces.addFirst(currentWorkspace);
 		updateWorkspaceList();

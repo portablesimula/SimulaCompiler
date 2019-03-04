@@ -46,7 +46,10 @@ public final class TypeConversion extends Expression {
 		if (toType == null)	return (false);
 		Type fromType = expression.type;
 		//Util.BREAK("TypeConversion.testCastNeccessary: "+fromType+" ==> "+toType);
-		if(fromType==null) Util.error("Expression "+expression+" has no type - can't be converted to "+toType);
+		if(fromType==null) {
+			Util.error("Expression "+expression+" has no type - can't be converted to "+toType);
+			return(false);
+		}
 		ConversionKind conversionKind = fromType.isConvertableTo(toType);
 		switch (conversionKind) {
 		case DirectAssignable:	return (false);

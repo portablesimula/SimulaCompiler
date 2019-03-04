@@ -7,10 +7,14 @@
  */
 package simula.compiler.utilities;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  * Runtime Options
@@ -29,6 +33,18 @@ public final class RTOption {
 	public static boolean THREADSWAP_TRACING = false;// true;
 	public static boolean QPS_TRACING = false; // true;
 	public static boolean SML_TRACING = false; // true;
+
+    public static void InitRuntimeOptions() {
+		RTOption.VERBOSE = false;//true;
+		RTOption.USE_CONSOLE=true;//false;//true;
+		RTOption.CODE_STEP_TRACING = false;// true;
+		RTOption.BLOCK_TRACING = false;// true;
+		RTOption.GOTO_TRACING = false;// true;
+		RTOption.THREAD_TRACING = false;// true;
+		RTOption.THREADSWAP_TRACING = false;// true;
+		RTOption.QPS_TRACING = false; // true;
+		RTOption.SML_TRACING = false; // true;
+	}
 
 	public static String getRTArguments() {
 		String args="";
@@ -68,9 +84,39 @@ public final class RTOption {
 		if(id.equalsIgnoreCase("QPS_TRACING")) QPS_TRACING=val; 
 		if(id.equalsIgnoreCase("SML_TRACING")) SML_TRACING=val; 
 	}
+    
+    public static void selectRuntimeOptions() {
+    	JPanel panel=new JPanel();
+    	panel.setBackground(Color.white);
+    	panel.add(checkBox("Verbose"));
+        panel.add(checkBox("USE_CONSOLE"));
+        panel.add(checkBox("CODE_STEP_TRACING"));
+        panel.add(checkBox("BLOCK_TRACING"));
+        panel.add(checkBox("GOTO_TRACING"));
+        panel.add(checkBox("THREAD_TRACING"));
+        panel.add(checkBox("THREADSWAP_TRACING"));
+        panel.add(checkBox("QPS_TRACING"));
+        panel.add(checkBox("SML_TRACING"));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		Util.optionDialog(panel,"Select Runtime Options",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,"Ok");
+    }
 
-	public static JCheckBoxMenuItem checkItem(String id) {
-        JCheckBoxMenuItem item = new JCheckBoxMenuItem(id);
+//	public static JCheckBoxMenuItem checkItem(String id) {
+//        JCheckBoxMenuItem item = new JCheckBoxMenuItem(id);
+//        item.setSelected(RTOption.getOption(id));
+//		//Util.println("RTOption.checkItem("+id+") Selected="+item.isSelected());
+//        item.addActionListener(new ActionListener() {
+//        	public void actionPerformed(ActionEvent e) {
+//        		//Util.println(id+"Item.actionPerformed: e="+e);
+//        		RTOption.setOption(id,item.isSelected());
+//        		//Util.println(id+"Item.actionPerformed: Option."+id+"="+RTOption.getOption(id));            		
+//		}});
+//        return(item);
+//	}
+
+	private static JCheckBox checkBox(String id) {
+        JCheckBox item = new JCheckBox(id);
+    	item.setBackground(Color.white);
         item.setSelected(RTOption.getOption(id));
 		//Util.println("RTOption.checkItem("+id+") Selected="+item.isSelected());
         item.addActionListener(new ActionListener() {

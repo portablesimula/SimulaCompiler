@@ -5,8 +5,6 @@ import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
@@ -15,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayDeque;
@@ -22,14 +21,11 @@ import java.util.Properties;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -37,78 +33,40 @@ import javax.swing.event.ChangeListener;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.RTOption;
 import simula.compiler.utilities.Util;
 
 
 public class SimulaEditor extends JFrame {
 
     private static final long serialVersionUID = 1L;
-//    public static boolean RENDER_LINE_NUMBERS=true;
-//    public static boolean AUTO_REFRESH=false;
+    static JTabbedPane tabbedPane; 
+    static EditorMenues menuBar;
+    static SourceTextPanel current;
+    static AutoRefresher autoRefresher;
     
-    JTabbedPane tabbedPane; 
-    FileMenu fileMenu;
-    EditMenu editMenu;
-
-    
-//    private File currentFile;
-    
+	// ****************************************************************
+	// *** SimulaEditor: Main Entry
+	// ****************************************************************
     public static void main(String[] args) {
-    	//System.setProperty("file.encoding","UTF-8");
-       	
 		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
 		if(simulaHome==null) Util.error("Simula Property 'simula.home' is not defined");
-
-		//String userDir=System.getProperty("user.dir");
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
 		Global.packetName="simulaTestPrograms";
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
 		Option.outputDir=Global.getTempFileDir("simula/bin/");
-
-		SettingsMenu.InitRuntimeOptions();
-    	SettingsMenu.InitCompilerOptions();
-		
-//		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/simple";
+		RTOption.InitRuntimeOptions();
+    	Option.InitCompilerOptions();
 		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples";
-
 		SimulaEditor editor=new SimulaEditor();
     	editor.setVisible(true);
     }
-
-    SourceTextPanel getCurrentTextPanel() {
-        SourceTextPanel current=(SourceTextPanel)tabbedPane.getSelectedComponent();
-//        Util.println("SimulaEditor.getCurrentTextPanel - Current Panel: name=" + current.getName());
-//        Util.println("SimulaEditor.getCurrentTextPanel - Current Panel: sourceFile=" + current.sourceFile);
-        return(current);
-    }
-    
-    void setSelectedTabTitle(String title) {
-    	int selectedIndex = tabbedPane.getSelectedIndex();
-    	tabbedPane.setTitleAt(selectedIndex,title);
-    }
-    
-    void removeSelectedTab() {
-    	int selectedIndex = tabbedPane.getSelectedIndex();
-    	tabbedPane.removeTabAt(selectedIndex);
-    }
-    
-    JTextPane getCurrentTextPane() {
-		SourceTextPanel current=getCurrentTextPanel();
-		if(current!=null) return(current.getTextPane());
-		return(null);
-    }
-    
-    File getCurrentSourceFile() {
-		SourceTextPanel current=getCurrentTextPanel();
-		if(current!=null) return(current.sourceFile);
-		return(null);
-    }
-    
+            
+	// ****************************************************************
+	// *** Constructor
+	// ****************************************************************
     public SimulaEditor() {
-//		UIManager.put("OptionPane.background", Color.WHITE);
-//        UIManager.put("OptionPane.messagebackground", Color.WHITE);
-//        UIManager.put("Panel.background", Color.WHITE);
         try { setIconImage(Global.simIcon.getImage()); } 
         catch (Exception e) { e.printStackTrace(); }
 		Global.console=new ConsolePanel();
@@ -131,7 +89,6 @@ public class SimulaEditor extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         setLocationRelativeTo(null); // center the frame on screen
-//        this.setLocationByPlatform(true);
 
         getContentPane().setLayout(new BorderLayout()); // the BorderLayout bit makes it fill it automatically
         tabbedPane = new JTabbedPane();
@@ -139,9 +96,9 @@ public class SimulaEditor extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				Component selected=tabbedPane.getSelectedComponent();
 				if(selected instanceof SourceTextPanel) {
-					SourceTextPanel current=getCurrentTextPanel();
-					current.updateEditable();
-					editMenu.update(current);
+					//SourceTextPanel current=getCurrentTextPanel();
+					current=(SourceTextPanel)selected;
+					menuBar.updateMenuItems();
 				}
 			}});
         boolean continuousLayout = true;
@@ -150,40 +107,28 @@ public class SimulaEditor extends JFrame {
         splitPane1.setDividerLocation(topHeight);
         getContentPane().add(splitPane1);
 
-        new Refresher().start();
+        autoRefresher=new AutoRefresher(); autoRefresher.start();
 
         // Set the Menus
-        JMenuItem aboutMenu = new JMenuItem("About");
-        JMenuBar menuBar = new JMenuBar();
-        fileMenu=new FileMenu(this);
-        menuBar.add(fileMenu);
-        editMenu=new EditMenu(this);
-        menuBar.add(editMenu);
-        menuBar.add(new RunMenu(this));
-        menuBar.add(new SettingsMenu());
-        menuBar.add(aboutMenu);
-       
+        menuBar=new EditorMenues();
         this.setJMenuBar(menuBar);
-        
-        AboutDialog about=new AboutDialog(this);
-        aboutMenu.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//Util.println("ABOUT");
-				about.setVisible(true);
-			}});
-        aboutMenu.setEnabled(true);
         this.setVisible(true);
         doCheckForNewVersion();
         doSelectWorkspace();
     }
     
+    // ****************************************************************
+    // *** processWindowEvent
+    // ****************************************************************
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-        	//Util.println("WINDOW CLOSING EVENT");
-        	fileMenu.doExit(); 
+        	menuBar.doExitAction(); 
         }
     }
 
+    // ****************************************************************
+    // *** doSelectWorkspace
+    // ****************************************************************
     void doSelectWorkspace() {
     	if (Option.verbose) Util.println("SimulaEditor.doSelectWorkspace: ");
     	String text="The Simula Editor uses the directory workspace to "
@@ -223,15 +168,16 @@ public class SimulaEditor extends JFrame {
     	panel.setLayout(new BorderLayout());
     	panel.add(textArea,BorderLayout.NORTH);
     	panel.add(workspaceChooser,BorderLayout.CENTER);
-		int result=Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,"OK","Cancel");
-        //Util.println("doSelectWorkspace: result="+result);
-        if(result!=JOptionPane.OK_OPTION) System.exit(0);
+		Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE,"OK");
         UIManager.put("Panel.background",PanelBackground);
         String selected=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
     	Global.updateCurrentWorkspace(selected);
         //Util.println("doSelectWorkspace: selected="+selected);
     }
 
+    // ****************************************************************
+    // *** doCheckForNewVersion
+    // ****************************************************************
     void doCheckForNewVersion() {
     	if (Option.verbose) Util.println("SimulaEditor.doCheckForNewVersion: ");
         try {
@@ -244,10 +190,10 @@ public class SimulaEditor extends JFrame {
 		    URL remote = new URL(remoteFileName);
             Properties remoteProperties=new Properties();
             remoteProperties.loadFromXML(remote.openStream());
-			if (Option.verbose) {
-				System.out.print("SimulaEditor.doCheckForNewVersion: REMOTE ");
-				remoteProperties.list(System.out);
-			}
+//			if (Option.verbose) {
+//				System.out.print("SimulaEditor.doCheckForNewVersion: REMOTE ");
+//				remoteProperties.list(System.out);
+//			}
             String remoteReleaseID=remoteProperties.getProperty("simula.version")
             		          +'R'+remoteProperties.getProperty("simula.revision");
         	String remoteSetupDated=remoteProperties.getProperty("simula.setup.dated","?");
@@ -271,41 +217,40 @@ public class SimulaEditor extends JFrame {
     			}
             }
         } catch(Exception e) { e.printStackTrace(); }
-        
     }
-
-	void doNewFile() {
-        SourceTextPanel panel=new SourceTextPanel(null);
-        panel.newTextPane();
-        tabbedPane.addTab("unnamed", null, panel, "Tool tip ...");
+    
+    
+    // ****************************************************************
+    // *** setSelectedTabTitle  /  removeSelectedTab
+    // ****************************************************************
+    static void setSelectedTabTitle(String title) { tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(),title); }
+    static void removeSelectedTab() {
+    	tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+        current=(SourceTextPanel)tabbedPane.getSelectedComponent();
+        menuBar.updateMenuItems();
+    }
+    
+    // ****************************************************************
+    // *** doNewTabbedPanel
+    // ****************************************************************
+	static void doNewTabbedPanel(File file) {
+        //SourceTextPanel current=new SourceTextPanel(file,menuBar.popupMenu);
+        current=new SourceTextPanel(file,menuBar.popupMenu);
+        tabbedPane.addTab((file==null)?"unnamed":file.getName(), null, current, "Tool tip ...");
         // select the last tab
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
-//        getCurrentTextPanel();
-		panel.fileChanged=false;
-	}
-
-	void doOpenFile(File file) {
-		if(!file.exists()) {
-			Util.popUpError("Can't open file (the file does not exist)\n"+file);
-		} else {
-			if(file.getName().toLowerCase().endsWith(".jar")) doRunJarFile(file);
-			else {
-				SourceTextPanel panel=new SourceTextPanel(file);
-				try {
-					//Reader reader=new FileReader(file);
-					Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
-					panel.fillTextPane(reader);
-				}
-				catch(IOException e) { e.printStackTrace(); }
-				tabbedPane.addTab(file.getName(), null, panel, "Tool tip ...");
-				// select the last tab
-				tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
-				panel.fileChanged=false;
-			}
-		}
+		current.fileChanged=false;
+		if(file==null)current.fillTextPane(new StringReader("begin\n\nend;\n"),0);
+		else try { Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
+		 		   current.fillTextPane(reader,0);
+		} catch(IOException e) { e.printStackTrace(); }
+		menuBar.updateMenuItems();
 	}
 	
-	private void doRunJarFile(File jarFile) {
+    // ****************************************************************
+    // *** doRunJarFile
+    // ****************************************************************
+	static void doRunJarFile(File jarFile) {
 		new Thread(new Runnable() {
 			public void run() {
 				try { SimulaCompiler.execute("java -jar " + jarFile + " -USE_CONSOLE");
@@ -314,31 +259,28 @@ public class SimulaEditor extends JFrame {
 		}).start();
 	}
 	
-	class Refresher extends Thread {
-		boolean stop=false;
-		
-		public Refresher() {
-			setPriority(MIN_PRIORITY);
-		}
-		
+    // ****************************************************************
+    // *** AutoRefresher
+    // ****************************************************************
+	class AutoRefresher extends Thread {
+		int counter=10;
+		boolean stoped=false;
+		public AutoRefresher() { setPriority(MIN_PRIORITY);	}
+		public void terminate() { stoped=true; }
+		public void reset() { counter=10; }
+
 		public void run() {
-			while(!stop) {
-				try {sleep(1000); } catch(InterruptedException e) {}
-				try {
-				SourceTextPanel current=getCurrentTextPanel();
-				if(current.AUTO_REFRESH && current!=null && current.refreshNeeded) {
-					current.refreshNeeded=false;
-					current.doRefresh();
+			while (!stoped) {
+				try { sleep(100); } catch (InterruptedException e) {}
+				if ((counter--) <= 0) {
+					try { if (current.AUTO_REFRESH && current != null && current.refreshNeeded) {
+							  current.refreshNeeded = false;
+							  menuBar.refresh.doClick();
+						  }
+					} catch (Throwable t) {}
 				}
-				} catch(Throwable t) {}
 			}
 		}
-	}
-
-
-	void doRefresh() {
-		SourceTextPanel current=getCurrentTextPanel();
-		if(current!=null) current.doRefresh();
 	}
 
 }

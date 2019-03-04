@@ -1,5 +1,130 @@
 Simula Issues
 
+CLOSED Issue 15: Fra Karel
+Identifier 'null' blir ikke konvertert til en lovlig Java-Identifier.
+Analyse: 'null' er ikke i lista over keyword i Java. ( i Java er 'null' en
+         såkalt NullLiteral og kan ikke brukes som Identifier ).
+Derfor hadde glemt å bytte identifier 'null' til noe annet. Det er gjort nå.
+===============================================================================
+
+CLOSED Issue 14: Fra Dag og Karel
+ Savnet av en undo i editoren er stort.
+ 
+ - redigeringkontroll kunne utbedres:
+  = redigering modus bør åpnes automatisk ved klikking i editor vinduet
+  = Undo mulighet bør innføres
+  = kontroll v.h.a. høyre museknapp for Cut, Copy og Paste er ønskelig
+  = kanskje også for New, Open, Save, Delete og Close
+
+Tiltak: Editoren er skrevet om. 
+===============================================================================
+
+OPEN Issue 13 Fra Stein
+Tillater subklasser på dypere blokknivå.
+Det ser ut til at den tillater subklasse på dypere blokk nivå enn superklassen,
+og litt dotting og QUA'ing rundt det går også gjennom.
+Programmet under går nemlig fint:
+
+begin
+   class A;
+   begin
+      integer k;
+
+      procedure P;
+      begin
+        integer i;
+        A class C;   ! Subclass on a deeper block level not allowed ;
+        begin 
+           integer j;
+           j:= 5;
+        end C;
+
+        ref(A) rA; 
+        rA:- new C;
+        outint( rA qua C.j, 9); outimage;
+      end P;
+   end A;
+
+   ref(A)rAx;
+   rAx:- new A;
+   rAx.P;
+
+   outtext("Kom helt til slutten!"); outimage;
+end
+
+
+===============================================================================
+
+OPEN Issue 12: Fra Stein
+Jeg testet dette med at det ikke er lov å dotte seg inn i klasser med lokale klasser,
+se utdrag av SIMULA standard nederst under.  Programmet under virker helt strålende,
+og det burde det vel ikke.  Da er det vel også lett å konstruere programmer som foretar
+såkalt "transplantasjon", men jeg har ikke gjort det.
+
+begin
+   class A;
+   begin
+      class B;
+      begin
+        integer i; 
+        i:= 25;
+      end B;
+
+      ref(B) rB;
+      rB:- new B;    
+   end A;
+
+   ref(A) rA; 
+   rA:- new A;
+   outint(rA.rB.i, 9);
+end
+
+----------------------------------------------------------------------
+
+FRA SIMULA STANDARD:
+
+Let X be a simple object expression qualified by the class C, and let A be an
+appropriate attribute identifier. Then the remote identifier "X.A", if valid,
+is an attribute identification whose object is the value X and whose
+qualification is C (cf. 5.5.6).
+
+The remote identifier X.A is valid if the following conditions are satisfied:
+
+    The value X is different from none.
+    The object referenced by X has no class attribute declared at any prefix
+    level equal or outer to that of C. 
+
+Note: Condition 1 corresponds to a check which causes an error if the value of X is none.
+Condition 2 is an ad hoc rule intended to simplify the language and its implementations.
+
+Analyse: Sematic-check svarende til Condition 2 gjøres ikke.
+
+===============================================================================
+
+
+CLOSED Issue 11: Fra Stein
+Følgende program går gjennom:
+--------------------------------------------------------
+begin
+   integer i, j, k; j:= 19;
+   k:= i++j;
+   outint(k, 10); outimage;
+end
+---------------------------------------------------------
+Syntaksen for aritmetiske uttrykk tillater altså ikke "k:= i-+j;"
+Det må i så fall være parentes slik:    "k:= i-(+j) ;".
+Sjekk mot syntaksen fra Simula standard.
+
+Tiltak: Endret syntaxen bittelitt:
+        SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
+   endres til:
+        SimpleArithmeticExpression  =  UnaryTerm  {  ( + | - )  Term }
+        UnaryTerm  =  [ + | - ]  Term
+        
+        Deretter rettet jeg koden tilsvarende.
+
+===============================================================================
+
 OPEN Issue 10: Fra Eyvind, Gunnar, Karel ...
 Under utføring av 'store' simuleringer kommer det en feilmelding:
   Assertion Failed: Invariant-2
@@ -9,7 +134,6 @@ avslutter fint (for det meste).
 Analyse: 
 
 ===============================================================================
-
 
 CLOSED Issue 9: Fra Gunnar
 Simula PRM sect. 6.5 sier at bare bokstaver er lovlige 'selectors'.
@@ -70,12 +194,14 @@ OPEN Issue 4: Fra Dag
    
 Analyse: Tror at dette henger sammen med at auto-refresh er ganske ustabil.
 
-Tiltak: Tar vekk auto-refresh intil videre.
+Tiltak: Editoren er skrevet om.
 
 ===============================================================================
 
-OPEN Issue 3: Fra Dag og Karel
-* Kommentarer etter siste END er ikke lov.
+CLOSED Issue 3: Fra Dag og Karel
+* Kommentarer etter siste END er ikke lov.  END-Comment
+
+Tiltak: Det var en tullefeil - rettet(tror jeg).
 
 ===============================================================================
 
@@ -88,8 +214,10 @@ Tiltak: Java class identifier lages fra filnavnet ved å erstatte alle ulovlige
 
 ===============================================================================
 
-OPEN Issue 1: Fra Dag
+CLOSED Issue 1: Fra Dag
 * Editoren er rar. Plutselig finner den på å hoppe til starten av koden og 
-fjerne omtrent alt. Savnet av en undo er stort.
+fjerne omtrent alt.
+
+Tiltak: Det var en tullefeil - rettet(tror jeg).
 
 ===============================================================================

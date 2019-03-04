@@ -181,25 +181,49 @@ public abstract class Expression extends SyntaxClass
 	 return(expr);
   }
 
+//  static boolean OLD_UNARY_SYNTAX=false;//true;
   // SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
+  // SimpleArithmeticExpression  =  UnaryTerm  {  ( + | - )  Term }
   private static Expression parseAdditiveOperation() {
-	 Expression expr=parseUNIADDSUB();
+//	 if(OLD_UNARY_SYNTAX) return(OLD_parseAdditiveOperation());
+	 Expression expr=parseUNIMULDIV();
      while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          //expr=new ArithmeticOperation(expr,opr,parseUNIADDSUB());
-          expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseUNIADDSUB());
+    	  expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseMULDIV());
 	 }
 	 return(expr);
   }
 
-  private static Expression parseUNIADDSUB() {
+  // SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
+//  private static Expression OLD_parseAdditiveOperation() {
+//	 Expression expr=OLD_parseUNIADDSUB();
+//     while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
+//	      KeyWord opr=Parser.prevToken.getKeyWord();
+//          //expr=new ArithmeticOperation(expr,opr,parseUNIADDSUB());
+//          expr=ArithmeticOperation.newArithmeticOperation(expr,opr,OLD_parseUNIADDSUB());
+//	 }
+//	 return(expr);
+//  }
+
+  // UnaryTerm  =  [ + | - ]  Term
+  private static Expression parseUNIMULDIV() {
 	 Expression expr;
      if(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) {
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          expr=UnaryOperation.newUnaryOperation(opr,parseMULDIV());
+	      if(opr==KeyWord.PLUS) expr=parseMULDIV();
+	      else expr=UnaryOperation.newUnaryOperation(opr,parseMULDIV());
      } else expr = parseMULDIV();
      return(expr);
   }
+
+//  private static Expression OLD_parseUNIADDSUB() {
+//	 Expression expr;
+//     if(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) {
+//	      KeyWord opr=Parser.prevToken.getKeyWord();
+//          expr=UnaryOperation.newUnaryOperation(opr,parseMULDIV());
+//     } else expr = parseMULDIV();
+//     return(expr);
+//  }
 
   // Term  =  Factor  {  ( * | / | // )  Factor }
   private static Expression parseMULDIV() {
@@ -256,13 +280,13 @@ public abstract class Expression extends SyntaxClass
      else if(Parser.accept(KeyWord.NEW)) expr =ObjectGenerator.parse();
      else if(Parser.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
 	 else { String ident=acceptIdentifier();
-	        if(ident!=null) expr=Variable.parse(ident);
-	        else {
-	        	if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBASICEXPR returns: NULL");
-	        	if(Parser.prevToken.getKeyWord()==KeyWord.SEMICOLON) Parser.skipMissplacedCurrentSymbol(); // Ad'Hoc
-	    	    return(null);
-	        }
-	 }
+            if(ident!=null) expr=Variable.parse(ident);
+            else {
+     	        if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBASICEXPR returns: NULL, prevKeyword="+Parser.prevToken.getKeyWord());
+       	        if(Parser.prevToken.getKeyWord()==KeyWord.SEMICOLON) Parser.skipMissplacedCurrentSymbol(); // Ad'Hoc
+ 	            return(null);
+           }
+     }
 	 // Så kan det komme en sekvens av postfikser, som bygger tre “oppover mot høyre”
 	 while (Parser.acceptPostfixOprator()) {
 	      KeyWord opr=Parser.prevToken.getKeyWord(); // opr == DOT || opr== IS || opr == IN || opr == QUA

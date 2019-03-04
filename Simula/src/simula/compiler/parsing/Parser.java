@@ -127,7 +127,7 @@ public final class Parser {
 	{ Util.BREAK(msg+", current="+Parser.currentToken+", prev="+Parser.prevToken); }
 
 	
-	private static void nextSymb() {
+	public static void nextSymb() {
 		Parser.prevToken = Parser.currentToken;
 		if (savedToken == null) {
 			Parser.currentToken = simulaScanner.nextToken();

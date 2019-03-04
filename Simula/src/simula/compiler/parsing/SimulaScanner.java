@@ -53,6 +53,7 @@ public final class SimulaScanner {
 	 * source.
 	 * 
 	 * @param reader The character source to scan
+	 * @param editorMode true: delivers tokens to the SimulaEditor
 	 */
 	public SimulaScanner(final Reader reader,final boolean editorMode) {
 		this.sourceFileReader=new SourceFileReader(reader);
@@ -311,6 +312,7 @@ public final class SimulaScanner {
 	        	if(name.equalsIgnoreCase("NONE"))   return(newToken(KeyWord.NONE));
 	        	if(name.equalsIgnoreCase("NOT"))    return(newToken(KeyWord.NOT));
 	        	if(name.equalsIgnoreCase("NOTEXT")) return(newToken(KeyWord.NOTEXT));
+	        	if(name.equalsIgnoreCase("NULL"))   return(javaKeyword(name)); // Java NullLiteral
 	        	break;
 	        case 'O':
 	        	if(name.equalsIgnoreCase("OR"))         return(newToken(KeyWord.OR));
@@ -459,7 +461,12 @@ public final class SimulaScanner {
     	String result=number.toString(); number=null;
     	if(Option.TRACE_SCAN) Util.TRACE("scanDotDigit, result='"+result);
     	pushBack(current);
+    	try {
     	return(newToken(KeyWord.REALKONST,new Float(result)));
+    	} catch(NumberFormatException e) {
+    		Util.error("Illegal number: "+result);
+    		return(newToken(KeyWord.REALKONST,null));
+    	}
     }
 	
     //********************************************************************************
@@ -483,8 +490,13 @@ public final class SimulaScanner {
     	result=number.toString(); number=null;
     	if(Option.TRACE_SCAN) Util.TRACE("scanDigitsExp, result='"+result);
     	pushBack(current);
-    	if(doubleAmpersand) return(newToken(KeyWord.REALKONST,new Double(result)));
-    	return(newToken(KeyWord.REALKONST,new Float(result)));
+    	try {
+    		if(doubleAmpersand) return(newToken(KeyWord.REALKONST,new Double(result)));
+    		return(newToken(KeyWord.REALKONST,new Float(result)));
+    	} catch(NumberFormatException e) {
+    		Util.error("Illegal number: "+result);
+    		return(newToken(KeyWord.REALKONST,null));
+    	}
     }
 	
 
@@ -880,6 +892,7 @@ public final class SimulaScanner {
 				if (Option.TRACE_COMMENTS) Util.TRACE("ENDCOMMENT:\"" + skipped + '"');
 				if (firstLine < lastLine && (skipped.length() > 0))
 					Util.warning("END-Comment span mutiple source lines");
+				if(editorMode && accum.length()>0) tokenQueue.add(newToken(KeyWord.COMMENT));
 				tokenQueue.add(newToken(KeyWord.SEMICOLON)); break LOOP;  
 			} else if (Character.isLetter(current)) {
 				String name = scanName();
@@ -898,8 +911,11 @@ public final class SimulaScanner {
 				lastLine = Global.sourceLineNumber;
 			}
 		}
-		if (skipped.length() > 0 && current==EOF_MARK)
-			Util.error("END-Comment is not terminated: Skipped="+skipped);
+		if (skipped.length() > 0 && current==EOF_MARK) {
+			//Util.warning("END-Comment is not terminated: Skipped="+skipped);
+//			if(editorMode) tokenQueue.add(newToken(KeyWord.COMMENT));
+		}
+		if(editorMode && accum.length()>0) tokenQueue.add(newToken(KeyWord.COMMENT));
 		if (Option.TRACE_COMMENTS)
 			Util.TRACE("ENDCOMMENT:\"" + skipped + '"');
 		Token res=tokenQueue.remove();
@@ -917,7 +933,7 @@ public final class SimulaScanner {
 	    current=readNextCharacter();
 	    if(editorMode) {
 	        if(accum==null) accum=new StringBuilder();
-	        if(current!='\r') {
+	        if(current!='\r' && current!=EOF_MARK) {
 	    	    accum.append((char)current);
 	        }
 	    }
@@ -955,6 +971,7 @@ public final class SimulaScanner {
 		if(editorMode) {
 	        text=(accum==null)?"":accum.toString();
 	        accum=new StringBuilder();
+			//Util.println("SimulaScanner.newToken: keyWord="+keyWord+", text=\""+text.replace("\n","\\n")+'"');//+", value="+value);
 		}
 		return(new Token(text,keyWord,value));
 	  }

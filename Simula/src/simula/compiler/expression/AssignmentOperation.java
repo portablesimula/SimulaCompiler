@@ -65,9 +65,12 @@ public final class AssignmentOperation extends Expression
       { TypeDeclaration dcl=(TypeDeclaration)meaning.declaredAs;
         if(dcl.isConstant()) Util.error("Assignment to Constant: '"+lhs+"' is Illegal");
       }
+    } else {
+    	if(lhs.getWriteableVariable()==null) Util.error("Can't assign to "+lhs);
     }
+
     rhs.doChecking(); Type fromType=rhs.type;
-	//if(DEBUG) Util.log("doAssignmentChecking("+toString()+").doChecking - ("+toType+' '+keyWord+' '+fromType+")");
+	//Util.BREAK("AssignmentOperation.doChecking("+toString()+").doChecking - ("+toType+' '+opr+' '+fromType+")");
 	//if(DEBUG) Util.log("doAssignmentChecking: operator: "+keyWord);
 	if(opr==KeyWord.ASSIGNVALUE) this.textValueAssignment=(toType==Type.Text);
 	rhs=(Expression)TypeConversion.testAndCreate(toType,rhs);

@@ -1,9 +1,5 @@
 begin
     integer s=-1;
-
-%MACRO pushjump:
-       begin curjump:=curjump+1; jumpstack(curjump):= */1 end
-%ENDMACRO
    integer a,b c;
    a:=4;
    a b then

@@ -7,10 +7,10 @@
  */
 package simula.compiler;
 
-import simula.compiler.editor.SettingsMenu;
 import simula.compiler.editor.SimulaEditor;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.compiler.utilities.RTOption;
 import simula.compiler.utilities.Util;
 
 /**
@@ -66,8 +66,8 @@ public final class Simula {
 			Global.sampleSourceDir=simulaHome+'/'+Global.simulaReleaseID+"/tst";
 		    Global.simulaRtsLib=simulaHome+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
 		    //printGlobalList("*** STARTING SIMULA EDITOR ***");
-	    	SettingsMenu.InitRuntimeOptions();
-	    	SettingsMenu.InitCompilerOptions();
+			RTOption.InitRuntimeOptions();
+	    	Option.InitCompilerOptions();
 	    	SimulaEditor editor=new SimulaEditor();
 	    	editor.setVisible(true);
 		} else {

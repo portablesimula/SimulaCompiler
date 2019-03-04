@@ -53,7 +53,7 @@ public final class TestCompiler {
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
 		// String name="/error/simerr01.sim"; // Syntax errors
-		// String name="/error/simerr02.sim"; // Syntax errors
+		 String name="/error/simerr02.sim"; // Syntax errors  TODO: MÅ SJEKKES - NumberFormatException
 		// String name="/error/simerr03.sim"; // Wrong Number of parameters  
 		// String name="/error/simerr04.sim"; // Type checking of Parameter Array 
 		// String name="/error/simerr05.sim"; // Syntax error - Semicolon before 'else' 
@@ -69,11 +69,13 @@ public final class TestCompiler {
 		// String name="/error/simerr13.sim"; // Nested Connections 
 		// String name="/error/simerr14.sim"; // Two consecutive identifiers - ERROR - GÅR I LOOP
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
-		 String name="/error/8Queens.sim";  // Illegal Identifier
+		// String name="/error/simerr16.sim"; // Illegal lhs in assignment
+		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters
 		// String name="/error/Sudoku.sim";  // 
+		// String name="/error/NoughtsAndCrosses.sim";  // 
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
@@ -104,6 +106,7 @@ public final class TestCompiler {
 		// String name="/simple/DrawingTest.sim";
 		// String name="/simple/Editing.sim";
 		// String name="/simple/Expressions.sim";          // MÅ SJEKKES  UNARY  + - + operand
+		// String name="/simple/Expressions2.sim";         // MÅ SJEKKES  UNARY  + - + operand
 		// String name="/simple/ExternalClass1.sim";
 		// String name="/simple/ExternalClass2.sim";
 		// String name="/simple/ExternalClass3.sim";

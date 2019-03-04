@@ -37,7 +37,8 @@ public class Type
   public Type(Token key) { this.key=key; }
 
   public Type(String className)
-  { this.key=new Token(KeyWord.REF,className.toUpperCase());
+  { if(className==null) className="UNKNOWN"; // Error recovery
+	  this.key=new Token(KeyWord.REF,className.toUpperCase());
     //Util.BREAK("Type: new Ref-Type("+className+") ==> "+this+", refIdent="+getRefIdent());
   }
   

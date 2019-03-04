@@ -18,8 +18,9 @@ public class Search extends JFrame {
     private int startIndex=0;
     private int selectStart=-1;
 
-    public Search(JTextPane textPane) {
-        this.textPane = textPane;
+//    public Search(JTextPane textPane) {
+    public Search() {
+        this.textPane = SimulaEditor.current.editTextPane;
         setLayout(null);
         
         // ********************************************************

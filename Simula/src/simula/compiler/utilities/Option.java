@@ -7,10 +7,14 @@
  */
 package simula.compiler.utilities;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  * Compile Time Options
@@ -98,6 +102,40 @@ public final class Option {
 	 * Generate no warnings from Java-Compiler.
 	 */
 	public static boolean noJavacWarnings = false;
+    
+    public static void InitCompilerOptions() {
+		Option.verbose = true;
+		Option.WARNINGS=true;
+
+		// Overall TRACING Options
+		Option.TRACING=false;//true;
+		Option.BREAKING=false; //true; 
+
+		// Scanner Trace Options
+		Option.TRACE_SCAN=false;//true;
+		Option.TRACE_COMMENTS=false;//true;
+
+		// Parser Trace Options
+		Option.TRACE_PARSE=false;//true;
+
+		// Checker Trace Options
+		Option.TRACE_CHECKER=false;//true;
+		Option.TRACE_CHECKER_OUTPUT=false;//true;
+
+		// Coder Trace Options
+		Option.TRACE_CODING=false;
+
+		// Java Compiler and Jar-tool Trace Options
+		Option.TRACE_JAVAC=false;//true;
+		Option.TRACE_JAVAC_OUTPUT=false;//true;
+		Option.TRACE_JARING=false;//true;
+	
+		Option.standardClass = false;
+//		Option.keepJava="C:/WorkSpaces/SimulaCompiler/Simula/src/testing";
+//		Option.outputDir="C:/WorkSpaces/SimulaCompiler/Simula/bin/";
+		Option.noExecution = false;
+		Option.noJavacWarnings = false;
+	}
 	
 	public static boolean getOption(String id) {
 		if(id.equalsIgnoreCase("VERBOSE")) return(verbose); 
@@ -152,9 +190,48 @@ public final class Option {
 //		public static String keepJava = null;
 //		public static String outputDir = null;
 	}
+    
+    public static void selectCompilerOptions() {
+    	JPanel panel=new JPanel();
+    	panel.setBackground(Color.white);
+    	panel.add(checkBox("Verbose"));
+        panel.add(checkBox("Warnings"));
+        panel.add(checkBox("TRACING"));
+        panel.add(checkBox("BREAKING"));
+        panel.add(checkBox("TRACE_SCAN"));
+        panel.add(checkBox("TRACE_COMMENTS"));
+        panel.add(checkBox("TRACE_PARSE"));
+        panel.add(checkBox("TRACE_ATTRIBUTE_OUTPUT"));
+        panel.add(checkBox("TRACE_ATTRIBUTE_INPUT"));
+        panel.add(checkBox("TRACE_CHECKER"));
+        panel.add(checkBox("TRACE_CHECKER_OUTPUT"));
+        panel.add(checkBox("TRACE_CODING"));
+        panel.add(checkBox("TRACE_JAVAC"));
+        panel.add(checkBox("TRACE_JAVAC_OUTPUT"));
+        panel.add(checkBox("TRACE_BYTECODE_OUTPUT"));
+        panel.add(checkBox("TRACE_JARING"));
+        panel.add(checkBox("standardClass"));
+        panel.add(checkBox("noExecution"));
+        panel.add(checkBox("noJavacWarnings"));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		Util.optionDialog(panel,"Select Compiler Options",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,"Ok");
+    }
 
-	public static JCheckBoxMenuItem checkItem(String id) {
-        JCheckBoxMenuItem item = new JCheckBoxMenuItem(id);
+//	public static JCheckBoxMenuItem checkItem(String id) {
+//        JCheckBoxMenuItem item = new JCheckBoxMenuItem(id);
+//        item.setSelected(Option.getOption(id));
+//        item.addActionListener(new ActionListener() {
+//        	public void actionPerformed(ActionEvent e) {
+//        		//Util.println(id+"Item.actionPerformed: e="+e);
+//        		Option.setOption(id,item.isSelected());
+//        		//Util.println(id+"Item.actionPerformed: Option."+id+"="+Option.getOption(id));            		
+//		}});
+//        return(item);
+//	}
+
+	private static JCheckBox checkBox(String id) {
+        JCheckBox item = new JCheckBox(id);
+    	item.setBackground(Color.white);
         item.setSelected(Option.getOption(id));
         item.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
