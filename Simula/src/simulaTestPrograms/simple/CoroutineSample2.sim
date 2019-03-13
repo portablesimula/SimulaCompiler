@@ -1,0 +1,45 @@
+begin
+   ref(A) x;
+   
+   procedure trace(msg); text msg;
+   begin
+      outtext(msg); outimage; printThreadList;
+   end;
+   
+   class A;
+   begin
+      integer i;
+      trace("A: State 1(Initiating)");
+      detach;     
+      trace("A: State 2");
+      detach;
+      trace("A: State 3(Terminating)");
+   end A;
+   
+   outtext("-----------------------------------------"); outimage;
+   outtext("CoroutineSample -- Expected Output:"); outimage;
+   outtext("-----------------------------------------"); outimage;
+      outtext("Main: Before new A"); outimage;
+      outtext("A: State 1(Initiating)"); outimage;
+      outtext("Main: Before first resume"); outimage;
+      outtext("A: State 2"); outimage;
+      outtext("Main: Before second resume"); outimage;
+      outtext("A: State 3(Terminating)"); outimage;
+      outtext("Main: Before third resume"); outimage;
+   outtext("ERROR: Resume(x): x is not in detached state."); Outimage;
+   outtext("-----------------------------------------"); outimage;
+   outtext("CoroutineSample -- Actual Output:"); outimage;
+   outtext("-----------------------------------------"); outimage;
+   
+   begin
+      trace("Main: Before new A");
+      x:-new A();
+      trace("Main: Before first resume");
+      resume(x);
+      trace("Main: Before second resume");
+      resume(x);
+      trace("Main: Before third resume");
+      resume(x);
+   end subBlock;
+   
+end program;

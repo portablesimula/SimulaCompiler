@@ -1,14 +1,25 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.compiler.editor;
 
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.text.AbstractDocument.LeafElement;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -30,6 +41,7 @@ import java.util.StringTokenizer;
 
 public class SourceTextPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private static final boolean DEBUG=false;//true;
 
 	JTextPane editTextPane;  // Editable text pane with undo/redo history
 	private JTextPane lineNumbers;
@@ -57,19 +69,17 @@ public class SourceTextPanel extends JPanel {
     private UndoableEditListener undoListener=new UndoableEditListener() {
 		public void undoableEditHappened(UndoableEditEvent e) {
 			UndoableEdit edit=e.getEdit();
-
-//			try { // Testutskrift
-//				DefaultDocumentEvent evt = (DefaultDocumentEvent) edit;
-//				System.out.println("UndoableEditListener: evt=" + evt);
-//				String lastText = editTextPane.getDocument().getText(evt.getOffset(), evt.getLength());
-//				System.out.println("UndoableEditListener: " + evt.getPresentationName() + '[' + evt.getOffset() + ',' + evt.getLength() + "]=\"" + lastText + '"');
-//			} catch (Exception ex) { ex.printStackTrace(); }			
-
+			System.out.println("UndoableEdit'QUAL="+edit.getClass().getSimpleName());
+			if(DEBUG) Testutskrift(edit);
 			undoManager.addEdit(edit);
 			fileChanged=true; refreshNeeded=true;
 			SimulaEditor.menuBar.updateMenuItems();
 		}
 	};
+	
+	private void Testutskrift(UndoableEdit edt) {
+		System.out.println("UndoableEditListener: "+edit(edt.getPresentationName(),(DocumentEvent)edt));		
+	}
 
 	// ****************************************************************
 	// *** MouseListener
@@ -83,6 +93,38 @@ public class SourceTextPanel extends JPanel {
     	    if(e.getButton()==3) popupMenu.show(editTextPane,e.getX(),e.getY());
     	}
     };
+
+	// ****************************************************************
+	// *** DocumentListener
+	// ****************************************************************
+	DocumentListener documentListener=new DocumentListener() {
+		public void insertUpdate(DocumentEvent e)  { Testutskrift("Insert",e); }
+		public void removeUpdate(DocumentEvent e)  { Testutskrift("Remove",e); }
+		public void changedUpdate(DocumentEvent e) { Testutskrift("Changed",e); }
+		
+		private void Testutskrift(String id,DocumentEvent evt) {
+			if(DEBUG) System.out.println("DocumentListener: "+edit(id,evt));
+		}	
+	};
+	
+	private String edit(String id,DocumentEvent evt) {
+	    int ofst=evt.getOffset();
+	    int lng=evt.getLength();
+	    String styleName="UNKNOWN";
+	    String lastText="UNKNOWN";
+		try { // Testutskrift
+		    StyledDocument doc=(StyledDocument)editTextPane.getDocument();
+		    if(id.equals("Insert")) lastText= doc.getText(ofst,lng);
+		    if(id.equals("addition")) lastText= doc.getText(ofst,lng);
+		    Element elt=doc.getCharacterElement(ofst);
+		    if(elt instanceof LeafElement) {
+		    	LeafElement leaf=(LeafElement)elt;
+			    styleName=(String)leaf.getAttribute(StyleConstants.NameAttribute);
+		    }
+		    lastText=lastText.replace("\n","\\n");
+		} catch (Exception ex) { ex.printStackTrace(); }			
+	    return(id + '[' + ofst + ',' + lng + "]="+styleName+"\"" + lastText + '"');
+	}	
 	
 	// ****************************************************************
 	// *** Constructor
@@ -99,6 +141,7 @@ public class SourceTextPanel extends JPanel {
         doc=new DefaultStyledDocument(); addStylesToDocument(doc);
         doc.putProperty(DefaultEditorKit.EndOfLineStringProperty,"\n");
     	doc.addUndoableEditListener(undoListener);
+    	doc.addDocumentListener(documentListener);
         editTextPane.setStyledDocument(doc);
         editTextPane.setEditable(true);
         

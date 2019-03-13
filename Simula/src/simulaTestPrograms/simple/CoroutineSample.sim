@@ -3,7 +3,8 @@ begin
    
    procedure trace(msg); text msg;
    begin
-      outtext(msg); outimage; printThreadList;
+      outtext(msg); outimage;
+%      printThreadList;
    end;
    
    class A;

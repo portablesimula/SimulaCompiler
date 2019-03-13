@@ -88,9 +88,8 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  */
 public class Simulation$ extends Simset$ {
-	public boolean isDetachable() {
-		return (true);
-	}
+	//public boolean isDetachable() {	return(true); }
+    public boolean isDetachUsed() { return(true); }
 
 	public Head$ SQS = null;
 	public MAIN_PROGRAM$ main = null;

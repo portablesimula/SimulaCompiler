@@ -53,7 +53,7 @@ public final class TestCompiler {
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
 		// String name="/error/simerr01.sim"; // Syntax errors
-		 String name="/error/simerr02.sim"; // Syntax errors  TODO: MÅ SJEKKES - NumberFormatException
+		// String name="/error/simerr02.sim"; // Syntax errors  TODO: MÅ SJEKKES - NumberFormatException
 		// String name="/error/simerr03.sim"; // Wrong Number of parameters  
 		// String name="/error/simerr04.sim"; // Type checking of Parameter Array 
 		// String name="/error/simerr05.sim"; // Syntax error - Semicolon before 'else' 
@@ -85,6 +85,9 @@ public final class TestCompiler {
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
 		// String name="/simple/adHoc26.sim";
+		// String name="/simple/adHoc54.sim";
+		// String name="/simple/adHoc66.sim";
+		// String name="/simple/adHoc67.sim";
 		// String name="/simple/adHoc68.sim";
 	    // String name="/simple/Activation.sim";
 	    // String name="/simple/AnimationTest.sim";
@@ -97,7 +100,8 @@ public final class TestCompiler {
 		// String name="/simple/ClassGlyph.sim"; 
 		// String name="/simple/ClassGlyph2.sim";
 		// String name="/simple/ClockTimeTest.sim";
-		// String name="/simple/CoroutineSample.sim";
+		 String name="/simple/CoroutineSample.sim";
+		// String name="/simple/CoroutineSample2.sim";
 		// String name="/simple/dates.sim";
 		// String name="/simple/testdates.sim";
 		// String name="/simple/DetachSamples.sim"; 

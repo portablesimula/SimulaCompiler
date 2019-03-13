@@ -11,23 +11,15 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 
+import simula.runtime.loom.Continuation;
+import simula.runtime.loom.ContinuationScope;
+
 /**
 * 
 * @author Øystein Myhre Andersen
 */
 @SuppressWarnings("unchecked")
 public abstract class RTObject$  implements Runnable {
-//	protected static boolean CODE_STEP_TRACING=false;//true;
-//	protected static boolean BLOCK_TRACING=false;//true;
-//	protected static boolean GOTO_TRACING=false;//true;
-//	protected static boolean THREAD_TRACING=false;//true;
-//	protected static boolean THREADSWAP_TRACING=false;//true;
-//	protected static final boolean QPS_TRACING=false; //true;
-//	protected static final boolean SML_TRACING=false; //true;
-//
-//	protected static final boolean USE_DEPRECATED_QPS_METHODS=false; //true;
-//
-//	public static void warning(String msg) { System.err.println("Warning: "+msg); }
 	
 	// BASICIO
 	static final int INPUT_LINELENGTH_ = 80;
@@ -42,8 +34,8 @@ public abstract class RTObject$  implements Runnable {
 	public enum OperationalState { detached,resumed,attached,terminated,terminatingProcess }
 	public OperationalState STATE$;
 	public Thread THREAD$;
-	protected static final ContinuationScope continuationScope=new ContinuationScope("QPS System");
-	protected Continuation continuation;
+	protected static final ContinuationScope continuationScope=new ContinuationScope("QPS");
+	protected Continuation CONT$;
 	protected ClassBody CODE$;
 	
 	// RTS
@@ -53,7 +45,8 @@ public abstract class RTObject$  implements Runnable {
 	public int JTX$; // Jump Table Index used by STM$()
 
 	public boolean isQPSystemBlock() { return(false); } // Needs Redefinition
-	public boolean isDetachable() { return(false); } // Needs Redefinition
+//	public boolean isDetachable() { return(false); } // Needs Redefinition
+    public boolean isDetachUsed() { return(false); } // Needs Redefinition
 //    public int[] getLINEMAP$() { return(null); } // Needs Redefinition
 
 
@@ -88,7 +81,14 @@ public abstract class RTObject$  implements Runnable {
 	public RTObject$(RTObject$ SL)
 	{ if(SL!=null)
 	  { this.BL$=SL.BL$+1; this.SL$=SL;
-		this.THREAD$=Thread.currentThread();
+	  
+	  
+		if (RT.USE_LOOM) {
+			this.CONT$ = Continuation.getCurrentContinuation(continuationScope);
+		} else {
+			this.THREAD$ = Thread.currentThread();
+		}
+
 	    this.SEQU=objSEQU++;      // Used by TRACE-methods
 	  }
 	}
@@ -652,7 +652,7 @@ public abstract class RTObject$  implements Runnable {
 	// ************************************************************
 	// *** UncaughtExceptionHandler
 	// ************************************************************
-	class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+	public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 		public RTObject$ obj;
 	
 	    public UncaughtExceptionHandler(RTObject$ obj)  {
@@ -672,8 +672,9 @@ public abstract class RTObject$  implements Runnable {
             	  if(RT.Option.GOTO_TRACING) RT.println("DL="+DL.edObjectAttributes());
 //            	  DL.PENDING_EXCEPTION$=(RuntimeException)e;
             	  PENDING_EXCEPTION$=(RuntimeException)e;
-//            	  DL.resumeThread();
-            	  resumeThread(DL.THREAD$);
+//            	  DL.END_THREAD();
+          		  if(RT.USE_LOOM) DL.CONT$.run();
+          		  else END_THREAD(DL.THREAD$);
             	} else {
             		RT.println(who+": SIMULA RUNTIME ERROR: Illegal GOTO "+e); e.printStackTrace();
             	    shutDown(-1);
@@ -692,20 +693,20 @@ public abstract class RTObject$  implements Runnable {
                 	  msg=msg+" -- DURING SHUTDOWN";
                 	  RT.println(who+": SIMULA RUNTIME ERROR: "+msg);
                 	  //ENVIRONMENT$.printStackTrace(2);
-                	  ENVIRONMENT$.printStackTrace(e,0);
+                	  RT.printSimulaStackTrace(e,0);
                 	  //e.printStackTrace();
                 	  shutDown(-1);             		  
             	  }
               } else {
             	  RT.println(who+": SIMULA RUNTIME ERROR: "+msg);
             	  //ENVIRONMENT$.printStackTrace(2);
-            	  ENVIRONMENT$.printStackTrace(e,0);
+            	  RT.printSimulaStackTrace(e,0);
             	  e.printStackTrace();
             	  shutDown(-1);  
               }
             }
             else { RT.println(who+": UNCAUGHT EXCEPTION: "+e.getMessage()); e.printStackTrace(); shutDown(-1); }
-            if(RT.Option.GOTO_TRACING) ENVIRONMENT$.printThreadList(); 
+            if(RT.Option.GOTO_TRACING) RT.printThreadList(); 
         }
 	}
     
@@ -733,8 +734,12 @@ public abstract class RTObject$  implements Runnable {
 	 * routine. It will initiate the global data in the runtime system.
 	 */
 	public void BPRG(String ident) {
-		CTX$.THREAD$=Thread.currentThread();
-		CTX$.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
+		if(RT.USE_LOOM) {
+			Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
+		} else {
+			CTX$.THREAD$=Thread.currentThread();
+			CTX$.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
+		}
 		if(RT.Option.BLOCK_TRACING) RT.TRACE("Begin Execution of Simula Program: "+ident);
 		if(SYSIN$==null)
 		{ if(RT.Option.USE_CONSOLE) RT.console=new RTConsole();
@@ -769,7 +774,11 @@ public abstract class RTObject$  implements Runnable {
 	 */
 	public void BBLK() {
 		DL$=CUR$; CUR$=this;
-		this.THREAD$=Thread.currentThread(); 
+		if(RT.USE_LOOM) {
+			this.CONT$=DL$.CONT$;
+		} else {
+			this.THREAD$=Thread.currentThread(); 
+		}
 	    STATE$=OperationalState.attached;
 		if(RT.Option.BLOCK_TRACING) RT.TRACE("BEGIN "+edObjectAttributes());
 		RT.NoneCheck(SL$); // In case of Remote Call on Procedure  x.Func, x==none
@@ -821,7 +830,11 @@ public abstract class RTObject$  implements Runnable {
 	    if(this.STATE$==OperationalState.terminatingProcess) {
 	    	//RT.TRACE("TERMINATING PROCESS "+edObjectAttributes());
 	        this.STATE$=OperationalState.terminated;
-	        this.THREAD$=null; // Leave it to the GarbageCollector
+			if(RT.USE_LOOM) {
+		        this.CONT$=null; // Leave it to the GarbageCollector				
+			} else {
+				this.THREAD$=null; // Leave it to the GarbageCollector
+			}
 	    	return;            // Let this Thread R.I.P.
 	    }
 	    if(CUR$!=this) {
@@ -868,13 +881,18 @@ public abstract class RTObject$  implements Runnable {
 		   shutDown(0);
 //		   System.exit(0);
 	    } else {
-		    if(RT.USE_QPS_LOOM) {
-		    	// Stop operations and set reactivation point.
-		    	//Continuation.yield(continuationScope);
+			if(RT.USE_LOOM) {
+//	    		RT.BREAK("RTObject$.EBLK: isDetachUsed="+this.isDetachUsed()+", isQPSystemBlock="+this.isQPSystemBlock()+", CONT$="+CONT$);
+		    	if(this.CONT$!=null && this.isDetachUsed()) {
+		    		//RT.BREAK("RTObject$.EBLK: isDetachUsed="+this.isDetachUsed()+", isQPSystemBlock="+this.isQPSystemBlock()+", CONT$="+CONT$);
+		    		//RT.BREAK("RTObject$.EBLK: FROM "+this.CONT$);
+		    		// Stop operations and set reactivation point.
+		    		Continuation.yield(continuationScope);
+		    	}
 			} else {
 				if (this.THREAD$ != CUR$.THREAD$) {
 					if (RT.Option.QPS_TRACING) RT.TRACE("Resume " + CUR$.THREAD$);
-					resumeThread(CUR$.THREAD$);
+					END_THREAD(CUR$.THREAD$);
 					if (RT.Option.QPS_TRACING) RT.TRACE("Terminate " + this.THREAD$);
 					this.THREAD$ = null; // Leave it to the GarbageCollector
 				}
@@ -925,7 +943,7 @@ public abstract class RTObject$  implements Runnable {
 	public void call(RTObject$ ins)	{
 		RTObject$ dl;     //  Temporary reference to dynamic enclosure.
 		if(ins==null) throw new RuntimeException("Call(x): x is none.");
-		if(RT.USE_QPS_LOOM) {
+		if(RT.USE_LOOM) {
 			System.out.println("BEGIN CALL "+ins.edObjectAttributes());
 			System.out.println("BEGIN CALL CUR$="+CUR$.edObjectAttributes());
 		}
@@ -942,11 +960,11 @@ public abstract class RTObject$  implements Runnable {
 		// It is no longer a component head.
 		ins.STATE$=OperationalState.attached;
 		if(RT.Option.QPS_TRACING) RT.TRACE("END CALL "+ins.edObjectAttributes());
-	    if(RT.USE_QPS_LOOM) {
+		if(RT.USE_LOOM) {
 			System.out.println("END CALL "+ins.edObjectAttributes());
 			System.out.println("END CALL CUR$="+CUR$.edObjectAttributes());
 	    	// Resume operations at saved reactivation point.
-	    	CUR$.continuation.run();
+	    	CUR$.CONT$.run();
 	    	// Returns here after a new 'detach'
 	    } else {
 	    	swapThreads(CUR$.THREAD$);
@@ -997,6 +1015,7 @@ public abstract class RTObject$  implements Runnable {
 	 * @param obj
 	 *            The object to be Resumed
 	 */
+	static Continuation PENDING_CONT;
 	public void resume(RTObject$ ins) { resume(ins,false); }
 	public void resume(RTObject$ ins,boolean terminatingProcess)
 	{ RTObject$ comp;   //  Component head.
@@ -1028,13 +1047,28 @@ public abstract class RTObject$  implements Runnable {
 	    comp.DL$=CUR$; CUR$=ins.DL$; ins.DL$=mainSL;
 	    ins.STATE$=OperationalState.resumed;
 		if(RT.Option.QPS_TRACING) RT.TRACE("END RESUME "+ins.edObjectAttributes());
-	    if(RT.USE_QPS_LOOM) {
+		if(RT.USE_LOOM) {
 	    	// Resume operations at saved reactivation point.
-	    	CUR$.continuation.run();
-	    	// Returns here after a new 'detach'
+	    	Continuation cont=Continuation.getCurrentContinuation(continuationScope);
+	    	//RT.BREAK("RTObject.resume: CURRENT CONTINUATION "+cont);
+	    	//RT.BREAK("RESUME CONTINUATION "+CUR$.edObjectAttributes());
+	    	if(cont==null) {    		
+		    	cont=CUR$.CONT$;	    		
+		    	//RT.BREAK("RTObject.resume: CUR$.CONT$="+cont);
+		    	while(cont!=null) {
+		    		PENDING_CONT=null;
+		    		cont.run();
+			    	// Returns here after a new 'detach'
+			    	RT.BREAK("RTObject.resume: AFTER NEW DETACH: PENDING_CONT="+PENDING_CONT);
+		    		cont=PENDING_CONT;
+		    	}
+	    	} else {
+	    		PENDING_CONT=CUR$.CONT$;
+	    		Continuation.yield(continuationScope);
+	    	}
 	    } else {
-//	       if(terminatingProcess) CUR$.resumeThread();
-	       if(terminatingProcess) resumeThread(CUR$.THREAD$);
+//	       if(terminatingProcess) CUR$.END_THREAD();
+	       if(terminatingProcess) END_THREAD(CUR$.THREAD$);
 	       else swapThreads(CUR$.THREAD$);
 	    }
 	  }
@@ -1059,104 +1093,94 @@ public abstract class RTObject$  implements Runnable {
     	START(this); return(this);
     }
     
+	protected void START(RTObject$ ins) {
+		throw new RuntimeException("Object is not a Component");		
+    }
+    
+    public void run() {
+    	waitUntilPrevThreadNotRunning();
+    	STM$();
+    	//RT.TRACE("Object TERMINATES: "+this.edObjectAttributes());
+    	//RT.printThreadList();
+    }
+    
     public void resumeOperations() { // LOOM ONLY
-    	RT.ASSERT(RT.USE_QPS_LOOM,"Illegal Call on resumeOperations");
+    	RT.ASSERT(RT.USE_LOOM,"Illegal Call on resumeOperations");
     	throw new RuntimeException("Object is not a Component");
     }
     
-    public void run()
-    { STM$();
-      //RT.TRACE("Object TERMINATES: "+this.edObjectAttributes());
-      //RT.printThreadList();
+	// *********************************************************************
+	// *** THREAD: waitUntilPrevThreadNotRunning
+	// *********************************************************************
+    static Thread prevThread;
+    static void waitUntilPrevThreadNotRunning() {
+        if(prevThread!=null) {
+        	int count=10; // To prevent DeadLock
+        	while((count--)>0 && prevThread.getState()==Thread.State.RUNNABLE) {
+        		//if((count--)>0) System.out.println("waitUntilPrevThreadNotRunning: "+prevThread+", state="+prevThread.getState());
+        		//else RT.BREAK("waitUntilPrevThreadNotRunning: "+prevThread+", state="+prevThread.getState());
+        		//Thread.yield(); 
+        		try { Thread.sleep(0,1); } catch (InterruptedException e) { e.printStackTrace(); }
+        		//try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+        	}
+        	prevThread=null;
+        }
     }
-    
-	public void START(RTObject$ ins) {
-		if(RT.USE_QPS_LOOM) START_LOOM(ins);
-		else START_THREAD(ins);
-	}
-    
-	public void START_LOOM(RTObject$ ins) {
-		throw new RuntimeException("Object is not a Component");		
-	}
-    
-	public void START_THREAD(RTObject$ ins)
-    { if(RT.Option.THREAD_TRACING) RT.TRACE("START: ins="+ins.edObjectAttributes());
-      //if(RT.Option.THREAD_TRACING) RT.TRACE("START: CUR$="+CUR$.edObjectAttributes());
-      RTObject$ CALLER=CUR$.DL$;
-      if(RT.Option.THREAD_TRACING) RT.TRACE("START: CALLER="+CALLER.edObjectAttributes());
-	  RT.ASSERT(CUR$.THREAD$==Thread.currentThread(),"Invariant");
-	  // Start Object in a new Thread
-      ins.THREAD$=new Thread(ins,ins.edObjectIdent());
-	  ins.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
-      if(RT.Option.THREAD_TRACING) RT.TRACE("Start "+ins.THREAD$);
-      ins.THREAD$.start();
-      if(RT.Option.THREAD_TRACING) RT.TRACE("START:Suspend "+Thread.currentThread());
-//	  RT.println("START: THIS="+this.edObjectAttributes());
-//	  RT.println("START: CUR$="+CUR$.edObjectAttributes());
-//	  RT.println("START: CUR$.DL$="+CUR$.DL$.edObjectAttributes());
-//	  RT.println("START: CUR$.DL$.THREAD$="+CUR$.DL$.THREAD$);
 
-      Thread prev=Thread.currentThread();
-      Thread next=ins.THREAD$;
-      suspendCurrentThread();
-      
-//	  RT.TRACE("END START: PREV="+prev+", Thread.STATE="+prev.getState());
-//	  RT.TRACE("END START: NEXT="+next+", Thread.STATE="+next.getState());
-	  RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"Invariant");
-    
-	  while(next.getState()==Thread.State.RUNNABLE) Thread.yield();  
 
-	  RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Invariant");
-//    ENVIRONMENT$.checkMaxOneRunableSimulaThread();
-
-	}
-
-	
-	
+	// *********************************************************************
+	// *** THREAD: wakeupThread
+	// *********************************************************************
 	static boolean SHUTING_DOWN$=false;
 	private static RuntimeException PENDING_EXCEPTION$=null;
-
-
-	private static void suspendCurrentThread() {
-		Thread thread=Thread.currentThread();
-		synchronized (thread) {
-			try { thread.wait(); } catch (InterruptedException ex) { ex.printStackTrace(); }
-		}
-//		ENVIRONMENT$.checkMaxOneRunableSimulaThread(); ??
-		if (RT.Option.THREADSWAP_TRACING) RT.TRACE("RTObject$.suspendThread: RESTARTING "+thread);
+	private static void wakeupThread(final Thread next) {
+		//RT.checkMaxOneRunableSimulaThread();
+		Thread curr=Thread.currentThread();
+		if (RT.Option.THREAD_TRACING) RT.TRACE("RTObject$.wakeupThread: WAKEUP "+curr);
 		if (SHUTING_DOWN$) PENDING_EXCEPTION$ = CUR$.new TerminateException("EXIT");
 		if (PENDING_EXCEPTION$ != null) {
 			RuntimeException t = PENDING_EXCEPTION$;
 			PENDING_EXCEPTION$ = null;
-			if (RT.Option.GOTO_TRACING) RT.TRACE("RTObject$.suspendThread: Re-throw " + t);
+			if (RT.Option.GOTO_TRACING) RT.TRACE("RTObject$.wakeupThread: Re-throw " + t);
 			if(t!=null) throw (t);
 		}
-		if (RT.Option.THREAD_TRACING)	RT.TRACE("RTObject$.suspendThread: END " + thread);
-		if (RT.Option.THREAD_TRACING)	ENVIRONMENT$.printThreadList();
+		if(RT.DEBUGGING) {
+			if (RT.Option.THREAD_TRACING)	RT.TRACE("RTObject$.wakeupThread: END " + curr);
+			//if (RT.Option.THREAD_TRACING)	RT.printThreadList();
+			// RT.TRACE("END swapThread: PREV="+curr+", Thread.STATE="+prev.getState());
+			// RT.TRACE("END swapThread: NEXT="+next+", Thread.STATE="+next.getState());
+			RT.ASSERT(curr.getState()==Thread.State.RUNNABLE,"RTObject$.wakeupThread: Invariant-3");
+			while(next.getState()==Thread.State.RUNNABLE) Thread.yield();  
+			RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"RTObject$.wakeupThread: Invariant-4");
+			//RT.checkMaxOneRunableSimulaThread();
+		}
 	}
-
-	private static void resumeThread(final Thread thread)
-	{ synchronized (thread) {
-	     thread.notify();
-      }
-    }
 	
 
+	// *********************************************************************
+	// *** THREAD: shutDown
+	// *********************************************************************
 	private static void shutDown(int exitValue) {
-		if (RT.Option.THREADSWAP_TRACING)	RT.TRACE("RTObject$.shutDown:");
+		if (RT.Option.THREAD_TRACING)	RT.TRACE("RTObject$.shutDown:");
 		//RT.BREAK("RTObject$.shutDown:");
 		SHUTING_DOWN$ = true;
-		Thread[] t = new Thread[50];
-		int i = Thread.enumerate(t);
-		for (int j = 0; j < i; j++) {
-			Thread T = t[j];
-			// RT.BREAK("RTObject$.shutDown: Notify "+T);
-			if (T != Thread.currentThread()) {
+		
+		if(RT.USE_LOOM) {
+			// TODO: ALL.CONT$.run();
+		}
+		else {
+			Thread[] t = new Thread[50];
+			int i = Thread.enumerate(t);
+			for (int j = 0; j < i; j++) {
+				Thread T = t[j];
 				// RT.BREAK("RTObject$.shutDown: Notify "+T);
-				synchronized (T) { T.notify(); }
-				// Shutting Down Components one at a time:
-			    //while(T.getState()==Thread.State.RUNNABLE) Thread.yield();  
-			    try { T.join();	} catch (InterruptedException e) { e.printStackTrace();	}
+				if (T != Thread.currentThread()) {
+					// RT.BREAK("RTObject$.shutDown: Notify "+T);
+					synchronized (T) { T.notify(); }
+					// Shutting Down Components one at a time:
+					try { T.join();	} // Wait for a thread to terminate
+					catch (InterruptedException e) { e.printStackTrace();	}
+				}
 			}
 		}
 		if(RT.numberOfEditOverflows>0) RT.println("End program: WARNING "+RT.numberOfEditOverflows+" EditOverflows");
@@ -1164,28 +1188,74 @@ public abstract class RTObject$  implements Runnable {
 	}		
 	
 	
-    protected static void swapThreads(final Thread next)
-    { // Suspend CurrentThread and Resume 'next' in one operation
-    	
-      Thread prev=Thread.currentThread();
-//      RT.TRACE("BEGIN swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
-//      RT.TRACE("BEGIN swapThread: NEXT="+next+", Thread.STATE="+next.getState());
-      RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-1");
-      RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND ?
+	// *********************************************************************
+	// *** THREAD: swapThreads
+	// *********************************************************************
+    static boolean alreadyGotInvariant2=false;
+    public static void swapThreads(final Thread next) {
+    	if(RT.DEBUGGING) {
+    		Thread prev=Thread.currentThread();
+    		// RT.TRACE("BEGIN swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
+    		// RT.TRACE("BEGIN swapThread: NEXT="+next+", Thread.STATE="+next.getState());
+    		RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-1");
+      
+    		//RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND, KAREL og GUNNAR ?
+    		if(next.getState()==Thread.State.RUNNABLE) {
+    			RT.println("****************** INTERNAL ERROR: RTObject$.swapThreads: Invariant-2 FAILED ******************");
+    			RT.println("Current Object: "+CUR$.edObjectAttributes());
+    			RT.printStaticChain(CUR$);
+    			RT.println("Next Thread: "+next+", State="+next.getState());
+    			RT.printStackTrace();
+    			RT.printThreadList(true);
+    			RT.println("***********************************************************************************************");
+    			if(!alreadyGotInvariant2) RT.BREAK("Continue ?"); alreadyGotInvariant2=true;
+    		}
+    	}
+    	SWAP_THREAD(next); // Suspend CurrentThread and Resume 'next' in one operation
+    }
+    
+	// *********************************************************************
+	// *** BASIC PRIMITIVE: START_THREAD
+	// *********************************************************************
+    public static void START_THREAD(final Thread next) {
+        Thread current=Thread.currentThread();
+        if(RT.Option.THREAD_TRACING) RT.TRACE("RTObject$.START_THREAD: "+current.getName()+" ==> "+next.getName());
+        prevThread=current;
+        next.start();				// Start   'next'
+        synchronized (current) {	// Suspend 'prev'
+        	try { current.wait(); } catch (InterruptedException e) { e.printStackTrace(); }
+        }
+        //System.out.println("RTObject$.START_THREAD: CONTINUE: "+prev.getName());
+    	waitUntilPrevThreadNotRunning();
+        wakeupThread(next); // Continue here after suspend
+    }
+    
+	// *********************************************************************
+	// *** BASIC PRIMITIVE: SWAP_THREAD
+	// *********************************************************************
+    protected static void SWAP_THREAD(final Thread next) {
+        Thread current=Thread.currentThread();
+        if(RT.Option.THREAD_TRACING) RT.TRACE("RTObject$.SWAP_THREAD: "+current.getName()+" ==> "+next.getName());
+        prevThread=current;
+        synchronized (next) { next.notify(); }	// Resume  'next'
+        synchronized (current) {				// Suspend 'prev'
+        	try { current.wait(); } catch (InterruptedException ex) { ex.printStackTrace(); }
+        }
+        //System.out.println("RTObject$.SWAP_THREAD: CONTINUE: "+prev.getName());
+    	waitUntilPrevThreadNotRunning();
+        wakeupThread(next); // Continue here after suspend
+    }
 
-  	  // Resume 'next'	
-  	  synchronized (next) { next.notify(); }
-      
-  	  suspendCurrentThread();
-      
-//      RT.TRACE("END swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
-//      RT.TRACE("END swapThread: NEXT="+next+", Thread.STATE="+next.getState());
-      RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-3");
-      
-      while(next.getState()==Thread.State.RUNNABLE) Thread.yield();  
-
-      RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"RTObject$.swapThreads: Invariant-4");
-//      ENVIRONMENT$.checkMaxOneRunableSimulaThread();
+	// *********************************************************************
+	// *** BASIC PRIMITIVE: END_THREAD
+	// *********************************************************************
+	private static void END_THREAD(final Thread next) { 
+        Thread current=Thread.currentThread();
+        if(RT.Option.THREAD_TRACING) RT.TRACE("RTObject$.END_THREAD: "+current.getName()+" ==> "+next.getName());
+        prevThread=current;
+		synchronized (next) { next.notify(); } // Resume 'next'
+		// Let currentThread return from run()
+        //System.out.println("RTObject$.END_THREAD: CONTINUE: "+prev.getName());
     }
 
 	
@@ -1203,7 +1273,7 @@ public abstract class RTObject$  implements Runnable {
 //      RT.println(elt.getFileName()+" LINE "+line+": "+msg);    	
       RT.BREAK("  STEP_TRACE  "+elt.getFileName()+" LINE "+line+": "+msg);    	
 //      printStaticContextChain();
-      ENVIRONMENT$.printStackTrace(2); // TESTING
+      RT.printSimulaStackTrace(2); // TESTING
     }
 	
     public void TRACE_BEGIN_DCL$(String ident) { TRACE_BEGIN_DCL$(ident,-1); }
@@ -1238,7 +1308,9 @@ public abstract class RTObject$  implements Runnable {
 	  s.append(" SL=").append((SL$==null)?"null":SL$.edObjectIdent());
 	  s.append(" DL=").append((DL$==null)?"null":DL$.edObjectIdent());
 	  s.append(" STATE=").append(STATE$);
-	  s.append(" THREAD=").append(THREAD$);
+
+	  if(RT.USE_LOOM) s.append(" CONT$=").append(CONT$);
+	  else s.append(" THREAD=").append(THREAD$);
 	  s.append(" CUR=").append(CUR$);
 	  return(s.toString());
 	}

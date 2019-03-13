@@ -7,7 +7,6 @@
  */
 package simula.runtime;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -1343,106 +1342,6 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
     	RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
     }
 
-
-	// **********************************************************************
-	// *** Debugging utility: checkMaxOneRunableSimulaThread
-	// **********************************************************************
-	public static synchronized void checkMaxOneRunableSimulaThread() {
-		Thread[] t = new Thread[50];
-		Thread[] runnable=new Thread[50];
-		int i = Thread.enumerate(t);
-		int nRun=0;
-		for (int j = 0; j < i; j++) {
-			Thread T = t[j];
-			if(T.getState()==Thread.State.RUNNABLE) {
-				runnable[nRun]=T;
-				nRun++;
-			}
-		}
-		if(nRun!=1) {
-			RT.println("*** CHECKING MAX ONE RUNABLE SIMULA THREAD: ***");
-			RT.println("IMPOSSIBLE SITUATION: Number of RUNNABLE SimulaTherads = "+nRun);
-			for(int k=0;k<nRun;k++)
-			{ Thread T=runnable[k];
-				String msg="  - " + T;
-				if (T == Thread.currentThread())
-					msg=msg+" = CurrentThread";
-				if (T == RTObject$.CUR$.THREAD$)
-					msg=msg+" = CUR$.THREAD$";
-				RT.println(msg+"   STATE="+T.getState());
-				
-			}
-			printThreadList(true);
-			//Util.BREAK("IMPOSSIBLE SITUATION: Number of RUNNABLE SimulaTherads = "+nRun);
-			System.exit(-1);
-		}
-		RT.ASSERT(Thread.currentThread()==CUR$.THREAD$,"Invariant: Thread.currentThread()==CUR$.THREAD$");
-	}  
-
-	
-	// **********************************************************************
-	// *** Debugging utility: Procedure printThreadList
-	// **********************************************************************
-	public static void printThreadList() {
-		printThreadList(false);
-	}
-	public static synchronized void printThreadList(boolean withStackTrace) {
-		Thread[] t = new Thread[50];
-		int i = Thread.enumerate(t);
-		RT.println("ACTIVE THREAD LIST:");
-		for (int j = 0; j < i; j++) {
-			Thread T = t[j];
-			String msg="  - " + T;
-			if (T == Thread.currentThread())
-				msg=msg+" = CurrentThread";
-			if (T == RTObject$.CUR$.THREAD$)
-				msg=msg+" = CUR$.THREAD$";
-			RT.println(msg+"   STATE="+T.getState());
-			if(withStackTrace) {
-				printStackTrace(T,0);
-				RT.println("");
-			}
-		}
-		RT.ASSERT(Thread.currentThread()==CUR$.THREAD$,"Invariant: Thread.currentThread()==CUR$.THREAD$");
-		RT.println("----------------------------------------");
-	}  
-	
-	public static void printStackTrace(Thread thread,int start) {
-		StackTraceElement stackTraceElement[] = thread.getStackTrace();
-		int n = stackTraceElement.length;
-		for (int i = start; i < n; i++)
-			printSimulaLineInfo(stackTraceElement[i]);
-	}
-	
-	public static void printStackTrace(int start) {
-		printStackTrace(Thread.currentThread(),start);
-	}
-
-	
-	public static void printStackTrace(Throwable e,int start) {
-		StackTraceElement stackTraceElement[] = e.getStackTrace();
-		int n = stackTraceElement.length;
-		for (int i = start; i < n; i++)
-			printSimulaLineInfo(stackTraceElement[i]);
-	}
-
-	public static void printSimulaLineInfo(StackTraceElement elt)
-	{ try { 
-		    Class<?> cls=Class.forName(elt.getClassName());
-		    //RT.println("ENVIRONMENT$.getSimulaLineNumber: cls="+cls);
-		    Field field=cls.getField("INFO$");
-		    //RT.println("ENVIRONMENT$.getSimulaLineNumber: field="+field);
-		    PROGINFO$ info=(PROGINFO$)field.get(null);
-		    int[] lineMap=info.LINEMAP$;
-	        int x=0; int javaLineNumber=elt.getLineNumber();
-	        try { while(lineMap[x]<javaLineNumber) x=x+2;
-	              //return(lineMap[x-1]);
-	        	  RT.println("IN "+info.ident+'('+elt.getFileName()+':'+elt.getLineNumber()+" "+elt.getMethodName()+") at Simula Source Line "+lineMap[x-1]+"["+info.file+"]");
-	        } catch(Throwable t) { }
-	    } catch (Exception e) {
-	    	//e.printStackTrace();
-	    }
-	}
 
 
 }

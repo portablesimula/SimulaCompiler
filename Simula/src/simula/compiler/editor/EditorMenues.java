@@ -1,3 +1,10 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.compiler.editor;
 
 import java.awt.Color;
@@ -248,6 +255,7 @@ public class EditorMenues extends JMenuBar {
 		search.setEnabled(text);          search2.setEnabled(text);
 		refresh.setEnabled(text);         refresh2.setEnabled(text);
 		run.setEnabled(text);             run2.setEnabled(text);
+		debug.setEnabled(text);           debug2.setEnabled(text);
 		autoRefresh.setSelected(auto);    autoRefresh2.setSelected(auto);
 		autoRefresh.setEnabled(source);   autoRefresh2.setEnabled(source);
 		undo.setEnabled(canUndo);         undo2.setEnabled(canUndo);
@@ -278,12 +286,12 @@ public class EditorMenues extends JMenuBar {
 			else if(item==search  || item==search2) new Search();					
 			else if(item==refresh || item==refresh2) current.doRefresh();
 			else if(item==run   || item==run2) doRunAction();
-			else if(item==debug || item==debug2) doRunAction();
+			else if(item==debug || item==debug2) doDebugAction();
 			else if(item==autoRefresh) current.AUTO_REFRESH=autoRefresh.isSelected();
 			else if(item==autoRefresh2) current.AUTO_REFRESH=autoRefresh2.isSelected();
 			else if(item==workSpaces || item==workSpaces2) removeWorkspacesAction();
-			else if(item==compilerOption || item==compilerOption) Option.selectCompilerOptions();
-			else if(item==runtimeOption  || item==runtimeOption) RTOption.selectRuntimeOptions();			
+			else if(item==compilerOption || item==compilerOption2) Option.selectCompilerOptions();
+			else if(item==runtimeOption  || item==runtimeOption2) RTOption.selectRuntimeOptions();			
 			else if(item==about || item==about2) doAboutAction();
 			else if(item==more || item==more2) doMoreAction();
 		}
@@ -426,6 +434,16 @@ public class EditorMenues extends JMenuBar {
 					new SimulaCompiler(name,reader).doCompile();
 				}}).start();
 		} catch(Exception e) { Util.popUpError("Can't run: "+e);}
+	}
+	
+	// ****************************************************************
+	// *** doDebugAction
+	// ****************************************************************
+	private void doDebugAction() {
+		RTOption.DEBUGGING=true;
+		RTOption.VERBOSE=true;
+		RTOption.selectRuntimeOptions();
+		doRunAction();
 	}
     
 	// ****************************************************************

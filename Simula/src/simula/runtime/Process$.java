@@ -64,9 +64,8 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  */
 public class Process$ extends Link$ {
-	public boolean isDetachable() {
-		return (true);
-	}
+	//public boolean isDetachable() {	return(true); }
+    public boolean isDetachUsed() { return(true); }
 
 	public EVENT_NOTICE$ EVENT = null;
 //	public boolean TERMINATED$ = false;

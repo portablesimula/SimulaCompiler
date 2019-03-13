@@ -1,24 +1,45 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.runtime;
+
+import simula.runtime.loom.Continuation;
 
 /**
 * 
 * @author SIMULA Standards Group
 * @author Øystein Myhre Andersen
 */
-//public abstract class CLASS$ extends RTObject$ {
-public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
+public abstract class CLASS$ extends BASICIO$ {
 	// Constructor
 	public CLASS$(RTObject$ staticLink) {
 		super(staticLink);
 	}
-	
-    public void START_LOOM(RTObject$ ins) {
-    	System.out.println("CLASS$.START_LOOM: ");
-    	continuation=new Continuation(continuationScope,this,ins.edObjectIdent());
-    	continuation.run();
-    	// Return here when Continuation is Yield
-    	System.out.println("CLASS$.START_LOOM: Continuation RETURNS: "+ins.edObjectIdent());
-    }
+    
+	// *********************************************************************
+	// *** THREAD: START QPS COMPONENT IN A SEPARATE THREAD
+	// *********************************************************************
+	protected void START(RTObject$ ins) {
+		if(RT.USE_LOOM) {
+	    	//System.out.println("CLASS$.START_CONT$: ");
+        	CONT$=new Continuation(continuationScope,this);
+        	CONT$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
+        	CONT$.run();
+        	// Return here when Continuation is Yield
+        	//System.out.println("CLASS$.START_CONT$: Continuation RETURNS: "+ins.edObjectIdent());
+		} else {
+			RT.ASSERT(CUR$.THREAD$==Thread.currentThread(),"START_THREAD:Invariant-1");
+			// Start QPS Component in a new Thread
+			ins.THREAD$=new Thread(ins,ins.edObjectIdent());
+			ins.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
+			// if(RT.Option.THREAD_TRACING) RT.TRACE("Start "+ins.THREAD$);
+			START_THREAD(ins.THREAD$);
+		}
+	}
 
 	// *********************************************************************
 	// *** DETACH  -  See Simula Standard 7.3.1 Detach
@@ -79,10 +100,6 @@ public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 		               //  the head of the quasi-parallel system.
 	  ins=this;
 	  if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
-	  if(RT.USE_QPS_LOOM) {
-		  System.out.println("BEGIN DETACH "+edObjectAttributes());
-		  System.out.println("BEGIN DETACH CUR$="+CUR$);
-	  }
 	  RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
 	  //  Detach on a prefixed block is a no-operation.
 	  if(!CUR$.isQPSystemBlock())
@@ -115,14 +132,8 @@ public abstract class CLASS$ extends BASICIO$ {  // CORR-PREFIX
 		}
 		RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
 	    if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
-	    if(RT.USE_QPS_LOOM) {
-		    System.out.println("END DETACH "+edObjectAttributes());
-		    System.out.println("END DETACH new CUR$="+CUR$);
-	    	// Stop operations and set reactivation point.
-	    	Continuation.yield(continuationScope);
-	    } else {
-	    	swapThreads(CUR$.THREAD$);
-	    }
+		if (RT.USE_LOOM) Continuation.yield(continuationScope);
+	    else swapThreads(CUR$.THREAD$);
 	  }
 	}
 
