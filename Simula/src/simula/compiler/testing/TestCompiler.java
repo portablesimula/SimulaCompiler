@@ -70,6 +70,9 @@ public final class TestCompiler {
 		// String name="/error/simerr14.sim"; // Two consecutive identifiers - ERROR - GÅR I LOOP
 		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
 		// String name="/error/simerr16.sim"; // Illegal lhs in assignment
+		// String name="/error/issue12.sim"; // Dot-aksess inn i klasser med lokale klasser,
+		// String name="/error/issue13.sim"; // Tillater subklasser på dypere blokknivå.
+		 String name="/error/issue16.sim"; // Problemer med å evaluere Constant-expression
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
@@ -100,7 +103,7 @@ public final class TestCompiler {
 		// String name="/simple/ClassGlyph.sim"; 
 		// String name="/simple/ClassGlyph2.sim";
 		// String name="/simple/ClockTimeTest.sim";
-		 String name="/simple/CoroutineSample.sim";
+		// String name="/simple/CoroutineSample.sim";
 		// String name="/simple/CoroutineSample2.sim";
 		// String name="/simple/dates.sim";
 		// String name="/simple/testdates.sim";

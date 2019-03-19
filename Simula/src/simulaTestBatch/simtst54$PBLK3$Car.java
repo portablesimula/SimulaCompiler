@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 45
 package simulaTestBatch;
-// Simula-Beta-0.3 Compiled at Tue Mar 12 21:45:49 CET 2019
+// Simula-Beta-0.3 Compiled at Wed Mar 13 15:32:33 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class simtst54$PBLK3$Car extends Process$ {

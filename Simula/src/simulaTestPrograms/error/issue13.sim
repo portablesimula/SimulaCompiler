@@ -1,0 +1,39 @@
+% Issue 13 Fra Stein
+% Tillater subklasser på dypere blokknivå.
+% Det ser ut til at den tillater subklasse på dypere blokk nivå enn superklassen,
+% og litt dotting og QUA'ing rundt det går også gjennom.
+% Programmet under går nemlig fint:
+%
+% Legger til en global variabel og bruker den - da går det galt
+
+begin
+   integer global;
+   
+   class A;
+   begin
+      integer k;
+
+      procedure P;
+      begin
+        integer i;
+        A class C;   ! Subclass on a deeper block level not allowed ;
+        begin 
+           integer j;
+           j:= 5;
+           global:=55;
+        end C;
+
+        ref(A) rA; 
+        rA:- new C;
+        outint( rA qua C.j, 9); outimage;
+      end P;
+      
+      global:=11;
+   end A;
+
+   ref(A)rAx;
+   rAx:- new A;
+   rAx.P;
+
+   outtext("Kom helt til slutten!"); outimage;
+end

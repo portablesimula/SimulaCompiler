@@ -125,9 +125,9 @@ public final class Constant extends Expression {
 	    }
 	    if(x instanceof Variable) {
 		    Variable var=(Variable)x;
-//		    Meaning meaning=var.meaning;
+		    //Util.println("ArithmeticOperation.getNumber: Global.currentScope="+Global.currentScope);
 		    Meaning meaning=Global.currentScope.findMeaning(var.identifier);
-//		    //Util.println("ArithmeticOperation.getNumber: meaning="+meaning);
+		    //Util.println("ArithmeticOperation.getNumber: meaning="+meaning);
 		    if(meaning==null) return(null);
 		    Declaration declaredAs=meaning.declaredAs;
 		    //Util.println("ArithmeticOperation.getNumber: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());

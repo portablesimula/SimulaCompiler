@@ -68,9 +68,7 @@ public final class ConnectionBlock extends DeclarationScope {
 	}
 
 	public Meaning findMeaning(String identifier) {
-		// if(identifier.equalsIgnoreCase("ELT"))
-		// Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+")
-		// classDeclaration="+classDeclaration.edScopeChain());
+		// if(identifier.equalsIgnoreCase("ELT")) Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+") classDeclaration="+classDeclaration);
 		if (classDeclaration == null && Global.duringParsing)
 			return (null); // Still in Pass1(Parser)
 		Meaning result = classDeclaration.findRemoteAttributeMeaning(identifier);

@@ -144,6 +144,7 @@ public final class RunFullTestBatch {
 		names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.
 		names.add("simtst101.sim"); // OK: Test Standard Procedure 'sourceline'.
+		names.add("simtst102.sim"); // OK: GOTO out of an operating Process
 		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 

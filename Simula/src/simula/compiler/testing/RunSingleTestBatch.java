@@ -92,7 +92,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst51.sim"); // OK:  Test 'inner'.
 		//names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
 		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		names.add("simtst54.sim");  // OK: A VERY Simple Simulation
+		//names.add("simtst54.sim");  // OK: A VERY Simple Simulation
 		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
 		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
@@ -145,8 +145,8 @@ public final class RunSingleTestBatch {
 		//names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
-		//names.add("simtst102.sim"); // OK: Test 1-dim Array by value.
-		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
+		//names.add("simtst102.sim"); // OK: GOTO out of an operating Process
+		names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 
 		// Set options and tracing.

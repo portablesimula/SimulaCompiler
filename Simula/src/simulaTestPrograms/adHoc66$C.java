@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 6
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sat Mar 09 13:41:37 CET 2019
+// Simula-Beta-0.3 Compiled at Sun Mar 17 12:43:09 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class adHoc66$C extends CLASS$ {

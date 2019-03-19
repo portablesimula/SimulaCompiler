@@ -14,6 +14,8 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
+import simula.runtime.loom.ThreadUtils;
+
 /**
  * 
  * @author Øystein Myhre Andersen
@@ -24,13 +26,11 @@ public final class RT {
 	private static final boolean TRACING=true;//false;//true;
 	public  static boolean DEBUGGING=false;//true;
 	
-	public static final boolean USE_LOOM=false;//true;//false;
+	public static final boolean USE_LOOM=true;//false;
   
 	public static RTConsole console;
   
 	public static int numberOfEditOverflows;
-
-	public static TerminateException EXIT_EXCEPTION$ = new TerminateException("EXIT");
 
 	public static class Option {
 		public static boolean VERBOSE = false;//true;
@@ -39,7 +39,6 @@ public final class RT {
 		public static boolean BLOCK_TRACING = false;// true;
 		public static boolean GOTO_TRACING = false;// true;
 		public static boolean THREAD_TRACING = false;// true;
-//		public static boolean THREADSWAP_TRACING = false;// true;
 		public static boolean LOOM_TRACING = false;// true;
 		public static boolean QPS_TRACING = false; // true;
 		public static boolean SML_TRACING = false; // true;
@@ -48,7 +47,6 @@ public final class RT {
 	public static void setRuntimeOptions(String[] args) {
 
 		for(int i=0;i<args.length;i++) {
-			//System.out.println("RT.setRuntimeOptions: arg="+args[i]);
 			String arg=args[i];
 			if(arg.equalsIgnoreCase("-VERBOSE")) Option.VERBOSE=true;
 			if(arg.equalsIgnoreCase("-DEBUGGING")) DEBUGGING=true;
@@ -57,7 +55,6 @@ public final class RT {
 			if(arg.equalsIgnoreCase("-BLOCK_TRACING")) Option.BLOCK_TRACING=true;
 			if(arg.equalsIgnoreCase("-GOTO_TRACING")) Option.GOTO_TRACING=true;
 			if(arg.equalsIgnoreCase("-THREAD_TRACING")) Option.THREAD_TRACING=true;
-//			if(arg.equalsIgnoreCase("-THREADSWAP_TRACING")) Option.THREADSWAP_TRACING=true;
 			if(arg.equalsIgnoreCase("-LOOM_TRACING")) Option.LOOM_TRACING=true;
 			if(arg.equalsIgnoreCase("-QPS_TRACING")) Option.QPS_TRACING=true;
 			if(arg.equalsIgnoreCase("-SML_TRACING")) Option.SML_TRACING=true;
@@ -74,20 +71,11 @@ public final class RT {
 		System.out.println("BLOCK_TRACING="+Option.BLOCK_TRACING);
 		System.out.println("GOTO_TRACING="+Option.GOTO_TRACING);
 		System.out.println("THREAD_TRACING="+Option.THREAD_TRACING);
-//		System.out.println("THREADSWAP_TRACING="+Option.THREADSWAP_TRACING);
 		System.out.println("LOOM_TRACING="+Option.LOOM_TRACING);
 		System.out.println("QPS_TRACING="+Option.QPS_TRACING);
 		System.out.println("SML_TRACING="+Option.SML_TRACING);
 	}
 	
-    
-	// ************************************************************
-	// *** TerminateException
-	// ************************************************************
-	static class TerminateException extends RuntimeException
-	{ static final long serialVersionUID=1234;
-	  public TerminateException(String msg) { super(msg); }
-	}
 
 	public static void println(String s) {
 		if(console!=null) console.write(s+'\n');
@@ -110,7 +98,7 @@ public final class RT {
 	}
 
 	public static void NoneCheck(Object x) {
-		if (x == null && !RTObject$.SHUTING_DOWN$)
+		if (x == null) // && !Continuation.SHUTING_DOWN$)
 			throw new RuntimeException("NONE-CHECK FAILED");
 	}
   
@@ -148,7 +136,7 @@ public final class RT {
 				char c = sysin.inchar();
 				if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
 					println("STACK-TRACE");
-					printStackTrace();
+					ThreadUtils.printStackTrace();
 					printSimulaStackTrace(2);
 				}
 			}
@@ -197,96 +185,17 @@ public final class RT {
 	// *********************************************************************
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
-
-    public static void testCurrentThread() {
-    	if(Thread.currentThread()!=RTObject$.CUR$.THREAD$) {
-    		printThreadList(true);
-    	}
-    }
   
 	public static void printStaticChain(RTObject$ ins) {
 		RTObject$ x = ins;
 		println("*** STATIC CHAIN:");
 		while (x != null) {
 			boolean qps = x.isQPSystemBlock();
-//			boolean dab = x.isDetachable();
 			boolean dau = x.isDetachUsed();
-//			println(" - " + x + "[QPSystemBlock=" + qps + ",detachable=" + dab + ",state=" + x.STATE$);
 			println(" - " + x.edObjectIdent() + "[QPSystemBlock=" + qps + ",detachUsed=" + dau + ",state=" + x.STATE$+']');
 			x = x.SL$;
 		}
 
-	}
-	
-
-	// **********************************************************************
-	// *** Debugging utility: checkMaxOneRunableSimulaThread
-	// **********************************************************************
-	public static synchronized void checkMaxOneRunableSimulaThread() {
-		Thread[] t = new Thread[50];
-		Thread[] runnable=new Thread[50];
-		int i = Thread.enumerate(t);
-		int nRun=0;
-		for (int j = 0; j < i; j++) {
-			Thread T = t[j];
-			if(T.getState()==Thread.State.RUNNABLE) {
-				runnable[nRun]=T;
-				nRun++;
-			}
-		}
-		if(nRun!=1) {
-			RT.println("*** CHECKING MAX ONE RUNABLE SIMULA THREAD: ***");
-			RT.println("IMPOSSIBLE SITUATION: Number of RUNNABLE SimulaTherads = "+nRun);
-			for(int k=0;k<nRun;k++)
-			{ Thread T=runnable[k];
-				String msg="  - " + T;
-				if (T == Thread.currentThread())
-					msg=msg+" = CurrentThread";
-				if (T == RTObject$.CUR$.THREAD$)
-					msg=msg+" = CUR$.THREAD$";
-				RT.println(msg+"   STATE="+T.getState());
-				
-			}
-			printThreadList(true);
-			//Util.BREAK("IMPOSSIBLE SITUATION: Number of RUNNABLE SimulaTherads = "+nRun);
-			System.exit(-1);
-		}
-		//RT.ASSERT(Thread.currentThread()==CUR$.THREAD$,"Invariant: Thread.currentThread()==CUR$.THREAD$");
-	}  
-
-	
-	// **********************************************************************
-	// *** Debugging utility: Procedure printThreadList
-	// **********************************************************************
-	public static void printThreadList() {
-		printThreadList(false);
-	}
-	public static synchronized void printThreadList(boolean withStackTrace) {
-		Thread[] t = new Thread[50];
-		int i = Thread.enumerate(t);
-		RT.println("ACTIVE THREAD LIST:");
-		for (int j = 0; j < i; j++) {
-			Thread T = t[j];
-			String msg="  - " + T;
-			if (T == Thread.currentThread())
-				msg=msg+" = CurrentThread";
-			if (T == RTObject$.CUR$.THREAD$)
-				msg=msg+" = CUR$.THREAD$";
-			RT.println(msg+"   STATE="+T.getState());
-			if(withStackTrace) {
-				printSimulaStackTrace(T,0);
-				RT.println("");
-			}
-		}
-		//RT.ASSERT(Thread.currentThread()==CUR$.THREAD$,"Invariant: Thread.currentThread()==CUR$.THREAD$");
-		RT.println("-----------------------------------------------------------------------------------------------");
-	}  
-
-	public static void printStackTrace() {
-		StackTraceElement stackTraceElement[] = Thread.currentThread().getStackTrace();
-		int n = stackTraceElement.length;
-		for (int i = 2; i < n; i++)
-			println("   at "+stackTraceElement[i]);
 	}
 	
 	public static void printSimulaStackTrace(Thread thread,int start) {

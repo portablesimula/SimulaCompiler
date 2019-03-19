@@ -91,6 +91,7 @@ public final class ArithmeticOperation extends Expression
 //	  Util.BREAK("ArithmeticOperation.NEW: lhs="+lhs+", QUAL="+lhs.getClass().getSimpleName());
 //	  Util.BREAK("ArithmeticOperation.NEW: opr="+opr);
 //	  Util.BREAK("ArithmeticOperation.NEW: rhs="+rhs+", QUAL="+rhs.getClass().getSimpleName());
+
 	  Number lhn=Constant.getNumber(lhs);
 	  if(lhn!=null) {
 		  //Util.BREAK("ArithmeticOperation.NEW: lhn="+lhn+", QUAL="+lhn.getClass().getSimpleName());

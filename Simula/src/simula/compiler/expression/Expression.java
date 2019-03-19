@@ -189,6 +189,7 @@ public abstract class Expression extends SyntaxClass
 	 Expression expr=parseUNIMULDIV();
      while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 	      KeyWord opr=Parser.prevToken.getKeyWord();
+//    	  expr=new ArithmeticOperation(expr,opr,parseMULDIV());
     	  expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseMULDIV());
 	 }
 	 return(expr);

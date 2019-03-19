@@ -1,6 +1,6 @@
 // JavaLine 1 ==> SourceLine 15
 package simulaTestBatch;
-// Simula-Beta-0.3 Compiled at Sat Mar 09 10:18:35 CET 2019
+// Simula-Beta-0.3 Compiled at Sun Mar 17 12:36:45 CET 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class simtst66$Innfil extends CLASS$ {

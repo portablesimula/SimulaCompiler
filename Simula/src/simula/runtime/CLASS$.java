@@ -7,7 +7,11 @@
  */
 package simula.runtime;
 
+import java.lang.RuntimeException;
+import java.lang.Thread;
+
 import simula.runtime.loom.Continuation;
+import simula.runtime.loom.ThreadUtils;
 
 /**
 * 
@@ -21,23 +25,21 @@ public abstract class CLASS$ extends BASICIO$ {
 	}
     
 	// *********************************************************************
-	// *** THREAD: START QPS COMPONENT IN A SEPARATE THREAD
+	// *** START QPS COMPONENT IN A SEPARATE THREAD/CONTINUATION
 	// *********************************************************************
 	protected void START(RTObject$ ins) {
 		if(RT.USE_LOOM) {
-	    	//System.out.println("CLASS$.START_CONT$: ");
-        	CONT$=new Continuation(continuationScope,this);
-        	CONT$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
-        	CONT$.run();
-        	// Return here when Continuation is Yield
-        	//System.out.println("CLASS$.START_CONT$: Continuation RETURNS: "+ins.edObjectIdent());
+        	ins.CONT$=new Continuation(continuationScope,this);
+        	if(RT.Option.QPS_TRACING) RT.TRACE("START "+ins.edObjectIdent());
+        	RT.ASSERT(CUR$==ins,"CLASS$.START:Invariant-1");
+        	swapContinuations();
 		} else {
-			RT.ASSERT(CUR$.THREAD$==Thread.currentThread(),"START_THREAD:Invariant-1");
+			RT.ASSERT(CUR$.THREAD$==Thread.currentThread(),"CLASS$.START:Invariant-2");
 			// Start QPS Component in a new Thread
 			ins.THREAD$=new Thread(ins,ins.edObjectIdent());
 			ins.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
-			// if(RT.Option.THREAD_TRACING) RT.TRACE("Start "+ins.THREAD$);
-			START_THREAD(ins.THREAD$);
+			if(RT.Option.QPS_TRACING) RT.TRACE("START "+ins.edObjectIdent());
+			ThreadUtils.START_THREAD(ins.THREAD$);
 		}
 	}
 
@@ -99,7 +101,7 @@ public abstract class CLASS$ extends BASICIO$ {
 	  RTObject$ main;  //  The head of the main component and also
 		               //  the head of the quasi-parallel system.
 	  ins=this;
-	  if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
+//	  if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
 	  RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
 	  //  Detach on a prefixed block is a no-operation.
 	  if(!CUR$.isQPSystemBlock())
@@ -131,9 +133,10 @@ public abstract class CLASS$ extends BASICIO$ {
 		    dl=ins.DL$; ins.DL$=CUR$; CUR$=dl;
 		}
 		RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
-	    if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
+//	    if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
+	    if(RT.Option.QPS_TRACING) RT.TRACE("DETACH "+this.edObjectIdent()+" ==> "+CUR$.edObjectIdent());
 		if (RT.USE_LOOM) Continuation.yield(continuationScope);
-	    else swapThreads(CUR$.THREAD$);
+	    else ThreadUtils.SWAP_THREAD(CUR$.THREAD$);
 	  }
 	}
 

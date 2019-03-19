@@ -363,7 +363,7 @@ public class ClassDeclaration extends BlockDeclaration
   // *** Utility: findVisibleAttributeMeaning
   // ***********************************************************************************************
   public Meaning findVisibleAttributeMeaning(String ident)
-  { //if(ident.equalsIgnoreCase("p")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
+  { //if(ident.equalsIgnoreCase("pos")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this+", QUAL="+this.getClass().getSimpleName());
 	boolean searchBehindHidden=false;
 	ClassDeclaration scope=this;
     Declaration decl=scope.findLocalAttribute(ident);

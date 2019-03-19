@@ -8,7 +8,7 @@
 %  WRITTEN BY:  MYH   28/07-2018
 % ==============================================================================
 BEGIN
-   Boolean verbose=FALSE;
+   Boolean verbose=TRUE; !FALSE;
    Boolean found_error ;
    
    integer n;

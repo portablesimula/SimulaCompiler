@@ -1,5 +1,22 @@
 Simula Issues
 
+OPEN Issue 16: Fra Øystein
+Problemer med å evaluere Constant-expression
+
+Analyse: 
+
+begin
+
+inspect new infile(fileName) do
+simulation begin
+    integer k=pos-1;
+
+    setpos(pos-1);
+
+end;
+end;
+===============================================================================
+
 CLOSED Issue 15: Fra Karel
 Identifier 'null' blir ikke konvertert til en lovlig Java-Identifier.
 Analyse: 'null' er ikke i lista over keyword i Java. ( i Java er 'null' en
