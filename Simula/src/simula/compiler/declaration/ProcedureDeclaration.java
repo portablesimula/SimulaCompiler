@@ -7,6 +7,10 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
@@ -23,29 +27,16 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ProcedureDeclaration extends BlockDeclaration {
-	public Vector<Parameter> parameterList=new Vector<Parameter>();
+public class ProcedureDeclaration extends BlockDeclaration implements Externalizable {
+	public Vector<Parameter> parameterList = new Vector<Parameter>();
 	public VirtualMatch myVirtual; // Set during doChecking
 
-  
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	public ProcedureDeclaration(String identifier, BlockKind blockKind) {
+	public ProcedureDeclaration(final String identifier,final BlockKind blockKind) {
 		super(identifier);
 		this.blockKind = blockKind;
-	}
-
-	// ***********************************************************************************************
-	// *** Utility: addParameter
-	// ***********************************************************************************************
-	public void addParameter(Parameter parameter) {
-		for (Parameter par : parameterList)
-			if (par.identifier.equalsIgnoreCase(parameter.identifier)) {
-				Util.error("Parameter already defined: " + identifier);
-				return;
-			}
-		parameterList.add(parameter);
 	}
 
 	// ***********************************************************************************************
@@ -68,98 +59,79 @@ public class ProcedureDeclaration extends BlockDeclaration {
 	 * ProcedureIdentifier = Identifier
 	 * </pre>
 	 */
-	public static ProcedureDeclaration doParseProcedureDeclaration(Type type) {
+	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
 		BlockKind blockKind = (Option.standardClass) ? BlockKind.StaticMethod : BlockKind.Procedure;
 		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
 		block.type = type;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
-		BlockParser.doParse(block);
+		BlockParser.doParseProcedureDeclaration(block);
 		block.lastLineNumber = Global.sourceLineNumber;
-		if (Option.TRACE_PARSE)
-			Util.TRACE("END ProcedureDeclaration: " + block);
+		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
 		// Debug.BREAK("END ProcedureDeclaration: ");
 		Global.currentScope = block.declaredIn;
 		return (block);
 	}
 
-  // ***********************************************************************************************
-  // *** Checking
-  // ***********************************************************************************************
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
- 	Global.sourceLineNumber=lineNumber;
- 	if(blockKind==BlockKind.ContextFreeMethod) externalIdent=this.identifier; // TODO: Sjekk DETTE
- 	if(blockKind==BlockKind.StaticMethod) externalIdent=this.identifier;
- 	if(blockKind==BlockKind.MemberMethod) externalIdent=this.identifier;
- 	else if(externalIdent==null) externalIdent=edJavaClassName();
-
-	currentBlockLevel++; blockLevel=currentBlockLevel;
-//	Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-//	Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-//  Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
-    Global.currentScope=this;
-    
-    int prfx=0;//prefixLevel();
-    //Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
-    
-    if(blockKind==BlockKind.Procedure)
-       for(Parameter par:this.parameterList) par.setExternalIdentifier(prfx);
-    
-    for(Declaration par:this.parameterList) par.doChecking();
-    for(Declaration dcl:declarationList) dcl.doChecking();
-    for(Statement stm:statements) stm.doChecking();
-    doCheckLabelList(prfx);
-	VirtualSpecification virtualSpec = getVirtualSpecification();
-	if(virtualSpec!=null) // This Procedure is a Virtual Match
-	{ myVirtual=new VirtualMatch(virtualSpec,this);
-	  ClassDeclaration decl=(ClassDeclaration)declaredIn;
-	  decl.virtualMatchList.add(myVirtual); 
-	  if(decl==virtualSpec.specifiedIn) virtualSpec.hasDefaultMatch=true;
+	// ***********************************************************************************************
+	// *** Utility: addParameter
+	// ***********************************************************************************************
+	public void addParameter(final Parameter parameter) {
+		for (Parameter par : parameterList)
+			if (par.identifier.equalsIgnoreCase(parameter.identifier)) {
+				Util.error("Parameter already defined: " + identifier);
+				return;
+			}
+		parameterList.add(parameter);
 	}
-    Global.currentScope=declaredIn;
-    currentBlockLevel--;
-    SET_SEMANTICS_CHECKED();
-  }
-  
-    // ***********************************************************************************************
-    // *** Utility: getVirtualSpecification
-    // ***********************************************************************************************
-	public VirtualSpecification getVirtualSpecification() {
-		//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification:");
-		if (declaredIn instanceof ClassDeclaration) {
-			ClassDeclaration scope=(ClassDeclaration) declaredIn;
-			VirtualSpecification virtSpec = scope.searchVirtualSpecList(identifier);
-			if (virtSpec != null) {
-				//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: result=" + virtSpec);
-				return (virtSpec);
-			}
-			scope = scope.getPrefixClass();
 
-			SEARCH: while (scope != null) {
-				HiddenSpecification hdn = scope.searchHiddenList(identifier);
-				//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: hdn=" + hdn);
-				if (hdn != null) {
-					scope = hdn.getScopeBehindHidden();
-					continue SEARCH;
-				}
-				virtSpec = scope.searchVirtualSpecList(identifier);
-				if (virtSpec != null) {
-					//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: result=" + virtSpec);
-					return (virtSpec);
-				}
-				scope = scope.getPrefixClass();
-			}
+	// ***********************************************************************************************
+	// *** Checking
+	// ***********************************************************************************************
+	public void doChecking() {
+		if (IS_SEMANTICS_CHECKED())	return;
+		Global.sourceLineNumber = lineNumber;
+		if (blockKind == BlockKind.ContextFreeMethod) externalIdent = this.identifier;
+		if (blockKind == BlockKind.StaticMethod) externalIdent = this.identifier;
+		if (blockKind == BlockKind.MemberMethod) externalIdent = this.identifier;
+		else if (externalIdent == null)	externalIdent = edJavaClassName();
+
+		currentBlockLevel++;
+		blockLevel = currentBlockLevel;
+		// Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
+		// Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
+		//Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
+		Global.currentScope = this;
+
+		int prfx = 0;// prefixLevel();
+		// Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
+
+		if (blockKind == BlockKind.Procedure)
+			for (Parameter par : this.parameterList) par.setExternalIdentifier(prfx);
+		for (Declaration par : this.parameterList) par.doChecking();
+		for (Declaration dcl : declarationList)	dcl.doChecking();
+		for (Statement stm : statements) stm.doChecking();
+		doCheckLabelList(null);
+		VirtualSpecification virtualSpec = VirtualSpecification.getVirtualSpecification(this);
+		if (virtualSpec != null) {
+			//Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: virtualSpec="+virtualSpec);
+			// This Procedure is a Virtual Match
+			myVirtual = new VirtualMatch(virtualSpec, this);
+			ClassDeclaration decl = (ClassDeclaration) declaredIn;
+			decl.virtualMatchList.add(myVirtual);
+//			if (decl == virtualSpec.specifiedIn) virtualSpec.hasDefaultMatch = true;
+			if (decl == virtualSpec.declaredIn) virtualSpec.hasDefaultMatch = true;
 		}
-		//Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification: NOT FOUND");
-		return (null);
+		Global.currentScope = declaredIn;
+		currentBlockLevel--;
+		SET_SEMANTICS_CHECKED();
 	}
-  
-    // ***********************************************************************************************
-    // *** Utility: findVisibleAttributeMeaning
-    // ***********************************************************************************************
-	public Meaning findVisibleAttributeMeaning(String ident) {
-//		if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
-//		if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
+
+	// ***********************************************************************************************
+	// *** Utility: findVisibleAttributeMeaning
+	// ***********************************************************************************************
+	public Meaning findVisibleAttributeMeaning(final String ident) {
+		// if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
+		// if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
 		for (Declaration declaration : declarationList)
 			if (ident.equalsIgnoreCase(declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
@@ -176,41 +148,32 @@ public class ProcedureDeclaration extends BlockDeclaration {
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
 	public void doJavaCoding() {
-		//Util.BREAK("ProcedureDeclaration.doJavaCoding: " + identifier + ", BlockKind=" + blockKind);
+		// Util.BREAK("ProcedureDeclaration.doJavaCoding: " + identifier + ", BlockKind=" + blockKind);
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
 		switch (blockKind) {
-		case ContextFreeMethod:
-			doMethodJavaCoding("static ",false);
-			break; // Procedure coded as a Java Method.
-		case MemberMethod:
-			doMethodJavaCoding("",true);
-			break; // Procedure coded as a Java Method.
-		case StaticMethod:
-			doMethodJavaCoding("static ",true);
-			break; // Procedure coded as a Java Method.
-		case Procedure:
-			doProcedureCoding();
-			break;
-		default:
-			Util.FATAL_ERROR("Impossible Situation !");
+		case ContextFreeMethod:	doMethodJavaCoding("static ", false); break;
+		case MemberMethod: doMethodJavaCoding("", true); break;
+		case StaticMethod: doMethodJavaCoding("static ", true); break;
+		case Procedure:	doProcedureCoding(); break;
+		default: Util.FATAL_ERROR("Impossible Situation !");
 		}
 	}
-    
+
 	// ***********************************************************************************************
 	// *** Coding: METHOD -- Generate Inline Method code for Procedure.
 	// ***********************************************************************************************
 	// Generate Inline Method code for Procedure.
-	private void doMethodJavaCoding(String modifier,boolean addStaticLink) {
+	private void doMethodJavaCoding(final String modifier,final boolean addStaticLink) {
 		Global.sourceLineNumber = lineNumber;
 		Util.BREAK("ProcedureDeclaration.doMethodJavaCoding: " + identifier);
 		ASSERT_SEMANTICS_CHECKED(this);
 		Global.currentScope = this;
 		String line = "public " + modifier + ((type == null) ? "void" : type.toJavaType());
-		line = line + ' ' + getJavaIdentifier() + ' ' + edFormalParameterList(true,addStaticLink);
+		line = line + ' ' + getJavaIdentifier() + ' ' + edFormalParameterList(true, addStaticLink);
 		JavaModule.code(line);
 		if (type != null) {
-			JavaModule.code("// Declare return value as variable");
+			JavaModule.debug("// Declare return value as variable");
 			JavaModule.code(type.toJavaType() + ' ' + "RESULT$" + '=' + type.edDefaultValue() + ';');
 		}
 		for (Declaration decl : labelList) decl.doJavaCoding();
@@ -221,197 +184,183 @@ public class ProcedureDeclaration extends BlockDeclaration {
 		Global.currentScope = declaredIn;
 	}
 
-  // ***********************************************************************************************
-  // *** Coding Utility: edFormalParameterList
-  // ***********************************************************************************************
-  // Also used by subclass StandardProcedure
-  public String edFormalParameterList(boolean isInlineMethod,boolean addStaticLink)   // Accumulates through prefix-chain when class
-  { StringBuilder s=new StringBuilder(); s.append('(');
-    boolean withparams=false;
-    if(addStaticLink) {
-    	String SL="RTObject$";
-    	//String SL=this.declaredIn.externalIdent;
-    	s.append(SL+" SL$"); withparams=true;
-    }
-    for(Declaration par:this.parameterList)
-    { if(withparams) s.append(','); withparams=true;
-      s.append(((Parameter)par).toJavaType()).append(' ');
-      if(isInlineMethod) s.append(par.identifier);
-      else s.append('s').append(par.externalIdent); // s to indicate Specified Parameter
-    }
-    s.append(") {");
-    return(s.toString());
-  }
-
-  
-  // ***********************************************************************************************
-  // *** Coding: PROCEDURE
-  // ***********************************************************************************************
-  // Output .java file for Procedure.
-  private void doProcedureCoding()
-  {	Global.sourceLineNumber=lineNumber;
-    //Util.BREAK("ProcedureDeclaration.doProcedureCoding: "+identifier);
-	ASSERT_SEMANTICS_CHECKED(this);
-	if(this.isPreCompiled) return;
-	JavaModule javaModule=new JavaModule(this);
-	Global.javaModules.add(javaModule); 
-	javaModule.openJavaOutput();
-	Global.currentScope=this;
-	JavaModule.code("@SuppressWarnings(\"unchecked\")");
-	JavaModule.code("public final class "+getJavaIdentifier()+" extends BASICIO$ {");
-	doPrototypeCoding();
-	if(blockKind==BlockKind.Procedure  && type!=null)
-	{ JavaModule.code("// Declare return value as attribute");
-	  JavaModule.code("public "+type.toJavaType()+' '+"RESULT$;");
-	  JavaModule.code("public Object RESULT$() { return(RESULT$); }");
+	// ***********************************************************************************************
+	// *** Coding Utility: edFormalParameterList
+	// ***********************************************************************************************
+	// Also used by subclass StandardProcedure
+	public String edFormalParameterList(final boolean isInlineMethod,final boolean addStaticLink) {
+		// Accumulates through prefix-chain when class
+		StringBuilder s = new StringBuilder();
+		s.append('(');
+		boolean withparams = false;
+		if (addStaticLink) {
+			String SL = "RTObject$";
+			// String SL=this.declaredIn.externalIdent;
+			s.append(SL + " SL$");
+			withparams = true;
+		}
+		for (Declaration par : this.parameterList) {
+			if (withparams)	s.append(',');
+			withparams = true;
+			s.append(((Parameter) par).toJavaType()).append(' ');
+			if (isInlineMethod)
+				 s.append(par.identifier);
+			else s.append('s').append(par.externalIdent); // s to indicate Specified Parameter
+		}
+		s.append(") {");
+		return (s.toString());
 	}
 
-	JavaModule.code("// Declare parameters as attributes");
-	boolean hasParameter=false;
-	for(Parameter par:parameterList)
-	{ String tp=par.toJavaType(); hasParameter=true;
-	  JavaModule.code("public "+tp+' '+par.externalIdent+';');
+	// ***********************************************************************************************
+	// *** Coding: PROCEDURE
+	// ***********************************************************************************************
+	private void doProcedureCoding() {
+		Global.sourceLineNumber = lineNumber;
+		// Util.BREAK("ProcedureDeclaration.doProcedureCoding: "+identifier);
+		ASSERT_SEMANTICS_CHECKED(this);
+		if (this.isPreCompiled)	return;
+		JavaModule javaModule = new JavaModule(this);
+		Global.currentScope = this;
+		JavaModule.code("@SuppressWarnings(\"unchecked\")");
+		JavaModule.code("public final class " + getJavaIdentifier() + " extends BASICIO$ {");
+		JavaModule.debug("// ProcedureDeclaration: BlockKind=" + blockKind + ", BlockLevel=" + blockLevel
+					+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
+					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
+		JavaModule.code("public int prefixLevel() { return(0); }");
+		if (isQPSystemBlock())
+			JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
+		if (blockKind == BlockKind.Procedure && type != null) {
+			JavaModule.debug("// Declare return value as attribute");
+			JavaModule.code("public " + type.toJavaType() + ' ' + "RESULT$;");
+			JavaModule.code("public Object RESULT$() { return(RESULT$); }");
+		}
+		JavaModule.debug("// Declare parameters as attributes");
+		boolean hasParameter = false;
+		for (Parameter par : parameterList) {
+			String tp = par.toJavaType();
+			hasParameter = true;
+			JavaModule.code("public " + tp + ' ' + par.externalIdent + ';');
+		}
+		if (!labelList.isEmpty()) {
+			JavaModule.debug("// Declare local labels");
+			for (Declaration decl : labelList) decl.doJavaCoding();
+		}
+		JavaModule.debug("// Declare locals as attributes");
+		for (Declaration decl : declarationList) decl.doJavaCoding();
+		if (blockKind == BlockKind.Procedure && hasParameter) doCodePrepareFormal();
+		doCodeConstructor();
+		codeProcedureBody();
+		javaModule.codeProgramInfo();
+		JavaModule.code("}", "End of Procedure");
+		Global.currentScope = declaredIn;
+		javaModule.closeJavaOutput();
 	}
-	if(!labelList.isEmpty())
-	{ JavaModule.code("// Declare local labels");
-	  //JavaModule.code("   public int JTX$;"); // Moved to RTObject$
-	  for(Declaration decl:labelList) decl.doJavaCoding();
+
+	// ***********************************************************************************************
+	// *** Coding Utility: doCodeConstructor
+	// ***********************************************************************************************
+	private void doCodeConstructor() {
+		JavaModule.debug("// Normal Constructor");
+		JavaModule.code("public " + getJavaIdentifier() + edFormalParameterList(false, true));
+		JavaModule.code("super(SL$);");
+		JavaModule.debug("// Parameter assignment to locals");
+		for (Parameter par : parameterList)
+			JavaModule.code("this." + par.externalIdent + " = s" + par.externalIdent + ';');
+		JavaModule.code("BBLK();");
+		JavaModule.debug("// Declaration Code");
+		JavaModule.debug("TRACE_BEGIN_DCL$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
+		for (Declaration decl : declarationList) decl.doDeclarationCoding();
+		JavaModule.code("STM$();");
+		JavaModule.code("}");
 	}
-	JavaModule.code("// Declare locals as attributes");
-	for(Declaration decl:declarationList) decl.doJavaCoding();
-	if(blockKind==BlockKind.Procedure && hasParameter) doCodePrepareFormal();
-	doCodeConstructor();
-	codeProcedureBody();
-	javaModule.codeProgramInfo();
-	JavaModule.code("}"); // End of Procedure
-	Global.currentScope=declaredIn;
-	javaModule.closeJavaOutput();
-  }
-  
-  
-  // ***********************************************************************************************
-  // *** Coding: doPrototypeCoding  --  This code instead of traditional Prototype
-  // ***********************************************************************************************
-  private void doPrototypeCoding()
-  {	//String packetName=SimulaCompiler.packetName;
-	JavaModule.code("// ProcedureDeclaration: BlockKind="+blockKind+", BlockLevel="+blockLevel
-			  +", firstLine="+lineNumber+", lastLine="+lastLineNumber
-			  +", hasLocalClasses="+((hasLocalClasses)?"true":"false")
-	          +", System="+((isQPSystemBlock())?"true":"false")
-//		      +", detachUsed="+((detachUsed)?"true":"false")
-		      );
-	JavaModule.code("public int prefixLevel() { return(0); }");
-	if(isQPSystemBlock())
-	JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
-//	if(isDetachUsed())
-//	JavaModule.code("public boolean isDetachUsed() { return(true); }");
-  }
-  
-  
-  // ***********************************************************************************************
-  // *** Coding Utility: doCodeConstructor
-  // ***********************************************************************************************
-  private void doCodeConstructor()
-  {	JavaModule.code("// Normal Constructor");
-	JavaModule.code("public "+getJavaIdentifier()+edFormalParameterList(false,true));
-	JavaModule.code("super(SL$);");
-	JavaModule.code("// Parameter assignment to locals");
-	for(Parameter par:parameterList)
-		  JavaModule.code("this."+par.externalIdent+" = s"+par.externalIdent+';');	
-	
-	JavaModule.code("BBLK();");
-	JavaModule.code("// Declaration Code");
-    JavaModule.code("TRACE_BEGIN_DCL$(\""+identifier+"\","+Global.sourceLineNumber+");");
-	for(Declaration decl:declarationList) decl.doDeclarationCoding();
-	JavaModule.code("STM$();");		
-	JavaModule.code("} // End of Constructor");
-  }
-  
-  
-  // ***********************************************************************************************
-  // *** Coding Utility: doCodePrepareFormal
-  // ***********************************************************************************************
-  private void doCodePrepareFormal()
-  { JavaModule.code("// Parameter Transmission in case of Formal/Virtual Procedure Call");
-  	JavaModule.code("private int $npar=0; // Number of actual parameters transmitted.");
-  	JavaModule.code("public "+getJavaIdentifier()+" setPar(Object param) {");
-  	JavaModule.code("//Util.BREAK(\"CALL "+getJavaIdentifier()+".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$npar+\", staticLink=\"+SL$);");
-  	JavaModule.code("try {");
-  	JavaModule.code("switch($npar++) {");
-  	int npar=0;
-  	for(Parameter par:parameterList)
-  	{ String tp=par.toJavaType();
-  	  String typeValue;
-  	  if(par.mode==Parameter.Mode.name) typeValue=("("+tp+")param");
-  	  else if(par.kind==Parameter.Kind.Array) {
-  		  typeValue=("arrayValue(param)");
-  		  if(par.mode==Parameter.Mode.value) typeValue=typeValue+".COPY()";
-  	  }
-  	  else if(par.kind==Parameter.Kind.Procedure) typeValue=("procValue(param)");
-  	  else if(par.kind!=Parameter.Kind.Simple) typeValue=("("+tp+")param");
-  	  else if(par.type.isArithmeticType()) typeValue=(tp+"Value(param)");
-  	  else typeValue=("("+tp+")objectValue(param)");
-  	  JavaModule.code("case "+(npar++)+": "+par.externalIdent+"="+typeValue+"; break;");
-    }
-  	JavaModule.code("default: throw new RuntimeException(\"Wrong number of parameters\");");
-  	JavaModule.code("}");
-  	JavaModule.code("}");
-  	JavaModule.code("catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+$npar+\" \"+param,e);}");
-  	JavaModule.code("return(this);");
-  	JavaModule.code("}");
-  	JavaModule.code("// Constructor in case of Formal/Virtual Procedure Call");
-  	JavaModule.code("public "+getJavaIdentifier()+"(RTObject$ SL$)");
-  	JavaModule.code("{ super(SL$); }");
-  }
-  
-  // ***********************************************************************************************
-  // *** Coding Utility: codeProcedureBody  -- Redefined in SwitchDeclaration
-  // ***********************************************************************************************
-  public void codeProcedureBody()
-  {	JavaModule.code("// Procedure Statements");
-    JavaModule.code("public "+getJavaIdentifier()+" STM$() {");
-	JavaModule.code("TRACE_BEGIN_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
-   	codeSTMBody();
-	JavaModule.code("TRACE_END_STM$(\""+identifier+"\","+Global.sourceLineNumber+");");
-    JavaModule.code("EBLK();");
-    JavaModule.code("return(this);");
-    JavaModule.code("} // End of Procedure BODY");
-  }
 
+	// ***********************************************************************************************
+	// *** Coding Utility: doCodePrepareFormal
+	// ***********************************************************************************************
+	private void doCodePrepareFormal() {
+		JavaModule.debug("// Parameter Transmission in case of Formal/Virtual Procedure Call");
+		JavaModule.code("private int $npar=0; // Number of actual parameters transmitted.");
+		JavaModule.code("public " + getJavaIdentifier() + " setPar(Object param) {");
+		JavaModule.debug("//Util.BREAK(\"CALL " + getJavaIdentifier()
+				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$npar+\", staticLink=\"+SL$);");
+		JavaModule.code("try {");
+		JavaModule.code("switch($npar++) {");
+		int npar = 0;
+		for (Parameter par : parameterList) {
+			String tp = par.toJavaType();
+			String typeValue;
+			if (par.mode == Parameter.Mode.name) typeValue = ("(" + tp + ")param");
+			else if (par.kind == Parameter.Kind.Array) {
+				typeValue = ("arrayValue(param)");
+				if (par.mode == Parameter.Mode.value) typeValue = typeValue + ".COPY()";
+			} else if (par.kind == Parameter.Kind.Procedure) typeValue = ("procValue(param)");
+			else if (par.kind != Parameter.Kind.Simple)	typeValue = ("(" + tp + ")param");
+			else if (par.type.isArithmeticType()) typeValue = (tp + "Value(param)");
+			else typeValue = ("(" + tp + ")objectValue(param)");
+			JavaModule.code("case " + (npar++) + ": " + par.externalIdent + "=" + typeValue + "; break;");
+		}
+		JavaModule.code("default: throw new RuntimeException(\"Wrong number of parameters\");");
+		JavaModule.code("}");
+		JavaModule.code("}");
+		JavaModule.code("catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+$npar+\" \"+param,e);}");
+		JavaModule.code("return(this);");
+		JavaModule.code("}");
+		JavaModule.debug("// Constructor in case of Formal/Virtual Procedure Call");
+		JavaModule.code("public " + getJavaIdentifier() + "(RTObject$ SL$)");
+		JavaModule.code("{ super(SL$); }");
+	}
 
-  // ***********************************************************************************************
-  // *** Printing Utility: print
-  // ***********************************************************************************************
-  public void print(String indent)
-  { StringBuilder s=new StringBuilder(indent);
-    s.append('[').append(blockLevel).append("] ");
-    s.append(blockKind).append(' ').append(identifier);
-    s.append('[').append(externalIdent).append("] ");
-    s.append(editParameterList());
-    Util.println(s.toString());
-	String beg="begin["+edScopeChain()+']';
-	indent=indent+"    ";
-    Util.println(indent+beg); 
-//    if(!hiddenList.isEmpty()) Util.println(indent+"   HIDDEN"+hiddenList);
-//    if(!protectedList.isEmpty()) Util.println(indent+"   PROTECTED"+protectedList);
-    for(Declaration decl:declarationList) decl.print(indent+"   ");
-    for(Statement stm:statements) stm.print(indent+"   ");
-	Util.println(indent+"end["+edScopeChain()+']'); 
-	//Util.BREAK("ProcedureDeclaration.print DONE");
-  }
-  
-  // ***********************************************************************************************
-  // *** Printing Utility: editParameterList
-  // ***********************************************************************************************
-  private String editParameterList()
-  { StringBuilder s=new StringBuilder(); s.append('(');
-    boolean first=true;
-    for(Parameter par:parameterList)
-    { if(!first) s.append(','); s.append(par); first=false; }
-    s.append(')');
-    s.append(';');
-    return(s.toString());
-  }
+	// ***********************************************************************************************
+	// *** Coding Utility: codeProcedureBody -- Redefined in SwitchDeclaration
+	// ***********************************************************************************************
+	public void codeProcedureBody() {
+		JavaModule.debug("// Procedure Statements");
+		JavaModule.code("public " + getJavaIdentifier() + " STM$() {");
+		JavaModule.debug("TRACE_BEGIN_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
+		codeSTMBody();
+		JavaModule.debug("TRACE_END_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
+		JavaModule.code("EBLK();");
+		JavaModule.code("return(this);");
+		JavaModule.code("}", "End of Procedure BODY");
+	}
+
+	// ***********************************************************************************************
+	// *** Printing Utility: print
+	// ***********************************************************************************************
+	public void print(final int indent) {
+    	String spc=edIndent(indent);
+		StringBuilder s = new StringBuilder(spc);
+		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
+		s.append(blockKind).append(' ').append(identifier);
+		s.append('[').append(externalIdent).append("] ");
+		s.append(editParameterList());
+		Util.println(s.toString());
+		String beg = "begin[" + edScopeChain() + ']';
+		Util.println(spc + beg);
+		// if(!hiddenList.isEmpty()) Util.println(indent+" HIDDEN"+hiddenList);
+		// if(!protectedList.isEmpty()) Util.println(indent+" PROTECTED"+protectedList);
+		for (Declaration decl : declarationList) decl.print(indent + 1);
+		for (Statement stm : statements) stm.print(indent + 1);
+		Util.println(spc + "end[" + edScopeChain() + ']');
+		// Util.BREAK("ProcedureDeclaration.print DONE");
+	}
+
+	// ***********************************************************************************************
+	// *** Printing Utility: editParameterList
+	// ***********************************************************************************************
+	private String editParameterList() {
+		StringBuilder s = new StringBuilder();
+		s.append('(');
+		boolean first = true;
+		for (Parameter par : parameterList) {
+			if (!first)	s.append(',');
+			s.append(par);
+			first = false;
+		}
+		s.append(')');
+		s.append(';');
+		return (s.toString());
+	}
 
 	public String toString() {
 		StringBuilder s = new StringBuilder();
@@ -422,6 +371,44 @@ public class ProcedureDeclaration extends BlockDeclaration {
 			s.append((isProtected.definedIn != null) ? isProtected.definedIn.identifier : "MISSING");
 		}
 		return (s.toString());
+	}
+
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public ProcedureDeclaration() {	super(null); }
+
+	@Override
+	public void writeExternal(ObjectOutput oupt) throws IOException {
+		Util.TRACE_OUTPUT("BEGIN Write ProcedureDeclaration: "+identifier);
+		oupt.writeObject(identifier);
+		oupt.writeObject(externalIdent);
+		oupt.writeObject(type);
+		oupt.writeInt(blockLevel);
+		oupt.writeBoolean(hasLocalClasses);
+
+		oupt.writeObject(parameterList);
+		oupt.writeObject(labelList);
+		oupt.writeObject(declarationList);
+		Util.TRACE_OUTPUT("END Write ProcedureDeclaration: "+identifier);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
+		blockKind=BlockKind.Procedure;
+		Util.TRACE_INPUT("BEGIN Read ProcedureDeclaration: "+identifier+", Declared in: "+this.declaredIn);
+		identifier=(String)inpt.readObject();
+		externalIdent=(String)inpt.readObject();
+		type=Type.inType(inpt);
+		blockLevel=inpt.readInt();
+		hasLocalClasses=inpt.readBoolean();
+		
+		parameterList=(Vector<Parameter>) inpt.readObject();
+		labelList=(Vector<LabelDeclaration>) inpt.readObject();
+		declarationList=(Vector<Declaration>) inpt.readObject();
+		Util.TRACE_INPUT("END Read ProcedureDeclaration: "+identifier+", Declared in: "+this.declaredIn);
+		Global.currentScope = this.declaredIn;
 	}
 
 }

@@ -47,17 +47,14 @@ import javax.swing.JFileChooser;
  *
  */
 public class FILE$ extends CLASS$ {
-	// Declare parameters as attributes
-	public TXT$ FILENAME$;
-	// Declare locals as attributes
-	public TXT$ image;
+	protected final TXT$ FILENAME$;
 	protected boolean OPEN$;
 	
 	/**
 	 * 
 	 * The default values of the access modes are given in table 10.1, where "NA"
 	 * means "not applicable" (i.e. ignored for this file kind) and "*" means that
-	 * the value is implementation-defined. Files of kind
+	 * the value is implementation-defined.
 	 * 
 	 * <pre>
 	 *                       Files of kind
@@ -93,34 +90,26 @@ public class FILE$ extends CLASS$ {
 	 */
 	protected boolean PURGE$=false; // True:purge, False:noPurge
 	
-	//	protected boolean SHARED$;
-//	protected boolean APPEND$;
-//	protected boolean READWRITE$;
-//	protected boolean BYTESIZE$;
-//	protected boolean REWIND$;
+	//	protected boolean SHARED$;  // TODO:
+//	protected boolean APPEND$;      // TODO:
+//	protected boolean READWRITE$;   // TODO:
+//	protected boolean BYTESIZE$;    // TODO:
+//	protected boolean REWIND$;      // TODO:
 	protected Charset CHARSET$=Charset.defaultCharset();
 
 	// Constructor
-   public FILE$(RTObject$ staticLink,TXT$ FILENAME$) {
-      super(staticLink);
-      BBLK(); // Iff no prefix
- 	  TRACE_BEGIN_DCL$("FILE$");
-      this.FILENAME$ = FILENAME$;
-      // Create Class Body
-      CODE$=new ClassBody(CODE$,this,0) {
-         public void STM$() {
-       	    TRACE_BEGIN_STM$("FILE$",inner);
-            if(FILENAME$==null) {
-    			throw new RuntimeException("Illegal File Name");
-            }
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("FILE$");
-            EBLK(); // Iff no prefix
-      }};
+   public FILE$(final RTObject$ staticLink,final TXT$ FILENAME$) {
+	   super(staticLink);
+	   BBLK(); // Iff no prefix
+	   if(FILENAME$==null) throw new RuntimeException("Illegal File Name");
+	   this.FILENAME$ = FILENAME$;
    }
+   
    // Class Statements
-   public FILE$ STM$() { return((FILE$)CODE$.EXEC$()); }
-   public FILE$ START() { START(this); return(this); }
+   public FILE$ STM$() {
+       EBLK();
+       return(this);
+   }
 
 	public TXT$ filename() {
 		return (copy(FILENAME$));
@@ -132,7 +121,7 @@ public class FILE$ extends CLASS$ {
 	}
 	
 	// trySelectFile
-	protected File trySelectFile(String fileName) {
+	protected File trySelectFile(final String fileName) {
 		if(!(fileName.contains("/") || fileName.contains("\\"))) {
 			String dir=System.getProperty("user.dir",null);
 			// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
@@ -153,7 +142,7 @@ public class FILE$ extends CLASS$ {
 	}
 	
 	// Popup File Selector
-	protected File popupFileSelector(String title) {
+	protected File popupFileSelector(final String title) {
 		String userDir=System.getProperty("user.dir");
 		JFileChooser fileChooser = new JFileChooser(userDir);
 		fileChooser.setDialogTitle(title);
@@ -192,9 +181,8 @@ public class FILE$ extends CLASS$ {
 	 * @param mode
 	 * @return
 	 */
-	public boolean setaccess(TXT$ mode) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
+	public boolean setaccess(final TXT$ mode) {
+		// TODO: Complete the implementation according to Simula Standard Definition.
 //		System.out.println("FILE$(FILENAME$).setaccess: "+mode.edText());
 		//RT.BREAK("FILE$(FILENAME$).setaccess: "+mode.edText());
 		//RT.NOT_IMPLEMENTED("FILE$(FILENAME$).setaccess: "+mode.edText());

@@ -17,12 +17,12 @@ import simula.compiler.statement.Statement;
  * 
  * @author Øystein Myhre Andersen
  */
-public class BlockDeclaration extends DeclarationScope {
+public abstract class BlockDeclaration extends DeclarationScope {
 	public int lastLineNumber;
 	public boolean isMainModule; // If true; this is the outermost Subblock or Prefixed Block.
 	public boolean isContextFree; // If true; all member methods are independent of context
 	public boolean isPreCompiled; // If true; this Class/Procedure is Pre-Compiled
-	public Vector<Statement> statements = new Vector<Statement>();
+	public final Vector<Statement> statements = new Vector<Statement>();
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
@@ -33,7 +33,7 @@ public class BlockDeclaration extends DeclarationScope {
 	}
 
 	// Used by ClassDeclaration and ProcedureDeclaration
-	public BlockDeclaration(String identifier, BlockKind blockKind) {
+	public BlockDeclaration(final String identifier,final BlockKind blockKind) {
 		super(identifier);
 		this.blockKind = blockKind;
 	}
@@ -48,27 +48,26 @@ public class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Checking: doCheckLabelList
 	// ***********************************************************************************************
-	protected void doCheckLabelList(int prefixLevel) {
+	protected void doCheckLabelList(final ClassDeclaration prefixClass) {
 		int labelIndex = 1;
-//		Util.println("BlockDeclaration.doCheckLabelList: BEGIN "+identifier);
+		if (prefixClass != null)
+			labelIndex = prefixClass.getNlabels() + 1;
+		// Util.println("BlockDeclaration.doCheckLabelList: BEGIN "+identifier+" SUBCLASS OF "+prefixClass);
 		for (LabelDeclaration label : labelList) {
-			label.prefixLevel = prefixLevel;
 			label.index = labelIndex++;
-//			Util.println("BlockDeclaration.doCheckLabelList: "+label);
+			// Util.println("BlockDeclaration.doCheckLabelList: "+label);
 		}
-//		if(labelIndex>1) Util.BREAK("BlockDeclaration.doCheckLabelList: END "+identifier);
+		// if(labelIndex>1) Util.BREAK("BlockDeclaration.doCheckLabelList: END "+identifier);
 	}
 
 	// ***********************************************************************************************
 	// *** Coding: isBlockWithLocalClasses
 	// ***********************************************************************************************
 	public boolean isBlockWithLocalClasses() {
-		if (this.hasLocalClasses)
-			return (true);
+		if (this.hasLocalClasses) return (true);
 		if (this instanceof ClassDeclaration) {
 			ClassDeclaration prfx = ((ClassDeclaration) this).getPrefixClass();
-			if (prfx != null)
-				return (prfx.isBlockWithLocalClasses());
+			if (prfx != null) return (prfx.isBlockWithLocalClasses());
 		}
 		return (false);
 	}
@@ -88,31 +87,48 @@ public class BlockDeclaration extends DeclarationScope {
 	}
 
 	// ***********************************************************************************************
+	// *** Coding Utility: hasLabel
+	// ***********************************************************************************************
+	protected boolean hasLabel() {
+		// Needs redefinition for ClassDeclaration
+		return (!labelList.isEmpty());
+	}
+
+	// ***********************************************************************************************
 	// *** Coding Utility: codeSTMBody
 	// ***********************************************************************************************
 	protected void codeSTMBody() {
-		if (!labelList.isEmpty()) {
+		if (hasLabel()) {
 			JavaModule.code(externalIdent + " THIS$=(" + externalIdent + ")CUR$;");
 			JavaModule.code("LOOP$:while(JTX$>=0) {");
 			JavaModule.code("try {");
-			JavaModule.code("JUMPTABLE$(JTX$); // For ByteCode Engineering");
+			if (hasLabel())
+				JavaModule.code("JUMPTABLE$(JTX$);","For ByteCode Engineering");
 		}
-		for (Statement stm : statements) stm.doJavaCoding();
-		if (!labelList.isEmpty()) {
+		codeStatements();
+		if (hasLabel()) {
 			JavaModule.code("break LOOP$;");
 			JavaModule.code("}");
 			JavaModule.code("catch(LABQNT$ q) {");
 			JavaModule.code("CUR$=THIS$;");
-			JavaModule.code("if(q.SL$!=CUR$ || q.prefixLevel!=" + prefixLevel() + ") {");
+			JavaModule.code("if(q.SL$!=CUR$) {");
+			JavaModule.debug("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":NON-LOCAL\",q);");
 			JavaModule.code("CUR$.STATE$=OperationalState.terminated;");
-			JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"NON-LOCAL\",q);");
+			JavaModule.debug("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":RE-THROW\",q);");
 			JavaModule.code("throw(q);");
 			JavaModule.code("}");
-			JavaModule.code("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"LOCAL\",q);");
-			JavaModule.code("JTX$=q.index; continue LOOP$; // EG. GOTO Lx");
+			JavaModule.debug("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":LOCAL\",q);");
+			JavaModule.code("JTX$=q.index; continue LOOP$;","EG. GOTO Lx");
 			JavaModule.code("}");
 			JavaModule.code("}");
 		}
+	}
+
+	// ***********************************************************************************************
+	// *** Coding Utility: codeStatements
+	// ***********************************************************************************************
+	protected void codeStatements() {
+		for (Statement stm : statements) stm.doJavaCoding();
 	}
 
 	public String toString() {

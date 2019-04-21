@@ -40,188 +40,204 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public final class ConnectionStatement extends Statement
-{ Expression objectExpression;
-  Variable inspectedVariable;
-  TypeDeclaration inspectVariableDeclaration;
-  Vector<DoPart> connectionPart=new Vector<DoPart>();
-  Statement otherwise;
-  boolean hasWhenPart;
-  private static int SEQU=0;
+public final class ConnectionStatement extends Statement {
+	private final Expression objectExpression;
+	private final Variable inspectedVariable;
+	private final TypeDeclaration inspectVariableDeclaration;
+	private final Vector<DoPart> connectionPart = new Vector<DoPart>();
+	private final Statement otherwise;
+	private final boolean hasWhenPart;
+	private static int SEQU = 0;
 
-  public ConnectionStatement()
-  { if(Option.TRACE_PARSE) Parser.TRACE("Parse ConnectionStatement");
-//  Expression objectExpression=Expression.parseExpression();
-    objectExpression=Expression.parseExpression();
-    String ident="inspect$"+lineNumber+'$'+(SEQU++);
-    inspectedVariable=new Variable(ident);
-	inspectVariableDeclaration=new TypeDeclaration(Type.Ref("RTObject"),ident);
-	
-	//Util.BREAK("NEW ConnectionStatement: new InspectVariableDeclaration="+inspectVariableDeclaration);
-	DeclarationScope scope=Global.currentScope;
-	while(scope.blockKind==null || scope instanceof ConnectionBlock) scope=scope.declaredIn;
-	//Util.BREAK("NEW ConnectionStatement: ADD IT TO "+Global.currentScope);
-	scope.declarationList.add(inspectVariableDeclaration);
-    
-    if(Parser.accept(KeyWord.DO))
-    { ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable,null);
-      Statement statement=Statement.doParse();
-      connectionPart.add(new DoPart(connectionBlock,statement));
-      connectionBlock.end();
-    }
-    else
-    { while(Parser.accept(KeyWord.WHEN))
-      { String classIdentifier=expectIdentifier();
-        Parser.expect(KeyWord.DO);
-        ConnectionBlock connectionBlock=new ConnectionBlock(inspectedVariable,classIdentifier);
-        hasWhenPart=true;
-        Statement statement=Statement.doParse();
-        connectionPart.add(new WhenPart(classIdentifier,connectionBlock,statement));
-        connectionBlock.end();
-      }
-    	
-    }
-    otherwise=null;
-    if(Parser.accept(KeyWord.OTHERWISE)) otherwise=Statement.doParse();
-    if(Option.TRACE_PARSE) Util.TRACE("END NEW ConnectionStatement: "+toString());
-  }
+	public ConnectionStatement() {
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ConnectionStatement");
+		objectExpression = Expression.parseExpression();
+		String ident = "inspect$" + lineNumber + '$' + (SEQU++);
+		inspectedVariable = new Variable(ident);
+		inspectVariableDeclaration = new TypeDeclaration(Type.Ref("RTObject"), ident);
 
+		// Util.BREAK("NEW ConnectionStatement: new InspectVariableDeclaration="+inspectVariableDeclaration);
+		DeclarationScope scope = Global.currentScope;
+		while (scope.blockKind == null || scope instanceof ConnectionBlock)
+			scope = scope.declaredIn;
+		// Util.BREAK("NEW ConnectionStatement: ADD IT TO "+Global.currentScope);
+		scope.declarationList.add(inspectVariableDeclaration);
 
-  class DoPart
-  { String refIdentifier;
-    ConnectionBlock connectionBlock;
-	public DoPart(ConnectionBlock connectionBlock,Statement statement)
-	{ this.connectionBlock=connectionBlock; //this.statement=statement;
-	  connectionBlock.setStatement(statement);
-	  if(Option.TRACE_PARSE) Util.TRACE("NEW DoPart: " + toString());
+		boolean hasWhenPart=false;
+		if (Parser.accept(KeyWord.DO)) {
+			ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, null);
+			Statement statement = Statement.doParse();
+			connectionPart.add(new DoPart(connectionBlock, statement));
+			connectionBlock.end();
+		} else {
+			while (Parser.accept(KeyWord.WHEN)) {
+				String classIdentifier = expectIdentifier();
+				Parser.expect(KeyWord.DO);
+				ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, classIdentifier);
+				hasWhenPart = true;
+				Statement statement = Statement.doParse();
+				connectionPart.add(new WhenPart(classIdentifier, connectionBlock, statement));
+				connectionBlock.end();
+			}
+		}
+		Statement otherwise = null;
+		if (Parser.accept(KeyWord.OTHERWISE)) otherwise = Statement.doParse();
+		this.otherwise=otherwise;
+		this.hasWhenPart=hasWhenPart;
+		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ConnectionStatement: " + toString());
 	}
 
-	public void doChecking()
-	{ Type type=inspectVariableDeclaration.type;
-  	  refIdentifier=type.getRefIdent();
-      //Util.BREAK("ConnectionStatement.DoPart.doChecking: refIdentifier="+refIdentifier);
-	  if(refIdentifier==null) Util.error("The Variable "+inspectedVariable+" is not ref() type");
-	  connectionBlock.setClassDeclaration(AssignmentOperation.getQualification(refIdentifier));	
-	  connectionBlock.doChecking();
-	  SET_SEMANTICS_CHECKED();
-	}
-	
-	public void doCoding(boolean first)
-	{ ASSERT_SEMANTICS_CHECKED(this);
-	  connectionBlock.doJavaCoding();
-	}
-	
-	public void print(String indent)
-	{ Util.println(indent+"DO ");
-	  connectionBlock.print(indent);
+	private class DoPart {
+		final ConnectionBlock connectionBlock;
+
+		public DoPart(final ConnectionBlock connectionBlock,final Statement statement) {
+			this.connectionBlock = connectionBlock; // this.statement=statement;
+			connectionBlock.setStatement(statement);
+			if (Option.TRACE_PARSE)
+				Util.TRACE("NEW DoPart: " + toString());
+		}
+
+		public void doChecking() {
+			Type type = inspectVariableDeclaration.type;
+			String refIdentifier = type.getRefIdent();
+			// Util.BREAK("ConnectionStatement.DoPart.doChecking: refIdentifier="+refIdentifier);
+			if (refIdentifier == null)
+				Util.error("The Variable " + inspectedVariable + " is not ref() type");
+			connectionBlock.setClassDeclaration(AssignmentOperation.getQualification(refIdentifier));
+			connectionBlock.doChecking();
+			SET_SEMANTICS_CHECKED();
+		}
+
+		public void doCoding(final boolean first) {
+			ASSERT_SEMANTICS_CHECKED(this);
+			connectionBlock.doJavaCoding();
+		}
+
+		public void print(final int indent) {
+	    	String spc=edIndent(indent);
+			Util.println(spc + "DO ");
+			connectionBlock.print(indent);
+		}
+
+		public String toString() {
+			return (connectionBlock.toString());
+		}
 	}
 
-	public String toString() { return(connectionBlock.toString()); }
-  }
+	private final class WhenPart extends DoPart {
+		String classIdentifier; // Set during checking.
+		ClassDeclaration classDeclaration; // Set during checking.
+		boolean impossibleWhenPart; // Set by doChecking
 
-  class WhenPart extends DoPart
-  { String classIdentifier;
-    ClassDeclaration classDeclaration; // Set during checking.
-    boolean impossibleWhenPart; // Set by doChecking
-	public WhenPart(String classIdentifier,ConnectionBlock connectionBlock,Statement statement)
-	{ super(connectionBlock,statement);
-	  this.classIdentifier=classIdentifier;
-	  if(Option.TRACE_PARSE) Util.TRACE("NEW DoPart: " + toString());
+		public WhenPart(final String classIdentifier,final ConnectionBlock connectionBlock,final Statement statement) {
+			super(connectionBlock, statement);
+			this.classIdentifier = classIdentifier;
+			if (Option.TRACE_PARSE)
+				Util.TRACE("NEW DoPart: " + toString());
+		}
+
+		public void doChecking() {
+			if (classIdentifier == null) { // && objectExpression!=null)
+				Type type = inspectVariableDeclaration.type;
+				classIdentifier = type.getRefIdent();
+				if (classIdentifier == null)
+					Util.error("The Variable " + inspectedVariable + " is not ref() type");
+			}
+			// Util.BREAK("ConnectionStatement.WhenPart.doChecking: ");
+			if (classIdentifier != null) {
+				classDeclaration = AssignmentOperation.getQualification(classIdentifier);
+				connectionBlock.setClassDeclaration(classDeclaration);
+			}
+			if (!AssignmentOperation.checkCompatability(objectExpression, classIdentifier)) {
+				Util.warning("Impossible When Part: " + objectExpression + " is not compatible with " + classIdentifier);
+				impossibleWhenPart = true;
+			}
+			connectionBlock.doChecking();
+		}
+
+		public void doCoding(final boolean first) {
+			// Util.BREAK("ConnectionStatement.WhenPart.doCoding: statement="+statement.getClass().getName());
+			ASSERT_SEMANTICS_CHECKED(this);
+			String prfx = (first) ? "" : "else ";
+			String cid = classDeclaration.getJavaIdentifier();
+			if (!impossibleWhenPart) {
+				JavaModule.code(prfx + "if(" + inspectedVariable.toJavaCode() + " instanceof " + cid + ")","WHEN "	+ cid + " DO ");
+				connectionBlock.doJavaCoding();
+			} else
+				JavaModule.code(prfx,"WHEN " + cid + " DO -- IMPOSSIBLE REMOVED");
+		}
+
+		public void print(final int indent) {
+	    	String spc=edIndent(indent);
+			Util.println(spc + "WHEN " + classIdentifier + " DO ");
+			connectionBlock.print(indent);
+		}
+
+		public String toString() {
+			return ("WHEN " + classIdentifier + " DO ..."); // +statement);
+		}
 	}
 
-	public void doChecking()
-	{ if(classIdentifier==null) // && objectExpression!=null)
-	  { Type type=inspectVariableDeclaration.type;
-	    classIdentifier=type.getRefIdent();
-	    if(classIdentifier==null) Util.error("The Variable "+inspectedVariable+" is not ref() type");
-	  }
-      //Util.BREAK("ConnectionStatement.WhenPart.doChecking: ");
-	  if(classIdentifier!=null)
-	  {	classDeclaration=AssignmentOperation.getQualification(classIdentifier);
-		connectionBlock.setClassDeclaration(classDeclaration);
-	  }
-	  if(!AssignmentOperation.checkCompatability(objectExpression,classIdentifier))
-	  { Util.warning("Impossible When Part: "+objectExpression+" is not compatible with "+classIdentifier);
-	    impossibleWhenPart=true;
-	  }
-	  connectionBlock.doChecking();
+	public void doChecking() {
+		if (IS_SEMANTICS_CHECKED())	return;
+		Global.sourceLineNumber = lineNumber;
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("BEGIN ConnectionStatement(" + toString() + ").doChecking - Current Scope Chain: " + Global.currentScope.edScopeChain());
+		objectExpression.doChecking();
+		Type exprType = objectExpression.type;
+		// Util.BREAK("InspectVariable.doChecking("+this+") exprType="+exprType);
+		exprType.doChecking(Global.currentScope);
+		inspectVariableDeclaration.type = exprType;
+		inspectedVariable.type = exprType;
+		// Util.BREAK("ConnectionStatement.doChecking(2): inspectVariableDeclaration="+inspectVariableDeclaration);
+		inspectedVariable.doChecking();
+		// Util.BREAK("ConnectionStatement.doChecking(3): inspectedVariable="+inspectedVariable);
+		for (Enumeration<DoPart> e = connectionPart.elements(); e.hasMoreElements();) {
+			e.nextElement().doChecking();
+		}
+		if (otherwise != null) otherwise.doChecking();
+		SET_SEMANTICS_CHECKED();
 	}
-	
-	public void doCoding(boolean first)
-	{ //Util.BREAK("ConnectionStatement.WhenPart.doCoding: statement="+statement.getClass().getName());
-	  ASSERT_SEMANTICS_CHECKED(this);
-	  String prfx=(first)?"":"else ";
-	  String cid=classDeclaration.getJavaIdentifier();
-	  if(!impossibleWhenPart)
-	  { JavaModule.code(prfx+"if("+inspectedVariable.toJavaCode()+" instanceof "+cid+") // WHEN "+cid+" DO ");
-	    connectionBlock.doJavaCoding();
-	  } else JavaModule.code(prfx+"// WHEN "+cid+" DO -- IMPOSSIBLE REMOVED");
-	}
-	
-	public void print(String indent)
-	{ Util.println(indent+"WHEN "+classIdentifier+" DO ");
-	  connectionBlock.print(indent);
-	}
-	
-	public String toString()
-	{ return("WHEN "+classIdentifier+" DO ..."); }//+statement);	}
-  }
 
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
-    Global.sourceLineNumber=lineNumber;
-    if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ConnectionStatement("+toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-    objectExpression.doChecking();
-    Type exprType=objectExpression.type;
-    //Util.BREAK("InspectVariable.doChecking("+this+") exprType="+exprType);
-    exprType.doChecking(Global.currentScope);
-    inspectVariableDeclaration.type=exprType;
-    inspectedVariable.type=exprType;
-    //Util.BREAK("ConnectionStatement.doChecking(2): inspectVariableDeclaration="+inspectVariableDeclaration);
-    inspectedVariable.doChecking();
-    //Util.BREAK("ConnectionStatement.doChecking(3): inspectedVariable="+inspectedVariable);
-    for(Enumeration<DoPart> e=connectionPart.elements(); e.hasMoreElements();)
-    { e.nextElement().doChecking(); }
-    if(otherwise!=null) otherwise.doChecking();
-	SET_SEMANTICS_CHECKED();
-  }
-  
-  public void doJavaCoding()
-  {	Global.sourceLineNumber=lineNumber;
-	ASSERT_SEMANTICS_CHECKED(this);
-    JavaModule.code("{");
-    JavaModule.code("// BEGIN INSPECTION ");
-    Expression assignment=new AssignmentOperation(inspectedVariable,KeyWord.ASSIGNREF,objectExpression);
-    assignment.doChecking(); JavaModule.code(assignment.toJavaCode()+';');
-    if(hasWhenPart) JavaModule.code("//"+"INSPECT "+inspectedVariable);
-    else JavaModule.code("if("+inspectedVariable.toJavaCode()+"!=null) //"+"INSPECT "+inspectedVariable);
-    boolean first=true;
-    for(Enumeration<DoPart> e=connectionPart.elements(); e.hasMoreElements();)
-    { e.nextElement().doCoding(first); first=false; }
-    if(otherwise!=null)
-    { JavaModule.code("else // OTHERWISE ");
-      otherwise.doJavaCoding();
-      //JavaModule.code("// END OTHERWISE ");
-    }
-    //JavaModule.code("// END INSPECTION ");
-    JavaModule.code("}");
-  }
-  
-  // ***********************************************************************************************
-  // *** Printing Utility: print
-  // ***********************************************************************************************
-  public void print(String indent) { 
-//	  if(assignment!=null) assignment.print(indent);
-	  Util.println(indent+"INSPECT "+inspectedVariable);
-	  for(DoPart doPart:connectionPart) doPart.print(indent);
-	  if(otherwise!=null)
-	  { Util.println(indent+"   OTHERWISE "+otherwise+';'); }
-  }
+	public void doJavaCoding() {
+		Global.sourceLineNumber = lineNumber;
+		ASSERT_SEMANTICS_CHECKED(this);
+		JavaModule.code("{");
+		JavaModule.debug("// BEGIN INSPECTION ");
+		Expression assignment = new AssignmentOperation(inspectedVariable, KeyWord.ASSIGNREF, objectExpression);
+		assignment.doChecking();
+		JavaModule.code(assignment.toJavaCode() + ';');
+		if (hasWhenPart)
+			 JavaModule.debug("//" + "INSPECT " + inspectedVariable);
+		else JavaModule.code("if(" + inspectedVariable.toJavaCode() + "!=null)","INSPECT " + inspectedVariable);
+		boolean first = true;
+		for (Enumeration<DoPart> e = connectionPart.elements(); e.hasMoreElements();) {
+			e.nextElement().doCoding(first);
+			first = false;
+		}
+		if (otherwise != null) {
+			JavaModule.code("else","OTHERWISE ");
+			otherwise.doJavaCoding();
+			// JavaModule.debug("// END OTHERWISE ");
+		}
+		// JavaModule.debug("// END INSPECTION ");
+		JavaModule.code("}");
+	}
 
-  public String toString()
-  { String otherwisePart="";
-    if(otherwise!=null) otherwisePart=" OTHERWISE "+otherwise;
-	return("INSPECT "+inspectedVariable+" "+connectionPart+otherwisePart);
-  }
-  
+	// ***********************************************************************************************
+	// *** Printing Utility: print
+	// ***********************************************************************************************
+	public void print(final int indent) {
+    	String spc=edIndent(indent);
+		// if(assignment!=null) assignment.print(indent);
+		Util.println(spc + "INSPECT " + inspectedVariable);
+		for (DoPart doPart : connectionPart) doPart.print(indent);
+		if (otherwise != null) Util.println(spc + "   OTHERWISE " + otherwise + ';');
+	}
+
+	public String toString() {
+		String otherwisePart = (otherwise == null)?"":" OTHERWISE " + otherwise;
+		return ("INSPECT " + inspectedVariable + " " + connectionPart + otherwisePart);
+	}
+
 }

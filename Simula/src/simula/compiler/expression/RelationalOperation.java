@@ -28,10 +28,10 @@ import simula.compiler.utilities.Util;
  */
 public final class RelationalOperation extends Expression {
 	public Expression lhs;
-	public KeyWord opr;
+	public final KeyWord opr;
 	public Expression rhs;
 
-	public RelationalOperation(Expression lhs, KeyWord opr, Expression rhs) {
+	public RelationalOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
 		this.lhs = lhs;
 		this.opr = opr;
 		this.rhs = rhs;
@@ -48,18 +48,12 @@ public final class RelationalOperation extends Expression {
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN RelationalOperation" + toString() + ".doChecking - Current Scope Chain: "	+ Global.currentScope.edScopeChain());
 		switch (opr) {
-		case LT:
-		case LE:
-		case EQ:
-		case NE:
-		case GE:
-		case GT: {
+		case LT: case LE: case EQ: case NE: case GE: case GT: {
 			lhs.doChecking();
 			rhs.doChecking();
 			Type type1 = lhs.type;
@@ -81,8 +75,8 @@ public final class RelationalOperation extends Expression {
 			rhs = (Expression) TypeConversion.testAndCreate(atype, rhs);
 			break;
 		}
-		case EQR:
-		case NER: { // Object =/= Object or Object == Object
+		case EQR: case NER: {
+			// Object =/= Object or Object == Object
 			lhs.doChecking();
 			rhs.doChecking();
 			Type type1 = lhs.type;
@@ -112,30 +106,23 @@ public final class RelationalOperation extends Expression {
 		// Util.BREAK("RelationalOperation.toJavaCode: "+this);
 		ASSERT_SEMANTICS_CHECKED(this);
 		switch (opr) {
-		case LT:
-		case LE:
-		case EQ:
-		case NE:
-		case GE:
-		case GT: {
-			Type type1 = lhs.type;
-			Type type2 = rhs.type;
-			if ((type1 == Type.Text) && (type2 == Type.Text))
-				return (doCodeTextValueRelation());
-		}
-		case EQR:
-		case NER: {
-			Type type1 = lhs.type;
-			Type type2 = rhs.type;
-			if ((type1 == Type.Text) && (type2 == Type.Text))
-				return (doCodeTextRefRelation());
-		}
-		default: {
-			if (this.backLink == null)
-				return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
-			else
-				return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
-		}
+			case LT: case LE: case EQ: case NE: case GE: case GT: {
+				Type type1 = lhs.type;
+				Type type2 = rhs.type;
+				if ((type1 == Type.Text) && (type2 == Type.Text))
+					return (doCodeTextValueRelation());
+			}
+			case EQR: case NER: {
+				Type type1 = lhs.type;
+				Type type2 = rhs.type;
+				if ((type1 == Type.Text) && (type2 == Type.Text))
+					return (doCodeTextRefRelation());
+			}
+			default: {
+				if (this.backLink == null)
+					 return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
+				else return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
+			}
 		}
 	}
 
@@ -146,13 +133,13 @@ public final class RelationalOperation extends Expression {
 		StringBuilder s = new StringBuilder();
 		String fnc = "??";
 		switch (opr) {
-		case LT: fnc = "LT("; break;
-		case EQ: fnc = "EQ("; break;
-		case LE: fnc = "LE("; break;
-		case GT: fnc = "GT("; break;
-		case NE: fnc = "NE("; break;
-		case GE: fnc = "GE("; break;
-		default:
+		    case LT: fnc = "LT("; break;
+		    case EQ: fnc = "EQ("; break;
+		    case LE: fnc = "LE("; break;
+		    case GT: fnc = "GT("; break;
+		    case NE: fnc = "NE("; break;
+		    case GE: fnc = "GE("; break;
+		    default:
 		}
 		s.append("TXTREL$").append(fnc);
 		s.append(lhs.get()).append(',');
@@ -166,8 +153,7 @@ public final class RelationalOperation extends Expression {
 	private String doCodeTextRefRelation() {
 		String fnc = "TRF_EQ(";
 		StringBuilder s = new StringBuilder();
-		if (opr == KeyWord.NER)
-			fnc = "TRF_NE(";
+		if (opr == KeyWord.NER)	fnc = "TRF_NE(";
 		s.append(fnc);
 		s.append(lhs.get()).append(',');
 		s.append(rhs.get()).append(')');

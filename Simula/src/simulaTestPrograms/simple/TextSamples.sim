@@ -1,5 +1,4 @@
  
-%QUALIFIEDNAMES 
 begin Text T,U,amount,price,payment; 
 %TITLE *** C l a s s ***; 
   Procedure payer(T); value T; text T; 

@@ -57,7 +57,7 @@ public final class TXT$ {
 	public TXT$() {}
 
 	// Constructor
-	public TXT$(String s) {
+	public TXT$(final String s) {
 		OBJ = new TEXTOBJ(s);
 		START = 0; // Note: Counting from zero in this implementation
 		LENGTH = OBJ.SIZE;
@@ -81,7 +81,7 @@ public final class TXT$ {
 	public String edStripedText() {
 		//RT.BREAK("TXTREF.edText: "+this);
 		if(OBJ==null) return("");
-		TXT$ stp=this.strip();
+		TXT$ stp=TXT$.strip(this);
 		if(stp==null) return("");
 		return (stp.OBJ.edText(START, LENGTH));
 	}
@@ -92,18 +92,18 @@ public final class TXT$ {
 		return (OBJ.edText(START, POS)); 
 	}
 
-	public boolean constant() { return( constant(this)); }
+	//public boolean constant() { return( constant(this)); }
 	public static boolean constant(TXT$ T) {
 		return (T==null || T.OBJ == null || T.OBJ.CONST);
 	}
 
-	public int start() { return(start(this)); }
+	//public int start() { return(start(this)); }
 	public static int start(TXT$ T) {
 		if(T==null) return(1);
 		return (T.START + 1);
 	}
 
-	public int length() { return(length(this)); }
+	//public int length() { return(length(this)); }
 	public static int length(TXT$ T) {
 		if(T==null) return(0);
 		return (T.LENGTH);
@@ -130,7 +130,7 @@ public final class TXT$ {
 	 * 
 	 * @return
 	 */
-	public TXT$ main() { return(main(this)); }
+	//public TXT$ main() { return(main(this)); }
 	public static TXT$ main(TXT$ T) {
 		if(T==null) return(null);
 		if(T.OBJ==null) return(null);
@@ -142,24 +142,24 @@ public final class TXT$ {
 		return (U);
 	}
 
-	public int pos() { return(pos(this)); }
+	//public int pos() { return(pos(this)); }
 	public static int pos(TXT$ T) {
 		if(T==null) return(1);
 		return (T.POS + 1);
 	}
 
-	public void setpos(int i) { setpos(this,i); }
+	//public void setpos(final int i) { setpos(this,i); }
 	public static void setpos(TXT$ T,int i) {
 		if (T!=null) T.POS = (i < 1 || i > T.LENGTH + 1) ? T.LENGTH : (i - 1);
 	}
 
-	public boolean more() { return(more(this)); }
+	//public boolean more() { return(more(this)); }
 	public static boolean more(TXT$ T) {
 		if (T==null) return(false);
 		return (T.POS < T.LENGTH);
 	}
 
-	public char getchar() { return(getchar(this)); }
+	//public char getchar() { return(getchar(this)); }
 	public static char getchar(TXT$ T) {
 		if (T.POS >= T.LENGTH) {
 			throw new RuntimeException("Getchar");
@@ -169,8 +169,8 @@ public final class TXT$ {
 		}
 	}
 
-	public void putchar(char c) { putchar(this,c); }
-	public static void putchar(TXT$ T,char c) {
+	//void putchar(final char c) { putchar(this,c); }
+	public static void putchar(final TXT$ T,final char c) {
 		//RT.BREAK("TEXT$.putchar("+c+"): "+this);
 		if (T==null || T.OBJ == null) throw new RuntimeException("NOTEXT.Putchar");
 		if (T.OBJ.CONST) throw new RuntimeException("<constant>.Putchar");
@@ -201,8 +201,8 @@ public final class TXT$ {
 	 * @param n
 	 * @return
 	 */
-	public TXT$ sub(int i, int n) { return(sub(this,i,n)); }
-	public static TXT$ sub(TXT$ T,int i, int n) {
+//	public TXT$ sub(int i, int n) { return(sub(this,i,n)); }
+	public static TXT$ sub(TXT$ T,final int i,final int n) {
 		//RT.BREAK("TEXT$.sub("+i+','+n+"): "+this);
 //		if (i < 0 || n < 0 || i + n > LENGTH + 1)  // NOTE: FEIL I SIMULA STANDARD
 		if (i <= 0)	throw new RuntimeException(" ! Sub(i,n) is out of frame, i <= 0");
@@ -234,7 +234,7 @@ public final class TXT$ {
 	 * 
 	 * @return
 	 */
-	public TXT$ strip() { return(strip(this)); }
+//	public TXT$ strip() { return(strip(this)); }
 	public static TXT$ strip(TXT$ T) {
 		if(T==null || T.OBJ==null) return (null);
 		int n = T.LENGTH;
@@ -263,7 +263,7 @@ public final class TXT$ {
      *                 |  5  |  6  |  7  |  8  |  9
 	 * @return
 	 */
-	private static String getIntegerItem(TXT$ T) {
+	private static String getIntegerItem(final TXT$ T) {
 		StringBuilder sb = new StringBuilder();
 		//RT.BREAK("TEXT$.getItem: " + this);
 		char c=0;
@@ -294,8 +294,8 @@ public final class TXT$ {
 		return (sb.toString());
 	}
 
-	public int getint() { return(getint(this)); }
-	public static int getint(TXT$ T) {
+//	public int getint() { return(getint(this)); }
+	public static int getint(final TXT$ T) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		String item = getIntegerItem(T);
@@ -334,7 +334,7 @@ public final class TXT$ {
 	 * 
 	 * @return
 	 */
-	private static String getRealItem(TXT$ T) {
+	private static String getRealItem(final TXT$ T) {
 		StringBuilder sb = new StringBuilder();
 		//RT.BREAK("TEXT$.getRealItem: " + this);
 		char c=0;
@@ -372,8 +372,8 @@ public final class TXT$ {
 		return (sb.toString());
 	}
 
-	public double getreal() { return(getreal(this)); }
-	public static double getreal(TXT$ T) {
+//	public double getreal() { return(getreal(this)); }
+	public static double getreal(final TXT$ T) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		String item = getRealItem(T);
@@ -396,7 +396,7 @@ public final class TXT$ {
      *                 |  5  |  6  |  7  |  8  |  9
 	 * @return
 	 */
-	private static String getFracItem(TXT$ T) {
+	private static String getFracItem(final TXT$ T) {
 		StringBuilder sb = new StringBuilder();
 		//RT.BREAK("TEXT$.getFracItem: " + T);
 		char c=0; T.POS=0;
@@ -431,12 +431,12 @@ public final class TXT$ {
 		return (sb.toString());
 	}
 
-	public int getfrac() { return(getfrac(this)); }
-	public static int getfrac(TXT$ T) {
+//	public int getfrac() { return(getfrac(this)); }
+	public static int getfrac(final TXT$ T) {
 		return(Integer.parseInt(getFracItem(T)));
 	}
 
-    private static void putRealResult(TXT$ T,String output)
+    private static void putRealResult(final TXT$ T,String output)
     { if(ENVIRONMENT$.CURRENTDECIMALMARK!=',')
     	 output=output.replace(',',ENVIRONMENT$.CURRENTDECIMALMARK);
       putResult(T,output);
@@ -449,7 +449,7 @@ public final class TXT$ {
 	 * The final value of the position indicator of X is X.length+1.
 	 * @param s
 	 */
-	private static void putResult(TXT$ T,String s) {
+	private static void putResult(TXT$ T,final String s) {
 		//RT.BREAK("TXTREF.putResult: T="+T);
 		//RT.BREAK("TXTREF.putResult: s="+s);
 		if(T==null) T=ENVIRONMENT$.NOTEXT;
@@ -481,8 +481,8 @@ public final class TXT$ {
      * 
 	 * @param i
 	 */
-	public void putint(int i) { putint(this,i); }
-	public static void putint(TXT$ T,int i) {
+//	public void putint(int i) { putint(this,i); }
+	public static void putint(final TXT$ T,final int i) {
 		//RT.BREAK("TXTREF.putint("+i+")");
 		putResult(T,"" + i);
 	}
@@ -497,8 +497,8 @@ public final class TXT$ {
 	 * @param r
 	 * @param n
 	 */
-	public void putfix(double r, int n) { putfix(this,r,n); }
-	public static void putfix(TXT$ T,double r, int n) {
+//	public void putfix(double r, int n) { putfix(this,r,n); }
+	public static void putfix(final TXT$ T,double r, int n) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		//RT.BREAK("TXTREF.putfix("+r+','+n+")");
@@ -527,8 +527,8 @@ public final class TXT$ {
 	 * @param r
 	 * @param n
 	 */
-	public void putreal(double r, int n) { putreal(this,r,n); }
-	public static void putreal(TXT$ T,double r, int n) {
+//	public void putreal(double r, int n) { putreal(this,r,n); }
+	public static void putreal(final TXT$ T,double r,int n) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 //		RT.BREAK("TXTREF.putreal("+r+','+n+")");
@@ -558,8 +558,8 @@ public final class TXT$ {
 //	    putResult(T,output.replace(',','.'));
 	    putRealResult(T,output);
 	}
-	public void putreal(float r, int n) { putreal(this,r,n); }
-	public static void putreal(TXT$ T,float r, int n) {
+//	public void putreal(float r, int n) { putreal(this,r,n); }
+	public static void putreal(final TXT$ T,float r, int n) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 //		RT.BREAK("TXTREF.putreal("+r+','+n+")");
@@ -611,8 +611,8 @@ public final class TXT$ {
 	 * @param i
 	 * @param n
 	 */
-	public void putfrac(int i, int n) { putfrac(this,i,n); }
-	public static void putfrac(TXT$ T,int val, int n) {
+//	public void putfrac(int i, int n) { putfrac(this,i,n); }
+	public static void putfrac(final TXT$ T,final int val,final int n) {
 	    int v; // Scaled value (abs)
 	    int d; // Number of digits written
 	    int r; // Remaining digits in current group
@@ -640,46 +640,5 @@ public final class TXT$ {
 	    }
 	    for(int i=0;i<item.length;i++) T.OBJ.MAIN[T.START+i]=item[i];
 	}
-
-	
-// *** FROM PC-SIMULA disk3/ENV (written in Simuletta)
-//	Visible Routine PTFRAC;  --- put_frac;
-//	import infix(string) item; integer val,n;
-//	begin integer v; -- Scaled value (abs)
-//	      short integer d; -- Number of digits written
-//	      short integer r; -- Remaining digits in current group
-//	      short integer p; -- Next available position in item
-//	      short integer c; -- Current digit (numerical)
-//	%+D   if TRCSW > 3
-//	%+D   then begtrace("PTFRAC("); edint(trcbuf,val); edchar(trcbuf,',');
-//	%+D        edint(trcbuf,n); edchar(trcbuf,')'); outtrace;
-//	%+D   endif;
-//	      if n<=0 then r:=3 else r:=n rem 3; if r=0 then r:=3 endif endif;
-//	      v:=val/10; d:=0; p:=item.nchr-1;
-//	      if val<0 then c:=(v*10)-val; v:= -v else c:=val-(v*10) endif;
-//	      repeat if r = 0
-//	             then r:=3; if d <> n
-//	                  then if p<0 then STAT("PTFRAC-1",xq_tshort); goto E1 endif;
-//	                       var(item.chradr)(p):=' '; p:=p-1;
-//	                  endif;
-//	             endif;
-//	             if p < 0 then STAT("PTFRAC-2",xq_tshort); goto E2 endif;
-//	             var(item.chradr)(p):=(c+ISO_0) qua character; p:=p-1;
-//	             r:=r-1; d:=d+1;
-//	             if d = n
-//	             then if p < 0 then STAT("PTFRAC-3",xq_tshort); goto E3 endif;
-//	                  var(item.chradr)(p):=DMRK; p:=p-1;
-//	             endif;
-//	      while (v>0) or (d<n) do c:=v rem 10; v:=v/10; endrepeat;
-//	      if val < 0
-//	      then if p < 0 then STAT("PTFRAC-4",xq_tshort); goto E4; endif;
-//	           var(item.chradr)(p):='-'; p:=p-1;
-//	      endif;
-//	      repeat while p>=0 do var(item.chradr)(p):=' '; p:=p-1; endrepeat;
-//	E1:E2:E3:E4:end;
-//
-//	end;
-
-	
 	
 }

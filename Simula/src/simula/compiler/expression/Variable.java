@@ -103,7 +103,7 @@ public final class Variable extends Expression {
 	public String getJavaIdentifier()
 	{ return(meaning.declaredAs.getJavaIdentifier());	}
 	
-	public void setRemotelyAccessed(Meaning meaning) {
+	public void setRemotelyAccessed(final Meaning meaning) {
 		this.meaning = meaning;
 		remotelyAccessed=true;
 		this.doChecking();	
@@ -119,13 +119,13 @@ public final class Variable extends Expression {
 	  return (meaning);
     }
 
-	public Variable(String identifier) {
+	public Variable(final String identifier) {
 		this.identifier = identifier;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW Variable: " + identifier);
 		// Util.BREAK("NEW Variable: "+this);
 	}
 
-	public static Variable parse(String ident) {
+	public static Variable parse(final String ident) {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse Variable, current=" + Parser.currentToken + ", prev="	+ Parser.prevToken);
 		Variable variable = new Variable(ident);
@@ -151,17 +151,22 @@ public final class Variable extends Expression {
 		Declaration declaredAs=getMeaning().declaredAs;
 		if(declaredAs!=null) this.type=declaredAs.type;
 		//Util.BREAK("END Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
-		if(meaning.declaredAs instanceof StandardProcedure)
-		{ //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
-		  //Util.BREAK("Variable("+identifier+").doChecking: Declared as'Qual: "+meaning.declaredAs.getClass().getSimpleName());
-		  //Util.BREAK("Variable("+identifier+").doChecking: Declared in'Qual: "+meaning.declaredIn.getClass().getSimpleName());
-		  if(identifier.equalsIgnoreCase("detach"))
-		  { //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning.declaredAs);
-		    //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared in: "+meaning.declaredIn);
-			Util.ASSERT(meaning.declaredIn instanceof ClassDeclaration,"Invariant");
-			((ClassDeclaration)meaning.declaredIn).detachUsed=true;
-			//Util.BREAK("Variable("+identifier+").doChecking: (Class "+meaning.declaredIn.identifier+").detachUsed=true");
-		  }
+		if(meaning.declaredAs instanceof StandardProcedure)	{
+			//Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
+		    //Util.BREAK("Variable("+identifier+").doChecking: Declared as'Qual: "+meaning.declaredAs.getClass().getSimpleName());
+		    //Util.BREAK("Variable("+identifier+").doChecking: Declared in'Qual: "+meaning.declaredIn.getClass().getSimpleName());
+		    if(identifier.equalsIgnoreCase("detach")) {
+		    	//Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning.declaredAs);
+		        //Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared in: "+meaning.declaredIn);
+		        if(meaning.declaredIn instanceof ConnectionBlock) {
+		    	    ConnectionBlock conn=(ConnectionBlock)meaning.declaredIn;
+		    	    conn.getClassDeclaration().detachUsed=true;
+		        } else
+		        	if(meaning.declaredIn instanceof ClassDeclaration) {
+		        	((ClassDeclaration)meaning.declaredIn).detachUsed=true;
+		        } else Util.error("Variable("+identifier+").doChecking:INTERNAL ERROR, "+meaning.declaredIn.getClass().getSimpleName());
+		        //Util.BREAK("Variable("+identifier+").doChecking: (Class "+meaning.declaredIn.identifier+").detachUsed=true");
+		    }
 		}
 		
 		if(!this.hasArguments()) {
@@ -303,8 +308,8 @@ public final class Variable extends Expression {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	  // Returns true if this expression may be used as a statement.
-	  public boolean maybeStatement()
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement()
 	  {	ASSERT_SEMANTICS_CHECKED(this);
 	    if(meaning==null) return(false); // Error Recovery
 		Declaration declaredAs=meaning.declaredAs;
@@ -313,6 +318,7 @@ public final class Variable extends Expression {
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): meaning="+meaning);
 		//Util.BREAK("Variable.maybeStatement("+identifier+"): declaredAs="+declaredAs+", BlockDeclaration.Kind="+blockKind+", qual="+declaredAs.getClass().getSimpleName());
 		if(blockKind==BlockKind.Procedure) return(true);
+//		if(blockKind==BlockKind.ExternalProcedure) return(true);
 		if(blockKind==BlockKind.ContextFreeMethod) return(true);
 		if(blockKind==BlockKind.StaticMethod) return(true);
 		if(blockKind==BlockKind.MemberMethod) return(true);
@@ -339,7 +345,7 @@ public final class Variable extends Expression {
 	// *** Coding: put
 	// ******************************************************************
 	// Generate code for putting an value(expression) into this Variable
-	public String put(String rightPart) {
+	public String put(final String rightPart) {
 		//Util.BREAK("Variable("+this+").put("+rightPart+")");
 		ASSERT_SEMANTICS_CHECKED(this);
 		String lhs = this.editVariable(true); // Is a Destination
@@ -368,183 +374,194 @@ public final class Variable extends Expression {
 	// ******************************************************************
 	// *** Coding: editVariable
 	// ******************************************************************
-	private String editVariable(boolean destination)
-	{ Declaration decl=meaning.declaredAs;
-	  BlockKind blockKind=decl.blockKind;
-//	  if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable.edVariable("+identifier+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
-//	  if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
-	  ASSERT_SEMANTICS_CHECKED(this);
-	  Expression inspectedVariable=meaning.getInspectedVariable();
+	private String editVariable(final boolean destination) {
+		Declaration decl=meaning.declaredAs;
+		BlockKind blockKind=decl.blockKind;
+//	    if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable.edVariable("+identifier+"): meaning="+meaning+", remotelyAccessed="+remotelyAccessed+", destination="+destination);
+//	    if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable.edVariable("+identifier+"): decl="+decl+", BlockDeclaration.Kind="+blockKind+", qual="+decl.getClass().getSimpleName());
+	    ASSERT_SEMANTICS_CHECKED(this);
+	    Expression inspectedVariable=meaning.getInspectedVariable();
 	  
-	  if(decl instanceof ArrayDeclaration) { // Declared Array
-		  //ArrayDeclaration array=(ArrayDeclaration)decl;
-	      //Util.BREAK("Variable("+identifier+").get: ArrayDeclaration="+array);
-		  StringBuilder s = new StringBuilder();
-	      s.append(edIdentifierAccess(false));
-	      if(this.hasArguments()) { // Array Element Access
-	    	  int nDim=0;
-	    	  s.append(".Elt"); //[x-M.LB[1]]");
-	    	  for(Expression ix:checkedParams) {
-	    		  String index="["+ix.toJavaCode()+"-"+edIdentifierAccess(false)+".LB["+(nDim++)+"]]";
-	    		  s.append(index);
-	    	  }
-		  }
-		  String result=s.toString();
-		  return(result);
-	  }
+	    if(decl instanceof ArrayDeclaration) { // Declared Array
+	    	//ArrayDeclaration array=(ArrayDeclaration)decl;
+	    	//Util.BREAK("Variable("+identifier+").get: ArrayDeclaration="+array);
+	    	StringBuilder s = new StringBuilder();
+	    	s.append(edIdentifierAccess(false));
+	    	if(this.hasArguments()) { // Array Element Access
+	    		int nDim=0;
+	    		s.append(".Elt"); //[x-M.LB[1]]");
+	    		for(Expression ix:checkedParams) {
+	    			String index="["+ix.toJavaCode()+"-"+edIdentifierAccess(false)+".LB["+(nDim++)+"]]";
+	    			s.append(index);
+	    		}
+	    	}
+	    	String result=s.toString();
+	    	return(result);
+	    }
 	  
-	  else if (decl instanceof VirtualSpecification) { // Virtual Procedure/Label
-		  //s.append(CallProcedure.virtual(this,(Virtual)decl,remotelyAccessed));
-		  VirtualSpecification virtual=(VirtualSpecification)decl;
-//		  Util.BREAK("Variable.edVariable("+identifier+"): virtual="+virtual);
-//		  Util.BREAK("Variable.edVariable("+identifier+"): virtual'kind="+virtual.kind);
-		  StringBuilder s = new StringBuilder();
-//		  if(virtual.kind==VirtualSpecification.Kind.Label) s.append(decl.getJavaIdentifier()).append("()");
-//		  else
-		  s.append(CallProcedure.virtual(this,virtual,remotelyAccessed)); 
-		  String result=s.toString();
-		  return(result);
-	  }
+	    else if (decl instanceof VirtualSpecification) { // Virtual Procedure/Label
+	    	//s.append(CallProcedure.virtual(this,(Virtual)decl,remotelyAccessed));
+	    	VirtualSpecification virtual=(VirtualSpecification)decl;
+//			Util.BREAK("Variable.edVariable("+identifier+"): virtual="+virtual);
+//			Util.BREAK("Variable.edVariable("+identifier+"): virtual'kind="+virtual.kind);
+	    	StringBuilder s = new StringBuilder();
+//		  	if(virtual.kind==VirtualSpecification.Kind.Label) s.append(decl.getJavaIdentifier()).append("()");
+//		  	else
+	    	s.append(CallProcedure.virtual(this,virtual,remotelyAccessed)); 
+	    	String result=s.toString();
+	    	return(result);
+	    }
 	  
-	  else if(decl instanceof ProcedureDeclaration) { // Declared Procedure
-		  ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
-//	      BlockDeclaration.Kind blockKind=decl.blockKind;
-	      StringBuilder s = new StringBuilder();
-//	      if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable3("+identifier+").get: blockKind="+blockKind);
-	      if(blockKind==BlockKind.ContextFreeMethod) {
-	    	  // Standard Library Procedure
-				  if(identifier.equalsIgnoreCase("sourceline"))
-			  		  return(""+Global.sourceLineNumber);
-		      if(destination) return("RESULT$");
-	          s.append(CallProcedure.asStaticMethod(this,true));
-	      }
-	      else if(blockKind==BlockKind.StaticMethod) { // TODO: CHECK DETTE
-		      if(destination) return("RESULT$");
-	          s.append(CallProcedure.asStaticMethod(this,false));
-	      }
-	      else if(blockKind==BlockKind.MemberMethod) { // TODO: CHECK DETTE
-		      if(destination) return("RESULT$");
-	          s.append(CallProcedure.asNormalMethod(this));
-	      }
-	      else if(blockKind==BlockKind.Procedure) {
-	    	  // This Variable is a Procedure-Identifier.
-	    	  // When 'destination' it is a variable used to carry the resulting value until the final return.
-	    	  // otherwise; it is a ordinary procedure-call.
-	    	  if(destination) { // return("RESULT$");
-	    		  ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
-	    		  //Util.BREAK("Variable.editVariable("+identifier+"): meaning="+meaning);
-	    		  //Util.BREAK("Variable.editVariable("+identifier+"): proc'blockLevel="+proc.blockLevel);
-	    		  //Util.BREAK("Variable.editVariable("+identifier+"): currentScope'blockLevel="+Global.currentScope.blockLevel);
-	    		  if(proc.blockLevel==Global.currentScope.blockLevel) return("RESULT$");
-	    	      String cast=proc.getJavaIdentifier();
-	    	      return("(("+cast+")"+proc.edCTX()+").RESULT$");
-	    	  }
-		      //Util.BREAK("Variable4("+identifier+").get: blockKind="+blockKind+", myVirtual="+procedure.myVirtual);
-		      if(procedure.myVirtual!=null)
-			       s.append(CallProcedure.virtual(this,procedure.myVirtual.virtualSpec,remotelyAccessed));
-		      else s.append(CallProcedure.normal(this));
-	      }
-	      else if(blockKind==BlockKind.Class) {
-	    	  Util.error("Illegal use of class identifier: "+identifier);
-	      }
-	      else Util.FATAL_ERROR("Impossible: BlockKind="+blockKind);
-		  String result=s.toString();
-		  return(result);	    
-	  }
+	    else if(decl instanceof ProcedureDeclaration) { // Declared Procedure
+	    	ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
+//	      	BlockDeclaration.Kind blockKind=decl.blockKind;
+	    	StringBuilder s = new StringBuilder();
+//	      	if(identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("Variable3("+identifier+").get: blockKind="+blockKind);	      
+	    	switch(blockKind) {
+	    	    case ContextFreeMethod:
+		    	    // Standard Library Procedure
+	    	    	if(identifier.equalsIgnoreCase("sourceline"))
+	    	    		return(""+Global.sourceLineNumber);
+	    	    	if(destination) return("RESULT$");
+	    	    	s.append(CallProcedure.asStaticMethod(this,true));
+	    	    	break;
+	    	    case StaticMethod:
+	    	    	if(destination) return("RESULT$");
+	    	    	s.append(CallProcedure.asStaticMethod(this,false));
+	    	    	break;
+	    	    case MemberMethod:
+	    	    	if(destination) return("RESULT$");
+	    	    	s.append(CallProcedure.asNormalMethod(this));
+	    	    	break;
+	    	    case Class:
+//	      		case ExternalClass:
+	    	    	Util.error("Illegal use of class identifier: "+identifier);
+	    	    	break;
+	    	    case Procedure:
+//	      		case ExternalProcedure:
+	    	    	// This Variable is a Procedure-Identifier.
+	    	    	// When 'destination' it is a variable used to carry the resulting value until the final return.
+	    	    	// otherwise; it is a ordinary procedure-call.
+	    	    	if(destination) { // return("RESULT$");
+	    	    		ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
+	    	    		//Util.BREAK("Variable.editVariable("+identifier+"): meaning="+meaning);
+	    	    		//Util.BREAK("Variable.editVariable("+identifier+"): proc'blockLevel="+proc.blockLevel);
+	    	    		//Util.BREAK("Variable.editVariable("+identifier+"): currentScope'blockLevel="+Global.currentScope.blockLevel);
+	    	    		if(proc.blockLevel==Global.currentScope.blockLevel) return("RESULT$");
+	    	    		String cast=proc.getJavaIdentifier();
+	    	    		return("(("+cast+")"+proc.edCTX()+").RESULT$");
+	    	    	}
+	    	    	//Util.BREAK("Variable4("+identifier+").get: blockKind="+blockKind+", myVirtual="+procedure.myVirtual);
+	    	    	if(procedure.myVirtual!=null)
+	    	    		s.append(CallProcedure.virtual(this,procedure.myVirtual.virtualSpec,remotelyAccessed));
+	    	    	else s.append(CallProcedure.normal(this));
+	    	    	break;
+	    	    default: Util.FATAL_ERROR("Impossible: BlockKind="+blockKind);
+	    	}
+	    	String result=s.toString();
+	    	return(result);	    
+	    }
 	  
-	  else if (decl instanceof Parameter) { // Specified Parameter: Array, Procedure, Label or Simple
-		  StringBuilder s = new StringBuilder();
-	      Parameter par=(Parameter)decl;
-		  switch(par.kind)
-		  { case Array: // Parameter Array
-			  int nDim=0;
-			  String var=edIdentifierAccess(false);
-			  //Util.BREAK("Variable.editVariable'Parameter'Array: var="+var);;
-			  if(inspectedVariable!=null) var=inspectedVariable.toJavaCode()+'.'+var;
-			  if(par.mode==Parameter.Mode.name) var=var+".get()";
-			  if(this.hasArguments()) {
-//				  if(par.mode==Parameter.Mode.name) var=var+".get()";
-				  StringBuilder ixs=new StringBuilder();
-				  String dimBrackets="";
-				  for(Expression ix:checkedParams) {
-					  String index="["+ix.toJavaCode()+"-"+var+".LB["+(nDim++)+"]]"; 
-					  ixs.append(index);
-					  dimBrackets=dimBrackets+"[]";
-				  }
-				  String eltType=type.toJavaType();
-				  String cast="ARRAY$<"+eltType+dimBrackets+">";
-				  String castedVar="(("+cast+")"+var+")";
-				  s.append(castedVar).append(".Elt").append(ixs);
-			  } else s.append(var);
-			  break;
-		  case Procedure: // Parameter Procedure
-			  if(inspectedVariable!=null) s.append(inspectedVariable.toJavaCode()).append('.');
-			  if(par.mode==Parameter.Mode.value)
-				  Util.error("Parameter "+this+" by Value is not allowed - Rewrite Program");
-			  else // Procedure By Reference or Name.
-				  s.append(CallProcedure.formal(this,par)); 
-			  break;
-		  case Simple:
-		  case Label:
-			  s.append(edIdentifierAccess(destination)); // Kind: Simple/Label
-			  if(!destination && par.mode == Parameter.Mode.name) s.append(".get()");
-		  }
+	    else if (decl instanceof Parameter) { // Specified Parameter: Array, Procedure, Label or Simple
+	    	StringBuilder s = new StringBuilder();
+	    	Parameter par=(Parameter)decl;
+	    	switch(par.kind) {
+	    	    case Array: // Parameter Array
+	    	    	int nDim=0;
+	    	    	String var=edIdentifierAccess(false);
+	    	    	//Util.BREAK("Variable.editVariable'Parameter'Array: var="+var);;
+	    	    	if(inspectedVariable!=null) var=inspectedVariable.toJavaCode()+'.'+var;
+	    	    	if(par.mode==Parameter.Mode.name) var=var+".get()";
+	    	    	if(this.hasArguments()) {
+//				  	    if(par.mode==Parameter.Mode.name) var=var+".get()";
+	    	    		StringBuilder ixs=new StringBuilder();
+	    	    		String dimBrackets="";
+	    	    		for(Expression ix:checkedParams) {
+	    	    			String index="["+ix.toJavaCode()+"-"+var+".LB["+(nDim++)+"]]"; 
+	    	    			ixs.append(index);
+	    	    			dimBrackets=dimBrackets+"[]";
+	    	    		}
+	    	    		String eltType=type.toJavaType();
+	    	    		String cast="ARRAY$<"+eltType+dimBrackets+">";
+	    	    		String castedVar="(("+cast+")"+var+")";
+	    	    		s.append(castedVar).append(".Elt").append(ixs);
+	    	    	} else s.append(var);
+	    	    	break;
+	    	    case Procedure: // Parameter Procedure
+	    	    	if(inspectedVariable!=null) s.append(inspectedVariable.toJavaCode()).append('.');
+	    	    	if(par.mode==Parameter.Mode.value)
+	    	    		Util.error("Parameter "+this+" by Value is not allowed - Rewrite Program");
+	    	    	else // Procedure By Reference or Name.
+	    	    		s.append(CallProcedure.formal(this,par)); 
+	    	    	break;
+	    	    case Simple:
+	    	    case Label:
+	    	    	s.append(edIdentifierAccess(destination)); // Kind: Simple/Label
+	    	    	if(!destination && par.mode == Parameter.Mode.name) s.append(".get()");
+	    	}
 		  
-//		  if(!destination && par.mode == Parameter.Mode.name) s.append(".get()");
+//		  	if(!destination && par.mode == Parameter.Mode.name) s.append(".get()");
 			  
-		  String result=s.toString();
-		  return(result);
-	  }
+	    	String result=s.toString();
+	    	return(result);
+	    }
 	  
-	  else if(decl instanceof LabelDeclaration) {
-		  //Util.BREAK("Variable.editVariable: TypeDeclaration: "+decl);
-//		  return(edIdentifierAccess(false));
-		  return(edIdentifierAccess(destination));
-	  }
+	    else if(decl instanceof LabelDeclaration) {
+	    	//Util.BREAK("Variable.editVariable: LabelDeclaration: "+decl);
+	    	VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(decl);
+	    	if(virtSpec!=null) return(edIdentifierAccess(virtSpec.getVirtualIdentifier(),destination));
+	    	return(edIdentifierAccess(destination));
+	    }
 	  
-	  else if(decl instanceof TypeDeclaration) {
-		  //Util.BREAK("Variable.editVariable: TypeDeclaration: "+decl);
-		  return(edIdentifierAccess(destination));
-	  }
+	    else if(decl instanceof TypeDeclaration) {
+	    	//Util.BREAK("Variable.editVariable: TypeDeclaration: "+decl);
+	    	return(edIdentifierAccess(destination));
+	    }
 	  
-	  else if(decl instanceof ClassDeclaration) {
-		  //Util.BREAK("Variable.editVariable: ClassDeclaration: "+decl);
-		  Util.error("Illegal use of Class "+decl.identifier);
-		  return(edIdentifierAccess(destination));
-	  }
+	    else if(decl instanceof ClassDeclaration) {
+	    	//Util.BREAK("Variable.editVariable: ClassDeclaration: "+decl);
+	    	Util.error("Illegal use of Class "+decl.identifier);
+	    	return(edIdentifierAccess(destination));
+	    }
 	  
-	  Util.FATAL_ERROR("Umulig å komme hit ??");
-	  return(null);
-    }
+	    Util.FATAL_ERROR("Umulig å komme hit ??");
+	    return(null);
+	}
 
 	
 	// ***********************************************************************
 	// *** Coding: edIdentifierAccess
 	// ***********************************************************************
-	public String edIdentifierAccess(boolean destination)
-	{ Declaration decl=meaning.declaredAs;
-	  String id=decl.getJavaIdentifier();
-	  if(remotelyAccessed) return(id);
-	  if(meaning.isConnected())
-	  { Expression inspectedVariable=((ConnectionBlock)meaning.declaredIn).getInspectedVariable();
-	    //Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
-	    if(meaning.foundBehindInvisible)
-	    { String remoteCast=meaning.foundIn.getJavaIdentifier();
-		  id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
-	    } else id=inspectedVariable.toJavaCode()+"."+id;
+	public String edIdentifierAccess(boolean destination) {
+		Declaration decl = meaning.declaredAs;
+		String id = decl.getJavaIdentifier();
+		return (edIdentifierAccess(id, destination));
+	}
+
+	private String edIdentifierAccess(String id,boolean destination) {
+		//Declaration decl=meaning.declaredAs;
+		//String id=decl.getJavaIdentifier();
+		if(remotelyAccessed) return(id);
+		if(meaning.isConnected()) {
+			Expression inspectedVariable=((ConnectionBlock)meaning.declaredIn).getInspectedVariable();
+			//Util.BREAK("Variable.toJavaCode: INSPECT - remoteAttribute="+meaning);
+			if(meaning.foundBehindInvisible) {
+				String remoteCast=meaning.foundIn.getJavaIdentifier();
+				id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
+			} else id=inspectedVariable.toJavaCode()+"."+id;
 	    
-	  } else if(!(Option.standardClass &&
+		} else if(!(Option.standardClass &&
 			 (    meaning.declaredIn.blockKind==BlockKind.ContextFreeMethod // TODO: CHECK DETTE
 			   || meaning.declaredIn.blockKind==BlockKind.StaticMethod
 			   || meaning.declaredIn.blockKind==BlockKind.MemberMethod
 			 ))) {
-	    String cast=meaning.declaredIn.getJavaIdentifier();
-		int n=meaning.declaredIn.blockLevel;
-	    if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
-	    else if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !
-	    id="(("+cast+")"+meaning.declaredIn.edCTX()+")."+id;
-	  }
-	  return(id);		  
+			String cast=meaning.declaredIn.getJavaIdentifier();
+			int n=meaning.declaredIn.blockLevel;
+			if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
+			else if(n==Global.currentScope.blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !
+			id="(("+cast+")"+meaning.declaredIn.edCTX()+")."+id;
+		}
+		return(id);		  
 	}
 	
 	// ***********************************************************************

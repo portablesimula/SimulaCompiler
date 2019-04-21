@@ -40,21 +40,14 @@ package simula.runtime;
 public class Simset$ extends CLASS$ {
 
 	// Constructor
-    public Simset$(RTObject$ staticLink) {
-      super(staticLink);
-      BBLK(); // Iff no prefix
- 	  TRACE_BEGIN_DCL$("Simset$");
-      CODE$=new ClassBody(CODE$,this,0) {
-         public void STM$() {
-     	    RT.ASSERT_CUR$(Simset$.this,"Simset$:invariant-1");
-       	    TRACE_BEGIN_STM$("Simset$",inner);
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("Simset$");
-    	    RT.ASSERT_CUR$(Simset$.this,"Simset$:invariant-2");
-            EBLK(); // Iff no prefix
-      }};
+    public Simset$(final RTObject$ staticLink) {
+    	super(staticLink);
+    	BBLK();
     }
-    public Simset$ STM$() { return((Simset$)CODE$.EXEC$()); }
-    public Simset$ START() { START(this); return(this); }
+    
+    public Simset$ STM$() {
+        EBLK();
+        return(this);
+    }
 
 }

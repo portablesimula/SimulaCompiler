@@ -30,7 +30,7 @@ public final class SportFEC {
 		
 		// *** SIMULA S-PORT COMPILER AS TEST BATCH
 
-//		names.add("COMMON.DEF");  // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\COMMON.jar 
+		names.add("COMMON.DEF");  // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\COMMON.jar 
 //		names.add("ERRMSG.DEF");  // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\ERRMSG.jar 
 //		names.add("SCANNER.DEF"); // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\SCANNER.jar 
 //		names.add("SCANINP.DEF"); // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\SCANINP.jar 
@@ -40,7 +40,7 @@ public final class SportFEC {
 //		names.add("BUILDER2.DEF"); // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\BUILDER2.jar
 //		names.add("CHECKER1.DEF"); // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\CHECKER1.jar
 //		names.add("CHECKER2.DEF"); // END Create .jar File: C:\Users\YSTEIN~1\AppData\Local\Temp\simula\bin\CHECKER2.jar
-		names.add("SCODER0.DEF"); // Stopper fordi  %MACRO  ikke er implementert
+//		names.add("SCODER0.DEF"); // Stopper fordi  %MACRO  ikke er implementert
 		
 //		names.add("SCANNER.DEF");
 //		names.add("SCANNER.DEF");

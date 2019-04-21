@@ -120,12 +120,13 @@ public final class Parser {
 		return (false);
 	}
 	
-	public static void TRACE(final String msg)
-	{ Util.TRACE(msg+", current="+Parser.currentToken+", prev="+Parser.prevToken); }
-	
-	public static void BREAK(final String msg)
-	{ Util.BREAK(msg+", current="+Parser.currentToken+", prev="+Parser.prevToken); }
+	public static void TRACE(final String msg) {
+		Util.TRACE(msg + ", current=" + Parser.currentToken + ", prev=" + Parser.prevToken);
+	}
 
+	public static void BREAK(final String msg) {
+		Util.BREAK(msg + ", current=" + Parser.currentToken + ", prev=" + Parser.prevToken);
+	}
 	
 	public static void nextSymb() {
 		Parser.prevToken = Parser.currentToken;

@@ -51,20 +51,16 @@ public class Head$ extends Linkage$ {
 	 * The references SUC and PRED initially point to the "head" itself, which
 	 * thereby represents an empty set.
 	 */
-    public Head$(RTObject$ staticLink) {
+    public Head$(final RTObject$ staticLink) {
        super(staticLink);
-   	   TRACE_BEGIN_DCL$("Head$");
-       CODE$=new ClassBody(CODE$,this,1) {
-          public void STM$() {
-         	 TRACE_BEGIN_STM$("Head$",inner);
-             SUC=PRED=(Linkage$)CUR$;
-             if(inner!=null) inner.STM$();
-             TRACE_END_STM$("Head$");
-       }};
+       SUC=PRED=(Linkage$)CUR$;
     }
-    
-    public Head$ STM$() { return((Head$)CODE$.EXEC$()); }
-    public Head$ START() { START(this); return(this); }
+
+    public Head$ STM$() {
+//        SUC=PRED=(Linkage$)CUR$;
+        EBLK(); // LINKAGE
+        return(this);
+    }
 
 
 	/**

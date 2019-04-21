@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import simula.compiler.declaration.BlockDeclaration;
+import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -26,53 +27,39 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class JavaModule {
-	JavaModule enclosingJavaModule;
-	public BlockDeclaration blockDeclaration;
-	private Writer writer;
-	public String javaOutputFileName;
-	public Vector<Integer> lineMap=new Vector<Integer>();
+	private JavaModule enclosingJavaModule;
+	public final BlockDeclaration blockDeclaration;
+	private final Writer writer;
+	final String javaOutputFileName;
+	private final Vector<Integer> lineMap=new Vector<Integer>();
+	public Vector<CodeLine> saveCode; // Used during coding
 	
-	public JavaModule(BlockDeclaration blockDeclaration)
-	{ this.blockDeclaration=blockDeclaration; }
+	public JavaModule(final BlockDeclaration blockDeclaration) {
+		this.blockDeclaration = blockDeclaration;
+		// Util.BREAK("JavaModule: Global.javaModules.add "+javaModule);
+		Global.javaModules.add(this);
+		enclosingJavaModule = Global.currentJavaModule;
+		Global.currentJavaModule = this;
+		javaOutputFileName = Global.tempJavaFileDir + blockDeclaration.getJavaIdentifier() + ".java";
+		try {
+			File outputFile = new File(javaOutputFileName);
+			outputFile.getParentFile().mkdirs();
+			if (Option.verbose)	Util.TRACE("Output: " + outputFile.getCanonicalPath());
+			writer = new OutputStreamWriter(new FileOutputStream(outputFile), Global.CHARSET$);
+			JavaModule.code("package " + Global.packetName + ";");
+			JavaModule.code("// " + Global.simulaReleaseID + " Compiled at " + new Date());
+			JavaModule.code("import simula.runtime.*;");
+		} catch (IOException e) {
+			throw new RuntimeException("Writing .java output failed", e);
+		}
+	}
 
-	public String getClassOutputFileName()
-	{ return(Global.tempClassFileDir+Global.packetName+'/'+blockDeclaration.getJavaIdentifier()+".class"); }
-
-	public int getNumberOfLabels()
-	{ return(blockDeclaration.labelList.size()); }
-
-	
-	public void openJavaOutput() 
-	{ enclosingJavaModule=Global.currentJavaModule;
-	  Global.currentJavaModule=this;
-	  javaOutputFileName = Global.tempJavaFileDir + blockDeclaration.getJavaIdentifier() + ".java";
-	  
-//	  Util.BREAK("JavaModule.openJavaOutput: Suspend "+enclosingJavaModule);
-//	  Util.BREAK("JavaModule.openJavaOutput: Open    "+Global.currentJavaModule);
-//	  Util.BREAK("JavaModule.openJavaOutput: blockDeclaration.identifier="+blockDeclaration.identifier);
-//	  Util.BREAK("JavaModule.openJavaOutput: blockDeclaration.externalIdent="+blockDeclaration.externalIdent);
-	  try {
-		File outputFile = new File(javaOutputFileName);
-		outputFile.getParentFile().mkdirs();
-		if (Option.verbose) Util.TRACE("Output: " + outputFile.getCanonicalPath());
-		//writer = new FileWriter(outputFile);
-		writer=new OutputStreamWriter(new FileOutputStream(outputFile),Global.CHARSET$);
-		JavaModule.code("package "+Global.packetName+";"); 
-		JavaModule.code("// "+Global.simulaReleaseID+" Compiled at " + new Date());
-		
-		// Output Dependencies
-		JavaModule.code("import simula.runtime.*;");
-	  } catch (IOException e) {
-		throw new RuntimeException("Writing .java output failed",e);
-	  }
+	public String getClassOutputFileName() {
+		return (Global.tempClassFileDir + Global.packetName + '/' + blockDeclaration.getJavaIdentifier() + ".class");
 	}
 		 
 	public void closeJavaOutput() {
-//		Util.BREAK("JavaModule.closeJavaOutput: Close    "+Global.currentJavaModule);
-//		Util.BREAK("JavaModule.closeJavaOutput: Continue "+enclosingJavaModule);
-		try {
-			writer.flush();
-			writer.close();
+		try { writer.flush(); writer.close();
 		} catch (IOException e) {
 			throw new RuntimeException("Writing .java output failed", e);
 		}
@@ -81,35 +68,51 @@ public final class JavaModule {
 	}	
 
 	
-	public static void code(String line)
-	{ Global.currentJavaModule.write(line); }
+	public static void debug(final String line) {
+		if (RTOption.DEBUGGING)	code(line);
+	}
+
+	public static void code(final String line) {
+		Global.currentJavaModule.write(Global.sourceLineNumber, line);
+	}
+
+	public static void code(final String line,final String comment) {
+		if (!RTOption.DEBUGGING) code(line);
+		else code(line + " // " + comment);
+	}
+
+	public static void code(final CodeLine c) {
+		Global.currentJavaModule.write(c.sourceLineNumber, c.codeLine);
+	}
 
 	private int currentJavaLineNumber=0;
 	
 	private static int prevLineNumber=0;
 	private int indent;
-	public void write(String line) {
-		Util.ASSERT(Global.sourceLineNumber>0,"Invariant");
+	private void write(final int sourceLineNumber,final String line) {
+		Util.ASSERT(sourceLineNumber>0,"Invariant");
+		if(saveCode!=null) {
+			CodeLine codeLine=new CodeLine(sourceLineNumber,line);
+			saveCode.add(codeLine);
+		} else
 		try { currentJavaLineNumber++;
-			  if(prevLineNumber!=Global.sourceLineNumber) {
-//				  String s0=edIndent()+"// SourceLine "+Global.sourceLineNumber;
-				  String s0=edIndent()+"// JavaLine "+currentJavaLineNumber+" ==> SourceLine "+Global.sourceLineNumber;
-				  appendLine(currentJavaLineNumber,Global.sourceLineNumber);
-				  if(Option.TRACE_CODING) Util.println("CODE "+Global.sourceLineNumber+": "+s0);
+			  if(prevLineNumber!=sourceLineNumber) {
+				  String s0=edIndent()+"// JavaLine "+currentJavaLineNumber+" <== SourceLine "+sourceLineNumber;
+				  appendLine(currentJavaLineNumber,sourceLineNumber);
+				  if(Option.TRACE_CODING) Util.println("CODE "+sourceLineNumber+": "+s0);
 				  currentJavaLineNumber++;
-				  writer.write(s0+'\n');
+				  if(RTOption.DEBUGGING) writer.write(s0+'\n');
 			  }
 			  if(line.startsWith("}")) indent--;
 			  String s=edIndent()+line;
 			  if(line.endsWith("{")) indent++;
-			  if(Option.TRACE_CODING) Util.println("CODE "+Global.sourceLineNumber+": "+s);
+			  if(Option.TRACE_CODING) Util.println("CODE "+sourceLineNumber+": "+s);
 			  Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 			  writer.write(s+'\n');
 		} catch (IOException e) {
-			Util.println("Error Writing File: "+javaOutputFileName);
-			e.printStackTrace();
+			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
 		}
-		prevLineNumber=Global.sourceLineNumber;
+		prevLineNumber=sourceLineNumber;
 	}
 	
 	private String edIndent() {
@@ -118,7 +121,7 @@ public final class JavaModule {
 		return(s);  
 	}
 
-	public void appendLine(int javaLine,int simulaLine) {
+	public void appendLine(final int javaLine,final int simulaLine) {
 	    lineMap.add(javaLine); lineMap.addElement(simulaLine);
 	}
 	  
@@ -141,13 +144,13 @@ public final class JavaModule {
 		Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 		try { writer.write(s.toString()+'\n');
 		} catch (IOException e) {
-			Util.println("Error Writing File: "+javaOutputFileName);
-			e.printStackTrace();
+			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
 		}
 		
 	}
 	
-	public String toString()
-	{ return("JavaModule "+blockDeclaration+", javaOutputFileName="+javaOutputFileName); }
+	public String toString() {
+		return ("JavaModule " + blockDeclaration + ", javaOutputFileName=" + javaOutputFileName);
+	}
 
 }

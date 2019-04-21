@@ -31,15 +31,16 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ConditionalStatement extends Statement {
-	Expression condition;
-	Statement thenStatement;
-	Statement elseStatement = null;
+	private final Expression condition;
+	private final Statement thenStatement;
+	private final Statement elseStatement;
 
 	public ConditionalStatement() {
 //		Util.BREAK("BEGIN ConditionalStatement:");
 		condition = Expression.parseExpression();
 //		Util.BREAK("BEGIN ConditionalStatement: condition="+condition);
 		Parser.expect(KeyWord.THEN);
+		Statement elseStatement = null;
 		if (Parser.accept(KeyWord.ELSE)) {
 			thenStatement = new DummyStatement();
 			elseStatement = Statement.doParse();
@@ -51,26 +52,24 @@ public final class ConditionalStatement extends Statement {
 //			    Util.BREAK("BEGIN ConditionalStatement: elseStatement="+elseStatement);
 		    }
 		}
-//		Parser.skipMissplacedSymbol(KeyWord.THEN);
-//		Parser.skipMissplacedSymbol(KeyWord.STEP);
+		this.elseStatement=elseStatement;
 	}
 
-	public void print(String indent) {
-		StringBuilder s = new StringBuilder(indent);
+	public void print(final int indent) {
+    	String spc=edIndent(indent);
+		StringBuilder s = new StringBuilder(spc);
 		s.append("IF ").append(condition);
 		Util.println(s.toString());
-		Util.println(indent + "THEN ");
+		Util.println(spc + "THEN ");
+		thenStatement.print(indent + 1);
 		if (elseStatement != null) {
-			thenStatement.print(indent + "    ");
-			Util.println(indent + "ELSE ");
-			elseStatement.print(indent + "     ");
-		} else
-			thenStatement.print(indent + "    ");
+			Util.println(spc + "ELSE ");
+			elseStatement.print(indent + 1);
+		}
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		condition.doChecking();
 		condition.backLink=this; // To ensure RESULT$ from functions
 		//Util.BREAK("ConditionalStatement.doChecking: condition="+condition);

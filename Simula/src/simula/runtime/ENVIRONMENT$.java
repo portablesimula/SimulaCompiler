@@ -26,7 +26,7 @@ import java.util.Random;
  *
  */
 // public final class ENVIRONMENT$ {
-public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
+public class ENVIRONMENT$ extends RTObject$ {
 	static long START_TIME = System.currentTimeMillis();
 	static char CURRENTLOWTEN = '&';
 	static char CURRENTDECIMALMARK = '.';
@@ -71,14 +71,14 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	}
 
 	// Constructor
-	public ENVIRONMENT$(RTObject$ staticLink) {
+	public ENVIRONMENT$(final RTObject$ staticLink) {
 		super(staticLink);
 	}
 
 	// ************************************************************
 	// *** object IS classIdentifier
 	// ************************************************************
-	public boolean IS$(Object obj, Class<?> cls) {
+	public boolean IS$(final Object obj,final Class<?> cls) {
 		return((obj == null)?false:(obj.getClass() == cls));
 	}
 
@@ -103,7 +103,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param j
 	 * @return
 	 */
-	public int mod(int i, int j) {
+	public int mod(final int i,final int j) {
 		int res = i % j;
 		if (res == 0)
 			return (0);
@@ -125,7 +125,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param j
 	 * @return
 	 */
-	public int rem(int i, int j) {
+	public int rem(final int i,final int j) {
 		return (i % j);
 	}
 
@@ -140,15 +140,15 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param e
 	 * @return
 	 */
-	public int abs(int e) {
+	public int abs(final int e) {
 		return (Math.abs(e));
 	}
 
-	public float abs(float e) {
+	public float abs(final float e) {
 		return (Math.abs(e));
 	}
 
-	public double abs(double e) {
+	public double abs(final double e) {
 		return (Math.abs(e));
 	}
 
@@ -165,7 +165,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param e
 	 * @return
 	 */
-	public int sign(double e) {
+	public int sign(final double e) {
 		return ((e > 0) ? (1) : ((e < 0) ? -1 : 0));
 	}
 
@@ -186,7 +186,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param d
 	 * @return
 	 */
-	public int entier(double d) {
+	public int entier(final double d) {
 		int j = (int) d;
 		return ((((float) j) > d) ? (j - 1) : (j));
 	}
@@ -198,7 +198,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param x
 	 * @return
 	 */
-	public int IPOW$(int b, int x) {
+	public int IPOW$(final int b,int x) {
 		// RT.println("IPOW("+b+','+x+')');
 		if (x == 0) {
 			if (b == 0)
@@ -235,11 +235,11 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param x
 	 * @return
 	 */
-	public float addepsilon(float x) {
+	public float addepsilon(final float x) {
 		return (Math.nextUp(x));
 	}
 
-	public double addepsilon(double x) {
+	public double addepsilon(final double x) {
 		return (Math.nextUp(x));
 	}
 
@@ -264,11 +264,11 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param x
 	 * @return
 	 */
-	public float subepsilon(float x) {
+	public float subepsilon(final float x) {
 		return (Math.nextDown(x));
 	}
 
-	public double subepsilon(double x) {
+	public double subepsilon(final double x) {
 		return (Math.nextDown(x));
 	}
 
@@ -285,10 +285,10 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param i
 	 * @return
 	 */
-	public char Char(int i) {
+	public char Char(final int i) {
 		return ((char) i);
 	}
-	public char char$(int i) {
+	public char char$(final int i) {
 		return ((char) i);
 	}
 
@@ -305,7 +305,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param n
 	 * @return
 	 */
-	public char isochar(int n) {
+	public char isochar(final int n) {
 		return ((char) n);
 	}
 
@@ -321,7 +321,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @return
 	 */
-	public int rank(char c) {
+	public int rank(final char c) {
 		return ((int) c);
 	}
 
@@ -337,7 +337,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @return
 	 */
-	public int isorank(char c) {
+	public int isorank(final char c) {
 		return ((int) c);
 	}
 
@@ -352,7 +352,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @return
 	 */
-	public boolean digit(char c) {
+	public boolean digit(final char c) {
 		return (Character.isDigit(c));
 	}
 
@@ -368,7 +368,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @return
 	 */
-	public boolean letter(char c) {
+	public boolean letter(final char c) {
 		return (Character.isLetter(c));
 	}
 
@@ -392,7 +392,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @return
 	 */
-	public char lowten(char c) {
+	public char lowten(final char c) {
 		if (illegalLowten(c))
 			throw new RuntimeException("Illegal LOWTEN Character: " + c + "  Code=" + (int) c);
 		char lowten = CURRENTLOWTEN;
@@ -401,7 +401,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 		return (lowten);
 	}
 
-	private boolean illegalLowten(char c) {
+	private boolean illegalLowten(final char c) {
 		if (c <= 32)
 			return (true); // SPACE is also Illegal in this implementation
 		if (c >= 127)
@@ -445,7 +445,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @return
 	 */
-	public char decimalmark(char c) {
+	public char decimalmark(final char c) {
 		char decimalmark = 0;
 		if (c != '.' && c != ',') {
 			throw new RuntimeException("Decimalmark error: "+c);
@@ -471,15 +471,14 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @return
 	 */
 	public TXT$ upcase(TXT$ t) {
-		if (t == null)
-			t = NOTEXT;
-		t.setpos(1);
-		while (t.more()) {
-			char c = t.getchar();
-			t.setpos(t.pos() - 1);
-			t.putchar(Character.toUpperCase(c));
+		if (t == null) t = NOTEXT;
+		TXT$.setpos(t, 1);
+		while (TXT$.more(t)) {
+			char c = TXT$.getchar(t);
+			TXT$.setpos(t, TXT$.pos(t) - 1);
+			TXT$.putchar(t, Character.toUpperCase(c));
 		}
-		t.setpos(1);
+		TXT$.setpos(t, 1);
 		return (t);
 	}
 
@@ -498,15 +497,14 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @return
 	 */
 	public TXT$ lowcase(TXT$ t) {
-		if (t == null)
-			t = NOTEXT;
-		t.setpos(1);
-		while (t.more()) {
-			char c = t.getchar();
-			t.setpos(t.pos() - 1);
-			t.putchar(Character.toLowerCase(c));
+		if (t == null) t = NOTEXT;
+		TXT$.setpos(t, 1);
+		while (TXT$.more(t)) {
+			char c = TXT$.getchar(t);
+			TXT$.setpos(t, TXT$.pos(t) - 1);
+			TXT$.putchar(t, Character.toLowerCase(c));
 		}
-		t.setpos(1);
+		TXT$.setpos(t, 1);
 		return (t);
 	}
 
@@ -514,63 +512,63 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	// *** Mathematical functions ***
 	// *****************************************
 
-	public double sqrt(double r) {
+	public double sqrt(final double r) {
 		return (Math.sqrt(r));
 	}
 
-	public double sin(double r) {
+	public double sin(final double r) {
 		return (Math.sin(r));
 	}
 
-	public double cos(double r) {
+	public double cos(final double r) {
 		return (Math.cos(r));
 	}
 
-	public double tan(double r) {
+	public double tan(final double r) {
 		return (Math.tan(r));
 	}
 
-	public double cotan(double r) {
+	public double cotan(final double r) {
 		return (1.0 / Math.tan(r));
 	}
 
-	public double arcsin(double r) {
+	public double arcsin(final double r) {
 		return (Math.asin(r));
 	}
 
-	public double arccos(double r) {
+	public double arccos(final double r) {
 		return (Math.acos(r));
 	}
 
-	public double arctan(double r) {
+	public double arctan(final double r) {
 		return (Math.atan(r));
 	}
 
-	public double arctan2(double y, double x) {
+	public double arctan2(final double y,final double x) {
 		return (Math.atan2(y, x));
 	}
 
-	public double sinh(double r) {
+	public double sinh(final double r) {
 		return (Math.sinh(r));
 	}
 
-	public double cosh(double r) {
+	public double cosh(final double r) {
 		return (Math.cosh(r));
 	}
 
-	public double tanh(double r) {
+	public double tanh(final double r) {
 		return (Math.tanh(r));
 	}
 
-	public double ln(double r) {
+	public double ln(final double r) {
 		return (Math.log(r));
 	}
 
-	public double log10(double r) {
+	public double log10(final double r) {
 		return (Math.log10(r));
 	}
 
-	public double exp(double r) {
+	public double exp(final double r) {
 		return (Math.exp(r));
 	}
 
@@ -592,23 +590,23 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param y
 	 * @return
 	 */
-	public double max(double x, double y) {
+	public double max(final double x,final double y) {
 		return (Math.max(x, y));
 	}
 
-	public float max(float x, float y) {
+	public float max(final float x,final float y) {
 		return (Math.max(x, y));
 	}
 
-	public int max(int x, int y) {
+	public int max(final int x,final int y) {
 		return (Math.max(x, y));
 	}
 
-	public char max(char x, char y) {
+	public char max(final char x,final char y) {
 		return ((char) Math.max((int) x, (int) y));
 	}
 
-	public TXT$ max(TXT$ x, TXT$ y) {
+	public TXT$ max(final TXT$ x,final TXT$ y) {
 		return (TXTREL$LT(x, y) ? y : x);
 	}
 
@@ -626,23 +624,23 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param y
 	 * @return
 	 */
-	public double min(double x, double y) {
+	public double min(final double x,final double y) {
 		return (Math.min(x, y));
 	}
 
-	public float min(float x, float y) {
+	public float min(final float x,final float y) {
 		return (Math.min(x, y));
 	}
 
-	public int min(int x, int y) {
+	public int min(final int x,final int y) {
 		return (Math.min(x, y));
 	}
 
-	public char min(char x, char y) {
+	public char min(final char x,final char y) {
 		return ((char) Math.min((int) x, (int) y));
 	}
 
-	public TXT$ min(TXT$ x, TXT$ y) {
+	public TXT$ min(final TXT$ x,final TXT$ y) {
 		return (TXTREL$LT(x, y) ? x : y);
 	}
 
@@ -663,7 +661,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * 
 	 * @param msg
 	 */
-	public void error(TXT$ msg) {
+	public void error(final TXT$ msg) {
 		throw new RuntimeException(msg.edText());
 	}
 
@@ -689,7 +687,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param i
 	 * @return
 	 */
-	public int lowerbound(ARRAY$<?> a, int i) {
+	public int lowerbound(final ARRAY$<?> a,final int i) {
 		try {
 			return (a.LB[i - 1]);
 		} catch (RuntimeException e) {
@@ -715,7 +713,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param i
 	 * @return
 	 */
-	public int upperbound(ARRAY$<?> a, int i) {
+	public int upperbound(final ARRAY$<?> a,final int i) {
 		try {
 			return (a.UB[i - 1]);
 		} catch (RuntimeException e) {
@@ -732,9 +730,9 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	// **********************************************************************
 	static final Random random = new Random();
 
-	private double basicDRAW(NAME$<Integer> U) {
-		return (random.nextDouble());
-	}
+//	private double basicDRAW(NAME$<Integer> U) {
+//		return (random.nextDouble());
+//	}
 	
 	// **********************************************************************
 	// *** Random drawing: Procedure draw
@@ -755,14 +753,13 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public boolean draw(float a, NAME$<Integer> U) {
+//	public boolean draw(float a, NAME$<Integer> U) {
+	public boolean draw(final float a,final int U) {
 		boolean val;
-		if (a >= 1.0)
-			val = true;
-		else if (a <= 0.0)
-			val = false;
-		else
-			val = a >= basicDRAW(U);
+		if (a >= 1.0) val = true;
+		else if (a <= 0.0) val = false;
+//		else val = a >= basicDRAW(U);
+		else val = a >= random.nextDouble();
 		return (val);
 	}
 
@@ -786,10 +783,11 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int randint(int a, int b, NAME$<Integer> U) {
-		if (b < a)
-			throw new RuntimeException("Randint(a,b,u):  b < a");
-		int val = entier(basicDRAW(U) * ((b - a + 1))) + a;
+//	public int randint(int a, int b, NAME$<Integer> U) {
+	public int randint(final int a,final int b,final int U) {
+		if (b < a) throw new RuntimeException("Randint(a,b,u):  b < a");
+//		int val = entier(basicDRAW(U) * ((b - a + 1))) + a;
+		int val = entier(random.nextDouble() * ((b - a + 1))) + a;
 		return (val);
 	}
 
@@ -813,10 +811,11 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double uniform(double a, double b, NAME$<Integer> U) {
-		if (b < a)
-			throw new RuntimeException("Uniform(a,b,u): b < a");
-		double val = a + ((b - a) * basicDRAW(U));
+//	public double uniform(double a, double b, NAME$<Integer> U) {
+	public double uniform(final double a,final double b,final int U) {
+		if (b < a) throw new RuntimeException("Uniform(a,b,u): b < a");
+//		double val = a + ((b - a) * basicDRAW(U));
+		double val = a + ((b - a) * random.nextDouble());
 		return (val);
 	}
 
@@ -840,12 +839,13 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double normal(double a, double b, NAME$<Integer> U) {
+//	public double normal(double a, double b, NAME$<Integer> U) {
+	public double normal(final double a,final double b,final int U) {
 		double t, p, q, v, x;
 		boolean z;
-		if (b < 0.0)
-			throw new RuntimeException("Normal(a,b,u):  b <= 0.");
-		v = basicDRAW(U);
+		if (b < 0.0) throw new RuntimeException("Normal(a,b,u):  b <= 0.");
+//		v = basicDRAW();
+		v = random.nextDouble();
 		if (v > 0.5) {
 			z = true;
 			v = 1.0f - v;
@@ -882,10 +882,11 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double negexp(double a, NAME$<Integer> U) {
-		if (a <= 0.0)
-			throw new RuntimeException("Negexp(a,u): a <= 0");
-		double v = basicDRAW(U);
+//	public double negexp(double a, NAME$<Integer> U) {
+	public double negexp(final double a,final int U) {
+		if (a <= 0.0) throw new RuntimeException("Negexp(a,u): a <= 0");
+//		double v = basicDRAW(U);
+		double v = random.nextDouble();
 		double val = -Math.log(v) / a;
 		return (val);
 	}
@@ -923,12 +924,14 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int Poisson(double a, NAME$<Integer> U) {
+//	public int Poisson(double a, NAME$<Integer> U) {
+	public int Poisson(final double a,final int U) {
 		int val;
 		double acc, xpa, sqa;
 		if (a <= 0.0)
 			val = 0;
-		else if (a > 20.0) { // entier(normal(a,sqrt(a),U) + 0.5)
+		else if (a > 20.0) {
+			// entier(normal(a,sqrt(a),U) + 0.5)
 			sqa = Math.sqrt(a);
 			val = entier(normal(a, sqa, U) + 0.5);
 		} else {
@@ -936,7 +939,8 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 			val = 0;
 			xpa = Math.exp(-a);
 			do {
-				acc = acc * basicDRAW(U);
+//				acc = acc * basicDRAW();
+				acc = acc * random.nextDouble();
 				val = val + 1;
 			} while (acc >= xpa);
 			val = val - 1;
@@ -975,7 +979,8 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double Erlang(double a, double b, NAME$<Integer> U) {
+//	public double Erlang(double a, double b, NAME$<Integer> U) {
+	public double Erlang(final double a,final double b,final int U) {
 		int c;
 		double val, bc, ab, z, v;
 		if (a <= 0.0 || b <= 0.0)
@@ -985,12 +990,14 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 		bc = b - c;
 		ab = a * b;
 		while ((c--) > 0) {
-			v = basicDRAW(U);
+//			v = basicDRAW(U);
+			v = random.nextDouble();
 			z = Math.log(v);
 			val = val - (z / ab);
 		}
 		if (bc > 0.0) {
-			v = basicDRAW(U);
+//			v = basicDRAW(U);
+			v = random.nextDouble();
 			z = Math.log(v);
 			val = val - ((bc * z) / ab);
 		}
@@ -1024,12 +1031,14 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int discrete(ARRAY$<double[]> A, NAME$<Integer> U) {
+//	public int discrete(ARRAY$<double[]> A, NAME$<Integer> U) {
+	public int discrete(final ARRAY$<double[]> A,final int U) {
 		int result, j, nelt;
 		double v;
 		int lb = A.LB[0];
 		int ub = A.UB[0];
-		v = basicDRAW(U);
+//		v = basicDRAW(U);
+		v = random.nextDouble();
 		nelt = ub - lb + 1;
 		result = ub + 1;
 		j = 0;
@@ -1082,7 +1091,8 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public double linear(ARRAY$<double[]> A, ARRAY$<double[]> B, NAME$<Integer> U) {
+//	public double linear(ARRAY$<double[]> A, ARRAY$<double[]> B, NAME$<Integer> U) {
+	public double linear(final ARRAY$<double[]> A,final ARRAY$<double[]> B,final int U) {
 		int i, nelt;
 		double val, a_val, a_lag, a_dif, b_val, b_lag, v;
 
@@ -1092,7 +1102,8 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 		nelt = ub - lb + 1;
 		if (nelt != (B.UB[0] - B.LB[0] + 1))
 			throw new RuntimeException("Linear(A,B,U): The number of elements in A and B are different.");
-		v = basicDRAW(U);
+//		v = basicDRAW(U);
+		v = random.nextDouble();
 		i = 0;
 		while (A.Elt[i] < v)
 			i = i + 1;
@@ -1138,7 +1149,8 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param U
 	 * @return
 	 */
-	public int histd(ARRAY$<float[]> A, NAME$<Integer> U) {
+//	public int histd(ARRAY$<float[]> A, NAME$<Integer> U) {
+	public int histd(final ARRAY$<float[]> A,final int U) {
 		int result = 0;
 		int j; // Array index.
 		int nelt; // Number of array elements.
@@ -1158,7 +1170,8 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 			sum = sum + tmp;
 			j = j + 1;
 		} while (j < nelt);
-		wsum = sum * basicDRAW(U); // Make 0 <= wsum < sum
+//		wsum = sum * basicDRAW(U); // Make 0 <= wsum < sum
+		wsum = sum * random.nextDouble(); // Make 0 <= wsum < sum
 		j = 0;
 		sum = 0.0;
 		do {
@@ -1247,7 +1260,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	 * @param c
 	 * @param d
 	 */
-	public void histo(ARRAY$<?> A, ARRAY$<?> B, float c, float d) {
+	public void histo(final ARRAY$<?> A,final ARRAY$<?> B,final float c,final float d) {
 		if(A.nDim()!=1) 
 			throw new RuntimeException("histo(A,B,c,d) - A is not one-dimensional");
 		if(B.nDim()!=1) 
@@ -1280,7 +1293,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	// **********************************************************************
 	// *** Random drawing: Procedure setSeed
 	// **********************************************************************
-	public void setSeed(long seed) {
+	public void setSeed(final long seed) {
 		random.setSeed(seed);
 	}
 
@@ -1288,7 +1301,7 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	// **********************************************************************
 	// *** Utility: Procedure waitSomeTime
 	// **********************************************************************
-	public void waitSomeTime(int millies) {
+	public void waitSomeTime(final int millies) {
 		// RT.println("ENVIRONMENT.waitSomeTime: sleep="+millies);
 		try {
 			Thread.sleep(millies);
@@ -1302,43 +1315,43 @@ public class ENVIRONMENT$ extends RTObject$ { // CORR-PREFIX
 	// **********************************************************************
 	// *** Additional S-Port Procedures
 	// **********************************************************************
-    public void DEFEXCEPTION(RTObject$.LABQNT$ EXCEPTION_HANDLER,NAME$<Integer> eno) {
+    public void DEFEXCEPTION(final RTObject$.LABQNT$ EXCEPTION_HANDLER,final NAME$<Integer> eno) {
     	RT.NOT_IMPLEMENTED("DEFEXCEPTION"); // TODO: Implement it
     }
 
-    public int hash(TXT$ t) {
+    public int hash(final TXT$ t) {
     	RT.NOT_IMPLEMENTED("hash"); // TODO: Implement it
     	return(0);
     }
    
-    public char loadChar(TXT$ t,int i) {
+    public char loadChar(final TXT$ t,final int i) {
     	RT.NOT_IMPLEMENTED("loadChar"); // TODO: Implement it
     	return(' ');
     }
     
-    public void storeChar(char c,TXT$ t,int i) {
+    public void storeChar(final char c,final TXT$ t,final int i) {
     	RT.NOT_IMPLEMENTED("storeChar"); // TODO: Implement it
     }
     
-    public TXT$ getTextInfo(int i) {
+    public TXT$ getTextInfo(final int i) {
     	RT.NOT_IMPLEMENTED("getTextInfo"); // TODO: Implement it
     	return(null);
     }
     
-    public void giveTextInfo(int i,TXT$ t) {
+    public void giveTextInfo(final int i,final TXT$ t) {
     	RT.NOT_IMPLEMENTED("giveTextInfo"); // TODO: Implement it
     }
     
-    public int getIntInfo(int i) {
+    public int getIntInfo(final int i) {
     	RT.NOT_IMPLEMENTED("getIntInfo"); // TODO: Implement it
     	return(0);
     }
     
-    public void giveIntInfo(int i,int val) {
+    public void giveIntInfo(final int i,final int val) {
     	RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
     }
     
-    public void rts_utility(int index,int level) {
+    public void rts_utility(final int index,final int level) {
     	RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
     }
 

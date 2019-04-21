@@ -31,10 +31,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class LabeledStatement extends Statement {
-	private Vector<String> labels;
-	private Statement statement;
+	private final Vector<String> labels;
+	private final Statement statement;
 
-	public LabeledStatement(Vector<String> labels, Statement statement) {
+	public LabeledStatement(final Vector<String> labels,final Statement statement) {
 		this.labels = labels;
 		this.statement = statement;
 	}

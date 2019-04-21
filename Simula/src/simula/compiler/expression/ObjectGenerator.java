@@ -45,12 +45,12 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ObjectGenerator extends Expression {
-	private String classIdentifier;
+	private final String classIdentifier;
 	private Meaning meaning;
-	private Vector<Expression> params;
-	private Vector<Expression> checkedParams = new Vector<Expression>();
+	private final Vector<Expression> params;
+	private final Vector<Expression> checkedParams = new Vector<Expression>();
 
-	public ObjectGenerator(String classIdentifier, Vector<Expression> params) {
+	public ObjectGenerator(final String classIdentifier,final Vector<Expression> params) {
 		this.classIdentifier = classIdentifier;
 		this.type = Type.Ref(classIdentifier);
 		this.params = params;
@@ -77,12 +77,10 @@ public final class ObjectGenerator extends Expression {
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
-			Util.TRACE("BEGIN ObjectGenerator(" + classIdentifier + ").doChecking - Current Scope Chain: "
-					+ Global.currentScope.edScopeChain());
+			Util.TRACE("BEGIN ObjectGenerator(" + classIdentifier + ").doChecking - Current Scope Chain: " + Global.currentScope.edScopeChain());
 		meaning = Global.currentScope.findMeaning(classIdentifier);
 		if (meaning == null) {
 			// if(classIdentifier.equalsIgnoreCase("L"))Util.BREAK("ObjectGenerator.doChecking:
@@ -107,7 +105,7 @@ public final class ObjectGenerator extends Expression {
 				Util.TRACE("Formal Parameter: " + formalParameter + ", Formal Type=" + formalType);
 			Expression actualParameter = actualIterator.next();
 			actualParameter.doChecking();
-			// Util.BREAK("ObjectGenerator.doChecking Parameter "+formalParameter+" := "+actualParameter);
+			//Util.BREAK("ObjectGenerator.doChecking Parameter "+formalParameter+" := "+actualParameter);
 
 			Type actualType = actualParameter.type;
 			if (Option.TRACE_CHECKER)
@@ -118,7 +116,7 @@ public final class ObjectGenerator extends Expression {
 
 		}
 		if (formalIterator.hasNext())
-			Util.error("Wrong number of parameters to " + cls);
+			Util.error("Missing parameter("+formalIterator.next()+") to " + cls);
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END ObjectGenerator(" + classIdentifier + ").doChecking: type=" + type);
 		// Debug.BREAK("END ObjectGenerator");
@@ -155,9 +153,12 @@ public final class ObjectGenerator extends Expression {
 
 		s.append(')');
 		// if(((ClassDeclaration)meaning.declaredAs).isDetachUsed())
-		if (cls.isDetachUsed())
-			s.append(".START()");
-		else
+		if (cls.isDetachUsed()) {
+			s.append(".START$()");
+			String start="(("+classIdent+')'+s.toString()+')';
+			//Util.BREAK("ObjectGenerator.toJavaCode: START="+start);
+			return(start);
+		} else
 			s.append(".STM$()");
 
 		return (s.toString());

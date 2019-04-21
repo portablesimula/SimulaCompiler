@@ -1,8 +1,9 @@
 
 begin
    real x;
-   class A; virtual: Procedure P,Q; Label L; Switch S;
+   class A; virtual: Procedure P,Q;
    begin
+      switch S:=L1,L2;
       real y;
       procedure P(x,i,r); ref(A) x; integer i; real r;
       begin end;
@@ -17,7 +18,6 @@ begin
          begin end;
          procedure Q(r); real r;
          begin end;
-         switch S:=L1,L2;
          switch T:=L2,L1;
          goto T(2);
    end;      

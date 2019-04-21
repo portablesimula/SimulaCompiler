@@ -1,6 +1,4 @@
 
-%QUALIFIEDNAMES
-
 class Gauss(n); integer n;
 begin array W,X(1:n);
    real procedure integral(F,a,b); real procedure F; real a,b;

@@ -1,6 +1,4 @@
 
-%QUALIFIEDNAMES
-
 %class FunctionCall;
 begin ref(CCC) cx;
       integer array IntArr2(1:9);

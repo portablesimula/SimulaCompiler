@@ -47,24 +47,18 @@ import java.io.Writer;
  *
  */
 public class OutFile$ extends ImageFile$ {
-//	protected OutputStreamWriter writer;
 	protected Writer writer;
 
 	// Constructor
-   public OutFile$(RTObject$ staticLink,TXT$ FILENAME) {
-      super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$("OutFile$");
-      // Create Class Body
-      CODE$=new ClassBody(CODE$,this,2) {
-         public void STM$() {
-        	 TRACE_BEGIN_STM$("OutFile$",inner);
-             if(inner!=null) inner.STM$();
-             TRACE_END_STM$("OutFile$");
-      }};
-   }
-   // Class Statements
-   public OutFile$ STM$() { return((OutFile$)CODE$.EXEC$()); }
-   public OutFile$ START() { START(this); return(this); }
+	public OutFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+		super(staticLink,FILENAME);
+	}
+
+	// Class Statements
+	public OutFile$ STM$() {
+		EBLK();
+		return(this);
+	}
 
 	/**
 	 * <pre>
@@ -85,7 +79,7 @@ public class OutFile$ extends ImageFile$ {
 	 * @param IMAGE_
 	 * @return true if successful, otherwise false.
 	 */
-	public boolean open(TXT$ IMAGE_) {
+	public boolean open(final TXT$ IMAGE_) {
 		if (OPEN$) return (false); // File already opened
 		doCreateAction();
 		OPEN$ = true;

@@ -185,8 +185,8 @@ public class ThreadUtils {
 			String msg="  - " + T;
 			if (T == Thread.currentThread())
 				msg=msg+" = CurrentThread";
-			if (T == RTObject$.CUR$.THREAD$)
-				msg=msg+" = CUR$.THREAD$";
+//			if (T == RTObject$.CUR$.THREAD$)
+//				msg=msg+" = CUR$.THREAD$";
 			RT.println(msg+"   STATE="+T.getState());
 			if(withStackTrace) {
 				RT.printSimulaStackTrace(T,0);

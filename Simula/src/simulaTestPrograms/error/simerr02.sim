@@ -8,5 +8,5 @@ BEGIN
    z:=&&;
    b=b OR b;
    z;
-   x+4:=5;
+   x+4:=5++7;
 END

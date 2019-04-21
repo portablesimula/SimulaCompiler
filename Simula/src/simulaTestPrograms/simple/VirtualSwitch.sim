@@ -1,0 +1,26 @@
+begin
+
+   class A; virtual: switch S; procedure P;
+   begin
+      text ident="CLASS A";
+      outtext("In A before inner"); outimage;
+      goto S(2);
+      inner;
+   L2: outtext("In A after inner"); outimage;
+   end;
+   
+   A class B;
+   begin
+      switch S:=L2,L;
+      text ident="CLASS B";
+      outtext("In B before inner"); outimage;
+   L: outtext("At Label L - OK"); outimage;
+      inner;
+      outtext("In B after inner"); outimage;
+   end;
+   
+   ref(B) x;
+   x:-new B;
+   outtext("In MAIN after new B"); outimage;
+   outtext("In MAIN after new " & x.ident); outimage;
+end;

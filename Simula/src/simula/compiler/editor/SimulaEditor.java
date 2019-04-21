@@ -40,7 +40,6 @@ import javax.swing.event.ChangeListener;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.RTOption;
 import simula.compiler.utilities.Util;
 
 
@@ -75,7 +74,7 @@ public class SimulaEditor extends JFrame {
 	// ****************************************************************
     public SimulaEditor() {
         try { setIconImage(Global.simIcon.getImage()); } 
-        catch (Exception e) { e.printStackTrace(); }
+        catch (Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
 		Global.console=new ConsolePanel();
         Global.console.write("Simula Compiler Console:\n");
         
@@ -141,6 +140,10 @@ public class SimulaEditor extends JFrame {
     	String text="The Simula Editor uses the directory workspace to "
     			   +"\nretrieve Simula source files and save the results"
     	           +"\n"
+    			   +"\nThe default workspace 'Samples' contains a set of"
+    	           +"\nSimula sample programs ready to be compiled."
+    	           +"\nYou may open them by the menu item [File][Open]"
+    	           +"\n"
     			   +"\nExecutable .jar files are stored in the subdirectory /bin"
                    +"\n";
     	String browse="Browse for another Workspace Directory";
@@ -175,6 +178,7 @@ public class SimulaEditor extends JFrame {
     	panel.setLayout(new BorderLayout());
     	panel.add(textArea,BorderLayout.NORTH);
     	panel.add(workspaceChooser,BorderLayout.CENTER);
+    	panel.add(new JTextArea(""),BorderLayout.SOUTH);
 		Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE,"OK");
         UIManager.put("Panel.background",PanelBackground);
         String selected=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
@@ -223,7 +227,7 @@ public class SimulaEditor extends JFrame {
 					} catch (Exception ex) {}
     			}
             }
-        } catch(Exception e) { e.printStackTrace(); }
+        } catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
     }
     
     
@@ -250,7 +254,7 @@ public class SimulaEditor extends JFrame {
 		if(file==null)current.fillTextPane(new StringReader("begin\n\nend;\n"),0);
 		else try { Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
 		 		   current.fillTextPane(reader,0);
-		} catch(IOException e) { e.printStackTrace(); }
+		} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
 		menuBar.updateMenuItems();
 	}
 	
@@ -261,7 +265,7 @@ public class SimulaEditor extends JFrame {
 		new Thread(new Runnable() {
 			public void run() {
 				try { SimulaCompiler.execute("java -jar " + jarFile + " -USE_CONSOLE");
-				} catch (IOException e) { e.printStackTrace(); }
+				} catch (IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
 			}
 		}).start();
 	}

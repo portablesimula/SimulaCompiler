@@ -15,9 +15,9 @@ import simula.compiler.utilities.Type.ConversionKind;
 import simula.compiler.utilities.Util;
 
 public final class TypeConversion extends Expression {
-	Expression expression;
+	final Expression expression;
 
-	private TypeConversion(Type type, Expression expression) {
+	private TypeConversion(final Type type,final Expression expression) {
 		//Util.BREAK("new TypeConversion("+type+','+expression+") qual="+expression.getClass().getSimpleName());
 		this.type=type;
 		this.expression = expression; expression.backLink=this;
@@ -25,7 +25,7 @@ public final class TypeConversion extends Expression {
 	}
 
 	// Test if a TypeConversion is necessary and then do it.
-	public static String mayBeConvert(Type fromType,Type toType,String expr) {
+	public static String mayBeConvert(final Type fromType,final Type toType,final String expr) {
 		if(fromType==Type.Real || fromType==Type.LongReal)
 		{ if(toType==Type.Integer)
               return("=(int)Math.round("+expr+");");
@@ -34,14 +34,14 @@ public final class TypeConversion extends Expression {
 	}
 
 	// Test if a TypeConversion is necessary and then create it.
-	public static Expression testAndCreate(Type toType, Expression expression) {
+	public static Expression testAndCreate(final Type toType,final Expression expression) {
 		if (testCastNeccessary(toType, expression))
 			return (new TypeConversion(toType, expression));
 		return (expression);
 	}
 
 	// Test if a TypeConversion is necessary.
-	private static boolean testCastNeccessary(Type toType, Expression expression) {
+	private static boolean testCastNeccessary(final Type toType,final Expression expression) {
 		//Util.BREAK("TypeConversion.testCastNeccessary("+toType+','+expression+") qual="+expression.getClass().getSimpleName());
 		if (toType == null)	return (false);
 		Type fromType = expression.type;
@@ -52,13 +52,12 @@ public final class TypeConversion extends Expression {
 		}
 		ConversionKind conversionKind = fromType.isConvertableTo(toType);
 		switch (conversionKind) {
-		case DirectAssignable:	return (false);
-		case ConvertValue:
-		case ConvertRef:		return (true);
-		case Illegal:
-			Util.error("TypeConversion: Illegal cast: (" + toType + ") "
-					+ expression);
-		default: return (false);
+			case DirectAssignable:	return (false);
+			case ConvertValue:
+			case ConvertRef:		return (true);
+			case Illegal:
+				Util.error("TypeConversion: Illegal cast: (" + toType + ") " + expression);
+			default: return (false);
 		}
 	}
 	
@@ -67,8 +66,7 @@ public final class TypeConversion extends Expression {
 	{	return(expression.getWriteableVariable()); }
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		// Util.BREAK("TypeConversion.doChecking(): "+this);
 		type.doChecking(Global.currentScope);
 		expression.doChecking();
@@ -93,8 +91,7 @@ public final class TypeConversion extends Expression {
 		if (expression instanceof Variable) {
 			Variable var = (Variable) expression;
 			Declaration declaredAs = var.meaning.declaredAs;
-			// Util.BREAK("TypeConversion.toJavaCode: declaredAs="+declaredAs+",
-			// qual="+declaredAs.getClass().getSimpleName());
+			// Util.BREAK("TypeConversion.toJavaCode: declaredAs="+declaredAs+", qual="+declaredAs.getClass().getSimpleName());
 			if (declaredAs instanceof Parameter) {
 				Parameter par = (Parameter) declaredAs;
 				Type type = par.type;
@@ -102,8 +99,7 @@ public final class TypeConversion extends Expression {
 				// Util.BREAK("TypeConversion.toJavaCode: type="+type+", kind="+kind);
 				if (kind == Parameter.Kind.Procedure) {
 					evaluated = par.externalIdent + ".get().CPF().RESULT$()";
-					if (type.isArithmeticType())
-						return (cast + "Value(" + evaluated + ")");
+					if (type.isArithmeticType()) return (cast + "Value(" + evaluated + ")");
 				}
 			}
 		}

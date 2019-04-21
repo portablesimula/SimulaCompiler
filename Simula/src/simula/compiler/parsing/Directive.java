@@ -12,7 +12,7 @@ import simula.compiler.utilities.Util;
 
 public class Directive {
 
-	public static void treatDirectiveLine(SimulaScanner scanner,String id,String arg) {
+	public static void treatDirectiveLine(final SimulaScanner scanner,final String id,final String arg) {
 		if (id.equalsIgnoreCase("OPTION"))				Directive.setOption();
 		else if (id.equalsIgnoreCase("INSERT"))			Directive.insert(scanner,arg);
 		else if (id.equalsIgnoreCase("SPORT"))      	Directive.setSport(arg);
@@ -33,7 +33,7 @@ public class Directive {
 	 * Furthermore, if the source is being listed, listing is turned off during 
 	 * the inclusion and turned on again when reading continues after this directive. 
 	 */
-	public static void insert(SimulaScanner scanner,String fileName) {
+	public static void insert(final SimulaScanner scanner,final String fileName) {
 //		CHECK("C:/GitHub/SimulaCompiler/Simula/src/testing/bin/");
 //		CHECK("C:/GitHub/SimulaCompiler/Simula/src/testing/FEC/SYMTABLE.DEF");
 //		CHECK("C:/GitHub/SimulaCompiler/Simula/src/testing/FEC/");
@@ -45,7 +45,7 @@ public class Directive {
 		    	//scanner.insert(new FileReader(file));
 				Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
 				scanner.insert(reader);
-		    } catch(IOException e) { e.printStackTrace(); }
+		    } catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
 		} else Util.error("Can't open "+fileName+" for reading");
 	}
 //	private static void CHECK(String fileName) {
@@ -84,7 +84,7 @@ public class Directive {
      * <p>
      * The initial value is ON.
      */
-    public static void setSport(String onoff) {
+    public static void setSport(final String onoff) {
     	Option.sport=(onoff.equalsIgnoreCase("ON"));
     	Util.warning("Compiler Directive: %SPORT sets Option.sport="+Option.sport);
     }
@@ -106,7 +106,7 @@ public class Directive {
 	/**
 	 * %TITLE title-string
 	 */
-    public static void setTitle(String title) {
+    public static void setTitle(final String title) {
 //		Global.currentTitle = title;
 //		Util.warning("NOT IMPLEMENTED: Compiler Directive: %TITLE");
 	}
@@ -114,7 +114,7 @@ public class Directive {
     /**
      * %KEEP_JAVA directory-string
      */
-    public static void setKeepJava(String dir) {
+    public static void setKeepJava(final String dir) {
     	if(dir!=null) Option.keepJava=dir;
     	else Util.warning("Missing directory in KEEP_JAVA directive");	
     	Util.BREAK("KEEP_JAVA: "+Option.keepJava);

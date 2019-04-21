@@ -1,0 +1,38 @@
+begin
+
+   class A; virtual: procedure goto_L;
+   begin
+      text ident="CLASS A";
+      outtext("In A before inner"); outimage;
+      goto_L;
+      inner;
+      outtext("In A after inner"); outimage;
+   end;
+   
+   A class B;
+   begin
+      text ident="CLASS B";
+      procedure goto_L;
+      begin
+         outtext("In Procedure 'goto_L'"); outimage;
+         goto L;
+      end;
+      
+      outtext("In B before inner"); outimage;
+   L: outtext("In B At Label L - OK"); outimage;
+      inner;
+      outtext("In B after inner"); outimage;
+   end;
+   
+   B class C;
+   begin
+      outtext("In C before inner"); outimage;
+      inner;
+      outtext("In C after inner"); outimage;
+   end;
+   
+   ref(B) x;
+   x:-new C;
+   outtext("In MAIN after new B"); outimage;
+   outtext("In MAIN after new " & x.ident); outimage;
+end;

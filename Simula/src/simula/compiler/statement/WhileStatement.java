@@ -24,8 +24,8 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class WhileStatement extends Statement {
-	Expression condition;
-	Statement doStatement;
+	private final Expression condition;
+	private final Statement doStatement;
 
 	public WhileStatement() {
 		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement, current=" + Parser.currentToken);
@@ -53,7 +53,7 @@ public final class WhileStatement extends Statement {
 		doStatement.doJavaCoding();
 		
 		if(isWhileTrueDo())
-			JavaModule.code("   if(CODE$==null) break; // Ad'Hoc to prevent JAVAC error'terminate");
+			JavaModule.code("if(CTX$==null) break; // Ad'Hoc to prevent JAVAC error: 'dead code' and terminate");
 		
 		JavaModule.code("}");
 	}

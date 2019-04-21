@@ -7,10 +7,10 @@
  */
 package simula.compiler;
 
+import simula.compiler.editor.RTOption;
 import simula.compiler.editor.SimulaEditor;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.RTOption;
 import simula.compiler.utilities.Util;
 
 /**
@@ -20,7 +20,7 @@ import simula.compiler.utilities.Util;
  */
 public final class Simula {
 
-	static void help() {
+	private static void help() {
 		Util.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
 		Util.println("Usage: java simula.jar  [options]  sourceFile \n\n"
 				+ "possible options include:\n"
@@ -77,44 +77,30 @@ public final class Simula {
 		    new SimulaCompiler(fileName).doCompile();
 		}
 	}
-	
-//	private static void printGlobalList(String msg) {
-//		if(Option.verbose)
-//		{ Util.message(msg);
-//		  Util.message("Package Name:    "+Global.packetName);
-//		  //Util.message("SourceFile Name: "+Global.sourceName);
-//		  //Util.message("SourceFile Dir:  "+Global.sourceFileDir);
-//		  //Util.message("TempDir .Java:   "+Global.tempJavaFileDir);
-//		  //Util.message("TempDir .Class:  "+Global.tempClassFileDir);
-//		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
-//		  //Util.message("OutputDir:       "+Global.outputDir);
-//		}
-//
-//	}
-	
-	private static void error(String msg)
-	{ System.err.println("Simula: "+msg+"\n");
-	  Util.popUpError(msg);
-	  help();
+
+	private static void error(final String msg) {
+		System.err.println("Simula: " + msg + "\n");
+		Util.popUpError(msg);
+		help();
 	}
 
-    /**
-     * Option:  -keepJava <directory> Specify where to place generated .java files
-     */
-    private static void setKeepJava(String dir)
-    { Option.keepJava=dir;
-      Util.TRACE("KEEP_JAVA: "+Option.keepJava);
-      // TODO: Check dir legal directory name
-    }
+	/**
+	 * Option: -keepJava <directory> Specify where to place generated .java files
+	 */
+	private static void setKeepJava(final String dir) {
+		Option.keepJava = dir;
+		Util.TRACE("KEEP_JAVA: " + Option.keepJava);
+		// TODO: Check dir legal directory name
+	}
 
-    /**
-     * Option:  -output <directory>        Specify where to place generated executable .jar file
-     */
-    private static void setOutputDir(String dir)
-    { Option.outputDir=dir;
-      Util.TRACE("OUTPUT_DIR: "+Option.keepJava);
-      // TODO: Check dir legal directory name
-    }
-
+	/**
+	 * Option: -output <directory> Specify where to place generated executable .jar
+	 * file
+	 */
+	private static void setOutputDir(final String dir) {
+		Option.outputDir = dir;
+		Util.TRACE("OUTPUT_DIR: " + Option.keepJava);
+		// TODO: Check dir legal directory name
+	}
 
 }

@@ -44,78 +44,95 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 
-public abstract class SyntaxClass
-{ 
-  private boolean CHECKED=false; // Set true when doChecking(), put or get is called
-  public Type type=null;
-  public int lineNumber;
-  
-  public void print(String indent) { Util.println(indent+this); } 
+public abstract class SyntaxClass { 
+	private boolean CHECKED = false; // Set true when doChecking(), put or get is called
+	public Type type = null;
+	public final int lineNumber;
 
-  protected SyntaxClass()
-  { lineNumber=Global.sourceLineNumber;
-    //Util.BREAK(this.getClass().getName()+": Got LineNumber="+lineNumber);
-  }
-
-  public static String acceptIdentifier()
-  { Token token=Parser.currentToken;
-	if(Parser.accept(KeyWord.IDENTIFIER)) return(token.getIdentifier().toString());
-	return(null);
-  }
-  
-  public static String expectIdentifier()
-  { Token token=Parser.currentToken;
-	if(acceptIdentifier()!=null) return(token.getIdentifier().toString());
-    Util.error("Got symbol "+token+" while expecting an Identifier");
-    return(null);
-  }
-  
-
-  
-  public static Type acceptType()
-  { Type type=null; //Type.Notype;
-	if(Parser.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
-	else if(Parser.accept(KeyWord.CHARACTER)) type=Type.Character;
-	else if(Parser.accept(KeyWord.INTEGER)) type=Type.Integer;
-	else if(Parser.accept(KeyWord.SHORT)) { Parser.expect(KeyWord.INTEGER); type=Type.Integer; }
-	else if(Parser.accept(KeyWord.REAL)) type=Type.Real;
-	else if(Parser.accept(KeyWord.LONG)) { Parser.expect(KeyWord.REAL); type=Type.LongReal; }
-	else if(Parser.accept(KeyWord.TEXT)) type=Type.Text;
-	else if(Parser.accept(KeyWord.REF))
-	{ Parser.expect(KeyWord.BEGPAR); Token classIdentifier=Parser.currentToken;
-	Parser.expect(KeyWord.IDENTIFIER); Parser.expect(KeyWord.ENDPAR); 
-	  type=Type.Ref(classIdentifier.toString()); 
+	protected SyntaxClass() {
+		lineNumber = Global.sourceLineNumber;
+		// Util.BREAK(this.getClass().getName()+": Got LineNumber="+lineNumber);
 	}
-	return(type);  
-  }
 
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
-  	Global.sourceLineNumber=lineNumber;
-    String name=this.getClass().getSimpleName();
-    Util.NOT_IMPLEMENTED(""+name+".doChecking");
-  }
+	public static String acceptIdentifier() {
+		Token token = Parser.currentToken;
+		if (Parser.accept(KeyWord.IDENTIFIER))
+			return (token.getIdentifier().toString());
+		return (null);
+	}
 
-  // Should be called from all doChecking,put,get methods to signal that semantic checking is done.
-  protected void SET_SEMANTICS_CHECKED() { CHECKED=true; }
-  protected boolean IS_SEMANTICS_CHECKED() { return(CHECKED); }
+	public static String expectIdentifier() {
+		Token token = Parser.currentToken;
+		if (acceptIdentifier() != null)
+			return (token.getIdentifier().toString());
+		Util.error("Got symbol " + token + " while expecting an Identifier");
+		return (null);
+	}  
 
-  protected	void ASSERT_SEMANTICS_CHECKED(Object obj)
-  { if(!CHECKED)
-	  Util.error("FATAL error - Semantic checker not called: "+obj.getClass().getName()+", "+obj);
-    if(this instanceof Declaration)
-    { Declaration decl=(Declaration)this;
-      if(decl.externalIdent==null) Util.error("External Identifier is not set");
-    }
-  }
-
-  public void doDeclarationCoding() { }
-
-  public void doJavaCoding() {
-	Global.sourceLineNumber=lineNumber; Global.sourceLineNumber=lineNumber;
-	JavaModule.code(toJavaCode());
-  }
   
-  public String toJavaCode() { return(toString()); }
+    public static Type acceptType() {
+    	Type type=null; //Type.Notype;
+    	if(Parser.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
+    	else if(Parser.accept(KeyWord.CHARACTER)) type=Type.Character;
+    	else if(Parser.accept(KeyWord.INTEGER)) type=Type.Integer;
+		else if(Parser.accept(KeyWord.SHORT)) { Parser.expect(KeyWord.INTEGER); type=Type.Integer; }
+		else if(Parser.accept(KeyWord.REAL)) type=Type.Real;
+		else if(Parser.accept(KeyWord.LONG)) { Parser.expect(KeyWord.REAL); type=Type.LongReal; }
+		else if(Parser.accept(KeyWord.TEXT)) type=Type.Text;
+		else if(Parser.accept(KeyWord.REF))	{
+			Parser.expect(KeyWord.BEGPAR); Token classIdentifier=Parser.currentToken;
+			Parser.expect(KeyWord.IDENTIFIER); Parser.expect(KeyWord.ENDPAR); 
+			type=Type.Ref(classIdentifier.toString()); 
+		}
+		return(type);  
+    }
+
+	public void doChecking() {
+		if (IS_SEMANTICS_CHECKED())	return;
+		Global.sourceLineNumber = lineNumber;
+		String name = this.getClass().getSimpleName();
+		Util.NOT_IMPLEMENTED("" + name + ".doChecking");
+	}
+
+	// Should be called from all doChecking,put,get methods to signal that semantic
+	// checking is done.
+	protected void SET_SEMANTICS_CHECKED() {
+		CHECKED = true;
+	}
+
+	protected boolean IS_SEMANTICS_CHECKED() {
+		return (CHECKED);
+	}
+
+	protected void ASSERT_SEMANTICS_CHECKED(final Object obj) {
+		if (!CHECKED) Util.error("FATAL error - Semantic checker not called: " + obj.getClass().getName() + ", " + obj);
+		if (this instanceof Declaration) {
+			Declaration decl = (Declaration) this;
+			if (decl.externalIdent == null)	Util.error("External Identifier is not set");
+		}
+	}
+
+	public void doDeclarationCoding() {
+	}
+
+	public void doJavaCoding() {
+		Global.sourceLineNumber = lineNumber;
+		Global.sourceLineNumber = lineNumber;
+		JavaModule.code(toJavaCode());
+	}
+
+	public String toJavaCode() {
+		return (toString());
+	}
+
+	public void print(final int indent) {
+		Util.println(edIndent(indent) + this);
+	}
+	
+	protected String edIndent(final int indent) {
+		int i=indent; String s="";
+		while((i--)>0) s=s+"    ";
+		return(s);  
+	}
 
 }

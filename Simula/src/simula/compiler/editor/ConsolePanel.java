@@ -16,6 +16,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import simula.compiler.utilities.Util;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -31,15 +33,15 @@ public final class ConsolePanel extends JPanel {
     private Style styleWarning;
     private Style styleError;
 
-	public void write(String s) { write(s,styleRegular); }
-	public void writeError(String s) { write(s,styleError); }
-	public void writeWarning(String s) { write(s,styleWarning);	}
+	public void write(final String s) { write(s,styleRegular); }
+	public void writeError(final String s) { write(s,styleError); }
+	public void writeWarning(final String s) { write(s,styleWarning);	}
 
-	private void write(String s,Style style) {
+	private void write(final String s,final Style style) {
 		try {
 			doc.insertString(doc.getLength(), s, style);
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			Util.INTERNAL_ERROR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
         //Util.BREAK("ConsolePanel.write: done s="+s);
@@ -51,7 +53,7 @@ public final class ConsolePanel extends JPanel {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			Util.INTERNAL_ERROR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
         //Util.BREAK("ConsolePanel.write: done s="+s);
@@ -76,9 +78,8 @@ public final class ConsolePanel extends JPanel {
     }
 
     
-    private void addStylesToDocument(StyledDocument doc) {
-        Style defaultStyle = StyleContext.getDefaultStyleContext().
-                        getStyle(StyleContext.DEFAULT_STYLE);
+    private void addStylesToDocument(final StyledDocument doc) {
+        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
         
         Style regular = doc.addStyle("regular", defaultStyle);
         StyleConstants.setFontFamily(defaultStyle, "Courier New");

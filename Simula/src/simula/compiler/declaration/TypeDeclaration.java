@@ -7,10 +7,16 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Vector;
 
+import simula.compiler.JavaModule;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
+import simula.compiler.expression.TypeConversion;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -47,67 +53,95 @@ import simula.compiler.utilities.Util;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class TypeDeclaration extends Declaration {
-	// Type type;
-	public Constant constantElement;
+public class TypeDeclaration extends Declaration implements Externalizable {
+	// String identifier;    // Inherited
+	// String externalIdent; // Inherited
+	// Type type;            // Inherited
+	private boolean constant;
+	public Expression constantElement;
 
-	public TypeDeclaration(Type type, String identifier) {
+	public TypeDeclaration(final Type type,final String identifier) {
 		super(identifier);
 		this.type=type;
 		//Util.BREAK("TypeDeclaration: new "+type+" "+identifier);
 	}
 
-	public TypeDeclaration(Type type, String identifier, Constant constant) {
+	public TypeDeclaration(final Type type,final String identifier,final boolean constant,final Constant constantElement) {
 		this(type,identifier);
-		this.constantElement=constant;
+		this.constant=constant;
+		this.constantElement=constantElement;
 		//Util.BREAK("TypeDeclaration: new "+type+" "+identifier);
 	}
 	
-	public boolean isConstant() // Is used to prevent assignment of new value
-	{ return(constantElement!=null); }
+	public boolean isConstant() { // Is used to prevent assignment of new value
+		return(constant || constantElement!=null);	
+	}
 	   
-	public static void parse(Type type,Vector<Declaration> declarationList)
-	  { // identifier-list = identifier { , identifier }
+	public static void parse(final Type type,final Vector<Declaration> declarationList) {
+		// identifier-list = identifier { , identifier }
 	    if(Option.TRACE_PARSE) Parser.TRACE("Parse IdentifierList");
 	    if(Parser.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));
 	    else if(Parser.accept(KeyWord.ARRAY)) ArrayDeclaration.parse(type,declarationList);
-	    else
-	    { do
-	      { String ident=expectIdentifier();
-	        TypeDeclaration typeDeclaration=new TypeDeclaration(type,ident);
-	        if(Parser.accept(KeyWord.EQ))
-	        { Expression cnst=Expression.parseExpression();
-	          if(cnst instanceof Constant) typeDeclaration.constantElement=(Constant)cnst;
-	          else Util.error("Can't evaluate ConstantElement while parsing - "+cnst);
-	          //typeDeclaration.constantElement=TypeConversion.testAndCreate(type,Expression.parseExpression());
-	        }
-	        
-	        declarationList.add(typeDeclaration);
-	      } while(Parser.accept(KeyWord.COMMA)); 
+	    else {
+	    	do { 
+	    	    String ident=expectIdentifier();
+	            TypeDeclaration typeDeclaration=new TypeDeclaration(type,ident);
+	            if(Parser.accept(KeyWord.EQ)) typeDeclaration.constantElement=Expression.parseExpression();
+	            declarationList.add(typeDeclaration);
+	        } while(Parser.accept(KeyWord.COMMA)); 
 	    }
-	  } 
+	} 
 
 	public void doChecking() {
 		//Util.BREAK("TypeDeclaration.doChecking("+this+")");
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		type.doChecking(Global.currentScope);
-		if(constantElement!=null)
-		{ constantElement.doChecking();
-//	      constantElement=TypeConversion.testAndCreate(type,constantElement);
-//		  Util.BREAK("TypeDeclaration.doChecking("+this+") - Constant'type="+constantElement.type+" --> "+type);
-	      constantElement.type=type;
+		if(constantElement!=null) {
+			constantElement.doChecking();
+	        constantElement=TypeConversion.testAndCreate(type,constantElement);
+		    //Util.BREAK("TypeDeclaration.doChecking("+this+") - Constant'type="+constantElement.type+" --> "+type);
+	        constantElement.type=type;
+		}
+		if(Global.currentScope instanceof ClassDeclaration) {
+			ClassDeclaration cls=(ClassDeclaration)Global.currentScope;
+			if(cls.prefixLevel()>0) externalIdent=identifier+'$'+cls.prefixLevel();
+			else externalIdent=identifier;
 		}
 		SET_SEMANTICS_CHECKED();
 	}
 
+	public void doDeclarationCoding() {
+		//Util.BREAK("TypeDeclaration.doDeclarationCoding: "+this);	        			
+        if(constantElement!=null && !(constantElement instanceof Constant)) {
+        	// Initiate Final Variable
+//			Util.BREAK("TypeDeclaration.doDeclarationCoding: type="+type);	        			
+//			Util.BREAK("TypeDeclaration.doDeclarationCoding: constantElement.type="+constantElement.type);	        			
+			String value=constantElement.toJavaCode();
+			JavaModule.code(getJavaIdentifier() + '=' + value + ';');
+//			Util.BREAK("TypeDeclaration.doDeclarationCoding: CODE("+getJavaIdentifier() + '=' + value);	        			
+		}
+	}
+	
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		//Util.BREAK("TypeDeclaration.toJavaCode: scope="+scope.getClass().getName());
 		String modifier = "";
 		if (Global.currentScope.blockKind==BlockKind.Class) modifier = "public ";
 		if (this.isConstant()) modifier = modifier+"final ";
-		String value=(constantElement!=null)?constantElement.toJavaCode():type.edDefaultValue();
+		if(constantElement!=null) {
+			constantElement=TypeConversion.testAndCreate(type,constantElement.evaluate());
+	        //Util.BREAK("TypeDeclaration.toJavaCode: constantElement="+constantElement);
+	        constantElement.doChecking();
+	        if(constantElement instanceof Constant) {
+				String value=constantElement.toJavaCode();
+				String putValue=TypeConversion.mayBeConvert(constantElement.type,type,value);
+				return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + putValue);
+	        } else {
+				return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + ';');	        			
+	        }
+		}
+		String value=type.edDefaultValue();
 		return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + '=' + value + ';');
 	}
 
@@ -115,5 +149,32 @@ public class TypeDeclaration extends Declaration {
 		String s = ""+type + ' ' + identifier;
 		if(constantElement!=null) s=s+" = "+constantElement.toString();
 		return (s);
+	}
+
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public TypeDeclaration() { super(null); }
+
+	@Override
+	public void writeExternal(ObjectOutput oupt) throws IOException {
+		Util.TRACE_OUTPUT("Variable: "+type+' '+identifier+", constant="+isConstant()+", const="+constantElement);
+	    oupt.writeObject(identifier);
+	    oupt.writeObject(externalIdent);
+	    oupt.writeObject(type);
+	    oupt.writeBoolean(isConstant());
+		if(constantElement instanceof Constant)
+		     oupt.writeObject(constantElement);
+		else oupt.writeObject(null);
+	}
+
+	@Override
+	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
+		identifier=(String)inpt.readObject();
+		externalIdent=(String)inpt.readObject();
+		type=Type.inType(inpt);
+	    constant=inpt.readBoolean();
+	    constantElement=(Constant)inpt.readObject();
+	    Util.TRACE_INPUT("Variable: "+type+' '+identifier+", constant="+constant+", constantElement="+constantElement);
 	}
 }

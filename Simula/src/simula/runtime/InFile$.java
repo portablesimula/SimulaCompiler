@@ -53,23 +53,19 @@ import java.io.Reader;
  *
  */
 public class InFile$ extends ImageFile$ {
-	BufferedReader lineReader;
+	private BufferedReader lineReader;
 
 	// Constructor
-   public InFile$(RTObject$ staticLink,TXT$ FILENAME) {
-      super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$("InFile$");
-      CODE$=new ClassBody(CODE$,this,2) {
-         public void STM$() {
-       	    TRACE_BEGIN_STM$("InFile$",inner);
-            ENDFILE$=true;
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("InFile$");
-      }};
-   }
-   // Class Statements
-   public InFile$ STM$() { return((InFile$)CODE$.EXEC$()); }
-   public InFile$ START() { START(this); return(this); }
+	public InFile$(RTObject$ staticLink,TXT$ FILENAME) {
+		super(staticLink,FILENAME);
+		ENDFILE$=true;
+	}
+
+	// Class Statements
+	public InFile$ STM$() {
+		EBLK();
+		return(this);
+	}
 
 	/**
 	 * <p>
@@ -97,7 +93,7 @@ public class InFile$ extends ImageFile$ {
 	 * @param IMAGE_
 	 * @return true if successful, otherwise false.
 	 */
-	public boolean open(TXT$ IMAGE_) {
+	public boolean open(final TXT$ IMAGE_) {
 		if (OPEN$)	return (false);
 //		OPEN$ = true;
 		image = IMAGE_;
@@ -213,8 +209,8 @@ public class InFile$ extends ImageFile$ {
 		try {
 			String line = lineReader.readLine();
 			if (line != null) {
-				if (line.length() > image.length())
-					throw new RuntimeException( FILENAME$.edText()+": Image too short: input.length="+line.length()+", image.length="+image.length());
+				if (line.length() > TXT$.length(image))
+					throw new RuntimeException( FILENAME$.edText()+": Image too short: input.length="+line.length()+", image.length="+TXT$.length(image));
 				ASGSTR$(image,line);
 			} else {
 				ASGSTR$(image,"" + (char) 25);
@@ -269,19 +265,19 @@ public class InFile$ extends ImageFile$ {
 		if (!OPEN$ || ENDFILE$)
 			throw new RuntimeException("File not opened or attempt to read past EOF");
 		try {
-			image.setpos(1);
+			TXT$.setpos(image, 1);
 			String line = (rest != null) ? rest : lineReader.readLine();
 			rest = null;
 			if (line != null) {
-				if (line.length() > image.length()) { // Return partial image
-					rest = line.substring(image.length());
-					line = line.substring(0, image.length() - 1);
+				if (line.length() > TXT$.length(image)) { // Return partial image
+					rest = line.substring(TXT$.length(image));
+					line = line.substring(0, TXT$.length(image) - 1);
 				}
 				TXT$ LINE = new TXT$(line);
-				while (LINE.more())
-					image.putchar(LINE.getchar());
+				while (TXT$.more(LINE))
+					TXT$.putchar(image, TXT$.getchar(LINE));
 			} else {
-				image.putchar((char) 25);
+				TXT$.putchar(image, (char) 25);
 				ENDFILE$ = true;
 			}
 		} catch (IOException e) {

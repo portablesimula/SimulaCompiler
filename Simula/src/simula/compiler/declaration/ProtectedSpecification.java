@@ -7,6 +7,14 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Vector;
+
+import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
@@ -14,12 +22,12 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public final class ProtectedSpecification {
+public final class ProtectedSpecification implements Externalizable {
 	public String identifier;
 	public ClassDeclaration definedIn;
     public HiddenSpecification hiddenBy; // Set during doChecking
 
-	public ProtectedSpecification(ClassDeclaration definedIn,String identifier) {
+	public ProtectedSpecification(final ClassDeclaration definedIn,final String identifier) {
 		this.definedIn=definedIn;
 		this.identifier=identifier;
 	}
@@ -42,13 +50,11 @@ public final class ProtectedSpecification {
 		//Util.BREAK("ProtectedSpecification("+identifier+").doChecking: attribute="+attribute+" FOUND in "+definedIn);
 		if(attribute!=null) attribute.isProtected=this;
 		else Util.error("No Attribute "+identifier+" match 'protected' specification: "+this);
-		//
-		if(attribute instanceof ProcedureDeclaration) {
-			VirtualSpecification virtSpec=((ProcedureDeclaration)attribute).getVirtualSpecification();
-			if(virtSpec!=null) {
-				if( virtSpec.specifiedIn != attribute.declaredIn )
-					Util.error("A virtual attribute may only be specified protected in the class heading in which the virtual specification occurs.");
-			}
+		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(attribute);
+		if(virtSpec!=null) {
+//			if( virtSpec.specifiedIn != attribute.declaredIn )
+			if( virtSpec.declaredIn != attribute.declaredIn )
+				Util.error("A virtual attribute may only be specified protected in the class heading in which the virtual specification occurs.");
 		}
 		// Virtual specification together with Attribute definition.
 		VirtualSpecification vir=getVirtualSpecification();
@@ -71,6 +77,26 @@ public final class ProtectedSpecification {
 	  }
 	  s.append("]");
 	  return(s.toString());
+	}
+
+
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public ProtectedSpecification() {}
+
+	@Override
+	public void writeExternal(ObjectOutput oupt) throws IOException {
+		//Util.BREAK("AttributeFile.doWriteAttributeInfo: blk="+this);
+		Util.TRACE_OUTPUT("ProtectedSpecification: "+identifier);
+		oupt.writeObject(identifier);
+	}
+
+	@Override
+	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
+		identifier=(String)inpt.readObject();
+		this.definedIn=(ClassDeclaration)Global.currentScope;
+		Util.TRACE_INPUT("ProtectedSpecification: "+identifier);
 	}
 
 }

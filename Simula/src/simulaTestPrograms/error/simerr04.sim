@@ -1,8 +1,8 @@
 
 % Type checking of Parameter Array
 BEGIN
-%    long real array A(0:30);
-    integer array A(0:30);
+    long real array A(0:30);
+%    integer array A(0:30);
     
 	Procedure P(aa); real array aa;
 	begin end;   

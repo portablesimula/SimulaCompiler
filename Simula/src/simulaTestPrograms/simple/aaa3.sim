@@ -1,6 +1,0 @@
-begin integer i;
-   text t;
-   t:-"abracadabra";
-   outtext(t);
-end;
- tekst etter

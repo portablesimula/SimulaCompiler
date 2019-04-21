@@ -1,8 +1,8 @@
 begin 
-%  external class SubSep="C:\GitHub\SimulaCompiler\Simula/src/testing/bin/ExternalClass1.jar"; 
-  external class SubSep; 
+External class SubSep; 
    
 SubSep(5) begin 
+     real rrr=rr+3.14;
      text fname;
      x :- new B(); 
      iA(3):=5;

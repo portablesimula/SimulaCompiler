@@ -10,6 +10,7 @@ package simula.compiler.testing;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
+import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 
@@ -159,6 +160,18 @@ public final class RunFullTestBatch {
 		//Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
 		Option.outputDir=Global.getTempFileDir("simula/bin/");
+		
+		// Set RunTime Options and tracing.
+		RTOption.VERBOSE = false;
+		RTOption.DEBUGGING = false;
+//		RTOption.USE_CONTINUATIONS=true;
+		RTOption.USE_CONSOLE=false;
+		RTOption.CODE_STEP_TRACING = false;
+		RTOption.BLOCK_TRACING = false;
+		RTOption.GOTO_TRACING = false;
+		RTOption.THREAD_TRACING = false;
+		RTOption.QPS_TRACING = false;
+		RTOption.SML_TRACING = false;
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;

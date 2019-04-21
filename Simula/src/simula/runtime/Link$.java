@@ -56,18 +56,14 @@ package simula.runtime;
 public class Link$ extends Linkage$ {
 
 	// Constructor
-    public Link$(RTObject$ staticLink) {
-       super(staticLink);
-       TRACE_BEGIN_DCL$("Link$");
-       CODE$=new ClassBody(CODE$,this,1) {
-          public void STM$() {
-        	 TRACE_BEGIN_STM$("Link$",inner);
-             if(inner!=null) inner.STM$();
-             TRACE_END_STM$("Link$");
-       }};
+    public Link$(final RTObject$ staticLink) {
+    	super(staticLink);
     }
-    public Link$ STM$() { return((Link$)CODE$.EXEC$()); }
-    public Link$ START() { START(this); return(this); }
+    
+    public Link$ STM$() {
+        EBLK();
+    	return(this);
+    }
 
 	/**
 	 * The procedure "out" removes the object from the set (if any) of which it
@@ -94,7 +90,7 @@ public class Link$ extends Linkage$ {
 	 * 
 	 * @param x
 	 */
-	public void follow(Linkage$ x) {
+	public void follow(final Linkage$ x) {
 		out();
 		if (x != null) {
 			if (x.SUC != null) {
@@ -117,7 +113,7 @@ public class Link$ extends Linkage$ {
 	 * 
 	 * @param x
 	 */
-	public void precede(Linkage$ x) {
+	public void precede(final Linkage$ x) {
 		out();
 		if (x != null) {
 			if (x.SUC != null) {
@@ -137,7 +133,7 @@ public class Link$ extends Linkage$ {
 	 * 
 	 * @param S The set(Head) to receive this Link.
 	 */
-	public void into(Head$ S) {
+	public void into(final Head$ S) {
 		precede(S);
 	}
 }

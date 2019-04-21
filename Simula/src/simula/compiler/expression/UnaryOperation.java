@@ -26,29 +26,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class UnaryOperation extends Expression {
-	private KeyWord oprator;
+	private final KeyWord oprator;
 	private Expression operand;
-	  
-	  public static Expression newUnaryOperation(KeyWord oprator,Expression operand) {
-//		  Util.BREAK("UnaryOperation.NEW: lhs="+lhs+", QUAL="+lhs.getClass().getSimpleName());
-//		  Util.BREAK("UnaryOperation.NEW: oprator="+oprator);
-//		  Util.BREAK("UnaryOperation.NEW: operand="+operand+", QUAL="+operand.getClass().getSimpleName());
 
-		  if (oprator == KeyWord.NOT) {
-			  
-		  }
-		  else if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
-			  Number rhn=Constant.getNumber(operand);
-			  if(rhn!=null) {
-				  //Util.BREAK("UnaryOperation.NEW: rhn="+rhn+", QUAL="+rhn.getClass().getSimpleName());
-				  //Util.BREAK("UnaryOperation.Evaluate: "+lhs+' '+oprator+' '+operand);
-				  return(Constant.evaluate(oprator,rhn));
-			  }  
-		  }
-		  return(new UnaryOperation(oprator,operand));
-	  }
-
-	private UnaryOperation(KeyWord oprator, Expression operand) {
+	public UnaryOperation(final KeyWord oprator,final Expression operand) {
 		//Util.BREAK("NEW UnaryOperation: "+oprator+' '+operand);
 		this.oprator = oprator;
 		this.operand = operand;
@@ -60,13 +41,27 @@ public final class UnaryOperation extends Expression {
 		//Util.BREAK("NEW UnaryOperation: "+toString());
 	}
 
+	// Try to Compile-time Evaluate this expression
+	public Expression evaluate() {
+		if (oprator == KeyWord.NOT) {
+			  // TODO
+		}
+		else if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
+			Number rhn=Constant.getNumber(operand);
+			if(rhn!=null) {
+				//Util.BREAK("UnaryOperation.NEW: rhn="+rhn+", QUAL="+rhn.getClass().getSimpleName());
+				//Util.BREAK("UnaryOperation.Evaluate: "+lhs+' '+oprator+' '+operand);
+				return(Constant.evaluate(oprator,rhn));
+			}  
+		}
+		return(this);
+	}
+
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER)
-			Util.TRACE("BEGIN UnaryOperation" + toString()
-					+ ".doChecking - Current Scope Chain: "
-					+ Global.currentScope.edScopeChain());
+			Util.TRACE("BEGIN UnaryOperation" + toString() + ".doChecking - Current Scope Chain: " + Global.currentScope.edScopeChain());
 		operand.doChecking();
 		if (oprator == KeyWord.NOT)
 			this.type=Type.Boolean;
@@ -76,11 +71,11 @@ public final class UnaryOperation extends Expression {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	  // Returns true if this expression may be used as a statement.
-	  public boolean maybeStatement()
-	  {	ASSERT_SEMANTICS_CHECKED(this);
-		return(false);  
-	  }
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (false);
+	}
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);

@@ -50,46 +50,47 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public final class QualifiedObject extends Expression
-{ public Expression lhs;
-  public String classIdentifier;
-  ClassDeclaration classDeclaration; // Set by doChecking
+public final class QualifiedObject extends Expression {
+	public final Expression lhs;
+	public final String classIdentifier;
+	ClassDeclaration classDeclaration; // Set by doChecking
 
-  
-  public QualifiedObject(Expression lhs,String classIdentifier)
-  { this.lhs=lhs; this.classIdentifier=classIdentifier;
-    lhs.backLink=this;
-  }
-  
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
-   	Global.sourceLineNumber=lineNumber;
-	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN QualifiedObject"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	classDeclaration=getQualification(classIdentifier);
-	lhs.doChecking();
-	if(!checkCompatability(lhs,classIdentifier))
-		Util.error("Illegal Object Expression: "+lhs+" is not compatible with "+classIdentifier);
-	this.type=new Type(classIdentifier);
-	if(Option.TRACE_CHECKER) Util.TRACE("END QualifiedObject"+toString()+".doChecking - Result type="+this.type);
-	SET_SEMANTICS_CHECKED();
-  }
+	public QualifiedObject(final Expression lhs, final String classIdentifier) {
+		this.lhs = lhs;
+		this.classIdentifier = classIdentifier;
+		lhs.backLink = this;
+	}
 
-  // Returns true if this expression may be used as a statement.
-  public boolean maybeStatement()
-  {	ASSERT_SEMANTICS_CHECKED(this);
-	return(false);  
-  }
+	public void doChecking() {
+		if (IS_SEMANTICS_CHECKED())	return;
+		Global.sourceLineNumber = lineNumber;
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("BEGIN QualifiedObject" + toString() + ".doChecking - Current Scope Chain: "	+ Global.currentScope.edScopeChain());
+		classDeclaration = getQualification(classIdentifier);
+		lhs.doChecking();
+		if (!checkCompatability(lhs, classIdentifier))
+			Util.error("Illegal Object Expression: " + lhs + " is not compatible with " + classIdentifier);
+		this.type = new Type(classIdentifier);
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("END QualifiedObject" + toString() + ".doChecking - Result type=" + this.type);
+		SET_SEMANTICS_CHECKED();
+	}
 
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (false);
+	}
 
-  public String toJavaCode()
-  { ASSERT_SEMANTICS_CHECKED(this);
-	String result="((" + classDeclaration.getJavaIdentifier() + ")(" + lhs.get() + "))";
-	// Util.BREAK("QualifiedObject.toJavaCode: "+this+", ==> "+result);
-	return(result);
-  }
-  
+	public String toJavaCode() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		String result = "((" + classDeclaration.getJavaIdentifier() + ")(" + lhs.get() + "))";
+		// Util.BREAK("QualifiedObject.toJavaCode: "+this+", ==> "+result);
+		return (result);
+	}
 
-  public String toString()
-  { return("("+lhs+" QUA "+classIdentifier+")"); }
+	public String toString() {
+		return ("(" + lhs + " QUA " + classIdentifier + ")");
+	}
 
 }

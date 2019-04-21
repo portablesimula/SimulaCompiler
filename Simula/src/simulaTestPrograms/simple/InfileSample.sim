@@ -1,7 +1,8 @@
 
 begin
 %   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/sim/InfileSample.sim";
-   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/sim/Gauss.sim";
+%   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/sim/Gauss.sim";
+   Text fileName="Velg en fil";
    ref(Infile) inpt; integer i;
    inpt:-new Infile(fileName);
    if inpt.open (blanks (100)) then

@@ -71,24 +71,20 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * the executing program. The procedure "locked" returns the current value.
 	 */
 	boolean LOCKED$;
-	RandomAccessFile randomAccessFile;
-	FileLock fileLock;
+	
+	private RandomAccessFile randomAccessFile;
+	private FileLock fileLock;
 
 	// Constructor
-    public DirectByteFile$(RTObject$ staticLink,TXT$ FILENAME) {
+    public DirectByteFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
       super(staticLink,FILENAME);
-  	  TRACE_BEGIN_DCL$("DirectByteFile$");
   	  CREATE$=CreateAction$.noCreate; // Default for Direct-type files
-      CODE$=new ClassBody(CODE$,this,2) {
-         public void STM$() {
-        	TRACE_BEGIN_STM$("DirectByteFile$",inner);
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("DirectByteFile$");
-      }};
     }
     // Class Statements
-    public DirectByteFile$ STM$() { return((DirectByteFile$)CODE$.EXEC$()); }
-    public DirectByteFile$ START() { START(this); return(this); }
+    public DirectByteFile$ STM$() {
+        EBLK();
+        return(this);
+    }
 
 	/**
 	 * The procedure "endfile" returns true whenever LOC indicates an address
@@ -225,7 +221,7 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * 
 	 * @param p
 	 */
-	public void locate(int p) {
+	public void locate(final int p) {
 		if (p < 1 | p > MAXLOC$)
 			throw new RuntimeException("Parameter out of range");
 		else
@@ -322,7 +318,7 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * 
 	 * @param x
 	 */
-	public void outbyte(int x) {
+	public void outbyte(final int x) {
 		if (!OPEN$)
 			throw new RuntimeException("file closed");
 		if (x < 0 || x >= (2 ^ BYTESIZE$))
@@ -431,7 +427,7 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * @param loc2
 	 * @return
 	 */
-	public int lock(float timelimit, int loc1, int loc2) {
+	public int lock(final float timelimit,final int loc1,final int loc2) {
 		if (timelimit <= 0.0f) return (-1);
 		if (LOCKED$) unlock();
 		// TODO: Complete the implementation according
@@ -490,15 +486,15 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * @param t
 	 * @return
 	 */
-	public TXT$ intext(TXT$ t) {
-		t.setpos(1);
-		while (t.more() & (!endfile())) {
-			t.putchar((char) inbyte());
+	public TXT$ intext(final TXT$ t) {
+		TXT$.setpos(t, 1);
+		while (TXT$.more(t) & (!endfile())) {
+			TXT$.putchar(t, (char) inbyte());
 		}
 		if (endfile()) {
-			t.setpos(t.pos() - 1);
+			TXT$.setpos(t, TXT$.pos(t) - 1);
 		}
-		return (t.sub(1, t.pos() - 1));
+		return (TXT$.sub(t, 1, TXT$.pos(t) - 1));
 	}
 
 	/**
@@ -516,10 +512,10 @@ public class DirectByteFile$ extends ByteFile$ {
 	 * 
 	 * @param t
 	 */
-	public void outtext(TXT$ t) {
-		t.setpos(1);
-		while (t.more()) {
-			outbyte((int) t.getchar());
+	public void outtext(final TXT$ t) {
+		TXT$.setpos(t, 1);
+		while (TXT$.more(t)) {
+			outbyte((int) TXT$.getchar(t));
 		}
 	}
 

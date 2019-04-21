@@ -60,25 +60,12 @@ package simula.runtime;
  *
  */
 public final class TEXTOBJ extends RTObject$ {
-	// Declare parameters as attributes
-	public int SIZE;
-	public boolean CONST;
-	// Declare locals as attributes
-	char[] MAIN;
-
-	public String toString() {
-		return ("TEXTOBJ: SIZE=" + SIZE + ", CONST=" + CONST + ", MAIN=" + edText(0, SIZE));
-	}
-
-	// Utility
-	public String edText(int start, int length) {
-		StringBuilder s = new StringBuilder();
-		for (int i = start; i < (start+length); i++) s.append(MAIN[i]);
-		return (s.toString());
-	}
+	final int SIZE;
+	final boolean CONST;
+	final char[] MAIN;
 
 	// Constructor
-	public TEXTOBJ(int param_SIZE, boolean param_CONST) {
+	TEXTOBJ(final int param_SIZE,final boolean param_CONST) {
 		super(null);
 		// Parameter assignment to locals
 		SIZE = param_SIZE;
@@ -90,7 +77,7 @@ public final class TEXTOBJ extends RTObject$ {
 	}
 
 	// Constructor
-	public TEXTOBJ(String s) {
+	TEXTOBJ(final String s) {
 		super(null);
 		CONST = true;
 		MAIN = s.toCharArray();
@@ -99,9 +86,21 @@ public final class TEXTOBJ extends RTObject$ {
 	}
 
 	// Utility
-	public void fill(char c) {
+	void fill(char c) {
 		// RT.BREAK("TEXTOBJ.fill(" + c + ')' + ", MAIN=" + MAIN.length);
 		for (int i = 0; i < SIZE; i++)
 			MAIN[i] = c;
 	}
+
+	// Utility
+	String edText(final int start,final int length) {
+		StringBuilder s = new StringBuilder();
+		for (int i = start; i < (start+length); i++) s.append(MAIN[i]);
+		return (s.toString());
+	}
+
+	public String toString() {
+		return ("TEXTOBJ: SIZE=" + SIZE + ", CONST=" + CONST + ", MAIN=" + edText(0, SIZE));
+	}
+
 }

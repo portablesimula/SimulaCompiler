@@ -1,6 +1,29 @@
 Simula Issues
 
-OPEN Issue 16: Fra Øystein
+OPEN Issue 19: Fra Øystein
+Source Linjenummer er mangelfull ved Runtime-Error i statement koden til en
+separat kompilert super-klasse. Det refereres til feil source file.
+
+===============================================================================
+
+OPEN Issue 18: Fra Øystein
+Printfile er mangelfullt implementert.
+Prøv å bruke "java print document to printer".
+
+Se: https://coderanch.com/t/587886/java/Print-document-java
+
+===============================================================================
+
+OPEN Issue 17: Fra Øystein
+Dårlig feilmelding ved ulovlig GOTO.
+
+Analyse: Label quant inneholder for lite informasjon.
+
+Tiltak: Utvid LABQNT$ med identifier og linje-nummer.
+
+===============================================================================
+
+CLOSED Issue 16: Fra Øystein
 Problemer med å evaluere Constant-expression
 
 Analyse: 
@@ -15,6 +38,9 @@ simulation begin
 
 end;
 end;
+
+Tiltak: 1) evaluer expression i Pass 1 hvis bare konstanter
+        2) evaluer constant declaration i Java's Constructor til en final.
 ===============================================================================
 
 CLOSED Issue 15: Fra Karel
@@ -36,7 +62,7 @@ CLOSED Issue 14: Fra Dag og Karel
 Tiltak: Editoren er skrevet om. 
 ===============================================================================
 
-OPEN Issue 13 Fra Stein
+CLOSED Issue 13 Fra Stein
 Tillater subklasser på dypere blokknivå.
 Det ser ut til at den tillater subklasse på dypere blokk nivå enn superklassen,
 og litt dotting og QUA'ing rundt det går også gjennom.
@@ -72,7 +98,7 @@ end
 
 ===============================================================================
 
-OPEN Issue 12: Fra Stein
+CLOSED Issue 12: Fra Stein
 Jeg testet dette med at det ikke er lov å dotte seg inn i klasser med lokale klasser,
 se utdrag av SIMULA standard nederst under.  Programmet under virker helt strålende,
 og det burde det vel ikke.  Da er det vel også lett å konstruere programmer som foretar
@@ -95,6 +121,8 @@ begin
    rA:- new A;
    outint(rA.rB.i, 9);
 end
+
+Tiltak: Test for dot into klasse med lokale klasser er lagt inn.
 
 ----------------------------------------------------------------------
 

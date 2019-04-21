@@ -22,19 +22,18 @@ import simula.compiler.utilities.Global;
  *
  */
 public final class BlockStatement extends Statement {
-	public BlockDeclaration blockDeclaration;
+	private final BlockDeclaration blockDeclaration;
 
 	public String getJavaIdentifier() {
 		return (blockDeclaration.getJavaIdentifier());
 	}
 
-	public BlockStatement(BlockDeclaration blockDeclaration) {
+	public BlockStatement(final BlockDeclaration blockDeclaration) {
 		this.blockDeclaration = blockDeclaration;
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		blockDeclaration.doChecking();
 		SET_SEMANTICS_CHECKED();
 	}
@@ -49,13 +48,6 @@ public final class BlockStatement extends Statement {
 		  StringBuilder s = new StringBuilder();
 		  s.append("new ").append(getJavaIdentifier()).append('(');
 		  s.append(staticLink);
-
-//		  if(blockPrefix!=null && blockPrefix.hasArguments())
-//		  {	for (Expression par:blockPrefix.checkedParams) {
-//			   s.append(',').append(par.toJavaCode());
-//		    }
-//		  }
-
 		  if(blockDeclaration instanceof PrefixedBlockDeclaration)
 		  { Variable blockPrefix=((PrefixedBlockDeclaration)blockDeclaration).blockPrefix;
 			if(blockPrefix.hasArguments())
@@ -64,15 +56,18 @@ public final class BlockStatement extends Statement {
 		    }
 		  }
 		  s.append(')');
-		  if(blockDeclaration instanceof ClassDeclaration && ((ClassDeclaration)blockDeclaration).isDetachUsed())  // TODO: ER DETTE MULIG ?
-			   s.append(".START();");
+//		  Util.BREAK("BlockStatement.doJavaCoding: blockDeclaration.blockKind="+blockDeclaration.blockKind);
+//		  Util.BREAK("BlockStatement.doJavaCoding: blockDeclaration'QUAL="+blockDeclaration.getClass().getSimpleName());
+//		  if(blockDeclaration instanceof ClassDeclaration && ((ClassDeclaration)blockDeclaration).isDetachUsed()) {
+		  if(blockDeclaration.blockKind==BlockKind.PrefixedBlock && ((ClassDeclaration)blockDeclaration).isDetachUsed())
+			   s.append(".START$();");
 		  else s.append(".STM$();");
 		  JavaModule.code(s.toString());
 		}
 		blockDeclaration.doJavaCoding();
 	}
 
-	public void print(String indent) {
+	public void print(final int indent) {
 		blockDeclaration.print(indent);
 	}
 

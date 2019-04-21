@@ -45,8 +45,8 @@ begin
       end *** Prompt ***;
 
       Procedure InputFile;
-      begin text F; S: F:-Prompt("Input File","Standard File Name");
-            Inpt:-new InByteFile(F);
+      begin text F; S: !***F:-Prompt("Input File","Standard File Name");
+            Inpt:-new InByteFile("File");
             if not Inpt.Open then
             begin OutImage; OutText("The File """); OutText(F);
                   OutText(""" does not exist or is not accessible");
@@ -55,15 +55,17 @@ begin
       end;
 
       Procedure OutputFile;
-      begin text F; S: F:-Prompt("Output File","Standard File Name");
-            if F="TERM" then Oupt:-SysOut else
-            begin F:-Cat(F,".LST"); Oupt:-new OutFile(F);
-                  if not Oupt.Open(Blanks(100)) then
-                  begin OutImage; OutText("The File """); OutText(F);
-                        OutText(""" does not exist or is not accessible");
-                        OutImage; OutImage; goto S;
-                  end;
-            end;
+      begin
+%            text F; S: F:-Prompt("Output File","Standard File Name");
+%            if F="TERM" then Oupt:-SysOut else
+%            begin F:-Cat(F,".LST"); Oupt:-new OutFile(F);
+%                  if not Oupt.Open(Blanks(100)) then
+%                  begin OutImage; OutText("The File """); OutText(F);
+%                        OutText(""" does not exist or is not accessible");
+%                        OutImage; OutImage; goto S;
+%                  end;
+%            end;
+            Oupt:-SysOut;
       end;
 
       Text Procedure Cat(t1,t2); value t1,t2; text t1,t2;
@@ -90,8 +92,11 @@ begin
       OutText("SIMULA (R) Hex Dump   Version 0.00"); OutImage;
       OutText("Copyright (C) Simula a.s. 1986.  All rights reserved.");
       OutImage; OutImage; InputFile; OutputFile;
-      Start:=Prompt("Start Byte","0,1, ...").GetInt;
-      Count:=Prompt("Item Count","1,2, ...").GetInt;
+%      Start:=Prompt("Start Byte","0,1, ...").GetInt;
+%      Count:=Prompt("Item Count","1,2, ...").GetInt;
+      Start:=0;
+      Count:=10000;
+      
       PrtPart:-Blanks(20);
 
 NEXT:

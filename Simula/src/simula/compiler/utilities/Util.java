@@ -21,32 +21,18 @@ import javax.swing.UIManager;
  * @author Øystein Myhre Andersen
  *
  */
-public final class Util
-{ 
+public final class Util { 
 	
-//	public static void popUpMessage(String msg) {
-	public static void popUpMessage(Object msg) {
+	public static void popUpMessage(final Object msg) {
 		Util.optionDialog(msg,"Message",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, "OK");
 	}
 	
-	public static void popUpError(String msg) {
+	public static void popUpError(final String msg) {
 		int res=Util.optionDialog(msg+"\nDo you want to continue ?","Error",JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, "Yes", "No");
 		if(res!=JOptionPane.YES_OPTION) System.exit(0);
 	}
 
-//	public static int optionDialog(Object msg, String title, int optionType, int messageType) {
-//		Object OptionPaneBackground=UIManager.get("OptionPane.background");
-//		Object PanelBackground=UIManager.get("Panel.background");
-// 		UIManager.put("OptionPane.background", Color.WHITE);
-//        UIManager.put("Panel.background", Color.WHITE);
-//		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,Global.sIcon, null, null);
-//		//System.out.println("doClose.saveDialog: answer="+answer);
-//		UIManager.put("OptionPane.background",OptionPaneBackground);
-//        UIManager.put("Panel.background",PanelBackground);
-//		return(answer);
-//	}
-
-	public static int optionDialog(Object msg, String title, int optionType, int messageType,String... option) {
+	public static int optionDialog(final Object msg,final String title,final int optionType,final int messageType,final String... option) {
 		Object OptionPaneBackground=UIManager.get("OptionPane.background");
 		Object PanelBackground=UIManager.get("Panel.background");
  		UIManager.put("OptionPane.background", Color.WHITE);
@@ -66,6 +52,15 @@ public final class Util
 		nError++;
 		printError(err);
 		BREAK("Continue ?");
+	}
+
+	public static void INTERNAL_ERROR(final String msg,final Throwable e) {
+		String err = "Line " + Global.sourceLineNumber + "Internal Error: " + msg + e;
+		nError++;
+		printError(err);
+		e.printStackTrace();
+		//System.exit(-1);
+		FORCED_EXIT();
 	}
 
 	public static void FATAL_ERROR(final String s) {
@@ -95,9 +90,19 @@ public final class Util
 		TRACE("TRACE", msg);
 	}
 
-	public static void TRACE(final String id, String msg) {
+	public static void TRACE(final String id,final String msg) {
 		if (Option.TRACING)
 			println(id + " " + Global.sourceLineNumber + ": " + msg);
+	}
+
+	public static void TRACE_OUTPUT(final String msg) {
+		if (Option.TRACE_ATTRIBUTE_OUTPUT)
+			Util.println("ATTR OUTPUT: " + msg);
+	}
+
+	public static void TRACE_INPUT(final String msg) {
+		if (Option.TRACE_ATTRIBUTE_INPUT)
+			Util.println("ATTR INPUT: " + msg);
 	}
 
 	public static void NOT_IMPLEMENTED(final String s) {
@@ -166,7 +171,7 @@ public final class Util
     //*******************************************************************************
     //*** isJavaIdentifier - Check if 's' is a legal Java Identifier
     //*******************************************************************************
-	public static boolean isJavaIdentifier(String s) {
+	public static boolean isJavaIdentifier(final String s) {
 		if (s.length() == 0 || !Character.isJavaIdentifierStart(s.charAt(0))) {
 			return false;
 		}
@@ -181,7 +186,7 @@ public final class Util
     //*******************************************************************************
     //*** makeJavaIdentifier - Make 's' a legal Java Identifier
     //*******************************************************************************
-	public static String makeJavaIdentifier(String s) {
+	public static String makeJavaIdentifier(final String s) {
 		StringBuilder sb=new StringBuilder();
 		char c=s.charAt(0);
 		if (s.length() == 0 || !Character.isJavaIdentifierStart(c)) c='_';
@@ -205,7 +210,7 @@ public final class Util
 	 * @param x
 	 * @return
 	 */
-	public static int IPOW(int b, int x) {
+	public static int IPOW(final int b, int x) {
 		// RT.println("IPOW("+b+','+x+')');
 		if (x == 0) {
 			if (b == 0)
@@ -221,63 +226,63 @@ public final class Util
 		return (v);
 	}
   
-  //*******************************************************************************
-  //*** Reflection Utilities
-  //*******************************************************************************
+	//*******************************************************************************
+	//*** Reflection Utilities
+	//*******************************************************************************
   
 	
-	public static void listClass(final Class<?> c)
-	{ listConstructors(c);
-	  listMethods(c);	
+	public static void listClass(final Class<?> c) {
+		listConstructors(c);
+		listMethods(c);	
 	}
 	
-	public static void listMethods(final Class<?> c)
-	{ Method[] allMethods = c.getDeclaredMethods();
+	private static void listMethods(final Class<?> c) {
+		Method[] allMethods = c.getDeclaredMethods();
 		for(Method m:allMethods) listMethod(m);
 	}
 	
-	public static void listConstructors(final Class<?> c)
-	{ Constructor<?>[] allConstructors = c.getConstructors();
+	private static void listConstructors(final Class<?> c) {
+		Constructor<?>[] allConstructors = c.getConstructors();
 		for (Constructor<?> constructor : allConstructors)
 			listConstructor(constructor);
 	}
 	
-	public static void listConstructor(final Constructor<?> m)
-	{ System.out.format("%s%n", m.toGenericString());
-	  String  fmt = "%24s: %s%n";
-	  Class<?>[] pType  = m.getParameterTypes();
-	  Type[] gpType = m.getGenericParameterTypes();
-	  for (int i = 0; i < pType.length; i++) {
-      System.out.format(fmt,"ParameterType", pType[i]);
-		System.out.format(fmt,"GenericParameterType", gpType[i]);
-	  }
-	  Class<?>[] xType  = m.getExceptionTypes();
-	  Type[] gxType = m.getGenericExceptionTypes();
-	  for (int i = 0; i < xType.length; i++) {
-		System.out.format(fmt,"ExceptionType", xType[i]);
-		System.out.format(fmt,"GenericExceptionType", gxType[i]);
-	  }
+	private static void listConstructor(final Constructor<?> m)	{
+		System.out.format("%s%n", m.toGenericString());
+		String  fmt = "%24s: %s%n";
+		Class<?>[] pType  = m.getParameterTypes();
+		Type[] gpType = m.getGenericParameterTypes();
+		for (int i = 0; i < pType.length; i++) {
+			System.out.format(fmt,"ParameterType", pType[i]);
+			System.out.format(fmt,"GenericParameterType", gpType[i]);
+		}
+		Class<?>[] xType  = m.getExceptionTypes();
+		Type[] gxType = m.getGenericExceptionTypes();
+		for (int i = 0; i < xType.length; i++) {
+			System.out.format(fmt,"ExceptionType", xType[i]);
+			System.out.format(fmt,"GenericExceptionType", gxType[i]);
+		}
 	}
 	
-	public static void listMethod(final Method m)
-	{ System.out.format("%s%n", m.toGenericString());
-	  String  fmt = "%24s: %s%n";
-
-	  System.out.format(fmt, "ReturnType", m.getReturnType());
-	  System.out.format(fmt, "GenericReturnType", m.getGenericReturnType());
-
-	  Class<?>[] pType  = m.getParameterTypes();
-	  Type[] gpType = m.getGenericParameterTypes();
-	  for (int i = 0; i < pType.length; i++) {
-      System.out.format(fmt,"ParameterType", pType[i]);
-		System.out.format(fmt,"GenericParameterType", gpType[i]);
-	  }
-	  Class<?>[] xType  = m.getExceptionTypes();
-	  Type[] gxType = m.getGenericExceptionTypes();
-	  for (int i = 0; i < xType.length; i++) {
-		System.out.format(fmt,"ExceptionType", xType[i]);
-		System.out.format(fmt,"GenericExceptionType", gxType[i]);
-	  }
+	private static void listMethod(final Method m) {
+		System.out.format("%s%n", m.toGenericString());
+		String  fmt = "%24s: %s%n";
+	
+		System.out.format(fmt, "ReturnType", m.getReturnType());
+		System.out.format(fmt, "GenericReturnType", m.getGenericReturnType());
+	
+		Class<?>[] pType  = m.getParameterTypes();
+		Type[] gpType = m.getGenericParameterTypes();
+		for (int i = 0; i < pType.length; i++) {
+	        System.out.format(fmt,"ParameterType", pType[i]);
+			System.out.format(fmt,"GenericParameterType", gpType[i]);
+		}
+		Class<?>[] xType  = m.getExceptionTypes();
+		Type[] gxType = m.getGenericExceptionTypes();
+		for (int i = 0; i < xType.length; i++) {
+			System.out.format(fmt,"ExceptionType", xType[i]);
+			System.out.format(fmt,"GenericExceptionType", gxType[i]);
+		}
 	}
   
   

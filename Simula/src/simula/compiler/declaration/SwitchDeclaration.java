@@ -32,22 +32,17 @@ import simula.compiler.utilities.Util;
  * @see simula.compiler.expression.ConditionalExpression
  * @author Øystein Myhre Andersen
  */
-public final class SwitchDeclaration extends ProcedureDeclaration
-{
-	Vector<Expression> switchList = new Vector<Expression>();
+public final class SwitchDeclaration extends ProcedureDeclaration {
+	final Vector<Expression> switchList = new Vector<Expression>();
 
-	public SwitchDeclaration(String ident) {
-//		super(expectIdentifier(),BlockKind.Procedure);
+	public SwitchDeclaration(final String ident) {
 		super(ident,BlockKind.Procedure);
-		if (Option.TRACE_PARSE)
-			Parser.TRACE("Parse SwitchDeclaration");
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration");
 		this.type = Type.Label;
 		Parser.expect(KeyWord.ASSIGNVALUE);
-		do {
-			switchList.add(Expression.parseExpression());
+		do { switchList.add(Expression.parseExpression());
 		} while (Parser.accept(KeyWord.COMMA));
-		if (Option.TRACE_PARSE)
-			Parser.TRACE("Parse SwitchDeclaration(3), switchList=" + switchList);
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration(3), switchList=" + switchList);
 		this.addParameter(new Parameter("$SW", Type.Integer, Parameter.Kind.Simple));
 		Global.currentScope = declaredIn;
 		// Util.BREAK("NEW SwitchDeclaration: blockKind=" + blockKind);
@@ -61,16 +56,20 @@ public final class SwitchDeclaration extends ProcedureDeclaration
 			if(expr.type!=Type.Label) Util.error("Switch element "+expr+" is not a Label");
 			expr.backLink = this; // To ensure RESULT$ from functions
 		}
-		// Switch attributes are implicit specified 'protected'
-		if(declaredIn.blockKind==BlockKind.Class)
-			((ClassDeclaration)declaredIn).protectedList.add(new ProtectedSpecification((ClassDeclaration)Global.currentScope,identifier));
+		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(this);
+		//Util.BREAK("LabelDeclaration.doChecking("+identifier+"): virtSpec="+virtSpec);
+		if(virtSpec==null) {
+			// Switch attributes are implicit specified 'protected'
+			if(declaredIn.blockKind==BlockKind.Class)
+				((ClassDeclaration)declaredIn).protectedList.add(new ProtectedSpecification((ClassDeclaration)Global.currentScope,identifier));
+		}
 	}
 
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeSwitchBody
 	// ***********************************************************************************************
 	public void codeProcedureBody() {
-		JavaModule.code("// Switch Body");
+		JavaModule.debug("// Switch Body");
 		JavaModule.code("public " + getJavaIdentifier() + " STM$() {");
 		JavaModule.code("switch(p$$SW-1) {");
 		int n = 0;
@@ -81,7 +80,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration
 		JavaModule.code("}");
 		JavaModule.code("EBLK();");
 		JavaModule.code("return(this);");
-		JavaModule.code("} // End of Switch BODY");
+		JavaModule.code("}","End of Switch BODY");
 	}
 
 	public String toString() {

@@ -27,12 +27,11 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ConditionalExpression extends Expression {
-	Expression condition;
+	final Expression condition;
 	Expression thenExpression;
 	Expression elseExpression;
 
-	public ConditionalExpression(Type type, Expression condition,
-			Expression thenExpression, Expression elseExpression) {
+	public ConditionalExpression(final Type type, final Expression condition, final Expression thenExpression, final Expression elseExpression) {
 		this.condition = condition;
 		this.thenExpression = thenExpression; thenExpression.backLink=this;
 		this.elseExpression = elseExpression; elseExpression.backLink=this;
@@ -63,11 +62,11 @@ public final class ConditionalExpression extends Expression {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	  // Returns true if this expression may be used as a statement.
-	  public boolean maybeStatement()
-	  {	ASSERT_SEMANTICS_CHECKED(this);
-		return(false);  
-	  }
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (false);
+	}
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
@@ -82,4 +81,6 @@ public final class ConditionalExpression extends Expression {
 		return ("(IF " + condition + " THEN " + thenExpression + " ELSE "
 				+ elseExpression + ')');
 	}
+
+
 }

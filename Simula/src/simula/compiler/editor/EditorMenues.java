@@ -39,7 +39,6 @@ import javax.swing.undo.UndoManager;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.RTOption;
 import simula.compiler.utilities.Util;
 
 public class EditorMenues extends JMenuBar {
@@ -486,9 +485,9 @@ public class EditorMenues extends JMenuBar {
 		  + "   held by James Gosling at the 50th anniversary of Simula\n"
 		  + "   in Oslo on 27th September, 2017.\n\n"
 
-  	      + "   This Simula System is written in Java and compiles to\n"
-  	      + "   Java code with one exception; the Goto Statement need\n"
-  	      + "   to be corrected in the byte code.\n\n");
+		  + "   This Simula System is written in Java and compiles to pure\n" 
+		  + "   Java code with one exception; the Goto Statement need to\n" 
+		  + "   be corrected in the byte code, which is done automatically.\n\n");
 		Util.optionDialog(msg,"About Portable Simula",JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE,"Ok");
 	}
 	

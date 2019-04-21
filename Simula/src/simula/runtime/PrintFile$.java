@@ -72,27 +72,21 @@ import java.io.OutputStreamWriter;
  *
  */
 public class PrintFile$ extends OutFile$ {
-	int LINES_PER_PAGE$;
-	int SPACING$;
-	int LINE$;
-	int PAGE$; // TODO:
+	private int LINES_PER_PAGE$=66;
+	private int SPACING$=1;
+	private int LINE$;
+	private int PAGE$; // TODO:
 
 	// Constructor
-    public PrintFile$(RTObject$ staticLink,TXT$ FILENAME) {
-      super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$("PrintFile$");
-      CODE$=new ClassBody(CODE$,this,3) {
-         public void STM$() {
-       	    TRACE_BEGIN_STM$("PrintFile$",inner);
-            LINES_PER_PAGE$=66;
-            SPACING$=1;
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("PrintFile$");
-      }};
+    public PrintFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    	super(staticLink,FILENAME);
     }
+    
     // Class Statements
-    public PrintFile$ STM$() { return((PrintFile$)CODE$.EXEC$()); }
-    public PrintFile$ START() { START(this); return(this); }
+    public PrintFile$ STM$() {
+        EBLK();
+        return(this);
+    }
 
 	public int line() {
 		return (LINE$);
@@ -126,7 +120,7 @@ public class PrintFile$ extends OutFile$ {
 	 * 
 	 * @param n
 	 */
-	public void linesperpage(int n) {
+	public void linesperpage(final int n) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		LINES_PER_PAGE$ = n;
@@ -151,7 +145,7 @@ public class PrintFile$ extends OutFile$ {
 	 * 
 	 * @param n
 	 */
-	public void spacing(int n) {
+	public void spacing(final int n) {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		if (0 <= n && n <= LINES_PER_PAGE$)
@@ -194,7 +188,7 @@ public class PrintFile$ extends OutFile$ {
 	 * 
 	 * @param n
 	 */
-	public void eject(int n) {
+	public void eject(final int n) {
 		if (!OPEN$)
 			throw new RuntimeException("File not opened");
 		if (n <= 0)
@@ -202,8 +196,8 @@ public class PrintFile$ extends OutFile$ {
 		// TODO: Complete the implementation according
 		// to Simula Standard Definition.
 		if (n > LINES_PER_PAGE$)
-			n = 1;
-		LINE$ = n;
+			 LINE$ = 1;
+		else LINE$ = n;
 	}
 
 	/**
@@ -228,7 +222,7 @@ public class PrintFile$ extends OutFile$ {
 	 * @param image
 	 * @return true if successful, otherwise false.
 	 */
-	public boolean open(TXT$ image) {
+	public boolean open(final TXT$ image) {
 		if (OPEN$) return (false); // File already opened
 		doCreateAction();
 		PAGE$ = 0;

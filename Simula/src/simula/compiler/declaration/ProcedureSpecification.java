@@ -7,6 +7,10 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -18,6 +22,7 @@ import simula.compiler.utilities.Util;
 
 /**
  * Procedure Specification.
+ * 
  * <pre>
  * Syntax:
  * 
@@ -34,104 +39,137 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public final class ProcedureSpecification
-{ public String identifier;
-  public Type type;  
-  public Vector<Parameter> parameterList=new Vector<Parameter>();
-  
-  // ***********************************************************************************************
-  // *** CONSTRUCTOR
-  // ***********************************************************************************************
-  public ProcedureSpecification(String identifier,Type type,Vector<Parameter> parameterList)
-  { this.identifier=identifier; this.type=type; this.parameterList=parameterList; } 
-  
+public final class ProcedureSpecification implements Externalizable {
+	public String identifier;
+	public Type type;
+	public Vector<Parameter> parameterList;
 
-//***********************************************************************************************
-//*** Parsing: doParseProcedureSpecification
-//***********************************************************************************************
-/**
- * Procedure Specification.
- * <pre>
- * Syntax:
- * 
- * ProcedureSpecification
- *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead EmptyBody
- *     
- * ProcedureHead
- *     = [ FormalParameterPart ; [ ModePart ]
- *         specification-part  ] ;
- *         
- * ProcedureBody = Statement
- * ProcedureIdentifier = Identifier
- * </pre>
- */
-  public static ProcedureSpecification doParseProcedureSpecification(Type type)
-  {	BlockKind blockKind=(Option.standardClass)?BlockKind.MemberMethod:BlockKind.Procedure; // TODO: CHECK DETTE
-    ProcedureDeclaration block=new ProcedureDeclaration(null,blockKind);
-    block.type=type;  
-    if(Option.TRACE_PARSE) Parser.TRACE("Parse ProcedureDeclaration, type="+type);
-	BlockParser.doParse(block);
-    if(Option.TRACE_PARSE) Util.TRACE("END ProcedureDeclaration: "+block);
-	//Debug.BREAK("END ProcedureDeclaration: ");
-    Global.currentScope=block.declaredIn;
-    ProcedureSpecification procedureSpecification=new ProcedureSpecification(block.identifier,type,block.parameterList);
-	return(procedureSpecification);
-  }
-  
-  // ***********************************************************************************************
-  // *** Utility: doChecking 
-  // ***********************************************************************************************
-  public void doChecking(DeclarationScope scope)
-  { //Util.BREAK("ProcedureSpecification.checkCompatible: this Type="+type);
-	if(type!=null) type.doChecking(scope);
-	// Check parameters
-	for(Parameter par:parameterList) par.doChecking();
-  }
-  
-  // ***********************************************************************************************
-  // *** Utility: checkCompatible  -- 
-  // ***********************************************************************************************
-  public boolean checkCompatible(ProcedureDeclaration proc)
-  { //Util.BREAK("ProcedureSpecification.checkCompatible: this Type="+type);
-    //Util.BREAK("ProcedureSpecification.checkCompatible: othr Type="+proc.type);
-    //Util.BREAK("ProcedureSpecification.checkCompatible: TypeEquals="+type.equals(proc.type));
-	if(type!=null && !type.equals(proc.type)) return(false);
-	// Check parameters
-	Iterator<Parameter> formalIterator = parameterList.iterator();
-	Iterator<Parameter> actualIterator = proc.parameterList.iterator();
-	//Util.BREAK("SubscriptedVariable("+identifier+").doChecking: Params="+params);
-	while (actualIterator.hasNext()) {
-		if (!formalIterator.hasNext()) return(false); //Util.error("Wrong number of parameters to " + block);
-		Parameter formalParameter = (Parameter)formalIterator.next();
-	    //Util.BREAK("ProcedureSpecification.checkCompatible: formalParameter="+formalParameter);
-		Parameter actualParameter = actualIterator.next();
-	    //Util.BREAK("ProcedureSpecification.checkCompatible: actualParameter="+actualParameter);
-	    //Util.BREAK("ProcedureSpecification.checkCompatible: TypeEquals="+formalParameter.equals(actualParameter));
-		if(!formalParameter.equals(actualParameter)) return(false);
+	// ***********************************************************************************************
+	// *** CONSTRUCTORS
+	// ***********************************************************************************************
+	public ProcedureSpecification(final String identifier, final Type type, final Vector<Parameter> parameterList) {
+		this.identifier = identifier;
+		this.type = type;
+		this.parameterList = parameterList;
 	}
-	if (formalIterator.hasNext()) return(false); //Util.error("Wrong number of parameters to " + block);
-    return(true);
-  }
-  
-  // ***********************************************************************************************
-  // *** Printing Utility: editParameterList
-  // ***********************************************************************************************
-  private String editParameterList()
-  { StringBuilder s=new StringBuilder(); s.append('(');
-    boolean first=true;
-    for(Parameter par:parameterList)
-    { if(!first) s.append(','); s.append(par); first=false; }
-    s.append(')');
-    s.append(';');
-    return(s.toString());
-  }
 
-  public String toString()
-  { StringBuilder s=new StringBuilder();
-    if(type!=null) s.append(type).append(' ');
-    s.append("PROCEDURE ").append(identifier).append(editParameterList());
-	return(s.toString());
-  }
+	// ***********************************************************************************************
+	// *** Parsing: doParseProcedureSpecification
+	// ***********************************************************************************************
+	/**
+	 * Procedure Specification.
+	 * 
+	 * <pre>
+	 * Syntax:
+	 * 
+	 * ProcedureSpecification
+	 *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead EmptyBody
+	 *     
+	 * ProcedureHead
+	 *     = [ FormalParameterPart ; [ ModePart ]
+	 *         specification-part  ] ;
+	 *         
+	* ProcedureBody = Statement
+	* ProcedureIdentifier = Identifier
+	 * </pre>
+	 */
+	public static ProcedureSpecification doParseProcedureSpecification(final Type type) {
+		BlockKind blockKind = (Option.standardClass) ? BlockKind.MemberMethod : BlockKind.Procedure; // TODO: CHECK DETTE
+		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
+		block.type = type;
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
+		BlockParser.doParseProcedureDeclaration(block);
+		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
+		// Debug.BREAK("END ProcedureDeclaration: ");
+		Global.currentScope = block.declaredIn;
+		ProcedureSpecification procedureSpecification = new ProcedureSpecification(block.identifier, type, block.parameterList);
+		return (procedureSpecification);
+	}
 
-  
+	// ***********************************************************************************************
+	// *** Utility: doChecking
+	// ***********************************************************************************************
+	public void doChecking(final DeclarationScope scope) {
+		// Util.BREAK("ProcedureSpecification.doChecking: this Type="+type);
+		if (type != null) type.doChecking(scope);
+		// Check parameters
+		for (Parameter par : parameterList)	par.doChecking();
+	}
+
+	// ***********************************************************************************************
+	// *** Utility: checkCompatible --
+	// ***********************************************************************************************
+	public boolean checkCompatible(final ProcedureDeclaration proc) {
+		// Util.BREAK("ProcedureSpecification.checkCompatible: this Type="+type);
+		// Util.BREAK("ProcedureSpecification.checkCompatible: othr Type="+proc.type);
+		//Util.BREAK("ProcedureSpecification.checkCompatible: TypeEquals="+type.equals(proc.type));
+		if (type != null && !type.equals(proc.type)) return (false);
+		// Check parameters
+		Iterator<Parameter> formalIterator = parameterList.iterator();
+		Iterator<Parameter> actualIterator = proc.parameterList.iterator();
+		// Util.BREAK("SubscriptedVariable("+identifier+").doChecking: Params="+params);
+		while (actualIterator.hasNext()) {
+			if (!formalIterator.hasNext())
+				return (false); // Util.error("Wrong number of parameters to " + block);
+			Parameter formalParameter = (Parameter) formalIterator.next();
+			// Util.BREAK("ProcedureSpecification.checkCompatible: formalParameter="+formalParameter);
+			Parameter actualParameter = actualIterator.next();
+			// Util.BREAK("ProcedureSpecification.checkCompatible: actualParameter="+actualParameter);
+			// Util.BREAK("ProcedureSpecification.checkCompatible: TypeEquals="+formalParameter.equals(actualParameter));
+			if (!formalParameter.equals(actualParameter)) return (false);
+		}
+		if (formalIterator.hasNext())
+			return (false); // Util.error("Wrong number of parameters to " + block);
+		return (true);
+	}
+
+	// ***********************************************************************************************
+	// *** Printing Utility: editParameterList
+	// ***********************************************************************************************
+	private String editParameterList() {
+		StringBuilder s = new StringBuilder();
+		s.append('(');
+		boolean first = true;
+		for (Parameter par : parameterList) {
+			if (!first)	s.append(',');
+			s.append(par);
+			first = false;
+		}
+		s.append(')');
+		s.append(';');
+		return (s.toString());
+	}
+
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		if (type != null) s.append(type).append(' ');
+		s.append("PROCEDURE ").append(identifier).append(editParameterList());
+		return (s.toString());
+	}
+
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public ProcedureSpecification() {}
+
+	@Override
+	public void writeExternal(ObjectOutput oupt) throws IOException {
+		//Util.BREAK("AttributeFile.doWriteAttributeInfo: blk="+this);
+		Util.TRACE_OUTPUT("BEGIN Write ProcedureSpecification: "+identifier);
+		oupt.writeObject(identifier);
+		oupt.writeObject(type);
+
+		oupt.writeObject(parameterList);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
+		identifier=(String)inpt.readObject();
+		type=Type.inType(inpt);
+		
+		parameterList=(Vector<Parameter>) inpt.readObject();
+		Util.TRACE_INPUT("END Read ProcedureSpecification: "+identifier);
+	}
+
 }

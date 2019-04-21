@@ -1,36 +1,30 @@
-begin
-   ref(Drawing) drw;
-   
-   drw:-new Drawing("Simula Drawing",800,700);
-   drw.setBackgroundColor(drw.yellow);
-   drw.setStroke(4.5);
-   drw.setDrawColor(drw.red);
-   drw.setFillColor(drw.magenta);
+Drawing("Simula Drawing",800,700) begin
+   setBackgroundColor(yellow);
+   setStroke(4.5);
+   setDrawColor(red);
+   setFillColor(magenta);
    
    
     	
-   drw.fillEllipse(100, 100, 200, 50);
-   drw.setFillColor(drw.red);
-   drw.fillRectangle(300, 200, 200, 50);
-   drw.setFillColor(drw.cyan);
-   drw.fillRoundRectangle(100, 300, 200, 50,50,50);
-   drw.setDrawColor(drw.black);
-   drw.drawEllipse(100, 200, 200, 50);
-   drw.drawRectangle(300, 300, 200, 50);
-   drw.setDrawColor(drw.blue);
-   drw.drawRoundRectangle(200, 400, 200, 50,50,50);
+   fillEllipse(100, 100, 200, 50);
+   setFillColor(red);
+   fillRectangle(300, 200, 200, 50);
+   setFillColor(cyan);
+   fillRoundRectangle(100, 300, 200, 50,50,50);
+   setDrawColor(black);
+   drawEllipse(100, 200, 200, 50);
+   drawRectangle(300, 300, 200, 50);
+   setDrawColor(blue);
+   drawRoundRectangle(200, 400, 200, 50,50,50);
    
-   drw.setFontSize(24);
-   drw.setDrawColor(drw.orange);
-   drw.setFontStylePlain;
-   drw.setFontStyleBold;
-   drw.setFontStyleItalic;
-   drw.setFontStyleBoldItalic;
-   drw.drawText("Abracadabra",200,100);
+   setFontSize(24);
+   setDrawColor(orange);
+   setFontStylePlain;
+   setFontStyleBold;
+   setFontStyleItalic;
+   setFontStyleBoldItalic;
+   drawText("Abracadabra",200,100);
    
-   
-   while drw =/= none do
-   begin
-   end;
+   while true do;
     
 end;

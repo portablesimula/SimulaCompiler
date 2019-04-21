@@ -36,7 +36,19 @@ import java.io.OutputStream;
  *
  */
 public class OutbyteFile$ extends ByteFile$ {
-	OutputStream outputStream;
+	private OutputStream outputStream;
+
+	// Constructor
+    public OutbyteFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    	super(staticLink,FILENAME);
+    }
+    
+    // Class Statements
+    public OutbyteFile$ STM$() {
+        if(FILENAME$==null)	throw new RuntimeException("Illegal File Name");
+        EBLK();
+        return(this);
+    }
 
 	public boolean open() {
 		if (OPEN$) return (false);
@@ -65,7 +77,7 @@ public class OutbyteFile$ extends ByteFile$ {
 		return (false);
 	}
 
-	public void outbyte(int b) {
+	public void outbyte(final int b) {
 		if (!OPEN$)
 			throw new RuntimeException("file closed");
 //		RT.BREAK("OutbyteFile.outByte: b="+b);
@@ -80,30 +92,14 @@ public class OutbyteFile$ extends ByteFile$ {
 		}
 	}
 
-	public void outtext(TXT$ t) {
-		t.setpos(1);
-		while (t.more()) {
-			outbyte((int) t.getchar());
+	public void outtext(final TXT$ t) {
+		TXT$.setpos(t, 1);
+		while (TXT$.more(t)) {
+			outbyte((int) TXT$.getchar(t));
 		}
 	}
 
 	public boolean checkpoint() {
 		return (false);
 	}
-
-	// Constructor
-    public OutbyteFile$(RTObject$ staticLink,TXT$ FILENAME) {
-      super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$("OutbyteFile$");
-      // Create Class Body
-      CODE$=new ClassBody(CODE$,this,2) {
-         public void STM$() {
-        	 TRACE_BEGIN_STM$("OutbyteFile$",inner);
-             if(inner!=null) inner.STM$();
-             TRACE_END_STM$("OutbyteFile$");
-      }};
-    }
-    // Class Statements
-    public OutbyteFile$ STM$() { return((OutbyteFile$)CODE$.EXEC$()); }
-    public OutbyteFile$ START() { START(this); return(this); }
 }

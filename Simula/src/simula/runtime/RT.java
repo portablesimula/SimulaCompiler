@@ -26,7 +26,7 @@ public final class RT {
 	private static final boolean TRACING=true;//false;//true;
 	public  static boolean DEBUGGING=false;//true;
 	
-	public static final boolean USE_LOOM=true;//false;
+//	public static boolean USE_LOOM=false;//true;//false;
   
 	public static RTConsole console;
   
@@ -44,12 +44,12 @@ public final class RT {
 		public static boolean SML_TRACING = false; // true;
 	}
 	  
-	public static void setRuntimeOptions(String[] args) {
-
+	public static void setRuntimeOptions(final String[] args) {
 		for(int i=0;i<args.length;i++) {
 			String arg=args[i];
 			if(arg.equalsIgnoreCase("-VERBOSE")) Option.VERBOSE=true;
 			if(arg.equalsIgnoreCase("-DEBUGGING")) DEBUGGING=true;
+//			if(arg.equalsIgnoreCase("-USE_CONTINUATIONS")) USE_LOOM=true;
 			if(arg.equalsIgnoreCase("-USE_CONSOLE")) Option.USE_CONSOLE=true;
 			if(arg.equalsIgnoreCase("-CODE_STEP_TRACING")) Option.CODE_STEP_TRACING=true;
 			if(arg.equalsIgnoreCase("-BLOCK_TRACING")) Option.BLOCK_TRACING=true;
@@ -66,6 +66,8 @@ public final class RT {
 		System.out.println("file.encoding="+System.getProperty("file.encoding"));
 		System.out.println("defaultCharset="+Charset.defaultCharset());
 		System.out.println("VERBOSE="+Option.VERBOSE);
+		System.out.println("DEBUGGING="+DEBUGGING);
+//		System.out.println("USE_CONTINUATIONS="+USE_LOOM);
 		System.out.println("USE_CONSOLE="+Option.USE_CONSOLE);
 		System.out.println("CODE_STEP_TRACING="+Option.CODE_STEP_TRACING);
 		System.out.println("BLOCK_TRACING="+Option.BLOCK_TRACING);
@@ -77,39 +79,38 @@ public final class RT {
 	}
 	
 
-	public static void println(String s) {
+	public static void println(final String s) {
 		if(console!=null) console.write(s+'\n');
 		else System.out.println(s);
 	}
 	
-	public static void warning(String msg) {
+	public static void warning(final String msg) {
 		println("Simula Runtime Warning: "+msg);
 		printSimulaStackTrace(0);
 	}
   
-	public static void TRACE(String msg) {
+	public static void TRACE(final String msg) {
 		if (TRACING) println(Thread.currentThread().toString() + ": " + msg);
 	}
   
-	// SIMULA RUNTIME ERROR: NOT IMPLEMENTED:
-	public static void NOT_IMPLEMENTED(String s) {
+	public static void NOT_IMPLEMENTED(final String s) {
 		println("*** NOT IMPLEMENTED: " + s);
 		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 	}
 
-	public static void NoneCheck(Object x) {
+	public static void NoneCheck(final Object x) {
 		if (x == null) // && !Continuation.SHUTING_DOWN$)
 			throw new RuntimeException("NONE-CHECK FAILED");
 	}
   
-	public static void ASSERT(boolean test, String msg) {
+	public static void ASSERT(final boolean test,final String msg) {
 		if (!test) {
 			println("ASSERT(" + msg + ") -- FAILED");
 			BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 		}
 	}
 
-	public static void ASSERT_CUR$(RTObject$ obj, String msg) {
+	public static void ASSERT_CUR$(final RTObject$ obj,final String msg) {
 		if (RTObject$.CUR$ != obj) {
 			println(msg + ": CUR$=" + RTObject$.CUR$.edObjectAttributes());
 			println(msg + ":  obj=" + obj.edObjectAttributes());
@@ -117,7 +118,7 @@ public final class RT {
 		}
 	}
 
-	public static void BREAK(String msg) {
+	public static void BREAK(final String msg) {
 		if (BREAKING) {
 			if (RT.Option.CODE_STEP_TRACING) {
 				println(msg + ": <");
@@ -152,12 +153,12 @@ public final class RT {
     private static File simulaPropertiesFile;
     private static Properties simulaProperties;
     
-	public static String getProperty(String key,String defaultValue) {
+	public static String getProperty(final String key,final String defaultValue) {
 		if(simulaProperties==null) loadProperties();
 		return(simulaProperties.getProperty(key,defaultValue));
 	}
 	
-	public static void setProperty(String key,String value) {
+	public static void setProperty(final String key,final String value) {
 		if(simulaProperties==null) loadProperties();
 		simulaProperties.setProperty(key,value);
 		storeProperties();
@@ -186,7 +187,7 @@ public final class RT {
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
   
-	public static void printStaticChain(RTObject$ ins) {
+	public static void printStaticChain(final RTObject$ ins) {
 		RTObject$ x = ins;
 		println("*** STATIC CHAIN:");
 		while (x != null) {
@@ -198,27 +199,27 @@ public final class RT {
 
 	}
 	
-	public static void printSimulaStackTrace(Thread thread,int start) {
+	public static void printSimulaStackTrace(final Thread thread,final int start) {
 		StackTraceElement stackTraceElement[] = thread.getStackTrace();
 		int n = stackTraceElement.length;
 		for (int i = start; i < n; i++)
 			printSimulaLineInfo(stackTraceElement[i]);
 	}
 	
-	public static void printSimulaStackTrace(int start) {
+	public static void printSimulaStackTrace(final int start) {
 		printSimulaStackTrace(Thread.currentThread(),start);
 	}
 
 	
-	public static void printSimulaStackTrace(Throwable e,int start) {
+	public static void printSimulaStackTrace(final Throwable e,final int start) {
 		StackTraceElement stackTraceElement[] = e.getStackTrace();
 		int n = stackTraceElement.length;
 		for (int i = start; i < n; i++)
 			printSimulaLineInfo(stackTraceElement[i]);
 	}
 
-	public static void printSimulaLineInfo(StackTraceElement elt)
-	{ try { 
+	public static void printSimulaLineInfo(final StackTraceElement elt)	{
+		try { 
 		    Class<?> cls=Class.forName(elt.getClassName());
 		    //RT.println("ENVIRONMENT$.getSimulaLineNumber: cls="+cls);
 		    Field field=cls.getField("INFO$");

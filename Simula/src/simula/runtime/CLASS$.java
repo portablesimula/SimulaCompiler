@@ -8,39 +8,47 @@
 package simula.runtime;
 
 import java.lang.RuntimeException;
-import java.lang.Thread;
 
 import simula.runtime.loom.Continuation;
-import simula.runtime.loom.ThreadUtils;
 
 /**
 * 
 * @author SIMULA Standards Group
 * @author Øystein Myhre Andersen
 */
-public abstract class CLASS$ extends BASICIO$ {
+public abstract class CLASS$ extends BASICIO$ implements Runnable {
 	// Constructor
-	public CLASS$(RTObject$ staticLink) {
+	public CLASS$(final RTObject$ staticLink) {
 		super(staticLink);
 	}
-    
+
+	// Runnable Body
+	public RTObject$ START$() {
+		beginContinuation(); return(this);
+	}
+  
+	public void run() {
+		STM$();
+	}
+
+	
 	// *********************************************************************
-	// *** START QPS COMPONENT IN A SEPARATE THREAD/CONTINUATION
+	// *** BEGIN QPS COMPONENT IN A SEPARATE CONTINUATION
 	// *********************************************************************
-	protected void START(RTObject$ ins) {
-		if(RT.USE_LOOM) {
-        	ins.CONT$=new Continuation(continuationScope,this);
-        	if(RT.Option.QPS_TRACING) RT.TRACE("START "+ins.edObjectIdent());
-        	RT.ASSERT(CUR$==ins,"CLASS$.START:Invariant-1");
+	private void beginContinuation() {
+//		if(RT.USE_LOOM) {
+    	    this.CONT$=new Continuation(continuationScope,this);
+        	if(RT.Option.QPS_TRACING) RT.TRACE("START "+this.edObjectIdent());
+        	RT.ASSERT(CUR$==this,"CLASS$.START:Invariant-1");
         	swapContinuations();
-		} else {
-			RT.ASSERT(CUR$.THREAD$==Thread.currentThread(),"CLASS$.START:Invariant-2");
-			// Start QPS Component in a new Thread
-			ins.THREAD$=new Thread(ins,ins.edObjectIdent());
-			ins.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
-			if(RT.Option.QPS_TRACING) RT.TRACE("START "+ins.edObjectIdent());
-			ThreadUtils.START_THREAD(ins.THREAD$);
-		}
+//		} else {
+//			RT.ASSERT(CUR$.THREAD$==Thread.currentThread(),"CLASS$.START:Invariant-2");
+//			// Start QPS Component in a new Thread
+//			ins.THREAD$=new Thread(ins,ins.edObjectIdent());
+//			ins.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
+//			if(RT.Option.QPS_TRACING) RT.TRACE("START "+ins.edObjectIdent());
+//			ThreadUtils.START_THREAD(ins.THREAD$);
+//		}
 	}
 
 	// *********************************************************************
@@ -95,50 +103,50 @@ public abstract class CLASS$ extends BASICIO$ {
 	 * </ol>
 	 * </ul>
 	 */
-	public void detach()
-	{ RTObject$ ins;   //  Instance to be detached.
-	  RTObject$ dl;    //  Temporary reference to dynamical enclosure.
-	  RTObject$ main;  //  The head of the main component and also
-		               //  the head of the quasi-parallel system.
-	  ins=this;
-//	  if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
-	  RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
-	  //  Detach on a prefixed block is a no-operation.
-	  if(!CUR$.isQPSystemBlock())
-	  { // Make sure that the object is on the operating chain.
-		// Note that a detached or terminated object cannot be on
-		// the operating chain.
-		dl=CUR$;
-		while(dl!=ins) {
-		    dl=dl.DL$;
-		    if(dl==null) throw
-		      new RuntimeException("x.Detach: x is not on the operating chain.");
+	public void detach() {
+		RTObject$ ins; // Instance to be detached.
+		RTObject$ dl; // Temporary reference to dynamical enclosure.
+		RTObject$ main; // The head of the main component and also
+						// the head of the quasi-parallel system.
+		ins = this;
+		// if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
+		RT.ASSERT(CUR$.DL$ != CUR$, "Invariant");
+		// Detach on a prefixed block is a no-operation.
+		if (!CUR$.isQPSystemBlock()) {
+			// Make sure that the object is on the operating chain.
+			// Note that a detached or terminated object cannot be on the operating chain.
+			dl = CUR$;
+			while (dl != ins) {
+				dl = dl.DL$;
+				if (dl == null)
+					throw new RuntimeException("x.Detach: x is not on the operating chain.");
+			}
+			// Treat the case resumed and operating first,
+			// because it is probably the dynamically most common.
+			if (ins.STATE$ == OperationalState.resumed) {
+				ins.STATE$ = OperationalState.detached;
+				// Find main component for component to be detached. The main
+				// component head must be the static enclosure of the object,
+				// since the object has OperationalState.resumed.
+				main = ins.SL$;
+				// Rotate the contents of 'CUR$', 'ins.DL$' and 'main.DL$'.
+				// <main.DL$,ins.DL$,CUR$>:=<ins.DL$,CUR$,main.DL$>
+				dl = main.DL$; main.DL$ = ins.DL$; ins.DL$ = CUR$;
+				CUR$ = dl;
+			} else {
+				RT.ASSERT(ins.STATE$ == OperationalState.attached, "Invariant");
+				ins.STATE$ = OperationalState.detached;
+				// Swap the contents of object's 'DL$' and 'CUR$'.
+				// <ins.DL$,CUR$>:=<CUR$,ins.DL$>
+				dl = ins.DL$; ins.DL$ = CUR$; CUR$ = dl;
+			}
+			RT.ASSERT(CUR$.DL$ != CUR$, "Invariant");
+			// if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
+			if (RT.Option.QPS_TRACING) RT.TRACE("DETACH " + this.edObjectIdent() + " ==> " + CUR$.edObjectIdent());
+			// if (RT.USE_LOOM)
+			Continuation.yield(continuationScope);
+			// else ThreadUtils.SWAP_THREAD(CUR$.THREAD$);
 		}
-		// Treat the case resumed and operating first,
-		// because it is probably the dynamically most common.
-		if(ins.STATE$==OperationalState.resumed) {
-		    ins.STATE$=OperationalState.detached;
-		    // Find main component for component to be detached. The main
-		    // component head must be the static enclosure of the object,
-		    // since the object has OperationalState.resumed.
-		    main=ins.SL$;
-		    // Rotate the contents of 'CUR$', 'ins.DL$' and 'main.DL$'.
-		    // <main.DL$,ins.DL$,CUR$>:=<ins.DL$,CUR$,main.DL$>
-		    dl=main.DL$; main.DL$=ins.DL$; ins.DL$=CUR$; CUR$=dl;
-		} else {
-		    RT.ASSERT(ins.STATE$==OperationalState.attached,"Invariant");
-		    ins.STATE$=OperationalState.detached;
-		    // Swap the contents of object's 'DL$' and 'CUR$'.
-		    // <ins.DL$,CUR$>:=<CUR$,ins.DL$>
-		    dl=ins.DL$; ins.DL$=CUR$; CUR$=dl;
-		}
-		RT.ASSERT(CUR$.DL$!=CUR$,"Invariant");
-//	    if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
-	    if(RT.Option.QPS_TRACING) RT.TRACE("DETACH "+this.edObjectIdent()+" ==> "+CUR$.edObjectIdent());
-		if (RT.USE_LOOM) Continuation.yield(continuationScope);
-	    else ThreadUtils.SWAP_THREAD(CUR$.THREAD$);
-	  }
 	}
-
 
 }

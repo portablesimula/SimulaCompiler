@@ -43,24 +43,19 @@ package simula.runtime;
  *
  */
 public class Linkage$ extends CLASS$ {
-	public Linkage$ SUC = null;
-	public Linkage$ PRED = null;
+	protected Linkage$ SUC = null;
+	protected Linkage$ PRED = null;
 
 	// Constructor
-    public Linkage$(RTObject$ staticLink) {
-       super(staticLink);
-       BBLK(); // Iff no prefix
-       TRACE_BEGIN_DCL$("Linkage$");
-       CODE$=new ClassBody(CODE$,this,0) {
-          public void STM$() {
-        	 TRACE_BEGIN_STM$("Linkage$",inner);
-             if(inner!=null) inner.STM$();
-             TRACE_END_STM$("Linkage$");
-             EBLK(); // Iff no prefix
-       }};
+    public Linkage$(final RTObject$ staticLink) {
+    	super(staticLink);
+    	BBLK(); // Iff no prefix
     }
-    public Linkage$ STM$() { return((Linkage$)CODE$.EXEC$()); }
-    public Linkage$ START() { START(this); return(this); }
+    
+    public Linkage$ STM$() {
+        EBLK();
+        return(this);
+    }
 
 	public Link$ suc() {
 		return ((SUC instanceof Link$) ? (Link$) SUC : null);

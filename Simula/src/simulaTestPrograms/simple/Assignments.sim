@@ -1,7 +1,3 @@
-
-%  STANDARDCLASS
-%DISPLAY ON 
-%QUALIFIEDNAMES
 begin
    class A;
    begin

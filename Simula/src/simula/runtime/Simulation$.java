@@ -7,7 +7,6 @@
  */
 package simula.runtime;
 
-
 /**
  * 
  * The system class "simulation" may be considered an "application package"
@@ -88,43 +87,27 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  */
 public class Simulation$ extends Simset$ {
-	//public boolean isDetachable() {	return(true); }
     public boolean isDetachUsed() { return(true); }
 
-	public Head$ SQS = null;
-	public MAIN_PROGRAM$ main = null;
+	public final Head$ SQS; // = null;
+	public final MAIN_PROGRAM$ main; // = null;
 
 	// Constructor
 	public Simulation$(RTObject$ staticLink) {
-	super(staticLink);
-//	public Simulation$(ENVIRONMENT$ staticLink) {
-//	    super((RTObject$)staticLink);
-		TRACE_BEGIN_DCL$("Simulation$");
-		// Create Class Body
-		CODE$ = new ClassBody(CODE$, this,1) {
-			public void STM$() {
-	    	    RT.ASSERT_CUR$(Simulation$.this,"Simulation$:invariant-1");
-				TRACE_BEGIN_STM$("Simulation$",inner);
-				SQS = (Head$) new Head$(Simulation$.this).STM$();
-				main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START();
-				main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();
-	        	//RT.BREAK("GOT NEW EVENT_NOTICE: "+main.EVENT);
-				main.EVENT.into(SQS);
-				if (inner != null)
-					inner.STM$();
-	    	    RT.ASSERT_CUR$(Simulation$.this,"Simulation$:invariant-2");
-				TRACE_END_STM$("Simulation$");
-			}
-		};
+		super(staticLink);
+		SQS = (Head$) new Head$(Simulation$.this).STM$();
+		main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();
+		main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();
+		main.EVENT.into(SQS);
 	}
 
 	public Simulation$ STM$() {
-		return ((Simulation$) CODE$.EXEC$());
-	}
-
-	public Simulation$ START() {
-		START(this);
-		return (this);
+//		SQS = (Head$) new Head$(Simulation$.this).STM$();
+//		main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();
+//		main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();
+//		main.EVENT.into(SQS);
+        EBLK();
+		return(this);
 	}
 
 	public double time() {
@@ -145,7 +128,7 @@ public class Simulation$ extends Simset$ {
 		return (FIRSTEV().PROC);
 	}
 
-	public void hold(double T) {
+	public void hold(final double T) {
 		SIM_TRACE("Hold " + T);
 		EVENT_NOTICE$ first = FIRSTEV();
 		if (first != null) {
@@ -171,9 +154,7 @@ public class Simulation$ extends Simset$ {
      * end passivate;
      * </pre>
 	 */
-	public void passivate() { passivate(false); }
-
-	public void passivate(boolean terminatingProcess) {
+	public void passivate() {
 		Process$ cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());
 		// RT.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
@@ -187,36 +168,18 @@ public class Simulation$ extends Simset$ {
 		// RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+",
 		// SQS="+this.edSQS());
 		SIM_TRACE("END Passivate Resume[" + nxtcur.edObjectIdent() + ']');
-		resume(nxtcur, terminatingProcess);
+		resume(nxtcur);
 		SIM_TRACE("END Passivate AFTER Resume[" + nxtcur.edObjectIdent() + ']');
 		// RT.BREAK("Passivate: AFTER Resume(next)");
 	}
 
-//	public void terminate() {
-//		Process$ cur = current();
-//		SIM_TRACE("Terminate "+cur.edObjectIdent());
-//		//RT.println("Terminate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
-//		if (cur != null) {
-//			cur.EVENT.out();
-//			cur.EVENT = null;
-//		}
-//		if (SQS.empty())
-//			throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
-//		Process$ nxtcur=current();
-//		//RT.println("END Terminate: next current="+nxtcur.edObjectIdent()+", SQS="+this.edSQS());
-//		SIM_TRACE("END Terminate Resume["+nxtcur.edObjectIdent()+']');
-//		resume(nxtcur,true);
-//		SIM_TRACE("END Terminate AFTER Resume["+nxtcur.edObjectIdent()+']');
-//		//RT.BREAK("Terminate: AFTER Resume(next)");
-//	}
-
-	public void wait(Head$ S) {
+	public void wait(final Head$ S) {
 		SIM_TRACE("Wait in Queue " + S);
 		current().into(S);
 		passivate();
 	}
 
-	public void cancel(Process$ x) {
+	public void cancel(final Process$ x) {
 		SIM_TRACE("Cancel " + x);
 		if (x == current())
 			passivate();
@@ -245,13 +208,13 @@ public class Simulation$ extends Simset$ {
 	 * @param c
 	 * @param d
 	 */
-	public void accum(NAME$<Double> a, NAME$<Double> b, NAME$<Double> c, double d) {
+	public void accum(final NAME$<Double> a,final NAME$<Double> b,final NAME$<Double> c,final double d) {
 		a.put(a.get() + (c.get() * (time() - b.get())));
 		b.put(time());
 		c.put(c.get() + d);
 	}
 
-	public void ActivateDirect(boolean REAC, Process$ X) {
+	public void ActivateDirect(final boolean REAC,final Process$ X) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE$ == OperationalState.terminated)
@@ -279,11 +242,11 @@ public class Simulation$ extends Simset$ {
 		}
 	}
 
-	public void ActivateDelay(boolean REAC, Process$ X, double T, boolean PRIO) {
+	public void ActivateDelay(final boolean REAC,final Process$ X,final double T,final boolean PRIO) {
 		ActivateAt(REAC, X, time() + T, PRIO);
 	}
 
-	public void ActivateAt(boolean REAC, Process$ X, double T, boolean PRIO) {
+	public void ActivateAt(final boolean REAC,final Process$ X,double T,final boolean PRIO) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE$ == OperationalState.terminated)
@@ -316,15 +279,15 @@ public class Simulation$ extends Simset$ {
 		}
 	}
 
-	public void ActivateBefore(boolean REAC, Process$ X, Process$ Y) {
+	public void ActivateBefore(final boolean REAC,final Process$ X,final Process$ Y) {
 		ACTIVATE3(REAC, X, true, Y);
 	}
 
-	public void ActivateAfter(boolean REAC, Process$ X, Process$ Y) {
+	public void ActivateAfter(final boolean REAC,final Process$ X,final Process$ Y) {
 		ACTIVATE3(REAC, X, false, Y);
 	}
 
-	private void ACTIVATE3(boolean REAC, Process$ X, boolean BEFORE, Process$ Y) {
+	private void ACTIVATE3(final boolean REAC,final Process$ X,final boolean BEFORE,final Process$ Y) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, " none");
 		else if (X.STATE$ == OperationalState.terminated)
@@ -371,13 +334,13 @@ public class Simulation$ extends Simset$ {
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
 
-	private void TRACE_ACTIVATE(boolean REAC, String msg) {
+	private void TRACE_ACTIVATE(final boolean REAC,final String msg) {
 		String act = (REAC) ? "REACTIVATE " : "ACTIVATE ";
 		SIM_TRACE(act + msg);
 
 	}
 
-	public void SIM_TRACE(String msg) {
+	public void SIM_TRACE(final String msg) {
 		//checkSQS();
 		if (RT.Option.SML_TRACING) {
 			Thread thread = Thread.currentThread();

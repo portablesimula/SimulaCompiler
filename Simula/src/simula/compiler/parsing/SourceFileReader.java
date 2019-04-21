@@ -47,8 +47,7 @@ public final class SourceFileReader {
 	}
 	    
 	public void close() {
-		try { current.close();
-		} catch (IOException e) {}
-	} // end close;
+		try { current.close(); } catch (IOException e) {}
+	}
 
 }

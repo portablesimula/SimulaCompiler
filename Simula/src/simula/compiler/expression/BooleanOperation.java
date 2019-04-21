@@ -93,64 +93,74 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public final class BooleanOperation extends Expression
-{ public Expression lhs;
-  public KeyWord opr;
-  public Expression rhs;
-  
-  public BooleanOperation(Expression lhs,KeyWord opr,Expression rhs)
-  { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-    //lhs.backLink=rhs.backLink=this;
-	if(this.lhs==null)
-	{ Util.error("Missing operand before "+opr);
-	  this.lhs=new Variable("UNKNOWN$");
-	}
-	if(this.rhs==null)
-	{ Util.error("Missing operand after "+opr);
-	  this.rhs=new Variable("UNKNOWN$");
-	}
-    this.lhs.backLink=this.rhs.backLink=this;
-  }
-  
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
-   	Global.sourceLineNumber=lineNumber;
-	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN BooleanOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	switch(opr)
-	{ case AND: case OR: case IMP: case EQV: case AND_THEN: case OR_ELSE:
-	  { // Boolean operation
-		lhs.doChecking(); rhs.doChecking();
-		Type type1=lhs.type; Type type2=rhs.type;
-		if( type1.equals(type2) & type1==Type.Boolean) this.type=Type.Boolean;
-		if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
-		break;
-	  }
-	  default: Util.FATAL_ERROR("Impossible");
-	}
-	if(Option.TRACE_CHECKER) Util.TRACE("END BooleanOperation"+toString()+".doChecking - Result type="+this.type);
-	SET_SEMANTICS_CHECKED();
-  }
+public final class BooleanOperation extends Expression {
+	public Expression lhs;
+	public final KeyWord opr;
+	public Expression rhs;
 
-  // Returns true if this expression may be used as a statement.
-  public boolean maybeStatement()
-  {	ASSERT_SEMANTICS_CHECKED(this);
-	return(false);  
-  }
-  
-  public String toJavaCode()
-  { ASSERT_SEMANTICS_CHECKED(this);
-	switch(opr)
-	{ case IMP: return("((!"+lhs.get()+") | "+rhs.get()+')');
-	  case EQV: return("(("+lhs.get()+") == ("+rhs.get()+"))");
-      default: {
-    	  if(this.backLink==null)
-    		   return(lhs.get()+opr.toJavaCode()+'('+rhs.get()+')');
-    	  else return("("+lhs.get()+opr.toJavaCode()+'('+rhs.get()+"))");
-      }
+	public BooleanOperation(Expression lhs, KeyWord opr, Expression rhs) {
+		this.lhs = lhs;
+		this.opr = opr;
+		this.rhs = rhs;
+		// lhs.backLink=rhs.backLink=this;
+		if (this.lhs == null) {
+			Util.error("Missing operand before " + opr);
+			this.lhs = new Variable("UNKNOWN$");
+		}
+		if (this.rhs == null) {
+			Util.error("Missing operand after " + opr);
+			this.rhs = new Variable("UNKNOWN$");
+		}
+		this.lhs.backLink = this.rhs.backLink = this;
 	}
-  }
-  
-  public String toString()
-  { return("("+lhs+' '+opr+' '+rhs+")"); }
+
+	public void doChecking() {
+		if (IS_SEMANTICS_CHECKED())	return;
+		Global.sourceLineNumber = lineNumber;
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("BEGIN BooleanOperation" + toString() + ".doChecking - Current Scope Chain: "
+					+ Global.currentScope.edScopeChain());
+		switch (opr) {
+		    case AND:case OR:case IMP:case EQV:case AND_THEN:case OR_ELSE: {
+		    	// Boolean operation
+				lhs.doChecking();
+				rhs.doChecking();
+				Type type1 = lhs.type;
+				Type type2 = rhs.type;
+				if (type1.equals(type2) & type1 == Type.Boolean)
+					this.type = Type.Boolean;
+				if (this.type == null)
+					Util.error("Incompatible types in binary operation: " + toString());
+				break;
+		    }
+		    default: Util.FATAL_ERROR("Impossible");
+		}
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("END BooleanOperation" + toString() + ".doChecking - Result type=" + this.type);
+		SET_SEMANTICS_CHECKED();
+	}
+
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (false);
+	}
+
+	public String toJavaCode() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		switch (opr) {
+			case IMP: return ("((!" + lhs.get() + ") | " + rhs.get() + ')');
+			case EQV: return ("((" + lhs.get() + ") == (" + rhs.get() + "))");
+			default: {
+				if (this.backLink == null)
+				 	 return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
+				else return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
+			}
+		}
+	}
+
+	public String toString() {
+		return ("(" + lhs + ' ' + opr + ' ' + rhs + ")");
+	}
 
 }

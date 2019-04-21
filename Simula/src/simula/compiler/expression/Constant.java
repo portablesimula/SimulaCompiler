@@ -7,6 +7,11 @@
  */
 package simula.compiler.expression;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.TypeDeclaration;
 import simula.compiler.utilities.Global;
@@ -31,30 +36,29 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  * @see simula.compiler.parsing.SimulaScanner
  */
-public final class Constant extends Expression {
+public final class Constant extends Expression implements Externalizable {
 	public Object value;
 
-	public Constant(Type type, Object value) {
+	public Constant(final Type type,final Object value) {
 		this.type=type;
 		this.value = value;
 		//if (Option.TRACE_PARSE) Util.TRACE("NEW Constant: "+this);
 	}
 	
-    public static Constant createRealType(Object value)
+    public static Constant createRealType(final Object value)
     { Type type=Type.Real;
       if(value instanceof Double) type=Type.LongReal;
       return(new Constant(type,value));
     }
-
     
-    private static Type getType(Number n) {
+    private static Type getType(final Number n) {
     	if(n instanceof Integer) return(Type.Integer);
     	if(n instanceof Long) return(Type.Integer);
     	if(n instanceof Float) return(Type.Real);
     	return(Type.LongReal);
     }
     
-    public static Constant evaluate(KeyWord opr,Number rhn) { 
+    public static Constant evaluate(final KeyWord opr,final Number rhn) { 
     	Type type=getType(rhn);
 		Number result=null;
 		if(type==Type.Integer) {
@@ -80,10 +84,12 @@ public final class Constant extends Expression {
 		return(new Constant(type,result));
     }
   
-    public static Constant evaluate(Number lhn,KeyWord opr,Number rhn) { 
+    public static Constant evaluate(final Number lhn,final KeyWord opr,final Number rhn) { 
     	Type type=Type.arithmeticTypeConversion(getType(lhn),getType(rhn));
 		if(opr==KeyWord.DIV && type==Type.Integer) type=Type.Real;
-		//Util.BREAK("ArithmeticOperation.NEW: type="+type);
+//		Util.BREAK("Constant.evaluate: lhn="+lhn);
+//		Util.BREAK("Constant.evaluate: opr="+opr);
+//		Util.BREAK("Constant.evaluate: rhn="+rhn);
 		Number result=null;
 		if(type==Type.Integer) {
 			switch(opr) {
@@ -117,7 +123,16 @@ public final class Constant extends Expression {
 		return(new Constant(type,result));
     }
   
-    public static Number getNumber(Expression x) {
+    public static Number getNumber1(final Expression x) {
+	    if(x instanceof Constant) {
+		    Object value=((Constant)x).value;
+		    //Util.println("ArithmeticOperation.getNumber: value="+value+", QUAL="+value.getClass().getSimpleName());
+		    if(value instanceof Number) return((Number)value);
+	    }
+	    return(null);
+    }
+    
+    public static Number getNumber(final Expression x) {
 	    if(x instanceof Constant) {
 		    Object value=((Constant)x).value;
 		    //Util.println("ArithmeticOperation.getNumber: value="+value+", QUAL="+value.getClass().getSimpleName());
@@ -125,12 +140,12 @@ public final class Constant extends Expression {
 	    }
 	    if(x instanceof Variable) {
 		    Variable var=(Variable)x;
-		    //Util.println("ArithmeticOperation.getNumber: Global.currentScope="+Global.currentScope);
+		    //Util.BREAK("Constant.getNumber: Global.currentScope="+Global.currentScope);
 		    Meaning meaning=Global.currentScope.findMeaning(var.identifier);
-		    //Util.println("ArithmeticOperation.getNumber: meaning="+meaning);
+		    //Util.BREAK("Constant.getNumber: meaning="+meaning);
 		    if(meaning==null) return(null);
 		    Declaration declaredAs=meaning.declaredAs;
-		    //Util.println("ArithmeticOperation.getNumber: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());
+		    //Util.BREAK("ArithmeticOperation.getNumber: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());
 		    if(declaredAs instanceof TypeDeclaration) {
 			    TypeDeclaration tp=(TypeDeclaration)declaredAs;
 			    Expression constElt=tp.constantElement;
@@ -150,18 +165,18 @@ public final class Constant extends Expression {
     }
 
     
-	public void doChecking() {
+    public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		this.type.doChecking(Global.currentScope);
 		SET_SEMANTICS_CHECKED();
 	}
 
-	  // Returns true if this expression may be used as a statement.
-	  public boolean maybeStatement()
-	  {	ASSERT_SEMANTICS_CHECKED(this);
+    // Returns true if this expression may be used as a statement.
+    public boolean maybeStatement() {
+    	ASSERT_SEMANTICS_CHECKED(this);
 		return(false);  
-	  }
+    }
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
@@ -188,7 +203,7 @@ public final class Constant extends Expression {
 		return (""+value);
 	}
 	
-	private String encode(String s) {
+	private String encode(final String s) {
 		StringBuilder b = new StringBuilder();
 		for (char c : s.toCharArray()) {
 			if (c == '"') b.append('\\');
@@ -201,6 +216,27 @@ public final class Constant extends Expression {
 	public String toString() {
 		String val=value==null?"null":(value.getClass().getSimpleName()+'(' + value+')');
 		return("CONSTANT("+type+','+val+')');
+	}
+
+	
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public Constant() {}
+
+	@Override
+	public void writeExternal(ObjectOutput oupt) throws IOException {
+		Util.TRACE_OUTPUT("Constant: "+type+' '+value);
+		oupt.writeObject(type);
+		//Util.BREAK("AttributeFile.writeConstant: "+cnst+", value="+cnst.value);
+		oupt.writeObject(value);
+	}
+
+	@Override
+	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
+		type=Type.inType(inpt);
+		value=inpt.readObject();
+		Util.TRACE_INPUT("Constant: "+type+' '+value);
 	}
 
 }

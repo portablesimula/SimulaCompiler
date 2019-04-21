@@ -29,15 +29,14 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class GotoStatement extends Statement {
-	private Expression label;
+	private final Expression label;
 
 	public GotoStatement() {
 		label = Expression.parseExpression();
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		label.doChecking();
 		if (label.type != Type.Label)
 			Util.error("Goto " + label + ", " + label + " is not a Label");
@@ -49,12 +48,12 @@ public final class GotoStatement extends Statement {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (Option.standardClass) {
-			JavaModule.code("GOTO$(" + label + "); // GOTO QUASI LABEL");
+			JavaModule.code("GOTO$(" + label + ");","GOTO QUASI LABEL");
 			return;
 		}
-		Type type = label.type;
+  		Type type = label.type;
 		Util.ASSERT(type == Type.Label, "Invariant");
-		JavaModule.code("GOTO$(" + label.toJavaCode() + "); // GOTO EVALUATED LABEL");
+		JavaModule.code("GOTO$(" + label.toJavaCode() + ");","GOTO EVALUATED LABEL");
 	}
 
 	public String toString() {

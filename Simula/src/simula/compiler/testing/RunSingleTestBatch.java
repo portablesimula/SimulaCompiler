@@ -10,6 +10,7 @@ package simula.compiler.testing;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
+import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.runtime.RTObject$.LABQNT$;
@@ -105,7 +106,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
 		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
 		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
-		//names.add("simtst66.sim"); // OK:  Test corutines and two infiles which read from the same file.
+		//names.add("simtst66.sim"); // OK:  Test coroutines and two infiles which read from the same file.
 		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
 		//names.add("simtst68.sim"); // OK:  Test of coroutines.
 		//names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
@@ -127,8 +128,8 @@ public final class RunSingleTestBatch {
 		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
 		//names.add("simtst85.sim"); // OK:  Test Directfile.
-		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
-		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
+		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
+		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
 		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
 		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
@@ -146,7 +147,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 		//names.add("simtst102.sim"); // OK: GOTO out of an operating Process
-		names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
+		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 
 		// Set options and tracing.
@@ -182,6 +183,18 @@ public final class RunSingleTestBatch {
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
 		Option.outputDir=Global.getTempFileDir("simula/bin/");
+		
+		// Set RunTime Options and tracing.
+		RTOption.VERBOSE = true;
+		RTOption.DEBUGGING = false;
+//		RTOption.USE_CONTINUATIONS=true;
+		RTOption.USE_CONSOLE=false;
+		RTOption.CODE_STEP_TRACING = false;
+		RTOption.BLOCK_TRACING = false;
+		RTOption.GOTO_TRACING = false;
+		RTOption.THREAD_TRACING = false;
+		RTOption.QPS_TRACING = false;
+		RTOption.SML_TRACING = false;
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;

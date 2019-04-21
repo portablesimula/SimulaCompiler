@@ -73,49 +73,54 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public final class TextOperation extends Expression
-{ public Expression lhs;
-  public Expression rhs;
-  
-  public TextOperation(Expression lhs,Expression rhs)
-  { this.lhs=lhs; this.rhs=rhs;
-//    lhs.backLink=rhs.backLink=this;
-	if(this.lhs==null)
-	{ Util.error("Missing operand before &");
-	  this.lhs=new Variable("UNKNOWN$");
+public final class TextOperation extends Expression {
+	public Expression lhs;
+	public Expression rhs;
+
+	public TextOperation(final Expression lhs, final Expression rhs) {
+		this.lhs = lhs;
+		this.rhs = rhs;
+		if (this.lhs == null) {
+			Util.error("Missing operand before &");
+			this.lhs = new Variable("UNKNOWN$");
+		}
+		if (this.rhs == null) {
+			Util.error("Missing operand after &");
+			this.rhs = new Variable("UNKNOWN$");
+		}
+		this.lhs.backLink = this.rhs.backLink = this;
 	}
-	if(this.rhs==null)
-	{ Util.error("Missing operand after &");
-	  this.rhs=new Variable("UNKNOWN$");
+
+	public void doChecking() {
+		if (IS_SEMANTICS_CHECKED())
+			return;
+		Global.sourceLineNumber = lineNumber;
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("BEGIN TextOperation" + toString() + ".doChecking - Current Scope Chain: " + Global.currentScope.edScopeChain());
+		// TEXT & TEXT
+		lhs.doChecking();
+		rhs.doChecking();
+		if (lhs.type != Type.Text || rhs.type != Type.Text)
+			Util.error("Operand Type to Text Concatenation(&) is not Text");
+		this.type = Type.Text;
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("END TextOperation" + toString() + ".doChecking - Result type=" + this.type);
+		SET_SEMANTICS_CHECKED();
 	}
-    this.lhs.backLink=this.rhs.backLink=this;
-  }
-  
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
-   	Global.sourceLineNumber=lineNumber;
-	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN TextOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	// TEXT  &  TEXT
-	lhs.doChecking(); rhs.doChecking();
-	if(lhs.type!=Type.Text || rhs.type!=Type.Text) Util.error("Operand Type to Text Concatenation(&) is not Text");
-	this.type=Type.Text;
-	if(Option.TRACE_CHECKER) Util.TRACE("END TextOperation"+toString()+".doChecking - Result type="+this.type);
-	SET_SEMANTICS_CHECKED();
-  }
 
-  // Returns true if this expression may be used as a statement.
-  public boolean maybeStatement()
-  {	ASSERT_SEMANTICS_CHECKED(this);
-	return(false);  
-  }
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (false);
+	}
 
-  
-  public String toJavaCode()
-  { ASSERT_SEMANTICS_CHECKED(this);
-	return("CONC("+lhs.get()+','+rhs.get()+')');
-  }
+	public String toJavaCode() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return ("CONC(" + lhs.get() + ',' + rhs.get() + ')');
+	}
 
-  public String toString()
-  { return("("+lhs+" & "+rhs+")"); }
+	public String toString() {
+		return ("(" + lhs + " & " + rhs + ")");
+	}
 
 }

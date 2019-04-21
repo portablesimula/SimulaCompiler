@@ -38,9 +38,7 @@ public final class Global {
     public static final int MAX_WORKSPACE=10;
     
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
-	public static final boolean USE_OpenJDK_ASMTOOLS=false;//true;
-	public static final boolean USE_OW2_ASMTOOLS=true;
-	public static final boolean USE_QPS_LOOM=false;
+
 	
 	public static final boolean MODIFY_CLASS_VERSION=false;
 	public static final int major=52;  // .class file format version's Major
@@ -131,7 +129,7 @@ public final class Global {
 //		System.out.print("Global.storeProperties: SIMULA ");
 //		simulaProperties.list(System.out);
 		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
-		} catch(Exception e) { e.printStackTrace(); }
+		} catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
 	}
 	
     public static ArrayDeque<String> loadWorkspaces() {

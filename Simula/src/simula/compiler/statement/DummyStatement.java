@@ -21,6 +21,7 @@ package simula.compiler.statement;
  * @author Øystein Myhre Andersen
  */
 public final class DummyStatement extends Statement {
+	
 	public DummyStatement() {
 	}
 
@@ -34,7 +35,7 @@ public final class DummyStatement extends Statement {
 		ASSERT_SEMANTICS_CHECKED(this);
 	}
 
-	public void print(String indent) {
+	public void print(final int indent) {
 	}
 
 	public String toString() {

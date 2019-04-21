@@ -9,6 +9,7 @@ package simula.compiler.expression;
 
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
+
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
@@ -48,11 +49,11 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class LocalObject extends Expression {
-	private String classIdentifier;
+	private final String classIdentifier;
 	private ClassDeclaration classDeclaration; // Set by doChecking
 	private DeclarationScope declarationScope; // Set by doChecking
 
-	private LocalObject(String classIdentifier) {
+	private LocalObject(final String classIdentifier) {
 		this.classIdentifier = classIdentifier;
 		this.type=Type.Ref(classIdentifier);
 		if (Option.TRACE_PARSE)
@@ -82,11 +83,11 @@ public final class LocalObject extends Expression {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	  // Returns true if this expression may be used as a statement.
-	  public boolean maybeStatement()
-	  {	ASSERT_SEMANTICS_CHECKED(this);
-		return(false);  
-	  }
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (false);
+	}
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);

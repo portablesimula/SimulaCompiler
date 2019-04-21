@@ -7,6 +7,12 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 /**
@@ -14,7 +20,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public final class HiddenSpecification {
+public final class HiddenSpecification implements Externalizable {
 	public String identifier;
 	public ClassDeclaration definedIn;
     private ProtectedSpecification protectedBy; // Set during doChecking
@@ -23,7 +29,7 @@ public final class HiddenSpecification {
     	return(protectedBy);
     }
 
-	public HiddenSpecification(ClassDeclaration definedIn,String identifier) {
+	public HiddenSpecification(final ClassDeclaration definedIn,final String identifier) {
 		this.definedIn=definedIn;
 		this.identifier=identifier;
 	}
@@ -87,7 +93,7 @@ public final class HiddenSpecification {
 	// ***********************************************************************************************
 	// *** Utility: findHidden -- Search Protected-list for 'ident'
 	// ***********************************************************************************************
-	private static HiddenSpecification findHidden(ClassDeclaration scope,String ident)
+	private static HiddenSpecification findHidden(final ClassDeclaration scope,final String ident)
 	{ for(HiddenSpecification hdn:scope.hiddenList) if(ident.equalsIgnoreCase(hdn.identifier))
 	  { //Util.BREAK("HiddenSpecification.findHidden("+ident+"): FOUND");
 	      return(hdn);
@@ -111,6 +117,26 @@ public final class HiddenSpecification {
 	  }
 	  s.append("]");
 	  return(s.toString());
+	}
+
+
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public HiddenSpecification() {}
+
+	@Override
+	public void writeExternal(ObjectOutput oupt) throws IOException {
+		//Util.BREAK("AttributeFile.doWriteAttributeInfo: blk="+this);
+		Util.TRACE_OUTPUT("ProtectedSpecification: "+identifier);
+		oupt.writeObject(identifier);
+	}
+
+	@Override
+	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
+		identifier=(String)inpt.readObject();
+		this.definedIn=(ClassDeclaration)Global.currentScope;
+		Util.TRACE_INPUT("ProtectedSpecification: "+identifier);
 	}
 
 }

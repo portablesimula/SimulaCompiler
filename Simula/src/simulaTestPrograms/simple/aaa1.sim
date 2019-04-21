@@ -1,9 +1,0 @@
-begin 
- ref(symbolgroup)       symtab(  127);
-%-Z %RECORD OFF
-
-%+Z   ref(symbolbox) array hashtab(0:255);
-%-Z %RECORD ON
-%-Z   ref(symbolbox)       hashtab(  255);
-%-Z %RECORD OFF
-end;

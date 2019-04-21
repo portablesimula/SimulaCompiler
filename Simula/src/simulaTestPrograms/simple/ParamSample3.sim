@@ -7,7 +7,7 @@ begin
    ! -- Name Parameter with EXTREME BI-EFFECTS              -- ;
    ! --------------------------------------------------------- ;
 
-   Outtext("--- START Simula a.s. TEST 72"); Outimage ;
+   Outtext("--- START Simula a.s. TEST 72??"); Outimage ;
    Outtext("--- Test of formal parameters."); Outimage ; Outimage ;
 
    begin comment *** PART 1 ***;

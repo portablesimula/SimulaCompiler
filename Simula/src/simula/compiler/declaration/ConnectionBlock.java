@@ -18,7 +18,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 public final class ConnectionBlock extends DeclarationScope {
-	public Variable inspectedVariable;
+	public final Variable inspectedVariable;
 	Statement statement;
 	ClassDeclaration classDeclaration;
 
@@ -26,7 +26,7 @@ public final class ConnectionBlock extends DeclarationScope {
 		return (classDeclaration);
 	}
 
-	String whenClassIdentifier;
+	final String whenClassIdentifier;
 	public Declaration whenClassDeclaration; // Set during cheching
 
 	public Expression getInspectedVariable() {
@@ -38,7 +38,7 @@ public final class ConnectionBlock extends DeclarationScope {
 		return ((Expression) TypeConversion.testAndCreate(type, inspectedVariable));
 	}
 
-	public ConnectionBlock(Variable inspectedVariable, String whenClassIdentifier) {
+	public ConnectionBlock(final Variable inspectedVariable,final String whenClassIdentifier) {
 		super("Inspect:" + inspectedVariable);
 		// Global.currentScope=this;
 		blockKind = BlockKind.ConnectionBlock;
@@ -58,16 +58,16 @@ public final class ConnectionBlock extends DeclarationScope {
 	
 	
 
-	public void setClassDeclaration(ClassDeclaration classDeclaration) {
+	public void setClassDeclaration(final ClassDeclaration classDeclaration) {
 		// Util.BREAK("ConnectionBlock("+this.identifier+").setClassDeclaration("+classDeclaration.identifier+")");
 		this.classDeclaration = classDeclaration;
 	}
 
-	public void setStatement(Statement statement) {
+	public void setStatement(final Statement statement) {
 		this.statement = statement;
 	}
 
-	public Meaning findMeaning(String identifier) {
+	public Meaning findMeaning(final String identifier) {
 		// if(identifier.equalsIgnoreCase("ELT")) Util.BREAK("ConnectionBlock("+this.identifier+").findMeaning("+identifier+") classDeclaration="+classDeclaration);
 		if (classDeclaration == null && Global.duringParsing)
 			return (null); // Still in Pass1(Parser)
@@ -86,8 +86,7 @@ public final class ConnectionBlock extends DeclarationScope {
 	}
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		// Set External Identifier
 		externalIdent = inspectedVariable.identifier + '$' + lineNumber;
@@ -124,18 +123,17 @@ public final class ConnectionBlock extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
-	public void print(String indent) {
+	public void print(final int indent) {
+    	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(indent);
-		s.append('[').append(blockLevel).append("] ");
+	    s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
 		s.append(blockKind).append(' ').append(identifier);
 		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';
-		indent = indent + "    ";
-		Util.println(indent + beg);
-		for (Declaration decl : declarationList)
-			decl.print(indent + "   ");
-		statement.print(indent + "   ");
-		Util.println(indent + "end[" + edScopeChain() + ']');
+		Util.println(spc + beg);
+		for (Declaration decl : declarationList) decl.print(indent + 1);
+		statement.print(indent + 1);
+		Util.println(spc + "end[" + edScopeChain() + ']');
 		// Util.BREAK("ConnectionBlock.print DONE");
 	}
 

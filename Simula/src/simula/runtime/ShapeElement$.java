@@ -46,64 +46,83 @@ import java.awt.geom.RoundRectangle2D;
  * @author Øystein Myhre Andersen
  */
 public class ShapeElement$ extends Link$ implements Drawing$.Animable {
-	Drawing$ drawing;
+	final Drawing$ drawing;
     Color drawColor; // null: no drawing
     Color fillColor; // null: no filling
     Stroke stroke;
     Shape shape;
 
-    public void drawLine(double x1,double y1,double x2,double y2)
+	// Constructor
+	public ShapeElement$(RTObject$ staticLink) {
+		super(staticLink);
+		drawing=(Drawing$)staticLink;
+		stroke=drawing.currentStroke;
+		//RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
+		into(drawing.RENDERING_SET);
+	}
+	public ShapeElement$ STM$() {
+		//TRACE_BEGIN_STM$("ShapeElement$");
+//		ShapeElement$.this.stroke=drawing.currentStroke;
+//		//RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
+//		ShapeElement$.this.into(drawing.RENDERING_SET);
+		// INNER
+		//TRACE_END_STM$("ShapeElement$");
+		EBLK();
+		return(this);
+	}
+
+    public void drawLine(final double x1,final double y1,final double x2,final double y2)
     { shape=new Line2D.Double(x1,y1,x2,y2);
       drawColor=drawing.currentDrawColor;
       drawing.repaintMe();
     }
 
-    public void drawEllipse(double x,double y,double width,double height)
+    public void drawEllipse(final double x,final double y,final double width,final double height)
     { shape=new Ellipse2D.Double(x,y,width,height);
       drawColor=drawing.currentDrawColor;
       drawing.repaintMe();
     }
 
-    public void drawRectangle(double x,double y,double width,double height)
+    public void drawRectangle(final double x,final double y,final double width,final double height)
     { shape=new Rectangle2D.Double(x,y,width,height);
       drawColor=drawing.currentDrawColor;
       drawing.repaintMe();
     }
 
-    public void drawRoundRectangle(double x,double y,double width,double height, double arcw, double arch)
+    public void drawRoundRectangle(final double x,final double y,final double width,final double height, final double arcw, final double arch)
     { shape=new RoundRectangle2D.Double(x,y,width,height,arcw,arch);
       drawColor=drawing.currentDrawColor;
       drawing.repaintMe();
     }
 
-    public void fillEllipse(double x,double y,double width,double height)
+    public void fillEllipse(final double x,final double y,final double width,final double height)
     { shape=new Ellipse2D.Double(x,y,width,height);
       //RT.println("ShapeElement.fillEllipse: "+shape);
       fillColor=drawing.currentFillColor;
       drawing.repaintMe();
     }
 
-    public void fillRectangle(double x,double y,double width,double height)
+    public void fillRectangle(final double x,final double y,final double width,final double height)
     { shape=new Rectangle2D.Double(x,y,width,height);
       fillColor=drawing.currentFillColor;
       drawing.repaintMe();
     }
 
-    public void fillRoundRectangle(double x,double y,double width,double height, double arcw, double arch)
+    public void fillRoundRectangle(final double x,final double y,final double width,final double height, final double arcw, final double arch)
     { shape=new RoundRectangle2D.Double(x,y,width,height,arcw,arch);
       fillColor=drawing.currentFillColor;
       drawing.repaintMe();
     }
 
-    public void setColor(int rgb)
+    public void setColor(final int rgb)
     { if(fillColor!=null) { fillColor=new Color(rgb); }
       if(drawColor!=null) { drawColor=new Color(rgb); }
       drawing.repaintMe();
     }
 
-    public void setStroke(float size) { stroke=new BasicStroke(size); }
+    public void setStroke(final float size) { stroke=new BasicStroke(size); }
     
-    public void instantMoveTo(double x,double y)
+    public void instantMoveTo(final double x,final double y)
     { if(shape instanceof RectangularShape)
       { RectangularShape rect=((RectangularShape)shape);
         //RT.println("Move "+shape.getClass().getSimpleName()+" to x="+x+", y="+y);
@@ -113,7 +132,7 @@ public class ShapeElement$ extends Link$ implements Drawing$.Animable {
     }
     
     // speed = pixels per milli-second ???
-    public void moveTo(double x,double y,double speed)
+    public void moveTo(final double x,final double y,final double speed)
     { if(shape==null) return;
       Rectangle2D bnd=shape.getBounds2D();
       double x1=bnd.getX();
@@ -131,33 +150,7 @@ public class ShapeElement$ extends Link$ implements Drawing$.Animable {
       instantMoveTo(x,y);
     }
 
-	// Constructor
-	public ShapeElement$(RTObject$ staticLink) {
-		super(staticLink);
-		TRACE_BEGIN_DCL$("ShapeElement$");
-		drawing=(Drawing$)staticLink;
-		CODE$ = new ClassBody(CODE$, this,2) {
-			public void STM$() {
-				TRACE_BEGIN_STM$("ShapeElement$",inner);
-				ShapeElement$.this.stroke=drawing.currentStroke;
-				//RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
-				ShapeElement$.this.into(drawing.RENDERING_SET);
-				if (inner != null) inner.STM$();
-				TRACE_END_STM$("ShapeElement$");
-			}
-		};
-	}
-
-	public ShapeElement$ STM$() {
-		return ((ShapeElement$) CODE$.EXEC$());
-	}
-
-	public ShapeElement$ START() {
-		START(this);
-		return (this);
-	}
-
-    public void paint(Graphics2D g)
+    public void paint(final Graphics2D g)
     { g.setStroke(stroke);
   	  if(fillColor!=null)	{ g.setColor(fillColor); g.fill(shape); }
       if(drawColor!=null)	{ g.setColor(drawColor); g.draw(shape); }

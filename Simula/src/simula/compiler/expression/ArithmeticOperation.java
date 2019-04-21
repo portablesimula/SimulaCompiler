@@ -82,123 +82,112 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public final class ArithmeticOperation extends Expression
-{ public Expression lhs;
-  public KeyWord opr;
-  public Expression rhs;
+public final class ArithmeticOperation extends Expression {
+	public Expression lhs;
+	public final KeyWord opr;
+	public Expression rhs;
   
-  public static Expression newArithmeticOperation(Expression lhs,KeyWord opr,Expression rhs) {
-//	  Util.BREAK("ArithmeticOperation.NEW: lhs="+lhs+", QUAL="+lhs.getClass().getSimpleName());
-//	  Util.BREAK("ArithmeticOperation.NEW: opr="+opr);
-//	  Util.BREAK("ArithmeticOperation.NEW: rhs="+rhs+", QUAL="+rhs.getClass().getSimpleName());
-
-	  Number lhn=Constant.getNumber(lhs);
-	  if(lhn!=null) {
-		  //Util.BREAK("ArithmeticOperation.NEW: lhn="+lhn+", QUAL="+lhn.getClass().getSimpleName());
-		  Number rhn=Constant.getNumber(rhs);
-		  if(rhn!=null) {
-			  //Util.BREAK("ArithmeticOperation.NEW: rhn="+rhn+", QUAL="+rhn.getClass().getSimpleName());
-			  //Util.BREAK("ArithmeticOperation.Evaluate: "+lhs+' '+opr+' '+rhs);
-			  return(Constant.evaluate(lhn,opr,rhn));
-		  }		  
-	  }
-	  return(new ArithmeticOperation(lhs,opr,rhs));
-  }
+	public ArithmeticOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
+		this.opr=opr;
+		if(lhs==null) {
+			Util.error("Missing operand before "+opr);
+			this.lhs=new Variable("UNKNOWN$");
+		} else this.lhs=lhs;
+		if(rhs==null) {
+			Util.error("Missing operand after "+opr);
+			this.rhs=new Variable("UNKNOWN$");
+		} else this.rhs=rhs;
+		this.lhs.backLink=this.rhs.backLink=this;
+	}
   
-  private ArithmeticOperation(Expression lhs,KeyWord opr,Expression rhs)
-  { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-    //lhs.backLink=rhs.backLink=this;
-	if(this.lhs==null)
-	{ Util.error("Missing operand before "+opr);
-	  this.lhs=new Variable("UNKNOWN$");
+	// Try to Compile-time Evaluate this expression
+	public Expression evaluate() {
+		Number lhn=Constant.getNumber(lhs);
+		if(lhn!=null) {
+			Number rhn=Constant.getNumber(rhs);
+			if(rhn!=null) return(Constant.evaluate(lhn,opr,rhn));
+		}
+		return(this);
 	}
-	if(this.rhs==null)
-	{ Util.error("Missing operand after "+opr);
-	  this.rhs=new Variable("UNKNOWN$");
-	}
-    this.lhs.backLink=this.rhs.backLink=this;
-  }
   
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
-   	Global.sourceLineNumber=lineNumber;
-	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ArithmeticOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-	switch(opr)
-	{ case PLUS: case MINUS: case MUL:
-	  { // ArithmeticExpression
-		lhs.doChecking(); rhs.doChecking();
-		Type type1=lhs.type; Type type2=rhs.type;
-		this.type=Type.arithmeticTypeConversion(type1,type2);
-		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-		//Util.BREAK("ArithmeticOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
-		if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
-		break;
-	  }
-	  case DIV: // Real Division
-	  { // The operator / denotes real division.
-		// Any operand of integer type is converted before the operation.
-		// Division by zero constitutes an error.
-		lhs.doChecking(); rhs.doChecking();
-		Type type1=lhs.type; Type type2=rhs.type;
-		this.type=Type.arithmeticTypeConversion(type1,type2);
-		if(this.type==Type.Integer) this.type=Type.Real;
-		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-		//Util.BREAK("ArithmeticOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
-		if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
-		break;
-	  }
-	  case INTDIV: // Integer Division
-	  {	lhs.doChecking(); rhs.doChecking();
-		if(lhs.type!=Type.Integer || rhs.type!=Type.Integer)
-			Util.error("Incompatible types in binary operation: "+toString());
-		this.type=Type.Integer;
-		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-	    break; 
-	  }
-	  case EXP:
-	  {	lhs.doChecking(); rhs.doChecking();
-	    if(lhs.type!=Type.Integer || rhs.type!=Type.Integer)
-    	{ this.type=Type.LongReal; // Deviation from Simula Standard
-		  lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-		  rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-    	} else this.type=Type.Integer;
-	    break; 
-	  }
-	  default: Util.FATAL_ERROR("Impossible");
-	}
-	if(Option.TRACE_CHECKER) Util.TRACE("END ArithmeticOperation"+toString()+".doChecking - Result type="+this.type);
-	SET_SEMANTICS_CHECKED();
-  }
+    public void doChecking() {
+    	if(IS_SEMANTICS_CHECKED()) return;
+    	Global.sourceLineNumber=lineNumber;
+    	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ArithmeticOperation"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
+    	switch(opr) {
+    	    case PLUS: case MINUS: case MUL: {
+	    	    // ArithmeticExpression
+    	    	lhs.doChecking(); rhs.doChecking();
+    	    	Type type1=lhs.type; Type type2=rhs.type;
+    	    	this.type=Type.arithmeticTypeConversion(type1,type2);
+    	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
+    	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
+    	    	//Util.BREAK("ArithmeticOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
+    	    	if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
+    	    	break;
+    	    } case DIV: {
+    	    	// Real Division
+    	    	// The operator / denotes real division.
+    	    	// Any operand of integer type is converted before the operation.
+    	    	// Division by zero constitutes an error.
+    	    	lhs.doChecking(); rhs.doChecking();
+    	    	Type type1=lhs.type; Type type2=rhs.type;
+    	    	this.type=Type.arithmeticTypeConversion(type1,type2);
+    	    	if(this.type==Type.Integer) this.type=Type.Real;
+    	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
+    	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
+    	    	//Util.BREAK("ArithmeticOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
+    	    	if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
+    	    	break;
+    	    } case INTDIV: { // Integer Division
+    	    	lhs.doChecking(); rhs.doChecking();
+    	    	if(lhs.type!=Type.Integer || rhs.type!=Type.Integer)
+    	    		Util.error("Incompatible types in binary operation: "+toString());
+    	    	this.type=Type.Integer;
+    	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
+    	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
+    	    	break; 
+    	    } case EXP: {
+    	    	lhs.doChecking(); rhs.doChecking();
+    	    	if(lhs.type!=Type.Integer || rhs.type!=Type.Integer) {
+    	    		this.type=Type.LongReal; // Deviation from Simula Standard
+    	    		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
+    	    		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
+    	    	} else this.type=Type.Integer;
+    	    	break; 
+    	    }
+    	    default: Util.FATAL_ERROR("Impossible");
+    	}
+    	if(Option.TRACE_CHECKER) Util.TRACE("END ArithmeticOperation"+toString()+".doChecking - Result type="+this.type);
+    	SET_SEMANTICS_CHECKED();
+    }
 
   
-  // Returns true if this expression may be used as a statement.
-  public boolean maybeStatement()
-  {	ASSERT_SEMANTICS_CHECKED(this);
-	return(false);  
-  }
+    // Returns true if this expression may be used as a statement.
+    public boolean maybeStatement() {
+    	ASSERT_SEMANTICS_CHECKED(this);
+	    return(false);  
+    }
 
   
-  public String toJavaCode()
-  { //Util.BREAK("ArithmeticOperation.toJavaCode: "+this);
-	ASSERT_SEMANTICS_CHECKED(this);
-	switch(opr)
-	{ case EXP:
-		  { if(this.type==Type.Integer)
-			   return("IPOW$("+lhs.get()+','+rhs.get()+')');
-		  else return("Math.pow("+lhs.get()+','+rhs.get()+')');
-		  }
-      default:
-    	  { if(this.backLink==null)
-    		     return(lhs.get()+opr.toJavaCode()+'('+rhs.get()+')');
-    	    else return("("+lhs.get()+opr.toJavaCode()+'('+rhs.get()+"))");
-    	  }
+	public String toJavaCode() {
+		// Util.BREAK("ArithmeticOperation.toJavaCode: "+this);
+		ASSERT_SEMANTICS_CHECKED(this);
+		switch (opr) {
+		    case EXP: {
+		    	if (this.type == Type.Integer)
+		    	 	 return ("IPOW$(" + lhs.get() + ',' + rhs.get() + ')');
+		    	else return ("Math.pow(" + lhs.get() + ',' + rhs.get() + ')');
+		    }
+		    default: {
+		    	if (this.backLink == null)
+		    		 return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
+		    	else return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
+		    }
+		}
 	}
-  }
 
-  public String toString()
-  { return("("+lhs+' '+opr+' '+rhs+")"); }
+    public String toString()
+    { return("("+lhs+' '+opr+' '+rhs+")"); }
 
 }

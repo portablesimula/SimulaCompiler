@@ -1,5 +1,4 @@
 
-%QUALIFIEDNAMES
 Simset class DetachSamples;
 begin !BL=3;
    ref(C) x;

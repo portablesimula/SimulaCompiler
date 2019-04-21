@@ -1,3 +1,10 @@
-begin real x;
-      x+4:=5;
+begin
+
+   ref(A) x;
+
+   class A;;
+
+   x:-new A;
+   x.detach;
+
 end;

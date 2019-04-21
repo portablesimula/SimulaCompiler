@@ -95,13 +95,13 @@ import simula.compiler.utilities.Util;
 public final class ExternalDeclaration extends Declaration {
 	private ExternalDeclaration() {super(null);}
 
-	public static void doParse(Vector<Declaration> declarationList) {
+	public static void doParse(final Vector<Declaration> declarationList) {
         //= EXTERNAL  CLASS  ExternalList
         //= EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
         //| EXTERNAL kind PROCEDURE ExternalItem  IS ProcedureDeclaration
 		String kind=acceptIdentifier();
 		if(kind!=null) Util.NOT_IMPLEMENTED("External "+kind+" Procedure");
-		Type type = acceptType();
+		Type expectedType = acceptType();
 		//Token kind = Parser.currentToken;
 		if (!(Parser.accept(KeyWord.CLASS) || Parser.accept(KeyWord.PROCEDURE)))
 			Util.error("parseExternalDeclaration: Expecting CLASS or PROCEDURE");
@@ -117,7 +117,12 @@ public final class ExternalDeclaration extends Declaration {
 			if(externalIdentifier==null)
 				 jarFileName=Global.outputDir+identifier+".jar ";
 			else jarFileName=externalIdentifier.getIdentifier();
-			readAttributeFile(jarFileName,declarationList);
+			Type moduleType=readAttributeFile(jarFileName,declarationList);
+			if(moduleType!=expectedType) {
+				//Util.BREAK("ExternalDeclaration.doParse: expectedType="+expectedType);
+				//Util.BREAK("ExternalDeclaration.doParse: moduleType="+moduleType);
+				if(expectedType!=null) Util.error("Wrong external type");
+			}
 		  
 			if(Parser.accept(KeyWord.IS)) {
 				// ...
@@ -130,10 +135,11 @@ public final class ExternalDeclaration extends Declaration {
 	}
 
 
-	private static void readAttributeFile(String jarFileName,Vector<Declaration> declarationList) {
+	private static Type readAttributeFile(final String jarFileName,final Vector<Declaration> declarationList) {
+		Type moduleType=null;
 		File file=new File(jarFileName);
 		if(!(file.exists() && file.canRead())) {
-			Util.error("Can't read attribute file: "+file);	return;
+			Util.error("Can't read attribute file: "+file);	return(null);
 	    }
 //	    Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
 	    try { JarFile jarFile=new JarFile(jarFileName);
@@ -151,7 +157,7 @@ public final class ExternalDeclaration extends Declaration {
 //	        Util.BREAK("ExternalDeclaration.readAttributeFile: ZipEntry="+zipEntry);
 	        InputStream inputStream=jarFile.getInputStream(zipEntry);
 //	        Util.BREAK("ExternalDeclaration.readAttributeFile: inputStream="+inputStream);
-	        AttributeFile.readAttributeFile(inputStream,simulaInfo,declarationList);
+	        moduleType=AttributeFile.readAttributeFile(inputStream,simulaInfo,declarationList);
 	        inputStream.close();
 	        
 	        File destDir=new File(Global.tempClassFileDir);
@@ -159,10 +165,14 @@ public final class ExternalDeclaration extends Declaration {
 	        inputStream.close();
 	        jarFile.close();
 	        Global.externalJarFiles.add(jarFileName);
-	    } catch(IOException e) { e.printStackTrace(); }
+	    } catch(IOException | ClassNotFoundException e) {
+			Util.error("Unable to read Attribute File: "+jarFileName);
+	    	Util.INTERNAL_ERROR("Impossible",e);
+	    }
+	    return(moduleType);
 	}
 
-	private static void expandJarEntries(JarFile jarFile, File destDir) throws IOException {
+	private static void expandJarEntries(final JarFile jarFile,final File destDir) throws IOException {
 		new File(destDir,Global.packetName).mkdirs(); // Create directories
 		Enumeration<JarEntry> entries = jarFile.entries();
 		LOOP:while (entries.hasMoreElements()) {

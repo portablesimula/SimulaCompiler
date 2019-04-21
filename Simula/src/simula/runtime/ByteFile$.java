@@ -30,24 +30,21 @@ package simula.runtime;
  *
  */
 public class ByteFile$ extends FILE$ {
-	public int BYTESIZE$;
+	protected int BYTESIZE$;
 
-	public int bytesize() {
-		return (BYTESIZE$);
-	}
+	public int bytesize() {	return (BYTESIZE$);	}
 
 	// Constructor
-    public ByteFile$(RTObject$ staticLink,TXT$ FILENAME) {
+    public ByteFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
       super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$("ByteFile$");
-      CODE$=new ClassBody(CODE$,this,1) {
-         public void STM$() {
-       	    TRACE_BEGIN_STM$("ByteFile$",inner);
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("ByteFile$");
-      }};
     }
+    
     // Class Statements
-    public ByteFile$ STM$() { return((ByteFile$)CODE$.EXEC$()); }
-    public ByteFile$ START() { START(this); return(this); }
+    public ByteFile$ STM$() {
+        if(FILENAME$==null)
+        	throw new RuntimeException("Illegal File Name");
+        EBLK();
+        return(this);
+    }
+
 }

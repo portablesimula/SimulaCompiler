@@ -94,25 +94,20 @@ public class DirectFile$ extends ImageFile$ {
 	 */
 	int RECORDSIZE$;
 	
-	RandomAccessFile randomAccessFile;
-	FileLock fileLock;
+	private RandomAccessFile randomAccessFile;
+	private FileLock fileLock;
 
 	// Constructor
-    public DirectFile$(RTObject$ staticLink,TXT$ FILENAME) {
-      super(staticLink,FILENAME);
-   	  TRACE_BEGIN_DCL$("DirectFile$");
-  	  CREATE$=CreateAction$.noCreate; // Default for Direct-type files
-      CODE$=new ClassBody(CODE$,this,2) {
-         public void STM$() {
-          	TRACE_BEGIN_STM$("DirectFile$",inner);
-    		// ENDFILE$ = true; // ENDFILE is maintained by the underlying file system.
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("DirectFile$");
-      }};
+    public DirectFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    	super(staticLink,FILENAME);
+  	    CREATE$=CreateAction$.noCreate; // Default for Direct-type files
     }
+    
     // Class Statements
-    public DirectFile$ STM$() { return((DirectFile$)CODE$.EXEC$()); }
-    public DirectFile$ START() { START(this); return(this); }
+    public DirectFile$ STM$() {
+        EBLK();
+        return(this);
+    }
 
 	/**
 	 * The procedure "location" returns the current value of LOC.
@@ -159,7 +154,7 @@ public class DirectFile$ extends ImageFile$ {
 	 * 
 	 * @return
 	 */
-	public boolean open(TXT$ IMAGE$) {
+	public boolean open(final TXT$ IMAGE$) {
 		if (OPEN$) return (false);
 //		System.out.println("DirectFile$.open: CREATE$="+CREATE$+" on "+FILENAME$.edText());
 		doCreateAction();
@@ -167,7 +162,7 @@ public class DirectFile$ extends ImageFile$ {
 		MAXLOC$ = maxint - 1;
 		image = IMAGE$;
 		OPEN$ = true;
-		RECORDSIZE$ = image.length();
+		RECORDSIZE$ = TXT$.length(image);
 		setpos(1);
 		try {
 			String mode = "rws"; // mode is one of "r", "rw", "rws", or "rwd"
@@ -241,7 +236,7 @@ public class DirectFile$ extends ImageFile$ {
 	 * 
 	 * @param p
 	 */
-	public void locate(int p) {
+	public void locate(final int p) {
 		if (p < 1 | p > MAXLOC$)
 			throw new RuntimeException("Locate: Parameter out of range");
 		else
@@ -330,33 +325,33 @@ public class DirectFile$ extends ImageFile$ {
 	public void inimage() {
 		char fill = ' '; // Fill character
 		if (!OPEN$)	throw new RuntimeException("File not opened");
-		if (image.length() != RECORDSIZE$)
+		if (TXT$.length(image) != RECORDSIZE$)
 			throw new RuntimeException("DirectFile image length changed");
 		
 		setpos(1); // For Filling
 		int nextSetpos=1;
 		
-		if (LOC$ > lastloc()) image.putchar((char) 25);
+		if (LOC$ > lastloc()) TXT$.putchar(image, (char) 25);
 		// else if(external image does not exists)
 		// fill=(char)0;
 		else
 			try {
-				while (image.more()) {
+				while (TXT$.more(image)) {
 					int b = randomAccessFile.read();
 					if (b < 0) {
 						LOC$ = lastloc() + 1; // ENDFILE = true;
 						fill = (char) 0;
-						nextSetpos=image.length()+1;
+						nextSetpos=TXT$.length(image)+1;
 						break;
 					}
-					image.putchar((char) b);
+					TXT$.putchar(image, (char) b);
 				}
 			} catch (IOException e) {
 				throw new RuntimeException("Inimage failed", e);
 		}
 		ENDFILE$= LOC$ > lastloc();
 		locate(LOC$ + 1);
-		while (more())	image.putchar(fill);
+		while (more())	TXT$.putchar(image, fill);
 		setpos(nextSetpos);
 	}
 
@@ -527,7 +522,7 @@ public class DirectFile$ extends ImageFile$ {
 	 * @param loc2
 	 * @return
 	 */
-	public int lock(float timelimit, int loc1, int loc2) {
+	public int lock(final float timelimit,final int loc1,final int loc2) {
 		if (timelimit <= 0.0f)
 			return (-1);
 		if (LOCKED$)

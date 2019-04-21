@@ -100,24 +100,24 @@ import javax.swing.JFrame;
 public class Drawing$ extends Simset$ {
 	private static final boolean DEBUG=false;
 	
-	public static final int white =     0xffffff; // Color white:      R=255, G=255, B=255.
-	public static final int lightGray = 0xc0c0c0; // Color light gray: R=192, G=192, B=192.
-	public static final int gray =      0x808080; // Color gray:       R=128, G=128, B=128.
-	public static final int darkGray =  0x404040; // Color dark gray:  R=64,  G=64,  B=64.
-	public static final int black =     0x000000; // Color black:      R=0,   G=0,   B=0.
-	public static final int red =       0xff0000; // Color red:        R=255, G=0,   B=0.
-	public static final int pink =      0xffafaf; // Color pink:       R=255, G=175, B=175.
-	public static final int orange =    0xffc800; // Color orange:     R=255, G=200, B=0.
-	public static final int yellow =    0xffff00; // Color yellow:     R=255, G=255, B=0.
-	public static final int green =     0x00ff00; // Color green:      R=0,   G=255, B=0.
-	public static final int magenta =   0xff00ff; // Color magenta:    R=255, G=0,   B=255.
-	public static final int cyan =      0x00ffff; // Color cyan:       R=0,   G=255, B=255.
-	public static final int blue =      0x0000ff; // Color blue:       R=0,   G=0,   B=255.
+	public static final int white$1 =     0xffffff; // Color white:      R=255, G=255, B=255.
+	public static final int lightGray$1 = 0xc0c0c0; // Color light gray: R=192, G=192, B=192.
+	public static final int gray$1 =      0x808080; // Color gray:       R=128, G=128, B=128.
+	public static final int darkGray$1 =  0x404040; // Color dark gray:  R=64,  G=64,  B=64.
+	public static final int black$1 =     0x000000; // Color black:      R=0,   G=0,   B=0.
+	public static final int red$1 =       0xff0000; // Color red:        R=255, G=0,   B=0.
+	public static final int pink$1 =      0xffafaf; // Color pink:       R=255, G=175, B=175.
+	public static final int orange$1 =    0xffc800; // Color orange:     R=255, G=200, B=0.
+	public static final int yellow$1 =    0xffff00; // Color yellow:     R=255, G=255, B=0.
+	public static final int green$1 =     0x00ff00; // Color green:      R=0,   G=255, B=0.
+	public static final int magenta$1 =   0xff00ff; // Color magenta:    R=255, G=0,   B=255.
+	public static final int cyan$1 =      0x00ffff; // Color cyan:       R=0,   G=255, B=255.
+	public static final int blue$1 =      0x0000ff; // Color blue:       R=0,   G=0,   B=255.
 
-	JFrame frame;
-	Drawing canvas;
-	BufferStrategy strategy;
-	public Head$ RENDERING_SET = null;
+	final JFrame frame;
+	final Drawing canvas;
+	final BufferStrategy strategy;
+	final public Head$ RENDERING_SET;// = null;
     public Head$ renderingSet() { return(RENDERING_SET); }
     Color currentBackgroundColor=Color.WHITE;
     Color currentDrawColor=Color.BLACK;
@@ -141,19 +141,19 @@ public class Drawing$ extends Simset$ {
     public void setFontStyleBold() { currentFont=currentFont.deriveFont(Font.BOLD); }
     public void setFontStyleItalic() { currentFont=currentFont.deriveFont(Font.ITALIC); }
     public void setFontStyleBoldItalic() { currentFont=currentFont.deriveFont(Font.BOLD|Font.ITALIC); }
-    public void setStroke(float size) { currentStroke=new BasicStroke(size); }
+    public void setStroke(final float size) { currentStroke=new BasicStroke(size); }
     /*
      * FontSize usually 12.0 ?
      */
-    public void setFontSize(float size)
-    { if(DEBUG) RT.println("SetFontSize: size="+size+", OldFont="+currentFont);
+    public void setFontSize(final float size) {
+    	if(DEBUG) RT.println("SetFontSize: size="+size+", OldFont="+currentFont);
     	currentFont=currentFont.deriveFont(size);
     }
     public float getFontSize() { return(currentFont.getSize2D()); }
 
-	public void setBackgroundColor(int color)	{ currentBackgroundColor=new Color(color); }
-	public void setDrawColor(int color)	{ currentDrawColor=new Color(color); }
-	public void setFillColor(int color) { currentFillColor=new Color(color); }
+	public void setBackgroundColor(final int color)	{ currentBackgroundColor=new Color(color); }
+	public void setDrawColor(final int color)	{ currentDrawColor=new Color(color); }
+	public void setFillColor(final int color) { currentFillColor=new Color(color); }
 
 	/**
 	 * <pre>
@@ -163,103 +163,90 @@ public class Drawing$ extends Simset$ {
 	 * of the red component in bits 16-23, the green component in bits 8-15, and the
 	 * blue component in bits 0-7.
 	 */
-	public int color(int red,int green,int blue)
-	{ int value = (red << 16) | (green << 8) | blue;
-	  return(value);
+	public int color(final int red,final int green,final int blue) {
+		int value = (red << 16) | (green << 8) | blue;
+		return(value);
 	}
 
-	public TextElement$ drawText(TXT$ t,double x,double y)
+	public TextElement$ drawText(final TXT$ t,final double x,final double y)
 	{ return(new TextElement$(this,t,x,y).STM$()); }
 	   
-	public ShapeElement$ drawLine(double x1,double y1,double x2,double y2)
+	public ShapeElement$ drawLine(final double x1,final double y1,final double x2,final double y2)
 	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawLine(x1,y1,x2,y2); return(elt); }
 	   
-	public ShapeElement$ drawEllipse(double x,double y,double width,double height)
+	public ShapeElement$ drawEllipse(final double x,final double y,final double width,final double height)
 	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawEllipse(x,y,width,height); return(elt); }
 
-	public ShapeElement$ drawRectangle(double x,double y,double width,double height)
+	public ShapeElement$ drawRectangle(final double x,final double y,final double width,final double height)
 	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawRectangle(x,y,width,height); return(elt); }
 	   
-	public ShapeElement$ drawRoundRectangle(double x,double y,double width,double height, double arcw, double arch)
+	public ShapeElement$ drawRoundRectangle(final double x,final double y,final double width,final double height, final double arcw, final double arch)
 	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.drawRoundRectangle(x,y,width,height,arcw,arch); return(elt); }
 	   
-	public ShapeElement$ fillEllipse(double x,double y,double width,double height)
+	public ShapeElement$ fillEllipse(final double x,final double y,final double width,final double height)
 	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.fillEllipse(x,y,width,height); return(elt); }
  
-	public ShapeElement$ fillRectangle(double x,double y,double width,double height)
+	public ShapeElement$ fillRectangle(final double x,final double y,final double width,final double height)
 	{ ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.fillRectangle(x,y,width,height); return(elt); }
 	   
-    public ShapeElement$ fillRoundRectangle(double x,double y,double width,double height, double arcw, double arch)
+    public ShapeElement$ fillRoundRectangle(final double x,final double y,final double width,final double height, final double arcw, final double arch)
     { ShapeElement$ elt=new ShapeElement$(this).STM$(); elt.fillRoundRectangle(x,y,width,height,arcw,arch); return(elt); }
 
     
     class Drawing extends Canvas {
     	static final long serialVersionUID=123;
     	public void paint(Graphics g) { render(); }
-    	public void render()
-    	{ Graphics graphics = strategy.getDrawGraphics();
-    	  Graphics2D g=(Graphics2D)graphics;
-    	  g.setBackground(currentBackgroundColor);
-//    	  g.setBackground(Color.WHITE);
-    	  Rectangle bnd=this.getBounds();
-    	  g.clearRect(bnd.x,bnd.y,bnd.width,bnd.height);
-          // Render to graphics
-		  Link$ lnk=RENDERING_SET.first();
-		  while(lnk!=null) 
-		  { if(lnk instanceof Drawing$.Animable)
-			  ((Drawing$.Animable)lnk).paint(g);
-		    lnk=lnk.suc();
-		  }
-   	      graphics.dispose();
-   	      strategy.show();
+    	public void render() {
+    		Graphics graphics = strategy.getDrawGraphics();
+	    	Graphics2D g=(Graphics2D)graphics;
+	    	g.setBackground(currentBackgroundColor);
+	    	Rectangle bnd=this.getBounds();
+	    	g.clearRect(bnd.x,bnd.y,bnd.width,bnd.height);
+	        // Render to graphics
+			Link$ lnk=RENDERING_SET.first();
+			while(lnk!=null) {
+				if(lnk instanceof Drawing$.Animable)
+					((Drawing$.Animable)lnk).paint(g);
+			    lnk=lnk.suc();
+			}
+			graphics.dispose();
+			strategy.show();
     	}
     }
-
-	// Constructor
-	public Drawing$(RTObject$ staticLink,TXT$ title,int width,int height) {
-		super(staticLink);
-		TRACE_BEGIN_DCL$("Drawing$");
-		// Create Class Body
-		CODE$ = new ClassBody(CODE$, this,1) {
-			public void STM$() {
-				TRACE_BEGIN_STM$("Drawing$",inner);
-				RENDERING_SET = (Head$) new Head$(Drawing$.this).STM$();
-	        	init(title.edText(),width,height);
-				if (inner != null) inner.STM$();
-				TRACE_END_STM$("Drawing$");
-			}
-		};
+	
+	public Drawing$ STM$() {
+//		RENDERING_SET = (Head$) new Head$(Drawing$.this).STM$();
+//    	init(title.edText(),width,height);
+		EBLK();
+		return(this);
 	}
     
-    private void init(String title,int width,int height)
-    { frame = new JFrame(title);
-      canvas = new Drawing();
-      canvas.setSize(width, height);
+	// Constructor
+	public Drawing$(final RTObject$ staticLink,final TXT$ title,final int width,final int height) {
+		super(staticLink);
+		RENDERING_SET = (Head$) new Head$(Drawing$.this).STM$();
+    	frame = new JFrame(title.edText());
+    	canvas = new Drawing();
+    	canvas.setSize(width, height);
       
 //      currentFont=new Font(Font.DIALOG,12,Font.PLAIN);
 //      currentFont=new Font(Font.DIALOG_INPUT,12,Font.PLAIN);
 //      currentFont=new Font(Font.MONOSPACED,12,Font.PLAIN);
 //      currentFont=new Font(Font.SANS_SERIF,12,Font.PLAIN);
-      currentFont=new Font(Font.SERIF,12,Font.PLAIN);
+    	currentFont=new Font(Font.SERIF,12,Font.PLAIN);
 
 //      currentFont=new Font(Font.SERIF,currentFont.getSize(),currentFont.getStyle());
 
-      if(DEBUG) RT.println("Init: Current Font="+currentFont);
-	  setFontSize(12);
-	  if(DEBUG) RT.println("Init: Current Font="+currentFont);
-        frame.add(canvas);
-        frame.pack();
-        frame.setVisible(true);  
-        canvas.createBufferStrategy(2);
-        strategy = canvas.getBufferStrategy();        
-        frame.setAlwaysOnTop(true); // VIRKER
-//        frame.moveToFront(); //VIRKER IKKE !!!
-        
-//        frame.addWindowStateListener(new WindowStateListener() {
-//			public void windowStateChanged(WindowEvent e) {
-//				RT.println("windowStateChanged:WindowsEvent: "+e);
-//				
-//			}});
+	    if(DEBUG) RT.println("Init: Current Font="+currentFont);
+		setFontSize(12);
+		if(DEBUG) RT.println("Init: Current Font="+currentFont);
+	    frame.add(canvas);
+	    frame.pack();
+	    frame.setVisible(true);  
+	    canvas.createBufferStrategy(2);
+	    strategy = canvas.getBufferStrategy();        
+	    frame.setAlwaysOnTop(true); // VIRKER
+//      frame.moveToFront(); //VIRKER IKKE !!!
         frame.addWindowListener(new WindowListener() {
 			public void windowOpened(WindowEvent e) { if(DEBUG) RT.println("windowOpened.WindowsEvent: "+e); }
 			public void windowClosing(WindowEvent e) { if(DEBUG) RT.println("windowClosing.WindowsEvent: "+e);
@@ -274,12 +261,9 @@ public class Drawing$ extends Simset$ {
 			public void windowActivated(WindowEvent e) { if(DEBUG) RT.println("windowActivated.WindowsEvent: "+e); }
 			public void windowDeactivated(WindowEvent e) { if(DEBUG) RT.println("windowClosing.WindowsEvent: "+e);
 			}});
-        
-//        frame.setFocusable(true);
-//        frame.addKeyListener(new KeyListener() {
         canvas.setFocusable(true);
         canvas.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent e) {
+        	public void keyTyped(KeyEvent e) {
 				char c=e.getKeyChar();
 				if(DEBUG) RT.println("KEY "+c+" TYPED");
 				if(c=='x') System.exit(0);
@@ -289,26 +273,17 @@ public class Drawing$ extends Simset$ {
 			}
 			public void keyReleased(KeyEvent e) {
 				if(DEBUG) RT.println("KEY "+e.getKeyChar()+" RELEASE");
-			}});
+			}
+        });
     }
-
-	public Drawing$ STM$() {
-		return ((Drawing$) CODE$.EXEC$());
-	}
-
-	public Drawing$ START() {
-		START(this);
-		return (this);
-	}
     
-//	private void listRenderingSet()
-//	{ Link$ lnk=RENDERING_SET.first();
-//	  RT.println("RENDERING SET: first="+lnk);
-//	  while(lnk!=null) 
-//	  { RT.println(" - "+lnk.getClass().getSimpleName());
-//	    lnk=lnk.suc();
-//	  }
+//	private void listRenderingSet() {
+//		Link$ lnk = RENDERING_SET.first();
+//		RT.println("RENDERING SET: first=" + lnk);
+//		while (lnk != null) {
+//			RT.println(" - " + lnk.getClass().getSimpleName());
+//			lnk = lnk.suc();
+//		}
 //	}
-
 
 }

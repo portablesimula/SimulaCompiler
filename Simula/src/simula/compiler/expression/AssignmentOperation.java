@@ -33,162 +33,161 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public final class AssignmentOperation extends Expression
-{ public Expression lhs;
-  public KeyWord opr;
-  public Expression rhs;
-  private boolean textValueAssignment=false; // Set by doChecking
-
-  
-  public AssignmentOperation(Expression lhs,KeyWord opr,Expression rhs)
-  { this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-	if(this.lhs==null)
-	{ Util.error("Missing operand before "+opr);
-	  this.lhs=new Variable("UNKNOWN$");
-	}
-	if(this.rhs==null)
-	{ Util.error("Missing operand after "+opr);
-	  this.rhs=new Variable("UNKNOWN$");
-	}
-    this.lhs.backLink=this.rhs.backLink=this;
-  }
-
-  public void doChecking()
-  { if(IS_SEMANTICS_CHECKED()) return;
-   	Global.sourceLineNumber=lineNumber;
-	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-    lhs.doChecking(); Type toType=lhs.type;
-    if(lhs instanceof Variable)
-    { Variable var=(Variable)lhs;
-      Meaning meaning=var.getMeaning();
-      if(meaning.declaredAs instanceof TypeDeclaration)
-      { TypeDeclaration dcl=(TypeDeclaration)meaning.declaredAs;
-        if(dcl.isConstant()) Util.error("Assignment to Constant: '"+lhs+"' is Illegal");
-      }
-    } else {
-    	if(lhs.getWriteableVariable()==null) Util.error("Can't assign to "+lhs);
-    }
-
-    rhs.doChecking(); Type fromType=rhs.type;
-	//Util.BREAK("AssignmentOperation.doChecking("+toString()+").doChecking - ("+toType+' '+opr+' '+fromType+")");
-	//if(DEBUG) Util.log("doAssignmentChecking: operator: "+keyWord);
-	if(opr==KeyWord.ASSIGNVALUE) this.textValueAssignment=(toType==Type.Text);
-	rhs=(Expression)TypeConversion.testAndCreate(toType,rhs);
-	this.type=toType;
-	//Util.BREAK("doAssignmentChecking: CHECKED("+toString()+").doChecking - Result type="+this.type+"("+toType+' '+keyWord+' '+fromType+")");
-	if(this.type==null) Util.error("doAssignmentChecking: Illegal types: "+toType+" := "+fromType);
-	SET_SEMANTICS_CHECKED();
-  }
-
-
-  // Returns true if this expression may be used as a statement.
-  public boolean maybeStatement()
-  {	ASSERT_SEMANTICS_CHECKED(this);
-	return(true);  
-  }
-
+public final class AssignmentOperation extends Expression {
+	public Expression lhs;
+	public final KeyWord opr;
+	public Expression rhs;
+	private boolean textValueAssignment=false; // Set by doChecking
+	
 	  
-  public String toJavaCode()
-  { //Util.BREAK("Assignment.toJavaCode: "+this);
-	ASSERT_SEMANTICS_CHECKED(this);
-	return(doCodeAssignment());
-  }
-
-  // ***********************************************************************
-  // *** CODE: doCodeTextValueAssignment
-  // ***********************************************************************
-  private String doCodeTextValueAssignment()
-  { StringBuilder s=new StringBuilder();
-    //Util.BREAK("Assignment.doCodeTextValueAssignment: rhs="+rhs+", qual="+rhs.getClass().getSimpleName());
-    if(rhs instanceof Constant)
-    { Object value=((Constant)rhs).value;
-      //Util.BREAK("Assignment.doCodeTextValueAssignment: value="+value);
-      if(value!=null)
-      { //Util.BREAK("Assignment.doCodeTextValueAssignment: value="+value+", qual="+value.getClass().getSimpleName());
-        s.append("ASGSTR$(").append(lhs.toJavaCode()).append(",\"").append(value).append("\")");
-        //Util.BREAK("Assignment.doCodeTextValueAssignment: result="+s.toString());
-    	return(s.toString()); 
-      }
-    }
-    s.append("ASGTXT$(").append(lhs.toJavaCode()).append(',').append(rhs.toJavaCode()).append(')');
-	return(s.toString());  
-  }
-  
-
-  // ***********************************************************************
-  // *** CODE: doCodeAssignment   -- TODO: FJERNES / RETTES // 
-  // ***********************************************************************
-  private String doCodeAssignment()
-  { StringBuilder s=new StringBuilder();
-	if(this.textValueAssignment) s.append(doCodeTextValueAssignment());
-	else
-	{ //Util.BREAK("Assignment.doCodeAssignment: lhs="+lhs+", qual="+lhs.getClass().getSimpleName());
-	  //Util.BREAK("Assignment.doCodeAssignment: rhs="+rhs+", qual="+rhs.getClass().getSimpleName());
-	  
-	  // -------------------------------------------------------------------------
-	  // CHECK FOR SPECIAL CASE:
-	  //     OBJECT DOT ARRAY(x1,x2,...) := Expression ;
-	  // SHOULD BE CODED LIKES:
-	  //     <Expression-1> . ARRAY.put(x1,x2,<Expression-2>) ;
-	  //     OBJECT . ARRAY.A[x+9- OBJECT.ARRAY.LB[0]]=134;
-	  // -------------------------------------------------------------------------
-	  if(lhs instanceof RemoteVariable)
-	  { Expression afterDot=((RemoteVariable)lhs).rhs;
-		//Util.BREAK("Assignment.doCodeAssignment: afterDot="+afterDot+", qual="+afterDot.getClass().getSimpleName());
-		if(afterDot instanceof Variable &&  ((Variable)afterDot).hasArguments())
-		{ Declaration decl=((Variable)afterDot).meaning.declaredAs;
-		  //Util.BREAK("Assignment.doCodeAssignment30: decl="+decl+", qual="+decl.getClass().getSimpleName());
- 	      Expression beforeDot=((RemoteVariable)lhs).lhs;
-		  if(decl instanceof ArrayDeclaration) return(assignToRemoteArray(beforeDot,(Variable)afterDot,rhs));
-		  else if(decl instanceof Parameter)
-		  { Parameter par=(Parameter)decl;
-			//Util.BREAK("Assignment.doCodeAssignment31: par="+par+", qual="+par.getClass().getSimpleName());
-			if(par.kind==Parameter.Kind.Array) return(assignToRemoteArray(beforeDot,(Variable)afterDot,rhs));
-		  }
-		  
+	public AssignmentOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
+		this.lhs=lhs; this.opr=opr; this.rhs=rhs;
+		if(this.lhs==null) {
+			Util.error("Missing operand before "+opr);
+			this.lhs=new Variable("UNKNOWN$");
 		}
+		if(this.rhs==null) {
+			Util.error("Missing operand after "+opr);
+			this.rhs=new Variable("UNKNOWN$");
+		}
+	    this.lhs.backLink=this.rhs.backLink=this;
+	}
+
+	public void doChecking() {
+		if(IS_SEMANTICS_CHECKED()) return;
+	   	Global.sourceLineNumber=lineNumber;
+		if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
+	    lhs.doChecking(); Type toType=lhs.type;
+	    if(lhs instanceof Variable) {
+	    	Variable var=(Variable)lhs;
+		    Meaning meaning=var.getMeaning();
+		    if(meaning.declaredAs instanceof TypeDeclaration) {
+		    	TypeDeclaration dcl=(TypeDeclaration)meaning.declaredAs;
+		        if(dcl.isConstant()) Util.error("Assignment to Constant: '"+lhs+"' is Illegal");
+		    }
+	    } else {
+	    	if(lhs.getWriteableVariable()==null) Util.error("Can't assign to "+lhs);
+	    }
+	    rhs.doChecking(); Type fromType=rhs.type;
+		//Util.BREAK("AssignmentOperation.doChecking("+toString()+").doChecking - ("+toType+' '+opr+' '+fromType+")");
+		//if(DEBUG) Util.log("doAssignmentChecking: operator: "+keyWord);
+		if(opr==KeyWord.ASSIGNVALUE) this.textValueAssignment=(toType==Type.Text);
+		rhs=(Expression)TypeConversion.testAndCreate(toType,rhs);
+		this.type=toType;
+		//Util.BREAK("doAssignmentChecking: CHECKED("+toString()+").doChecking - Result type="+this.type+"("+toType+' '+keyWord+' '+fromType+")");
+		if(this.type==null) Util.error("doAssignmentChecking: Illegal types: "+toType+" := "+fromType);
+		SET_SEMANTICS_CHECKED();
 	  }
-	  s.append(lhs.put(rhs.get()));
-	}
-//	Util.BREAK("Assignment.doCodeAssignment: "+this+" ==> "+s);
-	return(s.toString());
-  }
-  
-  
-  // ***********************************************************************
-  // *** CODE: assignToRemoteArray
-  // ***********************************************************************
-  private String assignToRemoteArray(Expression beforeDot,Variable array,Expression rhs)
-  { String lhs=doAccessRemoteArray(beforeDot,array);
-	String asg=lhs+'='+rhs.toJavaCode();
-	return(asg);
-  }
-  
-  // ***********************************************************************
-  // *** CODE: doAccessRemoteArray 
-  // ***********************************************************************
-  private String doAccessRemoteArray(Expression beforeDot,Variable array)
-  { StringBuilder s=new StringBuilder();
-	int nDim=0;
-	// Generate: obj.M.A[6-obj.M.LB[1]];
-	String obj=beforeDot.toJavaCode();
-    String remoteIdent=obj+'.'+array.edIdentifierAccess(true);
-    StringBuilder ixs=new StringBuilder();
-    String dimBrackets="";
-	for(Expression ix:array.checkedParams) {
-		String index="["+ix.toJavaCode()+"-"+remoteIdent+".LB["+(nDim++)+"]]";
-		ixs.append(index);
-		dimBrackets=dimBrackets+"[]";
-	}
-	String eltType=type.toJavaType();
-	String cast="ARRAY$<"+eltType+dimBrackets+">";
-	String castedVar="(("+cast+")"+remoteIdent+")";
-	s.append(castedVar).append(".Elt").append(ixs);
 
-	return(s.toString());
-  }
 
-  public String toString()
-  { return("("+lhs+' '+opr+' '+rhs+")"); }
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (true);
+	}
+
+	public String toJavaCode() { // Util.BREAK("Assignment.toJavaCode: "+this);
+		ASSERT_SEMANTICS_CHECKED(this);
+		return (doCodeAssignment());
+	}
+
+	// ***********************************************************************
+	// *** CODE: doCodeTextValueAssignment
+	// ***********************************************************************
+	private String doCodeTextValueAssignment() {
+		StringBuilder s = new StringBuilder();
+		// Util.BREAK("Assignment.doCodeTextValueAssignment: rhs="+rhs+", qual="+rhs.getClass().getSimpleName());
+		if (rhs instanceof Constant) {
+			Object value = ((Constant) rhs).value;
+			// Util.BREAK("Assignment.doCodeTextValueAssignment: value="+value);
+			if (value != null) {
+				// Util.BREAK("Assignment.doCodeTextValueAssignment: value="+value+", qual="+value.getClass().getSimpleName());
+				s.append("ASGSTR$(").append(lhs.toJavaCode()).append(",\"").append(value).append("\")");
+				// Util.BREAK("Assignment.doCodeTextValueAssignment: result="+s.toString());
+				return (s.toString());
+			}
+		}
+		s.append("ASGTXT$(").append(lhs.toJavaCode()).append(',').append(rhs.toJavaCode()).append(')');
+		return (s.toString());
+	}  
+
+	// ***********************************************************************
+	// *** CODE: doCodeAssignment -- TODO: FJERNES / RETTES //
+	// ***********************************************************************
+	private String doCodeAssignment() {
+		StringBuilder s = new StringBuilder();
+		if (this.textValueAssignment)
+			s.append(doCodeTextValueAssignment());
+		else {
+			//Util.BREAK("Assignment.doCodeAssignment: lhs="+lhs+", qual="+lhs.getClass().getSimpleName());
+			//Util.BREAK("Assignment.doCodeAssignment: rhs="+rhs+", qual="+rhs.getClass().getSimpleName());
+			  
+			// -------------------------------------------------------------------------
+			// CHECK FOR SPECIAL CASE:
+			//     OBJECT DOT ARRAY(x1,x2,...) := Expression ;
+			// SHOULD BE CODED LIKES:
+			//     <Expression-1> . ARRAY.put(x1,x2,<Expression-2>) ;
+			//     OBJECT . ARRAY.A[x+9- OBJECT.ARRAY.LB[0]]=134;
+			// -------------------------------------------------------------------------
+			if(lhs instanceof RemoteVariable) {
+				Expression afterDot=((RemoteVariable)lhs).rhs;
+				//Util.BREAK("Assignment.doCodeAssignment: afterDot="+afterDot+", qual="+afterDot.getClass().getSimpleName());
+				if(afterDot instanceof Variable &&  ((Variable)afterDot).hasArguments()) {
+					Declaration decl = ((Variable) afterDot).meaning.declaredAs;
+					// Util.BREAK("Assignment.doCodeAssignment30: decl="+decl+", qual="+decl.getClass().getSimpleName());
+					Expression beforeDot = ((RemoteVariable) lhs).lhs;
+					if (decl instanceof ArrayDeclaration)
+						return (assignToRemoteArray(beforeDot, (Variable) afterDot, rhs));
+					else if (decl instanceof Parameter) {
+						Parameter par = (Parameter) decl;
+						// Util.BREAK("Assignment.doCodeAssignment31: par="+par+", qual="+par.getClass().getSimpleName());
+						if (par.kind == Parameter.Kind.Array)
+							return (assignToRemoteArray(beforeDot, (Variable) afterDot, rhs));
+					}
+
+				}
+			}
+			s.append(lhs.put(rhs.get()));
+		}
+//	    Util.BREAK("Assignment.doCodeAssignment: "+this+" ==> "+s);
+		return(s.toString());
+	}
+  
+  
+	// ***********************************************************************
+	// *** CODE: assignToRemoteArray
+	// ***********************************************************************
+	private String assignToRemoteArray(final Expression beforeDot, final Variable array, final Expression rhs) {
+		String lhs = doAccessRemoteArray(beforeDot, array);
+		String asg = lhs + '=' + rhs.toJavaCode();
+		return (asg);
+	}
+  
+	// ***********************************************************************
+	// *** CODE: doAccessRemoteArray
+	// ***********************************************************************
+	private String doAccessRemoteArray(final Expression beforeDot, final Variable array) {
+		StringBuilder s = new StringBuilder();
+		int nDim = 0;
+		// Generate: obj.M.A[6-obj.M.LB[1]];
+		String obj = beforeDot.toJavaCode();
+		String remoteIdent = obj + '.' + array.edIdentifierAccess(true);
+		StringBuilder ixs = new StringBuilder();
+		String dimBrackets = "";
+		for (Expression ix : array.checkedParams) {
+			String index = "[" + ix.toJavaCode() + "-" + remoteIdent + ".LB[" + (nDim++) + "]]";
+			ixs.append(index);
+			dimBrackets = dimBrackets + "[]";
+		}
+		String eltType = type.toJavaType();
+		String cast = "ARRAY$<" + eltType + dimBrackets + ">";
+		String castedVar = "((" + cast + ")" + remoteIdent + ")";
+		s.append(castedVar).append(".Elt").append(ixs);
+		return (s.toString());
+	}
+
+	public String toString() {
+		return ("(" + lhs + ' ' + opr + ' ' + rhs + ")");
+	}
 
 }

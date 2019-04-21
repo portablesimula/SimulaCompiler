@@ -30,7 +30,7 @@ import simula.runtime.RT;
  *
  */
 public class Continuation implements Runnable {
-    private static final boolean DEBUG = false;//true;
+    private static final boolean TESTING = false;//true;
     private static final boolean BREAKING = false;//true;
 	private static Continuation currentContinuation;
 	private static int SEQU=0;
@@ -44,7 +44,7 @@ public class Continuation implements Runnable {
 	
 	private Thread.UncaughtExceptionHandler uncaughtExceptionHandler=new Thread.UncaughtExceptionHandler() {
         public void uncaughtException(Thread thread, Throwable e) {
-        	if(DEBUG) {
+        	if(TESTING) {
         		RT.println("Thread["+thread.getName()+"]: UNCAUGHT EXCEPTION: "+e);
                 e.printStackTrace(); ThreadUtils.printThreadList(); 
         	}
@@ -57,7 +57,7 @@ public class Continuation implements Runnable {
 		this.ident="Continuation#"+(SEQU++);
 		this.scope=scope;
 		this.target=target;
-		if(DEBUG) System.out.println("Continuation: NEW "+this);
+		if(TESTING) System.out.println("Continuation: NEW "+this);
 	}
 
 	public boolean isDone() {
@@ -71,7 +71,7 @@ public class Continuation implements Runnable {
     }
 	
 	public final void run() {
-		if(DEBUG) System.out.println("Continuation("+ident+").run: BEGIN");
+		if(TESTING) System.out.println("Continuation("+ident+").run: BEGIN");
 		if (isDone()) throw new IllegalStateException("Continuation terminated");
 		if (parent != null) {
 			if (parent != currentContinuation) 

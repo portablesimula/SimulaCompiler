@@ -14,22 +14,15 @@ package simula.runtime;
 */
 public final class EVENT_NOTICE$ extends Link$ {
 	public double EVTIME;
-	public Process$ PROC;
-	public Simulation$ SIMULATION;
+	public final Process$ PROC;
+	private final Simulation$ SIMULATION;
 
 	// Constructor
-    public EVENT_NOTICE$(Simulation$ staticLink,float EVTIME,Process$ PROC) {
-       super(staticLink);
-       TRACE_BEGIN_DCL$("EVENT_NOTICE$");
-	   SIMULATION=staticLink;
-       this.EVTIME = EVTIME;
-       this.PROC = PROC;
-       CODE$=new ClassBody(CODE$,this,2) {
-          public void STM$() {
-        	 TRACE_BEGIN_STM$("EVENT_NOTICE$",inner);
-             if(inner!=null) inner.STM$();
-             TRACE_END_STM$("EVENT_NOTICE$");
-       }};
+    public EVENT_NOTICE$(final Simulation$ staticLink,final float EVTIME,final Process$ PROC) {
+    	super(staticLink);
+    	SIMULATION=staticLink;
+    	this.EVTIME = EVTIME;
+    	this.PROC = PROC;
     }
 	
 	
@@ -41,18 +34,7 @@ public final class EVENT_NOTICE$ extends Link$ {
 		return((EVENT_NOTICE$)PRED); // May be Head$
 	}
 
-//	public void OLD_RANK(boolean BEFORE) {
-//		RT.BREAK("EVENT_NOTICE$.RANK: BEFORE="+BEFORE);
-//		EVENT_NOTICE$ P =(EVENT_NOTICE$)SIMULATION.SQS.last();
-//		RT.BREAK("EVENT_NOTICE$.RANK: SQS.last:"+P);
-//		while(P.EVTIME > EVTIME) P = P.pred();
-//		RT.BREAK("EVENT_NOTICE$.RANK: NOT(P.EVTIME > EVTIME):"+P);
-//		if (BEFORE) while(P.EVTIME == EVTIME) P = P.pred();
-//		RT.BREAK("EVENT_NOTICE$.RANK: Follow:"+P);
-//		follow(P);
-//	}
-
-	public void RANK(boolean BEFORE) {
+	public void RANK(final boolean BEFORE) {
 //		RT.BREAK("EVENT_NOTICE$.RANK: BEFORE="+BEFORE);
 		EVENT_NOTICE$ P =(EVENT_NOTICE$)SIMULATION.SQS.last();
 //		RT.BREAK("EVENT_NOTICE$.RANK: SQS.last:"+P);

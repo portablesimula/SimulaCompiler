@@ -214,10 +214,10 @@ public final class SimulaScanner {
     //** End-Condition: current is last character of construct
     //**                getNext will return first character after construct
     //********************************************************************************
-    private Token javaKeyword(String name) {
+    private Token javaKeyword(final String name) {
     	return(identifierToken(name+'$'));
     }
-    private Token identifierToken(String name) {
+    private Token identifierToken(final String name) {
     	Token token=newToken(KeyWord.IDENTIFIER,name);
 //    	if(Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) Util.error("Missplaced identifier "+name+" directly after "+Parser.prevToken);
     	return(token);

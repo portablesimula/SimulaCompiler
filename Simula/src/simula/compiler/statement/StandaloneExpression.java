@@ -35,14 +35,12 @@ import simula.compiler.utilities.Util;
 public final class StandaloneExpression extends Statement {
 	private Expression expression;
 
-	public StandaloneExpression(Expression expression) {
+	public StandaloneExpression(final Expression expression) {
 		this.expression = expression;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW StandaloneExpression: " + toString());
 		//Util.BREAK("NEW StandaloneExpression: " + toString());
 		
-		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF))
-		{ 
-//		  this.expression = new Assignment(this.expression, Parser.prevToken.getKeyWord(),Expression.parseExpression());
+		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) { 
 		  this.expression = new AssignmentOperation(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
 		  //Util.BREAK("NEW StandaloneExpression: "+this);
 		}		
@@ -85,7 +83,7 @@ public final class StandaloneExpression extends Statement {
 		return (result);
 	}
 
-	public void print(String indent) {
+	public void print(final int indent) {
 		expression.print(indent);
 	}
 

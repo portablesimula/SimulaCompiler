@@ -29,6 +29,7 @@ import javax.swing.undo.UndoableEdit;
 
 import simula.compiler.parsing.SimulaScanner;
 import simula.compiler.utilities.Token;
+import simula.compiler.utilities.Util;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -122,7 +123,7 @@ public class SourceTextPanel extends JPanel {
 			    styleName=(String)leaf.getAttribute(StyleConstants.NameAttribute);
 		    }
 		    lastText=lastText.replace("\n","\\n");
-		} catch (Exception ex) { ex.printStackTrace(); }			
+		} catch (Exception ex) { Util.INTERNAL_ERROR("Impossible",ex); }			
 	    return(id + '[' + ofst + ',' + lng + "]="+styleName+"\"" + lastText + '"');
 	}	
 	

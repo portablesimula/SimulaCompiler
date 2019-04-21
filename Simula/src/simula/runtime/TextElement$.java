@@ -48,7 +48,7 @@ import java.awt.Stroke;
  * @author Øystein Myhre Andersen
  */
 public class TextElement$ extends Link$ implements Drawing$.Animable {
-	Drawing$ animation;
+	final Drawing$ animation;
     double x,y;
     String str;
     Color color;
@@ -57,46 +57,45 @@ public class TextElement$ extends Link$ implements Drawing$.Animable {
     
 	// Constructors
 
-	public TextElement$(RTObject$ staticLink,TXT$ txt,double x,double y) {
+	public TextElement$(final RTObject$ staticLink,final TXT$ txt,final double x,final double y) {
 		this(staticLink,txt.edText(),x,y);
 	}
     
-	public TextElement$(RTObject$ staticLink,String str,double x,double y) {
+	public TextElement$(final RTObject$ staticLink,final String str,final double x,final double y) {
 		super(staticLink);
-		TRACE_BEGIN_DCL$("TextElement$");
+		//TRACE_BEGIN_DCL$("TextElement$");
 		animation=(Drawing$)staticLink;
-		CODE$ = new ClassBody(CODE$, this,2) {
-			public void STM$() {
-				TRACE_BEGIN_STM$("TextElement$",inner);
-				TextElement$.this.str=str; TextElement$.this.x=x; TextElement$.this.y=y;
-				TextElement$.this.color=((Drawing$)(staticLink)).currentDrawColor;
-				TextElement$.this.stroke=((Drawing$)(staticLink)).currentStroke;
-				TextElement$.this.font=((Drawing$)(staticLink)).currentFont;
-			    into(((Drawing$)(staticLink)).RENDERING_SET);
-			      animation.repaintMe();
-				if (inner != null) inner.STM$();
-				TRACE_END_STM$("TextElement$");
-			}
-		};
+		TextElement$.this.str=str; TextElement$.this.x=x; TextElement$.this.y=y;
+		TextElement$.this.color=((Drawing$)(staticLink)).currentDrawColor;
+		TextElement$.this.stroke=((Drawing$)(staticLink)).currentStroke;
+		TextElement$.this.font=((Drawing$)(staticLink)).currentFont;
+	    into(((Drawing$)(staticLink)).RENDERING_SET);
+	    animation.repaintMe();
 	}
-
+	
 	public TextElement$ STM$() {
-		return ((TextElement$) CODE$.EXEC$());
+		//TRACE_BEGIN_STM$("TextElement$");
+//		TextElement$.this.str=str; TextElement$.this.x=x; TextElement$.this.y=y;
+//		TextElement$.this.color=((Drawing$)(staticLink)).currentDrawColor;
+//		TextElement$.this.stroke=((Drawing$)(staticLink)).currentStroke;
+//		TextElement$.this.font=((Drawing$)(staticLink)).currentFont;
+//	    into(((Drawing$)(staticLink)).RENDERING_SET);
+//	      animation.repaintMe();
+		// INNER
+		//TRACE_END_STM$("TextElement$");
+		EBLK();
+		return(this);
 	}
-
-	public TextElement$ START() {
-		START(this);
-		return (this);
-	}
+	
     public void setFontStylePlain() { font=font.deriveFont(Font.PLAIN); }
     public void setFontStyleBold() { font=font.deriveFont(Font.BOLD); }
     public void setFontStyleItalic() { font=font.deriveFont(Font.ITALIC); }
     public void setFontStyleBoldItalic() { font=font.deriveFont(Font.BOLD|Font.ITALIC); }
-    public void setStroke(float size) { stroke=new BasicStroke(size); }
+    public void setStroke(final float size) { stroke=new BasicStroke(size); }
     public float getFontSize() { return(font.getSize2D()); }
-    public void setFontSize(float size) { font=font.deriveFont(size); }
+    public void setFontSize(final float size) { font=font.deriveFont(size); }
 
-    public void setColor(int rgb)
+    public void setColor(final int rgb)
     { color=new Color(rgb);
       animation.repaintMe();
     }
@@ -106,13 +105,13 @@ public class TextElement$ extends Link$ implements Drawing$.Animable {
       animation.repaintMe();
     }
     
-    public void instantMoveTo(double x,double y)
+    public void instantMoveTo(final double x,final double y)
     { this.x=x; this.y=y;
       animation.repaintMe();
     }
     
     // speed = pixels per milli-second ???
-    public void moveTo(double x2,double y2,double speed)
+    public void moveTo(final double x2,final double y2,final double speed)
     { double x1=x;
       double y1=y;
       double dx=(x2-x1)/500;
@@ -128,7 +127,7 @@ public class TextElement$ extends Link$ implements Drawing$.Animable {
       instantMoveTo(x,y);
     }
 
-    public void paint(Graphics2D g)
+    public void paint(final Graphics2D g)
     { g.setStroke(stroke);
       g.setColor(color);
       g.setFont(font);

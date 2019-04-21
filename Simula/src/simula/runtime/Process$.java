@@ -64,58 +64,32 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  */
 public class Process$ extends Link$ {
-	//public boolean isDetachable() {	return(true); }
     public boolean isDetachUsed() { return(true); }
 
 	public EVENT_NOTICE$ EVENT = null;
 //	public boolean TERMINATED$ = false;
-	private static int SEQU = 0; // Used by SIM_TRACE
-	private int sequ = 0; // Used by SIM_TRACE
 
 	// Constructor
-	public Process$(RTObject$ staticLink) {
+	public Process$(final RTObject$ staticLink) {
 		super(staticLink);
 		TRACE_BEGIN_DCL$("Process$");
-		sequ = SEQU++;
-		CODE$ = new ClassBody(CODE$, this,2) {
-			public void STM$() {
-				TRACE_BEGIN_STM$("Process$",inner);
-				//System.out.println("Process.STM$: Just BEFORE Detach["+Process$.this.edObjectIdent()+']');
-				detach();
-				//System.out.println("Process.STM$: Just AFTER Detach["+Process$.this.edObjectIdent()+']');
-				if (inner != null)
-					inner.STM$();
-				TRACE_END_STM$("Process$");
-				//TERMINATED$ = true;
-
-//				Process$.this.STATE$=OperationalState.terminated;
-//				((Simulation$) SL$).passivate();
-//				throw new RuntimeException("INTERNAL error:  Process passes through final end.");
-				terminate();
-			}
-		};
 	}
 	
-	private void terminate()
-	{ // Simula Standard ch. 12.1 states:
-	  // Although the process state "terminated" is not strictly equivalent to the
-	  // corresponding basic concept defined in chapter 7, an implementation may treat
-	  // a terminated process object as terminated in the strict sense.
-
-	  //RT.BREAK("Process$.TERMINATE(1): "+this.edObjectAttributes());
-	  ((Simulation$) SL$).passivate(true);
-	  // Signal special action in RTObject$.EBLK
-	  Process$.this.STATE$=OperationalState.terminatingProcess;
-	  //RT.BREAK("Process$.TERMINATE(2): "+this.edObjectAttributes());
-	}
-
 	public Process$ STM$() {
-		return ((Process$) CODE$.EXEC$());
+		detach();
+		// INNER
+		// TERMINATED$ = true;
+		terminate();
+        EBLK();
+		return(this);
 	}
-
-	public Process$ START() {
-		START(this);
-		return (this);
+	
+	protected void terminate() {
+		//RT.BREAK("Process$.TERMINATE(1): "+this.edObjectAttributes());
+		((Simulation$) SL$).passivate();
+		// Signal special action in RTObject$.EBLK
+		Process$.this.STATE$=OperationalState.terminatingProcess;
+		//RT.BREAK("Process$.TERMINATE(2): "+this.edObjectAttributes());
 	}
 
 	public boolean idle() {
@@ -124,7 +98,6 @@ public class Process$ extends Link$ {
 
 	public boolean terminated() {
 //		return (TERMINATED$);
-//		return (CUR$.STATE$==OperationalState.terminated);
 		return (STATE$==OperationalState.terminated);
 	}
 
@@ -144,7 +117,7 @@ public class Process$ extends Link$ {
 	}
 
 	public String toString() {
-		return ("Process$"+sequ+"(" + this.edObjectIdent() + ") STATE$="+this.STATE$+", TERMINATED$=" + terminated());
+		return (this.edObjectIdent() + ": STATE$="+this.STATE$+", TERMINATED$=" + terminated());
 	}
 
 }

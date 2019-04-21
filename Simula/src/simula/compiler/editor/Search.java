@@ -102,7 +102,7 @@ public class Search extends JFrame {
 			}});
 
         try { setIconImage(Global.simulaIcon.getImage()); } 
-        catch (Exception e) { e.printStackTrace(); }
+        catch (Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
 
         // Set the width and height of the window
 //        int width = 360;

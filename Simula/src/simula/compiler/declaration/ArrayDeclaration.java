@@ -7,6 +7,10 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -82,47 +86,40 @@ import simula.compiler.utilities.Util;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public final class ArrayDeclaration extends Declaration {
+public final class ArrayDeclaration extends Declaration implements Externalizable {
 	// Type type; inherited
 	public int nDim;
 	Vector<BoundPair> boundPairList;
-//	public int nDim() { return(boundPairList.size()); }
 
 	public Vector<BoundPair> getBoundPairList() {
 		return (boundPairList);
 	}
 
-	private ArrayDeclaration(String identifier, Type type,
-			Vector<BoundPair> boundPairList) {
+	private ArrayDeclaration(final String identifier,final Type type,final Vector<BoundPair> boundPairList) {
 		super(identifier);
 		this.type=type;
 		this.boundPairList = boundPairList;
 		this.nDim=boundPairList.size();
-		if (Option.TRACE_PARSE)
-			Util.TRACE("END NEW ArrayDeclaration: " + toString());
+		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ArrayDeclaration: " + toString());
 	}
 
-	public ArrayDeclaration(String identifier, Type type,int nDim) {
+	public ArrayDeclaration(final String identifier,final Type type,final int nDim) {
 		super(identifier);
 		this.type=type;
 		this.nDim = nDim;
-		if (Option.TRACE_PARSE)
-			Util.TRACE("END NEW ArrayDeclaration: " + toString());
+		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ArrayDeclaration: " + toString());
 	}
 
-	public static void parse(Type type, Vector<Declaration> declarationList) {
+	public static void parse(final Type type,final Vector<Declaration> declarationList) {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current="
 					+ Parser.currentToken);
-		do {
-			parseArraySegment(type, declarationList);
+		do { parseArraySegment(type, declarationList);
 		} while (Parser.accept(KeyWord.COMMA));
 	}
 
-	private static void parseArraySegment(Type type,
-			Vector<Declaration> declarationList) {
-		if (Option.TRACE_PARSE)
-			Parser.TRACE("Parse ArraySegment");
+	private static void parseArraySegment(final Type type,final Vector<Declaration> declarationList) {
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ArraySegment");
 		// IdentifierList = Identifier { , Identifier }
 		Vector<String> identList = new Vector<String>();
 		do {
@@ -153,7 +150,7 @@ public final class ArrayDeclaration extends Declaration {
 			return (LB);
 		}
 
-		BoundPair(Expression LB, Expression UB) {
+		BoundPair(final Expression LB,final Expression UB) {
 			this.LB = LB;
 			this.UB = UB;
 		}
@@ -183,55 +180,78 @@ public final class ArrayDeclaration extends Declaration {
 		SET_SEMANTICS_CHECKED();
 	}
 
-    public void doJavaCoding() // TODO: NEW ARRAY CODE
-	{ Global.sourceLineNumber=lineNumber;
-	  ASSERT_SEMANTICS_CHECKED(this);
-	  // --------------------------------------------------------------------
-	  // public ARRAY$<float[]> Tab=null;
-	  // --------------------------------------------------------------------
-	  String arrType=this.type.toJavaType();
-	  int nDim=boundPairList.size();
-	  for(int i=0;i<nDim;i++) arrType=arrType+"[]";
-	  String arrayIdent=this.getJavaIdentifier();
-	  arrType="ARRAY$<"+arrType+'>';
-	  JavaModule.code("public "+arrType+""+arrayIdent+"=null;");
+    public void doJavaCoding() {
+    	Global.sourceLineNumber=lineNumber;
+    	ASSERT_SEMANTICS_CHECKED(this);
+    	// --------------------------------------------------------------------
+    	// public ARRAY$<float[]> Tab=null;
+    	// --------------------------------------------------------------------
+    	String arrType=this.type.toJavaType();
+    	int nDim=boundPairList.size();
+    	for(int i=0;i<nDim;i++) arrType=arrType+"[]";
+    	String arrayIdent=this.getJavaIdentifier();
+    	arrType="ARRAY$<"+arrType+'>';
+    	JavaModule.code("public "+arrType+""+arrayIdent+"=null;");
 	}
 
-    public void doDeclarationCoding() // TODO: NEW ARRAY CODE
-	{ Global.sourceLineNumber=lineNumber;
-	  ASSERT_SEMANTICS_CHECKED(this);
-	  // --------------------------------------------------------------------
-	  // integer array A(1:4,4:6,6:12);
-	  // --------------------------------------------------------------------
-	  // int[] A$LB=new int[3]; int[] A$UB=new int[3];
-	  // A$LB[0]=1; A$UB[0]=4;
-	  // A$LB[1]=4; A$UB[1]=6;
-	  // A$LB[2]=6; A$UB[2]=12;
-	  // A=new ARRAY$<int[][][]>(new int[A$UB[0]-A$LB[0]+1][A$UB[1]-A$LB[1]+1][A$UB[2]-A$LB[2]+1],A$LB,A$UB);
-	  // --------------------------------------------------------------------
-	  String arrayIdent=this.getJavaIdentifier();
-	  String arrType=this.type.toJavaType();
-	  String arrGen=arrType;
-	  int nDim=boundPairList.size();
-	  JavaModule.code("int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
-	  int n=0;
-	  for(BoundPair boundPair:boundPairList)
-	  {	arrType=arrType+"[]";
-	    String LBid=arrayIdent+"$LB["+n+"]";
-	    String UBid=arrayIdent+"$UB["+(n++)+"]";
-		String size=UBid+"-"+LBid+"+1";
-		arrGen=arrGen+'['+size+']';
-		JavaModule.code(""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
-		JavaModule.code("BOUND_CHECK$("+LBid+','+UBid+");");
-	  }	
-	  arrType="ARRAY$<"+arrType+'>';
-	  JavaModule.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
+    public void doDeclarationCoding() {
+    	Global.sourceLineNumber=lineNumber;
+    	ASSERT_SEMANTICS_CHECKED(this);
+    	// --------------------------------------------------------------------
+    	// integer array A(1:4,4:6,6:12);
+    	// --------------------------------------------------------------------
+    	// int[] A$LB=new int[3]; int[] A$UB=new int[3];
+    	// A$LB[0]=1; A$UB[0]=4;
+    	// A$LB[1]=4; A$UB[1]=6;
+    	// A$LB[2]=6; A$UB[2]=12;
+    	// A=new ARRAY$<int[][][]>(new int[A$UB[0]-A$LB[0]+1][A$UB[1]-A$LB[1]+1][A$UB[2]-A$LB[2]+1],A$LB,A$UB);
+    	// --------------------------------------------------------------------
+    	String arrayIdent=this.getJavaIdentifier();
+    	String arrType=this.type.toJavaType();
+    	String arrGen=arrType;
+    	int nDim=boundPairList.size();
+    	JavaModule.code("int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
+    	int n=0;
+    	for(BoundPair boundPair:boundPairList) {	
+    		arrType=arrType+"[]";
+    		String LBid=arrayIdent+"$LB["+n+"]";
+    		String UBid=arrayIdent+"$UB["+(n++)+"]";
+    		String size=UBid+"-"+LBid+"+1";
+    		arrGen=arrGen+'['+size+']';
+    		JavaModule.code(""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
+    		JavaModule.code("BOUND_CHECK$("+LBid+','+UBid+");");
+    	}	
+    	arrType="ARRAY$<"+arrType+'>';
+    	JavaModule.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
 	}
 
 	public String toString() {
 		String s = "ARRAY " + identifier + ((boundPairList==null)?"(?)":boundPairList);
-		if (type != null)
-			s = type.toString() + " " + s;
+		if (type != null) s = type.toString() + " " + s;
 		return (s);
+	}
+
+
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public ArrayDeclaration() { super(null); }
+
+	@Override
+	public void writeExternal(ObjectOutput oupt) throws IOException {
+		Util.TRACE_OUTPUT("Array: "+type+' '+identifier+", nDim="+nDim);
+	    oupt.writeObject(identifier);
+	    oupt.writeObject(externalIdent);
+	    oupt.writeObject(type);
+	    oupt.writeInt(nDim);
+	}
+
+	@Override
+	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
+		identifier=(String)inpt.readObject();
+		externalIdent=(String)inpt.readObject();
+		type=Type.inType(inpt);
+	    nDim=inpt.readInt();
+	    Util.TRACE_INPUT("Array: "+type+' '+identifier+", nDim="+nDim);
 	}
 }

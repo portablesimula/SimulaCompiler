@@ -1,6 +1,7 @@
 
 % Java keywords as Identifiers
 BEGIN
+   integer null;
 %  integer abstract, continue, for, new, switch;
    integer abstract, continue;
 

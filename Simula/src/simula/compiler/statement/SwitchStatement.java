@@ -66,9 +66,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class SwitchStatement extends Statement {
-	Expression lowKey,hiKey,switchKey;
+	private final Expression lowKey,hiKey;
+	private Expression switchKey;
     //int lowIndex,hiIndex;  // Set during Checking
-    Vector<WhenPart> switchCases=new Vector<WhenPart>();
+	private final Vector<WhenPart> switchCases=new Vector<WhenPart>();
 
 	public SwitchStatement() {
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchStatement");
@@ -130,7 +131,7 @@ public final class SwitchStatement extends Statement {
     		if(Option.TRACE_PARSE) Util.TRACE("NEW WhenPart: " + toString());
     	}
 	
-    	public void doCoding(boolean first)	{
+    	public void doCoding(final boolean first)	{
     		ASSERT_SEMANTICS_CHECKED(this);
     		for(CasePair casePair:caseKeyList)
     		if(casePair==null)
@@ -146,8 +147,9 @@ public final class SwitchStatement extends Statement {
     		statement.doJavaCoding();
     	}
 	
-    	public void print(String indent) {
-    		System.out.print(indent+edWhen());
+    	public void print(final int indent) {
+        	String spc=edIndent(indent);
+    		System.out.print(spc+edWhen());
     		statement.print(indent);
     	}
     	
@@ -193,7 +195,7 @@ public final class SwitchStatement extends Statement {
     	SET_SEMANTICS_CHECKED();
     }
 
-	private int intConstant(Expression e) {
+	private int intConstant(final Expression e) {
 		//Util.println("SwitchStatement.intConstant: e="+e+", QUAL="+e.getClass().getSimpleName());
 		if(e instanceof Constant) {
 			Object value=((Constant)e).value;
@@ -253,11 +255,12 @@ public final class SwitchStatement extends Statement {
     // ***********************************************************************************************
     // *** Printing Utility: print
     // ***********************************************************************************************
-    public void print(String indent) {
-    	Util.println(indent+"SWITCH("+lowKey+':'+hiKey+") "+switchKey);
-    	Util.println(indent+"BEGIN");
-    	for(WhenPart when:switchCases) when.print(indent+"   ");
-        Util.println(indent+"END"); 
+    public void print(final int indent) {
+    	String spc=edIndent(indent);
+    	Util.println(spc+"SWITCH("+lowKey+':'+hiKey+") "+switchKey);
+    	Util.println(spc+"BEGIN");
+    	for(WhenPart when:switchCases) when.print(indent+1);
+        Util.println(spc+"END"); 
     }
 
     public String toString() {

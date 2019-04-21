@@ -1,5 +1,3 @@
-
-%QUALIFIEDNAMES
 SIMSET begin real r;
 begin
    integer i;
@@ -16,7 +14,7 @@ begin
          inspect x do 
          begin
             y:-new B;
-      		x.detach;
+      		detach;
             r:=Q(r);
          end;   
       end;
@@ -26,9 +24,10 @@ begin
    
    x:-new A(13);
  
-   i:=x.Q(i);
+   inspect x do i:=Q(i);
    
-   inspect x.next do 
+   inspect x do 
+   inspect next do 
    begin
       y:-new B;
       

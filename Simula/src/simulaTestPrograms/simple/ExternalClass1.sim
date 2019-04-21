@@ -1,11 +1,12 @@
  
-Class Separat(i); integer i; 
-begin 
+Class Separat(i); integer i; virtual: switch EXIT;
+begin
    Integer IINT=45;
    Integer IREA=IINT+1;
    Character cc='a';
    Text ttt="Abracadabra";
    Boolean bb=true;
+   Real rr=IINT+sqrt(4);
    
    Text t; 
    Integer nA,nB; Integer Array iA(1:6);

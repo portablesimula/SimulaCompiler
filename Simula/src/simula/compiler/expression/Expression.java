@@ -157,7 +157,8 @@ public abstract class Expression extends SyntaxClass
   private static Expression  parseNOT() {
 	 Expression expr;
      if(Parser.accept(KeyWord.NOT)) {
-         expr=UnaryOperation.newUnaryOperation(KeyWord.NOT,parseTEXTCONC());
+         expr=new UnaryOperation(KeyWord.NOT,parseTEXTCONC());
+         //expr=UnaryOperation.newUnaryOperation(KeyWord.NOT,parseTEXTCONC());
     } else expr = parseTEXTCONC();
      return(expr);
   }
@@ -189,8 +190,8 @@ public abstract class Expression extends SyntaxClass
 	 Expression expr=parseUNIMULDIV();
      while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-//    	  expr=new ArithmeticOperation(expr,opr,parseMULDIV());
-    	  expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseMULDIV());
+    	  expr=new ArithmeticOperation(expr,opr,parseMULDIV());
+    	  //expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseMULDIV());
 	 }
 	 return(expr);
   }
@@ -212,7 +213,8 @@ public abstract class Expression extends SyntaxClass
      if(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) {
 	      KeyWord opr=Parser.prevToken.getKeyWord();
 	      if(opr==KeyWord.PLUS) expr=parseMULDIV();
-	      else expr=UnaryOperation.newUnaryOperation(opr,parseMULDIV());
+	      else expr=new UnaryOperation(opr,parseMULDIV());
+	      //else expr=UnaryOperation.newUnaryOperation(opr,parseMULDIV());
      } else expr = parseMULDIV();
      return(expr);
   }
@@ -231,8 +233,8 @@ public abstract class Expression extends SyntaxClass
 	 Expression expr=parseEXPON();
      while(Parser.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
 	      KeyWord opr=Parser.prevToken.getKeyWord();
-          //expr=new ArithmeticOperation(expr,opr,parseEXPON());
-          expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseEXPON());
+          expr=new ArithmeticOperation(expr,opr,parseEXPON());
+          //expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseEXPON());
 	 }
 	 return(expr);
   }
@@ -241,8 +243,8 @@ public abstract class Expression extends SyntaxClass
   private static Expression parseEXPON() {
 	 Expression expr=parseBASICEXPR();
      while(Parser.accept(KeyWord.EXP))
-    	 //expr=new ArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
-         expr=ArithmeticOperation.newArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
+    	 expr=new ArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
+         //expr=ArithmeticOperation.newArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
 	 return(expr);
   }
   
@@ -266,7 +268,8 @@ public abstract class Expression extends SyntaxClass
    * </pre>
    * @return Expression or null if no expression is found.
    */
-  private static Expression parseBASICEXPR() {      // Dette er vel kanskje det samme som “primary”?
+  private static Expression parseBASICEXPR() {
+	 // Dette er vel kanskje det samme som “primary”?
 	 // Merk: Alt som kan stå foran et postfix (DOT, IS, IN og QUA) må være et BASICEXPR
      if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression");
 	 Expression expr=null;
@@ -323,7 +326,7 @@ public abstract class Expression extends SyntaxClass
   // Is redefined in Variable, RemoteVariable and TypeConversion
   public Variable getWriteableVariable() { return(null); } 
 
-  private static ClassDeclaration getQualification(Expression simpleObjectExpression) {
+  private static ClassDeclaration getQualification(final Expression simpleObjectExpression) {
 		String refIdent=simpleObjectExpression.type.getRefIdent();
 		Declaration objDecl = Global.currentScope.findMeaning(refIdent).declaredAs;
 		if(objDecl instanceof ClassDeclaration)	return((ClassDeclaration)objDecl);
@@ -331,14 +334,14 @@ public abstract class Expression extends SyntaxClass
 		return(null);
   }
 	  
-  public static ClassDeclaration getQualification(String classIdentifier) {
+  public static ClassDeclaration getQualification(final String classIdentifier) {
 		Declaration classDecl=Global.currentScope.findMeaning(classIdentifier).declaredAs;
 		if(classDecl instanceof ClassDeclaration) return((ClassDeclaration)classDecl);
 			Util.error("Illegal: " + classIdentifier + " is not a class");
 		return(null);
   }
 	  
-  public static boolean checkCompatability(Expression simpleObjectExpression,String classIdentifier) {
+  public static boolean checkCompatability(final Expression simpleObjectExpression,final String classIdentifier) {
 		ClassDeclaration objDecl=getQualification(simpleObjectExpression);
 		ClassDeclaration quaDecl=getQualification(classIdentifier);
 		if(quaDecl==objDecl) Util.warning("Unneccessary QUA/IS/IN "+ classIdentifier);
@@ -346,15 +349,20 @@ public abstract class Expression extends SyntaxClass
 		else if(!(objDecl.isCompatibleClasses(quaDecl))) return(false);
 		return(true);
   }
+  
+  // Try to Compile-time Evaluate this expression
+  public Expression evaluate() { return(this); }
 
   // Returns true if this expression may be used as a statement.
   public abstract boolean maybeStatement();
   
   // Generate code for getting the value of this Expression
-  public String get()
-  { return(this.toJavaCode()); }
+	public String get() {
+		return (this.toJavaCode());
+	}
 
   // Generate code for putting the value into this Expression
-  public String put(String evaluated)
-  { return(this.toJavaCode()+'='+evaluated); }
+	public String put(String evaluated) {
+		return (this.toJavaCode() + '=' + evaluated);
+	}
 }

@@ -10,6 +10,10 @@ package simula.compiler.declaration;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.OverLoad;
 import simula.compiler.utilities.Type;
+
+import java.util.Vector;
+
+import simula.compiler.CodeLine;
 import simula.compiler.expression.Constant;
 
 public final class StandardClass extends ClassDeclaration
@@ -170,16 +174,26 @@ public final class StandardClass extends ClassDeclaration
 //    Procedures draw, randint, uniform, normal, negexp,
 //      Poisson, Erlang, discrete, linear, histd.
 
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+//    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Type.Integer));
 
 //    Calendar and timing utilities ........................... 9.10
 //    Procedures datetime, cputime, clocktime.
@@ -253,10 +267,7 @@ public final class StandardClass extends ClassDeclaration
   //        SYSOUT.close
   //  end BASICIO;
   
-//  public static StandardClass BASICIO=new StandardClass("ENVIRONMENT","BASICIO");
-//  static
-//  { UNIVERSE.addStandardClass(BASICIO); // Declared in UNIVERSE
-  public static StandardClass BASICIO=new StandardClass("RTObject","BASICIO");  // CORR-PREFIX
+  public static StandardClass BASICIO=new StandardClass("RTObject","BASICIO");
   static
   { ENVIRONMENT.addStandardClass(BASICIO); // Declared in ENVIRONMENT
     BASICIO.isContextFree=true;
@@ -281,10 +292,7 @@ public final class StandardClass extends ClassDeclaration
    * Thus every class object or instance of a prefixed block has this attribute.
    */
   
-//  public static StandardClass CLASS=new StandardClass("BASICIO","CLASS");
-//  static
-//  { UNIVERSE.addStandardClass(CLASS);  // Declared in UNIVERSE
-  public static StandardClass CLASS=new StandardClass("RTObject","CLASS");  // CORR-PREFIX
+  public static StandardClass CLASS=new StandardClass("RTObject","CLASS");
   static
   { ENVIRONMENT.addStandardClass(CLASS);  // Declared in ENVIRONMENT
 	CLASS.addStandardProcedure(BlockKind.MemberMethod,null,"detach");
@@ -305,7 +313,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass FILE=new StandardClass("RTObject","FILE",parameter("FILENAME$",Type.Text));
   static
   { BASICIO.addStandardClass(FILE);  // Declared in BASICIO
-    //FILE.isContextFree=true;
     FILE.addStandardAttribute(Type.Boolean,"OPEN$");  
     FILE.addStandardProcedure(BlockKind.MemberMethod,Type.Text,"filename");
     FILE.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"isopen");
@@ -324,7 +331,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass ImageFile=new StandardClass("FILE","ImageFile");
   static
   { BASICIO.addStandardClass(ImageFile);  // Declared in BASICIO
-    //ImageFile.isContextFree=true;
     ImageFile.addStandardAttribute(Type.Text,"image");  
     ImageFile.addStandardProcedure(BlockKind.MemberMethod,null,"setpos",parameter("i",Type.Integer));  
     ImageFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"pos");  
@@ -354,7 +360,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass InFile=new StandardClass("ImageFile","InFile");
   static
   { BASICIO.addStandardClass(InFile);  // Declared in BASICIO
-    //InFile.isContextFree=true;
     InFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
     InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"endfile");  
     InFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
@@ -392,7 +397,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass OutFile=new StandardClass("ImageFile","OutFile");
   static
   { BASICIO.addStandardClass(OutFile);  // Declared in BASICIO
-    //OutFile.isContextFree=true;
     OutFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
     OutFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");  
     OutFile.addStandardProcedure(BlockKind.MemberMethod,null,"outimage");  
@@ -447,7 +451,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass DirectFile=new StandardClass("ImageFile","DirectFile");
   static
   { BASICIO.addStandardClass(DirectFile);  // Declared in BASICIO
-    //DirectFile.isContextFree=true;
     DirectFile.addStandardAttribute(Type.Integer,"LOC_");  
     DirectFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
     DirectFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
@@ -503,7 +506,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass PrintFile=new StandardClass("OutFile","PrintFile");
   static
   { BASICIO.addStandardClass(PrintFile);  // Declared in BASICIO
-    //PrintFile.isContextFree=true;
     PrintFile.addStandardAttribute(Type.Integer,"LINE_");  
     PrintFile.addStandardAttribute(Type.Integer,"LINES_PER_PAGE_");  
     PrintFile.addStandardAttribute(Type.Integer,"SPACING_");  
@@ -529,7 +531,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass ByteFile=new StandardClass("FILE","ByteFile");
   static
   { BASICIO.addStandardClass(ByteFile);  // Declared in BASICIO
-    //ByteFile.isContextFree=true;
     ByteFile.addStandardAttribute(Type.Integer,"BYTESIZE_");  
     ByteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Integer,"bytesize");  
   }  
@@ -550,7 +551,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass InbyteFile=new StandardClass("ByteFile","InbyteFile");
   static
   { BASICIO.addStandardClass(InbyteFile);  // Declared in BASICIO
-    //InbyteFile.isContextFree=true;
     InbyteFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
     InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"endfile");  
     InbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
@@ -574,7 +574,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass OutbyteFile=new StandardClass("ByteFile","OutbyteFile");
   static
   { BASICIO.addStandardClass(OutbyteFile);
-    //OutbyteFile.isContextFree=true;
     OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
     OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"close");  
     OutbyteFile.addStandardProcedure(BlockKind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
@@ -606,7 +605,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass DirectByteFile=new StandardClass("ByteFile","DirectByteFile");
   static
   { BASICIO.addStandardClass(DirectByteFile);  // Declared in BASICIO
-    //DirectByteFile.isContextFree=true;
     DirectByteFile.addStandardAttribute(Type.Integer,"LOC_");  
     DirectByteFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
     DirectByteFile.addStandardAttribute(Type.Boolean,"LOCKED_");  
@@ -642,8 +640,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass Linkage=new StandardClass("CLASS","Linkage");
   static
   { Simset.addStandardClass(Linkage);  // Declared in Simset
-//  ref(link) procedure suc;
-//  ref(link) procedure pred;
     Linkage.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"suc");  
     Linkage.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"pred");  
     Linkage.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Linkage"),"prev");  
@@ -655,11 +651,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass Head=new StandardClass("Linkage","Head");
   static
   { Simset.addStandardClass(Head);  // Declared in Simset
-//  ref(link) procedure first;
-//  ref(link) procedure last;
-//  Boolean procedure empty;
-//  Integer procedure cardinal;
-//  procedure clear;
     Head.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"first");  
     Head.addStandardProcedure(BlockKind.MemberMethod,Type.Ref("Link"),"last");  
     Head.addStandardProcedure(BlockKind.MemberMethod,Type.Boolean,"empty");  
@@ -673,10 +664,6 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass Link=new StandardClass("Linkage","Link");
   static
   { Simset.addStandardClass(Link);  // Declared in Simset
-//  procedure out;
-//  procedure follow(X); ref(linkage) X;
-//  procedure precede(X); ref(linkage) X;
-//  procedure into(S); ref(head) S;
     Link.addStandardProcedure(BlockKind.MemberMethod,null,"out");  
     Link.addStandardProcedure(BlockKind.MemberMethod,null,"follow",parameter("X",Type.Ref("Linkage")));  
     Link.addStandardProcedure(BlockKind.MemberMethod,null,"precede",parameter("X",Type.Ref("Linkage")));  
@@ -690,6 +677,11 @@ public final class StandardClass extends ClassDeclaration
   static
   { ENVIRONMENT.addStandardClass(Simulation);  // Declared in ENVIRONMENT
     Simulation.detachUsed=true;
+//    Simulation.code1=codeSet( // Statements before inner 
+//    		new CodeLine(1,"SQS = (Head$) new Head$(this).STM$();"),
+//    		new CodeLine(1,"main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();"),
+//    		new CodeLine(1,"main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();"),
+//    		new CodeLine(1,"main.EVENT.into(SQS);"));
     Simulation.addStandardAttribute(Type.Ref("Head"),"SQS");  
     Simulation.addStandardAttribute(Type.Ref("MAIN_PROGRAM"),"main");  
     Simulation.addStandardProcedure(BlockKind.MemberMethod,Type.LongReal,"time");  
@@ -750,6 +742,8 @@ public final class StandardClass extends ClassDeclaration
   static
   { Simulation.addStandardClass(Process);  // Declared in Simulation
     Process.detachUsed=true;
+    Process.code1=codeSet(new CodeLine(1,"detach();"));    // Statements before inner 
+    Process.code2=codeSet(new CodeLine(1,"terminate();")); // Statements after inner 
 //  ref(EVENT_NOTICE) EVENT;
 //  Boolean TERMINATED_;
 //  Boolean procedure idle;
@@ -767,7 +761,7 @@ public final class StandardClass extends ClassDeclaration
   // ******************************************************************
   // *** The Standard Process Class MAIN_PROGRAM
   // ******************************************************************
-  public static StandardClass MAIN_PROGRAM=new StandardClass("Process","MAIN_PROGRAM");
+  public static final StandardClass MAIN_PROGRAM=new StandardClass("Process","MAIN_PROGRAM");
   static
   { Simulation.addStandardClass(MAIN_PROGRAM);   // Declared in Simulation
 //  Process class MAIN_PROGRAM;
@@ -782,6 +776,10 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass Drawing=new StandardClass("Simset","Drawing",parameter("Title",Type.Text),parameter("width",Type.Integer),parameter("height",Type.Integer)); 
   static
   { ENVIRONMENT.addStandardClass(Drawing);  // Declared in ENVIRONMENT
+//    Drawing.code1=codeSet( // Statements before inner 
+//  		new CodeLine(1,"// RENDERING_SET = (Head$) new Head$(Drawing$.this).STM$();"),
+//  		new CodeLine(1,"// init(title.edText(),width,height);")
+//  		);
     Drawing.addStandardAttribute(Type.Integer,"white",    0xffffff); // Color white:      R=255, G=255, B=255.
     Drawing.addStandardAttribute(Type.Integer,"lightGray",0xc0c0c0); // Color light gray: R=192, G=192, B=192.  
     Drawing.addStandardAttribute(Type.Integer,"gray",     0x808080); // Color gray:       R=128, G=128, B=128. 
@@ -827,6 +825,10 @@ public final class StandardClass extends ClassDeclaration
   public static StandardClass ShapeElement=new StandardClass("Link","ShapeElement");
   static
   { Drawing.addStandardClass(ShapeElement);  // Declared in Drawing
+//    ShapeElement.code1=codeSet( // Statements before inner 
+//		new CodeLine(1,"this.stroke=drawing.currentStroke;"),
+//		new CodeLine(1,"this.into(drawing.RENDERING_SET);")
+//		);
     ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"setColor",parameter("color",Type.Integer));  
     ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"drawLine",parameter("x1",Type.LongReal),parameter("y1",Type.LongReal),parameter("x2",Type.LongReal),parameter("y2",Type.LongReal));  
     ShapeElement.addStandardProcedure(BlockKind.MemberMethod,null,"drawEllipse",parameter("x",Type.LongReal),parameter("y",Type.LongReal),parameter("width",Type.LongReal),parameter("height",Type.LongReal));  
@@ -894,6 +896,12 @@ public final class StandardClass extends ClassDeclaration
 	addParameter(p1);
   }
   
+  private static Vector<CodeLine> codeSet(CodeLine... codeLine) {
+	  Vector<CodeLine> set=new Vector<CodeLine>();
+	  for(CodeLine c:codeLine) set.add(c);
+	  return(set);
+  }
+
   private static Parameter parameter(String ident,Type type)
   { return(new Parameter(ident,type,Parameter.Kind.Simple)); }
   
@@ -947,7 +955,7 @@ public final class StandardClass extends ClassDeclaration
   { declarationList.add(new TypeDeclaration(type,ident)); }
 
   private void addStandardAttribute(Type type,String ident,int iValue)
-  { declarationList.add(new TypeDeclaration(type,ident,new Constant(Type.Integer,(Integer)iValue))); }
+  { declarationList.add(new TypeDeclaration(type,ident,true,new Constant(Type.Integer,(Integer)iValue))); }
 
   private void addStandardProcedure(BlockKind kind,Type type,String ident,Parameter p1,Parameter p2,Parameter p3,Parameter p4,Parameter p5,Parameter p6)
   {	declarationList.add(new StandardProcedure(this,kind,type,ident,p1,p2,p3,p4,p5,p6)); }

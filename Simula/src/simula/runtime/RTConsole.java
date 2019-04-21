@@ -40,7 +40,7 @@ public final class RTConsole {
         frame.setVisible(true);
     }
 
-	public void write(String s) {
+	public void write(final String s) {
 		textArea.append(s);
 		textArea.setCaretPosition(textArea.getDocument().getLength());
 //	    textArea.repaint();
@@ -65,7 +65,7 @@ public final class RTConsole {
      * @throws IndexOutOfBoundsException If off is negative, or len is negative, or len is greater than cbuf.length - off
      * @throws IOException If an I/O error occurs
      */
-	public int read(char[] cbuf, int off, int len) throws IOException {
+	public int read(final char[] cbuf,final int off,final int len) throws IOException {
 		reading=true;
 		int firstPos=textArea.getCaretPosition();
 		textArea.setEditable(true);

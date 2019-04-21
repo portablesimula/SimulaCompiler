@@ -41,25 +41,21 @@ import java.io.InputStream;
  *
  */
 public class InbyteFile$ extends ByteFile$ {
-	boolean ENDFILE$;
-	InputStream inputStream;
+	protected boolean ENDFILE$=true;
+	private InputStream inputStream;
+	
 	// Constructor
-    public InbyteFile$(RTObject$ staticLink,TXT$ FILENAME) {
-      super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$("InbyteFile$");
-      CODE$=new ClassBody(CODE$,this,2) {
-         public void STM$() {
-       	    TRACE_BEGIN_STM$("InbyteFile$",inner);
-            ENDFILE$=true;
-            if(inner!=null) inner.STM$();
-            TRACE_END_STM$("InbyteFile$");
-      }};
+    public InbyteFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    	super(staticLink,FILENAME);
     }
+    
     // Class Statements
-    public InbyteFile$ STM$() { return((InbyteFile$)CODE$.EXEC$()); }
-    public InbyteFile$ START() { START(this); return(this); }
+    public InbyteFile$ STM$() {
+        EBLK();
+        return(this);
+    }
 
-	/**
+    /**
 	 * 
 	 * @return true if there are no more bytes to read.
 	 */
@@ -182,15 +178,15 @@ public class InbyteFile$ extends ByteFile$ {
 	 * @param t
 	 * @return
 	 */
-	public TXT$ intext(TXT$ t) {
-		t.setpos(1);
-		while (t.more() & (!ENDFILE$)) {
-			t.putchar((char) inbyte());
+	public TXT$ intext(final TXT$ t) {
+		TXT$.setpos(t, 1);
+		while (TXT$.more(t) & (!ENDFILE$)) {
+			TXT$.putchar(t, (char) inbyte());
 		}
 		if (ENDFILE$) {
-			t.setpos(t.pos() - 1);
+			TXT$.setpos(t, TXT$.pos(t) - 1);
 		}
-		return (t.sub(1, t.pos() - 1));
+		return (TXT$.sub(t, 1, TXT$.pos(t) - 1));
 	}
 
 }

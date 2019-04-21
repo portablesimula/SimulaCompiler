@@ -37,26 +37,14 @@ package simula.runtime;
 public final class MAIN_PROGRAM$ extends Process$ {
 
 	// Constructor
-	public MAIN_PROGRAM$(RTObject$ staticLink) {
+	public MAIN_PROGRAM$(final RTObject$ staticLink) {
 		super(staticLink);
-		TRACE_BEGIN_DCL$("MAIN_PROGRAM$");
-		// Create Class Body
-		CODE$ = new ClassBody(CODE$, this,3) {
-			public void STM$() {
-				TRACE_BEGIN_STM$("MAIN_PROGRAM$",inner);
-				while (true)
-					detach();
-			}
-		};
 	}
 
+    // Class Statements
 	public MAIN_PROGRAM$ STM$() {
-		return ((MAIN_PROGRAM$) CODE$.EXEC$());
-	}
-
-	public MAIN_PROGRAM$ START() {
-		START(this);
-		return (this);
+		while (true)
+			detach();
 	}
 
 	public String toString() {

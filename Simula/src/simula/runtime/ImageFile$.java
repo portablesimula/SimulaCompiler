@@ -58,44 +58,41 @@ public class ImageFile$ extends FILE$ {
 	 */
 	protected boolean ENDFILE$ = true;
 
-	public void setpos(int i) {
-		image.setpos(i);
+	// Constructor
+	public ImageFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+		super(staticLink,FILENAME);
+	}
+   
+	// Class Statements
+	public ImageFile$ STM$() {
+		EBLK();
+		return(this);
+	}
+
+	public void setpos(final int i) {
+		TXT$.setpos(image, i);
 	}
 
 	public int pos() {
-		return (image.pos());
+		return (TXT$.pos(image));
 	}
 
 	public boolean more() {
-		return (image.more());
+		return (TXT$.more(image));
 	}
 
 	public int length() {
-		return (image.length());
+		return (TXT$.length(image));
 	}
-
-	// Constructor
-   public ImageFile$(RTObject$ staticLink,TXT$ FILENAME) {
-      super(staticLink,FILENAME);
- 	  TRACE_BEGIN_DCL$("ImageFile$");
-      CODE$=new ClassBody(CODE$,this,1) {
-         public void STM$() {
-        	 TRACE_BEGIN_STM$("ImageFile$",inner);
-             if(inner!=null) inner.STM$();
-             TRACE_END_STM$("ImageFile$");
-      }};
-   }
-   // Class Statements
-   public ImageFile$ STM$() { return((ImageFile$)CODE$.EXEC$()); }
-   public ImageFile$ START() { START(this); return(this); }
    
    
-   // ************************************************************************
-   // *** Output Functions for Outfile, PrintFile and DirectFile
-   // ************************************************************************
+	// ************************************************************************
+	// *** Output Functions for Outfile, PrintFile and DirectFile
+	// ************************************************************************
 
-   public void outimage() // Needs redefinition
-   { throw new RuntimeException("Internal Error"); }
+	public void outimage() { // Needs redefinition
+		throw new RuntimeException("Internal Error");
+	}
 
 	/**
 	 * <pre>
@@ -111,9 +108,10 @@ public class ImageFile$ extends FILE$ {
 	 * 
 	 * @param c
 	 */
-	public void outchar(char c) {
+	public void outchar(final char c) {
 		if (!more()) outimage();
-		image.putchar(c);
+//		image.putchar(c);
+		TXT$.putchar(image, c);
 	}
 
 	/**
@@ -157,12 +155,12 @@ public class ImageFile$ extends FILE$ {
 	 * @param w
 	 * @return
 	 */
-	public TXT$ FIELD$(int w) {
+	public TXT$ FIELD$(final int w) {
 		if (w > length())
 			throw new RuntimeException("Item too long in output operation");
 		if (pos() + w - 1 > length())
 			outimage();
-		TXT$ result = image.sub(pos(), w);
+		TXT$ result = TXT$.sub(image, pos(), w);
 		setpos(pos() + w);
 		return (result);
 	}
@@ -191,44 +189,44 @@ public class ImageFile$ extends FILE$ {
 	 *     contain the item (i.e. no leading or trailing spaces).
 	 * </pre>
 	 */
-	public void outint(int i, int w) {
+	public void outint(final int i,final int w) {
 		if(w<=0)
-		{ TXT$ T=blanks(20); T.putint(i);
+		{ TXT$ T=blanks(20); TXT$.putint(T, i);
 		  String S=T.edText().trim();
 		  if(w==0) outtext(S); else ASGSTR$(FIELD$(-w),S);
-		} else FIELD$(w).putint(i);
+		} else TXT$.putint(FIELD$(w), i);
 	}
 
-	public void outfix(double r, int n, int w) {
+	public void outfix(final double r,final int n,final int w) {
 		if(w<=0)
-		{ TXT$ T=blanks(n+10); T.putfix(r, n);
+		{ TXT$ T=blanks(n+10); TXT$.putfix(T, r, n);
 		  String S=T.edText().trim();
 		  if(w==0) outtext(S); else ASGSTR$(FIELD$(-w),S);
-		} else FIELD$(w).putfix(r, n);
+		} else TXT$.putfix(FIELD$(w),r, n);
 	}
 
-	public void outreal(double r, int n, int w) {
+	public void outreal(final double r,final int n,final int w) {
 		if(w<=0)
-		{ TXT$ T=blanks(n+10); T.putreal(r, n);
+		{ TXT$ T=blanks(n+10); TXT$.putreal(T, r, n);
 		  String S=T.edText().trim();
 		  if(w==0) outtext(S); else ASGSTR$(FIELD$(-w),S);
-		} else FIELD$(w).putreal(r, n);
+		} else TXT$.putreal(FIELD$(w),r, n);
 	}
 
-	public void outreal(float r, int n, int w) {
+	public void outreal(final float r,final int n,final int w) {
 		if(w<=0)
-		{ TXT$ T=blanks(n+10); T.putreal(r, n);
+		{ TXT$ T=blanks(n+10); TXT$.putreal(T, r, n);
 		  String S=T.edText().trim();
 		  if(w==0) outtext(S); else ASGSTR$(FIELD$(-w),S);
-		} else FIELD$(w).putreal(r, n);
+		} else TXT$.putreal(FIELD$(w),r, n);
 	}
 
-	public void outfrac(int i, int n, int w) {
+	public void outfrac(final int i,final int n,final int w) {
 		if(w<=0)
-		{ TXT$ T=blanks(n+10); T.putfrac(i, n);
+		{ TXT$ T=blanks(n+10); TXT$.putfrac(T, i, n);
 		  String S=T.edText().trim();
 		  if(w==0) outtext(S); else ASGSTR$(FIELD$(-w),S);
-		} else FIELD$(w).putfrac(i, n);
+		} else TXT$.putfrac(FIELD$(w),i, n);
 	}
 
 	/**
@@ -243,21 +241,22 @@ public class ImageFile$ extends FILE$ {
 	 * 
 	 * @param T
 	 */
-	public void outtext(String s) { outtext(new TXT$(s)); }
-	public void outtext(TXT$ t) {
+	public void outtext(final String s) { outtext(new TXT$(s)); }
+	public void outtext(final TXT$ t) {
 		if(t==null) return;
-		if ((pos() > 1) && (t.length() > length() - pos() + 1))	outimage();
-		t.setpos(1);
-		while (t.more()) outchar(t.getchar());
+		if ((pos() > 1) && (TXT$.length(t) > length() - pos() + 1))	outimage();
+		TXT$.setpos(t, 1);
+		while (TXT$.more(t)) outchar(TXT$.getchar(t));
 	}
 
 	   
-	   // ************************************************************************
-	   // *** Input Functions for Infile and DirectFile
-	   // ************************************************************************
+	// ************************************************************************
+	// *** Input Functions for Infile and DirectFile
+	// ************************************************************************
 
-	   public void inimage() // Needs redefinition
-	   { throw new RuntimeException("Internal Error"); }
+	public void inimage() { // Needs redefinition
+		throw new RuntimeException("Internal Error");
+	}
 
 	/**
 	 * Inchar.
@@ -279,7 +278,7 @@ public class ImageFile$ extends FILE$ {
 	public char inchar() {
 //		if (!more()) inimage();  // From Infile
 		while (!more())	inimage(); // From Directfile (Skip never-written-images ???)
-		return (image.getchar());
+		return (TXT$.getchar(image));
 	}
 
 	/**
@@ -307,9 +306,10 @@ public class ImageFile$ extends FILE$ {
 	 * @param w
 	 * @return
 	 */
-	public TXT$ intext(int w) {
+	public TXT$ intext(final int w) {
 		TXT$ T = blanks(w);
-		while (T.more()) T.putchar(inchar());
+//		while (T.more()) T.putchar(inchar());
+		while (TXT$.more(T)) TXT$.putchar(T,inchar());
 		return (T);
 	}
 
@@ -344,7 +344,7 @@ public class ImageFile$ extends FILE$ {
 	}
 	private TXT$ nextItem() {
 		if (lastitem())	throw new RuntimeException("Attempt to read past EOF");
-		return(image.sub(pos(), length() - pos() + 1));
+		return(TXT$.sub(image, pos(), length() - pos() + 1));
 	}
 
 	/**
@@ -370,8 +370,8 @@ public class ImageFile$ extends FILE$ {
 	 */
 	public int inint() {
 		TXT$ T = nextItem();
-		int result = T.getint();
-		setpos(pos() + T.pos() - 1);
+		int result = TXT$.getint(T);
+		setpos(pos() + TXT$.pos(T) - 1);
 		return (result);
 	}
 
@@ -398,8 +398,8 @@ public class ImageFile$ extends FILE$ {
 	 */
 	public double inreal() {
 		TXT$ T = nextItem();
-		double result = T.getreal();
-		setpos(pos() + T.pos() - 1);
+		double result = TXT$.getreal(T);
+		setpos(pos() + TXT$.pos(T) - 1);
 		return (result);
 	}
 
@@ -426,8 +426,8 @@ public class ImageFile$ extends FILE$ {
 	 */
 	public int infrac() {
 		TXT$ T = nextItem();
-		int result = T.getfrac();
-		setpos(pos() + T.pos() - 1);
+		int result = TXT$.getfrac(T);
+		setpos(pos() + TXT$.pos(T) - 1);
 		return (result);
 	}
 

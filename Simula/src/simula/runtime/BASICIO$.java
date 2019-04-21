@@ -106,19 +106,18 @@ package simula.runtime;
 public class BASICIO$ extends ENVIRONMENT$ { 
 
 	// Constructor
-	public BASICIO$(RTObject$ staticLink) {
+	public BASICIO$(final RTObject$ staticLink) {
 		super(staticLink);
 	}
 	
-	  //        procedure terminate_program;
-	  //        begin ... ;  goto STOP  end terminate_program;
+//  procedure terminate_program;
+//  begin ... ;  goto STOP  end terminate_program;
 	public void terminate_program() {
 		System.exit(0);
 	}
     
     public String toString()
     { return("Simula "+this.getClass().getSimpleName()); }
-
 
 
 }

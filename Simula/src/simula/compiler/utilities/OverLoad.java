@@ -8,9 +8,9 @@
 package simula.compiler.utilities;
 
 public final class OverLoad extends Type {
-	Type[] type;
+	private final Type[] type;
 	
-	public OverLoad(Type... type)
+	public OverLoad(final Type... type)
 	{  super("OverLoad");
 	   this.type=type;
 	}
