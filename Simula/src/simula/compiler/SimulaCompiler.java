@@ -28,6 +28,7 @@ import javax.tools.ToolProvider;
 
 import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
 import simula.compiler.editor.RTOption;
+import simula.compiler.editor.SimulaEditor;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -456,12 +457,30 @@ public final class SimulaCompiler {
 		if (Option.verbose)	Util.message("Execute: " + command);
 		String cmd = command.trim() + '\n';
 		Process process = runtime.exec(cmd);
+//		InputStream err = process.getErrorStream();
+//		InputStream inp = process.getInputStream();
+//		while (process.isAlive()) {
+//			while (err.available() > 0)	System.err.append((char) err.read());
+//			while (inp.available() > 0)	System.out.append((char) inp.read());
+//		}
+		
+		StringBuilder error=new StringBuilder();
+		StringBuilder output=new StringBuilder();
+		// get the error stream of the process and print it
 		InputStream err = process.getErrorStream();
 		InputStream inp = process.getInputStream();
 		while (process.isAlive()) {
-			while (err.available() > 0)	System.err.append((char) err.read());
-			while (inp.available() > 0)	System.out.append((char) inp.read());
+			while(err.available() > 0) error.append((char)err.read());
+			while(inp.available() > 0) output.append((char)inp.read());
 		}
+		if (Option.verbose) {
+			if(error.length()>0) Util.message("Error: " + error.toString());
+			if(output.length()>0) Util.message("Output: " + output.toString());
+		} else {
+			if(error.length()>0) System.err.append("Error: " + error.toString());
+			if(output.length()>0) System.err.append("Output: " + output.toString());			
+		}
+		
 		return (process.exitValue());
 	}
 

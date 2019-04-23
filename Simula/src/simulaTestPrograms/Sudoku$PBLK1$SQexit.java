@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Sun Apr 21 21:28:12 CEST 2019
+// Simula-Beta-0.3 Compiled at Tue Apr 23 08:20:06 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class Sudoku$PBLK1$SQexit extends Link$ {
