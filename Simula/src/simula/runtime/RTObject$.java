@@ -832,7 +832,8 @@ public abstract class RTObject$ {
 	// *** begin ... ; goto STOP end terminate_program;
 	// ************************************************************
 	public void terminate_program() {
-		System.exit(0);
+		//System.exit(0);
+		endProgram(0);
 	}
 
 	// ************************************************************

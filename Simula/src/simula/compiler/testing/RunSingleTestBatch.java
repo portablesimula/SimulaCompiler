@@ -73,10 +73,10 @@ public final class RunSingleTestBatch {
 		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 		//names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 		//names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
-		//names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
-		//names.add("p40a.sim");     // OK:  Precompile this for Simtst 40.
-		//names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
-		//names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
+		names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
+		names.add("p40a.sim");     // OK:  Precompile this for Simtst 40.
+		names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
+		names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
 
 		//names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
 		//names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
@@ -128,8 +128,8 @@ public final class RunSingleTestBatch {
 		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 		//names.add("simtst84.sim"); // OK:  Test Printfile.
 		//names.add("simtst85.sim"); // OK:  Test Directfile.
-		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
-		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
+		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
+		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
 		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
 		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.

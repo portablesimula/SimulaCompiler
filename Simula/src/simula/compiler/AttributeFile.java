@@ -33,7 +33,7 @@ public final class AttributeFile {
 	ObjectInputStream inpt;
 	boolean verbose=true; //false;//true;
 	
-	public AttributeFile(final String attributeFileName) {
+	private AttributeFile(final String attributeFileName) {
 		this.attributeFileName = attributeFileName;
 	}
 
@@ -94,17 +94,17 @@ public final class AttributeFile {
 			                             final Vector<Declaration> declarationList) throws IOException, ClassNotFoundException {
 		AttributeFile attributeFile = new AttributeFile(attributeFileName);
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFileName);
+//		Util.BREAK("*** BEGIN Read SimulaAttributeFile: " + attributeFileName);
 		attributeFile.inpt = new ObjectInputStream(inputStream);
 		if (!attributeFile.checkVersion())
 			Util.error("Malformed SimulaAttributeFile: " + attributeFileName);
 		Type moduleType=null;
 		LOOP: while (true) {
 			BlockDeclaration module=null;
-			//Util.BREAK("AttributeFile.readBlockDeclaration(1): "+module);
+//			Util.BREAK("AttributeFile.readBlockDeclaration(1): "+module);
 			try { module=(BlockDeclaration) attributeFile.inpt.readObject();}
 //			catch (ClassNotFoundException e) { Util.INTERNAL_ERROR("Impossible",e); }
 			catch (EOFException e1) { break LOOP; }
-			//Util.BREAK("AttributeFile.readBlockDeclaration: "+module+", Declared in: "+module.declaredIn);
 				
 			module.isPreCompiled = true;
 			declarationList.add(module);

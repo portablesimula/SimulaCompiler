@@ -138,6 +138,7 @@ public final class ExternalDeclaration extends Declaration {
 	private static Type readAttributeFile(final String jarFileName,final Vector<Declaration> declarationList) {
 		Type moduleType=null;
 		File file=new File(jarFileName);
+        //Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
 		if(!(file.exists() && file.canRead())) {
 			Util.error("Can't read attribute file: "+file);	return(null);
 	    }

@@ -339,6 +339,7 @@ public class PrintFile$ extends OutFile$ {
 			eject(1);
 		try {
 			String s=(image==null)?"\n":(image.edStripedText()+'\n');
+//			System.out.println("\nPrintFile.outimage(), s=\""+s+"\"");
 			writer.write(s);
 			writer.flush();
 		} catch (IOException e) {

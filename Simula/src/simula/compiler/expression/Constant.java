@@ -227,8 +227,8 @@ public final class Constant extends Expression implements Externalizable {
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
 		Util.TRACE_OUTPUT("Constant: "+type+' '+value);
+//		Util.BREAK("Constant.writeExternal: CONSTANT("+type+','+value+')');
 		oupt.writeObject(type);
-		//Util.BREAK("AttributeFile.writeConstant: "+cnst+", value="+cnst.value);
 		oupt.writeObject(value);
 	}
 
@@ -236,6 +236,7 @@ public final class Constant extends Expression implements Externalizable {
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
 		type=Type.inType(inpt);
 		value=inpt.readObject();
+//		Util.BREAK("Constant.readExternal: CONSTANT("+type+','+value+')');
 		Util.TRACE_INPUT("Constant: "+type+' '+value);
 	}
 

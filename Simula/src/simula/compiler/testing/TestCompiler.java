@@ -41,7 +41,6 @@ public final class TestCompiler {
 
 		// *** SIMULA PROGRAMMER FOR VIDERE UTVIKLING
 		// String name="/simprogs/Matte.sim";
-		// String name="/simprogs/HexDump.sim";
 		// String name="/simprogs/LIFT90.sim";
 		// String name="/simprogs/TRAFFIC.sim";
 		// String name="/simprogs/DEMOS.sim";
@@ -54,6 +53,7 @@ public final class TestCompiler {
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HegnaNRK.sim";
 		// String name="/samples/HelloWorld.sim";
+		// String name="/samples/HexDump.sim";
 		// String name="/samples/JensensDevice.sim";
 		// String name="/samples/PrimeUnder.sim";
 		// String name="/samples/Sudoku.sim";
@@ -86,7 +86,7 @@ public final class TestCompiler {
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters
-		 String name="/error/NoughtsAndCrosses.sim";  // 
+		// String name="/error/NoughtsAndCrosses.sim";  // 
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
@@ -105,11 +105,11 @@ public final class TestCompiler {
 	    // String name="/simple/ArrayAsParameter.sim";
 		// String name="/simple/Assignments.sim";
 		// String name="/simple/Blocks.sim";
-		// String name="/simple/ClassGlyph.sim";
+		// String name="/simple/ClassGlyph.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/ClockTimeTest.sim";
 		// String name="/simple/CommentSamples.sim";
 		// String name="/simple/ConcatSample.sim";
-		// String name="/simple/CoroutineSample.sim";  //  ===> TIL TESTBATCH
+		 String name="/simple/CoroutineSample.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/CoroutineSample2.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/DecimalEdit.sim"; 
 		// String name="/simple/Detachable.sim"; 
@@ -120,14 +120,13 @@ public final class TestCompiler {
 		// String name="/simple/ExternalClass1.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/ExternalClass2.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/ExternalClass3.sim";  //  ===> TIL TESTBATCH
-		// String name="/simple/FittingRoom.sim";
 		// String name="/simple/ForWhileSamples.sim";
 		// String name="/simple/ForWhileSamples2.sim";
 		// String name="/simple/FunctionCall.sim";
 		// String name="/simple/Gauss.sim";
 		// String name="/simple/GotoSample0.sim";   //  ===> TIL TESTBATCH
 		// String name="/simple/GotoSample1.sim";   //  ===> TIL TESTBATCH
-		// String name="/simple/GotoSample2.sim";   // Illegal GOTO
+		// String name="/simple/GotoSample2.sim";
 		// String name="/simple/GotoSample3.sim";
 		// String name="/simple/GotoSample4.sim";
 		// String name="/simple/GotoSample5.sim";
@@ -138,7 +137,6 @@ public final class TestCompiler {
 		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
 		// String name="/simple/InspectionSamples.sim";  
-		// String name="/simple/JensensDevice.sim";
 		// String name="/simple/LocalObject.sim";
 		// String name="/simple/MultiAssignments.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/ParamSample.sim";
@@ -159,11 +157,11 @@ public final class TestCompiler {
 		// String name="/simple/TextSamples.sim";
 		// String name="/simple/TextSamples1.sim";
 		// String name="/simple/VariableByName.sim";
-		// String name="/simple/VirtualLabel.sim";
-		// String name="/simple/VirtualLabel2.sim";
-		// String name="/simple/VirtualLabel3.sim";
-		// String name="/simple/VirtualSample.sim";
-		// String name="/simple/VirtualSwitch.sim";
+		// String name="/simple/VirtualLabel.sim";   //  ===> TIL TESTBATCH 
+		// String name="/simple/VirtualLabel2.sim";   //  ===> TIL TESTBATCH 
+		// String name="/simple/VirtualLabel3.sim";   //  ===> TIL TESTBATCH 
+		// String name="/simple/VirtualSample.sim";   //  ===> TIL TESTBATCH 
+		// String name="/simple/VirtualSwitch.sim";   //  ===> TIL TESTBATCH 
 
 			// Set Compile Time Options and tracing.
 			Option.verbose = true;// false;
@@ -192,7 +190,7 @@ public final class TestCompiler {
 			// Java Compiler and Jar-tool Trace Options
 			Option.TRACE_JAVAC=false;//true;
 			Option.TRACE_JAVAC_OUTPUT=false;//true;
-			Option.TRACE_JARING=true;//false;//true;
+			Option.TRACE_JARING=false;//true;
 
 			//String userDir=System.getProperty("user.dir");
 			String userDir="C:/GitHub/SimulaCompiler/Simula";

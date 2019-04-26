@@ -159,6 +159,7 @@ public class TypeDeclaration extends Declaration implements Externalizable {
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
 		Util.TRACE_OUTPUT("Variable: "+type+' '+identifier+", constant="+isConstant()+", const="+constantElement);
+//		Util.BREAK("TypeDeclaration.writeExternal: "+type+' '+identifier+", constant="+isConstant()+", const="+constantElement);
 	    oupt.writeObject(identifier);
 	    oupt.writeObject(externalIdent);
 	    oupt.writeObject(type);
@@ -176,5 +177,6 @@ public class TypeDeclaration extends Declaration implements Externalizable {
 	    constant=inpt.readBoolean();
 	    constantElement=(Constant)inpt.readObject();
 	    Util.TRACE_INPUT("Variable: "+type+' '+identifier+", constant="+constant+", constantElement="+constantElement);
+//		Util.BREAK("TypeDeclaration.readExternal: "+type+' '+identifier+", constant="+isConstant()+", const="+constantElement);
 	}
 }

@@ -28,7 +28,6 @@ import javax.tools.ToolProvider;
 
 import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
 import simula.compiler.editor.RTOption;
-import simula.compiler.editor.SimulaEditor;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -184,14 +183,19 @@ public final class SimulaCompiler {
 			AttributeFile.write(program);
 			
 			// ***************************************************************
-			// *** CALL JAVAC COMPILER
+			// *** CALL JAVA COMPILER
 			// ***************************************************************
 			String classPath=Global.simulaRtsLib;
 			for(String jarFileName:Global.externalJarFiles)
-				  classPath=classPath+";"+jarFileName;
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			if(compiler!=null) callJavaSystemCompiler(compiler,classPath);
-			else callJavacCompiler(classPath);
+//				  classPath=classPath+";"+jarFileName;
+				  classPath=classPath+";"+(jarFileName.trim());
+			
+			//callJavaCompiler(classPath);
+			if(Global.USE_JAVA_SYSTEM_COMPILER) {
+				JavaCompiler compiler= ToolProvider.getSystemJavaCompiler();
+				if(compiler!=null) callJavaSystemCompiler(compiler,classPath);
+				else callJavacCompiler(classPath);
+			} else callJavacCompiler(classPath);
 			
 			if(Option.TRACE_JAVAC_OUTPUT) {
 				for(JavaModule module:Global.javaModules) {
@@ -279,41 +283,79 @@ public final class SimulaCompiler {
 		return(files);
 	}
 	
+//	// ***************************************************************
+//	// *** CALL JAVA COMPILER
+//	// ***************************************************************
+//	private void callJavaCompiler(final JavaCompiler compiler,final String classPath) throws IOException {
+//		if (Option.verbose)	Util.message("Call Java System Compiler");
+//		Vector<String> arguments = new Vector<String>();
+//		if (Option.TRACE_JAVAC) {
+//			arguments.add("-version");
+//			arguments.add("-verbose");
+//		}
+//		if (Option.verbose)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=" + classPath);
+//		arguments.add("-classpath");
+//		arguments.add(classPath);
+//		arguments.add("-d");
+//		arguments.add(Global.tempClassFileDir); // Specifies output directory.
+//		if (Option.noJavacWarnings)
+//			arguments.add("-nowarn");
+//		// arguments.add("-Xlint:unchecked");
+//		for (JavaModule module : Global.javaModules)
+//			arguments.add(module.javaOutputFileName); // Add .jave Files
+//
+//		// java.home=C:\Program Files\Java\jre1.8.0_161
+//		if (Option.TRACE_JAVAC)
+//			Util.println("Compiler=" + compiler);
+//		if (compiler == null)
+//			Util.error("SimulaCompiler.callJavaSystemCompiler: ToolProvider.getSystemJavaCompiler() returns null");
+//		int nArg = arguments.size();
+//		String[] args = new String[nArg];
+//		arguments.toArray(args);
+//
+//		if (Option.TRACE_JAVAC) {
+//			for (int i = 0; i < args.length; i++)
+//				Util.println("Compiler'args[" + i + "]=" + args[i]);
+//		}
+//
+//		int exitValue = compiler.run(null, null, null, args);
+//		if (Option.verbose) {
+//			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
+//			for (JavaModule module : Global.javaModules)
+//				Util.LIST(module.getClassOutputFileName());
+//		}
+//	}
+	
 	// ***************************************************************
 	// *** CALL JAVA SYSTEM COMPILER
 	// ***************************************************************
 	private void callJavaSystemCompiler(final JavaCompiler compiler,final String classPath) throws IOException {
-		if (Option.verbose)	Util.message("Call Java System Compiler");
+		//Option.TRACE_JAVAC=true; // TODO: TESTING !!!
 		Vector<String> arguments = new Vector<String>();
 		if (Option.TRACE_JAVAC) {
 			arguments.add("-version");
-			arguments.add("-verbose");
+			//arguments.add("-verbose");
 		}
 		if (Option.verbose)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=" + classPath);
-		arguments.add("-classpath");
-		arguments.add(classPath);
-		arguments.add("-d");
-		arguments.add(Global.tempClassFileDir); // Specifies output directory.
+		arguments.add("-classpath"); arguments.add(classPath);
+		arguments.add("-d"); arguments.add(Global.tempClassFileDir); // Specifies output directory.
 		if (Option.noJavacWarnings)
 			arguments.add("-nowarn");
 		// arguments.add("-Xlint:unchecked");
 		for (JavaModule module : Global.javaModules)
-			arguments.add(module.javaOutputFileName); // Add .jave Files
+			arguments.add(module.javaOutputFileName); // Add .java Files
 
 		// java.home=C:\Program Files\Java\jre1.8.0_161
 		if (Option.TRACE_JAVAC)
 			Util.println("Compiler=" + compiler);
-		if (compiler == null)
-			Util.error("SimulaCompiler.callJavaSystemCompiler: ToolProvider.getSystemJavaCompiler() returns null");
 		int nArg = arguments.size();
 		String[] args = new String[nArg];
 		arguments.toArray(args);
-
 		if (Option.TRACE_JAVAC) {
 			for (int i = 0; i < args.length; i++)
 				Util.println("Compiler'args[" + i + "]=" + args[i]);
 		}
-
+		if (Option.verbose)	Util.message("Call Java System Compiler");
 		int exitValue = compiler.run(null, null, null, args);
 		if (Option.verbose) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
@@ -322,39 +364,35 @@ public final class SimulaCompiler {
 		}
 	}
 	
+	
 	// ***************************************************************
-	// *** CALL JAVAC COMPILER
+	// *** CALL JAVA COMMAND LINE COMPILER
 	//
 	// https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html
 	// https://docs.oracle.com/javase/10/tools/tools-and-command-reference.htm
 	// ***************************************************************
-	private void callJavacCompiler(String classPath) throws IOException {
-		if (Option.verbose)	Util.message("Call Java CommandLine Compiler");
-		StringBuilder source = new StringBuilder();
-		;
-		for (JavaModule module : Global.javaModules)
-			source.append(' ').append(module.javaOutputFileName);
-		if (Option.verbose)	Util.message("SimulaCompiler.doCompile: source=" + source);
-		// String javac=Global.javaDir+"javac.exe";
-		// String javac=Global.javaHome+"javac.exe";
-		String javac = "javac.exe";
-		// Util.println("SimulaCompiler.callJavacCompiler: classPath="+classPath);
-		classPath = " -classpath " + classPath;
-
+	private void callJavacCompiler(final String classPath) throws IOException {
+		//Option.TRACE_JAVAC=true; // TODO: TESTING !!!
+		StringBuilder cmd=new StringBuilder();
+		if (Option.TRACE_JAVAC) {
+			cmd.append(" -version");
+			//cmd.append(" -verbose");
+		}
+		if (Option.verbose)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=" + classPath);
+		cmd.append(" -classpath ").append(classPath);
 		// *** TODO: Hvis tempClassFileDir ikke finnes - CREATE !
-		String classOutputDir = " -d " + Global.tempClassFileDir;
-
+		cmd.append(" -d ").append(Global.tempClassFileDir); // Specifies output directory.
+		if (Option.noJavacWarnings)	cmd.append(" -nowarn");
+		// cmd.append(" -Xlint:unchecked");
+		for (JavaModule module : Global.javaModules)
+			cmd.append(' ').append(module.javaOutputFileName); // Add .java Files
 		if (Option.TRACE_JAVAC) {
 			Util.println("SimulaCompiler.doCompile JAVAC: classPath=" + classPath);
-			Util.println("SimulaCompiler.doCompile JAVAC: source=" + source);
-			Util.println("SimulaCompiler.doCompile JAVAC: classOutputDir=" + classOutputDir);
+			Util.println("SimulaCompiler.doCompile JAVAC: arguments=" + cmd);
+			//				Util.println("SimulaCompiler.doCompile JAVAC: classOutputDir=" + classOutputDir);
 		}
-		String opt = (Option.TRACE_JAVAC) ? " -verbose" : "";
-		// opt=opt+" -Xlint:unchecked";
-		opt = opt + classOutputDir;
-		String command = javac + opt + classPath + source;
-		int exitValue = execute(command);
-
+		if (Option.verbose)	Util.message("Call Java Command Line Compiler");
+		int exitValue = execute("javac.exe"+cmd);
 		if (Option.verbose) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
 			for (JavaModule module : Global.javaModules)
@@ -368,11 +406,12 @@ public final class SimulaCompiler {
 	private String createJarFile(final ProgramModule program) throws IOException {
 		if (Option.verbose)	Util.message("BEGIN Create .jar File");
 		// String jarFileName=Global.outputDir+Global.sourceName+".jar ";
-		String jarFileName = Global.outputDir + Global.sourceName + ".jar";
+//		String jarFileName = Global.outputDir + Global.sourceName + ".jar";
+		String jarFileName = Global.outputDir + program.getIdentifier() + ".jar";
 
 		if (!program.isExecutable()) {
 			// Util.BREAK("SimulaCompiler.createJarFile: program="+program);
-			jarFileName = Global.outputDir + program.getIdentifier() + ".jar ";
+//			jarFileName = Global.outputDir + program.getIdentifier() + ".jar ";
 			Util.warning("Separate Compiled Module is written to: " + jarFileName);
 		}
 		File jarFile = new File(jarFileName);
@@ -457,29 +496,36 @@ public final class SimulaCompiler {
 		if (Option.verbose)	Util.message("Execute: " + command);
 		String cmd = command.trim() + '\n';
 		Process process = runtime.exec(cmd);
+		InputStream err = process.getErrorStream();
+		InputStream inp = process.getInputStream();
+		StringBuilder error=new StringBuilder();
+		while (process.isAlive()) {
+			while (err.available() > 0) {
+				char c=(char)err.read();
+				System.err.append(c);
+				error.append(c);
+			}
+			while (inp.available() > 0)	System.out.append((char) inp.read());
+		}
+		if(error.length()>0) Util.error(error.toString());
+		
+//		StringBuilder error=new StringBuilder();
+//		StringBuilder output=new StringBuilder();
+//		// get the error stream of the process and print it
 //		InputStream err = process.getErrorStream();
 //		InputStream inp = process.getInputStream();
 //		while (process.isAlive()) {
-//			while (err.available() > 0)	System.err.append((char) err.read());
-//			while (inp.available() > 0)	System.out.append((char) inp.read());
+//			while(err.available() > 0) error.append((char)err.read());
+//			while(inp.available() > 0) output.append((char)inp.read());
 //		}
-		
-		StringBuilder error=new StringBuilder();
-		StringBuilder output=new StringBuilder();
-		// get the error stream of the process and print it
-		InputStream err = process.getErrorStream();
-		InputStream inp = process.getInputStream();
-		while (process.isAlive()) {
-			while(err.available() > 0) error.append((char)err.read());
-			while(inp.available() > 0) output.append((char)inp.read());
-		}
-		if (Option.verbose) {
-			if(error.length()>0) Util.message("Error: " + error.toString());
-			if(output.length()>0) Util.message("Output: " + output.toString());
-		} else {
-			if(error.length()>0) System.err.append("Error: " + error.toString());
-			if(output.length()>0) System.err.append("Output: " + output.toString());			
-		}
+//		if (Option.verbose) {
+////			if(error.length()>0) Util.message("Error: " + error.toString());
+//			if(error.length()>0) Util.error("\""+error.toString()+"\"");
+//			if(output.length()>0) Util.message("Output: " + output.toString());
+//		} else {
+//			if(error.length()>0) System.err.append("Error: " + error.toString());
+//			if(output.length()>0) System.out.append(output.toString());			
+//		}
 		
 		return (process.exitValue());
 	}
