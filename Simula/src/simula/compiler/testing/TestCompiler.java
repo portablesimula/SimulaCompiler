@@ -47,8 +47,8 @@ public final class TestCompiler {
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
 		// String name="/samples/AnimationTest.sim";
-		// String name="/samples/Dates.sim";  //  ===> TIL SAMPLES
-		// String name="/samples/DatesTest.sim";  //  ===> TIL SAMPLES
+		// String name="/samples/Dates.sim";
+		// String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HegnaNRK.sim";
@@ -101,16 +101,13 @@ public final class TestCompiler {
 		// String name="/simple/adHoc66.sim";
 		// String name="/simple/adHoc67.sim";
 		// String name="/simple/adHoc68.sim";
-	    // String name="/simple/Activation.sim";  //  ===> TIL TESTBATCH
 	    // String name="/simple/ArrayAsParameter.sim";
 		// String name="/simple/Assignments.sim";
 		// String name="/simple/Blocks.sim";
-		// String name="/simple/ClassGlyph.sim";  //  ===> TIL TESTBATCH
+		// String name="/simple/ClassGlyph.sim";
 		// String name="/simple/ClockTimeTest.sim";
 		// String name="/simple/CommentSamples.sim";
 		// String name="/simple/ConcatSample.sim";
-		 String name="/simple/CoroutineSample.sim";  //  ===> TIL TESTBATCH
-		// String name="/simple/CoroutineSample2.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/DecimalEdit.sim"; 
 		// String name="/simple/Detachable.sim"; 
 		// String name="/simple/DetachSamples.sim"; 
@@ -137,18 +134,14 @@ public final class TestCompiler {
 		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
 		// String name="/simple/InspectionSamples.sim";  
-		// String name="/simple/LocalObject.sim";
-		// String name="/simple/MultiAssignments.sim";  //  ===> TIL TESTBATCH
+		 String name="/simple/LocalObject.sim";
 		// String name="/simple/ParamSample.sim";
-		// String name="/simple/ParamSample2.sim";  //  ===> TIL TESTBATCH
-		// String name="/simple/ParamSample3.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/PrfxBlockSamples.sim";
 		// String name="/simple/PriorProcedure.sim";   // ????
 		// String name="/simple/ProcedureSample.sim";
 		// String name="/simple/PromptSample.sim";
 		// String name="/simple/QPSample0.sim";   //  ===> TIL TESTBATCH
 		// String name="/simple/QPSample1.sim";   //  ===> TIL TESTBATCH
-		// String name="/simple/QPSample2.sim";   //  ===> TIL TESTBATCH (sjekk om den er der)
 		// String name="/simple/QPSample3.sim";   //  ===> TIL TESTBATCH
 		// String name="/simple/QPSample4.sim";
 		// String name="/simple/RemoteProcedure.sim";

@@ -412,7 +412,7 @@ public final class SimulaCompiler {
 		if (!program.isExecutable()) {
 			// Util.BREAK("SimulaCompiler.createJarFile: program="+program);
 //			jarFileName = Global.outputDir + program.getIdentifier() + ".jar ";
-			Util.warning("Separate Compiled Module is written to: " + jarFileName);
+			Util.warning("Separate Compiled Module is written to: \"" + jarFileName+"\"");
 		}
 		File jarFile = new File(jarFileName);
 		jarFile.getParentFile().mkdirs();

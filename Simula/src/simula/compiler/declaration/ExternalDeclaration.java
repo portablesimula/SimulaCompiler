@@ -115,7 +115,8 @@ public final class ExternalDeclaration extends Declaration {
 			}
 			String jarFileName;
 			if(externalIdentifier==null)
-				 jarFileName=Global.outputDir+identifier+".jar ";
+//				 jarFileName=Global.outputDir+identifier+".jar ";
+				 jarFileName=Global.outputDir+identifier+".jar";
 			else jarFileName=externalIdentifier.getIdentifier();
 			Type moduleType=readAttributeFile(jarFileName,declarationList);
 			if(moduleType!=expectedType) {
@@ -138,6 +139,7 @@ public final class ExternalDeclaration extends Declaration {
 	private static Type readAttributeFile(final String jarFileName,final Vector<Declaration> declarationList) {
 		Type moduleType=null;
 		File file=new File(jarFileName);
+		Util.warning("Separate Compiled Module is read from: \"" + jarFileName+"\"");
         //Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
 		if(!(file.exists() && file.canRead())) {
 			Util.error("Can't read attribute file: "+file);	return(null);

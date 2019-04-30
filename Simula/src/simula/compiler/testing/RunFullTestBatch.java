@@ -146,8 +146,14 @@ public final class RunFullTestBatch {
 		names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.
 		names.add("simtst101.sim"); // OK: Test Standard Procedure 'sourceline'.
 		names.add("simtst102.sim"); // OK: GOTO out of an operating Process
+		names.add("simtst103.sim"); // OK: All kinds of Activation Statements
+		names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
+		names.add("simtst105.sim"); // OK: Multiple assignments.
 		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
 		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
+		names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
+		names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
+		names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain
 
 		// Set options and tracing.
 		Option.BREAKING=false;

@@ -1,0 +1,95 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 110
+%
+%  PURPOSE: Simple Co-Routine Sample 3: detach - resume - chain
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:11);
+   ref(ProducerClass) Producer;
+   ref(ConsumerClass) Consumer;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   class ProducerClass;
+   begin
+	  trace("Producer:Init");
+	  detach;
+	  trace("Producer:Part 1 - Statements");
+	  RESUME(consumer);
+	  trace("Producer:Part 2 - Statements");
+	  RESUME(consumer);
+	  trace("Producer:Part 3 - Statements");
+	  RESUME(consumer);
+   end;
+   
+   class ConsumerClass;
+   begin
+	  trace("Consumer:Init");
+	  detach;
+	  trace("Consumer:Part 1 - Statements");
+	  RESUME(producer);
+	  trace("Consumer:Part 2 - Statements");
+	  RESUME(producer);
+	  trace("Consumer:Part 3 - Statements");
+	  RESUME(producer);
+   end;
+   
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 110"); Outimage ;
+   Outtext("--- Simple Co-Routine Sample 3: detach - resume - chain");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"Main: Before new Producer";
+   facit(1):-"Producer:Init";
+   facit(2):-"Main: Before new Consumer";
+   facit(3):-"Consumer:Init";
+   facit(4):-"Main: Before first resume";
+   facit(5):-"Producer:Part 1 - Statements";
+   facit(6):-"Consumer:Part 1 - Statements";
+   facit(7):-"Producer:Part 2 - Statements";
+   facit(8):-"Consumer:Part 2 - Statements";
+   facit(9):-"Producer:Part 3 - Statements";
+   facit(10):-"Consumer:Part 3 - Statements";
+   facit(11):-"Main: End of Program";
+   
+   begin
+      trace("Main: Before new Producer");
+      producer:-new ProducerClass();
+      trace("Main: Before new Consumer");
+      consumer:-new ConsumerClass();
+      trace("Main: Before first resume");
+      resume(producer);
+      trace("Main: End of Program");
+   end subBlock;
+   
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 110");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 110") ;
+      Outimage;
+   end;
+   
+end program;
