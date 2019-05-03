@@ -37,9 +37,9 @@ import simula.compiler.utilities.Util;
  *		ValuePart = VALUE IdentifierList ;
  *		NamePart  = NAME  IdentifierList ;
  *	
- *	ParameterPart = Parameter ; { Parameter ; }
- *		Parameter = Specifier IdentifierList
- *			Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
+ *	ParameterPart = ProcedureParameter ; { ProcedureParameter ; }
+ *		ProcedureParameter = ProcedureParameterSpecifier IdentifierList
+ *			ProcedureParameterSpecifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
  *
  *	ProtectionPart = ProtectionParameter { ; ProtectionParameter }
  *		ProtectionParameter = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
@@ -50,9 +50,6 @@ import simula.compiler.utilities.Util;
  *			VirtualParameter = VirtualSpecifier IdentifierList
  *				VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
  * </pre>
- * 
- * NOTE: Virtual labels and switches are not part of this implementation of
- * Simula Standard.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -87,7 +84,7 @@ public abstract class BlockParser extends SyntaxClass {
 			// ParameterPart = Parameter ; { Parameter ; }
 			// Parameter = Specifier IdentifierList
 			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
-			while (acceptParameterSpecifications(block, block.parameterList)) {
+			while (acceptClassParameterSpecifications(block, block.parameterList)) {
 				Parser.expect(KeyWord.SEMICOLON);
 			}
 		} else
@@ -162,7 +159,7 @@ public abstract class BlockParser extends SyntaxClass {
 			// ParameterPart = Parameter ; { Parameter ; }
 			// Parameter = Specifier IdentifierList
 			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
-			while (acceptParameterSpecifications(block, block.parameterList)) {
+			while (acceptProcedureParameterSpecifications(block, block.parameterList)) {
 				Parser.expect(KeyWord.SEMICOLON);
 			}
 		} else Parser.expect(KeyWord.SEMICOLON);
@@ -211,9 +208,52 @@ public abstract class BlockParser extends SyntaxClass {
 		} while (Parser.accept(KeyWord.COMMA));
 	}
 
-	private static boolean acceptParameterSpecifications(final BlockDeclaration block,final Vector<Parameter> parameterList) {
-		// Parameter = Specifier IdentifierList
-		// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
+	private static boolean acceptClassParameterSpecifications(final BlockDeclaration block,final Vector<Parameter> parameterList) {
+		// ClassParameter = ClassParameterSpecifier IdentifierList
+		// ClassParameterSpecifier = Type | [Type] ARRAY 
+		if (Option.TRACE_PARSE)
+			Parser.TRACE("Parse ParameterSpecifications");
+		Type type;
+		Parameter.Kind kind = Parameter.Kind.Simple;
+//		if (Parser.accept(KeyWord.SWITCH)) {
+//			type = Type.Label;
+//			kind = Parameter.Kind.Procedure;
+//		} else if (Parser.accept(KeyWord.LABEL))
+//			type = Type.Label;
+//		else if (Parser.accept(KeyWord.PROCEDURE)) {
+//			type = null;
+//			kind = Parameter.Kind.Procedure;
+//		} else {
+			type = acceptType();
+//			if (type == null) return (false);
+			if (Parser.accept(KeyWord.ARRAY)) {
+				if (type == null) {
+					// See Simula Standard 5.2 -
+					// If no type declarator is given the type real is understood.
+					type=Type.Real;
+				}
+				kind = Parameter.Kind.Array;
+			}
+			if (type == null) return (false);
+//			else if (Parser.accept(KeyWord.PROCEDURE)) kind = Parameter.Kind.Procedure;
+//		}
+		do {
+			String identifier = expectIdentifier();
+			Parameter parameter = null;
+			for (Parameter par : parameterList)
+				if (identifier.equalsIgnoreCase(par.identifier)) { parameter = par;	break; }
+			if (parameter == null) {
+				Util.error("Identifier " + identifier + " is not defined in this scope");
+				parameter = new Parameter(identifier);
+			}
+			parameter.setTypeAndKind(type, kind);
+		} while (Parser.accept(KeyWord.COMMA));
+		return (true);
+	}
+
+	private static boolean acceptProcedureParameterSpecifications(final BlockDeclaration block,final Vector<Parameter> parameterList) {
+		// ProcedureParameter = ProcedureParameterSpecifier IdentifierList
+		// ProcedureParameterSpecifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
 		if (Option.TRACE_PARSE)
 			Parser.TRACE("Parse ParameterSpecifications");
 		Type type;

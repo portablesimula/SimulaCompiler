@@ -38,7 +38,7 @@ public final class Global {
     public static final int MAX_WORKSPACE=10;
     
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
-	public static final boolean USE_JAVA_SYSTEM_COMPILER=true;//false;//true;
+	public static final boolean USE_JAVA_SYSTEM_COMPILER=false;//true;
 	
 	public static final boolean MODIFY_CLASS_VERSION=false;
 	public static final int major=52;  // .class file format version's Major

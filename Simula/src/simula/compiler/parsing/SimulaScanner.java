@@ -24,6 +24,7 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class SimulaScanner { 
+    //private static final boolean TESTING=false;
     private static final int EOF_MARK=25; // ISO EM(EndMedia) character used to denote end-of-input
     public boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
     private SourceFileReader sourceFileReader;      // The source file reader;
@@ -520,6 +521,7 @@ public final class SimulaScanner {
     		name.append((char)current);
     	pushBack(current);
     	if(Option.TRACE_SCAN) Util.TRACE("scanName, name="+name+",current="+edcurrent());
+	    //if(TESTING) Util.println("SimulaScanner.scanName: name="+name+",current="+edcurrent()+", accum=\""+accum+"\"");
     	return(name.toString());
     }
 	
@@ -779,7 +781,7 @@ public final class SimulaScanner {
     	while(current==' ') getNext();
     	while(current!=' ' && current!='\n') {
     		selector[current]=true;
-    		Util.println("PreProcessor.select: selector["+(char)current+"]=true");
+    		//if(TESTING) Util.println("PreProcessor.select: selector["+(char)current+"]=true");
     		getNext();
     	}
     }
@@ -841,26 +843,26 @@ public final class SimulaScanner {
 		return (newToken(KeyWord.COMMENT));
 	}
 	  
-		// ********************************************************************************
-		// ** scanCommentToEndOfLine
-		// ********************************************************************************
-		// ** Reference-Syntax:
-		// ** comment
-		// ** = -- { any character until end-of-line }
-		// ********************************************************************************
-		// ** End-Condition: current is last character of construct CHECKED
-		// ** getNext will return first character after construct
-		// ********************************************************************************
-		private Token scanCommentToEndOfLine() {
-			StringBuilder skipped = new StringBuilder();
-			if (Option.TRACE_SCAN) Util.TRACE("BEGIN scanCommentToEndOfLine, " + edcurrent());
-			while ((getNext() != '\n') && current != EOF_MARK)
-				skipped.append((char) current);
+	// ********************************************************************************
+	// ** scanCommentToEndOfLine
+	// ********************************************************************************
+	// ** Reference-Syntax:
+	// ** comment
+	// ** = -- { any character until end-of-line }
+	// ********************************************************************************
+	// ** End-Condition: current is last character of construct CHECKED
+	// ** getNext will return first character after construct
+	// ********************************************************************************
+	private Token scanCommentToEndOfLine() {
+		StringBuilder skipped = new StringBuilder();
+		if (Option.TRACE_SCAN) Util.TRACE("BEGIN scanCommentToEndOfLine, " + edcurrent());
+		while ((getNext() != '\n') && current != EOF_MARK)
 			skipped.append((char) current);
-			if (Option.TRACE_SCAN) Util.TRACE("END scanCommentToEndOfLine: " + edcurrent() + "  skipped=\"" + skipped + '"');
-			if (Option.TRACE_COMMENTS) Util.TRACE("COMMENT:\"" + skipped + "\" Skipped and replaced with a SPACE");
-			return (newToken(KeyWord.COMMENT));
-		}
+		skipped.append((char) current);
+		if (Option.TRACE_SCAN) Util.TRACE("END scanCommentToEndOfLine: " + edcurrent() + "  skipped=\"" + skipped + '"');
+		if (Option.TRACE_COMMENTS) Util.TRACE("COMMENT:\"" + skipped + "\" Skipped and replaced with a SPACE");
+		return (newToken(KeyWord.COMMENT));
+	}
 	
 	// ********************************************************************************
 	// ** scanEndComment
@@ -911,6 +913,7 @@ public final class SimulaScanner {
 				lastLine = Global.sourceLineNumber;
 			}
 		}
+		
 		if (skipped.length() > 0 && current==EOF_MARK) {
 			//Util.warning("END-Comment is not terminated: Skipped="+skipped);
 //			if(editorMode) tokenQueue.add(newToken(KeyWord.COMMENT));
@@ -919,6 +922,7 @@ public final class SimulaScanner {
 		if (Option.TRACE_COMMENTS)
 			Util.TRACE("ENDCOMMENT:\"" + skipped + '"');
 		Token res=tokenQueue.remove();
+		//if(TESTING) Util.println("SimulaScanner.scanEndComment: res="+res+", text=\""+res.getText()+"\"");
 		return(res);
 	}
 
@@ -943,6 +947,8 @@ public final class SimulaScanner {
     private int readNextCharacter() {
     	if(!puchBackStack.empty()) return(puchBackStack.pop());
 		int c=sourceFileReader.read();
+		//if(TESTING) Util.println("SimulaScanner.readNextCharacter: c="+(char)c+", code="+c+", accum=\""+accum+"\"");
+
 		if(c<0) { EOF_SEEN=true; return(EOF_MARK); }
 		if(c=='\n') Global.sourceLineNumber++;
 		
@@ -952,8 +958,9 @@ public final class SimulaScanner {
 
     private void pushBack(final int chr) {
 	    // push given value back into the input stream
+		//if(TESTING) Util.println("SimulaScanner.pushBack: c="+(char)chr+", code="+chr+", accum=\""+accum+"\"");
     	if(editorMode) {
-    		if(accum.length()>0)
+    		if(current!=EOF_MARK && accum.length()>0)
     		accum.deleteCharAt(accum.length()-1);
     	}
 	    puchBackStack.push((char)chr);
@@ -962,6 +969,7 @@ public final class SimulaScanner {
   
     private void pushBack(final String s) {
 	    // put given value back into the input stream
+		//if(TESTING) Util.println("SimulaScanner.pushBack: s=\""+s+"\", accum=\""+accum+"\"");
 	    int i=s.length();
 		while((i--)>0) pushBack(s.charAt(i));
     }
@@ -971,7 +979,7 @@ public final class SimulaScanner {
 		if(editorMode) {
 	        text=(accum==null)?"":accum.toString();
 	        accum=new StringBuilder();
-			//Util.println("SimulaScanner.newToken: keyWord="+keyWord+", text=\""+text.replace("\n","\\n")+'"');//+", value="+value);
+			//if(TESTING) Util.println("SimulaScanner.newToken: keyWord="+keyWord+", text=\""+text.replace("\n","\\n")+'"');//+", value="+value);
 		}
 		return(new Token(text,keyWord,value));
 	  }

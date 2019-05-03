@@ -19,8 +19,15 @@ import javax.swing.text.StyledDocument;
 import simula.compiler.utilities.Util;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public final class ConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -32,6 +39,10 @@ public final class ConsolePanel extends JPanel {
     private Style styleRegular;
     private Style styleWarning;
     private Style styleError;
+    private JPopupMenu popupMenu;
+    private JMenuItem clearItem;
+	private JMenuItem copyItem;
+
 
 	public void write(final String s) { write(s,styleRegular); }
 	public void writeError(final String s) { write(s,styleError); }
@@ -59,12 +70,14 @@ public final class ConsolePanel extends JPanel {
         //Util.BREAK("ConsolePanel.write: done s="+s);
 //	    textPane.repaint();
 		textPane.update(textPane.getGraphics());
+		write("Simula Compiler Console:\n");
 	}
 
-    public ConsolePanel() {
+	public ConsolePanel() {
     	super(new BorderLayout());
     	JScrollPane scrollPane;
     	textPane = new JTextPane();
+        textPane.addMouseListener(mouseListener);
     	scrollPane = new JScrollPane(textPane);
     	doc=new DefaultStyledDocument();
     	addStylesToDocument(doc);
@@ -74,6 +87,13 @@ public final class ConsolePanel extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         //JPanel panel = new JPanel(new BorderLayout());
         //panel.add(scrollPane);
+        popupMenu=new JPopupMenu();
+        clearItem = new JMenuItem("Clear Console");
+        //clearItem.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
+        popupMenu.add(clearItem); clearItem.addActionListener(actionListener);
+        copyItem = new JMenuItem("Copy to Clipboard");
+		copyItem.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+        popupMenu.add(copyItem); copyItem.addActionListener(actionListener);
         this.add(scrollPane);
     }
 
@@ -96,6 +116,41 @@ public final class ConsolePanel extends JPanel {
         styleWarning=doc.getStyle("warning");
         styleError=doc.getStyle("error");
     }
+    
+
+	// ****************************************************************
+	// *** MouseListener
+	// ****************************************************************
+    MouseListener mouseListener = new MouseListener() {
+		public void mousePressed(MouseEvent e) {}
+		public void mouseReleased(MouseEvent e) {}
+		public void mouseEntered(MouseEvent e) {}
+		public void mouseExited(MouseEvent e) {}
+		public void mouseClicked(MouseEvent e) {
+    	    if(e.getButton()==3) popupMenu.show(textPane,e.getX(),e.getY());
+    	}
+    };
+
+    
+	// ****************************************************************
+	// *** HelpMenu: ActionListener
+	// ****************************************************************
+	ActionListener actionListener = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			Object item=e.getSource();
+			//System.out.println("ConsolePanel.ActionListener: "+item);
+			if(item==clearItem) clear();
+			else if(item==copyItem) {
+				String text=textPane.getSelectedText();
+				//System.out.println("ConsolePanel.ActionListener: SelectedText=\""+text+"\"");
+				if(text==null) text=textPane.getText();
+				//System.out.println("ConsolePanel.ActionListener: Text=\""+text+"\"");
+				StringSelection stringSelection = new StringSelection(text);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(stringSelection, null);
+			}
+		}
+	};
 
     KeyListener listener = new KeyListener() {
     	public void keyPressed(KeyEvent event) {

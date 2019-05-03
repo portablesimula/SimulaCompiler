@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri Apr 26 11:57:49 CEST 2019
+// Simula-Beta-0.3 Compiled at Fri May 03 22:07:15 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HexDump extends BASICIO$ {
@@ -61,7 +61,7 @@ public final class HexDump extends BASICIO$ {
                 sysout().outimage();
                 sysout().outimage();
                 sysout().outtext(new TXT$("END  --  Input Bytes"));
-                sysout().outint((Sequ-(1)),6);
+                sysout().outint(Sequ,6);
                 sysout().outimage();
                 sysout().outimage();
                 break LOOP$;
@@ -83,5 +83,5 @@ public final class HexDump extends BASICIO$ {
         RT.setRuntimeOptions(args);
         new HexDump(CTX$).STM$();
     }
-    public static PROGINFO$ INFO$=new PROGINFO$("HexDump.sim","SimulaProgram HexDump",1,12,8,57,10,73,12,12,14,14,16,15,18,16,30,50,33,51,35,52,38,53,40,54,42,57,47,59,51,60,56,61,59,62,62,64,65,65,67,66,73,67,76,68,80,70,82,73,85,74,88,75,91,76,112,77);
+    public static PROGINFO$ INFO$=new PROGINFO$("HexDump.sim","SimulaProgram HexDump",1,11,8,51,10,67,12,11,14,13,16,14,18,15,30,44,33,45,35,46,38,47,40,48,42,51,47,53,51,54,56,55,59,56,62,58,65,59,67,60,73,61,76,62,80,64,82,67,85,68,88,69,91,70,112,71);
 }

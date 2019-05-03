@@ -113,7 +113,8 @@ public final class ProgramModule extends Statement {
   
 	public void doJavaCoding() { module.doJavaCoding(); }
 	public void print(final int indent) { module.print(0); }
-	public String toString() { return((module==null)?"":""+module.externalIdent); }
+//	public String toString() { return((module==null)?"":""+module.externalIdent); }
+	public String toString() { return((module==null)?"":""+module.identifier); }
 	public String getIdentifier() { return(module.identifier); }
 	
 }

@@ -82,6 +82,15 @@ public final class Util {
 		println(msg);
 	}
 
+	public static void CHECK_FILENAME(String fileName) {
+		if(fileName==null) return;
+		if(!fileName.trim().equals(fileName)) {
+			println("CHECK_FILENAME(\"" + fileName + "\") -- FAILED");
+			Option.BREAKING=true;
+			BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
+		}
+	}
+
 	public static void LIST(final String msg) {
 		TRACE("LIST", msg);
 	}

@@ -71,13 +71,13 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 *		ClassIdentifier = Identifier
 	 *
 	 *		ClassHead = [ FormalParameterPart ; [ ValuePart ] SpecificationPart ] ;
-	 *					 [ ProtectionPart ; ] [ VirtualPart ]
+	 *				    [ ProtectionPart ; ] [ VirtualPart ]
 	 *
 	 *			FormalParameterPart = "(" FormalParameter { , FormalParameter ")"
 	 *				FormalParameter = Identifier
 	 *			ValuePart = VALUE IdentifierList
-	 *			SpecificationPart = Specifier  IdentifierList ; { Specifier  IdentifierList ; }
-	 *				Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
+	 *			SpecificationPart = ClassParameterSpecifier  IdentifierList ; { ClassParameterSpecifier  IdentifierList ; }
+	 *				ClassParameterSpecifier = Type | [Type] ARRAY 
 	 *
 	 *			ProtectionPart = ProtectionSpecification { ; ProtectionSpecification }
 	 *				ProtectionSpecification = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList

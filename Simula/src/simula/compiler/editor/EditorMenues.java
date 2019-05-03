@@ -186,6 +186,9 @@ public class EditorMenues extends JMenuBar {
         popupMenu.add(newFile2); newFile2.addActionListener(actionListener);
 		popupMenu.add(openFile2); openFile2.addActionListener(actionListener);
         popupMenu.addSeparator();
+        popupMenu.add(run2); run2.setEnabled(false); run2.addActionListener(actionListener);
+        popupMenu.add(debug2); debug2.setEnabled(false); debug2.addActionListener(actionListener);
+        popupMenu.addSeparator();
         popupMenu.add(saveFile2); saveFile2.setEnabled(false); saveFile2.addActionListener(actionListener);
         popupMenu.add(saveAs2); saveAs2.setEnabled(false); saveAs2.addActionListener(actionListener);
         popupMenu.addSeparator();
@@ -205,9 +208,9 @@ public class EditorMenues extends JMenuBar {
         popupMenu.add(search2); search2.setEnabled(false); search2.addActionListener(actionListener);
         popupMenu.addSeparator();
         popupMenu.add(refresh2); refresh2.setEnabled(false); refresh2.addActionListener(actionListener);
-        popupMenu.addSeparator();
-        popupMenu.add(run2); run2.setEnabled(false); run2.addActionListener(actionListener);
-        popupMenu.add(debug2); debug2.setEnabled(false); debug2.addActionListener(actionListener);
+//        popupMenu.addSeparator();
+//        popupMenu.add(run2); run2.setEnabled(false); run2.addActionListener(actionListener);
+//        popupMenu.add(debug2); debug2.setEnabled(false); debug2.addActionListener(actionListener);
         popupMenu.addSeparator();
         popupMenu.add(autoRefresh2); autoRefresh2.setEnabled(false); autoRefresh2.addActionListener(actionListener);
         popupMenu.addSeparator();

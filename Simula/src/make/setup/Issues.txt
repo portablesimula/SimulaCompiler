@@ -1,5 +1,33 @@
 Simula Issues
 
+CLOSED Issue 22: Fra Gunnar
+Jeg brukte søkefunksjonen i SimulaEditor.
+Først så jeg ikke funnet, neste gang var den posisjonert på siste linje i vinduet.
+Setter du den i midten?
+
+Tiltak: Tror den er på midten nå.
+
+===============================================================================
+
+CLOSED Issue 21: Fra Karel
+Input file without terminating new-line.
+Siste tegn kastes. 
+
+Tiltak: Tror det er iorden nå
+
+===============================================================================
+
+OPEN Issue 20: Fra Karel
+En klasse kan ha for eksempel prosedyrer og labels som parametre. 
+
+Ved første kjøring får man feil med litt kryptisk melding.
+Prøv å kommentere vekk linje 12 for å unngå feilen og kjør.
+Hvis du så gjenoppretter linjen og eksekverer igjen, kommer ikke den opprinnelige feilmeldingen.
+
+Analyse: Klasser og Prosedyrer bruker samme BlockDeclarartion til å parse input.
+
+===============================================================================
+
 OPEN Issue 19: Fra Øystein
 Source Linjenummer er mangelfull ved Runtime-Error i statement koden til en
 separat kompilert super-klasse. Det refereres til feil source file.

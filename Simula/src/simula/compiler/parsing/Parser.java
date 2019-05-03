@@ -133,13 +133,13 @@ public final class Parser {
 		if (savedToken == null) {
 			Parser.currentToken = simulaScanner.nextToken();
 			//Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
-			if(Parser.currentToken==null)
-		    { if(!endOfFileErrorGiven) {
-		    	Util.warning("Possible scanning past END-OF-FILE");
-		      }
-		      endOfFileErrorGiven=true;
-		      Parser.currentToken = new Token(KeyWord.END);
-		    }
+			if (Parser.currentToken == null) {
+				if (!endOfFileErrorGiven) {
+					//Util.warning("Possible scanning past END-OF-FILE");
+				}
+				endOfFileErrorGiven = true;
+				Parser.currentToken = new Token(KeyWord.END);
+			}
 		} else {
 			Parser.currentToken = savedToken;
 			savedToken = null;

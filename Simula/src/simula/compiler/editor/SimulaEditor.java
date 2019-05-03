@@ -14,6 +14,8 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,6 +100,7 @@ public class SimulaEditor extends JFrame {
 
         getContentPane().setLayout(new BorderLayout()); // the BorderLayout bit makes it fill it automatically
         tabbedPane = new JTabbedPane();
+        tabbedPane.addMouseListener(mouseListener);
         tabbedPane.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				Component selected=tabbedPane.getSelectedComponent();
@@ -122,6 +125,19 @@ public class SimulaEditor extends JFrame {
         doCheckForNewVersion();
         doSelectWorkspace();
     }
+
+	// ****************************************************************
+	// *** MouseListener
+	// ****************************************************************
+    MouseListener mouseListener = new MouseListener() {
+		public void mousePressed(MouseEvent e) {}
+		public void mouseReleased(MouseEvent e) {}
+		public void mouseEntered(MouseEvent e) {}
+		public void mouseExited(MouseEvent e) {}
+		public void mouseClicked(MouseEvent e) {
+    	    if(e.getButton()==3) menuBar.popupMenu.show(tabbedPane,e.getX(),e.getY());
+    	}
+    };
     
     // ****************************************************************
     // *** processWindowEvent
@@ -136,7 +152,7 @@ public class SimulaEditor extends JFrame {
     // *** doSelectWorkspace
     // ****************************************************************
     void doSelectWorkspace() {
-    	if (Option.verbose) Util.println("SimulaEditor.doSelectWorkspace: ");
+    	if (Option.TRACING) Util.println("SimulaEditor.doSelectWorkspace: ");
     	String text="The Simula Editor uses the directory workspace to "
     			   +"\nretrieve Simula source files and save the results"
     	           +"\n"
@@ -190,14 +206,14 @@ public class SimulaEditor extends JFrame {
     // *** doCheckForNewVersion
     // ****************************************************************
     void doCheckForNewVersion() {
-    	if (Option.verbose) Util.println("SimulaEditor.doCheckForNewVersion: ");
+    	if (Option.TRACING) Util.println("SimulaEditor.doCheckForNewVersion: ");
         try {
         	String thisRevision=Global.getProperty("simula.revision","?");
         	String thisSetupDated=Global.getProperty("simula.setup.dated","?");
 	        String thisReleaseID=Global.simulaReleaseID+'R'+thisRevision;
 
 		    String remoteFileName="https://portablesimula.github.io/github.io/setup/setupProperties.xml";
-		    if (Option.verbose) Util.println("SimulaEditor.doCheckForNewVersion: Load Remote Properties from: "+remoteFileName);
+		    if (Option.TRACING) Util.println("SimulaEditor.doCheckForNewVersion: Load Remote Properties from: "+remoteFileName);
 		    URL remote = new URL(remoteFileName);
             Properties remoteProperties=new Properties();
             remoteProperties.loadFromXML(remote.openStream());

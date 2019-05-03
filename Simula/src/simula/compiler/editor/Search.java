@@ -112,7 +112,8 @@ public class Search extends JFrame {
         setSize(360,160);
 
         // center the frame on the frame
-        setLocationRelativeTo(textPane);
+//        setLocationRelativeTo(textPane);
+        setLocationRelativeTo(this);
         setVisible(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
@@ -122,16 +123,17 @@ public class Search extends JFrame {
 		selectStart = textPane.getText().toLowerCase().indexOf(textField.getText().toLowerCase());
 		if (selectStart == -1) {
 			startIndex = 0;
-			JOptionPane.showMessageDialog(null, "Could not find \"" + textField.getText() + "\"!");
+//			JOptionPane.showMessageDialog(null, "Could not find \"" + textField.getText() + "\"!");
+			JOptionPane.showMessageDialog(this, "Could not find \"" + textField.getText() + "\"!");
 			return;
 		}
 		if (selectStart == textPane.getText().toLowerCase().lastIndexOf(textField.getText().toLowerCase())) {
 			startIndex = 0;
 		}
 		int selectEnd = selectStart + textField.getText().length();
-		Util.println("FindButton: textField="+textField.getText());
-		Util.println("FindButton: selectStart="+selectStart);
-		Util.println("FindButton: selectEnd="+selectEnd);
+//		Util.println("FindButton: textField="+textField.getText());
+//		Util.println("FindButton: selectStart="+selectStart);
+//		Util.println("FindButton: selectEnd="+selectEnd);
 		textPane.select(selectStart, selectEnd);		
 	}
 	

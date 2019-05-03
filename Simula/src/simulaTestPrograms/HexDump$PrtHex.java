@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri Apr 26 11:57:49 CEST 2019
+// Simula-Beta-0.3 Compiled at Fri May 03 22:07:15 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HexDump$PrtHex extends BASICIO$ {
@@ -47,5 +47,5 @@ public final class HexDump$PrtHex extends BASICIO$ {
         EBLK();
         return(this);
     }
-    public static PROGINFO$ INFO$=new PROGINFO$("HexDump.sim","Procedure PrtHex",1,37,10,38,36,39,38,40,45,41,51,42,55,43);
+    public static PROGINFO$ INFO$=new PROGINFO$("HexDump.sim","Procedure PrtHex",1,31,10,32,36,33,38,34,45,35,51,36,55,37);
 }

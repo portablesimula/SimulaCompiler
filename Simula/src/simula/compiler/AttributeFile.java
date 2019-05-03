@@ -41,7 +41,7 @@ public final class AttributeFile {
 		String relativeAttributeFileName = program.getRelativeAttributeFileName();
 		if (relativeAttributeFileName == null) return;
 		String attributeFileName = Global.tempClassFileDir + relativeAttributeFileName;
-		if (Option.verbose)	Util.TRACE("*** BEGIN Generate SimulaAttributeFile: " + attributeFileName);
+		if (Option.verbose)	Util.message("*** BEGIN Generate SimulaAttributeFile: \"" + attributeFileName+"\"");
 		AttributeFile attributeFile = new AttributeFile(attributeFileName);
 		attributeFile.write((BlockDeclaration) program.module);
 		if (Option.TRACE_ATTRIBUTE_OUTPUT) {

@@ -42,12 +42,17 @@ public final class SimulaCompiler {
 	final String inputFileName;
 	final Reader reader; // Reader in case of SimulaEditor
 	
+	private ProgramModule programModule;
+	private String jarFileName;
+	private String mainEntry;
+	
 	public SimulaCompiler(final String inputFileName) {
 		this(inputFileName,null);
 	}
 	
 	public SimulaCompiler(final String inputFileName,Reader reader) {
 		Global.initiate();
+		Util.CHECK_FILENAME(inputFileName);
 		this.inputFileName = inputFileName;
 		if(reader==null) {
 			try { reader=new InputStreamReader(new FileInputStream(inputFileName),Global.CHARSET$);
@@ -66,10 +71,11 @@ public final class SimulaCompiler {
 		// Create Output File Path
 		String name = inputFile.getName();
 		Global.sourceFileName=name;
+		Util.CHECK_FILENAME(Global.sourceFileName);
 		Global.sourceName = name.substring(0, name.length() - 4);
 		Global.sourceFileDir=inputFile.getParent()+"/";
 		
-		if(Option.verbose) Util.message("Compiling: "+inputFileName);
+		if(Option.TRACING) Util.message("Compiling: \""+inputFileName+"\"");
 		
 		if(Option.outputDir==null)
 		     Global.outputDir=Global.sourceFileDir+"bin/";	
@@ -92,15 +98,15 @@ public final class SimulaCompiler {
 		if(Option.deleteTempFiles) tmpClassDir.deleteOnExit();
 		Global.tempClassFileDir=tmpClassDir.toString()+'/';
 
-		if(Option.verbose)
-		{ Util.message("Package Name:    "+Global.packetName);
-		  Util.message("SourceFile Name: "+Global.sourceName);
-		  Util.message("SourceFile Dir:  "+Global.sourceFileDir);
-		  Util.message("CurrentWorkspace "+Global.currentWorkspace);
-		  Util.message("TempDir .Java:   "+Global.tempJavaFileDir);
-		  Util.message("TempDir .Class:  "+Global.tempClassFileDir);
-		  Util.message("SimulaRtsLib:    "+Global.simulaRtsLib);
-		  Util.message("OutputDir:       "+Global.outputDir);
+		if(Option.TRACING)
+		{ Util.message("Package Name:    \""+Global.packetName+"\"");
+		  Util.message("SourceFile Name: \""+Global.sourceName+"\"");
+		  Util.message("SourceFile Dir:  \""+Global.sourceFileDir+"\"");
+		  Util.message("CurrentWorkspace \""+Global.currentWorkspace+"\"");
+		  Util.message("TempDir .Java:   \""+Global.tempJavaFileDir+"\"");
+		  Util.message("TempDir .Class:  \""+Global.tempClassFileDir+"\"");
+		  Util.message("SimulaRtsLib:    \""+Global.simulaRtsLib+"\"");
+		  Util.message("OutputDir:       \""+Global.outputDir+"\"");
 		  Util.message("Java version     "+System.getProperty("java.version"));
 		  Util.message("Java vendor      "+System.getProperty("java.vendor"));
 		  Util.message("OS name          "+System.getProperty("os.name"));
@@ -144,10 +150,10 @@ public final class SimulaCompiler {
 			// ***************************************************************
 			Global.javaModules=new Vector<JavaModule>();
 			Parser.open(reader);
-			ProgramModule program = new ProgramModule();
-			if (Option.verbose) {
-				Util.message("END Parsing, resulting Program: "+program);
-				if (Option.TRACE_PARSE && program != null) program.print(0);
+			programModule = new ProgramModule();
+			if (Option.TRACING) {
+				Util.message("END Parsing, resulting Program: \""+programModule+"\"");
+				if (Option.TRACE_PARSE && programModule != null) programModule.print(0);
 			}
 			Parser.close(); Global.duringParsing=false;
 			if(Util.nError>0) {
@@ -157,12 +163,12 @@ public final class SimulaCompiler {
 			// ***************************************************************
 			// *** Semantic Checker
 			// ***************************************************************
-			if (Option.verbose)	Util.message("BEGIN Semantic Checker");
+			if (Option.TRACING)	Util.message("BEGIN Semantic Checker");
 			//program.print(0);
-			program.doChecking();
-			if (Option.verbose) {
-				Util.message("END Semantic Checker: "+program);
-				if (Option.TRACE_CHECKER_OUTPUT && program != null)	program.print(0);
+			programModule.doChecking();
+			if (Option.TRACING) {
+				Util.message("END Semantic Checker: \""+programModule+"\"");
+				if (Option.TRACE_CHECKER_OUTPUT && programModule != null)	programModule.print(0);
 			}
 			if(Util.nError>0) {
 				Util.message("Compiler terminated after "+Util.nError+" errors during semantic checking");
@@ -171,25 +177,26 @@ public final class SimulaCompiler {
 			// ***************************************************************
 			// *** Generate .java intermediate code
 			// ***************************************************************
-			if (Option.verbose) Util.message("BEGIN Generate .java Output Code"); 
-			program.doJavaCoding();
-			if (Option.verbose)	{
+			if (Option.TRACING) Util.message("BEGIN Generate .java Output Code"); 
+			programModule.doJavaCoding();
+			if (Option.TRACING)	{
 				Util.message("END Generate .java Output Code");
 			    for(JavaModule module:Global.javaModules)
 			      	Util.LIST(module.javaOutputFileName);
 			}
 			
-			if (Option.verbose) Util.message("BEGIN Possible Generate AttributeFile");
-			AttributeFile.write(program);
+			if (Option.TRACING) Util.message("BEGIN Possible Generate AttributeFile");
+			AttributeFile.write(programModule);
 			
 			// ***************************************************************
 			// *** CALL JAVA COMPILER
 			// ***************************************************************
 			String classPath=Global.simulaRtsLib;
-			for(String jarFileName:Global.externalJarFiles)
-//				  classPath=classPath+";"+jarFileName;
-				  classPath=classPath+";"+(jarFileName.trim());
-			
+			for(String jar:Global.externalJarFiles) {
+				Util.CHECK_FILENAME(jar);
+//				classPath=classPath+";"+jar;
+				classPath=classPath+";"+(jar.trim());
+			}
 			//callJavaCompiler(classPath);
 			if(Global.USE_JAVA_SYSTEM_COMPILER) {
 				JavaCompiler compiler= ToolProvider.getSystemJavaCompiler();
@@ -212,6 +219,7 @@ public final class SimulaCompiler {
 			//repairClassFiles(classDir);
 			ArrayList<String> files=classFiles(classDir,new ArrayList<String>());
 			for(String classFileName:files) {
+				Util.CHECK_FILENAME(classFileName);
 				//Util.println("SimulaCompiler.doCompile: Repair: "+classFileName);
 				new ByteCodeEngineering().doRepairSingleByteCode(classFileName);
 			}
@@ -228,20 +236,21 @@ public final class SimulaCompiler {
 			// ***************************************************************
 			// *** CRERATE .jar FILE  INLINE
 			// ***************************************************************
-			String jarFile=createJarFile(program);
+			String jarFile=createJarFile(programModule);
 			if(Option.TRACE_JARING)	{
 				Util.println("List .jar File: "+jarFile);
 			    execute("jar.exe -tvf "+jarFile);
 			}
+			if(Option.verbose) printSummary();
 			
 			// ***************************************************************
 			// *** EXECUTE .jar FILE
 			// ***************************************************************
 			// java -jar C:/WorkSpaces/SimulaCompiler/Simula/bin/adHoc00.jar
-			if(!program.isExecutable() || Option.noExecution) {
-				if(Option.verbose) Util.message("No Execution of .jar File: "+jarFile);
+			if(!programModule.isExecutable() || Option.noExecution) {
+				if(Option.TRACING) Util.message("Separate Compilation - No Execution of .jar File: "+jarFile);
 			} else {
-				if(Option.verbose) Util.message("Execute .jar File");
+				if(Option.TRACING) Util.message("Execute .jar File");
 			
 				String opt="";
 				//if(Global.simulaRtsLib!=null) opt=opt+"-classpath "+Global.simulaRtsLib;
@@ -254,7 +263,7 @@ public final class SimulaCompiler {
 			  
 				//Util.BREAK("SimulaCompiler.doCompile: EXECUTE cmd="+cmd);
 				int exitValue3=execute(cmd);
-				if (Option.verbose)
+				if (Option.TRACING)
 					Util.message("END Execute .jar File. Exit value="+exitValue3);
 			}
 			if(Option.deleteTempFiles) emptyTempClassFileDir();
@@ -274,6 +283,7 @@ public final class SimulaCompiler {
 				classFiles(fileEntry,files);
 			} else {
 				String classFileName = fileEntry.getPath();
+				Util.CHECK_FILENAME(classFileName);
 				//Util.println(classFileName);
 				if(classFileName.endsWith(".class")) {
 					if(!files.contains(classFileName)) files.add(classFileName);
@@ -282,49 +292,6 @@ public final class SimulaCompiler {
 		}
 		return(files);
 	}
-	
-//	// ***************************************************************
-//	// *** CALL JAVA COMPILER
-//	// ***************************************************************
-//	private void callJavaCompiler(final JavaCompiler compiler,final String classPath) throws IOException {
-//		if (Option.verbose)	Util.message("Call Java System Compiler");
-//		Vector<String> arguments = new Vector<String>();
-//		if (Option.TRACE_JAVAC) {
-//			arguments.add("-version");
-//			arguments.add("-verbose");
-//		}
-//		if (Option.verbose)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=" + classPath);
-//		arguments.add("-classpath");
-//		arguments.add(classPath);
-//		arguments.add("-d");
-//		arguments.add(Global.tempClassFileDir); // Specifies output directory.
-//		if (Option.noJavacWarnings)
-//			arguments.add("-nowarn");
-//		// arguments.add("-Xlint:unchecked");
-//		for (JavaModule module : Global.javaModules)
-//			arguments.add(module.javaOutputFileName); // Add .jave Files
-//
-//		// java.home=C:\Program Files\Java\jre1.8.0_161
-//		if (Option.TRACE_JAVAC)
-//			Util.println("Compiler=" + compiler);
-//		if (compiler == null)
-//			Util.error("SimulaCompiler.callJavaSystemCompiler: ToolProvider.getSystemJavaCompiler() returns null");
-//		int nArg = arguments.size();
-//		String[] args = new String[nArg];
-//		arguments.toArray(args);
-//
-//		if (Option.TRACE_JAVAC) {
-//			for (int i = 0; i < args.length; i++)
-//				Util.println("Compiler'args[" + i + "]=" + args[i]);
-//		}
-//
-//		int exitValue = compiler.run(null, null, null, args);
-//		if (Option.verbose) {
-//			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
-//			for (JavaModule module : Global.javaModules)
-//				Util.LIST(module.getClassOutputFileName());
-//		}
-//	}
 	
 	// ***************************************************************
 	// *** CALL JAVA SYSTEM COMPILER
@@ -336,7 +303,7 @@ public final class SimulaCompiler {
 			arguments.add("-version");
 			//arguments.add("-verbose");
 		}
-		if (Option.verbose)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=" + classPath);
+		if (Option.TRACING)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=\"" + classPath+"\"");
 		arguments.add("-classpath"); arguments.add(classPath);
 		arguments.add("-d"); arguments.add(Global.tempClassFileDir); // Specifies output directory.
 		if (Option.noJavacWarnings)
@@ -355,9 +322,9 @@ public final class SimulaCompiler {
 			for (int i = 0; i < args.length; i++)
 				Util.println("Compiler'args[" + i + "]=" + args[i]);
 		}
-		if (Option.verbose)	Util.message("Call Java System Compiler");
+		if (Option.TRACING)	Util.message("Call Java System Compiler");
 		int exitValue = compiler.run(null, null, null, args);
-		if (Option.verbose) {
+		if (Option.TRACING) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
 			for (JavaModule module : Global.javaModules)
 				Util.LIST(module.getClassOutputFileName());
@@ -378,7 +345,7 @@ public final class SimulaCompiler {
 			cmd.append(" -version");
 			//cmd.append(" -verbose");
 		}
-		if (Option.verbose)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=" + classPath);
+		if (Option.TRACING)	Util.println("SimulaCompiler.callJavacCompiler: classPath=\"" + classPath+"\"");
 		cmd.append(" -classpath ").append(classPath);
 		// *** TODO: Hvis tempClassFileDir ikke finnes - CREATE !
 		cmd.append(" -d ").append(Global.tempClassFileDir); // Specifies output directory.
@@ -391,9 +358,9 @@ public final class SimulaCompiler {
 			Util.println("SimulaCompiler.doCompile JAVAC: arguments=" + cmd);
 			//				Util.println("SimulaCompiler.doCompile JAVAC: classOutputDir=" + classOutputDir);
 		}
-		if (Option.verbose)	Util.message("Call Java Command Line Compiler");
+		if (Option.TRACING)	Util.message("Call Java Command Line Compiler");
 		int exitValue = execute("javac.exe"+cmd);
-		if (Option.verbose) {
+		if (Option.TRACING) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
 			for (JavaModule module : Global.javaModules)
 				Util.LIST(module.getClassOutputFileName());
@@ -404,25 +371,26 @@ public final class SimulaCompiler {
 	// *** CREATE .jar FILE
 	// ***************************************************************
 	private String createJarFile(final ProgramModule program) throws IOException {
-		if (Option.verbose)	Util.message("BEGIN Create .jar File");
-		// String jarFileName=Global.outputDir+Global.sourceName+".jar ";
-//		String jarFileName = Global.outputDir + Global.sourceName + ".jar";
-		String jarFileName = Global.outputDir + program.getIdentifier() + ".jar";
+		if (Option.TRACING)	Util.message("BEGIN Create .jar File");
+		jarFileName = Global.outputDir + program.getIdentifier() + ".jar";
 
 		if (!program.isExecutable()) {
 			// Util.BREAK("SimulaCompiler.createJarFile: program="+program);
 //			jarFileName = Global.outputDir + program.getIdentifier() + ".jar ";
 			Util.warning("Separate Compiled Module is written to: \"" + jarFileName+"\"");
 		}
+		Util.CHECK_FILENAME(jarFileName);
 		File jarFile = new File(jarFileName);
 		jarFile.getParentFile().mkdirs();
 		Manifest manifest = new Manifest();
-		String mainEntry = Global.packetName + '/' + program.getIdentifier();
+		mainEntry = Global.packetName + '/' + program.getIdentifier();
 		mainEntry = mainEntry.replace('/', '.');
-		if (Option.verbose)
-			Util.message("Output " + jarFile + " MANIFEST'mainEntry=" + mainEntry);
+		Util.CHECK_FILENAME(mainEntry);
+		if (Option.TRACING)
+			Util.message("Output " + jarFile + " MANIFEST'mainEntry=\"" + mainEntry+"\"");
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		String relativeAttributeFileName = program.getRelativeAttributeFileName();
+		Util.CHECK_FILENAME(relativeAttributeFileName);
 		if (relativeAttributeFileName != null)
 			manifest.getMainAttributes().putValue("SIMULA-INFO", relativeAttributeFileName);
 		else
@@ -439,7 +407,7 @@ public final class SimulaCompiler {
 			// add(target,new File(Global.simulaRtsLib+"simula/compiler/utilities/Option.class"),Global.simulaRtsLib.length());
 		}
 		target.close();
-		if (Option.verbose)	Util.message("END Create .jar File: " + jarFile);
+		if (Option.TRACING)	Util.message("END Create .jar File: " + jarFile);
 		return (jarFile.toString());
 	}
 
@@ -480,9 +448,34 @@ public final class SimulaCompiler {
 	}
 	
 	// ***************************************************************
+	// *** PRINT SUMMARY
+	// ***************************************************************
+	private void printSummary() {
+		Util.message("------------  SUMMARY AFTER COMPILATION  ------------");
+		Util.message("Package Name:    \""+Global.packetName+"\"");
+		Util.message("SourceFile Name: \""+Global.sourceName+"\"");
+		Util.message("SourceFile Dir:  \""+Global.sourceFileDir+"\"");
+		Util.message("CurrentWorkspace \""+Global.currentWorkspace+"\"");
+		Util.message("TempDir .Java:   \""+Global.tempJavaFileDir+"\"");
+		Util.message("TempDir .Class:  \""+Global.tempClassFileDir+"\"");
+		Util.message("SimulaRtsLib:    \""+Global.simulaRtsLib+"\"");
+		Util.message("OutputDir:       \""+Global.outputDir+"\"");
+		
+		
+		if (!programModule.isExecutable()) {
+			Util.message("Separate Compiled "+programModule.module.blockKind+" is written to: \"" + jarFileName+"\"");
+			Util.message("Rel Attr.File:   \""+programModule.getRelativeAttributeFileName()+"\"");
+		} else {
+			Util.message("Resulting File:  \"" + jarFileName+"\"");
+			Util.message("Main Entry:      \"" + mainEntry+"\"");
+		}
+	}
+	
+	// ***************************************************************
 	// *** LIST .class file
 	// ***************************************************************
 	public static void doListClassFile(final String classFileName) {
+		Util.CHECK_FILENAME(classFileName);
 		String command = "javap -c -l -p -s -verbose " + classFileName;
 		try { execute(command);
 		} catch (IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
@@ -493,7 +486,7 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	public static int execute(final String command) throws IOException {
 		Runtime runtime = Runtime.getRuntime();
-		if (Option.verbose)	Util.message("Execute: " + command);
+		if (Option.TRACING)	Util.message("Execute: " + command);
 		String cmd = command.trim() + '\n';
 		Process process = runtime.exec(cmd);
 		InputStream err = process.getErrorStream();
@@ -518,7 +511,7 @@ public final class SimulaCompiler {
 //			while(err.available() > 0) error.append((char)err.read());
 //			while(inp.available() > 0) output.append((char)inp.read());
 //		}
-//		if (Option.verbose) {
+//		if (Option.TRACING) {
 ////			if(error.length()>0) Util.message("Error: " + error.toString());
 //			if(error.length()>0) Util.error("\""+error.toString()+"\"");
 //			if(output.length()>0) Util.message("Output: " + output.toString());
