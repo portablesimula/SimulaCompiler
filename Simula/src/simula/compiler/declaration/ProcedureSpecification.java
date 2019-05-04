@@ -14,7 +14,6 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.Vector;
 
-import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -47,7 +46,7 @@ public final class ProcedureSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	public ProcedureSpecification(final String identifier, final Type type, final Vector<Parameter> parameterList) {
+	private ProcedureSpecification(final String identifier, final Type type, final Vector<Parameter> parameterList) {
 		this.identifier = identifier;
 		this.type = type;
 		this.parameterList = parameterList;
@@ -66,21 +65,22 @@ public final class ProcedureSpecification implements Externalizable {
 	 *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead EmptyBody
 	 *     
 	 * ProcedureHead
-	 *     = [ FormalParameterPart ; [ ModePart ]
-	 *         specification-part  ] ;
+	 *     = [ FormalParameterPart ; [ ModePart ] ProcedureSpecificationPart  ] ;
 	 *         
-	* ProcedureBody = Statement
-	* ProcedureIdentifier = Identifier
+	 * EmptyBody = DummyStatement
+	 * 
+	 * ProcedureIdentifier = Identifier
+	 * 
 	 * </pre>
 	 */
 	public static ProcedureSpecification doParseProcedureSpecification(final Type type) {
-		BlockKind blockKind = (Option.standardClass) ? BlockKind.MemberMethod : BlockKind.Procedure; // TODO: CHECK DETTE
-		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
-		block.type = type;
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
-		BlockParser.doParseProcedureDeclaration(block);
-		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
-		// Debug.BREAK("END ProcedureDeclaration: ");
+//		BlockKind blockKind = (Option.standardClass) ? BlockKind.MemberMethod : BlockKind.Procedure; // TODO: CHECK DETTE
+//		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
+//		block.type = type;
+//		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
+//		BlockParser.doParseProcedureDeclaration(block);
+		ProcedureDeclaration block = ProcedureDeclaration.doParseProcedureDeclaration(type);
+		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureSpecification: " + block);
 		Global.currentScope = block.declaredIn;
 		ProcedureSpecification procedureSpecification = new ProcedureSpecification(block.identifier, type, block.parameterList);
 		return (procedureSpecification);

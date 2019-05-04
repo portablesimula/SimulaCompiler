@@ -220,7 +220,7 @@ public final class SimulaScanner {
     }
     private Token identifierToken(final String name) {
     	Token token=newToken(KeyWord.IDENTIFIER,name);
-//    	if(Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) Util.error("Missplaced identifier "+name+" directly after "+Parser.prevToken);
+//    	if(Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) Util.error("Misplaced identifier "+name+" directly after "+Parser.prevToken);
     	return(token);
     }
 	private Token scanIdentifier() {

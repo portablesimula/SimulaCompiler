@@ -68,14 +68,14 @@ public final class Parser {
 
 	public static boolean skipMissplacedSymbol(final KeyWord s) {
 		if (Parser.accept(s)) {
-			Util.error("Missplaced symbol: "+s+" -- Ignored");
+			Util.error("Misplaced symbol: "+s+" -- Ignored");
 			return (true);
 		}
 		return (false);
 	}
 
 	public static void skipMissplacedCurrentSymbol() {
-		Util.error("Missplaced symbol: "+Parser.currentToken+" -- Ignored");
+		Util.error("Misplaced symbol: "+Parser.currentToken+" -- Ignored");
 		nextSymb();
 	}
 	
@@ -147,7 +147,7 @@ public final class Parser {
 		}
 		if(Parser.currentToken.getKeyWord()==KeyWord.IDENTIFIER)
 			if(Parser.prevToken!=null && Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) {
-				Util.error("Missplaced identifier "+Parser.currentToken+" directly after "+Parser.prevToken+" - Ignored");
+				Util.error("Misplaced identifier "+Parser.currentToken+" directly after "+Parser.prevToken+" - Ignored");
 		        nextSymb();
 			}
 	}

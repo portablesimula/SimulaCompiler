@@ -17,8 +17,10 @@ import java.util.Vector;
 import simula.compiler.JavaModule;
 import simula.compiler.CodeLine;
 import simula.compiler.parsing.Parser;
+import simula.compiler.statement.InnerStatement;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -44,7 +46,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	public ClassDeclaration(final String identifier,final  BlockKind blockKind) {
+	private ClassDeclaration(final String identifier,final  BlockKind blockKind) {
 		super(identifier);
 		this.blockKind = blockKind;
 	}
@@ -73,9 +75,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 *		ClassHead = [ FormalParameterPart ; [ ValuePart ] SpecificationPart ] ;
 	 *				    [ ProtectionPart ; ] [ VirtualPart ]
 	 *
-	 *			FormalParameterPart = "(" FormalParameter { , FormalParameter ")"
+	 *			FormalParameterPart = "(" FormalParameter { , FormalParameter } ")"
 	 *				FormalParameter = Identifier
+	 *
 	 *			ValuePart = VALUE IdentifierList
+	 *
 	 *			SpecificationPart = ClassParameterSpecifier  IdentifierList ; { ClassParameterSpecifier  IdentifierList ; }
 	 *				ClassParameterSpecifier = Type | [Type] ARRAY 
 	 *
@@ -101,8 +105,62 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		// Util.BREAK("ClassDeclaration.doParseClassDeclaration: set hasLocalClasses in="+block.declaredIn);
 		if (block.prefix == null)
 			block.prefix = StandardClass.CLASS.identifier;
+		block.modifyIdentifier(expectIdentifier());
+		// Util.BREAK("BEGIN BlockParser: "+block);
+		// if(Option.TRACE_PARSE) Parser.BREAK("Begin BlockParser");
+		if (Parser.accept(KeyWord.BEGPAR)) {
+			do { // ParameterPart = Parameter ; { Parameter ; }
+				block.addParameter(new Parameter(expectIdentifier()));
+			} while (Parser.accept(KeyWord.COMMA));
+			Parser.expect(KeyWord.ENDPAR);
+			Parser.expect(KeyWord.SEMICOLON);
+			// ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
+			// ValuePart = VALUE IdentifierList ;
+			// NamePart = NAME IdentifierList ;
+			if (Parser.accept(KeyWord.VALUE)) {
+				expectModeList(block, block.parameterList, Parameter.Mode.value);
+				Parser.expect(KeyWord.SEMICOLON);
+			}
+			// ParameterPart = Parameter ; { Parameter ; }
+			// Parameter = Specifier IdentifierList
+			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
+			while (acceptClassParameterSpecifications(block, block.parameterList)) {
+				Parser.expect(KeyWord.SEMICOLON);
+			}
+		} else
+			Parser.expect(KeyWord.SEMICOLON);
 
-		BlockParser.doParse(block);
+		// ProtectionPart = ProtectionParameter { ; ProtectionParameter }
+		// ProtectionParameter = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
+		// | PROTECTED IdentifierList | PROTECTED HIDDEN IdentifierList
+		while (true) {
+			if (Parser.accept(KeyWord.HIDDEN)) {
+				if (Parser.accept(KeyWord.PROTECTED))
+					expectHiddenProtectedList(block, true, true);
+				else
+					expectHiddenProtectedList(block, true, false);
+			} else if (Parser.accept(KeyWord.PROTECTED)) {
+				if (Parser.accept(KeyWord.HIDDEN))
+					expectHiddenProtectedList(block, true, true);
+				else
+					expectHiddenProtectedList(block, false, true);
+			} else
+				break;
+		}
+		// VirtualPart = VIRTUAL: virtual-specification-part
+		// VirtualParameterPart = VirtualParameter ; { VirtualParameter ; }
+		// VirtualParameter = VirtualSpecifier IdentifierList
+		// VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
+		if (Parser.accept(KeyWord.VIRTUAL))
+			VirtualSpecification.parseInto(block);
+
+		if (Parser.accept(KeyWord.BEGIN))
+			doParseBody(block);
+		else {
+			block.statements.add(Statement.doParse());
+			block.statements.add(new InnerStatement()); // Implicit INNER
+		}
+
 		block.lastLineNumber = Global.sourceLineNumber;
 
 		// Util.BREAK("ClassDeclaration.doParseClassDeclaration: set Type="+Type.Ref(block.identifier));
@@ -111,6 +169,105 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		if (Option.TRACE_PARSE)	Util.TRACE("END ClassDeclaration: " + block);
 		Global.currentScope = block.declaredIn;
 		return (block);
+	}
+	
+	// ***********************************************************************************************
+	// *** PARSING: expectModeList
+	// ***********************************************************************************************
+	private static void expectModeList(final BlockDeclaration block, final Vector<Parameter> parameterList,final Parameter.Mode mode) {
+		do {
+			String identifier = expectIdentifier();
+			Parameter parameter = null;
+			for (Parameter par : parameterList)
+				if (identifier.equalsIgnoreCase(par.identifier)) {
+					parameter = par;
+					break;
+				}
+			if (parameter == null) {
+				Util.error("Identifier " + identifier + " is not defined in this scope");
+				parameter = new Parameter(identifier);
+			}
+			parameter.setMode(mode);
+		} while (Parser.accept(KeyWord.COMMA));
+	}
+	
+	// ***********************************************************************************************
+	// *** PARSING: acceptClassParameterSpecifications
+	// ***********************************************************************************************
+	private static boolean acceptClassParameterSpecifications(final BlockDeclaration block,final Vector<Parameter> parameterList) {
+		// ClassParameter = ClassParameterSpecifier IdentifierList
+		// ClassParameterSpecifier = Type | [Type] ARRAY 
+		if (Option.TRACE_PARSE)
+			Parser.TRACE("Parse ParameterSpecifications");
+		Type type;
+		Parameter.Kind kind = Parameter.Kind.Simple;
+		type = acceptType();
+		if (Parser.accept(KeyWord.ARRAY)) {
+			if (type == null) {
+				// See Simula Standard 5.2 -
+				// If no type is given the type real is understood.
+				type=Type.Real;
+			}
+			kind = Parameter.Kind.Array;
+		}
+		if (type == null) return (false);
+		do {
+			String identifier = expectIdentifier();
+			Parameter parameter = null;
+			for (Parameter par : parameterList)
+				if (identifier.equalsIgnoreCase(par.identifier)) { parameter = par;	break; }
+			if (parameter == null) {
+				Util.error("Identifier " + identifier + " is not defined in this scope");
+				parameter = new Parameter(identifier);
+			}
+			parameter.setTypeAndKind(type, kind);
+		} while (Parser.accept(KeyWord.COMMA));
+		return (true);
+	}
+
+	// ***********************************************************************************************
+	// *** PARSING: expectHiddenProtectedList
+	// ***********************************************************************************************
+	private static boolean expectHiddenProtectedList(final ClassDeclaration block, final boolean hidden,final boolean prtected) {
+		// Util.BREAK("BlockParser.expectHiddenProtectedList: Hidden="+hidden+", Protected="+prtected);
+		do {
+			String identifier = expectIdentifier();
+			if (hidden)
+				block.hiddenList.add(new HiddenSpecification(block, identifier));
+			if (prtected) {
+				block.protectedList.add(new ProtectedSpecification(block, identifier));
+				// Util.BREAK("Class "+block.identifier+" PROTECTED-LIST="+block.protectedList);
+			}
+		} while (Parser.accept(KeyWord.COMMA));
+		// Util.BREAK("BlockParser.expectHiddenProtectedList: HiddenList="+block.hiddenList);
+		// Util.BREAK("BlockParser.expectHiddenProtectedList: ProtectedList="+block.protectedList);
+		Parser.expect(KeyWord.SEMICOLON);
+		return (true);
+	}
+
+	// ***********************************************************************************************
+	// *** PARSING: doParseBody
+	// ***********************************************************************************************
+	private static void doParseBody(final BlockDeclaration block) {
+		Statement stm;
+		// Debug.BREAK("BEGIN Block: "+this.edScopeChain());
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse Block");
+		while (Declaration.parseDeclaration(block.declarationList)) {
+			Parser.accept(KeyWord.SEMICOLON);
+		}
+
+		Statement inner = new InnerStatement();
+		Vector<Statement> stmList = block.statements;
+		while (!Parser.accept(KeyWord.END)) {
+			stm = Statement.doParse();
+			if (stm != null) stmList.add(stm);
+			if (Parser.accept(KeyWord.INNER)) {
+				if (inner == null) Util.error("Max one INNER per Block");
+				else stmList.add(inner);
+				inner = null;
+			}
+		}
+		if (inner != null) stmList.add(inner); // Implicit INNER
 	}
 
 	// ***********************************************************************************************

@@ -82,7 +82,8 @@ public final class TestCompiler {
 		// String name="/error/issue13.sim"; // Tillater subklasser på dypere blokknivå.
 		// String name="/error/issue16.sim"; // Problemer med å evaluere Constant-expression
 		// String name="/error/issue17.sim"; // Dårlig feilmelding ved ulovlig GOTO.
-		 String name="/error/issue20.sim"; // Label og Proceure som parameter til en Klasse
+		// String name="/error/issue20.sim"; // Label og Proceure som parameter til en Klasse
+		// String name="/error/issue23.sim"; // no-type Array som parameter
 		// String name="/error/issue21.sim"; // Ingen new-line til slutt i file
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
@@ -152,7 +153,7 @@ public final class TestCompiler {
 		// String name="/simple/TextSamples.sim";
 		// String name="/simple/TextSamples1.sim";
 		// String name="/simple/VariableByName.sim";
-		// String name="/simple/VirtualLabel.sim";   //  ===> TIL TESTBATCH 
+		 String name="/simple/VirtualLabel.sim";   //  ===> TIL TESTBATCH 
 		// String name="/simple/VirtualLabel2.sim";   //  ===> TIL TESTBATCH 
 		// String name="/simple/VirtualLabel3.sim";   //  ===> TIL TESTBATCH 
 		// String name="/simple/VirtualSample.sim";   //  ===> TIL TESTBATCH 

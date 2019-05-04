@@ -17,6 +17,7 @@ import simula.compiler.JavaModule;
 import simula.compiler.parsing.Parser;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
@@ -51,12 +52,25 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	 * ProcedureDeclaration
 	 *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead ProcedureBody
 	 *     
-	 * ProcedureHead
-	 *     = [ FormalParameterPart ; [ ModePart ]
-	 *         specification-part  ] ;
-	 *         
-	 * ProcedureBody = Statement
 	 * ProcedureIdentifier = Identifier
+	 * 
+	 * ProcedureHead
+	 *     = ProcedureIdentifier [ FormalParameterPart ; [ ModePart ] ProcedureSpecificationPart  ] ;
+	 *         
+	 * ProcedureHead = [ FormalParameterPart ; [ ModePart ] ParameterPart  ] ;
+	 *
+	 *	FormalParameterPart = "(" FormalParameter { , FormalParameter } ")"
+	 *		FormalParameter = Identifier
+	 *	
+	 *	ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
+	 *		ValuePart = VALUE IdentifierList ;
+	 *		NamePart  = NAME  IdentifierList ;
+	 *	
+	 *	ProcedureSpecificationPart = ProcedureSpecifier IdentifierList ; { ProcedureSpecifier IdentifierList ; }
+	 *		ProcedureSpecifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
+	 *
+	 * ProcedureBody = Statement
+	 * 
 	 * </pre>
 	 */
 	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
@@ -64,12 +78,126 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
 		block.type = type;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
-		BlockParser.doParseProcedureDeclaration(block);
+		block.modifyIdentifier(expectIdentifier());
+		// Util.BREAK("BEGIN BlockParser: "+block);
+		// if(Option.TRACE_PARSE) Parser.BREAK("Begin BlockParser");
+		if (Parser.accept(KeyWord.BEGPAR)) {
+			do { // ParameterPart = Parameter ; { Parameter ; }
+				block.addParameter(new Parameter(expectIdentifier()));
+			} while (Parser.accept(KeyWord.COMMA));
+			Parser.expect(KeyWord.ENDPAR);
+			Parser.expect(KeyWord.SEMICOLON);
+			// ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
+			// ValuePart = VALUE IdentifierList ;
+			// NamePart = NAME IdentifierList ;
+			if (Parser.accept(KeyWord.VALUE)) {
+				expectModeList(block, block.parameterList, Parameter.Mode.value);
+				Parser.expect(KeyWord.SEMICOLON);
+			}
+			if (Parser.accept(KeyWord.NAME)) {
+				expectModeList(block, block.parameterList, Parameter.Mode.name);
+				Parser.expect(KeyWord.SEMICOLON);
+			}
+			if (Parser.accept(KeyWord.VALUE)) {
+				expectModeList(block, block.parameterList, Parameter.Mode.value);
+				Parser.expect(KeyWord.SEMICOLON);
+			}
+			// ParameterPart = Parameter ; { Parameter ; }
+			// Parameter = Specifier IdentifierList
+			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
+			while (acceptProcedureParameterSpecifications(block, block.parameterList)) {
+				Parser.expect(KeyWord.SEMICOLON);
+			}
+		} else Parser.expect(KeyWord.SEMICOLON);
+		if (Parser.accept(KeyWord.BEGIN))
+			doParseBody(block);
+		else block.statements.add(Statement.doParse());
+
+
 		block.lastLineNumber = Global.sourceLineNumber;
 		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
 		// Debug.BREAK("END ProcedureDeclaration: ");
 		Global.currentScope = block.declaredIn;
 		return (block);
+	}
+
+	// ***********************************************************************************************
+	// *** PARSING: expectModeList
+	// ***********************************************************************************************
+	private static void expectModeList(final BlockDeclaration block, final Vector<Parameter> parameterList,final Parameter.Mode mode) {
+		do {
+			String identifier = expectIdentifier();
+			Parameter parameter = null;
+			for (Parameter par : parameterList)
+				if (identifier.equalsIgnoreCase(par.identifier)) {
+					parameter = par;
+					break;
+				}
+			if (parameter == null) {
+				Util.error("Identifier " + identifier + " is not defined in this scope");
+				parameter = new Parameter(identifier);
+			}
+			parameter.setMode(mode);
+		} while (Parser.accept(KeyWord.COMMA));
+	}
+
+	// ***********************************************************************************************
+	// *** PARSING: acceptProcedureParameterSpecifications
+	// ***********************************************************************************************
+	private static boolean acceptProcedureParameterSpecifications(final BlockDeclaration block,final Vector<Parameter> parameterList) {
+		// ProcedureParameter = ProcedureParameterSpecifier IdentifierList
+		// ProcedureParameterSpecifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ParameterSpecifications");
+		Type type;
+		Parameter.Kind kind = Parameter.Kind.Simple;
+		if (Parser.accept(KeyWord.SWITCH)) {
+			type = Type.Label;
+			kind = Parameter.Kind.Procedure;
+		} else if (Parser.accept(KeyWord.LABEL))
+			type = Type.Label;
+		else {
+			type = acceptType();
+			//if (type == null) return (false);
+			if (Parser.accept(KeyWord.ARRAY)) {
+				if (type == null) {
+					// See Simula Standard 5.2 -
+					// If no type is given the type real is understood.
+					type=Type.Real;
+				}
+				kind = Parameter.Kind.Array;
+			}
+			else if (Parser.accept(KeyWord.PROCEDURE)) kind = Parameter.Kind.Procedure;
+			else if(type == null) return (false);
+		}
+		do {
+			String identifier = expectIdentifier();
+			Parameter parameter = null;
+			for (Parameter par : parameterList)
+				if (identifier.equalsIgnoreCase(par.identifier)) { parameter = par;	break; }
+			if (parameter == null) {
+				Util.error("Identifier " + identifier + " is not defined in this scope");
+				parameter = new Parameter(identifier);
+			}
+			parameter.setTypeAndKind(type, kind);
+		} while (Parser.accept(KeyWord.COMMA));
+		return (true);
+	}
+
+	// ***********************************************************************************************
+	// *** PARSING: doParseBody
+	// ***********************************************************************************************
+	private static void doParseBody(final BlockDeclaration block) {
+		Statement stm;
+		// Debug.BREAK("BEGIN Block: "+this.edScopeChain());
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse Block");
+		while (Declaration.parseDeclaration(block.declarationList)) {
+			Parser.accept(KeyWord.SEMICOLON);
+		}
+		Vector<Statement> stmList = block.statements;
+		while (!Parser.accept(KeyWord.END)) {
+			stm = Statement.doParse();
+			if (stm != null) stmList.add(stm);
+		}
 	}
 
 	// ***********************************************************************************************

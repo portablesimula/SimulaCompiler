@@ -1,5 +1,11 @@
 Simula Issues
 
+OPEN Issue 23: Fra Karel
+Untyped array parameter til procedure. Parser failed
+Syntax i Simula Standard er feil.
+
+===============================================================================
+
 CLOSED Issue 22: Fra Gunnar
 Jeg brukte søkefunksjonen i SimulaEditor.
 Først så jeg ikke funnet, neste gang var den posisjonert på siste linje i vinduet.
