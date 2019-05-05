@@ -118,7 +118,7 @@ public final class ExternalDeclaration extends Declaration {
 //				 jarFileName=Global.outputDir+identifier+".jar ";
 				 jarFileName=Global.outputDir+identifier+".jar";
 			else jarFileName=externalIdentifier.getIdentifier();
-			Type moduleType=readAttributeFile(jarFileName,declarationList);
+			Type moduleType=readAttributeFile(identifier,jarFileName,declarationList);
 			if(moduleType!=expectedType) {
 				//Util.BREAK("ExternalDeclaration.doParse: expectedType="+expectedType);
 				//Util.BREAK("ExternalDeclaration.doParse: moduleType="+moduleType);
@@ -136,7 +136,7 @@ public final class ExternalDeclaration extends Declaration {
 	}
 
 
-	private static Type readAttributeFile(final String jarFileName,final Vector<Declaration> declarationList) {
+	private static Type readAttributeFile(final String identifier,final String jarFileName,final Vector<Declaration> declarationList) {
 		Type moduleType=null;
 		File file=new File(jarFileName);
 		Util.warning("Separate Compiled Module is read from: \"" + jarFileName+"\"");
@@ -170,7 +170,8 @@ public final class ExternalDeclaration extends Declaration {
 	        Global.externalJarFiles.add(jarFileName);
 	    } catch(IOException | ClassNotFoundException e) {
 			Util.error("Unable to read Attribute File: "+jarFileName);
-	    	Util.INTERNAL_ERROR("Impossible",e);
+			Util.warning("It may be necessary to recompile '"+identifier+"'");
+	    	Util.INTERNAL_ERROR("Caused by:",e);
 	    }
 	    return(moduleType);
 	}

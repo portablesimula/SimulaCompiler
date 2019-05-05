@@ -1,56 +1,85 @@
+// JavaLine 1 <== SourceLine 881
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri May 03 22:07:43 CEST 2019
+// Simula-Beta-0.3 Compiled at Sun May 05 10:24:02 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$ledig_post_plass extends BASICIO$ {
+    // ProcedureDeclaration: BlockKind=Procedure, BlockLevel=2, firstLine=881, lastLine=897, hasLocalClasses=false, System=false
     public int prefixLevel() { return(0); }
+    // Declare return value as attribute
     public int RESULT$;
     public Object RESULT$() { return(RESULT$); }
-    final LABQNT$ out=new LABQNT$(this,1,"out");
+    // Declare parameters as attributes
+    // Declare local labels
+    // JavaLine 14 <== SourceLine 895
+    final LABQNT$ out=new LABQNT$(this,1,"out"); // Local Label #1=out
+    // Declare locals as attributes
+    // JavaLine 17 <== SourceLine 883
     int i=0;
     int nr=0;
+    // Normal Constructor
     public HegnaNRK$PBLK21$ledig_post_plass(RTObject$ SL$) {
         super(SL$);
+        // Parameter assignment to locals
         BBLK();
+        // Declaration Code
+        TRACE_BEGIN_DCL$("ledig_post_plass",883);
         STM$();
     }
+    // Procedure Statements
     public HegnaNRK$PBLK21$ledig_post_plass STM$() {
+        TRACE_BEGIN_STM$("ledig_post_plass",883);
         HegnaNRK$PBLK21$ledig_post_plass THIS$=(HegnaNRK$PBLK21$ledig_post_plass)CUR$;
         LOOP$:while(JTX$>=0) {
             try {
-                JUMPTABLE$(JTX$);
+                JUMPTABLE$(JTX$); // For ByteCode Engineering
+                // JavaLine 36 <== SourceLine 884
                 nr=0;
+                // JavaLine 38 <== SourceLine 885
                 if(VALUE$(((((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster$1<(((HegnaNRK$PBLK21)(CUR$.SL$)).max_antall_poster$1))&((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[(((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster$1+(1))-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]==(null)))))) {
+                    // JavaLine 40 <== SourceLine 887
                     nr=(((HegnaNRK$PBLK21)(CUR$.SL$)).antall_poster$1+(1));
                 } else
+                // JavaLine 43 <== SourceLine 889
                 for(boolean CB$889:new ForList(
                     new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(((HegnaNRK$PBLK21)(CUR$.SL$)).max_antall_poster$1); }})
                    )) { if(!CB$889) continue;
+                // JavaLine 47 <== SourceLine 890
                 if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).post_peker.LB[0]]==(null)))) {
+                    // JavaLine 49 <== SourceLine 892
                     {
+                        TRACE_BEGIN_STM$("CompoundStatement892",892);
                         nr=i;
-                        GOTO$(out);
+                        // JavaLine 53 <== SourceLine 893
+                        GOTO$(out); // GOTO EVALUATED LABEL
+                        TRACE_END_STM$("CompoundStatement892",893);
                     }
                 }
             }
+            // JavaLine 59 <== SourceLine 895
             LABEL$(1,"out");
             if(VALUE$((nr==(0)))) {
                 new HegnaNRK$PBLK21$feil(((HegnaNRK$PBLK21)(CUR$.SL$)),4);
             }
+            // JavaLine 64 <== SourceLine 896
             RESULT$=nr;
             break LOOP$;
         }
         catch(LABQNT$ q) {
             CUR$=THIS$;
             if(q.SL$!=CUR$) {
+                if(RT.Option.GOTO_TRACING) TRACE_GOTO("ledig_post_plass:NON-LOCAL",q);
                 CUR$.STATE$=OperationalState.terminated;
+                if(RT.Option.GOTO_TRACING) TRACE_GOTO("ledig_post_plass:RE-THROW",q);
                 throw(q);
             }
-            JTX$=q.index; continue LOOP$;
+            if(RT.Option.GOTO_TRACING) TRACE_GOTO("ledig_post_plass:LOCAL",q);
+            JTX$=q.index; continue LOOP$; // EG. GOTO Lx
         }
     }
+    TRACE_END_STM$("ledig_post_plass",896);
     EBLK();
     return(this);
-}
-public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure ledig_post_plass",1,881,10,895,12,883,25,884,27,885,29,887,32,889,36,890,38,892,41,893,46,895,51,896,66,897);
-}
+} // End of Procedure BODY
+public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure ledig_post_plass",1,881,14,895,17,883,36,884,38,885,40,887,43,889,47,890,49,892,53,893,59,895,64,896,83,897);
+} // End of Procedure

@@ -308,7 +308,13 @@ public class EditorMenues extends JMenuBar {
         	File file=fileChooser.getSelectedFile();
     		if(!file.exists()) { Util.popUpError("Can't open file\n"+file); return; }
     		if(file.getName().toLowerCase().endsWith(".jar")) SimulaEditor.doRunJarFile(file);
-    		else SimulaEditor.doNewTabbedPanel(file);
+    		else {
+    			SimulaEditor.doNewTabbedPanel(file);
+//    			new Thread(new Runnable() {
+//    				public void run() {
+//    	    			SimulaEditor.doNewTabbedPanel(file);
+//    				}}).start();
+    		}
         	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
         }
 	}

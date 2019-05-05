@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri May 03 22:04:59 CEST 2019
+// Simula-Beta-0.3 Compiled at Sun May 05 10:19:51 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class TQueens extends BASICIO$ {

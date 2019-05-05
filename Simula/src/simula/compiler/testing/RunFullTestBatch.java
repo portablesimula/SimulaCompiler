@@ -154,6 +154,7 @@ public final class RunFullTestBatch {
 		names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
 		names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
 		names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain
+		names.add("simtst111.sim"); // OK: Virtual Label
 
 		// Set options and tracing.
 		Option.BREAKING=false;
@@ -184,6 +185,7 @@ public final class RunFullTestBatch {
 		  SimulaCompiler compiler = new SimulaCompiler(fileName);
 		  compiler.doCompile();
 		}
+		System.out.println("--- END OF SIMULA TESTBATCH");
 	}
 
 }

@@ -1,5 +1,5 @@
 package simulaTestBatch;
-// Simula-Beta-0.3 Compiled at Tue Apr 30 12:21:21 CEST 2019
+// Simula-Beta-0.3 Compiled at Sat May 04 12:34:15 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class simtst105$FIELD extends BASICIO$ {

@@ -260,19 +260,23 @@ public class SimulaEditor extends JFrame {
     // ****************************************************************
     // *** doNewTabbedPanel
     // ****************************************************************
-	static void doNewTabbedPanel(File file) {
-        //SourceTextPanel current=new SourceTextPanel(file,menuBar.popupMenu);
-        current=new SourceTextPanel(file,menuBar.popupMenu);
-        tabbedPane.addTab((file==null)?"unnamed":file.getName(), null, current, "Tool tip ...");
-        // select the last tab
-        tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
-		current.fileChanged=false;
-		if(file==null)current.fillTextPane(new StringReader("begin\n\nend;\n"),0);
-		else try { Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
-		 		   current.fillTextPane(reader,0);
-		} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
-		menuBar.updateMenuItems();
-	}
+    static void doNewTabbedPanel(File file) {
+    	new Thread(new Runnable() {
+    		public void run() {
+    			//SimulaEditor.doNewTabbedPanel(file);
+    			//SourceTextPanel current=new SourceTextPanel(file,menuBar.popupMenu);
+    			current=new SourceTextPanel(file,menuBar.popupMenu);
+    			tabbedPane.addTab((file==null)?"unnamed":file.getName(), null, current, "Tool tip ...");
+    			// select the last tab
+    			tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+    			current.fileChanged=false;
+    			if(file==null)current.fillTextPane(new StringReader("begin\n\nend;\n"),0);
+    			else try { Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
+    				current.fillTextPane(reader,0);
+    			} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+    			menuBar.updateMenuItems();
+    		}}).start();
+    }
 	
     // ****************************************************************
     // *** doRunJarFile

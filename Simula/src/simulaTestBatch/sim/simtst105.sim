@@ -34,18 +34,23 @@ begin
     X:= i:= Y:= F:= val;
 
     result:-blanks(80);
-    FIELD(11):="Results: X="; FIELD(6).putfix(X,4); 
+    FIELD(2):="X="; FIELD(6).putfix(X,4); 
     FIELD(4):=", i="; FIELD(1).putint(i);
     FIELD(4):=", Y="; FIELD(6).putfix(Y,4);
     FIELD(4):=", F="; FIELD(6).putfix(F,4);
-    outtext("RESULT: " & result); outimage;
-
-    outtext("Test "&Case&": results: X="); outfix(X,4,6); 
-    outtext(", i="); outint(i,0);
-    outtext(", Y="); outfix(Y,4,6);
-    outtext(", F="); outfix(F,4,6);
-    outimage;
-    outtext("               "&Facit); outimage; outimage;
+    result:-result.strip;
+%    outtext("RESULT: ]" & result & "["); outimage;
+%    outtext("FACIT:  ]" & facit & "["); outimage;
+    if result NE facit then
+    begin
+       found_error:=true;
+       outtext("ERROR: " & result); outimage;
+    end;
+    if verbose OR found_error then
+    begin
+       outtext("Test "&Case&": results: " & result); outimage;
+       outtext("               facit: "&Facit); outimage; outimage;
+    end;   
    end;
 
    if verbose then begin
@@ -54,10 +59,10 @@ begin
    Outimage; Outimage;
    end;
    
-   P("case 1",r,3.14,"Facit: X=3.0000, i=3, Y=3.1400, F=3.1400");
-   P("case 2",n,3.14,"Facit: X=3.0000, i=3, Y=3.1400, F=3.0000");
-   P("case 3",r,3.54,"Facit: X=4.0000, i=4, Y=3.5400, F=3.5400");
-   P("case 4",n,4.01,"Facit: X=4.0000, i=4, Y=4.0100, F=4.0000");
+   P("case 1",r,3.14,"X=3.0000, i=3, Y=3.1400, F=3.1400");
+   P("case 2",n,3.14,"X=3.0000, i=3, Y=3.1400, F=3.0000");
+   P("case 3",r,3.54,"X=4.0000, i=4, Y=3.5400, F=3.5400");
+   P("case 4",n,4.01,"X=4.0000, i=4, Y=4.0100, F=4.0000");
 
    
    IF found_error THEN

@@ -1,18 +1,30 @@
+// JavaLine 1 <== SourceLine 462
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri May 03 22:07:42 CEST 2019
+// Simula-Beta-0.3 Compiled at Sun May 05 10:24:02 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$definer extends BASICIO$ {
+    // ProcedureDeclaration: BlockKind=Procedure, BlockLevel=2, firstLine=462, lastLine=466, hasLocalClasses=false, System=false
     public int prefixLevel() { return(0); }
+    // Declare parameters as attributes
+    // Declare locals as attributes
+    // Normal Constructor
     public HegnaNRK$PBLK21$definer(RTObject$ SL$) {
         super(SL$);
+        // Parameter assignment to locals
         BBLK();
+        // Declaration Code
+        TRACE_BEGIN_DCL$("definer",462);
         STM$();
     }
+    // Procedure Statements
     public HegnaNRK$PBLK21$definer STM$() {
+        TRACE_BEGIN_STM$("definer",462);
+        // JavaLine 23 <== SourceLine 465
         ((HegnaNRK$PBLK21)(CUR$.SL$)).feltnavn$1=new HegnaNRK$PBLK21$les_register(((HegnaNRK$PBLK21)(CUR$.SL$))).RESULT$;
+        TRACE_END_STM$("definer",465);
         EBLK();
         return(this);
-    }
-    public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure definer",1,462,14,465,18,466);
-}
+    } // End of Procedure BODY
+    public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure definer",1,462,23,465,28,466);
+} // End of Procedure

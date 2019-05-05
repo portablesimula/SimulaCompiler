@@ -1,17 +1,27 @@
+// JavaLine 1 <== SourceLine 869
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri May 03 22:07:43 CEST 2019
+// Simula-Beta-0.3 Compiled at Sun May 05 10:24:02 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$finn_intern_feltnr extends BASICIO$ {
+    // ProcedureDeclaration: BlockKind=Procedure, BlockLevel=2, firstLine=869, lastLine=879, hasLocalClasses=false, System=false
     public int prefixLevel() { return(0); }
+    // Declare return value as attribute
     public int RESULT$;
     public Object RESULT$() { return(RESULT$); }
+    // Declare parameters as attributes
     public int p$feltnr;
-    final LABQNT$ out=new LABQNT$(this,1,"out");
+    // Declare local labels
+    // JavaLine 15 <== SourceLine 878
+    final LABQNT$ out=new LABQNT$(this,1,"out"); // Local Label #1=out
+    // Declare locals as attributes
+    // JavaLine 18 <== SourceLine 870
     int i=0;
     int nr=0;
+    // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
     public HegnaNRK$PBLK21$finn_intern_feltnr setPar(Object param) {
+        //Util.BREAK("CALL HegnaNRK$PBLK21$finn_intern_feltnr.setPar: param="+param+", qual="+param.getClass().getSimpleName()+", npar="+$npar+", staticLink="+SL$);
         try {
             switch($npar++) {
                 case 0: p$feltnr=intValue(param); break;
@@ -21,30 +31,45 @@ public final class HegnaNRK$PBLK21$finn_intern_feltnr extends BASICIO$ {
         catch(ClassCastException e) { throw new RuntimeException("Wrong type of parameter: "+$npar+" "+param,e);}
         return(this);
     }
+    // Constructor in case of Formal/Virtual Procedure Call
     public HegnaNRK$PBLK21$finn_intern_feltnr(RTObject$ SL$)
     { super(SL$); }
+    // Normal Constructor
     public HegnaNRK$PBLK21$finn_intern_feltnr(RTObject$ SL$,int sp$feltnr) {
         super(SL$);
+        // Parameter assignment to locals
         this.p$feltnr = sp$feltnr;
         BBLK();
+        // Declaration Code
+        TRACE_BEGIN_DCL$("finn_intern_feltnr",870);
         STM$();
     }
+    // Procedure Statements
     public HegnaNRK$PBLK21$finn_intern_feltnr STM$() {
+        TRACE_BEGIN_STM$("finn_intern_feltnr",870);
         HegnaNRK$PBLK21$finn_intern_feltnr THIS$=(HegnaNRK$PBLK21$finn_intern_feltnr)CUR$;
         LOOP$:while(JTX$>=0) {
             try {
-                JUMPTABLE$(JTX$);
+                JUMPTABLE$(JTX$); // For ByteCode Engineering
+                // JavaLine 54 <== SourceLine 871
                 nr=0;
+                // JavaLine 56 <== SourceLine 872
                 for(boolean CB$872:new ForList(
                     new StepUntil(new NAME$<Number>(){ public Number put(Number x$){i=(int)x$; return(x$);};  public Number get(){return((Number)i); }	},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(1); }},new NAME$<Number>() { public Number get(){return(((HegnaNRK$PBLK21)(CUR$.SL$)).felt_antall$1); }})
                    )) { if(!CB$872) continue;
+                // JavaLine 60 <== SourceLine 873
                 if(VALUE$((((HegnaNRK$PBLK21)(CUR$.SL$)).intern_feltnr.Elt[i-((HegnaNRK$PBLK21)(CUR$.SL$)).intern_feltnr.LB[0]]==(p$feltnr)))) {
+                    // JavaLine 62 <== SourceLine 875
                     {
+                        TRACE_BEGIN_STM$("CompoundStatement875",875);
                         nr=i;
-                        GOTO$(out);
+                        // JavaLine 66 <== SourceLine 876
+                        GOTO$(out); // GOTO EVALUATED LABEL
+                        TRACE_END_STM$("CompoundStatement875",876);
                     }
                 }
             }
+            // JavaLine 72 <== SourceLine 878
             LABEL$(1,"out");
             RESULT$=nr;
             break LOOP$;
@@ -52,14 +77,18 @@ public final class HegnaNRK$PBLK21$finn_intern_feltnr extends BASICIO$ {
         catch(LABQNT$ q) {
             CUR$=THIS$;
             if(q.SL$!=CUR$) {
+                if(RT.Option.GOTO_TRACING) TRACE_GOTO("finn_intern_feltnr:NON-LOCAL",q);
                 CUR$.STATE$=OperationalState.terminated;
+                if(RT.Option.GOTO_TRACING) TRACE_GOTO("finn_intern_feltnr:RE-THROW",q);
                 throw(q);
             }
-            JTX$=q.index; continue LOOP$;
+            if(RT.Option.GOTO_TRACING) TRACE_GOTO("finn_intern_feltnr:LOCAL",q);
+            JTX$=q.index; continue LOOP$; // EG. GOTO Lx
         }
     }
+    TRACE_END_STM$("finn_intern_feltnr",878);
     EBLK();
     return(this);
-}
-public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure finn_intern_feltnr",1,869,11,878,13,870,40,871,42,872,46,873,48,875,51,876,56,878,72,879);
-}
+} // End of Procedure BODY
+public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure finn_intern_feltnr",1,869,15,878,18,870,54,871,56,872,60,873,62,875,66,876,72,878,92,879);
+} // End of Procedure

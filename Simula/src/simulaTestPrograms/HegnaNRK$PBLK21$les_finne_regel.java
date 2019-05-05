@@ -1,27 +1,47 @@
+// JavaLine 1 <== SourceLine 760
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri May 03 22:07:42 CEST 2019
+// Simula-Beta-0.3 Compiled at Sun May 05 10:24:02 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class HegnaNRK$PBLK21$les_finne_regel extends BASICIO$ {
+    // ProcedureDeclaration: BlockKind=Procedure, BlockLevel=2, firstLine=760, lastLine=772, hasLocalClasses=false, System=false
     public int prefixLevel() { return(0); }
+    // Declare parameters as attributes
+    // Declare locals as attributes
+    // Normal Constructor
     public HegnaNRK$PBLK21$les_finne_regel(RTObject$ SL$) {
         super(SL$);
+        // Parameter assignment to locals
         BBLK();
+        // Declaration Code
+        TRACE_BEGIN_DCL$("les_finne_regel",760);
         STM$();
     }
+    // Procedure Statements
     public HegnaNRK$PBLK21$les_finne_regel STM$() {
+        TRACE_BEGIN_STM$("les_finne_regel",760);
+        // JavaLine 23 <== SourceLine 763
         new HegnaNRK$PBLK21$stryk_finne_regel(((HegnaNRK$PBLK21)(CUR$.SL$)));
+        // JavaLine 25 <== SourceLine 764
         ((HegnaNRK$PBLK21)(CUR$.SL$)).feltnavn$1=new HegnaNRK$PBLK21$les_feltnavn(((HegnaNRK$PBLK21)(CUR$.SL$))).RESULT$;
+        // JavaLine 27 <== SourceLine 765
         while((((HegnaNRK$PBLK21)(CUR$.SL$)).feltnr$1!=(((HegnaNRK$PBLK21)(CUR$.SL$)).quit_felt$1))) {
+            // JavaLine 29 <== SourceLine 767
             {
+                TRACE_BEGIN_STM$("CompoundStatement767",767);
                 ((HegnaNRK$PBLK21)(CUR$.SL$)).felttype$1=((HegnaNRK$PBLK21)(CUR$.SL$)).felttype_tabell.Elt[((HegnaNRK$PBLK21)(CUR$.SL$)).feltnr$1-((HegnaNRK$PBLK21)(CUR$.SL$)).felttype_tabell.LB[0]];
+                // JavaLine 33 <== SourceLine 768
                 new HegnaNRK$PBLK21$les_feltverdi(((HegnaNRK$PBLK21)(CUR$.SL$)));
+                // JavaLine 35 <== SourceLine 769
                 new HegnaNRK$PBLK21$sett_finne_regel(((HegnaNRK$PBLK21)(CUR$.SL$)));
+                // JavaLine 37 <== SourceLine 770
                 ((HegnaNRK$PBLK21)(CUR$.SL$)).feltnavn$1=new HegnaNRK$PBLK21$les_feltnavn(((HegnaNRK$PBLK21)(CUR$.SL$))).RESULT$;
+                TRACE_END_STM$("CompoundStatement767",770);
             }
         }
+        TRACE_END_STM$("les_finne_regel",770);
         EBLK();
         return(this);
-    }
-    public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure les_finne_regel",1,760,14,763,16,764,18,765,20,767,23,768,25,769,27,770,33,772);
-}
+    } // End of Procedure BODY
+    public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Procedure les_finne_regel",1,760,23,763,25,764,27,765,29,767,33,768,35,769,37,770,45,772);
+} // End of Procedure

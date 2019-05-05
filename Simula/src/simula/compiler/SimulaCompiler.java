@@ -53,6 +53,7 @@ public final class SimulaCompiler {
 	public SimulaCompiler(final String inputFileName,Reader reader) {
 		Global.initiate();
 		Util.CHECK_FILENAME(inputFileName);
+		//Util.BREAK("Compile: "+inputFileName);
 		this.inputFileName = inputFileName;
 		if(reader==null) {
 			try { reader=new InputStreamReader(new FileInputStream(inputFileName),Global.CHARSET$);
@@ -247,9 +248,11 @@ public final class SimulaCompiler {
 			// *** EXECUTE .jar FILE
 			// ***************************************************************
 			// java -jar C:/WorkSpaces/SimulaCompiler/Simula/bin/adHoc00.jar
+
 			if(!programModule.isExecutable() || Option.noExecution) {
 				if(Option.TRACING) Util.message("Separate Compilation - No Execution of .jar File: "+jarFile);
 			} else {
+				if(Option.verbose) Util.message("------------  EXECUTION SUMMARY  ------------");
 				if(Option.TRACING) Util.message("Execute .jar File");
 			
 				String opt="";
@@ -262,9 +265,9 @@ public final class SimulaCompiler {
 				String cmd="java "+opt+" -jar "+jarFile+arg;
 			  
 				//Util.BREAK("SimulaCompiler.doCompile: EXECUTE cmd="+cmd);
+				if (Option.verbose)	Util.message("Execute: "+cmd);
 				int exitValue3=execute(cmd);
-				if (Option.TRACING)
-					Util.message("END Execute .jar File. Exit value="+exitValue3);
+				if (Option.verbose)	Util.message("END Execute .jar File. Exit value="+exitValue3);
 			}
 			if(Option.deleteTempFiles) emptyTempClassFileDir();
 			
@@ -451,7 +454,7 @@ public final class SimulaCompiler {
 	// *** PRINT SUMMARY
 	// ***************************************************************
 	private void printSummary() {
-		Util.message("------------  SUMMARY AFTER COMPILATION  ------------");
+		Util.message("------------  COMPILATION SUMMARY  ------------");
 		Util.message("Package Name:    \""+Global.packetName+"\"");
 		Util.message("SourceFile Name: \""+Global.sourceName+"\"");
 		Util.message("SourceFile Dir:  \""+Global.sourceFileDir+"\"");

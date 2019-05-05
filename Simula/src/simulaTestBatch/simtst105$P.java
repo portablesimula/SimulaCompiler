@@ -1,5 +1,5 @@
 package simulaTestBatch;
-// Simula-Beta-0.3 Compiled at Tue Apr 30 12:21:21 CEST 2019
+// Simula-Beta-0.3 Compiled at Sat May 04 12:34:15 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class simtst105$P extends BASICIO$ {
@@ -39,7 +39,7 @@ public final class simtst105$P extends BASICIO$ {
     public simtst105$P STM$() {
         X=((double)(i=((int)((int)Math.round(Y=p$F.put(p$val))))));
         ((simtst105)(CUR$.SL$)).result=blanks(80);
-        ASGSTR$(new simtst105$FIELD(((simtst105)(CUR$.SL$)),11).RESULT$,"Results: X=");
+        ASGSTR$(new simtst105$FIELD(((simtst105)(CUR$.SL$)),2).RESULT$,"X=");
         TXT$.putfix(new simtst105$FIELD(((simtst105)(CUR$.SL$)),6).RESULT$,X,4);
         ASGSTR$(new simtst105$FIELD(((simtst105)(CUR$.SL$)),4).RESULT$,", i=");
         TXT$.putint(new simtst105$FIELD(((simtst105)(CUR$.SL$)),1).RESULT$,i);
@@ -47,22 +47,25 @@ public final class simtst105$P extends BASICIO$ {
         TXT$.putfix(new simtst105$FIELD(((simtst105)(CUR$.SL$)),6).RESULT$,Y,4);
         ASGSTR$(new simtst105$FIELD(((simtst105)(CUR$.SL$)),4).RESULT$,", F=");
         TXT$.putfix(new simtst105$FIELD(((simtst105)(CUR$.SL$)),6).RESULT$,p$F.get(),4);
-        sysout().outtext(CONC(new TXT$("RESULT: "),((simtst105)(CUR$.SL$)).result));
-        sysout().outimage();
-        sysout().outtext(CONC(CONC(new TXT$("Test "),p$Case$),new TXT$(": results: X=")));
-        sysout().outfix(X,4,6);
-        sysout().outtext(new TXT$(", i="));
-        sysout().outint(i,0);
-        sysout().outtext(new TXT$(", Y="));
-        sysout().outfix(Y,4,6);
-        sysout().outtext(new TXT$(", F="));
-        sysout().outfix(p$F.get(),4,6);
-        sysout().outimage();
-        sysout().outtext(CONC(new TXT$("               "),p$Facit));
-        sysout().outimage();
-        sysout().outimage();
+        ((simtst105)(CUR$.SL$)).result=TXT$.strip(((simtst105)(CUR$.SL$)).result);
+        if(VALUE$(TXTREL$NE(((simtst105)(CUR$.SL$)).result,p$Facit))) {
+            {
+                ((simtst105)(CUR$.SL$)).found_error=true;
+                sysout().outtext(CONC(new TXT$("ERROR: "),((simtst105)(CUR$.SL$)).result));
+                sysout().outimage();
+            }
+        }
+        if(VALUE$((((simtst105)(CUR$.SL$)).verbose|(((simtst105)(CUR$.SL$)).found_error)))) {
+            {
+                sysout().outtext(CONC(CONC(CONC(new TXT$("Test "),p$Case$),new TXT$(": results: ")),((simtst105)(CUR$.SL$)).result));
+                sysout().outimage();
+                sysout().outtext(CONC(new TXT$("               facit: "),p$Facit));
+                sysout().outimage();
+                sysout().outimage();
+            }
+        }
         EBLK();
         return(this);
     }
-    public static PROGINFO$ INFO$=new PROGINFO$("simtst105.sim","Procedure P",1,29,12,31,14,32,43,34,45,36,47,37,50,38,53,39,56,40,59,41,62,43,65,44,68,45,71,46,74,47,76,48,82,49);
+    public static PROGINFO$ INFO$=new PROGINFO$("simtst105.sim","Procedure P",1,29,12,31,14,32,43,34,45,36,47,37,50,38,53,39,56,40,59,41,61,44,63,46,66,47,71,49,73,51,77,52,85,54);
 }

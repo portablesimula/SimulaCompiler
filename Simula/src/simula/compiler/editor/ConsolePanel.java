@@ -31,8 +31,6 @@ import java.awt.event.MouseListener;
 
 public final class ConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-//	private static final boolean USE_TEXT_PANE=true;
-//    private JTextArea textArea;
     private static JTextPane textPane;
 
     private StyledDocument doc;
@@ -42,7 +40,16 @@ public final class ConsolePanel extends JPanel {
     private JPopupMenu popupMenu;
     private JMenuItem clearItem;
 	private JMenuItem copyItem;
+	private boolean reading; // Used by KeyListener and read()
+	private char keyin;      // Used by KeyListener and read()
 
+
+	public char read() {
+		textPane.requestFocus();
+		reading=true; // Enables KeyListener (see below)
+		while(reading) Thread.yield();
+		return(keyin);
+	}
 
 	public void write(final String s) { write(s,styleRegular); }
 	public void writeError(final String s) { write(s,styleError); }
@@ -84,6 +91,7 @@ public final class ConsolePanel extends JPanel {
     	doc.putProperty(DefaultEditorKit.EndOfLineStringProperty,"\n");
     	textPane.setStyledDocument(doc);
     	textPane.addKeyListener(listener);
+//    	doc.addDocumentListener(docListener);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         //JPanel panel = new JPanel(new BorderLayout());
         //panel.add(scrollPane);
@@ -133,7 +141,7 @@ public final class ConsolePanel extends JPanel {
 
     
 	// ****************************************************************
-	// *** HelpMenu: ActionListener
+	// *** ActionListener
 	// ****************************************************************
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -151,41 +159,19 @@ public final class ConsolePanel extends JPanel {
 			}
 		}
 	};
-
-    KeyListener listener = new KeyListener() {
-    	public void keyPressed(KeyEvent event) {
-    	    //printEventInfo("Key Pressed", event);
-    	}
-
+    
+	// ****************************************************************
+	// *** KeyListener
+	// ****************************************************************
+    private KeyListener listener = new KeyListener() {
+    	public void keyTyped(KeyEvent event) {}
+    	public void keyPressed(KeyEvent event) {}
     	public void keyReleased(KeyEvent event) {
-    	    //printEventInfo("Key Released", event);
+    	    if(reading) {
+    	    	keyin=event.getKeyChar();
+       	    	reading=false;
+    	    }
     	}
-
-    	public void keyTyped(KeyEvent event) {
-    	    //printEventInfo("Key Typed", event);
-    	}
-
-//    	private void printEventInfo(String str, KeyEvent e) {
-//    	    System.out.println(str);
-//    	    int code = e.getKeyCode();
-//    	    System.out.println("   Code: " + KeyEvent.getKeyText(code));
-//    	    System.out.println("   Char: " + e.getKeyChar());
-//    	    int mods = e.getModifiersEx();
-//    	    System.out.println("    Mods: "	+ KeyEvent.getModifiersExText(mods));
-//    	    System.out.println("    Location: "	+ keyboardLocation(e.getKeyLocation()));
-//    	    System.out.println("    Action? " + e.isActionKey());
-//    	}
-
-//    	private String keyboardLocation(int keybrd) {
-//    	    switch (keybrd) {
-//    	        case KeyEvent.KEY_LOCATION_RIGHT:	return "Right";
-//    	        case KeyEvent.KEY_LOCATION_LEFT: 	return "Left";
-//    	        case KeyEvent.KEY_LOCATION_NUMPAD:return "NumPad";
-//    	        case KeyEvent.KEY_LOCATION_STANDARD:return "Standard";
-//    	        case KeyEvent.KEY_LOCATION_UNKNOWN:
-//    	        default:return "Unknown";
-//    	    }
-//    	}
     };
 
 }

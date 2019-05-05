@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri May 03 22:08:22 CEST 2019
+// Simula-Beta-0.3 Compiled at Sun May 05 10:34:06 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Dates$Date$Is_earlier_in_year extends BASICIO$ {

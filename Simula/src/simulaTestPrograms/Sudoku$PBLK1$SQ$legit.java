@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Fri May 03 22:05:47 CEST 2019
+// Simula-Beta-0.3 Compiled at Sun May 05 10:20:35 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class Sudoku$PBLK1$SQ$legit extends BASICIO$ {

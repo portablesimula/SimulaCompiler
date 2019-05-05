@@ -51,11 +51,11 @@ public final class Util {
 		String err = "Line " + Global.sourceLineNumber + " Error: " + msg;
 		nError++;
 		printError(err);
-		BREAK("Continue ?");
+		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 	}
 
 	public static void INTERNAL_ERROR(final String msg,final Throwable e) {
-		String err = "Line " + Global.sourceLineNumber + "Internal Error: " + msg + e;
+		String err = "Line " + Global.sourceLineNumber + " Internal Error: " + msg +"  "+ e;
 		nError++;
 		printError(err);
 		e.printStackTrace();
@@ -138,12 +138,17 @@ public final class Util {
 
 	public static void BREAK(final String id, final String title) {
 		if (Option.BREAKING) {
-			System.err.println(id + " " + Global.sourceLineNumber + ": " + title + ": <");
-			try {
-				char c = (char) System.in.read();
-				if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
-//					try { throw new RuntimeException("QUIT");
-//					} catch (Exception e) {	e.printStackTrace(); }
+			if(Global.console!=null) {
+				Global.console.writeError(id + " " + Global.sourceLineNumber + ": " + title + ": <");
+				char c=Global.console.read();
+				if (c == 'Q' || c == 'q') {
+					println("\n\n:STACK-TRACE");
+					printStackTrace();
+				}
+			} else try {
+				System.err.println(id + " " + Global.sourceLineNumber + ": " + title + ": <");
+				char c=(char) System.in.read();
+				if (c == 'Q' || c == 'q') {
 					println("STACK-TRACE");
 					printStackTrace();
 				}
