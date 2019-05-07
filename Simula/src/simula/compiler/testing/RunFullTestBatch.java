@@ -154,7 +154,14 @@ public final class RunFullTestBatch {
 		names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
 		names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
 		names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain
-		names.add("simtst111.sim"); // OK: Virtual Label
+		names.add("simtst111.sim"); // OK: Virtual Label Sample 1
+		names.add("simtst112.sim"); // OK: Virtual Label Sample 2
+		names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
+		names.add("simtst114.sim"); // OK: Switch Statement
+		names.add("simtst115.sim"); // OK: Simple QPS-Sample 1
+		names.add("simtst116.sim"); // OK: Simple QPS-Sample 2
+		names.add("simtst117.sim"); // OK: Simple QPS-Sample 3
+		names.add("simtst118.sim"); // OK: Simple QPS-Sample 4
 
 		// Set options and tracing.
 		Option.BREAKING=false;

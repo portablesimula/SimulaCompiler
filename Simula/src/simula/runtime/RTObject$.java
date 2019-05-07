@@ -439,6 +439,20 @@ public abstract class RTObject$ {
 		}
 	}
 
+	/**
+	 * <pre>
+	 *  A1 step A2 until A3 C := A1;
+     *                      DELTA := A2;
+     *                      while DELTA*(C-A3) <= 0
+     *                      do begin
+     *                            S;
+     *                            DELTA := A2;
+     *                            C := C + DELTA;
+     *                      end while;
+     *                      ... next for list element
+	 * </pre>
+	 *
+	 */
 	public final class StepUntil extends ForElt {
 		final NAME$<Number> cvar, init, step, until;
 		Number nextValue;
@@ -450,7 +464,7 @@ public abstract class RTObject$ {
 			this.until = until;
 		}
 
-		public Boolean next() {
+		public Boolean OLD_next() {
 			if (nextValue == null) {
 				nextValue = init.get();
 				cvar.put(nextValue);
@@ -479,8 +493,41 @@ public abstract class RTObject$ {
 			cvar.put(nextValue);
 			return (more);
 		}
-	}
 
+		public Boolean next() {
+			try {
+			Number stp;
+			int sign;
+			if (nextValue == null) {
+				nextValue = init.get();
+				stp=new Integer(0);
+				sign=(int) Math.signum(step.get().longValue());
+			} // First value
+			else {
+				stp= step.get();
+				sign=(int) Math.signum(stp.longValue());
+			}
+			Number val = nextValue;
+			Number utl = until.get();
+			if (val instanceof Double || stp instanceof Double) {
+				nextValue = new Double(val.doubleValue() + stp.doubleValue());
+				more = ( sign * (nextValue.doubleValue() - utl.doubleValue()) <= 0);
+			} else if (val instanceof Float || stp instanceof Float) {
+				nextValue = new Float(val.floatValue() + stp.floatValue());
+				more = ( sign * (nextValue.floatValue() - utl.floatValue()) <= 0);
+			} else if (val instanceof Long || stp instanceof Long) {
+				nextValue = new Float(val.longValue() + stp.longValue());
+				more = ( sign * (nextValue.longValue() - utl.longValue()) <= 0);
+			} else {
+				nextValue = new Integer(val.intValue() + stp.intValue());
+				more = ( sign * (nextValue.intValue() - utl.intValue()) <= 0);
+			}
+			cvar.put(nextValue);
+			return (more);
+			} catch(Throwable e) { e.printStackTrace(); return(null); }
+		}
+	}
+	
 	public final class WhileElt<T> extends ForElt {
 		final NAME$<T> cvar, expr;
 		NAME$<Boolean> cond;

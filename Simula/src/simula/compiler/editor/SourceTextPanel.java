@@ -70,7 +70,7 @@ public class SourceTextPanel extends JPanel {
     private UndoableEditListener undoListener=new UndoableEditListener() {
 		public void undoableEditHappened(UndoableEditEvent e) {
 			UndoableEdit edit=e.getEdit();
-			System.out.println("UndoableEdit'QUAL="+edit.getClass().getSimpleName());
+			//System.out.println("UndoableEdit'QUAL="+edit.getClass().getSimpleName());
 			if(DEBUG) Testutskrift(edit);
 			undoManager.addEdit(edit);
 			fileChanged=true; refreshNeeded=true;

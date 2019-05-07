@@ -1,7 +1,7 @@
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA TEST NO 111
 %
-%  PURPOSE: Virtual Label
+%  PURPOSE: Virtual Label - Sample 1
 %
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
@@ -46,7 +46,7 @@ begin
    
    if verbose then begin
    Outtext("--- START SIMULA TEST 111"); Outimage ;
-   Outtext("--- Virtual Label");
+   Outtext("--- Virtual Label - Sample 1");
    Outimage; Outimage;
    end;
    

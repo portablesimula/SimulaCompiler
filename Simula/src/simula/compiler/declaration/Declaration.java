@@ -62,7 +62,11 @@ public abstract class Declaration extends SyntaxClass {
     }
   
     private void checkAlreadyDefined() {
-    	boolean illegal=false;
+//    	if("trace".equalsIgnoreCase(identifier)) {    		
+//    		Util.BREAK("Declaration.checkAlreadyDefined: identifier="+identifier+", declaredIn="+declaredIn);
+//    	}
+    	boolean error=false;
+    	boolean warning=false;
     	if(identifier==null) return;
     	if(declaredIn==null) return;
     	if(declaredIn instanceof StandardClass) return;
@@ -74,13 +78,18 @@ public abstract class Declaration extends SyntaxClass {
 	    
     	if(parameterList!=null)
     		for(Declaration decl:parameterList)
-    			if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}
-    	for(Declaration decl:declaredIn.declarationList) {
+    			if(decl.identifier.equalsIgnoreCase(identifier)) { warning=true; break;}
+    	LOOP:for(Declaration decl:declaredIn.declarationList) {
     		if(decl==null) return; // Error recovery
     		if(decl.identifier==null) return; // Error recovery
-    		if(decl.identifier.equalsIgnoreCase(identifier)) { illegal=true; break;}    	
+//        	if("trace".equalsIgnoreCase(identifier)) {    		
+//        		Util.BREAK("Declaration.checkAlreadyDefined(2): identifier="+identifier+", decl.identifier="+decl.identifier);
+//        	}
+    		if(decl.identifier.equalsIgnoreCase(identifier)) { error=true; break LOOP;}    	
     	}
-    	if(illegal) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
+//    	if(illegal) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
+    	if(error) Util.error(identifier+" is alrerady defined in "+declaredIn.identifier);
+    	else if(warning) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
     }
   
     public static boolean parseDeclaration(final Vector<Declaration> declarationList) {

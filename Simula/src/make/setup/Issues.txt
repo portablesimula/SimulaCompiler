@@ -1,5 +1,12 @@
 Simula Issues
 
+OPEN Issue 24: Fra Karel
+for k := n step m until max do  hvor  n > max 
+uføres en gang før jeg testet.
+Skulle ikke gjort det.
+
+===============================================================================
+
 OPEN Issue 23: Fra Karel
 Untyped array parameter til procedure. Parser failed
 Syntax i Simula Standard er feil.

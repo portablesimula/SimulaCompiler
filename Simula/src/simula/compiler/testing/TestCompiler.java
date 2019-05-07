@@ -47,6 +47,7 @@ public final class TestCompiler {
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
 		// String name="/samples/AnimationTest.sim";
+		 String name="/samples/Atkins.sim";
 		// String name="/samples/Dates.sim";
 		// String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
@@ -82,9 +83,10 @@ public final class TestCompiler {
 		// String name="/error/issue13.sim"; // Tillater subklasser på dypere blokknivå.
 		// String name="/error/issue16.sim"; // Problemer med å evaluere Constant-expression
 		// String name="/error/issue17.sim"; // Dårlig feilmelding ved ulovlig GOTO.
-		 String name="/error/issue20.sim"; // Label og Proceure som parameter til en Klasse
+		// String name="/error/issue20.sim"; // Label og Proceure som parameter til en Klasse
 		// String name="/error/issue23.sim"; // no-type Array som parameter
 		// String name="/error/issue21.sim"; // Ingen new-line til slutt i file
+		// String name="/error/issue24.sim"; // For step until
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
@@ -143,23 +145,14 @@ public final class TestCompiler {
 		// String name="/simple/PriorProcedure.sim";   // ????
 		// String name="/simple/ProcedureSample.sim";
 		// String name="/simple/PromptSample.sim";
-		// String name="/simple/QPSample0.sim";   //  ===> TIL TESTBATCH
-		// String name="/simple/QPSample1.sim";   //  ===> TIL TESTBATCH
-		// String name="/simple/QPSample3.sim";   //  ===> TIL TESTBATCH
-		// String name="/simple/QPSample4.sim";
 		// String name="/simple/RemoteProcedure.sim";
 		// String name="/simple/SubClassTest.sim";
-		// String name="/simple/SwitchStatement.sim";   //  ===> TIL TESTBATCH 
 		// String name="/simple/TextSamples.sim";
 		// String name="/simple/TextSamples1.sim";
 		// String name="/simple/VariableByName.sim";
-		// String name="/simple/VirtualLabel2.sim";   //  ===> TIL TESTBATCH 
-		// String name="/simple/VirtualLabel3.sim";   //  ===> TIL TESTBATCH 
-		// String name="/simple/VirtualSample.sim";   //  ===> TIL TESTBATCH 
-		// String name="/simple/VirtualSwitch.sim";   //  ===> TIL TESTBATCH 
 
 			// Set Compile Time Options and tracing.
-			Option.verbose = true;// false;
+		    Option.verbose = true;// false;
 			Option.WARNINGS=true;
 
 			// Overall TRACING Options
@@ -196,7 +189,7 @@ public final class TestCompiler {
 			
 			// Set RunTime Options and tracing.
 			RTOption.VERBOSE = true;
-			RTOption.DEBUGGING = false;//true;
+			RTOption.DEBUGGING = true;//false;//true;
 //			RTOption.USE_CONTINUATIONS=true;
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;

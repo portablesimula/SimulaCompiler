@@ -1,0 +1,79 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 116
+%
+%  PURPOSE: Simple QPS-Sample 2
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:8);
+   ref(C)  x;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   Procedure Print (msg); Text msg;
+   begin OutText(msg); Outimage; end;
+   
+   Ref (A) x,y;
+
+   Class A(id); text id;
+   Begin Print("Event A(" & id & ")-1: Just Before First Detach");
+         Detach;
+         Print("Event A(" & id & ")-2: Just Before Second Detach");
+         Detach;
+         if(y=/=none) then
+         begin
+            Print("Event A(" & id & ")-3: Just Before Resume(y)");
+            resume(y);
+         end;
+         Print("Event A(" & id & ")-4: Just Before Final-END");
+   End;
+
+
+   Print("--------------------------------------") ;
+   Print("--- Test resume and detach.") ;
+   Print("--------------------------------------") ;
+   Print("Expected Output:") ;
+   Print("--------------------------------------") ;
+   Print("Event 1: Just Before x:-New A") ;
+   Print("Event A(x)-1: Just Before First Detach") ;
+   Print("Event 2: Just Before y:-New A") ;
+   Print("Event A(y)-1: Just Before First Detach") ;
+   Print("Event 3: Just Before first Resume(x)") ;
+   Print("Event A(x)-2: Just Before Second Detach") ;
+   Print("Event 4: Just Before second Resume(x)") ;
+   Print("Event A(x)-3: Just Before Resume(y)") ;
+   Print("Event A(y)-2: Just Before Second Detach") ;
+   Print("Event x: Just Before final END") ;
+   Print("--------------------------------------") ;
+   Print("Actual Output:") ;
+   Print("--------------------------------------") ;
+
+
+
+   Print("Event 1: Just Before x:-New A");
+   x:- New A("x");
+   Print("Event 2: Just Before y:-New A");
+   y:- New A("y");
+   Print("Event 3: Just Before first Resume(x)");
+   Resume(x);
+   Print("Event 4: Just Before second Resume(x)");
+   Resume(x);
+   Print("Event x: Just Before final END");
+   Print("--------------------------------------") ;
+
+end;
