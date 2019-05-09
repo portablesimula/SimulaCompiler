@@ -47,8 +47,7 @@ public final class AttributeFile {
 		if (Option.TRACE_ATTRIBUTE_OUTPUT) {
 			try { attributeFile.listAttributeFile(attributeFileName);
 			} catch (ClassNotFoundException e) {
-				Util.error("Unable to list Attribute File: "+attributeFileName);
-				e.printStackTrace();
+				Util.INTERNAL_ERROR("Unable to list Attribute File: "+attributeFileName, e);
 			}
 		}
 		if (Option.verbose)	Util.TRACE("*** ENDOF Generate SimulaAttributeFile: " + attributeFileName);

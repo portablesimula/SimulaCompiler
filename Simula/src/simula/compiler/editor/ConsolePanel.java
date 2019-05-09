@@ -51,6 +51,7 @@ public final class ConsolePanel extends JPanel {
 		return(keyin);
 	}
 
+
 	public void write(final String s) { write(s,styleRegular); }
 	public void writeError(final String s) { write(s,styleError); }
 	public void writeWarning(final String s) { write(s,styleWarning);	}
@@ -86,13 +87,16 @@ public final class ConsolePanel extends JPanel {
     	textPane = new JTextPane();
         textPane.addMouseListener(mouseListener);
     	scrollPane = new JScrollPane(textPane);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     	doc=new DefaultStyledDocument();
     	addStylesToDocument(doc);
     	doc.putProperty(DefaultEditorKit.EndOfLineStringProperty,"\n");
     	textPane.setStyledDocument(doc);
     	textPane.addKeyListener(listener);
 //    	doc.addDocumentListener(docListener);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         //JPanel panel = new JPanel(new BorderLayout());
         //panel.add(scrollPane);
         popupMenu=new JPopupMenu();
@@ -173,5 +177,6 @@ public final class ConsolePanel extends JPanel {
     	    }
     	}
     };
+
 
 }

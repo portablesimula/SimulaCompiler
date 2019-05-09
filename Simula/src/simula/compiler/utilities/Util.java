@@ -177,8 +177,8 @@ public final class Util {
 
 	public static void printError(final String s) {
 		String u = s.replace('\r', (char) 0);
-		u = u.replace('\n', (char) 0);
-		if (Global.console != null)	Global.console.writeError(u + '\n');
+//		u = u.replace('\n', (char) 0);
+		if (Global.console != null)	Global.console.writeError(u);// + '\n');
 		else System.err.println(u);
 	}  
 

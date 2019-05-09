@@ -1,5 +1,5 @@
 package simulaTestBatch;
-// Simula-Beta-0.3 Compiled at Mon May 06 16:21:54 CEST 2019
+// Simula-Beta-0.3 Compiled at Thu May 09 10:47:07 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class simtst116$C extends CLASS$ {

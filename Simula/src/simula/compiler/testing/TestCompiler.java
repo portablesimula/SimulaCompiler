@@ -47,13 +47,13 @@ public final class TestCompiler {
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
 		// String name="/samples/AnimationTest.sim";
-		 String name="/samples/Atkins.sim";
+		// String name="/samples/Atkins.sim";
 		// String name="/samples/Dates.sim";
 		// String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HegnaNRK.sim";
-		// String name="/samples/HelloWorld.sim";
+		 String name="/samples/HelloWorld.sim";
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/JensensDevice.sim";
 		// String name="/samples/PrimeUnder.sim";

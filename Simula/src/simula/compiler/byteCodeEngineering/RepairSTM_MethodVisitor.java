@@ -21,7 +21,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	private static final boolean DEBUG=false;
 
 	private String classFileName;
-	private String owner;
+//	private String owner;
 	private MethodNode mn;
 	MethodVisitor next;
 	
@@ -43,7 +43,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	public RepairSTM_MethodVisitor(String classFileName,String owner, int access, String name, String desc, MethodVisitor mv) {
 		super(SimClassVisitor.ASM_Release, new MethodNode(access, name, desc, null, null));
 		this.classFileName=classFileName;
-		this.owner = owner;
+//		this.owner = owner;
 		next = mv;
 		//Util.BREAK("NEW RepairSTM_MethodVisitor: access="+edAccessFlags(access)+' '+name+' '+desc);
 	}
@@ -72,8 +72,8 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 				if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 Method Instruction="+AsmUtils.edInstruction(instr));
 				MethodInsnNode invokeStatic=(MethodInsnNode)instr;
 				String name=invokeStatic.name;
-				String desc=invokeStatic.desc;
-				boolean itf=invokeStatic.itf;
+//				String desc=invokeStatic.desc;
+//				boolean itf=invokeStatic.itf;
 				//Util.BREAK("RepairSTM_MethodVisitor.treatSTM_Method: INVOKESTATIC "+name);
 				
 				//if(name.equals("LABEL$") & desc.equals("(I)V") & (!itf)	)  {

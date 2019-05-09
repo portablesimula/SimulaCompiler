@@ -1,0 +1,22 @@
+package simulaTestPrograms;
+// Simula-Beta-0.3 Compiled at Thu May 09 12:11:58 CEST 2019
+import simula.runtime.*;
+@SuppressWarnings("unchecked")
+public class HegnaNRK$heltallverdi extends HegnaNRK$verdi {
+    public int prefixLevel() { return(1); }
+    public int tall$1=0;
+    public PRCQNT$ skriv$0() { return(new PRCQNT$(this,HegnaNRK$heltallverdi$skriv.class)); }
+    public PRCQNT$ kopi$0() { return(new PRCQNT$(this,HegnaNRK$heltallverdi$kopi.class)); }
+    public PRCQNT$ test_verdilikhet$0() { return(new PRCQNT$(this,HegnaNRK$heltallverdi$test_verdilikhet.class)); }
+    public PRCQNT$ test_verdi_mindre$0() { return(new PRCQNT$(this,HegnaNRK$heltallverdi$test_verdi_mindre.class)); }
+    public PRCQNT$ les$0() { return(new PRCQNT$(this,HegnaNRK$heltallverdi$les.class)); }
+    public HegnaNRK$heltallverdi(RTObject$ staticLink) {
+        super(staticLink);
+        TRACE_BEGIN_DCL$("heltallverdi",101);
+    }
+    public HegnaNRK$heltallverdi STM$() {
+        EBLK();
+        return(this);
+    }
+    public static PROGINFO$ INFO$=new PROGINFO$("HegnaNRK.sim","Class heltallverdi",7,65,19,104,22,104);
+}

@@ -113,7 +113,7 @@ public final class Global {
 		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
 		} catch(Exception e) {
 			Util.popUpError("Can't load: "+simulaPropertiesFile+"\nGot error: "+e );
-			e.printStackTrace();
+			Util.INTERNAL_ERROR("Global.loadProperties FAILED: ", e);
 		}
 		String simulaHome=Global.getProperty("simula.home",null);
 		if(simulaHome==null) {

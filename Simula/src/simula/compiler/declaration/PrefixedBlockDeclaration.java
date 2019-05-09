@@ -34,7 +34,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	}
 
 	// ***********************************************************************************************
-	// *** createMaybeBlock
+	// *** createPrefixedBlock
 	// ***********************************************************************************************
 	// Used by ProgramModule
 	public static PrefixedBlockDeclaration createPrefixedBlock(final Variable blockPrefix) {
@@ -82,7 +82,9 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		if (blockKind != BlockKind.SimulaProgram) {
 			if (blockPrefix != null) {
 				blockKind = BlockKind.PrefixedBlock;
-				modifyIdentifier("" + Global.sourceName + "$PBLK" + lineNumber);
+				if(isMainModule)
+					 modifyIdentifier(Global.sourceName);
+				else modifyIdentifier("" + Global.sourceName + "$PBLK" + lineNumber);
 				this.externalIdent = this.identifier;
 			} else if (!declarationList.isEmpty()) {
 				blockKind = BlockKind.SubBlock;

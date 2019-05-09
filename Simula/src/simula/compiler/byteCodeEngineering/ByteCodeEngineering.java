@@ -11,6 +11,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -38,13 +39,14 @@ public final class ByteCodeEngineering {
 	}
 
     public void doRepairSingleByteCode(String classFileName) {
+    	InputStream inputStream=null;
         try {
         	File file=new File(classFileName);
         	String fileName=file.getName();
             //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Load "+classFileName);
             if(Option.TRACE_REPAIRING) Util.println("ByteCodeEngineering.doRepairSingleByteCode: Load "+classFileName);
             if(LIST_ASM_CODE) SimulaCompiler.doListClassFile(classFileName);
-			InputStream inputStream=new FileInputStream(classFileName);
+			inputStream=new FileInputStream(classFileName);
 			ClassReader classReader = new ClassReader(inputStream);
 			ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 			// classVisitor forwards all events to classWriter
@@ -60,9 +62,12 @@ public final class ByteCodeEngineering {
         } catch (Exception e) {
         	Util.println("ByteCodeEngineering FAILED for "+classFileName);
         	Util.error("ByteCodeEngineering FAILED for "+classFileName+", Exception="+e.getClass().getSimpleName()+", msg="+e.getMessage());
-        	e.printStackTrace();
+        	Util.INTERNAL_ERROR("ByteCodeEngineering.doRepairSingleByteCode FAILED: ", e);
         	Util.BREAK("CONTINUE ?");
         	//System.exit(0);
+        } finally {
+        	if(inputStream!=null)
+				try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
         }
     }
     
