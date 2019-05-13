@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.attribute.FileTime;
@@ -88,23 +89,27 @@ public final class SimulaCompiler {
 		if(Option.outputDir==null)
 		     Global.outputDir=Global.sourceFileDir+"bin/";	
 		else Global.outputDir=Option.outputDir;
+//		Util.message("Option.outputDir:       \""+Option.outputDir+"\"");
+//		Util.message("Global.outputDir:       \""+Global.outputDir+"\"");
 
 		// Get Temp Directory:
-		String simtmp=Option.keepJava;
-		if(simtmp==null) simtmp=Global.getTempFileDir("simula/");
-		
+//		String simtmp=Option.keepJava;
+//		if(simtmp==null) simtmp=Global.getTempFileDir("simula/");
+		Global.simulaTempDir=Global.getTempFileDir("simula/");
+		//Global.simulaTempDir.deleteOnExit();
+		deleteTempFiles(Global.simulaTempDir);
+
 		// Create Temp .java-Files Directory:
-		String tmpJavaDirName=simtmp+"/src/"+Global.packetName;
+		String javatmp=Option.keepJava;
+		if(javatmp==null) javatmp=Global.simulaTempDir;
+		String tmpJavaDirName=javatmp+"/src/"+Global.packetName;
 		File tmpJavaDir=new File(tmpJavaDirName);
 		tmpJavaDir.mkdirs();
-		if(Option.deleteTempFiles) tmpJavaDir.deleteOnExit();
 		Global.tempJavaFileDir=tmpJavaDir.toString()+'/';
 
 		// Create Temp .class-Files Directory:
-//		File tmpClassDir=new File(Global.tempJavaFileDir+"/"+Global.sourceName+'_'+"Classes");
-		File tmpClassDir=new File(Global.tempJavaFileDir+"/classes");
+		File tmpClassDir=new File(Global.simulaTempDir+"/classes");
 		tmpClassDir.mkdirs();
-		if(Option.deleteTempFiles) tmpClassDir.deleteOnExit();
 		Global.tempClassFileDir=tmpClassDir.toString()+'/';
 
 		if(Option.verbose) {
@@ -132,50 +137,45 @@ public final class SimulaCompiler {
 //		Util.println("SYSTEM: path.separator="+System.getProperty("path.separator"));
 //		Util.println("SYSTEM: User working directory="+System.getProperty("user.dir"));
 //		Util.println("SYSTEM: User home directory="+System.getProperty("user.home"));
-		if(Option.deleteTempFiles) deleteFiles(Global.tempClassFileDir + Global.packetName);
 	}
 	
-//	private void list(final String dirName) {
-//		try {
-//			Util.message("------------  LIST "+dirName+"  ------------");
-//			list("",new File(dirName));
-//		} catch (Exception e) { Util.INTERNAL_ERROR("SimulaCompiler.listFiles FAILED: ", e); e.printStackTrace(); }
-//	}
-//	
-//	private void list(String indent,final File dir) {
-//		try {
-//			//Util.println("tmpClass: "+dir);
-//			File[] elt = dir.listFiles();
-//			if(elt==null || elt.length==0) {
-//				Util.println("Empty Directory: "+dir);
-//				return; 
-//			}
-//			Util.println("Elements: "+elt.length);
-//			for (File f : elt) {
-//				Util.println(indent+"- "+f);
-//				if(f.isDirectory()) list(indent+"   ",f);
-//			}
-//		} catch (Exception e) { Util.INTERNAL_ERROR("SimulaCompiler.listFiles FAILED: ", e);e.printStackTrace(); }
-//	}
-	
-	private void deleteFiles(final String dirName) {
-		if(Option.verbose) Util.message("Clean up Directory: "+dirName);
+	private void list(final String dirName) {
 		try {
-			// Try to Clean Global.tempClassFileDir
-//			  File tmpClass = new File(Global.tempClassFileDir + '/' + Global.packetName);
+			Util.message("------------  LIST "+dirName+"  ------------");
+			list("",new File(dirName));
+		} catch (Exception e) { Util.INTERNAL_ERROR("SimulaCompiler.listFiles FAILED: ", e); e.printStackTrace(); }
+	}
+	
+	private void list(String indent,final File dir) {
+		try {
+			//Util.println("tmpClass: "+dir);
+			File[] elt = dir.listFiles();
+			if(elt==null || elt.length==0) {
+				Util.println("Empty Directory: "+dir);
+				return; 
+			}
+			Util.println("Elements: "+elt.length);
+			for (File f : elt) {
+				Util.println(indent+"- "+f);
+				if(f.isDirectory()) list(indent+"   ",f);
+			}
+		} catch (Exception e) { Util.INTERNAL_ERROR("SimulaCompiler.listFiles FAILED: ", e);e.printStackTrace(); }
+	}
+	
+	private void deleteTempFiles(final String dirName) {
+		//if(Option.DEBUGGING) Util.message("Clean up Directory: "+dirName);
+		try { // Try to Clean Global.simulaTempDir
 			  File tmpClass = new File(dirName);
 			  // Util.println("tmpClass: "+tmpClass);
 			  File[] elt = tmpClass.listFiles();
 			  // Util.println("Elements: "+elt);
 			  if(elt==null) return; 
 			  for (File f : elt) {
-				  if(Option.verbose) Util.println("Delete: "+f);
+				  if(Option.DEBUGGING) {
+					  if(f.isFile()) Util.println("Delete: "+f);
+				  }
+				  if(f.isDirectory()) deleteTempFiles(f.getPath());
 				  f.delete();
-				  
-//				  Path path=Paths.get(f.getPath());
-//				  FileSystem sys=path.getFileSystem();
-//				  Util.println("Delete(2): isOpen="+sys.isOpen()+", Path="+path);
-//				  java.nio.file.Files.delete(path);
 			  }
 		} catch (Exception e) { Util.INTERNAL_ERROR("SimulaCompiler.deleteFiles FAILED: ", e);	e.printStackTrace(); }
 		//list(dirName);
@@ -242,22 +242,37 @@ public final class SimulaCompiler {
 				classPath=classPath+";"+(jar.trim());
 			}
 			//callJavaCompiler(classPath);
+			int exitValue= -1;
+			String msg="Commandline";
 			if(Global.USE_JAVA_SYSTEM_COMPILER) {
 				JavaCompiler compiler= ToolProvider.getSystemJavaCompiler();
-				if(compiler!=null) callJavaSystemCompiler(compiler,classPath);
-				else callJavacCompiler(classPath);
-			} else callJavacCompiler(classPath);
-			
-			if(Option.TRACE_JAVAC_OUTPUT) {
+				if(compiler!=null) {
+					exitValue=callJavaSystemCompiler(compiler,classPath);
+					msg="System";
+					if(exitValue!=0) {
+						Util.error("Java "+msg+" Compiler returns exit="+exitValue+"\n");
+						msg="Commandline"; // Try use CommandLine Compiler
+						exitValue=callJavacCompiler(classPath);
+					}
+				}
+				else exitValue=callJavacCompiler(classPath);
+			} else exitValue=callJavacCompiler(classPath);
+			if(exitValue!=0) {
+				Util.error("Java "+msg+" Compiler returns exit="+exitValue+"\n");
+				Util.message("\nCompiler terminated after error(s) during Java Compilation");
+				return;
+			}
+
+			// ***************************************************************
+			// *** POSSIBLE -- DO BYTE_CODE_ENGINEERING
+			// ***************************************************************
+			if(Option.TRACE_BYTECODE_OUTPUT) {
+				Util.message("------------  LIST ByteCode Before Engineering  ------------");
 				for(JavaModule module:Global.javaModules) {
 					String classFile=module.getClassOutputFileName();
 					doListClassFile(classFile);
 				}
 			}
-			
-			// ***************************************************************
-			// *** POSSIBLE -- DO BYTE_CODE_ENGINEERING
-			// ***************************************************************
 			//Util.println("SimulaCompiler.doCompile: BEGIN BYTE CODE REPAIR: "+Global.tempClassFileDir);
 			File classDir=new File(Global.tempClassFileDir);
 			//repairClassFiles(classDir);
@@ -270,6 +285,7 @@ public final class SimulaCompiler {
 
 		    //doListClassFile("C:/Users/YSTEIN~1/AppData/Local/Temp/GotoSample6Classes/testing/GotoSample6$B$1.class"); // AD'HOC
 			if(Option.TRACE_BYTECODE_OUTPUT) {
+				Util.message("------------  LIST ByteCode After Engineering  ------------");
 				for(JavaModule module:Global.javaModules) {
 					String classFile=module.getClassOutputFileName();
 					doListClassFile(classFile);
@@ -286,10 +302,9 @@ public final class SimulaCompiler {
 //			    execute("jar.exe -tvf "+jarFile);
 //			}
 			if(Option.verbose) printSummary();
-			if(Option.deleteTempFiles) {
-				if(Option.verbose) Util.message("------------  CLEANING UP TEMP FILES  ------------");
-				deleteFiles(Global.tempClassFileDir + Global.packetName);
-			}
+//			if(Option.DEBUGGING) Util.message("------------  CLEANING UP TEMP FILES  ------------");
+//			deleteTempFiles(Global.simulaTempDir);
+			
 			
 			// ***************************************************************
 			// *** EXECUTE .jar FILE
@@ -316,10 +331,8 @@ public final class SimulaCompiler {
 				int exitValue3=execute(cmd);
 				if (Option.verbose)	Util.message("END Execute .jar File. Exit value="+exitValue3);
 			}
-//			if(Option.deleteTempFiles) {
-//				if(Option.verbose) Util.message("------------  CLEANING UP TEMP FILES  ------------");
-//				deleteFiles(Global.tempClassFileDir + Global.packetName);
-//			}
+			if(Option.DEBUGGING) Util.message("------------  CLEANING UP TEMP FILES  ------------");
+			deleteTempFiles(Global.simulaTempDir);
 			
 		} catch (IOException e) {
 			Util.INTERNAL_ERROR("Compiler Error: ",e);
@@ -349,10 +362,9 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** CALL JAVA SYSTEM COMPILER
 	// ***************************************************************
-	private void callJavaSystemCompiler(final JavaCompiler compiler,final String classPath) throws IOException {
-		//Option.TRACE_JAVAC=true; // TODO: TESTING !!!
+	private int callJavaSystemCompiler(final JavaCompiler compiler,final String classPath) throws IOException {
 		Vector<String> arguments = new Vector<String>();
-		if (Option.TRACE_JAVAC) {
+		if (Option.DEBUGGING) {
 			arguments.add("-version");
 			//arguments.add("-verbose");
 		}
@@ -362,26 +374,34 @@ public final class SimulaCompiler {
 		if (Option.noJavacWarnings)
 			arguments.add("-nowarn");
 		// arguments.add("-Xlint:unchecked");
+		// arguments.add("-BareTull");
 		for (JavaModule module : Global.javaModules)
 			arguments.add(module.javaOutputFileName); // Add .java Files
-
-		// java.home=C:\Program Files\Java\jre1.8.0_161
-		if (Option.TRACE_JAVAC)
-			Util.println("Compiler=" + compiler);
 		int nArg = arguments.size();
 		String[] args = new String[nArg];
 		arguments.toArray(args);
-		if (Option.TRACE_JAVAC) {
+		
+		InputStream in=System.in;
+		OutputStream out=System.out;
+		OutputStream err=System.err;
+		if(Global.console!=null) {
+			out=Global.console.getOutputStream();
+			err=Global.console.getErrorStream();
+		}
+		if(Option.DEBUGGING) Util.message("------------  Call Java System Compiler  ------------");
+		int exitValue = compiler.run(in, out, err, args);
+		if(Option.DEBUGGING) {
+			Util.message("System Compiler supports " + compiler.getSourceVersions());
 			for (int i = 0; i < args.length; i++)
 				Util.println("Compiler'args[" + i + "]=" + args[i]);
+			list(Global.tempClassFileDir);
 		}
-		if (Option.TRACING)	Util.message("Call Java System Compiler");
-		int exitValue = compiler.run(null, null, null, args);
 		if (Option.TRACING) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
 			for (JavaModule module : Global.javaModules)
 				Util.LIST(module.getClassOutputFileName());
 		}
+		return(exitValue);
 	}
 	
 	
@@ -391,33 +411,34 @@ public final class SimulaCompiler {
 	// https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html
 	// https://docs.oracle.com/javase/10/tools/tools-and-command-reference.htm
 	// ***************************************************************
-	private void callJavacCompiler(final String classPath) throws IOException {
-		//Option.TRACE_JAVAC=true; // TODO: TESTING !!!
+	private int callJavacCompiler(final String classPath) throws IOException {
 		StringBuilder cmd=new StringBuilder();
-		if (Option.TRACE_JAVAC) {
+		if (Option.DEBUGGING) {
 			cmd.append(" -version");
 			//cmd.append(" -verbose");
 		}
 		if (Option.TRACING)	Util.println("SimulaCompiler.callJavacCompiler: classPath=\"" + classPath+"\"");
 		cmd.append(" -classpath ").append(classPath);
-		// *** TODO: Hvis tempClassFileDir ikke finnes - CREATE !
 		cmd.append(" -d ").append(Global.tempClassFileDir); // Specifies output directory.
 		if (Option.noJavacWarnings)	cmd.append(" -nowarn");
 		// cmd.append(" -Xlint:unchecked");
+		
+//		cmd.append(" -myeMereTull");
+		
 		for (JavaModule module : Global.javaModules)
 			cmd.append(' ').append(module.javaOutputFileName); // Add .java Files
-		if (Option.TRACE_JAVAC) {
-			Util.println("SimulaCompiler.doCompile JAVAC: classPath=" + classPath);
-			Util.println("SimulaCompiler.doCompile JAVAC: arguments=" + cmd);
-			//				Util.println("SimulaCompiler.doCompile JAVAC: classOutputDir=" + classOutputDir);
-		}
-		if (Option.TRACING)	Util.message("Call Java Command Line Compiler");
 		int exitValue = execute("javac.exe"+cmd);
+		if(Option.DEBUGGING) {
+			Util.message("------------  Call Java Command Line Compiler  ------------");
+			Util.message("javac.exe"+cmd);
+			list(Global.tempClassFileDir);
+		}
 		if (Option.TRACING) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
 			for (JavaModule module : Global.javaModules)
 				Util.LIST(module.getClassOutputFileName());
 		}
+		return(exitValue);
 	}
 	
 	// ***************************************************************
@@ -442,6 +463,7 @@ public final class SimulaCompiler {
 		if (Option.TRACING)
 			Util.message("Output " + jarFile + " MANIFEST'mainEntry=\"" + mainEntry+"\"");
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+		manifest.getMainAttributes().putValue("Created-By",Global.simulaReleaseID+" (Portable Simula)");
 		String relativeAttributeFileName = program.getRelativeAttributeFileName();
 		Util.CHECK_FILENAME(relativeAttributeFileName);
 		if (relativeAttributeFileName != null)
@@ -523,8 +545,7 @@ public final class SimulaCompiler {
 			Util.message("Main Entry:      \"" + mainEntry+"\"");
 		}
 //		list("Global.tempClassFileDir" + '/' + "Global.packetName");
-//		if(Option.TRACE_JARING)
-		    listJarFile(jarFileName);
+		if(Option.DEBUGGING) listJarFile(jarFileName);
 	}
 
 	// ***************************************************************

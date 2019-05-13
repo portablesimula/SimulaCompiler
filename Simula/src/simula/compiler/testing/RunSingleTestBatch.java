@@ -160,9 +160,19 @@ public final class RunSingleTestBatch {
 		//names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
 		//names.add("simtst114.sim"); // OK: Switch Statement
 		//names.add("simtst115.sim"); // OK: Simple QPS-Sample 1
-		names.add("simtst116.sim"); // OK: Simple QPS-Sample 2
+		//names.add("simtst116.sim"); // OK: Simple QPS-Sample 2
 		//names.add("simtst117.sim"); // OK: Simple QPS-Sample 3
 		//names.add("simtst118.sim"); // OK: Simple QPS-Sample 4
+		//names.add("ExternalClass1.sim");      // OK:  Precompile this for Simtst 119.
+		//names.add("ExternalClass2.sim");      // OK:  Precompile this for Simtst 119.
+		//names.add("simtst119.sim"); // OK: Uses EcternalClass1-2
+		//names.add("simtst120.sim"); // OK: VERY LOCAL GOTO SAMPLE
+		//names.add("simtst121.sim"); // OK: LEGAL GOTO out of an operating Process and the enclosing System.
+		//names.add("simtst122.sim"); // OK: GOTO LABEL IN SUPER CLASS
+		//names.add("simtst123.sim"); // OK: GOTO VIRTUAL LABEL
+		//names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
+		//names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
+		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
 
 		// Set options and tracing.
 		Option.verbose = true;// false;
@@ -186,22 +196,14 @@ public final class RunSingleTestBatch {
 		// Coder Trace Options
 		Option.TRACE_CODING=true;
 
-		// Java Compiler and Jar-tool Trace Options
-		Option.TRACE_JAVAC=false;//true;
-		Option.TRACE_JAVAC_OUTPUT=false;//true;
-		Option.TRACE_JARING=true; //false;//true;
-
-		//String userDir=System.getProperty("user.dir");
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
 		Global.packetName="simulaTestBatch";
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
-		Option.outputDir=Global.getTempFileDir("simula/bin/");
 		
 		// Set RunTime Options and tracing.
 		RTOption.VERBOSE = true;
 		RTOption.DEBUGGING = false;
-//		RTOption.USE_CONTINUATIONS=true;
 		RTOption.USE_CONSOLE=false;
 		RTOption.CODE_STEP_TRACING = false;
 		RTOption.BLOCK_TRACING = false;

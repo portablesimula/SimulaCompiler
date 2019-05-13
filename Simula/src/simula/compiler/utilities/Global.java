@@ -61,8 +61,9 @@ public final class Global {
 	public static String currentWorkspace;  // Where to find ...put resulting .jar
 	public static ArrayDeque<String> workspaces;
 
-	public static String tempJavaFileDir;   // Temp dir for .java  files
-	public static String tempClassFileDir;  // Temp dir for .class  files
+	public static String simulaTempDir;     // Temp directory
+	public static String tempJavaFileDir;   // Temp sub-dir for .java  files
+	public static String tempClassFileDir;  // Temp sub-dir for .class  files
 	
 	public static String packetName = "simprog"; // NOTE: Must be a single identifier
 

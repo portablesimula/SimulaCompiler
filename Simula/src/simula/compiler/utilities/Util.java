@@ -75,7 +75,9 @@ public final class Util {
 
 	public static void warning(final String msg) {
 		String line = "LINE " + Global.sourceLineNumber + ": WARNING: " + msg;
-		if (Option.WARNINGS) println(line);
+		if (Option.WARNINGS) {
+			printWarning(line);
+		}
 	}
 
 	public static void message(final String msg) {
@@ -177,8 +179,13 @@ public final class Util {
 
 	public static void printError(final String s) {
 		String u = s.replace('\r', (char) 0);
-//		u = u.replace('\n', (char) 0);
-		if (Global.console != null)	Global.console.writeError(u);// + '\n');
+		if (Global.console != null)	Global.console.writeError(u + '\n');
+		else System.err.println(u);
+	}  
+
+	public static void printWarning(final String s) {
+		String u = s.replace('\r', (char) 0);
+		if (Global.console != null)	Global.console.writeWarning(u + '\n');
 		else System.err.println(u);
 	}  
 

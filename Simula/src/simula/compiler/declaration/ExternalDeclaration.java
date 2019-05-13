@@ -24,6 +24,7 @@ import simula.compiler.AttributeFile;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -176,22 +177,33 @@ public final class ExternalDeclaration extends Declaration {
 	    return(moduleType);
 	}
 
+//	private static void expandJarEntries(final JarFile jarFile,final File destDir) throws IOException {
 	private static void expandJarEntries(final JarFile jarFile,final File destDir) throws IOException {
+		if(Option.verbose) Util.message("---------  EXPAND .jar File: "+jarFile.getName()+"  ---------");
 		new File(destDir,Global.packetName).mkdirs(); // Create directories
 		Enumeration<JarEntry> entries = jarFile.entries();
+		int nEntriesAdded=0;
 		LOOP:while (entries.hasMoreElements()) {
 			JarEntry entry = entries.nextElement();
 			InputStream inputStream = jarFile.getInputStream(entry);
 	           
 			String name=entry.getName();
+			//Util.BREAK("ExternalDeclaration.expandJarEntries: entry'name="+name);
 //	           if(name.startsWith("simula/runtime")) continue LOOP;
 //	           if(name.startsWith("simula/compiler")) continue LOOP;
-			if(!name.startsWith(Global.packetName)) continue LOOP;
-			if(!name.endsWith(".class")) continue LOOP;
+			if(!name.startsWith(Global.packetName)) {
+				//Util.BREAK("!name.startsWith(Global.packetName): "+Global.packetName);
+				continue LOOP;
+			}
+			if(!name.endsWith(".class")) {
+				//Util.BREAK("!name.endsWith(\".class\"): ");
+				continue LOOP;
+			}
 			//Util.BREAK("ExternalDeclaration.expandJarEntries: entry'name="+entry.getName());
 			//Util.BREAK("ExternalDeclaration.expandJarEntries: TREAT entry="+entry);
 			File destFile = new File(destDir,entry.getName());
 			//Util.BREAK("ExternalDeclaration.expandJarEntries: destFile="+destFile);
+			//Util.message("Add entry: "+destFile);
 			OutputStream outputStream=new FileOutputStream(destFile);	 
 			byte[] buffer = new byte[4096];
 			int bytesRead = 0;
@@ -201,7 +213,9 @@ public final class ExternalDeclaration extends Declaration {
 			inputStream.close();
 			outputStream.flush();
 			outputStream.close();
+			nEntriesAdded++;
 		}
+		if(Option.verbose) Util.message("---------  END EXPAND .jar File, "+nEntriesAdded+" Entries Added  ---------");
 	}
 
 }

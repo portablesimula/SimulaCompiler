@@ -29,15 +29,7 @@ begin integer MAX, SQRT_MAX;
       if bArray(n) then begin 
          n2 := n * n; 
          for k := n2 step n2 until MAX do 
-            begin
-               if k < 4 or k > (MAX-4) then
-               begin
-                  outtext("n="); outint(n,0);
-                  outtext(", n2="); outint(n2,0);
-                  outtext(", k="); outint(k,0); outimage;
-               end;
                bArray(k) := FALSE;
-            end; 
       end; 
         
     for k := 0 step 1 until MAX do 

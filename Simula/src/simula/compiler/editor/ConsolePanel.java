@@ -28,6 +28,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public final class ConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -51,7 +53,24 @@ public final class ConsolePanel extends JPanel {
 		return(keyin);
 	}
 
+	public OutputStream getOutputStream() {
+		return(new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				String s=""+(char)b;
+				ConsolePanel.this.write(s,styleRegular);
+			}});
+	}
 
+	public OutputStream getErrorStream() {
+		return(new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				String s=""+(char)b;
+				ConsolePanel.this.write(s,styleError);
+			}});
+	}
+	
 	public void write(final String s) { write(s,styleRegular); }
 	public void writeError(final String s) { write(s,styleError); }
 	public void writeWarning(final String s) { write(s,styleWarning);	}

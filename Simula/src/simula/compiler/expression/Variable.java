@@ -550,11 +550,15 @@ public final class Variable extends Expression {
 				id="(("+remoteCast+")("+inspectedVariable.toJavaCode()+"))."+id;
 			} else id=inspectedVariable.toJavaCode()+"."+id;
 	    
-		} else if(!(Option.standardClass &&
-			 (    meaning.declaredIn.blockKind==BlockKind.ContextFreeMethod // TODO: CHECK DETTE
-			   || meaning.declaredIn.blockKind==BlockKind.StaticMethod
-			   || meaning.declaredIn.blockKind==BlockKind.MemberMethod
-			 ))) {
+//		} else if(!(Option.standardClass &&
+//			 (    meaning.declaredIn.blockKind==BlockKind.ContextFreeMethod // TODO: CHECK DETTE
+//			   || meaning.declaredIn.blockKind==BlockKind.StaticMethod
+//			   || meaning.declaredIn.blockKind==BlockKind.MemberMethod
+//			 ))) {
+		} else if(!( meaning.declaredIn.blockKind==BlockKind.ContextFreeMethod // TODO: CHECK DETTE
+				  || meaning.declaredIn.blockKind==BlockKind.StaticMethod
+				  || meaning.declaredIn.blockKind==BlockKind.MemberMethod
+				 )) {
 			String cast=meaning.declaredIn.getJavaIdentifier();
 			int n=meaning.declaredIn.blockLevel;
 			if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();

@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Thu May 09 12:13:33 CEST 2019
+// Simula-Beta-0.3 Compiled at Fri May 10 10:23:05 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class DatesTest extends Dates {
@@ -20,7 +20,7 @@ public final class DatesTest extends Dates {
         M_tab.Elt[4-M_tab.LB[0]]=M_tab.Elt[6-M_tab.LB[0]]=M_tab.Elt[9-M_tab.LB[0]]=M_tab.Elt[11-M_tab.LB[0]]=30;
         M_tab.Elt[2-M_tab.LB[0]]=28;
         WE_tab.Elt[0-WE_tab.LB[0]]=new TXT$("Sunday");
-        WN_tab.Elt[0-WN_tab.LB[0]]=new TXT$("s�ndag");
+        WN_tab.Elt[0-WN_tab.LB[0]]=new TXT$("søndag");
         WE_tab.Elt[1-WE_tab.LB[0]]=new TXT$("Monday");
         WN_tab.Elt[1-WN_tab.LB[0]]=new TXT$("mandag");
         WE_tab.Elt[2-WE_tab.LB[0]]=new TXT$("Tuesday");
@@ -32,7 +32,7 @@ public final class DatesTest extends Dates {
         WE_tab.Elt[5-WE_tab.LB[0]]=new TXT$("Friday");
         WN_tab.Elt[5-WN_tab.LB[0]]=new TXT$("fredag");
         WE_tab.Elt[6-WE_tab.LB[0]]=new TXT$("Saturday");
-        WN_tab.Elt[6-WN_tab.LB[0]]=new TXT$("l�rdag");
+        WN_tab.Elt[6-WN_tab.LB[0]]=new TXT$("lørdag");
         TD$1=new Dates$Today(((DatesTest)CUR$)).RESULT$;
         sysout().outtext(CONC(CONC(new TXT$("I dag er det "),new Dates$Date$Image(TD$1).RESULT$),new TXT$(".")));
         sysout().outimage();

@@ -424,6 +424,26 @@ public class EditorMenues extends JMenuBar {
 	// *** doRunAction
 	// ****************************************************************
 	private void doRunAction() {
+		Option.DEBUGGING=false;
+		RTOption.DEBUGGING=false;
+		doStartRunning();
+	}
+	
+	// ****************************************************************
+	// *** doDebugAction
+	// ****************************************************************
+	private void doDebugAction() {
+		Option.DEBUGGING=true;
+		RTOption.DEBUGGING=true;
+		RTOption.VERBOSE=true;
+		RTOption.selectRuntimeOptions();
+		doStartRunning();
+	}
+	
+	// ****************************************************************
+	// *** doStartRunning
+	// ****************************************************************
+	private void doStartRunning() {
 		maybeSaveCurrentFile();
 //		SourceTextPanel current=SimulaEditor.current;
        	File file=SimulaEditor.current.sourceFile;
@@ -442,16 +462,6 @@ public class EditorMenues extends JMenuBar {
 					new SimulaCompiler(name,reader).doCompile();
 				}}).start();
 		} catch(Exception e) { Util.popUpError("Can't run: "+e);}
-	}
-	
-	// ****************************************************************
-	// *** doDebugAction
-	// ****************************************************************
-	private void doDebugAction() {
-		RTOption.DEBUGGING=true;
-		RTOption.VERBOSE=true;
-		RTOption.selectRuntimeOptions();
-		doRunAction();
 	}
     
 	// ****************************************************************

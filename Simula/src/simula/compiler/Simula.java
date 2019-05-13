@@ -52,9 +52,9 @@ public final class Simula {
 				else if (arg.equals("-noexec")) Option.noExecution=true;
 				else if (arg.equals("-nowarn")) { Option.noJavacWarnings=true; Option.WARNINGS=false; }
 				else if (arg.equals("-verbose")) Option.verbose=true;
-				else if (arg.equals("-standardClass")) Option.standardClass=true;
+//				else if (arg.equals("-standardClass")) Option.standardClass=true;
 				else if (arg.equals("-keepJava")) setKeepJava(argv[++i]);
-				else if (arg.equals("-outputJava")) setOutputDir(argv[++i]);
+				else if (arg.equals("-output")) setOutputDir(argv[++i]);
 				else error("Unknown option "+arg);
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");

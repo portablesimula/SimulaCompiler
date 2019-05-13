@@ -1,15 +1,30 @@
 Simula Issues
 
-OPEN Issue 24: Fra Karel
+OPEN Issue 25: Fra Øystein
+Håndtering av integer overflow underflow.
+
+Java def. sier  'The integer operators do not indicate overflow or underflow in any way.'
+
+Fra Java 8 er det inført metoder   Math.addExact (multiplyExact, subtractExact etc.) som kaster exception overflow/underflow.
+Dermed får vi redusert performance.
+Jeg tror jeg innfører en compiler option på dette.
+
+===============================================================================
+
+CLOSED Issue 24: Fra Karel
 for k := n step m until max do  hvor  n > max 
 uføres en gang før jeg testet.
 Skulle ikke gjort det.
 
+Tiltak: For Element Step-Until er oppdatert.
+
 ===============================================================================
 
-OPEN Issue 23: Fra Karel
+CLOSED Issue 23: Fra Karel
 Untyped array parameter til procedure. Parser failed
 Syntax i Simula Standard er feil.
+
+Tiltak: Simula Standard er 'rettet' og untyped array tillates nå.
 
 ===============================================================================
 
@@ -30,7 +45,7 @@ Tiltak: Tror det er iorden nå
 
 ===============================================================================
 
-OPEN Issue 20: Fra Karel
+CLOSED Issue 20: Fra Karel
 En klasse kan ha for eksempel prosedyrer og labels som parametre. 
 
 Ved første kjøring får man feil med litt kryptisk melding.
@@ -38,6 +53,8 @@ Prøv å kommentere vekk linje 12 for å unngå feilen og kjør.
 Hvis du så gjenoppretter linjen og eksekverer igjen, kommer ikke den opprinnelige feilmeldingen.
 
 Analyse: Klasser og Prosedyrer bruker samme BlockDeclarartion til å parse input.
+
+Tiltak: Rettet
 
 ===============================================================================
 
@@ -273,7 +290,7 @@ Tiltak: 1) Vinduet med FATAL ERROR blir stående
 
 ===============================================================================
 
-OPEN Issue 4: Fra Dag
+CLOSED Issue 4: Fra Dag
 * Editoren henger av og til og jeg får melding om
    java.lang.OutOfMemoryError: Java heap space. Si fra om du vil
    ha en full stack trace.

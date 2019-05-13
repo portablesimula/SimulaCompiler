@@ -74,11 +74,6 @@ public final class ProcedureSpecification implements Externalizable {
 	 * </pre>
 	 */
 	public static ProcedureSpecification doParseProcedureSpecification(final Type type) {
-//		BlockKind blockKind = (Option.standardClass) ? BlockKind.MemberMethod : BlockKind.Procedure; // TODO: CHECK DETTE
-//		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
-//		block.type = type;
-//		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
-//		BlockParser.doParseProcedureDeclaration(block);
 		ProcedureDeclaration block = ProcedureDeclaration.doParseProcedureDeclaration(type);
 		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureSpecification: " + block);
 		Global.currentScope = block.declaredIn;

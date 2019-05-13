@@ -1,0 +1,66 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 122
+%
+%  PURPOSE: GOTO LABEL IN SUPER CLASS
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:9);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   Class A;
+   BEGIN
+      L1: trace("A.L1"); n:=n+1;
+   END;
+
+   A Class B;
+   BEGIN
+      L2: trace("B.L2"); n:=n+1;
+      if n < 4 then goto L1;
+   END;
+
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 122"); Outimage ;
+   Outtext("--- GOTO LABEL IN SUPER CLASS");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"A.L1";
+   facit(1):-"B.L2";
+   facit(2):-"A.L1";
+   facit(3):-"B.L2";
+   facit(4):-"At END OF TEST";
+   
+   new B;
+   trace("At END OF TEST");
+      
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 122");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 122") ;
+      Outimage;
+   end;
+   
+END;   

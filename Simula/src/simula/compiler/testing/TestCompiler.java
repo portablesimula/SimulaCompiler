@@ -53,7 +53,7 @@ public final class TestCompiler {
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HegnaNRK.sim";
-		 String name="/samples/HelloWorld.sim";
+		// String name="/samples/HelloWorld.sim";
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/JensensDevice.sim";
 		// String name="/samples/PrimeUnder.sim";
@@ -100,7 +100,7 @@ public final class TestCompiler {
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
-		// String name="/simple/adHoc26.sim";
+		 String name="/simple/adHoc26.sim";
 		// String name="/simple/adHoc51.sim";
 		// String name="/simple/adHoc54.sim";
 		// String name="/simple/adHoc66.sim";
@@ -119,22 +119,11 @@ public final class TestCompiler {
 		// String name="/simple/DrawingTest.sim";
 		// String name="/simple/Editing.sim";
 		// String name="/simple/Expressions.sim";
-		// String name="/simple/ExternalClass1.sim";  //  ===> TIL TESTBATCH
-		// String name="/simple/ExternalClass2.sim";  //  ===> TIL TESTBATCH
-		// String name="/simple/ExternalClass3.sim";  //  ===> TIL TESTBATCH
 		// String name="/simple/ForWhileSamples.sim";
 		// String name="/simple/ForWhileSamples2.sim";
 		// String name="/simple/FunctionCall.sim";
 		// String name="/simple/Gauss.sim";
-		// String name="/simple/GotoSample0.sim";   //  ===> TIL TESTBATCH
-		// String name="/simple/GotoSample1.sim";   //  ===> TIL TESTBATCH
-		// String name="/simple/GotoSample2.sim";
-		// String name="/simple/GotoSample3.sim";
-		// String name="/simple/GotoSample4.sim";
-		// String name="/simple/GotoSample5.sim";
-		// String name="/simple/GotoSample6.sim";
-		// String name="/simple/GotoSample7.sim";
-		// String name="/simple/GotoSample8.sim";
+		// String name="/simple/GotoSample2.sim"; // ILLEGAL GOTO out of an operating Process and into the enclosing System.
 		// String name="/simple/HashingExample.sim";
 		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
@@ -174,11 +163,6 @@ public final class TestCompiler {
 
 			// Coder Trace Options
 			Option.TRACE_CODING=true;
-
-			// Java Compiler and Jar-tool Trace Options
-			Option.TRACE_JAVAC=false;//true;
-			Option.TRACE_JAVAC_OUTPUT=false;//true;
-			Option.TRACE_JARING=false;//true;
 
 			//String userDir=System.getProperty("user.dir");
 			String userDir="C:/GitHub/SimulaCompiler/Simula";

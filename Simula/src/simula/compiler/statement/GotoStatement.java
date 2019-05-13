@@ -10,7 +10,6 @@ package simula.compiler.statement;
 import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -47,10 +46,10 @@ public final class GotoStatement extends Statement {
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		if (Option.standardClass) {
-			JavaModule.code("GOTO$(" + label + ");","GOTO QUASI LABEL");
-			return;
-		}
+//		if (Option.standardClass) {
+//			JavaModule.code("GOTO$(" + label + ");","GOTO QUASI LABEL");
+//			return;
+//		}
   		Type type = label.type;
 		Util.ASSERT(type == Type.Label, "Invariant");
 		JavaModule.code("GOTO$(" + label.toJavaCode() + ");","GOTO EVALUATED LABEL");

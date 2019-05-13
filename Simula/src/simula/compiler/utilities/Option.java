@@ -30,6 +30,7 @@ public final class Option {
 	// Overall TRACING Options
 	public static boolean TRACING=false;//true;//false;//true;
 	public static boolean BREAKING=true;//false; //true; 
+	public static boolean DEBUGGING=false; // Set by EditorMenues - doDebugAction
 
 	// Scanner Trace Options
 	public static boolean TRACE_SCAN=false;//true;
@@ -48,9 +49,9 @@ public final class Option {
 	public static boolean TRACE_CODING=false;//true;
 
 	// Java Compiler and Jar-tool Trace Options
-	public static boolean TRACE_JAVAC=false;//true;
-	public static boolean TRACE_JAVAC_OUTPUT=false;//true;
-	public static boolean TRACE_JARING=false;//true;
+//	public static boolean TRACE_JAVAC=false;//true;
+//	public static boolean TRACE_JAVAC_OUTPUT=false;//true;
+//	public static boolean TRACE_JARING=false;//true;
 	
 	// Byte code engineering Options
 	public static boolean TRACE_BYTECODE_OUTPUT=false;
@@ -66,17 +67,12 @@ public final class Option {
 	 */
 	public static boolean sport = true;
 	
-	/** 
-	 * Used to compile 'standard classes' to indicate simplified block structure.
-	 * In addition all 'procedures' will be treated as Java Methods.
-	 */
-	public static boolean standardClass = false;
+//	/** 
+//	 * Used to compile 'standard classes' to indicate simplified block structure.
+//	 * In addition all 'procedures' will be treated as Java Methods.
+//	 */
+//	public static boolean standardClass = false;
 
-	
-	/**
-	 * Enables/disables deletion of temporary .java .class and .jasm files.
-	 */
-	public static boolean deleteTempFiles = true;
 	
 	/**
 	 * Used by Java-Coding to save the generated .java files.
@@ -88,7 +84,7 @@ public final class Option {
 	/**
 	 * Used by Java-Coding to save the generated .jar files.
 	 * <p>
-	 * If not set, .jar files are stored in the same directory as the source file.
+	 * If not set, .jar files are stored in subdirectory /bin of the source file directory.
 	 */
 	public static String outputDir = null;
 	
@@ -110,7 +106,8 @@ public final class Option {
 		// Overall TRACING Options
 		Option.TRACING=false;//true;
 		Option.BREAKING=false; //true; 
-
+		Option.DEBUGGING=false;
+		
 		// Scanner Trace Options
 		Option.TRACE_SCAN=false;//true;
 		Option.TRACE_COMMENTS=false;//true;
@@ -124,13 +121,8 @@ public final class Option {
 
 		// Coder Trace Options
 		Option.TRACE_CODING=false;
-
-		// Java Compiler and Jar-tool Trace Options
-		Option.TRACE_JAVAC=false;//true;
-		Option.TRACE_JAVAC_OUTPUT=false;//true;
-		Option.TRACE_JARING=false;//true;
 	
-		Option.standardClass = false;
+//		Option.standardClass = false;
 //		Option.keepJava="C:/WorkSpaces/SimulaCompiler/Simula/src/testing";
 //		Option.outputDir="C:/WorkSpaces/SimulaCompiler/Simula/bin/";
 		Option.noExecution = false;
@@ -150,11 +142,8 @@ public final class Option {
 		if(id.equalsIgnoreCase("TRACE_CHECKER")) return(TRACE_CHECKER); 
 		if(id.equalsIgnoreCase("TRACE_CHECKER_OUTPUT")) return(TRACE_CHECKER_OUTPUT); 
 		if(id.equalsIgnoreCase("TRACE_CODING")) return(TRACE_CODING); 
-		if(id.equalsIgnoreCase("TRACE_JAVAC")) return(TRACE_JAVAC); 
-		if(id.equalsIgnoreCase("TRACE_JAVAC_OUTPUT")) return(TRACE_JAVAC_OUTPUT); 
 		if(id.equalsIgnoreCase("TRACE_BYTECODE_OUTPUT")) return(TRACE_BYTECODE_OUTPUT); 
-		if(id.equalsIgnoreCase("TRACE_JARING")) return(TRACE_JARING); 
-		if(id.equalsIgnoreCase("standardClass")) return(standardClass); 
+//		if(id.equalsIgnoreCase("standardClass")) return(standardClass); 
 		if(id.equalsIgnoreCase("noExecution")) return(noExecution); 
 		if(id.equalsIgnoreCase("noJavacWarnings")) return(noJavacWarnings); 
 
@@ -178,11 +167,8 @@ public final class Option {
 		if(id.equalsIgnoreCase("TRACE_CHECKER")) TRACE_CHECKER=val; 
 		if(id.equalsIgnoreCase("TRACE_CHECKER_OUTPUT")) TRACE_CHECKER_OUTPUT=val; 
 		if(id.equalsIgnoreCase("TRACE_CODING")) TRACE_CODING=val; 
-		if(id.equalsIgnoreCase("TRACE_JAVAC")) TRACE_JAVAC=val; 
-		if(id.equalsIgnoreCase("TRACE_JAVAC_OUTPUT")) TRACE_JAVAC_OUTPUT=val; 
 		if(id.equalsIgnoreCase("TRACE_BYTECODE_OUTPUT")) TRACE_BYTECODE_OUTPUT=val; 
-		if(id.equalsIgnoreCase("TRACE_JARING")) TRACE_JARING=val; 
-		if(id.equalsIgnoreCase("standardClass")) standardClass=val; 
+//		if(id.equalsIgnoreCase("standardClass")) standardClass=val; 
 		if(id.equalsIgnoreCase("noExecution")) noExecution=val; 
 		if(id.equalsIgnoreCase("noJavacWarnings")) noJavacWarnings=val; 
 
@@ -206,11 +192,8 @@ public final class Option {
         panel.add(checkBox("TRACE_CHECKER"));
         panel.add(checkBox("TRACE_CHECKER_OUTPUT"));
         panel.add(checkBox("TRACE_CODING"));
-        panel.add(checkBox("TRACE_JAVAC"));
-        panel.add(checkBox("TRACE_JAVAC_OUTPUT"));
         panel.add(checkBox("TRACE_BYTECODE_OUTPUT"));
-        panel.add(checkBox("TRACE_JARING"));
-        panel.add(checkBox("standardClass"));
+//        panel.add(checkBox("standardClass"));
         panel.add(checkBox("noExecution"));
         panel.add(checkBox("noJavacWarnings"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

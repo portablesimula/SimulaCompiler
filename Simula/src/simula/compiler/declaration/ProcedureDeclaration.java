@@ -74,7 +74,8 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	 * </pre>
 	 */
 	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
-		BlockKind blockKind = (Option.standardClass) ? BlockKind.StaticMethod : BlockKind.Procedure;
+//		BlockKind blockKind = (Option.standardClass) ? BlockKind.StaticMethod : BlockKind.Procedure;
+		BlockKind blockKind = BlockKind.Procedure;
 		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
 		block.type = type;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);

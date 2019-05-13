@@ -891,16 +891,7 @@ public abstract class RTObject$ {
 	 * routine. It will initiate the global data in the runtime system.
 	 */
 	public void BPRG(final String ident) {
-		// if(RT.USE_LOOM) {
-		if (RT.Option.VERBOSE)
-			System.out.println("RTObject$.BPRG: Using Delimited Continuation (LOOM)");
 		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
-		// } else {
-		// if(RT.Option.VERBOSE) System.out.println("RTObject$.BPRG: Using Ordinary
-		// Threads");
-		// CTX$.THREAD$=Thread.currentThread();
-		// CTX$.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
-		// }
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("Begin Execution of Simula Program: " + ident);
 		if (SYSIN$ == null) {
 			if (RT.Option.USE_CONSOLE) RT.console = new RTConsole();

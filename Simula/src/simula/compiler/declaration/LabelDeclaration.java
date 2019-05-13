@@ -7,11 +7,13 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+
 import simula.compiler.JavaModule;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 
-public final class LabelDeclaration extends TypeDeclaration {
+public final class LabelDeclaration extends TypeDeclaration implements Externalizable {
     public int index; // set by BlockDeclaration.doCheckLabelList
     
 	public LabelDeclaration(final String identifier) {
@@ -52,5 +54,10 @@ public final class LabelDeclaration extends TypeDeclaration {
 	public String toString() {
 		return ("LABEL "+identifier+", index="+index);
 	}
+
+	// ***********************************************************************************************
+	// *** Externalization
+	// ***********************************************************************************************
+	public LabelDeclaration() { }
 
 }

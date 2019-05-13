@@ -54,16 +54,22 @@ public class SimulaEditor extends JFrame {
     static AutoRefresher autoRefresher;
     
 	// ****************************************************************
-	// *** SimulaEditor: Main Entry
+	// *** SimulaEditor: Main Entry for TESTING ONLY
 	// ****************************************************************
     public static void main(String[] args) {
 		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
 		if(simulaHome==null) Util.error("Simula Property 'simula.home' is not defined");
+		
+				
+//		Global.packetName="simulaTestPrograms";
+		Global.packetName="simprog";
+//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+		
+		
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
-		Global.packetName="simulaTestPrograms";
-		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
-		Option.outputDir=Global.getTempFileDir("simula/bin/");
+		
+//		Option.outputDir=Global.getTempFileDir("simula/bin/");
 		RTOption.InitRuntimeOptions();
     	Option.InitCompilerOptions();
 		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples";

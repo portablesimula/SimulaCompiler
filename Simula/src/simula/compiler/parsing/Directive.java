@@ -16,7 +16,7 @@ public class Directive {
 		if (id.equalsIgnoreCase("OPTION"))				Directive.setOption();
 		else if (id.equalsIgnoreCase("INSERT"))			Directive.insert(scanner,arg);
 		else if (id.equalsIgnoreCase("SPORT"))      	Directive.setSport(arg);
-		else if (id.equalsIgnoreCase("STANDARDCLASS"))	Directive.setStandardClass();
+//		else if (id.equalsIgnoreCase("STANDARDCLASS"))	Directive.setStandardClass();
 		else if (id.equalsIgnoreCase("TITLE"))			Directive.setTitle(arg);
 		else if (id.equalsIgnoreCase("PAGE"))			Directive.page();
 		else if (id.equalsIgnoreCase("KEEP_JAVA"))		Directive.setKeepJava(arg);
@@ -89,19 +89,19 @@ public class Directive {
     	Util.warning("Compiler Directive: %SPORT sets Option.sport="+Option.sport);
     }
     
-    /**
-     * %STANDARDCLASS
-     * <p>
-     * Used to compile 'standard classes' to indicate simplified block structure.
-     * In addition all 'procedures' will be treated as Java Methods.
-     * <p>
-     * The initial value is false.
-     * See BlockDeclaration.java
-     */
-    public static void setStandardClass() {
-    	Util.warning("Compiler Directive: %STANDARDCLASS sets Option.standardClass=true");
-    	Option.standardClass=true;
-    }
+//    /**
+//     * %STANDARDCLASS
+//     * <p>
+//     * Used to compile 'standard classes' to indicate simplified block structure.
+//     * In addition all 'procedures' will be treated as Java Methods.
+//     * <p>
+//     * The initial value is false.
+//     * See BlockDeclaration.java
+//     */
+//    public static void setStandardClass() {
+//    	Util.warning("Compiler Directive: %STANDARDCLASS sets Option.standardClass=true");
+//    	Option.standardClass=true;
+//    }
 
 	/**
 	 * %TITLE title-string

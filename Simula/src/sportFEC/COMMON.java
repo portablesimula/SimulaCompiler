@@ -1,5 +1,5 @@
 package sportFEC;
-// Simula-Beta-0.3 Compiled at Sun Apr 14 09:36:42 CEST 2019
+// Simula-Beta-0.3 Compiled at Sat May 11 14:14:36 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class COMMON extends CLASS$ {
@@ -327,8 +327,8 @@ public class COMMON extends CLASS$ {
     public ARRAY$<COMMON$quantity[]>prefixchain=null;
     public ARRAY$<COMMON$brecord[]>display=null;
     public ARRAY$<TXT$[]>diag=null;
-    public PRCQNT$ COMMONerror$0() { throw new RuntimeException("No Virtual Match"); }
-    public PRCQNT$ ENDCOMP$0() { throw new RuntimeException("No Virtual Match"); }
+    public PRCQNT$ COMMONerror$0(){ throw new RuntimeException("No Virtual Match: COMMONerror"); }
+    public PRCQNT$ ENDCOMP$0(){ throw new RuntimeException("No Virtual Match: ENDCOMP"); }
     public COMMON(RTObject$ staticLink) {
         super(staticLink);
         BBLK(); // Iff no prefix
