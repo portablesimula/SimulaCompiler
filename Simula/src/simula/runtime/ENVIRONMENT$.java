@@ -213,6 +213,25 @@ public class ENVIRONMENT$ extends RTObject$ {
 			v = v * b;
 		return (v);
 	}
+	
+	public int IPOW$EXACT(final int b,int x) {
+		//RT.println("IPOW$EXACT("+b+','+x+')');
+		if (x == 0) {
+			if (b == 0)
+				throw new RuntimeException("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
+			return (1); // any ** 0 ==> 1
+		} else if (x < 0)
+			throw new RuntimeException("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
+		else if (b == 0)
+			return (0); // 0 ** non_zero ==> 0
+		int v = b;
+		while ((--x) > 0) {
+//			v = v * b;
+			//RT.println("IPOW$EXACT: x="+x+", v="+v);
+		    v = Math.multiplyExact(v,b);
+		}
+		return (v);
+	}
 
 	/**
 	 * Overloaded versions of 'addepsilon'.
@@ -1313,10 +1332,12 @@ public class ENVIRONMENT$ extends RTObject$ {
 
 
 	// **********************************************************************
-	// *** Additional S-Port Procedures
+	// *** Additional S-Port'like Procedures
 	// **********************************************************************
-    public void DEFEXCEPTION(final RTObject$.LABQNT$ EXCEPTION_HANDLER,final NAME$<Integer> eno) {
-    	RT.NOT_IMPLEMENTED("DEFEXCEPTION"); // TODO: Implement it
+	public static RTObject$.PRCQNT$ EXCEPTION_HANDLER=null;
+    public void DEFEXCEPTION(final RTObject$.PRCQNT$ EXCEPTION_HANDLER) {
+    	//System.out.println("ENVIRONMENT.DEFEXCEPTION: EXCEPTION_HANDLER="+EXCEPTION_HANDLER);
+    	ENVIRONMENT$.EXCEPTION_HANDLER=EXCEPTION_HANDLER;
     }
 
     public int hash(final TXT$ t) {

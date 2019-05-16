@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
+import simula.common.ConsolePanel;
 import simula.runtime.loom.ThreadUtils;
 
 /**
@@ -25,10 +26,9 @@ public final class RT {
 	private static final boolean BREAKING=true;//false;//true;
 	private static final boolean TRACING=true;//false;//true;
 	public  static boolean DEBUGGING=false;//true;
-	
-//	public static boolean USE_LOOM=false;//true;//false;
   
-	public static RTConsole console;
+//	public static RTConsole console;
+	public static ConsolePanel console;
   
 	public static int numberOfEditOverflows;
 
@@ -83,9 +83,19 @@ public final class RT {
 		if(console!=null) console.write(s+'\n');
 		else System.out.println(s);
 	}
+
+	public static void printError(final String s) {
+		if(console!=null) console.writeError(s+'\n');
+		else System.err.println(s);
+	}
+
+	public static void printWarning(final String s) {
+		if(console!=null) console.writeWarning(s+'\n');
+		else System.out.println(s);
+	}
 	
 	public static void warning(final String msg) {
-		println("Simula Runtime Warning: "+msg);
+		printWarning("Simula Runtime Warning: "+msg);
 		printSimulaStackTrace(0);
 	}
   
@@ -105,7 +115,7 @@ public final class RT {
   
 	public static void ASSERT(final boolean test,final String msg) {
 		if (!test) {
-			println("ASSERT(" + msg + ") -- FAILED");
+			printError("ASSERT(" + msg + ") -- FAILED");
 			BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 		}
 	}
@@ -121,7 +131,7 @@ public final class RT {
 	public static void BREAK(final String msg) {
 		if (BREAKING) {
 			if (RT.Option.CODE_STEP_TRACING) {
-				println(msg + ": <");
+				printWarning(msg + ": <");
 				try {
 					Thread.sleep(2000);
 				} catch (Exception e) {
@@ -129,14 +139,14 @@ public final class RT {
 				}
 				return;
 			}
-			println("BREAK["+Thread.currentThread().getName()+"]: " + msg);
+			printError("BREAK["+Thread.currentThread().getName()+"]: " + msg);
 			InFile$ sysin = RTObject$.SYSIN$;
 //			if (console != null) {
 			if (sysin != null) {
 				sysin.inimage();
 				char c = sysin.inchar();
 				if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
-					println("STACK-TRACE");
+					printWarning("STACK-TRACE");
 					ThreadUtils.printStackTrace();
 					printSimulaStackTrace(2);
 				}

@@ -54,6 +54,7 @@ public final class MakeSetup {
 			updateSetupProperties();
 
 			makeSimulaCompiler();
+			copySimulaCommonClasses();
 			copySimulaRuntimeSystem();
 			copySimulaIconFiles();
 //			dummyExecuteSimulaCompiler();
@@ -74,8 +75,19 @@ public final class MakeSetup {
 		File releaseHome=new File(RELEASE_HOME);
 		releaseHome.mkdirs();
 		String compilerManifest=ECLIPSE_ROOT+"\\src\\make\\setup\\CompilerManifest.MF";
-		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/objectweb/asm");
+		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/common -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/objectweb/asm");
 		execute("jar -tvf "+RELEASE_HOME+"\\simula.jar");
+	}
+	
+	// ***************************************************************
+	// *** COPY SIMULA COMMON CLASSES
+	// ***************************************************************
+	private static void copySimulaCommonClasses() throws IOException {
+		String target=RELEASE_HOME+"\\rts\\simula\\common";
+		printHeading("Copy Common Classes into "+RELEASE_HOME);
+        System.out.println("MakeCompiler.copySimulaCommonClasses: target="+target);
+        // *** Copy Current Common Classes
+		execute("Robocopy "+COMPILER_BIN+"\\simula\\common "+target+" /E");
 	}
 	
 	// ***************************************************************
@@ -84,7 +96,7 @@ public final class MakeSetup {
 	private static void copySimulaRuntimeSystem() throws IOException {
 		String target=RELEASE_HOME+"\\rts\\simula\\runtime";
 		printHeading("Copy Simula RuntimeSystem into "+RELEASE_HOME);
-        System.out.println("MakeCompiler.copySimulaRuntimeSystem: RELEASE_HOME="+RELEASE_HOME);
+        System.out.println("MakeCompiler.copySimulaRuntimeSystem: target="+target);
         // *** Copy Current Runtime System
 		execute("Robocopy "+COMPILER_BIN+"\\simula\\runtime "+target+" /E");
 	}

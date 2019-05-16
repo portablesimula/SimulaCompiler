@@ -216,10 +216,10 @@ public final class StandardClass extends ClassDeclaration
     ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"waitSomeTime",parameter("millies",Type.Integer)); 
     ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"printThreadList",parameter("withStackTrace",Type.Boolean));
 
-    // **************************************
-    // *** Additional S-Port Procedures   ***
-    // **************************************
-    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"DEFEXCEPTION",parameter("erh",Type.Label),parameter("eno",Parameter.Mode.name,Type.Integer));
+    // *****************************************
+    // *** Additional S-Port'like Procedures ***
+    // *****************************************
+    ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,null,"DEFEXCEPTION",parameter("erh",Parameter.Kind.Procedure,Parameter.Mode.value,null));
     ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text));
     ENVIRONMENT.addStandardProcedure(BlockKind.ContextFreeMethod,Type.Character,"loadChar",parameter("t",Type.Text),parameter("i",Type.Integer)); 
     
@@ -913,6 +913,11 @@ public final class StandardClass extends ClassDeclaration
   
   private static Parameter parameter(String ident,Parameter.Mode mode,Type type)
   { Parameter spec=new Parameter(ident,type,Parameter.Kind.Simple);
+    spec.setMode(mode); return(spec);
+  }
+  
+  private static Parameter parameter(String ident,Parameter.Kind kind,Parameter.Mode mode,Type type)
+  { Parameter spec=new Parameter(ident,type,kind);
     spec.setMode(mode); return(spec);
   }
   

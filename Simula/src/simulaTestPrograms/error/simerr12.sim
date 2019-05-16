@@ -1,6 +1,0 @@
-begin
-  external procedure SeparatProcedure;
-  
-  SeparatProcedure(5);
-  
-end;

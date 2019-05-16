@@ -476,6 +476,7 @@ public final class SimulaCompiler {
 		// for(ExternalJarFile jf:ExternalJarFile.ExternalJarFiles)
 		// addExternalJar(target,jf.jarFileName);
 
+		add(target, new File(Global.simulaRtsLib + "simula/common"), Global.simulaRtsLib.length());
 		if (Global.INCLUDE_RUNTIME_SYSTEM_IN_JAR) {
 			add(target, new File(Global.simulaRtsLib + "simula/runtime"), Global.simulaRtsLib.length());
 			// add(target,new File(Global.simulaRtsLib+"simula/compiler/utilities/Util.class"),Global.simulaRtsLib.length());

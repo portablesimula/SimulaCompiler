@@ -1,10 +1,13 @@
 begin
-
-   ref(A) x;
-
-   class A;;
-
-   x:-new A;
-   x.detach;
+   integer i,j,k;
+   i:=44;
+   j:=8;
+   k:=i+j;
+   k:=i**j;
+   
+   k:=k ** k;
+   k:=k ** k;
+   k:=k ** k;
+   
 
 end;

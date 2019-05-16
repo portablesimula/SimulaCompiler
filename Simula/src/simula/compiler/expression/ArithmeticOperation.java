@@ -170,22 +170,31 @@ public final class ArithmeticOperation extends Expression {
     }
 
   
-	public String toJavaCode() {
-		// Util.BREAK("ArithmeticOperation.toJavaCode: "+this);
-		ASSERT_SEMANTICS_CHECKED(this);
-		switch (opr) {
-		    case EXP: {
-		    	if (this.type == Type.Integer)
-		    	 	 return ("IPOW$(" + lhs.get() + ',' + rhs.get() + ')');
-		    	else return ("Math.pow(" + lhs.get() + ',' + rhs.get() + ')');
-		    }
-		    default: {
-		    	if (this.backLink == null)
-		    		 return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
-		    	else return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
-		    }
-		}
-	}
+    public String toJavaCode() {
+    	// Util.BREAK("ArithmeticOperation.toJavaCode: "+this);
+    	ASSERT_SEMANTICS_CHECKED(this);
+    	if(Global.USE_EXACT_MATH && this.type == Type.Integer) {
+    		switch (opr) {
+    	       case PLUS:  return ("Math.addExact(" + lhs.get() + ',' + rhs.get() + ')');
+    	       case MINUS: return ("Math.subtractExact(" + lhs.get() + ',' + rhs.get() + ')');
+    	       case MUL:   return ("Math.multiplyExact(" + lhs.get() + ',' + rhs.get() + ')');
+       		   case EXP:   return ("IPOW$EXACT(" + lhs.get() + ',' + rhs.get() + ')');
+			default: break; // Fall Through
+    		}
+    	}
+   		switch (opr) {
+   		   case EXP: {
+   			   if (this.type == Type.Integer)
+   				   return ("IPOW$(" + lhs.get() + ',' + rhs.get() + ')');
+   			   else return ("Math.pow(" + lhs.get() + ',' + rhs.get() + ')');
+   		   }
+   		   default: {
+   			   if (this.backLink == null)
+   				   return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
+   			   else return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
+   		   }
+   		}
+    }
 
     public String toString()
     { return("("+lhs+' '+opr+' '+rhs+")"); }

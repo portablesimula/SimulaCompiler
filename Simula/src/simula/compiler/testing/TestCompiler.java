@@ -67,27 +67,22 @@ public final class TestCompiler {
 		// String name="/error/simerr04.sim"; // Type checking of Parameter Array 
 		// String name="/error/simerr05.sim"; // Syntax error - Semicolon before 'else' 
 		// String name="/error/simerr06.sim"; // Label invisible through inspection 
-		// String name="/error/simerr07.sim"; // None-check failed 
 		// String name="/error/simerr08.sim"; // Local Connected Object 
 		// String name="/error/simerr09.sim"; // Character and Java keyword char 
 		// String name="/error/simerr10.sim"; // Java keywords as Identifiers 
-		// String name="/error/PrecompiledClass.sim"; // Used by simerr11 
-		// String name="/error/simerr11.sim"; // Division by Zero in Precompiled Class 
-		// String name="/error/PrecompiledProcedure.sim"; // Used by simerr12 
-		// String name="/error/simerr12.sim"; // Division by Zero in Precompiled Procedure 
 		// String name="/error/simerr13.sim"; // Nested Connections 
 		// String name="/error/simerr14.sim"; // Two consecutive identifiers - ERROR - GÅR I LOOP
-		// String name="/error/simerr15.sim"; // Constants - Må Sjekkes, går i loop
+		// String name="/error/simerr15.sim"; // Constants
 		// String name="/error/simerr16.sim"; // Illegal lhs in assignment
+		
 		// String name="/error/issue12.sim"; // Dot-aksess inn i klasser med lokale klasser,
 		// String name="/error/issue13.sim"; // Tillater subklasser på dypere blokknivå.
 		// String name="/error/issue16.sim"; // Problemer med å evaluere Constant-expression
-		// String name="/error/issue17.sim"; // Dårlig feilmelding ved ulovlig GOTO.
 		// String name="/error/issue20.sim"; // Label og Proceure som parameter til en Klasse
 		// String name="/error/issue23.sim"; // no-type Array som parameter
 		// String name="/error/issue21.sim"; // Ingen new-line til slutt i file
 		// String name="/error/issue24.sim"; // For step until
-		// String name="/error/8Queens.sim";  // Illegal Identifier
+		 String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters
@@ -100,7 +95,7 @@ public final class TestCompiler {
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
-		 String name="/simple/adHoc26.sim";
+		// String name="/simple/adHoc26.sim";
 		// String name="/simple/adHoc51.sim";
 		// String name="/simple/adHoc54.sim";
 		// String name="/simple/adHoc66.sim";
@@ -123,7 +118,6 @@ public final class TestCompiler {
 		// String name="/simple/ForWhileSamples2.sim";
 		// String name="/simple/FunctionCall.sim";
 		// String name="/simple/Gauss.sim";
-		// String name="/simple/GotoSample2.sim"; // ILLEGAL GOTO out of an operating Process and into the enclosing System.
 		// String name="/simple/HashingExample.sim";
 		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";

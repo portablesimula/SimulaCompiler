@@ -1,6 +1,6 @@
 // JavaLine 1 <== SourceLine 2
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Tue May 07 10:43:21 CEST 2019
+// Simula-Beta-0.3 Compiled at Thu May 16 17:59:01 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class issue24 extends BASICIO$ {

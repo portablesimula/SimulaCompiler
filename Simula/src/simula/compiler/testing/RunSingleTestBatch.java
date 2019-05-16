@@ -172,7 +172,16 @@ public final class RunSingleTestBatch {
 		//names.add("simtst123.sim"); // OK: GOTO VIRTUAL LABEL
 		//names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
 		//names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
-		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
+		//names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
+		
+		//names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
+		//names.add("simerr02.sim"); // OK: Testing NONE-CHECK
+		//names.add("PrecompiledClass.sim"); // OK: Used by simerr03
+		//names.add("simerr03.sim"); // OK: Division by Zero in Precompiled Class 
+		//names.add("PrecompiledProcedure.sim"); // OK: Used by simerr04
+		//names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
+		//names.add("simerr05.sim"); // OK: NumberFormatException
+		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
 
 		// Set options and tracing.
 		Option.verbose = true;// false;

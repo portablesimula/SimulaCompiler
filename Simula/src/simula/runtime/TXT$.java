@@ -82,8 +82,10 @@ public final class TXT$ {
 		//RT.BREAK("TXTREF.edText: "+this);
 		if(OBJ==null) return("");
 		TXT$ stp=TXT$.strip(this);
+		//RT.BREAK("TXTREF.edText: stp="+stp);
 		if(stp==null) return("");
-		return (stp.OBJ.edText(START, LENGTH));
+//		return (stp.OBJ.edText(START, LENGTH));
+		return (stp.OBJ.edText(START, stp.LENGTH));
 	}
 
 	// Utility

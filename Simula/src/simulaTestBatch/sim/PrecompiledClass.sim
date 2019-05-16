@@ -1,0 +1,13 @@
+
+Class SeparatClass(i); integer i;
+begin
+   ref(A) x;
+   Integer n;
+
+   Class A;
+   Begin Integer ord;
+         Procedure proc1;
+         begin ord:=n//0; end;
+   End;
+
+end;

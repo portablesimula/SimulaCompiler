@@ -33,9 +33,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
+import simula.common.ConsolePanel;
+import simula.runtime.RTObject$.NAME$;
 import simula.runtime.loom.Continuation;
 import simula.runtime.loom.ContinuationScope;
 import simula.runtime.loom.ThreadUtils;
+import simulaTestPrograms.GotoSample2;
+import simulaTestPrograms.GotoSample2$ExceptionHandler;
 
 /**
  * 
@@ -852,7 +856,16 @@ public abstract class RTObject$ {
 					DL.CONT$.run();
 					// else ThreadUtils.END_THREAD(DL.THREAD$);
 				} else {
-					RT.println(who + ": SIMULA RUNTIME ERROR: Illegal GOTO " + ((LABQNT$)e).identifier);
+					String msg="Illegal GOTO " + ((LABQNT$)e).identifier;
+					if(ENVIRONMENT$.EXCEPTION_HANDLER!=null) treatRuntimeException(msg);
+//					if(ENVIRONMENT$.EXCEPTION_HANDLER!=null) {
+//						try { System.out.println("Runtime Error(1): EXCEPTION_HANDLER="+ENVIRONMENT$.EXCEPTION_HANDLER);
+//							  PRCQNT$ erh=ENVIRONMENT$.EXCEPTION_HANDLER;
+//							  ENVIRONMENT$.EXCEPTION_HANDLER=null;
+//							  erh.CPF().setPar(new TXT$(msg)).ENT$();
+//						} catch (Throwable t) { t.printStackTrace(); }
+//					}
+					RT.println(who + ": SIMULA RUNTIME ERROR: " + msg);
 					e.printStackTrace();
 					endProgram(-1);
 				}
@@ -861,16 +874,35 @@ public abstract class RTObject$ {
 				if (e instanceof NullPointerException) msg = "NONE-CHECK Failed";
 				else if (e instanceof ArrayIndexOutOfBoundsException) msg = "ArrayIndexOutOfBounds";
 				else msg = e.getClass().getSimpleName() + " " + msg;
-				RT.println(who + ": SIMULA RUNTIME ERROR: " + msg);
+				if(ENVIRONMENT$.EXCEPTION_HANDLER!=null) treatRuntimeException(msg);
+//				{
+//					try { System.out.println("Runtime Error(2): EXCEPTION_HANDLER="+ENVIRONMENT$.EXCEPTION_HANDLER);
+//				    	  PRCQNT$ erh=ENVIRONMENT$.EXCEPTION_HANDLER;
+//				    	  ENVIRONMENT$.EXCEPTION_HANDLER=null;
+//				    	  erh.CPF().setPar(new TXT$(msg)).ENT$();
+//					} catch (Throwable t) { t.printStackTrace(); }
+//				}
+				RT.printError(who + ": SIMULA RUNTIME ERROR: " + msg);
 				RT.printSimulaStackTrace(e, 0);
 				e.printStackTrace();
 				endProgram(-1);
 			} else {
-				RT.println(who + ": UNCAUGHT EXCEPTION: " + e.getMessage());
+				RT.printError(who + ": UNCAUGHT EXCEPTION: " + e.getMessage());
 				e.printStackTrace();
 				endProgram(-1);
 			}
 			if (RT.Option.GOTO_TRACING)	ThreadUtils.printThreadList();
+		}
+		
+		private void treatRuntimeException(String msg) {
+  	       PRCQNT$ erh=ENVIRONMENT$.EXCEPTION_HANDLER;
+  	       try { //System.out.println("Runtime Error(2): EXCEPTION_HANDLER="+ENVIRONMENT$.EXCEPTION_HANDLER);
+	    	     ENVIRONMENT$.EXCEPTION_HANDLER=null;
+	    	     erh.CPF().setPar(new TXT$(msg)).ENT$();
+		   } catch (Throwable t) {
+			     RT.printError("EXCEPTION IN SIMULA EXCEPTION_HANDLER: " + erh);
+		    	 t.printStackTrace();
+		    }			
 		}
 	}
 
@@ -894,7 +926,11 @@ public abstract class RTObject$ {
 		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("Begin Execution of Simula Program: " + ident);
 		if (SYSIN$ == null) {
-			if (RT.Option.USE_CONSOLE) RT.console = new RTConsole();
+//			if (RT.Option.USE_CONSOLE) RT.console = new RTConsole();
+			if (RT.Option.USE_CONSOLE) {
+				RT.console = new ConsolePanel();
+				RT.console.popup();
+			}
 			SYSIN$ = new InFile$(this, new TXT$("SYSIN"));
 			SYSOUT$ = new PrintFile$(this, new TXT$("SYSOUT"));
 			SYSIN$.open(blanks(INPUT_LINELENGTH_));
@@ -1028,7 +1064,7 @@ public abstract class RTObject$ {
 		// if(CUR$==null) {
 			// SYSIN$.close();
 			// SYSOUT$.close();
-			SYSOUT$.outimage();
+			//SYSOUT$.outimage();
 			if (RT.Option.BLOCK_TRACING)
 				RT.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
 			endProgram(0);
@@ -1194,6 +1230,9 @@ public abstract class RTObject$ {
 	// *********************************************************************
 	private static void endProgram(final int exitValue) {
 		if (RT.Option.THREAD_TRACING) RT.TRACE("RTObject$.endProgram:");
+		// SYSIN$.close();
+		// SYSOUT$.close();
+		SYSOUT$.outimage();
 		if (RT.numberOfEditOverflows > 0)
 			RT.println("End program: WARNING " + RT.numberOfEditOverflows + " EditOverflows");
 		if (RT.console == null)	System.exit(exitValue);
