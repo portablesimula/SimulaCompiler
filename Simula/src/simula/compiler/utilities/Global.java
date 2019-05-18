@@ -138,7 +138,10 @@ public final class Global {
     	workspaces=new ArrayDeque<String>();
     	for(int i=1;i<=MAX_WORKSPACE;i++) {
     		String ws=getProperty("simula.workspace."+i,null);
-    		if(ws!=null) workspaces.add(ws);
+    		if(ws!=null) {
+    	    	if(ws.contains("Simula-Beta-0.3")) ws=ws.replace("Simula-Beta-0.3","Simula-1.0");
+    			workspaces.add(ws);
+    		}
     	}
     	if(workspaces.isEmpty()) {
     		//String dir=System.getProperty("user.dir",null);

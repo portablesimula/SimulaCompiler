@@ -99,7 +99,7 @@ public class SimulaEditor extends JFrame {
         String releaseID=Global.simulaReleaseID+'R'+revision;
         setTitle("SimulaEditor ("+releaseID+ " built "+dated+" )");
     	Global.currentWorkspace=Global.getProperty("simula.workspace.dir",Global.sampleSourceDir);
-
+    	if(Global.currentWorkspace.contains("Simula-Beta-0.3")) Global.currentWorkspace=Global.currentWorkspace.replace("Simula-Beta-0.3","Simula-1.0");
         // Set the default close operation (exit when it gets closed)
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
