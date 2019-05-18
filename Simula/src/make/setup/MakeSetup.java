@@ -22,6 +22,7 @@ import java.util.jar.Manifest;
 import static java.nio.file.StandardCopyOption.*;
 
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Util;
 
 /**
  * NOTE:
@@ -34,6 +35,9 @@ import simula.compiler.utilities.Global;
  *
  */
 public final class MakeSetup {
+	
+//	private final static int EXPLICIT_REVISION = -1; // Normal update
+	private final static int EXPLICIT_REVISION = 1;
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Simula-1.0";
@@ -72,6 +76,8 @@ public final class MakeSetup {
 	// ***************************************************************
 	private static void makeSimulaCompiler() throws IOException	{
 		printHeading("Make Simula Compiler.jar in "+RELEASE_HOME);
+		deleteFiles(RELEASE_HOME);
+		list(RELEASE_HOME);
 		File releaseHome=new File(RELEASE_HOME);
 		releaseHome.mkdirs();
 		String compilerManifest=ECLIPSE_ROOT+"\\src\\make\\setup\\CompilerManifest.MF";
@@ -87,7 +93,9 @@ public final class MakeSetup {
 		printHeading("Copy Common Classes into "+RELEASE_HOME);
         System.out.println("MakeCompiler.copySimulaCommonClasses: target="+target);
         // *** Copy Current Common Classes
-		execute("Robocopy "+COMPILER_BIN+"\\simula\\common "+target+" /E");
+//		execute("Robocopy "+COMPILER_BIN+"\\simula\\common "+target+" /E");
+//		copyFiles(COMPILER_BIN+"\\simula\\common",target);
+		copyFolder(new File(COMPILER_BIN+"\\simula\\common"),new File(target),true);
 	}
 	
 	// ***************************************************************
@@ -98,7 +106,10 @@ public final class MakeSetup {
 		printHeading("Copy Simula RuntimeSystem into "+RELEASE_HOME);
         System.out.println("MakeCompiler.copySimulaRuntimeSystem: target="+target);
         // *** Copy Current Runtime System
-		execute("Robocopy "+COMPILER_BIN+"\\simula\\runtime "+target+" /E");
+//		execute("Robocopy "+COMPILER_BIN+"\\simula\\runtime "+target+" /E");
+//		copyFiles(COMPILER_BIN+"\\simula\\runtime",target);
+//		copyFiles(COMPILER_BIN+"\\simula\\runtime\\loom",target+"\\loom");
+		copyFolder(new File(COMPILER_BIN+"\\simula\\runtime"),new File(target),true);
 	}
 	
 	// ***************************************************************
@@ -141,9 +152,78 @@ public final class MakeSetup {
 	// ***************************************************************
 	private static void copySimulaReleaseTests() throws IOException	{
 		printHeading("Copy Simula TestPrograms into "+RELEASE_SAMPLES);
-		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples "+RELEASE_SAMPLES+" /E");
+		deleteFiles(RELEASE_SAMPLES);
+//		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples "+RELEASE_SAMPLES+" /E");
+		copyFolder(new File(ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples"), new File(RELEASE_SAMPLES), false);
 	}
 	
+	// ***************************************************************
+	// *** DELETE FILES
+	// ***************************************************************
+	private static void deleteFiles(final String dirName) {
+		try { File tmpClass = new File(dirName);
+			  File[] elt = tmpClass.listFiles();
+			  if(elt==null) return; 
+			  for (File f : elt) {
+				  if(f.isDirectory()) deleteFiles(f.getPath());
+				  f.delete();
+			  }
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	// ***************************************************************
+	// *** COPY FOLDER
+	// ***************************************************************
+	static private void copyFolder(File source, File target,boolean copySubFolders) throws IOException {
+//	    // checks
+//	    if(source==null || target==null) return;
+//	    if(!source.isDirectory()) return;
+//	    if(target.exists()){
+//	        if(!target.isDirectory()){
+//	            //System.out.println("destination not a folder " + target);
+//	            return;
+//	        }
+//	    } else target.mkdir();
+//	    if(source.listFiles()==null || source.listFiles().length==0) return;
+
+		target.mkdirs();
+	    for(File file: source.listFiles()) {
+	        File fileDest = new File(target, file.getName());
+	        //System.out.println(fileDest.getAbsolutePath());
+	        if(file.isDirectory()) {
+	            if(copySubFolders) copyFolder(file, fileDest, copySubFolders);
+	        } else {
+	            //if(fileDest.exists()) continue;
+	        	Files.copy(file.toPath(), fileDest.toPath());
+	        }
+	    }
+	}	
+	// ***************************************************************
+	// *** LIST FILES
+	// ***************************************************************
+	private static void list(final String dirName) {
+		try {
+			Util.message("------------  LIST "+dirName+"  ------------");
+			list("",new File(dirName));
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+	
+	private static void list(String indent,final File dir) {
+		try {
+			//Util.println("tmpClass: "+dir);
+			File[] elt = dir.listFiles();
+			if(elt==null || elt.length==0) {
+				Util.println("Empty Directory: "+dir);
+				return; 
+			}
+			Util.println("Elements: "+elt.length);
+			for (File f : elt) {
+				Util.println(indent+"- "+f);
+				if(f.isDirectory()) list(indent+"   ",f);
+			}
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
 //	// ***************************************************************
 //	// *** DUMMY EXECUTE SIMULA COMPILER JAR
 //	// ***************************************************************
@@ -251,11 +331,13 @@ public final class MakeSetup {
 	// ***************************************************************
 	// *** UPDATE SETUP PROPERTIES
 	// ***************************************************************
+	@SuppressWarnings("unused")
 	private static void updateSetupProperties() {
 		String prevRevision=getProperty("simula.revision",null);
 		int revision=0;
 		if(prevRevision!=null) {
-			revision=Integer.parseUnsignedInt(prevRevision)+1;
+			if(EXPLICIT_REVISION > 0) revision=EXPLICIT_REVISION;
+			else revision=Integer.parseUnsignedInt(prevRevision)+1;
 		}
 		//revision=xx; // TODO: Ad'Hoc
 		String setupDated=""+new Date();

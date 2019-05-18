@@ -57,13 +57,13 @@ public final class SimulaExtractor extends JFrame {
 	private static final boolean DEBUG=true;
 	
 	// NOTE: When updating release id, change version in Global.simulaReleaseID
-    public static final String simulaReleaseID="Simula-Beta-0.3";
+    public static final String simulaReleaseID="Simula-1.0";
     public static String simulaRevisionID="?";
 
     private static File simulaPropertiesFile;
     private static Properties simulaProperties;
     private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
-	private static final String programAndVersion = "Simula Beta 0.3";
+	private static final String programAndVersion = "Simula 1.0";
 	private static String SIMULA_HOME; // e.g. C:\Users\Øystein\Simula
 	private static String setupDated;
 	private final ImageIcon simulaIcon;

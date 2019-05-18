@@ -31,7 +31,7 @@ public final class Global {
 	public static final String gitURL="https://github.com/portablesimula";
 	
 	// NOTE: When updating release id, change version in SimulaExtractor.
-    public static final String simulaReleaseID="Simula-Beta-0.3";
+    public static final String simulaReleaseID="Simula-1.0";
     public static final ImageIcon simulaIcon = new ImageIcon("icons/simula.png");
     public static final ImageIcon simIcon = new ImageIcon("icons/sim2.png");
     public static final ImageIcon sIcon = new ImageIcon("icons/sim.png");
