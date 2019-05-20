@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Simula-Setup-Dated: Mon May 20 13:03:34 CEST 2019
-Simula-Revision: 2
+Simula-Setup-Dated: Mon May 20 18:15:40 CEST 2019
+Simula-Revision: 3
 Main-Class: make.setup.SimulaExtractor
 

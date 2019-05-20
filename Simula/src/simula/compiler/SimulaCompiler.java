@@ -113,15 +113,9 @@ public final class SimulaCompiler {
 		Global.tempClassFileDir=tmpClassDir.toString()+'/';
 
 		if(Option.verbose) {
+			// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
 			Util.message("------------  ENVIRONMENT SUMMARY  ------------");
-//			Util.message("Package Name:    \""+Global.packetName+"\"");
-//			Util.message("SourceFile Name: \""+Global.sourceName+"\"");
-//			Util.message("SourceFile Dir:  \""+Global.sourceFileDir+"\"");
-//			Util.message("CurrentWorkspace \""+Global.currentWorkspace+"\"");
-//			Util.message("TempDir .Java:   \""+Global.tempJavaFileDir+"\"");
-//			Util.message("TempDir .Class:  \""+Global.tempClassFileDir+"\"");
-//			Util.message("SimulaRtsLib:    \""+Global.simulaRtsLib+"\"");
-//			Util.message("OutputDir:       \""+Global.outputDir+"\"");
+			Util.message("Simula Home      "+Global.getProperty("simula.home",null));
 			Util.message("Java Home        "+System.getProperty("java.home"));
 			Util.message("Java version     "+System.getProperty("java.version"));
 			Util.message("Java vendor      "+System.getProperty("java.vendor"));
@@ -131,12 +125,6 @@ public final class SimulaCompiler {
 			Util.message("file.encoding    "+System.getProperty("file.encoding"));
 			Util.message("defaultCharset   "+Charset.defaultCharset());
 		}
-		// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
-//		Util.println("SYSTEM: java.home="+System.getProperty("java.home"));
-//		Util.println("SYSTEM: java.class.path="+System.getProperty("java.class.path"));
-//		Util.println("SYSTEM: path.separator="+System.getProperty("path.separator"));
-//		Util.println("SYSTEM: User working directory="+System.getProperty("user.dir"));
-//		Util.println("SYSTEM: User home directory="+System.getProperty("user.home"));
 	}
 	
 	private void list(final String dirName) {
@@ -236,13 +224,25 @@ public final class SimulaCompiler {
 			// *** CALL JAVA COMPILER
 			// ***************************************************************
 			String classPath=Global.simulaRtsLib;
-			if(!(new File(classPath)).exists()) Util.error("Simula RTS does not exist: \""+classPath+"\"");
-			if(!(new File(classPath)).canRead()) Util.error("Can't read Simula RTS: \""+classPath+"\"");
+			if(Option.verbose) {
+				Util.message("------------  CLASSPATH DETAILS  ------------");
+				File rtsLib=new File(Global.simulaRtsLib+"/simula/runtime");
+				boolean exist=rtsLib.exists();
+				boolean cread=rtsLib.canRead();
+		      	String[] list=rtsLib.list(); 
+				Util.message("Simula Runtime System:    \""+rtsLib+"\", exists="+exist+", canRead="+cread+", size="+list.length);
+				for(int i=0;i<list.length;i++) {
+					Util.message("       "+i+": \""+list[i]+"\"");
+				}
+			}
 			
 			for(String jar:Global.externalJarFiles) {
 				Util.CHECK_FILENAME(jar);
-				if(!(new File(jar)).exists()) Util.error("Simula Library does not exist: \""+classPath+"\"");
-				if(!(new File(jar)).canRead()) Util.error("Can't read Simula Library: \""+classPath+"\"");
+				File jarFile=new File(jar);
+				boolean exist=jarFile.exists();
+				boolean cread=jarFile.canRead();
+				Util.message("Precompiled Library:      \""+jar+"\", exists="+exist+", canRead="+cread);
+				listJarFile(jar);
 //				classPath=classPath+";"+jar;
 				classPath=classPath+";"+(jar.trim());
 			}
@@ -394,13 +394,19 @@ public final class SimulaCompiler {
 			err=Global.console.getErrorStream();
 		}
 		if(Option.DEBUGGING) Util.message("------------  Call Java System Compiler  ------------");
-		int exitValue = compiler.run(in, out, err, args);
 		if(Option.DEBUGGING) {
 			Util.message("System Compiler supports " + compiler.getSourceVersions());
 			for (int i = 0; i < args.length; i++)
 				Util.println("Compiler'args[" + i + "]=" + args[i]);
 			list(Global.tempClassFileDir);
 		}
+		int exitValue = compiler.run(in, out, err, args);
+//		if(Option.DEBUGGING) {
+//			Util.message("System Compiler supports " + compiler.getSourceVersions());
+//			for (int i = 0; i < args.length; i++)
+//				Util.println("Compiler'args[" + i + "]=" + args[i]);
+//			list(Global.tempClassFileDir);
+//		}
 		if (Option.TRACING) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
 			for (JavaModule module : Global.javaModules)

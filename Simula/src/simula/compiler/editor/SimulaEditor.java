@@ -85,6 +85,11 @@ public class SimulaEditor extends JFrame {
         try { setIconImage(Global.simIcon.getImage()); } 
         catch (Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
 		Global.console=new ConsolePanel();
+    	String revision=Global.getProperty("simula.revision","?");
+    	String dated=Global.getProperty("simula.setup.dated","?");
+        String releaseID=Global.simulaReleaseID+'R'+revision;
+		Global.simulaVersion="SimulaEditor ("+releaseID+ " built "+dated+" )";
+        Global.console.write(Global.simulaVersion+"\n");
         Global.console.write("Simula Compiler Console:\n");
         
         // Set the initial size of the window
@@ -94,10 +99,11 @@ public class SimulaEditor extends JFrame {
         setSize(frameWidth, frameHeight);
 
         // Set the title of the window
-    	String revision=Global.getProperty("simula.revision","?");
-    	String dated=Global.getProperty("simula.setup.dated","?");
-        String releaseID=Global.simulaReleaseID+'R'+revision;
-        setTitle("SimulaEditor ("+releaseID+ " built "+dated+" )");
+//    	String revision=Global.getProperty("simula.revision","?");
+//    	String dated=Global.getProperty("simula.setup.dated","?");
+//        String releaseID=Global.simulaReleaseID+'R'+revision;
+//        String title="SimulaEditor ("+releaseID+ " built "+dated+" )";
+        setTitle(Global.simulaVersion);
     	Global.currentWorkspace=Global.getProperty("simula.workspace.dir",Global.sampleSourceDir);
     	if(Global.currentWorkspace.contains("Simula-Beta-0.3")) Global.currentWorkspace=Global.currentWorkspace.replace("Simula-Beta-0.3","Simula-1.0");
         // Set the default close operation (exit when it gets closed)

@@ -16,6 +16,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 import java.awt.*;
@@ -156,6 +157,7 @@ public final class ConsolePanel extends JPanel {
         //Util.BREAK("ConsolePanel.write: done s="+s);
 //	    textPane.repaint();
 		textPane.update(textPane.getGraphics());
+        Global.console.write(Global.simulaVersion+"\n");
 		write("Simula Compiler Console:\n");
 	}
 
