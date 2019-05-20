@@ -24,7 +24,9 @@ public abstract class CLASS$ extends BASICIO$ implements Runnable {
 
 	// Runnable Body
 	public RTObject$ START$() {
-		beginContinuation(); return(this);
+		beginContinuation();
+//		System.out.println("CLASS$.START$: beginContinuation RETURNS");
+		return(this);
 	}
   
 	public void run() {
@@ -36,19 +38,10 @@ public abstract class CLASS$ extends BASICIO$ implements Runnable {
 	// *** BEGIN QPS COMPONENT IN A SEPARATE CONTINUATION
 	// *********************************************************************
 	private void beginContinuation() {
-//		if(RT.USE_LOOM) {
-    	    this.CONT$=new Continuation(continuationScope,this);
-        	if(RT.Option.QPS_TRACING) RT.TRACE("START "+this.edObjectIdent());
-        	RT.ASSERT(CUR$==this,"CLASS$.START:Invariant-1");
-        	swapContinuations();
-//		} else {
-//			RT.ASSERT(CUR$.THREAD$==Thread.currentThread(),"CLASS$.START:Invariant-2");
-//			// Start QPS Component in a new Thread
-//			ins.THREAD$=new Thread(ins,ins.edObjectIdent());
-//			ins.THREAD$.setUncaughtExceptionHandler(new UncaughtExceptionHandler(ins));
-//			if(RT.Option.QPS_TRACING) RT.TRACE("START "+ins.edObjectIdent());
-//			ThreadUtils.START_THREAD(ins.THREAD$);
-//		}
+		this.CONT$=new Continuation(continuationScope,this);
+		if(RT.Option.QPS_TRACING) RT.TRACE("START "+this.edObjectIdent());
+		RT.ASSERT(CUR$==this,"CLASS$.START:Invariant-1");
+		swapContinuations();
 	}
 
 	// *********************************************************************

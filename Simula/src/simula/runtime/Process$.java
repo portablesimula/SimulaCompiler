@@ -86,10 +86,13 @@ public class Process$ extends Link$ {
 	
 	protected void terminate() {
 		//RT.BREAK("Process$.TERMINATE(1): "+this.edObjectAttributes());
-		((Simulation$) SL$).passivate();
+//		((Simulation$) SL$).passivate();
+		Process$ nxtcur = ((Simulation$) SL$).passivate1();
+		//RT.BREAK("Process$.TERMINATE(2): nxtcur="+nxtcur);
+		resume(nxtcur,false); // Special Case without Swap
 		// Signal special action in RTObject$.EBLK
 		Process$.this.STATE$=OperationalState.terminatingProcess;
-		//RT.BREAK("Process$.TERMINATE(2): "+this.edObjectAttributes());
+		//RT.BREAK("Process$.TERMINATE(3): "+this.edObjectAttributes());
 	}
 
 	public boolean idle() {

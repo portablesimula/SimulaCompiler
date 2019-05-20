@@ -34,12 +34,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import simula.common.ConsolePanel;
-import simula.runtime.RTObject$.NAME$;
 import simula.runtime.loom.Continuation;
 import simula.runtime.loom.ContinuationScope;
 import simula.runtime.loom.ThreadUtils;
-import simulaTestPrograms.GotoSample2;
-import simulaTestPrograms.GotoSample2$ExceptionHandler;
 
 /**
  * 
@@ -959,11 +956,7 @@ public abstract class RTObject$ {
 	public void BBLK() {
 		DL$ = CUR$;
 		CUR$ = this;
-		// if(RT.USE_LOOM) {
 		this.CONT$ = DL$.CONT$;
-		// } else {
-		// this.THREAD$=Thread.currentThread();
-		// }
 		STATE$ = OperationalState.attached;
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("BEGIN " + edObjectAttributes());
 		RT.NoneCheck(SL$); // In case of Remote Call on Procedure x.Func, x==none
@@ -1008,11 +1001,15 @@ public abstract class RTObject$ {
 						// enclosing the resumed object ('CUR$').
 		RTObject$ main; // The head of the main component and also
 						// the head of the quasi-parallel system.
+//		RT.println("RTObject.EBLK: CUR$=" + CUR$.edObjectAttributes());
+//		RT.println("RTObject.EBLK: this=" + this.edObjectAttributes());
 		if (RT.Option.BLOCK_TRACING)
 			RT.TRACE("END BLOCK(1) " + edObjectAttributes());
 
 		if (this.STATE$ == OperationalState.terminatingProcess) {
-			// RT.TRACE("TERMINATING PROCESS "+edObjectAttributes());
+			//RT.TRACE("TERMINATING PROCESS "+edObjectAttributes());
+//			RT.println("RTObject.EBLK(2): CUR$=" + CUR$.edObjectAttributes());
+//			RT.println("RTObject.EBLK(2): this=" + this.edObjectAttributes());
 			this.STATE$ = OperationalState.terminated;
 			// if(RT.USE_LOOM) {
 			this.CONT$ = null; // Leave it to the GarbageCollector
@@ -1024,8 +1021,8 @@ public abstract class RTObject$ {
 		if (CUR$ != this) {
 			// RT.println("RTObject.EBLK: CUR$="+CUR$.edObjectIdent());
 			// RT.println("RTObject.EBLK: this="+this.edObjectIdent());
-			RT.println("RTObject.EBLK: CUR$=" + CUR$.edObjectAttributes());
-			RT.println("RTObject.EBLK: this=" + this.edObjectAttributes());
+			RT.println("RTObject.EBLK(3): CUR$=" + CUR$.edObjectAttributes());
+			RT.println("RTObject.EBLK(3): this=" + this.edObjectAttributes());
 		}
 		RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-1");
 
@@ -1069,16 +1066,9 @@ public abstract class RTObject$ {
 				RT.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
 			endProgram(0);
 		} else {
-			// if(RT.USE_LOOM) {
 			if (this.CONT$ != null && this.isDetachUsed()) {
 				Continuation.yield(continuationScope);
 			}
-			// } else {
-			// if (this.THREAD$ != CUR$.THREAD$) {
-			// ThreadUtils.END_THREAD(CUR$.THREAD$);
-			// this.THREAD$ = null; // Leave it to the GarbageCollector
-			// }
-			// }
 		}
 	}
 
@@ -1180,10 +1170,13 @@ public abstract class RTObject$ {
 	 * block instances on the reactivation chain of Y also become operating.
 	 * </ul>
 	 * 
-	 * @param obj
+	 * @param ins
 	 *            The object to be Resumed
 	 */
 	public void resume(final RTObject$ ins) {
+		resume(ins,true); // Normal Case
+	}
+	public void resume(final RTObject$ ins,boolean doSwap) {
 		RTObject$ comp;   // Component head.
 		RTObject$ mainSL; // Static enclosure of main component head.
 		RTObject$ main;   // The head of the main component and also
@@ -1209,12 +1202,7 @@ public abstract class RTObject$ {
 			ins.STATE$ = OperationalState.resumed;
 			if (RT.Option.QPS_TRACING)
 				RT.TRACE("RESUME " + this.edObjectIdent() + " ==> " + CUR$.edObjectIdent());
-			// if(RT.USE_LOOM) {
-			swapContinuations();
-			// } else {
-			// if(terminatingProcess) ThreadUtils.END_THREAD(CUR$.THREAD$);
-			// else ThreadUtils.SWAP_THREAD(CUR$.THREAD$);
-			// }
+			if(doSwap) swapContinuations();
 		}
 	}
 
@@ -1235,6 +1223,7 @@ public abstract class RTObject$ {
 		SYSOUT$.outimage();
 		if (RT.numberOfEditOverflows > 0)
 			RT.println("End program: WARNING " + RT.numberOfEditOverflows + " EditOverflows");
+//		ThreadUtils.printThreadList();
 		if (RT.console == null)	System.exit(exitValue);
 	}
 
@@ -1247,9 +1236,10 @@ public abstract class RTObject$ {
 			cont = CUR$.CONT$;
 			RTObject$ next = CUR$;
 			while (next.CONT$ != null) {
+				//System.out.println("RTObject$.swapContinuations: Continuation RUN: "+next.edObjectIdent());
 				next.CONT$.run();
-				// Return here when Continuation is Yield
-				// System.out.println("RTObject$.swapContinuations: Continuation RETURNS: "+next.edObjectIdent()+" ==> "+CUR$.edObjectIdent());
+				// Return here when Continuation is Yield or Done
+				//System.out.println("RTObject$.swapContinuations: Continuation RETURNS: "+next.edObjectIdent()+" ==> "+CUR$.edObjectIdent());
 				next = CUR$;
 			}
 			// System.out.println("RTObject$.swapContinuations: Continuation RETURNS(2): "+next.edObjectIdent()+" ==> "+CUR$.edObjectIdent());

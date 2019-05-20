@@ -116,6 +116,8 @@ public final class RT {
 	public static void ASSERT(final boolean test,final String msg) {
 		if (!test) {
 			printError("ASSERT(" + msg + ") -- FAILED");
+			Thread.dumpStack();
+			System.exit(-1);
 			BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 		}
 	}
@@ -139,18 +141,29 @@ public final class RT {
 				}
 				return;
 			}
-			printError("BREAK["+Thread.currentThread().getName()+"]: " + msg);
-			InFile$ sysin = RTObject$.SYSIN$;
-//			if (console != null) {
-			if (sysin != null) {
-				sysin.inimage();
-				char c = sysin.inchar();
-				if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
-					printWarning("STACK-TRACE");
-					ThreadUtils.printStackTrace();
-					printSimulaStackTrace(2);
+			printError("BBREAK["+Thread.currentThread().getName()+"]: " + msg);
+			char c=' ';//'q';
+			if(RT.Option.USE_CONSOLE) {
+				InFile$ sysin = RTObject$.SYSIN$;
+				if (sysin != null) {
+					sysin.inimage();
+					c = sysin.inchar();
 				}
+			} else {
+//				try {
+//					c=(char) System.in.read();
+//					System.out.println("GOT character: c="+(char)c);
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
+			if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
+				printWarning("STACK-TRACE");
+				ThreadUtils.printStackTrace();
+				printSimulaStackTrace(2);
+			}
+
 		}
 	}
 

@@ -82,7 +82,8 @@ public final class TestCompiler {
 		// String name="/error/issue23.sim"; // no-type Array som parameter
 		// String name="/error/issue21.sim"; // Ingen new-line til slutt i file
 		// String name="/error/issue24.sim"; // For step until
-		 String name="/error/8Queens.sim";  // Illegal Identifier
+		 String name="/error/issue26.sim"; // Terminating Process in strict sence.
+		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters

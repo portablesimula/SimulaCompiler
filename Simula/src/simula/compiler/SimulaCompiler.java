@@ -236,8 +236,13 @@ public final class SimulaCompiler {
 			// *** CALL JAVA COMPILER
 			// ***************************************************************
 			String classPath=Global.simulaRtsLib;
+			if(!(new File(classPath)).exists()) Util.error("Simula RTS does not exist: \""+classPath+"\"");
+			if(!(new File(classPath)).canRead()) Util.error("Can't read Simula RTS: \""+classPath+"\"");
+			
 			for(String jar:Global.externalJarFiles) {
 				Util.CHECK_FILENAME(jar);
+				if(!(new File(jar)).exists()) Util.error("Simula Library does not exist: \""+classPath+"\"");
+				if(!(new File(jar)).canRead()) Util.error("Can't read Simula Library: \""+classPath+"\"");
 //				classPath=classPath+";"+jar;
 				classPath=classPath+";"+(jar.trim());
 			}
@@ -611,6 +616,7 @@ public final class SimulaCompiler {
 		Process process = runtime.exec(cmd);
 		InputStream err = process.getErrorStream();
 		InputStream inp = process.getInputStream();
+//		OutputStream out = process.getOutputStream();
 		StringBuilder error=new StringBuilder();
 		while (process.isAlive()) {
 			while (err.available() > 0) {
@@ -622,6 +628,11 @@ public final class SimulaCompiler {
 				if(Global.console != null) Global.console.write(""+(char) inp.read());
 				else System.out.append((char) inp.read());
 			}
+//			while (System.in.available() > 0) {
+//				int c=System.in.read();
+//				System.out.println("Pipe character: c="+(char)c);
+//				out.write(c);
+//			}
 		}
 		if(error.length()>0) Util.error(error.toString());
 		

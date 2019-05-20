@@ -155,6 +155,13 @@ public class Simulation$ extends Simset$ {
      * </pre>
 	 */
 	public void passivate() {
+		Process$ nxtcur = passivate1();
+		SIM_TRACE("END Passivate Resume[" + nxtcur.edObjectIdent() + ']');
+		resume(nxtcur);
+		SIM_TRACE("END Passivate AFTER Resume[" + nxtcur.edObjectIdent() + ']');
+	}
+	
+	Process$ passivate1() { // Used directly by Process$.TERMINATE
 		Process$ cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());
 		// RT.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
@@ -165,12 +172,8 @@ public class Simulation$ extends Simset$ {
 		if (SQS.empty())
 			throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
 		Process$ nxtcur = current();
-		// RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+",
-		// SQS="+this.edSQS());
-		SIM_TRACE("END Passivate Resume[" + nxtcur.edObjectIdent() + ']');
-		resume(nxtcur);
-		SIM_TRACE("END Passivate AFTER Resume[" + nxtcur.edObjectIdent() + ']');
-		// RT.BREAK("Passivate: AFTER Resume(next)");
+		// RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+", SQS="+this.edSQS());
+		return(nxtcur);
 	}
 
 	public void wait(final Head$ S) {

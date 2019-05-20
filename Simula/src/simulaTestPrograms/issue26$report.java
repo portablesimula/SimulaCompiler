@@ -1,20 +1,21 @@
+// JavaLine 1 <== SourceLine 4
 package simulaTestPrograms;
-// Simula-Beta-0.3 Compiled at Thu May 16 11:18:13 CEST 2019
+// Simula-1.0 Compiled at Mon May 20 10:13:03 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
-public final class GotoSample2$trace extends BASICIO$ {
-    // ProcedureDeclaration: BlockKind=Procedure, BlockLevel=2, firstLine=6, lastLine=8, hasLocalClasses=false, System=false
+public final class issue26$report extends BASICIO$ {
+    // ProcedureDeclaration: BlockKind=Procedure, BlockLevel=2, firstLine=4, lastLine=7, hasLocalClasses=false, System=false
     public int prefixLevel() { return(0); }
     // Declare parameters as attributes
-    public TXT$ p$t;
+    public TXT$ p$message;
     // Declare locals as attributes
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     private int $npar=0; // Number of actual parameters transmitted.
-    public GotoSample2$trace setPar(Object param) {
-        //Util.BREAK("CALL GotoSample2$trace.setPar: param="+param+", qual="+param.getClass().getSimpleName()+", npar="+$npar+", staticLink="+SL$);
+    public issue26$report setPar(Object param) {
+        //Util.BREAK("CALL issue26$report.setPar: param="+param+", qual="+param.getClass().getSimpleName()+", npar="+$npar+", staticLink="+SL$);
         try {
             switch($npar++) {
-                case 0: p$t=(TXT$)objectValue(param); break;
+                case 0: p$message=(TXT$)objectValue(param); break;
                 default: throw new RuntimeException("Wrong number of parameters");
             }
         }
@@ -22,27 +23,27 @@ public final class GotoSample2$trace extends BASICIO$ {
         return(this);
     }
     // Constructor in case of Formal/Virtual Procedure Call
-    public GotoSample2$trace(RTObject$ SL$)
+    public issue26$report(RTObject$ SL$)
     { super(SL$); }
     // Normal Constructor
-    public GotoSample2$trace(RTObject$ SL$,TXT$ sp$t) {
+    public issue26$report(RTObject$ SL$,TXT$ sp$message) {
         super(SL$);
         // Parameter assignment to locals
-        this.p$t = sp$t;
+        this.p$message = sp$message;
         BBLK();
         // Declaration Code
-        TRACE_BEGIN_DCL$("trace",6);
+        TRACE_BEGIN_DCL$("report",4);
         STM$();
     }
     // Procedure Statements
-    public GotoSample2$trace STM$() {
-        TRACE_BEGIN_STM$("trace",6);
-        // JavaLine 40 <== SourceLine 7
-        sysout().outtext(p$t);
+    public issue26$report STM$() {
+        TRACE_BEGIN_STM$("report",4);
+        // JavaLine 41 <== SourceLine 6
+        sysout().outtext(p$message);
         sysout().outimage();
-        TRACE_END_STM$("trace",7);
+        TRACE_END_STM$("report",6);
         EBLK();
         return(this);
     } // End of Procedure BODY
-    public static PROGINFO$ INFO$=new PROGINFO$("GotoSample2.sim","Procedure trace",40,7,46,8);
+    public static PROGINFO$ INFO$=new PROGINFO$("issue26.sim","Procedure report",1,4,41,6,47,7);
 } // End of Procedure

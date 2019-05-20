@@ -1,5 +1,16 @@
 Simula Issues
 
+OPEN Issue 26: Fra Øystein
+Terminering av Prosesser.
+
+Java def. 12.1 sier:
+
+  'an implementation may treat a terminated process object as terminated in the strict sense.'
+  Med 'strict' menes her: som om processen hadde utført 'final end'.
+
+
+===============================================================================
+
 OPEN Issue 25: Fra Øystein
 Håndtering av integer overflow underflow.
 
