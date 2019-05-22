@@ -1,5 +1,37 @@
 Simula Issues
 
+OPEN Issue 28: Fra Karel
+PrimeUnder stopper etter hvert ved 1000000 som input 
+
+Analyse: Regner med at du får denne meldingen:
+
+Thread:main[Simulation$ SQS=Simula Head$]: UNCAUGHT EXCEPTION: unable to create new native thread
+
+Årsaken er at alle Simulation-prosesser realiseres i hver sin Thread.
+Og, det er vanlig praksis i simulerings-programmer å skrive:
+
+process class P; 
+   begin
+         ... initial action
+         while true do begin 
+           ... action
+           hold(someTime); 
+         end; 
+   end;
+
+Dette fører til at Thread'ene ikke termineres. De blir hengende og beholder sin memory.
+
+Java VM har en del options for å tildele memory til Threads.
+Det bør undersøkes om noen VM-options bør gjøres tilgjengelig fra SimulaEditor.
+===============================================================================
+
+OPEN Issue 27: Fra Karel
+Procedure kall med tomme paranteser:  P()
+Dette hører ikke til i Simula.
+Parser'n blir rettet.
+
+===============================================================================
+
 OPEN Issue 26: Fra Øystein
 Terminering av Prosesser.
 
@@ -7,7 +39,6 @@ Java def. 12.1 sier:
 
   'an implementation may treat a terminated process object as terminated in the strict sense.'
   Med 'strict' menes her: som om processen hadde utført 'final end'.
-
 
 ===============================================================================
 

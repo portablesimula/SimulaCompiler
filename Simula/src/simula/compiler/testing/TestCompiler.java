@@ -60,6 +60,14 @@ public final class TestCompiler {
 		// String name="/samples/Sudoku.sim";
 		// String name="/samples/TQueens.sim";
 
+		// *** SIMULA ERROR-TEST PROGRAMMER FRA KAREL
+		// String name="/Karel/Collatz.sim";
+		// String name="/Karel/FittingRoom.sim";
+		// String name="/Karel/HegnaNRK.sim";
+		// String name="/Karel/JensensDevice.sim";
+		// String name="/Karel/PrimeUnder.sim";
+		 String name="/Karel/simulaid.sim";
+
 		// *** SIMULA ERROR-TEST PROGRAMMER
 		// String name="/error/simerr01.sim"; // Syntax errors
 		// String name="/error/simerr02.sim"; // Syntax errors  TODO: MÅ SJEKKES - NumberFormatException - Illegal number: 1e
@@ -82,7 +90,7 @@ public final class TestCompiler {
 		// String name="/error/issue23.sim"; // no-type Array som parameter
 		// String name="/error/issue21.sim"; // Ingen new-line til slutt i file
 		// String name="/error/issue24.sim"; // For step until
-		 String name="/error/issue26.sim"; // Terminating Process in strict sence.
+		// String name="/error/issue26.sim"; // Terminating Process in strict sence.
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters

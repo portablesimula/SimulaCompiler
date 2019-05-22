@@ -158,7 +158,7 @@ public final class ConsolePanel extends JPanel {
 //	    textPane.repaint();
 		textPane.update(textPane.getGraphics());
         Global.console.write(Global.simulaVersion+"\n");
-		write("Simula Compiler Console:\n");
+//		write("Simula Compiler Console:\n");
 	}
 
 	public ConsolePanel() {

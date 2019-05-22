@@ -12,6 +12,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
+import simula.compiler.utilities.Global;
+
 /**
  * The Class ENVIRONMENT.
  * <p>
@@ -55,7 +57,7 @@ public class ENVIRONMENT$ extends RTObject$ {
 	 *   <prog>:    Identification of the executing task or program
 	 * </pre>
 	 */
-	public final String simid = "Portable SIMULA 2019";
+	public final String simid = "Portable "+Global.simulaReleaseID;
 	public final String siteid = "";
 	public final String OS = "";
 	public final String CPU = "";

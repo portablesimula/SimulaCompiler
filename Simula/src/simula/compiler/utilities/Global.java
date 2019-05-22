@@ -48,7 +48,8 @@ public final class Global {
 
 	public static String simulaVersion;
 	public static Vector<JavaModule> javaModules;
-	public static Vector<String> externalJarFiles=new Vector<String>();
+//	public static Vector<String> externalJarFiles=new Vector<String>();
+	public static Vector<String> externalJarFiles;
 	public static Charset CHARSET$=Charset.defaultCharset();
 
 	public static int sourceLineNumber; //=1;
@@ -78,6 +79,7 @@ public final class Global {
 	
 	public static void initiate()
 	{ duringParsing=true;
+	  externalJarFiles=new Vector<String>();
 //		sourceLineNumber=0;
 		//console=new Console();
 	}

@@ -39,7 +39,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// Used by ProgramModule
 	public static MaybeBlockDeclaration createMaybeBlock() {
-		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName);
+		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName+'$');
 		module.isMainModule = true;
 		module.blockKind = BlockKind.SimulaProgram;
 		module.parseMaybeBlock();

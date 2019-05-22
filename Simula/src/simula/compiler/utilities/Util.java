@@ -8,7 +8,6 @@
 package simula.compiler.utilities;
 
 import java.awt.Color;
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;

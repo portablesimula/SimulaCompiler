@@ -147,9 +147,11 @@ public final class Variable extends Expression {
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
-		//Util.BREAK("BEGIN Variable("+identifier+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
+		//Util.BREAK("BEGIN Variable("+identifier+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		Declaration declaredAs=getMeaning().declaredAs;
-		if(declaredAs!=null) this.type=declaredAs.type;
+		if(declaredAs!=null) {
+			this.type=declaredAs.type;
+		}
 		//Util.BREAK("END Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
 		if(meaning.declaredAs instanceof StandardProcedure)	{
 			//Util.BREAK("Variable("+identifier+").doChecking: type="+type+", Declared as: "+meaning);
@@ -235,7 +237,7 @@ public final class Variable extends Expression {
 					Type formalType = formalParameter.type;
 					//Util.BREAK("Formal Parameter: " + formalParameter + ", Formal Type=" + formalType + ", Formal Kind=" + formalParameter.kind);
 					Expression actualParameter = actualIterator.next();
-					//Util.BREAK("Actual Parameter: " + actualParameter);
+					//Util.BREAK("Actual Parameter: " + actualParameter+", QUAL="+actualParameter.getClass().getSimpleName());
 					actualParameter.doChecking();
 					//Util.BREAK("Actual Parameter: " + actualParameter.type + " " + actualParameter + ", Actual Type=" + actualParameter.type);
 					if(formalType instanceof OverLoad)

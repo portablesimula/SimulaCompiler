@@ -90,7 +90,7 @@ public class SimulaEditor extends JFrame {
         String releaseID=Global.simulaReleaseID+'R'+revision;
 		Global.simulaVersion="SimulaEditor ("+releaseID+ " built "+dated+" )";
         Global.console.write(Global.simulaVersion+"\n");
-        Global.console.write("Simula Compiler Console:\n");
+//        Global.console.write("Simula Compiler Console:\n");
         
         // Set the initial size of the window
         int frameHeight=800;//500;

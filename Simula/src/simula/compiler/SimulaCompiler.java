@@ -115,15 +115,15 @@ public final class SimulaCompiler {
 		if(Option.verbose) {
 			// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
 			Util.message("------------  ENVIRONMENT SUMMARY  ------------");
-			Util.message("Simula Home      "+Global.getProperty("simula.home",null));
-			Util.message("Java Home        "+System.getProperty("java.home"));
-			Util.message("Java version     "+System.getProperty("java.version"));
-			Util.message("Java vendor      "+System.getProperty("java.vendor"));
-			Util.message("OS name          "+System.getProperty("os.name"));
-			Util.message("OS architecture  "+System.getProperty("os.arch"));
-			Util.message("OS version       "+System.getProperty("os.version"));
-			Util.message("file.encoding    "+System.getProperty("file.encoding"));
-			Util.message("defaultCharset   "+Charset.defaultCharset());
+			Util.message("Simula Home        "+Global.getProperty("simula.home",null));
+			Util.message("Java Home          "+System.getProperty("java.home"));
+			Util.message("Java Version       "+System.getProperty("java.version"));
+			Util.message("Java Vendor        "+System.getProperty("java.vendor"));
+			Util.message("OS name            "+System.getProperty("os.name"));
+			Util.message("OS architecture    "+System.getProperty("os.arch"));
+			Util.message("OS version         "+System.getProperty("os.version"));
+			Util.message("file.encoding      "+System.getProperty("file.encoding"));
+			Util.message("defaultCharset     "+Charset.defaultCharset());
 		}
 	}
 	
@@ -142,7 +142,7 @@ public final class SimulaCompiler {
 				Util.println("Empty Directory: "+dir);
 				return; 
 			}
-			Util.println("Elements: "+elt.length);
+			//Util.println("Elements: "+elt.length);
 			for (File f : elt) {
 				Util.println(indent+"- "+f);
 				if(f.isDirectory()) list(indent+"   ",f);
@@ -224,8 +224,11 @@ public final class SimulaCompiler {
 			// *** CALL JAVA COMPILER
 			// ***************************************************************
 			String classPath=Global.simulaRtsLib;
-			if(Option.verbose) {
+//			String classPath=Global.javaLib+";"+Global.simulaRtsLib;
+			if(Option.DEBUGGING) {
 				Util.message("------------  CLASSPATH DETAILS  ------------");
+				Util.message("Java PathSeparator "+System.getProperty("path.separator"));
+				Util.message("Java ClassPath     "+System.getProperty("java.class.path"));
 				File rtsLib=new File(Global.simulaRtsLib+"/simula/runtime");
 				boolean exist=rtsLib.exists();
 				boolean cread=rtsLib.canRead();
@@ -236,15 +239,19 @@ public final class SimulaCompiler {
 				}
 			}
 			
+			String pathSeparator=System.getProperty("path.separator");
 			for(String jar:Global.externalJarFiles) {
 				Util.CHECK_FILENAME(jar);
-				File jarFile=new File(jar);
-				boolean exist=jarFile.exists();
-				boolean cread=jarFile.canRead();
-				Util.message("Precompiled Library:      \""+jar+"\", exists="+exist+", canRead="+cread);
-				listJarFile(jar);
-//				classPath=classPath+";"+jar;
-				classPath=classPath+";"+(jar.trim());
+				if(Option.DEBUGGING) {
+					File jarFile=new File(jar);
+					boolean exist=jarFile.exists();
+					boolean cread=jarFile.canRead();
+					Util.message("Precompiled Library:      \""+jar+"\", exists="+exist+", canRead="+cread);
+					listJarFile(jar);
+				}
+				// classPath=classPath+";"+jar;
+//				classPath=classPath+";"+(jar.trim());
+				classPath=classPath+pathSeparator+(jar.trim());
 			}
 			//callJavaCompiler(classPath);
 			int exitValue= -1;
@@ -262,6 +269,12 @@ public final class SimulaCompiler {
 				}
 				else exitValue=callJavacCompiler(classPath);
 			} else exitValue=callJavacCompiler(classPath);
+			if(Option.DEBUGGING) {
+				Util.message("Java "+msg+" Compiler returns exit="+exitValue+"\n");
+				for (JavaModule module : Global.javaModules)
+					Util.LIST(module.getClassOutputFileName());
+				list(Global.tempClassFileDir);
+			}
 			if(exitValue!=0) {
 				Util.error("Java "+msg+" Compiler returns exit="+exitValue+"\n");
 				Util.message("\nCompiler terminated after error(s) during Java Compilation");
@@ -398,20 +411,14 @@ public final class SimulaCompiler {
 			Util.message("System Compiler supports " + compiler.getSourceVersions());
 			for (int i = 0; i < args.length; i++)
 				Util.println("Compiler'args[" + i + "]=" + args[i]);
-			list(Global.tempClassFileDir);
 		}
 		int exitValue = compiler.run(in, out, err, args);
 //		if(Option.DEBUGGING) {
-//			Util.message("System Compiler supports " + compiler.getSourceVersions());
-//			for (int i = 0; i < args.length; i++)
-//				Util.println("Compiler'args[" + i + "]=" + args[i]);
+//			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
+//			for (JavaModule module : Global.javaModules)
+//				Util.LIST(module.getClassOutputFileName());
 //			list(Global.tempClassFileDir);
 //		}
-		if (Option.TRACING) {
-			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
-			for (JavaModule module : Global.javaModules)
-				Util.LIST(module.getClassOutputFileName());
-		}
 		return(exitValue);
 	}
 	
@@ -438,12 +445,13 @@ public final class SimulaCompiler {
 		
 		for (JavaModule module : Global.javaModules)
 			cmd.append(' ').append(module.javaOutputFileName); // Add .java Files
-		int exitValue = execute("javac.exe"+cmd);
 		if(Option.DEBUGGING) {
 			Util.message("------------  Call Java Command Line Compiler  ------------");
-			Util.message("javac.exe"+cmd);
+			Util.message("javac"+cmd);
 			list(Global.tempClassFileDir);
 		}
+//		int exitValue = execute("javac.exe"+cmd);
+		int exitValue = execute("javac"+cmd);
 		if (Option.TRACING) {
 			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
 			for (JavaModule module : Global.javaModules)
@@ -543,8 +551,8 @@ public final class SimulaCompiler {
 		Util.message("SourceFile Name: \""+Global.sourceName+"\"");
 		Util.message("SourceFile Dir:  \""+Global.sourceFileDir+"\"");
 		Util.message("CurrentWorkspace \""+Global.currentWorkspace+"\"");
-		Util.message("TempDir .Java:   \""+Global.tempJavaFileDir+"\"");
-		Util.message("TempDir .Class:  \""+Global.tempClassFileDir+"\"");
+		Util.message("TempDir .java:   \""+Global.tempJavaFileDir+"\"");
+		Util.message("TempDir .class:  \""+Global.tempClassFileDir+"\"");
 		Util.message("SimulaRtsLib:    \""+Global.simulaRtsLib+"\"");
 		Util.message("OutputDir:       \""+Global.outputDir+"\"");
 		
