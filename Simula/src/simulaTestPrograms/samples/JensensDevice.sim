@@ -37,10 +37,10 @@ long real procedure Sum(k, lower, upper, ak);
    outtext("-------------------------------------------------------------------"); outimage; 
    outtext("End JensensDevice sample 1, Sum="); outint(result,6); outimage; 
     
-   outtext("-------------------------------------------------------------------"); outimage; 
-   outtext("Next line should be Runtime Error: Name Parameter is not a Variable"); outimage; 
-   outtext("-------------------------------------------------------------------"); outimage; 
-   result:=Sum(j+m*n,10,20,A(i)); 
+%   outtext("-------------------------------------------------------------------"); outimage; 
+%   outtext("Next line should be Runtime Error: Name Parameter is not a Variable"); outimage; 
+%   outtext("-------------------------------------------------------------------"); outimage; 
+%   result:=Sum(j+m*n,10,20,A(i)); 
     
 end JensensDevice;
 

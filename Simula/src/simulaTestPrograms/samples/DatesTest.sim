@@ -7,7 +7,7 @@ Dates begin
   OutText("I dag er det " & TD.Image & ".");  OutImage; 
    
   P :- Easter(TD.Y); 
-  OutText("1. påskedag er " & P.Image);  OutImage; 
+  OutText("1. Påskedag er " & P.Image);  OutImage; 
    
   KrH :- P.Plus(39); 
   OutText(KrH.Weekday_norsk & " " & KrH.Image & " er Kristi Himmelfartsdag"); 

@@ -13,6 +13,7 @@ import simula.compiler.SimulaCompiler;
 import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.runtime.RT;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -202,12 +203,16 @@ public final class RunFullTestBatch {
 		RTOption.QPS_TRACING = false;
 		RTOption.SML_TRACING = false;
 
+		long startTimeMs = System.currentTimeMillis( );
+
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
 		  SimulaCompiler compiler = new SimulaCompiler(fileName);
 		  compiler.doCompile();
 		}
 		System.out.println("--- END OF SIMULA TESTBATCH");
+		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
+		System.out.println("\nElapsed Time: Approximately " + timeUsed/1000 + " sec.");
 	}
 
 }

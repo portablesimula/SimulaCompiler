@@ -83,7 +83,13 @@ public class Continuation implements Runnable {
 		if(targetThread==null) {
 	    	if(BREAKING) RT.BREAK(this.toString()+".run: INIT:"+target);
 	    	Runnable runner=new Runnable() { public void run() {	target.run(); done=true; yield(scope); }};
+	    	
 	    	targetThread=new Thread(runner,ident);
+	    	
+//	    	long stackSize=0x20000; // 128K;
+////	    	long stackSize=0x40000; // 256K;
+//	    	targetThread=new Thread(null,runner,ident,stackSize);
+	    	
 	    	targetThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 	    	ThreadUtils.START_THREAD(targetThread);
 	    	if(BREAKING) RT.BREAK(this.toString()+".run: RETURN after INIT:"+target);

@@ -130,12 +130,16 @@ public final class Variable extends Expression {
 			Util.TRACE("Parse Variable, current=" + Parser.currentToken + ", prev="	+ Parser.prevToken);
 		Variable variable = new Variable(ident);
 		if (Parser.accept(KeyWord.BEGPAR)) {
-			if (!Parser.accept(KeyWord.ENDPAR)) {
+//			if (!Parser.accept(KeyWord.ENDPAR)) {
 				variable.params = new Vector<Expression>();
-				do { variable.params.add(parseExpression());
+				do {
+					Expression par=parseExpression();
+//					Util.BREAK("par="+par);
+					if(par==null) Util.error("Missing parameter identifier");
+					variable.params.add(par);
 				} while (Parser.accept(KeyWord.COMMA));
 				Parser.expect(KeyWord.ENDPAR);
-			}
+//			}
 		}
 		if (Option.TRACE_PARSE)	Util.TRACE("NEW Variable: " + variable);
 		return(variable);

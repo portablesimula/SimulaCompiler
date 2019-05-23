@@ -122,6 +122,7 @@ public final class SimulaCompiler {
 			Util.message("OS name            "+System.getProperty("os.name"));
 			Util.message("OS architecture    "+System.getProperty("os.arch"));
 			Util.message("OS version         "+System.getProperty("os.version"));
+			Util.message("32/64 bit JVM      "+System.getProperty("sun.arch.data.model"));
 			Util.message("file.encoding      "+System.getProperty("file.encoding"));
 			Util.message("defaultCharset     "+Charset.defaultCharset());
 		}
@@ -346,7 +347,11 @@ public final class SimulaCompiler {
 			  
 				//Util.BREAK("SimulaCompiler.doCompile: EXECUTE cmd="+cmd);
 				if (Option.verbose)	Util.message("Execute: "+cmd);
+				
+//				long startTimeMs = System.currentTimeMillis( );
 				int exitValue3=execute(cmd);
+//				long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
+				
 				if (Option.verbose)	Util.message("END Execute .jar File. Exit value="+exitValue3);
 			}
 			if(Option.DEBUGGING) Util.message("------------  CLEANING UP TEMP FILES  ------------");

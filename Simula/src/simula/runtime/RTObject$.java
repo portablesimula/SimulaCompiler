@@ -53,6 +53,7 @@ public abstract class RTObject$ {
 	public static PrintFile$ SYSOUT$;
 	public InFile$ sysin() { return (SYSIN$); }
 	public PrintFile$ sysout() { return (SYSOUT$); }
+	private static long startTimeMs;
 
 	// QPS
 	public enum OperationalState {
@@ -920,6 +921,7 @@ public abstract class RTObject$ {
 	 * routine. It will initiate the global data in the runtime system.
 	 */
 	public void BPRG(final String ident) {
+		startTimeMs = System.currentTimeMillis( );
 		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("Begin Execution of Simula Program: " + ident);
 		if (SYSIN$ == null) {
@@ -1224,6 +1226,8 @@ public abstract class RTObject$ {
 		if (RT.numberOfEditOverflows > 0)
 			RT.println("End program: WARNING " + RT.numberOfEditOverflows + " EditOverflows");
 //		ThreadUtils.printThreadList();
+		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
+		if(RT.Option.VERBOSE) RT.println("\nEnd program: Elapsed Time Approximately " + timeUsed/1000 + " sec.");
 		if (RT.console == null)	System.exit(exitValue);
 	}
 

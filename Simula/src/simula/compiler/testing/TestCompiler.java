@@ -62,11 +62,11 @@ public final class TestCompiler {
 
 		// *** SIMULA ERROR-TEST PROGRAMMER FRA KAREL
 		// String name="/Karel/Collatz.sim";
-		// String name="/Karel/FittingRoom.sim";
+		 String name="/Karel/FittingRoom.sim";  // P()
 		// String name="/Karel/HegnaNRK.sim";
 		// String name="/Karel/JensensDevice.sim";
 		// String name="/Karel/PrimeUnder.sim";
-		 String name="/Karel/simulaid.sim";
+		// String name="/Karel/simulaid.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER
 		// String name="/error/simerr01.sim"; // Syntax errors

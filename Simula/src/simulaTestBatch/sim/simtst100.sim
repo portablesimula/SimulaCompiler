@@ -139,7 +139,7 @@ begin
        
        min_signif:=signpos; max_signif:=0;
        
-       if verbose then putget:-sysout() else
+       if verbose then putget:-sysout else
        begin
           putget:-new outfile(outputFrom100);
           if not putget.open(blanks(80)) then begin

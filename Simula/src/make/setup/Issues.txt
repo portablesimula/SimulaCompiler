@@ -1,5 +1,27 @@
 Simula Issues
 
+OPEN Issue 30: Fra Gunnar
+IllegalStateException 
+
+Kjører Docking og får:
+ Thread:main[Simula Docking]: SIMULA RUNTIME ERROR: IllegalStateException Buffers have not been created (etter 14 vans) 
+ - Line 242 Error: (som ovenfor, men mer) Jeg har mistet output
+ 
+  se: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6933331
+  
+===============================================================================
+
+OPEN Issue 29: Fra Karel
+Problem med nasjonale bokstaver.
+
+Jeg må distribuere sample.sim filer i UTF-8 fordi det er 'mest vanlig' nå til dags.
+Vurderer å innføre en ny option i SimulaEditor:
+   - CHARSET    UTF-8   windows-1252   ...
+
+CHARSET brukes så når  .sim  filer leses.
+
+===============================================================================
+
 OPEN Issue 28: Fra Karel
 PrimeUnder stopper etter hvert ved 1000000 som input 
 
@@ -23,6 +45,15 @@ Dette fører til at Thread'ene ikke termineres. De blir hengende og beholder sin
 
 Java VM har en del options for å tildele memory til Threads.
 Det bør undersøkes om noen VM-options bør gjøres tilgjengelig fra SimulaEditor.
+
+I første omgang innføres en ny option i SimulaEditor:
+    - ThreadStackSize   default 128 KB stack size in a 32-bit JVM,
+                          and a 256 KB stack size in a 64-bit JVM.
+                          
+Implementeres ved: public Thread​(ThreadGroup group,Runnable target,String name,long stackSize)
+                     hvor group angis 'null'
+                          
+Mer info her: http://xmlandmore.blogspot.com/2014/09/jdk-8-thread-stack-size-tuning.html
 ===============================================================================
 
 OPEN Issue 27: Fra Karel
@@ -32,13 +63,15 @@ Parser'n blir rettet.
 
 ===============================================================================
 
-OPEN Issue 26: Fra Øystein
+CLOSED Issue 26: Fra Øystein
 Terminering av Prosesser.
 
 Java def. 12.1 sier:
 
   'an implementation may treat a terminated process object as terminated in the strict sense.'
   Med 'strict' menes her: som om processen hadde utført 'final end'.
+  
+Tiltak: Terminering av processer behandles nå individuelt.
 
 ===============================================================================
 
@@ -104,6 +137,8 @@ OPEN Issue 19: Fra Øystein
 Source Linjenummer er mangelfull ved Runtime-Error i statement koden til en
 separat kompilert super-klasse. Det refereres til feil source file.
 
+Dessuten kan linjenummer være unøyaktig i alle tilfeller.
+
 ===============================================================================
 
 OPEN Issue 18: Fra Øystein
@@ -114,7 +149,7 @@ Se: https://coderanch.com/t/587886/java/Print-document-java
 
 ===============================================================================
 
-OPEN Issue 17: Fra Øystein
+CLOSED Issue 17: Fra Øystein
 Dårlig feilmelding ved ulovlig GOTO.
 
 Analyse: Label quant inneholder for lite informasjon.
@@ -270,13 +305,13 @@ Tiltak: Endret syntaxen bittelitt:
 
 ===============================================================================
 
-OPEN Issue 10: Fra Eyvind, Gunnar, Karel ...
+CLOSED Issue 10: Fra Eyvind, Gunnar, Karel ...
 Under utføring av 'store' simuleringer kommer det en feilmelding:
   Assertion Failed: Invariant-2
 Deretter kan man fortsette ved å trykke [Enter] og programmet
 avslutter fint (for det meste).
 
-Analyse: 
+Analyse: Thread swap var mangelfullt implementert.
 
 ===============================================================================
 
