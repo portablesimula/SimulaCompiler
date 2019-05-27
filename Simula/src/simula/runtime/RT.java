@@ -30,6 +30,7 @@ public final class RT {
 //	public static RTConsole console;
 	public static ConsolePanel console;
   
+	public static String progamIdent;
 	public static int numberOfEditOverflows;
 
 	public static class Option {

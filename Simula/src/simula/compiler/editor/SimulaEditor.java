@@ -39,6 +39,7 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import simula.common.Comn;
 import simula.common.ConsolePanel;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
@@ -135,6 +136,16 @@ public class SimulaEditor extends JFrame {
         menuBar=new EditorMenues();
         this.setJMenuBar(menuBar);
         this.setVisible(true);
+        
+		int javaVersion=Comn.getJavaVersion();
+		if(javaVersion<8) {
+			Util.popUpError("You have installed Java "+javaVersion+'.'
+					     +"\nWe recommend at least Java 8."
+					     +"\nCheck the settings and consider"
+					     +"\ninstalling a newer version.\n");
+		}
+
+        
         doCheckForNewVersion();
         doSelectWorkspace();
     }

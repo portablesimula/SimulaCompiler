@@ -46,6 +46,7 @@ import java.text.DecimalFormat;
  *
  */
 public final class TXT$ {
+	private static final int UNICODE_MINUS_SIGN=8722; // 0x2212
 	TEXTOBJ OBJ;
 	int START; // Start index of OBJ.MAIN[], counting from zero.
 				// Note this differ from Simula Definition.
@@ -514,6 +515,7 @@ public final class TXT$ {
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
 		if(r== -0.0) r=0.0; // NOTE: Java har både +0.0 og -0.0
 	    String output = myFormatter.format(r);
+	    output=output.replace((char)UNICODE_MINUS_SIGN,'-');
 //	    putResult(T,output.replace(',','.'));
 	    putRealResult(T,output);
 	}
@@ -556,6 +558,7 @@ public final class TXT$ {
 //		myFormatter.setRoundingMode(RoundingMode.UNNECESSARY);
 //		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
+	    output=output.replace((char)UNICODE_MINUS_SIGN,'-');	    
 	    output=addPlussExponent(output);
 //	    putResult(T,output.replace(',','.'));
 	    putRealResult(T,output);
@@ -587,20 +590,21 @@ public final class TXT$ {
 //		myFormatter.setRoundingMode(RoundingMode.UNNECESSARY);
 //		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
+	    output=output.replace((char)UNICODE_MINUS_SIGN,'-');
 	    output=addPlussExponent(output);
 //	    putResult(T,output.replace(',','.'));
 	    putRealResult(T,output);
 	}
 	
-	private static String addPlussExponent(String s)
-	{ String[] part=s.split("E");
-	  if(part.length==2)
-	  { //RT.BREAK("TXTREF.addPlussExponent: part 1="+part[0]);
-	    //RT.BREAK("TXTREF.addPlussExponent: part 2="+part[1]);
-	    if(!(part[1].startsWith("-"))) s=part[0]+"E+"+part[1];
-	    
-	  }
-	  return(s);
+	private static String addPlussExponent(String s) { 
+		s=s.replace((char)UNICODE_MINUS_SIGN,'-');
+		String[] part=s.split("E");
+		if(part.length==2) {
+			//RT.BREAK("TXTREF.addPlussExponent: part 1="+part[0]);
+			//RT.BREAK("TXTREF.addPlussExponent: part 2="+part[1]);
+			if(!(part[1].startsWith("-"))) s=part[0]+"E+"+part[1];
+		}
+		return(s);
 	}
 
 	/**

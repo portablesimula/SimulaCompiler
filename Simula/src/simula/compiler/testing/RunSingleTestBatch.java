@@ -34,7 +34,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
-		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
+		names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
 		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
@@ -181,7 +181,7 @@ public final class RunSingleTestBatch {
 		//names.add("PrecompiledProcedure.sim"); // OK: Used by simerr04
 		//names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
 		//names.add("simerr05.sim"); // OK: NumberFormatException
-		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
+		//names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
 
 		// Set options and tracing.
 		Option.verbose = true;// false;

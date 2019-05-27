@@ -7,6 +7,8 @@
  */
 package simula.compiler;
 
+import java.lang.Runtime;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -115,16 +117,26 @@ public final class SimulaCompiler {
 		if(Option.verbose) {
 			// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
 			Util.message("------------  ENVIRONMENT SUMMARY  ------------");
-			Util.message("Simula Home        "+Global.getProperty("simula.home",null));
-			Util.message("Java Home          "+System.getProperty("java.home"));
-			Util.message("Java Version       "+System.getProperty("java.version"));
-			Util.message("Java Vendor        "+System.getProperty("java.vendor"));
-			Util.message("OS name            "+System.getProperty("os.name"));
-			Util.message("OS architecture    "+System.getProperty("os.arch"));
-			Util.message("OS version         "+System.getProperty("os.version"));
-			Util.message("32/64 bit JVM      "+System.getProperty("sun.arch.data.model"));
-			Util.message("file.encoding      "+System.getProperty("file.encoding"));
-			Util.message("defaultCharset     "+Charset.defaultCharset());
+			Util.message("Simula Home          "+Global.getProperty("simula.home",null));
+			Util.message("Java Home            "+System.getProperty("java.home"));
+			Util.message("Java Class Path      "+System.getProperty("java.class.path"));
+			Util.message("Java Class Version   "+System.getProperty("java.class.version"));
+			Util.message("Java Version         "+System.getProperty("java.version"));
+//			Util.message("Java VM Version      "+System.getProperty("java.vm.version"));
+			Util.message("Java VM Spec Version "+System.getProperty("java.vm.specification.version"));
+//			Util.message("Java Spec Version    "+System.getProperty("java.version"));
+			Util.message("Java Vendor          "+System.getProperty("java.vendor"));
+			Util.message("OS name              "+System.getProperty("os.name"));
+			Util.message("OS architecture      "+System.getProperty("os.arch"));
+			Util.message("OS version           "+System.getProperty("os.version"));
+			Util.message("32/64 bit JVM        "+System.getProperty("sun.arch.data.model"));
+			Util.message("file.encoding        "+System.getProperty("file.encoding"));
+			Util.message("defaultCharset       "+Charset.defaultCharset());
+			
+			// this will list the current system properties
+		    //  Properties p = System.getProperties();
+		    //  p.list(System.out);
+
 		}
 	}
 	

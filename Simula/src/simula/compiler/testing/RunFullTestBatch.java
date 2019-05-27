@@ -13,7 +13,6 @@ import simula.compiler.SimulaCompiler;
 import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.runtime.RT;
 
 /**
  * Simula Test Batch donated by Simula as.

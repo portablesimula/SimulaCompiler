@@ -40,10 +40,11 @@ public final class TestCompiler {
 		// String name="/rts/Simulation.sim";
 
 		// *** SIMULA PROGRAMMER FOR VIDERE UTVIKLING
-		// String name="/simprogs/Matte.sim";
-		// String name="/simprogs/LIFT90.sim";
-		// String name="/simprogs/TRAFFIC.sim";
 		// String name="/simprogs/DEMOS.sim";
+		// String name="/simprogs/HegnaNRK.sim";
+		// String name="/simprogs/LIFT90.sim";
+		// String name="/simprogs/Matte.sim";
+		// String name="/simprogs/TRAFFIC.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
 		// String name="/samples/AnimationTest.sim";
@@ -52,7 +53,6 @@ public final class TestCompiler {
 		// String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
-		// String name="/samples/HegnaNRK.sim";
 		// String name="/samples/HelloWorld.sim";
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/JensensDevice.sim";
@@ -62,7 +62,7 @@ public final class TestCompiler {
 
 		// *** SIMULA ERROR-TEST PROGRAMMER FRA KAREL
 		// String name="/Karel/Collatz.sim";
-		 String name="/Karel/FittingRoom.sim";  // P()
+		// String name="/Karel/FittingRoom.sim";  // P()
 		// String name="/Karel/HegnaNRK.sim";
 		// String name="/Karel/JensensDevice.sim";
 		// String name="/Karel/PrimeUnder.sim";
@@ -99,7 +99,7 @@ public final class TestCompiler {
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
-		// String name="/simple/adHoc01.sim";
+		 String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";

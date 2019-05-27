@@ -466,43 +466,44 @@ public abstract class RTObject$ {
 			this.until = until;
 		}
 
-		public Boolean OLD_next() {
-			if (nextValue == null) {
-				nextValue = init.get();
-				cvar.put(nextValue);
-				return (true);
-			} // First value
-			Number val = nextValue;
-			// nextValue=val+step;
-			// more:= step*(nextValue-until) <= 0
-			Number stp = step.get();
-			Number utl = until.get();
-			if (val instanceof Double || stp instanceof Double) {
-				nextValue = new Double(val.doubleValue() + stp.doubleValue());
-				more = (stp.floatValue() * (nextValue.floatValue() - utl.floatValue()) <= 0);
-			} else if (val instanceof Float || stp instanceof Float) {
-				nextValue = new Float(val.floatValue() + stp.floatValue());
-				more = (stp.floatValue() * (nextValue.floatValue() - utl.floatValue()) <= 0);
-			} else if (val instanceof Long || stp instanceof Long) {
-				nextValue = new Float(val.longValue() + stp.longValue());
-				more = (stp.longValue() * (nextValue.longValue() - utl.longValue()) <= 0);
-			} else {
-				nextValue = new Integer(val.intValue() + stp.intValue());
-				more = (stp.intValue() * (nextValue.intValue() - utl.intValue()) <= 0);
-			}
-			// RT.BREAK("StepUntil.next: return="+val+", nextValue="+nextValue+",
-			// more="+more);
-			cvar.put(nextValue);
-			return (more);
-		}
+//		public Boolean OLD_next() {
+//			if (nextValue == null) {
+//				nextValue = init.get();
+//				cvar.put(nextValue);
+//				return (true);
+//			} // First value
+//			Number val = nextValue;
+//			// nextValue=val+step;
+//			// more:= step*(nextValue-until) <= 0
+//			Number stp = step.get();
+//			Number utl = until.get();
+//			if (val instanceof Double || stp instanceof Double) {
+//				nextValue = new Double(val.doubleValue() + stp.doubleValue());
+//				more = (stp.floatValue() * (nextValue.floatValue() - utl.floatValue()) <= 0);
+//			} else if (val instanceof Float || stp instanceof Float) {
+//				nextValue = new Float(val.floatValue() + stp.floatValue());
+//				more = (stp.floatValue() * (nextValue.floatValue() - utl.floatValue()) <= 0);
+//			} else if (val instanceof Long || stp instanceof Long) {
+//				nextValue = new Float(val.longValue() + stp.longValue());
+//				more = (stp.longValue() * (nextValue.longValue() - utl.longValue()) <= 0);
+//			} else {
+//				nextValue = new Integer(val.intValue() + stp.intValue());
+//				more = (stp.intValue() * (nextValue.intValue() - utl.intValue()) <= 0);
+//			}
+//			// RT.BREAK("StepUntil.next: return="+val+", nextValue="+nextValue+",
+//			// more="+more);
+//			cvar.put(nextValue);
+//			return (more);
+//		}
 
+//		@SuppressWarnings("deprecation")
 		public Boolean next() {
 			try {
 			Number stp;
 			int sign;
 			if (nextValue == null) {
 				nextValue = init.get();
-				stp=new Integer(0);
+				stp=0;//new Integer(0);
 				sign=(int) Math.signum(step.get().longValue());
 			} // First value
 			else {
@@ -512,16 +513,20 @@ public abstract class RTObject$ {
 			Number val = nextValue;
 			Number utl = until.get();
 			if (val instanceof Double || stp instanceof Double) {
-				nextValue = new Double(val.doubleValue() + stp.doubleValue());
+//				nextValue = new Double(val.doubleValue() + stp.doubleValue());
+				nextValue = val.doubleValue() + stp.doubleValue();
 				more = ( sign * (nextValue.doubleValue() - utl.doubleValue()) <= 0);
 			} else if (val instanceof Float || stp instanceof Float) {
-				nextValue = new Float(val.floatValue() + stp.floatValue());
+//				nextValue = new Float(val.floatValue() + stp.floatValue());
+				nextValue =val.floatValue() + stp.floatValue();
 				more = ( sign * (nextValue.floatValue() - utl.floatValue()) <= 0);
 			} else if (val instanceof Long || stp instanceof Long) {
-				nextValue = new Float(val.longValue() + stp.longValue());
+//				nextValue = new Float(val.longValue() + stp.longValue());
+				nextValue = val.longValue() + stp.longValue();
 				more = ( sign * (nextValue.longValue() - utl.longValue()) <= 0);
 			} else {
-				nextValue = new Integer(val.intValue() + stp.intValue());
+//				nextValue = new Integer(val.intValue() + stp.intValue());
+				nextValue = val.intValue() + stp.intValue();
 				more = ( sign * (nextValue.intValue() - utl.intValue()) <= 0);
 			}
 			cvar.put(nextValue);
@@ -923,6 +928,7 @@ public abstract class RTObject$ {
 	public void BPRG(final String ident) {
 		startTimeMs = System.currentTimeMillis( );
 		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
+		RT.progamIdent=ident;
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("Begin Execution of Simula Program: " + ident);
 		if (SYSIN$ == null) {
 //			if (RT.Option.USE_CONSOLE) RT.console = new RTConsole();
@@ -1223,11 +1229,19 @@ public abstract class RTObject$ {
 		// SYSIN$.close();
 		// SYSOUT$.close();
 		SYSOUT$.outimage();
-		if (RT.numberOfEditOverflows > 0)
-			RT.println("End program: WARNING " + RT.numberOfEditOverflows + " EditOverflows");
 //		ThreadUtils.printThreadList();
 		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
-		if(RT.Option.VERBOSE) RT.println("\nEnd program: Elapsed Time Approximately " + timeUsed/1000 + " sec.");
+		if(RT.Option.VERBOSE) {
+			RT.println("\nEnd program: " + RT.progamIdent);		      
+			if (RT.numberOfEditOverflows > 0)
+				RT.println(" -  WARNING " + RT.numberOfEditOverflows + " EditOverflows");
+			Runtime runtime=Runtime.getRuntime();
+			RT.println(" -  Memory(used="+runtime.totalMemory()+",free="+runtime.freeMemory()+')');
+			RT.println(" -  nProcessors="+runtime.availableProcessors());
+			RT.println(" -  Active Thread Count = " + Thread.activeCount());
+			RT.println(" -  Elapsed Time Approximately " + timeUsed/1000 + " sec.");
+		} else if (RT.numberOfEditOverflows > 0)
+			RT.println("End program: WARNING " + RT.numberOfEditOverflows + " EditOverflows");			
 		if (RT.console == null)	System.exit(exitValue);
 	}
 

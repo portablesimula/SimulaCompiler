@@ -1,61 +1,17 @@
 begin 
 
-      procedure V(n); integer n;
-      begin outtext("CALL GLOBAL'V: n="); outint(n,0); outimage; end;
+procedure test(msg,result,expected); text msg,result,expected;
+begin
+   outtext (msg); outtext(result);
+   outimage;
+end;
 
-      class a; protected V;
-               virtual: procedure V;
-      begin
-            procedure V(n); integer n;
-            begin outtext("CALL A'V: n="); outint(n,0); outimage; end;
-      end;
+real rea;
+text txt;
 
-    a class b; hidden V;          ! no more matching;
-      begin
-            procedure V(n); integer n;
-            begin outtext("CALL B'V: n="); outint(n,0); outimage; end;
-            
-%            inspect this a do V(7777);
-       end;
- 
-    b class c;
-      begin procedure V(n); integer n;
-            begin outtext("CALL C'V: n="); outint(n,0); outimage; end;
-            
-%            inspect this a do V(8888);
-          
-%            V(3333);
-      end;
-      
-    c class x; protected V;
-               virtual: procedure V;
-      begin 
-            procedure V(n); integer n;
-            begin outtext("CALL X'V: n="); outint(n,0); outimage; end;
-            
-%            V(2222);
-      end;
-
-    x class y; hidden V;          ! no more matching;
-      begin 
-            procedure V(n); integer n;
-            begin outtext("CALL Y'V: n="); outint(n,0); outimage; end;
-            
-%            inspect this a do V(6666);
-      end;
-
-      ref(a) ra; ref(b) rb; ref(c) rc;
-
-      rc:-new c;
-%      rb:-new b;
-%      ra:-new a;
-
-%            inspect rc qua a do V(4444);
-%            inspect new b do V(5555);
-%            inspect rc qua b do V(6666);
-            
-      inspect new y do V(9999);  ! Skal kalle C'V ;
-      new y.V(7777);  ! Skal kalle C'V ;
-            
+txt :- blanks (30);
+rea := - 3;
+txt.putreal (rea, 7);
+test("real operation (3).",txt,"                 -3.000000&+00");
 
 end

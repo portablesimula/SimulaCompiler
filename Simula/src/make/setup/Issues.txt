@@ -56,7 +56,7 @@ Implementeres ved: public Thread​(ThreadGroup group,Runnable target,String nam
 Mer info her: http://xmlandmore.blogspot.com/2014/09/jdk-8-thread-stack-size-tuning.html
 ===============================================================================
 
-OPEN Issue 27: Fra Karel
+CLOSED Issue 27: Fra Karel
 Procedure kall med tomme paranteser:  P()
 Dette hører ikke til i Simula.
 Parser'n blir rettet.
@@ -82,6 +82,7 @@ Java def. sier  'The integer operators do not indicate overflow or underflow in 
 
 Fra Java 8 er det inført metoder   Math.addExact (multiplyExact, subtractExact etc.) som kaster exception overflow/underflow.
 Dermed får vi redusert performance.
+
 Jeg tror jeg innfører en compiler option på dette.
 
 ===============================================================================
