@@ -7,6 +7,7 @@
  */
 package simula.compiler.testing;
 
+import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
@@ -187,9 +188,9 @@ public final class RunFullTestBatch {
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 		
-		String userDir="C:/GitHub/SimulaCompiler/Simula";
+		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
-		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.
 		RTOption.VERBOSE = false;

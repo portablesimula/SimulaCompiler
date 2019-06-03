@@ -59,8 +59,8 @@ public class SimulaEditor extends JFrame {
 	// *** SimulaEditor: Main Entry for TESTING ONLY
 	// ****************************************************************
     public static void main(String[] args) {
-		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
-		if(simulaHome==null) Util.error("Simula Property 'simula.home' is not defined");
+//		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
+//		if(simulaHome==null) Util.error("Simula Property 'simula.home' is not defined");
 		
 				
 //		Global.packetName="simulaTestPrograms";
@@ -69,12 +69,13 @@ public class SimulaEditor extends JFrame {
 		
 		
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
-		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+//		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 //		Option.outputDir=Global.getTempFileDir("simula/bin/");
 		RTOption.InitRuntimeOptions();
     	Option.InitCompilerOptions();
-		Global.sampleSourceDir="C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples";
+		Global.sampleSourceDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples");
 		SimulaEditor editor=new SimulaEditor();
     	editor.setVisible(true);
     }
@@ -91,7 +92,6 @@ public class SimulaEditor extends JFrame {
         String releaseID=Global.simulaReleaseID+'R'+revision;
 		Global.simulaVersion="SimulaEditor ("+releaseID+ " built "+dated+" )";
         Global.console.write(Global.simulaVersion+"\n");
-//        Global.console.write("Simula Compiler Console:\n");
         
         // Set the initial size of the window
         int frameHeight=800;//500;
@@ -100,13 +100,12 @@ public class SimulaEditor extends JFrame {
         setSize(frameWidth, frameHeight);
 
         // Set the title of the window
-//    	String revision=Global.getProperty("simula.revision","?");
-//    	String dated=Global.getProperty("simula.setup.dated","?");
-//        String releaseID=Global.simulaReleaseID+'R'+revision;
-//        String title="SimulaEditor ("+releaseID+ " built "+dated+" )";
         setTitle(Global.simulaVersion);
-    	Global.currentWorkspace=Global.getProperty("simula.workspace.dir",Global.sampleSourceDir);
-    	if(Global.currentWorkspace.contains("Simula-Beta-0.3")) Global.currentWorkspace=Global.currentWorkspace.replace("Simula-Beta-0.3","Simula-1.0");
+    	Global.currentWorkspace=new File(Global.getProperty("simula.workspace.dir",Global.sampleSourceDir.toString()));
+    	
+    	if(Global.currentWorkspace.toString().contains("Simula-Beta-0.3"))                                                // TODO: SKAL FJERNES SENERE
+    		Global.currentWorkspace=new File(Global.currentWorkspace.toString().replace("Simula-Beta-0.3","Simula-1.0")); // TODO: SKAL FJERNES SENERE
+    	
         // Set the default close operation (exit when it gets closed)
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -188,8 +187,8 @@ public class SimulaEditor extends JFrame {
                    +"\n";
     	String browse="Browse for another Workspace Directory";
     	Choice workspaceChooser = new Choice();
-    	ArrayDeque<String> workspaces=Global.loadWorkspaces();
-    	for(String workspace:workspaces) workspaceChooser.add(workspace);
+    	ArrayDeque<File> workspaces=Global.loadWorkspaces();
+    	for(File workspace:workspaces) workspaceChooser.add(workspace.toString());
     	workspaceChooser.add(browse);
     	workspaceChooser.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -198,7 +197,7 @@ public class SimulaEditor extends JFrame {
 		        String s=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
 		        if(s.equals(browse)) {
 			        //Util.println("itemStateChanged: CALL FILE CHOOSER on"+e.getItem());  
-			        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home",Global.currentWorkspace));
+			        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home",Global.currentWorkspace.toString()));
 			        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			        int answer = fileChooser.showOpenDialog(SimulaEditor.this);
 			        if (answer == JFileChooser.APPROVE_OPTION) {
@@ -222,7 +221,7 @@ public class SimulaEditor extends JFrame {
 		Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE,"OK");
         UIManager.put("Panel.background",PanelBackground);
         String selected=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
-    	Global.updateCurrentWorkspace(selected);
+    	Global.updateCurrentWorkspace(new File(selected));
         //Util.println("doSelectWorkspace: selected="+selected);
     }
 

@@ -7,6 +7,7 @@
  */
 package simula.compiler.testing;
 
+import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
@@ -34,7 +35,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
-		names.add("simtst04.sim"); // OK:  To test putint and putreal.
+		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
 		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
@@ -78,8 +79,8 @@ public final class RunSingleTestBatch {
 		//names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
 		//names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
 
-		//names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
-		//names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
+		names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
+		names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
 		//names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
 		//names.add("simtst43.sim"); // OK:  Compute "n-fac", using recursion.
 		//names.add("simtst44.sim"); // OK:  Test text procedure.
@@ -205,10 +206,10 @@ public final class RunSingleTestBatch {
 		// Coder Trace Options
 		Option.TRACE_CODING=true;
 
-		String userDir="C:/GitHub/SimulaCompiler/Simula";
+		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
-		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.
 		RTOption.VERBOSE = true;

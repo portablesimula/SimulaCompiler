@@ -439,7 +439,8 @@ public final class SimulaScanner {
     	if(Option.TRACE_SCAN) Util.TRACE("scanNumber, result='"+result+"' radix="+radix);
 
     	pushBack(current);
-    	return(newToken(KeyWord.INTEGERKONST,new Long(Long.parseLong(result,radix))));
+//    	return(newToken(KeyWord.INTEGERKONST,new Long(Long.parseLong(result,radix))));
+    	return(newToken(KeyWord.INTEGERKONST,Long.parseLong(result,radix)));
     }
 
 
@@ -463,7 +464,8 @@ public final class SimulaScanner {
     	if(Option.TRACE_SCAN) Util.TRACE("scanDotDigit, result='"+result);
     	pushBack(current);
     	try {
-    	return(newToken(KeyWord.REALKONST,new Float(result)));
+//    		return(newToken(KeyWord.REALKONST,new Float(result)));
+    		return(newToken(KeyWord.REALKONST,Float.parseFloat(result)));
     	} catch(NumberFormatException e) {
     		Util.error("Illegal number: "+result);
     		return(newToken(KeyWord.REALKONST,null));
@@ -492,8 +494,10 @@ public final class SimulaScanner {
     	if(Option.TRACE_SCAN) Util.TRACE("scanDigitsExp, result='"+result);
     	pushBack(current);
     	try {
-    		if(doubleAmpersand) return(newToken(KeyWord.REALKONST,new Double(result)));
-    		return(newToken(KeyWord.REALKONST,new Float(result)));
+//    		if(doubleAmpersand) return(newToken(KeyWord.REALKONST,new Double(result)));
+//    		return(newToken(KeyWord.REALKONST,new Float(result)));
+    		if(doubleAmpersand) return(newToken(KeyWord.REALKONST,Double.parseDouble(result)));
+    		return(newToken(KeyWord.REALKONST,Float.parseFloat(result)));
     	} catch(NumberFormatException e) {
     		Util.error("Illegal number: "+result);
     		return(newToken(KeyWord.REALKONST,null));
@@ -557,7 +561,8 @@ public final class SimulaScanner {
     		pushBack(current);
     	}
     	if(Option.TRACE_SCAN) Util.TRACE("END scanCharacterConstant, result='"+result+"', "+edcurrent());
-    	return(newToken(KeyWord.CHARACTERKONST,new Character(result)));
+//    	return(newToken(KeyWord.CHARACTERKONST,new Character(result)));
+    	return(newToken(KeyWord.CHARACTERKONST,Character.valueOf(result)));
     }  
     
     

@@ -73,7 +73,9 @@ public final class LocalObject extends Expression {
 		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER);
 			Util.TRACE("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
+		//Util.BREAK("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		Meaning meaning=Global.currentScope.findMeaning(classIdentifier);
+		//Util.BREAK("LocalObject(" + toString()+").doChecking - Meaning="+meaning);
 		Declaration decl = meaning.declaredAs;
 		//Util.BREAK("LocalObject.doChecking: decl="+decl+", QUAL="+decl.getClass().getSimpleName());
 		if (decl instanceof ClassDeclaration) classDeclaration=(ClassDeclaration)decl;
@@ -102,6 +104,8 @@ public final class LocalObject extends Expression {
 //		Util.BREAK("LocalObject.toJavaCode: scopeDeclaration="+scopeDeclaration);
 //		Util.BREAK("LocalObject.toJavaCode: Global.currentScope="+Global.currentScope);
 //		if(scopeDeclaration!=null && scopeDeclaration.blockLevel!=Global.currentScope.blockLevel)
+		
+		
 //			 return ("(("+cast+")"+Global.currentScope.edCTX(classDeclaration.blockLevel)+")");
 			 return ("(("+cast+")"+scopeDeclaration.edCTX()+")");
 //		else return ("("+cast+".this)");

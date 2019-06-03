@@ -1,5 +1,32 @@
 Simula Issues
 
+OPEN Issue 32: Fra Øystein
+This Process.into( ... )   feiler.
+
+Kjører:
+Simulation begin 
+
+   Process class Customer; 
+   begin procedure abra; 
+               this Process.into(none); 
+   end; 
+
+   new Customer.abra;
+end
+og får: SIMULA RUNTIME ERROR: ClassCastException
+===============================================================================
+
+OPEN Issue 31: Fra Øystein
+Labeled INNER statement.
+
+Kjører:
+class A;
+L: inner; goto L;
+end;
+
+og får: Error: Misplaced symbol: INNER -- Ignored  
+===============================================================================
+
 OPEN Issue 30: Fra Gunnar
 IllegalStateException 
 

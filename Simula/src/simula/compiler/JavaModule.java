@@ -30,7 +30,8 @@ public final class JavaModule {
 	private JavaModule enclosingJavaModule;
 	public final BlockDeclaration blockDeclaration;
 	private final Writer writer;
-	final String javaOutputFileName;
+//	final String javaOutputFileName;
+	final File javaOutputFile;
 	private final Vector<Integer> lineMap=new Vector<Integer>();
 	public Vector<CodeLine> saveCode; // Used during coding
 	
@@ -40,12 +41,16 @@ public final class JavaModule {
 		Global.javaModules.add(this);
 		enclosingJavaModule = Global.currentJavaModule;
 		Global.currentJavaModule = this;
-		javaOutputFileName = Global.tempJavaFileDir + blockDeclaration.getJavaIdentifier() + ".java";
+//		javaOutputFileName = Global.tempJavaFileDir + blockDeclaration.getJavaIdentifier() + ".java";
+		javaOutputFile = new File(Global.tempJavaFileDir,blockDeclaration.getJavaIdentifier()+".java");
 		try {
-			File outputFile = new File(javaOutputFileName);
-			outputFile.getParentFile().mkdirs();
-			if (Option.verbose)	Util.TRACE("Output: " + outputFile.getCanonicalPath());
-			writer = new OutputStreamWriter(new FileOutputStream(outputFile), Global.CHARSET$);
+//			File outputFile = new File(javaOutputFileName);
+//			outputFile.getParentFile().mkdirs();
+//			if (Option.verbose)	Util.TRACE("Output: " + outputFile.getCanonicalPath());
+//			writer = new OutputStreamWriter(new FileOutputStream(outputFile), Global.CHARSET$);
+			javaOutputFile.getParentFile().mkdirs();
+			if (Option.verbose)	Util.TRACE("Output: " + javaOutputFile.getCanonicalPath());
+			writer = new OutputStreamWriter(new FileOutputStream(javaOutputFile), Global.CHARSET$);
 			JavaModule.code("package " + Global.packetName + ";");
 			JavaModule.code("// " + Global.simulaReleaseID + " Compiled at " + new Date());
 			JavaModule.code("import simula.runtime.*;");
@@ -110,7 +115,8 @@ public final class JavaModule {
 			  Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 			  writer.write(s+'\n');
 		} catch (IOException e) {
-			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
+//			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
+			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFile,e);
 		}
 		prevLineNumber=sourceLineNumber;
 	}
@@ -144,13 +150,14 @@ public final class JavaModule {
 		Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 		try { writer.write(s.toString()+'\n');
 		} catch (IOException e) {
-			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
+//			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
+			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFile,e);
 		}
 		
 	}
 	
 	public String toString() {
-		return ("JavaModule " + blockDeclaration + ", javaOutputFileName=" + javaOutputFileName);
+		return ("JavaModule " + blockDeclaration + ", javaOutputFile=" + javaOutputFile);
 	}
 
 }

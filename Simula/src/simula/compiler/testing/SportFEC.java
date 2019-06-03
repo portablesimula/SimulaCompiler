@@ -7,6 +7,7 @@
  */
 package simula.compiler.testing;
 
+import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
@@ -78,10 +79,11 @@ public final class SportFEC {
 		Option.TRACE_REPAIRING=true;
 		
 
-		String userDir="C:/GitHub/SimulaCompiler/Simula";
+		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="sportFEC";
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
-		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+//		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
+		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 
 		for(String name:names)
 		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;

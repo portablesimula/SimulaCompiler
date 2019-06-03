@@ -114,15 +114,12 @@ public final class ExternalDeclaration extends Declaration {
 				externalIdentifier = Parser.currentToken;
 				Parser.expect(KeyWord.TEXTKONST);
 			}
-			String jarFileName;
+			File jarFile;
 			if(externalIdentifier==null)
-//				 jarFileName=Global.outputDir+identifier+".jar ";
-				 jarFileName=Global.outputDir+identifier+".jar";
-			else jarFileName=externalIdentifier.getIdentifier();
-			Type moduleType=readAttributeFile(identifier,jarFileName,declarationList);
+				 jarFile=new File(Global.outputDir,identifier+".jar");
+			else jarFile=new File(externalIdentifier.getIdentifier());
+			Type moduleType=readAttributeFile(identifier,jarFile,declarationList);
 			if(moduleType!=expectedType) {
-				//Util.BREAK("ExternalDeclaration.doParse: expectedType="+expectedType);
-				//Util.BREAK("ExternalDeclaration.doParse: moduleType="+moduleType);
 				if(expectedType!=null) Util.error("Wrong external type");
 			}
 		  
@@ -137,47 +134,36 @@ public final class ExternalDeclaration extends Declaration {
 	}
 
 
-	private static Type readAttributeFile(final String identifier,final String jarFileName,final Vector<Declaration> declarationList) {
+	private static Type readAttributeFile(final String identifier,final File file,final Vector<Declaration> declarationList) {
 		Type moduleType=null;
-		File file=new File(jarFileName);
-		Util.warning("Separate Compiled Module is read from: \"" + jarFileName+"\"");
-        //Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
+		Util.warning("Separate Compiled Module is read from: \"" + file+"\"");
 		if(!(file.exists() && file.canRead())) {
 			Util.error("Can't read attribute file: "+file);	return(null);
 	    }
 //	    Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
-	    try { JarFile jarFile=new JarFile(jarFileName);
-//	        Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
-		
-	        Manifest manifest=jarFile.getManifest();
-//	        Util.BREAK("ExternalDeclaration.readAttributeFile: manifest="+manifest);
+	    try {
+	    	JarFile jarFile=new JarFile(file);
+	        Manifest manifest=jarFile.getManifest();			
 	        Attributes mainAttributes=manifest.getMainAttributes();
-//	        Util.BREAK("ExternalDeclaration.readAttributeFile: MainAttributes="+mainAttributes);
 	        String simulaInfo=mainAttributes.getValue("SIMULA-INFO");
-//	        Util.BREAK("ExternalDeclaration.readAttributeFile: simulaInfo="+simulaInfo);
-//	        JarEntry entry=external.getJarEntry(simulaInfo);
-//	        Util.BREAK("ExternalDeclaration.readAttributeFile: entry="+entry);
 	        ZipEntry zipEntry=jarFile.getEntry(simulaInfo);
-//	        Util.BREAK("ExternalDeclaration.readAttributeFile: ZipEntry="+zipEntry);
 	        InputStream inputStream=jarFile.getInputStream(zipEntry);
-//	        Util.BREAK("ExternalDeclaration.readAttributeFile: inputStream="+inputStream);
-	        moduleType=AttributeFile.readAttributeFile(inputStream,simulaInfo,declarationList);
+	        moduleType=AttributeFile.readAttributeFile(inputStream,new File(simulaInfo),declarationList);
 	        inputStream.close();
 	        
-	        File destDir=new File(Global.tempClassFileDir);
+	        File destDir=Global.tempClassFileDir;
 	        expandJarEntries(jarFile,destDir);
 	        inputStream.close();
 	        jarFile.close();
-	        Global.externalJarFiles.add(jarFileName);
+	        Global.externalJarFiles.add(file);
 	    } catch(IOException | ClassNotFoundException e) {
-			Util.error("Unable to read Attribute File: "+jarFileName);
+			Util.error("Unable to read Attribute File: "+file);
 			Util.warning("It may be necessary to recompile '"+identifier+"'");
 	    	Util.INTERNAL_ERROR("Caused by:",e);
 	    }
 	    return(moduleType);
 	}
 
-//	private static void expandJarEntries(final JarFile jarFile,final File destDir) throws IOException {
 	private static void expandJarEntries(final JarFile jarFile,final File destDir) throws IOException {
 		if(Option.verbose) Util.message("---------  EXPAND .jar File: "+jarFile.getName()+"  ---------");
 		new File(destDir,Global.packetName).mkdirs(); // Create directories
@@ -185,35 +171,30 @@ public final class ExternalDeclaration extends Declaration {
 		int nEntriesAdded=0;
 		LOOP:while (entries.hasMoreElements()) {
 			JarEntry entry = entries.nextElement();
-			InputStream inputStream = jarFile.getInputStream(entry);
 	           
 			String name=entry.getName();
-			//Util.BREAK("ExternalDeclaration.expandJarEntries: entry'name="+name);
-//	           if(name.startsWith("simula/runtime")) continue LOOP;
-//	           if(name.startsWith("simula/compiler")) continue LOOP;
-			if(!name.startsWith(Global.packetName)) {
-				//Util.BREAK("!name.startsWith(Global.packetName): "+Global.packetName);
-				continue LOOP;
+			if(!name.startsWith(Global.packetName))	continue LOOP;
+			if(!name.endsWith(".class")) continue LOOP;
+			
+			InputStream inputStream = null;
+			OutputStream outputStream = null;
+			try { inputStream = jarFile.getInputStream(entry);
+			      File destFile = new File(destDir,entry.getName());
+			      //Util.message("Add entry: "+destFile);
+			      outputStream=new FileOutputStream(destFile);	 
+			      byte[] buffer = new byte[4096];
+			      int bytesRead = 0;
+			      while ((bytesRead = inputStream.read(buffer)) != -1) {
+				      outputStream.write(buffer, 0, bytesRead);
+			      }
+			      nEntriesAdded++;
+			} finally {
+				if(inputStream!=null) inputStream.close();
+				if(outputStream!=null) {
+					outputStream.flush();
+					outputStream.close();
+				}
 			}
-			if(!name.endsWith(".class")) {
-				//Util.BREAK("!name.endsWith(\".class\"): ");
-				continue LOOP;
-			}
-			//Util.BREAK("ExternalDeclaration.expandJarEntries: entry'name="+entry.getName());
-			//Util.BREAK("ExternalDeclaration.expandJarEntries: TREAT entry="+entry);
-			File destFile = new File(destDir,entry.getName());
-			//Util.BREAK("ExternalDeclaration.expandJarEntries: destFile="+destFile);
-			//Util.message("Add entry: "+destFile);
-			OutputStream outputStream=new FileOutputStream(destFile);	 
-			byte[] buffer = new byte[4096];
-			int bytesRead = 0;
-			while ((bytesRead = inputStream.read(buffer)) != -1) {
-				outputStream.write(buffer, 0, bytesRead);
-			}
-			inputStream.close();
-			outputStream.flush();
-			outputStream.close();
-			nEntriesAdded++;
 		}
 		if(Option.verbose) Util.message("---------  END EXPAND .jar File, "+nEntriesAdded+" Entries Added  ---------");
 	}

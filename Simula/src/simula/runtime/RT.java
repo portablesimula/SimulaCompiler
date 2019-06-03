@@ -87,7 +87,7 @@ public final class RT {
 
 	public static void printError(final String s) {
 		if(console!=null) console.writeError(s+'\n');
-		else System.err.println(s);
+		else System.out.println(s);
 	}
 
 	public static void printWarning(final String s) {

@@ -315,7 +315,8 @@ public class EditorMenues extends JMenuBar {
 //    	    			SimulaEditor.doNewTabbedPanel(file);
 //    				}}).start();
     		}
-        	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
+//        	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
+        	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory());
         }
 	}
 	
@@ -330,7 +331,8 @@ public class EditorMenues extends JMenuBar {
 	        if (fileChooser.showSaveDialog(SimulaEditor.tabbedPane)!=JFileChooser.APPROVE_OPTION) return; // Do Nothing
 	        File file=fileChooser.getSelectedFile();
 	        Util.println("saveAs.APPROVED: "+fileChooser.getSelectedFile());
-	        Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
+//	        Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
+	        Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory());
 	        if(file.exists() && overwriteDialog(file)!=JOptionPane.YES_OPTION) return; // Do Nothing
 	        if(!file.getName().toLowerCase().endsWith(".sim")) {
 	        	if(noSimTypeDialog(file)!=JOptionPane.OK_OPTION) return; // Do Nothing
@@ -445,10 +447,9 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	private void doStartRunning() {
 		maybeSaveCurrentFile();
-//		SourceTextPanel current=SimulaEditor.current;
        	File file=SimulaEditor.current.sourceFile;
 		if(file==null) {
-			file=new File(Global.getTempFileDir("simula/tmp/")+"unnamed.sim");
+			file=new File(Global.getTempFileDir("simula/tmp/"),"unnamed.sim");
 			file.getParentFile().mkdirs();
 		}
 		try {
@@ -473,8 +474,9 @@ public class EditorMenues extends JMenuBar {
     	JLabel label=new JLabel("Check Workspaces to be removed:");
     	panel.add(label);
     	ArrayList<JCheckBox> list=new ArrayList<JCheckBox>();
-    	for(String workspace:Global.workspaces) {
-        	JCheckBox checkbox=new JCheckBox(workspace); 
+//    	for(String workspace:Global.workspaces) {
+    	for(File workspace:Global.workspaces) {
+        	JCheckBox checkbox=new JCheckBox(workspace.toString()); 
         	checkbox.setBackground(Color.white);
         	list.add(checkbox); panel.add(checkbox);  
     	}
@@ -486,7 +488,7 @@ public class EditorMenues extends JMenuBar {
 			//Util.println("SettingsMenu.removeWorkspaces: OK res="+res);
 			for(JCheckBox box:list) {
 				//Util.println("SettingsMenu.removeWorkspaces: box="+box.isSelected()+", text="+box.getText());
-				if(box.isSelected()) Global.workspaces.remove(box.getText());
+				if(box.isSelected()) Global.workspaces.remove(new File(box.getText()));
 			}
 	    	Global.updateWorkspaceList();
 		}

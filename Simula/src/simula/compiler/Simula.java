@@ -7,6 +7,8 @@
  */
 package simula.compiler;
 
+import java.io.File;
+
 import simula.compiler.editor.RTOption;
 import simula.compiler.editor.SimulaEditor;
 import simula.compiler.utilities.Global;
@@ -37,12 +39,10 @@ public final class Simula {
 	}
 
 	public static void main(String[] argv) {
-        //System.setProperty("file.encoding","UTF-8");
 		String fileName = null;
-		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
-		// Set default options.
 		Option.verbose=true;//false;
 		Option.WARNINGS=true;
+		Global.initProperties();
 
 		// Parse command line arguments.
 		for(int i=0;i<argv.length;i++) {
@@ -52,28 +52,22 @@ public final class Simula {
 				else if (arg.equals("-noexec")) Option.noExecution=true;
 				else if (arg.equals("-nowarn")) { Option.noJavacWarnings=true; Option.WARNINGS=false; }
 				else if (arg.equals("-verbose")) Option.verbose=true;
-//				else if (arg.equals("-standardClass")) Option.standardClass=true;
 				else if (arg.equals("-keepJava")) setKeepJava(argv[++i]);
 				else if (arg.equals("-output")) setOutputDir(argv[++i]);
 				else error("Unknown option "+arg);
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
 		}		
-		//Util.popUpMessage("SIMULA_HOME="+simulaHome);
-		
+	    Global.simulaRtsLib=new File(Global.simulaHome,"rts");
 		if (fileName == null) {
-			//error("No input files specified");
-			Global.sampleSourceDir=simulaHome+'/'+Global.simulaReleaseID+"/tst";
-		    Global.simulaRtsLib=simulaHome+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
 		    //printGlobalList("*** STARTING SIMULA EDITOR ***");
+			Global.sampleSourceDir=new File(Global.simulaHome,"samples");
 			RTOption.InitRuntimeOptions();
 	    	Option.InitCompilerOptions();
 	    	SimulaEditor editor=new SimulaEditor();
 	    	editor.setVisible(true);
 		} else {
-		    Global.simulaRtsLib=simulaHome+'/'+Global.simulaReleaseID+"/rts/"; // TODO: Later  /RTS.jar
 		    //printGlobalList("*** STARTING SIMULA COMPILER ***");
-		    // Start compiler ....
 		    new SimulaCompiler(fileName).doCompile();
 		}
 	}
@@ -88,7 +82,7 @@ public final class Simula {
 	 * Option: -keepJava <directory> Specify where to place generated .java files
 	 */
 	private static void setKeepJava(final String dir) {
-		Option.keepJava = dir;
+		Option.keepJava = new File(dir);
 		Util.TRACE("KEEP_JAVA: " + Option.keepJava);
 		// TODO: Check dir legal directory name
 	}
@@ -98,7 +92,7 @@ public final class Simula {
 	 * file
 	 */
 	private static void setOutputDir(final String dir) {
-		Option.outputDir = dir;
+		Option.outputDir = new File(dir);
 		Util.TRACE("OUTPUT_DIR: " + Option.keepJava);
 		// TODO: Check dir legal directory name
 	}

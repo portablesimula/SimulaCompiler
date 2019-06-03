@@ -34,26 +34,14 @@ public class Directive {
 	 * the inclusion and turned on again when reading continues after this directive. 
 	 */
 	public static void insert(final SimulaScanner scanner,final String fileName) {
-//		CHECK("C:/GitHub/SimulaCompiler/Simula/src/testing/bin/");
-//		CHECK("C:/GitHub/SimulaCompiler/Simula/src/testing/FEC/SYMTABLE.DEF");
-//		CHECK("C:/GitHub/SimulaCompiler/Simula/src/testing/FEC/");
-//		CHECK("C:/GitHub/SimulaCompiler/Simula/src/testing/");
-//		CHECK(fileName);
 		File file=new File(fileName);
 		if(file.exists() && file.canRead()) {
 		    try {
-		    	//scanner.insert(new FileReader(file));
 				Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
 				scanner.insert(reader);
 		    } catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
 		} else Util.error("Can't open "+fileName+" for reading");
 	}
-//	private static void CHECK(String fileName) {
-//		File file=new File(fileName);
-//		Util.println("Directive.insert: file="+file);
-//		Util.println("Directive.insert: file.exists()="+file.exists());
-//		Util.println("Directive.insert: file.canRead()="+file.canRead());
-//	}
 
 	/**
 	 * %PAGE
@@ -115,7 +103,7 @@ public class Directive {
      * %KEEP_JAVA directory-string
      */
     public static void setKeepJava(final String dir) {
-    	if(dir!=null) Option.keepJava=dir;
+    	if(dir!=null) Option.keepJava=new File(dir);
     	else Util.warning("Missing directory in KEEP_JAVA directive");	
     	Util.BREAK("KEEP_JAVA: "+Option.keepJava);
     }

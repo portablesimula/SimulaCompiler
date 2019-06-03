@@ -775,7 +775,8 @@ public class ENVIRONMENT$ extends RTObject$ {
 	 * @return
 	 */
 //	public boolean draw(float a, NAME$<Integer> U) {
-	public boolean draw(final float a,final int U) {
+//	public boolean draw(final float a,final int U) {
+	public boolean draw(final double a,final int U) {
 		boolean val;
 		if (a >= 1.0) val = true;
 		else if (a <= 0.0) val = false;

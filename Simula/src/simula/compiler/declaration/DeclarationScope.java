@@ -72,7 +72,10 @@ public abstract class DeclarationScope extends Declaration {
     		if (identifier.equalsIgnoreCase(x.identifier)) return (x);
     		while ((x = x.getPrefixClass()) != null) {
     			// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
-    			if (identifier.equalsIgnoreCase(x.identifier)) return (x);
+    			if (identifier.equalsIgnoreCase(x.identifier)) {
+       			    //Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): Found in "+x);
+    				return (x);
+    			}
     		}
     	} else if (this instanceof ConnectionBlock) {
     		ConnectionBlock z = (ConnectionBlock)this;
@@ -88,15 +91,16 @@ public abstract class DeclarationScope extends Declaration {
     }
 
     // ***********************************************************************************************
-    // *** Coding Utility: edCTX(contextLevel)
+    // *** Coding Utility: edCTX()
     // ***********************************************************************************************
     public String edCTX() {
     	if(blockLevel==0) return("CTX$");
     	int curLevel=Global.currentScope.blockLevel;
 //      Util.BREAK("DeclarationScope.edCTX: Current="+Global.currentScope);
 //      Util.BREAK("DeclarationScope.edCTX: Current'Qual="+Global.currentScope.getClass().getSimpleName());
-//      Util.BREAK("DeclarationScope.edCTX: Current'BlockLevel="+curLevel);
-//      Util.BREAK("DeclarationScope.edCTX: Current'Enc'BlockLevel="+Global.currentScope.declaredIn.blockLevel);
+//        Util.BREAK("DeclarationScope.edCTX: BlockLevel="+blockLevel);
+//        Util.BREAK("DeclarationScope.edCTX: CurrentScope'BlockLevel="+curLevel);
+//        Util.BREAK("DeclarationScope.edCTX: CurrentScope'Enc'BlockLevel="+Global.currentScope.declaredIn.blockLevel);
         Util.ASSERT(curLevel >= Global.currentScope.declaredIn.blockLevel,"Invariant");
         if(blockLevel==curLevel) return("CUR$");
         String ret="CUR$";

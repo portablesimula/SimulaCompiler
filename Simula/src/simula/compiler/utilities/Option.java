@@ -10,6 +10,7 @@ package simula.compiler.utilities;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -79,14 +80,14 @@ public final class Option {
 	 * <p>
 	 * If not set, a temp directory is used/created.
 	 */
-	public static String keepJava = null;
+	public static File keepJava = null;
 	
 	/**
 	 * Used by Java-Coding to save the generated .jar files.
 	 * <p>
 	 * If not set, .jar files are stored in subdirectory /bin of the source file directory.
 	 */
-	public static String outputDir = null;
+	public static File outputDir = null;
 	
 	
 	/**

@@ -7,6 +7,8 @@
  */
 package simula.compiler.testing;
 
+import java.io.File;
+
 import simula.compiler.SimulaCompiler;
 import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
@@ -40,6 +42,8 @@ public final class TestCompiler {
 		// String name="/rts/Simulation.sim";
 
 		// *** SIMULA PROGRAMMER FOR VIDERE UTVIKLING
+		// String name="/simprogs/COUNTERACT.sim";  // Used by AirportDeparture
+		// String name="/simprogs/AirportDeparture.sim";
 		// String name="/simprogs/DEMOS.sim";
 		// String name="/simprogs/HegnaNRK.sim";
 		// String name="/simprogs/LIFT90.sim";
@@ -91,6 +95,8 @@ public final class TestCompiler {
 		// String name="/error/issue21.sim"; // Ingen new-line til slutt i file
 		// String name="/error/issue24.sim"; // For step until
 		// String name="/error/issue26.sim"; // Terminating Process in strict sence.
+		// String name="/error/issue31.sim"; // Labeled INNER
+		 String name="/error/issue32.sim"; // Labeled INNER
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
@@ -99,7 +105,7 @@ public final class TestCompiler {
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
-		 String name="/simple/adHoc01.sim";
+		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
@@ -167,17 +173,15 @@ public final class TestCompiler {
 			// Coder Trace Options
 			Option.TRACE_CODING=true;
 
-			//String userDir=System.getProperty("user.dir");
-			String userDir="C:/GitHub/SimulaCompiler/Simula";
+			File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
 			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
-			Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
-			Option.outputDir=Global.getTempFileDir("simula/bin/");
+			Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			
 			// Set RunTime Options and tracing.
 			RTOption.VERBOSE = true;
 			RTOption.DEBUGGING = true;//false;//true;
-//			RTOption.USE_CONTINUATIONS=true;
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;
 			RTOption.BLOCK_TRACING = false;

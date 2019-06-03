@@ -28,37 +28,37 @@ import simula.compiler.utilities.Util;
 public final class AttributeFile {
 	private final String version="SimulaAttributeFile: Version 1.0";
 
-	final String attributeFileName;
+	final File attributeFile;
 	ObjectOutputStream oupt;
 	ObjectInputStream inpt;
 	boolean verbose=true; //false;//true;
 	
-	private AttributeFile(final String attributeFileName) {
-		this.attributeFileName = attributeFileName;
+	private AttributeFile(final File attributeFile) {
+		this.attributeFile = attributeFile;
 	}
 
 	public static void write(final ProgramModule program) throws IOException {
 		String relativeAttributeFileName = program.getRelativeAttributeFileName();
 		if (relativeAttributeFileName == null) return;
-		String attributeFileName = Global.tempClassFileDir + relativeAttributeFileName;
-		if (Option.verbose)	Util.message("*** BEGIN Generate SimulaAttributeFile: \"" + attributeFileName+"\"");
-		AttributeFile attributeFile = new AttributeFile(attributeFileName);
+		File file = new File(Global.tempClassFileDir,relativeAttributeFileName);
+		if (Option.verbose)	Util.message("*** BEGIN Generate SimulaAttributeFile: \"" + file+"\"");
+		AttributeFile attributeFile = new AttributeFile(file);
 		attributeFile.write((BlockDeclaration) program.module);
 		if (Option.TRACE_ATTRIBUTE_OUTPUT) {
-			try { attributeFile.listAttributeFile(attributeFileName);
+			try { attributeFile.listAttributeFile(file);
 			} catch (ClassNotFoundException e) {
-				Util.INTERNAL_ERROR("Unable to list Attribute File: "+attributeFileName, e);
+				Util.INTERNAL_ERROR("Unable to list Attribute File: "+file, e);
 			}
 		}
-		if (Option.verbose)	Util.TRACE("*** ENDOF Generate SimulaAttributeFile: " + attributeFileName);
+		if (Option.verbose)	Util.TRACE("*** ENDOF Generate SimulaAttributeFile: " + file);
 	}
 
 	private void write(final BlockDeclaration module) throws IOException {
-		File attributeDir = new File(Global.tempClassFileDir + Global.packetName);
+		File attributeDir = new File(Global.tempClassFileDir,Global.packetName);
 		// Util.BREAK("AttributeFile.write: attributeDir="+attributeDir);
 		// Util.BREAK("AttributeFile.write: attributeDir'canWrite="+attributeDir.canWrite());
 		attributeDir.mkdirs();
-		File attributeFile = new File(attributeFileName);
+//		File attributeFile = new File(attributeFileName);
 		// Util.BREAK("AttributeFile.write: attributeFile="+attributeFile);
 		// Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
 		attributeFile.createNewFile();
@@ -89,14 +89,14 @@ public final class AttributeFile {
 		//Util.BREAK("AttributeFile.write: END WRITING DEPENDENCIES");
 	}
 
-	public static Type readAttributeFile(final InputStream inputStream,final String attributeFileName,
-			                             final Vector<Declaration> declarationList) throws IOException, ClassNotFoundException {
-		AttributeFile attributeFile = new AttributeFile(attributeFileName);
-		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFileName);
+	public static Type readAttributeFile(final InputStream inputStream,final File file,
+            final Vector<Declaration> declarationList) throws IOException, ClassNotFoundException {
+		AttributeFile attributeFile = new AttributeFile(file);
+		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + file);
 //		Util.BREAK("*** BEGIN Read SimulaAttributeFile: " + attributeFileName);
 		attributeFile.inpt = new ObjectInputStream(inputStream);
 		if (!attributeFile.checkVersion())
-			Util.error("Malformed SimulaAttributeFile: " + attributeFileName);
+			Util.error("Malformed SimulaAttributeFile: " + file);
 		Type moduleType=null;
 		LOOP: while (true) {
 			BlockDeclaration module=null;
@@ -113,22 +113,22 @@ public final class AttributeFile {
 			if (Option.TRACE_ATTRIBUTE_INPUT) module.print(0);
 		}
 		attributeFile.inpt.close();
-		if (Option.verbose)	Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + attributeFileName);
+		if (Option.verbose)	Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + file);
 		return(moduleType);
 	}	
 	  
 	
-	private BlockDeclaration listAttributeFile(final String attributeFileName) throws IOException, ClassNotFoundException {
-		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFileName);
-		FileInputStream fileInputStream = new FileInputStream(attributeFileName);
+	private BlockDeclaration listAttributeFile(final File attributeFile) throws IOException, ClassNotFoundException {
+		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFile);
+		FileInputStream fileInputStream = new FileInputStream(attributeFile);
 		inpt = new ObjectInputStream(fileInputStream);
-		if (!checkVersion()) Util.error("Malformed SimulaAttributeFile: " + attributeFileName);
+		if (!checkVersion()) Util.error("Malformed SimulaAttributeFile: " + attributeFile);
 		BlockDeclaration blockDeclaration=(BlockDeclaration)inpt.readObject();
 		inpt.close();
 		if (Option.verbose) {
 			// Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
 			if (Option.TRACE_ATTRIBUTE_INPUT) {
-				Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + attributeFileName);
+				Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + attributeFile);
 				blockDeclaration.print(0);
 			}
 		}

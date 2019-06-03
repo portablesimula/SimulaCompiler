@@ -60,7 +60,7 @@ public final class SimulaExtractor extends JFrame {
     public static final String simulaReleaseID="Simula-1.0";
     public static String simulaRevisionID="?";
 
-    private static File simulaPropertiesFile;
+//    private static File OLD_simulaPropertiesFile;
     private static Properties simulaProperties;
     private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
 	private static final String programAndVersion = "Simula 1.0";
@@ -117,15 +117,34 @@ public final class SimulaExtractor extends JFrame {
 	}
 	
 	private static void loadProperties() {
-		String USER_HOME=System.getProperty("user.home");
-		if(DEBUG) System.out.println("USER_HOME="+USER_HOME);
-		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		if(DEBUG) System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
-		simulaPropertiesDir.mkdirs();
-		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
 		simulaProperties = new Properties();
-		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
+		getSimulaPropertiesFile();
+		try { simulaProperties.loadFromXML(new FileInputStream(LOAD_PROPERTIES_FROM));
 		} catch(Exception e) {} // e.printStackTrace(); }
+	}
+	
+	private static File SIMULA_PROPERTIES_HOME;
+	private static File LOAD_PROPERTIES_FROM;
+	private static void getSimulaPropertiesFile() {
+		if(DEBUG) System.out.println("SimulaExtractor.getSimulaPropertiesFile: simulaHome="+SIMULA_HOME);
+		SIMULA_PROPERTIES_HOME=new File(SIMULA_HOME,"simulaProperties.xml");
+		if(DEBUG) System.out.println("SimulaExtractor.getSimulaPropertiesFile: SIMULA_PROPERTIES_HOME="+SIMULA_PROPERTIES_HOME+", exists="+SIMULA_PROPERTIES_HOME.exists());
+		if(SIMULA_PROPERTIES_HOME.exists()) {
+			LOAD_PROPERTIES_FROM=SIMULA_PROPERTIES_HOME;
+			return;
+		}
+
+		// Compatibility: TRY TO READ OLD SIMULA PROPERTY FILE FROM <user.home>/.simula
+		String USER_HOME=System.getProperty("user.home");
+		//Util.println("USER_HOME="+USER_HOME);
+		if(DEBUG) System.out.println("SimulaCompiler: USER_HOME="+USER_HOME);
+//		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
+		File simulaPropertiesDir=new File(USER_HOME,".simula");
+		//Util.println("simulaPropertiesDir="+simulaPropertiesDir);
+		simulaPropertiesDir.mkdirs();
+		LOAD_PROPERTIES_FROM=new File(simulaPropertiesDir,"simulaProperties.xml");
+		if(DEBUG) System.out.println("SimulaCompiler: LOAD_PROPERTIES_FROM="+LOAD_PROPERTIES_FROM+", exists="+LOAD_PROPERTIES_FROM.exists());
+		return;
 	}
 	
 	private static void loadManifest(ZipFile zipFile,ZipEntry entry) throws IOException  {
@@ -148,7 +167,8 @@ public final class SimulaExtractor extends JFrame {
 			if(DEBUG) simulaProperties.list(System.out);
 			OutputStream out=null;
 			try {
-				out=new FileOutputStream(simulaPropertiesFile);
+//				out=new FileOutputStream(simulaPropertiesFile);
+				out=new FileOutputStream(SIMULA_PROPERTIES_HOME);
 				simulaProperties.storeToXML(out,"Simula Properties");
 			} catch(Exception e) { e.printStackTrace(); }
 			finally { if(out!=null) try {out.close(); } catch(IOException e){}   }
@@ -182,12 +202,6 @@ public final class SimulaExtractor extends JFrame {
 			return jarFileName;
 		} catch (Exception e) { return(null); }
 	}
-
-//	// True if we are running on Windows
-//	private boolean isWindows() {
-//		return (File.separatorChar == '\\');
-//	}
-
 
 	// Get the directory in which to unpack our file
 	// @param filename The name of the JAR file from which we are unpacking.
@@ -346,7 +360,9 @@ public final class SimulaExtractor extends JFrame {
 						JOptionPane.QUESTION_MESSAGE, simulaIcon, options, options[0]);
 				if(DEBUG) System.out.println("SimulaExtractor.extract: answer="+answer); // TODO: MYH
 				if(answer==0) {
-					startJar(jarFileName);
+					new Thread() {
+						public void run() {	startJar(jarFileName); }
+					}.start();
 //					try {
 //						Thread.sleep(5 * 1000); // sleep a few seconds
 //						// On Windows, when the installer exits,
@@ -378,10 +394,7 @@ public final class SimulaExtractor extends JFrame {
 	private void startJar(String jar) {
 		String cmd;
 		Runtime rt = Runtime.getRuntime();
-//		if (isWindows())
-//			 cmd = "\"" + getJavawProg() + "\" -jar \"" + jar + "\"";
-//		else
-			cmd = getJavaProg() + " -jar " + jar;
+		cmd = getJavaProg() + " -jar " + jar;
 		try { rt.exec(cmd);
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(this, "Can't run " + cmd, "Error Running Java", JOptionPane.ERROR_MESSAGE);
@@ -395,10 +408,5 @@ public final class SimulaExtractor extends JFrame {
 		return System.getProperty("java.home") + sep + "bin" + sep + "java";
 	}
 
-//	/** Get the path to the javaw program. */
-//	private String getJavawProg() {
-//		String sep = File.separator;
-//		return System.getProperty("java.home") + sep + "bin" + sep + "javaw";
-//	}
 	
 }
