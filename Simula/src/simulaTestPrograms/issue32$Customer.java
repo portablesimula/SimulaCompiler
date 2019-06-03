@@ -1,5 +1,5 @@
 package simulaTestPrograms;
-// Simula-1.0 Compiled at Sat Jun 01 10:23:13 CEST 2019
+// Simula-1.0 Compiled at Mon Jun 03 12:50:51 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class issue32$Customer extends Process$ {

@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-SIMULA-INFO: simulaTestBatch/CLASS.AF
-Created-By: Simula-1.0 (Portable Simula)
-

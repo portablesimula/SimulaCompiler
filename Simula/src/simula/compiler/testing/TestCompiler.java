@@ -96,7 +96,7 @@ public final class TestCompiler {
 		// String name="/error/issue24.sim"; // For step until
 		// String name="/error/issue26.sim"; // Terminating Process in strict sence.
 		// String name="/error/issue31.sim"; // Labeled INNER
-		 String name="/error/issue32.sim"; // Labeled INNER
+		 String name="/error/issue32.sim"; // This Process
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
