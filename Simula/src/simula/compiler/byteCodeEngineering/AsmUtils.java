@@ -116,14 +116,14 @@ public class AsmUtils {
 			  int min=((TableSwitchInsnNode)instr).min;
 			  int max=((TableSwitchInsnNode)instr).max;
 			  LabelNode dflt=((TableSwitchInsnNode)instr).dflt;
-			  List<LabelNode> labels=((TableSwitchInsnNode)instr).labels;
+//			  List<LabelNode> labels=((TableSwitchInsnNode)instr).labels;
 			  return(Printer.OPCODES[instr.getOpcode()]+' '+min+' '+max+' '+"...");
 
 		  /** The type of {@link LookupSwitchInsnNode} instructions. */
 		  case AbstractInsnNode.LOOKUPSWITCH_INSN:
 			  dflt=((LookupSwitchInsnNode)instr).dflt;
 			  List<Integer> keys=((LookupSwitchInsnNode)instr).keys;
-			  labels=((LookupSwitchInsnNode)instr).labels;
+//			  labels=((LookupSwitchInsnNode)instr).labels;
 			  return(Printer.OPCODES[instr.getOpcode()]+' '+dflt+' '+keys+' '+"...");
 
 		  /** The type of {@link MultiANewArrayInsnNode} instructions. */
@@ -190,17 +190,17 @@ public class AsmUtils {
 	    return(stringBuilder.toString());
 	}
 	
-	private static String edFrameType(final int type) {
-		switch (type) {
-		case Opcodes.F_NEW: return("NEW");
-		case Opcodes.F_FULL: return("FULL");
-		case Opcodes.F_APPEND: return("APPEND");
-		case Opcodes.F_CHOP: return("CHOP");
-		case Opcodes.F_SAME: return("SAME");
-		case Opcodes.F_SAME1: return("SAME1");
-		default: return("UNKNOWN");
-		}
-	}
+//	private static String edFrameType(final int type) {
+//		switch (type) {
+//		case Opcodes.F_NEW: return("NEW");
+//		case Opcodes.F_FULL: return("FULL");
+//		case Opcodes.F_APPEND: return("APPEND");
+//		case Opcodes.F_CHOP: return("CHOP");
+//		case Opcodes.F_SAME: return("SAME");
+//		case Opcodes.F_SAME1: return("SAME1");
+//		default: return("UNKNOWN");
+//		}
+//	}
 	  
 	// FREAME EDITING COPIED FROM Textifier
 	static StringBuilder stringBuilder;

@@ -55,6 +55,7 @@ import javax.swing.UIManager;
 public final class SimulaExtractor extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final boolean DEBUG=true;
+	private static final boolean USE_CONSOLE=false;
 	
 	// NOTE: When updating release id, change version in Global.simulaReleaseID
     public static final String simulaReleaseID="Simula-1.0";
@@ -70,7 +71,11 @@ public final class SimulaExtractor extends JFrame {
 	
 	private String myClassName;
 	private JTextField installDirField;
+	private static ConsolePanel console;
 
+	// ****************************************************************
+	// *** SimulaExtractor: Main Entry for TESTING ONLY
+	// ****************************************************************
 	public static void main(String[] args) {
     	//System.setProperty("file.encoding","UTF-8");
 		if(DEBUG) System.out.println("SimulaExtractor: user.home="+System.getProperty("user.home"));
@@ -80,11 +85,20 @@ public final class SimulaExtractor extends JFrame {
         UIManager.put("OptionPane.messagebackground", Color.WHITE);
         UIManager.put("Panel.background", Color.WHITE);
 		SimulaExtractor simulaExtractor = new SimulaExtractor();
+		simulaExtractor.setVisible(true);
+
 		String jarFileName = simulaExtractor.getJarFileName();
+		if(jarFileName==null) jarFileName = "C:/GitHub/Binaries/setup.jar";
+		
 		boolean ok=simulaExtractor.extract(jarFileName);
 		writeCompilerBat();
 		storeProperties();
-		System.exit(ok ? 0 : 1);
+		if(console!=null) {
+			if(ok) {
+			    console.write("Simula was successfully installed");
+			}
+		while(true) Thread.yield();
+		} else System.exit(ok ? 0 : 1);
 	}
 	
 	private static void writeCompilerBat() {
@@ -127,7 +141,7 @@ public final class SimulaExtractor extends JFrame {
 	private static File LOAD_PROPERTIES_FROM;
 	private static void getSimulaPropertiesFile() {
 		if(DEBUG) System.out.println("SimulaExtractor.getSimulaPropertiesFile: simulaHome="+SIMULA_HOME);
-		SIMULA_PROPERTIES_HOME=new File(SIMULA_HOME,"simulaProperties.xml");
+		SIMULA_PROPERTIES_HOME=new File(SIMULA_HOME,simulaReleaseID+"/simulaProperties.xml");
 		if(DEBUG) System.out.println("SimulaExtractor.getSimulaPropertiesFile: SIMULA_PROPERTIES_HOME="+SIMULA_PROPERTIES_HOME+", exists="+SIMULA_PROPERTIES_HOME.exists());
 		if(SIMULA_PROPERTIES_HOME.exists()) {
 			LOAD_PROPERTIES_FROM=SIMULA_PROPERTIES_HOME;
@@ -158,6 +172,7 @@ public final class SimulaExtractor extends JFrame {
 	}
 	
 	private static void storeProperties() {
+		loadProperties();
 		if(simulaProperties!=null) {
 			simulaProperties.put("simula.setup.dated",setupDated);
 			simulaProperties.put("simula.installed",new Date().toString());
@@ -165,11 +180,14 @@ public final class SimulaExtractor extends JFrame {
 			simulaProperties.put("simula.revision",simulaRevisionID);
 			simulaProperties.put("simula.home",SIMULA_HOME);
 			if(DEBUG) simulaProperties.list(System.out);
+			if(console!=null) simulaProperties.list(console.getPrintStream());
 			OutputStream out=null;
 			try {
+				SIMULA_PROPERTIES_HOME=new File(SIMULA_HOME,simulaReleaseID+"/simulaProperties.xml");
 //				out=new FileOutputStream(simulaPropertiesFile);
 				out=new FileOutputStream(SIMULA_PROPERTIES_HOME);
 				simulaProperties.storeToXML(out,"Simula Properties");
+				if(DEBUG) System.out.println("SimulaExtractor.storeProperties: Simula Properties was written to: "+SIMULA_PROPERTIES_HOME);
 			} catch(Exception e) { e.printStackTrace(); }
 			finally { if(out!=null) try {out.close(); } catch(IOException e){}   }
 		}
@@ -178,7 +196,18 @@ public final class SimulaExtractor extends JFrame {
 	SimulaExtractor() {
 		URL url=getClass().getResource("sim.png");
 		simulaIcon=(url==null)?null:new ImageIcon(url);
-		loadProperties();
+		if(USE_CONSOLE) {
+			// Set the initial size of the window
+			int frameHeight=800;//500;
+			int frameWidth=800;
+			setSize(frameWidth, frameHeight);
+			setLocationRelativeTo(null); // center the frame on screen
+			System.out.println("Open ConsolePanel");
+			console=new ConsolePanel();
+			this.add(console);
+			this.setVisible(true);
+		}
+//		loadProperties();
 	}
 
 	private String getJarFileName() {
@@ -275,6 +304,7 @@ public final class SimulaExtractor extends JFrame {
 			}
 		}
 		SIMULA_HOME=installDirFile.getParentFile().toString();
+		if(console!=null) console.write("Install Directory: "+SIMULA_HOME);
 		return installDirFile;
 	}
 

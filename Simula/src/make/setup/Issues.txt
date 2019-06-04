@@ -1,6 +1,6 @@
 Simula Issues
 
-OPEN Issue 32: Fra Øystein
+CLOSED Issue 32: Fra Øystein
 This Process.into( ... )   feiler.
 
 Kjører:
@@ -14,6 +14,10 @@ Simulation begin
    new Customer.abra;
 end
 og får: SIMULA RUNTIME ERROR: ClassCastException
+
+Analyse: Standard class Process kan brukes på alle blokknivåer og 
+         har ikke eget blokknivå. Derfor feiler  this Process
+Tiltak: Kodegenerering av  This <classIdentifier>  er skrevet om
 ===============================================================================
 
 OPEN Issue 31: Fra Øystein
@@ -34,8 +38,9 @@ Kjører Docking og får:
  Thread:main[Simula Docking]: SIMULA RUNTIME ERROR: IllegalStateException Buffers have not been created (etter 14 vans) 
  - Line 242 Error: (som ovenfor, men mer) Jeg har mistet output
  
-  se: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6933331
-  
+Analyse: se: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6933331
+
+Tiltak: Ingen, venter på Java 13
 ===============================================================================
 
 OPEN Issue 29: Fra Karel

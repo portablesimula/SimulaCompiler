@@ -20,7 +20,7 @@ import simula.compiler.utilities.Util;
 public final class ConnectionBlock extends DeclarationScope {
 	public final Variable inspectedVariable;
 	Statement statement;
-	ClassDeclaration classDeclaration;
+	public ClassDeclaration classDeclaration;
 
 	public ClassDeclaration getClassDeclaration() {
 		return (classDeclaration);

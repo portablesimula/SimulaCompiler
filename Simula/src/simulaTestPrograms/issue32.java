@@ -1,6 +1,6 @@
 // JavaLine 1 <== SourceLine 3
 package simulaTestPrograms;
-// Simula-1.0 Compiled at Mon Jun 03 12:50:51 CEST 2019
+// Simula-1.0 Compiled at Tue Jun 04 09:37:28 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class issue32 extends Simulation$ {
@@ -24,7 +24,7 @@ public final class issue32 extends Simulation$ {
         // Class Simset: Code before inner
         // Class Simulation: Code before inner
         // Class issue32: Code before inner
-        new issue32$Customer$abra(((issue32$Customer)new issue32$Customer(((issue32)CUR$)).START$()));
+        new issue32$Customer$abra(((issue32$Customer)new issue32$Customer(((issue32)(CUR$))).START$()));
         TRACE_END_STM$("issue32",8);
         EBLK();
         return(this);

@@ -1,6 +1,6 @@
 // JavaLine 1 <== SourceLine 4
 package simulaTestPrograms;
-// Simula-1.0 Compiled at Mon Jun 03 12:50:51 CEST 2019
+// Simula-1.0 Compiled at Tue Jun 04 09:37:28 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class issue32$Customer$abra extends BASICIO$ {
@@ -21,7 +21,7 @@ public final class issue32$Customer$abra extends BASICIO$ {
     public issue32$Customer$abra STM$() {
         TRACE_BEGIN_STM$("abra",4);
         // JavaLine 23 <== SourceLine 5
-        ((Process$)CUR$).into(null);
+        ((Process$)(CUR$.SL$)).into(null);
         TRACE_END_STM$("abra",5);
         EBLK();
         return(this);

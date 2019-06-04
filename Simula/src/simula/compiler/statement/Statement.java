@@ -98,6 +98,7 @@ public abstract class Statement extends SyntaxClass {
 		    case SWITCH:     Parser.nextSymb(); return (new SwitchStatement());
 		    case ACTIVATE:   Parser.nextSymb(); return (new ActivationStatement());
 		    case REACTIVATE: Parser.nextSymb(); return (new ActivationStatement());
+		    case INNER:      Parser.nextSymb(); return (new InnerStatement());
 		    case SEMICOLON:  Parser.nextSymb(); return (new DummyStatement()); // Dummy Statement
 		    case END:        return (new DummyStatement()); // Dummy Statement, keep END
 		

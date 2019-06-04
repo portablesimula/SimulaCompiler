@@ -263,7 +263,14 @@ public class SimulaEditor extends JFrame {
 					try {
 						desktop.browse(new URI("https://portablesimula.github.io/github.io/"));
 					    System.exit(-1); // Stop the Editor
-					} catch (Exception ex) {}
+					} catch (Exception ex) {
+						msg="Unable to open Desktop Browser\n\n"
+						   +"Go to your Browser and open page:\n"
+						   +" https://portablesimula.github.io/github.io/\n\n"
+						   +"Do you want to continue ?";
+		    			result=Util.optionDialog(msg,"Update Notification",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,"Yes","No");
+						if(result!=0) System.exit(-1); // Stop the Editor
+					}
     			}
             }
         } catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
