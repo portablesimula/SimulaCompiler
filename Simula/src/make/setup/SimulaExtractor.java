@@ -55,29 +55,27 @@ import javax.swing.UIManager;
 public final class SimulaExtractor extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final boolean DEBUG=true;
-	private static final boolean USE_CONSOLE=false;
+	private static final boolean USE_CONSOLE=true;//false;
 	
 	// NOTE: When updating release id, change version in Global.simulaReleaseID
     public static final String simulaReleaseID="Simula-1.0";
     public static String simulaRevisionID="?";
 
-//    private static File OLD_simulaPropertiesFile;
-    private static Properties simulaProperties;
     private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
 	private static final String programAndVersion = "Simula 1.0";
-	private static String SIMULA_HOME; // e.g. C:\Users\Øystein\Simula
+	private static File INSTALL_DIR; // e.g. C:\Users\Øystein\Simula\Simula-1.0
 	private static String setupDated;
 	private final ImageIcon simulaIcon;
 	
 	private String myClassName;
 	private JTextField installDirField;
 	private static ConsolePanel console;
+	private static JFrame mainFrame;
 
 	// ****************************************************************
-	// *** SimulaExtractor: Main Entry for TESTING ONLY
+	// *** SimulaExtractor: Main Entry
 	// ****************************************************************
 	public static void main(String[] args) {
-    	//System.setProperty("file.encoding","UTF-8");
 		if(DEBUG) System.out.println("SimulaExtractor: user.home="+System.getProperty("user.home"));
 		if(DEBUG) System.out.println("SimulaExtractor: user.dir="+System.getProperty("user.dir"));
 		// List UIManager keys: https://thebadprogrammer.com/swing-uimanager-keys/
@@ -85,131 +83,122 @@ public final class SimulaExtractor extends JFrame {
         UIManager.put("OptionPane.messagebackground", Color.WHITE);
         UIManager.put("Panel.background", Color.WHITE);
 		SimulaExtractor simulaExtractor = new SimulaExtractor();
-		simulaExtractor.setVisible(true);
+//		simulaExtractor.setVisible(true);
 
 		String jarFileName = simulaExtractor.getJarFileName();
-		if(jarFileName==null) jarFileName = "C:/GitHub/Binaries/setup.jar";
+		if(jarFileName==null) jarFileName = "C:/GitHub/Binaries/setup.jar"; // for TESTING ONLY
 		
 		boolean ok=simulaExtractor.extract(jarFileName);
 		writeCompilerBat();
-		storeProperties();
+		updateProperties();
 		if(console!=null) {
 			if(ok) {
-			    console.write("Simula was successfully installed");
+			    console.write("=================================\n"
+			    		     +"Simula was successfully installed\n");
 			}
 		while(true) Thread.yield();
 		} else System.exit(ok ? 0 : 1);
 	}
 	
+	// ***************************************************************
+	// *** Constructor: SimulaExtractor
+	// ***************************************************************
+	SimulaExtractor() {
+		URL url=getClass().getResource("sim.png");
+		simulaIcon=(url==null)?null:new ImageIcon(url);
+		mainFrame=this;
+		if(USE_CONSOLE) {
+			// Set the initial size of the window
+			int frameHeight=300;
+			int frameWidth=550;
+			setSize(frameWidth, frameHeight);
+	        // Set the default close operation (exit when it gets closed)
+	        setDefaultCloseOperation(EXIT_ON_CLOSE);
+			setLocationRelativeTo(null); // center the frame on screen
+			System.out.println("Open ConsolePanel");
+			console=new ConsolePanel();
+			mainFrame.setTitle("Installing Simula");
+			mainFrame.add(console);
+//			mainFrame.setVisible(true);
+		}
+	}
+	
+	// ***************************************************************
+	// *** writeCompilerBat
+	// ***************************************************************
 	private static void writeCompilerBat() {
 		boolean windows=(File.separatorChar)=='\\';
-		String path=SIMULA_HOME+File.separatorChar+simulaReleaseID;
 		String text;
 		String fileName;
 		if(windows) {
 			fileName="RunSimulaEditor.bat";
 			text="rem *** Call Simula Editor\r\n" + 
-				 "java -jar "+path+"\\simula.jar\r\n" + 
+				 "java -jar "+INSTALL_DIR+"\\simula.jar\r\n" + 
 				 "pause\r\n";
 		} else {
 			fileName="RunSimulaEditor.sh";
 			text="printf \"*** Call Simula Editor\\n\"\r\n" + 
-				 "java -jar "+path+"/simula.jar\r\n" + 
+				 "java -jar "+INSTALL_DIR+"/simula.jar\r\n" + 
 				 "read -p \"Press enter to continue\"\r\n";
 		}
-		if(DEBUG) System.out.println("path="+path);
+		if(DEBUG) System.out.println("INSTALL_DIR="+INSTALL_DIR);
 		if(DEBUG) System.out.println("fileName="+fileName);
 		if(DEBUG) System.out.println("text="+text);
-		if(DEBUG) System.out.println("fullFilePath="+path+'/'+fileName);
+//		File file=new File(path+'/'+fileName);
+		File file=new File(INSTALL_DIR,fileName);
+		
+		if(DEBUG) System.out.println("fullFilePath="+file);
 		try {
-			FileOutputStream file=new FileOutputStream(path+'/'+fileName);
-			Writer writer=new OutputStreamWriter(file);
+			if(console!=null) console.write("Write: "+file+'\n');
+			FileOutputStream oupt=new FileOutputStream(file);
+			Writer writer=new OutputStreamWriter(oupt);
 			writer.write(text);
 			writer.flush();
 			writer.close();
 		} catch(IOException e) { e.printStackTrace(); }
 	}
 	
-	private static void loadProperties() {
-		simulaProperties = new Properties();
-		getSimulaPropertiesFile();
-		try { simulaProperties.loadFromXML(new FileInputStream(LOAD_PROPERTIES_FROM));
-		} catch(Exception e) {} // e.printStackTrace(); }
-	}
-	
-	private static File SIMULA_PROPERTIES_HOME;
-	private static File LOAD_PROPERTIES_FROM;
-	private static void getSimulaPropertiesFile() {
-		if(DEBUG) System.out.println("SimulaExtractor.getSimulaPropertiesFile: simulaHome="+SIMULA_HOME);
-		SIMULA_PROPERTIES_HOME=new File(SIMULA_HOME,simulaReleaseID+"/simulaProperties.xml");
-		if(DEBUG) System.out.println("SimulaExtractor.getSimulaPropertiesFile: SIMULA_PROPERTIES_HOME="+SIMULA_PROPERTIES_HOME+", exists="+SIMULA_PROPERTIES_HOME.exists());
-		if(SIMULA_PROPERTIES_HOME.exists()) {
-			LOAD_PROPERTIES_FROM=SIMULA_PROPERTIES_HOME;
-			return;
+	// ***************************************************************
+	// *** updateProperties
+	// ***************************************************************
+	private static void updateProperties() {
+		Properties simulaProperties = new Properties();
+		File loadPropertiesFrom=null;
+		File simulaPropertiesFile=new File(INSTALL_DIR,"simulaProperties.xml");
+		if(DEBUG) System.out.println("SimulaExtractor.getSimulaPropertiesFile: simulaPropertiesFile="+simulaPropertiesFile+", exists="+simulaPropertiesFile.exists());
+		if(simulaPropertiesFile.exists()) {
+			loadPropertiesFrom=simulaPropertiesFile;
+		} else {
+			// Compatibility: TRY TO READ OLD SIMULA PROPERTY FILE FROM <user.home>/.simula
+			String USER_HOME=System.getProperty("user.home");
+			loadPropertiesFrom=new File(USER_HOME,".siimula/simulaProperties.xml");
 		}
+		if(loadPropertiesFrom.exists()) {
+			if(DEBUG) System.out.println("SimulaCompiler: loadPropertiesFrom="+loadPropertiesFrom);
+			if(console!=null) console.write("Read:  "+loadPropertiesFrom+'\n');
+			try { simulaProperties.loadFromXML(new FileInputStream(loadPropertiesFrom));
+			} catch(Exception e) {} // e.printStackTrace(); }
+		}
+		simulaProperties.put("simula.setup.dated",setupDated);
+		simulaProperties.put("simula.installed",new Date().toString());
+		simulaProperties.put("simula.version",simulaReleaseID);
+		simulaProperties.put("simula.revision",simulaRevisionID);
+		simulaProperties.put("simula.home",INSTALL_DIR.getParentFile().toString());
 
-		// Compatibility: TRY TO READ OLD SIMULA PROPERTY FILE FROM <user.home>/.simula
-		String USER_HOME=System.getProperty("user.home");
-		//Util.println("USER_HOME="+USER_HOME);
-		if(DEBUG) System.out.println("SimulaCompiler: USER_HOME="+USER_HOME);
-//		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		File simulaPropertiesDir=new File(USER_HOME,".simula");
-		//Util.println("simulaPropertiesDir="+simulaPropertiesDir);
-		simulaPropertiesDir.mkdirs();
-		LOAD_PROPERTIES_FROM=new File(simulaPropertiesDir,"simulaProperties.xml");
-		if(DEBUG) System.out.println("SimulaCompiler: LOAD_PROPERTIES_FROM="+LOAD_PROPERTIES_FROM+", exists="+LOAD_PROPERTIES_FROM.exists());
-		return;
-	}
-	
-	private static void loadManifest(ZipFile zipFile,ZipEntry entry) throws IOException  {
-		Manifest manifest = new Manifest(zipFile.getInputStream(entry));
-		Attributes main=manifest.getMainAttributes();
-		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: Main-Class="+main.getValue("Main-Class"));
-		simulaRevisionID=main.getValue("Simula-Revision");
-		setupDated=main.getValue("Simula-Setup-Dated");
-		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: This Simula-Revision: "+simulaRevisionID);
-		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: This Simula-Setup-Dated: "+setupDated);
-	}
-	
-	private static void storeProperties() {
-		loadProperties();
-		if(simulaProperties!=null) {
-			simulaProperties.put("simula.setup.dated",setupDated);
-			simulaProperties.put("simula.installed",new Date().toString());
-			simulaProperties.put("simula.version",simulaReleaseID);
-			simulaProperties.put("simula.revision",simulaRevisionID);
-			simulaProperties.put("simula.home",SIMULA_HOME);
-			if(DEBUG) simulaProperties.list(System.out);
-			if(console!=null) simulaProperties.list(console.getPrintStream());
-			OutputStream out=null;
-			try {
-				SIMULA_PROPERTIES_HOME=new File(SIMULA_HOME,simulaReleaseID+"/simulaProperties.xml");
-//				out=new FileOutputStream(simulaPropertiesFile);
-				out=new FileOutputStream(SIMULA_PROPERTIES_HOME);
-				simulaProperties.storeToXML(out,"Simula Properties");
-				if(DEBUG) System.out.println("SimulaExtractor.storeProperties: Simula Properties was written to: "+SIMULA_PROPERTIES_HOME);
-			} catch(Exception e) { e.printStackTrace(); }
-			finally { if(out!=null) try {out.close(); } catch(IOException e){}   }
-		}
-	}
-	
-	SimulaExtractor() {
-		URL url=getClass().getResource("sim.png");
-		simulaIcon=(url==null)?null:new ImageIcon(url);
-		if(USE_CONSOLE) {
-			// Set the initial size of the window
-			int frameHeight=800;//500;
-			int frameWidth=800;
-			setSize(frameWidth, frameHeight);
-			setLocationRelativeTo(null); // center the frame on screen
-			System.out.println("Open ConsolePanel");
-			console=new ConsolePanel();
-			this.add(console);
-			this.setVisible(true);
-		}
-//		loadProperties();
+		if(DEBUG) simulaProperties.list(System.out);
+		//if(console!=null) simulaProperties.list(console.getPrintStream());
+		OutputStream out=null;
+		try {
+			out=new FileOutputStream(simulaPropertiesFile);
+			simulaProperties.storeToXML(out,"Simula Properties");
+			if(console!=null) console.write("Write: "+simulaPropertiesFile+'\n');
+		} catch(Exception e) { e.printStackTrace(); }
+		finally { if(out!=null) try {out.close(); } catch(IOException e){}   }
 	}
 
+	// ***************************************************************
+	// *** getJarFileName
+	// ***************************************************************
 	private String getJarFileName() {
 		myClassName = this.getClass().getName().replace('.', '/') + ".class";
 		if(DEBUG) System.out.println("SimulaExtractor.getJarFileName: myClassName="+myClassName); // TODO: MYH
@@ -232,6 +221,9 @@ public final class SimulaExtractor extends JFrame {
 		} catch (Exception e) { return(null); }
 	}
 
+	// ***************************************************************
+	// *** getInstallDir
+	// ***************************************************************
 	// Get the directory in which to unpack our file
 	// @param filename The name of the JAR file from which we are unpacking.
 	File getInstallDir(String filename) {
@@ -273,18 +265,21 @@ public final class SimulaExtractor extends JFrame {
 
 		// Show the user the query panel so he can select options
 		String title = "Installing " + programAndVersion;
+//		Object[] options = { "Log", "Install", "Cancel" };
 		Object[] options = { "Install", "Cancel" };
         int answer = JOptionPane.showOptionDialog(this, panel, title, JOptionPane.DEFAULT_OPTION,
 				JOptionPane.QUESTION_MESSAGE, simulaIcon, options, options[0]);
-		if (answer != 0) {
-			return null; // cancelled
-		}
+//		if (answer == 2) return null; // cancelled
+//		if (answer == 0) mainFrame.setVisible(true);
+		if (answer != 0) return null; // cancelled
+		mainFrame.setVisible(true);
+
 
 		// Get the values from the dialog box
 		String installDirectory = installDirField.getText() + File.separator + simulaInstallSubdirectory;
 
-		File installDirFile = new File(installDirectory);
-		if(installDirFile.exists()) {
+		INSTALL_DIR = new File(installDirectory);
+		if(INSTALL_DIR.exists()) {
 			Object[] options2 = { "Exit", "Continue" };
 			String msg2 = "It looks like the Simula System is already installed.\n"
 					   + "The selected install directory:\n"
@@ -295,19 +290,22 @@ public final class SimulaExtractor extends JFrame {
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, simulaIcon, options2, options2[0]);
 			if (result != 1) System.exit(-1); // Stop the install
 		}
-		if (!installDirFile.exists()) {
-			if (!installDirFile.mkdirs()) {
+		if (!INSTALL_DIR.exists()) {
+			if (!INSTALL_DIR.mkdirs()) {
 				msg = "Unable to create directory\n" + installDirectory;
 				title = "Error Creating Directory";
 				JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
 				return null; // TBD - should let user try again
 			}
 		}
-		SIMULA_HOME=installDirFile.getParentFile().toString();
-		if(console!=null) console.write("Install Directory: "+SIMULA_HOME);
-		return installDirFile;
+		if(console!=null) console.write("Installing "+programAndVersion+"\n"
+		                               +"Simula-Directory:   "+INSTALL_DIR+'\n');
+		return(INSTALL_DIR);
 	}
 
+	// ***************************************************************
+	// *** browseForInstallDirectory
+	// ***************************************************************
 	// Call this when the user presses the Browse button, then put
 	// the result back into the main dialog
 	private String browseForInstallDirectory(String defaultInstallDir) {
@@ -325,6 +323,9 @@ public final class SimulaExtractor extends JFrame {
 	}
 
 
+	// ***************************************************************
+	// *** extract
+	// ***************************************************************
 	/**
 	 * Extract from the specified Zip/Jar-file.
 	 * 
@@ -348,15 +349,19 @@ public final class SimulaExtractor extends JFrame {
 			int extracted = 0;
 			Enumeration<? extends ZipEntry> entries = zf.entries();
 
-			for (int i = 0; i < size; i++) {
+		LOOP:for (int i = 0; i < size; i++) {
 				ZipEntry entry = (ZipEntry) entries.nextElement();
-				if (entry.isDirectory()) continue;
+				if (entry.isDirectory()) continue LOOP;
 				String pathname = entry.getName();
-//				if(DEBUG) System.out.println("Found File Entry: " + pathname);
-				if( pathname.startsWith("make/setup")) continue;
+				//if(DEBUG) System.out.println("Found File Entry: " + pathname);
+				if( pathname.startsWith("make/setup")) continue LOOP;
 				if(	pathname.toUpperCase().equals("META-INF/MANIFEST.MF")) {
 					loadManifest(zf,entry);
-					continue;
+					continue LOOP;
+				}
+				if(pathname.endsWith(".gitignore")) continue LOOP;
+				if(console!=null) {
+					console.write("Extracting: "+entry+'\n');
 				}
 				in = zf.getInputStream(entry);
 				File outFile = new File(outputDir, pathname);
@@ -420,7 +425,27 @@ public final class SimulaExtractor extends JFrame {
 		}
 		return true; // no errors
 	}
+	
+	// ***************************************************************
+	// *** loadManifest
+	// ***************************************************************
+	private static void loadManifest(ZipFile zipFile,ZipEntry entry) throws IOException  {
+		Manifest manifest = new Manifest(zipFile.getInputStream(entry));
+		Attributes main=manifest.getMainAttributes();
+		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: Main-Class="+main.getValue("Main-Class"));
+		simulaRevisionID=main.getValue("Simula-Revision");
+		setupDated=main.getValue("Simula-Setup-Dated");
+		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: This Simula-Revision: "+simulaRevisionID);
+		if(DEBUG) System.out.println("SimulaExtractor.loadManifest: This Simula-Setup-Dated: "+setupDated);
+		if(console!=null) {
+			console.write("Simula-Release ID:  "+simulaReleaseID+'R'+simulaRevisionID+'\n');
+			console.write("Simula-Setup-Dated: "+setupDated+'\n');
+		}
+	}
 
+	// ***************************************************************
+	// *** startJar
+	// ***************************************************************
 	private void startJar(String jar) {
 		String cmd;
 		Runtime rt = Runtime.getRuntime();
