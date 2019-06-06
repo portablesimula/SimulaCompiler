@@ -48,6 +48,7 @@ public final class TestCompiler {
 		// String name="/simprogs/HegnaNRK.sim";
 		// String name="/simprogs/LIFT90.sim";
 		// String name="/simprogs/Matte.sim";
+		// String name="/simprogs/QueDemo.sim";
 		// String name="/simprogs/TRAFFIC.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
@@ -56,7 +57,7 @@ public final class TestCompiler {
 		// String name="/samples/Dates.sim";
 		// String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
-		// String name="/samples/FittingRoom.sim";
+		 String name="/samples/FittingRoom.sim";
 		// String name="/samples/HelloWorld.sim";
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/JensensDevice.sim";
@@ -95,8 +96,9 @@ public final class TestCompiler {
 		// String name="/error/issue21.sim"; // Ingen new-line til slutt i file
 		// String name="/error/issue24.sim"; // For step until
 		// String name="/error/issue26.sim"; // Terminating Process in strict sence.
-		 String name="/error/issue31.sim"; // Labeled INNER
+		// String name="/error/issue31.sim"; // Labeled INNER
 		// String name="/error/issue32.sim"; // This Process
+		// String name="/error/issue33.sim"; // inspect x  This Process. 
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters

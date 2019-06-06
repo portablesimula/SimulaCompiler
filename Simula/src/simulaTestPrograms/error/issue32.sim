@@ -1,9 +1,18 @@
 Simulation begin 
 
+   ref(Customer) cust;
+
    Process class Customer; 
    begin procedure abra; 
+         begin
                this Process.into(none); 
+               inspect cust do 
+               begin
+                     this Process.into(none); 
+               end;
+         end;      
    end; 
 
-   new Customer.abra;
+   cust:-new Customer;
+   cust.abra;
 end

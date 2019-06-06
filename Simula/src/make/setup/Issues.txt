@@ -17,10 +17,13 @@ og får: SIMULA RUNTIME ERROR: ClassCastException
 
 Analyse: Standard class Process kan brukes på alle blokknivåer og 
          har ikke eget blokknivå. Derfor feiler  this Process
+         
+         Det viste seg at behandlingen av  This A  inne fra en connection
+         block også ble feil når A er deklarert utenfor connnection block'a
 Tiltak: Kodegenerering av  This <classIdentifier>  er skrevet om
 ===============================================================================
 
-OPEN Issue 31: Fra Øystein
+CLOSED Issue 31: Fra Øystein
 Labeled INNER statement.
 
 Kjører:
@@ -28,7 +31,9 @@ class A;
 L: inner; goto L;
 end;
 
-og får: Error: Misplaced symbol: INNER -- Ignored  
+og får: Error: Misplaced symbol: INNER -- Ignored
+Analyse: INNER Statement hadde falt ut fra perser'n
+Tiltak: INNER er inne igjen.  
 ===============================================================================
 
 OPEN Issue 30: Fra Gunnar

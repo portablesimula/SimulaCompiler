@@ -98,12 +98,12 @@ public abstract class DeclarationScope extends Declaration {
     	int curLevel=Global.currentScope.blockLevel;
 //      Util.BREAK("DeclarationScope.edCTX: Current="+Global.currentScope);
 //      Util.BREAK("DeclarationScope.edCTX: Current'Qual="+Global.currentScope.getClass().getSimpleName());
-        Util.BREAK("DeclarationScope.edCTX: BlockLevel="+blockLevel);
-        Util.BREAK("DeclarationScope.edCTX: CurrentScope'BlockLevel="+curLevel);
+//        Util.BREAK("DeclarationScope.edCTX: BlockLevel="+blockLevel);
+//        Util.BREAK("DeclarationScope.edCTX: CurrentScope'BlockLevel="+curLevel);
 //        Util.BREAK("DeclarationScope.edCTX: CurrentScope'Enc'BlockLevel="+Global.currentScope.declaredIn.blockLevel);
-        Util.ASSERT(curLevel >= Global.currentScope.declaredIn.blockLevel,"Invariant");
+//        Util.ASSERT(curLevel >= Global.currentScope.declaredIn.blockLevel,"Invariant");
         int ctxDiff=curLevel-blockLevel;
-        Util.BREAK("DeclarationScope.edCTX: ctxDiff="+ctxDiff);
+//        Util.BREAK("DeclarationScope.edCTX: ctxDiff="+ctxDiff);
 //        if(blockLevel==curLevel) return("CUR$");
 //        String ret="CUR$";
 //        while(blockLevel<(curLevel--)) ret=ret+".SL$";

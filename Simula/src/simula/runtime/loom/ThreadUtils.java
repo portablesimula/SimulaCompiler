@@ -109,28 +109,29 @@ public class ThreadUtils {
 	// *********************************************************************
 	// *** THREAD: checkThreads - current running and next not running
 	// *********************************************************************
-    private static boolean alreadyGotInvariant2=false;
-    private static void checkThreads(final Thread next) {
-    	if(RT.DEBUGGING) {
-    		Thread prev=Thread.currentThread();
-    		// RT.TRACE("BEGIN swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
-    		// RT.TRACE("BEGIN swapThread: NEXT="+next+", Thread.STATE="+next.getState());
-    		RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-1");
-      
-    		//RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND, KAREL og GUNNAR ?
-    		if(next.getState()==Thread.State.RUNNABLE) {
-    			RT.println("****************** INTERNAL ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
-    			RT.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());
-    			RT.printStaticChain(RTObject$.CUR$);
-    			RT.println("Next Thread: "+next+", State="+next.getState());
-    			printStackTrace();
-    			printThreadList(true);
-    			RT.println("***********************************************************************************************");
-    			if(!alreadyGotInvariant2) RT.BREAK("Continue ?"); alreadyGotInvariant2=true;
-    		}
-    	}
-//    	ThreadUtils.SWAP_THREAD(next); // Suspend CurrentThread and Resume 'next' in one operation
-    }
+	private static boolean alreadyGotInvariant2=false;
+	private static void checkThreads(final Thread next) {
+		Thread prev=Thread.currentThread();
+		// RT.TRACE("BEGIN swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
+		// RT.TRACE("BEGIN swapThread: NEXT="+next+", Thread.STATE="+next.getState());
+		RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-1");
+
+		//RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND, KAREL og GUNNAR ?
+		if(next.getState()==Thread.State.RUNNABLE) {
+			try { Thread.sleep(4); } catch (InterruptedException e) {} // Wait a little while
+			if(next.getState()==Thread.State.RUNNABLE) {
+				RT.println("****************** INTERNAL ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
+				RT.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());
+				RT.printStaticChain(RTObject$.CUR$);
+				RT.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
+				RT.println("Next    Thread: "+next+", State="+next.getState());
+				printStackTrace();
+				printThreadList(true);
+				RT.println("***********************************************************************************************");
+				if(!alreadyGotInvariant2) RT.BREAK("Continue ?"); alreadyGotInvariant2=true;
+			}
+		}
+	}
 	
 	
 
