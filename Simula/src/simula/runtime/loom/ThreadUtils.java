@@ -118,7 +118,10 @@ public class ThreadUtils {
 
 		//RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND, KAREL og GUNNAR ?
 		if(next.getState()==Thread.State.RUNNABLE) {
-			try { Thread.sleep(4); } catch (InterruptedException e) {} // Wait a little while
+			System.out.println("****************** INTERNAL ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
+			System.out.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());
+			System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
+			System.out.println("Next    Thread: "+next+", State="+next.getState());
 			if(next.getState()==Thread.State.RUNNABLE) {
 				RT.println("****************** INTERNAL ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
 				RT.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());

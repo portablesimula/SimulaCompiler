@@ -48,7 +48,7 @@ public final class TestCompiler {
 		// String name="/simprogs/HegnaNRK.sim";
 		// String name="/simprogs/LIFT90.sim";
 		// String name="/simprogs/Matte.sim";
-		// String name="/simprogs/QueDemo.sim";
+		 String name="/simprogs/QueDemo.sim";
 		// String name="/simprogs/TRAFFIC.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
@@ -57,7 +57,7 @@ public final class TestCompiler {
 		// String name="/samples/Dates.sim";
 		// String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
-		 String name="/samples/FittingRoom.sim";
+		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HelloWorld.sim";
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/JensensDevice.sim";

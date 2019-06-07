@@ -1,6 +1,6 @@
 // JavaLine 1 <== SourceLine 36
 package simulaTestPrograms;
-// Simula-1.0 Compiled at Thu Jun 06 12:16:38 CEST 2019
+// Simula-1.0 Compiled at Thu Jun 06 15:32:42 CEST 2019
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public class QueDemo$$QueueingSystem$Dock extends Link$ {

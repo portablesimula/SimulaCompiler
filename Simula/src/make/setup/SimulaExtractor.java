@@ -93,8 +93,17 @@ public final class SimulaExtractor extends JFrame {
 		updateProperties();
 		if(console!=null) {
 			if(ok) {
-			    console.write("=================================\n"
-			    		     +"Simula was successfully installed\n");
+			    console.write("=====================================================\n");
+			    console.write("Simula was successfully installed\n\n");
+			    console.write("To activate Simula use the following command:\n\n");
+				boolean windows=(File.separatorChar)=='\\';
+			    if(windows) {
+			    	console.write("RunSimulaEditor.bat\n\n");
+				    console.write("You may move the batch-file to any directory.\n");
+			    } else {
+			    	console.write("./RunSimulaEditor.sh\n\n");
+				    console.write("You may move the shell script to any directory.\n");
+			    }
 			}
 		while(true) Thread.yield();
 		} else System.exit(ok ? 0 : 1);
@@ -137,15 +146,18 @@ public final class SimulaExtractor extends JFrame {
 				 "pause\r\n";
 		} else {
 			fileName="RunSimulaEditor.sh";
-			text="printf \"*** Call Simula Editor\\n\"\r\n" + 
-				 "java -jar "+INSTALL_DIR+"/simula.jar\r\n" + 
-				 "read -p \"Press enter to continue\"\r\n";
+			text="printf \"*** Call Simula Editor\\n\"\n" + 
+                 "pushd "+INSTALL_DIR+"\n"+
+				 "java -jar simula.jar\n" + 
+                 "popd\n"+
+				 "read -p \"Press enter to continue\"\n";
 		}
 		if(DEBUG) System.out.println("INSTALL_DIR="+INSTALL_DIR);
 		if(DEBUG) System.out.println("fileName="+fileName);
 		if(DEBUG) System.out.println("text="+text);
 //		File file=new File(path+'/'+fileName);
 		File file=new File(INSTALL_DIR,fileName);
+		file.setExecutable(true); 
 		
 		if(DEBUG) System.out.println("fullFilePath="+file);
 		try {
