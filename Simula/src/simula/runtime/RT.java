@@ -142,7 +142,7 @@ public final class RT {
 				}
 				return;
 			}
-			printError("BBREAK["+Thread.currentThread().getName()+"]: " + msg);
+			printError("BREAK["+Thread.currentThread().getName()+"]: " + msg);
 			char c=' ';//'q';
 			if(RT.Option.USE_CONSOLE) {
 				InFile$ sysin = RTObject$.SYSIN$;

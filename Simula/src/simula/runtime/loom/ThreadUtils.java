@@ -21,7 +21,8 @@ public class ThreadUtils {
 	// *** BASIC PRIMITIVE: START_THREAD
 	// *********************************************************************
     public static void START_THREAD(final Thread next) {
-    	if(RT.DEBUGGING) checkThreads(next);
+//    	if(RT.DEBUGGING)
+    		checkThreads(next);
         Thread current=Thread.currentThread();
         if(RT.Option.THREAD_TRACING) RT.TRACE("Continuation.START_THREAD: "+current.getName()+" ==> "+next.getName());
         prevThread=current;
@@ -38,7 +39,8 @@ public class ThreadUtils {
 	// *** BASIC PRIMITIVE: SWAP_THREAD
 	// *********************************************************************
     public static void SWAP_THREAD(final Thread next) {
-    	if(RT.DEBUGGING) checkThreads(next);
+//    	if(RT.DEBUGGING)
+    		checkThreads(next);
         Thread current=Thread.currentThread();
         if(RT.Option.THREAD_TRACING) RT.TRACE("Continuation.SWAP_THREAD: "+current.getName()+" ==> "+next.getName());
         prevThread=current;
@@ -56,7 +58,8 @@ public class ThreadUtils {
 	// *** BASIC PRIMITIVE: END_THREAD
 	// *********************************************************************
 	public static void END_THREAD(final Thread next) { 
-    	if(RT.DEBUGGING) checkThreads(next);
+//    	if(RT.DEBUGGING)
+    		checkThreads(next);
         Thread current=Thread.currentThread();
         if(RT.Option.THREAD_TRACING) RT.TRACE("Continuation.END_THREAD: "+current.getName()+" ==> "+next.getName());
         prevThread=current;
@@ -77,8 +80,32 @@ public class ThreadUtils {
         		try { Thread.sleep(0,1); } catch (InterruptedException e) { e.printStackTrace(); }
         		//try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
         	}
+    		if(prevThread.getState()==Thread.State.RUNNABLE) {
+    			System.out.println("****************** ERROR: waitUntilPrevThreadNotRunning FAILED ******************");
+    			System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
+    			System.out.println("Prev    Thread: "+prevThread+", State="+prevThread.getState());
+    		}
         	prevThread=null;
         }
+    }
+    
+	// *********************************************************************
+	// *** THREAD: waitUntilThreadNotRunning
+	// *********************************************************************
+    private static void waitUntilThreadNotRunning(Thread thread) {
+    	int count=10; // To prevent DeadLock
+    	int nano=1;
+    	while((count--)>0 && thread.getState()==Thread.State.RUNNABLE) {
+    		//Thread.yield(); 
+    		try { Thread.sleep(0,nano); } catch (InterruptedException e) { e.printStackTrace(); }
+    		//try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+    		nano=nano*4;
+    	}
+    	if(thread.getState()==Thread.State.RUNNABLE) {
+    		System.out.println("****************** ERROR: waitUntilThreadNotRunning("+nano+") FAILED ******************");
+    		System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
+    		System.out.println("This    Thread: "+thread+", State="+thread.getState());
+    	}
     }
 
 	// *********************************************************************
@@ -114,16 +141,16 @@ public class ThreadUtils {
 		Thread prev=Thread.currentThread();
 		// RT.TRACE("BEGIN swapThread: PREV="+prev+", Thread.STATE="+prev.getState());
 		// RT.TRACE("BEGIN swapThread: NEXT="+next+", Thread.STATE="+next.getState());
-		RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-1");
+		if(RT.DEBUGGING) RT.ASSERT(prev.getState()==Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-1");
 
 		//RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND, KAREL og GUNNAR ?
 		if(next.getState()==Thread.State.RUNNABLE) {
-			System.out.println("****************** INTERNAL ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
-			System.out.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());
+			waitUntilThreadNotRunning(next);
+			System.out.println("****************** ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
 			System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
 			System.out.println("Next    Thread: "+next+", State="+next.getState());
 			if(next.getState()==Thread.State.RUNNABLE) {
-				RT.println("****************** INTERNAL ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
+				RT.println("****************** REPEATED ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
 				RT.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());
 				RT.printStaticChain(RTObject$.CUR$);
 				RT.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());

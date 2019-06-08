@@ -157,11 +157,11 @@ public final class SimulaExtractor extends JFrame {
 		if(DEBUG) System.out.println("text="+text);
 //		File file=new File(path+'/'+fileName);
 		File file=new File(INSTALL_DIR,fileName);
-		file.setExecutable(true); 
-		
 		if(DEBUG) System.out.println("fullFilePath="+file);
 		try {
 			if(console!=null) console.write("Write: "+file+'\n');
+			try { boolean executable=file.setExecutable(true,false); // Sets everybody's execute permission 
+			} catch(SecurityException e) {}
 			FileOutputStream oupt=new FileOutputStream(file);
 			Writer writer=new OutputStreamWriter(oupt);
 			writer.write(text);
@@ -201,6 +201,10 @@ public final class SimulaExtractor extends JFrame {
 		//if(console!=null) simulaProperties.list(console.getPrintStream());
 		OutputStream out=null;
 		try {
+			try {
+				boolean readable=simulaPropertiesFile.setReadable(true,false); // Sets everybody's read permission 
+				boolean writable=simulaPropertiesFile.setWritable(true,false); // Sets everybody's write permission 
+			} catch(SecurityException e) {}
 			out=new FileOutputStream(simulaPropertiesFile);
 			simulaProperties.storeToXML(out,"Simula Properties");
 			if(console!=null) console.write("Write: "+simulaPropertiesFile+'\n');

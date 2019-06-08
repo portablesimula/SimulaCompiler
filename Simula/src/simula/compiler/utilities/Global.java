@@ -62,6 +62,7 @@ public final class Global {
 	public static File sampleSourceDir;   // Where to find sample simula files
 	public static File currentWorkspace;  // Where to find ...put resulting .jar
 	public static ArrayDeque<File> workspaces;
+	public static File[] workspaceList;
 
 	public static File simulaTempDir;     // Temp directory
 	public static File tempJavaFileDir;   // Temp sub-dir for .java  files
@@ -190,6 +191,64 @@ public final class Global {
 		storeProperties();
 
 	}
+	public static void NEW_updateWorkspaceList() {
+    	for(int i=1;i<=MAX_WORKSPACE;i++) {
+    		simulaWorkspaces.remove("simula.workspace."+i);
+    	}
+		int i=1;
+		for(File ws:workspaceList) {
+			simulaWorkspaces.setProperty("simula.workspace."+(i++),ws.toString());
+		}
+		Global.currentWorkspace=workspaceList[0];
+		storeProperties();
+
+	}
+	
+	// *** Workspaces ***
+    public static File simulaWorkspacesFile;
+    private static Properties simulaWorkspaces;
+	
+	
+    private static void loadWorkspaceProperties() {
+    	simulaWorkspaces = new Properties();
+    	String USER_HOME=System.getProperty("user.home");
+    	File simulaPropertiesDir=new File(USER_HOME,".simula");
+    	simulaPropertiesDir.mkdirs();
+    	simulaWorkspacesFile=new File(simulaPropertiesDir,"workspaces.xml");
+    	System.out.println("SimulaCompiler: simulaWorkspacesFile="+simulaWorkspacesFile+", exists="+simulaWorkspacesFile.exists());
+    	if(simulaWorkspacesFile.exists()) {
+    		try { simulaWorkspaces.loadFromXML(new FileInputStream(simulaWorkspacesFile));
+    		} catch(Exception e) {
+    			Util.popUpError("Can't load: "+simulaWorkspacesFile+"\nGot error: "+e );
+    			Util.INTERNAL_ERROR("Global.loadWorkspaces FAILED: ", e);
+    		}
+    	}
+    	workspaceList=new File[MAX_WORKSPACE];
+    	boolean empty=true;
+    	for(int i=1;i<=MAX_WORKSPACE;i++) {
+    		String ws=getProperty("simula.workspace."+i,null);
+    		if(ws!=null) {
+    	    	if(ws.contains("Simula-Beta-0.3")) ws=ws.replace("Simula-Beta-0.3","Simula-1.0");
+    			workspaceList[i]=new File(ws);
+    			empty=false;
+    		}
+    	}
+    	if(empty) {
+    		String dir=Global.sampleSourceDir.toString();
+    		dir=dir.replace('/', File.separatorChar).replace('\\', File.separatorChar);
+    		workspaces.add(new File(dir));
+    	}
+
+    }
+	
+	private static void storeWorkspaceProperties() {
+//		System.out.print("Global.storeWorkspaceProperties: SIMULA ");
+//		simulaWorkspaces.list(System.out);
+		try { simulaWorkspaces.storeToXML(new FileOutputStream(simulaWorkspacesFile),"Simula Workspaces");
+		} catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
+	}
+	
+	
 
 
 }
