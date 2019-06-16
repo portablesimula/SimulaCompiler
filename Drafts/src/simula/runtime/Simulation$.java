@@ -88,17 +88,30 @@ package simula.runtime;
  */
 public class Simulation$ extends Simset$ {
     public boolean isDetachUsed() { return(true); }
+    
+    public static final boolean USE_NEW_SQS=true;//false;//true;
+    public static final boolean DEBUG=false;//true;
 
+	public final Head$ OLD_SQS; // = null;
 	public final SequencingSet$ SQS;
 	public final MAIN_PROGRAM$ main;
 	
 	// Constructor
 	public Simulation$(RTObject$ staticLink) {
 		super(staticLink);
-		SQS=new SequencingSet$();
-		main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();
-		main.EVENT = new EVENT_NOTICE$(0, main);
-		SQS.add(main.EVENT,false);
+		if(USE_NEW_SQS) {
+			SQS=new SequencingSet$();
+			OLD_SQS=null;
+			main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();
+			main.EVENT = new EVENT_NOTICE$(0, main);
+			SQS.add(main.EVENT,false);
+		} else {
+			OLD_SQS = (Head$) new Head$(Simulation$.this).STM$();
+			SQS=null;
+			main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();
+			main.xEVENT = (OLD_EVENT_NOTICE$) new OLD_EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();
+			main.xEVENT.into(OLD_SQS);
+		}
 	}
 
 	public Simulation$ STM$() {
@@ -111,8 +124,21 @@ public class Simulation$ extends Simset$ {
 	}
 
 	public double time() {
-		return (SQS.first().EVTIME);			
+		if(USE_NEW_SQS) {
+			return (SQS.first().EVTIME);			
+		}
+		return (FIRSTEV().EVTIME);
 	}
+
+	private OLD_EVENT_NOTICE$ FIRSTEV() {
+		OLD_EVENT_NOTICE$ FIRSTEV = ((OLD_EVENT_NOTICE$) (OLD_SQS.first()));
+		return (FIRSTEV);
+	}
+
+//	private EVENT_NOTICE$ NEW_FIRSTEV() {
+//		EVENT_NOTICE$ FIRSTEV = SQS.first();
+//		return (FIRSTEV);			
+//	}
 
 	/*
 	 * <pre>
@@ -120,10 +146,33 @@ public class Simulation$ extends Simset$ {
 	 * </pre>
 	 */
 	public Process$ current() {
-		return (SQS.first().PROC);			
+		if(USE_NEW_SQS) {
+			return (SQS.first().PROC);			
+		}
+		return (FIRSTEV().PROC);
 	}
 
 	public void hold(final double T) {
+		if(USE_NEW_SQS) {
+			NEW_hold(T); return;
+		}
+		SIM_TRACE("Hold " + T);
+		OLD_EVENT_NOTICE$ first = FIRSTEV();
+		if (first != null) {
+			if (T > 0)
+				first.EVTIME = first.EVTIME + T;
+			OLD_EVENT_NOTICE$ suc = first.suc();
+			if (suc != null) {
+				if (suc.EVTIME <= first.EVTIME) {
+					first.out();
+					first.RANK(false);
+					resume(current());
+				}
+			}
+		}
+	}
+
+	public void NEW_hold(final double T) {
 		SIM_TRACE("Hold " + T);
 		EVENT_NOTICE$ first = SQS.pollFirst();
 		if (first != null) {
@@ -157,16 +206,25 @@ public class Simulation$ extends Simset$ {
 	Process$ passivate1() { // Used directly by Process$.TERMINATE
 		Process$ cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());
-		// RT.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.SQS);
-		if (cur != null) {
-			SQS.remove(cur.EVENT);
-			cur.EVENT = null;
-		}
-		if (SQS.isEmpty())
-			throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
+		// RT.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.edSQS());
+		if(USE_NEW_SQS) {
+			if (cur != null) {
+				SQS.remove(cur.EVENT);
+				cur.EVENT = null;
+			}
+			if (SQS.isEmpty())
+				throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
 
+		} else {
+			if (cur != null) {
+				cur.xEVENT.out();
+				cur.xEVENT = null;
+			}
+			if (OLD_SQS.empty())
+				throw new RuntimeException("Cancel,Passivate or Wait empties SQS");
+		}
 		Process$ nxtcur = current();
-		// RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+", SQS="+this.SQS);
+		// RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+", SQS="+this.edSQS());
 		return(nxtcur);
 	}
 
@@ -178,10 +236,18 @@ public class Simulation$ extends Simset$ {
 
 	public void cancel(final Process$ x) {
 		SIM_TRACE("Cancel " + x);
-		if (x == current())	passivate();
-		else if (x != null && x.EVENT != null) {
-			SQS.remove(x.EVENT);
-			x.EVENT = null;
+		if(USE_NEW_SQS) {
+			if (x == current())	passivate();
+			else if (x != null && x.EVENT != null) {
+				SQS.remove(x.EVENT);
+				x.EVENT = null;
+			}
+		} else {
+			if (x == current())	passivate();
+			else if (x != null && x.xEVENT != null) {
+				x.xEVENT.out();
+				x.xEVENT = null;
+			}
 		}
 	}
 
@@ -215,25 +281,41 @@ public class Simulation$ extends Simset$ {
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE$ == OperationalState.terminated)
 			TRACE_ACTIVATE(REAC, "terminated process");
+		else if (X.xEVENT != null && !REAC)
+			TRACE_ACTIVATE(REAC, "scheduled process");
 		else if (X.EVENT != null && !REAC)
 			TRACE_ACTIVATE(REAC, "scheduled process");
 		else {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent());
 			Process$ z;
-			EVENT_NOTICE$ EV = null;
-			if (REAC) EV = X.EVENT;
-			else if (X.EVENT != null) return;
-			z = current();
-			X.EVENT = new EVENT_NOTICE$(time(), X);
-			//X.EVENT.precede(FIRSTEV());
-			SQS.add(X.EVENT,true);
-			if (EV != null) {
-				//EV.out();
-				SQS.remove(EV);
-				if (SQS.isEmpty())
-					throw new RuntimeException("(Re)Activate empties SQS.");
-			}
+			if(USE_NEW_SQS) {
+				EVENT_NOTICE$ EV = null;
+				if (REAC) EV = X.EVENT;
+				else if (X.EVENT != null) return;
+				z = current();
+				X.EVENT = new EVENT_NOTICE$(time(), X);
+				//X.EVENT.precede(FIRSTEV());
+				SQS.add(X.EVENT,true);
+				if (EV != null) {
+					//EV.out();
+					SQS.remove(EV);
+					if (SQS.isEmpty())
+						throw new RuntimeException("(Re)Activate empties SQS.");
+				}
 
+			} else {
+				OLD_EVENT_NOTICE$ EV = null;
+				if (REAC) EV = X.xEVENT;
+				else if (X.xEVENT != null) return;
+				z = current();
+				X.xEVENT = (OLD_EVENT_NOTICE$) new OLD_EVENT_NOTICE$(this, (float) time(), X).STM$();
+				X.xEVENT.precede(FIRSTEV());
+				if (EV != null) {
+					EV.out();
+					if (OLD_SQS.empty())
+						throw new RuntimeException("(Re)Activate empties SQS.");
+				}
+			}
 			if (z != current())
 				resume(current());
 		}
@@ -248,23 +330,45 @@ public class Simulation$ extends Simset$ {
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE$ == OperationalState.terminated)
 			TRACE_ACTIVATE(REAC, "terminated process");
+		else if (X.xEVENT != null && !REAC)
+			TRACE_ACTIVATE(REAC, "scheduled process");
 		else if (X.EVENT != null && !REAC)
 			TRACE_ACTIVATE(REAC, "scheduled process");
 		else {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent() + " at " + T + ((PRIO) ? "prior" : ""));
 			Process$ z;
-			EVENT_NOTICE$ EV = null;
-			if (REAC) EV = X.EVENT;
-			else if (X.EVENT != null) return;
-			z = current();
-			if (T < time())	T = time();
-			X.EVENT = new EVENT_NOTICE$(T, X);
-			SQS.add(X.EVENT,PRIO);
-			if (EV != null) {
-				SQS.remove(EV);
-				if (SQS.isEmpty())
-					throw new RuntimeException("(Re)Activate empties SQS.");
+			
+			if(USE_NEW_SQS) {
+				EVENT_NOTICE$ EV = null;
+				if (REAC) EV = X.EVENT;
+				else if (X.EVENT != null) return;
+				z = current();
+				if (T < time())	T = time();
+				X.EVENT = new EVENT_NOTICE$(T, X);
+				SQS.add(X.EVENT,PRIO);
+				if (EV != null) {
+					SQS.remove(EV);
+					if (SQS.isEmpty())
+						throw new RuntimeException("(Re)Activate empties SQS.");
+				}
+			} else {
+				OLD_EVENT_NOTICE$ EV = null;
+				if (REAC) EV = X.xEVENT;
+				else if (X.xEVENT != null) return;
+				z = current();
+				if (T < time())	T = time();
+				X.xEVENT = (OLD_EVENT_NOTICE$) new OLD_EVENT_NOTICE$(this, (float) T, X).STM$();
+				if (T == time() && PRIO)
+					X.xEVENT.precede(FIRSTEV());
+				else
+					X.xEVENT.RANK(PRIO);
+				if (EV != null) {
+					EV.out();
+					if (OLD_SQS.empty())
+						throw new RuntimeException("(Re)Activate empties SQS.");
+				}
 			}
+			
 			if (z != current())	resume(current());
 		}
 	}
@@ -278,6 +382,48 @@ public class Simulation$ extends Simset$ {
 	}
 
 	private void ACTIVATE3(final boolean REAC,final Process$ X,final boolean BEFORE,final Process$ Y) {
+		if(USE_NEW_SQS) {
+			NEW_ACTIVATE3(REAC,X,BEFORE,Y); 
+			return;
+		}
+		if (X == null)
+			TRACE_ACTIVATE(REAC, " none");
+		else if (X.STATE$ == OperationalState.terminated)
+			TRACE_ACTIVATE(REAC, " terminated process");
+		else if (X.xEVENT != null && !REAC)
+			TRACE_ACTIVATE(REAC, " scheduled process");
+		else if (X == Y)
+			TRACE_ACTIVATE(REAC, " before/after itself");
+		else {
+			TRACE_ACTIVATE(REAC, X.edObjectIdent() + ((BEFORE) ? " BEFORE " : " AFTER ") + Y.edObjectIdent());
+			Process$ z;
+			OLD_EVENT_NOTICE$ EV = null;
+			if (REAC) EV = X.xEVENT;
+			else if (X.xEVENT != null) return;
+			z = current();
+			if (Y == null || Y.xEVENT == null) X.xEVENT = null;
+			else {
+				if (X == Y)	return; // reactivate X before/after X;
+				X.xEVENT = (OLD_EVENT_NOTICE$) new OLD_EVENT_NOTICE$(this, (float) Y.xEVENT.EVTIME, X).STM$();
+				if (BEFORE)
+					X.xEVENT.precede(Y.xEVENT);
+				else X.xEVENT.follow(Y.xEVENT);
+			}
+			if (EV != null) {
+				EV.out();
+				if (OLD_SQS.empty())
+					throw new RuntimeException("(Re)Activate empties SQS.");					
+			}
+			if (z != current())
+			{ Process$ nxtcur=current();
+			    SIM_TRACE("END ACTIVATE3 Resume["+nxtcur.edObjectIdent()+']');
+				resume(nxtcur);
+			} else SIM_TRACE("END ACTIVATE3 Continue["+z.edObjectIdent()+']');
+
+		}
+	}
+
+	private void NEW_ACTIVATE3(final boolean REAC,final Process$ X,final boolean BEFORE,final Process$ Y) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, " none");
 		else if (X.STATE$ == OperationalState.terminated)
@@ -321,13 +467,43 @@ public class Simulation$ extends Simset$ {
 	private void TRACE_ACTIVATE(final boolean REAC,final String msg) {
 		String act = (REAC) ? "REACTIVATE " : "ACTIVATE ";
 		SIM_TRACE(act + msg);
+
 	}
 
 	public void SIM_TRACE(final String msg) {
+		//checkSQS();
 		if (RT.Option.SML_TRACING) {
 			Thread thread = Thread.currentThread();
-			RT.println(thread.toString() + ": Time=" + time() + "  " + msg +", SQS="+ SQS);
+			RT.println(thread.toString() + ": Time=" + time() + "  " + msg +", SQS="+ edSQS());
 		}
+	}
+
+//	private String checkSQS() {
+//		StringBuilder s = new StringBuilder();
+//		Link$ x = SQS.first();
+//		s.append(", SQS =");
+//		while (x != null) {
+//			EVENT_NOTICE$ ev = (EVENT_NOTICE$) x;
+//			if(ev.PROC.STATE$==OperationalState.terminated)
+//				throw new RuntimeException("SQS CONTAIN TERMINATED ELEMENT: "+ev.PROC);
+//			x = x.suc();
+//		}
+//		return (s.toString());
+//	}
+
+	private String edSQS() {
+		if(USE_NEW_SQS) return(SQS.edNEW_SQS());
+		//checkSQS();
+		StringBuilder s = new StringBuilder();
+		Link$ x = OLD_SQS.first();
+		if(x==null) s.append("EMPTY");
+		while (x != null) {
+			OLD_EVENT_NOTICE$ ev = (OLD_EVENT_NOTICE$) x;
+			s.append(' ').append(ev.PROC.edObjectIdent()).append('[').append(ev.EVTIME).append(']');
+//			s.append('\n');
+			x = x.suc();
+		}
+		return (s.toString());
 	}
 
 	public String toString() {

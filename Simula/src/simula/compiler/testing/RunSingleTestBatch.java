@@ -79,8 +79,8 @@ public final class RunSingleTestBatch {
 		//names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
 		//names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
 
-		names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
-		names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
+		//names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
+		//names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
 		//names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
 		//names.add("simtst43.sim"); // OK:  Compute "n-fac", using recursion.
 		//names.add("simtst44.sim"); // OK:  Test text procedure.
@@ -148,7 +148,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 		//names.add("simtst102.sim"); // OK: GOTO out of an operating Process
-		//names.add("simtst103.sim"); // OK: All kinds of Activation Statements
+		names.add("simtst103.sim"); // OK: All kinds of Activation Statements
 		//names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
 		//names.add("simtst105.sim"); // OK: Multiple assignments.
 		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.

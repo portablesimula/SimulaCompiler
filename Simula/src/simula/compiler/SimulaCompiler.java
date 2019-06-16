@@ -106,6 +106,8 @@ public final class SimulaCompiler {
 		tmpClassDir.mkdirs();
 		Global.tempClassFileDir=tmpClassDir;
 
+//		File userHome=new File(System.getProperty("user.home"));
+		File desktop=new File(System.getProperty("user.home"),"Desktop");
 		if(Option.verbose) {
 			// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
 			Util.message("------------  ENVIRONMENT SUMMARY  ------------");
@@ -113,6 +115,9 @@ public final class SimulaCompiler {
 			Util.message("Simula Home          "+Global.simulaHome);
 			Util.message("Simula Home (prev)   "+Global.getProperty("simula.home",null));
 			Util.message("Java Home            "+System.getProperty("java.home"));
+			Util.message("User Home            "+System.getProperty("user.home"));
+			String s=(desktop.exists())?"true ":"false";
+			Util.message("Desktop Exists="+s+" "+desktop.toString());
 			Util.message("Java Class Path      "+System.getProperty("java.class.path"));
 			Util.message("Java Class Version   "+System.getProperty("java.class.version"));
 			Util.message("Java Version         "+System.getProperty("java.version"));
@@ -126,10 +131,10 @@ public final class SimulaCompiler {
 			Util.message("32/64 bit JVM        "+System.getProperty("sun.arch.data.model"));
 			Util.message("file.encoding        "+System.getProperty("file.encoding"));
 			Util.message("defaultCharset       "+Charset.defaultCharset());
+
 			
 			// this will list the current system properties
-		    //  Properties p = System.getProperties();
-		    //  p.list(System.out);
+		    //  System.getProperties().list(System.out);
 
 		}
 	}

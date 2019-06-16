@@ -315,8 +315,7 @@ public class EditorMenues extends JMenuBar {
 //    	    			SimulaEditor.doNewTabbedPanel(file);
 //    				}}).start();
     		}
-//        	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
-        	Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory());
+        	Global.setCurrentWorkspace(fileChooser.getCurrentDirectory());
         }
 	}
 	
@@ -330,9 +329,8 @@ public class EditorMenues extends JMenuBar {
 	        JFileChooser fileChooser = new JFileChooser(Global.currentWorkspace);
 	        if (fileChooser.showSaveDialog(SimulaEditor.tabbedPane)!=JFileChooser.APPROVE_OPTION) return; // Do Nothing
 	        File file=fileChooser.getSelectedFile();
-	        Util.println("saveAs.APPROVED: "+fileChooser.getSelectedFile());
-//	        Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory().toString());
-	        Global.updateCurrentWorkspace(fileChooser.getCurrentDirectory());
+	        //Util.println("saveAs.APPROVED: "+fileChooser.getSelectedFile());
+	        Global.setCurrentWorkspace(fileChooser.getCurrentDirectory());
 	        if(file.exists() && overwriteDialog(file)!=JOptionPane.YES_OPTION) return; // Do Nothing
 	        if(!file.getName().toLowerCase().endsWith(".sim")) {
 	        	if(noSimTypeDialog(file)!=JOptionPane.OK_OPTION) return; // Do Nothing
@@ -490,7 +488,7 @@ public class EditorMenues extends JMenuBar {
 				//Util.println("SettingsMenu.removeWorkspaces: box="+box.isSelected()+", text="+box.getText());
 				if(box.isSelected()) Global.workspaces.remove(new File(box.getText()));
 			}
-	    	Global.updateWorkspaceList();
+	    	Global.storeWorkspaceProperties();
 		}
     }
 	

@@ -19,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -64,8 +65,15 @@ public final class SimulaExtractor extends JFrame {
     private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
 	private static final String programAndVersion = "Simula 1.0";
 	private static File INSTALL_DIR; // e.g. C:\Users\Øystein\Simula\Simula-1.0
+	private static File BATCH_FILE;
 	private static String setupDated;
-	private final ImageIcon simulaIcon;
+	private static ImageIcon simulaIcon;
+	
+	private static String simulaJarFileName;
+	private static String targetDir;
+	private static int nExtractedFiles;
+	private static boolean compilerBatWasWritten;
+	private static boolean desktopEntryWasWritten;
 	
 	private String myClassName;
 	private JTextField installDirField;
@@ -89,20 +97,27 @@ public final class SimulaExtractor extends JFrame {
 		if(jarFileName==null) jarFileName = "C:/GitHub/Binaries/setup.jar"; // for TESTING ONLY
 		
 		boolean ok=simulaExtractor.extract(jarFileName);
-		writeCompilerBat();
+		askWriteDesktopLinks();
+		if(!desktopEntryWasWritten) askWriteCompilerBat();
+		askRunSimula();
 		updateProperties();
 		if(console!=null) {
 			if(ok) {
 			    console.write("=====================================================\n");
 			    console.write("Simula was successfully installed\n\n");
-			    console.write("To activate Simula use the following command:\n\n");
-				boolean windows=(File.separatorChar)=='\\';
-			    if(windows) {
-			    	console.write("RunSimulaEditor.bat\n\n");
-				    console.write("You may move the batch-file to any directory.\n");
-			    } else {
-			    	console.write("./RunSimulaEditor.sh\n\n");
-				    console.write("You may move the shell script to any directory.\n");
+			    
+			    if(compilerBatWasWritten) {
+			    	console.write("To activate Simula you may use the following command:\n\n");
+			    	console.write(" "+BATCH_FILE+"\n\n");
+			    	boolean windows=(File.separatorChar)=='\\';
+			    	if(windows) {
+			    		console.write("You may move the batch-file to any directory.\n");
+			    	} else {
+			    		console.write("You may move the shell script to any directory.\n");
+			    	}
+			    }
+			    if(desktopEntryWasWritten) {
+			    	console.write("Use DesktopEntry 'Simula' to activate Simula\n");			    	
 			    }
 			}
 		while(true) Thread.yield();
@@ -124,7 +139,7 @@ public final class SimulaExtractor extends JFrame {
 	        // Set the default close operation (exit when it gets closed)
 	        setDefaultCloseOperation(EXIT_ON_CLOSE);
 			setLocationRelativeTo(null); // center the frame on screen
-			System.out.println("Open ConsolePanel");
+			if(DEBUG) System.out.println("Open ConsolePanel");
 			console=new ConsolePanel();
 			mainFrame.setTitle("Installing Simula");
 			mainFrame.add(console);
@@ -133,16 +148,19 @@ public final class SimulaExtractor extends JFrame {
 	}
 	
 	// ***************************************************************
-	// *** writeCompilerBat
+	// *** askWriteCompilerBat
 	// ***************************************************************
-	private static void writeCompilerBat() {
+	private static void askWriteCompilerBat() {
 		boolean windows=(File.separatorChar)=='\\';
 		String text;
 		String fileName;
 		if(windows) {
 			fileName="RunSimulaEditor.bat";
-			text="rem *** Call Simula Editor\r\n" + 
+			text="CHCP 65001\r\n" +  // Let Windows recognize UTF-8
+			     "rem *** Call Simula Editor\r\n" + 
 				 "java -jar "+INSTALL_DIR+"\\simula.jar\r\n" + 
+//				 "cd "+INSTALL_DIR+"\r\n"+
+//				 "java -jar simula.jar\r\n" + 
 				 "pause\r\n";
 		} else {
 			fileName="RunSimulaEditor.sh";
@@ -156,18 +174,129 @@ public final class SimulaExtractor extends JFrame {
 		if(DEBUG) System.out.println("fileName="+fileName);
 		if(DEBUG) System.out.println("text="+text);
 //		File file=new File(path+'/'+fileName);
-		File file=new File(INSTALL_DIR,fileName);
-		if(DEBUG) System.out.println("fullFilePath="+file);
-		try {
-			if(console!=null) console.write("Write: "+file+'\n');
-			try { boolean executable=file.setExecutable(true,false); // Sets everybody's execute permission 
+		BATCH_FILE=new File(INSTALL_DIR,fileName);
+		if(windows) {
+			String USER_HOME=System.getProperty("user.home");
+			File desktop=new File(USER_HOME,"desktop");
+			BATCH_FILE=new File(desktop,fileName);
+			
+		}
+		if(DEBUG) System.out.println("BATCH_FILE="+BATCH_FILE);
+		String msg="Do you want\n   '"+fileName+"'\nplaced on your desktop ?";
+		int res=optionDialog(msg,"Question",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, "Yes", "No");
+		if(res==0) try {
+			if(console!=null) console.write("Write: "+BATCH_FILE+'\n');
+			try { BATCH_FILE.setExecutable(true,false); // Sets everybody's execute permission 
 			} catch(SecurityException e) {}
-			FileOutputStream oupt=new FileOutputStream(file);
-			Writer writer=new OutputStreamWriter(oupt);
+			FileOutputStream oupt=new FileOutputStream(BATCH_FILE);
+			Writer writer=new OutputStreamWriter(oupt,Charset.forName("UTF-8"));
 			writer.write(text);
 			writer.flush();
 			writer.close();
+			compilerBatWasWritten=true;
 		} catch(IOException e) { e.printStackTrace(); }
+	}
+	
+	// ***************************************************************
+	// *** writeDesktopLinks
+	// ***************************************************************
+	private static void askWriteDesktopLinks() {
+		boolean windows=(File.separatorChar)=='\\';
+		//if(windows) createSymbolicLink(); // TODO: Test dette med Java 13
+		//createHardLink();
+		if(!windows) askWriteDesktopEntry();
+	}
+	
+//	// ***************************************************************
+//	// *** createSymbolicLink  --  Used on Windows
+//	// ***************************************************************
+//	// Denne må utsettes til Java 13
+//	//
+//	// See: https://bugs.openjdk.java.net/browse/JDK-8221852
+//	// ***************************************************************
+//	private static void createSymbolicLink() {
+//		//boolean windows=(File.separatorChar)=='\\';
+//		String USER_HOME=System.getProperty("user.home");
+//		Path simulaLink=Paths.get(USER_HOME,"desktop","Simula.lnk");
+//		Path simulaJar=Paths.get(INSTALL_DIR.toString(),"simula.jar");
+//		try {
+//			if (Files.exists(simulaLink)) Files.delete(simulaLink);
+//		    Files.createSymbolicLink(simulaLink, simulaJar);
+//			if(console!=null) console.write("SLink: "+simulaLink+" -> "+simulaJar+'\n');
+//		} catch (Exception x) {
+//			if(DEBUG) x.printStackTrace();
+//		}
+//	}
+	
+//	// ***************************************************************
+//	// *** createHardLink
+//	// ***************************************************************
+//	private static void createHardLink() {
+//		boolean windows=(File.separatorChar)=='\\';
+//		String USER_HOME=System.getProperty("user.home");
+//		Path simulaLink=Paths.get(USER_HOME,"desktop","SimulaHard.lnk");
+////		Path simulaJar=Paths.get(INSTALL_DIR.toString(),"simula.jar");
+//		Path simulaJar=Paths.get(INSTALL_DIR.toString(),"RunSimulaEditor.bat");
+//		try {
+//			if (Files.exists(simulaLink)) Files.delete(simulaLink);
+//		    Files.createLink(simulaLink, simulaJar);
+//			boolean executable=new File(simulaLink.toString()).setExecutable(true,false); // Sets everybody's execute permission 
+//			if(console!=null) console.write("HLink: "+simulaLink+" -> "+simulaJar+'\n');
+//		} catch (IOException x) {
+//			x.printStackTrace();
+//		    System.err.println(x);
+//		} catch (UnsupportedOperationException x) {
+//		    // Some file systems do not
+//		    // support adding an existing
+//		    // file to a directory.
+//			x.printStackTrace();
+//		    System.err.println(x);
+//		}
+//	}
+	
+	// ***************************************************************
+	// *** askWriteDesktopEntry
+	// ***************************************************************
+	// *** See: https://wiki.archlinux.org/index.php/desktop_entries
+	// ***************************************************************
+	private static void askWriteDesktopEntry() {
+//		boolean windows=(File.separatorChar)=='\\';
+		String USER_HOME=System.getProperty("user.home");
+		String text;
+//		File iconFile=new File(INSTALL_DIR,"icons/sim.png");    // The name of the icon that will be used to display this entry
+		text="[Desktop Entry]\n" + 
+				"Encoding=UTF-8\n" +
+				"Type=Application\n" +     // The type as listed above
+				"Version=1.0\n" +          // The version of the desktop entry specification to which this file complies
+				"Name=Simula\n" +          // The name of the application
+				"Path="+INSTALL_DIR+"\n" + // The path to the folder in which the executable is run
+				"Exec=java -jar simula.jar\n" +     // The executable of the application, possibly with arguments.
+//				"Icon="+iconFile+"\n" +     // The name of the icon that will be used to display this entry
+				"Icon=icons/sim.png\n" +    // The name of the icon that will be used to display this entry
+				"Terminal=false\n" +     // Describes whether this application needs to be run in a terminal or not
+				"Categories=Education;Languages;Simula"; // Describes the categories in which this entry should be shown
+		File apps=new File(USER_HOME,".local/share/applications");
+		//apps.mkdirs();
+		File file=new File(apps,"Simula.desktop");
+
+		if(DEBUG) System.out.println("fullFilePath="+file);
+		if(DEBUG) System.out.println("------ DESKTOP ENTRY ------\n"+text);
+		String msg="Do you want DesktopEntry\n      'Simula'\nplaced on your desktop ?";
+		int res=optionDialog(msg,"Question",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, "Yes", "No");
+		if(res==0) try {
+			if(console!=null) console.write("Write: "+file+'\n');
+//			try { boolean executable=file.setExecutable(true,false); // Sets everybody's execute permission 
+//			} catch(SecurityException e) {}
+			FileOutputStream oupt=new FileOutputStream(file);
+			Writer writer=new OutputStreamWriter(oupt,Charset.forName("UTF-8"));
+			writer.write(text);
+			writer.flush();
+			writer.close();
+			desktopEntryWasWritten=true;
+		} catch(IOException e) {} // e.printStackTrace(); }
+
+		// På Unix'type spør først og evt. gjør dette:
+		// sudo mv ~/.local/share/applications/Simula.desktop /usr/share/applications/
 	}
 	
 	// ***************************************************************
@@ -202,8 +331,8 @@ public final class SimulaExtractor extends JFrame {
 		OutputStream out=null;
 		try {
 			try {
-				boolean readable=simulaPropertiesFile.setReadable(true,false); // Sets everybody's read permission 
-				boolean writable=simulaPropertiesFile.setWritable(true,false); // Sets everybody's write permission 
+				simulaPropertiesFile.setReadable(true,false); // Sets everybody's read permission 
+				simulaPropertiesFile.setWritable(true,false); // Sets everybody's write permission 
 			} catch(SecurityException e) {}
 			out=new FileOutputStream(simulaPropertiesFile);
 			simulaProperties.storeToXML(out,"Simula Properties");
@@ -362,7 +491,7 @@ public final class SimulaExtractor extends JFrame {
 				return true; // cancelled
 			}
 			int size = zf.size();
-			int extracted = 0;
+			nExtractedFiles = 0;
 			Enumeration<? extends ZipEntry> entries = zf.entries();
 
 		LOOP:for (int i = 0; i < size; i++) {
@@ -392,54 +521,63 @@ public final class SimulaExtractor extends JFrame {
 					if (nRead <= 0)	break;
 					out.write(buf, 0, nRead);
 				}
-				extracted++;
+				nExtractedFiles++;
 				out.close();
 				outFile.setLastModified(archiveTime.getTime());
 			}
 			zf.close();
-			String targetDir = outputDir.getPath();
-			String jarFileName = targetDir + File.separator + "simula.jar";
+			targetDir = outputDir.getPath();
+			simulaJarFileName = targetDir + File.separator + "simula.jar";
 			String title = "Installed " + programAndVersion;
-			String msg = "Extracted " + extracted + " file" + ((extracted != 1) ? "s" : "")
+			String msg = "Extracted " + nExtractedFiles + " file" + ((nExtractedFiles != 1) ? "s" : "")
 					   + " from setup.jar\nInto: " + targetDir;
-			File jarFile = new File(jarFileName);
-			if (jarFile.exists()) {
-				msg += "\n\n" + "The Simula executable JAR file is installed at\n" + jarFileName;
-				msg +="\n\nDo you want to start it now ?\n\n";
-				Object[] options = { "Start Simula", "Exit" };
-		        int answer = JOptionPane.showOptionDialog(SimulaExtractor.this, msg, title, JOptionPane.DEFAULT_OPTION,
-						JOptionPane.QUESTION_MESSAGE, simulaIcon, options, options[0]);
-				if(DEBUG) System.out.println("SimulaExtractor.extract: answer="+answer); // TODO: MYH
-				if(answer==0) {
-					new Thread() {
-						public void run() {	startJar(jarFileName); }
-					}.start();
-//					try {
-//						Thread.sleep(5 * 1000); // sleep a few seconds
-//						// On Windows, when the installer exits,
-//						// the window from which it was invoked
-//						// (e.g. DOS window or File Manager)
-//						// is raised, hiding the app startup
-//						// screen. This is annoying. Keep the
-//						// sleep time here low so that on a slow
-//						// machine we will be gone before the
-//						// app startup screen appears, and
-//						// thus we won't have covered it up as
-//						// the slow machine plods along.
-//					} catch (Exception ex) {}
-				}
-			} else {
+			File jarFile = new File(simulaJarFileName);
+//			if (jarFile.exists()) {
+//				msg += "\n\n" + "The Simula executable JAR file is installed at\n" + simulaJarFileName;
+//				msg +="\n\nDo you want to start it now ?\n\n";
+//				Object[] options = { "Start Simula", "Exit" };
+//		        int answer = JOptionPane.showOptionDialog(SimulaExtractor.this, msg, title, JOptionPane.DEFAULT_OPTION,
+//						JOptionPane.QUESTION_MESSAGE, simulaIcon, options, options[0]);
+//				if(DEBUG) System.out.println("SimulaExtractor.extract: answer="+answer); // TODO: MYH
+//				if(answer==0) {
+//					new Thread() {
+//						public void run() {	startJar(simulaJarFileName); }
+//					}.start();
+//				}
+//			} else {
+			if (!jarFile.exists()) {
 				// The extraction was incomplete
 				JOptionPane.showMessageDialog(SimulaExtractor.this, msg, title, JOptionPane.INFORMATION_MESSAGE);
 			}
 		} catch (Exception e) {
-			if (DEBUG) e.printStackTrace(System.out); else if(DEBUG) if(DEBUG) System.out.println(e);
+			if (DEBUG) e.printStackTrace(System.out);
+			return false; // got an error
+		} finally {
 			if (zf != null) { try {	zf.close();	} catch (IOException ioe) {}}
 			if (out != null) { try { out.close(); } catch (IOException ioe) {}}
-			if (in != null) { try {	in.close();	} catch (IOException ioe) {}}
-			return false; // got an error
+			if (in != null) { try {	in.close();	} catch (IOException ioe) {}}			
 		}
 		return true; // no errors
+	}
+	
+	// ***************************************************************
+	// *** askRunSimula
+	// ***************************************************************
+	private static void askRunSimula() {
+		String title = "Installed " + programAndVersion;
+		//String msg="";
+		String msg = "Extracted " + nExtractedFiles + " file" + ((nExtractedFiles != 1) ? "s" : "")
+				   + " from setup.jar\nInto: " + targetDir;
+		msg += "\n\n" + "The Simula executable JAR file is installed at\n" + simulaJarFileName;
+		msg +="\n\nDo you want to start it now ?\n\n";
+		int answer=optionDialog(msg,title,JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, "Start Simula", "Exit");
+
+		if(DEBUG) System.out.println("SimulaExtractor.extract: answer="+answer); // TODO: MYH
+		if(answer==0) {
+			new Thread() {
+				public void run() {	startJar(simulaJarFileName); }
+			}.start();
+		}		
 	}
 	
 	// ***************************************************************
@@ -462,22 +600,34 @@ public final class SimulaExtractor extends JFrame {
 	// ***************************************************************
 	// *** startJar
 	// ***************************************************************
-	private void startJar(String jar) {
+	private static void startJar(String jar) {
 		String cmd;
 		Runtime rt = Runtime.getRuntime();
 		cmd = getJavaProg() + " -jar " + jar;
 		try { rt.exec(cmd);
 		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(this, "Can't run " + cmd, "Error Running Java", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Can't run " + cmd, "Error Running Java", JOptionPane.ERROR_MESSAGE);
 		}
 		// Don't wait for it to finish, we just quietly exit now
 	}
 
 	/** Get the path to the java program. */
-	private String getJavaProg() {
+	private static String getJavaProg() {
 		String sep = File.separator;
 		return System.getProperty("java.home") + sep + "bin" + sep + "java";
 	}
 
+
+	private static int optionDialog(final Object msg,final String title,final int optionType,final int messageType,final String... option) {
+		Object OptionPaneBackground=UIManager.get("OptionPane.background");
+		Object PanelBackground=UIManager.get("Panel.background");
+ 		UIManager.put("OptionPane.background", Color.WHITE);
+        UIManager.put("Panel.background", Color.WHITE);
+		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,simulaIcon, option, option[0]);
+		//System.out.println("doClose.saveDialog: answer="+answer);
+		UIManager.put("OptionPane.background",OptionPaneBackground);
+        UIManager.put("Panel.background",PanelBackground);
+		return(answer);
+	}
 	
 }

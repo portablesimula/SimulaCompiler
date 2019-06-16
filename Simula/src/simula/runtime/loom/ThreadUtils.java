@@ -74,17 +74,18 @@ public class ThreadUtils {
     private static Thread prevThread;
     private static void waitUntilPrevThreadNotRunning() {
         if(prevThread!=null) {
-        	int count=10; // To prevent DeadLock
-        	while((count--)>0 && prevThread.getState()==Thread.State.RUNNABLE) {
-        		//Thread.yield(); 
-        		try { Thread.sleep(0,1); } catch (InterruptedException e) { e.printStackTrace(); }
-        		//try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
-        	}
-    		if(prevThread.getState()==Thread.State.RUNNABLE) {
-    			System.out.println("****************** ERROR: waitUntilPrevThreadNotRunning FAILED ******************");
-    			System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
-    			System.out.println("Prev    Thread: "+prevThread+", State="+prevThread.getState());
-    		}
+//        	int count=10; // To prevent DeadLock
+//        	while((count--)>0 && prevThread.getState()==Thread.State.RUNNABLE) {
+//        		//Thread.yield(); 
+//        		try { Thread.sleep(0,1); } catch (InterruptedException e) { e.printStackTrace(); }
+//        		//try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+//        	}
+//    		if(prevThread.getState()==Thread.State.RUNNABLE) {
+//    			System.out.println("****************** ERROR: waitUntilPrevThreadNotRunning FAILED ******************");
+//    			System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
+//    			System.out.println("Prev    Thread: "+prevThread+", State="+prevThread.getState());
+//    		}
+    		waitUntilThreadNotRunning(prevThread);
         	prevThread=null;
         }
     }
@@ -99,7 +100,7 @@ public class ThreadUtils {
     		//Thread.yield(); 
     		try { Thread.sleep(0,nano); } catch (InterruptedException e) { e.printStackTrace(); }
     		//try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
-    		nano=nano*4;
+    		nano=nano*4; // Sleep longer and longer ...
     	}
     	if(thread.getState()==Thread.State.RUNNABLE) {
     		System.out.println("****************** ERROR: waitUntilThreadNotRunning("+nano+") FAILED ******************");
@@ -146,19 +147,21 @@ public class ThreadUtils {
 		//RT.ASSERT(next.getState()!=Thread.State.RUNNABLE,"Continuation.swapThreads: Invariant-2"); // DENNE KOMMER HOS EYVIND, KAREL og GUNNAR ?
 		if(next.getState()==Thread.State.RUNNABLE) {
 			waitUntilThreadNotRunning(next);
-			System.out.println("****************** ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
-			System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
-			System.out.println("Next    Thread: "+next+", State="+next.getState());
 			if(next.getState()==Thread.State.RUNNABLE) {
-				RT.println("****************** REPEATED ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
-				RT.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());
-				RT.printStaticChain(RTObject$.CUR$);
-				RT.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
-				RT.println("Next    Thread: "+next+", State="+next.getState());
-				printStackTrace();
-				printThreadList(true);
-				RT.println("***********************************************************************************************");
-				if(!alreadyGotInvariant2) RT.BREAK("Continue ?"); alreadyGotInvariant2=true;
+				System.out.println("****************** ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
+				System.out.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
+				System.out.println("Next    Thread: "+next+", State="+next.getState());
+				if(next.getState()==Thread.State.RUNNABLE) {
+					RT.println("****************** REPEATED ERROR: Continuation.swapThreads: Invariant-2 FAILED ******************");
+					RT.println("Current Object: "+RTObject$.CUR$.edObjectAttributes());
+					RT.printStaticChain(RTObject$.CUR$);
+					RT.println("Current Thread: "+Thread.currentThread()+", State="+Thread.currentThread().getState());
+					RT.println("Next    Thread: "+next+", State="+next.getState());
+					printStackTrace();
+					printThreadList(true);
+					RT.println("***********************************************************************************************");
+					if(!alreadyGotInvariant2) RT.BREAK("Continue ?"); alreadyGotInvariant2=true;
+				}
 			}
 		}
 	}

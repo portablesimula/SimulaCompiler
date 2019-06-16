@@ -66,6 +66,7 @@ package simula.runtime;
 public class Process$ extends Link$ {
     public boolean isDetachUsed() { return(true); }
 
+	public OLD_EVENT_NOTICE$ xEVENT = null;
 	public EVENT_NOTICE$ EVENT = null;
 //	public boolean TERMINATED$ = false;
 
@@ -96,7 +97,10 @@ public class Process$ extends Link$ {
 	}
 
 	public boolean idle() {
-		return (EVENT == null);			
+		if(Simulation$.USE_NEW_SQS) {
+			return (EVENT == null);			
+		}
+		return (xEVENT == null);
 	}
 
 	public boolean terminated() {
@@ -107,16 +111,24 @@ public class Process$ extends Link$ {
 	public double evtime() {
 		if (idle())
 			throw new RuntimeException("Process.Evtime:  The process is idle.");
-		return (EVENT.EVTIME);			
+		if(Simulation$.USE_NEW_SQS) {
+			return (EVENT.EVTIME);			
+		}
+		return (xEVENT.EVTIME);
 	}
 
 	public Process$ nextev() {
 		if (idle())	return (null);
-		EVENT_NOTICE$ suc=((Simulation$) SL$).SQS.nextAfter(EVENT);
+		if(Simulation$.USE_NEW_SQS) {
+			EVENT_NOTICE$ suc=((Simulation$) SL$).SQS.nextAfter(EVENT);
+			if (suc == null)
+				return (null);
+			return (suc.PROC);
+		}
+		OLD_EVENT_NOTICE$ suc = xEVENT.suc();
 		if (suc == null)
 			return (null);
 		return (suc.PROC);
-
 	}
 
 	public String toString() {

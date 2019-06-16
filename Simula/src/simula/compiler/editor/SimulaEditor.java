@@ -25,7 +25,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayDeque;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
@@ -84,6 +83,7 @@ public class SimulaEditor extends JFrame {
 	// *** Constructor
 	// ****************************************************************
     public SimulaEditor() {
+		Global.initiate();
         try { setIconImage(Global.simIcon.getImage()); } 
         catch (Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
 		Global.console=new ConsolePanel();
@@ -101,10 +101,14 @@ public class SimulaEditor extends JFrame {
 
         // Set the title of the window
         setTitle(Global.simulaVersion);
-    	Global.currentWorkspace=new File(Global.getProperty("simula.workspace.dir",Global.sampleSourceDir.toString()));
-    	
-    	if(Global.currentWorkspace.toString().contains("Simula-Beta-0.3"))                                                // TODO: SKAL FJERNES SENERE
-    		Global.currentWorkspace=new File(Global.currentWorkspace.toString().replace("Simula-Beta-0.3","Simula-1.0")); // TODO: SKAL FJERNES SENERE
+//      if(Global.USE_NEW_WORKSPACES) {
+        	Global.loadWorkspaceProperties();
+//        } else {
+//        	Global.currentWorkspace=new File(Global.getProperty("simula.workspace.dir",Global.sampleSourceDir.toString()));
+//        
+//        	if(Global.currentWorkspace.toString().contains("Simula-Beta-0.3"))                                                // TODO: SKAL FJERNES SENERE
+//        		Global.currentWorkspace=new File(Global.currentWorkspace.toString().replace("Simula-Beta-0.3","Simula-1.0")); // TODO: SKAL FJERNES SENERE
+//        }
     	
         // Set the default close operation (exit when it gets closed)
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -187,8 +191,12 @@ public class SimulaEditor extends JFrame {
                    +"\n";
     	String browse="Browse for another Workspace Directory";
     	Choice workspaceChooser = new Choice();
-    	ArrayDeque<File> workspaces=Global.loadWorkspaces();
-    	for(File workspace:workspaces) workspaceChooser.add(workspace.toString());
+//		if(Global.USE_NEW_WORKSPACES) {
+			for(File workspace:Global.workspaces) workspaceChooser.add(workspace.toString());			
+//		} else {
+//			ArrayDeque<File> workspaces=Global.loadWorkspacesFromOldPropertyFile();
+//			for(File workspace:workspaces) workspaceChooser.add(workspace.toString());
+//		}
     	workspaceChooser.add(browse);
     	workspaceChooser.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -221,7 +229,7 @@ public class SimulaEditor extends JFrame {
 		Util.optionDialog(panel,"Select Simula Workspace",JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE,"OK");
         UIManager.put("Panel.background",PanelBackground);
         String selected=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
-    	Global.updateCurrentWorkspace(new File(selected));
+    	Global.setCurrentWorkspace(new File(selected));
         //Util.println("doSelectWorkspace: selected="+selected);
     }
 

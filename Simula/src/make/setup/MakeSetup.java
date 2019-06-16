@@ -36,8 +36,8 @@ import simula.compiler.utilities.Util;
  */
 public final class MakeSetup {
 	
-//	private final static int EXPLICIT_REVISION = -1; // Normal update
-	private final static int EXPLICIT_REVISION = 13;
+	private final static int EXPLICIT_REVISION = -1; // Normal update
+//	private final static int EXPLICIT_REVISION = 13;
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Simula-1.0";
