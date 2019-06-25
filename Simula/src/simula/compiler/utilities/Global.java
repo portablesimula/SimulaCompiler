@@ -61,14 +61,14 @@ public final class Global {
 	public static String sourceFileName;
 	public static String sourceName;
 	public static File simulaRtsLib;      // The simula runtime system
-	public static File outputDir;         // Where to put resulting .jar
 
 	
     public static File simulaPropertiesFile;
     private static Properties simulaProperties;
 	public static File sampleSourceDir;   // Where to find sample simula files
-	public static File currentWorkspace;  // Where to find ...put resulting .jar
+	public static File currentWorkspace;  // Where to find .sim source files
 	public static ArrayDeque<File> workspaces;
+	public static File outputDir;         // Used by Java-Coding to save the generated .jar files.
 
 	public static File simulaTempDir;     // Temp directory
 	public static File tempJavaFileDir;   // Temp sub-dir for .java  files
@@ -84,27 +84,66 @@ public final class Global {
 
 	public static ConsolePanel console;
 	
-	public static void initiate()
-	{ duringParsing=true;
-	  externalJarFiles=new Vector<File>();
-	  String SIMULA_HOME=getProperty("simula.home",null);
-	  String SIMULA_VERSION=getProperty("simula.version",null);
-	  File simdir=new File(SIMULA_HOME,SIMULA_VERSION);
-//	  simulaIcon = new ImageIcon("icons/simula.png");
-//	  simIcon = new ImageIcon("icons/sim2.png");
-	  simulaIcon = new ImageIcon(new File(simdir,"icons/simula.png").toString());
-	  simIcon = new ImageIcon(new File(simdir,"icons/sim2.png").toString());
-	  sIcon = new ImageIcon(new File(simdir,"icons/sim.png").toString());
+	public static void initiate() {
+		duringParsing=true;
+		externalJarFiles=new Vector<File>();
+		String SIMULA_HOME=getProperty("simula.home",null);
+		if(SIMULA_HOME!=null) {
+			String SIMULA_VERSION=getProperty("simula.version",null);
+			if(SIMULA_VERSION!=null) {
+				File simdir=new File(SIMULA_HOME,SIMULA_VERSION);
+				simulaIcon = new ImageIcon(new File(simdir,"icons/simula.png").toString());
+				simIcon = new ImageIcon(new File(simdir,"icons/sim2.png").toString());
+				sIcon = new ImageIcon(new File(simdir,"icons/sim.png").toString());
+			}
+		}
+		
+		//TESTING();
 	}
+	
+//	private static void TESTING() {
+//		File temp=getTempFileDir("simula/temp");
+//		isFileWriteable(temp);
+//		File tempFile=new File(temp,"tempfile");
+//		try { tempFile.createNewFile();	} catch (IOException e) { e.printStackTrace(); }
+//		isFileWriteable(tempFile);
+//	}
+//	
+//	private static boolean isFileWriteable(File file) {
+//		try {
+//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> exists="+(file.exists()?"TRUE":"FALSE"));
+//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> isDirectory="+(file.isDirectory()?"TRUE":"FALSE"));
+//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> canRead="+(file.canRead()?"TRUE":"FALSE"));
+//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> canWrite="+(file.canWrite()?"TRUE":"FALSE"));
+//			if (file.canWrite()) {
+//				System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> TRUE");
+//				return (true);
+//			}
+//		} catch (SecurityException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> FALSE");
+//		return (false);
+//	}
 
 	public static File getTempFileDir(String subDir) {
 		String tmp=System.getProperty("java.io.tmpdir");
-		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
-		if(!(tmp.endsWith("/") || tmp.endsWith("\\"))) tmp=tmp+'/';
-		if(subDir.startsWith("/") || subDir.startsWith("\\")) subDir=subDir.substring(1);
-		return(new File(tmp,subDir));
+//		System.out.println("Global.getTempFileDir: subDir="+subDir+", tmp="+tmp);
+//		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+//		if(!(tmp.endsWith("/") || tmp.endsWith("\\"))) tmp=tmp+'/';
+//		if(subDir.startsWith("/") || subDir.startsWith("\\")) subDir=subDir.substring(1);
+		File tempFileDir=new File(tmp,subDir);
+		tempFileDir.mkdirs();
+		return(tempFileDir);
 	}
-    
+	
+	public static void trySetOutputDir(File dir) {
+		dir.mkdirs();
+		if(dir.canWrite()) Global.outputDir=dir;
+		else Global.outputDir=getTempFileDir("simulaEditor/bin");
+		//System.out.println("Global.trySetOutputDir: dir="+dir+", Global.outputDir="+Global.outputDir);
+	}
+	
 	public static void initProperties() {
 		if(simulaProperties==null) loadProperties();
 //		if(USE_NEW_WORKSPACES) {
@@ -160,8 +199,8 @@ public final class Global {
 		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
 		} catch(Exception e) {
 			Util.popUpError("Can't load: "+simulaPropertiesFile+"\nGot error: "+e );
-			Util.INTERNAL_ERROR("Global.loadProperties FAILED: ", e);
-		}
+			//Util.INTERNAL_ERROR("Global.loadProperties FAILED: ", e);
+		}	
 	}
 	
 //	private static void storeProperties() {

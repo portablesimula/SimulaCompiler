@@ -92,8 +92,10 @@ public final class Simula {
 	 * file
 	 */
 	private static void setOutputDir(final String dir) {
-		Option.outputDir = new File(dir);
-		Util.TRACE("OUTPUT_DIR: " + Option.keepJava);
+//		Option.outputDir = new File(dir);
+//		Util.TRACE("OUTPUT_DIR: " + Option.outputDir);
+		Global.outputDir = new File(dir);
+		Util.TRACE("OUTPUT_DIR: " + Global.outputDir);
 		// TODO: Check dir legal directory name
 	}
 

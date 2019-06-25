@@ -68,6 +68,8 @@ public class EditorMenues extends JMenuBar {
     
     private JMenu settings=new JMenu("Settings");
 	private JCheckBox autoRefresh=new JCheckBox("AutoRefresh");
+    private JMenuItem setWorkSpace = new JMenuItem("Select WorkSpace");
+    private JMenuItem setOutputDir = new JMenuItem("Select Output Dir.");
     private JMenuItem workSpaces = new JMenuItem("Remove WorkSpaces");
     private JMenuItem compilerOption = new JMenuItem("Compiler Options");
     private JMenuItem runtimeOption = new JMenuItem("Runtime Options");
@@ -94,6 +96,8 @@ public class EditorMenues extends JMenuBar {
     private JMenuItem run2 = new JMenuItem("Run");
     private JMenuItem debug2 = new JMenuItem("Debug");
 	private JCheckBox autoRefresh2=new JCheckBox("AutoRefresh");
+    private JMenuItem setWorkSpace2 = new JMenuItem("Select WorkSpace");
+    private JMenuItem setOutputDir2 = new JMenuItem("Select Output Dir.");
     private JMenuItem workSpaces2 = new JMenuItem("Remove WorkSpaces");
     private JMenuItem compilerOption2 = new JMenuItem("Compiler Options");
     private JMenuItem runtimeOption2 = new JMenuItem("Runtime Options");
@@ -132,6 +136,8 @@ public class EditorMenues extends JMenuBar {
 		runMenu.add(debug); debug.setEnabled(false); debug.addActionListener(actionListener);
 		this.add(runMenu);
 		settings.add(autoRefresh); autoRefresh.setEnabled(false); autoRefresh.addActionListener(actionListener);
+        settings.add(setWorkSpace); setWorkSpace.addActionListener(actionListener);
+        settings.add(setOutputDir); setOutputDir.addActionListener(actionListener);
         settings.add(workSpaces); workSpaces.addActionListener(actionListener);
         settings.add(compilerOption); compilerOption.addActionListener(actionListener);
         settings.add(runtimeOption); runtimeOption.addActionListener(actionListener);
@@ -214,6 +220,8 @@ public class EditorMenues extends JMenuBar {
         popupMenu.addSeparator();
         popupMenu.add(autoRefresh2); autoRefresh2.setEnabled(false); autoRefresh2.addActionListener(actionListener);
         popupMenu.addSeparator();
+        popupMenu.add(setWorkSpace2); setWorkSpace2.addActionListener(actionListener);
+        popupMenu.add(setOutputDir2); setOutputDir2.addActionListener(actionListener);
         popupMenu.add(workSpaces2); workSpaces2.addActionListener(actionListener);
         popupMenu.add(compilerOption2); compilerOption2.addActionListener(actionListener);
         popupMenu.add(runtimeOption2); runtimeOption2.addActionListener(actionListener);
@@ -291,6 +299,8 @@ public class EditorMenues extends JMenuBar {
 			else if(item==debug || item==debug2) doDebugAction();
 			else if(item==autoRefresh) current.AUTO_REFRESH=autoRefresh.isSelected();
 			else if(item==autoRefresh2) current.AUTO_REFRESH=autoRefresh2.isSelected();
+			else if(item==setWorkSpace || item==setWorkSpace2) selectWorkspaceAction();
+			else if(item==setOutputDir || item==setOutputDir2) selectOutputDirAction();
 			else if(item==workSpaces || item==workSpaces2) removeWorkspacesAction();
 			else if(item==compilerOption || item==compilerOption2) Option.selectCompilerOptions();
 			else if(item==runtimeOption  || item==runtimeOption2) RTOption.selectRuntimeOptions();			
@@ -463,6 +473,20 @@ public class EditorMenues extends JMenuBar {
 		} catch(Exception e) { Util.popUpError("Can't run: "+e);}
 	}
     
+	// ****************************************************************
+	// *** selectWorkspaceAction
+	// ****************************************************************
+    private void selectWorkspaceAction() {
+    	SimulaEditor.doSelectWorkspace();
+    }	
+    
+	// ****************************************************************
+	// *** selectOutputDirAction
+	// ****************************************************************
+    private void selectOutputDirAction() {
+    	SimulaEditor.doSelectOutputDir();
+    }	
+
 	// ****************************************************************
 	// *** removeWorkspacesAction
 	// ****************************************************************

@@ -82,12 +82,12 @@ public final class Option {
 	 */
 	public static File keepJava = null;
 	
-	/**
-	 * Used by Java-Coding to save the generated .jar files.
-	 * <p>
-	 * If not set, .jar files are stored in subdirectory /bin of the source file directory.
-	 */
-	public static File outputDir = null;
+//	/**
+//	 * Used by Java-Coding to save the generated .jar files.
+//	 * <p>
+//	 * If not set, .jar files are stored in subdirectory /bin of the source file directory.
+//	 */
+//	public static File outputDir = null;
 	
 	
 	/**

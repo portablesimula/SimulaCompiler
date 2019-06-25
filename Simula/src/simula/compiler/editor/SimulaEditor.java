@@ -85,7 +85,7 @@ public class SimulaEditor extends JFrame {
     public SimulaEditor() {
 		Global.initiate();
         try { setIconImage(Global.simIcon.getImage()); } 
-        catch (Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
+        catch (Exception e) {}// Util.INTERNAL_ERROR("Impossible",e); }
 		Global.console=new ConsolePanel();
     	String revision=Global.getProperty("simula.revision","?");
     	String dated=Global.getProperty("simula.setup.dated","?");
@@ -178,7 +178,7 @@ public class SimulaEditor extends JFrame {
     // ****************************************************************
     // *** doSelectWorkspace
     // ****************************************************************
-    void doSelectWorkspace() {
+    static void doSelectWorkspace() {
     	if (Option.TRACING) Util.println("SimulaEditor.doSelectWorkspace: ");
     	String text="The Simula Editor uses the directory workspace to "
     			   +"\nretrieve Simula source files and save the results"
@@ -187,7 +187,8 @@ public class SimulaEditor extends JFrame {
     	           +"\nSimula sample programs ready to be compiled."
     	           +"\nYou may open them by the menu item [File][Open]"
     	           +"\n"
-    			   +"\nExecutable .jar files are stored in the subdirectory /bin"
+    			   +"\nExecutable .jar files are normally stored in the"
+    	           +"\nsubdirectory <CurrentWorkspace>/bin"
                    +"\n";
     	String browse="Browse for another Workspace Directory";
     	Choice workspaceChooser = new Choice();
@@ -207,7 +208,8 @@ public class SimulaEditor extends JFrame {
 			        //Util.println("itemStateChanged: CALL FILE CHOOSER on"+e.getItem());  
 			        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home",Global.currentWorkspace.toString()));
 			        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			        int answer = fileChooser.showOpenDialog(SimulaEditor.this);
+//			        int answer = fileChooser.showOpenDialog(SimulaEditor.this);
+			        int answer = fileChooser.showOpenDialog(null);
 			        if (answer == JFileChooser.APPROVE_OPTION) {
 			        	String anotherWorkspace=fileChooser.getSelectedFile().toString();
 			        	workspaceChooser.remove(browse);  
@@ -231,8 +233,23 @@ public class SimulaEditor extends JFrame {
         String selected=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
     	Global.setCurrentWorkspace(new File(selected));
         //Util.println("doSelectWorkspace: selected="+selected);
+	    Global.trySetOutputDir(new File(Global.currentWorkspace,"bin"));
     }
 
+    // ****************************************************************
+    // *** doSelectOutputDir
+    // ****************************************************************
+    static void doSelectOutputDir() {
+    	if (Option.TRACING); Util.println("SimulaEditor.doSelectOutputDir: ");
+        JFileChooser fileChooser = new JFileChooser(Global.outputDir);
+        fileChooser.setDialogTitle("Select Output Directory");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int answer = fileChooser.showOpenDialog(null);
+        if (answer == JFileChooser.APPROVE_OPTION) {
+        	Global.outputDir=fileChooser.getSelectedFile();
+        }
+    }
+    
     // ****************************************************************
     // *** doCheckForNewVersion
     // ****************************************************************

@@ -85,9 +85,12 @@ public final class SimulaCompiler {
 		
 		if(Option.TRACING) Util.message("Compiling: \""+inputFileName+"\"");
 		
-		if(Option.outputDir==null)
-		     Global.outputDir=new File(Global.sourceFileDir,"bin");	
-		else Global.outputDir=Option.outputDir;
+//		if(Option.outputDir==null) {
+//		     Global.outputDir=new File(Global.sourceFileDir,"bin");	
+//		} else Global.outputDir=Option.outputDir;
+		if(Global.outputDir==null) {
+		     Global.trySetOutputDir(new File(Global.sourceFileDir,"bin"));
+		}
 
 		// Get Temp Directory:
 		Global.simulaTempDir=Global.getTempFileDir("simula/");
@@ -443,18 +446,33 @@ public final class SimulaCompiler {
 		}
 		return(exitValue);
 	}
-	
+
 	// ***************************************************************
 	// *** CREATE .jar FILE
 	// ***************************************************************
 	private String createJarFile(final ProgramModule program) throws IOException {
 		if (Option.TRACING)	Util.message("BEGIN Create .jar File");
 		jarFile = new File(Global.outputDir,program.getIdentifier()+".jar");
+		jarFile.getParentFile().mkdirs();
+//		jarFile.createNewFile();
+		
+//		Global.outputDir.mkdirs();
+//		Global.isFileWriteable(Global.outputDir);
+//		jarFile.createNewFile();
+//		if(!Global.isFileWriteable(jarFile)) {
+//			Util.error("Can't write output  to: \"" + jarFile+"\"");
+//			Util.warning("Can't write output  to: \"" + jarFile+"\"");
+//			String USER_HOME=System.getProperty("user.home");
+//			File outputDir=new File(USER_HOME,"bin");
+//			outputDir.mkdirs();
+//			jarFile = new File(outputDir,program.getIdentifier()+".jar");
+//			Util.warning("Output file changed to: \"" + jarFile+"\"");
+//		}
 
 		if (!program.isExecutable()) {
 			Util.warning("Separate Compiled Module is written to: \"" + jarFile+"\"");
 		}
-		jarFile.getParentFile().mkdirs();
+//		jarFile.getParentFile().mkdirs();
 		Manifest manifest = new Manifest();
 		mainEntry = Global.packetName + '/' + program.getIdentifier();
 		mainEntry = mainEntry.replace('/', '.');

@@ -15,11 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -65,15 +62,15 @@ public final class SimulaExtractor extends JFrame {
     private static final String simulaInstallSubdirectory = "Simula"+File.separatorChar+simulaReleaseID;
 	private static final String programAndVersion = "Simula 1.0";
 	private static File INSTALL_DIR; // e.g. C:\Users\Øystein\Simula\Simula-1.0
-	private static File BATCH_FILE;
+//	private static File BATCH_FILE;
 	private static String setupDated;
 	private static ImageIcon simulaIcon;
 	
 	private static String simulaJarFileName;
 	private static String targetDir;
 	private static int nExtractedFiles;
-	private static boolean compilerBatWasWritten;
-	private static boolean desktopEntryWasWritten;
+//	private static boolean compilerBatWasWritten;
+//	private static boolean desktopEntryWasWritten;
 	
 	private String myClassName;
 	private JTextField installDirField;
@@ -97,28 +94,30 @@ public final class SimulaExtractor extends JFrame {
 		if(jarFileName==null) jarFileName = "C:/GitHub/Binaries/setup.jar"; // for TESTING ONLY
 		
 		boolean ok=simulaExtractor.extract(jarFileName);
-		askWriteDesktopLinks();
-		if(!desktopEntryWasWritten) askWriteCompilerBat();
-		askRunSimula();
+//		askWriteDesktopLinks();
+//		if(!desktopEntryWasWritten) askWriteCompilerBat();
 		updateProperties();
+		askRunSimula();
+//		updateProperties();
 		if(console!=null) {
 			if(ok) {
 			    console.write("=====================================================\n");
-			    console.write("Simula was successfully installed\n\n");
+			    console.write("Simula was successfully installed in\n\n");
+			    console.write("       "+INSTALL_DIR+"\n\n");
 			    
-			    if(compilerBatWasWritten) {
-			    	console.write("To activate Simula you may use the following command:\n\n");
-			    	console.write(" "+BATCH_FILE+"\n\n");
-			    	boolean windows=(File.separatorChar)=='\\';
-			    	if(windows) {
-			    		console.write("You may move the batch-file to any directory.\n");
-			    	} else {
-			    		console.write("You may move the shell script to any directory.\n");
-			    	}
-			    }
-			    if(desktopEntryWasWritten) {
-			    	console.write("Use DesktopEntry 'Simula' to activate Simula\n");			    	
-			    }
+//			    if(compilerBatWasWritten) {
+//			    	console.write("To activate Simula you may use the following command:\n\n");
+//			    	console.write(" "+BATCH_FILE+"\n\n");
+//			    	boolean windows=(File.separatorChar)=='\\';
+//			    	if(windows) {
+//			    		console.write("You may move the batch-file to any directory.\n");
+//			    	} else {
+//			    		console.write("You may move the shell script to any directory.\n");
+//			    	}
+//			    }
+//			    if(desktopEntryWasWritten) {
+//			    	console.write("Use DesktopEntry 'Simula' to activate Simula\n");			    	
+//			    }
 			}
 		while(true) Thread.yield();
 		} else System.exit(ok ? 0 : 1);
@@ -147,65 +146,68 @@ public final class SimulaExtractor extends JFrame {
 		}
 	}
 	
-	// ***************************************************************
-	// *** askWriteCompilerBat
-	// ***************************************************************
-	private static void askWriteCompilerBat() {
-		boolean windows=(File.separatorChar)=='\\';
-		String text;
-		String fileName;
-		if(windows) {
-			fileName="RunSimulaEditor.bat";
-			text="CHCP 65001\r\n" +  // Let Windows recognize UTF-8
-			     "rem *** Call Simula Editor\r\n" + 
-				 "java -jar "+INSTALL_DIR+"\\simula.jar\r\n" + 
-//				 "cd "+INSTALL_DIR+"\r\n"+
-//				 "java -jar simula.jar\r\n" + 
-				 "pause\r\n";
-		} else {
-			fileName="RunSimulaEditor.sh";
-			text="printf \"*** Call Simula Editor\\n\"\n" + 
-                 "pushd "+INSTALL_DIR+"\n"+
-				 "java -jar simula.jar\n" + 
-                 "popd\n"+
-				 "read -p \"Press enter to continue\"\n";
-		}
-		if(DEBUG) System.out.println("INSTALL_DIR="+INSTALL_DIR);
-		if(DEBUG) System.out.println("fileName="+fileName);
-		if(DEBUG) System.out.println("text="+text);
-//		File file=new File(path+'/'+fileName);
-		BATCH_FILE=new File(INSTALL_DIR,fileName);
-		if(windows) {
-			String USER_HOME=System.getProperty("user.home");
-			File desktop=new File(USER_HOME,"desktop");
-			BATCH_FILE=new File(desktop,fileName);
-			
-		}
-		if(DEBUG) System.out.println("BATCH_FILE="+BATCH_FILE);
-		String msg="Do you want\n   '"+fileName+"'\nplaced on your desktop ?";
-		int res=optionDialog(msg,"Question",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, "Yes", "No");
-		if(res==0) try {
-			if(console!=null) console.write("Write: "+BATCH_FILE+'\n');
-			try { BATCH_FILE.setExecutable(true,false); // Sets everybody's execute permission 
-			} catch(SecurityException e) {}
-			FileOutputStream oupt=new FileOutputStream(BATCH_FILE);
-			Writer writer=new OutputStreamWriter(oupt,Charset.forName("UTF-8"));
-			writer.write(text);
-			writer.flush();
-			writer.close();
-			compilerBatWasWritten=true;
-		} catch(IOException e) { e.printStackTrace(); }
-	}
+//	// ***************************************************************
+//	// *** askWriteCompilerBat
+//	// ***************************************************************
+//	private static void askWriteCompilerBat() {
+//		boolean windows=(File.separatorChar)=='\\';
+//		String text;
+//		String fileName;
+//		if(windows) {
+//			fileName="RunSimulaEditor.bat";
+//			text="CHCP 65001\r\n" +  // Let Windows recognize UTF-8
+//			     "rem *** Call Simula Editor\r\n" + 
+//				 "java -jar "+INSTALL_DIR+"\\simula.jar\r\n" + 
+////				 "cd "+INSTALL_DIR+"\r\n"+
+////				 "java -jar simula.jar\r\n" + 
+//				 "pause\r\n";
+//		} else {
+//			fileName="RunSimulaEditor.sh";
+//			text="printf \"*** Call Simula Editor\\n\"\n" + 
+//                 "pushd "+INSTALL_DIR+"\n"+
+//				 "java -jar simula.jar\n" + 
+//                 "popd\n"+
+//				 "read -p \"Press enter to continue\"\n";
+//		}
+//		if(DEBUG) System.out.println("INSTALL_DIR="+INSTALL_DIR);
+//		if(DEBUG) System.out.println("fileName="+fileName);
+//		if(DEBUG) System.out.println("text="+text);
+////		File file=new File(path+'/'+fileName);
+////		BATCH_FILE=new File(INSTALL_DIR,fileName);
+////		if(windows) {
+//			String USER_HOME=System.getProperty("user.home");
+//			//File desktop=new File(USER_HOME,"desktop");
+//			File desktop=new File(USER_HOME,"Desktop"); //  ~/Desktop;
+//			BATCH_FILE=new File(desktop,fileName);
+////		}
+//		if(DEBUG) System.out.println("BATCH_FILE="+BATCH_FILE);
+//		String msg="Do you want\n   '"+fileName+"'\nplaced on your desktop ?";
+//		int res=optionDialog(msg,"Question",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, "Yes", "No");
+//		if(res==0) try {
+//			if(console!=null) console.write("Write: "+BATCH_FILE+'\n');
+//			try { BATCH_FILE.setExecutable(true,false); // Sets everybody's execute permission 
+//			} catch(SecurityException e) {}
+//			FileOutputStream oupt=new FileOutputStream(BATCH_FILE);
+//			Writer writer=new OutputStreamWriter(oupt,Charset.forName("UTF-8"));
+//			writer.write(text);
+//			writer.flush();
+//			writer.close();
+//			compilerBatWasWritten=true;
+//		} catch(IOException e) { 
+//			JOptionPane.showMessageDialog(null, "SORRY: Can't write " + BATCH_FILE, "Error", JOptionPane.ERROR_MESSAGE);
+//			e.printStackTrace();
+//		}
+//	}
 	
-	// ***************************************************************
-	// *** writeDesktopLinks
-	// ***************************************************************
-	private static void askWriteDesktopLinks() {
-		boolean windows=(File.separatorChar)=='\\';
-		//if(windows) createSymbolicLink(); // TODO: Test dette med Java 13
-		//createHardLink();
-		if(!windows) askWriteDesktopEntry();
-	}
+//	// ***************************************************************
+//	// *** writeDesktopLinks
+//	// ***************************************************************
+//	private static void askWriteDesktopLinks() {
+//		boolean windows=(File.separatorChar)=='\\';
+//		//if(windows) createSymbolicLink(); // TODO: Test dette med Java 13
+//		//createHardLink();
+//		if(!windows) askWriteDesktopEntry();
+//	}
 	
 //	// ***************************************************************
 //	// *** createSymbolicLink  --  Used on Windows
@@ -254,50 +256,54 @@ public final class SimulaExtractor extends JFrame {
 //		}
 //	}
 	
-	// ***************************************************************
-	// *** askWriteDesktopEntry
-	// ***************************************************************
-	// *** See: https://wiki.archlinux.org/index.php/desktop_entries
-	// ***************************************************************
-	private static void askWriteDesktopEntry() {
-//		boolean windows=(File.separatorChar)=='\\';
-		String USER_HOME=System.getProperty("user.home");
-		String text;
-//		File iconFile=new File(INSTALL_DIR,"icons/sim.png");    // The name of the icon that will be used to display this entry
-		text="[Desktop Entry]\n" + 
-				"Encoding=UTF-8\n" +
-				"Type=Application\n" +     // The type as listed above
-				"Version=1.0\n" +          // The version of the desktop entry specification to which this file complies
-				"Name=Simula\n" +          // The name of the application
-				"Path="+INSTALL_DIR+"\n" + // The path to the folder in which the executable is run
-				"Exec=java -jar simula.jar\n" +     // The executable of the application, possibly with arguments.
-//				"Icon="+iconFile+"\n" +     // The name of the icon that will be used to display this entry
-				"Icon=icons/sim.png\n" +    // The name of the icon that will be used to display this entry
-				"Terminal=false\n" +     // Describes whether this application needs to be run in a terminal or not
-				"Categories=Education;Languages;Simula"; // Describes the categories in which this entry should be shown
-		File apps=new File(USER_HOME,".local/share/applications");
-		//apps.mkdirs();
-		File file=new File(apps,"Simula.desktop");
-
-		if(DEBUG) System.out.println("fullFilePath="+file);
-		if(DEBUG) System.out.println("------ DESKTOP ENTRY ------\n"+text);
-		String msg="Do you want DesktopEntry\n      'Simula'\nplaced on your desktop ?";
-		int res=optionDialog(msg,"Question",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, "Yes", "No");
-		if(res==0) try {
-			if(console!=null) console.write("Write: "+file+'\n');
-//			try { boolean executable=file.setExecutable(true,false); // Sets everybody's execute permission 
-//			} catch(SecurityException e) {}
-			FileOutputStream oupt=new FileOutputStream(file);
-			Writer writer=new OutputStreamWriter(oupt,Charset.forName("UTF-8"));
-			writer.write(text);
-			writer.flush();
-			writer.close();
-			desktopEntryWasWritten=true;
-		} catch(IOException e) {} // e.printStackTrace(); }
-
-		// På Unix'type spør først og evt. gjør dette:
-		// sudo mv ~/.local/share/applications/Simula.desktop /usr/share/applications/
-	}
+//	// ***************************************************************
+//	// *** askWriteDesktopEntry
+//	// ***************************************************************
+//	// *** See: https://wiki.archlinux.org/index.php/desktop_entries
+//	// ***************************************************************
+//	private static void askWriteDesktopEntry() {
+////		boolean windows=(File.separatorChar)=='\\';
+//		String USER_HOME=System.getProperty("user.home");
+//		String text;
+////		File iconFile=new File(INSTALL_DIR,"icons/sim.png");    // The name of the icon that will be used to display this entry
+//		text="[Desktop Entry]\n" + 
+//				"Encoding=UTF-8\n" +
+//				"Type=Application\n" +     // The type as listed above
+//				"Version=1.0\n" +          // The version of the desktop entry specification to which this file complies
+//				"Name=Simula\n" +          // The name of the application
+//				"Path="+INSTALL_DIR+"\n" + // The path to the folder in which the executable is run
+//				"Exec=java -jar simula.jar\n" +     // The executable of the application, possibly with arguments.
+////				"Icon="+iconFile+"\n" +     // The name of the icon that will be used to display this entry
+//				"Icon=icons/sim.png\n" +    // The name of the icon that will be used to display this entry
+//				"Terminal=false\n" +     // Describes whether this application needs to be run in a terminal or not
+//				"Categories=Education;Languages;Simula"; // Describes the categories in which this entry should be shown
+//		//File apps=new File(USER_HOME,".local/share/applications");
+//		File apps=new File(USER_HOME,"Desktop"); //  ~/Desktop;
+//		//apps.mkdirs();
+//		File file=new File(apps,"Simula.desktop");
+//
+//		if(DEBUG) System.out.println("fullFilePath="+file);
+//		if(DEBUG) System.out.println("------ DESKTOP ENTRY ------\n"+text);
+//		String msg="Do you want DesktopEntry\n      'Simula'\nplaced on your desktop ?";
+//		int res=optionDialog(msg,"Question",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, "Yes", "No");
+//		if(res==0) try {
+//			if(console!=null) console.write("Write: "+file+'\n');
+////			try { boolean executable=file.setExecutable(true,false); // Sets everybody's execute permission 
+////			} catch(SecurityException e) {}
+//			FileOutputStream oupt=new FileOutputStream(file);
+//			Writer writer=new OutputStreamWriter(oupt,Charset.forName("UTF-8"));
+//			writer.write(text);
+//			writer.flush();
+//			writer.close();
+//			desktopEntryWasWritten=true;
+//		} catch(IOException e) {
+//			JOptionPane.showMessageDialog(null, "SORRY: Can't write " + file, "Error", JOptionPane.ERROR_MESSAGE);
+//			e.printStackTrace();
+//		}
+//
+//		// På Unix'type spør først og evt. gjør dette:
+//		// sudo mv ~/.local/share/applications/Simula.desktop /usr/share/applications/
+//	}
 	
 	// ***************************************************************
 	// *** updateProperties
