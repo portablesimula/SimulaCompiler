@@ -1,0 +1,53 @@
+begin
+
+Class A(p1,p2); integer p1; real p2;
+  begin
+    integer lim=40;
+    text Array TA(1:lim);
+    text T="Constant";
+    integer i;
+    real r;
+    i:=p1;
+    inner;
+    r:=p2;
+  end;
+  
+A Class B(p3); long real p3;
+begin
+      array RA(1:lim);
+      RA(14):=r;
+      inner;
+      r:=RA(14);
+end;
+  
+  Procedure callFP(F); procedure F;
+  begin
+     F(7,9);
+  end;
+  
+  
+  integer Procedure P(p1,p2);
+    integer p1; real p2;
+  begin
+    text Array TA(1:40);
+    integer i;
+    P:=p1;
+    i:=6;
+  end;
+
+  
+  integer i;
+  ref(A) x;
+  i:=P(4,3.14); 
+  callFP(P);
+  x:-new B(1,2,3);
+
+
+  ! Sub-block;
+  begin
+    text Array TA(1:40);
+    integer i;
+    i:=6;
+  end;
+  
+end;  

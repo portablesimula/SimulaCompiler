@@ -121,19 +121,37 @@ public class FILE$ extends CLASS$ {
 	}
 	
 	// trySelectFile
+//	protected File trySelectFile(final String fileName) {
+//		if(!(fileName.contains("/") || fileName.contains("\\"))) {
+//			String dir=System.getProperty("user.dir",null);
+//			// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
+//			if(!(dir.endsWith("/") || dir.endsWith("\\"))) dir=dir+'/';
+//			File tryFile=new File(dir+fileName);
+//			//System.out.println("File$.trySelectFile: with user.dir: "+tryFile);
+//			if(tryFile.exists()) return(tryFile);
+//			LOOP:for(int i=1;i<10;i++) {
+//				dir=RT.getProperty("simula.workspace."+i,null);
+//				if(dir==null) break LOOP;
+//				if(!(dir.endsWith("/") || dir.endsWith("\\"))) dir=dir+'/';
+//				tryFile=new File(dir+fileName);
+//				//System.out.println("File$.trySelectFile: with workspace"+i+": "+tryFile);
+//				if(tryFile.exists()) return(tryFile);
+//			}
+//		}
+//		return(popupFileSelector("Can't Open "+fileName+", select another"));
+//	}
 	protected File trySelectFile(final String fileName) {
-		if(!(fileName.contains("/") || fileName.contains("\\"))) {
-			String dir=System.getProperty("user.dir",null);
-			// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
-			if(!(dir.endsWith("/") || dir.endsWith("\\"))) dir=dir+'/';
-			File tryFile=new File(dir+fileName);
+		File file=new File(fileName);
+		if(!file.isAbsolute()) {
+			File dir=new File(System.getProperty("user.dir",null));
+			File tryFile=new File(dir,fileName);
 			//System.out.println("File$.trySelectFile: with user.dir: "+tryFile);
 			if(tryFile.exists()) return(tryFile);
 			LOOP:for(int i=1;i<10;i++) {
-				dir=RT.getProperty("simula.workspace."+i,null);
-				if(dir==null) break LOOP;
-				if(!(dir.endsWith("/") || dir.endsWith("\\"))) dir=dir+'/';
-				tryFile=new File(dir+fileName);
+				String workspace=RT.getProperty("simula.workspace."+i,null);
+				if(workspace==null) break LOOP;
+				dir=new File(workspace);
+				tryFile=new File(dir,fileName);
 				//System.out.println("File$.trySelectFile: with workspace"+i+": "+tryFile);
 				if(tryFile.exists()) return(tryFile);
 			}

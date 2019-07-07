@@ -355,7 +355,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		JavaModule.debug("// ProcedureDeclaration: BlockKind=" + blockKind + ", BlockLevel=" + blockLevel
 					+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
-		JavaModule.code("public int prefixLevel() { return(0); }");
+//		JavaModule.code("public int prefixLevel() { return(0); }");
 		if (isQPSystemBlock())
 			JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
 		if (blockKind == BlockKind.Procedure && type != null) {

@@ -87,13 +87,8 @@ public abstract class RTObject$ {
 	 */
 	RTObject$ DL$; // Dynamic Link
 
-	/**
-	 * Static block level.
-	 */
-	int BL$;
-
-	private static int objSEQU = 0; // Used by TRACE-methods
-	private int SEQU; // Used by TRACE-methods
+//	private static int objSEQU = 0; // Used by TRACE-methods
+//	private int SEQU; // Used by TRACE-methods
 	// ************************************************************
 	// *** Constructor
 	// ************************************************************
@@ -105,16 +100,10 @@ public abstract class RTObject$ {
 	 */
 	public RTObject$(final RTObject$ SL) {
 		if (SL != null) {
-			this.BL$ = SL.BL$ + 1;
 			this.SL$ = SL;
-
-			// if (RT.USE_LOOM) {
 			this.CONT$ = Continuation.getCurrentContinuation(continuationScope);
-			// } else {
-			// this.THREAD$ = Thread.currentThread();
-			// }
 
-			this.SEQU = objSEQU++; // Used by TRACE-methods
+//			this.SEQU = objSEQU++; // Used by TRACE-methods
 		}
 	}
 
@@ -1319,15 +1308,14 @@ public abstract class RTObject$ {
 	public String edObjectIdent() {
 		StringBuilder s = new StringBuilder();
 		s.append(this.getClass().getSimpleName());
-		if (SEQU > 0)
-			s.append('#').append(SEQU);
+//		if (SEQU > 0) s.append('#').append(SEQU);
+		s.append('#').append(this.hashCode());
 		return (s.toString());
 	}
 
 	public String edObjectAttributes() {
 		StringBuilder s = new StringBuilder();
 		s.append(edObjectIdent());
-		s.append(" BlockLevel=").append(BL$);
 		s.append(" SL=").append((SL$ == null) ? "null" : SL$.edObjectIdent());
 		s.append(" DL=").append((DL$ == null) ? "null" : DL$.edObjectIdent());
 		s.append(" STATE=").append(STATE$);

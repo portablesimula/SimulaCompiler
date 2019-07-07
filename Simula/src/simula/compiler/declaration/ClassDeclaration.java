@@ -702,7 +702,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 					+ prefixLevel() + ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false")
 					+ ", detachUsed=" + ((detachUsed) ? "true" : "false"));
-		JavaModule.code("public int prefixLevel() { return(" + prefixLevel() + "); }");
+//		JavaModule.code("public int prefixLevel() { return(" + prefixLevel() + "); }");
 		if (isQPSystemBlock())
 			JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
 		if (isDetachUsed())

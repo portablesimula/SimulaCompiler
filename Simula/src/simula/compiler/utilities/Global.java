@@ -134,13 +134,22 @@ public final class Global {
 //		if(subDir.startsWith("/") || subDir.startsWith("\\")) subDir=subDir.substring(1);
 		File tempFileDir=new File(tmp,subDir);
 		tempFileDir.mkdirs();
+		setAccessRWX(tempFileDir);
 		return(tempFileDir);
+	}
+	
+	public static void setAccessRWX(File dir) {
+		dir.setReadable(true,false);   // Readable for all users
+		dir.setWritable(true,false);   // Writable for all users
+		dir.setExecutable(true,false); // Executable for all users
 	}
 	
 	public static void trySetOutputDir(File dir) {
 		dir.mkdirs();
 		if(dir.canWrite()) Global.outputDir=dir;
-		else Global.outputDir=getTempFileDir("simulaEditor/bin");
+		else {
+			Global.outputDir=getTempFileDir("simulaEditor/bin");
+		}
 		//System.out.println("Global.trySetOutputDir: dir="+dir+", Global.outputDir="+Global.outputDir);
 	}
 	

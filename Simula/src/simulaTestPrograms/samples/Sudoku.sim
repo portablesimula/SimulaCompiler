@@ -60,8 +60,7 @@ exit:
     integer i, j; 
     
     outtext( "PUZZLE INPUT:" ); outimage; 
-    inspect new infile( "SudokuDifficult.txt" ) do begin 
-%    inspect new infile( "C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/error/SudokuDifficult.txt" ) do begin 
+    inspect new infile( "data/SudokuDifficult.txt" ) do begin 
       Open( Blanks(80) ); 
       for i := 1 step 1 until 9 do begin  
         for j := 1 step 1 until 9 do 

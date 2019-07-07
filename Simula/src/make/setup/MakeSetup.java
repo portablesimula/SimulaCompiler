@@ -37,7 +37,7 @@ import simula.compiler.utilities.Util;
 public final class MakeSetup {
 	
 //	private final static int EXPLICIT_REVISION = -1; // Normal update
-	private final static int EXPLICIT_REVISION = 18;
+	private final static int EXPLICIT_REVISION = 19;
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Simula-1.0";
@@ -155,6 +155,7 @@ public final class MakeSetup {
 		deleteFiles(RELEASE_SAMPLES);
 //		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples "+RELEASE_SAMPLES+" /E");
 		copyFolder(new File(ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples"), new File(RELEASE_SAMPLES), false);
+		copyFolder(new File(ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples\\data"), new File(RELEASE_SAMPLES+"\\data"), false);
 	}
 	
 	// ***************************************************************

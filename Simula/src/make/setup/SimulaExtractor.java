@@ -318,7 +318,7 @@ public final class SimulaExtractor extends JFrame {
 		} else {
 			// Compatibility: TRY TO READ OLD SIMULA PROPERTY FILE FROM <user.home>/.simula
 			String USER_HOME=System.getProperty("user.home");
-			loadPropertiesFrom=new File(USER_HOME,".siimula/simulaProperties.xml");
+			loadPropertiesFrom=new File(USER_HOME,".simula/simulaProperties.xml");
 		}
 		if(loadPropertiesFrom.exists()) {
 			if(DEBUG) System.out.println("SimulaCompiler: loadPropertiesFrom="+loadPropertiesFrom);

@@ -48,22 +48,28 @@ public final class TestCompiler {
 		// String name="/simprogs/HegnaNRK.sim";
 		// String name="/simprogs/LIFT90.sim";
 		// String name="/simprogs/Matte.sim";
+		// String name="/simprogs/NewDocking.sim";
 		// String name="/simprogs/QueDemo.sim";
 		// String name="/simprogs/TRAFFIC.sim";
+		// String name="/simprogs/SudokuPuzzle.sim";
+		// String name="/simprogs/SudokuPuzzleFlow.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
 		// String name="/samples/AnimationTest.sim";
 		// String name="/samples/Atkins.sim";
 		// String name="/samples/Dates.sim";
 		// String name="/samples/DatesTest.sim";
-		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HelloWorld.sim";
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/JensensDevice.sim";
-		 String name="/samples/PrimeUnder.sim";
+		// String name="/samples/PrimeUnder.sim";
 		// String name="/samples/Sudoku.sim";
+		 String name="/samples/SudokuPuzzle.sim";
 		// String name="/samples/TQueens.sim";
+
+		// *** SIMULA DESIGN EXAMPLES
+		// String name="/design/Test.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER FRA KAREL
 		// String name="/Karel/Collatz.sim";
