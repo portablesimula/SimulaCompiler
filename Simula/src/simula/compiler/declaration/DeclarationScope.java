@@ -30,7 +30,7 @@ public abstract class DeclarationScope extends Declaration {
 		declaredIn = Global.currentScope;
 		Global.currentScope = this;
 		if (declaredIn != null)	sourceBlockLevel = declaredIn.sourceBlockLevel + 1;
-		// Util.BREAK("DeclarationScope("+this.edJavaClassName()+"): sourceBlockLevel="+sourceBlockLevel);
+		//if("pb".equals(ident)) Util.BREAK("NEW DeclarationScope("+this.edJavaClassName()+"): sourceBlockLevel="+sourceBlockLevel);
 	}
 
 	// ***********************************************************************************************
@@ -59,6 +59,28 @@ public abstract class DeclarationScope extends Declaration {
     	}
     	return(meaning);
     }
+
+	// ***********************************************************************************************
+	// *** Utility: findProcedure -- Follow Static Chain Looking for a Procedure named 'identifier'
+	// ***********************************************************************************************
+	public ProcedureDeclaration findProcedure(final String identifier) {
+		// Util.BREAK("DeclarationScope("+this.identifier+").findProcedure("+identifier+"):");
+		DeclarationScope scope=this;
+		while(scope!=null) {
+			// Util.BREAK("DeclarationScope("+this.identifier+").findProcedure("+identifier+"): CHECKING "+this);
+			// Util.BREAK("DeclarationScope.findProcedure("+identifier+"): CHECKING "+scope+", QUAL="+scope.getClass().getSimpleName());
+			if(identifier.equalsIgnoreCase(scope.identifier)) {
+				if(scope instanceof ProcedureDeclaration) {
+					// Util.BREAK("DeclarationScope("+this.identifier+").findProcedure("+identifier+"): GOT IT !!!  PROCEDURE="+scope);
+		    		return((ProcedureDeclaration)scope);
+				}
+				// Util.BREAK("DeclarationScope("+this.identifier+").findProcedure("+identifier+"): GOT WRONG ONE, RESULT="+scope);
+	    		return(null);
+			}
+			scope=scope.declaredIn;
+		}
+		return(null);
+	}
 
 //    //***********************************************************************************************
 //    //*** Utility: findThis  --  Follow Static Chain Looking for a Class named 'identifier'

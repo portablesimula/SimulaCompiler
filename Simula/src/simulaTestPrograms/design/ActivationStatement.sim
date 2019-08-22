@@ -1,0 +1,21 @@
+% ActivationStatement
+Simulation begin
+   ref(Process) x,y;
+
+   activate x;
+   activate x delay 1.34;   
+   activate x delay 1.34 prior;
+   activate x at 13.7;
+   activate x at 13.7 prior;
+   activate x before y;
+   activate x after y;
+
+   reactivate x;
+   reactivate x delay 1.34;   
+   reactivate x delay 1.34 prior;
+   reactivate x at 13.7;
+   reactivate x at 13.7 prior;
+   reactivate x before y;
+   reactivate x after y;
+
+end;      

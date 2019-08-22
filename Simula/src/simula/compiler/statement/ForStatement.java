@@ -174,6 +174,7 @@ public final class ForStatement extends Statement {
 		public void doChecking() {
 			if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ForListElement("+this+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		    expr1.doChecking(); 
+			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
 		}
 		public String edCode(final String classIdent) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
@@ -194,6 +195,8 @@ public final class ForStatement extends Statement {
 			expr1.doChecking();
 			expr2.doChecking(); if(expr2.type!=Type.Boolean) Util.error("While "+expr2+" is not of type Boolean");
 			expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
+			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
+			expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
 		}
 		public String edCode(final String classIdent) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
@@ -210,17 +213,22 @@ public final class ForStatement extends Statement {
 	private class StepUntilElement extends ForListElement {
 		Expression expr2;
 	    Expression expr3;
-		public StepUntilElement(final Expression expr1,final Expression expr2,final Expression expr3)
-		{ super(expr1); this.expr2=expr2; this.expr3=expr3; }  
+		public StepUntilElement(final Expression expr1,final Expression expr2,final Expression expr3) {
+			super(expr1); this.expr2=expr2; this.expr3=expr3;
+			Util.BREAK("ForStatement.NEW StepuntilElement= "+this);
+			if(expr1==null) Util.error("Missing expression before 'step' in ForStatement");
+			if(expr2==null) Util.error("Missing expression after 'step' in ForStatement");
+			if(expr3==null) Util.error("Missing expression after 'until' in ForStatement");
+		}  
 		public void doChecking() {
 			expr1.doChecking(); expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
 			expr2.doChecking(); expr2=TypeConversion.testAndCreate(controlVariable.type,expr2);
 			expr3.doChecking(); expr3=TypeConversion.testAndCreate(controlVariable.type,expr3);
-		}
-		public String edCode(final String classIdent) {
 			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
 			expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
 			expr3.backLink=ForStatement.this; // To ensure RESULT$ from functions
+		}
+		public String edCode(final String classIdent) {
 			return("new StepUntil("+edControlVariableByName(classIdent)
 	  	                     +",new NAME$<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
 	  	                     +",new NAME$<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"

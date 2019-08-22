@@ -7,8 +7,6 @@
  */
 package simula.compiler.expression;
 
-import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.Parameter;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Type.ConversionKind;
@@ -62,8 +60,9 @@ public final class TypeConversion extends Expression {
 	}
 	
 	// Is redefined in Variable, RemoteVariable and TypeConversion
-	public Variable getWriteableVariable()
-	{	return(expression.getWriteableVariable()); }
+	public Variable getWriteableVariable() {
+		return(expression.getWriteableVariable());
+	}
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
@@ -83,30 +82,46 @@ public final class TypeConversion extends Expression {
 		return(false);  
 	  }
 
-	public String toJavaCode() {
+	  public String toJavaCode() {
+		  ASSERT_SEMANTICS_CHECKED(this);
+		  // Util.BREAK("TypeConversion.toJavaCode: "+expression.type+" ==> "+type);
+		  String evaluated = expression.toJavaCode();
+		  if (type == Type.Integer) {
+			  Type fromType = expression.type;
+			  if (fromType == Type.Real || fromType == Type.LongReal)
+				  return("(int)Math.round(" + evaluated + ")");
+		  }
+		  return ("((" + type.toJavaType() + ")(" + evaluated + "))");
+	  }
+
+	public String OLD_toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		// Util.BREAK("TypeConversion.toJavaCode: "+expression.type+" ==> "+type);
 		String evaluated = expression.toJavaCode();
 		String cast = type.toJavaType();
-		if (expression instanceof Variable) {
-			Variable var = (Variable) expression;
-			Declaration declaredAs = var.meaning.declaredAs;
-			// Util.BREAK("TypeConversion.toJavaCode: declaredAs="+declaredAs+", qual="+declaredAs.getClass().getSimpleName());
-			if (declaredAs instanceof Parameter) {
-				Parameter par = (Parameter) declaredAs;
-				Type type = par.type;
-				Parameter.Kind kind = par.kind;
-				// Util.BREAK("TypeConversion.toJavaCode: type="+type+", kind="+kind);
-				if (kind == Parameter.Kind.Procedure) {
-					evaluated = par.externalIdent + ".get().CPF().RESULT$()";
-					if (type.isArithmeticType()) return (cast + "Value(" + evaluated + ")");
-				}
+//		if (expression instanceof Variable) {
+//			Variable var = (Variable) expression;
+//			Declaration declaredAs = var.meaning.declaredAs;
+//			// Util.BREAK("TypeConversion.toJavaCode: declaredAs="+declaredAs+", qual="+declaredAs.getClass().getSimpleName());
+//			if (declaredAs instanceof Parameter) {
+//				Parameter par = (Parameter) declaredAs;
+//				Type type = par.type;
+//				Parameter.Kind kind = par.kind;
+//				// Util.BREAK("TypeConversion.toJavaCode: type="+type+", kind="+kind+", evaluated="+evaluated);
+//				if (kind == Parameter.Kind.Procedure) {
+//					//evaluated = par.externalIdent + ".get().CPF().RESULT$()";
+//					if (type.isArithmeticType()) return (cast + "Value(" + evaluated + ")");
+//				}
+//			}
+//		}
+		if (type.isArithmeticType()) {
+			if (type == Type.Integer) {
+				Type fromType = expression.type;
+				if (fromType == Type.Real || fromType == Type.LongReal)
+//					evaluated = "(int)Math.round(" + evaluated + ")";
+					return("(int)Math.round(" + evaluated + ")");
 			}
-		}
-		if (type == Type.Integer) {
-			Type fromType = expression.type;
-			if (fromType == Type.Real || fromType == Type.LongReal)
-				evaluated = "(int)Math.round(" + evaluated + ")";
+//			return (cast + "Value(" + evaluated + ")");
 		}
 		return ("((" + cast + ")(" + evaluated + "))");
 	}

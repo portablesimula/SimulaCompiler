@@ -223,7 +223,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		if (this.isMainModule)
 			JavaModule.code("BPRG(\"" + identifier + "\");");
 		JavaModule.debug("// Declaration Code");
-		JavaModule.debug("TRACE_BEGIN_DCL$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		for (Declaration decl : declarationList) decl.doDeclarationCoding();
 		JavaModule.code("}");
 	}

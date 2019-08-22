@@ -46,6 +46,7 @@ public abstract class Declaration extends SyntaxClass {
 		//Util.BREAK("Declaration.modifyIdentifier: "+identifier+" ==> "+newIdentifier);
 		this.identifier=newIdentifier;
 	    checkAlreadyDefined();
+		//Util.BREAK("Declaration.modifyIdentifier: "+identifier+" ==> "+newIdentifier+", IN DECLARATION: "+this);
 	}
 	  
 	public ProtectedSpecification isProtected; // Set during Checking

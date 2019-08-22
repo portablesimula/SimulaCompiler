@@ -175,9 +175,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		Util.ASSERT(labelList.isEmpty(), "Invariant");
 		Global.currentScope = this;
 		JavaModule.code("{");
-		JavaModule.debug("TRACE_BEGIN_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		for (Statement stm : statements) stm.doJavaCoding();
-		JavaModule.debug("TRACE_END_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		JavaModule.code("}");
 		Global.currentScope = declaredIn;
 	}
@@ -231,7 +229,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		JavaModule.code("BBLK();");
 		if (blockKind == BlockKind.SimulaProgram) JavaModule.code("BPRG(\"" + identifier + "\");");
 		JavaModule.debug("// Declaration Code");
-		JavaModule.debug("TRACE_BEGIN_DCL$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		for (Declaration decl : declarationList) decl.doDeclarationCoding();
 		JavaModule.code("}");
 	}
@@ -242,11 +239,10 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	private void doCodeStatements() {
 		JavaModule.debug("// " + blockKind + " Statements");
 		JavaModule.code("public RTObject$ STM$() {");
-		JavaModule.debug("TRACE_BEGIN_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		codeSTMBody();
-		JavaModule.debug("TRACE_END_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		JavaModule.code("EBLK();");
-		JavaModule.code("return(null);");
+//		JavaModule.code("return(null);");
+		JavaModule.code("return(this);");
 		JavaModule.code("}", "End of " + blockKind + " Statements");
 	}
 

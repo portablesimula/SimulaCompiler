@@ -97,49 +97,35 @@ public abstract class CLASS$ extends BASICIO$ implements Runnable {
 	 * </ul>
 	 */
 	public void detach() {
-		RTObject$ ins; // Instance to be detached.
-		RTObject$ dl; // Temporary reference to dynamical enclosure.
-		RTObject$ main; // The head of the main component and also
-						// the head of the quasi-parallel system.
-		ins = this;
-		// if(RT.Option.QPS_TRACING) RT.TRACE("BEGIN DETACH "+edObjectAttributes());
-		RT.ASSERT(CUR$.DL$ != CUR$, "Invariant");
-		// Detach on a prefixed block is a no-operation.
-		if (!CUR$.isQPSystemBlock()) {
-			// Make sure that the object is on the operating chain.
-			// Note that a detached or terminated object cannot be on the operating chain.
-			dl = CUR$;
-			while (dl != ins) {
-				dl = dl.DL$;
-				if (dl == null)
-					throw new RuntimeException("x.Detach: x is not on the operating chain.");
-			}
-			// Treat the case resumed and operating first,
-			// because it is probably the dynamically most common.
-			if (ins.STATE$ == OperationalState.resumed) {
-				ins.STATE$ = OperationalState.detached;
-				// Find main component for component to be detached. The main
-				// component head must be the static enclosure of the object,
-				// since the object has OperationalState.resumed.
-				main = ins.SL$;
-				// Rotate the contents of 'CUR$', 'ins.DL$' and 'main.DL$'.
-				// <main.DL$,ins.DL$,CUR$>:=<ins.DL$,CUR$,main.DL$>
-				dl = main.DL$; main.DL$ = ins.DL$; ins.DL$ = CUR$;
-				CUR$ = dl;
-			} else {
-				RT.ASSERT(ins.STATE$ == OperationalState.attached, "Invariant");
-				ins.STATE$ = OperationalState.detached;
-				// Swap the contents of object's 'DL$' and 'CUR$'.
-				// <ins.DL$,CUR$>:=<CUR$,ins.DL$>
-				dl = ins.DL$; ins.DL$ = CUR$; CUR$ = dl;
-			}
-			RT.ASSERT(CUR$.DL$ != CUR$, "Invariant");
-			// if(RT.Option.QPS_TRACING) RT.TRACE("END DETACH "+edObjectAttributes());
-			if (RT.Option.QPS_TRACING) RT.TRACE("DETACH " + this.edObjectIdent() + " ==> " + CUR$.edObjectIdent());
-			// if (RT.USE_LOOM)
-			Continuation.yield(continuationScope);
-			// else ThreadUtils.SWAP_THREAD(CUR$.THREAD$);
+		if (isQPSystemBlock()) return; // Detach QPS System Block is no-operation.
+		// Make sure that this object is on the operating chain.
+		// Note that a detached or terminated object cannot be on the operating chain.
+		RTObject$ dl = CUR$;
+		while (dl != this) {
+			dl = dl.DL$;
+			if (dl == null)
+				throw new RuntimeException("x.Detach: x is not on the operating chain.");
 		}
+		switch(this.STATE$) {
+			case resumed: {
+				// Find main component for component to be detached. The main
+				// component head must be the static enclosure of the object.
+				RTObject$ main = this.SL$;
+				// Rotate the contents of 'CUR$', 'this.DL$' and 'main.DL$'.
+				// <main.DL$,this.DL$,CUR$> := <this.DL$,CUR$,main.DL$>
+				dl = main.DL$; main.DL$ = this.DL$; this.DL$ = CUR$; CUR$ = dl;
+			} break;
+			case attached: {
+				// Swap the contents of object's 'this.DL$' and 'CUR$'.
+				// <this.DL$,CUR$> := <CUR$,this.DL$>
+				dl = this.DL$; this.DL$ = CUR$; CUR$ = dl;
+			} break;
+			default: throw new RuntimeException("Illegal Detach");
+		}
+		this.STATE$ = OperationalState.detached;
+ 
+		if (RT.Option.QPS_TRACING) RT.TRACE("DETACH " + this.edObjectIdent() + " ==> " + CUR$.edObjectIdent());
+		Continuation.yield(continuationScope);
 	}
 
 }

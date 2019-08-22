@@ -21,7 +21,6 @@ import java.lang.NullPointerException;
 import java.lang.Number;
 import java.lang.Object;
 import java.lang.RuntimeException;
-import java.lang.StackTraceElement;
 import java.lang.String;
 import java.lang.StringBuilder;
 import java.lang.SuppressWarnings;
@@ -29,8 +28,6 @@ import java.lang.System;
 import java.lang.Thread;
 import java.lang.Throwable;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import simula.common.ConsolePanel;
@@ -87,8 +84,6 @@ public abstract class RTObject$ {
 	 */
 	RTObject$ DL$; // Dynamic Link
 
-//	private static int objSEQU = 0; // Used by TRACE-methods
-//	private int SEQU; // Used by TRACE-methods
 	// ************************************************************
 	// *** Constructor
 	// ************************************************************
@@ -102,80 +97,9 @@ public abstract class RTObject$ {
 		if (SL != null) {
 			this.SL$ = SL;
 			this.CONT$ = Continuation.getCurrentContinuation(continuationScope);
-
-//			this.SEQU = objSEQU++; // Used by TRACE-methods
 		}
 	}
 
-	// *********************************************************************
-	// *** PROCEDURE HANDLING
-	// *********************************************************************
-	/**
-	 * This method is virtual and must be redefined in all procedure blocks
-	 * 
-	 * @param obj Procedure's Parameter Value Object
-	 * @return
-	 */
-	public RTObject$ setPar(final Object obj) { return (this); }
-
-	/**
-	 * This method is virtual and must be redefined in all type procedure blocks
-	 * 
-	 * @return
-	 */
-	public Object RESULT$() { return (null); }
-
-	// *******************************************************
-	// *** FRAMEWORK for Procedure-Parameters in Java Coding
-	// *******************************************************
-	public final class PRCQNT$ {
-		final RTObject$ staticLink;
-		final Class<?> procedure;
-
-		// Constructor
-		public PRCQNT$(final RTObject$ staticLink,final Class<?> procedure) {
-			this.staticLink = staticLink;
-			this.procedure = procedure;
-		}
-
-		public RTObject$ CPF() {
-			// RT.BREAK("CPF: procedure=" + procedure + ", Qual=" + procedure.getClass().getSimpleName());
-			try {
-				Constructor<?> constr = procedure.getConstructor(new Class[] { RTObject$.class });
-				// RT.BREAK("CPF2: constr=" + constr + ", Qual=" +
-				// procedure.getClass().getSimpleName());
-				Object obj = constr.newInstance(staticLink);
-				// RT.BREAK("CPF5: obj=" + obj + ", Qual=" + obj.getClass().getSimpleName());
-				return ((RTObject$) obj);
-			} catch (InvocationTargetException e) {
-				// e.printStackTrace();
-				// RT.BREAK("CPF3 cause=" + e.getCause());
-				// RT.BREAK("CPF3 TargetException=" + e.getTargetException());
-				Throwable targetException = e.getTargetException();
-				if (targetException instanceof RuntimeException) {
-					// RT.BREAK("CPF3 RE-THROW TargetException=" + e.getTargetException());
-					throw (RuntimeException) targetException;
-				}
-				throw new RuntimeException("RTObject$.PRCQNT$.CPF: FATAL error - Impossible situation - " + e, e);
-			} catch (Throwable e) {
-				throw new RuntimeException("RTObject$.PRCQNT$.CPF: FATAL error - Impossible situation - " + e, e);
-			}
-		}
-
-		public String toString() {
-			return ("Simula PRCQNT$(" + staticLink + ',' + procedure + ')');
-		}
-
-	}
-
-	public RTObject$ ENT$() {
-		// Enter Formal Procedure
-	    // RT.BREAK("RTObject.ENT: CUR="+CUR$);
-		BBLK();
-		// RT.BREAK("RTObject.ENT: CUR="+CUR$);
-		STM$();
-		return (this);
-	}
 
 	// ****************************************************
 	// *** The Abstract Generic Class NAME$<T> supporting
@@ -455,36 +379,6 @@ public abstract class RTObject$ {
 			this.until = until;
 		}
 
-//		public Boolean OLD_next() {
-//			if (nextValue == null) {
-//				nextValue = init.get();
-//				cvar.put(nextValue);
-//				return (true);
-//			} // First value
-//			Number val = nextValue;
-//			// nextValue=val+step;
-//			// more:= step*(nextValue-until) <= 0
-//			Number stp = step.get();
-//			Number utl = until.get();
-//			if (val instanceof Double || stp instanceof Double) {
-//				nextValue = new Double(val.doubleValue() + stp.doubleValue());
-//				more = (stp.floatValue() * (nextValue.floatValue() - utl.floatValue()) <= 0);
-//			} else if (val instanceof Float || stp instanceof Float) {
-//				nextValue = new Float(val.floatValue() + stp.floatValue());
-//				more = (stp.floatValue() * (nextValue.floatValue() - utl.floatValue()) <= 0);
-//			} else if (val instanceof Long || stp instanceof Long) {
-//				nextValue = new Float(val.longValue() + stp.longValue());
-//				more = (stp.longValue() * (nextValue.longValue() - utl.longValue()) <= 0);
-//			} else {
-//				nextValue = new Integer(val.intValue() + stp.intValue());
-//				more = (stp.intValue() * (nextValue.intValue() - utl.intValue()) <= 0);
-//			}
-//			// RT.BREAK("StepUntil.next: return="+val+", nextValue="+nextValue+",
-//			// more="+more);
-//			cvar.put(nextValue);
-//			return (more);
-//		}
-
 //		@SuppressWarnings("deprecation")
 		public Boolean next() {
 			try {
@@ -502,19 +396,15 @@ public abstract class RTObject$ {
 			Number val = nextValue;
 			Number utl = until.get();
 			if (val instanceof Double || stp instanceof Double) {
-//				nextValue = new Double(val.doubleValue() + stp.doubleValue());
 				nextValue = val.doubleValue() + stp.doubleValue();
 				more = ( sign * (nextValue.doubleValue() - utl.doubleValue()) <= 0);
 			} else if (val instanceof Float || stp instanceof Float) {
-//				nextValue = new Float(val.floatValue() + stp.floatValue());
 				nextValue =val.floatValue() + stp.floatValue();
 				more = ( sign * (nextValue.floatValue() - utl.floatValue()) <= 0);
 			} else if (val instanceof Long || stp instanceof Long) {
-//				nextValue = new Float(val.longValue() + stp.longValue());
 				nextValue = val.longValue() + stp.longValue();
 				more = ( sign * (nextValue.longValue() - utl.longValue()) <= 0);
 			} else {
-//				nextValue = new Integer(val.intValue() + stp.intValue());
 				nextValue = val.intValue() + stp.intValue();
 				more = ( sign * (nextValue.intValue() - utl.intValue()) <= 0);
 			}
@@ -790,7 +680,7 @@ public abstract class RTObject$ {
 		static final long serialVersionUID = 42L;
 		public final RTObject$ SL$; // Static link, i.e. the block in which the label is defined.
 		public final int index; // I.e. ordinal number of the Label within its Scope(staticLink).
-		public final String identifier;
+		public final String identifier; // To improve error and trace messages.
 
 		// Constructor
 		public LABQNT$(final RTObject$ SL$,final int index,final String identifier) {
@@ -944,16 +834,13 @@ public abstract class RTObject$ {
 	 * <li>Attach the block to its dynamic environment.</li>
 	 * <p>
 	 * <li>Update the current instance pointer(CUR$).</li>
-	 * <p>
-	 * <li>Update the Context Vector(CV$[]).</li>
-	 * <p>
-	 * <li>Return to the block's declaration code.</li>
 	 * </ul>
 	 */
 	public void BBLK() {
 		DL$ = CUR$;
 		CUR$ = this;
 		this.CONT$ = DL$.CONT$;
+//		RT.ASSERT(this.CONT$==DL$.CONT$,"RTObject$.BBLK: this.CONT$ != DL$.CONT$");
 		STATE$ = OperationalState.attached;
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("BEGIN " + edObjectAttributes());
 		RT.NoneCheck(SL$); // In case of Remote Call on Procedure x.Func, x==none
@@ -1120,12 +1007,8 @@ public abstract class RTObject$ {
 		// From now on the object is in attached state.
 		// It is no longer a component head.
 		ins.STATE$ = OperationalState.attached;
-		if (RT.Option.QPS_TRACING)
-			RT.TRACE("CALL " + this.edObjectIdent() + " ==> " + CUR$.edObjectIdent());
-
-		// if(RT.USE_LOOM)
+		if (RT.Option.QPS_TRACING) RT.TRACE("CALL " + this.edObjectIdent() + " ==> " + CUR$.edObjectIdent());
 		swapContinuations();
-		// else ThreadUtils.SWAP_THREAD(CUR$.THREAD$);
 	}
 
 	// *********************************************************************
@@ -1257,47 +1140,6 @@ public abstract class RTObject$ {
 	// *********************************************************************
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
-
-	private void BCODE$(final int simulaSourceLine,final String msg) {
-		if (!RT.Option.CODE_STEP_TRACING) return;
-		StackTraceElement elt = Thread.currentThread().getStackTrace()[4];
-		String line;
-		if (simulaSourceLine <= 1)
-			 line = "J" + elt.getLineNumber();
-		else line = "S" + simulaSourceLine;
-		RT.BREAK("  STEP_TRACE  " + elt.getFileName() + " LINE " + line + ": " + msg);
-		RT.printSimulaStackTrace(2); // TESTING
-	}
-
-	public void TRACE_BEGIN_DCL$(final String ident) { TRACE_BEGIN_DCL$(ident, -1); }
-
-	public void TRACE_BEGIN_DCL$(final String ident,final int simulaSourceLine) {
-		BCODE$(simulaSourceLine, "BEGIN  " + ident + ".DCL");
-	}
-
-	public void TRACE_BEGIN_STM$(final String ident) {
-		TRACE_BEGIN_STM$(ident, -1);
-	}
-
-	public void TRACE_BEGIN_STM$(final String ident,final int simulaSourceLine) {
-		BCODE$(simulaSourceLine, "BEGIN  " + ident + ".STM$");
-	}
-
-	public void TRACE_BEGIN_STM_BEFORE_INNER$(final String ident,final int simulaSourceLine) {
-		BCODE$(simulaSourceLine, "BEGIN  " + ident + ".STM$(Before inner)");
-	}
-
-	public void TRACE_BEGIN_STM_AFTER_INNER$(final String ident,final int simulaSourceLine) {
-		BCODE$(simulaSourceLine, "BEGIN  " + ident + ".STM$(After inner)");
-	}
-
-	public void TRACE_END_STM$(final String ident) {
-		TRACE_END_STM$(ident, -1);
-	}
-
-	public void TRACE_END_STM$(final String ident,final int simulaSourceLine) {
-		BCODE$(simulaSourceLine, "END  " + ident + ".STM$");
-	}
 
 	public static TXT$ objectTraceIdentifier(final RTObject$ staticLink) {
 		return (new TXT$(staticLink.edObjectIdent()));

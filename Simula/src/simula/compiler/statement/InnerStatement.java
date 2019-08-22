@@ -37,12 +37,12 @@ public final class InnerStatement extends Statement {
 	
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-//		JavaModule.code("TRACE_BEGIN_STM_BEFORE_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
+//		JavaModule.trace("TRACE_BEGIN_STM_BEFORE_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
 		ClassDeclaration cls=(ClassDeclaration)Global.currentScope;
 		if(cls.code2==null) cls.code2=new Vector<CodeLine>();
 		//Util.BREAK("InnerStatement.doJavaCoding: scope="+Global.currentScope);
 		Global.currentJavaModule.saveCode=cls.code2;
-//		JavaModule.code("TRACE_BEGIN_STM_AFTER_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
+//		JavaModule.trace("TRACE_BEGIN_STM_AFTER_INNER$(\""+Global.currentScope.identifier+"\","+Global.sourceLineNumber+");");
 	}
 
 	public void print(final int indent) {

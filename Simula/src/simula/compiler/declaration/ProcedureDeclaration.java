@@ -351,7 +351,8 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		JavaModule javaModule = new JavaModule(this);
 		Global.currentScope = this;
 		JavaModule.code("@SuppressWarnings(\"unchecked\")");
-		JavaModule.code("public final class " + getJavaIdentifier() + " extends BASICIO$ {");
+//		JavaModule.code("public final class " + getJavaIdentifier() + " extends BASICIO$ {");
+		JavaModule.code("public final class " + getJavaIdentifier() + " extends PROC$ {");
 		JavaModule.debug("// ProcedureDeclaration: BlockKind=" + blockKind + ", BlockLevel=" + blockLevel
 					+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
@@ -397,7 +398,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			JavaModule.code("this." + par.externalIdent + " = s" + par.externalIdent + ';');
 		JavaModule.code("BBLK();");
 		JavaModule.debug("// Declaration Code");
-		JavaModule.debug("TRACE_BEGIN_DCL$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		for (Declaration decl : declarationList) decl.doDeclarationCoding();
 		JavaModule.code("STM$();");
 		JavaModule.code("}");
@@ -408,13 +408,14 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private void doCodePrepareFormal() {
 		JavaModule.debug("// Parameter Transmission in case of Formal/Virtual Procedure Call");
-		JavaModule.code("private int $npar=0; // Number of actual parameters transmitted.");
+//		JavaModule.code("private int $npar=0; // Number of actual parameters transmitted.");
 		JavaModule.code("public " + getJavaIdentifier() + " setPar(Object param) {");
 		JavaModule.debug("//Util.BREAK(\"CALL " + getJavaIdentifier()
-				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$npar+\", staticLink=\"+SL$);");
+				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$nParLeft+\", staticLink=\"+SL$);");
 		JavaModule.code("try {");
-		JavaModule.code("switch($npar++) {");
-		int npar = 0;
+//		JavaModule.code("switch($npar++) {");
+		JavaModule.code("switch($nParLeft--) {");
+		int nPar = 0;
 		for (Parameter par : parameterList) {
 			String tp = par.toJavaType();
 			String typeValue;
@@ -426,17 +427,18 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			else if (par.kind != Parameter.Kind.Simple)	typeValue = ("(" + tp + ")param");
 			else if (par.type.isArithmeticType()) typeValue = (tp + "Value(param)");
 			else typeValue = ("(" + tp + ")objectValue(param)");
-			JavaModule.code("case " + (npar++) + ": " + par.externalIdent + "=" + typeValue + "; break;");
+			JavaModule.code("case " + ( parameterList.size() - (nPar++)) + ": " + par.externalIdent + "=" + typeValue + "; break;");
 		}
-		JavaModule.code("default: throw new RuntimeException(\"Wrong number of parameters\");");
+		JavaModule.code("default: throw new RuntimeException(\"Too many parameters\");");
 		JavaModule.code("}");
 		JavaModule.code("}");
-		JavaModule.code("catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+$npar+\" \"+param,e);}");
+		JavaModule.code("catch(ClassCastException e) { throw new RuntimeException(\"Wrong type of parameter: \"+param,e);}");
 		JavaModule.code("return(this);");
 		JavaModule.code("}");
 		JavaModule.debug("// Constructor in case of Formal/Virtual Procedure Call");
-		JavaModule.code("public " + getJavaIdentifier() + "(RTObject$ SL$)");
-		JavaModule.code("{ super(SL$); }");
+		JavaModule.code("public " + getJavaIdentifier() + "(RTObject$ SL$) {");
+		JavaModule.code("super(SL$,"+parameterList.size()+");","Expecting "+parameterList.size()+" parameters");
+		JavaModule.code("}");
 	}
 
 	// ***********************************************************************************************
@@ -445,9 +447,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	public void codeProcedureBody() {
 		JavaModule.debug("// Procedure Statements");
 		JavaModule.code("public " + getJavaIdentifier() + " STM$() {");
-		JavaModule.debug("TRACE_BEGIN_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		codeSTMBody();
-		JavaModule.debug("TRACE_END_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		JavaModule.code("EBLK();");
 		JavaModule.code("return(this);");
 		JavaModule.code("}", "End of Procedure BODY");
@@ -463,6 +463,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		s.append(blockKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
 		s.append(editParameterList());
+		s.append("  isProtected=").append(isProtected);
 		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';
 		Util.println(spc + beg);
@@ -493,7 +494,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 
 	public String toString() {
 		StringBuilder s = new StringBuilder();
-		s.append(identifier).append('[').append(externalIdent).append("] BlockKind=").append(blockKind);
+		s.append(identifier).append("[externalIdent=").append(externalIdent).append("] BlockKind=").append(blockKind).append(", HashCode=").append(hashCode());
 		if (isProtected != null) {
 			s.append(", Protected by ").append(isProtected.identifier);
 			s.append(" defined in ");

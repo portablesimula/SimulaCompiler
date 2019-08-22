@@ -118,7 +118,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst74.sim"); // OK:  Test resume and detach.
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
-		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
+		names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
 		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
 		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
@@ -148,7 +148,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
 		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
 		//names.add("simtst102.sim"); // OK: GOTO out of an operating Process
-		names.add("simtst103.sim"); // OK: All kinds of Activation Statements
+		//names.add("simtst103.sim"); // OK: All kinds of Activation Statements
 		//names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
 		//names.add("simtst105.sim"); // OK: Multiple assignments.
 		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.

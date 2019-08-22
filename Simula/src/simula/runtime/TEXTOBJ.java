@@ -60,10 +60,9 @@ package simula.runtime;
  *
  */
 public final class TEXTOBJ extends RTObject$ {
-	final int SIZE;
-	final boolean CONST;
-	final char[] MAIN;
-
+	final int SIZE;      // Number of characters in the text object.
+	final boolean CONST; // True: Indicates a text constant
+	final char[] MAIN;   // The characters
 	// Constructor
 	TEXTOBJ(final int param_SIZE,final boolean param_CONST) {
 		super(null);

@@ -1337,8 +1337,8 @@ public class ENVIRONMENT$ extends RTObject$ {
 	// **********************************************************************
 	// *** Additional S-Port'like Procedures
 	// **********************************************************************
-	public static RTObject$.PRCQNT$ EXCEPTION_HANDLER=null;
-    public void DEFEXCEPTION(final RTObject$.PRCQNT$ EXCEPTION_HANDLER) {
+	public static PRCQNT$ EXCEPTION_HANDLER=null;
+    public void DEFEXCEPTION(final PRCQNT$ EXCEPTION_HANDLER) {
     	//System.out.println("ENVIRONMENT.DEFEXCEPTION: EXCEPTION_HANDLER="+EXCEPTION_HANDLER);
     	ENVIRONMENT$.EXCEPTION_HANDLER=EXCEPTION_HANDLER;
     }

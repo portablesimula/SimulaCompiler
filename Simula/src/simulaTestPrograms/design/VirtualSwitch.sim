@@ -1,0 +1,17 @@
+% VirtualSwitch
+begin
+
+  Class A; virtual: switch S;
+  begin
+     goto S(2);
+  end;
+  
+  A class B;
+  begin
+     switch S:=L1,L2;
+  end;   
+  
+  new B;
+  
+  L1:L2:
+end;  

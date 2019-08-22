@@ -1,13 +1,9 @@
 begin
    integer i,j,k;
-   i:=44;
-   j:=8;
-   k:=i+j;
-   k:=i**j;
+   text t;
+   text procedure other;
+   begin other:-"abra"; end;
    
-   k:=k ** k;
-   k:=k ** k;
-   k:=k ** k;
-   
-
-end;
+%   for t:="one",other while k < 7 do i:=88;
+   for t:=other do i:=88;
+end;      

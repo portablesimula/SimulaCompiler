@@ -225,6 +225,10 @@ public final class SimulaCompiler {
 			    for(JavaModule module:Global.javaModules)
 			      	Util.LIST(module.javaOutputFile.toString());
 			}
+			if(Util.nError>0) {
+				Util.message("Compiler terminated after "+Util.nError+" errors during code generation");
+				return;
+			}
 			
 			if (Option.TRACING) Util.message("BEGIN Possible Generate AttributeFile");
 			AttributeFile.write(programModule);

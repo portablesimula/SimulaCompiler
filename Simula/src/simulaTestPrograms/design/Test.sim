@@ -1,4 +1,6 @@
 begin
+   Integer Array Table(6:56);
+   Text Array TA(6:56,8:88);
 
 Class A(p1,p2); integer p1; real p2;
   begin
@@ -20,9 +22,11 @@ begin
       r:=RA(14);
 end;
   
-  Procedure callFP(F); procedure F;
+  Procedure callFP(F); integer procedure F;
   begin
-     F(7,9);
+     real r; integer i;
+     r:=F(7,9);
+     i:=F(7,9);
   end;
   
   
@@ -36,16 +40,36 @@ end;
   end;
 
   
-  integer i;
+  integer i,ix,iy;
+  text t;
+  boolean cd;
   ref(A) x;
+  
+  i := Table(ix); 
+  Table(ix) := i;
+  
+  t :- TA(ix,iy); 
+  TA(ix,iy) :- t;
+
   i:=P(4,3.14); 
   callFP(P);
   x:-new B(1,2,3);
+  cd:=x IS B;
+  cd:=x IN B;
+  x qua B.p3 := 3.14;
 
+
+  ! Prefixed block;
+  B(1,2,3) begin
+    text Array TA(1:lim);
+    integer i;
+    i:=6;
+  end;
 
   ! Sub-block;
   begin
-    text Array TA(1:40);
+    integer lim=40;
+    text Array TA(1:lim);
     integer i;
     i:=6;
   end;

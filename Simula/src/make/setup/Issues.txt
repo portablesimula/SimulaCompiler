@@ -1,5 +1,14 @@
 Simula Issues
 
+CLOSED Issue 33: Fra Øystein
+formell integer procedure F som anvendes i et assignment til en real.
+
+Kjører:
+real r; r:=F(7,9); Hvor F er formell.
+og får: Feil Java kode.
+Analyse: TypeConversion.toJavaCode var feil - rettet.
+===============================================================================
+
 CLOSED Issue 32: Fra Øystein
 This Process.into( ... )   feiler.
 

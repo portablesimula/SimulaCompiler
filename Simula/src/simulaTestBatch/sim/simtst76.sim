@@ -5,7 +5,7 @@
 %  PURPOSE:     Test of detach and resume in SIMSET.
 %
 %  WRITTEN BY:  BEH   25/08-86
-%  MODIFIED BY: MYH   28/07-2018  According to (new) Simula Standard
+%  MODIFIED BY: MYH   28/07-2018  Adding VERBOSE
 % ==============================================================================
 BEGIN
    Boolean found_error ;
@@ -85,22 +85,20 @@ SIMSET Begin
                      Print("I"); Resume(Y);
                      Detach
                End;
-               Print("K");
-               detach;
-               Print("M");
+               Print("L");
           End;
 
           x:- New A;
           Print("B"); Resume(x);
           Print("G"); Resume(x);
-          Print("L"); Resume(x);
-          Print("N");
+          Print("K"); Resume(x);
+          Print("M");
 
           t:- Copy (sysout.image.strip);
           sysout.setpos (1);
           sysout.image:= notext;
 
-         if t = "ABCDEFGHIJKLMN" then
+         if t = "ABCDEFGHIJKLM" then
          else
          begin Outtext ("*** error : Detach - resume (2).") ;
                Outimage ;

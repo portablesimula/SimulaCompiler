@@ -34,22 +34,22 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class RemoteVariable extends Expression {
-	public final Expression lhs;
-	public final Variable rhs;
+	public final Expression obj;
+	public final Variable var;
 	private Meaning remoteAttribute; // Set by doChecking
 	private ProcedureDeclaration callRemoteProcedure = null;
 	private VirtualSpecification callRemoteVirtual = null;
 
 	private boolean accessRemoteArray = false; // Set by doChecking
 
-	public RemoteVariable(final Expression lhs, final Variable rhs) {
-		this.lhs = lhs;
-		this.rhs = rhs;
-		lhs.backLink = rhs.backLink = this;
+	public RemoteVariable(final Expression obj, final Variable var) {
+		this.obj = obj;
+		this.var = var;
+		obj.backLink = var.backLink = this;
 	}
 
 	public Variable getWriteableVariable() {
-		return (rhs);
+		return (var);
 	}
 
 	public void doChecking() {
@@ -59,7 +59,7 @@ public final class RemoteVariable extends Expression {
 			Util.TRACE("BEGIN RemoteVariable" + toString() + ".doChecking - Current Scope Chain: "
 					+ Global.currentScope.edScopeChain());
 		// Util.BREAK("BEGIN RemoteVariable"+toString()+".doChecking - Current Scope Chain: "+currentScope.edScopeChain());
-		this.type = doRemoteChecking(lhs, rhs);
+		this.type = doRemoteChecking(obj, var);
 
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END RemoteVariable" + toString() + ".doChecking - Result type=" + this.type);
@@ -89,11 +89,9 @@ public final class RemoteVariable extends Expression {
 		if (attr instanceof Variable) {
 			Variable var = (Variable) attr;
 			String ident = var.identifier;
-			// Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5a)
-			// findRemoteAttributeMeaning("+ident+") Search in "+objType.getQual());
+			//Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5a) findRemoteAttributeMeaning("+ident+") Search in "+objType.getQual());
 			remoteAttribute = objType.getQual().findRemoteAttributeMeaning(ident);
-			// Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5)
-			// findRemoteAttributeMeaning("+ident+") ==> "+remoteAttribute);
+			//Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5) findRemoteAttributeMeaning("+ident+") ==> "+remoteAttribute);
 			if (remoteAttribute == null) {
 				Util.error("RemoteVariable.doRemoteChecking: " + ident + " is not an attribute of "	+ objType.getRefIdent());
 				return (Type.Integer); // Error Recovery
@@ -159,25 +157,25 @@ public final class RemoteVariable extends Expression {
 	// Returns true if this expression may be used as a statement.
 	public boolean maybeStatement() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		return (rhs.maybeStatement());
+		return (var.maybeStatement());
 	}
 
 	public String toJavaCode() {
 		// Util.BREAK("RemoteVariable.toJavaCode: "+this);
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (callRemoteProcedure != null)
-			return (CallProcedure.remote(lhs, callRemoteProcedure, (Variable) rhs, backLink));
+			return (CallProcedure.remote(obj, callRemoteProcedure, var, backLink));
 		else if (callRemoteVirtual != null)
-			return (CallProcedure.remoteVirtual(lhs, (Variable) rhs, callRemoteVirtual));
+			return (CallProcedure.remoteVirtual(obj, var, callRemoteVirtual));
 		else if (accessRemoteArray)
-			return (doAccessRemoteArray(lhs, (Variable) rhs));
+			return (doAccessRemoteArray(obj, var));
 		// Util.BREAK("RemoteVariable.toJavaCode: DOT - remoteAttribute="+remoteAttribute);
 		String result;
 		if (remoteAttribute.foundBehindInvisible) {
 			String remoteCast = remoteAttribute.foundIn.getJavaIdentifier();
-			result = "((" + remoteCast + ")(" + lhs.get() + "))." + rhs.get();
+			result = "((" + remoteCast + ")(" + obj.get() + "))." + var.get();
 		} else
-			result = lhs.get() + KeyWord.DOT.toJavaCode() + rhs.get();
+			result = obj.get() + KeyWord.DOT.toJavaCode() + var.get();
 
 		// Util.BREAK("RemoteVariable.toJavaCode: DOT result="+result);
 		return (result);
@@ -208,7 +206,7 @@ public final class RemoteVariable extends Expression {
 	}
 
 	public String toString() {
-		return ("(" + lhs + " DOT " + rhs + ")");
+		return ("(" + obj + " DOT " + var + ")");
 	}
 
 }

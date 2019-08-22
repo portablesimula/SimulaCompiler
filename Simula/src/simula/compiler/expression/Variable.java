@@ -450,12 +450,21 @@ public final class Variable extends Expression {
 	    	    	// otherwise; it is a ordinary procedure-call.
 	    	    	if(destination) { // return("RESULT$");
 	    	    		ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
-	    	    		//Util.BREAK("Variable.editVariable("+identifier+"): meaning="+meaning);
-	    	    		//Util.BREAK("Variable.editVariable("+identifier+"): proc'blockLevel="+proc.blockLevel);
-	    	    		//Util.BREAK("Variable.editVariable("+identifier+"): currentScope'blockLevel="+Global.currentScope.blockLevel);
-	    	    		if(proc.blockLevel==Global.currentScope.blockLevel) return("RESULT$");
-	    	    		String cast=proc.getJavaIdentifier();
-	    	    		return("(("+cast+")"+proc.edCTX()+").RESULT$");
+//	    	    		Util.BREAK("Variable.editVariable("+identifier+"): Procedure'Destination'scopeChain="+Global.currentScope.edScopeChain());
+	    	    		
+//	    	    		// *** OLD CODE:
+//	    	    		if(proc.blockLevel==Global.currentScope.blockLevel) return("RESULT$");
+//	    	    		String cast=proc.getJavaIdentifier();
+//	    	    		return("(("+cast+")"+proc.edCTX()+").RESULT$");
+
+	    	    		// *** ALTERNATIVE
+	    	    		ProcedureDeclaration found=Global.currentScope.findProcedure(proc.identifier);
+	    	    		if(found!=null) {
+    	    	    		if(found.blockLevel==Global.currentScope.blockLevel) return("RESULT$");
+    	    	    		String cast=found.getJavaIdentifier();
+    	    	    		return("(("+cast+")"+found.edCTX()+").RESULT$");
+	    	    		} else Util.error("Can't assign to procedure "+proc.identifier);
+    	    		    
 	    	    	}
 	    	    	//Util.BREAK("Variable4("+identifier+").get: blockKind="+blockKind+", myVirtual="+procedure.myVirtual);
 	    	    	if(procedure.myVirtual!=null)

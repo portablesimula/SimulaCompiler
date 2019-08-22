@@ -462,13 +462,15 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: findRemoteAttributeMeaning
 	// ***********************************************************************************************
 	public Meaning findRemoteAttributeMeaning(final String ident) {
-		// if(ident.equalsIgnoreCase("P"))Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+this);
+		//if(ident.equalsIgnoreCase("S"))Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+this);
 
 		boolean behindProtected = false;
 		ClassDeclaration scope = this;
 
 		Declaration decl = scope.findLocalAttribute(ident);
 		if (decl != null) {
+			// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): decl="+decl);
+			// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): decl.isProtected="+decl.isProtected);
 			boolean prtected = decl.isProtected != null;
 			// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): protected="+prtected);
 			VirtualSpecification virtSpec = VirtualSpecification.getVirtualSpecification(decl);
@@ -750,7 +752,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		if (hasNoRealPrefix()) JavaModule.code("BBLK(); // Iff no prefix");
 
 		JavaModule.debug("// Declaration Code");
-		JavaModule.code("TRACE_BEGIN_DCL$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		for (Declaration decl : declarationList) decl.doDeclarationCoding();
 		JavaModule.code("}");
 	}
@@ -872,9 +873,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		String classID = this.getJavaIdentifier();
 		// JavaModule.code("public "+getJavaIdentifier()+" STM$() {");
 		JavaModule.code("public " + classID + " STM$() {");
-		JavaModule.debug("TRACE_BEGIN_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		codeSTMBody();
-		JavaModule.debug("TRACE_END_STM$(\"" + identifier + "\"," + Global.sourceLineNumber + ");");
 		JavaModule.code("EBLK();");
 		JavaModule.code("return(this);");
 		JavaModule.code("}","End of Class Statements");

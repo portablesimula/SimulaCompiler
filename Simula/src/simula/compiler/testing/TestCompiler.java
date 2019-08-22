@@ -65,11 +65,28 @@ public final class TestCompiler {
 		// String name="/samples/JensensDevice.sim";
 		// String name="/samples/PrimeUnder.sim";
 		// String name="/samples/Sudoku.sim";
-		 String name="/samples/SudokuPuzzle.sim";
+		// String name="/samples/SudokuPuzzle.sim";
 		// String name="/samples/TQueens.sim";
 
 		// *** SIMULA DESIGN EXAMPLES
 		// String name="/design/Test.sim";
+		// String name="/design/ActivationStatement.sim";
+		// String name="/design/ArrayAsParameters.sim";
+		// String name="/design/CallProcedureRemote.sim";
+		// String name="/design/CallProcedureConnected.sim";
+		// String name="/design/ProcedureDeclaration.sim";
+		// String name="/design/CallProcedureFormal.sim";
+		// String name="/design/CallProcedureVirtual.sim";
+		// String name="/design/ProcedureByName.sim";
+		// String name="/design/ProcedureResult.sim";
+		// String name="/design/SwitchDeclaration.sim";
+		// String name="/design/SwitchStatement.sim";
+		// String name="/design/VirtualSwitch.sim";
+		// String name="/design/FormalSwitch.sim";
+		// String name="/design/NormalSwitch.sim";
+		// String name="/design/ForStatement.sim";
+		// String name="/design/InspectStatement.sim";
+		// String name="/design/WhileStatement.sim";
 
 		// *** SIMULA ERROR-TEST PROGRAMMER FRA KAREL
 		// String name="/Karel/Collatz.sim";
@@ -104,12 +121,13 @@ public final class TestCompiler {
 		// String name="/error/issue26.sim"; // Terminating Process in strict sence.
 		// String name="/error/issue31.sim"; // Labeled INNER
 		// String name="/error/issue32.sim"; // This Process
-		// String name="/error/issue33.sim"; // inspect x  This Process. 
+		// String name="/error/issue33.sim"; // Call Procedure Formal 
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters
 		// String name="/error/NoughtsAndCrosses.sim";  // 
+		 String name="/error/simtst76b.sim";  // 
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";

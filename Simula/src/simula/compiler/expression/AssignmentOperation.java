@@ -130,12 +130,12 @@ public final class AssignmentOperation extends Expression {
 			//     OBJECT . ARRAY.A[x+9- OBJECT.ARRAY.LB[0]]=134;
 			// -------------------------------------------------------------------------
 			if(lhs instanceof RemoteVariable) {
-				Expression afterDot=((RemoteVariable)lhs).rhs;
+				Expression afterDot=((RemoteVariable)lhs).var;
 				//Util.BREAK("Assignment.doCodeAssignment: afterDot="+afterDot+", qual="+afterDot.getClass().getSimpleName());
 				if(afterDot instanceof Variable &&  ((Variable)afterDot).hasArguments()) {
 					Declaration decl = ((Variable) afterDot).meaning.declaredAs;
 					// Util.BREAK("Assignment.doCodeAssignment30: decl="+decl+", qual="+decl.getClass().getSimpleName());
-					Expression beforeDot = ((RemoteVariable) lhs).lhs;
+					Expression beforeDot = ((RemoteVariable) lhs).obj;
 					if (decl instanceof ArrayDeclaration)
 						return (assignToRemoteArray(beforeDot, (Variable) afterDot, rhs));
 					else if (decl instanceof Parameter) {

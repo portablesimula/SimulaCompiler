@@ -72,7 +72,6 @@ public class Process$ extends Link$ {
 	// Constructor
 	public Process$(final RTObject$ staticLink) {
 		super(staticLink);
-		TRACE_BEGIN_DCL$("Process$");
 	}
 	
 	public Process$ STM$() {
