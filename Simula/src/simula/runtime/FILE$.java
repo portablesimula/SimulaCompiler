@@ -128,14 +128,25 @@ public class FILE$ extends CLASS$ {
 			File tryFile=new File(dir,fileName);
 			//System.out.println("File$.trySelectFile: with user.dir: "+tryFile);
 			if(tryFile.exists()) return(tryFile);
-			LOOP:for(int i=1;i<10;i++) {
-				String workspace=RT.getProperty("simula.workspace."+i,null);
-				if(workspace==null) break LOOP;
-				dir=new File(workspace);
+			
+			File javaClassPath=new File(System.getProperty("java.class.path"));
+			if(javaClassPath.exists()) try {
+				//System.out.println("File$.trySelectFile: with java.class.path: "+javaClassPath);
+				dir=javaClassPath.getParentFile().getParentFile();
+				//System.out.println("File$.trySelectFile: with java.class.path'PARENT'PARENT: "+dir);
 				tryFile=new File(dir,fileName);
-				//System.out.println("File$.trySelectFile: with workspace"+i+": "+tryFile);
+				//System.out.println("File$.trySelectFile: "+tryFile);
 				if(tryFile.exists()) return(tryFile);
-			}
+			} catch(Throwable e) {}
+
+//			LOOP:for(int i=1;i<10;i++) {
+//				String workspace=RT.getProperty("simula.workspace."+i,null);
+//				if(workspace==null) break LOOP;
+//				dir=new File(workspace);
+//				tryFile=new File(dir,fileName);
+//				//System.out.println("File$.trySelectFile: with workspace"+i+": "+tryFile);
+//				if(tryFile.exists()) return(tryFile);
+//			}
 		}
 		return(popupFileSelector("Can't Open "+fileName+", select another"));
 	}

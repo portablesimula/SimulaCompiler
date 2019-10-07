@@ -7,12 +7,8 @@
  */
 package simula.runtime;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.Properties;
 
 import simula.common.ConsolePanel;
 import simula.runtime.loom.ThreadUtils;
@@ -167,42 +163,42 @@ public final class RT {
 
 	
 
-	// *********************************************************************
-	// *** SIMULA RUNTIME PROPERTIES
-	// *********************************************************************
-
-    private static File simulaPropertiesFile;
-    private static Properties simulaProperties;
-    
-	public static String getProperty(final String key,final String defaultValue) {
-		if(simulaProperties==null) loadProperties();
-		return(simulaProperties.getProperty(key,defaultValue));
-	}
-	
-	public static void setProperty(final String key,final String value) {
-		if(simulaProperties==null) loadProperties();
-		simulaProperties.setProperty(key,value);
-		storeProperties();
-	}
-	
-	private static void loadProperties() {
-		String USER_HOME=System.getProperty("user.home");
-		//System.out.println("USER_HOME="+USER_HOME);
-		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		//System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
-		simulaPropertiesDir.mkdirs();
-		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
-		simulaProperties = new Properties();
-		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
-		} catch(Exception e) {}
-	}
-	
-	private static void storeProperties() {
-		System.out.print("RT.storeProperties: SIMULA ");
-		simulaProperties.list(System.out);
-		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
-		} catch(Exception e) { e.printStackTrace(); }
-	}
+//	// *********************************************************************
+//	// *** SIMULA RUNTIME PROPERTIES
+//	// *********************************************************************
+//
+//    private static File simulaPropertiesFile;
+//    private static Properties simulaProperties;
+//    
+//	public static String getProperty(final String key,final String defaultValue) {
+//		if(simulaProperties==null) loadProperties();
+//		return(simulaProperties.getProperty(key,defaultValue));
+//	}
+//	
+//	public static void setProperty(final String key,final String value) {
+//		if(simulaProperties==null) loadProperties();
+//		simulaProperties.setProperty(key,value);
+//		storeProperties();
+//	}
+//	
+//	private static void loadProperties() {
+//		String USER_HOME=System.getProperty("user.home");
+//		//System.out.println("USER_HOME="+USER_HOME);
+//		File simulaPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
+//		//System.out.println("simulaPropertiesDir="+simulaPropertiesDir);
+//		simulaPropertiesDir.mkdirs();
+//		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
+//		simulaProperties = new Properties();
+//		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
+//		} catch(Exception e) {}
+//	}
+//	
+//	private static void storeProperties() {
+//		System.out.print("RT.storeProperties: SIMULA ");
+//		simulaProperties.list(System.out);
+//		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
+//		} catch(Exception e) { e.printStackTrace(); }
+//	}
 
 	// *********************************************************************
 	// *** TRACING AND DEBUGGING UTILITIES
