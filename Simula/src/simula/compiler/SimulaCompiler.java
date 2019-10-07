@@ -66,8 +66,6 @@ public final class SimulaCompiler {
 		if(reader==null) {
 			try { reader=new InputStreamReader(new FileInputStream(inputFileName),Global.CHARSET$);
 			} catch (IOException e) {
-				//Util.println("Error Opening File: " + fileName);
-				//e.printStackTrace();
 				Util.error("can't open " + inputFileName+", reason: "+e);
 			}
 		}
@@ -85,9 +83,6 @@ public final class SimulaCompiler {
 		
 		if(Option.TRACING) Util.message("Compiling: \""+inputFileName+"\"");
 		
-//		if(Option.outputDir==null) {
-//		     Global.outputDir=new File(Global.sourceFileDir,"bin");	
-//		} else Global.outputDir=Option.outputDir;
 		if(Global.outputDir==null) {
 		     Global.trySetOutputDir(new File(Global.sourceFileDir,"bin"));
 		}
@@ -109,7 +104,6 @@ public final class SimulaCompiler {
 		tmpClassDir.mkdirs();
 		Global.tempClassFileDir=tmpClassDir;
 
-//		File userHome=new File(System.getProperty("user.home"));
 		File desktop=new File(System.getProperty("user.home"),"Desktop");
 		if(Option.verbose) {
 			// https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
@@ -135,7 +129,6 @@ public final class SimulaCompiler {
 			Util.message("file.encoding        "+System.getProperty("file.encoding"));
 			Util.message("defaultCharset       "+Charset.defaultCharset());
 
-			
 			// this will list the current system properties
 		    //  System.getProperties().list(System.out);
 
@@ -151,13 +144,11 @@ public final class SimulaCompiler {
 	
 	private void list(String indent,final File dir) {
 		try {
-			//Util.println("tmpClass: "+dir);
 			File[] elt = dir.listFiles();
 			if(elt==null || elt.length==0) {
 				Util.println("Empty Directory: "+dir);
 				return; 
 			}
-			//Util.println("Elements: "+elt.length);
 			for (File f : elt) {
 				Util.println(indent+"- "+f);
 				if(f.isDirectory()) list(indent+"   ",f);
@@ -312,12 +303,10 @@ public final class SimulaCompiler {
 					doListClassFile(classFile);
 				}
 			}
-			//Util.println("SimulaCompiler.doCompile: BEGIN BYTE CODE REPAIR: "+Global.tempClassFileDir);
 			File classDir=Global.tempClassFileDir;
 			//repairClassFiles(classDir);
 			ArrayList<String> files=classFiles(classDir,new ArrayList<String>());
 			for(String classFileName:files) {
-				//Util.println("SimulaCompiler.doCompile: Repair: "+classFileName);
 				new ByteCodeEngineering().doRepairSingleByteCode(classFileName);
 			}
 			if(Option.TRACE_BYTECODE_OUTPUT) {
@@ -392,9 +381,7 @@ public final class SimulaCompiler {
 		if (Option.noJavacWarnings)
 			arguments.add("-nowarn");
 		// arguments.add("-Xlint:unchecked");
-		// arguments.add("-BareTull");
 		for (JavaModule module : Global.javaModules)
-//			arguments.add(module.javaOutputFileName); // Add .java Files
 			arguments.add(module.javaOutputFile.toString()); // Add .java Files
 		int nArg = arguments.size();
 		String[] args = new String[nArg];
@@ -458,25 +445,9 @@ public final class SimulaCompiler {
 		if (Option.TRACING)	Util.message("BEGIN Create .jar File");
 		jarFile = new File(Global.outputDir,program.getIdentifier()+".jar");
 		jarFile.getParentFile().mkdirs();
-//		jarFile.createNewFile();
-		
-//		Global.outputDir.mkdirs();
-//		Global.isFileWriteable(Global.outputDir);
-//		jarFile.createNewFile();
-//		if(!Global.isFileWriteable(jarFile)) {
-//			Util.error("Can't write output  to: \"" + jarFile+"\"");
-//			Util.warning("Can't write output  to: \"" + jarFile+"\"");
-//			String USER_HOME=System.getProperty("user.home");
-//			File outputDir=new File(USER_HOME,"bin");
-//			outputDir.mkdirs();
-//			jarFile = new File(outputDir,program.getIdentifier()+".jar");
-//			Util.warning("Output file changed to: \"" + jarFile+"\"");
-//		}
-
 		if (!program.isExecutable()) {
 			Util.warning("Separate Compiled Module is written to: \"" + jarFile+"\"");
 		}
-//		jarFile.getParentFile().mkdirs();
 		Manifest manifest = new Manifest();
 		mainEntry = Global.packetName + '/' + program.getIdentifier();
 		mainEntry = mainEntry.replace('/', '.');
@@ -492,10 +463,6 @@ public final class SimulaCompiler {
 		
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 		add(target, new File(Global.tempClassFileDir,Global.packetName), Global.tempClassFileDir.toString().length());
-		// // Add External Jar Files
-		// for(ExternalJarFile jf:ExternalJarFile.ExternalJarFiles)
-		// addExternalJar(target,jf.jarFileName);
-
 		add(target, new File(Global.simulaRtsLib,"simula/common"), Global.simulaRtsLib.toString().length());
 		if (Global.INCLUDE_RUNTIME_SYSTEM_IN_JAR) {
 			add(target, new File(Global.simulaRtsLib,"simula/runtime"), Global.simulaRtsLib.toString().length());
@@ -565,13 +532,12 @@ public final class SimulaCompiler {
 	private void printSummary() {
 		Util.message("------------  COMPILATION SUMMARY  ------------");
 		if (!programModule.isExecutable()) {
-			Util.message("Separate Compiled "+programModule.module.blockKind+" is written to: \"" + jarFile+"\"");
+			Util.message("Separate Compiled "+programModule.module.declarationKind+" is written to: \"" + jarFile+"\"");
 			Util.message("Rel Attr.File:   \""+programModule.getRelativeAttributeFileName()+"\"");
 		} else {
 			Util.message("Resulting File:  \"" + jarFile+"\"");
 			Util.message("Main Entry:      \"" + mainEntry+"\"");
 		}
-//		list("Global.tempClassFileDir" + '/' + "Global.packetName");
 		if(Option.DEBUGGING) listJarFile(jarFile);
 	}
 
@@ -630,7 +596,6 @@ public final class SimulaCompiler {
 		Process process = runtime.exec(cmd);
 		InputStream err = process.getErrorStream();
 		InputStream inp = process.getInputStream();
-//		OutputStream out = process.getOutputStream();
 		StringBuilder error=new StringBuilder();
 		while (process.isAlive()) {
 			while (err.available() > 0) {
@@ -642,32 +607,8 @@ public final class SimulaCompiler {
 				if(Global.console != null) Global.console.write(""+(char) inp.read());
 				else System.out.append((char) inp.read());
 			}
-//			while (System.in.available() > 0) {
-//				int c=System.in.read();
-//				System.out.println("Pipe character: c="+(char)c);
-//				out.write(c);
-//			}
 		}
 		if(error.length()>0) Util.error(error.toString());
-		
-//		StringBuilder error=new StringBuilder();
-//		StringBuilder output=new StringBuilder();
-//		// get the error stream of the process and print it
-//		InputStream err = process.getErrorStream();
-//		InputStream inp = process.getInputStream();
-//		while (process.isAlive()) {
-//			while(err.available() > 0) error.append((char)err.read());
-//			while(inp.available() > 0) output.append((char)inp.read());
-//		}
-//		if (Option.TRACING) {
-////			if(error.length()>0) Util.message("Error: " + error.toString());
-//			if(error.length()>0) Util.error("\""+error.toString()+"\"");
-//			if(output.length()>0) Util.message("Output: " + output.toString());
-//		} else {
-//			if(error.length()>0) System.err.append("Error: " + error.toString());
-//			if(output.length()>0) System.out.append(output.toString());			
-//		}
-		
 		return (process.exitValue());
 	}
 

@@ -57,7 +57,7 @@ public class Head$ extends Linkage$ {
     }
 
     public Head$ STM$() {
-//        SUC=PRED=(Linkage$)CUR$;
+//      SUC=PRED=(Linkage$)CUR$; // Moved to Constructor
         EBLK(); // LINKAGE
         return(this);
     }

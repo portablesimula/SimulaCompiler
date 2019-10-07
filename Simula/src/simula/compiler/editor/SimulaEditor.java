@@ -58,20 +58,9 @@ public class SimulaEditor extends JFrame {
 	// *** SimulaEditor: Main Entry for TESTING ONLY
 	// ****************************************************************
     public static void main(String[] args) {
-//		String simulaHome=Global.getProperty("simula.home",null); // Default, may be null
-//		if(simulaHome==null) Util.error("Simula Property 'simula.home' is not defined");
-		
-				
-//		Global.packetName="simulaTestPrograms";
 		Global.packetName="simprog";
-//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
-		
-		
 		String userDir="C:/GitHub/SimulaCompiler/Simula";
-//		Global.simulaRtsLib=userDir+"/bin/"; // To use Eclipse Project's simula.runtime
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
-		
-//		Option.outputDir=Global.getTempFileDir("simula/bin/");
 		RTOption.InitRuntimeOptions();
     	Option.InitCompilerOptions();
 		Global.sampleSourceDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples");
@@ -101,14 +90,7 @@ public class SimulaEditor extends JFrame {
 
         // Set the title of the window
         setTitle(Global.simulaVersion);
-//      if(Global.USE_NEW_WORKSPACES) {
-        	Global.loadWorkspaceProperties();
-//        } else {
-//        	Global.currentWorkspace=new File(Global.getProperty("simula.workspace.dir",Global.sampleSourceDir.toString()));
-//        
-//        	if(Global.currentWorkspace.toString().contains("Simula-Beta-0.3"))                                                // TODO: SKAL FJERNES SENERE
-//        		Global.currentWorkspace=new File(Global.currentWorkspace.toString().replace("Simula-Beta-0.3","Simula-1.0")); // TODO: SKAL FJERNES SENERE
-//        }
+       	Global.loadWorkspaceProperties();
     	
         // Set the default close operation (exit when it gets closed)
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -148,7 +130,6 @@ public class SimulaEditor extends JFrame {
 					     +"\ninstalling a newer version.\n");
 		}
 
-        
         doCheckForNewVersion();
         doSelectWorkspace();
     }
@@ -192,23 +173,14 @@ public class SimulaEditor extends JFrame {
                    +"\n";
     	String browse="Browse for another Workspace Directory";
     	Choice workspaceChooser = new Choice();
-//		if(Global.USE_NEW_WORKSPACES) {
-			for(File workspace:Global.workspaces) workspaceChooser.add(workspace.toString());			
-//		} else {
-//			ArrayDeque<File> workspaces=Global.loadWorkspacesFromOldPropertyFile();
-//			for(File workspace:workspaces) workspaceChooser.add(workspace.toString());
-//		}
+		for(File workspace:Global.workspaces) workspaceChooser.add(workspace.toString());			
     	workspaceChooser.add(browse);
     	workspaceChooser.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-		        //Util.println("itemStateChanged: "+e);
-		        //Util.println("Workspace Selected: "+ workspaceChooser.getItem(workspaceChooser.getSelectedIndex()));  
 		        String s=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
 		        if(s.equals(browse)) {
-			        //Util.println("itemStateChanged: CALL FILE CHOOSER on"+e.getItem());  
 			        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home",Global.currentWorkspace.toString()));
 			        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//			        int answer = fileChooser.showOpenDialog(SimulaEditor.this);
 			        int answer = fileChooser.showOpenDialog(null);
 			        if (answer == JFileChooser.APPROVE_OPTION) {
 			        	String anotherWorkspace=fileChooser.getSelectedFile().toString();
@@ -232,8 +204,23 @@ public class SimulaEditor extends JFrame {
         UIManager.put("Panel.background",PanelBackground);
         String selected=workspaceChooser.getItem(workspaceChooser.getSelectedIndex());  
     	Global.setCurrentWorkspace(new File(selected));
-        //Util.println("doSelectWorkspace: selected="+selected);
 	    Global.trySetOutputDir(new File(Global.currentWorkspace,"bin"));
+    }
+
+    // ****************************************************************
+    // *** doSelectJavaDir
+    // ****************************************************************
+    static void doSelectJavaDir() {
+    	if (Option.TRACING); Util.println("SimulaEditor.doSelectJavaDir: ");
+	    File file=new File(Global.currentWorkspace,"java");
+	    file.mkdirs();
+        JFileChooser fileChooser = new JFileChooser(file);
+        fileChooser.setDialogTitle("Select Java Directory");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int answer = fileChooser.showOpenDialog(null);
+        if (answer == JFileChooser.APPROVE_OPTION) {
+        	Option.keepJava=fileChooser.getSelectedFile();
+        }
     }
 
     // ****************************************************************
@@ -265,10 +252,6 @@ public class SimulaEditor extends JFrame {
 		    URL remote = new URL(remoteFileName);
             Properties remoteProperties=new Properties();
             remoteProperties.loadFromXML(remote.openStream());
-//			if (Option.verbose) {
-//				System.out.print("SimulaEditor.doCheckForNewVersion: REMOTE ");
-//				remoteProperties.list(System.out);
-//			}
             String remoteReleaseID=remoteProperties.getProperty("simula.version")
             		          +'R'+remoteProperties.getProperty("simula.revision");
         	String remoteSetupDated=remoteProperties.getProperty("simula.setup.dated","?");
@@ -284,7 +267,6 @@ public class SimulaEditor extends JFrame {
     			int result=Util.optionDialog(msg,"Update Notification",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,"Yes","No");
     			if(result==0) {
 					Desktop desktop = Desktop.getDesktop();
-//					try { desktop.browse(new URI("https://github.com/portablesimula"));
 					try {
 						desktop.browse(new URI("https://portablesimula.github.io/github.io/"));
 					    System.exit(-1); // Stop the Editor
@@ -315,12 +297,10 @@ public class SimulaEditor extends JFrame {
     // ****************************************************************
     // *** doNewTabbedPanel
     // ****************************************************************
-    static void doNewTabbedPanel(File file) {
+    static void doNewTabbedPanel(File file,Language lang) {
     	new Thread(new Runnable() {
     		public void run() {
-    			//SimulaEditor.doNewTabbedPanel(file);
-    			//SourceTextPanel current=new SourceTextPanel(file,menuBar.popupMenu);
-    			current=new SourceTextPanel(file,menuBar.popupMenu);
+     			current=new SourceTextPanel(file,lang,menuBar.popupMenu);
     			tabbedPane.addTab((file==null)?"unnamed":file.getName(), null, current, "Tool tip ...");
     			// select the last tab
     			tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
@@ -344,7 +324,7 @@ public class SimulaEditor extends JFrame {
 			}
 		}).start();
 	}
-	
+	    
     // ****************************************************************
     // *** AutoRefresher
     // ****************************************************************

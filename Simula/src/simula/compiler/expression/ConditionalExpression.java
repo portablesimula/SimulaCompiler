@@ -42,10 +42,8 @@ public final class ConditionalExpression extends Expression {
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
-		//Util.warning("ConditionalExpression in this Context is not Supported - Rewrite program");
 		condition.doChecking();
 		condition.backLink=this; // To ensure RESULT$ from functions
-		//Util.BREAK("ConditionalExpression.doChecking(): Condition: "+condition);
 		Type cType = condition.type;
 		if (cType != Type.Boolean)
 			Util.error("ConditionalExpression: Condition is not a boolean (rather "
@@ -58,7 +56,6 @@ public final class ConditionalExpression extends Expression {
 		thenExpression.doChecking(); // In case TypeConversion was added
 		elseExpression.doChecking(); // In case TypeConversion was added
 		this.type=expectedType;
-		// Util.BREAK("END ConditionalExpression" + toString() + ".doChecking - Result type=" + this.type);
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -70,8 +67,6 @@ public final class ConditionalExpression extends Expression {
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		//Util.BREAK("ConditionalExpression.toJavaCode: thenExpression="+thenExpression+", qual="+thenExpression.getClass().getSimpleName());
-		//Util.BREAK("ConditionalExpression.toJavaCode: elseExpression="+elseExpression+", qual="+elseExpression.getClass().getSimpleName());
 		return ("((" + condition.get() + ")?("
 				+ thenExpression.get() + "):("
 				+ elseExpression.get() + "))");

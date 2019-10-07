@@ -86,7 +86,6 @@ public class OutFile$ extends ImageFile$ {
 		image = IMAGE_;
 		setpos(1);
 		OutputStream outputStream;
-		//RT.BREAK("OutFile.open: Filename=" + FILENAME$);
 		if (FILENAME$.edText().equalsIgnoreCase("sysout"))
 			outputStream = System.out;
 		else {

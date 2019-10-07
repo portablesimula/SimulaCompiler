@@ -10,16 +10,11 @@ package simula.compiler.statement;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
-import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.TypeDeclaration;
-import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
-import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -94,7 +89,6 @@ public final class SwitchStatement extends Statement {
 			}
 			Parser.expect(KeyWord.DO);
 			Statement statement = Statement.doParse();
-//			Parser.expect(KeyWord.SEMICOLON);
 			Parser.accept(KeyWord.SEMICOLON);
 			switchCases.add(new WhenPart(caseKeyList, statement));
 		}
@@ -137,9 +131,9 @@ public final class SwitchStatement extends Statement {
     		if(casePair==null)
     			 JavaModule.code("default:");
     		else {
-    			int low=intConstant(casePair.lowCase);
+    			int low=casePair.lowCase.getInt();
     			if(casePair.hiCase!=null) {
-        			int hi=intConstant(casePair.hiCase);
+        			int hi=casePair.hiCase.getInt();
         			for(int i=low;i<=hi;i++)
         			JavaModule.code("case "+i+": ");
     			} else JavaModule.code("case "+low+": ");
@@ -170,21 +164,13 @@ public final class SwitchStatement extends Statement {
     public void doChecking() {
     	if(IS_SEMANTICS_CHECKED()) return;
     	Global.sourceLineNumber=lineNumber;
-    	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN SwitchStatement("+toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-    
+    	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN SwitchStatement("+toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());    
     	lowKey.doChecking(); hiKey.doChecking();
-
-//    	lowIndex=intConstant(lowKey);
-//    	hiIndex=intConstant(hiKey);
-//    	if(lowIndex > hiIndex) Util.error("Switch Statement: "+lowKey+"("+lowIndex+")"+" > "+hiKey+"("+hiIndex+")");
     	switchKey.doChecking();
-		//Util.println("SwitchStatement.doChecking: switchKey'type="+switchKey.type);
 		if(switchKey.type==Type.Character) {
-			
+			Util.NOT_IMPLEMENTED("Switch Statement: Keytype Character");
 		} else switchKey=TypeConversion.testAndCreate(Type.Integer,switchKey);
-//    	boolean[] used=new boolean[hiIndex-lowIndex+1];
     	for(WhenPart when:switchCases) {
-			//Util.println("SwitchStatement.doChecking: when="+when);
     		for(CasePair casePair:when.caseKeyList)
 			if(casePair!=null) {
 				casePair.lowCase.doChecking();
@@ -194,54 +180,6 @@ public final class SwitchStatement extends Statement {
     	}
     	SET_SEMANTICS_CHECKED();
     }
-
-	private int intConstant(final Expression e) {
-		//Util.println("SwitchStatement.intConstant: e="+e+", QUAL="+e.getClass().getSimpleName());
-		if(e instanceof Constant) {
-			Object value=((Constant)e).value;
-			//Util.println("SwitchStatement.intConstant: value="+value+", QUAL="+value.getClass().getSimpleName());
-			if(value instanceof Number) {
-				int intValue=((Number)value).intValue();
-				//Util.println("SwitchStatement.intConstant: longValue="+intValue);
-				return(intValue);
-			} else if(value instanceof Character) {
-				char charValue=((Character)value).charValue();
-				//Util.println("SwitchStatement.intConstant: charValue="+charValue);
-				return((int)charValue);
-			}
-		}
-		if(e instanceof Variable) {
-			Variable var=(Variable)e;
-			Meaning meaning=var.meaning;
-			//Util.println("SwitchStatement.intConstant: meaning="+meaning);
-			Declaration declaredAs=meaning.declaredAs;
-			//Util.println("SwitchStatement.intConstant: declaredAs="+declaredAs+", QUAL="+declaredAs.getClass().getSimpleName());
-			if(declaredAs instanceof TypeDeclaration) {
-				TypeDeclaration tp=(TypeDeclaration)declaredAs;
-				Expression constElt=tp.constantElement;
-				//Util.println("SwitchStatement.intConstant: constElt="+constElt);
-				if(constElt!=null) {
-				    //Util.println("SwitchStatement.intConstant: constElt="+constElt+", QUAL="+constElt.getClass().getSimpleName());
-					if(constElt instanceof Constant) {
-						Object value=((Constant)constElt).value;
-						//Util.println("SwitchStatement.intConstant: value="+value+", QUAL="+value.getClass().getSimpleName());
-						if(value instanceof Number) {
-							int intValue=((Number)value).intValue();
-							//Util.println("SwitchStatement.intConstant: longValue="+intValue);
-							return(intValue);
-						} else if(value instanceof Character) {
-							char charValue=((Character)value).charValue();
-							//Util.println("SwitchStatement.intConstant: charValue="+charValue);
-							return((int)charValue);
-						}
-					}
-				}
-			}
-		}
-		Util.error("Switch Statement: "+e+" is not a Constant");
-		return(0);
-	}
-  
 	
 	
     public void doJavaCoding() {

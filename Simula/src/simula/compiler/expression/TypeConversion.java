@@ -16,7 +16,6 @@ public final class TypeConversion extends Expression {
 	final Expression expression;
 
 	private TypeConversion(final Type type,final Expression expression) {
-		//Util.BREAK("new TypeConversion("+type+','+expression+") qual="+expression.getClass().getSimpleName());
 		this.type=type;
 		this.expression = expression; expression.backLink=this;
 	    this.doChecking();
@@ -33,17 +32,28 @@ public final class TypeConversion extends Expression {
 
 	// Test if a TypeConversion is necessary and then create it.
 	public static Expression testAndCreate(final Type toType,final Expression expression) {
-		if (testCastNeccessary(toType, expression))
+		if (testCastNeccessary(toType, expression)) {
+			if(expression instanceof Constant) {
+				Number val=(Number)((Constant)expression).value;
+				Type fromType=expression.type;
+				if(toType==Type.Integer) {
+					if(fromType==Type.Real) val=(int)Math.round(val.floatValue());
+					else if(fromType==Type.LongReal) val=(int)Math.round(val.doubleValue());
+				}
+				else if(toType==Type.Real) val=val.floatValue();
+				else if(toType==Type.LongReal) val=val.doubleValue();
+				else Util.FATAL_ERROR("IMPOSSIBLE - TypeConversion.testAndCreate: "+expression);
+				Constant c=new Constant(toType,val); c.doChecking();
+				return(c);
+			}
 			return (new TypeConversion(toType, expression));
-		return (expression);
+		} return (expression);
 	}
 
 	// Test if a TypeConversion is necessary.
 	private static boolean testCastNeccessary(final Type toType,final Expression expression) {
-		//Util.BREAK("TypeConversion.testCastNeccessary("+toType+','+expression+") qual="+expression.getClass().getSimpleName());
 		if (toType == null)	return (false);
 		Type fromType = expression.type;
-		//Util.BREAK("TypeConversion.testCastNeccessary: "+fromType+" ==> "+toType);
 		if(fromType==null) {
 			Util.error("Expression "+expression+" has no type - can't be converted to "+toType);
 			return(false);
@@ -66,11 +76,9 @@ public final class TypeConversion extends Expression {
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
-		// Util.BREAK("TypeConversion.doChecking(): "+this);
 		type.doChecking(Global.currentScope);
 		expression.doChecking();
 		Type type = expression.type;
-		// Util.BREAK("TypeConversion.doChecking(): Cast="+this.type+", expression.type="+type.toJavaType());
 		if (type.isConvertableTo(this.type) == Type.ConversionKind.Illegal)
 			Util.error("Illegal Type Conversion " + type + " ==> " + this.type);
 		SET_SEMANTICS_CHECKED();
@@ -84,7 +92,6 @@ public final class TypeConversion extends Expression {
 
 	  public String toJavaCode() {
 		  ASSERT_SEMANTICS_CHECKED(this);
-		  // Util.BREAK("TypeConversion.toJavaCode: "+expression.type+" ==> "+type);
 		  String evaluated = expression.toJavaCode();
 		  if (type == Type.Integer) {
 			  Type fromType = expression.type;
@@ -93,38 +100,6 @@ public final class TypeConversion extends Expression {
 		  }
 		  return ("((" + type.toJavaType() + ")(" + evaluated + "))");
 	  }
-
-	public String OLD_toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
-		// Util.BREAK("TypeConversion.toJavaCode: "+expression.type+" ==> "+type);
-		String evaluated = expression.toJavaCode();
-		String cast = type.toJavaType();
-//		if (expression instanceof Variable) {
-//			Variable var = (Variable) expression;
-//			Declaration declaredAs = var.meaning.declaredAs;
-//			// Util.BREAK("TypeConversion.toJavaCode: declaredAs="+declaredAs+", qual="+declaredAs.getClass().getSimpleName());
-//			if (declaredAs instanceof Parameter) {
-//				Parameter par = (Parameter) declaredAs;
-//				Type type = par.type;
-//				Parameter.Kind kind = par.kind;
-//				// Util.BREAK("TypeConversion.toJavaCode: type="+type+", kind="+kind+", evaluated="+evaluated);
-//				if (kind == Parameter.Kind.Procedure) {
-//					//evaluated = par.externalIdent + ".get().CPF().RESULT$()";
-//					if (type.isArithmeticType()) return (cast + "Value(" + evaluated + ")");
-//				}
-//			}
-//		}
-		if (type.isArithmeticType()) {
-			if (type == Type.Integer) {
-				Type fromType = expression.type;
-				if (fromType == Type.Real || fromType == Type.LongReal)
-//					evaluated = "(int)Math.round(" + evaluated + ")";
-					return("(int)Math.round(" + evaluated + ")");
-			}
-//			return (cast + "Value(" + evaluated + ")");
-		}
-		return ("((" + cast + ")(" + evaluated + "))");
-	}
 
 	public String toString() {
 		return ("((" + type + ")(" + expression + "))");

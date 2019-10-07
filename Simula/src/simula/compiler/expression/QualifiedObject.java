@@ -84,9 +84,7 @@ public final class QualifiedObject extends Expression {
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		String result = "((" + classDeclaration.getJavaIdentifier() + ")(" + lhs.get() + "))";
-		// Util.BREAK("QualifiedObject.toJavaCode: "+this+", ==> "+result);
-		return (result);
+		return("((" + classDeclaration.getJavaIdentifier() + ")(" + lhs.get() + "))");
 	}
 
 	public String toString() {

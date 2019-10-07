@@ -94,21 +94,23 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ExternalDeclaration extends Declaration {
-	private ExternalDeclaration() {super(null);}
+	private ExternalDeclaration() {
+		super(null);
+		this.declarationKind=Declaration.Kind.ExternalDeclaration;
+	}
 
 	public static void doParse(final Vector<Declaration> declarationList) {
-        //= EXTERNAL  CLASS  ExternalList
-        //= EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
-        //| EXTERNAL kind PROCEDURE ExternalItem  IS ProcedureDeclaration
+        // = EXTERNAL  CLASS  ExternalList
+        // | EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
+        // | EXTERNAL kind PROCEDURE ExternalItem  IS ProcedureDeclaration
 		String kind=acceptIdentifier();
 		if(kind!=null) Util.NOT_IMPLEMENTED("External "+kind+" Procedure");
 		Type expectedType = acceptType();
-		//Token kind = Parser.currentToken;
 		if (!(Parser.accept(KeyWord.CLASS) || Parser.accept(KeyWord.PROCEDURE)))
 			Util.error("parseExternalDeclaration: Expecting CLASS or PROCEDURE");
 		
 		String identifier = expectIdentifier();
-		LOOP:while(true) {
+   LOOP:while(true) {
 			Token externalIdentifier = null;
 			if (Parser.accept(KeyWord.EQ)) {
 				externalIdentifier = Parser.currentToken;
@@ -140,7 +142,6 @@ public final class ExternalDeclaration extends Declaration {
 		if(!(file.exists() && file.canRead())) {
 			Util.error("Can't read attribute file: "+file);	return(null);
 	    }
-//	    Util.BREAK("ExternalDeclaration.readAttributeFile: "+jarFileName);
 	    try {
 	    	JarFile jarFile=new JarFile(file);
 	        Manifest manifest=jarFile.getManifest();			
@@ -180,7 +181,6 @@ public final class ExternalDeclaration extends Declaration {
 			OutputStream outputStream = null;
 			try { inputStream = jarFile.getInputStream(entry);
 			      File destFile = new File(destDir,entry.getName());
-			      //Util.message("Add entry: "+destFile);
 			      outputStream=new FileOutputStream(destFile);	 
 			      byte[] buffer = new byte[4096];
 			      int bytesRead = 0;

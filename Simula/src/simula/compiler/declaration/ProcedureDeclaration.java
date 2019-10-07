@@ -24,7 +24,6 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * </pre>
  * 
  * @author Øystein Myhre Andersen
  */
@@ -35,9 +34,9 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	public ProcedureDeclaration(final String identifier,final BlockKind blockKind) {
+	public ProcedureDeclaration(final String identifier,final Declaration.Kind declarationKind) {
 		super(identifier);
-		this.blockKind = blockKind;
+		this.declarationKind = declarationKind;
 	}
 
 	// ***********************************************************************************************
@@ -74,17 +73,15 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	 * </pre>
 	 */
 	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
-//		BlockKind blockKind = (Option.standardClass) ? BlockKind.StaticMethod : BlockKind.Procedure;
-		BlockKind blockKind = BlockKind.Procedure;
-		ProcedureDeclaration block = new ProcedureDeclaration(null, blockKind);
+		Declaration.Kind declarationKind = Declaration.Kind.Procedure;
+		ProcedureDeclaration block = new ProcedureDeclaration(null, declarationKind);
 		block.type = type;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
 		block.modifyIdentifier(expectIdentifier());
-		// Util.BREAK("BEGIN BlockParser: "+block);
-		// if(Option.TRACE_PARSE) Parser.BREAK("Begin BlockParser");
+		// if(Option.TRACE_PARSE) Parser.BREAK("Begin doParseProcedureDeclaration");
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
-				block.addParameter(new Parameter(expectIdentifier()));
+				new Parameter(expectIdentifier()).into(block.parameterList);
 			} while (Parser.accept(KeyWord.COMMA));
 			Parser.expect(KeyWord.ENDPAR);
 			Parser.expect(KeyWord.SEMICOLON);
@@ -117,7 +114,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 
 		block.lastLineNumber = Global.sourceLineNumber;
 		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
-		// Debug.BREAK("END ProcedureDeclaration: ");
 		Global.currentScope = block.declaredIn;
 		return (block);
 	}
@@ -189,7 +185,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private static void doParseBody(final BlockDeclaration block) {
 		Statement stm;
-		// Debug.BREAK("BEGIN Block: "+this.edScopeChain());
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse Block");
 		while (Declaration.parseDeclaration(block.declarationList)) {
 			Parser.accept(KeyWord.SEMICOLON);
@@ -202,39 +197,23 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	}
 
 	// ***********************************************************************************************
-	// *** Utility: addParameter
-	// ***********************************************************************************************
-	public void addParameter(final Parameter parameter) {
-		for (Parameter par : parameterList)
-			if (par.identifier.equalsIgnoreCase(parameter.identifier)) {
-				Util.error("Parameter already defined: " + identifier);
-				return;
-			}
-		parameterList.add(parameter);
-	}
-
-	// ***********************************************************************************************
 	// *** Checking
 	// ***********************************************************************************************
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
-		if (blockKind == BlockKind.ContextFreeMethod) externalIdent = this.identifier;
-		if (blockKind == BlockKind.StaticMethod) externalIdent = this.identifier;
-		if (blockKind == BlockKind.MemberMethod) externalIdent = this.identifier;
+		if (declarationKind == Declaration.Kind.ContextFreeMethod) externalIdent = this.identifier;
+		if (declarationKind == Declaration.Kind.StaticMethod) externalIdent = this.identifier;
+		if (declarationKind == Declaration.Kind.MemberMethod) externalIdent = this.identifier;
 		else if (externalIdent == null)	externalIdent = edJavaClassName();
 
 		currentBlockLevel++;
 		blockLevel = currentBlockLevel;
-		// Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-		// Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-		//Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
 		Global.currentScope = this;
 
 		int prfx = 0;// prefixLevel();
-		// Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
 
-		if (blockKind == BlockKind.Procedure)
+		if (declarationKind == Declaration.Kind.Procedure)
 			for (Parameter par : this.parameterList) par.setExternalIdentifier(prfx);
 		for (Declaration par : this.parameterList) par.doChecking();
 		for (Declaration dcl : declarationList)	dcl.doChecking();
@@ -242,12 +221,10 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		doCheckLabelList(null);
 		VirtualSpecification virtualSpec = VirtualSpecification.getVirtualSpecification(this);
 		if (virtualSpec != null) {
-			//Util.BREAK("ProcedureDeclaration("+identifier+").doChecking: virtualSpec="+virtualSpec);
 			// This Procedure is a Virtual Match
 			myVirtual = new VirtualMatch(virtualSpec, this);
 			ClassDeclaration decl = (ClassDeclaration) declaredIn;
 			decl.virtualMatchList.add(myVirtual);
-//			if (decl == virtualSpec.specifiedIn) virtualSpec.hasDefaultMatch = true;
 			if (decl == virtualSpec.declaredIn) virtualSpec.hasDefaultMatch = true;
 		}
 		Global.currentScope = declaredIn;
@@ -259,8 +236,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		// if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
-		// if (ident.equalsIgnoreCase("P")) Util.BREAK("ProcedureDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
 		for (Declaration declaration : declarationList)
 			if (ident.equalsIgnoreCase(declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
@@ -277,10 +252,9 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
 	public void doJavaCoding() {
-		// Util.BREAK("ProcedureDeclaration.doJavaCoding: " + identifier + ", BlockKind=" + blockKind);
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
-		switch (blockKind) {
+		switch (declarationKind) {
 		case ContextFreeMethod:	doMethodJavaCoding("static ", false); break;
 		case MemberMethod: doMethodJavaCoding("", true); break;
 		case StaticMethod: doMethodJavaCoding("static ", true); break;
@@ -323,9 +297,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		s.append('(');
 		boolean withparams = false;
 		if (addStaticLink) {
-			String SL = "RTObject$";
-			// String SL=this.declaredIn.externalIdent;
-			s.append(SL + " SL$");
+			s.append("RTObject$ SL$");
 			withparams = true;
 		}
 		for (Declaration par : this.parameterList) {
@@ -345,21 +317,18 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private void doProcedureCoding() {
 		Global.sourceLineNumber = lineNumber;
-		// Util.BREAK("ProcedureDeclaration.doProcedureCoding: "+identifier);
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
 		JavaModule javaModule = new JavaModule(this);
 		Global.currentScope = this;
 		JavaModule.code("@SuppressWarnings(\"unchecked\")");
-//		JavaModule.code("public final class " + getJavaIdentifier() + " extends BASICIO$ {");
 		JavaModule.code("public final class " + getJavaIdentifier() + " extends PROC$ {");
-		JavaModule.debug("// ProcedureDeclaration: BlockKind=" + blockKind + ", BlockLevel=" + blockLevel
+		JavaModule.debug("// ProcedureDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel
 					+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
-//		JavaModule.code("public int prefixLevel() { return(0); }");
 		if (isQPSystemBlock())
 			JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
-		if (blockKind == BlockKind.Procedure && type != null) {
+		if (declarationKind == Declaration.Kind.Procedure && type != null) {
 			JavaModule.debug("// Declare return value as attribute");
 			JavaModule.code("public " + type.toJavaType() + ' ' + "RESULT$;");
 			JavaModule.code("public Object RESULT$() { return(RESULT$); }");
@@ -377,7 +346,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		}
 		JavaModule.debug("// Declare locals as attributes");
 		for (Declaration decl : declarationList) decl.doJavaCoding();
-		if (blockKind == BlockKind.Procedure && hasParameter) doCodePrepareFormal();
+		if (declarationKind == Declaration.Kind.Procedure && hasParameter) doCodePrepareFormal();
 		doCodeConstructor();
 		codeProcedureBody();
 		javaModule.codeProgramInfo();
@@ -408,12 +377,10 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private void doCodePrepareFormal() {
 		JavaModule.debug("// Parameter Transmission in case of Formal/Virtual Procedure Call");
-//		JavaModule.code("private int $npar=0; // Number of actual parameters transmitted.");
 		JavaModule.code("public " + getJavaIdentifier() + " setPar(Object param) {");
 		JavaModule.debug("//Util.BREAK(\"CALL " + getJavaIdentifier()
 				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$nParLeft+\", staticLink=\"+SL$);");
 		JavaModule.code("try {");
-//		JavaModule.code("switch($npar++) {");
 		JavaModule.code("switch($nParLeft--) {");
 		int nPar = 0;
 		for (Parameter par : parameterList) {
@@ -460,41 +427,22 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
 		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
-		s.append(blockKind).append(' ').append(identifier);
+		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
-		s.append(editParameterList());
+		s.append(Parameter.editParameterList(parameterList));
 		s.append("  isProtected=").append(isProtected);
 		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';
 		Util.println(spc + beg);
-		// if(!hiddenList.isEmpty()) Util.println(indent+" HIDDEN"+hiddenList);
-		// if(!protectedList.isEmpty()) Util.println(indent+" PROTECTED"+protectedList);
 		for (Declaration decl : declarationList) decl.print(indent + 1);
 		for (Statement stm : statements) stm.print(indent + 1);
 		Util.println(spc + "end[" + edScopeChain() + ']');
-		// Util.BREAK("ProcedureDeclaration.print DONE");
-	}
-
-	// ***********************************************************************************************
-	// *** Printing Utility: editParameterList
-	// ***********************************************************************************************
-	private String editParameterList() {
-		StringBuilder s = new StringBuilder();
-		s.append('(');
-		boolean first = true;
-		for (Parameter par : parameterList) {
-			if (!first)	s.append(',');
-			s.append(par);
-			first = false;
-		}
-		s.append(')');
-		s.append(';');
-		return (s.toString());
 	}
 
 	public String toString() {
 		StringBuilder s = new StringBuilder();
-		s.append(identifier).append("[externalIdent=").append(externalIdent).append("] BlockKind=").append(blockKind).append(", HashCode=").append(hashCode());
+		s.append(identifier).append("[externalIdent=").append(externalIdent).append("] Kind=")
+		.append(declarationKind).append(", QUAL=").append(this.getClass().getSimpleName()).append(", HashCode=").append(hashCode());
 		if (isProtected != null) {
 			s.append(", Protected by ").append(isProtected.identifier);
 			s.append(" defined in ");
@@ -526,7 +474,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	@Override
 	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
-		blockKind=BlockKind.Procedure;
+		declarationKind=Declaration.Kind.Procedure;
 		Util.TRACE_INPUT("BEGIN Read ProcedureDeclaration: "+identifier+", Declared in: "+this.declaredIn);
 		identifier=(String)inpt.readObject();
 		externalIdent=(String)inpt.readObject();

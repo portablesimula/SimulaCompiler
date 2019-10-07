@@ -25,7 +25,6 @@ public class Search extends JFrame {
     private int startIndex=0;
     private int selectStart=-1;
 
-//    public Search(JTextPane textPane) {
     public Search() {
         this.textPane = SimulaEditor.current.editTextPane;
         setLayout(null);
@@ -105,14 +104,9 @@ public class Search extends JFrame {
         catch (Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
 
         // Set the width and height of the window
-//        int width = 360;
-//        int height = 160;
-
-        // Set size window
         setSize(360,160);
 
         // center the frame on the frame
-//        setLocationRelativeTo(textPane);
         setLocationRelativeTo(this);
         setVisible(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -123,7 +117,6 @@ public class Search extends JFrame {
 		selectStart = textPane.getText().toLowerCase().indexOf(textField.getText().toLowerCase());
 		if (selectStart == -1) {
 			startIndex = 0;
-//			JOptionPane.showMessageDialog(null, "Could not find \"" + textField.getText() + "\"!");
 			JOptionPane.showMessageDialog(this, "Could not find \"" + textField.getText() + "\"!");
 			return;
 		}
@@ -131,9 +124,6 @@ public class Search extends JFrame {
 			startIndex = 0;
 		}
 		int selectEnd = selectStart + textField.getText().length();
-//		Util.println("FindButton: textField="+textField.getText());
-//		Util.println("FindButton: selectStart="+selectStart);
-//		Util.println("FindButton: selectEnd="+selectEnd);
 		textPane.select(selectStart, selectEnd);		
 	}
 	

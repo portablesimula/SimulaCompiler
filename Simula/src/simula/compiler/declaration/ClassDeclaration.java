@@ -37,7 +37,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	public Vector<Parameter> parameterList = new Vector<Parameter>();
 	public Vector<VirtualSpecification> virtualSpecList = new Vector<VirtualSpecification>();
 	public Vector<VirtualMatch> virtualMatchList = new Vector<VirtualMatch>();
-	// public Vector<String> hiddenList=new Vector<String>();
 	public Vector<ProtectedSpecification> protectedList = new Vector<ProtectedSpecification>();
 	public Vector<HiddenSpecification> hiddenList = new Vector<HiddenSpecification>();
 	public Vector<CodeLine> code1; // Statement code before inner
@@ -46,13 +45,14 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	private ClassDeclaration(final String identifier,final  BlockKind blockKind) {
-		super(identifier);
-		this.blockKind = blockKind;
-	}
+//	protected ClassDeclaration(final String identifier,final  BlockKind blockKind) {
+//		super(DeclarationKind.ClassDeclaration,identifier);
+//		this.blockKind = blockKind;
+//	}
 
 	public ClassDeclaration(String identifier) {
 		super(identifier);
+		this.declarationKind=Declaration.Kind.Class;
 	}
 
 	// ***********************************************************************************************
@@ -99,18 +99,15 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 * </pre>
 	 */
 	public static ClassDeclaration doParseClassDeclaration(final String prefix) {
-		ClassDeclaration block = new ClassDeclaration(null, BlockKind.Class);
+		ClassDeclaration block = new ClassDeclaration(null);
 		block.prefix = prefix;
 		block.declaredIn.hasLocalClasses = true;
-		// Util.BREAK("ClassDeclaration.doParseClassDeclaration: set hasLocalClasses in="+block.declaredIn);
 		if (block.prefix == null)
 			block.prefix = StandardClass.CLASS.identifier;
 		block.modifyIdentifier(expectIdentifier());
-		// Util.BREAK("BEGIN BlockParser: "+block);
-		// if(Option.TRACE_PARSE) Parser.BREAK("Begin BlockParser");
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
-				block.addParameter(new Parameter(expectIdentifier()));
+				new Parameter(expectIdentifier()).into(block.parameterList);
 			} while (Parser.accept(KeyWord.COMMA));
 			Parser.expect(KeyWord.ENDPAR);
 			Parser.expect(KeyWord.SEMICOLON);
@@ -160,10 +157,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			block.statements.add(Statement.doParse());
 			block.statements.add(new InnerStatement()); // Implicit INNER
 		}
-
 		block.lastLineNumber = Global.sourceLineNumber;
-
-		// Util.BREAK("ClassDeclaration.doParseClassDeclaration: set Type="+Type.Ref(block.identifier));
 		block.type = Type.Ref(block.identifier);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ClassDeclaration");
 		if (Option.TRACE_PARSE)	Util.TRACE("END ClassDeclaration: " + block);
@@ -229,18 +223,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** PARSING: expectHiddenProtectedList
 	// ***********************************************************************************************
 	private static boolean expectHiddenProtectedList(final ClassDeclaration block, final boolean hidden,final boolean prtected) {
-		// Util.BREAK("BlockParser.expectHiddenProtectedList: Hidden="+hidden+", Protected="+prtected);
 		do {
 			String identifier = expectIdentifier();
-			if (hidden)
-				block.hiddenList.add(new HiddenSpecification(block, identifier));
-			if (prtected) {
-				block.protectedList.add(new ProtectedSpecification(block, identifier));
-				// Util.BREAK("Class "+block.identifier+" PROTECTED-LIST="+block.protectedList);
-			}
+			if (hidden)	block.hiddenList.add(new HiddenSpecification(block, identifier));
+			if (prtected) block.protectedList.add(new ProtectedSpecification(block, identifier));
 		} while (Parser.accept(KeyWord.COMMA));
-		// Util.BREAK("BlockParser.expectHiddenProtectedList: HiddenList="+block.hiddenList);
-		// Util.BREAK("BlockParser.expectHiddenProtectedList: ProtectedList="+block.protectedList);
 		Parser.expect(KeyWord.SEMICOLON);
 		return (true);
 	}
@@ -250,7 +237,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	private static void doParseBody(final BlockDeclaration block) {
 		Statement stm;
-		// Debug.BREAK("BEGIN Block: "+this.edScopeChain());
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse Block");
 		while (Declaration.parseDeclaration(block.declarationList)) {
 			Parser.accept(KeyWord.SEMICOLON);
@@ -268,18 +254,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			}
 		}
 		if (inner != null) stmList.add(inner); // Implicit INNER
-	}
-
-	// ***********************************************************************************************
-	// *** Utility: addParameter
-	// ***********************************************************************************************
-	public void addParameter(final Parameter parameter) {
-		for (Parameter par : parameterList)
-			if (par.identifier.equalsIgnoreCase(parameter.identifier)) {
-				Util.error("Parameter already defined: " + identifier);
-				return;
-			}
-		parameterList.add(parameter);
 	}
 
 	// ***********************************************************************************************
@@ -303,15 +277,9 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 */
 	public boolean isSubClassOf(final ClassDeclaration other) {
 		ClassDeclaration prefixClass = getPrefixClass();
-		// Util.BREAK("ClassDeclaration: ("+this+").isSubClassOf("+other+')');
 		if (prefixClass != null)
-			do { // Util.BREAK("ClassDeclaration.isSubClassOf: prefix="+prefixClass);
-				if (other == prefixClass) {
-					// Util.BREAK("ClassDeclaration("+this.identifier+").isSubClassOf("+other.identifier+") Returns TRUE");
-					return (true);
-				}
+			do { if (other == prefixClass) return(true);
 			} while ((prefixClass = prefixClass.getPrefixClass()) != null);
-		// Util.BREAK("ClassDeclaration("+this.identifier+").isSubClassOf("+other.identifier+") Returns FALSE");
 		return (false);
 	}
 
@@ -322,28 +290,18 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
-		// Util.BREAK("ClassDeclaration("+identifier+").doChecking: externalIdent="+externalIdent);
-
 		currentBlockLevel++;
 		blockLevel = currentBlockLevel;
-		// Util.BREAK("ClassDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-		// Util.BREAK("ClassDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-		// Util.BREAK("ClassDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
 		Global.currentScope = this;
 		ClassDeclaration prefixClass = null;
 		if (!hasNoRealPrefix()) {
-			// Util.BREAK("ClassDeclaration("+identifier+").doChecking: prefix="+prefix);
-			// Util.BREAK("ClassDeclaration("+identifier+").doChecking: blockLevel="+sourceBlockLevel);
 			prefixClass = getPrefixClass();
-			// Util.BREAK("ClassDeclaration("+identifier+").doChecking: prefixClass="+prefixClass);
-			// Util.BREAK("ClassDeclaration("+identifier+").doChecking: prefixClass.blockLevel="+prefixClass.sourceBlockLevel);
-			if (prefixClass.blockKind != BlockKind.StandardClass) {
+			if (prefixClass.declarationKind != Declaration.Kind.StandardClass) {
 				if (sourceBlockLevel != prefixClass.sourceBlockLevel)
 					Util.error("Subclass on a deeper block level not allowed.");
 			}
 		}
 		int prfx = prefixLevel();
-		// Util.BREAK("ClassDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
 		for (Parameter par : this.parameterList) par.setExternalIdentifier(prfx);
 		for (Declaration par : new ClassParameterIterator()) par.doChecking();
 		for (VirtualSpecification vrt : virtualSpecList) vrt.doChecking();
@@ -355,7 +313,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		Global.currentScope = declaredIn;
 		currentBlockLevel--;
 		SET_SEMANTICS_CHECKED();
-		// print("","");
 	}
 
 	// ***********************************************************************************************
@@ -379,17 +336,9 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: searchVirtualSpecList -- - Search VirtualSpec-list for 'ident'
 	// ***********************************************************************************************
 	public VirtualSpecification searchVirtualSpecList(final String ident) {
-		//Util.BREAK("ClassDeclaration("+identifier+").searchVirtualSpecList("+ident+"):");
 		for (VirtualSpecification virtual : virtualSpecList) {
-			//Util.BREAK("ClassDeclaration("+identifier+").searchVirtualSpecList("+ident+"): CHECK "+virtual.identifier);
-			if (ident.equalsIgnoreCase(virtual.identifier)) {
-				// Util.BREAK("ClassDeclaration("+identifier+").searchVirtualSpecList("+ident+"):
-				// Result="+virtual);
-				return (virtual);
-			}
-		}
-		// Util.BREAK("ClassDeclaration("+identifier+").searchVirtualSpecList("+ident+"): NOT FOUND");
-		return (null);
+			if (ident.equalsIgnoreCase(virtual.identifier)) return (virtual);
+		} return (null);
 	}
 
 	// ***********************************************************************************************
@@ -429,7 +378,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: findLocalAttribute
 	// ***********************************************************************************************
 	public Declaration findLocalAttribute(final String ident) {
-		// if(ident.equalsIgnoreCase("P")) Util.BREAK("ClassDeclaration("+identifier+").findLocalAttribute("+ident+"): scope="+this);
 		for (Parameter parameter : parameterList)
 			if (ident.equalsIgnoreCase(parameter.identifier)) return (parameter);
 		for (Declaration declaration : declarationList)
@@ -448,7 +396,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: findLocalProcedure
 	// ***********************************************************************************************
 	public ProcedureDeclaration findLocalProcedure(final String ident) {
-		// if(ident.equalsIgnoreCase("P")) Util.BREAK("ClassDeclaration("+identifier+").findLocalProcedure("+ident+"): scope="+this);
 		for (Declaration decl : declarationList)
 			if (ident.equalsIgnoreCase(decl.identifier)) {
 				if (decl instanceof ProcedureDeclaration)
@@ -462,29 +409,17 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: findRemoteAttributeMeaning
 	// ***********************************************************************************************
 	public Meaning findRemoteAttributeMeaning(final String ident) {
-		//if(ident.equalsIgnoreCase("S"))Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): scope="+this);
-
 		boolean behindProtected = false;
 		ClassDeclaration scope = this;
-
 		Declaration decl = scope.findLocalAttribute(ident);
 		if (decl != null) {
-			// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): decl="+decl);
-			// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): decl.isProtected="+decl.isProtected);
 			boolean prtected = decl.isProtected != null;
-			// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): protected="+prtected);
 			VirtualSpecification virtSpec = VirtualSpecification.getVirtualSpecification(decl);
 			if (virtSpec != null && virtSpec.isProtected != null) prtected = true;
-			if (!prtected) {
-				Meaning meaning = new Meaning(decl, this, scope, behindProtected);
-				// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): DIRECT RESULT="+meaning);
-				return (meaning);
-			}
+			if (!prtected) return(new Meaning(decl, this, scope, behindProtected));
 		}
-
-		SEARCH: while (scope != null) {
+SEARCH: while (scope != null) {
 			HiddenSpecification hdn = scope.searchHiddenList(ident);
-			// Util.BREAK("ClassDeclaration(" + identifier + ").findRemoteAttributeMeaning: hdn=" + hdn);
 			if (hdn != null) {
 				scope = hdn.getScopeBehindHidden();
 				behindProtected = true;
@@ -493,16 +428,8 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			Declaration decl2 = scope.findLocalAttribute(ident);
 			if (decl2 != null) {
 				boolean prtected = decl2.isProtected != null;
-				// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): protected="+prtected);
-				if (withinScope(scope)) {
-					// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): protected=null for local attribute");
-					prtected = false;
-				}
-				if (!prtected) {
-					Meaning meaning = new Meaning(decl2, this, scope, behindProtected);
-					// Util.BREAK("ClassDeclaration("+identifier+").findRemoteAttributeMeaning("+ident+"): RESULT="+meaning);
-					return (meaning);
-				}
+				if (withinScope(scope)) prtected = false;
+				if (!prtected) return(new Meaning(decl2, this, scope, behindProtected));
 				behindProtected = true;
 			}
 			scope = scope.getPrefixClass();
@@ -514,13 +441,8 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: searchProtectedList - Search Protected-list for 'ident'
 	// ***********************************************************************************************
 	public ProtectedSpecification searchProtectedList(final String ident) {
-		// Util.BREAK("ClassDeclaration("+identifier+").searchProtectedList("+ident+"): protectedList="+protectedList);
 		for (ProtectedSpecification pct : protectedList)
-			if (ident.equalsIgnoreCase(pct.identifier)) {
-				// Util.BREAK("ClassDeclaration("+identifier+").searchProtectedList("+ident+"): FOUND in "+this);
-				return (pct);
-			}
-		// Util.BREAK("ClassDeclaration("+identifier+").searchProtectedList("+ident+"): NOT FOUND");
+			if (ident.equalsIgnoreCase(pct.identifier))	return (pct);
 		return (null);
 	}
 
@@ -547,23 +469,16 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		// if(ident.equalsIgnoreCase("pos")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this+", QUAL="+this.getClass().getSimpleName());
 		boolean searchBehindHidden = false;
 		ClassDeclaration scope = this;
 		Declaration decl = scope.findLocalAttribute(ident);
 		if (decl != null) {
 			Meaning meaning = new Meaning(decl, this, scope, searchBehindHidden);
-			// if(ident.equalsIgnoreCase("p"))
-			// Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"):
-			// FOUND DIRECT meaning="+meaning+", scope="+scope);
 			return (meaning);
 		}
 		scope = scope.getPrefixClass();
-
-		SEARCH: while (scope != null) {
+SEARCH: while (scope != null) {
 			HiddenSpecification hdn = scope.searchHiddenList(ident);
-			// Util.BREAK("ProcedureDeclaration(" + identifier + ").getVirtualSpecification:
-			// hdn=" + hdn);
 			if (hdn != null) {
 				scope = hdn.getScopeBehindHidden();
 				searchBehindHidden = true;
@@ -572,14 +487,10 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			decl = scope.findLocalAttribute(ident);
 			if (decl != null) {
 				Meaning meaning = new Meaning(decl, this, scope, searchBehindHidden);
-				// if(ident.equalsIgnoreCase("p"))
-				// Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"):
-				// FOUND meaning="+meaning+", scope="+scope);
 				return (meaning);
 			}
 			scope = scope.getPrefixClass();
 		}
-		// if(ident.equalsIgnoreCase("p")) Util.BREAK("ClassDeclaration("+identifier+").findVisibleAttributeMeaning("+ident+"): NOT FOUND");
 		return (null);
 	}
 
@@ -588,10 +499,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	HiddenSpecification searchHiddenList(final String ident) {
 		for (HiddenSpecification hdn : hiddenList)
-			if (ident.equalsIgnoreCase(hdn.identifier)) {
-				// Util.BREAK("ClassDeclaration("+identifier+").searchHiddenList("+ident+"): FOUND="+hdn);
-				return (hdn);
-			}
+			if (ident.equalsIgnoreCase(hdn.identifier))	return (hdn);
 		return (null);
 	}
 
@@ -599,11 +507,8 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: getPrefixClass
 	// ***********************************************************************************************
 	public ClassDeclaration getPrefixClass() {
-		// Util.BREAK("ClassDeclaration.getPrefixClass: "+prefix);
 		if (prefix == null)	return (null);
-		// Util.BREAK("ClassDeclaration.getPrefixClass("+prefix+") Search in "+declaredIn);
 		Meaning meaning = declaredIn.findMeaning(prefix);
-		// Util.BREAK("ClassDeclaration.getPrefixClass("+prefix+") Search in "+declaredIn+", Result="+meaning);
 		if (meaning == null) Util.error("Undefined prefix: " + prefix);
 		Declaration decl = meaning.declaredAs;
 		if (decl == this) Util.error("Class prefix chain loops");
@@ -688,7 +593,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
 	public void doJavaCoding() {
-		// Util.BREAK("ClassDeclaration.doJavaCoding: "+identifier+", BlockKind="+blockKind);
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
 		Global.sourceLineNumber = lineNumber;
@@ -700,11 +604,10 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
 		else line = line + " extends BASICIO$";
 		JavaModule.code(line + " {");
-		JavaModule.debug("// ClassDeclaration: BlockKind=" + blockKind + ", BlockLevel=" + blockLevel + ", PrefixLevel="
+		JavaModule.debug("// ClassDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel + ", PrefixLevel="
 					+ prefixLevel() + ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false")
 					+ ", detachUsed=" + ((detachUsed) ? "true" : "false"));
-//		JavaModule.code("public int prefixLevel() { return(" + prefixLevel() + "); }");
 		if (isQPSystemBlock())
 			JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
 		if (isDetachUsed())
@@ -724,7 +627,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		for (VirtualSpecification virtual : virtualSpecList) {
 			if (!virtual.hasDefaultMatch) virtual.doJavaCoding();
 		}
-
 		for (VirtualMatch match : virtualMatchList)	match.doJavaCoding();
 		doCodeConstructor();
 		codeClassStatements();
@@ -775,8 +677,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			withparams = true;
 			s.append(((Parameter) par).toJavaType());
 			s.append(' ');
-			// if(!isMethod) s.append("par$");
-			// s.append(par.identifier);
 			if (isMethod) s.append(par.identifier);
 			else s.append('s').append(par.externalIdent); // s to indicate Specified Parameter
 		}
@@ -812,11 +712,9 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Coding Utility: codeStatements
 	// ***********************************************************************************************
 	public void codeStatements() {
-		// Util.BREAK("ClassDeclaration.codeStatements: BEGIN");
 		writeCode1(); // Write code before inner
 		writeCode2(); // Write code after inner
 		// listSavedCode();
-		// Util.BREAK("ClassDeclaration.codeStatements: DONE");
 	}
 
 	// ***********************************************************************************************
@@ -870,15 +768,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	protected void codeClassStatements() {
 		JavaModule.debug("// Class Statements");
-		String classID = this.getJavaIdentifier();
-		// JavaModule.code("public "+getJavaIdentifier()+" STM$() {");
-		JavaModule.code("public " + classID + " STM$() {");
+		JavaModule.code("public "+getJavaIdentifier()+" STM$() {");
 		codeSTMBody();
 		JavaModule.code("EBLK();");
 		JavaModule.code("return(this);");
 		JavaModule.code("}","End of Class Statements");
-		// if(isDetachUsed())
-		// JavaModule.code("public "+classID+" START() { START(this); return(this); }");
 	}
 
 	// ***********************************************************************************************
@@ -901,9 +795,9 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		StringBuilder s = new StringBuilder(spc);
 		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
 		if (prefix != null)	s.append(prefix).append(' ');
-		s.append(blockKind).append(' ').append(identifier);
+		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
-		s.append(editParameterList());
+		s.append(Parameter.editParameterList(parameterList));
 		Util.println(s.toString());
 		if (!virtualSpecList.isEmpty())	Util.println(spc + "    VIRTUAL-SPEC" + virtualSpecList);
 		if (!virtualMatchList.isEmpty()) Util.println(spc + "    VIRTUAL-MATCH" + virtualMatchList);
@@ -916,32 +810,17 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		Util.println(spc + "end[" + edScopeChain() + ']');
 	}
 
-	// ***********************************************************************************************
-	// *** Printing Utility: editParameterList
-	// ***********************************************************************************************
-	private String editParameterList() {
-		StringBuilder s = new StringBuilder();
-		s.append('(');
-		boolean first = true;
-		for (Parameter par : parameterList) {
-			if (!first)	s.append(',');
-			s.append(par);
-			first = false;
-		}
-		s.append(')');
-		s.append(';');
-		return (s.toString());
-	}
-
 	public String toString() {
-		return ("" + identifier + '[' + externalIdent + "] BlockKind=" + blockKind);
+		return ("" + identifier + '[' + externalIdent + "] DeclarationKind=" + declarationKind);
 	}
 
 
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
-	public ClassDeclaration() {	super(null); }
+	public ClassDeclaration() {
+		super(null);
+	}
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
@@ -970,7 +849,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	@Override
 	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
-		blockKind=BlockKind.Class;
+		declarationKind=Declaration.Kind.Class;
 		Util.TRACE_INPUT("BEGIN Read ClassDeclaration: "+identifier+", Declared in: "+this.declaredIn);
 		identifier=(String)inpt.readObject();
 		externalIdent=(String)inpt.readObject();

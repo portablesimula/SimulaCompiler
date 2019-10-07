@@ -45,18 +45,15 @@ public final class ProtectedSpecification implements Externalizable {
 	// ***********************************************************************************************
 	public void doChecking() {
 		Declaration attribute=getAttribute();
-		//Util.BREAK("ProtectedSpecification("+identifier+").doChecking: attribute="+attribute+" FOUND in "+definedIn);
 		if(attribute!=null) attribute.isProtected=this;
 		else Util.error("No Attribute "+identifier+" match 'protected' specification: "+this);
 		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(attribute);
 		if(virtSpec!=null) {
-//			if( virtSpec.specifiedIn != attribute.declaredIn )
 			if( virtSpec.declaredIn != attribute.declaredIn )
 				Util.error("A virtual attribute may only be specified protected in the class heading in which the virtual specification occurs.");
 		}
 		// Virtual specification together with Attribute definition.
 		VirtualSpecification vir=getVirtualSpecification();
-		//Util.BREAK("ProtectedSpecification("+identifier+").doChecking: virtual="+vir+", declaredIn="+((vir!=null)?vir.declaredIn:"MISSING"));
 		if(vir!=null) vir.isProtected=this;
 	}
 
@@ -64,11 +61,9 @@ public final class ProtectedSpecification implements Externalizable {
 	public String toString()
 	{ StringBuilder s=new StringBuilder();
 	  s.append("Protected ").append(identifier);
-	  //public ClassDeclaration definedIn;
 	  s.append("[ Defined in ");
 	  s.append((definedIn!=null)?definedIn.identifier:"UNKNOWN");
 	  if(hiddenBy!=null) {
-		  //public ProtectedSpecification protectedBy; // Set during doChecking
 		  s.append(", Hidden by ").append(hiddenBy.identifier);
 		  s.append(" defined in ");
 		  s.append((hiddenBy.definedIn!=null)?hiddenBy.definedIn.identifier:"MISSING");
@@ -85,7 +80,6 @@ public final class ProtectedSpecification implements Externalizable {
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		//Util.BREAK("AttributeFile.doWriteAttributeInfo: blk="+this);
 		Util.TRACE_OUTPUT("ProtectedSpecification: "+identifier);
 		oupt.writeObject(identifier);
 	}

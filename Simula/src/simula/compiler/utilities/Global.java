@@ -32,9 +32,6 @@ public final class Global {
 	
 	// NOTE: When updating release id, change version in SimulaExtractor.
     public static final String simulaReleaseID="Simula-1.0";
-//    public static final ImageIcon simulaIcon = new ImageIcon("icons/simula.png");
-//    public static final ImageIcon simIcon = new ImageIcon("icons/sim2.png");
-//    public static final ImageIcon sIcon = new ImageIcon("icons/sim.png");
     public static ImageIcon simulaIcon;
     public static ImageIcon simIcon;
     public static ImageIcon sIcon;
@@ -43,7 +40,6 @@ public final class Global {
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	public static final boolean USE_JAVA_SYSTEM_COMPILER=true;//false;//true;
 	public static final boolean USE_EXACT_MATH=true;//false;//true;
-//	public static final boolean USE_NEW_WORKSPACES=true;//false;
 	
 	public static final boolean MODIFY_CLASS_VERSION=false;
 	public static final int major=52;  // .class file format version's Major
@@ -97,41 +93,10 @@ public final class Global {
 				sIcon = new ImageIcon(new File(simdir,"icons/sim.png").toString());
 			}
 		}
-		
-		//TESTING();
 	}
-	
-//	private static void TESTING() {
-//		File temp=getTempFileDir("simula/temp");
-//		isFileWriteable(temp);
-//		File tempFile=new File(temp,"tempfile");
-//		try { tempFile.createNewFile();	} catch (IOException e) { e.printStackTrace(); }
-//		isFileWriteable(tempFile);
-//	}
-//	
-//	private static boolean isFileWriteable(File file) {
-//		try {
-//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> exists="+(file.exists()?"TRUE":"FALSE"));
-//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> isDirectory="+(file.isDirectory()?"TRUE":"FALSE"));
-//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> canRead="+(file.canRead()?"TRUE":"FALSE"));
-//			System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> canWrite="+(file.canWrite()?"TRUE":"FALSE"));
-//			if (file.canWrite()) {
-//				System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> TRUE");
-//				return (true);
-//			}
-//		} catch (SecurityException e) {
-//			e.printStackTrace();
-//		}
-//		System.out.println("SimulaCompiler.isFileWriteable: " + file + " ==> FALSE");
-//		return (false);
-//	}
 
 	public static File getTempFileDir(String subDir) {
 		String tmp=System.getProperty("java.io.tmpdir");
-//		System.out.println("Global.getTempFileDir: subDir="+subDir+", tmp="+tmp);
-//		// See: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4391434
-//		if(!(tmp.endsWith("/") || tmp.endsWith("\\"))) tmp=tmp+'/';
-//		if(subDir.startsWith("/") || subDir.startsWith("\\")) subDir=subDir.substring(1);
 		File tempFileDir=new File(tmp,subDir);
 		tempFileDir.mkdirs();
 		setAccessRWX(tempFileDir);
@@ -155,10 +120,6 @@ public final class Global {
 	
 	public static void initProperties() {
 		if(simulaProperties==null) loadProperties();
-//		if(USE_NEW_WORKSPACES) {
-//			Util.BREAK("Global.initProperties: simulaWorkspaces="+simulaWorkspaces);
-//			if(simulaWorkspaces==null) loadWorkspaceProperties();			
-//		}
 	}
 
 	public static String getProperty(String key,String defaultValue) {
@@ -166,19 +127,11 @@ public final class Global {
 		return(simulaProperties.getProperty(key,defaultValue));
 	}
 	
-//	public static void NOT_USED_setProperty(String key,String value) {
-//		if(simulaProperties==null) loadProperties();
-//		simulaProperties.setProperty(key,value);
-//		storeProperties();
-//	}
-	
 	private static File getSimulaPropertiesFile() {
 		File javaClassPath=new File(System.getProperty("java.class.path"));
 		if(javaClassPath.exists()) {
 			simulaHome=javaClassPath.getParentFile();
-			//System.out.println("Global.getSimulaPropertiesFile: simulaHome="+simulaHome);
 			simulaPropertiesFile=new File(simulaHome,"simulaProperties.xml");
-			//System.out.println("Global.getSimulaPropertiesFile: simulaPropertiesFile="+simulaPropertiesFile+", exists="+simulaPropertiesFile.exists());
 			if(simulaPropertiesFile.exists()) return(simulaPropertiesFile);
 		}
 		Util.popUpError("It seems that the system is not properly installed"
@@ -212,13 +165,6 @@ public final class Global {
 		}	
 	}
 	
-//	private static void storeProperties() {
-////		System.out.print("Global.storeProperties: SIMULA ");
-////		simulaProperties.list(System.out);
-//		try { simulaProperties.storeToXML(new FileOutputStream(simulaPropertiesFile),"Simula Properties");
-//		} catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
-//	}
-	
 	
 	// **********************************************************
 	// *** WORKSPACES
@@ -232,7 +178,6 @@ public final class Global {
     	String USER_HOME=System.getProperty("user.home");
     	File simulaPropertiesDir=new File(USER_HOME,".simula");
     	simulaWorkspacesFile=new File(simulaPropertiesDir,"workspaces.xml");
-    	//System.out.println("Global: simulaWorkspacesFile="+simulaWorkspacesFile+", exists="+simulaWorkspacesFile.exists());
     	workspaces=new ArrayDeque<File>();
     	if(simulaWorkspacesFile.exists()) {
     		try {
@@ -256,12 +201,9 @@ public final class Global {
     		workspaces.add(Global.sampleSourceDir);
     	}
     	currentWorkspace=workspaces.getFirst();
-    	//System.out.println("Global.loadWorkspaceProperties: currentWorkspace="+currentWorkspace);
-		//listWorkspaces("loadWorkspaceProperties: LOAD WORKSPACES");
     }
 	
 	private static void loadWorkspacesFromOldPropertyFile() {
-    	//System.out.println("Global.loadWorkspaceProperties: loadWorkspacesFromOldPropertyFile ====== OLD !!!!!!!!!!!!");
 		for(int i=1;i<=MAX_WORKSPACE;i++) {
 			String ws=getProperty("simula.workspace."+i,null);
 			if(ws!=null) {
@@ -272,7 +214,6 @@ public final class Global {
 	}
 	
 	public static void setCurrentWorkspace(File workspace) {
-		//System.out.println("Global.updateCurrentWorkspace: "+workspace);
 		if(!workspace.equals(Global.currentWorkspace)) {
 			workspaces.remove(workspace);
 			workspaces.addFirst(workspace);
@@ -302,7 +243,4 @@ public final class Global {
 //	}
 	
 	
-	
-
-
 }

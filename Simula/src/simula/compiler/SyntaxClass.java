@@ -51,7 +51,6 @@ public abstract class SyntaxClass {
 
 	protected SyntaxClass() {
 		lineNumber = Global.sourceLineNumber;
-		// Util.BREAK(this.getClass().getName()+": Got LineNumber="+lineNumber);
 	}
 
 	public static String acceptIdentifier() {
@@ -94,8 +93,8 @@ public abstract class SyntaxClass {
 		Util.NOT_IMPLEMENTED("" + name + ".doChecking");
 	}
 
-	// Should be called from all doChecking,put,get methods to signal that semantic
-	// checking is done.
+	// Should be called from all doChecking,put,get methods
+	// to signal that semantic checking is done.
 	protected void SET_SEMANTICS_CHECKED() {
 		CHECKED = true;
 	}
@@ -116,7 +115,6 @@ public abstract class SyntaxClass {
 	}
 
 	public void doJavaCoding() {
-		Global.sourceLineNumber = lineNumber;
 		Global.sourceLineNumber = lineNumber;
 		JavaModule.code(toJavaCode());
 	}

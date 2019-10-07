@@ -127,10 +127,10 @@ public final class TestCompiler {
 		// String name="/error/Queens2.sim";  // Illegal Characters
 		// String name="/error/Characters.sim";  // Illegal Characters
 		// String name="/error/NoughtsAndCrosses.sim";  // 
-		 String name="/error/simtst76b.sim";  // 
+		// String name="/error/simtst76b.sim";  // 
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		// String name="/simple/adHoc00.sim";
+		 String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";

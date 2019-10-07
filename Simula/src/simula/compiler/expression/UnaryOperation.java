@@ -26,11 +26,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class UnaryOperation extends Expression {
-	private final KeyWord oprator;
-	private Expression operand;
+	final KeyWord oprator;
+	Expression operand;
 
 	public UnaryOperation(final KeyWord oprator,final Expression operand) {
-		//Util.BREAK("NEW UnaryOperation: "+oprator+' '+operand);
 		this.oprator = oprator;
 		this.operand = operand;
 		if(this.operand==null)
@@ -38,7 +37,6 @@ public final class UnaryOperation extends Expression {
 		  this.operand=new Variable("UNKNOWN$");
 		}
 		this.operand.backLink=this;
-		//Util.BREAK("NEW UnaryOperation: "+toString());
 	}
 
 	// Try to Compile-time Evaluate this expression
@@ -47,10 +45,8 @@ public final class UnaryOperation extends Expression {
 			  // TODO
 		}
 		else if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
-			Number rhn=Constant.getNumber(operand);
+			Number rhn=operand.getNumber();
 			if(rhn!=null) {
-				//Util.BREAK("UnaryOperation.NEW: rhn="+rhn+", QUAL="+rhn.getClass().getSimpleName());
-				//Util.BREAK("UnaryOperation.Evaluate: "+lhs+' '+oprator+' '+operand);
 				return(Constant.evaluate(oprator,rhn));
 			}  
 		}

@@ -42,7 +42,6 @@ public final class LabeledStatement extends Statement {
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		statement.doChecking();
-		//Util.BREAK("LabeledStatement.doChecking: labels="+labels);
 		for (String label:labels) {
 			Meaning meaning = Global.currentScope.findMeaning(label);
 			try {

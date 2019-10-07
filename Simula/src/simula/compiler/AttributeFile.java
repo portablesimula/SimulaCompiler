@@ -55,61 +55,47 @@ public final class AttributeFile {
 
 	private void write(final BlockDeclaration module) throws IOException {
 		File attributeDir = new File(Global.tempClassFileDir,Global.packetName);
-		// Util.BREAK("AttributeFile.write: attributeDir="+attributeDir);
-		// Util.BREAK("AttributeFile.write: attributeDir'canWrite="+attributeDir.canWrite());
 		attributeDir.mkdirs();
-//		File attributeFile = new File(attributeFileName);
-		// Util.BREAK("AttributeFile.write: attributeFile="+attributeFile);
-		// Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
 		attributeFile.createNewFile();
-		// Util.BREAK("AttributeFile.write: attributeFile'canWrite="+attributeFile.canWrite());
 		FileOutputStream fileOutputStream = new FileOutputStream(attributeFile);
 		oupt = new ObjectOutputStream(fileOutputStream);
 		writeVersion();
 		writeDependencies();
 		if (Option.verbose)
-			Util.TRACE("***       Write External " + module.blockKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
+			Util.TRACE("***       Write External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
 		oupt.writeObject(module);
 		oupt.flush(); oupt.close();	oupt = null;
 	}
 
 	private void writeDependencies() throws IOException {
-		//Util.BREAK("AttributeFile.write: BEGIN WRITING DEPENDENCIES");
 		for(Declaration dcl:StandardClass.ENVIRONMENT.declarationList) {
-			//Util.BREAK("AttributeFile.write: DCL: "+dcl,", QUAL="+dcl.getClass().getSimpleName());
 			if(dcl instanceof BlockDeclaration) {
 				BlockDeclaration ext=(BlockDeclaration)dcl;
 				if(ext.isPreCompiled) {
-					//Util.BREAK("AttributeFile.write: BLK="+ext.identifier+", isPreCompiled="+ext.isPreCompiled);   
-					if (Option.verbose) Util.TRACE("***       Write External "+ext.blockKind+' '+ext.identifier+'['+ext.externalIdent+']');
-						oupt.writeObject(ext);
+					if (Option.verbose) Util.TRACE("***       Write External "+ext.declarationKind+' '+ext.identifier+'['+ext.externalIdent+']');
+					oupt.writeObject(ext);
 				}
 			}
 		}
-		//Util.BREAK("AttributeFile.write: END WRITING DEPENDENCIES");
 	}
 
 	public static Type readAttributeFile(final InputStream inputStream,final File file,
             final Vector<Declaration> declarationList) throws IOException, ClassNotFoundException {
 		AttributeFile attributeFile = new AttributeFile(file);
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + file);
-//		Util.BREAK("*** BEGIN Read SimulaAttributeFile: " + attributeFileName);
 		attributeFile.inpt = new ObjectInputStream(inputStream);
 		if (!attributeFile.checkVersion())
 			Util.error("Malformed SimulaAttributeFile: " + file);
 		Type moduleType=null;
 		LOOP: while (true) {
 			BlockDeclaration module=null;
-//			Util.BREAK("AttributeFile.readBlockDeclaration(1): "+module);
 			try { module=(BlockDeclaration) attributeFile.inpt.readObject();}
-//			catch (ClassNotFoundException e) { Util.INTERNAL_ERROR("Impossible",e); }
 			catch (EOFException e1) { break LOOP; }
-				
 			module.isPreCompiled = true;
 			declarationList.add(module);
 			moduleType=module.type;
 			if (Option.verbose)
-				Util.TRACE("***       Read External " + module.blockKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
+				Util.TRACE("***       Read External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
 			if (Option.TRACE_ATTRIBUTE_INPUT) module.print(0);
 		}
 		attributeFile.inpt.close();
@@ -126,7 +112,6 @@ public final class AttributeFile {
 		BlockDeclaration blockDeclaration=(BlockDeclaration)inpt.readObject();
 		inpt.close();
 		if (Option.verbose) {
-			// Util.BREAK("*** ENDOF Read SimulaAttributeFile: "+attributeFileName);
 			if (Option.TRACE_ATTRIBUTE_INPUT) {
 				Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + attributeFile);
 				blockDeclaration.print(0);

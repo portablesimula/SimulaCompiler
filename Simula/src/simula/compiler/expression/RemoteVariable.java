@@ -58,7 +58,6 @@ public final class RemoteVariable extends Expression {
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN RemoteVariable" + toString() + ".doChecking - Current Scope Chain: "
 					+ Global.currentScope.edScopeChain());
-		// Util.BREAK("BEGIN RemoteVariable"+toString()+".doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		this.type = doRemoteChecking(obj, var);
 
 		if (Option.TRACE_CHECKER)
@@ -69,10 +68,8 @@ public final class RemoteVariable extends Expression {
 	private Type doRemoteChecking(final Expression obj, final Expression attr) {
 		Global.sourceLineNumber = lineNumber;
 		Type result;
-		// Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		obj.doChecking();
 		Type objType = obj.type;
-		// Util.BREAK("BEGIN doRemoteChecking("+toString()+").doChecking(2) - objType="+objType+", obj="+obj);
 		if (objType == Type.Text)
 			return (doRemoteTextChecking(obj, attr));
 
@@ -83,47 +80,31 @@ public final class RemoteVariable extends Expression {
 		else if (qual.hasLocalClasses)
 			Util.error("Illegal remote access into object of class with local classes.");
 
-		// Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(3) findDefinition("+classIdentifier+") ==> "+decl);
-		// attr.doChecking(); // NOTE Should not be called for a remote attribute
-		// Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(4) - attr="+attr+", attr.Class="+attr.getClass().getName());
 		if (attr instanceof Variable) {
 			Variable var = (Variable) attr;
 			String ident = var.identifier;
-			//Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5a) findRemoteAttributeMeaning("+ident+") Search in "+objType.getQual());
 			remoteAttribute = objType.getQual().findRemoteAttributeMeaning(ident);
-			//Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(5) findRemoteAttributeMeaning("+ident+") ==> "+remoteAttribute);
 			if (remoteAttribute == null) {
 				Util.error("RemoteVariable.doRemoteChecking: " + ident + " is not an attribute of "	+ objType.getRefIdent());
 				return (Type.Integer); // Error Recovery
 			}
 			var.setRemotelyAccessed(remoteAttribute);
 
-			// Util.BREAK("RemoteVariable.doRemoteChecking: RemoteAttribute'QUAL="+remoteAttribute.declaredAs.getClass().getSimpleName());
 			if (remoteAttribute.declaredAs instanceof Parameter) {
 				Parameter par = (Parameter) remoteAttribute.declaredAs;
-				// Util.BREAK("RemoteVariable.doRemoteChecking: DOT par="+par);
-				// Util.BREAK("RemoteVariable.doRemoteChecking: DOT par'kind="+par.kind);
 				if (par.kind == Parameter.Kind.Array)
 					accessRemoteArray = true;
 			}
-			// Util.EXIT();
 
 			if (remoteAttribute.declaredAs instanceof ArrayDeclaration) { // Array
 				if (var.hasArguments())	accessRemoteArray = true;
 			} else if (remoteAttribute.declaredAs instanceof ProcedureDeclaration) { // Procedure
-			    // Util.BREAK("RemoteVariable.doRemoteChecking: Call Remote Procedure
-				// "+remote+", qual="+remote.getClass().getSimpleName());
 				callRemoteProcedure = (ProcedureDeclaration) remoteAttribute.declaredAs;
 			} else if (remoteAttribute.declaredAs instanceof VirtualSpecification) { // Virtual Procedure
-			    // Util.BREAK("RemoteVariable.doRemoteChecking: Call Remote Virtual Procedure
-				// "+remoteAttribute+", qual="+remoteAttribute.getClass().getSimpleName());
 				callRemoteVirtual = (VirtualSpecification) remoteAttribute.declaredAs;
 			}
 			result = remoteAttribute.declaredAs.type;
-			// Util.BREAK("RemoteVariable.doRemoteChecking("+toString()+").doChecking(6) - attr="+attr+", attr.Type="+result);
 		} else {
-			// Util.BREAK("RemoteVariable.doRemoteChecking -- Usikker på dette !!!");
-			// Util.BREAK("RemoteVariable.doRemoteChecking: attr="+attr.getClass().getName());
 			Util.error("Illegal attribute(" + attr + ") in remote access");
 			result = attr.type;
 		}
@@ -131,14 +112,11 @@ public final class RemoteVariable extends Expression {
 	}
 
 	private Type doRemoteTextChecking(final Expression obj, final Expression attr) {
-		// Util.BREAK("RemoteVariable.doRemoteTextChecking("+toString()+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		Type result;
-		// Util.BREAK("RemoteVariable.doRemoteTextChecking("+toString()+").doChecking - attr'name="+attr.getClass().getName());
 		if (attr instanceof Variable) { // Covers FunctionDesignator and SubscriptedVariable since they are subclasses
 			Variable var = (Variable) attr;
 			String ident = var.identifier;
 			Meaning remote = StandardClass.typeText.findMeaning(ident);
-			// Util.BREAK("RemoteVariable.doRemoteTextChecking: remote="+remote);
 			if (remote == null)
 				Util.error("RemoteVariable.doRemoteTextChecking: " + ident + " is not a Text attribute");
 			var.setRemotelyAccessed(remote);
@@ -146,8 +124,6 @@ public final class RemoteVariable extends Expression {
 			result = remote.declaredAs.type;
 
 		} else {
-			// Util.BREAK("RemoteVariable.doRemoteTextChecking -- Usikker på dette !!!");
-			// Util.BREAK("RemoteVariable.doRemoteTextChecking: attr="+attr.getClass().getName());
 			Util.error("Illegal attribute(" + attr + ") in remote access");
 			result = attr.type;
 		}
@@ -161,7 +137,6 @@ public final class RemoteVariable extends Expression {
 	}
 
 	public String toJavaCode() {
-		// Util.BREAK("RemoteVariable.toJavaCode: "+this);
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (callRemoteProcedure != null)
 			return (CallProcedure.remote(obj, callRemoteProcedure, var, backLink));
@@ -169,15 +144,11 @@ public final class RemoteVariable extends Expression {
 			return (CallProcedure.remoteVirtual(obj, var, callRemoteVirtual));
 		else if (accessRemoteArray)
 			return (doAccessRemoteArray(obj, var));
-		// Util.BREAK("RemoteVariable.toJavaCode: DOT - remoteAttribute="+remoteAttribute);
 		String result;
 		if (remoteAttribute.foundBehindInvisible) {
 			String remoteCast = remoteAttribute.foundIn.getJavaIdentifier();
 			result = "((" + remoteCast + ")(" + obj.get() + "))." + var.get();
-		} else
-			result = obj.get() + KeyWord.DOT.toJavaCode() + var.get();
-
-		// Util.BREAK("RemoteVariable.toJavaCode: DOT result="+result);
+		} else result = obj.get() + KeyWord.DOT.toJavaCode() + var.get();
 		return (result);
 	}
 

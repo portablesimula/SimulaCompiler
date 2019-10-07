@@ -102,11 +102,13 @@ public final class ForStatement extends Statement {
 			iterator.next().doChecking();
 		}
 		doStatement.doChecking();
-		// Debug.BREAK("END ForStatement("+controlVariable+").doChecking: type="+type);
 		SET_SEMANTICS_CHECKED();
 	}
   
 	public void doJavaCoding() {
+		ForListElement singleElement=isOptimizable();
+		if(singleElement!=null) { singleElement.doSimplifiedJavaCoding(); return; }
+
 		// ------------------------------------------------------------
 	    //	for(boolean CB$:new ForList(
 	    //			 new SingleElt<Number>(n1)
@@ -129,8 +131,6 @@ public final class ForStatement extends Statement {
 	    	if(elt.expr1.type==Type.Boolean) classIdent="Boolean"; // AD'HOC
 	    	if(elt.expr1.type==Type.Text) {
 	    		classIdent="TXT$"; // AD'HOC
-//		        if(assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)
-//      	  	Util.NOT_IMPLEMENTED("For-Statement with text value assignment (:=)");
 	    	}
 	    	JavaModule.code("   "+del+elt.edCode(classIdent));
 	    	del=',';
@@ -138,13 +138,22 @@ public final class ForStatement extends Statement {
 	    JavaModule.code("   )) { if(!"+CB+") continue;");
 	    doStatement.doJavaCoding();
 	    JavaModule.code("}");
-	} 
+	}
+
+	private ForListElement isOptimizable() {
+		if(forList.size()!=1) return(null);
+		ForListElement elt=forList.firstElement();
+		return(elt.isOptimizable());
+	}
   
     private String edControlVariableByName(final String classIdent) {
     	String cv=controlVariable.toJavaCode();
-    	String cast=controlVariable.type.toJavaType();
+    	String castVar="x$;";
+    	if(controlVariable.type==Type.Integer) castVar="x$.intValue();";
+    	else if(controlVariable.type==Type.Real) castVar="x$.floatValue();";
+    	else if(controlVariable.type==Type.LongReal) castVar="x$.doubleValue();";
     	String cvName="new NAME$<"+classIdent+">()"+
-    			"{ public "+classIdent+" put("+classIdent+" x$){"+cv+"=("+cast+")x$; return(x$);};"+
+    			"{ public "+classIdent+" put("+classIdent+" x$){"+cv+"="+castVar+" return(x$);};"+
     			"  public "+classIdent+" get(){return(("+classIdent+")"+cv+"); }	}";
     	return(cvName);
     }
@@ -163,7 +172,7 @@ public final class ForStatement extends Statement {
 	}
   
 	// ************************************************************************************
-	// *** ForListElement  --  Single Element
+	// *** ForListElement  --  Single Value
 	// ************************************************************************************
 	private class ForListElement {
 		Expression expr1;
@@ -180,6 +189,21 @@ public final class ForStatement extends Statement {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 		    return("new Single"+forElt+"("+edControlVariableByName(classIdent)
 		      +",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
+		}
+		public ForListElement isOptimizable() {
+			return(this);
+		}
+		public void doSimplifiedJavaCoding() {
+	    	String cv=controlVariable.toJavaCode();
+	    	String val=this.expr1.toJavaCode();
+	    	if(expr1.type!=controlVariable.type) {
+	    		if(controlVariable.type==Type.Integer) val="(int)"+val;
+	    		else if(controlVariable.type==Type.Real) val="(float)"+val;
+	    		else if(controlVariable.type==Type.LongReal) val="(double)"+val;
+	    	}
+		    JavaModule.code(cv+"="+val+"; {");
+		    doStatement.doJavaCoding();
+		    JavaModule.code("}");		
 		}
 		public String toString() { return(""+expr1); }
 	}
@@ -204,6 +228,21 @@ public final class ForStatement extends Statement {
 			+",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
 			+",new NAME$<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 		}
+		public ForListElement isOptimizable() {
+			return(this);
+		}
+		public void doSimplifiedJavaCoding() {
+	    	String cv=controlVariable.toJavaCode();
+	    	String cond=this.expr2.toJavaCode();
+	    	// ------------------------------------------------------------
+	    	//  cv=expr1; while(cond) { Statements ...  cv=expr1; }
+	    	// ------------------------------------------------------------
+		    JavaModule.code(cv+"="+this.expr1.toJavaCode()+";");
+		    JavaModule.code("while("+cond+") {");
+		    doStatement.doJavaCoding();
+		    JavaModule.code(cv+"="+this.expr1.toJavaCode()+";");
+		    JavaModule.code("}");		
+		}
 		public String toString() { return(""+expr1+" while "+expr2); }
 	}
   
@@ -215,7 +254,6 @@ public final class ForStatement extends Statement {
 	    Expression expr3;
 		public StepUntilElement(final Expression expr1,final Expression expr2,final Expression expr3) {
 			super(expr1); this.expr2=expr2; this.expr3=expr3;
-			Util.BREAK("ForStatement.NEW StepuntilElement= "+this);
 			if(expr1==null) Util.error("Missing expression before 'step' in ForStatement");
 			if(expr2==null) Util.error("Missing expression after 'step' in ForStatement");
 			if(expr3==null) Util.error("Missing expression after 'until' in ForStatement");
@@ -235,6 +273,35 @@ public final class ForStatement extends Statement {
 	  	                     +",new NAME$<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
 	      
 		}
+		public ForListElement isOptimizable() {
+			Number step=expr2.getNumber();
+			if(step==null) return(null); 
+			return(this);
+		}
+		public void doSimplifiedJavaCoding() {
+			int step=this.expr2.getNumber().intValue();
+	    	String cv=controlVariable.toJavaCode();
+	    	String stepClause,incrClause;
+	    	if(step>=0) {
+	    		// ------------------------------------------------------------
+	    	    //	for(cv=expr1; cv<=expr3; cv=cv+step) { Statements ...	}
+	    	    // ------------------------------------------------------------
+	        	stepClause=cv+"<="+this.expr3.toJavaCode()+";";
+	        	if(step==1) incrClause=cv+"++";
+	        	else incrClause=cv+"="+cv+"+"+step;    		
+	    	} else {
+	    		// ------------------------------------------------------------
+	    	    //	for(cv=expr1; cv>=expr3; cv=cv+step) { Statements ...	}
+	    	    // ------------------------------------------------------------
+	        	stepClause=cv+">="+this.expr3.toJavaCode()+";";
+	        	if(step== -1) incrClause=cv+"--";
+	        	else incrClause=cv+"="+cv+step;
+	    	}
+		    JavaModule.code("for("+cv+"="+this.expr1.toJavaCode()+";"+stepClause+incrClause+") {");
+		    doStatement.doJavaCoding();
+		    JavaModule.code("}");		
+		}
+
 		public String toString() { return(""+expr1+" step "+expr2+ " until "+expr3); }
 	}
 

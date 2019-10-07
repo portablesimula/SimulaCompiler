@@ -33,9 +33,9 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	}
 
 	// Used by ClassDeclaration and ProcedureDeclaration
-	public BlockDeclaration(final String identifier,final BlockKind blockKind) {
+	public BlockDeclaration(final String identifier,final Declaration.Kind declarationKind) {
 		super(identifier);
-		this.blockKind = blockKind;
+		this.declarationKind = declarationKind;
 	}
 
 	// ***********************************************************************************************
@@ -49,15 +49,8 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// *** Checking: doCheckLabelList
 	// ***********************************************************************************************
 	protected void doCheckLabelList(final ClassDeclaration prefixClass) {
-		int labelIndex = 1;
-		if (prefixClass != null)
-			labelIndex = prefixClass.getNlabels() + 1;
-		// Util.println("BlockDeclaration.doCheckLabelList: BEGIN "+identifier+" SUBCLASS OF "+prefixClass);
-		for (LabelDeclaration label : labelList) {
-			label.index = labelIndex++;
-			// Util.println("BlockDeclaration.doCheckLabelList: "+label);
-		}
-		// if(labelIndex>1) Util.BREAK("BlockDeclaration.doCheckLabelList: END "+identifier);
+		int labelIndex = (prefixClass == null)?(1) : prefixClass.getNlabels() + 1;
+		for (LabelDeclaration label : labelList) label.index = labelIndex++;
 	}
 
 	// ***********************************************************************************************
@@ -76,7 +69,7 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// *** Coding: isQPSystemBlock -- QPS System is any block with local class(es)
 	// ***********************************************************************************************
 	public boolean isQPSystemBlock() {
-		switch (blockKind) {
+		switch (declarationKind) {
 		case SimulaProgram:
 		case SubBlock:
 		case PrefixedBlock:
@@ -132,7 +125,7 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	}
 
 	public String toString() {
-		return ("" + identifier + '[' + externalIdent + "] BlockDeclaration.Kind=" + blockKind);
+		return ("" + identifier + '[' + externalIdent + "] Declaration.Kind=" + declarationKind);
 	}
 
 }

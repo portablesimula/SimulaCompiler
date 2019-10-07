@@ -47,11 +47,9 @@ public class Type implements Externalizable {
 	public Type(String className) {
 		if(className==null) className="UNKNOWN"; // Error recovery
 		this.key=new Token(KeyWord.REF,className.toUpperCase());
-		//Util.BREAK("Type: new Ref-Type("+className+") ==> "+this+", refIdent="+getRefIdent());
 	}
   
 	public String getRefIdent() {
-		//Util.BREAK("Type.getRefIdent key.KeyWord="+key.getKeyWord()+", key.Value="+key.getValue());
 		if(key.getKeyWord()==KeyWord.REF) {
 			if(key.getValue()==null) return(null);
 			return(key.getValue().toString());
@@ -60,7 +58,6 @@ public class Type implements Externalizable {
 	}
   
 	public String getJavaRefIdent() {
-		//Util.BREAK("Type.getJavaRefIdent key.KeyWord="+key.getKeyWord()+", key.Value="+key.getValue());
 		if(key.getKeyWord()==KeyWord.REF) {
 			if(key.getValue()==null) return("RTObject$");
 			if(!CHECKED) this.doChecking(Global.currentScope);
@@ -75,14 +72,10 @@ public class Type implements Externalizable {
 		if (CHECKED) return;
 		String refIdent=getRefIdent();
 		if(refIdent!=null) {
-			//Util.BREAK("Type.doChecking("+this+"): RefIdent="+refIdent);
 			if(!refIdent.equals("LABQNT$") && !refIdent.equals("$UNKNOWN")) {
-				// ARRAY ?
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
-			    //Util.BREAK("Type.doChecking("+this+"): RefIdent'declaredAs="+decl);
 			    if(decl instanceof ClassDeclaration) {
 			    	qual=(ClassDeclaration)decl;
-			    	//Util.BREAK("Type.doChecking("+this+"): qual="+qual);
 			    } else Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 			}
 		}
@@ -101,10 +94,7 @@ public class Type implements Externalizable {
 	public boolean equals(final Object other) {
 		Token thisKey=this.key;  
 		Token otherKey=((Type)other).key;  
-		boolean result=thisKey.equals(otherKey);
-//		Util.BREAK("Type.equals("+thisKey+","+otherKey+") --> "+result);
-//		Util.BREAK("Type.equals("+this+","+other+") --> "+result);
-		return(result);
+		return(thisKey.equals(otherKey));
 	}
   
   
@@ -120,7 +110,6 @@ public class Type implements Externalizable {
      */
     public enum ConversionKind { Illegal, DirectAssignable, ConvertValue, ConvertRef }
     public ConversionKind isConvertableTo(final Type to) {
-    	//Util.BREAK("Type("+this+").isConvertableTo("+to+')');
 	    ConversionKind result;
 	    if(to==null) result=ConversionKind.Illegal;
 	    else if(this.equals(to)) result=ConversionKind.DirectAssignable;
@@ -128,7 +117,6 @@ public class Type implements Externalizable {
 	    else if(this.isSubReferenceOf(to)) result=ConversionKind.DirectAssignable;  
 	    else if(to.isSubReferenceOf(this)) result=ConversionKind.ConvertRef; // Needs Runtime-Check
 	    else result=ConversionKind.Illegal;
-	    //Util.BREAK("Type("+this+").isConvertableTo("+to+") -- Result="+result);
 	    return(result); 
     }
   
@@ -146,7 +134,6 @@ public class Type implements Externalizable {
 			if(thisDecl==null) result=false; // Error Recovery
 			else result=((ClassDeclaration)thisDecl).isSubClassOf((ClassDeclaration)otherDecl);
 		}
-	    //Util.BREAK("Type("+this+").isSubReferenceOf("+other+") -- Result="+result);
 		return(result); 
 	}
   
@@ -171,7 +158,6 @@ public class Type implements Externalizable {
 	}
   
 	public static Type arithmeticTypeConversion(final Type type1,final Type type2) {
-    	//Util.BREAK("Type.arithmeticTypeConversion("+type1+','+type2+")");
 		if(type1==Type.Integer)	{
 			if(type2==Type.Integer) return(Type.Integer); 
 			else if(type2==Type.Real) return(Type.Real);
@@ -240,7 +226,6 @@ public class Type implements Externalizable {
 	}
 	
 	public static Type inType(ObjectInput inpt) throws IOException, ClassNotFoundException {
-//		type=Type.matchType((Type)inpt.readObject());
 		Type tp=(Type)inpt.readObject();
 		if(tp==null) return(null);
 		KeyWord key=tp.key.getKeyWord();
@@ -260,7 +245,6 @@ public class Type implements Externalizable {
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		//TRACE_OUTPUT("Type="+this);
 		oupt.writeObject(key);
 	}
 

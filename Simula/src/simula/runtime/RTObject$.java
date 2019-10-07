@@ -40,7 +40,6 @@ import simula.runtime.loom.ThreadUtils;
  * @author Øystein Myhre Andersen
  */
 @SuppressWarnings("unchecked")
-// public abstract class RTObject$ implements Runnable {
 public abstract class RTObject$ {
 
 	// BASICIO
@@ -58,13 +57,11 @@ public abstract class RTObject$ {
 	}
 
 	public OperationalState STATE$;
-	// public Thread THREAD$;
 	protected static final ContinuationScope continuationScope = new ContinuationScope("QPS");
 	public Continuation CONT$;
 
 	// RTS
 	public static final BASICIO$ CTX$ = new BASICIO$(null);
-	public static RTObject$ PRG$; // Current Program
 	public static RTObject$ CUR$ = CTX$; // Current Block Instance
 	public int JTX$; // Jump Table Index used by STM$()
 
@@ -147,10 +144,7 @@ public abstract class RTObject$ {
 
 		public ARRAY$<T> COPY() {
 			T CPY = copyMultiArray(Elt);
-			// RT.BREAK("ARRAY.COPY: Elt="+Elt.getClass().getName()+" at "+Elt);
-			// RT.BREAK("ARRAY.COPY: CPY="+CPY.getClass().getName()+" at "+CPY);
-			ARRAY$<T> to = new ARRAY$<T>(CPY, LB, UB); // TODO: DETTE MÅ SJEKKES
-			// RT.BREAK("ARRAY.COPY: to="+to.getClass().getSimpleName()+" == "+to);
+			ARRAY$<T> to = new ARRAY$<T>(CPY, LB, UB);
 			return (to);
 		}
 
@@ -204,43 +198,25 @@ public abstract class RTObject$ {
 	}
 
 	public ARRAY$<?> arrayValue(final Object par) {
-		// RT.BREAK("RTObject.arrayValue: par="+par);
-		// RT.BREAK("RTObject.arrayValue: par'Qual="+par.getClass().getSimpleName());
 		if (par instanceof NAME$<?>)
 			return (((NAME$<ARRAY$<?>>) par).get());
 		return ((ARRAY$<?>) par);
 	}
 
 	public PRCQNT$ procValue(final Object par) {
-		// RT.BREAK("RTObject.arrayValue: par="+par);
-		// RT.BREAK("RTObject.arrayValue: par'Qual="+par.getClass().getSimpleName());
 		if (par instanceof NAME$<?>)
 			return (((NAME$<PRCQNT$>) par).get());
 		return ((PRCQNT$) par);
 	}
 
-//	public TXT$ TXT$Value(Object par) {
-//		RT.BREAK("RTObject.TXT$Value: par=" + par);
-//		RT.BREAK("RTObject.TXT$Value: par'Qual=" + par.getClass().getSimpleName());
-//		RT.BREAK("RTObject.TXT$Value: par'super'Qual=" + par.getClass().getSuperclass().getSimpleName());
-//		if (par instanceof NAME$<?>) par = ((NAME$<TXT$>) par).get();
-//		if (par instanceof PRCQNT$)	par = ((PRCQNT$) par).CPF().RESULT$();
-//		return ((TXT$) par);
-//	}
-
 	public Object objectValue(Object par) {
-		// RT.BREAK("RTObject.objectValue: par="+par);
-		// RT.BREAK("RTObject.objectValue: par'Qual="+par.getClass().getSimpleName());
 		if (par instanceof NAME$<?>) par = ((NAME$<?>) par).get();
 		if (par instanceof PRCQNT$)	par = ((PRCQNT$) par).CPF().RESULT$();
 		return (par);
 	}
 
 	public int intValue(Object par) {
-		// RT.BREAK("RTObject.intValue: par="+par);
-		// RT.BREAK("RTObject.intValue: par'Qual="+par.getClass().getSimpleName());
-		// RT.BREAK("RTObject.intValue: par'super'Qual="+par.getClass().getSuperclass().getSimpleName());
-		if (par instanceof NAME$<?>)par = ((NAME$<?>) par).get();
+		if (par instanceof NAME$<?>) par = ((NAME$<?>) par).get();
 		if (par instanceof PRCQNT$)	par = ((PRCQNT$) par).CPF().RESULT$();
 		if (par instanceof Float) return ((int) par);
 		if (par instanceof Double) return ((int) (double) par);
@@ -326,7 +302,6 @@ public abstract class RTObject$ {
 			T val = nextValue.get();
 			cvar.put(val);
 			nextValue = null;
-			// RT.BREAK("SingleElt.next: return="+val);
 			return (true);
 		}
 	}
@@ -349,7 +324,6 @@ public abstract class RTObject$ {
 			TXT$ val = nextValue.get();
 			ASGTXT$(cvar.get(), val);
 			nextValue = null;
-			// RT.BREAK("SingleElt.next: return="+val);
 			return (true);
 		}
 	}
@@ -379,7 +353,6 @@ public abstract class RTObject$ {
 			this.until = until;
 		}
 
-//		@SuppressWarnings("deprecation")
 		public Boolean next() {
 			try {
 			Number stp;
@@ -428,12 +401,12 @@ public abstract class RTObject$ {
 			T val = expr.get();
 			cvar.put(val);
 			more = cond.get(); // IF not more return null - test i loopen: if(CB$==null) continue;
-			// RT.BREAK("WhileElt.next: return="+val);
 			return (more);
 		}
 	}
 
-	public final class WhileTValElt extends ForElt { // For t:= <TextExpr> while <Cond> // Text Value Assignment
+	public final class WhileTValElt extends ForElt {
+		// For t:= <TextExpr> while <Cond> // Text Value Assignment
 		final NAME$<TXT$> cvar, expr;
 		NAME$<Boolean> cond;
 
@@ -445,10 +418,8 @@ public abstract class RTObject$ {
 
 		public Boolean next() {
 			TXT$ val = expr.get();
-			// cvar.put(val);
 			ASGTXT$(cvar.get(), val);
 			more = cond.get(); // IF not more return null - test i loopen: if(CB$==null) continue;
-			// RT.BREAK("WhileElt.next: return="+val);
 			return (more);
 		}
 	}
@@ -594,11 +565,8 @@ public abstract class RTObject$ {
 		int lng; // Length of common parts.
 		if (left == null) left = NOTEXT;
 		if (right == null) right = NOTEXT;
-		// RT.BREAK("ENVIRONMENT.TXTREL("+code+") Left= \""+left.edText()+'"');
-		// RT.BREAK("ENVIRONMENT.TXTREL("+code+") Right=\""+right.edText()+'"');
 		lng = right.LENGTH;
 		dif = lng - left.LENGTH;
-		// RT.BREAK("ENVIRONMENT.TXTREL("+code+") dif="+dif);
 		if (dif != 0) {
 			if (code == 2) return (false);
 			if (code == 5) return (true);
@@ -609,18 +577,11 @@ public abstract class RTObject$ {
 			int rightChar = right.OBJ.MAIN[right.START + i];
 			int leftChar = left.OBJ.MAIN[left.START + i];
 			if (rightChar != leftChar) {
-				// RT.BREAK("ENVIRONMENT.TXTREL("+code+") pos="+i);
-				// RT.BREAK("ENVIRONMENT.TXTREL("+code+") leftChar="+(char)leftChar+",
-				// code="+leftChar);
-				// RT.BREAK("ENVIRONMENT.TXTREL("+code+") rightChar="+(char)rightChar+",
-				// code="+rightChar);
 				dif = rightChar - leftChar;
 				break;
 			}
 			i = i + 1;
 		}
-		;
-		// RT.BREAK("ENVIRONMENT.TXTREL("+code+") dif="+dif);
 		switch (code) {
 		case 1:	return (0 < dif);
 		case 2:	return (0 == dif);
@@ -636,8 +597,6 @@ public abstract class RTObject$ {
 	// *** TXTREL - Text reference relations. == =/=
 	// **************************************************************
 	public boolean TRF_EQ(TXT$ left, TXT$ right) {
-		// RT.BREAK("TRF_EQ: left="+left);
-		// RT.BREAK("TRF_EQ: right="+right);
 		if (left == null) left = NOTEXT;
 		if (right == null) right = NOTEXT;
 		if (left.LENGTH != right.LENGTH) return (false);
@@ -661,9 +620,11 @@ public abstract class RTObject$ {
 	// *** lOCAL JUMP/LABEL - Meant for Byte-Code Engineering
 	// ************************************************************
 	public static void LABEL$(final int labelIndex,final String ident) {
-	} // Local LABEL - Needs ByteCode Engineering.
+		// Local LABEL - Needs ByteCode Engineering.
+	}
 
-	public static void JUMPTABLE$(final int labelIndex) { // Local GOTO - Needs ByteCode Engineering.
+	public static void JUMPTABLE$(final int labelIndex) {
+		// Local GOTO - Needs ByteCode Engineering.
 		if (RT.Option.GOTO_TRACING)
 			RT.TRACE("RTObject$.JUMPTABLE$: labelIndex=" + labelIndex);
 		RT.printSimulaStackTrace(0);
@@ -687,8 +648,6 @@ public abstract class RTObject$ {
 			this.SL$ = SL$;
 			this.index = index;
 			this.identifier = identifier;
-			// RT.ASSERT(this.index>0,"Invariant");
-			// RT.BREAK("NEW LABQNT: SL="+SL$+", index="+index);
 		}
 
 		public String toString() {
@@ -734,19 +693,10 @@ public abstract class RTObject$ {
 					if (RT.Option.GOTO_TRACING)	System.err.println("DL=" + DL.edObjectAttributes());
 					if (RT.Option.GOTO_TRACING)	RT.println("DL=" + DL.edObjectAttributes());
 					ThreadUtils.PENDING_EXCEPTION$ = (RuntimeException) e;
-					// if(RT.USE_LOOM)
 					DL.CONT$.run();
-					// else ThreadUtils.END_THREAD(DL.THREAD$);
 				} else {
 					String msg="Illegal GOTO " + ((LABQNT$)e).identifier;
 					if(ENVIRONMENT$.EXCEPTION_HANDLER!=null) treatRuntimeException(msg);
-//					if(ENVIRONMENT$.EXCEPTION_HANDLER!=null) {
-//						try { System.out.println("Runtime Error(1): EXCEPTION_HANDLER="+ENVIRONMENT$.EXCEPTION_HANDLER);
-//							  PRCQNT$ erh=ENVIRONMENT$.EXCEPTION_HANDLER;
-//							  ENVIRONMENT$.EXCEPTION_HANDLER=null;
-//							  erh.CPF().setPar(new TXT$(msg)).ENT$();
-//						} catch (Throwable t) { t.printStackTrace(); }
-//					}
 					RT.println(who + ": SIMULA RUNTIME ERROR: " + msg);
 					e.printStackTrace();
 					endProgram(-1);
@@ -757,13 +707,6 @@ public abstract class RTObject$ {
 				else if (e instanceof ArrayIndexOutOfBoundsException) msg = "ArrayIndexOutOfBounds";
 				else msg = e.getClass().getSimpleName() + " " + msg;
 				if(ENVIRONMENT$.EXCEPTION_HANDLER!=null) treatRuntimeException(msg);
-//				{
-//					try { System.out.println("Runtime Error(2): EXCEPTION_HANDLER="+ENVIRONMENT$.EXCEPTION_HANDLER);
-//				    	  PRCQNT$ erh=ENVIRONMENT$.EXCEPTION_HANDLER;
-//				    	  ENVIRONMENT$.EXCEPTION_HANDLER=null;
-//				    	  erh.CPF().setPar(new TXT$(msg)).ENT$();
-//					} catch (Throwable t) { t.printStackTrace(); }
-//				}
 				RT.printError(who + ": SIMULA RUNTIME ERROR: " + msg);
 				RT.printSimulaStackTrace(e, 0);
 				e.printStackTrace();
@@ -793,7 +736,6 @@ public abstract class RTObject$ {
 	// *** begin ... ; goto STOP end terminate_program;
 	// ************************************************************
 	public void terminate_program() {
-		//System.exit(0);
 		endProgram(0);
 	}
 
@@ -810,7 +752,6 @@ public abstract class RTObject$ {
 		RT.progamIdent=ident;
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("Begin Execution of Simula Program: " + ident);
 		if (SYSIN$ == null) {
-//			if (RT.Option.USE_CONSOLE) RT.console = new RTConsole();
 			if (RT.Option.USE_CONSOLE) {
 				RT.console = new ConsolePanel();
 				RT.console.popup();
@@ -820,8 +761,7 @@ public abstract class RTObject$ {
 			SYSIN$.open(blanks(INPUT_LINELENGTH_));
 			SYSOUT$.open(blanks(OUTPUT_LINELENGTH_));
 		}
-		PRG$ = this;
-		CUR$ = this;// TODO: Check Konsekvenser av å fjerne denne
+		CUR$ = this;
 	}
 
 	// ************************************************************
@@ -837,10 +777,8 @@ public abstract class RTObject$ {
 	 * </ul>
 	 */
 	public void BBLK() {
-		DL$ = CUR$;
-		CUR$ = this;
-		this.CONT$ = DL$.CONT$;
-//		RT.ASSERT(this.CONT$==DL$.CONT$,"RTObject$.BBLK: this.CONT$ != DL$.CONT$");
+		DL$ = CUR$;	CUR$ = this;
+		CONT$ = DL$.CONT$;
 		STATE$ = OperationalState.attached;
 		if (RT.Option.BLOCK_TRACING) RT.TRACE("BEGIN " + edObjectAttributes());
 		RT.NoneCheck(SL$); // In case of Remote Call on Procedure x.Func, x==none
@@ -881,73 +819,40 @@ public abstract class RTObject$ {
 	 * <p>
 	 */
 	public void EBLK() {
-		RTObject$ dl;   // A temporary to the instance dynamically
-						// enclosing the resumed object ('CUR$').
-		RTObject$ main; // The head of the main component and also
-						// the head of the quasi-parallel system.
-//		RT.println("RTObject.EBLK: CUR$=" + CUR$.edObjectAttributes());
-//		RT.println("RTObject.EBLK: this=" + this.edObjectAttributes());
-		if (RT.Option.BLOCK_TRACING)
-			RT.TRACE("END BLOCK(1) " + edObjectAttributes());
-
-		if (this.STATE$ == OperationalState.terminatingProcess) {
-			//RT.TRACE("TERMINATING PROCESS "+edObjectAttributes());
-//			RT.println("RTObject.EBLK(2): CUR$=" + CUR$.edObjectAttributes());
-//			RT.println("RTObject.EBLK(2): this=" + this.edObjectAttributes());
-			this.STATE$ = OperationalState.terminated;
-			// if(RT.USE_LOOM) {
-			this.CONT$ = null; // Leave it to the GarbageCollector
-			// } else {
-			// this.THREAD$=null; // Leave it to the GarbageCollector
-			// }
-			return; // Let this Thread R.I.P.
+		switch(STATE$) {
+			case attached: {
+					RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-1");
+					STATE$ = OperationalState.terminated;
+					CUR$ = DL$; // Make the dynamic enclosure the new current instance.
+					if (RT.Option.BLOCK_TRACING) RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
+				} break;
+			case resumed: {
+					RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-2");
+					// Treat the case of a resumed and operating object.
+					// It is the head of an object component. The class
+					// object enters the terminated state, and the object component
+					// disappears from its system. The main component of that system
+					// takes its place as the operating component of the system.
+					// Invariant: CUR$.STATE$ = resumed and CUR$.DL = main.SL
+					STATE$ = OperationalState.terminated;
+					// Find main component (and system) head. It must be the static
+					// enclosure since the object has been RESUMEd.
+					RTObject$ main = SL$;
+					// The main component becomes the operating component.
+					RTObject$ dl = DL$; DL$ = null;
+					CUR$ = main.DL$; main.DL$ = dl;
+					if (RT.Option.BLOCK_TRACING) RT.TRACE("END COMPONENT " + edObjectAttributes());
+				} break;
+			case terminatingProcess: {
+					//RT.TRACE("TERMINATING PROCESS "+edObjectAttributes());
+					STATE$ = OperationalState.terminated;
+					CONT$ = null; // Leave it to the GarbageCollector
+					return; // Let this Continuation R.I.P.
+				}
+			default: throw new RuntimeException("RTObject$.EBLK: Internal Error " + edObjectAttributes());
 		}
-		if (CUR$ != this) {
-			// RT.println("RTObject.EBLK: CUR$="+CUR$.edObjectIdent());
-			// RT.println("RTObject.EBLK: this="+this.edObjectIdent());
-			RT.println("RTObject.EBLK(3): CUR$=" + CUR$.edObjectAttributes());
-			RT.println("RTObject.EBLK(3): this=" + this.edObjectAttributes());
-		}
-		RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-1");
-
-		if (CUR$.STATE$ == OperationalState.attached) {
-			CUR$.STATE$ = OperationalState.terminated;
-			// Make the dynamic enclosure the new current instance.
-			CUR$ = CUR$.DL$;
-			if (RT.Option.BLOCK_TRACING)
-				RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
-		} else if (CUR$.STATE$ == OperationalState.resumed) {
-			// Treat the case of a resumed and operating object.
-			// It is the head of an object component. The class
-			// object enters the terminated state, and the object component
-			// disappears from its system. The main component of that system
-			// takes its place as the operating component of the system.
-			// Invariant: CUR$.STATE$ = resumed and CUR$.DL = main.SL
-			CUR$.STATE$ = OperationalState.terminated;
-			// Find main component (and system) head. It must be the static
-			// enclosure since the object has been RESUMEd.
-			main = CUR$.SL$;
-			// The main component becomes the operating component.
-			dl = CUR$.DL$;
-			CUR$.DL$ = null;
-			CUR$ = main.DL$;
-			main.DL$ = dl;
-			if (RT.Option.BLOCK_TRACING)
-				RT.TRACE("END COMPONENT " + edObjectAttributes());
-			// } else {
-			// // Treat the case of a prefixed block instance.
-			// CUR$=CUR$.DL$;
-			// if(RT.Option.BLOCK_TRACING) RT.TRACE("END PREFIXED BLOCK
-			// "+edObjectAttributes());
-		}
-		if (RT.Option.BLOCK_TRACING) RT.TRACE("END BLOCK(2) " + CUR$);
 		if (CUR$ == null || CUR$ == CTX$) {
-		// if(CUR$==null) {
-			// SYSIN$.close();
-			// SYSOUT$.close();
-			//SYSOUT$.outimage();
-			if (RT.Option.BLOCK_TRACING)
-				RT.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
+			if (RT.Option.BLOCK_TRACING) RT.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
 			endProgram(0);
 		} else {
 			if (this.CONT$ != null && this.isDetachUsed()) {
@@ -1161,10 +1066,7 @@ public abstract class RTObject$ {
 		s.append(" SL=").append((SL$ == null) ? "null" : SL$.edObjectIdent());
 		s.append(" DL=").append((DL$ == null) ? "null" : DL$.edObjectIdent());
 		s.append(" STATE=").append(STATE$);
-
-		// if(RT.USE_LOOM)
 		s.append(" CONT$=").append(CONT$);
-		// else s.append(" THREAD=").append(THREAD$);
 		s.append(" CUR=").append(CUR$);
 		return (s.toString());
 	}

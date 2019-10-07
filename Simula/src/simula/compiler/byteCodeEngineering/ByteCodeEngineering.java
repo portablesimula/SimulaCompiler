@@ -79,7 +79,8 @@ public final class ByteCodeEngineering {
     		out.write(bytes,0,bytes.length);
     		out.flush();
     		out.close();
-    	} catch (Exception ex) { // again, catch any exceptions and...
+    	} catch (Exception ex) {
+    		// again, catch any exceptions and...
     		// ...write to the debug console
     		System.err.println(ex.getMessage());
     	}

@@ -30,15 +30,14 @@ import simula.compiler.utilities.Util;
 public class AsmUtils {
 	
 	public static void exploreTableswitch(TableSwitchInsnNode tableSwitch) {
-		// Util.BREAK("RepairSTM$MethodVisitor.exploreTableswitch: " + tableSwitch);
+		// Util.BREAK("AsmUtils.exploreTableswitch: " + tableSwitch);
 		StringBuilder s=new StringBuilder();
 		int min=tableSwitch.min;
 		int max=tableSwitch.max;
 		LabelNode dflt=tableSwitch.dflt;
 		List<LabelNode> labels=tableSwitch.labels;
-		//Util.BREAK("RepairSTM$MethodVisitor.exploreTableswitch: "+Printer.OPCODES[tableSwitch.getOpcode()]+' '+min+' '+max+' '+"...");
+		//Util.BREAK("AsmUtils.exploreTableswitch: "+Printer.OPCODES[tableSwitch.getOpcode()]+' '+min+' '+max+' '+"...");
 		s.append("  TABLESWITCH["+min+":"+max+"] {\n");
-		//s.append(" GOTO { ");
 		int n=min;
 		for(LabelNode L:labels) {
 			s.append("      KEY").append(n++).append(": ");
@@ -46,7 +45,7 @@ public class AsmUtils {
 		}
 		s.append(" } Default: "+edLabel(dflt));
 		Util.println(s.toString());
-		//Util.BREAK("RepairSTM$MethodVisitor.exploreTableswitch: END");
+		//Util.BREAK("AsmUtils.exploreTableswitch: END");
 	}
 
 	
@@ -140,7 +139,6 @@ public class AsmUtils {
 			  List<Object> stack=((FrameNode)instr).stack;
 			  int numStack=(stack==null)?0:stack.size();
 			  String ed=edFrame(type, numLocal, (local==null)?null:local.toArray(), numStack, (stack==null)?null:stack.toArray());
-//			  return("FRAME "+edFrameType(type));
 			  return(ed);
 
 		  /** The type of {@link LineNumberNode} "instructions". */
@@ -163,44 +161,20 @@ public class AsmUtils {
 	
 	public static String edAccessFlags(final int accessFlags) {
 		StringBuilder stringBuilder=new StringBuilder();
-	    if ((accessFlags & Opcodes.ACC_PUBLIC) != 0) stringBuilder.append(" PUBLIC");
-	    if ((accessFlags & Opcodes.ACC_PRIVATE) != 0) stringBuilder.append(" PRIVATE");
-	    if ((accessFlags & Opcodes.ACC_PROTECTED) != 0) stringBuilder.append(" PROTECTED");	    
-	    if ((accessFlags & Opcodes.ACC_STATIC) != 0)    stringBuilder.append(" STATIC");
-	    if ((accessFlags & Opcodes.ACC_FINAL) != 0)     stringBuilder.append(" FINAL");
-	    if ((accessFlags & Opcodes.ACC_SYNCHRONIZED) != 0)    stringBuilder.append(" SYNCHRONIZED");
-	    if ((accessFlags & Opcodes.ACC_BRIDGE) != 0)    stringBuilder.append(" BRIDGE");
-	    if ((accessFlags & Opcodes.ACC_VARARGS) != 0)         stringBuilder.append(" VARARGS");
-	    if ((accessFlags & Opcodes.ACC_NATIVE) != 0)	      stringBuilder.append(" NATIVE");
-	    if ((accessFlags & Opcodes.ACC_ABSTRACT) != 0) 	      stringBuilder.append(" ABSTRACT");
-	    if ((accessFlags & Opcodes.ACC_STRICT) != 0) 	      stringBuilder.append(" STRICT");
-	    if ((accessFlags & Opcodes.ACC_SYNTHETIC) != 0)       stringBuilder.append(" SYNTHETIC");
-	    
-//	    if ((accessFlags & Opcodes.ACC_SUPER) != 0)    stringBuilder.append(" SUPER");
-//	    if ((accessFlags & Opcodes.ACC_TRANSITIVE) != 0)    stringBuilder.append(" TRANSITIVE");
-//	    if ((accessFlags & Opcodes.ACC_VOLATILE) != 0)    stringBuilder.append(" VOLATILE");
-//	    if ((accessFlags & Opcodes.ACC_STATIC_PHASE) != 0)    stringBuilder.append(" STATIC_PHASE");
-//	    if ((accessFlags & Opcodes.ACC_TRANSIENT) != 0)       stringBuilder.append(" TRANSIENT");
-//	    if ((accessFlags & Opcodes.ACC_ENUM) != 0)	      stringBuilder.append(" ENUM");
-//	    if ((accessFlags & Opcodes.ACC_ANNOTATION) != 0)      stringBuilder.append(" ANNOTATION");
-//	    if ((accessFlags & Opcodes.ACC_INTERFACE) != 0)       stringBuilder.append(" INTERFACE");
-//	    if ((accessFlags & Opcodes.ACC_DEPRECATED) != 0)      stringBuilder.append(" DEPRECATED");
-//	    if ((accessFlags & Opcodes.ACC_MANDATED) != 0) stringBuilder.append(" MANDATED");
-//	    if ((accessFlags & Opcodes.ACC_MODULE) != 0)       stringBuilder.append(" MODULE");
+	    if ((accessFlags & Opcodes.ACC_PUBLIC) != 0)		stringBuilder.append(" PUBLIC");
+	    if ((accessFlags & Opcodes.ACC_PRIVATE) != 0)		stringBuilder.append(" PRIVATE");
+	    if ((accessFlags & Opcodes.ACC_PROTECTED) != 0) 	stringBuilder.append(" PROTECTED");	    
+	    if ((accessFlags & Opcodes.ACC_STATIC) != 0)    	stringBuilder.append(" STATIC");
+	    if ((accessFlags & Opcodes.ACC_FINAL) != 0)     	stringBuilder.append(" FINAL");
+	    if ((accessFlags & Opcodes.ACC_SYNCHRONIZED) != 0)  stringBuilder.append(" SYNCHRONIZED");
+	    if ((accessFlags & Opcodes.ACC_BRIDGE) != 0)  		stringBuilder.append(" BRIDGE");
+	    if ((accessFlags & Opcodes.ACC_VARARGS) != 0)       stringBuilder.append(" VARARGS");
+	    if ((accessFlags & Opcodes.ACC_NATIVE) != 0)	    stringBuilder.append(" NATIVE");
+	    if ((accessFlags & Opcodes.ACC_ABSTRACT) != 0) 	    stringBuilder.append(" ABSTRACT");
+	    if ((accessFlags & Opcodes.ACC_STRICT) != 0) 	    stringBuilder.append(" STRICT");
+	    if ((accessFlags & Opcodes.ACC_SYNTHETIC) != 0)     stringBuilder.append(" SYNTHETIC");
 	    return(stringBuilder.toString());
 	}
-	
-//	private static String edFrameType(final int type) {
-//		switch (type) {
-//		case Opcodes.F_NEW: return("NEW");
-//		case Opcodes.F_FULL: return("FULL");
-//		case Opcodes.F_APPEND: return("APPEND");
-//		case Opcodes.F_CHOP: return("CHOP");
-//		case Opcodes.F_SAME: return("SAME");
-//		case Opcodes.F_SAME1: return("SAME1");
-//		default: return("UNKNOWN");
-//		}
-//	}
 	  
 	// FREAME EDITING COPIED FROM Textifier
 	static StringBuilder stringBuilder;

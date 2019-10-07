@@ -35,7 +35,6 @@ public final class RelationalOperation extends Expression {
 		this.lhs = lhs;
 		this.opr = opr;
 		this.rhs = rhs;
-		// lhs.backLink=rhs.backLink=this;
 		if (this.lhs == null) {
 			Util.error("Missing operand before " + opr);
 			this.lhs = new Variable("UNKNOWN$");
@@ -103,7 +102,6 @@ public final class RelationalOperation extends Expression {
 	}
 
 	public String toJavaCode() {
-		// Util.BREAK("RelationalOperation.toJavaCode: "+this);
 		ASSERT_SEMANTICS_CHECKED(this);
 		switch (opr) {
 			case LT: case LE: case EQ: case NE: case GE: case GT: {

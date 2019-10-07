@@ -53,24 +53,23 @@ import simula.compiler.utilities.Util;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class TypeDeclaration extends Declaration implements Externalizable {
+public class SimpleVariableDeclaration extends Declaration implements Externalizable {
 	// String identifier;    // Inherited
 	// String externalIdent; // Inherited
 	// Type type;            // Inherited
 	private boolean constant;
 	public Expression constantElement;
 
-	public TypeDeclaration(final Type type,final String identifier) {
+	public SimpleVariableDeclaration(final Type type,final String identifier) {
 		super(identifier);
+		this.declarationKind=Declaration.Kind.SimpleVariableDeclaration;
 		this.type=type;
-		//Util.BREAK("TypeDeclaration: new "+type+" "+identifier);
 	}
 
-	public TypeDeclaration(final Type type,final String identifier,final boolean constant,final Constant constantElement) {
+	public SimpleVariableDeclaration(final Type type,final String identifier,final boolean constant,final Constant constantElement) {
 		this(type,identifier);
 		this.constant=constant;
 		this.constantElement=constantElement;
-		//Util.BREAK("TypeDeclaration: new "+type+" "+identifier);
 	}
 	
 	public boolean isConstant() { // Is used to prevent assignment of new value
@@ -85,7 +84,7 @@ public class TypeDeclaration extends Declaration implements Externalizable {
 	    else {
 	    	do { 
 	    	    String ident=expectIdentifier();
-	            TypeDeclaration typeDeclaration=new TypeDeclaration(type,ident);
+	            SimpleVariableDeclaration typeDeclaration=new SimpleVariableDeclaration(type,ident);
 	            if(Parser.accept(KeyWord.EQ)) typeDeclaration.constantElement=Expression.parseExpression();
 	            declarationList.add(typeDeclaration);
 	        } while(Parser.accept(KeyWord.COMMA)); 
@@ -93,14 +92,12 @@ public class TypeDeclaration extends Declaration implements Externalizable {
 	} 
 
 	public void doChecking() {
-		//Util.BREAK("TypeDeclaration.doChecking("+this+")");
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		type.doChecking(Global.currentScope);
 		if(constantElement!=null) {
 			constantElement.doChecking();
 	        constantElement=TypeConversion.testAndCreate(type,constantElement);
-		    //Util.BREAK("TypeDeclaration.doChecking("+this+") - Constant'type="+constantElement.type+" --> "+type);
 	        constantElement.type=type;
 		}
 		if(Global.currentScope instanceof ClassDeclaration) {
@@ -112,26 +109,20 @@ public class TypeDeclaration extends Declaration implements Externalizable {
 	}
 
 	public void doDeclarationCoding() {
-		//Util.BREAK("TypeDeclaration.doDeclarationCoding: "+this);	        			
         if(constantElement!=null && !(constantElement instanceof Constant)) {
         	// Initiate Final Variable
-//			Util.BREAK("TypeDeclaration.doDeclarationCoding: type="+type);	        			
-//			Util.BREAK("TypeDeclaration.doDeclarationCoding: constantElement.type="+constantElement.type);	        			
 			String value=constantElement.toJavaCode();
 			JavaModule.code(getJavaIdentifier() + '=' + value + ';');
-//			Util.BREAK("TypeDeclaration.doDeclarationCoding: CODE("+getJavaIdentifier() + '=' + value);	        			
 		}
 	}
 	
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		//Util.BREAK("TypeDeclaration.toJavaCode: scope="+scope.getClass().getName());
 		String modifier = "";
-		if (Global.currentScope.blockKind==BlockKind.Class) modifier = "public ";
+		if (Global.currentScope.declarationKind==Declaration.Kind.Class) modifier = "public ";
 		if (this.isConstant()) modifier = modifier+"final ";
 		if(constantElement!=null) {
 			constantElement=TypeConversion.testAndCreate(type,constantElement.evaluate());
-	        //Util.BREAK("TypeDeclaration.toJavaCode: constantElement="+constantElement);
 	        constantElement.doChecking();
 	        if(constantElement instanceof Constant) {
 				String value=constantElement.toJavaCode();
@@ -154,12 +145,14 @@ public class TypeDeclaration extends Declaration implements Externalizable {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
-	public TypeDeclaration() { super(null); }
+	public SimpleVariableDeclaration() {
+		super(null);
+		this.declarationKind=Declaration.Kind.SimpleVariableDeclaration;
+	}
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
 		Util.TRACE_OUTPUT("Variable: "+type+' '+identifier+", constant="+isConstant()+", const="+constantElement);
-//		Util.BREAK("TypeDeclaration.writeExternal: "+type+' '+identifier+", constant="+isConstant()+", const="+constantElement);
 	    oupt.writeObject(identifier);
 	    oupt.writeObject(externalIdent);
 	    oupt.writeObject(type);
@@ -177,6 +170,5 @@ public class TypeDeclaration extends Declaration implements Externalizable {
 	    constant=inpt.readBoolean();
 	    constantElement=(Constant)inpt.readObject();
 	    Util.TRACE_INPUT("Variable: "+type+' '+identifier+", constant="+constant+", constantElement="+constantElement);
-//		Util.BREAK("TypeDeclaration.readExternal: "+type+' '+identifier+", constant="+isConstant()+", const="+constantElement);
 	}
 }

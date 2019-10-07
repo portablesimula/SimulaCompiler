@@ -26,21 +26,15 @@ public final class PRCQNT$ {
 	}
 
 	public PROC$ CPF() {
-		// RT.BREAK("CPF: procedure=" + procedure + ", Qual=" + procedure.getClass().getSimpleName());
 		try {
+			// Get 'default' constructor:  <Procedure>(RTObject$ SL);
 			Constructor<?> constr = procedure.getConstructor(new Class[] { RTObject$.class });
-			// RT.BREAK("CPF2: constr=" + constr + ", Qual=" + procedure.getClass().getSimpleName());
 			Object obj = constr.newInstance(staticLink);
-			// RT.BREAK("CPF5: obj=" + obj + ", Qual=" + obj.getClass().getSimpleName());
 			return ((PROC$) obj);
 		} catch (InvocationTargetException e) {
-			// e.printStackTrace();
-			// RT.BREAK("CPF3 cause=" + e.getCause());
-			// RT.BREAK("CPF3 TargetException=" + e.getTargetException());
 			Throwable targetException = e.getTargetException();
 			if (targetException instanceof RuntimeException) {
-				// RT.BREAK("CPF3 RE-THROW TargetException=" + e.getTargetException());
-				throw (RuntimeException) targetException;
+				throw (RuntimeException) targetException; // RE-THROW TargetException
 			}
 			throw new RuntimeException("PRCQNT$.CPF: FATAL error (1) - Impossible situation - " + e, e);
 		} catch (Throwable e) {

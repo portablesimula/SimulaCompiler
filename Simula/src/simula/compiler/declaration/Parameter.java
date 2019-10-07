@@ -11,7 +11,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
+import java.util.Vector;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -29,6 +29,7 @@ public final class Parameter extends Declaration implements Externalizable {
 
 	public Parameter(final String identifier) {
 		super(identifier);
+		this.declarationKind=Declaration.Kind.Parameter;
 	}
 
 	public Parameter(final String identifier,final Type type,final Parameter.Kind kind) {
@@ -41,13 +42,22 @@ public final class Parameter extends Declaration implements Externalizable {
 		this(identifier, type, kind);
 		this.nDim = nDim;
 	}
+	
+	// ***********************************************************************************************
+	// *** Utility: into
+	// ***********************************************************************************************
+	public void into(final Vector<Parameter> parameterList) {
+		for (Parameter par : parameterList)
+			if (par.identifier.equalsIgnoreCase(this.identifier)) {
+				Util.error("Parameter already defined: " + identifier);
+				return;
+			}
+		parameterList.add(this);
+	}
   
 	public boolean equals(final Object other) {
 		if (!(other instanceof Parameter)) return (false);
 		Parameter otherPar = (Parameter) other;
-		// Util.BREAK("Parameter.equals: This type="+type);
-		// Util.BREAK("Parameter.equals: Othr type="+otherPar.type);
-		// Util.BREAK("Parameter.equals: TypeEquals="+type.equals(otherPar.type));
 		if (!type.equals(otherPar.type)) return (false);
 		if (kind != otherPar.kind) return (false);
 		if (mode != otherPar.mode) return (false);
@@ -66,20 +76,14 @@ public final class Parameter extends Declaration implements Externalizable {
 	}
 
 	public void setExternalIdentifier(final int prefixLevel) {
-		// Util.BREAK("Parameter.modifyIdentifier: identifier="+identifier);
 		if (prefixLevel > 0)
 			 externalIdent = "p" + prefixLevel + '$' + identifier;
 		else externalIdent = "p$" + identifier;
-		// Util.BREAK("Parameter.modifyIdentifier: identifier="+identifier+" ==> "+externalIdent);
 	}
 
 	public void doChecking() {
 		if(IS_SEMANTICS_CHECKED()) return;
 		Global.sourceLineNumber=lineNumber;
-//      Util.BREAK("CHECKING Parameter: "+this);
-//	    Util.BREAK("Parameter: "+kind+' '+type+' '+identifier+" by "+((mode!=null)?mode:"default"));
-// 	    Util.BREAK("Parameter("+this.toString()+").doChecking: Current Scope Chain: "+Global.currentScope.edScopeChain());
-//	    Util.BREAK("Parameter("+this.toString()+").doChecking: type="+type);
 		if(kind==null) {
 			Util.error("Parameter "+identifier+" is not specified -- assumed Simple Integer");
 			kind=Kind.Simple; type=Type.Integer;
@@ -114,7 +118,6 @@ public final class Parameter extends Declaration implements Externalizable {
     * </pre>
     */
     private boolean legalTransmitionMode() { 
-    	//Util.BREAK("Parameter: "+kind+' '+type+" by "+((mode!=null)?mode:"default"));
     	boolean illegal=false;
     	switch(kind) {
     	    case Simple: 
@@ -133,7 +136,7 @@ public final class Parameter extends Declaration implements Externalizable {
     	}
     	return(!illegal);
 	}
-  
+    
     public String toJavaType() {
     	ASSERT_SEMANTICS_CHECKED(this);
     	if(mode==Parameter.Mode.name) {
@@ -143,21 +146,37 @@ public final class Parameter extends Declaration implements Externalizable {
     		    	return("NAME$<"+type.toJavaTypeClass()+">");
     		    case Procedure: return("NAME$<PRCQNT$>");
     		    case Label:     return("NAME$<LABQNT$>");
-//    	        case Array:		return("NAME$<ARRAY$<"+type.toJavaType()+"[]>>");
     		    case Array:		return("NAME$<ARRAY$<?>>");
-//          	case Switch:    return("NAME$<PRCQNT$>");
     		}
     	}
-//      if(kind==Parameter.Kind.Array) return("ARRAY$<"+type.toJavaType()+"[]>");
-    	if(kind==Parameter.Kind.Array) return("ARRAY$<?>");
-    	if(kind==Parameter.Kind.Procedure) return("PRCQNT$");
-    	if(kind==Parameter.Kind.Label) return("LABQNT$");
+    	switch(kind) {
+    		case Array:     return("ARRAY$<?>");
+    		case Label:     return("LABQNT$");
+    		case Procedure: return("PRCQNT$");
+    		case Simple: // Fall through
+		}
     	return(type.toJavaType());
     }
   
     public String toJavaCode() {
     	return(toJavaType() + ' ' + externalIdent);
     }
+    
+	// ***********************************************************************************************
+	// *** Printing Utility: editParameterList
+	// ***********************************************************************************************
+	public static String editParameterList(Vector<Parameter> parameterList) {
+		StringBuilder s = new StringBuilder();
+		s.append('(');
+		boolean first = true;
+		for (Parameter par : parameterList) {
+			if (!first)	s.append(',');
+			s.append(par);
+			first = false;
+		}
+		s.append(");");
+		return (s.toString());
+	}
 
     public String toString() {
     	String s="";
@@ -172,7 +191,10 @@ public final class Parameter extends Declaration implements Externalizable {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
-	public Parameter() { super(null); }
+	public Parameter() {
+		super(null);
+		this.declarationKind=Declaration.Kind.Parameter;
+	}
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {

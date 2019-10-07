@@ -28,7 +28,6 @@ public final class Token implements Externalizable {
 		this.text = text;
 		this.keyWord = keyWord;
 		this.value = value;
-		// Util.BREAK("NEW ITEM:'" + this + "' KeyWord="+keyWord);
 	}
 
 	public Token(final String text,final KeyWord keyWord) {
@@ -146,7 +145,6 @@ public final class Token implements Externalizable {
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		//TRACE_OUTPUT("Type="+this);
 		oupt.writeObject(keyWord);
 		oupt.writeObject(value);
 	}

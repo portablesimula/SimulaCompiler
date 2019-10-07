@@ -38,19 +38,33 @@ public abstract class Declaration extends SyntaxClass {
 	public String identifier; // Simula Identifier from Source Text
 	public String externalIdent; // External Identifier set by doChecking
 	public DeclarationScope declaredIn;  // The DeclarationScope in which this Declaration is defined.
-	public BlockKind blockKind;
-	
-	public final String getJavaIdentifier() { return(this.externalIdent); }  // May be redefined
-	
-	public void modifyIdentifier(final String newIdentifier) {
-		//Util.BREAK("Declaration.modifyIdentifier: "+identifier+" ==> "+newIdentifier);
-		this.identifier=newIdentifier;
-	    checkAlreadyDefined();
-		//Util.BREAK("Declaration.modifyIdentifier: "+identifier+" ==> "+newIdentifier+", IN DECLARATION: "+this);
+	public Kind declarationKind;
+	public enum Kind {
+		StandardClass,
+		ConnectionBlock,
+		CompoundStatement,
+	    SubBlock,
+	    Procedure,			// Normal Simula Procedure implemented as a Java Class
+	    MemberMethod,		// Procedure coded as a Java Member Method. 
+		StaticMethod,		// Treated as a Java Static Method with implicit 0th parameter 'static link'
+		ContextFreeMethod,	// Treated as a Java Static Method without 0th parameter (Context Free Method)
+	    Class,
+	    PrefixedBlock,
+	    SimulaProgram,
+	    
+		ArrayDeclaration,
+		VirtualSpecification,
+		VirtualMatch,
+//		ProcedureDeclaration,
+		Parameter,
+		LabelDeclaration,
+		SimpleVariableDeclaration,
+//		ClassDeclaration,
+		ExternalDeclaration,
+//		ConnectionBlock
+
 	}
-	  
-	public ProtectedSpecification isProtected; // Set during Checking
-	public ProtectedSpecification getProtected() { return(isProtected); } // NOTE: Redefined in ProcedureDeclaration
+
     
     // ***********************************************************************************************
     // *** Constructor
@@ -61,11 +75,18 @@ public abstract class Declaration extends SyntaxClass {
 	    declaredIn=Global.currentScope;
 	    checkAlreadyDefined();
     }
+	
+	public final String getJavaIdentifier() { return(this.externalIdent); }  // May be redefined
+	
+	public void modifyIdentifier(final String newIdentifier) {
+		this.identifier=newIdentifier;
+	    checkAlreadyDefined();
+	}
+	  
+	public ProtectedSpecification isProtected; // Set during Checking
+	public ProtectedSpecification getProtected() { return(isProtected); } // NOTE: Redefined in ProcedureDeclaration
   
     private void checkAlreadyDefined() {
-//    	if("trace".equalsIgnoreCase(identifier)) {    		
-//    		Util.BREAK("Declaration.checkAlreadyDefined: identifier="+identifier+", declaredIn="+declaredIn);
-//    	}
     	boolean error=false;
     	boolean warning=false;
     	if(identifier==null) return;
@@ -77,18 +98,15 @@ public abstract class Declaration extends SyntaxClass {
     	else if(declaredIn instanceof ClassDeclaration) parameterList=((ClassDeclaration)declaredIn).parameterList;
     	else parameterList=null;  // No parameters
 	    
-    	if(parameterList!=null)
+    	if(parameterList!=null) {
     		for(Declaration decl:parameterList)
     			if(decl.identifier.equalsIgnoreCase(identifier)) { warning=true; break;}
-    	LOOP:for(Declaration decl:declaredIn.declarationList) {
+    	}
+   LOOP:for(Declaration decl:declaredIn.declarationList) {
     		if(decl==null) return; // Error recovery
     		if(decl.identifier==null) return; // Error recovery
-//        	if("trace".equalsIgnoreCase(identifier)) {    		
-//        		Util.BREAK("Declaration.checkAlreadyDefined(2): identifier="+identifier+", decl.identifier="+decl.identifier);
-//        	}
     		if(decl.identifier.equalsIgnoreCase(identifier)) { error=true; break LOOP;}    	
     	}
-//    	if(illegal) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
     	if(error) Util.error(identifier+" is alrerady defined in "+declaredIn.identifier);
     	else if(warning) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
     }
@@ -116,7 +134,7 @@ public abstract class Declaration extends SyntaxClass {
     		String ident=acceptIdentifier();
     		if(ident==null) {
     			// Switch Statement
-    			Parser.saveCurrentToken(); //?? PushBack ??
+    			Parser.saveCurrentToken();
     			return(false);
     		}
     		declarationList.add(new SwitchDeclaration(ident));
@@ -124,7 +142,7 @@ public abstract class Declaration extends SyntaxClass {
     	else if(Parser.accept(KeyWord.EXTERNAL)) ExternalDeclaration.doParse(declarationList);
     	else {
     		Type type=acceptType(); if(type==null) return(false);
-    		TypeDeclaration.parse(type,declarationList);
+    		SimpleVariableDeclaration.parse(type,declarationList);
     		if(Option.TRACE_PARSE) Parser.TRACE("Parse Declaration(2)");
     	}
     	return(true);

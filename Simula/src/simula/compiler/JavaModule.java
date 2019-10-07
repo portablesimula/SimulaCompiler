@@ -30,24 +30,17 @@ public final class JavaModule {
 	private JavaModule enclosingJavaModule;
 	public final BlockDeclaration blockDeclaration;
 	private final Writer writer;
-//	final String javaOutputFileName;
 	final File javaOutputFile;
 	private final Vector<Integer> lineMap=new Vector<Integer>();
 	public Vector<CodeLine> saveCode; // Used during coding
 	
 	public JavaModule(final BlockDeclaration blockDeclaration) {
 		this.blockDeclaration = blockDeclaration;
-		// Util.BREAK("JavaModule: Global.javaModules.add "+javaModule);
 		Global.javaModules.add(this);
 		enclosingJavaModule = Global.currentJavaModule;
 		Global.currentJavaModule = this;
-//		javaOutputFileName = Global.tempJavaFileDir + blockDeclaration.getJavaIdentifier() + ".java";
 		javaOutputFile = new File(Global.tempJavaFileDir,blockDeclaration.getJavaIdentifier()+".java");
 		try {
-//			File outputFile = new File(javaOutputFileName);
-//			outputFile.getParentFile().mkdirs();
-//			if (Option.verbose)	Util.TRACE("Output: " + outputFile.getCanonicalPath());
-//			writer = new OutputStreamWriter(new FileOutputStream(outputFile), Global.CHARSET$);
 			javaOutputFile.getParentFile().mkdirs();
 			if (Option.verbose)	Util.TRACE("Output: " + javaOutputFile.getCanonicalPath());
 			writer = new OutputStreamWriter(new FileOutputStream(javaOutputFile), Global.CHARSET$);
@@ -138,7 +131,7 @@ public final class JavaModule {
 		s.append(edIndent()+"public static PROGINFO$ INFO$=new PROGINFO$(\"");
 		s.append(Global.sourceFileName);
 		s.append("\",\"");
-		s.append(blockDeclaration.blockKind+" "+blockDeclaration.identifier);
+		s.append(blockDeclaration.declarationKind+" "+blockDeclaration.identifier);
 		s.append('"');
 		for(Integer i:lineMap) { s.append(','); s.append(""+i); }
 		s.append(");");
@@ -150,7 +143,6 @@ public final class JavaModule {
 		Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 		try { writer.write(s.toString()+'\n');
 		} catch (IOException e) {
-//			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
 			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFile,e);
 		}
 		

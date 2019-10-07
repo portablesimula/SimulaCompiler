@@ -27,7 +27,6 @@ public final class RT {
 	private static final boolean TRACING=true;//false;//true;
 	public  static boolean DEBUGGING=false;//true;
   
-//	public static RTConsole console;
 	public static ConsolePanel console;
   
 	public static String progamIdent;
@@ -50,7 +49,6 @@ public final class RT {
 			String arg=args[i];
 			if(arg.equalsIgnoreCase("-VERBOSE")) Option.VERBOSE=true;
 			if(arg.equalsIgnoreCase("-DEBUGGING")) DEBUGGING=true;
-//			if(arg.equalsIgnoreCase("-USE_CONTINUATIONS")) USE_LOOM=true;
 			if(arg.equalsIgnoreCase("-USE_CONSOLE")) Option.USE_CONSOLE=true;
 			if(arg.equalsIgnoreCase("-CODE_STEP_TRACING")) Option.CODE_STEP_TRACING=true;
 			if(arg.equalsIgnoreCase("-BLOCK_TRACING")) Option.BLOCK_TRACING=true;
@@ -68,7 +66,6 @@ public final class RT {
 		System.out.println("defaultCharset="+Charset.defaultCharset());
 		System.out.println("VERBOSE="+Option.VERBOSE);
 		System.out.println("DEBUGGING="+DEBUGGING);
-//		System.out.println("USE_CONTINUATIONS="+USE_LOOM);
 		System.out.println("USE_CONSOLE="+Option.USE_CONSOLE);
 		System.out.println("CODE_STEP_TRACING="+Option.CODE_STEP_TRACING);
 		System.out.println("BLOCK_TRACING="+Option.BLOCK_TRACING);
@@ -252,7 +249,6 @@ public final class RT {
 		    int[] lineMap=info.LINEMAP$;
 	        int x=0; int javaLineNumber=elt.getLineNumber();
 	        try { while(lineMap[x]<javaLineNumber) x=x+2;
-	              //return(lineMap[x-1]);
 	        	  RT.println("IN "+info.ident+'('+elt.getFileName()+':'+elt.getLineNumber()+" "+elt.getMethodName()+") at Simula Source Line "+lineMap[x-1]+"["+info.file+"]");
 	        } catch(Throwable t) { }
 	    } catch (Exception e) {

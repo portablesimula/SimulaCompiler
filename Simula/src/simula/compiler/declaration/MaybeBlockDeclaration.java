@@ -41,7 +41,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	public static MaybeBlockDeclaration createMaybeBlock() {
 		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName+'$');
 		module.isMainModule = true;
-		module.blockKind = BlockKind.SimulaProgram;
+		module.declarationKind = Declaration.Kind.SimulaProgram;
 		module.parseMaybeBlock();
 		return (module);
 	}
@@ -66,31 +66,25 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	 */
 	public BlockStatement parseMaybeBlock() {
 		Statement stm;
-		// Debug.BREAK("BEGIN Block: "+this.edScopeChain());
-		if (Option.TRACE_PARSE)
-			Parser.TRACE("Parse MayBeBlock");
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse MayBeBlock");
 		while (Declaration.parseDeclaration(declarationList))
 			Parser.accept(KeyWord.SEMICOLON);
 		while (!Parser.accept(KeyWord.END)) {
 			stm = Statement.doParse();
-			// Util.BREAK("BlockDeclaration.parseMaybeBlock: stm="+stm);
 			if (stm != null) statements.add(stm);
 		}
-		if (blockKind != BlockKind.SimulaProgram) {
+		if (declarationKind != Declaration.Kind.SimulaProgram) {
 			if (!declarationList.isEmpty()) {
-				blockKind = BlockKind.SubBlock;
+				declarationKind = Declaration.Kind.SubBlock;
 				modifyIdentifier("SubBlock" + lineNumber);
 			} else {
-				blockKind = BlockKind.CompoundStatement;
+				declarationKind = Declaration.Kind.CompoundStatement;
 				modifyIdentifier("CompoundStatement" + lineNumber);
 				if (!labelList.isEmpty())
 					moveLabelsFrom(this); // Label is also declaration
 			}
 		}
 		this.lastLineNumber = Global.sourceLineNumber;
-		// declarationMap.print("END Block: "+blockName);
-		// Debug.BREAK("END Block: "+this.edScopeChain());
-
 		Global.currentScope = declaredIn;
 		return (new BlockStatement(this));
 	}
@@ -101,14 +95,11 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		// a CompoundStatement or ConnectionBlock.
 		DeclarationScope declaredIn = block.declaredIn;
 		Vector<LabelDeclaration> labelList = block.labelList;
-		// if(DEBUG) Util.BREAK("BlockDeclaration.parseMaybeBlock:
-		// declaredIn="+declaredIn);
 		DeclarationScope enc = declaredIn;
-		while (enc.blockKind == BlockKind.CompoundStatement
-				&& enc.blockKind == BlockKind.ConnectionBlock
+		while (enc.declarationKind == Declaration.Kind.CompoundStatement
+				&& enc.declarationKind == Declaration.Kind.ConnectionBlock
 				&& enc.declarationList.isEmpty())
 			enc = enc.declaredIn;
-		// if(DEBUG) Util.BREAK("BlockDeclaration.parseMaybeBlock: Labels are moved to enc="+enc);
 		for (LabelDeclaration lab : labelList) enc.labelList.add(lab);
 		labelList.clear();
 	}
@@ -120,20 +111,14 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
-
-		if (blockKind != BlockKind.CompoundStatement) currentBlockLevel++;
+		if (declarationKind != Declaration.Kind.CompoundStatement) currentBlockLevel++;
 		blockLevel = currentBlockLevel;
-		// Util.BREAK("BlockDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-		// Util.BREAK("BlockDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-		// Util.BREAK("BlockDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
 		Global.currentScope = this;
-
-		// Util.BREAK("BlockDeclaration("+identifier+").doChecking: prefixLevel="+prfx);
 		for (Declaration dcl : declarationList)	dcl.doChecking();
 		for (Statement stm : statements) stm.doChecking();
 		doCheckLabelList(null);
 		Global.currentScope = declaredIn;
-		if (blockKind != BlockKind.CompoundStatement) currentBlockLevel--;
+		if (declarationKind != Declaration.Kind.CompoundStatement) currentBlockLevel--;
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -141,8 +126,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		// if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): scope="+this);
-		// if(ident.equalsIgnoreCase("ln")) Util.BREAK("DeclarationScope("+identifier+").findVisibleAttributeMeaning("+ident+"): declaredIn="+declaredIn);
 		for (Declaration declaration : declarationList)
 			if (ident.equalsIgnoreCase(declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
@@ -156,10 +139,9 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
 	public void doJavaCoding() {
-		// Util.BREAK("BlockDeclaration.doJavaCoding: "+identifier+", BlockDeclaration.Kind="+blockKind);
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
-		if (blockKind == BlockKind.CompoundStatement)
+		if (declarationKind == Declaration.Kind.CompoundStatement)
 			 doCompoundStatementCoding();
 		else doSubBlockCoding();
 	}
@@ -169,7 +151,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doCompoundStatementCoding() {
 		Global.sourceLineNumber = lineNumber;
-		// Util.BREAK("BlockDeclaration.doSubBlockJavaCoding: "+identifier);
 		ASSERT_SEMANTICS_CHECKED(this);
 		Util.ASSERT(declarationList.isEmpty(), "Invariant");
 		Util.ASSERT(labelList.isEmpty(), "Invariant");
@@ -185,16 +166,14 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doSubBlockCoding() {
 		Global.sourceLineNumber = lineNumber;
-		// Util.BREAK("BlockDeclaration.doBlockJavaCoding: "+identifier);
 		ASSERT_SEMANTICS_CHECKED(this);
 		JavaModule javaModule = new JavaModule(this);
 		Global.currentScope = this;
 		JavaModule.code("@SuppressWarnings(\"unchecked\")");
 		JavaModule.code("public final class " + getJavaIdentifier() + " extends BASICIO$" + " {");
-		JavaModule.debug("// SubBlock: BlockKind=" + blockKind + ", BlockLevel=" + blockLevel + ", firstLine="
+		JavaModule.debug("// SubBlock: Kind=" + declarationKind + ", BlockLevel=" + blockLevel + ", firstLine="
 				+ lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 				+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
-//		JavaModule.code("public int prefixLevel() { return(0); }");
 		if (isQPSystemBlock())
 			JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
 		if (!labelList.isEmpty()) {
@@ -227,7 +206,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		JavaModule.code("public " + getJavaIdentifier() + "(RTObject$ staticLink) {");
 		JavaModule.code("super(staticLink);");
 		JavaModule.code("BBLK();");
-		if (blockKind == BlockKind.SimulaProgram) JavaModule.code("BPRG(\"" + identifier + "\");");
+		if (declarationKind == Declaration.Kind.SimulaProgram) JavaModule.code("BPRG(\"" + identifier + "\");");
 		JavaModule.debug("// Declaration Code");
 		for (Declaration decl : declarationList) decl.doDeclarationCoding();
 		JavaModule.code("}");
@@ -237,13 +216,12 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// *** Coding Utility: doCodeStatements
 	// ***********************************************************************************************
 	private void doCodeStatements() {
-		JavaModule.debug("// " + blockKind + " Statements");
+		JavaModule.debug("// " + declarationKind + " Statements");
 		JavaModule.code("public RTObject$ STM$() {");
 		codeSTMBody();
 		JavaModule.code("EBLK();");
-//		JavaModule.code("return(null);");
 		JavaModule.code("return(this);");
-		JavaModule.code("}", "End of " + blockKind + " Statements");
+		JavaModule.code("}", "End of " + declarationKind + " Statements");
 	}
 
 	// ***********************************************************************************************
@@ -253,21 +231,18 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
 		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
-		s.append(blockKind).append(' ').append(identifier);
+		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
 		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';
 		Util.println(spc + beg);
-		// if(!hiddenList.isEmpty()) Util.println(indent+" HIDDEN"+hiddenList);
-		// if(!protectedList.isEmpty()) Util.println(indent+" PROTECTED"+protectedList);
 		for (Declaration decl : declarationList) decl.print(indent + 1);
 		for (Statement stm : statements) stm.print(indent + 1);
 		Util.println(spc + "end[" + edScopeChain() + ']');
-		// Util.BREAK("BlockDeclaration.print DONE");
 	}
 
 	public String toString() {
-		return ("" + identifier + '[' + externalIdent + "] BlockKind=" + blockKind);
+		return ("" + identifier + '[' + externalIdent + "] Kind=" + declarationKind);
 	}
 
 }

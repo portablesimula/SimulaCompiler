@@ -10,6 +10,7 @@ package simula.compiler.utilities;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
+import simula.compiler.editor.RTOption;
 import simula.compiler.expression.Expression;
 
 /**
@@ -49,27 +50,38 @@ public final class Meaning {
 	}
 
 	// ***************************************************************************************
-	// *** CODING: edStaticLink
+	// *** CODING: edUnqualifiedStaticLink
 	// ***************************************************************************************
-	public String edStaticLink() {
+	public String edUnqualifiedStaticLink() {
 		// Edit staticLink reference
 		String staticLink;
 		Expression connectedObject = getInspectedVariable();
-		// Util.BREAK("Meaning.edStaticLink: connectedObject="+connectedObject);
 		if (connectedObject != null)
 			staticLink = connectedObject.toJavaCode();
 		else {
-			// Util.BREAK("Meaning.edStaticLink: Meaning="+this);
-			// Util.BREAK("Meaning.edStaticLink: Meaning'declaredIn.blockLevel="+declaredIn.blockLevel);
-			// Util.BREAK("Meaning.edStaticLink: Current="+Global.currentScope);
-			// Util.BREAK("Meaning.edStaticLink: Current'BlockLevel="+Global.currentScope.blockLevel);
+			staticLink = declaredIn.edCTX();
+			if (RTOption.DEBUGGING)	{
+				String cast = declaredIn.getJavaIdentifier();
+				staticLink = "((" + cast + ")" + staticLink + ')';
+			}
+		}
+		return (staticLink);
+	}
 
-			// staticLink=Global.currentScope.edCTX(declaredIn.blockLevel);
+	// ***************************************************************************************
+	// *** CODING: edQualifiedStaticLink
+	// ***************************************************************************************
+	public String edQualifiedStaticLink() {
+		// Edit staticLink reference
+		String staticLink;
+		Expression connectedObject = getInspectedVariable();
+		if (connectedObject != null)
+			staticLink = connectedObject.toJavaCode();
+		else {
 			staticLink = declaredIn.edCTX();
 			String cast = declaredIn.getJavaIdentifier();
 			staticLink = "((" + cast + ")" + staticLink + ')';
 		}
-		// Util.BREAK("Meaning.edStaticLink: staticLink="+staticLink);
 		return (staticLink);
 	}
 

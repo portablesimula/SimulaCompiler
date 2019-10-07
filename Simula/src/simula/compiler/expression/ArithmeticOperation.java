@@ -102,9 +102,9 @@ public final class ArithmeticOperation extends Expression {
   
 	// Try to Compile-time Evaluate this expression
 	public Expression evaluate() {
-		Number lhn=Constant.getNumber(lhs);
+		Number lhn=lhs.getNumber();
 		if(lhn!=null) {
-			Number rhn=Constant.getNumber(rhs);
+			Number rhn=rhs.getNumber();
 			if(rhn!=null) return(Constant.evaluate(lhn,opr,rhn));
 		}
 		return(this);
@@ -122,7 +122,6 @@ public final class ArithmeticOperation extends Expression {
     	    	this.type=Type.arithmeticTypeConversion(type1,type2);
     	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
     	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-    	    	//Util.BREAK("ArithmeticOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
     	    	if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
     	    	break;
     	    } case DIV: {
@@ -136,7 +135,6 @@ public final class ArithmeticOperation extends Expression {
     	    	if(this.type==Type.Integer) this.type=Type.Real;
     	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
     	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-    	    	//Util.BREAK("ArithmeticOperation.doChecking: arithmeticTypeConversion("+type1+','+type2+") ==> "+this.type);
     	    	if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
     	    	break;
     	    } case INTDIV: { // Integer Division
@@ -171,7 +169,6 @@ public final class ArithmeticOperation extends Expression {
 
   
     public String toJavaCode() {
-    	// Util.BREAK("ArithmeticOperation.toJavaCode: "+this);
     	ASSERT_SEMANTICS_CHECKED(this);
     	if(Global.USE_EXACT_MATH && this.type == Type.Integer) {
     		switch (opr) {

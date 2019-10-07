@@ -72,7 +72,6 @@ public final class TEXTOBJ extends RTObject$ {
 		// Class Body
 		MAIN = new char[SIZE];
 		fill(' ');
-		// RT.BREAK("new "+this);
 	}
 
 	// Constructor
@@ -86,7 +85,6 @@ public final class TEXTOBJ extends RTObject$ {
 
 	// Utility
 	void fill(char c) {
-		// RT.BREAK("TEXTOBJ.fill(" + c + ')' + ", MAIN=" + MAIN.length);
 		for (int i = 0; i < SIZE; i++)
 			MAIN[i] = c;
 	}

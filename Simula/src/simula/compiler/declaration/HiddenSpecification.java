@@ -79,14 +79,6 @@ public final class HiddenSpecification implements Externalizable {
 	public ClassDeclaration getScopeBehindHidden() {
 		ProtectedSpecification protectedBy=getProtectedBy();
 		ClassDeclaration definedIn=protectedBy.definedIn;
-//		Declaration atr=definedIn.findLocalAttribute(this.identifier);
-//		if(atr instanceof ProcedureDeclaration) {
-//			ProcedureDeclaration proc=(ProcedureDeclaration)atr;
-//			VirtualSpecification virtSpec=proc.getVirtualSpecification();
-//			if(virtSpec!=null) {
-//				return(virtSpec.specifiedIn.getPrefixClass());
-//			}
-//		}
 		return(definedIn.getPrefixClass());
 	}
 	
@@ -94,10 +86,8 @@ public final class HiddenSpecification implements Externalizable {
 	// *** Utility: findHidden -- Search Protected-list for 'ident'
 	// ***********************************************************************************************
 	private static HiddenSpecification findHidden(final ClassDeclaration scope,final String ident)
-	{ for(HiddenSpecification hdn:scope.hiddenList) if(ident.equalsIgnoreCase(hdn.identifier))
-	  { //Util.BREAK("HiddenSpecification.findHidden("+ident+"): FOUND");
-	      return(hdn);
-	  }
+	{ for(HiddenSpecification hdn:scope.hiddenList)
+		if(ident.equalsIgnoreCase(hdn.identifier)) return(hdn);
 	  return(null);
 	}
 
@@ -105,7 +95,6 @@ public final class HiddenSpecification implements Externalizable {
 	public String toString()
 	{ StringBuilder s=new StringBuilder();
 	  s.append("Hidden ").append(identifier);
-	  //public ClassDeclaration definedIn;
 	  s.append("[Defined in ");
 	  s.append((definedIn!=null)?definedIn.identifier:"UNKNOWN");
 	  if(protectedBy!=null) {
@@ -127,7 +116,6 @@ public final class HiddenSpecification implements Externalizable {
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		//Util.BREAK("AttributeFile.doWriteAttributeInfo: blk="+this);
 		Util.TRACE_OUTPUT("ProtectedSpecification: "+identifier);
 		oupt.writeObject(identifier);
 	}

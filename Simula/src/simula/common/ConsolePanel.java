@@ -49,27 +49,11 @@ public final class ConsolePanel extends JPanel {
 	private char keyin;      // Used by KeyListener and read()
 
 	private Reader consoleReader;
-
-//	public static void main(String[] args) {
-//		ConsolePanel console=new ConsolePanel();
-//		console.popup();
-//		console.write("Dette er en tekst\n");
-//		Writer writer=console.getWriter();
-//		try {
-//			writer.write("Her er mere ...\n");
-//			writer.flush();
-//			Reader reader=console.getReader();
-//			int c=reader.read();
-//			writer.write("Read: c="+c+", char="+(char)c);
-//		} catch (IOException e) { e.printStackTrace(); }
-//	}
 	
 	public char read() {
-		//System.out.println("Try Read");
 		textPane.requestFocus();
 		reading=true; // Enables KeyListener (see below)
 		while(reading) Thread.yield();
-		//System.out.println("Read: code="+(int)keyin+", CHAR='"+keyin+"'");
 		return(keyin);
 	}
 
@@ -141,10 +125,6 @@ public final class ConsolePanel extends JPanel {
 			Util.INTERNAL_ERROR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
-        //Util.BREAK("ConsolePanel.write: done s="+s);
-//        System.out.println("ConsolePanel.write: done s=\""+s+"\"");
-//	    textPane.repaint();
-//		textPane.update(textPane.getGraphics());
 	}
 
 	public void clear() {
@@ -154,8 +134,6 @@ public final class ConsolePanel extends JPanel {
 			Util.INTERNAL_ERROR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
-        //Util.BREAK("ConsolePanel.write: done s="+s);
-//	    textPane.repaint();
 		textPane.update(textPane.getGraphics());
         Global.console.write(Global.simulaVersion+"\n");
 //		write("Simula Compiler Console:\n");
@@ -175,12 +153,6 @@ public final class ConsolePanel extends JPanel {
     	textPane.setStyledDocument(doc);
     	textPane.addKeyListener(listener);
 		textPane.setEditable(false);
-
-//    	doc.addDocumentListener(docListener);
-//        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        //JPanel panel = new JPanel(new BorderLayout());
-        //panel.add(scrollPane);
         popupMenu=new JPopupMenu();
         clearItem = new JMenuItem("Clear Console");
         //clearItem.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
@@ -193,7 +165,6 @@ public final class ConsolePanel extends JPanel {
 	
 	public void popup() {
     	JFrame frame=new JFrame();
-//        frame.setSize(800, 500); // Initial frame size
         frame.setSize(950, 500); // Initial frame size
         frame.setTitle("Runtime Console");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -244,13 +215,10 @@ public final class ConsolePanel extends JPanel {
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Object item=e.getSource();
-			//System.out.println("ConsolePanel.ActionListener: "+item);
 			if(item==clearItem) clear();
 			else if(item==copyItem) {
 				String text=textPane.getSelectedText();
-				//System.out.println("ConsolePanel.ActionListener: SelectedText=\""+text+"\"");
 				if(text==null) text=textPane.getText();
-				//System.out.println("ConsolePanel.ActionListener: Text=\""+text+"\"");
 				StringSelection stringSelection = new StringSelection(text);
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(stringSelection, null);
@@ -271,6 +239,5 @@ public final class ConsolePanel extends JPanel {
     	    }
     	}
     };
-
 
 }

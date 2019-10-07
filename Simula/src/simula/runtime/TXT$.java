@@ -49,10 +49,10 @@ public final class TXT$ {
 	private static final int UNICODE_MINUS_SIGN=8722; // 0x2212
 	TEXTOBJ OBJ;
 	int START; // Start index of OBJ.MAIN[], counting from zero.
-				// Note this differ from Simula Definition.
+			   // Note this differ from Simula Definition.
 	int LENGTH;
-	int POS; // Current index of OBJ.MAIN[], counting from zero.
-				// Note this differ from Simula Definition.
+	int POS;   // Current index of OBJ.MAIN[], counting from zero.
+			   // Note this differ from Simula Definition.
 
 	// Constructor
 	public TXT$() {}
@@ -73,40 +73,32 @@ public final class TXT$ {
 
 	// Utility
 	public String edText() {
-		//RT.BREAK("TXTREF.edText: "+this);
 		if(OBJ==null) return("");
 		return (OBJ.edText(START, LENGTH));
 	}
 
 	// Utility
 	public String edStripedText() {
-		//RT.BREAK("TXTREF.edText: "+this);
 		if(OBJ==null) return("");
 		TXT$ stp=TXT$.strip(this);
-		//RT.BREAK("TXTREF.edText: stp="+stp);
 		if(stp==null) return("");
-//		return (stp.OBJ.edText(START, LENGTH));
 		return (stp.OBJ.edText(START, stp.LENGTH));
 	}
 
 	// Utility
 	public String edTextToPos() {
-//		return (OBJ.edText(START, POS + 1));
 		return (OBJ.edText(START, POS)); 
 	}
 
-	//public boolean constant() { return( constant(this)); }
 	public static boolean constant(TXT$ T) {
 		return (T==null || T.OBJ == null || T.OBJ.CONST);
 	}
 
-	//public int start() { return(start(this)); }
 	public static int start(TXT$ T) {
 		if(T==null) return(1);
 		return (T.START + 1);
 	}
 
-	//public int length() { return(length(this)); }
 	public static int length(TXT$ T) {
 		if(T==null) return(0);
 		return (T.LENGTH);
@@ -133,7 +125,6 @@ public final class TXT$ {
 	 * 
 	 * @return
 	 */
-	//public TXT$ main() { return(main(this)); }
 	public static TXT$ main(TXT$ T) {
 		if(T==null) return(null);
 		if(T.OBJ==null) return(null);
@@ -145,24 +136,20 @@ public final class TXT$ {
 		return (U);
 	}
 
-	//public int pos() { return(pos(this)); }
 	public static int pos(TXT$ T) {
 		if(T==null) return(1);
 		return (T.POS + 1);
 	}
 
-	//public void setpos(final int i) { setpos(this,i); }
 	public static void setpos(TXT$ T,int i) {
 		if (T!=null) T.POS = (i < 1 || i > T.LENGTH + 1) ? T.LENGTH : (i - 1);
 	}
 
-	//public boolean more() { return(more(this)); }
 	public static boolean more(TXT$ T) {
 		if (T==null) return(false);
 		return (T.POS < T.LENGTH);
 	}
 
-	//public char getchar() { return(getchar(this)); }
 	public static char getchar(TXT$ T) {
 		if (T.POS >= T.LENGTH) {
 			throw new RuntimeException("Getchar");
@@ -172,9 +159,7 @@ public final class TXT$ {
 		}
 	}
 
-	//void putchar(final char c) { putchar(this,c); }
 	public static void putchar(final TXT$ T,final char c) {
-		//RT.BREAK("TEXT$.putchar("+c+"): "+this);
 		if (T==null || T.OBJ == null) throw new RuntimeException("NOTEXT.Putchar");
 		if (T.OBJ.CONST) throw new RuntimeException("<constant>.Putchar");
 		if (T.POS >= T.LENGTH) throw new RuntimeException("Putchar outside frame");
@@ -204,9 +189,7 @@ public final class TXT$ {
 	 * @param n
 	 * @return
 	 */
-//	public TXT$ sub(int i, int n) { return(sub(this,i,n)); }
 	public static TXT$ sub(TXT$ T,final int i,final int n) {
-		//RT.BREAK("TEXT$.sub("+i+','+n+"): "+this);
 //		if (i < 0 || n < 0 || i + n > LENGTH + 1)  // NOTE: FEIL I SIMULA STANDARD
 		if (i <= 0)	throw new RuntimeException(" ! Sub(i,n) is out of frame, i <= 0");
 		if (n < 0)throw new RuntimeException(" ! Sub(i,n) is out of frame, n < 0");
@@ -220,7 +203,6 @@ public final class TXT$ {
 			RT.ASSERT(U.START>=0,"Invariant");
 			U.LENGTH = n;
 			U.POS = 0; // Note: Counting from zero in this implementation
-			//RT.BREAK("TEXT$.sub("+i+','+n+"): "+T);
 			return (U);
 		}
 		return (null);
@@ -237,7 +219,6 @@ public final class TXT$ {
 	 * 
 	 * @return
 	 */
-//	public TXT$ strip() { return(strip(this)); }
 	public static TXT$ strip(TXT$ T) {
 		if(T==null || T.OBJ==null) return (null);
 		int n = T.LENGTH;
@@ -268,12 +249,10 @@ public final class TXT$ {
 	 */
 	private static String getIntegerItem(final TXT$ T) {
 		StringBuilder sb = new StringBuilder();
-		//RT.BREAK("TEXT$.getItem: " + this);
 		char c=0;
-		T.POS=0; // TEST !!!
+		T.POS=0;
 		while (T.POS < T.LENGTH) { // SKIP BLANKS
 			c = T.OBJ.MAIN[T.START + T.POS];
-			//RT.BREAK("TEXT$.getItem1: POS=" + POS + " Skip? c=" + c);
 			if (c != ' ') break;
 			T.POS++;
 		}
@@ -281,28 +260,22 @@ public final class TXT$ {
 		{ sb.append(c); T.POS = T.POS + 1;
 		  while (T.POS < T.LENGTH) { // SKIP BLANKS
 			  c = T.OBJ.MAIN[T.START + T.POS];
-			  //RT.BREAK("TEXT$.getItem2: POS=" + POS + " Skip? c=" + c);
 			  if (c != ' ') break;
 			  T.POS++;
 		  }
 		}
 		while (T.POS < T.LENGTH) { // KEEP DIGITS
 			c = T.OBJ.MAIN[T.START + T.POS];
-//			if (c == ' ') break;
 			if(!Character.isDigit(c)) break;
-			//RT.BREAK("TEXT$.getItem3: POS=" + POS + " Add c=" + c);
 			sb.append(c);
 			T.POS++;
 		}
 		return (sb.toString());
 	}
 
-//	public int getint() { return(getint(this)); }
 	public static int getint(final TXT$ T) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		String item = getIntegerItem(T);
-		//RT.BREAK("TEXT$.getint: item=\""+item+'"');
 		int res = Integer.parseInt(item);
 		return (res);
 	}
@@ -339,12 +312,10 @@ public final class TXT$ {
 	 */
 	private static String getRealItem(final TXT$ T) {
 		StringBuilder sb = new StringBuilder();
-		//RT.BREAK("TEXT$.getRealItem: " + this);
 		char c=0;
-		T.POS=0; // TEST !!!
+		T.POS=0;
 		while (T.POS < T.LENGTH) { // SKIP BLANKS
 			c = T.OBJ.MAIN[T.START + T.POS];
-			//RT.BREAK("TEXT$.getRealItem1: POS=" + POS + " Skip? c=" + c);
 			if (c != ' ') break;
 			T.POS++;
 		}
@@ -352,7 +323,6 @@ public final class TXT$ {
 		{ sb.append(c); T.POS++;
 		  while (T.POS < T.LENGTH) { // SKIP BLANKS
 			  c = T.OBJ.MAIN[T.START + T.POS];
-			  //RT.BREAK("TEXT$.getRealItem2: POS=" + POS + " Skip? c=" + c);
 			  if (c != ' ') break;
 			  T.POS++;
 		  }
@@ -361,24 +331,19 @@ public final class TXT$ {
 			int lastDigPos=T.POS;
 			c = T.OBJ.MAIN[T.START + T.POS];
 			if(Character.isDigit(c)); //OK
-//			else if(c=='.'); // OK
 			else if(c==ENVIRONMENT$.CURRENTDECIMALMARK) c='.'; // OK
 			else if(c=='+'); // OK
 			else if(c=='-'); // OK
-//			else if(c=='&') c='E'; // OK
 			else if(c==ENVIRONMENT$.CURRENTLOWTEN) c='E'; // OK
 			else { T.POS=lastDigPos-1; break; }	
 			sb.append(c); lastDigPos=T.POS;
-			//RT.BREAK("TEXT$.getRealItem3: POS=" + POS + " Add c=" + c);
 			T.POS++;
 		}
 		return (sb.toString());
 	}
 
-//	public double getreal() { return(getreal(this)); }
 	public static double getreal(final TXT$ T) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		String item = getRealItem(T);
 		double res = Double.parseDouble(item);
 		return (res);
@@ -401,11 +366,9 @@ public final class TXT$ {
 	 */
 	private static String getFracItem(final TXT$ T) {
 		StringBuilder sb = new StringBuilder();
-		//RT.BREAK("TEXT$.getFracItem: " + T);
 		char c=0; T.POS=0;
 		while (T.POS < T.LENGTH) { // SKIP BLANKS
 			c = T.OBJ.MAIN[T.START + T.POS];
-			//RT.BREAK("TEXT$.getFracItem1: POS=" + T.POS + " Skip? c=" + c);
 			if (c != ' ') break;
 			T.POS++;
 		}
@@ -413,7 +376,6 @@ public final class TXT$ {
 		{ sb.append(c); T.POS++;
 		  while (T.POS < T.LENGTH) { // SKIP BLANKS
 			  c = T.OBJ.MAIN[T.START + T.POS];
-			  //RT.BREAK("TEXT$.getFracItem2: POS=" + T.POS + " Skip? c=" + c);
 			  if (c != ' ') break;
 			  T.POS++;
 		  }
@@ -422,19 +384,15 @@ public final class TXT$ {
 		while (T.POS < T.LENGTH) { // KEEP DIGITS
 			c = T.OBJ.MAIN[T.START + T.POS];
 			if(Character.isDigit(c)) { sb.append(c); lastDigPos=T.POS; } //OK
-//			else if(c=='.'); // OK  NOTE: THIS WAS WRONG IN PC-SIMULA
 			else if(c==ENVIRONMENT$.CURRENTDECIMALMARK); // OK  NOTE: THIS WAS WRONG IN PC-SIMULA
 			else if(c==' '); // OK
 			else break;
-			//RT.BREAK("TEXT$.getFracItem3: POS=" + T.POS + " Add c=" + c);
 			T.POS++;
 		}
 		T.POS=lastDigPos+1;
-		//RT.BREAK("TEXT$.getFracItem: Result: POS="+T.POS+", Item=]"+sb.toString()+'[');
 		return (sb.toString());
 	}
 
-//	public int getfrac() { return(getfrac(this)); }
 	public static int getfrac(final TXT$ T) {
 		return(Integer.parseInt(getFracItem(T)));
 	}
@@ -453,12 +411,9 @@ public final class TXT$ {
 	 * @param s
 	 */
 	private static void putResult(TXT$ T,final String s) {
-		//RT.BREAK("TXTREF.putResult: T="+T);
-		//RT.BREAK("TXTREF.putResult: s="+s);
 		if(T==null) T=ENVIRONMENT$.NOTEXT;
 		char[] c = s.toCharArray();
 		if (c.length > T.LENGTH) {
-			//RT.warning("Edit Overflow Occured");
 		    RT.numberOfEditOverflows++;
 			for (int j = 0; j < T.LENGTH; j = j + 1)
 				T.OBJ.MAIN[T.START + j] = '*';
@@ -466,7 +421,6 @@ public final class TXT$ {
 			int m=c.length-1;
 			for (int j = T.LENGTH-1; j >= 0; j = j - 1) {
 				char k = (m>=0) ? c[m--] : ' ';
-//				if(Character.toUpperCase(k)=='E') k='&';
 				if(Character.toUpperCase(k)=='E') k=ENVIRONMENT$.CURRENTLOWTEN;
 				if(k==160) k=' '; // String formatted with NumberFormat
 				                  // may have non-breaking space
@@ -474,7 +428,6 @@ public final class TXT$ {
 				T.OBJ.MAIN[T.START + j] = k;
 			}
 		}
-		//RT.BREAK("TXTREF.putResult: OBJ.MAIN="+this.edText());
 		T.POS = T.LENGTH;
 	}
 
@@ -484,9 +437,7 @@ public final class TXT$ {
      * 
 	 * @param i
 	 */
-//	public void putint(int i) { putint(this,i); }
 	public static void putint(final TXT$ T,final int i) {
-		//RT.BREAK("TXTREF.putint("+i+")");
 		putResult(T,"" + i);
 	}
 
@@ -500,23 +451,16 @@ public final class TXT$ {
 	 * @param r
 	 * @param n
 	 */
-//	public void putfix(double r, int n) { putfix(this,r,n); }
 	public static void putfix(final TXT$ T,double r, int n) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-		//RT.BREAK("TXTREF.putfix("+r+','+n+")");
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		if(n<0) throw new RuntimeException("putfix(r,n) - n < 0");
 		if(n==0) { putint(T,(int)(r+0.5)); return; }
-//		StringBuilder pattern=new StringBuilder("###.");
 		StringBuilder pattern=new StringBuilder("##0.");
-//		while((n--)>0) pattern.append('#');
 		while((n--)>0) pattern.append('0');
-		//RT.BREAK("TXTREF.putfix: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
 		if(r== -0.0) r=0.0; // NOTE: Java har både +0.0 og -0.0
 	    String output = myFormatter.format(r);
 	    output=output.replace((char)UNICODE_MINUS_SIGN,'-');
-//	    putResult(T,output.replace(',','.'));
 	    putRealResult(T,output);
 	}
 
@@ -531,68 +475,38 @@ public final class TXT$ {
 	 * @param r
 	 * @param n
 	 */
-//	public void putreal(double r, int n) { putreal(this,r,n); }
 	public static void putreal(final TXT$ T,double r,int n) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-//		RT.BREAK("TXTREF.putreal("+r+','+n+")");
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		if(n<0) throw new RuntimeException("putreal(r,n) - n < 0");
 		if(n==0) RT.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
 		if(r== -0.0d) r=0.0d;
 		
-//		StringBuilder pattern=new StringBuilder("#.");
-//		while((n--)>1) pattern.append('#');
 		StringBuilder pattern=new StringBuilder("0");
 		if(n>1) pattern.append('.');
 		while((n--)>1) pattern.append('0');
-//		pattern.append("E00");
 		pattern.append("E000");
-//		RT.BREAK("TXTREF.putreal: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
-//		myFormatter.setRoundingMode(RoundingMode.CEILING);
-//		myFormatter.setRoundingMode(RoundingMode.DOWN);
-//		myFormatter.setRoundingMode(RoundingMode.FLOOR);
-//		myFormatter.setRoundingMode(RoundingMode.HALF_DOWN);
 		myFormatter.setRoundingMode(RoundingMode.HALF_EVEN); // Java Default
-//		myFormatter.setRoundingMode(RoundingMode.HALF_UP);
-//		myFormatter.setRoundingMode(RoundingMode.UNNECESSARY);
-//		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
 	    output=output.replace((char)UNICODE_MINUS_SIGN,'-');	    
 	    output=addPlussExponent(output);
-//	    putResult(T,output.replace(',','.'));
 	    putRealResult(T,output);
 	}
-//	public void putreal(float r, int n) { putreal(this,r,n); }
+
 	public static void putreal(final TXT$ T,float r, int n) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
-//		RT.BREAK("TXTREF.putreal("+r+','+n+")");
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		if(n<0) throw new RuntimeException("putreal(r,n) - n < 0");
 		if(n==0) RT.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
 		if(r== -0.0f) r=0.0f;
-		
-//		StringBuilder pattern=new StringBuilder("#.");
-//		while((n--)>1) pattern.append('#');
-//		StringBuilder pattern=new StringBuilder("0.");
 		StringBuilder pattern=new StringBuilder("0");
 		if(n>1) pattern.append('.');
 		while((n--)>1) pattern.append('0');
 		pattern.append("E00");
-//		RT.BREAK("TXTREF.putreal: pattern="+pattern);
 		DecimalFormat myFormatter = new DecimalFormat(pattern.toString());
-//		myFormatter.setRoundingMode(RoundingMode.CEILING);
-//		myFormatter.setRoundingMode(RoundingMode.DOWN);
-//		myFormatter.setRoundingMode(RoundingMode.FLOOR);
-//		myFormatter.setRoundingMode(RoundingMode.HALF_DOWN);
 		myFormatter.setRoundingMode(RoundingMode.HALF_EVEN); // Java Default
-//		myFormatter.setRoundingMode(RoundingMode.HALF_UP);
-//		myFormatter.setRoundingMode(RoundingMode.UNNECESSARY);
-//		myFormatter.setRoundingMode(RoundingMode.UP);
 	    String output = myFormatter.format(r);
 	    output=output.replace((char)UNICODE_MINUS_SIGN,'-');
 	    output=addPlussExponent(output);
-//	    putResult(T,output.replace(',','.'));
 	    putRealResult(T,output);
 	}
 	
@@ -600,8 +514,6 @@ public final class TXT$ {
 		s=s.replace((char)UNICODE_MINUS_SIGN,'-');
 		String[] part=s.split("E");
 		if(part.length==2) {
-			//RT.BREAK("TXTREF.addPlussExponent: part 1="+part[0]);
-			//RT.BREAK("TXTREF.addPlussExponent: part 2="+part[1]);
 			if(!(part[1].startsWith("-"))) s=part[0]+"E+"+part[1];
 		}
 		return(s);
@@ -617,7 +529,6 @@ public final class TXT$ {
 	 * @param i
 	 * @param n
 	 */
-//	public void putfrac(int i, int n) { putfrac(this,i,n); }
 	public static void putfrac(final TXT$ T,final int val,final int n) {
 	    int v; // Scaled value (abs)
 	    int d; // Number of digits written
@@ -639,10 +550,9 @@ public final class TXT$ {
 		      } 
 	          if(val<0) item[p--]='-';
 	          while(p>=0) item[p--]=' ';
-	    } catch(ArrayIndexOutOfBoundsException e)
-	    { //RT.warning("Edit Overflow Occured");
-	      RT.numberOfEditOverflows++;
-		  for(int i=0;i<item.length;i++) item[i]='*';
+	    } catch(ArrayIndexOutOfBoundsException e) {
+	    	RT.numberOfEditOverflows++;
+	    	for(int i=0;i<item.length;i++) item[i]='*';
 	    }
 	    for(int i=0;i<item.length;i++) T.OBJ.MAIN[T.START+i]=item[i];
 	}

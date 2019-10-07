@@ -11,7 +11,6 @@ import simula.compiler.JavaModule;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
 import simula.compiler.parsing.Parser;
-import simula.compiler.statement.BlockStatement;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -24,37 +23,13 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class PrefixedBlockDeclaration extends ClassDeclaration {
-	public Variable blockPrefix; // Block Prefix in case of Prefixed Block.
+	public final Variable blockPrefix; // Block Prefix
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTOR
 	// ***********************************************************************************************
-	public PrefixedBlockDeclaration(String identifier) {
-		super(identifier);
-	}
-
-	// ***********************************************************************************************
-	// *** createPrefixedBlock
-	// ***********************************************************************************************
-	// Used by ProgramModule
-	public static PrefixedBlockDeclaration createPrefixedBlock(final Variable blockPrefix) {
-		PrefixedBlockDeclaration module = new PrefixedBlockDeclaration(Global.sourceName);
-		module.isMainModule = true;
-		module.blockKind = BlockKind.SimulaProgram;
-		module.blockPrefix = blockPrefix;
-		if (blockPrefix != null) {
-			module.prefix = blockPrefix.identifier;
-			module.blockKind = BlockKind.PrefixedBlock;
-		} else module.prefix = "BASICIO";
-		module.parsePrefixedBlock(blockPrefix);
-		return (module);
-	}
-
-	// ***********************************************************************************************
-	// *** Parsing: parsePrefixedBlock
-	// ***********************************************************************************************
 	/**
-	 * Parse PrefixedBlock.
+	 * PrefixedBlock.
 	 * 
 	 * <pre>
 	 * Syntax:
@@ -63,52 +38,29 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	 *
 	 * </pre>
 	 * 
+	 * @param identifier
 	 * @param blockPrefix
+	 * @param isMainModule
 	 */
-	public BlockStatement parsePrefixedBlock(final Variable blockPrefix) {
-		Statement stm;
-		if (blockPrefix != null) {
-			this.blockPrefix = blockPrefix;
-			this.prefix = blockPrefix.identifier;
-		}
-		// Util.BREAK("PrefixedBlockDeclaration.parseMaybeBlock: BlockPrefix="+blockPrefix);
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse MayBeBlock");
+	public PrefixedBlockDeclaration(String identifier,final Variable blockPrefix,boolean isMainModule) {
+		super(identifier);
+		this.declarationKind=Declaration.Kind.PrefixedBlock;
+		Util.ASSERT(blockPrefix != null,"blockPrefix == null");
+		this.blockPrefix = blockPrefix;
+		this.prefix = blockPrefix.identifier;
+		this.isMainModule=isMainModule;
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse PrefixedBlock");
 		while (Declaration.parseDeclaration(declarationList)) Parser.accept(KeyWord.SEMICOLON);
 		while (!Parser.accept(KeyWord.END)) {
-			stm = Statement.doParse();
-			// Util.BREAK("PrefixedBlockDeclaration.parseMaybeBlock: stm="+stm);
+			Statement stm = Statement.doParse();
 			if (stm != null) statements.add(stm);
 		}
-		if (blockKind != BlockKind.SimulaProgram) {
-			if (blockPrefix != null) {
-				blockKind = BlockKind.PrefixedBlock;
-				if(isMainModule)
-					 modifyIdentifier(Global.sourceName);
-				else modifyIdentifier("" + Global.sourceName + "$PBLK" + lineNumber);
-				this.externalIdent = this.identifier;
-			} else if (!declarationList.isEmpty()) {
-				blockKind = BlockKind.SubBlock;
-				modifyIdentifier("SubBlock" + lineNumber);
-			} else {
-				blockKind = BlockKind.CompoundStatement;
-				modifyIdentifier("CompoundStatement" + lineNumber);
-				if (!labelList.isEmpty()) { // Label is also declaration
-				    // Special case: Label in a Compound Statement.
-					// Move Label Declaration to nearest enclosing
-					// Block (with other declarations)
-
-					// Util.BREAK("PrefixedBlockDeclaration.parseMaybeBlock: declaredIn="+declaredIn);
-					DeclarationScope enc = declaredIn;
-					while (enc.declarationList.isEmpty()) enc = enc.declaredIn;
-					// Util.BREAK("PrefixedBlockDeclaration.parseMaybeBlock: Label is moved to enc="+enc);
-					for (LabelDeclaration lab : labelList) enc.labelList.add(lab);
-					labelList.clear();
-				}
-			}
-		}
+		if(isMainModule)
+		     modifyIdentifier(Global.sourceName);
+		else modifyIdentifier("" + Global.sourceName + "$PBLK" + lineNumber);
+		this.externalIdent = this.identifier;
 		this.lastLineNumber = Global.sourceLineNumber;
 		Global.currentScope = declaredIn;
-		return (new BlockStatement(this));
 	}
 
 	// ***********************************************************************************************
@@ -120,11 +72,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		currentBlockLevel++;
 		blockLevel = currentBlockLevel;
-		// Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: blockPrefix="+blockPrefix);
-		// Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: currentBlockLevel="+currentBlockLevel);
-		// Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: blockLevel="+blockLevel);
-		// Util.BREAK("PrefixedBlockDeclaration("+identifier+").doChecking: declaredIn="+declaredIn);
-
 		if (blockPrefix != null) {
 			Global.currentScope = this.declaredIn;
 			blockPrefix.doChecking();
@@ -150,7 +97,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
-		// Util.BREAK("PrefixedBlockDeclaration.doJavaCoding: "+identifier);
 		ASSERT_SEMANTICS_CHECKED(this);
 		JavaModule javaModule = new JavaModule(this);
 		Global.currentScope = this;
@@ -160,11 +106,10 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
 		else line = line + " extends BASICIO$";
 		JavaModule.code(line + " {");
-		JavaModule.debug("// PrefixedBlockDeclaration: BlockKind=" + blockKind + ", BlockLevel=" + blockLevel
+		JavaModule.debug("// PrefixedBlockDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel
 				+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 				+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false")
 				+ ", detachUsed=" + ((detachUsed) ? "true" : "false"));
-//		JavaModule.code("public int prefixLevel() { return(0); }");
 		if (isQPSystemBlock())
 			JavaModule.code("public boolean isQPSystemBlock() { return(true); }");
 		if (isDetachUsed())
@@ -180,7 +125,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		}
 		JavaModule.debug("// Declare locals as attributes");
 		for (Declaration decl : declarationList) decl.doJavaCoding();
-		// for(VirtualSpecification virtual:virtualSpecList) virtual.doJavaCoding();
 		for (VirtualMatch match : virtualMatchList)	match.doJavaCoding();
 		doCodeConstructor();
 		codeClassStatements();
@@ -235,37 +179,19 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		StringBuilder s = new StringBuilder(spc);
 		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
 		if (prefix != null)	s.append(prefix).append(' ');
-		s.append(blockKind).append(' ').append(identifier);
+		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
-		s.append(editParameterList());
+		s.append(Parameter.editParameterList(parameterList));
 		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';
 		Util.println(spc + beg);
 		for (Declaration decl : declarationList) decl.print(indent + 1);
 		for (Statement stm : statements) stm.print(indent + 1);
 		Util.println(spc + "end[" + edScopeChain() + ']');
-		// Util.BREAK("PrefixedBlockDeclaration.print DONE");
-	}
-
-	// ***********************************************************************************************
-	// *** Printing Utility: editParameterList
-	// ***********************************************************************************************
-	private String editParameterList() {
-		StringBuilder s = new StringBuilder();
-		s.append('(');
-		boolean first = true;
-		for (Parameter par : parameterList) {
-			if (!first)	s.append(',');
-			s.append(par);
-			first = false;
-		}
-		s.append(')');
-		s.append(';');
-		return (s.toString());
 	}
 
 	public String toString() {
-		return ("" + identifier + '[' + externalIdent + "] BlockKind=" + blockKind + ", BlockPrefix=" + blockPrefix);
+		return ("" + identifier + '[' + externalIdent + "] Kind=" + declarationKind + ", BlockPrefix=" + blockPrefix);
 	}
 
 }

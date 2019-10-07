@@ -37,37 +37,29 @@ public final class StandaloneExpression extends Statement {
 
 	public StandaloneExpression(final Expression expression) {
 		this.expression = expression;
-		if (Option.TRACE_PARSE) Util.TRACE("NEW StandaloneExpression: " + toString());
-		//Util.BREAK("NEW StandaloneExpression: " + toString());
-		
+		if (Option.TRACE_PARSE) Util.TRACE("NEW StandaloneExpression: " + toString());		
 		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) { 
 		  this.expression = new AssignmentOperation(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
-		  //Util.BREAK("NEW StandaloneExpression: "+this);
 		}		
 	}
 
-	  //  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
-	  private static Expression parseStandaloneExpression() { 
-		 //Util.BREAK("Expression.parseStandaloneExpression");
-		 Expression retExpr=Expression.parseExpression();
-		 while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
-		      KeyWord opr=Parser.prevToken.getKeyWord();
-//	          retExpr=new Assignment(retExpr,opr,Expression.parseExpression());
-	          retExpr=new AssignmentOperation(retExpr,opr,parseStandaloneExpression());
-		 }
-		 return retExpr;
-	  }
+	//  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
+	private static Expression parseStandaloneExpression() { 
+		Expression retExpr=Expression.parseExpression();
+		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
+			KeyWord opr=Parser.prevToken.getKeyWord();
+			retExpr=new AssignmentOperation(retExpr,opr,parseStandaloneExpression());
+		}
+		return retExpr;
+	}
 
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER) Util.TRACE("StandaloneExpression("+expression+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		expression.doChecking();
-		//Util.BREAK("StandaloneExpression.doChecking: expression="+expression);
-		//Util.BREAK("StandaloneExpression.doChecking: expression'QUAL="+expression.getClass().getSimpleName());
 		if(!expression.maybeStatement()) Util.error("Illegal/Missplaced Expression: "+expression);
 		if (Option.TRACE_CHECKER) Util.TRACE("END StandaloneExpression(" + expression+ ").doChecking: type=" + type);
-		// Debug.BREAK("END StandaloneExpression");
 		SET_SEMANTICS_CHECKED();
 	}
 	
@@ -79,7 +71,6 @@ public final class StandaloneExpression extends Statement {
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		String result=expression.toJavaCode();
-		//Util.BREAK("StandaloneExpression.toJavaCode: "+this+" ==> "+result);
 		return (result);
 	}
 

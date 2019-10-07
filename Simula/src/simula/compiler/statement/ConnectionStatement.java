@@ -7,14 +7,13 @@
  */
 package simula.compiler.statement;
 
-import java.util.Enumeration;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.DeclarationScope;
-import simula.compiler.declaration.TypeDeclaration;
+import simula.compiler.declaration.SimpleVariableDeclaration;
 import simula.compiler.expression.AssignmentOperation;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
@@ -43,7 +42,7 @@ import simula.compiler.utilities.Util;
 public final class ConnectionStatement extends Statement {
 	private final Expression objectExpression;
 	private final Variable inspectedVariable;
-	private final TypeDeclaration inspectVariableDeclaration;
+	private final SimpleVariableDeclaration inspectVariableDeclaration;
 	private final Vector<DoPart> connectionPart = new Vector<DoPart>();
 	private final Statement otherwise;
 	private final boolean hasWhenPart;
@@ -54,13 +53,10 @@ public final class ConnectionStatement extends Statement {
 		objectExpression = Expression.parseExpression();
 		String ident = "inspect$" + lineNumber + '$' + (SEQU++);
 		inspectedVariable = new Variable(ident);
-		inspectVariableDeclaration = new TypeDeclaration(Type.Ref("RTObject"), ident);
-
-		// Util.BREAK("NEW ConnectionStatement: new InspectVariableDeclaration="+inspectVariableDeclaration);
+		inspectVariableDeclaration = new SimpleVariableDeclaration(Type.Ref("RTObject"), ident);
 		DeclarationScope scope = Global.currentScope;
-		while (scope.blockKind == null || scope instanceof ConnectionBlock)
+		while (scope.declarationKind == null || scope instanceof ConnectionBlock)
 			scope = scope.declaredIn;
-		// Util.BREAK("NEW ConnectionStatement: ADD IT TO "+Global.currentScope);
 		scope.declarationList.add(inspectVariableDeclaration);
 
 		boolean hasWhenPart=false;
@@ -100,7 +96,6 @@ public final class ConnectionStatement extends Statement {
 		public void doChecking() {
 			Type type = inspectVariableDeclaration.type;
 			String refIdentifier = type.getRefIdent();
-			// Util.BREAK("ConnectionStatement.DoPart.doChecking: refIdentifier="+refIdentifier);
 			if (refIdentifier == null)
 				Util.error("The Variable " + inspectedVariable + " is not ref() type");
 			connectionBlock.setClassDeclaration(AssignmentOperation.getQualification(refIdentifier));
@@ -143,7 +138,6 @@ public final class ConnectionStatement extends Statement {
 				if (classIdentifier == null)
 					Util.error("The Variable " + inspectedVariable + " is not ref() type");
 			}
-			// Util.BREAK("ConnectionStatement.WhenPart.doChecking: ");
 			if (classIdentifier != null) {
 				classDeclaration = AssignmentOperation.getQualification(classIdentifier);
 				connectionBlock.setClassDeclaration(classDeclaration);
@@ -156,7 +150,6 @@ public final class ConnectionStatement extends Statement {
 		}
 
 		public void doCoding(final boolean first) {
-			// Util.BREAK("ConnectionStatement.WhenPart.doCoding: statement="+statement.getClass().getName());
 			ASSERT_SEMANTICS_CHECKED(this);
 			String prfx = (first) ? "" : "else ";
 			String cid = classDeclaration.getJavaIdentifier();
@@ -185,16 +178,11 @@ public final class ConnectionStatement extends Statement {
 			Util.TRACE("BEGIN ConnectionStatement(" + toString() + ").doChecking - Current Scope Chain: " + Global.currentScope.edScopeChain());
 		objectExpression.doChecking();
 		Type exprType = objectExpression.type;
-		// Util.BREAK("InspectVariable.doChecking("+this+") exprType="+exprType);
 		exprType.doChecking(Global.currentScope);
 		inspectVariableDeclaration.type = exprType;
 		inspectedVariable.type = exprType;
-		// Util.BREAK("ConnectionStatement.doChecking(2): inspectVariableDeclaration="+inspectVariableDeclaration);
 		inspectedVariable.doChecking();
-		// Util.BREAK("ConnectionStatement.doChecking(3): inspectedVariable="+inspectedVariable);
-		for (Enumeration<DoPart> e = connectionPart.elements(); e.hasMoreElements();) {
-			e.nextElement().doChecking();
-		}
+		for(DoPart part:connectionPart) part.doChecking();
 		if (otherwise != null) otherwise.doChecking();
 		SET_SEMANTICS_CHECKED();
 	}
@@ -211,10 +199,7 @@ public final class ConnectionStatement extends Statement {
 			 JavaModule.debug("//" + "INSPECT " + inspectedVariable);
 		else JavaModule.code("if(" + inspectedVariable.toJavaCode() + "!=null)","INSPECT " + inspectedVariable);
 		boolean first = true;
-		for (Enumeration<DoPart> e = connectionPart.elements(); e.hasMoreElements();) {
-			e.nextElement().doCoding(first);
-			first = false;
-		}
+		for(DoPart part:connectionPart) { part.doCoding(first);	first = false; }
 		if (otherwise != null) {
 			JavaModule.code("else","OTHERWISE ");
 			otherwise.doJavaCoding();

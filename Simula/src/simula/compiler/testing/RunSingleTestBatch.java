@@ -35,7 +35,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
-		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
+		names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
 		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
@@ -118,7 +118,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst74.sim"); // OK:  Test resume and detach.
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
-		names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
+		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
 		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
 		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.

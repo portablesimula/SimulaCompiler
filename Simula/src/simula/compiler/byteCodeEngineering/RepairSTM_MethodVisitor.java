@@ -21,7 +21,6 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	private static final boolean DEBUG=false;
 
 	private String classFileName;
-//	private String owner;
 	private MethodNode mn;
 	MethodVisitor next;
 	
@@ -35,24 +34,20 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	  { this.index=index; this.target=target; this.ident=(String)ident; }
 	  public String toString() { return("LABEL"+index+" = "+ident+" = "+AsmUtils.edLabel(target)); }
 	}
-//	Vector<LabelHandle> labelHandles=new Vector<LabelHandle>();
 	Vector<LabelHandle> labelHandles;
 	private int maxIndex;
 
 
-	public RepairSTM_MethodVisitor(String classFileName,String owner, int access, String name, String desc, MethodVisitor mv) {
+	public RepairSTM_MethodVisitor(String classFileName, int access, String name, String desc, MethodVisitor mv) {
 		super(SimClassVisitor.ASM_Release, new MethodNode(access, name, desc, null, null));
 		this.classFileName=classFileName;
-//		this.owner = owner;
 		next = mv;
-		//Util.BREAK("NEW RepairSTM_MethodVisitor: access="+edAccessFlags(access)+' '+name+' '+desc);
 	}
 
 	@Override
 	public void visitEnd() {
 		if(DEBUG) Util.println("RepairSTM_MethodVisitor: Visit END: mv'QUAL="+mv.getClass().getSimpleName());
 		mn = (MethodNode) mv;
-		//Util.BREAK("RepairSTM_MethodVisitor.visitEnd: "+owner+": "+AsmUtils.edAccessFlags(mn.access)+' '+mn.name+' '+mn.desc);
 		instructions=mn.instructions;
 		String methodName=mn.name;
 		treatSTM_Method(methodName);
@@ -72,13 +67,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 				if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 Method Instruction="+AsmUtils.edInstruction(instr));
 				MethodInsnNode invokeStatic=(MethodInsnNode)instr;
 				String name=invokeStatic.name;
-//				String desc=invokeStatic.desc;
-//				boolean itf=invokeStatic.itf;
-				//Util.BREAK("RepairSTM_MethodVisitor.treatSTM_Method: INVOKESTATIC "+name);
-				
-				//if(name.equals("LABEL$") & desc.equals("(I)V") & (!itf)	)  {
 				if(name.equals("LABEL$"))  {
-				//if(name.endsWith("LABEL$"))  {
 					if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 GOT: INVOKESTATIC LABEL$ (I)V false, opcode="+opcode+", Opcode="+Opcodes.INVOKESTATIC);
 					if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 GOT: INVOKESTATIC LABEL$ (I)V false, instr="+AsmUtils.edInstruction(instr));
 					treatLABEL(invokeStatic);
@@ -235,9 +224,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		if (Option.TRACE_REPAIRING)
 			listInstructionSequence("RepairSTM_MethodVisitor.treatJUMPTABLE: GOT ", start, 8);
 		// Prepare Labels
-//		LabelNode[] labels=new LabelNode[labelHandles.size()];
 		LabelNode[] labels=new LabelNode[maxIndex];
-		//Vector<LabelHandle> labels=new Vector<LabelHandle>();
 		if(DEBUG) {
 			Util.println("RepairSTM_MethodVisitor.treatJUMPTABLE: size="+labelHandles.size());
 			Util.println("RepairSTM_MethodVisitor.treatJUMPTABLE: labels.length="+labels.length);
@@ -260,9 +247,6 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		int min=1; // the minimum key value.
 		int max=labels.length; // the maximum key value.
 		LabelNode dflt=new LabelNode(); // beginning of the default handler block.
-//		LabelNode[] labels=null;  // beginnings of the handler blocks. {@code labels[i]} is the beginning of the
-//		                        //     handler block for the {@code min + i} key.
-		   
 		TableSwitchInsnNode tableSwitch=new TableSwitchInsnNode(min,max,dflt,labels);
 		if(DEBUG) AsmUtils.exploreTableswitch(tableSwitch);
 		instructions.insertBefore(invokeStatic, tableSwitch); // Insert tableSwitch before invokeStatic

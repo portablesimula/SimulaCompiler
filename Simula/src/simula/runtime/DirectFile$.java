@@ -156,7 +156,6 @@ public class DirectFile$ extends ImageFile$ {
 	 */
 	public boolean open(final TXT$ IMAGE$) {
 		if (OPEN$) return (false);
-//		System.out.println("DirectFile$.open: CREATE$="+CREATE$+" on "+FILENAME$.edText());
 		doCreateAction();
 		LOC$ = 1;
 		MAXLOC$ = maxint - 1;
@@ -332,8 +331,7 @@ public class DirectFile$ extends ImageFile$ {
 		int nextSetpos=1;
 		
 		if (LOC$ > lastloc()) TXT$.putchar(image, (char) 25);
-		// else if(external image does not exists)
-		// fill=(char)0;
+		// else if(external image does not exists) fill=(char)0;
 		else
 			try {
 				while (TXT$.more(image)) {

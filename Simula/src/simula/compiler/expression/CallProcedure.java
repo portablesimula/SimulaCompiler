@@ -12,7 +12,6 @@ import java.util.Iterator;
 import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.ArrayDeclaration;
 import simula.compiler.declaration.BlockDeclaration;
-import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
@@ -21,7 +20,7 @@ import simula.compiler.declaration.Parameter;
 import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.ProcedureSpecification;
 import simula.compiler.declaration.StandardProcedure;
-import simula.compiler.declaration.TypeDeclaration;
+import simula.compiler.declaration.SimpleVariableDeclaration;
 import simula.compiler.declaration.VirtualSpecification;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
@@ -49,12 +48,11 @@ public final class CallProcedure {
 	 */
 	public static String normal(final Variable variable)
     { StringBuilder s=new StringBuilder();
-	  //Util.BREAK("CallProcedure.normal: variable="+variable);
 	  Meaning meaning=variable.meaning;
 	  Declaration decl=meaning.declaredAs;
 	  ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
 	  s.append("new ").append(decl.getJavaIdentifier());
-	  String staticLink=meaning.edStaticLink();
+	  String staticLink=meaning.edUnqualifiedStaticLink();
       // Generate Parameter Transmission
       s.append(edProcedureParameters(variable,staticLink,procedure)); 
       // Check if part of expression
@@ -74,34 +72,25 @@ public final class CallProcedure {
 	 * @return
 	 */
 	public static String remote(final Expression obj,final ProcedureDeclaration procedure,final Variable func,final SyntaxClass backLink)
-	{ //Util.BREAK("CallProcedure.remote: obj="+obj);
-	  //Util.BREAK("CallProcedure.procedure: procedure="+procedure);
-	  //Util.BREAK("CallProcedure.procedure: procedure.myVirtual="+procedure.myVirtual);
-	  if(procedure.myVirtual!=null)
+	{ if(procedure.myVirtual!=null)
 	  { // Call Remote Virtual Procedure
-//		return(remoteVirtual(obj,func,procedure.myVirtual,backLink));
 		return(remoteVirtual(obj,func,procedure.myVirtual.virtualSpec));
 	  }
-	  else if(procedure.blockKind==BlockKind.ContextFreeMethod) // TODO: CHECK DETTE
+	  else if(procedure.declarationKind==Declaration.Kind.ContextFreeMethod) // TODO: CHECK DETTE
 	  { // Call Remote Method
 		return(asRemoteMethod(obj,procedure,func,backLink));
 	  }
-	  else if(procedure.blockKind==BlockKind.StaticMethod) // TODO: CHECK DETTE
+	  else if(procedure.declarationKind==Declaration.Kind.StaticMethod) // TODO: CHECK DETTE
 	  { // Call Remote Method
 		return(asRemoteMethod(obj,procedure,func,backLink));
 	  }
-	  else if(procedure.blockKind==BlockKind.MemberMethod) // TODO: CHECK DETTE
+	  else if(procedure.declarationKind==Declaration.Kind.MemberMethod) // TODO: CHECK DETTE
 	  { // Call Remote Method
 		return(asRemoteMethod(obj,procedure,func,backLink));
 	  }
 	  String call="new "+procedure.getJavaIdentifier();
-	  String staticLink=obj.get();
-	  //Util.BREAK("CallProcedure.remote: staticLink="+staticLink);
-	  
+	  String staticLink=obj.get();	  
 	  call=call+edProcedureParameters(func,staticLink,procedure);
-	  
-	  //Util.BREAK("CallProcedure.remote: procedure.type="+procedure.type);
-	  //Util.BREAK("CallProcedure.remote: backLink="+backLink);
 	  if(procedure.type!=null && backLink!=null) call=call+".RESULT$";
 	  return(call);
 	}
@@ -119,24 +108,17 @@ public final class CallProcedure {
 	 * @return
 	 */
 	private static String asRemoteMethod(final Expression obj,final ProcedureDeclaration procedure,final Variable func,final SyntaxClass backLink)
-	{ //Util.BREAK("CallProcedure.asRemoteMethod: obj="+obj);
-	  //Util.BREAK("CallProcedure.asRemoteMethod: procedure="+procedure);
-	  //Util.BREAK("CallProcedure.asRemoteMethod: procedure.declaredIn="+procedure.declaredIn);
-	  //Util.BREAK("CallProcedure.asRemoteMethod: func="+func);
-	  
-	  BlockDeclaration declaredIn=(BlockDeclaration)procedure.declaredIn;
+	{ BlockDeclaration declaredIn=(BlockDeclaration)procedure.declaredIn;
 	  if(declaredIn.isContextFree)
 	  { // Call Static Member Method
 	    String cast=declaredIn.getJavaIdentifier();
 	    String params=edProcedureParameters(func,obj.toJavaCode(),procedure);
 	    String methodCall=cast+'.'+procedure.getJavaIdentifier()+params;
-	    //Util.BREAK("CallProcedure.asRemoteMethod: Result="+methodCall);
 	    return(methodCall);
 	  }
 	  // Call Ordinary Member Method
 	  String params=edProcedureParameters(func,null,procedure);
 	  String methodCall=obj.toJavaCode()+'.'+procedure.getJavaIdentifier()+params;
-	  //Util.BREAK("CallProcedure.asRemoteMethod: Result="+methodCall);
 	  return(methodCall);
 	}
 
@@ -154,8 +136,6 @@ public final class CallProcedure {
 	{ 
 	  Meaning meaning=variable.meaning;
 	  ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
-//	  if(variable.identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("CallProcedure.asNormalMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
-//	  if(variable.identifier.equalsIgnoreCase("instantMoveTo")) Util.BREAK("CallProcedure.asNormalMethod: "+procedure.blockKind+", DECL="+procedure);
 	  String params=edProcedureParameters(variable,null,procedure);
 	  
 	  String methodCall=meaning.declaredAs.getJavaIdentifier()+params;
@@ -164,24 +144,14 @@ public final class CallProcedure {
 	  	String connID=declaredIn.toJavaCode();
 	    return(connID+'.'+methodCall);
 	  }
-	  //Util.BREAK("CallProcedure.asNormalMethod: "+methodCall);
 	  BlockDeclaration staticLink=(BlockDeclaration)meaning.declaredAs.declaredIn;
-	  //Util.BREAK("CallProcedure.asNormalMethod: staticLink="+staticLink);
-	  //Util.BREAK("CallProcedure.asNormalMethod: isContextFree="+staticLink.isContextFree);
-	  //Util.BREAK("CallProcedure.asNormalMethod: remotelyAccessed="+variable.remotelyAccessed);
 	  if(!staticLink.isContextFree)
-	  { //String castIdent=staticLink.getJavaIdentifier();
-	    //Util.BREAK("CallProcedure.asNormalMethod: staticLink.blockLevel="+staticLink.blockLevel);
-		BlockDeclaration currentModule=Global.currentJavaModule.blockDeclaration; // Class, Procedure, ...
-		//Util.BREAK("CallProcedure.asNormalMethod: currentModule.blockLevel="+currentModule.blockLevel);
-		//Util.BREAK("CallProcedure.asNormalMethod: meaning="+meaning);
-		//Util.BREAK("CallProcedure.asNormalMethod: meaning.blockLevel="+meaning.declaredIn.blockLevel);
+	  { BlockDeclaration currentModule=Global.currentJavaModule.blockDeclaration; // Class, Procedure, ...
 		String castIdent=meaning.declaredIn.getJavaIdentifier();
 	    int n=meaning.declaredIn.blockLevel;
 		if(n!=currentModule.blockLevel)
             methodCall="(("+castIdent+")"+meaning.declaredIn.edCTX()+")."+methodCall;
 	  }
-//	  Util.BREAK("CallProcedure.asNormalMethod: Result="+methodCall);
 	  return(methodCall);
 	}
 	
@@ -198,8 +168,6 @@ public final class CallProcedure {
 	{ 
 	  Meaning meaning=variable.meaning;
 	  ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
-//	  Util.BREAK("CallProcedure.asStaticMethod: "+meaning+", Qual="+meaning.declaredAs.getClass().getSimpleName());
-//	  Util.BREAK("CallProcedure.asStaticMethod: "+procedure.blockKind+", DECL="+procedure);
 	  BlockDeclaration staticLink=(BlockDeclaration)meaning.declaredAs.declaredIn;
 	  String staticLinkString=null;
 	  if(!isContextFree)staticLinkString=staticLink.edCTX();
@@ -210,24 +178,13 @@ public final class CallProcedure {
 	  {	String connID=meaning.declaredIn.toJavaCode();
 		return(connID+'.'+methodCall);
 	  }
-	  //Util.BREAK("CallProcedure.asStaticMethod: "+methodCall);
-//	  BlockDeclaration staticLink=(BlockDeclaration)meaning.declaredAs.declaredIn;
-	  //Util.BREAK("CallProcedure.asStaticMethod: staticLink="+staticLink);
-	  //Util.BREAK("CallProcedure.asStaticMethod: isContextFree="+staticLink.isContextFree);
-	  //Util.BREAK("CallProcedure.asStaticMethod: remotelyAccessed="+variable.remotelyAccessed);
 	  if(!isContextFree)
-	  { //String castIdent=staticLink.getJavaIdentifier();
-	    //Util.BREAK("CallProcedure.asStaticMethod: staticLink.blockLevel="+staticLink.blockLevel);
-		BlockDeclaration currentModule=Global.currentJavaModule.blockDeclaration; // Class, Procedure, ...
-		//Util.BREAK("CallProcedure.asStaticMethod: currentModule.blockLevel="+currentModule.blockLevel);
-		//Util.BREAK("CallProcedure.asStaticMethod: meaning="+meaning);
-		//Util.BREAK("CallProcedure.asStaticMethod: meaning.blockLevel="+meaning.declaredIn.blockLevel);
+	  { BlockDeclaration currentModule=Global.currentJavaModule.blockDeclaration; // Class, Procedure, ...
 		String castIdent=meaning.declaredIn.getJavaIdentifier();
 	    int n=meaning.declaredIn.blockLevel;
 		if(n!=currentModule.blockLevel)
             methodCall="(("+castIdent+")"+meaning.declaredIn.edCTX()+")."+methodCall;
 	  }
-	  //Util.BREAK("CallProcedure.asStaticMethod: Result="+methodCall);
 	  return(methodCall);
 	}
 
@@ -244,8 +201,6 @@ public final class CallProcedure {
 	public static String formal(final Variable variable,final Parameter par)
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
 	  String ident=variable.edIdentifierAccess(false);
-	  //Util.BREAK("CallProcedure.formal: variable="+variable);
-	  //Util.BREAK("CallProcedure.formal: ident="+ident);
 	  if(par.mode==Parameter.Mode.name) ident=ident+".get()";
 	  return(codeCPF(ident,variable,null));
 	}
@@ -263,23 +218,15 @@ public final class CallProcedure {
 	public static String virtual(final Variable variable,final VirtualSpecification virtual,final boolean remotelyAccessed) {
 		//return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
 	    String ident=virtual.getVirtualIdentifier();
-	    //Util.BREAK("CallProcedure.virtual: ident="+ident+", remotelyAccessed="+remotelyAccessed);
-	    //Util.BREAK("CallProcedure.virtual: variable="+variable);
-	    //Util.BREAK("CallProcedure.virtual: variable.meaning="+variable.meaning);
-	    //Util.BREAK("CallProcedure.virtual: virtual="+virtual);
-	    //Util.BREAK("CallProcedure.virtual: staticLink="+variable.meaning.edStaticLink());
-	    //Util.BREAK("CHECK DETTE TILFELLET(CallProcedure.virtual)"); System.exit(-1);
 	    if(virtual.kind==VirtualSpecification.Kind.Label) return(ident);
 	    if(variable.meaning.isConnected()) {
 	    	String conn=variable.meaning.declaredIn.toJavaCode();
 	        ident=conn+"."+ident;
 	    } else if(!remotelyAccessed) {
-		    String staticLink=variable.meaning.edStaticLink();
+		    String staticLink=variable.meaning.edQualifiedStaticLink();
 	        ident=staticLink+"."+ident;
 	    }
-	    String result=codeCPF(ident,variable,virtual.procedureSpec);
-	    //Util.BREAK("CallProcedure.virtual: result="+result);
-	    return(result);
+	    return(codeCPF(ident,variable,virtual.procedureSpec));
 	}
 
 	// ********************************************************************
@@ -297,14 +244,6 @@ public final class CallProcedure {
 	public static String remoteVirtual(final Expression obj,final Variable variable,final VirtualSpecification virtual)
 	{ //return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
 	  String ident=obj.get()+'.'+virtual.getVirtualIdentifier();
-	  
-	  //Util.BREAK("CallProcedure.remoteVirtual: ident="+ident);
-	  //Util.BREAK("CallProcedure.remoteVirtual: variable="+variable);
-	  //Util.BREAK("CallProcedure.remoteVirtual: backLink="+backLink);
-	  //Util.BREAK("CallProcedure.remoteVirtual: variable.meaning="+variable.meaning);
-	  //Util.BREAK("CallProcedure.remoteVirtual: virtual="+virtual);
-	  //Util.BREAK("CallProcedure.remoteVirtual: staticLink="+variable.meaning.edStaticLink());
-	  
 	  return(codeCPF(ident,variable,virtual.procedureSpec));
 	}
 	
@@ -313,7 +252,6 @@ public final class CallProcedure {
 	// ********************************************************************
 	private static String codeCPF(final String ident,final Variable variable,final ProcedureSpecification procedureSpec)
 	{ StringBuilder s=new StringBuilder();
-	  //Util.BREAK("CallProcedure.codeCPF: ident="+ident);
 	  if(procedureSpec!=null) s.append(codeCSVP(ident,variable,procedureSpec));
 	  else
 	  { s.append(ident).append(".CPF()");
@@ -323,21 +261,16 @@ public final class CallProcedure {
 	        s.append(".setPar(");
 		    Type formalType=actualParameter.type;
 		    Parameter.Kind kind=Parameter.Kind.Simple;  // Default, see below
-		    //Util.BREAK("CallProcedure.codeCPF: actualParameter="+actualParameter);
 		    if((actualParameter instanceof Variable) && !(((Variable)actualParameter).hasArguments()))
 		    { Variable var=(Variable)actualParameter;
-		      //Util.BREAK("CallProcedure.codeCPF: actualParameter'meaning="+var.meaning);
-		      //Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs="+var.meaning.declaredAs);
-		      //Util.BREAK("CallProcedure.codeCPF: actualParameter'declaredAs'Qual="+var.meaning.declaredAs.getClass().getSimpleName());
 		      Declaration decl=var.meaning.declaredAs;
-		      
 			  if(decl instanceof StandardProcedure) {
 				  if(decl.identifier.equalsIgnoreCase("sourceline")) {
 					  actualParameter=new Constant(Type.Integer,Global.sourceLineNumber);
 					  actualParameter.doChecking();
 				  }
 			  }
-			  else if(decl instanceof TypeDeclaration) kind=Parameter.Kind.Simple;
+			  else if(decl instanceof SimpleVariableDeclaration) kind=Parameter.Kind.Simple;
 			  else if(decl instanceof Parameter) kind=((Parameter)decl).kind;
 			  else if(decl instanceof ProcedureDeclaration) kind=Parameter.Kind.Procedure;
 			  else if(decl instanceof ArrayDeclaration) kind=Parameter.Kind.Array;
@@ -353,15 +286,11 @@ public final class CallProcedure {
 	    }
 	  }
 	  Type resultType=variable.type;
-      //Util.BREAK("CallProcedure.codeCPF: resultType1="+resultType);
 	  if(procedureSpec!=null) resultType=procedureSpec.type;
-      //Util.BREAK("CallProcedure.codeCPF: resultType2="+resultType);
 	  if(resultType!=null && variable.backLink!=null)
 	  { boolean partOfExpression=true;
 	    if(variable.backLink instanceof RemoteVariable)
 	    { RemoteVariable binOper=(RemoteVariable)variable.backLink;
-	      //Util.BREAK("CallProcedure.codeCPF: binOper="+binOper);
-	      //Util.BREAK("CallProcedure.codeCPF: binOper.backLink="+binOper.backLink);
 	      // NOTE: Standalone <expression>.<function> should not be casted
 	      if(binOper.backLink==null) partOfExpression=false;
 	    }
@@ -382,16 +311,13 @@ public final class CallProcedure {
 	// ********************************************************************
 	private static String codeCSVP(final String ident,final Variable variable,final ProcedureSpecification procedureSpec)
 	{ StringBuilder s=new StringBuilder();
-	  //Util.BREAK("CallProcedure.codeCPF: ident="+ident);
 	  s.append(ident).append(".CPF()");
 	  if(variable.hasArguments())
 	  { Iterator<Parameter> formalIterator = procedureSpec.parameterList.iterator(); // If class also over prefix-chain
 		Iterator<Expression> actualIterator = variable.checkedParams.iterator();
 		while(actualIterator.hasNext())
 		{ Expression actualParameter = actualIterator.next();
-		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Actual Parameter: " + actualParameter);
 		  Parameter formalParameter = (Parameter)formalIterator.next();
-		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Formal Parameter: " + formalParameter);
 	      s.append(".setPar(");
 		  Type formalType=formalParameter.type;
 		  Parameter.Kind kind=formalParameter.kind;  
@@ -417,13 +343,9 @@ public final class CallProcedure {
 	    Iterator<Expression> actualIterator = variable.checkedParams.iterator();
 	    while(actualIterator.hasNext())
 	    { Expression actualParameter = actualIterator.next();
-		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+").get: Actual Parameter: " + actualParameter);
 		  Parameter formalParameter = (Parameter)formalIterator.next();
-		  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+"): Formal Parameter: " + formalParameter);
 		  if(formalParameter.nDim>0) {
-			  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+"): Array Dimentions=" + formalParameter.nDim);
 			  int aDim=getNdim(actualParameter);
-			  //Util.BREAK("CallProcedure.edProcedureParameters("+variable.identifier+"): Variable Dimentions=" + aDim);
 			  if(aDim<1) Util.warning("Parameter Array "+actualParameter+" remains unchecked. Java or Runtime errors may occur");
 			  else if(aDim!=formalParameter.nDim) Util.error("Parameter Array "+actualParameter+" has wrong number of dimensions");
 		  }
@@ -439,16 +361,11 @@ public final class CallProcedure {
 	}
 	
     private static int getNdim(final Expression actualParameter) {
-    	//Util.BREAK("CallProcedure.getNdim("+actualParameter+"): actualParameter'QUAL=" + actualParameter.getClass().getSimpleName());
     	Variable aVar=null;
     	if(actualParameter instanceof RemoteVariable) aVar=((RemoteVariable)actualParameter).var;
     	else if(actualParameter instanceof Variable) aVar=(Variable)actualParameter;
-//    	else Util.FATAL_ERROR("Impossible");
     	else return(-1); // Unchecked
     	Meaning meaning=aVar.meaning;
-    	//Util.BREAK("CallProcedure.getNdim("+aVar.identifier+"): aVar'meaning=" + aVar.meaning);
-    	//Util.BREAK("CallProcedure.getNdim("+aVar.identifier+"): aVar'meaning'QUAL=" + aVar.meaning.declaredAs.getClass().getSimpleName());
-    	
     	if(meaning.declaredAs instanceof Parameter) {
     		Parameter par=(Parameter)meaning.declaredAs;
     		return(par.nDim);    		
@@ -464,10 +381,6 @@ public final class CallProcedure {
 	// ********************************************************************
 	private static String doParameterTransmition(final Type formalType,final Parameter.Kind kind,final Parameter.Mode mode,final Expression actualParameter) {
 		StringBuilder s = new StringBuilder();
-		//Util.BREAK("CallProcedure.doParameterTransmition: FORMAL "+kind+' '+formalType+" by "+((mode!=null)?mode:"default"));
-		//Util.BREAK("CallProcedure.doParameterTransmition: ACTUAL "+actualParameter);
-		//Util.BREAK("CallProcedure.doParameterTransmition: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
-		  
 		switch(kind) {
 		    case Simple: doSimpleParameter(s,formalType,mode,actualParameter); break;
 		    case Procedure: doProcedureParameter(s,formalType,mode,actualParameter); break;
@@ -491,10 +404,6 @@ public final class CallProcedure {
 	// *** doSimpleParameter -- Simple Variable as Actual Parameter
 	// ********************************************************************
 	private static void doSimpleParameter(final StringBuilder s,final Type formalType,final Parameter.Mode mode,final Expression actualParameter) {
-		//Util.BREAK("CallProcedure.doSimpleParameter: FORMAL "+kind+' '+type+' '+formalParameter.identifier+" by "+((mode!=null)?mode:"default"));
-	    //Util.BREAK("CallProcedure.doSimpleParameter: ACTUAL "+actualParameter);
-		//Util.BREAK("CallProcedure.doSimpleParameter: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
-	  
 		if(mode==null) // Simple Type/Ref/Text by Default
 		  	s.append(actualParameter.toJavaCode());
 		else if(mode==Parameter.Mode.value) { // Simple Type/Ref/Text by Value
@@ -515,11 +424,6 @@ public final class CallProcedure {
 		    if(writeableVariable!=null) {
 		    	s.append("new NAME$<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
-//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter: " + actualParameter);
-//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'var: " + writeableVariable);
-//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Meaning: " + writeableVariable.meaning);
-//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic: " + writeableVariable.meaning.declaredAs);
-//			    Util.BREAK("CallProcedure.doSimpleParameter: Actual Parameter'Semantic'Qual: " + writeableVariable.meaning.declaredAs.getClass().getSimpleName());
 				if(!(writeableVariable.meaning.declaredAs instanceof BlockDeclaration))
                 { Type actualType=actualParameter.type;
 				  String rhs="("+actualType.toJavaType()+")x$";
@@ -533,13 +437,7 @@ public final class CallProcedure {
 					//	   return(y);
                 	//  }
                     // --------------------------------------------------
-        			//Util.BREAK("CallProcedure.doSimpleParameter: rhs="+rhs);
-      			    //Util.BREAK("CallProcedure.doSimpleParameter: var="+var);
-      			    //Util.BREAK("CallProcedure.doSimpleParameter: actualType="+actualType);
-      			    //Util.BREAK("CallProcedure.doSimpleParameter: formalType="+formalType);
-      			    //Util.BREAK("CallProcedure.doSimpleParameter: var.type="+var.type);
       			    String putValue=TypeConversion.mayBeConvert(actualType,writeableVariable.type,"y");
-      			    //Util.BREAK("CallProcedure.doSimpleParameter: putValue="+putValue);
                     s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x$)");
                     s.append("{ "+formalType.toJavaType()+" y=x$; ");
                     s.append(writeableVariable.toJavaCode()).append(putValue);
@@ -562,7 +460,6 @@ public final class CallProcedure {
 		      else
 		      {
 		    	s.append("new NAME$<"+javaTypeClass+">()");
-//		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.toJavaCode()+"); }");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
 		    	s.append(" }");
 		      }
@@ -574,12 +471,6 @@ public final class CallProcedure {
 	// *** doArrayParameter -- Array as Actual Parameter
 	// ********************************************************************
 	private static void doArrayParameter(final StringBuilder s,final Type formalType,final Parameter.Mode mode,final Expression actualParameter) {
-		//Util.BREAK("CallProcedure.doArrayParameter: ACTUAL "+actualParameter);
-		//Util.BREAK("CallProcedure.doArrayParameter: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
-		// Value Type:      by  Value - Reference - Name
-		// Reference Type:  by          Reference - Name
-		//Util.BREAK("CallProcedure.doArrayParameter: actualParameter="+actualParameter);
-		//Util.BREAK("CallProcedure.doArrayParameter: actualParameter'QUAL="+actualParameter.getClass().getSimpleName());
 		if(mode==Parameter.Mode.value) {
 		    Util.warning("Array-Parameter by value is not (fully) implemented");
 		    s.append(actualParameter.toJavaCode()).append(".COPY()");
@@ -592,101 +483,12 @@ public final class CallProcedure {
 		} else s.append(actualParameter.toJavaCode());
 	}
 	
-//	// ********************************************************************
-//	// *** doProcedureParameter -- Procedure as Actual Parameter
-//	// ********************************************************************
-//	private static void OLD_doProcedureParameter(final StringBuilder s, final Type formalType, final Parameter.Mode mode, final Expression actualParameter) {
-//		 Util.BREAK("CallProcedure.doProcedureParameter: FORMAL "+formalType+" procedure by "+((mode!=null)?mode:"default"));
-//		// Util.BREAK("CallProcedure.doProcedureParameter: ACTUAL "+actualParameter);
-//		 Util.BREAK("CallProcedure.doProcedureParameter: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
-//		String staticLink = null;
-//		String procIdent = null;
-//		
-//		if (actualParameter instanceof RemoteVariable) {
-//			// Check for <ObjectExpression> DOT <Variable>
-//			RemoteVariable dotOperation = (RemoteVariable) actualParameter;
-//			staticLink = dotOperation.obj.toJavaCode();
-//			if (dotOperation.var instanceof Variable) {
-//				Variable var = dotOperation.var;
-//				// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Type: " + var.type);
-//				// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Meaning: " + var.meaning);
-//				// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Semantic: " + var.meaning.declaredAs);
-////				procIdent = ((Variable) dotOperation.var).meaning.declaredAs.getJavaIdentifier();
-//				procIdent = var.meaning.declaredAs.getJavaIdentifier();
-//			} else Util.FATAL_ERROR("Impossible");
-//				
-//		} else if (actualParameter instanceof Variable) {
-//			procIdent = ((Variable) actualParameter).meaning.declaredAs.getJavaIdentifier();
-//			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter: " + actualParameter);
-//			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Qual: " + actualParameter.getClass().getSimpleName());
-//			staticLink = edStaticLink(actualParameter);
-//		} else if (actualParameter instanceof ConditionalExpression) {
-//			Util.NOT_IMPLEMENTED("Conditional Procedure Expression: " + actualParameter);
-//		}
-//		if (staticLink == null)	Util.error("Illegal Procedure Expression: " + actualParameter);
-//
-//		String procQuant = "new PRCQNT$(" + staticLink + "," + procIdent + ".class)";
-//		if (actualParameter instanceof Variable) {
-//			Variable var = (Variable) actualParameter;
-//			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Type: " + var.type);
-//			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Meaning: " + var.meaning);
-//
-//			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Semantic: " + var.meaning.declaredAs);
-//			 Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Semantic: " + var.meaning.declaredAs.getClass().getSimpleName());
-//			if (var.meaning.declaredAs instanceof Parameter) {
-//				Parameter par = (Parameter) var.meaning.declaredAs;
-//				procQuant = ((Variable) actualParameter).getJavaIdentifier();
-//				if (par.mode == Parameter.Mode.name)
-//					procQuant = procQuant + ".get()";
-//			} else if (var.meaning.declaredAs instanceof VirtualSpecification) {
-//				VirtualSpecification vir = (VirtualSpecification) var.meaning.declaredAs;
-//				//Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") VirtualIdentifier: " + vir.getVirtualIdentifier());
-//				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
-//			}
-////		} else if (actualParameter instanceof RemoteVariable) {
-////			RemoteVariable rem = (RemoteVariable) actualParameter;  SJEKK DETTE
-////			Variable var = rem.var;
-////			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Type: " + var.type);
-////			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Meaning: " + var.meaning);
-////
-////			// Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Semantic: " + var.meaning.declaredAs);
-////			 Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") Actual Parameter'Semantic: " + var.meaning.declaredAs.getClass().getSimpleName());
-////			if (var.meaning.declaredAs instanceof Parameter) {
-////				Parameter par = (Parameter) var.meaning.declaredAs;
-////				procQuant = ((Variable) actualParameter).getJavaIdentifier();
-////				if (par.mode == Parameter.Mode.name)
-////					procQuant = procQuant + ".get()";
-////			} else if (var.meaning.declaredAs instanceof VirtualSpecification) {
-////				VirtualSpecification vir = (VirtualSpecification) var.meaning.declaredAs;
-////				//Util.BREAK("CallProcedure.doProcedureParameter("+procIdent+") VirtualIdentifier: " + vir.getVirtualIdentifier());
-////				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
-////			}
-//		}
-//
-//		if (mode == Parameter.Mode.name) {
-//			// --- EXAMPLE -------------------------------------------------------------------------
-//			// r = new ParamSample$Q(this, new NAME$<PRCQNT$>() {
-//			//     public PRCQNT$ get() {
-//			//         return (new PRCQNT$(ParamSample.this, ParamSample$P.class));
-//			//     }
-//			// }).RESULT$;
-//			// -------------------------------------------------------------------------------------
-//			s.append("new NAME$<PRCQNT$>()");
-//			s.append("{ public PRCQNT$ get() { return(" + procQuant + "); }");
-//			s.append(" }");
-//		} else s.append(procQuant);
-//	}
-
 	
 	// ********************************************************************
 	// *** doProcedureParameter -- Procedure as Actual Parameter
 	// ********************************************************************
 	private static void doProcedureParameter(final StringBuilder s, final Type formalType, final Parameter.Mode mode, final Expression actualParameter) {
-		// Util.BREAK("CallProcedure.doProcedureParameter: FORMAL "+formalType+" procedure by "+((mode!=null)?mode:"default"));
-		// Util.BREAK("CallProcedure.doProcedureParameter: ACTUAL "+actualParameter);
-		// Util.BREAK("CallProcedure.doProcedureParameter: ACTUAL'Qual "+actualParameter.getClass().getSimpleName());
 		String procQuant = edProcedureQuant(mode,actualParameter);
-
 		if (mode == Parameter.Mode.name) {
 			// --- EXAMPLE -------------------------------------------------------------------------
 			// r = new ParamSample$Q(this, new NAME$<PRCQNT$>() {
@@ -708,13 +510,9 @@ public final class CallProcedure {
 	    if (actualParameter instanceof Variable) {
 			Variable var = (Variable) actualParameter;
 			Declaration decl=var.meaning.declaredAs;
+	    	String staticLink=var.meaning.edQualifiedStaticLink();
 	    	String procIdent = decl.getJavaIdentifier();
-	    	String staticLink = edStaticLink(actualParameter);
 			String procQuant = "new PRCQNT$(" + staticLink + "," + procIdent + ".class)";
-			// Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Actual Parameter'Type: " + var.type);
-			// Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Actual Parameter'Meaning: " + var.meaning);
-			// Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Actual Parameter'Semantic: " + decl);
-			// Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Actual Parameter'Semantic: " + decl.getClass().getSimpleName());
 			if (decl instanceof Parameter) {
 				Parameter par = (Parameter) decl;
 				procQuant = ((Variable) actualParameter).getJavaIdentifier();
@@ -722,14 +520,12 @@ public final class CallProcedure {
 					procQuant = procQuant + ".get()";
 			} else if (decl instanceof ProcedureDeclaration) {
 				ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
-				//Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Procedure: " + procedure+", myVirtual="+procedure.myVirtual);
     	    	if(procedure.myVirtual!=null) {
     	    		VirtualSpecification vir = procedure.myVirtual.virtualSpec;
     				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
     	    	}
 			} else if (decl instanceof VirtualSpecification) {
 				VirtualSpecification vir = (VirtualSpecification) decl;
-				//Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") VirtualIdentifier: " + vir.getVirtualIdentifier());
 				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
 			} else Util.FATAL_ERROR("TODO: Flere sånne(1) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			return(procQuant);
@@ -739,16 +535,11 @@ public final class CallProcedure {
 			String staticLink = rem.obj.toJavaCode();
 			Variable var = rem.var;
 			Declaration decl=var.meaning.declaredAs;
-			// Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Actual Parameter'Type: " + var.type);
-			// Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Actual Parameter'Meaning: " + var.meaning);
-			// Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") Actual Parameter'Semantic: " + decl);
 			if (decl instanceof VirtualSpecification) {
 				VirtualSpecification vir = (VirtualSpecification) decl;
-				//Util.BREAK("CallProcedure.edProcedureQuant("+procIdent+") VirtualIdentifier: " + vir.getVirtualIdentifier());
 				return(staticLink+'.'+vir.getVirtualIdentifier());
 			} else if (decl instanceof ProcedureDeclaration) {
 				ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
-				//Util.BREAK("CallProcedure.edProcedureQuant: Procedure=" + procedure+", myVirtual="+procedure.myVirtual);
     	    	if(procedure.myVirtual!=null) {
     	    		VirtualSpecification vir = procedure.myVirtual.virtualSpec;
     				return(staticLink+'.'+vir.getVirtualIdentifier());
@@ -758,20 +549,6 @@ public final class CallProcedure {
 			return("new PRCQNT$(" + staticLink + "," + procIdent + ".class)");
 		} else Util.error("Illegal Procedure Expression as Actual Parameter: " + actualParameter);
 	    return("UNKNOWN"); // Error recovery
-	}
-
-	
-	// ********************************************************************
-	// *** edStaticLink
-	// ********************************************************************
-	private static String edStaticLink(Expression actualParameter) {
-		// Util.BREAK("CallProcedure.edStaticLink: actualParameter="+actualParameter+", qual="+actualParameter.getClass().getSimpleName());
-		if (actualParameter instanceof Variable) {
-			Variable apar = (Variable) actualParameter;
-			return (apar.meaning.edStaticLink());
-		}
-		Util.error("Actual parameter " + actualParameter + " is not implemented");
-		return ("(" + Global.currentScope.externalIdent + ")CUR$");
 	}
 
 }

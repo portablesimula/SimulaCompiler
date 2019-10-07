@@ -23,8 +23,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public final class SimulaScanner { 
-    //private static final boolean TESTING=false;
+public final class SimulaScanner extends DefaultScanner { 
     private static final int EOF_MARK=25; // ISO EM(EndMedia) character used to denote end-of-input
     public boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
     private SourceFileReader sourceFileReader;      // The source file reader;
@@ -439,7 +438,6 @@ public final class SimulaScanner {
     	if(Option.TRACE_SCAN) Util.TRACE("scanNumber, result='"+result+"' radix="+radix);
 
     	pushBack(current);
-//    	return(newToken(KeyWord.INTEGERKONST,new Long(Long.parseLong(result,radix))));
     	return(newToken(KeyWord.INTEGERKONST,Long.parseLong(result,radix)));
     }
 
@@ -464,7 +462,6 @@ public final class SimulaScanner {
     	if(Option.TRACE_SCAN) Util.TRACE("scanDotDigit, result='"+result);
     	pushBack(current);
     	try {
-//    		return(newToken(KeyWord.REALKONST,new Float(result)));
     		return(newToken(KeyWord.REALKONST,Float.parseFloat(result)));
     	} catch(NumberFormatException e) {
     		Util.error("Illegal number: "+result);
@@ -494,8 +491,6 @@ public final class SimulaScanner {
     	if(Option.TRACE_SCAN) Util.TRACE("scanDigitsExp, result='"+result);
     	pushBack(current);
     	try {
-//    		if(doubleAmpersand) return(newToken(KeyWord.REALKONST,new Double(result)));
-//    		return(newToken(KeyWord.REALKONST,new Float(result)));
     		if(doubleAmpersand) return(newToken(KeyWord.REALKONST,Double.parseDouble(result)));
     		return(newToken(KeyWord.REALKONST,Float.parseFloat(result)));
     	} catch(NumberFormatException e) {
@@ -525,7 +520,6 @@ public final class SimulaScanner {
     		name.append((char)current);
     	pushBack(current);
     	if(Option.TRACE_SCAN) Util.TRACE("scanName, name="+name+",current="+edcurrent());
-	    //if(TESTING) Util.println("SimulaScanner.scanName: name="+name+",current="+edcurrent()+", accum=\""+accum+"\"");
     	return(name.toString());
     }
 	
@@ -561,7 +555,6 @@ public final class SimulaScanner {
     		pushBack(current);
     	}
     	if(Option.TRACE_SCAN) Util.TRACE("END scanCharacterConstant, result='"+result+"', "+edcurrent());
-//    	return(newToken(KeyWord.CHARACTERKONST,new Character(result)));
     	return(newToken(KeyWord.CHARACTERKONST,Character.valueOf(result)));
     }  
     
@@ -750,25 +743,15 @@ public final class SimulaScanner {
 		    return (newToken(KeyWord.COMMENT));
 		} else if(Character.isLetter(current)) {
 			String id=scanName();
-//			if (id.equalsIgnoreCase("OPTION"))				Directive.setOption();
-//			else if (id.equalsIgnoreCase("INSERT"))			Directive.insert(this,readUntilEndofLine());
-//			else if (id.equalsIgnoreCase("SELECT"))			setSelectors();
-//			else if (id.equalsIgnoreCase("STANDARDCLASS"))	Directive.setStandardClass();
-//			else if (id.equalsIgnoreCase("TITLE"))			Directive.setTitle(readUntilEndofLine());
-//			else if (id.equalsIgnoreCase("PAGE"))			Directive.page();
-//			else if (id.equalsIgnoreCase("KEEP_JAVA"))		Directive.setKeepJava(readUntilEndofLine());
-//			else { Util.warning("Unknown Compiler Directive: " + id); readUntilEndofLine();	}
 			if (id.equalsIgnoreCase("SELECT")) setSelectors();
 			else Directive.treatDirectiveLine(this,id,readUntilEndofLine());
 		}
-		//readUntilEndofLine();
 	    return (newToken(KeyWord.COMMENT));
 	}
 	
 	private String readUntilEndofLine() {
 		StringBuilder line=new StringBuilder();
 		while(getNext()!='\n') {
-		    //Util.println("SimulaScanner.readUntilEndofLine: SKIP char="+(char)current);
 			line.append((char)current);
 		}
 		pushBack('\n');
@@ -786,38 +769,31 @@ public final class SimulaScanner {
     	while(current==' ') getNext();
     	while(current!=' ' && current!='\n') {
     		selector[current]=true;
-    		//if(TESTING) Util.println("PreProcessor.select: selector["+(char)current+"]=true");
     		getNext();
     	}
     }
     
 	private boolean lineSelected() {
-		//Util.println("SimulaScanner.lineSelected: c="+(char)current);
 		while (true) {
 			if (current == '+') {
 				getNext();
-				//Util.println("SimulaScanner.lineSelected(+): c="+(char)current);
 				while (Character.isLetter(current) | Character.isDigit(current)) {
 					if (!selector[current])
 						return (false); // then SKIPLINE;
 					getNext();
-					//Util.println("SimulaScanner.lineSelected(2+): c="+(char)current);
 				}
 			} else if (current == '-') {
 				getNext();
-				//Util.println("SimulaScanner.lineSelected(-): c="+(char)current);
 				while (Character.isLetter(current) | Character.isDigit(current)) {
 					if (selector[current])
 						return (false); // then SKIPLINE;
 					getNext();
-					//Util.println("SimulaScanner.lineSelected(2-): c="+(char)current);
 				}
 			} else
 				break;
 		}
 		while (current == ' ') getNext();
 		pushBack(current);
-		//Util.println("SimulaScanner.lineSelected(end): c="+(char)current);
 		return (true); // Return to scan remainder part of line.
 	}
   
@@ -927,7 +903,6 @@ public final class SimulaScanner {
 		if (Option.TRACE_COMMENTS)
 			Util.TRACE("ENDCOMMENT:\"" + skipped + '"');
 		Token res=tokenQueue.remove();
-		//if(TESTING) Util.println("SimulaScanner.scanEndComment: res="+res+", text=\""+res.getText()+"\"");
 		return(res);
 	}
 
@@ -952,7 +927,6 @@ public final class SimulaScanner {
     private int readNextCharacter() {
     	if(!puchBackStack.empty()) return(puchBackStack.pop());
 		int c=sourceFileReader.read();
-		//if(TESTING) Util.println("SimulaScanner.readNextCharacter: c="+(char)c+", code="+c+", accum=\""+accum+"\"");
 
 		if(c<0) { EOF_SEEN=true; return(EOF_MARK); }
 		if(c=='\n') Global.sourceLineNumber++;
@@ -963,7 +937,6 @@ public final class SimulaScanner {
 
     private void pushBack(final int chr) {
 	    // push given value back into the input stream
-		//if(TESTING) Util.println("SimulaScanner.pushBack: c="+(char)chr+", code="+chr+", accum=\""+accum+"\"");
     	if(editorMode) {
     		if(current!=EOF_MARK && accum.length()>0)
     		accum.deleteCharAt(accum.length()-1);
@@ -974,7 +947,6 @@ public final class SimulaScanner {
   
     private void pushBack(final String s) {
 	    // put given value back into the input stream
-		//if(TESTING) Util.println("SimulaScanner.pushBack: s=\""+s+"\", accum=\""+accum+"\"");
 	    int i=s.length();
 		while((i--)>0) pushBack(s.charAt(i));
     }
@@ -984,7 +956,6 @@ public final class SimulaScanner {
 		if(editorMode) {
 	        text=(accum==null)?"":accum.toString();
 	        accum=new StringBuilder();
-			//if(TESTING) Util.println("SimulaScanner.newToken: keyWord="+keyWord+", text=\""+text.replace("\n","\\n")+'"');//+", value="+value);
 		}
 		return(new Token(text,keyWord,value));
 	  }

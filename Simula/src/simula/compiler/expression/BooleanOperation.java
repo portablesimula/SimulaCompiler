@@ -102,7 +102,6 @@ public final class BooleanOperation extends Expression {
 		this.lhs = lhs;
 		this.opr = opr;
 		this.rhs = rhs;
-		// lhs.backLink=rhs.backLink=this;
 		if (this.lhs == null) {
 			Util.error("Missing operand before " + opr);
 			this.lhs = new Variable("UNKNOWN$");

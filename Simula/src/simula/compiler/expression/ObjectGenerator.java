@@ -65,7 +65,6 @@ public final class ObjectGenerator extends Expression {
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			if (!Parser.accept(KeyWord.ENDPAR)) {
-				// do { params.add(parseSimpleExpression());
 				do {
 					params.add(parseExpression());
 				} while (Parser.accept(KeyWord.COMMA));
@@ -83,8 +82,6 @@ public final class ObjectGenerator extends Expression {
 			Util.TRACE("BEGIN ObjectGenerator(" + classIdentifier + ").doChecking - Current Scope Chain: " + Global.currentScope.edScopeChain());
 		meaning = Global.currentScope.findMeaning(classIdentifier);
 		if (meaning == null) {
-			// if(classIdentifier.equalsIgnoreCase("L"))Util.BREAK("ObjectGenerator.doChecking:
-			// findMeaning("+classIdentifier+") ==> UNDEFINED");
 			Util.error("Undefined variable: " + classIdentifier);
 			meaning = new Meaning(null, null); // Error Recovery: No Meaning
 		}
@@ -105,7 +102,6 @@ public final class ObjectGenerator extends Expression {
 				Util.TRACE("Formal Parameter: " + formalParameter + ", Formal Type=" + formalType);
 			Expression actualParameter = actualIterator.next();
 			actualParameter.doChecking();
-			//Util.BREAK("ObjectGenerator.doChecking Parameter "+formalParameter+" := "+actualParameter);
 
 			Type actualType = actualParameter.type;
 			if (Option.TRACE_CHECKER)
@@ -119,7 +115,6 @@ public final class ObjectGenerator extends Expression {
 			Util.error("Missing parameter("+formalIterator.next()+") to " + cls);
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END ObjectGenerator(" + classIdentifier + ").doChecking: type=" + type);
-		// Debug.BREAK("END ObjectGenerator");
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -134,7 +129,7 @@ public final class ObjectGenerator extends Expression {
 		StringBuilder s = new StringBuilder();
 		String classIdent = meaning.declaredAs.getJavaIdentifier();
 		s.append("new ").append(classIdent).append('(');
-		s.append(meaning.edStaticLink());
+		s.append(meaning.edUnqualifiedStaticLink());
 
 		ClassDeclaration cls = (ClassDeclaration) meaning.declaredAs;
 		Iterator<Parameter> formalIterator = cls.parameterIterator();

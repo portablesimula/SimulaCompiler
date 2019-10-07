@@ -69,6 +69,7 @@ public class EditorMenues extends JMenuBar {
     private JMenu settings=new JMenu("Settings");
 	private JCheckBox autoRefresh=new JCheckBox("AutoRefresh");
     private JMenuItem setWorkSpace = new JMenuItem("Select WorkSpace");
+    private JMenuItem setJavaDir = new JMenuItem("Select Java Dir.");
     private JMenuItem setOutputDir = new JMenuItem("Select Output Dir.");
     private JMenuItem workSpaces = new JMenuItem("Remove WorkSpaces");
     private JMenuItem compilerOption = new JMenuItem("Compiler Options");
@@ -97,6 +98,7 @@ public class EditorMenues extends JMenuBar {
     private JMenuItem debug2 = new JMenuItem("Debug");
 	private JCheckBox autoRefresh2=new JCheckBox("AutoRefresh");
     private JMenuItem setWorkSpace2 = new JMenuItem("Select WorkSpace");
+    private JMenuItem setJavaDir2 = new JMenuItem("Select Java Dir.");
     private JMenuItem setOutputDir2 = new JMenuItem("Select Output Dir.");
     private JMenuItem workSpaces2 = new JMenuItem("Remove WorkSpaces");
     private JMenuItem compilerOption2 = new JMenuItem("Compiler Options");
@@ -137,6 +139,7 @@ public class EditorMenues extends JMenuBar {
 		this.add(runMenu);
 		settings.add(autoRefresh); autoRefresh.setEnabled(false); autoRefresh.addActionListener(actionListener);
         settings.add(setWorkSpace); setWorkSpace.addActionListener(actionListener);
+        settings.add(setJavaDir); setJavaDir.addActionListener(actionListener);
         settings.add(setOutputDir); setOutputDir.addActionListener(actionListener);
         settings.add(workSpaces); workSpaces.addActionListener(actionListener);
         settings.add(compilerOption); compilerOption.addActionListener(actionListener);
@@ -214,13 +217,11 @@ public class EditorMenues extends JMenuBar {
         popupMenu.add(search2); search2.setEnabled(false); search2.addActionListener(actionListener);
         popupMenu.addSeparator();
         popupMenu.add(refresh2); refresh2.setEnabled(false); refresh2.addActionListener(actionListener);
-//        popupMenu.addSeparator();
-//        popupMenu.add(run2); run2.setEnabled(false); run2.addActionListener(actionListener);
-//        popupMenu.add(debug2); debug2.setEnabled(false); debug2.addActionListener(actionListener);
         popupMenu.addSeparator();
         popupMenu.add(autoRefresh2); autoRefresh2.setEnabled(false); autoRefresh2.addActionListener(actionListener);
         popupMenu.addSeparator();
         popupMenu.add(setWorkSpace2); setWorkSpace2.addActionListener(actionListener);
+        popupMenu.add(setJavaDir2); setJavaDir2.addActionListener(actionListener);
         popupMenu.add(setOutputDir2); setOutputDir2.addActionListener(actionListener);
         popupMenu.add(workSpaces2); workSpaces2.addActionListener(actionListener);
         popupMenu.add(compilerOption2); compilerOption2.addActionListener(actionListener);
@@ -233,10 +234,7 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** EditMenu: UpdateMenuItems
 	// ****************************************************************
-//	public void updateMenuItems(SourceTextPanel sourceTextPanel) {
 	public void updateMenuItems() {
-		//Util.println("EditMenu.updateMenuItems: sourceTextPanel="+sourceTextPanel);
-		//SourceTextPanel current=simulaEditor.getCurrentTextPanel();
 		SourceTextPanel current=SimulaEditor.current;
 		boolean source=false;
 		boolean text=false;
@@ -279,18 +277,14 @@ public class EditorMenues extends JMenuBar {
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Object item=e.getSource();
-			//SourceTextPanel current=simulaEditor.getCurrentTextPanel();
 			SourceTextPanel current=SimulaEditor.current;
-			//System.out.println("EditMenu.ActionListener: "+item);
-			if(item==newFile || item==newFile2) SimulaEditor.doNewTabbedPanel(null);
+			if(item==newFile || item==newFile2) SimulaEditor.doNewTabbedPanel(null,Language.Simula);
 			else if(item==openFile || item==openFile2) doOpenFileAction();
 			else if(item==saveFile || item==saveFile2) doSaveCurrentFile(false);
 			else if(item==saveAs   || item==saveAs2) doSaveCurrentFile(true);
 			else if(item==close    || item==close2) doCloseCurrentFileAction();
 			else if(item==closeAll || item==closeAll2) doCloseAllAction();
 			else if(item==exit     || item==exit2) doExitAction();
-//			else if(item==undo || item==undo2) { current.getUndoManager().undo(); updateMenuItems(); }
-//			else if(item==redo || item==redo2) { current.getUndoManager().redo(); updateMenuItems(); }
 			else if(item==undo || item==undo2) undoAction();
 //			else if(item==redo || item==redo2) redoAction();
 			else if(item==search  || item==search2) new Search();					
@@ -300,6 +294,7 @@ public class EditorMenues extends JMenuBar {
 			else if(item==autoRefresh) current.AUTO_REFRESH=autoRefresh.isSelected();
 			else if(item==autoRefresh2) current.AUTO_REFRESH=autoRefresh2.isSelected();
 			else if(item==setWorkSpace || item==setWorkSpace2) selectWorkspaceAction();
+			else if(item==setJavaDir || item==setJavaDir2) selectJavaDirAction();
 			else if(item==setOutputDir || item==setOutputDir2) selectOutputDirAction();
 			else if(item==workSpaces || item==workSpaces2) removeWorkspacesAction();
 			else if(item==compilerOption || item==compilerOption2) Option.selectCompilerOptions();
@@ -317,15 +312,17 @@ public class EditorMenues extends JMenuBar {
         if (fileChooser.showOpenDialog(SimulaEditor.tabbedPane)==JFileChooser.APPROVE_OPTION) {
         	File file=fileChooser.getSelectedFile();
     		if(!file.exists()) { Util.popUpError("Can't open file\n"+file); return; }
-    		if(file.getName().toLowerCase().endsWith(".jar")) SimulaEditor.doRunJarFile(file);
-    		else {
-    			SimulaEditor.doNewTabbedPanel(file);
-//    			new Thread(new Runnable() {
-//    				public void run() {
-//    	    			SimulaEditor.doNewTabbedPanel(file);
-//    				}}).start();
+    		String lowName=file.getName().toLowerCase();
+    		if(lowName.endsWith(".sim")) {
+    			SimulaEditor.doNewTabbedPanel(file,Language.Simula);
+            	Global.setCurrentWorkspace(fileChooser.getCurrentDirectory());
     		}
-        	Global.setCurrentWorkspace(fileChooser.getCurrentDirectory());
+    		else if(lowName.endsWith(".jar")) SimulaEditor.doRunJarFile(file);
+    		else if(lowName.endsWith(".java")) {
+    			SimulaEditor.doNewTabbedPanel(file,Language.Java);
+    		}
+    		else SimulaEditor.doNewTabbedPanel(file,Language.Other);
+    		
         }
 	}
 	
@@ -333,13 +330,11 @@ public class EditorMenues extends JMenuBar {
     // *** doSaveCurrentFile
     // ****************************************************************
 	void doSaveCurrentFile(boolean saveAs) {
-		//SourceTextPanel current=simulaEditor.getCurrentTextPanel();
 		SourceTextPanel current=SimulaEditor.current;
 		if(saveAs || current.sourceFile==null) {
 	        JFileChooser fileChooser = new JFileChooser(Global.currentWorkspace);
 	        if (fileChooser.showSaveDialog(SimulaEditor.tabbedPane)!=JFileChooser.APPROVE_OPTION) return; // Do Nothing
 	        File file=fileChooser.getSelectedFile();
-	        //Util.println("saveAs.APPROVED: "+fileChooser.getSelectedFile());
 	        Global.setCurrentWorkspace(fileChooser.getCurrentDirectory());
 	        if(file.exists() && overwriteDialog(file)!=JOptionPane.YES_OPTION) return; // Do Nothing
 	        if(!file.getName().toLowerCase().endsWith(".sim")) {
@@ -349,7 +344,6 @@ public class EditorMenues extends JMenuBar {
 	        SimulaEditor.setSelectedTabTitle(file.getName());
 	        current.fileChanged=true;
 		}
-		//Util.println("SourceTextPanel.saveFile: sourceFile="+sourceFile+", fileChanged="+fileChanged);
     	if(current.fileChanged)	try {
     		Writer writer=new OutputStreamWriter(new FileOutputStream(current.sourceFile.getPath()),Global.CHARSET$);
     		BufferedWriter out = new BufferedWriter(writer);
@@ -388,7 +382,6 @@ public class EditorMenues extends JMenuBar {
     // ****************************************************************
 	// Also used by RunMeny[Run]
 	void maybeSaveCurrentFile() {
-		//SourceTextPanel current=simulaEditor.getCurrentTextPanel();
 		SourceTextPanel current=SimulaEditor.current;
 		if(current==null) return; if(!current.fileChanged) return;
 		if(saveDialog(current.sourceFile)==JOptionPane.YES_OPTION) doSaveCurrentFile(false);
@@ -481,6 +474,13 @@ public class EditorMenues extends JMenuBar {
     }	
     
 	// ****************************************************************
+	// *** selectJavaDirAction
+	// ****************************************************************
+    private void selectJavaDirAction() {
+    	SimulaEditor.doSelectJavaDir();
+    }	
+    
+	// ****************************************************************
 	// *** selectOutputDirAction
 	// ****************************************************************
     private void selectOutputDirAction() {
@@ -496,7 +496,6 @@ public class EditorMenues extends JMenuBar {
     	JLabel label=new JLabel("Check Workspaces to be removed:");
     	panel.add(label);
     	ArrayList<JCheckBox> list=new ArrayList<JCheckBox>();
-//    	for(String workspace:Global.workspaces) {
     	for(File workspace:Global.workspaces) {
         	JCheckBox checkbox=new JCheckBox(workspace.toString()); 
         	checkbox.setBackground(Color.white);
@@ -505,11 +504,8 @@ public class EditorMenues extends JMenuBar {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		int res=Util.optionDialog(panel,"Remove Workspaces (no changes to the file system)"
 				,JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,"Update","Cancel");
-		//Util.println("SettingsMenu.removeWorkspaces: res="+res);
 		if(res==JOptionPane.OK_OPTION) {
-			//Util.println("SettingsMenu.removeWorkspaces: OK res="+res);
 			for(JCheckBox box:list) {
-				//Util.println("SettingsMenu.removeWorkspaces: box="+box.isSelected()+", text="+box.getText());
 				if(box.isSelected()) Global.workspaces.remove(new File(box.getText()));
 			}
 	    	Global.storeWorkspaceProperties();

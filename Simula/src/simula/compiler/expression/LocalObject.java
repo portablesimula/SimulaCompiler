@@ -9,7 +9,6 @@ package simula.compiler.expression;
 
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
-import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.expression.Expression;
@@ -73,47 +72,26 @@ public final class LocalObject extends Expression {
 		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER);
 			Util.TRACE("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
-		//Util.BREAK("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.currentScope.edScopeChain());
 		Meaning meaning=Global.currentScope.findMeaning(classIdentifier);
-		//Util.BREAK("LocalObject(" + toString()+").doChecking - Meaning="+meaning);
 		Declaration decl = meaning.declaredAs;
-		//Util.BREAK("LocalObject.doChecking: decl="+decl+", QUAL="+decl.getClass().getSimpleName());
 		if (decl instanceof ClassDeclaration) classDeclaration=(ClassDeclaration)decl;
 		else Util.error("LocalObject("+this+") "+classIdentifier+" is not a class");
-//		declarationScope=Global.currentScope.findThis(classIdentifier);
-//		declarationScope=findThis(Global.currentScope,classIdentifier);
-//		declarationScope=findThis(Global.currentScope);
-//		declarationScope=findThis();
 		findThis();
-		
-		
-		
-//		if(declarationScope==null) Util.error("This "+classIdentifier+" -- Is not on static chain.");
 		SET_SEMANTICS_CHECKED();
 	}
 
     //***********************************************************************************************
     //*** Utility: findThis  --  Follow Static Chain Looking for a Class named 'classIdentifier'
     //***********************************************************************************************
-//	private static DeclarationScope findThis(DeclarationScope thisScope,final String classIdentifier) {
-//	private DeclarationScope findThis(DeclarationScope thisScope) {
-//	private DeclarationScope findThis() {
 	private void findThis() {
 		ctxDiff=0;
-//		DeclarationScope thisScope=Global.currentScope;
 		thisScope=Global.currentScope;
 		while(thisScope!=null) {
-//			Util.BREAK("LocalObject.findThis: classIdentifier="+classIdentifier+"): CHECKING "+thisScope+", QUAL="+thisScope.getClass().getSimpleName());
-
 			if (thisScope instanceof ClassDeclaration) {
 				if (classIdentifier.equalsIgnoreCase(thisScope.identifier)) return;// (thisScope);
 				ClassDeclaration x = (ClassDeclaration) thisScope;
-//				if (classIdentifier.equalsIgnoreCase(x.identifier)) return (x);
 				while ((x = x.getPrefixClass()) != null) {
-					// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
 					if (classIdentifier.equalsIgnoreCase(x.identifier)) {
-						//Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): Found in "+x);
-//						return (x);
 						return;// (thisScope);
 					}
 				}
@@ -122,53 +100,17 @@ public final class LocalObject extends Expression {
 				ClassDeclaration x = (ClassDeclaration) z.classDeclaration;
 				if (classIdentifier.equalsIgnoreCase(x.identifier)) return;// (z);
 				while ((x = x.getPrefixClass()) != null) {
-//					 Util.BREAK("DeclarationScope.findThis: classIdentifier="+classIdentifier+", x="+x.identifier+"): CHECKING "+x);
 					if (classIdentifier.equalsIgnoreCase(x.identifier)) return;// (z);
 				}
 			}
-			//    	if(declaredIn!=null) return(declaredIn.findThis(identifier));
-//			if(thisScope.declaredIn!=null) return(findThis(thisScope.declaredIn,classIdentifier));
-//			 Util.BREAK("DeclarationScope.findThis: thisScope.blockKind="+thisScope.blockKind);
-			if(thisScope.blockKind != BlockKind.CompoundStatement && thisScope.blockKind != BlockKind.ConnectionBlock) {
+			if(thisScope.declarationKind != Declaration.Kind.CompoundStatement
+			&& thisScope.declarationKind != Declaration.Kind.ConnectionBlock) {
 				ctxDiff++;
-//				Util.BREAK("DeclarationScope.findThis: thisScope.blockKind="+thisScope.blockKind+", ctxDiff="+ctxDiff);
 			}
 			thisScope=thisScope.declaredIn;
 		}
-//		return(null);
 		Util.error("This "+classIdentifier+" -- Is not on static chain.");
 	}
-
-//    //***********************************************************************************************
-//    //*** Utility: findThis  --  Follow Static Chain Looking for a Class named 'classIdentifier'
-//    //***********************************************************************************************
-//    private static DeclarationScope OLD_findThis(DeclarationScope thisScope,final String classIdentifier) {
-//    	// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"):");
-//    	// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+this);
-//    	//Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+this+", QUAL="+this.getClass().getSimpleName());
-//    	if (thisScope instanceof ClassDeclaration) {
-//    		ClassDeclaration x = (ClassDeclaration) thisScope;
-//    		if (classIdentifier.equalsIgnoreCase(x.identifier)) return (x);
-//    		while ((x = x.getPrefixClass()) != null) {
-//    			// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
-//    			if (classIdentifier.equalsIgnoreCase(x.identifier)) {
-//       			    //Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): Found in "+x);
-//    				return (x);
-//    			}
-//    		}
-//    	} else if (thisScope instanceof ConnectionBlock) {
-//    		ConnectionBlock z = (ConnectionBlock)thisScope;
-//    		ClassDeclaration x = (ClassDeclaration) z.classDeclaration;
-//    		if (classIdentifier.equalsIgnoreCase(x.identifier)) return (z);
-//    		while ((x = x.getPrefixClass()) != null) {
-//    			// Util.BREAK("DeclarationScope("+this.identifier+").findThis("+identifier+"): CHECKING "+x);
-//    			if (classIdentifier.equalsIgnoreCase(x.identifier)) return (z);
-//    		}
-//    	}
-////    	if(declaredIn!=null) return(declaredIn.findThis(identifier));
-//    	if(thisScope.declaredIn!=null) return(OLD_findThis(thisScope.declaredIn,classIdentifier));
-//    	return(null);
-//    }
 
 	// Returns true if this expression may be used as a statement.
 	public boolean maybeStatement() {
@@ -178,17 +120,11 @@ public final class LocalObject extends Expression {
 
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-//		Util.BREAK("LocalObject.toJavaCode: thisScope="+thisScope+", QUAL="+thisScope.getClass().getSimpleName());
 		String cast = classDeclaration.getJavaIdentifier();
 		if (thisScope instanceof ConnectionBlock) {
 			ConnectionBlock connectionBlock = (ConnectionBlock) thisScope;
-//			Util.BREAK("LocalObject.toJavaCode: thisScope="+thisScope+", QUAL="+thisScope.getClass().getSimpleName());
-//			Util.BREAK("LocalObject.toJavaCode: connectionBlock.inspectedVariable.toJavaCode()="+connectionBlock.inspectedVariable.toJavaCode());
 			return ("((" + cast + ")" + connectionBlock.inspectedVariable.toJavaCode() + ")");
 		}
-//		BlockDeclaration scopeDeclaration=(BlockDeclaration)declarationScope;
-//		return ("(("+cast+")"+scopeDeclaration.edCTX()+")");
-
 		return ("((" + cast + ")" + DeclarationScope.edCTX(ctxDiff) + ")");
 	}
 

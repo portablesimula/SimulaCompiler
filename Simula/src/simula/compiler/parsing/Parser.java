@@ -55,7 +55,6 @@ public final class Parser {
 		savedToken = Parser.currentToken;
 		Parser.currentToken = Parser.prevToken;
 		Parser.prevToken = null;
-		// Util.BREAK("SAVED TOKEN:'" + savedToken);
 	}
 
 	public static boolean accept(final KeyWord s) {
@@ -132,7 +131,6 @@ public final class Parser {
 		Parser.prevToken = Parser.currentToken;
 		if (savedToken == null) {
 			Parser.currentToken = simulaScanner.nextToken();
-			//Util.BREAK("TOKEN:'" + Parser.currentToken + "'");
 			if (Parser.currentToken == null) {
 				if (!endOfFileErrorGiven) {
 					//Util.warning("Possible scanning past END-OF-FILE");
@@ -143,7 +141,6 @@ public final class Parser {
 		} else {
 			Parser.currentToken = savedToken;
 			savedToken = null;
-			// Util.BREAK("SAVED TOKEN:'" + Parser.currentToken + "'");
 		}
 		if(Parser.currentToken.getKeyWord()==KeyWord.IDENTIFIER)
 			if(Parser.prevToken!=null && Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) {

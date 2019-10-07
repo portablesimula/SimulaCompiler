@@ -36,16 +36,15 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 	final Vector<Expression> switchList = new Vector<Expression>();
 
 	public SwitchDeclaration(final String ident) {
-		super(ident,BlockKind.Procedure);
+		super(ident,Declaration.Kind.Procedure);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration");
 		this.type = Type.Label;
 		Parser.expect(KeyWord.ASSIGNVALUE);
 		do { switchList.add(Expression.parseExpression());
 		} while (Parser.accept(KeyWord.COMMA));
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration(3), switchList=" + switchList);
-		this.addParameter(new Parameter("$SW", Type.Integer, Parameter.Kind.Simple));
+		new Parameter("$SW", Type.Integer, Parameter.Kind.Simple).into(parameterList);
 		Global.currentScope = declaredIn;
-		// Util.BREAK("NEW SwitchDeclaration: blockKind=" + blockKind);
 	}
 
 	public void doChecking() {
@@ -57,10 +56,9 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 			expr.backLink = this; // To ensure RESULT$ from functions
 		}
 		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(this);
-		//Util.BREAK("LabelDeclaration.doChecking("+identifier+"): virtSpec="+virtSpec);
 		if(virtSpec==null) {
 			// Switch attributes are implicit specified 'protected'
-			if(declaredIn.blockKind==BlockKind.Class)
+			if(declaredIn.declarationKind==Declaration.Kind.Class)
 				((ClassDeclaration)declaredIn).protectedList.add(new ProtectedSpecification((ClassDeclaration)Global.currentScope,identifier));
 		}
 	}

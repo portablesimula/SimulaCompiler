@@ -27,6 +27,7 @@ import javax.swing.text.StyledDocument;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
+import simula.compiler.parsing.DefaultScanner;
 import simula.compiler.parsing.SimulaScanner;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
@@ -50,6 +51,7 @@ public class SourceTextPanel extends JPanel {
 	public File sourceFile;
     public boolean AUTO_REFRESH=true;//false;
  	
+    private Language lang;
 	private Style styleRegular;
 	private Style styleKeyword;
 	private Style styleComment;
@@ -57,7 +59,6 @@ public class SourceTextPanel extends JPanel {
 	private Style styleLineNumber;
 	private JPopupMenu popupMenu;
 	private StyledDocument doc;
-//	private StyledDocument lin;
 	
     public boolean fileChanged = false;
     public boolean refreshNeeded = false;
@@ -70,7 +71,6 @@ public class SourceTextPanel extends JPanel {
     private UndoableEditListener undoListener=new UndoableEditListener() {
 		public void undoableEditHappened(UndoableEditEvent e) {
 			UndoableEdit edit=e.getEdit();
-			//System.out.println("UndoableEdit'QUAL="+edit.getClass().getSimpleName());
 			if(DEBUG) Testutskrift(edit);
 			undoManager.addEdit(edit);
 			fileChanged=true; refreshNeeded=true;
@@ -130,8 +130,9 @@ public class SourceTextPanel extends JPanel {
 	// ****************************************************************
 	// *** Constructor
 	// ****************************************************************
-    public SourceTextPanel(File sourceFile,JPopupMenu popupMenu) {
+    public SourceTextPanel(File sourceFile,Language lang,JPopupMenu popupMenu) {
     	this.sourceFile=sourceFile;
+    	this.lang=lang;
     	this.popupMenu=popupMenu;
         editTextPane = new JTextPane(); editTextPane.setEditable(false);
         editTextPane.addMouseListener(mouseListener);
@@ -161,9 +162,19 @@ public class SourceTextPanel extends JPanel {
 	// *** fillTextPane
 	// ****************************************************************
     void fillTextPane(Reader reader,int caretPosition) {
+    	switch(lang) {
+			case Simula: fillTextPane(reader,caretPosition,new SimulaScanner(reader,true)); break;
+			case Java:   fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break; // TODO
+			default:     fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break; // TODO
+    	}
+    }
+    
+	// ****************************************************************
+	// *** fillTextPane
+	// ****************************************************************
+    private void fillTextPane(Reader reader,int caretPosition,DefaultScanner preScanner) {
 		int lineNumber=1;
 		StyledDocument lin=new DefaultStyledDocument(); addStylesToDocument(lin);
-        SimulaScanner preScanner=new SimulaScanner(reader,true);
         editTextPane.setEditable(false);
     	doc.removeUndoableEditListener(undoListener);
 		try {
@@ -173,13 +184,11 @@ public class SourceTextPanel extends JPanel {
 			while((token=preScanner.nextToken())!=null) {
 			    String text=token.getText();
 			    Style style=getStyle(token.getStyleCode());
-			    //Util.println("SourceTextPanel.fillTextPane: INSERT: "+token+", text=\""+text+'\"');
 				StringTokenizer tokenizer=new StringTokenizer(text,"\n",true);
 				while(tokenizer.hasMoreTokens()) {
 					String item=tokenizer.nextToken();
 					if(item.equals("\n"))
 						lin.insertString(lin.getLength(),edLineNumber(lineNumber++), styleLineNumber);
-				    //Util.println("SourceTextPanel.fillTextPane: DOC INSERT: "+item);
 					doc.insertString(doc.getLength(), item, style);
 				}
 		    }
@@ -222,7 +231,6 @@ public class SourceTextPanel extends JPanel {
 		int count=0;
 		for(int i=0;i<pos;i++) {
 			if(s.charAt(i)=='\r') { count++; pos++; }
-			//if(s.charAt(i)<' ' && s.charAt(i)!='\n' && s.charAt(i)!='\r') Util.println("ControlCharacter: "+(int)s.charAt(i));
 		}
 		return(count);
 	}

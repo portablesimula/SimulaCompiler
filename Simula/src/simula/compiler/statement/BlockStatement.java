@@ -8,8 +8,8 @@
 package simula.compiler.statement;
 
 import simula.compiler.JavaModule;
+import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.BlockDeclaration;
-import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.expression.Expression;
@@ -41,9 +41,7 @@ public final class BlockStatement extends Statement {
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-
-		//Util.BREAK("BlockStatement.doJavaCoding: blockKind="+blockDeclaration.blockKind+", QUAL="+blockDeclaration.getClass().getSimpleName());
-		if(blockDeclaration.blockKind!=BlockKind.CompoundStatement)
+		if(blockDeclaration.declarationKind!=Declaration.Kind.CompoundStatement)
 		{ String staticLink=blockDeclaration.declaredIn.edCTX();
 		  StringBuilder s = new StringBuilder();
 		  s.append("new ").append(getJavaIdentifier()).append('(');
@@ -56,10 +54,7 @@ public final class BlockStatement extends Statement {
 		    }
 		  }
 		  s.append(')');
-//		  Util.BREAK("BlockStatement.doJavaCoding: blockDeclaration.blockKind="+blockDeclaration.blockKind);
-//		  Util.BREAK("BlockStatement.doJavaCoding: blockDeclaration'QUAL="+blockDeclaration.getClass().getSimpleName());
-//		  if(blockDeclaration instanceof ClassDeclaration && ((ClassDeclaration)blockDeclaration).isDetachUsed()) {
-		  if(blockDeclaration.blockKind==BlockKind.PrefixedBlock && ((ClassDeclaration)blockDeclaration).isDetachUsed())
+		  if(blockDeclaration.declarationKind==Declaration.Kind.PrefixedBlock && ((ClassDeclaration)blockDeclaration).isDetachUsed())
 			   s.append(".START$();");
 		  else s.append(".STM$();");
 		  JavaModule.code(s.toString());

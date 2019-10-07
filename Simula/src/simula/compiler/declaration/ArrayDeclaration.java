@@ -97,6 +97,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 
 	private ArrayDeclaration(final String identifier,final Type type,final Vector<BoundPair> boundPairList) {
 		super(identifier);
+		this.declarationKind=Declaration.Kind.ArrayDeclaration;
 		this.type=type;
 		this.boundPairList = boundPairList;
 		this.nDim=boundPairList.size();
@@ -105,6 +106,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 
 	public ArrayDeclaration(final String identifier,final Type type,final int nDim) {
 		super(identifier);
+		this.declarationKind=Declaration.Kind.ArrayDeclaration;
 		this.type=type;
 		this.nDim = nDim;
 		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ArrayDeclaration: " + toString());
@@ -159,11 +161,8 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 			// TODO: Hvis konstante grenser så eveluerer vi her !
 			LB.doChecking();
 			UB.doChecking();
-			//Util.warning("Only Arrays with lower bound zero is fully supported");
 			LB=(Expression)TypeConversion.testAndCreate(Type.Integer,LB);
 			UB=(Expression)TypeConversion.testAndCreate(Type.Integer,UB);
-
-			// TODO: Her mangler mye
 		}
 
 		public String toString() {
@@ -235,7 +234,10 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
-	public ArrayDeclaration() { super(null); }
+	public ArrayDeclaration() {
+		super(null);
+		this.declarationKind=Declaration.Kind.ArrayDeclaration;
+	}
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {

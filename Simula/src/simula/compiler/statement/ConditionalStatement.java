@@ -36,9 +36,7 @@ public final class ConditionalStatement extends Statement {
 	private final Statement elseStatement;
 
 	public ConditionalStatement() {
-//		Util.BREAK("BEGIN ConditionalStatement:");
 		condition = Expression.parseExpression();
-//		Util.BREAK("BEGIN ConditionalStatement: condition="+condition);
 		Parser.expect(KeyWord.THEN);
 		Statement elseStatement = null;
 		if (Parser.accept(KeyWord.ELSE)) {
@@ -46,10 +44,8 @@ public final class ConditionalStatement extends Statement {
 			elseStatement = Statement.doParse();
 		} else {
 		    thenStatement = Statement.doParse();
-//		    Util.BREAK("BEGIN ConditionalStatement: thenStatement="+thenStatement);
 		    if (Parser.accept(KeyWord.ELSE)) {
 			    elseStatement = Statement.doParse();
-//			    Util.BREAK("BEGIN ConditionalStatement: elseStatement="+elseStatement);
 		    }
 		}
 		this.elseStatement=elseStatement;
@@ -72,8 +68,6 @@ public final class ConditionalStatement extends Statement {
 		if (IS_SEMANTICS_CHECKED())	return;
 		condition.doChecking();
 		condition.backLink=this; // To ensure RESULT$ from functions
-		//Util.BREAK("ConditionalStatement.doChecking: condition="+condition);
-		//Util.BREAK("ConditionalStatement.doChecking: condition.type="+condition.type);
 		if (!condition.type.equals(Type.Boolean))
 			Util.error("ConditionalStatement.doChecking: Condition is not of Type Boolean, but: "
 					+ condition.type);
@@ -89,7 +83,6 @@ public final class ConditionalStatement extends Statement {
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-//		JavaModule.code("if(" + condition.toJavaCode() + ") {");
 		JavaModule.code("if(VALUE$(" + condition.toJavaCode() + ")) {");
 		thenStatement.doJavaCoding();
 		if (elseStatement != null) {

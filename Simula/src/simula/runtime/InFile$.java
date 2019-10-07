@@ -95,7 +95,6 @@ public class InFile$ extends ImageFile$ {
 	 */
 	public boolean open(final TXT$ IMAGE_) {
 		if (OPEN$)	return (false);
-//		OPEN$ = true;
 		image = IMAGE_;
 		ENDFILE$ = false;
 		ASGTXT$(image,null); // image := NOTEXT;

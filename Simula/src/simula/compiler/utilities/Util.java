@@ -59,7 +59,6 @@ public final class Util {
 		nError++;
 		printError(err);
 		e.printStackTrace();
-		//System.exit(-1);
 		FORCED_EXIT();
 	}
 
@@ -69,7 +68,6 @@ public final class Util {
 		printError(msg);
 		println("STACK-TRACE");
 		printStackTrace();
-		//System.exit(-1);
 		FORCED_EXIT();
 	}
 
@@ -238,70 +236,63 @@ public final class Util {
 		return (v);
 	}
   
-	//*******************************************************************************
-	//*** Reflection Utilities
-	//*******************************************************************************
-  
-	
-	public static void listClass(final Class<?> c) {
-		listConstructors(c);
-		listMethods(c);	
-	}
-	
-	private static void listMethods(final Class<?> c) {
-		Method[] allMethods = c.getDeclaredMethods();
-		for(Method m:allMethods) listMethod(m);
-	}
-	
-	private static void listConstructors(final Class<?> c) {
-		Constructor<?>[] allConstructors = c.getConstructors();
-		for (Constructor<?> constructor : allConstructors)
-			listConstructor(constructor);
-	}
-	
-	private static void listConstructor(final Constructor<?> m)	{
-		System.out.format("%s%n", m.toGenericString());
-		String  fmt = "%24s: %s%n";
-		Class<?>[] pType  = m.getParameterTypes();
-		Type[] gpType = m.getGenericParameterTypes();
-		for (int i = 0; i < pType.length; i++) {
-			System.out.format(fmt,"ParameterType", pType[i]);
-			System.out.format(fmt,"GenericParameterType", gpType[i]);
-		}
-		Class<?>[] xType  = m.getExceptionTypes();
-		Type[] gxType = m.getGenericExceptionTypes();
-		for (int i = 0; i < xType.length; i++) {
-			System.out.format(fmt,"ExceptionType", xType[i]);
-			System.out.format(fmt,"GenericExceptionType", gxType[i]);
-		}
-	}
-	
-	private static void listMethod(final Method m) {
-		System.out.format("%s%n", m.toGenericString());
-		String  fmt = "%24s: %s%n";
-	
-		System.out.format(fmt, "ReturnType", m.getReturnType());
-		System.out.format(fmt, "GenericReturnType", m.getGenericReturnType());
-	
-		Class<?>[] pType  = m.getParameterTypes();
-		Type[] gpType = m.getGenericParameterTypes();
-		for (int i = 0; i < pType.length; i++) {
-	        System.out.format(fmt,"ParameterType", pType[i]);
-			System.out.format(fmt,"GenericParameterType", gpType[i]);
-		}
-		Class<?>[] xType  = m.getExceptionTypes();
-		Type[] gxType = m.getGenericExceptionTypes();
-		for (int i = 0; i < xType.length; i++) {
-			System.out.format(fmt,"ExceptionType", xType[i]);
-			System.out.format(fmt,"GenericExceptionType", gxType[i]);
-		}
-	}
-  
-  
-  
-  
-  
-  
+//	//*******************************************************************************
+//	//*** Reflection Utilities
+//	//*******************************************************************************
+//  
+//	public static void listClass(final Class<?> c) {
+//		listConstructors(c);
+//		listMethods(c);	
+//	}
+//	
+//	private static void listMethods(final Class<?> c) {
+//		Method[] allMethods = c.getDeclaredMethods();
+//		for(Method m:allMethods) listMethod(m);
+//	}
+//	
+//	private static void listConstructors(final Class<?> c) {
+//		Constructor<?>[] allConstructors = c.getConstructors();
+//		for (Constructor<?> constructor : allConstructors)
+//			listConstructor(constructor);
+//	}
+//	
+//	private static void listConstructor(final Constructor<?> m)	{
+//		System.out.format("%s%n", m.toGenericString());
+//		String  fmt = "%24s: %s%n";
+//		Class<?>[] pType  = m.getParameterTypes();
+//		Type[] gpType = m.getGenericParameterTypes();
+//		for (int i = 0; i < pType.length; i++) {
+//			System.out.format(fmt,"ParameterType", pType[i]);
+//			System.out.format(fmt,"GenericParameterType", gpType[i]);
+//		}
+//		Class<?>[] xType  = m.getExceptionTypes();
+//		Type[] gxType = m.getGenericExceptionTypes();
+//		for (int i = 0; i < xType.length; i++) {
+//			System.out.format(fmt,"ExceptionType", xType[i]);
+//			System.out.format(fmt,"GenericExceptionType", gxType[i]);
+//		}
+//	}
+//	
+//	private static void listMethod(final Method m) {
+//		System.out.format("%s%n", m.toGenericString());
+//		String  fmt = "%24s: %s%n";
+//	
+//		System.out.format(fmt, "ReturnType", m.getReturnType());
+//		System.out.format(fmt, "GenericReturnType", m.getGenericReturnType());
+//	
+//		Class<?>[] pType  = m.getParameterTypes();
+//		Type[] gpType = m.getGenericParameterTypes();
+//		for (int i = 0; i < pType.length; i++) {
+//	        System.out.format(fmt,"ParameterType", pType[i]);
+//			System.out.format(fmt,"GenericParameterType", gpType[i]);
+//		}
+//		Class<?>[] xType  = m.getExceptionTypes();
+//		Type[] gxType = m.getGenericExceptionTypes();
+//		for (int i = 0; i < xType.length; i++) {
+//			System.out.format(fmt,"ExceptionType", xType[i]);
+//			System.out.format(fmt,"GenericExceptionType", gxType[i]);
+//		}
+//	}
   
   
 }

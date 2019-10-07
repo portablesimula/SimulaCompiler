@@ -48,11 +48,6 @@ public final class Option {
 
 	// Coder Trace Options
 	public static boolean TRACE_CODING=false;//true;
-
-	// Java Compiler and Jar-tool Trace Options
-//	public static boolean TRACE_JAVAC=false;//true;
-//	public static boolean TRACE_JAVAC_OUTPUT=false;//true;
-//	public static boolean TRACE_JARING=false;//true;
 	
 	// Byte code engineering Options
 	public static boolean TRACE_BYTECODE_OUTPUT=false;
@@ -68,27 +63,12 @@ public final class Option {
 	 */
 	public static boolean sport = true;
 	
-//	/** 
-//	 * Used to compile 'standard classes' to indicate simplified block structure.
-//	 * In addition all 'procedures' will be treated as Java Methods.
-//	 */
-//	public static boolean standardClass = false;
-
-	
 	/**
 	 * Used by Java-Coding to save the generated .java files.
 	 * <p>
 	 * If not set, a temp directory is used/created.
 	 */
 	public static File keepJava = null;
-	
-//	/**
-//	 * Used by Java-Coding to save the generated .jar files.
-//	 * <p>
-//	 * If not set, .jar files are stored in subdirectory /bin of the source file directory.
-//	 */
-//	public static File outputDir = null;
-	
 	
 	/**
 	 * Don't execute generated .jar file.
@@ -123,9 +103,6 @@ public final class Option {
 		// Coder Trace Options
 		Option.TRACE_CODING=false;
 	
-//		Option.standardClass = false;
-//		Option.keepJava="C:/WorkSpaces/SimulaCompiler/Simula/src/testing";
-//		Option.outputDir="C:/WorkSpaces/SimulaCompiler/Simula/bin/";
 		Option.noExecution = false;
 		Option.noJavacWarnings = false;
 	}
@@ -144,13 +121,8 @@ public final class Option {
 		if(id.equalsIgnoreCase("TRACE_CHECKER_OUTPUT")) return(TRACE_CHECKER_OUTPUT); 
 		if(id.equalsIgnoreCase("TRACE_CODING")) return(TRACE_CODING); 
 		if(id.equalsIgnoreCase("TRACE_BYTECODE_OUTPUT")) return(TRACE_BYTECODE_OUTPUT); 
-//		if(id.equalsIgnoreCase("standardClass")) return(standardClass); 
 		if(id.equalsIgnoreCase("noExecution")) return(noExecution); 
 		if(id.equalsIgnoreCase("noJavacWarnings")) return(noJavacWarnings); 
-
-//		public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;//true;
-//		public static String keepJava = null;
-//		public static String outputDir = null;
 		return(false);
 	}
 
@@ -169,13 +141,8 @@ public final class Option {
 		if(id.equalsIgnoreCase("TRACE_CHECKER_OUTPUT")) TRACE_CHECKER_OUTPUT=val; 
 		if(id.equalsIgnoreCase("TRACE_CODING")) TRACE_CODING=val; 
 		if(id.equalsIgnoreCase("TRACE_BYTECODE_OUTPUT")) TRACE_BYTECODE_OUTPUT=val; 
-//		if(id.equalsIgnoreCase("standardClass")) standardClass=val; 
 		if(id.equalsIgnoreCase("noExecution")) noExecution=val; 
 		if(id.equalsIgnoreCase("noJavacWarnings")) noJavacWarnings=val; 
-
-//		public static boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;//false;//true;
-//		public static String keepJava = null;
-//		public static String outputDir = null;
 	}
     
     public static void selectCompilerOptions() {
@@ -194,24 +161,11 @@ public final class Option {
         panel.add(checkBox("TRACE_CHECKER_OUTPUT"));
         panel.add(checkBox("TRACE_CODING"));
         panel.add(checkBox("TRACE_BYTECODE_OUTPUT"));
-//        panel.add(checkBox("standardClass"));
         panel.add(checkBox("noExecution"));
         panel.add(checkBox("noJavacWarnings"));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		Util.optionDialog(panel,"Select Compiler Options",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,"Ok");
     }
-
-//	public static JCheckBoxMenuItem checkItem(String id) {
-//        JCheckBoxMenuItem item = new JCheckBoxMenuItem(id);
-//        item.setSelected(Option.getOption(id));
-//        item.addActionListener(new ActionListener() {
-//        	public void actionPerformed(ActionEvent e) {
-//        		//Util.println(id+"Item.actionPerformed: e="+e);
-//        		Option.setOption(id,item.isSelected());
-//        		//Util.println(id+"Item.actionPerformed: Option."+id+"="+Option.getOption(id));            		
-//		}});
-//        return(item);
-//	}
 
 	private static JCheckBox checkBox(String id) {
         JCheckBox item = new JCheckBox(id);
@@ -219,9 +173,7 @@ public final class Option {
         item.setSelected(Option.getOption(id));
         item.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//Util.println(id+"Item.actionPerformed: e="+e);
         		Option.setOption(id,item.isSelected());
-        		//Util.println(id+"Item.actionPerformed: Option."+id+"="+Option.getOption(id));            		
 		}});
         return(item);
 	}

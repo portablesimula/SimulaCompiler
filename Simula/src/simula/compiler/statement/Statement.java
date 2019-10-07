@@ -58,23 +58,15 @@ public abstract class Statement extends SyntaxClass {
 			Util.TRACE("Parse Statement, current=" + Parser.currentToken + ", prev=" + Parser.prevToken);
 		String ident = acceptIdentifier();
 		while (Parser.accept(KeyWord.COLON)) {
-			if(ident!=null)
-			{ if (labels == null)	labels = new Vector<String>();
-			  labels.add(ident);
-			  LabelDeclaration label=new LabelDeclaration(ident);
-			  //currentScope.declarationList.add(label);
-			
-//			  Util.BREAK("Statement.doParse: currentScope="+Global.currentScope);
-//			  Util.BREAK("Statement.doParse: currentScope'QUAL="+Global.currentScope.getClass().getSimpleName());
-//			  Util.BREAK("Statement.doParse: currentScope'identifier="+Global.currentScope.identifier);
-//			  Util.BREAK("Statement.doParse: currentScope'add Label="+label);
-			  Global.currentScope.labelList.add(label);
-		    } else {
-		    	Util.error("Missplaced ':'");
-		    }
+			if (ident != null) {
+				if (labels == null)	labels = new Vector<String>();
+				labels.add(ident);
+				LabelDeclaration label = new LabelDeclaration(ident);
+				Global.currentScope.labelList.add(label);
+			} else Util.error("Missplaced ':'");
 			ident = acceptIdentifier();
 		}
-		if(ident!=null) Parser.saveCurrentToken(); // Not Label Pushback
+		if(ident!=null) Parser.saveCurrentToken(); // Not Label: Pushback
 		Statement statement = doUnlabeledStatement();
 		if (labels != null && statement != null)
 			statement = new LabeledStatement(labels, statement);
@@ -84,7 +76,6 @@ public abstract class Statement extends SyntaxClass {
 	private static Statement doUnlabeledStatement() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Statement.doUnlabeledStatement, current=" + Parser.currentToken	+ ", prev=" + Parser.prevToken);
-		//Util.BREAK("Statement.doUnlabeledStatement, current=" + Parser.currentToken	+ ", prev=" + Parser.prevToken);
 		switch(Parser.currentToken.getKeyWord()) {
 		    case BEGIN: Parser.nextSymb(); return (new MaybeBlockDeclaration(null).parseMaybeBlock());
 		    case IF:    Parser.nextSymb(); return (new ConditionalStatement());
@@ -104,11 +95,11 @@ public abstract class Statement extends SyntaxClass {
 		
 		    case IDENTIFIER: case NEW: case THIS: case BEGPAR:
 		         Expression expr = Expression.parseExpression();
-		         //Util.BREAK("Statement.doUnlabeledStatement: expr="+expr);
 		         if(expr!=null) {
-		        	 //Util.BREAK("Statement.doUnlabeledStatement: expr="+expr+", QUAL="+expr.getClass().getSimpleName());
 		        	 if(expr instanceof Variable)
-		        	 { if (Parser.accept(KeyWord.BEGIN)) return (new PrefixedBlockDeclaration(null).parsePrefixedBlock((Variable)expr)); }
+		        	 { if (Parser.accept(KeyWord.BEGIN))
+		        		 return new BlockStatement(new PrefixedBlockDeclaration(null,(Variable)expr,false));
+		        	 }
 		        	 return (new StandaloneExpression(expr));
 		         }
 		    default:

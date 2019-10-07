@@ -45,9 +45,7 @@ public abstract class PROC$ extends BASICIO$ {
 	public PROC$ ENT$() {
 		// Enter Formal Procedure
 		if($nParLeft!=0) throw new RuntimeException("Too few parameters");
-	    // RT.BREAK("RTObject.ENT: CUR="+CUR$);
 		BBLK();
-		// RT.BREAK("RTObject.ENT: CUR="+CUR$);
 		STM$();
 		return (this);
 	}

@@ -7,7 +7,6 @@
  */
 package simula.compiler;
 
-import simula.compiler.declaration.BlockKind;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
@@ -51,14 +50,14 @@ public final class ProgramModule extends Statement {
 	final Variable sysout;
   
 	public String getRelativeAttributeFileName() {
-		if(module.blockKind==BlockKind.Class) return(Global.packetName+"/CLASS.AF");
-		if(module.blockKind==BlockKind.Procedure) return(Global.packetName+"/PROCEDURE.AF");
+		if(module.declarationKind==Declaration.Kind.Class) return(Global.packetName+"/CLASS.AF");
+		if(module.declarationKind==Declaration.Kind.Procedure) return(Global.packetName+"/PROCEDURE.AF");
 		else return(null);
 	  }
 	  
 	public boolean isExecutable() {
-		if(module.blockKind==BlockKind.SimulaProgram) return(true);
-		if(module.blockKind==BlockKind.PrefixedBlock) return(true);
+		if(module.declarationKind==Declaration.Kind.SimulaProgram) return(true);
+		if(module.declarationKind==Declaration.Kind.PrefixedBlock) return(true);
 		else return(false);
 	}
 
@@ -68,7 +67,7 @@ public final class ProgramModule extends Statement {
 		sysout=new Variable("sysout");
 		try	{
 			if(Option.TRACE_PARSE) Parser.TRACE("Parse Program");
-			Global.currentScope=StandardClass.BASICIO;     // BASICIO Begin
+			Global.currentScope=StandardClass.BASICIO;			// BASICIO Begin
 			new ConnectionBlock(sysin,null)                     //    Inspect sysin do
 			     .setClassDeclaration(StandardClass.InFile);
 			new ConnectionBlock(sysout,null)                    //    Inspect sysout do
@@ -76,9 +75,6 @@ public final class ProgramModule extends Statement {
 			Global.currentScope.sourceBlockLevel=0;
 			while(Parser.accept(KeyWord.EXTERNAL)) {
 				ExternalDeclaration.doParse(StandardClass.ENVIRONMENT.declarationList);
-				//Util.BREAK("BEGIN PRINT ENVIRONMENT");
-				//StandardClass.ENVIRONMENT.print(0);
-				//Util.BREAK("END PRINT ENVIRONMENT");
 				Parser.expect(KeyWord.SEMICOLON);
 			}
 			String ident=acceptIdentifier();
@@ -87,7 +83,7 @@ public final class ProgramModule extends Statement {
 			    else {
 			    	Variable blockPrefix=Variable.parse(ident);	
 			  	    Parser.expect(KeyWord.BEGIN);
-			  	    module=PrefixedBlockDeclaration.createPrefixedBlock(blockPrefix); 
+		        	module=new PrefixedBlockDeclaration(null,blockPrefix,true);
 			    }
 			}
 			else if(Parser.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMaybeBlock(); 
@@ -113,7 +109,6 @@ public final class ProgramModule extends Statement {
   
 	public void doJavaCoding() { module.doJavaCoding(); }
 	public void print(final int indent) { module.print(0); }
-//	public String toString() { return((module==null)?"":""+module.externalIdent); }
 	public String toString() { return((module==null)?"":""+module.identifier); }
 	public String getIdentifier() { return(module.identifier); }
 	

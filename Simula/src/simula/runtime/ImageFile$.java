@@ -110,7 +110,6 @@ public class ImageFile$ extends FILE$ {
 	 */
 	public void outchar(final char c) {
 		if (!more()) outimage();
-//		image.putchar(c);
 		TXT$.putchar(image, c);
 	}
 
@@ -308,7 +307,6 @@ public class ImageFile$ extends FILE$ {
 	 */
 	public TXT$ intext(final int w) {
 		TXT$ T = blanks(w);
-//		while (T.more()) T.putchar(inchar());
 		while (TXT$.more(T)) TXT$.putchar(T,inchar());
 		return (T);
 	}
