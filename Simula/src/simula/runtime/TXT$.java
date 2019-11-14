@@ -415,7 +415,6 @@ public final class TXT$ {
 	 * @param s
 	 */
 	private static void putResult(TXT$ T,final String s) {
-		System.out.println("TXT$.putResult: T="+T+", s="+s);
 //		if(T==null) T=ENVIRONMENT$.NOTEXT;
 		checkAssignable(T);
 		char[] c = s.toCharArray();
