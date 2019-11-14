@@ -1,5 +1,18 @@
 Simula Issues
 
+CLOSED Issue 34: From Sid
+Incorrect runtime message at  NOTEXT.put...()
+Analysis: Simula Standard 8.7 Editing procedures states: 
+		  "If X references a constant text frame or notext, an error results".
+		  Neither constant text nor notext was checked.
+Action: Corrected in  TXT$.putResult, TXT$.putchar
+
+Two new runtime errors introduced:
+	- Illegal Text T.put...  T==NOTEXT
+	- Illegal Text T.put...  T is constant
+   
+===============================================================================
+
 CLOSED Issue 33: Fra Øystein
 formell integer procedure F som anvendes i et assignment til en real.
 

@@ -122,6 +122,7 @@ public final class TestCompiler {
 		// String name="/error/issue31.sim"; // Labeled INNER
 		// String name="/error/issue32.sim"; // This Process
 		// String name="/error/issue33.sim"; // Call Procedure Formal 
+		 String name="/error/issue34.sim"; // NOTEXT.put... 
 		// String name="/error/8Queens.sim";  // Illegal Identifier
 		// String name="/error/Queens.sim";
 		// String name="/error/Queens2.sim";  // Illegal Characters
@@ -130,7 +131,7 @@ public final class TestCompiler {
 		// String name="/error/simtst76b.sim";  // 
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";

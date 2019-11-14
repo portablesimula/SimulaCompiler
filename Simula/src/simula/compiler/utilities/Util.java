@@ -8,9 +8,6 @@
 package simula.compiler.utilities;
 
 import java.awt.Color;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;

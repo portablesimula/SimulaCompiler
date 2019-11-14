@@ -159,9 +159,13 @@ public final class TXT$ {
 		}
 	}
 
+	private static void checkAssignable(TXT$ T) {
+		if (T==null || T.OBJ == null) throw new RuntimeException("Illegal Text T.put...  T==NOTEXT");
+		if(T.OBJ.CONST) throw new RuntimeException("Illegal Text T.put...  T is constant");
+	}
+
 	public static void putchar(final TXT$ T,final char c) {
-		if (T==null || T.OBJ == null) throw new RuntimeException("NOTEXT.Putchar");
-		if (T.OBJ.CONST) throw new RuntimeException("<constant>.Putchar");
+		checkAssignable(T);
 		if (T.POS >= T.LENGTH) throw new RuntimeException("Putchar outside frame");
 		T.OBJ.MAIN[T.START + T.POS] = c;
 		T.POS++;
@@ -402,7 +406,7 @@ public final class TXT$ {
     	 output=output.replace(',',ENVIRONMENT$.CURRENTDECIMALMARK);
       putResult(T,output);
     }
-
+	
 	/**
 	 * If the text frame is too short to contain the resulting
 	 * numeric item, the text frame into which the number was to
@@ -411,7 +415,9 @@ public final class TXT$ {
 	 * @param s
 	 */
 	private static void putResult(TXT$ T,final String s) {
-		if(T==null) T=ENVIRONMENT$.NOTEXT;
+		System.out.println("TXT$.putResult: T="+T+", s="+s);
+//		if(T==null) T=ENVIRONMENT$.NOTEXT;
+		checkAssignable(T);
 		char[] c = s.toCharArray();
 		if (c.length > T.LENGTH) {
 		    RT.numberOfEditOverflows++;
