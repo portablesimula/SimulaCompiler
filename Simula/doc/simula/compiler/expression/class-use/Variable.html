@@ -121,13 +121,13 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>static <a href="../../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a></code></td>
-<td class="colLast"><span class="strong">BlockDeclaration.</span><code><strong><a href="../../../../simula/compiler/declaration/BlockDeclaration.html#createMaybeBlock(simula.compiler.expression.Variable,%20java.lang.String)">createMaybeBlock</a></strong>(<a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;blockPrefix,
+<td class="colFirst"><code>static <a href="../../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a></code></td>
+<td class="colLast"><span class="strong">DeclarationScope.</span><code><strong><a href="../../../../simula/compiler/declaration/DeclarationScope.html#createMaybeBlock(simula.compiler.expression.Variable,%20java.lang.String)">createMaybeBlock</a></strong>(<a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;blockPrefix,
                 java.lang.String&nbsp;blockIdentifier)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../simula/compiler/statement/BlockStatement.html" title="class in simula.compiler.statement">BlockStatement</a></code></td>
-<td class="colLast"><span class="strong">BlockDeclaration.</span><code><strong><a href="../../../../simula/compiler/declaration/BlockDeclaration.html#parseMaybeBlock(simula.compiler.expression.Variable)">parseMaybeBlock</a></strong>(<a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;blockPrefix)</code>
+<td class="colLast"><span class="strong">DeclarationScope.</span><code><strong><a href="../../../../simula/compiler/declaration/DeclarationScope.html#parseMaybeBlock(simula.compiler.expression.Variable)">parseMaybeBlock</a></strong>(<a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;blockPrefix)</code>
 <div class="block">Parse CompoundStatement, SubBlock or PrefixedBlock.</div>
 </td>
 </tr>
@@ -204,8 +204,8 @@
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><span class="strong">CallProcedure.</span><code><strong><a href="../../../../simula/compiler/expression/CallProcedure.html#asRemoteMethod(simula.compiler.expression.Expression,%20simula.compiler.declaration.BlockDeclaration,%20simula.compiler.expression.Variable,%20simula.compiler.SyntaxClass)">asRemoteMethod</a></strong>(<a href="../../../../simula/compiler/expression/Expression.html" title="class in simula.compiler.expression">Expression</a>&nbsp;obj,
-              <a href="../../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a>&nbsp;procedure,
+<td class="colLast"><span class="strong">CallProcedure.</span><code><strong><a href="../../../../simula/compiler/expression/CallProcedure.html#asRemoteMethod(simula.compiler.expression.Expression,%20simula.compiler.declaration.DeclarationScope,%20simula.compiler.expression.Variable,%20simula.compiler.SyntaxClass)">asRemoteMethod</a></strong>(<a href="../../../../simula/compiler/expression/Expression.html" title="class in simula.compiler.expression">Expression</a>&nbsp;obj,
+              <a href="../../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a>&nbsp;procedure,
               <a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;func,
               <a href="../../../../simula/compiler/SyntaxClass.html" title="class in simula.compiler">SyntaxClass</a>&nbsp;backLink)</code>
 <div class="block">CallProcedure.remote</div>
@@ -218,9 +218,9 @@
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>private static java.lang.String</code></td>
-<td class="colLast"><span class="strong">CallProcedure.</span><code><strong><a href="../../../../simula/compiler/expression/CallProcedure.html#edProcedureParameters(simula.compiler.expression.Variable,%20java.lang.String,%20simula.compiler.declaration.BlockDeclaration)">edProcedureParameters</a></strong>(<a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;variable,
+<td class="colLast"><span class="strong">CallProcedure.</span><code><strong><a href="../../../../simula/compiler/expression/CallProcedure.html#edProcedureParameters(simula.compiler.expression.Variable,%20java.lang.String,%20simula.compiler.declaration.DeclarationScope)">edProcedureParameters</a></strong>(<a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;variable,
                      java.lang.String&nbsp;staticLink,
-                     <a href="../../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a>&nbsp;procedure)</code>&nbsp;</td>
+                     <a href="../../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a>&nbsp;procedure)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
@@ -237,8 +237,8 @@
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><span class="strong">CallProcedure.</span><code><strong><a href="../../../../simula/compiler/expression/CallProcedure.html#remote(simula.compiler.expression.Expression,%20simula.compiler.declaration.BlockDeclaration,%20simula.compiler.expression.Variable,%20simula.compiler.SyntaxClass)">remote</a></strong>(<a href="../../../../simula/compiler/expression/Expression.html" title="class in simula.compiler.expression">Expression</a>&nbsp;obj,
-      <a href="../../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a>&nbsp;procedure,
+<td class="colLast"><span class="strong">CallProcedure.</span><code><strong><a href="../../../../simula/compiler/expression/CallProcedure.html#remote(simula.compiler.expression.Expression,%20simula.compiler.declaration.DeclarationScope,%20simula.compiler.expression.Variable,%20simula.compiler.SyntaxClass)">remote</a></strong>(<a href="../../../../simula/compiler/expression/Expression.html" title="class in simula.compiler.expression">Expression</a>&nbsp;obj,
+      <a href="../../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a>&nbsp;procedure,
       <a href="../../../../simula/compiler/expression/Variable.html" title="class in simula.compiler.expression">Variable</a>&nbsp;func,
       <a href="../../../../simula/compiler/SyntaxClass.html" title="class in simula.compiler">SyntaxClass</a>&nbsp;backLink)</code>
 <div class="block">CallProcedure.remote</div>

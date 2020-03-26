@@ -1,5 +1,5 @@
 package simulaTestBatch;
-// Simula-1.0 Compiled at Sat Oct 05 10:25:26 CEST 2019
+// Simula-1.0 Compiled at Wed Mar 25 18:02:24 CET 2020
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class simtst04$$test extends PROC$ {

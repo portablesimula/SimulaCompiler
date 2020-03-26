@@ -96,7 +96,7 @@
 <li><a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">simula.compiler.declaration.DeclarationScope</a></li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">simula.compiler.declaration.BlockDeclaration</a></li>
+<li><a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">simula.compiler.declaration.DeclarationScope</a></li>
 <li>
 <ul class="inheritance">
 <li>simula.compiler.declaration.StandardClass</li>
@@ -117,7 +117,7 @@
 <hr>
 <br>
 <pre>public final class <span class="strong">StandardClass</span>
-extends <a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a></pre>
+extends <a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a></pre>
 </li>
 </ul>
 </div>
@@ -242,11 +242,11 @@ extends <a href="../../../simula/compiler/declaration/BlockDeclaration.html" tit
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="fields_inherited_from_class_simula.compiler.declaration.BlockDeclaration">
+<li class="blockList"><a name="fields_inherited_from_class_simula.compiler.declaration.DeclarationScope">
 <!--   -->
 </a>
-<h3>Fields inherited from class&nbsp;simula.compiler.declaration.<a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a></h3>
-<code><a href="../../../simula/compiler/declaration/BlockDeclaration.html#isContextFree">isContextFree</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#isMainModule">isMainModule</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#myVirtual">myVirtual</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#statements">statements</a></code></li>
+<h3>Fields inherited from class&nbsp;simula.compiler.declaration.<a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a></h3>
+<code><a href="../../../simula/compiler/declaration/DeclarationScope.html#isContextFree">isContextFree</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#isMainModule">isMainModule</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#myVirtual">myVirtual</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#statements">statements</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="fields_inherited_from_class_simula.compiler.declaration.DeclarationScope">
@@ -366,7 +366,7 @@ extends <a href="../../../simula/compiler/declaration/BlockDeclaration.html" tit
 <td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/StandardClass.html#findAttributeMeaning(java.lang.String)">findAttributeMeaning</a></strong>(java.lang.String&nbsp;ident)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../simula/compiler/utilities/BlockDeclaration.Kind.html" title="enum in simula.compiler.utilities">BlockDeclaration.Kind</a></code></td>
+<td class="colFirst"><code><a href="../../../simula/compiler/utilities/DeclarationScope.Kind.html" title="enum in simula.compiler.utilities">DeclarationScope.Kind</a></code></td>
 <td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/StandardClass.html#getBlockKind()">getBlockKind</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -392,11 +392,11 @@ extends <a href="../../../simula/compiler/declaration/BlockDeclaration.html" tit
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="methods_inherited_from_class_simula.compiler.declaration.BlockDeclaration">
+<li class="blockList"><a name="methods_inherited_from_class_simula.compiler.declaration.DeclarationScope">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;simula.compiler.declaration.<a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a></h3>
-<code><a href="../../../simula/compiler/declaration/BlockDeclaration.html#createMaybeBlock(simula.compiler.expression.Variable,%20java.lang.String)">createMaybeBlock</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#doChecking()">doChecking</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#doCodeCreateClassBody(java.lang.String)">doCodeCreateClassBody</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#doCodeLabelSwitch(java.lang.String)">doCodeLabelSwitch</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#doJavaCoding(java.lang.String)">doJavaCoding</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#doParseClassDeclaration(java.lang.String)">doParseClassDeclaration</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#doParseProcedureDeclaration(simula.compiler.utilities.Type)">doParseProcedureDeclaration</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#edFormalParameterList(boolean)">edFormalParameterList</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#findVirtual(java.lang.String)">findVirtual</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#hasNoRealPrefix()">hasNoRealPrefix</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#isSubClassOf(simula.compiler.declaration.BlockDeclaration)">isSubClassOf</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#parameterIterator()">parameterIterator</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#parseMaybeBlock(simula.compiler.expression.Variable)">parseMaybeBlock</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#print(java.lang.String,%20java.lang.String)">print</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#setStatement(simula.compiler.statement.Statement)">setStatement</a>, <a href="../../../simula/compiler/declaration/BlockDeclaration.html#toString()">toString</a></code></li>
+<h3>Methods inherited from class&nbsp;simula.compiler.declaration.<a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a></h3>
+<code><a href="../../../simula/compiler/declaration/DeclarationScope.html#createMaybeBlock(simula.compiler.expression.Variable,%20java.lang.String)">createMaybeBlock</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#doChecking()">doChecking</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#doCodeCreateClassBody(java.lang.String)">doCodeCreateClassBody</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#doCodeLabelSwitch(java.lang.String)">doCodeLabelSwitch</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#doJavaCoding(java.lang.String)">doJavaCoding</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#doParseClassDeclaration(java.lang.String)">doParseClassDeclaration</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#doParseProcedureDeclaration(simula.compiler.utilities.Type)">doParseProcedureDeclaration</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#edFormalParameterList(boolean)">edFormalParameterList</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#findVirtual(java.lang.String)">findVirtual</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#hasNoRealPrefix()">hasNoRealPrefix</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#isSubClassOf(simula.compiler.declaration.DeclarationScope)">isSubClassOf</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#parameterIterator()">parameterIterator</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#parseMaybeBlock(simula.compiler.expression.Variable)">parseMaybeBlock</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#print(java.lang.String,%20java.lang.String)">print</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#setStatement(simula.compiler.statement.Statement)">setStatement</a>, <a href="../../../simula/compiler/declaration/DeclarationScope.html#toString()">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_simula.compiler.declaration.DeclarationScope">
@@ -725,7 +725,7 @@ extends <a href="../../../simula/compiler/declaration/BlockDeclaration.html" tit
 <ul class="blockList">
 <li class="blockList">
 <h4>getBlockKind</h4>
-<pre>public&nbsp;<a href="../../../simula/compiler/utilities/BlockDeclaration.Kind.html" title="enum in simula.compiler.utilities">BlockDeclaration.Kind</a>&nbsp;getBlockKind()</pre>
+<pre>public&nbsp;<a href="../../../simula/compiler/utilities/DeclarationScope.Kind.html" title="enum in simula.compiler.utilities">DeclarationScope.Kind</a>&nbsp;getBlockKind()</pre>
 </li>
 </ul>
 <a name="edJavaClassName()">
@@ -750,7 +750,7 @@ extends <a href="../../../simula/compiler/declaration/BlockDeclaration.html" tit
 <pre>public&nbsp;java.lang.String&nbsp;getJavaIdentifier()</pre>
 <dl>
 <dt><strong>Overrides:</strong></dt>
-<dd><code><a href="../../../simula/compiler/declaration/BlockDeclaration.html#getJavaIdentifier()">getJavaIdentifier</a></code>&nbsp;in class&nbsp;<code><a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a></code></dd>
+<dd><code><a href="../../../simula/compiler/declaration/DeclarationScope.html#getJavaIdentifier()">getJavaIdentifier</a></code>&nbsp;in class&nbsp;<code><a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a></code></dd>
 </dl>
 </li>
 </ul>

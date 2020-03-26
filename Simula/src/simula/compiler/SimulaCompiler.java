@@ -455,11 +455,13 @@ public final class SimulaCompiler {
 			Util.message("Output " + jarFile + " MANIFEST'mainEntry=\"" + mainEntry+"\"");
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		manifest.getMainAttributes().putValue("Created-By",Global.simulaReleaseID+" (Portable Simula)");
-		String relativeAttributeFileName = program.getRelativeAttributeFileName();
-		if (relativeAttributeFileName != null)
-			manifest.getMainAttributes().putValue("SIMULA-INFO", relativeAttributeFileName);
-		else
+		if(program.isExecutable()) {
 			manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, mainEntry);
+		} else {
+			String relativeAttributeFileName = program.getRelativeAttributeFileName();
+			if (relativeAttributeFileName != null)
+			manifest.getMainAttributes().putValue("SIMULA-INFO", relativeAttributeFileName);
+		}
 		
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 		add(target, new File(Global.tempClassFileDir,Global.packetName), Global.tempClassFileDir.toString().length());

@@ -106,7 +106,7 @@
 <li class="blockList">
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a>, <a href="../../../simula/compiler/declaration/ConnectionBlock.html" title="class in simula.compiler.declaration">ConnectionBlock</a></dd>
+<dd><a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a>, <a href="../../../simula/compiler/declaration/ConnectionBlock.html" title="class in simula.compiler.declaration">ConnectionBlock</a></dd>
 </dl>
 <hr>
 <br>
@@ -237,13 +237,13 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/DeclarationScope.html#findVirtual(java.lang.String)">findVirtual</a></strong>(java.lang.String&nbsp;ident)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a></code></td>
+<td class="colFirst"><code><a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a></code></td>
 <td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/DeclarationScope.html#getPrefix()">getPrefix</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../simula/compiler/declaration/DeclarationScope.html#isDetachUsed()">isDetachUsed</a></strong>()</code>
-<div class="block">Ta utgangspunkt i hvilke klasser man har kalt "detach" i, altså kvalifikasjonen av de X som er
+<div class="block">Ta utgangspunkt i hvilke klasser man har kalt "detach" i, altsï¿½ kvalifikasjonen av de X som er
  brukt i "X.detach".</div>
 </td>
 </tr>
@@ -426,7 +426,7 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <ul class="blockList">
 <li class="blockList">
 <h4>getPrefix</h4>
-<pre>public&nbsp;<a href="../../../simula/compiler/declaration/BlockDeclaration.html" title="class in simula.compiler.declaration">BlockDeclaration</a>&nbsp;getPrefix()</pre>
+<pre>public&nbsp;<a href="../../../simula/compiler/declaration/DeclarationScope.html" title="class in simula.compiler.declaration">DeclarationScope</a>&nbsp;getPrefix()</pre>
 </li>
 </ul>
 <a name="edCTX(int)">
@@ -454,9 +454,9 @@ extends <a href="../../../simula/compiler/declaration/Declaration.html" title="c
 <li class="blockList">
 <h4>isDetachUsed</h4>
 <pre>public&nbsp;boolean&nbsp;isDetachUsed()</pre>
-<div class="block">Ta utgangspunkt i hvilke klasser man har kalt "detach" i, altså kvalifikasjonen av de X som er
- brukt i "X.detach".  Men da må man jo også holde greie på hvilke slike som har forekommet i
- eksterne "moduler" (som f.eks. SIMULATION), uten at det burde være problematisk.</div>
+<div class="block">Ta utgangspunkt i hvilke klasser man har kalt "detach" i, altsï¿½ kvalifikasjonen av de X som er
+ brukt i "X.detach".  Men da mï¿½ man jo ogsï¿½ holde greie pï¿½ hvilke slike som har forekommet i
+ eksterne "moduler" (som f.eks. SIMULATION), uten at det burde vï¿½re problematisk.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd></dd></dl>
 </li>
 </ul>
