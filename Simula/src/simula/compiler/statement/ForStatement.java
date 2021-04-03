@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import simula.compiler.JavaModule;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
 import simula.compiler.expression.Expression;
@@ -92,6 +93,7 @@ public final class ForStatement extends Statement {
 		Global.sourceLineNumber = lineNumber;
 		controlVariable.doChecking();
 		this.type = controlVariable.type; // Type of control variable
+//		Util.BREAK("ForStatement.doChecking: controlVariable="+controlVariable+", type="+this.type);
 		Declaration decl = controlVariable.meaning.declaredAs;
 		if (decl instanceof Parameter && ((Parameter) decl).mode == Parameter.Mode.name)
 			Util.error("For-Statement's Controled Variable(" + controlVariable + ") can't be a formal parameter by Name");
@@ -132,7 +134,7 @@ public final class ForStatement extends Statement {
 	    	if(elt.expr1.type==Type.Text) {
 	    		classIdent="TXT$"; // AD'HOC
 	    	}
-	    	JavaModule.code("   "+del+elt.edCode(classIdent));
+	    	JavaModule.code("   "+del+elt.edCode(classIdent,elt.expr1.type));
 	    	del=',';
 	    }
 	    JavaModule.code("   )) { if(!"+CB+") continue;");
@@ -146,12 +148,16 @@ public final class ForStatement extends Statement {
 		return(elt.isOptimizable());
 	}
   
-    private String edControlVariableByName(final String classIdent) {
+    private String edControlVariableByName(final String classIdent,Type xType) {
     	String cv=controlVariable.toJavaCode();
     	String castVar="x$;";
     	if(controlVariable.type==Type.Integer) castVar="x$.intValue();";
     	else if(controlVariable.type==Type.Real) castVar="x$.floatValue();";
     	else if(controlVariable.type==Type.LongReal) castVar="x$.doubleValue();";
+    	else if(controlVariable.type.isReferenceType()) {
+    		ClassDeclaration qual=controlVariable.type.getQual();
+    		if(!(controlVariable.type.equals(xType))) castVar="("+qual.getJavaIdentifier()+")x$;";
+    	}
     	String cvName="new NAME$<"+classIdent+">()"+
     			"{ public "+classIdent+" put("+classIdent+" x$){"+cv+"="+castVar+" return(x$);};"+
     			"  public "+classIdent+" get(){return(("+classIdent+")"+cv+"); }	}";
@@ -185,9 +191,9 @@ public final class ForStatement extends Statement {
 		    expr1.doChecking(); 
 			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
 		}
-		public String edCode(final String classIdent) {
+		public String edCode(final String classIdent,Type xType) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
-		    return("new Single"+forElt+"("+edControlVariableByName(classIdent)
+		    return("new Single"+forElt+"("+edControlVariableByName(classIdent,xType)
 		      +",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
 		}
 		public ForListElement isOptimizable() {
@@ -200,6 +206,10 @@ public final class ForStatement extends Statement {
 	    		if(controlVariable.type==Type.Integer) val="(int)"+val;
 	    		else if(controlVariable.type==Type.Real) val="(float)"+val;
 	    		else if(controlVariable.type==Type.LongReal) val="(double)"+val;
+	        	else if(controlVariable.type.isReferenceType()) {
+	        		ClassDeclaration qual=controlVariable.type.getQual();
+	        		if(!(controlVariable.type.equals(this.expr1.type))) val="("+qual.getJavaIdentifier()+")"+val;
+	        	}
 	    	}
 		    JavaModule.code(cv+"="+val+"; {");
 		    doStatement.doJavaCoding();
@@ -222,9 +232,9 @@ public final class ForStatement extends Statement {
 			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
 			expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
 		}
-		public String edCode(final String classIdent) {
+		public String edCode(final String classIdent,Type xType) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
-			return("new While"+forElt+"("+edControlVariableByName(classIdent)
+			return("new While"+forElt+"("+edControlVariableByName(classIdent,xType)
 			+",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
 			+",new NAME$<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 		}
@@ -266,8 +276,8 @@ public final class ForStatement extends Statement {
 			expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
 			expr3.backLink=ForStatement.this; // To ensure RESULT$ from functions
 		}
-		public String edCode(final String classIdent) {
-			return("new StepUntil("+edControlVariableByName(classIdent)
+		public String edCode(final String classIdent,Type xType) {
+			return("new StepUntil("+edControlVariableByName(classIdent,xType)
 	  	                     +",new NAME$<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
 	  	                     +",new NAME$<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
 	  	                     +",new NAME$<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");

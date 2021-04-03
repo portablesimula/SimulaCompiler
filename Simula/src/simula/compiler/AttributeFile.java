@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Vector;
 
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
+import simula.compiler.declaration.DeclarationList;
 import simula.compiler.declaration.StandardClass;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
@@ -80,7 +80,7 @@ public final class AttributeFile {
 	}
 
 	public static Type readAttributeFile(final InputStream inputStream,final File file,
-            final Vector<Declaration> declarationList) throws IOException, ClassNotFoundException {
+            final DeclarationList declarationList) throws IOException, ClassNotFoundException {
 		AttributeFile attributeFile = new AttributeFile(file);
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + file);
 		attributeFile.inpt = new ObjectInputStream(inputStream);
@@ -92,7 +92,7 @@ public final class AttributeFile {
 			try { module=(BlockDeclaration) attributeFile.inpt.readObject();}
 			catch (EOFException e1) { break LOOP; }
 			module.isPreCompiled = true;
-			declarationList.add(module);
+			declarationList.addUnique(module);
 			moduleType=module.type;
 			if (Option.verbose)
 				Util.TRACE("***       Read External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']');

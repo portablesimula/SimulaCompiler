@@ -321,9 +321,9 @@ public final class Variable extends Expression {
 	    ASSERT_SEMANTICS_CHECKED(this);
 	    Expression inspectedVariable=meaning.getInspectedVariable();
 	    
-	    if(decl.identifier.equalsIgnoreCase("L1")) {
-	    	Util.BREAK("Variable.editVariable: decl="+decl+", QUAL="+decl.getClass().getSimpleName()+", declarationKind="+decl.declarationKind);
-	    }
+//	    if(decl.identifier.equalsIgnoreCase("L1")) {
+//	    	Util.BREAK("Variable.editVariable: decl="+decl+", QUAL="+decl.getClass().getSimpleName()+", declarationKind="+decl.declarationKind);
+//	    }
 
 	    StringBuilder s;
 		switch(decl.declarationKind) {

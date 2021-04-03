@@ -28,9 +28,10 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * switch-statement = SWITCH ( lowKey : hiKey ) switchKey BEGIN { switch-case } [ none-case ] END
+ * switch-statement = SWITCH ( lowKey : hiKey ) switchKey BEGIN { switch-case } [ none-case ] END [ otherwise-case ]
  *      switch-case = WHEN <caseKey-list> do <statement> ;
  *      none-case   = WHEN NONE do <statement> ;
+ *      otherwise-case   = OTHERWISE <statement> ;
  *      <caseKey-list> = caseKey { , caseKey }
  *      caseKey = caseConstant  | caseConstant : caseConstant
  *      
@@ -65,6 +66,7 @@ public final class SwitchStatement extends Statement {
 	private Expression switchKey;
     //int lowIndex,hiIndex;  // Set during Checking
 	private final Vector<WhenPart> switchCases=new Vector<WhenPart>();
+	private Statement otherwise;
 
 	public SwitchStatement() {
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchStatement");
@@ -74,6 +76,7 @@ public final class SwitchStatement extends Statement {
 		hiKey = Expression.parseExpression();
 		Parser.expect(KeyWord.ENDPAR);
 		switchKey = Expression.parseExpression();
+		switchKey.backLink=this;
 		Parser.expect(KeyWord.BEGIN);
     	boolean noneCaseUsed=false;
 		while (Parser.accept(KeyWord.WHEN)) {
@@ -93,7 +96,10 @@ public final class SwitchStatement extends Statement {
 			switchCases.add(new WhenPart(caseKeyList, statement));
 		}
 		Parser.expect(KeyWord.END);
-		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ConnectionStatement: " + toString());
+		if(Parser.accept(KeyWord.OTHERWISE)) {
+			otherwise = Statement.doParse();			
+		}
+		if (Option.TRACE_PARSE)	Util.TRACE("END NEW SwitchStatement: " + toString());
 	}
 
 	public CasePair parseCasePair() {
@@ -139,6 +145,7 @@ public final class SwitchStatement extends Statement {
     			} else JavaModule.code("case "+low+": ");
     		}
     		statement.doJavaCoding();
+    		JavaModule.code("break;");
     	}
 	
     	public void print(final int indent) {
@@ -168,8 +175,10 @@ public final class SwitchStatement extends Statement {
     	lowKey.doChecking(); hiKey.doChecking();
     	switchKey.doChecking();
 		if(switchKey.type==Type.Character) {
-			Util.NOT_IMPLEMENTED("Switch Statement: Keytype Character");
-		} else switchKey=TypeConversion.testAndCreate(Type.Integer,switchKey);
+//			Util.NOT_IMPLEMENTED("Switch Statement: Keytype Character");
+			switchKey=TypeConversion.testAndCreate(Type.Character,switchKey);
+		} else
+			switchKey=TypeConversion.testAndCreate(Type.Integer,switchKey);
     	for(WhenPart when:switchCases) {
     		for(CasePair casePair:when.caseKeyList)
 			if(casePair!=null) {

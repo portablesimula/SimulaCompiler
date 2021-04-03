@@ -318,10 +318,13 @@ public abstract class Expression extends SyntaxClass {
 		return(null);
 	}
 
-	public static boolean checkCompatability(final Expression simpleObjectExpression,final String classIdentifier) {
+	public static boolean checkCompatability(final Expression simpleObjectExpression,final KeyWord opr,final String classIdentifier) {
 		ClassDeclaration objDecl=getQualification(simpleObjectExpression);
 		ClassDeclaration quaDecl=getQualification(classIdentifier);
-		if(quaDecl==objDecl) Util.warning("Unneccessary QUA/IS/IN "+ classIdentifier);
+		if(quaDecl==objDecl) {
+//			Util.BREAK("Expression.checkCompatability: quaDecl="+quaDecl+", objDecl="+objDecl);
+			Util.warning("Unneccessary " + opr + " in expression: " + simpleObjectExpression + ' ' + opr + ' ' + classIdentifier);
+		}
 		else if(quaDecl==null) Util.error("Illegal QUA -- " + classIdentifier + " is not a class");
 		else if(!(objDecl.isCompatibleClasses(quaDecl))) return(false);
 		return(true);

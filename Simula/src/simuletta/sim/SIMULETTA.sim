@@ -1,0 +1,62 @@
+--begin
+External class Common;
+External procedure Pass1;
+External procedure Pass2;
+
+%      -----------------------------------------------------------------
+%      ---                                                           ---
+%      ---                 P O R T A B L E     S I M U L A           ---
+%      ---                                                           ---
+%      ---              S I M U L E T T A    C O M P I L E R         ---
+%      ---                                                           ---
+%      ---                                                           ---
+%      ---                   M A I N    P R O G R A M                ---
+%      ---                                                           ---
+%      -----------------------------------------------------------------
+
+begin
+
+     inspect new Common do begin
+         ref(link) q;
+         option(rank('Y')):=1;
+
+         Pass1(this Common);
+         
+         for q:-qntset.first,q.suc while q=/=none do prt(q,0);
+
+         Pass2(this Common);
+
+         if option(rank('Y'))<>0 or nerr<>0 then begin
+--            outimage; outtext("End " & smlid);
+            if curline > 0 then
+            begin outtext(", lines: "); outtext(leftint(curline)) end;
+            if nerr <> 0 then begin
+               outtext(" , "); outtext(leftint(nerr));
+            end else outtext(" no");
+            outtext(" errors.");
+            outimage; -- symboltable.close;
+         end;
+
+
+         if ListFile == none then  ! Nothing ;
+         else if ListFile =/= sysout then ListFile.close;
+
+         --! termstatus=0 means normal running, S-code completed,
+         --  termstatus=3 means normal running, no S-code
+         --  termstatus=4 means running, but errors found
+         --  termstatus=5 means term by testincerr or the like,
+         --  termstatus=6 means term by internerr ;
+         if nerr<>0 and then termstatus=0 then termstatus:=4;
+         --giveIntInfo(1,termstatus);
+         ! giveIntInfo(2,maxtagno);
+         --giveIntInfo(3,curline);
+         if nerr > 0 then begin
+            outtext("Program Terminated due to " & leftint(nerr) & " Errors"); outimage;
+         end;   
+         --giveIntInfo(4,nerr);
+     end inspect common;
+
+     !*** now also signal SML end to environment ***;
+     giveIntInfo(5,0);
+
+end of program;

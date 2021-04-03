@@ -484,7 +484,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		
 		parameterList=(Vector<Parameter>) inpt.readObject();
 		labelList=(Vector<LabelDeclaration>) inpt.readObject();
-		declarationList=(Vector<Declaration>) inpt.readObject();
+		declarationList=(DeclarationList) inpt.readObject();
 		Util.TRACE_INPUT("END Read ProcedureDeclaration: "+identifier+", Declared in: "+this.declaredIn);
 		Global.currentScope = this.declaredIn;
 	}

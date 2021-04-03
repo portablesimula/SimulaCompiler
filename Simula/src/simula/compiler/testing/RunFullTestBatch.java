@@ -173,6 +173,7 @@ public final class RunFullTestBatch {
 		names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
 		names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
 		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
+		names.add("simtst127.sim"); // OK: Switch (character) Statement
 
 		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
 		names.add("simerr02.sim"); // OK: Testing NONE-CHECK

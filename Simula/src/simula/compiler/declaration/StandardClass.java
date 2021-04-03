@@ -66,6 +66,7 @@ public final class StandardClass extends ClassDeclaration
     RTObject.isContextFree=true;
     RTObject.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"objectTraceIdentifier");
     RTObject.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"waitSomeTime",parameter("millies",Type.Integer));
+//    RTObject.addStandardProcedure(Declaration.Kind.MemberMethod,null,"detach"); // TODO: TEMP: Nødvendig for å kompilere Simuletta
   }
   
   // ******************************************************************
@@ -305,7 +306,8 @@ public final class StandardClass extends ClassDeclaration
   //  
   //     if FILENAME_ = notext then error("Illegal File Name");
   //  end FILE_;      
-  public static StandardClass FILE=new StandardClass("RTObject","FILE",parameter("FILENAME$",Type.Text));
+//  public static StandardClass FILE=new StandardClass("RTObject","FILE",parameter("FILENAME$",Type.Text));
+  public static StandardClass FILE=new StandardClass("CLASS","FILE",parameter("FILENAME$",Type.Text));
   static
   { BASICIO.addStandardClass(FILE);  // Declared in BASICIO
     FILE.addStandardAttribute(Type.Boolean,"OPEN$");  
@@ -572,6 +574,7 @@ public final class StandardClass extends ClassDeclaration
     OutbyteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
     OutbyteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
     OutbyteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
+    OutbyteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   
     OutbyteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
     OutbyteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
   }  
@@ -613,7 +616,8 @@ public final class StandardClass extends ClassDeclaration
     DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"locate",parameter("i",Type.Integer));  
     DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
     DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
-    DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
+    DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   
+//    DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
     DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
     DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"unlock");  
     DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  

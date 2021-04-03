@@ -1,0 +1,1402 @@
+simset
+class Common;
+
+%      ----------------------------------------------------------------
+%      ---                                                          ---
+%      ---                 P O R T A B L E     S I M U L A          ---
+%      ---              S I M U L E T T A    C O M P I L E R        ---
+%      ---                                                          ---
+%      ---                   C l a s s    C o m m o n               ---
+%      ---                                                          ---
+%      ----------------------------------------------------------------
+
+begin
+      text sportid="S-PORT SYSTEM";
+      integer DO_TRACING;
+
+
+%   *** insert here mnemonics or declarations of internal symbols ***
+
+      character NUL = '!0!';
+
+      short integer identx,constx;
+      short integer hash;
+      text simsymbol;
+
+%title ******   S Y M B O L   T A B L E   ******
+      integer MAX_SYMB=5000;
+	  ref(symbolbox) array symtab(0:MAX_SYMB);
+	  short integer nSymb; -- Number of symbols + 1
+
+      ref(identsymbol) dummyBox; -- TODO: Denne brukes som 'prefix' til records som ikke har prefix.
+      
+      text procedure edSymbol(s); short integer s;
+      begin
+         edSymbol:-symtab(s).symbol;
+      end;
+
+      class symbolbox;
+      begin short integer id;   ! internal repr. of symbol (index);
+            ref(linkage) curmeaning;
+            text symbol;           ! textual repr. of symbol;
+      end;
+
+      symbolbox class constsymbol; ;
+      symbolbox class identsymbol; ;
+
+      procedure DEFKEYWORD(code,ident); short integer code; text ident; begin
+		 -- NOTE: keywords have predefined indices from one up
+		 -- The same string as id and const must have different indices. lastid < lastconst always.  -- ?????????????????
+         ref(identsymbol) symb;
+		 symb:-new identsymbol; symb.symbol:-lowcase(copy(ident));
+		 if symtab(code) =/= none then begin
+            TRACE("COMMON.DEFKEYWORD",sourceline,"ALREADY DEFINED: " & edSymbol(code) & "  " & ident);
+		 end;
+         symtab(code):-symb;
+--         TRACE("COMMON.DEFKEYWORD",sourceline,"IDENT: " & edSymbol(code) & " ==> " & leftint(code));
+      end;
+
+      procedure DEFIDENT;
+      begin ref(identsymbol) symb;
+            text ident;
+            if simsymbol==notext then hash:=0
+            else begin 
+               if nSymb >= MAX_SYMB then FATAL_ERROR("Symbol table overflow (DEFIDENT)");
+               ident:-lowcase(copy(simsymbol));
+			   if nSymb>0 then for hash:=0 step 1 until nSymb do begin
+--                  TRACE("COMMON.DEFIDENT",sourceline,"IDENT: " & leftint(hash) & "  "& ident & " <==> " & symtab(hash).symbol);
+			      if ident=symtab(hash).symbol then goto E; end;
+               symb:-new identsymbol; symb.symbol:-ident;
+			   hash:=nSymb:=nSymb+1;  symtab(nSymb):-symb;
+			end;   
+      E:
+            TRACE("COMMON.DEFIDENT",sourceline,"IDENT: " & edSymbol(hash) & " ==> " & leftint(hash));
+      end;
+
+
+      procedure DEFCONST;
+      begin ref(constsymbol) symb;
+            if simsymbol==notext then hash:=0
+            else begin             
+               if nSymb >= MAX_SYMB then FATAL_ERROR("Symbol table overflow (DEFCONST)");
+			   if nSymb>0 then for hash:=0 step 1 until nSymb do begin
+			      if simsymbol=symtab(hash).symbol then goto E; end;
+               symb:-new constsymbol; symb.symbol:-copy(simsymbol);
+			   hash:=nSymb:=nSymb+1;  symtab(nSymb):-symb;
+			end;   
+      E:
+            TRACE("COMMON.DEFCONST",sourceline,"IDENT: " & edSymbol(hash) & " ==> " & leftint(hash));
+      end;
+
+%title ******   Additional facilities   ******
+
+      short integer array option(0:95);
+
+      procedure setopt(ch,val); character ch; short integer val; begin
+          option(rank(ch)):=val;
+      end;
+
+Boolean SportOk;       ! true: allow special S-code extensions  ;
+Boolean recomp;        ! true: compatible recompilation         ;
+Boolean GiveNotes;     ! Should warnings be printed ?           ;
+Boolean listingon;     ! Is listing currently being produced ?  ;
+Boolean global_module; ! Set in pass 1 if compiling a global module ;
+boolean simob_descr, simob_entity, simob_const; ! NOT USED      ;
+boolean GenerateScode; !not used currently;
+short integer ntag;    ! Next available tag number          ;
+short integer mxtag;   ! max tag number used                ;
+short integer termstatus;  ! Status of compilation                  ;
+short integer currentpass; ! Indicates number of current FEC pass   ;
+short integer string;  ! index of STRING                 ;
+short integer simob_level; ! NOT USED                           ;
+short integer curline; ! Current input line number              ;
+short integer nerr;    ! No of error messages given so far      ;
+short integer maxerrno;! No of error messages permitted         ;
+short integer rutlev;  !                                        ;
+short integer listlength;  ! image length for list file         ;
+short integer module_trace;  !                                  ;
+ref(identSymbol) chradrBox, nchrBox; ! attr of STRING           ;
+ref(printfile) ListFile; ! Listing file - none if no listing    ;
+ref(head) modset;      ! The set of all inserted modules        ;
+ref(head) qntset;      ! The set of all global declarations     ;
+                       ! (not including any inserted decl)      ;
+ref(head) vislist;     ! Visible declar, moved from qntset      ;
+ref(head) constlist;   ! Constspec'ed, moved from qntset        ;
+ref(head) localdecl;   ! The local decls in routines in pass 1  ;
+                       ! The local decls in modules  in pass 2  ;
+ref(head) redeclset;   ! Redeclaration set in pass2             ;
+ref(head) structset;   ! The ordered set of all struct constants;
+ref(head) caseset;     ! The ordered set of case statement descr;
+ref(caseDescr) curcase;! Current case statement descriptor      ;
+ref(head) TRC_info;    ! The set of trace and info items to be  ;
+	               ! outputed before the next instruction   ;
+ref(head) TRC_init;    ! The initial set of trace and info items;
+text module_ident;     ! Current module's identifier            ;
+		       ! (notext for main)                      ;
+text module_code;      ! Current module's check-code            ;
+		       ! (notext for main)                      ;
+text L2name;           ! Scratch file identification            ;
+text nscodename;       ! S-code  file identification            ;
+text predefname;       ! Predef file identification             ;
+text timestamp;        ! - of this compilation                  ;
+text leftintbuf;       ! - for editing of integer  (NOT USED)   ;
+text leftsintbuf;      ! - for editing of sint     (NOT USED)   ;
+text tempt;            ! local use only ;
+
+Boolean array Selector(0:127);  ! Selection switches ;
+
+procedure SetSelectors(t,val); text t; short integer val;
+begin short integer i; boolean b;
+      if val=0 then
+      for i:= 47 step 1 until 127 do selector(i):=false;
+      b := val <> 2; t.setpos(1);
+      while t.more do begin
+            i:=rank(t.getchar); if i>127 then i:=i-128;
+            if i>47 then selector(i):=b;
+      end;
+end;
+
+text procedure TagName(i); short integer i;
+begin text t1;
+      t1 :- leftint(i);
+      TagName:-"T" & t1;
+end;
+
+ref(symbolbox) array tagtab(0:2000);
+
+short integer TYP_INFIX=1, TYP_INT=2, TYP_STRUCT=3,
+      TYP_FIELD=4, TYP_REF=5, TYP_NAME  =6,
+      TYP_ENT  =7,
+      TYP_UNDEF=0, TYP_MXMX=7;
+
+short integer TAG_BOOL=  1, TAG_CHAR=  2, TAG_INT=   3,
+      TAG_SINT=  4, TAG_REAL=  5, TAG_LREAL= 6,
+      TAG_AADDR= 7, TAG_OADDR= 8, TAG_GADDR= 9,
+      TAG_PADDR=10, TAG_RADDR=11, TAG_SIZE= 12;
+
+short integer T_NULL = 0,
+      T_UNDEF= 0,T_INT=  1,T_SINT=2,T_REAL=3,
+      T_LREAL= 4,T_SIZE= 5,T_CHAR=6,T_BOOL=7,
+      T_LABEL= 8,T_ENT=  9,T_REF=10,T_NAME=11,
+      T_FIELD=12,T_DEST=13;
+
+!******    S - I N S T R U C T I O N S    ******;
+
+
+short integer  S_NULL=0,S_RECORD=1,
+S_LSHIFTL=2, -- extension to Scode, left shift logical
+S_PREFIX=3,S_ATTR=4,
+S_LSHIFTA=5, -- extension to Scode, left shift arithmetical
+S_REP=6,
+S_ALT=7,S_FIXREP=8,S_ENDRECORD=9,S_C_RECORD=10,
+S_TEXT=11,S_C_CHAR=12,S_C_INT=13,S_C_SIZE=14,
+S_C_REAL=15,S_C_LREAL=16,S_C_AADDR=17,S_C_OADDR=18,
+S_C_GADDR=19,S_C_PADDR=20,S_C_DOT=21,S_C_RADDR=22,
+S_NOBODY=23,S_ANONE=24,S_ONONE=25,S_GNONE=26,
+S_NOWHERE=27,S_TRUE=28,S_FALSE=29,S_PROFILE=30,
+S_KNOWN=31,S_SYSTEM=32,S_EXTERNAL=33,S_IMPORT=34,
+S_EXPORT=35,S_EXIT=36,S_ENDPROFILE=37,S_ROUTINESPEC=38,
+S_ROUTINE=39,S_LOCAL=40,S_ENDROUTINE=41,S_MODULE=42,
+S_EXISTING=43,S_TAG=44,S_BODY=45,S_ENDMODULE=46,
+S_LABELSPEC=47,S_LABEL=48,S_RANGE=49,S_GLOBAL=50,
+S_INIT=51,S_CONSTSPEC=52,S_CONST=53,S_DELETE=54,
+S_FDEST=55,S_BDEST=56,S_SAVE=57,S_RESTORE=58,
+S_BSEG=59,S_ESEG=60,S_SKIPIF=61,S_ENDSKIP=62,
+S_IF=63,S_ELSE=64,S_ENDIF=65,
+S_RSHIFTL=66, -- extension to Scode, right shift logical
+S_PRECALL=67,S_ASSPAR=68,S_ASSREP=69,S_CALL=70,
+S_FETCH=71,S_REFER=72,S_DEREF=73,S_SELECT=74,
+S_REMOTE=75,S_LOCATE=76,S_INDEX=77,S_INCO=78,
+S_DECO=79,S_PUSH=80,S_PUSHC=81,S_PUSHLEN=82,
+S_DUP=83,S_POP=84,S_EMPTY=85,S_SETOBJ=86,
+S_GETOBJ=87,S_ACCESS=88,S_FJUMP=89,S_BJUMP=90,
+S_FJUMPIF=91,S_BJUMPIF=92,S_SWITCH=93,S_GOTO=94,
+S_T_INITO=95,S_T_GETO=96,S_T_SETO=97,S_ADD=98,
+S_SUB=99,S_MULT=100,S_DIV=101,S_REM=102,
+S_NEG=103,S_AND=104,S_OR=105,S_XOR=106,
+S_IMP=107,S_EQV=108,S_NOT=109,S_DIST=110,
+S_ASSIGN=111,S_UPDATE=112,S_CONVERT=113,S_SYSINSERT=114,
+S_INSERT=115,S_ZEROAREA=116,S_INITAREA=117,S_COMPARE=118,
+S_LT=119,S_LE=120,S_EQ=121,S_GE=122,
+S_GT=123,S_NE=124,S_EVAL=125,S_INFO=126,
+S_LINE=127,S_SETSWITCH=128,
+S_RSHIFTA=129, -- extension to Scode, right shift arithmetical
+S_PROGRAM=130,S_MAIN=131,
+S_ENDPROGRAM=132,S_DSIZE=133,S_SDEST=134,S_RUPDATE=135,
+S_ASSCALL=136,S_CALL_TOS=137,S_DINITAREA=138,S_NOSIZE=139,
+S_POPALL=140,S_REPCALL=141,S_INTERFACE=142,S_MACRO=143,
+S_MARK=144,S_MPAR=145,S_ENDMACRO=146,S_MCALL=147,
+S_PUSHV=148,S_SELECTV=149,S_REMOTEV=150,S_INDEXV=151,
+S_ACCESSV=152,S_DECL=153,S_STMT=154,
+N_INSTR=154,
+
+!******    A d d i t i o n a l    K E Y W O R D S    ******;
+
+S_BEGIN=155,S_END=156,S_VARIANT=157,S_SHORT=158,
+S_LONG=159,S_INTEGER=160,S_SIZE=161,S_REAL=162,
+S_CHAR=163,S_BOOLEAN=164,S_REF=165,S_NAME=166,
+S_FIELD=167,S_INFIX=168,S_ENTRY=169,S_NONE=170,
+S_NONAME=171,S_NOFIELD=172,S_THEN=173,S_ELSIF=174,
+S_QUA=175,S_VAR=176,S_REPEAT=177,S_WHILE=178,
+S_DO=179,S_ENDREPEAT=180,S_SYSRUT=181,S_DEFINE=182,
+S_CASE=183,S_WHEN=184,S_OTHERWISE=185,S_ENDCASE=186,
+S_VISIBLE=187,S_ASSERT=188,S_SKIP=189,
+N_KEYW=189,
+
+!******    A d d i t i o n a l    B A S I C    S Y M B O L S    ******;
+
+S_INTVAL=190,S_REALVAL=191,S_LREALVAL=192,S_STRING=193,
+S_COLON=194,S_LPAR=195,S_RPAR=196,S_COMMA=197,
+S_DOT=198,S_ADDRESS=199,S_CHARS=200,S_PERCENT=201,
+
+!******    A d d i t i o n a l   I N T E R N A L   S Y M B O L S    ******;
+
+S_TRACE=202,S_NOEXPR=203,S_VARID=204,S_VAREXPR=205,
+S_VARCALL=206,S_ARGLIST=207,S_ENDVAR=208,S_IFEXPR=209,
+S_REPEXPR=210,S_DEFLAB=211,S_STRUCT=212,S_ENDWHEN=213,
+S_SIMPLE=214,S_DOTVAR=215,
+S_IDENT=216, !*** TEMP ***;
+N_SYMB=216,
+S_MXMX=216;
+
+!******    A t t r i b u t e    F i l e    S Y M B O L S    ******;
+
+short integer M_NULL = 0,
+M_MODULE=1,M_MACRO=2,M_MARK=3,M_MPAR=4,
+M_ENDMACRO=5,M_DEFINE=6,M_INTEGER=7,M_SHORT=8,
+M_RANGE=9,M_STRUCT=10,M_REAL=11,M_LONG=12,
+M_SIZE=13,M_CHAR=14,M_BOOL=15,M_LABEL=16,
+M_REF=17,M_ENTRY=18,M_FIELD=19,M_NAME=20,
+M_VAR=21,M_LABSPEC=22,M_RECORD=23,M_ALT=24,
+M_ENDRECORD=25,M_GLOBAL=26,M_PROFILE=27,M_IMPORT=28,
+M_EXPORT=29,M_EXIT=30,M_BODY=31,M_SYSRUT=32,
+M_KNOWN=33,M_EXTERNAL=34,M_ROUTINE=35,M_END=36,
+M_MXMX = 36;
+%title  *********    U t i l i t y   R o u t i n e s    *********
+link class trace_item(s,v); short integer s,v;;
+link class info_item(v); text v;;
+
+procedure deftag(d); ref(descr) d;
+   if d.xtag = 0 then begin
+      newtag(d.symb); d.tag:=ntag; end
+   else begin
+      d.tag:=d.xtag;
+   end;
+
+procedure defpeculiar(d); ref(peculiar) d;
+begin ref(symbolbox) symb;
+   if d.xtag = 0 then begin
+      if d.libProc then begin
+         simsymbol:-d.info; DEFCONST; symb:-symtab(hash) end
+      else symb:-d.symb;
+      newtag(symb); d.tag :=ntag;
+      newtag(symb); d.body:=ntag;
+   end
+   else begin
+      d.tag:=d.xtag;
+      d.body:=d.xtag+1;
+   end;
+end;
+
+procedure newtag(box); ref(symbolbox) box;
+begin ntag:=ntag+1;
+      tagtab(ntag):-box;
+end;
+
+procedure openerror(t); text t;
+     FATAL_ERROR(" can't open " & t);
+
+procedure error1(n,t); short integer n; text t; !TEMP subst;
+     WARNING("Can't open " & t & " - no listing");
+
+procedure FATAL_ERROR(msg); text msg;
+begin
+    if curline>0 then outtext("LINE " & leftint(curline) & "  ");
+    outtext("*** FATAL ERROR *** "); outtext(msg); outimage;
+    nerr:=nerr+1;
+    DO_TRACING:=4; TRACE("COMMON.FATAL_ERROR",sourceline,"Continue ?");
+    -- RTS_Utility(1,0);
+    terminate_program;
+end;
+
+procedure ERROR(msg); text msg;
+begin
+    outimage;
+    if curline>0 then outtext("LINE " & leftint(curline) & "  ");
+    outtext("ERROR: " & msg); nerr:=nerr+1; outimage;
+    DO_TRACING:=4; TRACE("COMMON.ERROR",sourceline,"Continue ?");
+    -- RTS_Utility(1,0);
+end;
+
+procedure WARNING(msg); text msg;
+begin if curline>0 then outtext("LINE " & leftint(curline) & "  ");
+    outtext(" NOTE: " & msg); outimage;
+end;
+
+-- TRACE("COMMON.DEFKEYWORD",sourceline,"IDENT: " & edSymbol(code) & " ==> " & leftint(code));
+procedure TRACE(id,lno,msg); text id,msg; integer lno;
+begin if DO_TRACING > 0 then 
+      begin if curline>0 then outtext("LINE " & leftint(curline) & "  ");
+            outtext(id); outtext("(");
+      		outint(lno,0); outtext(")  ");
+      		outtext(msg);
+      		-- outimage;
+      		breakoutimage; inimage;
+      end;		
+end;
+
+procedure IERR;
+begin
+    outimage;
+    if curline>0 then outtext("LINE " & leftint(curline) & "  ");
+    ERROR("***Internal error***");
+    DO_TRACING:=4; TRACE("COMMON.IERR",sourceline,"Continue ?");
+    -- RTS_Utility(1,0);
+    terminate_program;
+end;
+
+ref(bytefile) procedure openAttrFile(fnam,out); text fnam; boolean out;
+begin ref(bytefile) f;
+      if out then inspect new outbytefile(getTextInfo(11)) do begin
+         f:-this bytefile;
+         if not open then FATAL_ERROR("Cannot open attr.file "
+                                      & fnam & " for output");
+      end
+      else begin
+         giveTextInfo(2,fnam);
+         inspect new inbytefile(getTextInfo(12)) do begin
+            f:-this bytefile;
+            if not open then FATAL_ERROR("Cannot open attr.file "
+                                          & fnam & " for input");
+         end;
+      end;
+      openAttrFile:-f;
+end;
+
+text procedure edchar(c); character c;
+begin text t; 
+    edchar:-t:-blanks(1);
+    t.putchar(c);
+end;
+
+text procedure eddouble(i); short integer i;
+begin text t; 
+    eddouble:-t:-
+    blanks(if i>99 then (if i<1000 then 3 else
+	  (if i>9999 then 5 else 4)) else if i>9 then 2 else 1);
+    t.putint(i);
+end;
+
+text procedure leftint(i); integer i;
+begin leftintbuf.putint(i); i:=11;
+      while loadchar(leftintbuf,i)<>' ' do i:=i-1;
+      leftint:-leftintbuf.sub(i+2,11-i);
+end;
+
+    short integer procedure size;
+          size:=identx;
+
+%title ******   T y p e    D i c t i o n a r y   ******
+
+short integer maxTypes=255;
+ref(TypeNotice) array typeTable(0:maxTypes);
+
+short integer nTypes;
+head class TypeSet(type); short integer type; ;
+ref(TypeSet) infixTypes,integerTypes,structTypes;
+ref(TypeSet) entTypes,refTypes,fieldTypes,nameTypes;
+text procedure edTypeSet(set); ref(TypeSet) set;
+begin if set==integerTypes then edTypeSet:-copy("IntegerTypes")
+ else if set==infixTypes then edTypeSet:-copy("InfixTypes")
+ else if set==structTypes then edTypeSet:-copy("StructTypes")
+ else if set==entTypes then edTypeSet:-copy("EntTypes")
+ else if set==refTypes then edTypeSet:-copy("RefTypes")
+ else if set==fieldTypes then edTypeSet:-copy("FieldTypes")
+ else if set==nameTypes then edTypeSet:-copy("NameTypes")
+end;
+
+procedure initTypeTable; begin
+   infixTypes:-new TypeSet(TYP_INFIX); 
+   integerTypes:-new TypeSet(TYP_INT);
+   structTypes:-new TypeSet(TYP_STRUCT);
+   entTypes:-new TypeSet(TYP_ENT);
+   refTypes:-new TypeSet(TYP_REF);
+   fieldTypes:-new TypeSet(TYP_FIELD);
+   nameTypes:-new TypeSet(TYP_NAME);
+
+--      T_UNDEF= 0,T_INT=  1,T_SINT=2,T_REAL=3,
+--      T_LREAL= 4,T_SIZE= 5,T_CHAR=6,T_BOOL=7,
+--      T_LABEL= 8,T_ENT=  9,T_REF=10,T_NAME=11,
+--      T_FIELD=12,T_DEST=13;
+   new TypeNotice(integerTypes,S_INTEGER,0,0);
+   new TypeNotice(integerTypes,S_SHORT,0,0);
+   new TypeNotice(infixTypes,S_REAL,0,0);
+   new TypeNotice(infixTypes,S_LONG,0,0);
+   new TypeNotice(infixTypes,S_SIZE,0,0);
+   new TypeNotice(infixTypes,S_CHAR,0,0);
+   new TypeNotice(infixTypes,S_BOOLEAN,0,0);
+   new TypeNotice(infixTypes,S_LABEL,0,0);
+   new TypeNotice(entTypes,S_ENTRY,0,0);
+   new TypeNotice(refTypes,S_REF,0,0);
+   new TypeNotice(nameTypes,S_NAME,0,0);
+   new TypeNotice(fieldTypes,S_FIELD,0,0);
+--   new TypeNotice(integerTypes,S_DEST,0,0); -- TODO: ?????
+
+    printTypeTable; TRACE("COMMON.initTypeTable",sourceline,"COMPLETED");
+end;
+
+procedure printTypeTable; begin
+   integer i;
+   ref(TypeNotice) typeNot;
+   for i:=1 step 1 until nTypes do begin
+      outtext(edType(i)); 
+      typeNot:-typeTable(i);
+      if typeNot==none then outtext(" = TypeNotice==NONE")
+      else begin
+         outtext(" = TypeNotice: set="); outtext(edTypeSet(typeNot.set));
+         outtext(", qual="); outtext(edSymbol(typeNot.qual));
+         outtext(", info1="); outtext(leftint(typeNot.info1));
+         outtext(", info2="); outtext(leftint(typeNot.info2));
+      end;
+      outimage;
+   end;
+end;
+
+short integer procedure defType(set,q,inf1,inf2);
+ref(TypeSet) set; short integer q; integer inf1,inf2;
+begin ref(TypeNotice) x;
+    TRACE("COMMON.defType",sourceline,"BEGIN: set=" & edTypeSet(set) & ", q=" & edSymbol(q));
+    x:-set.first;
+    while x=/=none do begin
+       if x.qual=q then begin
+       if x.info1=inf1 then begin if x.info2=inf2
+       then begin defType:=x.code; goto E end;   end end;
+       x:-x.suc;
+    end;
+    defType:=new TypeNotice(set,q,inf1,inf2).code;
+E:end;
+
+link class TypeNotice(set,qual,info1,info2);
+ref(TypeSet) set; short integer qual; integer info1,info2;
+begin short integer code;
+    if nTypes >= maxTypes then FATAL_ERROR("Too many different types");
+    code:=nTypes:=nTypes+1;
+    typeTable(code) :- this TypeNotice;
+    this TypeNotice.into(set);
+end *** TypeNotice ***;
+
+!*** recursive ***;
+text procedure edtype(t); short integer t;
+inspect typeTable(t) do begin
+ edtype:-
+      if set==infixTypes
+      then copy( if qual=S_REAL    then "real"
+	    else if qual=S_LONG    then "long real"
+	    else if qual=S_SIZE    then "size"
+	    else if qual=S_CHAR    then "character"
+	    else if qual=S_BOOLEAN then "Boolean"
+	    else if qual=S_LABEL   then "label"
+				   else "**Undefined**" )
+ else if set==integerTypes
+      then  ( if qual=S_SHORT   then copy("short integer")
+	 else if qual=S_INTEGER then copy("integer")
+	 else("range(" & copy(leftint(info1))&":"&leftint(info2) & ")"))
+ else if set==structTypes
+      then  ( if info1=0 then("infix(" & edSymbol(qual) &")")
+	 else("infix(" & symtab(qual).symbol & ":" & leftint(info1-1) & ")" ))
+ else if set==entTypes then("entry(" & edSymbol(qual) & ")")
+ else if set==refTypes then("ref("   & edSymbol(qual) & ")")
+ else if set==fieldTypes then("field(" & edtype(qual) & ")")
+ else if set==nameTypes then( "name("  & edtype(qual) & ")")
+ else copy("**Undefined**")
+end otherwise edtype:-copy("**ILLEGAL**");
+%title *********     M   o   d   u   l   e     *********
+link class module(modid); value modid; text modid;
+begin short integer bias,ntag; text modcode;
+    Boolean system; ref(head) dclset;
+
+    dclset:-new head; this module.into(modset);
+end *** module ***;
+
+
+% *********   D i s p l a y    N o t i c e   *********
+
+link class displnotice(d,old); ref(descr) d,old;
+begin end;
+
+
+% *********   M a c r o    D a t a   *********
+
+head class mnemonic(visible); Boolean visible;;
+
+mnemonic class macro(npar); short integer npar;
+begin ref(file) msc; !ref to it's macro scanner;
+        procedure dump(bx); ref(symbolbox) bx;
+        begin ref(link) ms;
+              outtext(" Macro " & bx.symbol & ":"); outimage;
+              ms:-first;
+              while ms=/=none do begin inspect ms
+                  when macro_symbol do dump when macro_param do dump;
+                ms:-ms.suc; end;
+        end;
+end;
+
+link class macro_symbol(s,box,v); value v;
+     short integer s; ref(symbolbox) box; text v;
+begin
+        procedure dump;
+        begin outtext(" MacroSymbol: " & 
+                        edSymbol(s) & "/" &
+                        box.symbol & "/" & v ); outimage; end;
+end;
+
+link class macro_param(n); short integer n;
+begin
+        procedure dump;
+        begin outtext(" MacroParam#"); outint(n,0);
+              outchar(' '); outimage; end;
+end;
+
+% *********   C a s e   S t a t e m e n t  D e s c r i p t o r   *********
+
+link class caseDescr(lb,ub); integer lb,ub; ! lower and upper bound;
+begin short integer branches;   ! counts the actual number of branches;
+    short integer type;           ! S_INT or S_CHAR;
+    boolean noIndex;          ! true if branch should term. with GOTO;
+end;
+%title ******   D e s c r i p t o r s   ******
+
+%   info from %tag-directive:
+
+ref(seqtag) taglist;
+class seqtag(box); ref(symbolbox) box;
+begin ref(seqtag) next; ref(descr) d; end;
+
+%   A descriptor is marked 'global' if it is declared on the
+%   outermost level or is declared through insert module.
+
+link class descr;
+begin ref(symbolbox) symb; !  character idhi,idlo;
+    short integer tag;   ! tag of descr - must be zero until Pass2;
+    short integer xtag;  ! <>0 for descr tagged thru %tag ;
+    Boolean global,visible;
+
+    global:=rutlev=0;
+end;
+
+descr class system_descr;
+begin short integer instr; end;
+
+descr class label_descr;
+begin end;
+
+descr class dest_descr;
+begin short integer dx; end;
+
+descr class record;
+begin Boolean used_as_type,dynamic,indefinite,packed;
+    ref(symbolbox) prefbox;
+%   character prefhi,preflo;
+    ref(head) atrset; ref(head) variantset;
+end;
+
+link class variant;
+begin ref(head) atrset; end;
+
+class parspec;
+begin ref(head) import; ref(quant) export,exit; end;
+
+descr class profile;
+begin ref(parspec) spec; Boolean interface,libProc; end;
+
+descr class routine;
+begin
+%     character profhi,proflo;
+      ref(head) local;
+      ref(symbolbox) profbox;
+end;
+
+profile class peculiar(kind); short integer kind;
+begin ref(head) local;
+      short integer body; !tag;
+      text info;
+end;
+
+descr class quant(type); short integer type;
+begin Boolean preped,read_only;
+    short integer count;
+    ref(head) initval;
+    text sysid;
+end;
+%title *****   Access record attribute   *****
+
+      ref(quant) procedure rec_atr(r,i);
+      ref(record) r; short integer i;
+      begin ref(quant) q,a; ref(record) rr; ref(variant) v;
+            rr:-r;
+         L: inspect r do begin
+               a:-atrset.first;
+               while a=/=none do begin
+                     if a.symb.id=i
+                     then begin
+                        rec_atr:-a; goto EXT end;
+                     a:-a.suc;
+               end;
+               v:-variantset.first;
+               while true do inspect v do begin v:-suc;
+                     a:-atrset.first;
+                     while a=/=none do begin
+                        if a.symb.id=i
+                        then begin
+                              rec_atr:-a; goto EXT end;
+                        a:-a.suc;
+                     end;
+               end
+               otherwise begin
+                  if prefbox=/=none then begin
+                     if prefbox.curmeaning is record then r:-prefbox.curmeaning
+                     else begin
+                        ERROR("Unknown prefix: " & prefbox.symbol);
+                        inspect new record do begin
+                           atrset:-new head; variantset:-new head;
+                           symb:-prefbox; r:-this record;
+                        end;
+                     end;
+                     goto L;
+                  end; goto SCANX;
+               end;         SCANX:
+            end inspect r;
+
+            rec_atr:-q:-new quant(T_UNDEF);
+            q.symb:-symtab(i);
+            ERROR(q.symb.symbol & " is not an attribute of " & rr.symb.symbol );
+      EXT:end *** rec_atr ***;
+
+%title *********   E x p r e s s i o n   *********
+
+link class expr;;
+expr class quaopr(x,type);   ref(expr) x; short integer type;;
+expr class dsize(r,x); short integer r; ref(expr) x;;
+expr class binopr(opr,x,y);  short integer opr; ref(expr) x,y;;
+expr class unopr(opr,x);     short integer opr; ref(expr) x;;
+expr class repexpr(exprset); ref(head) exprset;;
+expr class ifexpr;     begin ref(expr) cond,x,y; end;
+
+expr class designator(varset); ref(head) varset;;
+
+link class variable;
+begin
+      ref(symbolbox) varbox;
+      ref(head) argset;
+end;
+
+link class varexpr(vx,argset); ref(expr) vx; ref(head) argset;;
+
+link class varcall(vx,argset,prf);
+ref(expr) vx; ref(head) argset; short integer prf;;
+
+link class qualification(type); short integer type;;
+
+% link class elt_notice(id,elt); short integer id; ref(const) elt;;
+link class elt_notice(ebox,elt); ref(symbolbox) ebox; ref(const) elt;;
+
+link class quant_notice(q); ref(quant) q;;
+
+expr class const(instr); short integer instr;;
+
+const class val_const(v); text v;;
+
+% const class idn_const(id); short integer id;;
+const class idn_const(ibox); ref(symbolbox) ibox;;
+
+% const class offset_const;
+% begin short integer rid,ndot; short integer array qid(1:5); end;
+const class offset_const;
+begin short integer of; short integer ndot;
+      short integer array q(1:5);
+end;
+
+const class structured_const;
+begin short integer str; ref(head) elt_set; end;
+
+const class repeated_const; begin ref(head) elt_set; end;
+%title *********  Display maintainence  *********
+
+procedure displ(d); ref(descr) d;
+begin ref(linkage) old;
+      if module_trace>1 then outtext(" >>> Into display: ");
+      inspect d do begin
+         if module_trace>1 then prt(this descr,20);
+         inspect symb do begin
+            old:-curmeaning; curmeaning:-this descr;
+         end;
+         if not global
+         then new displnotice(this descr,old).into(redeclset);
+         inspect old
+            when descr do
+	         if global and then d.global then
+	         ERROR("Illegal re-declaration of " & symb.symbol)
+            when mnemonic do
+	         ERROR("Mnemonic re-declaration: " & symb.symbol)
+         ;
+      end d=/=none;
+      if module_trace>1 then outimage;
+end *** displ ***;
+
+procedure update_display(s); ref(head) s;
+begin ref(descr) d; ref(linkage) old;
+      if module_trace>1 then begin
+         outtext(" >>>>>>> Update display start"); outimage end;
+ inspect s do begin
+    d:-first;
+    while true do inspect d do begin
+             if module_trace>1 then prt(this descr,20);
+         inspect symb do begin
+            old:-curmeaning; curmeaning:-this descr;
+         end;
+	if not global
+	then new displnotice(this descr,old).into(redeclset);
+	inspect old
+	   when descr do
+	         if global and then d.global then
+	         ERROR("Illegal re-declaration of " & symb.symbol)
+            when mnemonic do
+	         ERROR("Mnemonic re-declaration: " & symb.symbol)
+	;
+       d:-suc;
+    end otherwise goto XXX; XXX:
+ end s=/=none;
+      if module_trace>1 then begin
+         outtext(" <<<<<<> Update display end"); outimage end;
+end *** update_display ***;
+
+%title ******   P r i n t    D a t a    E l e m e n t   ******
+
+  procedure prt(d,pos); ref(linkage) d; short integer pos;
+  begin
+        procedure prt_parspec(p,pos); ref(parspec) p; short integer pos;
+        inspect p do
+        begin ref(quant) q;
+              if import =/= none then
+              begin setpos(pos); outtext("import");
+                    for q:-import.first,q.suc while q =/= none do
+                    begin prt(q,pos+8); outimage end;
+              end;
+              if export =/= none then
+              begin setpos(pos); outtext("export");
+                    prt(export,pos+8); outimage;
+              end
+         else if exit =/= none then
+              begin setpos(pos); outtext("exit");
+                    prt(exit,pos+8); outimage;
+              end;
+        end *** prt - parspec ***;
+
+        procedure outName(t); text t;
+        inspect d qua descr do begin outtext(t);
+              if xtag<>0 then
+                 outtext("X" & leftint(xtag) );
+              outtext("T" & leftint(tag)   & ":" & symb.symbol);
+        end;
+
+        if pos > 0 then setpos(pos);
+        inspect d
+   when system_descr do
+        begin outname("system-function "); outchar(';'); outimage end
+   when label_descr do
+        begin outname("label-const "); outchar(';'); outimage; end
+   when dest_descr do
+        begin outname("destination-const "); outimage; end
+   when record do
+        begin ref(descr) d; ref(variant) v;
+              outname("Record ");
+              if prefbox =/= none then
+              outtext(":" & prefbox.symbol); outchar(';');
+              if used_as_type then outtext("   info ""TYPE"";");
+              if dynamic then outtext("   info ""DYNAMIC"";");
+              outimage; setpos(pos); outtext("begin ");
+              if atrset.empty then outimage else
+              for d:-atrset.first,d.suc while d =/= none do prt(d,pos+6+1);
+              if not variantset.empty then
+              begin for v:-variantset.first,v.suc while v =/= none do
+                    begin setpos(pos+6); outtext("Variant"); outimage;
+                          if not v.atrset.empty then
+                          begin for d:-v.atrset.first,d.suc
+                                while d=/=none do prt(d,pos+6+1);
+                          end;
+                    end;
+              end;
+              setpos(pos); outtext("end;"); outimage;
+        end
+   when peculiar do
+        begin ref(quant) q;
+              if kind=S_ROUTINE  then outtext("routine """)
+         else if kind=S_SYSRUT   then outtext("system(""")
+         else if kind=S_KNOWN    then outtext("known(""")
+         else if kind=S_EXTERNAL then outtext("external(""")
+         else IERR; outtext(info); outname(""") ");
+              outchar(';'); outimage;
+              prt_parspec(spec,pos);
+              if local =/= none then begin prt(local,pos); outimage end;
+        end
+   when profile do
+        begin if interface then outtext("global ");
+              outname("profile "); outchar(';'); outimage;
+              prt_parspec(spec,pos);
+        end
+   when routine do
+        begin outtext("Routine("); outtext(profbox.symbol);
+              outname(") "); outchar(';'); outimage;
+              if local =/= none then begin prt(local,pos); outimage end;
+        end
+   when quant do
+        begin if read_only then outtext("constant ");
+              outname(edtype(type) & " " );
+              if count ne 1 then outtext("(" & leftint(count) & ")");
+              if initval =/= none then
+              begin Boolean b;
+                    ref(const) c;
+                    b:=initval.cardinal>1; c:-initval.first;
+                    outchar('='); if b then outchar('('); prt(c,0);
+                    for c:-c.suc while c=/=none do
+                    begin outchar(','); prt(c,0) end;
+                    if b then outchar(')');
+              end;
+              outchar(';'); outimage;
+        end
+   when designator do
+        begin ref(link) v; ref(expr) x; Boolean flg1,flg2;
+              if not varset.empty then
+              begin for v:-varset.first,v.suc while v =/= none do
+                    inspect v when variable do
+                    begin if flg1 then outchar('.');
+                          flg1:=true; outtext(varbox.symbol);
+                          if argset =/= none then
+                          begin outchar('('); flg2:=false;
+                                for x:-argset.first,x.suc
+                                while x =/= none do
+                                begin if flg2 then outchar(',');
+                                      flg2:=true; prt(x,0);
+                                end;
+                                outchar(')');
+                          end;
+                    end
+               when varexpr do
+                    begin if flg1 then outchar('.'); flg1:=true;
+                          outchar('('); prt(vx,0); outchar(')');
+                          if argset =/= none then
+                          begin outchar('('); flg2:=false;
+                                for x:-argset.first,x.suc
+                                while x =/= none do
+                                begin if flg2 then outchar(',');
+                                      flg2:=true; prt(x,0);
+                                end;
+                                outchar(')');
+                          end;
+                    end
+               when varcall do
+                    begin if flg1 then outchar('.'); flg1:=true;
+                          outtext("call " &
+                      edSymbol(prf) & "(");
+                          prt(vx,0); outchar(')');
+                          if argset =/= none then
+                          begin outchar('('); flg2:=false;
+                                for x:-argset.first,x.suc
+                                while x =/= none do
+                                begin if flg2 then outchar(',');
+                                      flg2:=true; prt(x,0);
+                                end;
+                                outchar(')');
+                          end;
+                    end
+               when qualification do
+                    begin outtext(" qua " & edtype(type) );
+                          flg1:=true;
+                    end
+          otherwise IERR;
+              end;
+        end
+
+   when repexpr do
+        begin ref(expr) x; x:-exprset.first; outchar('('); prt(x,0);
+              for x:-x.suc while x =/= none do
+              begin outchar(','); prt(x,0) end;
+              outchar(')');
+        end
+   when quaopr do
+        begin outchar('('); prt(x,0); outchar(')');
+              outtext(" qua "); outtext(edtype(type));
+        end
+   when dsize do
+        begin outtext("size(" & edSymbol(r) & ":");
+              prt(x,0); outchar(')');
+        end
+   when binopr do
+        begin outchar('('); prt(x,0); outchar(')');
+              if opr=S_ADD then outtext(" + ")
+         else if opr=S_SUB then outtext(" - ")
+         else if opr=S_MULT then outtext(" * ")
+         else if opr=S_DIV then outtext(" / ")
+         else if opr=S_REM then outtext(" rem ")
+         else if opr=S_LT then outtext(" < ")
+         else if opr=S_LE then outtext(" <= ")
+         else if opr=S_EQ then outtext(" = ")
+         else if opr=S_GT then outtext(" > ")
+         else if opr=S_GE then outtext(" >= ")
+         else if opr=S_NE then outtext(" <> ")
+         else if opr=S_AND then outtext(" and ")
+         else if opr=S_OR then outtext(" or ")
+         else if opr=S_XOR then outtext(" xor ")
+         else IERR;
+              outchar('('); prt(y,0); outchar(')');
+        end
+   when unopr do
+        begin
+              if opr=S_NEG  then outtext(" - ")
+         else if opr=S_NOT  then outtext(" not ")
+         else if opr=S_NAME then outtext(" name")
+         else IERR;
+              outchar('('); prt(x,0); outchar(')');
+        end
+   when ifexpr do
+        begin outtext("if "); prt(cond,0); outtext(" then ");
+              prt(x,0); outtext(" else "); prt(y,0);
+        end
+   when module do
+        begin if system then outtext("sys");
+              outtext("insert "); outtext(modid);
+              outchar(';'); outimage; prt(dclset,pos);
+        end
+   when val_const do
+        begin outchar('''); outtext(v); outchar(''') end
+   when offset_const do
+        begin short integer i;
+              outtext("field(" & edSymbol(of));
+              for i:=1 step 1 until ndot
+              do outtext("." & edSymbol(q(i)));
+              outchar(')');
+        end
+   when idn_const do
+        begin if instr=S_C_OADDR then outtext("ref(")
+         else if instr=S_C_GADDR then outtext("name(")
+         else if instr=S_C_SIZE  then outtext("size(")
+         else if instr=S_C_PADDR then outtext("label(")
+         else if instr=S_C_RADDR then outtext("entry(")
+         else                         outtext("**Unknown(");
+              outtext(ibox.symbol); outchar(')');
+        end
+   when structured_const do
+        begin ref(elt_notice) e;
+              outtext("record:" & edSymbol(str) & "(");
+              e:-elt_set.first;
+              if e =/= none then
+              begin outtext(e.ebox.symbol & "="); prt(e.elt,0);
+              L:    e:-e.suc;
+                    if e =/= none then
+                    begin outtext("," & e.ebox.symbol & "=");
+                          prt(e.elt,0); goto L;
+                    end;
+              end;
+              outchar(')');
+        end
+   when repeated_const do
+        begin ref(const) e; e:-elt_set.first; outchar('(');
+              if e =/= none then
+              begin prt(e,0);  L:   e:-e.suc;
+                    if e =/= none then
+                    begin outchar(','); prt(e,0); goto L end;
+              end;
+              outchar(')');
+        end
+   when const do
+        begin if instr=S_TRUE     then outtext("true")
+         else if instr=S_FALSE    then outtext("false")
+         else if instr=S_ONONE    then outtext("none")
+         else if instr=S_ANONE    then outtext("nofield")
+         else if instr=S_GNONE    then outtext("noname")
+         else if instr=S_NOSIZE   then outtext("nosize")
+         else if instr=S_NOWHERE  then outtext("nowhere")
+         else if instr=S_NOBODY   then outtext("nobody")
+         else                          outtext("**Unknown");
+        end
+   when macro do
+        begin
+        end
+   when mnemonic do
+        begin
+        end
+   when head do
+        begin ref(descr) d; outtext("begin");
+              if empty then outimage else
+              for d:-first,d.suc while d =/= none do prt(d,pos+6);
+              setpos(pos); outtext("end;"); outimage;
+        end
+        otherwise outtext("**Unknown data element**");
+  end *** prt ***;
+
+%title ******   I n i t i a l i z a t i o n   ******
+%  procedure InitCommon;
+   begin character firstch; short integer sym,i;
+
+      procedure def_sysfnc(istr); short integer istr;
+      inspect new system_descr do begin
+            instr:=istr;
+            DEFIDENT; symb:-symtab(hash);
+            symb.curmeaning:-this system_descr;
+      end *** def_sysfnc ***;
+
+%title ******   Initialise COMMON   ******
+begin
+      integer i; character cs; text t,listname,feoptions;
+      
+      TRC_info:-new head;; ! The set of trace and info items to be  ;
+	                      ! outputed before the next instruction   ;
+      TRC_init:-new head;  ! The initial set of trace and info items;
+      
+--      initTypeTable;
+      
+      modset:-new head;
+      qntset:-new head;
+      
+
+%     ******   R e a d  C o m p i l e r   P a r a m e t e r s   ******
+
+      L2name:-gettextinfo(7);
+      nscodename:-gettextinfo(4);
+
+      recomp:=getintinfo(22)=1;
+      GenerateScode:=getintinfo(1)=1;
+
+      timestamp:-datetime;
+      maxerrno:=getintinfo(4);            ! How many errors allowed?;
+      GiveNotes:= getintinfo(5)=0;        ! "NOTEs" to be output?;
+      simob_level:=getintinfo(30);
+      simob_descr:=  simob_level>0;
+      simob_entity:= simob_level>=2; simob_const:=simob_level>=3;
+
+%     ********* Open listing file ***********
+
+      listname:-gettextinfo(2);  listlength:=sysout.image.length;
+      if listname=/=notext then begin
+         t:-copy(listname); t:-lowcase(t);
+         if t = "sysout" then listfile:-sysout
+         else inspect new printfile(listname) do begin
+              listlength:=getintinfo(7); t:-blanks(listlength);
+              if not open(t) then begin
+                 listlength:=0; error1(-366,listname) end
+              else listfile:-this printfile;
+         end;
+      end;
+      listingon:=listfile=/=none;
+
+%     !*** set options and selectors as given to environment ***;
+
+      t:-gettextinfo(16);
+      while t.more do if t.getchar=':' then begin
+          if t.more then feoptions:-copy(t.sub(t.pos,t.length-t.pos+1));
+          t:-t.sub(1,t.pos-2); goto SETem;
+      end;
+      SETem: SetSelectors(t,0);
+             while feoptions.more do setopt(feoptions.getchar,1);
+
+      termstatus:=3;
+      currentpass:=1;  ! in pass 1;
+      !***** remember below: digits + sign + ONE SPACE *****;
+      !lefttxtbuf:-blanks(35); !*** enough to hold long real ***;
+      leftintbuf :-blanks(12); !*** enough to hold 32-bits integer ***;
+      leftsintbuf:-blanks( 7); !*** enough to hold 16-bits integer ***;
+
+	  DEFKEYWORD(S_NULL    ,"NULL");
+	DEFKEYWORD(S_RECORD    ,"RECORD");
+	DEFKEYWORD(S_LSHIFTL   ,"LSHIFTL"); -- extension to Scode, left shift logical
+	DEFKEYWORD(S_PREFIX    ,"PREFIX");
+	DEFKEYWORD(S_ATTR      ,"ATTR");
+	DEFKEYWORD(S_LSHIFTA   ,"LSHIFTA"); -- extension to Scode, left shift arithmetical
+	DEFKEYWORD(S_REP       ,"REP");
+	DEFKEYWORD(S_ALT       ,"ALT");
+	DEFKEYWORD(S_FIXREP    ,"FIXREP");
+	DEFKEYWORD(S_ENDRECORD ,"ENDRECORD");
+	DEFKEYWORD(S_C_RECORD  ,"C_RECORD");
+	DEFKEYWORD(S_TEXT      ,"TEXT");
+	DEFKEYWORD(S_C_CHAR    ,"C_CHAR");
+	DEFKEYWORD(S_C_INT     ,"C_INT");
+	DEFKEYWORD(S_C_SIZE    ,"C_SIZE");
+
+	DEFKEYWORD(S_C_REAL    ,"C_REAL");
+	DEFKEYWORD(S_C_LREAL   ,"C_LREAL");
+	DEFKEYWORD(S_C_AADDR   ,"C_AADDR");
+	DEFKEYWORD(S_C_OADDR   ,"C_OADDR");
+--S_C_REAL=15,S_C_LREAL=16,S_C_AADDR=17,S_C_OADDR=18,
+	DEFKEYWORD(S_C_GADDR   ,"C_GADDR");
+	DEFKEYWORD(S_C_PADDR   ,"C_PADDR");
+	DEFKEYWORD(S_C_DOT     ,"C_DOT");
+	DEFKEYWORD(S_C_RADDR   ,"C_RADDR");
+--S_C_GADDR=19,S_C_PADDR=20,S_C_DOT=21,S_C_RADDR=22,
+	DEFKEYWORD(S_NOBODY    ,"NOBODY");
+	DEFKEYWORD(S_ANONE     ,"ANONE");
+	DEFKEYWORD(S_ONONE     ,"ONONE");
+	DEFKEYWORD(S_GNONE     ,"GNONE");
+--S_NOBODY=23,S_ANONE=24,S_ONONE=25,S_GNONE=26,
+	DEFKEYWORD(S_NOWHERE   ,"NOWHERE");
+	DEFKEYWORD(S_TRUE      ,"TRUE");
+	DEFKEYWORD(S_FALSE     ,"FALSE");
+	DEFKEYWORD(S_PROFILE   ,"PROFILE");
+--S_NOWHERE=27,S_TRUE=28,S_FALSE=29,S_PROFILE=30,
+	DEFKEYWORD(S_KNOWN     ,"KNOWN");
+	DEFKEYWORD(S_SYSTEM    ,"SYSTEM");
+	DEFKEYWORD(S_EXTERNAL  ,"EXTERNAL");
+	DEFKEYWORD(S_IMPORT    ,"IMPORT");
+--S_KNOWN=31,S_SYSTEM=32,S_EXTERNAL=33,S_IMPORT=34,
+	DEFKEYWORD(S_EXPORT    ,"EXPORT");
+	DEFKEYWORD(S_EXIT      ,"EXIT");
+	DEFKEYWORD(S_ENDPROFILE ,"ENDPROFILE");
+	DEFKEYWORD(S_ROUTINESPEC ,"ROUTINESPEC");
+--S_EXPORT=35,S_EXIT=36,S_ENDPROFILE=37,S_ROUTINESPEC=38,
+	DEFKEYWORD(S_ROUTINE   ,"ROUTINE");
+	DEFKEYWORD(S_LOCAL     ,"LOCAL");
+	DEFKEYWORD(S_ENDROUTINE ,"ENDROUTINE");
+	DEFKEYWORD(S_MODULE    ,"MODULE");
+--S_ROUTINE=39,S_LOCAL=40,S_ENDROUTINE=41,S_MODULE=42,
+	DEFKEYWORD(S_EXISTING  ,"EXISTING");
+	DEFKEYWORD(S_TAG       ,"TAG");
+	DEFKEYWORD(S_BODY      ,"BODY");
+	DEFKEYWORD(S_ENDMODULE ,"ENDMODULE");
+--S_EXISTING=43,S_TAG=44,S_BODY=45,S_ENDMODULE=46,
+	DEFKEYWORD(S_LABELSPEC ,"LABELSPEC");
+	DEFKEYWORD(S_LABEL     ,"LABEL");
+	DEFKEYWORD(S_RANGE     ,"RANGE");
+	DEFKEYWORD(S_GLOBAL    ,"GLOBAL");
+--S_LABELSPEC=47,S_LABEL=48,S_RANGE=49,S_GLOBAL=50,
+	DEFKEYWORD(S_INIT      ,"INIT");
+	DEFKEYWORD(S_CONSTSPEC ,"CONSTSPEC");
+	DEFKEYWORD(S_CONST     ,"CONST");
+	DEFKEYWORD(S_DELETE    ,"DELETE");
+--S_INIT=51,S_CONSTSPEC=52,S_CONST=53,S_DELETE=54,
+	DEFKEYWORD(S_FDEST     ,"FDEST");
+	DEFKEYWORD(S_BDEST     ,"BDEST");
+	DEFKEYWORD(S_SAVE      ,"SAVE");
+	DEFKEYWORD(S_RESTORE   ,"RESTORE");
+--S_FDEST=55,S_BDEST=56,S_SAVE=57,S_RESTORE=58,
+	DEFKEYWORD(S_BSEG      ,"BSEG");
+	DEFKEYWORD(S_ESEG      ,"ESEG");
+	DEFKEYWORD(S_SKIPIF    ,"SKIPIF");
+	DEFKEYWORD(S_ENDSKIP   ,"ENDSKIP");
+--S_BSEG=59,S_ESEG=60,S_SKIPIF=61,S_ENDSKIP=62,
+	DEFKEYWORD(S_IF        ,"IF");
+	DEFKEYWORD(S_ELSE      ,"ELSE");
+	DEFKEYWORD(S_ENDIF     ,"ENDIF");
+--S_IF=63,S_ELSE=64,S_ENDIF=65,
+	DEFKEYWORD(S_RSHIFTL   ,"RSHIFTL"); -- extension to Scode, right shift logical
+--S_RSHIFTL=66, -- extension to Scode, right shift logical
+	DEFKEYWORD(S_PRECALL   ,"PRECALL");
+	DEFKEYWORD(S_ASSPAR    ,"ASSPAR");
+	DEFKEYWORD(S_ASSREP    ,"ASSREP");
+	DEFKEYWORD(S_CALL      ,"CALL");
+--S_PRECALL=67,S_ASSPAR=68,S_ASSREP=69,S_CALL=70,
+	DEFKEYWORD(S_FETCH     ,"FETCH");
+	DEFKEYWORD(S_REFER     ,"REFER");
+	DEFKEYWORD(S_DEREF     ,"DEREF");
+	DEFKEYWORD(S_SELECT    ,"SELECT");
+--S_FETCH=71,S_REFER=72,S_DEREF=73,S_SELECT=74,
+	DEFKEYWORD(S_REMOTE    ,"REMOTE");
+	DEFKEYWORD(S_LOCATE    ,"LOCATE");
+	DEFKEYWORD(S_INDEX     ,"INDEX");
+	DEFKEYWORD(S_INCO      ,"INCO");
+--S_REMOTE=75,S_LOCATE=76,S_INDEX=77,S_INCO=78,
+	DEFKEYWORD(S_DECO      ,"DECO");
+	DEFKEYWORD(S_PUSH      ,"PUSH");
+	DEFKEYWORD(S_PUSHC     ,"PUSHC");
+	DEFKEYWORD(S_PUSHLEN   ,"PUSHLEN");
+--S_DECO=79,S_PUSH=80,S_PUSHC=81,S_PUSHLEN=82,
+	DEFKEYWORD(S_DUP       ,"DUP");
+	DEFKEYWORD(S_POP       ,"POP");
+	DEFKEYWORD(S_EMPTY     ,"EMPTY");
+	DEFKEYWORD(S_SETOBJ    ,"SETOBJ");
+--S_DUP=83,S_POP=84,S_EMPTY=85,S_SETOBJ=86,
+	DEFKEYWORD(S_GETOBJ    ,"GETOBJ");
+	DEFKEYWORD(S_ACCESS    ,"ACCESS");
+	DEFKEYWORD(S_FJUMP     ,"FJUMP");
+	DEFKEYWORD(S_BJUMP     ,"BJUMP");
+--S_GETOBJ=87,S_ACCESS=88,S_FJUMP=89,S_BJUMP=90,
+	DEFKEYWORD(S_FJUMPIF   ,"FJUMPIF");
+	DEFKEYWORD(S_BJUMPIF   ,"BJUMPIF");
+	DEFKEYWORD(S_SWITCH    ,"SWITCH");
+	DEFKEYWORD(S_GOTO      ,"GOTO");
+--S_FJUMPIF=91,S_BJUMPIF=92,S_SWITCH=93,S_GOTO=94,
+	DEFKEYWORD(S_T_INITO   ,"T_INITO");
+	DEFKEYWORD(S_T_GETO    ,"T_GETO");
+	DEFKEYWORD(S_T_SETO    ,"T_SETO");
+	DEFKEYWORD(S_ADD       ,"ADD");
+--S_T_INITO=95,S_T_GETO=96,S_T_SETO=97,S_ADD=98,
+	DEFKEYWORD(S_SUB       ,"SUB");
+	DEFKEYWORD(S_MULT      ,"MULT");
+	DEFKEYWORD(S_DIV       ,"DIV");
+	DEFKEYWORD(S_REM       ,"REM");
+--S_SUB=99,S_MULT=100,S_DIV=101,S_REM=102,
+	DEFKEYWORD(S_NEG       ,"NEG");
+	DEFKEYWORD(S_AND       ,"AND");
+	DEFKEYWORD(S_OR        ,"OR");
+	DEFKEYWORD(S_XOR       ,"XOR");
+--S_NEG=103,S_AND=104,S_OR=105,S_XOR=106,
+	DEFKEYWORD(S_IMP       ,"IMP");
+	DEFKEYWORD(S_EQV       ,"EQV");
+	DEFKEYWORD(S_NOT       ,"NOT");
+	DEFKEYWORD(S_DIST      ,"DIST");
+--S_IMP=107,S_EQV=108,S_NOT=109,S_DIST=110,
+	DEFKEYWORD(S_ASSIGN    ,"ASSIGN");
+	DEFKEYWORD(S_UPDATE    ,"UPDATE");
+	DEFKEYWORD(S_CONVERT   ,"CONVERT");
+	DEFKEYWORD(S_SYSINSERT ,"SYSINSERT");
+--S_ASSIGN=111,S_UPDATE=112,S_CONVERT=113,S_SYSINSERT=114,
+	DEFKEYWORD(S_INSERT    ,"INSERT");
+	DEFKEYWORD(S_ZEROAREA  ,"ZEROAREA");
+	DEFKEYWORD(S_INITAREA  ,"INITAREA");
+	DEFKEYWORD(S_COMPARE   ,"COMPARE");
+--S_INSERT=115,S_ZEROAREA=116,S_INITAREA=117,S_COMPARE=118,
+	DEFKEYWORD(S_LT        ,"LT");
+	DEFKEYWORD(S_LE        ,"LE");
+	DEFKEYWORD(S_EQ        ,"EQ");
+	DEFKEYWORD(S_GE        ,"GE");
+--S_LT=119,S_LE=120,S_EQ=121,S_GE=122,
+	DEFKEYWORD(S_GT        ,"GT");
+	DEFKEYWORD(S_NE        ,"NE");
+	DEFKEYWORD(S_EVAL      ,"EVAL");
+	DEFKEYWORD(S_INFO      ,"INFO");
+--S_GT=123,S_NE=124,S_EVAL=125,S_INFO=126,
+	DEFKEYWORD(S_LINE      ,"LINE");
+	DEFKEYWORD(S_SETSWITCH ,"SETSWITCH");
+--S_LINE=127,S_SETSWITCH=128,
+	DEFKEYWORD(S_RSHIFTA   ,"RSHIFTA"); -- extension to Scode, right shift arithmetical
+--S_RSHIFTA=129, -- extension to Scode, right shift arithmetical
+	DEFKEYWORD(S_PROGRAM   ,"PROGRAM");
+	DEFKEYWORD(S_MAIN      ,"MAIN");
+--S_PROGRAM=130,S_MAIN=131,
+	DEFKEYWORD(S_ENDPROGRAM ,"ENDPROGRAM");
+	DEFKEYWORD(S_DSIZE     ,"DSIZE");
+	DEFKEYWORD(S_SDEST     ,"SDEST");
+	DEFKEYWORD(S_RUPDATE   ,"RUPDATE");
+--S_ENDPROGRAM=132,S_DSIZE=133,S_SDEST=134,S_RUPDATE=135,
+	DEFKEYWORD(S_ASSCALL   ,"ASSCALL");
+	DEFKEYWORD(S_CALL_TOS  ,"CALL_TOS");
+	DEFKEYWORD(S_DINITAREA ,"DINITAREA");
+	DEFKEYWORD(S_NOSIZE    ,"NOSIZE");
+--S_ASSCALL=136,S_CALL_TOS=137,S_DINITAREA=138,S_NOSIZE=139,
+	DEFKEYWORD(S_POPALL    ,"POPALL");
+	DEFKEYWORD(S_REPCALL   ,"REPCALL");
+	DEFKEYWORD(S_INTERFACE ,"INTERFACE");
+	DEFKEYWORD(S_MACRO     ,"MACRO");
+--S_POPALL=140,S_REPCALL=141,S_INTERFACE=142,S_MACRO=143,
+	DEFKEYWORD(S_MARK      ,"MARK");
+	DEFKEYWORD(S_MPAR      ,"MPAR");
+	DEFKEYWORD(S_ENDMACRO  ,"ENDMACRO");
+	DEFKEYWORD(S_MCALL     ,"MCALL");
+--S_MARK=144,S_MPAR=145,S_ENDMACRO=146,S_MCALL=147,
+	DEFKEYWORD(S_PUSHV     ,"PUSHV");
+	DEFKEYWORD(S_SELECTV   ,"SELECTV");
+	DEFKEYWORD(S_REMOTEV   ,"REMOTEV");
+	DEFKEYWORD(S_INDEXV    ,"INDEXV");
+--S_PUSHV=148,S_SELECTV=149,S_REMOTEV=150,S_INDEXV=151,
+	DEFKEYWORD(S_ACCESSV   ,"ACCESSV");
+	DEFKEYWORD(S_DECL      ,"DECL");
+	DEFKEYWORD(S_STMT      ,"STMT");
+--S_ACCESSV=152,S_DECL=153,S_STMT=154,
+--N_INSTR=154,
+
+!******    A d d i t i o n a l    K E Y W O R D S    ******;
+
+	DEFKEYWORD(S_BEGIN     ,"BEGIN");
+	DEFKEYWORD(S_END       ,"END");
+	DEFKEYWORD(S_VARIANT   ,"VARIANT");
+	DEFKEYWORD(S_SHORT     ,"SHORT");
+--S_BEGIN=155,S_END=156,S_VARIANT=157,S_SHORT=158,
+	DEFKEYWORD(S_LONG      ,"LONG");
+	DEFKEYWORD(S_INTEGER   ,"INTEGER");
+	DEFKEYWORD(S_SIZE      ,"SIZE");
+	DEFKEYWORD(S_REAL      ,"REAL");
+--S_LONG=159,S_INTEGER=160,S_SIZE=161,S_REAL=162,
+	DEFKEYWORD(S_CHAR      ,"CHARACTER");
+	DEFKEYWORD(S_BOOLEAN   ,"BOOLEAN");
+	DEFKEYWORD(S_REF       ,"REF");
+	DEFKEYWORD(S_NAME      ,"NAME");
+--S_CHAR=163,S_BOOLEAN=164,S_REF=165,S_NAME=166,
+	DEFKEYWORD(S_FIELD     ,"FIELD");
+	DEFKEYWORD(S_INFIX     ,"INFIX");
+	DEFKEYWORD(S_ENTRY     ,"ENTRY");
+	DEFKEYWORD(S_NONE      ,"NONE");
+--S_FIELD=167,S_INFIX=168,S_ENTRY=169,S_NONE=170,
+	DEFKEYWORD(S_NONAME    ,"NONAME");
+	DEFKEYWORD(S_NOFIELD   ,"NOFIELD");
+	DEFKEYWORD(S_THEN      ,"THEN");
+	DEFKEYWORD(S_ELSIF     ,"ELSIF");
+--S_NONAME=171,S_NOFIELD=172,S_THEN=173,S_ELSIF=174,
+	DEFKEYWORD(S_QUA       ,"QUA");
+	DEFKEYWORD(S_VAR       ,"VAR");
+	DEFKEYWORD(S_REPEAT    ,"REPEAT");
+	DEFKEYWORD(S_WHILE     ,"WHILE");
+--S_QUA=175,S_VAR=176,S_REPEAT=177,S_WHILE=178,
+	DEFKEYWORD(S_DO        ,"DO");
+	DEFKEYWORD(S_ENDREPEAT ,"ENDREPEAT");
+	DEFKEYWORD(S_SYSRUT    ,"SYSROUTINE");
+	DEFKEYWORD(S_DEFINE    ,"DEFINE");
+--S_DO=179,S_ENDREPEAT=180,S_SYSRUT=181,S_DEFINE=182,
+	DEFKEYWORD(S_CASE      ,"CASE");
+	DEFKEYWORD(S_WHEN      ,"WHEN");
+	DEFKEYWORD(S_OTHERWISE ,"OTHERWISE");
+	DEFKEYWORD(S_ENDCASE   ,"ENDCASE");
+--S_CASE=183,S_WHEN=184,S_OTHERWISE=185,S_ENDCASE=186,
+	DEFKEYWORD(S_VISIBLE   ,"VISIBLE");
+	DEFKEYWORD(S_ASSERT    ,"ASSERT");
+	DEFKEYWORD(S_SKIP      ,"SKIP");
+--S_VISIBLE=187,S_ASSERT=188,S_SKIP=189,
+--N_KEYW=189,
+
+!******    A d d i t i o n a l    B A S I C    S Y M B O L S    ******;
+
+	DEFKEYWORD(S_INTVAL   ,"INTVAL");
+	DEFKEYWORD(S_REALVAL  ,"REALVAL");
+	DEFKEYWORD(S_LREALVAL ,"LREALVAL");
+	DEFKEYWORD(S_STRING   ,"STRING");
+--S_INTVAL=190,S_REALVAL=191,S_LREALVAL=192,S_STRING=193,
+	DEFKEYWORD(S_COLON    ,"COLON");
+	DEFKEYWORD(S_LPAR     ,"LPAR");
+	DEFKEYWORD(S_RPAR     ,"RPAR");
+	DEFKEYWORD(S_COMMA    ,"COMMA");
+--S_COLON=194,S_LPAR=195,S_RPAR=196,S_COMMA=197,
+	DEFKEYWORD(S_DOT      ,"DOT");
+	DEFKEYWORD(S_ADDRESS  ,"ADDRESS");
+	DEFKEYWORD(S_CHARS    ,"CHARS");
+	DEFKEYWORD(S_PERCENT  ,"PERCENT");
+--S_DOT=198,S_ADDRESS=199,S_CHARS=200,S_PERCENT=201,
+
+!******    A d d i t i o n a l   I N T E R N A L   S Y M B O L S    ******;
+
+	DEFKEYWORD(S_TRACE    ,"TRACE");
+	DEFKEYWORD(S_NOEXPR   ,"NOEXPR");
+	DEFKEYWORD(S_VARID    ,"VARID");
+	DEFKEYWORD(S_VAREXPR  ,"VAREXPR");
+--S_TRACE=202,S_NOEXPR=203,S_VARID=204,S_VAREXPR=205,
+	DEFKEYWORD(S_VARCALL  ,"VARCALL");
+	DEFKEYWORD(S_ARGLIST  ,"ARGLIST");
+	DEFKEYWORD(S_ENDVAR   ,"ENDVAR");
+	DEFKEYWORD(S_IFEXPR   ,"IFEXPR");
+--S_VARCALL=206,S_ARGLIST=207,S_ENDVAR=208,S_IFEXPR=209,
+	DEFKEYWORD(S_REPEXPR  ,"REPEXPR");
+	DEFKEYWORD(S_DEFLAB   ,"DEFLAB");
+	DEFKEYWORD(S_STRUCT   ,"STRUCT");
+	DEFKEYWORD(S_ENDWHEN  ,"ENDWHEN");
+--S_REPEXPR=210,S_DEFLAB=211,S_STRUCT=212,S_ENDWHEN=213,
+	DEFKEYWORD(S_SIMPLE   ,"SIMPLE");
+	DEFKEYWORD(S_DOTVAR   ,"DOTVAR");
+--S_SIMPLE=214,S_DOTVAR=215,
+	DEFKEYWORD(S_IDENT    ,"IDENT");
+--S_IDENT=216, !*** TEMP ***;
+--N_SYMB=216,
+--S_MXMX=216;
+
+    nsymb:=S_MXMX;
+    
+    initTypeTable;
+    
+   end *** Initialization ***;
+
+end *** Common ***;

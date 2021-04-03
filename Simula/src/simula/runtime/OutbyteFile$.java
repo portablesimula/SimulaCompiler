@@ -92,6 +92,21 @@ public class OutbyteFile$ extends ByteFile$ {
 		}
 	}
 
+	public void out2byte(final int b) {
+		if (!OPEN$)
+			throw new RuntimeException("file closed");
+//		RT.BREAK("OutbyteFile.outByte: b="+b);
+//		RT.BREAK("OutbyteFile.outByte: BYTESIZE$="+BYTESIZE$);
+//		RT.BREAK("OutbyteFile.outByte: 2 ** BYTESIZE$="+Math.pow(2,BYTESIZE$));
+//		if (b < 0 || b >= (Math.pow(2,BYTESIZE$)))
+//			throw new RuntimeException("Illegal byte value");
+		try {
+			outputStream.write(b);
+		} catch (IOException e) {
+			throw new RuntimeException("Out2byte failed", e);
+		}
+	}
+
 	public void outtext(final TXT$ t) {
 		TXT$.setpos(t, 1);
 		while (TXT$.more(t)) {

@@ -83,8 +83,7 @@ public final class ObjectRelation extends Expression {
 			return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
-			Util.TRACE("BEGIN ObjectRelation" + toString() + ".doChecking - Current Scope Chain: "
-					+ Global.currentScope.edScopeChain());
+			Util.TRACE("BEGIN ObjectRelation" + toString() + ".doChecking - Current Scope Chain: " + Global.currentScope.edScopeChain());
 		classDeclaration = getQualification(classIdentifier);
 		// Object IS ClassIdentifier | Object IN ClassIdentifier
 		lhs.doChecking();
@@ -93,7 +92,7 @@ public final class ObjectRelation extends Expression {
 		if (refIdent == null) {
 			Util.warning("NONE IS/IN " + classIdentifier + " -- Rewrite program");
 		} else {
-			if (!checkCompatability(lhs, classIdentifier))
+			if (!checkCompatability(lhs, opr, classIdentifier))
 				Util.warning("IS/IN is always FALSE -- " + classIdentifier + " is not compatible with " + refIdent);
 		}
 		this.type = Type.Boolean;
@@ -113,10 +112,10 @@ public final class ObjectRelation extends Expression {
 		String refIdent = lhs.type.getRefIdent();
 		if (refIdent == null) return ("false"); // NONE IS/IN Any is always FALSE
 		if (opr == KeyWord.IN) {
-			if (!checkCompatability(lhs, classIdentifier)) return ("false"); // warning("IN is always FALSE
+			if (!checkCompatability(lhs, opr, classIdentifier)) return ("false"); // warning("IN is always FALSE
 			return (lhs.get() + opr.toJavaCode() + classDeclaration.getJavaIdentifier());
 		} else if (opr == KeyWord.IS) {
-			if (!checkCompatability(lhs, classIdentifier)) return ("false"); // warning("IS is always FALSE
+			if (!checkCompatability(lhs, opr, classIdentifier)) return ("false"); // warning("IS is always FALSE
 			return ("IS$(" + lhs.get() + "," + classDeclaration.getJavaIdentifier() + ".class)");
 		} else {
 			Util.FATAL_ERROR("Impossible");

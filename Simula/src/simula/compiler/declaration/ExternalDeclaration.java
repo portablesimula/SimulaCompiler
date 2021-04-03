@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -99,7 +98,7 @@ public final class ExternalDeclaration extends Declaration {
 		this.declarationKind=Declaration.Kind.ExternalDeclaration;
 	}
 
-	public static void doParse(final Vector<Declaration> declarationList) {
+	public static void doParse(final DeclarationList declarationList) {
         // = EXTERNAL  CLASS  ExternalList
         // | EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
         // | EXTERNAL kind PROCEDURE ExternalItem  IS ProcedureDeclaration
@@ -136,9 +135,9 @@ public final class ExternalDeclaration extends Declaration {
 	}
 
 
-	private static Type readAttributeFile(final String identifier,final File file,final Vector<Declaration> declarationList) {
+	private static Type readAttributeFile(final String identifier,final File file,final DeclarationList declarationList) {
 		Type moduleType=null;
-		Util.warning("Separate Compiled Module is read from: \"" + file+"\"");
+		if(Option.verbose) Util.message("Separate Compiled Module is read from: \"" + file+"\"");
 		if(!(file.exists() && file.canRead())) {
 			Util.error("Can't read attribute file: "+file);	return(null);
 	    }

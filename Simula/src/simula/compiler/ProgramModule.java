@@ -7,6 +7,7 @@
  */
 package simula.compiler;
 
+import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
@@ -45,9 +46,9 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ProgramModule extends Statement {
-	final Declaration module;
-	final Variable sysin;
-	final Variable sysout;
+	BlockDeclaration module;
+	Variable sysin;
+	Variable sysout;
   
 	public String getRelativeAttributeFileName() {
 		if(module.declarationKind==Declaration.Kind.Class) return(Global.packetName+"/CLASS.AF");
@@ -61,16 +62,20 @@ public final class ProgramModule extends Statement {
 		else return(false);
 	}
 
-	public ProgramModule() {
-		Declaration module=null;
-		sysin=new Variable("sysin");
-		sysout=new Variable("sysout");
+
+	public ProgramModule() {}
+
+	public static ProgramModule parseProgramModule() {
+		BlockDeclaration module=null;
+		ProgramModule programModule=new ProgramModule();
+		programModule.sysin=new Variable("sysin");
+		programModule.sysout=new Variable("sysout");
 		try	{
 			if(Option.TRACE_PARSE) Parser.TRACE("Parse Program");
 			Global.currentScope=StandardClass.BASICIO;			// BASICIO Begin
-			new ConnectionBlock(sysin,null)                     //    Inspect sysin do
+			new ConnectionBlock(programModule.sysin,null)       //    Inspect sysin do
 			     .setClassDeclaration(StandardClass.InFile);
-			new ConnectionBlock(sysout,null)                    //    Inspect sysout do
+			new ConnectionBlock(programModule.sysout,null)      //    Inspect sysout do
 			     .setClassDeclaration(StandardClass.PrintFile);
 			Global.currentScope.sourceBlockLevel=0;
 			while(Parser.accept(KeyWord.EXTERNAL)) {
@@ -94,9 +99,10 @@ public final class ProgramModule extends Statement {
 			}
 			StandardClass.BASICIO.declarationList.add(module);
 		
-			if(Option.verbose) Util.TRACE("ProgramModule: END NEW SimulaProgram: "+toString());
+			if(Option.verbose) Util.TRACE("ProgramModule: END NEW SimulaProgram: "+programModule.toString());
 		} catch(Throwable e) { Util.INTERNAL_ERROR("Impossible",e); }
-		this.module=module;
+		programModule.module=module;
+		return(programModule);
 	}	
 
 	public void doChecking() {

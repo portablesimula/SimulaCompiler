@@ -1337,46 +1337,111 @@ public class ENVIRONMENT$ extends RTObject$ {
 	// **********************************************************************
 	// *** Additional S-Port'like Procedures
 	// **********************************************************************
+	public String SourceFileName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\simulettaTestPrograms\\TEST1.sml";
+
 	public static PRCQNT$ EXCEPTION_HANDLER=null;
     public void DEFEXCEPTION(final PRCQNT$ EXCEPTION_HANDLER) {
     	//System.out.println("ENVIRONMENT.DEFEXCEPTION: EXCEPTION_HANDLER="+EXCEPTION_HANDLER);
     	ENVIRONMENT$.EXCEPTION_HANDLER=EXCEPTION_HANDLER;
     }
 
-    public int hash(final TXT$ t) {
-    	RT.NOT_IMPLEMENTED("hash"); // TODO: Implement it
-    	return(0);
-    }
-   
-    public char loadChar(final TXT$ t,final int i) {
-    	RT.NOT_IMPLEMENTED("loadChar"); // TODO: Implement it
-    	return(' ');
-    }
     
-    public void storeChar(final char c,final TXT$ t,final int i) {
-    	RT.NOT_IMPLEMENTED("storeChar"); // TODO: Implement it
-    }
+//  Visible known("HASH") HASH;
+//  import infix(txtqnt) txt; export short integer val;
+//      -- ***** TEXT param, not STRING - SINT export, but must be in 0:255
+//  begin range(0:255) tmp,shift,ch;
+//        -----------------------------------------------------------------
+//        val:=0;
+//        if txt.ent <> none
+//        then shift:=1; tmp:=0;
+//             repeat while txt.sp<txt.lp do
+//                    -- ******* truncate below - DO NOT OVERFLOW ****** --
+//                    tmp:=tmp + ((txt.ent.cha(txt.sp) qua integer)*shift);
+//                    -- *******  i.e. "rem 256" *********************** --
+//                    txt.sp:=txt.sp+1;  shift:=5-shift;
+//             endrepeat;
+//             val:=tmp;
+//        endif;
+//        -----------------------------------------------------------------
+//  end;
+  public int hash(final TXT$ t) {
+  	int hash=t.edText().hashCode();
+//  	RT.NOT_IMPLEMENTED("hash"); // TODO: Implement it
+  	RT.println("ENDOF hash: hash="+hash+", t="+t);
+  	return(hash);
+  }
+ 
+  public char loadChar(final TXT$ t,final int i) {
+  	// Returns the character at position i+1 (NB).
+  	// I.e. characters are counted from zero
+  	// c=t.char[i];
+  	TEXTOBJ obj=t.OBJ;
+  	char c=obj.MAIN[t.START+i];
+  	return(c);
+  }
+  
+  public void storeChar(final char c,final TXT$ t,final int i) {
+  	// Deposit c at position i+1 (NB).
+  	// I.e. characters are counted from zero
+  	// t.char[i]=c;
+  	TEXTOBJ obj=t.OBJ;
+  	obj.MAIN[t.START+i]=c;
+  }
     
-    public TXT$ getTextInfo(final int i) {
-    	RT.NOT_IMPLEMENTED("getTextInfo"); // TODO: Implement it
-    	return(null);
-    }
+  public TXT$ getTextInfo(final int i) {
+  	switch(i) {
+  	case 1:  return(new TXT$(SourceFileName));  // SourceFileName
+  	case 2:  return(new TXT$("sysout"));  // listname  i.e.  Listing File Name
+  	case 4:  return(new TXT$("nscodename"));  // nscodename
+  	case 7:  return(new TXT$("ScratchFileName"));  // ScratchFileName
+  	case 11: return(new TXT$("AttributeInputFileName"));  // AttributeInputFileName
+  	case 12: return(new TXT$("AttributeOutputFileName")); // AttributeOutputFileName
+  	case 16: return(new TXT$("A")); // options and selectors
+  	default: RT.NOT_IMPLEMENTED("getTextInfo: "+i); // TODO: Implement it
+  	}
+  	return(null);
+  }
     
     public void giveTextInfo(final int i,final TXT$ t) {
-    	RT.NOT_IMPLEMENTED("giveTextInfo"); // TODO: Implement it
+    	RT.NOT_IMPLEMENTED("giveTextInfo("+i+")  t="+t); // TODO: Implement it
     }
     
     public int getIntInfo(final int i) {
-    	RT.NOT_IMPLEMENTED("getIntInfo"); // TODO: Implement it
+    	switch(i) {
+    		case 1:  return(1);  // 1:GenerateScode
+    		case 4:  return(50);  // maxerrno
+    		case 5:  return(1);  // GiveNotes
+    		case 22:  return(0);  // recomp
+    		case 30:  return(0);  // simob_level
+    		default: RT.NOT_IMPLEMENTED("getIntInfo: "+i); // TODO: Implement it
+    	}
     	return(0);
     }
     
+    
+    // termstatus=0 means normal running, S-code completed,
+    // termstatus=3 means normal running, no S-code
+    // termstatus=4 means running, but errors found
+    // termstatus=5 means term by testincerr or the like,
+    // termstatus=6 means term by internerr ;
     public void giveIntInfo(final int i,final int val) {
-    	RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
+    	switch(i) {
+//    	case 1: termstatus=val; break;
+//    	case 2: maxtagno=val; break;
+//    	case 3: curline=val; break;
+    	case 4: int nerr=val;
+    		if(nerr > 0) {
+    			System.out.println("Program Terminated due to "+nerr+" Errors");
+    			System.exit(nerr);
+    		}
+    		break;
+//    	case 5: signal_SML_end=true;
+    	default: RT.NOT_IMPLEMENTED("giveIntInfo("+i+")  val="+val); // TODO: Implement it
+    	}
     }
     
     public void rts_utility(final int index,final int level) {
-    	RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
+    	RT.NOT_IMPLEMENTED("rts_utility("+index+")  level="+level); // TODO: Implement it
     }
 
 

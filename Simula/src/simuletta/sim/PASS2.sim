@@ -1,0 +1,2127 @@
+External class Common;
+External class InptFile;
+External class OuptFile;
+External procedure UtModule;
+
+Procedure Pass2(comn); ref(Common) comn;
+%      ----------------------------------------------------------------
+%      ---                                                          ---
+%      ---                 P O R T A B L E     S I M U L A          ---
+%      ---                                                          ---
+%      ---              S I M U L E T T A    C O M P I L E R        ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                P r o c e d u r e    P a s s   2          ---
+%      ---                                                          ---
+%      ----------------------------------------------------------------
+
+%SELECT ZAD
+
+inspect comn do inspect new InptFile(L2name,comn) do begin
+inspect new OuptFile(nscodename,comn) do begin
+
+      short integer typ;
+      short integer freeindex;
+      short integer byte;
+      short integer curdest,ndest;
+      short integer delhi,dello;    ! first tag to keep at delete ;
+      short integer K_TT=6, K_FF=4, K_EQ=7, K_NE=3, K_GT=8, K_LE=2, K_LT=9, K_GE=1;
+      short integer n;
+      short integer tracemode;
+      ref(descr) d; ref(const) e; ref(quant_notice) qn;
+      text eltid,attrfile;
+
+      short integer array condinstr(0:9);
+      short integer array indexUsed(0:255);
+      short integer array sw(0:10); !*** zero never used ***;
+      ref(program_point) array dest_tab(0:255); !*** zero never used **;
+
+      procedure out_S_line;
+      begin curline:=innumber;
+            outinst(S_LINE); outnumber(curline);
+            if output_trace>0 then outcode;
+      end;
+
+%title   *****   Display Access   *****
+
+      ref(quant) procedure get_qnt(i); short integer i;
+      inspect symtab(i) do
+      begin -- ref(linkage) d; d:-display(id);
+            -- if d is quant then get_qnt:-d
+            -- else begin
+               ERROR( if curmeaning == none
+                      then ("No declaration of var: " & symbol)
+                      else (symbol & " is not a variable") );
+               inspect new quant(T_UNDEF) do begin
+                  get_qnt:-this quant;
+                  symb:-this symbolbox;
+               end;
+      end *** get_qnt ***;
+
+      ref(record) procedure get_rec(i); short integer i;
+      inspect symtab(i) do
+      begin -- ref(linkage) d; d:-display(symbol);
+            -- if d is record then get_rec:-d
+            -- else begin
+               ERROR( if curmeaning == none
+                      then ("No declaration of record: " & symbol)
+                      else (symbol & " is not a record") );
+               inspect new record do begin
+                  atrset:-new head; variantset:-new head;
+                  get_rec:-this record;
+                  symb:-this symbolbox;
+               end;
+      end *** get_rec ***;
+
+      ref(profile) procedure get_prf(i); short integer i;
+      inspect symtab(i) do
+      begin  -- ref(linkage) d; d:-display(symbol);
+             -- if d is profile then get_prf:-d
+             -- else begin
+               ERROR( if curmeaning == none
+                      then ("No declaration of profile: " & symbol)
+                      else (symbol & " is not a profile") );
+               inspect new profile do begin
+                  get_prf:-this profile;
+                  symb:-this symbolbox;
+               end;
+      end *** get_prf ***;
+
+      ref(descr) procedure get_ent(i); short integer i;
+      inspect symtab(i) do
+      begin -- ref(linkage) d; d:-display(symbol);
+             -- if d is routine or else d is peculiar
+             -- then get_ent:-d
+             -- else begin
+               ERROR( if curmeaning == none
+                      then ("No declaration of routine: " & symbol)
+                      else (symbol & " is not a routine") );
+               inspect new routine do begin
+                  simsymbol:-"*dummy*"; DEFIDENT;
+                  profbox:-symtab(hash);
+                  get_ent:-this routine;
+                  symb:-this symbolbox;
+               end;
+      end *** get_ent ***;
+
+      ref(label_descr) procedure get_lab(i); short integer i;
+      inspect symtab(i) do
+      begin -- ref(linkage) d; d:-display(symbol);
+            -- if d is label_descr then get_lab:-d
+            -- else begin
+               ERROR( if curmeaning == none
+                      then ("No declaration of label: " & symbol)
+                      else (symbol & " is not a label") );
+               inspect new label_descr do begin
+                  get_lab:-this label_descr;
+                  symb:-this symbolbox;
+               end;
+      end *** get_lab ***;
+%title ********* Pass 2  -  Descriptor output *********
+      procedure out_parspec(s); ref(parspec) s;
+      begin ref(quant) q;
+         inspect s do begin
+            if import =/= none then
+            begin q:-import.first;
+                  while true do inspect q do begin
+                        deftag(this descr);
+                        outinst(S_IMPORT); outtagid(tag);
+                        outquant(this quant);
+                        if output_trace>0 then outcode;
+                        q:-suc;
+                  end otherwise goto XXX; XXX:
+            end;
+            inspect export do begin
+                  deftag(this descr);
+                  outinst(S_EXPORT); outtagid(tag);
+                  outquant(this quant);
+                  if output_trace>0 then outcode;
+            end
+            otherwise inspect exit do begin
+                  deftag(this descr);
+                  outinst(S_EXIT); outtagid(tag);
+                  if output_trace>0 then outcode;
+            end;
+         end inspect s;
+      end *** out_parspec ***;
+
+      procedure out_attr(q); ref(quant) q;
+      inspect q do begin
+           if not preped then FATAL_ERROR("out_attr, nonprep'd");
+           if initval =/= none then
+              ERROR("Initial value for attribute");
+           deftag(this descr);
+           outinst(S_ATTR); outtagid(tag); outquant(this quant);
+           if output_trace>0 then outcode;
+      end *** out_attr ***;
+
+      !*** recursive ***;
+      procedure out_descr(d); ref(descr) d;
+      begin ref(quant) a; ref(record) p; ref(variant) v;
+            ref(profile) profil; ref(linkage) dentry;
+            Boolean vx; short integer typ;
+
+            !*** recursive (calls out_descr) ***;
+            procedure prepare_quant(q); ref(quant) q;
+            begin ref(linkage) dentry;
+                  short integer varhi,varlo;
+               inspect q do begin
+                  if tracemode > 3 then inspect sysout do begin
+                    outtext("Begin prepare " & symb.symbol); outimage;
+                  end;
+                  inspect typeTable(type) do
+                  if set==structTypes then begin
+                     dentry:-symtab(qual).curmeaning;
+                     if not dentry is record
+                     then dentry:-get_rec(qual);
+                     inspect dentry qua record do begin
+                        if tag=0 then out_descr(this record);
+                        if tag=0 then ERROR("Declaration loop");
+                     end;
+                  end; preped:=true;
+                  if tracemode > 3 then inspect sysout do begin
+                    outtext("End prepare " & symb.symbol); outimage;
+                  end;
+               end;
+            end *** prepare_quant ***;
+
+            !*** recursive (calls prepare_quant) ***;
+            procedure prep_parspec(s); ref(parspec) s;
+            begin ref(quant) q;
+              inspect s do begin
+                  if import =/= none then
+                  begin for q:-import.first, q.suc while q =/= none
+                         do prepare_quant(q);
+                  end;
+                  prepare_quant(export); prepare_quant(exit);
+               end;
+            end *** prep_parspec ***;
+
+%page
+
+            inspect d
+               when record do
+                 if tag=0 then begin
+                    !******   Output Record Descriptor   ******;
+
+--                    taghi:='!255!';
+                    if tracemode > 3 then inspect sysout do
+                    begin outtext("Begin prepare " & symb.symbol);
+                          outimage;
+                    end;
+                    if prefbox =/= none then begin
+                       inspect prefbox.curmeaning
+                       when record do  begin
+                          if tag=0
+                          then out_descr(this record);
+--                          if taghi='!255!' then ERROR("Declaration loop");
+                          d qua record.indefinite:=indefinite;
+                       end
+                       otherwise begin
+                          ERROR("Can't find prefix record");
+                          prefbox:-none;
+                       end;
+                    end;
+                    a:-atrset.first;
+                    while true do inspect a do begin a:-suc;
+                          if indefinite then
+                          ERROR("Indefinite rep is not last attr.");
+                          prepare_quant(this quant);
+                          indefinite := count=0;
+                    end otherwise goto ATRX;  ATRX:
+                    v:-variantset.first;
+                    while true do inspect v do begin v:-suc;
+                          a:-atrset.first;
+                          while true do inspect a do begin a:-suc;
+                                if indefinite then ERROR(
+                                   "Indefinite rep is not last attr.");
+                                prepare_quant(this quant);
+                                indefinite:= count=0;
+                          end otherwise goto VTRX;  VTRX:
+                    end otherwise goto VREX;  VREX:
+                    deftag(this descr);
+                    outinst(S_RECORD); outtagid(tag);
+                    if used_as_type then begin
+                       outinst(S_INFO); outtext("!4!TYPE");
+                       if output_trace>0 then outcode;
+                    end
+                    else if packed then begin
+                       outinst(S_INFO); outtext("!6!PACKED");
+                       if output_trace>0 then outcode;
+                    end;
+                    if dynamic then begin
+                       outinst(S_INFO); outtext("!7!DYNAMIC");
+                       if output_trace>0 then outcode;
+                    end;
+                    if prefbox =/= none
+                    then inspect prefbox.curmeaning when record do  begin
+                         outinst(S_PREFIX); outtagid(tag) end;
+                    if output_trace>0 then outcode;
+                    a:-atrset.first;
+                    while true do inspect a do begin
+                          out_attr(this quant); a:-suc;
+                    end otherwise goto ATREX;  ATREX:
+                    v:-variantset.first;
+                    while true do inspect v do begin
+                          outinst(S_ALT); vx:=true;
+                          if output_trace>0 then outcode;
+                          a:-atrset.first;
+                          while true do inspect a do begin
+                                out_attr(a); a:-suc;
+                          end otherwise goto VATRX;  VATRX:
+                          v:-suc;
+                    end otherwise goto VAREX;  VAREX:
+                    outinst(S_ENDRECORD);
+                    if output_trace>0 then outcode;
+                end
+              when peculiar do begin
+                   !******  Output Peculiar Descriptor  ******;
+                   prep_parspec(spec);
+                   defpeculiar(this peculiar);
+                   outinst(S_PROFILE); outtagid(tag);
+                   if kind=S_KNOWN then begin
+                      outinst(S_KNOWN); outtagid(body);
+                      outstring(info) end
+              else if kind=S_SYSRUT then begin
+                      outinst(S_SYSTEM); outtagid(body);
+                      outstring(info) end
+              else if kind=S_EXTERNAL then begin
+                      outinst(S_EXTERNAL); outtagid(body);
+                      outstring(info); !*** nature ***;
+                      outstring(symb.symbol); !*** xid==id ***;
+                   end;
+                   if output_trace>0 then outcode;
+                   out_parspec(spec);
+                   outinst(S_ENDPROFILE);
+                   if output_trace>0 then outcode;
+                   if kind=S_ROUTINE then begin
+                      outinst(S_ROUTINESPEC); outtagid(body);
+                      if libProc then outentry(tag)
+                      else outtagid(tag);
+                      if output_trace>0 then outcode;
+                   end;
+               end
+              when profile do begin
+                   !******   Output Profile Descriptor   ******;
+                   prep_parspec(spec);
+                   deftag(this descr);
+                   outinst(S_PROFILE); outtagid(tag);
+                   if output_trace>0 then outcode;
+                   if interface then begin
+                         outinst(S_INTERFACE); outtext("!6!INTRHA");
+                         if output_trace>0 then outcode;
+                   end;
+                   out_parspec(spec);
+                   outinst(S_ENDPROFILE);
+                   if output_trace>0 then outcode;
+               end
+              when routine do begin !*** Output Routine Descriptor ***;
+                   deftag(this descr);
+                   dentry:-profbox.curmeaning;
+                   if not dentry is profile
+                   then dentry:-get_prf(profbox.id);
+                   outinst(S_ROUTINESPEC); outtagid(tag);
+                   outtagid(dentry qua profile.tag);
+                   if output_trace>0 then outcode;
+               end
+              when label_descr do begin
+                   !******   Output Label Specification  ******;
+                   deftag(this descr);
+                   outinst(S_LABELSPEC); outtagid(tag);
+                   if output_trace>0 then outcode;
+               end
+              when quant do
+                if rutlev > 0 then begin
+                   !***   Output Quant Descriptor in Routine Body  ***;
+                   if not preped then prepare_quant(this quant);
+                   deftag(this descr);
+                   if initval=/=none or read_only then
+                      ERROR("Illegal declaration of " & symb.symbol);
+                   outinst(S_LOCAL); outtagid(tag);
+                   outquant(this quant);
+                   if output_trace>0 then outcode;
+                end
+           else if global_module then begin
+                   !***   Output Quant Descriptor in Global Module  ***;
+                   if not preped then prepare_quant(this quant);
+                   deftag(this descr);
+                   if read_only then
+                   begin ref(const) e;
+                         outinst(S_CONST); outtagid(tag);
+                         outquant(this quant);
+                         if output_trace>0 then outcode;
+                         if initval == none then outdefault(type) else
+                         for e:-initval.first,e.suc while e=/=none
+                          do begin typ:=outconst(e);
+                             if typ<>type then tstconv(typ,type); end;
+                         initval:-none;
+                         if output_trace>0 then outcode;
+                   end
+                   else begin
+                         outinst(S_GLOBAL); outtagid(tag);
+                         outquant(this quant);
+                   end;
+                   if sysid<>notext then begin
+                      outinst(S_SYSTEM); outstring(sysid) end;
+                   if output_trace>0 then outcode;
+                end
+                else begin
+                   !***  Output Quant Descriptor in Sub-Module/Main ***;
+                   if initval=/=none and read_only then begin
+                      if not preped then prepare_quant(this quant);
+                      deftag(this descr);
+                      outinst(S_CONSTSPEC); outtagid(tag);
+                      outquant(this quant);
+                      if output_trace>0 then outcode;
+                   end
+              else if not visible then begin
+                      if module_ident == notext then begin
+                         if not preped then prepare_quant(this quant);
+                         deftag(this descr);
+                         outinst(S_LOCAL); outtagid(tag);
+                         outquant(this quant);
+                         if output_trace>0 then outcode;
+                      end
+                      else new quant_notice(this quant).into(localdecl)
+                   end
+                   else begin
+                      if not preped then prepare_quant(this quant);
+                      deftag(this descr);
+                      outinst(S_GLOBAL);
+                      ERROR("Illegal global declaration of " &
+                            symb.symbol);
+                      outtagid(tag); outquant(this quant);
+                      if output_trace>0 then outcode;
+                   end;
+                end
+            otherwise if not d is dest_descr then IERR;
+      end *** out_descr ***;
+%title ********* Pass 2  -  Program point *********
+      class program_point;
+      begin short integer p;
+            short integer index,kind;
+
+            !********************************;
+            !**  kind=0:  Undefined        **;
+            !**  kind=1:  Fixup-defined    **;
+            !**  kind=2:  Normal-defined   **;
+            !**  kind=3:  Defined and used **;
+            !********************************;
+
+      procedure jumpif(cond); short integer cond;
+      begin
+           switch(0:3) kind begin
+              when 0 do begin
+                   kind:=1;
+                   if freeindex=0 then FATAL_ERROR("Index oflow");
+                   index:=freeindex;
+                   freeindex:=indexused(freeindex);
+                   outinst(S_FJUMPIF);
+                   outinst(condinstr(cond)); outbyt(index);
+                   end;
+              when 2 do begin
+                   kind:=3;
+                   indexUsed(index):=freeindex; freeindex:=index;
+                   outinst(S_BJUMPIF);
+                   outinst(condinstr(cond)); outbyt(index);
+                   end;
+              when 1,3 do begin
+                   ERROR("More than one jump to local label " & edSymbol(p));
+                   outinst(S_POP); outinst(S_POP);
+                   end;
+            end;
+            if output_trace>0 then outcode;
+      end;
+
+      procedure go_to;
+      begin
+            switch(0:3) kind begin
+              when 0 do begin
+                   kind:=1;
+                   if freeindex=0 then FATAL_ERROR("Index oflow");
+                   index:=freeindex;
+                   freeindex:=indexused(freeindex);
+                   outinst(S_FJUMP); outbyt(index);
+                   end;
+              when 2 do begin
+                   kind:=3;
+                   indexUsed(index):=freeindex; freeindex:=index;
+                   outinst(S_BJUMP); outbyt(index);
+                   end;
+              when 1,3 do begin
+                   ERROR("More than one goto local label " & edSymbol(p));
+                   end;
+            end;
+            if output_trace>0 then outcode;
+      end;
+
+      procedure define;
+      begin
+            switch(0:3) kind begin
+              when 0 do begin
+                   kind:=2;
+                   if freeindex=0 then FATAL_ERROR("Index oflow");
+                   index:=freeindex;
+                   freeindex:=indexused(freeindex);
+                   outinst(S_BDEST); outbyt(index);
+                   end;
+              when 1 do begin
+                   kind:=3;
+                   indexUsed(index):=freeindex; freeindex:=index;
+                   outinst(S_FDEST); outbyt(index);
+                   end;
+              when 2,3 do begin
+                   ERROR("Local label already defined " & edSymbol(p)); end;
+            end;
+            if output_trace>0 then outcode;
+      end *** define ***;
+
+      end *** program_point ***;
+
+%title ********* Pass 2  -   Statement  *********
+      !*** recursive ***;
+      boolean procedure statement(term); short integer term;
+      ! *** false if last was explicit or implicit jump *** ;
+      begin
+            short integer xtype,tp,cond;
+            short integer nassign;                        !** S_ASSIGN **;
+            short integer pt,bt,hilo;
+            short integer first;      ! delete tags in routines;
+            short integer i;
+            ref(program_point) els_lab;               !** S_IF **;
+            ref(program_point) beg_lab;               !** S_REPEAT **;
+            ref(displnotice) x;                       !** S_BODY **;
+            ref(parspec) spc; ref(head)locdecl;       !** S_BODY **;
+            ref(profile) prf; ref(descr) d;           !** S_BODY **;
+            ref(linkage) dentry;
+            text tempt;                               !** S_INFO **;
+
+            procedure casestmt;
+            begin short integer lb,ub; lb:=innumber; ub:=innumber;
+              begin short integer nwhen,n,x; text tempt;
+                  short integer stag;
+                  Boolean array defined(lb:ub); short integer typ;
+                  ref(program_point) array xdest(1:ub-lb+1);
+                  typ:=expression(ininstr);
+                  if typ<>T_INT then tstconv(typ,T_INT);
+                  if lb ne 0 then begin
+                     outinst(S_PUSHC); outinst(S_C_INT);
+                     tempt:-leftint(lb); outstring(tempt);
+                     if output_trace>0 then outcode;
+                     outinst(S_SUB);
+                     if output_trace>0 then outcode;
+                  end;
+                  newtag(symtab(S_SWITCH));
+                  stag:=ntag;
+                  outinst(S_SWITCH); outtag(stag);
+                  outnumber(ub-lb+1);
+                  if output_trace>0 then outcode;
+                  for byte:=ininstr while byte=S_WHEN do begin
+                      for n:=innumber,n-1 while n>0 do begin
+                          x:=innumber;
+                          if defined(x)
+                          then ERROR("When index already defined")
+                          else begin defined(x):=true;
+                             outinst(S_SDEST); outtag(stag);
+                             outnumber(x-lb);
+                             if output_trace>0 then outcode;
+                          end;
+                      end;
+                      byte:=ininstr;
+                      if statement(S_ENDWHEN) then begin
+                         nwhen:=nwhen+1;
+                         inspect new program_point do begin
+                            xdest(nwhen):-this program_point;
+                            go_to;
+                         end;
+                      end; !else jump immediately before end-when;
+                  end;
+                  for x:=lb step 1 until ub do
+                   if not defined(x) then begin
+                      outinst(S_SDEST); outtag(stag);
+                      outnumber(x-lb);
+                      if output_trace>0 then outcode;
+                  end;
+                  if byte=S_OTHERWISE then
+                  begin byte:=ininstr; statement(S_ENDCASE) end
+             else if byte ne S_ENDCASE then IERR;
+                  while nwhen <> 0 do begin
+                     xdest(nwhen).define; nwhen:=nwhen-1 end;
+              end array block;
+            end casestmt;
+
+      statement:=true;
+      while byte ne term do begin
+           switch(0:255) byte begin
+
+           when S_LINE do out_S_line;
+
+           when S_INFO do   begin
+               outinst(S_INFO); tempt:-instring; outstring(tempt) end;
+
+           when S_TRACE do   begin
+                 short integer s,v;
+                 s:=innumber; v:=innumber;
+                 if tracemode > 3 then inspect sysout do
+                 begin outtext("TRACE"); outint(s,4);
+                       outint(v,4); outimage;
+                 end;
+                 if s=1 then input_trace := v
+            else if s=2 then output_trace := v
+            else if s=3 then module_trace := v
+            else if s=4 then tracemode := v
+                 else begin outinst(S_SETSWITCH);
+                      s := if s=11 then 1 else if s=12 then 4
+                      else if s=13 then 3 else if s=14 then 2
+                      else if s=21 then 5 else if s=22 then 5
+                      else if s=23 then 9 else if s=24 then 5 else 9;
+                      outbyt(s); outbyt(v);
+                      if output_trace>0 then outcode;
+                 end;
+            end;
+
+           when S_GOTO do   begin
+                 tp:=expression(ininstr);
+                 if tp = T_DEST then dest_tab(curdest).go_to
+                 else begin
+                      if tp ne T_LABEL
+                      then ERROR("Illegal type - goto");
+                      outinst(S_GOTO);
+                      if output_trace>0 then outcode;
+                 end;
+                 statement:=false;
+            end;
+
+           when S_ASSIGN do   begin
+                 statement:=true;
+                 nassign:=inbyt;
+                 xtype:=expression(ininstr);
+                 while nassign <> 0 do begin
+                       nassign:=nassign-1;
+                       if ininstr=S_VAR then begin
+                          tp:=invariable(true);
+                          if xtype<>tp then tstconv(xtype,tp)
+                       end else IERR;
+                       outinst(S_RUPDATE);
+                       if output_trace>0 then outcode;
+                 end;
+                 outinst(S_POP);
+                 if output_trace>0 then outcode;
+            end;
+
+           when S_IF do   begin
+                 statement:=true;
+                 els_lab:-new program_point;
+                 cond:=condition(ininstr);
+                 els_lab.jumpif( 10 - cond );
+                 byte:=ininstr; statement(S_ELSE);
+                 byte:=ininstr;
+                 if byte=S_ENDIF then els_lab.define
+                 else inspect new program_point do begin
+                      go_to;
+                      els_lab.define; statement(S_ENDIF);
+                      define;
+                 end;
+            end;
+
+           when S_SKIPIF do   begin
+                 statement:=true;
+                 cond:=condition(ininstr);
+                 outinst(S_SKIPIF); outinst(condinstr(cond));
+                 byte:=ininstr; statement(S_ENDSKIP);
+                 outinst(S_ENDSKIP);
+            end;
+
+           when S_CALL do   begin
+                 statement:=true;
+                 if expression(ininstr)<>0 then begin
+                    outinst(S_POP);
+                    if output_trace>0 then outcode;
+            end  end;
+
+           when S_REPEAT do   begin
+                 statement:=true;
+                 beg_lab:-new program_point; beg_lab.define;
+                 byte:=ininstr; statement(S_WHILE);
+                 cond:=condition(ininstr); byte:=ininstr;
+                 if byte=S_ENDREPEAT then beg_lab.jumpif(cond)
+                 else inspect new program_point do begin
+                      jumpif( 10-cond );
+                      statement(S_ENDREPEAT); beg_lab.go_to;
+                      define;
+                 end;
+            end;
+
+           when S_CASE do begin
+                statement:=true; casestmt; end;
+
+           when S_BODY do   begin
+                statement:=true;
+                rutlev:=rutlev+1;
+                redeclset:-new head;
+                hilo:=in2byt;
+                dentry:-symtab(i).curmeaning;
+                if dentry is routine then begin
+         RBODY:    inspect dentry qua routine do begin
+                      dentry:-profbox.curmeaning;
+                      if not dentry is profile
+                      then dentry:-get_prf(profbox.id);
+                      inspect dentry qua profile do begin
+                         pt:=tag;
+                         update_display(spec.import);
+                         displ(spec.export); displ(spec.exit); end;
+                      update_display(local); locdecl:-local;
+                      if tag=0
+                      then deftag(this descr);
+                      bt:=tag;
+                      outinst(S_ROUTINE);
+                      outtagid(bt); outtagid(pt);
+                end end
+           else if dentry is peculiar then begin
+                   inspect dentry qua peculiar do begin
+                      inspect spec do begin
+                         update_display(import);
+                         displ(export); displ(exit); end;
+                      update_display(local); locdecl:-local;
+                      if body=0 then begin
+                         newtag(symb); body:=ntag;
+                      end;
+                      outinst(S_ROUTINE); outtagid(body);
+                      if libProc then outentry(tag)
+                      else outtagid(tag);
+                end end
+                else begin dentry:-get_ent(hilo); goto RBODY end;
+                if output_trace>0 then outcode;
+                first:=ntag;
+                inspect locdecl do begin
+                   if not empty then begin
+                      for d:-first,d.suc while d=/=none
+                      do out_descr(d);
+                   end;
+                end;
+                byte:=ininstr; statement(S_END);
+                if not redeclset.empty then
+                begin for x:-redeclset.first,x.suc while x=/=none
+                       do x.d.symb.curmeaning:-x.old;
+                end;
+                while ndest <> 0 do
+                begin inspect dest_tab(ndest) do begin
+                         if kind ne 3 then 
+                            ERROR("Illegal use of label " & edSymbol(p));
+                         index:=kind:=0;
+                       end;
+                       ndest:=ndest-1;
+                end;
+                outinst(S_ENDROUTINE);
+                if output_trace>0 then outcode;
+                redeclset:-none; rutlev:=rutlev-1;
+            end;
+
+           when S_DEFLAB do   begin
+                statement:=true;
+                 if rutlev > 0 then begin
+                    short integer x; ref(linkage) d;
+                    x:=in2byt;
+                    d:-symtab(x).curmeaning;
+                    if d is dest_descr then !***OK;
+                    else begin
+                       ERROR(if d == none 
+                          then ("No declaration of dest: " & edSymbol(x))
+                          else (edSymbol(x) & " is not a local label"));
+                       d:-new dest_descr;
+                       d qua descr.symb:-symtab(x);
+                    end;
+                    inspect d qua dest_descr do begin
+                            if dx = 0 then begin
+                               if ndest=255 then FATAL_ERROR("Too many labels");
+                               dx:=ndest:=ndest+1;
+                               dest_tab(dx).p:=symb.id;
+                            end;
+                            dest_tab(dx).define;
+                    end;
+                 end *** indest (rutlev>0) ***
+                 else begin
+                       outinst(S_LABEL);
+                       hilo:=in2byt; 
+                       dentry:-symtab(i).curmeaning;
+                       if not dentry is label_descr
+                       then dentry:-get_lab(hilo);
+                       outtag(dentry qua label_descr.tag);
+                       if output_trace>0 then outcode;
+                 end;
+            end;
+
+           when NONE do IERR;
+         end;
+
+         byte:=ininstr;
+       end while byte
+      end *** statement ***;
+%title ********* Pass 2  -   I n v a r i a b l e   *********
+      !***  recursive (calls expression) ***;
+      short integer procedure invariable(target); Boolean target;
+      begin Boolean simple,vmode; ref(record) remqual; short integer n;
+            short integer vartype,r,v,typ,hilo;
+            short integer t,q; ref(quant) a; !* while byte<>S_ENDVAR *;
+            ref(linkage) dentry;
+
+            procedure rutcall(spec); ref(parspec) spec;
+            begin short integer c,i,j,apar,fpar; ref(quant) par;
+                  short integer b;
+               inspect spec do begin
+                  if import =/= none then begin
+                     fpar:=import.cardinal; par:-import.first end
+                  else begin fpar:=0; par:-none end;
+                  if byte=S_ARGLIST then begin
+                       apar:=inbyt;
+                       for i:=1 step 1 until apar do
+                       if par == none then begin
+                          expression(ininstr);
+                          outinst(S_POP);
+                          if output_trace>0 then outcode;
+                       end
+                       else begin
+                          b:=ininstr;
+                          if b=S_REPEXPR then begin
+                             c:=innumber; b:=ininstr; end
+                          else c:=1;
+                          typ:=expression(b);
+                          if typ<>par.type then tstconv(typ,par.type);
+                          for j:=2 step 1 until c do begin
+                              typ:=expression(ininstr);
+                              if typ<>par.type then tstconv(typ,par.type);
+                          end;
+                          if c > par.count then begin
+                             ERROR("Too many elts in repeated parameter");
+                             while c>par.count do
+                             begin c:=c-1; outinst(S_POP);
+                                   if output_trace>0 then outcode;
+                             end;
+                          end;
+                          if c=1 then outinst(S_ASSPAR)
+                          else begin
+                             outinst(S_ASSREP); outbyt(c) end;
+                          if output_trace>0 then outcode;
+                          par:-par.suc;
+                       end;
+                       byte:=ininstr;
+                  end
+                  else apar:=0;
+                  if apar <> fpar then
+                     ERROR("Wrong number of actual parameters");
+                  if rutlev > 0 and exit =/= none then
+                     ERROR("Illegal call on routine with spec. exit-label");
+                  vartype:= if export==none then 0 else export.type;
+               end inspect spec
+            end *** rutcall ***;
+
+            byte:=ininstr;
+            if byte=S_SIMPLE then simple:=true
+       else if byte=S_DOTVAR then simple:=false else IERR;
+            byte:=ininstr;
+
+            if byte=S_VAREXPR then begin
+                  vartype:=expression(ininstr);
+                  inspect typeTable(vartype) do
+                  if set==nameTypes then
+                  begin vartype:=qual;
+                        outinst(S_REFER); outtype(vartype);
+                        if output_trace>0 then outcode;
+                  end else ERROR("var(-- not name --)");
+                  byte:=ininstr;
+                  vmode:=if simple then not target
+                         else typeTable(vartype).set==refTypes;
+
+                  if byte=S_ARGLIST then
+                  begin n:=inbyt;
+                        if typeTable(expression(ininstr)).set =/= integerTypes then ERROR("Index is not integer");
+                        outinst(if vmode then S_INDEXV else S_INDEX);
+                        if n>1 then
+                        begin ERROR("Only one index allowed");
+                              for n:=n-1 while n>0 do begin
+                                  if output_trace>0 then outcode;
+                                  expression(ininstr);
+                                  outinst(S_POP);
+                              end;
+                        end;
+                        if output_trace>0 then outcode;
+                        byte:=ininstr;
+                  end
+             else if vmode then begin
+                        outinst(S_FETCH);
+                        if output_trace>0 then outcode;
+                  end;
+            end
+       else if byte=S_VARCALL then begin
+                 hilo:=in2byt;
+                 dentry:-symtab(hilo).curmeaning;
+                 byte:=ininstr;
+                 if not dentry is profile
+                 then dentry:-get_prf(hilo);
+                 inspect dentry qua profile do begin
+                    outinst(S_PRECALL); outtag(tag);
+                    if output_trace>0 then outcode;
+                    rutcall(spec);
+                    typ:=expression(byte);
+                    byte:=defType(entTypes,hilo,0,0);
+                    if typ<>byte then tstconv(typ,byte);
+                 end;
+                 outinst(S_CALL_TOS);
+                 if output_trace>0 then outcode;
+                 byte:=ininstr;
+            end
+       else if byte=S_VARID then
+            begin hilo:=in2byt; byte:=ininstr;
+                  inspect symtab(hilo).curmeaning
+                     when system_descr do vartype:=sysfnc(this system_descr)
+                     when label_descr do begin
+                          vartype:=T_LABEL;
+                          outinst(S_PUSHC); outinst(S_C_PADDR);
+                          outtag(tag);
+                          if output_trace>0 then outcode;
+                      end
+                     when dest_descr do begin
+                          if dx=0 then begin
+                             if ndest = 255 then FATAL_ERROR("Too many labels");
+                             dx:=ndest:=ndest+1;
+                             dest_tab(dx).p:=hilo;
+                          end;
+                          curdest:=dx; vartype:= T_DEST;
+                      end
+                     when peculiar do begin
+                          outinst(S_PRECALL); outtag(tag);
+                          if output_trace>0 then outcode;
+                          rutcall(spec);
+                          if body=0 then begin
+                             newtag(symb);
+                             body:=ntag;
+                             outinst(S_ROUTINESPEC);
+                             outtagid(body);
+                             outtag  (tag);
+                             if output_trace>0 then outcode;
+                          end;
+                          outinst(S_CALL); outtag(body);
+                          if output_trace>0 then outcode;
+                      end
+                     when routine do begin
+                          dentry:-profbox.curmeaning;
+                          if not dentry is profile then
+                             dentry:-get_prf(profbox.id);
+                          outinst(S_PRECALL);
+                          outtag(dentry qua profile.tag);
+                          if output_trace>0 then outcode;
+                          rutcall(dentry qua profile.spec);
+                          if tag=0 then begin
+                             deftag(this descr);
+                             outinst(S_ROUTINESPEC);
+                             outtagid(tag);
+                             outtagid(dentry qua profile.tag);
+                             if output_trace>0 then outcode;
+                          end;
+                          outinst(S_CALL); outtag(tag);
+                          if output_trace>0 then outcode;
+                      end
+                  otherwise begin
+                      dentry:-symtab(hilo).curmeaning;
+                      if not dentry is quant
+                      then dentry:-get_qnt(hilo);
+                      inspect dentry qua quant do begin
+                          vartype:=type;
+                          vmode:=if simple then not target else
+                                  typeTable(type).set==refTypes;
+
+                          if byte=S_ARGLIST then begin
+                               outinst(S_PUSH); outtag(tag);
+                               n:=inbyt;
+                               if typeTable(expression(ininstr)).set =/= integerTypes then ERROR("Index is not integer");
+                               outinst(if vmode then S_INDEXV else S_INDEX);
+                               if n>1 then begin
+                                  ERROR("Only one index allowed");
+                                  for n:=n-1 while n>0 do begin
+                                         if output_trace>0 then outcode;
+                                         expression(ininstr);
+                                         outinst(S_POP);
+                                  end;
+                               end;
+                               if output_trace>0 then outcode;
+                               byte:=ininstr;
+                          end
+                          else begin
+                               outinst(if vmode then S_PUSHV else S_PUSH);
+                               outtag(tag);
+                               if output_trace>0 then outcode;
+                          end;
+                      end;
+                  end;
+
+            end else IERR;
+
+            if tracemode > 2 then inspect sysout do
+            begin setpos(22); outtext("Variable type: ");
+                  outtext(if vartype=0 then "no-type" else edtype(vartype));
+                  outimage;
+            end;
+            while byte <> S_ENDVAR do begin
+                  if byte=S_QUA then begin
+                     typ:=inbyt;
+                     if vartype<>typ then begin
+                        convert(vartype,typ); vartype:=typ end;
+                  end
+             else if byte ne S_DOT then IERR;
+                  hilo:=typeTable(vartype).qual;
+                  if hilo=0 then ERROR("Missing qua in remote access");
+                  remqual:-symtab(hilo).curmeaning;
+                  if not remqual is record then remqual:-get_rec(hilo);
+                  if ininstr <> S_VAR then IERR;
+                  byte:=ininstr;
+                  if byte=S_SIMPLE then simple:=true
+             else if byte=S_DOTVAR then simple:=false else IERR;
+                  if ininstr <> S_VARID then IERR;
+                  hilo:=in2byt;
+                  byte:=ininstr;
+                  a:-rec_atr(remqual,hilo);
+                  inspect typeTable(vartype).set do
+                          if type=TYP_REF then begin
+                             r:=S_REMOTE; v:=S_REMOTEV end
+                     else if type=TYP_STRUCT then begin
+                             r:=S_SELECT; v:=S_SELECTV end
+                          else begin ERROR("Remote access through non-ref variable");
+                                     goto EXT; end
+                  ;
+                  if a =/= none then begin
+                     vartype:=a.type;
+                     vmode:=if simple then not target
+                            else typeTable(a.type).set==refTypes;
+                     if tracemode > 2 then inspect sysout do
+                     begin setpos(21); outtext("Attribute type: ");
+                           outtext(edtype(vartype)); outimage;
+                     end;
+                     if byte=S_ARGLIST then begin
+                          outinst(r); outtag(a.tag);
+                          n:=inbyt;
+                          if typeTable(expression(ininstr)).set =/= integerTypes then ERROR("Index is not integer");
+                          outinst(if vmode then S_INDEXV else S_INDEX);
+                          if n>1 then begin
+                               ERROR("Only one index allowed");
+                               for n:=n-1 while n>0 do begin
+                                   if output_trace>0 then outcode;
+                                   expression(ininstr);
+                                   outinst(S_POP)
+                               end;
+                          end;
+                          if output_trace>0 then outcode;
+                          byte:=ininstr;
+                     end
+                     else begin
+                          outinst(if vmode then v else r);
+                          outtag(a.tag);
+                          if output_trace>0 then outcode;
+                     end;
+                  end;
+      EXT:  end *** remote ***;
+            invariable:=vartype;
+      end *** invariable ***;
+%title ********* Pass 2  -   Expression routines  *********
+      short integer procedure arith_type(t); short integer t;
+            if typeTable(t).set==integerTypes
+                         then arith_type:=T_INT
+       else if t=T_REAL  then arith_type:=T_REAL
+       else if t=T_LREAL then arith_type:=T_LREAL
+       else begin !*** ERROR("Non-arithmetic type: " & edtype(t));
+                  if t<>T_INT then tstconv(t,T_INT); arith_type:=T_INT;
+            end;
+
+      !*** recursive ***;
+      short integer procedure expression(b); short integer b;
+      begin short integer xtype,t2,opr,c,hilo;
+            ref(record) r; ref(linkage) dentry;
+            ref(quant) q;
+            short integer rid,n,displx;
+
+            switch(0:255) b begin
+
+            when S_LINE do out_S_line;
+
+            when S_VAR     do
+                 xtype := invariable(false);
+
+            when S_QUA     do  begin
+                  t2:=expression(ininstr); xtype:=inbyt;
+                  if t2<>xtype then convert(t2,xtype) end;
+
+            when S_DSIZE   do  begin
+                  hilo:=in2byt;
+                  t2:=expression(ininstr); 
+                  if t2<>T_INT then convert(t2,T_INT);
+                  dentry:-symtab(hilo).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(hilo);
+                  inspect dentry qua record do begin
+                     if not indefinite then
+                        ERROR("Illegal record in size(r:x)");
+                     outinst(S_DSIZE); outtag(tag);
+                  end;
+                  if output_trace>0 then outcode;
+                  xtype:=T_SIZE; end;
+
+            when S_IFEXPR  do  begin
+                  c:=condition(ininstr);
+                  outinst(S_IF); outinst(condinstr(c));
+                  if output_trace>0 then outcode;
+                  xtype:=expression(ininstr);
+                  outinst(S_ELSE);
+                  if output_trace>0 then outcode;
+                  t2:=expression(ininstr);
+                  if xtype<>t2 then tstconv(xtype,t2);
+                  outinst(S_ENDIF);
+                  if output_trace>0 then outcode;
+                  end;
+
+            when S_REPEXPR do  begin
+                  n:=innumber;
+                  if n>1 then begin
+                     ERROR("Repeated expression out of context");
+                     for n:=n-1 while n>0 do
+                     begin expression(ininstr);
+                        outinst(S_POP);
+                        if output_trace>0 then outcode;
+                     end;
+                  end;
+                  xtype:=expression(ininstr);
+                 end;
+
+            when S_C_INT  do  begin
+                  xtype:=T_INT;
+                  outinst(S_PUSHC); outinst(S_C_INT);
+                  tempt:-instring; outstring(tempt) end;
+
+            when S_C_REAL  do  begin
+                  xtype:=T_REAL;
+                  outinst(S_PUSHC); outinst(S_C_REAL);
+                  tempt:-instring; outstring(tempt) end;
+
+            when S_C_LREAL  do  begin
+                  xtype:=T_LREAL;
+                  outinst(S_PUSHC); outinst(S_C_LREAL);
+                  tempt:-instring; outstring(tempt) end;
+
+            when S_C_CHAR  do  begin
+                  xtype:=T_CHAR;
+                  outinst(S_PUSHC); outinst(S_C_CHAR);
+                  outbyt(inbyt); end;
+
+            when S_TEXT  do  begin
+                  xtype:=T_CHAR;
+                  outinst(S_PUSHC); outinst(S_TEXT);
+                  tempt:-inlongstring; outlongstring(tempt) end;
+
+            when S_TRUE  do  begin
+                  xtype:=T_BOOL;
+                  outinst(S_PUSHC); outinst(S_TRUE); end;
+
+            when S_FALSE  do  begin
+                  xtype:=T_BOOL;
+                  outinst(S_PUSHC); outinst(S_FALSE); end;
+
+            when S_ONONE  do  begin
+                  xtype:=T_REF;
+                  outinst(S_PUSHC); outinst(S_ONONE); end;
+
+            when S_ANONE  do  begin
+                  xtype:=T_FIELD;
+                  outinst(S_PUSHC); outinst(S_ANONE); end;
+
+            when S_GNONE  do  begin
+                  xtype:=T_NAME;
+                  outinst(S_PUSHC); outinst(S_GNONE); end;
+
+            when S_NOSIZE  do  begin
+                  xtype:=T_SIZE;
+                  outinst(S_PUSHC); outinst(S_NOSIZE); end;
+
+            when S_NOWHERE  do  begin
+                  xtype:=T_LABEL;
+                  outinst(S_PUSHC); outinst(S_NOWHERE); end;
+
+            when S_NOBODY  do  begin
+                  xtype:=T_ENT;
+                  outinst(S_PUSHC); outinst(S_NOBODY); end;
+
+            when S_C_SIZE  do  begin
+                  xtype:=T_SIZE;
+                  outinst(S_PUSHC); outinst(S_C_SIZE);
+                  hilo:=in2byt;
+                  dentry:-symtab(hilo).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(hilo);
+                  outtag(dentry qua record.tag); end;
+
+            when S_C_OADDR  do  begin
+                  hilo:=in2byt;
+                  dentry:-symtab(hilo).curmeaning;
+                  if dentry is quant then q:-dentry
+                  else q:-get_qnt(hilo);
+                  inspect q do begin
+                     inspect typeTable(type)
+                     do xtype:=defType(refTypes,qual,0,0);
+                     outinst(S_PUSHC); outinst(S_C_OADDR);
+                     outtag(tag);
+                  end end;
+
+            when S_C_AADDR  do  begin
+                  outinst(S_PUSHC);
+                  hilo:=in2byt;
+                  n:=innumber;
+                  for n:=n-1 while n>0 do begin
+                      dentry:-symtab(hilo).curmeaning;
+                      if not dentry is record
+                      then dentry:-get_rec(hilo);
+                      inspect rec_atr(dentry qua record,in2byt)
+                      do begin
+                         outinst(S_C_DOT); outtag(tag);
+                         hilo:=typeTable(type).qual;
+                      end;
+                  end;
+                  dentry:-symtab(hilo).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(hilo);
+                  inspect rec_atr(dentry qua record,in2byt)
+                  do begin
+                     xtype:=defType(fieldTypes,type,0,0);
+                     outinst(S_C_AADDR);
+                     outtag(tag);
+                  end end;
+
+            when S_C_GADDR  do  begin
+                  hilo:=in2byt;
+                  dentry:-symtab(hilo).curmeaning;
+                  q:- if dentry is quant then dentry qua quant
+                      else get_qnt(hilo);
+                  inspect q do begin
+                     xtype:=defType(nameTypes,type,0,0);
+                     if global or else read_only then begin
+                        outinst(S_PUSHC); outinst(S_C_GADDR);
+                        outtag(tag);
+                     end else begin
+                        outinst(S_PUSH); outtag(tag);
+                        if output_trace>0 then outcode;
+                        outinst(S_DEREF);
+                  end; end; end;
+
+            when S_C_PADDR  do  begin
+                  xtype:=T_LABEL;
+                  outinst(S_PUSHC); outinst(S_C_PADDR);
+                  hilo:=in2byt;
+                  dentry:-symtab(hilo).curmeaning;
+                  if not dentry is label_descr
+                  then dentry:-get_lab(hilo);
+                  outtag(dentry qua label_descr.tag); end;
+
+            when S_C_RADDR  do  begin
+                  hilo:=in2byt;
+                  dentry:-symtab(hilo).curmeaning;
+                  if dentry is routine then begin
+            RADDX:   inspect dentry qua routine do begin
+                        xtype:=defType(entTypes,profbox.id,0,0);
+                        outinst(S_PUSHC); outinst(S_C_RADDR);
+                        outtag(tag);
+                  end end
+             else if dentry is peculiar then begin
+                     inspect dentry qua peculiar do begin
+                        if kind ne S_ROUTINE then
+                           ERROR("entry(x) -- x is a peculiar routine");
+                        xtype:=defType(entTypes,symb.id,0,0);
+                        outinst(S_PUSHC); outinst(S_C_RADDR);
+                        outtag(body);
+                  end end
+                  else begin dentry:-get_ent(hilo);
+                       goto RADDX end;
+                  end;
+
+            when S_C_RECORD do  begin
+                  outinst(S_PUSHC);
+                  hilo:=in2byt;
+                  xtype:=defType(structTypes,hilo,0,0);
+                  inspect structset.first qua structured_const do begin
+                     if str<>hilo then IERR;
+                     out; outconst(this structured_const); end;
+                  end;
+
+            when S_NAME do  begin
+                  if ininstr <> S_VAR then IERR;
+                  rid:=invariable(true);
+                  xtype:=defType(nameTypes,rid,0,0);
+                  outinst(S_DEREF); end;
+
+            when S_NOT do  begin
+                  xtype:=expression(ininstr);
+                  if not SportOK and then xtype<>T_BOOL
+                  then begin tstconv(xtype,T_BOOL); xtype:=T_BOOL; end;
+                  outinst(S_NOT) end;
+
+            when S_NEG do  begin
+                  xtype:=expression(ininstr);
+                  xtype:=arith_type(xtype);
+                  outinst(S_NEG) end;
+
+            when S_AND,S_OR,S_XOR do  begin
+                  xtype:=expression(ininstr);
+                  t2:=   expression(ininstr);
+                  if not SportOK or else xtype<>t2 then begin
+                     if xtype<>T_BOOL then tstconv(xtype,T_BOOL);
+                     if t2   <>T_BOOL then tstconv(t2   ,T_BOOL);
+                     xtype:=T_BOOL;
+                  end;
+                  outinst(b); end;
+
+            when S_ADD do  begin
+                  xtype:=expression(ininstr  );
+                  if typeTable(xtype).set == refTypes then begin
+                     t2:=expression(ininstr);
+                     inspect typeTable(t2) do begin
+                        if set==fieldTypes then begin
+                           xtype := defType(nameTypes,qual,0,0);
+                           outinst(S_LOCATE);
+                        end
+                        else begin
+                           if t2<>T_SIZE then tstconv(t2,T_SIZE);
+                           xtype:=T_REF; outinst(S_INCO);
+                        end;
+                     end
+                  end
+             else if typeTable(xtype).set==nameTypes then begin
+                     t2:=expression(ininstr);
+                     inspect typeTable(t2) do begin
+                        if set==fieldTypes then begin
+                           outinst(S_LOCATE);
+                           if output_trace>0 then outcode;
+                           xtype := defType(nameTypes,qual,0,0);
+                        end else ERROR("Illegal type after +");
+                     end
+                  end
+                  else begin
+                     xtype:=arith_type(xtype); t2:=expression(ininstr);
+                     if t2<>xtype then tstconv(t2,xtype);
+                     outinst(S_ADD);
+                  end; end;
+
+            when S_SUB do  begin
+                  xtype:=expression(ininstr);
+                  if typeTable(xtype).set==refTypes then begin
+                     t2:=expression(ininstr);
+                     if t2=T_SIZE then begin
+                        outinst(S_DECO);
+                        if output_trace>0 then outcode;
+                        xtype:=T_REF end
+                else if typeTable(t2).set==refTypes then begin
+                        outinst(S_DIST);
+                        if output_trace>0 then outcode;
+                        xtype:=T_SIZE end
+                     else ERROR("Illegal type following -");
+                  end
+                  else begin
+                     xtype:=arith_type(xtype); t2:=expression(ininstr);
+                     if t2<>xtype then tstconv(t2,xtype);
+                     outinst(S_SUB);
+                  end; end;
+
+            when S_MULT,S_DIV,
+                 S_LSHIFTL,S_RSHIFTL,S_LSHIFTA,S_RSHIFTA do begin
+                  t2:=expression(ininstr); xtype:=arith_type(t2);
+                  t2:=expression(ininstr);
+                  if t2<>xtype then tstconv(t2,xtype);
+                  outinst(b); end;
+
+
+            when S_REM do  begin
+                  xtype:=T_INT;
+                  t2:=expression(ininstr);
+                  if t2<>T_INT then tstconv(t2,T_INT);
+                  t2:=expression(ininstr);
+                  if t2<>T_INT then tstconv(t2,T_INT);
+                  outinst(S_REM); end;
+
+            when NONE do begin 
+                  opr:=relation(b);
+                  if opr=0 or opr=10 then IERR;
+                  xtype:=T_BOOL; condition(b);
+                  outinst(S_COMPARE);
+                  outinst(condinstr(opr));
+                  end;
+          end *** case ***;
+
+          if output_trace>0 then outcode;
+          expression := xtype;
+          if tracemode > 2 then begin inspect sysout do
+             setpos(20); outtext("Expression type: " & edtype(xtype));
+             outimage;
+          end;
+      end *** expression ***;
+%title *********    O u t c o n s t    *********
+      !*** recursive ***;
+      short integer procedure outconst(c); ref(const) c;
+      begin short integer cnstype;
+            ref(quant) q; !*** offset_const - idn_const ***;
+            short integer fixrep; !*** struct_const ***;
+            ref(const) e; short integer t,t1; !*** rep_const ***;
+            ref(routine) r; ref(linkage) dentry;
+
+            if tracemode > 2 then inspect sysout do
+            begin outtext("Outconst: "); prt(c,5); outimage end;
+            inspect c
+       when val_const  do begin
+                  outinst(instr);
+                  if instr=S_C_CHAR then begin
+                     cnstype:=T_CHAR; outbyt(rank(v.getchar)) end
+             else if instr=S_TEXT   then begin
+                     cnstype:=T_CHAR; outlongstring(v) end
+                  else begin outstring(v);
+                     cnstype :=  if instr=S_C_INT   then T_INT
+                            else if instr=S_C_REAL  then T_REAL
+                            else if instr=S_C_LREAL then T_LREAL
+                            else T_UNDEF;
+                  end;
+            end
+       when offset_const do begin
+                  outinst(instr);
+                  dentry:-symtab(of).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(of);
+                  inspect rec_atr(dentry qua record,q(1))
+                  do begin
+                     outtag(tag);
+                     cnstype:=defType(fieldTypes,type,0,0);
+                  end;
+            end
+       when idn_const do begin
+                  outinst(instr);
+                  if instr=S_C_SIZE then begin
+                     dentry:-ibox.curmeaning;
+                     if not dentry is record
+                     then dentry:-get_rec(ibox.id);
+                     outtag(dentry qua record.tag);
+                     cnstype:=T_SIZE end
+             else if instr=S_C_OADDR then begin
+                     dentry:-ibox.curmeaning;
+                     if not dentry is quant
+                     then dentry:-get_qnt(ibox.id);
+                     inspect dentry qua quant do begin
+                        outtag(tag);
+                        inspect typeTable(type)
+                        do cnstype := defType(refTypes,qual,0,0);
+                     end;
+                  end
+             else if instr=S_C_GADDR then begin
+                     dentry:-ibox.curmeaning;
+                     if not dentry is quant
+                     then dentry:-get_qnt(ibox.id);
+                     inspect dentry qua quant do begin
+                        outtag(tag);
+                        cnstype:=defType(nameTypes,type,0,0);
+                        if global or else read_only then !OK; else
+                          ERROR("Local variable in name(..) constant");
+                     end;
+                  end
+             else if instr=S_C_PADDR then begin
+                     dentry:-ibox.curmeaning;
+                     if not dentry is label_descr
+                     then dentry:-get_lab(ibox.id);
+                     outtag(dentry qua label_descr.tag);
+                     cnstype:=T_LABEL end
+             else if instr=S_C_RADDR then begin
+                     dentry:-ibox.curmeaning;
+                     if not dentry is routine
+                     then dentry:-get_ent(ibox.id);
+                     inspect dentry qua routine do begin
+                        outtag(tag);
+                        cnstype:=defType(entTypes,profbox.id,0,0);
+                     end;
+                  end;
+            end
+       when structured_const do begin
+                  outinst(instr);
+                  dentry:-symtab(str).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(str);
+                  outtag(dentry qua record.tag);
+                  if output_trace>0 then outcode;
+                  fixrep:=outstruct(dentry qua record,elt_set);
+                  outinst(S_ENDRECORD);
+                  if not elt_set.empty then
+                     ERROR("Extra unmatched element(s) in constant");
+                  cnstype:=defType(structTypes,str,fixrep,0);
+            end
+       when repeated_const do begin
+                  e:-elt_set.first; cnstype:=t:=outconst(e);
+                  for e:-e.suc while e =/= none do begin
+                     t1:=outconst(e);
+                     if t1 <> t and then
+                        typeTable(t).set=/=typeTable(t1).set then ERROR("Different types in repeated constant");
+                  end;
+            end
+       otherwise begin
+                  outinst(c.instr);
+                  cnstype :=  if c.instr=S_TRUE    or else
+                                 c.instr=S_FALSE   then T_BOOL
+                         else if c.instr=S_ONONE   then T_REF
+                         else if c.instr=S_ANONE   then T_FIELD
+                         else if c.instr=S_GNONE   then T_NAME
+                         else if c.instr=S_NOSIZE  then T_SIZE
+                         else if c.instr=S_NOWHERE then T_LABEL
+                         else if c.instr=S_NOBODY  then T_ENT
+                         else T_UNDEF;
+            end;
+            if output_trace>0 then outcode;
+            if tracemode > 2 then inspect sysout do
+            begin outtext("Outconst type: " & edtype(cnstype));
+                  outimage;
+            end;
+            outconst:=cnstype;
+      end *** outconst ***;
+%page
+      !*** recursive (calls outstruct) ***;
+      procedure outdefault(type); short integer type;
+      begin ref(linkage) dentry; short integer hilo;
+            if typeTable(type).set==integerTypes then begin
+               outinst(S_C_INT); outtext("!1!0") end
+       else if type=T_REAL then begin
+               outinst(S_C_REAL); outtext("!1!0") end
+       else if type=T_LREAL then begin
+               outinst(S_C_LREAL); outtext("!1!0") end
+       else if type=T_CHAR then begin
+               outinst(S_C_CHAR); outbyt(rank(' ')); end
+       else if type=T_BOOL  then begin
+               outinst(S_FALSE); end
+       else if type=T_LABEL then begin
+               outinst(S_NOWHERE); end
+       else if type=T_SIZE  then begin
+               outinst(S_NOSIZE); end
+       else if typeTable(type).set==refTypes   then begin
+               outinst(S_ONONE); end
+       else if typeTable(type).set==fieldTypes then begin
+               outinst(S_ANONE); end
+       else if typeTable(type).set==nameTypes  then begin
+               outinst(S_GNONE); end
+       else if typeTable(type).set==entTypes   then begin
+               outinst(S_NOBODY); end
+       else if typeTable(type).set==structTypes then begin
+               hilo:=typeTable(type).qual;
+               dentry:-symtab(hilo).curmeaning;
+               if not dentry is record
+               then dentry:-get_rec(hilo);
+               outinst(S_C_RECORD);
+               outtag(dentry qua record.tag);
+               if output_trace>0 then outcode;
+               outstruct(dentry qua record,new head);
+               outinst(S_ENDRECORD);
+            end else IERR;
+            if output_trace>0 then outcode;
+      end ***outdefault***;
+
+      !*** recursive ***;
+      short integer procedure outstruct(rec,set);
+      ref(record) rec; ref(head) set;
+      begin ref(quant) q; ref(elt_notice) n; ref(variant) v;
+            ref(linkage) dentry;
+
+            ref(elt_notice) procedure get_elt(box); ref(symbolbox) box;
+            inspect set do begin
+               if empty then get_elt:-none else
+               begin for n:-first,n.suc while n =/= none do
+                  if n.ebox==box then goto E;
+            E:    get_elt:-n;
+               end;
+            end;
+
+            !*** recursive (calls outdefault) ***;
+            procedure out_atrset(S); ref(head) S;
+            begin ref(quant) q; short integer t2;
+                  q:-S.first;
+                  while true do inspect q do begin q:-suc;
+                        outinst(S_ATTR); outtag(tag);
+                        outtype(type);
+                        n:-get_elt(symb);
+                        if n == none then outdefault(type)
+                        else begin
+                           t2:=outconst(n.elt);
+                           if t2<>type then tstconv(t2,type); n.out end;
+                  end otherwise goto XIT;   XIT:
+            end;
+
+         inspect rec do begin
+            if prefbox =/= none then begin
+               dentry:-prefbox.curmeaning;
+               if not dentry is record
+               then dentry:-get_rec(prefbox.id);
+               outstruct:=outstruct(dentry qua record,set);
+            end;
+            out_atrset(atrset);
+            if not variantset.empty then
+            begin for v:-variantset.first,v.suc while v =/= none do
+                  begin if not v.atrset.empty then
+                        begin for q:-v.atrset.first,q.suc
+                              while q =/= none do
+                              if get_elt(q.symb) =/= none then goto L;
+                        end;
+                  end;
+                  v:-variantset.first;
+            L:    out_atrset(v.atrset);
+            end;
+            if rec.indefinite then begin
+               outstruct:=1;
+               if n=/=none then
+               inspect n.elt when repeated_const
+               do outstruct:=elt_set.cardinal+1 otherwise outstruct:=2;
+            end;
+         end inspect rec
+      end *** outstruct ***;
+%title *********     C  o  n  d  i  t  i  o  n    *********
+
+      !*** recursive - calls 'expression' ***;
+      short integer procedure condition(b); short integer b;
+      begin short integer cond,t,t2; boolean notseen;
+            cond:=relation(b);
+            if b=S_EQ or else b=S_NE then begin
+               t:=expression(ininstr); t2:=expression(ininstr);
+               if t2<>t then tstconv(t2,t) end
+       else if cond ne 0 and then cond <> 10 then begin
+               t:=expression(ininstr);
+               if typeTable(t).set==integerTypes
+               then t:=T_INT
+          else if t=T_REAL or else t=T_LREAL or else
+                  t=T_CHAR or else t=T_SIZE  then  !nothing;
+          else if typeTable(t).set=/=refTypes then
+               ERROR("Illegal type in relation: " & edtype(t));
+               t2:=expression(ininstr);
+               if t2<>t then tstconv(t2,t);
+            end
+       else begin
+               if b=S_NOT then begin b:=ininstr; notseen:=true end;
+               t2:=expression(b);
+               if t2<>T_BOOL then tstconv(t2,T_BOOL); cond:=K_EQ;
+               outinst(S_PUSHC); outinst(if notseen then S_FALSE else S_TRUE);
+            end;
+            if output_trace>0 then outcode;
+            condition:=cond;
+      end *** condition ***;
+
+      short integer procedure relation(b); short integer b;
+      relation := if b=S_LT then K_LT else if b=S_LE then K_LE
+             else if b=S_EQ then K_EQ else if b=S_GT then K_GT
+             else if b=S_GE then K_GE else if b=S_NE then K_NE
+                  else 0;
+
+%title *********      S    y    s    f    n    c      *********
+      short integer procedure sysfnc(d); ref(system_descr) d;
+      begin short integer apar,npar,recid; ref(record) r;
+            ref(linkage) dentry; short integer inx;
+
+            procedure invalue(type); short integer type;
+            begin short integer t2;
+                  apar:=apar-1;
+                  if apar >= 0 then begin
+                     t2:=expression(ininstr);
+                     if t2<>type then tstconv(t2,type);
+                  end
+                  else begin
+                     outinst(S_PUSHC); outdefault(type) end;
+            end;
+
+            procedure inid;
+            begin short integer b;
+                  apar:=apar-1; inx:=0;
+                  if apar >= 0 then
+                  begin b:=ininstr;
+                        if b=S_VAR then
+                        begin if ininstr ne S_SIMPLE then goto ERR;
+                              if ininstr ne S_VARID then goto ERR;
+                              inx:=in2byt;
+                              if ininstr ne S_ENDVAR then
+                        ERR:  begin ERROR("Wrong kind of parameter to "
+                                          & d.symb.symbol);
+                                    while ininstr ne S_ENDVAR do;
+                              end;
+                        end else
+                        begin ERROR("Wrong kind of parameter to "
+                                     & d.symb.symbol);
+                              expression(b);
+                              outinst(S_POP);
+                              if output_trace>0 then outcode;
+                        end;
+                  end;
+            end *** inid ***;
+
+         inspect d do begin
+            npar := apar := if byte=S_ARGLIST then inbyt else 0;
+            switch(0:255) instr begin
+
+              when S_LINE do out_S_line;
+
+              when S_GETOBJ do begin
+                  sysfnc:=T_REF;
+                  invalue(T_INT);
+                  outinst(S_GETOBJ);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_SETOBJ do begin
+                  invalue(T_REF); invalue(T_INT);
+                  outinst(S_SETOBJ);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_DSIZE do begin
+                  sysfnc:=T_SIZE;
+                  inid;
+                  dentry:-symtab(inx).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(inx);
+                  invalue(T_INT);
+                  inspect dentry qua record do begin
+                     if not indefinite then
+                        ERROR("Illegal record in rec_size");
+                     outinst(S_DSIZE); outtag(tag);
+                     if output_trace>0 then outcode;
+                  end end;
+
+              when S_T_INITO do begin
+                  invalue(T_REF);
+                  outinst(S_T_INITO);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_T_GETO do begin
+                  sysfnc:=T_REF;
+                  outinst(S_T_GETO);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_T_SETO do begin
+                  invalue(T_REF);
+                  outinst(S_T_SETO);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_PUSHLEN do begin
+                  sysfnc:=T_SIZE;
+                  outinst(S_PUSHLEN);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_ZEROAREA do begin
+                  invalue(T_REF); invalue(T_REF);
+                  outinst(S_ZEROAREA);
+                  if output_trace>0 then outcode;
+                  outinst(S_POP);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_INITAREA do begin
+                  inid; invalue(T_REF);
+                  outinst(S_INITAREA);
+                  dentry:-symtab(inx).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(inx);
+                  outtag(dentry qua record.tag);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_REF do begin
+                  sysfnc:=T_REF;
+                  invalue(T_NAME);
+                  outinst(S_CONVERT); outtype(T_REF);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when S_FIELD do begin
+                  sysfnc:=T_FIELD;
+                  invalue(T_NAME);
+                  outinst(S_CONVERT); outtype(T_FIELD);
+                  if output_trace>0 then outcode;
+                  end;
+
+              when NONE do IERR;
+            end;
+
+            if apar ne 0 then
+            begin ERROR("Wrong no. of arguments to " & symb.symbol);
+                  for apar:=apar-1 while apar >= 0 do
+                  begin expression(ininstr);
+                        outinst(S_POP);
+                        if output_trace>0 then outcode;
+                  end;
+            end;
+            if npar > 0 then byte:=ininstr;
+         end inspect
+      end *** sysfnc ***;
+%title ********* Pass 2  -   Type conversion handling   *********
+      procedure convert(t1,t2); short integer t1,t2;
+      if type_check(t1,t2) then begin
+            outinst(S_CONVERT); outtype(t2);
+                  if output_trace>0 then outcode;
+      end *** convert ***;
+
+      procedure tstconv(t1,t2); short integer t1,t2;
+      begin
+            if type_check(t1,t2)
+            then ERROR("Missing type conversion: " &
+                       edtype(t1) & " => " & edtype(t2) );
+      end *** tstconv ***;
+
+
+      Boolean procedure type_check(t1,t2); short integer t1,t2;
+      begin ref(symbolbox) q1,q2;
+
+            Boolean procedure inprefix(q1,q2); ref(symbolbox) q1,q2;
+            begin ref(linkage) dentry;
+                  -- inprefix:=false;
+                  if q2==dummybox then inprefix:=true
+             else if q2.curmeaning is record and q1.curmeaning is record
+                  then while true do begin
+                  !*** true if q1 is prefixed by q2 ***;
+                       dentry:-q1.curmeaning;
+                       if dentry is record then begin
+                          q1:-dentry qua record.prefbox;
+                          if q1 == q2 then begin
+                             inprefix:=true; goto L end;
+                          if q1 == none then goto L;
+                       end else goto L;
+                  end;
+      L:    end *** inprefix ***;
+
+            procedure converr;
+               ERROR(msg("Type conversion is undefined:  "));
+
+            text procedure msg(s); value s; text s;
+            msg:-s & edtype(t1) & "  -->  " & edtype(t2);
+
+            if tracemode>0 then inspect sysout do begin
+               outtext(msg("Convert ")); outimage end;
+            if typeTable(t1).set==integerTypes then
+            begin if typeTable(t2).set=/=integerTypes then
+                  begin if t2<>T_REAL and then t2<>T_LREAL
+                           and then t2<>T_CHAR
+                        then converr; type_check:=true;
+                  end;
+            end
+       else if t1=T_REAL or t1=T_LREAL then
+            begin if typeTable(t2).set=/=integerTypes
+                  and then not(t2=T_REAL or t2=T_LREAL)
+                  then converr; type_check:=true;
+            end
+       else if t1=T_CHAR then
+            begin if typeTable(t2).set=/=integerTypes
+                  then converr; type_check:=true;
+            end
+       else if (          typeTable(t1).set==fieldTypes
+                 and then typeTable(t2).set==fieldTypes ) or else
+               (          typeTable(t1).set==nameTypes
+                 and then typeTable(t2).set==nameTypes )
+            then begin
+                  if typeTable(t1).qual<>0 and then
+                     typeTable(t2).qual<>0 and then
+                     type_check(typeTable(t1).qual,typeTable(t2).qual)
+                  then ERROR(msg("Qualification check fails:  "));
+            end
+       else if  typeTable(t1).set==refTypes and then
+                typeTable(t2).set==refTypes
+            then begin
+                  q2:-symtab(typeTable(t2).qual);
+                  if q2 =/= dummybox then begin
+                     q1:-symtab(typeTable(t1).qual);
+                     if q1=/=q2 and then not inprefix(q1,q2) then begin
+                        if inprefix(q2,q1) then
+%                          WARNING(msg("qualification extension:  "))
+                        else ERROR(msg("qualification check fails:  "));
+                     end;
+                  end;
+            end
+       else if  typeTable(t1).set==entTypes and then
+                typeTable(t2).set==entTypes then
+            begin if typeTable(t1).qual<>0 then converr end
+       else converr;
+      end *** type_check ***;
+%title ********* Pass 2  -   S-Instruction output routines  *********
+
+      procedure outtype(t); short integer t;
+      begin ref(linkage) dentry;
+         inspect typeTable(t) do inspect set do begin
+          switch(NUL:TYP_MXMX) type begin
+            when TYP_NAME do
+                 uttag(TAG_GADDR);
+            when TYP_FIELD do
+                uttag(TAG_AADDR);
+            when TYP_REF do
+                 uttag(TAG_OADDR);
+            when TYP_ENT do
+                 uttag(TAG_RADDR);
+            when TYP_INT do
+                 uttag(TAG_INT);
+            when TYP_INFIX do
+                 uttag( if qual=S_SIZE    then TAG_SIZE
+                   else if qual=S_CHAR    then TAG_CHAR
+                   else if qual=S_BOOLEAN then TAG_BOOL
+                   else if qual=S_LABEL   then TAG_PADDR
+                   else if qual=S_REAL    then TAG_REAL
+                   else if qual=S_LONG    then TAG_LREAL
+                   else                          0        );
+            when TYP_STRUCT do begin
+                  dentry:-symtab(qual).curmeaning;
+                  if not dentry is record
+                  then dentry:-get_rec(qual);
+                  outtag(dentry qua record.tag); end;
+            when NONE do
+                 IERR;
+         end case;
+        end inspect;
+      end *** outtype ***;
+
+      procedure outquant(q); ref(quant) q;
+      begin ref(linkage) dentry;
+            inspect typeTable(q.type) do inspect set do begin
+              switch(NUL:TYP_MXMX) type begin
+                when TYP_NAME do
+                     uttag(TAG_GADDR);
+                when TYP_FIELD do
+                     uttag(TAG_AADDR);
+                when TYP_REF do
+                     uttag(TAG_OADDR);
+                when TYP_ENT do
+                     uttag(TAG_RADDR);
+                when TYP_INT do   begin
+                     if qual=S_SHORT
+                     then uttag(TAG_SINT)
+                     else begin uttag(TAG_INT);
+                        if qual=S_RANGE then begin
+                           outinst(S_RANGE);
+                           outnumber(info1); outnumber(info2);
+                        end;
+                     end;
+                  end;
+                when TYP_INFIX do
+                     uttag( if qual=S_REAL    then TAG_REAL
+                       else if qual=S_LONG    then TAG_LREAL
+                       else if qual=S_SIZE    then TAG_SIZE
+                       else if qual=S_CHAR    then TAG_CHAR
+                       else if qual=S_BOOLEAN then TAG_BOOL
+                       else if qual=S_LABEL   then TAG_PADDR
+                            else                     0     );
+                when TYP_STRUCT do begin
+                     dentry:-symtab(qual).curmeaning;
+                     if not dentry is record
+                     then dentry:-get_rec(qual);
+                     outtag(dentry qua record.tag);
+                     if info1>0 then begin
+                        outinst(S_FIXREP); outnumber(info1-1) end;
+                  end;
+                when NONE do IERR;
+             end case;
+            end inspect;
+            if q.count ne 1 then begin
+                  outinst(S_REP); outnumber(q.count) end;
+      end;
+%title *********   M o n i t o r   -   P a s s  2   *********
+
+
+            curline := 255; !temp use - will become zero;
+            while curline<>0 do begin
+                  dest_tab(curline):-new program_point;
+                  curline:=curline-1;
+            end *** init of dest_tab and curline ***;
+
+
+            freeindex:=255;
+            while freeindex<>1 do begin
+                  indexused(freeindex-1):=freeindex;
+                  freeindex:=freeindex-1;
+            end *** init of index-handling ***;
+
+            input_trace := 0;  output_trace := 0;
+            module_trace := 0; tracemode:=0;
+
+            while not TRC_init.empty do begin
+                  inspect TRC_init.first when trace_item do begin
+                        if tracemode > 3 then inspect sysout do
+                        begin outtext("TRACE"); outint(s,4);
+                              outint(v,4); outimage;
+                        end;
+                        if s=1 then input_trace := v
+                   else if s=2 then output_trace := v
+                   else if s=3 then module_trace := v
+                   else if s=4 then tracemode := v
+                   else begin
+                              s := if s=11 then 1 else if s=12 then 4
+                              else if s=13 then 3 else if s=14 then 2
+                              else if s=21 then 5 else if s=22 then 5
+                              else if s=23 then 9 else if s=24 then 5 else 9;
+                              sw(s):=v;
+                        end;
+                  end otherwise IERR;
+                  TRC_init.first.out;
+            end;
+
+            if output_trace > 0 then begin outimage; eject(1); outimage end;
+            update_display(qntset);  ! *** this InptFile.open;
+              ! ***this OuptFile.open;
+            outinst(S_PROGRAM);
+
+            tempt:-datetime;
+            outstring(tempt & "'Simuletta'Java");
+            if output_trace>0 then outcode;
+
+            condinstr(K_TT):=S_EQ; condinstr(K_FF):=S_NE;
+            condinstr(K_EQ):=S_EQ; condinstr(K_NE):=S_NE;
+            condinstr(K_GT):=S_GT; condinstr(K_LE):=S_LE;
+            condinstr(K_LT):=S_LT; condinstr(K_GE):=S_GE;
+
+
+            byte:=ininstr; if byte <> S_BEGIN then IERR;
+            if module_ident==notext then begin
+               outinst(S_MAIN); eltid:-copy("MAIN") end
+            else begin
+               if global_module then outinst(S_GLOBAL);
+               eltid:-module_ident;
+               if eltid.length > 10 then eltid:-eltid.sub(1,10);
+               outinst(S_MODULE);
+               outstring(eltid); outstring(module_code);
+            end;
+            if output_trace>0 then outcode;
+            for n:=1 step 1 until 10 do if sw(n) > 0 then begin
+               outinst(S_SETSWITCH); outbyt(n);
+               outbyt(sw(n));
+               if output_trace>0 then outcode;
+            end;
+            if not modset.empty then
+            begin ref(module) m; ref(descr) d;
+                  for m:-modset.first,m.suc
+                  while m=/=none do inspect m do begin
+                    outinst(if system then S_SYSINSERT else S_INSERT);
+                    outstring(modid); outstring(modcode);
+                    outtext("!1!?");
+                    ! *** External ident later  TEMP  ***;
+                    outnumber(bias+1); outnumber(bias+ntag);
+                    if output_trace>0 then outcode;
+                  end;
+            end;
+
+            localdecl:-new head; vislist:-new head; constlist:-new head;
+            d:-qntset.first;
+            TRACE("Pass2",sourceline,"qntset: " & (if qntset==none then "qntset == NONE" else "qntset =/= NONE"));
+            while true do inspect d do begin d:-suc;
+                  if visible or else global_module
+                  then begin out_descr(this descr); into(vislist) end
+             else if this descr is record then begin
+                     out_descr(this descr); out end
+             else if this descr is quant and then module_ident=/=notext
+                     and then (this descr qua quant.initval==none
+                       or else not this descr qua quant.read_only)
+                  then new quant_notice(this descr qua quant)
+                           .into(localdecl);
+            end otherwise goto QNTSV;   QNTSV:
+
+            if module_ident =/= notext then begin
+                  givetextinfo(2,eltid);
+                  attrfile:-gettextinfo(12);
+               UtModule(comn,this OuptFile,attrfile,eltid);
+               outinst(S_BODY);
+               if output_trace>0 then outcode;
+
+               if not localdecl.empty then
+               begin for qn:-localdecl.first,qn.suc
+                     while qn =/= none do inspect qn.q do
+                     begin if initval=/=none then
+                           ERROR("Illegal with initial value");
+                           deftag(this descr);
+                           outinst(S_LOCAL); outtagid(tag);
+                           outquant(this quant);
+                           if output_trace>0 then outcode;
+                     end;
+                     localdecl:-new head;
+               end;
+               while not vislist.empty
+                  do vislist.first.into(constlist);
+
+            end;
+
+            if not global_module then begin
+               d:-qntset.first;
+               while d =/= none do begin
+                  inspect d when quant do begin d:-suc;
+                     if initval =/= none then begin
+                        if tag=0 then begin
+                           if tracemode > 3 then inspect sysout do begin
+                             outtext("=> Const-prep " & symb.symbol);
+                             outimage end;
+                           inspect typeTable(type) do
+                           if set==structTypes then begin
+                       --     dentry:-display(n);
+                       --     if not dentry is record
+                       --     then dentry:-get_rec(n);
+                       --     inspect dentry qua record do begin
+                              inspect symtab(qual).curmeaning qua record
+                              do begin
+                                 if tag=0
+                                 then out_descr(this record);
+                                 if tag=0
+                                 then ERROR("Declaration loop");
+                              end;
+                           end; preped:=true;
+                           if tracemode > 3 then inspect sysout do begin
+                             outtext("<= * " & symb.symbol);
+                             outimage end;
+                           deftag(this descr);
+                           outinst(S_CONSTSPEC); outtagid(tag);
+                           outquant(this quant);
+                           if output_trace>0 then outcode;
+                        end;
+                        into(constlist);
+                     end else out_descr(this descr);
+                  end otherwise begin out_descr(d); d:-d.suc end;
+               end;
+               d:-constlist.first;
+               while d=/=none do inspect d qua quant do begin d:-suc;
+                     outinst(S_CONST); outtag(tag);
+                     outquant(this quant);
+                     if output_trace>0 then outcode;
+                     for e:-initval.first,e.suc
+                     while e =/= none do begin
+                           typ:=outconst(e);
+                           if typ<>type then tstconv(typ,type);
+                     end;
+               end;
+               byte:=ininstr; statement(S_ENDPROGRAM);
+            end
+            else begin
+               d:-qntset.first;
+               while d =/= none do begin
+                  inspect d when quant do begin
+                     if initval =/= none then begin
+                        if tag=0 then begin
+                           ERROR("INIT on undefined var: " & symb.symbol);
+                           deftag(this descr);
+                        end;
+                        WARNING("INIT may not be def. in BEC!!!");
+                        outinst(S_INIT); outtag(tag);
+                        outtype(type);
+                        if output_trace>0 then outcode;
+                        for e:-initval.first,e.suc
+                        while e =/= none do begin
+                           typ:=outconst(e);
+                           if typ<>type then tstconv(typ,type); end;
+                     end else out_descr(d);
+                  end otherwise out_descr(d);
+                  d:-d.suc;
+               end;
+            end;
+            if module_ident =/= notext then begin
+               outinst(S_ENDMODULE);
+               if output_trace>0 then outcode;
+            end;
+
+         outinst(S_ENDPROGRAM);
+         if output_trace>0 then outcode;
+         this InptFile.close; this OuptFile.close;
+
+ end *** inspect Inptfile ***;
+
+ end *** Pass2 ***;

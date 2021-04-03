@@ -111,7 +111,7 @@ public abstract class Declaration extends SyntaxClass {
     	else if(warning) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
     }
   
-    public static boolean parseDeclaration(final Vector<Declaration> declarationList) {
+    public static boolean parseDeclaration(final DeclarationList declarationList) {
     	if(Option.TRACE_PARSE) Parser.TRACE("Parse Declaration");
     	String prefix=acceptIdentifier();
     	if(prefix!=null) {

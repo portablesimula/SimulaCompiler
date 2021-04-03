@@ -9,6 +9,7 @@ package simula.compiler.expression;
 
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -68,7 +69,7 @@ public final class QualifiedObject extends Expression {
 			Util.TRACE("BEGIN QualifiedObject" + toString() + ".doChecking - Current Scope Chain: "	+ Global.currentScope.edScopeChain());
 		classDeclaration = getQualification(classIdentifier);
 		lhs.doChecking();
-		if (!checkCompatability(lhs, classIdentifier))
+		if (!checkCompatability(lhs, KeyWord.QUA, classIdentifier))
 			Util.error("Illegal Object Expression: " + lhs + " is not compatible with " + classIdentifier);
 		this.type = new Type(classIdentifier);
 		if (Option.TRACE_CHECKER)

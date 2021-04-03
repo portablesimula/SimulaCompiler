@@ -1,0 +1,1959 @@
+External class Common;
+External class OuptFile;
+external procedure InModule;
+
+Procedure Pass1(comn); ref(Common) comn;
+%      ----------------------------------------------------------------
+%      ---                                                          ---
+%      ---                 P O R T A B L E     S I M U L A          ---
+%      ---                                                          ---
+%      ---              S I M U L E T T A    C O M P I L E R        ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      ---                P r o c e d u r e    P a s s   1          ---
+%      ---                                                          ---
+%      ---                                                          ---
+%      --- Selection switches:                                      ---
+%      ---                                                          ---
+%      ---    'D' Included when dump is wanted                      ---
+%      ---    'I' Included to make compiler use inserted mnemonic   ---
+%      ---    'N' Included to produce ND-500 version                ---
+%      ---    'U' Included to produce UNIVAC version                ---
+%      ---    'X' Included to produce XENIX version                 ---
+%      ---                                                          ---
+%      ----------------------------------------------------------------
+
+%SELECT ZAD
+
+inspect comn do 
+inspect new ouptfile(L2name,comn) do
+begin
+
+      Boolean all_visible;
+      ref(head) currentset;
+      text source_file;
+      short integer input_trace;
+      short integer tracemode;
+
+      ref(file) scanner,parser;
+
+      short integer symbol;         ! Current symbol code           ;
+      short integer inserted;       ! insert level                  ;
+      ref(seqtag) taglast;      ! identifiers of %tag           ;
+      ref(sourceElt) cursource; ! current input file            ;
+      text curval;              ! Current symbol value          ;
+
+      class sourceElt;
+      begin ref(sourceElt) prev;
+            ref(infile) inptf; integer linenr;
+
+            procedure close;
+            begin
+                  if inptf =/= sysin then inptf.close;
+                  cursource:-prev;
+                  if inserted<>0 then inserted:=inserted-1;
+                  if prev=/=none then curline:=prev.linenr;
+            end;
+
+            prev:-cursource;
+            if prev=/=none then prev.linenr:=curline;
+            if lowcase(copy(source_file))="sysin"
+            then inptf:-sysin
+            else begin inptf:-new infile(source_file);
+                       inptf.open(blanks(256)) end;
+            curline:=0;
+            inserted:=inserted+1;
+      end;
+                      
+      procedure close;
+      begin ref(symbolbox) cbox; ref(descr) q; 
+            !*** ignore anything after final end ***;
+            while cursource=/=none do cursource.close;
+            taglast:-taglist:-taglist.next; ! remove dummy;
+            while taglast=/=none do begin cbox:-taglast.box;
+               q:-qntset.first;
+               while q=/=none do begin
+                  if q.symb == cbox then begin
+                     newtag(q.symb);
+                     q.xtag:=ntag;
+                     if tracemode<>0 then begin
+                        sysout.outtext("%tag: "); prt(q,10) end;
+                     taglast.d:-q; goto FOUND;
+                  end;
+                  q:-q.suc;
+               end;
+               ERROR("%tag - identifier not found: " &cbox.symbol);
+     FOUND:    taglast:-taglast.next;
+            end;
+      end;
+%title *****   G E T S Y M B   *****
+
+      file class getsymb;
+      begin ref(file) prev;
+            ref(infile) inpt;     ! Source input file ;
+            character c;
+            short integer startpos,ampos,lng; short integer s,n,v;
+            short integer impos,imlen;  ! Current pos, length ;
+            text inim;              ! Stripped input line ;
+            text t,id; !*** percent only ***;
+
+            procedure instringval(quote); character quote;
+            begin character ch;
+                  short integer i,j; !never more than 3 digits;
+                  short integer storepos,storelength;
+                  text result;
+
+                  procedure ISOcode;
+                  begin short integer count,i,j; boolean digits;
+                        short integer oldpos; oldpos:=impos;
+                        ch:=loadchar(inim,impos); impos:=impos+1;
+                        while count<3 do begin count:=count+1;
+                           if digit(ch) then begin
+                              digits:=true;
+                              i:=10*i + isorank(ch) - isorank('0');
+                              ch:=loadchar(inim,impos); impos:=impos+1;
+                           end;
+                        end;
+                        if digits and then i<256 and then ch='!'
+                        then ch:=char(i)
+                        else begin ch:='!'; impos:=oldpos end;
+                        putchar;
+                  end;
+
+                  procedure putchar;
+                  begin if storepos=storelength then begin
+                           result:-result & blanks(10);
+                           storelength:=storelength+10;
+                        end;
+                        storechar(ch,result,storepos);
+                        storepos:=storepos+1;
+                  end;
+
+               while true do begin
+                  ch:=loadchar(inim,impos); impos:=impos+1;
+                  if ch='!' then ISOcode
+             else if ch='!30!' then begin
+                     ERROR("Missing quote at end-of-line");
+                     inline; goto L;
+                  end
+             else if ch=quote then begin
+                  L: ch:=loadchar(inim,impos); impos:=impos+1;
+                     if ch=' ' then goto L;
+                     if ch='!30!' then begin
+                        inline; goto L end;
+                     if ch<>quote then begin
+                        impos:=impos-1;
+                        goto EXIT end;
+                  end
+             else putchar;
+               end loop;
+
+         EXIT: curval:-if result == notext then notext
+                       else result.sub(1,storepos);
+                 TRACE("Pass1.GETSYMB",sourceline,"instringval=""" & curval & """");
+
+            end *** instringval ***;
+
+%title *****   G E T S Y M B :  inline and directive handling   *****
+
+            procedure inline;
+            begin character ch;
+            short integer startpos;
+            short integer n,s,v; text id;
+
+                  procedure percenterr;
+                  begin inspect sysout do begin
+                           outtext(inim.strip); outimage;
+                           while impos<>0 do begin
+                              impos:=impos-1; outchar('=');
+                           end; outimage;
+                        end;
+                        ERROR("Illegal %-directive - ignored");
+                        goto NEWL;
+                  end *** percenterr ***;
+
+                  procedure getBasic;
+                  begin text id; short integer n;
+                       symbol:=0; curval:-notext;
+                       ch:=loadchar(inim,impos); impos:=impos+1;
+                       while ch=' ' do begin
+                          ch:=loadchar(inim,impos); impos:=impos+1; end;
+                       id:-inim.sub(impos,imlen-impos+3);
+                       n:=1;
+                       if letter(ch) then begin
+                          while letter(loadchar(inim,impos)) or
+                                digit(loadchar(inim,impos))
+                          do begin
+                             n:=n+1; impos:=impos+1; end;
+                          symbol:=S_IDENT;
+                          curval:-lowcase(copy(id.sub(1,n)));
+                       end
+                  else if digit(ch) then begin
+                          while digit(loadchar(inim,impos))
+                          do begin
+                             n:=n+1; impos:=impos+1; end;
+                          symbol:=S_INTVAL;
+                          curval:-copy(id.sub(1,n));
+                       end
+                       else begin !*** result in ch ***;
+                          !*** impos:=impos+1;
+                       end;
+                       !*** impos:=impos-1;
+                  end;
+%page
+            NEWL: imlen:=impos:=0;
+                  while imlen = 0 do begin
+            NEWR:    inpt.inrecord;
+                     if inpt.endfile then begin
+                        inspect cursource do close;
+                        if cursource==none then begin
+                           ERROR("Missing END"); inim:="END; ";
+                           inim.setpos(0); end
+                        else begin
+                           inpt:-cursource.inptf;
+                           inim:-inpt.image; goto NEWR end;
+                     end;
+                     curline:=curline+1;
+                     imlen:=inpt.image.pos-1;
+                     inspect ListFile do begin
+                        if inserted<>0 then begin
+                           outchar('>'); outint(curline,6);
+                           outtext(" " & inim.sub(1,imlen));
+                        end
+                        else begin
+                           outint(curline,6);
+                           outtext("* " & inim.sub(1,imlen));
+                        end;
+                        outimage;
+                     end;
+                     if input_trace > 0 then inspect sysout do begin
+                        if inserted<>0 then begin
+                           outchar('>'); outint(curline,6);
+                           outtext(" " & inim.sub(1,imlen));
+                        end
+                        else begin
+                           outint(curline,6);
+                           outtext("* " & inim.sub(1,imlen));
+                        end;
+                        outimage;
+                     end;
+                  end;
+                  storechar('!30!',inim,imlen);
+                  if loadchar(inim,impos)='%' then begin
+                     impos:=impos+1;
+            REPPCT:  ch:=loadchar(inim,impos); startpos:=impos;
+                     impos:=impos+1; id:-notext;
+                     if ch=' ' or else ch='!30!' then goto NEWL;
+                     if ch='+' then begin
+            REP1:       ch:=loadchar(inim,impos); impos:=impos+1;
+                        if letter(ch)
+                        then goto if Selector(rank(ch)) then REP1 else DIR;
+            PCTCHK:     if ch='+' then goto REP1;
+                        if ch='-' then goto REP2;
+                        if ch=' ' then begin
+                              ch:=loadchar(inim,impos); impos:=impos+1; end;
+                        if ch = '%' then goto REPPCT;
+                        impos:=impos-1; goto NXT;
+                     end;
+
+                     if ch='-' then begin
+            REP2:       ch:=loadchar(inim,impos); impos:=impos+1;
+                        if letter(ch) then
+                           goto if Selector(rank(ch)) then DIR else REP2;
+                        goto PCTCHK;
+                     end;
+%page
+                     impos:=impos-1;
+                     getbasic; id:-curval;
+            DIR:
+                     if input_trace > 3 then inspect sysout do begin
+                        if id == notext then outtext("%DIR=notext") else
+                      begin outtext("%DIR=" & id); outchar('.') end;
+                        outimage;
+                     end;
+
+                     if id==notext then ! Do nothing;
+                else if id="define" or id="macro" or id="endmacro" then
+                        begin impos:=startpos; goto NXT end
+                else if id="page" or id="title" then begin
+                        inspect ListFile do eject(1);
+                        if input_trace > 0 then eject(1);
+                     end
+                else if id="visible" then
+                        all_visible:=module_ident=/=notext
+                else if id="hidden"  then all_visible:=false
+                else if id="insert"  then begin
+                        while loadchar(inim,impos)=' ' do impos:=impos+1;
+                        source_file:-inim.sub(impos+1,imlen-impos).strip;
+                        cursource:-new sourceElt;
+                        inpt:-cursource.inptf; inim:-inpt.image;
+                     end
+                else if id="tag" then begin
+                        if rutlev=0 then begin
+                           getbasic;
+                           if ch <> '(' then percenterr;
+                           ch:=',';
+                           while ch = ',' do begin
+                              getbasic;
+                              if symbol<>S_IDENT then percenterr;
+                              simsymbol:-curval; DEFIDENT;
+                              taglast:-taglast.next:-
+                                       new seqtag(symtab(hash));
+                              getbasic;
+                           end;
+                           if ch <> ')' then percenterr;
+                        end else percenterr;
+                     end
+                else if id="sport" then begin getbasic;
+                           SportOk:= curval="on";
+                     end
+                else if id="eof" then begin
+                        inspect cursource do close;
+                        inspect cursource do begin
+                           inpt:-inptf; inim:-inpt.image end
+                        otherwise !???; ;
+                     end
+                else if id="pass" then begin
+                       getbasic; if symbol ne S_INTVAL then percenterr;
+                       n:=curval.getint;
+                       getbasic; if symbol<>S_IDENT then percenterr;
+                       if curval="input"  then s:=1
+                  else if curval="output" then s:=2
+                  else if curval="modtrc" then s:=3
+                  else if curval="trace"  then s:=4
+                  else if curval="dotracing" then s:=5 else percenterr;
+                       getbasic; if ch <> '=' then percenterr;
+                       getbasic; if symbol ne S_INTVAL then percenterr;
+                       v:=curval.getint;
+                       if n=1 then
+                       begin if s=1 then input_trace := v
+                        else if s=2 then begin
+                                if parser is grammar
+                                then parser qua grammar.settrace(v)
+                             end
+                        else if s=3 then module_trace := v
+                        else if s=4 then tracemode := v
+                        else if s=5 then DO_TRACING := v;
+                       end else
+                       begin s:=(n-2)*10+s;
+                             new trace_item(s,v).into(TRC_info);
+                             if tracemode > 3 then inspect sysout do
+                             begin outtext("TRACE"); outint(s,4);
+                                   outint(v,4); outimage;
+                             end;
+                       end;
+                     end
+                else begin
+                        id:-inim.sub(startpos+1,imlen-startpos);
+                        new info_item(copy(id)).into(TRC_info);
+                        if tracemode > 3 then inspect sysout do begin
+                           outtext("INFO "); outtext(id); outimage end;
+                     end;
+                     goto NEWL;
+                  end;
+       NXT: end *** inline ***;
+%title ***   G E T S Y M B :   main loop   ***
+            detach; ! for initialisation ;   goto NXT;
+
+      REPT:
+            call(parser);
+
+      NXT:  curval:-notext; hash:=0;
+
+      LOOP: c:=loadchar(inim,impos); impos:=impos+1;
+      
+--          TRACE("Pass1.GETSYMB",sourceline,"LOOP: c=" & edchar(c));
+
+          switch(NUL:'!255!') c begin
+
+            when 'a':'z','A':'Z' do begin
+                 startpos:=impos;
+                 while true do begin
+                    c:=loadchar(inim,impos); impos:=impos+1;
+--                    TRACE("Pass1.GETSYMB LNID",sourceline,"Pass1.GETSYMB: IDENT: c=" & edchar(c));
+                    switch(NUL:'!255!') c begin
+                      when '0':'9','a':'z','A':'Z','_' do ;
+                      when none do
+                      begin
+--                         TRACE("Pass1.GETSYMB LNID",sourceline,"Pass1.GETSYMB: goto LNID: c=" & edchar(c));
+                         goto LNID;
+                       end;
+                    end;
+                 end;
+
+      LNID:      simsymbol:-inim.sub(startpos,impos-startpos);
+--                 TRACE("Pass1.GETSYMB",sourceline,"LNID: simsymbol=" & simsymbol);
+                 DEFIDENT;
+                 TRACE("Pass1.GETSYMB LNID",sourceline,"simsymbol=" & edSymbol(hash));
+                 if hash>S_MXMX then begin
+                    inspect symtab(hash).curmeaning
+                       when macro do begin
+                            TRACE("Pass1.GETSYMB",sourceline,"MACRO=" & edSymbol(hash));
+                            if msc=/=none then call(msc) else
+                            new macro_scan("***macro***",this macro);
+                       end
+                       when mnemonic do begin
+                            TRACE("Pass1.GETSYMB",sourceline,"MNEMONIC=" & edSymbol(hash));
+                            inspect first qua macro_symbol do begin
+                                curval :-v; symbol:=s;
+                                hash:=box.id;
+                            end;
+                       end
+                    otherwise begin
+                       symbol:=S_IDENT;
+                       curval:-inim.sub(startpos,impos-startpos);
+                       TRACE("Pass1.GETSYMB",sourceline,"IDENTIFIER=" & curval);
+                    end;
+                 end else begin
+                       symbol:=hash;
+                       TRACE("Pass1.GETSYMB",sourceline,"KEYWORD=" & edSymbol(symbol));
+                 end;    
+                 impos:=impos-1;
+--                 TRACE("Pass1.GETSYMB",sourceline,"END LNID: c=" & edchar(c));
+              end;
+
+            when '&' do begin
+                 startpos:=impos; goto LEXP; end;
+
+            when '0':'9' do begin !*** here from dot digit too;
+                 startpos:=impos;
+            DIG1:c:=loadchar(inim,impos); impos:=impos+1;
+                 if digit(c) then goto DIG1;
+                 if c='.' then begin
+                    c:=loadchar(inim,impos); impos:=impos+1;
+                    if digit(c) then begin
+                       while digit(c) do begin
+            NUMDOT:       c:=loadchar(inim,impos); impos:=impos+1; end;
+                    end
+                    else ERROR("No digit after dot");
+                    symbol:=S_REALVAL;
+                    if c='&' then begin
+            LEXP:      symbol:=S_REALVAL;
+                       c:=loadchar(inim,impos); impos:=impos+1;
+                       if c='&' then
+                       begin ampos:=impos-startpos;
+                          c:=loadchar(inim,impos); impos:=impos+1;
+                          symbol:=S_LREALVAL
+                       end;
+                       if c='+' or c='-' then begin
+                          c:=loadchar(inim,impos); impos:=impos+1;
+                       end;
+                       if digit(c) then begin while digit(c) do begin
+                          c:=loadchar(inim,impos); impos:=impos+1;
+                       end end
+                       else ERROR("No digit after ampersand");
+                    end ampersand;
+                 end
+            else if c='&' then goto LEXP
+                 else symbol:=S_INTVAL;
+                 lng:=impos-startpos;
+                 curval:-copy(inim.sub(startpos,lng));
+                 if symbol=S_LREALVAL then
+                 begin ! This code substitutes && by & in Lreal-const ;
+                    curval.sub(ampos,  lng-ampos) :=
+                    curval.sub(ampos+1,lng-ampos)    ;
+                    curval :- curval.sub(1,lng-1);
+                 end;
+                 impos:=impos-1;
+              end;
+
+            when '"' do begin
+--                 TRACE("Pass1.GETSYMB",sourceline,"BEGIN STRING-1");
+                 instringval('"'); symbol:=S_STRING;
+              end;
+
+            when ''' do begin
+--                 TRACE("Pass1.GETSYMB",sourceline,"BEGIN STRING-2");
+                 instringval('''); symbol:=S_CHARS;
+              end;
+
+            when '%' do
+                 symbol:=S_PERCENT;
+
+            when '(' do  symbol:=S_LPAR;
+            when ')' do  symbol:=S_RPAR;
+            when '+' do  symbol:=S_ADD;
+            when ',' do  symbol:=S_COMMA;
+            when '/' do  symbol:=S_DIV;
+            when '=' do  symbol:=S_EQ;
+            when '@' do  symbol:=S_ADDRESS;
+
+            when '-' do begin
+                 if loadchar(inim,impos)='-' then goto LEOL;
+                 symbol:=S_SUB;
+              end;
+
+            when '.' do begin
+                 if digit(loadchar(inim,impos)) then goto NUMDOT;
+                 symbol:=S_DOT;
+              end;
+
+            when ':' do begin
+                 if loadchar(inim,impos)='=' then begin
+                    symbol:=S_ASSIGN; impos:=impos+1 end
+                 else symbol:=S_COLON;
+              end;
+
+            when '*' do begin
+                 if loadchar(inim,impos)='/' then begin
+                    ! convert */ to % - macro param indicator;
+                    symbol:=S_PERCENT; impos:=impos+1 end
+                 else symbol:=S_MULT;
+              end;
+
+            when '<' do begin
+                 c:=loadchar(inim,impos);
+                 if c='>' then begin
+                    symbol:=S_NE; impos:=impos+1 end
+            else if c='=' then begin
+                    symbol:=S_LE; impos:=impos+1 end
+            else if SportOk and then c='<' then begin
+                    symbol:=S_LSHIFTL;impos:=impos+1 end
+            else if SportOk and then c='-' and then
+                    loadchar(inim,impos+1)='<'
+                 then begin
+                    symbol:=S_LSHIFTA;impos:=impos+2 end
+                 else symbol:=S_LT;
+              end;
+
+            when '>' do begin
+                 c:=loadchar(inim,impos);
+                 if c='=' then begin
+                    symbol:=S_GE; impos:=impos+1 end
+            else if SportOk and then c='>' then begin
+                    symbol:=S_RSHIFTL;impos:=impos+1 end
+            else if SportOk and then c='-' and then
+                    loadchar(inim,impos+1)='>'
+                 then begin
+                    symbol:=S_RSHIFTA;impos:=impos+2 end
+                 else symbol:=S_GT;
+              end;
+
+            when '!30!' do begin !*** end-of-line, get next image ***;
+      LEOL:      inline; goto LOOP; end;
+
+            when NUL,'!127!',';',' ','!9!' do goto LOOP; !add HT here;
+
+            when '!1!':'!7!','!14!':'!29!','!31!','!','#','$','?',
+                 '!91!':'!96!','!123!':'!126!' do begin
+                  ERROR("Illegal character - ignored: " & 
+                        leftint(rank(c)));
+                  goto LOOP; end;
+
+           end *** case inchar ***;
+
+            if input_trace > 1 then inspect sysout do begin
+               outtext("Line"); outint(curline,6); outtext("   ");
+               outtext("Symbol=#"); outtext(leftint(symbol));
+               outtext(":" & edSymbol(symbol));
+               if curval =/= notext then begin
+                  setpos(50); outtext("Value: """ & curval & """");
+               end;
+               outimage;
+            end;
+            goto REPT;
+
+      end *** getsymb ***;
+
+%title ******   M A C R O _ S C A N   ******
+
+      file class macro_scan(mac); ref(macro) mac;
+      hidden protected prev,paramcount,bracecount,mpercent;
+      begin short integer paramcount,bracecount,n;
+            boolean mpercent;
+            ref(link) save,symb; ref(macro_symbol) mSymb;
+            ref(file) prev;
+            ref(head) array par(0:mac.npar);
+            ref(head) curpar;
+
+            mac.msc:-this file;
+      !******   Initiate macro scan   ******;
+      INIT: prev:-parser; parser:-this file;
+            symb:-mac.first; paramcount:=mac.npar;
+            detach; !*** symchronize ***;
+            if paramcount > 0 then begin
+               while paramcount <> 0 do begin
+                  par(paramcount):-new head; paramcount:=paramcount-1;
+               end;
+               detach; 
+               if symbol <> S_LPAR then ERROR("Expected ( in macro call");
+      NXTPAR:  detach;
+               if symbol=S_PERCENT then begin
+                  mpercent:=true; detach end;
+               paramcount:=paramcount+1;
+               if paramcount>mac.npar then curpar:-new head
+               else curpar:-par(paramcount);
+               while true do begin
+                     if mpercent then begin 
+                        if symbol=S_PERCENT then begin
+                           mpercent:=false; detach;
+                           if symbol=S_COMMA then goto NXTPAR;
+                           if symbol<>S_RPAR then ERROR("Expected )");
+                           goto SWAP;
+                        end
+                     end
+                else if symbol = S_COMMA then goto NXTPAR
+                else if symbol = S_LPAR  then bracecount:=bracecount+1
+                else if symbol = S_RPAR  then begin
+                        if bracecount>0 then bracecount:=bracecount-1
+                        else goto SWAP;
+                     end;
+                     new macro_symbol(symbol,symtab(hash),curval).into(curpar);
+                     detach;
+               end;
+            end;
+      SWAP: if paramcount>mac.npar
+            then ERROR("Too many macro parameters");
+            curpar:-none;
+            parser:-prev; prev:-scanner; scanner:-this file;
+            while true do begin
+               curval:-notext; hash:=0;
+         PARA: if symb is macro_param then begin
+                    save:-symb.suc; n:=symb qua macro_param.n;
+                    symb:-if par(n)=/=none then par(n).first else none;
+               end;
+               if symb == none then begin
+                  if save == none then goto QUIT;
+                  symb:-save; save:-none; goto PARA;
+               end;
+               if symb =/= none then begin
+                  mSymb:-symb; symb:-symb.suc;
+                  inspect mSymb.box.curmeaning
+                     when macro do begin
+                        if msc=/=none then call(msc) else
+                        new macro_scan("***macro***",this macro);
+                        goto SYNCH end
+                     when mnemonic do mSymb:-first;
+                  symbol:=mSymb.s; curval:-mSymb.v;
+                  hash:=mSymb.box.id;
+               end;
+               if input_trace > 1 then inspect sysout do begin
+                  outtext("Line"); outint(curline,6); outtext("   ");
+                  outtext("Macro Scan ");
+                  outtext("Symbol=#"); outtext(leftint(symbol));
+                  outtext(":" & edSymbol(symbol));
+                  if curval =/= notext then begin
+                     setpos(50); outtext("=""" & curval & """");
+                  end;
+                  outimage;
+               end;
+      SYNCH:   call(parser);
+            end;
+      
+      QUIT: scanner:-prev; prev:-none;
+            if input_trace > 1 then inspect sysout do begin
+               outtext("Macro Scan terminated!");
+               outimage;
+            end;
+            detach; goto INIT; !*** reuse macro scanner ***;
+      end *** macro_scan ***;
+
+%title ******   P A R S E R : intype   ******
+    file class grammar;
+    begin
+
+
+      procedure settrace(v); short integer v;
+           output_trace:=v;
+
+      short integer nstring,outline;
+
+      !*** recursive ***;
+      short integer procedure intype;
+                !when changed, remember to change 'declaration'!!!;
+      begin short integer typ,rec; short integer fixrep;
+            integer low,up;
+          switch(NUL:'!255!') symbol begin
+        when S_INTEGER do
+             intype:=T_INT;
+        when S_SHORT   do begin
+             intype:=T_SINT; detach;
+             if symbol<>S_INTEGER then begin
+                chckErr(sourceline,S_INTEGER); goto ITEX end;
+             end;
+        when S_RANGE do begin
+             detach;
+             if symbol<>S_LPAR then chckWrn(sourceline,S_LPAR) else detach;
+             if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+             up:=curval.getint;  !low:=0;
+             detach;
+             if symbol=S_COLON then begin
+                detach;
+                if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                low:=up; up:=curval.getint; detach;
+             end;
+             intype:=defType(integerTypes,S_RANGE,low,up);
+             if symbol<>S_RPAR then begin
+                chckWrn(sourceline,S_RPAR); goto ITEX end;
+             end;
+        when S_REAL do
+             intype:=T_REAL;
+        when S_LONG do begin
+             intype:=T_LREAL; detach;
+             if symbol<>S_REAL then begin chckWrn(sourceline,S_REAL); goto ITEX end;
+             end;
+        when S_SIZE do
+             intype:=T_SIZE;
+        when S_BOOLEAN do
+             intype:=T_BOOL;
+        when S_LABEL do
+             intype:=T_LABEL;
+        when S_CHAR do
+             intype:=T_CHAR;
+        when S_ENTRY do begin
+             detach;
+             if symbol<>S_LPAR then chckWrn(sourceline,S_LPAR) else detach;
+             if symbol = S_IDENT then begin
+                intype:=defType(entTypes,hash,0,0);
+                detach; end
+             else intype:=T_ENT;
+             if symbol<>S_RPAR then begin chckWrn(sourceline,S_RPAR); goto ITEX end;
+             end;
+        when S_REF do begin
+             detach;
+             if symbol<>S_LPAR then chckWrn(sourceline,S_LPAR) else detach;
+             if symbol = S_IDENT then begin
+                intype:=defType(refTypes,hash,0,0);
+                detach; end
+             else intype:=T_REF;
+             if symbol<>S_RPAR then begin chckWrn(sourceline,S_RPAR); goto ITEX end;
+             end;
+        when S_NAME do begin
+             detach;
+             if symbol<>S_LPAR then chckWrn(sourceline,S_LPAR) else detach;
+             if symbol <= N_KEYW then begin
+                typ:=intype;
+                intype:=defType(nameTypes,typ,0,0); end
+             else intype:=T_NAME;
+             if symbol<>S_RPAR then begin chckWrn(sourceline,S_RPAR); goto ITEX end;
+             end;
+        when S_FIELD do begin
+             detach;
+             if symbol<>S_LPAR then chckWrn(sourceline,S_LPAR) else detach;
+             if symbol <= N_KEYW then begin
+                typ:=intype;
+                intype:=defType(fieldTypes,typ,0,0); end
+             else intype:=T_FIELD;
+             if symbol<>S_RPAR then begin chckWrn(sourceline,S_RPAR); goto ITEX end;
+             end;
+        when S_INFIX do begin
+             detach;
+             if symbol<>S_LPAR then chckWrn(sourceline,S_LPAR) else detach;
+             if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+             rec:=hash;
+             detach;
+             if symbol = S_COLON then begin
+                detach;
+                if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                fixrep:=curval.getint+1;
+                detach;
+             end else fixrep:=0;
+             intype:=defType(structTypes,rec,fixrep,0);
+             if symbol<>S_RPAR then begin chckWrn(sourceline,S_RPAR); goto ITEX end;
+             end;
+        when NONE do
+             goto ITEX ;
+       end *** case ***;
+       detach;        ITEX:
+      end *** intype ***;
+%title ******   P A R S E R :   declarations   ******
+      procedure declarations(declset,inrec,inLocals);
+      ref(head) declset; Boolean inrec,inLocals;
+      begin short integer type,typ,rec;
+            Boolean constflag,visibleflag,lparseen;
+            short integer fixrep,pno;
+            integer l,u,repcount;
+            ref(head) oldset;
+            ref(macro) mac; ref(mnemonic) mne;
+            ref(symbolbox) cbox;
+            text symbval;
+
+            ref(parspec) procedure read_par;
+            begin ref(head) x;
+               TRACE("Pass1.PARSER",sourceline,"read_par");
+               rutlev:=rutlev+1;
+               inspect new parspec do begin
+                  read_par :- this parspec;
+                  this grammar.detach;
+                  if symbol=S_IMPORT then begin
+                     import:-new head;
+                     declarations(import,true,inLocals) end;
+                  if symbol=S_EXPORT then begin
+                     x:-new head; declarations(x,true,inLocals);
+                     inspect x.first do begin
+                        export:-this link;
+                        if suc=/=none
+                        then ERROR("Too many export variables");
+                     end otherwise ERROR("Missing export variable");
+                  end
+             else if symbol=S_EXIT then
+                  begin x:-new head; declarations(x,true,inLocals);
+                        inspect x.first do begin
+                           exit:-this link;
+                           if suc=/=none
+                           then ERROR("Too many exit variables");
+                        end otherwise ERROR("Missing exit variable");
+                  end;
+               end inspect parspec;
+               rutlev:=rutlev-1;
+            end *** read_par ***;
+
+            TRACE("Pass1.PARSER",sourceline,"declarations");
+            oldset:-currentset; currentset:-declset;
+--            TRACE("Pass1.PARSER",sourceline,"BEFORE DETACH");
+            detach;
+--            TRACE("Pass1.PARSER",sourceline,"AFTER DETACH");
+            while symbol <= N_KEYW do begin
+                visibleflag:=if inLocals then false else all_visible;
+    NXT:
+           TRACE("Pass1.PARSER",sourceline,"NXT SYMBOL=" & edSymbol(symbol));
+           switch(S_NULL:N_KEYW) symbol begin
+           when S_RECORD do
+             inspect new record do begin
+             
+--                DO_TRACING:=1; TRACE("Pass1.PARSER",sourceline,"when S_RECORD");
+                
+                this grammar.detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                symb:-symtab(hash);
+                this grammar.detach;
+                variantset:-new head;
+                if symbol=S_COLON then begin
+                   this grammar.detach;
+                   if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                   prefbox:-symtab(hash);
+                   this grammar.detach; end;
+                if symbol = S_INFO then begin
+                      this grammar.detach;
+                      if symbol<>S_STRING then chckErr(sourceline,S_STRING);
+                      symbval:-curval; strl1: this grammar.detach;
+                      if symbol=S_STRING then begin
+                         symbval:-symbval & curval; goto strl1 end;
+                      if symbval="DYNAMIC" then dynamic:=true
+                 else if symbval="TYPE"    then used_as_type:=true
+                 else if symbval="PACKED"  then packed:=true
+                 else ERROR("Unknown INFO-string");
+                end;
+                if symbol<>S_BEGIN then chckErr(sourceline,S_BEGIN);
+                atrset :- new head;
+                declarations(atrset,true,inLocals);
+                while symbol=S_VARIANT do
+                   inspect new variant do begin
+                      into(variantset); atrset :- new head;
+                      declarations(atrset,true,inLocals);
+                end;
+                if symbol<>S_END then chckErr(sourceline,S_END);
+                if input_trace > 2 then prt(this descr,20);
+                if inrec then ERROR("Misplaced record declaration")
+                else into(declset);
+                visible:=visibleflag;
+                this grammar.detach;
+            end;
+
+           when S_PROFILE,S_GLOBAL do
+             inspect new profile do begin
+                TRACE("Pass1.PARSER",sourceline,"PROFILE");
+                if symbol=S_GLOBAL then begin
+                   interface:=true;
+                   this grammar.detach;
+                   if symbol<>S_PROFILE then chckErr(sourceline,S_PROFILE) end;
+                if rutlev > 0 then
+                   FATAL_ERROR("Profile declared within a routine");
+                this grammar.detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                symb:-symtab(hash);
+                spec:-read_par;
+                if symbol<>S_END then chckErr(sourceline,S_END);
+                if input_trace > 2 then prt(this profile,20);
+                if inrec then ERROR("Misplaced profile declaration")
+                else into(declset);
+                visible:=visibleflag;
+                this grammar.detach;
+            end;
+
+           when S_BODY do
+             inspect new routine do begin
+                TRACE("Pass1.PARSER",sourceline,"BODY");
+                if rutlev > 0 then
+                   FATAL_ERROR("Body declared within a routine");
+                this grammar.detach;
+                if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+                this grammar.detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                profbox:-symtab(hash);
+                this grammar.detach;
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+                this grammar.detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                symb:-symtab(hash);
+                outinst(S_BODY); outident(hash);
+                if output_trace>0 then outcode;
+                this grammar.detach; if symbol<>S_BEGIN then chckErr(sourceline,S_BEGIN);
+                localdecl:-local:-new head;
+                rutlev:=rutlev+1;
+                   declarations(local,false,true); statement;
+                rutlev:=rutlev-1;
+                if symbol<>S_END then chckErr(sourceline,S_END);
+                outinst(S_END );
+                if output_trace>0 then outcode;
+                if input_trace > 2 then prt(this routine,20);
+                if inrec then ERROR("Misplaced routine body")
+                else into(declset);
+                visible:=visibleflag;
+                this grammar.detach;
+            end;
+
+           when S_SYSRUT,S_KNOWN,S_EXTERNAL,S_ROUTINE do
+            inspect new peculiar(symbol) do begin
+
+                DO_TRACING:=1; TRACE("Pass1.PARSER",sourceline,"when ROUTINE");
+                
+                if rutlev > 0 then
+                   FATAL_ERROR("Routine declared inside a routine");
+                this grammar.detach;
+                if symbol=S_LPAR then begin
+                   libProc:= (kind=S_ROUTINE);
+                   this grammar.detach;
+                   if symbol<>S_STRING then chckErr(sourceline,S_STRING);
+                   info:-curval; strl2: this grammar.detach;
+                   if symbol=S_STRING then begin
+                      info:-info & curval; goto strl2 end;
+                   if symbol<>S_RPAR then chckErr(sourceline,S_RPAR)
+                   else this grammar.detach;
+                end;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                symb:-symtab(hash);
+                spec:-read_par;
+                
+                TRACE("Pass1.PARSER",sourceline,"ROUTINE(2)"); prt(this peculiar,20);
+                
+                if kind=S_KNOWN or kind=S_ROUTINE then begin
+                   outinst(S_BODY); outident(symb.id);
+                   if output_trace>0 then outcode;
+                   if symbol<>S_BEGIN then chckErr(sourceline,S_BEGIN);
+                   localdecl:-local:-new head;
+                   rutlev:=rutlev+1;
+                      declarations(local,false,true); statement;
+                   rutlev:=rutlev-1;
+                   outinst(S_END );
+                   if output_trace>0 then outcode;
+                end;
+                if symbol<>S_END then chckErr(sourceline,S_END);
+                if input_trace > 2 then prt(this peculiar,20);
+                if inrec then
+                ERROR("Misplaced peculiar routine declaration")
+                else into(declset);
+                visible:=visibleflag;
+                this grammar.detach;
+            end;
+
+           when S_INSERT,S_SYSINSERT do begin
+                text attrfile,modid; Boolean sys;
+                if inrec then ERROR("Misplaced insert");
+                sys:=symbol=S_SYSINSERT;
+          IDN:  detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                modid:-edSymbol(hash);
+                   givetextinfo(2,modid); attrfile:-gettextinfo(12);
+                InModule(comn,attrfile,modid);
+                modset.last qua module.system:=sys;
+                detach;
+                if symbol=S_COMMA then goto IDN;
+            end;
+
+           when S_CONST do begin
+                constflag:=true;   detach; goto NXT end;
+
+           when S_VISIBLE do begin
+                if inLocals then ERROR("Visible illegal in routine")
+                else visibleflag:=module_ident=/=notext; -- not in main
+                detach; goto NXT end;
+
+           when S_DEFINE do begin
+           LD:  detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                cbox:-symtab(hash);
+                detach;
+                if symbol<>S_EQ then chckErr(sourceline,S_EQ);
+                detach;
+                inspect cbox do begin
+                   if curmeaning =/= none
+                   then ERROR("Redefinition of mnemonic");
+                   curmeaning:-mne:-new mnemonic(visibleflag);
+                end;
+                inspect new macro_symbol(symbol,cbox,curval)
+                do begin into(mne);
+                                  if input_trace>1 then dump;
+                end;
+                detach;
+                if symbol=S_COMMA then goto LD;
+            end;
+
+           when S_MACRO do begin
+                detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                cbox:-symtab(hash);
+                inspect symtab(hash) do begin
+                   if curmeaning =/= none
+                   then ERROR("Redefinition of mnemonic");
+                   curmeaning:-mac:-new macro(visibleflag,0);
+                end;
+                detach;
+                if symbol=S_LPAR then begin lparseen:=true;
+                   detach;
+                   if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                   mac.npar:=curval.getint;
+                   detach;
+                   if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+                   detach;
+                   if symbol<>S_BEGIN then chckErr(sourceline,S_BEGIN);
+                end
+                else begin
+                   if symbol<>S_COLON
+                   then WARNING("Missing leftpar or colon");
+                end;
+                detach;
+                while symbol ne S_ENDMACRO do begin
+                   if symbol=S_PERCENT then begin
+                      detach;
+                      if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                      pno:=curval.getint;
+                      if pno>mac.npar then begin
+                         if lparseen
+                         then ERROR("Too large macro param index");
+                         mac.npar:=pno;
+                      end;
+                      new macro_param(pno).into(mac);
+                   end
+                   else new macro_symbol
+                        (symbol,symtab(hash),curval).into(mac);
+                   detach;
+                end;
+                if input_trace>1 then mac.dump(cbox);
+                detach;
+            end;
+
+%          *** the remainding is - except for NAME and FIELD -
+%          *** an exact expansion of 'intype' followed by NID-code
+
+           when S_NAME,S_FIELD do begin
+                type:=intype; goto NID1 end;
+           when S_INTEGER do begin
+                type:=T_INT; goto NID end;
+           when S_SHORT   do begin
+                detach;
+                if symbol<>S_INTEGER then chckErr(sourceline,S_INTEGER);
+                type:=T_SINT; goto NID end;
+           when S_RANGE   do begin
+                detach;
+                if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+                detach;
+                if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                l:=curval.getint;
+                detach;
+                if symbol<>S_COLON then chckErr(sourceline,S_COLON);
+                detach;
+                if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                u:=curval.getint;
+                detach;
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+                type:=defType(integerTypes,S_RANGE,l,u);
+                goto NID end;
+           when S_REAL    do begin
+                type:=T_REAL; goto NID end;
+           when S_LONG    do begin
+                detach; if symbol<>S_REAL then chckErr(sourceline,S_REAL);
+                type:=T_LREAL; goto NID end;
+           when S_SIZE    do begin
+                type:=T_SIZE; goto NID end;
+           when S_BOOLEAN do begin
+                type:=T_BOOL; goto NID end;
+           when S_LABEL   do begin
+                type:=T_LABEL; goto NID end;
+           when S_CHAR    do begin
+                type:=T_CHAR; goto NID end;
+           when S_ENTRY   do begin
+                detach;
+                if symbol<>S_LPAR then chckErr(sourceline,S_LPAR); detach;
+                if symbol = S_IDENT then begin
+                   type:=defType(entTypes,hash,0,0);
+                   detach; end
+                else type:=T_ENT;
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR); goto NID end;
+           when S_REF     do begin
+                detach;
+                if symbol<>S_LPAR then chckErr(sourceline,S_LPAR); detach;
+                if symbol = S_IDENT then begin
+                   type:=defType(refTypes,hash,0,0);
+                   detach; end
+                else type:=T_REF;
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR); goto NID end;
+           when S_INFIX do begin
+                detach;
+                if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+                detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                rec:=hash;
+                detach;
+                if symbol = S_COLON then begin
+                   detach;
+                   if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                   fixrep:=curval.getint+1;
+                   detach;
+                end else fixrep:=0;
+                TRACE("Pass1.PARSER",sourceline,"INFIX: " & (if structTypes==none then "NONE" else "IKKE"));
+                type:=defType(structTypes,rec,fixrep,0);
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR); -- goto NID end;
+
+          NID:  detach;
+          NID1: inspect new quant(type) do begin
+                   TRACE("Pass1.PARSER",sourceline,"BEGIN NEW QUANT: " & edType(type) & " " & edSymbol(hash));
+                   if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                   symb:-symtab(hash);
+                   count:=1;
+                   this grammar.detach;
+                   TRACE("Pass1.PARSER",sourceline,"BEGIN +++++++++++++++++++++++++++++++++++ NEW QUANT(0): " & edSymbol(symbol) & "  " & curval);
+                   if symbol = S_SYSTEM then begin
+                      this grammar.detach;
+                      if symbol<>S_STRING then chckErr(sourceline,S_STRING);
+                      sysid:-curval; strl3: this grammar.detach;
+                      if symbol=S_STRING then begin
+                         sysid:-sysid & curval; goto strl3 end;
+                   end;
+                   if symbol = S_LPAR then begin
+                      this grammar.detach;
+                      if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                      count:=curval.getint;
+                      TRACE("Pass1.PARSER",sourceline,"NEW QUANT(1): " & edSymbol(hash) & ", count=" & leftint(count)); prt(this quant,0);
+                      this grammar.detach;
+                      if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+                      this grammar.detach;
+                   end;
+                   TRACE("Pass1.PARSER",sourceline,"NEW QUANT(2): " & edSymbol(hash)); prt(this quant,0);
+                   if symbol=S_EQ then begin
+                      initval:-new head; repcount:=count;
+                      this grammar.detach;
+                      if symbol=S_LPAR then begin
+                      
+                   LL:    this grammar.detach;
+                         make_const(getprim).into(initval);
+                         if symbol=S_COMMA then begin
+                            if repcount=0 then
+                               ERROR("Too many elts in repetition");
+                            repcount:=repcount-1; goto LL;
+                         end;
+                         
+                         if symbol<>S_RPAR then chckErr(sourceline,S_RPAR)
+                         else this grammar.detach;
+                      end
+                      else make_const(getprim).into(initval);
+                   end;
+                   visible:=visibleflag;
+                   read_only:=constflag; into(declset);
+                   TRACE("Pass1.PARSER",sourceline,"ENDOF NEW QUANT: " & edSymbol(hash)); prt(this quant,0);
+                end;
+                if symbol=S_COMMA then goto NID;
+            end;
+           when NONE do begin
+                if tracemode>0 then WARNING("NONE in declarations");
+                goto EXT;
+            end;
+         end *** case symbol ***;
+         constflag:=false;
+      end *** while symbol ***;
+    EXT:
+            currentset:-oldset;
+end declarations;
+%title ******   P A R S E R :   statement   ******
+ref(designator) array target(0:10); -- used in ASSIGN-stat only
+
+procedure statement;
+begin ref(designator) d; ref(expr) dx,x; short integer n;
+
+      procedure case_stat;
+      begin short integer l,u,whichx; character type;
+            short integer n; short integer array which(0:255);
+
+            short integer procedure caseindex;
+            begin detach;
+                  if symbol=S_CHARS then begin
+                     caseindex:=rank(loadchar(curval,0)) end
+                  else begin
+                     if symbol<>S_INTVAL then chckErr(sourceline,S_INTVAL);
+                     caseindex:=curval.getint;
+                  end;
+            end;
+
+            outinst(S_CASE     );
+            l:=caseindex;
+            detach; if symbol<>S_COLON then chckErr(sourceline,S_COLON);
+            u:=caseindex;
+            if l<0 then begin l:=0; ERROR("Negative Range Bound") end;
+            if u < l then
+            begin u:=l; ERROR("Inconsistent case bounds") end;
+            detach; if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+            out2byte(l); out2byte(u);
+            if output_trace>0 then outcode;
+            detach; outexpr(scan_expr(getprim));
+            if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+            detach; if symbol<>S_WHEN then chckErr(sourceline,S_WHEN);
+            while symbol=S_WHEN do begin
+            M:    which(n):=whichx:=caseindex;
+                  if whichx < l or whichx > u
+                  then ERROR("Illegal when-index");
+                  detach;
+                  if symbol=S_COMMA then begin
+                     if n < 255 then n:=n+1 else ERROR("Too many when-indexes");
+                     goto M end;
+                  if symbol<>S_COLON then chckErr(sourceline,S_COLON);
+                  outinst(S_WHEN     ); out2byte(n+1);
+                  while true do begin
+                    out2byte(which(n));
+                    if n = 0 then goto WXIT; n:=n-1;
+                  end;                     WXIT:
+                  if output_trace>0 then outcode;
+                  detach;
+                  statement;
+                  outinst(S_ENDWHEN  );
+                  if output_trace>0 then outcode;
+            end;
+            if symbol=S_OTHERWISE then begin
+               outinst(S_OTHERWISE);
+               if output_trace>0 then outcode;
+               detach;
+               statement end;
+            if symbol<>S_ENDCASE then chckErr(sourceline,S_ENDCASE);
+            outinst(S_ENDCASE  );
+            if output_trace>0 then outcode;
+            detach;
+      end *** case_stat ***;
+
+   while true do begin
+NXT:  while not TRC_info.empty do
+      begin inspect TRC_info.first when trace_item do begin
+                  outinst(S_TRACE); out2byte(s); out2byte(v);
+                  if output_trace>0 then outcode;
+               end
+            when info_item do begin
+                  outinst(S_INFO ); outstring(v);
+                  if output_trace>0 then outcode;
+               end
+            otherwise IERR; TRC_info.first.out;
+      end;
+
+      if curline > outline then begin
+         outinst(S_LINE );
+         out2byte(curline); outline:=curline;
+         if output_trace>0 then outcode;
+      end;
+
+          switch(NUL:'!255!') symbol begin
+
+      when S_IF do begin 
+      L:    n:=n+1;
+            outinst(S_IF    );
+            detach;
+            outexpr(scan_expr(getprim));
+            if output_trace>0 then outcode;
+            if symbol<>S_THEN then chckErr(sourceline,S_THEN); detach;
+            statement;
+            outinst(S_ELSE  );
+            if output_trace>0 then outcode;
+            if symbol=S_ELSIF then goto L;
+            if symbol=S_ELSE then begin detach;
+               statement end;
+            if symbol<>S_ENDIF then chckErr(sourceline,S_ENDIF); detach;
+            while n<>0 do begin outinst(S_ENDIF );
+                  n:=n-1;
+                  if output_trace>0 then outcode;
+            end;
+       end;
+
+      when S_ASSERT do begin 
+            outinst(S_SKIPIF);
+            detach; outexpr(scan_expr(getprim));
+            if output_trace>0 then outcode;
+            if symbol<>S_SKIP then chckErr(sourceline,S_SKIP); detach;
+            statement;
+            if symbol<>S_ENDSKIP then chckErr(sourceline,S_ENDSKIP); outinst(S_ENDSKIP);
+            if output_trace>0 then outcode;
+            detach;
+       end;
+
+      when S_REPEAT do begin
+            outinst(S_REPEAT); detach;
+            if output_trace>0 then outcode;
+            statement;
+            if symbol<>S_WHILE then chckErr(sourceline,S_WHILE); outinst(S_WHILE );
+            detach; outexpr(scan_expr(getprim));
+            if output_trace>0 then outcode;
+            if symbol<>S_DO then chckErr(sourceline,S_DO); detach;
+            statement;
+            if symbol<>S_ENDREPEAT then chckErr(sourceline,S_ENDREPEAT);
+            outinst(S_ENDREPEAT);
+            if output_trace>0 then outcode;
+            detach;
+       end;
+
+      when S_CASE do
+            case_stat;
+
+      when S_GOTO do begin
+            outinst(S_GOTO     );
+            detach; outexpr(scan_expr(getprim));
+            if output_trace>0 then outcode;
+       end;
+
+      when S_VAR,S_CALL,S_IDENT do begin
+            dx:-indesignator;
+            if tracemode > 2 then inspect sysout do
+            begin outtext("Expr: "); prt(dx,10); outimage end;
+            if dx is designator then d:-dx
+       else begin ERROR("Misplaced qua"); d:-dx qua quaopr.x end;
+            if symbol=S_ASSIGN then begin
+            ASG:  target(n):-d; n:=n+1;
+                  detach;
+                  if symbol=S_IDENT or else symbol=S_VAR then
+                  begin dx:-indesignator;
+                        if tracemode > 2 then inspect sysout do
+                        begin outtext("Expr: ");
+                              prt(dx,10); outimage;
+                        end;
+                        if symbol=S_ASSIGN then
+                        begin if dx is designator then d:-dx
+                              else begin ERROR("Misplaced qua");
+                                    d:-dx qua quaopr.x;
+                              end;
+                              goto ASG;
+                        end;
+                        x:-scan_expr(dx);
+                  end else x:-scan_expr(getprim);
+                  outinst(S_ASSIGN); outbyt(n); outexpr(x);
+                  while n <> 0 do begin
+                     n:=n-1; outexpr(target(n));
+                     target(n):-none;
+                  end;
+                  if output_trace>0 then outcode;
+            end
+       else if symbol=S_COLON then
+            begin -- if d.varset.cardinal > 1 then
+                  -- ERROR("Illegal label identifier");
+                  inspect d.varset.first when variable do
+                  begin if argset =/= none or else suc=/=none
+                        then ERROR("Illegal label identifier");
+                        if rutlev > 0 then begin
+                              inspect new dest_descr do begin
+                                 symb:-varbox;
+                                 into(localdecl) end
+                        end
+                        else begin
+                              inspect new label_descr do begin
+                                 symb:-varbox;
+                                 visible:=all_visible; into(qntset);
+                              end;
+                        end;
+                        outinst(S_DEFLAB);
+                        outident(varbox.id);
+                        if output_trace>0 then outcode;
+                  end otherwise IERR;
+                  detach;
+                  goto NXT;
+            end
+            else begin
+                  outinst(S_CALL  ); outexpr(d);
+                  if output_trace>0 then outcode;
+            end
+      end;
+
+      when NONE do
+           goto XIT;
+
+      end *** case symbol ***;
+    end *** while true do ***;   XIT:
+end *** statement ***;
+%title ******   P A R S E R :   scan_expr   ******
+
+!*** recursive ***;
+ref(expr) procedure scan_expr(x); ref(expr) x;
+begin short integer opr,type;
+
+             switch(NUL:'!255!') symbol begin
+
+           when S_ADD,S_SUB,S_MULT,S_DIV,S_REM,
+                S_NE,S_EQ,S_LT,S_GT,S_LE,S_GE,
+                S_OR,S_XOR,S_AND,
+                S_LSHIFTL,S_LSHIFTA,S_RSHIFTL,S_RSHIFTA do
+                opr:=symbol;
+
+           when S_QUA do begin
+                detach; type:=intype;
+                if type = T_NULL then ERROR("Illegal syntax after qua");
+                x:-scan_expr(new quaopr(x,type)); goto EXT;
+             end;
+
+           when NONE    do begin
+                if tracemode>0 then WARNING("NONE in getprim");
+                goto EXT;
+             end;
+         end *** case ***;
+         detach;
+         x:-scan_expr(new binopr(opr,x,getprim));
+EXT:  scan_expr :- x;
+      if tracemode > 2 then inspect sysout do
+      begin outtext("Expr: "); prt(x,10); outimage end;
+end *** scan_expr ***;
+
+%title ******   P A R S E R :   getprim   ******
+ref(expr) procedure getprim;
+begin ref(expr) x; ref(head) exprset; ref(designator) d;
+      text symbval;
+      ref(const) e; ref(symbolbox) cbox;
+
+          switch(NUL:'!255!') symbol begin
+
+        when S_IDENT,S_VAR,S_CALL do
+             getprim :- indesignator;
+
+        when S_NOWHERE  do   begin
+             getprim:-new const(S_NOWHERE); detach; end;
+
+        when S_INTVAL   do   begin
+             getprim:-new val_const(S_C_INT,curval); detach; end;
+
+        when S_REALVAL  do   begin
+             getprim:-new val_const(S_C_REAL,curval); detach; end;
+
+        when S_LREALVAL do   begin
+             getprim:-new val_const(S_C_LREAL,curval); detach; end;
+
+        when S_TRUE     do   begin
+             getprim:-new const(S_TRUE); detach; end;
+
+        when S_FALSE    do   begin
+             getprim:-new const(S_FALSE); detach; end;
+
+        when S_CHARS    do   begin
+             symbval:-curval;
+             getprim:- if symbval.length=1
+                       then new val_const(S_C_CHAR,symbval)
+                       else new val_const(S_TEXT,symbval);
+             detach; end;
+
+        when S_STRING   do   begin
+             nstring:=nstring+1;
+             simsymbol:-"string:" & leftint(nstring); DEFIDENT;
+             cbox:-symtab(hash);
+             symbval:-curval; strl4: detach;
+             if symbol=S_STRING then begin
+                symbval:-symbval & curval; goto strl4 end;
+             getprim:-new_string(currentset,symbval,cbox);
+             end;
+
+        when S_SIZE     do   begin
+             detach; if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+             detach; if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+             cbox:-symtab(hash);
+             detach;
+             if symbol=S_RPAR
+             then getprim:-new idn_const(S_C_SIZE,cbox)
+             else begin
+                if symbol=S_COMMA then else
+                if symbol<>S_COLON then chckErr(sourceline,S_COLON);
+                detach;
+                getprim:-new dsize(cbox.id,scan_expr(getprim));
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+             end;
+             detach; end;
+
+        when S_NOSIZE   do   begin
+             getprim:-new const(S_NOSIZE); detach; end;
+
+        when S_REF      do   begin
+             detach; if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+             detach; if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+             getprim:-new idn_const(S_C_OADDR,symtab(hash));
+             detach; if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+             detach; end;
+
+        when S_NONE     do   begin
+             getprim:-new const(S_ONONE); detach; end;
+
+        when S_FIELD    do   begin
+             inspect new offset_const(S_C_AADDR) do begin
+                getprim:-this offset_const;
+                this grammar.detach;
+                if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+                this grammar.detach;
+                if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                of:=hash;
+                this grammar.detach; if symbol<>S_DOT then chckErr(sourceline,S_DOT);
+                while symbol=S_DOT do begin
+                   ndot:=ndot+1;
+                   if ndot>5 then FATAL_ERROR("More than 5 dots");
+                   this grammar.detach;
+                   if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                   q(ndot):=hash;
+                   this grammar.detach;
+                end;
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+             end;
+             detach; end;
+
+        when S_NOFIELD  do   begin
+             getprim:-new const(S_ANONE); detach; end;
+
+        when S_NAME do begin
+             detach;
+             if symbol<>S_LPAR then chckErr(sourceline,S_LPAR); detach;
+             d:-indesignator;
+             if symbol<>S_RPAR then chckErr(sourceline,S_RPAR)
+             else detach;
+             goto SADDR end;
+
+        when S_ADDRESS do begin
+             detach;
+             d:-indesignator;
+     SADDR:  inspect d.varset do inspect first when variable do
+                if argset==none and then suc==none then cbox:-varbox;
+                
+             if cbox==none then getprim:-new unopr(S_NAME,d)
+                      else getprim:-new idn_const(S_C_GADDR,cbox);
+             end;
+
+        when S_NONAME   do   begin
+             getprim:-new const(S_GNONE); detach; end;
+
+        when S_ENTRY    do   begin
+             detach;
+             if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+             detach;
+             if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+             getprim:-new idn_const(S_C_RADDR,symtab(hash));
+             detach;
+             if symbol<>S_RPAR then chckErr(sourceline,S_RPAR);
+             detach; end;
+
+        when S_NOBODY   do   begin
+             getprim:-new const(S_NOBODY);
+             detach; end;
+
+        when S_RECORD do
+          inspect new structured_const(S_C_RECORD) do begin
+             getprim:-this structured_const; elt_set:-new head;
+             this grammar.detach;
+             if symbol<>S_COLON then chckErr(sourceline,S_COLON);
+             this grammar.detach;
+             if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+             str:=hash;
+             this grammar.detach;
+             if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+        L:   this grammar.detach;
+             if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+             cbox:-symtab(hash);
+             this grammar.detach;
+             if symbol<>S_EQ then chckErr(sourceline,S_EQ);
+             this grammar.detach;
+             if symbol <> S_LPAR then e:-make_const(getprim)
+             else inspect new repeated_const(T_NULL) do begin
+                e:-this repeated_const; elt_set:-new head;
+                symbol:=S_COMMA; while symbol=S_COMMA do begin
+                   this grammar.detach; make_const(getprim).into(elt_set);
+                end;
+                if symbol<>S_RPAR then chckErr(sourceline,S_RPAR)
+                else this grammar.detach;
+             end;
+             new elt_notice(cbox,e).into(elt_set);
+             if symbol=S_COMMA then goto L;
+             if symbol<>S_RPAR then chckErr(sourceline,S_RPAR)
+             else this grammar.detach; end;
+
+        when S_IF       do  begin
+             inspect new ifexpr do begin
+                this grammar.detach; cond:-scan_expr(getprim);
+                if symbol<>S_THEN then chckErr(sourceline,S_THEN); 
+                this grammar.detach;    x:-scan_expr(getprim);
+                if symbol<>S_ELSE then chckErr(sourceline,S_ELSE);
+                this grammar.detach;    y:-scan_expr(getprim);
+                getprim:-this ifexpr;
+             end; end;
+
+        when S_NOT      do  begin
+             detach; getprim:-new unopr(S_NOT,getprim);
+             !*** getprim:-new binopr(S_EQV,getprim,new const(S_FALSE));
+             end;
+
+        when S_SUB      do  begin
+             detach; getprim:-new unopr(S_NEG,getprim); end;
+
+        when S_LPAR     do  begin
+             detach; getprim:-x:-scan_expr(getprim);
+             if symbol=S_COMMA then begin
+                  exprset:-new head; x.into(exprset);
+                  while symbol=S_COMMA do begin
+                        detach;
+                        scan_expr(getprim).into(exprset); end;
+                  getprim:-new repexpr(exprset);
+             end;
+             if symbol<>S_RPAR then chckWrn(sourceline,S_RPAR)
+             else detach; end;
+
+        when NONE do begin
+             ERROR("Getprim, symbol:" & leftint(symbol));
+             getprim:-new expr end;
+      end *** case ***;
+end *** getprim ***;
+%title ******   P A R S E R :   outexpr   ******
+      procedure outexpr(e); ref(expr) e;
+      begin short integer i;
+            ref(link) v; ref(expr) x,y; Boolean flg1;
+         inspect e
+         when designator do begin
+            if not varset.empty then
+            begin for v:-varset.first,v.suc while v =/= none do
+                  inspect v
+                  when variable do begin
+                        if flg1 then begin
+                           outinst(S_DOT    );
+                        end;
+                        flg1:=true;
+                        outinst(S_VAR    );
+                        outinst(if v.suc==none
+                                then S_SIMPLE else S_DOTVAR);
+                        outinst(S_VARID  );
+                        outident(varbox.id);
+                        if argset =/= none then begin
+                           outinst(S_ARGLIST);
+                           outbyt(argset.cardinal);
+                           if output_trace>0 then outcode;
+                           y:-argset.first;
+                           for x:-y while x=/=none do
+                           begin y:-x.suc; outexpr(x) end;
+                        end;
+                  end
+             when varexpr do
+                  begin if flg1 then begin
+                           outinst(S_DOT    );
+                        end;
+                        flg1:=true;
+                        outinst(S_VAR    );
+                        outinst(if v.suc==none
+                                then S_SIMPLE else S_DOTVAR);
+                        outinst(S_VAREXPR);
+                        if output_trace>0 then outcode;
+                        outexpr(vx);
+                        inspect argset do begin
+                           outinst(S_ARGLIST); outbyt(cardinal);
+                           if output_trace>0 then outcode;
+                           y:-first;
+                           for x:-y while x=/=none do
+                           begin y:-x.suc; outexpr(x) end;
+                        end;
+                  end
+             when varcall do
+                  begin if flg1 then begin
+                           outinst(S_DOT    );
+                        end;
+                        flg1:=true;
+                        outinst(S_VAR    );
+                        outinst(if v.suc==none
+                                then S_SIMPLE else S_DOTVAR);
+                        outinst(S_VARCALL);
+                        outident(prf);
+                        inspect argset do begin
+                           outinst(S_ARGLIST); outbyt(cardinal);
+                           if output_trace>0 then outcode;
+                           y:-first;
+                           for x:-y while x=/=none do
+                           begin y:-x.suc; outexpr(x) end;
+                        end;
+                        outexpr(vx);
+                  end
+             when qualification do begin
+                        outinst(S_QUA    ); outbyt(type); flg1:=false;
+                  end
+             otherwise IERR;
+             outinst(S_ENDVAR );
+            end;
+        end
+
+        when repexpr do begin
+            outinst(S_REPEXPR);
+            out2byte(exprset.cardinal); y:-exprset.first;
+            if output_trace>0 then outcode;
+            for x:-y while x=/=none do
+            begin y:-x.suc; outexpr(x) end;
+        end
+        when quaopr do begin
+            outinst(S_QUA    ); outexpr(x); outbyt(type) end
+        when dsize  do begin
+            outinst(S_DSIZE  ); outident(r); outexpr(x) end
+        when binopr do begin
+            outinst(opr      ); outexpr(x); outexpr(y) end
+        when unopr  do begin
+            outinst(opr      ); outexpr(x) end
+        when ifexpr do begin
+            outinst(S_IFEXPR ); outexpr(cond);
+            if output_trace>0 then outcode;
+            outexpr(x); outexpr(y) end
+        when val_const do begin
+            outinst(instr    );
+            if instr=S_C_CHAR then outbyt(rank(v.getchar))
+       else if instr=S_TEXT then outlongstring(v) else outstring(v);
+      end
+        when offset_const do begin
+            outinst(instr    );
+            outident(of); out2byte(ndot);
+            for i:=1 step 1 until ndot do outident(q(i));
+      end
+        when idn_const do begin
+            outinst(instr    ); outident(ibox.id) end
+        when structured_const do begin
+            this const.into(structset);
+            outinst(instr    );
+            outident(str);
+      end
+        when const do begin
+            outinst(instr    );
+      end
+        otherwise  begin
+            outinst(S_NOEXPR );
+      end;
+   end outexpr;
+%title ******   P A R S E R :   indesignator   ******
+ref(expr) procedure indesignator;
+begin ref(expr) x,vx; ref(head) varset,argset; ! short integer prfid,id;
+      short integer type; ref(variable) varvar; short integer hi; -- hi,lo;
+      ref(symbolbox) cbox;
+      varset:-new head; x:-new designator(varset);
+      if symbol = S_IDENT then
+      begin -- ref(head) argset; short integer id;
+  NXTID:    cbox:-symtab(hash); detach; argset:-none;
+            if symbol=S_LPAR then
+            begin argset:-new head;
+            L1:   detach; scan_expr(getprim).into(argset);
+                  if symbol=S_COMMA then goto L1;
+                  if symbol<>S_RPAR then chckWrn(sourceline,S_RPAR)
+                  else detach;
+            end;
+            varvar:-new variable;
+            varvar.argset:-argset;
+            varvar.varbox:-cbox; varvar.argset:-argset;
+            varvar.into(varset);
+      end
+ else if symbol=S_VAR  then begin
+            detach;
+            if symbol<>S_LPAR then chckErr(sourceline,S_LPAR)
+            else detach;
+            vx:-scan_expr(getprim);
+            if symbol<>S_RPAR then chckWrn(sourceline,S_RPAR)
+            else detach;
+            if symbol=S_LPAR then
+            begin argset:-new head;
+            L2:   detach; scan_expr(getprim).into(argset);
+                  if symbol=S_COMMA then goto L2;
+                  if symbol<>S_RPAR then chckWrn(sourceline,S_RPAR)
+                  else detach;
+            end;
+            new varexpr(vx,argset).into(varset);
+      end
+ else if symbol=S_CALL then begin
+            detach;
+            if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+            hi:=hash;
+            detach;
+            if symbol<>S_LPAR then chckErr(sourceline,S_LPAR);
+            detach;
+            vx:-scan_expr(getprim);
+            if symbol<>S_RPAR then chckWrn(sourceline,S_RPAR)
+            else detach;
+            if symbol=S_LPAR then
+            begin argset:-new head;
+            L3:   detach; scan_expr(getprim).into(argset);
+                  if symbol=S_COMMA then goto L3;
+                  if symbol<>S_RPAR then chckWrn(sourceline,S_RPAR)
+                  else detach;
+            end;
+            new varcall(vx,argset,hi).into(varset);
+      end
+ else IERR;
+      if symbol=S_DOT then begin
+         detach; if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+         goto NXTID end;
+      if symbol=S_QUA then begin
+            detach; type:=intype;
+            if type=T_NULL and then symbol = S_IDENT then begin
+               !***  T E M P  ***;
+               type:=defType(refTypes,hash,0,0);
+               detach; end;
+            if type=T_NULL then ERROR("Illegal syntax after qua");
+            if symbol=S_DOT then
+            begin detach; if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+                  new qualification(type).into(varset); goto NXTID;
+            end;
+            x:-new quaopr(x,type);
+      end;
+      indesignator:-x;
+end *** indesignator ***;
+%title ******   P A R S E R :   make_const - new_string   ******
+ref(const) procedure make_const(e); ref(expr) e;
+begin ref(idn_const) c;
+      inspect e
+         when const do make_const:-this const
+         when designator do begin
+              make_const:-c:-new idn_const(S_C_PADDR,none);
+              if varset.cardinal ne 1
+              then ERROR("Remote label is not allowed");
+              inspect varset.first when variable do begin
+                     if argset =/= none then
+                     ERROR("Indexed label is not allowed");
+                     c.ibox:-varbox;
+               end otherwise ERROR("Illegal label");
+         end
+      otherwise begin ERROR("Illegal constant");
+              make_const:-new val_const(S_C_INT,copy("0"));
+      end;
+end *** make_const ***;
+
+ref(structured_const) procedure new_string(declset,t,cbox);
+      ref(head) declset; text t; ref(symbolbox) cbox;
+      ! ******  NOTE: DEFIDENT must NEVER be called here!!!!  ****** ;
+begin ref(structured_const) s; ref(quant) q;
+      ref(const) v; text t1;
+      ! ***  const character <id>=(C1,C2, ... Cn)  ***;
+      inspect new quant(T_CHAR) do begin
+         symb:-cbox;
+         count:=t.length; read_only:=true;
+         global:=false;
+         -- false because this quant is only used to define the
+         -- actual string value, never ref'd directly
+         initval:-new head; new val_const(S_TEXT,t).into(initval);
+         into(declset);
+      end;
+      ! ***  record:string(chradr=name(<id>),nchr=<n>)  ***;
+      inspect new structured_const(S_C_RECORD) do begin
+         new_string:-this structured_const;
+         str:=string; elt_set:-new head;
+
+         v:-new idn_const(S_C_GADDR,cbox);
+         new elt_notice(chradrBox,v).into(elt_set);
+
+         t1:-copy(leftint(t.length)); v:-new val_const(S_C_INT,t1);
+         new elt_notice(nchrBox,v).into(elt_set);
+      end;
+end *** new_string ***;
+%title ******   P A R S E R :   diagnostics   ******
+      procedure chckErr(line,s); short integer line,s;
+      begin
+            TRACE("Pass1.CHCKERR",sourceline,"s=" & leftint(s));
+            ERROR("Pass1(" & leftint(line) & ") Syntax Error -- Expecting: " &
+                  edSymbol(s) & ", got: " &
+                  edSymbol(symbol));
+	  end;
+	  
+      procedure chckWrn(line,s); short integer line,s;
+      begin
+            TRACE("Pass1.WARNING",sourceline,"s=" & leftint(s));
+            WARNING("Pass1(" & leftint(line) & ") Syntax Error -- Expecting: " &
+                  edSymbol(s) & ", got: " &
+                  edSymbol(symbol));
+      end;
+
+%title *********    P   A   S   S      1    *********
+
+      detach;
+      taglist:-taglast:-new seqtag(none);
+      if symbol=taglist or symbol=S_GLOBAL then begin
+         global_module:=symbol=S_GLOBAL;
+         detach;
+         if symbol<>S_IDENT then chckErr(sourceline,S_IDENT);
+         module_ident:-edSymbol(hash);
+         detach;
+         if symbol=S_LPAR then begin
+            detach; if symbol<>S_STRING then chckErr(sourceline,S_STRING);
+            module_code:-curval; strl5: detach;
+            if symbol=S_STRING then begin
+               module_code:-module_code & curval; goto strl5 end;
+            if symbol<>S_RPAR then chckWrn(sourceline,S_RPAR) else detach;
+         end;
+         if module_code == notext then module_code:-datetime;
+      end;
+      TRC_init:-new head;
+      if not TRC_info.empty then
+      begin ref(link) x,y; y:-TRC_info.first;
+            for x:-y while x =/= none do
+            begin y:-x.suc;
+                  if x is trace_item then x.into(TRC_init);
+            end;
+      end;
+      if symbol<>S_BEGIN then chckErr(sourceline,S_BEGIN); outinst(S_BEGIN  );
+      if output_trace>0 then outcode;
+      currentset:-qntset;
+      declarations(qntset,false,false); statement;
+      if symbol<>S_END then chckErr(sourceline,S_END); outinst(S_ENDPROGRAM);
+      if output_trace>0 then outcode;
+      this OuptFile.close; goto EXITPASS1;
+
+  end grammar;
+
+%     ******   R e a d  C o m p i l e r   P a r a m e t e r s   ******
+   begin
+   		 text smlid="S-PORT SIMULETTA";
+   		 
+         text listid;
+         text s,select;
+         short integer n; character ch; boolean inOpt;
+
+         source_file:-gettextinfo(1);
+         listid:-gettextinfo(2);
+         L2name:-gettextinfo(7);
+         nscodename:-gettextinfo(4);
+         select:-gettextinfo(16);
+
+         if listid == notext               then ListFile:-none
+    else if lowcase(copy(listid))="sysout" then ListFile:-sysout
+    else begin
+            ListFile:-new PrintFile(listid);
+            if not ListFile.open(Blanks(132)) then begin
+               outtext("*** NB: Cannot open listing file"
+                       & listid & " - listing deleted ***");
+               outimage; ListFile:-none;
+            end;
+         end;
+         while select.more do begin
+               ch:=select.getchar;
+               if ch>'Z' then begin
+                  if ch>'z' then goto SKIP;
+                  ch:=char(rank(ch)-90) end;
+               if ch=':' then inOpt:=true
+          else if ch=' ' then goto E
+          else if inOpt then Option(rank(ch)):=1
+               else Selector(rank(ch)):=true;
+   SKIP: end;
+     E:
+
+--         if option(rank('Y'))<>NUL then
+         begin
+            outtext(smlid); outtext(" (trace)");
+            outimage;
+            outtext("Source file:  "); outtext(source_file); outimage;
+            if select =/= notext then begin
+               outtext("Selection:    "); outtext(select); outimage end;
+            if listid =/= notext then begin
+               outtext("  listing file: "); outtext(listid); end;
+            outtext("   S-Code file: "); outtext(nscodename);
+            outimage; outtext("Scratch file: "); outtext(L2name); outimage;
+            outimage; outimage;
+         end trace output;
+   end;
+
+    parser:-new grammar(L2name     );
+    inspect new getsymb("***scanner***") do begin
+       cursource:-new sourceElt; inserted:=0; scanner:-this file;
+       inpt:-cursource.inptf; inim:-inpt.image; inline;
+    end;
+    call(scanner);
+
+    EXITPASS1:
+    close; !scanner;
+
+end inspect comn and *** Pass1 ***;

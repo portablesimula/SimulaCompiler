@@ -35,7 +35,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
-		names.add("simtst04.sim"); // OK:  To test putint and putreal.
+		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
 		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
 		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
@@ -174,6 +174,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
 		//names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
 		//names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
+		names.add("simtst127.sim"); // OK: Switch (character) Statement
 		
 		//names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
 		//names.add("simerr02.sim"); // OK: Testing NONE-CHECK

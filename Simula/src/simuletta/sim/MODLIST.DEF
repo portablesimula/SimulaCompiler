@@ -1,0 +1,366 @@
+begin
+External class Common;
+External procedure InModule;
+
+%REUSE ON
+%      -----------------------------------------------------------------
+%      ---  COPYRIGHT 1987 by                                        ---
+%      ---  Simula a.s.                                              ---
+%      ---  Oslo, Norway                                             ---
+%      ---                                                           ---
+%      ---              P O R T A B L E     S I M U L A              ---
+%      ---           S I M U L E T T A    C O M P I L E R            ---
+%      ---                                                           ---
+%      ---                  M  O  D  L  I  S  T                      ---
+%      ---                                                           ---
+%      ---                                                           ---
+%      --- Selection switches:                                       ---
+%      ---                                                           ---
+%      ---    'D' Included when dump is wanted                       ---
+%      ---    'I' Included to make compiler use inserted mnemonics   ---
+%      ---    'N' Included to produce ND-500 version                 ---
+%      ---    'U' Included to produce UNIVAC version                 ---
+%      ---    'X' Included to produce XENIX version                  ---
+%      -----------------------------------------------------------------
+
+% inspect new Common(2000) do
+inspect new Common do
+begin text inim,symbol,sourceid,ouptid;
+      Boolean tracemode;
+      ref(infile) inpt; ref(outfile) sfile;
+      ref(modinfo) array modtab(1:100); short integer nmod;
+      ref(modinfo) array modref(0:2000);
+
+      class idnotice(box,taghi,taglo,d);
+            ref(symbolbox) box; character taghi,taglo; ref(descr) d;
+      begin ref(idnotice) next; 
+            text part1;
+            procedure outid; sfile.outtext(box.symbol);
+
+            integer procedure tag;
+                    tag:=rank(taghi)*256+rank(taglo);
+
+            procedure outidtext;
+            inspect sfile do begin
+                  outtext("RTS");
+                  outtext(box.symbol.sub(2,box.symbol.length-1));
+                  setpos(35); outtext(" = ""!"); outint(rank(taghi),0);
+                  outtext("!!"); outint(rank(taglo),0);
+                  outtext("!"";"); outimage;
+            end;
+
+%           procedure outidhi;
+%           inspect sfile do begin
+%                 outtext("HI");
+%                 outtext(box.id.sub(2,box.id.length-1));
+%                 setpos(35); outtext(" = '!"); outint(rank(taghi),0);
+%                 outtext("!',"); outimage;
+%                 ! NB: always followed by "outidlo" ;
+%           end;
+
+%           procedure outidlo;
+%           inspect sfile do begin
+%                 outtext("LO");
+%                 outtext(box.id.sub(2,box.id.length-1));
+%                 setpos(35); outtext(" = '!"); outint(rank(taglo),0);
+%                 outtext("!';"); outimage;
+%           end;
+
+            procedure outasg(ps); short integer ps;
+            inspect sfile do
+            begin !***  %-I  XXXX := <abs-tag of XXXX>;
+                  outtext("%-I"); setpos(ps); outid;
+                  if pos<ps+15 then setpos(ps+15); outtext(":= ");
+                  outtext(eddouble(taghi,taglo)); outchar(';');outimage;
+            end *** outasg ***;
+
+            procedure outdef;
+            inspect sfile do
+            begin !*** Output: %DEFINE XXXX = <abs-tag of XXXX>;
+                  outtext("%DEFINE "); outid; setpos(35);outtext(" = ");
+                  outtext(eddouble(taghi,taglo)); outchar(';');outimage;
+                  !***  %DEFINE RTS_XXXX = <abs-tag of XXXX as text>;
+                  outtext("%DEFINE "); outidtext;
+%                 outtext("%DEFINE "); outidhi;
+%                 outtext("        "); outidlo;
+            end *** outdef ***;
+
+            part1 :- blanks(3);
+            inspect modref(tag) do if firstid == none
+            then begin firstid:-this idnotice;
+                       lastid:-this idnotice;
+                 end
+            else begin if lastid =/= none then
+                       lastid.next:-this idnotice;
+                       lastid:-this idnotice;
+                 end;
+      end *** idnotice ***;
+%title  *********   C  L  A  S  S      M  O  D  I  N  F  O   *********
+      short integer nxtrts; !counts inserted RTS-modules;
+
+      class modinfo(mod); ref(module) mod;
+      begin  ref(idnotice) firstid,lastid;
+
+            procedure output;
+            begin ref(idnotice) d; short integer dtag;
+               inspect sfile do begin
+                  if firstid =/= none then 
+                  for d:-firstid, d.next while d=/=none do begin
+                      ! d.outid: ;
+                      sfile.outtext(upcase(d.box.symbol));
+                      outchar(' ');
+                      if pos<20 then setpos(20);
+                      outtext(mod.modid); dtag:=d.tag;
+                      outint(dtag-modref(dtag).mod.bias-1,6);
+                      outimage;
+                  end;
+            end end;
+
+            procedure outmne(ps); short integer ps; inspect sfile do
+            begin ref(idnotice) d;
+                  outimage;
+                  outtext("%   ******  Predefined tags for ");
+                  outtext(mod.modid); outtext("-module  ******"); outimage;
+                  if firstid == none then outimage else
+                  for d:-firstid,d.next
+                  while d =/= none do d.outdef;
+            end;
+
+            procedure outdecl; inspect sfile do
+            begin ref(idnotice) d;
+                  outimage;
+                  outtext("%   ******  Predefined tags for ");
+                  outtext(mod.modid);
+                  outtext("-module  ******"); outimage;
+                  if firstid == none then outimage else
+                  begin outtext("%-I   short integer ");
+                        d:-firstid; d.outid;
+                        for d:-d.next while d =/= none do
+                        begin outchar(',');
+                              if sfile.pos>60 then
+                              begin outimage;
+                                    outtext("%-I                 ");
+                              end;
+                              d.outid;
+                        end;
+                        outchar(';'); outimage;
+                        outtext("%   ******  tags as text  ******");
+                        outimage;
+                        for d:-firstid, d.next while d =/= none do begin
+                            outtext("%-I text "); d.outidtext;
+%                           outtext("%-I character "); d.outidhi;
+%                           outtext("%-I           "); d.outidlo;
+                        end;
+                        outimage; outimage;
+                  end;
+            end;
+
+            procedure outcode; inspect sfile do
+            begin ref(idnotice) d;
+                  outimage;
+                  outtext("%   ******  Initialisation of ");
+                  outtext(mod.modid);
+                  outtext("-module  ******"); outimage; outimage;
+                  nxtrts:=nxtrts+1;
+            !+D;  outtext("%+D   if regnewmodule(""");
+            !+D;  outtext(mod.modid); outtext(""",""");
+            !+D;  outtext(mod.modcode); outtext(""",");
+            !+D;  outtext(leftint(mod.ntag)); outtext(")"); outimage;
+            !+D;  outtext("%+D      .basetag <> "); outtext(leftint(mod.bias+1));
+            !+D;  outtext(" then fatal0(298);"); outimage;
+            !-D;  outtext("%-D   moduletab("); outtext(leftint(nxtrts));
+            !-D;  outtext("):-new module(""");
+            !-D;  outtext(mod.modid); outtext(""",""");
+            !-D;  outtext(mod.modcode); outtext(""",");
+            !-D;  outtext(leftint(mod.ntag)); outchar(',');
+            !-D;  outtext(leftint(mod.bias+1)); outtext(");"); outimage;
+                  d:-firstid;
+                  while d =/= none do begin d.outasg(7); d:-d.next end;
+            end;
+
+            begin short integer i,tagno;
+                  tagno:=rank(ntaghi)*256+rank(ntaglo);
+                  for i:=mod.bias+1 step 1 until tagno
+                  do modref(i):-this modinfo;
+                  outtext("Module "); outtext(mod.modid);
+                  outtext(", tags ="); outint(mod.bias+1,5);
+                  outtext(", ... ,"); outint(tagno,5); outimage;
+            end;
+      end *** modinfo ***;
+%title *********   I N S Y M B  /  I N I D E N T   *********
+
+      text procedure imrest;
+      begin while inim.getchar=' ' do ; inim.setpos(inim.pos-1);
+            imrest:-inim.sub(inim.pos,inim.length-inim.pos+1);
+            inim:-notext;
+      end;
+
+      text procedure insymb;
+      begin text s; short integer p,n;
+            switch W:=LX,LX,LX,LX,LX,LX,LX,LX,LX,LX, !   0-9   ;
+                      LX,LX,LX,LX,LX,LX,LX,LX,LX,LX, !  10-19  ;
+                      LX,LX,LX,LX,LX,LX,LX,LX,LX,LX, !  20-29  ;
+                      LX,LX,LX,LX,LX,LI,LX,LX,LX,LX, !  30-39  ;
+                      LX,LX,LX,LX,LX,LM,LX,LX,LI,LI, !  40-49  ;
+                      LI,LI,LI,LI,LI,LI,LI,LI,LX,LX, !  50-59  ;
+                      LX,LX,LX,LX,LX,LI,LI,LI,LI,LI, !  60-69  ;
+                      LI,LI,LI,LI,LI,LI,LI,LI,LI,LI, !  70-79  ;
+                      LI,LI,LI,LI,LI,LI,LI,LI,LI,LI, !  80-89  ;
+                      LI,LX,LX,LX,LX,LI,LX,LI,LI,LI, !  90-99  ;
+                      LI,LI,LI,LI,LI,LI,LI,LI,LI,LI, ! 100-109 ;
+                      LI,LI,LI,LI,LI,LI,LI,LI,LI,LI, ! 110-119 ;
+                      LI,LI,LI,LX,LX,LX,LX,LX;       ! 120-127 ;
+
+
+      NX:   while not inim.more do
+            begin if inpt.endfile and inpt =/= sysin then
+                  begin inpt.close; inpt:-sysin end;
+                  if inpt.endfile then inim:-copy("END")
+             else begin inpt.inimage;
+                        if not inpt.endfile
+                        then inim:-inpt.image.strip;
+                  end;
+            end;
+            while inim.getchar=' ' do ;
+            n:=0; p:=inim.pos-1; inim.setpos(p);
+      LI:   n:=n+1; if inim.more then goto W(rank(inim.getchar)+1);
+      LM:   if inim.more then
+            begin if inim.getchar = '-'  then
+                  begin inim:-notext; goto NX end;
+            end;
+      LX:   if n>1 then n:=n-1;
+            s:-upcase(inim.sub(p,n)); inim.setpos(p+n);
+            if s=";" then goto NX;
+            if tracemode then
+            begin outtext("Insymb: """); outtext(s);
+                  outchar('"'); outimage;
+            end;  insymb:-symbol:-s;
+      end;
+%title ******   I n i t i a l i z a t i o n   ******
+%     InitCommon;
+
+      outtext(sportid & " (MODLIST)"); outimage; inpt:-sysin;
+
+% %+D   module_trace:=1; !*** T E M P ***;
+
+      outtext("Enter parameters:"); outimage;
+
+NXPAR:if insymb = "TRACE" then
+      begin tracemode:=true; goto NXPAR end
+ else if symbol = "SOURCE" then
+      begin if insymb ne "=" then ERROR("Missing =");
+            sourceid:-imrest; inpt:-new infile(sourceid);
+            inpt.open(blanks(90)); goto NXPAR;
+      end;
+
+%title *********  M  O  N  I  T  O  R  *********
+      begin short integer i; ref(descr) d; text modname,mainid;
+            character cidhi,cidlo; ref(symbolbox) cbox;
+      NEXT:
+            if symbol = "TRACE"   then tracemode:=true
+       else if symbol = "NOTRACE" then tracemode:=false
+       else if symbol = "INSERT"  then
+            begin text attrfile;
+            N:    simsymbol:-modname:-insymb; DEFIDENT;
+                  outtext("Insert: "); outtext(modname); outimage;
+%+D               if tracemode then module_trace:=1;
+                  attrfile:-modname; !******     T  E  M  P    ******;
+%+U               attrfile:-"SML$PF." & attrfile;
+%+N               attrfile:-attrfile & ":ATR1";
+%-U %-N           attrfile:-attrfile & ".at1";
+                  InModule(this Common,attrfile,modname);
+                  nmod:=nmod+1; modtab(nmod):-new modinfo(modset.last);
+                  if insymb = "," then goto N; goto NEXT;
+            end
+       else if symbol = "DEFINE" then
+            begin insymb;
+                  while symbol ne "END" do
+                  begin simsymbol:-symbol; DEFIDENT;
+                        cbox:-boxof(hashhi,hashlo);
+                        if insymb ne "=" then ERROR("Missing =");
+                        mainid:-simsymbol:-insymb; DEFIDENT;
+                        d:-boxof(hashhi,hashlo).curmeaning;
+                        if d==none then
+                        begin ERROR("Undefined: " & mainid);
+                              d:-new quant(NUL);
+                        end;
+                        if insymb="." then
+                        begin insymb; inspect d
+                         when peculiar do
+                              begin if symbol ne "BODY" then
+                                    ERROR("Illegal id after dot");
+                                    new idnotice(cbox,bodyhi,bodylo,
+                                  tagtab(rank(bodyhi)).val(rank(bodylo))
+                                   .curmeaning);
+                              end
+                         when record do begin
+                              simsymbol:-symbol; DEFIDENT;
+                              d:-rec_atr(this record,hashhi,hashlo);
+                              new idnotice(cbox,d.taghi,d.taglo,d);
+                          end
+                    otherwise ERROR("Illegal id before dot: " &
+                                     mainid );
+                              insymb;
+                        end
+                   else new idnotice(cbox,d.taghi,d.taglo,d);
+                  end;
+            end
+       else if symbol = "MNEMONIC" then
+            begin if insymb ne "=" then ERROR("Missing =");
+                  ouptid:-imrest;
+                  sfile:-new outfile(ouptid); sfile.open(blanks(72));
+                  for i:=1 step 1 until nmod do modtab(i).outmne(2);
+                  sfile.close;
+            end
+       else if symbol = "DECL" then
+            begin if insymb ne "=" then ERROR("Missing =");
+                  ouptid:-imrest;
+                  sfile:-new outfile(ouptid); sfile.open(blanks(72));
+                  for i:=1 step 1 until nmod do modtab(i).outdecl;
+                  sfile.close;
+            end
+       else if symbol = "CODE" then
+            begin if insymb ne "=" then ERROR("Missing =");
+                  ouptid:-imrest;
+                  sfile:-new outfile(ouptid); sfile.open(blanks(72));
+                  sfile.outtext("%+D    lastusedtag:=31;"); outimage;
+                  for i:=1 step 1 until nmod do modtab(i).outcode;
+                  sfile.outtext("%-D    lastusedtag:=");
+                  sfile.outtext(leftint(modtab(nmod).mod.bias+
+                                      modtab(nmod).mod.ntag));
+                  sfile.outchar(';'); outimage;
+                  sfile.close;
+            end
+       else if symbol = "SYSTEM" then
+            begin if insymb ne "=" then ERROR("Missing =");
+                  ouptid:-imrest;
+                  sfile:-new outfile(ouptid); sfile.open(blanks(72));
+                  for i:=1 step 1 until nmod do modtab(i).output;
+                  sfile.close;
+            end
+       else if symbol = "DISPLAY" then
+%+D         begin short integer i,j;
+%+D               i:=rank(identhi)+1;
+%+D               while i<>0 do begin
+%+D                  i:=i-1;
+%+D                  inspect symtab(i) do begin
+%+D                     j:=256; while j<>0 do begin
+%+D                        j:=j-1;
+%+D                        inspect val(j).curmeaning do begin
+%+D                           outtext("Display"); outint(i*256+j,5);
+%+D                           outtext("* "); prt(this linkage,15);
+%+D                           outimage;
+%+D         end end end end end
+       else if symbol = "END" then goto EXIT
+       else ERROR("Illegal command: " & symbol);
+            insymb; goto NEXT;
+
+
+    EXIT:   outimage; outimage; outtext("End MODLIST, ");
+            outtext(if nerr=0 then "no" else leftint(nerr)); 
+            outtext(" errors."); outimage;
+            if inpt =/= sysin then inpt.close;
+      end *** monitor ***;
+
+end
+end of program;

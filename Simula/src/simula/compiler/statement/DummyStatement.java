@@ -7,6 +7,8 @@
  */
 package simula.compiler.statement;
 
+import simula.compiler.JavaModule;
+
 /**
  * Dummy Statement.
  * 
@@ -33,6 +35,7 @@ public final class DummyStatement extends Statement {
 
 	public void doJavaCoding() { /* No Coding */
 		ASSERT_SEMANTICS_CHECKED(this);
+		JavaModule.code(";");
 	}
 
 	public void print(final int indent) {

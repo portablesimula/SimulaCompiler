@@ -43,7 +43,7 @@ import simula.runtime.loom.ThreadUtils;
 public abstract class RTObject$ {
 
 	// BASICIO
-	static final int INPUT_LINELENGTH_ = 80;
+	static final int INPUT_LINELENGTH_  = 132; //80;
 	static final int OUTPUT_LINELENGTH_ = 132;
 	static InFile$ SYSIN$;
 	public static PrintFile$ SYSOUT$;
@@ -868,6 +868,7 @@ public abstract class RTObject$ {
 	// *********************************************************************
 	// *** DETACH - MOVED TO CLASS$ -- See Simula Standard 7.3.1 Detach
 	// *********************************************************************
+
 
 	// *********************************************************************
 	// *** CALL - See Simula Standard 7.3.1 Call

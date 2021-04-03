@@ -148,12 +148,22 @@ public final class ObjectGenerator extends Expression {
 
 		s.append(')');
 		// if(((ClassDeclaration)meaning.declaredAs).isDetachUsed())
+//		if (cls.isDetachUsed()) {
+//			s.append(".START$()");
+//			String start="(("+classIdent+')'+s.toString()+')';
+//			//Util.BREAK("ObjectGenerator.toJavaCode: START="+start);
+//			return(start);
+//		} else
+			
 		if (cls.isDetachUsed()) {
 			s.append(".START$()");
-			String start="(("+classIdent+')'+s.toString()+')';
-			//Util.BREAK("ObjectGenerator.toJavaCode: START="+start);
+//			String start="(("+classIdent+')'+s.toString()+')';
+			String start=s.toString();
+			if(backLink!=null) start="(("+classIdent+')'+start+')';
+			//Util.BREAK("ObjectGenerator.toJavaCode: backLink="+this.backLink+", START="+start);
 			return(start);
 		} else
+			
 			s.append(".STM$()");
 
 		return (s.toString());
