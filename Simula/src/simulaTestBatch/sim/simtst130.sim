@@ -708,10 +708,10 @@ DEC_Lib begin
         end;      
 
         trace("BEGIN TEST initem --------------------------------------------------- nFailed=" & edit(nFailed));
-            createImagefile(new Outfile("TEMP1"));             testImagefile("TEMP1");
-            createDirectfile(new Directfile("TEMP2"));         testDirectfile("TEMP2");
-            createBytefile(new OutBytefile("TEMP3"));          testBytefile("TEMP3");
-            createDirectBytefile(new DirectBytefile("TEMP4")); testDirectBytefile("TEMP4");
+            createImagefile(new Outfile("simtst130-TEMP1"));             testImagefile("simtst130-TEMP1");
+            createDirectfile(new Directfile("simtst130-TEMP2"));         testDirectfile("simtst130-TEMP2");
+            createBytefile(new OutBytefile("simtst130-TEMP3"));          testBytefile("simtst130-TEMP3");
+            createDirectBytefile(new DirectBytefile("simtst130-TEMP4")); testDirectBytefile("simtst130-TEMP4");
         trace("ENDOF TEST initem --------------------------------------------------- nFailed=" & edit(nFailed));
     
     end;
@@ -754,7 +754,7 @@ DEC_Lib begin
 
         trace("BEGIN TEST linecount --------------------------------------------------- nFailed=" & edit(nFailed));
             test(pf, -1);
-            pf:-new PrintFile("TEMP");
+            pf:-new PrintFile("simtst130-TEMP");
             test(pf, -2);
             pf.open(blanks(80));
             test(pf,linesperpage(0));
