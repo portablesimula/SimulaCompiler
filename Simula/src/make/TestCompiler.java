@@ -241,7 +241,7 @@ public final class TestCompiler {
 			// Runtime Trace Options
 			Option.TRACE_LOOM=false;//true;
 
-			File simulaHome=new File("C:/GitHub/Simula2/Simula2");
+			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
 //			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime

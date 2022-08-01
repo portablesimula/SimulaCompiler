@@ -228,12 +228,16 @@ public class FILE$ extends CLASS$ {
 	}
 
 
-	protected void doCreateAction() {
+	protected File doCreateAction(File file) {
 		try {
-		File file = new File(FILENAME$.edText().trim());
-//			  System.out.println("FILE$.doCreateAction: "+CREATE$+" on "+file);
-//			  RT.BREAK("FILE$.doCreateAction: "+CREATE$+" on "+file);
-			  switch(CREATE$) {
+			if(!file.isAbsolute() && RT.Option.RUNTIME_USER_DIR.length()>0) {
+				file=new File(RT.Option.RUNTIME_USER_DIR+'/'+FILENAME$.edText());
+			}
+			
+//			File file = new File(FILENAME$.edText().trim());
+//			System.out.println("FILE$.doCreateAction: "+CREATE$+" on "+file);
+//			RT.BREAK("FILE$.doCreateAction: "+CREATE$+" on "+file);
+			switch(CREATE$) {
 			      case NA: {
 					  //System.out.println("FILE$.doCreateAction: NA on "+file);
 			    	  //throw new RuntimeError("File access mode=NA - Can't open file");
@@ -266,8 +270,9 @@ public class FILE$ extends CLASS$ {
 			    		  if(!success) throw new SimulaRuntimeError("File access mode=anyCreate but couldn't create a new empty file: "+file);
 			    	  } break;
 			      }
-			  }
+			}
 		} catch (IOException e) {	}
+		return(file);
 	}
 
 	protected void doPurgeAction() {

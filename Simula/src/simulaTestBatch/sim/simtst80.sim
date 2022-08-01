@@ -19,7 +19,7 @@ BEGIN
    Boolean verbose=false;
    
    --Text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any8089";
-   Text fileName="C:/GitHub/Simula2/Simula2/src/simulaTestBatch/files/any8089";
+   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any8089";
 
    Ref(imagefile) f1, f2;
 

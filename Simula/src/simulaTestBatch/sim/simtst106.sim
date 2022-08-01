@@ -12,7 +12,7 @@ COMMENT DATA data96;
 Boolean found_error;
 
 --Text fileName="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/data96";
-Text fileName="C:/GitHub/Simula2/Simula2/src/simulaTestBatch/files/data96";
+Text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/data96";
 
 outtext("--- START Simula a.s. TEST 96"); outimage;
 outtext("    Test of Simulation - reads from infile ""data96"".");

@@ -77,11 +77,7 @@ public class InbyteFile$ extends ByteFile$ {
 	 */
 	public boolean open() {
 		if (OPEN$) return (false);
-		doCreateAction();
-		File file=new File(FILENAME$.edText());
-		if(!file.isAbsolute() && RT.Option.RUNTIME_USER_DIR.length()>0) {
-			file=new File(RT.Option.RUNTIME_USER_DIR+'/'+FILENAME$.edText());
-		}
+		File file=doCreateAction(new File(FILENAME$.edText()));
 		if(!file.exists()) {
 			//File selected=popupFileSelector("Can't Open "+file+", select another");
 			File selected=trySelectFile(file.toString());

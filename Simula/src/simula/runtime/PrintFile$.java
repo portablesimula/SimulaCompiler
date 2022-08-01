@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -229,7 +230,6 @@ public class PrintFile$ extends OutFile$ {
 	 */
 	public boolean open(final TXT$ image) {
 		if (OPEN$) return (false); // File already opened
-		doCreateAction();
 		PAGE$ = 0;
 		OPEN$ = true;
 		this.image = image;
@@ -240,8 +240,9 @@ public class PrintFile$ extends OutFile$ {
 			if(RT.console!=null) writer=RT.console.getWriter();
 			else writer = new OutputStreamWriter(System.out,CHARSET$);
 		} else {
+			File file=doCreateAction(new File(FILENAME$.edText()));
 			try {
-				OutputStream outputStream = new FileOutputStream(FILENAME$.edText());
+				OutputStream outputStream = new FileOutputStream(file);
 				writer = new OutputStreamWriter(outputStream,CHARSET$);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();

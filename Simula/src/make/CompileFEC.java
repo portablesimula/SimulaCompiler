@@ -63,7 +63,7 @@ public final class CompileFEC {
 		Option.noExecution=false;//true;
 //		Option.verbose=true;
 		
-		File userDir=new File("C:/GitHub/Simula2/Simula2");
+		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaFEC";
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
@@ -85,6 +85,7 @@ public final class CompileFEC {
 //			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
 			String fileName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/"+name;
 			SimulaCompiler compiler = new SimulaCompiler(fileName);
+			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
 			compiler.doCompile();
 			System.out.println("Done: "+fileName);
 		}

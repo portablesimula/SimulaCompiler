@@ -33,7 +33,7 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -179,7 +179,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
 		//names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
 		//names.add("simtst129.sim"); // OK: Switch in precompiled class
-		//names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
+		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 		//names.add("simtst131.sim"); // OK: Catching Errors
 		//names.add("simtst132.sim"); // OK: SPORT Options
 		//names.add("simtst133.sim"); // OK: Environment Interface
@@ -200,8 +200,8 @@ public final class RunSingleTestBatch {
 		Option.WARNINGS=true;
 
 		// Overall TRACING Options
-		Option.TRACING=true;//false;//true;
-		Option.BREAKING=true;//false; //true; 
+		Option.TRACING=false;//true;
+		Option.BREAKING=false; //true; 
 
 		// Scanner Trace Options
 		Option.TRACE_SCAN=false;//true;
@@ -219,7 +219,7 @@ public final class RunSingleTestBatch {
 		// Coder Trace Options
 		Option.TRACE_CODING=false;//true;
 
-		File userDir=new File("C:/GitHub/Simula2/Simula2");
+		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
 		//Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
@@ -243,13 +243,14 @@ public final class RunSingleTestBatch {
 //		RT.SPORT_SysInsertDirName="ABRA";
 //		System.out.println(RT.SPORT_SysInsertDirName+"===============================================================================");
 
-		for(String name:names)
-		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
-	      try { SimulaCompiler compiler = new SimulaCompiler(fileName);
-		        compiler.doCompile();
-		  }
-	      catch(LABQNT$ q) { q.printStackTrace(); }
-		  catch(Throwable t) { System.err.println("ERROR: "+t.getMessage()); t.printStackTrace(); }
+		for(String name:names) {
+			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
+			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
+			try { SimulaCompiler compiler = new SimulaCompiler(fileName);
+				  compiler.doCompile();
+			}
+			catch(LABQNT$ q) { q.printStackTrace(); }
+			catch(Throwable t) { System.err.println("ERROR: "+t.getMessage()); t.printStackTrace(); }
 		}
 	}
 

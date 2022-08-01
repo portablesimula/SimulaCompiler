@@ -58,12 +58,10 @@ public class SimulaEditor extends JFrame {
 	// ****************************************************************
     public static void main(String[] args) {
 		Global.packetName="simprog";
-//		String userDir="C:/GitHub/SimulaCompiler/Simula2";
-		String userDir="C:/GitHub/Simula2/Simula2";
+		String userDir="C:/GitHub/SimulaCompiler/Simula";
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime  Download
 		RTOption.InitRuntimeOptions();
     	Option.InitCompilerOptions();
-//		Global.sampleSourceDir=new File("C:/GitHub/SimulaCompiler/Simula2/src/simulaTestPrograms/samples");
 		Global.sampleSourceDir=new File(userDir+"/src/simulaTestPrograms/samples");
 		Option.INLINE_TESTING=true;
 		SimulaEditor editor=new SimulaEditor();

@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -81,7 +82,6 @@ public class OutFile$ extends ImageFile$ {
 	 */
 	public boolean open(final TXT$ IMAGE_) {
 		if (OPEN$) return (false); // File already opened
-		doCreateAction();
 		OPEN$ = true;
 		image = IMAGE_;
 		setpos(1);
@@ -89,8 +89,9 @@ public class OutFile$ extends ImageFile$ {
 		if (FILENAME$.edText().equalsIgnoreCase("sysout"))
 			outputStream = System.out;
 		else {
+			File file=doCreateAction(new File(FILENAME$.edText()));
 			try {
-				outputStream = new FileOutputStream(FILENAME$.edText());
+				outputStream = new FileOutputStream(file);
 			} catch (FileNotFoundException e) {
 				return (false);
 			}

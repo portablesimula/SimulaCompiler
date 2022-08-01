@@ -197,7 +197,7 @@ public final class RunFullTestBatch {
 		Option.WARNINGS=false;
 		Option.verbose=false;
 		
-		File userDir=new File("C:/GitHub/Simula2/Simula2");
+		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
@@ -215,10 +215,11 @@ public final class RunFullTestBatch {
 
 		long startTimeMs = System.currentTimeMillis( );
 
-		for(String name:names)
-		{ String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
-		  SimulaCompiler compiler = new SimulaCompiler(fileName);
-		  compiler.doCompile();
+		for(String name:names) {
+			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
+			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
+			SimulaCompiler compiler = new SimulaCompiler(fileName);
+			compiler.doCompile();
 		}
 		System.out.println("--- END OF SIMULA TESTBATCH");
 		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;

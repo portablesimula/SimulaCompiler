@@ -12,7 +12,7 @@ BEGIN
    Boolean verbose=false;
    
 --   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any77";
-   Text fileName="C:/GitHub/Simula2/Simula2/src/simulaTestBatch/files/any77";
+   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any77";
 
    Class Les (n, andre); Integer n; Ref (Les) andre;
    Begin Text array linjer (1:300);

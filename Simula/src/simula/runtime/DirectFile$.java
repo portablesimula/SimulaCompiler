@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -156,7 +157,7 @@ public class DirectFile$ extends ImageFile$ {
 	 */
 	public boolean open(final TXT$ IMAGE$) {
 		if (OPEN$) return (false);
-		doCreateAction();
+		File file=doCreateAction(new File(FILENAME$.edText()));
 		LOC$ = 1;
 		MAXLOC$ = maxint - 1;
 		image = IMAGE$;
@@ -165,7 +166,7 @@ public class DirectFile$ extends ImageFile$ {
 		setpos(1);
 		try {
 			String mode = "rws"; // mode is one of "r", "rw", "rws", or "rwd"
-			randomAccessFile = new RandomAccessFile(FILENAME$.edText(), mode);
+			randomAccessFile = new RandomAccessFile(file, mode);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return (false);

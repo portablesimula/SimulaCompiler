@@ -7,6 +7,7 @@
  */
 package simula.runtime;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -57,9 +58,9 @@ public class OutbyteFile$ extends ByteFile$ {
 			outputStream = System.out;
 		else {
 			//System.out.println("OutbyteFile$.open: FILENAME$="+FILENAME$);
-			doCreateAction();
+			File file=doCreateAction(new File(FILENAME$.edText()));
 			try {
-				outputStream = new FileOutputStream(FILENAME$.edText());
+				outputStream = new FileOutputStream(file);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				return (false);

@@ -49,7 +49,7 @@ public final class MakeSetup {
 	private final static String RELEASE_SAMPLES=RELEASE_HOME+"\\samples";
 
 	private final static String GITHUB_ROOT="C:\\GitHub";
-	private final static String ECLIPSE_ROOT="C:\\GitHub\\Simula2\\Simula2";
+	private final static String ECLIPSE_ROOT="C:\\GitHub\\SimulaCompiler\\Simula";
 	private final static String COMPILER_BIN=ECLIPSE_ROOT+"\\bin";
 	private final static String INSTALLER_BIN=ECLIPSE_ROOT+"\\bin";
 

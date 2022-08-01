@@ -8,6 +8,7 @@
 package simula.runtime;
 
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -151,11 +152,11 @@ public class DirectByteFile$ extends ByteFile$ {
 	 */
 	public boolean open() {
 		if (OPEN$) return (false);
-		doCreateAction();
 		// LOC$ = 1; // LOC is maintained by the underlying file system.
+		File file=doCreateAction(new File(FILENAME$.edText()));
 		try {
 			String mode = "rw"; // mode is one of "r", "rw", "rws", or "rwd"
-			randomAccessFile = new RandomAccessFile(FILENAME$.edText(), mode);
+			randomAccessFile = new RandomAccessFile(file, mode);
 		} catch (FileNotFoundException e) {
 			return (false);
 		}

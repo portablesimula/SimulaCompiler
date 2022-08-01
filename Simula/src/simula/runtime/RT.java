@@ -38,17 +38,17 @@ public final class RT {
 		public static boolean LOOM_TRACING = false;// true;
 		public static boolean QPS_TRACING = false; // true;
 		public static boolean SML_TRACING = false; // true;
-		public static boolean USE_VIRTUAL_THREAD=false;//true;
+		public static boolean USE_VIRTUAL_THREAD=true;
 		public static String  RUNTIME_USER_DIR="";
 	}
 
 	public static class SPORT_Option {
 	    public static String ModuleName="ModuleName";
-		public static String SourceDirName="C:\\GitHub\\Simula2\\Simula2\\src\\sport\\rts";
+		public static String SourceDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts";
 		public static String SPORT_SysInsertDirName="CCCC:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
-//		public static String SCodeDirName="C:\\GitHub\\Simula2\\Simula2\\src\\sport\\rts\\scode";
-//		public static String TempDirName="C:\\GitHub\\Simula2\\Simula2\\src\\sport\\rts\\temp";
-//		public static String SourceFileName="C:\\GitHub\\Simula2\\Simula2\\src\\sport\\rts\\RT.DEF";
+//		public static String SCodeDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\scode";
+//		public static String TempDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\temp";
+//		public static String SourceFileName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\RT.DEF";
 		
 		// getTextInfo
 		public static String getSourceFileName() { return(SourceDirName+"\\"+ModuleName); }
@@ -85,7 +85,7 @@ public final class RT {
 	    public static String PredefFileName="C:/WorkSpaces/Predefiner/Predefiner/src/Attrs/FEC/PREDEF.atr";
 
 //	    public static String XmessageFileName="X-MSG";
-//	    public static String XmessageFileName="C:/GitHub/Simula2/Simula2/src/sportFEC/sim/FECERROR.txt";
+//	    public static String XmessageFileName="C:/GitHub/SimulaCompiler/Simula/src/sportFEC/sim/FECERROR.txt";
 	    public static String XmessageFileName="C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/FECERROR.txt";
 	    
 	    // getIntInfo

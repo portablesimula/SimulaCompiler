@@ -106,11 +106,7 @@ public class InFile$ extends ImageFile$ {
 			else reader=new InputStreamReader(System.in,CHARSET$);
 		}
 		else {
-			doCreateAction();
-			File file=new File(FILENAME$.edText());
-			if(!file.isAbsolute() && RT.Option.RUNTIME_USER_DIR.length()>0) {
-				file=new File(RT.Option.RUNTIME_USER_DIR+'/'+FILENAME$.edText());
-			}
+			File file=doCreateAction(new File(FILENAME$.edText()));
 			if(!file.exists()) {
 				File selected=trySelectFile(file.getAbsoluteFile().getParentFile().toString());
 				if(selected!=null) file=selected;				
