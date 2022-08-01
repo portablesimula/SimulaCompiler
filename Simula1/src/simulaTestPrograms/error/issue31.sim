@@ -1,5 +1,0 @@
-class A;
-L:
-   inner;
-   goto L;
-end;   

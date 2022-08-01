@@ -1,9 +1,0 @@
-% RemoteSwitch
-begin
-  switch S:=L1,L2;
-  
-  goto S(4); 
-  
-  L1:L2:
-  
-end;  

@@ -1,9 +1,0 @@
-
-%STANDARDCLASS
-
-
-FILE_ class ByteFile_;
-begin short integer BYTESIZE_;
-      short integer procedure bytesize; bytesize := BYTESIZE_;
-
-end bytefile;

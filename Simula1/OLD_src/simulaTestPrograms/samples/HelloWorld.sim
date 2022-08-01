@@ -1,4 +1,0 @@
-begin
-   outtext("Hello World!");
-   outimage;
-end;   

@@ -1,7 +1,0 @@
-begin
-  integer i, j;
-  i := 123456789;
-  j := 123456789123456789;
-  Outint( i, 20 ); Outimage;
-  Outint( j, 20 ); Outimage;
-end;

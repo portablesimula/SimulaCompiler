@@ -1,9 +1,0 @@
-external class terminal;
-terminal begin  open(25,80);
-        while inchar <> ' ' do inspect sysout do begin
-            outtext("map: "); outint(rank(lastkey.map),3);
-            outtext("  chr: "); outint(rank(lastkey.chr),3);
-            outtext("  fkey: "); outint(lastkey.fkey,3); outimage;
-        end;    close;
-end;
-

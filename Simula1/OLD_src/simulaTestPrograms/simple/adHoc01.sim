@@ -1,9 +1,0 @@
-Simulation begin 
-
-   Process class Customer; 
-   begin procedure abra; 
-               this Process.into(none); 
-   end; 
-
-   new Customer.abra;
-end
