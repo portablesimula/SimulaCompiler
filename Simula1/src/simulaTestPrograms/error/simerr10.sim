@@ -1,0 +1,35 @@
+
+% Java keywords as Identifiers
+BEGIN
+   integer null;
+%  integer abstract, continue, for, new, switch;
+   integer abstract, continue;
+
+%  integer assert, default, if, package, synchronized;
+   integer assert, default,     package, synchronized;
+
+%  integer boolean, do, goto, private, this;
+   integer                    private;
+
+%  integer break, double, implements, protected, throw;
+   integer break, double, implements,            throw;
+
+%  integer byte, else, import, public, throws;
+   integer byte,       import, public, throws;
+
+%  integer case, enum, instanceof, return, transient;
+   integer case, enum, instanceof, return, transient;
+
+%  integer catch, extends, int, short, try;
+   integer catch, extends, int,        try;
+
+%  integer char, final, interface, static, void;
+   integer char, final, interface, static, void;
+
+%  integer class, finally, long, strictfp, volatile;
+   integer        finally,       strictfp, volatile;
+
+%  integer const, float, native, super, while;
+   integer const, float, native, super;
+   
+end of program;

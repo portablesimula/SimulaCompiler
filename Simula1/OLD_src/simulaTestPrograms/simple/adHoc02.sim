@@ -1,0 +1,19 @@
+SIMSET begin 
+      link class a;
+      begin 
+            procedure Va(n); integer n;
+            begin end;
+      end;
+ 
+
+      ref(link) elt;
+
+      elt:-new a;
+      
+      inspect elt 
+         when a do begin
+            Va(200);
+            out;
+         end;
+
+end

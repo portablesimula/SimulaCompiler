@@ -1,0 +1,26 @@
+
+Simset class DetachSamples;
+begin !BL=3;
+   ref(C) x;
+   
+   Class C;
+   Begin !BL=4;
+      integer i;
+      detach;
+   End;
+   
+   Link class MyLink;
+   begin !BL=4;
+       detach;
+   end MyLink;
+   
+   Procedure P;
+   begin !BL=4;
+       detach; ! Should bind to Simset'detach ;
+       x.detach;
+   end;    
+   
+    x:-new C();
+    detach;
+   
+end;

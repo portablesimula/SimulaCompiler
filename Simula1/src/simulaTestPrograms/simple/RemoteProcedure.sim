@@ -1,0 +1,36 @@
+
+begin
+   ref(A) x;
+   real r;
+   
+   class A; virtual: integer procedure V;
+   begin
+      ref(B) y;
+      
+      class B;
+      begin
+         integer procedure V(j); integer j; V:=j+r;
+      end;
+      
+      real procedure F(x); real x; begin end;
+      
+      integer procedure G; begin end;
+      
+      procedure H(x); real x; begin end;
+      
+      procedure E; begin end;
+      
+   end;
+   
+   inspect x do r:=F(r);
+   
+   inspect x do y:-new B();
+   
+   inspect x do E;
+   
+   inspect x do r:=V(3.14);
+
+   x:-new A;   
+   r:=x.F(r);
+
+end;

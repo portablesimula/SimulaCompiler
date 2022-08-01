@@ -1,0 +1,18 @@
+
+%QUALIFIEDNAMES
+% =======================================   Main   program  ===========
+%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 98
+%
+%  PURPOSE:  Test attribute protection. Test visibility of labels.
+%
+%  METHOD:   Define a class structure, with combinations of 'protected'
+%            and 'hidden' at same or different prefix levels. Test 
+%            values of integer variable or constant at different levels.
+%            In addition, try to 'goto' an invisible (inspected) label.
+%
+%  NOTE:     If constants are not implemented, change declarations
+%            marked !C; to normal integer declarations.
+%
+%  WRITTEN BY:  Peter Jensen March 1987
+% =====================================================================
+%

@@ -1,0 +1,225 @@
+% **********************************************************************
+% * Simulation model for a warehouse area for reception of goods. The  *
+% * goods arrive in VANs with a certain load and an unloading dock is  *
+% * selected (if all busy, the van waits in a queue). Each dock has an *
+% * unloading position and a place for cleaning the van afterwards.    *
+% * The primary output from the model is the accumulated time spent in *
+% * the pre-docking waiting queue for 2-6 docks                        *
+% **********************************************************************
+begin  !*** compile w/selector G: no use of class Drawing
+       !*** compile w/selector T: no sync with cputime, no interaction;
+       
+boolean verbose=TRUE;
+       
+integer cnt,grm;
+
+procedure trace(msg); text msg;
+begin if verbose then
+begin outtext(msg); outimage; end; end;
+
+%  -G external class Drawing;
+    ref (Drawing) Drw;
+    integer invisible;
+ 
+   procedure FillSquare(line,pos,b,h); long real line,pos,b,h;
+   begin inspect Drw do fillEllipse(pos,line,h,b); end;
+
+    
+Simulation class warehouse(nDocks);
+integer nDocks;
+begin
+   integer waitStep=100;
+   real washTime = 20.0, pTime = 5.0;
+   long real uSpeed = 1000.0&&0;                    ! unloading speed;
+   long real accWait;
+   integer Totnr, hi, arrInterval;
+
+    integer              b = 5, l = 5;
+    integer qLine= 10, qPos=30,               ! start of queue;
+                  drPos= 15,                        ! driving to a dock;
+                  pPos =40,                         ! dock platform;
+                  uPos=120,                         ! unload position;
+                  wPos=200;                         ! car washery;
+    integer dLine1 = 75;                      ! first dock;
+    integer qLength, psl, dLine;
+    
+    
+    Procedure drawMap(nr); integer nr; inspect Drw do begin
+       setFillColor(cyan);
+       FillSquare(qLine-8,qPos-8,16+b,4);
+       FillSquare(qLine-8,qPos-4,4,100);
+       FillSquare(qLine+4+b,qPos-4,4,100);
+       for psl:= 1 step 1 until nr do begin
+          dLine:= dLine1 + (psl-1)*20;
+          FillSquare(dLine-8,pPos-8,16+b,4);
+          FillSquare(dLine-8,pPos-4,4,240);
+          FillSquare(dLine+4+b,pPos-4,4,240);
+       end for;
+% -G    Setpos(Textline(dLine1)-2,Textpos(pPos)); outtext("Platform:");
+% -G    Setpos(Textline(dLine1)-2,Textpos(uPos)); outtext("Unload:");
+% -G    Setpos(Textline(dLine1)-2,Textpos(wPos )); outtext("Wash:");
+    setDrawColor(orange);
+    setFontStyleBoldItalic;
+    outtext("dLine1="); outint(dLine1,0); outimage;
+    outtext("pPos="); outint(pPos,0); outimage;
+    outtext("uPos="); outint(uPos,0); outimage;
+    outtext("wPos="); outint(wPos,0); outimage;
+    drawText("Platform:",pPos,dLine1-15);
+    drawText("Unload:",uPos,dLine1-15);
+    drawText("Wash:",wPos,dLine1-15);
+    end drawMap;
+    
+    Procedure drawVan(ln,ps,cl); integer ln,ps,cl; inspect Drw do begin
+       setFillColor(cl); FillSquare(ln,ps,b,l);
+    end drawMap;
+    
+    Procedure VantoQueue; inspect Drw do begin
+       drawVan(qLine,qPos+qLength*l*2,black);
+       qLength:= qLength+1;
+    end VantoQueue;
+    
+    Procedure VantoPlatform(nr); integer nr; inspect Drw do begin
+       for psl:= qPos step -5 until drPos+5 do begin
+          waitSomeTime(waitStep);
+          drawVan(qLine,psl,invisible);
+          drawVan(qLine,psl-5,black);
+       end for;
+       for psl:= 1 step 1 until qLength-1 do begin
+          waitSomeTime(waitStep);
+          drawVan(qLine,qPos+(psl)*l*2,invisible);
+          drawVan(qLine,qPos+(psl-1)*l*2,black);
+       end for;
+       drawVan(qLine,qPos+qLength*l*2,invisible);
+       if qLength>0 then qLength:= qLength-1;
+       dLine:= dLine1 + (nr-1)*20 - 5;
+       for psl:= qLine step 5 until dLine do begin
+          waitSomeTime(waitStep);
+          drawVan(psl,drPos,invisible);
+          drawVan(psl+5,drPos,black);
+       end;
+       dLine:= dLine1 + (nr-1)*20;
+       for psl:= drPos step 5 until pPos-5 do begin
+          waitSomeTime(waitStep);
+          drawVan(dLine,psl,invisible);
+          drawVan(dLine,psl+5,magenta);
+       end;
+    end VantoPlatform;
+    
+    Procedure VantoUnload(nr); integer nr; inspect Drw do begin
+       dLine:= dLine1 + (nr-1)*20;
+       for psl:= pPos step 5 until uPos-5 do begin
+          waitSomeTime(waitStep);
+          drawVan(dLine,psl,invisible);
+          drawVan(dLine,psl+5,black);
+       end;
+    end VantoUnload;
+    
+    Procedure VantoWash(nr); integer nr; inspect Drw do begin
+       dLine:= dLine1 + (nr-1)*20;
+       for psl:= uPos step 5 until wPos-5 do begin
+          waitSomeTime(waitStep);
+          drawVan(dLine,psl,invisible);
+          drawVan(dLine,psl+5,magenta);
+       end;
+    end VantoWash;
+    
+    Procedure VanFinished(nr); integer nr; inspect Drw do begin
+       dLine:= dLine1 + (nr-1)*20;
+       for psl:= wPos step 5 until wPos+25 do begin
+          waitSomeTime(waitStep);
+          drawVan(dLine,psl,invisible);
+          drawVan(dLine,psl+5,magenta);
+       end;
+       drawVan(dLine,wPos+30,invisible);
+    end VanFinished;
+
+   Process class Van(load); integer load;
+   begin long real waitTime; ref (Dock) Dk;
+      trace("Van[" & objectTraceIdentifier & "] is entering the scene");
+      
+      if platforms.First == none then begin
+         !*** all docks busy, wait in queue ***;
+         waitTime:= time;
+         VantoQueue;
+         Wait(Waiting); out;
+         accWait:= accWait+time-waitTime;        ! accumulate waiting time;
+      end;
+      Dk:- platforms.first;                      ! drive to free dock;
+      inspect Dk do begin
+         VantoPlatform(Dnr);
+         trace("Van[" & objectTraceIdentifier & "] is moved to plattform ...");
+         out;                                    ! this dock busy now;
+         Hold(pTime);                            ! maneuver to platform;
+         VantoUnload(Dnr);
+         trace("Van[" & objectTraceIdentifier & "] is unloading");
+         waitTime:= 1000.0&&0*load/uSpeed;
+         Hold(waitTime);                         ! unload;
+         VantoWash(Dnr);
+         trace("Van[" & objectTraceIdentifier & "] is washing");
+         Hold(washTime);                         ! clean van;
+         VanFinished(Dnr);
+         trace("Van[" & objectTraceIdentifier & "] is leaving");
+         into(platforms);                        ! this dock free again;
+      end;
+      if Waiting.first =/= none then             ! signal waiting vans;
+         activate Waiting.first after This Van;
+      trace("Van[" & objectTraceIdentifier & "] is terminating");
+   end class Van;
+
+   Process class Generator;
+   begin integer arrInterval;
+      real array arrivals(1:9), AvrgLoad(4:24);
+      arrivals(1):= 59; arrivals(2):= 19; arrivals(3):= 13;
+      arrivals(4):=  4; arrivals(5):=  1; arrivals(6):=  1;
+      arrivals(7):=  1; arrivals(8):=  1; arrivals(9):=  1;
+      AvrgLoad( 4):= 9; AvrgLoad( 6):= 20; AvrgLoad( 8):=22; AvrgLoad(10):= 14;
+      AvrgLoad(12):= 9; AvrgLoad(14):=  3; AvrgLoad(16):= 2; AvrgLoad(18):=  9;
+      AvrgLoad(20):= 4; AvrgLoad(22):=  6; AvrgLoad(24):= 2;
+      while true do begin
+         arrInterval:= Histd(arrivals, U1);          ! arrivals gir fordeling;
+         Hold(arrInterval*10-5);
+         Totnr:= Totnr + 1;
+         activate new Van(Histd(AvrgLoad,U2));    ! Medbragt mengde;
+      end;
+   end class Generator;
+
+   Procedure Report; begin
+      outtext("Docks: ");    outint(nDocks,3);
+      outtext(" Waiting: "); outfix(accWait,2,8);
+      outtext(" nVans: ");   outint(Totnr,3);
+      outimage;
+   end Report;
+
+   ref (Head) platforms, Waiting;
+   Link class Dock(Dnr); integer Dnr; ;
+ 
+   drawMap(nDocks);
+
+   platforms:- new Head; Waiting:- new Head;
+   for hi:= 1 step 1 until nDocks do new Dock(hi).into(platforms);
+
+   activate new Generator;
+
+   inner;
+
+   Report;
+
+end class warehouse;
+
+integer U1, U2;
+% Good Seeds:
+%        455470314       950423827      1602649445
+%        660825716       913127751      1081211210
+%       1566259315      1255638063       914672042
+
+U1:= 455470314;  U2:= 950423827;
+
+    Drw:- new Drawing("Warehouse Simulation");
+    invisible:=Drw.white;
+    for cnt:= 2 step 1 until 6 do
+       warehouse(cnt) begin Hold(960.0); end;
+    outtext("End of Simulation"); outimage;
+    
+    while Drw =/= NONE do begin end;   
+% -G drw.terminateprogram;
+end Program;

@@ -1,0 +1,75 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
+package simula.compiler.byteCodeEngineering;
+
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+
+import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Util;
+
+/**
+ * This class is introduced to compensate for a weakness in ASM ( https://asm.ow2.io/ ).
+ * ClassWriter.getCommonSuperClass does not work because Global.tempClassFileDir is not present in java.class.path
+ * Instead we use the information we have about all generated .class files to find common superclass of two types.
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
+public class ExtendedClassWriter extends ClassWriter {
+	private static final boolean DEBUG=false;
+
+	public ExtendedClassWriter(ClassReader classReader, int flags) {
+		super(classReader, flags);
+	}
+
+	@Override
+	protected String getCommonSuperClass(final String type1, final String type2) {
+//		return(JavaClassInfo.getCommonSuperType(type1,type2));
+//	}
+//
+//	
+//	public static String getCommonSuperType(final String type1, final String type2) {
+		// Called from: ClassWriter.getCommonSuperClass
+    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);  // TODO: TESTING Path
+    	try { String superType=null;
+    		JavaClassInfo info1=getClassInfo(type1);
+	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info1="+info1);  // TODO: TESTING Path
+	    	JavaClassInfo info2=getClassInfo(type2);
+	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info2="+info2);  // TODO: TESTING Path
+			if(info1.isSuperTypeOf(info2)) superType=type1;
+			else if(info2.isSuperTypeOf(info1)) superType=type2;
+			else {
+				JavaClassInfo.printJavaClassMap("");
+//	    		Util.IERR("");				
+			}
+	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: "+type1+", "+type2+" ==> "+superType);  // TODO: TESTING Path
+
+			return(superType);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    		JavaClassInfo.printJavaClassMap("");
+        	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);  // TODO: TESTING Path
+    		throw new RuntimeException("Unable to find CommonSuperType: "+type1+", "+type2);
+    	}
+	}
+	
+	private static JavaClassInfo getClassInfo(String type) {
+		int n=type.lastIndexOf('/');
+		String dir=type.substring(0, n);
+		Util.ASSERT(dir.equals(Global.packetName)," dir="+dir+", Global.packetName="+Global.packetName);
+		type=type.substring(n+1);
+		if(DEBUG) System.out.println("ExtendedClassWriter.getClassInfo: javaClassMap.get("+type+")");  // TODO: TESTING Path
+//		JavaClassInfo info=Global.javaClassMap.get(type);
+//		if(info==null) printJavaClassMap("");
+//		return(info);
+		return(JavaClassInfo.get(type));
+	}
+
+}	
+

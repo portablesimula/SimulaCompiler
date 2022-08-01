@@ -1,0 +1,1529 @@
+SIMSET
+begin
+comment -- program for håndtering av enkle databaser ;
+    
+comment dimensjonert for
+       antall kommandoer:              24
+       antall typer:                    8
+       antall felter i en post:        16
+       antall forskjellige felt-typer: 16
+       antall poster i databasen:     256
+       antall finne-regel-felter:       8
+       antall formater:                 8
+       antall felter i et format:      16
+       maksimal tekstverdi-lengde:    180
+       maksimal feltnavn-lengde:       30
+       fil-buffer lengde:              80
+       skjerm-buffer-lengde:           78
+       ;
+    
+comment globale verdier ;
+   character eot ;
+   integer skjerm_image_lengde ;
+   integer navne_lengde ;
+   integer tekst_lengde ;
+    
+comment fil-kontroll ;
+   ref(infile) innbase ;
+   ref(outfile) utbase ;
+   text fil_image ;
+   integer fil_image_lengde ;
+   text innbase_navn,utbase_navn ;
+   text default_file_type ;
+    
+comment kjente kommandoer ;
+   integer max_kommando,quit_kommando ;
+   text array kommando_tabell(1:24) ;
+    
+comment kjente felt-typer ;
+   integer max_type ;
+   character array type_tabell(1:8) ;
+    
+comment format-beskrivelser;
+   integer antall_format_def, max_format_def ;
+   integer max_format_lengde ;
+   text array formatnavn_tabell(1:8) ;
+   ref(format)array format_peker(1:8) ;
+   text formatnavn ;
+   integer formatnr,format_ark_lengde ;
+   integer array format_fnr,format_spos(1:16) ;
+    
+class format(antall) ; integer antall ;
+   begin integer array fnr,spos(1:antall) ;
+   integer ark_lengde ;
+   end format ;
+           
+class verdi ;
+   virtual: procedure skriv ;
+            procedure les ;
+            boolean procedure test_verdilikhet ;
+            boolean procedure test_verdi_mindre ;
+            ref(verdi) procedure kopi ;
+   ;
+    
+verdi class heltallverdi ;
+   begin integer tall ;
+       procedure skriv ;
+           outint(tall,5) ;
+       ref(verdi) procedure kopi ;
+           begin ref(heltallverdi) k ;
+           k:-new heltallverdi ;
+           k.tall:=tall ;
+           kopi:-k ;
+           end ;
+       boolean procedure test_verdilikhet(v) ;
+           ref(verdi) v ;
+           test_verdilikhet:=if v in heltallverdi then
+                               tall=v qua heltallverdi.tall
+                             else false ;
+       boolean procedure test_verdi_mindre(v) ;
+           ref(verdi) v ;
+           test_verdi_mindre:=if v in heltallverdi then
+                               tall<v qua heltallverdi.tall
+                              else false ;
+       procedure les ;
+       begin if not sysin.image.more then inimage ;
+           while sysin.image.sub(sysin.image.pos,1)=" " do
+              begin inchar ;
+              if not sysin.image.more then inimage ;
+              end ;
+           if sysin.image.sub(sysin.image.pos,1)="=" then
+              begin
+              inchar ;
+              if siste_felt_verdi_lest(feltnr)=/=none then
+                   tall:=siste_felt_verdi_lest(feltnr)
+                                       qua heltallverdi.tall
+              else tall:=0 ;
+              end  
+           else
+              begin
+              tall:=sikker_inint ;
+              siste_felt_verdi_lest(feltnr):-kopi ;
+              end ;
+       end les ;
+   end heltallverdi ;
+    
+verdi class tekstverdi ;
+   begin text tekst ;
+           ref(verdi) procedure kopi ;
+              begin ref(tekstverdi) k ;
+              k:-new tekstverdi ;
+              k.tekst:-copy(tekst) ;
+              kopi:-k ;
+              end ;
+           procedure les ;
+           begin if not sysin.image.more then inimage ;
+               while sysin.image.sub(sysin.image.pos,1)=" " do
+               begin inchar ;
+                   if not sysin.image.more then inimage ;
+               end ;
+           if sysin.image.sub(sysin.image.pos,1)="=" then
+               begin
+               inchar ;
+               if siste_felt_verdi_lest(feltnr)=/=none then
+                   tekst:-copy(siste_felt_verdi_lest(feltnr)
+                                       qua tekstverdi.tekst)
+              else tekst:-notext ;
+              end  
+           else
+           begin integer i ; character c ;
+           text t ;
+           t:-blanks(tekst_lengde) ;
+           c:=les_tegn(' ') ;
+           i:=0 ;
+           while c <> eot and i < tekst_lengde do
+               begin
+                   i:=i+1 ;
+                   t.putchar(c) ;
+                   c:=les_tegn(c) ;
+               end ;
+           while c <> eot do c:=les_tegn(c) ;
+           tekst:-copy(t.sub(1,i).strip) ;
+           siste_felt_verdi_lest(feltnr):-kopi ;
+           end ;
+       end les ;
+    
+       character procedure les_tegn(forrige_tegn) ;
+           character forrige_tegn ;
+           begin character c ;
+               c:=forrige_tegn ;
+               if c=' ' then
+                   while c=' ' do c:=inchar
+               else
+               if not sysin.image.more then c:=' '
+                                       else c:=inchar ;
+               les_tegn:=c ;
+           end les_tegn ;
+    
+       boolean procedure test_verdilikhet(v) ;
+           ref(verdi) v ;
+           if not v in tekstverdi then test_verdilikhet:=false
+           else
+           begin integer i,j,k ;
+               boolean funnet ;
+               k:=tekst.length ;
+               j:=v qua tekstverdi.tekst.length-k+1 ;
+               if j<0 then test_verdilikhet:=false
+               else
+               begin
+                   i:=0 ; funnet:=false ;
+                   while not funnet and i<j do
+                       begin
+                       i:=i+1 ;
+                       funnet:=tekst=v qua tekstverdi.tekst.sub(i,k) ;
+                       end ;
+                   test_verdilikhet:=funnet ;
+               end ;
+           end ;
+    
+       boolean procedure test_verdi_mindre(v) ;
+           ref(verdi) v ;
+           test_verdi_mindre:=if v in tekstverdi then
+                               tekst<v qua tekstverdi.tekst
+                              else false ;
+    
+       procedure skriv ;
+           begin integer i,j,k,l,m ; character c ;
+           m:=sysout.image.pos ;
+           j:=tekst.length ;
+           i:=0 ;
+           while i<j do
+               begin
+                   i:=i+1 ;
+                   k:=i ;
+                   tekst.setpos(k) ;
+                   c:=tekst.getchar ;
+                   while c <> ' ' and k < j do
+                       begin
+                           k:=k+1 ;
+                           c:=tekst.getchar ;
+                       end ;
+                   l:=k-i ;
+                   if k=j then l:=l+1 ;
+                   if sysout.image.pos+l > skjerm_image_lengde then
+                       begin
+                           outimage ;
+                           sysout.image.setpos(m) ;
+                       end ;
+                   outtext(tekst.sub(i,l)) ;
+                   if k<j then outchar(' ') ;
+                   i:=k ;
+               end ;
+           end skriv ;
+   end tekstverdi ;
+    
+comment begreper for mengde-behandling ;
+    
+class tabell_mengde(antall) ; integer antall ;
+   begin
+       integer array tabell(1:antall) ;
+   end tabell_mengde ;
+    
+link class liste_element(nr) ; integer nr ;;
+    
+ref(tabell_mengde) mengde ;
+    
+comment struktur for intern_post ;
+   integer felt_antall,max_intern_felt ;
+   ref(verdi) array intern_felt(1:16) ;
+   integer array intern_feltnr(1:16) ;
+    
+comment struktur for felt-beskrivelser ;
+   integer max_felt_def,antall_felt_def ;
+   integer quit_felt ;
+   integer array felttype_tabell(1:16+1) ;
+   text array feltnavn_tabell(1:16+1) ;
+   ref(verdi) array siste_felt_verdi_lest(1:16+1) ;
+    
+comment struktur for finneregel ;
+   integer finne_regel_antall,max_finne_regel ;
+   integer array finnefeltnr(1:8) ;
+   ref(verdi) array finnefeltpeker(1:8) ;
+    
+comment parameter-blokk ved felt-lesing ;
+   text feltnavn ;
+   integer feltnr,felttype ;
+   ref(verdi) feltverdi ;
+    
+comment representasjon av database ;
+integer aktuell ;
+class post(antall) ; integer antall ;
+   begin
+       integer array feltnr(1:antall) ;
+       ref(verdi) array felt(1:antall) ;
+   end post ;
+integer max_antall_poster,antall_poster ;
+ref(post) array post_peker(1:256) ;
+    
+procedure feil(i) ; integer i ;
+   comment skriver enkel feilmelding ;
+   begin
+       outtext("Feilmelding nr.:") ;
+       outint(i,4) ; outimage ;
+   end ;
+    
+procedure main ;
+   comment hovedprogram ;
+   begin integer kommandonr ;
+       start_databasen ;
+       kommandonr:=les_kommando ;
+       while kommandonr <> quit_kommando do
+           begin
+               do_kommando(kommandonr) ;
+               kommandonr:=les_kommando ;
+           end ;
+       avslutt_databasen ;
+   end main ;
+    
+integer procedure les_kommando ;
+   comment leser en kommando og setter kommando-nummer ;
+   begin integer kommando ;
+       text kommando_navn ;
+       lede_tekst("Kommando:") ;
+       kommando_navn:-les_navn ;
+       kommando:=finn_kommando(kommando_navn) ;
+       while kommando=0 do
+           begin
+               feil(1) ;
+               kommando_navn:-les_navn ;
+               kommando:=finn_kommando(kommando_navn) ;
+           end ;
+       les_kommando:=kommando ;
+   end les_kommando ;
+    
+procedure start_databasen ;
+   comment innledende operasjoner ;
+   begin
+       hilse_melding ;
+   end start_databasen ;
+    
+procedure avslutt_databasen ;
+   comment avsluttende operasjoner ;
+   begin
+       slutt_melding ;
+   end avslutt_databasen ;
+    
+procedure hilse_melding ;
+   comment skriver velkommen til skjerm ;
+   begin
+outimage ;
+outtext("STORE NORSKE BEREGNINGSKOMPAGNIE") ; outimage ;
+outimage ;
+outtext("Person-søke-system, versjon 29. februar 1984") ;
+outimage ;
+   end hilse_melding ;
+    
+procedure slutt_melding ;
+   comment skriver aslutning til skjerm ;
+   begin
+       outtext("Takk for samværet") ; outimage ;
+       outtext("Velkommen igjen om fire år.") ;
+   end slutt_melding ;
+    
+procedure lede_tekst(tekst) ; text tekst ;
+   comment skriver en ledetekst til skjerm, om nødvendig ;
+   begin
+       if sysin.image.strip.length < sysin.image.pos then
+       begin
+           outtext(tekst) ;
+           breakoutimage ;
+       end ;
+   end ;
+    
+character procedure les_type ;
+   comment leser en felt-type-betegnelse ;
+   begin character char ;
+       char:=inchar ;
+       while char = ' ' do char:=inchar ;
+       les_type:=char ;
+   end les_type ;
+    
+text procedure les_navn ;
+   comment leser et navn ;
+   begin character char ;
+       text navn ;
+       navn:-blanks(navne_lengde) ;
+       char:=inchar ;
+       while char=' ' do char:=inchar ;
+       while char <> ' ' and navn.pos <= navne_lengde do
+           begin
+               navn.putchar(char) ;
+               char:=inchar ;
+           end ;
+       les_navn:-copy(navn.strip) ;
+   end les_navn ;
+    
+integer procedure finn_kommando(kommando) ; text kommando ;
+   comment finner kommando-nr ved oppslag i kommando_tabell ;
+   begin integer i,nr ;
+       i:=nr:=0 ;
+       while nr=0 and i < max_kommando do
+           begin
+               i:=i+1 ;
+               if kommando=kommando_tabell(i) then nr:=i ;
+           end ;
+       finn_kommando:=nr ;
+   end finn_kommando ;
+    
+integer procedure finn_felt(felt) ; text felt ;
+   comment finner feltnr ved oppslag i felt-definisjoner ;
+   begin integer i,nr ;
+       i:=nr:=0 ;
+       while nr=0 and i < antall_felt_def do
+           begin
+               i:=i+1 ;
+               if felt=feltnavn_tabell(i)
+                   then nr:=i ;
+           end ;
+       finn_felt:=nr ;
+   end finn_felt ;
+    
+integer procedure finn_type(type) ; character type ;
+   comment finner typenr ved oppslag i type-tabell ;
+   begin integer i,nr ;
+       i:=nr:=0 ;
+       while nr=0 and i < max_type do
+           begin
+               i:=i+1 ;
+               if type=type_tabell(i) then nr:=i ;
+           end ;
+       finn_type:=nr ;
+   end finn_type ;
+    
+procedure do_kommando(kommandonr) ; integer kommandonr ;
+   comment foreta kommando i følge kommando-nummer ;
+   begin
+       if kommandonr=1 then definer  else
+       if kommandonr=2 then registrer  else
+       if kommandonr=3 then finn else
+       if kommandonr=4 then endre else
+       if kommandonr=5 then trykk else
+       if kommandonr=6 then fjern else
+       if kommandonr=7 then hjelp else
+       if kommandonr=8 then list else
+       if kommandonr=9 then listdef else
+       if kommandonr=10 then neste else
+       if kommandonr=11 then hent else
+       if kommandonr=12 then datareg else
+       if kommandonr=13 then definer_format else
+       if kommandonr=14 then rapporter else
+       if kommandonr=15 then tainn else
+       if kommandonr=16 then leggut else
+       if kommandonr=17 then finnmengde else
+       if kommandonr=18 then sortermengde else
+       if kommandonr=19 then rapportermengde ;
+    
+   end do_kommando ;
+    
+procedure hjelp ;
+   comment lister tilgjengelige kommandoer ;
+   begin integer i ;
+       outimage ;
+       for i:=1 step 1 until max_kommando do
+          begin
+          outtext(kommando_tabell(i)) ; outimage ;
+          end ;
+   end hjelp ;
+    
+procedure list ;
+   comment skriver ut innhold av alle poster i basen ;
+   begin integer i,pnr ;
+       outimage ;
+       pnr:=1 ;
+       for i:=1 step 1 until antall_poster do
+           begin
+               while post_peker(pnr)==none do pnr:=pnr+1 ;
+               outtext("Post nr.") ; outint(pnr,4) ; outimage ;
+               hent_post(pnr) ;
+               skjerm_intern_post ;
+               pnr:=pnr+1 ;
+           end ;
+       outtext("Totalt antall poster er") ;
+       outint(antall_poster,4) ; outimage ;
+   end list ;
+    
+procedure listdef ;
+   comment lister definerte feltnavn med type, samt formater ;
+   begin integer i,j ;
+       for i:=2 step 1 until antall_felt_def do
+           begin
+           j:=felttype_tabell(i) ;
+           outtext(feltnavn_tabell(i)) ;
+           outchar(' ') ; outchar(type_tabell(j)) ;
+           outimage ;
+           end ;
+       for i:=1 step 1 until antall_format_def do
+           begin
+           outtext(formatnavn_tabell(i)) ;
+           outimage ;
+           end ;
+   end listdef ;
+    
+procedure definer ;
+   comment definerer nye felter i databasen ;
+   begin
+       feltnavn:-les_register ;
+   end definer ;
+    
+text procedure les_register ;
+   comment leser navnet på et nytt felt eller quit_felt  ;
+   begin text felt, pass ;
+       lede_tekst("Registernavn:") ;
+       felt:-les_navn ;
+outtext("Henter database ") ; outtext(felt) ; outimage ;
+lede_tekst("Angi passord:") ;
+pass:-les_navn ;
+outtext("Database ") ; outtext(felt) ; outtext(" tilkoblet") ;
+outimage ;
+   end les_nytt_feltnavn ;
+    
+text procedure les_feltnavn ;
+   comment leser navnet på et kjent felt  ;
+   begin text felt ;
+       lede_tekst("Felt:") ;
+       felt:-les_navn ;
+       feltnr:=finn_felt(felt) ;
+       while feltnr = 0 do
+           begin
+               feil(6) ;
+               felt:-les_navn ;
+               feltnr:=finn_felt(felt) ;
+           end ;
+       les_feltnavn:-felt ;
+   end les_feltnavn ;
+    
+procedure noter_ny_felt ;
+   comment legger ny felt i feltbeskrivelse ;
+   begin
+       if antall_felt_def < max_felt_def then
+           begin
+               antall_felt_def:=antall_felt_def+1 ;
+               feltnavn_tabell(antall_felt_def):-feltnavn ;
+               felttype_tabell(antall_felt_def):=felttype ;
+           end
+       else feil(7) ;
+   end noter_ny_felt ;
+    
+integer procedure les_felttype ;
+   comment leser en felttype-betegnelse ;
+   begin character type ; integer typenr ;
+       lede_tekst("Type:") ;
+       type:=les_type ;
+       typenr:=finn_type(type) ;
+       while typenr=0 do
+           begin
+               feil(3) ;
+               type:=les_type ;
+               typenr:=finn_type(type) ;
+           end ;
+       les_felttype:=typenr ;
+   end les_felttype ;
+    
+procedure registrer ;
+   comment registrer en ny post med feltverdier ;
+   begin integer i ; character c ;
+if rest>80 then
+begin
+outtext("Antall personer overstiger maskinens utskriftkapasitet.") ;
+outimage ;
+outtext("Angi flere egenskaper.") ; outimage ;
+end 
+else
+if rest>=10 then
+begin
+outtext("Person-oversikt, geografisk fordeling:") ; outimage ;
+outint(1,3) ; outtext(":  Østlandet  :") ; outint(34,3) ; outimage ;
+outint(2,3) ; outtext(":  Sørlandet  :") ; outint(14,3) ; outimage ;
+outint(3,3) ; outtext(":  Vestlandet :") ; outint(19,3) ; outimage ;
+outint(4,3) ; outtext(":  Nord-Norge :") ; outint(8 ,3) ; outimage ;
+lede_tekst("Hvilken gruppe ønsker De,angi nummer:") ;
+i:=inint ; i:=3 ;
+outimage ;
+outtext("Person-oversikt, gruppe 3, Vestlandet:") ; outimage ;
+outint(1,3);outtext(":  Rogaland             :");outint(5,2);outimage;
+outint(2,3);outtext(":  Hordaland og Bergen  :");outint(8,2);outimage;
+outint(3,3);outtext(":  Møre og Romsdal      :");outint(4,2);outimage;
+outint(4,3);outtext(":  Sogn og Fjordane     :");outint(2,2);outimage;
+lede_tekst("Hvilken gruppe ønsker De, angi nummer:") ;
+i:=inint ; i:=2 ; rest:=8 ;
+outimage ;
+outtext("Person-oversikt, gruppe 3.2, Hordaland og Bergen") ;
+outimage ;
+outtext("Antall personer i gruppen er 8") ; outimage ;
+end ;
+if rest<10 then begin
+outtext("Det er forbudt å offentliggjøre persondata for ") ; outimage;
+outtext("grupper med færre enn 10 personer") ; outimage ;
+outtext("uten spesiell tillatelse fra Datatilsynet.") ; outimage ;
+loop:lede_tekst("Har De slik tillatelse? J/N:") ;
+c:=inchar ; while c=' ' do c:=inchar ;
+if c='J' then
+begin
+outtext("Å neida, den går ikke, De lurer ikke meg!") ; outimage ;
+outtext("De står ikke i Datatilsynets spesial-register!") ; outimage ;
+outtext("Svar nå ærlig på spørsmålet!") ; outimage ;
+go to loop ;
+end ;
+outtext("Nei da så, ") ;
+outtext("beklager at jeg ikke kan gi Dem den ønskede utskrift.") ;
+outimage ;
+end ;
+   end registrer ;
+    
+procedure stryk_intern_post ;
+   comment fjerner innhold i intern_post ;
+   begin
+       felt_antall:=0 ;
+   end stryk_intern_post ;
+    
+procedure endre_intern_post ;
+   comment legg nye verdier på felter i intern_post ;
+   begin
+       feltnavn:-les_feltnavn ;
+       while feltnr <> quit_felt do
+           begin
+               felttype:=felttype_tabell(feltnr) ;
+               les_feltverdi ;
+               legg_i_intern_post ;
+               feltnavn:-les_feltnavn ;
+           end ;
+   end endre_intern_post ;
+    
+procedure les_feltverdi ;
+   comment leser verdien til et felt etter felttype ;
+   begin
+       lede_tekst("Verdi:") ;
+       if felttype=1 then feltverdi:-new heltallverdi ;
+       if felttype=2 then feltverdi:-new tekstverdi ;
+       feltverdi.les ;
+   end les_feltverdi ;
+    
+procedure endre ;
+   comment endre aktuell post i databasen ;
+   begin
+       if aktuell <> 0 then
+       begin
+           endre_intern_post ;
+           stryk_aktuell_post ;
+           skriv_intern_post ;
+       end
+       else feil(10) ;
+   end endre ;
+    
+real rest ;
+integer antall_egenskaper ;
+integer array divisor(1:20) ;
+text array egenskap(1:20) ;
+    
+procedure finn ;
+   comment finner post og legger i intern_post ;
+   begin
+   integer i ;
+lede_tekst("Egenskap:") ;
+antall_egenskaper:=antall_egenskaper+1;
+egenskap(antall_egenskaper):-les_navn;
+if antall_egenskaper=1 then
+  rest:=2030552.0
+else
+  rest:=rest/divisor(antall_egenskaper) ;
+outtext("Søker etter ") ; outtext(egenskap(antall_egenskaper)) ;
+if antall_egenskaper>1 then
+begin
+outtext(" i kombinasjon med følgende egenskaper:") ;
+for i:=1 step 1 until antall_egenskaper-1 do
+begin outimage ;
+outtext(egenskap(i)) ;
+end ;
+end ;
+outimage ;
+if rest<=10 then rest:=0 ;
+outtext("Antall personer funnet:") ;
+outfix(rest,0,10) ;
+outimage ;
+if antall_egenskaper > 1 and
+divisor(antall_egenskaper)=1 and rest>1 then
+begin
+outtext("Dette er de samme personer som ved forrige søk.") ;
+outimage ;
+outtext("Det er fullt samsvar mellom egenskapene ") ; outimage ;
+outtext(egenskap(antall_egenskaper)) ; outtext(" og ") ;
+outtext(egenskap(antall_egenskaper-1)) ; outimage ;
+end ;
+if rest<=1 then
+begin
+outtext("Ingen norske personer tilfredstiller alle de oppstilte") ;
+outtext(" krav og egenskaper.") ; outimage ;
+outtext("Jeg er en datamaskin, jeg kan alt og tilfredstiller alle.") ;
+outimage ;
+outtext("Hva kan jeg stå til tjeneste med?") ; outimage ;
+antall_egenskaper:=0 ;
+end ;
+   end finn ;
+    
+procedure finn_og_hent(start) ; integer start ;
+   comment finner og henter post etter oppgitt regel og start ;
+   begin integer funn ;
+       stryk_intern_post ;
+       funn:=finn_post(start) ;
+       if funn <> 0 then
+           begin
+               hent_post(funn) ;
+               outimage ;
+               skjerm_intern_post ;
+           end
+       else
+           feil(5) ;
+   end finn_og_hent ;
+    
+integer procedure finn_post(start) ; integer start ;
+   comment finner postnr i følge finne_regel ;
+   begin integer i,j,pnr ; boolean funnet ;
+       i:=0 ; pnr:=start ;
+       funnet:=false ;
+       while not funnet and i<antall_poster
+                        and pnr<max_antall_poster do
+       begin
+           i:=i+1 ;
+           pnr:=pnr+1 ;
+           while post_peker(pnr)==none and pnr<max_antall_poster
+               do pnr:=pnr+1 ;
+           if post_peker(pnr)=/=none then
+               begin
+                   j:=1 ;
+                   if finne_regel_antall=0 then
+                       funnet:=true
+                   else
+                       funnet:=finn_post_felt(pnr,j) ;
+                   while funnet and j<finne_regel_antall do
+                   begin
+                       j:=j+1 ;
+                       funnet:=finn_post_felt(pnr,j) ;
+                   end ;
+               end ;
+       end ;
+       finn_post:=if funnet then pnr else 0 ;
+   end finn_post ;
+    
+procedure neste ;
+   comment finner neste post etter regel og aktuell 
+           og legger i intern_post ;
+       finn_og_hent(aktuell) ;
+    
+procedure hent ;
+   comment henter post direkte inn i intern_post ut fra post-nr ;
+   begin integer pnr ;
+       lede_tekst("Post nummer:") ;
+       pnr:=sikker_inint ;
+       if pnr<=0 or pnr>max_antall_poster then feil(11)
+       else
+       begin
+           hent_post(pnr) ;
+           if aktuell <> pnr then feil(12)
+           else skjerm_intern_post ;
+       end ;
+   end hent ;
+    
+boolean procedure finn_post_felt(pnr,finr) ; integer pnr,finr ;
+   comment sann hvis finne_regel finr finnes i post pnr ;
+   begin integer i,fnr ; ref(verdi) pverdi ;
+       boolean funnet,likhet ;
+       i:=0 ;
+       funnet:=likhet:=false ;
+       fnr:=finnefeltnr(finr) ;
+       pverdi:-finnefeltpeker(finr) ;
+       inspect post_peker(pnr) do
+           while not funnet and i<antall do
+           begin
+               i:=i+1 ;
+               if fnr=feltnr(i) then
+                   begin
+                       funnet:=true ;
+                       likhet:=pverdi.test_verdilikhet(felt(i)) ;
+                   end ;
+           end ;
+       finn_post_felt:=likhet ;
+   end finn_post_felt ;
+    
+procedure trykk ;
+   begin
+       outimage ;
+       skjerm_intern_post ;
+   end trykk ;
+    
+procedure fjern ;
+   comment fjerner aktuell post fra databasen ;
+   begin
+       stryk_aktuell_post ;
+       stryk_intern_post ;
+   end fjern ;
+    
+procedure les_finne_regel ;
+   comment leser et søke-mønster ;
+   begin
+       stryk_finne_regel ;
+       feltnavn:-les_feltnavn ;
+       while feltnr <> quit_felt do
+           begin
+               felttype:=felttype_tabell(feltnr) ;
+               les_feltverdi ;
+               sett_finne_regel ;
+               feltnavn:-les_feltnavn ;
+           end ;
+   end les_finne_regel ;
+    
+procedure stryk_finne_regel ;
+   comment fjerner gammelt søke-mønster ;
+   begin
+       finne_regel_antall:=0 ;
+   end stryk_finne_regel ;
+    
+procedure sett_finne_regel ;
+   comment noterer en part av søkemønster ;
+   begin
+       if finne_regel_antall < max_finne_regel then
+       begin
+           finne_regel_antall:=finne_regel_antall+1 ;
+           finnefeltnr(finne_regel_antall):=feltnr ;
+           finnefeltpeker(finne_regel_antall):-feltverdi ;
+       end
+       else feil(9) ;
+   end sett_finne_regel ;
+    
+procedure skriv_intern_post ;
+   comment gjemmer intern_post i databasen ;
+   begin integer i,post_fri ;
+       post_fri:=ledig_post_plass ;
+       if post_fri <> 0 then
+           begin
+               post_peker(post_fri):-new post(felt_antall) ;
+               inspect post_peker(post_fri) do
+                   for i:=1 step 1 until felt_antall do
+                       begin
+                           feltnr(i):=intern_feltnr(i) ;
+                           felt(i):-felt_kopi(intern_felt(i)) ;
+                       end ;
+               antall_poster:=antall_poster+1 ;
+               aktuell:=post_fri ;
+           end ;
+   end skriv_intern_post ;
+    
+procedure hent_post (pnr) ; integer pnr ;
+   comment henter post pnr fra databasen inn i intern_post ;
+   begin integer i ;
+       inspect post_peker(pnr) do
+           begin
+               felt_antall:=antall ;
+               for i:=1 step 1 until felt_antall do
+                   begin
+                       intern_feltnr(i):=feltnr(i) ;
+                       intern_felt(i):-felt_kopi(felt(i)) ;
+                   end ;
+               aktuell:=pnr ;
+           end ;
+   end hent_post ;
+    
+procedure stryk_aktuell_post ;
+   comment frigjør plassen for en post i databasen ;
+   begin
+       if aktuell <> 0 then
+           begin
+               post_peker(aktuell):-none ;
+               aktuell:=0 ;
+               antall_poster:=antall_poster-1 ;
+           end
+           else feil(10) ;
+   end stryk_aktuell_post ;
+    
+procedure skjerm_intern_post ;
+   comment presenter intern_post på skjerm ;
+   begin integer i ;
+       for i:=1 step 1 until felt_antall do
+           begin
+               feltnr:=intern_feltnr(i) ;
+               feltnavn:-feltnavn_tabell(feltnr) ;
+               felttype:=felttype_tabell(feltnr) ;
+               outtext(feltnavn) ; outchar(':') ;
+               sysout.image.setpos(navne_lengde+1) ;
+               intern_felt(i).skriv ;
+               outimage ;
+           end ;
+   end skjerm_intern_post ;
+    
+procedure legg_i_intern_post ;
+   comment legger nylig lest verdi inn i intern_post ;
+   begin integer fnr ;
+       fnr:=finn_intern_feltnr(feltnr) ;
+       if fnr=0 then
+           begin
+               if felt_antall>=max_intern_felt then feil(8)
+               else felt_antall:=felt_antall+1 ;
+               fnr:=felt_antall ;
+               intern_feltnr(fnr):=feltnr ;
+           end ;
+       intern_felt(fnr):-felt_kopi(feltverdi) ;
+   end legg_i_intern_post ;
+    
+ref(verdi) procedure felt_kopi(felt) ; ref(verdi) felt ;
+   felt_kopi:-felt ;
+    
+integer procedure finn_intern_feltnr(feltnr) ; integer feltnr ;
+   begin integer i,nr ;
+       nr:=0 ;
+       for i:=1 step 1 until felt_antall do
+           if intern_feltnr(i)=feltnr then
+               begin
+                   nr:=i ;
+                   go to out ;
+               end ;
+   out:finn_intern_feltnr:=nr ;
+   end finn_intern_feltnr ;
+    
+integer procedure ledig_post_plass ;
+   comment finner en ledig plass i post_peker ;
+   begin integer i,nr ;
+       nr:=0 ;
+       if antall_poster < max_antall_poster and
+               post_peker(antall_poster+1)==none
+           then nr:=antall_poster+1
+       else
+           for i:=1 step 1 until max_antall_poster do
+               if post_peker(i)==none then
+                   begin
+                       nr:=i ;
+                       go to out ;
+                   end ;
+   out:if nr=0 then feil(4) ;
+       ledig_post_plass:=nr ;
+   end ledig_post_plass ;
+    
+procedure definer_format ;
+   comment les og noter felter i en format-definisjon ;
+   begin integer i ;
+   if antall_format_def >=max_format_def then feil(13)
+   else
+       begin
+       comment les format-navn ;
+       formatnavn:-les_nytt_formatnavn ;
+       format_ark_lengde:=les_lengde ;
+       antall_format_def:=antall_format_def+1 ;
+       formatnavn_tabell(antall_format_def):-formatnavn ;
+       comment les felter, dvs. format-beskrivelse ;
+       i:=0 ;
+       feltnavn:-les_feltnavn ;
+       while feltnr <> quit_felt do
+           begin
+           if i >= max_format_lengde then feil(15)
+           else
+               begin
+               i:=i+1 ;
+               format_fnr(i):=feltnr ;
+               format_spos(i):=les_startposisjon ;
+               end ;
+           feltnavn:-les_feltnavn ;
+           end ;
+       format_peker(antall_format_def):-new format(i) ;
+       inspect format_peker(antall_format_def) do
+           begin
+           ark_lengde:=format_ark_lengde ;
+           for i:=1 step 1 until antall do
+               begin
+               fnr(i):=format_fnr(i) ;
+               spos(i):=format_spos(i) ;
+               end ;
+           end ;
+       end ;
+   end definer_format ;
+    
+text procedure les_formatnavn ;
+   comment leser et navn og slår opp i format_tabell ;
+   begin text form ;
+   lede_tekst("Format:") ;
+   form:-les_navn ;
+   formatnr:=finn_format(form) ;
+   while formatnr=0 do
+       begin
+           feil(16) ;
+           form:-les_navn ;
+           formatnr:=finn_format(form) ;
+       end ;
+   les_formatnavn:-form ;
+   end les_formatnavn ;
+    
+text procedure les_nytt_formatnavn ;
+   comment leser nytt format-navn og slår opp i tabell ;
+   begin text form ;
+   lede_tekst("Nytt format:") ;
+   form:-les_navn ;
+   formatnr:=finn_format(form) ;
+   while formatnr <> 0 do
+       begin
+           feil(17) ;
+           form:-les_navn ;
+           formatnr:=finn_format(form) ;
+       end ;
+   les_nytt_formatnavn:-form ;
+   end les_nytt_formatnavn ;
+    
+integer procedure finn_format(form) ; text form ;
+   comment finner eventuelt format-navn i tabell ;
+   begin integer i,nr ;
+       i:=nr:=0 ;
+       while nr=0 and i < antall_format_def do
+           begin
+               i:=i+1 ;
+               if form=formatnavn_tabell(i) then
+                   nr:=i ;
+           end ;
+       finn_format:=nr ;
+   end finn_format ;
+    
+integer procedure les_startposisjon ;
+   begin integer i ;
+       lede_tekst("Start-posisjon:") ;
+       i:=sikker_inint ;
+       while i < 0 and i > 128 do
+           begin
+           feil(8) ;
+           i:=sikker_inint ;
+           end ;
+       les_startposisjon:=i ;
+   end les_startposisjon ;
+    
+integer procedure les_lengde ;
+   begin integer i ;
+       lede_tekst("Ark-lengde:") ;
+       i:=sikker_inint ;
+       while i < 0 and i > 100 do
+           begin
+           feil(14) ;
+           i:=sikker_inint ;
+           end ;
+       les_lengde:=i ;
+   end les_lengde ;
+    
+integer procedure sikker_inint ;
+   comment leser et heltall, gir feilmelding ved ikke-heltall;
+   begin text temp ; character c ; boolean ok,tegn ; integer i ;
+   ok:=false ;
+   while not ok do
+       begin
+       temp:-blanks(navne_lengde) ;
+       i:=0 ;
+       c:=inchar ;
+       while c=' ' do c:=inchar ;
+       tegn:=true ;
+       while c='+' or c='-' do
+           begin
+           if c='-' then tegn:=not tegn ;
+           c:=inchar ;
+           end ;
+       if not tegn then
+           begin
+           temp.putchar('-') ;
+           i:=i+1 ;
+           end ;
+       while number(c) do
+           begin
+           if i < navne_lengde then temp.putchar(c) ;
+           i:=i+1 ;
+           c:=inchar ;
+           end ;
+       ok:=c=' ' and ((i<6 and tegn)  or (i<7 and not tegn)) ;
+       if not ok then feil(20) ;
+       end ;
+   sikker_inint:=temp.getint ;
+   end sikker_inint ;
+    
+boolean procedure number(c) ; character c ;
+   number:='0' <= c and c <= '9' ;
+    
+procedure datareg ;
+   comment leser et ubegrenset antall poster i følge et format ;
+   begin boolean mer ; integer i ; character c ;
+   text test ;
+   formatnavn:-les_formatnavn ;
+   inspect format_peker(formatnr) do
+       begin
+       mer:=true ;
+       while mer do
+           begin
+           stryk_intern_post ;
+           for i:=1 step 1 until antall do
+               begin
+               feltnr:=fnr(i) ;
+               feltnavn:-feltnavn_tabell(feltnr) ;
+               felttype:=felttype_tabell(feltnr) ;
+               lede_tekst(feltnavn) ;
+               test:-blanks(navne_lengde+1-feltnavn.length) ;
+               test.setpos(1) ; while test.more do test.putchar('.') ;
+               lede_tekst(test) ;
+               les_feltverdi ;
+               legg_i_intern_post ;
+               end ;
+           skriv_intern_post ;
+           lede_tekst("Mer? (J/N):") ;
+           c:=inchar ;
+           while c=' ' do c:=inchar ;
+           mer:=c='J' ;
+           end ;
+       end ;
+   end datareg ;
+    
+procedure rapporter ;
+   comment finner og rapporterer i følge format ;
+   begin boolean mer ; integer funn ;
+   formatnavn:-les_formatnavn ;
+   les_finne_regel ;
+   outimage ;
+   mer:=true ; funn:=0 ;
+   while mer do
+       begin
+       funn:=finn_post(funn) ;
+       if funn <> 0 then
+           begin
+           hent_post(funn) ;
+           trykk_rapport(formatnr) ;
+           end ;
+       mer:=funn <> 0 ;
+       end ;
+   end rapporter ;
+    
+procedure trykk_rapport(formatnr) ; integer formatnr ;
+   comment trykker intern_-post i følge oppgitt format ;
+   begin integer i,k,felt_linje ; boolean funnet ;
+   procedure skriv_linje ;
+       begin
+       felt_linje:=felt_linje+1 ;
+       outimage ;
+       end skriv_linje ;
+   inspect format_peker(formatnr) do
+       begin
+       felt_linje:=0 ;
+       for i:=1 step 1 until antall do
+           begin
+           k:=0 ;
+           funnet:=false ;
+           while not funnet and k<felt_antall do
+               begin
+               k:=k+1 ;
+               funnet:=fnr(i)=intern_feltnr(k) ;
+               end ;
+           if funnet then
+               begin
+               if spos(i)=0 then outchar(' ')
+               else
+                   begin
+                   if spos(i)<sysout.image.pos then skriv_linje ;
+                   sysout.image.setpos(spos(i)) ;
+                   end ;
+               intern_felt(k).skriv ;
+               end ;
+           end ;
+       skriv_linje ;
+       while felt_linje<ark_lengde do skriv_linje ;
+       end ;
+   end trykk_rapport ;
+    
+procedure tainn ;
+   comment les database-navn og les den inn ;
+   begin
+       lede_tekst("Database-navn:") ;
+       innbase_navn:-open_innbase ;
+       hent_innbase ;
+       lukk_innbase ;
+   end tainn ;
+    
+procedure leggut ;
+   comment les database-navn og skriv den ut ;
+   begin
+       lede_tekst("Database-navn:") ;
+       utbase_navn:-open_utbase ;
+       skriv_utbase ;
+       lukk_utbase ;
+   end leggut ;
+    
+text procedure open_innbase ;
+   comment åpner database for innlesing ;
+   begin text filnavn ;
+       boolean oppe ;
+       fil_image:-blanks(fil_image_lengde) ;
+       fil_image.sub(1,5):=default_file_type ;
+       oppe:=false ;
+       while not oppe do
+           begin
+           filnavn:-les_filnavn ;
+           innbase:-new infile(filnavn) ;
+           oppe:=innbase.open(fil_image) ;
+           if not oppe then feil(11) ;
+           end ;
+       fil_image.sub(1,5):=blanks(5) ;
+       open_innbase:-filnavn ;
+   end open_innbase ;
+    
+text procedure open_utbase ;
+   comment åpner database for utskrift ;
+   begin text filnavn ;
+       boolean oppe ;
+       fil_image:-blanks(fil_image_lengde) ;
+       fil_image.sub(1,5):=default_file_type ;
+       oppe:=false ;
+       while not oppe do
+           begin
+           filnavn:-les_filnavn ;
+           utbase:-new outfile(filnavn) ;
+           oppe:=utbase.open(fil_image) ;
+           if not oppe then feil(11) ;
+           end ;
+       fil_image.sub(1,5):=blanks(5) ;
+       open_utbase:-filnavn ;
+   end open_utbase ;
+    
+text procedure les_filnavn ;
+   les_filnavn:-les_navn ;
+    
+procedure lukk_innbase ;
+   begin
+       innbase.close ;
+       fil_image:-notext ;
+   end lukk_innbase ;
+    
+procedure lukk_utbase ;
+   begin
+       utbase.close ;
+       fil_image:-notext ;
+   end lukk_utbase ;
+    
+procedure hent_innbase ;
+   comment overfører database fra masselager til internt lager ;
+   inspect innbase do if not lastitem then
+   begin integer i,j,k,pnr ; text t ; character c ;
+   comment feltbeskrivelser ;
+   antall_felt_def:=inint ;
+   for i:=1 step 1 until antall_felt_def do
+       begin
+       j:=inint ;
+       t:-blanks(inint) ;
+       c:=inchar ;
+       while t.more do t.putchar(inchar) ;
+       feltnavn_tabell(j):-t ;
+       felttype_tabell(j):=inint ;
+       end ;
+   comment format-beskrivelser ;
+   antall_format_def:=inint ;
+   for i:=1 step 1 until antall_format_def do
+       begin
+       j:=inint ;
+       t:-blanks(inint) ;
+       c:=inchar ;
+       while t.more do t.putchar(inchar) ;
+       formatnavn_tabell(j):-t ;
+       inspect new format(inint) do
+           begin
+           for k:=1 step 1 until antall do fnr(k):=inint ;
+           for k:=1 step 1 until antall do spos(k):=inint ;
+           ark_lengde:=inint ;
+           format_peker(j):-this format ;
+           end ;
+       end ;
+   comment poster ;
+   for i:=1 step 1 until max_antall_poster do
+       post_peker(i):-none ;
+   antall_poster:=inint ;
+   for i:=1 step 1 until antall_poster do
+       begin
+       pnr:=inint ;
+       inspect new post(inint) do
+           for j:=1 step 1 until antall do
+               begin
+               feltnr(j):=inint ;
+               k:=inint ;
+               if k=1 then
+                   begin
+                   felt(j):-new heltallverdi ;
+                   felt(j) qua heltallverdi.tall:=inint ;
+                   end 
+               else
+               if k=2 then
+                   begin
+                   felt(j):-new tekstverdi ;
+                   t:-blanks(inint) ;
+                   c:=inchar ;
+                   while t.more do t.putchar(inchar) ;
+                   felt(j) qua tekstverdi.tekst:-t ;
+                   end ;
+               post_peker(pnr):-this post ;
+               end ;
+       end ;
+   end hent_innbase ;
+    
+procedure skriv_utbase ;
+   comment legger database ut på masselager ;
+   inspect utbase do
+   begin integer i,j,k,pnr ;
+   comment feltbeskrivelser ;
+   outint(antall_felt_def,3) ;
+   outimage ;
+   for i:=1 step 1 until antall_felt_def do
+       begin
+       outint(i,3) ;
+       outint(feltnavn_tabell(i).length,4) ; outchar(' ') ;
+       outtext(feltnavn_tabell(i)) ;
+       outint(felttype_tabell(i),3) ;
+       outimage ;
+       end ;
+   comment formatbeskrivelser ;
+   outint(antall_format_def,3) ;
+   outimage ;
+   for i:=1 step 1 until antall_format_def do
+       begin
+       outint(i,3) ;
+       outint(formatnavn_tabell(i).length,4) ;
+       outchar(' ') ; outtext(formatnavn_tabell(i)) ;
+       outimage ;
+       inspect format_peker(i) do
+           begin
+           outint(antall,4) ;
+           for j:=1 step 1 until antall do outint(fnr(j),4) ;
+           for j:=1 step 1 until antall do outint(spos(j),4) ;
+           outint(ark_lengde,4) ;
+           end ;
+       outimage ;
+       end ;
+   comment poster ;
+   outint(antall_poster,5) ;
+   outimage ;
+   i:=0 ; pnr:=0 ;
+   while pnr < antall_poster do
+       begin
+       i:=i+1 ;
+       inspect post_peker(i) do
+           begin
+           pnr:=pnr+1 ;
+           outint(i,5) ;
+           outint(antall,4) ;
+           outimage ;
+           for j:=1 step 1 until antall do
+               begin
+               outint(feltnr(j),4) ;
+               k:=felttype_tabell(feltnr(j)) ;
+               outint(k,3) ;
+               if k=1 then
+                   outint(felt(j) qua heltallverdi.tall,8)
+               else
+               if k=2 then
+                   begin
+                   integer rom,tpos,rest ;
+                   tpos:=1 ;
+                   rest:=felt(j) qua tekstverdi.tekst.length ;
+                   outint(rest,5) ;
+                   outchar(' ') ;
+                   rom:=image.length-image.pos+1 ;
+                   while rest <> 0 do
+                       begin
+                       if rest <= rom then
+                           begin
+                           outtext(felt(j) qua tekstverdi
+                                   .tekst.sub(tpos,rest)) ;
+                           rest:=0 ;
+                           end 
+                       else
+                           begin
+                           outtext(felt(j) qua tekstverdi
+                                   .tekst.sub(tpos,rom)) ;
+                           tpos:=tpos+rom ;
+                           rest:=rest-rom ;
+                           rom:=image.length ;
+                           end ;
+                       outimage ;
+                       end ;
+                   end ;
+               outimage ;
+               end ;
+           end ;
+       end ;
+   end skriv_utbase ;
+    
+procedure finnmengde ;
+   comment velger ut en mengde pga. finne-regel ;
+   begin integer i,antall,funn ;
+   ref(liste_element) lise ;
+   ref(head)liste_mengde ;
+   antall:=0 ;
+   les_finne_regel ;
+   liste_mengde:-new head ;
+   funn:=finn_post(0) ;
+   while funn <> 0do
+       begin
+       antall:=antall+1 ;
+       new liste_element(funn).into(liste_mengde) ;
+       funn:=finn_post(funn) ;
+       end ;
+   outtext("Antall poster i mengden:") ; outint(antall,5) ;
+   outimage ;
+   if antall=0 then mengde:-none
+   else
+       begin
+           mengde:-new tabell_mengde(antall) ;
+           for i:=1 step 1 until antall do
+               begin
+               lise:-liste_mengde.first ;
+               lise.out ;
+               mengde.tabell(i):=lise.nr ;
+               end ;
+       end ;
+   end finnmengde ;
+    
+procedure sortermengde ;
+   comment sorter mengde på basis av felt, synkende ;
+   begin
+   if mengde==none then feil(18)
+   else
+       begin integer fnr,i,j ;
+       ref(verdi)array key(1:mengde.antall) ;
+       feltnavn:-les_feltnavn ;
+       fnr:=feltnr ;
+       for i:=1 step 1 until mengde.antall do
+           begin
+           hent_post(mengde.tabell(i)) ;
+           j:=finn_intern_feltnr(fnr) ;
+           if j<>0 then key(i):-intern_felt(j)
+           else key(i):-none ;
+           end ;
+       sorter(mengde.tabell,key,mengde.antall) ;
+       end ;
+   end sortermengde ;
+    
+procedure sorter(tabell,key,antall) ;
+   comment sorterer tabell av lengde antall på basis av key-verdier ;
+   comment metode SHELL-sort benyttes ;
+   integer array tabell ; integer antall ;
+   ref(verdi)array key ;
+   begin
+       integer array hs(1:7) ;
+       integer t,j,h,i,l,h1,n ; boolean bool ;
+       ref(verdi) k ;
+       i:=1 ;
+       for j:=1,4,13,40,121,364,1093 do
+           begin
+           hs(i):=j ;
+           i:=i+1 ;
+           end ;
+       for i:=2 step 1 until 7 do
+           if hs(i) > antall then goto overogut ;
+       i:=8 ;
+       overogut:
+       t:=i-1 ;
+       for l:=1 step 1 until t do
+           begin
+           h:=hs(t+1-l) ;
+           h1:=h+1 ;
+           for j:=h1 step 1 until antall do
+               begin
+               i:=j-h ;
+               k:-key(j) ;
+               n:=tabell(j) ;
+         igjen:if k==none then bool:=true
+                   else bool:=k.test_verdi_mindre(key(i)) ;
+               if bool then
+                   begin
+                   key(i+h):-key(i) ;
+                   tabell(i+h):=tabell(i) ;
+                   i:=i-h ;
+                   if i > 0 then goto igjen ;
+                   end ;
+               key(i+h):-k ;
+               tabell(i+h):=n ;
+               end ;
+           end ;
+   end sorter ;
+    
+procedure rapportermengde ;
+   comment skriver rapport over mengde i følge format ;
+   begin integer i ;
+   formatnavn:-les_formatnavn ;
+   for i:=1 step 1 until mengde.antall do
+       begin
+       hent_post(mengde.tabell(i)) ;
+       trykk_rapport(formatnr) ;
+       end ;
+   end rapportermengde ;
+    
+comment definer kjente begreper ;
+    
+comment kommandoer ;
+   kommando_tabell(1):-"KONTAKT" ;
+   kommando_tabell(2):-"SKRIV" ;
+   kommando_tabell(3):-"SØK" ;
+   kommando_tabell(4):-"ENDRE" ;
+   kommando_tabell(5):-"TRYKK" ;
+   kommando_tabell(6):-"FJERN" ;
+   kommando_tabell(7):-"HJELP" ;
+   kommando_tabell(8):-"LIST" ;
+   kommando_tabell(9):-"LISTDEF" ;
+   kommando_tabell(10):-"NESTE" ;
+   kommando_tabell(11):-"HENT" ;
+   kommando_tabell(12):-"DATAREG" ;
+   kommando_tabell(13):-"DEFFORMAT" ;
+   kommando_tabell(14):-"RAPPORTER" ;
+   kommando_tabell(15):-"TAINN" ;
+   kommando_tabell(16):-"LEGGUT" ;
+   kommando_tabell(17):-"FINNMENGDE" ;
+   kommando_tabell(18):-"SORTERMENGDE" ;
+   kommando_tabell(19):-"RAPPORTERMENGDE" ;
+   max_kommando:=20 ;
+   kommando_tabell(max_kommando):-"SLUTT" ;
+   quit_kommando:=max_kommando ;
+    
+comment felt-typer ;
+   type_tabell(1):='H' ;
+   type_tabell(2):='T' ;
+   max_type:=3 ;
+   type_tabell(max_type):='.' ;
+    
+comment felt-navn ;
+   max_felt_def:=16+1 ;
+   antall_felt_def:=1 ;
+   feltnavn_tabell(antall_felt_def):-"." ;
+   felttype_tabell(antall_felt_def):=max_type ;
+   quit_felt:=antall_felt_def ;
+    
+comment intern_post ;
+   felt_antall:=0 ;
+   max_intern_felt:=16 ;
+    
+comment finne-regel ;
+   max_finne_regel:=8 ;
+   finne_regel_antall:=0 ;
+    
+comment post ;
+   antall_poster:=0 ;
+   max_antall_poster:=256 ;
+    
+comment format ;
+   max_format_def:=8 ;
+   max_format_lengde:=16 ;
+   antall_format_def:=0 ;
+    
+comment diverse ;
+   aktuell:=0 ;
+   eot:=''' ;
+   skjerm_image_lengde:=78 ;
+   navne_lengde:=30 ;
+   tekst_lengde:=180 ;
+   fil_image_lengde:=80 ;
+   default_file_type:-":SYMB" ;
+   mengde:-none ;
+divisor(1):=1 ;
+divisor(2):=17 ;
+divisor(3):=2  ;
+divisor(4):= 3 ;
+divisor(5):=11 ;
+divisor(6):=1  ;
+divisor(7):=3  ;
+divisor(8):=4  ;
+divisor(9):=2  ;
+divisor(10):=10 ;
+divisor(11):=1 ;
+    
+MAIN ;
+end program ;

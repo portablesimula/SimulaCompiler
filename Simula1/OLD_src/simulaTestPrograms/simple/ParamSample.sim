@@ -1,0 +1,16 @@
+
+begin
+   real r;
+
+   integer procedure P(i,r); integer i; real r;
+   begin
+   end;
+   
+   real procedure Q(F); name F; procedure F;
+   begin
+      F(84,7.14);
+   end;
+   
+   r := Q(P);
+   
+end;      

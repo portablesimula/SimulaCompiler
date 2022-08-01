@@ -1,0 +1,36 @@
+
+begin
+	long real v;
+	long real x;
+	Text tt,uu,zz;
+	ref(A) aa,bb;
+	
+	class A;
+	begin
+	end;
+	
+	Procedure F(cond,q); name cond,q; boolean cond; long real q;
+	begin
+		long real j;
+		j:=q;
+	    q:=9.7;
+	    q:=q+13.4;
+	    q:=if cond then q else q+67.9;
+	end F;
+	
+	Procedure G(q,r); name q; ref(A) q,r;
+	begin q:-r; end;
+	
+	Procedure W(t,u,z); value t; name u; text t,u,z;
+	begin u.setpos(4); end;
+	
+	v:=4.0;
+	x:=5.0;
+	F(true,v);
+	F(x<v,x+4.5);
+	
+	G(aa,bb);
+	
+	W(tt,uu,zz);
+	
+end program;

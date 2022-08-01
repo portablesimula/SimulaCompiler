@@ -1,0 +1,29 @@
+
+begin
+
+	class A;
+	begin
+	   outtext("Before INNER in A"); outimage;
+	   inner;
+	   outtext("After INNER in A"); outimage;
+	end;
+
+	A class B;
+	begin
+	   outtext("Before INNER in B"); outimage;
+	   inner;
+	   outtext("After INNER in B"); outimage;
+	end;
+
+	B class C;
+	begin
+	   outtext("Before INNER in C"); outimage;
+	   inner;
+	   outtext("After INNER in C"); outimage;
+	end;
+
+	ref(C) x;
+
+	x:-new C();
+
+end;

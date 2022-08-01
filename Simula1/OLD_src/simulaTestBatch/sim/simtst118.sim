@@ -1,0 +1,149 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 118
+%
+%  PURPOSE: Simple QPS-Sample 4
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:29);
+   Text t;
+   Integer nA,nB;
+   Ref (A) x;
+   Ref (B) y;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   Text Procedure edIdent(id,n); Character id; Integer n;
+   begin Text t; t:-Copy("(Xn)");
+         t.sub(2,1).putChar(id);
+         t.sub(3,1).putChar(Char(Rank('0')+n));
+         edIdent:-t;
+   end;
+
+   Class A;
+   Begin Real array X(P:1);
+         Integer ord;
+         Text procedure id; begin id:-edIdent('A',ord); end;
+         ord:=nA:=nA+1;
+         trace("Event A-1: Just Before First Detach in " & id);
+         Detach;
+          trace ("B");
+         trace("Event A-2: Just Before Second Detach in " & edIdent('A',ord));
+         Detach;
+          trace ("F");
+         trace("Event A-3: Just Before Final-END in " & edIdent('A',ord));
+   End;
+
+   Class B;
+   Begin Real array X(P:1);
+         Integer ord;
+         Text procedure id; begin id:-edIdent('B',ord); end;
+         ord:=nB:=nB+1;
+         trace("Event B-1: Just Before First Detach in " & id);
+         Detach; trace ("G");
+         trace("Event B-2: Just Before Second Detach in " & edIdent('B',ord));
+         Detach; trace ("H");
+         trace("Event B-3: Just Before Final-END in " & edIdent('B',ord));
+   End;
+
+   Real Procedure P;
+   Begin 
+%         Outtext("Event P-1: Just Before First Resume: ");
+%         Outtext(" x="); outtext(if x=/= none then x.id else "none");
+%         Outtext(" y="); outtext(if y=/= none then y.id else "none");
+%         Outimage;
+         
+         If x=/=none then
+         begin
+            trace("Event P-2: Just Before First Resume: " & x.id);
+            Resume(x);
+         end;
+         trace ("C");
+         If y=/=none then
+         begin
+            trace("Event P-3: Just Before Second Resume: " & y.id);
+            Resume(y);
+         end;
+         trace ("D");
+   End;
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 118"); Outimage ;
+   Outtext("--- Simple QPS-Sample 4");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"Event 1: Just Before New A";                                                                                         
+   facit(1):-"C";                                                                                                        
+   facit(2):-"D";                                                                                                                                   
+   facit(3):-"Event A-1: Just Before First Detach in (A1)";                                                                                         
+   facit(4):-"Event 2: Just Before New B(1)";                                                                                                       
+   facit(5):-"Event P-2: Just Before First Resume: (A1)";                                                                                           
+   facit(6):-"B";                                                                                                                                   
+   facit(7):-"Event A-2: Just Before Second Detach in (A1)";                                                                                        
+   facit(8):-"C";                                                                                                                                   
+   facit(9):-"D";                                                                                                                                   
+   facit(10):-"Event B-1: Just Before First Detach in (B1)";                                                                                         
+   facit(11):-"Event 1: Just Before New B(2)";                                                                                                       
+   facit(12):-"Event P-2: Just Before First Resume: (A1)";                                                                                           
+   facit(13):-"F";                                                                                                                                   
+   facit(14):-"Event A-3: Just Before Final-END in (A1)";                                                                                            
+   facit(15):-"C";                                                                                                                                   
+   facit(16):-"Event P-3: Just Before Second Resume: (B1)";                                                                                          
+   facit(17):-"G";                                                                                                                                   
+   facit(18):-"Event B-2: Just Before Second Detach in (B1)";                                                                                        
+   facit(19):-"D";                                                                                                                                   
+   facit(20):-"Event B-1: Just Before First Detach in (B2)";                                                                                         
+   facit(21):-"C";                                                                                                                                   
+   facit(22):-"Event P-3: Just Before Second Resume: (B2)";                                                                                          
+   facit(23):-"G";                                                                                                                                   
+   facit(24):-"Event B-2: Just Before Second Detach in (B2)";                                                                                        
+   facit(25):-"D";                                                                                                                                   
+   facit(26):-"Event A-1: Just Before First Detach in (A2)";                                                                                         
+   facit(27):-"Event 1: Just Before Resume(y)";                                                                                                      
+   facit(28):-"H";                                                                                                                                   
+   facit(29):-"Event B-3: Just Before Final-END in (B2)";                                                                                            
+
+
+   nA:=0; nB:=0;
+
+   trace("Event 1: Just Before New A");
+   x:- New A;
+   trace("Event 2: Just Before New B(1)");
+   y:- New B;
+   trace("Event 1: Just Before New B(2)");
+   y:- New B;
+   x:- none; x:- New A;
+   trace("Event 1: Just Before Resume(y)");
+   Resume(y);
+   
+      
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 118");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 118") ;
+      Outimage;
+   end;
+   
+
+end;

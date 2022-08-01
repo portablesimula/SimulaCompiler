@@ -1,0 +1,10 @@
+% 
+%
+begin integer i;
+   for i:=128 step 1 until 256 do
+   begin
+      outtext("   Character #"); outint(i,0);
+      outtext(" = '"); outchar(char(i)); outtext("'");
+      outimage;
+   end;
+end;

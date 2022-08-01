@@ -1,0 +1,26 @@
+BEGIN
+   ref(C) A,B;
+
+   PROCEDURE P; begin end;   
+
+   Class C(ident); text ident;
+   BEGIN
+      ref(C) neste;
+      outtext("INIT "&ident); outimage;
+      detach;
+      outtext("SESS "&ident); outimage;
+      resume(neste);
+      P;
+      outtext("ENDE "&ident); outimage;
+   END;
+
+
+   A:-new C("A");
+   B:-new C("B") ;
+   A.neste :- B ;
+   B.neste :- A ;
+
+   resume(A) ;
+   outtext("FINAL END"); outimage;
+
+ END

@@ -1,0 +1,45 @@
+begin
+ procedure X;  Outchar(char(if char(64)=' ' then 127 else 34));
+ procedure B4; Outtext(blanks(4));
+ procedure Y(s);  text s; begin Outtext(s); Outimage; end;
+ procedure YY(s); text s; Outtext(s);
+ procedure Z(s);  text s;
+ begin B4; X; Outtext(s); X; Outchar(','); Outimage; end;
+ procedure ZZ(s); text s;
+ begin X; Outtext(s); X; Outchar(','); Outimage; end;
+ procedure ZZZ(s); text s;
+ begin B4; X; Outtext(s); X; Outimage; end;
+ procedure WW(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w);
+        value a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w;
+         text a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w;
+ begin
+   Y(a);Y(b);Y(c);Y(d);Y(e);Y(f);Y(g);Y(h);Y(i);Y(j);Y(k);Y(l);
+   Y(m);Y(n);Y(o);Y(p);Y(q);Y(r);Y(s);Y(t);YY(u);ZZ(a);Z(b);
+   Z(c);Z(d);Z(e);Z(f);Z(g);Z(h);Z(i);Z(j);Z(k);Z(l);Z(m);Z(n);
+   Z(o);Z(p);Z(q);Z(r);Z(s);Z(t);Z(u);Z(v);ZZZ(w);Y(v);YY(w)
+ end;
+WW( "begin",
+    " procedure X;  Outchar(char(if char(64)=' ' then 127 else 34));",
+    " procedure B4; Outtext(blanks(4));",
+    " procedure Y(s);  text s; begin Outtext(s); Outimage; end;",
+    " procedure YY(s); text s; Outtext(s);",
+    " procedure Z(s);  text s;",
+    " begin B4; X; Outtext(s); X; Outchar(','); Outimage; end;",
+    " procedure ZZ(s); text s;",
+    " begin X; Outtext(s); X; Outchar(','); Outimage; end;",
+    " procedure ZZZ(s); text s;",
+    " begin B4; X; Outtext(s); X; Outimage; end;",
+    " procedure WW(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w);",
+    "        value a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w;",
+    "         text a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w;",
+    " begin",
+    "   Y(a);Y(b);Y(c);Y(d);Y(e);Y(f);Y(g);Y(h);Y(i);Y(j);Y(k);Y(l);",
+    "   Y(m);Y(n);Y(o);Y(p);Y(q);Y(r);Y(s);Y(t);YY(u);ZZ(a);Z(b);",
+    "   Z(c);Z(d);Z(e);Z(f);Z(g);Z(h);Z(i);Z(j);Z(k);Z(l);Z(m);Z(n);",
+    "   Z(o);Z(p);Z(q);Z(r);Z(s);Z(t);Z(u);Z(v);ZZZ(w);Y(v);YY(w)",
+    " end;",
+    "WW( ",
+    "  );",
+    "end of self-reproducible SIMULA program"
+  );
+end of self-reproducible SIMULA program

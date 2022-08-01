@@ -1,0 +1,85 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 116
+%
+%  PURPOSE: Simple QPS-Sample 2
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:8);
+   ref(C)  x;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   procedure P;
+   begin
+      x:-new C();
+      ! - - - ;
+      trace("In Procedure P - Just Before first Resume(x)");
+      resume(x);
+   end;
+
+   class C;
+   begin
+      procedure Q;
+      begin
+         ! - - - ;
+         trace("In Procedure Q - Just Before first Detach");
+         detach;
+         ! - - - ;
+         trace("In Procedure Q - Just Before second Detach");
+         detach;
+         ! - - - ;
+      end;
+      ! - - - ;
+      Q;
+      ! - - - ;
+   end;
+   ! - - - ;
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 116"); Outimage ;
+   Outtext("--- Simple QPS-Sample 2");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"In Block - Just Before call procedure P";
+   facit(1):-"In Procedure Q - Just Before first Detach";
+   facit(2):-"In Procedure P - Just Before first Resume(x)";
+   facit(3):-"In Procedure Q - Just Before second Detach";
+   facit(4):-"In Block - Just Before final END";
+   
+   
+   trace("In Block - Just Before call procedure P");
+   P;
+   ! - - - ;
+   trace("In Block - Just Before final END");
+   
+      
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 116");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 116") ;
+      Outimage;
+   end;
+   
+end;

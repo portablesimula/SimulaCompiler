@@ -1,0 +1,19 @@
+
+%STANDARDCLASS
+
+BASICIO class BASICIO_(INPUT_LINELENGTH, OUTPUT_LINELENGTH);
+                    integer INPUT_LINELENGTH, OUTPUT_LINELENGTH;
+begin
+   ref(InFile) SYSIN_;
+   ref(InFile) procedure sysin; sysin:-SYSIN_;
+   ref(PrintFile) SYSOUT_;
+   ref(PrintFile) procedure sysout; sysout:-SYSOUT_;
+   
+   SYSIN_ :- new InFile("SYSIN");
+   SYSOUT_ :- new PrintFile("SYSOUT");
+   SYSIN_.open(blanks(INPUT_LINELENGTH));
+   SYSOUT_.open(blanks(OUTPUT_LINELENGTH));
+   inner;
+   SYSIN_.close;
+   SYSOUT_.close;
+end BASICIO;

@@ -1,0 +1,536 @@
+%SPORT ON
+class Drawing(grm); short integer grm;
+hidden protected CGAdraw, ScaleLn, ScalePs, PsLim, LnLim, Lnfac, Psfac;
+hidden protected oldMode, Colour, CPos, CLine, Maxps, Maxln, Outchb;
+begin
+% ************************************************************
+% *  Simula a.s. Oslo, Norway 1991                           *
+% *                                                          *
+% *  Class Drawing (Simula Utility Software Library)         *
+% *                                                          *
+% *  Compile:                                                *
+% *     sim -P1 [-Ztarget] [-dlevel] drawing.def             *
+% *                                                          *
+% *  Assumes KEYBOARD.INS at \SIM\KB\KEYBOARD.INS - if not,  *
+% *  edit the following line to reflect its location         *
+
+%INSERT \sim\kb\keyboard.ins
+
+% ************************************************************
+% *  Release 109.2.2. (B)                                    *
+% *  ----------------                                        *
+% *  Changes from previous release:                          *
+% *     "open" and "close" removed. "lastKey" inititialised. *
+% *     DrawSect: parameter change, rewritten                *
+% *     DrawCircle: rewritten                                *
+% *     Optimized for faster execution                       *
+% *     Scaling changed - see procedure initScreen           *
+% *  New procedures                                          *
+% *     InitScreen - change video mode                       *
+% *     terminateProgram - reset mode and terminate          *
+% *                                                          *
+% ************************************************************
+
+%BOUNDCHECK OFF
+
+   boolean CGAdraw;
+   short integer oldMode, Colour, ScaleLn, ScalePs, PsLim, LnLim;
+   short integer Maxps, Maxln, Lnfac, Psfac;
+   short integer CPos, CLine;
+   text Outchb;
+
+   External Library Procedure PUTCTL="E@PUTCTL" is
+   Procedure PUTCTL(c); character c; ;
+   external assembly Procedure DRAWPTEGA = "MS@DRPT" is
+   Procedure DRAWPTEGA(Ln, Ps); short integer Ln, Ps; ;
+   external assembly Procedure DRAWPTCGA = "MS@DRPTCGA" is
+   Procedure DRAWPTCGA(Ln, Ps); short integer Ln, Ps; ;
+   external assembly Procedure DRAW4CGA = "MS@DRP4CGA" is
+   Procedure DRAW4CGA(Ln, Ps, rl, rp); short integer Ln, Ps, rl, rp; ;
+   external assembly Procedure DRAWGLN = "MS@DRGLN" is
+   Procedure DRAWGLN(Ps0, Ln0, Ps1, Ln1);
+      short integer Ps0, Ln0, Ps1, Ln1; ;
+   external assembly Procedure CLEAR = "MS@CLS" is
+   Procedure CLEAR; ;
+   external assembly Procedure GETGRM = "MS@GETGR" is
+   short integer Procedure GETGRM; ;
+   external assembly Procedure INITGR = "MS@INITGR" is
+   Procedure INITGR(mode); short integer mode; ;
+   external assembly Procedure CINBT = "MS@CINBT" is
+   Short Integer Procedure CINBT; ;
+   external assembly Procedure Outstring = "MS@OUTST" is
+   Procedure Outstring(str); text str; ;
+   external assembly Procedure StPos = "MS@STPOS" is
+   Procedure StPos(l,p); short integer l,p; ;
+
+   short integer Procedure SetColour(cl); short integer cl; begin
+      external assembly Procedure StCol = "MS@STCOL" is
+      Procedure StCol(clr); short integer clr; ;
+      SetColour:= Colour;
+      switch (4:94) grm begin
+         when 6, 15, 17, 89 do      Colour:= cl-cl//2*2;
+         when 4, 5 do               Colour:= cl-cl//4*4;
+         when 13, 14, 16, 18, 88 do Colour:= cl-cl//16*16;
+         when 19, 94 do             Colour:= cl-cl//256*256;
+         when none do Colour:= 1;
+      end otherwise Colour:= 1;
+      StCol(Colour);
+   end SetColour;
+
+   short integer Procedure SetColor(cl); short integer cl;
+      SetColor:= SetColour(cl);
+
+   short integer Procedure MaxPos; MaxPos:= PsLim;
+   short integer Procedure MaxLine; MaxLine:= LnLim;
+
+   Procedure Beep; PUTCTL('!7!');
+
+   short integer Procedure TextLine(gln); short integer gln; begin
+      gln:= if gln<0 then 0 else if gln>LnLim then LnLim else gln;
+      TextLine:= gln//Lnfac;
+   end TextLine;
+
+   short integer Procedure TextPos(gps); short integer gps; begin
+      gps:= if gps<0 then 0 else if gps>PsLim then PsLim else gps;
+      TextPos:= gps//Psfac;
+   end TextPos;
+
+   short integer Procedure GraphLine(tln); short integer tln; begin
+      tln:= if tln<1 then 1 else if tln>Maxln then Maxln else tln;
+      GraphLine:= (tln-1) * Lnfac;
+   end GraphLine;
+
+   short integer Procedure GraphPos(tps); short integer tps; begin
+      tps:= if tps<1 then 1 else if tps>Maxps then Maxps else tps;
+      GraphPos:= (tps-1) * Psfac;
+   end GraphPos;
+
+   Procedure DrawLine(ln,ps,rl,rp); short integer ln,ps,rl,rp; begin
+%     -- draw general line
+      short integer dp,dl,cp,cl,w, ln1,ps1;
+      if CGAdraw then begin
+         if rl = 0 then drawBar(ln,ps,rp) else begin
+            w:=max(abs(rp),abs(rl));
+            if rp>0 then dp:=w//2 else dp:=-w//2;
+            if rl>0 then dl:=w//2 else dl:=-w//2;
+            ln1:= ln+rl; ps1:= ps+rp; cl:=ln; cp:=ps;
+            while cp<>ps1 or else cl<>ln1 do begin
+               DRAWPTCGA(cl,cp); dp:=dp+rp; dl:=dl+rl;
+               if dp>= w then begin cp:=cp+1; dp:=dp-w; end else
+               if dp<=-w then begin cp:=cp-1; dp:=dp+w; end;
+               if dl>= w then begin cl:=cl+1; dl:=dl-w; end else
+               if dl<=-w then begin cl:=cl-1; dl:=dl+w; end;
+            end;
+            DRAWPTCGA(ln1,ps1);
+         end
+      end
+      else DRAWGLN(ps,ln,ps+rp,ln+rl);
+   end DrawLine;
+
+   Procedure DrawBar(ln,ps,rp); short integer ln,ps,rp; begin
+%     -- draw horizontal line
+      external library procedure DRAWBARCGA="MS@DRBARCGA" is
+      procedure drawbarCGA(ln,ps,rp); short integer ln,ps,rp; ;
+      short integer i;
+      if rp = 0 then !nothing - don't draw;  else
+      if CGAdraw then begin
+         if rp > 0 then drawbarCGA(ln,ps,rp)
+                   else drawbarCGA(ln,ps+rp,-rp);
+      end
+      else DRAWGLN(ps,ln,ps+rp,ln);
+   end DrawBar;
+
+   Procedure DrawSquare(ln,ps,rl,rp); short integer ln,ps,rl,rp; begin
+      short integer i;
+      if CGAdraw then begin
+         DrawBar (ln,ps,rp); DrawBar (ln+rl,ps,rp);
+         if rl > 0 then rl:= ln+rl
+         else begin i:= ln+rl; rl:=ln; ln:=i end;
+         while ln <= rl do begin
+             DRAWPTCGA(ln,ps); DRAWPTCGA(ln,ps+rp); ln:=ln+1 end;
+      end else begin
+         DRAWGLN(ps,ln,ps+rp,ln);
+         DRAWGLN(ps,ln,ps,ln+rl);
+         DRAWGLN(ps+rp,ln,ps+rp,ln+rl);
+         DRAWGLN(ps,ln+rl,ps+rp,ln+rl);
+    end;
+   end DrawSquare;
+
+   Procedure FillSquare(ln,ps,rl,rp); short integer ln,ps,rl,rp; begin
+      external assembly Procedure DRAWBOX = "MS@DRBOX" is
+      Procedure DRAWBOX   (Ps0, Ln0, Ps1, Ln1);
+             short integer Ps0, Ln0, Ps1, Ln1; ;
+      external assembly Procedure DRAWBOXCGA = "MS@DRBOXCGA" is
+      Procedure DRAWBOXCGA(Ln, Ps, rl, rp);
+             short integer Ln, Ps, rl, rp; ;
+      short integer ll,lp;
+      !*** ensure correct arguments to drawbox-routines ***;
+      ll:=ln+rl; if rl < 0 then begin ll:=ln; ln:=ln+rl; rl:=-rl end;
+      lp:=ps+rp; if rp < 0 then begin lp:=ps; ps:=ps+rp; rp:=-rp end;
+      if rl=0 or rp=0 then !nothing - don't draw;  else
+      if CGAdraw then DRAWBOXCGA(ln,ps,rl,rp)
+                 else DRAWBOX   (ps,ln,lp,ll);
+   end FillSquare;
+%page
+   Procedure DrawCircle(ln,ps,r); short integer ln,ps,r; begin
+%     -- Draw apparent circle around (ln,ps) with radius r.
+      DrawSector(ln,ps,r,0,1000,0);
+   end drawcircle;
+
+%  Procedure DrawSector(ax,ay,r,sprm,lprm,tr);
+%  -- ax and ay swapped to be consistent with DrawCircle:
+   Procedure DrawSector(ln,ps,r,sprm,lprm,tr);
+   short integer ps,ln,r,sprm,lprm,tr;  begin
+%     -- Draw apparent arc around (ln,ps) with radius r.
+%     -- Note: whether or not the 'circle' is round depends on the values
+%     --       of ScaleLn and ScalePs. For best result these should be primes,
+%     --       but beware: scl2 and scp2 are declared SHORT INTEGER !!!!
+      integer rr, F1, F2x, F2y, F2, ls2, lh2;      
+      short integer ls, lh, pn, ph, pmax, i, delta1, delta2, delta3, F2n,
+                    scl2, scp2, !***NB***;
+                    firstP, firstL, lastP, lastL, firstQ, lastQ;
+%RECORD ON
+      short integer startL(7); short integer startP(7);
+      short integer stopL (7); short integer stopP (7);
+%RECORD OFF
+
+      Procedure GetPoint(v); short integer v;  begin
+         ! determine circle point at angle v, result in (lastL,lastP);
+         short integer cx, cy, nx, ny, mx, my, dx, dy;
+         integer a1, a2, a3; v:=mod(v,1000);
+         cy:= -r*sin(v*acon);
+         cx:= r*cos(v*acon)*ScalePs; cx:= cx//ScaleLn;
+%        if mod(v,250)<>0 then begin
+            switch(0:3) (v//250) begin
+            when 0 do begin dx:=+1; dy:= if v=0 then 0 else -1 end;
+            when 1 do begin dx:=-1; dy:=-1;
+                   if v=250 then begin cx:=0; cy:=-r; goto EX end; end;
+            when 2 do begin dx:=-1; dy:= if v=500 then 0 else +1 end;
+            when 3 do begin dx:=+1; dy:=+1;
+                   if v=750 then begin cx:=0; cy:=+r; goto EX end; end;
+            end case;
+            a1:=abs((scl2*cx//scp2)*cx+cy*cy-rr);
+            nx:= cx+dx; ny:= cy   ;
+            a2:=abs((scl2*nx//scp2)*nx+ny*ny-rr);
+            mx:= cx+dx; my:= cy+dy;
+            a3:=abs((scl2*mx//scp2)*mx+my*my-rr);
+            if a3<=a1 then begin cx:=mx; cy:=my; a1:=a3 end;
+            if a2<=a1 then begin cx:=nx; cy:=ny;        end;
+%        end;
+     EX: lastL:= cy; lastP:= cx;
+      end getPoint;
+      
+      if lprm = 0 then goto FINIS; ! don't draw sector of 0 length;
+      sprm:=mod(abs(sprm),1000); lprm:=mod(abs(lprm),1000);
+      ln:= ln-tr*sin((sprm+lprm/2)*acon);
+      ps:= ps+tr*cos((sprm+lprm/2)*acon)*ScalePs/ScaleLn;
+      scl2:= Scaleln; scl2:= scl2*scl2;
+      scp2:= Scaleps; scp2:= scp2*scp2;
+      rr:= r; rr:= rr*rr;
+      getPoint(0); ph:= pmax:= lastP;
+
+      if lprm<>0 then begin
+         lprm:=lprm+sprm;
+         getPoint(sprm); firstL:= lastL; firstP:= lastP;
+         getPoint(lprm);
+         ! both the sector lines must be drawn from center in case overlap;
+         ! otherwise the line iteration may differ in single pixels;
+         DrawLine(ln,ps,firstL,firstP); DrawLine(ln,ps,lastL,lastP);
+
+        !*** init iteration ***;
+        ph:= firstP:= abs(firstP); lastP:= abs(lastP);
+        lh:= firstL:= abs(firstL); lastL:= abs(lastL);
+        lastQ:= lprm//250; firstQ:= sprm//250;
+   
+        i:= firstQ; lh:= firstL; ph:= firstP;
+        while i<=lastQ do begin
+           if mod(i,2)=0 then begin
+              startL(i):= firstL; startP(i):= firstP;
+              if i=lastQ then begin
+                 stopL(i):= lastL; stopP(i):= lastP end
+              else begin
+                 stopL(i):= r;   ! stopP(i):= 0;
+                 firstL:= r; firstP:= 0;
+              end;
+           end else begin
+              stopL(i) := firstL; stopP (i):= firstP;
+              if i=lastQ then begin
+                 startL(i):= lastL;  startP(i):= lastP end
+              else begin
+                 startP(i):= pmax; ! startL(i):= 0;
+                 firstL:= 0; firstP:= pmax;
+              end;
+           end;
+           if lh > startL(i) then lh:= startL(i);
+           if ph < startP(i) then ph:= startP(i);
+           i:= i+1;
+        end;
+      end;
+
+      ls:= lh+1; ls2:= ls*ls; lh2:= lh*lh; pn:= ph-1;
+      F2x:= scl2*ph; F2n:= F2x//scp2; F2y:= F2n*scp2; F2:= F2n*ph - rr;
+      goto START;
+
+      while true do begin
+%        NEXT POINT:  F1 >= F2  ,  ls2 > lh2 >= 0
+         delta1:=abs(F1+ls2); delta2:=abs(F2+lh2); delta3:=abs(F2+ls2);
+         if delta1 < delta2 then begin
+            if delta3 <= delta1 then goto CHGB;
+            lh:= ls; ls:= ls+1; lh2:= ls2; ls2:= ls2+1+lh+lh;
+         end
+         else begin
+            if delta3 <= delta2 then begin
+    CHGB:      lh:= ls; ls:= ls+1; lh2:= ls2; ls2:= ls2+1+lh+lh;
+            end; 
+            ph:= pn; pn:= pn-1;
+    START:  F1:= F2; F2x:= F2x-scl2; F2:= F2-F2n;
+            !*** assume ScaleLn <= ScalePs (holds for all defaults) ***;
+            if F2y > F2x then begin
+               F2:= F2-pn; F2n:= F2n-1; F2y:= F2y-scp2 end;
+%              F2n:= F2x//scp2; F2y:= F2n*scp2; F2:= F2n*pn-rr end;
+%           F2:= (F2x//scp2)*pn-rr;
+         end;
+         if lprm=0 then begin
+            if CGAdraw then DRAW4CGA(ln,ps,lh,ph)
+            else begin
+               DRAWPTEGA(lh+ln,ph+ps); DRAWPTEGA(lh+ln,ps-ph);
+               DRAWPTEGA(ln-lh,ps-ph); DRAWPTEGA(ln-lh,ph+ps) end;
+            if ph=0 then goto FINIS;
+         end else begin
+            i:= firstQ;
+         DLOOP:
+%        for i:=firstQ step 1 until lastQ do begin
+             ! startL <= (lh,ph) <= stopP   => draw this point ;
+             if startL(i) > lh then !no draw; else
+%            if startL(i)<lh or else (startL(i)=lh and startP(i)>=ph)
+             if startL(i)<lh or else (                 startP(i)>=ph)
+             then begin
+                if stopL(i) > lh or else (stopL(i)=lh and stopP(i)<=ph)
+                then switch(0:7) i begin
+                     when 0,4 do ! DrawPoint(ln-lh,ps+ph);
+                              if CGAdraw then DRAWPTCGA(ln-lh,ps+ph)
+                                         else DRAWPTEGA(ln-lh,ps+ph);
+                     when 1,5 do ! DrawPoint(ln-lh,ps-ph);
+                              if CGAdraw then DRAWPTCGA(ln-lh,ps-ph)
+                                         else DRAWPTEGA(ln-lh,ps-ph);
+                     when 2,6 do ! DrawPoint(ln+lh,ps-ph);
+                              if CGAdraw then DRAWPTCGA(ln+lh,ps-ph)
+                                         else DRAWPTEGA(ln+lh,ps-ph);
+                     when 3,7 do ! DrawPoint(ln+lh,ps+ph);
+                              if CGAdraw then DRAWPTCGA(ln+lh,ps+ph)
+                                         else DRAWPTEGA(ln+lh,ps+ph);
+                end
+                else begin !drop this arc;
+                     if i=firstQ then firstQ:=firstQ+1 else
+                     if i=lastQ  then lastQ :=lastQ -1;
+                     if firstQ > lastQ then goto FINIS;
+                     startL(i):= r+2; !will stop at first test; 
+                end;
+             end;
+            if i < lastQ then begin i:=i+1; goto DLOOP end;
+         end;
+      end; 
+   FINIS:
+   end drawsector;
+%page
+   Procedure PlotPoint(ln,ps); short integer ln,ps;
+      if CGAdraw then DRAWPTCGA(ln,ps) else DRAWPTEGA(ln,ps);
+
+   Procedure DrawPoint(ln,ps); short integer ln,ps;
+      if CGAdraw then DRAWPTCGA(ln,ps) else DRAWPTEGA(ln,ps);
+
+   Procedure DrawDiagram(a,ln,ps,h,b,px);
+   integer array a; short integer ln,ps,h,b,px; begin
+      short integer lb, ub, ant, i, cp, tp, cl;
+      lb:= LowerBound(a,1); ub:= UpperBound(a,1); ant:= ub-lb+1;
+      if ant > 0 then begin !*** otherwise dummy array;
+         if ant*b+ps>PsLim then b:= (PsLim-ps)//ant;
+         cp:= ps;
+         for i:= lb step 1 until ub do begin
+            tp:= - h*a(i)//100;
+            DrawSquare(ln,cp,tp,b); cp:= cp+b;
+         end;
+         cl:= SetColour(px); cp:=ps+1;
+         for i:= lb step 1 until ub do begin
+            tp:= - h*a(i)//100;
+            if tp > +1 then FillSquare(ln+1,cp,tp-2,b-2) else
+            if tp < -1 then FillSquare(ln-1,cp,tp+2,b-2);
+            cp:= cp+b;
+         end;
+         SetColour(cl);
+      end;
+   end DrawDiagram;
+%page
+   Procedure DrawOval(ln,ps,r,pf);
+   short integer ln,ps,r; real pf; begin
+      integer rr, a1, a2, scl2, scp2;
+      short integer ls, lh, pn, ph;
+      ph:=r*ScalePs/ScaleLn; lh:=0; rr:=r*r; pf:=pf*pf;
+      scl2:= ScaleLn*ScaleLn; scp2:= ScalePs*ScalePs;
+      while ph<>0 do begin
+         if CGAdraw then begin 
+            DRAW4CGA(ln,ps,lh,ph);
+         end else begin
+            DRAWPTEGA(ln+lh,ps+ph); DRAWPTEGA(ln-lh,ps+ph);
+            DRAWPTEGA(ln-lh,ps-ph); DRAWPTEGA(ln+lh,ps-ph);
+         end;
+         pn:=ph-1; ls:=lh-1;
+         a1:=abs(ph*ph*scl2/scp2+ls*ls*pf-rr);
+         a2:=abs(pn*pn*scl2/scp2+lh*lh*pf-rr);
+         if a1<a2 then lh:=ls else ph:= pn;
+      end;
+      if CGAdraw then begin
+         DRAWPTCGA(ln+lh,ps); DRAWPTCGA(ln-lh,ps);
+      end else begin
+         DRAWPTEGA(ln+lh,ps); DRAWPTEGA(ln-lh,ps);
+      end;
+   end DrawOval;
+
+   Procedure ErasePage; ! INITGR(grm);
+      initVDU(grm);
+
+   Procedure EraseLine; begin
+      Outstring(Blanks(Maxps-CPos));
+   end EraseLine;
+%page
+   Procedure Setpos(Line,Pos); short integer Line, Pos; begin
+      if Line<1 then Line:= 1 else if Line > Maxln then Line:= Maxln;
+      if Pos <1 then Pos := 1 else if Pos  > Maxps then Pos := Maxps;
+      If Line=Maxln and Pos=Maxps then Pos:= Pos-1;
+      CLine:= Line-1; CPos:= Pos-1;
+      StPos(CLine,CPos);
+   end Setpos;
+
+   Procedure GoHome; begin
+      StPos(0,0); CPos:= CLine:= 0;
+   end GoHome;
+
+   Procedure Outchar(c); character c; begin
+%     sysout.outchar(c); breakoutimage;
+      Outchb.Setpos(1); Outchb.Putchar(c); Outstring(Outchb);
+      CPos:= if CPos < Maxps then CPos+1 else CPos;
+      StPos(CLine,CPos);
+   end Outchar;
+
+   Procedure Outtext(t); text t; begin
+      if t.length > Maxps-CPos then t:- t.sub(1,Maxps-CPos);
+      if CLine=Maxln and then t.length=Maxps-CPos then begin
+         if t.length=1 then goto E else t:- t.sub(1,t.length-1) end;
+      Outstring(t);
+      CPos:= CPos+t.length; if CPos >= Maxps then CPos:= Maxps-1;
+      StPos(CLine,CPos);
+   E:
+   end Outtext;
+%page
+   Text Procedure Intext(w); short integer w; begin
+      text th; character ch;
+      short integer i, op, lb, rb; Boolean cont;
+      if w<1 or w>Maxps-CPos then w:= Maxps-CPos;
+      lb:= CPos; rb:= CPos+w-1; cont:= true;
+      StPos(CLine,lb); th:- blanks(w);
+      while cont do begin
+         ch:= Inchar;
+         if ch=RubOut then begin
+            if th.pos>1 then th.setpos(th.pos-1);
+            if CPos>lb and CPos<=rb+1 then CPos:= CPos-1;
+            StPos(CLine,CPos);
+            Outchb:= " "; Outstring(Outchb);
+            th.putchar(' '); th.setpos(th.pos-1);
+         end else
+         if ch <> char(0) then begin
+            if ch=CrKey then cont:= false else begin
+               if th.pos > th.length then th.setpos(th.pos-1);
+               if CPos > rb then CPos:= rb; Stpos(CLine,CPos);
+               th.Putchar(ch); Outchar(ch); end;
+         end;
+      end;
+      Intext:- th; CPos:= lb+w; StPos(CLine,CPos);
+   end Intext;
+
+   procedure terminateProgram; begin
+      gohome; CLEAR; terminate_program;
+   end terminateProgram;
+   
+   short integer procedure initScreen(mode); short integer mode; begin
+      ! set video mode and return previous mode;
+      
+      grm:= if mode >= 128 then mode-128 else mode;
+      CGAdraw:= grm<13 or grm=19 or grm>88;
+      !*** set text screen default 80 x 25 ***;
+           Maxps:= 80; Maxln:= 25;
+      !*** set graphic screen default 640 x 200 and conv. factors ***;
+           PsLim:= 639; LnLim:= 199; Lnfac:= Psfac:= 8;  
+      !*** set scaling acc. to grm and possibly change defaults ***;
+      !    The scaling is for a 'standard' VGA (NEC multisync)     ;
+      Scaleln:= 1; ScalePs:= 1; 
+      switch (0:127) grm begin
+      !  T E X T    40 x 25; when
+           0,1               do begin Maxps:= 40; end; 
+      !  T E X T    80 x 25; when
+           2,3,7             do begin end; 
+      !  PCjr modes, internal modes ; when
+           8:12              do inspect sysout do begin
+                             outtext("*** DRAWING: Illegal video mode: ");
+                             outint(grm,3); outimage; terminate_Program end;
+      ! 320 x 200 - 40 x 25; when
+        4,5,13,19            do begin Maxps:=40; PsLim:=319;
+                             ScaleLn:=107; ScalePs:=131; end;
+      ! 640 x 200 - 80 x 25; when
+             6,14            do begin ScaleLn:= 32; ScalePs:= 79; end;
+      ! 640 x 350 - 80 x 25; when
+               16            do begin LnLim:= 349; Lnfac:= 14;
+                             Scaleln:= 59; ScalePs:= 79; end;
+      ! 640 x 480 - 80 x 30; when
+            17,18            do begin Maxln:= 30; LnLim:= 479; Lnfac:= 16;
+                             Scaleln:= 1; ScalePs:= 1; end; 
+      ! 800 x 600 - 100 x75; when
+            88,89            do begin Maxps:=100; PsLim:= 799;
+                             Maxln:=75; LnLim:= 599;
+                             Scaleln:= 87; ScalePs:= 109; end;
+      ! 640 x 400 - 80 x 25; when
+               94            do begin Lnfac:= 16; LnLim:= 399;
+                             Scaleln:=137; ScalePs:=171; end;
+      !  NOT IMPLEMENTED MODES ; when
+             NONE            do inspect sysout do begin
+                             outtext("*** DRAWING: video mode not impl.: ");
+                             outint(grm,3); outimage; terminate_Program end;
+      end;
+      initScreen:= rem(GETGRM,256);
+%     INITGR(mode);
+      initVDU(mode);
+   end initScreen;
+
+   procedure initVDU(mode); short integer mode; begin
+      external assembly Procedure SETVDU = "MS@SETVDM" is
+      Procedure SETVDU(mode,LnLim,PsLim,Exp,VidMeM);
+      short integer mode,   ! Video Mode to be set;
+                    LnLim,  ! Number of graphic lines-1 (max y); 
+                    PsLim,  ! Number of pixels per line - 1 (max x);
+                    Exp,    ! 2**Exp is the pos divisor for dir. addr.;
+                    VidMeM; ! Base addr of video memory;
+      ! Exp and VidMem are significant for modes where drawing is
+        done thru writes into video memory (i.e. CGAdraw is FALSE);
+      !*** USE THIS PROCEDURE WITH CARE - no checking is performed on 
+       *** the parameters !!!!!!!;
+      ;
+      SETVDU(mode, LnLim, PsLim, 
+             if grm<6 then 2 else if grm=19 then 0 else 3, !Exp; 
+             if grm<7 then 16r0B800 else 16r0A000);
+             !  VidMem:      CGA          EGA/VGA ;
+   end;
+
+%page
+   real acon = 6.283185&-3;    ! Arccos(-1)/500;
+   Outchb:- blanks(1);
+   lastKey :- new keyPkt;  !*** initialise character input ***;
+   goHome; Colour:= 1;
+
+   oldMode:= initScreen(grm); 
+
+   inner;
+
+%  grm:= InitScreen(oldMode);
+   CLEAR;
+
+end Draw;
+

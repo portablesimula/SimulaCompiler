@@ -1,0 +1,90 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 87
+%
+%  PURPOSE:     Test Specification of Virtual Procedures.
+%
+%  WRITTEN BY:  MYH  13/06-2018
+% ==============================================================================
+BEGIN
+   Boolean found_error;
+   Boolean verbose=false;
+   integer pval;
+   ref(A) ra;
+   ref(B) rb;
+   ref(FILE) test;
+   
+   Procedure checkPval(n,val); integer n,val;
+   Begin if pval = val then
+     else
+     begin
+         Outtext("*** error in test "); Outint(n,0); Outtext(": Test Specification of Virtual Procedures."); Outimage;
+         Outtext("            Erroneus values: val = "); Outint(pval, 0); Outimage;
+         Outtext("            --------- Facit: val = "); Outint(val, 0); Outimage;
+         found_error := true
+     end;
+   end;
+
+   Class A; virtual: ref(FILE) Procedure myFile is ref(FILE) Procedure actual(i,j); integer i,j;;
+                     Procedure virt2 is Procedure act2(j); integer j;;
+                     Integer Procedure virt3 is Procedure act3;;
+                     Procedure virt4 is Procedure act4;;
+   begin integer i;
+     ref(FILE) Procedure myFile(i,j); integer i,j;
+     begin pval:=i+j; end;
+     
+     integer procedure pA;
+     Begin 
+        ref(FILE) f;
+        f :- myFile(4,3);
+        pA := pval;
+     end;
+   end;
+
+   A Class B;
+   begin integer i;
+     ref(FILE) Procedure myFile(i,j); integer i,j;
+     begin pval:=2*i+j; end;
+     Procedure virt4;
+     begin pval:=4567; end;
+     
+     integer procedure pB;
+     Begin 
+        ref(FILE) f;
+        f :- myFile(14,13);
+        pB := pval;
+     end;
+   end;
+
+   if verbose then begin
+   Outtext("--- START TEST 87"); Outimage;
+   Outtext("--- Test Specification of Virtual Procedures.");
+   Outimage; Outimage;
+   end;
+   
+   ra :- new A();
+   rb :- new B();
+  
+   test :- ra.myFile(7,21);
+   checkPval(1,7+21);
+  
+   test :- rb.myFile(17,210);
+   checkPval(2,2*17+210);
+   
+   rb.virt4;
+   checkPval(3,4567);
+  
+   
+ 
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext("--- NO ERRORS FOUND IN TEST 87");
+   END;
+
+   if verbose then begin
+   Outtext("--- END TEST 87");
+   Outimage
+   end
+   
+ END

@@ -1,0 +1,116 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM Name:   Simula a.s. - SIMULA TEST NO 83
+%
+%  PURPOSE:     Name Parameter with EXTREME BI-EFFECTS
+%
+%  WRITTEN BY:  MYH   29/07-2018
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+
+   ! --------------------------------------------------------- ;
+   ! -- Name Parameter with EXTREME BI-EFFECTS              -- ;
+   ! --------------------------------------------------------- ;
+
+   if verbose then begin
+   Outtext("--- START Simula a.s. TEST 83"); Outimage ;
+   Outtext("--- Test of formal parameters."); Outimage ; Outimage ;
+   end;
+
+   begin comment *** PART 1 ***;
+      integer i,j;
+      ref(A) array rA(0:2);
+   
+      class A;
+      begin integer n; n:=5;
+            rA(i):-this A; i:=i+1;
+      end;
+
+      Procedure P(y); Name y; Ref(A) y;
+      Begin
+         comment EG: rA(0).n := rA(1).n + 3   ;
+         y.n:=y.n+3;
+      end;
+   
+      P(new A);
+   
+      IF rA(0).n = 8 and rA(1).n = 5 THEN
+      Begin
+         if verbose then
+         begin Outtext("--- NO ERRORS FOUND IN PART 1"); Outimage end;
+      End Else
+      Begin
+         Outtext ("*** ERROR IN PART 1"); Outimage;
+         found_error:=true;
+         for j:=0 step 1 until i do
+         begin
+            Outtext("Object "); outint(j,0);
+            if rA(j) =/= none then
+            begin outtext(" -- n="); outint(rA(j).n,0); end
+            else outtext(" -- NULL");
+            outimage;
+         end;
+      end;
+   end;
+   
+   begin comment *** PART 2 ***;
+      ref(A) x,v;
+
+      Class A;
+      begin integer i;
+         Ref(A) Procedure Z;
+         Begin if verbose then begin outtext("Call Z"); outimage; end;
+               P(x);
+               Z:- v:- New A;
+         End;
+   
+      end;
+   
+      Procedure P(y); Name y; Ref(A) y;
+      Begin
+         Q(y.i)
+      End;
+
+      Procedure Q(ii); Name ii; Integer ii;
+      Begin
+         ii:=ii+2
+         if verbose then
+         begin outtext("INC: x.i,v.i=");
+            if x =/= none then outint(x.i,3) else outtext("x==NONE ");
+            if v =/= none then outint(v.i,3); outimage;
+         end;   
+      End;
+   
+      x:-new A;
+      P(x.Z);
+   
+%     P(x);
+   
+      if verbose then
+      begin outtext("END  x.i="); outint(x.i,0); outimage;
+            outtext("END  v.i="); outint(v.i,0); outimage;
+      end;
+            
+      IF x.i=4 and v.i = 2 THEN
+      Begin
+         if verbose then
+         begin Outtext("--- NO ERRORS FOUND IN PART 2"); Outimage end;
+      End Else
+      Begin
+         Outtext ("*** ERROR IN PART 2"); Outimage;
+         found_error:=true;
+      end;
+   end;
+   
+   IF found_error THEN ELSE
+   Begin
+      Outtext("--- NO ERRORS FOUND IN TEST 83"); 
+   End;
+   if verbose then begin
+   Outtext("--- END Simula a.s. TEST 83") ;
+   Outimage;
+   end;
+   
+end;      

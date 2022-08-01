@@ -1,0 +1,10 @@
+% SwitchDeclaration
+begin
+  integer expr;
+  boolean cond;
+  switch S:=L1,L2;
+  switch S2:=L1,L2,S(3),S(expr);
+  switch S3:=L1,L2,S(3), if cond then L1 else L2;
+  L1:
+  L2:
+end;      

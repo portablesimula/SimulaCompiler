@@ -1,0 +1,71 @@
+begin
+%     -----------------------------------------------------------------------
+%     ---  Simula a.s.                                                    ---
+%     ---                                                                 ---
+%     ---                 U T I L I T Y   P R O G R A M S                 ---
+%     ---                                                                 ---
+%     ---                         H E X D U M P                           ---
+%     ---                                                                 ---
+%     -----------------------------------------------------------------------
+
+      Ref(InByteFile) Inpt; ! Input File ;
+
+      Integer Sequ; ! Input byte number ;
+      Integer Code; ! Current Record Code ;
+      Text PrtPart;
+
+      Procedure InputFile;
+      begin text F;
+            Inpt:-new InByteFile("File");
+            if not Inpt.Open then
+            begin OutImage; OutText("The File """); OutText(F);
+                  OutText(""" does not exist or is not accessible");
+                  OutImage; OutImage; terminate_program;
+            end;
+      end;
+
+
+      Integer Procedure InByte;
+      begin InByte:=Inpt.InByte; Sequ:=Sequ+1 end;
+
+      Procedure PrtHex(i,n); integer i,n;
+      begin text t; integer h; t:-Blanks(n);
+            while n > 0 do
+            begin h:=mod(i,16)+48; i:=i//16; if h > 57 then h:=h+7;
+                  t.SetPos(n); t.PutChar(Char(h)); n:=n-1;
+            end;  SysOut.OutText(t);
+      end;
+
+      Character Procedure PrtChar(n); integer n;
+      PrtChar:=if n>31 and n<128 then Char(n) else '.';
+
+%title ***    M A I N    ***
+
+      OutText("SIMULA (R) Hex Dump   Version 0.00"); OutImage;
+      OutText("Simula a.s. 1986.  All rights reserved.");
+      OutImage; OutImage;
+      InputFile;
+      PrtPart:-Blanks(20);
+
+NEXT:
+      SysOut.SetPos(60); SysOut.OutText(PrtPart); SysOut.OutImage;
+
+      if Inpt.EndFile then goto FERDIG;
+      Code:=InByte; if Inpt.EndFile then goto FERDIG;
+      PrtPart.SetPos(1); PrtPart:=notext;
+      SysOut.OutInt(Sequ-1,6); SysOut.OutText(": ");
+
+      PrtHex(code,2); PrtPart.PutChar(PrtChar(code));
+      while SysOut.Pos < 56 do
+      begin Code:=InByte; if Inpt.EndFile then goto NEXT;
+            SysOut.OutChar(' '); PrtHex(code,2);
+            PrtPart.PutChar(PrtChar(code));
+      end;
+      goto NEXT;
+
+FERDIG:
+      Inpt.Close;
+      OutImage; OutImage;
+      OutText("END  --  Input Bytes"); OutInt(Sequ,6);
+      OutImage; OutImage;
+end;

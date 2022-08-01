@@ -1,0 +1,92 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 112
+%
+%  PURPOSE: Virtual Label - Sample 2
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:8);
+   ref(B) x;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   class A; virtual: procedure goto_L;
+   begin
+      text ident="CLASS A";
+      trace("In A before inner"); 
+      goto_L;
+      inner;
+      trace("In A after inner"); 
+   end;
+   
+   A class B;
+   begin
+      text ident="CLASS B";
+      procedure goto_L;
+      begin
+         trace("In Procedure 'goto_L'"); 
+         goto L;
+      end;
+      
+      trace("In B before inner"); 
+   L: trace("In B At Label L - OK"); 
+      inner;
+      trace("In B after inner"); 
+   end;
+   
+   B class C;
+   begin
+      trace("In C before inner"); 
+      inner;
+      trace("In C after inner"); 
+   end;
+   
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 112"); Outimage ;
+   Outtext("--- Virtual Label - Sample 2");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"In A before inner";
+   facit(1):-"In Procedure 'goto_L'";
+   facit(2):-"In B At Label L - OK";
+   facit(3):-"In C before inner";
+   facit(4):-"In C after inner";
+   facit(5):-"In B after inner";
+   facit(6):-"In A after inner";
+   facit(7):-"In MAIN after new B";
+   facit(8):-"In MAIN after new CLASS B";
+
+   x:-new C;
+   trace("In MAIN after new B"); 
+   trace("In MAIN after new " & x.ident); 
+   
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 112");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 112") ;
+      Outimage;
+   end;
+   
+end;

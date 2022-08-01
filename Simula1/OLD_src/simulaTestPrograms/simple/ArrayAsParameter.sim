@@ -1,0 +1,38 @@
+
+begin
+   ref(CC) array R(1:312);
+   integer array A(7:89);
+   integer array A2(7:89,45:97);
+   integer x;
+   ref(CC) cx;
+   
+   class CC(AAA); integer array AAA;
+   begin
+      integer array B2(7:89,45:97);
+      integer m;
+      ref(CC) next;
+      m:=AAA(74);
+   end;
+   
+   procedure Proc(AA); integer array AA;
+   begin
+      integer k;
+      k:=AA(9);
+   end;
+   
+   A(8):=45;
+   x:=A(88);
+   A2(9,56):=45;
+   x:=A2(37,78);
+   cx:-new CC(A);
+   cx.next:-new CC(A);
+   cx.AAA(x+9) := 134;
+   cx.next.AAA(x+11) := 134;
+   cx.next.B2(x+15,48) := 134;
+   
+   R(45):-cx;
+   cx.next:-R(89);
+   
+   Proc(A);
+   new CC(A);
+end;   

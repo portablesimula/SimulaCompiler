@@ -1,0 +1,20 @@
+begin
+  
+  Procedure callFP(F); integer procedure F;
+  begin
+     real r; integer i;
+     r:=F(7,9);
+     i:=F(7,9);
+%     i:=F(7,9,13); !Too many parameters;
+     i:=F(9); !Too few parameters;
+  end;
+  
+  
+  integer Procedure P(p1,p2); integer p1; real p2;
+  begin
+    P:=p1;
+  end;
+  
+  callFP(P);
+  
+end;  

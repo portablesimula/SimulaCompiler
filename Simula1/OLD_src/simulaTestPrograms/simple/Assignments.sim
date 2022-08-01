@@ -1,0 +1,48 @@
+begin
+   class A;
+   begin
+     ref(A) ax;
+     real attr;
+%     attr:=89;
+   end;
+   
+   A class B;
+   begin
+     ref(B) by;
+     integer bttr;
+%     attr:=89;
+   end;
+   
+   integer procedure F(x); real x;
+   begin F:=4*x; end;
+
+   
+   boolean bb;
+   
+   integer i,j,k;
+   real r,w;
+   
+   ref(A) x;
+   ref(B) y;
+   
+   x:-new B();
+   x.ax:-new B();
+   y:-new B();
+   y.by:-new B();
+   
+   r:=k;
+   j:=i+j*k;
+   
+   r:=k:=w+j*i;
+   
+   (if bb then x else y).attr:=67;
+   
+   x.attr:=y.bttr:=w+j*i;
+
+   ((x qua B).ax qua B).by :- new B();
+    
+   x:-y:-x:-new B();
+   
+   j:=F(3.14);
+   
+EXIT:end;   

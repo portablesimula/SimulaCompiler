@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -37,7 +40,7 @@ import simula.compiler.utilities.Util;
 public final class MakeSetup {
 	
 //	private final static int EXPLICIT_REVISION = -1; // Normal update
-	private final static int EXPLICIT_REVISION = 22;
+	private final static int EXPLICIT_REVISION = 7;
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Simula-1.0";
@@ -46,7 +49,7 @@ public final class MakeSetup {
 	private final static String RELEASE_SAMPLES=RELEASE_HOME+"\\samples";
 
 	private final static String GITHUB_ROOT="C:\\GitHub";
-	private final static String ECLIPSE_ROOT="C:\\GitHub\\SimulaCompiler\\Simula";
+	private final static String ECLIPSE_ROOT="C:\\GitHub\\Simula2\\Simula2";
 	private final static String COMPILER_BIN=ECLIPSE_ROOT+"\\bin";
 	private final static String INSTALLER_BIN=ECLIPSE_ROOT+"\\bin";
 
@@ -58,7 +61,6 @@ public final class MakeSetup {
 			updateSetupProperties();
 
 			makeSimulaCompiler();
-			copySimulaCommonClasses();
 			copySimulaRuntimeSystem();
 			copySimulaIconFiles();
 //			dummyExecuteSimulaCompiler();
@@ -81,35 +83,25 @@ public final class MakeSetup {
 		File releaseHome=new File(RELEASE_HOME);
 		releaseHome.mkdirs();
 		String compilerManifest=ECLIPSE_ROOT+"\\src\\make\\setup\\CompilerManifest.MF";
-		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/common -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/objectweb/asm");
-		execute("jar -tvf "+RELEASE_HOME+"\\simula.jar");
-	}
-	
-	// ***************************************************************
-	// *** COPY SIMULA COMMON CLASSES
-	// ***************************************************************
-	private static void copySimulaCommonClasses() throws IOException {
-		String target=RELEASE_HOME+"\\rts\\simula\\common";
-		printHeading("Copy Common Classes into "+RELEASE_HOME);
-        System.out.println("MakeCompiler.copySimulaCommonClasses: target="+target);
-        // *** Copy Current Common Classes
-//		execute("Robocopy "+COMPILER_BIN+"\\simula\\common "+target+" /E");
-//		copyFiles(COMPILER_BIN+"\\simula\\common",target);
-		copyFolder(new File(COMPILER_BIN+"\\simula\\common"),new File(target),true);
+//		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/common -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/objectweb/asm");
+		execute("jar","cmf",compilerManifest,RELEASE_HOME+"\\simula.jar",
+//				"-C",COMPILER_BIN,"./simula/common",
+				"-C", COMPILER_BIN, "./simula/compiler",
+				"-C", COMPILER_BIN, "./org/objectweb/asm");
+//		execute("jar -tvf "+RELEASE_HOME+"\\simula.jar");
+		execute("jar", "-tvf", RELEASE_HOME+"\\simula.jar");
 	}
 	
 	// ***************************************************************
 	// *** COPY SIMULA RUNTIME SYSTEM
 	// ***************************************************************
 	private static void copySimulaRuntimeSystem() throws IOException {
+		File source=new File(COMPILER_BIN+"\\simula\\runtime");
 		String target=RELEASE_HOME+"\\rts\\simula\\runtime";
-		printHeading("Copy Simula RuntimeSystem into "+RELEASE_HOME);
+		printHeading("Copy Simula RuntimeSystem "+source+" ===> "+target);
         System.out.println("MakeCompiler.copySimulaRuntimeSystem: target="+target);
-        // *** Copy Current Runtime System
-//		execute("Robocopy "+COMPILER_BIN+"\\simula\\runtime "+target+" /E");
-//		copyFiles(COMPILER_BIN+"\\simula\\runtime",target);
-//		copyFiles(COMPILER_BIN+"\\simula\\runtime\\loom",target+"\\loom");
-		copyFolder(new File(COMPILER_BIN+"\\simula\\runtime"),new File(target),true);
+		copyFolder(source,new File(target),true);
+		list(source);
 	}
 	
 	// ***************************************************************
@@ -122,7 +114,7 @@ public final class MakeSetup {
 		copyImageFile("simula.png");
 	}
 	private static void copyImageFile(String fileName) throws IOException	{
-		File source=new File(ECLIPSE_ROOT+"\\icons\\"+fileName);
+		File source=new File(ECLIPSE_ROOT+"\\src\\icons\\"+fileName);
 		File target=new File(RELEASE_HOME+"\\icons\\"+fileName);
 		target.mkdirs();
 		System.out.println("source="+source);
@@ -176,17 +168,6 @@ public final class MakeSetup {
 	// *** COPY FOLDER
 	// ***************************************************************
 	static private void copyFolder(File source, File target,boolean copySubFolders) throws IOException {
-//	    // checks
-//	    if(source==null || target==null) return;
-//	    if(!source.isDirectory()) return;
-//	    if(target.exists()){
-//	        if(!target.isDirectory()){
-//	            //System.out.println("destination not a folder " + target);
-//	            return;
-//	        }
-//	    } else target.mkdir();
-//	    if(source.listFiles()==null || source.listFiles().length==0) return;
-
 		target.mkdirs();
 	    for(File file: source.listFiles()) {
 	        File fileDest = new File(target, file.getName());
@@ -202,10 +183,10 @@ public final class MakeSetup {
 	// ***************************************************************
 	// *** LIST FILES
 	// ***************************************************************
-	private static void list(final String dirName) {
-		try {
-			Util.message("------------  LIST "+dirName+"  ------------");
-			list("",new File(dirName));
+	private static void list(final String dirName) { list(new File(dirName)); }
+	private static void list(final File dir) {
+		try { Util.message("------------  LIST "+dir+"  ------------");
+			  list("",dir);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
@@ -219,12 +200,20 @@ public final class MakeSetup {
 			}
 			Util.println("Elements: "+elt.length);
 			for (File f : elt) {
-				Util.println(indent+"- "+f);
+				Util.println(indent+"- "+getModifiedTime(f)+"  "+f);
 				if(f.isDirectory()) list(indent+"   ",f);
 			}
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 
+	private static String getModifiedTime(File file) {
+		try { Path path = Paths.get(file.toString());
+			  BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
+			  return(attr.lastModifiedTime().toString().substring(0,19).replace('T',' '));
+		} catch (IOException e) { e.printStackTrace(); }
+		return(null);
+	}
+	
 //	// ***************************************************************
 //	// *** DUMMY EXECUTE SIMULA COMPILER JAR
 //	// ***************************************************************
@@ -271,11 +260,17 @@ public final class MakeSetup {
 		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
 			
 		String installerManifest=SETUP_SRC+"\\InstallerManifest.MF";
-		String files=" -C "+RELEASE_HOME+" ."  // Complete Simula Release
-				    +" -C "+INSTALLER_BIN+" ./make/setup";
-		execute("jar cmf "+installerManifest+" "+GIT_BINARIES+"\\setup.jar"+files);
+		
+//		String files=" -C "+RELEASE_HOME+"."  // Complete Simula Release
+//				    +" -C "+INSTALLER_BIN+" ./make/setup";
+//		System.out.println("jar cmf "+installerManifest+" "+GIT_BINARIES+"\\setup.jar"+files);
+		
+		execute("jar", "cmf", installerManifest, GIT_BINARIES+"\\setup.jar",
+				"-C",RELEASE_HOME, ".",  // Complete Simula Release
+			    "-C",INSTALLER_BIN, "./make/setup");
 		printHeading("BEGIN -- List Simula Setup.jar in "+GIT_BINARIES);
-		execute("jar -tvf "+GIT_BINARIES+"\\setup.jar");
+//		execute("jar -tvf "+GIT_BINARIES+"\\setup.jar");
+		execute("jar","-tvf",GIT_BINARIES+"\\setup.jar");
 		printHeading("END -- List Simula Setup.jar in "+GIT_BINARIES);
 		copySetupJAR();
 	}
@@ -285,7 +280,7 @@ public final class MakeSetup {
 	// ***************************************************************
 	private static void copySetupJAR() throws IOException	{
 		File source=new File(GIT_BINARIES+"\\setup.jar");
-		File target=new File(GITHUB_ROOT+"\\github.io\\setup\\setup.jar");
+		File target=new File(GITHUB_ROOT+"\\github.io\\setup2\\setup.jar");
 		System.out.println("source="+source);
 		System.out.println("target="+target);
 		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
@@ -296,18 +291,21 @@ public final class MakeSetup {
 	// *** EXECUTE SIMULA SETUP
 	// ***************************************************************
 	private static void executeSimulaSetup() throws IOException	{
-		String SETUP_JAR=GITHUB_ROOT+"\\github.io\\setup\\setup.jar";
+		String SETUP_JAR=GITHUB_ROOT+"\\github.io\\setup2\\setup.jar";
 		printHeading("Execute SimulaSetup: "+SETUP_JAR);
-		execute("java -jar "+SETUP_JAR);
+//		execute("java -jar "+SETUP_JAR);
+		execute("java","-jar",SETUP_JAR);
 	}
 	
 	// ***************************************************************
 	// *** EXECUTE OS COMMAND
 	// ***************************************************************
-	private static int execute(String command) throws IOException {
+	private static int execute(String... cmd) throws IOException {
 		Runtime runtime = Runtime.getRuntime();
-        System.out.println("MakeCompiler.execute: command="+command);
-	    String cmd=command.trim()+'\n';
+		String line="";
+		for(int i=0;i<cmd.length;i++) line=line+" "+cmd[i];
+        System.out.println("MakeCompiler.execute: command="+line);
+//	    String cmd=command.trim()+'\n';
 		Process process = runtime.exec(cmd);
 		//try
 		{ InputStream err=process.getErrorStream();
@@ -323,9 +321,9 @@ public final class MakeSetup {
 	}
 
 	private static void printHeading(String heading) {
-		System.out.println("********************************************************************************");
+		System.out.println("************************************************************************************************************************************");
 		System.out.println("*** "+heading);
-		System.out.println("********************************************************************************");
+		System.out.println("************************************************************************************************************************************");
 	}
 	
 	
@@ -380,7 +378,7 @@ public final class MakeSetup {
 		String USER_HOME=System.getProperty("user.home");
 		System.out.println("USER_HOME="+USER_HOME);
 //		File setupPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		File setupPropertiesDir=new File(GITHUB_ROOT+"\\github.io\\setup");
+		File setupPropertiesDir=new File(GITHUB_ROOT+"\\github.io\\setup2");
 		System.out.println("setupPropertiesDir="+setupPropertiesDir);
 		setupPropertiesDir.mkdirs();
 		setupPropertiesFile=new File(setupPropertiesDir,"setupProperties.xml");

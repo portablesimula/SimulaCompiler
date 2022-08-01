@@ -1,0 +1,12 @@
+% ProcedureDeclaration
+begin
+
+  integer Procedure P(p1,p2);
+    integer p1; real p2;
+  begin
+    text Array TA(1:40);
+    integer i;
+    P:=p1;
+    i:=6;
+  end; 
+end;      

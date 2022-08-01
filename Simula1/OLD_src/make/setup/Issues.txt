@@ -1,0 +1,463 @@
+Simula Issues
+
+CLOSED Issue 34: From Sid
+Incorrect runtime message at  NOTEXT.put...()
+Analysis: Simula Standard 8.7 Editing procedures states: 
+		  "If X references a constant text frame or notext, an error results".
+		  Neither constant text nor notext was checked.
+Action: Corrected in  TXT$.putResult, TXT$.putchar
+
+Two new runtime errors introduced:
+	- Illegal Text T.put...  T==NOTEXT
+	- Illegal Text T.put...  T is constant
+   
+===============================================================================
+
+CLOSED Issue 33: Fra Øystein
+formell integer procedure F som anvendes i et assignment til en real.
+
+Kjører:
+real r; r:=F(7,9); Hvor F er formell.
+og får: Feil Java kode.
+Analyse: TypeConversion.toJavaCode var feil - rettet.
+===============================================================================
+
+CLOSED Issue 32: Fra Øystein
+This Process.into( ... )   feiler.
+
+Kjører:
+Simulation begin 
+
+   Process class Customer; 
+   begin procedure abra; 
+               this Process.into(none); 
+   end; 
+
+   new Customer.abra;
+end
+og får: SIMULA RUNTIME ERROR: ClassCastException
+
+Analyse: Standard class Process kan brukes på alle blokknivåer og 
+         har ikke eget blokknivå. Derfor feiler  this Process
+         
+         Det viste seg at behandlingen av  This A  inne fra en connection
+         block også ble feil når A er deklarert utenfor connnection block'a
+Tiltak: Kodegenerering av  This <classIdentifier>  er skrevet om
+===============================================================================
+
+CLOSED Issue 31: Fra Øystein
+Labeled INNER statement.
+
+Kjører:
+class A;
+L: inner; goto L;
+end;
+
+og får: Error: Misplaced symbol: INNER -- Ignored
+Analyse: INNER Statement hadde falt ut fra perser'n
+Tiltak: INNER er inne igjen.  
+===============================================================================
+
+OPEN Issue 30: Fra Gunnar
+IllegalStateException 
+
+Kjører Docking og får:
+ Thread:main[Simula Docking]: SIMULA RUNTIME ERROR: IllegalStateException Buffers have not been created (etter 14 vans) 
+ - Line 242 Error: (som ovenfor, men mer) Jeg har mistet output
+ 
+Analyse: se: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6933331
+
+Tiltak: Ingen, venter på Java 13
+===============================================================================
+
+OPEN Issue 29: Fra Karel
+Problem med nasjonale bokstaver.
+
+Jeg må distribuere sample.sim filer i UTF-8 fordi det er 'mest vanlig' nå til dags.
+Vurderer å innføre en ny option i SimulaEditor:
+   - CHARSET    UTF-8   windows-1252   ...
+
+CHARSET brukes så når  .sim  filer leses.
+
+===============================================================================
+
+OPEN Issue 28: Fra Karel
+PrimeUnder stopper etter hvert ved 1000000 som input 
+
+Analyse: Regner med at du får denne meldingen:
+
+Thread:main[Simulation$ SQS=Simula Head$]: UNCAUGHT EXCEPTION: unable to create new native thread
+
+Årsaken er at alle Simulation-prosesser realiseres i hver sin Thread.
+Og, det er vanlig praksis i simulerings-programmer å skrive:
+
+process class P; 
+   begin
+         ... initial action
+         while true do begin 
+           ... action
+           hold(someTime); 
+         end; 
+   end;
+
+Dette fører til at Thread'ene ikke termineres. De blir hengende og beholder sin memory.
+
+Java VM har en del options for å tildele memory til Threads.
+Det bør undersøkes om noen VM-options bør gjøres tilgjengelig fra SimulaEditor.
+
+I første omgang innføres en ny option i SimulaEditor:
+    - ThreadStackSize   default 128 KB stack size in a 32-bit JVM,
+                          and a 256 KB stack size in a 64-bit JVM.
+                          
+Implementeres ved: public Thread​(ThreadGroup group,Runnable target,String name,long stackSize)
+                     hvor group angis 'null'
+                          
+Mer info her: http://xmlandmore.blogspot.com/2014/09/jdk-8-thread-stack-size-tuning.html
+===============================================================================
+
+CLOSED Issue 27: Fra Karel
+Procedure kall med tomme paranteser:  P()
+Dette hører ikke til i Simula.
+Parser'n blir rettet.
+
+===============================================================================
+
+CLOSED Issue 26: Fra Øystein
+Terminering av Prosesser.
+
+Java def. 12.1 sier:
+
+  'an implementation may treat a terminated process object as terminated in the strict sense.'
+  Med 'strict' menes her: som om processen hadde utført 'final end'.
+  
+Tiltak: Terminering av processer behandles nå individuelt.
+
+===============================================================================
+
+OPEN Issue 25: Fra Øystein
+Håndtering av integer overflow underflow.
+
+Java def. sier  'The integer operators do not indicate overflow or underflow in any way.'
+
+Fra Java 8 er det inført metoder   Math.addExact (multiplyExact, subtractExact etc.) som kaster exception overflow/underflow.
+Dermed får vi redusert performance.
+
+Jeg tror jeg innfører en compiler option på dette.
+
+===============================================================================
+
+CLOSED Issue 24: Fra Karel
+for k := n step m until max do  hvor  n > max 
+uføres en gang før jeg testet.
+Skulle ikke gjort det.
+
+Tiltak: For Element Step-Until er oppdatert.
+
+===============================================================================
+
+CLOSED Issue 23: Fra Karel
+Untyped array parameter til procedure. Parser failed
+Syntax i Simula Standard er feil.
+
+Tiltak: Simula Standard er 'rettet' og untyped array tillates nå.
+
+===============================================================================
+
+CLOSED Issue 22: Fra Gunnar
+Jeg brukte søkefunksjonen i SimulaEditor.
+Først så jeg ikke funnet, neste gang var den posisjonert på siste linje i vinduet.
+Setter du den i midten?
+
+Tiltak: Tror den er på midten nå.
+
+===============================================================================
+
+CLOSED Issue 21: Fra Karel
+Input file without terminating new-line.
+Siste tegn kastes. 
+
+Tiltak: Tror det er iorden nå
+
+===============================================================================
+
+CLOSED Issue 20: Fra Karel
+En klasse kan ha for eksempel prosedyrer og labels som parametre. 
+
+Ved første kjøring får man feil med litt kryptisk melding.
+Prøv å kommentere vekk linje 12 for å unngå feilen og kjør.
+Hvis du så gjenoppretter linjen og eksekverer igjen, kommer ikke den opprinnelige feilmeldingen.
+
+Analyse: Klasser og Prosedyrer bruker samme BlockDeclarartion til å parse input.
+
+Tiltak: Rettet
+
+===============================================================================
+
+OPEN Issue 19: Fra Øystein
+Source Linjenummer er mangelfull ved Runtime-Error i statement koden til en
+separat kompilert super-klasse. Det refereres til feil source file.
+
+Dessuten kan linjenummer være unøyaktig i alle tilfeller.
+
+===============================================================================
+
+OPEN Issue 18: Fra Øystein
+Printfile er mangelfullt implementert.
+Prøv å bruke "java print document to printer".
+
+Se: https://coderanch.com/t/587886/java/Print-document-java
+
+===============================================================================
+
+CLOSED Issue 17: Fra Øystein
+Dårlig feilmelding ved ulovlig GOTO.
+
+Analyse: Label quant inneholder for lite informasjon.
+
+Tiltak: Utvid LABQNT$ med identifier og linje-nummer.
+
+===============================================================================
+
+CLOSED Issue 16: Fra Øystein
+Problemer med å evaluere Constant-expression
+
+Analyse: 
+
+begin
+
+inspect new infile(fileName) do
+simulation begin
+    integer k=pos-1;
+
+    setpos(pos-1);
+
+end;
+end;
+
+Tiltak: 1) evaluer expression i Pass 1 hvis bare konstanter
+        2) evaluer constant declaration i Java's Constructor til en final.
+===============================================================================
+
+CLOSED Issue 15: Fra Karel
+Identifier 'null' blir ikke konvertert til en lovlig Java-Identifier.
+Analyse: 'null' er ikke i lista over keyword i Java. ( i Java er 'null' en
+         såkalt NullLiteral og kan ikke brukes som Identifier ).
+Derfor hadde glemt å bytte identifier 'null' til noe annet. Det er gjort nå.
+===============================================================================
+
+CLOSED Issue 14: Fra Dag og Karel
+ Savnet av en undo i editoren er stort.
+ 
+ - redigeringkontroll kunne utbedres:
+  = redigering modus bør åpnes automatisk ved klikking i editor vinduet
+  = Undo mulighet bør innføres
+  = kontroll v.h.a. høyre museknapp for Cut, Copy og Paste er ønskelig
+  = kanskje også for New, Open, Save, Delete og Close
+
+Tiltak: Editoren er skrevet om. 
+===============================================================================
+
+CLOSED Issue 13 Fra Stein
+Tillater subklasser på dypere blokknivå.
+Det ser ut til at den tillater subklasse på dypere blokk nivå enn superklassen,
+og litt dotting og QUA'ing rundt det går også gjennom.
+Programmet under går nemlig fint:
+
+begin
+   class A;
+   begin
+      integer k;
+
+      procedure P;
+      begin
+        integer i;
+        A class C;   ! Subclass on a deeper block level not allowed ;
+        begin 
+           integer j;
+           j:= 5;
+        end C;
+
+        ref(A) rA; 
+        rA:- new C;
+        outint( rA qua C.j, 9); outimage;
+      end P;
+   end A;
+
+   ref(A)rAx;
+   rAx:- new A;
+   rAx.P;
+
+   outtext("Kom helt til slutten!"); outimage;
+end
+
+
+===============================================================================
+
+CLOSED Issue 12: Fra Stein
+Jeg testet dette med at det ikke er lov å dotte seg inn i klasser med lokale klasser,
+se utdrag av SIMULA standard nederst under.  Programmet under virker helt strålende,
+og det burde det vel ikke.  Da er det vel også lett å konstruere programmer som foretar
+såkalt "transplantasjon", men jeg har ikke gjort det.
+
+begin
+   class A;
+   begin
+      class B;
+      begin
+        integer i; 
+        i:= 25;
+      end B;
+
+      ref(B) rB;
+      rB:- new B;    
+   end A;
+
+   ref(A) rA; 
+   rA:- new A;
+   outint(rA.rB.i, 9);
+end
+
+Tiltak: Test for dot into klasse med lokale klasser er lagt inn.
+
+----------------------------------------------------------------------
+
+FRA SIMULA STANDARD:
+
+Let X be a simple object expression qualified by the class C, and let A be an
+appropriate attribute identifier. Then the remote identifier "X.A", if valid,
+is an attribute identification whose object is the value X and whose
+qualification is C (cf. 5.5.6).
+
+The remote identifier X.A is valid if the following conditions are satisfied:
+
+    The value X is different from none.
+    The object referenced by X has no class attribute declared at any prefix
+    level equal or outer to that of C. 
+
+Note: Condition 1 corresponds to a check which causes an error if the value of X is none.
+Condition 2 is an ad hoc rule intended to simplify the language and its implementations.
+
+Analyse: Sematic-check svarende til Condition 2 gjøres ikke.
+
+===============================================================================
+
+
+CLOSED Issue 11: Fra Stein
+Følgende program går gjennom:
+--------------------------------------------------------
+begin
+   integer i, j, k; j:= 19;
+   k:= i++j;
+   outint(k, 10); outimage;
+end
+---------------------------------------------------------
+Syntaksen for aritmetiske uttrykk tillater altså ikke "k:= i-+j;"
+Det må i så fall være parentes slik:    "k:= i-(+j) ;".
+Sjekk mot syntaksen fra Simula standard.
+
+Tiltak: Endret syntaxen bittelitt:
+        SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
+   endres til:
+        SimpleArithmeticExpression  =  UnaryTerm  {  ( + | - )  Term }
+        UnaryTerm  =  [ + | - ]  Term
+        
+        Deretter rettet jeg koden tilsvarende.
+
+===============================================================================
+
+CLOSED Issue 10: Fra Eyvind, Gunnar, Karel ...
+Under utføring av 'store' simuleringer kommer det en feilmelding:
+  Assertion Failed: Invariant-2
+Deretter kan man fortsette ved å trykke [Enter] og programmet
+avslutter fint (for det meste).
+
+Analyse: Thread swap var mangelfullt implementert.
+
+===============================================================================
+
+CLOSED Issue 9: Fra Gunnar
+Simula PRM sect. 6.5 sier at bare bokstaver er lovlige 'selectors'.
+I PC Simula tillot vi også siffer.
+
+Tiltak: Simula PRM og Simula Scanner rettes slik at siffer blir lovlig.
+
+===============================================================================
+
+CLOSED Issue 8: Fra Øystein
+Det er umulig å fjerne et Workspace igjen.
+
+Tiltak: En ny knapp i [Settings] [WorkSpaces] innføres for å kunne fjerne 
+        sånne.
+
+===============================================================================
+
+CLOSED Issue 7: Fra Øystein
+Forsøk på å åpne et ferdig kompilert programs .jar file - feiler stort.
+
+Tiltak: Editor rettet: [Open] på en .jar file starter en utføring.
+
+===============================================================================
+
+CLOSED Issue 6: Fra Dag
+Jeg har også en kommentar som går på versjon:
+
+* Gammel Simula skrev ut stjerner når tallverdien i kall på OutInt var for 
+kort. Nyere versjoner utvidet i stedet feltet. Jeg foretrekker det siste.
+
+Analyse: Finner ikke noe sånt i Simula Standard.
+         Outint(value,0) er innført i Simula Standard til å bety noe ala
+         det du beskriver.
+
+Tiltak: Ingen.
+
+===============================================================================
+
+CLOSED Issue 5: Fra Dag
+* Jeg har også prøvd å hente inn eksterne klasser; se de to vedlagte 
+filene. dates.sim lar seg greit kompilere. Når jeg prøver å kompilere 
+testdates.sim, krasjer kompilatoren, editoren og alt.
+
+Analyse: Reproduserer i test-utgaven min. Går feil ved lesing av attr.file
+         Long real constant lagt ut feil i attr.filen
+         Ved senere lesing gikk kompilatoren i FATAL ERROR som i editoren
+         ikke ble synlig fordi en System.exit(-1) lukket alle vinduer.
+         
+Tiltak: 1) Vinduet med FATAL ERROR blir stående
+        2) Skriving av long real constant er retta i attr.file          
+
+===============================================================================
+
+CLOSED Issue 4: Fra Dag
+* Editoren henger av og til og jeg får melding om
+   java.lang.OutOfMemoryError: Java heap space. Si fra om du vil
+   ha en full stack trace.
+   
+Analyse: Tror at dette henger sammen med at auto-refresh er ganske ustabil.
+
+Tiltak: Editoren er skrevet om.
+
+===============================================================================
+
+CLOSED Issue 3: Fra Dag og Karel
+* Kommentarer etter siste END er ikke lov.  END-Comment
+
+Tiltak: Det var en tullefeil - rettet(tror jeg).
+
+===============================================================================
+
+CLOSED Issue 2: Fra Dag og Gunnar
+* Kompilatoren liker ikke filnavn med bindestrek.
+ Heller ikke filnavn som begynner med et siffer
+ 
+Tiltak: Java class identifier lages fra filnavnet ved å erstatte alle ulovlige
+        tegn med '_'. 
+
+===============================================================================
+
+CLOSED Issue 1: Fra Dag
+* Editoren er rar. Plutselig finner den på å hoppe til starten av koden og 
+fjerne omtrent alt.
+
+Tiltak: Det var en tullefeil - rettet(tror jeg).
+
+===============================================================================

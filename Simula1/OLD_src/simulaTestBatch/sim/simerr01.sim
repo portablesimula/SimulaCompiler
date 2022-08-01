@@ -1,0 +1,95 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA ERROR TEST NO 01
+%
+%  PURPOSE: ILLEGAL GOTO out of an operating Process and into the enclosing System.
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Text CASE=" ERROR-TEST 01";
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:8);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   
+   procedure ExceptionHandler(ErrorText); text ErrorText;
+   begin
+      trace("ExceptionHandler got error: " & ErrorText);
+      IF found_error THEN
+           Outtext("GOT ERROR(S) IN" & CASE)
+      ELSE Outtext ("--- NO ERRORS FOUND IN" & CASE);
+
+      if verbose then begin
+         Outimage;
+         Outtext ("--- END SIMULA" & CASE) ;
+         Outimage;
+      end;
+      terminate_program;
+   end;
+
+   procedure p;
+   begin
+      integer i;
+      Simulation begin
+         ref(Car) car1;
+      
+         Process Class Car(pname); Text pname;
+         Begin
+            trace(pname & " is initiating");
+            while true do
+            begin
+               trace(pname & " is active 1");
+               Hold (4);
+               trace(pname & " is active 2");
+               goto EXIT_LABEL;
+		    end;
+         End;
+      
+         trace("START SIMULATION");
+         car1:- New Car("Bil 1");
+         trace(car1.pname & " is scheduled for 4.0");
+         Activate car1 at 4.0;
+         Hold (12);
+EXIT_LABEL: outtext("At OUT"); outimage;
+      
+      end;
+   end;
+   
+   
+   if verbose then begin
+   Outtext("--- START SIMULA" & CASE);
+   Outtext("--- ILLEGAL GOTO");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"--- START GOTO SAMPLE";
+   facit(1):-"START SIMULATION";
+   facit(2):-"Bil 1 is scheduled for 4.0";
+   facit(3):-"Bil 1 is initiating";
+   facit(4):-"Bil 1 is active 1";
+   facit(5):-"Bil 1 is active 2";
+   facit(6):-"ExceptionHandler got error: Illegal GOTO EXIT_LABEL";
+
+   DEFEXCEPTION(ExceptionHandler);
+
+   trace("--- START GOTO SAMPLE");
+
+   p;
+   
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+
+ END

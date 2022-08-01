@@ -1,0 +1,89 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 88
+%
+%  PURPOSE:     Test visibility of Hidden attributes.
+%
+%  WRITTEN BY:  MYH  28/05-2018
+% ==============================================================================
+BEGIN
+   Boolean found_error;
+   Boolean verbose=false;
+   integer pval;
+
+   Class A;
+   begin integer i;
+         integer array H(1:10);
+         integer procedure vai; vai := i;
+         integer procedure vaA; vaA := H(5);
+         integer procedure P; P:=134;
+   end;
+
+   A Class B; Protected i,H,P;
+   begin integer i;
+         integer array H(1:10);
+         integer procedure vbi; vbi := i;
+         integer procedure vbA; vbA := H(5);
+         integer procedure P; P:=13;
+   end;
+
+   B Class C; Hidden i,H,P;
+   begin 
+         integer procedure vci; vci := i;
+         integer procedure vcA; vcA := H(5);
+%         integer procedure P; P:=1;
+   end;
+
+   if verbose then begin
+   Outtext("--- START TEST 88"); Outimage;
+   Outtext("--- Test visibility of Hidden attributes.");
+   Outimage; Outimage;
+   end;
+   
+   C begin
+   
+     i := 34;
+     if vai = 34 and vbi = 0 and vci = 0 then
+     else
+     begin
+         Outtext("*** error in test 1: Visibility of Hidden attribute."); Outimage;
+         Outtext("            Erroneus values : vai = "); Outint(vai, 4); Outimage;
+         Outtext("                              vbi = "); Outint(vbi, 4); Outimage;
+         Outtext("                              vci = "); Outint(vci, 4); Outimage;
+         found_error := true
+     end;
+   
+     H(5) := 34;
+     if vaA = 34 and vbA = 0 and vcA = 0 then
+     else
+     begin
+         Outtext("*** error in test 1: Visibility of Hidden attribute."); Outimage;
+         Outtext("            Erroneus values : vaA = "); Outint(vaA, 4); Outimage;
+         Outtext("                              vbA = "); Outint(vbA, 4); Outimage;
+         Outtext("                              vcA = "); Outint(vcA, 4); Outimage;
+         found_error := true
+     end;
+   
+     pval := P;
+     if pval = 134 then
+     else
+     begin
+         Outtext("*** error in test 1: Visibility of Hidden attribute."); Outimage;
+         Outtext("            Erroneus values : pval = "); Outint(pval, 4); Outimage;
+         found_error := true
+     end;
+   
+   end;
+
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext("--- NO ERRORS FOUND IN TEST 88");
+   END;
+
+   if verbose then begin
+   Outtext("--- END TEST 88");
+   Outimage
+   end
+   
+ END

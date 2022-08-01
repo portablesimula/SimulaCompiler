@@ -1,0 +1,52 @@
+begin
+   integer curline=134;
+   text inim,leftintbuf;
+   character c;
+   integer impos;
+
+
+   text procedure leftint(i); integer i;
+   begin leftintbuf.putint(i); i:=11;
+         while loadchar(leftintbuf,i)<>' ' do i:=i-1;
+         leftint:-leftintbuf.sub(i+2,11-i);
+   end;
+
+   text procedure edchar(c); character c;
+   begin text t; 
+       edchar:-t:-blanks(1);
+       t.putchar(c);
+   end;
+
+   
+
+   procedure TRACE(msg); text msg;
+   begin if curline>0 then outtext("LINE " & leftint(curline) & "  ");
+       outtext(msg); outimage;
+   end;
+       
+   inim:-copy("ABC : ");
+   leftintbuf :-blanks(12); !*** enough to hold 32-bits integer ***;
+
+   c:=loadchar(inim,impos); impos:=impos+1;
+   TRACE("Pass1.GETSYMB: LOOP: c=" & edchar(c));
+   switch('!0!':'!255!') c begin
+
+      when 'a':'z','A':'Z' do begin
+            
+         while true do begin
+                    c:=loadchar(inim,impos); impos:=impos+1;
+                    TRACE("Pass1.GETSYMB: IDENT: c=" & edchar(c));
+                    switch('!0!':'!255!') c begin
+                      when '0':'9','a':'z','A':'Z','_' do ;
+                      when none do
+                      begin
+                         TRACE("Pass1.GETSYMB: goto LNID: c=" & edchar(c));
+                         goto LNID;
+                       end;
+                    end;
+                 end;
+
+      LNID: --     simsymbol:-inim.sub(startpos,impos-startpos); DEFIDENT;
+   end;
+            
+end;

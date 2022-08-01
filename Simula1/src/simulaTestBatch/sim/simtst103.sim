@@ -1,0 +1,89 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 103
+%
+%  PURPOSE: All kinds of Activation Statements
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+Simulation Begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+
+   ref(Car) bil1,bil2,bil3;
+   text t;
+
+   integer traceCase;
+   text array facit(0:8);
+   
+   text procedure edfix(r); real r;
+   begin text t; t:-blanks(6); t.putfix(r,2); edfix:-t; end;
+   
+   procedure trace(msg); text msg;
+   begin
+      text case1;
+      case1:-edfix(time) & ": " & msg;
+      if verbose then begin outtext(case1); outimage; end;
+      if case1 NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & case1); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   Process Class Car(id); text id;
+   Begin
+      trace(id & ": Run Fase-1");
+      Hold (4);
+      trace(id & ": Run Fase-2");
+      Hold (12);
+      trace(id & ": Terminates");
+   End;
+   
+
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 103"); Outimage ;
+   Outtext("--- Test Activation Statements");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"  0.00: Bil-1: Run Fase-1";
+   facit(1):-"  4.00: Bil-1: Run Fase-2";
+   facit(2):-"  7.45: Bil-3: Run Fase-1";
+   facit(3):-"  7.45: Bil-2: Run Fase-1";                                                                                                           
+   facit(4):-" 11.45: Bil-3: Run Fase-2";                                                                                                           
+   facit(5):-" 11.45: Bil-2: Run Fase-2";                                                                                                           
+   facit(6):-" 16.00: Bil-1: Terminates";                                                                                                           
+   facit(7):-" 23.45: Bil-3: Terminates";                                                                                              
+   facit(8):-" 23.45: Bil-2: Terminates";
+   
+   Activate bil1; ! Activate NONE is dummy ;
+
+   bil1:-new car("Bil-1");
+   Activate bil1;
+   bil2:-new car("Bil-2");
+   bil3:-new car("Bil-3");
+   Activate bil2 at 7.45;
+   Activate bil3 at 7.45 prior;
+   Activate bil2 delay 1.23;
+   Activate bil3 delay 1.23 prior;
+   Activate bil2 before bil1;
+   Activate bil3 after bil1;
+   Hold(100);
+   
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 103");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 103") ;
+      Outimage;
+   end;
+   
+End;

@@ -1,0 +1,66 @@
+
+% Testing NONE-CHECK
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA ERROR TEST NO 06
+%
+%  PURPOSE:  ArrayIndexOutOfBounds
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Text CASE=" ERROR-TEST 06";
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:1);
+
+   text txt;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   
+   procedure ExceptionHandler(ErrorText); text ErrorText;
+   begin
+      trace("ExceptionHandler got error: " & ErrorText);
+      IF found_error THEN
+           Outtext("GOT ERROR(S) IN" & CASE)
+      ELSE Outtext ("--- NO ERRORS FOUND IN" & CASE);
+
+      if verbose then begin
+         Outimage;
+         Outtext ("--- END SIMULA" & CASE) ;
+         Outimage;
+      end;
+      terminate_program;
+   end;
+   
+   
+   if verbose then begin
+   Outtext("--- START SIMULA" & CASE);
+   Outtext("---  ArrayIndexOutOfBounds");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"--- Testing NumberFormatException";
+   facit(1):-"ExceptionHandler got error: ArrayIndexOutOfBounds";
+
+   DEFEXCEPTION(ExceptionHandler);
+
+   trace("--- Testing NumberFormatException");
+   
+   txt:-facit(13);
+      
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+
+end;

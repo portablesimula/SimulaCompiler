@@ -1,0 +1,199 @@
+BEGIN
+   Ref(File) xf;
+   Boolean found_error ;
+   boolean verbose=false;
+   
+   Text   anyIntypeFile="C:/GitHub/SimulaCompiler/Simula/src/testing/batch/files/any8189";
+
+   procedure report(line,t,abort); integer line; text t; boolean abort;
+   begin outimage; outtext("Line "); outint(line,0); outtext(": *** report: "); outtext(t); outimage;
+         found_error:=true;
+         if abort then error("Abort requested");
+   end;
+
+   if verbose then begin
+   Outtext("--- START Simula a.s. TEST 81 (Test 'open' and 'close')");
+   Outimage ;
+   Outtext("    file ""any8189"" is opened as infile and inbytefile");
+   Outimage;
+   Outtext("    file ""sxcvz1"" is opened as outfile, "
+                                         "printfile and outbytefile");
+   Outimage;
+   Outtext("    file ""sxcvz2"" is opened as directfile");
+   Outimage;
+   Outtext("    file ""sxcvz3"" is opened as directbytefile");
+   Outimage;
+   end;
+
+   xf:- New Infile(anyIntypeFile);
+
+   if xf qua Infile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened infile ""any8189"")",false);
+
+   if not xf qua Infile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened infile ""any8189"")",true);
+
+   if xf qua Infile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(on open infile ""any8189"")",false);
+
+   if not xf qua Infile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open infile ""any8189"")",false)
+   else
+   if xf qua Infile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed infile ""any8189"")",false);
+
+
+   xf:- New Outfile("sxcvz1");
+
+   if xf qua Outfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened outfile ""sxcvz1"")",false);
+
+   if not xf qua Outfile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened outfile ""sxcvz1"")",true);
+
+   if xf qua Outfile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(open outfile ""sxcvz11"")",false);
+
+   if not xf qua Outfile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open outfile ""sxcvz1"")",false)
+   else
+   if xf qua Outfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed outfile ""sxcvz1"")",false);
+
+
+   xf:- New Directfile("sxcvz2");
+   xf.SetAccess("CREATE");
+
+   if xf qua Directfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened directfile ""sxcvz2"")",false);
+
+   if not xf qua Directfile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened directfile ""sxcvz2"")",true);
+
+   if xf qua Directfile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(open directfile ""sxcvz2"")",false);
+
+   if not xf qua Directfile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open directfile ""sxcvz2"")",false)
+   else
+   if xf qua Directfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed directfile ""sxcvz2"")",false);
+
+
+%   xf:- New Inbytefile("any8189");
+   xf:- New Inbytefile(anyIntypeFile);
+
+   if xf qua Inbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened inbytefile ""any8189"")",false);
+
+   if not xf qua Inbytefile.Open
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened inbytefile ""any8189"")",true);
+
+   if xf qua Inbytefile.Open
+   then report(sourceline,"'open' returns TRUE "
+              "(on open inbytefile ""any8189"")",false);
+
+   if not xf qua Inbytefile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open inbytefile ""any8189"")",false)
+   else
+   if xf qua Inbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed inbytefile ""any8189"")",false);
+
+
+   xf:- New Outbytefile("sxcvz1");
+
+   if xf qua Outbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened outbytefile ""sxcvz1"")",false);
+
+   if not xf qua Outbytefile.Open
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened outbytefile ""sxcvz1"")",true);
+
+   if xf qua Outbytefile.Open
+   then report(sourceline,"'open' returns TRUE "
+              "(on open outbytefile ""sxcvz1"")",false);
+
+   if not xf qua Outbytefile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open outbytefile ""sxcvz1"")",false)
+   else
+   if xf qua Outbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed outbytefile ""sxcvz1"")",false);
+
+
+   xf:- New Directbytefile("sxcvz3");
+   xf.SetAccess("CREATE");
+
+   if xf qua Directbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened directbytefile ""sxcvz3"")",false);
+
+   if not xf qua Directbytefile.Open
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened directbytefile ""sxcvz3"")",true);
+
+   if xf qua Directbytefile.Open
+   then report(sourceline,"'open' returns TRUE "
+              "(on open directbytefile ""sxcvz3"")",false);
+
+   if not xf qua Directbytefile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open directbytefile ""sxcvz3"")",false)
+   else
+   if xf qua Directbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed directbytefile ""sxcvz2"")",false);
+
+
+   xf:- New Printfile("sxcvz1");
+
+   if xf qua Printfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened printfile ""sxcvz1"")",false);
+
+   if not xf qua Printfile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened printfile ""sxcvz1"")",true);
+
+   if xf qua Printfile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(on open printfile ""sxcvz1"")",false);
+
+   if not xf qua Printfile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open printfile ""sxcvz1"")",false)
+   else
+   if xf qua Printfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed printfile ""sxcvz1"")",false);
+
+% TERMINATE:
+
+   if not found_error then
+   begin outtext("--- NO ERRORS FOUND IN TEST 81"); end;
+   if verbose then begin
+      outtext("--- END Simula a.s. TEST 81"); outimage;
+   end;
+
+END

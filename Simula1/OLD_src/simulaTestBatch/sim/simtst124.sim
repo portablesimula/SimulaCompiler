@@ -1,0 +1,76 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 124
+%
+%  PURPOSE: GOTO VIRTUAL LABEL
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:4);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   Class A; virtual: Label L1;
+   BEGIN
+
+      L1: trace("A.L1"); n:=n+1;
+          if n < 4 then
+          begin
+              trace("JUST BEFORE GOTO L1 - B.L1");
+              goto L1;
+          end;
+   END;
+
+   A Class B;
+   BEGIN
+      BEGIN_B: trace("BEGIN B");
+      L1: trace("B.L1"); n:=n+1;
+     
+   END;
+
+   if verbose then begin
+      Outtext("--- START SIMULA TEST 124"); Outimage ;
+      Outtext("--- GOTO VIRTUAL LABEL");
+      Outimage; Outimage;
+   end;
+   
+   facit(0):-"BEGIN PROGRAM";
+   facit(1):-"A.L1";
+   facit(2):-"JUST BEFORE GOTO L1 - B.L1";
+   facit(3):-"B.L1";
+   facit(4):-"END PROGRAM";
+   
+   trace("BEGIN PROGRAM");
+   new B;
+   trace("END PROGRAM");
+      
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 124");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 124") ;
+      Outimage;
+   end;
+   
+   
+END;   

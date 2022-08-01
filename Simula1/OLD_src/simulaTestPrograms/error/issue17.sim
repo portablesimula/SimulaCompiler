@@ -1,0 +1,50 @@
+%
+% OPEN Issue 17: Fra Øystein
+% Dårlig feilmelding ved ulovlig GOTO.
+%
+% -----------------------------------------------------------------------
+% ILLEGAL GOTO out of an operating Process and into the enclosing System.
+% -----------------------------------------------------------------------
+BEGIN
+
+   procedure trace(t); value t; text t; begin
+      outtext(t); outimage;
+   end trace;
+
+   procedure p;
+   begin
+      integer i;
+      Simulation begin
+         ref(Car) car1;
+      
+         Process Class Car(pname); Text pname;
+         Begin
+            trace(pname & " is initiating");
+            while true do
+            begin
+               trace(pname & " is active 1");
+               Hold (4);
+               trace(pname & " is active 2");
+               goto EXIT_LABEL;
+		    end;
+         End;
+      
+         trace("START SIMULATION");
+         car1:- New Car("Bil 1");
+         trace(car1.pname & " is scheduled for 4.0");
+         Activate car1 at 4.0;
+         Hold (12);
+EXIT_LABEL: outtext("At OUT"); outimage;
+      
+      end;
+   end;
+   
+
+
+   Outtext ("--- START GOTO SAMPLE"); Outimage;
+
+   p;
+   
+   Outtext ("THIS LINE SHOULD NEVER BE EXECUTED"); Outimage;
+
+ END

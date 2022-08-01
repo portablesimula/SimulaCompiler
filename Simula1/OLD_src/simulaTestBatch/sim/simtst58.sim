@@ -1,0 +1,48 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 58
+%
+%  PURPOSE:     Test goto statement within a connection block where the
+%               destination is in the corresponding otherwise-clause.
+%
+%  WRITTEN BY:  BEH   22/08-86
+% ==============================================================================
+BEGIN
+   Boolean found_error;
+   Boolean verbose=false;
+
+   integer i;
+
+   Class A;;
+
+   if verbose then begin
+   Outtext ("--- START Simula a.s. TEST 58");
+   Outimage;
+   Outtext ("--- Test goto statement within a connection block where the");
+   Outimage;
+   Outtext ("--- destination is in the corresponding otherwise-clause.");
+   Outimage; Outimage;
+   end;
+
+   found_error := true;
+
+   Inspect new A do
+   Begin Goto L End
+   Otherwise L: found_error := false;
+
+   IF found_error THEN
+   Begin
+       Outtext ("*** error : In goto statement.");
+       Outimage;
+   END
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 58");
+   END;
+
+   if verbose then begin
+   Outtext ("--- END Simula a.s. TEST 58");
+   Outimage
+   end
+   
+ END

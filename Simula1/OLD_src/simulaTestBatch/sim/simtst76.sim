@@ -1,0 +1,123 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 76
+%
+%  PURPOSE:     Test of detach and resume in SIMSET.
+%
+%  WRITTEN BY:  BEH   25/08-86
+%  MODIFIED BY: MYH   28/07-2018  Adding VERBOSE
+% ==============================================================================
+BEGIN
+   Boolean found_error ;
+   Boolean verbose=FALSE;
+   Text t;
+
+   Procedure Print(t); Value t; Text t;
+   begin Outtext(t); if verbose then outimage; end; 
+
+   if verbose then begin
+   Outtext ("--- START Simula a.s. TEST 76") ;
+   Outimage ;
+   Outtext ("--- Test of detach and resume.") ;
+   Outimage ; Outimage ;
+   end;
+   
+
+SIMSET Begin
+         Ref(A) x;
+
+         Link Class A;
+         Begin Print("A");
+               Begin Ref(C) Y;
+                     Class C;
+                     Begin Print("C"); Detach;
+                           Print("E");
+                     End;
+
+                     Print("B");
+                     Y:- New C;
+                     Print("D");
+                     Resume(Y);
+                     Print("F");
+               End;
+               Print("G");
+         End;
+
+         Print("AA");
+         x:- New A ;
+         Print("AB");
+
+         t:- Copy (sysout.image.strip);
+         sysout.setpos (1);
+         sysout.image:= notext;
+
+         if t = "AAABCDEFGAB" then
+         begin
+           if verbose then begin Outtext("--- NO ERRORS IN PART 1"); outimage; end
+         end  
+         else
+         begin Outtext ("*** error : Detach - resume (1).") ;
+               Outimage ;
+               Outtext ("             Erroneus sequencing: ") ;
+               Outtext (t) ;
+               Outimage; Outimage;
+               found_error := true
+         end;
+  End;
+
+SIMSET Begin
+         Ref(A)x;
+
+         Link Class A;
+         Begin Print("A");
+               Detach;
+               Begin Ref(C) Y;
+
+                     Class C;
+                     Begin Print("D"); Detach;
+                           Print("F"); This A.Detach;
+                           Print("H"); Detach;
+                           Print("J");
+                     End;
+
+                     Print("C"); Y:- New C;
+                     Print("E"); Resume(Y);
+                     Print("I"); Resume(Y);
+                     Detach
+               End;
+               Print("L");
+          End;
+
+          x:- New A;
+          Print("B"); Resume(x);
+          Print("G"); Resume(x);
+          Print("K"); Resume(x);
+          Print("M");
+
+          t:- Copy (sysout.image.strip);
+          sysout.setpos (1);
+          sysout.image:= notext;
+
+         if t = "ABCDEFGHIJKLM" then
+         else
+         begin Outtext ("*** error : Detach - resume (2).") ;
+               Outimage ;
+               Outtext ("             Erroneus sequencing: ") ;
+               Outtext (t) ;
+               Outimage; Outimage;
+               found_error := true
+         end;
+    End;
+
+   IF found_error tHEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 76") ;
+   END ;
+
+   if verbose then begin
+   Outtext ("--- END Simula a.s. TEST 76") ;
+   Outimage
+   end
+   
+ END

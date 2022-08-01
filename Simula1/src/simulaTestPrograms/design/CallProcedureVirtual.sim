@@ -1,0 +1,22 @@
+begin
+  ref(A) x;
+  integer i;
+
+  Class A(p1,p2); integer p1; real p2;
+  virtual: integer procedure P; procedure Q is integer procedure Q(p1,p2); integer p1; real p2;;
+  begin
+    integer Procedure P(p1,p2); integer p1; real p2;
+    begin
+      P:=p1;
+    end;
+    integer Procedure Q(p1,p2); integer p1; real p2;
+    begin
+      P:=p1;
+    end;
+    p1:=P(4,3.14); 
+    p1:=Q(4,3.14); 
+  end;
+  
+  i:=x.P(4,3.14); 
+  
+end;  

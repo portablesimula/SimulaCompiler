@@ -1,0 +1,22 @@
+Simset begin
+	integer pos;
+
+
+	link class quant;
+	begin end;
+
+	class parspec;
+	begin ref(head) import; ref(quant) export,exit; end;
+ 	
+  procedure prt(d,pos); ref(linkage) d; short integer pos;
+  begin
+        procedure prt_parspec(p,pos); ref(parspec) p; short integer pos;
+        inspect p do
+        begin ref(quant) q;
+              if import =/= none then
+              begin 
+                    for q:-import.first,q.suc while q =/= none do
+                    begin prt(q,pos+8); outimage end;
+              end;
+        end;
+ end;  

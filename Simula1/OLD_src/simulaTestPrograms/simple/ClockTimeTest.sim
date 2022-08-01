@@ -1,0 +1,31 @@
+
+Begin
+   integer time;
+   integer HH,MM;
+   integer hour,minute,second;
+   long real cpu;
+   
+   text datim;
+   
+   cpu:=cputime;
+   datim:-datetime;  
+   outtext("DATE AND TIME: " & datim); outimage;
+   
+   time:=ClockTime();
+%   outtext("Time="); outint(time,0); outimage;
+   MM:=time // 60; 
+%   outtext("MM="); outint(MM,0); outimage;
+%   outtext("MM*60="); outint(MM*60,0); outimage;
+   second := time - (MM*60);
+%   outtext("HH="); outint(HH,0); outimage;
+   HH:=MM // 60;
+   minute := MM - (HH*60);
+   hour := HH;
+   
+   outtext("TIME: Hour="); outint(hour,0);
+   outtext(", Minute="); outint(minute,0);
+   outtext(", Second="); outint(second,0); outimage;
+   
+   outtext("CPU-seconds used:"); outreal(cputime-cpu,3,10);
+   outimage;
+End;

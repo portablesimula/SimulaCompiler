@@ -1,0 +1,45 @@
+BEGIN
+   Ref(A) ua;
+   
+% Facit:
+%  A: før detach                                                                                                                       
+%  B: før første detach                                                                                                                
+%  MAIN: før første resume                                                                                                             
+%  A: før Call                                                                                                                         
+%  B: før andre detach                                                                                                                 
+%  A: etter Call                                                                                                                       
+%  MAIN: før andre resume                                                                                                              
+%  B: etter detach                                                                                                                     
+%  MAIN: etter andre resume 
+
+   Class A;
+   begin
+      Ref(B) rb;
+
+	  outtext("A: før detach"); outimage;
+      Detach;
+	  outtext("A: før Call"); outimage;
+      Call(rb);
+	  outtext("A: etter Call"); outimage;
+   END of class A;
+
+   Class B;
+   begin
+	  outtext("B: før første detach"); outimage;
+      Detach;
+	  outtext("B: før andre detach"); outimage;
+      Detach;
+	  outtext("B: etter detach"); outimage;
+   END of class B;
+
+
+   ua :- New A;
+   ua.rb :- New B;
+   outtext("MAIN: før første resume"); outimage;
+   Resume(ua);
+   outtext("MAIN: før andre resume"); outimage;
+   Resume(ua.rb);
+   outtext("MAIN: etter andre resume"); outimage;
+
+   
+ END

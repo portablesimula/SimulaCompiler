@@ -1,0 +1,51 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 86
+%
+%  PURPOSE:     Simple Test of Separately Compiled Class.
+%
+%  WRITTEN BY:  MYH  23/06-2018
+% ==============================================================================
+BEGIN
+   Boolean found_error;
+   Boolean verbose=false;
+
+%  external class Separat="C:\GitHub\SimulaCompiler\Simula/src/testing/bin/ExternalClass1.jar";
+  external class Separat;
+  
+  Separat(5) begin
+  
+     
+     Procedure checkEvent(n,val); integer n,val;
+     Begin if eventValue = val then
+       else
+       begin
+           Outtext("*** error in test "); Outint(n,0); Outtext(": Simple Test of Separately Compiled Class."); Outimage;
+           Outtext("            Erroneus values: val = "); Outint(eventValue, 0); Outimage;
+           Outtext("            --------- Facit: val = "); Outint(val, 0); Outimage;
+           found_error := true
+       end;
+     end;
+  
+     if verbose then begin
+     Outtext("--- START TEST 86"); Outimage;
+     Outtext("--- Simple Test of Separately Compiled Class.");
+     Outimage; Outimage;
+     end;
+  
+     x :- new B();
+ 
+     IF found_error THEN
+     ELSE
+     BEGIN
+        Outtext("--- NO ERRORS FOUND IN TEST 86");
+     END;
+
+     if verbose then begin
+     Outtext("--- END TEST 86");
+     Outimage
+     end
+  
+  end;
+  
+end;

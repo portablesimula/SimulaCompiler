@@ -1,0 +1,16 @@
+
+begin
+   !*** Prefixed Block Samples ***;
+   
+   class A(k); real k;
+   begin integer i; i:=44; end;
+      
+   ref(A) x; real r;
+   
+   A(3.14) begin !real r;
+       !integer i;
+       r:=i:=55;
+       i:=77;
+      end; 
+   
+end of program;

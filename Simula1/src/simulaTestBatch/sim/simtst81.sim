@@ -1,0 +1,211 @@
+
+% =====================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 81
+%
+%  PURPOSE:        Test the value of close.
+%
+%  NOTE:           Uses several files as noted 
+%
+%  WRITTEN BY:  BEH   28/08-86
+% ====================================================================
+BEGIN
+   Ref(File) xf;
+   Boolean found_error ;
+   boolean verbose=false;
+   
+   Text anyIntypeFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyIntypeFile81";
+   Text anyOuttypeFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOuttypeFile81";
+   Text anyDirectFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectFile81";
+   Text anyDirectByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectByteFile81";
+
+   procedure report(line,t,abort); integer line; text t; boolean abort;
+   begin outimage; outtext("Line "); outint(line,0); outtext(": *** report: "); outtext(t); outimage;
+         found_error:=true;
+         if abort then error("Abort requested");
+   end;
+
+   if verbose then begin
+   Outtext("--- START Simula a.s. TEST 81 (Test 'open' and 'close')");
+   Outimage ;
+   Outtext("    file ""anyIntypeFile"" is opened as infile and inbytefile");
+   Outimage;
+   Outtext("    file ""anyOuttypeFile"" is opened as outfile, "
+                                         "printfile and outbytefile");
+   Outimage;
+   Outtext("    file ""anyDirectFile"" is opened as directfile");
+   Outimage;
+   Outtext("    file ""anyDirectByteFile"" is opened as directbytefile");
+   Outimage;
+   end;
+
+   xf:- New Infile(anyIntypeFile);
+
+   if xf qua Infile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened infile ""anyIntypeFile"")",false);
+
+   if not xf qua Infile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened infile ""anyIntypeFile"")",true);
+
+   if xf qua Infile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(on open infile ""anyIntypeFile"")",false);
+
+   if not xf qua Infile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open infile ""anyIntypeFile"")",false)
+   else
+   if xf qua Infile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed infile ""anyIntypeFile"")",false);
+
+
+   xf:- New Outfile(anyOuttypeFile);
+
+   if xf qua Outfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened outfile " & anyOuttypeFile &")",false);
+
+   if not xf qua Outfile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened outfile " & anyOuttypeFile &")",true);
+
+   if xf qua Outfile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(open outfile " & anyOuttypeFile &")",false);
+
+   if not xf qua Outfile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open outfile " & anyOuttypeFile &")",false)
+   else
+   if xf qua Outfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed outfile " & anyOuttypeFile &")",false);
+
+
+   xf:- New Directfile(anyDirectFile);
+   xf.SetAccess("CREATE");
+
+   if xf qua Directfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened directfile " & anyDirectFile & ")",false);
+
+   if not xf qua Directfile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened directfile " & anyDirectFile & ")",true);
+
+   if xf qua Directfile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(open directfile " & anyDirectFile & ")",false);
+
+   if not xf qua Directfile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open directfile " & anyDirectFile & ")",false)
+   else
+   if xf qua Directfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed directfile " & anyDirectFile & ")",false);
+
+
+   xf:- New Inbytefile(anyIntypeFile);
+
+   if xf qua Inbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened inbytefile ""anyIntypeFile"")",false);
+
+   if not xf qua Inbytefile.Open
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened inbytefile ""anyIntypeFile"")",true);
+
+   if xf qua Inbytefile.Open
+   then report(sourceline,"'open' returns TRUE "
+              "(on open inbytefile ""anyIntypeFile"")",false);
+
+   if not xf qua Inbytefile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open inbytefile ""anyIntypeFile"")",false)
+   else
+   if xf qua Inbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed inbytefile ""anyIntypeFile"")",false);
+
+
+   xf:- New Outbytefile(anyOuttypeFile);
+
+   if xf qua Outbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened outbytefile " & anyOuttypeFile &")",false);
+
+   if not xf qua Outbytefile.Open
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened outbytefile " & anyOuttypeFile &")",true);
+
+   if xf qua Outbytefile.Open
+   then report(sourceline,"'open' returns TRUE "
+              "(on open outbytefile " & anyOuttypeFile &")",false);
+
+   if not xf qua Outbytefile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open outbytefile " & anyOuttypeFile &")",false)
+   else
+   if xf qua Outbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed outbytefile " & anyOuttypeFile &")",false);
+
+
+   xf:- New Directbytefile(anyDirectByteFile);
+   xf.SetAccess("CREATE");
+
+   if xf qua Directbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened directbytefile " & anyDirectByteFile & ")",false);
+
+   if not xf qua Directbytefile.Open
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened directbytefile " & anyDirectByteFile & ")",true);
+
+   if xf qua Directbytefile.Open
+   then report(sourceline,"'open' returns TRUE "
+              "(on open directbytefile " & anyDirectByteFile & ")",false);
+
+   if not xf qua Directbytefile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open directbytefile " & anyDirectByteFile & ")",false)
+   else
+   if xf qua Directbytefile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed directbytefile " & anyDirectByteFile & ")",false);
+
+
+   xf:- New Printfile(anyOuttypeFile);
+
+   if xf qua Printfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(never-opened printfile " & anyOuttypeFile &")",false);
+
+   if not xf qua Printfile.Open(blanks(80))
+   then report(sourceline,"'open' returns FALSE "
+              "(never-opened printfile " & anyOuttypeFile &")",true);
+
+   if xf qua Printfile.Open(blanks(80))
+   then report(sourceline,"'open' returns TRUE "
+              "(on open printfile " & anyOuttypeFile &")",false);
+
+   if not xf qua Printfile.Close
+   then report(sourceline,"'close' returns FALSE "
+              "(open printfile " & anyOuttypeFile &")",false)
+   else
+   if xf qua Printfile.Close
+   then report(sourceline,"'close' returns TRUE "
+              "(closed printfile " & anyOuttypeFile &")",false);
+
+% TERMINATE:
+
+   if not found_error then
+   begin outtext("--- NO ERRORS FOUND IN TEST 81"); end;
+   if verbose then begin
+      outtext("--- END Simula a.s. TEST 81"); outimage;
+   end;
+
+END

@@ -1,0 +1,995 @@
+%SPORT ON
+class TERMINAL;
+Hidden Protected MAXLIN,MAXPOS,EDTBUF,FIELD,KEYIN,EDTTXT,
+                   OSSTAT,OSID,wNOT,wAND,wOR,wXOR,wSHL,wSHR,
+                   HEIGHT,DWIDTH,CURLIN,CURPOS,UPDPOS,SCROPN,SCRCLS,
+                   REGION,SWPWIN,PUTCTL,PUTCHR,GETCEL,NEWLIN,SETWRP,
+                   OUTCHR,PUTTXT,GETTXT,SCROL1,REFRSH,SCMODE;
+begin
+% ************************************************************
+% *  Simula a.s. Oslo, Norway 1991                           *
+% *                                                          *
+% *  Class Terminal (Simula Utility Software Library)        *
+% *                                                          *
+% *  Compile:                                                *
+% *  DOS:    sim -P1 [-Ztarget] [-dlevel] terminal.def       *
+% *  OS2:    sim -P1 [-dlevel] terminal.def                  *
+% *  other:  sim -SX [-dlevel] terminal.def                  *
+% *                                                          *
+% *  Assumes KEYBOARD.INS at \SIM\KB\KEYBOARD.INS - if not,  *
+% *  edit the following line to reflect its location         *
+
+%-X %INSERT \sim\kb\keyboard.ins
+%+X %INSERT /sim/kb/keyboard.ins
+
+% ************************************************************
+% 
+% 
+%                            C L A S S
+%                                
+%                         T E R M I N A L
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+%                     1. Introduction
+%                     2. Opening and Closing
+%                     3. The Cursor
+%                     4. Output Operations
+%                     5. Input Operations
+%                     6. Screen Cell Attributes
+%                     7. Error Reporting
+%                     8. Selecting Video Adapter
+%                     9. Debugging Programs using Class Terminal
+%                    10. Worked Cases
+%                        Appendix A
+%                        Appendix B -- External Utilities
+% 
+% 
+% 
+% 
+% 
+%              Simula a.s., Oslo, Norway, February 1990
+%title ***  Class Terminal  ***  1. Introduction  ***
+%  1. Introduction.
+% 
+% An object of the class "terminal" is used to represent a terminal device
+% containing both a video screen and a keyboard. The screen is assumed to
+% be capable of displaying a specified number of lines, each containing
+% the same number of characters.
+% 
+% The individual characters on the screen may be addressed by pairs of
+% ordinal numbers. The screen can be seen as a two-dimensional text object.
+% 
+% Different from sysout and sysin, the terminal file will not be auto-
+% matically opened when an object is created, but must be opened by the
+% user. In the same way the user must close the terminal file. The opening
+% of the file establishes the association with the external device, and
+% will clear the screen.
+% 
+% Other file utilities such as inchar, intext, inint, inreal, infrac,
+% outchar, outtext, outint, outreal, outfix, outfrac are also available.
+% All operations are direct.
+% 
+% Not all combinations of the characters on the keyboard are represented in
+% the character set, e.g. the PF-keys. Class Terminal also implements
+% access to these through extended character codes.
+% 
+% In addition to the utilitites mentioned above, display oriented utilities
+% like erasing a line, clearing the screen, positioning the cursor are also
+% available.
+% 
+% The attributes of fields on the screen may be manipulated by giving a
+% graphic rendition mode for output and possibly another mode for input.
+% 
+% A copy of the screen is maintained behind the scene.
+% Any field of the screen may be inspected through an expression on
+% the form: "Screen(m).Sub(p,n)" where "m" is the line number, "p" is the
+% position on the line, and "n" is the length of the field.
+%
+%page
+% Class TERMINAL;
+% begin text OsIdent;
+%      ref(KeyPkt) LastKey;
+%      ref(Attributes) CurAttr;   !** Current Output  Attributes  **;
+%      ref(Attributes) EditAttr;  !** Current Editing Attributes  **;
+%      ref(Attributes) MsgAttr;   !** Current Message Attributes  **;
+% 
+%      boolean Procedure Open(Hgt,Wdt); short integer Hgt,Wdt; ... ;
+%      boolean Procedure Close; ... ;
+% 
+%      Procedure Setpos(line,pos); short integer line,pos; ... ;
+%      short integer Procedure Pos; ... ;
+%      short integer Procedure Line; ... ;
+% 
+%      Procedure Refresh; ... ;
+%      Procedure EraseLine; ... ;
+%      Procedure ErasePage; ... ;
+%      boolean Procedure AutoWrap(on); boolean on; ... ;
+%      Procedure Outchar(c); character c; ... ;
+%      Procedure Outtext(t); text t; ... ;
+%      Procedure Outimage; ... ;
+%      Procedure Outint(i,w); integer i; short integer w; ... ;
+%      Procedure Outfix(r,n,w); long real r; short integer n,w; ... ;
+%      Procedure Outreal(r,n,w); long real r; short integer n,w; ... ;
+%      Procedure Outfrac(i,n,w); integer i; short integer n,w; ... ;
+% 
+%      Class KeyPkt; ... ;
+%      character Procedure Inchar; ... ;
+%      character Procedure Ifchar; ... ;
+%      text Procedure Screen(line); short integer line; ... ;
+%      text Procedure Intext(w); short integer w; ... ;
+%      integer Procedure Inint(w); short integer w; ... ;
+%      long real Procedure Inreal(w); short integer w; ... ;
+%      integer Procedure Infrac(w); short integer w; ... ;
+% 
+%      Class Attributes(...); ...;
+%      begin character Procedure Encoding; ... ;
+%            ref(Attributes) Procedure Bold; ... ;
+%            ref(Attributes) Procedure LowIntensity; ... ;
+%            ref(Attributes) Procedure Invers; ... ;
+%            ref(Attributes) Procedure Blink; ... ;
+%            ref(Attributes) Procedure WithBackground(Bgr);
+%                                      short integer Bgr; ... ;
+%            ref(Attributes) Procedure WithForeground(Fgr);
+%                                      short integer Fgr; ... ;
+%      end;
+%
+%      ref(Attributes) Procedure Colours(Fgr,Bgr); short integer Fgr,Bgr; ... ;
+%      ref(Attributes) Procedure Monochrome; ... ;
+%      ref(Attributes) Procedure Concealed; ... ;
+%
+%      short integer MessageLine;
+%      Procedure Message(ms); text ms; ... ;
+%
+%      short integer Procedure SetScreenMode(code); short integer code; ... ;
+% end;
+%page
+% Implementation:
+%
+        short integer MAXLIN;
+        short integer MAXPOS;
+        text OsIdent,EDTBUF;
+%title ***  Class Terminal  ***  2. Opening and Closing  ***
+%  2. Opening and Closing.
+% 
+%   Definition:
+%
+%      boolean Procedure Open;
+%      if not OPEN then
+%      beginshort integer i, Dunit;
+%           MessageLineE:= MAXLINE;
+%           Open:= OPEN:= true;
+%           ... ;
+%           ! Set GRM = 0, EditGRM = 7, MessageGRM = 5;
+%           ErasePage; Setpos(1,1);
+%      E:end Open;
+% 
+%   Implementation:
+%
+      boolean procedure open(Hgt,Wdt); short integer Hgt,Wdt;
+      begin
+            OsIdent:-Copy(OSID(Blanks(80)).Strip);
+            Open:=SCROPN(Hgt,Wdt);
+            MAXLIN:=HEIGHT-1; MAXPOS:=DWIDTH//2-1;
+            REGION(0,0,MAXPOS,MAXLIN);
+            MessageLine:=MAXLIN; EDTBUF:-Blanks(DWIDTH);
+            if CurAttr  == none then CurAttr:-Monochrome;
+            if EditAttr == none then EditAttr:-Curattr.Invers;
+            if MsgAttr  == none then MsgAttr:-CurAttr.Bold;
+            ErasePage; LastKey:-New KeyPkt;
+      end;
+% 
+% Procedure "Open" establishes the association with an external device, checks
+% the access modes and causes corresponding opening actions.
+% 
+% If successful, "Open" returns the value true. In addition, the screen is
+% erased (i.e. blanked out). The cursor is placed in the 'home' position
+% i.e. at the upper left corner of the screen (Line=1,Pos=1).
+% 
+%   Definition:
+% 
+%      Procedure Close;
+%      if OPEN then
+%      begin ... ;
+%           ErasePage; Setpos(1,1);
+%           ! Reset GRM;
+%           OPEN:= false; ... ;
+%      end;
+% 
+%   Implementation:
+%
+      procedure close;
+      begin UPDPOS(0,0); ErasePage; SCRCLS; LastKey:-none end;
+
+      procedure terminateProgram;
+      begin close; terminate_program; end;
+% 
+% Procedure "Close" causes closing actions on the external device. In
+% addition, the association between the TERMINAL object and the external
+% device is dissolved.
+% "terminateProgram" will in addition terminate program execution.
+%title ***  Class Terminal  ***  3. The Cursor  ***
+%  3. The Cursor.
+% 
+% On the screen, the individual character cells are addressed by pair of
+% ordinal numbers. The pair (LINE,POS) defines the currently active
+% position on the screen, i.e. the cursor position. The procedures "Line"
+% and "Pos" give access to the current values of LINE and POS.
+%
+% At any time: 1 <= Line <= MAXLINE   and   1 <= Pos <= MAXPOS.
+%
+% When the file is closed, the values of LINE and POS are set to zero.
+% 
+% The dimension of the screen is specified through the parameters MAXLINE
+% and MAXPOS. They indicate the highest permitted values of "LINE" and
+% "POS". Note however that these values may be reduced during open.
+% 
+% 
+%   Definition:
+% 
+%      short integer Procedure Pos;Pos:= POS;
+%      short integer Procedure Line;Line:= LINE;
+% 
+%      Procedure Setpos(line,pos); short integer line,pos;
+%      if OPEN then
+%      beginif line<1 then line:= 1 else
+%           if line>MAXLINE then line:= MAXLINE;
+%           if pos<1  then pos:= 1 else
+%           if pos>MAXPOS   then pos:= MAXPOS;
+%           ... ; ! move the cursor to (line,pos);
+%           LINE:= line; POS:= pos;
+%      end;
+% 
+%   Implementation:
+%
+      short integer procedure pos;  Pos:= CURPOS+1;
+      short integer procedure line; Line:=CURLIN+1;
+      procedure setpos(L,P); short integer L,P; UPDPOS(L-1,P-1);
+% 
+% The procedures Pos and Line give acces to the Line number and position on
+% the line of the Cursor.
+% 
+% The procedure "Setpos" will move the cursor to the given line and pos.
+% However, an attempt to move the cursor outside the extent of the screen is
+% not possible due to automatic checking and modifying within the procedure.
+%title ***  Class Terminal  ***  4. Output Operations  ***
+%  4. Output Operations.
+% 
+% 
+%   4.x Refresh
+% 
+%   Definition:
+% 
+%      Procedure Refresh;
+%      begin ErasePage;
+%            ......;
+%            Setpos(1,1);
+%      end;
+% 
+%   Implementation:
+%
+      procedure refresh; REFRSH(true);
+% 
+% The video screen is erased (i.e. blanked out) and the cursor is moved to
+% the home position (Line=1,Pos=1). Then all text in the array "Screen" is
+% re-written on the video screen. Finally the cursor is moved to the home
+% position. All control information is stored, and will be redisplayed when
+% calling Refresh.
+% 
+% 
+%   4.x Erase Rest of Line
+% 
+%   Definition:
+% 
+%      Procedure EraseLine;
+%      begin...;
+%           Screen(LINE).sub(POS,..):=notext;
+%      end;
+% 
+%   Implementation:
+%
+      procedure eraseLine; PUTCHR(' ',CurAttr.Encoding,DWIDTH);
+% 
+% The current line is filled with the current background colour from cursor
+% position to the end of line.
+% 
+% To erase the whole line, move the cursor prior to calling EraseLine.
+% I.e.  Setpos(Line,1); EraseLine;
+% 
+%   4.x Erase Whole Screen
+% 
+%   Definition:
+% 
+%      Procedure ErasePage;
+%      beginshort integer i; ...;
+%           for i:=1 step 1 until MAXLINE do
+%           begin Setpos(i,1); EraseLine end;
+%      end;
+% 
+%   Implementation:
+%
+      procedure erasePage; begin SCROL1(0,CurAttr.Encoding); UPDPOS(0,0) end;
+% 
+% The whole screen is filled with the current backgroud colour.
+% The cursor is moved to the home position (Line=1,Pos=1).
+% 
+% 
+%   4.x Page and Line Wraping
+% 
+%   Definition:
+% 
+%     boolean Procedure AutoWrap(on); boolean on;
+%     begin
+%          ... ;
+%     end;
+% 
+%   Implementation:
+%
+      boolean procedure autoWrap(on); boolean on; AutoWrap:=SETWRP(on);
+% 
+% 
+%   4.x Beep Output.
+% 
+%   Definition:
+% 
+%      Procedure Beep;
+%      begin
+%           ... ; ! generate 'beep' ;
+%      end;
+% 
+%   Implementation:
+%
+      procedure beep; PUTCTL('!7!');
+% 
+% 
+% 
+%   4.x Character Output.
+% 
+%   Definition:
+% 
+%      Procedure Outchar(c); character c;
+%      beginScreen(Line).Sub(Pos,1).putchar(c);
+%           ... ; ! write c on the screen ;
+%           Setpos(Line,Pos+1);
+%      end Outchar;
+% 
+%   Implementation:
+%
+      procedure outchar(c); character c; OUTCHR(c,CurAttr.Encoding);
+% 
+% The procedure "Outchar" stores a character on the screen at (Line,Pos).
+% 
+% 
+%   4.x Text Output.
+% 
+%   Definition:
+% 
+%      Procedure Outtext(t); text t;
+%      begin character c; text u;
+%           if Pos > 1 then
+%           beginif t.length > MAXPOS-Pos+1 then
+%                begin if t.length > MAXPOS then t:-t.Sub(1,MAXPOS);
+%                end;
+%           end;
+%           t.Setpos(1); while t.More do Outchar(t.Getchar);
+%      end Outtext;
+% 
+%   Implementation:
+%
+      procedure outtext(t); text t; PUTTXT(t,CurAttr.Encoding);
+% 
+% Procedure "Outtext" transfers the contents of the text parameter to the
+% screen. If the text is too long to fit into the rest of
+% the current line, only the part it is room for will be oprinted.
+% 
+% 
+%   4.x Outimage.
+% 
+%   Definition:
+% 
+%     Procedure Outimage;
+%     begin
+%          ... ;
+%     end;
+% 
+%   Implementation:
+%
+      procedure outimage; NEWLIN(CurAttr.Encoding);
+%page
+%   4.x Item-oriented output.
+% 
+%   Definition:
+% 
+%      Procedure Outint(i,w); integer i; short integer w;
+%      begintext f; short integer x;
+%           f:-blanks(w); f.putint(i);
+%           if w <= 0 then !*** Strip off leading blanks ***;
+%           beginf.Setpos(1);
+%                while f.Getchar=' 'do x:= x+1;
+%                f:- f.Sub(x+1, if w=0 then 12-x else -w-x);
+%           end;
+%           Outtext(f);
+%      end;
+% 
+%      Procedure Outfix(r,n,w); long real r; short integer n,w;
+%           ! as body of Outint, with "putfix" substituted for "putint"; ;
+% 
+%      Procedure Outreal(r,n,w); long real r; short integer n,w;
+%           ! as body of Outint, with "putreal" substituted for "putint"; ;
+% 
+%      Procedure Outfrac(i,n,w); integer i; short integer n,w;
+%           ! as body of Outint, with "putfrac" substituted for "putint"; ;
+% 
+%   Implementation:
+%
+      procedure outint(i,w); integer i,w;
+      begin text f; integer x; f:-FIELD(w); f.Putint(i);
+            if w <= 0 then !*** Strip off leading blanks ***;
+            begin f.Setpos(1); while f.Getchar=' ' do x:=x+1;
+                  f:-f.Sub(x+1,if w=0 then 12-x else -w-x);
+            end; Outtext(f);
+      end;
+
+      procedure outfix(r,n,w); long real r; short integer n,w;
+      begin text f; integer x; f:-FIELD(w); f.Putfix(r,n);
+            if w <= 0 then !*** Strip off leading blanks ***;
+            begin f.Setpos(1); while f.Getchar=' ' do x:=x+1;
+                  f:-f.Sub(x+1,if w=0 then 12-x else -w-x);
+            end; Outtext(f);
+      end;
+
+      procedure outreal(r,n,w); long real r; short integer n,w;
+      begin text f; integer x; f:-FIELD(w); f.Putreal(r,n);
+            if w <= 0 then !*** Strip off leading blanks ***;
+            begin f.Setpos(1); while f.Getchar=' ' do x:=x+1;
+                  f:-f.Sub(x+1,if w=0 then 12-x else -w-x);
+            end; Outtext(f);
+      end;
+
+      procedure outfrac(i,n,w); integer i,n,w;
+      begin text f; integer x; f:-FIELD(w); f.Putfrac(i,n);
+            if w <= 0 then !*** Strip off leading blanks ***;
+            begin f.Setpos(1); while f.Getchar=' ' do x:=x+1;
+                  f:-f.Sub(x+1,if w=0 then 12-x else -w-x);
+            end; Outtext(f);
+      end;
+
+      text procedure FIELD(w); short integer w;
+      begin if w=0 then w:=12 else if w<0 then w:= -w;
+            if w>EDTBUF.Length then w:=EDTBUF.Length;
+            FIELD:-EDTBUF.Sub(1,w);
+      end FIELD;
+%
+%
+% The procedures "Outint", "Outfix", "Outreal" and "Outfrac" are defined in
+% terms of the corresponding editing procedures. They provide facilities for
+% "item-oriented" output. Each item is edited into a "field" normally
+% starting at the current accessible character.
+% POS is advanced correspondingly.
+% 
+% If the remainder of the current line is too short to contain the item,
+% only the part it is room for is printed. The field is spacefilled before
+% the editing operation.
+% 
+% If a field cannot be contained within the full length of a line, the field
+% is truncated (see the procedure "Outtext").
+% 
+% Parameter "w" determines both the length of this field and the adjustment
+% of the item within it, as follows.
+% 
+%       w > 0    The field length is w, the item is right-adjusted.
+% 
+%       w < 0    The field length is abs(w), the item is left-adjusted.
+% 
+%       w = 0    The field length is the exact number of characters
+%                needed to contain the item (i.e. no leading or trailing
+%                spaces).
+%title ***  Class Terminal  ***  5. Input Operations  ***
+%  5. Input Operations.
+% 
+%   5.x Read Screen Content
+% 
+%   Definition:
+% 
+%      text Procedure Screen(line); short integer line; ... ;
+%      if OPEN then
+%      begin text t; Screen:-t:-Blanks(MAXPOS);
+%            t:= ... ;  ! fill t with caracters from video screen ;
+%            Setpos(line,1);
+%      end;
+% 
+%   Implementation:
+%
+       text procedure screen(Lin); short integer Lin;
+       begin text t; Screen:-t:-Blanks(MAXPOS+1);
+             GETTXT(Lin,1,t); UPDPOS(Lin-1,0);
+       end;
+% 
+% The procedure "Screen" gives access the text currently displayed on the
+% video screen. The parameter "line" specifies the line number and the
+% procedure returns a text object carrying the characters on that line.
+% All attribute information is lost. After the operation the cursor is
+% positioned at the first character cell of the specified line.
+% 
+% 
+%   5.x Edited text input
+% 
+%   Definition:
+% 
+%      text Procedure Intext(w); short integer w;
+%      if OPEN then
+%      beginif w <= 0 then w:=MAXPOS;
+%           if Pos+w > MAXPOS then w:=MAXPOS-Pos;
+%           ... ;
+%           ! define the field Screen(Line).Sub(Pos,w) for editing ;
+%           ... ;
+%           ! allow normal editing withinthe field. Any control-key
+%             except left and right arrow, insert and delete will
+%             terminate the editing ;
+% 
+%           Intext:-... ;   ! final content of the edited field ;
+%      end;
+% 
+%   Implementation:
+%
+      text procedure intext(w); short integer w;
+      begin text Fld; Intext:-Fld:-Blanks(min(w,MAXPOS-(CURPOS+1)));
+            EDTTXT(Fld,EditAttr.Encoding,CurAttr.Encoding,LastKey);
+      end;
+% 
+% The procedure "Intext" gives access to a text field on the screen. The
+% parameter "w" is used to specify the length of the field. If w <= 0 or w >
+% MAXPOS-Pos, w is set to MAXPOS-Pos i.e. giving the length of 'rest of
+% line'.
+% 
+% 
+% The field is then defined as:
+% 
+%      Screen(Line).Sub(Pos,w).
+% 
+% When the field is defined, echo is turned on for all printable characters,
+% and the procedure "Intext" goes into normal editing mode. The key Insert
+% turns "Intext" from normal into expanding editing mode, or reverse if it
+% already is in expanding mode.
+% 
+% The variable "LastKey" carries the extended character code of the keyin
+% which terminated the editing mode.
+% 
+% In editing mode the keys left and right arrow are used for cursor
+% navigation within the designated field.
+% 
+% The key Delete has different effects dependig on the content of the
+% designated field and the cursor position:
+% 
+% - There is at least one non-blank character at or to the right of the
+%   current cursor position. The entering of a Delete key will have the
+%   effect of removing the character at the current cursor position, all
+%   characters following it within the designated field will be moved one
+%   character position to the left, and the last character position within
+%   the field is blanked. The cursor is not moved.
+%
+% - The cursor is positioned at first blank following the last non-blank
+%   character of the designated field. Then entering of a Delete key will
+%   have effect of moving the cursor one character position to the left and
+%   the character at that position is blanked.
+%
+% - Otherwise, the cursor is moved to the first blank following the last
+%   non-blank character of the designated field.
+%
+% The effect of entering a printable character or space depends upon the
+% current editing mode. In normal editing mode the character at the current
+% cursor position is replaced by the entered character. In expanding editing
+% mode the character at the current cursor position and all characters
+% following it are moved one character position to the right, deleting the
+% last character of the field, and the entered character is inserted at the
+% current cursor position. In both cases the cursor is moved one character
+% position to the right, but not outside the designated field.
+% 
+% All other keys will terminate editing mode and the procedure "Intext"
+% will return a reference to the edited field. In addition the variable
+% "LastKey" will carry the extended character code of the control key
+% which terminated the editing.
+%page
+%   5.x Edited Item-oriented input
+% 
+% 
+%   Definition:
+% 
+%      integer Procedure Inint(w); short integer w;
+%      beginshort integer cl,cp; text t;
+%           cl:=Line; cp:=Pos;
+%      L:   t:-Intext(w);
+%           if ... ! no integer in t or more than one integer; then
+%           beginMessage("*** Illegal integer number ***");
+%                Setpos(cl,cp); goto L;
+%           end;
+%           Inint:=t.Getint; ????????????; Setpos(cl,cp+w);
+%      end;
+% 
+%      long real Procedure Inreal(w); short integer w;
+%           ! as body of Inint, with "Getreal" substituted for "Getint" etc.; ;
+% 
+%      integer Procedure Infrac(w); short integer w;
+%           ! as body of Inint, with "Getfrac" substituted for "Getint" etc.; ;
+% 
+% 
+%   Implementation:
+%
+      integer procedure inint(w); short integer w;
+      begin text t; short integer cl,cp;
+            external library procedure GetInt="E@UUGINT" is
+            integer procedure GetInt(t); text t; ;
+            cl:=CURLIN; cp:=CURPOS;
+       REP: t:- Intext(w); Inint:=GetInt(t.strip);
+            if OSSTAT <> 0 then
+            begin Message(" *** Illegal integer number *** ");
+                  UPDPOS(cl,cp); goto REP;
+            end;
+      end;
+
+      long real procedure inreal(w); short integer w;
+      begin text t; short integer cl,cp;
+            external library procedure GetReal="E@UUGREA" is
+            long real procedure GetReal(t); text t; ;
+            cl:=CURLIN; cp:=CURPOS;
+       REP: t:- Intext(w); InReal:=GetReal(t.strip);
+            if OSSTAT <> 0 then
+            begin Message(" *** Illegal real number *** ");
+                  UPDPOS(cl,cp); goto REP;
+            end;
+      end;
+      
+      integer procedure infrac(w); short integer w;
+      begin text t; short integer cl,cp;
+            external library procedure GetFrac="E@UUGFRC" is
+            integer procedure GetFrac(t); text t; ;
+            cl:=CURLIN; cp:=CURPOS;
+       REP: t:- Intext(w); InFrac:=GetFrac(t.strip);
+            if OSSTAT <> 0 then
+            begin Message(" *** Illegal integer number *** ");
+                  UPDPOS(cl,cp); goto REP;
+            end;
+      end;
+% 
+% The procedures "Inint", "Inreal" and "Infrac" are defined in terms of the
+% corresponding de-editing procedures of "Intext(w)". After the editing of
+% the designated field, the field is checked for correct syntax. If the field
+% contains a numeric item of the right syntax and nothing more, the item is
+% de-edited and the result becomes the result of the procedure.
+% 
+% If a numeric overflow or a syntax error occurs, an error message is
+% displayed at the message line and the whole process is repeated.
+% 
+% Upon return the cursor is positioned at the first character position
+% following the designated field, and the message line is blanked out.
+%title ***  Class Terminal  ***  6. Screen Cell Attributes  ***
+%  6. Screen Cell Attributes.
+% 
+%   Definition:
+% 
+% 
+%   Implementation:
+%
+      ref(Attributes) CurAttr;   !** Current Output  Attributes  **;
+      ref(Attributes) EditAttr;  !** Current Editing Attributes  **;
+      ref(Attributes) MsgAttr;   !** Current Message Attributes  **;
+
+      integer Black        =  0; !**  Black                   **;
+      integer Blue         =  1; !**  Blue                    **;
+      integer Green        =  2; !**  Green                   **;
+      integer Cyan         =  3; !**  Cyan                    **;
+      integer Red          =  4; !**  Red                     **;
+      integer Magenta      =  5; !**  Magenta                 **;
+      integer Brown        =  6; !**  Brown                   **;
+      integer White        =  7; !**  White                   **;
+      integer Gray         =  8; !**  Gray          (Black)   **;
+      integer LightBlue    =  9; !**  Light Blue    (Blue)    **;
+      integer LightGreen   = 10; !**  Light Green   (Green)   **;
+      integer LightCyan    = 11; !**  Light Cyan    (Cyan)    **;
+      integer LightRed     = 12; !**  Light Red     (Red)     **;
+      integer LightMagenta = 13; !**  Light Magenta (Magenta) **;
+      integer Yellow       = 14; !**  Yellow        (Brown)   **;
+      integer BrightWhite  = 15; !**  Bright White  (White)   **;
+
+      Class Attributes(BLNK,FGR,BGR); short integer BLNK,FGR,BGR;
+      Hidden protected BLNK,FGR,BGR,ATR;
+      begin character ATR;
+
+            character procedure encoding; Encoding:=ATR;
+
+            ref(Attributes) procedure bold;
+            Bold:-new Attributes(BLNK,BGR,wOR(FGR,8));
+
+            ref(Attributes) procedure lowIntensity;
+            LowIntensity:-new Attributes(BLNK,BGR,wAND(FGR,7));
+
+            ref(Attributes) procedure invers;
+            Invers:-new Attributes(BLNK,wOR(wAND(FGR,8),BGR),wAND(FGR,7));
+
+            ref(Attributes) procedure blink;
+            Blink:-new Attributes(1,FGR,BGR);
+
+            ref(Attributes) procedure withBackground(Bgr); short integer Bgr;
+            WithBackground:-new Attributes(BLNK,FGR,Bgr);
+
+            ref(Attributes) procedure withForeground(Fgr); short integer Fgr;
+            WithForeground:-new Attributes(BLNK,Fgr,BGR);
+
+            ATR:=char(wOR(wOR(wSHL(BLNK,7),wSHL(wAND(BGR,7),4)),wAND(FGR,15)));
+      end;
+
+      ref(Attributes) procedure colours(Fgr,Bgr); short integer Fgr,Bgr;
+      Colours:-new Attributes(0,Fgr,Bgr);
+
+      ref(Attributes) procedure monochrome;
+      Monochrome:-new Attributes(0,White,Black);
+
+      ref(Attributes) procedure concealed;
+      Concealed:-new Attributes(0,Black,Black);
+
+% 
+% The Class 'Attributes' introduces the concept of blink and colour attributes
+% to character cells outputed onto the screen.
+%
+% The variable "CurAttr" holds the attributes for all output operation, while
+% the variable "EditAttr" holds the attributes to be used while in editing mode
+% (see the procedure "Intext"), and the variable "MsgAttr" holds the attributes
+% to be used while writing messages on the message line. All three variables may
+% be modified in the user's program at any time, thereby changing the attributes
+% to be used in succeeding operations.
+%
+% The procedure "Colours" produces an object of class 'Attributes' with the
+% specifed foreground 'Fgr' and background 'Bgr' colours and blinking off.
+%
+% The parameters "Fgr" and "Bgr" is given according to the table below.
+%
+%                                Foregound          Background
+%     Mnemonic       Value       Colour             Colour
+%
+%     Black           0          Black              Black
+%     Blue            1          Blue               Blue
+%     Green           2          Green              Green
+%     Cyan            3          Cyan               Cyan
+%     Red             4          Red                Red
+%     Magenta         5          Magenta            Magenta
+%     Brown           6          Brown              Brown
+%     White           7          White              White
+%     Gray            8          Gray               Black
+%     LightBlue       9          Light Blue         Blue
+%     LightGreen     10          Light Green        Green
+%     LightCyan      11          Light Cyan         Cyan
+%     LightRed       12          Light Red          Red
+%     LightMagenta   13          Light Magenta      Magenta
+%     Yellow         14          Yellow             Brown
+%     BrightWhite    15          Bright White       White
+%
+%title ***  Class Terminal  ***  7. Error Reporting  ***
+%  7. Error Reporting.
+% 
+% One line on the screen, called the 'message line' is reserved for status
+% and error messages to the user. By default the message line is the very
+% last line on the screen, but this can be changed by calling the procedure
+% "MessageLine".
+% 
+% 
+%   Definition:
+% 
+% 
+%   Implementation:
+%
+      short integer MessageLine;
+
+      procedure message(ms); text ms;
+      begin ref(Attributes) a; short integer L,P;
+            a:-CurAttr; CurAttr:-MsgAttr; L:=Line; P:=Pos;
+            Setpos(MessageLine,1); EraseLine;
+            Setpos(MessageLine,((DWIDTH//2)-ms.length)//2-1);
+            Outtext(ms); Inchar; CurAttr:-a;
+            Setpos(MessageLine,1); EraseLine; Setpos(L,P);
+      end;
+
+%
+% 
+% With the procedure Message the program may present a message for the
+% user on the current message line. The message will be displayed until
+% the user perform a keyin.
+% 
+% The variable 'MessageLine' is used to specify which line is used for
+% Message.
+%title ***  Class Terminal  ***  8. Selecting Video Adapter  ***
+%  8. Selecting Video Adapter.
+% 
+% 
+%   Definition:
+% 
+%      Procedure SetScreenMode(code); short integer code;
+%      begin ... end;
+% 
+%   Implementation:
+%
+      short integer procedure setScreenMode(code); short integer code;
+      begin SetScreenMode:=SCMODE(code) end;
+% 
+% The procedure SetScreenMode sets the screen mode of the receiving device
+% after the specified code. Code is specified following the table below:
+% 
+%       Code   Type    Dimension   Meaning
+% 
+%          0  CGA Text   40x25  16 colours
+%          1  CGA Text   40x25  16 colours
+%          2  CGA Text   80x25  16 colours
+%          3  CGA Text   80x25  16 colours
+%          4  CGA Graph  40x25   4 colours
+%          5  CGA Graph  40x25   4 colours
+%          6  CGA Graph  80x25   2 colours
+%          7  EGA Text   80x25     Mono
+%         13  EGA Graph  40x25  16 colours
+%         14  EGA Graph  80x25  16 colours
+%         15  EGA Graph  80x25     Mono
+%         16  EGA Graph  80x25  16 colours
+%         17  VGA Graph  80x30   2 colours
+%         18  VGA Graph  80x30  16 colours
+%         19  VGA Graph  40x25 256 colours
+%         84  VGA Text  132x43  16 colours
+%         85  VGA Text  132x25  16 colours
+%         86  VGA Text  132x43   2 colours
+%         87  VGA Text  132x25   2 colours
+%         88  VGA Graph 100x75  16 colours
+%         89  VGA Graph 100x75   2 colours
+%         94  VGA Graph  80x25 256 colours
+%title ***  Class Terminal  ***  9. Debugging Programs using Class Terminal  ***
+%  9. Debugging Programs using Class Terminal.
+%title ***  Class Terminal  ***  10. Worked Cases  ***
+%  10. Worked Cases.
+% 
+% 
+%  10.1 Worked Case - A Data Registering System
+% 
+% begin
+%      external class Terminal;
+%      ref (Terminal) Term;
+% 
+%      Class Customer(no); short integer no;
+%      beginText Cname, Firm, Town, Country, Addr;
+% 
+%           Procedure Display;
+%           beginSetOutputGRM(31);
+%                SetPos(4,5); Outtext(Cname);
+%                SetPos(6,5); Outtext(Firm); ... ;
+%                SetOutputGRM(0);
+%           end;
+% 
+%           Procedure Input;
+%           beginSetOutputGRM(32);
+%                SetPos(4,5);
+%                Cname:= Intext(Cname.length);
+%                ...
+%                SetOutputGRM(0);
+%           end;
+% 
+%      end class Customer;
+% 
+%      Term:- new Terminal("OWN", 24, 79);
+%      if not Term.Open then goto EXIT;
+% 
+%      ....
+% 
+% EXIT:
+%      Term.Close;
+% end;      
+%title ***  Class Terminal  ***  Appendix A  ***
+% 
+% Known ANSII ESCAPE Sequences interpreted by ANSI.SYS
+% 
+% 
+%      <ESC> !91! <n> ; <m> H    Cursor to position n,m
+% 
+%      <ESC> 2 J                 Erase Screen
+% 
+%      <ESC> !91! K              Erase Line
+% 
+%      <ESC> !91! <n> m          Set graphic rendition mode n.
+% 
+%      <ESC> !91! <n> l          Set Screen Mode
+% 
+%      <ESC> !91! <n> p          Keyboard reassign
+%title ***  Class Terminal  ***  Appendix B -- External Utilities  ***
+    external library procedure OSSTAT="E@UUSTAT" is
+    short integer procedure OSSTAT; ;
+
+    external library procedure OSID="E@UUOSID" is
+    text procedure OSID(val); value val; text val; ;
+
+    external library procedure wNOT="E@UUWNOT" is
+    short integer procedure wNOT(i); short integer i; ;
+
+    external library procedure wAND="E@UUWAND" is
+    short integer procedure wAND(i,j); short integer i,j; ;
+
+    external library procedure wOR="E@UUWOR" is
+    short integer procedure wOR(i,j); short integer i,j; ;
+
+    external library procedure wXOR="E@UUWXOR" is
+    short integer procedure wXOR(i,j); short integer i,j; ;
+
+    external library procedure wSHL="E@UUWSHL" is
+    short integer procedure wSHL(i,j); short integer i,j; ;
+
+    external library procedure wSHR="E@UUWSHR" is
+    short integer procedure wSHR(i,j); short integer i,j; ;
+
+    external library procedure HEIGHT="E@HEIGHT" is
+    short integer procedure HEIGHT; ;
+
+    external library procedure DWIDTH="E@DWIDTH" is
+    short integer procedure DWIDTH; ;
+
+    external library procedure CURLIN="E@CURLIN" is
+    short integer procedure CURLIN; ;
+
+    external library procedure CURPOS="E@CURPOS" is
+    short integer procedure CURPOS; ;
+
+    external library procedure UPDPOS="E@UPDPOS" is
+    procedure UPDPOS(Lin,Pos); short integer Lin,Pos; ;
+
+    external library procedure SCROPN="E@SCROPN" is
+    boolean procedure SCROPN(Hgt,Wdt); short integer Hgt,Wdt; ;
+
+    external library procedure SCRCLS="E@SCRCLS" is
+    boolean procedure SCRCLS; ;
+
+    external library procedure REGION="E@REGION" is
+    procedure REGION(MinP,MinL,MaxP,MaxL);
+    short integer MinP,MinL,MaxP,MaxL; ;
+
+    external library procedure SWPWIN="E@SWPWIN" is
+    procedure SWPWIN(t,down); text t; boolean down; ;
+
+    external library procedure PUTCTL="E@PUTCTL" is
+    procedure PUTCTL(c); character c; ;
+
+    external library procedure PUTCHR="E@PUTCHR" is
+    procedure PUTCHR(c,a,n); character c,a; short integer n; ;
+
+    external library procedure GETCEL="E@GETCEL" is
+    short integer procedure GETCEL(AbsLin,AbsPos);
+    short integer AbsLin,AbsPos; ;
+
+    external library procedure OUTCEL="E@OUTCEL" is
+    procedure OUTCEL(AbsLin,AbsPos,Cel); short integer AbsLin,AbsPos,Cel; ;
+
+    external library procedure NEWLIN="E@NEWLIN" is
+    procedure NEWLIN(a); character a; ;
+
+    external library procedure SETWRP="E@SETWRP" is
+    boolean procedure SETWRP(on); boolean on; ;
+
+    external library procedure OUTCHR="E@OUTCHR" is
+    procedure OUTCHR(c,a); character c,a; ;
+
+    external library procedure PUTTXT="E@PUTTXT" is
+    procedure PUTTXT(t,a); text t; character a; ;
+
+    external library procedure GETTXT="E@GETTXT" is
+    procedure GETTXT(Lin,Pos,t); short integer Lin,Pos; text t; ;
+
+    external library procedure SCROL1="E@SCROLL" is
+    procedure SCROL1(n,a); short integer n; character a; ;
+
+    external library procedure REFRSH="E@REFRSH" is
+    procedure REFRSH(Down); boolean Down; ;
+
+    external library procedure SCMODE="E@SCMODE" is
+    short integer procedure SCMODE(code); short integer code; ;
+
+    external library procedure EDTTXT="E@EDTTXT" is
+    procedure EDTTXT(Fld,EdtAtr,OldAtr,Pkt);
+    text Fld; character EdtAtr,OldAtr; ref(KeyPkt) Pkt; ;
+
+end;
+

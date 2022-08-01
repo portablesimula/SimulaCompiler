@@ -1,0 +1,31 @@
+ 
+begin Text T,U,amount,price,payment; 
+%TITLE *** C l a s s ***; 
+  Procedure payer(T); value T; text T; 
+  begin 
+     T.setpos(6); 
+  end; 
+  integer pay; 
+  boolean b; 
+  Text image; 
+%LISTING ON   
+  Text Array TA(-9:-1); 
+  ref(InFile) file; 
+  T:-blanks(20); 
+  if T=U then TA(-5):-T; 
+  b:=T.more; 
+   
+   
+   
+%SELECT ABC   
+  file.setpos(8); 
+%+B %STANDARDCLASS
+  amount:-T.sub(20,5); price:-T.sub(30,6); 
+%+A  payment:-T.sub(60,10); 
+  if(T.strip="order") then 
+  begin pay:=amount.getint * price.getfrac; 
+%-F     payment.putfrac(pay,2); 
+  end kommentar 
+%+M    else if u="DEFINE" then payer(U); 
+          mere eee-kommentar her ...
+end; 

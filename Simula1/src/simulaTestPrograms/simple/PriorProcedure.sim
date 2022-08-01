@@ -1,0 +1,27 @@
+
+begin 
+   integer global;
+   
+   begin
+      integer global2;
+   
+      prior procedure P(a,b,c); integer a,b,c;
+      begin
+         global:=c;
+      end;
+   
+      prior integer procedure Q(a); integer a;
+      begin
+         begin
+            integer jj;
+         end;
+         
+         global2:=a;
+         Q:=a+1;
+         
+      end;   
+   
+      P(1,2,Q(3));
+      
+   end;   
+end;

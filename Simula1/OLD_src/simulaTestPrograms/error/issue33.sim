@@ -1,0 +1,22 @@
+begin
+  
+  Procedure callFP(F); integer procedure F;
+  begin
+     integer i; real r;
+     i:=F(7,9);
+     r:=F(7,9);
+  end;
+  
+  
+  integer Procedure P(p1,p2);
+    integer p1; real p2;
+  begin
+    P:=p1+6;
+  end;
+
+  
+  integer i;
+  callFP(P);
+
+  
+end;  

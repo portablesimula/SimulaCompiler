@@ -1,0 +1,91 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 126
+%
+%  PURPOSE: GOTO SIMPLE SWITCH
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:10);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   Class A; virtual: Label L1; Procedure P;
+   BEGIN
+      Switch S1 := L1, L3, L6;
+
+      L1: trace("A.L1"); n:=n+1;
+      
+      L3: trace("A.L3");
+      L6: trace("A.L6");
+   END;
+
+   A Class B;
+   BEGIN
+      Procedure P; BEGIN END;
+      BEGIN_B: trace("BEGIN B");
+      L1: trace("B.L1"); n:=n+1;
+     
+      if n < 4 then
+      BEGIN
+         trace("JUST BEFORE GOTO S(1) - B.L1");
+         goto S1(1);
+      END;
+   END;
+   
+
+   if verbose then begin
+      Outtext("--- START SIMULA TEST 126"); Outimage ;
+      Outtext("--- GOTO VIRTUAL LABEL");
+      Outimage; Outimage;
+   end;
+   
+   facit(0):-"BEGIN PROGRAM";
+   facit(1):-"A.L1";
+   facit(2):-"A.L3";
+   facit(3):-"A.L6";
+   facit(4):-"BEGIN B";
+   facit(5):-"B.L1";
+   facit(6):-"JUST BEFORE GOTO S(1) - B.L1";
+   facit(7):-"B.L1";
+   facit(8):-"JUST BEFORE GOTO S(1) - B.L1";
+   facit(9):-"B.L1";
+   facit(10):-"END PROGRAM";
+   
+   trace("BEGIN PROGRAM");
+   
+   new B;
+   
+   trace("END PROGRAM");
+
+      
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 126");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 126") ;
+      Outimage;
+   end;
+   
+   
+END;   

@@ -1,0 +1,19 @@
+% InspectStatement
+begin
+   integer i,j,k;
+   text t;
+   ref(ImageFile) x;
+   inspect x do image:-t;
+   
+   inspect x do image:-t otherwise t:-notext;
+   
+   inspect x
+   when infile  do t:-intext(12)
+   when outfile do outtext(t);
+   
+   inspect x
+   when infile  do t:-intext(12)
+   when outfile do outtext(t)
+   otherwise t:-notext;
+   
+end;      

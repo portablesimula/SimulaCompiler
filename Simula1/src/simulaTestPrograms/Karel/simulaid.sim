@@ -1,0 +1,4 @@
+begin 
+%  outint(sourceline, 5 );
+  outtext(simulaid);
+end

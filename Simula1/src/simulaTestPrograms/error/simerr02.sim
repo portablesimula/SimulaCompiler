@@ -1,0 +1,12 @@
+BEGIN
+   boolean b;
+   integer x,z;
+
+   x=4;
+   z=z*5;
+   x+z+4;
+   z:=&&;
+   b=b OR b;
+   z;
+   x+4:=5++7;
+END

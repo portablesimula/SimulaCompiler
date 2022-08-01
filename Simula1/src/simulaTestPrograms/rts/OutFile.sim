@@ -1,0 +1,75 @@
+
+%STANDARDCLASS
+
+ImageFile class OutFile_;
+
+begin
+
+      boolean procedure open(IMAGE_); Text IMAGE_;
+      begin if(OPEN_) then error("File already opened");
+            image:-IMAGE_;
+            image:=notext;
+            setpos(1);
+            open:=OPEN_:=true;
+      end open;
+      
+      boolean procedure close;
+      if OPEN_ then
+      begin ! ... ;
+            if pos <> 1 then outimage;
+            image:-notext;
+            ! ... ;
+            OPEN_:=false;
+            close:=true;
+      end;
+      
+      procedure outimage;
+      begin if not OPEN_ then error("File not opened");
+            ! Implementation dependent ;
+            image := notext;
+            setpos(1);
+      end outimage;      
+
+	procedure outrecord;
+    if not OPEN_ then  error("..." ! file closed; )
+    else begin
+         !... ; ! transfer image.sub(1,pos-1);
+                ! Note: no blanking of "image";
+         setpos(1)
+    end outrecord;
+ 	
+	procedure breakoutimage;
+	if not OPEN_ then error("..." ! file closed; )
+	else begin
+	     !... ; ! output image.sub(1,pos-1);
+         image := notext;
+         setpos(1)
+    end breakoutimage;
+	
+	Boolean procedure checkpoint; ;;
+         
+      procedure outchar(c); character c;
+      begin if not more then outimage;
+            image.putchar(c);
+      end outchar;
+      
+      text procedure FIELD_(w); integer w;
+      begin if w <= 0 or w > length then error("Illegal field width in output operation");
+            if pos+w-1 > length then outimage;
+            FIELD_:-image.sub(pos,w);
+            setpos(pos+w);
+      end FIELD;
+      
+      procedure outint(i,w); integer i,w; FIELD_(w).putint(i);
+      procedure outfix(r,n,w); real r; integer n,w; FIELD_(w).putfix(r,n);
+      procedure outreal(r,n,w); real r; integer n,w; FIELD_(w).putreal(r,n);
+      procedure outfrac(i,n,w); integer i,n,w; FIELD_(w).putfrac(i,n);
+      
+       procedure outtext(t); text t;
+           begin
+              if pos>1 and then t.length>length-pos+1 then outimage;
+%              if pos>1 then if t.length>length-pos+1 then outimage;
+              t.setpos(1);
+              while t.more do outchar(t.getchar);
+           end outtext;
+end OutFile;

@@ -1,0 +1,87 @@
+
+% Testing NONE-CHECK
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA ERROR TEST NO 07
+%
+%  PURPOSE:  Wrong number of paramerters to virtual procedure
+%
+%  WRITTEN BY:  MYH   04/09-2021
+% ==============================================================================
+begin
+   Text CASE=" ERROR-TEST 07";
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:7);
+
+   text txt;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   class A(i); integer i; virtual: procedure V; begin
+       CatchingErrors begin
+           procedure onError(message); text message; begin
+               trace("onError got error: " & message);
+           end;
+           if i=0 then V;
+           if i=1 then V("text");
+           if i=2 then V("text",4);
+           if i=3 then V("text",4,3.14);
+           if i=4 then V("text",4,3.14,"extra");
+       end;
+    end;
+   
+   A class B; begin
+       procedure V(t,n,r); text t; integer n; real r; begin
+           trace("V Called by V(" & t & "," & edit(n) & "," & edfix(r,2) & ")" )
+       end;
+   end;
+   
+   
+   if verbose then begin
+   Outtext("--- START SIMULA" & CASE);
+   Outtext("---  Wrong number of paramerters to virtual procedure");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"--- Testing Wrong number of paramerters to virtual procedure";
+   facit(1):-"onError got error: SimulaRuntimeError: Too few parameters";
+   facit(2):-"onError got error: SimulaRuntimeError: Too few parameters";
+   facit(3):-"V Called by V(text,4,3.14)";
+   facit(4):-"onError got error: SimulaRuntimeError: Too many parameters";
+   facit(5):-"END OF TEST07";
+
+
+   trace("--- Testing Wrong number of paramerters to virtual procedure");
+   
+   new B(0);
+   new B(1);
+   new B(2);
+   new B(3);
+   new B(4);
+   new B(5);
+      
+   trace("END OF TEST07");
+
+   IF found_error THEN
+       Outtext("GOT ERROR(S) IN" & CASE)
+   ELSE Outtext ("--- NO ERRORS FOUND IN" & CASE);
+
+   if verbose then begin
+       Outimage;
+       Outtext ("--- END SIMULA" & CASE) ;
+       Outimage;
+   end;
+
+end;

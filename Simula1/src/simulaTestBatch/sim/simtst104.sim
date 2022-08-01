@@ -1,0 +1,58 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 104
+%
+%  PURPOSE: Procedure parameter 'F' by name.
+%           Which should be evaluated and called when used.
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error;
+   real r;
+
+   procedure trace(msg,r,facit); text msg; real r,facit;
+   begin
+      if verbose OR (r NE facit) then
+      begin
+         if r NE facit then
+         begin found_error:=TRUE;
+               outtext("ERROR: ");
+         end else outtext("TRACE: ");
+         outtext(msg & ", Result="); outreal(r,2,10);
+         outtext("  Facit="); outreal(facit,2,10);  outimage;
+      end;
+   end;
+
+   integer procedure P;
+   begin
+      p:=34;
+   end;
+   
+   real procedure Q(F); name F; integer procedure F;
+   begin
+      Q:=F;
+   end;
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 104"); Outimage ;
+   Outtext("--- Procedure parameter 'F' by name."); outimage;
+   Outtext("--- Which should be evaluated and called when used.");
+   Outimage; Outimage;
+   end;
+   
+   r := Q(P);
+   trace("r := Q(P)",r,34);
+   
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 104");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 104") ;
+      Outimage;
+   end;   
+end;      

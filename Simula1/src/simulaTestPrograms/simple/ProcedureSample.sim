@@ -1,0 +1,20 @@
+
+begin
+	real v;
+	
+	real Procedure G(r); real r;
+	begin G:=r+4; end;
+	
+	real Procedure F;
+	begin F:=v+4; end;
+	
+    v := G(7);
+    
+    v:= F;
+    
+    F;
+    
+    G(sqrt(v));
+    outtext("Ferdig!");
+    	
+end program;

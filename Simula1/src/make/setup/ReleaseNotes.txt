@@ -1,0 +1,7 @@
+=====================================================================================
+
+This directory contains a Simula System ready for use. 
+
+More information: https://portablesimula.github.io/github.io/
+
+=====================================================================================

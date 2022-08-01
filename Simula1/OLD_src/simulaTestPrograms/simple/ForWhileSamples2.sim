@@ -1,0 +1,23 @@
+begin
+   integer x,y,z;
+   boolean bb;
+   character ch;
+   text t;
+   ref(CA) p,a,b,c;
+   
+   class CA; begin integer e; ref(D) dd; end;
+   class D; begin integer e; ref(D) c; end;
+   
+
+%   for ch:=inchar while ch ne ' 'do t.putchar(ch);
+   
+%   for bb:=true, false, x>y while z<1 do z:=z+12;
+   
+   t:-blanks(7);
+   for t:="abra","ca","dabra" do outtext(t); outchar('|'); outimage;
+   for t:-"abra","ca","dabra" do outtext(t); outchar('|'); outimage;
+   
+   c:-new CA();
+   for p:-a,b,c while p.e< -1 do z:=z+12;
+
+end;

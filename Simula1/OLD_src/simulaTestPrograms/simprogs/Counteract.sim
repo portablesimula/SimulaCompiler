@@ -1,0 +1,100 @@
+Simulation class COUNTERACT; 
+begin integer index; real simperiod; 
+ 
+   class Station; 
+   virtual: ref(Clerk) procedure kind;
+            procedure clerkparam; 
+            real procedure servicetime; 
+   begin ref(Clerk) server; 
+         procedure clerkparam;; 
+   end Station; 
+    
+    
+   Station class Store; 
+   begin ref(Head) q; 
+         q:-new Head; 
+   end Store; 
+    
+    
+   Station class Singleq(nClerks); integer nClerks; 
+   begin ref(Head) q,office; 
+         ref(Clerk) procedure kind; 
+               kind:-new Commonqclerk(this Station,q); 
+         q:-new Head; office:-new Head; 
+         for index:=1 step 1 until nClerks do 
+         begin server:-kind; 
+               activate server; server:-none; 
+         end; 
+   end Singleq; 
+    
+    
+   Station class Multiq(channels); integer channels; 
+   begin integer munqnr; 
+         ref(Head) array q(0:channels);      
+         ref(Clerk) array c(0:channels); 
+         integer procedure muiq; 
+         begin ! ... ... ... ; end; 
+         ref(Clerk) procedure kind; 
+               kind:-new Clerk(this Station,q(index)); 
+         for index:=1 step 1 until channels do 
+         begin q(index):-new Head; server:-kind; 
+               clerkparam; c(index):-server; 
+               activate server; server:-none; 
+         end;    
+   end Multiq; 
+     
+     
+   Process class Clerk(location,q); ref(Station) location; ref(Head) q; 
+   virtual: procedure wait; 
+            ref(Customer) procedure choice; 
+            real procedure servicetime; 
+   begin ref(Customer) selected; real a,b; 
+         procedure wait; passivate; 
+         ref(Customer) procedure choice; choice:-q.first; 
+         real procedure servicetime; servicetime:=location.servicetime; 
+   repeat: if q.empty then wait; 
+         location.server:-this Clerk; 
+         selected:-choice; selected.out; cancel(selected); 
+         hold(servicetime); activate selected after current; 
+         selected:-none; goto repeat; 
+   end Clerk;  
+    
+    
+   Clerk class Commonqclerk; 
+   begin procedure wait; 
+         begin into(location qua Singleq.office); 
+               passivate; out; 
+         end; 
+   end Commonqclerk; 
+    
+    
+   Process class Customer; 
+   begin real servicetime,deptime; integer minqnr; 
+         procedure into(location); ref(Station) location; 
+         begin ref(Head) qselect; ref(Clerk) cselect; 
+               inspect location  
+                  when Singleq do 
+                       begin qselect:-q; cselect:-office.first end 
+                  when Multiq do 
+                       begin munqnr:=minqnr; qselect:-q(munqnr); 
+                             cselect:-c(munqnr) 
+                       end
+                  when Store do qselect:-q; 
+               this Process.into(qselect); 
+               activate cselect after current; 
+         end into; 
+         procedure maxtime(T); real T; 
+         begin reactivate current at T; 
+               if not idle then out; 
+         end; 
+   end Customer; 
+    
+    
+   Process class Arrival; 
+   begin integer i; 
+     repeat: i:=7;
+         inner; 
+         if time < simperiod then goto repeat; 
+   end Arrival; 
+    
+end COUNTERACT;

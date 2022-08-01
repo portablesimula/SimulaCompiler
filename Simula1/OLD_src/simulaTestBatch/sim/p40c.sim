@@ -1,0 +1,6 @@
+integer procedure pb(n); integer n;
+   begin
+      external integer procedure pa;
+      integer tull; tull:=444;
+      if n<10 then pb:= n+pa(n+1);
+   end;

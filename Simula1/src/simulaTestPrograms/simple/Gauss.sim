@@ -1,0 +1,14 @@
+
+class Gauss(n); integer n;
+begin array W,X(1:n);
+   real procedure integral(F,a,b); real procedure F; real a,b;
+   begin real sum,range; integer i;
+      range:=(b-a)*0.5;
+      for i:=1 step 1 until n do
+         sum:=sum+F(  a+range*(X(i)+1)  )*W(i);
+      integral:=range*sum;
+   end integral;
+   comment compute the values of the elements of
+           W and X as functions of n;
+   ! ... ... ... ;
+end Gauss;              

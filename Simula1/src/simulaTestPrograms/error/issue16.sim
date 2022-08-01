@@ -1,0 +1,18 @@
+
+% OPEN Issue 16: Fra Øystein
+% Problemer med å evaluere Constant-expression
+%
+% Analyse: 
+
+begin
+integer konst=sqrt(4);
+
+inspect new infile(fileName) do
+simulation begin
+    integer k=pos-1;
+    integer kkk; kkk:=sqrt(4);
+
+    setpos(pos-1);
+
+end;
+end;

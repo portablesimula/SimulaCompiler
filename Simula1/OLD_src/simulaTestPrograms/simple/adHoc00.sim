@@ -1,0 +1,72 @@
+begin
+   integer i,j=4,pos=2,neg=-2,q;
+   character c;
+   text t;
+   real r;
+   integer k=6;
+   
+   outtext("TEST CASE 10"); outimage; 
+%   while j < 15 do
+   for i := 1 step j until 20 do
+   begin
+      outint(i,0); outimage;
+   end ;
+   
+      
+   outtext("TEST CASE 9"); outimage; 
+   for i:=q while i<12 do
+   begin
+      outint(i,0); outimage;
+      q:=q+1;
+   end;
+   
+   outtext("TEST CASE 1"); outimage; 
+   for i:=1 step pos until k do
+   begin
+      outint(i,0); outimage;
+   end;
+
+   outtext("TEST CASE 2"); outimage; 
+   for i:=k step neg until -11 do
+   begin
+      outint(i,0); outimage;
+   end;
+
+   outtext("TEST CASE 3"); outimage; 
+   for r:=1 step 1 until k do
+   begin
+      outint(r,0); outimage;
+   end;
+
+   outtext("TEST CASE 4"); outimage; 
+   for r:=k step -1 until 1 do
+   begin
+      outint(r,0); outimage;
+   end;
+   
+   outtext("TEST CASE 5"); outimage; 
+   for i:= 3.14 step 1.0 until 6 do
+   begin
+      outint(i,0); outimage;
+   end;
+
+   outtext("TEST CASE 6"); outimage; 
+   for i:= 3 do                 ! INT REAL INT;
+   for i:= 3.14 do                 ! INT REAL INT;
+   begin
+      outint(i,0); outimage;
+   end;
+   
+   outtext("TEST CASE 7"); outimage; 
+   for c:= '?' do
+   begin
+      outchar(c); outimage;
+   end;
+   
+   outtext("TEST CASE 8"); outimage; 
+   for t:- "Abra" do
+   begin
+      outtext(t); outimage;
+   end;
+  
+end;      

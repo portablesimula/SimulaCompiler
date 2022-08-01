@@ -1,0 +1,71 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 125
+%
+%  PURPOSE: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:3);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   if verbose then begin
+      Outtext("--- START SIMULA TEST 125"); Outimage ;
+      Outtext("--- GOTO VIRTUAL LABEL");
+      Outimage; Outimage;
+   end;
+   
+   facit(0):-"BEGIN PROGRAM";
+   facit(1):-"At L3";
+   facit(2):-"At L1";
+   facit(3):-"END PROGRAM";
+   
+   trace("BEGIN PROGRAM");
+   
+   goto L3;
+   
+   begin
+      begin
+         begin
+            L3: trace("At L3");
+         end;
+         goto L1;
+         L2: trace("At L2");
+      end;
+      L1: trace("At L1");
+   end;
+   
+   trace("END PROGRAM");
+
+      
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 125");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 125") ;
+      Outimage;
+   end;
+   
+   
+END;   

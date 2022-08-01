@@ -1,0 +1,181 @@
+
+%STANDARDCLASS
+
+ImageFile class DirectFile_;
+    begin   integer LOC_, MAXLOC_;  Boolean ENDFILE_, LOCKED_;
+       integer procedure location;  location:= LOC_;
+       Boolean procedure endfile;   endfile := ENDFILE_;
+       Boolean procedure locked;    locked  := LOCKED_;
+       
+       Boolean procedure open(fileimage); text fileimage;
+       begin
+           if(not OPEN_) then
+           begin ! ...  see 10.1.2;
+              MAXLOC_ := 100000; ! ...   See below;
+              image  :- fileimage;
+              setpos(1);
+              locate(1);
+              open   := OPEN_ := true;
+           end;    
+       end open;
+
+       Boolean procedure close;
+           if OPEN_ then begin ! ... see 10.1.2;
+              image :- notext;
+              if LOCKED_ then unlock;
+              LOC_ := MAXLOC_ := 0;
+              ! ... ;
+              OPEN_  := false;
+              close := ENDFILE_ := true;
+       end close;
+       
+       procedure locate(i); integer i;
+       begin
+           if i<1 or i>MAXLOC_ then error("Parameter out of range")
+           else begin
+              LOC_:= i;
+              ! ... ;
+           end;   
+       end locate;
+
+       integer procedure lastloc;
+       begin
+           if not OPEN_ then error("file closed")
+%           else  lastloc := ... ;
+       end lastloc;
+       
+       integer procedure maxloc;
+       begin if not OPEN_ then error("file closed")
+             else  maxloc := MAXLOC_;
+       end maxloc;      
+       
+       procedure inimage;
+       begin if not OPEN_ then error("file closed")
+             else begin
+                 setpos(1);
+                 ENDFILE_:= LOC_ > lastloc;
+                 if ENDFILE_ then image:= "!25!"
+%                 else if ... ! external written image at LOC exists ; then
+%                      ... ! transfer to image;
+                 else begin
+                   while more do image.putchar('!0!')
+                      ! Note: now pos = length+1;
+                 end not written;
+                locate(LOC_+1)   ! Location for *next* image;
+             end;   
+       end inimage;
+       
+       procedure outimage;
+       begin
+           if not OPEN_ then error("file closed")
+           else if LOC_ > MAXLOC_ then error("file overflow")
+           else begin
+              !...   output "image" to external image at LOC;
+              locate(LOC_+1);
+              image := notext;
+              setpos(1)
+           end;   
+       end outimage;
+       
+       Boolean procedure deleteimage;
+       begin
+           if OPEN_ !and then ...  image LOC was written;
+           then begin
+              ! ...  attempt to delete image;
+%              if ... ! delete operation successful;
+%              then
+                 begin
+                   deleteimage := true;
+                   locate(LOC_+1);
+                 end successful
+           end;   
+       end deleteimage;
+       
+       character procedure inchar;
+       begin
+          while not more do inimage;
+          inchar:= image.getchar
+       end inchar;
+       
+                   
+      Boolean procedure checkpoint; begin checkpoint:=false; end;
+      
+      integer procedure lock(timelimit,loc1,loc2);
+                    real timelimit; integer loc1,loc2;
+      begin lock := -1;
+            if timelimit>0.0 then
+            begin if LOCKED_ then unlock;
+                  ! ... try to lock indicated part of file, see below;
+%                  if !success; then begin LOCKED_ := true; lock := 0 end
+            end
+      end lock;
+
+      Boolean procedure unlock;
+      begin unlock := checkpoint;
+            if LOCKED_ then begin !release file; LOCKED_ := false end
+      end unlock;
+       
+      
+      Boolean procedure lastitem;
+      begin character c;
+              c := ' ';
+              while not ENDFILE_ !and then (c=' ' or else c='!9!');
+              do c := inchar;
+              lastitem := ENDFILE_;
+              if c <> ' ' then setpos(pos-1)     
+      end lastitem;   
+      
+      integer procedure inint;
+      begin text T;
+            if lastitem then error("Attempt to read past EOF");
+            T :- image.sub(pos,length-pos+1);
+            inint := T.getint;
+            setpos(pos+T.pos-1)
+      end inint;
+      
+      real procedure inreal;
+      begin text T;
+            if lastitem then error("Attempt to read past EOF");
+            T :- image.sub(pos,length-pos+1);
+            inreal := T.getreal;
+            setpos(pos+T.pos-1)
+      end inreal;
+      
+      integer procedure infrac;
+      begin text T;
+            if lastitem then error("Attempt to read past EOF");
+            T :- image.sub(pos,length-pos+1);
+            infrac := T.getfrac;
+            setpos(pos+T.pos-1)
+      end infrac;
+      
+      text procedure intext(w); integer w;
+      begin text t;
+         intext :- t :- blanks(w);
+         while t.more do t.putchar(inchar)
+      end intext;
+      
+
+         
+      procedure outchar(c); character c;
+      begin if not more then outimage;
+            image.putchar(c);
+      end outchar;
+      
+      text procedure FIELD_(w); integer w;
+      begin if w <= 0 or w > length then error("Illegal field width in output operation");
+            if pos+w-1 > length then outimage;
+            FIELD_:-image.sub(pos,w);
+            setpos(pos+w);
+      end FIELD;
+      
+      procedure outint(i,w); integer i,w; FIELD_(w).putint(i);
+      procedure outfix(r,n,w); real r; integer n,w; FIELD_(w).putfix(r,n);
+      procedure outreal(r,n,w); real r; integer n,w; FIELD_(w).putreal(r,n);
+      procedure outfrac(i,n,w); integer i,n,w; FIELD_(w).putfrac(i,n);
+      procedure outtext(T); value T; text T; FIELD_(T.length) := T;
+
+       ENDFILE_:= true
+       ! ... ;
+    end directfile;
+    

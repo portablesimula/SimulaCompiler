@@ -1,0 +1,27 @@
+LINESPERPAGE:=4    LINE 1.
+      LINE 2.
+      LINE 3.
+      LINE 4.
+      LINE 5.
+SPACING:=0  LINE 1
+            LINE  2
+            LINE   3
+EJECT (3)
+EJECT (2)
+LINESPERPAGE:=60,  SPACING:=2
+EJECT (80),  EQUIV TO EJECT (1)
+123 456.7  8.9&-02    123.5TEXT
+                                                                                                                                 123
+*                                                                                                                              456.7
+*                                                                                                                            8.9&-02
+*                                                                                                                              123.5
+*                                                                                                                               TEXT
+*
+123
+ 456.7
+  8.9&-02
+    123.5
+TEXT                                                                                                                               X
+Y
+Z                                                                               B                                      A
+LAST LINE OF OUTPUT.

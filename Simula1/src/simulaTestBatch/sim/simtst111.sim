@@ -1,0 +1,76 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 111
+%
+%  PURPOSE: Virtual Label - Sample 1
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:5);
+   ref(B) x;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   class A; virtual: label L;
+   begin
+      text ident="CLASS A";
+      trace("In A before inner");
+      goto L;
+      inner;
+      trace("In A after inner");
+   end;
+   
+   A class B;
+   begin
+      text ident="CLASS B";
+      trace("In B before inner");
+   L: trace("At Label L - OK");
+      inner;
+      trace("In B after inner");
+   end;
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 111"); Outimage ;
+   Outtext("--- Virtual Label - Sample 1");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"In A before inner";
+   facit(1):-"At Label L - OK";
+   facit(2):-"In B after inner";
+   facit(3):-"In A after inner";
+   facit(4):-"In MAIN after new B";
+   facit(5):-"In MAIN after new CLASS B";
+
+   x:-new B;
+   trace("In MAIN after new B");
+   trace("In MAIN after new " & x.ident);
+   
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 111");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 111") ;
+      Outimage;
+   end;
+   
+end;

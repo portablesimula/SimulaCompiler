@@ -1,0 +1,91 @@
+Simulation Begin
+
+   Boolean found_error;
+   Boolean verbose=false;
+   
+   Integer u;
+   ref(Car) bil1,bil2;
+   
+   Integer testCase;
+   Text array facit(0:33);
+  
+   Procedure initFacit; begin
+      facit(0):-"0.00: START Simtest1";
+      facit(1):-"0.00: Bil 1 is scheduled for 4.0";
+      facit(2):-"0.00: Bil 2 is scheduled for 6.0";
+      facit(3):-"4.00: Bil 1 is initiating";
+      facit(4):-"4.00: Bil 1 is active 1";
+      facit(5):-"6.00: Bil 2 is initiating";
+      facit(6):-"6.00: Bil 2 is active 1";
+      facit(7):-"8.00: Bil 1 is active 2";
+      facit(8):-"8.00: Bil 1 is active 1";
+      facit(9):-"10.00: Bil 2 is active 2";
+      facit(10):-"10.00: Bil 2 is active 1";
+      facit(11):-"12.00: Final END of Simulation";
+   end;
+   
+   Procedure printFacit; begin 
+      Integer i;
+      for i:=0 step 1 until 11 do begin
+         outtext(facit(i)); outimage;
+      end;
+   end;   
+   
+   Procedure report (message); Text message; Begin
+      Boolean err; Text T; T:-blanks(40);
+      OutFix (Time, 2, 0); OutText (": " & message);
+      T:=sysout.image.strip; sysout.image:=notext; sysout.image.setpos(1);
+      err:=T.strip NE facit(testCase); testCase:=testCase+1;
+      if verbose then begin
+         outtext(T); if err then outtext("  - ERROR"); outimage;
+      end;
+      if err then found_error:=true;
+   End;
+
+   Process Class Car(pname); Text pname;
+   Begin
+         report(pname & " is initiating");
+         while true do
+         begin
+            report(pname & " is active 1");
+            Hold (4);
+            report(pname & " is active 2");
+		 end;
+   End;
+
+   initFacit;
+   if verbose then begin
+      Outtext("--- START Simula a.s. TEST 54"); Outimage ;
+      outtext("--- A VERY Simple Simulation"); outimage;
+      outtext("--------------------------------"); outimage;
+      outtext("Expected output:"); outimage;
+      outtext("--------------------------------"); outimage;
+      printFacit;
+      outtext("--------------------------------"); outimage;
+      outtext("Actual output:"); outimage;
+      outtext("--------------------------------"); outimage;
+   end;
+
+   report("START Simtest1");
+   bil1:- New Car("Bil 1");
+   bil2:- New Car("Bil 2");
+   report(bil1.pname & " is scheduled for 4.0");
+   Activate bil1 at 4.0;
+   report(bil2.pname & " is scheduled for 6.0");
+   Activate bil2 at 6.0;
+   Hold (12);
+   
+   report("Final END of Simulation");
+   if verbose then begin
+      outtext("--------------------------------"); outimage;
+   end;
+   
+   IF found_error
+   THEN Outtext("--- ERRORS FOUND IN TEST 54 - Re-Run with verbose = true")
+   ELSE Outtext("--- NO ERRORS FOUND IN TEST 54");
+   
+   if verbose then begin
+      Outimage; Outtext ("--- END Simula TEST 54"); Outimage
+   end
+   
+End;

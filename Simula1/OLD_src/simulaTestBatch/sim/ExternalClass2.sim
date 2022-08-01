@@ -1,0 +1,21 @@
+External class MainSeparat; 
+   
+MainSeparat class SubSep;
+begin 
+   integer ICHR=IINT+4;
+
+     Procedure PP;
+     begin integer i;
+        ref(SubSep2) xx;
+        External class MainSeparat; 
+        MainSeparat class SubSep2;
+        begin 
+           trace("--- Start Statements of Class SubSep2") ; 
+        
+        end;
+        xx:-new SubSep2(15);
+     end;
+     trace("--- Start Statements of Class SubSep") ; 
+     x :- new B(); 
+   
+end;

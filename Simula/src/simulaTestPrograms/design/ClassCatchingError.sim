@@ -1,0 +1,10 @@
+class CatchingErrors;
+virtual: procedure onError;
+begin
+-- code: try {
+             inner;
+-- code: } catch(RuntimeException e) {
+             onError(e.getMessage());
+-- code: }
+
+end;  

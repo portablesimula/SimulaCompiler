@@ -1,0 +1,70 @@
+
+% ================================================   Main   program  ===========
+%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 89
+%
+%  PURPOSE: Test inbytefile and outbytefile.
+%           Inputfile must be defined.
+%
+%  METHOD:  Copy from one file to the other.
+%
+%  WRITTEN BY:
+% ==============================================================================
+begin text src,dst; integer b,bb;
+      boolean errorFound;
+      boolean verbose;
+      ref(inbytefile) inpt,inoupt; ref(outbytefile) oupt;
+      Text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/inputByteFile89";
+      Text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputByteFile89";
+      
+
+      if verbose then begin
+      outtext("--- START Simula a.s. TEST 89"); outimage;
+      end;
+      
+      inpt:-new inbytefile(inptFileName);
+      if not inpt.open then error("Can't open " & inptFileName);
+      oupt:-new outbytefile(ouptFileName);
+      if not oupt.open then error("Can't open " & ouptFileName);
+
+      inpt.close; inpt.open;
+%     for b:=inpt.inbyte while b <> 26 do oupt.outbyte(b);
+
+      b:=inpt.inbyte;
+      while not inpt.endfile do
+      begin
+         oupt.outbyte(b); b:=inpt.inbyte;
+      end;
+      inpt.close; oupt.close;
+      
+      inoupt:-new inbytefile(oupt.filename); oupt:-none;
+      if not inpt.open then error("Can't re-open " & inpt.FileName);
+      if not inoupt.open then error("Can't re-open " & inoupt.FileName);
+      b:=inpt.inbyte; bb:=inoupt.inbyte;
+      while not inpt.endfile do begin
+            if not b=bb then begin errorFound:=true;
+               error("The files differ");
+            end;
+            if inoupt.endfile then begin errorFound:=true;
+               error("Output file is too short");
+            end;
+            b:=inpt.inbyte; bb:=inoupt.inbyte;
+      end;
+      if inoupt.endfile then !OK;
+      else begin errorFound:=true;
+         error("Output file is too long");
+      end;
+
+      inpt.close; inoupt.close;
+      
+      IF errorFound THEN
+      ELSE
+      BEGIN
+         Outtext("--- NO ERRORS FOUND IN TEST 89");
+      END;
+
+      if verbose then begin
+      Outtext("--- END TEST 89");
+      Outimage
+      end
+      
+end;

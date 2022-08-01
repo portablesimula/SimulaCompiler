@@ -1,0 +1,39 @@
+% ArrayAsParameters
+begin
+  array A,B(1:70);
+  integer j;
+  boolean c;
+  
+  Procedure callFP(F); integer procedure F;
+  begin
+     array B(1:50);
+     real r; integer i;
+     r:=F(B);
+     i:=F(A);
+  end;
+  
+  
+  integer Procedure P(p1); value p1; array p1;
+  begin
+    P:=p1(4);
+  end;
+  
+  integer Procedure Q(p1); name p1; array p1;
+  begin
+    P:=p1(4);
+  end;
+  
+  integer Procedure Q2(p1); array p1;
+  begin
+    P:=p1(4);
+  end;
+  
+  j:=P(A);
+  j:=P(if c then A else B);
+  j:=Q(if c then A else B);
+  j:=Q2(A); 
+
+  callFP(P);
+  callFP(Q);
+  
+end;  

@@ -1,0 +1,117 @@
+
+%INCLUDE_QPS
+%STANDARDCLASS
+%QUALIFIEDNAMES
+
+Simset_ class Simulation_;
+begin
+   ref(Head) SQS;
+   ref(MAIN_PROGRAM) main;
+   
+   ref(EVENT_NOTICE) procedure FIRSTEV; FIRSTEV:-SQS.first;
+   ref(Process) procedure current; current:-FIRSTEV.PROC;
+   
+   Link class EVENT_NOTICE(EVTIME,PROC); real EVTIME; ref(Process)PROC;
+   begin
+       ref(EVENT_NOTICE) procedure suc;
+             suc:-if this Link.suc is EVENT_NOTICE then this Link.suc else none;
+      ref(EVENT_NOTICE) procedure pred; pred:-this Link.pred;
+      
+      procedure RANK(BEFORE_); Boolean BEFORE_;
+      begin ref(EVENT_NOTICE) P;
+         P:-SQS.last;
+         for P:-P while P.EVTIME > EVTIME do P:-P.pred;
+         if BEFORE_ then
+         begin for P:-P while P.EVTIME = EVTIME do P:-P.pred; end;
+         follow(P);
+      end RANK;   
+   end EVENT_NOTICE;
+   
+   Link class Process;
+   begin ref(EVENT_NOTICE) EVENT;
+      Boolean TERMINATED_;
+      Boolean procedure idle; idle:=EVENT==none;
+      Boolean procedure terminated; terminated:=TERMINATED_;
+      real procedure evtime; if idle then error("") else evtime:=EVENT.EVTIME;
+      
+      ref(Process) procedure nextev;
+         nextev:- if idle then none else
+                  if EVENT.suc == none then none
+                  else EVENT.suc.PROC;
+      detach;
+      inner;
+      TERMINATED_:=true;
+      passivate;
+      error("");
+   end Process;
+   
+   procedure hold(T); real T;
+   inspect FIRSTEV do
+   begin if T>0 then EVTIME:=EVTIME+T;
+      if suc =/= none then
+      begin if suc.EVTIME <= EVTIME then
+         begin out; RANK(false);
+            resume(current);
+         end
+      end
+   end hold; 
+   
+   procedure passivate;
+   begin inspect current do
+      begin EVENT.out; EVENT:-none end;
+      if SQS.empty then error("")     
+                   else resume(current);
+   end passivate;             
+   
+   procedure wait(S); ref(Head) S;
+   begin current.into(S); passivate end wait;
+   
+   procedure cancel(X); ref(Process) X;
+   if X==current then passivate else
+   inspect X do if EVENT =/= none then
+   begin EVENT.out; EVENT:-none end cancel;                
+   
+   procedure ACTIVATE_(REAC,X,CODE,T,Y,PRIOR_);
+      value CODE; ref(Process) X,Y; Boolean REAC,PRIOR_; Text CODE; real T;
+   inspect X do if not TERMINATED_ then
+   begin ref(Process) Z; ref(EVENT_NOTICE) EV;
+         if REAC then EV:-EVENT
+         else if EVENT =/= none then goto EXIT;
+         Z:-current;
+         if CODE="direct" then
+ DIRECT: begin
+               EVENT:-new EVENT_NOTICE(evtime,X);
+               EVENT.precede(FIRSTEV)
+         end direct
+         else if CODE="delay" then
+         begin T:=T+evtime; goto CODE_AT end delay
+         else if CODE="at" then
+CODE_AT: begin
+               if T<evtime then T:=evtime;
+               if T=evtime or PRIOR_ then goto DIRECT;
+               EVENT:-new EVENT_NOTICE(T,X);
+               EVENT.RANK(PRIOR_)
+         end at
+         else if(if Y==none then true else Y.EVENT==none)
+         then EVENT:-none else
+         begin if X==Y then goto EXIT;
+               comment reactivate X before/after X;
+               EVENT:-new EVENT_NOTICE(Y.EVENT.EVTIME,X);
+               if CODE="before" then EVENT.precede(Y.EVENT)
+                                else EVENT.follow(Y.EVENT)
+         end before or after; 
+         if EV=/=none then
+         begin EV.out; if SQS.empty then error("") end;
+         if Z =/= current then resume(current);                                  
+   EXIT:end ACTIVATE;   
+                    
+   Process class MAIN_PROGRAM;
+   begin
+      L: detach; goto L
+   end MAIN_PROGRAM;
+   
+   main:-new MAIN_PROGRAM;
+   main.EVENT:-New EVENT_NOTICE(0,main);
+   main.EVENT.into(SQS);
+   
+end SIMULATION;

@@ -1,0 +1,26 @@
+begin
+   long real a,b,c,f,x,y;
+   integer i;
+   boolean cond;
+   Class D; begin ref(D) cd; real e; end;
+   ref(D) rd;
+   
+   x := a + rd.cd qua D. e * f ;
+   
+   a:= x**2.0 + y**2.0;
+   
+   x := a + b + c;
+       
+   y := x := a ** b ** c;
+   
+   a:= a + - +4.0 - + -5.0 ;
+   
+   a:= - a **  b
+   
+   cond := NOT i > 2
+   
+   a := - a * b
+   
+   a := - + - a *b
+
+end of program;

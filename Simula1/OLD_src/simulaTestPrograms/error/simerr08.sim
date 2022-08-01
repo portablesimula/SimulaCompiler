@@ -1,0 +1,11 @@
+
+% Local Connected Object
+BEGIN
+   class A; begin end;
+   ref(A) x;
+   Character k=''';
+   inspect new A do
+   begin
+      x:-this A;
+   end ;
+end of program;

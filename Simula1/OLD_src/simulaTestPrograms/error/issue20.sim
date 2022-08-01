@@ -1,0 +1,13 @@
+begin integer I;
+  
+   procedure OK; Outtext( "OK" );
+
+   procedure P( i, l, q ); integer i; label l; procedure q;  
+   begin q; end;
+  
+   class     C( i, l, q ); integer i; array l; procedure q;  
+   begin q; end;
+    
+L:     P( I, L, OK );
+   new C( I, L, OK );  
+end

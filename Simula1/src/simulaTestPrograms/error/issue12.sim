@@ -1,0 +1,23 @@
+% Issue 12: Fra Stein
+% Jeg testet dette med at det ikke er lov å dotte seg inn i klasser med lokale klasser,
+% se utdrag av SIMULA standard nederst under.  Programmet under virker helt strålende,
+% og det burde det vel ikke.  Da er det vel også lett å konstruere programmer som foretar
+% såkalt "transplantasjon", men jeg har ikke gjort det.
+
+begin
+   class A;
+   begin
+      class B;
+      begin
+        integer i; 
+        i:= 25;
+      end B;
+
+      ref(B) rB;
+      rB:- new B;    
+   end A;
+
+   ref(A) rA; 
+   rA:- new A;
+   outint(rA.rB.i, 9);
+end

@@ -1,0 +1,32 @@
+begin
+   integer i,n;
+   real r;
+   Character c;
+   Text t;
+   t:-blanks(14);
+   t:="abracadabra";
+   if t =/= NOTEXT then t.sub(1,3):="abc";
+   t:-copy("barabra");
+   outtext(t); outimage;   
+   
+   if t.constant then begin end;  
+   i:=t.start;  
+   i:=t.length;  
+   t:-t.main;  
+   i:=t.pos;  
+   t.setpos(34);  
+   if t.more then begin end;  
+   c:=t.getchar;  
+   t.putchar(c);  
+   t:-t.sub(3,6);  
+   t:-t.strip;  
+   i:=t.getint;  
+   i:=t.getreal;  
+   i:=t.getfrac;  
+   t.putint(i);  
+   t.putfix(r,n);  
+   t.putreal(r,n);  
+   t.putfrac(i,n);  
+   
+   
+end; 

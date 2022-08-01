@@ -1,0 +1,5 @@
+% WhileStatement
+begin
+   integer i,j,k;
+   while i < j do k:=i+j;   
+end;      

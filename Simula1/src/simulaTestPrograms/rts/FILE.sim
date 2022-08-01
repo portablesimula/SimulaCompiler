@@ -1,0 +1,13 @@
+
+%STANDARDCLASS
+
+class FILE_(FILENAME_); value FILENAME_; text FILENAME_;
+   begin
+%     text image;
+      Boolean OPEN_;
+      text procedure filename; filename:-copy(FILENAME_);
+      Boolean procedure isopen; isopen:=OPEN_;
+      Boolean procedure setaccess(mode); text mode; begin end;
+      
+      if FILENAME_ == notext then error("Illegal File Name");
+end FILE_;      

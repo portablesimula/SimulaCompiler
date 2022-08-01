@@ -1,0 +1,57 @@
+
+Class Separat(i); integer i; virtual: Procedure checkEvent;
+
+begin
+   Text t;
+   Integer nA,nB;
+   Integer eventValue;
+   
+   Text Procedure edIdent(id,n); Character id; Integer n;
+   begin Text t; t:-Copy("(Xn)");
+         t.sub(2,1).putChar(id);
+         t.sub(3,1).putChar(Char(Rank('0')+n));
+         edIdent:-t;
+   end;
+
+   Procedure Event (n,val); Integer n,val;
+   begin eventValue:=val; CheckEvent(n,val); end;
+   Ref (A) x;
+   Ref (B) y;
+ 
+  Infile class MyInfile; virtual: ref(FILE) Procedure pvirt is ref(FILE) Procedure actual(i,j); integer i,j;;
+  Begin
+     ref(FILE) Procedure pvirt(i,j); integer i,j;
+     begin i:=34;
+     end;
+     integer procedure inRom;
+     Begin 
+        ref(FILE) myFile;
+        myFile :- pvirt(4,3);
+     end;
+  end;
+
+   Class A;
+   Begin Real array X(P:1);
+         Integer ord;
+         Text procedure idA; begin idA:-edIdent('A',ord); end;
+         ord:=nA:=nA+1;
+         Event(2,234);
+   End;
+
+   A Class B;
+   Begin Real array X(P:1);
+         Integer ord;
+         Text procedure idB; begin idB:-edIdent('B',ord); end;
+         ord:=nB:=nB+1;
+         Event(3,729);
+   End;
+
+   Real Procedure P;
+   Begin 
+      Event(21,49054)
+   End;
+
+   Event(1,9163876) ;
+   nA:=0; nB:=0;
+
+end;

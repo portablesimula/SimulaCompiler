@@ -1,0 +1,92 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 114
+%
+%  PURPOSE: Switch Statement
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:5);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+   
+   procedure test(key,msg); character key; text msg;
+   begin
+      character lowKey='!0!';
+      character hiKey='Z';
+      character case1='A';
+      character case2='B';
+
+      switch(lowkey:hikey) key
+      begin
+         when case1 do begin
+              trace(msg & " selected case 1");
+              goto BREAK;
+         end;
+
+         when case2 do begin
+              trace(msg & " selected case 2");
+              goto BREAK;
+         end;
+
+         when 'C' do begin
+              trace(msg & " selected case 3");
+              goto BREAK;
+         end;
+
+         when NONE do begin
+              trace(msg & " selected case NONE");
+              goto NOMORE;
+         end;
+      end case;
+   BREAK: end;
+   
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 127"); Outimage ;
+   Outtext("--- Switch Statement");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"Test 1 selected case 2";
+   facit(1):-"Test 2 selected case 1";
+   facit(2):-"Test 3 selected case 3";
+   facit(3):-"Test 4 selected case NONE";
+   facit(4):-"In MAIN after NOMORE";
+
+   test('B',"Test 1");
+   test('A',"Test 2");
+   test('C',"Test 3");
+   test('Z',"Test 4");
+   trace("Should never come here");
+NOMORE:
+   trace("In MAIN after NOMORE");
+   
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 127");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 127") ;
+      Outimage;
+   end;
+   
+end;
+

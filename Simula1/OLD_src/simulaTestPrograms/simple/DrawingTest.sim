@@ -1,0 +1,30 @@
+Drawing("Simula Drawing",800,700) begin
+   setBackgroundColor(yellow);
+   setStroke(4.5);
+   setDrawColor(red);
+   setFillColor(magenta);
+   
+   
+    	
+   fillEllipse(100, 100, 200, 50);
+   setFillColor(red);
+   fillRectangle(300, 200, 200, 50);
+   setFillColor(cyan);
+   fillRoundRectangle(100, 300, 200, 50,50,50);
+   setDrawColor(black);
+   drawEllipse(100, 200, 200, 50);
+   drawRectangle(300, 300, 200, 50);
+   setDrawColor(blue);
+   drawRoundRectangle(200, 400, 200, 50,50,50);
+   
+   setFontSize(24);
+   setDrawColor(orange);
+   setFontStylePlain;
+   setFontStyleBold;
+   setFontStyleItalic;
+   setFontStyleBoldItalic;
+   drawText("Abracadabra",200,100);
+   
+   while true do;
+    
+end;

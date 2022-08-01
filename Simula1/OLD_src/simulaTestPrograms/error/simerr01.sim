@@ -1,0 +1,14 @@
+BEGIN
+   boolean b;
+   integer x,z;
+
+   if b then then outimage;
+   if b then else outimage;
+   if b then step outimage;
+   if b then begin outimage;
+   x:=x+4: z:=x+16;
+   for(i=x;x<44;x++) x=x+6;
+// wrong commentar ...
+   if(x<z) { z:-END; }
+
+END

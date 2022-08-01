@@ -1,0 +1,25 @@
+external class Dates; 
+ 
+Dates begin 
+  ref(Date) TD, P, KrH, M1, M17; 
+   
+  TD :- Today; 
+  OutText("I dag er det " & TD.Image & ".");  OutImage; 
+   
+  P :- Easter(TD.Y); 
+  OutText("1. Påskedag er " & P.Image);  OutImage; 
+   
+  KrH :- P.Plus(39); 
+  OutText(KrH.Weekday_norsk & " " & KrH.Image & " er Kristi Himmelfartsdag"); 
+  OutImage; 
+   
+  M1 :- new Date(1,5,TD.Y);  M17 :- new Date(17,5,TD.Y); 
+  OutText(M1.Image & " er en " & M1.Weekday_norsk & " og er "); 
+  if not M1.Is_weekend then OutText("ikke "); 
+  OutText("helg.");  OutImage; 
+   
+  OutText(M17.Image & " er en " & M17.Weekday_english & " og er "); 
+  if not M17.Is_weekend then OutText("ikke "); 
+  OutText("helg.");  OutImage; 
+   
+end 

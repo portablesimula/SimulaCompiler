@@ -1,0 +1,93 @@
+% ----------------------------------------------------------------
+% LEGAL GOTO out of an operating Process and the enclosing System.
+% ----------------------------------------------------------------
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 121
+%
+%  PURPOSE: LEGAL GOTO out of an operating Process and the enclosing System.
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+begin
+   Boolean verbose=FALSE;
+   Boolean found_error ;
+   integer traceCase;
+   text array facit(0:9);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg NE facit(traceCase) then
+      begin
+         found_error:=TRUE;
+         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   procedure p;
+   begin
+      integer i;
+      Simulation begin
+         ref(Car) car1;
+      
+         Process Class Car(pname); Text pname;
+         Begin
+            trace(pname & " is initiating");
+            while true do
+            begin
+               trace(pname & " is active 1");
+               Hold (4);
+               trace(pname & " is active 2");
+               goto EXIT_LABEL;
+		    end;
+         End;
+      
+         trace("START SIMULATION");
+         car1:- New Car("Bil 1");
+         trace(car1.pname & " is scheduled for 4.0");
+         Activate car1 at 4.0;
+         Hold (12);
+      
+      end;
+   end;
+   
+
+
+   
+   if verbose then begin
+   Outtext("--- START SIMULA TEST 121"); Outimage ;
+   Outtext("--- LEGAL GOTO out of an operating Process and the enclosing System.");
+   Outimage; Outimage;
+   end;
+   
+   facit(0):-"--- START GOTO SAMPLE";
+   facit(1):-"START SIMULATION";
+   facit(2):-"Bil 1 is scheduled for 4.0";
+   facit(3):-"Bil 1 is initiating";
+   facit(4):-"Bil 1 is active 1";
+   facit(5):-"Bil 1 is active 2";
+   facit(6):-"At END OF TEST";
+
+   trace("--- START GOTO SAMPLE");
+   p;
+   trace("THIS LINE SHOULD NEVER BE EXECUTED");
+   EXIT_LABEL: trace("At END OF TEST");
+      
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext ("--- NO ERRORS FOUND IN TEST 121");
+   END ;
+
+   if verbose then begin
+      Outimage;
+      Outtext ("--- END SIMULA TEST 121") ;
+      Outimage;
+   end;
+   
+
+ END

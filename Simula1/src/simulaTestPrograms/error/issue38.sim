@@ -1,0 +1,39 @@
+begin
+	  ref(Meaning) curmeaning;
+	  ref(macro_scan) msc;
+
+	  class Meaning;
+	  begin end;
+	  
+	  Meaning class mnemonic;
+	  begin
+	  end;
+	  
+	  Meaning class macro;
+	  begin
+	  end;
+	  
+	  class macro_scan(id,mac); text id; ref(macro) mac;
+	  begin end;
+
+      file class getsymb;
+      begin ref(file) prev;
+            ref(infile) inpt;     ! Source input file ;
+            character c,startpos,ampos,lng; short integer s,n,v;
+            character impos,imlen;  ! Current pos, length ;
+            text inim;              ! Stripped input line ;
+            text t,id; !*** percent only ***;
+            
+            inspect curmeaning
+            when macro do begin
+                            if msc=/=none then call(msc) else
+                            new macro_scan("***macro***",this macro);
+                 end
+            when mnemonic do begin
+                            --inspect first qua macro_symbol do begin
+                            --    curval :-v; symbol:=s;
+                            --    hashhi:=box.idhi; hashlo:=box.idlo;
+                 end;
+	  end;                       
+            
+end;

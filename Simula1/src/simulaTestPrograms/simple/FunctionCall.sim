@@ -1,0 +1,55 @@
+
+%class FunctionCall;
+begin ref(CCC) cx;
+      integer array IntArr2(1:9);
+   class CCC;
+   begin
+      integer i;
+      boolean b;
+      real x,y;
+      text T;
+      integer array IntArr(1:9);
+      integer procedure P(a,b,c); real a,b,c; begin end;
+   
+      integer procedure Q1(iVal,i,iName); value iVal; name iName; integer iVal,i,iName; begin iVal:=13; Q1:=i+iName; end;
+      real procedure Q2(rVal,r,rName); value rVal; name rName; real rVal,r,rName; begin rName:=13; Q2:=r+rVal; end;
+      ref(CCC) procedure Q3(r,rName); name rName; ref(CCC) r,rName; begin Q3:=rName; end;
+      Text procedure Q4(tVal,t,tName); value tVal; name tName; Text tVal,t,tName; begin t.setpos(13); Q4:-tName; end;
+      procedure Q5(VA,IA,NA); value VA; name NA; integer array VA,IA,NA; begin VA(2):=74; IA(4):=13; NA(7):=x+y; end;
+      procedure Q6(pro,namePro); name namePro; procedure pro,namePro;
+      begin
+         pro(13,14,15);
+         namePro(13,14,15);
+      end;
+      
+      procedure Q7(lab,nameLab); name nameLab; label lab,nameLab;
+      begin
+         if b then goto lab; goto nameLab;
+         goto if b then nameLab else lab;
+      end;
+
+      procedure Q(a,b,c,T,IA,pro); name a,pro; value b,T; real a,b,c; Text T; integer array IA; procedure pro;
+      begin 
+         a:=13;
+         b:=14;
+         c:=15;
+      end;
+   
+      P(1,2,3);
+      P((if x<y then 16 else 32),3.14,5.678);  
+      Q(x+y,x-y,x**y,"abc",IntArr,P);
+
+      i:=Q1(x+y,x-y,x**y);
+      Q2(x,y,x*y);
+      cx:-Q3(cx,cx);
+      T:-Q4("abc","def","ghi");
+      Q5(IntArr,IntArr,IntArr);
+      Q6(P,P);
+      Q7(L,L); L: b:=true;
+   end class CCC;
+   
+   cx:-new CCC();
+   
+   cx.Q5(IntArr2,IntArr2,IntArr2);
+      
+end;   

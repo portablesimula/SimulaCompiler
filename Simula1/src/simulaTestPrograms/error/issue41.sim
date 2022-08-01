@@ -1,0 +1,7 @@
+Drawing("Drawing",1000,1000) begin 
+   ref(ShapeElement) rect;
+   rect:-drawRectangle(20,20,200,200);
+   
+   while true do; -- Keep graphic window
+   
+end;

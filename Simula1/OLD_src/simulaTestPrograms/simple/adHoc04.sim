@@ -1,0 +1,57 @@
+BEGIN
+   Boolean found_error;
+   Boolean verbose=false;
+   integer pval;
+   
+   integer procedure P; P:=3456;
+
+   Class A; virtual: Procedure P;
+   begin
+%         integer procedure P; P:=134;
+   end;
+
+   A Class B; Protected P;
+   begin
+         integer procedure P; P:=13;
+%         Outtext("Line "); outint(sourceline,0); outtext(": Call P result="); outint(P,0); outimage;
+   end;
+
+   B Class C; Hidden P;
+   begin 
+         integer procedure P;
+                 P:=1;
+         
+         Outtext("Call P, Check Result==1, result="); outint(P,0); outimage;
+   end;
+
+   if verbose then begin
+   Outtext("--- START TEST Ad'Hoc 04"); Outimage;
+   Outtext("--- Test visibility of Hidden attributes.");
+   Outimage; Outimage;
+   end;
+   
+   C begin
+      
+     pval := P;
+     if pval = 3456 then
+     else
+     begin
+         Outtext("*** error in test 1: Visibility of Hidden attribute."); Outimage;
+         Outtext("            Erroneus values : pval = "); Outint(pval, 4); Outimage;
+         found_error := true
+     end;
+   
+   end;
+
+   IF found_error THEN
+   ELSE
+   BEGIN
+      Outtext("--- NO ERRORS FOUND IN TEST Ad'Hoc 04");
+   END;
+
+   if verbose then begin
+   Outtext("--- END TEST Ad'Hoc 04");
+   Outimage
+   end
+   
+ END

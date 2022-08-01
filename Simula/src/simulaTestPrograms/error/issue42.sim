@@ -1,0 +1,32 @@
+begin 
+
+    procedure trace(message); text message; begin
+        outtext(message); outimage;
+    end;
+    
+    class A; begin end;
+    
+    procedure HIDDEN_LABEL; begin
+        procedure P; begin end;
+        integer L;
+        L:=4;
+        begin L:P: end;
+        L:=5;
+    end;
+   
+    integer procedure GOTO_ERROR(n); integer n; begin
+        if n > 4 then begin
+            GOTO_ERROR:=44444444;
+            if n > 5 then goto ERR;
+            trace("No else brance");
+        end
+        else ERR: LLL: begin --text t;
+            GOTO_ERROR:=88888888;
+        end;
+    end;
+    
+    trace("n=2: result:" & edit(GOTO_ERROR(2)) );
+    trace("n=5: result:" & edit(GOTO_ERROR(5)) );
+    trace("n=6: result:" & edit(GOTO_ERROR(6)) );
+   
+end;

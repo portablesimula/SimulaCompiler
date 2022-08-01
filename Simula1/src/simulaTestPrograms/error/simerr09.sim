@@ -1,0 +1,9 @@
+
+% Character and Java keyword char
+BEGIN
+   integer i,j,null;
+   Character c;
+   Character k=''';
+   c:=char(null);
+   
+end of program;
