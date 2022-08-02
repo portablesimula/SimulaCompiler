@@ -20,7 +20,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import simula.compiler.AttributeFile;
+import simula.compiler.AttributeFileIO;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -149,7 +149,7 @@ public final class ExternalDeclaration extends Declaration {
 	        String simulaInfo=mainAttributes.getValue("SIMULA-INFO");
 	        ZipEntry zipEntry=jarFile.getEntry(simulaInfo);
 	        InputStream inputStream=jarFile.getInputStream(zipEntry);
-	        moduleType=AttributeFile.readAttributeFile(inputStream,new File(simulaInfo),declarationList);
+	        moduleType=AttributeFileIO.readAttributeFile(inputStream,new File(simulaInfo),declarationList);
 	        inputStream.close();
 	        
 	        File destDir=Global.tempClassFileDir;

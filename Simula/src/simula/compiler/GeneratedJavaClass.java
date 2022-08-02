@@ -60,8 +60,7 @@ public final class GeneratedJavaClass {
 			ClassDeclaration cls=(ClassDeclaration)blockDeclaration;
 			info.prefixIdent=cls.prefix;
 		}
-		JavaClassInfo.put(info.externalIdent,info); // TODO: TESTING NYTT_OPPLEGG
-		//System.out.println("NEW JavaModule: externalIdent="+blockDeclaration.getJavaIdentifier()+", MAP="+Global.javaClassMap.get(blockDeclaration.getJavaIdentifier()));
+		JavaClassInfo.put(info.externalIdent,info);
 	}
 
 	public String getClassOutputFileName() {
@@ -120,7 +119,6 @@ public final class GeneratedJavaClass {
 			  Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 			  writer.write(s+'\n');
 		} catch (IOException e) {
-//			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFileName,e);
 			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFile,e);
 		}
 		prevLineNumber=sourceLineNumber;
@@ -160,6 +158,7 @@ public final class GeneratedJavaClass {
 		
 	}
 	
+	@Override
 	public String toString() {
 		return ("JavaModule " + blockDeclaration + ", javaOutputFile=" + javaOutputFile);
 	}

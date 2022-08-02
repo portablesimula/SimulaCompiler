@@ -7,58 +7,51 @@ import java.io.ObjectInputStream;
 
 import simula.compiler.utilities.Util;
 
-public class AttributeInput {
+public class AttributeInputStream {
 	public static boolean TESTING=false;//true;//false;
 	private String name;
 	private ObjectInputStream in;
 	
-    public AttributeInput(String name,InputStream in) throws IOException {
+    public AttributeInputStream(String name,InputStream in) throws IOException {
     	this.name=name;
 		this.in = new ObjectInputStream(new BufferedInputStream(in,10*512));
     }
-
 	
 	public Object readObject() throws IOException, ClassNotFoundException {
         Object obj=in.readObject();
     	if(TESTING) System.out.println("AttributeInputStream.readObject: "+obj);
         return(obj);
 	}
-
 	
     public final boolean readBoolean() throws IOException, ClassNotFoundException {
         boolean b=(boolean) in.readObject();
     	if(TESTING) System.out.println("AttributeInputStream.readBoolean: "+b);
         return(b);
     }
-
 	
     public final byte readByte() throws IOException, ClassNotFoundException {
         byte b=(byte) in.readObject();
     	if(TESTING) System.out.println("AttributeInputStream.readByte: "+b);
         return(b);
     }
-
 	
     public final short readShort() throws IOException, ClassNotFoundException {
         short i=(short) in.readObject();
     	if(TESTING) System.out.println("AttributeInputStream.readShort: "+i);
         return(i);
     }
-
 	
     public final int readInt() throws IOException, ClassNotFoundException {
         int i=(int) in.readObject();
     	if(TESTING) System.out.println("AttributeInputStream.readShort: "+i);
         return(i);
     }
-
 	
     public final char readChar() throws IOException, ClassNotFoundException {
         char c=(char) in.readObject();
     	if(TESTING) System.out.println("AttributeInputStream.readChar: "+c);
         return(c);
     }
-
 	
 	public float readFloat() throws IOException, ClassNotFoundException {
         float f=(float) in.readObject();
@@ -66,32 +59,28 @@ public class AttributeInput {
         return(f);
 	}
 
-	
 	public double readDouble() throws IOException, ClassNotFoundException {
         double d=(double) in.readObject();
     	if(TESTING) System.out.println("AttributeInputStream.readDouble: "+d);
         return(d);
 	}
 
-    private int kind=0;
-	
+    private int kind=0;	
     public final byte readKind() throws IOException, ClassNotFoundException {
-    	if(AttributeOutput.USE_SYNCMARK) {
-    		checkSyncMark(AttributeOutput.SYNCMARK);
+    	if(AttributeOutputStream.USE_SYNCMARK) {
+    		checkSyncMark(AttributeOutputStream.SYNCMARK);
     	}
         kind = (int) in.readObject();
     	if(TESTING)
     		System.out.println("AttributeInputStream.readKind: "+kind);
         return (byte)(kind);
     }
-
 	
 	public String readIdent() throws IOException, ClassNotFoundException {
         String s=(String) in.readObject();
         if(TESTING) System.out.println("AttributeInputStream.readIdent: "+s);
     	return(s);
 	}
-
 	
 	public String readString() throws IOException, ClassNotFoundException {
         String s=(String) in.readObject();
@@ -99,10 +88,9 @@ public class AttributeInput {
     	return(s);
 	}
 
-	
 	public void checkSyncMark(String mark) throws ClassNotFoundException, IOException {
 		//System.out.println("checkSync: "+mark);
-		if(AttributeOutput.USE_SYNCMARK) {
+		if(AttributeOutputStream.USE_SYNCMARK) {
 			Object mrk=in.readObject();
 			if(mrk instanceof String) if(((String)mrk).equals(mark)) return;
 
@@ -113,14 +101,12 @@ public class AttributeInput {
 			Object obj=null; int n=0;
 			while((obj=in.readObject())!=null && (n++)<100) {
 				System.out.println("*** OUT OF SYNC: Next Object: "+obj.getClass().getSimpleName()+" "+obj);
-				//BREAK("OUT OF SYNC("+mark+")");
 			}
 			Util.IERR(name+":OUT OF SYNC("+mark+") "+obj.getClass().getSimpleName()+" "+mrk);
 			Thread.dumpStack();
 		}
 	}
-	
-	
+		
 	public void readAhead(String msg,int lim) throws ClassNotFoundException, IOException {
 		Object obj=null; int n=0;
 		while((obj=in.readObject())!=null && (n++)<lim) {
@@ -130,7 +116,6 @@ public class AttributeInput {
 		Thread.dumpStack();
 	}
 
-	
 	public void close() throws IOException {
 		in.close();
 	}

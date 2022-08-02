@@ -67,7 +67,6 @@ public final class ProgramModule extends Statement {
 		sysout=new Variable("sysout");
 		try	{
 			if(Option.TRACE_PARSE) Parser.TRACE("Parse Program");
-//			Global.currentScope=StandardClass.BASICIO;			// BASICIO Begin
 			Global.setScope(StandardClass.BASICIO);		    	// BASICIO Begin
 			new ConnectionBlock(sysin,null)                     //    Inspect sysin do
 			     .setClassDeclaration(StandardClass.InFile);
@@ -100,6 +99,7 @@ public final class ProgramModule extends Statement {
 		this.module=module;
 	}	
 
+	@Override
 	public void doChecking() {
 		if(IS_SEMANTICS_CHECKED()) return;
 		sysin.doChecking();
@@ -108,8 +108,11 @@ public final class ProgramModule extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
   
+	@Override
 	public void doJavaCoding() { module.doJavaCoding(); }
+	@Override
 	public void print(final int indent) { module.print(0); }
+	@Override
 	public String toString() { return((module==null)?"":""+module.identifier); }
 	public String getIdentifier() { return(module.identifier); }
 	

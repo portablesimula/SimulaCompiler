@@ -322,13 +322,10 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		JavaClassInfo info=new JavaClassInfo();
 		info.externalIdent=this.getJavaIdentifier();
 //		info.prefixIdent=this.prefix;
-		if(prefixClass!=null) {  // TODO: TESTING NYTT_OPPLEGG
+		if(prefixClass!=null) {
 			info.prefixIdent=externalPrefixIdent=prefixClass.getJavaIdentifier();
-//			Util.println("ClassDeclaration.doChecking: externalIdent="+info.externalIdent+", prefixIdent="+info.prefixIdent);
-//			if(info.prefixIdent==null) Util.IERR("STOP");
 		}
-		JavaClassInfo.put(info.externalIdent,info); // TODO: TESTING NYTT_OPPLEGG
-//		System.out.println("NEW ClassDeclaration: externalIdent="+info.externalIdent+", MAP="+Global.javaClassMap.get(info.externalIdent));
+		JavaClassInfo.put(info.externalIdent,info);
 	}
 
 	// ***********************************************************************************************
@@ -889,9 +886,6 @@ SEARCH: while (scope != null) {
 		oupt.writeObject(externalPrefixIdent);
 
 		Util.TRACE_OUTPUT("END Write ClassDeclaration: "+identifier);
-//		if(identifier.equalsIgnoreCase("COMMON$idpack")  // TODO: TESTING NYTT_OPPLEGG
-//		|| identifier.equalsIgnoreCase("SCANNER$protpack")) // TODO: TESTING NYTT_OPPLEGG
-//			Util.println("WRITE: "+identifier+", prefix="+prefix+", externalPrefixIdent="+externalPrefixIdent); 
 	}
 
 	@Override
@@ -924,8 +918,7 @@ SEARCH: while (scope != null) {
 		JavaClassInfo info=new JavaClassInfo();
 		info.externalIdent=this.getJavaIdentifier();
 		info.prefixIdent=externalPrefixIdent;
-		JavaClassInfo.put(info.externalIdent,info); // TODO: TESTING NYTT_OPPLEGG
-//		System.out.println("NEW ClassDeclaration: externalIdent="+info.externalIdent+", MAP="+Global.javaClassMap.get(info.externalIdent));
+		JavaClassInfo.put(info.externalIdent,info);
 	}
 
 }

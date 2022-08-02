@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Vector;
-
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationList;
@@ -26,7 +24,7 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
-public final class AttributeFile {
+public final class AttributeFileIO {
 	private final String version="SimulaAttributeFile: Version 1.0";
 
 	final File attributeFile;
@@ -34,7 +32,7 @@ public final class AttributeFile {
 	ObjectInputStream inpt;
 	boolean verbose=false;//true;
 	
-	private AttributeFile(final File attributeFile) {
+	private AttributeFileIO(final File attributeFile) {
 		this.attributeFile = attributeFile;
 	}
 
@@ -43,7 +41,7 @@ public final class AttributeFile {
 		if (relativeAttributeFileName == null) return;
 		File file = new File(Global.tempClassFileDir,relativeAttributeFileName);
 		if (Option.verbose)	Util.message("*** BEGIN Generate SimulaAttributeFile: \"" + file+"\"");
-		AttributeFile attributeFile = new AttributeFile(file);
+		AttributeFileIO attributeFile = new AttributeFileIO(file);
 		attributeFile.write((BlockDeclaration) program.module);
 		if (Option.TRACE_ATTRIBUTE_OUTPUT) {
 			try { attributeFile.listAttributeFile(file);
@@ -82,7 +80,7 @@ public final class AttributeFile {
 
 	public static Type readAttributeFile(final InputStream inputStream,final File file,
             final DeclarationList declarationList) throws IOException, ClassNotFoundException {
-		AttributeFile attributeFile = new AttributeFile(file);
+		AttributeFileIO attributeFile = new AttributeFileIO(file);
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + file);
 		attributeFile.inpt = new ObjectInputStream(inputStream);
 		if (!attributeFile.checkVersion())
@@ -93,22 +91,12 @@ public final class AttributeFile {
 			try { module=(BlockDeclaration) attributeFile.inpt.readObject();}
 			catch (EOFException e1) { break LOOP; }
 			module.isPreCompiled = true;
-//			Util.BREAK("AttributeFile.readAttributeFile: module="+module);
 			Declaration d=declarationList.find(module.identifier);
 			if(d!=null) {
 				Util.warning("Multiple declarations with the same name: "+module+" and "+d);
 			} else {
 				declarationList.add(module);
 				moduleType=module.type;
-				
-//				Util.BREAK("SimulaAttributeFile.readAttributeFile: BEGIN "+declarationList.identifier+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-//				for(Declaration dd:declarationList) Util.message(""+dd);
-//				Util.BREAK("SimulaAttributeFile.readAttributeFile: ENDOF "+declarationList.identifier+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-
-//				Util.BREAK("SimulaAttributeFile.readAttributeFile: BEGIN "+module.declarationList.identifier+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-//				for(Declaration dd:module.declarationList) Util.message(""+dd);
-//				Util.BREAK("SimulaAttributeFile.readAttributeFile: ENDOF "+module.declarationList.identifier+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-
 				if (Option.verbose)
 					Util.TRACE("***       Read External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']'
 							+"  ==>  "+declarationList.identifier);
@@ -120,7 +108,6 @@ public final class AttributeFile {
 		return(moduleType);
 	}	
 	  
-	
 	private BlockDeclaration listAttributeFile(final File attributeFile) throws IOException, ClassNotFoundException {
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFile);
 		FileInputStream fileInputStream = new FileInputStream(attributeFile);

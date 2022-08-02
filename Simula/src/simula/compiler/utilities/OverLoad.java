@@ -41,16 +41,14 @@ public final class OverLoad extends Type {
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
 		oupt.writeObject(key);
-		if(NYTT_OPPLEGG) Util.IERR("");
-		else oupt.writeObject(qual);
+		oupt.writeObject(qual);
 		oupt.writeObject(type);
 	}
 
 	@Override
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
 		key=(Token)inpt.readObject();
-		if(NYTT_OPPLEGG) Util.IERR("");
-		else qual=(ClassDeclaration) inpt.readObject();
+		qual=(ClassDeclaration) inpt.readObject();
 		type=(Type[])inpt.readObject();
 	}
 

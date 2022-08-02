@@ -26,24 +26,14 @@ public class Type implements Externalizable {
 	public static final Type Character = new Type(new Token(KeyWord.CHARACTER));
 	public static final Type Text = new Type(new Token(KeyWord.TEXT));
 	public static final Type Ref = new Type(new Token(KeyWord.REF));
-	
-	//public static final Type Ref(String className) { return (new Type(className)); }
-	public static final Type Ref(String className) {
-		if(NYTT_OPPLEGG) return (defType(className)); // TODO: TESTING NYTT_OPPLEGG
-		else return (new Type(className));
-	}
+	public static final Type Ref(String className) { return (new Type(className)); }
 	
 	public static final Type Procedure = new Type(new Token(KeyWord.PROCEDURE));
 	public static final Type Label = new Type(new Token(KeyWord.LABEL));
-
-	public static final boolean NYTT_OPPLEGG=false;//true;
-//	private String externalIdent; // JavaClassName TODO: TESTING NYTT_OPPLEGG
-//	private String prefixIdent;   // JavaClassName TODO: TESTING NYTT_OPPLEGG
 	
 	protected ClassDeclaration qual; // Qual in case of ref(Qual) type; Set by doChecking below
 
 	public ClassDeclaration getQual() {
-		if(NYTT_OPPLEGG) Util.IERR("");
 		Util.ASSERT(CHECKED, "Type is not Checked");
 		return (qual);
 	}
@@ -56,19 +46,9 @@ public class Type implements Externalizable {
 	  
 	public Type(Token key) { this.key=key; }
 
-	protected Type(String className) {
+	public Type(String className) {
 		if(className==null) className="UNKNOWN"; // Error recovery
 		this.key=new Token(KeyWord.REF,className.toUpperCase());
-	}
-  
-	public static Type defType(String className) { // TODO: TESTING NYTT_OPPLEGG
-		String scopeName=Global.getCurrentScope().edJavaClassName()+'$'+className;
-		Type type=Global.typeMap.get(scopeName);
-		if(type!=null) System.out.println("got Type "+type);//+", externalIdent="+type.getExternalIdent()+", prefixIdent="+type.getPrefixIdent());
-		if(type!=null) return(type);
-		type=new Type(className);
-//		System.out.println("NEW Type "+type+", scopeName="+scopeName+", MAP="+Global.typeMap.get(scopeName));// TODO: TESTING NYTT_OPPLEGG
-		return(type);
 	}
 	
 	public static void printTypeMap(String title) {
@@ -90,21 +70,15 @@ public class Type implements Externalizable {
 		if(key.getKeyWord()==KeyWord.REF) {
 			if(key.getValue()==null) return("RTObject$");
 			if(!CHECKED) this.doChecking(Global.getCurrentScope());
-//			if(NYTT_OPPLEGG) {
-//				return(externalIdent);				
-//			} else {
-				if(qual==null) return("UNKNOWN");
-				return(qual.getJavaIdentifier());
-//			}
+			if(qual==null) return("UNKNOWN");
+			return(qual.getJavaIdentifier());
 		}
 		return(null); 
 	}
   
 	private boolean CHECKED=false; // Set true when doChecking is called
 	public void doChecking(final DeclarationScope scope) {
-		if(!NYTT_OPPLEGG) {
-			if(qual!=null) CHECKED=true; // This Ref-Type is read from attribute file
-		}
+		if(qual!=null) CHECKED=true; // This Ref-Type is read from attribute file
 		if(CHECKED) return;
 		Global.enterScope(scope);
 		String refIdent=getRefIdent();
@@ -116,14 +90,6 @@ public class Type implements Externalizable {
 			    } else {
 			    	Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 					Util.BREAK("Type.doChecking: refIdent="+refIdent+", scopeChain="+Global.getCurrentScope().edScopeChain());
-					
-//					Util.println("Type.doChecking: refIdent="+refIdent+", scopeChain="+Global.getCurrentScope().edScopeChain());
-//					Util.println("QUAL="+qual);
-//					Util.FATAL_ERROR("MIDLERTIDIG STOP HER");
-//					Global.getCurrentScope().print(0);  // TODO: SKAL FJERNES SEINERE
-//					Util.FATAL_ERROR("MIDLERTIDIG STOP HER");
-//					Option.TRACE_FIND=2; scope.findMeaning(refIdent);
-					
 			    }
 			}
 		}
@@ -303,11 +269,6 @@ public class Type implements Externalizable {
 //		if(AttributeOutput.USE_ATTRIBUTE_IO) Util.IERR("");
 		oupt.writeObject(key);
 		oupt.writeObject(qual);
-//		oupt.writeObject(externalIdent);
-//		oupt.writeObject(prefixIdent);
-		
-//		Global.typeMap.put(externalIdent,this); // TODO: TESTING NYTT_OPPLEGG
-//		System.out.println("Type.writeExternal: "+this+", externalIdent="+externalIdent+", prefixIdent="+prefixIdent+", MAP="+Global.typeMap.get(externalIdent));
 	}
 
 	@Override
@@ -315,11 +276,6 @@ public class Type implements Externalizable {
 //		if(AttributeOutput.USE_ATTRIBUTE_IO) Util.IERR("");
 		key=(Token)inpt.readObject();
 		qual=(ClassDeclaration) inpt.readObject();
-//		externalIdent=(String)inpt.readObject();
-//		prefixIdent=(String)inpt.readObject();
-//		
-//		Global.typeMap.put(externalIdent,this); // TODO: TESTING NYTT_OPPLEGG
-//		System.out.println("Type.readExternal: "+this+", externalIdent="+externalIdent+", prefixIdent="+prefixIdent+", MAP="+Global.typeMap.get(externalIdent));
 	}
 	
 }

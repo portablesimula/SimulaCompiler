@@ -26,11 +26,7 @@ import simula.compiler.utilities.Option;
 public final class RunFullTestBatch {
 
 	public static void main(String[] args) {
-    	//System.setProperty("file.encoding","UTF-8");
 		Vector<String> names=new Vector<String>();
-		//names.add("adHoc00.sim"); // For ad'hoc testing
-		// *** SIMULA TEST BATCH TIL EKSEKVERING
-		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements
 		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		names.add("simtst03.sim"); // OK:  Test Text Value Relations

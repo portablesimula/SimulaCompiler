@@ -53,20 +53,11 @@ public final class ByteCodeEngineering {
 			// classVisitor forwards all events to classWriter
 			ClassVisitor classVisitor; 
 			if(DEBUG) {
-				// * ClassWriter classWriter = new ExtendedClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
-				// * ClassVisitor classVisitor = new <b>MyClassAdapter</b>(new CheckClassAdapter(classWriter, true));
 				classWriter = new ExtendedClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
 				classVisitor = new CheckClassAdapter(new SimClassVisitor(fileName,classWriter), true);
-				
 			} else classVisitor = new SimClassVisitor(fileName,classWriter);
 			classReader.accept(classVisitor, 0); // ClassReader will call methods in classWriter
 			if(DEBUG) Util.println("ByteCodeEngineering.doRepairSingleByteCode: AFTER  classReader.accept(classVisitor, 0);");
-
-			// * ClassWriter classWriter = new ExtendedClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
-			// * ClassVisitor classVisitor = new <b>MyClassAdapter</b>(new CheckClassAdapter(classWriter, true));
-			// * classReader.accept(classVisitor, 0);
-
-			
 			// Dump the class to <classFileName>
             if(Option.TRACE_REPAIRING) Util.println("ByteCodeEngineering.doRepairSingleByteCode: Dump "+classFileName);
 			byte[] b2 = classWriter.toByteArray(); // b2 represents the repaired version of the input class
@@ -76,10 +67,7 @@ public final class ByteCodeEngineering {
         	Util.println("ByteCodeEngineering FAILED for "+classFileName);
         	e.printStackTrace();
         	Util.warning("ByteCodeEngineering FAILED for "+classFileName+", Exception="+e.getClass().getSimpleName()+", msg="+e.getMessage());
- //       	Util.INTERNAL_ERROR("ByteCodeEngineering.doRepairSingleByteCode FAILED: ", e);
- //       	Util.BREAK("CONTINUE ?");
-        	//System.exit(0);
-        } finally {
+       } finally {
         	if(inputStream!=null)
 				try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
         }
@@ -94,8 +82,6 @@ public final class ByteCodeEngineering {
     		out.flush();
     		out.close();
     	} catch (Exception ex) {
-    		// again, catch any exceptions and...
-    		// ...write to the debug console
     		System.err.println(ex.getMessage());
     	}
 

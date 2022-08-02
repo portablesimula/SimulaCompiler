@@ -216,7 +216,7 @@ public final class SimulaCompiler {
 			}
 			
 			if (Option.TRACING) Util.message("BEGIN Possible Generate AttributeFile");
-			AttributeFile.write(programModule);
+			AttributeFileIO.write(programModule);
 			
 			// ***************************************************************
 			// *** CALL JAVA COMPILER

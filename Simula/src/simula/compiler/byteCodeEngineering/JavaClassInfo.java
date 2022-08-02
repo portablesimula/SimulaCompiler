@@ -15,11 +15,11 @@ import simula.compiler.utilities.Global;
  */
 public class JavaClassInfo {
 	private static final boolean DEBUG=false;
-	public String externalIdent; // JavaClassName TODO: TESTING NYTT_OPPLEGG
-	public String prefixIdent;   // JavaClassName TODO: TESTING NYTT_OPPLEGG
+	public String externalIdent;
+	public String prefixIdent;
 	
 	public static void put(String key,JavaClassInfo info) {
-		Global.javaClassMap.putIfAbsent(key,info); // TODO: TESTING NYTT_OPPLEGG
+		Global.javaClassMap.putIfAbsent(key,info);
 	}
 	
 	public static JavaClassInfo get(String key) {
@@ -28,7 +28,7 @@ public class JavaClassInfo {
 		return(info);		
 	}
 
-	public boolean isSuperTypeOf(final JavaClassInfo other) { // TODO: TESTING NYTT_OPPLEGG
+	public boolean isSuperTypeOf(final JavaClassInfo other) {
 		// This is subtype of other   iff   This is in other's prefix chain.
 		boolean res=false;
 		String prefix=other.prefixIdent;
@@ -36,14 +36,14 @@ public class JavaClassInfo {
 			if(this.externalIdent.equals(prefix)) { res=true; break LOOP; }
 			prefix = getPrefixIdent(prefix);
 		}
-		if(DEBUG) System.out.println("JavaClassInfo.isSuperTypeOf: "+this.externalIdent+".isSuperTypeOf("+other.externalIdent+") ==> "+res);  // TODO: TESTING Path
+		if(DEBUG) System.out.println("JavaClassInfo.isSuperTypeOf: "+this.externalIdent+".isSuperTypeOf("+other.externalIdent+") ==> "+res);
 		return (res);
 	}
 
 	private String getPrefixIdent(String ident) {
 		JavaClassInfo prefix=Global.javaClassMap.get(ident);
 		String res=((prefix==null)?null:prefix.prefixIdent);
-		if(DEBUG) System.out.println("JavaClassInfo.getClassInfo: getPrefixIdent("+ident+") ==> "+res);  // TODO: TESTING Path
+		if(DEBUG) System.out.println("JavaClassInfo.getClassInfo: getPrefixIdent("+ident+") ==> "+res);
 		return(res);
 	}
 	

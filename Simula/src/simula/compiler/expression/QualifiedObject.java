@@ -70,8 +70,7 @@ public final class QualifiedObject extends Expression {
 		lhs.doChecking();
 		if (!checkCompatability(lhs, classIdentifier))
 			Util.error("Illegal Object Expression: " + lhs + " is not compatible with " + classIdentifier);
-//		this.type = new Type(classIdentifier);
-		this.type = Type.defType(classIdentifier); // TODO: TESTING
+		this.type = new Type(classIdentifier);
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END QualifiedObject" + toString() + ".doChecking - Result type=" + this.type);
 		SET_SEMANTICS_CHECKED();

@@ -30,31 +30,21 @@ public class ExtendedClassWriter extends ClassWriter {
 
 	@Override
 	protected String getCommonSuperClass(final String type1, final String type2) {
-//		return(JavaClassInfo.getCommonSuperType(type1,type2));
-//	}
-//
-//	
-//	public static String getCommonSuperType(final String type1, final String type2) {
 		// Called from: ClassWriter.getCommonSuperClass
-    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);  // TODO: TESTING Path
+    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);
     	try { String superType=null;
     		JavaClassInfo info1=getClassInfo(type1);
-	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info1="+info1);  // TODO: TESTING Path
+	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info1="+info1);
 	    	JavaClassInfo info2=getClassInfo(type2);
-	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info2="+info2);  // TODO: TESTING Path
+	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info2="+info2);
 			if(info1.isSuperTypeOf(info2)) superType=type1;
 			else if(info2.isSuperTypeOf(info1)) superType=type2;
-			else {
-				JavaClassInfo.printJavaClassMap("");
-//	    		Util.IERR("");				
-			}
-	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: "+type1+", "+type2+" ==> "+superType);  // TODO: TESTING Path
-
+	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: "+type1+", "+type2+" ==> "+superType);
 			return(superType);
     	} catch(Exception e) {
     		e.printStackTrace();
     		JavaClassInfo.printJavaClassMap("");
-        	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);  // TODO: TESTING Path
+        	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);
     		throw new RuntimeException("Unable to find CommonSuperType: "+type1+", "+type2);
     	}
 	}
@@ -64,10 +54,7 @@ public class ExtendedClassWriter extends ClassWriter {
 		String dir=type.substring(0, n);
 		Util.ASSERT(dir.equals(Global.packetName)," dir="+dir+", Global.packetName="+Global.packetName);
 		type=type.substring(n+1);
-		if(DEBUG) System.out.println("ExtendedClassWriter.getClassInfo: javaClassMap.get("+type+")");  // TODO: TESTING Path
-//		JavaClassInfo info=Global.javaClassMap.get(type);
-//		if(info==null) printJavaClassMap("");
-//		return(info);
+		if(DEBUG) System.out.println("ExtendedClassWriter.getClassInfo: javaClassMap.get("+type+")");
 		return(JavaClassInfo.get(type));
 	}
 

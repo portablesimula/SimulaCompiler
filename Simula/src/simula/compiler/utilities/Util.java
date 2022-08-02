@@ -48,7 +48,7 @@ public final class Util {
 		String err = edLINE(": Error: " + msg);
 		nError++;
 		printError(err);
-		Thread.dumpStack(); // TODO: TESTING NYTT_OPPLEGG
+//		Thread.dumpStack();
 		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 	}
 

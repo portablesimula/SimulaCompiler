@@ -100,7 +100,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 				}
 			}
 		}
-		instructions.resetLabels(); // TODO: Bare nødvendig til slutt ???
+		instructions.resetLabels();
 
         if(Option.LIST_REPAIRED_INSTRUCTION_LIST) {
         	Util.println("*** LIST REPAIRED INSTRUCTION LIST ***");
@@ -125,7 +125,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	 *    NEXT-INSTRUCTION
 	 * </pre>
 	 */
-	private void treatLABEL(MethodInsnNode invokeStatic) {//, InstructionHandle invokeStatic) {
+	private void treatLABEL(MethodInsnNode invokeStatic) {
 		AbstractInsnNode pushLabelIdentifier=invokeStatic.getPrevious();
 		// Retrieve Label Identifier
 		Object labelIdentifier="Unknown";
@@ -188,7 +188,6 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		instructions.insertBefore(pushLabelIndexInstrution, label); // Insert Label before pushLabelIndexInstrution
 		instructions.remove(pushLabelIndexInstrution);
 		instructions.remove(invokeStatic);
-		//instructions.resetLabels(); // TODO: Bare nødvendig til slutt ???
 		if (Option.TRACE_REPAIRING)
 			listInstructionSequence("RepairSTM_MethodVisitor.treatLABEL: NEW ", start, 8);
 	}
@@ -219,7 +218,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	 *    NEXT-INSTRUCTION
 	 * </pre>
 	 */
-	private void treatJUMPTABLE(MethodInsnNode invokeStatic) {//, InstructionHandle invokeStatic) {
+	private void treatJUMPTABLE(MethodInsnNode invokeStatic) {
 		AbstractInsnNode start=invokeStatic.getPrevious().getPrevious();
 		if (Option.TRACE_REPAIRING)
 			listInstructionSequence("RepairSTM_MethodVisitor.treatJUMPTABLE: GOT ", start, 8);
@@ -253,7 +252,6 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		instructions.insertBefore(invokeStatic, dflt); // Insert dflt before invokeStatic
 		instructions.remove(invokeStatic);
 		
-		//instructions.resetLabels(); // TODO: Bare nødvendig til slutt ???
 		if (Option.TRACE_REPAIRING)
 			listInstructionSequence("RepairSTM_MethodVisitor.treatJUMPTABLE: NEW ", start, 8);
 	}
