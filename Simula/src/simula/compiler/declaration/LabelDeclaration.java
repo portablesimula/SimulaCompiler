@@ -22,10 +22,10 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 		this.declarationKind=Declaration.Kind.LabelDeclaration;
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
-//		DeclarationScope declaredIn=Global.currentScope;
 		DeclarationScope declaredIn=Global.getCurrentScope();
 		type.doChecking(declaredIn);
 		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(this);
@@ -41,6 +41,7 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		String ident=getJavaIdentifier();
@@ -51,6 +52,7 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 		else GeneratedJavaClass.code("final LABQNT$ "+ident+"=new LABQNT$(this,"+index+",\""+identifier+"\");","Local Label #"+index+'='+identifier);
 	}
 
+	@Override
 	public String toString() {
 		return ("LABEL "+identifier+", index="+index);
 	}

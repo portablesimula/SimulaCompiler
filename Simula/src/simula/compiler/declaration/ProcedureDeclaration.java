@@ -78,7 +78,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		block.type = type;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
 		block.modifyIdentifier(expectIdentifier());
-		// if(Option.TRACE_PARSE) Parser.BREAK("Begin doParseProcedureDeclaration");
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
 				new Parameter(expectIdentifier()).into(block.parameterList);
@@ -114,7 +113,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 
 		block.lastLineNumber = Global.sourceLineNumber;
 		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
-//		Global.currentScope = block.declaredIn;
 		Global.setScope(block.declaredIn);
 		return (block);
 	}
@@ -200,6 +198,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Checking
 	// ***********************************************************************************************
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
@@ -210,7 +209,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 
 		currentBlockLevel++;
 		blockLevel = currentBlockLevel;
-//		Global.currentScope = this;
 		Global.enterScope(this);
 
 		int prfx = 0;// prefixLevel();
@@ -229,7 +227,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			decl.virtualMatchList.add(myVirtual);
 			if (decl == virtualSpec.declaredIn) virtualSpec.hasDefaultMatch = true;
 		}
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		currentBlockLevel--;
 		SET_SEMANTICS_CHECKED();
@@ -238,6 +235,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
+	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
 		//Util.BREAK("ProcedureDeclaration.findVisibleAttributeMeaning: "+identifier+", Lookup ident="+ident);
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
@@ -263,6 +261,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
+	@Override
 	public void doJavaCoding() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
@@ -283,7 +282,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		Global.sourceLineNumber = lineNumber;
 		Util.BREAK("ProcedureDeclaration.doMethodJavaCoding: " + identifier);
 		ASSERT_SEMANTICS_CHECKED(this);
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		String line = "public " + modifier + ((type == null) ? "void" : type.toJavaType());
 		line = line + ' ' + getJavaIdentifier() + ' ' + edFormalParameterList(true, addStaticLink);
@@ -297,7 +295,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		for (Statement stm : statements) stm.doJavaCoding();
 		if (type != null) GeneratedJavaClass.code("return(RESULT$);");
 		GeneratedJavaClass.code("}");
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 	}
 
@@ -334,7 +331,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends PROC$ {");
@@ -366,7 +362,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		codeProcedureBody();
 		javaModule.codeProgramInfo();
 		GeneratedJavaClass.code("}", "End of Procedure");
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		javaModule.closeJavaOutput();
 	}
@@ -439,6 +434,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
@@ -455,6 +451,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		Util.println(spc + "end[" + edScopeChain() + ']');
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 		s.append(identifier).append("[externalIdent=").append(externalIdent).append("] Kind=")

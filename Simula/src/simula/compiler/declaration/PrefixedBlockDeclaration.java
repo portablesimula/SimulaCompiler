@@ -60,13 +60,13 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		else modifyIdentifier("" + Global.sourceName + "$PBLK" + lineNumber);
 		this.externalIdent = this.identifier;
 		this.lastLineNumber = Global.sourceLineNumber;
-//		Global.currentScope = declaredIn;
 		Global.setScope(declaredIn);
 	}
 
 	// ***********************************************************************************************
 	// *** Checking
 	// ***********************************************************************************************
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
@@ -74,14 +74,12 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		currentBlockLevel++;
 		blockLevel = currentBlockLevel;
 		if (blockPrefix != null) {
-//			Global.currentScope = this.declaredIn;
 			Global.enterScope(this.declaredIn);
 			blockPrefix.doChecking();
 			this.prefix = blockPrefix.identifier;
 			this.getPrefixClass().doChecking();
 			Global.exitScope();
 		}
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		Util.ASSERT(parameterList.isEmpty(), "Invariant");
 		Util.ASSERT(virtualSpecList.isEmpty(), "Invariant");
@@ -91,7 +89,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		for (Declaration dcl : declarationList)	dcl.doChecking();
 		for (Statement stm : statements) stm.doChecking();
 		doCheckLabelList(this.getPrefixClass());
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		currentBlockLevel--;
 		SET_SEMANTICS_CHECKED();
@@ -100,11 +97,11 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		String line = "public final class " + getJavaIdentifier();
@@ -153,7 +150,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		}
 		javaModule.codeProgramInfo();
 		GeneratedJavaClass.code("}", "End of Class");
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		javaModule.closeJavaOutput();
 	}
@@ -181,6 +177,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
@@ -197,6 +194,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		Util.println(spc + "end[" + edScopeChain() + ']');
 	}
 
+	@Override
 	public String toString() {
 		return ("" + identifier + '[' + externalIdent + "] Kind=" + declarationKind + ", BlockPrefix=" + blockPrefix);
 	}

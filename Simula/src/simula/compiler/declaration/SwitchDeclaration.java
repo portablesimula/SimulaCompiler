@@ -48,6 +48,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 		Global.setScope(declaredIn);
 	}
 
+	@Override
 	public void doChecking() {
 		super.doChecking();
 		externalIdent = edJavaClassName();
@@ -67,6 +68,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeSwitchBody
 	// ***********************************************************************************************
+	@Override
 	public void codeProcedureBody() {
 		GeneratedJavaClass.debug("// Switch Body");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + " STM$() {");
@@ -82,6 +84,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 		GeneratedJavaClass.code("}","End of Switch BODY");
 	}
 
+	@Override
 	public String toString() {
 		return ("SWITCH " + identifier + " := " + switchList);
 	}

@@ -165,11 +165,13 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 			UB=(Expression)TypeConversion.testAndCreate(Type.Integer,UB);
 		}
 
+		@Override
 		public String toString() {
 			return ("" + LB + ':' + UB);
 		}
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -179,6 +181,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
     public void doJavaCoding() {
     	Global.sourceLineNumber=lineNumber;
     	ASSERT_SEMANTICS_CHECKED(this);
@@ -193,6 +196,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	GeneratedJavaClass.code("public "+arrType+""+arrayIdent+"=null;");
 	}
 
+	@Override
     public void doDeclarationCoding() {
     	Global.sourceLineNumber=lineNumber;
     	ASSERT_SEMANTICS_CHECKED(this);
@@ -224,6 +228,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	GeneratedJavaClass.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
 	}
 
+	@Override
 	public String toString() {
 		String s = "ARRAY " + identifier + ((boundPairList==null)?"(?)":boundPairList);
 		if (type != null) s = type.toString() + " " + s;

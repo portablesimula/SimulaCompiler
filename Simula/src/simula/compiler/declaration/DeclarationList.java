@@ -19,16 +19,11 @@ public class DeclarationList extends Vector<Declaration> {
 		} return(null);
 	}
 	
+	@Override
 	public boolean add(Declaration dcl) {
-//		for(Declaration d:this) if(d.identifier.equals(dcl.identifier)) {
-//			Util.error("Multiple declarations with the same name: "+dcl+" and "+d);
-//			Util.FATAL_ERROR("DeclarationList.add");
-//			return(false);
-//		}
 		Declaration d=find(dcl.identifier);
 		if(d!=null) {
 			Util.warning("Multiple declarations with the same name: "+dcl.identifier);
-//			Util.FATAL_ERROR("DeclarationList.add");
 			return(false);			
 		}
 		super.addElement(dcl);

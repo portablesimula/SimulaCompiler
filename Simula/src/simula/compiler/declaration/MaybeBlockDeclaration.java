@@ -85,7 +85,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 			}
 		}
 		this.lastLineNumber = Global.sourceLineNumber;
-//		Global.currentScope = declaredIn;
 		Global.setScope(declaredIn);
 		return (new BlockStatement(this));
 	}
@@ -108,18 +107,17 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Checking
 	// ***********************************************************************************************
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		if (declarationKind != Declaration.Kind.CompoundStatement) currentBlockLevel++;
 		blockLevel = currentBlockLevel;
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		for (Declaration dcl : declarationList)	dcl.doChecking();
 		for (Statement stm : statements) stm.doChecking();
 		doCheckLabelList(null);
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		if (declarationKind != Declaration.Kind.CompoundStatement) currentBlockLevel--;
 		SET_SEMANTICS_CHECKED();
@@ -128,6 +126,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
+	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
 		//Util.BREAK("MaybeBlockDeclaration.findVisibleAttributeMeaning: "+identifier+", Lookup ident="+ident);
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
@@ -148,6 +147,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
+	@Override
 	public void doJavaCoding() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
@@ -164,17 +164,13 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		ASSERT_SEMANTICS_CHECKED(this);
 		Util.ASSERT(declarationList.isEmpty(), "Invariant");
 		Util.ASSERT(labelList.isEmpty(), "Invariant");
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		GeneratedJavaClass.code("{");
 		if(labelcode!=null) {
 			for(String labCode:labelcode) GeneratedJavaClass.code(labCode);
 		}
-		for (Statement stm : statements) {
-			stm.doJavaCoding();
-		}
+		for (Statement stm : statements) stm.doJavaCoding();
 		GeneratedJavaClass.code("}");
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 	}
 
@@ -185,7 +181,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends BASICIO$" + " {");
@@ -212,7 +207,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		}
 		javaModule.codeProgramInfo();
 		GeneratedJavaClass.code("}", "End of SubBlock");
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		javaModule.closeJavaOutput();
 	}
@@ -246,6 +240,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
@@ -260,6 +255,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		Util.println(spc + "end[" + edScopeChain() + ']');
 	}
 
+	@Override
 	public String toString() {
 		return ("" + identifier + '[' + externalIdent + "] Kind=" + declarationKind);
 	}

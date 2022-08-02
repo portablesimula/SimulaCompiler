@@ -54,21 +54,21 @@ public final class HiddenSpecification implements Externalizable {
   	    	return(gotProtected);
   	    }
 	    scope=scope.getPrefixClass();
-	    SEARCH:while(scope!=null)
-		{ //Util.BREAK("HiddenSpecification("+identifier+").getMatchingProtected(): SEARCHING: "+scope);
-	      HiddenSpecification gotHidden=findHidden(scope,identifier);
-	      if(gotHidden!=null) {
-	    	  //Util.BREAK("HiddenSpecification("+identifier+").getMatchingProtected(): FOUND HIDDEN="+gotHidden);
-	    	  scope=gotHidden.getScopeBehindHidden();
-	    	  continue SEARCH;
-	      }
-    	  gotProtected=scope.searchProtectedList(identifier);
-    	  if(gotProtected!=null) {
-    		  //Util.BREAK("HiddenSpecification("+identifier+").getMatchingProtected(): FOUND SINGLE PROTECTED="+gotProtected);
-    		  return(gotProtected);
-    	  }
-	      scope=scope.getPrefixClass();
-		}
+	    SEARCH:while(scope!=null) {
+	    	//Util.BREAK("HiddenSpecification("+identifier+").getMatchingProtected(): SEARCHING: "+scope);
+	    	HiddenSpecification gotHidden=findHidden(scope,identifier);
+	    	if(gotHidden!=null) {
+	    		//Util.BREAK("HiddenSpecification("+identifier+").getMatchingProtected(): FOUND HIDDEN="+gotHidden);
+	    		scope=gotHidden.getScopeBehindHidden();
+	    		continue SEARCH;
+	    	}
+	    	gotProtected=scope.searchProtectedList(identifier);
+	    	if(gotProtected!=null) {
+	    		//Util.BREAK("HiddenSpecification("+identifier+").getMatchingProtected(): FOUND SINGLE PROTECTED="+gotProtected);
+	    		return(gotProtected);
+	    	}
+	    	scope=scope.getPrefixClass();
+	    }
 		Util.error(identifier+" is specified HIDDEN without being PROTECTED");
 		return(null);
 	}
@@ -92,6 +92,7 @@ public final class HiddenSpecification implements Externalizable {
 	}
 
 	
+	@Override
 	public String toString()
 	{ StringBuilder s=new StringBuilder();
 	  s.append("Hidden ").append(identifier);

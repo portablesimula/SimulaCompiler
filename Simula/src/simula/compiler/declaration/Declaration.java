@@ -62,7 +62,6 @@ public abstract class Declaration extends SyntaxClass {
 //		ClassDeclaration,
 		ExternalDeclaration,
 //		ConnectionBlock
-
 	}
 
     
@@ -106,8 +105,6 @@ public abstract class Declaration extends SyntaxClass {
     		if(decl==null) return; // Error recovery
     		if(decl.identifier==null) return; // Error recovery
     		if(decl.identifier.equalsIgnoreCase(identifier)) {
-//    			System.out.println("THIS: "+this);
-//    			System.out.println("FOUND: "+decl);
     			error=true; break LOOP;
     		}    	
     	}

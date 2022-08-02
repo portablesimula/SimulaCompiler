@@ -19,7 +19,7 @@ import simula.compiler.utilities.Util;
 public final class Parameter extends Declaration implements Externalizable { 
 	// String identifier;    // Inherited
 	// String externalIdent; // Inherited
-	// Type type;            // Inherited: Procedure's type if any
+	// Type type;            // Inherited:
     public Parameter.Mode mode;
     public Parameter.Kind kind;
     public int nDim= -1; // Array Param's nDim. Set during doChecking
@@ -55,6 +55,7 @@ public final class Parameter extends Declaration implements Externalizable {
 		parameterList.add(this);
 	}
   
+	@Override
 	public boolean equals(final Object other) {
 		if (!(other instanceof Parameter)) return (false);
 		Parameter otherPar = (Parameter) other;
@@ -81,6 +82,7 @@ public final class Parameter extends Declaration implements Externalizable {
 		else externalIdent = "p$" + identifier;
 	}
 
+	@Override
 	public void doChecking() {
 		if(IS_SEMANTICS_CHECKED()) return;
 		Global.sourceLineNumber=lineNumber;
@@ -158,6 +160,7 @@ public final class Parameter extends Declaration implements Externalizable {
     	return(type.toJavaType());
     }
   
+	@Override
     public String toJavaCode() {
     	return(toJavaType() + ' ' + externalIdent);
     }
@@ -178,6 +181,7 @@ public final class Parameter extends Declaration implements Externalizable {
 		return (s.toString());
 	}
 
+	@Override
     public String toString() {
     	String s="";
     	if(type!=null) s=s+type; else s="NOTYPE";

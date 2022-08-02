@@ -11,8 +11,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Vector;
-
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
@@ -91,6 +89,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	    }
 	} 
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -109,6 +108,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doDeclarationCoding() {
         if(constantElement!=null && !(constantElement instanceof Constant)) {
         	// Initiate Final Variable
@@ -117,13 +117,10 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 		}
 	}
 	
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		String modifier = "";
-		
-//		if (Global.getCurrentScope().declarationKind==Declaration.Kind.Class)  // ØM: ER DETTE RIKTIG ?
-			modifier = "public ";
-		
+		String modifier="public ";
 		if (this.isConstant()) modifier = modifier+"final ";
 		if(constantElement!=null) {
 			constantElement=TypeConversion.testAndCreate(type,constantElement.evaluate());
@@ -140,6 +137,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 		return (modifier + type.toJavaType() + ' ' + getJavaIdentifier() + '=' + value + ';');
 	}
 
+	@Override
 	public String toString() {
 		String s = ""+type + ' ' + identifier;
 		if(constantElement!=null) s=s+" = "+constantElement.toString();

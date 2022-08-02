@@ -58,6 +58,7 @@ public final class ProtectedSpecification implements Externalizable {
 	}
 
 	
+	@Override
 	public String toString()
 	{ StringBuilder s=new StringBuilder();
 	  s.append("Protected ").append(identifier);

@@ -19,7 +19,6 @@ public abstract class DeclarationScope extends Declaration {
 	protected static int currentBlockLevel = 0; // Used during doChecking
 	public int blockLevel; // Set during doChecking
 	public boolean hasLocalClasses = false;
-//	public Vector<Declaration> declarationList = new Vector<Declaration>();
 	public DeclarationList declarationList;// = new DeclarationList();
 	public Vector<LabelDeclaration> labelList = new Vector<LabelDeclaration>();
 
@@ -30,10 +29,8 @@ public abstract class DeclarationScope extends Declaration {
 		super(ident);
 		declarationList = new DeclarationList(this.getClass().getSimpleName()+':'+ident+":Line="+Global.sourceLineNumber);
 		declaredIn = Global.getCurrentScope();
-//		Global.currentScope = this;
 		Global.setScope(this);
 		if (declaredIn != null)	sourceBlockLevel = declaredIn.sourceBlockLevel + 1;
-		//if("pb".equals(ident)) Util.BREAK("NEW DeclarationScope("+this.edJavaClassName()+"): sourceBlockLevel="+sourceBlockLevel);
 	}
 
 	// ***********************************************************************************************

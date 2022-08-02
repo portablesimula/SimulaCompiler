@@ -40,7 +40,6 @@ public final class ConnectionBlock extends DeclarationScope {
 	public void end() {
 		if (Option.TRACE_PARSE)	Util.TRACE("END ConnectionBlock: " + this.edScopeChain());
 	    if(!labelList.isEmpty()) MaybeBlockDeclaration.moveLabelsFrom(this); // Label is also declaration
-//		Global.currentScope = declaredIn;
 		Global.setScope(declaredIn);
 	}
 	
@@ -52,10 +51,9 @@ public final class ConnectionBlock extends DeclarationScope {
 		this.statement = statement;
 	}
 
+	@Override
 	public Meaning findMeaning(final String identifier) {
-//		Util.message("ConnectionBlock.findMeaning: "+identifier);
-		if (classDeclaration == null && Global.duringParsing)
-			return (null); // Still in Pass1(Parser)
+		if (classDeclaration == null && Global.duringParsing) return (null); // Still in Pass1(Parser)
 		Meaning result = classDeclaration.findRemoteAttributeMeaning(identifier);
 		if (result != null) {
 			result.declaredIn = this;
@@ -68,12 +66,12 @@ public final class ConnectionBlock extends DeclarationScope {
 		return (result);
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		// Set External Identifier
 		externalIdent = inspectedVariable.identifier + '$' + lineNumber;
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		blockLevel = currentBlockLevel;
 		if (whenClassIdentifier != null) {
@@ -81,23 +79,22 @@ public final class ConnectionBlock extends DeclarationScope {
 			whenClassDeclaration = meaning.declaredAs;
 		}
 		statement.doChecking();
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-//		Global.currentScope = this;
 		Global.enterScope(this);
-		GeneratedJavaClass.code("{");    // ØM 28/8-2021
+		GeneratedJavaClass.code("{");
 		statement.doJavaCoding();
-		GeneratedJavaClass.code("}");    // ØM 28/8-2021
-//		Global.currentScope = declaredIn;
+		GeneratedJavaClass.code("}");
 		Global.exitScope();
 	}
 
+	@Override
 	public String toJavaCode() {
 		String connID = inspectedVariable.toJavaCode();
 		Declaration when = whenClassDeclaration;
@@ -108,6 +105,7 @@ public final class ConnectionBlock extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(indent);
@@ -121,6 +119,7 @@ public final class ConnectionBlock extends DeclarationScope {
 		Util.println(spc + "end[" + edScopeChain() + ']');
 	}
 
+	@Override
 	public String toString() {
 		return ("Inspect(" + inspectedVariable + ") do " + statement);
 	}

@@ -32,6 +32,7 @@ public final class VirtualMatch extends Declaration implements Externalizable {
 		this.match=match;
 	}
 
+	@Override
 	public void doJavaCoding(){
 	    String matchCode="{ throw new SimulaRuntimeError(\"No Virtual Match: "+identifier+"\"); }";
 	    if(match!=null)
@@ -39,6 +40,7 @@ public final class VirtualMatch extends Declaration implements Externalizable {
 	    GeneratedJavaClass.code("public PRCQNT$ "+virtualSpec.getVirtualIdentifier()+" "+matchCode);
 	}
 	
+	@Override
 	public String toString() {
 		StringBuilder s=new StringBuilder();
 	    if(match.type!=null) s.append(match.type).append(' '); 

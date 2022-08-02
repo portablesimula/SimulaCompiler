@@ -135,6 +135,7 @@ public abstract class BlockDeclaration extends DeclarationScope {
 		for (Statement stm : statements) stm.doJavaCoding();
 	}
 
+	@Override
 	public String toString() {
 		return ("" + identifier + '[' + externalIdent + "] Declaration.Kind=" + declarationKind);
 	}

@@ -88,6 +88,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 		Parser.expect(KeyWord.SEMICOLON);
 	}
 	
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -126,6 +127,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 		return (null);
 	}
 
+	@Override
 	public void doJavaCoding() {
 		ASSERT_SEMANTICS_CHECKED(this);
 	    String matchCode="{ throw new SimulaRuntimeError(\"No Virtual Match: "+identifier+"\"); }";
@@ -133,6 +135,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 		GeneratedJavaClass.code("public " + qnt + getVirtualIdentifier() + matchCode);
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 		if (type != null) s.append(type).append(' ');

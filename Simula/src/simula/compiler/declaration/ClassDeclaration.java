@@ -42,16 +42,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	public Vector<HiddenSpecification> hiddenList = new Vector<HiddenSpecification>();
 	public Vector<CodeLine> code1; // Statement code before inner
 	public Vector<CodeLine> code2; // Statement code after inner
-	private String externalPrefixIdent; // Eg. 
+	private String externalPrefixIdent;
 
 	// ***********************************************************************************************
-	// *** CONSTRUCTORS
+	// *** CONSTRUCTOR
 	// ***********************************************************************************************
-//	protected ClassDeclaration(final String identifier,final  BlockKind blockKind) {
-//		super(DeclarationKind.ClassDeclaration,identifier);
-//		this.blockKind = blockKind;
-//	}
-
 	public ClassDeclaration(String identifier) {
 		super(identifier);
 		this.declarationKind=Declaration.Kind.Class;
@@ -163,7 +158,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		block.type = Type.Ref(block.identifier);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ClassDeclaration");
 		if (Option.TRACE_PARSE)	Util.TRACE("END ClassDeclaration: " + block);
-//		Global.currentScope = block.declaredIn;
 		Global.setScope(block.declaredIn);
 		return (block);
 	}
@@ -289,13 +283,13 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Checking
 	// ***********************************************************************************************
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		currentBlockLevel++;
 		blockLevel = currentBlockLevel;
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		ClassDeclaration prefixClass = null;
 		if (!hasNoRealPrefix()) {
@@ -314,14 +308,12 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		checkProtectedList();
 		checkHiddenList();
 		doCheckLabelList(prefixClass);
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		currentBlockLevel--;
 		SET_SEMANTICS_CHECKED();
 		
 		JavaClassInfo info=new JavaClassInfo();
 		info.externalIdent=this.getJavaIdentifier();
-//		info.prefixIdent=this.prefix;
 		if(prefixClass!=null) {
 			info.prefixIdent=externalPrefixIdent=prefixClass.getJavaIdentifier();
 		}
@@ -357,6 +349,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: prefixLevel
 	// ***********************************************************************************************
+	@Override
 	public int prefixLevel() {
 		if (hasNoRealPrefix()) return (0);
 		ClassDeclaration prfx = getPrefixClass();
@@ -475,7 +468,6 @@ SEARCH: while (scope != null) {
 	// *** Utility: withinScope -- Used by findRemoteAttributeMeaning
 	// ***********************************************************************************************
 	private static boolean withinScope(final DeclarationScope otherScope) {
-//		DeclarationScope scope = Global.currentScope;
 		DeclarationScope scope = Global.getCurrentScope();
 		while (scope != null) {
 			if (scope == otherScope) return (true);
@@ -494,6 +486,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
+	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
 		//Util.BREAK("ClassDeclaration.findVisibleAttributeMeaning: "+identifier+", Lookup ident="+ident);
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
@@ -536,19 +529,11 @@ SEARCH: while (scope != null) {
 	// *** Utility: getPrefixClass
 	// ***********************************************************************************************
 	public ClassDeclaration getPrefixClass() {
-//		Util.message("ClassDeclaration.getPrefixClass: "+identifier+'\''+prefix+"   Declared in "+declaredIn);
 		if (prefix == null)	return (null);
 		Meaning meaning = declaredIn.findMeaning(prefix);
 		if (meaning == null) Util.error("Undefined prefix: " + prefix);
 		Declaration decl = meaning.declaredAs;
 		if (decl == this) {
-//			Util.message("ClassDeclaration.getPrefixClass: "+identifier+", prefix="+prefix+"   Declared in "+declaredIn);
-//			Util.message("ClassDeclaration.getPrefixClass: meaning="+meaning);
-//			Util.message("ClassDeclaration.getPrefixClass: Declared in "+declaredIn);
-////			for(Declaration ddd:declaredIn.declarationList) Util.message(""+ddd);
-//			Option.TRACE_FIND=true;
-//			Meaning mmm = declaredIn.findMeaning(prefix);
-//
 			Util.error("Class prefix chain loops: "+identifier);
 		}
 		if (decl instanceof ClassDeclaration) return ((ClassDeclaration) decl);
@@ -575,12 +560,10 @@ SEARCH: while (scope != null) {
 	// *** Coding: isDetachUsed -- If the 'detach' attribute is used
 	// ***********************************************************************************************
 	/**
-	 * KOMMENTAR FRA Stein: Ta utgangspunkt i hvilke klasser man har kalt "detach"
+	 * COMMENT FROM Stein: Ta utgangspunkt i hvilke klasser man har kalt "detach"
 	 * i, altså kvalifikasjonen av de X som er brukt i "X.detach". Men da må man jo
 	 * også holde greie på hvilke slike som har forekommet i eksterne "moduler" (som
 	 * f.eks. SIMULATION), uten at det burde være problematisk.
-	 * 
-	 * @return
 	 */
 	public boolean isDetachUsed() {
 		// TRAVERSER PREFIX LOOKING FOR (detachUsed==true)
@@ -631,12 +614,12 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding: doJavaCoding
 	// ***********************************************************************************************
+	@Override
 	public void doJavaCoding() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
 		Global.sourceLineNumber = lineNumber;
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
-//		Global.currentScope = this;
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		String line = "public class " + getJavaIdentifier();
@@ -672,7 +655,6 @@ SEARCH: while (scope != null) {
 		codeClassStatements();
 		javaModule.codeProgramInfo();
 		GeneratedJavaClass.code("}","End of Class");
-//		Global.currentScope = declaredIn;
 		Global.exitScope();
 		javaModule.closeJavaOutput();
 	}
@@ -728,6 +710,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: hasLabel
 	// ***********************************************************************************************
+	@Override
 	protected boolean hasLabel() {
 		if (!labelList.isEmpty()) return (true);
 		if (!this.hasNoRealPrefix()) {
@@ -752,6 +735,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: codeStatements
 	// ***********************************************************************************************
+	@Override
 	public void codeStatements() {
 		writeCode1(); // Write code before inner
 		writeCode2(); // Write code after inner
@@ -831,6 +815,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
@@ -851,6 +836,7 @@ SEARCH: while (scope != null) {
 		Util.println(spc + "end[" + edScopeChain() + ']');
 	}
 
+	@Override
 	public String toString() {
 		return ("" + identifier + '[' + externalIdent + "] DeclarationKind=" + declarationKind);
 	}
@@ -912,7 +898,6 @@ SEARCH: while (scope != null) {
 		code2=(Vector<CodeLine>) inpt.readObject();
 		externalPrefixIdent=(String) inpt.readObject();
 		Util.TRACE_INPUT("END Read ClassDeclaration: "+identifier+", Declared in: "+this.declaredIn);
-//		Global.currentScope = this.declaredIn;
 		Global.setScope(this.declaredIn);
 		
 		JavaClassInfo info=new JavaClassInfo();
