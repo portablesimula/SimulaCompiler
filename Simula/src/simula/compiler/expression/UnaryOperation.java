@@ -39,6 +39,7 @@ public final class UnaryOperation extends Expression {
 		this.operand.backLink=this;
 	}
 
+	@Override
 	// Try to Compile-time Evaluate this expression
 	public Expression evaluate() {
 		if (oprator == KeyWord.NOT) {
@@ -53,6 +54,7 @@ public final class UnaryOperation extends Expression {
 		return(this);
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -73,11 +75,13 @@ public final class UnaryOperation extends Expression {
 		return (false);
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		return ("(" + oprator.toJavaCode() + "(" + operand.toJavaCode() + "))");
 	}
 
+	@Override
 	public String toString() {
 		return ("(UNARY:" + oprator + ' ' + operand + ")");
 	}

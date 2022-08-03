@@ -11,7 +11,6 @@ import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
-import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
@@ -67,6 +66,7 @@ public final class LocalObject extends Expression {
 		return(expr);
 	}
 
+	@Override
 	public void doChecking() { 
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -118,6 +118,7 @@ public final class LocalObject extends Expression {
 		return (false);
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		String cast = classDeclaration.getJavaIdentifier();
@@ -128,6 +129,7 @@ public final class LocalObject extends Expression {
 		return ("((" + cast + ")" + DeclarationScope.edCTX(ctxDiff) + ")");
 	}
 
+	@Override
 	public String toString() {
 		return ("THIS " + classIdentifier);
 	}

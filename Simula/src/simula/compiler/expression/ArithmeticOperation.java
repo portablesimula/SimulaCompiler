@@ -101,6 +101,7 @@ public final class ArithmeticOperation extends Expression {
 	}
   
 	// Try to Compile-time Evaluate this expression
+	@Override
 	public Expression evaluate() {
 		Number lhn=lhs.getNumber();
 		if(lhn!=null) {
@@ -110,6 +111,7 @@ public final class ArithmeticOperation extends Expression {
 		return(this);
 	}
   
+	@Override
     public void doChecking() {
     	if(IS_SEMANTICS_CHECKED()) return;
     	Global.sourceLineNumber=lineNumber;
@@ -168,6 +170,7 @@ public final class ArithmeticOperation extends Expression {
     }
 
   
+	@Override
     public String toJavaCode() {
     	ASSERT_SEMANTICS_CHECKED(this);
     	if(Global.USE_EXACT_MATH && this.type == Type.Integer) {
@@ -193,6 +196,7 @@ public final class ArithmeticOperation extends Expression {
    		}
     }
 
+	@Override
     public String toString()
     { return("("+lhs+' '+opr+' '+rhs+")"); }
 

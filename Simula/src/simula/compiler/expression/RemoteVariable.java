@@ -48,24 +48,23 @@ public final class RemoteVariable extends Expression {
 		obj.backLink = var.backLink = this;
 	}
 
+	@Override
 	public Variable getWriteableVariable() {
 		return (var);
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN RemoteVariable" + toString() + ".doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());
 		this.type = doRemoteChecking(obj, var);
-
-		if (Option.TRACE_CHECKER)
-			Util.TRACE("END RemoteVariable" + toString() + ".doChecking - Result type=" + this.type);
+		if (Option.TRACE_CHECKER) Util.TRACE("END RemoteVariable" + toString() + ".doChecking - Result type=" + this.type);
 		SET_SEMANTICS_CHECKED();
 	}
 
 	private Type doRemoteChecking(final Expression obj, final Expression attr) {
-		//Util.BREAK("RemoteVariable.doRemoteChecking: obj="+obj+", attr="+attr);
 		Global.sourceLineNumber = lineNumber;
 		Type result;
 		obj.doChecking();
@@ -136,6 +135,7 @@ public final class RemoteVariable extends Expression {
 		return (var.maybeStatement());
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (callRemoteProcedure != null)
@@ -183,6 +183,7 @@ public final class RemoteVariable extends Expression {
 		return (s.toString());
 	}
 
+	@Override
 	public String toString() {
 		return ("(" + obj + " DOT " + var + ")");
 	}

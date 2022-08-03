@@ -78,6 +78,7 @@ public final class ObjectRelation extends Expression {
 		lhs.backLink = this;
 	}
   
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())
 			return;
@@ -107,6 +108,7 @@ public final class ObjectRelation extends Expression {
 		return (false);
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		String refIdent = lhs.type.getRefIdent();
@@ -123,6 +125,7 @@ public final class ObjectRelation extends Expression {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return ("(" + lhs + ' ' + opr + ' ' + classIdentifier + ")");
 	}

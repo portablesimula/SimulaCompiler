@@ -116,6 +116,7 @@ public final class Constant extends Expression implements Externalizable {
 		return(new Constant(type,result));
     }
     
+	@Override
     public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -129,6 +130,7 @@ public final class Constant extends Expression implements Externalizable {
 		return(false);  
     }
 
+	@Override
 	public String toJavaCode() {
 		//ASSERT_SEMANTICS_CHECKED(this); // ØM: Ad'Hoc
 		if(type==Type.Text)
@@ -183,6 +185,7 @@ public final class Constant extends Expression implements Externalizable {
 		b.append("\\u"+hex);	
 	}
 
+	@Override
 	public String toString() {
 		String val=value==null?"null":(value.getClass().getSimpleName()+'(' + value+')');
 		return("CONSTANT("+type+','+val+')');

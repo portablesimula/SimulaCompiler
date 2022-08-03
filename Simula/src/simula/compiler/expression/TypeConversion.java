@@ -32,7 +32,6 @@ public final class TypeConversion extends Expression {
 
 	// Test if a TypeConversion is necessary and then create it.
 	public static Expression testAndCreate(final Type toType,final Expression expression) {
-		//System.out.println("TypeConversion.testAndCreate: TEST cast: (" + toType + ") " + expression);
 		if (testCastNeccessary(toType, expression)) {
 			if(expression instanceof Constant) {
 				Number val=(Number)((Constant)expression).value;
@@ -70,11 +69,13 @@ public final class TypeConversion extends Expression {
 		}
 	}
 	
+	@Override
 	// Is redefined in Variable, RemoteVariable and TypeConversion
 	public Variable getWriteableVariable() {
 		return(expression.getWriteableVariable());
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		type.doChecking(Global.getCurrentScope());
@@ -85,23 +86,25 @@ public final class TypeConversion extends Expression {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	  // Returns true if this expression may be used as a statement.
-	  public boolean maybeStatement()
-	  {	ASSERT_SEMANTICS_CHECKED(this);
+	// Returns true if this expression may be used as a statement.
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED(this);
 		return(false);  
-	  }
+	}
 
-	  public String toJavaCode() {
-		  ASSERT_SEMANTICS_CHECKED(this);
-		  String evaluated = expression.toJavaCode();
-		  if (type == Type.Integer) {
-			  Type fromType = expression.type;
-			  if (fromType == Type.Real || fromType == Type.LongReal)
-				  return("(int)Math.round(" + evaluated + ")");
-		  }
-		  return ("((" + type.toJavaType() + ")(" + evaluated + "))");
-	  }
+	@Override
+	public String toJavaCode() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		String evaluated = expression.toJavaCode();
+		if (type == Type.Integer) {
+			Type fromType = expression.type;
+			if (fromType == Type.Real || fromType == Type.LongReal)
+				return("(int)Math.round(" + evaluated + ")");
+		}
+		return ("((" + type.toJavaType() + ")(" + evaluated + "))");
+	}
 
+	@Override
 	public String toString() {
 		return ("((" + type + ")(" + expression + "))");
 	}

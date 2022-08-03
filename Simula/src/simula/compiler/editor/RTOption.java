@@ -134,12 +134,9 @@ public final class RTOption {
         JCheckBox item = new JCheckBox(id);
     	item.setBackground(Color.white);
         item.setSelected(RTOption.getOption(id));
-		//Util.println("RTOption.checkItem("+id+") Selected="+item.isSelected());
         item.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//Util.println(id+"Item.actionPerformed: e="+e);
         		RTOption.setOption(id,item.isSelected());
-        		//Util.println(id+"Item.actionPerformed: Option."+id+"="+RTOption.getOption(id));            		
 		}});
         return(item);
 	}

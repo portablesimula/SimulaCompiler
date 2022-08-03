@@ -96,8 +96,10 @@ public final class Variable extends Expression {
 	public boolean hasArguments() {
 		return(params!=null);
 	}
-	public String getJavaIdentifier()
-	{ return(meaning.declaredAs.getJavaIdentifier());	}
+	
+	public String getJavaIdentifier() {
+		return(meaning.declaredAs.getJavaIdentifier());
+	}
 	
 	public void setRemotelyAccessed(final Meaning meaning) {
 		this.meaning = meaning;
@@ -134,9 +136,11 @@ public final class Variable extends Expression {
 		return(variable);
 	}
 
+	@Override
 	// Is redefined in Variable, RemoteVariable and TypeConversion
 	public Variable getWriteableVariable() { return(this); }
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -274,12 +278,10 @@ public final class Variable extends Expression {
 	  }
 
 	  
-	  
-	  
-
 	// ******************************************************************
 	// *** Coding: toJavaCode
 	// ******************************************************************
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		return (get());
@@ -475,6 +477,7 @@ public final class Variable extends Expression {
 	// ***********************************************************************
 	// *** Utility: toString
 	// ***********************************************************************
+	@Override
 	public String toString() {
 		if(params==null) return ("" + identifier);
 		else return (("" + identifier + params).replace('[', '(').replace(']', ')'));

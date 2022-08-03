@@ -91,9 +91,9 @@ public final class TextOperation extends Expression {
 		this.lhs.backLink = this.rhs.backLink = this;
 	}
 
+	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
-			return;
+		if (IS_SEMANTICS_CHECKED()) return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN TextOperation" + toString() + ".doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());
@@ -115,11 +115,13 @@ public final class TextOperation extends Expression {
 		return (false);
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		return ("CONC(" + lhs.get() + ',' + rhs.get() + ')');
 	}
 
+	@Override
 	public String toString() {
 		return ("(" + lhs + " & " + rhs + ")");
 	}

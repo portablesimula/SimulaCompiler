@@ -51,14 +51,9 @@ public final class ObjectGenerator extends Expression {
 
 	public ObjectGenerator(final String classIdentifier,final Vector<Expression> params) {
 		this.classIdentifier = classIdentifier;
-		
 		this.type = Type.Ref(classIdentifier);
-//		this.type = Type.Ref;
-//		this.type = Type.Ref("RTObject");
-		
 		this.params = params;
-		if (Option.TRACE_PARSE)
-			Util.TRACE("NEW ObjectGenerator: " + toString());
+		if (Option.TRACE_PARSE) Util.TRACE("NEW ObjectGenerator: " + toString());
 	}
 
 	public static Expression parse() {
@@ -68,8 +63,7 @@ public final class ObjectGenerator extends Expression {
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			if (!Parser.accept(KeyWord.ENDPAR)) {
-				do {
-					params.add(parseExpression());
+				do { params.add(parseExpression());
 				} while (Parser.accept(KeyWord.COMMA));
 				Parser.expect(KeyWord.ENDPAR);
 			}
@@ -78,6 +72,7 @@ public final class ObjectGenerator extends Expression {
 		return (expr);
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
@@ -127,6 +122,7 @@ public final class ObjectGenerator extends Expression {
 		return (true);
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		StringBuilder s = new StringBuilder();
@@ -163,6 +159,7 @@ public final class ObjectGenerator extends Expression {
 		return (s.toString());
 	}
 
+	@Override
 	public String toString() {
 		return (("NEW " + classIdentifier + checkedParams).replace('[', '(').replace(']', ')'));
 	}

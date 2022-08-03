@@ -46,6 +46,7 @@ public final class RelationalOperation extends Expression {
 		this.lhs.backLink = this.rhs.backLink = this;
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
@@ -105,6 +106,7 @@ public final class RelationalOperation extends Expression {
 		return (false);
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		switch (opr) {
@@ -162,6 +164,7 @@ public final class RelationalOperation extends Expression {
 		return (s.toString());
 	}
 
+	@Override
 	public String toString() {
 		return ("(" + lhs + ' ' + opr + ' ' + rhs + ")");
 	}
