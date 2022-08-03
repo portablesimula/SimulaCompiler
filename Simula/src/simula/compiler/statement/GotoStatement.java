@@ -34,6 +34,7 @@ public final class GotoStatement extends Statement {
 		label = Expression.parseExpression();
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		label.doChecking();
@@ -43,6 +44,7 @@ public final class GotoStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
@@ -51,6 +53,7 @@ public final class GotoStatement extends Statement {
 		GeneratedJavaClass.code("GOTO$(" + label.toJavaCode() + ");","GOTO EVALUATED LABEL");
 	}
 
+	@Override
 	public String toString() {
 		return ("GOTO " + label);
 	}

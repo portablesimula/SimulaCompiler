@@ -8,8 +8,6 @@
 package simula.compiler.parsing;
 
 import java.io.Reader;
-import java.io.StringReader;
-
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Util;
@@ -90,29 +88,29 @@ public final class Parser {
 		return(accept(s1) || accept(s2) || accept(s3));
 	}
 	
-	public static boolean acceptPostfixOprator()
-	{ //   DOT | IS | IN | QUA
-	  if(accept(KeyWord.DOT)) return(true);
-	  if(accept(KeyWord.IS)) return(true);
-	  if(accept(KeyWord.IN)) return(true);
-	  if(accept(KeyWord.QUA)) return(true);
-	  return(false);
+	public static boolean acceptPostfixOprator() {
+		//   DOT | IS | IN | QUA
+		if(accept(KeyWord.DOT)) return(true);
+		if(accept(KeyWord.IS)) return(true);
+		if(accept(KeyWord.IN)) return(true);
+		if(accept(KeyWord.QUA)) return(true);
+		return(false);
 	}
 	
-	public static boolean acceptRelationalOperator()
-	{ // value-relational-operator
-	  //     =  <  |  <=  |  =  |  >=  |  >  |  <> | == | =/=
-	  if(accept(KeyWord.LT)) return(true);
-	  if(accept(KeyWord.LE)) return(true);
-	  if(accept(KeyWord.EQ)) return(true);
-	  if(accept(KeyWord.GE)) return(true);
-	  if(accept(KeyWord.GT)) return(true);
-	  if(accept(KeyWord.NE)) return(true);
-	  if(accept(KeyWord.NER)) return(true);
-	  if(accept(KeyWord.EQR)) return(true);
-	  return(false);
+	public static boolean acceptRelationalOperator() {
+		// value-relational-operator
+		//     =  <  |  <=  |  =  |  >=  |  >  |  <> | == | =/=
+		if(accept(KeyWord.LT)) return(true);
+		if(accept(KeyWord.LE)) return(true);
+		if(accept(KeyWord.EQ)) return(true);
+		if(accept(KeyWord.GE)) return(true);
+		if(accept(KeyWord.GT)) return(true);
+		if(accept(KeyWord.NE)) return(true);
+		if(accept(KeyWord.NER)) return(true);
+		if(accept(KeyWord.EQR)) return(true);
+		return(false);
 	}
-	
+
 
 	public static boolean expect(final KeyWord s) {
 		if (accept(s)) return (true);

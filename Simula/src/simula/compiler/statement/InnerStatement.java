@@ -29,12 +29,14 @@ import simula.compiler.utilities.Util;
  */
 public final class InnerStatement extends Statement {
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		SET_SEMANTICS_CHECKED();
 	}
 	
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ClassDeclaration cls=(ClassDeclaration)Global.getCurrentScope();
@@ -42,11 +44,13 @@ public final class InnerStatement extends Statement {
 		Global.currentJavaModule.saveCode=cls.code2;
 	}
 
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		Util.println(spc+"inner"); 
 	}
 
+	@Override
 	public String toString() {
 		return ("INNER");
 	}

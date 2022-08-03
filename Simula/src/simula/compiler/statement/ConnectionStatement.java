@@ -114,6 +114,7 @@ public final class ConnectionStatement extends Statement {
 			connectionBlock.print(indent);
 		}
 
+		@Override
 		public String toString() {
 			return (connectionBlock.toString());
 		}
@@ -131,6 +132,7 @@ public final class ConnectionStatement extends Statement {
 				Util.TRACE("NEW DoPart: " + toString());
 		}
 
+		@Override
 		public void doChecking() {
 			if (classIdentifier == null) { // && objectExpression!=null)
 				Type type = inspectVariableDeclaration.type;
@@ -149,6 +151,7 @@ public final class ConnectionStatement extends Statement {
 			connectionBlock.doChecking();
 		}
 
+		@Override
 		public void doCoding(final boolean first) {
 			ASSERT_SEMANTICS_CHECKED(this);
 			String prfx = (first) ? "" : "else ";
@@ -160,17 +163,20 @@ public final class ConnectionStatement extends Statement {
 				GeneratedJavaClass.code(prfx,"WHEN " + cid + " DO -- IMPOSSIBLE REMOVED");
 		}
 
+		@Override
 		public void print(final int indent) {
 	    	String spc=edIndent(indent);
 			Util.println(spc + "WHEN " + classIdentifier + " DO ");
 			connectionBlock.print(indent);
 		}
 
+		@Override
 		public String toString() {
 			return ("WHEN " + classIdentifier + " DO ..."); // +statement);
 		}
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
@@ -187,6 +193,7 @@ public final class ConnectionStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
@@ -212,6 +219,7 @@ public final class ConnectionStatement extends Statement {
 	// ***********************************************************************************************
 	// *** Printing Utility: print
 	// ***********************************************************************************************
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		// if(assignment!=null) assignment.print(indent);
@@ -220,6 +228,7 @@ public final class ConnectionStatement extends Statement {
 		if (otherwise != null) Util.println(spc + "   OTHERWISE " + otherwise + ';');
 	}
 
+	@Override
 	public String toString() {
 		String otherwisePart = (otherwise == null)?"":" OTHERWISE " + otherwise;
 		return ("INSPECT " + inspectedVariable + " " + connectionPart + otherwisePart);

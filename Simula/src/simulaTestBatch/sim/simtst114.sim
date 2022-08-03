@@ -71,7 +71,7 @@ begin
    test(2,"Test 1");
    test(1,"Test 2");
    test(3,"Test 3");
-   test(200,"Test 4");
+   test(5,"Test 4");
    trace("Should never come here");
 NOMORE:
    trace("In MAIN after NOMORE");

@@ -51,7 +51,6 @@ public class DefaultScanner {
         	return(null);
 		}
 		return(new Token(line+'\n',KeyWord.NEWLINE,lineNumberReader.getLineNumber()));
-//		return(new Token(line+'\n',KeyWord.IDENTIFIER,lineNumberReader.getLineNumber()));
 	}
 
 }

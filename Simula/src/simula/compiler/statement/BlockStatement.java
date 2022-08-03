@@ -36,6 +36,7 @@ public final class BlockStatement extends Statement {
 		return(blockDeclaration.declarationKind == Declaration.Kind.CompoundStatement);
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		blockDeclaration.doChecking();
@@ -46,6 +47,7 @@ public final class BlockStatement extends Statement {
 		blockDeclaration.addLeadingLabel(labelcode);
 	}
 	
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
@@ -70,10 +72,12 @@ public final class BlockStatement extends Statement {
 		blockDeclaration.doJavaCoding();
 	}
 
+	@Override
 	public void print(final int indent) {
 		blockDeclaration.print(indent);
 	}
 
+	@Override
 	public String toString() {
 		return ("CALL " + blockDeclaration);
 	}

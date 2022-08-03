@@ -53,6 +53,7 @@ public final class StandaloneExpression extends Statement {
 		return retExpr;
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -63,21 +64,25 @@ public final class StandaloneExpression extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 	
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		GeneratedJavaClass.code(toJavaCode() + ';');
 	}
 
+	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		String result=expression.toJavaCode();
 		return (result);
 	}
 
+	@Override
 	public void print(final int indent) {
 		expression.print(indent);
 	}
 
+	@Override
 	public String toString() {
 		return ("STANDALONE " + expression);
 	}

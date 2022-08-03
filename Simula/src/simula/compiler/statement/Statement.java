@@ -108,6 +108,7 @@ public abstract class Statement extends SyntaxClass {
 		}
 	}
 
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);

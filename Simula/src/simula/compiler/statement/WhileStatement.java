@@ -35,6 +35,7 @@ public final class WhileStatement extends Statement {
 		if (Option.TRACE_PARSE)	Util.TRACE("NEW WhileStatement: " + toString());
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
@@ -46,6 +47,7 @@ public final class WhileStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
@@ -64,6 +66,7 @@ public final class WhileStatement extends Statement {
 	  return(((Boolean)((Constant)condition).value));
 	}
 
+	@Override
 	public String toString() {
 		return ("WHILE " + condition + " DO " + doStatement);
 	}

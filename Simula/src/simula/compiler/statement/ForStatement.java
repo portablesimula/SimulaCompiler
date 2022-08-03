@@ -88,12 +88,12 @@ public final class ForStatement extends Statement {
 			return (new ForListElement(expr1));
 	}
   
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		controlVariable.doChecking();
 		this.type = controlVariable.type; // Type of control variable
-//		Util.BREAK("ForStatement.doChecking: controlVariable="+controlVariable+", type="+this.type);
 		Declaration decl = controlVariable.meaning.declaredAs;
 		if (decl instanceof Parameter && ((Parameter) decl).mode == Parameter.Mode.name)
 			Util.error("For-Statement's Controled Variable(" + controlVariable + ") can't be a formal parameter by Name");
@@ -107,6 +107,7 @@ public final class ForStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
   
+	@Override
 	public void doJavaCoding() {
 		ForListElement singleElement=isOptimizable();
 		if(singleElement!=null) { singleElement.doSimplifiedJavaCoding(); return; }
@@ -164,6 +165,7 @@ public final class ForStatement extends Statement {
     	return(cvName);
     }
   
+	@Override
 	public void print(final int indent) {
 		String spc = edIndent(indent);
 		String fl = forList.toString().replace('[', ' ').replace(']', ' ');
@@ -172,6 +174,7 @@ public final class ForStatement extends Statement {
 			doStatement.print(indent);
 	}
 
+	@Override
 	public String toString() {
 		String fl = forList.toString().replace('[', ' ').replace(']', ' ');
 		return ("FOR " + controlVariable + " " + assignmentOperator + fl + " DO " + doStatement);
@@ -215,6 +218,7 @@ public final class ForStatement extends Statement {
 		    doStatement.doJavaCoding();
 		    GeneratedJavaClass.code("}");		
 		}
+		@Override
 		public String toString() { return(""+expr1); }
 	}
   
@@ -224,6 +228,7 @@ public final class ForStatement extends Statement {
 	private class WhileElement extends ForListElement {
 		final Expression expr2;
 		public WhileElement(final Expression expr1,final Expression expr2) { super(expr1); this.expr2=expr2; }  
+		@Override
 		public void doChecking() {
 			if(Option.TRACE_CHECKER) Util.TRACE("BEGIN WhileElement("+this+").doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
 			expr1.doChecking();
@@ -232,15 +237,18 @@ public final class ForStatement extends Statement {
 			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
 			expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
 		}
+		@Override
 		public String edCode(final String classIdent,Type xType) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 			return("new While"+forElt+"("+edControlVariableByName(classIdent,xType)
 			+",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
 			+",new NAME$<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 		}
+		@Override
 		public ForListElement isOptimizable() {
 			return(this);
 		}
+		@Override
 		public void doSimplifiedJavaCoding() {
 	    	String cv=controlVariable.toJavaCode();
 	    	String cond=this.expr2.toJavaCode();
@@ -268,6 +276,7 @@ public final class ForStatement extends Statement {
 			if(expr2==null) Util.error("Missing expression after 'step' in ForStatement");
 			if(expr3==null) Util.error("Missing expression after 'until' in ForStatement");
 		}  
+		@Override
 		public void doChecking() {
 			expr1.doChecking(); expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
 			expr2.doChecking(); expr2=TypeConversion.testAndCreate(controlVariable.type,expr2);
@@ -283,11 +292,13 @@ public final class ForStatement extends Statement {
 	  	                     +",new NAME$<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
 	      
 		}
+		@Override
 		public ForListElement isOptimizable() {
 			Number step=expr2.getNumber();
 			if(step==null) return(null); 
 			return(this);
 		}
+		@Override
 		public void doSimplifiedJavaCoding() {
 			int step=this.expr2.getNumber().intValue();
 	    	String cv=controlVariable.toJavaCode();
@@ -312,6 +323,7 @@ public final class ForStatement extends Statement {
 		    GeneratedJavaClass.code("}");		
 		}
 
+		@Override
 		public String toString() { return(""+expr1+" step "+expr2+ " until "+expr3); }
 	}
 

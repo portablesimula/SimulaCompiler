@@ -43,8 +43,6 @@ public final class SourceFileReader {
 			  while (c == -1) {
 				  close();
 				  if (stack.isEmpty()) return (-1);
-//				  Global.sourceLineNumber=lineStack.pop();
-//				  current = stack.pop();
 				  forceEOF();
 				  c = current.read();
 			  }
@@ -52,25 +50,18 @@ public final class SourceFileReader {
 		return (c);
 	}
 	
-//	public void insert(final Reader reader) {
-//		lineStack.push(Global.sourceLineNumber); Global.sourceLineNumber=1;
-//		stack.push(current); current=reader;
-//	}
-	
 	public void insert(final File file) {
 		lineStack.push(Global.sourceLineNumber); Global.sourceLineNumber=1;
 	    try {
 			Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
 			nameStack.push(Global.insertName);
 			Global.insertName=file.getName();
-			//System.out.println("INSERT: Global.insertName="+Global.insertName+", file="+file);
 			stack.push(current); current=reader;
 	    } catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
 	}
 	
 	public void forceEOF() {
 		Global.insertName=nameStack.pop();
-		//System.out.println("EOF: Global.insertName="+Global.insertName);
 		Global.sourceLineNumber=lineStack.pop();
 		current = stack.pop();
 	}

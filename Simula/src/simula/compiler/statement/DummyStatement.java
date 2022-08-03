@@ -27,20 +27,24 @@ public final class DummyStatement extends Statement {
 	public DummyStatement() {
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		// No Checking
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doJavaCoding() { /* No Coding */
 		ASSERT_SEMANTICS_CHECKED(this);
 		GeneratedJavaClass.code(";");
 	}
 
+	@Override
 	public void print(final int indent) {
 	}
 
+	@Override
 	public String toString() {
 		return ("DUMMY");
 	}

@@ -9,7 +9,7 @@ begin
    Boolean verbose=FALSE;
    Boolean found_error ;
    integer traceCase;
-   text array facit(0:5);
+   text array facit(0:9);
    
    procedure trace(msg); text msg;
    begin
@@ -24,7 +24,7 @@ begin
       traceCase:=traceCase+1;
    end;
    
-   procedure test(key,msg); character key; text msg;
+   procedure test1(key,msg); character key; text msg;
    begin
       character lowKey='!0!';
       character hiKey='Z';
@@ -33,28 +33,29 @@ begin
 
       switch(lowkey:hikey) key
       begin
-         when case1 do begin
-              trace(msg & " selected case 1");
-              goto BREAK;
-         end;
-
-         when case2 do begin
-              trace(msg & " selected case 2");
-              goto BREAK;
-         end;
-
-         when 'C' do begin
-              trace(msg & " selected case 3");
-              goto BREAK;
-         end;
-
-         when NONE do begin
-              trace(msg & " selected case NONE");
-              goto NOMORE;
-         end;
+         when case1 do begin trace(msg & " selected case 1"); end;
+         when case2 do begin trace(msg & " selected case 2"); end;
+         when 'C','D' do begin trace(msg & " selected case 3"); end;
+         when NONE do begin trace(msg & " selected case NONE"); end;
       end case;
-   BREAK: end;
+    end;
    
+  
+   procedure test2(key,msg); integer key; text msg;
+   begin
+      integer lowKey=0;
+      integer hiKey=30;
+      integer case1=1;
+      integer case2=2;
+
+      switch(lowkey:hikey) key
+      begin
+         when case1 do begin trace(msg & " selected case 1"); end;
+         when case2 do begin trace(msg & " selected case 2"); end;
+         when 3,4,5 do begin trace(msg & " selected case 3"); end;
+         when NONE  do begin trace(msg & " selected case NONE"); end;
+      end case;
+    end;
    
    if verbose then begin
    Outtext("--- START SIMULA TEST 127"); Outimage ;
@@ -66,14 +67,24 @@ begin
    facit(1):-"Test 2 selected case 1";
    facit(2):-"Test 3 selected case 3";
    facit(3):-"Test 4 selected case NONE";
-   facit(4):-"In MAIN after NOMORE";
 
-   test('B',"Test 1");
-   test('A',"Test 2");
-   test('C',"Test 3");
-   test('Z',"Test 4");
-   trace("Should never come here");
-NOMORE:
+   facit(4):-"Test 5 selected case 2";
+   facit(5):-"Test 6 selected case 1";
+   facit(6):-"Test 7 selected case 3";
+   facit(7):-"Test 8 selected case NONE";
+
+   facit(8):-"In MAIN after NOMORE";
+
+   test1('B',"Test 1");
+   test1('A',"Test 2");
+   test1('C',"Test 3");
+   test1('Z',"Test 4");
+
+   test2(2,"Test 5");
+   test2(1,"Test 6");
+   test2(5,"Test 7");
+   test2(27,"Test 8");
+
    trace("In MAIN after NOMORE");
    
    IF found_error THEN

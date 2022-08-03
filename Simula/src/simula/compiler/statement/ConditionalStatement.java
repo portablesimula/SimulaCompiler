@@ -51,6 +51,7 @@ public final class ConditionalStatement extends Statement {
 		this.elseStatement=elseStatement;
 	}
 
+	@Override
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
@@ -64,6 +65,7 @@ public final class ConditionalStatement extends Statement {
 		}
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		condition.doChecking();
@@ -78,6 +80,7 @@ public final class ConditionalStatement extends Statement {
 	}
 
 	
+	@Override
 	// TODO: Kan optimaliseres til å gjenkjenne Label inne i Conditional
 	//       statement grenene. Og bare legge inn  VALUE$(condition)  da !
 	public void doJavaCoding() {
@@ -92,6 +95,7 @@ public final class ConditionalStatement extends Statement {
 			GeneratedJavaClass.code("}");
 	}
 
+	@Override
 	public String toString() {
 		return ("IF " + condition + " THEN " + thenStatement + " ELSE "
 				+ elseStatement + ';');

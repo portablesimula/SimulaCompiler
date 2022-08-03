@@ -40,6 +40,7 @@ public final class LabeledStatement extends Statement {
 		this.statement = statement;
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		statement.doChecking();
@@ -49,20 +50,18 @@ public final class LabeledStatement extends Statement {
 			if(!(decl instanceof LabelDeclaration)) {
 				Util.warning("Label "+label+" can be confused with "
 						+decl.getClass().getSimpleName()+" "+decl.identifier+" at line "+decl.lineNumber+')');
-//				meaning=Global.getCurrentScope().findLabelMeaning(label);
-//				decl=meaning.declaredAs;
 			}
 			decl.doChecking();
 		}
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		GeneratedJavaClass.code("{");
 		for (String label:labels) {
-//			Meaning meaning = Global.getCurrentScope().findMeaning(label);
 			Meaning meaning=Global.getCurrentScope().findLabelMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
 			String labelcode="LABEL$("+decl.index+",\""+decl.identifier+"\");";
@@ -77,6 +76,7 @@ public final class LabeledStatement extends Statement {
 		statement.doJavaCoding();
 		GeneratedJavaClass.code("}");	}
 
+	@Override
 	public String toString() {
 		return ("" + labels + ':');
 	}

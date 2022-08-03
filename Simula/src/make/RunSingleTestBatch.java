@@ -175,11 +175,11 @@ public final class RunSingleTestBatch {
 		//names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
 		//names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
 		//names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
-		//names.add("simtst127.sim"); // OK: Switch (character) Statement
+		names.add("simtst127.sim"); // OK: Switch (character) Statement
 		//names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
 		//names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
 		//names.add("simtst129.sim"); // OK: Switch in precompiled class
-		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
+		//names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 		//names.add("simtst131.sim"); // OK: Catching Errors
 		//names.add("simtst132.sim"); // OK: SPORT Options
 		//names.add("simtst133.sim"); // OK: Environment Interface
@@ -196,7 +196,7 @@ public final class RunSingleTestBatch {
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
-		Option.verbose = false;
+		Option.verbose = true;//false;
 		Option.WARNINGS=true;
 
 		// Overall TRACING Options

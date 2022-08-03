@@ -9,7 +9,6 @@ package simula.compiler.parsing;
 
 import java.io.File;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -101,6 +100,7 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                                 nextToken 
     //********************************************************************************
+	@Override
 	public Token nextToken() {
     	Token token;
 		if(tokenQueue.size()>0) { 
@@ -234,7 +234,6 @@ public final class SimulaScanner extends DefaultScanner {
     }
     private Token identifierToken(final String name) {
     	Token token=newToken(KeyWord.IDENTIFIER,name);
-//    	if(Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) Util.error("Misplaced identifier "+name+" directly after "+Parser.prevToken);
     	return(token);
     }
 
@@ -386,7 +385,6 @@ public final class SimulaScanner extends DefaultScanner {
 	        	if(name.equalsIgnoreCase("WHILE")) return(newToken(KeyWord.WHILE));
 	        	break;
 	    }
-	    //return(newToken(KeyWord.IDENTIFIER,name));
 	    return(identifierToken(name));
 	}
 	
@@ -454,7 +452,6 @@ public final class SimulaScanner extends DefaultScanner {
     	if(Option.TRACE_SCAN) Util.TRACE("scanNumber, result='"+result+"' radix="+radix);
 
     	pushBack(current);
-//    	return(newToken(KeyWord.INTEGERKONST,Long.parseLong(result,radix)));
     	long res = 0;
     	try {
     		res=Long.parseLong(result,radix);
@@ -468,7 +465,7 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                              scanDotDigit 
     //********************************************************************************
-    //** End-Condition: current is last character of construct                 CHECKED
+    //** End-Condition: current is last character of construct                 
     //**                getNext will return first character after construct
     //********************************************************************************
     private Token scanDotDigit(StringBuilder number) {
@@ -495,7 +492,7 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                             scanDigitsExp 
     //********************************************************************************
-    //** End-Condition: current is last character of construct                 CHECKED
+    //** End-Condition: current is last character of construct                 
     //**                getNext will return first character after construct
     //********************************************************************************
     private Token scanDigitsExp(StringBuilder number) {
@@ -530,7 +527,7 @@ public final class SimulaScanner extends DefaultScanner {
     //**      identifier
     //**       = letter  { letter  |  digit  |  _  }
     //********************************************************************************
-    // Scan identifier or reserved name.                                       CHECKED
+    // Scan identifier or reserved name.                                       
     //** End-Condition: current is last character of construct
     //**                getNext will return first character after construct
     //********************************************************************************
@@ -550,7 +547,7 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                     scanCharacterConstant
     //********************************************************************************
-    //**  Reference-Syntax:                                                    CHECKED
+    //**  Reference-Syntax:                                                    
     //**      character-constant
     //**       = '  character-designator  '
     //**      character-designator
@@ -585,13 +582,13 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                          scanTextConstant
     //********************************************************************************
-    //**  Reference-Syntax:                                                    CHECKED
+    //**  Reference-Syntax:                                                    
     //**      string
     //**       = simple-string  {  string-separator  simple-string  }
     //**      simple-string
     //**       = " { iso-code |  non-quote-character  |  ""  }  "
     //**      iso-code
-    //**       =! digit  [ digit ]  [ digit ]  !
+    //**       = ! digit  [ digit ]  [ digit ]  !
     //**      string-separator
     //**       = token-separator  {  token-separator  }
     //**      token-separator
@@ -751,7 +748,7 @@ public final class SimulaScanner extends DefaultScanner {
     //**      directive
     //**       =  % { any character except end-of-line }
     //********************************************************************************
-    //** End-Condition: current is last character of construct               UNCHECKED
+    //** End-Condition: current is last character of construct
     //**                getNext will return first character after construct
     //********************************************************************************
 	private Token scanDirectiveLine() {
@@ -829,7 +826,7 @@ public final class SimulaScanner extends DefaultScanner {
 	// ** comment
 	// ** = COMMENT { any character except semicolon } ;
 	// ********************************************************************************
-	// ** End-Condition: current is last character of construct CHECKED
+	// ** End-Condition: current is last character of construct 
 	// ** getNext will return first character after construct
 	// ********************************************************************************
 	private Token scanComment() {
@@ -856,7 +853,7 @@ public final class SimulaScanner extends DefaultScanner {
 	// ** comment
 	// ** = -- { any character until end-of-line }
 	// ********************************************************************************
-	// ** End-Condition: current is last character of construct CHECKED
+	// ** End-Condition: current is last character of construct 
 	// ** getNext will return first character after construct
 	// ********************************************************************************
 	private Token scanCommentToEndOfLine() {
