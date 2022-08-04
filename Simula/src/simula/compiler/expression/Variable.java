@@ -148,13 +148,9 @@ public final class Variable extends Expression {
 		if(declaredAs!=null) this.type=declaredAs.type;
 		if(meaning.declaredAs instanceof StandardProcedure)	{
 		    if(identifier.equalsIgnoreCase("detach")) {
-		        if(meaning.declaredIn instanceof ConnectionBlock) {
-		    	    ConnectionBlock conn=(ConnectionBlock)meaning.declaredIn;
-		    	    conn.classDeclaration.detachUsed=true;
-		        } else
-		        	if(meaning.declaredIn instanceof ClassDeclaration) {
-		        	((ClassDeclaration)meaning.declaredIn).detachUsed=true;
-		        } else Util.error("Variable("+identifier+").doChecking:INTERNAL ERROR, "+meaning.declaredIn.getClass().getSimpleName());
+		        if(meaning.declaredIn instanceof ConnectionBlock conn) conn.classDeclaration.detachUsed=true;
+		        else if(meaning.declaredIn instanceof ClassDeclaration cdecl) cdecl.detachUsed=true;
+		        else Util.error("Variable("+identifier+").doChecking:INTERNAL ERROR, "+meaning.declaredIn.getClass().getSimpleName());
 		    }
 		}
 		if(!this.hasArguments()) {
@@ -186,7 +182,7 @@ public final class Variable extends Expression {
 				this.type=decl.type;
 				Type overloadedType=this.type;
 				Iterator<Parameter> formalIterator;
-				if(decl instanceof ClassDeclaration) formalIterator = ((ClassDeclaration)decl).new ClassParameterIterator();
+				if(decl instanceof ClassDeclaration cdecl) formalIterator = cdecl.new ClassParameterIterator();
 				else formalIterator = ((ProcedureDeclaration)decl).parameterList.iterator();
 				if(params!=null) {
 					// Check parameters
@@ -294,8 +290,7 @@ public final class Variable extends Expression {
 	public String put(final String rightPart) {
 		ASSERT_SEMANTICS_CHECKED(this);
 		String lhs = this.editVariable(true); // Is a Destination
-		if(meaning.declaredAs instanceof Parameter) {
-			Parameter par=(Parameter)meaning.declaredAs;
+		if(meaning.declaredAs instanceof Parameter par) {
 			if(par.kind==Parameter.Kind.Simple && par.mode == Parameter.Mode.name) {
 				return(lhs+".put("+rightPart+')');
 			}
@@ -446,9 +441,7 @@ public final class Variable extends Expression {
 	private String edIdentifierAccess(String id,boolean destination) {
 		Expression constantElement=meaning.getConstant();
 		if(constantElement != null) {
-			if(constantElement instanceof Constant) {
-				Constant constant=(Constant)constantElement;
-				//Util.println("Value="+constant.toJavaCode());
+			if(constantElement instanceof Constant constant) {
 				return(constant.toJavaCode());
 			}
 		}

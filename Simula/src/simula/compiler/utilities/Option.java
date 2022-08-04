@@ -25,32 +25,31 @@ import javax.swing.JPanel;
  */
 public final class Option {
 	
-	
 	public static boolean INLINE_TESTING = false; 
 	public static boolean verbose = false; 
 	public static boolean WARNINGS=true;
 
 	// Overall TRACING Options
-	public static boolean TRACING=false;//true;//false;//true;
-	public static boolean BREAKING=true;//false; //true; 
+	public static boolean TRACING=false;
+	public static boolean BREAKING=false; 
 	public static boolean DEBUGGING=false; // Set by EditorMenues - doDebugAction
 
 	// Scanner Trace Options
-	public static boolean TRACE_SCAN=false;//true;
-	public static boolean TRACE_COMMENTS=false;//true;
+	public static boolean TRACE_SCAN=false;
+	public static boolean TRACE_COMMENTS=false;
 
 	// Parser Trace Options
-	public static boolean TRACE_PARSE=true;//false;//true;
-	public static boolean TRACE_ATTRIBUTE_OUTPUT=false;//true;
-	public static boolean TRACE_ATTRIBUTE_INPUT=false;//true;
+	public static boolean TRACE_PARSE=true;
+	public static boolean TRACE_ATTRIBUTE_OUTPUT=false;
+	public static boolean TRACE_ATTRIBUTE_INPUT=false;
 
 	// Checker Trace Options
-	public static boolean TRACE_CHECKER=false;//true;
-	public static boolean TRACE_CHECKER_OUTPUT=false;//true;
+	public static boolean TRACE_CHECKER=false;
+	public static boolean TRACE_CHECKER_OUTPUT=false;
 	public static int TRACE_FIND=0;
 
 	// Coder Trace Options
-	public static boolean TRACE_CODING=false;//true;
+	public static boolean TRACE_CODING=false;
 	
 	// Byte code engineering Options
 	public static boolean TRACE_BYTECODE_OUTPUT=false;
@@ -91,20 +90,20 @@ public final class Option {
 		Option.WARNINGS=true;
 
 		// Overall TRACING Options
-		Option.TRACING=false;//true;
-		Option.BREAKING=false; //true; 
+		Option.TRACING=false;
+		Option.BREAKING=false;  
 		Option.DEBUGGING=false;
 		
 		// Scanner Trace Options
-		Option.TRACE_SCAN=false;//true;
-		Option.TRACE_COMMENTS=false;//true;
+		Option.TRACE_SCAN=false;
+		Option.TRACE_COMMENTS=false;
 
 		// Parser Trace Options
-		Option.TRACE_PARSE=false;//true;
+		Option.TRACE_PARSE=false;
 
 		// Checker Trace Options
-		Option.TRACE_CHECKER=false;//true;
-		Option.TRACE_CHECKER_OUTPUT=false;//true;
+		Option.TRACE_CHECKER=false;
+		Option.TRACE_CHECKER_OUTPUT=false;
 
 		// Coder Trace Options
 		Option.TRACE_CODING=false;

@@ -137,13 +137,13 @@ public final class RelationalOperation extends Expression {
 		StringBuilder s = new StringBuilder();
 		String fnc = "??";
 		switch (opr) {
-		    case LT: fnc = "LT("; break;
-		    case EQ: fnc = "EQ("; break;
-		    case LE: fnc = "LE("; break;
-		    case GT: fnc = "GT("; break;
-		    case NE: fnc = "NE("; break;
-		    case GE: fnc = "GE("; break;
-		    default:
+		    case LT -> fnc = "LT(";
+		    case EQ -> fnc = "EQ(";
+		    case LE -> fnc = "LE(";
+		    case GT -> fnc = "GT(";
+		    case NE -> fnc = "NE(";
+		    case GE -> fnc = "GE(";
+		    default -> Util.IERR("Unexpected value: " + opr);
 		}
 		s.append("TXTREL$").append(fnc);
 		s.append(lhs.get()).append(',');

@@ -416,8 +416,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	public ProcedureDeclaration findLocalProcedure(final String ident) {
 		for (Declaration decl : declarationList)
 			if (ident.equalsIgnoreCase(decl.identifier)) {
-				if (decl instanceof ProcedureDeclaration)
-					 return ((ProcedureDeclaration) decl);
+				if (decl instanceof ProcedureDeclaration proc) return (proc);
 				else return (null);
 			}
 		return (null);
@@ -471,8 +470,8 @@ SEARCH: while (scope != null) {
 		DeclarationScope scope = Global.getCurrentScope();
 		while (scope != null) {
 			if (scope == otherScope) return (true);
-			if (scope instanceof ClassDeclaration) {
-				ClassDeclaration prfx = ((ClassDeclaration) scope).getPrefixClass();
+			if (scope instanceof ClassDeclaration cls) {
+				ClassDeclaration prfx = cls.getPrefixClass();
 				while (prfx != null) {
 					if (prfx == otherScope)	return (true);
 					prfx = prfx.getPrefixClass();
@@ -536,8 +535,8 @@ SEARCH: while (scope != null) {
 		if (decl == this) {
 			Util.error("Class prefix chain loops: "+identifier);
 		}
-		if (decl instanceof ClassDeclaration) return ((ClassDeclaration) decl);
-		if (decl instanceof StandardClass) return ((ClassDeclaration) decl);
+		if (decl instanceof ClassDeclaration cls) return (cls);
+		if (decl instanceof StandardClass scl) return (scl);
 		Util.error("Prefix " + prefix + " is not a Class");
 		return (null);
 	}

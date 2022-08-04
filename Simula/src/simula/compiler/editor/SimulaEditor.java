@@ -103,9 +103,8 @@ public class SimulaEditor extends JFrame {
         tabbedPane.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				Component selected=tabbedPane.getSelectedComponent();
-				if(selected instanceof SourceTextPanel) {
-					//SourceTextPanel current=getCurrentTextPanel();
-					current=(SourceTextPanel)selected;
+				if(selected instanceof SourceTextPanel panel) {
+					current=panel;
 					menuBar.updateMenuItems();
 				}
 			}});

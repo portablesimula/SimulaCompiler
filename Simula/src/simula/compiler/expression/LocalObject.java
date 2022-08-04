@@ -74,7 +74,7 @@ public final class LocalObject extends Expression {
 			Util.TRACE("BEGIN LocalObject(" + toString()+").doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
 		Meaning meaning=Global.getCurrentScope().findMeaning(classIdentifier);
 		Declaration decl = meaning.declaredAs;
-		if (decl instanceof ClassDeclaration) classDeclaration=(ClassDeclaration)decl;
+		if (decl instanceof ClassDeclaration cdecl) classDeclaration=cdecl;
 		else Util.error("LocalObject("+this+") "+classIdentifier+" is not a class");
 		findThis();
 		SET_SEMANTICS_CHECKED();
@@ -87,16 +87,14 @@ public final class LocalObject extends Expression {
 		ctxDiff=0;
 		thisScope=Global.getCurrentScope();
 		while(thisScope!=null) {
-			if (thisScope instanceof ClassDeclaration) {
+			if (thisScope instanceof ClassDeclaration x) {
 				if (classIdentifier.equalsIgnoreCase(thisScope.identifier)) return;// (thisScope);
-				ClassDeclaration x = (ClassDeclaration) thisScope;
 				while ((x = x.getPrefixClass()) != null) {
 					if (classIdentifier.equalsIgnoreCase(x.identifier)) {
 						return;// (thisScope);
 					}
 				}
-			} else if (thisScope instanceof ConnectionBlock) {
-				ConnectionBlock z = (ConnectionBlock)thisScope;
+			} else if (thisScope instanceof ConnectionBlock z) {
 				ClassDeclaration x = (ClassDeclaration) z.classDeclaration;
 				if (classIdentifier.equalsIgnoreCase(x.identifier)) return;// (z);
 				while ((x = x.getPrefixClass()) != null) {
@@ -122,8 +120,7 @@ public final class LocalObject extends Expression {
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		String cast = classDeclaration.getJavaIdentifier();
-		if (thisScope instanceof ConnectionBlock) {
-			ConnectionBlock connectionBlock = (ConnectionBlock) thisScope;
+		if (thisScope instanceof ConnectionBlock connectionBlock) {
 			return ("((" + cast + ")" + connectionBlock.inspectedVariable.toJavaCode() + ")");
 		}
 		return ("((" + cast + ")" + DeclarationScope.edCTX(ctxDiff) + ")");

@@ -118,8 +118,7 @@ public class SourceTextPanel extends JPanel {
 		    if(id.equals("Insert")) lastText= doc.getText(ofst,lng);
 		    if(id.equals("addition")) lastText= doc.getText(ofst,lng);
 		    Element elt=doc.getCharacterElement(ofst);
-		    if(elt instanceof LeafElement) {
-		    	LeafElement leaf=(LeafElement)elt;
+		    if(elt instanceof LeafElement leaf) {
 			    styleName=(String)leaf.getAttribute(StyleConstants.NameAttribute);
 		    }
 		    lastText=lastText.replace("\n","\\n");

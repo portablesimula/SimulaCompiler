@@ -21,6 +21,7 @@ public final class OverLoad extends Type {
 	   this.type=type;
 	}
 	
+	@Override
 	public String toString()
 	{ StringBuilder s=new StringBuilder();
 	  s.append("OverLoad(");

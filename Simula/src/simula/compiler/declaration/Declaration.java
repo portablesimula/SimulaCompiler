@@ -93,8 +93,8 @@ public abstract class Declaration extends SyntaxClass {
     	if(declaredIn instanceof StandardClass) return;
     	if(declaredIn instanceof StandardProcedure) return;
     	Vector<Parameter> parameterList;
-    	if(declaredIn instanceof ProcedureDeclaration) parameterList=((ProcedureDeclaration)declaredIn).parameterList;
-    	else if(declaredIn instanceof ClassDeclaration) parameterList=((ClassDeclaration)declaredIn).parameterList;
+    	if(declaredIn instanceof ProcedureDeclaration proc) parameterList=proc.parameterList;
+    	else if(declaredIn instanceof ClassDeclaration cls) parameterList=cls.parameterList;
     	else parameterList=null;  // No parameters
 	    
     	if(parameterList!=null) {

@@ -100,8 +100,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	        constantElement.type=type;
 	        constantElement.backLink=this;
 		}
-		if(Global.getCurrentScope() instanceof ClassDeclaration) {
-			ClassDeclaration cls=(ClassDeclaration)Global.getCurrentScope();
+		if(Global.getCurrentScope() instanceof ClassDeclaration cls) {
 			if(cls.prefixLevel()>0) externalIdent=identifier+'$'+cls.prefixLevel();
 			else externalIdent=identifier;
 		}

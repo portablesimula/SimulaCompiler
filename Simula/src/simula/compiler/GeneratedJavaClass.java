@@ -56,10 +56,7 @@ public final class GeneratedJavaClass {
 		
 		JavaClassInfo info=new JavaClassInfo();
 		info.externalIdent=blockDeclaration.getJavaIdentifier();
-		if(blockDeclaration instanceof ClassDeclaration) {
-			ClassDeclaration cls=(ClassDeclaration)blockDeclaration;
-			info.prefixIdent=cls.prefix;
-		}
+		if(blockDeclaration instanceof ClassDeclaration cls) info.prefixIdent=cls.prefix;
 		JavaClassInfo.put(info.externalIdent,info);
 	}
 

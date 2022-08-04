@@ -61,15 +61,9 @@ public final class ConsolePanel extends JPanel {
 		if (consoleReader == null) {
 			consoleReader = new Reader() {
 				public int read(final char[] cbuf,final int off,final int len) throws IOException {
-					//reading=true;
 					int firstPos=textPane.getCaretPosition();
 					textPane.setEditable(true);
-					//textPane.getCaret().setVisible(true);
-					
-					//while(reading) Thread.yield();
 					while(ConsolePanel.this.read() != '\n');
-					
-					//textPane.getCaret().setVisible(false);
 					textPane.setEditable(false);
 					String input=textPane.getText().substring(firstPos);
 					int pos=0;
@@ -94,6 +88,7 @@ public final class ConsolePanel extends JPanel {
 
 	public Writer getWriter() {
 		return(new Writer() {
+			@Override
 			public void write(String s) {
 				ConsolePanel.this.write(s);		
 			}
@@ -135,8 +130,6 @@ public final class ConsolePanel extends JPanel {
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 		textPane.update(textPane.getGraphics());
-//        Global.console.write(Global.simulaVersion+"\n");
-//		write("Simula Compiler Console:\n");
 	}
 	
 	public static void INTERNAL_ERROR(final String msg,final Throwable e) {
@@ -174,7 +167,6 @@ public final class ConsolePanel extends JPanel {
         frame.setTitle("Runtime Console");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-
         frame.getContentPane().add(this);
         frame.setVisible(true);
     }

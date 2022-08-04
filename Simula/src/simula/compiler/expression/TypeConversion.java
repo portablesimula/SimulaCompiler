@@ -33,8 +33,8 @@ public final class TypeConversion extends Expression {
 	// Test if a TypeConversion is necessary and then create it.
 	public static Expression testAndCreate(final Type toType,final Expression expression) {
 		if (testCastNeccessary(toType, expression)) {
-			if(expression instanceof Constant) {
-				Number val=(Number)((Constant)expression).value;
+			if(expression instanceof Constant constant) {
+				Number val=(Number)constant.value;
 				Type fromType=expression.type;
 				if(toType==Type.Integer) {
 					if(fromType==Type.Real) val=(int)Math.round(val.floatValue());

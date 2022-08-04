@@ -68,8 +68,7 @@ public final class AttributeFileIO {
 
 	private void writeDependencies() throws IOException {
 		for(Declaration dcl:StandardClass.ENVIRONMENT.declarationList) {
-			if(dcl instanceof BlockDeclaration) {
-				BlockDeclaration ext=(BlockDeclaration)dcl;
+			if(dcl instanceof BlockDeclaration ext) {
 				if(ext.isPreCompiled) {
 					if (Option.verbose) Util.TRACE("***       Write External "+ext.declarationKind+' '+ext.identifier+'['+ext.externalIdent+']');
 					oupt.writeObject(ext);

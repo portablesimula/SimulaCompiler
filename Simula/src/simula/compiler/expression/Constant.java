@@ -59,7 +59,7 @@ public final class Constant extends Expression implements Externalizable {
 		Number result=null;
 		if(type==Type.Integer) {
 			switch(opr) {
-	        	case PLUS: result=rhn.intValue(); break;
+	        	case PLUS: result=rhn.intValue();
 	        	case MINUS: result= - rhn.intValue(); break;
 	        	default:
 			}
@@ -86,30 +86,30 @@ public final class Constant extends Expression implements Externalizable {
 		Number result=null;
 		if(type==Type.Integer) {
 			switch(opr) {
-	        	case PLUS: result=lhn.intValue() + rhn.intValue(); break;
-	        	case MINUS: result=lhn.intValue() - rhn.intValue(); break;
-	        	case MUL: result=lhn.intValue() * rhn.intValue(); break;
-	        	case INTDIV: result=lhn.intValue() / rhn.intValue(); break;
-        		case EXP: result=Util.IPOW(lhn.intValue(),rhn.intValue()); break;
-	        	default:
+	        	case PLUS   -> result=lhn.intValue() + rhn.intValue();
+	        	case MINUS  -> result=lhn.intValue() - rhn.intValue();
+	        	case MUL    -> result=lhn.intValue() * rhn.intValue();
+	        	case INTDIV -> result=lhn.intValue() / rhn.intValue();
+        		case EXP    -> result=Util.IPOW(lhn.intValue(),rhn.intValue());
+        		default     -> Util.IERR("Unexpected value: " + opr);
 			}
 		} else if(type==Type.Real) {
 			switch(opr) {
-        		case PLUS: result=lhn.floatValue() + rhn.floatValue(); break;
-        		case MINUS: result=lhn.floatValue() - rhn.floatValue(); break;
-        		case MUL: result=lhn.floatValue() * rhn.floatValue(); break;
-        		case DIV: result=lhn.floatValue() / rhn.floatValue(); break;
-        		case EXP: result=Math.pow(lhn.floatValue(),rhn.floatValue()); break;
-        		default:
+        		case PLUS  -> result=lhn.floatValue() + rhn.floatValue();
+        		case MINUS -> result=lhn.floatValue() - rhn.floatValue();
+        		case MUL   -> result=lhn.floatValue() * rhn.floatValue();
+        		case DIV   -> result=lhn.floatValue() / rhn.floatValue();
+        		case EXP   -> result=Math.pow(lhn.floatValue(),rhn.floatValue());
+        		default    -> Util.IERR("Unexpected value: " + opr);
 			}
 		} else if(type==Type.LongReal) {
 			switch(opr) {
-				case PLUS: result=lhn.doubleValue() + rhn.doubleValue(); break;
-				case MINUS: result=lhn.doubleValue() - rhn.doubleValue(); break;
-				case MUL: result=lhn.doubleValue() * rhn.doubleValue(); break;
-				case DIV: result=lhn.doubleValue() / rhn.doubleValue(); break;
-				case EXP: result=Math.pow(lhn.doubleValue(),rhn.doubleValue()); break;
-				default:
+				case PLUS  -> result=lhn.doubleValue() + rhn.doubleValue();
+				case MINUS -> result=lhn.doubleValue() - rhn.doubleValue();
+				case MUL   -> result=lhn.doubleValue() * rhn.doubleValue();
+				case DIV   -> result=lhn.doubleValue() / rhn.doubleValue();
+				case EXP   -> result=Math.pow(lhn.doubleValue(),rhn.doubleValue());
+        		default    -> Util.IERR("Unexpected value: " + opr);
 			}
 		}
 		if(result==null) Util.FATAL_ERROR("Impossible");
@@ -178,9 +178,9 @@ public final class Constant extends Expression implements Externalizable {
 	private void appendHex(StringBuilder b,char c) {
 		String hex=Integer.toHexString(c);
 		switch(hex.length()) {
-		case 1: hex="000"+hex; break;
-		case 2: hex="00"+hex; break;
-		case 3: hex="0"+hex; break;
+		case 1-> hex="000"+hex;
+		case 2-> hex="00"+hex;
+		case 3-> hex="0"+hex;
 		}
 		b.append("\\u"+hex);	
 	}

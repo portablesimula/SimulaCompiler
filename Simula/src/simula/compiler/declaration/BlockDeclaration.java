@@ -59,8 +59,8 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	public boolean isBlockWithLocalClasses() {
 		if (this.hasLocalClasses) return (true);
-		if (this instanceof ClassDeclaration) {
-			ClassDeclaration prfx = ((ClassDeclaration) this).getPrefixClass();
+		if (this instanceof ClassDeclaration cls) {
+			ClassDeclaration prfx = cls.getPrefixClass();
 			if (prfx != null) return (prfx.isBlockWithLocalClasses());
 		}
 		return (false);

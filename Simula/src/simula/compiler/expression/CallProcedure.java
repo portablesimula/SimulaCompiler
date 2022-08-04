@@ -269,8 +269,7 @@ public final class CallProcedure {
 					s.append(".setPar(");
 					Type formalType=actualParameter.type;
 					Parameter.Kind kind=Parameter.Kind.Simple;  // Default, see below
-					if((actualParameter instanceof Variable) && !(((Variable)actualParameter).hasArguments())) {
-						Variable var=(Variable)actualParameter;
+					if((actualParameter instanceof Variable var) && !var.hasArguments()) {
 						Declaration decl=var.meaning.declaredAs;
 						if(decl instanceof StandardProcedure) {
 							if(decl.identifier.equalsIgnoreCase("sourceline")) {
@@ -279,7 +278,7 @@ public final class CallProcedure {
 							}
 						}
 						else if(decl instanceof SimpleVariableDeclaration) kind=Parameter.Kind.Simple;
-						else if(decl instanceof Parameter) kind=((Parameter)decl).kind;
+						else if(decl instanceof Parameter par) kind=par.kind;
 						else if(decl instanceof ProcedureDeclaration) kind=Parameter.Kind.Procedure;
 						else if(decl instanceof ArrayDeclaration) kind=Parameter.Kind.Array;
 						else if(decl instanceof LabelDeclaration) kind=Parameter.Kind.Label;
@@ -297,8 +296,7 @@ public final class CallProcedure {
 		if(procedureSpec!=null) resultType=procedureSpec.type;
 		if(resultType!=null && variable.backLink!=null) {
 			boolean partOfExpression=true;
-			if(variable.backLink instanceof RemoteVariable) {
-				RemoteVariable binOper=(RemoteVariable)variable.backLink;
+			if(variable.backLink instanceof RemoteVariable binOper) {
 				// NOTE: Standalone <expression>.<function> should not be casted
 				if(binOper.backLink==null) partOfExpression=false;
 			}
@@ -378,17 +376,12 @@ public final class CallProcedure {
 	
     private static int getNdim(final Expression actualParameter) {
     	Variable aVar=null;
-    	if(actualParameter instanceof RemoteVariable) aVar=((RemoteVariable)actualParameter).var;
-    	else if(actualParameter instanceof Variable) aVar=(Variable)actualParameter;
+    	if(actualParameter instanceof RemoteVariable rem) aVar=rem.var;
+    	else if(actualParameter instanceof Variable var) aVar=var;
     	else return(-1); // Unchecked
     	Meaning meaning=aVar.meaning;
-    	if(meaning.declaredAs instanceof Parameter) {
-    		Parameter par=(Parameter)meaning.declaredAs;
-    		return(par.nDim);    		
-    	} else if(meaning.declaredAs instanceof ArrayDeclaration) {
-    		ArrayDeclaration aArray=(ArrayDeclaration)meaning.declaredAs;
-    		return(aArray.nDim);
-    	}
+    	if(meaning.declaredAs instanceof Parameter par) return(par.nDim);    		
+    	if(meaning.declaredAs instanceof ArrayDeclaration aArray) return(aArray.nDim);
     	return(-1);
     }
 	
@@ -398,19 +391,18 @@ public final class CallProcedure {
 	private static String doParameterTransmition(final Type formalType,final Parameter.Kind kind,final Parameter.Mode mode,final Expression actualParameter) {
 		StringBuilder s = new StringBuilder();
 		switch(kind) {
-		    case Simple: doSimpleParameter(s,formalType,mode,actualParameter); break;
-		    case Procedure: doProcedureParameter(s,formalType,mode,actualParameter); break;
-		    case Array: doArrayParameter(s,formalType,mode,actualParameter); break;
-		    case Label:
-		    	String labQuant=actualParameter.toJavaCode();
-		    	if(mode==Parameter.Mode.name) {
-			    	  s.append("new NAME$<LABQNT$>()");
-				      s.append("{ public LABQNT$ get() { return("+labQuant+"); }");
-				      s.append(" }");
-			    }
-			    else s.append(labQuant);
-			    break;
-		    default:	
+		    case Simple -> doSimpleParameter(s,formalType,mode,actualParameter);
+		    case Procedure -> doProcedureParameter(s,formalType,mode,actualParameter);
+		    case Array -> doArrayParameter(s,formalType,mode,actualParameter);
+		    case Label -> {
+		    		String labQuant=actualParameter.toJavaCode();
+		    		if(mode==Parameter.Mode.name) {
+		    			s.append("new NAME$<LABQNT$>()");
+		    			s.append("{ public LABQNT$ get() { return("+labQuant+"); }");
+		    			s.append(" }");
+		    		}
+		    		else s.append(labQuant);
+		    	}
 		}
 		return(s.toString());
 	}
@@ -520,39 +512,32 @@ public final class CallProcedure {
 	// *** edProcedureQuant
 	// ********************************************************************
 	private static String edProcedureQuant(final Parameter.Mode mode, final Expression actualParameter) {
-	    if (actualParameter instanceof Variable) {
-			Variable var = (Variable) actualParameter;
+	    if (actualParameter instanceof Variable var) {
 			Declaration decl=var.meaning.declaredAs;
 	    	String staticLink=var.meaning.edQualifiedStaticLink();
 	    	String procIdent = decl.getJavaIdentifier();
 			String procQuant = "new PRCQNT$(" + staticLink + "," + procIdent + ".class)";
-			if (decl instanceof Parameter) {
-				Parameter par = (Parameter) decl;
+			if (decl instanceof Parameter par) {
 				procQuant = ((Variable) actualParameter).getJavaIdentifier();
 				if (par.mode == Parameter.Mode.name)
 					procQuant = procQuant + ".get()";
-			} else if (decl instanceof ProcedureDeclaration) {
-				ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
+			} else if (decl instanceof ProcedureDeclaration procedure) {
     	    	if(procedure.myVirtual!=null) {
     	    		VirtualSpecification vir = procedure.myVirtual.virtualSpec;
     				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
     	    	}
-			} else if (decl instanceof VirtualSpecification) {
-				VirtualSpecification vir = (VirtualSpecification) decl;
+			} else if (decl instanceof VirtualSpecification vir) {
 				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
 			} else Util.FATAL_ERROR("TODO: Flere sånne(1) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			return(procQuant);
-	    } else if (actualParameter instanceof RemoteVariable) {
+	    } else if (actualParameter instanceof RemoteVariable rem) {
 			// Check for <ObjectExpression> DOT <Variable>
-			RemoteVariable rem = (RemoteVariable) actualParameter;
 			String staticLink = rem.obj.toJavaCode();
 			Variable var = rem.var;
 			Declaration decl=var.meaning.declaredAs;
-			if (decl instanceof VirtualSpecification) {
-				VirtualSpecification vir = (VirtualSpecification) decl;
+			if (decl instanceof VirtualSpecification vir) {
 				return(staticLink+'.'+vir.getVirtualIdentifier());
-			} else if (decl instanceof ProcedureDeclaration) {
-				ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
+			} else if (decl instanceof ProcedureDeclaration procedure) {
     	    	if(procedure.myVirtual!=null) {
     	    		VirtualSpecification vir = procedure.myVirtual.virtualSpec;
     				return(staticLink+'.'+vir.getVirtualIdentifier());

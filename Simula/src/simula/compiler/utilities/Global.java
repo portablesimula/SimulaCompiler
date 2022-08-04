@@ -108,12 +108,11 @@ public final class Global {
 	public static String edScopeChain() { return(getCurrentScope().edScopeChain()); }
 	
 	public static void enterScope(DeclarationScope scope) {
-//		Util.BREAK("Global.enterScope: currentScope <== "+scope);
 		scopeStack.push(currentScope); currentScope=scope;
 	}
+	
 	public static void exitScope() {
 		currentScope=scopeStack.pop();
-//		Util.BREAK("Global.exitScope: currentScope <== "+currentScope);
 	}
 
 
@@ -137,7 +136,6 @@ public final class Global {
 		else {
 			Global.outputDir=getTempFileDir("simulaEditor/bin");
 		}
-		//System.out.println("Global.trySetOutputDir: dir="+dir+", Global.outputDir="+Global.outputDir);
 	}
 	
 	public static void initProperties() {
@@ -152,7 +150,6 @@ public final class Global {
 	private static File getSimulaPropertiesFile() {
 		File javaClassPath=new File(System.getProperty("java.class.path"));
 		if(Option.INLINE_TESTING) System.out.println("INLINE_TESTING");
-		//System.out.println("Global.getSimulaPropertiesFile: javaClassPath="+javaClassPath);
 		if(javaClassPath.exists()) {
 			simulaHome=javaClassPath.getParentFile();
 			simulaPropertiesFile=new File(simulaHome,"simulaProperties.xml");
@@ -168,12 +165,10 @@ public final class Global {
 		// Compatibility: TRY TO READ OLD SIMULA PROPERTY FILE FROM <user.home>/.simula
 		// Compatibility: TRY TO READ OLD SIMULA PROPERTY FILE FROM <user.home>/simula/simula-2.0
 		String USER_HOME=System.getProperty("user.home");
-//		File simulaPropertiesDir=new File(USER_HOME,".simula");
 		File simulaPropertiesDir=new File(USER_HOME,"simula/simula-2.0");
 		System.out.println("Global.getSimulaPropertiesFile: simulaPropertiesDir="+simulaPropertiesDir);
 		simulaPropertiesDir.mkdirs();
 		simulaPropertiesFile=new File(simulaPropertiesDir,"simulaProperties.xml");
-		//System.out.println("SimulaCompiler: simulaPropertiesFile="+simulaPropertiesFile+", exists="+simulaPropertiesFile.exists());
 		if(!simulaPropertiesFile.exists()) {
 			Util.popUpError("It seems that the system is not properly installed"
 			         +"\n\nTrying to use 'old' Simula Property File:\n"
@@ -190,7 +185,6 @@ public final class Global {
 		try { simulaProperties.loadFromXML(new FileInputStream(simulaPropertiesFile));
 		} catch(Exception e) {
 			Util.popUpError("Can't load: "+simulaPropertiesFile+"\nGot error: "+e );
-			//Util.INTERNAL_ERROR("Global.loadProperties FAILED: ", e);
 		}	
 	}
 	
@@ -257,19 +251,10 @@ public final class Global {
 			simulaWorkspaces.setProperty("simula.workspace."+(i++),ws.toString());
 		}
 		Global.currentWorkspace=workspaces.getFirst();
-		//System.out.println("Global.updateWorkspaceList: StoreWorkspaceProperties: SIMULA ");
-		//listWorkspaces("storeWorkspaceProperties: STORE WORKSPACES");
 		simulaWorkspacesFile.getParentFile().mkdirs();
 		try { simulaWorkspaces.storeToXML(new FileOutputStream(simulaWorkspacesFile),"Simula Workspaces");
 		} catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
 	}
-	
-//	private static void listWorkspaces(String title) {
-//		System.out.println("Global.listWorkspaces: "+title);
-//		for(File ws:workspaces)
-//			System.out.println("Global.listWorkspaces: "+ws);
-//    	System.out.println("Global.listWorkspaces: currentWorkspace="+currentWorkspace);
-//	}
 	
 	
 }

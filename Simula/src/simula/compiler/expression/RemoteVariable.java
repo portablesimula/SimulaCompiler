@@ -79,8 +79,7 @@ public final class RemoteVariable extends Expression {
 		else if (qual.hasLocalClasses)
 			Util.warning("Illegal remote access into object of class with local classes.");
 
-		if (attr instanceof Variable) {
-			Variable var = (Variable) attr;
+		if (attr instanceof Variable var) {
 			String ident = var.identifier;
 			remoteAttribute = objType.getQual().findRemoteAttributeMeaning(ident);
 			if (remoteAttribute == null) {
@@ -89,18 +88,17 @@ public final class RemoteVariable extends Expression {
 			}
 			var.setRemotelyAccessed(remoteAttribute);
 
-			if (remoteAttribute.declaredAs instanceof Parameter) {
-				Parameter par = (Parameter) remoteAttribute.declaredAs;
+			if (remoteAttribute.declaredAs instanceof Parameter par) {
 				if (par.kind == Parameter.Kind.Array)
 					accessRemoteArray = true;
 			}
 
 			if (remoteAttribute.declaredAs instanceof ArrayDeclaration) { // Array
 				if (var.hasArguments())	accessRemoteArray = true;
-			} else if (remoteAttribute.declaredAs instanceof ProcedureDeclaration) { // Procedure
-				callRemoteProcedure = (ProcedureDeclaration) remoteAttribute.declaredAs;
-			} else if (remoteAttribute.declaredAs instanceof VirtualSpecification) { // Virtual Procedure
-				callRemoteVirtual = (VirtualSpecification) remoteAttribute.declaredAs;
+			} else if (remoteAttribute.declaredAs instanceof ProcedureDeclaration proc) { // Procedure
+				callRemoteProcedure = proc;
+			} else if (remoteAttribute.declaredAs instanceof VirtualSpecification virSpec) { // Virtual Procedure
+				callRemoteVirtual = virSpec;
 			}
 			result = remoteAttribute.declaredAs.type;
 		} else {
@@ -112,8 +110,7 @@ public final class RemoteVariable extends Expression {
 
 	private Type doRemoteTextChecking(final Expression obj, final Expression attr) {
 		Type result;
-		if (attr instanceof Variable) { // Covers FunctionDesignator and SubscriptedVariable since they are subclasses
-			Variable var = (Variable) attr;
+		if (attr instanceof Variable var) { // Covers FunctionDesignator and SubscriptedVariable since they are subclasses
 			String ident = var.identifier;
 			Meaning remote = StandardClass.typeText.findMeaning(ident);
 			if (remote == null)
@@ -146,10 +143,7 @@ public final class RemoteVariable extends Expression {
 			return (doAccessRemoteArray(obj, var));
 		Expression constantElement=remoteAttribute.getConstant();
 		if(constantElement != null) {
-			if(constantElement instanceof Constant) {
-				Constant constant=(Constant)constantElement;
-				return(constant.toJavaCode());
-			}
+			if(constantElement instanceof Constant constant) return(constant.toJavaCode());
 		}
 		String result;
 		if (remoteAttribute.foundBehindInvisible) {

@@ -56,27 +56,20 @@ public final class Token implements Externalizable {
 
 	public StyleCode getStyleCode() {
 		switch(keyWord) {
-		    case ASSIGNVALUE: case ASSIGNREF:
-		    case COMMA: case COLON: case SEMICOLON:
-		    case BEGPAR: case ENDPAR: case BEGBRACKET: case ENDBRACKET:
-		    case EQR: case NER:
+		    case ASSIGNVALUE: case ASSIGNREF: case COMMA: case COLON: case SEMICOLON:
+		    case BEGPAR: case ENDPAR: case BEGBRACKET: case ENDBRACKET: case EQR: case NER:
 		    case EQ: case GE: case GT: case LE: case LT: case NE:
-		    case PLUS: case MINUS: case MUL: case DIV:
-		    case INTDIV: case EXP:
-		    case IDENTIFIER:
-		    //case OR_ELSE:
-		    //case AND_THEN:
-		    case DOT:
+		    case PLUS: case MINUS: case MUL: case DIV: case INTDIV: case EXP:
+		    case IDENTIFIER: case DOT:
 		    	 return(Token.StyleCode.regular);
-		    case BOOLEANKONST:
-		    case INTEGERKONST:
-		    case CHARACTERKONST:
-		    case REALKONST:
-		    case TEXTKONST:
-		    case STRING:
+		    	 
+		    case BOOLEANKONST: case INTEGERKONST: case CHARACTERKONST:
+		    case REALKONST: case TEXTKONST: case STRING:
 		    	 return(Token.StyleCode.constant);
+		    	 
 		    case COMMENT:
 		    	 return(Token.StyleCode.comment);
+		    	 
 		    default: return(Token.StyleCode.keyword);
 		}
 	}

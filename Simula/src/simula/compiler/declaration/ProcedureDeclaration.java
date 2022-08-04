@@ -266,11 +266,11 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.isPreCompiled)	return;
 		switch (declarationKind) {
-		case ContextFreeMethod:	doMethodJavaCoding("static ", false); break;
-		case MemberMethod: doMethodJavaCoding("", true); break;
-		case StaticMethod: doMethodJavaCoding("static ", true); break;
-		case Procedure:	doProcedureCoding(); break;
-		default: Util.FATAL_ERROR("Impossible Situation !");
+		case ContextFreeMethod -> doMethodJavaCoding("static ", false);
+		case MemberMethod -> doMethodJavaCoding("", true);
+		case StaticMethod -> doMethodJavaCoding("static ", true);
+		case Procedure -> doProcedureCoding();
+		default -> Util.FATAL_ERROR("Impossible Situation !");
 		}
 	}
 

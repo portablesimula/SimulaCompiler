@@ -37,8 +37,7 @@ public final class Meaning {
 	}
 
 	public Expression getConstant() {
-		if(declaredAs instanceof SimpleVariableDeclaration) {
-			SimpleVariableDeclaration simple=(SimpleVariableDeclaration)declaredAs;
+		if(declaredAs instanceof SimpleVariableDeclaration simple) {
 			if(simple.isConstant()) return(simple.constantElement);
 		}
 		return(null);
@@ -94,6 +93,7 @@ public final class Meaning {
 		return (staticLink);
 	}
 
+	@Override
 	public String toString() {
 		if (declaredAs == null)	return ("NO MEANING");
 		return ("DeclaredAs " + declaredAs + ", foundBehindInvisible=" + foundBehindInvisible + "  (blockLevel="

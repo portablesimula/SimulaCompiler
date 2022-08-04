@@ -96,9 +96,9 @@ public abstract class Statement extends SyntaxClass {
 		    case IDENTIFIER: case NEW: case THIS: case BEGPAR:
 		         Expression expr = Expression.parseExpression();
 		         if(expr!=null) {
-		        	 if(expr instanceof Variable)
-		        	 { if (Parser.accept(KeyWord.BEGIN))
-		        		 return new BlockStatement(new PrefixedBlockDeclaration(null,(Variable)expr,false));
+		        	 if(expr instanceof Variable var) {
+		        		 if (Parser.accept(KeyWord.BEGIN))
+		        			 return new BlockStatement(new PrefixedBlockDeclaration(null,var,false));
 		        	 }
 		        	 return (new StandaloneExpression(expr));
 		         }

@@ -51,23 +51,23 @@ public final class BlockStatement extends Statement {
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		if(blockDeclaration.declarationKind!=Declaration.Kind.CompoundStatement)
-		{ String staticLink=blockDeclaration.declaredIn.edCTX();
-		  StringBuilder s = new StringBuilder();
-		  s.append("new ").append(getJavaIdentifier()).append('(');
-		  s.append(staticLink);
-		  if(blockDeclaration instanceof PrefixedBlockDeclaration)
-		  { Variable blockPrefix=((PrefixedBlockDeclaration)blockDeclaration).blockPrefix;
-			if(blockPrefix.hasArguments())
-			  for (Expression par:blockPrefix.checkedParams) {
-			   s.append(',').append(par.toJavaCode());
-		    }
-		  }
-		  s.append(')');
-		  if(blockDeclaration.declarationKind==Declaration.Kind.PrefixedBlock && ((ClassDeclaration)blockDeclaration).isDetachUsed())
-			   s.append(".START$();");
-		  else s.append(".STM$();");
-		  GeneratedJavaClass.code(s.toString());
+		if(blockDeclaration.declarationKind!=Declaration.Kind.CompoundStatement) {
+			String staticLink=blockDeclaration.declaredIn.edCTX();
+			StringBuilder s = new StringBuilder();
+			s.append("new ").append(getJavaIdentifier()).append('(');
+			s.append(staticLink);
+			if(blockDeclaration instanceof PrefixedBlockDeclaration pref) {
+				Variable blockPrefix=pref.blockPrefix;
+				if(blockPrefix.hasArguments())
+					for (Expression par:blockPrefix.checkedParams) {
+						s.append(',').append(par.toJavaCode());
+					}
+			}
+			s.append(')');
+			if(blockDeclaration.declarationKind==Declaration.Kind.PrefixedBlock && ((ClassDeclaration)blockDeclaration).isDetachUsed())
+				s.append(".START$();");
+			else s.append(".STM$();");
+			GeneratedJavaClass.code(s.toString());
 		}
 		blockDeclaration.doJavaCoding();
 	}

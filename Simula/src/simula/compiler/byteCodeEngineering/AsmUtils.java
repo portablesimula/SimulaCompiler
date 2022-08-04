@@ -217,38 +217,22 @@ public class AsmUtils {
 			if (i > 0) {
 				stringBuilder.append(' ');
 			}
-			if (frameTypes[i] instanceof String) {
-				String descriptor = (String) frameTypes[i];
+			if (frameTypes[i] instanceof String descriptor) {
 				if (descriptor.charAt(0) == '[') {
 					appendDescriptor(Textifier.FIELD_DESCRIPTOR, descriptor);
 				} else {
 					appendDescriptor(Textifier.INTERNAL_NAME, descriptor);
 				}
-			} else if (frameTypes[i] instanceof Integer) {
-				switch (((Integer) frameTypes[i]).intValue()) {
-				case 0:
-					appendDescriptor(Textifier.FIELD_DESCRIPTOR, "T");
-					break;
-				case 1:
-					appendDescriptor(Textifier.FIELD_DESCRIPTOR, "I");
-					break;
-				case 2:
-					appendDescriptor(Textifier.FIELD_DESCRIPTOR, "F");
-					break;
-				case 3:
-					appendDescriptor(Textifier.FIELD_DESCRIPTOR, "D");
-					break;
-				case 4:
-					appendDescriptor(Textifier.FIELD_DESCRIPTOR, "J");
-					break;
-				case 5:
-					appendDescriptor(Textifier.FIELD_DESCRIPTOR, "N");
-					break;
-				case 6:
-					appendDescriptor(Textifier.FIELD_DESCRIPTOR, "U");
-					break;
-				default:
-					throw new IllegalArgumentException();
+			} else if (frameTypes[i] instanceof Integer frameType) {
+				switch (frameType.intValue()) {
+					case 0->appendDescriptor(Textifier.FIELD_DESCRIPTOR, "T");
+					case 1->appendDescriptor(Textifier.FIELD_DESCRIPTOR, "I");
+					case 2->appendDescriptor(Textifier.FIELD_DESCRIPTOR, "F");
+					case 3->appendDescriptor(Textifier.FIELD_DESCRIPTOR, "D");
+					case 4->appendDescriptor(Textifier.FIELD_DESCRIPTOR, "J");
+					case 5->appendDescriptor(Textifier.FIELD_DESCRIPTOR, "N");
+					case 6->appendDescriptor(Textifier.FIELD_DESCRIPTOR, "U");
+					default->throw new IllegalArgumentException();
 				}
 			} else {
 				appendLabel((Label) frameTypes[i]);

@@ -62,8 +62,8 @@ public final class WhileStatement extends Statement {
 	
 	private boolean isWhileTrueDo()
 	{ // Check for:  while(true) do {}
-	  if(!(condition instanceof Constant)) return(false);
-	  return(((Boolean)((Constant)condition).value));
+		if(condition instanceof Constant cnst) return((boolean)cnst.value);
+		else return(false);
 	}
 
 	@Override

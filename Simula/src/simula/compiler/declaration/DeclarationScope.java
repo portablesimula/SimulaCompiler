@@ -74,7 +74,7 @@ public abstract class DeclarationScope extends Declaration {
 		DeclarationScope scope=this;
 		while(scope!=null) {
 			if(identifier.equalsIgnoreCase(scope.identifier)) {
-				if(scope instanceof ProcedureDeclaration) return((ProcedureDeclaration)scope);
+				if(scope instanceof ProcedureDeclaration proc) return(proc);
 	    		return(null);
 			}
 			scope=scope.declaredIn;

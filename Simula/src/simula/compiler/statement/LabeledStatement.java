@@ -65,8 +65,8 @@ public final class LabeledStatement extends Statement {
 			Meaning meaning=Global.getCurrentScope().findLabelMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
 			String labelcode="LABEL$("+decl.index+",\""+decl.identifier+"\");";
-			if(statement instanceof BlockStatement) {
-				BlockStatement blockStatement=(BlockStatement)statement;
+			if(statement instanceof BlockStatement stat) {
+				BlockStatement blockStatement=stat;
 				if(blockStatement.isCompoundStatement())
 				    blockStatement.addLeadingLabel(labelcode);
 				else GeneratedJavaClass.code(labelcode);

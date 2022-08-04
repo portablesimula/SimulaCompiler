@@ -95,7 +95,7 @@ public final class ForStatement extends Statement {
 		controlVariable.doChecking();
 		this.type = controlVariable.type; // Type of control variable
 		Declaration decl = controlVariable.meaning.declaredAs;
-		if (decl instanceof Parameter && ((Parameter) decl).mode == Parameter.Mode.name)
+		if (decl instanceof Parameter par && par.mode == Parameter.Mode.name)
 			Util.error("For-Statement's Controled Variable(" + controlVariable + ") can't be a formal parameter by Name");
 		if (type != Type.Text && assignmentOperator.getKeyWord() == KeyWord.ASSIGNVALUE && type.isReferenceType())
 			Util.error("Illegal For-Statement with object value assignment ( := )");

@@ -92,7 +92,7 @@ public class AttributeInputStream {
 		//System.out.println("checkSync: "+mark);
 		if(AttributeOutputStream.USE_SYNCMARK) {
 			Object mrk=in.readObject();
-			if(mrk instanceof String) if(((String)mrk).equals(mark)) return;
+			if(mrk instanceof String smrk) if(smrk.equals(mark)) return;
 
 			System.out.println("\n\n*******************************************************************************************************************");
 			System.out.println("*** OUT OF SYNC WHILE READING "+name+": EXPECTING MARK '"+mark+"' GOT "+mrk.getClass().getSimpleName()+" '"+mrk+"'");

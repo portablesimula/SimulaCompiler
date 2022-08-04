@@ -27,7 +27,6 @@ public class Type implements Externalizable {
 	public static final Type Text = new Type(new Token(KeyWord.TEXT));
 	public static final Type Ref = new Type(new Token(KeyWord.REF));
 	public static final Type Ref(String className) { return (new Type(className)); }
-	
 	public static final Type Procedure = new Type(new Token(KeyWord.PROCEDURE));
 	public static final Type Label = new Type(new Token(KeyWord.LABEL));
 	
@@ -85,9 +84,8 @@ public class Type implements Externalizable {
 		if(refIdent!=null) {
 			if(!refIdent.equals("LABQNT$") && !refIdent.equals("$UNKNOWN")) {
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
-			    if(decl instanceof ClassDeclaration) {
-			    	qual=(ClassDeclaration)decl;
-			    } else {
+			    if(decl instanceof ClassDeclaration cdecl) qual=cdecl;
+			    else {
 			    	Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 					Util.BREAK("Type.doChecking: refIdent="+refIdent+", scopeChain="+Global.getCurrentScope().edScopeChain());
 			    }
@@ -235,6 +233,7 @@ public class Type implements Externalizable {
 		return(this.toString());
 	}
 	  
+	@Override
 	public String toString() {
 		if(key==null) return("null");
 		if(key.getKeyWord()==KeyWord.REF) return("Ref("+key.getValue()+')');

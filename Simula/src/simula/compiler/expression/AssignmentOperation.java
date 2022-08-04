@@ -59,11 +59,9 @@ public final class AssignmentOperation extends Expression {
 	   	Global.sourceLineNumber=lineNumber;
 		if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
 	    lhs.doChecking(); Type toType=lhs.type;
-	    if(lhs instanceof Variable) {
-	    	Variable var=(Variable)lhs;
+	    if(lhs instanceof Variable var) {
 		    Meaning meaning=var.getMeaning();
-		    if(meaning.declaredAs instanceof SimpleVariableDeclaration) {
-		    	SimpleVariableDeclaration dcl=(SimpleVariableDeclaration)meaning.declaredAs;
+		    if(meaning.declaredAs instanceof SimpleVariableDeclaration dcl) {
 		        if(dcl.isConstant()) Util.error("Assignment to Constant: '"+lhs+"' is Illegal");
 		    }
 	    } else {
@@ -95,8 +93,8 @@ public final class AssignmentOperation extends Expression {
 	// ***********************************************************************
 	private String doCodeTextValueAssignment() {
 		StringBuilder s = new StringBuilder();
-		if (rhs instanceof Constant) {
-			Object value = ((Constant) rhs).value;
+		if (rhs instanceof Constant cnst) {
+			Object value = cnst.value;
 			if (value != null) {
 				s.append("ASGSTR$(").append(lhs.toJavaCode()).append(",\"").append(value).append("\")");
 				return (s.toString());
@@ -121,17 +119,16 @@ public final class AssignmentOperation extends Expression {
 			//     <Expression-1> . ARRAY.put(x1,x2,<Expression-2>) ;
 			//     OBJECT . ARRAY.A[x+9- OBJECT.ARRAY.LB[0]]=134;
 			// -------------------------------------------------------------------------
-			if(lhs instanceof RemoteVariable) {
+			if(lhs instanceof RemoteVariable rem) {
 				Expression afterDot=((RemoteVariable)lhs).var;
-				if(afterDot instanceof Variable &&  ((Variable)afterDot).hasArguments()) {
-					Declaration decl = ((Variable) afterDot).meaning.declaredAs;
-					Expression beforeDot = ((RemoteVariable) lhs).obj;
+				if(afterDot instanceof Variable varAfterDot &&  varAfterDot.hasArguments()) {
+					Declaration decl = varAfterDot.meaning.declaredAs;
+					Expression beforeDot = rem.obj;
 					if (decl instanceof ArrayDeclaration)
-						return (assignToRemoteArray(beforeDot, (Variable) afterDot, rhs));
-					else if (decl instanceof Parameter) {
-						Parameter par = (Parameter) decl;
+						return (assignToRemoteArray(beforeDot, varAfterDot, rhs));
+					else if (decl instanceof Parameter par) {
 						if (par.kind == Parameter.Kind.Array)
-							return (assignToRemoteArray(beforeDot, (Variable) afterDot, rhs));
+							return (assignToRemoteArray(beforeDot, varAfterDot, rhs));
 					}
 
 				}

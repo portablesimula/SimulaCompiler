@@ -308,14 +308,14 @@ public abstract class Expression extends SyntaxClass {
 	private static ClassDeclaration getQualification(final Expression simpleObjectExpression) {
 		String refIdent=simpleObjectExpression.type.getRefIdent();
 		Declaration objDecl = Global.getCurrentScope().findMeaning(refIdent).declaredAs;
-		if(objDecl instanceof ClassDeclaration)	return((ClassDeclaration)objDecl);
+		if(objDecl instanceof ClassDeclaration cls)	return(cls);
 		Util.error("Illegal ref(" + refIdent + "): " + refIdent + " is not a class");
 		return(null);
 	}
 
 	public static ClassDeclaration getQualification(final String classIdentifier) {
 		Declaration classDecl=Global.getCurrentScope().findMeaning(classIdentifier).declaredAs;
-		if(classDecl instanceof ClassDeclaration) return((ClassDeclaration)classDecl);
+		if(classDecl instanceof ClassDeclaration cls) return(cls);
 		Util.error("Illegal: " + classIdentifier + " is not a class");
 		return(null);
 	}
@@ -346,71 +346,44 @@ public abstract class Expression extends SyntaxClass {
 	}
 	
     public Number getNumber() {
-    	if(this instanceof UnaryOperation) {
-    		UnaryOperation u=(UnaryOperation)this;
+    	if(this instanceof UnaryOperation u) {
     		if(u.oprator==KeyWord.MINUS) {
     			Number val=u.operand.getNumber();
     			return(-val.intValue());
     		}
-    	} else if(this instanceof Constant) {
-		    Object value=((Constant)this).value;
-		    if(value instanceof Number) {
-		    	return((Number)value);
-		    }
-	    } else if(this instanceof Variable) {
-		    Variable var=(Variable)this;
+    	} else if(this instanceof Constant cnst) {
+		    if(cnst.value instanceof Number num) return(num);
+	    } else if(this instanceof Variable var) {
 		    Meaning meaning=Global.getCurrentScope().findMeaning(var.identifier);
-		    if(meaning==null) {
-		    	return(null);
-		    }
+		    if(meaning==null) return(null);
 		    Declaration declaredAs=meaning.declaredAs;
-		    if(declaredAs instanceof SimpleVariableDeclaration) {
-			    SimpleVariableDeclaration tp=(SimpleVariableDeclaration)declaredAs;
+		    if(declaredAs instanceof SimpleVariableDeclaration tp) {
 			    Expression constElt=tp.constantElement;
-			    if(constElt!=null) {
-				    if(constElt instanceof Constant) {
-					    Object value=((Constant)constElt).value;
-					    if(value instanceof Number) {
-					    	return((Number)value);
-					    }
-				    }
-			    }
+			    if(constElt!=null && constElt instanceof Constant cnst)
+			    	if(cnst.value instanceof Number num) return(num);
 		    }
 		    return(null);
-	    } else if(this instanceof TypeConversion) {
-	    	return(((TypeConversion)this).expression.getNumber()); // TODO: Hva hvis   (int)3.14  som real
+	    } else if(this instanceof TypeConversion conv) {
+	    	return(conv.expression.getNumber()); // TODO: Hva hvis   (int)3.14  som real
 	    }
 	    return(null);
     }
 	
 	public int getInt() {
-		if(this instanceof Constant) {
-			Object value=((Constant)this).value;
-			if(value instanceof Number) {
-				int intValue=((Number)value).intValue();
-				return(intValue);
-			} else if(value instanceof Character) {
-				char charValue=((Character)value).charValue();
-				return((int)charValue);
-			}
+		if(this instanceof Constant cnst) {
+			if(cnst.value instanceof Number num)	return(num.intValue());
+			if(cnst.value instanceof Character chr) return((int)chr.charValue());
 		}
-		if(this instanceof Variable) {
-			Variable var=(Variable)this;
+		if(this instanceof Variable var) {
 			Meaning meaning=var.meaning;
 			Declaration declaredAs=meaning.declaredAs;
-			if(declaredAs instanceof SimpleVariableDeclaration) {
-				SimpleVariableDeclaration tp=(SimpleVariableDeclaration)declaredAs;
+			if(declaredAs instanceof SimpleVariableDeclaration tp) {
 				Expression constElt=tp.constantElement;
 				if(constElt!=null) {
-					if(constElt instanceof Constant) {
-						Object value=((Constant)constElt).value;
-						if(value instanceof Number) {
-							int intValue=((Number)value).intValue();
-							return(intValue);
-						} else if(value instanceof Character) {
-							char charValue=((Character)value).charValue();
-							return((int)charValue);
-						}
+					if(constElt instanceof Constant constant) {
+						Object value=constant.value;
+						if(value instanceof Number num)	return(num.intValue());
+						if(value instanceof Character chr) return((int)chr.charValue());
 					}
 				}
 			}
