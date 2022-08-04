@@ -172,47 +172,45 @@ public abstract class RTObject$ {
 	}
 
 	public ARRAY$<?> arrayValue(final Object par) {
-		if (par instanceof NAME$<?>)
-			return (((NAME$<ARRAY$<?>>) par).get());
+		if (par instanceof NAME$<?> arr) return((ARRAY$<?>)arr.get());
 		return ((ARRAY$<?>) par);
 	}
 
 	public PRCQNT$ procValue(final Object par) {
-		if (par instanceof NAME$<?>)
-			return (((NAME$<PRCQNT$>) par).get());
+		if (par instanceof NAME$<?> proc) return((PRCQNT$)proc.get());
 		return ((PRCQNT$) par);
 	}
 
 	public Object objectValue(Object par) {
-		if (par instanceof NAME$<?>) par = ((NAME$<?>) par).get();
-		if (par instanceof PRCQNT$)	par = ((PRCQNT$) par).CPF().RESULT$();
+		if (par instanceof NAME$<?> npar) par = npar.get();
+		if (par instanceof PRCQNT$ proc)  par = proc.CPF().RESULT$();
 		return (par);
 	}
 
 	public int intValue(Object par) {
-		if (par instanceof NAME$<?>) par = ((NAME$<?>) par).get();
-		if (par instanceof PRCQNT$)	par = ((PRCQNT$) par).CPF().RESULT$();
-		if (par instanceof Float) return ((int) par);
-		if (par instanceof Double) return ((int) (double) par);
-		if (par instanceof Integer)	return ((int) par);
+		if (par instanceof NAME$<?> npar) par = npar.get();
+		if (par instanceof PRCQNT$ proc)  par = proc.CPF().RESULT$();
+		if (par instanceof Float   f) return (f.intValue());
+		if (par instanceof Double  d) return (d.intValue());
+		if (par instanceof Integer i) return (i);
 		throw new ClassCastException("Incompatible Types: int," + par.getClass().getSimpleName());
 	}
 
 	public float floatValue(Object par) {
-		if (par instanceof NAME$<?>) par = ((NAME$<?>) par).get();
-		if (par instanceof PRCQNT$)	par = ((PRCQNT$) par).CPF().RESULT$();
-		if (par instanceof Float) return ((float) par);
-		if (par instanceof Double) return ((float) (double) par);
-		if (par instanceof Integer)	return ((float) (int) par);
+		if (par instanceof NAME$<?> npar) par = npar.get();
+		if (par instanceof PRCQNT$ proc)  par = proc.CPF().RESULT$();
+		if (par instanceof Float   f) return (f);
+		if (par instanceof Double  d) return (d.floatValue());
+		if (par instanceof Integer i) return (i.floatValue());
 		throw new ClassCastException("Incompatible Types: float," + par.getClass().getSimpleName());
 	}
 
 	public double doubleValue(Object par) {
-		if (par instanceof NAME$<?>) par = ((NAME$<?>) par).get();
-		if (par instanceof PRCQNT$)	par = ((PRCQNT$) par).CPF().RESULT$();
-		if (par instanceof Float) return ((double) (float) par);
-		if (par instanceof Double) return ((double) (double) par);
-		if (par instanceof Integer)	return ((double) (int) par);
+		if (par instanceof NAME$<?> npar) par = npar.get();
+		if (par instanceof PRCQNT$ proc)  par = proc.CPF().RESULT$();
+		if (par instanceof Float   f) return (f.doubleValue());
+		if (par instanceof Double  d) return (d);
+		if (par instanceof Integer i) return (i.doubleValue());
 		throw new ClassCastException("Incompatible Types: double," + par.getClass().getSimpleName());
 	}
 
@@ -676,11 +674,6 @@ public abstract class RTObject$ {
 					endProgram(-1);
 				}
 			} else if (e instanceof RuntimeException) {
-//				String msg = e.getMessage();
-//				if (e instanceof NullPointerException) msg = "NONE-CHECK Failed";
-//				else if (e instanceof ArrayIndexOutOfBoundsException) msg = "ArrayIndexOutOfBounds";
-//				else msg = e.getClass().getSimpleName() + " " + msg;
-				
 				String msg=getErrorMessage(e);
 				
 				if(ENVIRONMENT$.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
@@ -721,8 +714,6 @@ public abstract class RTObject$ {
 		String msg = e.getMessage();
 		if (e instanceof NullPointerException) msg = "NONE-CHECK Failed";
 		else if (e instanceof ArrayIndexOutOfBoundsException) msg = "ArrayIndexOutOfBounds";
-//		else msg = e.getClass().getSimpleName() + ": " + msg;
-//		return(msg);
 		return(e.getClass().getSimpleName() + ": " + msg);
 	}
 
@@ -815,13 +806,13 @@ public abstract class RTObject$ {
 	 */
 	public void EBLK() {
 		switch(STATE$) {
-			case attached: {
+			case attached -> {
 					RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-1");
 					STATE$ = OperationalState.terminated;
 					CUR$ = DL$; // Make the dynamic enclosure the new current instance.
 					if (RT.Option.BLOCK_TRACING) RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
-				} break;
-			case resumed: {
+				}
+			case resumed -> {
 					RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-2");
 					// Treat the case of a resumed and operating object.
 					// It is the head of an object component. The class
@@ -837,14 +828,14 @@ public abstract class RTObject$ {
 					RTObject$ dl = DL$; DL$ = null;
 					CUR$ = main.DL$; main.DL$ = dl;
 					if (RT.Option.BLOCK_TRACING) RT.TRACE("END COMPONENT " + edObjectAttributes());
-				} break;
-			case terminatingProcess: {
+				}
+			case terminatingProcess -> {
 					//RT.TRACE("TERMINATING PROCESS "+edObjectAttributes());
 					STATE$ = OperationalState.terminated;
 					CORUT$ = null; // Leave it to the GarbageCollector
 					return; // Let this Continuation R.I.P.
 				}
-			default: throw new SimulaRuntimeError("RTObject$.EBLK: Internal Error " + edObjectAttributes());
+			default -> throw new SimulaRuntimeError("RTObject$.EBLK: Internal Error " + edObjectAttributes());
 		}
 		if (CUR$ == null || CUR$ == CTX$) {
 			if (RT.Option.BLOCK_TRACING) RT.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
@@ -934,20 +925,20 @@ public abstract class RTObject$ {
 				throw new SimulaRuntimeError("x.Detach: x is not on the operating chain.");
 		}
 		switch(this.STATE$) {
-			case resumed: {
+			case resumed -> {
 				// Find main component for component to be detached. The main
 				// component head must be the static enclosure of the object.
 				RTObject$ main = this.SL$;
 				// Rotate the contents of 'CUR$', 'this.DL$' and 'main.DL$'.
 				// <main.DL$,this.DL$,CUR$> := <this.DL$,CUR$,main.DL$>
 				dl = main.DL$; main.DL$ = this.DL$; this.DL$ = CUR$; CUR$ = dl;
-			} break;
-			case attached: {
+			} 
+			case attached -> {
 				// Swap the contents of object's 'this.DL$' and 'CUR$'.
 				// <this.DL$,CUR$> := <CUR$,this.DL$>
 				dl = this.DL$; this.DL$ = CUR$; CUR$ = dl;
-			} break;
-			default: throw new SimulaRuntimeError("Illegal Detach");
+			}
+			default -> throw new SimulaRuntimeError("Illegal Detach");
 		}
 		this.STATE$ = OperationalState.detached;
  

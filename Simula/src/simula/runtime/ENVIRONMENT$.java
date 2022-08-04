@@ -1815,20 +1815,22 @@ public class ENVIRONMENT$ extends RTObject$ {
     	if(Option.VERBOSE) RT.println("giveIntInfo: index="+index+", info="+info);
     	StringBuilder sb=new StringBuilder();
     	switch(index) {
-    	case 1: sb.append("End of pass " + (PASS_NO++) + ": " );
+    	case 1 -> {
+    		sb.append("End of pass " + (PASS_NO++) + ": " );
     		switch(info) {
-    		case 0: sb.append("No user errors found. Go on with next pass."); break;
-    		case 1: sb.append("User errors are found, but go on with next pass."); break;
-    		case 2: sb.append("Reserved for fututre use, continuation is possible."); break;
-    		case 3: sb.append("No user errors found, but because of options etc. the next pass should not be started."); break;
-    		case 4: sb.append("User errors found, therefore do not start next pass."); break;
-    		case 5: sb.append("Too many or too difficult user errors encountered. Compiler should terminate."); break;
-    		case 6: sb.append("An internal error in the compiler has occurred. Compiler should terminate."); break;
-    		} break;
-    	case 2: sb.append("Max tag="+info); break;
-    	case 3: sb.append("nSourceLines="+info); break;
-    	case 4: sb.append("nErrors="+info); break;
-    	case 5: sb.append("nWarnings="+info); break;
+    			case 0 -> sb.append("No user errors found. Go on with next pass.");
+    			case 1 -> sb.append("User errors are found, but go on with next pass.");
+    			case 2 -> sb.append("Reserved for fututre use, continuation is possible.");
+    			case 3 -> sb.append("No user errors found, but because of options etc. the next pass should not be started.");
+    			case 4 -> sb.append("User errors found, therefore do not start next pass.");
+    			case 5 -> sb.append("Too many or too difficult user errors encountered. Compiler should terminate.");
+    			case 6 -> sb.append("An internal error in the compiler has occurred. Compiler should terminate.");
+    		}
+    	}
+    	case 2 -> sb.append("Max tag="+info);
+    	case 3 -> sb.append("nSourceLines="+info);
+    	case 4 -> sb.append("nErrors="+info);
+    	case 5 -> sb.append("nWarnings="+info);
     	}
     	if(Option.VERBOSE) RT.println(sb.toString());
     }

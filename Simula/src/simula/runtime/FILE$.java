@@ -238,18 +238,16 @@ public class FILE$ extends CLASS$ {
 //			System.out.println("FILE$.doCreateAction: "+CREATE$+" on "+file);
 //			RT.BREAK("FILE$.doCreateAction: "+CREATE$+" on "+file);
 			switch(CREATE$) {
-			      case NA: {
+			      case NA -> {
 					  //System.out.println("FILE$.doCreateAction: NA on "+file);
 			    	  //throw new RuntimeError("File access mode=NA - Can't open file");
-			    	  break;
 			      }
-			      case noCreate:{
+			      case noCreate -> {
 					  //System.out.println("FILE$.doCreateAction: noCreate on "+file);
 			    	  // If the value is "nocreate", the associated file must exist at "open".
 			    	  if(!file.exists()) throw new SimulaRuntimeError("File access mode=noCreate but File \""+file+"\" does not exist");
-			    	  break;
 			      }
-			      case create:{
+			      case create -> {
 					  //System.out.println("FILE$.doCreateAction: Create on "+file);
 			    	  // If the value is "create", the external file associated with FILENAME
 			    	  // must not exist at "open" (if it does, "open" returns false);
@@ -258,9 +256,8 @@ public class FILE$ extends CLASS$ {
 				    	  boolean success=file.createNewFile();
 				    	  if(!success) throw new SimulaRuntimeError("File access mode=Create but couldn't create a new empty file: "+file);
 			    	  }
-			    	  break;
 			      }
-			      case anyCreate:{
+			      case anyCreate -> {
 					  //System.out.println("FILE$.doCreateAction: anyCreate on "+file+", "+file.getAbsolutePath());
 			    	  // The value "anycreate" implies that if the file does exist
 			    	  // at "open" the file is opened, otherwise a new file is created.
@@ -268,7 +265,7 @@ public class FILE$ extends CLASS$ {
 			    		  boolean success=file.createNewFile();
 			    		  //System.out.println("FILE$.doCreateAction: Create on "+file+", success="+success);
 			    		  if(!success) throw new SimulaRuntimeError("File access mode=anyCreate but couldn't create a new empty file: "+file);
-			    	  } break;
+			    	  }
 			      }
 			}
 		} catch (IOException e) {	}
