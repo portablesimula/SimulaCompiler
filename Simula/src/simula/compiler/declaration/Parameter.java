@@ -48,7 +48,7 @@ public final class Parameter extends Declaration implements Externalizable {
 	// ***********************************************************************************************
 	public void into(final Vector<Parameter> parameterList) {
 		for (Parameter par : parameterList)
-			if (par.identifier.equalsIgnoreCase(this.identifier)) {
+			if (Util.equals(par.identifier, this.identifier)) {
 				Util.error("Parameter already defined: " + identifier);
 				return;
 			}

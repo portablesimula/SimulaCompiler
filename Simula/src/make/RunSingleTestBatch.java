@@ -33,7 +33,7 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -175,7 +175,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
 		//names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
 		//names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
-		names.add("simtst127.sim"); // OK: Switch (character) Statement
+		//names.add("simtst127.sim"); // OK: Switch (character) Statement
 		//names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
 		//names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
 		//names.add("simtst129.sim"); // OK: Switch in precompiled class
@@ -198,6 +198,7 @@ public final class RunSingleTestBatch {
 		Option.INLINE_TESTING=true;
 		Option.verbose = true;//false;
 		Option.WARNINGS=true;
+		Option.CASE_SENSITIVE=true;
 
 		// Overall TRACING Options
 		Option.TRACING=false;//true;

@@ -58,11 +58,11 @@ public class Linkage$ extends CLASS$ {
     }
 
 	public Link$ suc() {
-		return ((SUC instanceof Link$) ? (Link$) SUC : null);
+		return ((SUC instanceof Link$ suc) ? suc : null);
 	}
 
 	public Link$ pred() {
-		return ((PRED instanceof Link$) ? (((Link$) (PRED))) : null);
+		return ((PRED instanceof Link$ pred) ? pred : null);
 	}
 
 	public Linkage$ prev() {

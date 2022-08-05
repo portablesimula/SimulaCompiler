@@ -99,12 +99,12 @@ public abstract class Declaration extends SyntaxClass {
 	    
     	if(parameterList!=null) {
     		for(Declaration decl:parameterList)
-    			if(decl.identifier.equalsIgnoreCase(identifier)) { warning=true; break;}
+    			if(Util.equals(decl.identifier, identifier)) { warning=true; break;}
     	}
    LOOP:for(Declaration decl:declaredIn.declarationList) {
     		if(decl==null) return; // Error recovery
     		if(decl.identifier==null) return; // Error recovery
-    		if(decl.identifier.equalsIgnoreCase(identifier)) {
+    		if(Util.equals(decl.identifier, identifier)) {
     			error=true; break LOOP;
     		}    	
     	}

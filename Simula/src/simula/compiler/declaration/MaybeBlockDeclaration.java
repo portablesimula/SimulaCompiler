@@ -132,12 +132,12 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);
-			if (ident.equalsIgnoreCase(declaration.identifier))
+			if (Util.equals(ident, declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
 		}
 		for (LabelDeclaration label : labelList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Label "+label);
-			if (ident.equalsIgnoreCase(label.identifier))
+			if (Util.equals(ident, label.identifier))
 				return (new Meaning(label, this, this, false));
 		}
 		if(Option.TRACE_FIND>0) Util.message("ENDOF Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");

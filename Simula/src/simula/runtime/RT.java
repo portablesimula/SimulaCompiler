@@ -198,7 +198,7 @@ public final class RT {
 	
 	public static void warning(final String msg) {
 		printWarning("Simula Runtime Warning: "+msg);
-		printSimulaStackTrace(0);
+		//printSimulaStackTrace(0);
 	}
   
 	public static void TRACE(final String msg) {

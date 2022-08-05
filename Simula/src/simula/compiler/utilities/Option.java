@@ -28,6 +28,7 @@ public final class Option {
 	public static boolean INLINE_TESTING = false; 
 	public static boolean verbose = false; 
 	public static boolean WARNINGS=true;
+	public static boolean CASE_SENSITIVE=false;
 
 	// Overall TRACING Options
 	public static boolean TRACING=false;

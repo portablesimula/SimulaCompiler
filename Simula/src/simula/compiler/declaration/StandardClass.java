@@ -991,7 +991,7 @@ public final class StandardClass extends ClassDeclaration
 	  if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Standard Class "+identifier+" for "+ident+" ================================== "+identifier+" ==================================");
 	  for(Declaration declaration:declarationList) {
 		  if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration.identifier);
-		  if(ident.equalsIgnoreCase(declaration.identifier)) {
+		  if(Util.equals(ident, declaration.identifier)) {
 			  return(new Meaning(declaration,this));
 		  }
     	}
@@ -1004,7 +1004,7 @@ public final class StandardClass extends ClassDeclaration
   @Override
   public Meaning findRemoteAttributeMeaning(String ident) {
 	  for(Declaration declaration:declarationList)
-		  if(ident.equalsIgnoreCase(declaration.identifier))
+		  if(Util.equals(ident, declaration.identifier))
 			  return(new Meaning(declaration,this));
 	  ClassDeclaration prfx=getPrefixClass();
 	  if(prfx!=null) return(prfx.findRemoteAttributeMeaning(ident));

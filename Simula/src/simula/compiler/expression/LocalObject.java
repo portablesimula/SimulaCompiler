@@ -88,17 +88,17 @@ public final class LocalObject extends Expression {
 		thisScope=Global.getCurrentScope();
 		while(thisScope!=null) {
 			if (thisScope instanceof ClassDeclaration x) {
-				if (classIdentifier.equalsIgnoreCase(thisScope.identifier)) return;// (thisScope);
+				if (Util.equals(classIdentifier, thisScope.identifier)) return;
 				while ((x = x.getPrefixClass()) != null) {
-					if (classIdentifier.equalsIgnoreCase(x.identifier)) {
+					if (Util.equals(classIdentifier, x.identifier)) {
 						return;// (thisScope);
 					}
 				}
 			} else if (thisScope instanceof ConnectionBlock z) {
 				ClassDeclaration x = (ClassDeclaration) z.classDeclaration;
-				if (classIdentifier.equalsIgnoreCase(x.identifier)) return;// (z);
+				if (Util.equals(classIdentifier, x.identifier)) return;
 				while ((x = x.getPrefixClass()) != null) {
-					if (classIdentifier.equalsIgnoreCase(x.identifier)) return;// (z);
+					if (Util.equals(classIdentifier, x.identifier)) return;
 				}
 			}
 			if(thisScope.declarationKind != Declaration.Kind.CompoundStatement

@@ -219,8 +219,7 @@ public class Drawing$ extends Simset$ {
 	        // Render to graphics
 			Link$ lnk=RENDERING_SET.first();
 			while(lnk!=null) {
-				if(lnk instanceof Drawing$.Animable)
-					((Drawing$.Animable)lnk).paint(g);
+				if(lnk instanceof Drawing$.Animable l) l.paint(g);
 			    lnk=lnk.suc();
 			}
 			graphics.dispose();

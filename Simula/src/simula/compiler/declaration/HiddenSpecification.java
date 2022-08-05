@@ -87,7 +87,7 @@ public final class HiddenSpecification implements Externalizable {
 	// ***********************************************************************************************
 	private static HiddenSpecification findHidden(final ClassDeclaration scope,final String ident)
 	{ for(HiddenSpecification hdn:scope.hiddenList)
-		if(ident.equalsIgnoreCase(hdn.identifier)) return(hdn);
+		if(Util.equals(ident, hdn.identifier)) return(hdn);
 	  return(null);
 	}
 

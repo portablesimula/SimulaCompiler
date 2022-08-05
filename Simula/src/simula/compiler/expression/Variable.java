@@ -147,7 +147,7 @@ public final class Variable extends Expression {
 		Declaration declaredAs=getMeaning().declaredAs;
 		if(declaredAs!=null) this.type=declaredAs.type;
 		if(meaning.declaredAs instanceof StandardProcedure)	{
-		    if(identifier.equalsIgnoreCase("detach")) {
+		    if(Util.equals(identifier, "detach")) {
 		        if(meaning.declaredIn instanceof ConnectionBlock conn) conn.classDeclaration.detachUsed=true;
 		        else if(meaning.declaredIn instanceof ClassDeclaration cdecl) cdecl.detachUsed=true;
 		        else Util.error("Variable("+identifier+").doChecking:INTERNAL ERROR, "+meaning.declaredIn.getClass().getSimpleName());
@@ -381,8 +381,7 @@ public final class Variable extends Expression {
 		
    	    case ContextFreeMethod:
     	    // Standard Library Procedure
-   	    	if(identifier.equalsIgnoreCase("sourceline"))
-   	    		return(""+Global.sourceLineNumber);
+   	    	if(Util.equals(identifier, "sourceline")) return(""+Global.sourceLineNumber);
    	    	if(destination) return("RESULT$");
    	    	return(CallProcedure.asStaticMethod(this,true));
    	    	

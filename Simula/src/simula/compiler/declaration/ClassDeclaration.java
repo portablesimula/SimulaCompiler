@@ -170,7 +170,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			String identifier = expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
-				if (identifier.equalsIgnoreCase(par.identifier)) {
+				if (Util.equals(identifier, par.identifier)) {
 					parameter = par;
 					break;
 				}
@@ -206,7 +206,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			String identifier = expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
-				if (identifier.equalsIgnoreCase(par.identifier)) { parameter = par;	break; }
+				if (Util.equals(identifier, par.identifier)) { parameter = par; break; }
 			if (parameter == null) {
 				Util.error("Identifier " + identifier + " is not defined in this scope");
 				parameter = new Parameter(identifier);
@@ -342,7 +342,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	public VirtualSpecification searchVirtualSpecList(final String ident) {
 		for (VirtualSpecification virtual : virtualSpecList) {
-			if (ident.equalsIgnoreCase(virtual.identifier)) return (virtual);
+			if (Util.equals(ident, virtual.identifier)) return (virtual);
 		} return (null);
 	}
 
@@ -387,25 +387,24 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		for (Parameter parameter : parameterList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Parameter "+parameter);
-			if (ident.equalsIgnoreCase(parameter.identifier)) return (parameter);
+			if (Util.equals(ident, parameter.identifier)) return (parameter);
 		}
 		for (Declaration declaration : declarationList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);
-			if (ident.equalsIgnoreCase(declaration.identifier))	return (declaration);
+			if (Util.equals(ident, declaration.identifier))	return (declaration);
 		}
 		for (LabelDeclaration label : labelList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Label "+label);
-			if (ident.equalsIgnoreCase(label.identifier)) return (label);
+			if (Util.equals(ident, label.identifier)) return (label);
 		}
 		for (VirtualMatch match : virtualMatchList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Match "+match);
-			if (ident.equalsIgnoreCase(match.identifier)) return (match);
+			if (Util.equals(ident, match.identifier)) return (match);
 		}
 		for (VirtualSpecification virtual : virtualSpecList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Virtual "+virtual);
-			if (ident.equalsIgnoreCase(virtual.identifier))	return (virtual);
+			if (Util.equals(ident, virtual.identifier))	return (virtual);
 		}
-		// if(ident.equalsIgnoreCase("P")) Util.BREAK("ClassDeclaration("+identifier+").findLocalAttribute("+ident+"): NOT FOUND");
 		if(Option.TRACE_FIND>0) Util.message("ENDOF Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		return (null);
 	}
@@ -415,7 +414,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	public ProcedureDeclaration findLocalProcedure(final String ident) {
 		for (Declaration decl : declarationList)
-			if (ident.equalsIgnoreCase(decl.identifier)) {
+			if (Util.equals(ident, decl.identifier)) {
 				if (decl instanceof ProcedureDeclaration proc) return (proc);
 				else return (null);
 			}
@@ -459,7 +458,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	public ProtectedSpecification searchProtectedList(final String ident) {
 		for (ProtectedSpecification pct : protectedList)
-			if (ident.equalsIgnoreCase(pct.identifier))	return (pct);
+			if (Util.equals(ident, pct.identifier)) return (pct);
 		return (null);
 	}
 
@@ -520,7 +519,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	HiddenSpecification searchHiddenList(final String ident) {
 		for (HiddenSpecification hdn : hiddenList)
-			if (ident.equalsIgnoreCase(hdn.identifier))	return (hdn);
+			if (Util.equals(ident, hdn.identifier)) return (hdn);
 		return (null);
 	}
 
@@ -550,7 +549,7 @@ SEARCH: while (scope != null) {
 		if (prfx != null) {
 			noPrefix = false;
 			String prfxString = prfx.identifier;
-			if (prfxString.equalsIgnoreCase("CLASS")) noPrefix = true;
+			if (Util.equals(prfxString, "CLASS")) noPrefix = true;
 		}
 		return (noPrefix);
 	}

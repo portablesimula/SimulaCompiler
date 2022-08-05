@@ -59,7 +59,7 @@ public abstract class DeclarationScope extends Declaration {
     // ***********************************************************************************************
     public Meaning findLabelMeaning(final String identifier) {
     	for(LabelDeclaration dcl:labelList) {
-    		if(dcl.identifier.equalsIgnoreCase(identifier)) {
+    		if(Util.equals(dcl.identifier, identifier)) {
 				return (new Meaning(dcl, this, this, false));
     		}
     	}
@@ -73,7 +73,7 @@ public abstract class DeclarationScope extends Declaration {
 	public ProcedureDeclaration findProcedure(final String identifier) {
 		DeclarationScope scope=this;
 		while(scope!=null) {
-			if(identifier.equalsIgnoreCase(scope.identifier)) {
+			if(Util.equals(identifier, scope.identifier)) {
 				if(scope instanceof ProcedureDeclaration proc) return(proc);
 	    		return(null);
 			}

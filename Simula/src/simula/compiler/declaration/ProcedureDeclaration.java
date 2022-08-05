@@ -125,7 +125,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			String identifier = expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
-				if (identifier.equalsIgnoreCase(par.identifier)) {
+				if (Util.equals(identifier, par.identifier)) {
 					parameter = par;
 					break;
 				}
@@ -169,7 +169,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			String identifier = expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
-				if (identifier.equalsIgnoreCase(par.identifier)) { parameter = par;	break; }
+				if (Util.equals(identifier,par.identifier)) { parameter = par; break; }
 			if (parameter == null) {
 				Util.error("Identifier " + identifier + " is not defined in this scope");
 				parameter = new Parameter(identifier);
@@ -241,17 +241,17 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);
-			if (ident.equalsIgnoreCase(declaration.identifier))
+			if (Util.equals(ident, declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
 		}
 		for (Parameter parameter : parameterList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Parameter "+parameter);
-			if (ident.equalsIgnoreCase(parameter.identifier))
+			if (Util.equals(ident, parameter.identifier))
 				return (new Meaning(parameter, this, this, false));
 		}
 		for (LabelDeclaration label : labelList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Label "+label);
-			if (ident.equalsIgnoreCase(label.identifier))
+			if (Util.equals(ident, label.identifier))
 				return (new Meaning(label, this, this, false));
 		}
 		if(Option.TRACE_FIND>0) Util.message("ENDOF Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
