@@ -10,257 +10,257 @@
 %  WRITTEN BY:    THE  16/09-83
 %  REWRITTEN BY:  BEH  08/07-86
 % ====================================================================
-BEGIN
-BOOLEAN            result; !To contain the result of the;
+begin
+boolean            result; !To contain the result of the;
                            ! various boolean expressions;
-BOOLEAN          b1,b2,b3; ! b1-b3 always TRUE  ;
-BOOLEAN          b4,b5,b6; ! b4-b6 always FALSE ;
+boolean          b1,b2,b3; ! b1-b3 always true  ;
+boolean          b4,b5,b6; ! b4-b6 always false ;
 
-BOOLEAN       found_error;  ! set TRUE if error found;
-BOOLEAN verbose=false;
+boolean       found_error;  ! set true if error found;
+boolean verbose=false;
 
 if verbose then begin
-outtext ("--- START Simula a.s. TEST 2"); Outimage;
-outtext ("--- Test Boolean operators"); outimage; Outimage;
+outtext ("--- START Simula a.s. TEST 2"); outimage;
+outtext ("--- Test Boolean operators"); outimage; outimage;
 end;
 
-b1 := TRUE;
-b2 := IF b1 THEN b1 ELSE FALSE;
-b3 := IF b2 THEN b1 ELSE FALSE;
+b1 := true;
+b2 := if b1 then b1 else false;
+b3 := if b2 then b1 else false;
 
                             !*****************************;
                             ! Check that all variables   ;
                             ! have correct value.        ;
                             !*****************************;
-IF b1 THEN
-ELSE
-   BEGIN
+if b1 then
+else
+   begin
    outtext ("*** error :  Wrong value assigned to the variable b1.");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-IF b2 THEN
-ELSE
-   BEGIN
+if b2 then
+else
+   begin
    outtext ("*** error :  Wrong value assigned to the variable b2.");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-IF b3 THEN
-ELSE
-   BEGIN
+if b3 then
+else
+   begin
    outtext ("*** error :  Wrong value assigned to the variable b3.");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-IF b4 THEN
-   BEGIN
+if b4 then
+   begin
    outtext ("*** error :  Wrong value assigned to the variable b4.");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-IF b5 THEN
-   BEGIN
+if b5 then
+   begin
    outtext ("*** error :  Wrong value assigned to the variable b5.");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-IF b6 THEN
-   BEGIN
+if b6 then
+   begin
    outtext ("*** error :  Wrong value assigned to the variable b6.");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
                              !*****************************;
                              ! First test simple          ;
                              ! expressions with 'and'.    ;
-result := b1 AND b2;        !*****************************;
+result := b1 and b2;        !*****************************;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'and' (1).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b1 AND b4;
+result := b1 and b4;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'and' (2).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b6 AND b3;
+result := b6 and b3;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'and' (3).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b4 AND b5;
+result := b4 and b5;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'and' (4).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
                              !*****************************;
                              ! Then try simple expressions;
                              ! with 'or'.                 ;
-result := b1 OR b2;         !*****************************;
+result := b1 or b2;         !*****************************;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'or' (1).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b1 OR b4;
+result := b1 or b4;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'or' (2).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b6 OR b3;
+result := b6 or b3;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'or' (3).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b4 OR b5;
+result := b4 or b5;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'or' (4).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
                                        !*****************************;
                                        ! Test simple expressions    ;
                                        ! with 'not'.                ;
                                        !*****************************;
-result := NOT b1;
+result := not b1;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'not' did not give expected result (1).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := NOT b6;
+result := not b6;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'not' (2).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
                                        !*****************************;
                                        ! Test simple expressions    ;
                                        ! with 'imp'.                ;
                                        !*****************************;
-result := b1 IMP b2;
+result := b1 imp b2;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'imp' (1).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b1 IMP b4;
+result := b1 imp b4;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'imp' (2).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b6 IMP b3;
+result := b6 imp b3;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'imp' (3).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b4 IMP b5;
+result := b4 imp b5;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'imp' (4).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
                                        !*****************************;
                                        ! Test simple expressions    ;
                                        ! with 'eqv'.                ;
                                        !*****************************;
-result := b1 EQV b2;
+result := b1 eqv b2;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'eqv' (1).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b1 EQV b4;
+result := b1 eqv b4;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'eqv' (2).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b6 EQV b3;
+result := b6 eqv b3;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  'eqv' (3).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b4 EQV b5;
+result := b4 eqv b5;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  'eqv' (4).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
                                        !*****************************;
                                        ! Test simple expression with;
                                        ! and then.                  ;
@@ -268,13 +268,13 @@ ELSE
 
 result := b1 and then b2;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error : 'and then' (1).");
    outimage;
    found_error := true
-   END;
+   end;
 
 result := b1 and then b6;
 
@@ -352,124 +352,124 @@ end;
                                        ! Now try some more complex  ;
                                        ! expressions.               ;
                                        !*****************************;
-result := b1 AND b2 OR b3 AND b4;
+result := b1 and b2 or b3 and b4;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  Boolean expr. (1).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := NOT b1 OR b2;
+result := not b1 or b2;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  Boolean expr. (2).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := NOT b6 AND b5;
+result := not b6 and b5;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  Boolean expr. (3).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
 
-result := b4 EQV b5 IMP b1;
+result := b4 eqv b5 imp b1;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  Boolean expr. (4).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b1 AND b5 EQV b6 OR b1;
+result := b1 and b5 eqv b6 or b1;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  Boolean expr. (5).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
                                        ! ********* NOTE 1 ***********;
 
-result := NOT (NOT (NOT (NOT (NOT (NOT (NOT b6))))));
+result := not (not (not (not (not (not (not b6))))));
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  Boolean expr. (6).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := b1 IMP b2 IMP b3 IMP b4;
+result := b1 imp b2 imp b3 imp b4;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  Boolean expr. (7).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := (b4 AND b1 EQV b5 OR b6) IMP b1 AND NOT b6;
+result := (b4 and b1 eqv b5 or b6) imp b1 and not b6;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  Boolean expr. (8).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := IF b1 THEN
-             (IF b6 THEN
+result := if b1 then
+             (if b6 then
                  b1
-              ELSE
-                 IF b1 THEN
+              else
+                 if b1 then
                     b6
-                 ELSE
+                 else
                     b1)
-          ELSE
+          else
              b1;
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  Boolean expr. (9).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := IF b1 THEN b2 ELSE b5 AND b6;
+result := if b1 then b2 else b5 and b6;
 
-IF result THEN
-ELSE
-   BEGIN
+if result then
+else
+   begin
    outtext ("*** error :  Boolean expr. (10).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
-result := NOT b1 EQV b2 AND b3 IMP (IF IF b1 THEN b1 ELSE b6 THEN
-                                       b1 AND b2 OR b1 AND b6 IMP b2
-                                    ELSE
-                                       b1 EQV NOT (b1 AND b2 IMP b2));
+result := not b1 eqv b2 and b3 imp (if if b1 then b1 else b6 then
+                                       b1 and b2 or b1 and b6 imp b2
+                                    else
+                                       b1 eqv not (b1 and b2 imp b2));
 
-IF result THEN
-   BEGIN
+if result then
+   begin
    outtext ("*** error :  Boolean expr. (11).");
    outimage;
-   found_error := TRUE
-   END;
+   found_error := true
+   end;
 
 result := b4 or else b2 and b6;
 
@@ -500,11 +500,11 @@ begin
    found_error := true
 end;
 
-IF found_error THEN  ELSE
+if found_error then  else
    begin outtext ("--- NO ERRORS FOUND IN TEST 2"); end;
 if verbose then begin
-outtext ("--- END Simula a.s. TEST 2");
+outtext ("--- end Simula a.s. TEST 2");
 outimage;
 end;
 
-END of program;
+end of program;

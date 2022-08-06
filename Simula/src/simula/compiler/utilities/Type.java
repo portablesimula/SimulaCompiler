@@ -47,7 +47,9 @@ public class Type implements Externalizable {
 
 	public Type(String className) {
 		if(className==null) className="UNKNOWN"; // Error recovery
-		this.key=new Token(KeyWord.REF,className.toUpperCase());
+		if(Option.CASE_SENSITIVE)
+			 this.key=new Token(KeyWord.REF,className);
+		else this.key=new Token(KeyWord.REF,className.toUpperCase());
 	}
 	
 	public static void printTypeMap(String title) {
@@ -236,7 +238,7 @@ public class Type implements Externalizable {
 	@Override
 	public String toString() {
 		if(key==null) return("null");
-		if(key.getKeyWord()==KeyWord.REF) return("Ref("+key.getValue()+')');
+		if(key.getKeyWord()==KeyWord.REF) return("ref("+key.getValue()+')');
 		if(this.equals(LongReal)) return("LONG REAL"); 
 		return(key.toString());
 	}

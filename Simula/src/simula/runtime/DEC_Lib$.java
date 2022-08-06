@@ -640,15 +640,15 @@ public class DEC_Lib$ extends CLASS$ {
      *
 	 */
 	public static TXT$ initem(FILE$ f) {
-		if(f instanceof InFile$ | f instanceof DirectFile$) {
-			ImageFile$ F=(ImageFile$)f;
+		if(f instanceof infile$ | f instanceof directfile$) {
+			imagefile$ F=(imagefile$)f;
 			if(!F.lastitem()) return(GETITEM(F.image));
-		} else if(f instanceof InbyteFile$) {
-			InbyteFile$ F=(InbyteFile$)f;
+		} else if(f instanceof inbytefile$) {
+			inbytefile$ F=(inbytefile$)f;
 			int b=9; while(b==' ' | b==9) b=F.inbyte();
 			return(new TXT$(""+(char)b));
-		} else if(f instanceof DirectByteFile$) {
-			DirectByteFile$ F=(DirectByteFile$)f;
+		} else if(f instanceof directbytefile$) {
+			directbytefile$ F=(directbytefile$)f;
 			int b=9; while(b==' ' | b==9) b=F.inbyte();
 			return(new TXT$(""+(char)b));
 		}
@@ -685,7 +685,7 @@ public class DEC_Lib$ extends CLASS$ {
      *     end;
      * end;
 	 */
-	public static int linecount(PrintFile$ pf) {
+	public static int linecount(printfile$ pf) {
 		if(pf==null) return(-1);
 		if(!pf.isopen()) return(-2);
 		return(pf.LINES_PER_PAGE$);	

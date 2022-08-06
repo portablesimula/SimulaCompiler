@@ -52,17 +52,17 @@ import java.io.Reader;
  * @author Øystein Myhre Andersen
  *
  */
-public class InFile$ extends ImageFile$ {
+public class infile$ extends imagefile$ {
 	private BufferedReader lineReader;
 
 	// Constructor
-	public InFile$(RTObject$ staticLink,TXT$ FILENAME) {
+	public infile$(RTObject$ staticLink,TXT$ FILENAME) {
 		super(staticLink,FILENAME);
 		ENDFILE$=true;
 	}
 
 	// Class Statements
-	public InFile$ STM$() {
+	public infile$ STM$() {
 		EBLK();
 		return(this);
 	}

@@ -72,7 +72,7 @@ import java.io.OutputStreamWriter;
  * @author Øystein Myhre Andersen
  *
  */
-public class PrintFile$ extends OutFile$ {
+public class printfile$ extends outfile$ {
 	private int DEFAULT_LINES_PER_PAGE$=66;
 	public int LINES_PER_PAGE$=66;
 	private int SPACING$=1;
@@ -80,12 +80,12 @@ public class PrintFile$ extends OutFile$ {
 	private int PAGE$; // TODO:
 
 	// Constructor
-    public PrintFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    public printfile$(final RTObject$ staticLink,final TXT$ FILENAME) {
     	super(staticLink,FILENAME);
     }
     
     // Class Statements
-    public PrintFile$ STM$() {
+    public printfile$ STM$() {
         EBLK();
         return(this);
     }

@@ -36,17 +36,17 @@ import java.io.OutputStream;
  * @author Øystein Myhre Andersen
  *
  */
-public class OutbyteFile$ extends ByteFile$ {
+public class outbytefile$ extends bytefile$ {
 	private OutputStream outputStream;
 
 	// Constructor
-    public OutbyteFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    public outbytefile$(final RTObject$ staticLink,final TXT$ FILENAME) {
     	super(staticLink,FILENAME);
 		//System.out.println("new OutbyteFile$: FILENAME$="+FILENAME$);
     }
     
     // Class Statements
-    public OutbyteFile$ STM$() {
+    public outbytefile$ STM$() {
         if(FILENAME$==null)	throw new SimulaRuntimeError("Illegal File Name: null");
         EBLK();
         return(this);

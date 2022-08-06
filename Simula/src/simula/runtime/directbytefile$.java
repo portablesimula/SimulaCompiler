@@ -52,7 +52,7 @@ import java.nio.channels.FileLock;
  * @author Øystein Myhre Andersen
  *
  */
-public class DirectByteFile$ extends ByteFile$ {
+public class directbytefile$ extends bytefile$ {
 
 	/**
 	 * In this implementation LOC is maintained by the underlying file system.
@@ -77,12 +77,12 @@ public class DirectByteFile$ extends ByteFile$ {
 	private FileLock fileLock;
 
 	// Constructor
-    public DirectByteFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    public directbytefile$(final RTObject$ staticLink,final TXT$ FILENAME) {
       super(staticLink,FILENAME);
   	  CREATE$=CreateAction$.noCreate; // Default for Direct-type files
     }
     // Class Statements
-    public DirectByteFile$ STM$() {
+    public directbytefile$ STM$() {
         EBLK();
         return(this);
     }

@@ -43,7 +43,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class ImageFile$ extends FILE$ {
+public class imagefile$ extends FILE$ {
 	
 	/**
 	 * 
@@ -59,12 +59,12 @@ public class ImageFile$ extends FILE$ {
 	protected boolean ENDFILE$ = true;
 
 	// Constructor
-	public ImageFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+	public imagefile$(final RTObject$ staticLink,final TXT$ FILENAME) {
 		super(staticLink,FILENAME);
 	}
    
 	// Class Statements
-	public ImageFile$ STM$() {
+	public imagefile$ STM$() {
 		EBLK();
 		return(this);
 	}

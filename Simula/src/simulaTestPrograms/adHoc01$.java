@@ -6,9 +6,9 @@ import simula.runtime.*;
 public final class adHoc01$ extends BASICIO$ {
     // SubBlock: Kind=SimulaProgram, BlockLevel=1, firstLine=2, lastLine=50, hasLocalClasses=false, System=false
     // Declare locals as attributes
-    public OutbyteFile$ oupt=null;
+    public outbytefile$ oupt=null;
     // JavaLine 10 <== SourceLine 3
-    public InbyteFile$ inpt=null;
+    public inbytefile$ inpt=null;
     // Normal Constructor
     public adHoc01$(RTObject$ staticLink) {
         super(staticLink);
@@ -19,7 +19,7 @@ public final class adHoc01$ extends BASICIO$ {
     // SimulaProgram Statements
     public RTObject$ STM$() {
         // JavaLine 21 <== SourceLine 27
-        oupt=new OutbyteFile$(((BASICIO$)CTX$),new TXT$("TestFile")).STM$();
+        oupt=new outbytefile$(((BASICIO$)CTX$),new TXT$("TestFile")).STM$();
         ;
         // JavaLine 24 <== SourceLine 28
         oupt.open();
@@ -39,7 +39,7 @@ public final class adHoc01$ extends BASICIO$ {
         sysout().outimage();
         ;
         // JavaLine 41 <== SourceLine 34
-        inpt=new InbyteFile$(((BASICIO$)CTX$),new TXT$("TestFile")).STM$();
+        inpt=new inbytefile$(((BASICIO$)CTX$),new TXT$("TestFile")).STM$();
         ;
         // JavaLine 44 <== SourceLine 35
         inpt.open();
@@ -65,7 +65,7 @@ public final class adHoc01$ extends BASICIO$ {
         sysout().outimage();
         ;
         // JavaLine 67 <== SourceLine 43
-        inpt=new InbyteFile$(((BASICIO$)CTX$),new TXT$("TestFile")).STM$();
+        inpt=new inbytefile$(((BASICIO$)CTX$),new TXT$("TestFile")).STM$();
         ;
         // JavaLine 70 <== SourceLine 44
         inpt.open();

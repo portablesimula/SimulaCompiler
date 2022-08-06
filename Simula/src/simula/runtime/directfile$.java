@@ -65,7 +65,7 @@ import java.nio.channels.FileLock;
  * @author Øystein Myhre Andersen
  *
  */
-public class DirectFile$ extends ImageFile$ {
+public class directfile$ extends imagefile$ {
 
 	/**
 	 * The variable LOC contains the current ordinal number. When the file is
@@ -99,13 +99,13 @@ public class DirectFile$ extends ImageFile$ {
 	private FileLock fileLock;
 
 	// Constructor
-    public DirectFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    public directfile$(final RTObject$ staticLink,final TXT$ FILENAME) {
     	super(staticLink,FILENAME);
   	    CREATE$=CreateAction$.noCreate; // Default for Direct-type files
     }
     
     // Class Statements
-    public DirectFile$ STM$() {
+    public directfile$ STM$() {
         EBLK();
         return(this);
     }

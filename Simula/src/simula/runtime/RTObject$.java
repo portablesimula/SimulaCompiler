@@ -21,10 +21,10 @@ public abstract class RTObject$ {
 	// BASICIO
 	static final int INPUT_LINELENGTH_ = 80;
 	static final int OUTPUT_LINELENGTH_ = 132;
-	static InFile$ SYSIN$;
-	public static PrintFile$ SYSOUT$;
-	public static InFile$ sysin() { return (SYSIN$); }
-	public static PrintFile$ sysout() { return (SYSOUT$); }
+	static infile$ SYSIN$;
+	public static printfile$ SYSOUT$;
+	public static infile$ sysin() { return (SYSIN$); }
+	public static printfile$ sysout() { return (SYSOUT$); }
 	private static long startTimeMs;
 
 	// QPS
@@ -742,8 +742,8 @@ public abstract class RTObject$ {
 				RT.console = new RTConsolePanel();
 				RT.console.popup();
 			}
-			SYSIN$ = new InFile$(this, new TXT$("SYSIN"));
-			SYSOUT$ = new PrintFile$(this, new TXT$("SYSOUT"));
+			SYSIN$ = new infile$(this, new TXT$("SYSIN"));
+			SYSOUT$ = new printfile$(this, new TXT$("SYSOUT"));
 			SYSIN$.open(blanks(INPUT_LINELENGTH_));
 			SYSOUT$.open(blanks(OUTPUT_LINELENGTH_));
 		}

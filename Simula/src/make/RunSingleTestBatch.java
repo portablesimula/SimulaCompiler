@@ -33,7 +33,7 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
 		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -121,7 +121,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
 		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
-		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
+		names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
 		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 		//names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
@@ -198,7 +198,7 @@ public final class RunSingleTestBatch {
 		Option.INLINE_TESTING=true;
 		Option.verbose = true;//false;
 		Option.WARNINGS=true;
-		Option.CASE_SENSITIVE=true;
+//		Option.CASE_SENSITIVE=true;
 
 		// Overall TRACING Options
 		Option.TRACING=false;//true;

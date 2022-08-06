@@ -47,16 +47,16 @@ import java.io.Writer;
  * @author Øystein Myhre Andersen
  *
  */
-public class OutFile$ extends ImageFile$ {
+public class outfile$ extends imagefile$ {
 	protected Writer writer;
 
 	// Constructor
-	public OutFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+	public outfile$(final RTObject$ staticLink,final TXT$ FILENAME) {
 		super(staticLink,FILENAME);
 	}
 
 	// Class Statements
-	public OutFile$ STM$() {
+	public outfile$ STM$() {
 		EBLK();
 		return(this);
 	}

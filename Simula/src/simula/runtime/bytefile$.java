@@ -29,18 +29,18 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class ByteFile$ extends FILE$ {
+public class bytefile$ extends FILE$ {
 	protected int BYTESIZE$;
 
 	public int bytesize() {	return (BYTESIZE$);	}
 
 	// Constructor
-    public ByteFile$(final RTObject$ staticLink,final TXT$ FILENAME) {
+    public bytefile$(final RTObject$ staticLink,final TXT$ FILENAME) {
       super(staticLink,FILENAME);
     }
     
     // Class Statements
-    public ByteFile$ STM$() {
+    public bytefile$ STM$() {
         if(FILENAME$==null)
         	throw new SimulaRuntimeError("Illegal File Name");
         EBLK();
