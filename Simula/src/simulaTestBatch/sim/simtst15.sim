@@ -6,19 +6,11 @@
 %
 %  WRITTEN BY:  BEH   11/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(15,"--- Test the text generation procedures copy and blanks.") begin
 
    text t1, t2;
-
-if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 15");
-   Outimage;
-   Outtext ("--- Test the text generation procedures copy and blanks.");
-   Outimage; Outimage;
-end;
-
    t1 :- blanks (0);
 
    if     t1 == notext
@@ -28,16 +20,14 @@ end;
       and t1.constant then
    else
    begin
-      Outtext ("*** error : Text procedure Blanks (1).");
-      Outimage;
-      Outtext ("            Erroneus values :");
-      Outtext ("            ");
-      Outint (t1.start, 3);
-      Outint (t1.length, 3);
-      Outint (t1.pos, 3);
-      Outtext (if t1.more then " true" else " false");
-      Outimage; outimage;
-      found_error := true
+      err ("*** error : Text procedure Blanks (1).");
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outint (t1.start, 3);
+      outint (t1.length, 3);
+      outint (t1.pos, 3);
+      outtext (if t1.more then " true" else " false");
+      outimage; outimage;
    end;
 
    t1 :- blanks (5);
@@ -51,23 +41,21 @@ end;
       and t1.main.length = t2.length then
    else
    begin
-      Outtext ("*** error : Text procedure Blanks (2).");
-      Outimage;
-      Outtext ("            Erroneus values :");
-      Outtext ("            ");
-      Outint (t1.start, 3);
-      Outint (t1.length, 3);
-      Outint (t1.pos, 3);
-      Outtext (if t1.more then " true" else " false");
-      Outimage; outimage;
-      Outtext ("            Erroneus values :");
-      Outtext ("            ");
-      Outint (t2.start, 3);
-      Outint (t2.length, 3);
-      Outint (t2.pos, 3);
-      Outtext (if t2.more then " true" else " false");
-      Outimage; outimage;
-      found_error := true
+      err ("*** error : Text procedure Blanks (2).");
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outint (t1.start, 3);
+      outint (t1.length, 3);
+      outint (t1.pos, 3);
+      outtext (if t1.more then " true" else " false");
+      outimage; outimage;
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outint (t2.start, 3);
+      outint (t2.length, 3);
+      outint (t2.pos, 3);
+      outtext (if t2.more then " true" else " false");
+      outimage; outimage;
    end;
 
 
@@ -85,23 +73,21 @@ end;
       and t2.main.length = 4 then
    else
    begin
-      Outtext ("*** error : Text procedure Copy (3).");
-      Outimage;
-      Outtext ("            Erroneus values :");
-      Outtext ("            ");
-      Outint (t1.start, 3);
-      Outint (t1.length, 3);
-      Outint (t1.pos, 3);
-      Outtext (if t1.more then " true" else " false");
-      Outimage; outimage;
-      Outtext ("            Erroneus values :");
-      Outtext ("            ");
-      Outint (t2.start, 3);
-      Outint (t2.length, 3);
-      Outint (t2.pos, 3);
-      Outtext (if t2.more then " true" else " false");
-      Outimage; outimage;
-      found_error := true
+      err ("*** error : Text procedure Copy (3).");
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outint (t1.start, 3);
+      outint (t1.length, 3);
+      outint (t1.pos, 3);
+      outtext (if t1.more then " true" else " false");
+      outimage; outimage;
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outint (t2.start, 3);
+      outint (t2.length, 3);
+      outint (t2.pos, 3);
+      outtext (if t2.more then " true" else " false");
+      outimage; outimage;
    end;
 
    t1 :- copy (blanks (4));
@@ -116,35 +102,22 @@ end;
       and t1.pos = 1 then
    else
    begin
-      Outtext ("*** error : Text procedure Copy (4).");
-      Outimage;
-      Outtext ("            Erroneus values :");
-      Outtext ("            ");
-      Outint (t1.start, 3);
-      Outint (t1.length, 3);
-      Outint (t1.pos, 3);
-      Outtext (if t1.more then " true" else " false");
-      Outimage; outimage;
-      Outtext ("            Erroneus values :");
-      Outtext ("            ");
-      Outint (t2.start, 3);
-      Outint (t2.length, 3);
-      Outint (t2.pos, 3);
-      Outtext (if t2.more then " true" else " false");
-      Outimage; outimage;
-      found_error := true
+      err ("*** error : Text procedure Copy (4).");
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outint (t1.start, 3);
+      outint (t1.length, 3);
+      outint (t1.pos, 3);
+      outtext (if t1.more then " true" else " false");
+      outimage; outimage;
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outint (t2.start, 3);
+      outint (t2.length, 3);
+      outint (t2.pos, 3);
+      outtext (if t2.more then " true" else " false");
+      outimage; outimage;
    end;
 
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 15");
-   END;
-
-   if verbose then begin
-      Outtext ("--- END Simula a.s. TEST 15");
-      Outimage;
-   end;
    
- END;
+ end;

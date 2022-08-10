@@ -11,11 +11,8 @@ import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
-import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.runtime.RT;
-import simula.runtime.RTObject$.LABQNT$;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -33,22 +30,23 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		//names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
-		//names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
-		//names.add("simtst03.sim"); // OK:  Test Text Value Relations
-		//names.add("simtst04.sim"); // OK:  To test putint and putreal.
-		//names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
-		//names.add("simtst06.sim"); // OK:  Test Mathematical Functions
-		//names.add("simtst07.sim"); // OK:  Test Mathematical Library
-		//names.add("simtst08.sim"); // OK:  Test Scope of Variables.
-		//names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
-		//names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
+		names.add("SimulaTest.sim"); // Simula TestBatch Framework
+//		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+//		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
+//		names.add("simtst03.sim"); // OK:  Test Text Value Relations
+//		names.add("simtst04.sim"); // OK:  To test putint and putreal.
+//		names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
+//		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
+//		names.add("simtst07.sim"); // OK:  Test Mathematical Library
+//		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
+//		names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
+//		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
 
-		//names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
-		//names.add("simtst12.sim"); // OK:  Text value and reference relations.
-		//names.add("simtst13.sim"); // OK:  Text value assignment and text reference assigment.
-		//names.add("simtst14.sim"); // OK:  Text attributes: pos, setpos, more, getchar and putchar.
-		//names.add("simtst15.sim"); // OK:  Text generation procedures copy and blanks.
+		names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
+		names.add("simtst12.sim"); // OK:  Text value and reference relations.
+		names.add("simtst13.sim"); // OK:  Text value assignment and text reference assigment.
+		names.add("simtst14.sim"); // OK:  Text attributes: pos, setpos, more, getchar and putchar.
+		names.add("simtst15.sim"); // OK:  Text generation procedures copy and blanks.
 		//names.add("simtst16.sim"); // OK:  Standard Text procedures sub and strip.
 		//names.add("simtst17.sim"); // OK:  Editing and De-editing
 		//names.add("simtst18.sim"); // OK:  The put- and get-procedures for texts.
@@ -121,7 +119,7 @@ public final class RunSingleTestBatch {
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
 		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
 		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
-		names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
+		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
 		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 		//names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 
@@ -196,29 +194,29 @@ public final class RunSingleTestBatch {
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
-		Option.verbose = true;//false;
+//		Option.verbose = true;
 		Option.WARNINGS=true;
-//		Option.CASE_SENSITIVE=true;
+		Option.CASE_SENSITIVE=true;
 
 		// Overall TRACING Options
-		Option.TRACING=false;//true;
-		Option.BREAKING=false; //true; 
+//		Option.TRACING=true;
+//		Option.BREAKING=true; 
 
 		// Scanner Trace Options
-		Option.TRACE_SCAN=false;//true;
-		Option.TRACE_COMMENTS=false;//true;
+//		Option.TRACE_SCAN=true;
+//		Option.TRACE_COMMENTS=true;
 
 		// Parser Trace Options
-		Option.TRACE_PARSE=false;//true;
-		Option.TRACE_ATTRIBUTE_OUTPUT=true;
-		Option.TRACE_ATTRIBUTE_INPUT=true;
+//		Option.TRACE_PARSE=true;
+//		Option.TRACE_ATTRIBUTE_OUTPUT=true;
+//		Option.TRACE_ATTRIBUTE_INPUT=true;
 
 		// Checker Trace Options
-		Option.TRACE_CHECKER=false;//true;
-		Option.TRACE_CHECKER_OUTPUT=false;//true;
+//		Option.TRACE_CHECKER=true;
+//		Option.TRACE_CHECKER_OUTPUT=true;
 
 		// Coder Trace Options
-		Option.TRACE_CODING=false;//true;
+//		Option.TRACE_CODING=true;
 
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
@@ -226,23 +224,16 @@ public final class RunSingleTestBatch {
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.
-		RTOption.VERBOSE = true;//false; //true;
-		RTOption.DEBUGGING = false;
-		RTOption.USE_CONSOLE=false;//true;//false;
-		RTOption.CODE_STEP_TRACING = false;
-		RTOption.BLOCK_TRACING = false;
-		RTOption.GOTO_TRACING = false;
-		RTOption.THREAD_TRACING = false;
-		RTOption.QPS_TRACING = false;
-		RTOption.SML_TRACING = false;
-		RTOption.USE_VIRTUAL_THREAD=false;
-		
-		System.out.println(RT.SPORT_Option.SPORT_SysInsertDirName+"===============================================================================");
-		RT.SPORT_Option.SPORT_SysInsertDirName="ABRA";
-		System.out.println(RT.SPORT_Option.SPORT_SysInsertDirName+"===============================================================================");
-//		System.out.println(RT.SPORT_SysInsertDirName+"===============================================================================");
-//		RT.SPORT_SysInsertDirName="ABRA";
-//		System.out.println(RT.SPORT_SysInsertDirName+"===============================================================================");
+//		RTOption.VERBOSE = true;
+//		RTOption.DEBUGGING = true;
+//		RTOption.USE_CONSOLE=true;
+//		RTOption.CODE_STEP_TRACING = true;
+//		RTOption.BLOCK_TRACING = true;
+//		RTOption.GOTO_TRACING = true;
+//		RTOption.THREAD_TRACING = true;
+//		RTOption.QPS_TRACING = true;
+//		RTOption.SML_TRACING = true;
+//		RTOption.USE_VIRTUAL_THREAD=false;
 
 		for(String name:names) {
 			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
@@ -250,7 +241,6 @@ public final class RunSingleTestBatch {
 			try { SimulaCompiler compiler = new SimulaCompiler(fileName);
 				  compiler.doCompile();
 			}
-			catch(LABQNT$ q) { q.printStackTrace(); }
 			catch(Throwable t) { System.err.println("ERROR: "+t.getMessage()); t.printStackTrace(); }
 		}
 	}

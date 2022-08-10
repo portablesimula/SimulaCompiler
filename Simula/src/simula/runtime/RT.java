@@ -45,7 +45,7 @@ public final class RT {
 	public static class SPORT_Option {
 	    public static String ModuleName="ModuleName";
 		public static String SourceDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts";
-		public static String SPORT_SysInsertDirName="CCCC:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
+		public static String SPORT_SysInsertDirName="C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
 //		public static String SCodeDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\scode";
 //		public static String TempDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\temp";
 //		public static String SourceFileName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\RT.DEF";

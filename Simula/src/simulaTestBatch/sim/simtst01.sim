@@ -9,56 +9,36 @@
 %
 %  WRITTEN BY:  THE  16/09-83
 % ====================================================================
-begin
-boolean found_error;       ! Set to true if error in test;
-boolean verbose=false;
+external class SimulaTest;
 
-if verbose then
-begin outtext("--- START Simula a.s. TEST 1 ");
-      outimage;
-      outtext("--- Simple test of conditional statements");
-      outimage; outimage;
-end;
+SimulaTest(1,"--- Simple test of conditional statements") begin
 
-if true then
-else begin
-     outtext("*** error: (1)"); outimage; found_error := true end;
-
-if false then begin
-     outtext("*** error: (2)"); outimage; found_error := true end;
-
-if false then begin
-     outtext("*** error: (3)"); outimage; found_error := true end
-else;
+if true then else error("*** error: (1)");
+if false then error("*** error: (2)");
+if false then error("*** error: (3)") else;
 
 if true then begin
    if true then begin
       if true then begin
-         if false then begin
-            outtext("*** error: (4)"); outimage; found_error := true end
+         if false then error("*** error: (4)");
       end
-      else begin
-         outtext("*** error: (5)"); outimage; found_error := true end
+      else error("*** error: (5)");
    end
-   else begin
-      outtext("*** error: (6)"); outimage; found_error := true end
+   else error("*** error: (6)");
 end
-else begin
-   outtext("*** error: (7)"); outimage; found_error := true end
+else 
+   error("*** error: (7)");
 ;
 
-     if false then begin
-        outtext("*** error: (8)"); outimage; found_error := true end
+     if false then error("*** error: (8)")
 else if true then begin
-        if false then begin
-           outtext("*** error: (9)"); outimage; found_error := true end
+        if false then error("*** error: (9)");
      end
-else begin
-        outtext("*** error: (10)"); outimage; found_error := true end
+else error("*** error: (10)");
 ;
 
-if if if true then false else true then true else false then begin
-   outtext("*** error: (11)"); outimage; found_error := true end
+if if if true then false else true then true else false then 
+   error("*** error: (11)");
 ;
 
 if if true then
@@ -66,15 +46,7 @@ if if true then
    else
       if false then true else false
 then
-else begin
-   outtext("*** error: (12)"); outimage; found_error := true end
+else error("*** error: (12)");
 ;
-
-
-if found_error then  else
-   begin outtext("--- NO ERRORS FOUND IN TEST 1"); end;
-   
-if verbose then
-begin outtext("--- END Simula a.s. TEST 1"); outimage; end;
 
 end of program;

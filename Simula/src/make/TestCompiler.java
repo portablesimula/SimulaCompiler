@@ -67,7 +67,7 @@ public final class TestCompiler {
 		// String name="/samples/JensensDevice.sim";
 		// String name="/samples/LiftSimulation.sim";
 		// String name="/samples/PrimeUnder.sim";
-		 String name="/samples/Sudoku.sim";
+		// String name="/samples/Sudoku.sim";
 		// String name="/samples/SudokuPuzzle.sim";
 		// String name="/samples/TQueens.sim";
 
@@ -162,7 +162,7 @@ public final class TestCompiler {
 //		String name="/FECTest/fecTest.sim";
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		// String name="/simple/adHoc00.sim";
+		 String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";

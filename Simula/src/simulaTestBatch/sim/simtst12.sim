@@ -9,21 +9,13 @@
 %
 %  WRITTEN BY:  BEH   10/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
-   text t1, t2 ;
+external class SimulaTest;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 12") ;
-   Outimage ;
-   Outtext ("--- Test the text value and reference relations.") ;
-   Outimage; Outimage;
-   end;
-                                                !******************************;
-                                                ! Test of text value relations ;
-                                                !******************************;
+SimulaTest(12,"--- Test text value and reference relations.") begin
 
+   text t1, t2;
+
+   !**** Test of text value relations;
 
    if     t1 = notext
       and t2 = ""
@@ -32,63 +24,43 @@ BEGIN
       and t1 >= t2
       and "123" > ""
       and not t1 <> t2 then
-   else
-   begin
-      Outtext ("*** error : Text value relation (1).") ;
-      Outimage ;
-      found_error := true ;
-   end ;
+   else err ("*** error : Text value relation (1).");
 
-   t1 :- "abc" ;
+   t1 :- "abc";
 
    if     t1 = "abc"
       and t2 < t1
       and "" <= t1
       and t1 >= notext
       and t1 > ""         then
-   else
-   begin
-      Outtext ("*** error : Text value relation (2).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text value relation (2).");
 
 
-   t2 :- "abc" ;
+   t2 :- "abc";
 
    if     t1 = t2
       and "" < t2
       and t2 <= t1
       and t2 >= t1
       and (not (t2 > "abc")) then
-   else
-   begin
-      Outtext ("*** error : Text value relation (3).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text value relation (3).");
 
 
-   t2 :- "abc " ;
+   t2 :- "abc ";
 
    if (not (t1 = t2))
       and t1 < t2
       and "aaa" <= t2
       and t2 >= "abbcd"
       and t2 > notext then
-   else
-   begin
-      Outtext ("*** error : Text value relation (4).") ;
-      Outimage ;
-      found_error := true
-   end ;
-
+   else err ("*** error : Text value relation (4).");
+ 
                                                 !******************************;
-                                                ! Test of text reference       ;
+                                                ! Test of text reference      ;
                                                 !******************************;
 
-   t1 :- notext ;
-   t2 :- notext ;
+   t1 :- notext;
+   t2 :- notext;
 
    if     t1 == notext
       and t2 == t1
@@ -98,56 +70,25 @@ BEGIN
       and t1.main == t2.main
       and t2.main.length = t1.main.length
       and t1.start = 1 then
-   else
-   begin
-      Outtext ("*** error : Text reference relation (5).") ;
-      Outimage ;
-      found_error := true
-   end ;
-
-   t1 :- "abc" ;
+   else err ("*** error : Text reference relation (5).");
+ 
+   t1 :- "abc";
 
    if     t1 =/= t2
       and t1 == t1.main then
-   else
-   begin
-      Outtext ("*** error : Text reference relation (6).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text reference relation (6).");
 
-   t2 :- "abc" ;
+   t2 :- "abc";
 
    if     t1 =/= t2
       and not t1 == t2
       and t1 = t2 then
-   else
-   begin
-      Outtext ("*** error : Text reference relation (7).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text reference relation (7).");
 
-   t2 :- t1 ;
+   t2 :- t1;
 
    if     t1 == t2
       and t1 = t2 then
-   else
-   begin
-      Outtext ("*** error : Text reference relation (8).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text reference relation (8).");
 
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 12") ;
-   END ;
-
-   if verbose then begin
-      Outtext ("--- END Simula a.s. TEST 12") ;
-      Outimage;
-   end;
- END;
+ end;

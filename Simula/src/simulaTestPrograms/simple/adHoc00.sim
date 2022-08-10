@@ -1,33 +1,10 @@
-Simulation Begin
-   ref(C1) a,b,c;
-   ref(C2) x,y,z;
-         
-   procedure trace(msg); text msg; begin
-   	  outtext("Simulated time " & edfix(time,2) & ": " & msg); outimage;
-   end;
-
-   Process Class C1;
-   Begin
-      trace("Begin C1");
-   	  activate x after current;
-   End;
-
-
-   Process Class C2;
-   Begin
-   		
-   End;
+Begin
+   outtext("AB"
+   "CDE"); outimage;
    
+      outtext("AB
+   CDE"); outimage;
    
-   a:-new C1;
-   b:-new C1;
-   c:-new C1;
-   x:-new C2;
-   y:-new C2;
-   z:-new C2;
+   outtext("!345!"); outimage;
    
-   activate a;  
-   activate y at 200;  
-   activate z at 140;  
-   hold(400);
 End;

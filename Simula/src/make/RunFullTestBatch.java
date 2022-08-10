@@ -27,6 +27,7 @@ public final class RunFullTestBatch {
 
 	public static void main(String[] args) {
 		Vector<String> names=new Vector<String>();
+		names.add("SimulaTest.sim"); // Simula TestBatch Framework
 		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements
 		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 		names.add("simtst03.sim"); // OK:  Test Text Value Relations

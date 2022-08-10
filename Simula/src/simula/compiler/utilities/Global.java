@@ -24,6 +24,7 @@ import javax.swing.ImageIcon;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
 import simula.compiler.declaration.DeclarationScope;
+import simula.compiler.editor.RTOption;
 
 /**
  * Global Variables 
@@ -149,7 +150,10 @@ public final class Global {
 	
 	private static File getSimulaPropertiesFile() {
 		File javaClassPath=new File(System.getProperty("java.class.path"));
-		if(Option.INLINE_TESTING) System.out.println("INLINE_TESTING");
+		if(Option.INLINE_TESTING) {
+			if(RTOption.USE_VIRTUAL_THREAD) System.out.print("USE_VIRTUAL_THREAD, ");
+			System.out.println("INLINE_TESTING");
+		}
 		if(javaClassPath.exists()) {
 			simulaHome=javaClassPath.getParentFile();
 			simulaPropertiesFile=new File(simulaHome,"simulaProperties.xml");

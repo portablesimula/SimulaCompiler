@@ -39,7 +39,7 @@ public final class CompileFEC {
 //		names.add("BUILDER2.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\BUILDER2.jar
 		
 //		names.add("CHECKER1.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\CHECKER1.jar
-		names.add("CHECKER2.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\CHECKER2.jar
+//		names.add("CHECKER2.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\CHECKER2.jar
 //		names.add("SCODER0.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER0.jar
 //		names.add("SCODER1.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER1.jar
 //		names.add("SCODER1E.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER1E.jar	
@@ -52,7 +52,7 @@ public final class CompileFEC {
 //		names.add("GENMSG.sim");            // WILL GENERATE FILE MessageGenerator.sim
 //		names.add("MessageGenerator.sim");  // WILL GENERATE ERROR MESSAGE FILE FECERROR.txt
 		
-//		names.add("FECMAIN.sim");  // WILL CREATE THE S-PORT COMPILER
+		names.add("FECMAIN.sim");  // WILL CREATE THE S-PORT COMPILER
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
@@ -86,6 +86,7 @@ public final class CompileFEC {
 		for(String name:names) {
 //			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
 			String fileName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/"+name;
+			System.out.println("Compile: "+fileName);
 			SimulaCompiler compiler = new SimulaCompiler(fileName);
 			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
 			compiler.doCompile();

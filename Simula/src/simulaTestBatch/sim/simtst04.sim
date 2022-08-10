@@ -25,45 +25,35 @@
 %    CORR. BY:  PJE  3/6 86 to conformance with SIMULA Standard.
 %    CORR. BY:  MYH  25/3 2018 improved reports.
 %  ====================================================================
-BEGIN
-INTEGER            found_error;     ! Set to number of errors found. ;
-BOOLEAN verbose;
+external class SimulaTest;
 
-TEXT               txt;             ! Text to use the editing and;
+SimulaTest(4,"--- Test reading numbers from source text") begin
+
+text               txt;             ! text to use the editing and;
                                     ! de-editing procedures on.  ;
 
-INTEGER            intr;             ! To be used in the procedures;
-SHORT INTEGER      sho;             ! To be used in the procedures;
-REAL               rea;             ! To be used in the procedures;
-LONG REAL          lon;             ! To be used in the procedures;
+integer            intr;             ! To be used in the procedures;
+short integer      sho;             ! To be used in the procedures;
+real               rea;             ! To be used in the procedures;
+long real          lon;             ! To be used in the procedures;
 
-INTEGER            realprecision;   ! To contain the precision for;
-INTEGER            longprecision;   ! reals and long reals       ;
+integer            realprecision;   ! To contain the precision for;
+integer            longprecision;   ! reals and long reals       ;
                                     ! respectively.              ;
 
 procedure test(msg,result,expected); text msg,result,expected;
 begin
-IF result <> expected THEN  !*** NOTE 5 ***;
-   BEGIN
-   outtext ("*** error :  In "); outtext (msg);
-   outimage;
-   outtext (" - the following result is wrong: ");
-   outchar('"'); outtext (txt); outchar('"');
-   outimage;
-   outtext (" -               expected result: ");
-   outchar('"'); outtext (expected); outchar('"');
-   outimage;
-   found_error := found_error + 1
-   END;
+if result <> expected then  !*** NOTE 5 ***;
+   begin
+      err ("*** error :  In " & msg);
+      outtext (" - the following result is wrong: ");
+      outchar('"'); outtext (txt); outchar('"'); outimage;
+      outtext (" -               expected result: ");
+      outchar('"'); outtext (expected); outchar('"'); outimage;
+--   found_error := true;
+   end;
 end;
 
-
-if verbose then begin
-outtext ("--- START Simula a.s. TEST 4");
-Outimage;
-outtext ("--- Test reading numbers from source text");
-Outimage; Outimage;
-end;
 
 txt :- blanks (30);
 
@@ -392,11 +382,4 @@ txt.putreal (lon, longprecision);
 test("long real operation (16).",txt,"       -1.797693134862315&+308");
 
 
-IF found_error > 0 THEN Outint(found_error,4) ELSE Outtext ("--- NO");
-Outtext (" ERRORS FOUND IN TEST 4");
-if verbose then begin
-outtext ("--- END Simula a.s. TEST 4");
-outimage;
-end;
-
-END of program;
+end of program;

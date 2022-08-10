@@ -604,9 +604,11 @@ public final class SimulaScanner extends DefaultScanner {
     private Token scanTextConstant() {
     	if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant, "+edcurrent());
     	StringBuilder accumulatedTextConstant=new StringBuilder();
-    	int firstLine=Global.sourceLineNumber;
-    	int lastLine=firstLine;
+//    	int firstLine=Global.sourceLineNumber;
+//    	int lastLine=firstLine;
     	LOOP:while(true) {
+        	int firstLine=Global.sourceLineNumber;
+        	int lastLine=firstLine;
     		// Scan simple-string:
     		while(getNext() != '"') {
     			if(current=='!') accumulatedTextConstant.append((char)scanPossibleIsoCode());
@@ -708,7 +710,8 @@ public final class SimulaScanner extends DefaultScanner {
 						if (Option.TRACE_SCAN) Util.TRACE("scanPossibleIsoCode:Got three digits: "+(char)firstchar+(char)secondchar+(char)thirdchar+"value="+value);
 						if (value < 256)
 							return (value);
-						Util.warning("ISO-Code " + value + " is out of range (0:255)");
+						Util.warning("ISO-Code " + value + " is out of range (0:255)"
+							+" interpreted as an ordinary sequence of characters: !" +value + "!  See Simula Standard 1.6");
 						pushBack(current);
 						pushBack(thirdchar);
 						pushBack(secondchar);

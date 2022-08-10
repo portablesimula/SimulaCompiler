@@ -143,7 +143,7 @@ public final class Parser {
 		}
 		if(Parser.currentToken.getKeyWord()==KeyWord.IDENTIFIER)
 			if(Parser.prevToken!=null && Parser.prevToken.getKeyWord()==KeyWord.IDENTIFIER) {
-				Util.error("Misplaced identifier "+Parser.currentToken+" directly after "+Parser.prevToken+" - Ignored");
+				Util.error("Misplaced identifier "+Parser.currentToken+" directly after the identifier "+Parser.prevToken+" - Ignored");
 		        nextSymb();
 			}
 	}

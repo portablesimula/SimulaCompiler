@@ -14,23 +14,16 @@
 %
 %  REWRITTEN AND COMMENTED BY:   BEH  09/07-86
 % ===============================================================
-begin
+external class SimulaTest;
+
+SimulaTest(6,"--- Test of math. functions") begin
 
 class testmatlib;
 begin
-
-    Boolean found_error;
-    Boolean verbose=false;
     long real maxlongdig;
 
     procedure error (t); value t; text t;
-    begin
-          outtext ("*** Error in the ");
-          outtext (t);
-          outtext (" routine");
-          outimage;
-          found_error:= true;
-    end of procedure error;
+    begin err (t & " routine"); end;
 
 
     boolean procedure realdiff (x, y); long real x, y;
@@ -116,7 +109,7 @@ begin
     procedure testipower (b, e); integer b, e;
     begin
        long real x, y, z, r;
-       Boolean n;
+       boolean n;
 
        r:= b;
        if b<>0 and e<>0 then
@@ -276,33 +269,17 @@ begin
 
     maxlongdig:= 10.0&&17;
 
-    if verbose then begin
-    Outtext ("--- START Simula a.s. TEST 6");
-    Outimage;
-    Outtext ("--- Test of math. functions");
-    Outimage; Outimage;
-	end;
-	
-    inner;
-
-    IF found_error THEN  ELSE
-       begin Outtext ("--- NO ERRORS FOUND IN TEST 6");  end;
-    if verbose then begin   
-    outtext ("--- END Simula a.s. TEST 6");
-    outimage;
-    end;
-
 end of class testmatlib;
 
 testmatlib
 begin integer i, j, k, u1, u2; long real x, y;
-    Long Real limexp=7.09782712893384&&2; ! ln(maxlongreal);
-    Integer Ipowbaselim=215,          
+    long real limexp=7.09782712893384&&2; ! ln(maxlongreal);
+    integer Ipowbaselim=215,          
             Ipowexplim=4;               ! base**exp<maxint;
-    Long Real Lpowbaselim=1.844674407370955&&19,
+    long real Lpowbaselim=1.844674407370955&&19,
               Lpowexplim=1.60&&1;       ! base**exp<maxlongreal;
-    Long Real Twopi = 6.2831853&&0;
-    Long Real Pihalf= 1.5707963&&0;
+    long real Twopi = 6.2831853&&0;
+    long real Pihalf= 1.5707963&&0;
     long real hlexp;
     u1:=  455470314;                    ! Start values chosen to avoid;
     u2:= 2011455689;                    ! dependent series;

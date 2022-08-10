@@ -9,20 +9,11 @@
 %
 %  WRITTEN BY:  BEH  10/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   text t1, t2 ;
+SimulaTest(11,"--- Text Attributes constant, start, length, pos and main") begin
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 11") ;
-   Outimage ;
-   Outtext ("--- Test the text attributes constant, start, length,") ;
-   Outimage ;
-   Outtext ("--- pos and main.") ;
-   Outimage ; Outimage ;
-   end;
+   text t1, t2;
 
    if     t1.constant
       and t1.start = 1
@@ -35,26 +26,17 @@ BEGIN
       and t1.main.start = 1 then
    else
    begin
-      Outtext ("*** error : Text attributes (1)") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext (if t1.constant then "            true" else "            false");
-      Outint (t1.start, 3) ;
-      Outint (t1.length, 3) ;
-      Outint (t1.pos, 3) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1.main) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err ("*** error : Text attributes (1)");
+      outtext ("            Erroneus values : "); outimage;
+      outtext (if t1.constant then "            true" else "            false");
+      outint (t1.start, 3); outint (t1.length, 3);
+      outint (t1.pos, 3); outimage;
+      outtext ("            "); outtext (t1); outimage;
+      outtext ("            "); outtext (t1.main); outimage;
+   end;
 
 
-   t1 :- copy ("abcd") ;
+   t1 :- copy ("abcd");
 
    if not ( t1.constant
       and t1.start = 1
@@ -67,26 +49,16 @@ BEGIN
       and t1.main.start = 1 ) then
    else
    begin
-      Outtext ("*** error : Text attributes (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext (if t1.constant then "            true" else "            false");
-      Outint (t1.start, 3) ;
-      Outint (t1.length, 3) ;
-      Outint (t1.pos, 3) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1.main) ;
-      Outimage ;
-      found_error := true
-   end ;
+      outtext ("*** error : Text attributes (2).");
+      outtext ("            Erroneus values : "); outimage;
+      outtext (if t1.constant then "            true" else "            false");
+      outint (t1.start, 3); outint (t1.length, 3); outint (t1.pos, 3); outimage;
+      outtext ("            "); outtext (t1); outimage;
+      outtext ("            "); outtext (t1.main); outimage;
+   end;
 
 
-   t1 := "123" ;
+   t1 := "123";
 
    if not ( t1.constant
       and t1.start = 1
@@ -99,26 +71,16 @@ BEGIN
       and t1.main.start = 1 ) then
    else
    begin
-      Outtext ("*** error : Text attributes (3).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext (if t1.constant then "            true" else "            false");
-      Outint (t1.start, 3) ;
-      Outint (t1.length, 3) ;
-      Outint (t1.pos, 3) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1.main) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err ("*** error : Text attributes (3).");
+      outtext ("            Erroneus values : "); outimage;
+      outtext (if t1.constant then "            true" else "            false");
+      outint (t1.start, 3); outint (t1.length, 3); outint (t1.pos, 3); outimage;
+      outtext ("            "); outtext (t1); outimage;
+      outtext ("            "); outtext (t1.main); outimage;
+   end;
 
 
-   t2 :- t1 ;
+   t2 :- t1;
 
    if not ( t2.constant
       and t2.start = 1
@@ -128,26 +90,16 @@ BEGIN
       and t2.main = "123 " ) then
    else
    begin
-      Outtext ("*** error : Text attributes (4).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext (if t2.constant then "            true" else "            false");
-      Outint (t2.start, 3) ;
-      Outint (t2.length, 3) ;
-      Outint (t2.pos, 3) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t2) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t2.main) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err ("*** error : Text attributes (4).");
+      outtext ("            Erroneus values : "); outimage;
+      outtext (if t2.constant then "            true" else "            false");
+      outint (t2.start, 3); outint (t2.length, 3); outint (t2.pos, 3); outimage;
+      outtext ("            "); outtext (t2); outimage;
+      outtext ("            "); outtext (t2.main); outimage;
+   end;
 
 
-   t1 :- "abcdef" ;
+   t1 :- "abcdef";
 
    if     t1.constant
       and t1.start = 1
@@ -157,25 +109,15 @@ BEGIN
       and t1.main = "abcdef" then
    else
    begin
-      Outtext ("*** error : Text attributes (5).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext (if t1.constant then "            true" else "            false");
-      Outint (t1.start, 3) ;
-      Outint (t1.length, 3) ;
-      Outint (t1.pos, 3) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t1.main) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err ("*** error : Text attributes (5).");
+      outtext ("            Erroneus values : "); outimage;
+      outtext (if t1.constant then "            true" else "            false");
+      outint (t1.start, 3); outint (t1.length, 3); outint (t1.pos, 3); outimage;
+      outtext ("            "); outtext (t1); outimage;
+      outtext ("            "); outtext (t1.main); outimage;
+   end;
 
-   t2 :- t1 ;
+   t2 :- t1;
 
    if     t2.constant
       and t2.start = 1
@@ -185,35 +127,13 @@ BEGIN
       and t2.main = "abcdef" then
    else
    begin
-      Outtext ("*** error : Text attributes (6).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext (if t2.constant then "            true" else "            false");
-      Outint (t2.start, 3) ;
-      Outint (t2.length, 3) ;
-      Outint (t2.pos, 3) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t2) ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outtext (t2.main) ;
-      Outimage ;
-      found_error := true
-   end ;
-
-
-
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 11") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END OF Simula a.s. TEST 11") ;
-   Outimage;
+      err ("Text attributes (6).");
+      outtext ("            Erroneus values : "); outimage;
+      outtext (if t2.constant then "            true" else "            false");
+      outint (t2.start, 3); outint (t2.length, 3); outint (t2.pos, 3); outimage;
+      outtext ("            "); outtext (t2); outimage;
+      outtext ("            "); outtext (t2.main); outimage;
    end;
- END;
+
+
+ end;

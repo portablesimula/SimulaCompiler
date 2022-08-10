@@ -9,92 +9,43 @@
 %
 %  WRITTEN BY:  BEH  10/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose;
+external class SimulaTest;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 10") ;
-   Outimage ;
-   Outtext ("--- Test the evaluation of text constants.") ;
-   Outimage ; Outimage ;
-   end;
+SimulaTest(10,"--- Test the evaluation of text constants.") begin
+
                                                  !*****************************;
                                                  ! Test sequence of simple     ;
                                                  ! strings.                    ;
                                                  !*****************************;
    if "Ab" "cde" = "Abcde" then
-   else
-   begin
-      Outtext ("*** error : Text constant (1).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text constant (1).") ;
 
    if "AB"
            "CDE" = "ABCDE" then
-   else
-   begin
-      Outtext ("*** error : Text constant (2).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text constant (2).") ;
 
-   if "Abcde" = "AB" "cde" then
-   begin
-      Outtext ("*** error : Text constant (3).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   if "Abcde" = "AB" "cde" then err ("*** error : Text constant (3).") ;
                                                  !*****************************;
                                                  ! Test !x!                    ;
                                                  !*****************************;
    if "12!32!45" = "12 45" then
-   else
-   begin
-      Outtext ("*** error : Text constant (4).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text constant (4).") ;
 
    if "!345!" = "!33!345!33!" then
    else
    begin
-      Outtext ("*** error : Text constant (5).") ;
-      Outtext("LHS:"); outtext("!345!");
-      Outtext(", RHS:"); outtext("!33!345!33!");
-      Outimage ;
-      found_error := true
+      err ("*** error : Text constant (5).") ;
+      outtext("    LHS:"); outtext("!345!");
+      outtext(", RHS:"); outtext("!33!345!33!");
    end ;
 
    if "!3" "2!" = "!33!32!33!" then
-   else
-   begin
-      Outtext ("*** error : Text constant (6).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   else err ("*** error : Text constant (6).") ;
 
                                                 !******************************;
                                                 ! Test "" in a string.         ;
                                                 !******************************;
    if "a""b" = "a!34!b" then
-   else
-   begin
-      Outtext ("*** error : Text constant (7).") ;
-      Outimage ;
-      found_error := true
-   end ;
-
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 10") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 10") ;
-   Outimage;
-   end;
- END;
+   else err ("*** error : Text constant (7).") ;
+ 
+ end;

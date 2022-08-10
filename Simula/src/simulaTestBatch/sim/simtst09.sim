@@ -11,172 +11,119 @@
 %
 %  WRITTEN BY:  THE  07/11-83
 % ==========================================================
-BEGIN
-BOOLEAN            found_error;        ! Set to true when errors are ;
-                                       ! found.                      ;
-                                       BOOLEAN verbose=false;
-CHARACTER          c1;                 ! To be compared by the relops;
-CHARACTER          c2;                 ! To be compared by the relops;
+external class SimulaTest;
 
+SimulaTest(9,"--- Test of character relations etc.") begin
 
-if verbose then begin
-Outtext ("--- START Simula a.s. TEST 9");
-Outimage;
-Outtext ("--- Character relations etc.");
-Outimage; Outimage;
-end;
+character          c1;                 ! To be compared by the relops;
+character          c2;                 ! To be compared by the relops;
+
                                        !*****************************;
                                        ! Start testing of rel-ops.   ;
                                        !*****************************;
 c1 := ' ';
 c2 := '!32!';
 
-IF   NOT  c1 EQ ' '
-  OR      c1 LT c2
-  OR NOT  c1 <= c2
-  OR      c1 >  c2
-  OR NOT  c1 >= '!32!'
-  OR      c1 <> c2   THEN
-   BEGIN
-   outtext ("*** error : comparing characters (1).");
-   outimage;
-   found_error := TRUE
-   END;
+if   not  c1 eq ' '
+  or      c1 lt c2
+  or not  c1 <= c2
+  or      c1 >  c2
+  or not  c1 >= '!32!'
+  or      c1 <> c2   then err ("*** error : comparing characters (1).");
 
 c1 := '1';
 c2 := '!55!';
 
-IF        c1 =  c2
-  OR NOT  c1 <  c2
-  OR NOT '6' LE c2
-  OR  '!48!' GT c2
-  OR      c1 >= c2
-  OR NOT  c1 <> c2   THEN
-   BEGIN
-   outtext ("*** error : comparing characters (2).");
-   outimage;
-   found_error := TRUE
-   END;
+if        c1 =  c2
+  or not  c1 <  c2
+  or not '6' le c2
+  or  '!48!' gt c2
+  or      c1 >= c2
+  or not  c1 <> c2   then err ("*** error : comparing characters (2).");
 
-c1 := IF (IF c1 = '1' THEN c1 < '1' ELSE c1 >= '1') THEN 'B' ELSE '!90!';
+c1 := if (if c1 = '1' then c1 < '1' else c1 >= '1') then 'B' else '!90!';
 c2 := 'A';
 
-IF   NOT  c1 =  'Z'
-  OR      c1 <  c2
-  OR      c1 <= c2
-  OR NOT  c1 >  c2
-  OR NOT  c1 GE c2
-  OR  '!75!' NE 'K'  THEN
-   BEGIN
-   outtext ("*** error : comparing characters (3).");
-   outimage;
-   found_error := TRUE
-   END;
+if   not  c1 =  'Z'
+  or      c1 <  c2
+  or      c1 <= c2
+  or not  c1 >  c2
+  or not  c1 ge c2
+  or  '!75!' ne 'K'  then err ("*** error : comparing characters (3).");
+
                                        !*****************************;
                                        ! Test procedure DIGIT.       ;
                                        !*****************************;
 c1 := '0';
 c2 := '!42!';
 
-IF   NOT digit (c1)
-  OR NOT digit ('5')
-  OR NOT digit ('!57!')
-  OR     digit (c2)
-  OR     digit ('a')
-  OR     digit ('!33!')  THEN
-   BEGIN
-   outtext ("*** error : In procedure digit.");
-   outimage;
-   found_error := TRUE
-   END;
+if   not digit (c1)
+  or not digit ('5')
+  or not digit ('!57!')
+  or     digit (c2)
+  or     digit ('a')
+  or     digit ('!33!')  then err ("*** error : In procedure digit.");
+
                                        !*****************************;
                                        ! Test procedure LETTER.      ;
                                        !*****************************;
 c1 := 'd';
 c2 := '!32!';
 
-IF   NOT letter (c1)
-  OR NOT letter ('x')
-  OR NOT letter ('!65!')
-  OR     letter (c2)
-  OR     letter ('1')
-  OR     letter ('!61!')  THEN
-   BEGIN
-   outtext ("*** error : In procedure letter.");
-   outimage;
-   found_error := TRUE
-   END;
+if   not letter (c1)
+  or not letter ('x')
+  or not letter ('!65!')
+  or     letter (c2)
+  or     letter ('1')
+  or     letter ('!61!')  then err ("*** error : In procedure letter.");
+
                                        !*****************************;
                                        ! Test procedure ISORANK.     ;
                                        !*****************************;
 c1 := '!0!';
 c2 := ' ';
 
-IF   isorank (c1) <> 0
-  OR isorank (c2) <> 32
-  OR isorank ('!127!') <> 127
-  OR isorank ('/') <> 47
-  OR isorank (IF isorank (c1) > 0 THEN '9' ELSE '!12!') <> 12   THEN
-   BEGIN
-   outtext ("*** error : In procedure isorank.");
-   outimage;
-   found_error := TRUE
-   END;
+if   isorank (c1) <> 0
+  or isorank (c2) <> 32
+  or isorank ('!127!') <> 127
+  or isorank ('/') <> 47
+  or isorank (if isorank (c1) > 0 then '9' else '!12!') <> 12   then err ("*** error : In procedure isorank.");
+
                                        !*****************************;
                                        ! Test procedure ISOCHAR.     ;
                                        !*****************************;
 c1 := '!127!';
 c2 := '-';
 
-IF   isochar (127) <> c1
-  OR isochar (45) <> c2
-  OR isochar (33) <> '!'
-  OR isochar (isorank (c1)) <> c1
-  OR isochar (IF isochar (62) >= '>' THEN 65 ELSE 32) <> 'A'  THEN
-   BEGIN
-   outtext ("*** error : In procedure isochar.");
-   outimage;
-   found_error := TRUE
-   END;
+if   isochar (127) <> c1
+  or isochar (45) <> c2
+  or isochar (33) <> '!'
+  or isochar (isorank (c1)) <> c1
+  or isochar (if isochar (62) >= '>' then 65 else 32) <> 'A'  then err ("*** error : In procedure isochar.");
+
                                        !*****************************;
                                        ! Test procedure RANK.        ;
                                        !*****************************;
 c1 := '1';
 c2 := '2';
 
-IF   rank (c1) - rank ('0') <> 1
-  OR rank (c2) - rank ('0') <> 2
-  OR rank ('9') - rank ('0') <> 9
-  OR rank ('!55!') - rank ('0') <> 7   THEN
-   BEGIN
-   outtext ("*** error : In procedure rank.");
-   outimage;
-   found_error := TRUE
-   END;
+if   rank (c1) - rank ('0') <> 1
+  or rank (c2) - rank ('0') <> 2
+  or rank ('9') - rank ('0') <> 9
+  or rank ('!55!') - rank ('0') <> 7   then err ("*** error : In procedure rank.");
+
                                        !*****************************;
                                        ! Test procedure CHAR.        ;
                                        !*****************************;
 c1 := 'A';
 c2 := 'Z';
 
-IF   char (rank (c1)) <> c1
-  OR char (rank (c2)) <> c2
-  OR char (rank ('9')) <> '9'
-  OR char (rank ('!55!')) <> '7'
-  OR char (1) >= char (2)
-  OR char (0) > char (rank ('B'))  THEN
-   BEGIN
-   outtext ("*** error : In procedure char.");
-   outimage;
-   found_error := TRUE
-   END;
+if   char (rank (c1)) <> c1
+  or char (rank (c2)) <> c2
+  or char (rank ('9')) <> '9'
+  or char (rank ('!55!')) <> '7'
+  or char (1) >= char (2)
+  or char (0) > char (rank ('B'))  then err ("*** error : In procedure char.");
 
 
-IF found_error THEN  ELSE
-   begin Outtext ("--- NO ERRORS FOUND IN TEST 9");  end;
-if verbose then begin
-outtext ("--- END Simula a.s. TEST 9");
-outimage
-end;
-
-END of program;
+end of program;
