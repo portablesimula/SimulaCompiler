@@ -6,81 +6,55 @@
 %
 %  WRITTEN BY:  BEH   04/08-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   Class A ;
+SimulaTest(61,"--- Test remote access to attributes which are protected.") begin
+
+   class A;
    begin
-      integer i ;
-      integer procedure vai ; vai := i ;
-   end ;
-
-   A Class B ;
-      Protected i ;
-   begin
-      integer i ;
-
-      integer procedure vbi ; vbi := i ;
-
-      procedure p ; x.i := 1 ;
-   end ;
-
-   ref (B) x ;
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 61") ;
-   Outimage ;
-   Outtext ("--- Test remote access to attributes which are protected.") ;
-   Outimage ; Outimage ;
+      integer i;
+      integer procedure vai; vai := i;
    end;
 
-   x :- new B ;
-   x.p ;      ! i.e. B'i := 1 ;
-   x.i := 2 ; ! i.e. A'i := 2 ;
+   A class B;
+      protected i;
+   begin
+      integer i;
+
+      integer procedure vbi; vbi := i;
+
+      procedure p; x.i := 1;
+   end;
+
+   ref(B) x;
+
+   x :- new B;
+   x.p;      ! i.e. B'i := 1;
+   x.i := 2; ! i.e. A'i := 2;
 
    if x.vai = 2 and x.vbi = 1 then
    else
    begin
-      Outtext ("*** error : Visibility of protected attribute (1).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : x.vai = ") ;
-      Outint (x.vai, 4) ;
-      Outimage ;
-      Outtext ("                              x.vbi = ") ;
-      Outint (x.vbi, 4) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err("Visibility of protected attribute(1).");
+      outtext("            Erroneus values : x.vai = ");
+      outint(x.vai, 4); outimage;
+      outtext("                              x.vbi = ");
+      outint(x.vbi, 4); outimage;
+   end;
 
    B begin
-      x.i := 3 ;
-      i := 4 ;
+      x.i := 3;
+      i := 4;
 
       if x.vbi = 3 and vbi = 4 then
       else
       begin
-         Outtext  ("*** error : Visibility of protected attribute (2).") ;
-         Outimage ;
-         Outtext ("             Erroneus values : x.vbi = ") ;
-         Outint (x.vbi, 4) ;
-         Outimage ;
-         Outtext ("                                 vbi = ") ;
-         Outint (vbi, 4) ;
-         Outimage ;
-         found_error := true
-      end ;
-   end ;
+         err("*** error : Visibility of protected attribute(2).");
+         outtext("             Erroneus values : x.vbi = ");
+         outint(x.vbi, 4); outimage;
+         outtext("                                 vbi = ");
+         outint(vbi, 4); outimage;
+      end;
+   end;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 61") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 61") ;
-   Outimage
-   end
-   
- END
+ end;

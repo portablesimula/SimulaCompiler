@@ -14,31 +14,19 @@
 %
 %  WRITTEN BY:   THE  03/11-83
 % ====================================================================
-BEGIN
-BOOLEAN         found_error;    ! Set to true when errors are ;
-                                ! found.                      ;
-BOOLEAN verbose=false;
-TEXT            txt1;           ! To have its attribu. tested.;
-TEXT            txt2;           ! To have its attribu. tested.;
-CHARACTER       cha;
+external class SimulaTest;
 
-INTEGER         maxtext;        ! To contain the max legal    ;
-                                ! text length on your         ;
-                                ! implementation.             ;
+SimulaTest(70,"--- Test the text attributes length, pos, main, setpos,") begin
 
-if verbose then begin
-outtext ("--- START Simula a.s. TEST 70") ;
-outimage ;
-outtext ("--- Test the text attributes length, pos, main, setpos,") ;
-outimage ;
-outtext ("--- more, getchar and putchar, and the reference ") ;
-outtext ("comparators");
-outimage ;
-outtext ("--- == and =/=.") ;
-outimage ; outimage ;
-end;
+text            txt1;           ! To have its attribu. tested.;
+text            txt2;           ! To have its attribu. tested.;
+character       cha;
 
-maxtext := 32000 ;              !********* NOTE 1 ************;
+integer         maxtext;        ! To contain the max legal   ;
+                                ! text length on your        ;
+                                ! implementation.            ;
+
+maxtext := 32000;               !********* NOTE 1 ************;
                                 ! Fill in max length of text  ;
                                 ! constants.                  ;
 
@@ -53,21 +41,20 @@ if    not txt1.constant
    or txt1.length <> 0
    or txt1.pos <> 1    then
 begin
-   outtext ("*** error : in text attributes (1).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt1.constant then "            true"
-                             else "            false");
-   outint (txt1.start, 6) ;
-   outint (txt1.length, 6) ;
-   outint (txt1.pos, 6) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   err("*** error : in text attributes(1).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt1.constant then "            true"
+                            else "            false");
+   outint(txt1.start, 6);
+   outint(txt1.length, 6);
+   outint(txt1.pos, 6);
+   outimage; outimage;
+end;
 
 
-txt2 :- copy ("123456789 ") ;
+txt2 :- copy("123456789 ");
 
 if    txt2.constant
    or txt2.start <> 1
@@ -76,25 +63,24 @@ if    txt2.constant
    or txt2 <> "123456789 "
    or txt2.main <> "123456789 " then
 begin
-   outtext ("*** error : in text attributes (2).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt2.constant then "            true"
-                             else "            false");
-   outint (txt2.start, 6) ;
-   outint (txt2.length, 6) ;
-   outint (txt2.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2.main) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   err("*** error : in text attributes(2).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt2.constant then "            true"
+                            else "            false");
+   outint(txt2.start, 6);
+   outint(txt2.length, 6);
+   outint(txt2.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt2);
+   outimage;
+   outtext("            "); outtext(txt2.main);
+   outimage; outimage;
+end;
 
 
-txt2 := "abcdefg" ;
+txt2 := "abcdefg";
 
 if    txt2.constant
    or txt2.start <> 1
@@ -103,25 +89,24 @@ if    txt2.constant
    or txt2 <> "abcdefg   "
    or txt2.main <> "abcdefg   " then
 begin
-   outtext ("*** error : in text attributes (3).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt2.constant then "            true"
-                             else "            false");
-   outint (txt2.start, 6) ;
-   outint (txt2.length, 6) ;
-   outint (txt2.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2.main) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   err("*** error : in text attributes(3).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt2.constant then "            true"
+                            else "            false");
+   outint(txt2.start, 6);
+   outint(txt2.length, 6);
+   outint(txt2.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt2);
+   outimage;
+   outtext("            "); outtext(txt2.main);
+   outimage; outimage;
+end;
 
 
-txt1 :- "12345" ;
+txt1 :- "12345";
 
 if not txt1.constant
    or txt1.start <> 1
@@ -130,24 +115,23 @@ if not txt1.constant
    or txt1 <> "12345"
    or txt1.main <> "12345" then
 begin
-   outtext ("*** error : in text attributes (4).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt1.constant then "            true"
-                             else "            false");
-   outint (txt1.start, 6) ;
-   outint (txt1.length, 6) ;
-   outint (txt1.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt1) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt1.main) ;
-   outimage ; outimage ;
-   found_error := true end ;
+   err("*** error : in text attributes(4).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt1.constant then "            true"
+                            else "            false");
+   outint(txt1.start, 6);
+   outint(txt1.length, 6);
+   outint(txt1.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt1);
+   outimage;
+   outtext("            "); outtext(txt1.main);
+   outimage; outimage;
                                 !*****************************;
                                 ! Test of setpos              ;
-txt2.setpos (5) ;               !*****************************;
+txt2.setpos(5);                 !*****************************;
 
 if    txt2.constant
    or txt2.start <> 1
@@ -156,25 +140,24 @@ if    txt2.constant
    or txt2 <> "abcdefg   "
    or txt2.main <> "abcdefg   " then
 begin
-   outtext ("*** error : in text attributes (5).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt2.constant then "            true"
-                             else "            false");
-   outint (txt2.start, 6) ;
-   outint (txt2.length, 6) ;
-   outint (txt2.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2.main) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   err("*** error : in text attributes(5).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt2.constant then "            true"
+                            else "            false");
+   outint(txt2.start, 6);
+   outint(txt2.length, 6);
+   outint(txt2.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt2);
+   outimage;
+   outtext("            "); outtext(txt2.main);
+   outimage; outimage;
+end;
 
 
-txt2.setpos (txt2.pos - 3) ;
+txt2.setpos(txt2.pos - 3);
 
 if    txt2.constant
    or txt2.start <> 1
@@ -183,25 +166,24 @@ if    txt2.constant
    or txt2 <> "abcdefg   "
    or txt2.main <> "abcdefg   " then
 begin
-   outtext ("*** error : in text attributes (6).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt2.constant then "            true"
+   err("*** error : in text attributes(6).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt2.constant then "            true"
                              else "            false");
-   outint (txt2.start, 6) ;
-   outint (txt2.length, 6) ;
-   outint (txt2.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2.main) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   outint(txt2.start, 6);
+   outint(txt2.length, 6);
+   outint(txt2.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt2);
+   outimage;
+   outtext("            "); outtext(txt2.main);
+   outimage; outimage;
+end;
 
 
-txt2.setpos (-2) ;
+txt2.setpos(-2);
 
 if    txt2.constant
    or txt2.start <> 1
@@ -210,26 +192,25 @@ if    txt2.constant
    or txt2 <> "abcdefg   "
    or txt2.main <> "abcdefg   " then
 begin
-   outtext ("*** error : in text attributes (7).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt2.constant then "            true"
-                             else "            false");
-   outint (txt2.start, 6) ;
-   outint (txt2.length, 6) ;
-   outint (txt2.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2.main) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   err("*** error : in text attributes(7).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt2.constant then "            true"
+                            else "            false");
+   outint(txt2.start, 6);
+   outint(txt2.length, 6);
+   outint(txt2.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt2);
+   outimage;
+   outtext("            "); outtext(txt2.main);
+   outimage; outimage;
+end;
 
 
 
-txt2.setpos (12) ;
+txt2.setpos(12);
 
 if    txt2.constant
    or txt2.start <> 1
@@ -238,28 +219,27 @@ if    txt2.constant
    or txt2 <> "abcdefg   "
    or txt2.main <> "abcdefg   " then
 begin
-   outtext ("*** error : in text attributes (8).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt2.constant then "            true"
-                             else "            false");
-   outint (txt2.start, 6) ;
-   outint (txt2.length, 6) ;
-   outint (txt2.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt2.main) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   err("*** error : in text attributes(8).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt2.constant then "            true"
+                            else "            false");
+   outint(txt2.start, 6);
+   outint(txt2.length, 6);
+   outint(txt2.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt2);
+   outimage;
+   outtext("            "); outtext(txt2.main);
+   outimage; outimage;
+end;
 
 
 
 
                                 !*****************************;
-txt1 :- copy ("abcd") ;         ! Test of more and getchar    ;
+txt1 :- copy("abcd");           ! Test of more and getchar    ;
                                 !*****************************;
 if    not txt1.more or txt1.pos <> 1
    or txt1.getchar <> 'a' or not txt1.more or txt1.pos <> 2
@@ -273,30 +253,29 @@ if    not txt1.more or txt1.pos <> 1
    or txt1 <> "abcd"
    or txt1.main <> "abcd" then
 begin
-   outtext ("*** error : in text attributes (9).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt1.constant then "            true"
-                             else "            false");
-   outint (txt1.start, 6) ;
-   outint (txt1.length, 6) ;
-   outint (txt1.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt1) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt1.main) ;
-   outimage ; outimage ;
-   found_error := true
-end ;
+   err("*** error : in text attributes(9).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt1.constant then "            true"
+                            else "            false");
+   outint(txt1.start, 6);
+   outint(txt1.length, 6);
+   outint(txt1.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt1);
+   outimage;
+   outtext("            "); outtext(txt1.main);
+   outimage; outimage;
+end;
 
                                 !*****************************;
                                 ! Test of putchar             ;
-txt1 :- copy ("123456") ;       !*****************************;
-txt1.setpos (3) ;
-txt1.putchar ('c') ;
-txt1.setpos (6) ;
-txt1.putchar ('f') ;
+txt1 :- copy("123456");         !*****************************;
+txt1.setpos(3);
+txt1.putchar('c');
+txt1.setpos(6);
+txt1.putchar('f');
 
 if    txt1.constant
    or txt1.start <> 1
@@ -306,35 +285,23 @@ if    txt1.constant
    or txt1 <> "12c45f"
    or txt1.main <> "12c45f" then
 begin
-   outtext ("*** error : in text attributes (10).") ;
-   outimage ;
-   outtext ("            Erroneus values : ") ;
-   outimage ;
-   outtext (if txt1.constant then "            true"
-                             else "            false");
-   outint (txt1.start, 6) ;
-   outint (txt1.length, 6) ;
-   outint (txt1.pos, 6) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt1) ;
-   outimage ;
-   outtext ("            ") ; outtext (txt1.main) ;
-   outimage ; outimage ;
-   found_error := true  
-end ;                           
+   err(" in text attributes(10).");
+   outimage;
+   outtext("            Erroneus values : ");
+   outimage;
+   outtext(if txt1.constant then "            true"
+                            else "            false");
+   outint(txt1.start, 6);
+   outint(txt1.length, 6);
+   outint(txt1.pos, 6);
+   outimage;
+   outtext("            "); outtext(txt1);
+   outimage;
+   outtext("            "); outtext(txt1.main);
+   outimage; outimage;
+end;                           
                                 !*****************************;
                                 ! Test of sub and strip       ;
-txt1 :- "1234567890   " ;       !*****************************;
+txt1 :- "1234567890   ";        !*****************************;
 
-if found_error then
-ELSE
-   BEGIN
-   outtext ("--- NO ERRORS FOUND IN TEST 70") ;
-   END ;
-
-if verbose then begin
-outtext ("--- END Simula a.s. TEST 70") ;
-outimage
-end
-
-END of program;
+end;

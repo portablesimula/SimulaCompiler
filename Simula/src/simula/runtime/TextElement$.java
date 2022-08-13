@@ -47,7 +47,7 @@ import java.awt.Stroke;
  * 
  * @author Øystein Myhre Andersen
  */
-public class TextElement$ extends Link$ implements Drawing$.Animable {
+public class TextElement$ extends link$ implements Drawing$.Animable {
 	final Drawing$ animation;
     double x,y;
     String str;

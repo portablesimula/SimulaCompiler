@@ -45,7 +45,7 @@ import java.awt.geom.RoundRectangle2D;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ShapeElement$ extends Link$ implements Drawing$.Animable {
+public class ShapeElement$ extends link$ implements Drawing$.Animable {
 	final Drawing$ drawing;
     Color drawColor; // null: no drawing
     Color fillColor; // null: no filling

@@ -53,14 +53,14 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class Link$ extends Linkage$ {
+public class link$ extends linkage$ {
 
 	// Constructor
-    public Link$(final RTObject$ staticLink) {
+    public link$(final RTObject$ staticLink) {
     	super(staticLink);
     }
     
-    public Link$ STM$() {
+    public link$ STM$() {
         EBLK();
     	return(this);
     }
@@ -74,7 +74,7 @@ public class Link$ extends Linkage$ {
 		if (SUC != null) {
 			SUC.PRED = PRED;
 			PRED.SUC = SUC;
-			SUC = PRED = ((Linkage$) (null));
+			SUC = PRED = ((linkage$) (null));
 		}
 	}
 
@@ -90,13 +90,13 @@ public class Link$ extends Linkage$ {
 	 * 
 	 * @param x
 	 */
-	public void follow(final Linkage$ x) {
+	public void follow(final linkage$ x) {
 		out();
 		if (x != null) {
 			if (x.SUC != null) {
 				PRED = x;
 				SUC = x.SUC;
-				SUC.PRED = x.SUC = (Linkage$) this;
+				SUC.PRED = x.SUC = (linkage$) this;
 			}
 		}
 	}
@@ -113,13 +113,13 @@ public class Link$ extends Linkage$ {
 	 * 
 	 * @param x
 	 */
-	public void precede(final Linkage$ x) {
+	public void precede(final linkage$ x) {
 		out();
 		if (x != null) {
 			if (x.SUC != null) {
 				SUC = x;
 				PRED = x.PRED;
-				PRED.SUC = x.PRED = (Linkage$) this;
+				PRED.SUC = x.PRED = (linkage$) this;
 			}
 		}
 	}
@@ -133,7 +133,7 @@ public class Link$ extends Linkage$ {
 	 * 
 	 * @param S The set(Head) to receive this Link.
 	 */
-	public void into(final Head$ S) {
+	public void into(final head$ S) {
 		precede(S);
 	}
 }

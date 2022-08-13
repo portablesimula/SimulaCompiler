@@ -6,41 +6,33 @@
 %
 %  WRITTEN BY:  BEH   04/08-86,  MYH  27/05-2018
 % ==============================================================================
-BEGIN
-   Boolean found_error;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   Procedure check(expectedVai,expextedVbi,msg); integer expectedVai,expextedVbi; text msg; 
+SimulaTest(60,"--- Test visibility of protected attributes.") begin
+
+   procedure check(expectedVai,expextedVbi,msg); integer expectedVai,expextedVbi; text msg; 
    begin
       if xb.vai = expectedVai and xb.vbi = expextedVbi then
       else
       begin
-         Outtext("*** error in " & msg & ": Visibility of protected attribute."); Outimage;
-         Outtext("            Erroneus values : vai = "); Outint(xb.vai, 4); Outimage;
-         Outtext("                              vbi = "); Outint(xb.vbi, 4); Outimage;
-         found_error := true
+         err(" in " & msg & ": Visibility of protected attribute.");
+         outtext("            Erroneus values : vai = "); outint(xb.vai, 4); outimage;
+         outtext("                              vbi = "); outint(xb.vbi, 4); outimage;
       end;
    end;
 
-   Class A;
+   class A;
    begin integer i;
          integer procedure vai; vai := i;
    end;
 
-   A Class B; Protected i;
+   A class B; protected i;
    begin integer i;
          integer procedure vbi; vbi := i;
          procedure p; xb.i := 17;
    end;
 
    ref(B) xb;
-
-   if verbose then begin
-   Outtext("--- START Simula a.s. TEST 60");
-   Outimage;
-   Outtext("--- Test visibility of protected attributes.");
-   Outimage; Outimage;
-   end;
 
    xb :- new B;
    xb.p;
@@ -52,14 +44,4 @@ BEGIN
    inspect xb do i := 7;
    check(7,17,"Test 3");
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext("--- NO ERRORS FOUND IN TEST 60");
-   END;
-
-   if verbose then begin
-   Outtext("--- END Simula a.s. TEST 60");
-   Outimage
-   end
- END
+end;

@@ -44,19 +44,19 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class Head$ extends Linkage$ {
+public class head$ extends linkage$ {
 	/**
 	 * Construct a new set(Head) with no members.
 	 * <p>
 	 * The references SUC and PRED initially point to the "head" itself, which
 	 * thereby represents an empty set.
 	 */
-    public Head$(final RTObject$ staticLink) {
+    public head$(final RTObject$ staticLink) {
        super(staticLink);
-       SUC=PRED=(Linkage$)CUR$;
+       SUC=PRED=(linkage$)CUR$;
     }
 
-    public Head$ STM$() {
+    public head$ STM$() {
 //      SUC=PRED=(Linkage$)CUR$; // Moved to Constructor
         EBLK(); // LINKAGE
         return(this);
@@ -69,7 +69,7 @@ public class Head$ extends Linkage$ {
 	 * 
 	 * @return The first member of the set(Head)
 	 */
-	public Link$ first() {
+	public link$ first() {
 		return (suc());
 	}
 
@@ -79,7 +79,7 @@ public class Head$ extends Linkage$ {
 	 * 
 	 * @return The last member of the set(Head)
 	 */
-	public Link$ last() {
+	public link$ last() {
 		return (pred());
 	}
 
@@ -100,7 +100,7 @@ public class Head$ extends Linkage$ {
 	 */
 	public int cardinal() {
 		int i = 0;
-		Link$ ptr = first();
+		link$ ptr = first();
 		while (ptr != null) {
 			i = i + 1;
 			ptr = ptr.suc();
@@ -112,7 +112,7 @@ public class Head$ extends Linkage$ {
 	 * The procedure "clear" removes all members from the set.
 	 */
 	public void clear() {
-		for (Link$ x = first(); x != null;x = first())
+		for (link$ x = first(); x != null;x = first())
 			x.out();
 
 	}

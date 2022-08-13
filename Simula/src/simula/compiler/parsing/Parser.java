@@ -66,7 +66,7 @@ public final class Parser {
 
 	public static boolean skipMissplacedSymbol(final KeyWord s) {
 		if (Parser.accept(s)) {
-			Util.error("Misplaced symbol: "+s+" -- Ignored");
+			Util.error("Misplaced KeyWord: "+s.toLowerCase()+" -- Ignored");
 			return (true);
 		}
 		return (false);
@@ -114,7 +114,7 @@ public final class Parser {
 
 	public static boolean expect(final KeyWord s) {
 		if (accept(s)) return (true);
-		Util.error("Got symbol '" + Parser.currentToken + "' while expecting Symbol " + s);
+		Util.error("Got symbol '" + Parser.currentToken + "' while expecting KeyWord " + s.toLowerCase());
 		return (false);
 	}
 	

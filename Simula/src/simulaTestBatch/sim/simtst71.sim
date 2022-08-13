@@ -6,112 +6,74 @@
 %
 %  WRITTEN BY:  BEH   22/08-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(71,"--- Test visibility of identifiers.") begin
 
    integer i;
 
-   Class A ;
-      Virtual : Procedure P1;
-   BEGIN
-      Procedure P1; i := 1;
-   END ;
-
-   A Class B ;
-   BEGIN
-      Procedure P1; i := 2;
-      Procedure P2; i := 3;
-   END ;
-
-   Ref (A) rA ;
-
-   Procedure P2; i := 4;
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 71") ;
-   Outimage ;
-   Outtext ("--- Test visibility of identifiers.") ;
-   Outimage ; Outimage ;
+   class A;
+      virtual : procedure P1;
+   begin
+      procedure P1; i := 1;
    end;
-   
 
-   rA :- new B ;
+   A class B;
+   begin
+      procedure P1; i := 2;
+      procedure P2; i := 3;
+   end;
 
-   Inspect rA do
-   Begin P2 end;
+   ref(A) rA;
 
-   If i = 4 then
-   else
-   Begin
-      Outtext ("*** error : Visibility of identifiers (1).") ;
-      Outimage ;
-      Outtext ("            Value of i : ") ;
-      Outint (i, 3) ;
-      Outimage; Outimage;
-      found_error := true
-   End ;
+   procedure P2; i := 4;
 
-   rA :- new B ;
+   rA :- new B;
 
-   Inspect rA when B do
-   Begin P2 End;
+   inspect rA do
+   begin P2 end;
 
-   If i = 3 then
-   else
-   Begin
-      Outtext ("*** error : Visibility of identifiers (2).") ;
-      Outimage ;
-      Outtext ("            Value of i : ") ;
-      Outint (i, 3) ;
-      Outimage; Outimage;
-      found_error := true
-   End ;
+   if i = 4 then else begin
+      err("Visibility of identifiers(1).");
+      outtext("            Value of i : ");
+      outint(i, 3); outimage; outimage;
+   end;
+
+   rA :- new B;
+
+   inspect rA when B do
+   begin P2 end;
+
+   if i = 3 then else begin
+      err("Visibility of identifiers(2).");
+      outtext("            Value of i : ");
+      outint(i, 3); outimage; outimage;
+   end;
 
 
    rA :- new B;
 
-   Inspect rA do
-   Begin P1 End;
+   inspect rA do
+   begin P1 end;
 
-   If i = 2 then
-   else
-   Begin
-      Outtext ("*** error : Visibility of identifiers (3).") ;
-      Outimage ;
-      Outtext ("            Value of i : ") ;
-      Outint (i, 3) ;
-      Outimage; Outimage;
-      found_error := true
-   End ;
+   if i = 2 then else begin
+      err("Visibility of identifiers(3).");
+      outtext("            Value of i : ");
+      outint(i, 3); outimage; outimage;
+   end;
 
 
    rA :- new A;
 
    inspect rA do
-   Begin P1 end;
+   begin P1 end;
 
 
-   If i = 1 then
-   else
-   Begin
-      Outtext ("*** error : Visibility of identifiers (4).") ;
-      Outimage ;
-      Outtext ("            Value of i : ") ;
-      Outint (i, 3) ;
-      Outimage; Outimage;
-      found_error := true
-   End ;
+   if i = 1 then else begin
+      err("Visibility of identifiers(4).");
+      outtext("            Value of i : ");
+      outint(i, 3); outimage; outimage;
+   end;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 71") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 71") ;
-   Outimage
-   end
    
- END
+ end

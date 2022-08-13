@@ -132,7 +132,7 @@ public final class Token implements Externalizable {
 			    String res=keyWord.toString(); if(value!=null) res=value.toString()+' '+res;
 			    return(res);
 			} 
-			default: return(keyWord.toString());
+			default: return(keyWord.toLowerCase());
 		}
 	}
 

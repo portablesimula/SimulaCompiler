@@ -42,30 +42,30 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class Linkage$ extends CLASS$ {
-	protected Linkage$ SUC = null;
-	protected Linkage$ PRED = null;
+public class linkage$ extends CLASS$ {
+	protected linkage$ SUC = null;
+	protected linkage$ PRED = null;
 
 	// Constructor
-    public Linkage$(final RTObject$ staticLink) {
+    public linkage$(final RTObject$ staticLink) {
     	super(staticLink);
     	BBLK(); // Iff no prefix
     }
     
-    public Linkage$ STM$() {
+    public linkage$ STM$() {
         EBLK();
         return(this);
     }
 
-	public Link$ suc() {
-		return ((SUC instanceof Link$ suc) ? suc : null);
+	public link$ suc() {
+		return ((SUC instanceof link$ suc) ? suc : null);
 	}
 
-	public Link$ pred() {
-		return ((PRED instanceof Link$ pred) ? pred : null);
+	public link$ pred() {
+		return ((PRED instanceof link$ pred) ? pred : null);
 	}
 
-	public Linkage$ prev() {
+	public linkage$ prev() {
 		return (PRED);
 	}
 }

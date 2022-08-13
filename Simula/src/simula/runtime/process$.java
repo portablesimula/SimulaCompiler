@@ -63,17 +63,17 @@ package simula.runtime;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class Process$ extends Link$ {
+public class process$ extends link$ {
     public boolean isDetachUsed() { return(true); }
 
 	public EVENT_NOTICE$ EVENT = null;
 
 	// Constructor
-	public Process$(final RTObject$ staticLink) {
+	public process$(final RTObject$ staticLink) {
 		super(staticLink);
 	}
 	
-	public Process$ STM$() {
+	public process$ STM$() {
 		detach();
 		// INNER
 		// TERMINATED$ = true;
@@ -83,10 +83,10 @@ public class Process$ extends Link$ {
 	}
 	
 	protected void terminate() {
-		Process$ nxtcur = ((Simulation$) SL$).passivate1();
+		process$ nxtcur = ((simulation$) SL$).passivate1();
 		resume(nxtcur,false); // Special Case without Swap
 		// Signal special action in RTObject$.EBLK
-		Process$.this.STATE$=OperationalState.terminatingProcess;
+		process$.this.STATE$=OperationalState.terminatingProcess;
 	}
 
 	public boolean idle() {
@@ -103,7 +103,7 @@ public class Process$ extends Link$ {
 		return (EVENT.EVTIME());			
 	}
 
-	public Process$ nextev() {
+	public process$ nextev() {
 		if (idle())	return (null);
 		EVENT_NOTICE$ suc;
 		suc=(EVENT_NOTICE$) Ranking.RANK_SUC(EVENT);

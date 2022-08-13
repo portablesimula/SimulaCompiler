@@ -34,7 +34,7 @@ package simula.runtime;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public final class MAIN_PROGRAM$ extends Process$ {
+public final class MAIN_PROGRAM$ extends process$ {
 
 	// Constructor
 	public MAIN_PROGRAM$(final RTObject$ staticLink) {

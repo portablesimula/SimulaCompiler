@@ -6,32 +6,24 @@
 %
 %  WRITTEN BY:  BEH   18/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(27,"--- Test of while-loops.") begin
 
    text t ;
    integer i, j, n;
-   Boolean b ;
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 27") ;
-   Outimage ;
-   Outtext ("--- Test of while-loops.") ;
-   Outimage ; Outimage ;
-   end;
-
+   boolean b ;
 
    while b do n := n+1 ;
 
    if n <> 0 then
    begin
-      Outtext ("*** error : Number of iterations in while-loop (1).") ;
-      Outimage ;
-      Outtext ("            Number of iterations : ") ;
-      Outint (n, 5) ;
-      Outimage ;
-      found_error := true
+      err("Number of iterations in while-loop (1).") ;
+      outimage ;
+      outtext ("            Number of iterations : ") ;
+      outint (n, 5) ;
+      outimage ;
+      
    end ;
 
 
@@ -42,12 +34,12 @@ BEGIN
 
    if n <> 8 then
    begin
-      Outtext ("*** error : Number of iterations in while-loop (2).") ;
-      Outimage ;
-      Outtext ("            Number of iterations : ") ;
-      Outint (n, 5) ;
-      Outimage ;
-      found_error := true
+      err("Number of iterations in while-loop (2).") ;
+      outimage ;
+      outtext ("            Number of iterations : ") ;
+      outint (n, 5) ;
+      outimage ;
+      
    end ;
 
 
@@ -67,12 +59,12 @@ BEGIN
 
    if n <> 4 then
    begin
-      Outtext ("*** error : Number of iterations in while-loop (3).") ;
-      Outimage ;
-      Outtext ("            Number of iterations : ") ;
-      Outint (n, 5) ;
-      Outimage ;
-      found_error := true
+      err("Number of iterations in while-loop (3).") ;
+      outimage ;
+      outtext ("            Number of iterations : ") ;
+      outint (n, 5) ;
+      outimage ;
+      
    end ;
 
    n := 0 ;
@@ -86,12 +78,12 @@ BEGIN
 
    if n <> 5 then
    begin
-      Outtext ("*** error : Number of iterations in while-loop (4).") ;
-      Outimage ;
-      Outtext ("            Number of iterations : ") ;
-      Outint (n, 5) ;
-      Outimage ;
-      found_error := true
+      err("Number of iterations in while-loop (4).") ;
+      outimage ;
+      outtext ("            Number of iterations : ") ;
+      outint (n, 5) ;
+      outimage ;
+      
    end ;
 
 
@@ -108,25 +100,12 @@ BEGIN
 
    if n <> 6 then
    begin
-      Outtext ("*** error : Number of iterations in while-loop (5).") ;
-      Outimage ;
-      Outtext ("            Number of iterations : ") ;
-      Outint (n, 5) ;
-      Outimage ;
-      found_error := true
+      err("Number of iterations in while-loop (5).") ;
+      outimage ;
+      outtext ("            Number of iterations : ") ;
+      outint (n, 5) ;
+      outimage ;
+      
    end ;
 
-
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 27") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 27") ;
-   Outimage
-   end
-   
- END;
+end;

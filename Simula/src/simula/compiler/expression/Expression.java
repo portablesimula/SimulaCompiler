@@ -323,7 +323,7 @@ public abstract class Expression extends SyntaxClass {
 	public static boolean checkCompatability(final Expression simpleObjectExpression,final String classIdentifier) {
 		ClassDeclaration objDecl=getQualification(simpleObjectExpression);
 		ClassDeclaration quaDecl=getQualification(classIdentifier);
-		if(quaDecl==objDecl) Util.warning("Unneccessary QUA/IS/IN "+ classIdentifier);
+		if(quaDecl==objDecl) ; // Nothing: Util.warning("Unneccessary QUA/IS/IN "+ classIdentifier);
 		else if(quaDecl==null) Util.error("Illegal QUA -- " + classIdentifier + " is not a class");
 		else if(!(objDecl.isCompatibleClasses(quaDecl))) return(false);
 		return(true);

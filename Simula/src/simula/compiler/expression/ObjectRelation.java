@@ -92,9 +92,9 @@ public final class ObjectRelation extends Expression {
 		String refIdent = type1.getRefIdent();
 		if (refIdent == null) {
 			Util.warning("NONE IS/IN " + classIdentifier + " -- Rewrite program");
-		} else {
-			if (!checkCompatability(lhs, classIdentifier))
-				Util.warning("IS/IN is always FALSE -- " + classIdentifier + " is not compatible with " + refIdent);
+//		} else {
+//			if (!checkCompatability(lhs, classIdentifier))
+//				Util.warning("IS/IN is always FALSE -- " + classIdentifier + " is not compatible with " + refIdent);
 		}
 		this.type = Type.Boolean;
 		if (Option.TRACE_CHECKER)

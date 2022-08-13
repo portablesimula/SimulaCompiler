@@ -6,28 +6,19 @@
 %
 %  WRITTEN BY:  BEH   17/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   short integer si, sj ;
-   integer i, j ;
-   real r, s ;
-   long real lr, ls ;
+SimulaTest(25,"--- Test multiple arithmetic assignment.") begin
 
-   real eps ;
+   short integer si, sj;
+   integer i, j;
+   real r, s;
+   long real lr, ls;
 
+   real eps;
+   eps := 0.001;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 25") ;
-   Outimage ;
-   Outtext ("--- Test multiple arithmetic assignment.") ;
-   Outimage ; Outimage;
-   end;
-
-   eps := 0.001 ;
-
-   si := i := r := lr := 3.41 ;
+   si := i := r := lr := 3.41;
 
    if     si = 3
       and i = 3
@@ -35,18 +26,18 @@ BEGIN
       and lr > 3.41-eps and lr < 3.41+eps then
    else
    begin
-      Outtext ("*** error : Arithmetic assignment (1).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outint (si, 8) ; Outint (i, 12) ;
-      Outreal (r, 8, 15) ; Outreal (lr, 8, 16) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err(" Arithmetic assignment(1).");
+      outimage;
+      outtext("            Erroneus values : ");
+      outimage;
+      outtext("            ");
+      outint(si, 8); outint(i, 12);
+      outreal(r, 8, 15); outreal(lr, 8, 16);
+      outimage;
+      
+   end;
 
-   i := lr := r := si := 123 ;
+   i := lr := r := si := 123;
 
    if     si = 123
       and i = 123
@@ -54,18 +45,18 @@ BEGIN
       and lr > 123-eps and lr < 123+eps then
    else
    begin
-      Outtext ("*** error : Arithmetic assignment (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outint (si, 8) ; Outint (i, 12) ;
-      Outreal (r, 8, 15) ; Outreal (lr, 8, 16) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err(" Arithmetic assignment(2).");
+      outimage;
+      outtext("            Erroneus values : ");
+      outimage;
+      outtext("            ");
+      outint(si, 8); outint(i, 12);
+      outreal(r, 8, 15); outreal(lr, 8, 16);
+      outimage;
+      
+   end;
 
-   lr := si := r := i := 345.23 ;
+   lr := si := r := i := 345.23;
 
    if     si = 345
       and i = 345
@@ -73,18 +64,18 @@ BEGIN
       and lr > 345-eps and lr < 345+eps then
    else
    begin
-      Outtext ("*** error : Arithmetic assignment (3).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outint (si, 8) ; Outint (i, 12) ;
-      Outreal (r, 8, 15) ; Outreal (lr, 8, 16) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err(" Arithmetic assignment(3).");
+      outimage;
+      outtext("            Erroneus values : ");
+      outimage;
+      outtext("            ");
+      outint(si, 8); outint(i, 12);
+      outreal(r, 8, 15); outreal(lr, 8, 16);
+      outimage;
+      
+   end;
 
-   r := lr := i := si := 7654 ;
+   r := lr := i := si := 7654;
 
    if     si = 7654
       and  i = 7654
@@ -92,18 +83,18 @@ BEGIN
       and lr > 7654-eps and lr < 7654+eps then
    else
    begin
-      Outtext ("*** error : Arithmetic assignment (4).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outint (si, 8) ; Outint (i, 12) ;
-      Outreal (r, 8, 15) ; Outreal (lr, 8, 16) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err(" Arithmetic assignment(4).");
+      outimage;
+      outtext("            Erroneus values : ");
+      outimage;
+      outtext("            ");
+      outint(si, 8); outint(i, 12);
+      outreal(r, 8, 15); outreal(lr, 8, 16);
+      outimage;
+      
+   end;
 
-   i := r := si := lr := 23.12&+2 ;
+   i := r := si := lr := 23.12&+2;
 
    if     si = 2312
       and i = 2312
@@ -111,18 +102,18 @@ BEGIN
       and lr > 2312-eps and lr < 2312+eps then
    else
    begin
-      Outtext ("*** error : Arithmetic assignment (5).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outint (si, 8) ; Outint (i, 12) ;
-      Outreal (r, 8, 15) ; Outreal (lr, 8, 16) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err(" Arithmetic assignment(5).");
+      outimage;
+      outtext("            Erroneus values : ");
+      outimage;
+      outtext("            ");
+      outint(si, 8); outint(i, 12);
+      outreal(r, 8, 15); outreal(lr, 8, 16);
+      outimage;
+      
+   end;
 
-   si := lr := r := i := 3.2767&+4 ;
+   si := lr := r := i := 3.2767&+4;
 
    if     si = 32767
       and i = 32767
@@ -130,27 +121,15 @@ BEGIN
       and lr > 32767-eps*10 and lr < 32767+eps*10 then
    else
    begin
-      Outtext ("*** error : Arithmetic assignment (6).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outimage ;
-      Outtext ("            ") ;
-      Outint (si, 8) ; Outint (i, 12) ;
-      Outreal (r, 8, 15) ; Outreal (lr, 8, 16) ;
-      Outimage ;
-      found_error := true
-   end ;
+      err(" Arithmetic assignment(6).");
+      outimage;
+      outtext("            Erroneus values : ");
+      outimage;
+      outtext("            ");
+      outint(si, 8); outint(i, 12);
+      outreal(r, 8, 15); outreal(lr, 8, 16);
+      outimage;
+      
+   end;
 
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 25") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 25") ;
-   Outimage
-   end
-   
- END;
+end;

@@ -8,22 +8,22 @@
 %
 %  WRITTEN BY:  MYH   28/07-2018
 % ==============================================================================
-BEGIN
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(69,"--- Test complex use of detach, call and resume.") begin
    
    integer n;
-   Text array facit,notes(0:8);
+   text array facit,notes(0:8);
    
-   Procedure prt(msg); text msg;
+   procedure prt(msg); text msg;
    begin if verbose then 
       begin outtext(msg); outimage; end;
    end;
    
-   Procedure note(msg); text msg;
+   procedure note(msg); text msg;
    begin notes(n):-msg;
-      if notes(n) NE facit(n) then 
-         prt("*** ERROR: '" & notes(n) & "' NE '" & facit(n) & "'");
+      if notes(n) <> facit(n) then 
+         prt("*** ERROR: '" & notes(n) & "' <> '" & facit(n) & "'");
       n:=n+1;
       prt(msg);
    end;   
@@ -60,14 +60,6 @@ BEGIN
       
       
       
-      if verbose then begin
-      Outtext ("--- START Simula a.s. TEST 69") ;
-      Outimage ;
-      Outtext ("--- Test complex use of detach, call and resume.") ;
-      Outimage ; Outimage ;
-      end;
-
-      
       prt("--------------------------------------------------------");
       prt("Begin Annotated example from Simula Standard sect. 7.3.1");
       prt("--------------------------------------------------------");
@@ -94,13 +86,5 @@ BEGIN
       note("Final END of Example");
       prt("--------------------------------------------------------");
 
-      IF found_error THEN
-      Begin
-         Outtext ("*** ERROR: Program sequencing. RERUN WITH 'verbose' set TRUE !");
-      End ELSE
-      BEGIN Outtext ("--- NO ERRORS FOUND IN TEST 69");  END;
-
-      if verbose then begin
-      Outtext ("--- END Simula a.s. TEST 69"); Outimage end
       
 end S1;

@@ -86,25 +86,25 @@ package simula.runtime;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class Simulation$ extends Simset$ {
+public class simulation$ extends simset$ {
     public boolean isDetachUsed() { return(true); }
 	public final Ranking sqs;
 	public final MAIN_PROGRAM$ main$1;
 	
 	// Constructor
-	public Simulation$(RTObject$ staticLink) {
+	public simulation$(RTObject$ staticLink) {
 		super(staticLink);
 		sqs=new Ranking();//("MAIN");
 		sqs.bl = sqs;
 		sqs.ll = sqs;
 		sqs.rl = sqs;
 
-		main$1 = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();
+		main$1 = (MAIN_PROGRAM$) new MAIN_PROGRAM$((simulation$) CUR$).START$();
 		main$1.EVENT = new EVENT_NOTICE$(0, main$1);
 		Ranking.RANK_INTO(main$1.EVENT, sqs, 0);
 	}
 
-	public Simulation$ STM$() {
+	public simulation$ STM$() {
 //		OLD_SQS = (Head$) new Head$(Simulation$.this).STM$();
 //		main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();
 //		main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();
@@ -126,13 +126,13 @@ public class Simulation$ extends Simset$ {
 	 * ref (process) procedure current; current :- FIRSTEV.PROC;
 	 * </pre>
 	 */
-	public Process$ current() {
+	public process$ current() {
 		return (SQS_FIRST().PROC);			
 	}
 
 	public void hold(double time) {
 		SIM_TRACE("Hold " + time);
-		Process$ x=current();
+		process$ x=current();
 		if(time>0) {
 			time=x.evtime()+time;
 			x.EVENT.SET_EVTIME(time);
@@ -159,14 +159,14 @@ public class Simulation$ extends Simset$ {
      * </pre>
 	 */
 	public void passivate() {
-		Process$ nxtcur = passivate1();
+		process$ nxtcur = passivate1();
 		SIM_TRACE("END Passivate Resume[" + nxtcur.edObjectIdent() + ']');
 		resume(nxtcur);
 		SIM_TRACE("END Passivate AFTER Resume[" + nxtcur.edObjectIdent() + ']');
 	}
 	
-	Process$ passivate1() { // Used directly by Process$.TERMINATE
-		Process$ cur = current();
+	process$ passivate1() { // Used directly by Process$.TERMINATE
+		process$ cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());
 		// RT.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.SQS);
 		if (cur != null) {
@@ -176,18 +176,18 @@ public class Simulation$ extends Simset$ {
 		if(Ranking.RANK_EMPTY(sqs))
 			throw new SimulaRuntimeError("Cancel,Passivate or Wait empties SQS");
 
-		Process$ nxtcur = current();
+		process$ nxtcur = current();
 		// RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+", SQS="+this.SQS);
 		return(nxtcur);
 	}
 
-	public void wait(final Head$ S) {
+	public void wait(final head$ S) {
 		SIM_TRACE("Wait in Queue " + S);
 		current().into(S);
 		passivate();
 	}
 
-	public void cancel(final Process$ x) {
+	public void cancel(final process$ x) {
 		SIM_TRACE("Cancel " + x);
 		if (x == current())	passivate();
 		else if (x != null && x.EVENT != null) {
@@ -221,7 +221,7 @@ public class Simulation$ extends Simset$ {
 		c.put(c.get() + d);
 	}
 
-	public void ActivateDirect(final boolean REAC,final Process$ X) {
+	public void ActivateDirect(final boolean REAC,final process$ X) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE$ == OperationalState.terminated)
@@ -230,7 +230,7 @@ public class Simulation$ extends Simset$ {
 			TRACE_ACTIVATE(REAC, "scheduled process");
 		else {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent());
-			Process$ z;
+			process$ z;
 			EVENT_NOTICE$ EV = null;
 			if (REAC) EV = X.EVENT;
 			else if (X.EVENT != null) return;
@@ -253,11 +253,11 @@ public class Simulation$ extends Simset$ {
 		}
 	}
 
-	public void ActivateDelay(final boolean REAC,final Process$ X,final double T,final boolean PRIO) {
+	public void ActivateDelay(final boolean REAC,final process$ X,final double T,final boolean PRIO) {
 		ActivateAt(REAC, X, time() + T, PRIO);
 	}
 
-	public void ActivateAt(final boolean REAC,final Process$ X,double T,final boolean PRIO) {
+	public void ActivateAt(final boolean REAC,final process$ X,double T,final boolean PRIO) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE$ == OperationalState.terminated)
@@ -266,7 +266,7 @@ public class Simulation$ extends Simset$ {
 			TRACE_ACTIVATE(REAC, "scheduled process");
 		else {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent() + " at " + T + ((PRIO) ? "prior" : ""));
-			Process$ z;
+			process$ z;
 			EVENT_NOTICE$ EV = null;
 			if (REAC) EV = X.EVENT;
 			else if (X.EVENT != null) return;
@@ -280,15 +280,15 @@ public class Simulation$ extends Simset$ {
 		}
 	}
 
-	public void ActivateBefore(final boolean REAC,final Process$ X,final Process$ Y) {
+	public void ActivateBefore(final boolean REAC,final process$ X,final process$ Y) {
 		ACTIVATE3(REAC, X, true, Y);
 	}
 
-	public void ActivateAfter(final boolean REAC,final Process$ X,final Process$ Y) {
+	public void ActivateAfter(final boolean REAC,final process$ X,final process$ Y) {
 		ACTIVATE3(REAC, X, false, Y);
 	}
 
-	private void ACTIVATE3(final boolean REAC,final Process$ X,final boolean BEFORE,final Process$ Y) {
+	private void ACTIVATE3(final boolean REAC,final process$ X,final boolean BEFORE,final process$ Y) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, " none");
 		else if (X.STATE$ == OperationalState.terminated)
@@ -299,7 +299,7 @@ public class Simulation$ extends Simset$ {
 			TRACE_ACTIVATE(REAC, " before/after itself");
 		else {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent() + ((BEFORE) ? " BEFORE " : " AFTER ") + Y.edObjectIdent());
-			Process$ z;
+			process$ z;
 			EVENT_NOTICE$ EV = null;
 			if (REAC) EV = X.EVENT;
 			else if (X.EVENT != null) return;
@@ -313,7 +313,7 @@ public class Simulation$ extends Simset$ {
 			}
 			removePrevEvent(EV);
 			if (z != current())
-			{ Process$ nxtcur=current();
+			{ process$ nxtcur=current();
 			    SIM_TRACE("END ACTIVATE3 Resume["+nxtcur.edObjectIdent()+']');
 				resume(nxtcur);
 			} else SIM_TRACE("END ACTIVATE3 Continue["+z.edObjectIdent()+']');

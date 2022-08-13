@@ -629,47 +629,47 @@ public final class StandardClass extends ClassDeclaration
   }  
   
   // ******************************************************************
-  // *** The Standard Class Simset
+  // *** The Standard Class simset
   // ******************************************************************
-  public static StandardClass Simset=new StandardClass("CLASS","Simset");
+  public static StandardClass simset=new StandardClass("CLASS","simset");
   static {
-	  ENVIRONMENT.addStandardClass(Simset);  // Declared in ENVIRONMENT
+	  ENVIRONMENT.addStandardClass(simset);  // Declared in ENVIRONMENT
   }  
   
   // ******************************************************************
-  // *** The Standard Class Linkage
+  // *** The Standard Class linkage
   // ******************************************************************
-  public static StandardClass Linkage=new StandardClass("CLASS","Linkage");
+  public static StandardClass linkage=new StandardClass("CLASS","linkage");
   static {
-	  Simset.addStandardClass(Linkage);  // Declared in Simset
-	  Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"suc");  
-	  Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"pred");  
-	  Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Linkage"),"prev");  
+	  simset.addStandardClass(linkage);  // Declared in simset
+	  linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"suc");  
+	  linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"pred");  
+	  linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("linkage"),"prev");  
   }  
   
   // ******************************************************************
-  // *** The Standard Linkage Class Head
+  // *** The Standard linkage Class head
   // ******************************************************************
-  public static StandardClass Head=new StandardClass("Linkage","Head");
+  public static StandardClass head=new StandardClass("linkage","head");
   static {
-	  Simset.addStandardClass(Head);  // Declared in Simset
-	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"first");  
-	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"last");  
-	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"empty");  
-	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"cardinal");  
-	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,null,"clear");  
+	  simset.addStandardClass(head);  // Declared in simset
+	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"first");  
+	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"last");  
+	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"empty");  
+	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"cardinal");  
+	  head.addStandardProcedure(Declaration.Kind.MemberMethod,null,"clear");  
   }  
   
   // ******************************************************************
-  // *** The Standard Linkage Class Link
+  // *** The Standard linkage Class link
   // ******************************************************************
-  public static StandardClass Link=new StandardClass("Linkage","Link");
+  public static StandardClass link=new StandardClass("linkage","link");
   static {
-	  Simset.addStandardClass(Link);  // Declared in Simset
-	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out");  
-	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"follow",parameter("X",Type.Ref("Linkage")));  
-	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"precede",parameter("X",Type.Ref("Linkage")));  
-	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"into",parameter("S",Type.Ref("Head")));  
+	  simset.addStandardClass(link);  // Declared in simset
+	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out");  
+	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"follow",parameter("X",Type.Ref("linkage")));  
+	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"precede",parameter("X",Type.Ref("linkage")));  
+	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"into",parameter("S",Type.Ref("head")));  
   }  
   
   // ******************************************************************
@@ -686,62 +686,62 @@ public final class StandardClass extends ClassDeclaration
   }  
   
   // ******************************************************************
-  // *** The Standard Class Simulation
+  // *** The Standard Class simulation
   // ******************************************************************
-  public static StandardClass Simulation=new StandardClass("Simset","Simulation");
+  public static StandardClass simulation=new StandardClass("simset","simulation");
   static {
-	  ENVIRONMENT.addStandardClass(Simulation);  // Declared in ENVIRONMENT
-	  Simulation.detachUsed=true;
-//    Simulation.code1=codeSet( // Statements before inner 
-//    		new CodeLine(1,"SQS = (Head$) new Head$(this).STM$();"),
-//    		new CodeLine(1,"main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((Simulation$) CUR$).START$();"),
-//    		new CodeLine(1,"main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((Simulation$) CUR$, 0, main).STM$();"),
+	  ENVIRONMENT.addStandardClass(simulation);  // Declared in ENVIRONMENT
+	  simulation.detachUsed=true;
+//    simulation.code1=codeSet( // Statements before inner 
+//    		new CodeLine(1,"SQS = (head$) new head$(this).STM$();"),
+//    		new CodeLine(1,"main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((simulation$) CUR$).START$();"),
+//    		new CodeLine(1,"main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((simulation$) CUR$, 0, main).STM$();"),
 //    		new CodeLine(1,"main.EVENT.into(SQS);"));
-	  Simulation.addStandardAttribute(Type.Ref("Head"),"SQS");  
-	  Simulation.addStandardAttribute(Type.Ref("MAIN_PROGRAM"),"main");  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"time");  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("EVENT_NOTICE"),"FIRSTEV");  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Process"),"current");  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"hold",parameter("T",Type.LongReal));  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"passivate");  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"wait",parameter("S",Type.Ref("Head")));  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"cancel",parameter("x",Type.Ref("Process")));  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"accum",parameter("a",Parameter.Mode.name,Type.LongReal),parameter("b",Parameter.Mode.name,Type.LongReal)
+	  simulation.addStandardAttribute(Type.Ref("head"),"SQS");  
+	  simulation.addStandardAttribute(Type.Ref("MAIN_PROGRAM"),"main");  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"time");  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("EVENT_NOTICE"),"FIRSTEV");  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("process"),"current");  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"hold",parameter("T",Type.LongReal));  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"passivate");  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"wait",parameter("S",Type.Ref("head")));  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"cancel",parameter("x",Type.Ref("process")));  
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"accum",parameter("a",Parameter.Mode.name,Type.LongReal),parameter("b",Parameter.Mode.name,Type.LongReal)
 			  ,parameter("c",Parameter.Mode.name,Type.LongReal),parameter("d",Type.LongReal));    
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDirect"
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDirect"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("Process"))
+			  ,parameter("X",Type.Ref("process"))
 			  );  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAt"
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAt"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("Process"))
+			  ,parameter("X",Type.Ref("process"))
 			  ,parameter("T",Type.LongReal)
 			  ,parameter("PRIO",Type.Boolean)
 			  );  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDelay"
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDelay"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("Process"))
+			  ,parameter("X",Type.Ref("process"))
 			  ,parameter("T",Type.LongReal)
 			  ,parameter("PRIO",Type.Boolean)
 			  );  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateBefore"
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateBefore"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("Process"))
-			  ,parameter("Y",Type.Ref("Process"))
+			  ,parameter("X",Type.Ref("process"))
+			  ,parameter("Y",Type.Ref("process"))
 			  );  
-	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAfter"
+	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAfter"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("Process"))
-			  ,parameter("Y",Type.Ref("Process"))
+			  ,parameter("X",Type.Ref("process"))
+			  ,parameter("Y",Type.Ref("process"))
 			  );  
   }  
   
   // ******************************************************************
-  // *** The Standard Link Class EVENT_NOTICE
+  // *** The Standard link Class EVENT_NOTICE
   // ******************************************************************
-  public static StandardClass EVENT_NOTICE=new StandardClass("Link","EVENT_NOTICE");
+  public static StandardClass EVENT_NOTICE=new StandardClass("link","EVENT_NOTICE");
   static {
-	  Simulation.addStandardClass(EVENT_NOTICE);  // Declared in Simulation
+	  simulation.addStandardClass(EVENT_NOTICE);  // Declared in simulation
 //    ref(EVENT_NOTICE) procedure suc;
 //    ref(EVENT_NOTICE) procedure pred;
 //    procedure RANK(BEFORE_); Boolean BEFORE_;
@@ -751,35 +751,35 @@ public final class StandardClass extends ClassDeclaration
   }  
   
   // ******************************************************************
-  // *** The Standard Link Class Process
+  // *** The Standard link Class process
   // ******************************************************************
-  public static StandardClass Process=new StandardClass("Link","Process");
+  public static StandardClass process=new StandardClass("link","process");
   static {
-	  Simulation.addStandardClass(Process);  // Declared in Simulation
-	  Process.detachUsed=true;
-	  Process.code1=codeSet(new CodeLine(1,"detach();"));    // Statements before inner 
-	  Process.code2=codeSet(new CodeLine(1,"terminate();")); // Statements after inner 
+	  simulation.addStandardClass(process);  // Declared in simulation
+	  process.detachUsed=true;
+	  process.code1=codeSet(new CodeLine(1,"detach();"));    // Statements before inner 
+	  process.code2=codeSet(new CodeLine(1,"terminate();")); // Statements after inner 
 //    ref(EVENT_NOTICE) EVENT;
 //    Boolean TERMINATED_;
 //    Boolean procedure idle;
 //    Boolean procedure terminated;
 //    real procedure evtime;
-//    ref(Process) procedure nextev;
-	  Process.addStandardAttribute(Type.Ref("EVENT_NOTICE"),"EVENT");  
-	  Process.addStandardAttribute(Type.Boolean,"TERMINATED_");  
-	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"idle");  
-	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"terminated");  
-	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"evtime");  
-	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Process"),"nextev");  
+//    ref(process) procedure nextev;
+	  process.addStandardAttribute(Type.Ref("EVENT_NOTICE"),"EVENT");  
+	  process.addStandardAttribute(Type.Boolean,"TERMINATED_");  
+	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"idle");  
+	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"terminated");  
+	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"evtime");  
+	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("process"),"nextev");  
   }  
   
   // ******************************************************************
-  // *** The Standard Process Class MAIN_PROGRAM
+  // *** The Standard process Class MAIN_PROGRAM
   // ******************************************************************
-  public static final StandardClass MAIN_PROGRAM=new StandardClass("Process","MAIN_PROGRAM");
+  public static final StandardClass MAIN_PROGRAM=new StandardClass("process","MAIN_PROGRAM");
   static {
-	  Simulation.addStandardClass(MAIN_PROGRAM);   // Declared in Simulation
-//    Process class MAIN_PROGRAM;
+	  simulation.addStandardClass(MAIN_PROGRAM);   // Declared in simulation
+//    process class MAIN_PROGRAM;
 //    begin
 //       L: detach; goto L
 //    end MAIN_PROGRAM;
@@ -844,11 +844,11 @@ public final class StandardClass extends ClassDeclaration
   // ******************************************************************
   // *** The Standard Class Drawing
   // ******************************************************************
-  public static StandardClass Drawing=new StandardClass("Simset","Drawing",parameter("Title",Type.Text),parameter("width",Type.Integer),parameter("height",Type.Integer)); 
+  public static StandardClass Drawing=new StandardClass("simset","Drawing",parameter("Title",Type.Text),parameter("width",Type.Integer),parameter("height",Type.Integer)); 
   static {
 	  ENVIRONMENT.addStandardClass(Drawing);  // Declared in ENVIRONMENT
 //    Drawing.code1=codeSet( // Statements before inner 
-//  		new CodeLine(1,"// RENDERING_SET = (Head$) new Head$(Drawing$.this).STM$();"),
+//  		new CodeLine(1,"// RENDERING_SET = (head$) new head$(Drawing$.this).STM$();"),
 //  		new CodeLine(1,"// init(title.edText(),width,height);")
 //  		);
 	  Drawing.addStandardAttribute(Type.Integer,"white",    0xffffff); // Color white:      R=255, G=255, B=255.
@@ -870,7 +870,7 @@ public final class StandardClass extends ClassDeclaration
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFillColor",parameter("color",Type.Integer));  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setStroke",parameter("width",Type.Real));  
 
-	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Head"),"renderingSet");  
+	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("head"),"renderingSet");  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFontStylePlain");  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFontStyleBold");  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFontStyleItalic");  
@@ -891,9 +891,9 @@ public final class StandardClass extends ClassDeclaration
   }
   
   // ******************************************************************
-  // *** The Standard Link Class ShapeElement
+  // *** The Standard link Class ShapeElement
   // ******************************************************************
-  public static StandardClass ShapeElement=new StandardClass("Link","ShapeElement");
+  public static StandardClass ShapeElement=new StandardClass("link","ShapeElement");
   static {
 	  Drawing.addStandardClass(ShapeElement);  // Declared in Drawing
 //    ShapeElement.code1=codeSet( // Statements before inner 
@@ -915,9 +915,9 @@ public final class StandardClass extends ClassDeclaration
   }
   
   // ******************************************************************
-  // *** The Standard Link Class TextElement
+  // *** The Standard link Class TextElement
   // ******************************************************************
-  public static StandardClass TextElement=new StandardClass("Link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+  public static StandardClass TextElement=new StandardClass("link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
   static {
 	  Drawing.addStandardClass(TextElement);  // Declared in Drawing
 	  TextElement.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setColor",parameter("color",Type.Integer));  

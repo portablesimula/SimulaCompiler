@@ -7,42 +7,23 @@
 %
 %  WRITTEN BY:  BEH   22/08-86
 % ==============================================================================
-BEGIN
-   Boolean found_error;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   integer i;
+SimulaTest(58,"--- Test Goto from within a connection into otherwise") begin
 
-   Class A;;
+   boolean failed;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 58");
-   Outimage;
-   Outtext ("--- Test goto statement within a connection block where the");
-   Outimage;
-   Outtext ("--- destination is in the corresponding otherwise-clause.");
-   Outimage; Outimage;
-   end;
+   class A;;
 
-   found_error := true;
+   failed := true;
 
-   Inspect new A do
-   Begin Goto L End
-   Otherwise L: found_error := false;
-
-   IF found_error THEN
-   Begin
-       Outtext ("*** error : In goto statement.");
-       Outimage;
-   END
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 58");
-   END;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 58");
-   Outimage
+   inspect new A do begin
+      goto LAB;
    end
+   otherwise begin
+      LAB: failed := false;
+   end;   
+
+   if failed then err("goto test failed.");
    
- END
+end;

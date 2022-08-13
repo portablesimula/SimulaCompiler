@@ -23,41 +23,18 @@
 %
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
-BEGIN
+external class SimulaTest;
+
+SimulaTest(40,"--- Test separate compilation of procedures.") begin
    external integer procedure pa, pb ;
 
-   Boolean found_error ;
-   Boolean verbose=false;
    integer i ;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 40") ;
-   Outimage ;
-   Outtext ("--- Test use of external procedures.") ;
-   Outimage ; Outimage ;
+   i := pa(0) ;
+   if i = 45 then else begin
+      err("PA returned with wrong value.");
+      outtext("            Erroneus value : ");
+      outint(i, 5); outimage ;
    end;
-
-   i := pa (0) ;
-   if i = 45 then
-   else
-   begin
-      Outtext ("*** error : PA returned with wrong value.") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outint (i, 5) ;
-      Outimage ;
-      found_error := true
-   end ;
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 40") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 40") ;
-   Outimage
-   end
    
- END;
+end;

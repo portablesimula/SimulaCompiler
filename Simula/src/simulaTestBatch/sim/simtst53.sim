@@ -8,34 +8,27 @@
 %
 %  WRITTEN BY:  BEH   31/07-86
 % ==============================================================================
-BEGIN
-   Boolean verbose=false;
-   Class A ;
-      Virtual : procedure P1 ;
-   begin
-      Procedure P ;;
-   end ;
+external class SimulaTest;
 
-   A Class B ;
-   begin
-      Procedure P1 ;;
-   end ;
+SimulaTest(53,"--- Test simple virtual") begin
 
-   B Class C ;
-      Virtual : Procedure P ;
+   class A;
+      virtual : procedure P1;
    begin
-      Procedure P ;;
-   end ;
+      procedure P;;
+   end;
 
-   if verbose then begin
-   outtext("--- START Simula a.s. TEST 53"); Outimage;
-   outtext("--- Test simple virtual"); Outimage; Outimage;
+   A class B;
+   begin
+      procedure P1;;
+   end;
+
+   B class C ;
+      virtual : procedure P;
+   begin
+      procedure P;;
    end;
    
    C begin P1; end;
    
-   outtext("--- NO ERRORS FOUND IN TEST 53");
-   if verbose then begin
-   outtext("--- END Simula a.s. TEST 53"); Outimage;
-   end;
-END
+end

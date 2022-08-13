@@ -97,7 +97,7 @@ import javax.swing.JFrame;
  * 
  * @author Øystein Myhre Andersen
  */
-public class Drawing$ extends Simset$ {
+public class Drawing$ extends simset$ {
 	private static final boolean DEBUG=false;
 	
 	public static final int white$1 =     0xffffff; // Color white:      R=255, G=255, B=255.
@@ -131,8 +131,8 @@ public class Drawing$ extends Simset$ {
 	final JFrame frame;
 	final Drawing canvas;
 	final BufferStrategy strategy;
-	final public Head$ RENDERING_SET;// = null;
-    public Head$ renderingSet() { return(RENDERING_SET); }
+	final public head$ RENDERING_SET;// = null;
+    public head$ renderingSet() { return(RENDERING_SET); }
     Color currentBackgroundColor=Color.WHITE;
     Color currentDrawColor=Color.BLACK;
     Color currentFillColor=Color.GRAY;
@@ -217,7 +217,7 @@ public class Drawing$ extends Simset$ {
 	    	Rectangle bnd=this.getBounds();
 	    	g.clearRect(bnd.x,bnd.y,bnd.width,bnd.height);
 	        // Render to graphics
-			Link$ lnk=RENDERING_SET.first();
+			link$ lnk=RENDERING_SET.first();
 			while(lnk!=null) {
 				if(lnk instanceof Drawing$.Animable l) l.paint(g);
 			    lnk=lnk.suc();
@@ -237,7 +237,7 @@ public class Drawing$ extends Simset$ {
 	// Constructor
 	public Drawing$(final RTObject$ staticLink,final TXT$ title,final int width,final int height) {
 		super(staticLink);
-		RENDERING_SET = (Head$) new Head$(Drawing$.this).STM$();
+		RENDERING_SET = (head$) new head$(Drawing$.this).STM$();
     	frame = new JFrame(title.edText());
     	canvas = new Drawing();
     	canvas.setSize(width, height);

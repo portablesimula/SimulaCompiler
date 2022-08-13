@@ -1,44 +1,44 @@
 
 % =======================================   Main   program =============
-%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 31
+%  PROGRAM name:   Simula a.s. - SIMULA TEST NO 31
 %
 %  PURPOSE:     Test labels and switches as parameters to procedures
 %
 %  REWRITTEN BY:  BEH   21/07-86
 %  MODIFIED  BY:  MYH   24/07-2018
 % ======================================================================
-BEGIN
-   Boolean found_error;
-   Boolean verbose=FALSE;
+external class SimulaTest;
 
-   PROCEDURE P(LFD);  LABEL LFD;
-      BEGIN
-      b :=  NOT b;
-      GOTO LFD
-   END of procedure P;
+SimulaTest(31,"--- Test labels and switches as parameters to procedures") begin
 
-   PROCEDURE Q(LFN);  NAME LFN;  LABEL LFN;
-   BEGIN
-      b :=  NOT b;
-      GOTO LFN
-   END of procedure Q;
+   procedure P(LFD);  label LFD;
+      begin
+      b :=  not b;
+      goto LFD
+   end of procedure P;
 
-   PROCEDURE R(SFD);  SWITCH SFD;
-   BEGIN
-      b :=  NOT b;
+   procedure Q(LFN);  name LFN;  label LFN;
+   begin
+      b :=  not b;
+      goto LFN
+   end of procedure Q;
+
+   procedure R(SFD);  switch SFD;
+   begin
+      b :=  not b;
       i := i + 1;
-      GOTO SFD(i);
-      GOTO SFD(1)
-   END of procedure R;
+      goto SFD(i);
+      goto SFD(1)
+   end of procedure R;
 
-   PROCEDURE S(SFN);  NAME SFN;  SWITCH SFN;
-   BEGIN
-      b :=  NOT b;
+   procedure S(SFN);  name SFN;  switch SFN;
+   begin
+      b :=  not b;
       i := i + 1;
-      trace("GOTO SFN(i)");
-      GOTO SFN(i);
-      GOTO SFN(1)
-   END of procedure S;
+      trace("goto SFN(i)");
+      goto SFN(i);
+      goto SFN(1)
+   end of procedure S;
 
 
    procedure testpath(p); value p; text p;
@@ -46,27 +46,26 @@ BEGIN
       if path.strip = p then
       else
       begin
-         Outtext("*** error : Wrong path selected (");
-         Outint(j, if j < 10 then 1 else 2);
-         Outtext(").");
-         Outimage;
-         Outtext("            Erroneous values : "); Outtext(path.strip); Outint(j, 3); Outimage;
-         Outtext("                  Facit Path : "); Outtext(p.strip); Outimage;
-         found_error := true
+         err("Wrong path selected (");
+         outint(j, if j < 10 then 1 else 2);
+         outtext(").");
+         outimage;
+         outtext("            Erroneous values : "); outtext(path.strip); outint(j, 3); outimage;
+         outtext("                  Facit Path : "); outtext(p.strip); outimage;
       end
    end pros. testpath;
 
 
-   SWITCH S1 := L1, L2, L3, S2(1);
-   SWITCH S2 := S1(1), L2, S2(2);
-   SWITCH S3 := IF b THEN L2 ELSE L3;
-   SWITCH CONTROL := C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12;
+   switch S1 := L1, L2, L3, S2(1);
+   switch S2 := S1(1), L2, S2(2);
+   switch S3 := if b then L2 else L3;
+   switch CONTROL := C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12;
 
-   BOOLEAN            b;
-   INTEGER            i, j;
-   TEXT               path;
+   boolean            b;
+   integer            i, j;
+   text               path;
 
-   PROCEDURE trace(msg); text msg;
+   procedure trace(msg); text msg;
    begin
       if verbose then
       begin
@@ -77,37 +76,31 @@ BEGIN
       end;   
    end;
 
-   GOTO START;
+   goto START;
 
    L1: path.putchar('1');
-   trace("AT LABEL L1");
-   GOTO RETURN;
+   trace("AT label L1");
+   goto RETURN;
 
    L2: path.putchar('2');
-   trace("AT LABEL L2");
-   GOTO RETURN;
+   trace("AT label L2");
+   goto RETURN;
 
    L3: path.putchar('3');
-   trace("AT LABEL L3");
-   GOTO RETURN;
+   trace("AT label L3");
+   goto RETURN;
 
    L4: path.putchar('4');
-   trace("AT LABEL L4");
-   GOTO RETURN;
+   trace("AT label L4");
+   goto RETURN;
 
 
 RETURN:
 
-   GOTO CONTROL(J);
+   goto CONTROL(j);
 
 
 START:
-
-   if verbose then begin
-   Outtext("--- START Simula a.s. TEST 31");
-   Outtext(" (labels/switches as procedure parameters)");
-   Outimage;
-   end;
 
    path :- blanks(20);
    j := 1;
@@ -117,7 +110,7 @@ C1:
    testpath("1");
    j := 2;
    trace("AT CONTROL C1");
-   P(IF b THEN L2 ELSE L1);
+   P(if b then L2 else L1);
 
 C2:
    testpath("12");
@@ -129,7 +122,7 @@ C3:
    testpath("123");
    j := 4;
    trace("AT CONTROL C3");
-   Q(IF b THEN S1(3) ELSE L4);
+   Q(if b then S1(3) else L4);
 
 C4:
    testpath("1234");
@@ -178,7 +171,7 @@ C10:
 %   testpath("1234131113");
    testpath("1234131111");
    j := 11;
-   b := TRUE;
+   b := true;
    i := 0;
    trace("AT CONTROL C10");
    if b then R(S3) else R(S2);
@@ -195,16 +188,4 @@ C12:
 %   testpath("123413111332");
    testpath("123413111132");
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext("--- NO ERRORS FOUND IN TEST 31");
-   END;
-
-   if verbose then begin
-   Outtext("--- END Simula a.s. TEST 31");
-   Outimage
-   end
-   
-
-END of program;
+end;

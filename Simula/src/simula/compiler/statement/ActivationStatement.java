@@ -74,7 +74,7 @@ public final class ActivationStatement extends Statement {
 	}
 
 	public String toJavaCode() {
-		Type refProcess = Type.Ref("Process");
+		Type refProcess = Type.Ref("process");
 		if (object1 != null)
 			object1 = TypeConversion.testAndCreate(refProcess, object1);
 		if (object2 != null)
@@ -90,35 +90,35 @@ public final class ActivationStatement extends Statement {
 	}
 
 	private String edActivateDirect() {
-		String obj1 = (object1 == null) ? "null" : "(Process$)"+object1.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(process$)"+object1.toJavaCode();
 		Meaning activate1 = Global.getCurrentScope().findMeaning("ActivateDirect");
 		String staticLink = activate1.edQualifiedStaticLink();
 		return (staticLink + ".ActivateDirect(" + REAC + ',' + obj1 + ')');
 	}
 
 	private String edActivateAt() {
-		String obj1 = (object1 == null) ? "null" : "(Process$)"+object1.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(process$)"+object1.toJavaCode();
 		String staticLink = Global.getCurrentScope().findMeaning("ActivateAt").edQualifiedStaticLink();
 		return (staticLink + ".ActivateAt(" + REAC + ',' + obj1 + ',' + time.toJavaCode() + ',' + prior + ')');
 	}
 
 	private String edActivateDelay() {
-		String obj1 = (object1 == null) ? "null" : "(Process$)"+object1.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(process$)"+object1.toJavaCode();
 		String staticLink = Global.getCurrentScope().findMeaning("ActivateDelay").edQualifiedStaticLink();
 		return (staticLink + ".ActivateDelay(" + REAC + ',' + obj1 + ',' + time.toJavaCode() + ',' + prior + ')');
 	}
 
 	private String edActivateBefore() {
-		String obj1 = (object1 == null) ? "null" : "(Process$)"+object1.toJavaCode();
-		String obj2 = (object2 == null) ? "null" : "(Process$)"+object2.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(process$)"+object1.toJavaCode();
+		String obj2 = (object2 == null) ? "null" : "(process$)"+object2.toJavaCode();
 		Meaning activate3 = Global.getCurrentScope().findMeaning("ActivateBefore");
 		String staticLink = activate3.edQualifiedStaticLink();
 		return (staticLink + ".ActivateBefore(" + REAC + ',' + obj1 + ',' + obj2 + ')');
 	}
 
 	private String edActivateAfter() {
-		String obj1 = (object1 == null) ? "null" : "(Process$)"+object1.toJavaCode();
-		String obj2 = (object2 == null) ? "null" : "(Process$)"+object2.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(process$)"+object1.toJavaCode();
+		String obj2 = (object2 == null) ? "null" : "(process$)"+object2.toJavaCode();
 		Meaning activate3 = Global.getCurrentScope().findMeaning("ActivateAfter");
 		String staticLink = activate3.edQualifiedStaticLink();
 		return (staticLink + ".ActivateAfter(" + REAC + ',' + obj1 + ',' + obj2 + ')');

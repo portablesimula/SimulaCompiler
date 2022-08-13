@@ -8,9 +8,9 @@
 %
 %  REWRITTEN BY:  BEH   15/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(22,"--- Test for-loops with various for-list elements.") begin
 
    class c;
    begin ref(c)next; end c;
@@ -18,38 +18,31 @@ BEGIN
    integer i,j,n;
    ref(c)cp;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 22") ;
-   Outimage ;
-   Outtext ("--- Test for-loops with various for-list elements.") ;
-   Outimage ; Outimage ;
-   end;
-
    n := 1 ;
 
    for i:= 1 step 1 until 2 do            ! Fast For ;
    begin
       if i <> n then
       begin
-         Outtext ("*** error : Fast For (1).") ;
-         Outimage ;
-         Outtext ("            Erroneus values : ") ;
-         Outint (i,3) ; Outint (n,3) ;
-         Outimage ;
-         found_error := true
+         err(" : Fast For (1).") ;
+         outimage ;
+         outtext ("            Erroneus values : ") ;
+         outint (i,3) ; outint (n,3) ;
+         outimage ;
+         
       end ;
       n:=n+1;
    end ;
 
    if i <> n then
    begin
-      Outtext ("*** error : Fast For (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outint (i, 3) ;
-      Outint (n, 3) ;
-       Outimage ;
-      found_error := true
+      err(" : Fast For (2).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+       outimage ;
+      
    end ;
 
    n := 1 ;
@@ -58,26 +51,26 @@ BEGIN
    begin
       if i <> n then
       begin
-         Outtext ("*** error : Single Step Element (3).") ;
-         Outimage ;
-         Outtext ("            Erroneus values :") ;
-         Outint (i, 3) ;
-         Outint (n, 3) ;
-         Outimage ;
-         found_error := true
+         err(" : Single Step Element (3).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
       end ;
       n:=n+1;
    end ;
 
    if i <> n then
    begin
-      Outtext ("*** error :Single Step Element (4).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outint (i, 3) ;
-      Outint (n, 3) ;
-      Outimage ;
-      found_error := true
+      err(" :Single Step Element (4).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
    end ;
 
 
@@ -88,13 +81,13 @@ BEGIN
       if    i <> n and n < 3
          or n = 3 and i <> j then
       begin
-         Outtext ("*** error : Complex For (5).") ;
-         Outimage ;
-         Outtext ("            Erroneus values :") ;
-         Outint (i, 3) ;
-         Outint (n, 3) ;
-         Outimage ;
-         found_error := true
+         err(" : Complex For (5).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
       end ;
 
       n:=n+1;
@@ -102,13 +95,13 @@ BEGIN
 
    if i <> j then
    begin
-      Outtext ("*** error : Complex For (6).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outint (i, 3) ;
-      Outint (n, 3) ;
-      Outimage ;
-      found_error := true
+      err(" : Complex For (6).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
    end ;
 
    n := 1 ;
@@ -117,13 +110,13 @@ BEGIN
    begin
       if i <> n  or  n > 1 then
       begin
-         Outtext ("*** error : Single While Element (7).") ;
-         Outimage ;
-         Outtext ("            Erroneus values :") ;
-         Outint (i, 3) ;
-         Outint (n, 3) ;
-         Outimage ;
-         found_error := true
+         err(" : Single While Element (7).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
       end ;
 
       n:=n+1;
@@ -132,13 +125,13 @@ BEGIN
 
    if i <> 1 or n > 2 then
    begin
-      Outtext ("*** error : Singel While Element (8).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outint (i, 3) ;
-      Outint (n, 3) ;
-      Outimage ;
-      found_error := true
+      err(" : Singel While Element (8).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
    end ;
 
 
@@ -148,13 +141,13 @@ BEGIN
    begin
       if i <> 4 or n > 1 then
       begin
-         Outtext ("*** error : Complex For (9).") ;
-         Outimage ;
-         Outtext ("            Erroneus values :") ;
-         Outint (i, 3) ;
-         Outint (n, 3) ;
-         Outimage ;
-         found_error := true
+         err(" : Complex For (9).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
       end ;
 
       n:=n+1;
@@ -162,13 +155,13 @@ BEGIN
 
    if i <> 4 or n > 2 then
    begin
-      Outtext ("*** error : Complex For (10).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outint (i, 3) ;
-      Outint (n, 3) ;
-      Outimage ;
-      found_error := true
+      err(" : Complex For (10).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
    end ;
 
    n := 1 ;
@@ -179,13 +172,13 @@ BEGIN
 
       if n <> 1 or i <> 0 then
       begin
-         Outtext ("*** error : Complex For (11).") ;
-         Outimage ;
-         Outtext ("            Erroneus values :") ;
-         Outint (i, 3) ;
-         Outint (n, 3) ;
-         Outimage ;
-         found_error := true
+         err(" : Complex For (11).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
       end ;
 
       n:=n+1;
@@ -193,13 +186,13 @@ BEGIN
 
    if n <> 2 then
    begin
-      Outtext ("*** error : Complex For (12).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outint (i, 3) ;
-      Outint (n, 3) ;
-      Outimage ;
-      found_error := true
+      err(" : Complex For (12).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (i, 3) ;
+      outint (n, 3) ;
+      outimage ;
+      
    end ;
 
    n := 1 ;
@@ -210,13 +203,13 @@ BEGIN
 
       if cp == none and n = 1 or cp =/= none and n = 2 then
       begin
-         Outtext ("*** error : Complex For (13).") ;
-         Outimage ;
-         Outtext ("            Erroneus values :") ;
-         Outint (i, 3) ;
-         Outint (n, 3) ;
-         Outimage ;
-         found_error := true
+         err(" : Complex For (13).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
       end ;
 
       n1 := 1 ;
@@ -225,13 +218,13 @@ BEGIN
       begin
          if i <> 4 or n1 <> 1 then
          begin
-            Outtext ("*** error : Complex For (14).") ;
-            Outimage ;
-            Outtext ("            Erroneus values :") ;
-            Outint (i, 3) ;
-            Outint (n, 3) ;
-            Outimage ;
-            found_error := true
+            err(" : Complex For (14).") ;
+            outimage ;
+            outtext ("            Erroneus values :") ;
+            outint (i, 3) ;
+            outint (n, 3) ;
+            outimage ;
+            
          end ;
 
          n1:=n1+1;
@@ -239,13 +232,13 @@ BEGIN
 
       if i <> 4 or n1 <> 2 then
       begin
-         Outtext ("*** error : Complex For (15).") ;
-         Outimage ;
-         Outtext ("            Erroneus values :") ;
-         Outint (i, 3) ;
-         Outint (n, 3) ;
-         Outimage ;
-         found_error := true
+         err(" : Complex For (15).") ;
+         outimage ;
+         outtext ("            Erroneus values :") ;
+         outint (i, 3) ;
+         outint (n, 3) ;
+         outimage ;
+         
       end ;
 
       n:=n+1;
@@ -253,26 +246,13 @@ BEGIN
 
    if n <> 3 or cp =/= none then
    begin
-      Outtext ("*** error : Complex For (16).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outint (n, 3) ;
-      Outtext (if cp == none then " cp == none" else " cp =/= none") ;
-      Outimage ;
-      found_error := true
+      err(" : Complex For (16).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outint (n, 3) ;
+      outtext (if cp == none then " cp == none" else " cp =/= none") ;
+      outimage ;
+      
    end ;
 
-
-
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 22") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 22") ;
-   Outimage
-   end
- END;
+end;

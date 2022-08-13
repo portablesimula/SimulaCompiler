@@ -13,10 +13,10 @@ package simula.runtime;
 * @author Øystein Myhre Andersen
 */
 public final class EVENT_NOTICE$ extends Ranking {
-	public final Process$ PROC;
+	public final process$ PROC;
 
 	// Constructors
-    public EVENT_NOTICE$(final double EVTIME,final Process$ PROC) {
+    public EVENT_NOTICE$(final double EVTIME,final process$ PROC) {
     	this.rnk=EVTIME;
     	this.PROC = PROC;
     }

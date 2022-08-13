@@ -7,37 +7,27 @@
 %
 %  WRITTEN BY:  BEH   29/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(50,"--- Test binding of when-clause and otherwise-clause in connection statement, and qualification of the connection block.") begin
 
    integer j;
 
-   Class A; begin integer i; end;
+   class A; begin integer i; end;
 
-   A Class B; begin integer i; end;
+   A class B; begin integer i; end;
 
-   B Class C; begin integer i; end;
+   B class C; begin integer i; end;
 
-   B Class D; begin integer i; end;
+   B class D; begin integer i; end;
 
-   A Class E; begin integer i; end;
+   A class E; begin integer i; end;
 
-   ref (A) ra;
-   ref (B) rb;
-   ref (C) rc;
-   ref (D) rd;
-   ref (E) re;
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 50");
-   Outimage;
-   Outtext ("--- Test binding of when-clause and otherwise-clause in ");
-   Outtext ("connection"); Outimage;
-   Outtext ("--- statement, and qualification of the ");
-   Outtext ("connection block.");
-   Outimage; Outimage;
-   end;
+   ref(A) ra;
+   ref(B) rb;
+   ref(C) rc;
+   ref(D) rd;
+   ref(E) re;
 
    rb :- new B;
    ra :- new A;
@@ -54,13 +44,10 @@ BEGIN
    if j = 0 then
    else
    begin
-     Outtext ("*** error : Binding in connection statement (1).");
-     Outimage;
-     Outtext ("            Erroneus value : j = ");
-     Outint (j, 4);
-     Outimage;
+     err("Binding in connection statement(1).");
+     outtext("            Erroneus value : j = ");
+     outint(j, 4); outimage;
      j := 0;
-     found_error := true
    end;
 
 
@@ -82,18 +69,17 @@ BEGIN
       and ra qua B.i = 2 then
    else
    begin
-      Outtext ("*** error : Wrong clause selected (2).");
-      Outimage;
-      Outtext ("            Erroneus values : j          = ");
-      Outint (j, 3);
-      Outimage;
-      Outtext ("                              ra.i       = ");
-      Outint (ra.i, 3);
-      Outimage;
-      Outtext ("                              ra qua B.i = ");
-      Outint (ra qua B.i, 3);
-      Outimage;
-      found_error := true
+      err("Wrong clause selected(2).");
+      outimage;
+      outtext("            Erroneus values : j          = ");
+      outint(j, 3);
+      outimage;
+      outtext("                              ra.i       = ");
+      outint(ra.i, 3);
+      outimage;
+      outtext("                              ra qua B.i = ");
+      outint(ra qua B.i, 3);
+      outimage;
    end;
 
 
@@ -102,9 +88,9 @@ BEGIN
    rb.i := 0;
    j := 0;
 
-   inspect rb when d do
+   inspect rb when D do
       begin integer i; i := 5; j := 1 end
-              when a do
+              when A do
       begin integer i; i := 6; j := 2 end
    otherwise
       j := 3;
@@ -114,20 +100,19 @@ BEGIN
       and rb.i = 0 then
    else
    begin
-      Outtext ("*** error : Wrong clause selected or wrong variable");
-      Outimage;
-      Outtext ("            assigned (3).");
-      Outimage;
-      Outtext ("            Erroneus values : j    = ");
-      Outint (j, 3);
-      Outimage;
-      Outtext ("                              ra.i = ");
-      Outint (ra.i, 3);
-      Outimage;
-      Outtext ("                              rb.i = ");
-      Outint (rb.i, 3);
-      Outimage;
-      found_error := true
+      err("Wrong clause selected or wrong variable");
+      outimage;
+      outtext("            assigned(3).");
+      outimage;
+      outtext("            Erroneus values : j    = ");
+      outint(j, 3);
+      outimage;
+      outtext("                              ra.i = ");
+      outint(ra.i, 3);
+      outimage;
+      outtext("                              rb.i = ");
+      outint(rb.i, 3);
+      outimage;
    end;
 
 
@@ -149,31 +134,18 @@ BEGIN
       and rb.i = 9 then
    else
    begin
-      Outtext ("*** error : Wrong clause selected or wrong variable");
-      Outimage;
-      Outtext ("            assigned (4).");
-      Outimage;
-      Outtext ("            Erroneus values : j    = ");
-      Outint (j, 3);
-      Outimage;
-      Outtext ("                              ra.i = ");
-      Outint (ra.i, 3);
-      Outimage;
-      Outtext ("                              rb.i = ");
-      Outint (rb.i, 3);
-      Outimage;
-      found_error := true
+      err("Wrong clause selected or wrong variable");
+      outtext("            assigned(4).");
+      outimage;
+      outtext("            Erroneus values : j    = ");
+      outint(j, 3);
+      outimage;
+      outtext("                              ra.i = ");
+      outint(ra.i, 3);
+      outimage;
+      outtext("                              rb.i = ");
+      outint(rb.i, 3);
+      outimage;
    end;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 50");
-   END;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 50");
-   Outimage
-   end
-   
- END;
+end;

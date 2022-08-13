@@ -1,68 +1,68 @@
 
 % ===============================================   Main   program =============
-%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 32
+%  PROGRAM name:   Simula a.s. - SIMULA TEST NO 32
 %
 %  PURPOSE:     Simple test of formal procedures.
 %
 %  WRITTEN BY:  BEH   22/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   CLASS A ;
-   BEGIN
-      INTEGER ia ;
-      INTEGER PROCEDURE ip ;ip := 12 ;
-   END of class A ;
+SimulaTest(32,"--- Simple test of formal procedures.") begin
 
-   A CLASS B ;
-   BEGIN
-      INTEGER ib ;
-   END of class B ;
+   class A ;
+   begin
+      integer ia ;
+      integer procedure ip ;ip := 12 ;
+   end of class A ;
 
-   B CLASS C ;
-   BEGIN
-      INTEGER ic ;
-   END of class C ;
+   A class B ;
+   begin
+      integer ib ;
+   end of class B ;
 
-   CLASS X ; ;
+   B class C ;
+   begin
+      integer ic ;
+   end of class C ;
 
-   REF (A)            gra ;
-   REF (A)            ra ;
-   REF (B)            rb ;
-   REF (C)            rc ;
-   INTEGER            gi ;
-   REAL               gr ;
-   CHARACTER          gch ;
-   BOOLEAN            gbool ;
-   TEXT               gtext ;
+   class X ; ;
 
-   INTEGER PROCEDURE ip ;  ip := 11 ;
+   ref (A)            gra ;
+   ref (A)            ra ;
+   ref (B)            rb ;
+   ref (C)            rc ;
+   integer            gi ;
+   real               gr ;
+   character          gch ;
+   boolean            gbool ;
+   text               gtext ;
 
-   REAL PROCEDURE rp ; ;
+   integer procedure ip ;  ip := 11 ;
 
-   PROCEDURE Ap (i, r, bool, ch, ra, t) ;
-                       INTEGER     i ;
-                       REAL        r ;
-                       BOOLEAN     bool ;
-                       CHARACTER   ch ;
-                       REF (A)     ra ;
-                       TEXT        t ;
-   BEGIN
+   real procedure rp ; ;
+
+   procedure AP (i, r, bool, ch, ra, t) ;
+                       integer     i ;
+                       real        r ;
+                       boolean     bool ;
+                       character   ch ;
+                       ref (A)     ra ;
+                       text        t ;
+   begin
       gi := i ;
       gr := r ;
       gbool := bool ;
       gch := ch ;
       gra :- ra ;
       gtext :- t
-   END of procedure Ap ;
+   end of procedure AP ;
 
-   REF (A) PROCEDURE Rap ;  Rap :- new A ;
+   ref (A) procedure Rap ;  Rap :- new A ;
 
-   PROCEDURE P (F) ;  PROCEDURE F ;
-   BEGIN
-      F (1, 1.2, TRUE, 'c', NONE, NOTEXT) ;
+   procedure P (F) ;  procedure F ;
+   begin
+      F (1, 1.2, true, 'c', none, notext) ;
 
       if     gi = 1
 %         and gr = 1.2  // MYH 29/3-2018 Test for equality between real values may not be meaningfull 
@@ -75,33 +75,32 @@ BEGIN
           then
       else
       begin
-         Outtext ("*** error : Value of global variables (1).") ;
-         Outimage ;
-         Outtext ("            Erroneus values : gi = ") ;
-         Outint (gi, 5) ;
-         Outimage ;
-         Outtext ("                              gr = ") ;
-         Outreal (gr, 5, 12) ;
-         Outimage ;
-         Outtext ("                           gbool = ") ;
-         Outtext (if gbool then "true" else "false") ;
-         Outimage ;
-         Outtext ("                             gch = ") ;
-         Outchar (gch) ;
-         Outimage ;
-         Outtext ("                             gra == ") ;
-         Outtext (if gra == none then "notext" else
+         err(" Value of global variables (1).") ;
+         outimage ;
+         outtext ("            Erroneus values : gi = ") ;
+         outint (gi, 5) ;
+         outimage ;
+         outtext ("                              gr = ") ;
+         outreal (gr, 5, 12) ;
+         outimage ;
+         outtext ("                           gbool = ") ;
+         outtext (if gbool then "true" else "false") ;
+         outimage ;
+         outtext ("                             gch = ") ;
+         outchar (gch) ;
+         outimage ;
+         outtext ("                             gra == ") ;
+         outtext (if gra == none then "notext" else
                   if gra is A then "object of A" else
                   if gra is B then "object of B" else
                                    "object of C") ;
-         Outimage ;
-         Outtext ("                           gtext = ") ;
-         Outtext (if gtext = notext then "notext" else gtext) ;
-         Outimage ; Outimage ;
-         found_error := true
+         outimage ;
+         outtext ("                           gtext = ") ;
+         outtext (if gtext = notext then "notext" else gtext) ;
+         outimage ; outimage ;
       end ;
 
-      F (ip, ip + 1, false, if TRUE then 't' else 'f', Rap, copy ("abc")) ;
+      F (ip, ip + 1, false, if true then 't' else 'f', Rap, copy ("abc")) ;
 
       if     gi = 11
 %         and gr = 12  // MYH 29/3-2018 Test for equality between real values may not be meaningfull 
@@ -112,52 +111,33 @@ BEGIN
          and gtext = "abc" then
       else
       begin
-         Outtext ("*** error : Value of global variables (2).") ;
-         Outimage ;
-         Outtext ("            Erroneus values : gi = ") ;
-         Outint (gi, 5) ;
-         Outimage ;
-         Outtext ("                              gr = ") ;
-         Outreal (gr, 5, 12) ;
-         Outimage ;
-         Outtext ("                           gbool = ") ;
-         Outtext (if gbool then "true" else "false") ;
-         Outimage ;
-         Outtext ("                             gch = ") ;
-         Outchar (gch) ;
-         Outimage ;
-         Outtext ("                             gra == ") ;
-         Outtext (if gra == none then "notext" else
+         err(" Value of global variables (2).") ;
+         outimage ;
+         outtext ("            Erroneus values : gi = ") ;
+         outint (gi, 5) ;
+         outimage ;
+         outtext ("                              gr = ") ;
+         outreal (gr, 5, 12) ;
+         outimage ;
+         outtext ("                           gbool = ") ;
+         outtext (if gbool then "true" else "false") ;
+         outimage ;
+         outtext ("                             gch = ") ;
+         outchar (gch) ;
+         outimage ;
+         outtext ("                             gra == ") ;
+         outtext (if gra == none then "notext" else
                   if gra is A then "object of A" else
                   if gra is B then "object of B" else
                                    "object of C") ;
-         Outimage ;
-         Outtext ("                           gtext = ") ;
-         Outtext (if gtext = notext then "notext" else gtext) ;
-         Outimage ; Outimage ;
-         found_error := true
+         outimage ;
+         outtext ("                           gtext = ") ;
+         outtext (if gtext = notext then "notext" else gtext) ;
+         outimage ; outimage ;
       end ;
 
-   END of procedure P ;
+   end of procedure P ;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 32");
-   Outimage ;
-   Outtext ("--- Simple test of formal procedures");
-   Outimage; Outimage;
-   end;
+   P (AP) ;
 
-   P (ap) ;
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 32") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 32") ;
-   Outimage
-   end
-
-END of program;
+end of program;

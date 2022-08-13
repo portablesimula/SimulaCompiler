@@ -16,23 +16,16 @@
 %
 %  REWRITTEN BY:  BEH   17/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   integer i, j ;
+SimulaTest(21,"--- Test arrays of simple types and text.") begin
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 21") ;
-   Outimage ;
-   Outtext ("--- Test arrays of simple types and text.") ;
-   Outimage ; Outimage ;
-   end;
+   integer i, j;
 
    begin
 %      integer lb;
 %      integer ub;
-      integer array A, B (i-3:j+3) ;
+      integer array A, B (i-3:j+3);
       
 %      lb:=i-3;
 %      ub:=j+3;
@@ -41,57 +34,57 @@ BEGIN
 %      outtext("UB-LB+1="); outint(ub-lb+1,4); outimage;
 
       for i := 3 step -1 until -3 do
-         A (-i) := B (i) := i ;
+         A (-i) := B (i) := i;
 
       if A (-2) + B (-2) = 0 then
       else
       begin
-         Outtext ("*** error : Integer Array (1).") ;
-         Outimage ;
-         Outtext ("            Erroneus values : ") ;
-         Outimage ;
+         err(" : Integer Array (1).");
+         outimage;
+         outtext ("            Erroneus values : ");
+         outimage;
          for i := -3 step 1 until 3 do
          begin
-            Outint (i, 13) ;
-            Outint (A (i), 4) ;
-            Outint (B (i), 4) ;
-            Outimage ;
-         end ;
+            outint (i, 13);
+            outint (A (i), 4);
+            outint (B (i), 4);
+            outimage;
+         end;
 
-         found_error := true ;
-      end ;
+         ;
+      end;
 
 
       for i := 0 step 3 until 18 do
       begin
-         j := A (i/3-3) + B (i/3-3) ;
+         j := A (i/3-3) + B (i/3-3);
 
          if j = 0 then
          else
          begin
-            Outtext ("*** error : Integer Array (2).") ;
-            Outimage ;
-            Outtext ("            Erroneus values : ") ;
-            Outimage ;
-            Outint (i/3-3, 13) ;
-            Outint (A (i/3-3), 4) ;
-            Outint (B (i/3-3), 4) ;
-            Outimage ;
+            err(" : Integer Array (2).");
+            outimage;
+            outtext ("            Erroneus values : ");
+            outimage;
+            outint (i/3-3, 13);
+            outint (A (i/3-3), 4);
+            outint (B (i/3-3), 4);
+            outimage;
 
-            found_error := true
+            
          end
       end
-   end ;
+   end;
 
-   i := 10 ;
+   i := 10;
 
 %  begin                                        !**************  NOTE  1  *****;
 %
-%     Boolean array B (1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8, 8:9, 9:i, 0:1) ;
-%     Boolean a ;
+%     Boolean array B (1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:8, 8:9, 9:i, 0:1);
+%     Boolean a;
 %     integer i1, i2, i3, i4, i5, i6, i7, i8, i9, i0;
 %
-%     B (2, 3, 3, 5, 5, 7, 8, 8, 10, 1) := true ;
+%     B (2, 3, 3, 5, 5, 7, 8, 8, 10, 1) := true;
 %
 %     for i1 := 1, 2 do
 %     for i2 := 2, 3 do
@@ -103,121 +96,104 @@ BEGIN
 %     for i8 := 8, 9 do
 %     for i9 := 9, 10 do
 %     for i0 := 0, 1 do
-%        a := a or B (i1, i2, i3, i4, i5, i6, i7, i8, i9, i0) ;
+%        a := a or B (i1, i2, i3, i4, i5, i6, i7, i8, i9, i0);
 %
 %     if a then
 %     else
 %     begin
-%        Outtext ("*** error : Multidimetional Boolean Array (3).") ;
-%        Outimage ;
-%        found_error := true
+%        err(" : Multidimetional Boolean Array (3).");
+%        outimage;
+%        
 %     end
-%  end ;
+%  end;
 
    begin
-      character array C (2:3, 4:5, 6:7), D (8:9, 1:2) ;
+      character array C (2:3, 4:5, 6:7), D (8:9, 1:2);
 
-      integer n ;
+      integer n;
 
                                                 !*************  NOTE 2 ********;
-%      i := lowerbound (C, 2) ;
-%      j := upperbound (D, 2) ;
+%      i := lowerbound (C, 2);
+%      j := upperbound (D, 2);
 %
 %      if i = 5 and j = 2 then
 %      else
 %      begin
-%         Outtext ("*** error : Function lowerbound or upperbound (4).") ;
-%         Outimage ;
-%         Outtext ("            Erroneus values : ") ;
-%         Outint (i, 4) ; Outint (j, 4) ;
-%         Outimage ;
-%         found_error := true
-%      end ;
+%         err(" : Function lowerbound or upperbound (4).");
+%         outimage;
+%         outtext ("            Erroneus values : ");
+%         outint (i, 4); outint (j, 4);
+%         outimage;
+%         
+%      end;
 
 %      for i := 8, 9 do
 %      for j := 1, 2 do
       for i := 8 step 1 until 9 do
       for j := 1 step 1 until 2 do
       begin
-         D (i, j) := char (n+65) ;
+         D (i, j) := char (n+65);
          n := n+1
-      end ;
+      end;
 
       if D (8, 1) = 'A' and D (8, 2) = 'B'
-         and D (9, 1) = 'C' and D (9, 2) = 'D' THEN
+         and D (9, 1) = 'C' and D (9, 2) = 'D' then
       else
       begin
-         Outtext ("*** error : Value of character array (5).") ;
-         Outimage ;
-         Outtext ("            Erroneus values : ") ;
-         Outimage ;
+         err(" : Value of character array (5).");
+         outimage;
+         outtext ("            Erroneus values : ");
+         outimage;
 %         for i := 8, 9 do
 %         for j := 1, 2 do
          for i := 8 step 1 until 9 do
          for j := 1 step 1 until 2 do
          begin
-            Outint (i, 13) ; Outint (j, 3) ;
-            Outchar (D (i, j)) ;
-            Outimage ;
-         end ;
-         found_error := true
+            outint (i, 13); outint (j, 3);
+            outchar (D (i, j));
+            outimage;
+         end;
+         
       end
-   end ;
+   end;
 
    begin
-      text array T (1:4, 1:2) ;
+      text array T (1:4, 1:2);
 
-      text t1 ;
+      text t1;
 
-      t1 :- blanks (16) ;
+      t1 :- blanks (16);
 
 %      for i := 1, 2, 3, 4 do
 %      for j := 1, 2 do
       for i := 1 step 1 until 4 do
       for j := 1 step 1 until 2 do
       begin
-         T (i, j) :- t1.sub (4*(i-1)+2*j-1,2) ;
-         T (i, j).sub (1,1).putint (i) ;
+         T (i, j) :- t1.sub (4*(i-1)+2*j-1,2);
+         T (i, j).sub (1,1).putint (i);
          T (i, j).sub (2,1).putint (j)
-      end ;
+      end;
 
       if t1 = "1112212231324142" then
       else
       begin
-         Outtext ("*** error : Text array (6).") ;
-         Outimage ;
-         Outtext ("            Erroneus value : ") ;
-         Outtext (t1) ;
-         Outimage ;
-         found_error := true
-      end ;
+         err(" : Text array (6).");
+         outtext ("            Erroneus value : ");
+         outtext (t1); outimage;
+       end;
 
-%      for i := 10, 20, 30, 40 do
-%      for j := 1, 2 do
-      for i := 10 step 10 until 40 do
-      for j := 1 step 1 until 2 do
+      for i := 10, 20, 30, 40 do
+      for j := 1, 2 do
+--      for i := 10 step 10 until 40 do
+--      for j := 1 step 1 until 2 do
       if T (i/10, j).getint = i+j then
       else
       begin
-         Outtext ("*** error : Text array (7).") ;
-         Outimage ;
-         Outtext ("            Erroneus values : ") ;
-         Outint (i, 4) ; Outint (j, 3) ;
-         Outtext ("  ") ; Outtext (T (4*(i/10-1)+2*j-1, 2)) ;
-         Outimage ;
-         found_error := true
+         err(" : Text array (7).");
+         outtext ("            Erroneus values : ");
+         outint (i, 4); outint (j, 3); outtext ("  ");
+         outtext (T (4*(i/10-1)+2*j-1, 2)); outimage;
       end
-   end ;
+   end;
 
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 21") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 21") ;
-   Outimage
-   end
- END;
+end;

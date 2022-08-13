@@ -7,66 +7,47 @@
 %
 %  WRITTEN BY:  BEH   24/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   INTEGER            i, j ;
+SimulaTest(42,"--- Test an integer procedure which computes ""n-fac"", using iteration within the procedure.") begin
 
-   integer array res (0:7) ;
+   integer i, j;
 
-   INTEGER PROCEDURE Nfac (n) ;  INTEGER n ;
-   BEGIN
-      INTEGER         h ;
-      h := 1 ;
+   integer array res(0:7);
 
-      WHILE  n > 0  DO
-      BEGIN
-         h := h * n ;
+   integer procedure Nfac(n); integer n;
+   begin
+      integer h;
+      h := 1;
+
+      while  n > 0  do
+      begin
+         h := h * n;
          n := n - 1
-      END ;
+      end;
 
       Nfac := h
-   END of procedure NFAC ;
+   end of procedure NFAC;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 42") ;
-   Outimage ;
-   Outtext ("--- Test integer procedure which computes 'n-fac' iterativly.");
-   Outimage ; Outimage ;
+ 
+   res(0) := 1;
+   res(1) := 1;
+   res(2) := 2;
+   res(3) := 6;
+   res(4) := 24;
+   res(5) := 120;
+   res(6) := 720;
+   res(7) := 5040;
+
+   for  i := 1  step  1  until  7  do
+   begin
+      j := Nfac(i);
+      if j = res(i) then else begin
+         err("*** error : Values : ");
+         outint(i, 5);
+         outint(j, 10);
+         outimage;
+      end
    end;
 
-   res (0) := 1 ;
-   res (1) := 1 ;
-   res (2) := 2 ;
-   res (3) := 6 ;
-   res (4) := 24 ;
-   res (5) := 120 ;
-   res (6) := 720 ;
-   res (7) := 5040 ;
-
-   FOR  i := 1  STEP  1  UNTIL  7  DO
-   begin
-      j := Nfac (i) ;
-      if j = res (i) then
-      else
-      begin
-         Outtext ("*** error : Values : ") ;
-         Outint (i, 5) ;
-         Outint (j, 10) ;
-         Outimage ;
-         found_error := true
-      end
-   end ;
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 42") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 42") ;
-   Outimage
-   end
-END of program;
+ end;

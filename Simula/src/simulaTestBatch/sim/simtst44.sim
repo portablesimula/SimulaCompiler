@@ -6,72 +6,45 @@
 %
 %  REWRITTEN BY:  BEH   24/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   TEXT               t1, t2 ;
+SimulaTest(44,"--- Test text procedure.") begin
 
-   TEXT PROCEDURE Mysub (t, i1, i2) ;
-                         VALUE    t ;
-                         TEXT     t ;
-                         INTEGER  i1, i2 ;
-   IF  i2 < i1 OR t.length < i2
-   THEN
-   ELSE
-   BEGIN
-      TEXT         th ;
-      INTEGER      j ;
-      th :- BLANKS (i2 - i1 + 1) ;
-      t.SETPOS (i1) ;
-      FOR  j := i1  STEP 1 UNTIL i2 DO  th.PUTCHAR (t.GETCHAR) ;
-      Mysub :- th
-   END of procedure Mysub ;
+   text               t1, t2;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 44") ;
-   Outimage ;
-   Outtext ("--- Simple test of text procedures.") ;
-   Outimage ; Outimage ;
+   text procedure mysub(t, i1, i2); value t; text t; integer i1, i2;
+   if  i2 < i1 or t.length < i2 then else begin
+      text         th;
+      integer      j;
+      th :- blanks(i2 - i1 + 1);
+      t.setpos(i1);
+      for  j := i1  step 1 until i2 do  th.putchar(t.getchar);
+      mysub :- th
+   end of procedure Mysub;
+
+   t1 :- copy("test one");
+   t2 :- mysub(t1, 6, 8);
+   t1 :- t1.sub(6, 3);
+   if  t1 = t2  then else begin
+      err("text values.");
+      outimage;
+      outtext("            Erroneus values :");
+      outimage;
+      outtext("              t1 == t2  -  ");
+      outtext(if t1 == t2 then "true" else "false");
+      outimage;
+      outtext("              t1 == ");
+      outtext(if t1 == notext then "notext" else t1);
+      outimage;
+      outtext("              t2 == ");
+      outtext(if t2 == notext then "notext" else t2);
+      outimage;
+      outtext("              t1.main == ");
+      outtext(if t1.main == notext then "notext" else t1.main);
+      outimage;
+      outtext("              t2.main == ");
+      outtext(if t2.main == notext then "notext" else t2.main);
+      outimage;
    end;
 
-   t1 :- COPY ("test one") ;
-   t2 :- Mysub (t1, 6, 8) ;
-   t1 :- t1.sub (6, 3) ;
-   IF  t1 = t2  THEN
-   ELSE
-   begin
-      Outtext ("*** error : Text values.") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outimage ;
-      Outtext ("              t1 == t2  -  ") ;
-      Outtext (if t1 == t2 then "true" else "false") ;
-      Outimage ;
-      Outtext ("              t1 == ") ;
-      Outtext (if t1 == notext then "notext" else t1) ;
-      Outimage ;
-      Outtext ("              t2 == ") ;
-      Outtext (if t2 == notext then "notext" else t2) ;
-      Outimage ;
-      Outtext ("              t1.main == ") ;
-      Outtext (if t1.main == notext then "notext" else t1.main) ;
-      Outimage ;
-      Outtext ("              t2.main == ") ;
-      Outtext (if t2.main == notext then "notext" else t2.main) ;
-      Outimage ;
-      found_error := true
-   end ;
-
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 44") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 44") ;
-   Outimage
-   end
-   
-END of program;
+end of program;

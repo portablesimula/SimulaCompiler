@@ -7,9 +7,9 @@
 %
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(37,"--- Test call by name: Actual parameter is of a different type than the formal parameter.") begin
 
    integer i, j ;
    real x, y, z, eps ;
@@ -23,15 +23,6 @@ BEGIN
       x := r := s := 3.14 ;
    end;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 37") ;
-   Outimage ;
-   Outtext ("--- Test transmission by name, when the actual parameters") ;
-   Outimage ;
-   Outtext ("--- and formal parameters are of different type.") ;
-   Outimage ; Outimage ;
-   end;
-
    eps := 0.001 ;
 
    P (i, j) ;
@@ -41,15 +32,14 @@ BEGIN
       and x+eps > 3.14 and x-eps < 3.14 then
    else
    begin
-      Outtext ("*** error : Value of actual parameters (1).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outimage ;
-      Outint (i,16) ;
-      Outint (j, 4) ;
-      Outreal (x, 4, 10) ;
-      Outimage ;
-      found_error := true
+      err("Value of actual parameters (1).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outimage ;
+      outint (i,16) ;
+      outint (j, 4) ;
+      outreal (x, 4, 10) ;
+      outimage ;
    end ;
 
    P (i, y) ;
@@ -59,15 +49,14 @@ BEGIN
       and x-eps < 3.14 and x+eps > 3.14 then
    else
    begin
-      Outtext ("*** error : Value of actual parameters (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outimage ;
-      Outint (i,16) ;
-      Outreal (y, 4, 10) ;
-      Outreal (x, 4, 10) ;
-      Outimage ;
-      found_error := true
+      err("Value of actual parameters (2).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outimage ;
+      outint (i,16) ;
+      outreal (y, 4, 10) ;
+      outreal (x, 4, 10) ;
+      outimage ;
    end ;
 
    P (z, j) ;
@@ -77,26 +66,14 @@ BEGIN
       and x-eps < 3.14 and x+eps > 3.14 then
    else
    begin
-      Outtext ("*** error : Value of actual parameters (3).") ;
-      Outimage ;
-      Outtext ("            Erroneus values :") ;
-      Outimage ;
-      Outint (j,16) ;
-      Outreal (z, 4, 10) ;
-      Outreal (x, 4, 10) ;
-      Outimage ;
-      found_error := true
+      err("Value of actual parameters (3).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outimage ;
+      outint (j,16) ;
+      outreal (z, 4, 10) ;
+      outreal (x, 4, 10) ;
+      outimage ;
    end ;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 37") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 37") ;
-   Outimage
-   end
-   
- END;
+end;

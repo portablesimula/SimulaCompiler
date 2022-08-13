@@ -1,7 +1,7 @@
 
-BEGIN
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(59,"--- Test 2-dim Array by value.") begin
 
    procedure fillArray(RA,v1); integer array RA; integer v1;
    begin integer i,j;
@@ -19,7 +19,7 @@ BEGIN
       begin
          if RA(i,j) ne v1 then
          begin
-            found_error:=true;
+            err("Check Array failed");
             if verbose then
             begin
                outtext("*** ERROR " & msg & " at index "); outint(i,0); outchar(','); outint(j,0);
@@ -53,11 +53,6 @@ BEGIN
    
    integer array RA(1:3,5:7);
    ref(B) x;
-
-   if verbose then begin
-      Outtext ("--- START Simula TEST 59"); Outimage;
-      Outtext ("--- Test array by value."); Outimage; Outimage;
-   end;
    
    fillArray(RA,123);
    x:-new B(RA);
@@ -71,8 +66,4 @@ BEGIN
    x.Q(RA);
    checkArray("After Normal: x.Q(RA)",RA,789);
    
-   IF found_error THEN
-        Outtext ("*** ERRORS: Occur. RERUN WITH 'verbose' set TRUE !")
-   ELSE Outtext ("--- NO ERRORS FOUND IN TEST 59");
-   
-END;
+end;

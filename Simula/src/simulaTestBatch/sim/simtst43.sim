@@ -7,57 +7,38 @@
 %
 %  WRITTEN BY:  BEH   24/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   INTEGER            i, j ;
+SimulaTest(43,"--- Test an integer procedure which computes ""n-fac"", using recursion.") begin
 
-   integer array res (0:7) ;
+   integer i, j;
 
-   INTEGER PROCEDURE Nfac (n) ;  INTEGER n ;
+   integer array res(0:7);
+
+   integer procedure Nfac(n);  integer n;
       Nfac := if n = 0 then 1 else
-              if n > 0 then n * Nfac (n-1) else 0 ;
+              if n > 0 then n * Nfac(n-1) else 0;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 43") ;
-   Outimage ;
-   Outtext ("--- Test integer procedure which computes 'n-fac' recursively.");
-   Outimage ; Outimage ;
-   end;
+   res(0) := 1;
+   res(1) := 1;
+   res(2) := 2;
+   res(3) := 6;
+   res(4) := 24;
+   res(5) := 120;
+   res(6) := 720;
+   res(7) := 5040;
 
-   res (0) := 1 ;
-   res (1) := 1 ;
-   res (2) := 2 ;
-   res (3) := 6 ;
-   res (4) := 24 ;
-   res (5) := 120 ;
-   res (6) := 720 ;
-   res (7) := 5040 ;
-
-   FOR  i := 1  STEP  1  UNTIL  7  DO
+   for  i := 1  step  1  until  7  do
    begin
-      j := Nfac (i) ;
-      if j = res (i) then
+      j := Nfac(i);
+      if j = res(i) then
       else
       begin
-         Outtext ("*** error : Values : ") ;
-         Outint (i, 5) ;
-         Outint (j, 10) ;
-         Outimage ;
-         found_error := true
+         err("Values : ");
+         outint(i, 5);
+         outint(j, 10);
+         outimage;
       end
-   end ;
+   end;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 43") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 43") ;
-   Outimage
-   end
-   
-END of program;
+end of program;

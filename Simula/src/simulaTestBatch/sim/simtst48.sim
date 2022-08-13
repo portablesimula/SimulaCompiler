@@ -6,99 +6,78 @@
 %
 %  WRITTEN BY:  BEH   29/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   CLASS A ;
-   BEGIN
-      Text Procedure Tp ; Tp :- COPY (" A.Tp ") ;
+SimulaTest(48,"--- Test of qua") begin
 
-      Integer         i ;
-
-      i := 1 ;
-   End of class A ;
-
-   A CLASS B ;
-   BEGIN
-      Text Procedure Tp ; Tp :- COPY (" B.Tp ") ;
-
-      Integer         i ;
-
-      i := 2 ;
-   End of class B ;
-
-   B CLASS C ;
-   BEGIN
-      Text Procedure Tp ; Tp :- COPY (" C.Tp ") ;
-
-      Integer         i ;
-
-      i := 3 ;
-   End of class C ;
-
-   Ref (A)            ra ;
-   Ref (B)            rb ;
-   Ref (C)            rc ;
-
-   Procedure Check (i, t, vi, vt, enr) ; value t, vt ;
-      integer i, vi, enr ;
-      text t, vt ;
+   class A;
    begin
-      if i = vi and t = vt then
-      else
-      begin
-         Outtext ("*** error : Qualification (") ;
-         Outint (enr, if enr < 10 then 1 else 2) ;
-         Outtext (").") ;
-         Outimage ;
-         Outtext ("            Erroneus values : ") ;
-         Outimage ;
-         Outtext ("                   i = ") ;
-         Outint (i, 4) ;
-         Outimage ;
-         Outtext ("                   t = ") ;
-         Outtext (t) ;
-         Outimage ;
-         found_error := true
-      end ;
-   end ;
+      text procedure Tp; Tp :- copy(" A.Tp ");
 
+      integer         i;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 48") ;
-   Outimage ;
-   Outtext ("--- Test of Qua.") ;
-   Outimage ; Outimage ;
+      i := 1;
+   end of class A;
+
+   A class B;
+   begin
+      text procedure Tp; Tp :- copy(" B.Tp ");
+
+      integer         i;
+
+      i := 2;
+   end of class B;
+
+   B class C;
+   begin
+      text procedure Tp; Tp :- copy(" C.Tp ");
+
+      integer         i;
+
+      i := 3;
+   end of class C;
+
+   ref(A)            ra;
+   ref(B)            rb;
+   ref(C)            rc;
+
+   procedure check(i, t, vi, vt, enr); value t, vt;
+      integer i, vi, enr;
+      text t, vt;
+   begin
+      if i = vi and t = vt then else begin
+         err("Qualification");
+         outtext("   Case("); outint(enr, if enr < 10 then 1 else 2);
+         outtext(").");
+         outimage;
+         outtext("            Erroneus values : ");
+         outimage;
+         outtext("                   i = ");
+         outint(i, 4);
+         outimage;
+         outtext("                   t = ");
+         outtext(t);
+         outimage;
+      end;
    end;
 
-   ra :- rb :- rc :- new C ;
 
-   Check (ra.i, ra.Tp, 1, " A.Tp ", 1) ;
-   Check (ra qua B.i, ra qua B.Tp, 2, " B.Tp ", 2) ;
-   Check (ra qua C.i, ra qua C.Tp, 3, " C.Tp ", 3) ;
+   ra :- rb :- rc :- new C;
 
-   Check (rb qua A.i, rb qua A.Tp, 1, " A.Tp ", 4) ;
-   Check (rb.i, rb.Tp, 2, " B.Tp ", 5) ;
-   Check (rb qua C.i, rb qua C.Tp, 3, " C.Tp ", 6) ;
+   check(ra.i, ra.Tp, 1, " A.Tp ", 1);
+   check(ra qua B.i, ra qua B.Tp, 2, " B.Tp ", 2);
+   check(ra qua C.i, ra qua C.Tp, 3, " C.Tp ", 3);
 
-   Check (rc qua A.i, rb qua A.Tp, 1, " A.Tp ", 7) ;
-   Check (rc qua B.i, rc qua B.Tp, 2, " B.Tp ", 8) ;
-   Check (rc.i, rc.Tp, 3, " C.Tp ", 9) ;
+   check(rb qua A.i, rb qua A.Tp, 1, " A.Tp ", 4);
+   check(rb.i, rb.Tp, 2, " B.Tp ", 5);
+   check(rb qua C.i, rb qua C.Tp, 3, " C.Tp ", 6);
 
-   Check (ra qua B qua C qua B qua A.i, rb qua A qua C qua B.Tp,
-          1, " B.Tp ", 10) ;
-   Check (rc qua C.i, ra qua C qua A qua B qua A qua C.Tp, 3, " C.Tp ", 11) ;
+   check(rc qua A.i, rb qua A.Tp, 1, " A.Tp ", 7);
+   check(rc qua B.i, rc qua B.Tp, 2, " B.Tp ", 8);
+   check(rc.i, rc.Tp, 3, " C.Tp ", 9);
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 48") ;
-   End ;
+   check(ra qua B qua C qua B qua A.i, rb qua A qua C qua B.Tp,
+          1, " B.Tp ", 10);
+   check(rc qua C.i, ra qua C qua A qua B qua A qua C.Tp, 3, " C.Tp ", 11);
 
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 48") ;
-   Outimage
-   end
-   
- End;
+end;

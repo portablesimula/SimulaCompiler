@@ -6,66 +6,63 @@
 %
 %  WRITTEN BY:  BEH   08/08-86
 % ==============================================================================
-Begin
-   Boolean found_error ;
-   Boolean verbose=FALSE;
+external class SimulaTest;
 
-   Text array lines, facit (1:20) ;
-   Integer lnr ;
+SimulaTest(68,"--- Test of coroutines.") begin
 
-   Procedure Saveline ;
-   Begin
-      lnr := lnr + 1 ;
-      lines (lnr) :- Copy (sysout.image.strip) ;
-      sysout.image.setpos (1) ;
-      sysout.image := Notext
-   End ;
+   text array lines, facit(1:20);
+   integer lnr;
 
-   Procedure Checklines (n, e) ;
-      integer n, e ;
+   procedure Saveline;
    begin
-      Boolean Ok ;
-      integer i ;
+      lnr := lnr + 1;
+      lines(lnr) :- copy(sysout.image.strip);
+      sysout.image.setpos(1);
+      sysout.image := notext
+   end;
 
-      Ok := true ;
+   procedure Checklines(n, e);
+      integer n, e;
+   begin
+      boolean Ok;
+      integer i;
+
+      Ok := true;
 
       if n = lnr then
-      Begin
-         For i := 1 step 1 until n do
-         If lines (i) <> facit (i) then
-            Ok := false ;
-      End else
-         Ok := false ;
+      begin
+         for i := 1 step 1 until n do
+         if lines(i) <> facit(i) then
+            Ok := false;
+      end else
+         Ok := false;
 
-      If not Ok then
-      Begin
-         Outtext ("*** error : Coroutines (") ;
-         Outint (e, if e < 10 then 1 else 2) ;
-         Outtext (").") ;
-         Outimage ;
-         Outtext ("            Erroneus output : lnr = ") ;
-         Outint (lnr, 3) ;
-         Outimage ;
-         For i := 1 step 1 until lnr do
+      if not Ok then
+      begin
+         err("Failed");
+         outtext("Coroutines(");
+         outint(e, if e < 10 then 1 else 2);
+         outtext(")."); outimage;
+         outtext("            Erroneus output : lnr = ");
+         outint(lnr, 3); outimage;
+         for i := 1 step 1 until lnr do
          begin
-            Outtext ("                 ") ;
-            Outtext (lines (i)) ;
-            Outimage ;
-         end ;
-         Outimage ;
-         found_error := true
-      end ;
+            outtext("                 ");
+            outtext(lines(i)); outimage;
+         end;
+         outimage;
+      end;
 
-      For i := 1 step 1 until 20 do
-         lines (i) :- facit (i) :- notext ;
-      lnr := 0 ;
+      for i := 1 step 1 until 20 do
+         lines(i) :- facit(i) :- notext;
+      lnr := 0;
 
-   end pros. checklines ;
+   end pros. checklines;
 
 
-   Character c1, c2 ;
+   character c1, c2;
 
-   PROCEDURE trace(msg); text msg;
+   procedure trace(msg); text msg;
    begin
       if verbose then
       begin
@@ -76,115 +73,98 @@ Begin
    end;
 
 
-   Class Coroutine ;
+   class Coroutine;
    begin
       trace("In Coroutine: Just before Detach");
-      detach ;
+      detach;
       trace("In Coroutine: Just after Detach");
    end;
 
-   Coroutine Class Reader ;
-   While true do
-   Begin
-      c1 := inchar ;
+   Coroutine class Reader;
+   while true do
+   begin
+      c1 := inchar;
       trace("In Reader: Just before Detach");
-      Detach ;
+      detach;
       trace("In Reader: Just after Detach");
-   End ;
+   end;
 
-   Coroutine Class Changer ;
-   Begin
-      Call (r) ;
-      While true do
-      Begin
+   Coroutine class Changer;
+   begin
+      call(r);
+      while true do
+      begin
          if c1 = '*' then
-         Begin
-            Call (r) ;
+         begin
+            call(r);
             if c1 = '*' then
                c2 := '$'
             else
-            Begin
-               c2 := '*' ;
-               Resume (w) ;
+            begin
+               c2 := '*';
+               resume(w);
                c2 := c1
-            End ;
-         End else c2 := c1 ;
-         Resume (w) ; Call (r) ;
-      End ;
-   End class changer ;
+            end;
+         end else c2 := c1;
+         resume(w); call(r);
+      end;
+   end class changer;
 
-   Coroutine Class Writer ;
-   Begin
-      Integer i ;
+   Coroutine class Writer;
+   begin
+      integer i;
 
-      While true do
-      Begin
+      while true do
+      begin
          for i := 1 step 1 until 15 do
-         Begin
+         begin
             if c2 = '!' then
-            Begin
-               Saveline ;
-               detach ;
-               Goto R
-            End else
-            Begin
-               outchar(c2) ;
-               Resume (c)
-            End ;
-         End ;
-         Saveline ;
+            begin
+               Saveline;
+               detach;
+               goto R
+            end else
+            begin
+               outchar(c2);
+               resume(c)
+            end;
+         end;
+         Saveline;
        R:
-      End ;
-   End ;
-
-   Ref (Coroutine) r, c, w ;
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 68") ;
-   Outimage ;
-   Outtext ("--- Test coroutines.") ;
-   Outimage ; Outimage ;
+      end;
    end;
 
+   ref(Coroutine) r, c, w;
+
    trace("Before new Reader");
-   r :- New Reader ;
+   r :- new Reader;
    trace("Before new Changer");
-   c :- New Changer ;
+   c :- new Changer;
    trace("Before new Write");
-   w :- New Writer ;
+   w :- new Writer;
 
-   sysin.image := "|lhkjdfjg*fdgh*98dsgh**kjdk*sgjfhgh***kljhasdg*kfhgs!ksdf" ;
-   sysin.image.setpos (1) ;
+   sysin.image := "|lhkjdfjg*fdgh*98dsgh**kjdk*sgjfhgh***kljhasdg*kfhgs!ksdf";
+   sysin.image.setpos(1);
 
-   resume (c) ;
+   resume(c);
 
-   facit (1) :- "|lhkjdfjg*fdgh*" ;
-   facit (2) :- "98dsgh$kjdk*sgj" ;
-   facit (3) :- "fhgh$*kljhasdg*" ;
-   facit (4) :- "kfhgs" ;
+   facit(1) :- "|lhkjdfjg*fdgh*";
+   facit(2) :- "98dsgh$kjdk*sgj";
+   facit(3) :- "fhgh$*kljhasdg*";
+   facit(4) :- "kfhgs";
 
-   Checklines (4, 1) ;
+   Checklines(4, 1);
 
-   sysin.image.setpos (1) ;
-   sysin.image := "hi*auer****5tp9a**e598yu5e*890u**yj89u***53pq**98790!" ;
+   sysin.image.setpos(1);
+   sysin.image := "hi*auer****5tp9a**e598yu5e*890u**yj89u***53pq**98790!";
 
-   resume (c) ;
+   resume(c);
 
-   facit (1) :- "hi*auer$$5tp9a$" ;
-   facit (2) :- "e598yu5e*890u$y" ;
-   facit (3) :- "j89u$*53pq$9879" ;
-   facit (4) :- "0" ;
+   facit(1) :- "hi*auer$$5tp9a$";
+   facit(2) :- "e598yu5e*890u$y";
+   facit(3) :- "j89u$*53pq$9879";
+   facit(4) :- "0";
 
-   Checklines (4, 2) ;
+   Checklines(4, 2);
 
-   IF found_error THEN
-   ELSE
-   Begin
-      Outtext ("--- NO ERRORS FOUND IN TEST 68") ;
-   End ;
-
-   if verbose then begin
-   OutText ("--- END Simula a.s. TEST 68") ;
-   Outimage
-   end
- End
+ end

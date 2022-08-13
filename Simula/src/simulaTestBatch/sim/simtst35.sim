@@ -10,17 +10,17 @@
 %
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(35,"--- Test labels and switches as parameters to procedures") begin
 
    integer i, j ;
-   Boolean b ;
+   boolean b ;
 
-   Integer Procedure sqri ;
+   integer procedure sqri ;
       sqri := i*i ;
 
-   Integer Procedure P (f) ;
+   integer procedure P (f) ;
       name f ;
       integer f ;
    begin
@@ -31,19 +31,12 @@ BEGIN
          P := f + P (f) ;
    end ;
 
-   Procedure Q (f, a) ;
+   procedure Q (f, a) ;
       name a ;
       integer procedure f ;
       integer a ;
       a := f ;
 
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 35") ;
-   Outimage ;
-   Outtext ("--- Test type procedures as parameters");
-   Outimage; Outimage;
-   end;
 
    i := 2 ;
 
@@ -51,12 +44,12 @@ BEGIN
 
    if j <> 4 then
    begin
-      Outtext ("*** error : Value of j (1).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outint (j, 5) ;
-      Outimage ;
-      found_error := true
+      err("Value of j (1).") ;
+      outimage ;
+      outtext ("            Erroneus value : ") ;
+      outint (j, 5) ;
+      outimage ;
+      
    end ;
 
    i := 0 ;
@@ -65,12 +58,12 @@ BEGIN
 
    if j <> 385 then
    begin
-      Outtext ("*** error : Value of j (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outint (j, 7) ;
-      Outimage ;
-      found_error := true
+      err("Value of j (2).") ;
+      outimage ;
+      outtext ("            Erroneus value : ") ;
+      outint (j, 7) ;
+      outimage ;
+      
    end ;
 
 
@@ -81,12 +74,12 @@ BEGIN
 %
 %  if j <> 385 then
 %  begin
-%     Outtext ("*** error : Value of j (2).") ;
-%     Outimage ;
-%     Outtext ("            Erroneus value : ") ;
-%     Outint (j, 7) ;
-%     Outimage ;
-%     found_error := true
+%     err("Value of j (2).") ;
+%     outimage ;
+%     outtext ("            Erroneus value : ") ;
+%     outint (j, 7) ;
+%     outimage ;
+%     
 %  end ;
 
 
@@ -97,23 +90,12 @@ BEGIN
 %
 %  if j <> 3025 then
 %  begin
-%     Outtext ("*** error : Value of j (3).") ;
-%     Outimage ;
-%     Outtext ("            Erroneus value : ") ;
-%     Outint (j, 7) ;
-%     Outimage ;
-%     found_error := true
+%     err("Value of j (3).") ;
+%     outimage ;
+%     outtext ("            Erroneus value : ") ;
+%     outint (j, 7) ;
+%     outimage ;
+%     
 %  end ;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 35") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 35") ;
-   Outimage
-   end
-   
- END;
+end;

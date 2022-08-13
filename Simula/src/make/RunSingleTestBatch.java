@@ -41,79 +41,79 @@ public final class RunSingleTestBatch {
 //		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 //		names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
 //		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
-
-		names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
-		names.add("simtst12.sim"); // OK:  Text value and reference relations.
-		names.add("simtst13.sim"); // OK:  Text value assignment and text reference assigment.
-		names.add("simtst14.sim"); // OK:  Text attributes: pos, setpos, more, getchar and putchar.
-		names.add("simtst15.sim"); // OK:  Text generation procedures copy and blanks.
-		//names.add("simtst16.sim"); // OK:  Standard Text procedures sub and strip.
-		//names.add("simtst17.sim"); // OK:  Editing and De-editing
-		//names.add("simtst18.sim"); // OK:  The put- and get-procedures for texts.
-		//names.add("simtst19.sim"); // OK:  Text concatenation and text expression evaluation.
-		//names.add("simtst20.sim"); // OK:  Simple tests: integer relations <, <=, =, >=, > and <>
-
-		//names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
-		//names.add("simtst22.sim"); // OK:  Test for-loops with various for-list elements
-		//names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
-		//names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
-		//names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
-		//names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
-		//names.add("simtst27.sim"); // OK:  Test while-loops.
-		//names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
-		//names.add("simtst29.sim"); // OK:  Procedure parameters by value
-		//names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
-
-		//names.add("simtst31.sim"); // OK:  Labels and switches as parameters to procedures
-		//names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
-		//names.add("simtst33.sim"); // OK:  Test call by reference
-		//names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
-		//names.add("simtst35.sim"); // OK:  Type procedures as parameters.
-		//names.add("simtst36.sim"); // OK:  Jensens Device - call by name.
-		//names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
-		//names.add("simtst38.sim"); // OK:  Test the value of type procedures.
-		//names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
-		//names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
-		//names.add("p40a.sim");     // OK:  Precompile this for Simtst 40.
-		//names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
-		//names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
-
-		//names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
-		//names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
-		//names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
-		//names.add("simtst43.sim"); // OK:  Compute "n-fac", using recursion.
-		//names.add("simtst44.sim"); // OK:  Test text procedure.
-		//names.add("simtst45.sim"); // OK:  Test object relations - is and in.
-		//names.add("simtst46.sim"); // OK:  Test the qualification of a function designator.
-		//names.add("simtst47.sim"); // OK:  Test of this.
-		//names.add("simtst48.sim"); // OK:  Test of qua.
-		//names.add("simtst49.sim"); // OK:  For statements in connection blocks.
-		//names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
-
-		//names.add("simtst51.sim"); // OK:  Test 'inner'.
-		//names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
-		//names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		//names.add("simtst54.sim"); // OK: A VERY Simple Simulation
-		//names.add("simtst55.sim"); // OK:  Test virtual procedures.
-		//names.add("simtst56.sim"); // OK:  Test virtual procedures.
-		//names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
-		//names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
-		//names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
-		//names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
-
-		//names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
-		//names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.  Re-trow
-		//names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
-		//names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
-		//names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
-		//names.add("simtst66.sim"); // OK:  Test coroutines and two infiles which read from the same file.
-		//names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
-		//names.add("simtst68.sim"); // OK:  Test of coroutines.
-		//names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
-		//names.add("simtst70.sim"); // OK:  Text attributes and relations
+//
+//		names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
+//		names.add("simtst12.sim"); // OK:  Text value and reference relations.
+//		names.add("simtst13.sim"); // OK:  Text value assignment and text reference assigment.
+//		names.add("simtst14.sim"); // OK:  Text attributes: pos, setpos, more, getchar and putchar.
+//		names.add("simtst15.sim"); // OK:  Text generation procedures copy and blanks.
+//		names.add("simtst16.sim"); // OK:  Standard Text procedures sub and strip.
+//		names.add("simtst17.sim"); // OK:  Editing and De-editing
+//		names.add("simtst18.sim"); // OK:  The put- and get-procedures for texts.
+//		names.add("simtst19.sim"); // OK:  Text concatenation and text expression evaluation.
+//		names.add("simtst20.sim"); // OK:  Simple tests: integer relations <, <=, =, >=, > and <>
+//
+//		names.add("simtst21.sim"); // OK:  Arrays of simple types and text.
+//		names.add("simtst22.sim"); // OK:  Test for-loops with various for-list elements
+//		names.add("simtst23.sim"); // OK:  Type conversions in for step-until element.
+//		names.add("simtst24.sim"); // OK:  Conditional statements with more complex Boolean expressions.
+//		names.add("simtst25.sim"); // OK:  Multiple arithmetic assignment
+//		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
+//		names.add("simtst27.sim"); // OK:  Test while-loops.
+//		names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
+//		names.add("simtst29.sim"); // OK:  Procedure parameters by value
+//		names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
+//
+//		names.add("simtst31.sim"); // OK:  Labels and switches as parameters to procedures
+//		names.add("simtst32.sim"); // OK:  Simple test of formal procedures.
+//		names.add("simtst33.sim"); // OK:  Test call by reference
+//		names.add("simtst34.sim"); // OK:  Procedures with procedures as parameters.
+//		names.add("simtst35.sim"); // OK:  Type procedures as parameters.
+//		names.add("simtst36.sim"); // OK:  Jensens Device - call by name.
+//		names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
+//		names.add("simtst38.sim"); // OK:  Test the value of type procedures.
+//		names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
+//		names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
+//		names.add("p40a.sim");     // OK:  Precompile this for Simtst 40.
+//		names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
+//		names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
+//
+//		names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
+//		names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
+//		names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
+//		names.add("simtst43.sim"); // OK:  Compute "n-fac", using recursion.
+//		names.add("simtst44.sim"); // OK:  Test text procedure.
+//		names.add("simtst45.sim"); // OK:  Test object relations - is and in.
+//		names.add("simtst46.sim"); // OK:  Test the qualification of a function designator.
+//		names.add("simtst47.sim"); // OK:  Test of this.
+//		names.add("simtst48.sim"); // OK:  Test of qua.
+//		names.add("simtst49.sim"); // OK:  For statements in connection blocks.
+//		names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
+//
+//		names.add("simtst51.sim"); // OK:  Test 'inner'.
+//		names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
+//		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
+//		names.add("simtst54.sim"); // OK: A VERY Simple Simulation
+//		names.add("simtst55.sim"); // OK:  Test virtual procedures.
+//		names.add("simtst56.sim"); // OK:  Test virtual procedures.
+//		names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
+//		names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
+//		names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
+//		names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
+//
+//		names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
+//		names.add("simtst62.sim"); // OK:  Test complex use of detach and resume.  Re-trow
+//		names.add("simtst63.sim"); // OK:  Transmission by name of reference types. 
+//		names.add("simtst64.sim"); // OK:  Parameter transmission by value to classes.
+//		names.add("simtst65.sim"); // OK:  Parameter transmission by reference to classes.
+//		names.add("simtst66.sim"); // OK:  Test coroutines and two infiles which read from the same file.
+//		names.add("simtst67.sim"); // OK:  Simple test of detach, call and resume.
+//		names.add("simtst68.sim"); // OK:  Test of coroutines.
+//		names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
+//		names.add("simtst70.sim"); // OK:  Text attributes and relations
 		
-		//names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
-		//names.add("simtst72.sim"); // OK:  Test of formal procedures.
+		names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
+		names.add("simtst72.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst73.sim"); // OK:  Test of formal procedures.
 		//names.add("simtst74.sim"); // OK:  Test resume and detach.
 		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.

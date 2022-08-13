@@ -8,310 +8,217 @@
 %               should be filled in.
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
-   real eps ;
+external class SimulaTest;
 
-   Class A (t) ; value t ; text t ;;
+SimulaTest(38,"--- Test the value of type procedures.") begin
+   real eps;
 
-   A Class AB ;;
+   class A(t); value t; text t;;
 
-   Boolean       B ;
-   Short Integer si ;
-   Integer       i ;
-   Real          r ;
-   Long Real     lr ;
-   Text          t ;
-   Ref (A)       rA, rA2 ;
-   Ref (AB)      rB, rB2 ;
+   A class AB;;
 
-   Boolean Procedure PB (b) ; Boolean b ;
+   boolean       B;
+   short integer si;
+   integer       i;
+   real          r;
+   long real     lr;
+   text          t;
+   ref(A)       rA, rA2;
+   ref(AB)      rB, rB2;
+
+   boolean procedure PB(b); boolean b;
    if b then
    begin
       PB := true
-   end ;
+   end;
 
 
-   Short Integer Procedure  Psi (b) ; Boolean b ;
+   short integer procedure  Psi(b); boolean b;
    if b then
    begin
       Psi := 5
-   end ;
+   end;
 
-   Integer Procedure Pi (b) ; Boolean b ;
+   integer procedure Pi(b); boolean b;
    if b then
    begin
-      Pi := Psi (PB (true)) + 10
-   end ;
+      Pi := Psi(PB(true)) + 10
+   end;
 
 
-   Real Procedure Pr (b) ; Boolean b ;
+   real procedure Pr(b); boolean b;
    if b then
    begin
-      Pr := Pi (true) * Psi (true)
-   end ;
+      Pr := Pi(true) * Psi(true)
+   end;
 
-   Long Real Procedure Plr (b) ; Boolean b ;
+   long real procedure Plr(b); boolean b;
    if b then
    begin
-      Plr := Pr (true) * Psi (true) + Plr (false)
-   end ;
+      Plr := Pr(true) * Psi(true) + Plr(false)
+   end;
 
-   Text Procedure Pt (b) ; Boolean b ;
+   text procedure Pt(b); boolean b;
    if b then
    begin
-      text t ;
-      t :- blanks (5) ;
-      t.putint (Pi (true)) ;
+      text t;
+      t :- blanks(5);
+      t.putint(Pi(true));
       Pt :- t
-   end ;
+   end;
 
-   Ref (A) Procedure PrA (i) ; integer i ;
+   ref(A) procedure PrA(i); integer i;
    if i = 1 then
        PrA :- rA
    else
    if i = 2 then
-      PrA :- new AB ("ab") ;
+      PrA :- new AB("ab");
 
-   Ref (AB) Procedure PrAB (b) ; Boolean b ;
+   ref(AB) procedure PrAB(b); boolean b;
    if b then
    begin
-      PrAB :- new AB ("bb") ;
-   end ;
-
-
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 38") ;
-   Outimage ;
-   Outtext ("--- Test value of type procedures.") ;
-   Outimage ; Outimage ;
+      PrAB :- new AB("bb");
    end;
 
-   eps := 0.001 ;                                         !***** NOTE 1 *****;
 
-   B := PB (B) ;
+   eps := 0.001;                                         !***** NOTE 1 *****;
 
-   if B then
-   begin
-      Outtext ("*** error : Standard value of Boolean Procedure (1).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outtext (if B then "true" else "false") ;
-      Outimage ;
-      found_error := true
-   end ;
+   B := PB(B);
+
+   if B then begin
+      err("Standard value of boolean procedure(1).");
+      outtext("            Erroneus value : ");
+      outtext(if B then "true" else "false");
+      outimage;
+   end;
 
 
-   B := PB (B eqv B) ;
+   B := PB(B eqv B);
 
-   if B then
-   else
-   begin
-      Outtext ("*** error : Value of Boolean Procedure (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outtext (if B then "true" else "false") ;
-      Outimage ;
-      found_error := true
-   end ;
+   if B then else begin
+      err("Value of boolean procedure(2).");
+      outtext("            Erroneus value : ");
+      outtext(if B then "true" else "false");
+      outimage;
+   end;
 
 
-   si := Psi (false) ;
+   si := Psi(false);
 
-   if si = 0 then
-   else
-   begin
-      Outtext ("*** error : Standard value of Short Integer procedure (1).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outint (si, 5) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if si = 0 then else begin
+      err("Standard value of short integer procedure(1).");
+      outtext("            Erroneus value : ");
+      outint(si, 5); outimage;
+   end;
 
-   si := Psi (true) ;
+   si := Psi(true);
 
-   if si = 5 then
-   else
-   begin
-      Outtext ("*** error : value of Short Integer procedure (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outint (si, 5) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if si = 5 then else begin
+      err("value of short integer procedure(2).");
+      outtext("            Erroneus value : ");
+      outint(si, 5); outimage;
+   end;
 
 
-   i := Pi (B and not B) ;
+   i := Pi(B and not B);
 
-   if i = 0 then
-   else
-   begin
-      Outtext ("*** error : Standard value of Integer procedure (3).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outint (i, 7) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if i = 0 then else begin
+      err("Standard value of integer procedure(3).");
+      outtext("            Erroneus value : ");
+      outint(i, 7); outimage;
+   end;
 
 
-   i := Pi (B or not B) ;
+   i := Pi(B or not B);
 
-   if i = 15 then
-   else
-   begin
-      Outtext ("*** error : value of Integer procedure (4).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outint (i, 7) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if i = 15 then else begin
+      err("value of integer procedure(4).");
+      outtext("            Erroneus value : ");
+      outint(i, 7); outimage;
+   end;
 
-   r :=  Pr (PB (PB (false))) ;
+   r :=  Pr(PB(PB(false)));
 
-   if r = 0 then
-   else
-   begin
-      Outtext ("*** error : Standard value of Real procedure (5).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outreal (r, 4, 10) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if r = 0 then else begin
+      err("Standard value of real procedure(5).");
+      outtext("            Erroneus value : ");
+      outreal(r, 4, 10); outimage;
+   end;
 
-   r := Pr (PB (B imp B)) ;
+   r := Pr(PB(B imp B));
 
-   if r-r*eps > 75 or r+r*eps < 75 then
-   begin
-      Outtext ("*** error : value of Real procedure (6).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outreal (r, 4, 10) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if r-r*eps > 75 or r+r*eps < 75 then begin
+      err("value of real procedure(6).");
+      outtext("            Erroneus value : ");
+      outreal(r, 4, 10); outimage;
+   end;
 
 
-   lr := Plr (Pr (false) > 2) ;
+   lr := Plr(Pr(false) > 2);
 
-   if lr = 0 then
-   else
-   begin
-      Outtext ("*** error : Standard value of Long Real procedure (7).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outreal (lr, 4, 10) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if lr = 0 then else begin
+      err("Standard value of long real procedure(7).");
+      outtext("            Erroneus value : ");
+      outreal(lr, 4, 10); outimage;
+   end;
 
 
-   lr := Plr (true) ;
+   lr := Plr(true);
 
-   if lr-lr*eps > 375 or lr+lr*eps < 375 then
-   begin
-      Outtext ("*** error : value of Long Real procedure (8).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outreal (lr, 4, 10) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if lr-lr*eps > 375 or lr+lr*eps < 375 then begin
+      err("value of long real procedure(8).");
+      outtext("            Erroneus value : ");
+      outreal(lr, 4, 10); outimage;
+   end;
 
 
-   rA :- PrA (0) ;
+   rA :- PrA(0);
 
-   if rA == none then
-   else
-   begin
-      Outtext ("*** error : Standard value of Ref (A) procedure (9).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outtext ("not none") ;
-      Outimage ;
-      found_error := true
-   end ;
+   if rA == none then else begin
+      err("Standard value of ref(A) procedure(9).");
+      outtext("            Erroneus value : not none");
+      outimage;
+   end;
 
 
-   rA :- new A ("a") ;
+   rA :- new A("a");
 
-   rA2 :- PrA (1) ;
+   rA2 :- PrA(1);
 
-   if rA2 == rA then
-   else
-   begin
-      Outtext ("*** error : value of Ref (A) procedure (10).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outtext (if rA2 == none then "Object none" else
-               if rA2.t == notext then "Attribute = notext" else
-                            rA2.t ) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if rA2 == rA then else begin
+      err("value of ref(A) procedure(10).");
+      outtext("            Erroneus value : ");
+      outtext(if rA2 == none then "Object none" else
+              if rA2.t == notext then "Attribute = notext" else rA2.t );
+   end;
 
 
-   rA2 :- PrA (2) ;
+   rA2 :- PrA(2);
 
-   if rA2 =/= none and !then; rA2.t = "ab" then
-   else
-   begin
-      Outtext ("*** error : Subordinate value of Ref (A) procedure (11).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outtext (if rA2 == none then "object none" else
-               if rA2.t == notext then "attribute = notext" else
-                                      rA2.t ) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if rA2 =/= none and !then; rA2.t = "ab" then else begin
+      err("Subordinate value of ref(A) procedure(11).");
+      outtext("            Erroneus value : ");
+      outtext(if rA2 == none then "object none" else
+              if rA2.t == notext then "attribute = notext" else rA2.t );
+   end;
 
 
-   rB :- PrAB (false) ;
+   rB :- PrAB(false);
 
-   if rB == none then
-   else
-   begin
-      Outtext ("*** error : Standard value of Ref (AB) procedure (12).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outtext (if rB == none then "Object none" else
-               if rB.t == notext then "Attribute = notext" else
-                                      rB.t ) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if rB == none then else begin
+      err("Standard value of ref(AB) procedure(12).");
+      outtext("            Erroneus value : ");
+      outtext(if rB == none then "Object none" else
+              if rB.t == notext then "Attribute = notext" else rB.t );
+   end;
 
-   rB :- PrAB (rB2 == none) ;
+   rB :- PrAB(rB2 == none);
 
-   if rB =/= none and !then; rB.t = "bb" then
-   else
-   begin
-      Outtext ("*** error : value of Ref (AB) procedure (13).") ;
-      Outimage ;
-      Outtext ("            Erroneus value : ") ;
-      Outtext (if rB == none then "Object none" else
-               if rB.t == notext then "Attribute = notext" else
-                                      rB.t ) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if rB =/= none and !then; rB.t = "bb" then else begin
+      err("value of ref(AB) procedure(13).");
+      outtext("            Erroneus value : ");
+      outtext(if rB == none then "Object none" else
+              if rB.t == notext then "Attribute = notext" else rB.t );
+   end;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 38") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 38") ;
-   Outimage
-   end
-   
- END;
+end;

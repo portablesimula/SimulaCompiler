@@ -37,15 +37,15 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class Simset$ extends CLASS$ {
+public class simset$ extends CLASS$ {
 
 	// Constructor
-    public Simset$(final RTObject$ staticLink) {
+    public simset$(final RTObject$ staticLink) {
     	super(staticLink);
     	BBLK();
     }
     
-    public Simset$ STM$() {
+    public simset$ STM$() {
         EBLK();
         return(this);
     }

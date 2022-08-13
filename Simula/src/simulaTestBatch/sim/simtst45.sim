@@ -6,138 +6,119 @@
 %
 %  WRITTEN BY:  BEH   28/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   CLASS A ; ;
-   A CLASS B ; ;
-   A CLASS C ; ;
-   B CLASS D ; ;
-   C CLASS E ; ;
+SimulaTest(45,"--- Test object relations - is and in.") begin
 
-   REF (A) ra ;
-   REF (B) rb ;
-   REF (C) rc ;
-   REF (D) rd ;
-   REF (E) re ;
+   class A;;
+   A class B;;
+   A class C;;
+   B class D;;
+   C class E;;
 
-   PROCEDURE Check (a, b, enr) ;  BOOLEAN a, b ;  integer enr ;
-   IF  a EQV b  THEN
-   ELSE
-   begin
-      Outtext ("*** error : Object relation (") ;
-      Outint (enr, if enr < 10 then 1 else 2 ) ;
-      Outtext (").") ;
-      Outimage ;
-      Outtext ("            Erroneus valus : ") ;
-      Outimage ;
-      Outtext ("                 a = ") ;
-      Outtext (if a then "true" else "false") ;
-      Outimage ;
-      Outtext ("                 b = ") ;
-      Outtext (if b then "true" else "false" ) ;
-      Outimage ;
-      found_error := true
-   end ;
+   ref(A) ra;
+   ref(B) rb;
+   ref(C) rc;
+   ref(D) rd;
+   ref(E) re;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 45") ;
-   Outimage ;
-   Outtext ("--- Test object relations - IS and IN.") ;
-   Outimage ; Outimage ;
+   procedure check(a, b, enr);  boolean a, b;  integer enr;
+   if  a eqv b  then else begin
+      err("Object relation");
+      outtext("   case(");
+      outint(enr, if enr < 10 then 1 else 2 );
+      outtext(").");
+      outimage;
+      outtext("            Erroneus valus : ");
+      outimage;
+      outtext("                 a = ");
+      outtext(if a then "true" else "false");
+      outimage;
+      outtext("                 b = ");
+      outtext(if b then "true" else "false" );
+      outimage;
    end;
 
-   ra :- NEW A ;
-   rb :- NEW B ;
-   rc :- NEW C ;
-   rd :- NEW D ;
-   re :- NEW E ;
+   ra :- new A;
+   rb :- new B;
+   rc :- new C;
+   rd :- new D;
+   re :- new E;
 
 
-   Check (ra IS A, TRUE, 1) ;
-   Check (rb IS B, TRUE, 2) ;
-   Check (rc IS C, TRUE, 3) ;
-   Check (rd IS D, TRUE, 4) ;
-   Check (re IS E, TRUE, 5) ;
-   Check (ra IS B, FALSE, 6) ;
-   Check (ra IS C, FALSE, 7) ;
-   Check (ra IS D, FALSE, 8) ;
-   Check (ra IS E, FALSE, 9) ;
-   Check (rb IS A, FALSE, 10) ;
-   Check (rb IS C, FALSE, 11) ;
-   Check (rb IS D, FALSE, 12) ;
-   Check (rb IS E, FALSE, 13) ;
-   Check (rc IS A, FALSE, 14) ;
-   Check (rc IS B, FALSE, 15) ;
-   Check (rc IS D, FALSE, 16) ;
-   Check (rc IS E, FALSE, 17) ;
-   Check (rd IS A, FALSE, 18) ;
-   Check (rd IS B, FALSE, 19) ;
-   Check (rd IS C, FALSE, 20) ;
-   Check (rd IS E, FALSE, 21) ;
-   Check (re IS A, FALSE, 22) ;
-   Check (re IS B, FALSE, 23) ;
-   Check (re IS C, FALSE, 24) ;
-   Check (re IS D, FALSE, 25) ;
+   check(ra is A, true, 1);
+   check(rb is B, true, 2);
+   check(rc is C, true, 3);
+   check(rd is D, true, 4);
+   check(re is E, true, 5);
+   check(ra is B, false, 6);
+   check(ra is C, false, 7);
+   check(ra is D, false, 8);
+   check(ra is E, false, 9);
+   check(rb is A, false, 10);
+   check(rb is C, false, 11);
+   check(rb is D, false, 12);
+   check(rb is E, false, 13);
+   check(rc is A, false, 14);
+   check(rc is B, false, 15);
+   check(rc is D, false, 16);
+   check(rc is E, false, 17);
+   check(rd is A, false, 18);
+   check(rd is B, false, 19);
+   check(rd is C, false, 20);
+   check(rd is E, false, 21);
+   check(re is A, false, 22);
+   check(re is B, false, 23);
+   check(re is C, false, 24);
+   check(re is D, false, 25);
 
-   Check (rb QUA A IS B, TRUE, 26) ;
-   Check (rc QUA A IS C, TRUE, 27) ;
-   Check (rd QUA A IS D, TRUE, 28) ;
-   Check (re QUA A IS E, TRUE, 29) ;
+   check(rb qua A is B, true, 26);
+   check(rc qua A is C, true, 27);
+   check(rd qua A is D, true, 28);
+   check(re qua A is E, true, 29);
 
-   ra :- NEW B ;
-   Check (ra QUA A IS B, TRUE, 30) ;
+   ra :- new B;
+   check(ra qua A is B, true, 30);
 
-   rc :- NEW E ;
-   Check (rc QUA A IS E, TRUE, 31) ;
+   rc :- new E;
+   check(rc qua A is E, true, 31);
 
-   ra :- NEW A ; rc :- NEW C ;
-   Check (ra IN A, TRUE, 32) ;
-   Check (rb IN B, TRUE, 33) ;
-   Check (rc IN C, TRUE, 34) ;
-   Check (rd IN D, TRUE, 35) ;
-   Check (re IN E, TRUE, 36) ;
-   Check (ra IN B, FALSE, 37) ;
-   Check (ra IN C, FALSE, 38) ;
-   Check (ra IN D, FALSE, 39) ;
-   Check (ra IN E, FALSE, 40) ;
-   Check (rb IN D, FALSE, 41) ;
-   Check (rc IN E, FALSE, 42) ;
-   Check (rb IN A, TRUE, 43) ;
-   Check (rc IN A, TRUE, 44) ;
-   Check (rd IN A, TRUE, 45) ;
-   Check (rd IN B, TRUE, 46) ;
-   Check (re IN A, TRUE, 47) ;
-   Check (re IN C, TRUE, 48) ;
-   Check (re IN D, FALSE, 49) ;
-   Check (rd IN E, FALSE, 50) ;
-   Check (rb IN E, FALSE, 51) ;
-   Check (re IN B, FALSE, 52) ;
+   ra :- new A; rc :- new C;
+   check(ra in A, true, 32);
+   check(rb in B, true, 33);
+   check(rc in C, true, 34);
+   check(rd in D, true, 35);
+   check(re in E, true, 36);
+   check(ra in B, false, 37);
+   check(ra in C, false, 38);
+   check(ra in D, false, 39);
+   check(ra in E, false, 40);
+   check(rb in D, false, 41);
+   check(rc in E, false, 42);
+   check(rb in A, true, 43);
+   check(rc in A, true, 44);
+   check(rd in A, true, 45);
+   check(rd in B, true, 46);
+   check(re in A, true, 47);
+   check(re in C, true, 48);
+   check(re in D, false, 49);
+   check(rd in E, false, 50);
+   check(rb in E, false, 51);
+   check(re in B, false, 52);
 
-   Check (rb QUA A IN B, TRUE, 53) ;
-   Check (rc QUA A IN C, TRUE, 54) ;
-   Check (rd QUA A IN D, TRUE, 55) ;
-   Check (re QUA A IN E, TRUE, 56) ;
-   Check (rd QUA B IN D, TRUE, 57) ;
-   Check (re QUA C IN E, TRUE, 58) ;
+   check(rb qua A in B, true, 53);
+   check(rc qua A in C, true, 54);
+   check(rd qua A in D, true, 55);
+   check(re qua A in E, true, 56);
+   check(rd qua B in D, true, 57);
+   check(re qua C in E, true, 58);
 
-   ra :- rb :- NONE ;
-   Check (ra IN A, FALSE, 59) ;
-   Check (ra IS A, FALSE, 60) ;
-   Check (rb IN A, FALSE, 61) ;
-   Check (rb IS A, FALSE, 62) ;
-   Check (rb IN B, FALSE, 63) ;
+   ra :- rb :- none;
+   check(ra in A, false, 59);
+   check(ra is A, false, 60);
+   check(rb in A, false, 61);
+   check(rb is A, false, 62);
+   check(rb in B, false, 63);
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 45") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 45") ;
-   Outimage
-   end
    
- END;
+ end;

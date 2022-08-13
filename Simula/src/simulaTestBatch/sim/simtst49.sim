@@ -2,114 +2,68 @@
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 49
 %
-%  PURPOSE:     Test For statements in connection blocks.
+%  PURPOSE:     Test for statements in connection blocks.
 %
 %  REWRITTEN BY:  BEH   29/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   text t ;
+SimulaTest(49,"--- Test for statements in connection blocks.") begin
 
-   Class A ;
-   BEGIN
-      Integer         i, j, k ;
-   END of class A ;
+   text t;
 
-   A Class B ; ;
+   class A;
+   begin
+      integer         i, j, k;
+   end of class A;
 
-   Ref (A)            ra ;
-   Integer            l ;
+   A class B;;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 49") ;
-   Outimage ;
-   Outtext ("--- Test For statement in connection block.") ;
-   Outimage ; Outimage ;
+   ref(A)            ra;
+   integer            l;
+
+   ra :- new A;
+
+   inspect ra do
+      for i := l, l + 1, l + 2 do outint(i, 3);
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
+
+   if t = "  0  1  2" then else begin
+      err("for-loop(1).");
+      outtext("            Erroneus values : " & t); outimage;
    end;
 
-   ra :- New A ;
+   inspect ra do
+      for i := i, i + 1, i + 2 step -1 until 0 do
+         for j := i, i + 1 do outint(i + j, 3);
 
-   Inspect ra Do
-      For i := l, l + 1, l + 2 Do Outint (i, 3) ;
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
 
-   t :- copy (sysout.image.strip) ;
-   sysout.image.setpos (1) ;
-   sysout.image := notext ;
-
-   if t = "  0  1  2" then
-   else
-   begin
-      Outtext ("*** error : For-loop (1).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outtext (t) ;
-      Outimage ;
-      found_error := true
-   end ;
-
-   Inspect ra Do
-      For i := i, i + 1, i + 2 Step -1 Until 0 Do
-         For j := i, i + 1 Do Outint (i + j, 3) ;
-
-   t :- copy (sysout.image.strip) ;
-   sysout.image.setpos (1) ;
-   sysout.image := notext ;
-
-   if t = "  4  5  6  7 10 11  8  9  6  7  4  5  2  3  0  1"  then
-   else
-   begin
-      Outtext ("*** error : For-loop (2).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outtext (t) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if t = "  4  5  6  7 10 11  8  9  6  7  4  5  2  3  0  1"  then else begin
+      err("for-loop(2).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
 
 
-   Inspect ra
-   WHEN A Do
-      For k := k, k + 1 Do
-         For l := k Do Outint (k + l, 3)
-   WHEN B Do
-   BEGIN
-      Outtext ("*** error : Wrong statement selected (3).") ;
-      Outimage ;
-      found_error := true
-   end
-   OTHERWISE
-   BEGIN
-      Outtext ("*** error : Wrong statement selected (4).") ;
-      Outimage ;
-      found_error := true
-   end ;
+   inspect ra
+   when A do
+      for k := k, k + 1 do
+         for l := k do outint(k + l, 3)
+   when B do err("Wrong statement selected(3).")
+   otherwise err("Wrong statement selected(4).");
 
-   t :- copy (sysout.image.strip) ;
-   sysout.image.setpos (1) ;
-   sysout.image := notext ;
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
 
-   if t = "  0  2" then
-   else
-   begin
-      Outtext ("*** error : For-loop (5).") ;
-      Outimage ;
-      Outtext ("            Erroneus values : ") ;
-      Outtext (t) ;
-      Outimage ;
-      found_error := true
-   end ;
+   if t = "  0  2" then else begin
+      err("for-loop(5).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 49") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 49") ;
-   Outimage
-   end
-   
- END;
+end;

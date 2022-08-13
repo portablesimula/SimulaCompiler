@@ -6,47 +6,22 @@
 %
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   integer i ;
+SimulaTest(39,"--- Check that a formal parameter is global to the procedure body.") begin
 
-   procedure P (i) ;
-     name i ;
-     integer i ;
+   integer i;
+
+   procedure P(i);
+     name i;
+     integer i;
    begin
-     Integer i ;
-     i := 5 ;
-   end ;
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 39") ;
-   Outimage ;
-   Outtext ("--- Check that the formal parameters are global to the") ;
-   Outimage ;
-   Outtext ("--- procedure body.") ;
-   Outimage ; Outimage ;
+     integer i;
+     i := 5;
    end;
 
-   P (i) ;
+   P(i);
 
-   if i <> 0 then
-   begin
-      Outtext ("*** ERROR : Wrong variable used in procedure body.") ;
-      Outimage ;
-      found_error := true
-   end ;
+   if i <> 0 then err("Wrong variable used in procedure body.");
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 39") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 39") ;
-   Outimage
-   end
-   
- END;
+end;

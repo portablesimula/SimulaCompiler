@@ -21,10 +21,14 @@ public enum KeyWord
   // Other Symbols
   ASSIGNVALUE,ASSIGNREF,COMMA,COLON,SEMICOLON,BEGPAR,ENDPAR,BEGBRACKET,ENDBRACKET,EQR,NER,PLUS,MINUS,MUL,DIV,INTDIV,EXP,
   IDENTIFIER,BOOLEANKONST,INTEGERKONST,CHARACTERKONST,REALKONST,TEXTKONST,OR_ELSE,AND_THEN,DOT,NEWLINE,STRING;
+	  
+	  public String toLowerCase() {
+		  return(this.toString().toLowerCase());
+	  }
   
-  public String toJavaCode()
-  { switch (this)
-	{ case NONE: return("null");
+  public String toJavaCode() {
+	  switch (this) {
+	  case NONE: return("null");
 	  case NOTEXT: return("null");
 	  case ASSIGNVALUE: return(":=");
 	  case ASSIGNREF: return(":-");
@@ -52,7 +56,7 @@ public enum KeyWord
 	  case OR_ELSE: return ("||");
 	  case DOT: return (".");
 	  default: return (toString());
-	}
+	  }
   }
 
 }
