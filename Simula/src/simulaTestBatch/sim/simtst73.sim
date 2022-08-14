@@ -6,61 +6,51 @@
 %
 %  WRITTEN BY:  BEH   25/08-86
 % ==============================================================================
-BEGIN
-   Boolean verbose=false;
+external class SimulaTest;
 
-   Procedure P(Q); Procedure Q;
+SimulaTest(73,"--- Test of formal procedures.") begin
+
+   procedure P(Q); procedure Q;
         Q(i);
 
-   Integer i;
+   integer i;
 
-   Class A;
-   Begin Procedure R(k); Name k; Integer k;
+   class A;
+   begin procedure R(k); name k; integer k;
                k:= k+k;
 
-         Integer i ;
+         integer i;
 
          P(R);
-   End;
+   end;
 
-   Ref(A) x;
+   ref(A) x;
 
    if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 73") ;
-   Outimage ;
-   Outtext ("--- Test of formal procedures");
-   Outimage ; Outimage ;
+   outtext("--- START Simula a.s. TEST 73");
+   outimage;
+   outtext("--- Test of formal procedures");
+   outimage; outimage;
    end;
    
 
    i:= 1;
-   x:- New A;
-   Inspect x do P(R);
+   x:- new A;
+   inspect x do P(R);
 
    P(x.R);
 
-   IF i = 8 THEN
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 73") ;
-   END Else
-   Begin
-      Outtext ("*** error : Formal procedures.") ;
-      Outimage ;
-      Outtext ("            Erroneus values:  i   = ") ;
-      Outimage ;
-      Outint (i, 5) ;
-      Outimage ;
-      Outtext ("                              x.i = ") ;
+   if i = 8 then else begin
+      err("*** error : Formal procedures.");
+      outtext("            Erroneus values:  i   = ");
+      outimage;
+      outint(i, 5); outimage;
+      outtext("                              x.i = ");
       if x =/= none then
-         Outint (x.i, 5)
+         outint(x.i, 5)
       else
-         Outtext (" object none") ;
-      Outimage; Outimage
-   End;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 73") ;
-   Outimage
-   end
+         outtext(" object none");
+      outimage; outimage
+   end;
    
- END
+ end

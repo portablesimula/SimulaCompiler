@@ -241,9 +241,9 @@ public final class StandardClass extends ClassDeclaration
   //        procedure terminate_program;
   //        begin ... ;  goto STOP  end terminate_program;
   //
-  //            class FILE 
-  //       FILE class imagefile
-  //       FILE class bytefile
+  //            class file 
+  //       file class imagefile
+  //       file class bytefile
   //  imagefile class infile
   //  imagefile class outfile
   //  imagefile class directfile
@@ -292,37 +292,37 @@ public final class StandardClass extends ClassDeclaration
   }
   
   // ******************************************************************
-  // *** The Standard Class FILE
+  // *** The Standard Class file
   // ******************************************************************
-  //  class FILE_(FILENAME_); value FILENAME_; text FILENAME_;
+  //  class file(FILENAME); value FILENAME; text FILENAME;
   //  begin
   //     Boolean OPEN$;
-  //     text procedure filename; filename:=copy(FILENAME_);
+  //     text procedure filename; filename:=copy(FILENAME);
   //     Boolean procedure isopen; isopem:=OPEN$;
   //     Boolean procedure setaccess(mode);  text mode; ... ;
   //  
-  //     if FILENAME_ = notext then error("Illegal File Name");
-  //  end FILE_;      
-  public static StandardClass FILE=new StandardClass("CLASS","FILE",parameter("FILENAME$",Type.Text));
+  //     if FILENAME = notext then error("Illegal file Name");
+  //  end file;      
+  public static StandardClass file=new StandardClass("CLASS","file",parameter("FILENAME$",Type.Text));
   static {
-	  BASICIO.addStandardClass(FILE);  // Declared in BASICIO
-	  FILE.addStandardAttribute(Type.Boolean,"OPEN$");  
-	  FILE.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"filename");
-	  FILE.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"isopen");
-	  FILE.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"setaccess",parameter("mode",Type.Text));  
+	  BASICIO.addStandardClass(file);  // Declared in BASICIO
+	  file.addStandardAttribute(Type.Boolean,"OPEN$");  
+	  file.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"filename");
+	  file.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"isopen");
+	  file.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"setaccess",parameter("mode",Type.Text));  
   }  
   
   // ******************************************************************
-  // *** The Standard FILE Class imagefile
+  // *** The Standard file Class imagefile
   // ******************************************************************
-  //  FILE class imagefile;
+  //  file class imagefile;
   //  begin text image;
   //     procedure setpos(i);  integer i;  image.setpos(i);
   //     integer procedure pos;     pos    := image.pos;
   //     Boolean procedure more;    more   := image.more;
   //     integer procedure length;  length := image.length;
   //  end imagefile;
-  public static StandardClass imagefile=new StandardClass("FILE","imagefile");
+  public static StandardClass imagefile=new StandardClass("file","imagefile");
   static {
 	  BASICIO.addStandardClass(imagefile);  // Declared in BASICIO
 	  imagefile.addStandardAttribute(Type.Text,"image");  
@@ -518,14 +518,14 @@ public final class StandardClass extends ClassDeclaration
   }  
   
   // ******************************************************************
-  // *** The Standard FILE Class bytefile
+  // *** The Standard file Class bytefile
   // ******************************************************************
-  //  FILE class bytefile;
+  //  file class bytefile;
   //  begin short integer BYTESIZE;
   //     short integer procedure bytesize; bytesize := BYTESIZE;
   //
   //  end bytefile;
-  public static StandardClass bytefile=new StandardClass("FILE","bytefile");
+  public static StandardClass bytefile=new StandardClass("file","bytefile");
   static {
 	  BASICIO.addStandardClass(bytefile);  // Declared in BASICIO
 	  bytefile.addStandardAttribute(Type.Integer,"BYTESIZE_");  
@@ -819,7 +819,7 @@ public final class StandardClass extends ClassDeclaration
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"frontstrip",parameter("t",Type.Text));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"getitem",parameter("tt",Parameter.Mode.name,Type.Text));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text),parameter("n",Type.Integer));  
-	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"initem",parameter("f",Type.Ref("File")));  
+	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"initem",parameter("f",Type.Ref("file")));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"linecount",parameter("pf",Type.Ref("Printfile")));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"insinglechar");  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"lowc",parameter("c",Type.Character));  

@@ -1,22 +1,22 @@
 
 % ===============================================   Main   program =============
-%  PROGRAM Name:   Simula a.s. - SIMULA TEST NO 83
+%  PROGRAM name:   Simula a.s. - SIMULA TEST NO 83
 %
-%  PURPOSE:     Name Parameter with EXTREME BI-EFFECTS
+%  PURPOSE:     name Parameter with EXTREME BI-EFFECTS
 %
 %  WRITTEN BY:  MYH   29/07-2018
 % ==============================================================================
-begin
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(83,"--- Test name Parameter with EXTREME BI-EFFECTS") begin
 
    ! --------------------------------------------------------- ;
-   ! -- Name Parameter with EXTREME BI-EFFECTS              -- ;
+   ! -- name Parameter with EXTREME BI-EFFECTS              -- ;
    ! --------------------------------------------------------- ;
 
    if verbose then begin
-   Outtext("--- START Simula a.s. TEST 83"); Outimage ;
-   Outtext("--- Test of formal parameters."); Outimage ; Outimage ;
+   outtext("--- START Simula a.s. TEST 83"); outimage ;
+   outtext("--- Test of formal parameters."); outimage ; outimage ;
    end;
 
    begin comment *** PART 1 ***;
@@ -28,25 +28,19 @@ begin
             rA(i):-this A; i:=i+1;
       end;
 
-      Procedure P(y); Name y; Ref(A) y;
-      Begin
+      procedure P(y); name y; ref(A) y;
+      begin
          comment EG: rA(0).n := rA(1).n + 3   ;
          y.n:=y.n+3;
       end;
    
       P(new A);
    
-      IF rA(0).n = 8 and rA(1).n = 5 THEN
-      Begin
-         if verbose then
-         begin Outtext("--- NO ERRORS FOUND IN PART 1"); Outimage end;
-      End Else
-      Begin
-         Outtext ("*** ERROR IN PART 1"); Outimage;
-         found_error:=true;
-         for j:=0 step 1 until i do
-         begin
-            Outtext("Object "); outint(j,0);
+      if rA(0).n = 8 and rA(1).n = 5 then -- OK
+      else begin
+         err(" ERROR IN PART 1");
+         for j:=0 step 1 until i do begin
+            outtext("Object "); outint(j,0);
             if rA(j) =/= none then
             begin outtext(" -- n="); outint(rA(j).n,0); end
             else outtext(" -- NULL");
@@ -58,30 +52,30 @@ begin
    begin comment *** PART 2 ***;
       ref(A) x,v;
 
-      Class A;
+      class A;
       begin integer i;
-         Ref(A) Procedure Z;
-         Begin if verbose then begin outtext("Call Z"); outimage; end;
+         ref(A) procedure Z;
+         begin if verbose then begin outtext("Call Z"); outimage; end;
                P(x);
-               Z:- v:- New A;
-         End;
+               Z:- v:- new A;
+         end;
    
       end;
    
-      Procedure P(y); Name y; Ref(A) y;
-      Begin
+      procedure P(y); name y; ref(A) y;
+      begin
          Q(y.i)
-      End;
+      end;
 
-      Procedure Q(ii); Name ii; Integer ii;
-      Begin
+      procedure Q(ii); name ii; integer ii;
+      begin
          ii:=ii+2
          if verbose then
          begin outtext("INC: x.i,v.i=");
             if x =/= none then outint(x.i,3) else outtext("x==NONE ");
             if v =/= none then outint(v.i,3); outimage;
          end;   
-      End;
+      end;
    
       x:-new A;
       P(x.Z);
@@ -89,28 +83,13 @@ begin
 %     P(x);
    
       if verbose then
-      begin outtext("END  x.i="); outint(x.i,0); outimage;
-            outtext("END  v.i="); outint(v.i,0); outimage;
+      begin outtext("end  x.i="); outint(x.i,0); outimage;
+            outtext("end  v.i="); outint(v.i,0); outimage;
       end;
             
-      IF x.i=4 and v.i = 2 THEN
-      Begin
-         if verbose then
-         begin Outtext("--- NO ERRORS FOUND IN PART 2"); Outimage end;
-      End Else
-      Begin
-         Outtext ("*** ERROR IN PART 2"); Outimage;
-         found_error:=true;
-      end;
+      if x.i=4 and v.i = 2 then -- OK
+      else err(" ERROR IN PART 2");
    end;
    
-   IF found_error THEN ELSE
-   Begin
-      Outtext("--- NO ERRORS FOUND IN TEST 83"); 
-   End;
-   if verbose then begin
-   Outtext("--- END Simula a.s. TEST 83") ;
-   Outimage;
-   end;
    
 end;      

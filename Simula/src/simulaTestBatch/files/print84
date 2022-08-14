@@ -1,27 +1,27 @@
-LINESPERPAGE:=4    LINE 1.
-      LINE 2.
-      LINE 3.
-      LINE 4.
-      LINE 5.
-SPACING:=0  LINE 1
-            LINE  2
-            LINE   3
-EJECT (3)
-EJECT (2)
-LINESPERPAGE:=60,  SPACING:=2
-EJECT (80),  EQUIV TO EJECT (1)
-123 456.7  8.9&-02    123.5TEXT
+linesperpage:=4    line 1.
+      line 2.
+      line 3.
+      line 4.
+      line 5.
+spacing:=0  line 1
+            line  2
+            line   3
+eject(3)
+eject(2)
+linesperpage:=60,  spacing:=2
+eject(80),  EQUIV TO eject(1)
+123 456.7  8.9&-02    123.5text
                                                                                                                                  123
 *                                                                                                                              456.7
 *                                                                                                                            8.9&-02
 *                                                                                                                              123.5
-*                                                                                                                               TEXT
+*                                                                                                                               text
 *
 123
  456.7
   8.9&-02
     123.5
-TEXT                                                                                                                               X
+text                                                                                                                               X
 Y
 Z                                                                               B                                      A
-LAST LINE OF OUTPUT.
+LAST line OF OUTPUT.

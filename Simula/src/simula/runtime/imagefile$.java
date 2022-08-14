@@ -43,7 +43,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class imagefile$ extends FILE$ {
+public class imagefile$ extends file$ {
 	
 	/**
 	 * 

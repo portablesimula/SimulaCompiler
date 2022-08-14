@@ -7,89 +7,68 @@
 %
 %  WRITTEN BY:  BEH   26/08-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(77,"--- Test infile using two infile objects reading from the same external file.") begin
    
---   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any77";
-   Text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any77";
+   text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any77";
 
-   Class Les (n, andre); Integer n; Ref (Les) andre;
-   Begin Text array linjer (1:300);
-         Integer lnr, i;
-         Ref (infile) fil;
+   class Read(n, other); integer n; ref(Read) other;
+   begin text array linjer(1:300);
+         integer lnr, i;
+         ref(infile) fil;
 
-         Procedure Sammenlign;
-         Begin Boolean Procedure OK (i); integer i;
-                     OK:= if i<=lnr and i<=andre.lnr then
-                               linjer(i) = andre.linjer(i)
+         procedure Sammenlign;
+         begin boolean procedure OK(i); integer i;
+                     OK:= if i<=lnr and i<=other.lnr then
+                               linjer(i) = other.linjer(i)
                           else false;
 
-               For i:= 1, i+1 while i<=lnr, i+1 while i<=andre.lnr do
-               If not OK(i) then found_error := true;
+               for i:= 1, i+1 while i<=lnr, i+1 while i<=other.lnr do
+               if not OK(i) then begin
+                  err(" NOTE : Did not work.");
+                  outimage;
+                  outtext("       Records read from file:");
+                  outimage;
+                  for i:= 1, i+1 while i<=lnr, i+1 while i<=other.lnr do
+                  begin setpos(5);
+                        if i<=lnr then outtext(linjer(i));
+                        setpos(40);
+                        if i<=other.lnr then outtext(other.linjer(i));
+                        outimage
+                  end;
+                  outimage
+               end
+         end pros. sammenlign;
 
-               If found_error then
-               Begin Outtext ("*** NOTE : Did not work.");
-                     Outimage;
-                     Outtext ("       Records read from file:");
-                     Outimage;
-                     For i:= 1, i+1 while i<=lnr, i+1 while i<=andre.lnr do
-                     Begin Setpos(5);
-                           if i<=lnr then Outtext(linjer(i));
-                           Setpos(40);
-                           if i<=andre.lnr then Outtext(andre.linjer(i));
-                           Outimage
-                     End;
-                     Outimage
-               End
-         End pros. sammenlign;
+         if other =/= none then
+               other.other :- this Read;
 
-         If andre =/= none then
-               andre.andre :- this Les;
-
-         Detach;
+         detach;
 
 
-         fil :- new infile (fileName);
-         if not fil.open (blanks (30)) then
-                Error("Can't open infile: " & fileName);
-         fil.Inrecord;
+         fil :- new infile(fileName);
+         if not fil.open(blanks(30)) then
+                error("Can't open infile: " & fileName);
+         fil.inrecord;
 
-         While not fil.Endfile do
-         Begin i:= n+1;
-               For i:= i-1 while not fil.Endfile and i>0 and lnr<301 do
-               Begin lnr:= lnr+1; linjer(lnr):- copy (fil.image);
-                     fil.Inrecord
-               End;
-               Resume (andre)
-         End;
+         while not fil.endfile do
+         begin i:= n+1;
+               for i:= i-1 while not fil.endfile and i>0 and lnr<301 do
+               begin lnr:= lnr+1; linjer(lnr):- copy(fil.image);
+                     fil.inrecord
+               end;
+               resume(other)
+         end;
 
-         While not andre.fil.endfile do resume (andre);
+         while not other.fil.endfile do resume(other);
 
-         fil.Close; andre.fil.Close;
+         fil.close; other.fil.close;
          Sammenlign;
-   End;
-
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 77") ;
-   Outimage ;
-   Outtext ("--- Test infile using two infile objects reading from the") ;
-   Outimage ;
-   Outtext ("--- same external file: " & fileName) ;
-   Outimage ; Outimage ;
    end;
 
-   Resume (New Les(3, New Les(7, none)));
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 77") ;
-   END ;
+   resume(new Read(3, new Read(7, none)));
 
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 77") ;
-   Outimage
-   end
    
- END
+ end

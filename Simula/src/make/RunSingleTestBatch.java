@@ -111,25 +111,25 @@ public final class RunSingleTestBatch {
 //		names.add("simtst68.sim"); // OK:  Test of coroutines.
 //		names.add("simtst69.sim"); // OK:  Test complex use of detach, call and resume.
 //		names.add("simtst70.sim"); // OK:  Text attributes and relations
-		
-		names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
-		names.add("simtst72.sim"); // OK:  Test of formal procedures.
-		//names.add("simtst73.sim"); // OK:  Test of formal procedures.
-		//names.add("simtst74.sim"); // OK:  Test resume and detach.
-		//names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
-		//names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
-		//names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
-		//names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
-		//names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
-		//names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
-
-		//names.add("simtst81.sim"); // OK:  Test the value of close.   anyDirectFile
-		//names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
-		//names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
-		//names.add("simtst84.sim"); // OK:  Test Printfile.
-		//names.add("simtst85.sim"); // OK:  Test Directfile.
-		//names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
-		//names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
+//		
+//		names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
+//		names.add("simtst72.sim"); // OK:  Test of formal procedures.
+//		names.add("simtst73.sim"); // OK:  Test of formal procedures.
+//		names.add("simtst74.sim"); // OK:  Test resume and detach.
+//		names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
+//		names.add("simtst76.sim"); // OK:  Test of detach and resume in SIMSET.
+//		names.add("simtst77.sim"); // OK:  Two infile objects reading from the same external file.
+//		names.add("simtst78.sim"); // OK:  Test the text procedure filename of class file.
+//		names.add("simtst79.sim"); // OK:  Test the attribute 'IsOpen' of class file.
+//		names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
+//
+//		names.add("simtst81.sim"); // OK:  Test the value of close.
+//		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
+//		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
+//		names.add("simtst84.sim"); // OK:  Test Printfile.
+//		names.add("simtst85.sim"); // OK:  Test Directfile.
+		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
+		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
 		//names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
 		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
 		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.

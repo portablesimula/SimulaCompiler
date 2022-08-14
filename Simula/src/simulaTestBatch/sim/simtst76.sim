@@ -5,119 +5,90 @@
 %  PURPOSE:     Test of detach and resume in SIMSET.
 %
 %  WRITTEN BY:  BEH   25/08-86
-%  MODIFIED BY: MYH   28/07-2018  Adding VERBOSE
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=FALSE;
-   Text t;
+external class SimulaTest;
 
-   Procedure Print(t); Value t; Text t;
-   begin Outtext(t); if verbose then outimage; end; 
+SimulaTest(76,"--- Test of detach and resume in simset.") begin
+   text t;
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 76") ;
-   Outimage ;
-   Outtext ("--- Test of detach and resume.") ;
-   Outimage ; Outimage ;
-   end;
-   
+   procedure Print(t); value t; text t;
+   begin outtext(t); end; 
 
-SIMSET Begin
-         Ref(A) x;
+   simset begin
+         ref(A) x;
 
-         Link Class A;
-         Begin Print("A");
-               Begin Ref(C) Y;
-                     Class C;
-                     Begin Print("C"); Detach;
+         link class A;
+         begin Print("A");
+               begin ref(C) Y;
+                     class C;
+                     begin Print("C"); detach;
                            Print("E");
-                     End;
+                     end;
 
                      Print("B");
-                     Y:- New C;
+                     Y:- new C;
                      Print("D");
-                     Resume(Y);
+                     resume(Y);
                      Print("F");
-               End;
+               end;
                Print("G");
-         End;
+         end;
 
          Print("AA");
-         x:- New A ;
+         x:- new A;
          Print("AB");
 
-         t:- Copy (sysout.image.strip);
-         sysout.setpos (1);
+         t:- copy(sysout.image.strip);
+         sysout.setpos(1);
          sysout.image:= notext;
 
-         if t = "AAABCDEFGAB" then
-         begin
-           if verbose then begin Outtext("--- NO ERRORS IN PART 1"); outimage; end
-         end  
-         else
-         begin Outtext ("*** error : Detach - resume (1).") ;
-               Outimage ;
-               Outtext ("             Erroneus sequencing: ") ;
-               Outtext (t) ;
-               Outimage; Outimage;
-               found_error := true
+         if t = "AAABCDEFGAB" then else
+         begin err("detach - resume(1).");
+               outtext("             Erroneus sequencing: ");
+               outtext(t);
+               outimage; outimage;
          end;
-  End;
+   end;
 
-SIMSET Begin
-         Ref(A)x;
+   simset begin
+         ref(A)x;
 
-         Link Class A;
-         Begin Print("A");
-               Detach;
-               Begin Ref(C) Y;
+         link class A;
+         begin Print("A");
+               detach;
+               begin ref(C) Y;
 
-                     Class C;
-                     Begin Print("D"); Detach;
-                           Print("F"); This A.Detach;
-                           Print("H"); Detach;
+                     class C;
+                     begin Print("D"); detach;
+                           Print("F"); this A.detach;
+                           Print("H"); detach;
                            Print("J");
-                     End;
+                     end;
 
-                     Print("C"); Y:- New C;
-                     Print("E"); Resume(Y);
-                     Print("I"); Resume(Y);
-                     Detach
-               End;
+                     Print("C"); Y:- new C;
+                     Print("E"); resume(Y);
+                     Print("I"); resume(Y);
+                     detach
+               end;
                Print("L");
-          End;
+          end;
 
-          x:- New A;
-          Print("B"); Resume(x);
-          Print("G"); Resume(x);
-          Print("K"); Resume(x);
+          x:- new A;
+          Print("B"); resume(x);
+          Print("G"); resume(x);
+          Print("K"); resume(x);
           Print("M");
 
-          t:- Copy (sysout.image.strip);
-          sysout.setpos (1);
+          t:- copy(sysout.image.strip);
+          sysout.setpos(1);
           sysout.image:= notext;
 
          if t = "ABCDEFGHIJKLM" then
          else
-         begin Outtext ("*** error : Detach - resume (2).") ;
-               Outimage ;
-               Outtext ("             Erroneus sequencing: ") ;
-               Outtext (t) ;
-               Outimage; Outimage;
-               found_error := true
+         begin err("*** error : detach - resume(2).");
+                outtext("             Erroneus sequencing: ");
+               outtext(t); outimage; outimage;
          end;
-    End;
-
-   IF found_error tHEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 76") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 76") ;
-   Outimage
-   end
+    end;
    
- END
+ end

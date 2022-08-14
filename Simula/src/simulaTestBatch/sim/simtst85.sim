@@ -9,302 +9,290 @@
 %
 %  WRITTEN BY:
 % ==========================================================
-BEGIN BOOLEAN  errorfound;
-BOOLEAN verbose;
+external class SimulaTest;
+
+SimulaTest(85,"--- Test Directfile.") begin
 
 if verbose then begin
-outtext("--- START Simula a.s. TEST 85 (test DIRECTFILE)"); outimage;
-outtext("    - does 'new directfile(""direct85"")'.open(blanks(12)");
-outimage; outimage;
-end;
 
-INSPECT NEW DIRECTFILE("direct85") DO BEGIN
+inspect new directfile("direct85") do begin
 
-   INTEGER  i, j; REAL tmp;
+   integer  i, j; real tmp;
 
-   PROCEDURE check(txt,title,lngth); TEXT txt, title; INTEGER lngth;
-   BEGIN
-      IF SYSOUT.IMAGE.SUB(1,lngth) <> txt THEN
-      BEGIN
-         SYSOUT.OUTTEXT(" <-- was result"); SYSOUT.OUTIMAGE;
-         SYSOUT.OUTTEXT(txt);
-         SYSOUT.OUTTEXT(" <-- was expected"); SYSOUT.OUTIMAGE;
-         SYSOUT.OUTTEXT("*** Error in test of: ");
-         SYSOUT.OUTTEXT(title); SYSOUT.OUTIMAGE; SYSOUT.OUTIMAGE;
-         errorfound := TRUE;
-      END;
-      SYSOUT.IMAGE := NOTEXT; SYSOUT.IMAGE.SETPOS(1);
-             IMAGE := NOTEXT;        IMAGE.SETPOS(1);
-   END of procedure check;
+   procedure check(txt,title,lngth); text txt, title; integer lngth;
+   begin
+      if sysout.image.sub(1,lngth) <> txt then
+      begin
+         sysout.outtext(" <-- was result"); sysout.outimage;
+         sysout.outtext(txt);
+         sysout.outtext(" <-- was expected"); sysout.outimage;
+         sysout.outtext("*** Error in test of: ");
+         sysout.outtext(title); sysout.outimage; sysout.outimage;
+         err("Failed");
+      end;
+      sysout.image := notext; sysout.image.setpos(1);
+             image := notext;        image.setpos(1);
+   end of procedure check;
 
-   SETACCESS("CHARSET:UTF-8");
-   SETACCESS("CREATE");
-   OPEN(BLANKS(12));
+   setaccess("CHARSET:UTF-8");
+   setaccess("CREATE");
+   open(blanks(12));
 
-   SYSOUT.OUTINT(IMAGE.LENGTH,3);
-   SYSOUT.OUTINT(IMAGE.POS,3);
-   SYSOUT.OUTINT(LOCATION,3);
+   sysout.outint(image.length,3);
+   sysout.outint(image.pos,3);
+   sysout.outint(location,3);
 
-   check(" 12  1  1","IMAGE.LENGTH, IMAGE.POS and LOCATION after OPEN",9);
+   check(" 12  1  1","image.length, image.pos and location after open",9);
 
-   FOR i := 1 STEP 1 UNTIL 5 DO
-   BEGIN
-      LOCATE(6 - i);
-      SETPOS(9);
-      OUTINT(i, 4);
-      OUTIMAGE
-   END;
+   for i := 1 step 1 until 5 do
+   begin
+      locate(6 - i);
+      setpos(9);
+      outint(i, 4);
+      outimage
+   end;
 
-   LOCATE(2);
-   SYSOUT.OUTINT(LOCATION,3);
-   INIMAGE;
-   SYSOUT.OUTINT(ININT,3);
-   LOCATE(5);
-   SYSOUT.OUTINT(LOCATION,3);
-   INIMAGE;
-   SYSOUT.OUTINT(ININT,3);
-   LOCATE(3);
-   SYSOUT.OUTINT(LOCATION,3);
-   INIMAGE;
-   SYSOUT.OUTINT(ININT,3);
+   locate(2);
+   sysout.outint(location,3);
+   inimage;
+   sysout.outint(inint,3);
+   locate(5);
+   sysout.outint(location,3);
+   inimage;
+   sysout.outint(inint,3);
+   locate(3);
+   sysout.outint(location,3);
+   inimage;
+   sysout.outint(inint,3);
 
-   check("  2  4  5  1  3  3","LOCATE, LOCATION and ININT",18);
+   check("  2  4  5  1  3  3","locate, location and inint",18);
 
                                        ! SCAN FILE SEQUENTIALLY     ;
-   LOCATE(1);
-   SETPOS(13);
+   locate(1);
+   setpos(13);
    i := 1;
-   WHILE i <= 5 DO
-   BEGIN
-      SYSOUT.OUTINT(ININT, 5);
+   while i <= 5 do
+   begin
+      sysout.outint(inint, 5);
       i := i + 1
-   END;
+   end;
 
    check("    5    4    3    2    1",
-         "Sequential ININT without INIMAGE",25);
+         "Sequential inint without inimage",25);
 
-   LOCATE(1);
-   INIMAGE;
-   WHILE  NOT LASTITEM  DO SYSOUT.OUTREAL(INREAL, 1, 7);
+   locate(1);
+   inimage;
+   while  not lastitem  do sysout.outreal(inreal, 1, 7);
 
-   check(" 5&+000 4&+000 3&+000 2&+000 1&+000", "INREAL and LASTITEM",35);
+   check(" 5&+000 4&+000 3&+000 2&+000 1&+000", "inreal and lastitem",35);
 
-   LOCATE(1);
-   INIMAGE;
-   WHILE  NOT LASTITEM  DO SYSOUT.OUTINT(INFRAC, 10);
+   locate(1);
+   inimage;
+   while  not lastitem  do sysout.outint(infrac, 10);
 
    check("         5         4         3         2         1",
-         "INFRAC and LASTITEM",50);
+         "infrac and lastitem",50);
 
-   LOCATE(1);
-   INIMAGE;
-   WHILE  NOT LASTITEM  DO SYSOUT.OUTCHAR(INCHAR);
+   locate(1);
+   inimage;
+   while  not lastitem  do sysout.outchar(inchar);
 
-   check("54321", "INCHAR and LASTITEM",5);
+   check("54321", "inchar and lastitem",5);
 
-   LOCATE(1);
-   INIMAGE;
-   WHILE NOT ENDFILE DO
-   BEGIN
-      SYSOUT.OUTTEXT(INTEXT(12));
-      INIMAGE;
-   END;
+   locate(1);
+   inimage;
+   while not endfile do
+   begin
+      sysout.outtext(intext(12));
+      inimage;
+   end;
 
    check("           5           4           3           2           1",
-         "INTEXT and ENDFILE",60);
+         "intext and endfile",60);
 
-   BEGIN
-      TEXT ARRAY t(1:5);
+   begin
+      text array t(1:5);
       t(1)  :- "1A1B1C1D1E1F";
       t(2)  :- "2A2B2C2D2E2F";
       t(3)  :- "3A3B3C3D3E3F";
       t(4)  :- "4A4B4C4D4E4F";
       t(5)  :- "5A5B5C5D5E5F";
 
-      LOCATE(1);
-      FOR i := 1 STEP 1 UNTIL 5 DO
-      BEGIN
-         IMAGE := t(i);
-         OUTIMAGE;
-      END;
+      locate(1);
+      for i := 1 step 1 until 5 do
+      begin
+         image := t(i);
+         outimage;
+      end;
 
-      LOCATE(1);
-      INIMAGE;
-      SYSOUT.OUTTEXT(INTEXT(60));
+      locate(1);
+      inimage;
+      sysout.outtext(intext(60));
 
       check("1A1B1C1D1E1F2A2B2C2D2E2F3A3B3C3D3E3F4A4B4C4D4E4F5A5B5C5D5E5F",
-            "OUTIMAGE and INTEXT",60);
-   END;
-
-   LOCATE(1);
-   IMAGE.SETPOS(1);
-   WHILE  LOCATION <= 5  DO  OUTINT(LOCATION, 3);
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("  1  1  1  1  1  2  2  2  2  3  3  3  3  4  4  4  4  5  5  5",
-         "OUTINT and LOCATION",60);
-
-   LOCATE(1);
-   IMAGE.SETPOS(1);
-%   WHILE LOCATION <= 5 DO OUTREAL(LOCATION, 1, 7);
-   WHILE LOCATION <= 5 DO BEGIN tmp:=LOCATION; OUTREAL(tmp, 1, 6); END;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(70));
-
-   check(" 1&+00 1&+00 1&+00 2&+00 2&+00 3&+00 3&+00 4&+00 4&+00 5&+00",
-         "OUTREAL",60);
-
-   LOCATE(1);
-   IMAGE.SETPOS(1);
-   WHILE LOCATION <= 5 DO OUTFIX(LOCATION, 3, 6);
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check(" 1.000 1.000 1.000 2.000 2.000 3.000 3.000 4.000 4.000 5.000",
-         "OUTFIX",60);
-
-   LOCATE(1);
-   IMAGE.SETPOS(1);
-   WHILE LOCATION <= 5 DO OUTFRAC(LOCATION, 4, 12);
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("      .000 1      .000 1      .000 2      .000 3      .000 4",
-         "OUTFRAC",60);
-
-   LOCATE(1);
-   WHILE LOCATION <= 5 DO
-   BEGIN
-      SETPOS(LOCATION);
-      OUTCHAR('+');
-      OUTIMAGE;
-   END;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("+            +            +            +            +       ",
-         "OUTCHAR",60);
-
-   LOCATE(1);
-   WHILE LOCATION <= 4 DO
-   BEGIN
-      SETPOS(9);
-      OUTINT(LOCATION,5);
-   END;
-   OUTIMAGE;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("                1           2           3           4       ",
-         "OUTINT with forced OUTIMAGE",60);
-
-   LOCATE(1);
-   WHILE LOCATION <= 4 DO
-   BEGIN
-      SETPOS(8);
-      OUTREAL(LOCATION, 1, 6);
-   END;
-   OUTIMAGE;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("             1&+00       2&+00       3&+00       4&+00      ",
-         "OUTREAL with forced OUTIMAGE",60);
-
-   LOCATE(1);
-   WHILE LOCATION <= 4 DO
-   BEGIN
-      SETPOS(8);
-      OUTFIX(LOCATION, 3, 6);
-   END;
-   OUTIMAGE;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("             1.000       2.000       3.000       4.000      ",
-         "OUTFIX with forced OUTIMAGE",60);
-
-   LOCATE(1);
-   WHILE LOCATION <= 4 DO
-   BEGIN
-      SETPOS(6);
-      OUTFRAC(LOCATION, 4, 8);
-   END;
-   OUTIMAGE;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("              .000 1      .000 2      .000 3      .000 4    ",
-         "OUTFRAC with forced OUTIMAGE",60);
-
-   LOCATE(1);
-   WHILE LOCATION <= 4 DO
-   BEGIN
-      SETPOS(13);
-      OUTCHAR('+');
-   END;
-   OUTIMAGE;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("            +           +           +           +           ",
-         "OUTCHAR with forced OUTIMAGE",60);
-
-   LOCATE(1);
-   WHILE LOCATION <= 4 DO
-   BEGIN
-      SETPOS(10);
-      OUTTEXT("THIS")
-   END;
-   OUTIMAGE;
-
-   LOCATE(1);
-   INIMAGE;
-   SYSOUT.OUTTEXT(INTEXT(60));
-
-   check("            THIS        THIS        THIS        THIS        ",
-         "OUTTEXT with forced OUTIMAGE",60);
-
-   SETACCESS("PURGE");
-   CLOSE;
-
-   IF IMAGE == NOTEXT  THEN SYSOUT.OUTTEXT("TRUE")
-                       ELSE SYSOUT.OUTTEXT("FALSE");
-
-   check("TRUE","IMAGE after CLOSE",4);
-
-
-END of INSPECT DIRECTFILE;
-
-   IF errorfound THEN ELSE
-   Begin
-      Outtext("--- NO ERRORS FOUND IN TEST 85"); 
-   End;
-   if verbose then begin
-   Outtext("--- END Simula a.s. TEST 85") ;
-   Outimage;
+            "outimage and intext",60);
    end;
 
+   locate(1);
+   image.setpos(1);
+   while  location <= 5  do  outint(location, 3);
 
-END of program;
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("  1  1  1  1  1  2  2  2  2  3  3  3  3  4  4  4  4  5  5  5",
+         "outint and location",60);
+
+   locate(1);
+   image.setpos(1);
+%   while location <= 5 do outreal(location, 1, 7);
+   while location <= 5 do begin tmp:=location; outreal(tmp, 1, 6); end;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(70));
+
+   check(" 1&+00 1&+00 1&+00 2&+00 2&+00 3&+00 3&+00 4&+00 4&+00 5&+00",
+         "outreal",60);
+
+   locate(1);
+   image.setpos(1);
+   while location <= 5 do outfix(location, 3, 6);
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check(" 1.000 1.000 1.000 2.000 2.000 3.000 3.000 4.000 4.000 5.000",
+         "outfix",60);
+
+   locate(1);
+   image.setpos(1);
+   while location <= 5 do outfrac(location, 4, 12);
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("      .000 1      .000 1      .000 2      .000 3      .000 4",
+         "outfrac",60);
+
+   locate(1);
+   while location <= 5 do
+   begin
+      setpos(location);
+      outchar('+');
+      outimage;
+   end;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("+            +            +            +            +       ",
+         "outchar",60);
+
+   locate(1);
+   while location <= 4 do
+   begin
+      setpos(9);
+      outint(location,5);
+   end;
+   outimage;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("                1           2           3           4       ",
+         "outint with forced outimage",60);
+
+   locate(1);
+   while location <= 4 do
+   begin
+      setpos(8);
+      outreal(location, 1, 6);
+   end;
+   outimage;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("             1&+00       2&+00       3&+00       4&+00      ",
+         "outreal with forced outimage",60);
+
+   locate(1);
+   while location <= 4 do
+   begin
+      setpos(8);
+      outfix(location, 3, 6);
+   end;
+   outimage;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("             1.000       2.000       3.000       4.000      ",
+         "outfix with forced outimage",60);
+
+   locate(1);
+   while location <= 4 do
+   begin
+      setpos(6);
+      outfrac(location, 4, 8);
+   end;
+   outimage;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("              .000 1      .000 2      .000 3      .000 4    ",
+         "outfrac with forced outimage",60);
+
+   locate(1);
+   while location <= 4 do
+   begin
+      setpos(13);
+      outchar('+');
+   end;
+   outimage;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("            +           +           +           +           ",
+         "outchar with forced outimage",60);
+
+   locate(1);
+   while location <= 4 do
+   begin
+      setpos(10);
+      outtext("THIS")
+   end;
+   outimage;
+
+   locate(1);
+   inimage;
+   sysout.outtext(intext(60));
+
+   check("            THIS        THIS        THIS        THIS        ",
+         "outtext with forced outimage",60);
+
+   setaccess("PURGE");
+   close;
+
+   if image == notext  then sysout.outtext("true")
+                       else sysout.outtext("FALSE");
+
+   check("true","image after close",4);
+
+
+end of inspect directfile;
+
+
+end of program;

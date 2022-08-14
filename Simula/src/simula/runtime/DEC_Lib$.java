@@ -639,7 +639,7 @@ public class DEC_Lib$ extends CLASS$ {
      *   end;
      *
 	 */
-	public static TXT$ initem(FILE$ f) {
+	public static TXT$ initem(file$ f) {
 		if(f instanceof infile$ | f instanceof directfile$) {
 			imagefile$ F=(imagefile$)f;
 			if(!F.lastitem()) return(GETITEM(F.image));

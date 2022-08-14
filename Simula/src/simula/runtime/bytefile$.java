@@ -29,7 +29,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class bytefile$ extends FILE$ {
+public class bytefile$ extends file$ {
 	protected int BYTESIZE$;
 
 	public int bytesize() {	return (BYTESIZE$);	}

@@ -39,14 +39,14 @@ import javax.swing.JFileChooser;
  * mechanism, becomes associated with the file object. If the parameter value is
  * notext, a run-time error occurs.
  * <p>
- * The procedure "filename" retrieves the value of FILENAME.
+ * The procedure "filename" retrieves the value of FILENAME. 
  * 
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  *
  */
-public class FILE$ extends CLASS$ {
+public class file$ extends CLASS$ {
 	protected final TXT$ FILENAME$;
 	protected boolean OPEN$;
 	
@@ -98,7 +98,7 @@ public class FILE$ extends CLASS$ {
 	protected Charset CHARSET$=Charset.defaultCharset();
 
 	// Constructor
-   public FILE$(final RTObject$ staticLink,final TXT$ FILENAME$) {
+   public file$(final RTObject$ staticLink,final TXT$ FILENAME$) {
 	   super(staticLink);
 	   BBLK(); // Iff no prefix
 	   if(FILENAME$==null) throw new SimulaRuntimeError("Illegal File Name: null");
@@ -106,7 +106,7 @@ public class FILE$ extends CLASS$ {
    }
    
    // Class Statements
-   public FILE$ STM$() {
+   public file$ STM$() {
        EBLK();
        return(this);
    }

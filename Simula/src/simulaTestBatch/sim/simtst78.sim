@@ -7,60 +7,49 @@
 %  DEPENDS ON:  Random drawing.
 %
 %  NOTE:    1 - At lines marked with "NOTE 1", the characters which are allowed
-%               in a filename (except letters and digit) should be filled in.
+%               in a filename(except letters and digit) should be filled in.
 %
 %           2 - At line marked with "NOTE 2" the maximum length of a filename
 %               should be filled in.
 %
 %  WRITTEN BY:  BEH   27/08-86
 % ==============================================================================
-BEGIN
-   Boolean found_error ;
-   Boolean verbose=false;
+external class SimulaTest;
 
-   Character array C (1:45);
+SimulaTest(78,"--- Test the text procedure filename of class file.") begin
 
-   Integer i, maxlength, u;
+   character array C(1:45);
 
-   Procedure Test;
-   Begin Integer i; Ref(file) xf; Text filnavn;
+   integer i, maxlength, u;
 
-         filnavn:- Blanks(maxlength);
-         i:= Randint(1,26,u);
+   procedure Test;
+   begin integer i; ref(file) xf; text filnavn;
+
+         filnavn:- blanks(maxlength);
+         i:= randint(1,26,u);
          while i<=maxlength and i>0 do
-         Begin filnavn.putchar(C(i));
-               i:= Randint(-5,45,u);
-         End;
+         begin filnavn.putchar(C(i));
+               i:= randint(-5,45,u);
+         end;
 
-         if i<2  then xf:- New Infile(filnavn) else
-         if i<9  then xf:- New Outfile(filnavn) else
-         if i<16 then xf:- New Directfile(filnavn) else
-         if i<23 then xf:- New Inbytefile(filnavn) else
-         if i<30 then xf:- New Outbytefile(filnavn) else
-         if i<37 then xf:- New Directbytefile(filnavn) else
-                      xf:- New Printfile(filnavn);
+         if i<2  then xf:- new infile(filnavn) else
+         if i<9  then xf:- new outfile(filnavn) else
+         if i<16 then xf:- new directfile(filnavn) else
+         if i<23 then xf:- new inbytefile(filnavn) else
+         if i<30 then xf:- new outbytefile(filnavn) else
+         if i<37 then xf:- new directbytefile(filnavn) else
+                      xf:- new printfile(filnavn);
 
          if xf.filename <> filnavn then
-         Begin Outtext("*** error : Attribute filename of class file.");
-               Outimage;
-               Outtext("           Value of actual parameter and attribute:");
-               Outimage;
-               Outtext("             ");
-               Outtext(filnavn);
-               Outtext ("  ");
-               Outtext(xf.filename);
-               Outimage;
-               found_error:= true
-         End;
-   End pros. Test;
+         begin err("Attribute filename of class file.");
+               outtext("           Value of actual parameter and attribute:");
+               outimage;
+               outtext("             "); outtext(filnavn);
+               outtext("  "); outtext(xf.filename); outimage;
+         end;
+   end pros. Test;
 
 
-   if verbose then begin
-   Outtext ("--- START Simula a.s. TEST 78") ;
-   Outimage ;
-   Outtext ("--- Test the attribute 'filename' of class file.") ;
-   Outimage ; Outimage ;
-   end;
 
    C(1):= 'A'; C(2):= 'B'; C(3):= 'C';
    C(4):= 'D'; C(5):= 'E'; C(6):= 'F';
@@ -87,17 +76,7 @@ BEGIN
    maxlength:= 20;                              !**** NOTE 2 ****;
    u:= 54323;
 
-   For i:= 1 step 1 until 50 do Test;
+   for i:= 1 step 1 until 50 do Test;
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 78") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END Simula a.s. TEST 78") ;
-   Outimage
-   end
    
- END
+ end
