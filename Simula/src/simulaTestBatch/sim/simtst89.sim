@@ -9,17 +9,15 @@
 %
 %  WRITTEN BY:
 % ==============================================================================
-begin text src,dst; integer b,bb;
-      boolean errorFound;
-      boolean verbose;
-      ref(inbytefile) inpt,inoupt; ref(outbytefile) oupt;
-      Text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/inputByteFile89";
-      Text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputByteFile89";
-      
+external class SimulaTest;
 
-      if verbose then begin
-      outtext("--- START Simula a.s. TEST 89"); outimage;
-      end;
+SimulaTest(89,"--- Test inbytefile and outbytefile.") begin
+
+      text src,dst; integer b,bb;
+      ref(inbytefile) inpt,inoupt; ref(outbytefile) oupt;
+      text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/inputByteFile89";
+      text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputByteFile89";
+      
       
       inpt:-new inbytefile(inptFileName);
       if not inpt.open then error("Can't open " & inptFileName);
@@ -37,34 +35,18 @@ begin text src,dst; integer b,bb;
       inpt.close; oupt.close;
       
       inoupt:-new inbytefile(oupt.filename); oupt:-none;
-      if not inpt.open then error("Can't re-open " & inpt.FileName);
-      if not inoupt.open then error("Can't re-open " & inoupt.FileName);
+      if not inpt.open then error("Can't re-open " & inpt.filename);
+      if not inoupt.open then error("Can't re-open " & inoupt.filename);
       b:=inpt.inbyte; bb:=inoupt.inbyte;
       while not inpt.endfile do begin
-            if not b=bb then begin errorFound:=true;
-               error("The files differ");
-            end;
-            if inoupt.endfile then begin errorFound:=true;
-               error("Output file is too short");
-            end;
+            if not b=bb then err("The files differ");
+            if inoupt.endfile then err("Output file is too short");
             b:=inpt.inbyte; bb:=inoupt.inbyte;
       end;
       if inoupt.endfile then !OK;
-      else begin errorFound:=true;
-         error("Output file is too long");
-      end;
+      else err("Output file is too long");
 
       inpt.close; inoupt.close;
       
-      IF errorFound THEN
-      ELSE
-      BEGIN
-         Outtext("--- NO ERRORS FOUND IN TEST 89");
-      END;
-
-      if verbose then begin
-      Outtext("--- END TEST 89");
-      Outimage
-      end
       
 end;

@@ -5,12 +5,14 @@
 %
 %  WRITTEN BY:  MYH   2/9-2021
 % ==============================================================================
+external class SimulaTest;
+
+SimulaTest(131,"--- Test new standard procedure 'CatchingErrors'") begin
+
 CatchingErrors begin
-    Boolean verbose=FALSE;
-    Boolean found_error ;
     integer traceCase;
     text array facit(0:9);
-    ref(InBytefile) bf;
+    ref(inbytefile) bf;
 
     procedure onError(message); text message; begin
         trace("Inside onError: " & message);
@@ -20,10 +22,8 @@ CatchingErrors begin
     procedure trace(msg); text msg;
     begin
         if verbose then begin outtext(msg); outimage; end;
-        if msg NE facit(traceCase) then
-        begin
-            found_error:=TRUE;
-            outtext("ERROR in Case "); outint(traceCase,0); outimage;
+        if msg <> facit(traceCase) then
+        begin err("Case " & edit(traceCase));
             outtext("Trace: " & msg); outimage;
             outtext("Facit: " & facit(traceCase)); outimage;
         end;
@@ -45,11 +45,6 @@ CatchingErrors begin
         Q;
     end;
    
-   if verbose then begin
-   Outtext("--- START SIMULA TEST 131"); Outimage ;
-   Outtext("--- CATCHING ERRORS");
-   Outimage; Outimage;
-   end;
    
    facit(0):-"At START";
    facit(1):-"Inside onError: NullPointerException: NONE-CHECK Failed";
@@ -72,17 +67,4 @@ LAB4:trace("At LAB4");
    
    trace("At END OF TEST");
       
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 131");
-   END ;
-
-   if verbose then begin
-      Outimage;
-      Outtext ("--- END SIMULA TEST 131") ;
-      Outimage;
-   end;
-   
-
- END
+end;

@@ -6,60 +6,55 @@
 %
 %  WRITTEN BY:  MYH  13/06-2018
 % ==============================================================================
-BEGIN
-   Boolean found_error;
-   Boolean verbose=false;
+external class SimulaTest;
+
+SimulaTest(87,"--- Test Specification of Virtual Procedures.") begin
+
    integer pval;
    ref(A) ra;
    ref(B) rb;
-   ref(FILE) test;
+   ref(file) test;
    
-   Procedure checkPval(n,val); integer n,val;
-   Begin if pval = val then
+   procedure checkPval(n,val); integer n,val;
+   begin if pval = val then
      else
      begin
-         Outtext("*** error in test "); Outint(n,0); Outtext(": Test Specification of Virtual Procedures."); Outimage;
-         Outtext("            Erroneus values: val = "); Outint(pval, 0); Outimage;
-         Outtext("            --------- Facit: val = "); Outint(val, 0); Outimage;
-         found_error := true
+         outtext("*** error in test "); outint(n,0); outtext(": Test Specification of Virtual Procedures."); outimage;
+         outtext("            Erroneus values: val = "); outint(pval, 0); outimage;
+         outtext("            --------- Facit: val = "); outint(val, 0); outimage;
+         err("Failed");
      end;
    end;
 
-   Class A; virtual: ref(FILE) Procedure myFile is ref(FILE) Procedure actual(i,j); integer i,j;;
-                     Procedure virt2 is Procedure act2(j); integer j;;
-                     Integer Procedure virt3 is Procedure act3;;
-                     Procedure virt4 is Procedure act4;;
+   class A; virtual: ref(file) procedure myFile is ref(file) procedure actual(i,j); integer i,j;;
+                     procedure virt2 is procedure act2(j); integer j;;
+                     integer procedure virt3 is procedure act3;;
+                     procedure virt4 is procedure act4;;
    begin integer i;
-     ref(FILE) Procedure myFile(i,j); integer i,j;
+     ref(file) procedure myFile(i,j); integer i,j;
      begin pval:=i+j; end;
      
      integer procedure pA;
-     Begin 
-        ref(FILE) f;
+     begin 
+        ref(file) f;
         f :- myFile(4,3);
         pA := pval;
      end;
    end;
 
-   A Class B;
+   A class B;
    begin integer i;
-     ref(FILE) Procedure myFile(i,j); integer i,j;
+     ref(file) procedure myFile(i,j); integer i,j;
      begin pval:=2*i+j; end;
-     Procedure virt4;
+     procedure virt4;
      begin pval:=4567; end;
      
      integer procedure pB;
-     Begin 
-        ref(FILE) f;
+     begin 
+        ref(file) f;
         f :- myFile(14,13);
         pB := pval;
      end;
-   end;
-
-   if verbose then begin
-   Outtext("--- START TEST 87"); Outimage;
-   Outtext("--- Test Specification of Virtual Procedures.");
-   Outimage; Outimage;
    end;
    
    ra :- new A();
@@ -75,16 +70,4 @@ BEGIN
    checkPval(3,4567);
   
    
- 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext("--- NO ERRORS FOUND IN TEST 87");
-   END;
-
-   if verbose then begin
-   Outtext("--- END TEST 87");
-   Outimage
-   end
-   
- END
+end;

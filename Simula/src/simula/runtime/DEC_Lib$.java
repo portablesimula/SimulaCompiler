@@ -581,13 +581,13 @@ public class DEC_Lib$ extends CLASS$ {
      *    end of hash;
      *
 	 */
-    public static int hash(final TXT$ txt,int n) {
+    public static int hash2(final TXT$ txt,int n) {
         int h = txt.hashCode();
         h ^= (h >>> 20) ^ (h >>> 12) ^ (h >>> 7) ^ (h >>> 4);
         return(h & (n-1));
     }
 
-	public static int hash2(TXT$ t,int n) {
+	public static int hash(TXT$ t,int n) {
 		String S=t.edText();
 		String s=S.stripLeading();
 		if(s==null) return(mod(S.length(),n));

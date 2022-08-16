@@ -820,7 +820,7 @@ public final class StandardClass extends ClassDeclaration
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"getitem",parameter("tt",Parameter.Mode.name,Type.Text));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text),parameter("n",Type.Integer));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"initem",parameter("f",Type.Ref("file")));  
-	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"linecount",parameter("pf",Type.Ref("Printfile")));  
+	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"linecount",parameter("pf",Type.Ref("printfile")));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"insinglechar");  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"lowc",parameter("c",Type.Character));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"maketext",parameter("c",Type.Character),parameter("n",Type.Integer));  

@@ -136,7 +136,7 @@ public final class RunFullTestBatch {
 		names.add("simtst92.sim"); // OK:  Test 1-dim Array by value.
 		names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
 		names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
-		names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
+		names.add("simtst95.sim"); // OK:  Test Environment Interface.
 		names.add("simtst96.sim"); // OK:  Test hidden, protected attributes.
 		names.add("simtst97.sim"); // OK:  Test nested hidden and protected.
 		names.add("simtst98.sim"); // OK:  Test attribute protection - complex example. Test visibility of labels.
@@ -148,7 +148,7 @@ public final class RunFullTestBatch {
 		names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
 		names.add("simtst105.sim"); // OK: Multiple assignments.
 		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
-		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
+		names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 		names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
 		names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
 		names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain

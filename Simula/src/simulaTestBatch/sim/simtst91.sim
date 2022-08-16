@@ -8,16 +8,18 @@
 %
 %  WRITTEN BY:
 % ==============================================================================
-begin ref(A) x; text timage;
-      text array ta(0:3); integer ti;
-      boolean found_error;
-      boolean verbose=false;
+external class SimulaTest;
 
-      Procedure Test;
+SimulaTest(91,"--- Test virtual procedures, simple case.") begin
+
+      ref(A) x; text timage;
+      text array ta(0:3); integer ti;
+
+      procedure Test;
       if timage <> ta(ti) then
       begin outtext("--- error Virtual test no ");
             outint(ti,4); outimage; outimage;
-            found_error:= true;
+            err("Failed");
       end;
 
       class A;
@@ -54,10 +56,4 @@ begin ref(A) x; text timage;
       x.P1(copy("og dette var bra !!!!"));
       x.P2(copy("og til slutt var dette bra !!!!"));
 
-      if not found_error then
-      begin outtext("--- NO ERRORS FOUND IN TEST 91");
-      end;
-      if verbose then begin
-         outtext("--- END Simula a.s. TEST 91"); outimage;
-      end;   
-END of program;
+ end;

@@ -5,81 +5,59 @@
 %
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
-begin
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(117,"--- Test Simple QPS-Sample 3") begin
    integer traceCase;
    text array facit(0:9);
-   Ref (A) x,y;
+   ref (A) x,y;
    
    procedure trace(msg); text msg;
    begin
       if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+      if msg <> facit(traceCase) then begin
+         err("Case " & edit(traceCase));
          outtext("Trace: " & msg); outimage;
          outtext("Facit: " & facit(traceCase)); outimage;
       end;
       traceCase:=traceCase+1;
    end;
 
-   Class A(id); text id;
-   Begin trace("Event A(" & id & ")-1: Just Before First Detach");
-         Detach;
-         trace("Event A(" & id & ")-2: Just Before Second Detach");
-         Detach;
+   class A(id); text id;
+   begin trace("Event A(" & id & ")-1: Just Before First detach");
+         detach;
+         trace("Event A(" & id & ")-2: Just Before Second detach");
+         detach;
          if(y=/=none) then
          begin
-            trace("Event A(" & id & ")-3: Just Before Resume(y)");
+            trace("Event A(" & id & ")-3: Just Before resume(y)");
             resume(y);
          end;
-         trace("Event A(" & id & ")-4: Just Before Final-END");
-   End;
-
-
-   
-   if verbose then begin
-   Outtext("--- START SIMULA TEST 117"); Outimage ;
-   Outtext("--- Simple QPS-Sample 3");
-   Outimage; Outimage;
+         trace("Event A(" & id & ")-4: Just Before Final-end");
    end;
-   
-   facit(0):-"Event 1: Just Before x:-New A";
-   facit(1):-"Event A(x)-1: Just Before First Detach";
-   facit(2):-"Event 2: Just Before y:-New A";
-   facit(3):-"Event A(y)-1: Just Before First Detach";
-   facit(4):-"Event 3: Just Before first Resume(x)";
-   facit(5):-"Event A(x)-2: Just Before Second Detach";
-   facit(6):-"Event 4: Just Before second Resume(x)";
-   facit(7):-"Event A(x)-3: Just Before Resume(y)";
-   facit(8):-"Event A(y)-2: Just Before Second Detach";
-   facit(9):-"Event x: Just Before final END";
 
 
-   trace("Event 1: Just Before x:-New A");
-   x:- New A("x");
-   trace("Event 2: Just Before y:-New A");
-   y:- New A("y");
-   trace("Event 3: Just Before first Resume(x)");
-   Resume(x);
-   trace("Event 4: Just Before second Resume(x)");
-   Resume(x);
-   trace("Event x: Just Before final END");
-   
-      
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 117");
-   END ;
+   facit(0):-"Event 1: Just Before x:-new A";
+   facit(1):-"Event A(x)-1: Just Before First detach";
+   facit(2):-"Event 2: Just Before y:-new A";
+   facit(3):-"Event A(y)-1: Just Before First detach";
+   facit(4):-"Event 3: Just Before first resume(x)";
+   facit(5):-"Event A(x)-2: Just Before Second detach";
+   facit(6):-"Event 4: Just Before second resume(x)";
+   facit(7):-"Event A(x)-3: Just Before resume(y)";
+   facit(8):-"Event A(y)-2: Just Before Second detach";
+   facit(9):-"Event x: Just Before final end";
 
-   if verbose then begin
-      Outimage;
-      Outtext ("--- END SIMULA TEST 117") ;
-      Outimage;
-   end;
+
+   trace("Event 1: Just Before x:-new A");
+   x:- new A("x");
+   trace("Event 2: Just Before y:-new A");
+   y:- new A("y");
+   trace("Event 3: Just Before first resume(x)");
+   resume(x);
+   trace("Event 4: Just Before second resume(x)");
+   resume(x);
+   trace("Event x: Just Before final end");
    
 
 end;

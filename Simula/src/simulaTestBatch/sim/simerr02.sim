@@ -7,55 +7,16 @@
 %
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
-begin
-   Text CASE=" ERROR-TEST 02";
-   Boolean verbose=FALSE;
-   Boolean found_error ;
-   integer traceCase;
-   text array facit(0:8);
+external class RT_ErrorTest;
+
+RT_ErrorTest("  2 --- Testing NONE-CHECK") begin
 
    ref(A) x;
    real r;
    
-   procedure trace(msg); text msg;
-   begin
-      if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
-         outtext("Trace: " & msg); outimage;
-         outtext("Facit: " & facit(traceCase)); outimage;
-      end;
-      traceCase:=traceCase+1;
-   end;
-
-   
-   procedure ExceptionHandler(ErrorText); text ErrorText;
-   begin
-      trace("ExceptionHandler got error: " & ErrorText);
-      IF found_error THEN
-           Outtext("GOT ERROR(S) IN" & CASE)
-      ELSE Outtext ("--- NO ERRORS FOUND IN" & CASE);
-
-      if verbose then begin
-         Outimage;
-         Outtext ("--- END SIMULA" & CASE) ;
-         Outimage;
-      end;
-      terminate_program;
-   end;
-   
    class A;
    begin
       real procedure F(x); real x; begin end;
-   end;
-   
-   
-   if verbose then begin
-   Outtext("--- START SIMULA" & CASE);
-   Outtext("--- ILLEGAL GOTO");
-   Outimage; Outimage;
    end;
    
    facit(0):-"--- Testing NONE-CHECK";

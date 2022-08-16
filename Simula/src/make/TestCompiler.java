@@ -212,6 +212,7 @@ public final class TestCompiler {
 			Option.INLINE_TESTING=true;
 //		    Option.verbose = true;// false;
 			Option.WARNINGS=true;
+			Option.CASE_SENSITIVE=true;
 
 			// Overall TRACING Options
 //			Option.TRACING=true;//false;//true;

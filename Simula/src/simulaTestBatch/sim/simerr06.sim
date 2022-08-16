@@ -7,59 +7,19 @@
 %
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
-begin
-   Text CASE=" ERROR-TEST 06";
-   Boolean verbose=FALSE;
-   Boolean found_error ;
-   integer traceCase;
-   text array facit(0:1);
+external class RT_ErrorTest;
 
+RT_ErrorTest("  6 --- Test ArrayIndexOutOfBounds") begin
    text txt;
-   
-   procedure trace(msg); text msg;
-   begin
-      if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
-         outtext("Trace: " & msg); outimage;
-         outtext("Facit: " & facit(traceCase)); outimage;
-      end;
-      traceCase:=traceCase+1;
-   end;
-
-   
-   procedure ExceptionHandler(ErrorText); text ErrorText;
-   begin
-      trace("ExceptionHandler got error: " & ErrorText);
-      IF found_error THEN
-           Outtext("GOT ERROR(S) IN" & CASE)
-      ELSE Outtext ("--- NO ERRORS FOUND IN" & CASE);
-
-      if verbose then begin
-         Outimage;
-         Outtext ("--- END SIMULA" & CASE) ;
-         Outimage;
-      end;
-      terminate_program;
-   end;
-   
-   
-   if verbose then begin
-   Outtext("--- START SIMULA" & CASE);
-   Outtext("---  ArrayIndexOutOfBounds");
-   Outimage; Outimage;
-   end;
-   
-   facit(0):-"--- Testing ArrayIndexOutOfBoundsException";
+      
+   facit(0):-"--- Testing ArrayIndexOutOfBounds";
    facit(1):-"ExceptionHandler got error: ArrayIndexOutOfBoundsException: ArrayIndexOutOfBounds";
 
    DEFEXCEPTION(ExceptionHandler);
 
-   trace("--- Testing ArrayIndexOutOfBoundsException");
+   trace("--- Testing ArrayIndexOutOfBounds");
    
-   txt:-facit(13);
+   txt:-facit(130);
       
    trace("THIS LINE SHOULD NEVER BE EXECUTED");
 

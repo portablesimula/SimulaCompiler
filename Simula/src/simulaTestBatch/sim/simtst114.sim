@@ -5,19 +5,17 @@
 %
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
-begin
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(114,"--- Test Switch Statement") begin
    integer traceCase;
    text array facit(0:5);
    
    procedure trace(msg); text msg;
    begin
       if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+      if msg <> facit(traceCase) then begin
+         err("Case " & edit(traceCase));
          outtext("Trace: " & msg); outimage;
          outtext("Facit: " & facit(traceCase)); outimage;
       end;
@@ -31,7 +29,7 @@ begin
       integer case1=1;
       integer case2=2;
 
-      switch(lowkey:hikey) key
+      switch(lowKey:hiKey) key
       begin
          when case1 do begin
               trace(msg & " selected case 1");
@@ -48,19 +46,13 @@ begin
               goto BREAK;
          end;
 
-         when NONE do begin
+         when none do begin
               trace(msg & " selected case NONE");
               goto NOMORE;
          end;
       end case;
    BREAK: end;
    
-   
-   if verbose then begin
-   Outtext("--- START SIMULA TEST 114"); Outimage ;
-   Outtext("--- Switch Statement");
-   Outimage; Outimage;
-   end;
    
    facit(0):-"Test 1 selected case 2";
    facit(1):-"Test 2 selected case 1";
@@ -75,18 +67,6 @@ begin
    trace("Should never come here");
 NOMORE:
    trace("In MAIN after NOMORE");
-   
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 114");
-   END ;
-
-   if verbose then begin
-      Outimage;
-      Outtext ("--- END SIMULA TEST 114") ;
-      Outimage;
-   end;
    
 end;
 

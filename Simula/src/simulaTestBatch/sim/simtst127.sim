@@ -1,23 +1,21 @@
 % ===============================================   Main   program =============
-%  PROGRAM NAME:   SIMULA TEST NO 114
+%  PROGRAM NAME:   SIMULA TEST NO 127
 %
 %  PURPOSE: Switch Statement
 %
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
-begin
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(127,"--- Test switch statement") begin
    integer traceCase;
    text array facit(0:9);
    
    procedure trace(msg); text msg;
    begin
       if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+      if msg <> facit(traceCase) then
+      begin err("Case " & edit(traceCase));
          outtext("Trace: " & msg); outimage;
          outtext("Facit: " & facit(traceCase)); outimage;
       end;
@@ -31,12 +29,12 @@ begin
       character case1='A';
       character case2='B';
 
-      switch(lowkey:hikey) key
+      switch(lowKey:hiKey) key
       begin
          when case1 do begin trace(msg & " selected case 1"); end;
          when case2 do begin trace(msg & " selected case 2"); end;
          when 'C','D' do begin trace(msg & " selected case 3"); end;
-         when NONE do begin trace(msg & " selected case NONE"); end;
+         when none do begin trace(msg & " selected case none"); end;
       end case;
     end;
    
@@ -48,32 +46,27 @@ begin
       integer case1=1;
       integer case2=2;
 
-      switch(lowkey:hikey) key
+      switch(lowKey:hiKey) key
       begin
          when case1 do begin trace(msg & " selected case 1"); end;
          when case2 do begin trace(msg & " selected case 2"); end;
          when 3,4,5 do begin trace(msg & " selected case 3"); end;
-         when NONE  do begin trace(msg & " selected case NONE"); end;
+         when none  do begin trace(msg & " selected case none"); end;
       end case;
     end;
    
-   if verbose then begin
-   Outtext("--- START SIMULA TEST 127"); Outimage ;
-   Outtext("--- Switch Statement");
-   Outimage; Outimage;
-   end;
-   
+
    facit(0):-"Test 1 selected case 2";
    facit(1):-"Test 2 selected case 1";
    facit(2):-"Test 3 selected case 3";
-   facit(3):-"Test 4 selected case NONE";
+   facit(3):-"Test 4 selected case none";
 
    facit(4):-"Test 5 selected case 2";
    facit(5):-"Test 6 selected case 1";
    facit(6):-"Test 7 selected case 3";
-   facit(7):-"Test 8 selected case NONE";
+   facit(7):-"Test 8 selected case none";
 
-   facit(8):-"In MAIN after NOMORE";
+   facit(8):-"End of program";
 
    test1('B',"Test 1");
    test1('A',"Test 2");
@@ -85,19 +78,7 @@ begin
    test2(5,"Test 7");
    test2(27,"Test 8");
 
-   trace("In MAIN after NOMORE");
-   
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 127");
-   END ;
-
-   if verbose then begin
-      Outimage;
-      Outtext ("--- END SIMULA TEST 127") ;
-      Outimage;
-   end;
-   
+   trace("End of program");
+      
 end;
 

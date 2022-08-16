@@ -18,11 +18,11 @@
 %
 %  WRITTEN BY:  Peter Jensen September 1987
 % =====================================================================
-%
+external class SimulaTest;
 
-begin
-       Boolean verbose=FALSE;
-       Text outputFrom100="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputFrom100";
+SimulaTest(100,"--- Test that put-get-put delivers the identity.") begin
+
+       text outputFrom100="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputFrom100";
      
        integer signpos=17;  !***  number of sign. digits in long real;
        integer signpos1=signpos+1;
@@ -32,7 +32,7 @@ begin
        long real r;
        long real TENPOWER;    !*** 10**signpos ***;
        long real DELTA;       !*** TENPOWER(**(-1) ***;
-       boolean up,down;  ref(outfile) putget;
+       boolean up,down;
 
        text t,prevt,st,putgetput,heading;  ! local use in testputget ;
        procedure testputget(prevr,up); long real prevr; boolean up;
@@ -72,12 +72,10 @@ begin
                    if ndigits>0 then ndigits:=ndigits-1;
                    if signpos-ndigits<significance then begin
                       significance:=signpos-ndigits;
-             PRINT:   inspect putget do begin
-                         outimage;
-                         outtext(t1); outtext(heading); outimage;
-                         outtext(t2); outtext("   "); outtext(messt);
-                         outtext(", i="); outint(stepi,4); outimage;
-                      end
+             PRINT:   outimage;
+                      outtext(t1); outtext(heading); outimage;
+                      outtext(t2); outtext("   "); outtext(messt);
+                      outtext(", i="); outint(stepi,4); outimage;
                    end
                    else if ident then goto PRINT;
                    !*** put.get.put must be the identity ***;
@@ -116,7 +114,7 @@ begin
                  end;
        LOOP:     prevr:=r; swapt:-prevt; prevt:-t; t:-swapt; ! swap ;
              end;
-             inspect putget do begin
+             if verbose then begin
                 outimage;
                 outtext("*** SIGNIFICANCE from "); outtext(heading);
                 outtext(" is "); outint(significance,2); outimage;
@@ -126,26 +124,8 @@ begin
              if max_signif<significance then max_signif:=significance;
        end;
 
-       if verbose then begin
-          outtext("START Simula a.s test 100");
-          outimage;
-          outtext("    Test monotoneity of putreal and getreal.");
-          outimage;
-          outtext("    Test that put-get-put delivers the identity.");
-          outimage;
-          outtext("    - report on outfile "& outputFrom100);
-          outimage; outimage;
-       end;
-       
        min_signif:=signpos; max_signif:=0;
        
-       if verbose then putget:-sysout else
-       begin
-          putget:-new outfile(outputFrom100);
-          if not putget.open(blanks(80)) then begin
-             outtext("error: CAN'T OPEN FILE " & outputFrom100); outimage;
-             goto EXIT end;
-       end;   
        heading:-blanks(signpos+15);
        t:-blanks(signpos+8);
        prevt:-blanks(signpos+8); st:-blanks(signpos+8);
@@ -165,14 +145,7 @@ begin
        r:=10&&30; testputget(r,up);
        r:=10&&40; testputget(r,up);
 EXIT:
-       if verbose then outtext("..END Simula a.s test 100");
-       if min_signif=signpos
-       then  outtext("--- NO ERRORS FOUND IN TEST 100") ! no significant deviations found;
-       else begin outimage;  putget.outimage;
-            outtext(" Number of significant digits varies between");
-            outint(min_signif,3); outtext(" and"); outint(max_signif,3);
-       end;
-       putget.outtext(sysout.image); putget.outimage;
-       if not verbose then putget.close;
-%       outimage;
+       if min_signif=signpos then ! no significant deviations found;
+       else err(" Number of significant digits varies between" & edit(min_signif) & " and " & edit(max_signif));
+
 end

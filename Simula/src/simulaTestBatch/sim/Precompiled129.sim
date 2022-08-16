@@ -1,14 +1,14 @@
+external class SimulaTest;
 
-Class Precompiled129(i); integer i;
-begin
+SimulaTest class Precompiled129(i); integer i; begin
    ref(A) x;
-   Integer n;
-   Switch EXIT:=X1,X2,X3;
+   integer n;
+   switch EXIT:=X1,X2,X3;
 
-   Class A(j); integer j; begin
-       Switch MESSAGE:=M1,M2,M3;
-       Text pre="Abra ";
-       Text mess;
+   class A(j); integer j; begin
+       switch MESSAGE:=M1,M2,M3;
+       text pre="Abra ";
+       text mess;
        if j<1 or j>3 then goto Mxx;
        goto MESSAGE(j);
        
@@ -18,7 +18,7 @@ begin
 
        Mxx: mess:-pre & "Message " & edit(j); goto EXIT;
        
-   EXIT: End;
+   EXIT: end;
    X1:
    X2:
    X3:

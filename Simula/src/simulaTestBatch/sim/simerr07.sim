@@ -7,27 +7,12 @@
 %
 %  WRITTEN BY:  MYH   04/09-2021
 % ==============================================================================
-begin
-   Text CASE=" ERROR-TEST 07";
-   Boolean verbose=FALSE;
-   Boolean found_error ;
-   integer traceCase;
-   text array facit(0:7);
+external class RT_ErrorTest;
+
+RT_ErrorTest("   7 --- Test Wrong number of paramerters to virtual procedure") begin
 
    text txt;
    
-   procedure trace(msg); text msg;
-   begin
-      if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
-         outtext("Trace: " & msg); outimage;
-         outtext("Facit: " & facit(traceCase)); outimage;
-      end;
-      traceCase:=traceCase+1;
-   end;
    
    class A(i); integer i; virtual: procedure V; begin
        CatchingErrors begin
@@ -49,12 +34,6 @@ begin
    end;
    
    
-   if verbose then begin
-   Outtext("--- START SIMULA" & CASE);
-   Outtext("---  Wrong number of paramerters to virtual procedure");
-   Outimage; Outimage;
-   end;
-   
    facit(0):-"--- Testing Wrong number of paramerters to virtual procedure";
    facit(1):-"onError got error: SimulaRuntimeError: Too few parameters";
    facit(2):-"onError got error: SimulaRuntimeError: Too few parameters";
@@ -74,14 +53,5 @@ begin
       
    trace("END OF TEST07");
 
-   IF found_error THEN
-       Outtext("GOT ERROR(S) IN" & CASE)
-   ELSE Outtext ("--- NO ERRORS FOUND IN" & CASE);
-
-   if verbose then begin
-       Outimage;
-       Outtext ("--- END SIMULA" & CASE) ;
-       Outimage;
-   end;
 
 end;

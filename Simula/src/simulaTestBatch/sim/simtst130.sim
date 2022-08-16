@@ -5,10 +5,11 @@
 %
 %  WRITTEN BY:  MYH 
 % ==============================================================================
+external class SimulaTest;
+
+SimulaTest(130,"--- Test Class DEC_Lib, a set of utility procedures from DEC Handbook.") begin
+
 DEC_Lib begin
-    boolean VERBOSE;
-    integer nFailed;
-    
     boolean b,doAbort;
     integer i,j,p;
     real r;
@@ -17,16 +18,11 @@ DEC_Lib begin
     text m,o,n;
     text fileName,defaultextension;
     text t,t1,t2,t3,t4,t5;
-    ref(File) f;
-    ref(Printfile) pf;
+    ref(file) f;
+    ref(printfile) pf;
     
-    procedure trace(mess); text mess; if VERBOSE then begin
+    procedure trace(mess); text mess; if verbose then begin
         outtext(mess); outimage;
-    end;    
-    
-    procedure failed(mess); text mess; if VERBOSE then begin
-        outtext(mess); outimage; nFailed:=nFailed+1;
-        error("STOP HER INNTIL VIDERE");
     end;    
     
     procedure testAbort; begin ------------------------------------------------------------------------------ abort
@@ -63,12 +59,12 @@ DEC_Lib begin
             p:=master.pos; mastr1:-copy(master); mastr1.setpos(p);
             success:=change(master,oldt,newt);
             succes1:=change1(mastr1,oldt,newt);
-            if success ne expectedSuccess then failed("Test  testChange FAILED: expectedSuccess=" & edit(expectedSuccess));
-            if succes1 ne expectedSuccess then failed("Test testChange1 FAILED: expectedSuccess=" & edit(expectedSuccess));
-            if master ne expectedValue then failed("Test  testChange FAILED: master=" & master);
-            if mastr1 ne expectedValue then failed("Test testChange1 FAILED: mastr1=" & mastr1);
-            if master.pos ne expectedPosAfter then failed("Test  testChange FAILED: master.pos=" & edit(master.pos));
-            if mastr1.pos ne expectedPosAfter then failed("Test  testChange FAILED: mastr1.pos=" & edit(mastr1.pos));
+            if success ne expectedSuccess then err("Test  testChange FAILED: expectedSuccess=" & edit(expectedSuccess));
+            if succes1 ne expectedSuccess then err("Test testChange1 FAILED: expectedSuccess=" & edit(expectedSuccess));
+            if master ne expectedValue then err("Test  testChange FAILED: master=" & master);
+            if mastr1 ne expectedValue then err("Test testChange1 FAILED: mastr1=" & mastr1);
+            if master.pos ne expectedPosAfter then err("Test  testChange FAILED: master.pos=" & edit(master.pos));
+            if mastr1.pos ne expectedPosAfter then err("Test  testChange FAILED: mastr1.pos=" & edit(mastr1.pos));
         end;
         
         trace("BEGIN TEST change --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -104,10 +100,10 @@ DEC_Lib begin
             trace("Test  changeAll(" & master & "," & oldt & "," & newt & ")  "
                 & "   expectedValue=" & expectedValue & ", expectedPosAfter=" & edit(expectedPosAfter));
             changeAll(master,oldt,newt);
-            if master ne expectedValue then failed("Test  testChangeAll FAILED: master=" & master);
-            if master.pos ne expectedPosAfter then failed("Test  testChangeAll FAILED: master.pos=" & edit(master.pos));
+            if master ne expectedValue then err("Test  testChangeAll FAILED: master=" & master);
+            if master.pos ne expectedPosAfter then err("Test  testChangeAll FAILED: master.pos=" & edit(master.pos));
             master.setpos(p); changeAll(master,newt,oldt);
-            if master ne prevMaster then failed("Test  testChangeAll FAILED: master=" & master & ", prevMaster=" & prevMaster);
+            if master ne prevMaster then err("Test  testChangeAll FAILED: master=" & master & ", prevMaster=" & prevMaster);
         end;
 
         trace("BEGIN TEST change --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -122,7 +118,7 @@ DEC_Lib begin
         procedure test(t,defaultextension,expectedValue); text t,defaultextension,expectedValue; begin
             text res; res:-checkextension(t,defaultextension);
             trace("Test  checkextension(" & t & "," & defaultextension & ") ==> '" & res & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  checkextension FAILED: result=" & res);
+            if res ne expectedValue then err("Test  checkextension FAILED: result=" & res);
         end;
 
         trace("BEGIN TEST checkextension --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -137,8 +133,8 @@ DEC_Lib begin
         procedure test(t,expectedValue,expectedPosAfter); text t; integer expectedValue,expectedPosAfter; begin
             integer res; res:-checkfrac(t);
             trace("Test  checkfrac(" & t & ") ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
-            if res ne expectedValue then failed("Test  checkfrac FAILED: result=" & edit(res));
-            if t.pos ne expectedPosAfter then failed("Test  checkfrac FAILED: t.pos=" & edit(t.pos));
+            if res ne expectedValue then err("Test  checkfrac FAILED: result=" & edit(res));
+            if t.pos ne expectedPosAfter then err("Test  checkfrac FAILED: t.pos=" & edit(t.pos));
         end;
         
         trace("BEGIN TEST checkfrac --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -155,8 +151,8 @@ DEC_Lib begin
             integer res;
             res:-checkint(t);
             trace("Test  checkint(" & t & ") ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
-            if res ne expectedValue then failed("Test  checkint FAILED: result=" & edit(res));
-            if t.pos ne expectedPosAfter then failed("Test  checkint FAILED: t.pos=" & edit(t.pos));
+            if res ne expectedValue then err("Test  checkint FAILED: result=" & edit(res));
+            if t.pos ne expectedPosAfter then err("Test  checkint FAILED: t.pos=" & edit(t.pos));
         end;
         
         trace("BEGIN TEST checkint --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -173,8 +169,8 @@ DEC_Lib begin
             integer res;
             res:-checkreal(t);
             trace("Test  checkreal(" & t & ") ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
-            if res ne expectedValue then failed("Test  checkreal FAILED: result=" & edit(res));
-            if t.pos ne expectedPosAfter then failed("Test  checkreal FAILED: t.pos=" & edit(t.pos));
+            if res ne expectedValue then err("Test  checkreal FAILED: result=" & edit(res));
+            if t.pos ne expectedPosAfter then err("Test  checkreal FAILED: t.pos=" & edit(t.pos));
         end;
     
         trace("BEGIN TEST checkreal --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -188,18 +184,18 @@ DEC_Lib begin
 
     procedure testCompress; begin ------------------------------------------------------------------------------ compress
         text procedure compress1(tin, ch); text tin; character ch; begin
-            integer pInp, tinLen, count, pOut; character tmpCh;
+            integer pInp, tinLen, count, pout; character tmpCh;
             if tin == notext then compress1 :- notext
             else begin
                 tinLen := tin.length;
-                tin.SetPos(1); pOut:=1;
+                tin.setpos(1); pout:=1;
                 for pInp := 1 step 1 until tinLen do begin
                     tin.setpos(pInp); tmpCh := tin.getchar;
                     if tmpCh ne ch then begin
-                        depchar(tin,pOut,tmpCh); pOut:=pOut+1;
+                        depchar(tin,pout,tmpCh); pout:=pout+1;
                     end
                 end;
-                compress1 :- if pOut = 0 then notext else tin.sub(1,pOut-1);
+                compress1 :- if pout = 0 then notext else tin.sub(1,pout-1);
             end elsBeg;
         end compress;
 
@@ -209,17 +205,17 @@ DEC_Lib begin
             rs1:-compress1(tin2,ch);
             trace("Test  compress(" & tin & "," & edit(ch) & ") ==> '" & res & "'   expectedValue=" & expectedValue & ", expectedMain=" & expectedMain);
             trace("Test compress1(" & tin & "," & edit(ch) & ") ==> '" & rs1 & "'   expectedValue=" & expectedValue & ", expectedMain=" & expectedMain);
-            if res ne expectedValue then failed("Test  compress FAILED: result=" & res);
-            if rs1 ne expectedValue then failed("Test  compress1 FAILED: result=" & rs1);
-            if res.main ne expectedMain then failed("Test  compress FAILED: result.main=" & res.main);
-            if rs1.main ne expectedMain then failed("Test  compress1 FAILED: result.main=" & rs1.main);
+            if res ne expectedValue then err("Test  compress FAILED: result=" & res);
+            if rs1 ne expectedValue then err("Test  compress1 FAILED: result=" & rs1);
+            if res.main ne expectedMain then err("Test  compress FAILED: result.main=" & res.main);
+            if rs1.main ne expectedMain then err("Test  compress1 FAILED: result.main=" & rs1.main);
         end;
     
         trace("BEGIN TEST compress --------------------------------------------------- nFailed=" & edit(nFailed));
-        -- Example:  t1:-Copy("AxBxCxDx");  t2:-compress(t1,'x');
+        -- Example:  t1:-copy("AxBxCxDx");  t2:-compress(t1,'x');
         --     gives t1="ABCDCxDx", t2==t1.sub(1,4), t2="ABCD".
-        t1:-Copy("AxBxCxDx"); test(t1,'x',"ABCD","ABCDCxDx");
-        t1:-Copy("AxBxCxDx"); test(t1,'y',"AxBxCxDx","AxBxCxDx");
+        t1:-copy("AxBxCxDx"); test(t1,'x',"ABCD","ABCDCxDx");
+        t1:-copy("AxBxCxDx"); test(t1,'y',"AxBxCxDx","AxBxCxDx");
         trace("ENDOF TEST compress --------------------------------------------------- nFailed=" & edit(nFailed));
 
     end;
@@ -228,31 +224,31 @@ DEC_Lib begin
         procedure testConc(t1,t2,expectedValue); text t1,t2; text expectedValue; begin
             text res; res:-conc(t1,t2);
             trace("Test  conc(" & t1 & "," & t2 & ") ==> '" & res & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  testConc FAILED: result=" & res);
+            if res ne expectedValue then err("Test  testConc FAILED: result=" & res);
         end;
         
         procedure testConc2(t1,t2,expectedValue); text t1,t2; text expectedValue; begin
             text res; res:-conc2(t1,t2);
             trace("Test  conc2(" & t1 & "," & t2 & ") ==> '" & res & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  testConc2 FAILED: result=" & res);
+            if res ne expectedValue then err("Test  testConc2 FAILED: result=" & res);
         end;
         
         procedure testConc3(t1,t2,t3,expectedValue); text t1,t2,t3; text expectedValue; begin
             text res; res:-conc3(t1,t2,t3);
             trace("Test  conc3(" & t1 & "," & t2 & "," & t3 & ") ==> '" & res & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  testConc3 FAILED: result=" & res);
+            if res ne expectedValue then err("Test  testConc3 FAILED: result=" & res);
         end;
         
         procedure testConc4(t1,t2,t3,t4,expectedValue); text t1,t2,t3,t4; text expectedValue; begin
             text res; res:-conc4(t1,t2,t3,t4);
             trace("Test  conc4(" & t1 & "," & t2 & "," & t3 & "," & t4 & ") ==> '" & res & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  testConc4 FAILED: result=" & res);
+            if res ne expectedValue then err("Test  testConc4 FAILED: result=" & res);
         end;
         
         procedure testConc5(t1,t2,t3,t4,t5,expectedValue); text t1,t2,t3,t4,t5; text expectedValue; begin
             text res; res:-conc5(t1,t2,t3,t4,t5);
             trace("Test  conc5(" & t1 & "," & t2 & "," & t3 & "," & t4 & "," & t5 & ") ==> '" & res & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  testConc5 FAILED: result=" & res);
+            if res ne expectedValue then err("Test  testConc5 FAILED: result=" & res);
         end;
         
         trace("BEGIN TEST conc --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -282,7 +278,7 @@ DEC_Lib begin
         trace("BEGIN TEST testDayno --------------------------------------------------- nFailed=" & edit(nFailed));
             i:-dayno1; trace("Test dayno1 ==> '" & edit(i) & "'   pos=" & edit(t1.pos));
             j:-dayno;  trace("Test  dayno ==> '" & edit(j) & "'   pos=" & edit(t1.pos));
-            if i ne j then failed("Test  dayno FAILED");
+            if i ne j then err("Test  dayno FAILED");
         trace("ENDOF TEST testDayno --------------------------------------------------- nFailed=" & edit(nFailed));
     
     end;
@@ -293,7 +289,7 @@ DEC_Lib begin
         trace("BEGIN TEST today --------------------------------------------------- nFailed=" & edit(nFailed));
             trace("Test  today ==> " & today);
             trace("Test today1 ==> " & today1);
-            if today ne today1 then failed("Test  today FAILED");
+            if today ne today1 then err("Test  today FAILED");
         trace("ENDOF TEST today --------------------------------------------------- nFailed=" & edit(nFailed));
 
 	end;
@@ -304,23 +300,23 @@ DEC_Lib begin
         trace("BEGIN TEST testDaytime --------------------------------------------------- nFailed=" & edit(nFailed));
             t1:-daytime1; trace("Test daytime1 ==> '" & t1 & "'   pos=" & edit(t1.pos));
             t2:-daytime;  trace("Test  daytime ==> '" & t1 & "'   pos=" & edit(t1.pos));
-            if t1 ne t2 then failed("Test  daytime FAILED");
+            if t1 ne t2 then err("Test  daytime FAILED");
         trace("ENDOF TEST testDaytime --------------------------------------------------- nFailed=" & edit(nFailed));
     
     end;
 
     procedure testDepchar; begin ------------------------------------------------------------------------------ depchar
         procedure depchar1(t,p,c); text t; integer p; character c;
-        if p>0 and p<=t.length then t.sub(p,1).Putchar(c);
+        if p>0 and p<=t.length then t.sub(p,1).putchar(c);
 
         procedure test(t,p,c,expectedValue); text t,expectedValue; integer p; character c; begin
             depchar(t,p,c);
             trace("Test  depchar(" & t & "," & edit(p) & "," & edit(c) & "), ==> '" & t & "'   expectedValue=" & expectedValue);
-            if t ne expectedValue then failed("Test  depchar FAILED: result=" & t);
+            if t ne expectedValue then err("Test  depchar FAILED: result=" & t);
         
             depchar1(t,p,c);
             trace("Test  depchar1(" & t & "," & edit(p) & "," & edit(c) & "), ==> '" & t & "'   expectedValue=" & expectedValue);
-            if t ne expectedValue then failed("Test  depchar1 FAILED: result=" & t);
+            if t ne expectedValue then err("Test  depchar1 FAILED: result=" & t);
 		end;
 		    
         trace("BEGIN TEST testDepchar --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -362,8 +358,8 @@ DEC_Lib begin
             rs1:=fetchar1(t,p);
             trace("Test  fetchar(" & t & "," & edit(p) & ") ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue));
             trace("Test fetchar1(" & t & "," & edit(p) & ") ==> '" & edit(rs1) & "'   expectedValue=" & edit(expectedValue));
-            if res ne expectedValue then failed("Test  fetchar FAILED: result=" & edit(res));
-            if rs1 ne expectedValue then failed("Test  fetchar1 FAILED: result=" & edit(rs1));
+            if res ne expectedValue then err("Test  fetchar FAILED: result=" & edit(res));
+            if rs1 ne expectedValue then err("Test  fetchar1 FAILED: result=" & edit(rs1));
         end;
         
         trace("BEGIN TEST fetchar --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -397,10 +393,10 @@ DEC_Lib begin
             rs1:-findtrigger1(mastr2,triggers);
             trace("Test  findtrigger(" & master & "," & triggers & ") ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
             trace("Test findtrigger1(" & mastr2 & "," & triggers & ") ==> '" & edit(rs1) & "'   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
-            if res ne expectedValue then failed("Test  findtrigger FAILED: result=" & edit(res));
-            if rs1 ne expectedValue then failed("Test  findtrigger1 FAILED: result=" & edit(rs1));
-            if master.pos ne expectedPosAfter then failed("Test  findtrigger FAILED: master.pos=" & edit(master.pos));
-            if mastr2.pos ne expectedPosAfter then failed("Test  findtrigger1 FAILED: mastr2.pos=" & edit(mastr2.pos));
+            if res ne expectedValue then err("Test  findtrigger FAILED: result=" & edit(res));
+            if rs1 ne expectedValue then err("Test  findtrigger1 FAILED: result=" & edit(rs1));
+            if master.pos ne expectedPosAfter then err("Test  findtrigger FAILED: master.pos=" & edit(master.pos));
+            if mastr2.pos ne expectedPosAfter then err("Test  findtrigger1 FAILED: mastr2.pos=" & edit(mastr2.pos));
         end;
     
         trace("BEGIN TEST findtrigger --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -420,8 +416,8 @@ DEC_Lib begin
             res:-from(t,p); rs1:-from(t,p);
             trace("Test  from(" & t & "," & edit(p) & ") ==> '" & res & "'   expectedValue=" & expectedValue);
             trace("Test from1(" & t & "," & edit(p) & ") ==> '" & rs1 & "'   expectedValue=" & expectedValue);
-            if res ne rs1 then failed("Test  from FAILED");
-            if res ne expectedValue then failed("Test  from FAILED: result=" & res);
+            if res ne rs1 then err("Test  from FAILED");
+            if res ne expectedValue then err("Test  from FAILED: result=" & res);
         end;
                   
         trace("BEGIN TEST from --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -442,10 +438,10 @@ DEC_Lib begin
             rs1:-front1(t);
             trace("Test  front(" & t & "), t.pos=" & edit(t.pos) & " ==> '" & res & "'   expectedValue=" & expectedValue);
             trace("Test front1(" & t & "), t.pos=" & edit(t.pos) & " ==> '" & rs1 & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  front FAILED: result=" & res);
-            if rs1 ne expectedValue then failed("Test  front1 FAILED: result=" & rs1);
+            if res ne expectedValue then err("Test  front FAILED: result=" & res);
+            if rs1 ne expectedValue then err("Test  front1 FAILED: result=" & rs1);
             trace("front & from ==> '" & res & from(t,t.pos) & "'");
-            if (res & from(t,t.pos)) ne t then failed("Test  front1 FAILED: res & from(t,t.pos)='" & res & from(t,t.pos) & "'");
+            if (res & from(t,t.pos)) ne t then err("Test  front1 FAILED: res & from(t,t.pos)='" & res & from(t,t.pos) & "'");
         end;
         
         trace("BEGIN TEST front --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -458,7 +454,7 @@ DEC_Lib begin
 
     procedure testFrontcompare; begin ------------------------------------------------------------------------------ frontcompare
         boolean procedure frontcompare1(string,config); text string,config;
-        if String.length - String.pos+1 >= config.length then
+        if string.length - string.pos+1 >= config.length then
         frontcompare1:= string.sub(string.pos,config.length) = config;
         
         procedure test(t1,t2,expectedValue); text t1,t2; boolean expectedValue; begin
@@ -467,8 +463,8 @@ DEC_Lib begin
             rs1:-frontcompare1(t1,t2);
             trace("Test  frontcompare(" & t1 & "," & t2 & "), t1.pos=" & edit(t1.pos) & " ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue));
             trace("Test frontcompare1(" & t1 & "," & t2 & "), t1.pos=" & edit(t1.pos) & " ==> '" & edit(rs1) & "'   expectedValue=" & edit(expectedValue));
-            if res ne expectedValue then failed("Test  frontcompare FAILED: result=" & edit(res));
-            if rs1 ne expectedValue then failed("Test  frontcompare1 FAILED: result=" & edit(rs1));
+            if res ne expectedValue then err("Test  frontcompare FAILED: result=" & edit(res));
+            if rs1 ne expectedValue then err("Test  frontcompare1 FAILED: result=" & edit(rs1));
         end;
 
         trace("BEGIN TEST frontcompare --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -499,8 +495,8 @@ DEC_Lib begin
             rs1:-frontstrip1(t);
             trace("Test  frontstrip(" & t & "), t.pos=" & edit(t.pos) & " ==> '" & res & "'   expectedValue=" & expectedValue);
             trace("Test frontstrip1(" & t & "), t.pos=" & edit(t.pos) & " ==> '" & rs1 & "'   expectedValue=" & expectedValue);
-            if res ne expectedValue then failed("Test  frontstrip FAILED: result=" & res);
-            if rs1 ne expectedValue then failed("Test  frontstrip1 FAILED: result=" & rs1);
+            if res ne expectedValue then err("Test  frontstrip FAILED: result=" & res);
+            if rs1 ne expectedValue then err("Test  frontstrip1 FAILED: result=" & rs1);
         end;
         
         trace("BEGIN TEST frontstrip --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -543,10 +539,10 @@ DEC_Lib begin
             rs1:-getitem1(t2);
             trace("Test  getitem(" & tt & "), tt.pos=" & edit(tt.pos) & " ==> '" & res & "'   expectedValue=" & expectedValue & ", expectedPosAfter=" & edit(expectedPosAfter));
             trace("Test getitem1(" & t2 & "), t2.pos=" & edit(t2.pos) & " ==> '" & rs1 & "'   expectedValue=" & expectedValue & ", expectedPosAfter=" & edit(expectedPosAfter));
-            if res ne expectedValue then failed("Test  getitem FAILED: result=" & res);
-            if rs1 ne expectedValue then failed("Test  getitem1 FAILED: result=" & rs1);
-            if tt.pos ne expectedPosAfter then failed("Test  getitem FAILED: tt.pos=" & edit(tt.pos));
-            if t2.pos ne expectedPosAfter then failed("Test  getitem1 FAILED: t2.pos=" & edit(t2.pos));
+            if res ne expectedValue then err("Test  getitem FAILED: result=" & res);
+            if rs1 ne expectedValue then err("Test  getitem1 FAILED: result=" & rs1);
+            if tt.pos ne expectedPosAfter then err("Test  getitem FAILED: tt.pos=" & edit(tt.pos));
+            if t2.pos ne expectedPosAfter then err("Test  getitem1 FAILED: t2.pos=" & edit(t2.pos));
         end;
 
         trace("BEGIN TEST getitem --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -563,7 +559,7 @@ DEC_Lib begin
     procedure testHash; begin ------------------------------------------------------------------------------ hash
         integer procedure hash1(t,n); text t; integer n; begin
             text tstrip; integer a;
-            tstrip:- frontstrip(t.Strip);
+            tstrip:- frontstrip(t.strip);
             if tstrip == notext then hash1:= mod(t.length,n) else begin
                 a:= rank(tstrip.getchar);
                 if tstrip.length > 3 then begin
@@ -582,8 +578,8 @@ DEC_Lib begin
             rs1:-hash1(t,n);
             trace("Test  hash(" & t & "," & edit(n) & "), t.pos=" & edit(t.pos) & " ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue));
             trace("Test hash1(" & t & "," & edit(n) & "), t.pos=" & edit(t.pos) & " ==> '" & edit(rs1) & "'   expectedValue=" & edit(expectedValue));
-            if res ne expectedValue then failed("Test  hash FAILED: result=" & edit(res));
-            if rs1 ne expectedValue then failed("Test  hash1 FAILED: result=" & edit(rs1));
+            if res ne expectedValue then err("Test  hash FAILED: result=" & edit(res));
+            if rs1 ne expectedValue then err("Test  hash1 FAILED: result=" & edit(rs1));
         end;
         
         trace("BEGIN TEST hash --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -617,101 +613,101 @@ DEC_Lib begin
         
         integer nTests=10;
         
-        procedure createImagefile(fil); ref(Outfile) fil; begin
+        procedure createImagefile(fil); ref(outfile) fil; begin
             fil.setaccess("anycreate"); fil.open(blanks(20));
             for i:=1 step 1 until nTests do fil.outtext("   item" & edit(i) & "   ");
             fil.outimage; fil.close;
         end;  
         
         procedure testImagefile(fileName); text fileName;  begin
-            ref(Infile) fil;
-            fil:-new Infile(fileName); doTestImagefile(fil,initem1(fil));
-            fil:-new Infile(fileName); doTestImagefile(fil,initem(fil));
+            ref(infile) fil;
+            fil:-new infile(fileName); doTestImagefile(fil,initem1(fil));
+            fil:-new infile(fileName); doTestImagefile(fil,initem(fil));
         end;
         
-        procedure doTestImagefile(fil,nextitem); name nextitem; text nextitem; ref(Infile) fil;  begin
+        procedure doTestImagefile(fil,nextitem); name nextitem; text nextitem; ref(infile) fil;  begin
             fil.open(blanks(20)); i:=0;
             while not fil.lastitem do begin
                 text item; item:-nextitem; i:=i+1;
                 trace("GOT: '" & item & "'");
-                if item ne ("item" & edit(i)) then failed("TestInitem - ImageFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne ("item" & edit(i)) then err("TestInitem - ImageFile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
          
-        procedure createDirectfile(fil); ref(Directfile) fil; begin
+        procedure createDirectfile(fil); ref(directfile) fil; begin
             fil.setaccess("anycreate"); fil.open(blanks(20));
             for i:=1 step 1 until nTests do fil.outtext("   item" & edit(i) & "   ");
             fil.outimage; fil.close;
         end;  
 
         procedure testDirectfile(fileName); text fileName;  begin
-            ref(Directfile) fil;
-            fil:-new Directfile(fileName); doTestDirectfile(fil,initem1(fil));
-            fil:-new Directfile(fileName); doTestDirectfile(fil,initem(fil));
+            ref(directfile) fil;
+            fil:-new directfile(fileName); doTestDirectfile(fil,initem1(fil));
+            fil:-new directfile(fileName); doTestDirectfile(fil,initem(fil));
         end;
         
-        procedure doTestDirectfile(fil,nextitem); name nextitem; text nextitem; ref(Directfile) fil; begin
+        procedure doTestDirectfile(fil,nextitem); name nextitem; text nextitem; ref(directfile) fil; begin
             fil.open(blanks(20)); i:=0;
             fil.locate(1); fil.inimage;
             while not fil.lastitem do begin
                 text item;
                 item:-nextitem; i:=i+1;
                 trace("GOT: '" & item & "'");
-                if item ne ("item" & edit(i)) then failed("TestInitem - DirectFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne ("item" & edit(i)) then err("TestInitem - directfile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
          
-        procedure createBytefile(fil); ref(OutBytefile) fil; begin
+        procedure createBytefile(fil); ref(outbytefile) fil; begin
             fil.setaccess("anycreate"); fil.open;
             for i:=1 step 1 until nTests do fil.outtext("   " & edit(char(rank('A')+i)) & "   ");
             fil.close;
         end;  
 
         procedure testBytefile(fileName); text fileName;  begin
-            ref(InBytefile) fil;
-            fil:-new InBytefile(fileName); doTestBytefile(fil,initem1(fil));
-            fil:-new InBytefile(fileName); doTestBytefile(fil,initem(fil));
+            ref(inbytefile) fil;
+            fil:-new inbytefile(fileName); doTestBytefile(fil,initem1(fil));
+            fil:-new inbytefile(fileName); doTestBytefile(fil,initem(fil));
         end;
         
-        procedure doTestBytefile(fil,nextitem); name nextitem; text nextitem; ref(InBytefile) fil; begin
+        procedure doTestBytefile(fil,nextitem); name nextitem; text nextitem; ref(inbytefile) fil; begin
             fil.open;
             for i:=1 step 1 until nTests do begin
                 text item; item:-nextitem;
                 trace("GOT: '" & item & "'   Endfile=" & edit(endfile));
-                if item ne edit(char(rank('A')+i)) then failed("TestInitem - ByteFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne edit(char(rank('A')+i)) then err("TestInitem - ByteFile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
          
-        procedure createDirectBytefile(fil); ref(DirectBytefile) fil; begin
+        procedure createDirectBytefile(fil); ref(directbytefile) fil; begin
             fil.setaccess("anycreate"); fil.open;
             for i:=1 step 1 until nTests do fil.outtext("   " & edit(char(rank('A')+i)) & "   ");
             fil.close;
         end;  
 
         procedure testDirectBytefile(fileName); text fileName;  begin
-            ref(DirectBytefile) fil;
-            fil:-new DirectBytefile(fileName); doTestDirectBytefile(fil,initem1(fil));
-            fil:-new DirectBytefile(fileName); doTestDirectBytefile(fil,initem(fil));
+            ref(directbytefile) fil;
+            fil:-new directbytefile(fileName); doTestDirectBytefile(fil,initem1(fil));
+            fil:-new directbytefile(fileName); doTestDirectBytefile(fil,initem(fil));
         end;
         
-        procedure doTestDirectBytefile(fil,nextitem); name nextitem; text nextitem; ref(DirectBytefile) fil; begin
+        procedure doTestDirectBytefile(fil,nextitem); name nextitem; text nextitem; ref(directbytefile) fil; begin
             fil.open;
             for i:=1 step 1 until nTests do begin
                 text item; item:-nextitem;
                 trace("GOT: '" & item & "'   Endfile=" & edit(endfile));
-                if item ne edit(char(rank('A')+i)) then failed("TestInitem - DirectByteFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne edit(char(rank('A')+i)) then err("TestInitem - directbytefile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
 
         trace("BEGIN TEST initem --------------------------------------------------- nFailed=" & edit(nFailed));
-            createImagefile(new Outfile("simtst130-TEMP1"));             testImagefile("simtst130-TEMP1");
-            createDirectfile(new Directfile("simtst130-TEMP2"));         testDirectfile("simtst130-TEMP2");
-            createBytefile(new OutBytefile("simtst130-TEMP3"));          testBytefile("simtst130-TEMP3");
-            createDirectBytefile(new DirectBytefile("simtst130-TEMP4")); testDirectBytefile("simtst130-TEMP4");
+            createImagefile(new outfile("simtst130-TEMP1"));             testImagefile("simtst130-TEMP1");
+            createDirectfile(new directfile("simtst130-TEMP2"));         testDirectfile("simtst130-TEMP2");
+            createBytefile(new outbytefile("simtst130-TEMP3"));          testBytefile("simtst130-TEMP3");
+            createDirectBytefile(new directbytefile("simtst130-TEMP4")); testDirectBytefile("simtst130-TEMP4");
         trace("ENDOF TEST initem --------------------------------------------------- nFailed=" & edit(nFailed));
     
     end;
@@ -732,9 +728,9 @@ DEC_Lib begin
     end;
 
     procedure testLinecount; begin ------------------------------------------------------------------------------ linecount
-	    integer procedure linecount1(pfil); ref(PrintFile) pfil; begin
+	    integer procedure linecount1(pfil); ref(printfile) pfil; begin
             if pfil==none then linecount1:=-1
-            else if not pfil.isOpen then linecount1:=-2
+            else if not pfil.isopen then linecount1:=-2
             else begin
                 --  return current linesperpage setting
                 integer count; count:=linesperpage(0); linesperpage(count);
@@ -742,19 +738,19 @@ DEC_Lib begin
             end;
         end;
 
-        procedure test(pf,expectedValue); ref(PrintFile) pf; integer expectedValue; begin
+        procedure test(pf,expectedValue); ref(printfile) pf; integer expectedValue; begin
             integer c1,c2;
-            c1:-linecount(pf); c2:-linecount1(pf);
+            c1:=linecount(pf); c2:=linecount1(pf);
             trace("Test  linecount ==> '" & edit(c1) & "'   expectedValue=" & edit(expectedValue));
             trace("Test linecount1 ==> '" & edit(c2) & "'   expectedValue=" & edit(expectedValue));
-            if c1 ne expectedValue then failed("Test  linecount FAILED: result=" & edit(c1));
-            if c2 ne expectedValue then failed("Test  linecount1 FAILED: result=" & edit(c2));
-            if c1 ne c2 then failed("Test  linecount FAILED");
+            if c1 ne expectedValue then err("Test  linecount FAILED: result=" & edit(c1));
+            if c2 ne expectedValue then err("Test  linecount1 FAILED: result=" & edit(c2));
+            if c1 ne c2 then err("Test  linecount FAILED");
         end;
 
         trace("BEGIN TEST linecount --------------------------------------------------- nFailed=" & edit(nFailed));
             test(pf, -1);
-            pf:-new PrintFile("simtst130-TEMP");
+            pf:-new printfile("simtst130-TEMP");
             test(pf, -2);
             pf.open(blanks(80));
             test(pf,linesperpage(0));
@@ -764,7 +760,7 @@ DEC_Lib begin
 
     procedure testLowc; begin ------------------------------------------------------------------------------ lowc
          character procedure lowc1(c); character c;
-         lowc1:= if not Letter(c) then c else
+         lowc1:= if not letter(c) then c else
                 if c < 'a' then
                 char(rank(c)-rank('A')+rank('a')) else c;
 
@@ -773,7 +769,7 @@ DEC_Lib begin
             c1:-lowc(c); c2:-lowc1(c);
             trace("Test  lowc(" & edit(c) & ") " & " ==> '" & edit(c1) & "'");
             trace("Test lowc1(" & edit(c) & ") " & " ==> '" & edit(c2) & "'");
-            if c1 ne c2 then failed("Test  lowc FAILED");
+            if c1 ne c2 then err("Test  lowc FAILED");
         end;
 
         trace("BEGIN TEST lowc --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -795,7 +791,7 @@ DEC_Lib begin
             c1:-maketext(c,n); c2:-maketext1(c,n);
             trace("Test  maketext(" & edit(c) & ",n=" & edit(n) & ") " & " ==> '" & c1 & "'");
             trace("Test maketext1(" & edit(c) & ",n=" & edit(n) & ") " & " ==> '" & c2 & "'");
-            if c1 ne c2 then failed("Test  maketext FAILED");
+            if c1 ne c2 then err("Test  maketext FAILED");
         end;
 
         trace("BEGIN TEST maketext --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -808,7 +804,7 @@ DEC_Lib begin
         boolean procedure puttext1(oldstring,newstring); name oldstring; text oldstring,newstring; begin
             text s; s:-oldstring;
             if s.pos+newstring.length-1 <= s.length and then not s.constant then begin
-                puttext1 := TRUE;
+                puttext1 := true;
                 s.sub(s.pos,newstring.length):=newstring;
                 s.setpos(s.pos+newstring.length)
                 oldstring.setpos(s.pos)
@@ -823,10 +819,10 @@ DEC_Lib begin
             rs1:-puttext1(old2,newt);
             trace("Test  puttext(" & oldtx & "," & newt & ") ==> '" & oldt & "':" & edit(res) & "   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
             trace("Test puttext1(" & old2x & "," & newt & ") ==> '" & old2 & "':" & edit(rs1) & "   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
-            if res ne expectedValue then failed("Test  puttext FAILED: result=" & edit(res));
-            if rs1 ne expectedValue then failed("Test  puttext1 FAILED: result=" & edit(rs1));
-            if oldt.pos ne expectedPosAfter then failed("Test  puttext FAILED: oldt.pos=" & edit(oldt.pos));
-            if old2.pos ne expectedPosAfter then failed("Test  puttext1 FAILED: old2.pos=" & edit(old2.pos));
+            if res ne expectedValue then err("Test  puttext FAILED: result=" & edit(res));
+            if rs1 ne expectedValue then err("Test  puttext1 FAILED: result=" & edit(rs1));
+            if oldt.pos ne expectedPosAfter then err("Test  puttext FAILED: oldt.pos=" & edit(oldt.pos));
+            if old2.pos ne expectedPosAfter then err("Test  puttext1 FAILED: old2.pos=" & edit(old2.pos));
         end;
         
         trace("BEGIN TEST puttext --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -854,7 +850,7 @@ DEC_Lib begin
             t1:-rest(t); t2:-rest1(x);
             trace("Test  rest(" & t & ") t.pos=" & edit(pos) & " ==> '" & t1 & "'");
             trace("Test rest1(" & t & ") t.pos=" & edit(pos) & " ==> '" & t2 & "'");
-            if t1 ne t2 then failed("Test  rest FAILED");
+            if t1 ne t2 then err("Test  rest FAILED");
         end;
         
         trace("BEGIN TEST rest --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -875,10 +871,10 @@ DEC_Lib begin
             c1:-scanchar(t); c2:-scanchar1(x);
             trace("Test  scanchar(" & t & ") ==> '" & t & "':" & edit(c1) & "   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
             trace("Test scanchar1(" & x & ") ==> '" & x & "':" & edit(c2) & "   expectedValue=" & edit(expectedValue) & ", expectedPosAfter=" & edit(expectedPosAfter));
-            if c1 ne expectedValue then failed("Test  scanchar FAILED: result=" & edit(c1));
-            if c2 ne expectedValue then failed("Test  scanchar1 FAILED: result=" & edit(c2));
-            if t.pos ne expectedPosAfter then failed("Test  scanchar FAILED: t.pos=" & edit(t.pos));
-            if x.pos ne expectedPosAfter then failed("Test  scanchar1 FAILED: x.pos=" & edit(x.pos));
+            if c1 ne expectedValue then err("Test  scanchar FAILED: result=" & edit(c1));
+            if c2 ne expectedValue then err("Test  scanchar1 FAILED: result=" & edit(c2));
+            if t.pos ne expectedPosAfter then err("Test  scanchar FAILED: t.pos=" & edit(t.pos));
+            if x.pos ne expectedPosAfter then err("Test  scanchar1 FAILED: x.pos=" & edit(x.pos));
         end;
 
         trace("BEGIN TEST scanchar --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -893,7 +889,7 @@ DEC_Lib begin
         integer procedure scanfrac1(t); name t; text t; begin
             text s; s:-rest(t);
             if checkfrac(s)=1 then begin
-                scanfrac1:=s.Getfrac;
+                scanfrac1:=s.getfrac;
                 t.setpos(t.pos+s.pos-1)
             end else scanfrac1:=minint
         end;
@@ -905,9 +901,9 @@ DEC_Lib begin
             i1:-scanfrac(t); i2:-scanfrac1(x);
             trace("Test  scanfrac(" & t & ") ==> '" & edit(i1) & "'");
             trace("Test scanfrac1(" & t & ") ==> '" & edit(i2) & "'");
-            if i1 ne i2 then failed("Test  scanfrac FAILED");
-            if t.pos ne expectedPosAfter then failed("Test  scanfrac FAILED: t.pos=" & edit(t.pos));
-            if x.pos ne expectedPosAfter then failed("Test  scanfrac1 FAILED: x.pos=" & edit(x.pos));
+            if i1 ne i2 then err("Test  scanfrac FAILED");
+            if t.pos ne expectedPosAfter then err("Test  scanfrac FAILED: t.pos=" & edit(t.pos));
+            if x.pos ne expectedPosAfter then err("Test  scanfrac1 FAILED: x.pos=" & edit(x.pos));
         end;
 
         trace("BEGIN TEST scanfrac --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -928,7 +924,7 @@ DEC_Lib begin
             s:-rest(t);
             i:=checkint(s);
             if i=1 then begin
-                scanint1:=s.Getint;
+                scanint1:=s.getint;
                 t.setpos(t.pos+s.pos-1)
             end else scanint1:=minint
         end;
@@ -940,9 +936,9 @@ DEC_Lib begin
             i1:-scanint(t); i2:-scanint1(x);
             trace("Test  scanint(" & t & ") ==> '" & edit(i1) & "'");
             trace("Test scanint1(" & t & ") ==> '" & edit(i2) & "'");
-            if i1 ne i2 then failed("Test  scanint FAILED");
-            if t.pos ne expectedPosAfter then failed("Test  scanint FAILED: t.pos=" & edit(t.pos));
-            if x.pos ne expectedPosAfter then failed("Test  scanint1 FAILED: x.pos=" & edit(x.pos));
+            if i1 ne i2 then err("Test  scanint FAILED");
+            if t.pos ne expectedPosAfter then err("Test  scanint FAILED: t.pos=" & edit(t.pos));
+            if x.pos ne expectedPosAfter then err("Test  scanint1 FAILED: x.pos=" & edit(x.pos));
         end;
 
         trace("BEGIN TEST scanint --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -961,7 +957,7 @@ DEC_Lib begin
             s:-rest(t);
             i:=checkreal(s);
             if i=1 then begin
-                scanreal1:=s.Getreal;
+                scanreal1:=s.getreal;
                 trace("scanreal1(" & s & ")  PosAfter=" & edit(s.pos));
                 t.setpos(t.pos+s.pos-1)
             end else scanreal1:=minreal;
@@ -974,9 +970,9 @@ DEC_Lib begin
             lr1:-scanreal(t); lr2:-scanreal1(x);
             trace("Test  scanreal(" & t & ") ==> '" & edit(lr1) & "'  ExpectedPosAfter=" & edit(expectedPosAfter));
             trace("Test scanreal1(" & t & ") ==> '" & edit(lr2) & "'  ExpectedPosAfter=" & edit(expectedPosAfter));
-            if lr1 ne lr2 then failed("Test  scanreal FAILED");
-            if t.pos ne expectedPosAfter then failed("Test  scanreal FAILED: t.pos=" & edit(t.pos));
-            if x.pos ne expectedPosAfter then failed("Test  scanreal1 FAILED: x.pos=" & edit(x.pos));
+            if lr1 ne lr2 then err("Test  scanreal FAILED");
+            if t.pos ne expectedPosAfter then err("Test  scanreal FAILED: t.pos=" & edit(t.pos));
+            if x.pos ne expectedPosAfter then err("Test  scanreal1 FAILED: x.pos=" & edit(x.pos));
         end;
         
         trace("BEGIN TEST scanreal --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1012,9 +1008,9 @@ DEC_Lib begin
             t1:-scanto(t,c); t2:-scanto1(x,c);
             trace("Test  scanto(" & t & "," & edit(c) & ") ==> '" & t1 & "'  pos=" & edit(t.pos) & ", ExpectedPosAfter=" & edit(expectedPosAfter));
             trace("Test scanto1(" & t & "," & edit(c) & ") ==> '" & t2 & "'  pos=" & edit(t.pos) & ", ExpectedPosAfter=" & edit(expectedPosAfter));
-            if t1 ne t2 then failed("Test  scanto FAILED");
-            if t.pos ne expectedPosAfter then failed("Test  scanto FAILED: t.pos=" & edit(t.pos));
-            if x.pos ne expectedPosAfter then failed("Test  scanto1 FAILED: x.pos=" & edit(x.pos));
+            if t1 ne t2 then err("Test  scanto FAILED");
+            if t.pos ne expectedPosAfter then err("Test  scanto FAILED: t.pos=" & edit(t.pos));
+            if x.pos ne expectedPosAfter then err("Test  scanto1 FAILED: x.pos=" & edit(x.pos));
         end;
 
         trace("BEGIN TEST scanto --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1029,7 +1025,7 @@ DEC_Lib begin
         procedure test(t1,t2,n); text t1,t2; integer n; begin
             integer n2; n2:=search(t1,t2);
             trace("Test  search(" & t1 & "," & t2 & "," & edit(n) & ") ==> " & edit(n2));
-            if n ne n2 then failed("Test  search FAILED");
+            if n ne n2 then err("Test  search FAILED");
         end;
             
         trace("BEGIN TEST search --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1056,9 +1052,9 @@ DEC_Lib begin
             text t1,t2,x; x:-copy(t); t1:-skip(t,c); t2:-skip1(x,c);
             trace("Test  skip(" & t & "," & edit(c) & ") ==> '" & t1 & "'   expectedPosAfter=" & edit(expectedPosAfter));
             trace("Test skip1(" & t & "," & edit(c) & ") ==> '" & t2 & "'   expectedPosAfter=" & edit(expectedPosAfter));
-            if t1 ne t2 then failed("Test  skip FAILED");
-            if t.pos ne expectedPosAfter then failed("Test  skip FAILED: t.pos=" & edit(t.pos));
-            if x.pos ne expectedPosAfter then failed("Test  skip1 FAILED: x.pos=" & edit(x.pos));
+            if t1 ne t2 then err("Test  skip FAILED");
+            if t.pos ne expectedPosAfter then err("Test  skip FAILED: t.pos=" & edit(t.pos));
+            if x.pos ne expectedPosAfter then err("Test  skip1 FAILED: x.pos=" & edit(x.pos));
         end;
         
         trace("BEGIN TEST skip --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1075,7 +1071,7 @@ DEC_Lib begin
         procedure test(t); text t; begin
             trace("Test  startpos ==> " & edit(startpos(t)));
             trace("Test startpos1 ==> " & edit(startpos1(t)));
-            if startpos(t) ne startpos1(t) then failed("Test  startpos FAILED");
+            if startpos(t) ne startpos1(t) then err("Test  startpos FAILED");
         end;
         
         trace("BEGIN TEST startpos --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1094,7 +1090,7 @@ DEC_Lib begin
         procedure test(t,p,l); text t; integer p,l; begin
             trace("Test  tsub(" & t & "," & edit(p) & "," & edit(l) & ") ==> " & tsub(t,p,l));
             trace("Test  tsub1(" & t & "," & edit(p) & "," & edit(l) & ") ==> " & tsub1(t,p,l));
-            if tsub(t,p,l) ne tsub1(t,p,l) then failed("Test  tsub(" & t & "," & edit(p) & "," & edit(l) & ") FAILED");
+            if tsub(t,p,l) ne tsub1(t,p,l) then err("Test  tsub(" & t & "," & edit(p) & "," & edit(l) & ") FAILED");
         end;
         
         trace("BEGIN TEST tsub --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1109,14 +1105,14 @@ DEC_Lib begin
 	    
     procedure testUpc; begin ------------------------------------------------------------------------------ upc
         character procedure upc1(c); character c;
-           upc1:= if not Letter(c) then c else
+           upc1:= if not letter(c) then c else
                  if c > 'Z' then
                     char(rank(c)-rank('a')+rank('A')) else c;
 
         procedure test(c); character c; begin
             trace("Test  upc(" & edit(c) & ") ==> " & edit(upc(c)));
             trace("Test upc1(" & edit(c) & ") ==> " & edit(upc1(c)));
-            if upc(c) ne upc1(c) then failed("Test upc(" & edit(c) & ") FAILED");
+            if upc(c) ne upc1(c) then err("Test upc(" & edit(c) & ") FAILED");
         end;
         
         trace("BEGIN TEST upc --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1134,10 +1130,10 @@ DEC_Lib begin
             while master.more and test.more and cmaster = ctest do begin
                 cmaster:= master.getchar;
                 ctest:= test.getchar;
-                if (if cmaster > 'Z' then Letter(cmaster) else FALSE)
+                if (if cmaster > 'Z' then letter(cmaster) else false)
                     then cmaster:= char(rank(cmaster) - shift);
             end loop;
-        Out:upcompare1:= cmaster = ctest;
+        out:upcompare1:= cmaster = ctest;
         end;
     
         procedure test(master,test,expectedResult); text master,test; boolean expectedResult; begin
@@ -1146,8 +1142,8 @@ DEC_Lib begin
             result1:=upcompare1(master,test);
             trace("Test  upcompare(" & master & "," & test & ") ==> " & edit(result));
             trace("Test upcompare1(" & master & "," & test & ") ==> " & edit(result1));
-            if result ne result1 then failed("Test upcompare(" & master & "," & test & ") FAILED - not equal");
-            if result ne expectedResult then failed("Test upcompare(" & master & "," & test & ") FAILED - Wrong result");
+            if result ne result1 then err("Test upcompare(" & master & "," & test & ") FAILED - not equal");
+            if result ne expectedResult then err("Test upcompare(" & master & "," & test & ") FAILED - Wrong result");
         end;
 
         trace("BEGIN TEST upcompare --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1169,7 +1165,7 @@ DEC_Lib begin
         procedure test(t,i); text t; integer i; begin
             trace("Test  upto(" & t & "," & edit(i) & ") ==> " & upto(t,i));
             trace("Test upto1(" & t & "," & edit(i) & ") ==> " & upto1(t,i));
-            if upto(t,i) ne upto1(t,i) then failed("Test upto(" & t & "," & edit(i) & ") FAILED");
+            if upto(t,i) ne upto1(t,i) then err("Test upto(" & t & "," & edit(i) & ") FAILED");
         end;
         
         trace("BEGIN TEST upto --------------------------------------------------- nFailed=" & edit(nFailed));
@@ -1278,26 +1274,8 @@ DEC_Lib begin
         --testUpto;
     end;
     
-    if VERBOSE then begin
-    Outtext("--- START SIMULA TEST 130"); Outimage ;
-    Outtext("--- Class SimLib, a set of utility procedures from DEC Handbook.");
-    Outimage; Outimage;
-    end;
-
-    VERBOSE:=false;    
     fullTest;
-    
---    VERBOSE:=true;
 --    singleTest;
        
-    if nFailed = 0 then Outtext ("--- NO ERRORS FOUND IN TEST 130")
-    else Outtext ("--- " & edit(nFailed) & " ERRORS FOUND IN TEST 130");
-
-    if verbose then begin
-        Outimage;
-        Outtext ("--- END SIMULA TEST 130") ;
-        Outimage;
-    end;
-    
     
 end;

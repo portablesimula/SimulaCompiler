@@ -1,7 +1,8 @@
+external class SimulaTest;
 
-begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
-       boolean errfound;
-       boolean verbose=false;
+SimulaTest(99,"--- Test mod, rem, min, max.") begin
+
+       integer i,j;  integer array modres,remres(-4:4,-3:3);
        real x,y; long real lx,ly; text t,tx,ty,tlx,tly;
 
        procedure error(func,i,j,res); text func; integer i,j,res;
@@ -10,22 +11,16 @@ begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
              outtext(") evaluates to "); outint(res,2);
              outtext("  -  correct result is ");
              outint(if func="mod" then modres(i,j) else remres(i,j),2);
-             outimage; errfound:=true;
+             outimage; err("Failed");
        end;
 
        procedure rerror(func,x,y,res); text func,x,y,res;
        begin outtext("*** error: "); outtext(func);
              outchar('('); outtext(x); outchar(','); outtext(y);
              outtext(") evaluates to "); outtext(res);
-             outimage; errfound:=true;
+             outimage; err("Failed");
        end;
 
-       if verbose then begin
-       outtext("--- START Simula a.s TEST 99");
-       outtext("--- Test mod, rem, min, max.");
-       outimage;
-       end;
-       
        modres( 4, 3):= 1;  remres( 4, 3):= 1;
        modres( 4,-3):=-2;  remres( 4,-3):= 1;
        modres(-4, 3):= 2;  remres(-4, 3):=-1;
@@ -52,16 +47,7 @@ begin  integer i,j;  integer array modres,remres(-4:4,-3:3);
        t.putreal(max(lx,ly),10); if t<>tly then rerror("max",tlx,tly,t);
        t.putreal(max(ly,lx),10); if t<>tly then rerror("max",tly,tlx,t);
 
-       if y<x then begin outtext("*** error: y<x!!!"); outimage;
-             errfound:=true end;
-       if ly<lx then begin outtext("*** error: ly<lx!!!");  outimage;
-             errfound:=true end;
+       if y<x then err(" y<x!!!");
+       if ly<lx then err(" ly<lx!!!");
 
-       if not errfound then begin
-          outtext("--- NO ERRORS FOUND IN TEST 99");
-       end;
-       if verbose then begin
-          outtext("--- END Simula a.s. TEST 99");
-          outimage;
-       end;
 end;

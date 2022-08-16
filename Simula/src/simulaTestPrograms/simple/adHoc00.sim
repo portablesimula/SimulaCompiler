@@ -1,10 +1,48 @@
-Begin
-   outtext("AB"
-   "CDE"); outimage;
+DEC_Lib begin
+    text t1;
+
+    procedure trace(mess); text mess; begin
+        outtext(mess); outimage;
+    end;    
+
+    procedure failed(mess); text mess; begin
+        outtext(mess); outimage;
+    end;    
+
+    procedure testHash; begin ------------------------------------------------------------------------------ hash
+        integer procedure hash1(t,n); text t; integer n; begin
+            text tstrip; integer a;
+            tstrip:- frontstrip(t.strip);
+            if tstrip == notext then hash1:= mod(t.length,n) else begin
+                a:= rank(tstrip.getchar);
+                if tstrip.length > 3 then begin
+                    a:= a +   8*rank(tstrip.getchar);
+                    a:= a +  64*rank(tstrip.getchar)
+                end;
+                tstrip.setpos(tstrip.length);
+                a:= a + 512*rank(tstrip.getchar) + t.length;
+                hash1:= mod(a,n);
+            end
+        end of hash;
+
+        procedure test(t,n,expectedValue); text t; integer n,expectedValue; begin
+            integer res,rs1;
+            res:-hash(t,n);
+            rs1:-hash1(t,n);
+            trace("Test  hash(" & t & "," & edit(n) & "), t.pos=" & edit(t.pos) & " ==> '" & edit(res) & "'   expectedValue=" & edit(expectedValue));
+            trace("Test hash1(" & t & "," & edit(n) & "), t.pos=" & edit(t.pos) & " ==> '" & edit(rs1) & "'   expectedValue=" & edit(expectedValue));
+            if res ne expectedValue then failed("Test  hash FAILED: result=" & edit(res));
+            if rs1 ne expectedValue then failed("Test  hash1 FAILED: result=" & edit(rs1));
+        end;
+        
+--        trace("BEGIN TEST hash --------------------------------------------------- nFailed=" & edit(nFailed));
+            test("Abracadabra",17,3);
+            test("Abracadabra",37,26);
+             t1:-"Abraca      Abracadabra"; t1:-t1.sub(7,17); test(t1,133,104);
+--        trace("ENDOF TEST hash --------------------------------------------------- nFailed=" & edit(nFailed));
+    
+    end;
+
+    testHash;
    
-      outtext("AB
-   CDE"); outimage;
-   
-   outtext("!345!"); outimage;
-   
-End;
+end;

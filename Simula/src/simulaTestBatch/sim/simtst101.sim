@@ -6,9 +6,9 @@
 %
 %  WRITTEN BY:  MYH   30/07-2018
 % ==============================================================================
-BEGIN
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(101,"--- Test Standard Procedure 'sourceline'.") begin
 
    ref(A) x;
    integer traceCase;
@@ -22,9 +22,9 @@ BEGIN
       text case1;
       case1:-"LINE " & edint(line) & ": " & msg;
       if verbose then begin outtext(case1); outimage; end;
-      if case1 NE facit(traceCase) then
+      if case1 <> facit(traceCase) then
       begin
-         outtext("ERROR in Trace Case "); outint(traceCase,0); outtext(" at line "); outint(line,0); outimage;
+         err("Trace Case " & edit(traceCase) & " at line " & edit(line));
          outtext("Trace Case: " & case1); outimage;
          outtext("     Facit: " & facit(traceCase)); outimage;
       end;
@@ -32,46 +32,29 @@ BEGIN
    end;
    
    procedure Q(line); integer line;
-   Begin
+   begin
          trace(line,"Call Q");
-   End;
+   end;
 
-   Class A(line); integer line;
+   class A(line); integer line;
                   virtual: procedure P;
    begin integer i;
-      Procedure P(line); integer line;
-      Begin
+      procedure P(line); integer line;
+      begin
             trace(line,"Call P");
-      End;
+      end;
       trace(line,"NEW A");
       i:=sourceline;
-      trace(i+1,"END A");
+      trace(i+1,"end A");
    end;
    
-   if verbose then begin
-   Outtext("--- START SIMULA TEST 101"); Outimage ;
-   Outtext("--- Test Standard Procedure 'sourceline'.");
-   Outimage; Outimage;
-   end;
-   
-   facit(0):-"LINE 62: NEW A";
-   facit(1):-"LINE 48: END A";
-   facit(2):-"LINE 63: Call P";
-   facit(3):-"LINE 64: Call Q";
+   facit(0):-"LINE 56: NEW A";
+   facit(1):-"LINE 48: end A";
+   facit(2):-"LINE 57: Call P";
+   facit(3):-"LINE 58: Call Q";
    
    x:-new A(sourceline);
    x.P(sourceline);
    Q(sourceline);
 
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 101") ;
-   END ;
-
-   if verbose then begin
-   Outtext ("--- END SIMULA TEST 101") ;
-   Outimage;
-   end;
-
-END
+end

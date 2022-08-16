@@ -6,9 +6,9 @@
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
 begin
-External class SubSep; 
-   
-SubSep(5) begin 
+external class SubSep; 
+
+SubSep(119,"--- Test Use of Precompiled classes",5) begin
      real rrr=rr+3.14;
      text fname;
 
@@ -22,20 +22,6 @@ SubSep(5) begin
      PP;
      trace("--- NORMAL END OF PROGRAM") ; 
    
-      
-     IF found_error THEN
-     ELSE
-     BEGIN
-        Outtext ("--- NO ERRORS FOUND IN TEST 119");
-     END ;
-
-     if verbose then begin
-        Outimage;
-        Outtext ("--- END SIMULA TEST 119") ;
-        Outimage;
-     end;
-     
-     
   end; 
    
 end;

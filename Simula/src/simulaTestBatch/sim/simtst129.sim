@@ -5,21 +5,17 @@
 %
 %  WRITTEN BY:  MYH 
 % ==============================================================================
-External class Precompiled129; 
+external class Precompiled129; 
 
-Precompiled129(44) begin
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+Precompiled129(129,"--- Test switch in separate compiled class Precompiled129",44) begin
    integer traceCase;
    text array facit(0:5);
    
    procedure trace(msg); text msg;
    begin
       if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+      if msg <> facit(traceCase) then
+      begin err("Case " & edit(traceCase));
          outtext("Trace: " & msg); outimage;
          outtext("Facit: " & facit(traceCase)); outimage;
       end;
@@ -27,20 +23,12 @@ Precompiled129(44) begin
    end;
    
    procedure test; begin
-   
        trace(new A(2).mess);
        trace(new A(1).mess);
        trace(new A(3).mess);
        trace(new A(99).mess);
-     
    end;
    
-   
-   if verbose then begin
-   Outtext("--- START SIMULA TEST 129"); Outimage ;
-   Outtext("--- The new standard procedures  edit and edfix");
-   Outimage; Outimage;
-   end;
    
    facit(0):-"Abra Message 2";
    facit(1):-"Abra Message 1";
@@ -49,17 +37,6 @@ Precompiled129(44) begin
 
    test;
    
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 129");
-   END ;
-
-   if verbose then begin
-      Outimage;
-      Outtext ("--- END SIMULA TEST 129") ;
-      Outimage;
-   end;
    
 end;
 

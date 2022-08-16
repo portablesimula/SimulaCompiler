@@ -5,9 +5,9 @@
 %
 %  WRITTEN BY:  MYH   28/04-2019
 % ==============================================================================
-begin
-   Boolean verbose=FALSE;
-   Boolean found_error ;
+external class SimulaTest;
+
+SimulaTest(113,"--- Test Virtual Switch") begin
    integer traceCase;
    text array facit(0:5);
    ref(B) x;
@@ -15,10 +15,8 @@ begin
    procedure trace(msg); text msg;
    begin
       if verbose then begin outtext(msg); outimage; end;
-      if msg NE facit(traceCase) then
-      begin
-         found_error:=TRUE;
-         outtext("ERROR in Case "); outint(traceCase,0); outimage;
+      if msg <> facit(traceCase) then begin
+         err("Case " & edit(traceCase));
          outtext("Trace: " & msg); outimage;
          outtext("Facit: " & facit(traceCase)); outimage;
       end;
@@ -46,12 +44,6 @@ begin
    end;
    
    
-   if verbose then begin
-   Outtext("--- START SIMULA TEST 113"); Outimage ;
-   Outtext("--- Virtual Switch");
-   Outimage; Outimage;
-   end;
-   
    facit(0):-"In A before inner";
    facit(1):-"At Label L - OK";
    facit(2):-"In B after inner";
@@ -63,16 +55,5 @@ begin
    trace("In MAIN after new B"); 
    trace("In MAIN after new " & x.ident); 
    
-   IF found_error THEN
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 113");
-   END ;
-
-   if verbose then begin
-      Outimage;
-      Outtext ("--- END SIMULA TEST 113") ;
-      Outimage;
-   end;
    
 end;

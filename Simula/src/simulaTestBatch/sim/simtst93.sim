@@ -9,276 +9,252 @@
 %  REWRITTEN BY:  BEH   09/01-87
 %
 % ======================================================================
-Begin
+external class SimulaTest;
 
-   Boolean found_error ;
-   Boolean verbose;
+SimulaTest(93,"--- Test Simset - linkage, head, link, into, out, follow and precede.") begin
 
-   SIMSET Begin
-          Link Class Bead(i); Integer i;;
+   simset begin
+          link class Bead(i); integer i;;
 
-          Integer Procedure Scanleft;
-          Begin Ref(Linkage) l; Integer k;
+          integer procedure Scanleft;
+          begin ref(linkage) l; integer k;
                 l:-chain;
-                For l:-l.Suc While l=/=none do
-                Inspect l when Bead do k:=k*10+i
-                Otherwise k:=k*10;
+                for l:-l.suc while l=/=none do
+                inspect l when Bead do k:=k*10+i
+                otherwise k:=k*10;
                 Scanleft:=k
-          End;
-
-          Integer Procedure Scanright;
-          Begin Ref(Linkage) l; Integer k;
-                l:-chain;
-                For l:-l.PRED While l=/=none do
-                Inspect l when Bead do k:=k*10+i
-                Otherwise k:=k*10;
-                Scanright:=k
-          End;
-
-          Link Class A;;
-          Linkage Class B;;
-
-          Ref(A) Ar; Ref(B) Br;
-          Ref(Head) chain; Integer j,k; Ref(Bead) r,s; Ref(Linkage) x;
-
-
-          if verbose then begin
-          Outtext ("--- START Simula a.s - SIMULA TEST NO 93") ;
-          Outimage ;
-          Outtext ("--- Test Simset - linkage, head, link, head, into,") ;
-          Outimage;
-          Outtext ("--- out, follow and precede.");
-          Outimage ; Outimage ;
           end;
-          
-          chain:-New Head; k:=0;
-          For j:=1 step 1 until 5 do
-          begin New Bead(j).Into(chain); k:=k*10+((chain.pred) qua Bead).i end;
 
-          If k=12345 then
+          integer procedure Scanright;
+          begin ref(linkage) l; integer k;
+                l:-chain;
+                for l:-l.pred while l=/=none do
+                inspect l when Bead do k:=k*10+i
+                otherwise k:=k*10;
+                Scanright:=k
+          end;
+
+          link class A;;
+          linkage class B;;
+
+          ref(A) Ar; ref(B) Br;
+          ref(head) chain; integer j,k; ref(Bead) r,s; ref(linkage) x;
+
+          
+          chain:-new head; k:=0;
+          for j:=1 step 1 until 5 do
+          begin new Bead(j).into(chain); k:=k*10+((chain.pred) qua Bead).i end;
+
+          if k=12345 then
           else begin
-                Outtext("*** error : Attribute Into or Pred (1).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been: 12345");
-                Outimage;
-                found_error:=true
+                err(" Attribute into or pred (1).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been: 12345");
+                outimage;
+                
           end;
 
           k:=Scanleft;
-          If k=12345 then
+          if k=12345 then
           else begin
-                Outtext("*** error : Attribute Suc (2).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been: 12345");
-                Outimage;
-                found_error:=true
+                err(" Attribute suc (2).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been: 12345");
+                outimage;
+                
           end;
 
           k:=Scanright;
-          If k=54321 then
+          if k=54321 then
           else begin
-                Outtext("*** error : Attribute Pred (3).");
-                Outimage;
-                Outtext("            Erroneus reverse chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:         54321");
-                Outimage;
-                found_error:=true
+                err(" Attribute pred (3).");
+                outimage;
+                outtext("            Erroneus reverse chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:         54321");
+                outimage;
+                
           end;
 
           x:-chain;
-          For x:-x.Suc While x=/=none do
-          Begin r:-x qua Bead; k:=r.i;
-                If k=(k//2)*2 then Begin r.Out; r.Into(chain) End;
-          End;
-
-          k:=Scanleft;
-          If k=13452 then
-          else begin
-                Outtext("*** error : Attributes Suc, Out or Into (4).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been: 13452");
-                Outimage;
-                found_error:=true
+          for x:-x.suc while x=/=none do
+          begin r:-x qua Bead; k:=r.i;
+                if k=(k//2)*2 then begin r.out; r.into(chain) end;
           end;
 
-          New Bead(6).Out;  COMMENT NO EFFECT;
-          k:=Scanright;
-          If k=25431 then
+          k:=Scanleft;
+          if k=13452 then
           else begin
-                Outtext("*** error : Attributes Suc, Out or Into (5).");
-                Outimage;
-                Outtext("            Erroneus reverse chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:         25431");
-                Outimage;
-                found_error:=true
+                err(" Attributes suc, out or into (4).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been: 13452");
+                outimage;
+                
+          end;
+
+          new Bead(6).out;  comment NO EFFECT;
+          k:=Scanright;
+          if k=25431 then
+          else begin
+                err(" Attributes suc, out or into (5).");
+                outimage;
+                outtext("            Erroneus reverse chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:         25431");
+                outimage;
+                
           end;
 
 
           x:-chain.prev;
-          For x:-x.prev While x=/=chain do x.suc.into(chain);
+          for x:-x.prev while x=/=chain do x.suc.into(chain);
           k:=Scanleft;
-          If k=12543 then
+          if k=12543 then
           else begin
-                Outtext("*** error : Attributes Prev, Suc or Into (6).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been: 12543");
-                Outimage;
-                found_error:=true
+                err(" Attributes prev, suc or into (6).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been: 12543");
+                outimage;
+                
           end;
 
           r:-(chain.suc.suc.suc) qua Bead;
-          r.Follow(r);
+          r.follow(r);
           k:=Scanleft;
-          If k= 1243 then
+          if k= 1243 then
           else begin
-                Outtext("*** error : Attributes Suc or Follow (7).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:  1243"); Outimage;
-                found_error:=true
+                err(" Attributes suc or follow (7).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:  1243"); outimage;
+                
           end;
 
           r.follow(chain);
           (chain.prev.pred.prev) qua link.follow(chain.prev.pred);
           k:=Scanright;
-          If k= 32415 then
+          if k= 32415 then
           else begin
-                Outtext("*** error : Attributes Follow, Prev or Pred (8).");
-                Outimage;
-                Outtext("            Erroneus reverse chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:         32415"); Outimage;
-                found_error:=true
+                err(" Attributes follow, prev or pred (8).");
+                outimage;
+                outtext("            Erroneus reverse chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:         32415"); outimage;
+                
           end;
 
 
-          Ar:-New A; Br:-New B;
-          r.Follow(Br); Ar.Follow(r);
+          Ar:-new A; Br:-new B;
+          r.follow(Br); Ar.follow(r);
           k:=Scanleft;
-          If k= 1423 then
+          if k= 1423 then
           else begin
-                Outtext("*** error : Attribute Follow (9).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:  1423"); Outimage;
-                found_error:=true
+                err(" Attribute follow (9).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:  1423"); outimage;
+                
           end;
 
 
           chain.suc.suc.follow(none);
           Ar.follow(chain.suc);
           k:=Scanleft;
-          If k= 1023 then
+          if k= 1023 then
           else begin
-                Outtext("*** error : Attributes Suc or Follow (10).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:  1023"); Outimage;
-                found_error:=true
+                err(" Attributes suc or follow (10).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:  1023"); outimage;
+                
           end;
 
 
-          s:-New Bead(7); s.Follow(r);  COMMENT  NO EFFECT;
+          s:-new Bead(7); s.follow(r);  comment  NO EFFECT;
           k:=Scanleft;
-          If k= 1023 then
+          if k= 1023 then
           else begin
-                Outtext("*** error : Attributes Suc or Follow (11).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:  1023"); Outimage;
-                found_error:=true
+                err(" Attributes suc or follow (11).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:  1023"); outimage;
+                
           end;
 
           r.precede(chain);
           s.precede(Ar.suc);
           k:=Scanleft;
-          If k= 107235 then
+          if k= 107235 then
           else begin
-                Outtext("*** error : Attributes Suc or Precede (12).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been: 107235"); Outimage;
-                found_error:=true
+                err(" Attributes suc or precede (12).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been: 107235"); outimage;
+                
           end;
 
 
-          New A.precede(s.prev.suc.suc.pred.suc);
-          New A.Into(chain);
+          new A.precede(s.prev.suc.suc.pred.suc);
+          new A.into(chain);
           k:=Scanright;
-          If k= 5320701 then
+          if k= 5320701 then
           else begin
-                Outtext("*** error : Attributes Precede, Prev, Suc, Pred or"
-                        " Into (13).");
-                Outimage;
-                Outtext("            Erroneus reverse chain: ");
-                Outint (k,8); Outimage;
-                Outtext("            Should had been:         5320701");
-                Outimage;
-                found_error:=true
+                err(" Attributes precede, prev, suc, pred or into (13).");
+                outimage;
+                outtext("            Erroneus reverse chain: ");
+                outint (k,8); outimage;
+                outtext("            Should had been:         5320701");
+                outimage;
           end;
 
 
           Ar.precede(Ar);
-          (Chain.Prev) qua link.precede(Chain.Pred);
-          s.Precede(s);
+          (chain.prev) qua link.precede(chain.pred);
+          s.precede(s);
           k:=Scanleft;
-          If k= 10235 then
+          if k= 10235 then
           else begin
-                Outtext("*** error : Attributes Precede, Prev or Pred (14).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been: 10235"); Outimage;
-                found_error:=true
+                err(" Attributes precede, prev or pred (14).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been: 10235"); outimage;
+                
           end;
 
-          For j:=1 step 1 until 5 do chain.suc.suc.precede(chain.prev);
+          for j:=1 step 1 until 5 do chain.suc.suc.precede(chain.prev);
           k:=Scanleft;
-          If k= 13025 then
+          if k= 13025 then
           else begin
-                Outtext("*** error : Attributes Suc, Precede or Prev (15).");
-                Outimage;
-                Outtext("            Erroneus chain: ");
-                Outint (k,6); Outimage;
-                Outtext("            Should had been:  13025"); Outimage;
-                found_error:=true
+                err(" Attributes suc, precede or prev (15).");
+                outimage;
+                outtext("            Erroneus chain: ");
+                outint (k,6); outimage;
+                outtext("            Should had been:  13025"); outimage;
+                
           end;
 
           r.precede(r);
           s:-chain.suc.suc;
           s.out;
-          if r.Suc==none and r.Pred==none and s.suc==none and s.pred==none then
+          if r.suc==none and r.pred==none and s.suc==none and s.pred==none then
           else begin
-                Outtext("*** error : Attributes Precede, Suc or Pred (16).");
-                Outimage;
-                found_error:= true
+                err(" Attributes precede, suc or pred (16).");
           end;
 
      end prefix block;
 
-     IF found_error then
-     ELSE
-     Begin
-           Outtext ("--- NO ERRORS FOUND IN TEST 93") ;
-     End ;
-
-     if verbose then begin
-        Outtext ("--- END Simula a.s TEST 93") ;
-        Outimage;
-     end;
-End
+end;

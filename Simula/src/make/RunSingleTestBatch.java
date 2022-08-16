@@ -128,69 +128,73 @@ public final class RunSingleTestBatch {
 //		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 //		names.add("simtst84.sim"); // OK:  Test Printfile.
 //		names.add("simtst85.sim"); // OK:  Test Directfile.
-		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
-		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
-		//names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
-		//names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
-		//names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
-		//names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
-
-		//names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
-		//names.add("simtst92.sim"); // OK: Test 1-dim Array by value.
-		//names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
-		//names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
-		//names.add("simtst95.sim"); // OK:  Nested declaration of classes and prefixing.
-		//names.add("simtst96.sim"); // OK:  Test hidden, protected attributes.
-		//names.add("simtst97.sim"); // OK:  Test nested hidden and protected.
-		//names.add("simtst98.sim"); // OK:  Test attribute protection - complex example. Test visibility of labels.
-		//names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
-		//names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
-		//names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
-		//names.add("simtst102.sim"); // OK: GOTO out of an operating Process
-		//names.add("simtst103.sim"); // OK: All kinds of Activation Statements
-		//names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
-		//names.add("simtst105.sim"); // OK: Multiple assignments.
-		//names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
-		//names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
-		//names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
-		//names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
-		//names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain
-		//names.add("simtst111.sim"); // OK: Virtual Label Sample 1
-		//names.add("simtst112.sim"); // OK: Virtual Label Sample 2
-		//names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
-		//names.add("simtst114.sim"); // OK: Switch Statement
-		//names.add("simtst115.sim"); // OK: Simple QPS-Sample 1
-		//names.add("simtst116.sim"); // OK: Simple QPS-Sample 2
-		//names.add("simtst117.sim"); // OK: Simple QPS-Sample 3
-		//names.add("simtst118.sim"); // OK: Simple QPS-Sample 4
-		//names.add("ExternalClass1.sim");      // OK:  Precompile this for Simtst 119.
-		//names.add("ExternalClass2.sim");      // OK:  Precompile this for Simtst 119.
-		//names.add("simtst119.sim"); // OK: Uses EcternalClass1-2
-		//names.add("simtst120.sim"); // OK: VERY LOCAL GOTO SAMPLE
-		//names.add("simtst121.sim"); // OK: LEGAL GOTO out of an operating Process and the enclosing System.
-		//names.add("simtst122.sim"); // OK: GOTO LABEL IN SUPER CLASS
-		//names.add("simtst123.sim"); // OK: GOTO VIRTUAL LABEL
-		//names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
-		//names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
-		//names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
-		//names.add("simtst127.sim"); // OK: Switch (character) Statement
-		//names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
-		//names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
-		//names.add("simtst129.sim"); // OK: Switch in precompiled class
-		//names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
-		//names.add("simtst131.sim"); // OK: Catching Errors
-		//names.add("simtst132.sim"); // OK: SPORT Options
-		//names.add("simtst133.sim"); // OK: Environment Interface
+//		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
+//		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
+//		names.add("simtst87.sim"); // OK:  Specification of Virtual Procedures.
+//		names.add("simtst88.sim"); // OK:  Visibility of Hidden attributes.
+//		names.add("simtst89.sim"); // OK:  Test inbytefile and outbytefile.
+//		names.add("simtst90.sim"); // OK:  Test getfrac/putfrac.
+//
+//		names.add("simtst91.sim"); // OK:  Test virtual procedures, simple case.
+//		names.add("simtst92.sim"); // OK: Test 1-dim Array by value.
+//		names.add("simtst93.sim"); // OK:  Test Simset - linkage, head, link, into, out, follow and precede
+//		names.add("simtst94.sim"); // OK:  Test Simset - first, last, empty, cardinal and clear.
+//		names.add("simtst95.sim"); // OK:  Test Environment Interface.
+//		names.add("simtst96.sim"); // OK:  Test hidden, protected attributes.
+//		names.add("simtst97.sim"); // OK:  Test nested hidden and protected.
+//		names.add("simtst98.sim"); // OK:  Test attribute protection - complex example. Test visibility of labels.
+//		names.add("simtst99.sim"); // OK:  Test mod, rem, min, max.
+//		names.add("simtst100.sim"); // OK: Test that put-get-put delivers the identity.  Uses GOTO/LABEL
+//
+//		names.add("simtst101.sim"); // OK:  Test Standard Procedure 'sourceline'.
+//		names.add("simtst102.sim"); // OK: GOTO out of an operating Process
+//		names.add("simtst103.sim"); // OK: All kinds of Activation Statements
+//		names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
+//		names.add("simtst105.sim"); // OK: Multiple assignments.
+//		names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
+//		names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
+//		names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
+//		names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
+//		names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain
+//
+//		names.add("simtst111.sim"); // OK: Virtual Label Sample 1
+//		names.add("simtst112.sim"); // OK: Virtual Label Sample 2
+//		names.add("simtst113.sim"); // OK: Virtual Switch Sample 1
+//		names.add("simtst114.sim"); // OK: Switch Statement
+//		names.add("simtst115.sim"); // OK: Simple QPS-Sample 1
+//		names.add("simtst116.sim"); // OK: Simple QPS-Sample 2
+//		names.add("simtst117.sim"); // OK: Simple QPS-Sample 3
+//		names.add("simtst118.sim"); // OK: Simple QPS-Sample 4
+//		names.add("ExternalClass1.sim");      // OK:  Precompile this for Simtst 119.
+//		names.add("ExternalClass2.sim");      // OK:  Precompile this for Simtst 119.
+//		names.add("simtst119.sim"); // OK: Uses EcternalClass1-2
+//		names.add("simtst120.sim"); // OK: VERY LOCAL GOTO SAMPLE
+//
+//		names.add("simtst121.sim"); // OK: LEGAL GOTO out of an operating Process and the enclosing System.
+//		names.add("simtst122.sim"); // OK: GOTO LABEL IN SUPER CLASS
+//		names.add("simtst123.sim"); // OK: GOTO VIRTUAL LABEL
+//		names.add("simtst124.sim"); // OK: GOTO VIRTUAL LABEL
+//		names.add("simtst125.sim"); // OK: GOTO LABEL WITHIN NESTED COMPOUND STATEMENTS
+//		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
+//		names.add("simtst127.sim"); // OK: Switch (character) Statement
+//		names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
+//		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
+//		names.add("simtst129.sim"); // OK: Switch in precompiled class
+//		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
+//
+//		names.add("simtst131.sim"); // OK: Catching Errors
+//		names.add("simtst132.sim"); // OK: SPORT Options
 		
-		//names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
-		//names.add("simerr02.sim"); // OK: Testing NONE-CHECK
-		//names.add("PrecompiledClass.sim"); // OK: Used by simerr03
-		//names.add("simerr03.sim"); // OK: Division by Zero in Precompiled Class 
-		//names.add("PrecompiledProcedure.sim"); // OK: Used by simerr04
-		//names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
-		//names.add("simerr05.sim"); // OK: NumberFormatException
-		//names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
-		//names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
+		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
+		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
+		names.add("simerr02.sim"); // OK: Testing NONE-CHECK
+		names.add("PrecompiledClass.sim"); // OK: Used by simerr03
+		names.add("simerr03.sim"); // OK: Division by Zero in Precompiled Class 
+		names.add("PrecompiledProcedure.sim"); // OK: Used by simerr04
+		names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
+		names.add("simerr05.sim"); // OK: NumberFormatException
+		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
+		names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;

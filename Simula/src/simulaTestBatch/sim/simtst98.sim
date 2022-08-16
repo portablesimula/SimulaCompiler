@@ -14,12 +14,12 @@
 %
 %  WRITTEN BY:  Peter Jensen March 1987
 % =====================================================================
-%
+external class SimulaTest;
 
-begin integer i,j,k,globali,globalj,globalk;
+SimulaTest(98,"--- Test attribute protection. Test visibility of labels.") begin
+
+      integer i,j,k,globali,globalj,globalk;
       boolean trace; !*** set TRUE if output is wanted ***;
-      boolean errorFound;
-      boolean verbose=false;
       
       text programpoint;
       boolean ablock,bblock,cblock,dblock,eblock,fblock;
@@ -31,11 +31,8 @@ begin integer i,j,k,globali,globalj,globalk;
             then begin outtext(programpoint); outimage end;
             outtext("- l."); outint(line,4); outtext(": ");
             outtext(t); outint(i,3);
-            if i<>expected then begin errorFound:=true;
-               setpos(57); outtext(" WRONG! - should be:");
-               outint(expected,3) end;
-            outimage;
-      end;
+            if i<>expected then err(" WRONG! - should be:" & edit(expected));
+       end;
 
       procedure outim; if trace then outimage;
 
@@ -46,7 +43,7 @@ begin integer i,j,k,globali,globalj,globalk;
 
       procedure virtproc(line,t,where); integer line; text t,where;
       if t<>"global" or trace then begin
-            if t<>"global" then begin errorFound:=true;
+            if t<>"global" then begin err("Failed");
                outtext(programpoint);
                outtext("- error in implementation of visibility (scope)"
                        " rules: "); outimage; 
@@ -75,7 +72,7 @@ begin integer i,j,k,globali,globalj,globalk;
 
             procedure virtproc(line,t,wher); integer line; text t,wher;
             if t<>"a.virtproc" or trace then begin
-               if t<>"a.virtproc" then begin errorFound:=true;
+               if t<>"a.virtproc" then begin err("Failed");
                   outtext(programpoint); outimage end;
                outtext("- l."); outint(line,4); outtext(": ");
                outtext(wher); outimage;
@@ -105,7 +102,7 @@ begin integer i,j,k,globali,globalj,globalk;
                        then "OK: detach is dummy for pref.block"
                        else " !!! at L in xa (goto remote label)");
                outimage;
-               if not goto_OK then errorFound:=true;
+               if not goto_OK then err("Failed");
             end;
       end;
 
@@ -120,7 +117,7 @@ begin integer i,j,k,globali,globalj,globalk;
 
             procedure virtproc(line,t,wher); integer line; text t,wher;
             if t<>"b.virtproc" or trace then begin
-               if t<>"b.virtproc" then begin errorFound:=true;
+               if t<>"b.virtproc" then begin err("Failed");
                   outtext(programpoint); outimage end;
                outtext("- l."); outint(line,4); outtext(": ");
                outtext(wher); outimage;
@@ -155,7 +152,7 @@ begin integer i,j,k,globali,globalj,globalk;
 
             procedure virtproc(line,t,wher); integer line; text t,wher;
             if t<>"c.virtproc" or trace then begin
-               if t<>"c.virtproc" then begin errorFound:=true;
+               if t<>"c.virtproc" then begin err("Failed");
                   outtext(programpoint); outimage end;
                outtext("- l."); outint(line,4); outtext(": ");
                outtext(wher); outimage;
@@ -225,7 +222,7 @@ begin integer i,j,k,globali,globalj,globalk;
 
             procedure virtproc(line,t,wher); integer line; text t,wher;
             if t<>"x.virtproc" or trace then begin
-               if t<>"x.virtproc" then begin errorFound:=true;
+               if t<>"x.virtproc" then begin err("Failed");
                   outtext(programpoint); outimage end;
                outtext("- l."); outint(line,4); outtext(": ");
                outtext(wher); outimage;
@@ -248,7 +245,7 @@ begin integer i,j,k,globali,globalj,globalk;
                        then "OK: detach is dummy for X-pref.block"
                        else " !!! at L in X (goto remote label)");
                outimage;
-               if not goto_OK then errorFound:=true;
+               if not goto_OK then err("Failed");
             end;
       end;
 
@@ -260,7 +257,7 @@ begin integer i,j,k,globali,globalj,globalk;
 
             procedure virtproc(line,t,wher); integer line; text t,wher;
             if t<>"y.virtproc" or trace then begin
-               if t<>"y.virtproc" then begin errorFound:=true;
+               if t<>"y.virtproc" then begin err("Failed");
                   outtext(programpoint); outimage end;
                outtext("- l."); outint(line,4); outtext(": ");
                outtext(wher); outimage;
@@ -284,7 +281,7 @@ begin integer i,j,k,globali,globalj,globalk;
 
             procedure virtproc(line,t,wher); integer line; text t,wher;
             if t<>"z.virtproc" or trace then begin
-               if t<>"z.virtproc" then begin errorFound:=true;
+               if t<>"z.virtproc" then begin err("Failed");
                   outtext(programpoint); outimage end;
                outtext("- l."); outint(line,4); outtext(": ");
                outtext(wher); outimage;
@@ -312,12 +309,6 @@ begin integer i,j,k,globali,globalj,globalk;
       end;
 
 %     ************   Initialisations   **************
-
-      if verbose then begin
-      outtext(
-         "--- START Simula a.s test 98 (attribute protection test)");
-      outimage;
-      end;
       
       !*** for test purpose, insert this: ***     trace:=true;
       globali:=i:=2; globalj:=j:=3; globalk:=k:=4; outerout;
@@ -418,12 +409,5 @@ L:
 %   new y.virtproc(sourceline,"global"," NEW y.virt");    !source error;
 %   goto xa.L;                                            !source error;
 
-       if not errorfound then begin
-          outtext("--- NO ERRORS FOUND IN TEST 98");
-       end;
-       if verbose or errorfound then begin
-          outtext("--- END Simula a.s. TEST 98");
-          outimage;
-       end;
 
 end

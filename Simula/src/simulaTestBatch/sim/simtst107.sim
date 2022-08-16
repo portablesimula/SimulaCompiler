@@ -1,15 +1,17 @@
 
 % ================================================   Main   program  ===========
-%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 97
+%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 107
 %
 %  PURPOSE: Test Process, activation statements, idle, terminated, time.
 %
 %  WRITTEN BY: PW (21).
 % ==============================================================================
-Simulation
-begin
+external class SimulaTest;
 
-Boolean found_error;
+SimulaTest(107,"--- Test Process, activation statements, idle, terminated, time.") begin
+
+simulation begin
+   boolean failed;
 
 text array ut, answer(1:250);
 integer utno;
@@ -20,22 +22,25 @@ begin utno:=utno+1; ut(utno):-copy(sysout.image.strip);
       sysout.setpos(1);
 end;
 
-process class p(i); integer i;
-begin outtext("p("); outint (i,2);
+process class p(i); integer i; begin
+      if verbose then begin
+      outtext("p("); outint (i,2);
       outtext(") activated at time = "); outfix(time,3,8); outimage;
       passive(i):=false; terminatd(i):=false; active(i):=true;
       outstate(i);
       active(i):=false; terminatd(i):=true; passive(i):=false;
+      end;
 end;
 
 procedure startup;
 begin outstate(0); reactivate main at time+20.0; end;
 
-procedure outstate(c); integer c;
-begin integer i; real r;
+procedure outstate(c); integer c; begin
+      integer i; real r;
+      if verbose then begin
       comment output state of process objects and sqs;
-      Outtext("State("); Outint(testno,1); Outchar(','); Outint(c,2);
-      Outtext("): ");
+      outtext("State("); outint(testno,1); outchar(','); outint(c,2);
+      outtext("): ");
       for i:=1 step 1 until 10 do
       begin if active(i) then outtext(" a    ")else
             if terminatd(i)  then outtext(" t    ") else
@@ -64,6 +69,7 @@ begin integer i; real r;
             end
       end;
       outimage;
+      end;
 end of outstate;
 
 procedure createobjects;
@@ -85,9 +91,6 @@ boolean array active,passive,terminatd(1:10);
 integer i, testno;
 text activationtimes,delaytimes, actime;
 
-outtext("--- START Simula a.s. - TEST No. 97      ---"); sysout.outimage;
-outtext("--- Tests Process, activation statements, ---"); sysout.outimage;
-outtext("--- idle, terminated, time.               ---"); sysout.outimage;
 
 
 answer(  1):-copy(
@@ -544,23 +547,17 @@ for i:=2 step 2 until 10 do activate pa(i) after pa(i-1);
 startup;
 
    for i:=1 step 1 until utno do
-   if ut(i)<>answer(i) then found_error:=true;
+   if ut(i)<>answer(i) then failed:=true;
 
-   IF found_error THEN
-   Begin Outtext("*** error : Output"); sysout.Outimage;
-         Outtext("            Outputlines which did not match:");
+   if failed then
+   begin outtext("*** error : output"); sysout.outimage;
+         outtext("            outputlines which did not match:");
          sysout.outimage;
          for i:=1 step 1 until utno do
          if answer(i) <> ut(i) then
          begin outchar('*'); outtext(ut(i)); sysout.outimage;
                outchar('-'); outtext(answer(i)); sysout.outimage
          end
-   end
-   ELSE
-   BEGIN
-      Outtext ("--- NO ERRORS FOUND IN TEST 97") ;
-   END ;
+   end;
 
-   Outtext ("--- END OF Simula a.s - SIMULA TEST NO 97 ") ;
-   sysout.Outimage
 end;

@@ -6,9 +6,9 @@
 %
 %  WRITTEN BY:  MYH   14/11-2018
 % ==============================================================================
-begin
-      boolean verbose=false; !true;
-      boolean foundError;
+external class SimulaTest;
+
+SimulaTest(96,"--- Test hidden, protected attributes.") begin
 
       integer X=9999;
 
@@ -42,22 +42,15 @@ begin
       
       procedure check(line,msg,res,facit); text msg; integer line,res,facit;
       begin if res ne facit then
-         begin outtext("LINE: "); outint(line,0); outtext(" ERROR: " & msg); outint(res,0);
-               outtext(" not equal facit:"); outint(facit,0);
-               outimage; foundError:=true;
-         end else if verbose then
-         begin outtext("LINE: "); outint(line,0); outtext(" CHECKING: " & msg); outint(res,0);
-               outtext(" equal "); outint(facit,0);
+         err("LINE: " & edit(line) & " ERROR: " & msg & edit(res) & " not equal facit:"  & edit(facit))
+         else if verbose then begin
+               outtext("LINE: " & edit(line) & " CHECKING: " & msg & edit(res) & " equal " & edit(facit));
                outimage;
          end;
       end; 
 
       ref(a) ra; ref(b) rb; ref(c) rc;
       
-      if verbose then begin
-		  Outtext ("--- START Simula a.s TEST 96"); Outimage;
-		  Outtext ("--- Test hidden, protected attributes"); Outimage; Outimage;
-	  end;
       
       rc:-new c; rb:-new b; ra:-new a;
       
@@ -71,10 +64,5 @@ begin
       inspect rb do check(sourceline,"INSPECT RB: X=",X,2222);
       inspect ra do check(sourceline,"INSPECT RA: X=",X,9999);
 
-      IF foundError THEN 
-      begin if verbose then begin
-                outtext ("--- END Simula TEST 96 WITH ERROR(S)");
-            end;
-      end ELSE Outtext ("--- NO ERRORS FOUND IN TEST 96");
 
 end

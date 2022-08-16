@@ -10,177 +10,163 @@
 %  WRITTEN BY:  BEH   12/01-87
 %
 % ======================================================================
-Begin
+external class SimulaTest;
 
-   Boolean found_error ;
-   Boolean verbose=false;
+SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
 
-   SIMSET Begin
-          Link Class Bead(i); Integer i;;
+   simset begin
+          link class Bead(i); integer i;;
 
-          Link Class A;;
+          link class A;;
 
-          Procedure Skrivpeker(r); ref(linkage) r;
-          Begin Inspect r when Bead do begin Outtext("Bead - ");
-                                             Outint(i,4) end
-                          when A    do Outtext("A")
-                          when Link do Outtext("Link")
-                          when Head do Outtext("Head")
-                          when Linkage do Outtext("Linkage")
-                Otherwise              Outtext("none");
-                Outimage;
-          End;
+          procedure Skrivpeker(r); ref(linkage) r;
+          begin inspect r when Bead do begin outtext("Bead - ");
+                                             outint(i,4) end
+                          when A    do outtext("A")
+                          when link do outtext("link")
+                          when head do outtext("head")
+                          when linkage do outtext("linkage")
+                otherwise              outtext("none");
+                outimage;
+          end;
 
-          Ref(A) Ar;
-          Ref(Head) chain; Integer j; Ref(Bead) r,s; Ref(Linkage) x;
-
-          if verbose then begin
-          Outtext ("--- START Simula a.s TEST 94"); Outimage;
-          Outtext ("--- Test Simset - first, last, empty,");
-          Outtext (" cardinal and clear.");
-          Outimage ; Outimage ;
-		  end;
+          ref(A) Ar;
+          ref(head) chain; integer j; ref(Bead) r,s; ref(linkage) x;
 		  
-          chain:-New Head;
+          chain:-new head;
           if chain.first == none and
              chain.last  == none and
              chain.empty         and
              chain.cardinal = 0 then
           else
-          Begin Outtext("*** error : Values of attributes of");
-                Outtext(" Head (1).");
-                Outimage;
-                Outtext("            First:       ");
+          begin err(" Values of attributes of head (1).");
+                outimage;
+                outtext("            First:       ");
                 Skrivpeker(chain.first);
-                Outtext("            Last:       ");
+                outtext("            Last:       ");
                 Skrivpeker(chain.last);
-                Outtext("            Empty:      ");
-                Outtext(if chain.empty then "true" else "false");
-                Outimage;
-                Outtext("            Cardinal:   ");
-                Outint(chain.cardinal,5);
-                Outimage;
-                found_error:=true
+                outtext("            Empty:      ");
+                outtext(if chain.empty then "true" else "false");
+                outimage;
+                outtext("            Cardinal:   ");
+                outint(chain.cardinal,5);
+                outimage;
+                
           end;
 
 
-          For j:=1 step 1 until 5 do New Bead(j).Into(chain);
+          for j:=1 step 1 until 5 do new Bead(j).into(chain);
           if chain.first=/=none and !then; chain.first is Bead and
-             (chain.first) qua bead.i=1                          and
+             (chain.first) qua Bead.i=1                          and
              chain.last=/=none and !then; chain.last is Bead and
              (chain.last) qua Bead.i=5                           and
              not chain.empty                                   and
              chain.cardinal=5                                  then
           else
-          Begin Outtext("*** error : Values of attributes of");
-                Outtext(" Head (2).");
-                Outimage;
-                Outtext("            First:       ");
+          begin err(" Values of attributes of head (2).");
+                outimage;
+                outtext("            First:       ");
                 Skrivpeker(chain.first);
-                Outtext("            Last:       ");
+                outtext("            Last:       ");
                 Skrivpeker(chain.last);
-                Outtext("            Empty:      ");
-                Outtext(if chain.empty then "true" else "false");
-                Outimage;
-                Outtext("            Cardinal:   ");
-                Outint(chain.cardinal,5);
-                Outimage;
-                found_error:=true
+                outtext("            Empty:      ");
+                outtext(if chain.empty then "true" else "false");
+                outimage;
+                outtext("            Cardinal:   ");
+                outint(chain.cardinal,5);
+                outimage;
+                
           end;
 
           chain.first.into(chain);
           chain.first.precede(chain.last);
           chain.last.follow(chain.first.suc);
           chain.first.suc.suc.follow(chain.last.pred.pred);
-          if (chain.first) qua bead.i=3 and
-             (chain.last)  qua bead.i=2 and
+          if (chain.first) qua Bead.i=3 and
+             (chain.last)  qua Bead.i=2 and
              not chain.empty          and
              chain.cardinal=4         then
           else
-          Begin Outtext("*** error : Values of attributes of");
-                Outtext(" Head (3).");
-                Outimage;
-                Outtext("            First:       ");
+          begin err(" Values of attributes of head (3).");
+                outimage;
+                outtext("            First:       ");
                 Skrivpeker(chain.first);
-                Outtext("            Last:       ");
+                outtext("            Last:       ");
                 Skrivpeker(chain.last);
-                Outtext("            Empty:      ");
-                Outtext(if chain.empty then "true" else "false");
-                Outimage;
-                Outtext("            Cardinal:   ");
-                Outint(chain.cardinal,5);
-                Outimage;
-                found_error:=true
+                outtext("            Empty:      ");
+                outtext(if chain.empty then "true" else "false");
+                outimage;
+                outtext("            Cardinal:   ");
+                outint(chain.cardinal,5);
+                outimage;
+                
           end;
 
           x:-chain;
-          For x:-x.Suc While x=/=none do
-          Begin r:-x qua Bead; j:=r.i;
-                If j=(j//2)*2 then Begin r.Out; r.Into(chain) end
-          End;
-          if (chain.first) qua bead.i=3 and                      !3152;
-             (chain.last)  qua bead.i=4 and
+          for x:-x.suc while x=/=none do
+          begin r:-x qua Bead; j:=r.i;
+                if j=(j//2)*2 then begin r.out; r.into(chain) end
+          end;
+          if (chain.first) qua Bead.i=3 and                      !3152;
+             (chain.last)  qua Bead.i=4 and
              not chain.empty          and
              chain.cardinal=4         then
           else
-          Begin Outtext("*** error : Values of attributes of");
-                Outtext(" Head (4).");
-                Outimage;
-                Outtext("            First:       ");
+          begin err(" Values of attributes of head (4).");
+                outimage;
+                outtext("            First:       ");
                 Skrivpeker(chain.first);
-                Outtext("            Last:       ");
+                outtext("            Last:       ");
                 Skrivpeker(chain.last);
-                Outtext("            Empty:      ");
-                Outtext(if chain.empty then "true" else "false");
-                Outimage;
-                Outtext("            Cardinal:   ");
-                Outint(chain.cardinal,5);
-                Outimage;
-                found_error:=true
+                outtext("            Empty:      ");
+                outtext(if chain.empty then "true" else "false");
+                outimage;
+                outtext("            Cardinal:   ");
+                outint(chain.cardinal,5);
+                outimage;
+                
           end;
 
-          New A.follow(chain);
+          new A.follow(chain);
           if chain.first is A         and
-             (chain.last)  qua bead.i=4 and
+             (chain.last)  qua Bead.i=4 and
              not chain.empty          and
              chain.cardinal=5         then
           else
-          Begin Outtext("*** error : Values of attributes of");
-                Outtext(" Head (5).");
-                Outimage;
-                Outtext("            First:       ");
+          begin err(" Values of attributes of head (5).");
+                outimage;
+                outtext("            First:       ");
                 Skrivpeker(chain.first);
-                Outtext("            Last:       ");
+                outtext("            Last:       ");
                 Skrivpeker(chain.last);
-                Outtext("            Empty:      ");
-                Outtext(if chain.empty then "true" else "false");
-                Outimage;
-                Outtext("            Cardinal:   ");
-                Outint(chain.cardinal,5);
-                Outimage;
-                found_error:=true
+                outtext("            Empty:      ");
+                outtext(if chain.empty then "true" else "false");
+                outimage;
+                outtext("            Cardinal:   ");
+                outint(chain.cardinal,5);
+                outimage;
+                
           end;
 
-          New A.precede((chain.first.prev) qua head.last.pred);
+          new A.precede((chain.first.prev) qua head.last.pred);
           if chain.first is A         and
-             (chain.last)  qua bead.i=4 and
+             (chain.last)  qua Bead.i=4 and
              not chain.empty          and
              chain.cardinal=6         then
           else
-          Begin Outtext("*** error : Values of attributes of");
-                Outtext(" Head (6).");
-                Outimage;
-                Outtext("            First:       ");
+          begin err(" Values of attributes of head (6).");
+                outimage;
+                outtext("            First:       ");
                 Skrivpeker(chain.first);
-                Outtext("            Last:       ");
+                outtext("            Last:       ");
                 Skrivpeker(chain.last);
-                Outtext("            Empty:      ");
-                Outtext(if chain.empty then "true" else "false");
-                Outimage;
-                Outtext("            Cardinal:   ");
-                Outint(chain.cardinal,5);
-                Outimage;
-                found_error:=true
+                outtext("            Empty:      ");
+                outtext(if chain.empty then "true" else "false");
+                outimage;
+                outtext("            Cardinal:   ");
+                outint(chain.cardinal,5);
+                outimage;
+                
           end;
 
           chain.clear;
@@ -189,32 +175,21 @@ Begin
              chain.empty         and
              chain.cardinal = 0 then
           else
-          Begin Outtext("*** error : Values of attributes of");
-                Outtext(" Head (7).");
-                Outimage;
-                Outtext("            First:       ");
+          begin err(" Values of attributes of head (7).");
+                outimage;
+                outtext("            First:       ");
                 Skrivpeker(chain.first);
-                Outtext("            Last:       ");
+                outtext("            Last:       ");
                 Skrivpeker(chain.last);
-                Outtext("            Empty:      ");
-                Outtext(if chain.empty then "true" else "false");
-                Outimage;
-                Outtext("            Cardinal:   ");
-                Outint(chain.cardinal,5);
-                Outimage;
-                found_error:=true
+                outtext("            Empty:      ");
+                outtext(if chain.empty then "true" else "false");
+                outimage;
+                outtext("            Cardinal:   ");
+                outint(chain.cardinal,5);
+                outimage;
+                
           end;
 
      end prefix block;
 
-     IF found_error then
-     ELSE
-     Begin
-           Outtext ("--- NO ERRORS FOUND IN TEST 94") ;
-     End ;
-
-     if verbose then begin
-        Outtext ("--- END Simula a.s TEST 94") ;
-        Outimage;
-     end;
-End
+end;
