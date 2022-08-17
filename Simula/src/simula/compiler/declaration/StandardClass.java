@@ -682,7 +682,7 @@ public final class StandardClass extends ClassDeclaration
       CatchingErrors.code1=codeSet( // Statements before inner 
     	  new CodeLine(1,"try {"));      
       CatchingErrors.code2=codeSet( // Statements after inner 
-       	  new CodeLine(1,"} catch(RuntimeException e) { onError$(e,onError$0()); }"));
+       	  new CodeLine(1,"} catch(RuntimeException e) { CUR$=this; onError$(e,onError$0()); }"));
   }  
   
   // ******************************************************************
