@@ -1,68 +1,68 @@
  
 % From: https://en.wikipedia.org/wiki/Simula 
  
-Simulation Begin 
+simulation begin 
  
-   Class FittingRoom; Begin 
-      Ref (Head) door; 
-      Boolean inUse; 
+   class FittingRoom; begin 
+      ref(head) door; 
+      boolean inUse; 
        
-      Procedure request; Begin 
-         If inUse Then Begin 
-             Wait (door); 
-             door.First.Out; 
-         End; 
-         inUse:= True; 
-      End; 
-       
-      Procedure leave; Begin 
-         inUse:= False; 
-         reportFittingRoomAvailable; 
-         Activate door.First; 
-      End; 
-       
-      procedure reportFittingRoomAvailable; Begin 
-         ref(Link) elt; 
-         OutFix (Time, 2, 6); OutText (": FittingRoom becomes available, Queue: "); 
-         elt:-door.first; 
-         if elt == none then outtext("Empty"); 
-         while elt =/= none do Begin 
-            OutText(" " & (elt qua Person).pname); 
-            elt:-elt.suc; 
-         end;    
-         OutImage; 
+      procedure request; begin 
+         if inUse then begin 
+             wait(door); 
+             door.first.out; 
+         end; 
+         inUse:= true; 
       end; 
        
-      door:- New Head; 
-   End; 
+      procedure leave; begin 
+         inUse:= false; 
+         reportFittingRoomAvailable; 
+         activate door.first; 
+      end; 
+       
+      procedure reportFittingRoomAvailable; begin 
+         ref(link) elt; 
+         outfix(time, 2, 6); outtext(": FittingRoom becomes available, Queue: "); 
+         elt:-door.first; 
+         if elt == none then outtext("Empty"); 
+         while elt =/= none do begin 
+            outtext(" " &(elt qua Person).pname); 
+            elt:-elt.suc; 
+         end;    
+         outimage; 
+      end; 
+       
+      door:- new head; 
+   end; 
    
-   Procedure report (message); Text message; Begin 
-      OutFix (Time, 2, 6); OutText (": " & message); OutImage; 
-   End; 
+   procedure report(message); text message; begin 
+      outfix(time, 2, 6); outtext(": " & message); outimage; 
+   end; 
  
-   Process Class Person (pname); Text pname; Begin 
-      While True Do Begin 
-         Hold (Normal (12, 4, u)); 
-         report  (pname & " is requesting the fitting room"); 
+   process class Person(pname); text pname; begin 
+      while true do begin 
+         hold(normal(12, 4, u)); 
+         report (pname & " is requesting the fitting room"); 
          fittingroom1.request; 
-         report (pname & " has entered the fitting room"); 
-         Hold (Normal (3, 1, u)); 
+         report(pname & " has entered the fitting room"); 
+         hold(normal(3, 1, u)); 
          fittingroom1.leave; 
-         report (pname & " has left the fitting room"); 
-      End; 
-   End; 
+         report(pname & " has left the fitting room"); 
+      end; 
+   end; 
  
-   Integer u; 
-   Ref (FittingRoom) fittingRoom1; 
+   integer u; 
+   ref(FittingRoom) fittingroom1; 
  
-   fittingRoom1:- New FittingRoom; 
-   Activate New Person ("Sam"); 
-   Activate New Person ("Sally"); 
-   Activate New Person ("Andy"); 
-   Activate New Person ("Peter"); 
-   Activate New Person ("Elisabeth"); 
-   Activate New Person ("Harry"); 
-   Activate New Person ("Robert"); 
-   Activate New Person ("John"); 
-   Hold (100); 
-End;
+   fittingroom1:- new FittingRoom; 
+   activate new Person("Sam"); 
+   activate new Person("Sally"); 
+   activate new Person("Andy"); 
+   activate new Person("Peter"); 
+   activate new Person("Elisabeth"); 
+   activate new Person("Harry"); 
+   activate new Person("Robert"); 
+   activate new Person("John"); 
+   hold(100); 
+end;

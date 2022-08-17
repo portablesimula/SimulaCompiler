@@ -186,6 +186,8 @@ public final class RunFullTestBatch {
 		names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
 		names.add("simerr05.sim"); // OK: NumberFormatException
 		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
+		names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
+		names.add("simerr08.sim"); // OK: Illegal assignment. Name parameter is not a variable
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;

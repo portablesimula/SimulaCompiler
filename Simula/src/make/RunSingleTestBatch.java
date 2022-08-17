@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
+import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 
@@ -184,17 +185,18 @@ public final class RunSingleTestBatch {
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
 //		names.add("simtst132.sim"); // OK: SPORT Options
-		
+//		
 		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
-		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
-		names.add("simerr02.sim"); // OK: Testing NONE-CHECK
-		names.add("PrecompiledClass.sim"); // OK: Used by simerr03
-		names.add("simerr03.sim"); // OK: Division by Zero in Precompiled Class 
-		names.add("PrecompiledProcedure.sim"); // OK: Used by simerr04
-		names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
-		names.add("simerr05.sim"); // OK: NumberFormatException
-		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
+//		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
+//		names.add("simerr02.sim"); // OK: Testing NONE-CHECK
+//		names.add("PrecompiledClass.sim"); // OK: Used by simerr03
+//		names.add("simerr03.sim"); // OK: Division by Zero in Precompiled Class 
+//		names.add("PrecompiledProcedure.sim"); // OK: Used by simerr04
+//		names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
+//		names.add("simerr05.sim"); // OK: NumberFormatException
+//		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
 		names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
+		names.add("simerr08.sim"); // OK: Illegal assignment. Name parameter is not a variable
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;

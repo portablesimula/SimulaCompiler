@@ -17,7 +17,7 @@ begin
    begin outtext(msg); outimage; end; end; 
  
      
-   Simulation class Warehouse(nDocks); integer nDocks; 
+   simulation class Warehouse(nDocks); integer nDocks; 
    begin 
       real washTime = 20.0, pTime = 5.0; 
       long real unloadSpeed = 1000.0&&0; ! unloading speed; 
@@ -36,8 +36,8 @@ begin
       integer qLength; 
       
           
-      Procedure RemoveAllVans; begin 
-         ref(Link) elt,next; 
+      procedure RemoveAllVans; begin 
+         ref(link) elt,next; 
 %         integer speed=200; 
          elt:-renderingSet.first; 
          while elt =/= none do begin 
@@ -55,10 +55,10 @@ begin
       procedure FillSquare(line,pos,b,h); long real line,pos,b,h; 
       begin new ShapeElement.fillRectangle(pos,line,h,b); end; 
    
-      procedure drawText(str,pos,line); Text str; long real pos,line; 
+      procedure drawText(str,pos,line); text str; long real pos,line; 
       begin new TextElement(str,pos,line); end; 
      
-      Procedure drawMap(nr); integer nr; begin 
+      procedure drawMap(nr); integer nr; begin 
          integer psl,dLine; 
          setFillColor(cyan); 
          FillSquare(qLine-8,qPos-8,16+vanWidth,4); 
@@ -84,18 +84,18 @@ begin
       end drawMap; 
      
  
-      Process class Van(load); integer load; 
+      process class Van(load); integer load; 
       begin long real waitTime; ref(Dock) myDock; 
          ref(ShapeElement) vanShape; 
          integer dLine,speed=200; 
        
-         Procedure VantoQueue; begin 
+         procedure VantoQueue; begin 
             setFillColor(red); 
             vanShape.fillRectangle(qPos+qLength*vanHeight*2,qLine,vanWidth,vanHeight); 
             qLength:= qLength+1; 
          end VantoQueue; 
        
-         Procedure AnvanceQueue; begin 
+         procedure AnvanceQueue; begin 
             ref(Van) v; integer n; 
             v:-Waiting.first qua Van; 
             while v =/= none do begin 
@@ -104,7 +104,7 @@ begin
             end;    
          end AnvanceQueue; 
        
-         Procedure VantoPlatform; begin 
+         procedure VantoPlatform; begin 
             vanShape.setColor(black); 
             vanShape.moveTo(drPos,qLine,speed); 
       AnvanceQueue; 
@@ -122,18 +122,18 @@ begin
             trace("Van[" & objectTraceIdentifier & "] is moved to plattform ..."); 
          end VantoPlatform; 
      
-         Procedure VantoUnload; begin 
+         procedure VantoUnload; begin 
             vanShape.setColor(green); 
             vanShape.moveTo(uPos,dLine,speed); 
             trace("Van[" & objectTraceIdentifier & "] is unloading"); 
          end VantoUnload; 
      
-         Procedure VantoWash; begin 
+         procedure VantoWash; begin 
             vanShape.moveTo(wPos,dLine,speed); 
             trace("Van[" & objectTraceIdentifier & "] is washing"); 
          end VantoWash; 
      
-         Procedure VanFinished; begin 
+         procedure VanFinished; begin 
             vanShape.setColor(lightGray); 
             vanShape.moveTo(wPos+500,dLine,speed); 
             trace("Van[" & objectTraceIdentifier & "] is leaving"); 
@@ -146,11 +146,11 @@ begin
          trace("Van[" & objectTraceIdentifier & "] is entering the scene"); 
          vanShape:-new ShapeElement; 
        
-         if platforms.First == none then begin 
+         if platforms.first == none then begin 
             !*** all docks busy, wait in queue ***; 
             waitTime:= time; 
             VantoQueue; 
-            Wait(Waiting); out; 
+            wait(Waiting); out; 
             accWait:= accWait+time-waitTime;     ! accumulate waiting time; 
          end; 
          updateReport; 
@@ -159,20 +159,20 @@ begin
             if myDock==none then outtext("   *** NOTE: myDock==NONE !!!");    outimage;
          VantoPlatform; 
          myDock.out;                             ! this dock busy now; 
-         Hold(pTime);                            ! maneuver to platform; 
+         hold(pTime);                            ! maneuver to platform; 
          VantoUnload; 
          waitTime:= 1000.0&&0*load/unloadSpeed; 
-         Hold(waitTime);                         ! unload; 
+         hold(waitTime);                         ! unload; 
          VantoWash; 
-         Hold(washTime);                         ! clean van; 
+         hold(washTime);                         ! clean van; 
          VanFinished; 
          myDock.into(platforms);                 ! this dock free again; 
          if Waiting.first =/= none then          ! signal waiting vans; 
-            activate Waiting.first after This Van; 
+            activate Waiting.first after this Van; 
          trace("Van[" & objectTraceIdentifier & "] is terminating"); 
       end class Van; 
  
-      Process class Generator; 
+      process class Generator; 
       begin integer arrInterval; 
          real array arrivals(1:9), AvrgLoad(4:24); 
          arrivals(1):= 59; arrivals(2):= 19; arrivals(3):= 13; 
@@ -182,14 +182,14 @@ begin
          AvrgLoad(12):= 9; AvrgLoad(14):=  3; AvrgLoad(16):= 2; AvrgLoad(18):=  9; 
          AvrgLoad(20):= 4; AvrgLoad(22):=  6; AvrgLoad(24):= 2; 
          while true do begin 
-            arrInterval:= Histd(arrivals, U1);       ! arrivals gir fordeling; 
-            Hold(arrInterval*10-5); 
+            arrInterval:= histd(arrivals, U1);       ! arrivals gir fordeling; 
+            hold(arrInterval*10-5); 
             Totnr:= Totnr + 1; 
-            activate new Van(Histd(AvrgLoad,U2));    ! Medbragt mengde; 
+            activate new Van(histd(AvrgLoad,U2));    ! Medbragt mengde; 
          end; 
       end class Generator; 
  
-      Procedure UpdateReport; begin 
+      procedure updateReport; begin 
          outtext("Simulated Time: "); outfix(time,2,8); 
          outtext("   Docks: ");    outint(nDocks,3); 
          outtext("   Waiting: "); outfix(accWait,2,8); 
@@ -204,8 +204,8 @@ begin
       end Report; 
  
  
-      ref (Head) platforms, Waiting; 
-      Link class Dock(nr); integer nr;; 
+      ref (head) platforms, Waiting; 
+      link class Dock(nr); integer nr;; 
       integer hi; 
  
       !****************************************; 
@@ -214,14 +214,14 @@ begin
   
       drawMap(nDocks); 
  
-      platforms:- new Head; Waiting:- new Head; 
+      platforms:- new head; Waiting:- new head; 
       for hi:= 1 step 1 until nDocks do new Dock(hi).into(platforms); 
  
       activate new Generator; 
  
       inner; 
  
-      UpdateReport; 
+      updateReport; 
  
       hi:=white; 
  
@@ -240,7 +240,7 @@ begin
  
    for cnt:= 2 step 1 until 6 do 
        Warehouse(cnt) begin 
-          Hold(960.0); 
+          hold(960.0); 
           if cnt<6 then RemoveAllVans; 
        end; 
    outtext("End of Simulation"); outimage; 

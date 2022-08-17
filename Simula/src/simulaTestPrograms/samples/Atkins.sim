@@ -1,10 +1,10 @@
 begin integer MAX, SQRT_MAX;  
    
-  Outtext( "Find out how many primes are less than " ); BreakOutimage;  
-  MAX      := inint; Outimage; 
+  outtext( "Find out how many primes are less than " ); breakoutimage;  
+  MAX      := inint; outimage; 
   SQRT_MAX := sqrt(MAX) + 1; 
     
-  begin Boolean array bArray( 0 : MAX );  
+  begin boolean array bArray( 0 : MAX );  
         integer k, n, n2, x, y, s; long real t; 
       
     t := cputime; 
@@ -23,20 +23,20 @@ begin integer MAX, SQRT_MAX;
       end; 
     end; 
         
-    bArray(2) := bArray(3) := TRUE; 
+    bArray(2) := bArray(3) := true; 
  
     for n := 5 step 1 until SQRT_MAX + 1 do 
       if bArray(n) then begin 
          n2 := n * n; 
          for k := n2 step n2 until MAX do 
-               bArray(k) := FALSE;
+               bArray(k) := false;
       end; 
         
     for k := 0 step 1 until MAX do 
       if bArray(k) then 
          s := s + 1; 
           
-    Outint( s, 7 );     Outtext( " primes, according to Atkin." ); Outimage; Outimage; 
-    Outtext( " CPU time used :" ); OutFix( cputime - t, 4, 7 ); Outtext( " sec." ); 
+    outint( s, 7 );     outtext( " primes, according to Atkin." ); outimage; outimage; 
+    outtext( " CPU time used :" ); outfix( cputime - t, 4, 7 ); outtext( " sec." ); 
   end; 
 end

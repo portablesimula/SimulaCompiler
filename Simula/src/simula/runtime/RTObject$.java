@@ -800,17 +800,18 @@ public abstract class RTObject$ {
 	 * </ul>
 	 * Finally; Yield continuation and return to Compiler generated code.
 	 * <p>
-	 * However; If the program passes through its final end sysout.outimage is
+	 * However; If the program passes through its final end sysout.outimage is 
 	 * called. The the entire program is terminated.
 	 * <p>
 	 */
 	public void EBLK() {
 		switch(STATE$) {
 			case attached -> {
-					RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-1");
+					if (RT.Option.BLOCK_TRACING) RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
+					RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-1: CUR="+CUR$+", this="+this);
 					STATE$ = OperationalState.terminated;
 					CUR$ = DL$; // Make the dynamic enclosure the new current instance.
-					if (RT.Option.BLOCK_TRACING) RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
+//					if (RT.Option.BLOCK_TRACING) RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
 				}
 			case resumed -> {
 					RT.ASSERT(CUR$ == this, "RTObject$.EBLK:invariant-2");

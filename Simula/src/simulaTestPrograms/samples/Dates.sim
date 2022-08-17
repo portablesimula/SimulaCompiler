@@ -29,9 +29,9 @@ begin
     begin 
       text Tx; 
        
-      Tx :- Blanks(4);  Tx.PutInt(Nx);  Tx.SetPos(1); 
-      while Tx.GetChar = ' ' do ; 
-      N_image :- Tx.Sub(Tx.Pos-1,6-Tx.Pos); 
+      Tx :- blanks(4);  Tx.putint(Nx);  Tx.setpos(1); 
+      while Tx.getchar = ' ' do ; 
+      N_image :- Tx.sub(Tx.pos-1,6-Tx.pos); 
     end N_image; 
      
      
@@ -74,11 +74,11 @@ begin
  
       Ph := (new Date(14,11,1997).Diff(this Date)-(3+12&&0/60)/24) 
             /Lunar_period; 
-      Lunar_phase := Ph-Entier(Ph); 
+      Lunar_phase := Ph-entier(Ph); 
     end Lunar_phase; 
  
  
-    Boolean procedure Is_full_moon; 
+    boolean procedure Is_full_moon; 
     begin 
       real Limit = 0.5/Lunar_period; 
       real Phase; 
@@ -90,7 +90,7 @@ begin
      
     integer procedure Weekday; 
     begin 
-      Weekday := Mod(N_days,7); 
+      Weekday := mod(N_days,7); 
     end Weekday; 
      
      
@@ -108,13 +108,13 @@ begin
      
     text procedure Weekday_english; 
     begin 
-      Weekday_english :- Copy(WE_tab(Weekday)); 
+      Weekday_english :- copy(WE_tab(Weekday)); 
     end Weekday_english; 
      
      
     text procedure Weekday_norsk; 
     begin 
-      Weekday_norsk :- Copy(WN_tab(Weekday)); 
+      Weekday_norsk :- copy(WN_tab(Weekday)); 
     end Weekday_norsk; 
      
      
@@ -124,13 +124,13 @@ begin
     end Days_in_month; 
      
      
-    Boolean procedure Is_leapyear; 
+    boolean procedure Is_leapyear; 
     begin 
       Is_leapyear := L_year(Y); 
     end Is_leapyear; 
  
  
-    Boolean procedure Is_weekend; 
+    boolean procedure Is_weekend; 
     begin 
       integer Dx; 
        
@@ -139,25 +139,25 @@ begin
     end Is_weekend; 
      
      
-    Boolean procedure Is_same(Dx); 
+    boolean procedure Is_same(Dx); 
       ref(Date) Dx; 
     begin 
       Is_same := D=Dx.D and M=Dx.M and Y=Dx.Y; 
     end Is_same; 
  
      
-    Boolean procedure Is_earlier(Dx); 
+    boolean procedure Is_earlier(Dx); 
        ref(Date) Dx; 
     begin 
        if Y = Dx.Y then begin 
    if M = Dx.M then begin 
-      is_earlier := D<Dx.D; 
+      Is_earlier := D<Dx.D; 
    end else Is_earlier := M<Dx.M; 
        end else Is_earlier := Y<Dx.Y;   
     end Is_earlier; 
      
      
-    Boolean procedure Is_earlier_in_year(Dx); 
+    boolean procedure Is_earlier_in_year(Dx); 
       ref(Date) Dx; 
     begin 
        if M = Dx.M then begin 
@@ -166,7 +166,7 @@ begin
     end Is_earlier_in_year; 
      
      
-    Boolean procedure Is_norwegian_holiday; 
+    boolean procedure Is_norwegian_holiday; 
     begin 
       ref(Date) Ex; 
  
@@ -189,7 +189,7 @@ begin
      
     text procedure Image; 
     begin 
-      Image :- N_image(D) & "." & N_Image(M) & "." & N_image(Y); 
+      Image :- N_image(D) & "." & N_image(M) & "." & N_image(Y); 
     end Image; 
  
  
@@ -223,10 +223,10 @@ begin
   end M_leng; 
    
    
-  Boolean procedure L_year(Yx); 
+  boolean procedure L_year(Yx); 
     integer Yx; 
   begin 
-    L_year := Mod(Yx,4)=0 and Mod(Yx,100)>0 or Mod(Yx,400)=0; 
+    L_year := mod(Yx,4)=0 and mod(Yx,100)>0 or mod(Yx,400)=0; 
   end L_year; 
    
    
@@ -234,9 +234,9 @@ begin
   begin 
     text Tx, Dx, Mx, Yx; 
      
-    Tx :- DateTime; 
-    Dx :- Tx.Sub(9,2);  Mx :- Tx.Sub(6,2);  Yx :- Tx.Sub(1,4); 
-    Today :- new Date(Dx.GetInt,Mx.GetInt,Yx.GetInt); 
+    Tx :- datetime; 
+    Dx :- Tx.sub(9,2);  Mx :- Tx.sub(6,2);  Yx :- Tx.sub(1,4); 
+    Today :- new Date(Dx.getint,Mx.getint,Yx.getint); 
   end Today; 
    
    
@@ -245,16 +245,16 @@ begin
   begin 
     integer G, C, X, Z, D, E, N; 
  
-    G := Mod(Y,19) + 1; 
+    G := mod(Y,19) + 1; 
     C := Y//100 + 1; 
     X := (3*C)//4 - 12; 
     Z := (8*C+5)//25 - 5; 
     D := (5*Y)//4 - X - 10; 
-    E := Mod(11*G+20+Z-X,30); 
+    E := mod(11*G+20+Z-X,30); 
     if E=25 and G>11 or E=24 then E := E+1; 
     N := 44-E; 
     if N < 21 then N := N+30; 
-    N := N+7-Mod(D+N,7); 
+    N := N+7-mod(D+N,7); 
  
     Easter :- new Date(N,3,Y); 
   end Easter; 

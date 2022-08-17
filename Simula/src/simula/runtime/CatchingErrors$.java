@@ -21,6 +21,7 @@ package simula.runtime;
  *       -- code: try {
  *                    inner;
  *       -- code: } catch(RuntimeException e) {
+ *       -- code:     CUR$=this; // As iff non-local goto here
  *       -- code:     onError$(e,onError);
  *       -- code: }
  *       

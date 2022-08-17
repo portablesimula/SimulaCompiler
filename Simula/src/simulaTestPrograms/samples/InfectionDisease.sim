@@ -8,7 +8,7 @@ Drawing("Simulating Pandemic Development",900,900) begin
 -- 
 -- Written by �ystein Myhre Andersen, 2021. 
 -- 
-SIMULATION begin 
+simulation begin 
    real population=140; 
    real incubation=3; 
    integer length=50; 
@@ -22,19 +22,19 @@ SIMULATION begin
    -- Statistics 
    integer nInfected,nSick; 
  
-   Process class SickPerson; 
-   begin integer day; Boolean symptoms; real contacts; ref(Head) environment;   
+   process class SickPerson; 
+   begin integer day; boolean symptoms; real contacts; ref(head) environment;   
  
       procedure treatment; begin 
-         ref(Link) X; 
+         ref(link) X; 
          if not symptoms then begin 
-            for X :- environment.first while X in Process do X qua SickPerson.treatment; 
+            for X :- environment.first while X in process do X qua SickPerson.treatment; 
          end else if draw(probmass,u4) then begin 
             symptoms := false; nSick := nSick-1; 
          end    
       end treatment; 
  
-      environment :- new Head; uninfected := uninfected-1; symptoms := false; 
+      environment :- new head; uninfected := uninfected-1; symptoms := false; 
       contacts := randint(1,6,u5); nInfected := nInfected+1; 
       hold(incubation); symptoms := true; nSick := nSick+1; 
       for day:=1 step 1 until length do if symptoms then begin 
@@ -44,7 +44,7 @@ SIMULATION begin
       end 
    end SickPerson; 
  
-   procedure infect(n,S); value n; integer n; ref(Head) S; 
+   procedure infect(n,S); value n; integer n; ref(head) S; 
    begin integer i; 
       for i := 1 step 1 until n do 
       if draw(uninfected / population,u3) then 
@@ -52,7 +52,7 @@ SIMULATION begin
          activate S.last end 
    end infect; 
     
-   Process class Reporter; begin 
+   process class Reporter; begin 
       long real prevTime,timeStep; ref(Curve) infected,sick; 
       ref(Description) infectedLabel,sickLabel; 
       setBackgroundColor(lightGray); setStroke(4.5); 
@@ -70,14 +70,14 @@ SIMULATION begin
       end 
    end; 
     
-   class Description(x,y,color,txt); long real x,y; integer color; Text txt; begin 
+   class Description(x,y,color,txt); long real x,y; integer color; text txt; begin 
          setFillColor(color); fillRectangle(x, y, 50, 10); 
          setDrawColor(black); setFontSize(24); drawText(txt,x+70,y+11); 
    end; 
     
    class Curve(color); value color; integer color; begin 
       long real x,y,nextX,nextY; 
-      Procedure move(nxt); value nxt; long real nxt; begin 
+      procedure move(nxt); value nxt; long real nxt; begin 
          nextX := x+20; nextY := 900-10-(nxt*5); 
          setDrawColor(color); drawLine(x,y,nextX,nextY); 
          x:=nextX; y:=nextY; 

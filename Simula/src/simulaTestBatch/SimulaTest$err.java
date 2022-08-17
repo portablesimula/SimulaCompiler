@@ -1,5 +1,5 @@
 package simulaTestBatch;
-// Simula-2.0 Compiled at Mon Aug 15 13:05:49 CEST 2022
+// Simula-2.0 Compiled at Tue Aug 16 13:41:45 CEST 2022
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SimulaTest$err extends PROC$ {

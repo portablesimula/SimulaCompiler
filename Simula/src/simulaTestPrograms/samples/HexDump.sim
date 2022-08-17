@@ -8,64 +8,64 @@ begin
 %     ---                                                                 ---
 %     -----------------------------------------------------------------------
 
-      Ref(InByteFile) Inpt; ! Input File ;
+      ref(inbytefile) inpt; ! Input File ;
 
-      Integer Sequ; ! Input byte number ;
-      Integer Code; ! Current Record Code ;
-      Text PrtPart;
+      integer sequ; ! Input byte number ;
+      integer code; ! Current Record code ;
+      text prtpart;
 
-      Procedure InputFile;
+      procedure inputFile;
       begin text F;
-            Inpt:-new InByteFile("File");
-            if not Inpt.Open then
-            begin OutImage; OutText("The File """); OutText(F);
-                  OutText(""" does not exist or is not accessible");
-                  OutImage; OutImage; terminate_program;
+            inpt:-new inbytefile("File");
+            if not inpt.open then
+            begin outimage; outtext("The File """); outtext(F);
+                  outtext(""" does not exist or is not accessible");
+                  outimage; outimage; terminate_program;
             end;
       end;
 
 
-      Integer Procedure InByte;
-      begin InByte:=Inpt.InByte; Sequ:=Sequ+1 end;
+      integer procedure inbyte;
+      begin inbyte:=inpt.inbyte; sequ:=sequ+1 end;
 
-      Procedure PrtHex(i,n); integer i,n;
-      begin text t; integer h; t:-Blanks(n);
+      procedure prthex(i,n); integer i,n;
+      begin text t; integer h; t:-blanks(n);
             while n > 0 do
             begin h:=mod(i,16)+48; i:=i//16; if h > 57 then h:=h+7;
-                  t.SetPos(n); t.PutChar(Char(h)); n:=n-1;
-            end;  SysOut.OutText(t);
+                  t.setpos(n); t.putchar(char(h)); n:=n-1;
+            end;  sysout.outtext(t);
       end;
 
-      Character Procedure PrtChar(n); integer n;
-      PrtChar:=if n>31 and n<128 then Char(n) else '.';
+      character procedure prtchar(n); integer n;
+      prtchar:=if n>31 and n<128 then char(n) else '.';
 
 %title ***    M A I N    ***
 
-      OutText("SIMULA (R) Hex Dump   Version 0.00"); OutImage;
-      OutText("Simula a.s. 1986.  All rights reserved.");
-      OutImage; OutImage;
-      InputFile;
-      PrtPart:-Blanks(20);
+      outtext("SIMULA (R) Hex Dump   Version 0.00"); outimage;
+      outtext("Simula a.s. 1986.  All rights reserved.");
+      outimage; outimage;
+      inputFile;
+      prtpart:-blanks(20);
 
 NEXT:
-      SysOut.SetPos(60); SysOut.OutText(PrtPart); SysOut.OutImage;
+      sysout.setpos(60); sysout.outtext(prtpart); sysout.outimage;
 
-      if Inpt.EndFile then goto FERDIG;
-      Code:=InByte; if Inpt.EndFile then goto FERDIG;
-      PrtPart.SetPos(1); PrtPart:=notext;
-      SysOut.OutInt(Sequ-1,6); SysOut.OutText(": ");
+      if inpt.endfile then goto FINISH;
+      code:=inbyte; if inpt.endfile then goto FINISH;
+      prtpart.setpos(1); prtpart:=notext;
+      sysout.outint(sequ-1,6); sysout.outtext(": ");
 
-      PrtHex(code,2); PrtPart.PutChar(PrtChar(code));
-      while SysOut.Pos < 56 do
-      begin Code:=InByte; if Inpt.EndFile then goto NEXT;
-            SysOut.OutChar(' '); PrtHex(code,2);
-            PrtPart.PutChar(PrtChar(code));
+      prthex(code,2); prtpart.putchar(prtchar(code));
+      while sysout.pos < 56 do
+      begin code:=inbyte; if inpt.endfile then goto NEXT;
+            sysout.outchar(' '); prthex(code,2);
+            prtpart.putchar(prtchar(code));
       end;
       goto NEXT;
 
-FERDIG:
-      Inpt.Close;
-      OutImage; OutImage;
-      OutText("END  --  Input Bytes"); OutInt(Sequ,6);
-      OutImage; OutImage;
+FINISH:
+      inpt.close;
+      outimage; outimage;
+      outtext("END  --  Input Bytes"); outint(sequ,6);
+      outimage; outimage;
 end;

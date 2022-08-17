@@ -8,7 +8,7 @@ begin
 
 	boolean found_error;
 --	integer nFailed;
-	boolean verbose=false;
+	boolean verbose;
    
    procedure trace(msg); text msg;
    begin
