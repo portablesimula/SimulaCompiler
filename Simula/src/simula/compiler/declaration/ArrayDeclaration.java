@@ -173,7 +173,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if (type == null) type=Type.Real;
 		if(boundPairList!=null)
@@ -186,13 +186,13 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	Global.sourceLineNumber=lineNumber;
     	ASSERT_SEMANTICS_CHECKED(this);
     	// --------------------------------------------------------------------
-    	// public ARRAY$<float[]> Tab=null;
+    	// public _ARRAY<float[]> Tab=null;
     	// --------------------------------------------------------------------
     	String arrType=this.type.toJavaType();
     	int nDim=boundPairList.size();
     	for(int i=0;i<nDim;i++) arrType=arrType+"[]";
     	String arrayIdent=this.getJavaIdentifier();
-    	arrType="ARRAY$<"+arrType+'>';
+    	arrType="_ARRAY<"+arrType+'>';
     	GeneratedJavaClass.code("public "+arrType+""+arrayIdent+"=null;");
 	}
 
@@ -203,29 +203,29 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	// --------------------------------------------------------------------
     	// integer array A(1:4,4:6,6:12);
     	// --------------------------------------------------------------------
-    	// int[] A$LB=new int[3]; int[] A$UB=new int[3];
-    	// A$LB[0]=1; A$UB[0]=4;
-    	// A$LB[1]=4; A$UB[1]=6;
-    	// A$LB[2]=6; A$UB[2]=12;
-    	// A=new ARRAY$<int[][][]>(new int[A$UB[0]-A$LB[0]+1][A$UB[1]-A$LB[1]+1][A$UB[2]-A$LB[2]+1],A$LB,A$UB);
+    	// int[] A_LB=new int[3]; int[] A_UB=new int[3];
+    	// A_LB[0]=1; A_UB[0]=4;
+    	// A_LB[1]=4; A_UB[1]=6;
+    	// A_LB[2]=6; A_UB[2]=12;
+    	// A=new _ARRAY<int[][][]>(new int[A_UB[0]-A_LB[0]+1][A_UB[1]-A_LB[1]+1][A_UB[2]-A_LB[2]+1],A_LB,A_UB);
     	// --------------------------------------------------------------------
     	String arrayIdent=this.getJavaIdentifier();
     	String arrType=this.type.toJavaType();
     	String arrGen=arrType;
     	int nDim=boundPairList.size();
-    	GeneratedJavaClass.code("int[] "+arrayIdent+"$LB=new int["+nDim+"]; int[] "+arrayIdent+"$UB=new int["+nDim+"];");
+    	GeneratedJavaClass.code("int[] "+arrayIdent+"_LB=new int["+nDim+"]; int[] "+arrayIdent+"_UB=new int["+nDim+"];");
     	int n=0;
     	for(BoundPair boundPair:boundPairList) {	
     		arrType=arrType+"[]";
-    		String LBid=arrayIdent+"$LB["+n+"]";
-    		String UBid=arrayIdent+"$UB["+(n++)+"]";
+    		String LBid=arrayIdent+"_LB["+n+"]";
+    		String UBid=arrayIdent+"_UB["+(n++)+"]";
     		String size=UBid+"-"+LBid+"+1";
     		arrGen=arrGen+'['+size+']';
     		GeneratedJavaClass.code(""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
-    		GeneratedJavaClass.code("BOUND_CHECK$("+LBid+','+UBid+");");
+    		GeneratedJavaClass.code("_BOUND_CHECK("+LBid+','+UBid+");");
     	}	
-    	arrType="ARRAY$<"+arrType+'>';
-    	GeneratedJavaClass.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"$LB,"+arrayIdent+"$UB);");
+    	arrType="_ARRAY<"+arrType+'>';
+    	GeneratedJavaClass.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"_LB,"+arrayIdent+"_UB);");
 	}
 
 	@Override

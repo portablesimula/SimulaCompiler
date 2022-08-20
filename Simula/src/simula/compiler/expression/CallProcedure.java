@@ -54,7 +54,7 @@ public final class CallProcedure {
 		// Generate Parameter Transmission
 		s.append(edProcedureParameters(variable,staticLink,procedure)); 
 		// Check if part of expression
-		if(decl.type!=null && variable.backLink!=null) s.append(".RESULT$");
+		if(decl.type!=null && variable.backLink!=null) s.append("._RESULT");
 		return(s.toString());
 	}
 	
@@ -89,7 +89,7 @@ public final class CallProcedure {
 		String call="new "+procedure.getJavaIdentifier();
 		String staticLink=obj.get();	  
 		call=call+edProcedureParameters(func,staticLink,procedure);
-		if(procedure.type!=null && backLink!=null) call=call+".RESULT$";
+		if(procedure.type!=null && backLink!=null) call=call+"._RESULT";
 		return(call);
 	}
 
@@ -207,7 +207,7 @@ public final class CallProcedure {
 	 * @return piece of Java source code
 	 */
 	public static String formal(final Variable variable,final Parameter par)
-	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
+	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14)._ENT()");
 	  String ident=variable.edIdentifierAccess(false);
 	  if(par.mode==Parameter.Mode.name) ident=ident+".get()";
 	  return(codeCPF(ident,variable,null));
@@ -224,7 +224,7 @@ public final class CallProcedure {
 	 * @return piece of Java source code
 	 */	
 	public static String virtual(final Variable variable,final VirtualSpecification virtual,final boolean remotelyAccessed) {
-		//return("<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
+		//return("<IDENT>.CPF().setPar(4).setpar(3.14)._ENT()");
 	    String ident=virtual.getVirtualIdentifier();
 	    if(virtual.kind==VirtualSpecification.Kind.Label) return(ident);
 	    if(variable.meaning.isConnected()) {
@@ -250,7 +250,7 @@ public final class CallProcedure {
 	 * @return piece of Java source code
 	 */
 	public static String remoteVirtual(final Expression obj,final Variable variable,final VirtualSpecification virtual) {
-		//return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14).ENT$()");
+		//return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14)._ENT()");
 		String ident=obj.get()+'.'+virtual.getVirtualIdentifier();
 		return(codeCPF(ident,variable,virtual.procedureSpec));
 	}
@@ -265,7 +265,7 @@ public final class CallProcedure {
 			s.append(ident).append(".CPF()");
 			if(variable.hasArguments()) {
 				for(Expression actualParameter:variable.checkedParams) {
-					actualParameter.backLink=actualParameter;  // To ensure RESULT$ from functions
+					actualParameter.backLink=actualParameter;  // To ensure _RESULT from functions
 					s.append(".setPar(");
 					Type formalType=actualParameter.type;
 					Parameter.Kind kind=Parameter.Kind.Simple;  // Default, see below
@@ -289,7 +289,7 @@ public final class CallProcedure {
 					s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
 					s.append(')');
 				}
-				s.append(".ENT$()"); // Only when any parameter
+				s.append("._ENT()"); // Only when any parameter
 			}
 		}
 		Type resultType=variable.type;
@@ -301,7 +301,7 @@ public final class CallProcedure {
 				if(binOper.backLink==null) partOfExpression=false;
 			}
 			if(partOfExpression) {
-				s.append(".RESULT$()");
+				s.append("._RESULT()");
 				String callVirtual=s.toString();
 				String cast=resultType.toJavaType();
 				if(resultType.isArithmeticType())
@@ -331,7 +331,7 @@ public final class CallProcedure {
 				s.append(doParameterTransmition(formalType, kind, mode, actualParameter));
 				s.append(')');
 			}
-			s.append(".ENT$()"); // Only when any parameter
+			s.append("._ENT()"); // Only when any parameter
 		}
 		return (s.toString());
 	}
@@ -397,8 +397,8 @@ public final class CallProcedure {
 		    case Label -> {
 		    		String labQuant=actualParameter.toJavaCode();
 		    		if(mode==Parameter.Mode.name) {
-		    			s.append("new NAME$<LABQNT$>()");
-		    			s.append("{ public LABQNT$ get() { return("+labQuant+"); }");
+		    			s.append("new _NAME<_LABQNT>()");
+		    			s.append("{ public _LABQNT get() { return("+labQuant+"); }");
 		    			s.append(" }");
 		    		}
 		    		else s.append(labQuant);
@@ -421,8 +421,8 @@ public final class CallProcedure {
 		} else if(formalType==Type.Label) {
 		    	String labQuant=actualParameter.toJavaCode();
 		    	if(mode==Parameter.Mode.name) {
-			    	  s.append("new NAME$<LABQNT$>()");
-				      s.append("{ public LABQNT$ get() { return("+labQuant+"); }");
+			    	  s.append("new _NAME<_LABQNT>()");
+				      s.append("{ public _LABQNT get() { return("+labQuant+"); }");
 				      s.append(" }");
 			    }
 			    else s.append(labQuant);
@@ -430,41 +430,41 @@ public final class CallProcedure {
 		    String javaTypeClass=formalType.toJavaTypeClass();
 		    Variable writeableVariable=actualParameter.getWriteableVariable();
 		    if(writeableVariable!=null) {
-		    	s.append("new NAME$<"+javaTypeClass+">()");
+		    	s.append("new _NAME<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
 		    	if(!(writeableVariable.meaning.declaredAs instanceof BlockDeclaration)) {
 		    		Type actualType=actualParameter.type;
-		    		String rhs="("+actualType.toJavaType()+")x$";
+		    		String rhs="("+actualType.toJavaType()+")x_";
 		    		if(actualParameter instanceof TypeConversion) {
 		    			// --------------------------------------------------
 		    			// Generate something like:
 		    			//  
-		    			//  public Float put(Float x$) {
-		    			//     float y=x$; 
+		    			//  public Float put(Float x_) {
+		    			//     float y=x_; 
 		    			//	   n=(int) ( (float) y+0.5);
 		    			//	   return(y);
 		    			//  }
 		    			// --------------------------------------------------
 		    			String putValue=TypeConversion.mayBeConvert(actualType,writeableVariable.type,"y");
-		    			s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x$)");
-		    			s.append("{ "+formalType.toJavaType()+" y=x$; ");
+		    			s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x_)");
+		    			s.append("{ "+formalType.toJavaType()+" y=x_; ");
 		    			s.append(writeableVariable.toJavaCode()).append(putValue);
 		    			s.append("return(y); }");
 		    		} else {
 		    			// --------------------------------------------------
 		    			// Generate something like:
 		    			//  
-		    			//  public Double put(Double x$) {
-		    			//	   return (r = (double) x$);
+		    			//  public Double put(Double x_) {
+		    			//	   return (r = (double) x_);
 		    			//  }
 		    			// --------------------------------------------------
-		    			s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x$)"
+		    			s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x_)"
 		    					+" { return("+actualParameter.put(rhs)+"); }");
 		    		}
 		    	}
 		    	s.append(" }");
 		    } else {
-		    	s.append("new NAME$<"+javaTypeClass+">()");
+		    	s.append("new _NAME<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
 		    	s.append(" }");
 		    }
@@ -481,8 +481,8 @@ public final class CallProcedure {
 		    s.append(actualParameter.toJavaCode()).append(".COPY()");
 		}
 		else if(mode==Parameter.Mode.name) {
-		    String arrObj="ARRAY$<?>";
-			s.append("new NAME$<"+arrObj+">()");
+		    String arrObj="_ARRAY<?>";
+			s.append("new _NAME<"+arrObj+">()");
 			s.append("{ public "+arrObj+" get() { return("+actualParameter.toJavaCode()+"); }");
 			s.append(" }");
 		} else s.append(actualParameter.toJavaCode());
@@ -496,14 +496,14 @@ public final class CallProcedure {
 		String procQuant = edProcedureQuant(mode,actualParameter);
 		if (mode == Parameter.Mode.name) {
 			// --- EXAMPLE -------------------------------------------------------------------------
-			// r = new ParamSample$Q(this, new NAME$<PRCQNT$>() {
-			//     public PRCQNT$ get() {
-			//         return (new PRCQNT$(ParamSample.this, ParamSample$P.class));
+			// r = new ParamSample_Q(this, new _NAME<_PRCQNT>() {
+			//     public _PRCQNT get() {
+			//         return (new _PRCQNT(ParamSample.this, ParamSample_P.class));
 			//     }
-			// }).RESULT$;
+			// })._RESULT;
 			// -------------------------------------------------------------------------------------
-			s.append("new NAME$<PRCQNT$>()");
-			s.append("{ public PRCQNT$ get() { return(" + procQuant + "); }");
+			s.append("new _NAME<_PRCQNT>()");
+			s.append("{ public _PRCQNT get() { return(" + procQuant + "); }");
 			s.append(" }");
 		} else s.append(procQuant);
 	}
@@ -516,7 +516,7 @@ public final class CallProcedure {
 			Declaration decl=var.meaning.declaredAs;
 	    	String staticLink=var.meaning.edQualifiedStaticLink();
 	    	String procIdent = decl.getJavaIdentifier();
-			String procQuant = "new PRCQNT$(" + staticLink + "," + procIdent + ".class)";
+			String procQuant = "new _PRCQNT(" + staticLink + "," + procIdent + ".class)";
 			if (decl instanceof Parameter par) {
 				procQuant = ((Variable) actualParameter).getJavaIdentifier();
 				if (par.mode == Parameter.Mode.name)
@@ -544,7 +544,7 @@ public final class CallProcedure {
     	    	}
 			} else Util.FATAL_ERROR("TODO: Flere sånne(2) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			String procIdent = var.meaning.declaredAs.getJavaIdentifier();
-			return("new PRCQNT$(" + staticLink + "," + procIdent + ".class)");
+			return("new _PRCQNT(" + staticLink + "," + procIdent + ".class)");
 		} else Util.error("Illegal Procedure Expression as Actual Parameter: " + actualParameter);
 	    return("UNKNOWN"); // Error recovery
 	}

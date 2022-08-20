@@ -38,7 +38,7 @@ public final class BlockStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		blockDeclaration.doChecking();
 		SET_SEMANTICS_CHECKED();
 	}
@@ -65,8 +65,8 @@ public final class BlockStatement extends Statement {
 			}
 			s.append(')');
 			if(blockDeclaration.declarationKind==Declaration.Kind.PrefixedBlock && ((ClassDeclaration)blockDeclaration).isDetachUsed())
-				s.append(".START$();");
-			else s.append(".STM$();");
+				s.append("._START();");
+			else s.append("._STM();");
 			GeneratedJavaClass.code(s.toString());
 		}
 		blockDeclaration.doJavaCoding();

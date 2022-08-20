@@ -142,7 +142,7 @@ public final class Variable extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		Declaration declaredAs=getMeaning().declaredAs;
 		if(declaredAs!=null) this.type=declaredAs.type;
@@ -360,7 +360,7 @@ public final class Variable extends Expression {
 	    	    			dimBrackets=dimBrackets+"[]";
 	    	    		}
 	    	    		String eltType=type.toJavaType();
-	    	    		String cast="ARRAY$<"+eltType+dimBrackets+">";
+	    	    		String cast="_ARRAY<"+eltType+dimBrackets+">";
 	    	    		String castedVar="(("+cast+")"+var+")";
 	    	    		s.append(castedVar).append(".Elt").append(ixs);
 	    	    	} else s.append(var);
@@ -382,15 +382,15 @@ public final class Variable extends Expression {
    	    case ContextFreeMethod:
     	    // Standard Library Procedure
    	    	if(Util.equals(identifier, "sourceline")) return(""+Global.sourceLineNumber);
-   	    	if(destination) return("RESULT$");
+   	    	if(destination) return("_RESULT");
    	    	return(CallProcedure.asStaticMethod(this,true));
    	    	
    	    case StaticMethod:
-   	    	if(destination) return("RESULT$");
+   	    	if(destination) return("_RESULT");
    	    	return(CallProcedure.asStaticMethod(this,false));
    	    	
    	    case MemberMethod:
-   	    	if(destination) return("RESULT$");
+   	    	if(destination) return("_RESULT");
    	    	return(CallProcedure.asNormalMethod(this));
    	    	
    	    case Procedure:
@@ -398,13 +398,13 @@ public final class Variable extends Expression {
    	    	// This Variable is a Procedure-Identifier.
    	    	// When 'destination' it is a variable used to carry the resulting value until the final return.
    	    	// otherwise; it is a ordinary procedure-call.
-   	    	if(destination) { // return("RESULT$");
+   	    	if(destination) { // return("_RESULT");
    	    		ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
    	    		ProcedureDeclaration found=Global.getCurrentScope().findProcedure(proc.identifier);
    	    		if(found!=null) {
-    	    		if(found.blockLevel==Global.getCurrentScope().blockLevel) return("RESULT$");
+    	    		if(found.blockLevel==Global.getCurrentScope().blockLevel) return("_RESULT");
     	    		String cast=found.getJavaIdentifier();
-    	    		return("(("+cast+")"+found.edCTX()+").RESULT$");
+    	    		return("(("+cast+")"+found.edCTX()+")._RESULT");
    	    		} else Util.error("Can't assign to procedure "+proc.identifier);
     	    		    
    	    	}

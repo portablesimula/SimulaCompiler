@@ -91,7 +91,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		type.doChecking(Global.getCurrentScope());
 		if(constantElement!=null) {
@@ -101,7 +101,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	        constantElement.backLink=this;
 		}
 		if(Global.getCurrentScope() instanceof ClassDeclaration cls) {
-			if(cls.prefixLevel()>0) externalIdent=identifier+'$'+cls.prefixLevel();
+			if(cls.prefixLevel()>0) externalIdent=identifier+'_'+cls.prefixLevel();
 			else externalIdent=identifier;
 		}
 		SET_SEMANTICS_CHECKED();

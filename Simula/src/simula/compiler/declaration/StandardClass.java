@@ -22,7 +22,7 @@ public final class StandardClass extends ClassDeclaration
 {
   public Declaration.Kind getBlockKind() { return(Declaration.Kind.StandardClass); }
   public String edJavaClassName() { return(identifier); }
-//  public String getJavaIdentifier() { return(identifier+"$"); }
+//  public String getJavaIdentifier() { return(identifier+"_"); }
   
   // ******************************************************************
   // *** The Type TXT
@@ -117,7 +117,7 @@ public final class StandardClass extends ClassDeclaration
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"copy",parameter("T",Parameter.Mode.value,Type.Text));
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"blanks",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"Char",parameter("n",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"char$",parameter("n",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"_char",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"isochar",parameter("n",Type.Integer));
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"rank",parameter("c",Type.Character));
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"isorank",parameter("c",Type.Character));
@@ -234,26 +234,26 @@ public final class StandardClass extends ClassDeclaration
   // ******************************************************************
   //  ENVIRONMENT class BASICIO (INPUT_LINELENGTH, OUTPUT_LINELENGTH);
   //  integer INPUT_LINELENGTH, OUTPUT_LINELENGTH;
-  //  begin ref (infile) SYSIN; ref (printfile) SYSOUT;
-  //        ref (infile)    procedure sysin;   sysin  :- SYSIN;
-  //        ref (printfile) procedure sysout;  sysout :- SYSOUT;
+  //  begin ref (InFile) SYSIN; ref (PrintFile) SYSOUT;
+  //        ref (InFile)    procedure sysin;   sysin  :- SYSIN;
+  //        ref (PrintFile) procedure sysout;  sysout :- SYSOUT;
   //
   //        procedure terminate_program;
   //        begin ... ;  goto STOP  end terminate_program;
   //
-  //            class file 
-  //       file class imagefile
-  //       file class bytefile
-  //  imagefile class infile
-  //  imagefile class outfile
-  //  imagefile class directfile
-  //    outfile class printfile
-  //   bytefile class inbytefile
-  //   bytefile class outbytefile 
-  //   bytefile class directbytefile
+  //            class File 
+  //       File class ImageFile
+  //       File class ByteFile
+  //  ImageFile class InFile
+  //  ImageFile class OutFile
+  //  ImageFile class DirectFile
+  //    OutFile class PrintFile
+  //   ByteFile class InByteFile
+  //   ByteFile class OutByteFile 
+  //   ByteFile class DirectByteFile
   //
-  //        SYSIN  :- new infile("...");    ! Implementation-defined
-  //        SYSOUT :- new printfile("..."); ! files names;
+  //        SYSIN  :- new InFile("...");    ! Implementation-defined
+  //        SYSOUT :- new PrintFile("..."); ! files names;
   //        SYSIN.open(blanks(INPUT_LINELENGTH));
   //        SYSOUT.open(blanks(OUTPUT_LINELENGTH));
   //        inner;
@@ -265,8 +265,8 @@ public final class StandardClass extends ClassDeclaration
   static {
 	  ENVIRONMENT.addStandardClass(BASICIO); // Declared in ENVIRONMENT
 	  BASICIO.isContextFree=true;
-	  BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("infile"),"sysin");  
-	  BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("printfile"),"sysout");  
+	  BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("InFile"),"sysin");  
+	  BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("PrintFile"),"sysout");  
 	  BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,null,"terminate_program");  
 	  BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,null,"call",parameter("obj",Type.Ref("RTObject")));
 	  BASICIO.addStandardProcedure(Declaration.Kind.MemberMethod,null,"resume",parameter("obj",Type.Ref("RTObject")));
@@ -292,50 +292,50 @@ public final class StandardClass extends ClassDeclaration
   }
   
   // ******************************************************************
-  // *** The Standard Class file
+  // *** The Standard Class File
   // ******************************************************************
-  //  class file(FILENAME); value FILENAME; text FILENAME;
+  //  class File(FILENAME); value FILENAME; text FILENAME;
   //  begin
-  //     Boolean OPEN$;
+  //     Boolean OPEN_;
   //     text procedure filename; filename:=copy(FILENAME);
-  //     Boolean procedure isopen; isopem:=OPEN$;
+  //     Boolean procedure isopen; isopem:=OPEN_;
   //     Boolean procedure setaccess(mode);  text mode; ... ;
   //  
-  //     if FILENAME = notext then error("Illegal file Name");
-  //  end file;      
-  public static StandardClass file=new StandardClass("CLASS","file",parameter("FILENAME$",Type.Text));
+  //     if FILENAME = notext then error("Illegal ImageFile Name");
+  //  end File;      
+  public static StandardClass File=new StandardClass("CLASS","File",parameter("FILENAME_",Type.Text));
   static {
-	  BASICIO.addStandardClass(file);  // Declared in BASICIO
-	  file.addStandardAttribute(Type.Boolean,"OPEN$");  
-	  file.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"filename");
-	  file.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"isopen");
-	  file.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"setaccess",parameter("mode",Type.Text));  
+	  BASICIO.addStandardClass(File);  // Declared in BASICIO
+	  File.addStandardAttribute(Type.Boolean,"OPEN_");  
+	  File.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"filename");
+	  File.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"isopen");
+	  File.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"setaccess",parameter("mode",Type.Text));  
   }  
   
   // ******************************************************************
-  // *** The Standard file Class imagefile
+  // *** The Standard File Class ImageFile
   // ******************************************************************
-  //  file class imagefile;
+  //  File class ImageFile;
   //  begin text image;
   //     procedure setpos(i);  integer i;  image.setpos(i);
   //     integer procedure pos;     pos    := image.pos;
   //     Boolean procedure more;    more   := image.more;
   //     integer procedure length;  length := image.length;
-  //  end imagefile;
-  public static StandardClass imagefile=new StandardClass("file","imagefile");
+  //  end ImageFile;
+  public static StandardClass ImageFile=new StandardClass("File","ImageFile");
   static {
-	  BASICIO.addStandardClass(imagefile);  // Declared in BASICIO
-	  imagefile.addStandardAttribute(Type.Text,"image");  
-	  imagefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setpos",parameter("i",Type.Integer));  
-	  imagefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"pos");  
-	  imagefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"more");  
-	  imagefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"length");   
+	  BASICIO.addStandardClass(ImageFile);  // Declared in BASICIO
+	  ImageFile.addStandardAttribute(Type.Text,"image");  
+	  ImageFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setpos",parameter("i",Type.Integer));  
+	  ImageFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"pos");  
+	  ImageFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"more");  
+	  ImageFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"length");   
   }
   
   // ******************************************************************
-  // *** The Standard imagefile Class infile
+  // *** The Standard ImageFile Class InFile
   // ******************************************************************
-  //  imagefile class infile;
+  //  ImageFile class InFile;
   //  begin Boolean ENDFILE;
   //     Boolean procedure endfile;  endfile:= ENDFILE;
   //     Boolean procedure open(fileimage); text fileimage;
@@ -351,28 +351,28 @@ public final class StandardClass extends ClassDeclaration
   //
   //     ENDFILE:= true
   //     ...
-  //  end infile;
-  public static StandardClass infile=new StandardClass("imagefile","infile");
+  //  end InFile;
+  public static StandardClass InFile=new StandardClass("ImageFile","InFile");
   static {
-	  BASICIO.addStandardClass(infile);  // Declared in BASICIO
-	  infile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"inimage");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"inrecord");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Character,"inchar");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"lastitem");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("w",Type.Integer));  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inint");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"inreal");  
-	  infile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"infrac");  
+	  BASICIO.addStandardClass(InFile);  // Declared in BASICIO
+	  InFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"inimage");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"inrecord");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Character,"inchar");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"lastitem");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("w",Type.Integer));  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inint");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"inreal");  
+	  InFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"infrac");  
   }  
   
   // ******************************************************************
-  // *** The Standard imagefile Class outfile
+  // *** The Standard ImageFile Class OutFile
   // ******************************************************************
-  //  imagefile class outfile;
+  //  ImageFile class OutFile;
   //  begin
   //     Boolean procedure open(fileimage);  text fileimage;
   //     Boolean procedure close;
@@ -389,29 +389,29 @@ public final class StandardClass extends ClassDeclaration
   //     procedure outfrac(i,n,w); integer i,n,w;
   //
   //    ... ;
-  // end outfile;
-  public static StandardClass outfile=new StandardClass("imagefile","outfile");
+  // end OutFile;
+  public static StandardClass OutFile=new StandardClass("ImageFile","OutFile");
   static {
-	  BASICIO.addStandardClass(outfile);  // Declared in BASICIO
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outimage");  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outrecord");  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"breakoutimage");  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outchar",parameter("c",Type.Character));  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-	  outfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+	  BASICIO.addStandardClass(OutFile);  // Declared in BASICIO
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outimage");  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outrecord");  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"breakoutimage");  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outchar",parameter("c",Type.Character));  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+	  OutFile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
   }  
   
   // ******************************************************************
-  // *** The Standard imagefile Class directfile
+  // *** The Standard ImageFile Class DirectFile
   // ******************************************************************
-  //  imagefile class directfile;
+  //  ImageFile class DirectFile;
   //  begin   integer LOC, MAXLOC;  Boolean ENDFILE, LOCKED;
   //     integer procedure location;  location:= LOC;
   //     Boolean procedure endfile;   endfile := ENDFILE;
@@ -443,47 +443,47 @@ public final class StandardClass extends ClassDeclaration
   //
   //     ENDFILE:= true
   //     ...
-  //  end directfile;
-  public static StandardClass directfile=new StandardClass("imagefile","directfile");
+  //  end DirectFile;
+  public static StandardClass DirectFile=new StandardClass("ImageFile","DirectFile");
   static {
-	  BASICIO.addStandardClass(directfile);  // Declared in BASICIO
-	  directfile.addStandardAttribute(Type.Integer,"LOC_");  
-	  directfile.addStandardAttribute(Type.Integer,"MAXLOC_");  
-	  directfile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
-	  directfile.addStandardAttribute(Type.Boolean,"LOCKED_");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"location");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"locked");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");      
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lastloc");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"maxloc");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"locate",parameter("i",Type.Integer));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"inimage");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outimage");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"deleteimage");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Character,"inchar");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"unlock");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"lastitem");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("w",Type.Integer));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inint");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"inreal");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"infrac");  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outchar",parameter("c",Type.Character));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));   
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
-	  directfile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+	  BASICIO.addStandardClass(DirectFile);  // Declared in BASICIO
+	  DirectFile.addStandardAttribute(Type.Integer,"LOC_");  
+	  DirectFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
+	  DirectFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
+	  DirectFile.addStandardAttribute(Type.Boolean,"LOCKED_");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"location");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"locked");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");      
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lastloc");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"maxloc");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"locate",parameter("i",Type.Integer));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"inimage");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outimage");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"deleteimage");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Character,"inchar");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"unlock");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"lastitem");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("w",Type.Integer));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inint");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"inreal");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"infrac");  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outchar",parameter("c",Type.Character));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));   
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"FIELD_",parameter("w",Type.Integer));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outint",parameter("i",Type.Integer),parameter("w",Type.Integer));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outfrac",parameter("i",Type.Integer),parameter("n",Type.Integer),parameter("w",Type.Integer));  
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outfix", parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
+	  DirectFile.addStandardProcedure(Declaration.Kind.MemberMethod,new OverLoad(Type.Real,Type.LongReal),"outreal",parameter("r",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer),parameter("w",Type.Integer)); 
   }  
   
   // ******************************************************************
-  // *** The Standard outfile Class printfile
+  // *** The Standard OutFile Class PrintFile
   // ******************************************************************
-  //  outfile class printfile;
+  //  OutFile class PrintFile;
   //  begin integer LINE, LINES_PER_PAGE, SPACING, PAGE;
   //    integer procedure line; line := LINE;
   //    integer procedure page; page := PAGE;
@@ -498,44 +498,44 @@ public final class StandardClass extends ClassDeclaration
   //    SPACING := 1;
   //    LINES_PER_PAGE := ... ;
   //    ...
-  //  end printfile;
-  public static StandardClass printfile=new StandardClass("outfile","printfile");
+  //  end PrintFile;
+  public static StandardClass PrintFile=new StandardClass("OutFile","PrintFile");
   static {
-	  BASICIO.addStandardClass(printfile);  // Declared in BASICIO
-	  printfile.addStandardAttribute(Type.Integer,"LINE_");  
-	  printfile.addStandardAttribute(Type.Integer,"LINES_PER_PAGE_");  
-	  printfile.addStandardAttribute(Type.Integer,"SPACING_");  
-	  printfile.addStandardAttribute(Type.Integer,"PAGE_");  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"line"); 
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"page");  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"linesperpage",parameter("n",Type.Integer));  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"spacing",parameter("n",Type.Integer));  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"eject",parameter("n",Type.Integer));  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outimage");  
-	  printfile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outrecord");  
+	  BASICIO.addStandardClass(PrintFile);  // Declared in BASICIO
+	  PrintFile.addStandardAttribute(Type.Integer,"LINE_");  
+	  PrintFile.addStandardAttribute(Type.Integer,"LINES_PER_PAGE_");  
+	  PrintFile.addStandardAttribute(Type.Integer,"SPACING_");  
+	  PrintFile.addStandardAttribute(Type.Integer,"PAGE_");  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"line"); 
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"page");  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"linesperpage",parameter("n",Type.Integer));  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"spacing",parameter("n",Type.Integer));  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"eject",parameter("n",Type.Integer));  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outimage");  
+	  PrintFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outrecord");  
   }  
   
   // ******************************************************************
-  // *** The Standard file Class bytefile
+  // *** The Standard File Class ByteFile
   // ******************************************************************
-  //  file class bytefile;
+  //  File class ByteFile;
   //  begin short integer BYTESIZE;
   //     short integer procedure bytesize; bytesize := BYTESIZE;
   //
-  //  end bytefile;
-  public static StandardClass bytefile=new StandardClass("file","bytefile");
+  //  end ByteFile;
+  public static StandardClass ByteFile=new StandardClass("File","ByteFile");
   static {
-	  BASICIO.addStandardClass(bytefile);  // Declared in BASICIO
-	  bytefile.addStandardAttribute(Type.Integer,"BYTESIZE_");  
-	  bytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"bytesize");  
+	  BASICIO.addStandardClass(ByteFile);  // Declared in BASICIO
+	  ByteFile.addStandardAttribute(Type.Integer,"BYTESIZE_");  
+	  ByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"bytesize");  
   }  
   
   // ******************************************************************
-  // *** The Standard bytefile Class inbytefile
+  // *** The Standard ByteFile Class InByteFile
   // ******************************************************************
-  //  bytefile class inbytefile;
+  //  ByteFile class InByteFile;
   //  begin Boolean ENDFILE;
   //    Boolean procedure endfile; endfile:= ENDFILE;
   //    Boolean procedure open; 
@@ -545,23 +545,23 @@ public final class StandardClass extends ClassDeclaration
   //
   //    ENDFILE:= true;
   //    ...
-  //  end inbytefile;
-  public static StandardClass inbytefile=new StandardClass("bytefile","inbytefile");
+  //  end InByteFile;
+  public static StandardClass InByteFile=new StandardClass("ByteFile","InByteFile");
   static {
-	  BASICIO.addStandardClass(inbytefile);  // Declared in BASICIO
-	  inbytefile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
-	  inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
-	  inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
-	  inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
-	  inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
-	  inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"in2byte");  // TODO: Extension to Simula Standard
-	  inbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
+	  BASICIO.addStandardClass(InByteFile);  // Declared in BASICIO
+	  InByteFile.addStandardAttribute(Type.Boolean,"ENDFILE_");  
+	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
+	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
+	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
+	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"in2byte");  // TODO: Extension to Simula Standard
+	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
   }  
   
   // ******************************************************************
-  // *** The Standard bytefile Class outbytefile
+  // *** The Standard ByteFile Class OutByteFile
   // ******************************************************************
-  //  bytefile class outbytefile;
+  //  ByteFile class OutByteFile;
   //  begin
   //    Boolean procedure open; 
   //    Boolean procedure close; 
@@ -569,22 +569,22 @@ public final class StandardClass extends ClassDeclaration
   //    procedure outtext(t); text t; 
   //    Boolean procedure checkpoint; 
   //
-  //  end outbytefile;
-  public static StandardClass outbytefile=new StandardClass("bytefile","outbytefile");
+  //  end OutByteFile;
+  public static StandardClass OutByteFile=new StandardClass("ByteFile","OutByteFile");
   static {
-	  BASICIO.addStandardClass(outbytefile);
-	  outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
-	  outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
-	  outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
-	  outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   
-	  outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
-	  outbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
+	  BASICIO.addStandardClass(OutByteFile);
+	  OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+	  OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
+	  OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
+	  OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   
+	  OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
+	  OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
   }  
   
   // ******************************************************************
-  // *** The Standard bytefile Class directbytefile
+  // *** The Standard ByteFile Class DirectByteFile
   // ******************************************************************
-  //  bytefile class directbytefile;
+  //  ByteFile class DirectByteFile;
   //  begin integer LOC, MAXLOC;  Boolean LOCKED;
   //    Boolean procedure endfile; endfile:=OPEN and then LOC>lastloc;
   //    integer procedure location; location := LOC;
@@ -602,74 +602,74 @@ public final class StandardClass extends ClassDeclaration
   //    procedure intext(t); text t; 
   //    procedure outtext(t); text t;
   //     ...
-  //  end directbytefile;
-  public static StandardClass directbytefile=new StandardClass("bytefile","directbytefile");
+  //  end DirectByteFile;
+  public static StandardClass DirectByteFile=new StandardClass("ByteFile","DirectByteFile");
   static {
-	  BASICIO.addStandardClass(directbytefile);  // Declared in BASICIO
-	  directbytefile.addStandardAttribute(Type.Integer,"LOC_");  
-	  directbytefile.addStandardAttribute(Type.Integer,"MAXLOC_");  
-	  directbytefile.addStandardAttribute(Type.Boolean,"LOCKED_");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"location");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"maxloc");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"locked");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");      
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lastloc");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"locate",parameter("i",Type.Integer));  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   
-//    directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"unlock");  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
-	  directbytefile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
+	  BASICIO.addStandardClass(DirectByteFile);  // Declared in BASICIO
+	  DirectByteFile.addStandardAttribute(Type.Integer,"LOC_");  
+	  DirectByteFile.addStandardAttribute(Type.Integer,"MAXLOC_");  
+	  DirectByteFile.addStandardAttribute(Type.Boolean,"LOCKED_");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"endfile");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"location");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"maxloc");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"locked");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");      
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lastloc");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"locate",parameter("i",Type.Integer));  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   
+//    DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"lock",parameter("t",Type.Real),parameter("i",Type.Integer),parameter("j",Type.Integer));  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"unlock");  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
+	  DirectByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
   }  
   
   // ******************************************************************
-  // *** The Standard Class simset
+  // *** The Standard Class Simset
   // ******************************************************************
-  public static StandardClass simset=new StandardClass("CLASS","simset");
+  public static StandardClass Simset=new StandardClass("CLASS","Simset");
   static {
-	  ENVIRONMENT.addStandardClass(simset);  // Declared in ENVIRONMENT
+	  ENVIRONMENT.addStandardClass(Simset);  // Declared in ENVIRONMENT
   }  
   
   // ******************************************************************
-  // *** The Standard Class linkage
+  // *** The Standard Class Linkage
   // ******************************************************************
-  public static StandardClass linkage=new StandardClass("CLASS","linkage");
+  public static StandardClass Linkage=new StandardClass("CLASS","Linkage");
   static {
-	  simset.addStandardClass(linkage);  // Declared in simset
-	  linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"suc");  
-	  linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"pred");  
-	  linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("linkage"),"prev");  
+	  Simset.addStandardClass(Linkage);  // Declared in Simset
+	  Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"suc");  
+	  Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"pred");  
+	  Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Linkage"),"prev");  
   }  
   
   // ******************************************************************
-  // *** The Standard linkage Class head
+  // *** The Standard Linkage Class Head
   // ******************************************************************
-  public static StandardClass head=new StandardClass("linkage","head");
+  public static StandardClass Head=new StandardClass("Linkage","Head");
   static {
-	  simset.addStandardClass(head);  // Declared in simset
-	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"first");  
-	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("link"),"last");  
-	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"empty");  
-	  head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"cardinal");  
-	  head.addStandardProcedure(Declaration.Kind.MemberMethod,null,"clear");  
+	  Simset.addStandardClass(Head);  // Declared in Simset
+	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"first");  
+	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"last");  
+	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"empty");  
+	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"cardinal");  
+	  Head.addStandardProcedure(Declaration.Kind.MemberMethod,null,"clear");  
   }  
   
   // ******************************************************************
-  // *** The Standard linkage Class link
+  // *** The Standard Linkage Class Link
   // ******************************************************************
-  public static StandardClass link=new StandardClass("linkage","link");
+  public static StandardClass Link=new StandardClass("Linkage","Link");
   static {
-	  simset.addStandardClass(link);  // Declared in simset
-	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out");  
-	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"follow",parameter("X",Type.Ref("linkage")));  
-	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"precede",parameter("X",Type.Ref("linkage")));  
-	  link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"into",parameter("S",Type.Ref("head")));  
+	  Simset.addStandardClass(Link);  // Declared in Simset
+	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out");  
+	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"follow",parameter("X",Type.Ref("Linkage")));  
+	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"precede",parameter("X",Type.Ref("Linkage")));  
+	  Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"into",parameter("S",Type.Ref("Head")));  
   }  
   
   // ******************************************************************
@@ -682,66 +682,66 @@ public final class StandardClass extends ClassDeclaration
       CatchingErrors.code1=codeSet( // Statements before inner 
     	  new CodeLine(1,"try {"));      
       CatchingErrors.code2=codeSet( // Statements after inner 
-       	  new CodeLine(1,"} catch(RuntimeException e) { CUR$=this; onError$(e,onError$0()); }"));
+       	  new CodeLine(1,"} catch(RuntimeException e) { _CUR=this; _onError(e,onError_0()); }"));
   }  
   
   // ******************************************************************
-  // *** The Standard Class simulation
+  // *** The Standard Class Simulation
   // ******************************************************************
-  public static StandardClass simulation=new StandardClass("simset","simulation");
+  public static StandardClass Simulation=new StandardClass("Simset","Simulation");
   static {
-	  ENVIRONMENT.addStandardClass(simulation);  // Declared in ENVIRONMENT
-	  simulation.detachUsed=true;
-//    simulation.code1=codeSet( // Statements before inner 
-//    		new CodeLine(1,"SQS = (head$) new head$(this).STM$();"),
-//    		new CodeLine(1,"main = (MAIN_PROGRAM$) new MAIN_PROGRAM$((simulation$) CUR$).START$();"),
-//    		new CodeLine(1,"main.EVENT = (EVENT_NOTICE$) new EVENT_NOTICE$((simulation$) CUR$, 0, main).STM$();"),
+	  ENVIRONMENT.addStandardClass(Simulation);  // Declared in ENVIRONMENT
+	  Simulation.detachUsed=true;
+//    Simulation.code1=codeSet( // Statements before inner 
+//    		new CodeLine(1,"SQS = (Head_) new Head_(this)._STM();"),
+//    		new CodeLine(1,"main = (MAIN_PROGRAM_) new MAIN_PROGRAM_((Simulation_) _CUR)._START();"),
+//    		new CodeLine(1,"main.EVENT = (EVENT_NOTICE_) new EVENT_NOTICE_((Simulation_) _CUR, 0, main)._STM();"),
 //    		new CodeLine(1,"main.EVENT.into(SQS);"));
-	  simulation.addStandardAttribute(Type.Ref("head"),"SQS");  
-	  simulation.addStandardAttribute(Type.Ref("MAIN_PROGRAM"),"main");  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"time");  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("EVENT_NOTICE"),"FIRSTEV");  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("process"),"current");  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"hold",parameter("T",Type.LongReal));  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"passivate");  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"wait",parameter("S",Type.Ref("head")));  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"cancel",parameter("x",Type.Ref("process")));  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"accum",parameter("a",Parameter.Mode.name,Type.LongReal),parameter("b",Parameter.Mode.name,Type.LongReal)
+	  Simulation.addStandardAttribute(Type.Ref("Head"),"SQS");  
+	  Simulation.addStandardAttribute(Type.Ref("MAIN_PROGRAM"),"main");  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"time");  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("EVENT_NOTICE"),"FIRSTEV");  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Process"),"current");  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"hold",parameter("T",Type.LongReal));  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"passivate");  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"wait",parameter("S",Type.Ref("Head")));  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"cancel",parameter("x",Type.Ref("Process")));  
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"accum",parameter("a",Parameter.Mode.name,Type.LongReal),parameter("b",Parameter.Mode.name,Type.LongReal)
 			  ,parameter("c",Parameter.Mode.name,Type.LongReal),parameter("d",Type.LongReal));    
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDirect"
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDirect"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("process"))
+			  ,parameter("X",Type.Ref("Process"))
 			  );  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAt"
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAt"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("process"))
+			  ,parameter("X",Type.Ref("Process"))
 			  ,parameter("T",Type.LongReal)
 			  ,parameter("PRIO",Type.Boolean)
 			  );  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDelay"
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateDelay"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("process"))
+			  ,parameter("X",Type.Ref("Process"))
 			  ,parameter("T",Type.LongReal)
 			  ,parameter("PRIO",Type.Boolean)
 			  );  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateBefore"
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateBefore"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("process"))
-			  ,parameter("Y",Type.Ref("process"))
+			  ,parameter("X",Type.Ref("Process"))
+			  ,parameter("Y",Type.Ref("Process"))
 			  );  
-	  simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAfter"
+	  Simulation.addStandardProcedure(Declaration.Kind.MemberMethod,null,"ActivateAfter"
 			  ,parameter("REAC",Type.Boolean)
-			  ,parameter("X",Type.Ref("process"))
-			  ,parameter("Y",Type.Ref("process"))
+			  ,parameter("X",Type.Ref("Process"))
+			  ,parameter("Y",Type.Ref("Process"))
 			  );  
   }  
   
   // ******************************************************************
-  // *** The Standard link Class EVENT_NOTICE
+  // *** The Standard Link Class EVENT_NOTICE
   // ******************************************************************
-  public static StandardClass EVENT_NOTICE=new StandardClass("link","EVENT_NOTICE");
+  public static StandardClass EVENT_NOTICE=new StandardClass("Link","EVENT_NOTICE");
   static {
-	  simulation.addStandardClass(EVENT_NOTICE);  // Declared in simulation
+	  Simulation.addStandardClass(EVENT_NOTICE);  // Declared in Simulation
 //    ref(EVENT_NOTICE) procedure suc;
 //    ref(EVENT_NOTICE) procedure pred;
 //    procedure RANK(BEFORE_); Boolean BEFORE_;
@@ -751,35 +751,35 @@ public final class StandardClass extends ClassDeclaration
   }  
   
   // ******************************************************************
-  // *** The Standard link Class process
+  // *** The Standard Link Class Process
   // ******************************************************************
-  public static StandardClass process=new StandardClass("link","process");
+  public static StandardClass Process=new StandardClass("Link","Process");
   static {
-	  simulation.addStandardClass(process);  // Declared in simulation
-	  process.detachUsed=true;
-	  process.code1=codeSet(new CodeLine(1,"detach();"));    // Statements before inner 
-	  process.code2=codeSet(new CodeLine(1,"terminate();")); // Statements after inner 
+	  Simulation.addStandardClass(Process);  // Declared in Simulation
+	  Process.detachUsed=true;
+	  Process.code1=codeSet(new CodeLine(1,"detach();"));    // Statements before inner 
+	  Process.code2=codeSet(new CodeLine(1,"terminate();")); // Statements after inner 
 //    ref(EVENT_NOTICE) EVENT;
 //    Boolean TERMINATED_;
 //    Boolean procedure idle;
 //    Boolean procedure terminated;
 //    real procedure evtime;
-//    ref(process) procedure nextev;
-	  process.addStandardAttribute(Type.Ref("EVENT_NOTICE"),"EVENT");  
-	  process.addStandardAttribute(Type.Boolean,"TERMINATED_");  
-	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"idle");  
-	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"terminated");  
-	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"evtime");  
-	  process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("process"),"nextev");  
+//    ref(Process) procedure nextev;
+	  Process.addStandardAttribute(Type.Ref("EVENT_NOTICE"),"EVENT");  
+	  Process.addStandardAttribute(Type.Boolean,"TERMINATED_");  
+	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"idle");  
+	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"terminated");  
+	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.LongReal,"evtime");  
+	  Process.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Process"),"nextev");  
   }  
   
   // ******************************************************************
-  // *** The Standard process Class MAIN_PROGRAM
+  // *** The Standard Process Class MAIN_PROGRAM
   // ******************************************************************
-  public static final StandardClass MAIN_PROGRAM=new StandardClass("process","MAIN_PROGRAM");
+  public static final StandardClass MAIN_PROGRAM=new StandardClass("Process","MAIN_PROGRAM");
   static {
-	  simulation.addStandardClass(MAIN_PROGRAM);   // Declared in simulation
-//    process class MAIN_PROGRAM;
+	  Simulation.addStandardClass(MAIN_PROGRAM);   // Declared in Simulation
+//    Process class MAIN_PROGRAM;
 //    begin
 //       L: detach; goto L
 //    end MAIN_PROGRAM;
@@ -819,8 +819,8 @@ public final class StandardClass extends ClassDeclaration
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"frontstrip",parameter("t",Type.Text));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"getitem",parameter("tt",Parameter.Mode.name,Type.Text));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text),parameter("n",Type.Integer));  
-	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"initem",parameter("f",Type.Ref("file")));  
-	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"linecount",parameter("pf",Type.Ref("printfile")));  
+	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"initem",parameter("f",Type.Ref("File")));  
+	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"linecount",parameter("pf",Type.Ref("PrintFile")));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"insinglechar");  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"lowc",parameter("c",Type.Character));  
 	  DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"maketext",parameter("c",Type.Character),parameter("n",Type.Integer));  
@@ -844,11 +844,11 @@ public final class StandardClass extends ClassDeclaration
   // ******************************************************************
   // *** The Standard Class Drawing
   // ******************************************************************
-  public static StandardClass Drawing=new StandardClass("simset","Drawing",parameter("Title",Type.Text),parameter("width",Type.Integer),parameter("height",Type.Integer)); 
+  public static StandardClass Drawing=new StandardClass("Simset","Drawing",parameter("Title",Type.Text),parameter("width",Type.Integer),parameter("height",Type.Integer)); 
   static {
 	  ENVIRONMENT.addStandardClass(Drawing);  // Declared in ENVIRONMENT
 //    Drawing.code1=codeSet( // Statements before inner 
-//  		new CodeLine(1,"// RENDERING_SET = (head$) new head$(Drawing$.this).STM$();"),
+//  		new CodeLine(1,"// RENDERING_SET = (Head_) new Head_(Drawing_.this)._STM();"),
 //  		new CodeLine(1,"// init(title.edText(),width,height);")
 //  		);
 	  Drawing.addStandardAttribute(Type.Integer,"white",    0xffffff); // Color white:      R=255, G=255, B=255.
@@ -870,7 +870,7 @@ public final class StandardClass extends ClassDeclaration
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFillColor",parameter("color",Type.Integer));  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setStroke",parameter("width",Type.Real));  
 
-	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("head"),"renderingSet");  
+	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Head"),"renderingSet");  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFontStylePlain");  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFontStyleBold");  
 	  Drawing.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setFontStyleItalic");  
@@ -891,9 +891,9 @@ public final class StandardClass extends ClassDeclaration
   }
   
   // ******************************************************************
-  // *** The Standard link Class ShapeElement
+  // *** The Standard Link Class ShapeElement
   // ******************************************************************
-  public static StandardClass ShapeElement=new StandardClass("link","ShapeElement");
+  public static StandardClass ShapeElement=new StandardClass("Link","ShapeElement");
   static {
 	  Drawing.addStandardClass(ShapeElement);  // Declared in Drawing
 //    ShapeElement.code1=codeSet( // Statements before inner 
@@ -915,9 +915,9 @@ public final class StandardClass extends ClassDeclaration
   }
   
   // ******************************************************************
-  // *** The Standard link Class TextElement
+  // *** The Standard Link Class TextElement
   // ******************************************************************
-  public static StandardClass TextElement=new StandardClass("link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
+  public static StandardClass TextElement=new StandardClass("Link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  
   static {
 	  Drawing.addStandardClass(TextElement);  // Declared in Drawing
 	  TextElement.addStandardProcedure(Declaration.Kind.MemberMethod,null,"setColor",parameter("color",Type.Integer));  
@@ -940,7 +940,7 @@ public final class StandardClass extends ClassDeclaration
 	
   public StandardClass(String className) {
 	  super(className);
-	  this.externalIdent=className+"$";
+	  this.externalIdent="_"+className;
 	  this.declarationKind=Declaration.Kind.StandardClass;
 	  this.type=Type.Ref(className);
   }

@@ -230,7 +230,7 @@ public final class SimulaScanner extends DefaultScanner {
     //**                getNext will return first character after construct
     //********************************************************************************
     private Token javaKeyword(final String name) {
-    	return(identifierToken(name+'$'));
+    	return(identifierToken('_'+name));
     }
     private Token identifierToken(final String name) {
     	Token token=newToken(KeyWord.IDENTIFIER,name);

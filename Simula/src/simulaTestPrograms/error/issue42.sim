@@ -14,19 +14,19 @@ begin
         L:=5;
     end;
    
-    integer procedure GOTO_ERROR(n); integer n; begin
+    integer procedure _GOTOERROR(n); integer n; begin
         if n > 4 then begin
-            GOTO_ERROR:=44444444;
+            _GOTOERROR:=44444444;
             if n > 5 then goto ERR;
             trace("No else brance");
         end
         else ERR: LLL: begin --text t;
-            GOTO_ERROR:=88888888;
+            _GOTOERROR:=88888888;
         end;
     end;
     
-    trace("n=2: result:" & edit(GOTO_ERROR(2)) );
-    trace("n=5: result:" & edit(GOTO_ERROR(5)) );
-    trace("n=6: result:" & edit(GOTO_ERROR(6)) );
+    trace("n=2: result:" & edit(_GOTOERROR(2)) );
+    trace("n=5: result:" & edit(_GOTOERROR(5)) );
+    trace("n=6: result:" & edit(_GOTOERROR(6)) );
    
 end;

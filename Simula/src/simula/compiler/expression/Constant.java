@@ -118,7 +118,7 @@ public final class Constant extends Expression implements Externalizable {
     
 	@Override
     public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		this.type.doChecking(Global.getCurrentScope());
 		SET_SEMANTICS_CHECKED();
@@ -137,7 +137,7 @@ public final class Constant extends Expression implements Externalizable {
 		{ if(value==null) return("null");
 		  String val=value.toString();
           val=encode(val);
-		  return("new TXT$(\""+val+"\")");
+		  return("new _TXT(\""+val+"\")");
 		}
 		if(type==Type.Character) {
 			char charValue=((Character)value).charValue();

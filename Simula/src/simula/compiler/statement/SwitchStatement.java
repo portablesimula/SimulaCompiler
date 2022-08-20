@@ -51,7 +51,7 @@ import simula.compiler.utilities.Util;
  *   
  *   Is compiled into Java-code:
  *   
- *   if(key<lowkey || key>hikey) throw new SimulaRuntimeError("Switch key outside key interval");
+ *   if(key<lowkey || key>hikey) throw new _SimulaRuntimeError("Switch key outside key interval");
  *   switch(key) {
  *       case 0: <statement-0> ;
  *       ...
@@ -168,7 +168,7 @@ public final class SwitchStatement extends Statement {
 
 	@Override
     public void doChecking() {
-    	if(IS_SEMANTICS_CHECKED()) return;
+    	if(_ISSEMANTICS_CHECKED()) return;
     	Global.sourceLineNumber=lineNumber;
     	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN SwitchStatement("+toString()+").doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());    
     	lowKey.doChecking(); hiKey.doChecking();
@@ -195,7 +195,7 @@ public final class SwitchStatement extends Statement {
 	    StringBuilder sb=new StringBuilder();
 	    sb.append("if(").append(switchKey.toJavaCode()).append("<").append(lowKey.toJavaCode());
 	    sb.append(" || ").append(switchKey.toJavaCode()).append(">").append(hiKey.toJavaCode());
-	    sb.append(") throw new SimulaRuntimeError(\"Switch key outside key interval\");");
+	    sb.append(") throw new _SimulaRuntimeError(\"Switch key outside key interval\");");
 	    GeneratedJavaClass.code(sb.toString());
         GeneratedJavaClass.code("switch("+switchKey.toJavaCode()+") { // BEGIN SWITCH STATEMENT");
         for(WhenPart when:switchCases) when.doCoding(false);

@@ -51,7 +51,7 @@ public final class ConnectionStatement extends Statement {
 	public ConnectionStatement() {
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ConnectionStatement");
 		objectExpression = Expression.parseExpression();
-		String ident = "inspect$" + lineNumber + '$' + (SEQU++);
+		String ident = "inspect_" + lineNumber + '_' + (SEQU++);
 		inspectedVariable = new Variable(ident);
 		inspectVariableDeclaration = new SimpleVariableDeclaration(Type.Ref("RTObject"), ident);
 		DeclarationScope scope = Global.getCurrentScope();
@@ -178,7 +178,7 @@ public final class ConnectionStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN ConnectionStatement(" + toString() + ").doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());

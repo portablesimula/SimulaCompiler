@@ -243,7 +243,7 @@ public final class Util {
 	 * @return
 	 */
 	public static int IPOW(final int b, int x) {
-		// RT.println("IPOW("+b+','+x+')');
+		// _RT.println("IPOW("+b+','+x+')');
 		if (x == 0) {
 			if (b == 0)
 				error("Exponentiation: " + b + " ** " + x + "  Result is undefined.");

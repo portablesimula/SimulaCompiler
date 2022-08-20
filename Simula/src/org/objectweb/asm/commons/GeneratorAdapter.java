@@ -82,7 +82,7 @@ import org.objectweb.asm.Type;
  */
 public class GeneratorAdapter extends LocalVariablesSorter {
 
-  private static final String CLASS_DESCRIPTOR = "Ljava/lang/Class;";
+  private static final String _CLASSDESCRIPTOR = "Ljava/lang/Class;";
 
   private static final Type BYTE_TYPE = Type.getObjectType("java/lang/Byte");
 
@@ -397,28 +397,28 @@ public class GeneratorAdapter extends LocalVariablesSorter {
     } else {
       switch (value.getSort()) {
         case Type.BOOLEAN:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Boolean", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Boolean", "TYPE", _CLASSDESCRIPTOR);
           break;
         case Type.CHAR:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Character", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Character", "TYPE", _CLASSDESCRIPTOR);
           break;
         case Type.BYTE:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Byte", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Byte", "TYPE", _CLASSDESCRIPTOR);
           break;
         case Type.SHORT:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Short", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Short", "TYPE", _CLASSDESCRIPTOR);
           break;
         case Type.INT:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Integer", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Integer", "TYPE", _CLASSDESCRIPTOR);
           break;
         case Type.FLOAT:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Float", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Float", "TYPE", _CLASSDESCRIPTOR);
           break;
         case Type.LONG:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Long", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Long", "TYPE", _CLASSDESCRIPTOR);
           break;
         case Type.DOUBLE:
-          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Double", "TYPE", CLASS_DESCRIPTOR);
+          mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/Double", "TYPE", _CLASSDESCRIPTOR);
           break;
         default:
           mv.visitLdcInsn(value);

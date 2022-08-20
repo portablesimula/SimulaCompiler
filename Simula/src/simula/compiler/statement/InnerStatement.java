@@ -31,7 +31,7 @@ public final class InnerStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		SET_SEMANTICS_CHECKED();
 	}

@@ -1745,7 +1745,7 @@ public class ClassReader {
           createLabel(bytecodeOffset + readUnsignedShort(currentOffset + 1), labels);
           currentOffset += 3;
           break;
-        case Constants.GOTO_W:
+        case Constants._GOTOW:
         case Constants.JSR_W:
         case Constants.ASM_GOTO_W:
           createLabel(bytecodeOffset + readInt(currentOffset + 1), labels);
@@ -2283,7 +2283,7 @@ public class ClassReader {
               opcode, labels[currentBytecodeOffset + readShort(currentOffset + 1)]);
           currentOffset += 3;
           break;
-        case Constants.GOTO_W:
+        case Constants._GOTOW:
         case Constants.JSR_W:
           methodVisitor.visitJumpInsn(
               opcode - wideJumpOpcodeDelta,
@@ -2310,9 +2310,9 @@ public class ClassReader {
         case Constants.ASM_IFNONNULL:
           {
             // A forward jump with an offset > 32767. In this case we automatically replace ASM_GOTO
-            // with GOTO_W, ASM_JSR with JSR_W and ASM_IFxxx <l> with IFNOTxxx <L> GOTO_W <l> L:...,
+            // with _GOTOW, ASM_JSR with JSR_W and ASM_IFxxx <l> with IFNOTxxx <L> _GOTOW <l> L:...,
             // where IFNOTxxx is the "opposite" opcode of ASMS_IFxxx (e.g. IFNE for ASM_IFEQ) and
-            // where <L> designates the instruction just after the GOTO_W.
+            // where <L> designates the instruction just after the _GOTOW.
             // First, change the ASM specific opcodes ASM_IFEQ ... ASM_JSR, ASM_IFNULL and
             // ASM_IFNONNULL to IFEQ ... JSR, IFNULL and IFNONNULL.
             opcode =
@@ -2321,7 +2321,7 @@ public class ClassReader {
                     : opcode - Constants.ASM_IFNULL_OPCODE_DELTA;
             Label target = labels[currentBytecodeOffset + readUnsignedShort(currentOffset + 1)];
             if (opcode == Opcodes.GOTO || opcode == Opcodes.JSR) {
-              // Replace GOTO with GOTO_W and JSR with JSR_W.
+              // Replace GOTO with _GOTOW and JSR with JSR_W.
               methodVisitor.visitJumpInsn(opcode + Constants.WIDE_JUMP_OPCODE_DELTA, target);
             } else {
               // Compute the "opposite" of opcode. This can be done by flipping the least
@@ -2330,8 +2330,8 @@ public class ClassReader {
               opcode = opcode < Opcodes.GOTO ? ((opcode + 1) ^ 1) - 1 : opcode ^ 1;
               Label endif = createLabel(currentBytecodeOffset + 3, labels);
               methodVisitor.visitJumpInsn(opcode, endif);
-              methodVisitor.visitJumpInsn(Constants.GOTO_W, target);
-              // endif designates the instruction just after GOTO_W, and is visited as part of the
+              methodVisitor.visitJumpInsn(Constants._GOTOW, target);
+              // endif designates the instruction just after _GOTOW, and is visited as part of the
               // next instruction. Since it is a jump target, we need to insert a frame here.
               insertFrame = true;
             }
@@ -2339,9 +2339,9 @@ public class ClassReader {
             break;
           }
         case Constants.ASM_GOTO_W:
-          // Replace ASM_GOTO_W with GOTO_W.
+          // Replace ASM_GOTO_W with _GOTOW.
           methodVisitor.visitJumpInsn(
-              Constants.GOTO_W, labels[currentBytecodeOffset + readInt(currentOffset + 1)]);
+              Constants._GOTOW, labels[currentBytecodeOffset + readInt(currentOffset + 1)]);
           // The instruction just after is a jump target (because ASM_GOTO_W is used in patterns
           // IFNOTxxx <L> ASM_GOTO_W <l> L:..., see MethodWriter), so we need to insert a frame
           // here.
@@ -2768,8 +2768,8 @@ public class ClassReader {
         case TypeReference.METHOD_REFERENCE_TYPE_ARGUMENT:
           currentOffset += 4;
           break;
-        case TypeReference.CLASS_EXTENDS:
-        case TypeReference.CLASS_TYPE_PARAMETER_BOUND:
+        case TypeReference._CLASSEXTENDS:
+        case TypeReference._CLASSTYPE_PARAMETER_BOUND:
         case TypeReference.METHOD_TYPE_PARAMETER_BOUND:
         case TypeReference.THROWS:
         case TypeReference.EXCEPTION_PARAMETER:
@@ -2779,7 +2779,7 @@ public class ClassReader {
         case TypeReference.METHOD_REFERENCE:
           currentOffset += 3;
           break;
-        case TypeReference.CLASS_TYPE_PARAMETER:
+        case TypeReference._CLASSTYPE_PARAMETER:
         case TypeReference.METHOD_TYPE_PARAMETER:
         case TypeReference.METHOD_FORMAL_PARAMETER:
         case TypeReference.FIELD:
@@ -2857,7 +2857,7 @@ public class ClassReader {
     // Parse and store the target_type structure.
     int targetType = readInt(typeAnnotationOffset);
     switch (targetType >>> 24) {
-      case TypeReference.CLASS_TYPE_PARAMETER:
+      case TypeReference._CLASSTYPE_PARAMETER:
       case TypeReference.METHOD_TYPE_PARAMETER:
       case TypeReference.METHOD_FORMAL_PARAMETER:
         targetType &= 0xFFFF0000;
@@ -2897,8 +2897,8 @@ public class ClassReader {
         targetType &= 0xFF0000FF;
         currentOffset += 4;
         break;
-      case TypeReference.CLASS_EXTENDS:
-      case TypeReference.CLASS_TYPE_PARAMETER_BOUND:
+      case TypeReference._CLASSEXTENDS:
+      case TypeReference._CLASSTYPE_PARAMETER_BOUND:
       case TypeReference.METHOD_TYPE_PARAMETER_BOUND:
       case TypeReference.THROWS:
       case TypeReference.EXCEPTION_PARAMETER:

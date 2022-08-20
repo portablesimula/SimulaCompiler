@@ -141,13 +141,13 @@ final class Constants {
   static final int ASTORE_2 = 77;
   static final int ASTORE_3 = 78;
   static final int WIDE = 196;
-  static final int GOTO_W = 200;
+  static final int _GOTOW = 200;
   static final int JSR_W = 201;
 
   // Constants to convert between normal and wide jump instructions.
 
-  // The delta between the GOTO_W and JSR_W opcodes and GOTO and JUMP.
-  static final int WIDE_JUMP_OPCODE_DELTA = GOTO_W - Opcodes.GOTO;
+  // The delta between the _GOTOW and JSR_W opcodes and GOTO and JUMP.
+  static final int WIDE_JUMP_OPCODE_DELTA = _GOTOW - Opcodes.GOTO;
 
   // Constants to convert JVM opcodes to the equivalent ASM specific opcodes, and vice versa.
 

@@ -345,7 +345,7 @@ public class EditorMenues extends JMenuBar {
 	        current.fileChanged=true;
 		}
     	if(current.fileChanged)	try {
-    		Writer writer=new OutputStreamWriter(new FileOutputStream(current.sourceFile.getPath()),Global.CHARSET$);
+    		Writer writer=new OutputStreamWriter(new FileOutputStream(current.sourceFile.getPath()),Global._CHARSET);
     		BufferedWriter out = new BufferedWriter(writer);
     		String text=current.editTextPane.getText();
     		out.write(text); out.close();

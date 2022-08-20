@@ -77,8 +77,8 @@ begin
          nSteps:= nSteps+1; 
          if flow eq 1 and nSteps > maxSteps then begin 
             flow:= 0; 
-            Outtext("Flow tracking stopped after"); Outint(maxSteps,6); 
-            Outtext(" steps"); Outimage; 
+            outtext("Flow tracking stopped after"); outint(maxSteps,6); 
+            outtext(" steps"); outimage; 
          end; 
          resume(prev); 
        end; 
@@ -96,12 +96,12 @@ begin
        integer i,j; 
        SQchain:- new head; 
        inspect new infile("data/SudokuPuzzle.sdk") do begin 
-          Open(blanks(80)); 
-!         Outtext(this infile.filename); outimage; 
+          open(blanks(80)); 
+!         outtext(this infile.filename); outimage; 
           for i:=1 step 1 until 9 do 
           for j:=1 step 1 until 9 do 
-             SQInst(i,j):- new SQ(i,j,inint); 
-          Close; 
+             SQinst(i,j):- new SQ(i,j,inint); 
+          close; 
        end; 
        new SQexit.into(SQchain); 
      end; 
@@ -116,7 +116,7 @@ begin
        if Given and not legit(val) then begin 
           button_update(yellow); 
           given_is_good:= false; 
-          Outtext("Invalid sudoku"); Outimage; 
+          outtext("Invalid sudoku"); outimage; 
        end; 
      end; 
  
@@ -127,8 +127,8 @@ begin
        for j:=1 step 1 until 9 do 
          if not SQinst(i,j).Given then 
             SQinst(i,j).button_update(green); 
-       Outtext("Puzzle solved in"); Outint(nSteps,8); Outtext(" steps");  
-       Outimage; 
+       outtext("Puzzle solved in"); outint(nSteps,8); outtext(" steps");  
+       outimage; 
      end; 
  
      ref(head) SQchain; 

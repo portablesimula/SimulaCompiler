@@ -82,18 +82,18 @@ public final class TextOperation extends Expression {
 		this.rhs = rhs;
 		if (this.lhs == null) {
 			Util.error("Missing operand before &");
-			this.lhs = new Variable("UNKNOWN$");
+			this.lhs = new Variable("UNKNOWN_");
 		}
 		if (this.rhs == null) {
 			Util.error("Missing operand after &");
-			this.rhs = new Variable("UNKNOWN$");
+			this.rhs = new Variable("UNKNOWN_");
 		}
 		this.lhs.backLink = this.rhs.backLink = this;
 	}
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED()) return;
+		if (_ISSEMANTICS_CHECKED()) return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN TextOperation" + toString() + ".doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());

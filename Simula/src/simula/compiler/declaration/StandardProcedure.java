@@ -24,7 +24,7 @@ public final class StandardProcedure extends ProcedureDeclaration {
 
 	@Override
 	public void doChecking() {
-		if(IS_SEMANTICS_CHECKED()) return;
+		if(_ISSEMANTICS_CHECKED()) return;
 		Global.enterScope(this);
 		Global.sourceLineNumber=lineNumber;
 		String name=this.getClass().getSimpleName();

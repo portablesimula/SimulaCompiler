@@ -7,7 +7,7 @@
 % ==============================================================================
 external class RT_ErrorTest;
 
-RT_ErrorTest("   8 --- Test Illegal assignment. Name parameter is not a variable") begin
+RT_ErrorTest("  8 --- Test Illegal assignment. Name parameter is not a variable") begin
 
    integer a;   
 
@@ -16,7 +16,7 @@ RT_ErrorTest("   8 --- Test Illegal assignment. Name parameter is not a variable
       trace("x := " & edit(x));
    end;   
    
-   class A(i); integer i; begin
+   procedure testCase(i); integer i; begin
       CatchingErrors begin
          procedure onError(message); text message; begin
             trace("onError got error: " & message);
@@ -31,15 +31,15 @@ RT_ErrorTest("   8 --- Test Illegal assignment. Name parameter is not a variable
    
    facit(0):-"--- Test Illegal assignment. Name parameter is not a variable";
    facit(1):-"x := 8";
-   facit(2):-"onError got error: SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
-   facit(3):-"onError got error: SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
+   facit(2):-"onError got error: _SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
+   facit(3):-"onError got error: _SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
    facit(4):-"END OF TEST08";
 
    trace("--- Test Illegal assignment. Name parameter is not a variable");
 
-   new A(1);
-   new A(2);
-   new A(3);
+   testCase(1);
+   testCase(2);
+   testCase(3);
         
    trace("END OF TEST08");
 

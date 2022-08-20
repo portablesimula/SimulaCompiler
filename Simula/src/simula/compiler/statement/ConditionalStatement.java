@@ -67,9 +67,9 @@ public final class ConditionalStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		condition.doChecking();
-		condition.backLink=this; // To ensure RESULT$ from functions
+		condition.backLink=this; // To ensure _RESULT from functions
 		if (!condition.type.equals(Type.Boolean))
 			Util.error("ConditionalStatement.doChecking: Condition is not of Type Boolean, but: "
 					+ condition.type);
@@ -82,11 +82,11 @@ public final class ConditionalStatement extends Statement {
 	
 	@Override
 	// TODO: Kan optimaliseres til å gjenkjenne Label inne i Conditional
-	//       statement grenene. Og bare legge inn  VALUE$(condition)  da !
+	//       statement grenene. Og bare legge inn  _VALUE(condition)  da !
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
-		GeneratedJavaClass.code("if(VALUE$(" + condition.toJavaCode() + ")) {");
+		GeneratedJavaClass.code("if(_VALUE(" + condition.toJavaCode() + ")) {");
 		thenStatement.doJavaCoding();
 		if (elseStatement != null) {
 			GeneratedJavaClass.code("} else");

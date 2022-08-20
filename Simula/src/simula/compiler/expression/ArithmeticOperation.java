@@ -91,11 +91,11 @@ public final class ArithmeticOperation extends Expression {
 		this.opr=opr;
 		if(lhs==null) {
 			Util.error("Missing operand before "+opr);
-			this.lhs=new Variable("UNKNOWN$");
+			this.lhs=new Variable("UNKNOWN_");
 		} else this.lhs=lhs;
 		if(rhs==null) {
 			Util.error("Missing operand after "+opr);
-			this.rhs=new Variable("UNKNOWN$");
+			this.rhs=new Variable("UNKNOWN_");
 		} else this.rhs=rhs;
 		this.lhs.backLink=this.rhs.backLink=this;
 	}
@@ -113,7 +113,7 @@ public final class ArithmeticOperation extends Expression {
   
 	@Override
     public void doChecking() {
-    	if(IS_SEMANTICS_CHECKED()) return;
+    	if(_ISSEMANTICS_CHECKED()) return;
     	Global.sourceLineNumber=lineNumber;
     	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ArithmeticOperation"+toString()+".doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
     	switch(opr) {
@@ -178,14 +178,14 @@ public final class ArithmeticOperation extends Expression {
     	       case PLUS:  return ("Math.addExact(" + lhs.get() + ',' + rhs.get() + ')');
     	       case MINUS: return ("Math.subtractExact(" + lhs.get() + ',' + rhs.get() + ')');
     	       case MUL:   return ("Math.multiplyExact(" + lhs.get() + ',' + rhs.get() + ')');
-       		   case EXP:   return ("IPOW$EXACT(" + lhs.get() + ',' + rhs.get() + ')');
+       		   case EXP:   return ("_IPOW_EXACT(" + lhs.get() + ',' + rhs.get() + ')');
 			default: break; // Fall Through
     		}
     	}
    		switch (opr) {
    		   case EXP: {
    			   if (this.type == Type.Integer)
-   				   return ("IPOW$(" + lhs.get() + ',' + rhs.get() + ')');
+   				   return ("_IPOW(" + lhs.get() + ',' + rhs.get() + ')');
    			   else return ("Math.pow(" + lhs.get() + ',' + rhs.get() + ')');
    		   }
    		   default: {

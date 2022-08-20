@@ -37,7 +37,7 @@ package org.objectweb.asm;
 public final class TypePath {
 
   /** A type path step that steps into the element type of an array type. See {@link #getStep}. */
-  public static final int ARRAY_ELEMENT = 0;
+  public static final int _ARRAYELEMENT = 0;
 
   /** A type path step that steps into the nested type of a class type. See {@link #getStep}. */
   public static final int INNER_TYPE = 1;
@@ -88,7 +88,7 @@ public final class TypePath {
    * Returns the value of the given step of this path.
    *
    * @param index an index between 0 and {@link #getLength()}, exclusive.
-   * @return one of {@link #ARRAY_ELEMENT}, {@link #INNER_TYPE}, {@link #WILDCARD_BOUND}, or {@link
+   * @return one of {@link #_ARRAYELEMENT}, {@link #INNER_TYPE}, {@link #WILDCARD_BOUND}, or {@link
    *     #TYPE_ARGUMENT}.
    */
   public int getStep(final int index) {
@@ -127,7 +127,7 @@ public final class TypePath {
     while (typePathIndex < typePathLength) {
       char c = typePath.charAt(typePathIndex++);
       if (c == '[') {
-        output.put11(ARRAY_ELEMENT, 0);
+        output.put11(_ARRAYELEMENT, 0);
       } else if (c == '.') {
         output.put11(INNER_TYPE, 0);
       } else if (c == '*') {
@@ -154,7 +154,7 @@ public final class TypePath {
   }
 
   /**
-   * Returns a string representation of this type path. {@link #ARRAY_ELEMENT} steps are represented
+   * Returns a string representation of this type path. {@link #_ARRAYELEMENT} steps are represented
    * with '[', {@link #INNER_TYPE} steps with '.', {@link #WILDCARD_BOUND} steps with '*' and {@link
    * #TYPE_ARGUMENT} steps with their type argument index in decimal form followed by ';'.
    */
@@ -164,7 +164,7 @@ public final class TypePath {
     StringBuilder result = new StringBuilder(length * 2);
     for (int i = 0; i < length; ++i) {
       switch (getStep(i)) {
-        case ARRAY_ELEMENT:
+        case _ARRAYELEMENT:
           result.append('[');
           break;
         case INNER_TYPE:

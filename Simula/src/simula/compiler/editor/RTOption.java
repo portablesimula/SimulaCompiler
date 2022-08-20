@@ -32,7 +32,7 @@ public final class RTOption {
 	public static boolean USE_CONSOLE=false;//true;
 	public static boolean CODE_STEP_TRACING = false;// true;
 	public static boolean BLOCK_TRACING = false;// true;
-	public static boolean GOTO_TRACING = false;// true;
+	public static boolean _GOTOTRACING = false;// true;
 	public static boolean THREAD_TRACING = false;// true;
 	public static boolean LOOM_TRACING = false;// true;
 	public static boolean QPS_TRACING = false; // true;
@@ -45,7 +45,7 @@ public final class RTOption {
 		RTOption.USE_CONSOLE=true;//false;//true;
 		RTOption.CODE_STEP_TRACING = false;// true;
 		RTOption.BLOCK_TRACING = false;// true;
-		RTOption.GOTO_TRACING = false;// true;
+		RTOption._GOTOTRACING = false;// true;
 		RTOption.THREAD_TRACING = false;// true;
 		RTOption.LOOM_TRACING = false;// true;
 		RTOption.QPS_TRACING = false; // true;
@@ -59,7 +59,7 @@ public final class RTOption {
 		if(RTOption.USE_CONSOLE) args.add("-USE_CONSOLE");
 		if(RTOption.CODE_STEP_TRACING) args.add("-CODE_STEP_TRACING");
 		if(RTOption.BLOCK_TRACING) args.add("-BLOCK_TRACING");
-		if(RTOption.GOTO_TRACING) args.add("-GOTO_TRACING");
+		if(RTOption._GOTOTRACING) args.add("-_GOTOTRACING");
 		if(RTOption.THREAD_TRACING) args.add("-THREAD_TRACING");
 		if(RTOption.LOOM_TRACING) args.add("-LOOM_TRACING");
 		if(RTOption.QPS_TRACING) args.add("-QPS_TRACING");
@@ -74,7 +74,7 @@ public final class RTOption {
 //		if(RTOption.USE_CONSOLE) args=args+" -USE_CONSOLE";
 //		if(RTOption.CODE_STEP_TRACING) args=args+" -CODE_STEP_TRACING";
 //		if(RTOption.BLOCK_TRACING) args=args+" -BLOCK_TRACING";
-//		if(RTOption.GOTO_TRACING) args=args+" -GOTO_TRACING";
+//		if(RTOption._GOTOTRACING) args=args+" -_GOTOTRACING";
 //		if(RTOption.THREAD_TRACING) args=args+" -THREAD_TRACING";
 //		if(RTOption.LOOM_TRACING) args=args+" -LOOM_TRACING";
 //		if(RTOption.QPS_TRACING) args=args+" -QPS_TRACING";
@@ -89,7 +89,7 @@ public final class RTOption {
 		if(id.equalsIgnoreCase("USE_CONSOLE")) return(USE_CONSOLE); 
 		if(id.equalsIgnoreCase("CODE_STEP_TRACING")) return(CODE_STEP_TRACING); 
 		if(id.equalsIgnoreCase("BLOCK_TRACING")) return(BLOCK_TRACING); 
-		if(id.equalsIgnoreCase("GOTO_TRACING")) return(GOTO_TRACING); 
+		if(id.equalsIgnoreCase("_GOTOTRACING")) return(_GOTOTRACING); 
 		if(id.equalsIgnoreCase("THREAD_TRACING")) return(THREAD_TRACING); 
 		if(id.equalsIgnoreCase("LOOM_TRACING")) return(LOOM_TRACING); 
 		if(id.equalsIgnoreCase("QPS_TRACING")) return(QPS_TRACING); 
@@ -104,7 +104,7 @@ public final class RTOption {
 		if(id.equalsIgnoreCase("USE_CONSOLE")) USE_CONSOLE=val; 
 		if(id.equalsIgnoreCase("CODE_STEP_TRACING")) CODE_STEP_TRACING=val; 
 		if(id.equalsIgnoreCase("BLOCK_TRACING")) BLOCK_TRACING=val; 
-		if(id.equalsIgnoreCase("GOTO_TRACING")) GOTO_TRACING=val; 
+		if(id.equalsIgnoreCase("_GOTOTRACING")) _GOTOTRACING=val; 
 		if(id.equalsIgnoreCase("THREAD_TRACING")) THREAD_TRACING=val; 
 		if(id.equalsIgnoreCase("LOOM_TRACING")) LOOM_TRACING=val; 
 		if(id.equalsIgnoreCase("QPS_TRACING")) QPS_TRACING=val; 
@@ -120,7 +120,7 @@ public final class RTOption {
         panel.add(checkBox("USE_CONSOLE"));
         panel.add(checkBox("CODE_STEP_TRACING"));
         panel.add(checkBox("BLOCK_TRACING"));
-        panel.add(checkBox("GOTO_TRACING"));
+        panel.add(checkBox("_GOTOTRACING"));
         panel.add(checkBox("THREAD_TRACING"));
         panel.add(checkBox("LOOM_TRACING"));
         panel.add(checkBox("QPS_TRACING"));

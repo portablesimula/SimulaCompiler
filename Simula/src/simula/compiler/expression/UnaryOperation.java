@@ -34,7 +34,7 @@ public final class UnaryOperation extends Expression {
 		this.operand = operand;
 		if(this.operand==null)
 		{ Util.error("Missing operand after unary "+oprator);
-		  this.operand=new Variable("UNKNOWN$");
+		  this.operand=new Variable("UNKNOWN_");
 		}
 		this.operand.backLink=this;
 	}
@@ -56,7 +56,7 @@ public final class UnaryOperation extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN UnaryOperation" + toString() + ".doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());

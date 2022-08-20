@@ -55,7 +55,7 @@ public final class RemoteVariable extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN RemoteVariable" + toString() + ".doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());
@@ -170,7 +170,7 @@ public final class RemoteVariable extends Expression {
 			dimBrackets = dimBrackets + "[]";
 		}
 		String eltType = type.toJavaType();
-		String cast = "ARRAY$<" + eltType + dimBrackets + ">";
+		String cast = "_ARRAY<" + eltType + dimBrackets + ">";
 		String castedVar = "((" + cast + ")" + remoteIdent + ")";
 		s.append(castedVar).append(".Elt").append(ixs);
 

@@ -18,13 +18,13 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
     
 	public LabelDeclaration(final String identifier) {
 		super(Type.Label,identifier);
-	    this.externalIdent="LABEL$"+identifier;
+	    this.externalIdent="_LABEL"+identifier;
 		this.declarationKind=Declaration.Kind.LabelDeclaration;
 	}
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		DeclarationScope declaredIn=Global.getCurrentScope();
 		type.doChecking(declaredIn);
@@ -47,9 +47,9 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 		String ident=getJavaIdentifier();
 		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(this);
 		if(virtSpec!=null)
-			 GeneratedJavaClass.code("public LABQNT$ "+virtSpec.getVirtualIdentifier()
-			                     +" { return(new LABQNT$(this,"+index+",\""+identifier+"\")); }"," // Virtual Label #"+index+'='+identifier);
-		else GeneratedJavaClass.code("final LABQNT$ "+ident+"=new LABQNT$(this,"+index+",\""+identifier+"\");","Local Label #"+index+'='+identifier);
+			 GeneratedJavaClass.code("public _LABQNT "+virtSpec.getVirtualIdentifier()
+			                     +" { return(new _LABQNT(this,"+index+",\""+identifier+"\")); }"," // Virtual Label #"+index+'='+identifier);
+		else GeneratedJavaClass.code("final _LABQNT "+ident+"=new _LABQNT(this,"+index+",\""+identifier+"\");","Local Label #"+index+'='+identifier);
 	}
 
 	@Override

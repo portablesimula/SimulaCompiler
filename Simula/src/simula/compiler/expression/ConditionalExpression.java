@@ -41,10 +41,10 @@ public final class ConditionalExpression extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		condition.doChecking();
-		condition.backLink=this; // To ensure RESULT$ from functions
+		condition.backLink=this; // To ensure _RESULT from functions
 		Type cType = condition.type;
 		if (cType != Type.Boolean)
 			Util.error("ConditionalExpression: Condition is not a boolean (rather " + cType + ")");

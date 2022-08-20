@@ -80,7 +80,7 @@ public final class ObjectRelation extends Expression {
   
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())
+		if (_ISSEMANTICS_CHECKED())
 			return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
@@ -118,7 +118,7 @@ public final class ObjectRelation extends Expression {
 			return (lhs.get() + opr.toJavaCode() + classDeclaration.getJavaIdentifier());
 		} else if (opr == KeyWord.IS) {
 			if (!checkCompatability(lhs, classIdentifier)) return ("false"); // warning("IS is always FALSE
-			return ("IS$(" + lhs.get() + "," + classDeclaration.getJavaIdentifier() + ".class)");
+			return ("_IS(" + lhs.get() + "," + classDeclaration.getJavaIdentifier() + ".class)");
 		} else {
 			Util.FATAL_ERROR("Impossible");
 			return ("");

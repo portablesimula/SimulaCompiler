@@ -69,9 +69,9 @@ public final class ProgramModule extends Statement {
 			if(Option.TRACE_PARSE) Parser.TRACE("Parse Program");
 			Global.setScope(StandardClass.BASICIO);		    	// BASICIO Begin
 			new ConnectionBlock(sysin,null)                     //    Inspect sysin do
-			     .setClassDeclaration(StandardClass.infile);
+			     .setClassDeclaration(StandardClass.InFile);
 			new ConnectionBlock(sysout,null)                    //    Inspect sysout do
-			     .setClassDeclaration(StandardClass.printfile);
+			     .setClassDeclaration(StandardClass.PrintFile);
 			Global.getCurrentScope().sourceBlockLevel=0;
 			while(Parser.accept(KeyWord.EXTERNAL)) {
 				ExternalDeclaration.doParse(StandardClass.ENVIRONMENT.declarationList);
@@ -101,7 +101,7 @@ public final class ProgramModule extends Statement {
 
 	@Override
 	public void doChecking() {
-		if(IS_SEMANTICS_CHECKED()) return;
+		if(_ISSEMANTICS_CHECKED()) return;
 		sysin.doChecking();
 		sysout.doChecking();
 		module.doChecking();

@@ -69,7 +69,7 @@ public class Type implements Externalizable {
   
 	public String getJavaRefIdent() {
 		if(key.getKeyWord()==KeyWord.REF) {
-			if(key.getValue()==null) return("RTObject$");
+			if(key.getValue()==null) return("_RTObject");
 			if(!CHECKED) this.doChecking(Global.getCurrentScope());
 			if(qual==null) return("UNKNOWN");
 			return(qual.getJavaIdentifier());
@@ -84,7 +84,7 @@ public class Type implements Externalizable {
 		Global.enterScope(scope);
 		String refIdent=getRefIdent();
 		if(refIdent!=null) {
-			if(!refIdent.equals("LABQNT$") && !refIdent.equals("$UNKNOWN")) {
+			if(!refIdent.equals("_LABQNT") && !refIdent.equals("_UNKNOWN")) {
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
 			    if(decl instanceof ClassDeclaration cdecl) qual=cdecl;
 			    else {
@@ -216,9 +216,9 @@ public class Type implements Externalizable {
 		if(this.equals(Integer)) return("int");
 		if(this.equals(Boolean)) return("boolean");
 		if(this.equals(Character)) return("char");
-		if(this.equals(Text)) return("TXT$");
-		if(this.equals(Procedure)) return("PRCQNT$");
-		if(this.equals(Label)) return("LABQNT$");
+		if(this.equals(Text)) return("_TXT");
+		if(this.equals(Procedure)) return("_PRCQNT");
+		if(this.equals(Label)) return("_LABQNT");
 		return(this.toString());
 	}
 	 
@@ -231,7 +231,7 @@ public class Type implements Externalizable {
 		if(this.equals(Integer)) return("Integer");
 		if(this.equals(Boolean)) return("Boolean");
 		if(this.equals(Character)) return("Character");
-		if(this.equals(Text)) return("TXT$");
+		if(this.equals(Text)) return("_TXT");
 		return(this.toString());
 	}
 	  

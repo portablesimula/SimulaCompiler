@@ -32,8 +32,8 @@ begin
 --       text CASE=" ERROR-TEST 01";
        trace("ExceptionHandler got error: " & ErrorText);
        if found_error then
-            outtext("GOT ERROR(S) IN " & fullTitle)
-       else outtext ("--- NO ERRORS FOUND IN " & fullTitle);
+            outtext("GOT ERROR(S) IN" & fullTitle)
+       else outtext ("--- NO ERRORS FOUND IN" & fullTitle);
 
        if verbose then begin
           outimage;
@@ -43,7 +43,7 @@ begin
        terminate_program;
     end;
 
-    text fullTitle="Simula RT_Error TEST" & " " & title;
+    text fullTitle=" Simula RT_Error TEST" & title;
 	if verbose then begin
 		outtext ("--- START " & fullTitle); outimage; outimage;
 	end;

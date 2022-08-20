@@ -86,7 +86,7 @@ public abstract class DeclarationScope extends Declaration {
     // *** Coding Utility: edCTX
     // ***********************************************************************************************
     public String edCTX() {
-    	if(blockLevel==0) return("CTX$");
+    	if(blockLevel==0) return("CTX_");
     	int curLevel=Global.getCurrentScope().blockLevel;
         int ctxDiff=curLevel-blockLevel;
         return(edCTX(ctxDiff));
@@ -97,8 +97,8 @@ public abstract class DeclarationScope extends Declaration {
     // *** Coding Utility: edCTX
     // ***********************************************************************************************
     public static String edCTX(int ctxDiff) {
-        String ret="CUR$";
-        while((ctxDiff--)>0) ret=ret+".SL$";
+        String ret="_CUR";
+        while((ctxDiff--)>0) ret=ret+"._SL";
         return("("+ret+')');
     }
 	  
@@ -122,7 +122,7 @@ public abstract class DeclarationScope extends Declaration {
     		&& !(scope instanceof StandardClass)
     		&& !(scope instanceof StandardProcedure)) {
 				if(id==null) id=scope.identifier;
-				else id=scope.identifier+'$'+id;
+				else id=scope.identifier+'_'+id;
 	        }
 			scope=scope.declaredIn;
 		}

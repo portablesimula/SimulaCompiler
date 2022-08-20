@@ -40,7 +40,7 @@ public class SimClassVisitor extends ClassVisitor {
 		if(DEBUG) Util.println(" " + name + desc);
 		if(DEBUG) Util.println(" " + name + desc);
 		if(DEBUG) Util.println("Name=" + name + ", Descr=" + desc);
-		if(name.equalsIgnoreCase("STM$")) {
+		if(name.equalsIgnoreCase("_STM")) {
 			if(DEBUG) Util.println("SimClassVisitor.visitMethod");
 			MethodVisitor methodVisitor = cv.visitMethod(access,name,desc,signature,exceptions);
 			MethodVisitor methodVisitor2=new RepairSTM_MethodVisitor(classFileName, access, name, desc, methodVisitor);

@@ -285,7 +285,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		currentBlockLevel++;
@@ -623,7 +623,7 @@ SEARCH: while (scope != null) {
 		String line = "public class " + getJavaIdentifier();
 		if (prefix != null)
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
-		else line = line + " extends BASICIO$";
+		else line = line + " extends _BASICIO";
 		GeneratedJavaClass.code(line + " {");
 		GeneratedJavaClass.debug("// ClassDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel + ", PrefixLevel="
 					+ prefixLevel() + ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
@@ -689,7 +689,7 @@ SEARCH: while (scope != null) {
 		s.append('(');
 		boolean withparams = false;
 		if (!isMethod) {
-			s.append("RTObject$ staticLink");
+			s.append("_RTObject staticLink");
 			withparams = true;
 		}
 		for (Declaration par : new ClassParameterIterator()) {
@@ -791,7 +791,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	protected void codeClassStatements() {
 		GeneratedJavaClass.debug("// Class Statements");
-		GeneratedJavaClass.code("public "+getJavaIdentifier()+" STM$() {");
+		GeneratedJavaClass.code("public "+getJavaIdentifier()+" _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");

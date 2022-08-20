@@ -149,7 +149,7 @@ class Frame {
   // Constants to manipulate the DIM field of an abstract type.
 
   /** The constant to be added to an abstract type to get one with one more array dimension. */
-  private static final int ARRAY_OF = +1 << DIM_SHIFT;
+  private static final int _ARRAYOF = +1 << DIM_SHIFT;
 
   /** The constant to be added to an abstract type to get one with one less array dimension. */
   private static final int ELEMENT_OF = -1 << DIM_SHIFT;
@@ -1053,28 +1053,28 @@ class Frame {
         pop();
         switch (arg) {
           case Opcodes.T_BOOLEAN:
-            push(ARRAY_OF | BOOLEAN);
+            push(_ARRAYOF | BOOLEAN);
             break;
           case Opcodes.T_CHAR:
-            push(ARRAY_OF | CHAR);
+            push(_ARRAYOF | CHAR);
             break;
           case Opcodes.T_BYTE:
-            push(ARRAY_OF | BYTE);
+            push(_ARRAYOF | BYTE);
             break;
           case Opcodes.T_SHORT:
-            push(ARRAY_OF | SHORT);
+            push(_ARRAYOF | SHORT);
             break;
           case Opcodes.T_INT:
-            push(ARRAY_OF | INTEGER);
+            push(_ARRAYOF | INTEGER);
             break;
           case Opcodes.T_FLOAT:
-            push(ARRAY_OF | FLOAT);
+            push(_ARRAYOF | FLOAT);
             break;
           case Opcodes.T_DOUBLE:
-            push(ARRAY_OF | DOUBLE);
+            push(_ARRAYOF | DOUBLE);
             break;
           case Opcodes.T_LONG:
-            push(ARRAY_OF | LONG);
+            push(_ARRAYOF | LONG);
             break;
           default:
             throw new IllegalArgumentException();
@@ -1086,7 +1086,7 @@ class Frame {
         if (arrayElementType.charAt(0) == '[') {
           push(symbolTable, '[' + arrayElementType);
         } else {
-          push(ARRAY_OF | REFERENCE_KIND | symbolTable.addType(arrayElementType));
+          push(_ARRAYOF | REFERENCE_KIND | symbolTable.addType(arrayElementType));
         }
         break;
       case Opcodes.CHECKCAST:

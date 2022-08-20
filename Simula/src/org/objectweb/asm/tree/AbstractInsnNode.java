@@ -80,7 +80,7 @@ public abstract class AbstractInsnNode {
   public static final int LOOKUPSWITCH_INSN = 12;
 
   /** The type of {@link MultiANewArrayInsnNode} instructions. */
-  public static final int MULTIANEWARRAY_INSN = 13;
+  public static final int MULTIANEW_ARRAYINSN = 13;
 
   /** The type of {@link FrameNode} "instructions". */
   public static final int FRAME = 14;

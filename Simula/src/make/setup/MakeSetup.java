@@ -98,6 +98,7 @@ public final class MakeSetup {
 	private static void copySimulaRuntimeSystem() throws IOException {
 		File source=new File(COMPILER_BIN+"\\simula\\runtime");
 		String target=RELEASE_HOME+"\\rts\\simula\\runtime";
+//		String target=RELEASE_HOME+"\\rts";
 		printHeading("Copy Simula RuntimeSystem "+source+" ===> "+target);
         System.out.println("MakeCompiler.copySimulaRuntimeSystem: target="+target);
 		copyFolder(source,new File(target),true);

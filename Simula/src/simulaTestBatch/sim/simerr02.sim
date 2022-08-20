@@ -20,7 +20,7 @@ RT_ErrorTest("  2 --- Testing NONE-CHECK") begin
    end;
    
    facit(0):-"--- Testing NONE-CHECK";
-   facit(1):-"ExceptionHandler got error: SimulaRuntimeError: NONE-CHECK FAILED";
+   facit(1):-"ExceptionHandler got error: _SimulaRuntimeError: NONE-CHECK FAILED";
 
    DEFEXCEPTION(ExceptionHandler);
 

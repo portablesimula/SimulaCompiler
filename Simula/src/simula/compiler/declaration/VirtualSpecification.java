@@ -90,7 +90,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 	
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if(procedureSpec!=null) procedureSpec.doChecking(this.declaredIn);
 		// Label and switch attributes are implicit specified 'protected'
@@ -101,7 +101,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 
 	public String getVirtualIdentifier() {
 		ClassDeclaration specifiedIn=(ClassDeclaration)this.declaredIn; // TODO: Kan 'specifiedIn' fjernes
-		return (getJavaIdentifier() + '$' + specifiedIn.prefixLevel() + "()");
+		return (getJavaIdentifier() + '_' + specifiedIn.prefixLevel() + "()");
 	}
 	  
     // ***********************************************************************************************
@@ -130,8 +130,8 @@ public final class VirtualSpecification extends Declaration implements Externali
 	@Override
 	public void doJavaCoding() {
 		ASSERT_SEMANTICS_CHECKED(this);
-	    String matchCode="{ throw new SimulaRuntimeError(\"No Virtual Match: "+identifier+"\"); }";
-		String qnt = (kind == Kind.Label) ? "LABQNT$ " : "PRCQNT$ ";
+	    String matchCode="{ throw new _SimulaRuntimeError(\"No Virtual Match: "+identifier+"\"); }";
+		String qnt = (kind == Kind.Label) ? "_LABQNT " : "_PRCQNT ";
 		GeneratedJavaClass.code("public " + qnt + getVirtualIdentifier() + matchCode);
 	}
 

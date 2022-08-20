@@ -77,7 +77,7 @@ public final class TypeConversion extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		type.doChecking(Global.getCurrentScope());
 		expression.doChecking();
 		Type type = expression.type;

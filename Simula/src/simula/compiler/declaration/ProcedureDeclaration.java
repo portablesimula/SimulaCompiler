@@ -200,7 +200,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (declarationKind == Declaration.Kind.ContextFreeMethod) externalIdent = this.identifier;
 		if (declarationKind == Declaration.Kind.StaticMethod) externalIdent = this.identifier;
@@ -288,12 +288,12 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		GeneratedJavaClass.code(line);
 		if (type != null) {
 			GeneratedJavaClass.debug("// Declare return value as variable");
-			GeneratedJavaClass.code(type.toJavaType() + ' ' + "RESULT$" + '=' + type.edDefaultValue() + ';');
+			GeneratedJavaClass.code(type.toJavaType() + ' ' + "_RESULT" + '=' + type.edDefaultValue() + ';');
 		}
 		for (Declaration decl : labelList) decl.doJavaCoding();
 		for (Declaration decl : declarationList) decl.doJavaCoding();
 		for (Statement stm : statements) stm.doJavaCoding();
-		if (type != null) GeneratedJavaClass.code("return(RESULT$);");
+		if (type != null) GeneratedJavaClass.code("return(_RESULT);");
 		GeneratedJavaClass.code("}");
 		Global.exitScope();
 	}
@@ -308,7 +308,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		s.append('(');
 		boolean withparams = false;
 		if (addStaticLink) {
-			s.append("RTObject$ SL$");
+			s.append("_RTObject _SL");
 			withparams = true;
 		}
 		for (Declaration par : this.parameterList) {
@@ -333,7 +333,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
-		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends PROC$ {");
+		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends _PROC {");
 		GeneratedJavaClass.debug("// ProcedureDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel
 					+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
@@ -341,8 +341,8 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			GeneratedJavaClass.code("public boolean isQPSystemBlock() { return(true); }");
 		if (declarationKind == Declaration.Kind.Procedure && type != null) {
 			GeneratedJavaClass.debug("// Declare return value as attribute");
-			GeneratedJavaClass.code("public " + type.toJavaType() + ' ' + "RESULT$;");
-			GeneratedJavaClass.code("public Object RESULT$() { return(RESULT$); }");
+			GeneratedJavaClass.code("public " + type.toJavaType() + ' ' + "_RESULT;");
+			GeneratedJavaClass.code("public Object _RESULT() { return(_RESULT); }");
 		}
 		GeneratedJavaClass.debug("// Declare parameters as attributes");
 		boolean hasParameter = false;
@@ -372,14 +372,14 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + edFormalParameterList(false, true));
-		GeneratedJavaClass.code("super(SL$);");
+		GeneratedJavaClass.code("super(_SL);");
 		GeneratedJavaClass.debug("// Parameter assignment to locals");
 		for (Parameter par : parameterList)
 			GeneratedJavaClass.code("this." + par.externalIdent + " = s" + par.externalIdent + ';');
 		GeneratedJavaClass.code("BBLK();");
 		GeneratedJavaClass.debug("// Declaration Code");
 		for (Declaration decl : declarationList) decl.doDeclarationCoding();
-		GeneratedJavaClass.code("STM$();");
+		GeneratedJavaClass.code("_STM();");
 		GeneratedJavaClass.code("}");
 	}
 
@@ -390,9 +390,9 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		GeneratedJavaClass.debug("// Parameter Transmission in case of Formal/Virtual Procedure Call");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + " setPar(Object param) {");
 		GeneratedJavaClass.debug("//Util.BREAK(\"CALL " + getJavaIdentifier()
-				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+$nParLeft+\", staticLink=\"+SL$);");
+				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+_nParLeft+\", staticLink=\"+_SL);");
 		GeneratedJavaClass.code("try {");
-		GeneratedJavaClass.code("switch($nParLeft--) {");
+		GeneratedJavaClass.code("switch(_nParLeft--) {");
 		int nPar = 0;
 		for (Parameter par : parameterList) {
 			String tp = par.toJavaType();
@@ -407,15 +407,15 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			else typeValue = ("(" + tp + ")objectValue(param)");
 			GeneratedJavaClass.code("case " + ( parameterList.size() - (nPar++)) + ": " + par.externalIdent + "=" + typeValue + "; break;");
 		}
-		GeneratedJavaClass.code("default: throw new SimulaRuntimeError(\"Too many parameters\");");
+		GeneratedJavaClass.code("default: throw new _SimulaRuntimeError(\"Too many parameters\");");
 		GeneratedJavaClass.code("}");
 		GeneratedJavaClass.code("}");
-		GeneratedJavaClass.code("catch(ClassCastException e) { throw new SimulaRuntimeError(\"Wrong type of parameter: \"+param,e);}");
+		GeneratedJavaClass.code("catch(ClassCastException e) { throw new _SimulaRuntimeError(\"Wrong type of parameter: \"+param,e);}");
 		GeneratedJavaClass.code("return(this);");
 		GeneratedJavaClass.code("}");
 		GeneratedJavaClass.debug("// Constructor in case of Formal/Virtual Procedure Call");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(RTObject$ SL$) {");
-		GeneratedJavaClass.code("super(SL$,"+parameterList.size()+");","Expecting "+parameterList.size()+" parameters");
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(_RTObject _SL) {");
+		GeneratedJavaClass.code("super(_SL,"+parameterList.size()+");","Expecting "+parameterList.size()+" parameters");
 		GeneratedJavaClass.code("}");
 	}
 
@@ -424,7 +424,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	public void codeProcedureBody() {
 		GeneratedJavaClass.debug("// Procedure Statements");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + " STM$() {");
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + " _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");

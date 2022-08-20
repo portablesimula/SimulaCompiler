@@ -44,18 +44,18 @@ public final class AssignmentOperation extends Expression {
 		this.lhs=lhs; this.opr=opr; this.rhs=rhs;
 		if(this.lhs==null) {
 			Util.error("Missing operand before "+opr);
-			this.lhs=new Variable("UNKNOWN$");
+			this.lhs=new Variable("UNKNOWN_");
 		}
 		if(this.rhs==null) {
 			Util.error("Missing operand after "+opr);
-			this.rhs=new Variable("UNKNOWN$");
+			this.rhs=new Variable("UNKNOWN_");
 		}
 	    this.lhs.backLink=this.rhs.backLink=this;
 	}
 
 	@Override
 	public void doChecking() {
-		if(IS_SEMANTICS_CHECKED()) return;
+		if(_ISSEMANTICS_CHECKED()) return;
 	   	Global.sourceLineNumber=lineNumber;
 		if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
 	    lhs.doChecking(); Type toType=lhs.type;
@@ -96,11 +96,11 @@ public final class AssignmentOperation extends Expression {
 		if (rhs instanceof Constant cnst) {
 			Object value = cnst.value;
 			if (value != null) {
-				s.append("ASGSTR$(").append(lhs.toJavaCode()).append(",\"").append(value).append("\")");
+				s.append("_ASGSTR(").append(lhs.toJavaCode()).append(",\"").append(value).append("\")");
 				return (s.toString());
 			}
 		}
-		s.append("ASGTXT$(").append(lhs.toJavaCode()).append(',').append(rhs.toJavaCode()).append(')');
+		s.append("_ASGTXT(").append(lhs.toJavaCode()).append(',').append(rhs.toJavaCode()).append(')');
 		return (s.toString());
 	}  
 
@@ -165,7 +165,7 @@ public final class AssignmentOperation extends Expression {
 			dimBrackets = dimBrackets + "[]";
 		}
 		String eltType = type.toJavaType();
-		String cast = "ARRAY$<" + eltType + dimBrackets + ">";
+		String cast = "_ARRAY<" + eltType + dimBrackets + ">";
 		String castedVar = "((" + cast + ")" + remoteIdent + ")";
 		s.append(castedVar).append(".Elt").append(ixs);
 		return (s.toString());

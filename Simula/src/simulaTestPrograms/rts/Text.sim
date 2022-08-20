@@ -7,7 +7,7 @@ class TEXTOBJ_(SIZE,CONST); integer SIZE; Boolean CONST;
 begin character array MAIN(1:SIZE); end;
 
 class TEXTREF_;
-begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
+begin ref(TEXTOBJ_) OBJ_; integer _START,LENGTH_,POS_;
 
    Boolean procedure constant;
    constant := (OBJ_ == NONE) or_else OBJ_.CONST;
@@ -17,7 +17,7 @@ begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
    
    end ASSIGN;
    
-   integer procedure start; start := START_;
+   integer procedure start; start := _START;
    integer procedure length; length := LENGTH_;
    
    ref(TEXTREF_) procedure main;
@@ -25,7 +25,7 @@ begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
    then begin ref(TEXTREF_) T;
       T :- new TEXTREF_();
       T.OBJ_ :- OBJ_;
-      T.START_ := 1;
+      T._START := 1;
       T.LENGTH_ := OBJ_.SIZE;
       T.POS_ := 1;
       main :- T;
@@ -43,7 +43,7 @@ begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
    if POS_ > LENGTH_
    then error("..." ! Pos out of range;)
    else begin
-        getchar := OBJ_.MAIN(START_+POS_-1);
+        getchar := OBJ_.MAIN(_START+POS_-1);
         POS_ := POS_ + 1;
    end getchar; 
    
@@ -55,7 +55,7 @@ begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
    if (POS_ > LENGTH_) then error("...");
 %   else
    begin 
-       OBJ_.MAIN(START_+POS_-1) := c;
+       OBJ_.MAIN(_START+POS_-1) := c;
         POS_ := POS_ + 1;
    end putchar;
    end;
@@ -67,7 +67,7 @@ begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
    then begin ref(TEXTREF_) T;
       T :- new TEXTREF_();
       T.OBJ_ :- new TEXTOBJ_(n,false);
-      T.START_ := 1;
+      T._START := 1;
       T.LENGTH_ := n;
       T.POS_ := 1;
       T.ASSIGN(NOTEXT); ! T:=NOTEXT I.e. blank-fill;
@@ -79,7 +79,7 @@ begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
    then begin ref(TEXTREF_) U;
       U :- new TEXTREF_();
       U.OBJ_ :- new TEXTOBJ_(T.LENGTH_,false);
-      U.START_ := 1;
+      U._START := 1;
       U.LENGTH_ := T.LENGTH_;
       U.POS_ := 1
       U.ASSIGN(T); ! U:=T  I.e. text value assignment;
@@ -94,7 +94,7 @@ begin ref(TEXTOBJ_) OBJ_; integer START_,LENGTH_,POS_;
    then begin ref(TEXTREF_) T;
       T :- new TEXTREF_();
       T.OBJ_ :- OBJ_;
-      T.START_ := START_ + i - 1;
+      T._START := _START + i - 1;
       T.LENGTH_ := n;
       T.POS_ := 1;
       sub :- T

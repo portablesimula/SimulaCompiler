@@ -68,10 +68,10 @@ public final class ConnectionBlock extends DeclarationScope {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		// Set External Identifier
-		externalIdent = inspectedVariable.identifier + '$' + lineNumber;
+		externalIdent = inspectedVariable.identifier + '_' + lineNumber;
 		Global.enterScope(this);
 		blockLevel = currentBlockLevel;
 		if (whenClassIdentifier != null) {

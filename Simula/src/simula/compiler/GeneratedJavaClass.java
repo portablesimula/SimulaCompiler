@@ -46,7 +46,7 @@ public final class GeneratedJavaClass {
 		try {
 			javaOutputFile.getParentFile().mkdirs();
 			if (Option.verbose)	Util.TRACE("Output: " + javaOutputFile.getCanonicalPath());
-			writer = new OutputStreamWriter(new FileOutputStream(javaOutputFile), Global.CHARSET$);
+			writer = new OutputStreamWriter(new FileOutputStream(javaOutputFile), Global._CHARSET);
 			GeneratedJavaClass.code("package " + Global.packetName + ";");
 			GeneratedJavaClass.code("// " + Global.simulaReleaseID + " Compiled at " + new Date());
 			GeneratedJavaClass.code("import simula.runtime.*;");
@@ -133,9 +133,9 @@ public final class GeneratedJavaClass {
 	  
 	public void codeProgramInfo() {
 		appendLine(currentJavaLineNumber,blockDeclaration.lastLineNumber);
-		// public static PROGINFO$ INFO$=new PROGINFO$("file.sim","MainProgram",1,4,12,5,14,12,32,14,37,16);
+		// public static _PROGINFO INFO_=new _PROGINFO("file.sim","MainProgram",1,4,12,5,14,12,32,14,37,16);
 		StringBuilder s=new StringBuilder();
-		s.append(edIndent()+"public static PROGINFO$ INFO$=new PROGINFO$(\"");
+		s.append(edIndent()+"public static _PROGINFO INFO_=new _PROGINFO(\"");
 		s.append(Global.sourceFileName);
 		s.append("\",\"");
 		s.append(blockDeclaration.declarationKind+" "+blockDeclaration.identifier);

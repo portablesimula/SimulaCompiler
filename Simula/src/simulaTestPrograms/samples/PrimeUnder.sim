@@ -9,9 +9,10 @@
 % This is an implementation of 28. juni 2000 by Karel Babcicky.
 %
 
-Simulation begin
+simulation begin
         
-   integer acc; 
+   integer limit,acc; 
+   integer startTime,timeUsed;
     
    process class Prime; 
    begin integer which; 
@@ -25,11 +26,18 @@ Simulation begin
          end; 
    end; 
  
-   Outtext( "Show all primes less than " ); BreakOutimage;  
+   outtext( "Show all primes less than " );
+   breakoutimage; limit:=inint; 
  
+   startTime:=cputime;
+   
    activate new Prime at 2; 
-   hold(inint); 
+   hold(limit); 
  
-   Outimage; Outimage; 
-   Outint( acc, 7 ); Outtext( " primes found" );  
+   outimage; outimage; 
+   outint( acc, 7 ); outtext( " primes found" ); 
+   
+   outimage; outimage; 
+   timeUsed := cputime - startTime;
+   outtext("Elapsed Time: Approximately " & edit(timeUsed) & " sec.");
 end

@@ -57,7 +57,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		}
 		if(isMainModule)
 		     modifyIdentifier(Global.sourceName);
-		else modifyIdentifier("" + Global.sourceName + "$PBLK" + lineNumber);
+		else modifyIdentifier("" + Global.sourceName + "_PBLK" + lineNumber);
 		this.externalIdent = this.identifier;
 		this.lastLineNumber = Global.sourceLineNumber;
 		Global.setScope(declaredIn);
@@ -68,7 +68,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		currentBlockLevel++;
@@ -107,7 +107,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		String line = "public final class " + getJavaIdentifier();
 		if (prefix != null)
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
-		else line = line + " extends BASICIO$";
+		else line = line + " extends _BASICIO";
 		GeneratedJavaClass.code(line + " {");
 		GeneratedJavaClass.debug("// PrefixedBlockDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel
 				+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
@@ -136,15 +136,15 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 			GeneratedJavaClass.code("");
 			GeneratedJavaClass.code("public static void main(String[] args) {");
 			GeneratedJavaClass.debug("//System.setProperty(\"file.encoding\",\"UTF-8\");");
-			GeneratedJavaClass.code("RT.setRuntimeOptions(args);");
+			GeneratedJavaClass.code("_RT.setRuntimeOptions(args);");
 			StringBuilder s = new StringBuilder();
-			s.append("new " + getJavaIdentifier() + "(CTX$");
+			s.append("new " + getJavaIdentifier() + "(CTX_");
 			if (blockPrefix != null && blockPrefix.hasArguments()) {
 				for (Expression par : blockPrefix.checkedParams) {
 					s.append(',').append(par.toJavaCode());
 				}
 			}
-			s.append(").STM$();");
+			s.append(")._STM();");
 			GeneratedJavaClass.code("" + s);
 			GeneratedJavaClass.code("}", "End of main");
 		}

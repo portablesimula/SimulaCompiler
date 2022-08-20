@@ -55,7 +55,7 @@ public final class TestCompiler {
 		// String name="/simprogs/SudokuPuzzleFlow.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
-		// String name="/samples/AnimationTest.sim";
+		 String name="/samples/AnimationTest.sim";
 		// String name="/samples/Atkins.sim";
 		// String name="/samples/Dates.sim";
 		// String name="/samples/DatesTest.sim";
@@ -64,9 +64,10 @@ public final class TestCompiler {
 		// String name="/samples/HelloWorld.sim";
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/InfectionDisease.sim";
-		 String name="/samples/JensensDevice.sim";
+		// String name="/samples/JensensDevice.sim";
 		// String name="/samples/LiftSimulation.sim";
 		// String name="/samples/PrimeUnder.sim";
+		// String name="/samples/Quine.sim";
 		// String name="/samples/Sudoku.sim";
 		// String name="/samples/SudokuPuzzle.sim";
 		// String name="/samples/TQueens.sim";
@@ -256,7 +257,7 @@ public final class TestCompiler {
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;
 			RTOption.BLOCK_TRACING = false;
-			RTOption.GOTO_TRACING = false;
+			RTOption._GOTOTRACING = false;
 			RTOption.THREAD_TRACING = false;
 			RTOption.QPS_TRACING = false;
 			RTOption.SML_TRACING = false;

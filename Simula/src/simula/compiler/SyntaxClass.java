@@ -87,7 +87,7 @@ public abstract class SyntaxClass {
     }
 
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		String name = this.getClass().getSimpleName();
 		Util.NOT_IMPLEMENTED("" + name + ".doChecking");
@@ -99,7 +99,7 @@ public abstract class SyntaxClass {
 		CHECKED = true;
 	}
 
-	protected boolean IS_SEMANTICS_CHECKED() {
+	protected boolean _ISSEMANTICS_CHECKED() {
 		return (CHECKED);
 	}
 

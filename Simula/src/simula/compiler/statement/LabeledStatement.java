@@ -42,7 +42,7 @@ public final class LabeledStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		statement.doChecking();
 		for (String label:labels) {
 			Meaning meaning = Global.getCurrentScope().findMeaning(label);
@@ -64,7 +64,7 @@ public final class LabeledStatement extends Statement {
 		for (String label:labels) {
 			Meaning meaning=Global.getCurrentScope().findLabelMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-			String labelcode="LABEL$("+decl.index+",\""+decl.identifier+"\");";
+			String labelcode="_LABEL("+decl.index+",\""+decl.identifier+"\");";
 			if(statement instanceof BlockStatement stat) {
 				BlockStatement blockStatement=stat;
 				if(blockStatement.isCompoundStatement())

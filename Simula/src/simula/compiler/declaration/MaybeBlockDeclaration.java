@@ -39,7 +39,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// Used by ProgramModule
 	public static MaybeBlockDeclaration createMaybeBlock() {
-		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName+'$');
+		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName+'_');
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
 		module.parseMaybeBlock();
@@ -109,7 +109,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		if (declarationKind != Declaration.Kind.CompoundStatement) currentBlockLevel++;
@@ -183,7 +183,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
-		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends BASICIO$" + " {");
+		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends _BASICIO" + " {");
 		GeneratedJavaClass.debug("// SubBlock: Kind=" + declarationKind + ", BlockLevel=" + blockLevel + ", firstLine="
 				+ lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 				+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
@@ -201,8 +201,8 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 			GeneratedJavaClass.code("");
 			GeneratedJavaClass.code("public static void main(String[] args) {");
 			GeneratedJavaClass.debug("//System.setProperty(\"file.encoding\",\"UTF-8\");");
-			GeneratedJavaClass.code("RT.setRuntimeOptions(args);");
-			GeneratedJavaClass.code("new " + getJavaIdentifier() + "(CTX$).STM$();");
+			GeneratedJavaClass.code("_RT.setRuntimeOptions(args);");
+			GeneratedJavaClass.code("new " + getJavaIdentifier() + "(CTX_)._STM();");
 			GeneratedJavaClass.code("}", "End of main");
 		}
 		javaModule.codeProgramInfo();
@@ -216,7 +216,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(RTObject$ staticLink) {");
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(_RTObject staticLink) {");
 		GeneratedJavaClass.code("super(staticLink);");
 		GeneratedJavaClass.code("BBLK();");
 		if (declarationKind == Declaration.Kind.SimulaProgram) GeneratedJavaClass.code("BPRG(\"" + identifier + "\");");
@@ -230,7 +230,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doCodeStatements() {
 		GeneratedJavaClass.debug("// " + declarationKind + " Statements");
-		GeneratedJavaClass.code("public RTObject$ STM$() {");
+		GeneratedJavaClass.code("public _RTObject _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");

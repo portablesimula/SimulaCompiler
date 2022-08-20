@@ -103,26 +103,26 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	protected void codeSTMBody() {
 		if (hasLabel()) {
-			GeneratedJavaClass.code(externalIdent + " THIS$=(" + externalIdent + ")CUR$;");
-			GeneratedJavaClass.code("LOOP$:while(JTX$>=0) {");
+			GeneratedJavaClass.code(externalIdent + " THIS_=(" + externalIdent + ")_CUR;");
+			GeneratedJavaClass.code("_LOOP:while(_JTX>=0) {");
 			GeneratedJavaClass.code("try {");
-			GeneratedJavaClass.code("JUMPTABLE$(JTX$);","For ByteCode Engineering");
+			GeneratedJavaClass.code("_JUMPTABLE(_JTX);","For ByteCode Engineering");
 			Global.currentJavaModule.mustDoByteCodeEngineering=true;
 		}
 		codeStatements();
 		if (hasLabel()) {
-			GeneratedJavaClass.code("break LOOP$;");
+			GeneratedJavaClass.code("break _LOOP;");
 			GeneratedJavaClass.code("}");
-			GeneratedJavaClass.code("catch(LABQNT$ q) {");
-			GeneratedJavaClass.code("CUR$=THIS$;");
-			GeneratedJavaClass.code("if(q.SL$!=CUR$) {");
-			GeneratedJavaClass.debug("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":NON-LOCAL\",q);");
-			GeneratedJavaClass.code("CUR$.STATE$=OperationalState.terminated;");
-			GeneratedJavaClass.debug("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":RE-THROW\",q);");
+			GeneratedJavaClass.code("catch(_LABQNT q) {");
+			GeneratedJavaClass.code("_CUR=THIS_;");
+			GeneratedJavaClass.code("if(q._SL!=_CUR) {");
+			GeneratedJavaClass.debug("if(_RT.Option._GOTOTRACING) TRACE_GOTO(\"" + identifier + ":NON-LOCAL\",q);");
+			GeneratedJavaClass.code("_CUR.STATE_=OperationalState.terminated;");
+			GeneratedJavaClass.debug("if(_RT.Option._GOTOTRACING) TRACE_GOTO(\"" + identifier + ":RE-THROW\",q);");
 			GeneratedJavaClass.code("throw(q);");
 			GeneratedJavaClass.code("}");
-			GeneratedJavaClass.debug("if(RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":LOCAL\",q);");
-			GeneratedJavaClass.code("JTX$=q.index; continue LOOP$;","EG. GOTO Lx");
+			GeneratedJavaClass.debug("if(_RT.Option._GOTOTRACING) TRACE_GOTO(\"" + identifier + ":LOCAL\",q);");
+			GeneratedJavaClass.code("_JTX=q.index; continue _LOOP;","EG. GOTO Lx");
 			GeneratedJavaClass.code("}");
 			GeneratedJavaClass.code("}");
 		}

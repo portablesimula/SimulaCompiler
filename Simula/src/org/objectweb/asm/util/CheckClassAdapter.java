@@ -487,9 +487,9 @@ public class CheckClassAdapter extends ClassVisitor {
       final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
     checkState();
     int sort = new TypeReference(typeRef).getSort();
-    if (sort != TypeReference.CLASS_TYPE_PARAMETER
-        && sort != TypeReference.CLASS_TYPE_PARAMETER_BOUND
-        && sort != TypeReference.CLASS_EXTENDS) {
+    if (sort != TypeReference._CLASSTYPE_PARAMETER
+        && sort != TypeReference._CLASSTYPE_PARAMETER_BOUND
+        && sort != TypeReference._CLASSEXTENDS) {
       throw new IllegalArgumentException(
           "Invalid type reference sort 0x" + Integer.toHexString(sort));
     }
@@ -924,7 +924,7 @@ public class CheckClassAdapter extends ClassVisitor {
   static void checkTypeRef(final int typeRef) {
     int mask = 0;
     switch (typeRef >>> 24) {
-      case TypeReference.CLASS_TYPE_PARAMETER:
+      case TypeReference._CLASSTYPE_PARAMETER:
       case TypeReference.METHOD_TYPE_PARAMETER:
       case TypeReference.METHOD_FORMAL_PARAMETER:
         mask = 0xFFFF0000;
@@ -940,8 +940,8 @@ public class CheckClassAdapter extends ClassVisitor {
       case TypeReference.METHOD_REFERENCE:
         mask = 0xFF000000;
         break;
-      case TypeReference.CLASS_EXTENDS:
-      case TypeReference.CLASS_TYPE_PARAMETER_BOUND:
+      case TypeReference._CLASSEXTENDS:
+      case TypeReference._CLASSTYPE_PARAMETER_BOUND:
       case TypeReference.METHOD_TYPE_PARAMETER_BOUND:
       case TypeReference.THROWS:
       case TypeReference.EXCEPTION_PARAMETER:

@@ -46,30 +46,30 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 
 	@Override
 	public void visitEnd() {
-		if(DEBUG) Util.println("RepairSTM_MethodVisitor: Visit END: mv'QUAL="+mv.getClass().getSimpleName());
+		if(DEBUG) Util.println("Repair_STMMethodVisitor: Visit END: mv'QUAL="+mv.getClass().getSimpleName());
 		mn = (MethodNode) mv;
 		instructions=mn.instructions;
 		String methodName=mn.name;
-		treatSTM_Method(methodName);
+		treat_STMMethod(methodName);
 		mn.accept(next);
 	}
 	
 	
-	private void treatSTM_Method(String methodName) {
+	private void treat_STMMethod(String methodName) {
         if(Option.TRACE_REPAIRING) Util.println("*** PASS 1 - FIND AND TREAT ALL LABELS IN "+methodName+"("+classFileName+") ***");
         labelHandles=new Vector<LabelHandle>(); maxIndex=0;
 		ListIterator<AbstractInsnNode> iterator1=instructions.iterator();
 		while(iterator1.hasNext()) {
 			AbstractInsnNode instr=iterator1.next();
-			//if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 Instruction="+edInstruction(instr));
+			//if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS1 Instruction="+edInstruction(instr));
 			int opcode=instr.getOpcode();
 			if(opcode==Opcodes.INVOKESTATIC) {
-				if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 Method Instruction="+AsmUtils.edInstruction(instr));
+				if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS1 Method Instruction="+AsmUtils.edInstruction(instr));
 				MethodInsnNode invokeStatic=(MethodInsnNode)instr;
 				String name=invokeStatic.name;
-				if(name.equals("LABEL$"))  {
-					if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 GOT: INVOKESTATIC LABEL$ (I)V false, opcode="+opcode+", Opcode="+Opcodes.INVOKESTATIC);
-					if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS1 GOT: INVOKESTATIC LABEL$ (I)V false, instr="+AsmUtils.edInstruction(instr));
+				if(name.equals("_LABEL"))  {
+					if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS1 GOT: INVOKESTATIC _LABEL (I)V false, opcode="+opcode+", Opcode="+Opcodes.INVOKESTATIC);
+					if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS1 GOT: INVOKESTATIC _LABEL (I)V false, instr="+AsmUtils.edInstruction(instr));
 					treatLABEL(invokeStatic);
 				}
 			}
@@ -78,24 +78,24 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	       
 		String method=AsmUtils.edAccessFlags(mn.access)+' '+methodName+"("+classFileName+")";
         if(labelHandles.size()==0)
-        { if(DEBUG) Util.println("RepairSTM_MethodVisitor: No label found in Method "+method);
+        { if(DEBUG) Util.println("Repair_STMMethodVisitor: No label found in Method "+method);
           return; // ByteCodeEngineering FAILED
-        } else if(Option.verbose) Util.println("RepairSTM_MethodVisitor: "+labelHandles.size()+" label found in Method "+method);
+        } else if(Option.verbose) Util.println("Repair_STMMethodVisitor: "+labelHandles.size()+" label found in Method "+method);
         
-        if(Option.TRACE_REPAIRING) Util.println("*** PASS 2 - FIND AND TREAT JUMPTABLE$ ***");
+        if(Option.TRACE_REPAIRING) Util.println("*** PASS 2 - FIND AND TREAT _JUMPTABLE ***");
 		ListIterator<AbstractInsnNode> iterator2=instructions.iterator();
 		PASS2:while(iterator2.hasNext()) {
 			AbstractInsnNode instr=iterator2.next();
 			int opcode=instr.getOpcode();
 			if(opcode==Opcodes.INVOKESTATIC) {
-				//if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS2 Method Instruction="+edInstruction(instr));
+				//if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS2 Method Instruction="+edInstruction(instr));
 				MethodInsnNode invokeStatic=(MethodInsnNode)instr;
 				String name=invokeStatic.name;
 				String desc=invokeStatic.desc;
 				boolean itf=invokeStatic.itf;
-				if(name.equals("JUMPTABLE$") & desc.equals("(I)V") & (!itf)	)  {
-					if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS2 GOT: INVOKESTATIC JUMPTABLE$ (I)V false, opcode="+opcode+", Opcode="+Opcodes.INVOKESTATIC);
-					if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatSTM_Method: PASS2 GOT: INVOKESTATIC JUMPTABLE$ (I)V false, instr="+AsmUtils.edInstruction(instr));
+				if(name.equals("_JUMPTABLE") & desc.equals("(I)V") & (!itf)	)  {
+					if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS2 GOT: INVOKESTATIC _JUMPTABLE (I)V false, opcode="+opcode+", Opcode="+Opcodes.INVOKESTATIC);
+					if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS2 GOT: INVOKESTATIC _JUMPTABLE (I)V false, instr="+AsmUtils.edInstruction(instr));
 					treatJUMPTABLE(invokeStatic); break PASS2;
 				}
 			}
@@ -121,7 +121,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	 *    PREV-INSTRUCTION
 	 *    ICONST n   or  BIPUSH  or SIPUSH
 	 *    LDC Label-ident
-	 *    INVOKESTATIC LABEL$
+	 *    INVOKESTATIC _LABEL
 	 *    NEXT-INSTRUCTION
 	 * </pre>
 	 */
@@ -129,14 +129,14 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		AbstractInsnNode pushLabelIdentifier=invokeStatic.getPrevious();
 		// Retrieve Label Identifier
 		Object labelIdentifier="Unknown";
-		//Util.ASSERT(pushLabelIdentifier.getType()==AbstractInsnNode.LDC_INSN,"RepairSTM_MethodVisitor.treatLABEL: Invariant-1");
+		//Util.ASSERT(pushLabelIdentifier.getType()==AbstractInsnNode.LDC_INSN,"Repair_STMMethodVisitor.treatLABEL: Invariant-1");
 		if(pushLabelIdentifier.getType()!=AbstractInsnNode.LDC_INSN) {
-			Util.println("RepairSTM_MethodVisitor.treatLABEL: UNEXPECTED INSTRUCTION SEQUENCE BEFORE INVOKE LABEL$");
-			listInstructionSequence("RepairSTM_MethodVisitor.treatLABEL: UNKNOWN ", pushLabelIdentifier.getPrevious().getPrevious(), 8);
+			Util.println("Repair_STMMethodVisitor.treatLABEL: UNEXPECTED INSTRUCTION SEQUENCE BEFORE INVOKE _LABEL");
+			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: UNKNOWN ", pushLabelIdentifier.getPrevious().getPrevious(), 8);
 		} else {
 			LdcInsnNode labid=(LdcInsnNode)pushLabelIdentifier;
 			labelIdentifier=labid.cst;
-			if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatLABEL: labeIdentr="+labelIdentifier+", QUAL="+labelIdentifier.getClass().getSimpleName());
+			if(DEBUG) Util.println("Repair_STMMethodVisitor.treatLABEL: labeIdentr="+labelIdentifier+", QUAL="+labelIdentifier.getClass().getSimpleName());
 			instructions.remove(pushLabelIdentifier);
 		}
 		
@@ -144,8 +144,8 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		AbstractInsnNode pushLabelIndexInstrution=invokeStatic.getPrevious();
 		int prevOpcode=pushLabelIndexInstrution.getOpcode();
 		int insType=pushLabelIndexInstrution.getType();
-		if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatLABEL: prev2 instr="+AsmUtils.edInstruction(pushLabelIndexInstrution)+", type="+insType+", QUAL="+pushLabelIndexInstrution.getClass().getSimpleName());
-		if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatLABEL: prev1 instr="+AsmUtils.edInstruction(pushLabelIdentifier)+", type="+insType+", QUAL="+pushLabelIdentifier.getClass().getSimpleName());
+		if(DEBUG) Util.println("Repair_STMMethodVisitor.treatLABEL: prev2 instr="+AsmUtils.edInstruction(pushLabelIndexInstrution)+", type="+insType+", QUAL="+pushLabelIndexInstrution.getClass().getSimpleName());
+		if(DEBUG) Util.println("Repair_STMMethodVisitor.treatLABEL: prev1 instr="+AsmUtils.edInstruction(pushLabelIdentifier)+", type="+insType+", QUAL="+pushLabelIdentifier.getClass().getSimpleName());
 		
 		int labelIndex=0;
 		// • Load a constant on to the operand stack: bipush, sipush, ldc, ldc_w, ldc2_w,
@@ -157,7 +157,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			  case Opcodes.ICONST_3: labelIndex=3; break;
 			  case Opcodes.ICONST_4: labelIndex=4; break;
 			  case Opcodes.ICONST_5: labelIndex=5; break;
-			  default: Util.BREAK("RepairSTM_MethodVisitor.treatLABEL: IMPOSSIBLE-1");
+			  default: Util.BREAK("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-1");
 			}
 		}
 		else if(insType==AbstractInsnNode.INT_INSN) {
@@ -165,31 +165,31 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			switch(prevOpcode)
 			{ case Opcodes.BIPUSH: labelIndex=iprev.operand; break; // Value: −128 <= labelIndex < 127
 			  case Opcodes.SIPUSH: labelIndex=iprev.operand; break; // Value: −32768 <= labelIndex < 32767
-			  default: Util.BREAK("RepairSTM_MethodVisitor.treatLABEL: IMPOSSIBLE-2");
+			  default: Util.BREAK("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-2");
 			}
 		}
 		else if(insType==AbstractInsnNode.LDC_INSN) {
 			LdcInsnNode lprev=(LdcInsnNode)pushLabelIndexInstrution;
 			Object cst=lprev.cst;
 			//labelIndex=VALUE(cst); // TODO: Hva gjør vi her ??
-			listInstructionSequence("RepairSTM_MethodVisitor.treatLABEL: UNKNOWN ", pushLabelIndexInstrution.getPrevious().getPrevious(), 8);
+			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: UNKNOWN ", pushLabelIndexInstrution.getPrevious().getPrevious(), 8);
 			Util.NOT_IMPLEMENTED("More than 32767 labels in same Block (cst="+cst+')');
 		} else {
-			Util.BREAK("RepairSTM_MethodVisitor.treatLABEL: IMPOSSIBLE-3");
+			Util.BREAK("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-3");
 		}
-		if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatLABEL: PASS1 GOT: LABEL$"+labelIndex);
+		if(DEBUG) Util.println("Repair_STMMethodVisitor.treatLABEL: PASS1 GOT: _LABEL"+labelIndex);
 		AbstractInsnNode start=pushLabelIndexInstrution.getPrevious().getPrevious().getPrevious().getPrevious();
 		if (Option.TRACE_REPAIRING)
-			listInstructionSequence("RepairSTM_MethodVisitor.treatLABEL: GOT ", start, 8);
+			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: GOT ", start, 8);
 		LabelNode label=new LabelNode();
-		if(DEBUG) Util.println("RepairSTM_MethodVisitor.treatLABEL: ADD LableHandle: labelIndex="+labelIndex+", label="+AsmUtils.edLabel(label)+", ident="+labelIdentifier);
+		if(DEBUG) Util.println("Repair_STMMethodVisitor.treatLABEL: ADD LableHandle: labelIndex="+labelIndex+", label="+AsmUtils.edLabel(label)+", ident="+labelIdentifier);
 		maxIndex=Math.max(maxIndex,labelIndex);
 		labelHandles.add(new LabelHandle(labelIndex,label,labelIdentifier));
 		instructions.insertBefore(pushLabelIndexInstrution, label); // Insert Label before pushLabelIndexInstrution
 		instructions.remove(pushLabelIndexInstrution);
 		instructions.remove(invokeStatic);
 		if (Option.TRACE_REPAIRING)
-			listInstructionSequence("RepairSTM_MethodVisitor.treatLABEL: NEW ", start, 8);
+			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: NEW ", start, 8);
 	}
 	
 	private void listInstructionSequence(String id,AbstractInsnNode START,int n)
@@ -206,14 +206,14 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	 * Locate the instruction sequence:
 	 * <pre>
 	 *    PREV-INSTRUCTION
-	 *    GETFIELD JTX$
-	 *    INVOKESTATIC JUMPTABLE$
+	 *    GETFIELD _JTX
+	 *    INVOKESTATIC _JUMPTABLE
 	 *    NEXT-INSTRUCTION
 	 * </pre>
 	 * Replace it by:
 	 * <pre>
 	 *    PREV-INSTRUCTION
-	 *    GETFIELD JTX$
+	 *    GETFIELD _JTX
 	 *    TABLESWITCH ...
 	 *    NEXT-INSTRUCTION
 	 * </pre>
@@ -221,24 +221,24 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	private void treatJUMPTABLE(MethodInsnNode invokeStatic) {
 		AbstractInsnNode start=invokeStatic.getPrevious().getPrevious();
 		if (Option.TRACE_REPAIRING)
-			listInstructionSequence("RepairSTM_MethodVisitor.treatJUMPTABLE: GOT ", start, 8);
+			listInstructionSequence("Repair_STMMethodVisitor.treatJUMPTABLE: GOT ", start, 8);
 		// Prepare Labels
 		LabelNode[] labels=new LabelNode[maxIndex];
 		if(DEBUG) {
-			Util.println("RepairSTM_MethodVisitor.treatJUMPTABLE: size="+labelHandles.size());
-			Util.println("RepairSTM_MethodVisitor.treatJUMPTABLE: labels.length="+labels.length);
-			Util.println("RepairSTM_MethodVisitor.treatJUMPTABLE: maxIndex="+maxIndex);
+			Util.println("Repair_STMMethodVisitor.treatJUMPTABLE: size="+labelHandles.size());
+			Util.println("Repair_STMMethodVisitor.treatJUMPTABLE: labels.length="+labels.length);
+			Util.println("Repair_STMMethodVisitor.treatJUMPTABLE: maxIndex="+maxIndex);
 		}
 		boolean failed=false;
 		for(LabelHandle h:labelHandles) {
 			if (Option.TRACE_REPAIRING)
-				Util.println("RepairSTM_MethodVisitor.treatJUMPTABLE: "+h);
+				Util.println("Repair_STMMethodVisitor.treatJUMPTABLE: "+h);
 			labels[h.index-1]=h.target;
 			if(h.target==null) failed=true;
 		}
 		if(failed) {
 			for(LabelHandle h:labelHandles) {
-				Util.println("RepairSTM_MethodVisitor.treatJUMPTABLE: "+h);
+				Util.println("Repair_STMMethodVisitor.treatJUMPTABLE: "+h);
 			}
 			Util.FATAL_ERROR("ByteCode Engineering FAILED");
 		}
@@ -253,7 +253,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		instructions.remove(invokeStatic);
 		
 		if (Option.TRACE_REPAIRING)
-			listInstructionSequence("RepairSTM_MethodVisitor.treatJUMPTABLE: NEW ", start, 8);
+			listInstructionSequence("Repair_STMMethodVisitor.treatJUMPTABLE: NEW ", start, 8);
 	}
 
 

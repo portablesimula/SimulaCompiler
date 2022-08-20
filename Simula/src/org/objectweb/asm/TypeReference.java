@@ -42,7 +42,7 @@ public class TypeReference {
    * The sort of type references that target a type parameter of a generic class. See {@link
    * #getSort}.
    */
-  public static final int CLASS_TYPE_PARAMETER = 0x00;
+  public static final int _CLASSTYPE_PARAMETER = 0x00;
 
   /**
    * The sort of type references that target a type parameter of a generic method. See {@link
@@ -54,13 +54,13 @@ public class TypeReference {
    * The sort of type references that target the super class of a class or one of the interfaces it
    * implements. See {@link #getSort}.
    */
-  public static final int CLASS_EXTENDS = 0x10;
+  public static final int _CLASSEXTENDS = 0x10;
 
   /**
    * The sort of type references that target a bound of a type parameter of a generic class. See
    * {@link #getSort}.
    */
-  public static final int CLASS_TYPE_PARAMETER_BOUND = 0x11;
+  public static final int _CLASSTYPE_PARAMETER_BOUND = 0x11;
 
   /**
    * The sort of type references that target a bound of a type parameter of a generic method. See
@@ -209,7 +209,7 @@ public class TypeReference {
   /**
    * Returns a reference to a type parameter of a generic class or method.
    *
-   * @param sort one of {@link #CLASS_TYPE_PARAMETER} or {@link #METHOD_TYPE_PARAMETER}.
+   * @param sort one of {@link #_CLASSTYPE_PARAMETER} or {@link #METHOD_TYPE_PARAMETER}.
    * @param paramIndex the type parameter index.
    * @return a reference to the given generic class or method type parameter.
    */
@@ -220,7 +220,7 @@ public class TypeReference {
   /**
    * Returns a reference to a type parameter bound of a generic class or method.
    *
-   * @param sort one of {@link #CLASS_TYPE_PARAMETER} or {@link #METHOD_TYPE_PARAMETER}.
+   * @param sort one of {@link #_CLASSTYPE_PARAMETER} or {@link #METHOD_TYPE_PARAMETER}.
    * @param paramIndex the type parameter index.
    * @param boundIndex the type bound index within the above type parameters.
    * @return a reference to the given generic class or method type parameter bound.
@@ -239,7 +239,7 @@ public class TypeReference {
    * @return a reference to the given super type of a class.
    */
   public static TypeReference newSuperTypeReference(final int itfIndex) {
-    return new TypeReference((CLASS_EXTENDS << 24) | ((itfIndex & 0xFFFF) << 8));
+    return new TypeReference((_CLASSEXTENDS << 24) | ((itfIndex & 0xFFFF) << 8));
   }
 
   /**
@@ -290,8 +290,8 @@ public class TypeReference {
   /**
    * Returns the sort of this type reference.
    *
-   * @return one of {@link #CLASS_TYPE_PARAMETER}, {@link #METHOD_TYPE_PARAMETER}, {@link
-   *     #CLASS_EXTENDS}, {@link #CLASS_TYPE_PARAMETER_BOUND}, {@link #METHOD_TYPE_PARAMETER_BOUND},
+   * @return one of {@link #_CLASSTYPE_PARAMETER}, {@link #METHOD_TYPE_PARAMETER}, {@link
+   *     #_CLASSEXTENDS}, {@link #_CLASSTYPE_PARAMETER_BOUND}, {@link #METHOD_TYPE_PARAMETER_BOUND},
    *     {@link #FIELD}, {@link #METHOD_RETURN}, {@link #METHOD_RECEIVER}, {@link
    *     #METHOD_FORMAL_PARAMETER}, {@link #THROWS}, {@link #LOCAL_VARIABLE}, {@link
    *     #RESOURCE_VARIABLE}, {@link #EXCEPTION_PARAMETER}, {@link #INSTANCEOF}, {@link #NEW},
@@ -305,8 +305,8 @@ public class TypeReference {
 
   /**
    * Returns the index of the type parameter referenced by this type reference. This method must
-   * only be used for type references whose sort is {@link #CLASS_TYPE_PARAMETER}, {@link
-   * #METHOD_TYPE_PARAMETER}, {@link #CLASS_TYPE_PARAMETER_BOUND} or {@link
+   * only be used for type references whose sort is {@link #_CLASSTYPE_PARAMETER}, {@link
+   * #METHOD_TYPE_PARAMETER}, {@link #_CLASSTYPE_PARAMETER_BOUND} or {@link
    * #METHOD_TYPE_PARAMETER_BOUND}.
    *
    * @return a type parameter index.
@@ -318,7 +318,7 @@ public class TypeReference {
   /**
    * Returns the index of the type parameter bound, within the type parameter {@link
    * #getTypeParameterIndex}, referenced by this type reference. This method must only be used for
-   * type references whose sort is {@link #CLASS_TYPE_PARAMETER_BOUND} or {@link
+   * type references whose sort is {@link #_CLASSTYPE_PARAMETER_BOUND} or {@link
    * #METHOD_TYPE_PARAMETER_BOUND}.
    *
    * @return a type parameter bound index.
@@ -329,7 +329,7 @@ public class TypeReference {
 
   /**
    * Returns the index of the "super type" of a class that is referenced by this type reference.
-   * This method must only be used for type references whose sort is {@link #CLASS_EXTENDS}.
+   * This method must only be used for type references whose sort is {@link #_CLASSEXTENDS}.
    *
    * @return the index of an interface in the 'implements' clause of a class, or -1 if this type
    *     reference references the type of the super class.
@@ -401,7 +401,7 @@ public class TypeReference {
    */
   static void putTarget(final int targetTypeAndInfo, final ByteVector output) {
     switch (targetTypeAndInfo >>> 24) {
-      case CLASS_TYPE_PARAMETER:
+      case _CLASSTYPE_PARAMETER:
       case METHOD_TYPE_PARAMETER:
       case METHOD_FORMAL_PARAMETER:
         output.putShort(targetTypeAndInfo >>> 16);
@@ -418,8 +418,8 @@ public class TypeReference {
       case METHOD_REFERENCE_TYPE_ARGUMENT:
         output.putInt(targetTypeAndInfo);
         break;
-      case CLASS_EXTENDS:
-      case CLASS_TYPE_PARAMETER_BOUND:
+      case _CLASSEXTENDS:
+      case _CLASSTYPE_PARAMETER_BOUND:
       case METHOD_TYPE_PARAMETER_BOUND:
       case THROWS:
       case EXCEPTION_PARAMETER:

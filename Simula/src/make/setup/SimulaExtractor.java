@@ -55,7 +55,7 @@ public final class SimulaExtractor extends JFrame {
 	private static final boolean DEBUG=true;
 	private static final boolean USE_CONSOLE=true;//false;
 	
-	// NOTE: When updating release id, change version in Global.simulaReleaseID and in simula.runtime.ENVIRONMENT$
+	// NOTE: When updating release id, change version in Global.simulaReleaseID and in simula.runtime._ENVIRONMENT
     public static final String simulaReleaseID="Simula-2.0";
     public static String simulaRevisionID="?";
 

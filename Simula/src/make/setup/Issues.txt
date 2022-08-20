@@ -86,7 +86,7 @@ PrimeUnder stopper etter hvert ved 1000000 som input
 
 Analyse: Regner med at du får denne meldingen:
 
-Thread:main[Simulation$ SQS=Simula Head$]: UNCAUGHT EXCEPTION: unable to create new native thread
+Thread:main[Simulation$ SQS=Simula _Head]: UNCAUGHT EXCEPTION: unable to create new native thread
 
 Årsaken er at alle Simulation-prosesser realiseres i hver sin Thread.
 Og, det er vanlig praksis i simulerings-programmer å skrive:
@@ -214,7 +214,7 @@ Dårlig feilmelding ved ulovlig GOTO.
 
 Analyse: Label quant inneholder for lite informasjon.
 
-Tiltak: Utvid LABQNT$ med identifier og linje-nummer.
+Tiltak: Utvid _LABQNT med identifier og linje-nummer.
 
 ===============================================================================
 

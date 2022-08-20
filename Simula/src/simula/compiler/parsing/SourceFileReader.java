@@ -18,7 +18,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 //*************************************************************************************
-//**                                                             CLASS SourceFileReader
+//**                                                            CLASS SourceFileReader
 //*************************************************************************************
 
 /**
@@ -53,7 +53,7 @@ public final class SourceFileReader {
 	public void insert(final File file) {
 		lineStack.push(Global.sourceLineNumber); Global.sourceLineNumber=1;
 	    try {
-			Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
+			Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
 			nameStack.push(Global.insertName);
 			Global.insertName=file.getName();
 			stack.push(current); current=reader;

@@ -74,7 +74,7 @@ public final class ObjectGenerator extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN ObjectGenerator(" + classIdentifier + ").doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());
@@ -148,14 +148,14 @@ public final class ObjectGenerator extends Expression {
 		s.append(')');
 		// if(((ClassDeclaration)meaning.declaredAs).isDetachUsed())
 		if (cls.isDetachUsed()) {
-			s.append(".START$()");
+			s.append("._START()");
 //			String start="(("+classIdent+')'+s.toString()+')';
 			String start=s.toString();
 			if(backLink!=null) start="(("+classIdent+')'+start+')';
 			//Util.BREAK("ObjectGenerator.toJavaCode: backLink="+this.backLink+", START="+start);
 			return(start);
 		} else
-			s.append(".STM$()");
+			s.append("._STM()");
 		return (s.toString());
 	}
 

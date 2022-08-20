@@ -78,13 +78,13 @@ public final class Parameter extends Declaration implements Externalizable {
 
 	public void setExternalIdentifier(final int prefixLevel) {
 		if (prefixLevel > 0)
-			 externalIdent = "p" + prefixLevel + '$' + identifier;
-		else externalIdent = "p$" + identifier;
+			 externalIdent = "p" + prefixLevel + '_' + identifier;
+		else externalIdent = "p_" + identifier;
 	}
 
 	@Override
 	public void doChecking() {
-		if(IS_SEMANTICS_CHECKED()) return;
+		if(_ISSEMANTICS_CHECKED()) return;
 		Global.sourceLineNumber=lineNumber;
 		if(kind==null) {
 			Util.error("Parameter "+identifier+" is not specified -- assumed Simple Integer");
@@ -144,17 +144,17 @@ public final class Parameter extends Declaration implements Externalizable {
     	if(mode==Parameter.Mode.name) {
     		switch(kind) {
     		    case Simple:
-    		    	if(type==Type.Label) return("NAME$<LABQNT$>");
-    		    	return("NAME$<"+type.toJavaTypeClass()+">");
-    		    case Procedure: return("NAME$<PRCQNT$>");
-    		    case Label:     return("NAME$<LABQNT$>");
-    		    case Array:		return("NAME$<ARRAY$<?>>");
+    		    	if(type==Type.Label) return("_NAME<_LABQNT>");
+    		    	return("_NAME<"+type.toJavaTypeClass()+">");
+    		    case Procedure: return("_NAME<_PRCQNT>");
+    		    case Label:     return("_NAME<_LABQNT>");
+    		    case Array:		return("_NAME<_ARRAY<?>>");
     		}
     	}
     	switch(kind) {
-    		case Array:     return("ARRAY$<?>");
-    		case Label:     return("LABQNT$");
-    		case Procedure: return("PRCQNT$");
+    		case Array:     return("_ARRAY<?>");
+    		case Label:     return("_LABQNT");
+    		case Procedure: return("_PRCQNT");
     		case Simple: // Fall through
 		}
     	return(type.toJavaType());

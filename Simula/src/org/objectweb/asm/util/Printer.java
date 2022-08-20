@@ -417,9 +417,9 @@ public abstract class Printer {
    * Class type annotation. See {@link org.objectweb.asm.ClassVisitor#visitTypeAnnotation}.
    *
    * @param typeRef a reference to the annotated type. The sort of this type reference must be
-   *     {@link org.objectweb.asm.TypeReference#CLASS_TYPE_PARAMETER}, {@link
-   *     org.objectweb.asm.TypeReference#CLASS_TYPE_PARAMETER_BOUND} or {@link
-   *     org.objectweb.asm.TypeReference#CLASS_EXTENDS}. See {@link
+   *     {@link org.objectweb.asm.TypeReference#_CLASSTYPE_PARAMETER}, {@link
+   *     org.objectweb.asm.TypeReference#_CLASSTYPE_PARAMETER_BOUND} or {@link
+   *     org.objectweb.asm.TypeReference#_CLASSEXTENDS}. See {@link
    *     org.objectweb.asm.TypeReference}.
    * @param typePath the path to the annotated type argument, wildcard bound, array element type, or
    *     static inner type within 'typeRef'. May be {@literal null} if the annotation targets
@@ -686,8 +686,8 @@ public abstract class Printer {
    * org.objectweb.asm.RecordComponentVisitor#visitTypeAnnotation}.
    *
    * @param typeRef a reference to the annotated type. The sort of this type reference must be
-   *     {@link TypeReference#CLASS_TYPE_PARAMETER}, {@link
-   *     TypeReference#CLASS_TYPE_PARAMETER_BOUND} or {@link TypeReference#CLASS_EXTENDS}. See
+   *     {@link TypeReference#_CLASSTYPE_PARAMETER}, {@link
+   *     TypeReference#_CLASSTYPE_PARAMETER_BOUND} or {@link TypeReference#_CLASSEXTENDS}. See
    *     {@link TypeReference}.
    * @param typePath the path to the annotated type argument, wildcard bound, array element type, or
    *     static inner type within 'typeRef'. May be {@literal null} if the annotation targets

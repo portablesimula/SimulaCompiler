@@ -289,7 +289,7 @@ public class CheckMethodAdapter extends MethodVisitor {
   private static final String INVALID_TYPE_REFERENCE = "Invalid type reference sort 0x";
   private static final String INVALID_LOCAL_VARIABLE_INDEX = "Invalid local variable index";
   private static final String MUST_NOT_BE_NULL_OR_EMPTY = " (must not be null or empty)";
-  private static final String START_LABEL = "start label";
+  private static final String _STARTLABEL = "start label";
   private static final String END_LABEL = "end label";
 
   /** The class version number. */
@@ -901,7 +901,7 @@ public class CheckMethodAdapter extends MethodVisitor {
       final Label start, final Label end, final Label handler, final String type) {
     checkVisitCodeCalled();
     checkVisitMaxsNotCalled();
-    checkLabel(start, false, START_LABEL);
+    checkLabel(start, false, _STARTLABEL);
     checkLabel(end, false, END_LABEL);
     checkLabel(handler, false, "handler label");
     if (labelInsnIndices.get(start) != null
@@ -947,7 +947,7 @@ public class CheckMethodAdapter extends MethodVisitor {
     if (signature != null) {
       CheckClassAdapter.checkFieldSignature(signature);
     }
-    checkLabel(start, true, START_LABEL);
+    checkLabel(start, true, _STARTLABEL);
     checkLabel(end, true, END_LABEL);
     checkUnsignedShort(index, INVALID_LOCAL_VARIABLE_INDEX);
     int startInsnIndex = labelInsnIndices.get(start).intValue();
@@ -985,7 +985,7 @@ public class CheckMethodAdapter extends MethodVisitor {
           "Invalid start, end and index arrays (must be non null and of identical length");
     }
     for (int i = 0; i < start.length; ++i) {
-      checkLabel(start[i], true, START_LABEL);
+      checkLabel(start[i], true, _STARTLABEL);
       checkLabel(end[i], true, END_LABEL);
       checkUnsignedShort(index[i], INVALID_LOCAL_VARIABLE_INDEX);
       int startInsnIndex = labelInsnIndices.get(start[i]).intValue();
@@ -1004,7 +1004,7 @@ public class CheckMethodAdapter extends MethodVisitor {
     checkVisitCodeCalled();
     checkVisitMaxsNotCalled();
     checkUnsignedShort(line, "Invalid line number");
-    checkLabel(start, true, START_LABEL);
+    checkLabel(start, true, _STARTLABEL);
     super.visitLineNumber(line, start);
   }
 

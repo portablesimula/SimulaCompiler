@@ -194,7 +194,7 @@ public final class RunSingleTestBatch {
 //		names.add("PrecompiledProcedure.sim"); // OK: Used by simerr04
 //		names.add("simerr04.sim"); // OK: Division by Zero in Precompiled Procedure
 //		names.add("simerr05.sim"); // OK: NumberFormatException
-//		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
+		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
 		names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
 		names.add("simerr08.sim"); // OK: Illegal assignment. Name parameter is not a variable
 
@@ -226,7 +226,7 @@ public final class RunSingleTestBatch {
 
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
-		//Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.
@@ -235,7 +235,7 @@ public final class RunSingleTestBatch {
 //		RTOption.USE_CONSOLE=true;
 //		RTOption.CODE_STEP_TRACING = true;
 //		RTOption.BLOCK_TRACING = true;
-//		RTOption.GOTO_TRACING = true;
+//		RTOption._GOTOTRACING = true;
 //		RTOption.THREAD_TRACING = true;
 //		RTOption.QPS_TRACING = true;
 //		RTOption.SML_TRACING = true;

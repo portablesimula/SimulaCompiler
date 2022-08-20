@@ -86,7 +86,7 @@ public class ASMifier extends Printer {
               "Opcodes.NULL",
               "Opcodes.UNINITIALIZED_THIS"));
 
-  private static final Map<Integer, String> CLASS_VERSIONS;
+  private static final Map<Integer, String> _CLASSVERSIONS;
 
   static {
     HashMap<Integer, String> classVersions = new HashMap<>();
@@ -109,7 +109,7 @@ public class ASMifier extends Printer {
     classVersions.put(Opcodes.V17, "V17");
     classVersions.put(Opcodes.V18, "V18");
     classVersions.put(Opcodes.V19, "V19");
-    CLASS_VERSIONS = Collections.unmodifiableMap(classVersions);
+    _CLASSVERSIONS = Collections.unmodifiableMap(classVersions);
   }
 
   /** The name of the visitor variable in the produced code. */
@@ -223,7 +223,7 @@ public class ASMifier extends Printer {
 
     stringBuilder.setLength(0);
     stringBuilder.append("classWriter.visit(");
-    String versionString = CLASS_VERSIONS.get(version);
+    String versionString = _CLASSVERSIONS.get(version);
     if (versionString != null) {
       stringBuilder.append(versionString);
     } else {

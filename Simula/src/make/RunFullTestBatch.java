@@ -207,7 +207,7 @@ public final class RunFullTestBatch {
 		RTOption.USE_CONSOLE=false;
 		RTOption.CODE_STEP_TRACING = false;
 		RTOption.BLOCK_TRACING = false;
-		RTOption.GOTO_TRACING = false;
+		RTOption._GOTOTRACING = false;
 		RTOption.THREAD_TRACING = false;
 		RTOption.QPS_TRACING = false;
 		RTOption.SML_TRACING = false;

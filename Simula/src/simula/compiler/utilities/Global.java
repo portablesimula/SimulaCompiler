@@ -54,7 +54,7 @@ public final class Global {
 	public static File simulaHome;
 	public static String simulaVersion;
 	public static Vector<File> externalJarFiles;
-	public static Charset CHARSET$=Charset.defaultCharset();
+	public static Charset _CHARSET=Charset.defaultCharset();
 
 	public static int sourceLineNumber; //=1;
 	public static File sourceFileDir; 

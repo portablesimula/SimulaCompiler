@@ -29,7 +29,7 @@ public final class DummyStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		// No Checking
 		SET_SEMANTICS_CHECKED();
 	}

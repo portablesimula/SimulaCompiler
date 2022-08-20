@@ -17,7 +17,7 @@ begin
    begin outtext(msg); outimage; end; end; 
  
      
-   simulation class Warehouse(nDocks); integer nDocks; 
+   Simulation class Warehouse(nDocks); integer nDocks; 
    begin 
       real washTime = 20.0, pTime = 5.0; 
       long real unloadSpeed = 1000.0&&0; ! unloading speed; 
@@ -37,7 +37,7 @@ begin
       
           
       procedure RemoveAllVans; begin 
-         ref(link) elt,next; 
+         ref(Link) elt,next; 
 %         integer speed=200; 
          elt:-renderingSet.first; 
          while elt =/= none do begin 
@@ -84,7 +84,7 @@ begin
       end drawMap; 
      
  
-      process class Van(load); integer load; 
+      Process class Van(load); integer load; 
       begin long real waitTime; ref(Dock) myDock; 
          ref(ShapeElement) vanShape; 
          integer dLine,speed=200; 
@@ -172,7 +172,7 @@ begin
          trace("Van[" & objectTraceIdentifier & "] is terminating"); 
       end class Van; 
  
-      process class Generator; 
+      Process class Generator; 
       begin integer arrInterval; 
          real array arrivals(1:9), AvrgLoad(4:24); 
          arrivals(1):= 59; arrivals(2):= 19; arrivals(3):= 13; 
@@ -204,8 +204,8 @@ begin
       end Report; 
  
  
-      ref (head) platforms, Waiting; 
-      link class Dock(nr); integer nr;; 
+      ref (Head) platforms, Waiting; 
+      Link class Dock(nr); integer nr;; 
       integer hi; 
  
       !****************************************; 
@@ -214,7 +214,7 @@ begin
   
       drawMap(nDocks); 
  
-      platforms:- new head; Waiting:- new head; 
+      platforms:- new Head; Waiting:- new Head; 
       for hi:= 1 step 1 until nDocks do new Dock(hi).into(platforms); 
  
       activate new Generator; 

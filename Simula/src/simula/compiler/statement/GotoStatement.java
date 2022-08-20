@@ -36,11 +36,11 @@ public final class GotoStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		label.doChecking();
 		if (label.type != Type.Label)
 			Util.error("Goto " + label + ", " + label + " is not a Label");
-		label.backLink = this; // To ensure RESULT$ from functions
+		label.backLink = this; // To ensure _RESULT from functions
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -50,7 +50,7 @@ public final class GotoStatement extends Statement {
 		ASSERT_SEMANTICS_CHECKED(this);
   		Type type = label.type;
 		Util.ASSERT(type == Type.Label, "Invariant");
-		GeneratedJavaClass.code("GOTO$(" + label.toJavaCode() + ");","GOTO EVALUATED LABEL");
+		GeneratedJavaClass.code("_GOTO(" + label.toJavaCode() + ");","GOTO EVALUATED LABEL");
 	}
 
 	@Override

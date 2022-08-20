@@ -58,7 +58,7 @@ public class MultiANewArrayInsnNode extends AbstractInsnNode {
 
   @Override
   public int getType() {
-    return MULTIANEWARRAY_INSN;
+    return MULTIANEW_ARRAYINSN;
   }
 
   @Override

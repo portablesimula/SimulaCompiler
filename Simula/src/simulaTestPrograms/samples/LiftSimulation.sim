@@ -16,7 +16,7 @@ Drawing("Elevator simulation",1000,1000) begin
 -- 
 -- This is an implementation written in the 70's and it is fraught with logical errors.
 -- If you look closely at the graphical output, you will see that some request
--- for a lift is not satisfied even if a vacant elevator is on the same floor
+-- for a lift is not satisfied even if a vacant Elevator is on the same floor
 --
 -- Feel free to correct this program.
 --
@@ -35,13 +35,13 @@ real startTime=7.0;          -- Starting time in the morning
 real endTime=19.0;           -- Ending time in the evening
 
 
-Simulation begin
+simulation begin
     integer neutral=0, wayup=1, waydown=2; -- Elevator States
     real maxWaitingTime;
     real totalWaitingTime;
     integer U1, U2, U3, U4;  -- Random seeds
     ref(Elevator) array lifts(1:nLifts);
-    ref(Head) idleQueue;
+    ref(head) idleQueue;
     ref(Floor) array floors(0:nFloors);
     integer nPersionArrived,nPersionleft,nToLunch,nFromLunch;
 
@@ -58,9 +58,9 @@ Simulation begin
     end;
 
     ----------------------------------
-    --- Process: Person
+    --- process: Person
     ----------------------------------
-    Process class Person(officeFloor); integer officeFloor; begin
+    process class Person(officeFloor); integer officeFloor; begin
         ref(Floor) currentFloor;   -- Current floor for this Person
         integer destination; -- Destination floor when using a lift
         ref(Elevator) lift;  -- Current lift for this Person
@@ -72,7 +72,7 @@ Simulation begin
             ref(Elevator) lift;
             trace("Get lift going up at floor " & edit(currentFloor.no) & " nLifts=" & edit(currentFloor.lifts.cardinal));
             lift:- currentFloor.lifts.first;
-            While lift =/= none and then lift.state ne waydown and then not lift.space do
+            while lift =/= none and then lift.state ne waydown and then not lift.space do
                 lift:- lift.suc;
             trace("Get lift going up at floor " & edit(currentFloor.no) & " returns Lift=" & (if lift == none then "NONE" else edit(lift.no)));
             getLiftGoingUp:- lift;
@@ -82,7 +82,7 @@ Simulation begin
             ref(Elevator) lift;
             trace("Get lift going down at floor " & edit(currentFloor.no) & " nLifts=" & edit(currentFloor.lifts.cardinal));
             lift:- currentFloor.lifts.first;
-            While lift =/= none and then lift.state ne wayup and then not lift.space do
+            while lift =/= none and then lift.state ne wayup and then not lift.space do
                lift:- lift.suc;
             getLiftGoingDown:- lift;
         end;
@@ -111,8 +111,8 @@ Simulation begin
         --- Person - Story board (simulation events)
         ------------------------------------------
         arrivalTime:= time; nPersionArrived:=nPersionArrived+1;
-        leaveTime:= arrivalTime + 8.0 + Uniform(-1.0, 1.0, U4);
-        lunchTime:= arrivalTime + 4.0 + Uniform(-0.5, 1.0, U2);
+        leaveTime:= arrivalTime + 8.0 + uniform(-1.0, 1.0, U4);
+        lunchTime:= arrivalTime + 4.0 + uniform(-0.5, 1.0, U2);
         
         -- Person leaves floor 0 bound for officeFloor
         currentFloor:- floors(0); destination:= officeFloor;
@@ -134,7 +134,7 @@ Simulation begin
         passivate; out;
         hold(getoutTime);
          
-        -- Follow elevator, check every floor for possible exit;
+        -- Follow Elevator, check every floor for possible exit;
         personLeavesLift(lift.no);
         activate lift after current;
         reactivate current at lunchTime;
@@ -212,13 +212,13 @@ Simulation begin
 
 
     ----------------------------------
-    --- Process: Elevator
+    --- process: Elevator
     ----------------------------------
-    Process class Elevator(no); integer no; begin
+    process class Elevator(no); integer no; begin
         integer position, state, goal;
         boolean doorOpened;
         boolean array Button(0:nFloors);
-        ref(Head) load;
+        ref(head) load;
       
         ref(Floor) procedure currentFloor; currentFloor:- floors(position);
         boolean procedure space; space:= load.cardinal < maxload;
@@ -227,7 +227,7 @@ Simulation begin
         -----------------------------------------------
         --- Elevator - Story board (simulation events)
         -----------------------------------------------
-        load:- new Head;
+        load:- new head;
         state:= neutral;
         into(floors(0).lifts);
         while true do begin
@@ -281,7 +281,7 @@ Simulation begin
                 hold(doorSlamTime);
                 doorOpened:= true;
             end;
-            -- Person leaving here exit elevator;
+            -- Person leaving here exit Elevator;
             Button(position):= false;
             begin ref(Person) p;
                 p:- load.first;
@@ -293,7 +293,7 @@ Simulation begin
                     end else p:- p.suc;
                 end;
             end;
-            -- Person entering elevator here;
+            -- Person entering Elevator here;
             if state=wayup then begin
                 while (not currentFloor.personsGoingUp.empty) and space do begin
                     inspect currentFloor.personsGoingUp do begin
@@ -338,13 +338,13 @@ Simulation begin
     ----------------------------------
     class Floor(no); integer no; begin
         integer nPerson; -- on this floor
-        ref(Head) personsGoingUp;   -- Persons going up;
-        ref(Head) personsGoingDown; -- Persons going down;
-        ref(Head) lifts; -- Set of Lifts currently on this floor
+        ref(head) personsGoingUp;   -- Persons going up;
+        ref(head) personsGoingDown; -- Persons going down;
+        ref(head) lifts; -- Set of Lifts currently on this floor
         
-        Procedure activateIdleLift;
+        procedure activateIdleLift;
         if not idleQueue.empty then begin
-            ref(Process) lift,nearest;
+            ref(process) lift,nearest;
             -- Search for idle lift at this floor
             for lift:-idleQueue.first, lift.suc while lift =/= none do begin
                 if lift qua Elevator.no = no then goto E;
@@ -360,15 +360,15 @@ Simulation begin
             
         end else trace("activateIdleLift: idleQueue is empty");
         
-        personsGoingUp:- new Head; personsGoingDown:- new Head;
-        lifts:- new Head;
+        personsGoingUp:- new head; personsGoingDown:- new head;
+        lifts:- new head;
     end class Floor;
 
 
     -------------------------------------
-    --- Procedure: anyCallsUpFromFloor
+    --- procedure: anyCallsUpFromFloor
     -------------------------------------
-    integer Procedure anyCallsUpFromFloor(n); integer n; begin
+    integer procedure anyCallsUpFromFloor(n); integer n; begin
         integer j; anyCallsUpFromFloor:= -1;
         for j:= n step 1 until nFloors do
         if floors(j).personsGoingUp.first =/= none then begin
@@ -378,9 +378,9 @@ Simulation begin
 
 
     -------------------------------------
-    --- Procedure: anyCallsDownFromFloor
+    --- procedure: anyCallsDownFromFloor
     -------------------------------------
-    integer Procedure anyCallsDownFromFloor(n); integer n; begin
+    integer procedure anyCallsDownFromFloor(n); integer n; begin
         integer j; anyCallsDownFromFloor:= -1;
         for j:= n step -1 until 0 do
         if floors(j).personsGoingDown.first =/= none then begin
@@ -390,9 +390,9 @@ Simulation begin
     
         
     ----------------------------------
-    --- Process: Reporter
+    --- process: Reporter
     ----------------------------------
-    Process class Reporter; begin 
+    process class Reporter; begin 
         integer lb=150;    -- Shaft left border
         integer width=40;  -- Shaft width
         integer ffdist=70; -- floors to floor distance
@@ -404,7 +404,7 @@ Simulation begin
         ref(TextElement) array DNs(0:nFloors);
         ref(TextElement) array CNT(0:nFloors);
         
-        Text procedure edNonZero(n); integer n;
+        text procedure edNonZero(n); integer n;
             edNonZero:-if n>0 then edit(n) else " ";
 
         class LiftCabin(lift,x0,y0); ref(Elevator) lift; integer x0,y0; begin
@@ -510,14 +510,14 @@ Simulation begin
 
     begin -- Initiate global variables
         integer j;
-        idleQueue:- new Head;
+        idleQueue:- new head;
         U1:=455470314;     -- Random seed 1
         U2:=950423827;     -- Random seed 2
         U3:=1602649445;    -- Random seed 3
         U4:=660825716;     -- Random seed 4
         for j:=0 step 1 until nFloors do floors(j):- new Floor(j);
         for j:=1 step 1 until nLifts do begin
-            lifts(j):- new elevator(j);
+            lifts(j):- new Elevator(j);
             activate lifts(j);
         end;
         for j:=1 step 1 until nPersions do begin

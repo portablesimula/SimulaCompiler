@@ -325,7 +325,7 @@ public class SimulaEditor extends JFrame {
     			tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
     			current.fileChanged=false;
     			if(file==null)current.fillTextPane(new StringReader("begin\n\nend;\n"),0);
-    			else try { Reader reader=new InputStreamReader(new FileInputStream(file),Global.CHARSET$);
+    			else try { Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
     				current.fillTextPane(reader,0);
     			} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
     			menuBar.updateMenuItems();

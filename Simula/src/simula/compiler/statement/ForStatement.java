@@ -90,7 +90,7 @@ public final class ForStatement extends Statement {
   
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		controlVariable.doChecking();
 		this.type = controlVariable.type; // Type of control variable
@@ -113,19 +113,19 @@ public final class ForStatement extends Statement {
 		if(singleElement!=null) { singleElement.doSimplifiedJavaCoding(); return; }
 
 		// ------------------------------------------------------------
-	    //	for(boolean CB$:new ForList(
+	    //	for(boolean CB_:new ForList(
 	    //			 new SingleElt<Number>(n1)
 	    //			,new SingleElt<Number>(n3)
 	    //			,new StepUntil(n5,n3,n201)
 	    //			,new WhileElt<Number>(n4,b1)
-	    //       )) { if(!CB$) continue;
+	    //       )) { if(!CB_) continue;
 	    //	          // Statements ...
 	    //	}
 	    // ------------------------------------------------------------
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);
 		boolean refType=controlVariable.type.isReferenceType();
-		String CB="CB$"+lineNumber;
+		String CB="CB_"+lineNumber;
 	    GeneratedJavaClass.code("for(boolean "+CB+":new ForList(");
 	    char del=' ';
 	    for(ForListElement elt:forList) { 
@@ -133,7 +133,7 @@ public final class ForStatement extends Statement {
 	    	if(elt.expr1.type==Type.Character) classIdent="Character"; // AD'HOC
 	    	if(elt.expr1.type==Type.Boolean) classIdent="Boolean"; // AD'HOC
 	    	if(elt.expr1.type==Type.Text) {
-	    		classIdent="TXT$"; // AD'HOC
+	    		classIdent="_TXT"; // AD'HOC
 	    	}
 	    	GeneratedJavaClass.code("   "+del+elt.edCode(classIdent,elt.expr1.type));
 	    	del=',';
@@ -151,16 +151,16 @@ public final class ForStatement extends Statement {
   
     private String edControlVariableByName(final String classIdent,Type xType) {
     	String cv=controlVariable.toJavaCode();
-    	String castVar="x$;";
-    	if(controlVariable.type==Type.Integer) castVar="x$.intValue();";
-    	else if(controlVariable.type==Type.Real) castVar="x$.floatValue();";
-    	else if(controlVariable.type==Type.LongReal) castVar="x$.doubleValue();";
+    	String castVar="x_;";
+    	if(controlVariable.type==Type.Integer) castVar="x_.intValue();";
+    	else if(controlVariable.type==Type.Real) castVar="x_.floatValue();";
+    	else if(controlVariable.type==Type.LongReal) castVar="x_.doubleValue();";
     	else if(controlVariable.type.isReferenceType()) {
     		ClassDeclaration qual=controlVariable.type.getQual();
-    		if(!(controlVariable.type.equals(xType))) castVar="("+qual.getJavaIdentifier()+")x$;";
+    		if(!(controlVariable.type.equals(xType))) castVar="("+qual.getJavaIdentifier()+")x_;";
     	}
-    	String cvName="new NAME$<"+classIdent+">()"+
-    			"{ public "+classIdent+" put("+classIdent+" x$){"+cv+"="+castVar+" return(x$);};"+
+    	String cvName="new _NAME<"+classIdent+">()"+
+    			"{ public "+classIdent+" put("+classIdent+" x_){"+cv+"="+castVar+" return(x_);};"+
     			"  public "+classIdent+" get(){return(("+classIdent+")"+cv+"); }	}";
     	return(cvName);
     }
@@ -192,12 +192,12 @@ public final class ForStatement extends Statement {
 		public void doChecking() {
 			if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ForListElement("+this+").doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
 		    expr1.doChecking(); 
-			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
+			expr1.backLink=ForStatement.this; // To ensure _RESULT from functions
 		}
 		public String edCode(final String classIdent,Type xType) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 		    return("new Single"+forElt+"("+edControlVariableByName(classIdent,xType)
-		      +",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
+		      +",new _NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
 		}
 		public ForListElement isOptimizable() {
 			return(this);
@@ -234,15 +234,15 @@ public final class ForStatement extends Statement {
 			expr1.doChecking();
 			expr2.doChecking(); if(expr2.type!=Type.Boolean) Util.error("While "+expr2+" is not of type Boolean");
 			expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
-			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
-			expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
+			expr1.backLink=ForStatement.this; // To ensure _RESULT from functions
+			expr2.backLink=ForStatement.this; // To ensure _RESULT from functions
 		}
 		@Override
 		public String edCode(final String classIdent,Type xType) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 			return("new While"+forElt+"("+edControlVariableByName(classIdent,xType)
-			+",new NAME$<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
-			+",new NAME$<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
+			+",new _NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
+			+",new _NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 		}
 		@Override
 		public ForListElement isOptimizable() {
@@ -281,15 +281,15 @@ public final class ForStatement extends Statement {
 			expr1.doChecking(); expr1=TypeConversion.testAndCreate(controlVariable.type,expr1);
 			expr2.doChecking(); expr2=TypeConversion.testAndCreate(controlVariable.type,expr2);
 			expr3.doChecking(); expr3=TypeConversion.testAndCreate(controlVariable.type,expr3);
-			expr1.backLink=ForStatement.this; // To ensure RESULT$ from functions
-			expr2.backLink=ForStatement.this; // To ensure RESULT$ from functions
-			expr3.backLink=ForStatement.this; // To ensure RESULT$ from functions
+			expr1.backLink=ForStatement.this; // To ensure _RESULT from functions
+			expr2.backLink=ForStatement.this; // To ensure _RESULT from functions
+			expr3.backLink=ForStatement.this; // To ensure _RESULT from functions
 		}
 		public String edCode(final String classIdent,Type xType) {
 			return("new StepUntil("+edControlVariableByName(classIdent,xType)
-	  	                     +",new NAME$<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
-	  	                     +",new NAME$<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
-	  	                     +",new NAME$<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
+	  	                     +",new _NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
+	  	                     +",new _NAME<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
+	  	                     +",new _NAME<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
 	      
 		}
 		@Override

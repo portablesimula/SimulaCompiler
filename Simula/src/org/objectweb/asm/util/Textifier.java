@@ -71,12 +71,12 @@ public class Textifier extends Printer {
   public static final int METHOD_SIGNATURE = 4;
 
   /** The type of class signatures. See {@link #appendDescriptor}. */
-  public static final int CLASS_SIGNATURE = 5;
+  public static final int _CLASSSIGNATURE = 5;
 
   /** The type of method handle descriptors. See {@link #appendDescriptor}. */
   public static final int HANDLE_DESCRIPTOR = 9;
 
-  private static final String CLASS_SUFFIX = ".class";
+  private static final String _CLASSSUFFIX = ".class";
   private static final String DEPRECATED = "// DEPRECATED\n";
   private static final String RECORD = "// RECORD\n";
   private static final String INVISIBLE = " // invisible\n";
@@ -191,7 +191,7 @@ public class Textifier extends Printer {
     }
     appendRawAccess(access);
 
-    appendDescriptor(CLASS_SIGNATURE, signature);
+    appendDescriptor(_CLASSSIGNATURE, signature);
     if (signature != null) {
       appendJavaDeclaration(name, signature);
     }
@@ -667,7 +667,7 @@ public class Textifier extends Printer {
   }
 
   private void visitType(final Type value) {
-    stringBuilder.append(value.getClassName()).append(CLASS_SUFFIX);
+    stringBuilder.append(value.getClassName()).append(_CLASSSUFFIX);
   }
 
   @Override
@@ -1003,7 +1003,7 @@ public class Textifier extends Printer {
     if (value instanceof String) {
       Printer.appendString(stringBuilder, (String) value);
     } else if (value instanceof Type) {
-      stringBuilder.append(((Type) value).getDescriptor()).append(CLASS_SUFFIX);
+      stringBuilder.append(((Type) value).getDescriptor()).append(_CLASSSUFFIX);
     } else {
       stringBuilder.append(value);
     }
@@ -1322,11 +1322,11 @@ public class Textifier extends Printer {
    *
    * @param type the type of 'value'. Must be one of {@link #INTERNAL_NAME}, {@link
    *     #FIELD_DESCRIPTOR}, {@link #FIELD_SIGNATURE}, {@link #METHOD_DESCRIPTOR}, {@link
-   *     #METHOD_SIGNATURE}, {@link #CLASS_SIGNATURE} or {@link #HANDLE_DESCRIPTOR}.
+   *     #METHOD_SIGNATURE}, {@link #_CLASSSIGNATURE} or {@link #HANDLE_DESCRIPTOR}.
    * @param value an internal name, type descriptor or a type signature. May be {@literal null}.
    */
   protected void appendDescriptor(final int type, final String value) {
-    if (type == CLASS_SIGNATURE || type == FIELD_SIGNATURE || type == METHOD_SIGNATURE) {
+    if (type == _CLASSSIGNATURE || type == FIELD_SIGNATURE || type == METHOD_SIGNATURE) {
       if (value != null) {
         stringBuilder.append("// signature ").append(value).append('\n');
       }
@@ -1457,20 +1457,20 @@ public class Textifier extends Printer {
   private void appendTypeReference(final int typeRef) {
     TypeReference typeReference = new TypeReference(typeRef);
     switch (typeReference.getSort()) {
-      case TypeReference.CLASS_TYPE_PARAMETER:
-        stringBuilder.append("CLASS_TYPE_PARAMETER ").append(typeReference.getTypeParameterIndex());
+      case TypeReference._CLASSTYPE_PARAMETER:
+        stringBuilder.append("_CLASSTYPE_PARAMETER ").append(typeReference.getTypeParameterIndex());
         break;
       case TypeReference.METHOD_TYPE_PARAMETER:
         stringBuilder
             .append("METHOD_TYPE_PARAMETER ")
             .append(typeReference.getTypeParameterIndex());
         break;
-      case TypeReference.CLASS_EXTENDS:
-        stringBuilder.append("CLASS_EXTENDS ").append(typeReference.getSuperTypeIndex());
+      case TypeReference._CLASSEXTENDS:
+        stringBuilder.append("_CLASSEXTENDS ").append(typeReference.getSuperTypeIndex());
         break;
-      case TypeReference.CLASS_TYPE_PARAMETER_BOUND:
+      case TypeReference._CLASSTYPE_PARAMETER_BOUND:
         stringBuilder
-            .append("CLASS_TYPE_PARAMETER_BOUND ")
+            .append("_CLASSTYPE_PARAMETER_BOUND ")
             .append(typeReference.getTypeParameterIndex())
             .append(", ")
             .append(typeReference.getTypeParameterBoundIndex());

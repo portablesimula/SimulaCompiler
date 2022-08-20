@@ -43,7 +43,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 		do { switchList.add(Expression.parseExpression());
 		} while (Parser.accept(KeyWord.COMMA));
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration(3), switchList=" + switchList);
-		new Parameter("$SW", Type.Integer, Parameter.Kind.Simple).into(parameterList);
+		new Parameter("_SW", Type.Integer, Parameter.Kind.Simple).into(parameterList);
 //		Global.currentScope = declaredIn;
 		Global.setScope(declaredIn);
 	}
@@ -55,7 +55,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 		for (Expression expr : switchList) {
 			expr.doChecking();
 			if(expr.type!=Type.Label) Util.error("Switch element "+expr+" is not a Label");
-			expr.backLink = this; // To ensure RESULT$ from functions
+			expr.backLink = this; // To ensure _RESULT from functions
 		}
 		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(this);
 		if(virtSpec==null) {
@@ -71,13 +71,13 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 	@Override
 	public void codeProcedureBody() {
 		GeneratedJavaClass.debug("// Switch Body");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + " STM$() {");
-		GeneratedJavaClass.code("switch(p$$SW-1) {");
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + " _STM() {");
+		GeneratedJavaClass.code("switch(p__SW-1) {");
 		int n = 0;
 		for (Expression expr : ((SwitchDeclaration) this).switchList) {
-			GeneratedJavaClass.code("case " + (n++) + ": RESULT$=" + expr.toJavaCode() + "; break;");
+			GeneratedJavaClass.code("case " + (n++) + ": _RESULT=" + expr.toJavaCode() + "; break;");
 		}
-		GeneratedJavaClass.code("default: throw new SimulaRuntimeError(\"Illegal switch index: \"+p$$SW);");
+		GeneratedJavaClass.code("default: throw new _SimulaRuntimeError(\"Illegal switch index: \"+p__SW);");
 		GeneratedJavaClass.code("}");
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");

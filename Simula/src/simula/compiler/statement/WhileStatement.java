@@ -37,7 +37,7 @@ public final class WhileStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		// Util.BREAK("BEGIN WhileStatement("+condition+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		condition.doChecking(); condition.backLink=this;
@@ -55,7 +55,7 @@ public final class WhileStatement extends Statement {
 		doStatement.doJavaCoding();
 		
 		if(isWhileTrueDo())
-			GeneratedJavaClass.code("if(CTX$==null) break; // Ad'Hoc to prevent JAVAC error: 'dead code' and terminate");
+			GeneratedJavaClass.code("if(CTX_==null) break; // Ad'Hoc to prevent JAVAC error: 'dead code' and terminate");
 		
 		GeneratedJavaClass.code("}");
 	}

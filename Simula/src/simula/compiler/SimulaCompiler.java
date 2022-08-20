@@ -61,7 +61,7 @@ public final class SimulaCompiler {
 		Global.initiate();
 		this.inputFileName = inputFileName;
 		if(reader==null) {
-			try { reader=new InputStreamReader(new FileInputStream(inputFileName),Global.CHARSET$);
+			try { reader=new InputStreamReader(new FileInputStream(inputFileName),Global._CHARSET);
 			} catch (IOException e) {
 				Util.error("can't open " + inputFileName+", reason: "+e);
 			}
@@ -359,8 +359,9 @@ public final class SimulaCompiler {
 	private int callJavaSystemCompiler(final JavaCompiler compiler,final String classPath) throws IOException {
 		Vector<String> arguments = new Vector<String>();
 		if (Option.DEBUGGING) {
-			arguments.add("-version");
+			//arguments.add("-Xlint:path");
 			//arguments.add("-verbose");
+			arguments.add("-version");
 		}
 		if (Option.TRACING)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=\"" + classPath+"\"");
 		arguments.add("-classpath"); arguments.add(classPath);
