@@ -20,7 +20,7 @@ public abstract class _RTObject {
 
 	// BASICIO
 	static final int INPUT_LINELENGTH_ = 80;
-	static final int OUTPUT_LINELENGTH_ = 200;
+	static final int OUTPUT_LINELENGTH_ = 132;
 	static _InFile SYSIN_;
 	public static _PrintFile SYSOUT_;
 	public static _InFile sysin() { return (SYSIN_); }

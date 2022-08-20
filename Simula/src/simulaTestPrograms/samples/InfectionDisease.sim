@@ -8,7 +8,7 @@ Drawing("Simulating Pandemic Development",900,900) begin
 -- 
 -- Written by �ystein Myhre Andersen, 2021. 
 -- 
-simulation begin 
+Simulation begin 
    real population=140; 
    real incubation=3; 
    integer length=50; 
@@ -22,19 +22,19 @@ simulation begin
    -- Statistics 
    integer nInfected,nSick; 
  
-   process class SickPerson; 
-   begin integer day; boolean symptoms; real contacts; ref(head) environment;   
+   Process class SickPerson; 
+   begin integer day; boolean symptoms; real contacts; ref(Head) environment;   
  
       procedure treatment; begin 
-         ref(link) X; 
+         ref(Link) X; 
          if not symptoms then begin 
-            for X :- environment.first while X in process do X qua SickPerson.treatment; 
+            for X :- environment.first while X in Process do X qua SickPerson.treatment; 
          end else if draw(probmass,u4) then begin 
             symptoms := false; nSick := nSick-1; 
          end    
       end treatment; 
  
-      environment :- new head; uninfected := uninfected-1; symptoms := false; 
+      environment :- new Head; uninfected := uninfected-1; symptoms := false; 
       contacts := randint(1,6,u5); nInfected := nInfected+1; 
       hold(incubation); symptoms := true; nSick := nSick+1; 
       for day:=1 step 1 until length do if symptoms then begin 
@@ -44,7 +44,7 @@ simulation begin
       end 
    end SickPerson; 
  
-   procedure infect(n,S); value n; integer n; ref(head) S; 
+   procedure infect(n,S); value n; integer n; ref(Head) S; 
    begin integer i; 
       for i := 1 step 1 until n do 
       if draw(uninfected / population,u3) then 
@@ -52,7 +52,7 @@ simulation begin
          activate S.last end 
    end infect; 
     
-   process class Reporter; begin 
+   Process class Reporter; begin 
       long real prevTime,timeStep; ref(Curve) infected,sick; 
       ref(Description) infectedLabel,sickLabel; 
       setBackgroundColor(lightGray); setStroke(4.5); 

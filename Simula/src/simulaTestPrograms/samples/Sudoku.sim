@@ -1,7 +1,7 @@
-simset begin ref(head) SQchain; 
+Simset begin ref(Head) SQchain; 
   ref(SQ) array SQinst( 1 : 9, 1 : 9 ); 
    
-  link class SQexit(success); boolean success; 
+  Link class SQexit(success); boolean success; 
   begin integer i, j; 
     detach; 
     if success then begin 
@@ -17,7 +17,7 @@ simset begin ref(head) SQchain;
     else outtext( "The puzzle has no solution!" ); 
   end; 
  
-  link class SQ( row, col, val ); integer row, col, val;  
+  Link class SQ( row, col, val ); integer row, col, val;  
   begin 
     integer next_val; 
      
@@ -60,7 +60,7 @@ exit:
     integer i, j; 
     
     outtext( "PUZZLE INPUT:" ); outimage; 
-    inspect new infile( "data/SudokuDifficult.txt" ) do begin 
+    inspect new InFile( "data/SudokuDifficult.txt" ) do begin 
       open( blanks(80) ); 
       for i := 1 step 1 until 9 do begin  
         for j := 1 step 1 until 9 do 
@@ -72,7 +72,7 @@ exit:
     outimage; 
   end; 
       
-  SQchain :- new head; 
+  SQchain :- new Head; 
   new SQexit(false).into(SQchain); 
   get_input; 
   new SQexit(true).into(SQchain); 

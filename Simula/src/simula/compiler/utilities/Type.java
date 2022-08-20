@@ -145,10 +145,10 @@ public class Type implements Externalizable {
 		if(otherRef==null) result=false;  // No ref is a super-reference of NONE
 		else if(thisRef==null) result=true; // Any ref is a sub-reference of NONE
 		else {
-			BlockDeclaration thisDecl=(BlockDeclaration)Global.getCurrentScope().findMeaning(thisRef).declaredAs;
-			BlockDeclaration otherDecl=(BlockDeclaration)Global.getCurrentScope().findMeaning(otherRef).declaredAs;
+			ClassDeclaration thisDecl=(ClassDeclaration)Global.getCurrentScope().findMeaning(thisRef).declaredAs;
+			ClassDeclaration otherDecl=(ClassDeclaration)Global.getCurrentScope().findMeaning(otherRef).declaredAs;
 			if(thisDecl==null) result=false; // Error Recovery
-			else result=((ClassDeclaration)thisDecl).isSubClassOf((ClassDeclaration)otherDecl);
+			else result=thisDecl.isSubClassOf(otherDecl);
 		}
 		//System.out.println("Type.isSubReferenceOf: "+thisRef+"  ==>  " + otherRef + "   RESULT="+result);
 		return(result); 

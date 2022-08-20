@@ -24,7 +24,7 @@
 % =====================================================================
 external class SimulaTest;
 
-SimulaTest(79,"---  Test the attribute 'isopen' of class file.") begin
+SimulaTest(79,"--- Test the attribute 'isopen' of class file.") begin
 
    text anyExistingdirectfile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingDirectfile79";
    text anyImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyImageFile79";

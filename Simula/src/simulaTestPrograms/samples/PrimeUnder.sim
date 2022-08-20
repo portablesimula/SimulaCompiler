@@ -9,12 +9,12 @@
 % This is an implementation of 28. juni 2000 by Karel Babcicky.
 %
 
-simulation begin
+Simulation begin
         
    integer limit,acc; 
    integer startTime,timeUsed;
     
-   process class Prime; 
+   Process class Prime; 
    begin integer which; 
          acc   := acc + 1; 
          which := time; 

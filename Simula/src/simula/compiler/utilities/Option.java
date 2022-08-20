@@ -26,9 +26,9 @@ import javax.swing.JPanel;
 public final class Option {
 	
 	public static boolean INLINE_TESTING = false; 
+	public static boolean CASE_SENSITIVE=false;
 	public static boolean verbose = false; 
 	public static boolean WARNINGS=true;
-	public static boolean CASE_SENSITIVE=false;
 
 	// Overall TRACING Options
 	public static boolean TRACING=false;
@@ -87,6 +87,7 @@ public final class Option {
 	public static boolean noJavacWarnings = false;
     
     public static void InitCompilerOptions() {
+    	Option.CASE_SENSITIVE=false;
 		Option.verbose = false;
 		Option.WARNINGS=true;
 
@@ -114,6 +115,7 @@ public final class Option {
 	}
 	
 	public static boolean getOption(String id) {
+		if(id.equalsIgnoreCase("CASE_SENSITIVE")) return(CASE_SENSITIVE); 
 		if(id.equalsIgnoreCase("VERBOSE")) return(verbose); 
 		if(id.equalsIgnoreCase("WARNINGS")) return(WARNINGS); 
 		if(id.equalsIgnoreCase("TRACING")) return(TRACING); 
@@ -134,6 +136,7 @@ public final class Option {
 
 	
 	public static void setOption(String id,boolean val) {
+		if(id.equalsIgnoreCase("CASE_SENSITIVE")) CASE_SENSITIVE=val; 
 		if(id.equalsIgnoreCase("VERBOSE")) verbose=val; 
 		if(id.equalsIgnoreCase("WARNINGS")) WARNINGS=val; 
 		if(id.equalsIgnoreCase("TRACING")) TRACING=val; 
@@ -154,6 +157,7 @@ public final class Option {
     public static void selectCompilerOptions() {
     	JPanel panel=new JPanel();
     	panel.setBackground(Color.white);
+    	panel.add(checkBox("Case_Sensitive"));
     	panel.add(checkBox("Verbose"));
         panel.add(checkBox("Warnings"));
         panel.add(checkBox("TRACING"));

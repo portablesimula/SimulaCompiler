@@ -9,7 +9,7 @@
 % ==============================================================================
 external class SimulaTest;
 
-SimulaTest(50,"--- Test binding of when-clause and otherwise-clause in connection statement, and qualification of the connection block.") begin
+SimulaTest(50,"--- Test when and otherwise-clause in connection statement.") begin
 
    integer j;
 

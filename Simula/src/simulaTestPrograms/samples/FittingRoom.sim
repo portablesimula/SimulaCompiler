@@ -1,10 +1,10 @@
  
 % From: https://en.wikipedia.org/wiki/Simula 
  
-simulation begin 
+Simulation begin 
  
    class FittingRoom; begin 
-      ref(head) door; 
+      ref(Head) door; 
       boolean inUse; 
        
       procedure request; begin 
@@ -22,7 +22,7 @@ simulation begin
       end; 
        
       procedure reportFittingRoomAvailable; begin 
-         ref(link) elt; 
+         ref(Link) elt; 
          outfix(time, 2, 6); outtext(": FittingRoom becomes available, Queue: "); 
          elt:-door.first; 
          if elt == none then outtext("Empty"); 
@@ -33,14 +33,14 @@ simulation begin
          outimage; 
       end; 
        
-      door:- new head; 
+      door:- new Head; 
    end; 
    
    procedure report(message); text message; begin 
       outfix(time, 2, 6); outtext(": " & message); outimage; 
    end; 
  
-   process class Person(pname); text pname; begin 
+   Process class Person(pname); text pname; begin 
       while true do begin 
          hold(normal(12, 4, u)); 
          report (pname & " is requesting the fitting room"); 

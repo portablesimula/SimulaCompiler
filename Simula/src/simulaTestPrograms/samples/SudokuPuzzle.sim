@@ -17,7 +17,7 @@ begin
    if c='y' or c='Y' then flow:= 1; 
 
    Drawing("Sudoku",540,540) begin 
-     link class SQ(row, col, val); 
+     Link class SQ(row, col, val); 
      integer row,col,val; 
      begin 
        integer xPos,yPos,next_val; 
@@ -85,7 +85,7 @@ begin
  
      end; 
  
-     link class SQexit; 
+     Link class SQexit; 
      begin 
         detach; 
         print_output; 
@@ -94,10 +94,10 @@ begin
      procedure get_input; 
      begin 
        integer i,j; 
-       SQchain:- new head; 
-       inspect new infile("data/SudokuPuzzle.sdk") do begin 
+       SQchain:- new Head; 
+       inspect new InFile("data/SudokuPuzzle.sdk") do begin 
           open(blanks(80)); 
-!         outtext(this infile.filename); outimage; 
+!         outtext(this InFile.filename); outimage; 
           for i:=1 step 1 until 9 do 
           for j:=1 step 1 until 9 do 
              SQinst(i,j):- new SQ(i,j,inint); 
@@ -131,7 +131,7 @@ begin
        outimage; 
      end; 
  
-     ref(head) SQchain; 
+     ref(Head) SQchain; 
      ref(SQ) array SQinst(1:9,1:9); 
      integer nSteps, maxSteps; 
  

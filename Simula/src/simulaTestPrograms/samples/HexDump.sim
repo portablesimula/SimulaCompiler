@@ -8,7 +8,7 @@ begin
 %     ---                                                                 ---
 %     -----------------------------------------------------------------------
 
-      ref(inbytefile) inpt; ! Input File ;
+      ref(InByteFile) inpt; ! Input File ;
 
       integer sequ; ! Input byte number ;
       integer code; ! Current Record code ;
@@ -16,7 +16,7 @@ begin
 
       procedure inputFile;
       begin text F;
-            inpt:-new inbytefile("File");
+            inpt:-new InByteFile("File");
             if not inpt.open then
             begin outimage; outtext("The File """); outtext(F);
                   outtext(""" does not exist or is not accessible");

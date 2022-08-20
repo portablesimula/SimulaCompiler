@@ -55,10 +55,10 @@ public final class TestCompiler {
 		// String name="/simprogs/SudokuPuzzleFlow.sim";
 
 		// *** SIMULA PROGRAMMER TIL RELEASE TESTING
-		 String name="/samples/AnimationTest.sim";
+		// String name="/samples/AnimationTest.sim";
 		// String name="/samples/Atkins.sim";
 		// String name="/samples/Dates.sim";
-		// String name="/samples/DatesTest.sim";
+		 String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HelloWorld.sim";
