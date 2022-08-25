@@ -15,6 +15,7 @@ import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
 
 /**
  * 
@@ -29,7 +30,9 @@ public final class BlockStatement extends Statement {
 	}
 
 	public BlockStatement(final BlockDeclaration blockDeclaration) {
+		super(blockDeclaration.lineNumber);  // TESTING
 		this.blockDeclaration = blockDeclaration;
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": BlockStatement: "+this);
 	}
 	
 	public boolean isCompoundStatement() {
@@ -79,7 +82,7 @@ public final class BlockStatement extends Statement {
 
 	@Override
 	public String toString() {
-		return ("CALL " + blockDeclaration);
+		return ("BLOCK " + blockDeclaration);
 	}
 
 }

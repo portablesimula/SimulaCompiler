@@ -14,32 +14,32 @@ external class SimulaTest;
 
 SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
 
-   simset begin
-          link class Bead(i); integer i;;
+   Simset begin
+          Link class Bead(i); integer i;;
 
-          link class A;;
+          Link class A;;
 
-          procedure Skrivpeker(r); ref(linkage) r;
+          procedure Skrivpeker(r); ref(Linkage) r;
           begin inspect r when Bead do begin outtext("Bead - ");
                                              outint(i,4) end
                           when A    do outtext("A")
-                          when link do outtext("link")
-                          when head do outtext("head")
-                          when linkage do outtext("linkage")
+                          when Link do outtext("Link")
+                          when Head do outtext("Head")
+                          when Linkage do outtext("Linkage")
                 otherwise              outtext("none");
                 outimage;
           end;
 
           ref(A) Ar;
-          ref(head) chain; integer j; ref(Bead) r,s; ref(linkage) x;
+          ref(Head) chain; integer j; ref(Bead) r,s; ref(Linkage) x;
 		  
-          chain:-new head;
+          chain:-new Head;
           if chain.first == none and
              chain.last  == none and
              chain.empty         and
              chain.cardinal = 0 then
           else
-          begin err(" Values of attributes of head (1).");
+          begin err(" Values of attributes of Head (1).");
                 outimage;
                 outtext("            First:       ");
                 Skrivpeker(chain.first);
@@ -63,7 +63,7 @@ SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
              not chain.empty                                   and
              chain.cardinal=5                                  then
           else
-          begin err(" Values of attributes of head (2).");
+          begin err(" Values of attributes of Head (2).");
                 outimage;
                 outtext("            First:       ");
                 Skrivpeker(chain.first);
@@ -87,7 +87,7 @@ SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
              not chain.empty          and
              chain.cardinal=4         then
           else
-          begin err(" Values of attributes of head (3).");
+          begin err(" Values of attributes of Head (3).");
                 outimage;
                 outtext("            First:       ");
                 Skrivpeker(chain.first);
@@ -112,7 +112,7 @@ SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
              not chain.empty          and
              chain.cardinal=4         then
           else
-          begin err(" Values of attributes of head (4).");
+          begin err(" Values of attributes of Head (4).");
                 outimage;
                 outtext("            First:       ");
                 Skrivpeker(chain.first);
@@ -133,7 +133,7 @@ SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
              not chain.empty          and
              chain.cardinal=5         then
           else
-          begin err(" Values of attributes of head (5).");
+          begin err(" Values of attributes of Head (5).");
                 outimage;
                 outtext("            First:       ");
                 Skrivpeker(chain.first);
@@ -148,13 +148,13 @@ SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
                 
           end;
 
-          new A.precede((chain.first.prev) qua head.last.pred);
+          new A.precede((chain.first.prev) qua Head.last.pred);
           if chain.first is A         and
              (chain.last)  qua Bead.i=4 and
              not chain.empty          and
              chain.cardinal=6         then
           else
-          begin err(" Values of attributes of head (6).");
+          begin err(" Values of attributes of Head (6).");
                 outimage;
                 outtext("            First:       ");
                 Skrivpeker(chain.first);
@@ -175,7 +175,7 @@ SimulaTest(94,"--- Test Simset - first, last, empty, cardinal and clear.") begin
              chain.empty         and
              chain.cardinal = 0 then
           else
-          begin err(" Values of attributes of head (7).");
+          begin err(" Values of attributes of Head (7).");
                 outimage;
                 outtext("            First:       ");
                 Skrivpeker(chain.first);

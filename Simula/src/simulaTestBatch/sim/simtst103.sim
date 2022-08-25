@@ -10,7 +10,7 @@ external class SimulaTest;
 
 SimulaTest(103,"--- Test all kinds of Activation Statements") begin
 
-simulation begin
+Simulation begin
    ref(Car) bil1,bil2,bil3;
    text t;
 
@@ -34,7 +34,7 @@ simulation begin
       traceCase:=traceCase+1;
    end;
 
-   process class Car(id); text id;
+   Process class Car(id); text id;
    begin
       trace(id & ": Run Fase-1");
       hold (4);

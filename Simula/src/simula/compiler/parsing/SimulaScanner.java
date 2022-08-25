@@ -153,6 +153,8 @@ public final class SimulaScanner extends DefaultScanner {
     private Token scanBasic() {
     	if(Option.TRACE_SCAN) Util.TRACE("SimulaScanner.scanBasic, "+edcurrent());
     	while(true)	{
+    		Token.lineNumberBeforeScanBasic = Global.sourceLineNumber; // TESTING
+
     		if(Character.isLetter(getNext())) return(scanIdentifier());
     		switch(current) {
     		    case '=':

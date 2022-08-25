@@ -14,6 +14,7 @@ import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
@@ -35,9 +36,11 @@ public final class LabeledStatement extends Statement {
 	private final Vector<String> labels;
 	private final Statement statement;
 
-	public LabeledStatement(final Vector<String> labels,final Statement statement) {
+	public LabeledStatement(final int line,final Vector<String> labels,final Statement statement) {
+		super(line);
 		this.labels = labels;
 		this.statement = statement;
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": LabeledStatement: "+this);
 	}
 
 	@Override

@@ -21,13 +21,17 @@ public final class Token implements Externalizable {
 	private String text;
 	private KeyWord keyWord;
 	private Object value;
+	public int lineNumber; // TESTING
+    public static int lineNumberBeforeScanBasic; // TESTING
   
-	public enum StyleCode {regular,keyword,comment,constant,lineNumber};
+	public enum StyleCode {regular,keyword,comment,constant};//,XlineNumber};
 
 	public Token(final String text,final KeyWord keyWord,final Object value) {
 		this.text = text;
 		this.keyWord = keyWord;
 		this.value = value;
+		this.lineNumber = lineNumberBeforeScanBasic; // TESTING
+		//if(Option.TESTING) Util.println("new Token: Line "+lineNumber+": "+this);
 	}
 
 	public Token(final String text,final KeyWord keyWord) {

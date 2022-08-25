@@ -14,10 +14,10 @@ RT_ErrorTest("  1 --- ILLEGAL GOTO out of an operating Process and into the encl
    procedure p;
    begin
       integer i;
-      simulation begin
+      Simulation begin
          ref(Car) car1;
       
-         process class Car(pname); text pname;
+         Process class Car(pname); text pname;
          begin
             trace(pname & " is initiating");
             while true do

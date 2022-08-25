@@ -2,7 +2,7 @@
 % ===============================================   Main   program =====
 %  PROGRAM NAME:   Simula a.s - SIMULA TEST NO 93 (TEST PW 19)
 %
-%  PURPOSE:     Test Simset - linkage, head, link, into, out, follow and
+%  PURPOSE:     Test Simset - Linkage, Head, Link, into, out, follow and
 %               precede.
 %
 %
@@ -11,13 +11,13 @@
 % ======================================================================
 external class SimulaTest;
 
-SimulaTest(93,"--- Test Simset - linkage, head, link, into, out, follow and precede.") begin
+SimulaTest(93,"--- Test Simset - Linkage, Head, Link, into, out, follow and precede.") begin
 
-   simset begin
-          link class Bead(i); integer i;;
+   Simset begin
+          Link class Bead(i); integer i;;
 
           integer procedure Scanleft;
-          begin ref(linkage) l; integer k;
+          begin ref(Linkage) l; integer k;
                 l:-chain;
                 for l:-l.suc while l=/=none do
                 inspect l when Bead do k:=k*10+i
@@ -26,7 +26,7 @@ SimulaTest(93,"--- Test Simset - linkage, head, link, into, out, follow and prec
           end;
 
           integer procedure Scanright;
-          begin ref(linkage) l; integer k;
+          begin ref(Linkage) l; integer k;
                 l:-chain;
                 for l:-l.pred while l=/=none do
                 inspect l when Bead do k:=k*10+i
@@ -34,14 +34,14 @@ SimulaTest(93,"--- Test Simset - linkage, head, link, into, out, follow and prec
                 Scanright:=k
           end;
 
-          link class A;;
-          linkage class B;;
+          Link class A;;
+          Linkage class B;;
 
           ref(A) Ar; ref(B) Br;
-          ref(head) chain; integer j,k; ref(Bead) r,s; ref(linkage) x;
+          ref(Head) chain; integer j,k; ref(Bead) r,s; ref(Linkage) x;
 
           
-          chain:-new head; k:=0;
+          chain:-new Head; k:=0;
           for j:=1 step 1 until 5 do
           begin new Bead(j).into(chain); k:=k*10+((chain.pred) qua Bead).i end;
 
@@ -140,7 +140,7 @@ SimulaTest(93,"--- Test Simset - linkage, head, link, into, out, follow and prec
           end;
 
           r.follow(chain);
-          (chain.prev.pred.prev) qua link.follow(chain.prev.pred);
+          (chain.prev.pred.prev) qua Link.follow(chain.prev.pred);
           k:=Scanright;
           if k= 32415 then
           else begin
@@ -222,7 +222,7 @@ SimulaTest(93,"--- Test Simset - linkage, head, link, into, out, follow and prec
 
 
           Ar.precede(Ar);
-          (chain.prev) qua link.precede(chain.pred);
+          (chain.prev) qua Link.precede(chain.pred);
           s.precede(s);
           k:=Scanleft;
           if k= 10235 then

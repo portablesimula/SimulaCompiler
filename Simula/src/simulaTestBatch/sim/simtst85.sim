@@ -2,7 +2,7 @@
 % =================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 85
 %
-%  PURPOSE: Test Directfile. First set up a directfile with five records
+%  PURPOSE: Test Directfile. First set up a DirectFile with five records
 %           each of 12 characters, in edited format.
 %
 %  METHOD:
@@ -15,7 +15,7 @@ SimulaTest(85,"--- Test Directfile.") begin
 
 if verbose then begin
 
-inspect new directfile("direct85") do begin
+inspect new DirectFile("direct85") do begin
 
    integer  i, j; real tmp;
 
@@ -292,7 +292,7 @@ inspect new directfile("direct85") do begin
    check("true","image after close",4);
 
 
-end of inspect directfile;
+end of inspect DirectFile;
 
 
 end of program;

@@ -8,6 +8,7 @@
 package simula.compiler.statement;
 
 import simula.compiler.GeneratedJavaClass;
+import simula.compiler.utilities.Option;
 
 /**
  * Dummy Statement.
@@ -24,7 +25,9 @@ import simula.compiler.GeneratedJavaClass;
  */
 public final class DummyStatement extends Statement {
 	
-	public DummyStatement() {
+	public DummyStatement(final int line) {
+		super(line);
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": DummyStatement: "+this);
 	}
 
 	@Override

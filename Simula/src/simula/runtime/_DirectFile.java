@@ -158,6 +158,8 @@ public class _DirectFile extends _ImageFile {
 	public boolean open(final _TXT IMAGE) {
 		if (_OPEN) return (false);
 		File file=doCreateAction(new File(FILE_NAME.edText()));
+		if(_RT.DEBUGGING) TRACE_OPEN("Open DirectFile: "+file);
+		
 		_LOC = 1;
 		_MAXLOC = maxint - 1;
 		image = IMAGE;
@@ -323,13 +325,15 @@ public class _DirectFile extends _ImageFile {
 	 * 
 	 */
 	public void inimage() {
-		char fill = ' '; // Fill character
+		if(!_CANREAD)
+			throw new _SimulaRuntimeError("DirectFile: inimage failed - 'canread' is false");
 		if (!_OPEN)	throw new _SimulaRuntimeError("File not opened");
 		if (_TXT.length(image) != _RECORDSIZE)
 			throw new _SimulaRuntimeError("DirectFile image length changed");
 		
 		setpos(1); // For Filling
 		int nextSetpos=1;
+		char fill = ' '; // Fill character
 		
 		if (_LOC > lastloc()) _TXT.putchar(image, (char) 25);
 		// else if(external image does not exists) fill=(char)0;
@@ -378,6 +382,8 @@ public class _DirectFile extends _ImageFile {
 			throw new _SimulaRuntimeError("file closed");
 		if (_LOC > _MAXLOC)
 			throw new _SimulaRuntimeError("file overflow");
+		if(!_CANWRITE)
+			throw new _SimulaRuntimeError("DirectFile: outimage failed - 'canwrite' is false");
 		try {
 			randomAccessFile.write(image.edText().getBytes());
 		} catch (IOException e) {
@@ -418,6 +424,8 @@ public class _DirectFile extends _ImageFile {
 	public boolean deleteimage() {
 		if (!_OPEN)
 			return (false);
+		if(!_CANWRITE)
+			throw new _SimulaRuntimeError("DirectFile: deleteimage failed - 'canwrite' is false");
 		try {
 			// TODO: Complete the implementation according
 			// to Simula Standard Definition.

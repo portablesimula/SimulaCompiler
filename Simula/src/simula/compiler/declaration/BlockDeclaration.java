@@ -103,7 +103,7 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	protected void codeSTMBody() {
 		if (hasLabel()) {
-			GeneratedJavaClass.code(externalIdent + " THIS_=(" + externalIdent + ")_CUR;");
+			GeneratedJavaClass.code(externalIdent + " _THIS=(" + externalIdent + ")_CUR;");
 			GeneratedJavaClass.code("_LOOP:while(_JTX>=0) {");
 			GeneratedJavaClass.code("try {");
 			GeneratedJavaClass.code("_JUMPTABLE(_JTX);","For ByteCode Engineering");
@@ -114,7 +114,7 @@ public abstract class BlockDeclaration extends DeclarationScope {
 			GeneratedJavaClass.code("break _LOOP;");
 			GeneratedJavaClass.code("}");
 			GeneratedJavaClass.code("catch(_LABQNT q) {");
-			GeneratedJavaClass.code("_CUR=THIS_;");
+			GeneratedJavaClass.code("_CUR=_THIS;");
 			GeneratedJavaClass.code("if(q._SL!=_CUR) {");
 			GeneratedJavaClass.debug("if(_RT.Option._GOTOTRACING) TRACE_GOTO(\"" + identifier + ":NON-LOCAL\",q);");
 			GeneratedJavaClass.code("_CUR.STATE_=OperationalState.terminated;");

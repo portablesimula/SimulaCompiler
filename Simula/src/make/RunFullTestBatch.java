@@ -178,6 +178,7 @@ public final class RunFullTestBatch {
 		names.add("simtst131.sim"); // OK: Catching Errors
 		names.add("simtst132.sim"); // ERR: SPORT Options
 
+		names.add("RT_ErrorTest.sim"); // Simula Error TestBatch Framework
 		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
 		names.add("simerr02.sim"); // OK: Testing NONE-CHECK
 		names.add("PrecompiledClass.sim"); // OK: Used by simerr03
@@ -188,6 +189,7 @@ public final class RunFullTestBatch {
 		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
 		names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
 		names.add("simerr08.sim"); // OK: Illegal assignment. Name parameter is not a variable
+		names.add("simerr09.sim"); // OK: Read/write access on DirectFile and DirectByteFile
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
@@ -195,7 +197,7 @@ public final class RunFullTestBatch {
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 		Option.verbose=false;
-//		Option.CASE_SENSITIVE=true;
+		Option.CASE_SENSITIVE=true;
 		
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";

@@ -39,10 +39,12 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// Used by ProgramModule
 	public static MaybeBlockDeclaration createMaybeBlock() {
+		int lineNumber=Parser.prevToken.lineNumber;
+		if(Option.TESTING) System.out.println("BlockStatement.createMaybeBlock: line="+lineNumber+" "+Parser.prevToken);
 		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName+'_');
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
-		module.parseMaybeBlock();
+		module.parseMaybeBlock(lineNumber);
 		return (module);
 	}
 
@@ -64,13 +66,14 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	 * 
 	 * @param blockPrefix
 	 */
-	public BlockStatement parseMaybeBlock() {
-		Statement stm;
+	public BlockStatement parseMaybeBlock(int line) {
+		this.lineNumber=line;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse MayBeBlock");
+		//if(Option.TESTING) System.out.println("BlockStatement.parseMaybeBlock: "+this);
 		while (Declaration.parseDeclaration(declarationList))
 			Parser.accept(KeyWord.SEMICOLON);
 		while (!Parser.accept(KeyWord.END)) {
-			stm = Statement.doParse();
+			Statement stm = Statement.doParse();
 			if (stm != null) statements.add(stm);
 		}
 		if (declarationKind != Declaration.Kind.SimulaProgram) {
@@ -257,7 +260,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 
 	@Override
 	public String toString() {
-		return ("" + identifier + '[' + externalIdent + "] Kind=" + declarationKind);
+		return (identifier + '[' + externalIdent + "] Kind=" + declarationKind);
 	}
 
 }

@@ -48,7 +48,8 @@ public final class ConnectionStatement extends Statement {
 	private final boolean hasWhenPart;
 	private static int SEQU = 0;
 
-	public ConnectionStatement() {
+	public ConnectionStatement(final int line) {
+		super(line);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ConnectionStatement");
 		objectExpression = Expression.parseExpression();
 		String ident = "inspect_" + lineNumber + '_' + (SEQU++);
@@ -81,6 +82,7 @@ public final class ConnectionStatement extends Statement {
 		this.otherwise=otherwise;
 		this.hasWhenPart=hasWhenPart;
 		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ConnectionStatement: " + toString());
+		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": ConnectionStatement: "+this);
 	}
 
 	private class DoPart {

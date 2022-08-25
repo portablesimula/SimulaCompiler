@@ -39,14 +39,14 @@ begin
          edIdent:-t; 
    end; 
   
-  infile class MyInfile; virtual: ref(file) procedure pvirt is ref(file) procedure actual(i,j); integer i,j;; 
+  InFile class MyInfile; virtual: ref(File) procedure pvirt is ref(File) procedure actual(i,j); integer i,j;; 
   begin 
-     ref(file) procedure pvirt(i,j); integer i,j; 
+     ref(File) procedure pvirt(i,j); integer i,j; 
      begin i:=34; 
      end; 
      integer procedure inRom; 
      begin  
-        ref(file) myFile; 
+        ref(File) myFile; 
         myFile :- pvirt(4,3); 
      end; 
   end; 

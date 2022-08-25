@@ -2,7 +2,7 @@ external class SimulaTest;
 
 SimulaTest(54,"--- A VERY Simple Simulation") begin
 
-simulation begin   
+Simulation begin   
    integer u;
    ref(Car) bil1,bil2;
    
@@ -32,7 +32,7 @@ simulation begin
       testCase:=testCase+1;
    end;
  
-   process class Car(pname); text pname; begin
+   Process class Car(pname); text pname; begin
       report(pname & " is initiating");
       while true do begin
          report(pname & " is active 1");

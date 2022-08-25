@@ -29,6 +29,7 @@ public final class Option {
 	public static boolean CASE_SENSITIVE=false;
 	public static boolean verbose = false; 
 	public static boolean WARNINGS=true;
+	public static boolean TESTING = false; 
 
 	// Overall TRACING Options
 	public static boolean TRACING=false;
@@ -49,8 +50,9 @@ public final class Option {
 	public static boolean TRACE_CHECKER_OUTPUT=false;
 	public static int TRACE_FIND=0;
 
-	// Coder Trace Options
+	// Java Coder Options
 	public static boolean TRACE_CODING=false;
+	public static boolean COMMENT_CODE=false;
 	
 	// Byte code engineering Options
 	public static boolean TRACE_BYTECODE_OUTPUT=false;

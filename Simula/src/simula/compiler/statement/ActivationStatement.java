@@ -46,7 +46,8 @@ public final class ActivationStatement extends Statement {
 	private ActivationCode code;
 	private enum ActivationCode { direct, at, delay, before, after }
 
-	public ActivationStatement() {
+	public ActivationStatement(final int line) {
+		super(line);
 		Token activator = Parser.prevToken;
 		REAC = activator.getKeyWord() == KeyWord.REACTIVATE;
 		if (Option.TRACE_PARSE)
@@ -63,6 +64,7 @@ public final class ActivationStatement extends Statement {
 		}
 		if (Option.TRACE_PARSE)
 			Util.TRACE("END NEW ActivationStatement: " + toString());
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": ActivationStatement: "+this);
 	}
 
 	public void doChecking() {

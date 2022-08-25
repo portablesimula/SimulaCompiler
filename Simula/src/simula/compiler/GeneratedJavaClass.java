@@ -75,7 +75,7 @@ public final class GeneratedJavaClass {
 
 	
 	public static void debug(final String line) {
-		if (RTOption.DEBUGGING)	code(line);
+		if (Option.COMMENT_CODE)	code(line);
 	}
 
 	public static void code(final String line) {
@@ -83,7 +83,7 @@ public final class GeneratedJavaClass {
 	}
 
 	public static void code(final String line,final String comment) {
-		if (!RTOption.DEBUGGING) code(line);
+		if (!Option.COMMENT_CODE) code(line);
 		else code(line + " // " + comment);
 	}
 
@@ -107,7 +107,7 @@ public final class GeneratedJavaClass {
 				  appendLine(currentJavaLineNumber,sourceLineNumber);
 				  if(Option.TRACE_CODING) Util.println("CODE "+sourceLineNumber+": "+s0);
 				  currentJavaLineNumber++;
-				  if(RTOption.DEBUGGING) writer.write(s0+'\n');
+				  if(Option.COMMENT_CODE) writer.write(s0+'\n');
 			  }
 			  if(line.startsWith("}")) indent--;
 			  String s=edIndent()+line;

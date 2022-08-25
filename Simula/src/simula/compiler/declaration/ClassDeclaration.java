@@ -97,6 +97,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 */
 	public static ClassDeclaration doParseClassDeclaration(final String prefix) {
 		ClassDeclaration block = new ClassDeclaration(null);
+		block.lineNumber=Parser.prevToken.lineNumber;
 		block.prefix = prefix;
 		block.declaredIn.hasLocalClasses = true;
 		if (block.prefix == null)
@@ -152,12 +153,13 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			doParseBody(block);
 		else {
 			block.statements.add(Statement.doParse());
-			block.statements.add(new InnerStatement()); // Implicit INNER
+			block.statements.add(new InnerStatement(Parser.currentToken.lineNumber)); // Implicit INNER
 		}
 		block.lastLineNumber = Global.sourceLineNumber;
 		block.type = Type.Ref(block.identifier);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ClassDeclaration");
 		if (Option.TRACE_PARSE)	Util.TRACE("END ClassDeclaration: " + block);
+		if(Option.TESTING) System.out.println("Line "+block.lineNumber+": ClassDeclaration: "+block);
 		Global.setScope(block.declaredIn);
 		return (block);
 	}
@@ -238,19 +240,18 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		while (Declaration.parseDeclaration(block.declarationList)) {
 			Parser.accept(KeyWord.SEMICOLON);
 		}
-
-		Statement inner = new InnerStatement();
+		boolean seen=false;
 		Vector<Statement> stmList = block.statements;
 		while (!Parser.accept(KeyWord.END)) {
 			stm = Statement.doParse();
 			if (stm != null) stmList.add(stm);
 			if (Parser.accept(KeyWord.INNER)) {
-				if (inner == null) Util.error("Max one INNER per Block");
-				else stmList.add(inner);
-				inner = null;
+				if (seen) Util.error("Max one INNER per Block");
+				else stmList.add(new InnerStatement(Parser.currentToken.lineNumber));
+				seen = true;
 			}
 		}
-		if (inner != null) stmList.add(inner); // Implicit INNER
+		if (!seen) stmList.add(new InnerStatement(Parser.currentToken.lineNumber)); // Implicit INNER
 	}
 
 	// ***********************************************************************************************

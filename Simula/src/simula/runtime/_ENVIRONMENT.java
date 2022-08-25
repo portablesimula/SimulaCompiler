@@ -1352,7 +1352,7 @@ public class _ENVIRONMENT extends _RTObject {
 	// *** Utility: Procedure printThreadList
 	// **********************************************************************
 	public static void printThreadList(final boolean withStackTrace) {
-		_ThreadUtils.printThreadList(withStackTrace);
+		_RT.printThreadList(withStackTrace);
 	}
 	  
 	
@@ -1850,13 +1850,13 @@ public class _ENVIRONMENT extends _RTObject {
      * 
      */
     public static void giveTextInfo(final int index,final _TXT info) {
-    	if(Option.VERBOSE) _RT.println("giveTextInfo: index="+index+", info="+info.edText());
+    	if(Option.VERBOSE) _RT.println("giveTextInfo: index="+index+", info="+((info==null)?"null":info.edText()));
     	switch(index) {
     	case 1: _RT.SPORT_Option.xDecl1=info.edText(); // got predefmodule when compiling PREDEF.DEF
     	case 2: _RT.SPORT_Option.moduleIdent=info.edText();
     	        //System.out.println("_RT.SPORT_Option.moduleIdent="+_RT.SPORT_Option.moduleIdent);
     	        break;
-//    	case 3: _RT.SPORT_Option.xDecl2=info.edText(); break;
+    	case 3: _RT.SPORT_Option.xDecl2=(info==null)?"null":info.edText(); break;
     	case 4: _RT.SPORT_Option.SPORT_SysInsertDirName=info.edText(); break;
     	default: _RT.NOT_IMPLEMENTED("giveTextInfo");
     	}
@@ -1868,7 +1868,6 @@ public class _ENVIRONMENT extends _RTObject {
     public static void rts_utility(final int index,final int level) {
     	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level);
 		printStaticChain();
-    	_ThreadUtils.printStackTrace();
     	Thread.dumpStack();
     	//System.exit(-1);
     	switch(index) {

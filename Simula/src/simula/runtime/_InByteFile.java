@@ -76,6 +76,7 @@ public class _InByteFile extends _ByteFile {
 	 * @return
 	 */
 	public boolean open() {
+		if(_RT.DEBUGGING) TRACE_OPEN("Open InByteFile");
 		if (_OPEN) return (false);
 		File file=doCreateAction(new File(FILE_NAME.edText()));
 		if(!file.exists()) {

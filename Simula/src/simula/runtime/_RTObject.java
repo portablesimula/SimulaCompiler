@@ -601,7 +601,7 @@ public abstract class _RTObject {
 			_RT.TRACE("_RTObject._JUMPTABLE: labelIndex=" + labelIndex);
 		String msg = "FATAL ERROR: Local GOTO LABEL#" + labelIndex + " Needs ByteCode Engineering.";
 		_RT.println(msg);
-		_RT.printSimulaStackTrace(0);
+//		_RT.printSimulaStackTrace(0);
 		if (labelIndex == 0) return;
 		_RT.println(msg);
 		throw new _SimulaRuntimeError(msg);
@@ -693,7 +693,7 @@ public abstract class _RTObject {
 				e.printStackTrace();
 				endProgram(-1);
 			}
-			if (_RT.Option._GOTOTRACING)	_ThreadUtils.printThreadList();
+			if (_RT.Option._GOTOTRACING)	_RT.printThreadList();
 		}
 		
 		private void treatRuntimeError(String msg) {

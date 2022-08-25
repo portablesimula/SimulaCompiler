@@ -240,7 +240,7 @@ public class SourceTextPanel extends JPanel {
     		case keyword: return(styleKeyword);
     		case comment: return(styleComment);
     		case constant: return(styleConstant);
-    		case lineNumber: return(styleLineNumber);
+//    		case XlineNumber: return(styleLineNumber);
     	}
     	return(null);
     }

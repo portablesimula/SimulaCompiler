@@ -44,6 +44,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	 */
 	public PrefixedBlockDeclaration(String identifier,final Variable blockPrefix,boolean isMainModule) {
 		super(identifier);
+		this.lineNumber=Parser.prevToken.lineNumber;
 		this.declarationKind=Declaration.Kind.PrefixedBlock;
 		Util.ASSERT(blockPrefix != null,"blockPrefix == null");
 		this.blockPrefix = blockPrefix;
@@ -60,6 +61,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		else modifyIdentifier("" + Global.sourceName + "_PBLK" + lineNumber);
 		this.externalIdent = this.identifier;
 		this.lastLineNumber = Global.sourceLineNumber;
+		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": PrefixedBlockDeclaration: "+this);
 		Global.setScope(declaredIn);
 	}
 

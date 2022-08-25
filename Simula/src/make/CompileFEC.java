@@ -40,12 +40,14 @@ public final class CompileFEC {
 		
 //		names.add("CHECKER1.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\CHECKER1.jar
 //		names.add("CHECKER2.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\CHECKER2.jar
+		
 //		names.add("SCODER0.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER0.jar
 //		names.add("SCODER1.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER1.jar
 //		names.add("SCODER1E.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER1E.jar	
 //		names.add("SCODER2.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER2.jar
 //		names.add("SCODER3.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER3.jar
 //		names.add("SCODER4.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODER4.jar
+		
 //		names.add("PAS2INIT.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\PAS2INIT.jar 
 //		names.add("SCODMAIN.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCODMAIN.jar
 
@@ -59,7 +61,7 @@ public final class CompileFEC {
 		Option.BREAKING=false;
 		Option.TRACING=false;
 		Option.WARNINGS=false;
-		Option.CASE_SENSITIVE=true;
+//		Option.CASE_SENSITIVE=true;
 		
 		Simula.setSelectors("Z");
 		Option.noExecution=false;//true;
@@ -70,8 +72,8 @@ public final class CompileFEC {
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.
-		RTOption.VERBOSE = false;
-		RTOption.DEBUGGING = false;
+		RTOption.VERBOSE = true;//false;
+		RTOption.DEBUGGING = true;//false;
 		RTOption.USE_CONSOLE=false;
 		RTOption.CODE_STEP_TRACING = false;
 		RTOption.BLOCK_TRACING = false;
@@ -80,7 +82,8 @@ public final class CompileFEC {
 		RTOption.QPS_TRACING = false;
 		RTOption.SML_TRACING = false;
 		RTOption.USE_VIRTUAL_THREAD=true;//false;
-
+		RTOption.SPORT_SOURCE_FILE="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/simtst01.sim";
+		
 		long startTimeMs = System.currentTimeMillis( );
 
 		for(String name:names) {

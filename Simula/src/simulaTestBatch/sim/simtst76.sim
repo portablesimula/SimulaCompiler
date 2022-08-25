@@ -14,10 +14,10 @@ SimulaTest(76,"--- Test of detach and resume in simset.") begin
    procedure Print(t); value t; text t;
    begin outtext(t); end; 
 
-   simset begin
+   Simset begin
          ref(A) x;
 
-         link class A;
+         Link class A;
          begin Print("A");
                begin ref(C) Y;
                      class C;
@@ -50,10 +50,10 @@ SimulaTest(76,"--- Test of detach and resume in simset.") begin
          end;
    end;
 
-   simset begin
+   Simset begin
          ref(A)x;
 
-         link class A;
+         Link class A;
          begin Print("A");
                detach;
                begin ref(C) Y;

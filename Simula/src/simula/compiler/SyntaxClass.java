@@ -47,7 +47,7 @@ import simula.compiler.utilities.Util;
 public abstract class SyntaxClass { 
 	private boolean CHECKED = false; // Set true when doChecking(), put or get is called
 	public Type type = null;
-	public final int lineNumber;
+	public int lineNumber;
 
 	protected SyntaxClass() {
 		lineNumber = Global.sourceLineNumber;

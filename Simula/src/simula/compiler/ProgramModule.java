@@ -62,6 +62,7 @@ public final class ProgramModule extends Statement {
 	}
 
 	public ProgramModule() {
+		super(0);
 		Declaration module=null;
 		sysin=new Variable("sysin");
 		sysout=new Variable("sysout");

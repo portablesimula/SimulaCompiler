@@ -58,7 +58,7 @@ public final class TestCompiler {
 		// String name="/samples/AnimationTest.sim";
 		// String name="/samples/Atkins.sim";
 		// String name="/samples/Dates.sim";
-		 String name="/samples/DatesTest.sim";
+		// String name="/samples/DatesTest.sim";
 		// String name="/samples/Docking.sim";
 		// String name="/samples/FittingRoom.sim";
 		// String name="/samples/HelloWorld.sim";
@@ -164,7 +164,7 @@ public final class TestCompiler {
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
-		// String name="/simple/adHoc01.sim";
+		 String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
@@ -211,31 +211,32 @@ public final class TestCompiler {
 
 			// Set Compile Time Options and tracing.
 			Option.INLINE_TESTING=true;
-//		    Option.verbose = true;// false;
+//		    Option.verbose = true;
 			Option.WARNINGS=true;
 			Option.CASE_SENSITIVE=true;
+			Option.TESTING=true;
 
 			// Overall TRACING Options
-//			Option.TRACING=true;//false;//true;
-//			Option.BREAKING=true;//false; //true; 
-
-			// Scanner Trace Options
-			Option.TRACE_SCAN=false;//true;
-			Option.TRACE_COMMENTS=false;//true;
-
-			// Parser Trace Options
-			Option.TRACE_PARSE=false;//true;
-			Option.TRACE_ATTRIBUTE_OUTPUT=false;//true;
-			Option.TRACE_ATTRIBUTE_INPUT=false;//true;
-
-			// Checker Trace Options
-			Option.TRACE_CHECKER=false;//true;
-			Option.TRACE_CHECKER_OUTPUT=false;//true;
-			//Option.TRACE_FIND=2;
-			
-			// Coder Trace Options
-			Option.TRACE_CODING=false;//true;
-			
+//			Option.TRACING=true;
+//			Option.BREAKING=true; 
+//
+//			// Scanner Trace Options
+//			Option.TRACE_SCAN=true;
+//			Option.TRACE_COMMENTS=true;
+//
+//			// Parser Trace Options
+			Option.TRACE_PARSE=true;
+//			Option.TRACE_ATTRIBUTE_OUTPUT=true;
+//			Option.TRACE_ATTRIBUTE_INPUT=true;
+//
+//			// Checker Trace Options
+//			Option.TRACE_CHECKER=true;
+//			Option.TRACE_CHECKER_OUTPUT=true;
+//			//Option.TRACE_FIND=2;
+//			
+//			// Coder Trace Options
+//			Option.TRACE_CODING=false;true;
+//			
 //			Option.TRACE_REPAIRING=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
 //			Option.DEBUGGING=true;

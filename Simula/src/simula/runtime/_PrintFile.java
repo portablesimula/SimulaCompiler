@@ -229,6 +229,7 @@ public class _PrintFile extends _OutFile {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(final _TXT image) {
+		if(_RT.DEBUGGING) TRACE_OPEN("Open PrintFile");
 		if (_OPEN) return (false); // File already opened
 		_PAGE = 0;
 		_OPEN = true;

@@ -67,8 +67,9 @@ public final class SwitchStatement extends Statement {
 	private Expression switchKey;
 	private final Vector<WhenPart> switchCases=new Vector<WhenPart>();
 
-	public SwitchStatement() {
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchStatement");
+	public SwitchStatement(int line) {
+		super(line);
+		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchStatement: line="+line);
 		Parser.expect(KeyWord.BEGPAR);
 		lowKey = Expression.parseExpression();
 		Parser.expect(KeyWord.COLON);
@@ -96,6 +97,7 @@ public final class SwitchStatement extends Statement {
 		}
 		Parser.expect(KeyWord.END);
 		if (Option.TRACE_PARSE)	Util.TRACE("END NEW SwitchStatement: " + toString());
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": SwitchStatement: "+this);
 	}
 
 	public SwitchInterval parseCasePair() {

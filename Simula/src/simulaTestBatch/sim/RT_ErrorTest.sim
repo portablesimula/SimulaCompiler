@@ -4,7 +4,7 @@ class RT_ErrorTest(title); text title;
 begin
 
    integer traceCase;
-   text array facit(0:8);
+   text array facit(0:100);
 
 	boolean found_error;
 --	integer nFailed;

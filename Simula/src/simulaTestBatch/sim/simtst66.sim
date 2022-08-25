@@ -19,7 +19,7 @@ SimulaTest(66,"--- Test corutines and two infiles which read from the same file.
       text navn;
       integer a;
    begin
-      ref(infile) fil;
+      ref(InFile) fil;
       integer lnr;
       text array linjer(1:200);
 
@@ -35,7 +35,7 @@ SimulaTest(66,"--- Test corutines and two infiles which read from the same file.
       end;
 
 
-      fil :- new infile(navn);
+      fil :- new InFile(navn);
       if not fil.open(blanks(100)) then
       begin outtext("The file does not exist,");
             outtext("or cannot be opened as infile.");  outimage;

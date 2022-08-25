@@ -81,6 +81,7 @@ public class _OutFile extends _ImageFile {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(final _TXT IMAGE_) {
+		if(_RT.DEBUGGING) TRACE_OPEN("Open OutFile");
 		if (_OPEN) return (false); // File already opened
 		_OPEN = true;
 		image = IMAGE_;

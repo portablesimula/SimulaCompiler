@@ -94,6 +94,7 @@ public class _InFile extends _ImageFile {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(final _TXT IMAGE_) {
+		if(_RT.DEBUGGING) TRACE_OPEN("Open InFile");
 		if (_OPEN)	return (false);
 		image = IMAGE_;
 		_ENDFILE = false;

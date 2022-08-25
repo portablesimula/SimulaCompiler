@@ -27,12 +27,14 @@ public final class WhileStatement extends Statement {
 	private final Expression condition;
 	private final Statement doStatement;
 
-	public WhileStatement() {
-		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement, current=" + Parser.currentToken);
+	public WhileStatement(int line) {
+		super(line);
+		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement: line="+line+", current=" + Parser.currentToken);
 		condition = Expression.parseExpression();
 		Parser.expect(KeyWord.DO);
 		doStatement = Statement.doParse();
 		if (Option.TRACE_PARSE)	Util.TRACE("NEW WhileStatement: " + toString());
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": WhileStatement: "+this);
 	}
 
 	@Override

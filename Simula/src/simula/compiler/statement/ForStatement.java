@@ -53,7 +53,8 @@ public final class ForStatement extends Statement {
 	private final Vector<ForListElement> forList = new Vector<ForListElement>();
 	private final Statement doStatement;
 
-	public ForStatement() {
+	public ForStatement(final int line) {
+		super(line);
 		if (Option.TRACE_PARSE)
 			Parser.TRACE("Parse ForStatement");
 		controlVariable = new Variable(expectIdentifier());
@@ -67,11 +68,12 @@ public final class ForStatement extends Statement {
 		Statement doStatement = Statement.doParse();
 		if (doStatement == null) {
 			Util.error("No statement following DO in For statement");
-			doStatement = new DummyStatement();
+			doStatement = new DummyStatement(line);
 		}
 		this.doStatement=doStatement;
 		if (Option.TRACE_PARSE)
 			Util.TRACE("NEW ForStatement: " + toString());
+		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": ForStatement: "+this);
 	}
 
 	private ForListElement parseForListElement() {

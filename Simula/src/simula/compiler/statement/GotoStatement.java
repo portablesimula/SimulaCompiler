@@ -10,6 +10,7 @@ package simula.compiler.statement;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Expression;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -30,8 +31,10 @@ import simula.compiler.utilities.Util;
 public final class GotoStatement extends Statement {
 	private final Expression label;
 
-	public GotoStatement() {
+	public GotoStatement(final int line) {
+		super(line);
 		label = Expression.parseExpression();
+		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": GotoStatement: "+this);
 	}
 
 	@Override

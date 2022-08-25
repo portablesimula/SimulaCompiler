@@ -12,6 +12,7 @@ import java.util.Vector;
 import simula.compiler.CodeLine;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
@@ -28,6 +29,11 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class InnerStatement extends Statement {
+
+	public InnerStatement(final int line) {
+		super(line);
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": InnerStatement: "+this);
+	}
 
 	@Override
 	public void doChecking() {

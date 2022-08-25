@@ -12,6 +12,7 @@ import simula.compiler.expression.Expression;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -35,12 +36,13 @@ public final class ConditionalStatement extends Statement {
 	private final Statement thenStatement;
 	private final Statement elseStatement;
 
-	public ConditionalStatement() {
+	public ConditionalStatement(final int line) {
+		super(line);
 		condition = Expression.parseExpression();
 		Parser.expect(KeyWord.THEN);
 		Statement elseStatement = null;
 		if (Parser.accept(KeyWord.ELSE)) {
-			thenStatement = new DummyStatement();
+			thenStatement = new DummyStatement(Parser.currentToken.lineNumber);
 			elseStatement = Statement.doParse();
 		} else {
 		    thenStatement = Statement.doParse();
@@ -49,6 +51,7 @@ public final class ConditionalStatement extends Statement {
 		    }
 		}
 		this.elseStatement=elseStatement;
+		if(Option.TESTING) System.out.println("Line "+lineNumber+": IfStatement: "+this);
 	}
 
 	@Override

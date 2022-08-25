@@ -2,7 +2,7 @@
 % ====================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 84
 %
-%  PURPOSE: Test printfile.(PW 24)
+%  PURPOSE: Test PrintFile.(PW 24)
 %
 %  METHOD:
 %
@@ -10,11 +10,11 @@
 % ====================================================================
 external class SimulaTest;
 
-SimulaTest(84,"--- Test printfile") begin
+SimulaTest(84,"--- Test PrintFile") begin
 
 text print84="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/print84";
 
-ref(printfile)   myfile;
+ref(PrintFile)   myfile;
 boolean           save;
 
 procedure Check(b1, b2);   boolean b1, b2; begin
@@ -22,8 +22,8 @@ procedure Check(b1, b2);   boolean b1, b2; begin
 end of procedure Check;
 
 if verbose then
-begin outtext("--- START Simula a.s. TEST 84(test printfile)"); outimage;
-      outtext("    The program prints on ""new printfile(print84)"",");
+begin outtext("--- START Simula a.s. TEST 84(test PrintFile)"); outimage;
+      outtext("    The program prints on ""new PrintFile(print84)"",");
       outimage;
       outtext("    compare that output to program source after exec.");
       outimage;
@@ -31,7 +31,7 @@ begin outtext("--- START Simula a.s. TEST 84(test printfile)"); outimage;
       outimage; outimage;
 end;
 
-myfile:-new printfile(print84);
+myfile:-new PrintFile(print84);
 save:= myfile.line=0;
 Check(save, true);
 myfile.open(blanks(132));

@@ -53,6 +53,7 @@ public class _OutByteFile extends _ByteFile {
     }
 
 	public boolean open() {
+		if(_RT.DEBUGGING) TRACE_OPEN("Open OutByteFile");
 		if (_OPEN) return (false);
 		if (FILE_NAME.edText().equalsIgnoreCase("sysout"))
 			outputStream = System.out;

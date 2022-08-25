@@ -43,31 +43,35 @@ public final class _RT {
 	}
 
 	public static class SPORT_Option {
-	    public static String ModuleName="ModuleName";
-		public static String SourceDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts";
+	    private static String getModuleName() { return(new File(SPORT_SourceFileName).getName()); }
+		public static String SourceDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
 		public static String SPORT_SysInsertDirName="C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
-//		public static String SCodeDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\scode";
-//		public static String TempDirName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\temp";
-//		public static String SourceFileName="C:\\GitHub\\SimulaCompiler\\Simula\\src\\sport\\rts\\_RT.DEF";
+		public static String SPORT_SourceFileName=SourceDirName+"/ModuleName";
+//		public static String SCodeDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/scode";
+//		public static String TempDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp";
+//		public static String SourceFileName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/_RT.DEF";
 		
 		// getTextInfo
-		public static String getSourceFileName() { return(SourceDirName+"\\"+ModuleName); }
+//		public static String getSourceFileName() { return(SourceDirName+"/"+ModuleName); }
+		public static String getSourceFileName() { return(SPORT_SourceFileName); }
 //	    public static String ListingFileName=null;//"sysout";
 	    public static String ListingFileName="sysout";
-	    public static String getSCodeFileName() { return(createSubfileName("scode",ModuleName+".scd")); }
+	    public static String getSCodeFileName() {
+	    	return(createSubfileName("scode",getModuleName()+".scd"));
+	    }
 	    
 	    private static String createSubfileName(String subdir,String name) {
-	    	String tempFileName=SourceDirName+"\\"+subdir+"\\"+name;
+	    	String tempFileName=SourceDirName+"/"+subdir+"/"+name;
 	    	File file=new File(tempFileName);
 	    	file.getParentFile().mkdirs();
 	    	return(tempFileName);
 	    }
 	    
-	    public static String getScratchFileName() {	return(createSubfileName("temp",ModuleName+".tmp")); }
-	    public static String getAttributeOutputFileName() { return(createSubfileName("temp",ModuleName+".atr")); }
+	    public static String getScratchFileName() {	return(createSubfileName("temp",getModuleName()+".tmp")); }
+	    public static String getAttributeOutputFileName() { return(createSubfileName("temp",getModuleName()+".atr")); }
 	    public static String getAttributeFileName() {
 	    	//return(createSubfileName("temp",moduleIdent+".atr"));
-	    	String fileName=SourceDirName+"\\"+"temp"+"\\"+ModuleName+".atr";
+	    	String fileName=SourceDirName+"/"+"temp"+"/"+getModuleName()+".atr";
 	    	File file=new File(fileName);
 	    	if(!file.exists()) {
 		    	String name=moduleIdent;
@@ -122,6 +126,7 @@ public final class _RT {
 				else if(arg.equalsIgnoreCase("-SML_TRACING")) Option.SML_TRACING=true;
 				else if(arg.equalsIgnoreCase("-USE_VIRTUAL_THREAD")) Option.USE_VIRTUAL_THREAD=true;
 				else if (arg.equalsIgnoreCase("-RUNTIME_USER_DIR")) Option.RUNTIME_USER_DIR=args[++i];
+				else if (arg.equalsIgnoreCase("-SPORT_SOURCE_FILE")) SPORT_Option.SPORT_SourceFileName=args[++i];
 				// Spesial S-Port Simula and Simuletta Options
 				else if (arg.equalsIgnoreCase("-noexec")) ;//Option.noExecution=true;
 				else if (arg.equalsIgnoreCase("-nowarn")) ;//{ Option.noJavacWarnings=true; Option.WARNINGS=false; }
@@ -135,7 +140,7 @@ public final class _RT {
 				if(file==null) {
 					file=new File(arg);
 					SPORT_Option.SourceDirName=file.getParent();
-					SPORT_Option.ModuleName=file.getName();
+//					SPORT_Option.getModuleName()=file.getName();
 				}
 				else error("multiple input files specified");
 			}
@@ -188,7 +193,7 @@ public final class _RT {
 
 	public static void printError(final String s) {
 		if(console!=null) console.writeError(s+'\n');
-		else System.out.println(s);
+		else System.out.println("\n"+s);
 	}
 
 	public static void printWarning(final String s) {
@@ -245,7 +250,7 @@ public final class _RT {
 			char c=_RT.console.read();
 			if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
 				printWarning("STACK-TRACE");
-				_ThreadUtils.printStackTrace();
+				Thread.dumpStack();
 				printSimulaStackTrace(2);
 			}
 		}
@@ -331,10 +336,7 @@ public final class _RT {
 	}
 	
 	public static void printSimulaStackTrace(final Thread thread,final int start) {
-		StackTraceElement stackTraceElement[] = thread.getStackTrace();
-		int n = stackTraceElement.length;
-		for (int i = start; i < n; i++)
-			printSimulaLineInfo(stackTraceElement[i]);
+		printSimulaStackTrace(thread.getStackTrace(),start);
 	}
 	
 	public static void printSimulaStackTrace(final int start) {
@@ -343,19 +345,23 @@ public final class _RT {
 
 	
 	public static void printSimulaStackTrace(final Throwable e,final int start) {
-		StackTraceElement stackTraceElement[] = e.getStackTrace();
+		printSimulaStackTrace(e.getStackTrace(),start);
+	}
+	
+	private static void printSimulaStackTrace(final StackTraceElement stackTraceElement[],final int start) {
 		int n = stackTraceElement.length;
-		for (int i = start; i < n; i++) {
+		for (int i = start; i < (n-1); i++) {
 			printSimulaLineInfo(stackTraceElement[i]);
 			if(i>30) {
 				println("... SimulaStackTrace "+(n-30)+" lines Truncated");
 				return;
 			}
 		}
-		
+		printSimulaLineInfo(stackTraceElement[start]);
+		printStaticChain();
 	}
 
-	public static void printSimulaLineInfo(final StackTraceElement elt)	{
+	private static void printSimulaLineInfo(final StackTraceElement elt)	{
 		try { 
 		    Class<?> cls=Class.forName(elt.getClassName());
 		    //_RT.println("ENVIRONMENT_.getSimulaLineNumber: cls="+cls);
@@ -365,12 +371,39 @@ public final class _RT {
 		    int[] lineMap=info.LINEMAP_;
 	        int x=0; int javaLineNumber=elt.getLineNumber();
 	        try { while(lineMap[x]<javaLineNumber) x=x+2;
-	        	  _RT.println("IN "+info.ident+'('+elt.getFileName()+':'+elt.getLineNumber()+" "+elt.getMethodName()+") at Simula Source Line "+lineMap[x-1]+"["+info.file+"]");
+	        	  _RT.println("IN "+info.ident+'('+elt.getFileName()+':'+elt.getLineNumber()
+	        	      +" "+elt.getMethodName()+") at Simula Source Line "+lineMap[x-1]+"["+info.file+"]");
 	        } catch(Throwable t) { }
 	    } catch (Exception e) {
 	    	//e.printStackTrace();
 	    }
 	}
 
+	
+	// **********************************************************************
+	// *** Debugging utility: Procedure printThreadList
+	// **********************************************************************
+	public static void printThreadList() {
+		printThreadList(false);
+	}
+	
+	public static synchronized void printThreadList(boolean withStackTrace) {
+		Thread[] t = new Thread[50];
+		int i = Thread.enumerate(t);
+		_RT.println("ACTIVE THREAD LIST:");
+		for (int j = 0; j < i; j++) {
+			Thread T = t[j];
+			String msg="  - " + T;
+			if (T == Thread.currentThread())
+				msg=msg+" = CurrentThread";
+			_RT.println(msg+"   STATE="+T.getState());
+			if(withStackTrace) {
+				_RT.printSimulaStackTrace(T,0);
+				_RT.println("");
+			}
+		}
+		//_RT.ASSERT(Thread.currentThread()==_CUR._THREAD,"Invariant: Thread.currentThread()==_CUR._THREAD");
+		_RT.println("-----------------------------------------------------------------------------------------------");
+	}  
   
 }

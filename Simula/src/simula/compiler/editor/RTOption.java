@@ -38,6 +38,7 @@ public final class RTOption {
 	public static boolean QPS_TRACING = false; // true;
 	public static boolean SML_TRACING = false; // true;
 	public static boolean USE_VIRTUAL_THREAD=true;
+	public static String SPORT_SOURCE_FILE;
 
     public static void InitRuntimeOptions() {
 		RTOption.VERBOSE = false;//true;
@@ -51,6 +52,7 @@ public final class RTOption {
 		RTOption.QPS_TRACING = false; // true;
 		RTOption.SML_TRACING = false; // true;
 		RTOption.USE_VIRTUAL_THREAD = true;
+		RTOption.SPORT_SOURCE_FILE = null;
 	}
 
 	public static void addRTArguments(Vector<String> args) {
@@ -65,6 +67,10 @@ public final class RTOption {
 		if(RTOption.QPS_TRACING) args.add("-QPS_TRACING");
 		if(RTOption.SML_TRACING) args.add("-SML_TRACING");
 		if(RTOption.USE_VIRTUAL_THREAD) args.add("-USE_VIRTUAL_THREAD");
+		if(RTOption.SPORT_SOURCE_FILE!=null) {
+			args.add("-SPORT_SOURCE_FILE");
+			args.add(SPORT_SOURCE_FILE);
+		}
 	}
 
 //	public static String getRTArguments() {

@@ -10,7 +10,7 @@ external class SimulaTest;
 
 SimulaTest(107,"--- Test Process, activation statements, idle, terminated, time.") begin
 
-simulation begin
+Simulation begin
    boolean failed;
 
 text array ut, answer(1:250);
@@ -22,7 +22,7 @@ begin utno:=utno+1; ut(utno):-copy(sysout.image.strip);
       sysout.setpos(1);
 end;
 
-process class p(i); integer i; begin
+Process class p(i); integer i; begin
       if verbose then begin
       outtext("p("); outint (i,2);
       outtext(") activated at time = "); outfix(time,3,8); outimage;

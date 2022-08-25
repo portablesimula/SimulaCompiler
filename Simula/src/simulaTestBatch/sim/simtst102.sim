@@ -30,10 +30,10 @@ SimulaTest(102,"--- LEGAL GOTO out of an operating process and the enclosing Sys
    procedure p;
    begin
       integer i;
-      simulation begin
+      Simulation begin
          ref(Car) car1;
       
-         process class Car(pname); text pname;
+         Process class Car(pname); text pname;
          begin
             trace(sourceline,pname & " is initiating");
             while true do

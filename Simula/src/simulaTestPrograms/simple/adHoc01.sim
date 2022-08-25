@@ -1,49 +1,30 @@
-BEGIN
-    ref(OutbyteFile) oupt;
-    ref(InbyteFile) inpt;
-    
-    procedure doInbyte; begin
-        integer b;
-        b:=inpt.inbyte;
-        outtext("Inbyte: " & edit(b)); outimage;
-    end;
-    
-    procedure doOutbyte(b); integer b; begin
-        oupt.outbyte(b);
-        outtext("Outbyte: " & edit(b)); outimage;
-    end;
-    
-    procedure doIn2byte; begin
-        integer b;
-        b:=inpt.in2byte;
-        outtext("In2byte: " & edit(b)); outimage;
-    end;
-   
-    procedure doOut2byte(b); integer b; begin
-        oupt.out2byte(b);
-        outtext("Out2byte: " & edit(b)); outimage;
-    end;
+begin
+	ref(A) a;
 
-    oupt:-new OutbyteFile("TestFile");
-    oupt.open;
-    doOutbyte(5);
-    doOut2byte(7);
-    doOut2byte(256+13);
-    oupt.close; outimage;
+	class A(i); integer i;
+	begin boolean b;
+		outtext(" sub"); outimage;
+		inner;
+		if i>4 then else outtext("if-1");
+		while i<100 do i:=i+1;
+	end;
+	
+	procedure P; begin
+	   a.i:=0;
+	   outtext(" sub"); outimage;
+	end;	
+   
+    new A(55);
     
-    inpt:-new InbyteFile("TestFile");
-    inpt.open;
-    doInbyte;
-    doInbyte;
-    doInbyte;
-    doInbyte;
-    doInbyte;
-    inpt.close; outimage;
-    
-    inpt:-new InbyteFile("TestFile");
-    inpt.open;
-    doInbyte;
-    doIn2byte;
-    doIn2byte;
-    inpt.close; outimage;
- END
+    begin
+       integer i;
+       i:=33;
+       P;
+       for i:=5 step 1 until 22 do begin
+          if i=33 then goto EXIT;
+       end;
+       
+    END:   
+    EXIT:   
+    end;
+end;

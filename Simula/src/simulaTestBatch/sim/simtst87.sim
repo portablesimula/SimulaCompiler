@@ -13,7 +13,7 @@ SimulaTest(87,"--- Test Specification of Virtual Procedures.") begin
    integer pval;
    ref(A) ra;
    ref(B) rb;
-   ref(file) test;
+   ref(File) test;
    
    procedure checkPval(n,val); integer n,val;
    begin if pval = val then
@@ -26,17 +26,17 @@ SimulaTest(87,"--- Test Specification of Virtual Procedures.") begin
      end;
    end;
 
-   class A; virtual: ref(file) procedure myFile is ref(file) procedure actual(i,j); integer i,j;;
+   class A; virtual: ref(File) procedure myFile is ref(File) procedure actual(i,j); integer i,j;;
                      procedure virt2 is procedure act2(j); integer j;;
                      integer procedure virt3 is procedure act3;;
                      procedure virt4 is procedure act4;;
    begin integer i;
-     ref(file) procedure myFile(i,j); integer i,j;
+     ref(File) procedure myFile(i,j); integer i,j;
      begin pval:=i+j; end;
      
      integer procedure pA;
      begin 
-        ref(file) f;
+        ref(File) f;
         f :- myFile(4,3);
         pA := pval;
      end;
@@ -44,14 +44,14 @@ SimulaTest(87,"--- Test Specification of Virtual Procedures.") begin
 
    A class B;
    begin integer i;
-     ref(file) procedure myFile(i,j); integer i,j;
+     ref(File) procedure myFile(i,j); integer i,j;
      begin pval:=2*i+j; end;
      procedure virt4;
      begin pval:=4567; end;
      
      integer procedure pB;
      begin 
-        ref(file) f;
+        ref(File) f;
         f :- myFile(14,13);
         pB := pval;
      end;

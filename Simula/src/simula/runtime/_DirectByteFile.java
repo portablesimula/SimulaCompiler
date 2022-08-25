@@ -151,6 +151,7 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return
 	 */
 	public boolean open() {
+		if(_RT.DEBUGGING) TRACE_OPEN("Open DirectByteFile");
 		if (_OPEN) return (false);
 		// _LOC = 1; // LOC is maintained by the underlying file system.
 		File file=doCreateAction(new File(FILE_NAME.edText()));
@@ -279,6 +280,8 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return
 	 */
 	public int inbyte() {
+		if(!_CANREAD)
+			throw new _SimulaRuntimeError("DirectByteFile: inbyte failed - 'canread' is false");
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
 		// LOC is maintained by the underlying file system.
@@ -319,6 +322,8 @@ public class _DirectByteFile extends _ByteFile {
 	 * @param x
 	 */
 	public void outbyte(final int x) {
+		if(!_CANWRITE)
+			throw new _SimulaRuntimeError("DirectByteFile: outbyte failed - 'canwrite' is false");
 		if (!_OPEN) throw new _SimulaRuntimeError("file closed");
 		if (x < 0 || x >= (Math.pow(2,_BYTESIZE)))
 			throw new _SimulaRuntimeError("Outbyte, illegal byte value: "+x);

@@ -75,6 +75,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
 		Declaration.Kind declarationKind = Declaration.Kind.Procedure;
 		ProcedureDeclaration block = new ProcedureDeclaration(null, declarationKind);
+		block.lineNumber=Parser.prevToken.lineNumber;
 		block.type = type;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
 		block.modifyIdentifier(expectIdentifier());
@@ -113,6 +114,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 
 		block.lastLineNumber = Global.sourceLineNumber;
 		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
+		if(Option.TESTING) System.out.println("Line "+block.lineNumber+": ProcedureDeclaration: "+block);
 		Global.setScope(block.declaredIn);
 		return (block);
 	}

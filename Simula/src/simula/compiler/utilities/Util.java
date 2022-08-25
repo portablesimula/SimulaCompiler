@@ -73,7 +73,7 @@ public final class Util {
 		nError++;
 		printError(msg);
 		println("STACK-TRACE");
-		printStackTrace();
+		Thread.dumpStack();
 		FORCED_EXIT();
 	}
 
@@ -146,7 +146,7 @@ public final class Util {
 				char c=Global.console.read();
 				if (c == 'Q' || c == 'q') {
 					println("\n\n:STACK-TRACE");
-					printStackTrace();
+					Thread.dumpStack();
 				}
 			} else try {
 //				System.err.println(id + " " + Global.sourceLineNumber + ": " + title + ": <");
@@ -154,7 +154,7 @@ public final class Util {
 				char c=(char) System.in.read();
 				if (c == 'Q' || c == 'q') {
 					println("STACK-TRACE");
-					printStackTrace();
+					Thread.dumpStack();
 				}
 				while (System.in.available() > 0) System.in.read();
 			} catch (Exception e) {
@@ -163,13 +163,6 @@ public final class Util {
 				FORCED_EXIT();
 			}
 		}
-	}
-
-	public static void printStackTrace() {
-		StackTraceElement stackTraceElement[] = Thread.currentThread().getStackTrace();
-		int n = stackTraceElement.length;
-		for (int i = 2; i < n; i++)
-			println("   at "+stackTraceElement[i]);
 	}
 
 	public static void println(final String s) {

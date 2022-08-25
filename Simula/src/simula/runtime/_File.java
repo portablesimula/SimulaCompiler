@@ -10,6 +10,8 @@ package simula.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 
@@ -90,8 +92,18 @@ public class _File extends _CLASS {
 	 */
 	protected boolean _PURGE=false; // True:purge, False:noPurge
 	
+	/**
+	 * READWRITE: If the value is "readonly", output operations cannot be performed.
+	 * If the value is "writeonly", input operations cannot be performed. The value
+	 * "readwrite" enables both input and output. This mode is relevant only for
+	 * direct files.
+	 */
+	protected boolean _CANREAD=true;
+	protected boolean _CANWRITE=true;
+	
 	//	protected boolean _SHARED;  // TODO:
 //	protected boolean _APPEND;      // TODO:
+	
 //	protected boolean _READWRITE;   // TODO:
 //	protected boolean _BYTESIZE;    // TODO:
 //	protected boolean _REWIND;      // TODO:
@@ -194,16 +206,23 @@ public class _File extends _CLASS {
 		//_RT.NOT_IMPLEMENTED("FILE(FILE_NAME).setaccess: "+mode.edText());
 		String id=mode.edText().trim().toUpperCase();
 		boolean unrecognized=false;
+//		else if(id.equals("SHARED")) notImplemented=true; 
+//		else if(id.equals("NOSHARED")) notImplemented=true; 
+//		else if(id.equals("APPEND")) notImplemented=true; 
+//		else if(id.equals("NOAPPEND")) notImplemented=true; 
 		if(id.equals("CREATE")) _CREATE=_CreateAction.create; 
 		else if(id.equals("NOCREATE")) _CREATE=_CreateAction.noCreate; 
 		else if(id.equals("ANYCREATE")) _CREATE=_CreateAction.anyCreate; 
+		else if(id.equals("READONLY"))  { _CANWRITE=false; _CANREAD=true; }
+		else if(id.equals("WRITEONLY")) { _CANWRITE=true; _CANREAD=false; }
+		else if(id.equals("READWRITE")) { _CANWRITE=true; _CANREAD=true; }
+//		else if(id.equals("BYTESIZE:X")) notImplemented=true; 
+//		else if(id.equals("REWIND")) notImplemented=true; 
+//		else if(id.equals("NOREWIND")) notImplemented=true; 
 		else if(id.equals("PURGE")) _PURGE=true; 
 		else if(id.equals("NOPURGE")) _PURGE=false; 
-//		else if(id.equals(FileAccess.SHARED.name())) notImplemented=true; 
-//		else if(id.equals(FileAccess.APPEND.name())) notImplemented=true; 
-//		else if(id.equals(FileAccess.READWRITE.name())) notImplemented=true; 
-//		else if(id.equals(FileAccess.BYTESIZE.name())) notImplemented=true; 
-//		else if(id.equals(FileAccess.REWIND.name())) notImplemented=true; 
+		
+		else if(id.startsWith("%NOBUFFER")) ; // Ignore
 		else if(id.startsWith("CHARSET")) {
 			String charset=id.substring(7).trim();
 			//_RT.println("CHARSET: defaultCharset="+Charset.defaultCharset());
@@ -276,8 +295,16 @@ public class _File extends _CLASS {
 		try { File file = new File(FILE_NAME.edText().trim());
 //			  System.out.println("FILE.doPURGEAction: "+_PURGE+" on "+file);
 //			  _RT.BREAK("FILE.doPURGEAction: "+_PURGE+" on "+file);
-			  if(_PURGE) file.delete();  
+			  if(_PURGE) {
+				  if (!file.delete()) {
+					  _RT.warning("Purge "+file.getName()+" failed - the underlying OS was unable to perform the delete operation");
+				  }
+			  }
 		} catch (Exception e) {	}
 	}
 
+	protected void TRACE_OPEN(String mss) {
+		System.out.println(mss+": "+FILE_NAME.edText());
+		printStaticChain();
+	}
 }

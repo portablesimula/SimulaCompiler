@@ -21,25 +21,25 @@ SimulaTest(80,"--- Test the attribute 'isopen' of class file.") begin
    --text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any8089";
    text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any8089";
 
-   ref(imagefile) f1, f2;
+   ref(ImageFile) f1, f2;
 
-   f1:- new infile(fileName);                  !**** NOTE 1 ****;
-   f2:- new infile(fileName);                  !**** NOTE 1 ****;
+   f1:- new InFile(fileName);                  !**** NOTE 1 ****;
+   f2:- new InFile(fileName);                  !**** NOTE 1 ****;
 
-   if not f1 qua infile.open(blanks(100)) then error("Can't open file: " & fileName);
-   if not f2 qua infile.open(blanks(100)) then begin
-      outtext("WARNING: cannot open infile(f2)"); outimage end;
+   if not f1 qua InFile.open(blanks(100)) then error("Can't open file: " & fileName);
+   if not f2 qua InFile.open(blanks(100)) then begin
+      outtext("WARNING: cannot open InFile(f2)"); outimage end;
 
-   f1 qua infile.inimage;
-   while f1 qua infile.endfile do f1 qua infile.inimage;
+   f1 qua InFile.inimage;
+   while f1 qua InFile.endfile do f1 qua InFile.inimage;
 
    if f2.isopen then begin
-      if not f2 qua infile.close then err(" cannot close infile(f2)");
+      if not f2 qua InFile.close then err(" cannot close InFile(f2)");
    end;
 
    if f1.isopen then !OK;
    else err(" 'isopen' returns false but the file should be open");
 
-   if not f1 qua infile.close then err(" cannot close infile");
+   if not f1 qua InFile.close then err(" cannot close InFile");
       
 end;

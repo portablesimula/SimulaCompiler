@@ -16,7 +16,7 @@ SimulaTest(77,"--- Test infile using two infile objects reading from the same ex
    class Read(n, other); integer n; ref(Read) other;
    begin text array linjer(1:300);
          integer lnr, i;
-         ref(infile) fil;
+         ref(InFile) fil;
 
          procedure Sammenlign;
          begin boolean procedure OK(i); integer i;
@@ -47,9 +47,9 @@ SimulaTest(77,"--- Test infile using two infile objects reading from the same ex
          detach;
 
 
-         fil :- new infile(fileName);
+         fil :- new InFile(fileName);
          if not fil.open(blanks(30)) then
-                error("Can't open infile: " & fileName);
+                error("Can't open InFile: " & fileName);
          fil.inrecord;
 
          while not fil.endfile do
