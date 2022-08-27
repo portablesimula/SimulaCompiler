@@ -85,6 +85,7 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void outbyte(final int b) {
+		TRC("outbyte",""+b);
 		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
 		if (b < 0 || b >= (Math.pow(2,_BYTESIZE)))
 			throw new _SimulaRuntimeError("Illegal byte value");
@@ -96,6 +97,7 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void out2byte(final int b) {
+		TRC("out2byte",""+b);
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
 		try {
@@ -115,6 +117,13 @@ public class _OutByteFile extends _ByteFile {
 			outbyte((int) _TXT.getchar(t));
 		}
 	}
+	
+    private void TRC(String m, String v) {
+    	//if(Option.TRACE_CODING > 1) {
+    	String name=new File(FILE_NAME.edText()).getName();
+    	System.out.println(name+"   "+m+":  "+v);
+    	Thread.dumpStack();
+    }
 
 	public boolean checkpoint() {
 		return (false);

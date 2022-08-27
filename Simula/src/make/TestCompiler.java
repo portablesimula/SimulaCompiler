@@ -236,6 +236,7 @@ public final class TestCompiler {
 //			
 //			// Coder Trace Options
 //			Option.TRACE_CODING=false;true;
+			Option.COMMENT_CODE=true;
 //			
 //			Option.TRACE_REPAIRING=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
@@ -246,7 +247,7 @@ public final class TestCompiler {
 
 			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
-//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");

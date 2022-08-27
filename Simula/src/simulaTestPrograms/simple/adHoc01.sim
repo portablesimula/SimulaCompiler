@@ -1,3 +1,6 @@
+%-D
+%-D
+%-D
 begin
 	ref(A) a;
 
@@ -8,6 +11,9 @@ begin
 		if i>4 then else outtext("if-1");
 		while i<100 do i:=i+1;
 	end;
+%-D
+%-D
+%-D
 	
 	procedure P; begin
 	   a.i:=0;
@@ -15,6 +21,9 @@ begin
 	end;	
    
     new A(55);
+%-D
+%-D
+%-D
     
     begin
        integer i;
