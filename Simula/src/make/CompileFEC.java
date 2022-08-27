@@ -54,7 +54,7 @@ public final class CompileFEC {
 //		names.add("GENMSG.sim");            // WILL GENERATE FILE MessageGenerator.sim
 //		names.add("MessageGenerator.sim");  // WILL GENERATE ERROR MESSAGE FILE FECERROR.txt
 		
-//		names.add("FECMAIN.sim");  // WILL CREATE THE S-PORT COMPILER
+		names.add("FECMAIN.sim");  // WILL CREATE THE S-PORT COMPILER
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
@@ -69,7 +69,7 @@ public final class CompileFEC {
 //		Option.verbose=true;
 		
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
-		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.packetName="simulaFEC";
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
