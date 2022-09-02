@@ -20,17 +20,19 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class CodeLine implements Externalizable {
+	public String modid;
 	public int sourceLineNumber;
 	public String codeLine;
 	
-	public CodeLine(final int sourceLineNumber,final String codeLine) {
+	public CodeLine(final String modid,final int sourceLineNumber,final String codeLine) {
+		this.modid=modid;
 		this.sourceLineNumber=sourceLineNumber;
 		this.codeLine=codeLine;
 	}
 
 	@Override
 	public String toString() {
-		return("CodeLine["+sourceLineNumber+','+codeLine+']');
+		return("CodeLine["+modid+':'+sourceLineNumber+','+codeLine+']');
 	}
 
 	// ***********************************************************************************************
@@ -40,14 +42,16 @@ public final class CodeLine implements Externalizable {
 	
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		Util.TRACE_OUTPUT("CodeLine: "+sourceLineNumber+' '+codeLine);
+		Util.TRACE_OUTPUT(""+this);
 	    oupt.writeInt(sourceLineNumber);
 	    oupt.writeObject(codeLine);
+	    oupt.writeObject(modid);
 	}
 	@Override
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
 		sourceLineNumber=inpt.readInt();
 		codeLine=(String)inpt.readObject();
-		Util.TRACE_INPUT("CodeLine: "+sourceLineNumber+' '+codeLine);
+		modid=(String)inpt.readObject();
+		Util.TRACE_INPUT(""+this);
 	}
 }

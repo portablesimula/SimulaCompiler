@@ -750,7 +750,8 @@ SEARCH: while (scope != null) {
 			if (prfx != null) prfx.writeCode1();
 		}
 		saveClassStms();
-		GeneratedJavaClass.debug("// Class " + this.identifier + ": Code before inner");
+		String comment=(code2 != null && code2.size()>0)?"Code before inner":"Code";
+		GeneratedJavaClass.debug("// Class " + this.identifier + ": "+comment);
 		for (CodeLine c : code1) GeneratedJavaClass.code(c);
 	}
 
@@ -758,7 +759,7 @@ SEARCH: while (scope != null) {
 	// *** Coding Utility: writeCode2 -- Write code after inner
 	// ***********************************************************************************************
 	protected void writeCode2() {
-		if (code2 != null) {
+		if (code2 != null && code2.size()>0) {
 			GeneratedJavaClass.debug("// Class " + this.identifier + ": Code after inner");
 			for (CodeLine c : code2) GeneratedJavaClass.code(c);
 		}
@@ -791,12 +792,15 @@ SEARCH: while (scope != null) {
 	// *** Coding Utility: codeClassStatements
 	// ***********************************************************************************************
 	protected void codeClassStatements() {
+		boolean duringSTM_Coding=Global.duringSTM_Coding;
+		Global.duringSTM_Coding=true;
 		GeneratedJavaClass.debug("// Class Statements");
 		GeneratedJavaClass.code("public "+getJavaIdentifier()+" _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");
 		GeneratedJavaClass.code("}","End of Class Statements");
+		Global.duringSTM_Coding=duringSTM_Coding;
 	}
 
 	// ***********************************************************************************************

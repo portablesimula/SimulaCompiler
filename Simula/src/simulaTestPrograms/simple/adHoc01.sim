@@ -1,34 +1,33 @@
-%-D
-%-D
-%-D
 begin
 	ref(A) a;
 
-	class A(i); integer i;
-	begin boolean b;
+	class A(i); integer i; begin
+	    boolean b;
 		outtext(" sub"); outimage;
 		inner;
 		if i>4 then else outtext("if-1");
 		while i<100 do i:=i+1;
 	end;
-%-D
-%-D
-%-D
 	
-	procedure P; begin
-	   a.i:=0;
+	A class B; begin
+--	   a.i:=0;
+	   outtext("In class B");
+	end;   
+	
+	procedure P(n); name n; integer n; begin
+	   integer k;
+	   k:=n;
+--	   a.i:=0;
 	   outtext(" sub"); outimage;
 	end;	
    
-    new A(55);
-%-D
-%-D
-%-D
+    new B(55);
     
+    Simset 
     begin
        integer i;
        i:=33;
-       P;
+       P(a.i);
        for i:=5 step 1 until 22 do begin
           if i=33 then goto EXIT;
        end;

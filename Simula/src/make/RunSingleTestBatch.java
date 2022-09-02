@@ -153,7 +153,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
 //		names.add("simtst105.sim"); // OK: Multiple assignments.
 //		names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
-//		names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
+		names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 //		names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
 //		names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
 //		names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain
@@ -187,7 +187,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst132.sim"); // OK: SPORT Options
 //		
 //		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
-		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
+//		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
 //		names.add("simerr02.sim"); // OK: Testing NONE-CHECK
 //		names.add("PrecompiledClass.sim"); // OK: Used by simerr03
 //		names.add("simerr03.sim"); // OK: Division by Zero in Precompiled Class 
@@ -224,11 +224,11 @@ public final class RunSingleTestBatch {
 
 		// Coder Trace Options
 //		Option.TRACE_CODING=true;
-		Option.COMMENT_CODE=true;
+		Option.GNERATE_LINE_CALLS=true;
 
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
-//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.

@@ -92,8 +92,9 @@ public final class ConditionalStatement extends Statement {
 		GeneratedJavaClass.code("if(_VALUE(" + condition.toJavaCode() + ")) {");
 		thenStatement.doJavaCoding();
 		if (elseStatement != null) {
-			GeneratedJavaClass.code("} else");
+			GeneratedJavaClass.code("} else {");
 			elseStatement.doJavaCoding();
+			GeneratedJavaClass.code("}");
 		} else
 			GeneratedJavaClass.code("}");
 	}

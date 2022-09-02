@@ -1,19 +1,9 @@
-SIMSET begin 
-      link class a;
-      begin 
-            procedure Va(n); integer n;
-            begin end;
-      end;
- 
+begin 
+integer i1,i2;
 
-      ref(link) elt;
-
-      elt:-new a;
-      
-      inspect elt 
-         when a do begin
-            Va(200);
-            out;
-         end;
+if         i1 eq 0  and not i1 <  i2
+   and     i1 <= i2 and not i1 >  i2
+   and      0 >= i2 and not i1 <> i2  then
+else  outtext("INT.1 (comparing INTEGERs)");
 
 end

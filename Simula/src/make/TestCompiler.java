@@ -164,8 +164,8 @@ public final class TestCompiler {
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
-		 String name="/simple/adHoc01.sim";
-		// String name="/simple/adHoc02.sim";
+		// String name="/simple/adHoc01.sim";
+		 String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
@@ -236,7 +236,7 @@ public final class TestCompiler {
 //			
 //			// Coder Trace Options
 //			Option.TRACE_CODING=false;true;
-			Option.COMMENT_CODE=true;
+			Option.GNERATE_LINE_CALLS=true;
 //			
 //			Option.TRACE_REPAIRING=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
@@ -254,7 +254,7 @@ public final class TestCompiler {
 			
 			
 			// Set RunTime Options and tracing.
-			RTOption.VERBOSE = false;//true;
+//			RTOption.VERBOSE = true;//false;//true;
 			RTOption.DEBUGGING = true;//false;//true;
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;

@@ -26,6 +26,8 @@ public final class _RT {
 	public static _RTConsolePanel console;
   
 	public static String progamIdent;
+	public static String currentModid;
+	public static int currentSimLine;
 	public static int numberOfEditOverflows;
 
 	public static class Option {
@@ -349,34 +351,52 @@ public final class _RT {
 	}
 	
 	private static void printSimulaStackTrace(final StackTraceElement stackTraceElement[],final int start) {
-		int n = stackTraceElement.length;
-		for (int i = start; i < (n-1); i++) {
-			printSimulaLineInfo(stackTraceElement[i]);
-			if(i>30) {
-				println("... SimulaStackTrace "+(n-30)+" lines Truncated");
-				return;
+		if(currentModid!=null) {
+			_RT.println("In "+currentModid+" at line "+currentSimLine);
+		}else {
+			int n = stackTraceElement.length;
+			LOOP:for (int i = start; i < (n-1); i++) {
+				if(printSimulaLineInfo(stackTraceElement[i]," In ")) break LOOP;
 			}
 		}
-		printSimulaLineInfo(stackTraceElement[start]);
-		printStaticChain();
+		if(_RT.Option.VERBOSE) {
+			_RT.println("*** DYNAMIC CHAIN:");
+			int n = stackTraceElement.length;
+			for (int i = start; i < (n-1); i++) {
+				printSimulaLineInfo(stackTraceElement[i]," - ");
+				if(i>30) {
+					println("... SimulaStackTrace "+(n-30)+" lines Truncated");
+					return;
+				}
+			}
+			printSimulaLineInfo(stackTraceElement[start]," - ");
+			printStaticChain();
+		} else {
+			_RT.println("(For more info: rerun with runtime option 'verbose')\n");			
+		}
 	}
 
-	private static void printSimulaLineInfo(final StackTraceElement elt)	{
+	private static boolean printSimulaLineInfo(final StackTraceElement elt,final String lead)	{
 		try { 
 		    Class<?> cls=Class.forName(elt.getClassName());
-		    //_RT.println("ENVIRONMENT_.getSimulaLineNumber: cls="+cls);
-		    Field field=cls.getField("INFO_");
-		    //_RT.println("ENVIRONMENT_.getSimulaLineNumber: field="+field);
+		    //_RT.println("ENVIRONMENT.getSimulaLineNumber: "+elt.getClassName()+" = "+cls);
+		    Field field=cls.getField("_INFO");
+		    //_RT.println("ENVIRONMENT.getSimulaLineNumber: "+"GOT field="+field);
 		    _PROGINFO info=(_PROGINFO)field.get(null);
 		    int[] lineMap=info.LINEMAP_;
 	        int x=0; int javaLineNumber=elt.getLineNumber();
 	        try { while(lineMap[x]<javaLineNumber) x=x+2;
-	        	  _RT.println("IN "+info.ident+'('+elt.getFileName()+':'+elt.getLineNumber()
-	        	      +" "+elt.getMethodName()+") at Simula Source Line "+lineMap[x-1]+"["+info.file+"]");
-	        } catch(Throwable t) { }
+	              StringBuilder sb=new StringBuilder();
+	        	  sb.append(lead+info.ident);
+	        	  if(Option.VERBOSE) sb.append("("+elt.getFileName()+':'+elt.getLineNumber()+" "+elt.getMethodName()+")");
+	        	  sb.append(" at Simula Source Line "+lineMap[x-1]+"["+info.file+"]");
+	        	  _RT.println(sb.toString());
+	        	  return(true);
+	        } catch(Throwable t) { t.printStackTrace(); }
 	    } catch (Exception e) {
 	    	//e.printStackTrace();
 	    }
+		return(false);
 	}
 
 	
@@ -404,6 +424,11 @@ public final class _RT {
 		}
 		//_RT.ASSERT(Thread.currentThread()==_CUR._THREAD,"Invariant: Thread.currentThread()==_CUR._THREAD");
 		_RT.println("-----------------------------------------------------------------------------------------------");
+	}
+
+	public static void _LINE(String modid, int simLine) {
+		currentModid=modid;
+		currentSimLine=simLine;
 	}  
   
 }

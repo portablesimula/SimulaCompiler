@@ -18,7 +18,6 @@ import java.util.Vector;
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
 import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ClassDeclaration;
-import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -60,6 +59,11 @@ public final class GeneratedJavaClass {
 		JavaClassInfo.put(info.externalIdent,info);
 	}
 
+	public String modid() {
+		BlockDeclaration blk=Global.currentJavaModule.blockDeclaration;
+		return(blk.declarationKind+" "+blk.identifier);
+	}
+	
 	public String getClassOutputFileName() {
 		return (Global.tempClassFileDir + "/" + Global.packetName + '/' + blockDeclaration.getJavaIdentifier() + ".class");
 	}
@@ -75,39 +79,38 @@ public final class GeneratedJavaClass {
 
 	
 	public static void debug(final String line) {
-		if (Option.COMMENT_CODE)	code(line);
+		code(line);
 	}
 
 	public static void code(final String line) {
-		Global.currentJavaModule.write(Global.sourceLineNumber, line);
+		Global.currentJavaModule.write(Global.sourceLineNumber, line, Global.currentJavaModule.modid());
 	}
 
 	public static void code(final String line,final String comment) {
-		if (!Option.COMMENT_CODE) code(line);
-		else code(line + " // " + comment);
+		code(line + " // " + comment);
 	}
 
 	public static void code(final CodeLine c) {
-		Global.currentJavaModule.write(c.sourceLineNumber, c.codeLine);
+		Global.currentJavaModule.write(c.sourceLineNumber, c.codeLine, c.modid);
 	}
 
 	private int currentJavaLineNumber=0;
 	
 	private static int prevLineNumber=0;
 	private int indent;
-	private void write(final int sourceLineNumber,final String line) {
+	private void write(final int sourceLineNumber,final String line,final String modid) {
 		Util.ASSERT(sourceLineNumber>0,"Invariant");
 		if(saveCode!=null) {
-			CodeLine codeLine=new CodeLine(sourceLineNumber,line);
+			CodeLine codeLine=new CodeLine(modid,sourceLineNumber,line);
 			saveCode.add(codeLine);
 		} else
 		try { currentJavaLineNumber++;
 			  if(prevLineNumber!=sourceLineNumber) {
-				  String s0=edIndent()+"// JavaLine "+currentJavaLineNumber+" <== SourceLine "+sourceLineNumber;
+				  String s0=edIndent()+edLineNumberLine(sourceLineNumber,modid);
 				  appendLine(currentJavaLineNumber,sourceLineNumber);
 				  if(Option.TRACE_CODING) Util.println("CODE "+sourceLineNumber+": "+s0);
 				  currentJavaLineNumber++;
-				  if(Option.COMMENT_CODE) writer.write(s0+'\n');
+				  writer.write(s0+'\n');
 			  }
 			  if(line.startsWith("}")) indent--;
 			  String s=edIndent()+line;
@@ -119,6 +122,15 @@ public final class GeneratedJavaClass {
 			Util.INTERNAL_ERROR("Error Writing File: "+javaOutputFile,e);
 		}
 		prevLineNumber=sourceLineNumber;
+	}
+	
+	private String edLineNumberLine(final int simulaLine,final String modid) {
+		StringBuilder sb=new StringBuilder();
+		if(Global.duringSTM_Coding && Option.GNERATE_LINE_CALLS) {
+			sb.append("_RT._LINE(\"").append(modid).append("\",").append(simulaLine).append("); ");
+		}
+		sb.append("// JavaLine ").append(currentJavaLineNumber).append(" <== SourceLine ").append(simulaLine);
+		return(sb.toString());
 	}
 	
 	private String edIndent() {
@@ -133,9 +145,9 @@ public final class GeneratedJavaClass {
 	  
 	public void codeProgramInfo() {
 		appendLine(currentJavaLineNumber,blockDeclaration.lastLineNumber);
-		// public static _PROGINFO INFO_=new _PROGINFO("file.sim","MainProgram",1,4,12,5,14,12,32,14,37,16);
+		// public static _PROGINFO _INFO=new _PROGINFO("file.sim","MainProgram",1,4,12,5,14,12,32,14,37,16);
 		StringBuilder s=new StringBuilder();
-		s.append(edIndent()+"public static _PROGINFO INFO_=new _PROGINFO(\"");
+		s.append(edIndent()+"public static _PROGINFO _INFO=new _PROGINFO(\"");
 		s.append(Global.sourceFileName);
 		s.append("\",\"");
 		s.append(blockDeclaration.declarationKind+" "+blockDeclaration.identifier);

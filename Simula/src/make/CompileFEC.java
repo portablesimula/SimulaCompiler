@@ -62,9 +62,9 @@ public final class CompileFEC {
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 //		Option.CASE_SENSITIVE=true;
-		Option.COMMENT_CODE=true;
+		Option.GNERATE_LINE_CALLS=true;
 		
-		Simula.setSelectors("ZD");
+		Simula.setSelectors("ZDT");
 		Option.noExecution=false;//true;
 //		Option.verbose=true;
 		

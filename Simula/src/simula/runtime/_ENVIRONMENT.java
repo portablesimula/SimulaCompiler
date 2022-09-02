@@ -1545,8 +1545,8 @@ public class _ENVIRONMENT extends _RTObject {
     		if(Option.VERBOSE) _RT.println("getTextInfo(12) AttributeFileName="+attributeFileName);
     		return(new _TXT(attributeFileName));
     	case 13: // What is the environment part of the program head? 
-    		if(Option.VERBOSE) _RT.println("getTextInfo(13) environment part of the program head="+"ENVIRHEAD");
-    		return(new _TXT("ENVIRHEAD"));
+    		if(Option.VERBOSE) _RT.println("getTextInfo(13) environment part of the program head="+"/JAVA");
+    		return(new _TXT("/JAVA"));
     	case 14: // Module identifier to be used for the current separate compilation?
     		if(Option.VERBOSE) _RT.println("getTextInfo(14) Module identifier: "+_RT.SPORT_Option.xDecl1);
     		return(new _TXT(_RT.SPORT_Option.xDecl1));
@@ -1833,6 +1833,7 @@ public class _ENVIRONMENT extends _RTObject {
     	case 5 -> sb.append("nWarnings="+info);
     	}
     	if(Option.VERBOSE) _RT.println(sb.toString());
+    	Thread.dumpStack();
     }
     
     /**

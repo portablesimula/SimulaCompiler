@@ -105,6 +105,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		ASSERT_SEMANTICS_CHECKED(this);
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);
+		Global.duringSTM_Coding=false;
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		String line = "public final class " + getJavaIdentifier();
 		if (prefix != null)
@@ -132,7 +133,10 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		for (Declaration decl : declarationList) decl.doJavaCoding();
 		for (VirtualMatch match : virtualMatchList)	match.doJavaCoding();
 		doCodeConstructor();
+		boolean duringSTM_Coding=Global.duringSTM_Coding;
+		Global.duringSTM_Coding=true;
 		codeClassStatements();
+		Global.duringSTM_Coding=duringSTM_Coding;
 
 		if (this.isMainModule) {
 			GeneratedJavaClass.code("");

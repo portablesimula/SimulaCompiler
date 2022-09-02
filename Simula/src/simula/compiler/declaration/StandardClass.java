@@ -680,9 +680,9 @@ public final class StandardClass extends ClassDeclaration
 	  ENVIRONMENT.addStandardClass(CatchingErrors);  // Declared in ENVIRONMENT
       CatchingErrors.virtualSpecList.add(new VirtualSpecification("onError",null,VirtualSpecification.Kind.Procedure,null));
       CatchingErrors.code1=codeSet( // Statements before inner 
-    	  new CodeLine(1,"try {"));      
+    	  new CodeLine("CatchingErrors",1,"try {"));      
       CatchingErrors.code2=codeSet( // Statements after inner 
-       	  new CodeLine(1,"} catch(RuntimeException e) { _CUR=this; _onError(e,onError_0()); }"));
+       	  new CodeLine("CatchingErrors",3,"} catch(RuntimeException e) { _CUR=this; _onError(e,onError_0()); }"));
   }  
   
   // ******************************************************************
@@ -757,8 +757,8 @@ public final class StandardClass extends ClassDeclaration
   static {
 	  Simulation.addStandardClass(Process);  // Declared in Simulation
 	  Process.detachUsed=true;
-	  Process.code1=codeSet(new CodeLine(1,"detach();"));    // Statements before inner 
-	  Process.code2=codeSet(new CodeLine(1,"terminate();")); // Statements after inner 
+	  Process.code1=codeSet(new CodeLine("Process",1,"detach();"));    // Statements before inner 
+	  Process.code2=codeSet(new CodeLine("Process",3,"terminate();")); // Statements after inner 
 //    ref(EVENT_NOTICE) EVENT;
 //    Boolean TERMINATED_;
 //    Boolean procedure idle;

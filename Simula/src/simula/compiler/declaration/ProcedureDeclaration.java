@@ -425,12 +425,15 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// *** Coding Utility: codeProcedureBody -- Redefined in SwitchDeclaration
 	// ***********************************************************************************************
 	public void codeProcedureBody() {
+		boolean duringSTM_Coding=Global.duringSTM_Coding;
+		Global.duringSTM_Coding=true;
 		GeneratedJavaClass.debug("// Procedure Statements");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + " _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");
 		GeneratedJavaClass.code("}", "End of Procedure BODY");
+		Global.duringSTM_Coding=duringSTM_Coding;
 	}
 
 	// ***********************************************************************************************

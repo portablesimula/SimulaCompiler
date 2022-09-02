@@ -654,8 +654,8 @@ public abstract class _RTObject {
 		}
 
 		public void uncaughtException(Thread thread, Throwable e) {
-			String who = "Thread:" + thread.getName() + '[' + obj + ']';
-			if (_RT.Option._GOTOTRACING)	_RT.println(who + " throws exception: " + e);
+			String threadID =(_RT.Option.VERBOSE)? ( "Thread:" + thread.getName() + '[' + obj + "]: " ) : "";
+			if (_RT.Option._GOTOTRACING)	_RT.println(threadID + " throws exception: " + e);
 			if (_RT.Option._GOTOTRACING)	e.printStackTrace();
 			if (e instanceof _LABQNT) {
 				if (_RT.Option._GOTOTRACING)	System.err.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
@@ -669,27 +669,27 @@ public abstract class _RTObject {
 				} else {
 					String msg="Illegal GOTO " + ((_LABQNT)e).identifier;
 					if(_ENVIRONMENT.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
-					_RT.println(who + ": SIMULA RUNTIME ERROR: " + msg);
-					e.printStackTrace();
+					_RT.println(threadID + "SIMULA RUNTIME ERROR: " + msg);
+					if(_RT.Option.VERBOSE) e.printStackTrace();
 					endProgram(-1);
 				}
 			} else if (e instanceof RuntimeException) {
 				String msg=getErrorMessage(e);
 				
 				if(_ENVIRONMENT.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
-				_RT.printError(who + ": SIMULA RUNTIME ERROR: " + msg);
+				_RT.printError(threadID + "SIMULA RUNTIME ERROR: " + msg);
 				_RT.printSimulaStackTrace(e, 0);
-				e.printStackTrace();
+				if(_RT.Option.VERBOSE) e.printStackTrace();
 				endProgram(-1);
 			} else if (e instanceof Error) {
 				String msg = e.getClass().getSimpleName();
 //				if(_ENVIRONMENT.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
-				_RT.printError(who + ": SIMULA RUNTIME ERROR: " + msg);
+				_RT.printError(threadID + "SIMULA RUNTIME ERROR: " + msg);
 				_RT.printSimulaStackTrace(e, 0);
-				e.printStackTrace();
+				if(_RT.Option.VERBOSE) e.printStackTrace();
 				endProgram(-1);
 			} else {
-				_RT.printError(who + ": UNCAUGHT EXCEPTION: " + e.getMessage());
+				_RT.printError(threadID + "UNCAUGHT EXCEPTION: " + e.getMessage());
 				e.printStackTrace();
 				endProgram(-1);
 			}

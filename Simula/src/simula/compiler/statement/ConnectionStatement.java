@@ -52,7 +52,7 @@ public final class ConnectionStatement extends Statement {
 		super(line);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ConnectionStatement");
 		objectExpression = Expression.parseExpression();
-		String ident = "inspect_" + lineNumber + '_' + (SEQU++);
+		String ident = "_inspect_" + lineNumber + '_' + (SEQU++);
 		inspectedVariable = new Variable(ident);
 		inspectVariableDeclaration = new SimpleVariableDeclaration(Type.Ref("RTObject"), ident);
 		DeclarationScope scope = Global.getCurrentScope();
@@ -159,8 +159,9 @@ public final class ConnectionStatement extends Statement {
 			String prfx = (first) ? "" : "else ";
 			String cid = classDeclaration.getJavaIdentifier();
 			if (!impossibleWhenPart) {
-				GeneratedJavaClass.code(prfx + "if(" + inspectedVariable.toJavaCode() + " instanceof " + cid + ")","WHEN "	+ cid + " DO ");
+				GeneratedJavaClass.code(prfx + "if(" + inspectedVariable.toJavaCode() + " instanceof " + cid + ") {","WHEN "	+ cid + " DO ");
 				connectionBlock.doJavaCoding();
+				GeneratedJavaClass.code("}");
 			} else
 				GeneratedJavaClass.code(prfx,"WHEN " + cid + " DO -- IMPOSSIBLE REMOVED");
 		}
@@ -205,14 +206,15 @@ public final class ConnectionStatement extends Statement {
 		assignment.doChecking();
 		GeneratedJavaClass.code(assignment.toJavaCode() + ';');
 		if (hasWhenPart)
-			 GeneratedJavaClass.debug("//" + "INSPECT " + inspectedVariable);
-		else GeneratedJavaClass.code("if(" + inspectedVariable.toJavaCode() + "!=null)","INSPECT " + inspectedVariable);
+			 GeneratedJavaClass.code(" //{","NEW INSPECT " + inspectedVariable);
+		else GeneratedJavaClass.code("if(" + inspectedVariable.toJavaCode() + "!=null) {","NEW INSPECT " + inspectedVariable);
 		boolean first = true;
 		for(DoPart part:connectionPart) { part.doCoding(first);	first = false; }
+		if (!hasWhenPart) GeneratedJavaClass.code("}");
 		if (otherwise != null) {
-			GeneratedJavaClass.code("else","OTHERWISE ");
+			GeneratedJavaClass.code("else {","OTHERWISE ");
 			otherwise.doJavaCoding();
-			// JavaModule.debug("// END OTHERWISE ");
+			GeneratedJavaClass.code("}","END OTHERWISE ");
 		}
 		// JavaModule.debug("// END INSPECTION ");
 		GeneratedJavaClass.code("}");

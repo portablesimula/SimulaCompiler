@@ -52,7 +52,7 @@ public final class Option {
 
 	// Java Coder Options
 	public static boolean TRACE_CODING=false;
-	public static boolean COMMENT_CODE=false;
+	public static boolean GNERATE_LINE_CALLS=false;
 	
 	// Byte code engineering Options
 	public static boolean TRACE_BYTECODE_OUTPUT=false;

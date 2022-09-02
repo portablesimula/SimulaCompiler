@@ -72,7 +72,8 @@ public final class Global {
 	public static File outputDir;         // Used by Java-Coding to save the generated .jar files.
 	public static Map<String,Type> typeMap;
 
-	public static boolean duringParsing;  // True while Parsing
+	public static boolean duringParsing;     // True while Parsing
+	public static boolean duringSTM_Coding;  // True while generating STM code
 
 	public static File simulaTempDir;     // Temp directory
 	public static File tempJavaFileDir;   // Temp sub-dir for .java  files
@@ -89,6 +90,7 @@ public final class Global {
 		typeMap=new HashMap<String,Type>();
 		javaClassMap=new Hashtable<String,JavaClassInfo>();
 		duringParsing=true;
+		duringSTM_Coding=false;
 		externalJarFiles=new Vector<File>();
 		String SIMULA_HOME=getProperty("simula.home",null);
 		if(SIMULA_HOME!=null) {

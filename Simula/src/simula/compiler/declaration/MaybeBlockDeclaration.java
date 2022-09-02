@@ -41,7 +41,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	public static MaybeBlockDeclaration createMaybeBlock() {
 		int lineNumber=Parser.prevToken.lineNumber;
 		if(Option.TESTING) System.out.println("BlockStatement.createMaybeBlock: line="+lineNumber+" "+Parser.prevToken);
-		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName+'_');
+		MaybeBlockDeclaration module = new MaybeBlockDeclaration('_'+Global.sourceName);
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
 		module.parseMaybeBlock(lineNumber);
@@ -79,7 +79,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		if (declarationKind != Declaration.Kind.SimulaProgram) {
 			if (!declarationList.isEmpty()) {
 				declarationKind = Declaration.Kind.SubBlock;
-				modifyIdentifier("SubBlock" + Global.sourceLineNumber);
+				modifyIdentifier("SubBlock" + line);
 			} else {
 				declarationKind = Declaration.Kind.CompoundStatement;
 				modifyIdentifier("CompoundStatement" + Global.sourceLineNumber);
@@ -185,6 +185,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		ASSERT_SEMANTICS_CHECKED(this);
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);
+		Global.duringSTM_Coding=false;
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends _BASICIO" + " {");
 		GeneratedJavaClass.debug("// SubBlock: Kind=" + declarationKind + ", BlockLevel=" + blockLevel + ", firstLine="
@@ -199,7 +200,10 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		GeneratedJavaClass.debug("// Declare locals as attributes");
 		for (Declaration decl : declarationList) decl.doJavaCoding();
 		doCodeConstructor();
+		boolean duringSTM_Coding=Global.duringSTM_Coding;
+		Global.duringSTM_Coding=true;
 		doCodeStatements();
+		Global.duringSTM_Coding=duringSTM_Coding;
 		if (this.isMainModule) {
 			GeneratedJavaClass.code("");
 			GeneratedJavaClass.code("public static void main(String[] args) {");

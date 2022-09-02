@@ -198,6 +198,7 @@ public final class RunFullTestBatch {
 		Option.WARNINGS=false;
 		Option.verbose=false;
 		Option.CASE_SENSITIVE=true;
+		Option.GNERATE_LINE_CALLS=true;
 		
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";

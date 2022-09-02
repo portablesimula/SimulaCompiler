@@ -85,7 +85,7 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void outbyte(final int b) {
-		TRC("outbyte",""+b);
+//		TRC("outbyte",""+b);
 		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
 		if (b < 0 || b >= (Math.pow(2,_BYTESIZE)))
 			throw new _SimulaRuntimeError("Illegal byte value");
@@ -97,7 +97,7 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void out2byte(final int b) {
-		TRC("out2byte",""+b);
+//		TRC("out2byte",""+b);
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
 		try {
@@ -112,6 +112,7 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void outtext(final _TXT t) {
+//		TRC("outtext",""+t.edText());
 		_TXT.setpos(t, 1);
 		while (_TXT.more(t)) {
 			outbyte((int) _TXT.getchar(t));

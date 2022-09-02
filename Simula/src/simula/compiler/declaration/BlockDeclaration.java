@@ -132,7 +132,10 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// *** Coding Utility: codeStatements
 	// ***********************************************************************************************
 	protected void codeStatements() {
+		boolean duringSTM_Coding=Global.duringSTM_Coding;
+		Global.duringSTM_Coding=true;
 		for (Statement stm : statements) stm.doJavaCoding();
+		Global.duringSTM_Coding=duringSTM_Coding;
 	}
 
 	@Override
