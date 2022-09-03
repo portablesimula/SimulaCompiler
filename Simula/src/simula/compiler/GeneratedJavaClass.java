@@ -112,9 +112,11 @@ public final class GeneratedJavaClass {
 				  currentJavaLineNumber++;
 				  writer.write(s0+'\n');
 			  }
-			  if(line.startsWith("}")) indent--;
+//			  if(line.startsWith("}")) { indent--; if(indent<0) indent=0; }
+			  if(line.contains("}")) { indent--; if(indent<0) indent=0; }
 			  String s=edIndent()+line;
-			  if(line.endsWith("{")) indent++;
+//			  if(line.endsWith("{")) indent++;
+			  if(line.contains("{")) indent++;
 			  if(Option.TRACE_CODING) Util.println("CODE "+sourceLineNumber+": "+s);
 			  Util.ASSERT(writer!=null,"Can't Output Code - writer==null"); 
 			  writer.write(s+'\n');

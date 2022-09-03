@@ -69,7 +69,7 @@ public final class CompileFEC {
 //		Option.verbose=true;
 		
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
-//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+//		Option.keepJava=new File("C:/GitHub/SimulaCompiler/javaCodeFEC"); // Generated .java Source is then found in project javaCodeFEC
 		Global.packetName="simulaFEC";
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		

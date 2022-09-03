@@ -205,9 +205,7 @@ public final class ConnectionStatement extends Statement {
 		Expression assignment = new AssignmentOperation(inspectedVariable, KeyWord.ASSIGNREF, objectExpression);
 		assignment.doChecking();
 		GeneratedJavaClass.code(assignment.toJavaCode() + ';');
-		if (hasWhenPart)
-			 GeneratedJavaClass.code(" //{","NEW INSPECT " + inspectedVariable);
-		else GeneratedJavaClass.code("if(" + inspectedVariable.toJavaCode() + "!=null) {","NEW INSPECT " + inspectedVariable);
+		if (!hasWhenPart) GeneratedJavaClass.code("if(" + inspectedVariable.toJavaCode() + "!=null) {","INSPECT " + inspectedVariable);
 		boolean first = true;
 		for(DoPart part:connectionPart) { part.doCoding(first);	first = false; }
 		if (!hasWhenPart) GeneratedJavaClass.code("}");
@@ -217,7 +215,7 @@ public final class ConnectionStatement extends Statement {
 			GeneratedJavaClass.code("}","END OTHERWISE ");
 		}
 		// JavaModule.debug("// END INSPECTION ");
-		GeneratedJavaClass.code("}");
+		GeneratedJavaClass.code("}","END INSPECTION");
 	}
 
 	// ***********************************************************************************************

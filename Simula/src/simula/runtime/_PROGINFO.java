@@ -1,7 +1,5 @@
 package simula.runtime;
 
-import simula.compiler.utilities.Option;
-
 public class _PROGINFO {
 	final String file; // Simula Source File - e.g.  program.sim 
 	final String ident;
