@@ -34,6 +34,15 @@ public abstract class DeclarationScope extends Declaration {
 	}
 
 	// ***********************************************************************************************
+	// *** Utility: scopeID
+	// ***********************************************************************************************
+	public String scopeID() {
+//		if(declaredIn!=null) return(declaredIn.scopeID()+'.'+identifier+"["+blockLevel+"]");
+		if(blockLevel>1) return(declaredIn.scopeID()+'.'+identifier);
+		return(identifier);
+	}
+
+	// ***********************************************************************************************
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
 	public Meaning findVisibleAttributeMeaning(final String ident) {

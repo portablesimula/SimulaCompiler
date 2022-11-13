@@ -1833,7 +1833,6 @@ public class _ENVIRONMENT extends _RTObject {
     	case 5 -> sb.append("nWarnings="+info);
     	}
     	if(Option.VERBOSE) _RT.println(sb.toString());
-    	Thread.dumpStack();
     }
     
     /**
@@ -1867,12 +1866,13 @@ public class _ENVIRONMENT extends _RTObject {
      * Index 1: Called from Simuletta'Common.FATAL_ERROR
      */
     public static void rts_utility(final int index,final int level) {
-    	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level);
-		printStaticChain();
-    	Thread.dumpStack();
-    	//System.exit(-1);
     	switch(index) {
-    	case 1: return;
+    	case 1: // Terminate Program
+        	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level+"  Terminate Program");
+    		printStaticChain();
+        	//Thread.dumpStack();
+        	System.exit(-1);
+    		return;
     	default: 
     		_RT.NOT_IMPLEMENTED("rts_utility: index="+index+", level="+level); // TODO: Implement it
     		printStaticChain();

@@ -61,7 +61,7 @@ public final class GeneratedJavaClass {
 
 	public String modid() {
 		BlockDeclaration blk=Global.currentJavaModule.blockDeclaration;
-		return(blk.declarationKind+" "+blk.identifier);
+		return(blk.declarationKind+" "+blk.scopeID());
 	}
 	
 	public String getClassOutputFileName() {

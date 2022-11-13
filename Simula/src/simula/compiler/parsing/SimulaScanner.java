@@ -613,7 +613,10 @@ public final class SimulaScanner extends DefaultScanner {
         	int lastLine=firstLine;
     		// Scan simple-string:
     		while(getNext() != '"') {
-    			if(current=='!') accumulatedTextConstant.append((char)scanPossibleIsoCode());
+    			if(current=='!') {
+    				int code=scanPossibleIsoCode();
+    				accumulatedTextConstant.append((char)code);
+    			}
     			else if(current == EOF_MARK) {
     				Util.error("Text constant is not terminated.");
     				String result=accumulatedTextConstant.toString(); accumulatedTextConstant=null;
@@ -638,7 +641,9 @@ public final class SimulaScanner extends DefaultScanner {
     				if(firstLine<lastLine)
     					//Util.warning("Text constant span mutiple source lines");
     					Util.warning("Illegal Text constant. Simple string span mutiple source lines. See Simula Standard 1.6");
-    				result=result.replace("\n","\\n");
+    				
+//    				result=result.replace("\n","\\n");    // TESTING TEXT
+    				
     				tokenQueue.add(newToken(KeyWord.TEXTKONST,result));
     				break LOOP;
     			}

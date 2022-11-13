@@ -167,7 +167,7 @@ public final class TestCompiler {
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
-		// String name="/simple/adHoc04.sim";
+		 String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
 		// String name="/simple/adHoc06.sim";
 		// String name="/simple/adHoc26.sim";
@@ -196,7 +196,7 @@ public final class TestCompiler {
 		// String name="/simple/HashingExample.sim";
 		// String name="/simple/HelloWorld.sim";
 		// String name="/simple/InfileSample.sim";
-		 String name="/simple/InspectionSamples.sim";  
+		// String name="/simple/InspectionSamples.sim";  
 		// String name="/simple/LocalObject.sim";
 		// String name="/simple/ParamSample.sim";
 		// String name="/simple/PrfxBlockSamples.sim";
@@ -247,7 +247,7 @@ public final class TestCompiler {
 
 			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
-			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");

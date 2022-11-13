@@ -85,7 +85,7 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void outbyte(final int b) {
-//		TRC("outbyte",""+b);
+		TRC("outbyte",""+b);
 		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
 		if (b < 0 || b >= (Math.pow(2,_BYTESIZE)))
 			throw new _SimulaRuntimeError("Illegal byte value");
@@ -97,7 +97,7 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void out2byte(final int b) {
-//		TRC("out2byte",""+b);
+		TRC("out2byte",""+b);
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
 		try {
@@ -112,19 +112,43 @@ public class _OutByteFile extends _ByteFile {
 	}
 
 	public void outtext(final _TXT t) {
-//		TRC("outtext",""+t.edText());
+		TRC("outtext",""+intString(t.edText()));
 		_TXT.setpos(t, 1);
 		while (_TXT.more(t)) {
-			outbyte((int) _TXT.getchar(t));
+//			outbyte((int) _TXT.getchar(t));
+			try {
+				outputStream.write((int)_TXT.getchar(t));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
-	
+
+	private static final boolean TESTING=false;
     private void TRC(String m, String v) {
-    	//if(Option.TRACE_CODING > 1) {
-    	String name=new File(FILE_NAME.edText()).getName();
-    	System.out.println(name+"   "+m+":  "+v);
-    	Thread.dumpStack();
+    	if(TESTING) {
+    		System.out.println(_RT.currentModid+"  LINE "+_RT.currentSimLine+": "+m+":  "+v);
+    	}
     }
+
+	private static String intString(String s) {
+		String ddd="", chr=""; 
+		for(int i=0;i<s.length();i++) {
+			int b=s.charAt(i);
+			String val=Integer.toString(b).toUpperCase();
+			//String val=Integer.toString(b);
+			if(val.length() == 0) val="000";
+			if(val.length() == 1) val="00"+val;
+			if(val.length() == 2) val="0"+val;
+			ddd=ddd+val+" ";
+			if(!Character.isAlphabetic(b)) b='.';
+			chr=chr+((char)b)+" ";
+		}
+		String res="  "+ddd+"   "+chr;
+		//System.out.println(res);
+		return(res);
+	}
 
 	public boolean checkpoint() {
 		return (false);

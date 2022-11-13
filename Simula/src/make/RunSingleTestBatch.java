@@ -41,7 +41,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst07.sim"); // OK:  Test Mathematical Library
 //		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 //		names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
-//		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
+		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
 //
 //		names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
 //		names.add("simtst12.sim"); // OK:  Text value and reference relations.
@@ -153,7 +153,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst104.sim"); // OK: Procedure parameter 'F' by name.
 //		names.add("simtst105.sim"); // OK: Multiple assignments.
 //		names.add("simtst106.sim"); // ERR: Test SIMULATION, complex example.
-		names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
+//		names.add("simtst107.sim"); // OK:  Test Process, activation statements, idle, terminated, time.
 //		names.add("simtst108.sim"); // OK: Simple Co-Routine Sample 1: detach - call
 //		names.add("simtst109.sim"); // OK: Simple Co-Routine Sample 2: detach - resume
 //		names.add("simtst110.sim"); // OK: Simple Co-Routine Sample 3: detach - resume - chain

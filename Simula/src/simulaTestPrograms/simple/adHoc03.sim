@@ -1,7 +1,20 @@
 begin
-  integer i, j;
-  i := 123456789;
-  j := 123456789123456789;
-  Outint( i, 20 ); Outimage;
-  Outint( j, 20 ); Outimage;
-end;
+	integer i;
+	boolean b;
+	
+	goto L2;
+	
+	if b then begin
+		i:=1;
+		L1:
+		i:=2;
+		goto E;
+		i:=3;
+	end else begin
+		i:=4;
+		L2:
+		i:=5;
+		goto L1;
+		i:=6;
+	end;
+E:end;

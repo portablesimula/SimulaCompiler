@@ -449,7 +449,7 @@ public final class SimulaCompiler {
 		
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 		add(target, new File(Global.tempClassFileDir,Global.packetName), Global.tempClassFileDir.toString().length());
-		if (Global.INCLUDE_RUNTIME_SYSTEM_IN_JAR) {
+		if(programModule.isExecutable() && !Option.noExecution && Global.INCLUDE_RUNTIME_SYSTEM_IN_JAR) {
 			File rtsHome= new File(Global.simulaRtsLib,"simula/runtime");
 			add(target,rtsHome, Global.simulaRtsLib.toString().length());
 			//System.out.println("RTSHOME: "+rtsHome);
