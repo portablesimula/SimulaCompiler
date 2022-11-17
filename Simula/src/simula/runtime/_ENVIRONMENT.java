@@ -1374,9 +1374,10 @@ public class _ENVIRONMENT extends _RTObject {
 
     
     public static int hash(final _TXT txt) {
-        if(txt==null) return(0);
+        if(txt==null || _TXT.length(txt)==0) return(0);
         String s=txt.edText();
         String tstrip=s.trim();
+        if(tstrip.length()==0) return(0);
         int a=tstrip.charAt(0);
         if(tstrip.length() > 3) {
         	a= a +   8*tstrip.charAt(1);
@@ -1863,15 +1864,15 @@ public class _ENVIRONMENT extends _RTObject {
     }
     
     /**
-     * Index 1: Called from Simuletta'Common.FATAL_ERROR
+     * Index 1: Error or Warning given
      */
     public static void rts_utility(final int index,final int level) {
     	switch(index) {
-    	case 1: // Terminate Program
-        	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level+"  Terminate Program");
+    	case 1: // Error or Warning given
+        	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level+"  Error or Warning given");
     		printStaticChain();
-        	//Thread.dumpStack();
-        	System.exit(-1);
+        	Thread.dumpStack();
+        	//System.exit(-1);
     		return;
     	default: 
     		_RT.NOT_IMPLEMENTED("rts_utility: index="+index+", level="+level); // TODO: Implement it

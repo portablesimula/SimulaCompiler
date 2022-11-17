@@ -86,9 +86,9 @@ public final class _RT {
 	    	return(fileName);
 	    }
 	    public static String Selectors="AZ";
-//	    public static String PredefFileName="PredefRTS-FileName";
-//	    public static String PredefFileName="C:/Simuletta/Attrs/FEC/simulaRTS/COMBINE.atr"; 
-	    public static String PredefFileName="C:/WorkSpaces/Predefiner/Predefiner/src/Attrs/FEC/PREDEF.atr";
+	    
+		// The following file is created when front-end compiling the RTS:
+	    public static String PredefFileName="C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
 
 //	    public static String XmessageFileName="X-MSG";
 //	    public static String XmessageFileName="C:/GitHub/SimulaCompiler/Simula/src/sportFEC/sim/FECERROR.txt";

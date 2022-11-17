@@ -177,6 +177,7 @@ public final class RunFullTestBatch {
 		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 		names.add("simtst131.sim"); // OK: Catching Errors
 		names.add("simtst132.sim"); // ERR: SPORT Options
+		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
 
 		names.add("RT_ErrorTest.sim"); // Simula Error TestBatch Framework
 		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.

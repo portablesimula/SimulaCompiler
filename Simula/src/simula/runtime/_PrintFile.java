@@ -339,7 +339,7 @@ public class _PrintFile extends _OutFile {
 	 * are updated.
 	 */
 	public void outimage() {
-		//_RT.BREAK("PrintFile.outimage(), image="+image);
+		//System.out.println("_PrintFile.outimage(), image="+image);
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("File not opened");
 		if (_LINE > _LINES_PER_PAGE)

@@ -205,7 +205,9 @@ public class _InFile extends _ImageFile {
 		if (!_OPEN || _ENDFILE)
 			throw new _SimulaRuntimeError(FILE_NAME.edText()+": File not opened or attempt to read past EOF");
 		try {
-			String line = lineReader.readLine();
+//			String line = lineReader.readLine();
+			String line = (rest != null) ? rest : lineReader.readLine();
+			rest = null;
 			if (line != null) {
 				if (line.length() > _TXT.length(image))
 					throw new _SimulaRuntimeError( FILE_NAME.edText()+": Image too short: input.length="+line.length()+", image.length="+_TXT.length(image));
@@ -269,7 +271,9 @@ public class _InFile extends _ImageFile {
 			if (line != null) {
 				if (line.length() > _TXT.length(image)) { // Return partial image
 					rest = line.substring(_TXT.length(image));
-					line = line.substring(0, _TXT.length(image) - 1);
+					line = line.substring(0, _TXT.length(image));
+					//System.out.println("_InFile.inrecord: line=\""+line+'"');
+					//System.out.println("_InFile.inrecord: rest=\""+rest+'"');
 				}
 				_TXT LINE = new _TXT(line);
 				while (_TXT.more(LINE))

@@ -29,7 +29,7 @@ SimulaTest(95,"--- Test Environment Interface.") begin
    facit(0):-"BEGIN PROGRAM";
    facit(1):-"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts/temp/knwn.atr";
    facit(2):-"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts/temp/cent.atr";
-   facit(3):-"C:/WorkSpaces/Predefiner/Predefiner/src/Attrs/FEC/PREDEF.atr";
+   facit(3):-"C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
    facit(4):-"END PROGRAM";
    
    trace("BEGIN PROGRAM");

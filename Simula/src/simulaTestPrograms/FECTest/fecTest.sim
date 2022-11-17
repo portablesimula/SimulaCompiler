@@ -818,7 +818,7 @@ Begin
                  sysout.outtext("openattributefile:" & t); sysout.outimage;
                  
              --  t:-copy("C:\Simuletta\Attrs\FEC\simulaRTS\COMBINE.atr"); -- AD'HOC 
-                 t:-copy("C:\WorkSpaces\Predefiner\Predefiner\src\Attrs\FEC\PREDEF.atr"); -- AD'HOC 
+                 t:-copy("C:\WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr"); -- AD'HOC 
                  
                  inspect new inbytefile(t) do begin
                     setaccess("%nobuffer");

@@ -41,7 +41,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst07.sim"); // OK:  Test Mathematical Library
 //		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 //		names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
-		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
+//		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
 //
 //		names.add("simtst11.sim"); // OK:  Text Attributes constant, start, length, pos and main
 //		names.add("simtst12.sim"); // OK:  Text value and reference relations.
@@ -185,6 +185,7 @@ public final class RunSingleTestBatch {
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
 //		names.add("simtst132.sim"); // OK: SPORT Options
+		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
 //		
 //		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
 //		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
