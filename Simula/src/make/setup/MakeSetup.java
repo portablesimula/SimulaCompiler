@@ -281,7 +281,7 @@ public final class MakeSetup {
 	// ***************************************************************
 	private static void copySetupJAR() throws IOException	{
 		File source=new File(GIT_BINARIES+"\\setup.jar");
-		File target=new File(GITHUB_ROOT+"\\github.io\\setup2\\setup.jar");
+		File target=new File(GITHUB_ROOT+"\\github.io\\setup\\setup.jar");
 		System.out.println("source="+source);
 		System.out.println("target="+target);
 		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
@@ -292,7 +292,7 @@ public final class MakeSetup {
 	// *** EXECUTE SIMULA SETUP
 	// ***************************************************************
 	private static void executeSimulaSetup() throws IOException	{
-		String SETUP_JAR=GITHUB_ROOT+"\\github.io\\setup2\\setup.jar";
+		String SETUP_JAR=GITHUB_ROOT+"\\github.io\\setup\\setup.jar";
 		printHeading("Execute SimulaSetup: "+SETUP_JAR);
 //		execute("java -jar "+SETUP_JAR);
 		execute("java","-jar",SETUP_JAR);
@@ -379,7 +379,7 @@ public final class MakeSetup {
 		String USER_HOME=System.getProperty("user.home");
 		System.out.println("USER_HOME="+USER_HOME);
 //		File setupPropertiesDir=new File(USER_HOME+File.separatorChar+".simula");
-		File setupPropertiesDir=new File(GITHUB_ROOT+"\\github.io\\setup2");
+		File setupPropertiesDir=new File(GITHUB_ROOT+"\\github.io\\setup");
 		System.out.println("setupPropertiesDir="+setupPropertiesDir);
 		setupPropertiesDir.mkdirs();
 		setupPropertiesFile=new File(setupPropertiesDir,"setupProperties.xml");

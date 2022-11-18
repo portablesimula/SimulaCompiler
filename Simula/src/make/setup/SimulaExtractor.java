@@ -91,7 +91,7 @@ public final class SimulaExtractor extends JFrame {
 //		simulaExtractor.setVisible(true);
 
 		String jarFileName = simulaExtractor.getJarFileName();
-		if(jarFileName==null) jarFileName = "C:/GitHub/Binaries/setup2.jar"; // for TESTING ONLY
+		if(jarFileName==null) jarFileName = "C:/GitHub/Binaries/setup.jar"; // for TESTING ONLY
 		
 		boolean ok=simulaExtractor.extract(jarFileName);
 //		askWriteDesktopLinks();

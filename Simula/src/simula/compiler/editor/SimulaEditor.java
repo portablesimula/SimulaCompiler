@@ -266,7 +266,7 @@ public class SimulaEditor extends JFrame {
         	String thisSetupDated=Global.getProperty("simula.setup.dated","?");
 	        String thisReleaseID=Global.simulaReleaseID+'R'+thisRevision;
 
-		    String remoteFileName="https://portablesimula.github.io/github.io/setup2/setupProperties.xml";
+		    String remoteFileName="https://portablesimula.github.io/github.io/setup/setupProperties.xml";
 		    if (Option.TRACING) Util.println("SimulaEditor.doCheckForNewVersion: Load Remote Properties from: "+remoteFileName);
 		    URL remote = new URL(remoteFileName);
             Properties remoteProperties=new Properties();
