@@ -242,7 +242,7 @@ public final class Variable extends Expression {
 			} break;
 
 		default:
-			Util.FATAL_ERROR("Variable.doChecking: Impossible - "+decl.declarationKind);
+			Util.FATAL_ERROR("Variable.doChecking: Impossible - "+decl.declarationKind+"  "+decl);
 		}
 		
 		if (Option.TRACE_CHECKER)

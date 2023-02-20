@@ -1,38 +1,56 @@
-begin
-	ref(A) a;
 
-	class A(i); integer i; begin
-	    boolean b;
-		outtext(" sub"); outimage;
-		inner;
-		if i>4 then else outtext("if-1");
-		while i<100 do i:=i+1;
-	end;
-	
-	A class B; begin
---	   a.i:=0;
-	   outtext("In class B");
-	end;   
-	
-	procedure P(n); name n; integer n; begin
-	   integer k;
-	   k:=n;
---	   a.i:=0;
-	   outtext(" sub"); outimage;
-	end;	
-   
-    new B(55);
-    
-    Simset 
-    begin
-       integer i;
-       i:=33;
-       P(a.i);
-       for i:=5 step 1 until 22 do begin
-          if i=33 then goto EXIT;
+begin
+      text array T (1:4, 1:2);
+      text t1,t2; integer i,j,ix;
+
+%      t1 :- blanks (16);
+%      t1 :- copy ("****************");
+       t1 :- copy ("0123456789012345");
+
+         t2 :- t1.sub (ix,2);
+         outtext("  Loop ix="); outint(ix,2); outtext(", i="); outint(i,2); outtext(", j="); outint(j,2); outtext(", t1=""" & t1 & """"); outtext(", t2=""" & t2 & """"); outimage;
+         T (i, j) :- t1;
+         outtext("  Loop ix="); outint(ix,2);
+              outtext(", i="); outint(i,2);
+              outtext(", j="); outint(j,2);
+              outtext(", t1=""" & t1 & """");
+              outtext(", T (i, j)=""" & T (i, j) & """"); outimage;
+         T (i, j).sub (1,1).putint (i);
+
+
+
+
+%      for i := 1 step 1 until 4 do
+%      for j := 1 step 1 until 2 do
+	  i:=1; j:=2;
+      begin
+         ix := 4*(i-1)+2*j-1;
+         t2 :- t1.sub (ix,2);
+         outtext("  Loop ix="); outint(ix,2);
+              outtext(", i="); outint(i,2);
+              outtext(", j="); outint(j,2);
+              outtext(", t1=""" & t1 & """");
+              outtext(", t2=""" & t2 & """"); outimage;
+         T (i, j) :- t2;
+         outtext("  Loop ix="); outint(ix,2);
+              outtext(", i="); outint(i,2);
+              outtext(", j="); outint(j,2);
+              outtext(", t1=""" & t1 & """");
+              outtext(", T (i, j)=""" & T (i, j) & """"); outimage;
+         T (i, j).sub (1,1).putint (i);
+         T (i, j).sub (2,1).putint (j);
+         outtext("  Loop ix="); outint(ix,2);
+              outtext(", i="); outint(i,2);
+              outtext(", j="); outint(j,2);
+              outtext(", t1=""" & t1 & """");
+              outtext(", t2=""" & t2 & """"); outimage;
+      end;
+
+      if t1 = "1112212231324142" then
+      else
+      begin
+         outtext ("            Erroneus value : ");
+         outtext (t1); outimage;
        end;
-       
-    END:   
-    EXIT:   
-    end;
-end;
+
+end of program;

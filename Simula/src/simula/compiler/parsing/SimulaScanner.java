@@ -758,6 +758,21 @@ public final class SimulaScanner extends DefaultScanner {
     //**  Reference-Syntax:
     //**      directive
     //**       =  % { any character except end-of-line }
+	//**
+	//**    A conditional line takes the form:
+	//**		%selector-expression ….
+	//**	where '' …. '' represents the line to be conditionally included
+	//**	and the selector-expression has the form:
+	//**
+	//**		Selector-expression
+	//**			= selector-group { selector-group }
+	//**
+	//**		Selector-group
+	//**			= + letter_or_digit { letter_or_digit }
+	//**			| - letter_or_digit { letter_or_digit }
+	//**
+	//**	i.e. a string of letters and signs, with the first character being a sign.
+	//**	The selector-expression is terminated by a SP.
     //********************************************************************************
     //** End-Condition: current is last character of construct
     //**                getNext will return first character after construct
@@ -773,6 +788,7 @@ public final class SimulaScanner extends DefaultScanner {
 				readUntilEndofLine();
 		    }
 			//Util.println("SimulaScanner.scanDirectiveLine: RETURN char="+(char)current);
+			getNext(); if(current != ' ') pushBack(current);
 		    return (newToken(KeyWord.COMMENT));
 		} else if(Character.isLetter(current)) {
 			String id=scanName();

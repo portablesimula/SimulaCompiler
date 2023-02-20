@@ -1,0 +1,81 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 47
+%
+%  PURPOSE:     Test of this.
+%
+%  REWRITTEN BY:  BEH   29/07-86
+% ==============================================================================
+
+begin
+	integer nnn=47; text title="--- Test of this";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+   ref(A) ra1, ra2, ra3;
+
+   class A;
+   begin
+
+      ref(A) procedure z;
+      begin
+          ra2 :- this A;
+
+          begin
+             integer i;
+             ra3 :- this A
+          end;
+          z :- this A
+      end of procedure z;
+
+   end;
+
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+   ra1 :- new A;
+   ra1 :- ra1.z;
+
+   if ra1 == ra2 and ra2 == ra3 then
+   else
+   begin
+      err("this.");
+      outtext("            Erroneus references : ");
+      outimage;
+      outtext("                      ra1 == ra2 - ");
+      outtext(if ra1 == ra2 then "true" else "false");
+      outimage;
+      outtext("                      ra1 == ra3 - ");
+      outtext(if ra1 == ra3 then "true" else "false");
+      outimage;
+      outtext("                      ra2 == ra3 - ");
+      outtext(if ra2 == ra3 then "true" else "false");
+      outimage;
+   end;
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

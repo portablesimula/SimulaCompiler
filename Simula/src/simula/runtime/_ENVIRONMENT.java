@@ -1867,18 +1867,23 @@ public class _ENVIRONMENT extends _RTObject {
      * Index 1: Error or Warning given
      */
     public static void rts_utility(final int index,final int level) {
+    	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level+"  Error or Warning given");
     	switch(index) {
-    	case 1: // Error or Warning given
-        	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level+"  Error or Warning given");
-    		printStaticChain();
-        	Thread.dumpStack();
-        	//System.exit(-1);
-    		return;
-    	default: 
-    		_RT.NOT_IMPLEMENTED("rts_utility: index="+index+", level="+level); // TODO: Implement it
-    		printStaticChain();
-    		Thread.dumpStack();
+    		case 0: return; // Note
+			case 1: break; //return; // Warning
+			case 2: break;//return; // Error
+			case 3: break;//return; // COMMON Error
+			case 4: break;//return; // Abort
+	    	case 5: // newTag check-point with Stack trace
+	        	if(Option.VERBOSE) _RT.println("rts_utility: index=5: newTag should be changed to newTTag(ident)");
+	        	break;
+    		default: _RT.NOT_IMPLEMENTED("rts_utility: index="+index+", level="+level); // TODO: Implement it
     	}
+		printStaticChain();
+        try {Thread.sleep(10);}catch(Exception e) {}
+    	Thread.dumpStack();
+        try {Thread.sleep(10);}catch(Exception e) {}
+    	//System.exit(-1);
     }
 
 

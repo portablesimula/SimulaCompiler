@@ -13,7 +13,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Set;
 
-import simula.compiler.declaration.BlockDeclaration;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;

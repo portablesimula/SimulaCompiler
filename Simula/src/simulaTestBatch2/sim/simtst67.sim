@@ -1,0 +1,81 @@
+
+% ======================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 67
+%
+%  PURPOSE:     Simple test of detach, call and resume.
+%
+%  WRITTEN BY:  BEH   08/08-86
+% =====================================================================
+external class SimulaTest;
+
+SimulaTest(67,"--- Simple test of detach, call and resume.") begin
+
+   integer array ia(1:10);
+   integer i, nri;
+
+   procedure savei(i);  integer i;
+   begin  nri := nri + 1;   ia(nri) := i  end;
+
+   procedure Checki;
+   begin
+      if     ia(1) = 2
+         and ia(2) = 3
+         and ia(3) = 5
+         and ia(4) = 13
+         and ia(5) = 18
+         and ia(6) = 49
+         and nri    = 6  then
+      else
+      begin
+         integer j;
+         err("Program sequencing.");
+         outimage;
+         outtext("            Subsequent values of i : ");
+         outimage;
+         for j := 1 step 1 until nri do
+         begin
+            outtext("            ");
+            outint(j, 2);
+            outtext(" : ");
+            outint(ia(j), 4);
+            outimage;
+         end;
+         outimage;
+      end;
+   end pros. checki;
+
+
+   class A;
+   begin integer j;
+         ref(B) rb;
+
+         j := i := i+i;  savei(i);     !(1) *** i=2 ***;
+      detach;
+         j := i := j+i;  savei(i);     !(3) *** i=5 ***;
+      call(rb);
+         j := i := j+i;  savei(i);     !(5) *** i=18 ***;
+   end of class A;
+
+   class B;
+   begin integer j;
+
+         j := i := i+1;   savei(i);    !(2) *** i=3 ***;
+      detach;
+         j := i := j+2*i; savei(i);    !(4) *** i=13 ***;
+      detach;
+         j := i := j+2*i; savei(i)     !(6) *** i=49 ***;
+   end of class B;
+
+   ref(A)            ua;
+   integer            c;
+
+   i := 1;
+   ua :- new A;
+   c := c + 1;
+   ua.rb :- new B;
+   resume(ua);
+   resume(ua.rb);
+
+   Checki;
+   
+ end

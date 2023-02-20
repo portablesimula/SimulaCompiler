@@ -1,0 +1,113 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 20
+%
+%  PURPOSE:     Do some simple tests of the relational operators <, <=, =,
+%               >=, > and <> on integers.
+%
+%  METHOD:      Examples..
+%
+%  NOTE:    1 - At line marked with NOTE 1, extremum values (max or min) for
+%               integer or short integer on your implementation should be
+%               filled in.
+%
+%  WRITTEN BY:  BEH   15/07-86
+% ==============================================================================
+
+begin
+	integer n=20; text title="--- Test the relational operators <, <=, =, >=, >";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+   integer i,j ;
+   short integer si, sj ;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(n,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+   i := 5 ;
+   si := 3 ;
+
+   if     i = 5
+      and j <= sj
+      and i > si
+      and si >= sj
+      and j+si < i
+      and si <> j then
+   else
+   begin
+      err(" : Integer relations (1).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outtext ("            ") ;
+      outint (i, 12) ; outint (j, 12) ; outint (si, 12) ; outint (sj, 12) ;
+      outimage ; outimage ;
+      
+   end ;
+
+   j := -12 ;
+   sj := -34 ;
+
+   if     sj-j = -22
+      and j <= si
+      and sj < i
+      and i+j >= sj
+      and j > sj
+      and i <> j then
+   else
+   begin
+      err(" : Integer relations (2).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outtext ("            ") ;
+      outint (i, 12) ; outint (j, 12) ; outint (si, 12) ; outint (sj, 12) ;
+      outimage ; outimage ;
+      
+   end ;
+
+   i := 2147483647 ;                                      !***** NOTE 1 *****;
+   j := i - 10 ;
+   si := 32767 ;                                          !***** NOTE 1 *****;
+   sj := -32768 ;                                         !***** NOTE 1 *****;
+
+   if     sj + si = -1
+      and j < i
+      and si <= i
+      and i >= 2147483647                                 !***** NOTE 1 *****;
+      and sj+1 > sj then
+   else
+   begin
+      err(" : Integer relations (3).") ;
+      outimage ;
+      outtext ("            Erroneus values :") ;
+      outtext ("            ") ;
+      outint (i, 12) ; outint (j, 12) ; outint (si, 12) ; outint (sj, 12) ;
+      outimage ; outimage ;
+      
+   end ;
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(n,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(n,4); outimage;
+		end;
+	end;
+
+end of program;

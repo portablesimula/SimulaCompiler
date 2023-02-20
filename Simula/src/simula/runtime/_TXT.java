@@ -202,7 +202,7 @@ public final class _TXT {
 		if (n < 0)throw new _SimulaRuntimeError(" ! Sub(i="+i+",n="+n+") is out of frame, n < 0");
 		if (T==null) T=_ENVIRONMENT.NOTEXT;
 		if (i + n > T.LENGTH + 1)
-			throw new _SimulaRuntimeError(" ! Sub(i="+i+",n="+n+") is out of frame, i + n > LENGTH + 1");
+			throw new _SimulaRuntimeError(" ! Sub(i="+i+",n="+n+") is out of frame, i + n > LENGTH + 1, LENGTH = "+T.LENGTH);
 		else if (n > 0) {
 			_TXT U = new _TXT();
 			U.OBJ = T.OBJ;

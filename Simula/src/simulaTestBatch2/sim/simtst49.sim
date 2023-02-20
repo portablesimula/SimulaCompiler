@@ -1,0 +1,99 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 49
+%
+%  PURPOSE:     Test for statements in connection blocks.
+%
+%  REWRITTEN BY:  BEH   29/07-86
+% ==============================================================================
+
+begin
+	integer nnn=49; text title="--- Test for statements in connection blocks.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+   text t;
+
+   class A;
+   begin
+      integer         i, j, k;
+   end of class A;
+
+   A class B;;
+
+   ref(A)            ra;
+   integer            l;
+
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+   ra :- new A;
+
+   inspect ra do
+      for i := l, l + 1, l + 2 do outint(i, 3);
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
+
+   if t = "  0  1  2" then else begin
+      err("for-loop(1).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
+
+   inspect ra do
+      for i := i, i + 1, i + 2 step -1 until 0 do
+         for j := i, i + 1 do outint(i + j, 3);
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
+
+   if t = "  4  5  6  7 10 11  8  9  6  7  4  5  2  3  0  1"  then else begin
+      err("for-loop(2).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
+
+
+   inspect ra
+   when A do
+      for k := k, k + 1 do
+         for l := k do outint(k + l, 3)
+   when B do err("Wrong statement selected(3).")
+   otherwise err("Wrong statement selected(4).");
+
+   t :- copy(sysout.image.strip);
+   sysout.image.setpos(1);
+   sysout.image := notext;
+
+   if t = "  0  2" then else begin
+      err("for-loop(5).");
+      outtext("            Erroneus values : " & t); outimage;
+   end;
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

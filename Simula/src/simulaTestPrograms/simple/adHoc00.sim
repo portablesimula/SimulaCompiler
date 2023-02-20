@@ -1,33 +1,11 @@
-Simulation begin
-	ref(A) a;
 
-	Process class A(i); integer i;
-	begin boolean b;
-		outtext(" sub");
-		inner;
-		if i>4 then else outtext("if-1");
-		while i<100 do i:=i+1;
-		detach;
-	end;
-	
-	procedure P; begin
-	   integer j,key=22;
-	   switch(0:55) key begin
-       when 0 do j:=33;
- 
-       when none do j:=99;
-    end;
-	
-	activate new A(77);   
-	hold(100);
+begin   
+   ref(InputFile) fil1;
+   text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any66";
    
-    inspect new A(55) do begin
-       i:=33;
-       for i:=5 step 1 until 22 do begin
-          if i=33 then goto EXIT;
-       end;
-       
-    END:   
-    EXIT:   
-    end;
-end;
+		class InputFile(neste, navn, a); value navn; ref(InputFile) neste; text navn; integer a; begin
+		end;
+
+   fil1 :- new InputFile(new InputFile(none, fileName, 5), fileName, 13);
+ 
+end of program;

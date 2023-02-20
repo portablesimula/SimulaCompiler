@@ -164,10 +164,10 @@ public final class TestCompiler {
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
-		// String name="/simple/adHoc01.sim";
+		 String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
-		 String name="/simple/adHoc04.sim";
+		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
 		// String name="/simple/adHoc06.sim";
 		// String name="/simple/adHoc26.sim";

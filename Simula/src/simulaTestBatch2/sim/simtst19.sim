@@ -1,0 +1,116 @@
+
+% ======================================   Main   program =============
+%  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 19
+%
+%  PURPOSE:     Test text concatenation and text expression evaluation.
+%
+%  METHOD:      Examples.
+%
+%  WRITTEN BY:  BEH   14/07-86
+% ==============================================================
+
+begin
+	integer n=19; text title="--- Test text concatenation and text expression evaluation.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+   text t1, t2, t3;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(n,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+   t1 :- "abcde";
+   t2 :- "123"&t1&t3&"456"&t1.sub (3,3);
+
+   if     t2 = "123abcde456cde"
+      and not t2.constant then
+   else
+   begin
+      err(" : Text concatenation (1).");
+      outimage;
+      outtext ("            Erroneus values :");
+      outimage;
+      outtext ("            "); outtext (t2);
+      outtext (if t2.constant then "            true" else "            false");
+      outimage;
+      
+   end;
+
+   t1 :- copy ("abcde");
+   t1.setpos (3);
+   (t1).putchar ('3');
+   t3 :- t1;
+   t2 :- t1.sub (2,2);
+
+   if 
+%         t1.pos = 3   // USIKKER PÅ SEMANTIKKEN HER - MYH 26/3-2018
+%     and
+          t1 = "ab3de"
+      and t3 = "ab3de"
+      and t2 = "b3"
+      and not t3.constant
+      and not t2.constant then
+   else
+   begin
+      err(" : Text expression evaluation (2).");
+      outimage;
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outtext (t1); outtext ("   ");
+      outtext (if t1.constant then "            true" else"            false");
+      outimage;
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outtext (t2); outtext ("   ");
+      outtext (if t2.constant then "            true" else"            false");
+      outimage;
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outtext (t3); outtext ("   ");
+      outtext (if t3.constant then "            true" else"            false");
+      outimage;
+      outimage;
+      
+   end;
+
+   t1 :- if true then "1234" else notext;
+
+   if t1 = "1234" and t1.constant then
+   else
+   begin
+      err(" : Text expression evaluation (3).");
+      outimage;
+      outtext ("            Erroneus values :");
+      outtext ("            ");
+      outtext (t1); outtext ("   ");
+      outtext (if t1.constant then "            true" else"            false");
+      outimage;
+      outimage;
+      
+   end;
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(n,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(n,4); outimage;
+		end;
+	end;
+
+end of program;

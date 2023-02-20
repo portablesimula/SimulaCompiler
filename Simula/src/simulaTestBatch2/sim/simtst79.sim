@@ -1,0 +1,157 @@
+
+% ======================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 79
+%
+%  PURPOSE:     Test the attribute 'isopen' of class File.
+%
+%  NOTE:    1 - In lines marked with NOTE 1, a legal filename on your
+%               implementation should be filled in. In lines marked
+%               only with NOTE 1, it does not mather whether the file
+%               with the given filename exists or not.
+%           2 - There shall not exist any file with the filename given
+%               in the line marked with NOTE 2.
+%               (anyImageFile,anyExitingByteFile)
+%           3 - There shall exist a file with the filename given in
+%               the line marked with NOTE 3.
+%               (anyExistingImageFile,anyExitingByteFile)
+%               - if these are changed, change also prep-79 which will
+%                 generate the files.
+%           4 - if a file with this filename exists, the file will only
+%               be opened; if it does not exist, it will be created.
+%               (anyoutFile, anyoutByteFile, anydirectByteFile, anyPrintFile, anyExistingdirectfile)
+%
+%  WRITTEN BY:  BEH   27/08-86
+% =====================================================================
+external class SimulaTest;
+
+SimulaTest(79,"--- Test the attribute 'isopen' of class File.") begin
+
+   text anyExistingdirectfile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingDirectfile79";
+   text anyImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyImageFile79";
+
+   text anyExistingImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingImageFile79";
+   text anyExitingByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingByteFile79";
+   text anyoutFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOutFile79";
+   text anyoutByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOutByteFile79";
+   text anyprintFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyPrintFile79";
+   text anydirectByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectByteFile79";
+
+   ref(File) xf;
+   integer i;
+
+   procedure Test(line,open, B, nr); integer line; boolean open, B; integer nr;
+   begin if not open eqv B then begin
+               err("Failed");
+               outtext("Line "); outint(line,0); outtext(": *** error : Attribute 'isopen' of ");
+               if xf in InFile         then outtext("InFile")        
+          else if xf is OutFile        then outtext("OutFile")       
+          else if xf in PrintFile      then outtext("PrintFile")     
+          else if xf is DirectFile     then outtext("DirectFile")    
+          else if xf in InByteFile     then outtext("InByteFile")    
+          else if xf is OutByteFile    then outtext("OutByteFile")   
+          else if xf is DirectByteFile then outtext("DirectByteFile")
+               else                         outtext("??");
+
+               outtext(" ("); outint(nr, if nr < 10 then 1 else 2);
+               outtext(") should no be ");
+               outtext(if open then "true" else "false");
+               outimage;
+         end;
+   end pros. test;
+
+   
+   !***** PREPARE 'anyImageFile' to be used as InFile below *****;
+   xf:-new OutFile(anyImageFile);
+   xf qua OutFile.open(blanks(10));
+   for i:=0 step 1 until 30 do xf qua OutFile.outint(i,4);
+   xf qua OutFile.outimage;
+   xf qua OutFile.close;
+
+   xf:- new InFile(anyImageFile);             !***** NOTE 1, NOTE 2 *****;
+   Test(sourceline,xf.isopen, false, 1);
+
+   xf qua InFile.open(blanks(10));
+   Test(sourceline,xf.isopen, true, 2);
+
+   xf:- new InFile(anyExistingImageFile);             !***** NOTE 1, NOTE 3 *****;
+   Test(sourceline,xf.isopen, false, 3);
+
+   if not xf qua InFile.open(blanks(80))
+   then Test(sourceline,xf.isopen, false, 4)
+   else Test(sourceline,xf.isopen, true, 5);
+
+   xf qua InFile.close;
+   Test(sourceline,xf.isopen, false, 6);
+
+   xf:- new InByteFile("anyNoneExitingFile");         !***** NOTE 1, NOTE 2 *****;
+   Test(sourceline,xf.isopen, false, 7);
+
+   xf qua InByteFile.open;
+   Test(sourceline,xf.isopen, false, 8);
+
+   xf:- new InByteFile(anyExitingByteFile);         !***** NOTE 1, NOTE 3 *****;
+   Test(sourceline,xf.isopen, false, 9);
+
+   if not xf qua InByteFile.open
+   then Test(sourceline,xf.isopen, false, 10)
+   else Test(sourceline,xf.isopen, true, 11);
+
+   xf qua InByteFile.close;
+   Test(sourceline,xf.isopen, false, 12);
+
+
+   xf:- new OutFile(anyoutFile);            !***** NOTE 1, NOTE 4 *****;
+   Test(sourceline,xf.isopen, false, 13);
+
+   if not xf qua OutFile.open(blanks(80))
+   then Test(sourceline,xf.isopen, false, 14)
+   else Test(sourceline,xf.isopen, true, 15);
+
+   xf qua OutFile.close;
+   Test(sourceline,xf.isopen, false, 16);
+
+
+   xf:- new OutByteFile(anyoutByteFile);        !***** NOTE 1, NOTE 4 *****;
+   Test(sourceline,xf.isopen, false, 17);
+
+   if not xf qua OutByteFile.open
+   then Test(sourceline,xf.isopen, false, 18)
+   else Test(sourceline,xf.isopen, true, 19);
+
+   xf qua OutByteFile.close;
+   Test(sourceline,xf.isopen, false, 20);
+
+   xf:- new DirectFile(anyExistingdirectfile);         !***** NOTE 1, NOTE 4 *****;
+   Test(sourceline,xf.isopen, false, 21);
+
+   if not xf qua DirectFile.open(blanks(10))
+   then Test(sourceline,xf.isopen, false, 22)
+   else Test(sourceline,xf.isopen, true, 23);
+
+   xf qua DirectFile.close;
+   Test(sourceline,xf.isopen, false, 24);
+
+
+   xf:- new DirectByteFile(anydirectByteFile);     !***** NOTE 1, NOTE 4 *****;
+   xf.setaccess("CREATE");                ! MYH
+   Test(sourceline,xf.isopen, false, 25);
+
+   if not xf qua DirectByteFile.open
+   then Test(sourceline,xf.isopen, false, 26)
+   else Test(sourceline,xf.isopen, true, 27);
+
+   xf qua DirectByteFile.close;
+   Test(sourceline,xf.isopen, false, 28);
+
+   xf:- new PrintFile(anyprintFile);          !***** NOTE 1, NOTE 4 *****;
+   Test(sourceline,xf.isopen, false, 29);
+
+   if not xf qua PrintFile.open(blanks(136))
+   then Test(sourceline,xf.isopen, false, 30)
+   else Test(sourceline,xf.isopen, true, 31);
+
+   xf qua PrintFile.close;
+   Test(sourceline,xf.isopen, false, 32);
+
+    
+ end

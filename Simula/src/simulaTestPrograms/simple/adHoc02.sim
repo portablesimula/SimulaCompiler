@@ -1,9 +1,9 @@
 begin 
 integer i1,i2;
 
-if         i1 eq 0  and not i1 <  i2
-   and     i1 <= i2 and not i1 >  i2
-   and      0 >= i2 and not i1 <> i2  then
-else  outtext("INT.1 (comparing INTEGERs)");
+% if         i1 eq 0  and not i1 <  i2
+%   and     i1 <= i2 and not i1 >  i2
+%   and      0 >= i2 and not i1 <> i2  then
+% else  outtext("INT.1 (comparing INTEGERs)");
 
 end

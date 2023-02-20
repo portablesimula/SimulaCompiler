@@ -1,0 +1,56 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 75
+%
+%  PURPOSE:     Test of name parameters and virtual procedures.
+%
+%  WRITTEN BY:  BEH   25/08-86
+% ==============================================================================
+external class SimulaTest;
+
+SimulaTest(75,"--- Test of name parameters and virtual procedures.") begin
+
+   ref(A) x;
+   real ar, br;
+
+   class A;
+   virtual: real procedure Q;
+   begin real procedure Q; Q:= 2.5;
+
+         procedure T(R); name R; real R;
+         begin ar:= R*Q end;
+   end;
+
+   procedure S(P, B); name P, B; procedure P ; real B ;
+   begin P(x.Q); br:= B*x.Q end;
+
+   A class B;
+   begin real procedure Q; Q:=2; end;
+
+
+
+   x:- new B; S(x.T, x.Q);
+
+   if ar-ar/1000 < 4 and ar+ar/1000 > 4 and
+      br-br/1000 < 4 and br+br/1000 > 4 then
+   else
+   begin err ("*** error : Virtual procedures (1).") ;
+         outtext ("            Erroneus values : ar = ") ;
+         outreal (ar, 4, 10); outimage ;
+         outtext ("                              br = ");
+         outreal (br, 4, 10); outimage; outimage;
+   end;
+
+   x:- new A; S(x.T, x.Q);
+
+   if ar-ar/1000 < 6.25 and ar+ar/1000 > 6.25 and
+      br-br/1000 < 6.25 and br+br/1000 > 6.25 then
+   else
+   begin err ("Virtual procedures (2).") ;
+         outtext ("            Erroneus values : ar = ") ;
+         outreal (ar, 4, 10); outimage ;
+         outtext ("                              br = ");
+         outreal (br, 4, 10); outimage; outimage;
+   end;
+
+ end

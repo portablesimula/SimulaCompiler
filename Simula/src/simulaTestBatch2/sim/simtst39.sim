@@ -1,0 +1,56 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 39
+%
+%  PURPOSE:     Check that a formal parameter is global to the procedure body.
+%
+%  WRITTEN BY:  BEH   23/07-86
+% ==============================================================================
+
+begin
+	integer nnn=39; text title="--- Check that a formal parameter is global to the procedure body.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+   integer i;
+
+   procedure P(i);
+     name i;
+     integer i;
+   begin
+     integer i;
+     i := 5;
+   end;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+   P(i);
+
+   if i <> 0 then err("Wrong variable used in procedure body.");
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

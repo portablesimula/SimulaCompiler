@@ -1,0 +1,79 @@
+
+
+% ===============================================   Main   program  ============
+%  PROGRAM NAME:   SIMULA A/S - SIMULA TEST NO 10
+%
+%  PURPOSE:     To test the evaluation of text-constants
+%
+%  METHOD:      Take some examples and see if we get the expected values.
+%
+%  WRITTEN BY:  BEH  10/07-86
+% ==============================================================================
+begin
+	integer n=10; text title="--- Test the evaluation of text constants.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(n,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+                                                 !*****************************;
+                                                 ! Test sequence of simple     ;
+                                                 ! strings.                    ;
+                                                 !*****************************;
+   if "Ab" "cde" = "Abcde" then
+   else err ("*** error : Text constant (1).") ;
+
+   if "AB"
+           "CDE" = "ABCDE" then
+   else err ("*** error : Text constant (2).") ;
+
+   if "Abcde" = "AB" "cde" then err ("*** error : Text constant (3).") ;
+                                                 !*****************************;
+                                                 ! Test !x!                    ;
+                                                 !*****************************;
+   if "12!32!45" = "12 45" then
+   else err ("*** error : Text constant (4).") ;
+
+   if "!345!" = "!33!345!33!" then
+   else
+   begin
+      err ("*** error : Text constant (5).") ;
+      outtext("    LHS:"); outtext("!345!");
+      outtext(", RHS:"); outtext("!33!345!33!");
+   end ;
+
+   if "!3" "2!" = "!33!32!33!" then
+   else err ("*** error : Text constant (6).") ;
+
+                                                !******************************;
+                                                ! Test "" in a string.         ;
+                                                !******************************;
+   if "a""b" = "a!34!b" then
+   else err ("*** error : Text constant (7).") ;
+ 
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(n,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(n,4); outimage;
+		end;
+	end;
+
+end of program;
