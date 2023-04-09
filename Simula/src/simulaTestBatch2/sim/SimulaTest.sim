@@ -1,0 +1,42 @@
+ 
+class SimulaTest(n,title); integer n; text title;
+	hidden protected found_error;
+begin
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+    
+    text procedure edint(i); integer i; begin
+   		text t; t:-blanks(6); t.putint(i);
+  LOOP:	t.setpos(1); if t.getchar = ' ' then begin
+   			t:-t.sub(2,t.length-1); goto LOOP;
+   		end;
+   		edint:-t;
+    end;
+   
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(n,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+	
+	inner;
+	
+	if noMessage then else begin
+	if not found_error then begin
+		outtext ("--- NO ERRORS FOUND IN TEST"); outint(n,4); outtext("  "); outtext(title); !-- outimage;
+	end;
+
+	if verbose then begin
+		outtext ("--- END Simula a.s. TEST"); outint(n,4); outimage;
+	end;
+	end;
+	
+end;

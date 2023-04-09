@@ -1394,6 +1394,7 @@ public class _ENVIRONMENT extends _RTObject {
     	// c=t.char[i];
     	_TEXTOBJ obj=t.OBJ;
     	char c=obj.MAIN[t.START+i];
+//    	System.out.println("_ENVIRONMENT.loadrChar("+i+") ==> "+(int)c);
     	return(c);
     }
     
@@ -1542,15 +1543,15 @@ public class _ENVIRONMENT extends _RTObject {
     		if(Option.VERBOSE) _RT.println("getTextInfo(11) AttributeOutputFileName="+attributeOutputFileName);
     		return(new _TXT(attributeOutputFileName));  // AttributeInputFileName
     	case 12:
-    		String attributeFileName= _RT.SPORT_Option.getAttributeFileName();
+    		String attributeFileName= _RT.SPORT_Option.getExternalAttributeFileName();
     		if(Option.VERBOSE) _RT.println("getTextInfo(12) AttributeFileName="+attributeFileName);
     		return(new _TXT(attributeFileName));
     	case 13: // What is the environment part of the program head? 
     		if(Option.VERBOSE) _RT.println("getTextInfo(13) environment part of the program head="+"/JAVA");
     		return(new _TXT("/JAVA"));
     	case 14: // Module identifier to be used for the current separate compilation?
-    		if(Option.VERBOSE) _RT.println("getTextInfo(14) Module identifier: "+_RT.SPORT_Option.xDecl1);
-    		return(new _TXT(_RT.SPORT_Option.xDecl1));
+    		if(Option.VERBOSE) _RT.println("getTextInfo(14) Module identifier: "+_RT.SPORT_Option.currentModuleID);
+    		return(new _TXT(_RT.SPORT_Option.currentModuleID));
     	case 15: // Module check code to be used for the current separate compilation?
     		String checkCode="abracadab";
     		if(Option.VERBOSE) _RT.println("getTextInfo(15) Module check code: "+checkCode);
@@ -1848,19 +1849,34 @@ public class _ENVIRONMENT extends _RTObject {
      *   1  The string info is the identifier of a class or procedure being separately compiled.
      *   2  The string info is the identifier given in an external declaration that is being processed.
      *   3  The string info is the external identification given in an external declaration that is being processed.
+     *   
+     * E.g: When compiling:
+     * 
+     *   class SubSep; begin
+     *   	  external class MainSeparat="some file";
+     *   	  ...
+     *   end;
+     * 
+     * Index: Interpretation:
+     *   1  currentModuleID: SubSep
+     *   2  extIdent:      MainSeparate
+     *   3  extFile:       "some file"
+     *   
      * 
      */
     public static void giveTextInfo(final int index,final _TXT info) {
-    	if(Option.VERBOSE) _RT.println("giveTextInfo: index="+index+", info="+((info==null)?"null":info.edText()));
+    	String infoString=((info==null)?null:info.edText());
+    	if(Option.VERBOSE) _RT.println("giveTextInfo: index="+index+", info="+infoString);
     	switch(index) {
-    	case 1: _RT.SPORT_Option.xDecl1=info.edText(); // got predefmodule when compiling PREDEF.DEF
-    	case 2: _RT.SPORT_Option.moduleIdent=info.edText();
-    	        //System.out.println("_RT.SPORT_Option.moduleIdent="+_RT.SPORT_Option.moduleIdent);
-    	        break;
-    	case 3: _RT.SPORT_Option.xDecl2=(info==null)?"null":info.edText(); break;
-    	case 4: _RT.SPORT_Option.SPORT_SysInsertDirName=info.edText(); break;
-    	default: _RT.NOT_IMPLEMENTED("giveTextInfo");
+    		case 1: _RT.SPORT_Option.currentModuleID=infoString; break; // got predefmodule when compiling PREDEF.DEF
+    		case 2: _RT.SPORT_Option.extIdent=infoString; break;
+    		case 3: _RT.SPORT_Option.extFile=infoString; break;
+    		case 4: _RT.SPORT_Option.SPORT_SysInsertDirName=infoString; break;
+    		default: _RT.NOT_IMPLEMENTED("giveTextInfo");
     	}
+    	System.out.println("_RT.giveTextInfo: currentModuleID="+_RT.SPORT_Option.currentModuleID);
+    	System.out.println("_RT.giveTextInfo: extIdent="+_RT.SPORT_Option.extIdent);
+    	System.out.println("_RT.giveTextInfo: extFile="+_RT.SPORT_Option.extFile);
     }
     
     /**

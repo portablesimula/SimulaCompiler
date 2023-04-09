@@ -1,56 +1,75 @@
 
 begin
-      text array T (1:4, 1:2);
-      text t1,t2; integer i,j,ix;
 
-%      t1 :- blanks (16);
-%      t1 :- copy ("****************");
-       t1 :- copy ("0123456789012345");
+inspect new DirectFile("direct85") do begin
 
-         t2 :- t1.sub (ix,2);
-         outtext("  Loop ix="); outint(ix,2); outtext(", i="); outint(i,2); outtext(", j="); outint(j,2); outtext(", t1=""" & t1 & """"); outtext(", t2=""" & t2 & """"); outimage;
-         T (i, j) :- t1;
-         outtext("  Loop ix="); outint(ix,2);
-              outtext(", i="); outint(i,2);
-              outtext(", j="); outint(j,2);
-              outtext(", t1=""" & t1 & """");
-              outtext(", T (i, j)=""" & T (i, j) & """"); outimage;
-         T (i, j).sub (1,1).putint (i);
+   integer  i, j; real tmp;
+
+   setaccess("CHARSET:UTF-8");
+   setaccess("CREATE");
+   open(blanks(12));
+
+	
+   for i := 1 step 1 until 5 do
+   begin
+      locate(6 - i);
+      setpos(9);
+      outint(i, 4);
+      outimage
+   end;
+
+   locate(1);
+   inimage;
+   while  not lastitem  do begin
+		sysout.outtext(image & ": "); sysout.outimage;
+   		sysout.outreal(inreal, 1, 7);
+   		sysout.outimage;
+   end;
+
+	goto EXIT;
+
+   sysout.outimage;
+   sysout.outtext("==========================================="); sysout.outimage;
+   locate(2);
+   sysout.outtext("LOCATE 2="); sysout.outint(location,0);
+   inimage;
+   sysout.outtext(": """ & image & """"); sysout.outimage;
+   sysout.outint(inint,3); sysout.outimage;
+   sysout.outtext("==========================================="); sysout.outimage;
+
+	goto EXIT;
+
+   sysout.outimage;
+   sysout.outtext("==========================================="); sysout.outimage;
+   locate(5);
+   sysout.outtext("LOCATE 5="); sysout.outint(location,20); sysout.outimage;
+   inimage;
+   sysout.outtext(": """ & image & """"); sysout.outimage;
+   sysout.outint(inint,3); sysout.outimage;
+   sysout.outtext("==========================================="); sysout.outimage;
+
+	goto EXIT;
+
+   locate(5);
+   sysout.outint(location,3);
+   inimage;
+	sysout.outtext(": "); sysout.outtext(image);
+
+   sysout.outint(inint,3);
+   locate(3);
+   sysout.outint(location,3);
+   inimage;
+	sysout.outtext(": "); sysout.outtext(image);
+
+   sysout.outint(inint,3);
 
 
+EXIT:
 
+   setaccess("PURGE");
+   close;
 
-%      for i := 1 step 1 until 4 do
-%      for j := 1 step 1 until 2 do
-	  i:=1; j:=2;
-      begin
-         ix := 4*(i-1)+2*j-1;
-         t2 :- t1.sub (ix,2);
-         outtext("  Loop ix="); outint(ix,2);
-              outtext(", i="); outint(i,2);
-              outtext(", j="); outint(j,2);
-              outtext(", t1=""" & t1 & """");
-              outtext(", t2=""" & t2 & """"); outimage;
-         T (i, j) :- t2;
-         outtext("  Loop ix="); outint(ix,2);
-              outtext(", i="); outint(i,2);
-              outtext(", j="); outint(j,2);
-              outtext(", t1=""" & t1 & """");
-              outtext(", T (i, j)=""" & T (i, j) & """"); outimage;
-         T (i, j).sub (1,1).putint (i);
-         T (i, j).sub (2,1).putint (j);
-         outtext("  Loop ix="); outint(ix,2);
-              outtext(", i="); outint(i,2);
-              outtext(", j="); outint(j,2);
-              outtext(", t1=""" & t1 & """");
-              outtext(", t2=""" & t2 & """"); outimage;
-      end;
+end of inspect DirectFile;
 
-      if t1 = "1112212231324142" then
-      else
-      begin
-         outtext ("            Erroneus value : ");
-         outtext (t1); outimage;
-       end;
 
 end of program;

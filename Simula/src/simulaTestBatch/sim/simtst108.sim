@@ -45,7 +45,7 @@ SimulaTest(108,"--- Simple Co-Routine Sample 1: detach - call") begin
    
    begin
       trace("Main: Before new A");
-      x:-new A();
+      x:-new A;
       trace("Main: Before first call");
       call(x);
       trace("Main: Before second call");

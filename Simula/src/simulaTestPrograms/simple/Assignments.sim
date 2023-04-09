@@ -25,10 +25,10 @@ begin
    ref(A) x;
    ref(B) y;
    
-   x:-new B();
-   x.ax:-new B();
-   y:-new B();
-   y.by:-new B();
+   x:-new B;
+   x.ax:-new B;
+   y:-new B;
+   y.by:-new B;
    
    r:=k;
    j:=i+j*k;
@@ -39,9 +39,9 @@ begin
    
    x.attr:=y.bttr:=w+j*i;
 
-   ((x qua B).ax qua B).by :- new B();
+   ((x qua B).ax qua B).by :- new B;
     
-   x:-y:-x:-new B();
+   x:-y:-x:-new B;
    
    j:=F(3.14);
    

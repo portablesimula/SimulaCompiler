@@ -163,8 +163,8 @@ public final class TestCompiler {
 //		String name="/FECTest/fecTest.sim";
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		// String name="/simple/adHoc00.sim";
-		 String name="/simple/adHoc01.sim";
+		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
@@ -214,7 +214,7 @@ public final class TestCompiler {
 //		    Option.verbose = true;
 			Option.WARNINGS=true;
 			Option.CASE_SENSITIVE=true;
-			Option.TESTING=true;
+//			Option.TESTING=true;
 
 			// Overall TRACING Options
 //			Option.TRACING=true;
@@ -225,7 +225,7 @@ public final class TestCompiler {
 //			Option.TRACE_COMMENTS=true;
 //
 //			// Parser Trace Options
-			Option.TRACE_PARSE=true;
+//			Option.TRACE_PARSE=true;
 //			Option.TRACE_ATTRIBUTE_OUTPUT=true;
 //			Option.TRACE_ATTRIBUTE_INPUT=true;
 //

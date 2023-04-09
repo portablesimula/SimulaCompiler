@@ -127,8 +127,8 @@ public final class Variable extends Expression {
 			variable.params = new Vector<Expression>();
 			do {
 				Expression par=parseExpression();
-				if(par==null) Util.error("Missing parameter identifier");
-				variable.params.add(par);
+				if(par==null) Util.error("Missing procedure parameter");
+				else variable.params.add(par);
 			} while (Parser.accept(KeyWord.COMMA));
 			Parser.expect(KeyWord.ENDPAR);
 		}

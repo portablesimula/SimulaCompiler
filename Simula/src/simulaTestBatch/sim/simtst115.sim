@@ -25,7 +25,7 @@ SimulaTest(115,"--- Simple QPS-Sample 1") begin
 
    class A;
    begin
-      x:-new C();
+      x:-new C;
       ! - - - ;
       trace("In Class A - Just Before first Resume(x)");
       resume(x);

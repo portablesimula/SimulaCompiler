@@ -11,7 +11,7 @@ Begin
    datim:-datetime;  
    outtext("DATE AND TIME: " & datim); outimage;
    
-   time:=ClockTime();
+   time:=ClockTime;
 %   outtext("Time="); outint(time,0); outimage;
    MM:=time // 60; 
 %   outtext("MM="); outint(MM,0); outimage;

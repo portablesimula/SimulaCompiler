@@ -22,15 +22,27 @@
 %
 %  WRITTEN BY:  BEH   27/08-86
 % =====================================================================
-external class SimulaTest;
 
-SimulaTest(79,"--- Test the attribute 'isopen' of class File.") begin
+begin
+	integer nnn=79; text title="--- Test the attribute 'isopen' of class File.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
 
-   text anyExistingdirectfile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingDirectfile79";
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+
+   text anyExistingdirectfile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectfile79";
    text anyImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyImageFile79";
 
-   text anyExistingImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingImageFile79";
-   text anyExitingByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyExistingByteFile79";
+   text anyExistingImageFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyImageFile79";
+   text anyExitingByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyByteFile79";
    text anyoutFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOutFile79";
    text anyoutByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyOutByteFile79";
    text anyprintFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyPrintFile79";
@@ -59,6 +71,13 @@ SimulaTest(79,"--- Test the attribute 'isopen' of class File.") begin
          end;
    end pros. test;
 
+   
+   
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
    
    !***** PREPARE 'anyImageFile' to be used as InFile below *****;
    xf:-new OutFile(anyImageFile);
@@ -154,4 +173,15 @@ SimulaTest(79,"--- Test the attribute 'isopen' of class File.") begin
    Test(sourceline,xf.isopen, false, 32);
 
     
- end
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+

@@ -1,0 +1,102 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 87
+%
+%  PURPOSE:     Test Specification of Virtual Procedures.
+%
+%  WRITTEN BY:  MYH  13/06-2018
+% ==============================================================================
+
+begin
+	integer nnn=87; text title="--- Test Specification of Virtual Procedures.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+
+   integer pval;
+   ref(A) ra;
+   ref(B) rb;
+   ref(File) test;
+   
+   procedure checkPval(n,val); integer n,val;
+   begin if pval = val then
+     else
+     begin
+         outtext("*** error in test "); outint(n,0); outtext(": Test Specification of Virtual Procedures."); outimage;
+         outtext("            Erroneus values: val = "); outint(pval, 0); outimage;
+         outtext("            --------- Facit: val = "); outint(val, 0); outimage;
+         err("Failed");
+     end;
+   end;
+
+   class A; virtual: ref(File) procedure myFile is ref(File) procedure actual(i,j); integer i,j;;
+                     procedure virt2 is procedure act2(j); integer j;;
+                     integer procedure virt3 is procedure act3;;
+                     procedure virt4 is procedure act4;;
+   begin integer i;
+     ref(File) procedure myFile(i,j); integer i,j;
+     begin pval:=i+j; end;
+     
+     integer procedure pA;
+     begin 
+        ref(File) f;
+        f :- myFile(4,3);
+        pA := pval;
+     end;
+   end;
+
+   A class B;
+   begin integer i;
+     ref(File) procedure myFile(i,j); integer i,j;
+     begin pval:=2*i+j; end;
+     procedure virt4;
+     begin pval:=4567; end;
+     
+     integer procedure pB;
+     begin 
+        ref(File) f;
+        f :- myFile(14,13);
+        pB := pval;
+     end;
+   end;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+   
+   ra :- new A;
+   rb :- new B;
+  
+   test :- ra.myFile(7,21);
+   checkPval(1,7+21);
+  
+   test :- rb.myFile(17,210);
+   checkPval(2,2*17+210);
+   
+   rb.virt4;
+   checkPval(3,4567);
+  
+   
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

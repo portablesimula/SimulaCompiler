@@ -1,0 +1,222 @@
+
+% =====================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 81
+%
+%  PURPOSE:        Test the value of close.
+%
+%  NOTE:           Uses several files as noted 
+%
+%  WRITTEN BY:  BEH   28/08-86
+% ====================================================================
+
+begin
+	integer nnn=81; text title="--- Test the value of close.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+
+   ref(File) xf;
+   
+   text anyIntypeFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyIntypeFile81";
+   text anyouttypeFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyouttypeFile81";
+   text anyDirectFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectFile81";
+   text anyDirectByteFile="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyDirectByteFile81";
+
+   procedure report(line,t,abort); integer line; text t; boolean abort;
+   begin err("Failed");
+         outimage; outtext("Line "); outint(line,0); outtext(": *** report: "); outtext(t); outimage;
+         if abort then error("Abort requested");
+   end;
+
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+   xf:- new InFile(anyIntypeFile);
+
+   if xf qua InFile.close
+   then report(sourceline,"'close' returns true "
+              "(never-opened InFile ""anyIntypeFile"")",false);
+
+   if not xf qua InFile.open(blanks(80))
+   then report(sourceline,"'open' returns false "
+              "(never-opened InFile ""anyIntypeFile"")",true);
+
+   if xf qua InFile.open(blanks(80))
+   then report(sourceline,"'open' returns true "
+              "(on open InFile ""anyIntypeFile"")",false);
+
+   if not xf qua InFile.close
+   then report(sourceline,"'close' returns false "
+              "(open InFile ""anyIntypeFile"")",false)
+   else
+   if xf qua InFile.close
+   then report(sourceline,"'close' returns true "
+              "(closed InFile ""anyIntypeFile"")",false);
+
+
+   xf:- new OutFile(anyouttypeFile);
+
+   if xf qua OutFile.close
+   then report(sourceline,"'close' returns true "
+              "(never-opened OutFile " & anyouttypeFile &")",false);
+
+   if not xf qua OutFile.open(blanks(80))
+   then report(sourceline,"'open' returns false "
+              "(never-opened OutFile " & anyouttypeFile &")",true);
+
+   if xf qua OutFile.open(blanks(80))
+   then report(sourceline,"'open' returns true "
+              "(open OutFile " & anyouttypeFile &")",false);
+
+   if not xf qua OutFile.close
+   then report(sourceline,"'close' returns false "
+              "(open OutFile " & anyouttypeFile &")",false)
+   else
+   if xf qua OutFile.close
+   then report(sourceline,"'close' returns true "
+              "(closed OutFile " & anyouttypeFile &")",false);
+
+
+   xf:- new DirectFile(anyDirectFile);
+   xf.setaccess("CREATE");
+
+   if xf qua DirectFile.close
+   then report(sourceline,"'close' returns true "
+              "(never-opened DirectFile " & anyDirectFile & ")",false);
+
+   if not xf qua DirectFile.open(blanks(80))
+   then report(sourceline,"'open' returns false "
+              "(never-opened DirectFile " & anyDirectFile & ")",true);
+
+   if xf qua DirectFile.open(blanks(80))
+   then report(sourceline,"'open' returns true "
+              "(open DirectFile " & anyDirectFile & ")",false);
+
+   if not xf qua DirectFile.close
+   then report(sourceline,"'close' returns false "
+              "(open DirectFile " & anyDirectFile & ")",false)
+   else
+   if xf qua DirectFile.close
+   then report(sourceline,"'close' returns true "
+              "(closed DirectFile " & anyDirectFile & ")",false);
+
+
+   xf:- new InByteFile(anyIntypeFile);
+
+   if xf qua InByteFile.close
+   then report(sourceline,"'close' returns true "
+              "(never-opened InByteFile ""anyIntypeFile"")",false);
+
+   if not xf qua InByteFile.open
+   then report(sourceline,"'open' returns false "
+              "(never-opened InByteFile ""anyIntypeFile"")",true);
+
+   if xf qua InByteFile.open
+   then report(sourceline,"'open' returns true "
+              "(on open InByteFile ""anyIntypeFile"")",false);
+
+   if not xf qua InByteFile.close
+   then report(sourceline,"'close' returns false "
+              "(open InByteFile ""anyIntypeFile"")",false)
+   else
+   if xf qua InByteFile.close
+   then report(sourceline,"'close' returns true "
+              "(closed InByteFile ""anyIntypeFile"")",false);
+
+
+   xf:- new OutByteFile(anyouttypeFile);
+
+   if xf qua OutByteFile.close
+   then report(sourceline,"'close' returns true "
+              "(never-opened OutByteFile " & anyouttypeFile &")",false);
+
+   if not xf qua OutByteFile.open
+   then report(sourceline,"'open' returns false "
+              "(never-opened OutByteFile " & anyouttypeFile &")",true);
+
+   if xf qua OutByteFile.open
+   then report(sourceline,"'open' returns true "
+              "(on open OutByteFile " & anyouttypeFile &")",false);
+
+   if not xf qua OutByteFile.close
+   then report(sourceline,"'close' returns false "
+              "(open OutByteFile " & anyouttypeFile &")",false)
+   else
+   if xf qua OutByteFile.close
+   then report(sourceline,"'close' returns true "
+              "(closed OutByteFile " & anyouttypeFile &")",false);
+
+
+   xf:- new DirectByteFile(anyDirectByteFile);
+   xf.setaccess("CREATE");
+
+   if xf qua DirectByteFile.close
+   then report(sourceline,"'close' returns true "
+              "(never-opened DirectByteFile " & anyDirectByteFile & ")",false);
+
+   if not xf qua DirectByteFile.open
+   then report(sourceline,"'open' returns false "
+              "(never-opened DirectByteFile " & anyDirectByteFile & ")",true);
+
+   if xf qua DirectByteFile.open
+   then report(sourceline,"'open' returns true "
+              "(on open DirectByteFile " & anyDirectByteFile & ")",false);
+
+   if not xf qua DirectByteFile.close
+   then report(sourceline,"'close' returns false "
+              "(open DirectByteFile " & anyDirectByteFile & ")",false)
+   else
+   if xf qua DirectByteFile.close
+   then report(sourceline,"'close' returns true "
+              "(closed DirectByteFile " & anyDirectByteFile & ")",false);
+
+
+   xf:- new PrintFile(anyouttypeFile);
+
+   if xf qua PrintFile.close
+   then report(sourceline,"'close' returns true "
+              "(never-opened PrintFile " & anyouttypeFile &")",false);
+
+   if not xf qua PrintFile.open(blanks(80))
+   then report(sourceline,"'open' returns false "
+              "(never-opened PrintFile " & anyouttypeFile &")",true);
+
+   if xf qua PrintFile.open(blanks(80))
+   then report(sourceline,"'open' returns true "
+              "(on open PrintFile " & anyouttypeFile &")",false);
+
+   if not xf qua PrintFile.close
+   then report(sourceline,"'close' returns false "
+              "(open PrintFile " & anyouttypeFile &")",false)
+   else
+   if xf qua PrintFile.close
+   then report(sourceline,"'close' returns true "
+              "(closed PrintFile " & anyouttypeFile &")",false);
+
+% TERMINATE:
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

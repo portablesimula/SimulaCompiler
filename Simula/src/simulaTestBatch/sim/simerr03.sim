@@ -18,7 +18,7 @@ RT_ErrorTest("  3 --- Test Division by Zero in Precompiled Class") begin
    trace("--- START DIV BY ZERO SAMPLE");
   
    SeparatClass(5) begin
-      x :- new A();
+      x :- new A;
       x.proc1;
    end;
      

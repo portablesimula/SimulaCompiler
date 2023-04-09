@@ -48,7 +48,7 @@ begin ref(CCC) cx;
       Q7(L,L); L: b:=true;
    end class CCC;
    
-   cx:-new CCC();
+   cx:-new CCC;
    
    cx.Q5(IntArr2,IntArr2,IntArr2);
       

@@ -13,7 +13,7 @@ SubSep(119,"--- Test Use of Precompiled classes",5) begin
      text fname;
 
      trace("--- Start Statements of SubSep(5) begin") ; 
-     x :- new B(); 
+     x :- new B; 
      iA(3):=5;
      if ICHR = 49 and IINT = 45 then
      begin trace("OK"); end;

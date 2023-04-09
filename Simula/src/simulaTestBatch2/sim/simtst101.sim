@@ -1,0 +1,85 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 101
+%
+%  PURPOSE:     Test Standard Procedure 'sourceline'.
+%
+%  WRITTEN BY:  MYH   30/07-2018
+% ==============================================================================
+
+begin
+	integer nnn=101; text title="--- Test Standard Procedure 'sourceline'.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+
+   ref(A) x;
+   integer traceCase;
+   text array facit(0:3);
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(2); t.putint(i); edint:-t; end;
+   
+   procedure trace(line,msg); integer line; text msg;
+   begin
+      text case1;
+      case1:-"LINE " & edint(line) & ": " & msg;
+      if verbose then begin outtext(case1); outimage; end;
+      if case1 <> facit(traceCase) then
+      begin
+			sysout.setpos(1);
+			outtext("*** error: in test "); outint(traceCase,0); outtext(" at line "); outint(line,0); outimage;
+			outtext("Trace Case: " & case1); outimage;
+			outtext("     Facit: " & facit(traceCase)); outimage;
+			found_error:=true; nFailed:=nFailed+1;
+       end;
+      traceCase:=traceCase+1;
+   end;
+   
+   procedure Q(line); integer line;
+   begin
+         trace(line,"Call Q");
+   end;
+
+   class A(line); integer line;
+                  virtual: procedure P;
+   begin integer i;
+      procedure P(line); integer line;
+      begin
+            trace(line,"Call P");
+      end;
+      trace(line,"NEW A");
+      i:=sourceline;
+      trace(i+1,"end A");
+   end;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+   
+   facit(0):-"LINE 70: NEW A";
+   facit(1):-"LINE 56: end A";
+   facit(2):-"LINE 71: Call P";
+   facit(3):-"LINE 72: Call Q";
+   
+   x:-new A(sourceline);
+   x.P(sourceline);
+   Q(sourceline);
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

@@ -18,10 +18,10 @@ begin
      ! Ingen detach her ;
   end;
   
-  x:-new Process();
+  x:-new Process;
   x.detach;
   
-  z:-new Storage();
+  z:-new Storage;
   
   Simulation begin
     ref(Link) x;
@@ -33,9 +33,9 @@ begin
        ! Ingen detach her ;
     end;
   
-    x:-new Process();
+    x:-new Process;
     x.detach;
   
-    z:-new Storage();
+    z:-new Storage;
   end;
 end;

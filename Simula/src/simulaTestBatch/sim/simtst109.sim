@@ -45,7 +45,7 @@ SimulaTest(109,"--- Simple Co-Routine Sample 2: detach - resume") begin
    
    begin
       trace("Main: Before new A");
-      x:-new A();
+      x:-new A;
       trace("Main: Before first resume");
       resume(x);
       trace("Main: Before second resume");

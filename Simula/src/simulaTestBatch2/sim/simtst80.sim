@@ -14,14 +14,32 @@
 %
 %  WRITTEN BY:  BEH   27/08-86
 % ======================================================================
-external class SimulaTest;
 
-SimulaTest(80,"--- Test the attribute 'isopen' of class file.") begin
+begin
+	integer nnn=80; text title="--- Test the attribute 'isopen' of class file.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
    
-   --text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any8089";
+%   --text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any8089";
    text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any8089";
 
    ref(ImageFile) f1, f2;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
 
    f1:- new InFile(fileName);                  !**** NOTE 1 ****;
    f2:- new InFile(fileName);                  !**** NOTE 1 ****;
@@ -42,4 +60,16 @@ SimulaTest(80,"--- Test the attribute 'isopen' of class file.") begin
 
    if not f1 qua InFile.close then err(" cannot close InFile");
       
-end;
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+      

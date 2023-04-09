@@ -17,5 +17,5 @@ begin
     end;
     
     trace("--- Start Statements of class SubSep") ; 
-    x :- new B();  
+    x :- new B;  
 end;

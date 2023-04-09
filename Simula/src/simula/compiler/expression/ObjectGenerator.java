@@ -62,12 +62,14 @@ public final class ObjectGenerator extends Expression {
 		String classIdentifier = expectIdentifier();
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parser.accept(KeyWord.BEGPAR)) {
-			if (!Parser.accept(KeyWord.ENDPAR)) {
-				do { params.add(parseExpression());
-				} while (Parser.accept(KeyWord.COMMA));
-				Parser.expect(KeyWord.ENDPAR);
-			}
+			do {
+				Expression par=parseExpression();
+				if(par==null) Util.error("Missing class parameter");
+				else params.add(par);
+			} while (Parser.accept(KeyWord.COMMA));
+			Parser.expect(KeyWord.ENDPAR);
 		}
+
 		Expression expr = new ObjectGenerator(classIdentifier, params);
 		return (expr);
 	}

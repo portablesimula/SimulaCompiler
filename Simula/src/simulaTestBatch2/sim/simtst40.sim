@@ -23,18 +23,55 @@
 %
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
-external class SimulaTest;
+begin
+%	external integer procedure pa, pb ;
+    external integer procedure pa="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/simtst40pa.sim.atr";
+    external integer procedure pb="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/simtst40pb.sim.atr";
+	
+	
+	integer nnn=40; text title="--- Test separate compilation of procedures.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(6); t.putint(i); edint:-t; end;
 
-SimulaTest(40,"--- Test separate compilation of procedures.") begin
-   external integer procedure pa, pb ;
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
 
    integer i ;
 
-   i := pa(0) ;
-   if i = 45 then else begin
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+%   i := pa(0) ;
+   i := pa(9) ;
+   
+   if i = 6685 then else begin
       err("PA returned with wrong value.");
       outtext("            Erroneus value : ");
       outint(i, 5); outimage ;
    end;
    
-end;
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

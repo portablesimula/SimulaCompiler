@@ -10,6 +10,9 @@ begin
 	integer nFailed;
 	boolean verbose=false;
 	boolean noMessage;
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(6); t.putint(i); edint:-t; end;
 
 	procedure err(t); text t;
 	begin sysout.setpos(1);

@@ -57,8 +57,8 @@ SimulaTest(87,"--- Test Specification of Virtual Procedures.") begin
      end;
    end;
    
-   ra :- new A();
-   rb :- new B();
+   ra :- new A;
+   rb :- new B;
   
    test :- ra.myFile(7,21);
    checkPval(1,7+21);

@@ -14,9 +14,21 @@
 %
 %  WRITTEN BY:  BEH   27/08-86
 % ==============================================================================
-external class SimulaTest;
 
-SimulaTest(78,"--- Test the text procedure filename of class file.") begin
+begin
+	integer nnn=78; text title="--- Test the text procedure filename of class file.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
 
    character array C(1:45);
 
@@ -51,6 +63,12 @@ SimulaTest(78,"--- Test the text procedure filename of class file.") begin
 
 
 
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
    C(1):= 'A'; C(2):= 'B'; C(3):= 'C';
    C(4):= 'D'; C(5):= 'E'; C(6):= 'F';
    C(7):= 'G'; C(8):= 'H'; C(9):= 'I';
@@ -79,4 +97,15 @@ SimulaTest(78,"--- Test the text procedure filename of class file.") begin
    for i:= 1 step 1 until 50 do Test;
 
    
- end
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+

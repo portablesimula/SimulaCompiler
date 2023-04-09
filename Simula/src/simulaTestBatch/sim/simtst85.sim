@@ -13,7 +13,7 @@ external class SimulaTest;
 
 SimulaTest(85,"--- Test Directfile.") begin
 
-if verbose then begin
+% if verbose then begin
 
 inspect new DirectFile("direct85") do begin
 

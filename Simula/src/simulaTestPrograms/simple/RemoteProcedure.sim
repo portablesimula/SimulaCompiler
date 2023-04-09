@@ -24,7 +24,7 @@ begin
    
    inspect x do r:=F(r);
    
-   inspect x do y:-new B();
+   inspect x do y:-new B;
    
    inspect x do E;
    

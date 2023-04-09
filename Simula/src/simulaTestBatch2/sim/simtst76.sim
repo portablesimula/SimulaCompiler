@@ -6,9 +6,21 @@
 %
 %  WRITTEN BY:  BEH   25/08-86
 % ==============================================================================
-external class SimulaTest;
 
-SimulaTest(76,"--- Test of detach and resume in simset.") begin
+begin
+	integer nnn=76; text title="--- Test of detach and resume in simset.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
    text t;
 
    procedure Print(t); value t; text t;
@@ -73,6 +85,13 @@ SimulaTest(76,"--- Test of detach and resume in simset.") begin
                Print("L");
           end;
 
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
           x:- new A;
           Print("B"); resume(x);
           Print("G"); resume(x);
@@ -91,4 +110,16 @@ SimulaTest(76,"--- Test of detach and resume in simset.") begin
          end;
     end;
    
- end
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+

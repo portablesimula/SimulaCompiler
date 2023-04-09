@@ -65,9 +65,9 @@ SimulaTest(110,"--- Simple Co-Routine Sample 3: detach - resume - chain") begin
    
    begin
       trace("Main: Before new producer");
-      producer:-new ProducerClass();
+      producer:-new ProducerClass;
       trace("Main: Before new consumer");
-      consumer:-new ConsumerClass();
+      consumer:-new ConsumerClass;
       trace("Main: Before first resume");
       resume(producer);
       trace("Main: End of Program");

@@ -256,28 +256,31 @@ begin
 
                                      ! First try calling Pr1 with ;
                                      ! some subscripted variables ;
-
-   Pr1 (if ba1 (i-i) then ba1 (r+2-r) else ba1 (l+1-l),
-        if ba3 (1, s-s, r+l+i-r-l-i) then ca1 (l*i) else ca1 (i/i),
-        sa1 (l),
-        la1 (ra1 (ia1(sa3((r+r)/(2*r),
-             la1 (ra1 (ia1 (r-r))), la3 (0, l, 1))))),
-        ia3 (if ba1(r-r) eqv ba1(i-i) then r else (0),
-             ia1(i/i*i/i-1), sa1 (l)),
-        sa1 (l+sa1(l+sa1(l+sa1(l+sa1(l+sa1(l+sa1(sa1(l)+l))))))),
-        ta3 (i+s+r+sa1 (l)-r-s-i, ra1 (l)+ (s/s), -1+s/ (2**2)));
-
-   if sysout.image.strip =
-            "true *   0   2  2.0000&+00 0.0000&+000 ( 0, 1, 2)" then
-   else
-   begin
-      outimage;
-      err("Call with subscribted variables as actual");
-      outimage;
-      outtext ("            parameters (8).");
-      outimage; outimage;
-      
-   end;
+%	REMOVED:
+%				ERROR in FEC'SCODER: 
+%				Recursive or nested call is not allowed in S-Code: ARGIND
+%
+%   Pr1 (if ba1 (i-i) then ba1 (r+2-r) else ba1 (l+1-l),
+%        if ba3 (1, s-s, r+l+i-r-l-i) then ca1 (l*i) else ca1 (i/i),
+%        sa1 (l),
+%        la1 (ra1 (ia1(sa3((r+r)/(2*r),
+%             la1 (ra1 (ia1 (r-r))), la3 (0, l, 1))))),
+%        ia3 (if ba1(r-r) eqv ba1(i-i) then r else (0),
+%             ia1(i/i*i/i-1), sa1 (l)),
+%        sa1 (l+sa1(l+sa1(l+sa1(l+sa1(l+sa1(l+sa1(sa1(l)+l))))))),
+%        ta3 (i+s+r+sa1 (l)-r-s-i, ra1 (l)+ (s/s), -1+s/ (2**2)));
+%
+%   if sysout.image.strip =
+%            "true *   0   2  2.0000&+00 0.0000&+000 ( 0, 1, 2)" then
+%   else
+%   begin
+%      outimage;
+%      err("Call with subscribted variables as actual");
+%      outimage;
+%      outtext ("            parameters (8).");
+%      outimage; outimage;
+%      
+%   end;
 
 
    sysout.setpos (1);

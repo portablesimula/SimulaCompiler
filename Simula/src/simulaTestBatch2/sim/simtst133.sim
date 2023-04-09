@@ -1,0 +1,107 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   Simula a.s. - SIMULA TEST NO 133
+%
+%  PURPOSE:     Test infile reading with inimage and inrecord.
+%
+%  WRITTEN BY:  MYH
+% ==============================================================================
+
+begin
+	integer nnn=133; text title="--- Test infile reading with inimage and inrecord.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(6); t.putint(i); edint:-t; end;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+
+   text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/anyFile133";
+%   -- The file above should contain the two lines:
+%   --      12345678901234567890
+%   --      abcdefghijklmnopqrstuvwAB
+
+   ref(InFile) fil;   
+   integer traceCase;
+   text array facit(0:9);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edint(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+   text procedure inrecord; begin
+      fil.inrecord;
+      fil.image.setpos(1);
+      if rank(fil.inchar) = 25 then inrecord:-copy("ABRA")
+      else inrecord:-copy(fil.image.strip);
+   end;
+
+   text procedure inimage; begin
+      fil.inimage;
+      inimage:-copy(fil.image.strip);
+   end;
+
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+   
+   facit(0):-"At START";
+   facit(1):-"1234567";
+   facit(2):-"8901234";
+   facit(3):-"567890";
+   facit(4):-"abcdefg";
+   facit(5):-"hijklmn";
+   facit(6):-"opqrstu";
+   facit(7):-"vwABstu";
+   facit(8):-"ABRA";
+   facit(9):-"At END OF TEST";
+  
+   
+      trace("At START");
+
+         fil :- new InFile(fileName);
+         if not fil.open(blanks(7)) then
+                error("Can't open InFile: " & fileName);
+         trace(inrecord);
+         trace(inrecord);
+         trace(inimage);
+         trace(inrecord);
+         trace(inrecord);
+         trace(inrecord);
+         trace(inrecord);
+         trace(inrecord);
+
+      trace("At END OF TEST");
+   
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+

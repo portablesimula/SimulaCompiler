@@ -1,0 +1,362 @@
+
+external class MainSeparat; 
+   
+MainSeparat class SubSep;
+begin 
+    integer ICHR=IINT+4;
+
+    procedure PP;
+    begin integer i;
+        ref(SubSep2) xx;
+%        external class MainSeparat; 
+        MainSeparat class SubSep2;
+        begin 
+           trace("--- Start Statements of class SubSep2") ; 
+           noMessage:=true;
+        end;
+%        xx:-new SubSep2(99,"Title",15);
+        xx:-new SubSep2(15);
+    end;
+    
+    trace("--- Start Statements of class SubSep") ; 
+    x :- new B;  
+end;
+
+
+SCode: PAS2INIT.LINE 558:      PROGRAM      2023-04-08 10:32:09.671S-port 108.1/JAVA
+SCode: PAS2INIT.LINE 588:      SYSINSERT    rt cc 32 403
+SCode: PAS2INIT.LINE 588:      SYSINSERT    sysr cc 404 908
+SCode: PAS2INIT.LINE 588:      SYSINSERT    knwn cc 909 1118
+SCode: PAS2INIT.LINE 588:      SYSINSERT    util cc 1119 1158
+SCode: PAS2INIT.LINE 588:      SYSINSERT    strg cc 1159 1174
+SCode: PAS2INIT.LINE 588:      SYSINSERT    cent cc 1175 1371
+SCode: PAS2INIT.LINE 588:      SYSINSERT    cint cc 1372 1401
+SCode: PAS2INIT.LINE 588:      SYSINSERT    arr cc 1402 1441
+SCode: PAS2INIT.LINE 588:      SYSINSERT    form cc 1442 1716
+SCode: PAS2INIT.LINE 588:      SYSINSERT    libr cc 1717 1915
+SCode: PAS2INIT.LINE 588:      SYSINSERT    fil cc 1916 2085
+SCode: PAS2INIT.LINE 588:      SYSINSERT    smst cc 2086 2134
+SCode: PAS2INIT.LINE 588:      SYSINSERT    sml cc 2135 2212
+SCode: PAS2INIT.LINE 588:      SYSINSERT    edit cc 2213 2438
+SCode: PAS2INIT.LINE 588:      SYSINSERT    mntr cc 2439 2453
+SCode: SCODER2.LINE 949:       INSERT       mainseparat abracadab ? TAG[T:2454] TAG[T:2506]
+SCode: SCODER2.LINE 135:       RECORD       subsep[T:2507]
+SCode: SCODER2.LINE 138:       PREFIX       TAG[T:2454]
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODER2.LINE 1000:      CONSTSPEC    subsep'prototype[T:2508]  claptp[T:94]  FIXREP 3
+SCode: SCODER2.LINE 135:       RECORD       pp0[T:2510]
+SCode: SCODER2.LINE 143:       PREFIX       inst[T:150]
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODER2.LINE 970:       CONSTSPEC    pp'prototype[T:2511]  proptp[T:91]
+SCode: PAS2INIT.LINE 72:       TAG          subsep[T:2507] 0
+SCode: PAS2INIT.LINE 73:       TAG          subsep'prototype[T:2508] 1
+SCode: PAS2INIT.LINE 72:       TAG          pp0[T:2510] 2
+SCode: PAS2INIT.LINE 73:       TAG          pp'prototype[T:2511] 3
+SCode: PAS2INIT.LINE 622:      BODY
+SCode: PAS2INIT.LINE 623:      LINE         1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 92
+SCode: SCODMAIN.LINE 2666:     BSEG
+Builder2.LINE 1286: END Alloc1 BLK  class subsep2  blev=9 rtblev=9 npar=0 S
+Builder2.LINE 1286: END Alloc1 BLK   blev=8 rtblev=8 npar=0 localclasses
+*** PAR:Builder2.LINE 1286: END Alloc1 QNT  kind=ident i  type=integer  categ=local
+Builder2.LINE 1286: END Alloc1 QNT  kind=ident xx  ftag=-85  type=ref  categ=local
+Builder2.LINE 1286: END Alloc1 QNT  kind=class mainseparat  categ=extnal
+Builder2.LINE 1286: END Alloc1 QNT  kind=class subsep2  ftag=-79  categ=local
+
+BUILDER2.LINE 331: TRC: BEGIN expandexternals DUMPS ******************************????????????????
+BUILDER2.LINE 333: BLK  procedure pp:pp  blev=8 rtblev=8 npar=0 localclasses
+*** PAR:BUILDER2.LINE 333: QNT  kind=ident i  type=integer  categ=local
+BUILDER2.LINE 333: QNT  kind=ident xx  ftag=-85  type=ref  categ=local
+BUILDER2.LINE 333: QNT  kind=class mainseparat  categ=extnal
+BUILDER2.LINE 333: QNT  kind=class subsep2  ftag=-79  categ=local
+
+BUILDER2.LINE 334: QNT  kind=ident i  type=integer  categ=local
+BUILDER2.LINE 335: TRC: ENDOF expandexternals DUMPS ******************************????????????????
+BUILDER2.LINE 339: QNT  kind=ident i  type=integer  categ=local
+BUILDER2.LINE 339: QNT  kind=ident xx  ftag=-85  type=ref  categ=local
+BUILDER2.LINE 339: QNT  kind=class mainseparat  categ=extnal
+BUILDER2.LINE 342: BLK  class mainseparat  blev=9 rtblev=9 npar=0
+  EXTBRECORD S
+COMMON.LINE 982: TRC: openattributefile: giveTextInfo(2,mainseparat)
+COMMON.LINE 983: TRC: openattributefile: giveTextInfo(3,)
+giveTextInfo: index=2, info=mainseparat
+_RT.giveTextInfo: currentModuleID=subsep
+_RT.giveTextInfo: extIdent=mainseparat
+_RT.giveTextInfo: extFile=null
+giveTextInfo: index=3, info=null
+_RT.giveTextInfo: currentModuleID=subsep
+_RT.giveTextInfo: extIdent=mainseparat
+_RT.giveTextInfo: extFile=null
+_RT.getExternalAttributeFileName: currentModuleID="subsep"
+_RT.getExternalAttributeFileName: extIdent="mainseparat"
+_RT.getExternalAttributeFileName: extFile="null"
+_RT.getExternalAttributeFileName: TRY: "null"
+_RT.getExternalAttributeFileName: TRY: "C:\GitHub\SimulaCompiler\Simula\src\sport\rts\temp\mainseparat.atr"  exists=true
+getTextInfo(12) AttributeFileName=C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/mainseparat.atr
+COMMON.LINE 989: TRC: OPEN ATTRIBUTEFILE C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/mainseparat.atr
+COMMON.LINE 1012: TRC: END OPEN ATTRIBUTEFILE sysattrfile=false
+
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 92
+SCode: SCODER2.LINE 135:       RECORD       pp1[T:2513]
+SCode: SCODER2.LINE 138:       PREFIX       pp0[T:2510]
+SCode: SCODER2.LINE 156:          ATTR      i[T:2514]  short integer
+SCode: SCODER2.LINE 156:          ATTR      xx[T:2515]  text
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODER2.LINE 949:       INSERT       mainseparat abracadab ? TAG[T:2516] TAG[T:2568]
+SCode: SCODER2.LINE 135:       RECORD       subsep2[T:2569]
+SCode: SCODER2.LINE 138:       PREFIX       TAG[T:2516]
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODER2.LINE 1000:      CONSTSPEC    subsep2'prototype[T:2570]  claptp[T:94]  FIXREP 3
+SCode: SCODMAIN.LINE 2673:     BSEG
+SCode: SCODMAIN.LINE 2674:     LABEL        pp'start[T:2512]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 92
+SCode: SCODMAIN.LINE 2666:     BSEG
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 111
+SCode: SCODMAIN.LINE 2730:     LABEL        subsep2'dcl[T:2571]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+CHECKER1.LINE 1996: QTRC:
+QTRC:QNT  kind=procedure trace  ftag=2538  categ=local
+QTRC:BLK  procedure trace  blev=10 rtblev=10 npar=1
+*** PAR:QTRC:QNT  kind=ident   ftag=2540  type=text
+
+SCode: SCODMAIN.LINE 3325:     LINE         14
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 12
+SCode: SCODMAIN.LINE 1008:                  ============================= Quantity DUMP on next line
+trace l.0#   0 NOTY procedure local plev:1 tag:2538#   0 MODUL:mainseparat Clf:0
+SCode: SCODMAIN.LINE 1072:     PUSHC        C-OADDR TAG[T:2539]
+SCode: SCODMAIN.LINE 1082:     ASSCALL      A_LOCL[T:1215]
+SCode: SCODMAIN.LINE 1083:     CALL         A_LOCL[T:1215]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 95
+SCode: SCODMAIN.LINE 1382:     DUP
+SCode: SCODMAIN.LINE 1383:     REMOTE       TAG[T:2540]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 123
+BUILDER1.LINE 158: TRC: uniqueTagid "rTxtent"
+BUILDER1.LINE 167: TRC: newTTag rTxtent = 2572
+SCode: SCODER1.LINE 685:       CONST        rTxtent[T:2572] RTS.txtent FIXREP 37
+SCode: SCODER1.LINE 689:       C_RECORD     RTS.txtent[txtent[T:318]]
+SCode: SCODER1.LINE 690:          ATTR      RTS.entity.SL   OADDR ONONE
+SCode: SCODER1.LINE 691:          ATTR      RTS.entity.SORT C-INT "12"
+SCode: SCODER1.LINE 692:          ATTR      RTS.entity.MISC C-INT "1"
+SCode: SCODER1.LINE 693:          ATTR      RTS.entity.NCHA C-INT "37"
+SCode: SCODER1.LINE 707:          ATTR      RTS.entity.CHA CHAR TEXT 37 ...
+SCode: SCODER1.LINE 712:       ENDRECORD
+SCode: SCODMAIN.LINE 328:      PUSHC        C-RECORD RTS.txtqnt ATTR RTS.txtqnt.ent OADDR C-OADDR 2572
+SCode: SCODMAIN.LINE 338:         ATTR RTS.txtqnt.CP INT C-INT "0"
+SCode: SCODMAIN.LINE 339:         ATTR RTS.txtqnt.SP INT C-INT "0"
+SCode: SCODMAIN.LINE 340:         ATTR RTS.txtqnt.LP INT C-INT "37"
+SCode: SCODMAIN.LINE 346:      ENDRECORD
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 120
+SCode: SCODER1.LINE 457:       ASSIGN
+SCode: SCODMAIN.LINE 1501:     **************************************************** IEPRM: Clf=0
+SCode: SCODMAIN.LINE 1531:     ASSCALL      I_PRO[T:1196]
+SCode: SCODMAIN.LINE 1532:     CALL         I_PRO:body[T:1197]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 122
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3325:     LINE         15
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 1
+SCode: SCODMAIN.LINE 263:      PUSHC        TRUEtrue
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 140
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 2631:     REMOTE       TAG[T:2521]
+SCode: SCODMAIN.LINE 2640:     RUPDATE
+SCode: SCODMAIN.LINE 2641:     POP
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 100
+SCode: SCODMAIN.LINE 2564:     EMPTY
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3325:     LINE         16
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 117
+SCode: SCODMAIN.LINE 2751:     PUSHC        C-INT 2
+SCode: SCODMAIN.LINE 2754:     ASSCALL      nxtStm[T:1179]
+SCode: SCODMAIN.LINE 2755:     CALL         nxtStm:body[T:1180]
+SCode: SCODMAIN.LINE 2798:     ESEG
+SCode: SCODMAIN.LINE 2799:     EMPTY
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+CHECKER1.LINE 1996: QTRC:
+QTRC:QNT  kind=class subsep2:mainseparat  ftag=2569  categ=local
+QTRC:BLK  class subsep2:mainseparat  blev=9 rtblev=9 npar=1 navirt=1 localclasses S
+*** VIR:QTRC:QNT  kind=switch exit  type=label  categ=virt  virtno:1
+
+SCode: SCODMAIN.LINE 3325:     LINE         18
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 5
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 43
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 915:      ASSCALL      A_CLA[T:1224]
+SCode: SCODMAIN.LINE 916:      PUSHC        C-OADDR  subsep2'prototype[T:2570]
+SCode: SCODMAIN.LINE 917:      ASSPAR
+SCode: SCODMAIN.LINE 918:      CALL         A_CLA:body[T:1225]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 95
+SCode: SCODMAIN.LINE 1382:     DUP
+SCode: SCODMAIN.LINE 1383:     REMOTE       TAG[T:2518]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 4
+SCode: SCODMAIN.LINE 254:      PUSHC        C-INT 15
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 48
+SCode: SCODER1.LINE 457:       ASSIGN
+SCode: SCODMAIN.LINE 971:      ASSCALL      I_CLA[T:1229]
+SCode: SCODMAIN.LINE 972:      CALL         I_CLA:body[T:1230]
+SCode: SCODMAIN.LINE 989:      PUSH         tmp[T:64]
+SCode: SCODMAIN.LINE 990:      SELECTV      TAG[T:371]
+SCode: SCODMAIN.LINE 991:      EVAL
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 140
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 2631:     REMOTE       xx[T:2515]
+SCode: SCODMAIN.LINE 2640:     RUPDATE
+SCode: SCODMAIN.LINE 2641:     POP
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 100
+SCode: SCODMAIN.LINE 2564:     EMPTY
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3325:     LINE         19
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 16
+SCode: SCODMAIN.LINE 2845:     PRECALL      E_PRO[T:1200]
+SCode: SCODMAIN.LINE 2846:     CALL         E_PRO:body[T:1201]
+SCode: SCODMAIN.LINE 2847:     ESEG
+SCode: SCODMAIN.LINE 2848:     EMPTY
+BUILDER1.LINE 158: TRC: uniqueTagid "atrvirvec"
+BUILDER1.LINE 167: TRC: newTTag atrvirvec = 2573
+SCode: SCODE2.LINE 668:        CONST        atrvirvec[T:2573] virvec[T:113]FIXREP 1
+SCode: SCODE2.LINE 669:        C-RECORD     virvec[T:113]
+SCode: SCODE2.LINE 670:          ATTR       nvir[T:114] INT C-INT 1
+SCode: SCODE2.LINE 671:          ATTR       vir[T:115] virdes[T:116]
+SCode: SCODE2.LINE 681:          C-RECORD   virdes[T:116]
+SCode: SCODE2.LINE 717:            ATTR     TAG[T:120] OADDR ONONE
+SCode: SCODE2.LINE 728:          ENDRECORD
+SCode: SCODE2.LINE 731:        ENDRECORD
+SCode: SCODER2.LINE 755:       CONST        subsep2'prototype[T:2570]  claptp[T:94] FIXREP 3
+SCode: SCODER2.LINE 757:       C-RECORD     claptp[T:94]
+SCode: SCODER2.LINE 769:          ATTR      refVec[T:85]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 782:          ATTR      repVec[T:86]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 792:          ATTR      xpp[T:87]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 796:          ATTR      lng[T:88]  SIZE[T:12]  C-SIZE  subsep2[T:2569]
+SCode: SCODER2.LINE 823:          ATTR      plv[T:95]  INT[T:3]  C-INT  1
+SCode: SCODER2.LINE 832:          ATTR      dcl[T:96]  PADDR[T:10]  NOWHERE
+SCode: SCODER2.LINE 836:          ATTR      stm[T:97]  PADDR[T:10]  C-PADDR  subsep2'dcl[T:2571]
+SCode: SCODER2.LINE 849:          ATTR      cntInr[T:98]  PADDR[T:10]  C-PADDR  E_OBJ[T:1369]
+SCode: SCODER2.LINE 854:          ATTR      virts[T:99]  OADDR[T:8]  C-OADDR  atrvirvec[T:2573]
+SCode: SCODER2.LINE 862:          ATTR      prefix[T:100]  OADDR[T:8]  -- List on following lines
+SCode: SCODER2.LINE 872:                      C-OADDR  TAG[T:2517]
+SCode: SCODER2.LINE 883:                      C-OADDR  subsep2'prototype[T:2570]
+SCode: SCODER2.LINE 884:                      ONONE
+SCode: SCODER2.LINE 891:       ENDRECORD
+BUILDER1.LINE 158: TRC: uniqueTagid "pp'pntvec"
+BUILDER1.LINE 167: TRC: newTTag pp'pntvec = 2574
+SCode: SCODER2.LINE 615:       CONST        pp'pntvec[T:2574]  pntvec[T:101]  FIXREP 1
+SCode: SCODER2.LINE 619:       C-RECORD     pntvec[T:101]
+SCode: SCODER2.LINE 620:          ATTR      ncon[T:102]  INT[T:3]  C-INT 0
+SCode: SCODER2.LINE 636:          ATTR      npnt[T:103]  INT[T:3]  C-INT 1
+SCode: SCODER2.LINE 638:          ATTR      pnt[T:104]  AADDR[T:7]  ... list of pointers
+SCode: SCODER2.LINE 381:                    C-AADDR xx[T:2515]
+SCode: SCODER2.LINE 642:       ENDRECORD
+SCode: SCODER2.LINE 739:       CONST        pp'prototype[T:2511]  proptp[T:91]
+SCode: SCODER2.LINE 740:       C-RECORD     proptp[T:91]
+SCode: SCODER2.LINE 766:          ATTR      refVec[T:85]  OADDR[T:8]  OADDRpp'pntvec[T:2574]
+SCode: SCODER2.LINE 782:          ATTR      repVec[T:86]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 792:          ATTR      xpp[T:87]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 796:          ATTR      lng[T:88]  SIZE[T:12]  C-SIZE  pp1[T:2513]
+SCode: SCODER2.LINE 806:          ATTR      start[T:92]  PADDR[T:10]  C-PADDR  pp'start[T:2512]
+SCode: SCODER2.LINE 817:          ATTR      parVec[T:93]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 891:       ENDRECORD
+SCode: SCODMAIN.LINE 3002:     DELETE       pp1[T:2513]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 111
+SCode: SCODMAIN.LINE 2730:     LABEL        subsep'dcl[T:2509]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+CHECKER1.LINE 1996: QTRC:
+QTRC:QNT  kind=procedure trace  ftag=2476  categ=local
+QTRC:BLK  procedure trace  blev=8 rtblev=8 npar=1
+*** PAR:QTRC:QNT  kind=ident   ftag=2478  type=text
+
+SCode: SCODMAIN.LINE 3325:     LINE         21
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 12
+SCode: SCODMAIN.LINE 1008:                  ============================= Quantity DUMP on next line
+trace l.0#   0 NOTY procedure local plev:1 tag:2476#   0 MODUL:mainseparat Clf:0
+SCode: SCODMAIN.LINE 1072:     PUSHC        C-OADDR TAG[T:2477]
+SCode: SCODMAIN.LINE 1082:     ASSCALL      A_LOCL[T:1215]
+SCode: SCODMAIN.LINE 1083:     CALL         A_LOCL[T:1215]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 95
+SCode: SCODMAIN.LINE 1382:     DUP
+SCode: SCODMAIN.LINE 1383:     REMOTE       TAG[T:2478]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 123
+BUILDER1.LINE 158: TRC: uniqueTagid "rTxtent"
+BUILDER1.LINE 167: TRC: newTTag rTxtent = 2513
+SCode: SCODER1.LINE 685:       CONST        rTxtent[T:2513] RTS.txtent FIXREP 36
+SCode: SCODER1.LINE 689:       C_RECORD     RTS.txtent[txtent[T:318]]
+SCode: SCODER1.LINE 690:          ATTR      RTS.entity.SL   OADDR ONONE
+SCode: SCODER1.LINE 691:          ATTR      RTS.entity.SORT C-INT "12"
+SCode: SCODER1.LINE 692:          ATTR      RTS.entity.MISC C-INT "1"
+SCode: SCODER1.LINE 693:          ATTR      RTS.entity.NCHA C-INT "36"
+SCode: SCODER1.LINE 707:          ATTR      RTS.entity.CHA CHAR TEXT 36 ...
+SCode: SCODER1.LINE 712:       ENDRECORD
+SCode: SCODMAIN.LINE 328:      PUSHC        C-RECORD RTS.txtqnt ATTR RTS.txtqnt.ent OADDR C-OADDR 2513
+SCode: SCODMAIN.LINE 338:         ATTR RTS.txtqnt.CP INT C-INT "0"
+SCode: SCODMAIN.LINE 339:         ATTR RTS.txtqnt.SP INT C-INT "0"
+SCode: SCODMAIN.LINE 340:         ATTR RTS.txtqnt.LP INT C-INT "36"
+SCode: SCODMAIN.LINE 346:      ENDRECORD
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 120
+SCode: SCODER1.LINE 457:       ASSIGN
+SCode: SCODMAIN.LINE 1501:     **************************************************** IEPRM: Clf=0
+SCode: SCODMAIN.LINE 1531:     ASSCALL      I_PRO[T:1196]
+SCode: SCODMAIN.LINE 1532:     CALL         I_PRO:body[T:1197]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 122
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3325:     LINE         22
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 5
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 43
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 904:      ASSCALL      B_CLA[T:1206]
+SCode: SCODMAIN.LINE 905:      PUSHC        C-OADDR  TAG[T:2500]
+SCode: SCODMAIN.LINE 906:      ASSPAR
+SCode: SCODMAIN.LINE 907:      CALL         B_CLA:body[T:1207]
+SCode: SCODMAIN.LINE 989:      PUSH         tmp[T:64]
+SCode: SCODMAIN.LINE 990:      SELECTV      TAG[T:371]
+SCode: SCODMAIN.LINE 991:      EVAL
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 140
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 2631:     REMOTE       TAG[T:2468]
+SCode: SCODMAIN.LINE 2640:     RUPDATE
+SCode: SCODMAIN.LINE 2641:     POP
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 100
+SCode: SCODMAIN.LINE 2564:     EMPTY
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3325:     LINE         23
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 117
+SCode: SCODMAIN.LINE 2751:     PUSHC        C-INT 2
+SCode: SCODMAIN.LINE 2754:     ASSCALL      nxtStm[T:1179]
+SCode: SCODMAIN.LINE 2755:     CALL         nxtStm:body[T:1180]
+SCode: SCODMAIN.LINE 2798:     ESEG
+SCode: SCODMAIN.LINE 2799:     EMPTY
+
+BUILDER2.LINE 874: TRC: OPEN ATTRIBUTE OUTPUT: C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/subsep.atr
+BUILDER2.LINE 904: TRC: CLOSE ATTRIBUTE OUTPUT: C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/subsep.atr
+
+SCode: SCODE2.LINE 668:        CONST        atrvirvec[T:2514] virvec[T:113]FIXREP 1
+SCode: SCODE2.LINE 669:        C-RECORD     virvec[T:113]
+SCode: SCODE2.LINE 670:          ATTR       nvir[T:114] INT C-INT 1
+SCode: SCODE2.LINE 671:          ATTR       vir[T:115] virdes[T:116]
+SCode: SCODE2.LINE 681:          C-RECORD   virdes[T:116]
+SCode: SCODE2.LINE 717:            ATTR     TAG[T:120] OADDR ONONE
+SCode: SCODE2.LINE 728:          ENDRECORD
+SCode: SCODE2.LINE 731:        ENDRECORD
+
+SCode: SCODER2.LINE 755:       CONST        subsep'prototype[T:2508]  claptp[T:94] FIXREP 3
+SCode: SCODER2.LINE 757:       C-RECORD     claptp[T:94]
+SCode: SCODER2.LINE 769:          ATTR      refVec[T:85]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 782:          ATTR      repVec[T:86]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 792:          ATTR      xpp[T:87]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 796:          ATTR      lng[T:88]  SIZE[T:12]  C-SIZE  subsep[T:2507]
+SCode: SCODER2.LINE 823:          ATTR      plv[T:95]  INT[T:3]  C-INT  1
+SCode: SCODER2.LINE 832:          ATTR      dcl[T:96]  PADDR[T:10]  NOWHERE
+SCode: SCODER2.LINE 836:          ATTR      stm[T:97]  PADDR[T:10]  C-PADDR  subsep'dcl[T:2509]
+SCode: SCODER2.LINE 849:          ATTR      cntInr[T:98]  PADDR[T:10]  C-PADDR  E_OBJ[T:1369]
+SCode: SCODER2.LINE 854:          ATTR      virts[T:99]  OADDR[T:8]  C-OADDR  atrvirvec[T:2514]
+SCode: SCODER2.LINE 862:          ATTR      prefix[T:100]  OADDR[T:8]  -- List on following lines
+SCode: SCODER2.LINE 872:                      C-OADDR  TAG[T:2455]
+SCode: SCODER2.LINE 883:                      C-OADDR  subsep'prototype[T:2508]
+SCode: SCODER2.LINE 884:                      ONONE
+SCode: SCODER2.LINE 891:       ENDRECORD
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 88
+SCode: SCODMAIN.LINE 3344:     ENDMODULE
+SCode: SCODMAIN.LINE 3345:     ENDPROGRAM

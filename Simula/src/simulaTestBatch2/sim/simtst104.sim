@@ -1,0 +1,73 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 104
+%
+%  PURPOSE: Procedure parameter 'F' by name.
+%           Which should be evaluated and called when used.
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+
+begin
+	integer nnn=104; text title="--- Test procedure parameter 'F' by name.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+
+   real r;
+
+   text procedure edfix(r); real r;
+   begin text t; t:-blanks(6); t.putfix(r,2); edfix:-t; end;
+
+   procedure trace(msg,r,facit); text msg; real r,facit;
+   begin
+      if verbose or (r <> facit) then
+      begin
+         text case;
+         case:-copy(msg & ", Result=" & edfix(r) & "  Facit=" & edfix(facit));
+         if r <> facit then err(case)
+         else outtext("TRACE: " & case); outimage;
+      end;
+   end;
+
+   integer procedure P;
+   begin
+      P:=34;
+   end;
+   
+   real procedure Q(F); name F; integer procedure F;
+   begin
+      Q:=F;
+   end;
+   
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+   
+   r := Q(P);
+   trace("r := Q(P)",r,34);
+   
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+   

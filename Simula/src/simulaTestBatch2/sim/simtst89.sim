@@ -1,0 +1,81 @@
+
+% ================================================   Main   program  ===========
+%  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 89
+%
+%  PURPOSE: Test InByteFile and OutByteFile.
+%           Inputfile must be defined.
+%
+%  METHOD:  Copy from one file to the other.
+%
+%  WRITTEN BY:
+% ==============================================================================
+
+begin
+	integer nnn=89; text title="--- Test InByteFile and OutByteFile.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+
+      text src,dst; integer b,bb;
+      ref(InByteFile) inpt,inoupt; ref(OutByteFile) oupt;
+      text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/inputByteFile89";
+      text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputByteFile89";
+      
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+      
+      inpt:-new InByteFile(inptFileName);
+      if not inpt.open then error("Can't open " & inptFileName);
+      oupt:-new OutByteFile(ouptFileName);
+      if not oupt.open then error("Can't open " & ouptFileName);
+
+      inpt.close; inpt.open;
+%     for b:=inpt.inbyte while b <> 26 do oupt.outbyte(b);
+
+      b:=inpt.inbyte;
+      while not inpt.endfile do
+      begin
+         oupt.outbyte(b); b:=inpt.inbyte;
+      end;
+      inpt.close; oupt.close;
+      
+      inoupt:-new InByteFile(oupt.filename); oupt:-none;
+      if not inpt.open then error("Can't re-open " & inpt.filename);
+      if not inoupt.open then error("Can't re-open " & inoupt.filename);
+      b:=inpt.inbyte; bb:=inoupt.inbyte;
+      while not inpt.endfile do begin
+            if not b=bb then err("The files differ");
+            if inoupt.endfile then err("Output file is too short");
+            b:=inpt.inbyte; bb:=inoupt.inbyte;
+      end;
+      if inoupt.endfile then !OK;
+      else err("Output file is too long");
+
+      inpt.close; inoupt.close;
+      
+      
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

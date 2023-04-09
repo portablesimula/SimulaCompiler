@@ -8,10 +8,26 @@
 %
 %  WRITTEN BY:  BEH   23/07-86
 % ==============================================================================
-external class SimulaTest;
 
-SimulaTest(41,"--- Test labels and switches as parameters to procedures") begin
-   external procedure p41 ;
+begin
+%   external procedure p41 ;
+    external integer procedure p41="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/simtst41proc.sim.atr";
+   
+	integer nnn=41; text title="--- Test labels and switches as parameters to procedures";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(6); t.putint(i); edint:-t; end;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
 
    integer i ;
    integer array A(0:100) ;
@@ -27,11 +43,17 @@ SimulaTest(41,"--- Test labels and switches as parameters to procedures") begin
          p41(A, j) ;
    end ;
 
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
    P(teller) ;
 
    ! Check that : A(0) = 0, A(1) = 2, A(2) = 0, A(3) = 4, ....;
 
--- for i := 0, i+1 while not found_error and i <= 100 do
+% -- for i := 0, i+1 while not found_error and i <= 100 do
    for i := 0 step 1 until 99 do
    if mod(i,2) <> 0 and A(i) <> i+1 or mod(i,2) = 0 and A(i) <> 0 then
    begin
@@ -41,4 +63,15 @@ SimulaTest(41,"--- Test labels and switches as parameters to procedures") begin
       outimage ;
    end ;
 
-end;
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

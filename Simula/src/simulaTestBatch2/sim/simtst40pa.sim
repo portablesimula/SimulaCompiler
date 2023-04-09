@@ -1,0 +1,163 @@
+integer procedure pa(n); integer n;
+  begin
+    external integer procedure pb="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/simtst40pb.sim.atr";
+    if n<10 then pa:= n+pb(n+1);
+  end;
+
+  
+SCode: PAS2INIT.LINE 558:      PROGRAM      2023-04-06 10:30:42.957S-port 108.1/JAVA
+SCode: PAS2INIT.LINE 588:      SYSINSERT    rt cc 32 403
+SCode: PAS2INIT.LINE 588:      SYSINSERT    sysr cc 404 908
+SCode: PAS2INIT.LINE 588:      SYSINSERT    knwn cc 909 1118
+SCode: PAS2INIT.LINE 588:      SYSINSERT    util cc 1119 1158
+SCode: PAS2INIT.LINE 588:      SYSINSERT    strg cc 1159 1174
+SCode: PAS2INIT.LINE 588:      SYSINSERT    cent cc 1175 1371
+SCode: PAS2INIT.LINE 588:      SYSINSERT    cint cc 1372 1401
+SCode: PAS2INIT.LINE 588:      SYSINSERT    arr cc 1402 1441
+SCode: PAS2INIT.LINE 588:      SYSINSERT    form cc 1442 1716
+SCode: PAS2INIT.LINE 588:      SYSINSERT    libr cc 1717 1915
+SCode: PAS2INIT.LINE 588:      SYSINSERT    fil cc 1916 2085
+SCode: PAS2INIT.LINE 588:      SYSINSERT    smst cc 2086 2134
+SCode: PAS2INIT.LINE 588:      SYSINSERT    sml cc 2135 2212
+SCode: PAS2INIT.LINE 588:      SYSINSERT    edit cc 2213 2438
+SCode: PAS2INIT.LINE 588:      SYSINSERT    mntr cc 2439 2453
+SCode: SCODER2.LINE 135:       RECORD       pa[T:2454]
+SCode: SCODER2.LINE 143:       PREFIX       intPro[T:164]
+SCode: SCODER2.LINE 156:          ATTR      n[T:2457]  short integer
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODER2.LINE 970:       CONSTSPEC    pa'prototype[T:2455]  proptp[T:91]
+SCode: PAS2INIT.LINE 72:       TAG          pa[T:2454] 0
+SCode: PAS2INIT.LINE 73:       TAG          pa'prototype[T:2455] 1
+SCode: PAS2INIT.LINE 99:       TAG          n[T:2457] 2
+SCode: PAS2INIT.LINE 622:      BODY
+SCode: PAS2INIT.LINE 623:      LINE         1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 92
+SCode: SCODER2.LINE 135:       RECORD       pa0[T:2458]
+SCode: SCODER2.LINE 138:       PREFIX       pa[T:2454]
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODER2.LINE 949:       INSERT       pb abracadab C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/simtst40pb.sim.atr pa'prototype0[T:2459] TAG[T:2461]
+
+SCode: SCODMAIN.LINE 2673:     BSEG
+SCode: SCODMAIN.LINE 2674:     LABEL        pa'start[T:2456]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3325:     LINE         4
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 0
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 130:      REMOTEV      n[T:2457]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 4
+SCode: SCODMAIN.LINE 254:      PUSHC        C-INT 10
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 57
+SCode: SCODMAIN.LINE 2244:     FJUMPIF      GE 1
+SCode: SCODMAIN.LINE 2323:     EMPTY
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 0
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 130:      REMOTEV      n[T:2457]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 12
+
+SCode: SCODER1.LINE 42:        -- BEGIN     SAVE SCHEME
+SCode: SCODER1.LINE 43:        PUSHLEN
+SCode: SCODER1.LINE 44:        ASSCALL      presav[T:1328]
+SCode: SCODER1.LINE 45:        CALL         presav:body[T:1329]
+SCode: SCODER1.LINE 46:        SAVE
+SCode: SCODER1.LINE 47:        -- END       SAVE SCHEME
+
+SCode: SCODMAIN.LINE 1072:     PUSHC        C-OADDR pa'start0[T:2460]
+SCode: SCODMAIN.LINE 1082:     ASSCALL      A_LOCL[T:1215]
+SCode: SCODMAIN.LINE 1083:     CALL         A_LOCL[T:1215]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 95
+SCode: SCODMAIN.LINE 1382:     DUP
+SCode: SCODMAIN.LINE 1383:     REMOTE       TAG[T:2461]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 90
+SCode: SCODMAIN.LINE 59:       +++++++++++++++++++++++++++++++++++++++++++++ IDNT SWITCH: 0
+SCode: SCODER1.LINE 534:       PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 130:      REMOTEV      n[T:2457]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 4
+SCode: SCODMAIN.LINE 254:      PUSHC        C-INT 1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 70
+SCode: SCODMAIN.LINE 3424:     ADD
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 120
+SCode: SCODER1.LINE 457:       ASSIGN
+SCode: SCODMAIN.LINE 1501:     **************************************************** IEPRM: Clf=0
+SCode: SCODMAIN.LINE 1531:     ASSCALL      I_PRO[T:1196]
+SCode: SCODMAIN.LINE 1532:     CALL         I_PRO:body[T:1197]
+
+SCode: SCODER1.LINE 56:        -- BEGIN     RESTORE SCHEME
+SCode: SCODER1.LINE 57:        PRECALL      restor[T:1332]
+SCode: SCODER1.LINE 58:        CALL         restor:body[T:1333]
+SCode: SCODER1.LINE 59:        PUSH         rstr[T:81]
+SCode: SCODER1.LINE 60:        RESTORE
+SCode: SCODER1.LINE 61:        PRECALL      presto[T:1334]
+SCode: SCODER1.LINE 62:        CALL         presto:body[T:1335]
+SCode: SCODER1.LINE 63:        -- END       RESTORE SCHEME
+
+SCode: SCODMAIN.LINE 1544:     PUSH         tmp[T:64]
+SCode: SCODMAIN.LINE 1545:     SELECTV      TAG[T:371]
+SCode: SCODMAIN.LINE 1546:     REMOTEV      TAG[T:165]
+SCode: SCODMAIN.LINE 1547:     EVAL
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 70
+SCode: SCODMAIN.LINE 3424:     ADD
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 110
+SCode: SCODMAIN.LINE 2574:     PUSHV        curins[T:57]
+SCode: SCODMAIN.LINE 2581:     REMOTE       TAG[T:165]
+SCode: SCODMAIN.LINE 2640:     RUPDATE
+SCode: SCODMAIN.LINE 2641:     POP
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 100
+SCode: SCODMAIN.LINE 2564:     EMPTY
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 131
+SCode: SCODER.MNE.LINE 189:    FDEST        1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3325:     LINE         5
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 16
+SCode: SCODMAIN.LINE 2853:     PRECALL      E_FUNC[T:1203]
+SCode: SCODMAIN.LINE 2854:     CALL         E_FUNC:body[T:1204]
+SCode: SCODMAIN.LINE 2855:     ESEG
+SCode: SCODMAIN.LINE 2856:     EMPTY
+
+SCode: SCODER2.LINE 494:       CONST        pa_par1[T:2462]atrdes[T:124] C-RECORD atrdes[T:124]
+SCode: SCODER2.LINE 497:          ATTR      ident[T:125]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 514:          ATTR      fld[T:126]  AADDR[T:7]  C-AADDR n[T:2457]
+SCode: SCODER2.LINE 518:          ATTR      mode[T:127]  INT[T:3]  C-INT categ=0
+SCode: SCODER2.LINE 522:          ATTR      kind[T:128]  INT[T:3]  C-INT kind=0
+SCode: SCODER2.LINE 527:          ATTR      type[T:129]  INT[T:3]  C-INT type=4
+SCode: SCODER2.LINE 556:       ENDRECORD
+                                            pa_CONST[14]      ATTRIBUTE[0] = null  OADDR[IDENT]
+                                            pa_CONST[15]      ATTRIBUTE[1] = IntegerValue: AADDR(11)  AADDR[FLD]
+                                            pa_CONST[16]      ATTRIBUTE[2] = null  INT[MODE]
+                                            pa_CONST[17]      ATTRIBUTE[3] = null  INT[KIND]
+                                            pa_CONST[18]      ATTRIBUTE[4] = IntegerValue: INT(4)  INT[TYPE]
+
+SCode: SCODER2.LINE 579:       CONST        pa_atrvirvec[T:2463]  atrvec[T:121]  FIXREP 1
+SCode: SCODER2.LINE 580:       C-RECORD     atrvec[T:121]
+SCode: SCODER2.LINE 581:          ATTR      natr[T:122]  INT[T:3]  C-INT 1
+SCode: SCODER2.LINE 587:          ATTR      atr[T:123]  OADDR[T:8]  -- Value(s) on following lines
+SCode: SCODER2.LINE 592:                      C-OADDR  pa_par1[T:2462]
+SCode: SCODER2.LINE 595:       ENDRECORD
+                                            pa_CONST[19]      ATTRIBUTE[0] = IntegerValue: INT(1)  INT[NATR]
+                                            pa_CONST[20]      ATTRIBUTE[1] = OAddrValue: OADDR(SEG pa_CONST[14+0])  OADDR[ATR]
+
+SCode: SCODER2.LINE 739:       CONST        pa'prototype[T:2455]  proptp[T:91]
+SCode: SCODER2.LINE 740:       C-RECORD     proptp[T:91]
+SCode: SCODER2.LINE 769:          ATTR      refVec[T:85]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 782:          ATTR      repVec[T:86]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 792:          ATTR      xpp[T:87]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 796:          ATTR      lng[T:88]  SIZE[T:12]  C-SIZE  pa0[T:2458]
+SCode: SCODER2.LINE 806:          ATTR      start[T:92]  PADDR[T:10]  C-PADDR  pa'start[T:2456]
+SCode: SCODER2.LINE 814:          ATTR      parVec[T:93]  OADDR[T:8]  C-OADDR  pa_atrvirvec[T:2463]
+SCode: SCODER2.LINE 891:       ENDRECORD
+                                            pa_CONST[21]      ATTRIBUTE[0] = null  OADDR[REFVEC]
+                                            pa_CONST[22]      ATTRIBUTE[1] = null  OADDR[REPVEC]
+                                            pa_CONST[23]      ATTRIBUTE[2] = null  OADDR[XPP]
+                                            pa_CONST[24]      ATTRIBUTE[3] = IntegerValue: SIZE(12)  SIZE[LNG]
+                                            pa_CONST[25]      ATTRIBUTE[4] = PAddrValue: PADDR(SEG pa_BSEG1[0])  PADDR[START]
+                                            pa_CONST[26]      ATTRIBUTE[5] = OAddrValue: OADDR(SEG pa_CONST[19+0])  OADDR[PARVEC]
+
+SCode: SCODMAIN.LINE 3002:     DELETE       pa0[T:2458]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 88
+SCode: SCODMAIN.LINE 3344:     ENDMODULE
+SCode: SCODMAIN.LINE 3345:     ENDPROGRAM
+  

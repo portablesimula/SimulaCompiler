@@ -20,7 +20,7 @@ begin !BL=3;
        x.detach;
    end;    
    
-    x:-new C();
+    x:-new C;
     detach;
    
 end;

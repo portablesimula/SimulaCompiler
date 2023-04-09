@@ -1,0 +1,98 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 123
+%
+%  PURPOSE: GOTO VIRTUAL label
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+
+begin
+	integer nnn=123; text title="--- Test goto virtual label";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(6); t.putint(i); edint:-t; end;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+   integer traceCase;
+   text array facit(0:9);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin err("Case " & edint(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   class A; virtual: label L1; procedure P;
+   begin
+      switch S1 := L1, L3, L6;
+
+      L1: trace("A.L1"); n:=n+1;
+      
+      L3: trace("A.L3");
+      L6: trace("A.L6");
+   end;
+
+   A class B;
+   begin
+      procedure P; begin end;
+      BEGIN_B: trace("begin B");
+      L1: trace("B.L1"); n:=n+1;
+     
+      if n < 4 then
+      begin
+         trace("JUST BEFORE GOTO L1 - B.L1");
+         goto L1;
+      end;
+   end;
+   
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+   facit(0):-"A.L1";
+   facit(1):-"A.L3";
+   facit(2):-"A.L6";
+   facit(3):-"begin B";
+   facit(4):-"B.L1";
+   facit(5):-"JUST BEFORE GOTO L1 - B.L1";
+   facit(6):-"B.L1";
+   facit(7):-"JUST BEFORE GOTO L1 - B.L1";
+   facit(8):-"B.L1";
+   facit(9):-"At end OF TEST";
+   
+   new B;
+   trace("At end OF TEST");
+      
+   
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

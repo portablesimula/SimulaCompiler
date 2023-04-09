@@ -1,0 +1,90 @@
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 124
+%
+%  PURPOSE: GOTO VIRTUAL label
+%
+%  WRITTEN BY:  MYH   28/04-2019
+% ==============================================================================
+
+begin
+	integer nnn=124; text title="--- Test goto virtual label";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(6); t.putint(i); edint:-t; end;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+   integer traceCase;
+   text array facit(0:4);
+   integer n;
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg ne facit(traceCase) then
+      begin err("Case " & edint(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+   class A; virtual: label L1;
+   begin
+
+      L1: trace("A.L1"); n:=n+1;
+          if n < 4 then
+          begin
+              trace("JUST BEFORE GOTO L1 - B.L1");
+              goto L1;
+          end;
+   end;
+
+   A class B;
+   begin
+      BEGIN_B: trace("begin B");
+      L1: trace("B.L1"); n:=n+1;
+     
+   end;
+
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+   
+   facit(0):-"begin PROGRAM";
+   facit(1):-"A.L1";
+   facit(2):-"JUST BEFORE GOTO L1 - B.L1";
+   facit(3):-"B.L1";
+   facit(4):-"end PROGRAM";
+   
+   trace("begin PROGRAM");
+   new B;
+   trace("end PROGRAM");
+      
+   
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+

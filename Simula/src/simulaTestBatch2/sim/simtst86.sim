@@ -1,0 +1,64 @@
+
+% ===============================================   Main   program =============
+%  PROGRAM NAME:   SIMULA TEST NO 86
+%
+%  PURPOSE:     Simple Test of Separately Compiled Class.
+%
+%  WRITTEN BY:  MYH  23/06-2018
+% ==============================================================================
+
+begin
+%   external class Separat;
+    external integer procedure Separat="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp/simtst86Separat.sim.atr";
+    
+	integer nnn=86; text title="--- Simple Test of Separately Compiled Class.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+   
+   text procedure edint(i); integer i;
+   begin text t; t:-blanks(6); t.putint(i); edint:-t; end;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
+  
+  Separat(5) begin
+  
+     procedure checkEvent(n,val); integer n,val; begin
+       if eventValue = val then else begin
+           outtext("*** error in test "); outint(n,0); outtext(": Simple Test of Separately Compiled Class."); outimage;
+           outtext("            Erroneus values: val = "); outint(eventValue, 0); outimage;
+           outtext("            --------- Facit: val = "); outint(val, 0); outimage;
+           err("Failed");
+       end;
+     end;
+   
+     x :- new B;
+ 
+  end;
+  
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

@@ -30,7 +30,7 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-//		names.add("SimulaTest.sim"); // Simula TestBatch Framework
+		names.add("SimulaTest.sim"); // Simula TestBatch Framework
 //		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 //		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 //		names.add("simtst03.sim"); // OK:  Test Text Value Relations
@@ -113,7 +113,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst70.sim"); // OK:  Text attributes and relations
 //		
 //		names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
-//		names.add("simtst72.sim"); // OK:  Test of formal procedures.
+		names.add("simtst72.sim"); // OK:  Test of formal procedures.
 //		names.add("simtst73.sim"); // OK:  Test of formal procedures.
 //		names.add("simtst74.sim"); // OK:  Test resume and detach.
 //		names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.
@@ -184,7 +184,7 @@ public final class RunSingleTestBatch {
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
 //		names.add("simtst132.sim"); // OK: SPORT Options
-		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
+//		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
 //		
 //		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
 //		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
@@ -228,7 +228,7 @@ public final class RunSingleTestBatch {
 
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
-		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.

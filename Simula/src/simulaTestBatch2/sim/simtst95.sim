@@ -1,0 +1,74 @@
+
+% =============================================   Main   program =====
+%  PROGRAM NAME:   Simula a.s - SIMULA TEST NO 95
+%
+%  PURPOSE:     Test Environment Interface.
+%
+% ====================================================================
+
+begin
+	integer nnn=95; text title="--- Test Environment Interface.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test Case "); outint(traceCase,0); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
+
+   integer traceCase;
+   text array facit(0:4);
+   
+   procedure trace(msg); text msg;
+   begin
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin
+         err; outimage;
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
+   end;
+
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+   
+   facit(0):-"BEGIN PROGRAM";
+   facit(1):-"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts/temp/knwn.atr";
+   facit(2):-"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts/temp/cent.atr";
+   facit(3):-"C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
+   facit(4):-"END PROGRAM";
+   
+   trace("BEGIN PROGRAM");
+   giveTextInfo(4,"C:/WorkSpaces/SPort-System/S-Port/src/sport/rts");
+   
+   giveTextInfo(2,"knwn"); trace(getTextInfo(12));
+   giveTextInfo(2,"cent"); trace(getTextInfo(12));
+   
+   trace(getTextInfo(19));
+   
+   trace("END PROGRAM");
+
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;

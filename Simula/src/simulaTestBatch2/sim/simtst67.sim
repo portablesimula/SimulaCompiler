@@ -6,9 +6,21 @@
 %
 %  WRITTEN BY:  BEH   08/08-86
 % =====================================================================
-external class SimulaTest;
 
-SimulaTest(67,"--- Simple test of detach, call and resume.") begin
+begin
+	integer nnn=67; text title="--- Simple test of detach, call and resume.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
 
    integer array ia(1:10);
    integer i, nri;
@@ -69,6 +81,13 @@ SimulaTest(67,"--- Simple test of detach, call and resume.") begin
    ref(A)            ua;
    integer            c;
 
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
    i := 1;
    ua :- new A;
    c := c + 1;
@@ -78,4 +97,16 @@ SimulaTest(67,"--- Simple test of detach, call and resume.") begin
 
    Checki;
    
- end
+ 
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+ 

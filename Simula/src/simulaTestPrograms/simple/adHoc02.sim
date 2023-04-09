@@ -1,9 +1,18 @@
-begin 
-integer i1,i2;
-
-% if         i1 eq 0  and not i1 <  i2
-%   and     i1 <= i2 and not i1 >  i2
-%   and      0 >= i2 and not i1 <> i2  then
-% else  outtext("INT.1 (comparing INTEGERs)");
-
-end
+begin
+	class A; begin
+		integer i,j,k;
+		text t;
+	end;
+	
+	A class B; begin
+		new A;
+		new A;
+	end;
+	
+	integer i;
+	
+	for i:=0 step 1 until 10000 do begin
+		new B;
+	end;
+	
+end of program;

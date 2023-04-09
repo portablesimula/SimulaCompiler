@@ -6,9 +6,21 @@
 %
 %  WRITTEN BY:  BEH   22/08-86
 % ==============================================================================
-external class SimulaTest;
 
-SimulaTest(71,"--- Test visibility of identifiers.") begin
+begin
+	integer nnn=71; text title="--- Test visibility of identifiers.";
+	
+	boolean found_error;
+	integer nFailed;
+	boolean verbose=false;
+	boolean noMessage;
+
+	procedure err(t); text t;
+	begin sysout.setpos(1);
+	      outtext("*** error: in test "); outtext(t); outimage;
+	      found_error:=true; nFailed:=nFailed+1;
+	end;
+
 
    integer i;
 
@@ -27,6 +39,14 @@ SimulaTest(71,"--- Test visibility of identifiers.") begin
    ref(A) rA;
 
    procedure P2; i := 4;
+
+
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
 
    rA :- new B;
 
@@ -76,4 +96,16 @@ SimulaTest(71,"--- Test visibility of identifiers.") begin
    end;
 
    
- end
+
+	if noMessage then else begin
+		if not found_error then begin
+			outtext ("--- NO ERRORS FOUND IN TEST"); outint(nnn,4); outtext("  "); outtext(title); outimage;
+		end;
+
+		if verbose then begin
+			outtext ("--- END Simula a.s. TEST"); outint(nnn,4); outimage;
+		end;
+	end;
+
+end of program;
+

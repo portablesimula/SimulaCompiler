@@ -1,11 +1,11 @@
 
-begin   
-   ref(InputFile) fil1;
-   text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any66";
-   
-		class InputFile(neste, navn, a); value navn; ref(InputFile) neste; text navn; integer a; begin
-		end;
+begin
 
-   fil1 :- new InputFile(new InputFile(none, fileName, 5), fileName, 13);
- 
+	class A;;
+	procedure P;;
+	
+	P();
+	new A();
+	
 end of program;
+

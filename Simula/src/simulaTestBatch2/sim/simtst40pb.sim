@@ -1,0 +1,77 @@
+integer procedure pb(n);
+   integer n;
+   begin
+    pb:=6666+n;
+   end;
+     
+SCode: PAS2INIT.LINE 558:      PROGRAM      2023-04-05 15:26:43.178S-port 108.1/JAVA
+SCode: PAS2INIT.LINE 588:      SYSINSERT    rt cc 32 403
+SCode: PAS2INIT.LINE 588:      SYSINSERT    sysr cc 404 908
+SCode: PAS2INIT.LINE 588:      SYSINSERT    knwn cc 909 1118
+SCode: PAS2INIT.LINE 588:      SYSINSERT    util cc 1119 1158
+SCode: PAS2INIT.LINE 588:      SYSINSERT    strg cc 1159 1174
+SCode: PAS2INIT.LINE 588:      SYSINSERT    cent cc 1175 1371
+SCode: PAS2INIT.LINE 588:      SYSINSERT    cint cc 1372 1401
+SCode: PAS2INIT.LINE 588:      SYSINSERT    arr cc 1402 1441
+SCode: PAS2INIT.LINE 588:      SYSINSERT    form cc 1442 1716
+SCode: PAS2INIT.LINE 588:      SYSINSERT    libr cc 1717 1915
+SCode: PAS2INIT.LINE 588:      SYSINSERT    fil cc 1916 2085
+SCode: PAS2INIT.LINE 588:      SYSINSERT    smst cc 2086 2134
+SCode: PAS2INIT.LINE 588:      SYSINSERT    sml cc 2135 2212
+SCode: PAS2INIT.LINE 588:      SYSINSERT    edit cc 2213 2438
+SCode: PAS2INIT.LINE 588:      SYSINSERT    mntr cc 2439 2453
+SCode: SCODER2.LINE 135:       RECORD       pb[T:2454]
+SCode: SCODER2.LINE 143:       PREFIX       intPro[T:164]
+SCode: SCODER2.LINE 156:          ATTR      n[T:2457]  short integer
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODER2.LINE 970:       CONSTSPEC    pb'prototype[T:2455]  proptp[T:91]
+SCode: PAS2INIT.LINE 72:       TAG          pb[T:2454] 0
+SCode: PAS2INIT.LINE 73:       TAG          pb'prototype[T:2455] 1
+SCode: PAS2INIT.LINE 99:       TAG          n[T:2457] 2
+
+SCode: PAS2INIT.LINE 622:      BODY
+SCode: PAS2INIT.LINE 623:      LINE         1
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 92
+SCode: SCODER2.LINE 135:       RECORD       pb0[T:2458]
+SCode: SCODER2.LINE 138:       PREFIX       pb[T:2454]
+SCode: SCODER2.LINE 191:       ENDRECORD
+SCode: SCODMAIN.LINE 2652:     BSEG
+SCode: SCODMAIN.LINE 2653:     LABEL        pb'start[T:2456]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 89
+SCode: SCODMAIN.LINE 3304:     LINE         3
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 16
+SCode: SCODMAIN.LINE 2832:     PRECALL      E_FUNC[T:1203]
+SCode: SCODMAIN.LINE 2833:     CALL         E_FUNC:body[T:1204]
+SCode: SCODMAIN.LINE 2834:     ESEG
+SCode: SCODMAIN.LINE 2835:     EMPTY
+
+SCode: SCODER2.LINE 494:       CONST        pb_par1[T:2459]atrdes[T:124] C-RECORD atrdes[T:124]
+SCode: SCODER2.LINE 497:          ATTR      ident[T:125]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 514:          ATTR      fld[T:126]  AADDR[T:7]  C-AADDR n[T:2457]
+SCode: SCODER2.LINE 518:          ATTR      mode[T:127]  INT[T:3]  C-INT categ=0
+SCode: SCODER2.LINE 522:          ATTR      kind[T:128]  INT[T:3]  C-INT kind=0
+SCode: SCODER2.LINE 527:          ATTR      type[T:129]  INT[T:3]  C-INT type=4
+SCode: SCODER2.LINE 556:       ENDRECORD
+
+SCode: SCODER2.LINE 579:       CONST        pb_atrvirvec[T:2460]  atrvec[T:121]  FIXREP 1
+SCode: SCODER2.LINE 580:       C-RECORD     atrvec[T:121]
+SCode: SCODER2.LINE 581:          ATTR      natr[T:122]  INT[T:3]  C-INT 1
+SCode: SCODER2.LINE 587:          ATTR      atr[T:123]  OADDR[T:8]  -- Value(s) on following lines
+SCode: SCODER2.LINE 592:                      C-OADDR  pb_par1[T:2459]
+SCode: SCODER2.LINE 595:       ENDRECORD
+
+SCode: SCODER2.LINE 739:       CONST        pb'prototype[T:2455]  proptp[T:91]
+SCode: SCODER2.LINE 740:       C-RECORD     proptp[T:91]
+SCode: SCODER2.LINE 769:          ATTR      refVec[T:85]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 782:          ATTR      repVec[T:86]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 792:          ATTR      xpp[T:87]  OADDR[T:8]  ONONE
+SCode: SCODER2.LINE 796:          ATTR      lng[T:88]  SIZE[T:12]  C-SIZE  pb0[T:2458]
+SCode: SCODER2.LINE 806:          ATTR      start[T:92]  PADDR[T:10]  C-PADDR  pb'start[T:2456]
+SCode: SCODER2.LINE 814:          ATTR      parVec[T:93]  OADDR[T:8]  C-OADDR  pb_atrvirvec[T:2460]
+SCode: SCODER2.LINE 891:       ENDRECORD
+
+SCode: SCODMAIN.LINE 2981:     DELETE       pb0[T:2458]
+SCode: SCODMAIN.LINE 215:      +++++++++++++++++++++++++++++++++++++++++++++ MAIN SWITCH: 88
+SCode: SCODMAIN.LINE 3323:     ENDMODULE
+SCode: SCODMAIN.LINE 3324:     ENDPROGRAM
+   

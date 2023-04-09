@@ -44,14 +44,7 @@ begin
          end;   
       end;
 
-
-	if verbose then begin
-		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
-		outtext (title);
-		outimage; outimage;
-	end;
-
-
+	  outtext("BEGIN InputFile: navn=" & navn); outimage;
       fil :- new InFile(navn);
       if not fil.open(blanks(100)) then
       begin outtext("The file does not exist,");
@@ -95,6 +88,14 @@ begin
 
    
    
+
+	if verbose then begin
+		outtext ("--- START Simula a.s. TEST"); outint(nnn,4); outimage;
+		outtext (title);
+		outimage; outimage;
+	end;
+
+
 
    fil1 :- new InputFile(new InputFile(none, fileName, 5), fileName, 13);
    fil2 :- fil1.neste;

@@ -17,7 +17,7 @@ begin
    for t:="abra","ca","dabra" do outtext(t); outchar('|'); outimage;
    for t:-"abra","ca","dabra" do outtext(t); outchar('|'); outimage;
    
-   c:-new CA();
+   c:-new CA;
    for p:-a,b,c while p.e< -1 do z:=z+12;
 
 end;

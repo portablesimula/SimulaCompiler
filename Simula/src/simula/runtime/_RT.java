@@ -70,18 +70,47 @@ public final class _RT {
 	    }
 	    
 	    public static String getScratchFileName() {	return(createSubfileName("temp",getModuleName()+".tmp")); }
-	    public static String getAttributeOutputFileName() { return(createSubfileName("temp",getModuleName()+".atr")); }
-	    public static String getAttributeFileName() {
-	    	//return(createSubfileName("temp",moduleIdent+".atr"));
-	    	String fileName=SourceDirName+"/"+"temp"+"/"+getModuleName()+".atr";
+	    public static String getAttributeOutputFileName() { return(createSubfileName("temp",currentModuleID+".atr")); }
+	    
+//	    public static String getAttributeFileName() {
+//	    	String fileName=SourceDirName+"/"+"temp"+"/"+getModuleName()+".atr";
+//	    	File file=new File(fileName);
+//	    	if(!file.exists()) {
+//		    	String name=extIdent;
+//		    	int i=name.indexOf('.');
+//		    	if(i>0) name=name.substring(0,i);
+//	    		fileName=SPORT_SysInsertDirName+"/temp/"+name+".atr";
+//		    	file=new File(fileName);
+//	    		if(!file.exists()) System.out.println("getAttributeFileName: "+file+"  does NOT exists");
+//	    	}
+//	    	return(fileName);
+//	    }
+
+	    public static String getExternalAttributeFileName() {
+	        // 12 What is the name of the attribute file for an external declaration?
+	        //      Before this request is issued, the environment will have received the identifier (extIdent) and the
+	        //      external identifier (extFile) for the external declaration through the routine give_textinfo
+    		System.out.println("_RT.getExternalAttributeFileName: currentModuleID=\""+currentModuleID+"\"");
+    		System.out.println("_RT.getExternalAttributeFileName: extIdent=\""+extIdent+"\"");
+    		System.out.println("_RT.getExternalAttributeFileName: extFile=\""+extFile+"\"");
+    		System.out.println("_RT.getExternalAttributeFileName: TRY: \""+extFile+"\"");
+    		if(extFile!=null) {
+        		System.out.println("_RT.getExternalAttributeFileName: extFile != null "+extFile.length());
+    			return(extFile);
+    		}
+    		
+    	    String fileName=createSubfileName("temp",extIdent+".atr");
+//	    	String fileName=SourceDirName+"/"+"temp"+"/"+getModuleName()+".atr";
+    	    
 	    	File file=new File(fileName);
+    		System.out.println("_RT.getExternalAttributeFileName: TRY: \""+file+"\"  exists="+file.exists());
 	    	if(!file.exists()) {
-		    	String name=moduleIdent;
+		    	String name=extIdent;
 		    	int i=name.indexOf('.');
 		    	if(i>0) name=name.substring(0,i);
 	    		fileName=SPORT_SysInsertDirName+"/temp/"+name+".atr";
 		    	file=new File(fileName);
-	    		if(!file.exists()) System.out.println("getAttributeFileName: "+file+"  does NOT exists");
+	    		if(!file.exists()) System.out.println("_RT.getExternalAttributeFileName: \""+file+"\"  does NOT exists");
 	    	}
 	    	return(fileName);
 	    }
@@ -103,9 +132,16 @@ public final class _RT {
 	    public static int SimobLevel=0;
 
 	    // giveTextInfo
-	    public static String moduleIdent; // 1 The identifier of a class or procedure being separately compiled.
-	    public static String xDecl1; // 2 The identifier given in an external declaration that is being processed.
-	    public static String xDecl2; // 3 The external identification given in an external declaration that is being processed.
+	    //  Index: Interpretation:
+	    //    1  The string info is the identifier of a class or procedure being separately compiled.
+	    //    2  The string info is the identifier given in an external declaration that is being processed.
+	    //    3  The string info is the external identification given in an external declaration that is being processed.
+//	    public static String extIdent; // 1 The identifier given in an external declaration that is being processed. E.g class or procedure identifier
+//	    public static String currentModuleID; // 2 The identifier of a class or procedure being separately compiled. E.g class or procedure identifier
+//	    public static String extFile;  // 3 The external identification given in an external declaration that is being processed. E.g. FileName
+	    public static String currentModuleID; // 1 The identifier of a class or procedure being separately compiled. E.g class or procedure identifier
+	    public static String extIdent; // 2 The identifier given in an external declaration that is being processed. E.g class or procedure identifier
+	    public static String extFile;  // 3 The external identification given in an external declaration that is being processed. E.g. FileName
 	}
 	
 	

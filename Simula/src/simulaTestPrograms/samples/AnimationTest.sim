@@ -9,15 +9,15 @@ Drawing("Animation Test",900,900) begin
    setDrawColor(red);
    setFillColor(magenta);
     	
-   elt2:-new ShapeElement();
+   elt2:-new ShapeElement;
    elt2.fillRectangle(100, 100, 200, 50);
     	
    setFillColor(blue);
-   elt3:-new ShapeElement();
+   elt3:-new ShapeElement;
    elt3.fillRoundRectangle(100, 100, 200, 50,50,50);
    
    setDrawColor(black);
-         elt1:-new ShapeElement();
+         elt1:-new ShapeElement;
          elt1.drawEllipse(10,10,200,50);
    setFontSize(24);
    setDrawColor(orange);

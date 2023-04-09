@@ -25,7 +25,7 @@ SimulaTest(116,"--- Simple QPS-Sample 2") begin
 
    procedure P;
    begin
-      x:-new C();
+      x:-new C;
       ! - - - ;
       trace("In Procedure P - Just Before first Resume(x)");
       resume(x);
