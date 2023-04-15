@@ -1874,9 +1874,9 @@ public class _ENVIRONMENT extends _RTObject {
     		case 4: _RT.SPORT_Option.SPORT_SysInsertDirName=infoString; break;
     		default: _RT.NOT_IMPLEMENTED("giveTextInfo");
     	}
-    	System.out.println("_RT.giveTextInfo: currentModuleID="+_RT.SPORT_Option.currentModuleID);
-    	System.out.println("_RT.giveTextInfo: extIdent="+_RT.SPORT_Option.extIdent);
-    	System.out.println("_RT.giveTextInfo: extFile="+_RT.SPORT_Option.extFile);
+//    	System.out.println("_ENVIRONMENT.giveTextInfo: currentModuleID="+_RT.SPORT_Option.currentModuleID);
+//    	System.out.println("_ENVIRONMENT.giveTextInfo: extIdent="+_RT.SPORT_Option.extIdent);
+//    	System.out.println("_ENVIRONMENT.giveTextInfo: extFile="+_RT.SPORT_Option.extFile);
     }
     
     /**

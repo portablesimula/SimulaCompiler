@@ -126,7 +126,7 @@ public class AsmUtils {
 			  return(Printer.OPCODES[instr.getOpcode()]+' '+dflt+' '+keys+' '+"...");
 
 		  /** The type of {@link MultiANewArrayInsnNode} instructions. */
-		  case AbstractInsnNode.MULTIANEW_ARRAYINSN:
+		  case AbstractInsnNode.MULTIANEWARRAY_INSN:
 			  desc=((MultiANewArrayInsnNode)instr).desc;
 			  int dims=((MultiANewArrayInsnNode)instr).dims;
 			  return(Printer.OPCODES[instr.getOpcode()]+' '+desc+' '+dims);
@@ -241,7 +241,7 @@ public class AsmUtils {
 	}
 
 	protected static void appendDescriptor(final int type, final String value) {
-		if (type == Textifier._CLASSSIGNATURE || type == Textifier.FIELD_SIGNATURE
+		if (type == Textifier.CLASS_SIGNATURE || type == Textifier.FIELD_SIGNATURE
 				|| type == Textifier.METHOD_SIGNATURE) {
 			if (value != null) {
 				stringBuilder.append("// signature ").append(value).append('\n');

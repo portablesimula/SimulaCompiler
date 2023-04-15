@@ -90,12 +90,12 @@ public final class _RT {
 	        // 12 What is the name of the attribute file for an external declaration?
 	        //      Before this request is issued, the environment will have received the identifier (extIdent) and the
 	        //      external identifier (extFile) for the external declaration through the routine give_textinfo
-    		System.out.println("_RT.getExternalAttributeFileName: currentModuleID=\""+currentModuleID+"\"");
-    		System.out.println("_RT.getExternalAttributeFileName: extIdent=\""+extIdent+"\"");
-    		System.out.println("_RT.getExternalAttributeFileName: extFile=\""+extFile+"\"");
-    		System.out.println("_RT.getExternalAttributeFileName: TRY: \""+extFile+"\"");
+//    		System.out.println("_RT.getExternalAttributeFileName: currentModuleID=\""+currentModuleID+"\"");
+//    		System.out.println("_RT.getExternalAttributeFileName: extIdent=\""+extIdent+"\"");
+//    		System.out.println("_RT.getExternalAttributeFileName: extFile=\""+extFile+"\"");
+//    		System.out.println("_RT.getExternalAttributeFileName: TRY: \""+extFile+"\"");
     		if(extFile!=null) {
-        		System.out.println("_RT.getExternalAttributeFileName: extFile != null "+extFile.length());
+//        		System.out.println("_RT.getExternalAttributeFileName: extFile != null "+extFile.length());
     			return(extFile);
     		}
     		
@@ -103,7 +103,7 @@ public final class _RT {
 //	    	String fileName=SourceDirName+"/"+"temp"+"/"+getModuleName()+".atr";
     	    
 	    	File file=new File(fileName);
-    		System.out.println("_RT.getExternalAttributeFileName: TRY: \""+file+"\"  exists="+file.exists());
+//    		System.out.println("_RT.getExternalAttributeFileName: TRY: \""+file+"\"  exists="+file.exists());
 	    	if(!file.exists()) {
 		    	String name=extIdent;
 		    	int i=name.indexOf('.');
