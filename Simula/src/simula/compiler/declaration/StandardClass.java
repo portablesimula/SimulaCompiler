@@ -172,16 +172,16 @@ public final class StandardClass extends ClassDeclaration
 //    Procedures draw, randint, uniform, normal, negexp,
 //      Poisson, Erlang, discrete, linear, histd.
 
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Boolean,"draw",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"randint",parameter("a",Type.Integer),parameter("b",Type.Integer),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"uniform",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"normal",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
 
 //    Calendar and timing utilities ........................... 9.10
 //    Procedures datetime, cputime, clocktime.

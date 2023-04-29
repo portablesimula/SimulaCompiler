@@ -91,6 +91,7 @@ public final class TestCompiler {
 		// String name="/design/CallProcedureVirtual.sim";
 		// String name="/design/ProcedureByName.sim";
 		// String name="/design/ProcedureResult.sim";
+		 String name="/design/RandomDrawing.sim";
 		// String name="/design/SwitchDeclaration.sim";
 		// String name="/design/SwitchStatement.sim";
 		// String name="/design/VirtualSwitch.sim";
@@ -163,7 +164,7 @@ public final class TestCompiler {
 //		String name="/FECTest/fecTest.sim";
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
@@ -255,7 +256,7 @@ public final class TestCompiler {
 			
 			// Set RunTime Options and tracing.
 //			RTOption.VERBOSE = true;//false;//true;
-			RTOption.DEBUGGING = true;//false;//true;
+			RTOption.DEBUGGING = false;//true;
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;
 			RTOption.BLOCK_TRACING = false;

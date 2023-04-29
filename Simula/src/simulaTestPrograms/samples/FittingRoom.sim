@@ -42,18 +42,20 @@ Simulation begin
  
    Process class Person(pname); text pname; begin 
       while true do begin 
-         hold(normal(12, 4, u)); 
+         hold(normal(12, 4, U)); 
          report (pname & " is requesting the fitting room"); 
          fittingroom1.request; 
          report(pname & " has entered the fitting room"); 
-         hold(normal(3, 1, u)); 
+         hold(normal(3, 1, U)); 
          fittingroom1.leave; 
          report(pname & " has left the fitting room"); 
       end; 
    end; 
  
-   integer u; 
+   integer U; 
    ref(FittingRoom) fittingroom1; 
+ 
+   U:=1234507;
  
    fittingroom1:- new FittingRoom; 
    activate new Person("Sam"); 

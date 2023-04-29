@@ -10,6 +10,7 @@ package simula.runtime;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -49,6 +50,7 @@ public final class _RT {
 		public static String SourceDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
 		public static String SPORT_SysInsertDirName="C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
 		public static String SPORT_SourceFileName=SourceDirName+"/ModuleName";
+		public static Vector<String> SPORT_SourceFileNames=new Vector<String>();
 //		public static String SCodeDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/scode";
 //		public static String TempDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp";
 //		public static String SourceFileName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/_RT.DEF";
@@ -165,6 +167,7 @@ public final class _RT {
 				else if(arg.equalsIgnoreCase("-USE_VIRTUAL_THREAD")) Option.USE_VIRTUAL_THREAD=true;
 				else if (arg.equalsIgnoreCase("-RUNTIME_USER_DIR")) Option.RUNTIME_USER_DIR=args[++i];
 				else if (arg.equalsIgnoreCase("-SPORT_SOURCE_FILE")) SPORT_Option.SPORT_SourceFileName=args[++i];
+				else if (arg.equalsIgnoreCase("-SPORT_SOURCE_FILES")) SPORT_Option.SPORT_SourceFileNames.add(args[++i]);
 				// Spesial S-Port Simula and Simuletta Options
 				else if (arg.equalsIgnoreCase("-noexec")) ;//Option.noExecution=true;
 				else if (arg.equalsIgnoreCase("-nowarn")) ;//{ Option.noJavacWarnings=true; Option.WARNINGS=false; }

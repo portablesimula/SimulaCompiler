@@ -87,16 +87,16 @@ Simulation begin
        
    begin -- Initiate variables 
       integer i; 
-      uninfected := population; 
-      for i:=1 step 1 until length do probtreat(i) := uniform(0,0.5,u6); 
        
-      u1 := 455470314;  -- Start values chosen to 
+      u1 := 455470315;  -- Start values chosen to 
       u2 := 950423827;  -- avoid dependent series 
       u3 := 1602649445; 
-      u4 := 660825716; 
+      u4 := 660825717; 
       u5 := 913127751; 
-      u6 := 1081211210; 
+      u6 := 1081211211; 
        
+      uninfected := population; 
+      for i:=1 step 1 until length do probtreat(i) := uniform(0,0.5,u6); 
    end; 
  
    -- Start Simulation 

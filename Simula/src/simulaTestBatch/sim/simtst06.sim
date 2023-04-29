@@ -281,7 +281,7 @@ begin integer i, j, k, u1, u2; long real x, y;
     long real Twopi = 6.2831853&&0;
     long real Pihalf= 1.5707963&&0;
     long real hlexp;
-    u1:=  455470314;                    ! Start values chosen to avoid;
+    u1:=  455470315;                    ! Start values chosen to avoid;
     u2:= 2011455689;                    ! dependent series;
 
     for k:= 1 step 1 until 20 do

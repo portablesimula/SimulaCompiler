@@ -39,6 +39,7 @@ public final class RTOption {
 	public static boolean SML_TRACING = false; // true;
 	public static boolean USE_VIRTUAL_THREAD=true;
 	public static String SPORT_SOURCE_FILE;
+	public static Vector<String> SPORT_SOURCE_FILES;
 
     public static void InitRuntimeOptions() {
 		RTOption.VERBOSE = false;//true;
@@ -70,6 +71,12 @@ public final class RTOption {
 		if(RTOption.SPORT_SOURCE_FILE!=null) {
 			args.add("-SPORT_SOURCE_FILE");
 			args.add(SPORT_SOURCE_FILE);
+		}
+		if(RTOption.SPORT_SOURCE_FILES!=null) {
+			for(String fname:RTOption.SPORT_SOURCE_FILES) {
+			args.add("-SPORT_SOURCE_FILES");
+			args.add(fname);
+			}
 		}
 	}
 

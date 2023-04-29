@@ -30,7 +30,7 @@ public final class RunSingleTestBatch {
 		//names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		names.add("SimulaTest.sim"); // Simula TestBatch Framework
+//		names.add("SimulaTest.sim"); // Simula TestBatch Framework
 //		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 //		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 //		names.add("simtst03.sim"); // OK:  Test Text Value Relations
@@ -78,8 +78,8 @@ public final class RunSingleTestBatch {
 //		names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
 //
-//		names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
-//		names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
+		names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
+		names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
 //		names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
 //		names.add("simtst43.sim"); // OK:  Compute "n-fac", using recursion.
 //		names.add("simtst44.sim"); // OK:  Test text procedure.
@@ -113,7 +113,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst70.sim"); // OK:  Text attributes and relations
 //		
 //		names.add("simtst71.sim"); // OK:  Test visibility of identifiers.
-		names.add("simtst72.sim"); // OK:  Test of formal procedures.
+//		names.add("simtst72.sim"); // OK:  Test of formal procedures.
 //		names.add("simtst73.sim"); // OK:  Test of formal procedures.
 //		names.add("simtst74.sim"); // OK:  Test resume and detach.
 //		names.add("simtst75.sim"); // OK:  Name parameters and virtual procedures.

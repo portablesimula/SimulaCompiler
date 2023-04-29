@@ -11,8 +11,6 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
-
 import simula.runtime._RT.Option;
 
 /**
@@ -25,7 +23,7 @@ import simula.runtime._RT.Option;
  * <p>
  * 
  * @author SIMULA Standards Group
- * @author      * ystein Myhre Andersen
+ * @author Øystein Myhre Andersen
  *
  */
 // public final class _ENVIRONMENT {
@@ -741,15 +739,6 @@ public class _ENVIRONMENT extends _RTObject {
 	// *********************************************************************
 	// *** Random drawing ***
 	// *********************************************************************
-
-	// **********************************************************************
-	// *** Basic Drawing - Implementation using default Java-Seed.
-	// **********************************************************************
-	static final Random random = new Random();
-
-//	private double basicDRAW(_NAME<Integer> U) {
-//		return (random.nextDouble());
-//	}
 	
 	// **********************************************************************
 	// *** Random drawing: Procedure draw
@@ -762,23 +751,13 @@ public class _ENVIRONMENT extends _RTObject {
 	 * 
 	 * The value is true with the probability a, false with the probability 1 - a.
 	 * It is always true if a >= 1 and always false if a <= 0.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 * 
-	 * @param a
-	 * @param U
-	 * @return
 	 */
-//	public static boolean draw(float a, _NAME<Integer> U) {
-//	public static boolean draw(final float a,final int U) {
-	public static boolean draw(final double a,final int U) {
-		boolean val;
-		if (a >= 1.0) val = true;
-		else if (a <= 0.0) val = false;
-//		else val = a >= basicDRAW(U);
-		else val = a >= random.nextDouble();
-		return (val);
+	public static boolean draw(final double a, final _NAME<Integer> U) {
+		boolean res;
+		if (a >= 1.0) res = true;
+		else if (a <= 0.0) res = false;
+		else res = a >= _RandomDrawing.basicDRAW(U);
+		return (res);
 	}
 
 	// **********************************************************************
@@ -792,21 +771,10 @@ public class _ENVIRONMENT extends _RTObject {
 	 * 
 	 * The value is one of the integers a, a+1, ..., b-1, b with equal probability.
 	 * If b < a, the call constitutes an error.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 * 
-	 * @param a
-	 * @param b
-	 * @param U
-	 * @return
 	 */
-//	public static int randint(int a, int b, _NAME<Integer> U) {
-	public static int randint(final int a,final int b,final int U) {
+	public static int randint(final int a, final int b, final _NAME<Integer> U) {
 		if (b < a) throw new _SimulaRuntimeError("Randint(a,b,u):  b < a");
-//		int val = entier(basicDRAW(U) * ((b - a + 1))) + a;
-		int val = entier(random.nextDouble() * ((b - a + 1))) + a;
-		return (val);
+		return( entier(_RandomDrawing.basicDRAW(U) * ((b - a + 1))) + a );
 	}
 
 	// **********************************************************************
@@ -820,21 +788,10 @@ public class _ENVIRONMENT extends _RTObject {
 	 * 
 	 * The value is uniformly distributed in the interval a <= u < b. If b < a, the
 	 * call constitutes an error.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 *
-	 * @param a
-	 * @param b
-	 * @param U
-	 * @return
 	 */
-//	public static double uniform(double a, double b, _NAME<Integer> U) {
-	public static double uniform(final double a,final double b,final int U) {
+	public static double uniform(final double a, final double b, final _NAME<Integer> U) {
 		if (b < a) throw new _SimulaRuntimeError("Uniform(a,b,u): b < a");
-//		double val = a + ((b - a) * basicDRAW(U));
-		double val = a + ((b - a) * random.nextDouble());
-		return (val);
+		return( a + ((b - a) * _RandomDrawing.basicDRAW(U)) );
 	}
 
 	// **********************************************************************
@@ -848,22 +805,12 @@ public class _ENVIRONMENT extends _RTObject {
 	 * 
 	 * The value is normally distributed with mean a and standard deviation b. An
 	 * approximation formula may be used for the normal distribution function.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 * 
-	 * @param a
-	 * @param b
-	 * @param U
-	 * @return
 	 */
-//	public static double normal(double a, double b, _NAME<Integer> U) {
-	public static double normal(final double a,final double b,final int U) {
+	public static double normal(final double a, final double b, final _NAME<Integer> U) {
 		double t, p, q, v, x;
 		boolean z;
 		if (b < 0.0) throw new _SimulaRuntimeError("Normal(a,b,u):  b <= 0.");
-//		v = basicDRAW();
-		v = random.nextDouble();
+		v = _RandomDrawing.basicDRAW(U);
 		if (v > 0.5) {
 			z = true;
 			v = 1.0f - v;
@@ -874,8 +821,8 @@ public class _ENVIRONMENT extends _RTObject {
 		p = 2.515517f + (t * (0.802853f + (t * 0.010328f)));
 		q = 1.0f + (t * (1.432788f + (t * (0.189269f + (t * 0.001308f)))));
 		x = b * (t - (p / q));
-		double val = a + ((z) ? x : -x);
-		return (val);
+		double res = a + ((z) ? x : -x);
+		return (res);
 	}
 
 	// **********************************************************************
@@ -890,23 +837,13 @@ public class _ENVIRONMENT extends _RTObject {
 	 * The value is a drawing from the negative exponential distribution with mean
 	 * 1/a, defined by -ln(u)/a, where u is a basic drawing. This is the same as a
 	 * random "waiting time" in a Poisson distributed arrival pattern with expected
-	 * number of arrivals per time unit equal to a. If a is non-positive, a runtime
-	 * error occurs.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
+	 * number of arrivals per time unit equal to a.
 	 * 
-	 * @param a
-	 * @param U
-	 * @return
+	 * If a is non-positive, a runtime error occurs.
 	 */
-//	public static double negexp(double a, _NAME<Integer> U) {
-	public static double negexp(final double a,final int U) {
+	public static double negexp(final double a,final _NAME<Integer> U) {
 		if (a <= 0.0) throw new _SimulaRuntimeError("Negexp(a,u): a <= 0");
-//		double v = basicDRAW(U);
-		double v = random.nextDouble();
-		double val = -Math.log(v) / a;
-		return (val);
+		return( -Math.log(_RandomDrawing.basicDRAW(U)) / a );
 	}
 
 	// **********************************************************************
@@ -934,36 +871,26 @@ public class _ENVIRONMENT extends _RTObject {
 	 * When the parameter a is greater than some implementation-defined value, for
 	 * instance 20.0, the value may be approximated by entier(normal(a,sqrt(a),U) +
 	 * 0.5) or, when this is negative, by zero.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 * 
-	 * @param a
-	 * @param U
-	 * @return
 	 */
-//	public static int Poisson(double a, _NAME<Integer> U) {
-	public static int Poisson(final double a,final int U) {
-		int val;
-		double acc, xpa, sqa;
+	public static int Poisson(double a, final _NAME<Integer> U) {
+		int res;
 		if (a <= 0.0)
-			val = 0;
+			res = 0;
 		else if (a > 20.0) {
 			// entier(normal(a,sqrt(a),U) + 0.5)
-			sqa = Math.sqrt(a);
-			val = entier(normal(a, sqa, U) + 0.5);
+			double sqa = Math.sqrt(a);
+			res = entier(normal(a, sqa, U) + 0.5);
 		} else {
-			acc = 1.0;
-			val = 0;
-			xpa = Math.exp(-a);
+			double acc = 1.0;
+			res = 0;
+			double xpa = Math.exp(-a);
 			do {
-//				acc = acc * basicDRAW();
-				acc = acc * random.nextDouble();
-				val = val + 1;
+				acc = acc * _RandomDrawing.basicDRAW(U);
+				res = res + 1;
 			} while (acc >= xpa);
-			val = val - 1;
+			res = res - 1;
 		}
-		return (val);
+		return (res);
 	}
 
 	// **********************************************************************
@@ -988,38 +915,26 @@ public class _ENVIRONMENT extends _RTObject {
 	 * Both a and b must be greater than zero.
 	 * <p>
 	 * The last formula represents an approximation.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 * 
-	 * @param a
-	 * @param b
-	 * @param U
-	 * @return
 	 */
-//	public static double Erlang(double a, double b, _NAME<Integer> U) {
-	public static double Erlang(final double a,final double b,final int U) {
-		int c;
-		double val, bc, ab, z, v;
+	public static double Erlang(final double a, final double b, final _NAME<Integer> U) {
+		double res;
 		if (a <= 0.0 || b <= 0.0)
 			throw new _SimulaRuntimeError("Erlang(a,b,u):  a <= 0  or  b <= 0");
-		val = 0;
-		c = entier(b);
-		bc = b - c;
-		ab = a * b;
+		res = 0;
+		int c = entier(b);
+		double bc = b - c;
+		double ab = a * b;
 		while ((c--) > 0) {
-//			v = basicDRAW(U);
-			v = random.nextDouble();
-			z = Math.log(v);
-			val = val - (z / ab);
+			double v = _RandomDrawing.basicDRAW(U);
+			double z = Math.log(v);
+			res = res - (z / ab);
 		}
 		if (bc > 0.0) {
-//			v = basicDRAW(U);
-			v = random.nextDouble();
-			z = Math.log(v);
-			val = val - ((bc * z) / ab);
+			double v = _RandomDrawing.basicDRAW(U);
+			double z = Math.log(v);
+			res = res - ((bc * z) / ab);
 		}
-		return (val);
+		return (res);
 	}
 
 	// **********************************************************************
@@ -1041,25 +956,15 @@ public class _ENVIRONMENT extends _RTObject {
 	 * <p>
 	 * It is defined as the smallest i such that A(i) > u, where u is a basic
 	 * drawing and A(upperbound(A,1)+1) = 1.
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 *
-	 * @param A
-	 * @param U
-	 * @return
 	 */
-//	public static int discrete(_ARRAY<double[]> A, _NAME<Integer> U) {
-	public static int discrete(final _ARRAY<double[]> A,final int U) {
-		int result, j, nelt;
-		double v;
+	public static int discrete(final _ARRAY<double[]> A, final _NAME<Integer> U) {
+		int result;
 		int lb = A.LB[0];
 		int ub = A.UB[0];
-//		v = basicDRAW(U);
-		v = random.nextDouble();
-		nelt = ub - lb + 1;
+		double v = _RandomDrawing.basicDRAW(U);
+		int nelt = ub - lb + 1;
 		result = ub + 1;
-		j = 0;
+		int j = 0;
 		do {
 			if (A.Elt[j] > v) {
 				result = lb + j;
@@ -1100,29 +1005,18 @@ public class _ENVIRONMENT extends _RTObject {
 	 * <p>
 	 * 4. if D = 0: linear = B(i-1) if D <> 0: linear = B(i-1) + (B(i) -
 	 * B(i-1))*(u-A(i-1))/D
-	 * <p>
-	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
-	 * in the Java Library is used.
-	 * 
-	 * @param A
-	 * @param B
-	 * @param U
-	 * @return
 	 */
-//	public static double linear(_ARRAY<double[]> A, _ARRAY<double[]> B, _NAME<Integer> U) {
-	public static double linear(final _ARRAY<double[]> A,final _ARRAY<double[]> B,final int U) {
-		int i, nelt;
-		double val, a_val, a_lag, a_dif, b_val, b_lag, v;
+	public static double linear(final _ARRAY<double[]> A,final _ARRAY<double[]> B,final _NAME<Integer> U) {
+		double res;
 
 		int lb = A.LB[0];
 		int ub = A.UB[0];
 
-		nelt = ub - lb + 1;
+		int nelt = ub - lb + 1;
 		if (nelt != (B.UB[0] - B.LB[0] + 1))
 			throw new _SimulaRuntimeError("Linear(A,B,U): The number of elements in A and B are different.");
-//		v = basicDRAW(U);
-		v = random.nextDouble();
-		i = 0;
+		double v = _RandomDrawing.basicDRAW(U);
+		int i = 0;
 		while (A.Elt[i] < v)
 			i = i + 1;
 		if (i == 0) {
@@ -1133,17 +1027,17 @@ public class _ENVIRONMENT extends _RTObject {
 		} else if (i >= nelt)
 			throw new _SimulaRuntimeError("Linear(A,B,U): The array a does not satisfy the stated assumptions.");
 
-		a_val = A.Elt[i];
-		a_lag = A.Elt[i - 1];
-		a_dif = a_val - a_lag;
+		double a_val = A.Elt[i];
+		double a_lag = A.Elt[i - 1];
+		double a_dif = a_val - a_lag;
 		if (a_dif == 0.0)
-			val = B.Elt[i - 1];
+			res = B.Elt[i - 1];
 		else {
-			b_val = B.Elt[i];
-			b_lag = B.Elt[i - 1];
-			val = (((b_val - b_lag) / a_dif) * (v - a_lag)) + b_lag;
+			double b_val = B.Elt[i];
+			double b_lag = B.Elt[i - 1];
+			res = (((b_val - b_lag) / a_dif) * (v - a_lag)) + b_lag;
 		}
-		return (val);
+		return (res);
 	}
 
 	// **********************************************************************
@@ -1167,8 +1061,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param U
 	 * @return
 	 */
-//	public static int histd(_ARRAY<float[]> A, _NAME<Integer> U) {
-	public static int histd(final _ARRAY<float[]> A,final int U) {
+	public static int histd(final _ARRAY<float[]> A, final _NAME<Integer> U) {
 		int result = 0;
 		int j; // Array index.
 		int nelt; // Number of array elements.
@@ -1188,8 +1081,7 @@ public class _ENVIRONMENT extends _RTObject {
 			sum = sum + tmp;
 			j = j + 1;
 		} while (j < nelt);
-//		wsum = sum * basicDRAW(U); // Make 0 <= wsum < sum
-		wsum = sum * random.nextDouble(); // Make 0 <= wsum < sum
+		wsum = sum * _RandomDrawing.basicDRAW(U); // Make 0 <= wsum < sum
 		j = 0;
 		sum = 0.0;
 		do {
@@ -1203,6 +1095,9 @@ public class _ENVIRONMENT extends _RTObject {
 		return (result);
 	}
 
+	
+	
+	
 	// *****************************************
 	// *** Calendar and timing utilities ***
 	// *****************************************
@@ -1325,15 +1220,6 @@ public class _ENVIRONMENT extends _RTObject {
 	}
 
 	
-
-	// **********************************************************************
-	// *** Random drawing: Procedure setSeed
-	// **********************************************************************
-	public static void setSeed(final long seed) {
-		random.setSeed(seed);
-	}
-
-
 	// **********************************************************************
 	// *** Utility: Procedure waitSomeTime
 	// **********************************************************************

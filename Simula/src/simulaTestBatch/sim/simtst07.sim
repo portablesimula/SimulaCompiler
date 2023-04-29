@@ -294,7 +294,7 @@ Testmatlib begin
            real    Twopi=6.2831853,
                    Pihalf=1.5707963;
            real    hlexp;
-           u1 := 455470314;             ! Start values chosen to avoid;
+           u1 := 455470315;             ! Start values chosen to avoid;
            u2 := 2011455689;            ! dependent series;
            explim:= ln(maxreal);
 

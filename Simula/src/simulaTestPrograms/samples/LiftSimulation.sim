@@ -511,10 +511,10 @@ Simulation begin
     begin -- Initiate global variables
         integer j;
         idleQueue:- new Head;
-        U1:=455470314;     -- Random seed 1
+        U1:=455470315;     -- Random seed 1
         U2:=950423827;     -- Random seed 2
         U3:=1602649445;    -- Random seed 3
-        U4:=660825716;     -- Random seed 4
+        U4:=660825717;     -- Random seed 4
         for j:=0 step 1 until nFloors do floors(j):- new Floor(j);
         for j:=1 step 1 until nLifts do begin
             lifts(j):- new Elevator(j);
