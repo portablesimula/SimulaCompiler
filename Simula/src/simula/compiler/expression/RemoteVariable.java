@@ -19,6 +19,7 @@ import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
+import simula.runtime._SimulaRuntimeError;
 
 /**
  * Binary Operation.
@@ -77,7 +78,8 @@ public final class RemoteVariable extends Expression {
 		if (qual == null)
 			Util.error("doRemoteChecking: Object Expression (" + obj + ") is not a ref() type rather " + objType);
 		else if (qual.hasLocalClasses)
-			Util.warning("Illegal remote access into object of class with local classes.");
+//			Util.warning("Illegal remote access into object of class with local classes.");
+			Util.error("Illegal remote access into object of class with local classes.");
 
 		if (attr instanceof Variable var) {
 			String ident = var.identifier;
