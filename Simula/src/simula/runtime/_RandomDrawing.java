@@ -41,7 +41,7 @@ public class _RandomDrawing {
 	 * 
 	 * @param U The pseudo random number (seed) by name.
 	 * @return Returns the next pseudorandom, uniformly distributed value between 0.0 and 1.0
-	 * @throws _SimulaRuntimeError U is not an odd integer
+	 * @throws _SimulaRuntimeError When U is not an odd integer
 	 */
 	public static double basicDRAW(final _NAME<Integer> U) {
 		long seed=U.get();
