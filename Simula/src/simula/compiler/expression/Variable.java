@@ -289,13 +289,8 @@ public final class Variable extends Expression {
 	// Generate code for putting an value(expression) into this Variable
 	public String put(final String rightPart) {
 		ASSERT_SEMANTICS_CHECKED(this);
-		String lhs = this.editVariable(true); // Is a Destination
-		if(meaning.declaredAs instanceof Parameter par) {
-			if(par.kind==Parameter.Kind.Simple && par.mode == Parameter.Mode.name) {
-				return(lhs+".put("+rightPart+')');
-			}
-		}
-		return(lhs+'='+rightPart);
+		String edited = this.editVariable(rightPart); // Is a Destination
+		return(edited);
 	}
 
 	// ******************************************************************
@@ -304,15 +299,51 @@ public final class Variable extends Expression {
 	// Generate code for getting the value of this Variable
 	public String get() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		String result = this.editVariable(false); // Not a destination
+		String result = this.editVariable(null); // Not a destination
+		// System.out.println("Variable.get: RETURN "+result);
 		return (result);
+	}
+
+	// ******************************************************************
+	// *** Coding: doGetELEMENT
+	// ******************************************************************
+	public String doGetELEMENT(final String var) {
+		StringBuilder s = new StringBuilder();
+		s.append(var);
+		char sep='(';
+		// A.getELEMENT(i);
+		s.append(".getELEMENT");
+		for(Expression ix:checkedParams) {
+			String index=ix.toJavaCode();
+			s.append(sep).append(index); sep=',';
+		}
+		s.append(")");
+		return(s.toString());
+	}
+
+	// ******************************************************************
+	// *** Coding: doPutELEMENT
+	// ******************************************************************
+	public String doPutELEMENT(final String var,final String rightPart) {
+		StringBuilder s = new StringBuilder();
+		s.append(var);
+		char sep='(';
+		// A.putELEMENT(rightPart,i);
+		s.append(".putELEMENT(").append(var).append(".index");
+		for(Expression ix:checkedParams) {
+			String index=ix.toJavaCode();
+			s.append(sep).append(index); sep=',';
+		}
+		s.append("),").append(rightPart).append(")");
+		return(s.toString());
 	}
 	
 	
 	// ******************************************************************
 	// *** Coding: editVariable
 	// ******************************************************************
-	private String editVariable(final boolean destination) {
+	private String editVariable(final String rightPart) {
+		boolean destination=(rightPart!=null);
 		Declaration decl=meaning.declaredAs;
 	    ASSERT_SEMANTICS_CHECKED(this);
 	    Expression inspectedVariable=meaning.getInspectedVariable();
@@ -321,14 +352,15 @@ public final class Variable extends Expression {
 		
 		case ArrayDeclaration:
 	    	s = new StringBuilder();
-	    	s.append(edIdentifierAccess(false));
 	    	if(this.hasArguments()) { // Array Element Access
-	    		int nDim=0;
-	    		s.append(".Elt"); //[x-M.LB[1]]");
-	    		for(Expression ix:checkedParams) {
-	    			String index="["+ix.toJavaCode()+"-"+edIdentifierAccess(false)+".LB["+(nDim++)+"]]";
-	    			s.append(index);
-	    		}
+	    		String var=edIdentifierAccess(false);
+	    		if(rightPart!=null)
+	    			return(doPutELEMENT(var,rightPart));
+	    		else return(doGetELEMENT(var));
+	    	} else {
+	    		if(rightPart!=null) {
+			    	s.append(edIdentifierAccess(false)).append('=').append(rightPart);
+	    		} else s.append(edIdentifierAccess(false));
 	    	}
 	    	return(s.toString());
 	    	
@@ -338,6 +370,7 @@ public final class Variable extends Expression {
 	    	return(edIdentifierAccess(destination));
 		
 		case LabelDeclaration:
+			if(rightPart!=null) Util.IERR("TEST DETTE -- Variable.editVariable: LabelDeclaration: rightPart="+rightPart);
 	    	VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(decl);
 	    	if(virtSpec!=null) return(edIdentifierAccess(virtSpec.getVirtualIdentifier(),destination));
 	    	return(edIdentifierAccess(destination));
@@ -347,50 +380,68 @@ public final class Variable extends Expression {
 	    	Parameter par=(Parameter)decl;
 	    	switch(par.kind) {
 	    	    case Array: // Parameter Array
-	    	    	int nDim=0;
 	    	    	String var=edIdentifierAccess(false);
 	    	    	if(inspectedVariable!=null) var=inspectedVariable.toJavaCode()+'.'+var;
 	    	    	if(par.mode==Parameter.Mode.name) var=var+".get()";
 	    	    	if(this.hasArguments()) {
-	    	    		StringBuilder ixs=new StringBuilder();
-	    	    		String dimBrackets="";
-	    	    		for(Expression ix:checkedParams) {
-	    	    			String index="["+ix.toJavaCode()+"-"+var+".LB["+(nDim++)+"]]"; 
-	    	    			ixs.append(index);
-	    	    			dimBrackets=dimBrackets+"[]";
+    						String arrType=type.toJavaArrayType();
+    						String castedVar="(("+arrType+")"+var+")";
+    		    			if(rightPart!=null)
+    		    				 return(doPutELEMENT(castedVar,rightPart));
+    		    			else return(doGetELEMENT(castedVar));
+	    	    	} else {
+	    	    		if(rightPart!=null) {
+		    				s.append(var).append('=').append(rightPart);
+	    	    		} else {
+	    	    			s.append(var);
 	    	    		}
-	    	    		String eltType=type.toJavaType();
-	    	    		String cast="_ARRAY<"+eltType+dimBrackets+">";
-	    	    		String castedVar="(("+cast+")"+var+")";
-	    	    		s.append(castedVar).append(".Elt").append(ixs);
-	    	    	} else s.append(var);
+	    	    	}
 	    	    	break;
 	    	    case Procedure: // Parameter Procedure
+					if(destination) Util.IERR("TEST DETTE -- Variable.editVariable: Parameter Procedure: rightPart="+rightPart);
 	    	    	if(inspectedVariable!=null) s.append(inspectedVariable.toJavaCode()).append('.');
 	    	    	if(par.mode==Parameter.Mode.value)
 	    	    		Util.error("Parameter "+this+" by Value is not allowed - Rewrite Program");
 	    	    	else // Procedure By Reference or Name.
 	    	    		s.append(CallProcedure.formal(this,par)); 
+    	    		if(rightPart!=null) {
+    	    			s.append('=').append(rightPart);
+    	    		}
 	    	    	break;
 	    	    case Simple:
 	    	    case Label:
-	    	    	s.append(edIdentifierAccess(destination)); // Kind: Simple/Label
-	    	    	if(!destination && par.mode == Parameter.Mode.name) s.append(".get()");
+	    	    	var=edIdentifierAccess(destination); // Kind: Simple/Label
+	    	    	if(!destination && par.mode == Parameter.Mode.name) {
+	    	    		s.append(var).append(".get()");
+	    	    	} else
+    	    		if(rightPart!=null) {
+	    				if(par.mode == Parameter.Mode.name) {
+	    					s.append(var+".put("+rightPart+')');
+	    				} else s.append(var).append('=').append(rightPart);
+    	    		} else {
+    	    	    	s.append(edIdentifierAccess(destination)); // Kind: Simple/Label    	    			
+    	    		}
 	    	}
 	    	return(s.toString());
 		
    	    case ContextFreeMethod:
     	    // Standard Library Procedure
    	    	if(Util.equals(identifier, "sourceline")) return(""+Global.sourceLineNumber);
-   	    	if(destination) return("_RESULT");
+   	    	if(destination) {
+   	    		return("_RESULT="+rightPart);
+   	    	}
    	    	return(CallProcedure.asStaticMethod(this,true));
    	    	
    	    case StaticMethod:
-   	    	if(destination) return("_RESULT");
+   	    	if(destination) {
+   	    		return("_RESULT="+rightPart);
+   	    	}
    	    	return(CallProcedure.asStaticMethod(this,false));
    	    	
    	    case MemberMethod:
-   	    	if(destination) return("_RESULT");
+   	    	if(destination) {
+   	    		return("_RESULT="+rightPart);
+   	    	}
    	    	return(CallProcedure.asNormalMethod(this));
    	    	
    	    case Procedure:
@@ -401,22 +452,34 @@ public final class Variable extends Expression {
    	    	if(destination) { // return("_RESULT");
    	    		ProcedureDeclaration proc=(ProcedureDeclaration)meaning.declaredAs;
    	    		ProcedureDeclaration found=Global.getCurrentScope().findProcedure(proc.identifier);
+   	   	    	String res=null;
    	    		if(found!=null) {
-    	    		if(found.blockLevel==Global.getCurrentScope().blockLevel) return("_RESULT");
-    	    		String cast=found.getJavaIdentifier();
-    	    		return("(("+cast+")"+found.edCTX()+")._RESULT");
-   	    		} else Util.error("Can't assign to procedure "+proc.identifier);
-    	    		    
+    	    		if(found.blockLevel==Global.getCurrentScope().blockLevel) {
+    	    			res="_RESULT";
+    	    		} else {
+    	    			String cast=found.getJavaIdentifier();
+    	    			res="(("+cast+")"+found.edCTX()+")._RESULT";
+    	    		}
+   	    		} else {
+   	    			Util.error("Can't assign to procedure "+proc.identifier);
+   	    			res=proc.identifier; // Error recovery
+   	    		}
+   	    		if(rightPart!=null) res=res+"="+rightPart;
+   	    		return(res);
+   	    	} else {
+   	    		ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
+   	    		if(procedure.myVirtual!=null)
+   	    			return(CallProcedure.virtual(this,procedure.myVirtual.virtualSpec,remotelyAccessed));
+   	    		else return(CallProcedure.normal(this));
    	    	}
-   	    	ProcedureDeclaration procedure = (ProcedureDeclaration) decl;
-   	    	if(procedure.myVirtual!=null)
-   	    		 return(CallProcedure.virtual(this,procedure.myVirtual.virtualSpec,remotelyAccessed));
-   	    	else return(CallProcedure.normal(this));
-	
+ 	
 		case SimpleVariableDeclaration:
-	    	return(edIdentifierAccess(destination));
+			if(rightPart!=null)
+		    	 return(edIdentifierAccess(destination)+'='+rightPart);
+			else return(edIdentifierAccess(destination));
 	
 		case VirtualSpecification:
+			if(rightPart!=null) Util.IERR("TEST DETTE -- Variable.editVariable: VirtualSpecification: rightPart="+rightPart);
 	    	VirtualSpecification virtual=(VirtualSpecification)decl;
 	    	return(CallProcedure.virtual(this,virtual,remotelyAccessed)); 
 	
@@ -434,7 +497,8 @@ public final class Variable extends Expression {
 	public String edIdentifierAccess(boolean destination) {
 		Declaration decl = meaning.declaredAs;
 		String id = decl.getJavaIdentifier();
-		return (edIdentifierAccess(id, destination));
+		String res=edIdentifierAccess(id, destination);
+		return(res);
 	}
 
 	private String edIdentifierAccess(String id,boolean destination) {
@@ -444,7 +508,9 @@ public final class Variable extends Expression {
 				return(constant.toJavaCode());
 			}
 		}
-		if(remotelyAccessed) return(id);
+		if(remotelyAccessed) {
+			return(id);
+		}
 		if(meaning.isConnected()) {
 			Expression inspectedVariable=((ConnectionBlock)meaning.declaredIn).getInspectedVariable();
 			if(meaning.foundBehindInvisible) {

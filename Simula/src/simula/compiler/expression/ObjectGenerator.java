@@ -139,8 +139,10 @@ public final class ObjectGenerator extends Expression {
 			if (formalParameter.mode == Parameter.Mode.value) {
 				if (par.type == Type.Text)
 					s.append(",copy(").append(par.toJavaCode()).append(')');
-				else if (formalParameter.kind == Parameter.Kind.Array)
-					s.append(",(").append(par.toJavaCode()).append(").COPY()");
+				else if (formalParameter.kind == Parameter.Kind.Array) {
+					String cast=par.type.toJavaArrayType();
+					s.append(",((").append(cast).append(')').append(par.toJavaCode()).append(").COPY()");
+				}
 				else
 					s.append(',').append(par.toJavaCode());
 			} else

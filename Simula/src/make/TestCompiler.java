@@ -83,7 +83,9 @@ public final class TestCompiler {
 		// *** SIMULA DESIGN EXAMPLES
 		// String name="/design/Test.sim";
 		// String name="/design/ActivationStatement.sim";
+		//	 String name="/design/ArrayAssignment.sim";
 		// String name="/design/ArrayAsParameters.sim";
+		// String name="/design/ArrayByValue.sim";
 		// String name="/design/CallProcedureRemote.sim";
 		// String name="/design/CallProcedureConnected.sim";
 		// String name="/design/ProcedureDeclaration.sim";
@@ -91,7 +93,7 @@ public final class TestCompiler {
 		// String name="/design/CallProcedureVirtual.sim";
 		// String name="/design/ProcedureByName.sim";
 		// String name="/design/ProcedureResult.sim";
-		 String name="/design/RandomDrawing.sim";
+		// String name="/design/RandomDrawing.sim";
 		// String name="/design/SwitchDeclaration.sim";
 		// String name="/design/SwitchStatement.sim";
 		// String name="/design/VirtualSwitch.sim";
@@ -164,7 +166,7 @@ public final class TestCompiler {
 //		String name="/FECTest/fecTest.sim";
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		// String name="/simple/adHoc00.sim";
+		 String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
@@ -236,7 +238,7 @@ public final class TestCompiler {
 //			//Option.TRACE_FIND=2;
 //			
 //			// Coder Trace Options
-//			Option.TRACE_CODING=false;true;
+//			Option.TRACE_CODING=true;
 			Option.GNERATE_LINE_CALLS=true;
 //			
 //			Option.TRACE_REPAIRING=true;
@@ -248,7 +250,7 @@ public final class TestCompiler {
 
 			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
-//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");

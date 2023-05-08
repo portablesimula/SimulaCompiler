@@ -13,7 +13,7 @@ RT_ErrorTest("  6 --- Test ArrayIndexOutOfBounds") begin
    text txt;
       
    facit(0):-"--- Testing ArrayIndexOutOfBounds";
-   facit(1):-"ExceptionHandler got error: ArrayIndexOutOfBoundsException: ArrayIndexOutOfBounds";
+   facit(1):-"ExceptionHandler got error: _SimulaRuntimeError: Array index(1) = 130 is outside bounds 0:100";
 
    DEFEXCEPTION(ExceptionHandler);
 

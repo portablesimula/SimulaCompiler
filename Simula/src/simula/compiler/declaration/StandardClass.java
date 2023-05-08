@@ -179,9 +179,9 @@ public final class StandardClass extends ClassDeclaration
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"negexp",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"Poisson",parameter("a",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
     ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"Erlang",parameter("a",Type.LongReal),parameter("b",Type.LongReal),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",Type.LongReal,Parameter.Kind.Array,1),parameter("B",Type.LongReal,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
-    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"histd",parameter("A",Type.Real,Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"discrete",parameter("A",new OverLoad(Type.Real,Type.LongReal),Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.LongReal,"linear",parameter("A",new OverLoad(Type.Real,Type.LongReal),Parameter.Kind.Array,1),parameter("B",new OverLoad(Type.Real,Type.LongReal),Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
+    ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"histd",parameter("A",new OverLoad(Type.Real,Type.LongReal),Parameter.Kind.Array,1),parameter("U",Parameter.Mode.name,Type.Integer));
 
 //    Calendar and timing utilities ........................... 9.10
 //    Procedures datetime, cputime, clocktime.

@@ -11,6 +11,8 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+
+import simula.compiler.utilities.Util;
 import simula.runtime._RT.Option;
 
 /**
@@ -702,9 +704,9 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param i
 	 * @return
 	 */
-	public static int lowerbound(final _ARRAY<?> a,final int i) {
+	public static int lowerbound(final _ABSTRACT_ARRAY a,final int i) {
 		try {
-			return (a.LB[i - 1]);
+			return (a.lowerBound(i - 1));
 		} catch (_SimulaRuntimeError e) {
 			throw new _SimulaRuntimeError("Wrong number of dimensions", e);
 		}
@@ -728,9 +730,9 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param i
 	 * @return
 	 */
-	public static int upperbound(final _ARRAY<?> a,final int i) {
+	public static int upperbound(final _ABSTRACT_ARRAY a,final int i) {
 		try {
-			return (a.UB[i - 1]);
+			return (a.upperBound(i - 1));
 		} catch (_SimulaRuntimeError e) {
 			throw new _SimulaRuntimeError("Wrong number of dimensions", e);
 		}
@@ -957,16 +959,16 @@ public class _ENVIRONMENT extends _RTObject {
 	 * It is defined as the smallest i such that A(i) > u, where u is a basic
 	 * drawing and A(upperbound(A,1)+1) = 1.
 	 */
-	public static int discrete(final _ARRAY<double[]> A, final _NAME<Integer> U) {
+	public static int discrete(final _REALTYPE_ARRAY A, final _NAME<Integer> U) {
 		int result;
-		int lb = A.LB[0];
-		int ub = A.UB[0];
+		int lb = A.lowerBound(0);
+		int ub = A.upperBound(0);
 		double v = _RandomDrawing.basicDRAW(U);
 		int nelt = ub - lb + 1;
 		result = ub + 1;
 		int j = 0;
 		do {
-			if (A.Elt[j] > v) {
+			if (A.getRealTypeELEMENT(j) > v) {
 				result = lb + j;
 				nelt = 0;
 			}
@@ -1006,35 +1008,31 @@ public class _ENVIRONMENT extends _RTObject {
 	 * 4. if D = 0: linear = B(i-1) if D <> 0: linear = B(i-1) + (B(i) -
 	 * B(i-1))*(u-A(i-1))/D
 	 */
-	public static double linear(final _ARRAY<double[]> A,final _ARRAY<double[]> B,final _NAME<Integer> U) {
+	public static double linear(final _REALTYPE_ARRAY A,final _REALTYPE_ARRAY B,final _NAME<Integer> U) {
 		double res;
-
-		int lb = A.LB[0];
-		int ub = A.UB[0];
-
-		int nelt = ub - lb + 1;
-		if (nelt != (B.UB[0] - B.LB[0] + 1))
+		int nelt=A.SIZE;
+		if(nelt != B.SIZE)
 			throw new _SimulaRuntimeError("Linear(A,B,U): The number of elements in A and B are different.");
 		double v = _RandomDrawing.basicDRAW(U);
 		int i = 0;
-		while (A.Elt[i] < v)
+		while (A.getRealTypeELEMENT(i) < v)
 			i = i + 1;
 		if (i == 0) {
-			if (v == 0.0 && A.Elt[i] == 0.0)
+			if (v == 0.0 && A.getRealTypeELEMENT(i) == 0.0)
 				i = 1;
 			else
 				throw new _SimulaRuntimeError("Linear(A,B,U): The array a does not satisfy the stated assumptions.");
 		} else if (i >= nelt)
 			throw new _SimulaRuntimeError("Linear(A,B,U): The array a does not satisfy the stated assumptions.");
 
-		double a_val = A.Elt[i];
-		double a_lag = A.Elt[i - 1];
+		double a_val = A.getRealTypeELEMENT(i);
+		double a_lag = A.getRealTypeELEMENT(i - 1);
 		double a_dif = a_val - a_lag;
 		if (a_dif == 0.0)
-			res = B.Elt[i - 1];
+			res = B.getRealTypeELEMENT(i - 1);
 		else {
-			double b_val = B.Elt[i];
-			double b_lag = B.Elt[i - 1];
+			double b_val = B.getRealTypeELEMENT(i);
+			double b_lag = B.getRealTypeELEMENT(i - 1);
 			res = (((b_val - b_lag) / a_dif) * (v - a_lag)) + b_lag;
 		}
 		return (res);
@@ -1057,11 +1055,11 @@ public class _ENVIRONMENT extends _RTObject {
 	 * NOTE: The name specified parameter 'U' is not used. Instead, the default seed
 	 * in the Java Library is used.
 	 * 
-	 * @param A
+	 * @param rA
 	 * @param U
 	 * @return
 	 */
-	public static int histd(final _ARRAY<float[]> A, final _NAME<Integer> U) {
+	public static int histd(final _REALTYPE_ARRAY rA, final _NAME<Integer> U) {
 		int result = 0;
 		int j; // Array index.
 		int nelt; // Number of array elements.
@@ -1069,13 +1067,12 @@ public class _ENVIRONMENT extends _RTObject {
 		double wsum; // Weighted sum of all array element values.
 		double tmp; // Temporary variabel.
 
-		int lb = A.LB[0];
-		int ub = A.UB[0];
-		nelt = ub - lb + 1;
+		int lb = rA.lowerBound(0);
+		nelt = rA.SIZE;
 		j = 0;
 		sum = 0.0;
 		do {
-			tmp = A.Elt[j];
+			tmp = rA.getRealTypeELEMENT(j);
 			if (tmp < 0.0)
 				throw new _SimulaRuntimeError("Histd(a,u):  An element of the array a is negative");
 			sum = sum + tmp;
@@ -1085,7 +1082,7 @@ public class _ENVIRONMENT extends _RTObject {
 		j = 0;
 		sum = 0.0;
 		do {
-			sum = sum + A.Elt[j];
+			sum = sum + rA.getRealTypeELEMENT(j);
 			if (sum >= wsum) {
 				result = lb + j;
 				nelt = 0;
@@ -1094,7 +1091,6 @@ public class _ENVIRONMENT extends _RTObject {
 		} while (j < nelt);
 		return (result);
 	}
-
 	
 	
 	
@@ -1172,29 +1168,22 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param c
 	 * @param d
 	 */
-	public static void histo(final _ARRAY<?> A,final _ARRAY<?> B,final float c,final float d) {
-		if(A.nDim()!=1) 
-			throw new _SimulaRuntimeError("histo(A,B,c,d) - A is not one-dimensional");
-		if(B.nDim()!=1) 
-			throw new _SimulaRuntimeError("histo(A,B,c,d) - B is not one-dimensional");
-		int nelt = B.UB[0] - B.LB[0] + 1;
-		if (nelt >= (A.UB[0] - A.LB[0] + 1))
-			throw new _SimulaRuntimeError("histo(A,B,c,d) - A'length <= B'length");
-		try {
-			@SuppressWarnings("unchecked")
-			_ARRAY<float[]> AA=(_ARRAY<float[]>)A;
-			@SuppressWarnings("unchecked")
-			_ARRAY<float[]> BB=(_ARRAY<float[]>)B;
+	public static void histo(final _FLOAT_ARRAY A,final _FLOAT_ARRAY B,final float c,final float d) {
+		if(A.nDim()!=1) throw new _SimulaRuntimeError("histo(A,B,c,d) - A is not one-dimensional");
+		if(B.nDim()!=1) throw new _SimulaRuntimeError("histo(A,B,c,d) - B is not one-dimensional");
+		int nelt = B.SIZE;
+		if (nelt >= A.SIZE) throw new _SimulaRuntimeError("histo(A,B,c,d) - A'length <= B'length");
+//		try {
 			int i=0;
 			EX: do {
-				if (BB.Elt[i] >= c)
+				if (B.ELTS[i] >= c)
 					break EX;
 				i = i + 1;
 			} while (i < nelt);
-			AA.Elt[i] = AA.Elt[i] + d;
-		} catch(Exception e) { 	
-			throw new _SimulaRuntimeError("histo(A,B,c,d) - Internal Error",e);
-		}
+			A.ELTS[i] = A.ELTS[i] + d;
+//		} catch(Exception e) { 	
+//			throw new _SimulaRuntimeError("histo(A,B,c,d) - Internal Error",e);
+//		}
 	}
 
 	// **********************************************************************

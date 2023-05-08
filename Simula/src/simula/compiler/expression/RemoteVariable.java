@@ -159,24 +159,10 @@ public final class RemoteVariable extends Expression {
 	// *** CODE: doAccessRemoteArray
 	// ***********************************************************************
 	private String doAccessRemoteArray(final Expression beforeDot, final Variable array) {
-		StringBuilder s = new StringBuilder();
-		int nDim = 0;
-		// Generate: obj.M.A[6-obj.M.LB[1]];
 		String obj = beforeDot.toJavaCode();
-		String remoteIdent = obj + '.' + array.edIdentifierAccess(true);
-		StringBuilder ixs = new StringBuilder();
-		String dimBrackets = "";
-		for (Expression ix : array.checkedParams) {
-			String index = "[" + ix.toJavaCode() + "-" + remoteIdent + ".LB[" + (nDim++) + "]]";
-			ixs.append(index);
-			dimBrackets = dimBrackets + "[]";
-		}
-		String eltType = type.toJavaType();
-		String cast = "_ARRAY<" + eltType + dimBrackets + ">";
-		String castedVar = "((" + cast + ")" + remoteIdent + ")";
-		s.append(castedVar).append(".Elt").append(ixs);
-
-		return (s.toString());
+		String cast=array.type.toJavaArrayType();
+		String var="(("+cast+')'+obj+'.'+array.edIdentifierAccess(false)+')';
+		return(array.doGetELEMENT(var));
 	}
 
 	@Override

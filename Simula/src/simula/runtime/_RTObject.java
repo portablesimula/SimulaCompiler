@@ -10,6 +10,8 @@ package simula.runtime;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
+import simula.compiler.declaration.ArrayDeclaration;
+
 /**
  * 
  * @author Øystein Myhre Andersen
@@ -89,91 +91,139 @@ public abstract class _RTObject {
 	}
 
 	// ************************************************************
-	// *** ARRAY BOUND CHECKING
-	// ************************************************************
-	public void _BOUND_CHECK(final int lb,final int ub) {
-		if (lb > ub)
-			throw new _SimulaRuntimeError("ARRAY(" + lb + ':' + ub + ") - BOUND-CHECK FAILED");
-	}
-
-	// ************************************************************
 	// *** ARRAY OBJECTS
 	// ************************************************************
-	static final String arrayError = "Illegal use of array";
 
-	public int[] _IX(final int... ix) {
-		return (ix);
-	}
-
-	public final class _ARRAY<T> {
-		final public T Elt;
-		final public int[] LB;
-		final public int[] UB;
-
-		public _ARRAY(final T Elt,final int[] LB,final int[] UB) {
-			this.Elt = Elt;
+	public final class _BOUNDS {
+		final public int LB, SIZE;
+		
+		public _BOUNDS(final int LB,final int UB) {
+			if(LB > UB)
+				throw new _SimulaRuntimeError("Lower bound("+LB+") > upper bound("+UB+")");
 			this.LB = LB;
-			this.UB = UB;
-		}
-
-		public _ARRAY<T> COPY() {
-			T CPY = copyMultiArray(Elt);
-			_ARRAY<T> to = new _ARRAY<T>(CPY, LB, UB);
-			return (to);
-		}
-
-		public int nDim() {
-			return (LB.length);
-		}
-
-		public int size() {
-			int s = 1;
-			int nDim = LB.length;
-			for (int i = 0; i < nDim; i++) {
-				int length = UB[i] - LB[i] + 1;
-				s = s * length;
-			}
-			return (s);
+			SIZE = UB - LB + 1;
 		}
 
 		public String toString() {
-			int nDim = LB.length;
-			StringBuilder s = new StringBuilder();
-			if (nDim == 1) {
-				s.append("_ARRAY(").append(LB[0]).append(':').append(UB[0]).append("), ");
-				int length = UB[0] - LB[0] + 1;
-				s.append("LENGTH=").append(length);
-			}
-			return (s.toString());
+			return (""+LB+':'+(LB+SIZE-1));
 		}
 	}
-
-	// *******************************************************************************
-	// *** Utility: Multidimensional Array Copy
-	// Taken from: https://coderanch.com/t/378421/java/Multidimensional-array-copy
-	// *******************************************************************************
-	public static <T> T copyMultiArray(final T arr) {
-		return (T) copyMultiArrayObject(arr);
+	
+	public final class _INT_ARRAY extends _ABSTRACT_ARRAY {
+		final private int[] ELTS;
+		public _INT_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS); ELTS=new int[SIZE]; }
+		public int putELEMENT(int ix,int val) {
+			ELTS[ix]=val; return(val); }
+		public int getELEMENT(int... x) {
+			return(ELTS[index(x)]); }
+		public _INT_ARRAY COPY() {
+			_INT_ARRAY copy = new _INT_ARRAY(BOUNDS);
+			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
+			return(copy); }
+	}
+	
+	public final class _CHAR_ARRAY extends _ABSTRACT_ARRAY {
+		final private char[] ELTS;
+		public _CHAR_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS); ELTS=new char[SIZE]; }
+		public char putELEMENT(int ix,char val) {
+			ELTS[ix]=val; return(val); }
+		public char getELEMENT(int... x) {
+			return(ELTS[index(x)]); }
+		public _CHAR_ARRAY COPY() {
+			_CHAR_ARRAY copy = new _CHAR_ARRAY(BOUNDS);
+			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
+			return(copy); }
+	}
+	
+	public final class _BOOL_ARRAY extends _ABSTRACT_ARRAY {
+		final private boolean[] ELTS;
+		public _BOOL_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS); ELTS=new boolean[SIZE]; }
+		public boolean putELEMENT(int ix,boolean val) {
+			ELTS[ix]=val; return(val); }
+		public boolean getELEMENT(int... x) {
+			return(ELTS[index(x)]); }
+		public _BOOL_ARRAY COPY() {
+			_BOOL_ARRAY copy = new _BOOL_ARRAY(BOUNDS);
+			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
+			return(copy); }
+	}
+	
+	public abstract class _REALTYPE_ARRAY extends _ABSTRACT_ARRAY {
+		public _REALTYPE_ARRAY(final _BOUNDS... BOUNDS) { super(BOUNDS); }
+		public abstract double getRealTypeELEMENT(int i);
+	}
+	
+	public final class _FLOAT_ARRAY extends _REALTYPE_ARRAY {
+		final float[] ELTS;
+		public _FLOAT_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS); ELTS=new float[SIZE]; }
+		public float putELEMENT(int ix,float val) {
+			ELTS[ix]=val; return(val); }
+		public float getELEMENT(int... x) {
+			return(ELTS[index(x)]); }
+		public _FLOAT_ARRAY COPY() {
+			_FLOAT_ARRAY copy = new _FLOAT_ARRAY(BOUNDS);
+			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
+			return(copy); }
+		@Override
+		public double getRealTypeELEMENT(int i) { return(ELTS[i]); }
+	}
+	
+	public final class _DOUBLE_ARRAY extends _REALTYPE_ARRAY {
+		final double[] ELTS;
+		public _DOUBLE_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS); ELTS=new double[SIZE]; }
+		public double putELEMENT(int ix,double val) {
+			ELTS[ix]=val; return(val); }
+		public double getELEMENT(int... x) {
+			return(ELTS[index(x)]); }
+		public _DOUBLE_ARRAY COPY() {
+			_DOUBLE_ARRAY copy = new _DOUBLE_ARRAY(BOUNDS);
+			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
+			return(copy); }
+		@Override
+		public double getRealTypeELEMENT(int i) { return(ELTS[i]); }
+	}
+	
+	public final class _TEXT_ARRAY extends _ABSTRACT_ARRAY {
+		final private _TXT[] ELTS;
+		public _TEXT_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS); ELTS=new _TXT[SIZE]; }
+		public _TXT putELEMENT(int ix,_TXT val) {
+			ELTS[ix]=val; return(val); }
+		public _TXT getELEMENT(int... x) {
+			return(ELTS[index(x)]); }
+		public _TEXT_ARRAY COPY() {
+			_TEXT_ARRAY copy = new _TEXT_ARRAY(BOUNDS);
+			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
+			return(copy); }
+	}
+	
+	public final class _REF_ARRAY<T> extends _ABSTRACT_ARRAY {
+		final private _RTObject[] ELTS;
+		public _REF_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS);
+			ELTS=new _RTObject[SIZE]; }
+		public T putELEMENT(int ix,T val,int... x) {
+			ELTS[ix]=(_RTObject) val;
+			return(val);
+		}
+		public T getELEMENT(int... x) {
+			return( (T)ELTS[index(x)]);
+		}
+		public  _REF_ARRAY<T> COPY() {
+			 _REF_ARRAY<T> copy = new  _REF_ARRAY<T>(BOUNDS);
+			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
+			return(copy); }
 	}
 
-	private static Object copyMultiArrayObject(final Object arr) {
-		Class<?> clazz = arr.getClass();
-		if (!clazz.isArray())
-			throw new IllegalArgumentException("not an array: " + arr);
-		Class<?> componentType = clazz.getComponentType();
-		int length = Array.getLength(arr);
-		Object copy = Array.newInstance(componentType, length);
-		if (componentType.isArray())
-			for (int i = 0; i < length; i++)
-				Array.set(copy, i, copyMultiArrayObject(Array.get(arr, i)));
-		else
-			System.arraycopy(arr, 0, copy, 0, length);
-		return copy;
-	}
 
-	public _ARRAY<?> arrayValue(final Object par) {
-		if (par instanceof _NAME<?> arr) return((_ARRAY<?>)arr.get());
-		return ((_ARRAY<?>) par);
+	public _ABSTRACT_ARRAY arrayValue(final Object par) {
+		if (par instanceof _NAME<?> arr) return((_ABSTRACT_ARRAY)arr.get());
+		return ((_ABSTRACT_ARRAY) par);
 	}
 
 	public _PRCQNT procValue(final Object par) {

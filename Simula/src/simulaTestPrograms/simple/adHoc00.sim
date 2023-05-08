@@ -1,11 +1,34 @@
 
-begin
-
-	class A;;
-	procedure P;;
+ 
+begin  
+ 
+	integer U1, KK; 
+	real c, d;
 	
-	P();
-	new A();
-	
-end of program;
-
+	long
+	real array LA(1:9); 
+	real array RA(1:9); 
+ 	
+	long
+	real array LB(1:9); 
+	real array RB(1:9); 
+      
+	U1:= 1566259315; 
+      
+	RA(1):= 59; RA(2):= 19; RA(3):= 13; 
+	RA(4):=  4; RA(5):=  1; RA(6):=  1; 
+	RA(7):=  1; RA(8):=  1; RA(9):=  1; 
+         
+	KK:= histd(RA, U1); 
+	KK:= histd(LA, U1); 
+         
+	KK:= discrete(RA, U1); 
+	KK:= discrete(LA, U1); 
+         
+	KK:= linear(RA, RB, U1); 
+	KK:= linear(RA, LB, U1); 
+	KK:= linear(LA, RB, U1); 
+	KK:= linear(LA, LB, U1); 
+       
+    histo(RA,RB,c,d);
+end; 

@@ -1,0 +1,17 @@
+% ArrayAssigmnent
+
+begin 
+	integer i, j;
+	
+	begin
+		integer array A, B (i-3:j+3);
+    	integer i;
+    
+    		for i := 3 step -1 until -3 do begin
+    			outtext("  i = "); outint(i,0);	outtext("    -i = "); outint(-i,0); outimage;
+%        		A (-i) := B (i) := i;
+        		A (-i) := i;
+%        		B (i) := i;
+        	end;
+    end;
+end;

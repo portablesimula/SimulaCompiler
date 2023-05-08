@@ -477,14 +477,12 @@ public final class CallProcedure {
 	// ********************************************************************
 	private static void doArrayParameter(final StringBuilder s,final Type formalType,final Parameter.Mode mode,final Expression actualParameter) {
 		if(mode==Parameter.Mode.value) {
-		    Util.warning("Array-Parameter by value is not (fully) implemented");
-		    s.append(actualParameter.toJavaCode()).append(".COPY()");
+			s.append(actualParameter.toJavaCode()).append(".COPY()");
 		}
 		else if(mode==Parameter.Mode.name) {
-		    String arrObj="_ARRAY<?>";
-			s.append("new _NAME<"+arrObj+">()");
-			s.append("{ public "+arrObj+" get() { return("+actualParameter.toJavaCode()+"); }");
-			s.append(" }");
+			s.append("new _NAME<_ABSTRACT_ARRAY>()");
+			s.append("{ public _ABSTRACT_ARRAY get() { return("+actualParameter.toJavaCode()+"); }");
+			s.append(" }");	
 		} else s.append(actualParameter.toJavaCode());
 	}
 	

@@ -1,0 +1,10 @@
+% ArrayByValue
+
+begin integer array A(1:17); 
+   procedure p(A); value A; integer array A; 
+   begin
+   end; 
+    
+   p(A); 
+    
+end;

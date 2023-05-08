@@ -234,6 +234,26 @@ public class Type implements Externalizable {
 		return(this.toString());
 	}
 	  
+		public String toJavaArrayType() {
+			//if(key==null) return("void");
+		    //if(this.equals(Array)) return("array"); // ARRAY Elements 
+//			if(key.getKeyWord()==KeyWord.REF) { return("_RTOBJECT_ARRAY");
+			if(key.getKeyWord()==KeyWord.REF) {
+				String rtQual=getJavaRefIdent();
+				return("_REF_ARRAY<"+rtQual+">");
+			}
+			if(this.equals(LongReal)) return("_DOUBLE_ARRAY");
+			if(this.equals(Real)) return("_FLOAT_ARRAY");
+			if(this.equals(Integer)) return("_INT_ARRAY");
+			if(this.equals(Boolean)) return("_BOOL_ARRAY");
+			if(this.equals(Character)) return("_CHAR_ARRAY");
+			if(this.equals(Text)) return("_TEXT_ARRAY");
+//			if(this.equals(Procedure)) return("_PRCQNT");
+//			if(this.equals(Label)) return("_LABQNT");
+			Util.IERR("");
+			return(this.toString());
+		}
+	  
 	@Override
 	public String toString() {
 		if(key==null) return("null");

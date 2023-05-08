@@ -125,10 +125,10 @@ public final class AssignmentOperation extends Expression {
 					Declaration decl = varAfterDot.meaning.declaredAs;
 					Expression beforeDot = rem.obj;
 					if (decl instanceof ArrayDeclaration)
-						return (assignToRemoteArray(beforeDot, varAfterDot, rhs));
+						return (doAccessRemoteArray(beforeDot, varAfterDot, rhs.toJavaCode()));
 					else if (decl instanceof Parameter par) {
 						if (par.kind == Parameter.Kind.Array)
-							return (assignToRemoteArray(beforeDot, varAfterDot, rhs));
+							return (doAccessRemoteArray(beforeDot, varAfterDot, rhs.toJavaCode()));
 					}
 
 				}
@@ -138,37 +138,13 @@ public final class AssignmentOperation extends Expression {
 		return(s.toString());
 	}
   
-  
-	// ***********************************************************************
-	// *** CODE: assignToRemoteArray
-	// ***********************************************************************
-	private String assignToRemoteArray(final Expression beforeDot, final Variable array, final Expression rhs) {
-		String lhs = doAccessRemoteArray(beforeDot, array);
-		String asg = lhs + '=' + rhs.toJavaCode();
-		return (asg);
-	}
-  
 	// ***********************************************************************
 	// *** CODE: doAccessRemoteArray
 	// ***********************************************************************
-	private String doAccessRemoteArray(final Expression beforeDot, final Variable array) {
-		StringBuilder s = new StringBuilder();
-		int nDim = 0;
-		// Generate: obj.M.A[6-obj.M.LB[1]];
+	private String doAccessRemoteArray(final Expression beforeDot, final Variable array, final String rightPart) {
 		String obj = beforeDot.toJavaCode();
 		String remoteIdent = obj + '.' + array.edIdentifierAccess(true);
-		StringBuilder ixs = new StringBuilder();
-		String dimBrackets = "";
-		for (Expression ix : array.checkedParams) {
-			String index = "[" + ix.toJavaCode() + "-" + remoteIdent + ".LB[" + (nDim++) + "]]";
-			ixs.append(index);
-			dimBrackets = dimBrackets + "[]";
-		}
-		String eltType = type.toJavaType();
-		String cast = "_ARRAY<" + eltType + dimBrackets + ">";
-		String castedVar = "((" + cast + ")" + remoteIdent + ")";
-		s.append(castedVar).append(".Elt").append(ixs);
-		return (s.toString());
+		return(array.doPutELEMENT(remoteIdent,rightPart));
 	}
 
 	@Override

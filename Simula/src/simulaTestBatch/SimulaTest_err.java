@@ -1,6 +1,6 @@
 // JavaLine 1 <== SourceLine 10
 package simulaTestBatch;
-// Simula-2.0 Compiled at Mon Aug 22 09:53:21 CEST 2022
+// Simula-2.0 Compiled at Sat May 06 11:02:03 CEST 2023
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SimulaTest_err extends _PROC {
@@ -17,7 +17,7 @@ public final class SimulaTest_err extends _PROC {
                 default: throw new _SimulaRuntimeError("Too many parameters");
             }
         }
-        catch(ClassCastException e) { throw new _SimulaRuntimeError("Wrong type of parameter: "+param,e);}
+    catch(ClassCastException e) { throw new _SimulaRuntimeError("Wrong type of parameter: "+param,e);}
         return(this);
     }
     // Constructor in case of Formal/Virtual Procedure Call
@@ -35,17 +35,17 @@ public final class SimulaTest_err extends _PROC {
     }
     // Procedure Statements
     public SimulaTest_err _STM() {
-        // JavaLine 38 <== SourceLine 11
+        _RT._LINE("Procedure SimulaTest.err",11); // JavaLine 38 <== SourceLine 11
         sysout().setpos(1);
         ;
-        // JavaLine 41 <== SourceLine 12
+        _RT._LINE("Procedure SimulaTest.err",12); // JavaLine 41 <== SourceLine 12
         sysout().outtext(new _TXT("*** error: in test "));
         ;
         sysout().outtext(p_t);
         ;
         sysout().outimage();
         ;
-        // JavaLine 48 <== SourceLine 13
+        _RT._LINE("Procedure SimulaTest.err",13); // JavaLine 48 <== SourceLine 13
         ((SimulaTest)(_CUR._SL)).found_error=true;
         ;
         ((SimulaTest)(_CUR._SL)).nFailed=Math.addExact(((SimulaTest)(_CUR._SL)).nFailed,1);
@@ -53,5 +53,5 @@ public final class SimulaTest_err extends _PROC {
         EBLK();
         return(this);
     } // End of Procedure BODY
-    public static _PROGINFO INFO_=new _PROGINFO("SimulaTest.sim","Procedure err",1,10,38,11,41,12,48,13,55,14);
+    public static _PROGINFO _INFO=new _PROGINFO("SimulaTest.sim","Procedure err",1,10,38,11,41,12,48,13,55,14);
 } // End of Procedure

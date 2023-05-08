@@ -8,7 +8,7 @@
 % ==============================================================================
 external class SimulaTest;
 
-SimulaTest(62,"--- Test transmission by name of reference types.") begin
+SimulaTest(63,"--- Test transmission by name of reference types.") begin
 
    class A;
    begin

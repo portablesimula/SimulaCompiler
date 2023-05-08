@@ -186,14 +186,11 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	Global.sourceLineNumber=lineNumber;
     	ASSERT_SEMANTICS_CHECKED(this);
     	// --------------------------------------------------------------------
-    	// public _ARRAY<float[]> Tab=null;
+    	// public _FLOAT_GARRAY Tab=null;
     	// --------------------------------------------------------------------
-    	String arrType=this.type.toJavaType();
-    	int nDim=boundPairList.size();
-    	for(int i=0;i<nDim;i++) arrType=arrType+"[]";
+    	String arrType=this.type.toJavaArrayType();
     	String arrayIdent=this.getJavaIdentifier();
-    	arrType="_ARRAY<"+arrType+'>';
-    	GeneratedJavaClass.code("public "+arrType+""+arrayIdent+"=null;");
+    	GeneratedJavaClass.code("public "+arrType+" "+arrayIdent+"=null;");
 	}
 
 	@Override
@@ -203,29 +200,20 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	// --------------------------------------------------------------------
     	// integer array A(1:4,4:6,6:12);
     	// --------------------------------------------------------------------
-    	// int[] A_LB=new int[3]; int[] A_UB=new int[3];
-    	// A_LB[0]=1; A_UB[0]=4;
-    	// A_LB[1]=4; A_UB[1]=6;
-    	// A_LB[2]=6; A_UB[2]=12;
-    	// A=new _ARRAY<int[][][]>(new int[A_UB[0]-A_LB[0]+1][A_UB[1]-A_LB[1]+1][A_UB[2]-A_LB[2]+1],A_LB,A_UB);
+    	// A=new _INT_ARRAY(new _BOUNDS(1,4),new _BOUNDS(4,6),new _BOUNDS(6,7));
     	// --------------------------------------------------------------------
     	String arrayIdent=this.getJavaIdentifier();
-    	String arrType=this.type.toJavaType();
-    	String arrGen=arrType;
-    	int nDim=boundPairList.size();
-    	GeneratedJavaClass.code("int[] "+arrayIdent+"_LB=new int["+nDim+"]; int[] "+arrayIdent+"_UB=new int["+nDim+"];");
-    	int n=0;
+		String arrType=this.type.toJavaArrayType();
+    	StringBuilder sb=new StringBuilder();
+    	sb.append(arrayIdent).append("=new "+arrType);
+    	char sep='(';
     	for(BoundPair boundPair:boundPairList) {	
-    		arrType=arrType+"[]";
-    		String LBid=arrayIdent+"_LB["+n+"]";
-    		String UBid=arrayIdent+"_UB["+(n++)+"]";
-    		String size=UBid+"-"+LBid+"+1";
-    		arrGen=arrGen+'['+size+']';
-    		GeneratedJavaClass.code(""+LBid+'='+boundPair.LB.toJavaCode()+"; "+UBid+'='+boundPair.UB.toJavaCode()+';');
-    		GeneratedJavaClass.code("_BOUND_CHECK("+LBid+','+UBid+");");
-    	}	
-    	arrType="_ARRAY<"+arrType+'>';
-    	GeneratedJavaClass.code(""+arrayIdent+"=new "+arrType+"(new "+arrGen+","+arrayIdent+"_LB,"+arrayIdent+"_UB);");
+    		sb.append(sep); sep=',';
+    		sb.append("new _BOUNDS(").append(boundPair.LB.toJavaCode())
+    		           .append(',').append(boundPair.UB.toJavaCode()).append(')');
+    	}
+    	sb.append(");");
+    	GeneratedJavaClass.code(sb.toString());
 	}
 
 	@Override

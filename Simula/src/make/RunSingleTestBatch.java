@@ -78,8 +78,8 @@ public final class RunSingleTestBatch {
 //		names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
 //
-		names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
-		names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
+//		names.add("p41.sim");      // OK:  Precompile this for Simtst 41.
+//		names.add("simtst41.sim"); // OK:  Name parameter in external procedure.
 //		names.add("simtst42.sim"); // OK:  Compute "n-fac", using iteration within the procedure.
 //		names.add("simtst43.sim"); // OK:  Compute "n-fac", using recursion.
 //		names.add("simtst44.sim"); // OK:  Test text procedure.
@@ -98,7 +98,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst56.sim"); // OK:  Test virtual procedures.
 //		names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 //		names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
-//		names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
+		names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
 //		names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 //
 //		names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.

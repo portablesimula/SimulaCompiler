@@ -4,7 +4,7 @@ begin
   integer j;
   boolean c;
   
-  Procedure callFP(F); integer procedure F;
+  procedure callFP(F); integer procedure F;
   begin
      array B(1:50);
      real r; integer i;
@@ -13,17 +13,17 @@ begin
   end;
   
   
-  integer Procedure P(p1); value p1; array p1;
+  integer procedure P(p1); value p1; array p1;
   begin
     P:=p1(4);
   end;
   
-  integer Procedure Q(p1); name p1; array p1;
+  integer procedure Q(p1); name p1; array p1;
   begin
     P:=p1(4);
   end;
   
-  integer Procedure Q2(p1); array p1;
+  integer procedure Q2(p1); array p1;
   begin
     P:=p1(4);
   end;
