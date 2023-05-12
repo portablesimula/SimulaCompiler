@@ -16,8 +16,8 @@ import simula.compiler.utilities.Util;
 public abstract class DeclarationScope extends Declaration {
 	
 	public int sourceBlockLevel; // Set during Parsing
-	protected static int currentBlockLevel = 0; // Used during doChecking
-	public int blockLevel; // Set during doChecking
+	protected static int currentRTBlockLevel = 0; // Runtime  Block level - Used during doChecking
+	public int rtBlockLevel; // Set during doChecking
 	public boolean hasLocalClasses = false;
 	public DeclarationList declarationList;// = new DeclarationList();
 	public Vector<LabelDeclaration> labelList = new Vector<LabelDeclaration>();
@@ -37,8 +37,8 @@ public abstract class DeclarationScope extends Declaration {
 	// *** Utility: scopeID
 	// ***********************************************************************************************
 	public String scopeID() {
-//		if(declaredIn!=null) return(declaredIn.scopeID()+'.'+identifier+"["+blockLevel+"]");
-		if(blockLevel>1) return(declaredIn.scopeID()+'.'+identifier);
+//		if(declaredIn!=null) return(declaredIn.scopeID()+'.'+identifier+"["+rtBlockLevel+"]");
+		if(rtBlockLevel>1) return(declaredIn.scopeID()+'.'+identifier);
 		return(identifier);
 	}
 
@@ -95,9 +95,9 @@ public abstract class DeclarationScope extends Declaration {
     // *** Coding Utility: edCTX
     // ***********************************************************************************************
     public String edCTX() {
-    	if(blockLevel==0) return("CTX_");
-    	int curLevel=Global.getCurrentScope().blockLevel;
-        int ctxDiff=curLevel-blockLevel;
+    	if(rtBlockLevel==0) return("CTX_");
+    	int curLevel=Global.getCurrentScope().rtBlockLevel;
+        int ctxDiff=curLevel-rtBlockLevel;
         return(edCTX(ctxDiff));
         
     }

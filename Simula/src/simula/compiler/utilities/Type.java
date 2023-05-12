@@ -14,6 +14,7 @@ import java.io.ObjectOutput;
 import java.util.Set;
 
 import simula.compiler.declaration.ClassDeclaration;
+import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 
@@ -29,7 +30,8 @@ public class Type implements Externalizable {
 	public static final Type Procedure = new Type(new Token(KeyWord.PROCEDURE));
 	public static final Type Label = new Type(new Token(KeyWord.LABEL));
 	
-	protected ClassDeclaration qual; // Qual in case of ref(Qual) type; Set by doChecking below
+	protected ClassDeclaration qual;   // Qual in case of ref(Qual) type; Set by doChecking below
+	public ConnectionBlock declaredIn; // Qual'scope in case of ref(Qual) type; Set by Variable'doChecking
 
 	public ClassDeclaration getQual() {
 		Util.ASSERT(CHECKED, "Type is not Checked");
@@ -49,6 +51,12 @@ public class Type implements Externalizable {
 		if(Option.CASE_SENSITIVE)
 			 this.key=new Token(KeyWord.REF,className);
 		else this.key=new Token(KeyWord.REF,className.toUpperCase());
+	}
+	
+	public Type(Type tp,ConnectionBlock declaredIn) {
+		this.key=tp.key;
+		this.qual=tp.qual;
+		this.declaredIn=declaredIn;
 	}
 	
 	public static void printTypeMap(String title) {
@@ -105,12 +113,12 @@ public class Type implements Externalizable {
 		return(getRefIdent()!=null);
 	}
   
-	public boolean equals(final Object other) {
-		Token thisKey=this.key;  
-		Token otherKey=((Type)other).key;  
-		return(thisKey.equals(otherKey));
+	public boolean equals(final Object obj) {
+		Type other=(Type) obj;
+		return(this.key.equals(other.key));
+//		if(!this.key.equals(other.key)) return(false);
+//		return(true);
 	}
-  
   
 	/**
      * Checks if a type-conversion is legal.
@@ -257,7 +265,11 @@ public class Type implements Externalizable {
 	@Override
 	public String toString() {
 		if(key==null) return("null");
-		if(key.getKeyWord()==KeyWord.REF) return("ref("+key.getValue()+')');
+		if(key.getKeyWord()==KeyWord.REF) {
+			if(declaredIn==null) return("ref("+key.getValue()+')');
+//			return("ref("+declaredIn.identifier+"'"+key.getValue()+')');
+			return("ref("+declaredIn.inspectedVariable+"'"+key.getValue()+')');
+		}
 		if(this.equals(LongReal)) return("LONG REAL"); 
 		return(key.toString());
 	}
@@ -289,6 +301,7 @@ public class Type implements Externalizable {
 //		if(AttributeOutput.USE_ATTRIBUTE_IO) Util.IERR("");
 		oupt.writeObject(key);
 		oupt.writeObject(qual);
+		oupt.writeObject(declaredIn);
 	}
 
 	@Override
@@ -296,6 +309,7 @@ public class Type implements Externalizable {
 //		if(AttributeOutput.USE_ATTRIBUTE_IO) Util.IERR("");
 		key=(Token)inpt.readObject();
 		qual=(ClassDeclaration) inpt.readObject();
+		declaredIn=(ConnectionBlock) inpt.readObject();
 	}
 	
 }

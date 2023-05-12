@@ -73,8 +73,8 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
-		currentBlockLevel++;
-		blockLevel = currentBlockLevel;
+		currentRTBlockLevel++;
+		rtBlockLevel = currentRTBlockLevel;
 		if (blockPrefix != null) {
 			Global.enterScope(this.declaredIn);
 			blockPrefix.doChecking();
@@ -92,7 +92,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		for (Statement stm : statements) stm.doChecking();
 		doCheckLabelList(this.getPrefixClass());
 		Global.exitScope();
-		currentBlockLevel--;
+		currentRTBlockLevel--;
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -112,7 +112,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
 		else line = line + " extends _BASICIO";
 		GeneratedJavaClass.code(line + " {");
-		GeneratedJavaClass.debug("// PrefixedBlockDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel
+		GeneratedJavaClass.debug("// PrefixedBlockDeclaration: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel
 				+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 				+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false")
 				+ ", detachUsed=" + ((detachUsed) ? "true" : "false"));
@@ -187,7 +187,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
-		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
+		s.append('[').append(sourceBlockLevel).append(':').append(rtBlockLevel).append("] ");
 		if (prefix != null)	s.append(prefix).append(' ');
 		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");

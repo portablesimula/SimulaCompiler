@@ -109,10 +109,12 @@ public final class Variable extends Expression {
 	}
 
 	public Meaning getMeaning() {
-	  if (meaning == null) meaning = Global.getCurrentScope().findMeaning(identifier);
-	  Util.ASSERT(meaning.isNO_MEANING() || meaning.declaredIn!=null,"Invariant");
-	  return (meaning);
-    }
+		if (meaning == null) {
+			meaning = Global.getCurrentScope().findMeaning(identifier);
+		}
+		Util.ASSERT(meaning.isNO_MEANING() || meaning.declaredIn!=null,"Invariant");
+		return (meaning);
+	}
 
 	public Variable(final String identifier) {
 		this.identifier = identifier;
@@ -146,6 +148,11 @@ public final class Variable extends Expression {
 		Global.sourceLineNumber=lineNumber;
 		Declaration declaredAs=getMeaning().declaredAs;
 		if(declaredAs!=null) this.type=declaredAs.type;
+		
+		if(type!=null && this.type.getRefIdent()!=null && meaning.declaredIn instanceof ConnectionBlock conn) {
+			if(type!=null) type=new Type(type,conn);
+		}
+
 		if(meaning.declaredAs instanceof StandardProcedure)	{
 		    if(Util.equals(identifier, "detach")) {
 		        if(meaning.declaredIn instanceof ConnectionBlock conn) conn.classDeclaration.detachUsed=true;
@@ -454,7 +461,7 @@ public final class Variable extends Expression {
    	    		ProcedureDeclaration found=Global.getCurrentScope().findProcedure(proc.identifier);
    	   	    	String res=null;
    	    		if(found!=null) {
-    	    		if(found.blockLevel==Global.getCurrentScope().blockLevel) {
+    	    		if(found.rtBlockLevel==Global.getCurrentScope().rtBlockLevel) {
     	    			res="_RESULT";
     	    		} else {
     	    			String cast=found.getJavaIdentifier();
@@ -524,9 +531,9 @@ public final class Variable extends Expression {
 				  || meaning.declaredIn.declarationKind==Declaration.Kind.MemberMethod
 				 )) {
 			String cast=meaning.declaredIn.getJavaIdentifier();
-			int n=meaning.declaredIn.blockLevel;
+			int n=meaning.declaredIn.rtBlockLevel;
 			if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
-			else if(n==Global.getCurrentScope().blockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !		    
+			else if(n==Global.getCurrentScope().rtBlockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !		    
 			id="(("+cast+")"+meaning.declaredIn.edCTX()+")."+id; // ØM
 		}
 		return(id);		  

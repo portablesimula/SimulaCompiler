@@ -1,0 +1,26 @@
+% Transplantation
+begin ref(BB) rBB;
+      ref(AA) rAA;
+
+      class A;
+      begin ref(B) rB1;
+      		ref(B) procedure getRB1; getRB1:-rB1;
+            class B;
+            begin
+            end B;
+            rB1:- new B;
+      end A;
+      
+      A class BB;;
+
+      A class AA; ! Bare for å ha et navn (rB2) i rAA som ikke finnes i rA ;
+      begin ref(B) rB2;
+        rB2:- new B;
+      end AA;
+      
+      rBB :- new BB; ! Utfører “rB1:- new B” inni A prefixet til BB ;
+      rAA :- new AA; ! Utfører “rB2:- new B” inni AA ;
+      
+      inspect rAA do inspect rBB do rB2:- rB1; ! TRANSPLANTASJON! ;
+      
+end

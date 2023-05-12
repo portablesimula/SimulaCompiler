@@ -115,14 +115,14 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
-		if (declarationKind != Declaration.Kind.CompoundStatement) currentBlockLevel++;
-		blockLevel = currentBlockLevel;
+		if (declarationKind != Declaration.Kind.CompoundStatement) currentRTBlockLevel++;
+		rtBlockLevel = currentRTBlockLevel;
 		Global.enterScope(this);
 		for (Declaration dcl : declarationList)	dcl.doChecking();
 		for (Statement stm : statements) stm.doChecking();
 		doCheckLabelList(null);
 		Global.exitScope();
-		if (declarationKind != Declaration.Kind.CompoundStatement) currentBlockLevel--;
+		if (declarationKind != Declaration.Kind.CompoundStatement) currentRTBlockLevel--;
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -188,7 +188,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		Global.duringSTM_Coding=false;
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends _BASICIO" + " {");
-		GeneratedJavaClass.debug("// SubBlock: Kind=" + declarationKind + ", BlockLevel=" + blockLevel + ", firstLine="
+		GeneratedJavaClass.debug("// SubBlock: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel + ", firstLine="
 				+ lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 				+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
 		if (isQPSystemBlock())
@@ -251,7 +251,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
-		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
+		s.append('[').append(sourceBlockLevel).append(':').append(rtBlockLevel).append("] ");
 		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
 		Util.println(s.toString());

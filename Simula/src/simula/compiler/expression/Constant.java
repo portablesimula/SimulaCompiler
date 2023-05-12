@@ -146,7 +146,7 @@ public final class Constant extends Expression implements Externalizable {
 			if(intValue!='\'' && intValue>32 && intValue<127) return("'"+value+"'");
 			return("((char)"+intValue+')');
 		}
-		if(type==Type.Integer)  return (""+((Number)value).intValue());
+		if(type==Type.Integer)	return (""+((Number)value).intValue());
 		if(type==Type.Real)     return (""+((Number)value).floatValue()+'f');
 		if(type==Type.LongReal) return (""+((Number)value).doubleValue()+'d');
 		return (""+value);

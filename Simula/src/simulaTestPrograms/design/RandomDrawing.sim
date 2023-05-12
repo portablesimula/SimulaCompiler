@@ -51,7 +51,8 @@ Drawing("Random Drawing",900,900) begin
 	
 	diag:-new Diagram(0,100);
 	diag.init;
-	U:=1234507;
+	U:=-1234507;
+%	U:=1234507;
 %	verbose:=true;
 	
 	for p:=0 step 1 until 6 do begin
@@ -63,7 +64,7 @@ Drawing("Random Drawing",900,900) begin
     setStroke(4.5);
     setDrawColor(red);
 
-	for i:=0 step 1 until 200000 do begin
+	for i:=0 step 1 until 2000000 do begin
 %		k:=randint(0,100,U);
 %		k:=uniform(0,100,U);
 		k:=normal(50,10,U);

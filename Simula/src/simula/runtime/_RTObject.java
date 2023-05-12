@@ -725,7 +725,7 @@ public abstract class _RTObject {
 				}
 			} else if (e instanceof RuntimeException) {
 				String msg=getErrorMessage(e);
-				
+				msg=msg.replace("_SimulaRuntimeError: ","");
 				if(_ENVIRONMENT.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
 				_RT.printError(threadID + "SIMULA RUNTIME ERROR: " + msg);
 				_RT.printSimulaStackTrace(e, 0);

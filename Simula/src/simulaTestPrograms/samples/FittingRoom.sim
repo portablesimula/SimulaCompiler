@@ -55,7 +55,7 @@ Simulation begin
    integer U; 
    ref(FittingRoom) fittingroom1; 
  
-   U:=1234507;
+   U:=356355093;
  
    fittingroom1:- new FittingRoom; 
    activate new Person("Sam"); 

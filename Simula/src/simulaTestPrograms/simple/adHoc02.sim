@@ -1,18 +1,9 @@
-begin
-	class A; begin
-		integer i,j,k;
-		text t;
+Simulation Begin
+
+	ref(Head) queue; -- Persons going down;
+
+	inspect queue do begin
+		activate first after current;
+		passivate;
 	end;
-	
-	A class B; begin
-		new A;
-		new A;
-	end;
-	
-	integer i;
-	
-	for i:=0 step 1 until 10000 do begin
-		new B;
-	end;
-	
-end of program;
+End;

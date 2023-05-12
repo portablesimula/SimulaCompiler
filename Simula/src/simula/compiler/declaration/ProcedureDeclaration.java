@@ -209,28 +209,26 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		if (declarationKind == Declaration.Kind.MemberMethod) externalIdent = this.identifier;
 		else if (externalIdent == null)	externalIdent = edJavaClassName();
 
-		currentBlockLevel++;
-		blockLevel = currentBlockLevel;
+		currentRTBlockLevel++;
+		rtBlockLevel = currentRTBlockLevel;
 		Global.enterScope(this);
-
-		int prfx = 0;// prefixLevel();
-
-		if (declarationKind == Declaration.Kind.Procedure)
-			for (Parameter par : this.parameterList) par.setExternalIdentifier(prfx);
-		for (Declaration par : this.parameterList) par.doChecking();
-		for (Declaration dcl : declarationList)	dcl.doChecking();
-		for (Statement stm : statements) stm.doChecking();
-		doCheckLabelList(null);
-		VirtualSpecification virtualSpec = VirtualSpecification.getVirtualSpecification(this);
-		if (virtualSpec != null) {
-			// This Procedure is a Virtual Match
-			myVirtual = new VirtualMatch(virtualSpec, this);
-			ClassDeclaration decl = (ClassDeclaration) declaredIn;
-			decl.virtualMatchList.add(myVirtual);
-			if (decl == virtualSpec.declaredIn) virtualSpec.hasDefaultMatch = true;
-		}
+			int prfx = 0;// prefixLevel();
+			if (declarationKind == Declaration.Kind.Procedure)
+				for (Parameter par : this.parameterList) par.setExternalIdentifier(prfx);
+			for (Declaration par : this.parameterList) par.doChecking();
+			for (Declaration dcl : declarationList)	dcl.doChecking();
+			for (Statement stm : statements) stm.doChecking();
+			doCheckLabelList(null);
+			VirtualSpecification virtualSpec = VirtualSpecification.getVirtualSpecification(this);
+			if (virtualSpec != null) {
+				// This Procedure is a Virtual Match
+				myVirtual = new VirtualMatch(virtualSpec, this);
+				ClassDeclaration decl = (ClassDeclaration) declaredIn;
+				decl.virtualMatchList.add(myVirtual);
+				if (decl == virtualSpec.declaredIn) virtualSpec.hasDefaultMatch = true;
+			}
 		Global.exitScope();
-		currentBlockLevel--;
+		currentRTBlockLevel--;
 		SET_SEMANTICS_CHECKED();
 	}
 
@@ -336,7 +334,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends _PROC {");
-		GeneratedJavaClass.debug("// ProcedureDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel
+		GeneratedJavaClass.debug("// ProcedureDeclaration: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel
 					+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
 		if (isQPSystemBlock())
@@ -443,7 +441,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
-		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
+		s.append('[').append(sourceBlockLevel).append(':').append(rtBlockLevel).append("] ");
 		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
 		s.append(Parameter.editParameterList(parameterList));
@@ -481,7 +479,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		oupt.writeObject(externalIdent);
 		oupt.writeObject(type);
 		oupt.writeObject(declarationKind);
-		oupt.writeInt(blockLevel);
+		oupt.writeInt(rtBlockLevel);
 		oupt.writeBoolean(hasLocalClasses);
 
 		oupt.writeObject(parameterList);
@@ -499,7 +497,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		externalIdent=(String)inpt.readObject();
 		type=Type.inType(inpt);
 		declarationKind=(Kind) inpt.readObject();
-		blockLevel=inpt.readInt();
+		rtBlockLevel=inpt.readInt();
 		hasLocalClasses=inpt.readBoolean();
 		
 		parameterList=(Vector<Parameter>) inpt.readObject();

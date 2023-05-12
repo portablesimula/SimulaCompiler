@@ -1,0 +1,18 @@
+% Transplantation
+begin ref(A) rA1, rA2;
+
+  class A;
+  begin ref(B) rB;
+
+    class B;
+    begin
+    end B;
+
+    rB:- new B;
+  end A;
+
+  rA1 :- new A; !Her blir et nytt B-objekt generert innenfra A-objektet;
+  rA2 :- new A; ! Og ett til blir generert her;
+  rA1.rB:- rA2.rB; ! Ulovlig! Her far vi TRANSPLANTASJON;
+
+end

@@ -457,9 +457,9 @@ public final class SimulaScanner extends DefaultScanner {
     	pushBack(current);
     	long res = 0;
     	try {
-    		res=Long.parseLong(result,radix);
+    		res=Integer.parseInt(result,radix);
     	} catch (NumberFormatException e) {
-    		
+    		Util.error("Integer number out of range: "+result);
     	}
     	return(newToken(KeyWord.INTEGERKONST,res));
     }

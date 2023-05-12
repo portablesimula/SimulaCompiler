@@ -1,75 +1,8 @@
 
 begin
-
-inspect new DirectFile("direct85") do begin
-
-   integer  i, j; real tmp;
-
-   setaccess("CHARSET:UTF-8");
-   setaccess("CREATE");
-   open(blanks(12));
-
-	
-   for i := 1 step 1 until 5 do
-   begin
-      locate(6 - i);
-      setpos(9);
-      outint(i, 4);
-      outimage
-   end;
-
-   locate(1);
-   inimage;
-   while  not lastitem  do begin
-		sysout.outtext(image & ": "); sysout.outimage;
-   		sysout.outreal(inreal, 1, 7);
-   		sysout.outimage;
-   end;
-
-	goto EXIT;
-
-   sysout.outimage;
-   sysout.outtext("==========================================="); sysout.outimage;
-   locate(2);
-   sysout.outtext("LOCATE 2="); sysout.outint(location,0);
-   inimage;
-   sysout.outtext(": """ & image & """"); sysout.outimage;
-   sysout.outint(inint,3); sysout.outimage;
-   sysout.outtext("==========================================="); sysout.outimage;
-
-	goto EXIT;
-
-   sysout.outimage;
-   sysout.outtext("==========================================="); sysout.outimage;
-   locate(5);
-   sysout.outtext("LOCATE 5="); sysout.outint(location,20); sysout.outimage;
-   inimage;
-   sysout.outtext(": """ & image & """"); sysout.outimage;
-   sysout.outint(inint,3); sysout.outimage;
-   sysout.outtext("==========================================="); sysout.outimage;
-
-	goto EXIT;
-
-   locate(5);
-   sysout.outint(location,3);
-   inimage;
-	sysout.outtext(": "); sysout.outtext(image);
-
-   sysout.outint(inint,3);
-   locate(3);
-   sysout.outint(location,3);
-   inimage;
-	sysout.outtext(": "); sysout.outtext(image);
-
-   sysout.outint(inint,3);
-
-
-EXIT:
-
-   setaccess("PURGE");
-   close;
-
-end of inspect DirectFile;
-
-
-end of program;
+  integer i, j;
+  i := 123456789;
+  j := 123456789123456789;
+  Outint( i, 20 ); Outimage;
+  Outint( j, 20 ); Outimage;
+end;

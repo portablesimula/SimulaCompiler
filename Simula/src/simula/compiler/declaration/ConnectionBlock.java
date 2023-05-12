@@ -73,12 +73,12 @@ public final class ConnectionBlock extends DeclarationScope {
 		// Set External Identifier
 		externalIdent = inspectedVariable.identifier + '_' + lineNumber;
 		Global.enterScope(this);
-		blockLevel = currentBlockLevel;
-		if (whenClassIdentifier != null) {
-			Meaning meaning = findMeaning(whenClassIdentifier);
-			whenClassDeclaration = meaning.declaredAs;
-		}
-		statement.doChecking();
+			rtBlockLevel = currentRTBlockLevel;
+			if (whenClassIdentifier != null) {
+				Meaning meaning = findMeaning(whenClassIdentifier);
+				whenClassDeclaration = meaning.declaredAs;
+			}
+			statement.doChecking();
 		Global.exitScope();
 		SET_SEMANTICS_CHECKED();
 	}
@@ -109,7 +109,7 @@ public final class ConnectionBlock extends DeclarationScope {
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(indent);
-	    s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
+	    s.append('[').append(sourceBlockLevel).append(':').append(rtBlockLevel).append("] ");
 		s.append(declarationKind).append(' ').append(identifier);
 		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';

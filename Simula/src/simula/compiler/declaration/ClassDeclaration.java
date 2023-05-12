@@ -289,8 +289,8 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
-		currentBlockLevel++;
-		blockLevel = currentBlockLevel;
+		currentRTBlockLevel++;
+		rtBlockLevel = currentRTBlockLevel;
 		Global.enterScope(this);
 		ClassDeclaration prefixClass = null;
 		if (!hasNoRealPrefix()) {
@@ -310,7 +310,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		checkHiddenList();
 		doCheckLabelList(prefixClass);
 		Global.exitScope();
-		currentBlockLevel--;
+		currentRTBlockLevel--;
 		SET_SEMANTICS_CHECKED();
 		
 		JavaClassInfo info=new JavaClassInfo();
@@ -626,7 +626,7 @@ SEARCH: while (scope != null) {
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
 		else line = line + " extends _BASICIO";
 		GeneratedJavaClass.code(line + " {");
-		GeneratedJavaClass.debug("// ClassDeclaration: Kind=" + declarationKind + ", BlockLevel=" + blockLevel + ", PrefixLevel="
+		GeneratedJavaClass.debug("// ClassDeclaration: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel + ", PrefixLevel="
 					+ prefixLevel() + ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false")
 					+ ", detachUsed=" + ((detachUsed) ? "true" : "false"));
@@ -822,7 +822,7 @@ SEARCH: while (scope != null) {
 	public void print(final int indent) {
     	String spc=edIndent(indent);
 		StringBuilder s = new StringBuilder(spc);
-		s.append('[').append(sourceBlockLevel).append(':').append(blockLevel).append("] ");
+		s.append('[').append(sourceBlockLevel).append(':').append(rtBlockLevel).append("] ");
 		if (prefix != null)	s.append(prefix).append(' ');
 		s.append(declarationKind).append(' ').append(identifier);
 		s.append('[').append(externalIdent).append("] ");
@@ -858,7 +858,7 @@ SEARCH: while (scope != null) {
 		oupt.writeObject(identifier);
 		oupt.writeObject(externalIdent);
 		oupt.writeObject(type);
-		oupt.writeInt(blockLevel);
+		oupt.writeInt(rtBlockLevel);
 		oupt.writeObject(prefix);
 		oupt.writeBoolean(hasLocalClasses);
 		oupt.writeBoolean(detachUsed);
@@ -885,7 +885,7 @@ SEARCH: while (scope != null) {
 		identifier=(String)inpt.readObject();
 		externalIdent=(String)inpt.readObject();
 		type=Type.inType(inpt);
-		blockLevel=inpt.readInt();
+		rtBlockLevel=inpt.readInt();
 		prefix=(String)inpt.readObject();
 		hasLocalClasses=inpt.readBoolean();
 		detachUsed=inpt.readBoolean();

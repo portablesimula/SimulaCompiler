@@ -35,24 +35,25 @@ public class _RandomDrawing {
 	 * In this case the new value of U will also be negative,
 	 * while the returned real still lies in the interval <0,1>.
 	 * 
+	 * If the initial U is zero, U is replaced by System.currentTimeMillis()
+	 * Then U is forced to be an odd number by: U = U | 1
+	 * 
 	 * See: Donald E. Knuth, The Art of Computer Programming, Volume 2,
 	 *      Seminumerical Algorithms, Section 3.2.1.
 	 * </pre>
 	 * 
 	 * @param U The pseudo random number (seed) by name.
 	 * @return Returns the next pseudorandom, uniformly distributed value between 0.0 and 1.0
-	 * @throws _SimulaRuntimeError When U is not an odd integer
 	 */
 	public static double basicDRAW(final _NAME<Integer> U) {
 		long seed=U.get();
-		if((seed & 1) == 0)
-			throw new _SimulaRuntimeError("Basic Drawing: Seed("+seed+") is not an odd integer");
+		if(seed == 0) seed = System.currentTimeMillis();
 		if(seed > 0) {
-			seed = (seed * MULTIPLIER) % TWO_POW_31;
+			seed = ( (seed | 1) * MULTIPLIER) % TWO_POW_31;
 			U.put((int) seed);
 			return(((double)seed) / TWO_POW_31M1D); 
 		} else { // Antithetic drawing
-			seed = (-seed * MULTIPLIER) % TWO_POW_31;
+			seed = (((-seed) | 1) * MULTIPLIER) % TWO_POW_31;
 			U.put((int) -seed);
 			return( 1.0d - ((double)seed) / TWO_POW_31M1D ); 
 		}
