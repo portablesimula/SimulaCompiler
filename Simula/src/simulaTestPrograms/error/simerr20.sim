@@ -1,0 +1,9 @@
+ Simulation Begin
+ 
+ 	ref(Head) queue; -- Persons going down;
+ 
+ 	inspect queue do begin
+ 		activate first after current;
+ 		passivate;
+ 	end;
+ End;

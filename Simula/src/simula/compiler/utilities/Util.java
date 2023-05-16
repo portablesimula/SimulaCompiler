@@ -228,27 +228,23 @@ public final class Util {
     //*******************************************************************************
     //*** IPOW - Integer Power: b ** x
     //*******************************************************************************
-	/**
-	 * Integer Power: b ** x
-	 * 
-	 * @param b
-	 * @param x
-	 * @return
-	 */
-	public static int IPOW(final int b, int x) {
-		// _RT.println("IPOW("+b+','+x+')');
+	public static int IPOW(final long base, long x) {
+//		System.out.println("Util.IPOW: base="+base+", x="+x);
 		if (x == 0) {
-			if (b == 0)
-				error("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
+			if (base == 0)
+				error("Exponentiation: " + base + " ** " + x + "  Result is undefined.");
 			return (1); // any ** 0 ==> 1
 		} else if (x < 0)
-			error("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
-		else if (b == 0)
+			error("Exponentiation: " + base + " ** " + x + "  Result is undefined.");
+		else if (base == 0)
 			return (0); // 0 ** non_zero ==> 0
-		int v = b;
-		while ((--x) > 0)
-			v = v * b;
-		return (v);
+		
+		long res=(long) Math.pow((double)base,(double)x);
+//		System.out.println("Util.IPOW: base="+base+", x="+x+" ==> "+res);
+		if(res > Integer.MAX_VALUE || res < Integer.MIN_VALUE)
+			error("Arithmetic overflow: "+base+" ** "+x+" ==> "+res
+					+" which is outside integer value range["+Integer.MIN_VALUE+':'+Integer.MAX_VALUE+']');
+		return((int)res);
 	}
   
 //	//*******************************************************************************

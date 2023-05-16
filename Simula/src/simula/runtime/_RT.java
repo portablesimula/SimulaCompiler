@@ -58,8 +58,7 @@ public final class _RT {
 		// getTextInfo
 //		public static String getSourceFileName() { return(SourceDirName+"/"+ModuleName); }
 		public static String getSourceFileName() { return(SPORT_SourceFileName); }
-//	    public static String ListingFileName=null;//"sysout";
-	    public static String ListingFileName="sysout";
+	    public static String ListingFileName="#sysout";
 	    public static String getSCodeFileName() {
 	    	return(createSubfileName("scode",getModuleName()+".scd"));
 	    }

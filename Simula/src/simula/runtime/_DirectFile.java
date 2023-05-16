@@ -199,14 +199,22 @@ public class _DirectFile extends _ImageFile {
 		_LOC = 0;
 		_MAXLOC = 0;
 		try {
-			randomAccessFile.close();
+			if(_PURGE) {
+				randomAccessFile.setLength(0);
+				randomAccessFile.close();
+				File file = new File(FILE_NAME.edText().trim());
+				if (file.exists()) {
+					_RT.warning("Purge "+this.getClass().getSimpleName()+" \""+file.getName()
+					+"\" failed - the underlying OS was unable to perform the delete operation");
+				}
+			} else randomAccessFile.close();
 			randomAccessFile = null;
 		} catch (IOException e) {
 			return (false);
 		}
 		_OPEN = false;
 		_ENDFILE=true;
-		doPurgeAction();
+//		doPurgeAction();
 		return (true);
 	}
 

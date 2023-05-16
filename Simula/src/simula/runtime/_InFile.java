@@ -102,7 +102,7 @@ public class _InFile extends _ImageFile {
 		setpos(length() + 1);
 
 		Reader reader;
-		if (FILE_NAME.edText().equalsIgnoreCase("sysin")) {
+		if (FILE_NAME.edText().equalsIgnoreCase("#sysin")) {
 			if(_RT.console!=null) reader=_RT.console.getReader();
 			else reader=new InputStreamReader(System.in,_CHARSET);
 		}
@@ -154,7 +154,7 @@ public class _InFile extends _ImageFile {
 	 */
 	public boolean close() {
 		if (!_OPEN)	return (false);
-		if (!FILE_NAME.edText().equalsIgnoreCase("sysin"))
+		if (!FILE_NAME.edText().equalsIgnoreCase("#sysin"))
 		try {
 			if (lineReader != null)
 				lineReader.close();

@@ -86,13 +86,16 @@ public final class Constant extends Expression implements Externalizable {
 		Number result=null;
 		if(type==Type.Integer) {
 			switch(opr) {
-	        	case PLUS   -> result=lhn.intValue() + rhn.intValue();
-	        	case MINUS  -> result=lhn.intValue() - rhn.intValue();
-	        	case MUL    -> result=lhn.intValue() * rhn.intValue();
-	        	case INTDIV -> result=lhn.intValue() / rhn.intValue();
-        		case EXP    -> result=Util.IPOW(lhn.intValue(),rhn.intValue());
+        		case PLUS   -> result=lhn.longValue() + rhn.longValue();
+        		case MINUS  -> result=lhn.longValue() - rhn.longValue();
+        		case MUL    -> result=lhn.longValue() * rhn.longValue();
+        		case INTDIV -> result=lhn.longValue() / rhn.longValue();
+        		case EXP    -> result=Util.IPOW(lhn.longValue(),rhn.longValue());
         		default     -> Util.IERR("Unexpected value: " + opr);
 			}
+			if(result.longValue() > Integer.MAX_VALUE || result.longValue() < Integer.MIN_VALUE)
+				Util.error("Arithmetic overflow: "+lhn+' '+opr+' '+rhn);
+			result=(int) result.longValue();
 		} else if(type==Type.Real) {
 			switch(opr) {
         		case PLUS  -> result=lhn.floatValue() + rhn.floatValue();

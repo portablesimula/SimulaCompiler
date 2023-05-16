@@ -93,7 +93,7 @@ public final class TestCompiler {
 		// String name="/design/CallProcedureVirtual.sim";
 		// String name="/design/ProcedureByName.sim";
 		// String name="/design/ProcedureResult.sim";
-		 String name="/design/RandomDrawing.sim";
+		// String name="/design/RandomDrawing.sim";
 		// String name="/design/SwitchDeclaration.sim";
 		// String name="/design/SwitchStatement.sim";
 		// String name="/design/VirtualSwitch.sim";
@@ -132,8 +132,9 @@ public final class TestCompiler {
 		// String name="/error/simerr15.sim"; // Constants
 		// String name="/error/simerr16.sim"; // Illegal lhs in assignment
 		// String name="/error/simerr17.sim"; // Transplantation
-		// String name="/error/simerr18.sim"; // Transplantation
+		 String name="/error/simerr18.sim"; // Transplantation
 		// String name="/error/simerr19.sim"; // Transplantation
+		// String name="/error/simerr20.sim"; // Transplantation
 		
 		// String name="/error/issue12.sim"; // Dot-aksess inn i klasser med lokale klasser,
 		// String name="/error/issue13.sim"; // Tillater subklasser på dypere blokknivå.

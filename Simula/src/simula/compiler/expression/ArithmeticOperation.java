@@ -87,7 +87,7 @@ public final class ArithmeticOperation extends Expression {
 	public final KeyWord opr;
 	public Expression rhs;
   
-	public ArithmeticOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
+	private ArithmeticOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
 		this.opr=opr;
 		if(lhs==null) {
 			Util.error("Missing operand before "+opr);
@@ -99,10 +99,21 @@ public final class ArithmeticOperation extends Expression {
 		} else this.rhs=rhs;
 		this.lhs.backLink=this.rhs.backLink=this;
 	}
+
+	public static Expression create(final Expression lhs,final KeyWord opr,final Expression rhs) {
+		try { // Try to Compile-time Evaluate this expression
+			Number lhn=lhs.getNumber();
+			if(lhn!=null) {
+				Number rhn=rhs.getNumber();
+				if(rhn!=null) return(Constant.evaluate(lhn,opr,rhn));
+			}
+		} catch(Exception e) { Util.error("Arithmetic overflow: "+lhs+' '+opr+' '+rhs+"   "+e); e.printStackTrace(); }
+		return(new ArithmeticOperation(lhs,opr,rhs));
+	}
   
-	// Try to Compile-time Evaluate this expression
 	@Override
 	public Expression evaluate() {
+		// Try to Compile-time Evaluate this expression
 		Number lhn=lhs.getNumber();
 		if(lhn!=null) {
 			Number rhn=rhs.getNumber();
@@ -173,15 +184,6 @@ public final class ArithmeticOperation extends Expression {
 	@Override
     public String toJavaCode() {
     	ASSERT_SEMANTICS_CHECKED(this);
-    	if(Global.USE_EXACT_MATH && this.type == Type.Integer) {
-    		switch (opr) {
-    	       case PLUS:  return ("Math.addExact(" + lhs.get() + ',' + rhs.get() + ')');
-    	       case MINUS: return ("Math.subtractExact(" + lhs.get() + ',' + rhs.get() + ')');
-    	       case MUL:   return ("Math.multiplyExact(" + lhs.get() + ',' + rhs.get() + ')');
-       		   case EXP:   return ("_IPOW_EXACT(" + lhs.get() + ',' + rhs.get() + ')');
-			default: break; // Fall Through
-    		}
-    	}
    		switch (opr) {
    		   case EXP: {
    			   if (this.type == Type.Integer)

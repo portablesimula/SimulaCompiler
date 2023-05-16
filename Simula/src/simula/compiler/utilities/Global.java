@@ -44,7 +44,7 @@ public final class Global {
     
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	public static final boolean USE_JAVA_SYSTEM_COMPILER=true;//false;//true;
-	public static final boolean USE_EXACT_MATH=true;//false;//true;
+//	public static final boolean USE_EXACT_MATH=true;//false;//true;
 	
 //	public static final boolean MODIFY_CLASS_VERSION=false;
 //	public static final int major=52;  // .class file format version's Major
@@ -73,6 +73,7 @@ public final class Global {
 	public static Map<String,Type> typeMap;
 
 	public static boolean duringParsing;     // True while Parsing
+	public static boolean duringChecking;    // True while Checking
 	public static boolean duringSTM_Coding;  // True while generating STM code
 
 	public static File simulaTempDir;     // Temp directory
@@ -90,6 +91,7 @@ public final class Global {
 		typeMap=new HashMap<String,Type>();
 		javaClassMap=new Hashtable<String,JavaClassInfo>();
 		duringParsing=true;
+		duringChecking=false;
 		duringSTM_Coding=false;
 		externalJarFiles=new Vector<File>();
 		String SIMULA_HOME=getProperty("simula.home",null);
@@ -110,12 +112,20 @@ public final class Global {
 	public static void setScope(DeclarationScope scope) { currentScope=scope; } // During Parsing
 	public static String edScopeChain() { return(getCurrentScope().edScopeChain()); }
 	
+	private static int currentCTBlockLevel = 3; // CompileTime Block level
 	public static void enterScope(DeclarationScope scope) {
 		scopeStack.push(currentScope); currentScope=scope;
+		if(duringChecking) {
+			currentCTBlockLevel++;
+			if(scope.ctBlockLevel==0) {
+				scope.ctBlockLevel=currentCTBlockLevel;
+			}
+		}
 	}
 	
 	public static void exitScope() {
 		currentScope=scopeStack.pop();
+		if(duringChecking) currentCTBlockLevel--;
 	}
 
 

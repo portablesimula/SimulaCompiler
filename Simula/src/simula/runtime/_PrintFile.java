@@ -237,7 +237,7 @@ public class _PrintFile extends _OutFile {
 		_ASGTXT(image,null); // image := NOTEXT; ???
 		setpos(1);
 		//_RT.BREAK("OutFile.open: Filename=" + FILE_NAME);
-		if (FILE_NAME.edText().equalsIgnoreCase("sysout")) {
+		if (FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
 			if(_RT.console!=null) writer=_RT.console.getWriter();
 			else writer = new OutputStreamWriter(System.out,_CHARSET);
 		} else {
@@ -299,7 +299,7 @@ public class _PrintFile extends _OutFile {
 		_LINES_PER_PAGE = 0;
 		_LINE = 0;
 		image = null; // image :- NOTEXT;
-		if (!FILE_NAME.edText().equalsIgnoreCase("sysout"))
+		if (!FILE_NAME.edText().equalsIgnoreCase("#sysout"))
 		try {
 			writer.flush();
 			writer.close();

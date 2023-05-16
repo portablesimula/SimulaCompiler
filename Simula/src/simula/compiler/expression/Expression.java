@@ -161,7 +161,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression  parseNOT() {
 		Expression expr;
 		if(Parser.accept(KeyWord.NOT)) {
-			expr=new UnaryOperation(KeyWord.NOT,parseTEXTCONC());
+			expr=UnaryOperation.create(KeyWord.NOT,parseTEXTCONC());
 		} else expr = parseTEXTCONC();
 		return(expr);
 	}
@@ -191,7 +191,7 @@ public abstract class Expression extends SyntaxClass {
 		Expression expr=parseUNIMULDIV();
 		while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 			KeyWord opr=Parser.prevToken.getKeyWord();
-			expr=new ArithmeticOperation(expr,opr,parseMULDIV());
+			expr=ArithmeticOperation.create(expr,opr,parseMULDIV());
 		}
 		return(expr);
 	}
@@ -202,7 +202,7 @@ public abstract class Expression extends SyntaxClass {
 		if(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) {
 			KeyWord opr=Parser.prevToken.getKeyWord();
 			if(opr==KeyWord.PLUS) expr=parseMULDIV();
-			else expr=new UnaryOperation(opr,parseMULDIV());
+			else expr=UnaryOperation.create(opr,parseMULDIV());
 		} else expr = parseMULDIV();
 		return(expr);
 	}
@@ -212,7 +212,7 @@ public abstract class Expression extends SyntaxClass {
 		Expression expr=parseEXPON();
 		while(Parser.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
 			KeyWord opr=Parser.prevToken.getKeyWord();
-			expr=new ArithmeticOperation(expr,opr,parseEXPON());
+			expr=ArithmeticOperation.create(expr,opr,parseEXPON());
 			//expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseEXPON());
 		}
 		return(expr);
@@ -222,7 +222,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseEXPON() {
 		Expression expr=parseBASICEXPR();
 		while(Parser.accept(KeyWord.EXP))
-			expr=new ArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
+			expr=ArithmeticOperation.create(expr,KeyWord.EXP,parseBASICEXPR());
 		//expr=ArithmeticOperation.newArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
 		return(expr);
 	}
@@ -349,7 +349,7 @@ public abstract class Expression extends SyntaxClass {
     	if(this instanceof UnaryOperation u) {
     		if(u.oprator==KeyWord.MINUS) {
     			Number val=u.operand.getNumber();
-    			return(-val.intValue());
+    			if(val!=null) return(-val.intValue());
     		}
     	} else if(this instanceof Constant cnst) {
 		    if(cnst.value instanceof Number num) return(num);

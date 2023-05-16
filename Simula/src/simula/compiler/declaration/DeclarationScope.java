@@ -17,6 +17,7 @@ public abstract class DeclarationScope extends Declaration {
 	
 	public int sourceBlockLevel; // Set during Parsing
 	protected static int currentRTBlockLevel = 0; // Runtime  Block level - Used during doChecking
+	public int ctBlockLevel; // Set during doChecking
 	public int rtBlockLevel; // Set during doChecking
 	public boolean hasLocalClasses = false;
 	public DeclarationList declarationList;// = new DeclarationList();

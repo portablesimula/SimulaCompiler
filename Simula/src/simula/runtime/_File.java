@@ -194,11 +194,10 @@ public class _File extends _CLASS {
 	 * Standard</a> Chapter 10, INPUT-OUTPUT.
 	 * 
 	 * @param mode
-	 * @return
+	 * @return true if mode is recognized, otherwise false.
 	 */
 	public boolean setaccess(final _TXT mode) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
-//		System.out.println("FILE(FILE_NAME).setaccess: "+mode.edText());
+		//System.out.println(this.getClass().getSimpleName()+"("+FILE_NAME.edText()+").setaccess: "+mode.edText());
 		//_RT.BREAK("FILE(FILE_NAME).setaccess: "+mode.edText());
 		//_RT.NOT_IMPLEMENTED("FILE(FILE_NAME).setaccess: "+mode.edText());
 		String id=mode.edText().trim().toUpperCase();
@@ -219,28 +218,31 @@ public class _File extends _CLASS {
 		else if(id.equals("PURGE")) _PURGE=true; 
 		else if(id.equals("NOPURGE")) _PURGE=false; 
 		
-		else if(id.startsWith("%NOBUFFER")) ; // Ignore
-		else if(id.startsWith("CHARSET")) {
-			String charset=id.substring(7).trim();
-			//_RT.println("CHARSET: defaultCharset="+Charset.defaultCharset());
-			if(charset.startsWith(":")) {
-				charset=charset.substring(1).trim();
-				if(Charset.isSupported(charset)) {
-					if(_RT.Option.VERBOSE) _RT.warning("FILE("+FILE_NAME.edText()+").CHARSET Changed from "+_CHARSET+" to "+charset);
-					_CHARSET=Charset.forName(charset);
-					return(true); 
-				} else {
-					_RT.warning("FILE("+FILE_NAME.edText()+").setaccess: The Charset \""+charset+"\" is not supported");
-					return(false);
-				}
-			}
-			_RT.println("CHARSET: _CHARSET="+_CHARSET);
-		}
+		else if(id.startsWith("%NOBUFFER")) ; // S-PORT: Ignore
+		else if(id.startsWith("CHARSET")) setCharset(id);
 		else unrecognized=true;
 		if(unrecognized) {
-			_RT.warning("FILE("+FILE_NAME.edText()+").setaccess("+id+") -- is unrecognized or not implemented: ");			
+			_RT.warning("FILE("+FILE_NAME.edText()+").setaccess("+id+") -- is not recognized.");			
 		}
 		return (!unrecognized);
+	}
+	
+	protected boolean setCharset(String id) {
+		String charset=id.substring(7).trim();
+		//_RT.println("CHARSET: defaultCharset="+Charset.defaultCharset());
+		if(charset.startsWith(":")) {
+			charset=charset.substring(1).trim();
+			if(Charset.isSupported(charset)) {
+				if(_RT.Option.VERBOSE) _RT.warning("FILE("+FILE_NAME.edText()+").CHARSET Changed from "+_CHARSET+" to "+charset);
+				_CHARSET=Charset.forName(charset);
+				return(true); 
+			} else {
+				_RT.warning("FILE("+FILE_NAME.edText()+").setaccess: The Charset \""+charset+"\" is not supported");
+				return(false);
+			}
+		}
+		_RT.println("CHARSET: _CHARSET="+_CHARSET);
+		return(false);
 	}
 
 
@@ -294,7 +296,7 @@ public class _File extends _CLASS {
 //			  _RT.BREAK("FILE.doPURGEAction: "+_PURGE+" on "+file);
 			  if(_PURGE) {
 				  if (!file.delete()) {
-					  _RT.warning("Purge "+file.getName()+" failed - the underlying OS was unable to perform the delete operation");
+					  _RT.warning("Purge "+this.getClass().getSimpleName()+" \""+file.getName()+"\" failed - the underlying OS was unable to perform the delete operation");
 				  }
 			  }
 		} catch (Exception e) {	}

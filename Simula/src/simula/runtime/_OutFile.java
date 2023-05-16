@@ -87,7 +87,7 @@ public class _OutFile extends _ImageFile {
 		image = IMAGE_;
 		setpos(1);
 		OutputStream outputStream;
-		if (FILE_NAME.edText().equalsIgnoreCase("sysout"))
+		if (FILE_NAME.edText().equalsIgnoreCase("#sysout"))
 			outputStream = System.out;
 		else {
 			File file=doCreateAction(new File(FILE_NAME.edText()));

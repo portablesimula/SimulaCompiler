@@ -268,7 +268,8 @@ public class Type implements Externalizable {
 		if(key.getKeyWord()==KeyWord.REF) {
 			if(declaredIn==null) return("ref("+key.getValue()+')');
 //			return("ref("+declaredIn.identifier+"'"+key.getValue()+')');
-			return("ref("+declaredIn.inspectedVariable+"'"+key.getValue()+')');
+//			return("ref("+declaredIn.inspectedVariable+"'"+key.getValue()+')');
+			return("ref("+key.getValue()+"'"+declaredIn.ctBlockLevel+')');
 		}
 		if(this.equals(LongReal)) return("LONG REAL"); 
 		return(key.toString());

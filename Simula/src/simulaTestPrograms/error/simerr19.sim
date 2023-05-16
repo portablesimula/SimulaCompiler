@@ -21,6 +21,10 @@ begin ref(BB) rBB;
       rBB :- new BB; ! Utfører “rB1:- new B” inni A prefixet til BB ;
       rAA :- new AA; ! Utfører “rB2:- new B” inni AA ;
       
-      inspect rAA do inspect rBB do rB2:- rB1; ! TRANSPLANTASJON! ;
+      inspect rAA do
+      
+      	inspect rBB do
+      	
+      		rB2:- rB1; ! TRANSPLANTASJON! ;
       
 end

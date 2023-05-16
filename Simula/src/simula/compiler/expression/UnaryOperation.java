@@ -29,7 +29,7 @@ public final class UnaryOperation extends Expression {
 	final KeyWord oprator;
 	Expression operand;
 
-	public UnaryOperation(final KeyWord oprator,final Expression operand) {
+	private UnaryOperation(final KeyWord oprator,final Expression operand) {
 		this.oprator = oprator;
 		this.operand = operand;
 		if(this.operand==null)
@@ -39,13 +39,23 @@ public final class UnaryOperation extends Expression {
 		this.operand.backLink=this;
 	}
 
-	@Override
-	// Try to Compile-time Evaluate this expression
-	public Expression evaluate() {
-		if (oprator == KeyWord.NOT) {
-			  // TODO
+	public static Expression create(final KeyWord oprator,final Expression operand) {
+		if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
+			try { // Try to Compile-time Evaluate this expression
+				Number rhn=operand.getNumber();
+				if(rhn!=null) {
+					return(Constant.evaluate(oprator,rhn));
+				}  
+			} catch(Exception e) {}
 		}
-		else if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
+		return(new UnaryOperation(oprator,operand));
+	}
+	
+	@Override
+	public Expression evaluate() {
+		// Try to Compile-time Evaluate this expression
+		if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
+			//System.out.println("UnaryOperation.evaluate: "+oprator+", operand="+operand);
 			Number rhn=operand.getNumber();
 			if(rhn!=null) {
 				return(Constant.evaluate(oprator,rhn));

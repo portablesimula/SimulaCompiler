@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import simula.compiler.utilities.Util;
 import simula.runtime._RT.Option;
 
 /**
@@ -198,10 +199,6 @@ public class _ENVIRONMENT extends _RTObject {
 
 	/**
 	 * Integer Power: b ** x
-	 * 
-	 * @param b
-	 * @param x
-	 * @return
 	 */
 	public static int _IPOW(final int b,int x) {
 		// _RT.println("IPOW("+b+','+x+')');
@@ -213,29 +210,12 @@ public class _ENVIRONMENT extends _RTObject {
 			throw new _SimulaRuntimeError("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
 		else if (b == 0)
 			return (0); // 0 ** non_zero ==> 0
-		int v = b;
-		while ((--x) > 0)
-			v = v * b;
-		return (v);
-	}
-	
-	public static int _IPOW_EXACT(final int b,int x) {
-		//_RT.println("_IPOW_EXACT("+b+','+x+')');
-		if (x == 0) {
-			if (b == 0)
-				throw new _SimulaRuntimeError("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
-			return (1); // any ** 0 ==> 1
-		} else if (x < 0)
-			throw new _SimulaRuntimeError("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
-		else if (b == 0)
-			return (0); // 0 ** non_zero ==> 0
-		int v = b;
-		while ((--x) > 0) {
-//			v = v * b;
-			//_RT.println("_IPOW_EXACT: x="+x+", v="+v);
-		    v = Math.multiplyExact(v,b);
-		}
-		return (v);
+		
+		long res=(long) Math.pow((double)b,(double)x);
+		if(res > Integer.MAX_VALUE || res < Integer.MIN_VALUE)
+			throw new _SimulaRuntimeError("Arithmetic overflow: "+b+" ** "+x+" ==> "+res
+					+" which is outside integer value range["+Integer.MIN_VALUE+':'+Integer.MAX_VALUE+']');
+		return((int)res);
 	}
 
 	/**

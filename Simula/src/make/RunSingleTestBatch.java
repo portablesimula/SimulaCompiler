@@ -98,7 +98,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst56.sim"); // OK:  Test virtual procedures.
 //		names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
 //		names.add("simtst58.sim"); // OK?: Goto from within a connection into otherwise
-		names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
+//		names.add("simtst59.sim"); // OK: Test 2-dim Array by value.
 //		names.add("simtst60.sim"); // OK:  Visibility of protected attributes.
 //
 //		names.add("simtst61.sim"); // OK:  Remote access to attributes which are protected.
@@ -124,7 +124,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 //
 //		names.add("simtst81.sim"); // OK:  Test the value of close.
-//		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
+		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 //		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 //		names.add("simtst84.sim"); // OK:  Test Printfile.
 //		names.add("simtst85.sim"); // OK:  Test Directfile.

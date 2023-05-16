@@ -191,11 +191,13 @@ public final class SimulaCompiler {
 			// *** Semantic Checker
 			// ***************************************************************
 			if (Option.TRACING)	Util.message("BEGIN Semantic Checker");
+			Global.duringChecking=true;
 			programModule.doChecking();
 			if (Option.TRACING) {
 				Util.message("END Semantic Checker: \""+programModule+"\"");
 				if (Option.TRACE_CHECKER_OUTPUT && programModule != null)	programModule.print(0);
 			}
+			Global.duringChecking=false;
 			if(Util.nError>0) {
 				Util.message("Compiler terminated after "+Util.nError+" errors during semantic checking");
 				return;

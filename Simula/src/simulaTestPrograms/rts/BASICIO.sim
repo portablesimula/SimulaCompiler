@@ -9,8 +9,8 @@ begin
    ref(PrintFile) SYSOUT_;
    ref(PrintFile) procedure sysout; sysout:-SYSOUT_;
    
-   SYSIN_ :- new InFile("SYSIN");
-   SYSOUT_ :- new PrintFile("SYSOUT");
+   SYSIN_ :- new InFile("_SYSIN");
+   SYSOUT_ :- new PrintFile("_SYSOUT");
    SYSIN_.open(blanks(INPUT_LINELENGTH));
    SYSOUT_.open(blanks(OUTPUT_LINELENGTH));
    inner;

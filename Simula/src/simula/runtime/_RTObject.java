@@ -792,8 +792,8 @@ public abstract class _RTObject {
 				_RT.console = new _RTConsolePanel();
 				_RT.console.popup();
 			}
-			SYSIN_ = new _InFile(this, new _TXT("SYSIN"));
-			SYSOUT_ = new _PrintFile(this, new _TXT("SYSOUT"));
+			SYSIN_ = new _InFile(this, new _TXT("#sysin"));
+			SYSOUT_ = new _PrintFile(this, new _TXT("#sysout"));
 			SYSIN_.open(blanks(INPUT_LINELENGTH_));
 			SYSOUT_.open(blanks(OUTPUT_LINELENGTH_));
 		}

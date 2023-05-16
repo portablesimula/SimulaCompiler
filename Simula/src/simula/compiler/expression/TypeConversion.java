@@ -32,9 +32,9 @@ public final class TypeConversion extends Expression {
 
 	// Test if a TypeConversion is necessary and then create it.
 	public static Expression testAndCreate(final Type toType,final Expression expression) {
-//		if(toType!=null && toType.declaredIn != expression.type.declaredIn) {
-//			Util.error("Incompatible types (Attempted Transplantation): "+expression.type+" can't be converted to "+toType);
-//		}
+		if(toType!=null && toType.declaredIn!=null && toType.declaredIn.ctBlockLevel != expression.type.declaredIn.ctBlockLevel) {
+			Util.error("Incompatible types (Attempted Transplantation): "+expression.type+" can't be converted to "+toType);
+		}
 		if (testCastNeccessary(toType, expression)) {
 			if(expression instanceof Constant constant) {
 				Number val=(Number)constant.value;

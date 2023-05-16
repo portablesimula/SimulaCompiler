@@ -1,20 +1,23 @@
 begin
-	integer i;
-	boolean b;
-	
-	goto L2;
-	
-	if b then begin
-		i:=1;
-		L1:
-		i:=2;
-		goto E;
-		i:=3;
-	end else begin
-		i:=4;
-		L2:
-		i:=5;
-		goto L1;
-		i:=6;
+	integer i,i2,s2;
+	i:= -66;
+	i:=4*5+6;
+%	i:= 1234567890 * 1234556767;
+%	i:= 123456 ** 1234578934;
+	i:= 123 ** 2;
+	i:= 123 ** 3;
+	i:= 123 ** 4;
+	i:= 123 ** 5;
+	i:= 123 ** 6;
+
+	i2 :=   1;
+	s2 := - 1;
+	i:= 10;
+	i2:= 12345 ** i;
+
+	if -i2 - s2 = 0 then i:= 999;
+	for i:=0 step 1 until 66 do begin
+		i2:= (-123) ** i;
+		outtext("TEST -123 ** "); outint(i,0); outtext(" ==> "); outint(i2,0); outimage;
 	end;
-E:end;
+end;

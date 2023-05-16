@@ -107,7 +107,6 @@ public final class Simula {
 	private static void setKeepJava(final String dir) {
 		Option.keepJava = new File(dir);
 		Util.TRACE("KEEP_JAVA: " + Option.keepJava);
-		// TODO: Check dir legal directory name
 	}
 
 	/**
@@ -117,7 +116,6 @@ public final class Simula {
 	private static void setOutputDir(final String dir) {
 		Global.outputDir = new File(dir);
 		Util.TRACE("OUTPUT_DIR: " + Global.outputDir);
-		// TODO: Check dir legal directory name
 	}
 
 }
