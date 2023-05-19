@@ -26,7 +26,7 @@ public final class ConnectionBlock extends DeclarationScope {
 	public Declaration whenClassDeclaration; // Set during cheching
 
 	public ConnectionBlock(final Variable inspectedVariable,final String whenClassIdentifier) {
-		super("Inspect:" + inspectedVariable);
+		super("Connection block at line " + (Global.sourceLineNumber-1));
 		declarationKind = Declaration.Kind.ConnectionBlock;
 		this.inspectedVariable = inspectedVariable;
 		this.whenClassIdentifier = whenClassIdentifier;

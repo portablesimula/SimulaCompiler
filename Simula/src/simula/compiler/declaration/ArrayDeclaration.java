@@ -158,7 +158,6 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 		}
 
 		public void doChecking() {
-			// TODO: Hvis konstante grenser så eveluerer vi her !
 			LB.doChecking();
 			UB.doChecking();
 			LB=(Expression)TypeConversion.testAndCreate(Type.Integer,LB);

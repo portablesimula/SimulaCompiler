@@ -115,11 +115,9 @@ public class _OutByteFile extends _ByteFile {
 		TRC("outtext",""+intString(t.edText()));
 		_TXT.setpos(t, 1);
 		while (_TXT.more(t)) {
-//			outbyte((int) _TXT.getchar(t));
 			try {
 				outputStream.write((int)_TXT.getchar(t));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

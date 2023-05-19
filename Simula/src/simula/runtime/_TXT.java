@@ -281,7 +281,6 @@ public final class _TXT {
 	}
 
 	public static int getint(final _TXT T) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
 		String item = getIntegerItem(T);
 		int res = Integer.parseInt(item);
 		return (res);
@@ -351,7 +350,6 @@ public final class _TXT {
 	}
 
 	public static double getreal(final _TXT T) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
 		String item = getRealItem(T);
 		double res = Double.parseDouble(item);
 		return (res);
@@ -461,7 +459,6 @@ public final class _TXT {
 	 * @param n
 	 */
 	public static void putfix(final _TXT T,double r, int n) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
 		if(n<0) throw new _SimulaRuntimeError("putfix(r,n) - n < 0");
 		if(n==0) { putint(T,(int)(r+0.5)); return; }
 		StringBuilder pattern=new StringBuilder("##0.");
@@ -485,7 +482,6 @@ public final class _TXT {
 	 * @param n
 	 */
 	public static void putreal(final _TXT T,double r,int n) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
 		if(n<0) throw new _SimulaRuntimeError("putreal(r,n) - n < 0");
 		if(n==0) _RT.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
 		if(r== -0.0d) r=0.0d;
@@ -503,7 +499,6 @@ public final class _TXT {
 	}
 
 	public static void putreal(final _TXT T,float r, int n) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
 		if(n<0) throw new _SimulaRuntimeError("putreal(r,n) - n < 0");
 		if(n==0) _RT.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
 		if(r== -0.0f) r=0.0f;

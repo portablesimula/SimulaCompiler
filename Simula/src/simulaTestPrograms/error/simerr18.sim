@@ -1,6 +1,6 @@
-% Transplantation
 begin ref(A)  rA;
       ref(AA) rAA;
+      ref(AA) rAAA;
       boolean bb;
 
       class A;
@@ -17,9 +17,16 @@ begin ref(A)  rA;
       begin ref(B) rB2;
         rB2:- new B;
       end AA;
+ 
+      AA class AAA;
+      begin ref(BB) rB3;
+      		B class BB;;
+        	rB3:- new BB;
+      end AA;
       
-      rA  :- new A;  ! Utfører “rB1:- new B” inni rA ;
-      rAA :- new AA; ! Utfører “rB2:- new B” inni rAA ;
+      rA   :- new A;   ! Utfører “rB1:- new B”  inni rA ;
+      rAA  :- new AA;  ! Utfører “rB2:- new B”  inni rAA ;
+      rAAA :- new AAA; ! Utfører “rB3:- new BB” inni rAAA ;
       
       inspect rAA do begin
       		integer ii;
@@ -33,5 +40,10 @@ begin ref(A)  rA;
       inspect rAA do inspect rA do rB1:- if bb then rB2 else getRB1; ! TRANSPLANTASJON! ;
       inspect rAA do inspect rA do rB1:- rB2;                        ! TRANSPLANTASJON! ;
       inspect rAA do inspect rA do putRB1(rB2);                      ! TRANSPLANTASJON! ;
+
+      inspect rAAA
+      	 when AAA do
+      	 	inspect rA do
+      	 		 rB1:- rB3;                                    ! TRANSPLANTASJON! ;
       
 end

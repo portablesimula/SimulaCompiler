@@ -32,13 +32,17 @@ public final class TypeConversion extends Expression {
 
 	// Test if a TypeConversion is necessary and then create it.
 	public static Expression testAndCreate(final Type toType,final Expression expression) {
-		if(toType!=null && toType.declaredIn!=null && toType.declaredIn.ctBlockLevel != expression.type.declaredIn.ctBlockLevel) {
-			Util.error("Incompatible types (Attempted Transplantation): "+expression.type+" can't be converted to "+toType);
+		Type fromType=expression.type;
+		String qual=(fromType==null)?null:fromType.getRefIdent();
+		if(qual != null) {
+			int rhsBL=(fromType!=null && fromType.declaredIn!=null)?fromType.declaredIn.ctBlockLevel : 0;
+			int lhsBL=(toType!=null && toType.declaredIn!=null)?toType.declaredIn.ctBlockLevel : 0;
+			if(rhsBL != 0 && lhsBL != 0 && rhsBL != lhsBL)
+				Util.error("Incompatible types: "+expression+" of type "+expression.type+" can't be converted to "+toType);
 		}
 		if (testCastNeccessary(toType, expression)) {
 			if(expression instanceof Constant constant) {
 				Number val=(Number)constant.value;
-				Type fromType=expression.type;
 				if(toType==Type.Integer) {
 					if(fromType==Type.Real) val=(int)Math.round(val.floatValue());
 					else if(fromType==Type.LongReal) val=(int)Math.round(val.doubleValue());

@@ -123,8 +123,7 @@ public class _PrintFile extends _OutFile {
 	 * @param n
 	 */
 	public int linesperpage(final int n) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		int prev=_LINES_PER_PAGE;
 		if(n >0 ) _LINES_PER_PAGE=n;
 		else if(n < 0) _LINES_PER_PAGE=maxint;
@@ -152,8 +151,7 @@ public class _PrintFile extends _OutFile {
 	 * @param n
 	 */
 	public void spacing(final int n) {
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		if (0 <= n && n <= _LINES_PER_PAGE)
 			_SPACING = n;
 		else
@@ -199,8 +197,7 @@ public class _PrintFile extends _OutFile {
 			throw new _SimulaRuntimeError("File not opened");
 		if (n <= 0)
 			throw new _SimulaRuntimeError("Parameter out of range");
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
+		// TODO: Complete the implementation according to Simula Standard Definition.
 		if (n > _LINES_PER_PAGE)
 			 _LINE = 1;
 		else _LINE = n;
@@ -291,7 +288,6 @@ public class _PrintFile extends _OutFile {
 	public boolean close() {
 		if (!_OPEN)
 			return (false); // File not opened
-		// TODO: Access mode actions ...
 		if (pos() != 1)
 			outimage();
 		_SPACING = 1;

@@ -6,7 +6,7 @@ Drawing("Simulating Pandemic Development",900,900) begin
 -- On the wall in meeting room 'Simula' is printed a program written in Simula I. 
 -- It is a draft simulation of a pandemic that I have translated and completed in Simula 67 
 -- 
--- Written by �ystein Myhre Andersen, 2021. 
+-- Written by Øystein Myhre Andersen, 2021. 
 -- 
 Simulation begin 
    real population=140; 

@@ -155,7 +155,6 @@ public class _InByteFile extends _ByteFile {
 	
     
     public int in2byte() {
-    	//_RT.NOT_IMPLEMENTED("in2byte"); // TODO: Implement it
     	int b1=inbyte();
     	int b2=inbyte();
     	int res=((b1<<8) | b2);

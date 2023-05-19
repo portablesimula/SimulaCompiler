@@ -85,7 +85,9 @@ public final class AssignmentOperation extends Expression {
 	@Override
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
-		return (doCodeAssignment());
+		if (this.textValueAssignment)
+			return(doCodeTextValueAssignment());
+		else return(doCodeAssignment());
 	}
 
 	// ***********************************************************************
@@ -105,36 +107,32 @@ public final class AssignmentOperation extends Expression {
 	}  
 
 	// ***********************************************************************
-	// *** CODE: doCodeAssignment -- TODO: FJERNES / RETTES //
+	// *** CODE: doCodeAssignment
 	// ***********************************************************************
 	private String doCodeAssignment() {
 		StringBuilder s = new StringBuilder();
-		if (this.textValueAssignment)
-			s.append(doCodeTextValueAssignment());
-		else {
-			// -------------------------------------------------------------------------
-			// CHECK FOR SPECIAL CASE:
-			//     OBJECT DOT ARRAY(x1,x2,...) := Expression ;
-			// SHOULD BE CODED LIKES:
-			//     <Expression-1> . ARRAY.put(x1,x2,<Expression-2>) ;
-			//     OBJECT . ARRAY.A[x+9- OBJECT.ARRAY.LB[0]]=134;
-			// -------------------------------------------------------------------------
-			if(lhs instanceof RemoteVariable rem) {
-				Expression afterDot=((RemoteVariable)lhs).var;
-				if(afterDot instanceof Variable varAfterDot &&  varAfterDot.hasArguments()) {
-					Declaration decl = varAfterDot.meaning.declaredAs;
-					Expression beforeDot = rem.obj;
-					if (decl instanceof ArrayDeclaration)
+		// -------------------------------------------------------------------------
+		// CHECK FOR SPECIAL CASE:
+		//     OBJECT DOT ARRAY(x1,x2,...) := Expression ;
+		// SHOULD BE CODED LIKES:
+		//     OBJECT.ARRAY.putELEMENT(OBJECT.ARRAY.index(x1,x2),Expression);
+		// -------------------------------------------------------------------------
+		if(lhs instanceof RemoteVariable rem) {
+			Expression afterDot=((RemoteVariable)lhs).var;
+			if(afterDot instanceof Variable varAfterDot &&  varAfterDot.hasArguments()) {
+				Declaration decl = varAfterDot.meaning.declaredAs;
+				Expression beforeDot = rem.obj;
+				System.out.println("AssignmentOperation.doCodeAssignment: beforeDot = "+beforeDot+", decl="+decl);
+				if (decl instanceof ArrayDeclaration)
+					return (doAccessRemoteArray(beforeDot, varAfterDot, rhs.toJavaCode()));
+				else if (decl instanceof Parameter par) {
+					if (par.kind == Parameter.Kind.Array)
 						return (doAccessRemoteArray(beforeDot, varAfterDot, rhs.toJavaCode()));
-					else if (decl instanceof Parameter par) {
-						if (par.kind == Parameter.Kind.Array)
-							return (doAccessRemoteArray(beforeDot, varAfterDot, rhs.toJavaCode()));
-					}
-
 				}
+
 			}
-			s.append(lhs.put(rhs.get()));
 		}
+		s.append(lhs.put(rhs.get()));
 		return(s.toString());
 	}
   

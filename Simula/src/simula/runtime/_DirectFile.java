@@ -214,7 +214,6 @@ public class _DirectFile extends _ImageFile {
 		}
 		_OPEN = false;
 		_ENDFILE=true;
-//		doPurgeAction();
 		return (true);
 	}
 
@@ -435,8 +434,6 @@ public class _DirectFile extends _ImageFile {
 		if(!_CANWRITE)
 			throw new _SimulaRuntimeError("DirectFile: deleteimage failed - 'canwrite' is false");
 		try {
-			// TODO: Complete the implementation according
-			// to Simula Standard Definition.
 			for (int i = 0; i < _RECORDSIZE; i++)
 				randomAccessFile.write(0);
 		} catch (IOException e) {
@@ -538,16 +535,14 @@ public class _DirectFile extends _ImageFile {
 	 * @return
 	 */
 	public int lock(final float timelimit,final int loc1,final int loc2) {
+		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
 		if (timelimit <= 0.0f)
 			return (-1);
 		if (_LOCKED)
 			unlock();
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
 		// Check that operations are completed within 'timelimit'
 		try {
 			int size = loc2 - loc1 + 1;
-			//fileLock = randomAccessFile.getChannel().lock(loc1, size, true);
 			fileLock = randomAccessFile.getChannel().tryLock(loc1-1, size, true);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -569,6 +564,7 @@ public class _DirectFile extends _ImageFile {
 	 * @return
 	 */
 	public boolean unlock() {
+		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
 		boolean result = checkpoint();
 		if (_LOCKED)
 			try {

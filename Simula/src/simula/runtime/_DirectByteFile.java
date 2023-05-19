@@ -184,12 +184,20 @@ public class _DirectByteFile extends _ByteFile {
 		_MAXLOC = 0;
 		_OPEN = false;
 		try {
-			randomAccessFile.close();
+			if(_PURGE) {
+				randomAccessFile.setLength(0);
+				randomAccessFile.close();
+				File file = new File(FILE_NAME.edText().trim());
+				if (file.exists()) {
+					_RT.warning("Purge "+this.getClass().getSimpleName()+" \""+file.getName()
+					+"\" failed - the underlying OS was unable to perform the delete operation");
+				}
+			} else randomAccessFile.close();
 			randomAccessFile = null;
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("I/O Error on file",e);
+			return (false);
 		}
-		doPurgeAction();
+		_OPEN = false;
 		return (true);
 	}
 
@@ -431,10 +439,9 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return
 	 */
 	public int lock(final float timelimit,final int loc1,final int loc2) {
+		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
 		if (timelimit <= 0.0f) return (-1);
 		if (_LOCKED) unlock();
-		// TODO: Complete the implementation according
-		// to Simula Standard Definition.
 		// Check that operations are completed within 'timelimit'
 		try {
 			int size = loc2 - loc1 + 1;
@@ -459,6 +466,7 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return
 	 */
 	public boolean unlock() {
+		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
 		boolean result = checkpoint();
 		if (_LOCKED)
 			try {

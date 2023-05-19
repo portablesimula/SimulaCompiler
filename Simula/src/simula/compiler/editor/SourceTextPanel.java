@@ -163,8 +163,8 @@ public class SourceTextPanel extends JPanel {
     void fillTextPane(Reader reader,int caretPosition) {
     	switch(lang) {
 			case Simula: fillTextPane(reader,caretPosition,new SimulaScanner(reader,true)); break;
-			case Java:   fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break; // TODO
-			default:     fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break; // TODO
+			case Java:   fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break;
+			default:     fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break;
     	}
     }
     

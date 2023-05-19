@@ -266,10 +266,11 @@ public class Type implements Externalizable {
 	public String toString() {
 		if(key==null) return("null");
 		if(key.getKeyWord()==KeyWord.REF) {
-			if(declaredIn==null) return("ref("+key.getValue()+')');
-//			return("ref("+declaredIn.identifier+"'"+key.getValue()+')');
-//			return("ref("+declaredIn.inspectedVariable+"'"+key.getValue()+')');
-			return("ref("+key.getValue()+"'"+declaredIn.ctBlockLevel+')');
+			if(declaredIn==null) {
+				if(qual==null) return("ref("+key.getValue()+')');
+				return("ref("+key.getValue()+") qualified by Class "+qual.identifier+" with block level "+qual.ctBlockLevel);
+			}
+			return("ref("+key.getValue()+") declared in "+declaredIn.identifier+" with block level "+declaredIn.ctBlockLevel);
 		}
 		if(this.equals(LongReal)) return("LONG REAL"); 
 		return(key.toString());

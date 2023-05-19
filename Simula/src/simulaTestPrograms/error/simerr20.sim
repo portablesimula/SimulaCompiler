@@ -1,9 +1,26 @@
- Simulation Begin
- 
- 	ref(Head) queue; -- Persons going down;
- 
- 	inspect queue do begin
- 		activate first after current;
- 		passivate;
- 	end;
- End;
+% Simulation Begin
+% 
+% 	ref(Head) queue; -- Persons going down;
+% 
+% 	inspect queue do begin
+% 		activate first after current;
+% 		passivate;
+% 	end;
+% End;
+
+begin
+	ref(C) a;
+
+	class C; begin
+		ref(D) b;
+		b:-new D;
+	end;
+	
+	C class D;;
+	
+	procedure P(x); ref(D) x;;
+	
+	inspect a do begin
+		P(b);
+	end;
+end;

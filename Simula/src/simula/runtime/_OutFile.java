@@ -130,7 +130,6 @@ public class _OutFile extends _ImageFile {
 	public boolean close() {
 		if (!_OPEN)
 			return (false); // File not opened
-		// TODO: Access mode actions ...
 		if (pos() != 1)
 			outimage();
 		image = null; // image :- NOTEXT;

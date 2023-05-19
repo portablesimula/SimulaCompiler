@@ -98,12 +98,6 @@ public class _File extends _CLASS {
 	protected boolean _CANREAD=true;
 	protected boolean _CANWRITE=true;
 	
-	//	protected boolean _SHARED;  // TODO:
-//	protected boolean _APPEND;      // TODO:
-	
-//	protected boolean _READWRITE;   // TODO:
-//	protected boolean _BYTESIZE;    // TODO:
-//	protected boolean _REWIND;      // TODO:
 	protected Charset _CHARSET=Charset.defaultCharset();
 
 	// Constructor

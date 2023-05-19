@@ -96,8 +96,9 @@ public final class Meaning {
 	@Override
 	public String toString() {
 		if (declaredAs == null)	return ("NO MEANING");
-		return ("DeclaredAs " + declaredAs + ", foundBehindInvisible=" + foundBehindInvisible + "  (rtBlockLevel="
-				+ declaredIn.rtBlockLevel + ",declaredIn=" + declaredIn + ",foundIn=" + foundIn + ')');
+		return ("DeclaredAs " + declaredAs + ", foundBehindInvisible=" + foundBehindInvisible
+				+ "  (ctBlockLevel="+ declaredIn.ctBlockLevel + ", rtBlockLevel="+ declaredIn.rtBlockLevel
+				+ ",declaredIn=" + declaredIn + ",foundIn=" + foundIn + ')');
 	}
 
 }

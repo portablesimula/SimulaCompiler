@@ -100,7 +100,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 	}
 
 	public String getVirtualIdentifier() {
-		ClassDeclaration specifiedIn=(ClassDeclaration)this.declaredIn; // TODO: Kan 'specifiedIn' fjernes
+		ClassDeclaration specifiedIn=(ClassDeclaration)this.declaredIn;
 		return (getJavaIdentifier() + '_' + specifiedIn.prefixLevel() + "()");
 	}
 	  

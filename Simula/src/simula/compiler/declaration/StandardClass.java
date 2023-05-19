@@ -554,7 +554,7 @@ public final class StandardClass extends ClassDeclaration
 	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
 	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
 	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
-	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"in2byte");  // TODO: Extension to Simula Standard
+	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"in2byte");  // Extension to Simula Standard
 	  InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
   }  
   

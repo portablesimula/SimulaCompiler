@@ -47,7 +47,7 @@ public abstract class DeclarationScope extends Declaration {
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		Util.FATAL_ERROR("BlockDeclaration.findVisibleAttributeMeaning: SHOULD BEEN REDEFINED");
+		Util.FATAL_ERROR("DeclarationScope.findVisibleAttributeMeaning: SHOULD BEEN REDEFINED");
 		return (null);
 	}
 	  
