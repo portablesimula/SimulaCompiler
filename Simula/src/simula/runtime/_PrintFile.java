@@ -7,12 +7,9 @@
  */
 package simula.runtime;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 /**
  * The Class PrintFile.
@@ -73,12 +70,14 @@ import java.io.OutputStreamWriter;
  *
  */
 public class _PrintFile extends _OutFile {
-	private int _DEFAULT_LINES_PER_PAGE=66;
-	public int _LINES_PER_PAGE=66;
+	private int _DEFAULT_LINES_PER_PAGE=56;//66;
+	public int _LINES_PER_PAGE=56;//66;
 	private int _SPACING=1;
 	private int _LINE;
-	private int _PAGE; // TODO:
-
+	private int _PAGE;
+	
+	private _Printer _PRINTER;
+	
 	// Constructor
     public _PrintFile(final _RTObject staticLink,final _TXT FILENAME) {
     	super(staticLink,FILENAME);
@@ -95,9 +94,10 @@ public class _PrintFile extends _OutFile {
 	}
 
 	public int page() {
+//		System.out.println("_PrintFile.page: "+_PAGE);
 		return (_PAGE);
 	}
-
+	
 	/**
 	 * <pre>
 	 * integer procedure linesperpage(n); integer n;
@@ -123,7 +123,6 @@ public class _PrintFile extends _OutFile {
 	 * @param n
 	 */
 	public int linesperpage(final int n) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
 		int prev=_LINES_PER_PAGE;
 		if(n >0 ) _LINES_PER_PAGE=n;
 		else if(n < 0) _LINES_PER_PAGE=maxint;
@@ -151,11 +150,9 @@ public class _PrintFile extends _OutFile {
 	 * @param n
 	 */
 	public void spacing(final int n) {
-		// TODO: Complete the implementation according to Simula Standard Definition.
-		if (0 <= n && n <= _LINES_PER_PAGE)
-			_SPACING = n;
-		else
-			throw new _SimulaRuntimeError("Parameter out of range");
+		if (n < 0 || n > _LINES_PER_PAGE)
+			throw new _SimulaRuntimeError("Spacing("+n+") - Parameter out of range");
+		_SPACING = (n==0)?1:n; // spacing(0) has the same effect as spacing(1)
 	}
 
 	/**
@@ -192,15 +189,26 @@ public class _PrintFile extends _OutFile {
 	 * 
 	 * @param n
 	 */
-	public void eject(final int n) {
+	public void eject(int n) {
+//		System.out.println("_PrintFile: eject "+n+", _PRINTER="+_PRINTER);
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("File not opened");
 		if (n <= 0)
-			throw new _SimulaRuntimeError("Parameter out of range");
-		// TODO: Complete the implementation according to Simula Standard Definition.
-		if (n > _LINES_PER_PAGE)
-			 _LINE = 1;
-		else _LINE = n;
+			throw new _SimulaRuntimeError("Parameter out of range: eject "+n);
+		if (n > _LINES_PER_PAGE) n = 1;
+		if(n <= _LINE) {
+			_PAGE = _PAGE + 1;
+			if(_PRINTER!=null) {
+//				System.out.println("_PrintFile: eject "+n+", Page="+_PAGE);
+				_PRINTER.newPage(_PAGE);
+				for(int i=1;i<n;i++) _PRINTER.addLine(null);
+			}
+		} else {
+			int diff= n - _LINE;
+//			System.out.println("_PrintFile: eject "+n+", diff="+diff+", Page="+_PAGE);
+			for(int i=0;i<diff;i++) _PRINTER.addLine(null);
+		}
+		_LINE=n;
 	}
 
 	/**
@@ -229,6 +237,7 @@ public class _PrintFile extends _OutFile {
 		if(_RT.DEBUGGING) TRACE_OPEN("Open PrintFile");
 		if (_OPEN) return (false); // File already opened
 		_PAGE = 0;
+		_LINE = 1;
 		_OPEN = true;
 		this.image = image;
 		_ASGTXT(image,null); // image := NOTEXT; ???
@@ -236,16 +245,12 @@ public class _PrintFile extends _OutFile {
 		//_RT.BREAK("OutFile.open: Filename=" + FILE_NAME);
 		if (FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
 			if(_RT.console!=null) writer=_RT.console.getWriter();
-			else writer = new OutputStreamWriter(System.out,_CHARSET);
+//			else writer = new OutputStreamWriter(System.out,_CHARSET);
+			else writer = new PrintWriter(System.out,true,_CHARSET);
 		} else {
-			File file=doCreateAction(new File(FILE_NAME.edText()));
-			try {
-				OutputStream outputStream = new FileOutputStream(file);
-				writer = new OutputStreamWriter(outputStream,_CHARSET);
-			} catch (FileNotFoundException e) {
-				//e.printStackTrace();
-				return (false);
-			}
+			_PRINTER=new _Printer(FILE_NAME.edText(),_FONT,_ORIENTATION,_ASK,_LEFT_MARGIN, _RIGHT_MARGIN, _TOP_MARGIN, _BOT_MARGIN);
+			_DEFAULT_LINES_PER_PAGE = _LINES_PER_PAGE = _PRINTER.linesPerSheet;
+			//System.out.println("_PrintFile: open \""+image+'"'+"  ====> "+_PRINTER);
 		}
 		eject(1);
 		return (true);
@@ -295,14 +300,17 @@ public class _PrintFile extends _OutFile {
 		_LINES_PER_PAGE = 0;
 		_LINE = 0;
 		image = null; // image :- NOTEXT;
-		if (!FILE_NAME.edText().equalsIgnoreCase("#sysout"))
-		try {
-			writer.flush();
-			writer.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			return (false);
-		} //else console.close();
+		if (!FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
+			if(_PRINTER!=null) {
+				_PRINTER.print();
+			} else try {
+				writer.flush();
+				writer.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				return (false);
+			} //else console.close();
+		}
 		_OPEN = false;
 		doPurgeAction();
 		return (true);
@@ -335,15 +343,25 @@ public class _PrintFile extends _OutFile {
 	 * are updated.
 	 */
 	public void outimage() {
-		//System.out.println("_PrintFile.outimage(), image="+image);
-		if (!_OPEN)
-			throw new _SimulaRuntimeError("File not opened");
-		if (_LINE > _LINES_PER_PAGE)
-			eject(1);
+//		System.out.println("_PrintFile.outimage(), _LINES_PER_PAGE="+_LINES_PER_PAGE+", _LINE="+_LINE+", _PAGE="+_PAGE);
+		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
+		if (_LINE > _LINES_PER_PAGE) eject(1);
 		try {
-			String s=(image==null)?"\n":(image.edStripedText()+'\n');
-			writer.write(s);
-			writer.flush();
+			if(_PRINTER!=null) {
+				String line=image.edStripedText();
+//				System.out.println("_PrintFile.outimage(), line="+line);
+				_PRINTER.addLine(line);
+				if(_SPACING > 1) {
+					for(int i=1;i<_SPACING;i++) _PRINTER.addLine(null);
+				}
+			} else {
+				String line=(image==null)?"\n":(image.edStripedText()+'\n');
+				writer.write(line);
+				if(_SPACING > 1) {
+					for(int i=1;i<_SPACING;i++) writer.write("\n");
+				}
+				writer.flush();
+			}
 		} catch (IOException e) {
 			throw new _SimulaRuntimeError("Outimage failed", e);
 		}

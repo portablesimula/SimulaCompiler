@@ -283,7 +283,7 @@ public final class CallProcedure {
 						else if(decl instanceof ArrayDeclaration) kind=Parameter.Kind.Array;
 						else if(decl instanceof LabelDeclaration) kind=Parameter.Kind.Label;
 						else if(decl instanceof ClassDeclaration) kind=Parameter.Kind.Simple; // Error Recovery
-						else Util.FATAL_ERROR("TODO: Flere sånne tilfeller ???");
+						else Util.FATAL_ERROR("Flere sånne tilfeller ???");
 					}
 					Parameter.Mode mode=Parameter.Mode.name; // NOTE: ALL PARAMETERS BY'NAME !!!
 					s.append(doParameterTransmition(formalType,kind,mode,actualParameter));
@@ -526,7 +526,7 @@ public final class CallProcedure {
     	    	}
 			} else if (decl instanceof VirtualSpecification vir) {
 				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
-			} else Util.FATAL_ERROR("TODO: Flere sånne(1) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
+			} else Util.FATAL_ERROR("Flere sånne(1) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			return(procQuant);
 	    } else if (actualParameter instanceof RemoteVariable rem) {
 			// Check for <ObjectExpression> DOT <Variable>
@@ -540,7 +540,7 @@ public final class CallProcedure {
     	    		VirtualSpecification vir = procedure.myVirtual.virtualSpec;
     				return(staticLink+'.'+vir.getVirtualIdentifier());
     	    	}
-			} else Util.FATAL_ERROR("TODO: Flere sånne(2) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
+			} else Util.FATAL_ERROR("Flere sånne(2) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			String procIdent = var.meaning.declaredAs.getJavaIdentifier();
 			return("new _PRCQNT(" + staticLink + "," + procIdent + ".class)");
 		} else Util.error("Illegal Procedure Expression as Actual Parameter: " + actualParameter);

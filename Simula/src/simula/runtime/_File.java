@@ -7,10 +7,14 @@
  */
 package simula.runtime;
 
+import java.awt.Font;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.swing.JFileChooser;
+import java.util.StringTokenizer;
 
 /**
  * The class file.
@@ -194,26 +198,29 @@ public class _File extends _CLASS {
 		//System.out.println(this.getClass().getSimpleName()+"("+FILE_NAME.edText()+").setaccess: "+mode.edText());
 		//_RT.BREAK("FILE(FILE_NAME).setaccess: "+mode.edText());
 		//_RT.NOT_IMPLEMENTED("FILE(FILE_NAME).setaccess: "+mode.edText());
-		String id=mode.edText().trim().toUpperCase();
+		String id=mode.edText().trim();
+		String ID=id.toUpperCase();
 		boolean unrecognized=false;
-//		else if(id.equals("SHARED")) notImplemented=true; 
-//		else if(id.equals("NOSHARED")) notImplemented=true; 
-//		else if(id.equals("APPEND")) notImplemented=true; 
-//		else if(id.equals("NOAPPEND")) notImplemented=true; 
-		if(id.equals("CREATE")) _CREATE=_CreateAction.create; 
-		else if(id.equals("NOCREATE")) _CREATE=_CreateAction.noCreate; 
-		else if(id.equals("ANYCREATE")) _CREATE=_CreateAction.anyCreate; 
-		else if(id.equals("READONLY"))  { _CANWRITE=false; _CANREAD=true; }
-		else if(id.equals("WRITEONLY")) { _CANWRITE=true; _CANREAD=false; }
-		else if(id.equals("READWRITE")) { _CANWRITE=true; _CANREAD=true; }
-//		else if(id.equals("BYTESIZE:X")) notImplemented=true; 
-//		else if(id.equals("REWIND")) notImplemented=true; 
-//		else if(id.equals("NOREWIND")) notImplemented=true; 
-		else if(id.equals("PURGE")) _PURGE=true; 
-		else if(id.equals("NOPURGE")) _PURGE=false; 
+//		else if(ID.equals("SHARED")) notImplemented=true; 
+//		else if(ID.equals("NOSHARED")) notImplemented=true; 
+//		else if(ID.equals("APPEND")) notImplemented=true; 
+//		else if(ID.equals("NOAPPEND")) notImplemented=true; 
+		if(ID.equalsIgnoreCase("CREATE")) _CREATE=_CreateAction.create; 
+		else if(ID.equals("NOCREATE")) _CREATE=_CreateAction.noCreate; 
+		else if(ID.equals("ANYCREATE")) _CREATE=_CreateAction.anyCreate; 
+		else if(ID.equals("READONLY"))  { _CANWRITE=false; _CANREAD=true; }
+		else if(ID.equals("WRITEONLY")) { _CANWRITE=true; _CANREAD=false; }
+		else if(ID.equals("READWRITE")) { _CANWRITE=true; _CANREAD=true; }
+//		else if(ID.equals("BYTESIZE:X")) notImplemented=true; 
+//		else if(ID.equals("REWIND")) notImplemented=true; 
+//		else if(ID.equals("NOREWIND")) notImplemented=true; 
+		else if(ID.equals("PURGE")) _PURGE=true; 
+		else if(ID.equals("NOPURGE")) _PURGE=false; 
 		
-		else if(id.startsWith("%NOBUFFER")) ; // S-PORT: Ignore
-		else if(id.startsWith("CHARSET")) setCharset(id);
+		else if(ID.startsWith("%NOBUFFER")) ; // S-PORT: Ignore
+		else if(ID.startsWith("CHARSET")) setCharset(ID);
+		else if(ID.startsWith("FONT")) setFont(id);
+		else if(ID.startsWith("MARGINS")) setMargins(id);
 		else unrecognized=true;
 		if(unrecognized) {
 			_RT.warning("FILE("+FILE_NAME.edText()+").setaccess("+id+") -- is not recognized.");			
@@ -237,6 +244,65 @@ public class _File extends _CLASS {
 		}
 		_RT.println("CHARSET: _CHARSET="+_CHARSET);
 		return(false);
+	}
+	
+	protected Font _FONT=null;//new Font(Font.MONOSPACED, Font.PLAIN, 12);
+	protected int _ORIENTATION=PageFormat.PORTRAIT;
+	protected boolean _ASK=false;
+	protected double _LEFT_MARGIN=0, _RIGHT_MARGIN=0, _TOP_MARGIN=0, _BOT_MARGIN=0;
+
+	
+	protected boolean setFont(String id) {
+		String fld=id.substring(4).trim();
+//		System.out.println("FONT: "+id);
+		if(fld.startsWith(":")) {
+			fld=fld.substring(1).trim();
+			
+			StringTokenizer st = new StringTokenizer(fld);
+			String fontName=st.nextToken();
+			int style=Font.PLAIN;
+			int size=12;
+			while (st.hasMoreTokens()) {
+		         String token=st.nextToken();
+//		         System.out.println(token);
+		         if(token.equalsIgnoreCase("PLAIN")) style=Font.PLAIN;
+		         else if(token.equalsIgnoreCase("ITALIC")) style=Font.ITALIC;
+		         else if(token.equalsIgnoreCase("BOLD")) style=style|Font.BOLD;
+		         else if(token.equalsIgnoreCase("PORTRAIT")) _ORIENTATION=PageFormat.PORTRAIT;
+		         else if(token.equalsIgnoreCase("LANDSCAPE")) _ORIENTATION=PageFormat.LANDSCAPE;
+		         else if(token.equalsIgnoreCase("ASK")) _ASK=true;
+		         //else if(token.equalsIgnoreCase("REVERSE_LANDSCAPE")) _ORIENTATION=PageFormat.REVERSE_LANDSCAPE;
+		         else try { size=Integer.decode(token); } catch(Exception e) {}
+			}
+			_FONT=new Font(fontName,style,size);
+		}
+//		System.out.println("FONT: "+_FONT+"  "+edit(_ORIENTATION));
+		return(false);
+	}
+	
+	protected boolean setMargins(String id) {
+		String fld=id.substring(7).trim();
+//		System.out.println("FONT: "+id);
+		if(fld.startsWith(":")) {
+			fld=fld.substring(1).trim();
+			
+			StringTokenizer st = new StringTokenizer(fld," ");
+			try {
+				_LEFT_MARGIN=Double.parseDouble(st.nextToken());
+				_RIGHT_MARGIN=Double.parseDouble(st.nextToken());
+				_TOP_MARGIN=Double.parseDouble(st.nextToken());
+				_BOT_MARGIN=Double.parseDouble(st.nextToken());
+			} catch(Exception e) {}
+		}
+//		System.out.println("MARGINS: "+_LEFT_MARGIN+" "+_RIGHT_MARGIN+" "+_TOP_MARGIN+" "+_BOT_MARGIN);
+		return(false);
+	}
+	
+	private String edit(int orientation) {
+		if(orientation==PageFormat.LANDSCAPE) return("LANDSCAPE");
+		if(orientation==PageFormat.PORTRAIT) return("PORTRAIT");
+		if(orientation==PageFormat.REVERSE_LANDSCAPE) return("REVERSE_LANDSCAPE");
+		return(null);
 	}
 
 

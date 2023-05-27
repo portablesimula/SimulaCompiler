@@ -57,8 +57,9 @@ public final class ConnectionBlock extends DeclarationScope {
 		Meaning result = classDeclaration.findRemoteAttributeMeaning(identifier);
 		if (result != null) {
 			result.declaredIn = this;
-		} else if (declaredIn != null)
+		} else if (declaredIn != null) {
 			result = declaredIn.findMeaning(identifier);
+		}
 		if (result == null) {
 			Util.error("Undefined variable: " + identifier);
 			result = new Meaning(null, null); // Error Recovery: No Meaning

@@ -171,7 +171,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		else if(insType==AbstractInsnNode.LDC_INSN) {
 			LdcInsnNode lprev=(LdcInsnNode)pushLabelIndexInstrution;
 			Object cst=lprev.cst;
-			//labelIndex=VALUE(cst); // TODO: Hva gjør vi her ??
+			//labelIndex=VALUE(cst); // Hva gjør vi her ??
 			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: UNKNOWN ", pushLabelIndexInstrution.getPrevious().getPrevious(), 8);
 			Util.NOT_IMPLEMENTED("More than 32767 labels in same Block (cst="+cst+')');
 		} else {

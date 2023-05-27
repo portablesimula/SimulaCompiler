@@ -1426,7 +1426,7 @@ public class _ENVIRONMENT extends _RTObject {
     		ModuleIdent=ModuleIdent.substring(0,ModuleIdent.length()-4).toLowerCase();
     		if(Option.VERBOSE) _RT.println("getTextInfo(25) ModuleIdent=\""+ModuleIdent+'"');
     		return(new _TXT(ModuleIdent)); // Modid par of source file name in lower case 
-    	default: _RT.NOT_IMPLEMENTED("getTextInfo: "+index); // TODO: Implement it
+    	default: _RT.NOT_IMPLEMENTED("getTextInfo: "+index);
     	}
     	return(null);
     }
@@ -1630,7 +1630,7 @@ public class _ENVIRONMENT extends _RTObject {
     		case 30:
         		if(Option.VERBOSE) _RT.println("getIntInfo(30)  SimobLevel="+_RT.SPORT_Option.SimobLevel);
     			return(_RT.SPORT_Option.SimobLevel);  // simob_level
-    		default: _RT.NOT_IMPLEMENTED("getIntInfo: "+index); // TODO: Implement it
+    		default: _RT.NOT_IMPLEMENTED("getIntInfo: "+index);
     	}
     	return(0);
     }
@@ -1667,7 +1667,7 @@ public class _ENVIRONMENT extends _RTObject {
      */
     private static int PASS_NO=1;
     public static void giveIntInfo(final int index,final int info) {
-    	//_RT.NOT_IMPLEMENTED("giveIntInfo"); // TODO: Implement it
+    	//_RT.NOT_IMPLEMENTED("giveIntInfo");
     	if(Option.VERBOSE) _RT.println("giveIntInfo: index="+index+", info="+info);
     	StringBuilder sb=new StringBuilder();
     	switch(index) {
@@ -1747,7 +1747,7 @@ public class _ENVIRONMENT extends _RTObject {
 	    	case 5: // newTag check-point with Stack trace
 	        	if(Option.VERBOSE) _RT.println("rts_utility: index=5: newTag should be changed to newTTag(ident)");
 	        	break;
-    		default: _RT.NOT_IMPLEMENTED("rts_utility: index="+index+", level="+level); // TODO: Implement it
+    		default: _RT.NOT_IMPLEMENTED("rts_utility: index="+index+", level="+level);
     	}
 		printStaticChain();
         try {Thread.sleep(10);}catch(Exception e) {}

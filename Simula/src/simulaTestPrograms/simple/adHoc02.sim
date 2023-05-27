@@ -1,9 +1,18 @@
-Simulation Begin
+begin
 
-	ref(Head) queue; -- Persons going down;
-
-	inspect queue do begin
-		activate first after current;
-		passivate;
+	procedure test1; begin
+		-- Plain printing using defaults
+		inspect new printFile("PrintFile") do begin
+			integer i;
+			open(blanks(80));
+			for i:=1 step 1 until 77 do begin
+				outtext("Page "); outint(page,0); outtext("  Line "); outint(i,0);
+				setpos(78); outtext("XX"); outimage;
+			end;
+			close;
+		end;
 	end;
-End;
+	
+	test1;
+		
+end;

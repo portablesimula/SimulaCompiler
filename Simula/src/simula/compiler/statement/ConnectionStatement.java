@@ -56,12 +56,15 @@ public final class ConnectionStatement extends Statement {
 		inspectedVariable = new Variable(ident);
 		inspectVariableDeclaration = new SimpleVariableDeclaration(Type.Ref("RTObject"), ident);
 		DeclarationScope scope = Global.getCurrentScope();
-		while (scope.declarationKind == null || scope instanceof ConnectionBlock)
+		while (scope.declarationKind == null || scope instanceof ConnectionBlock) {
 			scope = scope.declaredIn;
+		}
 		scope.declarationList.add(inspectVariableDeclaration);
 
+		boolean hasDoPart=false;
 		boolean hasWhenPart=false;
 		if (Parser.accept(KeyWord.DO)) {
+			hasDoPart = true;
 			ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, null);
 			Statement statement = Statement.doParse();
 			connectionPart.add(new DoPart(connectionBlock, statement));
@@ -77,6 +80,7 @@ public final class ConnectionStatement extends Statement {
 				connectionBlock.end();
 			}
 		}
+		if(!(hasDoPart | hasWhenPart)) Util.error("Incomplete Inspect statement: "+objectExpression);
 		Statement otherwise = null;
 		if (Parser.accept(KeyWord.OTHERWISE)) otherwise = Statement.doParse();
 		this.otherwise=otherwise;

@@ -84,8 +84,6 @@ public final class ConditionalStatement extends Statement {
 
 	
 	@Override
-	// TODO: Kan optimaliseres til å gjenkjenne Label inne i Conditional
-	//       statement grenene. Og bare legge inn  _VALUE(condition)  da !
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
 		ASSERT_SEMANTICS_CHECKED(this);

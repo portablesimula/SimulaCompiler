@@ -74,10 +74,6 @@ public final class StandardClass extends ClassDeclaration
   // ******************************************************************
   // *** The Standard Class ENVIRONMENT
   // ******************************************************************
-  // TODO: Rettes slik at alle genererte metoder blir static.
-  //       Ta med et flag (enten i klassen eller i alle procedurene
-  //       Dettte svarer til diskusjonen om innføring av 'context class'
-  //  
   public static StandardClass ENVIRONMENT=new StandardClass("RTObject","ENVIRONMENT");
   static {
 	UNIVERSE.addStandardClass(ENVIRONMENT); // Declared in UNIVERSE

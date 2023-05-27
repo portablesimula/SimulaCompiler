@@ -132,7 +132,7 @@ public final class TestCompiler {
 		// String name="/error/simerr15.sim"; // Constants
 		// String name="/error/simerr16.sim"; // Illegal lhs in assignment
 		// String name="/error/simerr17.sim"; // Transplantation
-		 String name="/error/simerr18.sim"; // Transplantation
+		// String name="/error/simerr18.sim"; // Transplantation
 		// String name="/error/simerr19.sim"; // Transplantation
 		// String name="/error/simerr20.sim"; // Transplantation
 		
@@ -174,7 +174,7 @@ public final class TestCompiler {
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
-		// String name="/simple/adHoc04.sim";
+		 String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
 		// String name="/simple/adHoc06.sim";
 		// String name="/simple/adHoc26.sim";
@@ -254,14 +254,14 @@ public final class TestCompiler {
 
 			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
-			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			
 			
 			// Set RunTime Options and tracing.
-//			RTOption.VERBOSE = true;//false;//true;
+			RTOption.VERBOSE = true;//false;//true;
 			RTOption.DEBUGGING = false;//true;
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;

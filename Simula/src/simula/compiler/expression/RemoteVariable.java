@@ -73,7 +73,7 @@ public final class RemoteVariable extends Expression {
 		if (objType == Type.Text)
 			return (doRemoteTextChecking(obj, attr));
 
-		objType.doChecking(Global.getCurrentScope()); // Nødvendig hvis TypeDeclaration er nedenfor TODO: ER DETTE OK ?
+		objType.doChecking(Global.getCurrentScope()); // Nødvendig hvis TypeDeclaration er nedenfor
 		ClassDeclaration qual = objType.getQual();
 		if (qual == null)
 			Util.error("doRemoteChecking: Object Expression (" + obj + ") is not a ref() type rather " + objType);

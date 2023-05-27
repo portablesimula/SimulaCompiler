@@ -364,7 +364,7 @@ public abstract class Expression extends SyntaxClass {
 		    }
 		    return(null);
 	    } else if(this instanceof TypeConversion conv) {
-	    	return(conv.expression.getNumber()); // TODO: Hva hvis   (int)3.14  som real
+	    	return(conv.expression.getNumber()); // Hva hvis   (int)3.14  som real
 	    }
 	    return(null);
     }
