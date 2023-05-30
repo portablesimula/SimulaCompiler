@@ -7,9 +7,16 @@
  */
 package simula.runtime;
 
+import java.awt.Font;
+import java.awt.print.Book;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
+import javax.print.PrintService;
 
 /**
  * The Class PrintFile.
@@ -70,13 +77,11 @@ import java.io.PrintWriter;
  *
  */
 public class _PrintFile extends _OutFile {
-	private int _DEFAULT_LINES_PER_PAGE=56;//66;
-	public int _LINES_PER_PAGE=56;//66;
+	private int _DEFAULT_LINES_PER_PAGE=66;
+	public int _LINES_PER_PAGE=66;
 	private int _SPACING=1;
 	private int _LINE;
 	private int _PAGE;
-	
-	private _Printer _PRINTER;
 	
 	// Constructor
     public _PrintFile(final _RTObject staticLink,final _TXT FILENAME) {
@@ -98,6 +103,109 @@ public class _PrintFile extends _OutFile {
 		return (_PAGE);
 	}
 	
+	/**
+	 * <pre>
+	 * Boolean procedure open(fileimage);  text fileimage;
+	 * if ... then
+	 * begin ... 
+	 *    image :- fileimage;
+	 *    PAGE  := 0;
+	 *    LINE  := 1;
+	 *    setpos(1);
+	 *    eject(1);
+	 *    open  := OPEN := true;
+	 * end open;
+	 * </pre>
+	 * <p>
+	 * Procedure "open" establishes the association with an external file (as
+	 * identified by FILENAME), checks the access modes and causes corresponding
+	 * opening actions on the external file. If the external file is closed, it
+	 * is opened. *
+	 * 
+	 * @param image
+	 * @return true if successful, otherwise false.
+	 */
+	public boolean open(final _TXT image) {
+		if(_RT.DEBUGGING) TRACE_OPEN("Open PrintFile");
+		if (_OPEN) return (false); // File already opened
+		_PAGE = 0;
+		_LINE = 1;
+		_OPEN = true;
+		this.image = image;
+		_ASGTXT(image,null); // image := NOTEXT; ???
+		setpos(1);
+		//_RT.BREAK("OutFile.open: Filename=" + FILE_NAME);
+		if (FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
+			if(_RT.console!=null) writer=_RT.console.getWriter();
+//			else writer = new OutputStreamWriter(System.out,_CHARSET);
+			else writer = new PrintWriter(System.out,true,_CHARSET);
+		} else {
+			init_Printer();
+		}
+		eject(1);
+		return (true);
+	}
+
+	/**
+	 * <pre>
+	 * Boolean procedure close;
+	 * if OPEN then
+	 * begin ... ! 
+	 *    if pos <> 1 then outimage;
+	 *    
+	 *    eject(LINES_PER_PAGE);
+	 *    PAGE := ... ;
+	 *    LINE := 0;
+	 *    SPACING := 1;
+	 *    LINES_PER_PAGE:= ... ;
+	 *    
+	 *    
+	 *    image :- notext;
+	 *    ... ; ! perform closing actions on external file;
+	 *    OPEN  := false;
+	 *    close := true;
+	 * end close;
+	 * </pre>
+	 * <p>
+	 * Procedure "close" causes closing actions on the external file, as
+	 * specified by the access modes. In addition, the association between the
+	 * file object and the external file is dissolved. If possible, the external
+	 * file is closed.
+	 * <p>
+	 * The procedure "close" calls "outimage" if the position indicator is not
+	 * equal to 1.
+	 * <p>
+	 * If successful, "close" returns true. In addition, PAGE, LINE, SPACING,
+	 * LINES_PER_PAGE, OPEN and "image" are reinitiated.
+	 * 
+	 * @return true if successful, otherwise false.
+	 */
+	public boolean close() {
+		if (!_OPEN)
+			return (false); // File not opened
+		if (pos() != 1)
+			outimage();
+		_SPACING = 1;
+		//eject(_LINES_PER_PAGE); // TODO:
+		_LINES_PER_PAGE = 0;
+		_LINE = 0;
+		image = null; // image :- NOTEXT;
+		if (!FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
+			if(writer==null) {
+				print();
+			} else try {
+				writer.flush();
+				writer.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				return (false);
+			} //else console.close();
+		}
+		_OPEN = false;
+		doPurgeAction();
+		return (true);
+	}
+
 	/**
 	 * <pre>
 	 * integer procedure linesperpage(n); integer n;
@@ -198,122 +306,17 @@ public class _PrintFile extends _OutFile {
 		if (n > _LINES_PER_PAGE) n = 1;
 		if(n <= _LINE) {
 			_PAGE = _PAGE + 1;
-			if(_PRINTER!=null) {
+			if(writer==null) {
 //				System.out.println("_PrintFile: eject "+n+", Page="+_PAGE);
-				_PRINTER.newPage(_PAGE);
-				for(int i=1;i<n;i++) _PRINTER.addLine(null);
+				newPage(_PAGE);
+				for(int i=1;i<n;i++) addLine(null);
 			}
 		} else {
 			int diff= n - _LINE;
 //			System.out.println("_PrintFile: eject "+n+", diff="+diff+", Page="+_PAGE);
-			for(int i=0;i<diff;i++) _PRINTER.addLine(null);
+			for(int i=0;i<diff;i++) addLine(null);
 		}
 		_LINE=n;
-	}
-
-	/**
-	 * <pre>
-	 * Boolean procedure open(fileimage);  text fileimage;
-	 * if ... then
-	 * begin ... 
-	 *    image :- fileimage;
-	 *    PAGE  := 0;
-	 *    LINE  := 1;
-	 *    setpos(1);
-	 *    eject(1);
-	 *    open  := OPEN := true;
-	 * end open;
-	 * </pre>
-	 * <p>
-	 * Procedure "open" establishes the association with an external file (as
-	 * identified by FILENAME), checks the access modes and causes corresponding
-	 * opening actions on the external file. If the external file is closed, it
-	 * is opened. *
-	 * 
-	 * @param image
-	 * @return true if successful, otherwise false.
-	 */
-	public boolean open(final _TXT image) {
-		if(_RT.DEBUGGING) TRACE_OPEN("Open PrintFile");
-		if (_OPEN) return (false); // File already opened
-		_PAGE = 0;
-		_LINE = 1;
-		_OPEN = true;
-		this.image = image;
-		_ASGTXT(image,null); // image := NOTEXT; ???
-		setpos(1);
-		//_RT.BREAK("OutFile.open: Filename=" + FILE_NAME);
-		if (FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
-			if(_RT.console!=null) writer=_RT.console.getWriter();
-//			else writer = new OutputStreamWriter(System.out,_CHARSET);
-			else writer = new PrintWriter(System.out,true,_CHARSET);
-		} else {
-			_PRINTER=new _Printer(FILE_NAME.edText(),_FONT,_ORIENTATION,_ASK,_LEFT_MARGIN, _RIGHT_MARGIN, _TOP_MARGIN, _BOT_MARGIN);
-			_DEFAULT_LINES_PER_PAGE = _LINES_PER_PAGE = _PRINTER.linesPerSheet;
-			//System.out.println("_PrintFile: open \""+image+'"'+"  ====> "+_PRINTER);
-		}
-		eject(1);
-		return (true);
-	}
-
-	/**
-	 * <pre>
-	 * Boolean procedure close;
-	 * if OPEN then
-	 * begin ... ! 
-	 *    if pos <> 1 then outimage;
-	 *    
-	 *    eject(LINES_PER_PAGE);
-	 *    PAGE := ... ;
-	 *    LINE := 0;
-	 *    SPACING := 1;
-	 *    LINES_PER_PAGE:= ... ;
-	 *    
-	 *    
-	 *    image :- notext;
-	 *    ... ; ! perform closing actions on external file;
-	 *    OPEN  := false;
-	 *    close := true;
-	 * end close;
-	 * </pre>
-	 * <p>
-	 * Procedure "close" causes closing actions on the external file, as
-	 * specified by the access modes. In addition, the association between the
-	 * file object and the external file is dissolved. If possible, the external
-	 * file is closed.
-	 * <p>
-	 * The procedure "close" calls "outimage" if the position indicator is not
-	 * equal to 1.
-	 * <p>
-	 * If successful, "close" returns true. In addition, PAGE, LINE, SPACING,
-	 * LINES_PER_PAGE, OPEN and "image" are reinitiated.
-	 * 
-	 * @return true if successful, otherwise false.
-	 */
-	public boolean close() {
-		if (!_OPEN)
-			return (false); // File not opened
-		if (pos() != 1)
-			outimage();
-		_SPACING = 1;
-		//eject(_LINES_PER_PAGE); // TODO:
-		_LINES_PER_PAGE = 0;
-		_LINE = 0;
-		image = null; // image :- NOTEXT;
-		if (!FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
-			if(_PRINTER!=null) {
-				_PRINTER.print();
-			} else try {
-				writer.flush();
-				writer.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				return (false);
-			} //else console.close();
-		}
-		_OPEN = false;
-		doPurgeAction();
-		return (true);
 	}
 
 	/**
@@ -347,12 +350,12 @@ public class _PrintFile extends _OutFile {
 		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
 		if (_LINE > _LINES_PER_PAGE) eject(1);
 		try {
-			if(_PRINTER!=null) {
+			if(writer==null) {
 				String line=image.edStripedText();
 //				System.out.println("_PrintFile.outimage(), line="+line);
-				_PRINTER.addLine(line);
+				addLine(line);
 				if(_SPACING > 1) {
-					for(int i=1;i<_SPACING;i++) _PRINTER.addLine(null);
+					for(int i=1;i<_SPACING;i++) addLine(null);
 				}
 			} else {
 				String line=(image==null)?"\n":(image.edStripedText()+'\n');
@@ -401,5 +404,111 @@ public class _PrintFile extends _OutFile {
 		_LINE = _LINE + _SPACING;
 		setpos(1);
 	}
+
+	
+	// ===========================================================================================================
+	//
+	//   Page oriented Print Service
+	//
+	// ===========================================================================================================
+	// Paper size: http://en.wikipedia.org/wiki/ISO_216
+	// 
+	// Stående A4: Width:  8.3  inches = 210 mm =  595 pixels
+	//             Height: 11.7 inches = 297 mm =  842 pixels.
+	//
+	// Stående A3: Width:  11.7 inches = 297 mm =  842 pixels
+	//             Height: 16.5 inches = 420 mm = 1191 pixels.
+	// ===========================================================================================================
+	private static final double inch=0.02540; // 1 inch == 0.02540 meter
+	private static final int printerDPI=72; // DPI = Dots Per Inch
+	private static final double pixelsPerMeter=((double)printerDPI)/inch;
+	private static final double pixelsPerMilli=pixelsPerMeter/1000.0d;
+
+	private PrinterJob printerJob;
+	private Book book;
+	private _PrintPage currentPrintPage;
+	PageFormat pageFormat;
+	float lineGap; // 
+	private int linesPerSheet;
+
+	private void init_Printer() {
+		if(_FONT==null) {
+			this._FONT=new Font(Font.MONOSPACED, Font.PLAIN, 12);
+			_ORIENTATION=PageFormat.PORTRAIT;
+		}
+		printerJob=PrinterJob.getPrinterJob();
+		book=new Book();
+		printerJob.setPageable(book);
+
+		pageFormat=printerJob.defaultPage();
+		pageFormat.setOrientation(_ORIENTATION);
+		setMargins(pageFormat,_LEFT_MARGIN,_RIGHT_MARGIN,_TOP_MARGIN,_BOT_MARGIN);
+		if(_ASK) pageFormat=printerJob.pageDialog(pageFormat);
+		lineGap=this._FONT.getSize2D()*1.25f;
+		linesPerSheet=(int) (pageFormat.getImageableHeight()/(double)lineGap);
+		_DEFAULT_LINES_PER_PAGE = _LINES_PER_PAGE = linesPerSheet;
+	}
+
+	private void setMargins(final PageFormat sheet,double left, double right, double top, double bot) {
+		if(sheet.getOrientation()==PageFormat.LANDSCAPE) {
+			double ll=left; left=right; right=ll; // Swap  left  <==>  right
+		}
+		double X = left * pixelsPerMilli;
+		double Y = top * pixelsPerMilli;
+		double width = sheet.getWidth() - (left + right) * pixelsPerMilli;
+		double height = sheet.getHeight() - (top + bot) * pixelsPerMilli;
+
+		Paper paper=pageFormat.getPaper();
+		if(sheet.getOrientation()==PageFormat.PORTRAIT)
+			 paper.setImageableArea(X,Y,width,height);			
+		else paper.setImageableArea(Y,X,height,width);
+		
+		pageFormat.setPaper(paper);
+	}
+	
+	private boolean isBookEmpty() {
+		int n=book.getNumberOfPages();
+		for(int i=0;i<n;i++) {
+			_PrintPage page=(_PrintPage) book.getPrintable(i);
+			if(page.nLines() > 0) return(false);
+		}
+		return(true);
+	}
+
+	private void newPage(int n) {
+		currentPrintPage=new _PrintPage(this,n,1);
+		book.append(currentPrintPage,pageFormat);
+	}
+
+	private void addLine(String text) {
+		if(currentPrintPage.nLines() >= linesPerSheet) {
+			int page=currentPrintPage.pageNumber;
+			int sheet=currentPrintPage.sheetNumber;
+			currentPrintPage=new _PrintPage(this,page,sheet+1);
+			book.append(currentPrintPage,pageFormat);
+		}
+		currentPrintPage.addLine(text);
+	}
+
+	private void print() {
+		if(isBookEmpty()) return; // Nothing tp print
+		boolean ok=false;
+		PrintService printService=lookupPrintService();
+		if(printService != null) {
+			try { printerJob.setPrintService(printService); ok=true;
+			} catch (PrinterException e) {}
+		} else ok=printerJob.printDialog();
+		if(ok) try { printerJob.print(); } catch(PrinterException e) {}
+	}
+	
+	private PrintService lookupPrintService() {
+		String fileName=FILE_NAME.edText();
+		PrintService[] printServices=PrinterJob.lookupPrintServices();
+		for(PrintService printService:printServices) {
+			if(printService.getName().equalsIgnoreCase(fileName)) return(printService);			
+		}
+		return(null);
+	}
+
 
 }

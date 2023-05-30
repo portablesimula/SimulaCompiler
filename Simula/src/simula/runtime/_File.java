@@ -274,6 +274,13 @@ public class _File extends _CLASS {
 		         //else if(token.equalsIgnoreCase("REVERSE_LANDSCAPE")) _ORIENTATION=PageFormat.REVERSE_LANDSCAPE;
 		         else try { size=Integer.decode(token); } catch(Exception e) {}
 			}
+			
+			if(fontName.equalsIgnoreCase("Dialog,")) fontName=Font.DIALOG;
+			else if(fontName.equalsIgnoreCase("DialogInput.")) fontName=Font.DIALOG_INPUT;
+			else if(fontName.equalsIgnoreCase("Monospaced,")) fontName=Font.MONOSPACED;
+			else if(fontName.equalsIgnoreCase("Serif,")) fontName=Font.SERIF;
+			else if(fontName.equalsIgnoreCase("SansSerif,")) fontName=Font.SANS_SERIF;
+			
 			_FONT=new Font(fontName,style,size);
 		}
 //		System.out.println("FONT: "+_FONT+"  "+edit(_ORIENTATION));

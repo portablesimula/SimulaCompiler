@@ -733,7 +733,7 @@ DEC_Lib begin
             else if not pfil.isopen then linecount1:=-2
             else begin
                 --  return current linesperpage setting
-                integer count; count:=linesperpage(0); linesperpage(count);
+                integer count; count:=pfil.linesperpage(0); linesperpage(count);
                 linecount1:=count;
             end;
         end;
@@ -753,7 +753,7 @@ DEC_Lib begin
             pf:-new PrintFile("simtst130-TEMP");
             test(pf, -2);
             pf.open(blanks(80));
-            test(pf,linesperpage(0));
+            test(pf,pf.linesperpage(0));
         trace("ENDOF TEST linecount --------------------------------------------------- nFailed=" & edit(nFailed));
     
     end;

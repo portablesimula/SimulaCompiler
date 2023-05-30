@@ -124,7 +124,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst80.sim"); // OK:  Test the attribute 'IsOpen' of class file.
 //
 //		names.add("simtst81.sim"); // OK:  Test the value of close.
-		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
+//		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 //		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
 //		names.add("simtst84.sim"); // OK:  Test Printfile.
 //		names.add("simtst85.sim"); // OK:  Test Directfile.
@@ -180,7 +180,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
 //		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
 //		names.add("simtst129.sim"); // OK: Switch in precompiled class
-//		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
+		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
 //		names.add("simtst132.sim"); // OK: SPORT Options

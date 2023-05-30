@@ -1,0 +1,81 @@
+% Random Drawing
+Drawing("Random Drawing",900,900) begin
+	boolean verbose;
+
+	class Diagram(a,b); integer a,b; begin
+		integer array observed(a:b); integer nObs;
+		ref(ShapeElement) array elt(a:b);
+		integer yBase;
+		
+		procedure init; begin
+			for i:=a step 1 until b do begin
+				elt(i):-new ShapeElement;
+			end;
+		end;
+		
+		procedure observation(x); integer x; begin
+			integer obs;
+			if x >= a and then x <= b then begin
+				observed(x):=observed(x)+1; nObs:=nObs+1;
+				obs:=observed(x);
+			end;
+			if verbose then begin
+				outtext("DRAW:"); outint(x,13);
+				outtext("  observed="); outint(obs,4);
+				outtext("  nObs="); outint(nObs,0);
+				outtext("  relObs="); outfix((obs/nObs)*100,2,6);
+				outimage;
+			end;
+%			paint;
+		end;
+		
+		procedure paint; begin
+			integer x,x1,y1,x2,y2,obs;
+			long real rel;
+			for x:=a step 1 until b do begin
+				obs:=observed(x);
+				rel:=obs / nObs;
+				obs:=rel*3000;
+				x1:=100+(10*x); y1:=800; ! yBase  ;
+				x2:=100+(10*x); y2:=800-obs;
+				drawLine(x1,y1,x2,y2);
+			end;
+		end;
+		
+		yBase:=800;
+	end;
+	
+	integer i,k,p;
+	integer U;
+	ref(Diagram) diag;
+	
+	diag:-new Diagram(0,100);
+	diag.init;
+	U:=-1234507;
+%	U:=1234507;
+%	verbose:=true;
+	
+	for p:=0 step 1 until 6 do begin
+		k:=5**((2*p)+1);
+		outtext("   p="); outint(p,0); outtext("  5**((2*p)+1) = "); outint(k,0); outimage;
+	end;
+	
+	setBackgroundColor(lightGray);
+    setStroke(4.5);
+    setDrawColor(red);
+
+	for i:=0 step 1 until 2000000 do begin
+%		k:=randint(0,100,U);
+%		k:=uniform(0,100,U);
+		k:=normal(50,10,U);
+%		k:=negexp(50,U)*100;
+%		k:=Poisson(50,U)/100;
+%		k:=Erlang(25,4,U)/100;
+		diag.observation(k);
+	end;
+
+	diag.paint;
+	
+	while true do ;
+	
+end;      

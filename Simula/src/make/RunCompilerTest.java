@@ -19,7 +19,7 @@ import simula.compiler.utilities.Option;
  * @author Øystein Myhre Andersen
  *
  */
-public final class TestCompiler {
+public final class RunCompilerTest {
 
 	public static void main(String[] args) {
     	//System.setProperty("file.encoding","UTF-8");
@@ -79,6 +79,16 @@ public final class TestCompiler {
 
 		// *** SIMULA I EXAMPLES
 		// String name="/SIMULA_1/SIMULA.sim";
+
+		// *** SINGULÆRE TEST PROGRAMMER
+		 String name="/singulares/PrintFileTest1.sim";
+		// String name="/singulares/PrintFileTest2.sim";
+		// String name="/singulares/PrintFileTest3.sim";
+		// String name="/singulares/PrintFileTest4.sim";
+		// String name="/singulares/PrintFileTest5.sim";
+		// String name="/singulares/PrintFileTest6.sim";
+		// String name="/singulares/RandomDrawing.sim";
+		// String name="/singulares/Transplantation2.sim";
 
 		// *** SIMULA DESIGN EXAMPLES
 		// String name="/design/Test.sim";
@@ -174,7 +184,7 @@ public final class TestCompiler {
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
-		 String name="/simple/adHoc04.sim";
+		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
 		// String name="/simple/adHoc06.sim";
 		// String name="/simple/adHoc26.sim";
@@ -261,7 +271,7 @@ public final class TestCompiler {
 			
 			
 			// Set RunTime Options and tracing.
-			RTOption.VERBOSE = true;//false;//true;
+//			RTOption.VERBOSE = true;//false;//true;
 			RTOption.DEBUGGING = false;//true;
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;
