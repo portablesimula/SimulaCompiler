@@ -1,0 +1,35 @@
+
+begin ref(A)  rA;
+      ref(AA) rAA;
+      ref(AAA) rAAA;
+      boolean bb;
+
+      class A;
+      begin ref(B) rB1;
+      		ref(B) procedure getRB1; getRB1:-rB1;
+      		procedure putRB1(rb); ref(B) rb; rB1:-rb;
+            class B;
+            begin
+            end B;
+            rB1:- new B;
+      end A;
+
+      A class AA; ! Bare for å ha et navn (rB2) i rAA som ikke finnes i rA ;
+      begin ref(B) rB2;
+        rB2:- new B;
+      end AA;
+ 
+      AA class AAA;
+      begin ref(BB) rB3;
+      		B class BB;;
+        	rB3:- new BB;
+      end AA;
+      
+      rA   :- new A;   ! Utfører “rB1:- new B”  inni rA ;
+      rAA  :- new AA;  ! Utfører “rB2:- new B”  inni rAA ;
+      rAAA :- new AAA; ! Utfører “rB3:- new BB” inni rAAA ;
+      
+
+      inspect rAAA do inspect rA do rB1:- rB3;                        ! TRANSPLANTASJON! ;
+      
+end

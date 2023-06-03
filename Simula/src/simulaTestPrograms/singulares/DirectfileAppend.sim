@@ -1,0 +1,35 @@
+begin
+	integer i;
+	ref(Directfile) f1,f2;
+	
+	
+	f1:-new Directfile("TEMP002");
+	f1.setaccess("CREATE");
+	f1.open(blanks(20));
+	for i:=1 step 1 until 20 do begin
+		f1.outtext("Pass 1, line "); f1.outint(i,0); 
+		f1.outimage;
+	end;
+	f1.close;
+	
+	
+	f2:-new Directfile("TEMP002");
+	f2.setaccess("APPEND");
+	f2.open(blanks(20));
+	for i:=1 step 1 until 20 do begin
+		f2.outtext("Pass 2, line "); f2.outint(i,0); 
+		f2.outimage;
+	end;
+	f2.close;
+	
+	inspect new Directfile("TEMP002") do begin
+		open(blanks(20));
+		for i:=1 step 1 until 50 do begin
+			inimage;
+			sysout.outtext(image); sysout.outimage;
+		end;
+		setaccess("PURGE");
+		close;
+	end;
+	
+end

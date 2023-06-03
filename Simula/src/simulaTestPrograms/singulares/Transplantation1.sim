@@ -16,7 +16,8 @@ begin ref(A)  rA;
       
       rA  :- new A;  ! Utfører “rB1:- new B”  inni rA ;
       rAA :- new AA; ! Utfører “rB2:- new B”  inni rAA ;
-     
-      inspect rAA do inspect rA do rB2:- rB1; ! TRANSPLANTASJON! ;
+      
+%      inspect rAA do inspect rA do rB2:- rB1; ! TRANSPLANTASJON! ;
+	  rAA.rB2 :- rA.rB1;  ! TRANSPLANTASJON! ;
       
 end

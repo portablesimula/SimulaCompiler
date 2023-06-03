@@ -205,7 +205,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		if (_ISSEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (declarationKind == Declaration.Kind.ContextFreeMethod) externalIdent = this.identifier;
-		if (declarationKind == Declaration.Kind.StaticMethod) externalIdent = this.identifier;
 		if (declarationKind == Declaration.Kind.MemberMethod) externalIdent = this.identifier;
 		else if (externalIdent == null)	externalIdent = edJavaClassName();
 
@@ -268,7 +267,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		switch (declarationKind) {
 		case ContextFreeMethod -> doMethodJavaCoding("static ", false);
 		case MemberMethod -> doMethodJavaCoding("", true);
-		case StaticMethod -> doMethodJavaCoding("static ", true);
 		case Procedure -> doProcedureCoding();
 		default -> Util.FATAL_ERROR("Impossible Situation !");
 		}

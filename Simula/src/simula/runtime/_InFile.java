@@ -9,10 +9,8 @@ package simula.runtime;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
@@ -113,9 +111,10 @@ public class _InFile extends _ImageFile {
 				if(selected!=null) file=selected;				
 			}
 			try {
-				InputStream inputStream = new FileInputStream(file);
-				reader = new InputStreamReader(inputStream,_CHARSET);
-			} catch (FileNotFoundException e) {
+//				InputStream inputStream = new FileInputStream(file);
+//				reader = new InputStreamReader(inputStream,_CHARSET);
+				reader = new FileReader(file,_CHARSET);
+			} catch (IOException e) {
 				//e.printStackTrace();
 				_OPEN=false;
 //				_RT.BREAK("INFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);

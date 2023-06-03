@@ -41,7 +41,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	public static MaybeBlockDeclaration createMaybeBlock() {
 		int lineNumber=Parser.prevToken.lineNumber;
 		if(Option.TESTING) System.out.println("BlockStatement.createMaybeBlock: line="+lineNumber+" "+Parser.prevToken);
-		MaybeBlockDeclaration module = new MaybeBlockDeclaration('_'+Global.sourceName);
+		MaybeBlockDeclaration module = new MaybeBlockDeclaration("_Block_"+Global.sourceName);
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
 		module.parseMaybeBlock(lineNumber);

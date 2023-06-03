@@ -184,7 +184,6 @@ public final class Variable extends Expression {
 		case StandardClass:
 		case Procedure:
 	    case ContextFreeMethod:
-	    case StaticMethod:
 	    case MemberMethod:
 				this.type=decl.type;
 				Type overloadedType=this.type;
@@ -267,7 +266,6 @@ public final class Variable extends Expression {
 			case Procedure: return(true);
 //			case ExternalProcedure: return(true);
 			case ContextFreeMethod: return(true);
-			case StaticMethod: return(true);
 			case MemberMethod: return(true);
 			case Parameter:
 				Parameter par=(Parameter)declaredAs;
@@ -439,12 +437,6 @@ public final class Variable extends Expression {
    	    	}
    	    	return(CallProcedure.asStaticMethod(this,true));
    	    	
-   	    case StaticMethod:
-   	    	if(destination) {
-   	    		return("_RESULT="+rightPart);
-   	    	}
-   	    	return(CallProcedure.asStaticMethod(this,false));
-   	    	
    	    case MemberMethod:
    	    	if(destination) {
    	    		return("_RESULT="+rightPart);
@@ -526,14 +518,13 @@ public final class Variable extends Expression {
 			} else {
 				id=inspectedVariable.toJavaCode()+"."+id;
 			}
-		} else if(!( meaning.declaredIn.declarationKind==Declaration.Kind.ContextFreeMethod // TODO: CHECK DETTE
-				  || meaning.declaredIn.declarationKind==Declaration.Kind.StaticMethod
+		} else if(!( meaning.declaredIn.declarationKind==Declaration.Kind.ContextFreeMethod
 				  || meaning.declaredIn.declarationKind==Declaration.Kind.MemberMethod
 				 )) {
 			String cast=meaning.declaredIn.getJavaIdentifier();
 			int n=meaning.declaredIn.rtBlockLevel;
 			if(meaning.foundBehindInvisible) cast=meaning.foundIn.getJavaIdentifier();
-			else if(n==Global.getCurrentScope().rtBlockLevel) return(id);  // currentScope may be a sub-block  TODO: Check Dette !		    
+			else if(n==Global.getCurrentScope().rtBlockLevel) return(id);  // currentScope may be a sub-block		    
 			id="(("+cast+")"+meaning.declaredIn.edCTX()+")."+id; // ØM
 		}
 		return(id);		  

@@ -12,7 +12,7 @@ begin
 			open(blanks(80));
 			for i:=1 step 1 until 77 do begin
 				outtext("Page "); outint(page,0); outtext("  Line "); outint(i,0);
-				setpos(78); outtext("XX"); outimage;
+				setpos(68); outtext("XX"); outimage;
 			end;
 			close;
 		end;
@@ -34,7 +34,7 @@ begin
 			for i:=1 step 1 until 77 do begin
 				if line=6 then eject(8);
 				outtext("Page "); outint(page,0); outtext("  Line "); outint(line,0);
-				setpos(78); outtext("XX"); outimage;
+				setpos(68); outtext("AB"); outimage;
 			end;
 			close;
 		end;
@@ -97,7 +97,7 @@ begin
 			linesperpage(linesperpage(0)+20);
 			for i:=1 step 1 until 177 do begin
 				outtext("Page "); outint(page,0); outtext("  Line "); outint(i,0);
-				setpos(78); outtext("XX"); outimage;
+				setpos(68); outtext("XYZZZ"); setpos(70); outrecord;
 			end;
 			close;
 		end;
@@ -117,18 +117,45 @@ begin
 			open(blanks(80));
 			linesperpage(-1);
 			for i:=1 step 1 until 277 do begin
-				outtext("Page "); outint(page,0); outtext("  Line "); outint(line,0);
-				setpos(78); outtext("XX"); outimage;
+				outtext("Breakoutimage: "); breakoutimage;
+				outtext("Page "); outint(page,0); outtext("  Outimage-Line "); outint(line,0);
+				setpos(58); outtext("XX"); outimage;
 			end;
 			close;
 		end;
 	end;
 	
+	procedure test7; begin
+		----------------------------------------------
+		-- Continuous Console printing using defaults:
+		----------------------------------------------
+		-- Should print these lines:
+		-- Abracadabra                                                        XXX
+		-- 123456
+		-- 999956789AAAAAAAAAAB                                                         
+		-- EE9956789AAAAAAAAAAB                                               XXX
+		-- 123456789AAAAAAAAAAB                                               XXX
+		-- ABCDEFGHIJKLMNOPQR
+		
+		inspect new printFile("Console: Printfile test 7") do begin
+			open(copy("Abracadabra                                                        XXX"));
+				outimage;
+				outtext("123456789AAAAAAAAAAB");
+				setpos(7); outrecord;
+				outtext("9999"); setpos(78); outrecord;
+				outtext("EE"); setpos(68); outtext("XXX"); outrecord;
+				outtext("123456789AAAAAAAAAAB"); outimage;
+				outtext("ABCDEFGHIJKLMNOPQR");
+				! no outimage;
+			close;
+		end;
+	end;
+	
 !	test1;
-!	test2;
+	test2;
 !	test3;
 !	test4;
 !	test5;
-	test6;
-	
+!	test6;
+!	test7;	
 end;

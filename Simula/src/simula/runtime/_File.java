@@ -9,7 +9,6 @@ package simula.runtime;
 
 import java.awt.Font;
 import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -102,6 +101,7 @@ public class _File extends _CLASS {
 	protected boolean _CANREAD=true;
 	protected boolean _CANWRITE=true;
 	
+	protected boolean _APPEND=false;
 	protected Charset _CHARSET=Charset.defaultCharset();
 
 	// Constructor
@@ -133,27 +133,14 @@ public class _File extends _CLASS {
 		if(!file.isAbsolute()) {
 			File dir=new File(System.getProperty("user.dir",null));
 			File tryFile=new File(dir,fileName);
-			//System.out.println("_File.trySelectFile: with user.dir: "+tryFile);
 			if(tryFile.exists()) return(tryFile);
 			
 			File javaClassPath=new File(System.getProperty("java.class.path"));
 			if(javaClassPath.exists()) try {
-				//System.out.println("_File.trySelectFile: with java.class.path: "+javaClassPath);
 				dir=javaClassPath.getParentFile().getParentFile();
-				//System.out.println("_File.trySelectFile: with java.class.path'PARENT'PARENT: "+dir);
 				tryFile=new File(dir,fileName);
-				//System.out.println("_File.trySelectFile: "+tryFile);
 				if(tryFile.exists()) return(tryFile);
 			} catch(Throwable e) {}
-
-//			LOOP:for(int i=1;i<10;i++) {
-//				String workspace=_RT.getProperty("simula.workspace."+i,null);
-//				if(workspace==null) break LOOP;
-//				dir=new File(workspace);
-//				tryFile=new File(dir,fileName);
-//				//System.out.println("_File.trySelectFile: with workspace"+i+": "+tryFile);
-//				if(tryFile.exists()) return(tryFile);
-//			}
 		}
 		JFileChooser fileChooser = new JFileChooser(file.getParent());
 		fileChooser.setDialogTitle("Can't Open "+fileName+", select another");
@@ -203,9 +190,9 @@ public class _File extends _CLASS {
 		boolean unrecognized=false;
 //		else if(ID.equals("SHARED")) notImplemented=true; 
 //		else if(ID.equals("NOSHARED")) notImplemented=true; 
-//		else if(ID.equals("APPEND")) notImplemented=true; 
-//		else if(ID.equals("NOAPPEND")) notImplemented=true; 
-		if(ID.equalsIgnoreCase("CREATE")) _CREATE=_CreateAction.create; 
+		if(ID.equals("APPEND")) _APPEND=true; 
+		else if(ID.equals("NOAPPEND")) _APPEND=false; 
+		else if(ID.equalsIgnoreCase("CREATE")) _CREATE=_CreateAction.create; 
 		else if(ID.equals("NOCREATE")) _CREATE=_CreateAction.noCreate; 
 		else if(ID.equals("ANYCREATE")) _CREATE=_CreateAction.anyCreate; 
 		else if(ID.equals("READONLY"))  { _CANWRITE=false; _CANREAD=true; }
@@ -248,7 +235,7 @@ public class _File extends _CLASS {
 	
 	protected Font _FONT=null;//new Font(Font.MONOSPACED, Font.PLAIN, 12);
 	protected int _ORIENTATION=PageFormat.PORTRAIT;
-	protected boolean _ASK=false;
+	protected boolean _ASK_PAPER=false;
 	protected double _LEFT_MARGIN=0, _RIGHT_MARGIN=0, _TOP_MARGIN=0, _BOT_MARGIN=0;
 
 	
@@ -270,7 +257,7 @@ public class _File extends _CLASS {
 		         else if(token.equalsIgnoreCase("BOLD")) style=style|Font.BOLD;
 		         else if(token.equalsIgnoreCase("PORTRAIT")) _ORIENTATION=PageFormat.PORTRAIT;
 		         else if(token.equalsIgnoreCase("LANDSCAPE")) _ORIENTATION=PageFormat.LANDSCAPE;
-		         else if(token.equalsIgnoreCase("ASK")) _ASK=true;
+		         else if(token.equalsIgnoreCase("ASK")) _ASK_PAPER=true;
 		         //else if(token.equalsIgnoreCase("REVERSE_LANDSCAPE")) _ORIENTATION=PageFormat.REVERSE_LANDSCAPE;
 		         else try { size=Integer.decode(token); } catch(Exception e) {}
 			}
@@ -304,14 +291,6 @@ public class _File extends _CLASS {
 //		System.out.println("MARGINS: "+_LEFT_MARGIN+" "+_RIGHT_MARGIN+" "+_TOP_MARGIN+" "+_BOT_MARGIN);
 		return(false);
 	}
-	
-	private String edit(int orientation) {
-		if(orientation==PageFormat.LANDSCAPE) return("LANDSCAPE");
-		if(orientation==PageFormat.PORTRAIT) return("PORTRAIT");
-		if(orientation==PageFormat.REVERSE_LANDSCAPE) return("REVERSE_LANDSCAPE");
-		return(null);
-	}
-
 
 	protected File doCreateAction(File file) {
 		try {

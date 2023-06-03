@@ -8,10 +8,8 @@
 package simula.runtime;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
@@ -75,7 +73,7 @@ public class _OutFile extends _ImageFile {
 	 * Procedure "open" establishes the association with an external file (as
 	 * identified by FILENAME), checks the access modes and causes corresponding
 	 * opening actions on the external file. If the external file is closed, it
-	 * is opened. *
+	 * is opened.
 	 * 
 	 * @param IMAGE_
 	 * @return true if successful, otherwise false.
@@ -86,18 +84,18 @@ public class _OutFile extends _ImageFile {
 		_OPEN = true;
 		image = IMAGE_;
 		setpos(1);
-		OutputStream outputStream;
+//		OutputStream outputStream;
 		if (FILE_NAME.edText().equalsIgnoreCase("#sysout"))
-			outputStream = System.out;
+//			outputStream = System.out;
+			writer = new OutputStreamWriter(System.out,_CHARSET);
 		else {
 			File file=doCreateAction(new File(FILE_NAME.edText()));
 			try {
-				outputStream = new FileOutputStream(file);
-			} catch (FileNotFoundException e) {
-				return (false);
-			}
+//				outputStream = new FileOutputStream(file);
+//				writer = new OutputStreamWriter(outputStream,_CHARSET);
+				writer = new FileWriter(file, _CHARSET, _APPEND);
+			} catch (IOException e) { return (false); }
 		}
-		writer = new OutputStreamWriter(outputStream,_CHARSET);
 		return (true);
 	}
 
@@ -168,16 +166,16 @@ public class _OutFile extends _ImageFile {
 	 * indicator is set to 1.
 	 */
 	public void outimage() {
-		if (!_OPEN)
-			throw new _SimulaRuntimeError("File not opened");
-		try {
-			String s=(image==null)?"\n":(image.edStripedText()+'\n');
-			writer.write(s);
-			writer.flush();
-		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Outimage failed",e);
-		}
-		_ASGTXT(image,null); // image:=NOTEXT;
+		writeImage("Outimage",(image==null)?"\n":(image.edStripedText()+'\n'),true);
+	}
+	
+	protected void writeImage(String ident,String img,boolean blank) {
+		// Used by outimage, outrecord and breakoutimage
+		// Redfined in PrintFile
+		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
+		try { writer.write(img); writer.flush();
+		} catch (IOException e) { throw new _SimulaRuntimeError(ident+" failed",e); }
+		if(blank) _ASGTXT(image,null); // image:=NOTEXT;
 		setpos(1);
 	}
 
@@ -197,16 +195,7 @@ public class _OutFile extends _ImageFile {
 	 * although POS is set to one.
 	 */
 	public void outrecord() {
-		if (!_OPEN)
-			throw new _SimulaRuntimeError("File not opened");
-		try {
-			String s=(image==null)?"\n":(image.edTextToPos()+'\n');
-			writer.write(s);
-			writer.flush();
-		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Outrecord failed", e);
-		}
-		setpos(1);
+		writeImage("Outrecord",(image==null)?"\n":(image.edTextToPos()+'\n'),false);
 	}
 
 	/**
@@ -233,17 +222,7 @@ public class _OutFile extends _ImageFile {
 	 * written.
 	 */
 	public void breakoutimage() {
-		if ((!_OPEN))
-			throw new _SimulaRuntimeError("File not opened");
-		try {
-			String s=(image==null)?"":(image.edTextToPos());
-		    writer.write(s);
-		    writer.flush();
-		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Breakoutimage failed", e);
-		}
-		_ASGTXT(image,null);
-		setpos(1);
+		writeImage("BreakOutimage",(image==null)?"":(image.edTextToPos()),true);
 	}
 
 	/**

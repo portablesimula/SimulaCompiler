@@ -790,7 +790,7 @@ public abstract class _RTObject {
 		if (SYSIN_ == null) {
 			if (_RT.Option.USE_CONSOLE) {
 				_RT.console = new _RTConsolePanel();
-				_RT.console.popup();
+				_RT.console.popup("Runtime Console");
 			}
 			SYSIN_ = new _InFile(this, new _TXT("#sysin"));
 			SYSOUT_ = new _PrintFile(this, new _TXT("#sysout"));
@@ -1159,7 +1159,8 @@ public abstract class _RTObject {
 			_RT.println(" -  Elapsed Time Approximately " + timeUsed/1000 + " sec.");
 		} else if (_RT.numberOfEditOverflows > 0)
 			_RT.println("End program: WARNING " + _RT.numberOfEditOverflows + " EditOverflows");			
-		if (_RT.console == null)	System.exit(exitValue);
+//		if (_RT.console == null)	System.exit(exitValue);
+		if (!_RT.someConsolePresent) System.exit(exitValue);
 	}
 
 	// *********************************************************************

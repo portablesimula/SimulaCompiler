@@ -73,17 +73,11 @@ public final class CallProcedure {
 		if(procedure.myVirtual!=null) {
 			// Call Remote Virtual Procedure
 			return(remoteVirtual(obj,func,procedure.myVirtual.virtualSpec));
-		}
-		else if(procedure.declarationKind==Declaration.Kind.ContextFreeMethod) // TODO: CHECK DETTE
-		{ // Call Remote Method
+		} else if(procedure.declarationKind==Declaration.Kind.ContextFreeMethod) {
+			// Call Remote Method
 			return(asRemoteMethod(obj,procedure,func,backLink));
-		}
-		else if(procedure.declarationKind==Declaration.Kind.StaticMethod) // TODO: CHECK DETTE
-		{ // Call Remote Method
-			return(asRemoteMethod(obj,procedure,func,backLink));
-		}
-		else if(procedure.declarationKind==Declaration.Kind.MemberMethod) // TODO: CHECK DETTE
-		{ // Call Remote Method
+		} else if(procedure.declarationKind==Declaration.Kind.MemberMethod) {
+			// Call Remote Method
 			return(asRemoteMethod(obj,procedure,func,backLink));
 		}
 		String call="new "+procedure.getJavaIdentifier();

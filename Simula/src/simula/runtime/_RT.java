@@ -25,6 +25,7 @@ public final class _RT {
 	public  static boolean DEBUGGING=false;//true;
   
 	public static _RTConsolePanel console;
+	public static boolean someConsolePresent;
   
 	public static String progamIdent;
 	public static String currentModid;
@@ -262,7 +263,7 @@ public final class _RT {
   
 	public static void ASSERT(final boolean test,final String msg) {
 		if (!test) {
-			if (_RT.console==null) { _RT.console = new _RTConsolePanel(); _RT.console.popup(); }
+			if (_RT.console==null) { _RT.console = new _RTConsolePanel(); _RT.console.popup("Runtime Console"); }
 			printError("ASSERT(" + msg + ") -- FAILED");
 			if(BREAKING) BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 			else { Thread.dumpStack(); System.exit(-1); }
@@ -285,7 +286,7 @@ public final class _RT {
 				} catch (Exception e) {	e.printStackTrace(); }
 				return;
 			}
-			if (_RT.console==null) { _RT.console = new _RTConsolePanel(); _RT.console.popup(); }
+			if (_RT.console==null) { _RT.console = new _RTConsolePanel(); _RT.console.popup("Runtime Console"); }
 			printError("BREAK["+Thread.currentThread().getName()+"]: " + msg);
 			char c=_RT.console.read();
 			if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");

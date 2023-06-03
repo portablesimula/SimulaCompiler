@@ -7,16 +7,8 @@
  */
 package simula.runtime;
 
-import java.awt.Font;
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import javax.print.PrintService;
 
 /**
  * The Class PrintFile.
@@ -89,19 +81,15 @@ public class _PrintFile extends _OutFile {
     }
     
     // Class Statements
+	@Override
     public _PrintFile _STM() {
         EBLK();
         return(this);
     }
 
-	public int line() {
-		return (_LINE);
-	}
+	public int line() { return (_LINE); }
 
-	public int page() {
-//		System.out.println("_PrintFile.page: "+_PAGE);
-		return (_PAGE);
-	}
+	public int page() { return (_PAGE); }
 	
 	/**
 	 * <pre>
@@ -125,22 +113,32 @@ public class _PrintFile extends _OutFile {
 	 * @param image
 	 * @return true if successful, otherwise false.
 	 */
+	@Override
 	public boolean open(final _TXT image) {
-		if(_RT.DEBUGGING) TRACE_OPEN("Open PrintFile");
+		String fileName=FILE_NAME.edText();
+		if(_RT.DEBUGGING) TRACE_OPEN("Open PrintFile: "+fileName);
 		if (_OPEN) return (false); // File already opened
 		_PAGE = 0;
 		_LINE = 1;
 		_OPEN = true;
 		this.image = image;
-		_ASGTXT(image,null); // image := NOTEXT; ???
 		setpos(1);
-		//_RT.BREAK("OutFile.open: Filename=" + FILE_NAME);
+		//_RT.BREAK("PrintFile.open: Filename=" + FILE_NAME);
 		if (FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
 			if(_RT.console!=null) writer=_RT.console.getWriter();
-//			else writer = new OutputStreamWriter(System.out,_CHARSET);
 			else writer = new PrintWriter(System.out,true,_CHARSET);
+		} else if(fileName.toUpperCase().startsWith("CONSOLE: ")) {
+			_RTConsolePanel console = new _RTConsolePanel();
+			String title=fileName.substring(9);
+			console.popup(title);
+			writer=console.getWriter();
 		} else {
-			init_Printer();
+			PageWriter pageWriter = new PageWriter(fileName);
+			pageWriter.setFont(_FONT,_ORIENTATION,_ASK_PAPER);
+			pageWriter.setMargins(_LEFT_MARGIN, _RIGHT_MARGIN, _TOP_MARGIN, _BOT_MARGIN);
+			pageWriter.open();
+			_DEFAULT_LINES_PER_PAGE = _LINES_PER_PAGE = pageWriter.getLinesPerSheet();
+			writer=pageWriter;
 		}
 		eject(1);
 		return (true);
@@ -180,20 +178,20 @@ public class _PrintFile extends _OutFile {
 	 * 
 	 * @return true if successful, otherwise false.
 	 */
+	@Override
 	public boolean close() {
+		if(_RT.DEBUGGING) TRACE_OPEN("Close PrintFile");
 		if (!_OPEN)
 			return (false); // File not opened
 		if (pos() != 1)
 			outimage();
 		_SPACING = 1;
-		//eject(_LINES_PER_PAGE); // TODO:
+		//eject(_LINES_PER_PAGE);
 		_LINES_PER_PAGE = 0;
 		_LINE = 0;
 		image = null; // image :- NOTEXT;
 		if (!FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
-			if(writer==null) {
-				print();
-			} else try {
+			try {
 				writer.flush();
 				writer.close();
 			} catch (IOException e1) {
@@ -298,216 +296,37 @@ public class _PrintFile extends _OutFile {
 	 * @param n
 	 */
 	public void eject(int n) {
-//		System.out.println("_PrintFile: eject "+n+", _PRINTER="+_PRINTER);
-		if (!_OPEN)
-			throw new _SimulaRuntimeError("File not opened");
-		if (n <= 0)
-			throw new _SimulaRuntimeError("Parameter out of range: eject "+n);
-		if (n > _LINES_PER_PAGE) n = 1;
-		if(n <= _LINE) {
-			_PAGE = _PAGE + 1;
-			if(writer==null) {
-//				System.out.println("_PrintFile: eject "+n+", Page="+_PAGE);
-				newPage(_PAGE);
-				for(int i=1;i<n;i++) addLine(null);
-			}
-		} else {
-			int diff= n - _LINE;
-//			System.out.println("_PrintFile: eject "+n+", diff="+diff+", Page="+_PAGE);
-			for(int i=0;i<diff;i++) addLine(null);
-		}
-		_LINE=n;
-	}
-
-	/**
-	 * <pre>
-	 * procedure outimage;
-	 * if not OPEN then  error("..." ! file closed; )
-	 * else begin
-	 *        if LINE > LINES_PER_PAGE then eject(1);
-	 *        ... ; ! output the image on the line indicated by LINE;
-	 *        LINE  := LINE + SPACING;
-	 *        image := notext;
-	 *        setpos(1)
-	 * end outimage;
-	 * </pre>
-	 * <p>
-	 * <p>
-	 * The transfer of an image from the text "image" to the file is performed
-	 * by the procedure "outimage". The procedure reacts in an
-	 * implementation-defined way if the "image" length is not appropriate for
-	 * the external file. (Depending on file type and host system, the external
-	 * file does not necessarily record trailing blanks from the "image".)
-	 * <p>
-	 * This implementation will strip the "image" before output operations.
-	 * <p>
-	 * After the transfer, "image" is cleared to blanks and the position
-	 * indicator is set to 1. In addition, the variable LINE (and possibly PAGE)
-	 * are updated.
-	 */
-	public void outimage() {
-//		System.out.println("_PrintFile.outimage(), _LINES_PER_PAGE="+_LINES_PER_PAGE+", _LINE="+_LINE+", _PAGE="+_PAGE);
 		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
-		if (_LINE > _LINES_PER_PAGE) eject(1);
+		if (n <= 0) throw new _SimulaRuntimeError("Parameter out of range: eject "+n);
+		if (n > _LINES_PER_PAGE) n = 1;
 		try {
-			if(writer==null) {
-				String line=image.edStripedText();
-//				System.out.println("_PrintFile.outimage(), line="+line);
-				addLine(line);
-				if(_SPACING > 1) {
-					for(int i=1;i<_SPACING;i++) addLine(null);
+			if(n <= _LINE) {
+				_PAGE = _PAGE + 1;
+				if(writer instanceof PageWriter pageWriter) {
+					pageWriter.newPage(_PAGE);
+					for(int i=1;i<n;i++) writer.write("\n");
 				}
 			} else {
-				String line=(image==null)?"\n":(image.edStripedText()+'\n');
-				writer.write(line);
-				if(_SPACING > 1) {
-					for(int i=1;i<_SPACING;i++) writer.write("\n");
-				}
-				writer.flush();
+				int diff= n - _LINE;
+				for(int i=0;i<diff;i++) writer.write("\n");
 			}
-		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Outimage failed", e);
-		}
-		_LINE = _LINE + _SPACING;
-		_ASGTXT(image,null); // image := NOTEXT;
-		setpos(1);
+		} catch (IOException e) { throw new _SimulaRuntimeError("Eject failed", e); }
+		_LINE=n;
 	}
-
-	/**
-	 * <pre>
-	 * procedure outrecord;
-	 * if not OPEN then  error("..." ! file closed; )
-	 * else begin
-	 *         if LINE > LINES_PER_PAGE then eject(1);
-	 *         ... ; ! output image.sub(1,pos-1) on the line indicated by LINE;
-	 *         LINE := LINE + SPACING;
-	 *         setpos(1)
-	 * end outrecord;
-	 * </pre>
-	 * <p>
-	 * The procedure "outrecord" transfers to the file only that part of "image"
-	 * which precedes POS. The contents are not blanked after the transfer,
-	 * although POS is set to one. In addition, the variable LINE (and possibly
-	 * PAGE) are updated.
-	 * 
-	 */
-	public void outrecord() {
-		if (!_OPEN)	throw new _SimulaRuntimeError("File not opened");
+	
+	@Override
+	protected void writeImage(String ident,String img,boolean blank) {
+		// Used by  Outimage, OutRecord and BreakOutimage in Outfile
+		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
 		if (_LINE > _LINES_PER_PAGE) eject(1);
-		try {
-			String s=image.edTextToPos() + '\n'; // TODO: Without line-feed \n ???
-			writer.write(s);
-			writer.flush();
-		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Outrecord failed");
-		}
+		try { //String line=(image==null)?nl:(image.edStripedText()+nl);
+			  writer.write(img);
+			  if(_SPACING > 1) { for(int i=1;i<_SPACING;i++) writer.write("\n"); }
+			  writer.flush();
+		} catch (IOException e) { throw new _SimulaRuntimeError(ident+" failed", e); }
 		_LINE = _LINE + _SPACING;
+		if(blank) _ASGTXT(image,null); // image := NOTEXT;
 		setpos(1);
-	}
-
-	
-	// ===========================================================================================================
-	//
-	//   Page oriented Print Service
-	//
-	// ===========================================================================================================
-	// Paper size: http://en.wikipedia.org/wiki/ISO_216
-	// 
-	// Stående A4: Width:  8.3  inches = 210 mm =  595 pixels
-	//             Height: 11.7 inches = 297 mm =  842 pixels.
-	//
-	// Stående A3: Width:  11.7 inches = 297 mm =  842 pixels
-	//             Height: 16.5 inches = 420 mm = 1191 pixels.
-	// ===========================================================================================================
-	private static final double inch=0.02540; // 1 inch == 0.02540 meter
-	private static final int printerDPI=72; // DPI = Dots Per Inch
-	private static final double pixelsPerMeter=((double)printerDPI)/inch;
-	private static final double pixelsPerMilli=pixelsPerMeter/1000.0d;
-
-	private PrinterJob printerJob;
-	private Book book;
-	private _PrintPage currentPrintPage;
-	PageFormat pageFormat;
-	float lineGap; // 
-	private int linesPerSheet;
-
-	private void init_Printer() {
-		if(_FONT==null) {
-			this._FONT=new Font(Font.MONOSPACED, Font.PLAIN, 12);
-			_ORIENTATION=PageFormat.PORTRAIT;
-		}
-		printerJob=PrinterJob.getPrinterJob();
-		book=new Book();
-		printerJob.setPageable(book);
-
-		pageFormat=printerJob.defaultPage();
-		pageFormat.setOrientation(_ORIENTATION);
-		setMargins(pageFormat,_LEFT_MARGIN,_RIGHT_MARGIN,_TOP_MARGIN,_BOT_MARGIN);
-		if(_ASK) pageFormat=printerJob.pageDialog(pageFormat);
-		lineGap=this._FONT.getSize2D()*1.25f;
-		linesPerSheet=(int) (pageFormat.getImageableHeight()/(double)lineGap);
-		_DEFAULT_LINES_PER_PAGE = _LINES_PER_PAGE = linesPerSheet;
-	}
-
-	private void setMargins(final PageFormat sheet,double left, double right, double top, double bot) {
-		if(sheet.getOrientation()==PageFormat.LANDSCAPE) {
-			double ll=left; left=right; right=ll; // Swap  left  <==>  right
-		}
-		double X = left * pixelsPerMilli;
-		double Y = top * pixelsPerMilli;
-		double width = sheet.getWidth() - (left + right) * pixelsPerMilli;
-		double height = sheet.getHeight() - (top + bot) * pixelsPerMilli;
-
-		Paper paper=pageFormat.getPaper();
-		if(sheet.getOrientation()==PageFormat.PORTRAIT)
-			 paper.setImageableArea(X,Y,width,height);			
-		else paper.setImageableArea(Y,X,height,width);
-		
-		pageFormat.setPaper(paper);
-	}
-	
-	private boolean isBookEmpty() {
-		int n=book.getNumberOfPages();
-		for(int i=0;i<n;i++) {
-			_PrintPage page=(_PrintPage) book.getPrintable(i);
-			if(page.nLines() > 0) return(false);
-		}
-		return(true);
-	}
-
-	private void newPage(int n) {
-		currentPrintPage=new _PrintPage(this,n,1);
-		book.append(currentPrintPage,pageFormat);
-	}
-
-	private void addLine(String text) {
-		if(currentPrintPage.nLines() >= linesPerSheet) {
-			int page=currentPrintPage.pageNumber;
-			int sheet=currentPrintPage.sheetNumber;
-			currentPrintPage=new _PrintPage(this,page,sheet+1);
-			book.append(currentPrintPage,pageFormat);
-		}
-		currentPrintPage.addLine(text);
-	}
-
-	private void print() {
-		if(isBookEmpty()) return; // Nothing tp print
-		boolean ok=false;
-		PrintService printService=lookupPrintService();
-		if(printService != null) {
-			try { printerJob.setPrintService(printService); ok=true;
-			} catch (PrinterException e) {}
-		} else ok=printerJob.printDialog();
-		if(ok) try { printerJob.print(); } catch(PrinterException e) {}
-	}
-	
-	private PrintService lookupPrintService() {
-		String fileName=FILE_NAME.edText();
-		PrintService[] printServices=PrinterJob.lookupPrintServices();
-		for(PrintService printService:printServices) {
-			if(printService.getName().equalsIgnoreCase(fileName)) return(printService);			
-		}
-		return(null);
 	}
 
 

@@ -61,7 +61,7 @@ public class _OutByteFile extends _ByteFile {
 			//System.out.println("_OutbyteFile.open: FILE_NAME="+FILE_NAME);
 			File file=doCreateAction(new File(FILE_NAME.edText()));
 			try {
-				outputStream = new FileOutputStream(file);
+				outputStream = new FileOutputStream(file,_APPEND);
 			} catch (FileNotFoundException e) {
 				//e.printStackTrace();
 				return (false);

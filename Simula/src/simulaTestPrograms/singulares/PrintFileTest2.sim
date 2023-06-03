@@ -7,12 +7,12 @@ begin
 		-- Orientation: PORTRAIT
 		-- Margins: 0 0 0 0
 		----------------------------------------------
-		inspect new printFile("Microsoft Print to PDF") do begin
+		inspect new printFile("Console: Printfile test 1") do begin
 			integer i;
 			open(blanks(80));
 			for i:=1 step 1 until 77 do begin
 				outtext("Page "); outint(page,0); outtext("  Line "); outint(i,0);
-				setpos(78); outtext("XX"); outimage;
+				setpos(68); outtext("XX"); outimage;
 			end;
 			close;
 		end;
@@ -26,7 +26,7 @@ begin
 		-- Margins: 5 15 10 20  measured in mm
 		-- The user will be asked for modifications
 		----------------------------------------------
-		inspect new printFile("ASK") do begin
+		inspect new printFile("Console: Printfile test 2") do begin
 			integer i;
 			setaccess("FONT: SansSerif PLAIN BOLD 10 ASK");
 			setaccess("MARGINS: 5 15 10 20"); ! left right top bottom ;
@@ -34,7 +34,7 @@ begin
 			for i:=1 step 1 until 77 do begin
 				if line=6 then eject(8);
 				outtext("Page "); outint(page,0); outtext("  Line "); outint(line,0);
-				setpos(78); outtext("XX"); outimage;
+				setpos(68); outtext("AB"); outimage;
 			end;
 			close;
 		end;
@@ -48,7 +48,7 @@ begin
 		-- Margins: 5 15 10 20  measured in mm
 		-- The user will NOT be asked for modifications
 		----------------------------------------------
-		inspect new printFile("ASK") do begin
+		inspect new printFile("Console: Printfile test 3") do begin
 			integer i;
 			setaccess("FONT: Dialog ITALIC 10 LANDSCAPE");
 			setaccess("MARGINS: 5 15 0 0"); ! left right top bottom ;
@@ -71,7 +71,7 @@ begin
 		-- Margins: 0 0 0 0
 		-- Changing LINES_PER_PAGE to be less than paper height 
 		----------------------------------------------
-		inspect new printFile("ASK") do begin
+		inspect new printFile("Console: Printfile test 4") do begin
 			integer i;
 			open(blanks(80));
 			linesperpage(linesperpage(0)-20);
@@ -91,13 +91,13 @@ begin
 		-- Margins: 0 0 0 0
 		-- Changing LINES_PER_PAGE to be larger than paper height 
 		----------------------------------------------
-		inspect new printFile("ASK") do begin
+		inspect new printFile("Console: Printfile test 5") do begin
 			integer i;
 			open(blanks(80));
 			linesperpage(linesperpage(0)+20);
 			for i:=1 step 1 until 177 do begin
 				outtext("Page "); outint(page,0); outtext("  Line "); outint(i,0);
-				setpos(78); outtext("XX"); outimage;
+				setpos(68); outtext("XYZZZ"); setpos(70); outrecord;
 			end;
 			close;
 		end;
@@ -111,24 +111,47 @@ begin
 		-- Margins: 0 0 0 0
 		-- Changing LINES_PER_PAGE to be "infinite" 
 		----------------------------------------------
-		inspect new printFile("ASK") do begin
+		inspect new printFile("Console: Printfile test 6") do begin
 			integer i;
 			setaccess("FONT: Serif ITALIC BOLD 8");
 			open(blanks(80));
 			linesperpage(-1);
 			for i:=1 step 1 until 277 do begin
-				outtext("Page "); outint(page,0); outtext("  Line "); outint(line,0);
-				setpos(78); outtext("XX"); outimage;
+				outtext("Breakoutimage: "); breakoutimage;
+				outtext("Page "); outint(page,0); outtext("  Outimage-Line "); outint(line,0);
+				setpos(58); outtext("XX"); outimage;
 			end;
 			close;
 		end;
 	end;
 	
-!	test1;
-!	test2;
-!	test3;
-!	test4;
-!	test5;
-	test6;
+	procedure test7; begin
+		----------------------------------------------
+		-- Continuous printing using:
+		-- Font: SERIF ITALIC BOLD 8
+		-- Orientation: PORTRAIT
+		-- Margins: 0 0 0 0
+		-- Changing LINES_PER_PAGE to be "infinite" 
+		----------------------------------------------
+		inspect new printFile("Console: Printfile test 7") do begin
+			integer i;
+			setaccess("FONT: Serif ITALIC BOLD 8");
+			open(blanks(80));
+			linesperpage(-1);
+				outtext("123456789AAAAAAAAAAB");
+				setpos(7); outrecord;
+				outtext("9999"); setpos(78); outrecord;
+				outtext("EE"); setpos(68); outtext("XXX"); outrecord;
+				outtext("123456789AAAAAAAAAAB"); outimage;
+			close;
+		end;
+	end;
 	
+	test1;
+	test2;
+	test3;
+	test4;
+	test5;
+	test6;
+	test7;	
 end;

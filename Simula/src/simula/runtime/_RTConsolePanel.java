@@ -132,8 +132,6 @@ public final class _RTConsolePanel extends JPanel {
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 		textPane.update(textPane.getGraphics());
-//        Global.console.write(Global.simulaVersion+"\n");
-//		write("Simula Compiler Console:\n");
 	}
 	
 	public static void INTERNAL_ERROR(final String msg,final Throwable e) {
@@ -165,15 +163,16 @@ public final class _RTConsolePanel extends JPanel {
         this.add(scrollPane);
     }
 	
-	public void popup() {
+	public void popup(String title) {
     	JFrame frame=new JFrame();
         frame.setSize(950, 500); // Initial frame size
-        frame.setTitle("Runtime Console");
+        frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
         frame.getContentPane().add(this);
         frame.setVisible(true);
+        _RT.someConsolePresent=true;
     }
 
     

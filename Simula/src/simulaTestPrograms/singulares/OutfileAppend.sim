@@ -1,0 +1,31 @@
+begin
+	integer i;
+	ref(Outfile) f1,f2;
+	
+	
+	f1:-new Outfile("TEMP001");
+	f1.open(blanks(20));
+	for i:=1 step 1 until 20 do begin
+		f1.outtext("Pass 1, line "); f1.outint(i,0); 
+		f1.outimage;
+	end;
+	f1.close;
+	
+	
+	f2:-new Outfile("TEMP001");
+	f2.setaccess("APPEND");
+	f2.open(blanks(20));
+	for i:=1 step 1 until 20 do begin
+		f2.outtext("Pass 2, line "); f2.outint(i,0); 
+		f2.outimage;
+	end;
+	f2.close;
+	
+	inspect new infile("TEMP001") do begin
+		open(blanks(20));
+		for i:=1 step 1 until 50 do begin
+			outtext(intext(20)); outimage;
+		end;
+	end;
+	
+end

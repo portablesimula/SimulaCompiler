@@ -81,14 +81,14 @@ public final class RunCompilerTest {
 		// String name="/SIMULA_1/SIMULA.sim";
 
 		// *** SINGULÆRE TEST PROGRAMMER
-		 String name="/singulares/PrintFileTest1.sim";
+		 String name="/singulares/DirectfileAppend.sim";
+		// String name="/singulares/OutfileAppend.sim";
+		// String name="/singulares/PrintFileTest.sim";
 		// String name="/singulares/PrintFileTest2.sim";
-		// String name="/singulares/PrintFileTest3.sim";
-		// String name="/singulares/PrintFileTest4.sim";
-		// String name="/singulares/PrintFileTest5.sim";
-		// String name="/singulares/PrintFileTest6.sim";
 		// String name="/singulares/RandomDrawing.sim";
+		// String name="/singulares/Transplantation1.sim";
 		// String name="/singulares/Transplantation2.sim";
+		// String name="/singulares/Transplantation3.sim";
 
 		// *** SIMULA DESIGN EXAMPLES
 		// String name="/design/Test.sim";
@@ -217,6 +217,7 @@ public final class RunCompilerTest {
 		// String name="/simple/LocalObject.sim";
 		// String name="/simple/ParamSample.sim";
 		// String name="/simple/PrfxBlockSamples.sim";
+		// String name="/simple/PrintFile.sim";
 		// String name="/simple/PriorProcedure.sim";   // ????
 		// String name="/simple/ProcedureSample.sim";
 		// String name="/simple/PromptSample.sim";

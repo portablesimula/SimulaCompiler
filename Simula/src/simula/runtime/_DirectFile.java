@@ -95,6 +95,8 @@ public class _DirectFile extends _ImageFile {
 	 */
 	int _RECORDSIZE;
 	
+	int INITIAL_LAST_LOC;
+	
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
 
@@ -169,7 +171,10 @@ public class _DirectFile extends _ImageFile {
 		try {
 			String mode = "rws"; // mode is one of "r", "rw", "rws", or "rwd"
 			randomAccessFile = new RandomAccessFile(file, mode);
-		} catch (FileNotFoundException e) {
+			INITIAL_LAST_LOC=(int) randomAccessFile.length() / IMAGE.LENGTH;
+//			System.out.println("Directfile.open: "+file+", length="+randomAccessFile.length());
+//			System.out.println("Directfile.open: "+file+", INITIAL_LAST_LOC="+INITIAL_LAST_LOC);
+		} catch (IOException e) {
 			e.printStackTrace();
 			return (false);
 		}
