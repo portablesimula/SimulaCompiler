@@ -2,115 +2,130 @@
 % ====================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 84
 %
-%  PURPOSE: Test PrintFile.(PW 24)
+%  PURPOSE: Test DirectBytefile
 %
 %  METHOD:
 %
-%  WRITTEN BY:
+%  WRITTEN BY: MYH
 % ====================================================================
 external class SimulaTest;
 
-SimulaTest(84,"--- Test PrintFile") begin
+SimulaTest(84,"--- Test DirectBytefile") begin
 
-text print84="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/print84";
-
-ref(PrintFile)   myfile;
-boolean           save;
-
-procedure Check(b1, b2);   boolean b1, b2; begin
-   if b1 eqv b2 then else err("error");
-end of procedure Check;
-
-if verbose then
-begin outtext("--- START Simula a.s. TEST 84(test PrintFile)"); outimage;
-      outtext("    The program prints on ""new PrintFile(print84)"",");
-      outimage;
-      outtext("    compare that output to program source after exec.");
-      outimage;
-      outtext("    In addition, ""OK"" is printed 5 times on sysout.");
-      outimage; outimage;
-end;
-
-myfile:-new PrintFile(print84);
-save:= myfile.line=0;
-Check(save, true);
-myfile.open(blanks(132));
-Check(myfile.line=1, true);
-
-inspect myfile do
+   integer traceCase;
+   text array facit(0:26);
+   
+   procedure trace(msg); text msg;
    begin
-   linesperpage(4);
-   outtext("linesperpage:=4    line 1."); outimage;
-   outtext("      line 2."); outimage;
-   outtext("      line 3."); outimage;
-   outtext("      line 4."); outimage;
-   outtext("      line 5."); outimage;
-   spacing(0);
-   outtext("spacing:=0  line 1");   outimage;
-   outtext("            line  2");  outimage;
-   outtext("            line   3"); outimage;
-   spacing(1);
-   eject(3);
-   outtext("eject(3)"); outimage;
-   eject(2);
-   outtext("eject(2)"); outimage;
-   linesperpage(60);
-   spacing(2);
-   outtext("linesperpage:=60,  spacing:=2"); outimage;
-   eject(80);
-   outtext("eject(80),  EQUIV TO eject(1)"); outimage;
-   Check(pos=1, true);
-   Check(image=blanks(132), true);
-   Check(length=132, true);
-                                       ! CHECK OUTFILE ATTRIBUTES   ;
-   outint(123, 3);
-   outfix(456.7, 1, 6);
-   outreal(8.9&-02, 2, 9);
-   outfrac(1234.5, 1, 9);
-   outtext("text ");
-   outimage;
-                                       ! FORCE outimage AFTER OUTPUT;
-                                       ! OF ITEM                    ;
-   setpos(130);
-   outint(123, 3);
-   outchar('*');
-   setpos(127);
-   outfix(456.7, 1, 6);
-   outchar('*');
-   setpos(124);
-   outreal(8.9&-02, 2, 9);
-   outchar('*');
-   setpos(124);
-   outfrac(1234.5, 1, 9);
-   outchar('*');
-   setpos(129);
-   outtext("text");
-   outchar('*');
-                                       ! FORCE OUTPUT BEFORE OUTPUT ;
-                                       ! OF ITEM                    ;
-   setpos(131);
-   outint(123, 3);
-   setpos(129);
-   outfix(456.7, 1, 6);
-   setpos(127);
-   outreal(8.9&-02, 2, 9);
-   setpos(127);
-   outfrac(1234.5, 1, 9);
-   setpos(130);
-   outtext("text");
-   setpos(132);
-   outchar('X');
-   outchar('Y');
-   setpos(199);
-   outchar('Z');
-   setpos(120);
-   outchar('A');
-   setpos(81);
-   outchar('B');
-   outimage;
-   outtext("LAST line OF OUTPUT.");
-   close;
+      if verbose then begin outtext(msg); outimage; end;
+      if msg <> facit(traceCase) then
+      begin err("Case " & edit(traceCase));
+         outtext("Trace: " & msg); outimage;
+         outtext("Facit: " & facit(traceCase)); outimage;
+      end;
+      traceCase:=traceCase+1;
    end;
+   
+   procedure test1; begin
+		inspect new DirectByteFile("TEMP084") do begin
+			integer i;
+			trace("Test1: Before open endfil=" & edit(endfile));
+			trace("Test1: Before open location=" & edit(location));
+			trace("Test1: Before open maxloc=" & edit(maxloc));
+			setaccess("CREATE");
+			open; 
+			trace("Test1: After open endfil=" & edit(endfile));
+			trace("Test1: After open location=" & edit(location));
+			trace("Test1: After open maxloc=" & edit(maxloc));
+			trace("Test1: After open lastloc=" & edit(lastloc));
+			for i:=1 step 1 until 5 do begin
+				outbyte(i);
+			end;
+			for i:=2,3,1,5,4 do begin
+				locate(i); trace("Test1: At loc " & edit(i) & ": " & edit(inbyte));
+			end;
+			locate(4);
+			trace("Test1: After locate(4) endfil=" & edit(endfile));
+			trace("Test1: After locate(4) location=" & edit(location));
+			trace("Test1: After locate(4) lastloc=" & edit(lastloc));
+			locate(6);
+			trace("Test1: After locate(6) endfil=" & edit(endfile));
+			setaccess("PURGE");
+			close; 
+		end; 	
+   end;
+   
+   procedure test2; begin
+		inspect new DirectByteFile("TEMP084") do begin
+			integer i,j;
+			text t;
+			setaccess("CREATE");
+			open; 
+			for i:=1 step 1 until 5 do begin
+				outbyte(rank('A')+i);
+			end;
+			locate(1); t:-blanks(5); intext(t); trace("Test2: " & t);
+			
+			for i:=1 step 1 until 5 do begin
+				outtext("Text " & edit(i));
+			end;
+
+			locate(1); t:-blanks(35); intext(t);
+%			sysout.outtext(t); outimage;
+			trace("Test2: " & t);
+
+			for i:=2,3,1,5,4 do begin
+				j := i*6;
+				locate(j);
+				t:-blanks(6); intext(t);
+%				sysout.outtext("Test2: LOC " & edit(j) & ": " & t); outimage;
+				trace("Test2: LOC " & edit(j) & ": " & t);
+			end;
+			
+			for i:=12,27 do begin
+				locate(i); trace("Test2: At loc " & edit(i) & ": " & edit(char(inbyte)));
+			end;
+			locate(55); trace("Test2: At loc 55: " & edit(inbyte));
+			locate(88); outbyte(88);
+			locate(55); trace("Test2: At loc 55: " & edit(inbyte));
+
+			setaccess("PURGE");
+			close; 
+		end; 	
+   end;
+   
+   
+   facit(0):-"Test1: Before open endfil=false";
+   facit(1):-"Test1: Before open location=0";
+   facit(2):-"Test1: Before open maxloc=0";
+   facit(3):-"Test1: After open endfil=true";
+   facit(4):-"Test1: After open location=1";
+   facit(5):-"Test1: After open maxloc=2147483646";
+   facit(6):-"Test1: After open lastloc=0";
+   facit(7):-"Test1: At loc 2: 2";
+   facit(8):-"Test1: At loc 3: 3";
+   facit(9):-"Test1: At loc 1: 1";
+   facit(10):-"Test1: At loc 5: 5";
+   facit(11):-"Test1: At loc 4: 4";
+   facit(12):-"Test1: After locate(4) endfil=false";
+   facit(13):-"Test1: After locate(4) location=4";
+   facit(14):-"Test1: After locate(4) lastloc=5";
+   facit(15):-"Test1: After locate(6) endfil=true";
+   facit(16):-"Test2: BCDEF";
+   facit(17):-"Test2: BCDEFText 1Text 2Text 3Text 4Text 5";
+   facit(18):-"Test2: LOC 12: Text 2";
+   facit(19):-"Test2: LOC 18: Text 3";
+   facit(20):-"Test2: LOC 6: Text 1";
+   facit(21):-"Test2: LOC 30: Text 5";
+   facit(22):-"Test2: LOC 24: Text 4";
+   facit(23):-"Test2: At loc 12: T";
+   facit(24):-"Test2: At loc 27: t";
+   facit(25):-"Test2: At loc 55: 0";
+   facit(26):-"Test2: At loc 55: 0";
+
+   test1;
+   test2;
+   
 
 
 end of program;

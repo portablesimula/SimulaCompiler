@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
+import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 
@@ -27,7 +28,8 @@ public final class RunSingleTestBatch {
 	public static void main(String[] args) {
     	//System.setProperty("file.encoding","UTF-8");
 		Vector<String> names=new Vector<String>();
-		//names.add("adHoc00.sim"); // For ad'hoc testing
+//		names.add("adHoc00.sim"); // For ad'hoc testing
+//		names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 //		names.add("SimulaTest.sim"); // Simula TestBatch Framework
@@ -93,7 +95,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst51.sim"); // OK:  Test 'inner'.
 //		names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
 //		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-//		names.add("simtst54.sim"); // OK: A VERY Simple Simulation
+		names.add("simtst54.sim"); // OK: A VERY Simple Simulation
 //		names.add("simtst55.sim"); // OK:  Test virtual procedures.
 //		names.add("simtst56.sim"); // OK:  Test virtual procedures.
 //		names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
@@ -126,7 +128,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst81.sim"); // OK:  Test the value of close.
 //		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 //		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
-//		names.add("simtst84.sim"); // OK:  Test Printfile.
+//		names.add("simtst84.sim"); // OK:  Test DirectBytefile.
 //		names.add("simtst85.sim"); // OK:  Test Directfile.
 //		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 //		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
@@ -180,11 +182,15 @@ public final class RunSingleTestBatch {
 //		names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
 //		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
 //		names.add("simtst129.sim"); // OK: Switch in precompiled class
-		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
+//		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
 //		names.add("simtst132.sim"); // OK: SPORT Options
 //		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
+//		names.add("simtst134.sim"); // OK: Outfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
+//		names.add("simtst135.sim"); // OK: OutBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
+//		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
+//		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		
 //		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
 //		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
@@ -203,7 +209,7 @@ public final class RunSingleTestBatch {
 		Option.INLINE_TESTING=true;
 //		Option.verbose = true;
 		Option.WARNINGS=true;
-		Option.CASE_SENSITIVE=true;
+//		Option.CASE_SENSITIVE=true;
 
 		// Overall TRACING Options
 //		Option.TRACING=true;
@@ -219,6 +225,7 @@ public final class RunSingleTestBatch {
 //		Option.TRACE_ATTRIBUTE_INPUT=true;
 
 		// Checker Trace Options
+//		Option.TRACE_FIND=4;
 //		Option.TRACE_CHECKER=true;
 //		Option.TRACE_CHECKER_OUTPUT=true;
 

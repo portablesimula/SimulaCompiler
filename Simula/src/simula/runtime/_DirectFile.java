@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * The class "directfile"
@@ -170,10 +172,10 @@ public class _DirectFile extends _ImageFile {
 		setpos(1);
 		try {
 			String mode = "rws"; // mode is one of "r", "rw", "rws", or "rwd"
+			if(_SYNCHRONOUS) mode="rws";
+			else mode=(_CANREAD & !_CANWRITE)?"r":"rw";
 			randomAccessFile = new RandomAccessFile(file, mode);
-			INITIAL_LAST_LOC=(int) randomAccessFile.length() / IMAGE.LENGTH;
-//			System.out.println("Directfile.open: "+file+", length="+randomAccessFile.length());
-//			System.out.println("Directfile.open: "+file+", INITIAL_LAST_LOC="+INITIAL_LAST_LOC);
+			if(_APPEND) INITIAL_LAST_LOC=lastloc();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return (false);
@@ -208,6 +210,7 @@ public class _DirectFile extends _ImageFile {
 				randomAccessFile.setLength(0);
 				randomAccessFile.close();
 				File file = new File(FILE_NAME.edText().trim());
+				file.deleteOnExit();
 				if (file.exists()) {
 					_RT.warning("Purge "+this.getClass().getSimpleName()+" \""+file.getName()
 					+"\" failed - the underlying OS was unable to perform the delete operation");
@@ -215,6 +218,7 @@ public class _DirectFile extends _ImageFile {
 			} else randomAccessFile.close();
 			randomAccessFile = null;
 		} catch (IOException e) {
+			//e.printStackTrace();
 			return (false);
 		}
 		_OPEN = false;
@@ -394,6 +398,9 @@ public class _DirectFile extends _ImageFile {
 			throw new _SimulaRuntimeError("file closed");
 		if (_LOC > _MAXLOC)
 			throw new _SimulaRuntimeError("file overflow");
+		if (_LOC <= INITIAL_LAST_LOC)
+			throw new _SimulaRuntimeError("DirectFile: outimage failed: location("+_LOC+") <= initial lastloc("+INITIAL_LAST_LOC+")"
+		                                + " - The file "+FILE_NAME.edText()+" was opend with APPEND");
 		if(!_CANWRITE)
 			throw new _SimulaRuntimeError("DirectFile: outimage failed - 'canwrite' is false");
 		try {
@@ -436,6 +443,9 @@ public class _DirectFile extends _ImageFile {
 	public boolean deleteimage() {
 		if (!_OPEN)
 			return (false);
+		if (_LOC <= INITIAL_LAST_LOC)
+			throw new _SimulaRuntimeError("DirectFile: deleteimage failed"+
+		    " - file opend with access-mode APPEND and location("+_LOC+") <= initial lastloc("+INITIAL_LAST_LOC+")");
 		if(!_CANWRITE)
 			throw new _SimulaRuntimeError("DirectFile: deleteimage failed - 'canwrite' is false");
 		try {

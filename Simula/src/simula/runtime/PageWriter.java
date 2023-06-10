@@ -14,6 +14,7 @@ import java.io.Writer;
 import java.util.Vector;
 
 import javax.print.PrintService;
+import javax.swing.JOptionPane;
 
 public class PageWriter extends Writer {
 	// ===========================================================================================================
@@ -56,7 +57,7 @@ public class PageWriter extends Writer {
 		this.font=font; this.orientation=orientation; this.ask=ask;
 	}
 	
-	public void setMargins(double left, double right, double top, double bot) {
+	public void setMargins(double top, double left, double bot, double right) {
 		this.left=left; this.right=right; this.top=top; this.bot=bot;
 	}
 
@@ -71,7 +72,7 @@ public class PageWriter extends Writer {
 
 		pageFormat=printerJob.defaultPage();
 		pageFormat.setOrientation(orientation);
-		setMargins(pageFormat,left,right,top,bot);
+		setMargins(pageFormat,top,left,bot,right);
 		if(ask) pageFormat=printerJob.pageDialog(pageFormat);
 		lineGap=this.font.getSize2D()*1.25f;
 		linesPerSheet=(int) (pageFormat.getImageableHeight()/(double)lineGap);
@@ -116,7 +117,7 @@ public class PageWriter extends Writer {
 		currentLine=new StringBuilder();
 	}
 
-	private void setMargins(final PageFormat sheet,double left, double right, double top, double bot) {
+	private void setMargins(final PageFormat sheet, double top, double left, double bot, double right) {
 		if(sheet.getOrientation()==PageFormat.LANDSCAPE) {
 			double ll=left; left=right; right=ll; // Swap  left  <==>  right
 		}
@@ -150,9 +151,23 @@ public class PageWriter extends Writer {
 			try { printerJob.setPrintService(printService); ok=true;
 			} catch (PrinterException e) {}
 		} else ok=printerJob.printDialog();
-		if(ok) try { printerJob.print(); } catch(PrinterException e) {}
+		if(ok) while(tryPrint());
 	}
-	
+
+	private boolean tryPrint() {
+		try { printerJob.print(); } catch(PrinterException e) {
+			//if(commandLine) throw new _SimulaRuntimeError(e.getMessage());
+			PrintService printService=printerJob.getPrintService();
+			String msg1; msg1=(printService==null)?"":"to "+printService;
+			String msg2=e.getMessage(); msg2=(msg2==null)?"":"\n"+msg2;
+			int res=_RT.optionDialog("Attempt to print "+msg1+" - FAILED"+msg2
+					+"\nDo you want to retry ?","Error",JOptionPane.YES_NO_OPTION
+					, JOptionPane.ERROR_MESSAGE, "Yes", "No");
+			if(res==JOptionPane.YES_OPTION) return(true);
+		}
+		return(false);
+	}
+
 	private PrintService lookupPrintService() {
 		PrintService[] printServices=PrinterJob.lookupPrintServices();
 		for(PrintService printService:printServices) {

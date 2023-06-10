@@ -73,6 +73,8 @@ public class _DirectByteFile extends _ByteFile {
 	 */
 	boolean _LOCKED;
 	
+	int INITIAL_LAST_LOC;
+
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
 
@@ -94,7 +96,7 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return
 	 */
 	public boolean endfile() {
-		return (location() > lastloc());
+		return(_OPEN && (location() > lastloc()));
 	}
 
 	/**
@@ -105,9 +107,10 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return the current read/write position.
 	 */
 	public int location() {
+		if(!_OPEN) return(0);
 		try {
 			long loc = randomAccessFile.getFilePointer();
-			return ((int) loc);
+			return ((int) loc+1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return (-1);
@@ -128,8 +131,7 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return
 	 */
 	public int maxloc() {
-		if (!_OPEN)
-			throw new _SimulaRuntimeError("file closed");
+//		if (!_OPEN) throw new _SimulaRuntimeError("file closed");
 		return (_MAXLOC);
 	}
 
@@ -154,16 +156,19 @@ public class _DirectByteFile extends _ByteFile {
 		if(_RT.DEBUGGING) TRACE_OPEN("Open DirectByteFile");
 		if (_OPEN) return (false);
 		// _LOC = 1; // LOC is maintained by the underlying file system.
-		File file=doCreateAction(new File(FILE_NAME.edText()));
-		try {
-			String mode = "rw"; // mode is one of "r", "rw", "rws", or "rwd"
-			randomAccessFile = new RandomAccessFile(file, mode);
-		} catch (FileNotFoundException e) {
-			return (false);
-		}
 		_MAXLOC = maxint - 1;
 		_BYTESIZE = 8;
 		_OPEN = true;
+		File file=doCreateAction(new File(FILE_NAME.edText()));
+		try {
+			String mode; // mode is one of "r", "rw", "rws", or "rwd"
+			if(_SYNCHRONOUS) mode="rws";
+			else mode=(_CANREAD & !_CANWRITE)?"r":"rw";
+			randomAccessFile = new RandomAccessFile(file, mode);
+			INITIAL_LAST_LOC=(_APPEND)?lastloc(): -1;
+		} catch (IOException e) {
+			return (false);
+		}
 		return (true);
 	}
 
@@ -235,7 +240,7 @@ public class _DirectByteFile extends _ByteFile {
 			throw new _SimulaRuntimeError("Parameter out of range");
 		else
 			try {
-				randomAccessFile.seek(p);
+				randomAccessFile.seek(p-1);
 			} catch (IOException e) {
 				throw new _SimulaRuntimeError("I/O Error on file",e);
 			}
@@ -296,7 +301,8 @@ public class _DirectByteFile extends _ByteFile {
 		// if (_LOC <= lastloc())
 
 		try {
-			return (randomAccessFile.read());
+			int b=randomAccessFile.read();
+			return(b== -1)?0:b;
 		} catch (EOFException e) {
 			return (0);
 
@@ -333,6 +339,9 @@ public class _DirectByteFile extends _ByteFile {
 		if(!_CANWRITE)
 			throw new _SimulaRuntimeError("DirectByteFile: outbyte failed - 'canwrite' is false");
 		if (!_OPEN) throw new _SimulaRuntimeError("file closed");
+		if (location() <= INITIAL_LAST_LOC)
+			throw new _SimulaRuntimeError("DirectByteFile: outbyte failed: location("+location()+") <= initial lastloc("+INITIAL_LAST_LOC+")"
+		                                + " - The file "+FILE_NAME.edText()+" was opend with APPEND");
 		if (x < 0 || x >= (Math.pow(2,_BYTESIZE)))
 			throw new _SimulaRuntimeError("Outbyte, illegal byte value: "+x);
 		// else

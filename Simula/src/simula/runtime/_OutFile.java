@@ -173,7 +173,7 @@ public class _OutFile extends _ImageFile {
 		// Used by outimage, outrecord and breakoutimage
 		// Redfined in PrintFile
 		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
-		try { writer.write(img); writer.flush();
+		try { writer.write(img); if(_SYNCHRONOUS) writer.flush();
 		} catch (IOException e) { throw new _SimulaRuntimeError(ident+" failed",e); }
 		if(blank) _ASGTXT(image,null); // image:=NOTEXT;
 		setpos(1);

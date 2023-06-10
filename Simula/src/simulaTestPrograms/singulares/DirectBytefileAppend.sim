@@ -1,43 +1,43 @@
 begin
 	integer i;
-	ref(Directfile) f1,f2;
+	ref(DirectBytefile) f1,f2;
 	
 	
 	outtext("===================  PASS 1  ================"); outimage;
-	f1:-new Directfile("TEMP002");
+	f1:-new DirectBytefile("TEMP003");
 	f1.setaccess("CREATE");
-	f1.open(blanks(20));
+	f1.open;
 	for i:=1 step 1 until 20 do begin
-		f1.outtext("Pass 1, line "); f1.outint(i,0); 
-		f1.outimage;
+		f1.outbyte(i);
 	end;
 	f1.close;
 	
 	
 	outtext("===================  PASS 2  ================"); outimage;
-	f2:-new Directfile("TEMP002");
+	f2:-new DirectBytefile("TEMP003");
 	f2.setaccess("APPEND");
-	f2.open(blanks(20));
+	f2.open;
 	f2.locate(f2.lastloc+1);
 	for i:=1 step 1 until 20 do begin
-		f2.outtext("Pass 2, line "); f2.outint(i,0); 
-		f2.outimage;
+		f2.outbyte(i+20); 
 	end;
 	
 	outtext("===================  PASS 3  ================"); outimage;
 	inspect f2 do begin
 		locate(1);
 		for i:=1 step 1 until 40 do begin
-			inimage;
-			sysout.outtext(image); sysout.outimage;
+			sysout.outtext("Inbyte: "); sysout.outint(inbyte,0); sysout.outimage;
 		end;
+		
+		locate(13); sysout.outtext("Inbyte(13): "); sysout.outint(inbyte,0); sysout.outimage;
+		
 
 		CatchingErrors begin
 			procedure onError(message); text message; begin
 				sysout.outtext("ERROR: " & message); sysout.outimage;
 				goto E;
 			end;
-			locate(6); outtext("ERROR"); outimage;
+			locate(6); outbyte(99); outimage;
 		end;
 		
 	 E: setaccess("PURGE");

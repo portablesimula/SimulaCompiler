@@ -23,7 +23,9 @@ import javax.swing.ImageIcon;
 
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
+import simula.compiler.declaration.DeclarationList;
 import simula.compiler.declaration.DeclarationScope;
+import simula.compiler.declaration.StandardClass;
 import simula.compiler.editor.RTOption;
 
 /**
@@ -94,6 +96,7 @@ public final class Global {
 		duringChecking=false;
 		duringSTM_Coding=false;
 		externalJarFiles=new Vector<File>();
+		StandardClass.INITIATE();
 		String SIMULA_HOME=getProperty("simula.home",null);
 		if(SIMULA_HOME!=null) {
 			String SIMULA_VERSION=getProperty("simula.version",null);

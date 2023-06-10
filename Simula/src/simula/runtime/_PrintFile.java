@@ -135,7 +135,7 @@ public class _PrintFile extends _OutFile {
 		} else {
 			PageWriter pageWriter = new PageWriter(fileName);
 			pageWriter.setFont(_FONT,_ORIENTATION,_ASK_PAPER);
-			pageWriter.setMargins(_LEFT_MARGIN, _RIGHT_MARGIN, _TOP_MARGIN, _BOT_MARGIN);
+			pageWriter.setMargins(_TOP_MARGIN, _LEFT_MARGIN, _BOT_MARGIN, _RIGHT_MARGIN);
 			pageWriter.open();
 			_DEFAULT_LINES_PER_PAGE = _LINES_PER_PAGE = pageWriter.getLinesPerSheet();
 			writer=pageWriter;

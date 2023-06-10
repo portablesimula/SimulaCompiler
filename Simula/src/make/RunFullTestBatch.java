@@ -123,7 +123,7 @@ public final class RunFullTestBatch {
 		names.add("simtst81.sim"); // OK:  Test the value of close.
 		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
-		names.add("simtst84.sim"); // OK:  Test Printfile.
+		names.add("simtst84.sim"); // OK:  Test DirectBytefile.
 		names.add("simtst85.sim"); // OK:  Test Directfile.
 		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 		names.add("simtst86.sim"); // OK:  Test separate compilation of Class.
@@ -178,6 +178,10 @@ public final class RunFullTestBatch {
 		names.add("simtst131.sim"); // OK: Catching Errors
 		names.add("simtst132.sim"); // ERR: SPORT Options
 		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
+		names.add("simtst134.sim"); // OK: Outfile with CREATE, APPEND and PURGE.
+		names.add("simtst135.sim"); // OK: OutBytefile with CREATE, APPEND and PURGE.
+		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND and PURGE.
+		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND and PURGE.
 
 		names.add("RT_ErrorTest.sim"); // Simula Error TestBatch Framework
 		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
@@ -198,7 +202,7 @@ public final class RunFullTestBatch {
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 		Option.verbose=false;
-		Option.CASE_SENSITIVE=true;
+//		Option.CASE_SENSITIVE=true;
 		Option.GNERATE_LINE_CALLS=true;
 		
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");

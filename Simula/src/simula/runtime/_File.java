@@ -103,6 +103,8 @@ public class _File extends _CLASS {
 	
 	protected boolean _APPEND=false;
 	protected Charset _CHARSET=Charset.defaultCharset();
+	
+	protected boolean _SYNCHRONOUS;
 
 	// Constructor
    public _File(final _RTObject staticLink,final _TXT FILE_NAME) {
@@ -206,6 +208,7 @@ public class _File extends _CLASS {
 		
 		else if(ID.startsWith("%NOBUFFER")) ; // S-PORT: Ignore
 		else if(ID.startsWith("CHARSET")) setCharset(ID);
+		else if(ID.startsWith("SYNCHRONOUS")) _SYNCHRONOUS=true;
 		else if(ID.startsWith("FONT")) setFont(id);
 		else if(ID.startsWith("MARGINS")) setMargins(id);
 		else unrecognized=true;
@@ -282,10 +285,10 @@ public class _File extends _CLASS {
 			
 			StringTokenizer st = new StringTokenizer(fld," ");
 			try {
-				_LEFT_MARGIN=Double.parseDouble(st.nextToken());
-				_RIGHT_MARGIN=Double.parseDouble(st.nextToken());
 				_TOP_MARGIN=Double.parseDouble(st.nextToken());
+				_LEFT_MARGIN=Double.parseDouble(st.nextToken());
 				_BOT_MARGIN=Double.parseDouble(st.nextToken());
+				_RIGHT_MARGIN=Double.parseDouble(st.nextToken());
 			} catch(Exception e) {}
 		}
 //		System.out.println("MARGINS: "+_LEFT_MARGIN+" "+_RIGHT_MARGIN+" "+_TOP_MARGIN+" "+_BOT_MARGIN);

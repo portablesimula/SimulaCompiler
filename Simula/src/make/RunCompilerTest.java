@@ -81,9 +81,10 @@ public final class RunCompilerTest {
 		// String name="/SIMULA_1/SIMULA.sim";
 
 		// *** SINGULÆRE TEST PROGRAMMER
-		 String name="/singulares/DirectfileAppend.sim";
+		// String name="/singulares/DirectBytefileAppend.sim";
+		// String name="/singulares/DirectfileAppend.sim";
 		// String name="/singulares/OutfileAppend.sim";
-		// String name="/singulares/PrintFileTest.sim";
+		 String name="/singulares/PrintFileTest.sim";
 		// String name="/singulares/PrintFileTest2.sim";
 		// String name="/singulares/RandomDrawing.sim";
 		// String name="/singulares/Transplantation1.sim";
@@ -250,7 +251,7 @@ public final class RunCompilerTest {
 //			// Checker Trace Options
 //			Option.TRACE_CHECKER=true;
 //			Option.TRACE_CHECKER_OUTPUT=true;
-//			//Option.TRACE_FIND=2;
+//			Option.TRACE_FIND=2;
 //			
 //			// Coder Trace Options
 //			Option.TRACE_CODING=true;

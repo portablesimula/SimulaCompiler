@@ -22,9 +22,11 @@ RT_ErrorTest("  9 --- Test Read/write access on DirectFile and DirectByteFile") 
    procedure testFileOperation(i,mss); integer i; text mss; begin
       CatchingErrors begin
          procedure onError(message); text message; begin
+%           sysout.outtext("testFileOperation " & edit(i) & ": onError got error: " & message); outimage;
             trace("onError got error: " & message);
          end;
   
+%        sysout.outtext("testFileOperation: " & edit(i) & mss); outimage;
          trace("testFileOperation: " & edit(i) & mss);
          switch (0:100) i begin
             when 1 do df.open(blanks(29));
@@ -33,7 +35,8 @@ RT_ErrorTest("  9 --- Test Read/write access on DirectFile and DirectByteFile") 
             when 4 do begin df.setaccess("WRITEONLY"); df.locate(4); df.inimage; end;
             when 5 do begin df.setaccess("READONLY");  df.locate(3); df.deleteimage; end;
             when 6 do begin db.setaccess("READONLY");  df.locate(4); db.outtext("ABRA"); end;
-            when 7 do begin db.setaccess("WRITEONLY"); df.locate(4); t:-blanks(4); db.intext(t); end;
+            when 7 do begin db.setaccess("WRITEONLY"); db.locate(3); t:-blanks(4); db.intext(t);
+			end;
          end;
          
       end;

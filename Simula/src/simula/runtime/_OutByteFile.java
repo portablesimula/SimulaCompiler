@@ -89,8 +89,7 @@ public class _OutByteFile extends _ByteFile {
 		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
 		if (b < 0 || b >= (Math.pow(2,_BYTESIZE)))
 			throw new _SimulaRuntimeError("Illegal byte value");
-		try {
-			outputStream.write(b);
+		try { outputStream.write(b); if(_SYNCHRONOUS) outputStream.flush();
 		} catch (IOException e) {
 			throw new _SimulaRuntimeError("Outbyte failed", e);
 		}
@@ -106,6 +105,7 @@ public class _OutByteFile extends _ByteFile {
 //	    	System.out.println("out2byte: "+b+" ==> hi="+hi+", lo="+lo);
 			outputStream.write(hi);
 			outputStream.write(lo);
+			if(_SYNCHRONOUS) outputStream.flush();
 		} catch (IOException e) {
 			throw new _SimulaRuntimeError("Out2byte failed", e);
 		}
@@ -117,6 +117,7 @@ public class _OutByteFile extends _ByteFile {
 		while (_TXT.more(t)) {
 			try {
 				outputStream.write((int)_TXT.getchar(t));
+				if(_SYNCHRONOUS) outputStream.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

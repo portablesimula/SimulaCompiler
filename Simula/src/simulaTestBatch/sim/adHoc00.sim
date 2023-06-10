@@ -1,0 +1,3 @@
+ begin
+ 	outtext("Hello World");
+ end;
