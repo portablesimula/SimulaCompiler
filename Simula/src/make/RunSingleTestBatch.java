@@ -75,7 +75,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 //		names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 //		names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
-//		names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
+		names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("p40a.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
@@ -95,7 +95,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst51.sim"); // OK:  Test 'inner'.
 //		names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
 //		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
-		names.add("simtst54.sim"); // OK: A VERY Simple Simulation
+//		names.add("simtst54.sim"); // OK: A VERY Simple Simulation
 //		names.add("simtst55.sim"); // OK:  Test virtual procedures.
 //		names.add("simtst56.sim"); // OK:  Test virtual procedures.
 //		names.add("simtst57.sim"); // OK:  Virtual procedure - different number of parameters
@@ -180,8 +180,8 @@ public final class RunSingleTestBatch {
 //		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
 //		names.add("simtst127.sim"); // OK: Switch (character) Statement
 //		names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
-//		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
-//		names.add("simtst129.sim"); // OK: Switch in precompiled class
+		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
+		names.add("simtst129.sim"); // OK: Switch in precompiled class
 //		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
@@ -209,6 +209,8 @@ public final class RunSingleTestBatch {
 		Option.INLINE_TESTING=true;
 //		Option.verbose = true;
 		Option.WARNINGS=true;
+//		Option.DEBUGGING=true;
+//		Option.EXTENSIONS=false;
 //		Option.CASE_SENSITIVE=true;
 
 		// Overall TRACING Options
@@ -237,6 +239,7 @@ public final class RunSingleTestBatch {
 		Global.packetName="simulaTestBatch";
 //		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+//		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
 		
 		// Set RunTime Options and tracing.
 //		RTOption.VERBOSE = true;
@@ -244,7 +247,7 @@ public final class RunSingleTestBatch {
 //		RTOption.USE_CONSOLE=true;
 //		RTOption.CODE_STEP_TRACING = true;
 //		RTOption.BLOCK_TRACING = true;
-//		RTOption._GOTOTRACING = true;
+//		RTOption.GOTO_TRACING = true;
 //		RTOption.THREAD_TRACING = true;
 //		RTOption.QPS_TRACING = true;
 //		RTOption.SML_TRACING = true;

@@ -242,7 +242,7 @@ public final class SimulaScanner extends DefaultScanner {
 	private Token scanIdentifier() {
 		String name=scanName();
 	    if(Option.TRACE_SCAN) Util.TRACE("scanIdentifier: name=\""+name+"\"");
-	    String ident=(Option.CASE_SENSITIVE)?name:name.toLowerCase();
+	    String ident=(Option.CaseSensitive)?name:name.toLowerCase();
 	    switch(Character.toLowerCase(ident.charAt(0))) {
 	        case 'a':
 		        if(ident.equals("abstract"))	return(javaKeyword(name)); // Java KeyWord

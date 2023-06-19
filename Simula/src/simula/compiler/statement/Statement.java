@@ -79,6 +79,7 @@ public abstract class Statement extends SyntaxClass {
 		return (statement);
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private static Statement doUnlabeledStatement() {
 		int lineNumber=Parser.currentToken.lineNumber;
 		if (Option.TRACE_PARSE)
@@ -93,7 +94,9 @@ public abstract class Statement extends SyntaxClass {
 		    case FOR:        Parser.nextSymb(); return (new ForStatement(lineNumber));
 		    case WHILE:      Parser.nextSymb(); return (new WhileStatement(lineNumber));
 		    case INSPECT:    Parser.nextSymb(); return (new ConnectionStatement(lineNumber));
-		    case SWITCH:     Parser.nextSymb(); return (new SwitchStatement(lineNumber));
+		    case SWITCH:	 if(Option.EXTENSIONS) {
+		    					Parser.nextSymb(); return (new SwitchStatement(lineNumber));
+		    				 }
 		    case ACTIVATE:   Parser.nextSymb(); return (new ActivationStatement(lineNumber));
 		    case REACTIVATE: Parser.nextSymb(); return (new ActivationStatement(lineNumber));
 		    case INNER:      Parser.nextSymb(); return (new InnerStatement(lineNumber));
@@ -109,10 +112,12 @@ public abstract class Statement extends SyntaxClass {
 		        	 }
 		        	 return (new StandaloneExpression(lineNumber,expr));
 		         }
-		    default:
-		    	Parser.skipMissplacedCurrentSymbol();
-		    	return(new DummyStatement(lineNumber));
+//		    default:
+//		    	Parser.skipMissplacedCurrentSymbol();
+//		    	return(new DummyStatement(lineNumber));
 		}
+    	Parser.skipMissplacedCurrentSymbol();
+    	return(new DummyStatement(lineNumber));
 	}
 
 	@Override

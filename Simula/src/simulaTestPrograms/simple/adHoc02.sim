@@ -1,18 +1,9 @@
-begin
-
-	procedure test1; begin
-		-- Plain printing using defaults
-		inspect new printFile("PrintFile") do begin
-			integer i;
-			open(blanks(80));
-			for i:=1 step 1 until 77 do begin
-				outtext("Page "); outint(page,0); outtext("  Line "); outint(i,0);
-				setpos(78); outtext("XX"); outimage;
-			end;
-			close;
-		end;
-	end;
-	
-	test1;
+external java class Vector = "java.util.Vector";
+begin    
+	ref(Vector) set; integer i;
+	class C;;
 		
+	set:-new Vector(100,200);
+	
+	set.add(new C);	
 end;

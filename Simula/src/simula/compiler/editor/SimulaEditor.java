@@ -230,7 +230,7 @@ public class SimulaEditor extends JFrame {
     // *** doSelectJavaDir
     // ****************************************************************
     static void doSelectJavaDir() {
-    	if (Option.TRACING); Util.println("SimulaEditor.doSelectJavaDir: ");
+    	if (Option.TRACING) Util.println("SimulaEditor.doSelectJavaDir: ");
 	    File file=new File(Global.currentWorkspace,"java");
 	    file.mkdirs();
         JFileChooser fileChooser = new JFileChooser(file);
@@ -246,13 +246,30 @@ public class SimulaEditor extends JFrame {
     // *** doSelectOutputDir
     // ****************************************************************
     static void doSelectOutputDir() {
-    	if (Option.TRACING); Util.println("SimulaEditor.doSelectOutputDir: ");
+    	if (Option.TRACING) Util.println("SimulaEditor.doSelectOutputDir: ");
         JFileChooser fileChooser = new JFileChooser(Global.outputDir);
         fileChooser.setDialogTitle("Select Output Directory");
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int answer = fileChooser.showOpenDialog(null);
         if (answer == JFileChooser.APPROVE_OPTION) {
         	Global.outputDir=fileChooser.getSelectedFile();
+        }
+    }
+
+    // ****************************************************************
+    // *** doSelectExtLibDir
+    // ****************************************************************
+    static void doSelectExtLibDir() {
+    	if (Option.TRACING) Util.println("SimulaEditor.doSelectExtLibDir: ");
+    	File prev=Global.extLib;
+    	if(prev==null) prev=Global.outputDir.getParentFile();
+//        JFileChooser fileChooser = new JFileChooser(Global.extLib);
+        JFileChooser fileChooser = new JFileChooser(prev);
+        fileChooser.setDialogTitle("Select External Search Library");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int answer = fileChooser.showOpenDialog(null);
+        if (answer == JFileChooser.APPROVE_OPTION) {
+        	Global.extLib=fileChooser.getSelectedFile();
         }
     }
     
@@ -268,7 +285,8 @@ public class SimulaEditor extends JFrame {
 
 		    String remoteFileName="https://portablesimula.github.io/github.io/setup/setupProperties.xml";
 		    if (Option.TRACING) Util.println("SimulaEditor.doCheckForNewVersion: Load Remote Properties from: "+remoteFileName);
-		    URL remote = new URL(remoteFileName);
+//		    URL remote = new URL(remoteFileName);
+		    URL remote = (new URI(remoteFileName)).toURL();
             Properties remoteProperties=new Properties();
             remoteProperties.loadFromXML(remote.openStream());
             String remoteReleaseID=remoteProperties.getProperty("simula.version")

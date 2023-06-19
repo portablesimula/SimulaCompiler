@@ -167,7 +167,7 @@ public final class Variable extends Expression {
 		checkedParams = new Vector<Expression>();
 		Declaration decl=meaning.declaredAs;
 		
-		switch(decl.declarationKind) {
+		if(decl!=null) switch(decl.declarationKind) {
 		case ArrayDeclaration:
 				ArrayDeclaration array=(ArrayDeclaration)decl;
 				this.type=array.type;
@@ -353,6 +353,7 @@ public final class Variable extends Expression {
 	    ASSERT_SEMANTICS_CHECKED(this);
 	    Expression inspectedVariable=meaning.getInspectedVariable();
 	    StringBuilder s;
+	    //System.out.println("Variable.editVariable: "+decl);
 		switch(decl.declarationKind) {
 		
 		case ArrayDeclaration:

@@ -5,7 +5,7 @@
 %
 %  WRITTEN BY:  MYH 
 % ==============================================================================
-external class Precompiled129; 
+external class Precompiled129 = "C:\GitHub\SimulaCompiler\Simula\src\simulaTestBatch\sim\bin\Precompiled129.jar"; 
 
 Precompiled129(129,"--- Test switch in separate compiled class Precompiled129",44) begin
    integer traceCase;

@@ -84,7 +84,7 @@ public final class RunCompilerTest {
 		// String name="/singulares/DirectBytefileAppend.sim";
 		// String name="/singulares/DirectfileAppend.sim";
 		// String name="/singulares/OutfileAppend.sim";
-		 String name="/singulares/PrintFileTest.sim";
+		// String name="/singulares/PrintFileTest.sim";
 		// String name="/singulares/PrintFileTest2.sim";
 		// String name="/singulares/RandomDrawing.sim";
 		// String name="/singulares/Transplantation1.sim";
@@ -183,7 +183,7 @@ public final class RunCompilerTest {
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
-		// String name="/simple/adHoc02.sim";
+		 String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
@@ -232,6 +232,7 @@ public final class RunCompilerTest {
 			Option.INLINE_TESTING=true;
 //		    Option.verbose = true;
 			Option.WARNINGS=true;
+//			Option.EXTENSIONS=false;
 //			Option.CASE_SENSITIVE=true;
 //			Option.TESTING=true;
 
@@ -254,7 +255,7 @@ public final class RunCompilerTest {
 //			Option.TRACE_FIND=2;
 //			
 //			// Coder Trace Options
-//			Option.TRACE_CODING=true;
+			Option.TRACE_CODING=true;
 			Option.GNERATE_LINE_CALLS=true;
 //			
 //			Option.TRACE_REPAIRING=true;
@@ -266,7 +267,7 @@ public final class RunCompilerTest {
 
 			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
-//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
@@ -278,7 +279,7 @@ public final class RunCompilerTest {
 			RTOption.USE_CONSOLE=false;
 			RTOption.CODE_STEP_TRACING = false;
 			RTOption.BLOCK_TRACING = false;
-			RTOption._GOTOTRACING = false;
+			RTOption.GOTO_TRACING = false;
 			RTOption.THREAD_TRACING = false;
 			RTOption.QPS_TRACING = false;
 			RTOption.SML_TRACING = false;

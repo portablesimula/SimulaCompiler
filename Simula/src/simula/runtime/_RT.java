@@ -14,6 +14,8 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import simula.compiler.utilities.Global;
+
 /**
  * 
  * @author Øystein Myhre Andersen
@@ -37,7 +39,7 @@ public final class _RT {
 		public static boolean USE_CONSOLE=false;//true;
 		public static boolean CODE_STEP_TRACING = false;// true;
 		public static boolean BLOCK_TRACING = false;// true;
-		public static boolean _GOTOTRACING = false;// true;
+		public static boolean GOTO_TRACING = false;// true;
 		public static boolean THREAD_TRACING = false;// true;
 		public static boolean LOOM_TRACING = false;// true;
 		public static boolean QPS_TRACING = false; // true;
@@ -159,7 +161,7 @@ public final class _RT {
 				else if(arg.equalsIgnoreCase("-USE_CONSOLE")) Option.USE_CONSOLE=true;
 				else if(arg.equalsIgnoreCase("-CODE_STEP_TRACING")) Option.CODE_STEP_TRACING=true;
 				else if(arg.equalsIgnoreCase("-BLOCK_TRACING")) Option.BLOCK_TRACING=true;
-				else if(arg.equalsIgnoreCase("-_GOTOTRACING")) Option._GOTOTRACING=true;
+				else if(arg.equalsIgnoreCase("-GOTO_TRACING")) Option.GOTO_TRACING=true;
 				else if(arg.equalsIgnoreCase("-THREAD_TRACING")) Option.THREAD_TRACING=true;
 				else if(arg.equalsIgnoreCase("-LOOM_TRACING")) Option.LOOM_TRACING=true;
 				else if(arg.equalsIgnoreCase("-QPS_TRACING")) Option.QPS_TRACING=true;
@@ -218,7 +220,7 @@ public final class _RT {
 		System.out.println("USE_CONSOLE="+Option.USE_CONSOLE);
 		System.out.println("CODE_STEP_TRACING="+Option.CODE_STEP_TRACING);
 		System.out.println("BLOCK_TRACING="+Option.BLOCK_TRACING);
-		System.out.println("_GOTOTRACING="+Option._GOTOTRACING);
+		System.out.println("GOTO_TRACING="+Option.GOTO_TRACING);
 		System.out.println("THREAD_TRACING="+Option.THREAD_TRACING);
 		System.out.println("LOOM_TRACING="+Option.LOOM_TRACING);
 		System.out.println("QPS_TRACING="+Option.QPS_TRACING);

@@ -647,7 +647,7 @@ public abstract class _RTObject {
 
 	public static void _JUMPTABLE(final int labelIndex) {
 		// Local GOTO - Needs ByteCode Engineering.
-		if (_RT.Option._GOTOTRACING)
+		if (_RT.Option.GOTO_TRACING)
 			_RT.TRACE("_RTObject._JUMPTABLE: labelIndex=" + labelIndex);
 		String msg = "FATAL ERROR: Local GOTO LABEL#" + labelIndex + " Needs ByteCode Engineering.";
 		_RT.println(msg);
@@ -682,7 +682,7 @@ public abstract class _RTObject {
 	// *** _GOTO -- To avoid Java-error: "Unreachable code" after GOTO
 	// ************************************************************
 	public void _GOTO(final _LABQNT q) {
-		if (_RT.Option._GOTOTRACING)	_RT.TRACE("_RTObject.GOTO: " + q );
+		if (_RT.Option.GOTO_TRACING)	_RT.TRACE("_RTObject.GOTO: " + q );
 		throw (q);
 	}
 
@@ -705,15 +705,15 @@ public abstract class _RTObject {
 
 		public void uncaughtException(Thread thread, Throwable e) {
 			String threadID =(_RT.Option.VERBOSE)? ( "Thread:" + thread.getName() + '[' + obj + "]: " ) : "";
-			if (_RT.Option._GOTOTRACING)	_RT.println(threadID + " throws exception: " + e);
-			if (_RT.Option._GOTOTRACING)	e.printStackTrace();
+			if (_RT.Option.GOTO_TRACING)	_RT.println(threadID + " throws exception: " + e);
+			if (_RT.Option.GOTO_TRACING)	e.printStackTrace();
 			if (e instanceof _LABQNT) {
-				if (_RT.Option._GOTOTRACING)	System.err.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
-				if (_RT.Option._GOTOTRACING)	_RT.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
+				if (_RT.Option.GOTO_TRACING)	System.err.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
+				if (_RT.Option.GOTO_TRACING)	_RT.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
 				_RTObject DL = obj.DL_;
 				if (DL != null && DL != CTX_) {
-					if (_RT.Option._GOTOTRACING)	System.err.println("DL=" + DL.edObjectAttributes());
-					if (_RT.Option._GOTOTRACING)	_RT.println("DL=" + DL.edObjectAttributes());
+					if (_RT.Option.GOTO_TRACING)	System.err.println("DL=" + DL.edObjectAttributes());
+					if (_RT.Option.GOTO_TRACING)	_RT.println("DL=" + DL.edObjectAttributes());
 					_Coroutine._PENDING_EXCEPTION = (RuntimeException) e;
 					DL.CORUT_.run();
 				} else {
@@ -743,7 +743,7 @@ public abstract class _RTObject {
 				e.printStackTrace();
 				endProgram(-1);
 			}
-			if (_RT.Option._GOTOTRACING)	_RT.printThreadList();
+			if (_RT.Option.GOTO_TRACING)	_RT.printThreadList();
 		}
 		
 		private void treatRuntimeError(String msg) {

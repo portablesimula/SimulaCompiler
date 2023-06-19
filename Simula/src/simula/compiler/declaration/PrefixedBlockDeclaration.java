@@ -79,7 +79,9 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 			Global.enterScope(this.declaredIn);
 			blockPrefix.doChecking();
 			this.prefix = blockPrefix.identifier;
-			this.getPrefixClass().doChecking();
+//			this.getPrefixClass().doChecking();
+			ClassDeclaration prefix=this.getPrefixClass();
+			if(prefix!=null) prefix.doChecking();
 			Global.exitScope();
 		}
 		Global.enterScope(this);

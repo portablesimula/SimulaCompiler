@@ -43,10 +43,11 @@ public final class StandardClass extends ClassDeclaration {
 	public static StandardClass Head;
 	public static StandardClass Link;
 	public static StandardClass Simulation;	
-	public static StandardClass CatchingErrors;
 	public static StandardClass EVENT_NOTICE;
 	public static StandardClass Process;
 	public static StandardClass MAIN_PROGRAM;
+	
+	public static StandardClass CatchingErrors;
 	public static StandardClass DEC_Lib;
 	public static StandardClass Drawing;
 	public static StandardClass ShapeElement;
@@ -73,15 +74,18 @@ public final class StandardClass extends ClassDeclaration {
 			initLinkage();
 			initHead();
 			initLink();
-		initCatchingErrors();
 		initSimulation();
 			initEVENT_NOTICE();
 			initProcess();
 			initMAIN_PROGRAM();
-		initDEC_Lib();
-		initDrawing();
-			initShapeElement();
-			initTextElement();
+			
+		if(Option.EXTENSIONS) {
+			initCatchingErrors();
+			initDEC_Lib();
+			initDrawing();
+				initShapeElement();
+				initTextElement();
+		}
 	}
 
 
@@ -257,33 +261,34 @@ public final class StandardClass extends ClassDeclaration {
 		// **************************************
 		// *** Additional Standard Procedures ***
 		// **************************************
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Boolean,"setSeed",parameter("seed",Type.Integer));
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"waitSomeTime",parameter("millies",Type.Integer)); 
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"printThreadList",parameter("withStackTrace",Type.Boolean));
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"printStaticChain");
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edit"
+		if(Option.EXTENSIONS) {
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"waitSomeTime"
+				,parameter("millies",Type.Integer)); 
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"printThreadList"
+				,parameter("withStackTrace",Type.Boolean));
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"printStaticChain");
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edit"
 				,parameter("x",new OverLoad(Type.Integer,Type.Real,Type.LongReal,Type.Boolean,Type.Character)));
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edfix"
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edfix"
 				,parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer));
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edtime"
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edtime"
 				,parameter("x",new OverLoad(Type.Real,Type.LongReal)));
-
+		}
+		
 		// *****************************************
 		// *** Additional S-Port'like Procedures ***
 		// *****************************************
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"DEFEXCEPTION",parameter("erh",Parameter.Kind.Procedure,Parameter.Mode.value,null));
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text));
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"loadChar",parameter("t",Type.Text),parameter("i",Type.Integer)); 
-
-		// storechar(EOL,line,linlen);
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"storeChar",parameter("c",Type.Character),parameter("t",Type.Text),parameter("i",Type.Integer)); 
-
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"getTextInfo",parameter("i",Type.Integer)); 
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"giveTextInfo",parameter("i",Type.Integer),parameter("t",Type.Text)); 
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"getIntInfo",parameter("i",Type.Integer)); 
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"giveIntInfo",parameter("i",Type.Integer),parameter("val",Type.Integer)); 
-		ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"rts_utility",parameter("index",Type.Integer),parameter("level",Type.Integer)); 
-
+		if(Option.EXTENSIONS) {
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"DEFEXCEPTION",parameter("erh",Parameter.Kind.Procedure,Parameter.Mode.value,null));
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text));
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"loadChar",parameter("t",Type.Text),parameter("i",Type.Integer)); 
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"storeChar",parameter("c",Type.Character),parameter("t",Type.Text),parameter("i",Type.Integer)); 
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"getTextInfo",parameter("i",Type.Integer)); 
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"giveTextInfo",parameter("i",Type.Integer),parameter("t",Type.Text)); 
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"getIntInfo",parameter("i",Type.Integer)); 
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"giveIntInfo",parameter("i",Type.Integer),parameter("val",Type.Integer)); 
+			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"rts_utility",parameter("index",Type.Integer),parameter("level",Type.Integer)); 
+		}
 	}
 
 	// ******************************************************************
@@ -612,8 +617,10 @@ public final class StandardClass extends ClassDeclaration {
 		InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
 		InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
 		InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"inbyte");  
-		InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"in2byte");  // Extension to Simula Standard
-		InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));  
+		InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"intext",parameter("t",Type.Text));
+		if(Option.EXTENSIONS) {
+			InByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Integer,"in2byte");  // Extension to Simula Standard
+		}
 	}  
 
 	// ******************************************************************
@@ -634,9 +641,11 @@ public final class StandardClass extends ClassDeclaration {
 		OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"open",parameter("fileimage",Type.Text));  
 		OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"close");  
 		OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outbyte",parameter("x",Type.Integer));   
-		OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   
 		OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"outtext",parameter("t",Type.Text));  
 		OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Boolean,"checkpoint");  
+		if(Option.EXTENSIONS) {
+			OutByteFile.addStandardProcedure(Declaration.Kind.MemberMethod,null,"out2byte",parameter("x",Type.Integer));   			
+		}
 	}  
 
 	// ******************************************************************
@@ -727,19 +736,6 @@ public final class StandardClass extends ClassDeclaration {
 		Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"follow",parameter("X",Type.Ref("Linkage")));  
 		Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"precede",parameter("X",Type.Ref("Linkage")));  
 		Link.addStandardProcedure(Declaration.Kind.MemberMethod,null,"into",parameter("S",Type.Ref("Head")));  
-	}  
-
-	// ******************************************************************
-	// *** The Standard Class CatchingErrors
-	// ******************************************************************
-	private static void initCatchingErrors() { 
-		CatchingErrors=new StandardClass("CLASS","CatchingErrors");
-		ENVIRONMENT.addStandardClass(CatchingErrors);  // Declared in ENVIRONMENT
-		CatchingErrors.virtualSpecList.add(new VirtualSpecification("onError",null,VirtualSpecification.Kind.Procedure,null));
-		CatchingErrors.code1=codeSet( // Statements before inner 
-				new CodeLine("CatchingErrors",1,"try {"));      
-		CatchingErrors.code2=codeSet( // Statements after inner 
-				new CodeLine("CatchingErrors",3,"} catch(RuntimeException e) { _CUR=this; _onError(e,onError_0()); }"));
 	}  
 
 	// ******************************************************************
@@ -844,7 +840,21 @@ public final class StandardClass extends ClassDeclaration {
 
 
 	// ******************************************************************
-	// *** The Standard Class DEC_Lib   - as defined in DEC handbook III
+	// *** The Standard Class CatchingErrors  NOTE: if(Option.EXTENSIONS)
+	// ******************************************************************
+	private static void initCatchingErrors() { 
+		CatchingErrors=new StandardClass("CLASS","CatchingErrors");
+		ENVIRONMENT.addStandardClass(CatchingErrors);  // Declared in ENVIRONMENT
+		CatchingErrors.virtualSpecList.add(new VirtualSpecification("onError",null,VirtualSpecification.Kind.Procedure,null));
+		CatchingErrors.code1=codeSet( // Statements before inner 
+				new CodeLine("CatchingErrors",1,"try {"));      
+		CatchingErrors.code2=codeSet( // Statements after inner 
+				new CodeLine("CatchingErrors",3,"} catch(RuntimeException e) { _CUR=this; _onError(e,onError_0()); }"));
+	}  
+
+	
+	// ******************************************************************
+	// *** The Standard Class DEC_Lib   - as defined in DEC handbook III    NOTE: if(Option.EXTENSIONS)
 	// ******************************************************************
 	private static void initDEC_Lib() { 
 		DEC_Lib=new StandardClass("CLASS","DEC_Lib");
@@ -899,7 +909,7 @@ public final class StandardClass extends ClassDeclaration {
 	}  
 
 	// ******************************************************************
-	// *** The Standard Class Drawing
+	// *** The Standard Class Drawing    NOTE: if(Option.EXTENSIONS)
 	// ******************************************************************
 	private static void initDrawing() {
 		Drawing=new StandardClass("Simset","Drawing",parameter("Title",Type.Text),parameter("width",Type.Integer),parameter("height",Type.Integer)); 
@@ -948,7 +958,7 @@ public final class StandardClass extends ClassDeclaration {
 	}
 
 	// ******************************************************************
-	// *** The Standard Link Class ShapeElement
+	// *** The Standard Link Class ShapeElement    NOTE: if(Option.EXTENSIONS)
 	// ******************************************************************
 	private static void initShapeElement() {
 		ShapeElement=new StandardClass("Link","ShapeElement");
@@ -972,7 +982,7 @@ public final class StandardClass extends ClassDeclaration {
 	}
 
 	// ******************************************************************
-	// *** The Standard Link Class TextElement
+	// *** The Standard Link Class TextElement    NOTE: if(Option.EXTENSIONS)
 	// ******************************************************************
 	private static void initTextElement() {
 		TextElement=new StandardClass("Link","TextElement",parameter("txt",Type.Text),parameter("x",Type.LongReal),parameter("y",Type.LongReal));  

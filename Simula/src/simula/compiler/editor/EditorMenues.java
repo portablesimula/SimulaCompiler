@@ -43,9 +43,15 @@ import simula.compiler.utilities.Util;
 
 public class EditorMenues extends JMenuBar {
 	private static final long serialVersionUID = 1L;
+	
+	private JMenuItem defJMenuItem(String ident,String toolTipText) {
+		JMenuItem item = new JMenuItem(ident);
+		if(toolTipText!=null) item.setToolTipText(toolTipText);
+		return(item);
+	}
     
     private JMenu fileMenu=new JMenu("File");
-    private JMenuItem newFile = new JMenuItem("New");
+    private JMenuItem newFile = defJMenuItem("New","Will open a new Simula file for editing");
     private JMenuItem openFile = new JMenuItem("Open");
     private JMenuItem saveFile = new JMenuItem("Save");
     private JMenuItem saveAs = new JMenuItem("Save As...");
@@ -69,8 +75,12 @@ public class EditorMenues extends JMenuBar {
     private JMenu settings=new JMenu("Settings");
 	private JCheckBox autoRefresh=new JCheckBox("AutoRefresh");
     private JMenuItem setWorkSpace = new JMenuItem("Select WorkSpace");
-    private JMenuItem setJavaDir = new JMenuItem("Select Java Dir.");
-    private JMenuItem setOutputDir = new JMenuItem("Select Output Dir.");
+    private JMenuItem setJavaDir = defJMenuItem("Select Java Dir.","Specify where to place generated .java files. \r\n"
+    											+ "Default: Temp directory which is deleted upon exit");
+    private JMenuItem setOutputDir = defJMenuItem("Select Output Dir.","Specify where to place generated .jar file. \r\n"
+    											+ "Default: Current workspace/bin");
+    private JMenuItem setExtLibDir = defJMenuItem("Select ExtLib Dir.","Specify where to search for precompiled classes and \r\n"
+    																+ "procedures. If not found, output directory is also searched. ");
     private JMenuItem workSpaces = new JMenuItem("Remove WorkSpaces");
     private JMenuItem compilerOption = new JMenuItem("Compiler Options");
     private JMenuItem runtimeOption = new JMenuItem("Runtime Options");
@@ -100,6 +110,7 @@ public class EditorMenues extends JMenuBar {
     private JMenuItem setWorkSpace2 = new JMenuItem("Select WorkSpace");
     private JMenuItem setJavaDir2 = new JMenuItem("Select Java Dir.");
     private JMenuItem setOutputDir2 = new JMenuItem("Select Output Dir.");
+    private JMenuItem setExtLibDir2 = new JMenuItem("Select ExtLib Dir.");
     private JMenuItem workSpaces2 = new JMenuItem("Remove WorkSpaces");
     private JMenuItem compilerOption2 = new JMenuItem("Compiler Options");
     private JMenuItem runtimeOption2 = new JMenuItem("Runtime Options");
@@ -141,6 +152,7 @@ public class EditorMenues extends JMenuBar {
         settings.add(setWorkSpace); setWorkSpace.addActionListener(actionListener);
         settings.add(setJavaDir); setJavaDir.addActionListener(actionListener);
         settings.add(setOutputDir); setOutputDir.addActionListener(actionListener);
+        settings.add(setExtLibDir); setExtLibDir.addActionListener(actionListener);
         settings.add(workSpaces); workSpaces.addActionListener(actionListener);
         settings.add(compilerOption); compilerOption.addActionListener(actionListener);
         settings.add(runtimeOption); runtimeOption.addActionListener(actionListener);
@@ -223,6 +235,7 @@ public class EditorMenues extends JMenuBar {
         popupMenu.add(setWorkSpace2); setWorkSpace2.addActionListener(actionListener);
         popupMenu.add(setJavaDir2); setJavaDir2.addActionListener(actionListener);
         popupMenu.add(setOutputDir2); setOutputDir2.addActionListener(actionListener);
+        popupMenu.add(setExtLibDir2); setExtLibDir2.addActionListener(actionListener);
         popupMenu.add(workSpaces2); workSpaces2.addActionListener(actionListener);
         popupMenu.add(compilerOption2); compilerOption2.addActionListener(actionListener);
         popupMenu.add(runtimeOption2); runtimeOption2.addActionListener(actionListener);
@@ -296,6 +309,7 @@ public class EditorMenues extends JMenuBar {
 			else if(item==setWorkSpace || item==setWorkSpace2) selectWorkspaceAction();
 			else if(item==setJavaDir || item==setJavaDir2) selectJavaDirAction();
 			else if(item==setOutputDir || item==setOutputDir2) selectOutputDirAction();
+			else if(item==setExtLibDir || item==setExtLibDir2) selectExtLibDirAction();
 			else if(item==workSpaces || item==workSpaces2) removeWorkspacesAction();
 			else if(item==compilerOption || item==compilerOption2) Option.selectCompilerOptions();
 			else if(item==runtimeOption  || item==runtimeOption2) RTOption.selectRuntimeOptions();			
@@ -486,6 +500,14 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
     private void selectOutputDirAction() {
     	SimulaEditor.doSelectOutputDir();
+    }	
+    
+	// ****************************************************************
+	// *** selectExtLibDirAction
+	// ****************************************************************
+    private void selectExtLibDirAction() {
+    	SimulaEditor.doSelectExtLibDir();
+    	Global.storeWorkspaceProperties();
     }	
 
 	// ****************************************************************

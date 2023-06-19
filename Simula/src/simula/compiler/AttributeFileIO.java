@@ -40,7 +40,8 @@ public final class AttributeFileIO {
 		String relativeAttributeFileName = program.getRelativeAttributeFileName();
 		if (relativeAttributeFileName == null) return;
 		File file = new File(Global.tempClassFileDir,relativeAttributeFileName);
-		if (Option.verbose)	Util.message("*** BEGIN Generate SimulaAttributeFile: \"" + file+"\"");
+		if (Option.verbose)
+			Util.message("*** BEGIN Generate SimulaAttributeFile: \"" + file+"\"");
 		AttributeFileIO attributeFile = new AttributeFileIO(file);
 		attributeFile.write((BlockDeclaration) program.module);
 		if (Option.TRACE_ATTRIBUTE_OUTPUT) {

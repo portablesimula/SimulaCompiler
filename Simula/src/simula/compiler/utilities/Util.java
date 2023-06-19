@@ -220,7 +220,7 @@ public final class Util {
     //*** 
     //*******************************************************************************
 	public static boolean equals(String s1,String s2) {
-		if(Option.CASE_SENSITIVE)
+		if(Option.CaseSensitive)
 			 return(s1.equals(s2));			
 		else return(s1.equalsIgnoreCase(s2));
 	}

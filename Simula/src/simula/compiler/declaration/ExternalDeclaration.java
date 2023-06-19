@@ -115,15 +115,14 @@ public final class ExternalDeclaration extends Declaration {
 				externalIdentifier = Parser.currentToken;
 				Parser.expect(KeyWord.TEXTKONST);
 			}
-			File jarFile;
-			if(externalIdentifier==null)
-				 jarFile=new File(Global.outputDir,identifier+".jar");
-			else jarFile=new File(externalIdentifier.getIdentifier());
-			Type moduleType=readAttributeFile(identifier,jarFile,declarationList);
-			if(moduleType!=expectedType) {
-				if(expectedType!=null) Util.error("Wrong external type");
+			File jarFile=findJarFile(identifier,externalIdentifier);
+			if(jarFile!=null) {
+				Type moduleType=readAttributeFile(identifier,jarFile,declarationList);
+				if(moduleType!=expectedType) {
+					if(expectedType!=null) Util.error("Wrong external type");
+				}
 			}
-		  
+
 			if(Parser.accept(KeyWord.IS)) {
 				// ...
 				Util.NOT_IMPLEMENTED("External non-Simula Procedure");
@@ -132,6 +131,29 @@ public final class ExternalDeclaration extends Declaration {
 			if(!Parser.accept(KeyWord.COMMA)) break LOOP;
 			identifier=expectIdentifier();
 		}
+	}
+	
+	private static File findJarFile(final String identifier,final Token externalIdentifier) {
+		File jarFile=null;
+		try {
+			if(externalIdentifier==null) {
+				// If present search extLib
+				if(Global.extLib!=null) {
+					jarFile=new File(Global.extLib,identifier+".jar");
+					//System.out.println("ExternalDeclaration.findJarFile(1): try "+jarFile+", exists="+jarFile.exists());
+					if(jarFile.exists()) return(jarFile);
+				}
+				jarFile=new File(Global.outputDir,identifier+".jar");
+				//System.out.println("ExternalDeclaration.findJarFile(2): try "+jarFile+", exists="+jarFile.exists());
+				if(jarFile.exists()) return(jarFile);
+			} else {
+				jarFile=new File(externalIdentifier.getIdentifier());
+				//System.out.println("ExternalDeclaration.findJarFile(3): try "+jarFile+", exists="+jarFile.exists());
+				if(jarFile.exists()) return(jarFile);
+			}
+		} catch(Exception e) { Util.INTERNAL_ERROR("Can't find attribute file: "+jarFile,e); }
+		Util.error("Can't find attribute file: "+jarFile);
+		return(null);
 	}
 
 
@@ -180,6 +202,7 @@ public final class ExternalDeclaration extends Declaration {
 			OutputStream outputStream = null;
 			try { inputStream = jarFile.getInputStream(entry);
 			      File destFile = new File(destDir,entry.getName());
+			      //System.out.println("ExternalDeclaration.expandJarEntries: "+destFile);
 			      outputStream=new FileOutputStream(destFile);	 
 			      byte[] buffer = new byte[4096];
 			      int bytesRead = 0;

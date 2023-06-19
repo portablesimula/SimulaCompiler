@@ -48,7 +48,7 @@ public class Type implements Externalizable {
 
 	public Type(String className) {
 		if(className==null) className="UNKNOWN"; // Error recovery
-		if(Option.CASE_SENSITIVE)
+		if(Option.CaseSensitive)
 			 this.key=new Token(KeyWord.REF,className);
 		else this.key=new Token(KeyWord.REF,className.toUpperCase());
 	}
@@ -95,7 +95,7 @@ public class Type implements Externalizable {
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
 			    if(decl instanceof ClassDeclaration cdecl) qual=cdecl;
 			    else {
-			    	Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
+			    	Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class rather "+decl.getClass().getSimpleName());
 					Util.BREAK("Type.doChecking: refIdent="+refIdent+", scopeChain="+Global.getCurrentScope().edScopeChain());
 			    }
 			}

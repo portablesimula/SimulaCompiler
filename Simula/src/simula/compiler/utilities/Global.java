@@ -64,7 +64,6 @@ public final class Global {
 	public static String sourceName;
 	public static String insertName;
 	public static File simulaRtsLib;      // The simula runtime system
-
 	
     public static File simulaPropertiesFile;
     private static Properties simulaProperties;
@@ -72,6 +71,7 @@ public final class Global {
 	public static File currentWorkspace;  // Where to find .sim source files
 	public static ArrayDeque<File> workspaces;
 	public static File outputDir;         // Used by Java-Coding to save the generated .jar files.
+	public static File extLib;			  // Used by ExternalDeclaration.readAttributeFile
 	public static Map<String,Type> typeMap;
 
 	public static boolean duringParsing;     // True while Parsing
@@ -224,11 +224,14 @@ public final class Global {
     	if(simulaWorkspacesFile.exists()) {
     		try {
     			simulaWorkspaces.loadFromXML(new FileInputStream(simulaWorkspacesFile));
+				String ext=simulaWorkspaces.getProperty("simula.extLib",null);
+				//Util.println("Global.loadWorkspaceProperties: extLib="+ext);
+				if(ext!=null) Global.extLib=new File(ext);
     			for(int i=1;i<=MAX_WORKSPACE;i++) {
     				String ws=simulaWorkspaces.getProperty("simula.workspace."+i,null);
     				if(ws!=null) {
     					if(ws.contains("Simula-Beta-0.3")) ws=ws.replace("Simula-Beta-0.3","Simula-1.0");
-    					//System.out.println("Global.loadWorkspaceProperties: ADD "+ws);
+    					//Util.println("Global.loadWorkspaceProperties: ADD "+ws);
     					workspaces.add(new File(ws));
     				}
     			}
@@ -266,6 +269,8 @@ public final class Global {
 	public static void storeWorkspaceProperties() {
 		simulaWorkspaces = new Properties();
 		int i=1;
+		//Util.println("Global.storeWorkspaceProperties: extLib="+Global.extLib.toString());
+		if(Global.extLib!=null) simulaWorkspaces.setProperty("simula.extLib",Global.extLib.toString());
 		for(File ws:workspaces) {
 			simulaWorkspaces.setProperty("simula.workspace."+(i++),ws.toString());
 		}

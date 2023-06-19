@@ -34,6 +34,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
 import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
+import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.editor.RTOption;
 import simula.compiler.parsing.Parser;
 import simula.compiler.utilities.Global;
@@ -184,7 +185,7 @@ public final class SimulaCompiler {
 			}
 			Parser.close(); Global.duringParsing=false;
 			if(Util.nError>0) {
-				Util.message("Compiler terminated after "+Util.nError+" errors during parsing");
+				Util.message("Compiler terminate "+Global.sourceName+" after "+Util.nError+" errors during parsing");
 				return;
 			}
 			// ***************************************************************
@@ -199,7 +200,7 @@ public final class SimulaCompiler {
 			}
 			Global.duringChecking=false;
 			if(Util.nError>0) {
-				Util.message("Compiler terminated after "+Util.nError+" errors during semantic checking");
+				Util.message("Compiler terminate "+Global.sourceName+" after "+Util.nError+" errors during semantic checking");
 				return;
 			}
 			// ***************************************************************
@@ -213,7 +214,7 @@ public final class SimulaCompiler {
 			      	Util.LIST(javaClass.javaOutputFile.toString());
 			}
 			if(Util.nError>0) {
-				Util.message("Compiler terminated after "+Util.nError+" errors during code generation");
+				Util.message("Compiler terminate "+Global.sourceName+" after "+Util.nError+" errors during code generation");
 				return;
 			}
 			
@@ -432,7 +433,10 @@ public final class SimulaCompiler {
 		jarFile = new File(Global.outputDir,program.getIdentifier()+".jar");
 		jarFile.getParentFile().mkdirs();
 		if (!program.isExecutable()) {
-			Util.warning("No execution - Separate Compiled javaClass is written to: \"" + jarFile+"\"");
+			String id=program.module.identifier;
+			String kind="Procedure ";
+			if(program.module instanceof ClassDeclaration) kind="Class ";
+			Util.warning("No execution - Separate Compiled "+kind+id+" is written to: \"" + jarFile+"\"");
 		}
 		Manifest manifest = new Manifest();
 		mainEntry = Global.packetName + '/' + program.getIdentifier();

@@ -25,18 +25,22 @@ public final class Simula {
 
 	private static void help() {
 		Util.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
-		Util.println("Usage: java simula.jar  [options]  sourceFile \n\n"
+		Util.println("Usage: java -jar simula.jar  [options]  sourceFile \n\n"
 				+ "possible options include:\n"
 				+ "  -help                      Print this synopsis of standard options\n"
 				+ "  -noexec                    Don't execute generated .jar file\n"
 				+ "  -nowarn                    Generate no warnings\n"
+				+ "  -noextension			    Disable all language extensions\n"
+				+ "					            In other words, follow the Simula Standard literally\n"
 				+ "  -select characters         First, all selectors are reset."
-				+ "                             Then, for each character, the corresponding selector is set.\n"
+				+ "                             Then, for each character, the corresponding selector is set\n"
 				+ "  -verbose                   Output messages about what the compiler is doing\n"
 				+ "  -keepJava <directory>      Specify where to place generated .java files\n"
 				+ "                             Default: Temp directory which is deleted upon exit\n"
 				+ "  -output <directory>        Specify where to place generated executable .jar file\n"
 				+ "                             Default: Same directory as source file\n"
+				+ "  -extLib <directory>		Specify where to search for precompiled classes and procedures\n"
+				+ "                             If not found, output directory is also searched "
 				+ "\nsourceFile      Simula Source File\n");
 		System.exit(0);
 	}
@@ -45,6 +49,7 @@ public final class Simula {
 		String fileName = null;
 		Option.verbose=false;
 		Option.WARNINGS=true;
+		Option.EXTENSIONS=true;
 		Global.initProperties();
 
 		// Parse command line arguments.
@@ -54,11 +59,13 @@ public final class Simula {
 				if (arg.equalsIgnoreCase("-help")) help();
 				else if (arg.equalsIgnoreCase("-noexec")) Option.noExecution=true;
 				else if (arg.equalsIgnoreCase("-nowarn")) { Option.noJavacWarnings=true; Option.WARNINGS=false; }
+				else if (arg.equalsIgnoreCase("-noextension")) { Option.EXTENSIONS=false; }
 				else if (arg.equalsIgnoreCase("-select")) setSelectors(argv[++i]);
 				else if (arg.equalsIgnoreCase("-verbose")) Option.verbose=true;
-				else if (arg.equalsIgnoreCase("-packetName")) Global.packetName=argv[++i];
+//				else if (arg.equalsIgnoreCase("-packetName")) Global.packetName=argv[++i];
 				else if (arg.equalsIgnoreCase("-keepJava")) setKeepJava(argv[++i]);
 				else if (arg.equalsIgnoreCase("-output")) setOutputDir(argv[++i]);
+				else if (arg.equalsIgnoreCase("-extLib")) Global.extLib=new File(argv[++i]);
 				else if (arg.equalsIgnoreCase("-source")) Option.SOURCE_FILE=argv[++i];
 				else error("Unknown option "+arg);
 			} else if(fileName==null) fileName = arg;

@@ -202,6 +202,7 @@ public final class RunFullTestBatch {
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 		Option.verbose=false;
+//		Option.EXTENSIONS=false;
 //		Option.CASE_SENSITIVE=true;
 		Option.GNERATE_LINE_CALLS=true;
 		
@@ -215,7 +216,7 @@ public final class RunFullTestBatch {
 		RTOption.USE_CONSOLE=false;
 		RTOption.CODE_STEP_TRACING = false;
 		RTOption.BLOCK_TRACING = false;
-		RTOption._GOTOTRACING = false;
+		RTOption.GOTO_TRACING = false;
 		RTOption.THREAD_TRACING = false;
 		RTOption.QPS_TRACING = false;
 		RTOption.SML_TRACING = false;
