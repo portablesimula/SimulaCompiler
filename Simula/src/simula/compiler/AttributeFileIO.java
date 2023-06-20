@@ -24,6 +24,11 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public final class AttributeFileIO {
 	private final String version="SimulaAttributeFile: Version 1.0";
 
@@ -36,7 +41,7 @@ public final class AttributeFileIO {
 		this.attributeFile = attributeFile;
 	}
 
-	public static void write(final ProgramModule program) throws IOException {
+	static void write(final ProgramModule program) throws IOException {
 		String relativeAttributeFileName = program.getRelativeAttributeFileName();
 		if (relativeAttributeFileName == null) return;
 		File file = new File(Global.tempClassFileDir,relativeAttributeFileName);
@@ -51,31 +56,6 @@ public final class AttributeFileIO {
 			}
 		}
 		if (Option.verbose)	Util.TRACE("*** ENDOF Generate SimulaAttributeFile: " + file);
-	}
-
-	private void write(final BlockDeclaration module) throws IOException {
-		File attributeDir = new File(Global.tempClassFileDir,Global.packetName);
-		attributeDir.mkdirs();
-		attributeFile.createNewFile();
-		FileOutputStream fileOutputStream = new FileOutputStream(attributeFile);
-		oupt = new ObjectOutputStream(fileOutputStream);
-		writeVersion();
-		writeDependencies();
-		if (Option.verbose)
-			Util.TRACE("***       Write External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
-		oupt.writeObject(module);
-		oupt.flush(); oupt.close();	oupt = null;
-	}
-
-	private void writeDependencies() throws IOException {
-		for(Declaration dcl:StandardClass.ENVIRONMENT.declarationList) {
-			if(dcl instanceof BlockDeclaration ext) {
-				if(ext.isPreCompiled) {
-					if (Option.verbose) Util.TRACE("***       Write External "+ext.declarationKind+' '+ext.identifier+'['+ext.externalIdent+']');
-					oupt.writeObject(ext);
-				}
-			}
-		}
 	}
 
 	public static Type readAttributeFile(final InputStream inputStream,final File file,
@@ -107,6 +87,32 @@ public final class AttributeFileIO {
 		if (Option.verbose)	Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + file);
 		return(moduleType);
 	}	
+
+	
+	private void write(final BlockDeclaration module) throws IOException {
+		File attributeDir = new File(Global.tempClassFileDir,Global.packetName);
+		attributeDir.mkdirs();
+		attributeFile.createNewFile();
+		FileOutputStream fileOutputStream = new FileOutputStream(attributeFile);
+		oupt = new ObjectOutputStream(fileOutputStream);
+		writeVersion();
+		writeDependencies();
+		if (Option.verbose)
+			Util.TRACE("***       Write External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
+		oupt.writeObject(module);
+		oupt.flush(); oupt.close();	oupt = null;
+	}
+
+	private void writeDependencies() throws IOException {
+		for(Declaration dcl:StandardClass.ENVIRONMENT.declarationList) {
+			if(dcl instanceof BlockDeclaration ext) {
+				if(ext.isPreCompiled) {
+					if (Option.verbose) Util.TRACE("***       Write External "+ext.declarationKind+' '+ext.identifier+'['+ext.externalIdent+']');
+					oupt.writeObject(ext);
+				}
+			}
+		}
+	}
 	  
 	private BlockDeclaration listAttributeFile(final File attributeFile) throws IOException, ClassNotFoundException {
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFile);

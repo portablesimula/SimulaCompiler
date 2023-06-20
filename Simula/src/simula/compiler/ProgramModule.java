@@ -46,8 +46,8 @@ import simula.compiler.utilities.Util;
  */
 public final class ProgramModule extends Statement {
 	final Declaration module;
-	final Variable sysin;
-	final Variable sysout;
+	final private Variable sysin;
+	final private Variable sysout;
   
 	public String getRelativeAttributeFileName() {
 		if(module.declarationKind==Declaration.Kind.Class) return(Global.packetName+"/CLASS.AF");
@@ -111,10 +111,13 @@ public final class ProgramModule extends Statement {
   
 	@Override
 	public void doJavaCoding() { module.doJavaCoding(); }
+	
 	@Override
 	public void print(final int indent) { module.print(0); }
+	
 	@Override
 	public String toString() { return((module==null)?"":""+module.identifier); }
+	
 	public String getIdentifier() { return(module.identifier); }
 	
 }

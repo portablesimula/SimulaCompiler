@@ -20,9 +20,9 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class CodeLine implements Externalizable {
-	public String modid;
-	public int sourceLineNumber;
-	public String codeLine;
+	String modid;
+	int sourceLineNumber;
+	String codeLine;
 	
 	public CodeLine(final String modid,final int sourceLineNumber,final String codeLine) {
 		this.modid=modid;

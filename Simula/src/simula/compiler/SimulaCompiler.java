@@ -47,8 +47,7 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class SimulaCompiler {
-	final String inputFileName;
-	final Reader reader; // Reader in case of SimulaEditor
+	final private Reader reader; // Reader in case of SimulaEditor
 	
 	private ProgramModule programModule;
 	private File jarFile;
@@ -60,7 +59,6 @@ public final class SimulaCompiler {
 	
 	public SimulaCompiler(final String inputFileName,Reader reader) {
 		Global.initiate();
-		this.inputFileName = inputFileName;
 		if(reader==null) {
 			try { reader=new InputStreamReader(new FileInputStream(inputFileName),Global._CHARSET);
 			} catch (IOException e) {
@@ -115,7 +113,6 @@ public final class SimulaCompiler {
 			Util.message("Java Class Path      "+System.getProperty("java.class.path"));
 			Util.message("Java Class Version   "+System.getProperty("java.class.version"));
 			Util.message("Java Version         "+System.getProperty("java.version"));
-//			Util.message("Java VM Version      "+System.getProperty("java.vm.version"));
 			Util.message("Java VM Spec Version "+System.getProperty("java.vm.specification.version"));
 			Util.message("Java Vendor          "+System.getProperty("java.vendor"));
 			Util.message("OS name              "+System.getProperty("os.name"));
@@ -362,8 +359,6 @@ public final class SimulaCompiler {
 	private int callJavaSystemCompiler(final JavaCompiler compiler,final String classPath) throws IOException {
 		Vector<String> arguments = new Vector<String>();
 		if (Option.DEBUGGING) {
-			//arguments.add("-Xlint:path");
-			//arguments.add("-verbose");
 			arguments.add("-version");
 		}
 		if (Option.TRACING)	Util.println("SimulaCompiler.callJavaSystemCompiler: classPath=\"" + classPath+"\"");
@@ -371,7 +366,6 @@ public final class SimulaCompiler {
 		arguments.add("-d"); arguments.add(Global.tempClassFileDir.toString()); // Specifies output directory.
 		if (Option.noJavacWarnings)
 			arguments.add("-nowarn");
-		// arguments.add("-Xlint:unchecked");
 		for (GeneratedJavaClass javaClass : Global.generatedJavaClass)
 			arguments.add(javaClass.javaOutputFile.toString()); // Add .java Files
 		int nArg = arguments.size();
@@ -407,7 +401,6 @@ public final class SimulaCompiler {
 		cmds.add("javac");
 		if (Option.DEBUGGING) {
 			cmds.add("-version");
-			//cmds.add("-verbose");
 		}
 		if (Option.TRACING)	Util.println("SimulaCompiler.callJavacCompiler: classPath=\"" + classPath+"\"");
 		cmds.add("-classpath"); cmds.add(classPath);
@@ -458,7 +451,6 @@ public final class SimulaCompiler {
 		if(programModule.isExecutable() && !Option.noExecution && Global.INCLUDE_RUNTIME_SYSTEM_IN_JAR) {
 			File rtsHome= new File(Global.simulaRtsLib,"simula/runtime");
 			add(target,rtsHome, Global.simulaRtsLib.toString().length());
-			//System.out.println("RTSHOME: "+rtsHome);
 		}
 		target.close();
 		if (Option.TRACING)	Util.message("END Create .jar File: " + jarFile);

@@ -62,7 +62,6 @@ public final class Simula {
 				else if (arg.equalsIgnoreCase("-noextension")) { Option.EXTENSIONS=false; }
 				else if (arg.equalsIgnoreCase("-select")) setSelectors(argv[++i]);
 				else if (arg.equalsIgnoreCase("-verbose")) Option.verbose=true;
-//				else if (arg.equalsIgnoreCase("-packetName")) Global.packetName=argv[++i];
 				else if (arg.equalsIgnoreCase("-keepJava")) setKeepJava(argv[++i]);
 				else if (arg.equalsIgnoreCase("-output")) setOutputDir(argv[++i]);
 				else if (arg.equalsIgnoreCase("-extLib")) Global.extLib=new File(argv[++i]);
@@ -71,17 +70,16 @@ public final class Simula {
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
 		}	
-		//System.out.println("FILE: "+fileName);
 	    Global.simulaRtsLib=new File(Global.simulaHome,"rts");
 		if (fileName == null) {
-		    //printGlobalList("*** STARTING SIMULA EDITOR ***");
+		    // *** STARTING SIMULA EDITOR ***
 			Global.sampleSourceDir=new File(Global.simulaHome,"samples");
 			RTOption.InitRuntimeOptions();
 	    	Option.InitCompilerOptions();
 	    	SimulaEditor editor=new SimulaEditor();
 	    	editor.setVisible(true);
 		} else {
-		    //printGlobalList("*** STARTING SIMULA COMPILER ***");
+		    // *** STARTING SIMULA COMPILER ***
 		    new SimulaCompiler(fileName).doCompile();
 		}
 	}
