@@ -13,6 +13,10 @@ import simula.compiler.GeneratedJavaClass;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ */
 public final class LabelDeclaration extends SimpleVariableDeclaration implements Externalizable {
     public int index; // set by BlockDeclaration.doCheckLabelList
     
@@ -24,7 +28,7 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		DeclarationScope declaredIn=Global.getCurrentScope();
 		type.doChecking(declaredIn);

@@ -202,7 +202,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (declarationKind == Declaration.Kind.ContextFreeMethod) externalIdent = this.identifier;
 		if (declarationKind == Declaration.Kind.MemberMethod) externalIdent = this.identifier;

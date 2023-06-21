@@ -92,7 +92,7 @@ public final class ForStatement extends Statement {
   
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		controlVariable.doChecking();
 		this.type = controlVariable.type; // Type of control variable

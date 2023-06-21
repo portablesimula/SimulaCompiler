@@ -87,7 +87,7 @@ import simula.compiler.utilities.Util;
  * parameters.
  * <p>
  * A non-Simula procedure cannot be used as an actual parameter corresponding to
- * a formal procedure. *
+ * a formal procedure.
  * 
  * 
  * @author Øystein Myhre Andersen

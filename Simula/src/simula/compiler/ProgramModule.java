@@ -102,7 +102,7 @@ public final class ProgramModule extends Statement {
 
 	@Override
 	public void doChecking() {
-		if(_ISSEMANTICS_CHECKED()) return;
+		if(IS_SEMANTICS_CHECKED()) return;
 		sysin.doChecking();
 		sysout.doChecking();
 		module.doChecking();

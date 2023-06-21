@@ -70,7 +70,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		currentRTBlockLevel++;

@@ -13,6 +13,10 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Util;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ */
 public abstract class DeclarationScope extends Declaration {
 	
 	public int sourceBlockLevel; // Set during Parsing
@@ -38,7 +42,6 @@ public abstract class DeclarationScope extends Declaration {
 	// *** Utility: scopeID
 	// ***********************************************************************************************
 	public String scopeID() {
-//		if(declaredIn!=null) return(declaredIn.scopeID()+'.'+identifier+"["+rtBlockLevel+"]");
 		if(rtBlockLevel>1) return(declaredIn.scopeID()+'.'+identifier);
 		return(identifier);
 	}

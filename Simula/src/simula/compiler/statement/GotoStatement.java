@@ -39,7 +39,7 @@ public final class GotoStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		label.doChecking();
 		if (label.type != Type.Label)
 			Util.error("Goto " + label + ", " + label + " is not a Label");

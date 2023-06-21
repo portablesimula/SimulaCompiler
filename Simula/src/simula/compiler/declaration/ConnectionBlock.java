@@ -18,12 +18,17 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
+/**
+ * </pre>
+ * 
+ * @author Øystein Myhre Andersen
+ */
 public final class ConnectionBlock extends DeclarationScope {
 	public final Variable inspectedVariable;
-	Statement statement;
 	public ClassDeclaration classDeclaration;
-	final String whenClassIdentifier;
-	public Declaration whenClassDeclaration; // Set during cheching
+	private Statement statement;
+	private final String whenClassIdentifier;
+	private Declaration whenClassDeclaration; // Set during cheching
 
 	public ConnectionBlock(final Variable inspectedVariable,final String whenClassIdentifier) {
 		super("Connection block at line " + (Global.sourceLineNumber-1));
@@ -70,7 +75,7 @@ public final class ConnectionBlock extends DeclarationScope {
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		// Set External Identifier
 		externalIdent = inspectedVariable.identifier + '_' + lineNumber;

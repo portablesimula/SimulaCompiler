@@ -89,11 +89,7 @@ import simula.compiler.utilities.Util;
 public final class ArrayDeclaration extends Declaration implements Externalizable {
 	// Type type; inherited
 	public int nDim;
-	Vector<BoundPair> boundPairList;
-
-	public Vector<BoundPair> getBoundPairList() {
-		return (boundPairList);
-	}
+	private Vector<BoundPair> boundPairList;
 
 	private ArrayDeclaration(final String identifier,final Type type,final Vector<BoundPair> boundPairList) {
 		super(identifier);
@@ -104,18 +100,9 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ArrayDeclaration: " + toString());
 	}
 
-	public ArrayDeclaration(final String identifier,final Type type,final int nDim) {
-		super(identifier);
-		this.declarationKind=Declaration.Kind.ArrayDeclaration;
-		this.type=type;
-		this.nDim = nDim;
-		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ArrayDeclaration: " + toString());
-	}
-
 	public static void parse(final Type type,final DeclarationList declarationList) {
 		if (Option.TRACE_PARSE)
-			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current="
-					+ Parser.currentToken);
+			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current=" + Parser.currentToken);
 		do { parseArraySegment(type, declarationList);
 		} while (Parser.accept(KeyWord.COMMA));
 	}
@@ -144,13 +131,9 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 		}
 	}
 
-	public static class BoundPair {
+	private static class BoundPair {
 		// BoundPair = ArithmeticExpression : ArithmeticExpression
-		public Expression LB, UB;
-
-		public Expression getLowerBound() {
-			return (LB);
-		}
+		Expression LB, UB;
 
 		BoundPair(final Expression LB,final Expression UB) {
 			this.LB = LB;
@@ -172,7 +155,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if (type == null) type=Type.Real;
 		if(boundPairList!=null)

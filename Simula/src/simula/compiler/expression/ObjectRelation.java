@@ -80,7 +80,7 @@ public final class ObjectRelation extends Expression {
   
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())
+		if (IS_SEMANTICS_CHECKED())
 			return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)

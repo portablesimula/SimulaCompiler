@@ -45,7 +45,7 @@ public final class LabeledStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		statement.doChecking();
 		for (String label:labels) {
 			Meaning meaning = Global.getCurrentScope().findMeaning(label);

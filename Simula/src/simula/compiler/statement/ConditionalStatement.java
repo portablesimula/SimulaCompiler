@@ -70,7 +70,7 @@ public final class ConditionalStatement extends Statement {
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		condition.doChecking();
 		condition.backLink=this; // To ensure _RESULT from functions
 		if (!condition.type.equals(Type.Boolean))

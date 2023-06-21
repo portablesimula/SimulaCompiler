@@ -93,7 +93,7 @@ public final class TextOperation extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED()) return;
+		if (IS_SEMANTICS_CHECKED()) return;
 		Global.sourceLineNumber = lineNumber;
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("BEGIN TextOperation" + toString() + ".doChecking - Current Scope Chain: " + Global.getCurrentScope().edScopeChain());

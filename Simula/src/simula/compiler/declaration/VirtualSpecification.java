@@ -90,7 +90,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 	
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		if(procedureSpec!=null) procedureSpec.doChecking(this.declaredIn);
 		// Label and switch attributes are implicit specified 'protected'

@@ -91,7 +91,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		type.doChecking(Global.getCurrentScope());
 		if(constantElement!=null) {

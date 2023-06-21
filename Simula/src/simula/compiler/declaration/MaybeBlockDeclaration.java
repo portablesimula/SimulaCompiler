@@ -20,7 +20,6 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * </pre>
  * 
  * @author Øystein Myhre Andersen
  */
@@ -69,7 +68,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	public BlockStatement parseMaybeBlock(int line) {
 		this.lineNumber=line;
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse MayBeBlock");
-		//if(Option.TESTING) System.out.println("BlockStatement.parseMaybeBlock: "+this);
 		while (Declaration.parseDeclaration(declarationList))
 			Parser.accept(KeyWord.SEMICOLON);
 		while (!Parser.accept(KeyWord.END)) {
@@ -112,7 +110,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		if (declarationKind != Declaration.Kind.CompoundStatement) currentRTBlockLevel++;

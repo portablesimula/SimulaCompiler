@@ -144,7 +144,7 @@ public final class Variable extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		Declaration declaredAs=getMeaning().declaredAs;
 		if(declaredAs!=null) this.type=declaredAs.type;

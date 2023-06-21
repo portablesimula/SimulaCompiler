@@ -35,12 +35,12 @@ import simula.compiler.utilities.Util;
 public class ClassDeclaration extends BlockDeclaration implements Externalizable {
 	public String prefix; // Class Prefix in case of a SubClass or Prefixed Block.
 	public boolean detachUsed = false; // Set true when attribute procedure 'detach' is used in/on this class.
-	public Vector<Parameter> parameterList = new Vector<Parameter>();
-	public Vector<VirtualSpecification> virtualSpecList = new Vector<VirtualSpecification>();
-	public Vector<VirtualMatch> virtualMatchList = new Vector<VirtualMatch>();
-	public Vector<ProtectedSpecification> protectedList = new Vector<ProtectedSpecification>();
-	public Vector<HiddenSpecification> hiddenList = new Vector<HiddenSpecification>();
-	public Vector<CodeLine> code1; // Statement code before inner
+	Vector<Parameter> parameterList = new Vector<Parameter>();
+	protected Vector<VirtualSpecification> virtualSpecList = new Vector<VirtualSpecification>();
+	protected Vector<VirtualMatch> virtualMatchList = new Vector<VirtualMatch>();
+	Vector<ProtectedSpecification> protectedList = new Vector<ProtectedSpecification>();
+	Vector<HiddenSpecification> hiddenList = new Vector<HiddenSpecification>();
+	protected Vector<CodeLine> code1; // Statement code before inner
 	public Vector<CodeLine> code2; // Statement code after inner
 	private String externalPrefixIdent;
 
@@ -286,7 +286,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		if (externalIdent == null) externalIdent = edJavaClassName();
 		currentRTBlockLevel++;

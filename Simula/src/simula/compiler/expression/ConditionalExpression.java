@@ -41,7 +41,7 @@ public final class ConditionalExpression extends Expression {
 
 	@Override
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		condition.doChecking();
 		condition.backLink=this; // To ensure _RESULT from functions

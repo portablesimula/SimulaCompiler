@@ -68,7 +68,7 @@ public final class ActivationStatement extends Statement {
 	}
 
 	public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		if (object1 != null) object1.doChecking();
 		if (time != null) time.doChecking();
 		if (object2 != null) object2.doChecking();

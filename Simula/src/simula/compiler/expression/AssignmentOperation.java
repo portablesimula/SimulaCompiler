@@ -55,7 +55,7 @@ public final class AssignmentOperation extends Expression {
 
 	@Override
 	public void doChecking() {
-		if(_ISSEMANTICS_CHECKED()) return;
+		if(IS_SEMANTICS_CHECKED()) return;
 	   	Global.sourceLineNumber=lineNumber;
 		if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
 	    lhs.doChecking(); Type toType=lhs.type;

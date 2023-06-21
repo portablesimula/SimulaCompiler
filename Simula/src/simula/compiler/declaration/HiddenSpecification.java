@@ -21,10 +21,10 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class HiddenSpecification implements Externalizable {
-	public String identifier;
-	public ClassDeclaration definedIn;
+	String identifier;
+	ClassDeclaration definedIn;
     private ProtectedSpecification protectedBy; // Set during doChecking
-    public ProtectedSpecification getProtectedBy() {
+    private ProtectedSpecification getProtectedBy() {
     	if(protectedBy==null) doChecking();
     	return(protectedBy);
     }

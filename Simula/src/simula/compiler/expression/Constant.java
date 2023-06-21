@@ -121,7 +121,7 @@ public final class Constant extends Expression implements Externalizable {
     
 	@Override
     public void doChecking() {
-		if (_ISSEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
 		this.type.doChecking(Global.getCurrentScope());
 		SET_SEMANTICS_CHECKED();

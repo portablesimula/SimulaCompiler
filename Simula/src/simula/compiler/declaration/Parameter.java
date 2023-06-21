@@ -84,7 +84,7 @@ public final class Parameter extends Declaration implements Externalizable {
 
 	@Override
 	public void doChecking() {
-		if(_ISSEMANTICS_CHECKED()) return;
+		if(IS_SEMANTICS_CHECKED()) return;
 		Global.sourceLineNumber=lineNumber;
 		if(kind==null) {
 			Util.error("Parameter "+identifier+" is not specified -- assumed Simple Integer");
