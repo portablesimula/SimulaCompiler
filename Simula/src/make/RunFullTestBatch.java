@@ -203,7 +203,7 @@ public final class RunFullTestBatch {
 		Option.WARNINGS=false;
 		Option.verbose=false;
 //		Option.EXTENSIONS=false;
-		Option.CaseSensitive=true;
+//		Option.CaseSensitive=true;
 		Option.GNERATE_LINE_CALLS=true;
 		
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");

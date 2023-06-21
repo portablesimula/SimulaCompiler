@@ -1,3 +1,30 @@
+// ASM: a very small and fast Java bytecode manipulation framework
+// Copyright (c) 2000-2011 INRIA, France Telecom
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+// 3. Neither the name of the copyright holders nor the names of its
+//    contributors may be used to endorse or promote products derived from
+//    this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+// THE POSSIBILITY OF SUCH DAMAGE.
 package simula.compiler.byteCodeEngineering;
 
 import java.util.HashMap;
@@ -30,13 +57,11 @@ import simula.compiler.utilities.Util;
 public class AsmUtils {
 	
 	public static void exploreTableswitch(TableSwitchInsnNode tableSwitch) {
-		// Util.BREAK("AsmUtils.exploreTableswitch: " + tableSwitch);
 		StringBuilder s=new StringBuilder();
 		int min=tableSwitch.min;
 		int max=tableSwitch.max;
 		LabelNode dflt=tableSwitch.dflt;
 		List<LabelNode> labels=tableSwitch.labels;
-		//Util.BREAK("AsmUtils.exploreTableswitch: "+Printer.OPCODES[tableSwitch.getOpcode()]+' '+min+' '+max+' '+"...");
 		s.append("  TABLESWITCH["+min+":"+max+"] {\n");
 		int n=min;
 		for(LabelNode L:labels) {
@@ -52,8 +77,8 @@ public class AsmUtils {
 	public static String edInstruction(AbstractInsnNode instr) {
 		StringBuilder s=new StringBuilder();
 		int type=instr.getType();
-		switch(type)
-		{ /** The type of {@link InsnNode} instructions. */
+		switch(type) {
+		  /** The type of {@link InsnNode} instructions. */
 		  case AbstractInsnNode.INSN: return(Printer.OPCODES[instr.getOpcode()]);
 		  /** The type of {@link IntInsnNode} instructions. */
 		  case AbstractInsnNode.INT_INSN:
@@ -115,14 +140,12 @@ public class AsmUtils {
 			  int min=((TableSwitchInsnNode)instr).min;
 			  int max=((TableSwitchInsnNode)instr).max;
 			  LabelNode dflt=((TableSwitchInsnNode)instr).dflt;
-//			  List<LabelNode> labels=((TableSwitchInsnNode)instr).labels;
 			  return(Printer.OPCODES[instr.getOpcode()]+' '+min+' '+max+' '+"...");
 
 		  /** The type of {@link LookupSwitchInsnNode} instructions. */
 		  case AbstractInsnNode.LOOKUPSWITCH_INSN:
 			  dflt=((LookupSwitchInsnNode)instr).dflt;
 			  List<Integer> keys=((LookupSwitchInsnNode)instr).keys;
-//			  labels=((LookupSwitchInsnNode)instr).labels;
 			  return(Printer.OPCODES[instr.getOpcode()]+' '+dflt+' '+keys+' '+"...");
 
 		  /** The type of {@link MultiANewArrayInsnNode} instructions. */

@@ -1,3 +1,10 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.compiler.byteCodeEngineering;
 
 import java.util.ListIterator;
@@ -26,14 +33,16 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	
 	InsnList instructions;
 	
-	class LabelHandle
-	{ int index;
-	  LabelNode target;
-	  String ident;
-	  LabelHandle(int index,LabelNode target,Object ident)
-	  { this.index=index; this.target=target; this.ident=(String)ident; }
-	  public String toString() { return("LABEL"+index+" = "+ident+" = "+AsmUtils.edLabel(target)); }
+	class LabelHandle {
+		int index;
+		LabelNode target;
+		String ident;
+		LabelHandle(int index,LabelNode target,Object ident) {
+			this.index=index; this.target=target; this.ident=(String)ident; }
+		@Override
+		public String toString() { return("LABEL"+index+" = "+ident+" = "+AsmUtils.edLabel(target)); }
 	}
+	
 	Vector<LabelHandle> labelHandles;
 	private int maxIndex;
 
@@ -192,10 +201,10 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: NEW ", start, 8);
 	}
 	
-	private void listInstructionSequence(String id,AbstractInsnNode START,int n)
-	{ AbstractInsnNode HHH=START;
-	  Util.println(id+"INSTRUCTION SEQUENCE:");
-	  while((n--)>0) { Util.println(id+AsmUtils.edInstruction(HHH)); HHH=HHH.getNext(); }
+	private void listInstructionSequence(String id,AbstractInsnNode START,int n) {
+		AbstractInsnNode HHH=START;
+		Util.println(id+"INSTRUCTION SEQUENCE:");
+		while((n--)>0) { Util.println(id+AsmUtils.edInstruction(HHH)); HHH=HHH.getNext(); }
 	}
 
 	
