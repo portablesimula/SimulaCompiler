@@ -23,10 +23,10 @@ public abstract class _RTObject {
 	// BASICIO
 	static final int INPUT_LINELENGTH_ = 80;
 	static final int OUTPUT_LINELENGTH_ = 132;
-	static _InFile SYSIN_;
-	public static _PrintFile SYSOUT_;
-	public static _InFile sysin() { return (SYSIN_); }
-	public static _PrintFile sysout() { return (SYSOUT_); }
+	static _Infile SYSIN_;
+	public static _Printfile SYSOUT_;
+	public static _Infile sysin() { return (SYSIN_); }
+	public static _Printfile sysout() { return (SYSOUT_); }
 	private static long startTimeMs;
 
 	// QPS
@@ -792,8 +792,8 @@ public abstract class _RTObject {
 				_RT.console = new _RTConsolePanel();
 				_RT.console.popup("Runtime Console");
 			}
-			SYSIN_ = new _InFile(this, new _TXT("#sysin"));
-			SYSOUT_ = new _PrintFile(this, new _TXT("#sysout"));
+			SYSIN_ = new _Infile(this, new _TXT("#sysin"));
+			SYSOUT_ = new _Printfile(this, new _TXT("#sysout"));
 			SYSIN_.open(blanks(INPUT_LINELENGTH_));
 			SYSOUT_.open(blanks(OUTPUT_LINELENGTH_));
 		}

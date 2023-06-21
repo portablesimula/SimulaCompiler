@@ -11,7 +11,7 @@ external class SimulaTest;
 SimulaTest(137,"--- Test DirectBytefile with CREATE, APPEND and PURGE.") begin
 
 	integer i,byte;
-	ref(DirectBytefile) f1,f2;
+	ref(Directbytefile) f1,f2;
 	
 	procedure trace(byte); integer byte; begin
 		sysout.outtext("Inbyte: "); sysout.outint(byte,0); sysout.outimage;
@@ -19,7 +19,7 @@ SimulaTest(137,"--- Test DirectBytefile with CREATE, APPEND and PURGE.") begin
 	
 	
 %	outtext("===================  PASS 1  ================"); outimage;
-	f1:-new DirectBytefile("TEMP006");
+	f1:-new Directbytefile("TEMP006");
 	f1.setaccess("CREATE");
 	f1.open;
 	for i:=1 step 1 until 20 do begin
@@ -29,7 +29,7 @@ SimulaTest(137,"--- Test DirectBytefile with CREATE, APPEND and PURGE.") begin
 	
 	
 %	outtext("===================  PASS 2  ================"); outimage;
-	f2:-new DirectBytefile("TEMP006");
+	f2:-new Directbytefile("TEMP006");
 	f2.setaccess("APPEND");
 	f2.setaccess("SYNCHRONOUS");
 	f2.open;
@@ -54,7 +54,7 @@ SimulaTest(137,"--- Test DirectBytefile with CREATE, APPEND and PURGE.") begin
 
 		CatchingErrors begin
 			procedure onError(message); text message; begin
-				text expected="_SimulaRuntimeError: DirectByteFile: outbyte failed:"
+				text expected="_SimulaRuntimeError: Directbytefile: outbyte failed:"
 							  " location(6) <= initial lastloc(20)"
 				              " - The file TEMP006 was opend with APPEND";
 %				sysout.outtext("ERR: " & message); sysout.outimage;

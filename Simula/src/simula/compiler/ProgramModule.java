@@ -70,9 +70,9 @@ public final class ProgramModule extends Statement {
 			if(Option.TRACE_PARSE) Parser.TRACE("Parse Program");
 			Global.setScope(StandardClass.BASICIO);		    	// BASICIO Begin
 			new ConnectionBlock(sysin,null)                     //    Inspect sysin do
-			     .setClassDeclaration(StandardClass.InFile);
+			     .setClassDeclaration(StandardClass.Infile);
 			new ConnectionBlock(sysout,null)                    //    Inspect sysout do
-			     .setClassDeclaration(StandardClass.PrintFile);
+			     .setClassDeclaration(StandardClass.Printfile);
 			Global.getCurrentScope().sourceBlockLevel=0;
 			while(Parser.accept(KeyWord.EXTERNAL)) {
 				ExternalDeclaration.doParse(StandardClass.ENVIRONMENT.declarationList);

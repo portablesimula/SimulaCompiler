@@ -68,7 +68,7 @@ import java.io.PrintWriter;
  * @author Øystein Myhre Andersen
  *
  */
-public class _PrintFile extends _OutFile {
+public class _Printfile extends _Outfile {
 	private int _DEFAULT_LINES_PER_PAGE=66;
 	public int _LINES_PER_PAGE=66;
 	private int _SPACING=1;
@@ -76,13 +76,13 @@ public class _PrintFile extends _OutFile {
 	private int _PAGE;
 	
 	// Constructor
-    public _PrintFile(final _RTObject staticLink,final _TXT FILENAME) {
+    public _Printfile(final _RTObject staticLink,final _TXT FILENAME) {
     	super(staticLink,FILENAME);
     }
     
     // Class Statements
 	@Override
-    public _PrintFile _STM() {
+    public _Printfile _STM() {
         EBLK();
         return(this);
     }

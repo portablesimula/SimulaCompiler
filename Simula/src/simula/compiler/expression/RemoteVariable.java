@@ -83,7 +83,8 @@ public final class RemoteVariable extends Expression {
 
 		if (attr instanceof Variable var) {
 			String ident = var.identifier;
-			remoteAttribute = objType.getQual().findRemoteAttributeMeaning(ident);
+			qual = objType.getQual();
+			if(qual!=null) remoteAttribute = qual.findRemoteAttributeMeaning(ident);
 			if (remoteAttribute == null) {
 				Util.error("RemoteVariable.doRemoteChecking: " + ident + " is not an attribute of "	+ objType.getRefIdent());
 				return (Type.Integer); // Error Recovery

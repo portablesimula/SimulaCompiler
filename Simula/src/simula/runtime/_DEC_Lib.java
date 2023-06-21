@@ -640,15 +640,15 @@ public class _DEC_Lib extends _CLASS {
      *
 	 */
 	public static _TXT initem(_File f) {
-		if(f instanceof _InFile | f instanceof _DirectFile) {
-			_ImageFile F=(_ImageFile)f;
+		if(f instanceof _Infile | f instanceof _Directfile) {
+			_Imagefile F=(_Imagefile)f;
 			if(!F.lastitem()) return(GETITEM(F.image));
-		} else if(f instanceof _InByteFile) {
-			_InByteFile F=(_InByteFile)f;
+		} else if(f instanceof _Inbytefile) {
+			_Inbytefile F=(_Inbytefile)f;
 			int b=9; while(b==' ' | b==9) b=F.inbyte();
 			return(new _TXT(""+(char)b));
-		} else if(f instanceof _DirectByteFile) {
-			_DirectByteFile F=(_DirectByteFile)f;
+		} else if(f instanceof _Directbytefile) {
+			_Directbytefile F=(_Directbytefile)f;
 			int b=9; while(b==' ' | b==9) b=F.inbyte();
 			return(new _TXT(""+(char)b));
 		}
@@ -685,7 +685,7 @@ public class _DEC_Lib extends _CLASS {
      *     end;
      * end;
 	 */
-	public static int linecount(_PrintFile pf) {
+	public static int linecount(_Printfile pf) {
 		if(pf==null) return(-1);
 		if(!pf.isopen()) return(-2);
 		return(pf._LINES_PER_PAGE);	

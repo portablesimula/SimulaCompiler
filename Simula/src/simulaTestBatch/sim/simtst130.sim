@@ -19,7 +19,7 @@ DEC_Lib begin
     text fileName,defaultextension;
     text t,t1,t2,t3,t4,t5;
     ref(File) f;
-    ref(PrintFile) pf;
+    ref(Printfile) pf;
     
     procedure trace(mess); text mess; if verbose then begin
         outtext(mess); outimage;
@@ -594,16 +594,16 @@ DEC_Lib begin
         text procedure initem1(fileref); ref(File) fileref; begin
             text res; short integer i;
             inspect fileref
-              when InFile do
+              when Infile do
                    if not lastitem then res:-getitem(image)
-              when DirectFile do
+              when Directfile do
                    if not lastitem then res:-getitem(image)
-              when InByteFile do begin
+              when Inbytefile do begin
                    res:-blanks(1); i:=rank('!9!');
                    while i=rank(' ') or i=rank('!9!') !TAB; do i:=inbyte;
                    res.sub(1,1).putchar(char(i));
               end
-              when DirectByteFile do begin
+              when Directbytefile do begin
                    res:-blanks(1); i:=rank('!9!');
                    while i=rank(' ') or i=rank('!9!') !TAB; do i:=inbyte;
                    res.sub(1,1).putchar(char(i));
@@ -613,101 +613,101 @@ DEC_Lib begin
         
         integer nTests=10;
         
-        procedure createImagefile(fil); ref(OutFile) fil; begin
+        procedure createImagefile(fil); ref(Outfile) fil; begin
             fil.setaccess("anycreate"); fil.open(blanks(20));
             for i:=1 step 1 until nTests do fil.outtext("   item" & edit(i) & "   ");
             fil.outimage; fil.close;
         end;  
         
         procedure testImagefile(fileName); text fileName;  begin
-            ref(InFile) fil;
-            fil:-new InFile(fileName); doTestImagefile(fil,initem1(fil));
-            fil:-new InFile(fileName); doTestImagefile(fil,initem(fil));
+            ref(Infile) fil;
+            fil:-new Infile(fileName); doTestImagefile(fil,initem1(fil));
+            fil:-new Infile(fileName); doTestImagefile(fil,initem(fil));
         end;
         
-        procedure doTestImagefile(fil,nextitem); name nextitem; text nextitem; ref(InFile) fil;  begin
+        procedure doTestImagefile(fil,nextitem); name nextitem; text nextitem; ref(Infile) fil;  begin
             fil.open(blanks(20)); i:=0;
             while not fil.lastitem do begin
                 text item; item:-nextitem; i:=i+1;
                 trace("GOT: '" & item & "'");
-                if item ne ("item" & edit(i)) then err("TestInitem - ImageFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne ("item" & edit(i)) then err("TestInitem - Imagefile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
          
-        procedure createDirectfile(fil); ref(DirectFile) fil; begin
+        procedure createDirectfile(fil); ref(Directfile) fil; begin
             fil.setaccess("anycreate"); fil.open(blanks(20));
             for i:=1 step 1 until nTests do fil.outtext("   item" & edit(i) & "   ");
             fil.outimage; fil.close;
         end;  
 
         procedure testDirectfile(fileName); text fileName;  begin
-            ref(DirectFile) fil;
-            fil:-new DirectFile(fileName); doTestDirectfile(fil,initem1(fil));
-            fil:-new DirectFile(fileName); doTestDirectfile(fil,initem(fil));
+            ref(Directfile) fil;
+            fil:-new Directfile(fileName); doTestDirectfile(fil,initem1(fil));
+            fil:-new Directfile(fileName); doTestDirectfile(fil,initem(fil));
         end;
         
-        procedure doTestDirectfile(fil,nextitem); name nextitem; text nextitem; ref(DirectFile) fil; begin
+        procedure doTestDirectfile(fil,nextitem); name nextitem; text nextitem; ref(Directfile) fil; begin
             fil.open(blanks(20)); i:=0;
             fil.locate(1); fil.inimage;
             while not fil.lastitem do begin
                 text item;
                 item:-nextitem; i:=i+1;
                 trace("GOT: '" & item & "'");
-                if item ne ("item" & edit(i)) then err("TestInitem - DirectFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne ("item" & edit(i)) then err("TestInitem - Directfile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
          
-        procedure createBytefile(fil); ref(OutByteFile) fil; begin
+        procedure createBytefile(fil); ref(Outbytefile) fil; begin
             fil.setaccess("anycreate"); fil.open;
             for i:=1 step 1 until nTests do fil.outtext("   " & edit(char(rank('A')+i)) & "   ");
             fil.close;
         end;  
 
         procedure testBytefile(fileName); text fileName;  begin
-            ref(InByteFile) fil;
-            fil:-new InByteFile(fileName); doTestBytefile(fil,initem1(fil));
-            fil:-new InByteFile(fileName); doTestBytefile(fil,initem(fil));
+            ref(Inbytefile) fil;
+            fil:-new Inbytefile(fileName); doTestBytefile(fil,initem1(fil));
+            fil:-new Inbytefile(fileName); doTestBytefile(fil,initem(fil));
         end;
         
-        procedure doTestBytefile(fil,nextitem); name nextitem; text nextitem; ref(InByteFile) fil; begin
+        procedure doTestBytefile(fil,nextitem); name nextitem; text nextitem; ref(Inbytefile) fil; begin
             fil.open;
             for i:=1 step 1 until nTests do begin
                 text item; item:-nextitem;
                 trace("GOT: '" & item & "'   Endfile=" & edit(endfile));
-                if item ne edit(char(rank('A')+i)) then err("TestInitem - ByteFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne edit(char(rank('A')+i)) then err("TestInitem - Bytefile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
          
-        procedure createDirectBytefile(fil); ref(DirectByteFile) fil; begin
+        procedure createDirectBytefile(fil); ref(Directbytefile) fil; begin
             fil.setaccess("anycreate"); fil.open;
             for i:=1 step 1 until nTests do fil.outtext("   " & edit(char(rank('A')+i)) & "   ");
             fil.close;
         end;  
 
         procedure testDirectBytefile(fileName); text fileName;  begin
-            ref(DirectByteFile) fil;
-            fil:-new DirectByteFile(fileName); doTestDirectBytefile(fil,initem1(fil));
-            fil:-new DirectByteFile(fileName); doTestDirectBytefile(fil,initem(fil));
+            ref(Directbytefile) fil;
+            fil:-new Directbytefile(fileName); doTestDirectBytefile(fil,initem1(fil));
+            fil:-new Directbytefile(fileName); doTestDirectBytefile(fil,initem(fil));
         end;
         
-        procedure doTestDirectBytefile(fil,nextitem); name nextitem; text nextitem; ref(DirectByteFile) fil; begin
+        procedure doTestDirectBytefile(fil,nextitem); name nextitem; text nextitem; ref(Directbytefile) fil; begin
             fil.open;
             for i:=1 step 1 until nTests do begin
                 text item; item:-nextitem;
                 trace("GOT: '" & item & "'   Endfile=" & edit(endfile));
-                if item ne edit(char(rank('A')+i)) then err("TestInitem - DirectByteFile FAILED for Item " & edit(i) & " = '" & item & "'");
+                if item ne edit(char(rank('A')+i)) then err("TestInitem - Directbytefile FAILED for Item " & edit(i) & " = '" & item & "'");
             end;
             fil.close;
         end;      
 
         trace("BEGIN TEST initem --------------------------------------------------- nFailed=" & edit(nFailed));
-            createImagefile(new OutFile("simtst130-TEMP1"));             testImagefile("simtst130-TEMP1");
-            createDirectfile(new DirectFile("simtst130-TEMP2"));         testDirectfile("simtst130-TEMP2");
-            createBytefile(new OutByteFile("simtst130-TEMP3"));          testBytefile("simtst130-TEMP3");
-            createDirectBytefile(new DirectByteFile("simtst130-TEMP4")); testDirectBytefile("simtst130-TEMP4");
+            createImagefile(new Outfile("simtst130-TEMP1"));             testImagefile("simtst130-TEMP1");
+            createDirectfile(new Directfile("simtst130-TEMP2"));         testDirectfile("simtst130-TEMP2");
+            createBytefile(new Outbytefile("simtst130-TEMP3"));          testBytefile("simtst130-TEMP3");
+            createDirectBytefile(new Directbytefile("simtst130-TEMP4")); testDirectBytefile("simtst130-TEMP4");
         trace("ENDOF TEST initem --------------------------------------------------- nFailed=" & edit(nFailed));
     
     end;
@@ -728,7 +728,7 @@ DEC_Lib begin
     end;
 
     procedure testLinecount; begin ------------------------------------------------------------------------------ linecount
-	    integer procedure linecount1(pfil); ref(PrintFile) pfil; begin
+	    integer procedure linecount1(pfil); ref(Printfile) pfil; begin
             if pfil==none then linecount1:=-1
             else if not pfil.isopen then linecount1:=-2
             else begin
@@ -738,7 +738,7 @@ DEC_Lib begin
             end;
         end;
 
-        procedure test(pf,expectedValue); ref(PrintFile) pf; integer expectedValue; begin
+        procedure test(pf,expectedValue); ref(Printfile) pf; integer expectedValue; begin
             integer c1,c2;
             c1:=linecount(pf); c2:=linecount1(pf);
             trace("Test  linecount ==> '" & edit(c1) & "'   expectedValue=" & edit(expectedValue));
@@ -750,7 +750,7 @@ DEC_Lib begin
 
         trace("BEGIN TEST linecount --------------------------------------------------- nFailed=" & edit(nFailed));
             test(pf, -1);
-            pf:-new PrintFile("simtst130-TEMP");
+            pf:-new Printfile("simtst130-TEMP");
             test(pf, -2);
             pf.open(blanks(80));
             test(pf,pf.linesperpage(0));

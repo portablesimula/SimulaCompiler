@@ -67,7 +67,7 @@ import java.nio.file.Path;
  * @author Øystein Myhre Andersen
  *
  */
-public class _DirectFile extends _ImageFile {
+public class _Directfile extends _Imagefile {
 
 	/**
 	 * The variable LOC contains the current ordinal number. When the file is
@@ -103,13 +103,13 @@ public class _DirectFile extends _ImageFile {
 	private FileLock fileLock;
 
 	// Constructor
-    public _DirectFile(final _RTObject staticLink,final _TXT FILENAME) {
+    public _Directfile(final _RTObject staticLink,final _TXT FILENAME) {
     	super(staticLink,FILENAME);
   	    _CREATE=_CreateAction.noCreate; // Default for Direct-type files
     }
     
     // Class Statements
-    public _DirectFile _STM() {
+    public _Directfile _STM() {
         EBLK();
         return(this);
     }
@@ -162,7 +162,7 @@ public class _DirectFile extends _ImageFile {
 	public boolean open(final _TXT IMAGE) {
 		if (_OPEN) return (false);
 		File file=doCreateAction(new File(FILE_NAME.edText()));
-		if(_RT.DEBUGGING) TRACE_OPEN("Open DirectFile: "+file);
+		if(_RT.DEBUGGING) TRACE_OPEN("Open Directfile: "+file);
 		
 		_LOC = 1;
 		_MAXLOC = maxint - 1;
@@ -342,10 +342,10 @@ public class _DirectFile extends _ImageFile {
 	 */
 	public void inimage() {
 		if(!_CANREAD)
-			throw new _SimulaRuntimeError("DirectFile: inimage failed - 'canread' is false");
+			throw new _SimulaRuntimeError("Directfile: inimage failed - 'canread' is false");
 		if (!_OPEN)	throw new _SimulaRuntimeError("File not opened");
 		if (_TXT.length(image) != _RECORDSIZE)
-			throw new _SimulaRuntimeError("DirectFile image length changed");
+			throw new _SimulaRuntimeError("Directfile image length changed");
 		
 		setpos(1); // For Filling
 		int nextSetpos=1;
@@ -399,10 +399,10 @@ public class _DirectFile extends _ImageFile {
 		if (_LOC > _MAXLOC)
 			throw new _SimulaRuntimeError("file overflow");
 		if (_LOC <= INITIAL_LAST_LOC)
-			throw new _SimulaRuntimeError("DirectFile: outimage failed: location("+_LOC+") <= initial lastloc("+INITIAL_LAST_LOC+")"
+			throw new _SimulaRuntimeError("Directfile: outimage failed: location("+_LOC+") <= initial lastloc("+INITIAL_LAST_LOC+")"
 		                                + " - The file "+FILE_NAME.edText()+" was opend with APPEND");
 		if(!_CANWRITE)
-			throw new _SimulaRuntimeError("DirectFile: outimage failed - 'canwrite' is false");
+			throw new _SimulaRuntimeError("Directfile: outimage failed - 'canwrite' is false");
 		try {
 			randomAccessFile.write(image.edText().getBytes());
 		} catch (IOException e) {
@@ -444,10 +444,10 @@ public class _DirectFile extends _ImageFile {
 		if (!_OPEN)
 			return (false);
 		if (_LOC <= INITIAL_LAST_LOC)
-			throw new _SimulaRuntimeError("DirectFile: deleteimage failed"+
+			throw new _SimulaRuntimeError("Directfile: deleteimage failed"+
 		    " - file opend with access-mode APPEND and location("+_LOC+") <= initial lastloc("+INITIAL_LAST_LOC+")");
 		if(!_CANWRITE)
-			throw new _SimulaRuntimeError("DirectFile: deleteimage failed - 'canwrite' is false");
+			throw new _SimulaRuntimeError("Directfile: deleteimage failed - 'canwrite' is false");
 		try {
 			for (int i = 0; i < _RECORDSIZE; i++)
 				randomAccessFile.write(0);

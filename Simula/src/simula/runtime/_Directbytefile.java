@@ -15,11 +15,11 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 
 /**
- * The class "directbytefile" defines a byte-oriented direct file.
+ * The class "Directbytefile" defines a byte-oriented direct file.
  * <p>
  * 
  * <pre>
- *  bytefile class directbytefile;
+ *  bytefile class Directbytefile;
  *        begin integer LOC, MAXLOC; Boolean LOCKED;
  *        Boolean procedure endfile; endfile:=OPEN and then LOC>lastloc;
  *        integer procedure location; location := LOC;
@@ -37,10 +37,10 @@ import java.nio.channels.FileLock;
  *        procedure intext(t); text t;
  *        procedure outtext(t); text t; 
  *           ...
- * end directbytefile;
+ * end Directbytefile;
  * </pre>
  * 
- * An object of the class "directbytefile" is used to represent an external file
+ * An object of the class "Directbytefile" is used to represent an external file
  * in which the individual bytes are addressable by ordinal numbers.
  * <p>
  * The variable LOC is defined to represent such ordinal numbers. When the file
@@ -52,7 +52,7 @@ import java.nio.channels.FileLock;
  * @author Øystein Myhre Andersen
  *
  */
-public class _DirectByteFile extends _ByteFile {
+public class _Directbytefile extends _ByteFile {
 
 	/**
 	 * In this implementation LOC is maintained by the underlying file system.
@@ -79,12 +79,12 @@ public class _DirectByteFile extends _ByteFile {
 	private FileLock fileLock;
 
 	// Constructor
-    public _DirectByteFile(final _RTObject staticLink,final _TXT FILENAME) {
+    public _Directbytefile(final _RTObject staticLink,final _TXT FILENAME) {
       super(staticLink,FILENAME);
   	  _CREATE=_CreateAction.noCreate; // Default for Direct-type files
     }
     // Class Statements
-    public _DirectByteFile _STM() {
+    public _Directbytefile _STM() {
         EBLK();
         return(this);
     }
@@ -153,7 +153,7 @@ public class _DirectByteFile extends _ByteFile {
 	 * @return
 	 */
 	public boolean open() {
-		if(_RT.DEBUGGING) TRACE_OPEN("Open DirectByteFile");
+		if(_RT.DEBUGGING) TRACE_OPEN("Open Directbytefile");
 		if (_OPEN) return (false);
 		// _LOC = 1; // LOC is maintained by the underlying file system.
 		_MAXLOC = maxint - 1;
@@ -294,7 +294,7 @@ public class _DirectByteFile extends _ByteFile {
 	 */
 	public int inbyte() {
 		if(!_CANREAD)
-			throw new _SimulaRuntimeError("DirectByteFile: inbyte failed - 'canread' is false");
+			throw new _SimulaRuntimeError("Directbytefile: inbyte failed - 'canread' is false");
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
 		// LOC is maintained by the underlying file system.
@@ -337,10 +337,10 @@ public class _DirectByteFile extends _ByteFile {
 	 */
 	public void outbyte(final int x) {
 		if(!_CANWRITE)
-			throw new _SimulaRuntimeError("DirectByteFile: outbyte failed - 'canwrite' is false");
+			throw new _SimulaRuntimeError("Directbytefile: outbyte failed - 'canwrite' is false");
 		if (!_OPEN) throw new _SimulaRuntimeError("file closed");
 		if (location() <= INITIAL_LAST_LOC)
-			throw new _SimulaRuntimeError("DirectByteFile: outbyte failed: location("+location()+") <= initial lastloc("+INITIAL_LAST_LOC+")"
+			throw new _SimulaRuntimeError("Directbytefile: outbyte failed: location("+location()+") <= initial lastloc("+INITIAL_LAST_LOC+")"
 		                                + " - The file "+FILE_NAME.edText()+" was opend with APPEND");
 		if (x < 0 || x >= (Math.pow(2,_BYTESIZE)))
 			throw new _SimulaRuntimeError("Outbyte, illegal byte value: "+x);

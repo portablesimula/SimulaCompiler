@@ -2,17 +2,17 @@
 % ===============================================   Main   program =============
 %  PROGRAM NAME:   SIMULA ERROR TEST NO 09
 %
-%  PURPOSE:  Test Read/write access on DirectFile and DirectByteFile
+%  PURPOSE:  Test Read/write access on Directfile and Directbytefile
 %
 % ==============================================================================
 external class RT_ErrorTest;
 
-RT_ErrorTest("  9 --- Test Read/write access on DirectFile and DirectByteFile") begin
+RT_ErrorTest("  9 --- Test Read/write access on Directfile and Directbytefile") begin
 
    integer i,a; 
    text t;  
-   ref(DirectFile) df;
-   ref(DirectByteFile) db;
+   ref(Directfile) df;
+   ref(Directbytefile) db;
 
    procedure P(x); name x; integer x; begin
       x:=x+x;
@@ -42,33 +42,33 @@ RT_ErrorTest("  9 --- Test Read/write access on DirectFile and DirectByteFile") 
       end;
    end;
    
-   facit(0):-"--- Test Read/write access on DirectFile and DirectByteFile";
-   facit(1):-"Open DirectFile: directErr09";
-   facit(2):-"Open DirectByteFile: directErb09";
+   facit(0):-"--- Test Read/write access on Directfile and Directbytefile";
+   facit(1):-"Open Directfile: directErr09";
+   facit(2):-"Open Directbytefile: directErb09";
    facit(3):-"Write into bouth files";
    facit(4):-"testFileOperation: 1 df.open(blanks(29))";
    facit(5):-"testFileOperation: 2 db.open";
    facit(6):-"testFileOperation: 3 ... df.outimage";
-   facit(7):-"onError got error: _SimulaRuntimeError: DirectFile: outimage failed - 'canwrite' is false";
+   facit(7):-"onError got error: _SimulaRuntimeError: Directfile: outimage failed - 'canwrite' is false";
    facit(8):-"testFileOperation: 4 ... df.inimage";
-   facit(9):-"onError got error: _SimulaRuntimeError: DirectFile: inimage failed - 'canread' is false";
+   facit(9):-"onError got error: _SimulaRuntimeError: Directfile: inimage failed - 'canread' is false";
    facit(10):-"testFileOperation: 5 ... df.deleteimage";
-   facit(11):-"onError got error: _SimulaRuntimeError: DirectFile: deleteimage failed - 'canwrite' is false";
+   facit(11):-"onError got error: _SimulaRuntimeError: Directfile: deleteimage failed - 'canwrite' is false";
    facit(12):-"testFileOperation: 6 ... db.outtext";
-   facit(13):-"onError got error: _SimulaRuntimeError: DirectByteFile: outbyte failed - 'canwrite' is false";
+   facit(13):-"onError got error: _SimulaRuntimeError: Directbytefile: outbyte failed - 'canwrite' is false";
    facit(14):-"testFileOperation: 7 ... df.intext";
-   facit(15):-"onError got error: _SimulaRuntimeError: DirectByteFile: inbyte failed - 'canread' is false";
+   facit(15):-"onError got error: _SimulaRuntimeError: Directbytefile: inbyte failed - 'canread' is false";
    facit(16):-"END OF TEST09";
 
-   trace("--- Test Read/write access on DirectFile and DirectByteFile");
+   trace("--- Test Read/write access on Directfile and Directbytefile");
    
-   df:-new DirectFile("directErr09")
-   db:-new DirectByteFile("directErb09")
+   df:-new Directfile("directErr09")
+   db:-new Directbytefile("directErb09")
 
-   trace("Open DirectFile: " & df.filename);
+   trace("Open Directfile: " & df.filename);
    df.setaccess("ANYCREATE"); df.setaccess("READWRITE"); df.open(blanks(29));
    
-   trace("Open DirectByteFile: " & db.filename);
+   trace("Open Directbytefile: " & db.filename);
    db.setaccess("ANYCREATE"); db.setaccess("READWRITE"); db.open;
    
    trace("Write into bouth files");

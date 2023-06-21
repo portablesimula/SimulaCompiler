@@ -18,7 +18,7 @@ begin
    ref (A) x;
    ref (B) y;
  
-  InFile class MyInfile; virtual: ref(File) procedure pvirt is ref(File) procedure actual(i,j); integer i,j;;
+  Infile class MyInfile; virtual: ref(File) procedure pvirt is ref(File) procedure actual(i,j); integer i,j;;
   begin
      ref(File) procedure pvirt(i,j); integer i,j;
      begin i:=34;

@@ -11,7 +11,7 @@ external class SimulaTest;
 SimulaTest(134,"--- Test Outfile with CREATE, APPEND and PURGE.") begin
 
 	integer i,byte;
-	ref(outfile) f1,f2;
+	ref(Outfile) f1,f2;
 	text expected;
 	
 	procedure trace(image); text image; begin
@@ -20,7 +20,7 @@ SimulaTest(134,"--- Test Outfile with CREATE, APPEND and PURGE.") begin
 	
 	
 %	outtext("===================  PASS 1  ================"); outimage;
-	f1:-new outfile("TEMP003");
+	f1:-new Outfile("TEMP003");
 	f1.setaccess("CREATE");
 	f1.open(blanks(20));
 	for i:=1 step 1 until 20 do begin
@@ -31,7 +31,7 @@ SimulaTest(134,"--- Test Outfile with CREATE, APPEND and PURGE.") begin
 	
 	
 %	outtext("===================  PASS 2  ================"); outimage;
-	f2:-new outfile("TEMP003");
+	f2:-new Outfile("TEMP003");
 	f2.setaccess("APPEND");
 	f2.open(blanks(20));
 	for i:=1 step 1 until 20 do begin

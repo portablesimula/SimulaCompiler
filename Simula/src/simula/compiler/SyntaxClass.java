@@ -31,6 +31,7 @@ import simula.compiler.utilities.Util;
  *  META-SYNTAX:
  *  
  *       MetaSymbol                    Meaning
+ *       
  *           =                     is defined to be
  *           |                     alternatively
  *         [ x ]                   0 or 1 instance of x

@@ -54,7 +54,8 @@ public final class ConnectionBlock extends DeclarationScope {
 	@Override
 	public Meaning findMeaning(final String identifier) {
 		if (classDeclaration == null && Global.duringParsing) return (null); // Still in Pass1(Parser)
-		Meaning result = classDeclaration.findRemoteAttributeMeaning(identifier);
+		Meaning result=null;
+		if(classDeclaration!=null) result = classDeclaration.findRemoteAttributeMeaning(identifier);
 		if (result != null) {
 			result.declaredIn = this;
 		} else if (declaredIn != null) {

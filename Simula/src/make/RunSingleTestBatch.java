@@ -75,7 +75,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst37.sim"); // OK:  Parameter by name and type conversion
 //		names.add("simtst38.sim"); // OK:  Test the value of type procedures.
 //		names.add("simtst39.sim"); // OK:  Check that a formal parameter is global to the procedure body.
-		names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
+//		names.add("p40b.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("p40a.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("p40c.sim");     // OK:  Precompile this for Simtst 40.
 //		names.add("simtst40.sim"); // OK:  Test separate compilation of procedures.
@@ -180,8 +180,8 @@ public final class RunSingleTestBatch {
 //		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
 //		names.add("simtst127.sim"); // OK: Switch (character) Statement
 //		names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
-		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
-		names.add("simtst129.sim"); // OK: Switch in precompiled class
+//		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
+//		names.add("simtst129.sim"); // OK: Switch in precompiled class
 //		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
@@ -203,7 +203,7 @@ public final class RunSingleTestBatch {
 //		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
 //		names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
 //		names.add("simerr08.sim"); // OK: Illegal assignment. Name parameter is not a variable
-//		names.add("simerr09.sim"); // OK: Read/write access on DirectFile and DirectByteFile
+		names.add("simerr09.sim"); // OK: Read/write access on DirectFile and DirectByteFile
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
@@ -211,7 +211,7 @@ public final class RunSingleTestBatch {
 		Option.WARNINGS=true;
 //		Option.DEBUGGING=true;
 //		Option.EXTENSIONS=false;
-//		Option.CASE_SENSITIVE=true;
+		Option.CaseSensitive=true;
 
 		// Overall TRACING Options
 //		Option.TRACING=true;

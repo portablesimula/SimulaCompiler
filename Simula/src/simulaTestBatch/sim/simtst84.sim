@@ -2,7 +2,7 @@
 % ====================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 84
 %
-%  PURPOSE: Test DirectBytefile
+%  PURPOSE: Test Directbytefile
 %
 %  METHOD:
 %
@@ -10,7 +10,7 @@
 % ====================================================================
 external class SimulaTest;
 
-SimulaTest(84,"--- Test DirectBytefile") begin
+SimulaTest(84,"--- Test Directbytefile") begin
 
    integer traceCase;
    text array facit(0:26);
@@ -27,7 +27,7 @@ SimulaTest(84,"--- Test DirectBytefile") begin
    end;
    
    procedure test1; begin
-		inspect new DirectByteFile("TEMP084") do begin
+		inspect new Directbytefile("TEMP084") do begin
 			integer i;
 			trace("Test1: Before open endfil=" & edit(endfile));
 			trace("Test1: Before open location=" & edit(location));
@@ -56,7 +56,7 @@ SimulaTest(84,"--- Test DirectBytefile") begin
    end;
    
    procedure test2; begin
-		inspect new DirectByteFile("TEMP084") do begin
+		inspect new Directbytefile("TEMP084") do begin
 			integer i,j;
 			text t;
 			setaccess("CREATE");

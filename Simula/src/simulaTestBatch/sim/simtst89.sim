@@ -2,7 +2,7 @@
 % ================================================   Main   program  ===========
 %  PROGRAM NAME:  Simula a.s. - SIMULA TEST NO 89
 %
-%  PURPOSE: Test InByteFile and OutByteFile.
+%  PURPOSE: Test Inbytefile and Outbytefile.
 %           Inputfile must be defined.
 %
 %  METHOD:  Copy from one file to the other.
@@ -11,17 +11,17 @@
 % ==============================================================================
 external class SimulaTest;
 
-SimulaTest(89,"--- Test InByteFile and OutByteFile.") begin
+SimulaTest(89,"--- Test Inbytefile and Outbytefile.") begin
 
       text src,dst; integer b,bb;
-      ref(InByteFile) inpt,inoupt; ref(OutByteFile) oupt;
+      ref(Inbytefile) inpt,inoupt; ref(Outbytefile) oupt;
       text inptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/inputByteFile89";
       text ouptFileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputByteFile89";
       
       
-      inpt:-new InByteFile(inptFileName);
+      inpt:-new Inbytefile(inptFileName);
       if not inpt.open then error("Can't open " & inptFileName);
-      oupt:-new OutByteFile(ouptFileName);
+      oupt:-new Outbytefile(ouptFileName);
       if not oupt.open then error("Can't open " & ouptFileName);
 
       inpt.close; inpt.open;
@@ -34,7 +34,7 @@ SimulaTest(89,"--- Test InByteFile and OutByteFile.") begin
       end;
       inpt.close; oupt.close;
       
-      inoupt:-new InByteFile(oupt.filename); oupt:-none;
+      inoupt:-new Inbytefile(oupt.filename); oupt:-none;
       if not inpt.open then error("Can't re-open " & inpt.filename);
       if not inoupt.open then error("Can't re-open " & inoupt.filename);
       b:=inpt.inbyte; bb:=inoupt.inbyte;

@@ -40,17 +40,17 @@ import java.io.InputStream;
  * @author Øystein Myhre Andersen
  *
  */
-public class _InByteFile extends _ByteFile {
+public class _Inbytefile extends _ByteFile {
 	protected boolean _ENDFILE=true;
 	private InputStream inputStream;
 	
 	// Constructor
-    public _InByteFile(final _RTObject staticLink,final _TXT FILENAME) {
+    public _Inbytefile(final _RTObject staticLink,final _TXT FILENAME) {
     	super(staticLink,FILENAME);
     }
     
     // Class Statements
-    public _InByteFile _STM() {
+    public _Inbytefile _STM() {
         EBLK();
         return(this);
     }

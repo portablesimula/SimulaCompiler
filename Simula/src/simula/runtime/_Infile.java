@@ -50,17 +50,17 @@ import java.io.Reader;
  * @author Øystein Myhre Andersen
  *
  */
-public class _InFile extends _ImageFile {
+public class _Infile extends _Imagefile {
 	private BufferedReader lineReader;
 
 	// Constructor
-	public _InFile(_RTObject staticLink,_TXT FILENAME) {
+	public _Infile(_RTObject staticLink,_TXT FILENAME) {
 		super(staticLink,FILENAME);
 		_ENDFILE=true;
 	}
 
 	// Class Statements
-	public _InFile _STM() {
+	public _Infile _STM() {
 		EBLK();
 		return(this);
 	}

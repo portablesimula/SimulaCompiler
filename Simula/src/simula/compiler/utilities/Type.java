@@ -95,7 +95,7 @@ public class Type implements Externalizable {
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
 			    if(decl instanceof ClassDeclaration cdecl) qual=cdecl;
 			    else {
-			    	Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class rather "+decl.getClass().getSimpleName());
+			    	Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 					Util.BREAK("Type.doChecking: refIdent="+refIdent+", scopeChain="+Global.getCurrentScope().edScopeChain());
 			    }
 			}

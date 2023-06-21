@@ -45,16 +45,16 @@ import java.io.Writer;
  * @author Øystein Myhre Andersen
  *
  */
-public class _OutFile extends _ImageFile {
+public class _Outfile extends _Imagefile {
 	protected Writer writer;
 
 	// Constructor
-	public _OutFile(final _RTObject staticLink,final _TXT FILENAME) {
+	public _Outfile(final _RTObject staticLink,final _TXT FILENAME) {
 		super(staticLink,FILENAME);
 	}
 
 	// Class Statements
-	public _OutFile _STM() {
+	public _Outfile _STM() {
 		EBLK();
 		return(this);
 	}

@@ -12,7 +12,7 @@ SimulaTest(131,"--- Test new standard procedure 'CatchingErrors'") begin
 CatchingErrors begin
     integer traceCase;
     text array facit(0:9);
-    ref(InByteFile) bf;
+    ref(Inbytefile) bf;
 
     procedure onError(message); text message; begin
         trace("Inside onError: " & message);

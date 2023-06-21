@@ -43,7 +43,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class _ImageFile extends _File {
+public class _Imagefile extends _File {
 	
 	/**
 	 * 
@@ -59,12 +59,12 @@ public class _ImageFile extends _File {
 	protected boolean _ENDFILE = true;
 
 	// Constructor
-	public _ImageFile(final _RTObject staticLink,final _TXT FILENAME) {
+	public _Imagefile(final _RTObject staticLink,final _TXT FILENAME) {
 		super(staticLink,FILENAME);
 	}
    
 	// Class Statements
-	public _ImageFile _STM() {
+	public _Imagefile _STM() {
 		EBLK();
 		return(this);
 	}
@@ -87,7 +87,7 @@ public class _ImageFile extends _File {
    
    
 	// ************************************************************************
-	// *** Output Functions for Outfile, PrintFile and DirectFile
+	// *** Output Functions for Outfile, Printfile and Directfile
 	// ************************************************************************
 
 	public void outimage() { // Needs redefinition
@@ -250,7 +250,7 @@ public class _ImageFile extends _File {
 
 	   
 	// ************************************************************************
-	// *** Input Functions for Infile and DirectFile
+	// *** Input Functions for Infile and Directfile
 	// ************************************************************************
 
 	public void inimage() { // Needs redefinition
