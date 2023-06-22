@@ -12,15 +12,18 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ */
 public final class StandardProcedure extends ProcedureDeclaration {
-	public boolean overloaded;
-	public StandardProcedure(DeclarationScope declaredIn,Declaration.Kind kind,Type type, String ident)
-	{ super(ident,kind); this.declaredIn=declaredIn; this.type=type; }
+	
+	StandardProcedure(DeclarationScope declaredIn,Declaration.Kind kind,Type type, String ident) {
+		super(ident,kind); this.declaredIn=declaredIn; this.type=type; }
 
-	public StandardProcedure(DeclarationScope declaredIn,Declaration.Kind kind,Type type, String ident,Parameter... param) {
+	StandardProcedure(DeclarationScope declaredIn,Declaration.Kind kind,Type type, String ident,Parameter... param) {
 		this(declaredIn,kind,type,ident);
-		for(int i=0;i<param.length;i++) param[i].into(parameterList);
-	}
+		for(int i=0;i<param.length;i++) param[i].into(parameterList); }
 
 	@Override
 	public void doChecking() {
@@ -35,16 +38,15 @@ public final class StandardProcedure extends ProcedureDeclaration {
 	}
 
 	@Override
-	public String toString()
-	{ String pfx=""; if(type!=null) pfx=type.toString()+" ";
-	return(pfx+"PROCEDURE "+identifier);
+	public String toString() {
+		String pfx=""; if(type!=null) pfx=type.toString()+" ";
+		return(pfx+"PROCEDURE "+identifier);
 	}
 
 
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
-	public StandardProcedure() {
-	}
+	public StandardProcedure() {}
 
 }

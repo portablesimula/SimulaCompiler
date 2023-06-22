@@ -64,7 +64,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 		this.type=type;
 	}
 
-	public SimpleVariableDeclaration(final Type type,final String identifier,final boolean constant,final Constant constantElement) {
+	SimpleVariableDeclaration(final Type type,final String identifier,final boolean constant,final Constant constantElement) {
 		this(type,identifier);
 		this.constant=constant;
 		this.constantElement=constantElement;
@@ -74,7 +74,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 		return(constant || constantElement!=null);	
 	}
 	   
-	public static void parse(final Type type,final DeclarationList declarationList) {
+	static void parse(final Type type,final DeclarationList declarationList) {
 		// identifier-list = identifier { , identifier }
 	    if(Option.TRACE_PARSE) Parser.TRACE("Parse IdentifierList");
 	    if(Parser.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));

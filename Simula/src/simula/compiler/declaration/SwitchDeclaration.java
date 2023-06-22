@@ -69,7 +69,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 	// *** Coding Utility: doCodeSwitchBody
 	// ***********************************************************************************************
 	@Override
-	public void codeProcedureBody() {
+	protected void codeProcedureBody() {
 		boolean duringSTM_Coding=Global.duringSTM_Coding;
 		Global.duringSTM_Coding=true;
 		GeneratedJavaClass.debug("// Switch Body");

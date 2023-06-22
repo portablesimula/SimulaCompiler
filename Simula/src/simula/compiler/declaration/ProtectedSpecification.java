@@ -21,21 +21,21 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class ProtectedSpecification implements Externalizable {
-	public String identifier;
-	public ClassDeclaration definedIn;
-    public HiddenSpecification hiddenBy; // Set during doChecking
+	String identifier;
+	ClassDeclaration definedIn;
+    HiddenSpecification hiddenBy; // Set during doChecking
 
-	public ProtectedSpecification(final ClassDeclaration definedIn,final String identifier) {
+	ProtectedSpecification(final ClassDeclaration definedIn,final String identifier) {
 		this.definedIn=definedIn;
 		this.identifier=identifier;
 	}
 	
-	public Declaration getAttribute() {
+	private Declaration getAttribute() {
 		// The Attribute being Protected
 		return(definedIn.findLocalAttribute(identifier));
 	}
 	
-	public VirtualSpecification getVirtualSpecification() {
+	private VirtualSpecification getVirtualSpecification() {
 		// The Attribute being Protected may be Virtual
 		return(definedIn.searchVirtualSpecList(identifier));
 	}
@@ -43,7 +43,7 @@ public final class ProtectedSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: doChecking -- Called from ClassDeclaration.checkProtectedList
 	// ***********************************************************************************************
-	public void doChecking() {
+	void doChecking() {
 		Declaration attribute=getAttribute();
 		if(attribute!=null) attribute.isProtected=this;
 		else Util.error("No Attribute "+identifier+" match 'protected' specification: "+this);

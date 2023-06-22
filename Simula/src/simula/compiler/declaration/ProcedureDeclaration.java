@@ -34,7 +34,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	public ProcedureDeclaration(final String identifier,final Declaration.Kind declarationKind) {
+	protected ProcedureDeclaration(final String identifier,final Declaration.Kind declarationKind) {
 		super(identifier);
 		this.declarationKind = declarationKind;
 	}
@@ -110,7 +110,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		if (Parser.accept(KeyWord.BEGIN))
 			doParseBody(block);
 		else block.statements.add(Statement.doParse());
-
 
 		block.lastLineNumber = Global.sourceLineNumber;
 		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
@@ -300,7 +299,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// *** Coding Utility: edFormalParameterList
 	// ***********************************************************************************************
 	// Also used by subclass StandardProcedure
-	public String edFormalParameterList(final boolean isInlineMethod,final boolean addStaticLink) {
+	private String edFormalParameterList(final boolean isInlineMethod,final boolean addStaticLink) {
 		// Accumulates through prefix-chain when class
 		StringBuilder s = new StringBuilder();
 		s.append('(');
@@ -420,7 +419,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Coding Utility: codeProcedureBody -- Redefined in SwitchDeclaration
 	// ***********************************************************************************************
-	public void codeProcedureBody() {
+	protected void codeProcedureBody() {
 		boolean duringSTM_Coding=Global.duringSTM_Coding;
 		Global.duringSTM_Coding=true;
 		GeneratedJavaClass.debug("// Procedure Statements");
@@ -489,7 +488,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	@Override
 	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
-//		declarationKind=Declaration.Kind.Procedure;
 		Util.TRACE_INPUT("BEGIN Read ProcedureDeclaration: "+identifier+", Declared in: "+this.declaredIn);
 		identifier=(String)inpt.readObject();
 		externalIdent=(String)inpt.readObject();
@@ -502,7 +500,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		labelList=(Vector<LabelDeclaration>) inpt.readObject();
 		declarationList=(DeclarationList) inpt.readObject();
 		Util.TRACE_INPUT("END Read ProcedureDeclaration: "+identifier+", Declared in: "+this.declaredIn);
-//		Global.currentScope = this.declaredIn;
 		Global.setScope(this.declaredIn);
 	}
 

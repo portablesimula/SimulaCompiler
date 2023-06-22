@@ -36,11 +36,9 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	 * 
 	 *	 PrefixedBlock = prefix BEGIN [ { Declaration ; } ]  [ { Statement ; } ] END
 	 *
+	 *		prefix = class-identifier [ actual-parameter-part ]
+	 *
 	 * </pre>
-	 * 
-	 * @param identifier
-	 * @param blockPrefix
-	 * @param isMainModule
 	 */
 	public PrefixedBlockDeclaration(String identifier,final Variable blockPrefix,boolean isMainModule) {
 		super(identifier);
@@ -79,7 +77,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 			Global.enterScope(this.declaredIn);
 			blockPrefix.doChecking();
 			this.prefix = blockPrefix.identifier;
-//			this.getPrefixClass().doChecking();
 			ClassDeclaration prefix=this.getPrefixClass();
 			if(prefix!=null) prefix.doChecking();
 			Global.exitScope();

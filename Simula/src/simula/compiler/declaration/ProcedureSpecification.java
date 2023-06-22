@@ -23,10 +23,10 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public final class ProcedureSpecification implements Externalizable {
-	public String identifier;
+ public final class ProcedureSpecification implements Externalizable {
 	public Type type;
 	public Vector<Parameter> parameterList;
+	private String identifier;
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
@@ -58,7 +58,7 @@ public final class ProcedureSpecification implements Externalizable {
 	 * 
 	 * </pre>
 	 */
-	public static ProcedureSpecification doParseProcedureSpecification(final Type type) {
+	static ProcedureSpecification doParseProcedureSpecification(final Type type) {
 		ProcedureDeclaration block = ProcedureDeclaration.doParseProcedureDeclaration(type);
 		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureSpecification: " + block);
 		Global.setScope(block.declaredIn);
@@ -69,32 +69,13 @@ public final class ProcedureSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: doChecking
 	// ***********************************************************************************************
-	public void doChecking(final DeclarationScope scope) {
+	void doChecking(final DeclarationScope scope) {
 		if (type != null) type.doChecking(scope);
 		// Check parameters
 		for (Parameter par : parameterList)	par.doChecking();
 	}
 
-	// ***********************************************************************************************
-	// *** Utility: checkCompatible --
-	// ***********************************************************************************************
-	public boolean checkCompatible(final ProcedureDeclaration proc) {
-		if (type != null && !type.equals(proc.type)) return (false);
-		// Check parameters
-		Iterator<Parameter> formalIterator = parameterList.iterator();
-		Iterator<Parameter> actualIterator = proc.parameterList.iterator();
-		while (actualIterator.hasNext()) {
-			if (!formalIterator.hasNext())
-				return (false); // Util.error("Wrong number of parameters to " + block);
-			Parameter formalParameter = (Parameter) formalIterator.next();
-			Parameter actualParameter = actualIterator.next();
-			if (!formalParameter.equals(actualParameter)) return (false);
-		}
-		if (formalIterator.hasNext())
-			return (false); // Util.error("Wrong number of parameters to " + block);
-		return (true);
-	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();

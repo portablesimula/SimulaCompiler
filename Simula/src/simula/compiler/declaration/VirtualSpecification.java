@@ -34,7 +34,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public final class VirtualSpecification extends Declaration implements Externalizable {
+ public final class VirtualSpecification extends Declaration implements Externalizable {
 	// String identifier;    // Inherited
 	// String externalIdent; // Inherited
 	// Type type;            // Inherited: Procedure's type if any
@@ -42,9 +42,9 @@ public final class VirtualSpecification extends Declaration implements Externali
 	public enum Kind { Procedure, Label, Switch	}
 	public Kind kind;
 	public ProcedureSpecification procedureSpec; // From: IS ProcedureSpecification
-    public boolean hasDefaultMatch; // Set during doChecking
+    boolean hasDefaultMatch; // Set during doChecking
 
-	public VirtualSpecification(final String identifier,final Type type,final Kind kind,final ProcedureSpecification procedureSpec) {
+	VirtualSpecification(final String identifier,final Type type,final Kind kind,final ProcedureSpecification procedureSpec) {
 		super(identifier);
 		this.declarationKind=Declaration.Kind.VirtualSpecification;
 	 	this.externalIdent=identifier;
@@ -54,7 +54,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 //		this.blockKind=BlockKind.Procedure;
 	}
 	
-	public static void parseInto(final ClassDeclaration block) {
+	static void parseInto(final ClassDeclaration block) {
 		Parser.expect(KeyWord.COLON);
    LOOP:while(true) {
 		    Type type;

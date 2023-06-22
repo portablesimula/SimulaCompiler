@@ -20,11 +20,11 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  *
  */
-public final class VirtualMatch extends Declaration implements Externalizable {
+ public final class VirtualMatch extends Declaration implements Externalizable {
 	public VirtualSpecification virtualSpec; // Set during doChecking
-    public ProcedureDeclaration match;       // Set during doChecking
+    private ProcedureDeclaration match;      // Set during doChecking
 	
-	public VirtualMatch(final VirtualSpecification virtualSpec,final ProcedureDeclaration match) {
+	VirtualMatch(final VirtualSpecification virtualSpec,final ProcedureDeclaration match) {
 		super(virtualSpec.identifier);
 		this.declarationKind=Declaration.Kind.VirtualMatch;
 		// NOTE: Called during Checking
