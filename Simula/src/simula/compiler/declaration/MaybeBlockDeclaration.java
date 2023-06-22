@@ -90,7 +90,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		return (new BlockStatement(this));
 	}
 
-	public static void moveLabelsFrom(DeclarationScope block) {
+	static void moveLabelsFrom(DeclarationScope block) {
 		// Special case: Labels in a CompoundStatement or ConnectionBlock.
 		// Move Label Declaration to nearest enclosing Block which is not
 		// a CompoundStatement or ConnectionBlock.

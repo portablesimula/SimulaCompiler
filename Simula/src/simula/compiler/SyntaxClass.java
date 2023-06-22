@@ -54,14 +54,14 @@ public abstract class SyntaxClass {
 		lineNumber = Global.sourceLineNumber;
 	}
 
-	public static String acceptIdentifier() {
+	protected static String acceptIdentifier() {
 		Token token = Parser.currentToken;
 		if (Parser.accept(KeyWord.IDENTIFIER))
 			return (token.getIdentifier().toString());
 		return (null);
 	}
 
-	public static String expectIdentifier() {
+	protected static String expectIdentifier() {
 		Token token = Parser.currentToken;
 		if (acceptIdentifier() != null)
 			return (token.getIdentifier().toString());
@@ -70,7 +70,7 @@ public abstract class SyntaxClass {
 	}  
 
   
-    public static Type acceptType() {
+    protected static Type acceptType() {
     	Type type=null; //Type.Notype;
     	if(Parser.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
     	else if(Parser.accept(KeyWord.CHARACTER)) type=Type.Character;

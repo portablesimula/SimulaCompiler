@@ -47,7 +47,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** CONSTRUCTOR
 	// ***********************************************************************************************
-	public ClassDeclaration(String identifier) {
+	protected ClassDeclaration(String identifier) {
 		super(identifier);
 		this.declarationKind=Declaration.Kind.Class;
 	}
@@ -341,7 +341,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: searchVirtualSpecList -- - Search VirtualSpec-list for 'ident'
 	// ***********************************************************************************************
-	public VirtualSpecification searchVirtualSpecList(final String ident) {
+	VirtualSpecification searchVirtualSpecList(final String ident) {
 		for (VirtualSpecification virtual : virtualSpecList) {
 			if (Util.equals(ident, virtual.identifier)) return (virtual);
 		} return (null);
@@ -362,29 +362,16 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: getNlabels
 	// ***********************************************************************************************
-	public int getNlabels() {
+	int getNlabels() {
 		if (hasNoRealPrefix())
 			return (labelList.size());
 		return (labelList.size() + getPrefixClass().getNlabels());
 	}
 
 	// ***********************************************************************************************
-	// *** Utility: findClassAttribute
-	// ***********************************************************************************************
-	public Declaration findClassAttribute(final String ident) {
-		ClassDeclaration scope = this;
-		while (scope != null) {
-			Declaration atr = scope.findLocalAttribute(ident);
-			if (atr != null) return (atr);
-			scope = scope.getPrefixClass();
-		}
-		return (null);
-	}
-
-	// ***********************************************************************************************
 	// *** Utility: findLocalAttribute
 	// ***********************************************************************************************
-	public Declaration findLocalAttribute(final String ident) {
+	Declaration findLocalAttribute(final String ident) {
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		for (Parameter parameter : parameterList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Parameter "+parameter);
@@ -413,7 +400,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: findLocalProcedure
 	// ***********************************************************************************************
-	public ProcedureDeclaration findLocalProcedure(final String ident) {
+	ProcedureDeclaration findLocalProcedure(final String ident) {
 		for (Declaration decl : declarationList)
 			if (Util.equals(ident, decl.identifier)) {
 				if (decl instanceof ProcedureDeclaration proc) return (proc);
@@ -457,7 +444,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Utility: searchProtectedList - Search Protected-list for 'ident'
 	// ***********************************************************************************************
-	public ProtectedSpecification searchProtectedList(final String ident) {
+	ProtectedSpecification searchProtectedList(final String ident) {
 		for (ProtectedSpecification pct : protectedList)
 			if (Util.equals(ident, pct.identifier)) return (pct);
 		return (null);
@@ -544,7 +531,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: hasNoRealPrefix
 	// ***********************************************************************************************
-	public boolean hasNoRealPrefix() {
+	private boolean hasNoRealPrefix() {
 		ClassDeclaration prfx = getPrefixClass();
 		boolean noPrefix = true;
 		if (prfx != null) {
@@ -684,7 +671,7 @@ SEARCH: while (scope != null) {
 	// *** Coding Utility: edFormalParameterList
 	// ***********************************************************************************************
 	// Also used by subclass StandardProcedure
-	public String edFormalParameterList(final boolean isMethod) {
+	protected String edFormalParameterList(final boolean isMethod) {
 		// Accumulates through prefix-chain when class
 		StringBuilder s = new StringBuilder();
 		s.append('(');
@@ -722,7 +709,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: saveClassStms
 	// ***********************************************************************************************
-	public void saveClassStms() {
+	private void saveClassStms() {
 		if (code1 == null) {
 			code1 = new Vector<CodeLine>();
 			Global.currentJavaModule.saveCode = code1;

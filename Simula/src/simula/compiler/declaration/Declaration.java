@@ -37,7 +37,8 @@ import simula.compiler.utilities.Util;
 public abstract class Declaration extends SyntaxClass {
 	public String identifier; // Simula Identifier from Source Text
 	public String externalIdent; // External Identifier set by doChecking
-	public DeclarationScope declaredIn;  // The DeclarationScope in which this Declaration is defined.
+	public DeclarationScope declaredIn;  // The DeclarationScope in which this Declaration is defined.	  
+	protected ProtectedSpecification isProtected; // Set during Checking
 	public Kind declarationKind;
 	public enum Kind {
 		StandardClass,
@@ -67,7 +68,7 @@ public abstract class Declaration extends SyntaxClass {
     // ***********************************************************************************************
     // *** Constructor
     // ***********************************************************************************************
-    public Declaration(final String identifier) {
+    protected Declaration(final String identifier) {
 	    this.identifier=identifier;
 	    this.externalIdent=identifier; // May be overwritten in doChecking()
 	    declaredIn=Global.getCurrentScope();
@@ -76,13 +77,10 @@ public abstract class Declaration extends SyntaxClass {
 	
 	public final String getJavaIdentifier() { return(this.externalIdent); }  // May be redefined
 	
-	public void modifyIdentifier(final String newIdentifier) {
+	protected void modifyIdentifier(final String newIdentifier) {
 		this.identifier=newIdentifier;
 	    checkAlreadyDefined();
 	}
-	  
-	public ProtectedSpecification isProtected; // Set during Checking
-	public ProtectedSpecification getProtected() { return(isProtected); } // NOTE: Redefined in ProcedureDeclaration
   
     private void checkAlreadyDefined() {
     	boolean error=false;
@@ -111,7 +109,7 @@ public abstract class Declaration extends SyntaxClass {
     	else if(warning) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
     }
   
-    public static boolean parseDeclaration(final DeclarationList declarationList) {
+    protected static boolean parseDeclaration(final DeclarationList declarationList) {
     	if(Option.TRACE_PARSE) Parser.TRACE("Parse Declaration");
     	String prefix=acceptIdentifier();
     	if(prefix!=null) {

@@ -100,7 +100,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ArrayDeclaration: " + toString());
 	}
 
-	public static void parse(final Type type,final DeclarationList declarationList) {
+	static void parse(final Type type,final DeclarationList declarationList) {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current=" + Parser.currentToken);
 		do { parseArraySegment(type, declarationList);
@@ -140,7 +140,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 			this.UB = UB;
 		}
 
-		public void doChecking() {
+		private void doChecking() {
 			LB.doChecking();
 			UB.doChecking();
 			LB=(Expression)TypeConversion.testAndCreate(Type.Integer,LB);

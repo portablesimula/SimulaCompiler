@@ -16,7 +16,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
-public final class Parameter extends Declaration implements Externalizable { 
+ public final class Parameter extends Declaration implements Externalizable { 
 	// String identifier;    // Inherited
 	// String externalIdent; // Inherited
 	// Type type;            // Inherited:
@@ -27,12 +27,12 @@ public final class Parameter extends Declaration implements Externalizable {
     public enum Mode { value, name } // Procedure parameter transfer mode
     public enum Kind { Simple, Procedure, Array, Label } //, Switch }
 
-	public Parameter(final String identifier) {
+	Parameter(final String identifier) {
 		super(identifier);
 		this.declarationKind=Declaration.Kind.Parameter;
 	}
 
-	public Parameter(final String identifier,final Type type,final Parameter.Kind kind) {
+	Parameter(final String identifier,final Type type,final Parameter.Kind kind) {
 		this(identifier);
 		this.type = type;
 		this.kind = kind;
@@ -46,7 +46,7 @@ public final class Parameter extends Declaration implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: into
 	// ***********************************************************************************************
-	public void into(final Vector<Parameter> parameterList) {
+	void into(final Vector<Parameter> parameterList) {
 		for (Parameter par : parameterList)
 			if (Util.equals(par.identifier, this.identifier)) {
 				Util.error("Parameter already defined: " + identifier);
@@ -65,18 +65,18 @@ public final class Parameter extends Declaration implements Externalizable {
 		return (true);
 	}
 
-	public void setMode(final Parameter.Mode mode) {
+	void setMode(final Parameter.Mode mode) {
 		if (this.mode != null)
 			Util.error("Parameter " + identifier + " is already specified by " + this.mode);
 		this.mode = mode;
 	}
 
-	public void setTypeAndKind(final Type type,final Parameter.Kind kind) {
+	void setTypeAndKind(final Type type,final Parameter.Kind kind) {
 		this.type = type;
 		this.kind = kind;
 	}
 
-	public void setExternalIdentifier(final int prefixLevel) {
+	void setExternalIdentifier(final int prefixLevel) {
 		if (prefixLevel > 0)
 			 externalIdent = "p" + prefixLevel + '_' + identifier;
 		else externalIdent = "p_" + identifier;
@@ -139,7 +139,7 @@ public final class Parameter extends Declaration implements Externalizable {
     	return(!illegal);
 	}
     
-    public String toJavaType() {
+    String toJavaType() {
     	ASSERT_SEMANTICS_CHECKED(this);
     	if(mode==Parameter.Mode.name) {
     		switch(kind) {
@@ -168,7 +168,7 @@ public final class Parameter extends Declaration implements Externalizable {
 	// ***********************************************************************************************
 	// *** Printing Utility: editParameterList
 	// ***********************************************************************************************
-	public static String editParameterList(Vector<Parameter> parameterList) {
+	static String editParameterList(Vector<Parameter> parameterList) {
 		StringBuilder s = new StringBuilder();
 		s.append('(');
 		boolean first = true;

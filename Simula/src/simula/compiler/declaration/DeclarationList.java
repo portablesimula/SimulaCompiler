@@ -20,7 +20,7 @@ public class DeclarationList extends Vector<Declaration> {
 	private static final long serialVersionUID = 1L;
 	public final String identifier;
 
-	public DeclarationList(String identifier) {
+	DeclarationList(String identifier) {
 		this.identifier=identifier;
 	}
 	

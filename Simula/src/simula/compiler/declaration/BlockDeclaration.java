@@ -29,12 +29,12 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
 	// Used by parseMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
-	public BlockDeclaration(String identifier) {
+	protected BlockDeclaration(String identifier) {
 		super(identifier);
 	}
 
 	// Used by ClassDeclaration and ProcedureDeclaration
-	public BlockDeclaration(final String identifier,final Declaration.Kind declarationKind) {
+	private BlockDeclaration(final String identifier,final Declaration.Kind declarationKind) {
 		super(identifier);
 		this.declarationKind = declarationKind;
 	}
@@ -57,7 +57,7 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding: isBlockWithLocalClasses
 	// ***********************************************************************************************
-	public boolean isBlockWithLocalClasses() {
+	protected boolean isBlockWithLocalClasses() {
 		if (this.hasLocalClasses) return (true);
 		if (this instanceof ClassDeclaration cls) {
 			ClassDeclaration prfx = cls.getPrefixClass();
@@ -69,7 +69,7 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding: isQPSystemBlock -- QPS System is any block with local class(es)
 	// ***********************************************************************************************
-	public boolean isQPSystemBlock() {
+	protected boolean isQPSystemBlock() {
 		switch (declarationKind) {
 		case SimulaProgram:
 		case SubBlock:

@@ -17,7 +17,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public abstract class DeclarationScope extends Declaration {
+ public abstract class DeclarationScope extends Declaration {
 	
 	public int sourceBlockLevel; // Set during Parsing
 	protected static int currentRTBlockLevel = 0; // Runtime  Block level - Used during doChecking
@@ -30,7 +30,7 @@ public abstract class DeclarationScope extends Declaration {
 	// ***********************************************************************************************
 	// *** Constructor
 	// ***********************************************************************************************
-	public DeclarationScope(final String ident) {
+	protected DeclarationScope(final String ident) {
 		super(ident);
 		declarationList = new DeclarationList(this.getClass().getSimpleName()+':'+ident+":Line="+Global.sourceLineNumber);
 		declaredIn = Global.getCurrentScope();
@@ -127,7 +127,7 @@ public abstract class DeclarationScope extends Declaration {
 	// ***********************************************************************************************
 	// *** Utility: edJavaClassName
 	// ***********************************************************************************************
-	public String edJavaClassName() {
+	protected String edJavaClassName() {
 		DeclarationScope scope=this;
 		String id=null;
 		while(scope!=null) {

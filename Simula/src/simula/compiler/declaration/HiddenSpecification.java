@@ -29,7 +29,7 @@ public final class HiddenSpecification implements Externalizable {
     	return(protectedBy);
     }
 
-	public HiddenSpecification(final ClassDeclaration definedIn,final String identifier) {
+	HiddenSpecification(final ClassDeclaration definedIn,final String identifier) {
 		this.definedIn=definedIn;
 		this.identifier=identifier;
 	}
@@ -37,7 +37,7 @@ public final class HiddenSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: doChecking -- Called from ClassDeclaration.checkHiddenList
 	// ***********************************************************************************************
-	public void doChecking() {
+	void doChecking() {
 	    protectedBy=getMatchingProtected();
 	    if(protectedBy!=null) protectedBy.hiddenBy=this;
 	}
@@ -76,7 +76,7 @@ public final class HiddenSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: getScopeBehindHidden -- Search backwards from 'hidden' ...
 	// ***********************************************************************************************
-	public ClassDeclaration getScopeBehindHidden() {
+	ClassDeclaration getScopeBehindHidden() {
 		ProtectedSpecification protectedBy=getProtectedBy();
 		ClassDeclaration definedIn=protectedBy.definedIn;
 		return(definedIn.getPrefixClass());
