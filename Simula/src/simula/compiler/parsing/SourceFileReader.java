@@ -33,11 +33,11 @@ public final class SourceFileReader {
 	private final Stack<String> nameStack=new Stack<String>();
 	private final Stack<Integer> lineStack=new Stack<Integer>();
 	
-	public SourceFileReader(final Reader reader) {
+	SourceFileReader(final Reader reader) {
 		current=reader;
 	}
 	
-	public int read() {
+	int read() {
 		int c= -1;
 		try { c = current.read();
 			  while (c == -1) {
@@ -50,7 +50,7 @@ public final class SourceFileReader {
 		return (c);
 	}
 	
-	public void insert(final File file) {
+	void insert(final File file) {
 		lineStack.push(Global.sourceLineNumber); Global.sourceLineNumber=1;
 	    try {
 			Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
@@ -60,13 +60,13 @@ public final class SourceFileReader {
 	    } catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
 	}
 	
-	public void forceEOF() {
+	void forceEOF() {
 		Global.insertName=nameStack.pop();
 		Global.sourceLineNumber=lineStack.pop();
 		current = stack.pop();
 	}
 	    
-	public void close() {
+	void close() {
 		try { current.close(); } catch (IOException e) {}
 	}
 

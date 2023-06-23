@@ -64,21 +64,10 @@ public final class Parser {
 		return (false);
 	}
 
-	public static boolean skipMissplacedSymbol(final KeyWord s) {
-		if (Parser.accept(s)) {
-			Util.error("Misplaced KeyWord: "+s.toLowerCase()+" -- Ignored");
-			return (true);
-		}
-		return (false);
-	}
-
 	public static void skipMissplacedCurrentSymbol() {
 		Util.error("Misplaced symbol: "+Parser.currentToken+" -- Ignored");
 		nextSymb();
 	}
-	
-	public static KeyWord lastKeyWord()
-	{ return(Parser.prevToken.getKeyWord()); }
 
 	public static boolean accept(final KeyWord s1,final KeyWord s2) {
 		return(accept(s1) || accept(s2));
@@ -120,10 +109,6 @@ public final class Parser {
 	
 	public static void TRACE(final String msg) {
 		Util.TRACE(msg + ", current=" + Parser.currentToken + ", prev=" + Parser.prevToken);
-	}
-
-	public static void BREAK(final String msg) {
-		Util.BREAK(msg + ", current=" + Parser.currentToken + ", prev=" + Parser.prevToken);
 	}
 	
 	public static void nextSymb() {

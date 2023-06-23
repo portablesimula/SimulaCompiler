@@ -6,7 +6,7 @@ import simula.compiler.utilities.Util;
 
 public class Directive {
 
-	public static void treatDirectiveLine(final SimulaScanner scanner,final String id,final String arg) {
+	static void treatDirectiveLine(final SimulaScanner scanner,final String id,final String arg) {
 		if (id.equalsIgnoreCase("OPTION"))				Directive.setOption();
 		else if (id.equalsIgnoreCase("INSERT"))			Directive.insert(scanner,arg);
 		else if (id.equalsIgnoreCase("SPORT"))      	Directive.setSport(arg);
@@ -27,7 +27,7 @@ public class Directive {
 	 * Furthermore, if the source is being listed, listing is turned off during 
 	 * the inclusion and turned on again when reading continues after this directive. 
 	 */
-	public static void insert(final SimulaScanner scanner,final String fileName) {
+	private static void insert(final SimulaScanner scanner,final String fileName) {
 		Util.warning("%INSERT "+fileName);
 		File file=new File(fileName);
 		if(file.exists() && file.canRead()) {
@@ -42,7 +42,7 @@ public class Directive {
 	 * page heading (as defined by %TITLE, see below) is non-empty, it will be
 	 * printed on top of the new page.
 	 */
-	public static void page() {
+	private static void page() {
 		// Ignored in this implementation
 	}
   
@@ -53,7 +53,7 @@ public class Directive {
      * The facility is intended for compiler maitenance,
      * and is not explained further.
      */
-    public static void setOption() {
+    private static void setOption() {
     	Util.warning("NOT IMPLEMENTED: Compiler Directive: %OPTION");
     }
     
@@ -64,7 +64,7 @@ public class Directive {
      * <p>
      * The initial value is ON.
      */
-    public static void setSport(final String onoff) {
+    private static void setSport(final String onoff) {
     	Option.sport=(onoff.equalsIgnoreCase("ON"));
     	Util.warning("Compiler Directive: %SPORT sets Option.sport="+Option.sport);
     }
@@ -72,21 +72,21 @@ public class Directive {
 	/**
 	 * %EOF
 	 */
-    public static void eof(final SimulaScanner scanner) {
+    private static void eof(final SimulaScanner scanner) {
     	scanner.sourceFileReader.forceEOF();
     }
 
 	/**
 	 * %TITLE title-string
 	 */
-    public static void setTitle(final String title) {
+    private static void setTitle(final String title) {
 		// Ignored in this implementation
 	}
 
     /**
      * %KEEP_JAVA directory-string
      */
-    public static void setKeepJava(final String dir) {
+    private static void setKeepJava(final String dir) {
     	if(dir!=null) Option.keepJava=new File(dir);
     	else Util.warning("Missing directory in KEEP_JAVA directive");	
     }

@@ -26,7 +26,7 @@ import simula.compiler.utilities.Util;
  */
 public final class SimulaScanner extends DefaultScanner { 
     private static final int EOF_MARK=25; // ISO EM(EndMedia) character used to denote end-of-input
-    public boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
+    private boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
     SourceFileReader sourceFileReader;      // The source file reader;
     private Stack<Character> puchBackStack=new Stack<Character>();
     public static boolean selector[]=new boolean[256];
@@ -67,19 +67,6 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
 	void insert(File file) {
 		this.sourceFileReader.insert(file);
-	}
-
-    //********************************************************************************
-    //*** Read %MACRO line
-    //********************************************************************************
-	public String readMacroLine() {
-		StringBuilder line=new StringBuilder();
-		char c=(char)readNextCharacter();
-		while(c != '\n') {
-			line.append(c);
-			c=(char)readNextCharacter();
-		}
-		return(line.toString());
 	}
 
     //********************************************************************************

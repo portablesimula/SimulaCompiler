@@ -19,7 +19,6 @@ import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-import simula.runtime._SimulaRuntimeError;
 
 /**
  * Binary Operation.

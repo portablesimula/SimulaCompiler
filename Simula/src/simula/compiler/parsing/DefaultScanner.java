@@ -28,7 +28,7 @@ public class DefaultScanner {
     //********************************************************************************
     //*** CONSTRUCTORS: Scanner
     //********************************************************************************
-	public DefaultScanner() {}
+	protected DefaultScanner() {}
 	/**
 	 * Constructs a new Default Scanner that produces Tokens scanned from the specified
 	 * source.
