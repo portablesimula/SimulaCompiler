@@ -93,12 +93,12 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public final class BooleanOperation extends Expression {
-	public Expression lhs;
-	public final KeyWord opr;
-	public Expression rhs;
+public final class BooleanExpression extends Expression {
+	private Expression lhs;
+	private final KeyWord opr;
+	private Expression rhs;
 
-	public BooleanOperation(Expression lhs, KeyWord opr, Expression rhs) {
+	BooleanExpression(Expression lhs, KeyWord opr, Expression rhs) {
 		this.lhs = lhs;
 		this.opr = opr;
 		this.rhs = rhs;

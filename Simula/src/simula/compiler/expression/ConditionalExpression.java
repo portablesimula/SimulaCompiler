@@ -31,7 +31,7 @@ public final class ConditionalExpression extends Expression {
 	Expression thenExpression;
 	Expression elseExpression;
 
-	public ConditionalExpression(final Type type, final Expression condition, final Expression thenExpression, final Expression elseExpression) {
+	ConditionalExpression(final Type type, final Expression condition, final Expression thenExpression, final Expression elseExpression) {
 		this.condition = condition;
 		this.thenExpression = thenExpression; thenExpression.backLink=this;
 		this.elseExpression = elseExpression; elseExpression.backLink=this;

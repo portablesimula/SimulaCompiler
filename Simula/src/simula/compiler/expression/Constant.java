@@ -41,7 +41,7 @@ public final class Constant extends Expression implements Externalizable {
 		this.value = value;
 	}
 	
-    public static Constant createRealType(final Object value)
+    static Constant createRealType(final Object value)
     { Type type=Type.Real;
       if(value instanceof Double) type=Type.LongReal;
       return(new Constant(type,value));
@@ -54,7 +54,7 @@ public final class Constant extends Expression implements Externalizable {
     	return(Type.LongReal);
     }
     
-    public static Constant evaluate(final KeyWord opr,final Number rhn) { 
+    static Constant evaluate(final KeyWord opr,final Number rhn) { 
     	Type type=getType(rhn);
 		Number result=null;
 		if(type==Type.Integer) {
@@ -80,7 +80,7 @@ public final class Constant extends Expression implements Externalizable {
 		return(new Constant(type,result));
     }
   
-    public static Constant evaluate(final Number lhn,final KeyWord opr,final Number rhn) { 
+    static Constant evaluate(final Number lhn,final KeyWord opr,final Number rhn) { 
     	Type type=Type.arithmeticTypeConversion(getType(lhn),getType(rhn));
 		if(opr==KeyWord.DIV && type==Type.Integer) type=Type.Real;
 		Number result=null;

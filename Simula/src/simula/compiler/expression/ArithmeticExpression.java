@@ -82,12 +82,12 @@ import simula.compiler.utilities.Util;
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public final class ArithmeticOperation extends Expression {
-	public Expression lhs;
-	public final KeyWord opr;
-	public Expression rhs;
+public final class ArithmeticExpression extends Expression {
+	private Expression lhs;
+	private final KeyWord opr;
+	private Expression rhs;
   
-	private ArithmeticOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
+	private ArithmeticExpression(final Expression lhs,final KeyWord opr,final Expression rhs) {
 		this.opr=opr;
 		if(lhs==null) {
 			Util.error("Missing operand before "+opr);
@@ -100,7 +100,7 @@ public final class ArithmeticOperation extends Expression {
 		this.lhs.backLink=this.rhs.backLink=this;
 	}
 
-	public static Expression create(final Expression lhs,final KeyWord opr,final Expression rhs) {
+	static Expression create(final Expression lhs,final KeyWord opr,final Expression rhs) {
 		try { // Try to Compile-time Evaluate this expression
 			Number lhn=lhs.getNumber();
 			if(lhn!=null) {
@@ -108,7 +108,7 @@ public final class ArithmeticOperation extends Expression {
 				if(rhn!=null) return(Constant.evaluate(lhn,opr,rhn));
 			}
 		} catch(Exception e) { Util.error("Arithmetic overflow: "+lhs+' '+opr+' '+rhs+"   "+e); e.printStackTrace(); }
-		return(new ArithmeticOperation(lhs,opr,rhs));
+		return(new ArithmeticExpression(lhs,opr,rhs));
 	}
   
 	@Override

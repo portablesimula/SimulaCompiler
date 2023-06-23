@@ -34,9 +34,9 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class AssignmentOperation extends Expression {
-	public Expression lhs;
-	public final KeyWord opr;
-	public Expression rhs;
+	private Expression lhs;
+	private final KeyWord opr;
+	private Expression rhs;
 	private boolean textValueAssignment=false; // Set by doChecking
 	
 	  

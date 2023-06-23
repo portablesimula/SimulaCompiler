@@ -112,7 +112,7 @@ public abstract class Expression extends SyntaxClass {
 	protected static Expression parseSimpleExpression()  {   
 		Expression expr = parseANDTHEN();
 		while(Parser.accept(KeyWord.OR_ELSE))  {
-			expr=new BooleanOperation(expr,KeyWord.OR_ELSE,parseANDTHEN());
+			expr=new BooleanExpression(expr,KeyWord.OR_ELSE,parseANDTHEN());
 		}
 		return(expr);
 	}
@@ -121,7 +121,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseANDTHEN() {
 		Expression expr = parseEQV();
 		while(Parser.accept(KeyWord.AND_THEN))
-			expr=new BooleanOperation(expr,KeyWord.AND_THEN,parseEQV());
+			expr=new BooleanExpression(expr,KeyWord.AND_THEN,parseEQV());
 		return(expr);
 	}
 
@@ -129,7 +129,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseEQV() { 
 		Expression expr=parseIMP();
 		while(Parser.accept(KeyWord.EQV))
-			expr=new BooleanOperation(expr,KeyWord.EQV,parseIMP());
+			expr=new BooleanExpression(expr,KeyWord.EQV,parseIMP());
 		return(expr);
 	}
 
@@ -137,7 +137,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseIMP() {
 		Expression expr=parseOR();
 		while(Parser.accept(KeyWord.IMP))
-			expr=new BooleanOperation(expr,KeyWord.IMP,parseOR());
+			expr=new BooleanExpression(expr,KeyWord.IMP,parseOR());
 		return(expr);
 	}
 
@@ -145,7 +145,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseOR() {
 		Expression expr=parseAND();
 		while(Parser.accept(KeyWord.OR))
-			expr=new BooleanOperation(expr,KeyWord.OR,parseAND());
+			expr=new BooleanExpression(expr,KeyWord.OR,parseAND());
 		return(expr);
 	}
 
@@ -153,7 +153,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseAND() {
 		Expression expr=parseNOT();
 		while(Parser.accept(KeyWord.AND))
-			expr=new BooleanOperation(expr,KeyWord.AND,parseNOT());
+			expr=new BooleanExpression(expr,KeyWord.AND,parseNOT());
 		return(expr);
 	}
 
@@ -191,7 +191,7 @@ public abstract class Expression extends SyntaxClass {
 		Expression expr=parseUNIMULDIV();
 		while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 			KeyWord opr=Parser.prevToken.getKeyWord();
-			expr=ArithmeticOperation.create(expr,opr,parseMULDIV());
+			expr=ArithmeticExpression.create(expr,opr,parseMULDIV());
 		}
 		return(expr);
 	}
@@ -212,7 +212,7 @@ public abstract class Expression extends SyntaxClass {
 		Expression expr=parseEXPON();
 		while(Parser.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
 			KeyWord opr=Parser.prevToken.getKeyWord();
-			expr=ArithmeticOperation.create(expr,opr,parseEXPON());
+			expr=ArithmeticExpression.create(expr,opr,parseEXPON());
 			//expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseEXPON());
 		}
 		return(expr);
@@ -222,7 +222,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseEXPON() {
 		Expression expr=parseBASICEXPR();
 		while(Parser.accept(KeyWord.EXP))
-			expr=ArithmeticOperation.create(expr,KeyWord.EXP,parseBASICEXPR());
+			expr=ArithmeticExpression.create(expr,KeyWord.EXP,parseBASICEXPR());
 		//expr=ArithmeticOperation.newArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
 		return(expr);
 	}
@@ -336,12 +336,12 @@ public abstract class Expression extends SyntaxClass {
 	public abstract boolean maybeStatement();
 
 	// Generate code for getting the value of this Expression
-	public String get() {
+	protected String get() {
 		return (this.toJavaCode());
 	}
 
 	// Generate code for putting the value into this Expression
-	public String put(String evaluated) {
+	String put(String evaluated) {
 		return (this.toJavaCode() + '=' + evaluated);
 	}
 	

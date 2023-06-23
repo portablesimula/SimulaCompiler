@@ -44,7 +44,7 @@ public final class CallProcedure {
 	 * @param variable
 	 * @return piece of Java source code
 	 */
-	public static String normal(final Variable variable) {
+	static String normal(final Variable variable) {
 		StringBuilder s=new StringBuilder();
 		Meaning meaning=variable.meaning;
 		Declaration decl=meaning.declaredAs;
@@ -69,7 +69,7 @@ public final class CallProcedure {
 	 * @param func Function Designator, may be subscripted
 	 * @return piece of Java source code
 	 */
-	public static String remote(final Expression obj,final ProcedureDeclaration procedure,final Variable func,final SyntaxClass backLink) {
+	static String remote(final Expression obj,final ProcedureDeclaration procedure,final Variable func,final SyntaxClass backLink) {
 		if(procedure.myVirtual!=null) {
 			// Call Remote Virtual Procedure
 			return(remoteVirtual(obj,func,procedure.myVirtual.virtualSpec));
@@ -124,7 +124,7 @@ public final class CallProcedure {
 	 * @param params
 	 * @return piece of Java source code
 	 */
-	public static String asNormalMethod(final Variable variable) { 
+	static String asNormalMethod(final Variable variable) { 
 		Meaning meaning=variable.meaning;
 		ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
 		String params=edProcedureParameters(variable,null,procedure);
@@ -164,7 +164,7 @@ public final class CallProcedure {
 	 * @param params
 	 * @return piece of Java source code
 	 */
-	public static String asStaticMethod(final Variable variable,final boolean isContextFree) { 
+	static String asStaticMethod(final Variable variable,final boolean isContextFree) { 
 		Meaning meaning=variable.meaning;
 		ProcedureDeclaration procedure = (ProcedureDeclaration) meaning.declaredAs;
 		BlockDeclaration staticLink=(BlockDeclaration)meaning.declaredAs.declaredIn;
@@ -200,7 +200,7 @@ public final class CallProcedure {
 	 * @param par declared as parameter 'par'
 	 * @return piece of Java source code
 	 */
-	public static String formal(final Variable variable,final Parameter par)
+	static String formal(final Variable variable,final Parameter par)
 	{ //return("<IDENT>.CPF().setPar(4).setpar(3.14)._ENT()");
 	  String ident=variable.edIdentifierAccess(false);
 	  if(par.mode==Parameter.Mode.name) ident=ident+".get()";
@@ -217,7 +217,7 @@ public final class CallProcedure {
 	 * @param ident
 	 * @return piece of Java source code
 	 */	
-	public static String virtual(final Variable variable,final VirtualSpecification virtual,final boolean remotelyAccessed) {
+	static String virtual(final Variable variable,final VirtualSpecification virtual,final boolean remotelyAccessed) {
 		//return("<IDENT>.CPF().setPar(4).setpar(3.14)._ENT()");
 	    String ident=virtual.getVirtualIdentifier();
 	    if(virtual.kind==VirtualSpecification.Kind.Label) return(ident);
@@ -243,7 +243,7 @@ public final class CallProcedure {
 	 * @param remotelyAccessed
 	 * @return piece of Java source code
 	 */
-	public static String remoteVirtual(final Expression obj,final Variable variable,final VirtualSpecification virtual) {
+	static String remoteVirtual(final Expression obj,final Variable variable,final VirtualSpecification virtual) {
 		//return("<Object>.<IDENT>.CPF().setPar(4).setpar(3.14)._ENT()");
 		String ident=obj.get()+'.'+virtual.getVirtualIdentifier();
 		return(codeCPF(ident,variable,virtual.procedureSpec));
