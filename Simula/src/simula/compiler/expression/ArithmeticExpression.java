@@ -175,6 +175,7 @@ public final class ArithmeticExpression extends Expression {
 
   
     // Returns true if this expression may be used as a statement.
+	@Override
     public boolean maybeStatement() {
     	ASSERT_SEMANTICS_CHECKED(this);
 	    return(false);  

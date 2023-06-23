@@ -49,14 +49,14 @@ public final class ObjectGenerator extends Expression {
 	private final Vector<Expression> params;
 	private final Vector<Expression> checkedParams = new Vector<Expression>();
 
-	public ObjectGenerator(final String classIdentifier,final Vector<Expression> params) {
+	private ObjectGenerator(final String classIdentifier,final Vector<Expression> params) {
 		this.classIdentifier = classIdentifier;
 		this.type = Type.Ref(classIdentifier);
 		this.params = params;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW ObjectGenerator: " + toString());
 	}
 
-	public static Expression parse() {
+	static Expression parse() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ObjectGenerator, current=" + Parser.currentToken);
 		String classIdentifier = expectIdentifier();
@@ -119,6 +119,7 @@ public final class ObjectGenerator extends Expression {
 	}
 
 	// Returns true if this expression may be used as a statement.
+	@Override
 	public boolean maybeStatement() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		return (true);

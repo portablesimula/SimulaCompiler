@@ -58,7 +58,7 @@ public final class LocalObject extends Expression {
 			Util.TRACE("NEW ThisObjectExpression: " + toString());
 	}
 
-	public static Expression acceptThisIdentifier() {
+	static Expression acceptThisIdentifier() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ThisObjectExpression, current=" + Parser.currentToken);
 		String classIdentifier = expectIdentifier();
@@ -111,6 +111,7 @@ public final class LocalObject extends Expression {
 	}
 
 	// Returns true if this expression may be used as a statement.
+	@Override
 	public boolean maybeStatement() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		return (false);

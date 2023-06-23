@@ -257,6 +257,7 @@ public final class Variable extends Expression {
 	}
 
 	// Returns true if this variable may be used as a statement.
+	@Override
 	public boolean maybeStatement()
 	  {	ASSERT_SEMANTICS_CHECKED(this);
 	    if(meaning==null) return(false); // Error Recovery
