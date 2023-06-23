@@ -51,11 +51,11 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class QualifiedObject extends Expression {
-	public final Expression lhs;
-	public final String classIdentifier;
+	private final Expression lhs;
+	private final String classIdentifier;
 	ClassDeclaration classDeclaration; // Set by doChecking
 
-	public QualifiedObject(final Expression lhs, final String classIdentifier) {
+	QualifiedObject(final Expression lhs, final String classIdentifier) {
 		this.lhs = lhs;
 		this.classIdentifier = classIdentifier;
 		lhs.backLink = this;

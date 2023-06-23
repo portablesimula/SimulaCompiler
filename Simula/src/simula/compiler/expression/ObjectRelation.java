@@ -66,12 +66,12 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ObjectRelation extends Expression {
-	public final Expression lhs;
-	public final KeyWord opr;
-	public final String classIdentifier;
+	private final Expression lhs;
+	private final KeyWord opr;
+	private final String classIdentifier;
 	ClassDeclaration classDeclaration; // Set by doChecking
 
-	public ObjectRelation(final Expression lhs, final KeyWord opr, final String classIdentifier) {
+	ObjectRelation(final Expression lhs, final KeyWord opr, final String classIdentifier) {
 		this.lhs = lhs;
 		this.opr = opr;
 		this.classIdentifier = classIdentifier;

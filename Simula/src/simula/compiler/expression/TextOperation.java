@@ -74,10 +74,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class TextOperation extends Expression {
-	public Expression lhs;
-	public Expression rhs;
+	private Expression lhs;
+	private Expression rhs;
 
-	public TextOperation(final Expression lhs, final Expression rhs) {
+	TextOperation(final Expression lhs, final Expression rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;
 		if (this.lhs == null) {

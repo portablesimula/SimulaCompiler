@@ -35,15 +35,15 @@ import simula.runtime._SimulaRuntimeError;
  * @author Øystein Myhre Andersen
  */
 public final class RemoteVariable extends Expression {
-	public final Expression obj;
-	public final Variable var;
+	final Expression obj;
+	final Variable var;
 	private Meaning remoteAttribute; // Set by doChecking
 	private ProcedureDeclaration callRemoteProcedure = null;
 	private VirtualSpecification callRemoteVirtual = null;
 
 	private boolean accessRemoteArray = false; // Set by doChecking
 
-	public RemoteVariable(final Expression obj, final Variable var) {
+	RemoteVariable(final Expression obj, final Variable var) {
 		this.obj = obj;
 		this.var = var;
 		obj.backLink = var.backLink = this;

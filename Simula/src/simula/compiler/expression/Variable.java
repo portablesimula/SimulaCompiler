@@ -88,7 +88,7 @@ import simula.compiler.utilities.Util;
 public final class Variable extends Expression {
 	public String identifier;
 	public Meaning meaning;
-	public boolean remotelyAccessed;
+	private boolean remotelyAccessed;
 
 	Vector<Expression> params;
 	public Vector<Expression> checkedParams; // Set by doChecking
@@ -97,18 +97,18 @@ public final class Variable extends Expression {
 		return(params!=null);
 	}
 	
-	public String getJavaIdentifier() {
+	String getJavaIdentifier() {
 		return(meaning.declaredAs.getJavaIdentifier());
 	}
 	
-	public void setRemotelyAccessed(final Meaning meaning) {
+	void setRemotelyAccessed(final Meaning meaning) {
 		this.meaning = meaning;
 		remotelyAccessed=true;
 		this.doChecking();	
 		SET_SEMANTICS_CHECKED(); // Checked as remote attribute
 	}
 
-	public Meaning getMeaning() {
+	Meaning getMeaning() {
 		if (meaning == null) {
 			meaning = Global.getCurrentScope().findMeaning(identifier);
 		}

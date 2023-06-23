@@ -27,11 +27,11 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class RelationalOperation extends Expression {
-	public Expression lhs;
-	public final KeyWord opr;
-	public Expression rhs;
+	private Expression lhs;
+	private final KeyWord opr;
+	private Expression rhs;
 
-	public RelationalOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
+	RelationalOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
 		this.lhs = lhs;
 		this.opr = opr;
 		this.rhs = rhs;

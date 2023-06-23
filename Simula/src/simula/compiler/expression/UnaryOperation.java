@@ -25,7 +25,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public final class UnaryOperation extends Expression {
+final class UnaryOperation extends Expression {
 	final KeyWord oprator;
 	Expression operand;
 
@@ -39,7 +39,7 @@ public final class UnaryOperation extends Expression {
 		this.operand.backLink=this;
 	}
 
-	public static Expression create(final KeyWord oprator,final Expression operand) {
+	static Expression create(final KeyWord oprator,final Expression operand) {
 		if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
 			try { // Try to Compile-time Evaluate this expression
 				Number rhn=operand.getNumber();
