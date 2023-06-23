@@ -29,13 +29,13 @@ public class JavaClassInfo {
 		Global.javaClassMap.putIfAbsent(key,info);
 	}
 	
-	public static JavaClassInfo get(String key) {
+	static JavaClassInfo get(String key) {
 		JavaClassInfo info=Global.javaClassMap.get(key);
 		if(info==null) printJavaClassMap("");
 		return(info);		
 	}
 
-	public boolean isSuperTypeOf(final JavaClassInfo other) {
+	boolean isSuperTypeOf(final JavaClassInfo other) {
 		// This is subtype of other   iff   This is in other's prefix chain.
 		boolean res=false;
 		String prefix=other.prefixIdent;
@@ -54,7 +54,7 @@ public class JavaClassInfo {
 		return(res);
 	}
 	
-	public static void printJavaClassMap(String title) {
+	static void printJavaClassMap(String title) {
 		Set<String> keys=Global.javaClassMap.keySet();
 		for(String key:keys) {
 			System.out.println("JavaClassMap-Key: "+key+", value="+Global.javaClassMap.get(key));

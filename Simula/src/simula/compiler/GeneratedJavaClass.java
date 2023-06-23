@@ -59,12 +59,12 @@ public final class GeneratedJavaClass {
 		JavaClassInfo.put(info.externalIdent,info);
 	}
 
-	public String modid() {
+	private String modid() {
 		BlockDeclaration blk=Global.currentJavaModule.blockDeclaration;
 		return(blk.declarationKind+" "+blk.scopeID());
 	}
 	
-	public String getClassOutputFileName() {
+	String getClassOutputFileName() {
 		return (Global.tempClassFileDir + "/" + Global.packetName + '/' + blockDeclaration.getJavaIdentifier() + ".class");
 	}
 		 
@@ -139,7 +139,7 @@ public final class GeneratedJavaClass {
 		return(s);  
 	}
 
-	public void appendLine(final int javaLine,final int simulaLine) {
+	private void appendLine(final int javaLine,final int simulaLine) {
 	    lineMap.add(javaLine); lineMap.addElement(simulaLine);
 	}
 	  

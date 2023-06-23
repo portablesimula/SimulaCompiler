@@ -19,12 +19,12 @@ public class SimClassVisitor extends ClassVisitor {
 	private static final boolean DEBUG=false;
 	private String classFileName;
 	
-	public SimClassVisitor(String classFileName) {
-		super(ASM_Release);
-		this.classFileName=classFileName;
-	}
+//	SimClassVisitor(String classFileName) {
+//		super(ASM_Release);
+//		this.classFileName=classFileName;
+//	}
 	
-	public SimClassVisitor(String classFileName,ClassVisitor classVisitor) {
+	SimClassVisitor(String classFileName,ClassVisitor classVisitor) {
 		super(ASM_Release,classVisitor);
 		this.classFileName=classFileName;
 	}

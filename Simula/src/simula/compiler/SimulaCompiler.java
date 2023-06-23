@@ -573,7 +573,7 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** EXECUTE OS COMMAND
 	// ***************************************************************
-	public static int execute(final Vector<String> cmdarray) throws IOException {
+	private static int execute(final Vector<String> cmdarray) throws IOException {
 		String[] cmds=new String[cmdarray.size()];
 		cmdarray.copyInto(cmds);
 		return(execute(cmds));

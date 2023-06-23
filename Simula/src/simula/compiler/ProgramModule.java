@@ -49,19 +49,21 @@ public final class ProgramModule extends Statement {
 	final private Variable sysin;
 	final private Variable sysout;
   
-	public String getRelativeAttributeFileName() {
+	String getIdentifier() { return(module.identifier); }
+
+	String getRelativeAttributeFileName() {
 		if(module.declarationKind==Declaration.Kind.Class) return(Global.packetName+"/CLASS.AF");
 		if(module.declarationKind==Declaration.Kind.Procedure) return(Global.packetName+"/PROCEDURE.AF");
 		else return(null);
 	  }
 	  
-	public boolean isExecutable() {
+	boolean isExecutable() {
 		if(module.declarationKind==Declaration.Kind.SimulaProgram) return(true);
 		if(module.declarationKind==Declaration.Kind.PrefixedBlock) return(true);
 		else return(false);
 	}
 
-	public ProgramModule() {
+	ProgramModule() {
 		super(0);
 		Declaration module=null;
 		sysin=new Variable("sysin");
@@ -117,7 +119,5 @@ public final class ProgramModule extends Statement {
 	
 	@Override
 	public String toString() { return((module==null)?"":""+module.identifier); }
-	
-	public String getIdentifier() { return(module.identifier); }
 	
 }

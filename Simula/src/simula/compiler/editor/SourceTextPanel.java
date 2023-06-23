@@ -41,6 +41,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.StringTokenizer;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class SourceTextPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static final boolean DEBUG=false;//true;
@@ -48,8 +53,8 @@ public class SourceTextPanel extends JPanel {
 	JTextPane editTextPane;  // Editable text pane with undo/redo history
 	private JTextPane lineNumbers;
 	private JScrollPane styleScrollPane;
-	public File sourceFile;
-    public boolean AUTO_REFRESH=true;//false;
+	File sourceFile;
+    boolean AUTO_REFRESH=true;//false;
  	
     private Language lang;
 	private Style styleRegular;
@@ -60,10 +65,10 @@ public class SourceTextPanel extends JPanel {
 	private JPopupMenu popupMenu;
 	private StyledDocument doc;
 	
-    public boolean fileChanged = false;
-    public boolean refreshNeeded = false;
+    boolean fileChanged = false;
+    boolean refreshNeeded = false;
 	private UndoManager undoManager = new UndoManager();
-	public UndoManager getUndoManager() { return(undoManager); }
+	UndoManager getUndoManager() { return(undoManager); }
     
 	// ****************************************************************
 	// *** UndoableEditListener
@@ -129,7 +134,7 @@ public class SourceTextPanel extends JPanel {
 	// ****************************************************************
 	// *** Constructor
 	// ****************************************************************
-    public SourceTextPanel(File sourceFile,Language lang,JPopupMenu popupMenu) {
+    SourceTextPanel(File sourceFile,Language lang,JPopupMenu popupMenu) {
     	this.sourceFile=sourceFile;
     	this.lang=lang;
     	this.popupMenu=popupMenu;
@@ -276,6 +281,7 @@ public class SourceTextPanel extends JPanel {
         styleLineNumber=doc.getStyle("lineNumber");
     }
     
+    @Override
     public String toString() {
     	String s="SourceTextPanel(";
         s=s+((sourceFile==null)?"unnamed":sourceFile.getName());

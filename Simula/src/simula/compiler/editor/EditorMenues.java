@@ -41,6 +41,11 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class EditorMenues extends JMenuBar {
 	private static final long serialVersionUID = 1L;
 	
@@ -121,7 +126,7 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** Constructor
 	// ****************************************************************
-	public EditorMenues() {
+	EditorMenues() {
     	fileMenu.add(newFile); newFile.addActionListener(actionListener);
     	fileMenu.add(openFile); openFile.addActionListener(actionListener);
     	fileMenu.addSeparator();
@@ -168,7 +173,7 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** HelpMenu: setAccelerators
 	// ****************************************************************
-	public void setAccelerators() {
+	private void setAccelerators() {
 		newFile.setAccelerator(KeyStroke.getKeyStroke('N', InputEvent.CTRL_DOWN_MASK));
 	    openFile.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
 		saveFile.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
@@ -202,7 +207,7 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** HelpMenu: addPopupMenuItems
 	// ****************************************************************
-	public void addPopupMenuItems() {
+	private void addPopupMenuItems() {
 	    popupMenu=new JPopupMenu();
         popupMenu.add(newFile2); newFile2.addActionListener(actionListener);
 		popupMenu.add(openFile2); openFile2.addActionListener(actionListener);
@@ -247,7 +252,7 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** EditMenu: UpdateMenuItems
 	// ****************************************************************
-	public void updateMenuItems() {
+	void updateMenuItems() {
 		SourceTextPanel current=SimulaEditor.current;
 		boolean source=false;
 		boolean text=false;
@@ -321,7 +326,7 @@ public class EditorMenues extends JMenuBar {
     // ****************************************************************
     // *** doOpenFileAction
     // ****************************************************************
-	public void doOpenFileAction() {
+	private void doOpenFileAction() {
         JFileChooser fileChooser = new JFileChooser(Global.currentWorkspace);
         if (fileChooser.showOpenDialog(SimulaEditor.tabbedPane)==JFileChooser.APPROVE_OPTION) {
         	File file=fileChooser.getSelectedFile();
@@ -370,7 +375,7 @@ public class EditorMenues extends JMenuBar {
     // ****************************************************************
     // *** doCloseCurrentFileAction
     // ****************************************************************
-	public void doCloseCurrentFileAction() {
+	private void doCloseCurrentFileAction() {
 			maybeSaveCurrentFile();
 			SimulaEditor.removeSelectedTab();
 	}

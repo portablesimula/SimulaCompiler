@@ -47,7 +47,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	private int maxIndex;
 
 
-	public RepairSTM_MethodVisitor(String classFileName, int access, String name, String desc, MethodVisitor mv) {
+	RepairSTM_MethodVisitor(String classFileName, int access, String name, String desc, MethodVisitor mv) {
 		super(SimClassVisitor.ASM_Release, new MethodNode(access, name, desc, null, null));
 		this.classFileName=classFileName;
 		next = mv;

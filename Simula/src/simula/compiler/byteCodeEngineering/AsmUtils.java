@@ -56,7 +56,7 @@ import simula.compiler.utilities.Util;
 
 public class AsmUtils {
 	
-	public static void exploreTableswitch(TableSwitchInsnNode tableSwitch) {
+	static void exploreTableswitch(TableSwitchInsnNode tableSwitch) {
 		StringBuilder s=new StringBuilder();
 		int min=tableSwitch.min;
 		int max=tableSwitch.max;
@@ -74,7 +74,7 @@ public class AsmUtils {
 	}
 
 	
-	public static String edInstruction(AbstractInsnNode instr) {
+	static String edInstruction(AbstractInsnNode instr) {
 		StringBuilder s=new StringBuilder();
 		int type=instr.getType();
 		switch(type) {
@@ -173,7 +173,7 @@ public class AsmUtils {
 		return(s.toString());
 	}
 	
-	public static String edLabel(AbstractInsnNode label) {
+	static String edLabel(AbstractInsnNode label) {
 		String res=label.toString();
 		if(label instanceof LabelNode) {
 			res=res.replace("org.objectweb.asm.tree.LabelNode@", "L");
@@ -182,7 +182,7 @@ public class AsmUtils {
 		return(res);
 	}
 	
-	public static String edAccessFlags(final int accessFlags) {
+	static String edAccessFlags(final int accessFlags) {
 		StringBuilder stringBuilder=new StringBuilder();
 	    if ((accessFlags & Opcodes.ACC_PUBLIC) != 0)		stringBuilder.append(" PUBLIC");
 	    if ((accessFlags & Opcodes.ACC_PRIVATE) != 0)		stringBuilder.append(" PRIVATE");
@@ -202,7 +202,7 @@ public class AsmUtils {
 	// FREAME EDITING COPIED FROM Textifier
 	static StringBuilder stringBuilder;
 
-	public static String edFrame(final int type, final int numLocal, final Object[] local, final int numStack, final Object[] stack) {
+	private static String edFrame(final int type, final int numLocal, final Object[] local, final int numStack, final Object[] stack) {
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("FRAME ");
 		switch (type) {

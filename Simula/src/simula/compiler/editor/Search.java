@@ -15,6 +15,11 @@ import simula.compiler.utilities.Util;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class Search extends JFrame {
     private static final long serialVersionUID = 1L;
     private static final int labWidth = 80;
@@ -25,7 +30,7 @@ public class Search extends JFrame {
     private int startIndex=0;
     private int selectStart=-1;
 
-    public Search() {
+    Search() {
         this.textPane = SimulaEditor.current.editTextPane;
         setLayout(null);
         
@@ -113,7 +118,7 @@ public class Search extends JFrame {
     }
 
 
-	public void find() {
+	private void find() {
 		selectStart = textPane.getText().toLowerCase().indexOf(textField.getText().toLowerCase());
 		if (selectStart == -1) {
 			startIndex = 0;
@@ -127,7 +132,7 @@ public class Search extends JFrame {
 		textPane.select(selectStart, selectEnd);		
 	}
 	
-	public void findNext() {
+	private void findNext() {
 		String selection = textPane.getSelectedText();
 		try {
 			selection.equals("");
@@ -152,7 +157,7 @@ public class Search extends JFrame {
 		} catch (NullPointerException e) {}
 	}
 
-	public void replace() {
+	private void replace() {
 		try {
 			find();
 			if (selectStart != -1)
@@ -162,7 +167,7 @@ public class Search extends JFrame {
 		}
 	}
 
-    public void replaceAll() {
+    private void replaceAll() {
         textPane.setText(textPane.getText().toLowerCase().replaceAll(textField.getText().toLowerCase(), replaceText.getText()));
     }
 

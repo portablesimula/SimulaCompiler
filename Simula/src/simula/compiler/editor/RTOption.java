@@ -80,7 +80,7 @@ public final class RTOption {
 		}
 	}
 
-//	public static String getRTArguments() {
+//	private static String getRTArguments() {
 //		String args="";
 //		if(RTOption.VERBOSE) args=args+" -VERBOSE";
 //		if(RTOption.DEBUGGING) args=args+" -DEBUGGING";
@@ -96,7 +96,7 @@ public final class RTOption {
 //		return(args);
 //	}
 		
-	public static boolean getOption(String id) {
+	private static boolean getOption(String id) {
 		if(id.equalsIgnoreCase("VERBOSE")) return(VERBOSE); 
 		if(id.equalsIgnoreCase("DEBUGGING")) return(DEBUGGING); 
 		if(id.equalsIgnoreCase("USE_CONSOLE")) return(USE_CONSOLE); 
@@ -111,7 +111,7 @@ public final class RTOption {
 		return(false);
 	}
 
-	public static void setOption(String id,boolean val) {
+	private static void setOption(String id,boolean val) {
 		if(id.equalsIgnoreCase("VERBOSE")) VERBOSE=val; 
 		if(id.equalsIgnoreCase("DEBUGGING")) DEBUGGING=val; 
 		if(id.equalsIgnoreCase("USE_CONSOLE")) USE_CONSOLE=val; 
@@ -125,7 +125,7 @@ public final class RTOption {
 		if(id.equalsIgnoreCase("USE_VIRTUAL_THREAD")) USE_VIRTUAL_THREAD=val; 
 	}
     
-    public static void selectRuntimeOptions() {
+    static void selectRuntimeOptions() {
     	JPanel panel=new JPanel();
     	panel.setBackground(Color.white);
     	panel.add(checkBox("Verbose"));

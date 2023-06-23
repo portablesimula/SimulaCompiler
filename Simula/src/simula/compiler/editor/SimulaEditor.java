@@ -45,6 +45,11 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class SimulaEditor extends JFrame {
 
     private static final long serialVersionUID = 1L;
