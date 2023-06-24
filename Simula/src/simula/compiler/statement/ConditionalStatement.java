@@ -51,7 +51,7 @@ public final class ConditionalStatement extends Statement {
 		    }
 		}
 		this.elseStatement=elseStatement;
-		if(Option.TESTING) System.out.println("Line "+lineNumber+": IfStatement: "+this);
+		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": IfStatement: "+this);
 	}
 
 	@Override

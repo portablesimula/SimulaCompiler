@@ -85,8 +85,7 @@ public final class ConnectionStatement extends Statement {
 		if (Parser.accept(KeyWord.OTHERWISE)) otherwise = Statement.doParse();
 		this.otherwise=otherwise;
 		this.hasWhenPart=hasWhenPart;
-		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ConnectionStatement: " + toString());
-		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": ConnectionStatement: "+this);
+		if (Option.TRACE_PARSE)	Util.TRACE("Line "+this.lineNumber+": ConnectionStatement: "+this);
 	}
 
 	private class DoPart {

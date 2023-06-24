@@ -71,9 +71,7 @@ public final class ForStatement extends Statement {
 			doStatement = new DummyStatement(line);
 		}
 		this.doStatement=doStatement;
-		if (Option.TRACE_PARSE)
-			Util.TRACE("NEW ForStatement: " + toString());
-		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": ForStatement: "+this);
+		if (Option.TRACE_PARSE) Util.TRACE("Line "+this.lineNumber+": ForStatement: "+this);
 	}
 
 	private ForListElement parseForListElement() {

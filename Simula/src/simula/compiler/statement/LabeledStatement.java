@@ -40,7 +40,7 @@ public final class LabeledStatement extends Statement {
 		super(line);
 		this.labels = labels;
 		this.statement = statement;
-		if(Option.TESTING) System.out.println("Line "+lineNumber+": LabeledStatement: "+this);
+		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": LabeledStatement: "+this);
 	}
 
 	@Override

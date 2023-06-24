@@ -157,9 +157,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		}
 		block.lastLineNumber = Global.sourceLineNumber;
 		block.type = Type.Ref(block.identifier);
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ClassDeclaration");
-		if (Option.TRACE_PARSE)	Util.TRACE("END ClassDeclaration: " + block);
-		if(Option.TESTING) System.out.println("Line "+block.lineNumber+": ClassDeclaration: "+block);
+		if (Option.TRACE_PARSE)	Parser.TRACE("Line "+block.lineNumber+": ClassDeclaration: "+block);
 		Global.setScope(block.declaredIn);
 		return (block);
 	}

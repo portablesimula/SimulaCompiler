@@ -112,8 +112,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		else block.statements.add(Statement.doParse());
 
 		block.lastLineNumber = Global.sourceLineNumber;
-		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureDeclaration: " + block);
-		if(Option.TESTING) System.out.println("Line "+block.lineNumber+": ProcedureDeclaration: "+block);
+		if (Option.TRACE_PARSE)	Util.TRACE("Line "+block.lineNumber+": ProcedureDeclaration: "+block);
 		Global.setScope(block.declaredIn);
 		return (block);
 	}

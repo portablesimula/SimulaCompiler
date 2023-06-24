@@ -11,8 +11,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Set;
-
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
@@ -59,13 +57,6 @@ public class Type implements Externalizable {
 		this.declaredIn=declaredIn;
 	}
 	
-	public static void printTypeMap(String title) {
-		Set<String> keys=Global.typeMap.keySet();
-		for(String key:keys) {
-			System.out.println("TypeMap-Key: "+key+", value="+Global.typeMap.get(key));
-		}
-	}
-	
 	public String getRefIdent() {
 		if(key.getKeyWord()==KeyWord.REF) {
 			if(key.getValue()==null) return(null);
@@ -94,10 +85,7 @@ public class Type implements Externalizable {
 			if(!refIdent.equals("_LABQNT") && !refIdent.equals("_UNKNOWN")) {
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
 			    if(decl instanceof ClassDeclaration cdecl) qual=cdecl;
-			    else {
-			    	Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
-					Util.BREAK("Type.doChecking: refIdent="+refIdent+", scopeChain="+Global.getCurrentScope().edScopeChain());
-			    }
+			    else Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
 			}
 		}
 		Global.exitScope();
@@ -231,7 +219,6 @@ public class Type implements Externalizable {
 	 
 	public String toJavaTypeClass() {
 		if(key==null) return("void");
-	    //Util.BREAK("Type.toJavaTypeClass: key="+key);
 		if(key.getKeyWord()==KeyWord.REF) return(getJavaRefIdent());
 		if(this.equals(LongReal)) return("Double");
 		if(this.equals(Real)) return("Float");

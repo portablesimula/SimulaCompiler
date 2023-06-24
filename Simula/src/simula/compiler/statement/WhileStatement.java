@@ -33,8 +33,7 @@ public final class WhileStatement extends Statement {
 		condition = Expression.parseExpression();
 		Parser.expect(KeyWord.DO);
 		doStatement = Statement.doParse();
-		if (Option.TRACE_PARSE)	Util.TRACE("NEW WhileStatement: " + toString());
-		if(Option.TESTING) System.out.println("Line "+lineNumber+": WhileStatement: "+this);
+		if (Option.TRACE_PARSE)	Util.TRACE("Line "+lineNumber+": WhileStatement: "+this);
 	}
 
 	@Override

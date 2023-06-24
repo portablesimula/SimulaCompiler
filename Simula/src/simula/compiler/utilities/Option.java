@@ -16,10 +16,8 @@ import java.io.File;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 /**
  * Compile Time Options
@@ -34,7 +32,6 @@ public final class Option {
 	public static boolean verbose = false; 
 	public static boolean WARNINGS=true;
 	public static boolean EXTENSIONS=true;
-	public static boolean TESTING = false; 
 
 	// Overall TRACING Options
 	public static boolean TRACING=false;

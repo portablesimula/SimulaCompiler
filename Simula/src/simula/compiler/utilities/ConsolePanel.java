@@ -31,9 +31,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ */
 public final class ConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
     private static JTextPane textPane;
@@ -48,34 +50,34 @@ public final class ConsolePanel extends JPanel {
 	private boolean reading; // Used by KeyListener and read()
 	private char keyin;      // Used by KeyListener and read()
 
-	private Reader consoleReader;
+//	private Reader consoleReader;
 	
-	public char read() {
+	char read() {
 		textPane.requestFocus();
 		reading=true; // Enables KeyListener (see below)
 		while(reading) Thread.yield();
 		return(keyin);
 	}
 
-	public Reader getReader() {
-		if (consoleReader == null) {
-			consoleReader = new Reader() {
-				public int read(final char[] cbuf,final int off,final int len) throws IOException {
-					int firstPos=textPane.getCaretPosition();
-					textPane.setEditable(true);
-					while(ConsolePanel.this.read() != '\n');
-					textPane.setEditable(false);
-					String input=textPane.getText().substring(firstPos);
-					int pos=0;
-					for(char c:input.toCharArray()) cbuf[off+(pos++)]=c;
-					return(pos);
-				}
-				@Override
-				public void close() throws IOException {}
-			};
-		}
-		return (consoleReader);
-	}
+//	private Reader getReader() {
+//		if (consoleReader == null) {
+//			consoleReader = new Reader() {
+//				public int read(final char[] cbuf,final int off,final int len) throws IOException {
+//					int firstPos=textPane.getCaretPosition();
+//					textPane.setEditable(true);
+//					while(ConsolePanel.this.read() != '\n');
+//					textPane.setEditable(false);
+//					String input=textPane.getText().substring(firstPos);
+//					int pos=0;
+//					for(char c:input.toCharArray()) cbuf[off+(pos++)]=c;
+//					return(pos);
+//				}
+//				@Override
+//				public void close() throws IOException {}
+//			};
+//		}
+//		return (consoleReader);
+//	}
 	
 	public OutputStream getOutputStream() {
 		return(new OutputStream() {
@@ -86,19 +88,19 @@ public final class ConsolePanel extends JPanel {
 			}});
 	}
 
-	public Writer getWriter() {
-		return(new Writer() {
-			@Override
-			public void write(String s) {
-				ConsolePanel.this.write(s);		
-			}
-			public void write(char[] cbuf, int off, int len) throws IOException {
-				ConsolePanel.this.write(new String(cbuf,off,len));
-			}
-			public void flush() throws IOException {}
-			public void close() throws IOException {}
-		});
-	}
+//	private Writer getWriter() {
+//		return(new Writer() {
+//			@Override
+//			public void write(String s) {
+//				ConsolePanel.this.write(s);		
+//			}
+//			public void write(char[] cbuf, int off, int len) throws IOException {
+//				ConsolePanel.this.write(new String(cbuf,off,len));
+//			}
+//			public void flush() throws IOException {}
+//			public void close() throws IOException {}
+//		});
+//	}
 
 	public OutputStream getErrorStream() {
 		return(new OutputStream() {
@@ -110,8 +112,8 @@ public final class ConsolePanel extends JPanel {
 	}
 	
 	public void write(final String s) { write(s,styleRegular); }
-	public void writeError(final String s) { write(s,styleError); }
-	public void writeWarning(final String s) { write(s,styleWarning);	}
+	void writeError(final String s) { write(s,styleError); }
+	void writeWarning(final String s) { write(s,styleWarning);	}
 
 	private void write(final String s,final Style style) {
 		try {
@@ -122,7 +124,7 @@ public final class ConsolePanel extends JPanel {
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 	}
 
-	public void clear() {
+	private void clear() {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
@@ -132,7 +134,7 @@ public final class ConsolePanel extends JPanel {
 		textPane.update(textPane.getGraphics());
 	}
 	
-	public static void INTERNAL_ERROR(final String msg,final Throwable e) {
+	private static void INTERNAL_ERROR(final String msg,final Throwable e) {
 		System.out.println("INTERNAL_ERROR: " + msg +"  "+ e);
 		e.printStackTrace();
 	}
@@ -161,7 +163,7 @@ public final class ConsolePanel extends JPanel {
         this.add(scrollPane);
     }
 	
-	public void popup() {
+	private void popup() {
     	JFrame frame=new JFrame();
         frame.setSize(950, 500); // Initial frame size
         frame.setTitle("Runtime Console");

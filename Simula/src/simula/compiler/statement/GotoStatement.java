@@ -34,7 +34,7 @@ public final class GotoStatement extends Statement {
 	GotoStatement(final int line) {
 		super(line);
 		label = Expression.parseExpression();
-		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": GotoStatement: "+this);
+		if (Option.TRACE_PARSE) Util.TRACE("Line "+this.lineNumber+": GotoStatement: "+this);
 	}
 
 	@Override

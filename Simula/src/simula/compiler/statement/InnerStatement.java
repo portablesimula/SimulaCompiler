@@ -32,7 +32,7 @@ public final class InnerStatement extends Statement {
 
 	 public InnerStatement(final int line) {
 		super(line);
-		if(Option.TESTING) System.out.println("Line "+lineNumber+": InnerStatement: "+this);
+		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": InnerStatement: "+this);
 	}
 
 	@Override

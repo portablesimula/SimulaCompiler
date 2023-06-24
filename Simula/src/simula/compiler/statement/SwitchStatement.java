@@ -96,8 +96,7 @@ public final class SwitchStatement extends Statement {
 			switchCases.add(new WhenPart(caseKeyList, statement));
 		}
 		Parser.expect(KeyWord.END);
-		if (Option.TRACE_PARSE)	Util.TRACE("END NEW SwitchStatement: " + toString());
-		if(Option.TESTING) System.out.println("Line "+lineNumber+": SwitchStatement: "+this);
+		if (Option.TRACE_PARSE)	Util.TRACE("Line "+lineNumber+": SwitchStatement: "+this);
 	}
 
 	private SwitchInterval parseCasePair() {

@@ -59,7 +59,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		else modifyIdentifier("" + Global.sourceName + "_PBLK" + lineNumber);
 		this.externalIdent = this.identifier;
 		this.lastLineNumber = Global.sourceLineNumber;
-		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": PrefixedBlockDeclaration: "+this);
+		if (Option.TRACE_PARSE)	Util.TRACE("Line "+this.lineNumber+": PrefixedBlockDeclaration: "+this);
 		Global.setScope(declaredIn);
 	}
 

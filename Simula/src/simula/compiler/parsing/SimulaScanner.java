@@ -140,7 +140,7 @@ public final class SimulaScanner extends DefaultScanner {
     private Token scanBasic() {
     	if(Option.TRACE_SCAN) Util.TRACE("SimulaScanner.scanBasic, "+edcurrent());
     	while(true)	{
-    		Token.lineNumberBeforeScanBasic = Global.sourceLineNumber; // TESTING
+    		Token.lineNumberBeforeScanBasic = Global.sourceLineNumber;
 
     		if(Character.isLetter(getNext())) return(scanIdentifier());
     		switch(current) {
@@ -626,11 +626,7 @@ public final class SimulaScanner extends DefaultScanner {
     				String result=accumulatedTextConstant.toString(); accumulatedTextConstant=null;
     				if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant(2): Result=\""+result+"\", "+edcurrent());
     				if(firstLine<lastLine)
-    					//Util.warning("Text constant span mutiple source lines");
     					Util.warning("Illegal Text constant. Simple string span mutiple source lines. See Simula Standard 1.6");
-    				
-//    				result=result.replace("\n","\\n");    // TESTING TEXT
-    				
     				tokenQueue.add(newToken(KeyWord.TEXTKONST,result));
     				break LOOP;
     			}

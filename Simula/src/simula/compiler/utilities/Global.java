@@ -12,9 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
@@ -23,7 +21,6 @@ import javax.swing.ImageIcon;
 
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
-import simula.compiler.declaration.DeclarationList;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.StandardClass;
 import simula.compiler.editor.RTOption;
@@ -34,24 +31,16 @@ import simula.compiler.editor.RTOption;
  * @author Øystein Myhre Andersen
  *
  */
-public final class Global {
-	public static final String gitURL="https://github.com/portablesimula";
-	
+public final class Global {	
 	// NOTE: When updating release id, change version in SimulaExtractor and RuntimeSystem
     public static final String simulaReleaseID="Simula-2.0";
     public static ImageIcon simulaIcon;
     public static ImageIcon simIcon;
-    public static ImageIcon sIcon;
-    public static final int MAX_WORKSPACE=10;
+    static ImageIcon sIcon;
+    private static final int MAX_WORKSPACE=10;
     
 	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR=true;
 	public static final boolean USE_JAVA_SYSTEM_COMPILER=true;//false;//true;
-//	public static final boolean USE_EXACT_MATH=true;//false;//true;
-	
-//	public static final boolean MODIFY_CLASS_VERSION=false;
-//	public static final int major=52;  // .class file format version's Major
-//	public static final int minor=0;   // .class file format version's Minor
-//	public static final int classFileVersion=minor<<16 | major;   // .class file format version used by modified .class files
 
 	public static File simulaHome;
 	public static String simulaVersion;
@@ -72,7 +61,6 @@ public final class Global {
 	public static ArrayDeque<File> workspaces;
 	public static File outputDir;         // Used by Java-Coding to save the generated .jar files.
 	public static File extLib;			  // Used by ExternalDeclaration.readAttributeFile
-	public static Map<String,Type> typeMap;
 
 	public static boolean duringParsing;     // True while Parsing
 	public static boolean duringChecking;    // True while Checking
@@ -90,7 +78,6 @@ public final class Global {
 	public static ConsolePanel console;
 	
 	public static void initiate() {
-		typeMap=new HashMap<String,Type>();
 		javaClassMap=new Hashtable<String,JavaClassInfo>();
 		duringParsing=true;
 		duringChecking=false;
@@ -113,7 +100,6 @@ public final class Global {
 	private static DeclarationScope currentScope=null; // Current Scope. Maintained during Checking and Coding
 	public static DeclarationScope getCurrentScope() { return(currentScope); }
 	public static void setScope(DeclarationScope scope) { currentScope=scope; } // During Parsing
-	public static String edScopeChain() { return(getCurrentScope().edScopeChain()); }
 	
 	private static int currentCTBlockLevel = 3; // CompileTime Block level
 	public static void enterScope(DeclarationScope scope) {
@@ -140,7 +126,7 @@ public final class Global {
 		return(tempFileDir);
 	}
 	
-	public static void setAccessRWX(File dir) {
+	private static void setAccessRWX(File dir) {
 		dir.setReadable(true,false);   // Readable for all users
 		dir.setWritable(true,false);   // Writable for all users
 		dir.setExecutable(true,false); // Executable for all users
@@ -211,7 +197,7 @@ public final class Global {
 	// **********************************************************
 	// *** WORKSPACES
 	// **********************************************************
-    public static File simulaWorkspacesFile;
+    private static File simulaWorkspacesFile;
     private static Properties simulaWorkspaces;
 	
 	

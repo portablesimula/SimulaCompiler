@@ -38,11 +38,10 @@ public final class StandaloneExpression extends Statement {
 	StandaloneExpression(final int line,final Expression expression) {
 		super(line);
 		this.expression = expression;
-		if (Option.TRACE_PARSE) Util.TRACE("NEW StandaloneExpression: " + toString());		
+		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": StandaloneExpression: "+this);
 		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) { 
-		  this.expression = new AssignmentOperation(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
+			this.expression = new AssignmentOperation(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
 		}		
-		if(Option.TESTING) System.out.println("Line "+lineNumber+": StandaloneExpression: "+this);
 	}
 
 	//  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
