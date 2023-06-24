@@ -201,7 +201,6 @@ public final class RunCmdTestBatch {
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
-		Option.BREAKING=false;
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 		Option.verbose=false;

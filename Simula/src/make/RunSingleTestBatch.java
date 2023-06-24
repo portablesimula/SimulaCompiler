@@ -215,7 +215,6 @@ public final class RunSingleTestBatch {
 
 		// Overall TRACING Options
 //		Option.TRACING=true;
-//		Option.BREAKING=true; 
 
 		// Scanner Trace Options
 //		Option.TRACE_SCAN=true;

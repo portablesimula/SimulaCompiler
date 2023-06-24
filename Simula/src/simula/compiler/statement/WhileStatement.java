@@ -40,10 +40,8 @@ public final class WhileStatement extends Statement {
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber=lineNumber;
-		// Util.BREAK("BEGIN WhileStatement("+condition+").doChecking - Current Scope Chain: "+currentScope.edScopeChain());
 		condition.doChecking(); condition.backLink=this;
-		if (condition.type != Type.Boolean)
-			Util.error("While condition is not Boolean");
+		if (condition.type != Type.Boolean) Util.error("While condition is not Boolean");
 		doStatement.doChecking();
 		SET_SEMANTICS_CHECKED();
 	}

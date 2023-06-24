@@ -472,7 +472,6 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		//Util.BREAK("ClassDeclaration.findVisibleAttributeMeaning: "+identifier+", Lookup ident="+ident);
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		boolean searchBehindHidden = false;
 		ClassDeclaration scope = this;

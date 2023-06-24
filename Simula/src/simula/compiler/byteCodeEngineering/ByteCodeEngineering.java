@@ -44,7 +44,6 @@ public final class ByteCodeEngineering {
         try {
         	File file=new File(classFileName);
         	String fileName=file.getName();
-            //Util.BREAK("ByteCodeEngineering.doRepairByteCode: Load "+classFileName);
             if(Option.TRACE_REPAIRING) Util.println("ByteCodeEngineering.doRepairSingleByteCode: Load "+classFileName);
             if(LIST_ASM_CODE) SimulaCompiler.doListClassFile(classFileName);
 			inputStream=new FileInputStream(classFileName);

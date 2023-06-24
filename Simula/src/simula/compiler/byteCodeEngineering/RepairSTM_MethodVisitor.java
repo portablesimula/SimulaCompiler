@@ -166,7 +166,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			  case Opcodes.ICONST_3: labelIndex=3; break;
 			  case Opcodes.ICONST_4: labelIndex=4; break;
 			  case Opcodes.ICONST_5: labelIndex=5; break;
-			  default: Util.BREAK("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-1");
+			  default: Util.IERR("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-1");
 			}
 		}
 		else if(insType==AbstractInsnNode.INT_INSN) {
@@ -174,7 +174,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			switch(prevOpcode)
 			{ case Opcodes.BIPUSH: labelIndex=iprev.operand; break; // Value: −128 <= labelIndex < 127
 			  case Opcodes.SIPUSH: labelIndex=iprev.operand; break; // Value: −32768 <= labelIndex < 32767
-			  default: Util.BREAK("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-2");
+			  default: Util.IERR("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-2");
 			}
 		}
 		else if(insType==AbstractInsnNode.LDC_INSN) {
@@ -184,7 +184,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: UNKNOWN ", pushLabelIndexInstrution.getPrevious().getPrevious(), 8);
 			Util.NOT_IMPLEMENTED("More than 32767 labels in same Block (cst="+cst+')');
 		} else {
-			Util.BREAK("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-3");
+			Util.IERR("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-3");
 		}
 		if(DEBUG) Util.println("Repair_STMMethodVisitor.treatLABEL: PASS1 GOT: _LABEL"+labelIndex);
 		AbstractInsnNode start=pushLabelIndexInstrution.getPrevious().getPrevious().getPrevious().getPrevious();

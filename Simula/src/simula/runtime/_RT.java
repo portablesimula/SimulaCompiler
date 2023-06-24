@@ -14,8 +14,6 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import simula.compiler.utilities.Global;
-
 /**
  * 
  * @author Øystein Myhre Andersen

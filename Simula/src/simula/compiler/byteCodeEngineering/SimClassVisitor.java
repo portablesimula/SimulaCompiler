@@ -34,7 +34,7 @@ public class SimClassVisitor extends ClassVisitor {
 		if(DEBUG) Util.println(name + " extends " + superName + " {");
 		// 'version' is the class version. The minor version is stored in the 16 most significant bits,
 		//           and the major version in the 16 least significant bits.
-		if(DEBUG) Util.BREAK("SimClassVisitor.visit: version="+version);
+		if(DEBUG) Util.println("SimClassVisitor.visit: version="+version);
 		// if(Global.MODIFY_CLASS_VERSION) version=Global.classFileVersion;
 		cv.visit(version,access,name,signature,superName,interfaces);
 	}

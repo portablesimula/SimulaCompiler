@@ -35,7 +35,6 @@ public final class Option {
 
 	// Overall TRACING Options
 	public static boolean TRACING=false;
-	public static boolean BREAKING=false; 
 	public static boolean DEBUGGING=false; // Set by EditorMenues - doDebugAction
 
 	// Scanner Trace Options
@@ -98,7 +97,6 @@ public final class Option {
 
 		// Overall TRACING Options
 		Option.TRACING=false;
-		Option.BREAKING=false;  
 		Option.DEBUGGING=false;
 
 		// Scanner Trace Options
@@ -125,7 +123,6 @@ public final class Option {
 		if(id.equalsIgnoreCase("WARNINGS")) return(WARNINGS); 
 		if(id.equalsIgnoreCase("EXTENSIONS")) return(EXTENSIONS); 
 		if(id.equalsIgnoreCase("TRACING")) return(TRACING); 
-		if(id.equalsIgnoreCase("BREAKING")) return(BREAKING); 
 		if(id.equalsIgnoreCase("TRACE_SCAN")) return(TRACE_SCAN); 
 		if(id.equalsIgnoreCase("TRACE_COMMENTS")) return(TRACE_COMMENTS); 
 		if(id.equalsIgnoreCase("TRACE_PARSE")) return(TRACE_PARSE); 
@@ -147,7 +144,6 @@ public final class Option {
 		if(id.equalsIgnoreCase("WARNINGS")) WARNINGS=val; 
 		if(id.equalsIgnoreCase("EXTENSIONS")) EXTENSIONS=val; 
 		if(id.equalsIgnoreCase("TRACING")) TRACING=val; 
-		if(id.equalsIgnoreCase("BREAKING")) BREAKING=val; 
 		if(id.equalsIgnoreCase("TRACE_SCAN")) TRACE_SCAN=val; 
 		if(id.equalsIgnoreCase("TRACE_COMMENTS")) TRACE_COMMENTS=val; 
 		if(id.equalsIgnoreCase("TRACE_PARSE")) TRACE_PARSE=val; 
@@ -171,7 +167,6 @@ public final class Option {
 		panel.add(checkBox("noExecution","Don't execute generated .jar file"));
 //		panel.add(checkBox("noJavacWarnings",""));
 		panel.add(checkBox("TRACING","Debug option"));
-		panel.add(checkBox("BREAKING","Debug option"));
 		panel.add(checkBox("TRACE_SCAN","Debug option"));
 		panel.add(checkBox("TRACE_COMMENTS","Debug option"));
 		panel.add(checkBox("TRACE_PARSE","Debug option"));

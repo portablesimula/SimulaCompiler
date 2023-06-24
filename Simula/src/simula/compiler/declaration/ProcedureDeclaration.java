@@ -234,7 +234,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		//Util.BREAK("ProcedureDeclaration.findVisibleAttributeMeaning: "+identifier+", Lookup ident="+ident);
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);
@@ -276,7 +275,6 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// Generate Inline Method code for Procedure.
 	private void doMethodJavaCoding(final String modifier,final boolean addStaticLink) {
 		Global.sourceLineNumber = lineNumber;
-		Util.BREAK("ProcedureDeclaration.doMethodJavaCoding: " + identifier);
 		ASSERT_SEMANTICS_CHECKED(this);
 		Global.enterScope(this);
 		String line = "public " + modifier + ((type == null) ? "void" : type.toJavaType());

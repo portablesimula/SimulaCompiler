@@ -70,7 +70,6 @@ public class AsmUtils {
 		}
 		s.append(" } Default: "+edLabel(dflt));
 		Util.println(s.toString());
-		//Util.BREAK("AsmUtils.exploreTableswitch: END");
 	}
 
 	

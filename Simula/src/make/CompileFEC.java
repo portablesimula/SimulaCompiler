@@ -67,7 +67,6 @@ public final class CompileFEC {
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
 //		Option.verbose=true;
-//		Option.BREAKING=false;
 //		Option.TRACING=false;
 		Option.WARNINGS=false;
 //		Option.CASE_SENSITIVE=true;

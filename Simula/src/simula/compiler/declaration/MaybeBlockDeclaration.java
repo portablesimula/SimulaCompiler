@@ -129,7 +129,6 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		//Util.BREAK("MaybeBlockDeclaration.findVisibleAttributeMeaning: "+identifier+", Lookup ident="+ident);
 		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
 			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);

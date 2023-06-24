@@ -192,7 +192,6 @@ public final class SimulaScanner extends DefaultScanner {
 	            case '5':case '6':case '7':case '8':case '9':return(scanNumber());
 	   
 	            case EOF_MARK:
-	            	if(Option.TRACE_SCAN) Util.BREAK("GOT END-OF-FILE");
 	            	return(null);
 	    	  
 	            case '%': return(scanDirectiveLine());

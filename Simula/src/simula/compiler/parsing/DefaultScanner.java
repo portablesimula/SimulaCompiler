@@ -46,10 +46,7 @@ public class DefaultScanner {
 	public Token nextToken() {
     	String line=null;
 		try { line = lineNumberReader.readLine(); } catch (IOException e) {}
-		if(line==null) {
-        	if(Option.TRACE_SCAN) Util.BREAK("GOT END-OF-FILE");
-        	return(null);
-		}
+		if(line==null) return(null);
 		return(new Token(line+'\n',KeyWord.NEWLINE,lineNumberReader.getLineNumber()));
 	}
 

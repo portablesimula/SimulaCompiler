@@ -48,8 +48,6 @@ public final class Util {
 		String err = edLINE(": Error: " + msg);
 		nError++;
 		printError(err);
-//		Thread.dumpStack();
-		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
 	}
 
 	public static void IERR(final String msg) {
@@ -118,50 +116,17 @@ public final class Util {
 	}
 
 	public static void NOT_IMPLEMENTED(final String s) {
-		System.err.println("*** NOT IMPLEMENTED: " + s);
-		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
+		IERR("*** NOT IMPLEMENTED: " + s);
 	}
 
 	public static void FORCED_EXIT() {
 		System.out.println("FORCED EXIT");
-		BREAK("FORCED EXIT");
 		if (Global.console == null) System.exit(-1);
 	}
 
 	public static void ASSERT(final boolean test, final String msg) {
 		if (!test) {
-			println("ASSERT(" + msg + ") -- FAILED");
-			BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
-		}
-	}
-
-	public static void BREAK(final String title) {
-		BREAK("BREAK", title);
-	}
-
-	public static void BREAK(final String id, final String title) {
-		if (Option.BREAKING) {
-			if(Global.console!=null) {
-				Global.console.writeError(id + " " + Global.sourceLineNumber + ": " + title + ": <");
-				char c=Global.console.read();
-				if (c == 'Q' || c == 'q') {
-					println("\n\n:STACK-TRACE");
-					Thread.dumpStack();
-				}
-			} else try {
-//				System.err.println(id + " " + Global.sourceLineNumber + ": " + title + ": <");
-				System.out.println(id + " " + Global.sourceLineNumber + ": " + title + ": <");
-				char c=(char) System.in.read();
-				if (c == 'Q' || c == 'q') {
-					println("STACK-TRACE");
-					Thread.dumpStack();
-				}
-				while (System.in.available() > 0) System.in.read();
-			} catch (Exception e) {
-				e.printStackTrace();
-				//System.exit(-1);
-				FORCED_EXIT();
-			}
+			IERR("ASSERT(" + msg + ") -- FAILED");
 		}
 	}
 
