@@ -4,6 +4,11 @@ import java.io.File;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
+/**
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class Directive {
 
 	static void treatDirectiveLine(final SimulaScanner scanner,final String id,final String arg) {

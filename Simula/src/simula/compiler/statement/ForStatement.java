@@ -53,7 +53,7 @@ public final class ForStatement extends Statement {
 	private final Vector<ForListElement> forList = new Vector<ForListElement>();
 	private final Statement doStatement;
 
-	public ForStatement(final int line) {
+	ForStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE)
 			Parser.TRACE("Parse ForStatement");

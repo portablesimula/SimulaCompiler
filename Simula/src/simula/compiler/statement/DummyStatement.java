@@ -25,7 +25,7 @@ import simula.compiler.utilities.Option;
  */
 public final class DummyStatement extends Statement {
 	
-	public DummyStatement(final int line) {
+	DummyStatement(final int line) {
 		super(line);
 		if(Option.TESTING) System.out.println("Line "+lineNumber+": DummyStatement: "+this);
 	}

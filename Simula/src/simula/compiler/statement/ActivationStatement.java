@@ -46,7 +46,7 @@ public final class ActivationStatement extends Statement {
 	private ActivationCode code;
 	private enum ActivationCode { direct, at, delay, before, after }
 
-	public ActivationStatement(final int line) {
+	ActivationStatement(final int line) {
 		super(line);
 		Token activator = Parser.prevToken;
 		REAC = activator.getKeyWord() == KeyWord.REACTIVATE;
@@ -67,6 +67,7 @@ public final class ActivationStatement extends Statement {
 		if(Option.TESTING) System.out.println("Line "+lineNumber+": ActivationStatement: "+this);
 	}
 
+	@Override
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		if (object1 != null) object1.doChecking();
@@ -75,6 +76,7 @@ public final class ActivationStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	@Override
 	public String toJavaCode() {
 		Type refProcess = Type.Ref("Process");
 		if (object1 != null)
@@ -126,6 +128,7 @@ public final class ActivationStatement extends Statement {
 		return (staticLink + ".ActivateAfter(" + REAC + ',' + obj1 + ',' + obj2 + ')');
 	}
 
+	@Override
 	public String toString() {
 		String pri = "";
 		if (prior) pri = " PRIOR";

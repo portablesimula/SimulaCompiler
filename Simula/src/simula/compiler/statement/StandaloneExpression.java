@@ -35,7 +35,7 @@ import simula.compiler.utilities.Util;
 public final class StandaloneExpression extends Statement {
 	private Expression expression;
 
-	public StandaloneExpression(final int line,final Expression expression) {
+	StandaloneExpression(final int line,final Expression expression) {
 		super(line);
 		this.expression = expression;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW StandaloneExpression: " + toString());		

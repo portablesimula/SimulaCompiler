@@ -48,7 +48,7 @@ public final class ConnectionStatement extends Statement {
 	private final boolean hasWhenPart;
 	private static int SEQU = 0;
 
-	public ConnectionStatement(final int line) {
+	ConnectionStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ConnectionStatement");
 		objectExpression = Expression.parseExpression();
@@ -92,7 +92,7 @@ public final class ConnectionStatement extends Statement {
 	private class DoPart {
 		final ConnectionBlock connectionBlock;
 
-		public DoPart(final ConnectionBlock connectionBlock,final Statement statement) {
+		private DoPart(final ConnectionBlock connectionBlock,final Statement statement) {
 			this.connectionBlock = connectionBlock; // this.statement=statement;
 			connectionBlock.setStatement(statement);
 			if (Option.TRACE_PARSE)

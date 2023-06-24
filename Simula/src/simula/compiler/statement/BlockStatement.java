@@ -23,9 +23,9 @@ import simula.compiler.utilities.Option;
  *
  */
 public final class BlockStatement extends Statement {
-	public final BlockDeclaration blockDeclaration;
+	private final BlockDeclaration blockDeclaration;
 
-	public String getJavaIdentifier() {
+	private String getJavaIdentifier() {
 		return (blockDeclaration.getJavaIdentifier());
 	}
 
@@ -35,7 +35,7 @@ public final class BlockStatement extends Statement {
 		if(Option.TESTING) System.out.println("Line "+lineNumber+": BlockStatement: "+this);
 	}
 	
-	public boolean isCompoundStatement() {
+	boolean isCompoundStatement() {
 		return(blockDeclaration.declarationKind == Declaration.Kind.CompoundStatement);
 	}
 
@@ -46,7 +46,7 @@ public final class BlockStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
-	public void addLeadingLabel(String labelcode) {
+	void addLeadingLabel(String labelcode) {
 		blockDeclaration.addLeadingLabel(labelcode);
 	}
 	

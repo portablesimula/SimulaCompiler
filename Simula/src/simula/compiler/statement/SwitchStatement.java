@@ -67,7 +67,7 @@ public final class SwitchStatement extends Statement {
 	private Expression switchKey;
 	private final Vector<WhenPart> switchCases=new Vector<WhenPart>();
 
-	public SwitchStatement(int line) {
+	SwitchStatement(int line) {
 		super(line);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchStatement: line="+line);
 		Parser.expect(KeyWord.BEGPAR);
@@ -100,7 +100,7 @@ public final class SwitchStatement extends Statement {
 		if(Option.TESTING) System.out.println("Line "+lineNumber+": SwitchStatement: "+this);
 	}
 
-	public SwitchInterval parseCasePair() {
+	private SwitchInterval parseCasePair() {
 		Expression lowCase=Expression.parseExpression();
 		Expression hiCase=null;
 		if(Parser.accept(KeyWord.COLON)) hiCase=Expression.parseExpression();
@@ -108,9 +108,9 @@ public final class SwitchStatement extends Statement {
 	}
 
 	
-    class SwitchInterval {
+    private class SwitchInterval {
     	Expression lowCase,hiCase;
-    	public SwitchInterval(Expression lowCase,Expression hiCase) {
+    	private SwitchInterval(Expression lowCase,Expression hiCase) {
     		this.lowCase=lowCase; this.hiCase=hiCase;
     	}
     	
@@ -121,16 +121,16 @@ public final class SwitchStatement extends Statement {
     	}
     }
     
-    class WhenPart {
+    private class WhenPart {
     	Vector<SwitchInterval> caseKeyList;
     	Statement statement;
-    	public WhenPart(Vector<SwitchInterval> caseKeyList,Statement statement)	{
+    	private WhenPart(Vector<SwitchInterval> caseKeyList,Statement statement)	{
     		this.caseKeyList=caseKeyList;
     		this.statement=statement;
     		if(Option.TRACE_PARSE) Util.TRACE("NEW WhenPart: " + toString());
     	}
 	
-    	public void doCoding(final boolean first)	{
+    	private void doCoding(final boolean first)	{
     		ASSERT_SEMANTICS_CHECKED(this);
     		for(SwitchInterval casePair:caseKeyList)
     		if(casePair==null)
@@ -147,7 +147,7 @@ public final class SwitchStatement extends Statement {
     		GeneratedJavaClass.code("break;");
     	}
 	
-    	public void print(final int indent) {
+    	private void print(final int indent) {
         	String spc=edIndent(indent);
     		System.out.print(spc+edWhen());
     		statement.print(indent);
@@ -191,6 +191,7 @@ public final class SwitchStatement extends Statement {
     }
 	
 	
+	@Override
     public void doJavaCoding() {
     	Global.sourceLineNumber=lineNumber;
 	    ASSERT_SEMANTICS_CHECKED(this);

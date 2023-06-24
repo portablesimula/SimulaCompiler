@@ -31,7 +31,7 @@ import simula.compiler.utilities.Util;
 public final class GotoStatement extends Statement {
 	private final Expression label;
 
-	public GotoStatement(final int line) {
+	GotoStatement(final int line) {
 		super(line);
 		label = Expression.parseExpression();
 		if(Option.TESTING) System.out.println("Line "+this.lineNumber+": GotoStatement: "+this);

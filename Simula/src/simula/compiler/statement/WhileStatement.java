@@ -27,7 +27,7 @@ public final class WhileStatement extends Statement {
 	private final Expression condition;
 	private final Statement doStatement;
 
-	public WhileStatement(int line) {
+	WhileStatement(int line) {
 		super(line);
 		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement: line="+line+", current=" + Parser.currentToken);
 		condition = Expression.parseExpression();
@@ -55,15 +55,13 @@ public final class WhileStatement extends Statement {
 		ASSERT_SEMANTICS_CHECKED(this);
 		GeneratedJavaClass.code("while(" + condition.toJavaCode() + ") {");
 		doStatement.doJavaCoding();
-		
 		if(isWhileTrueDo())
 			GeneratedJavaClass.code("if(CTX_==null) break; // Ad'Hoc to prevent JAVAC error: 'dead code' and terminate");
-		
 		GeneratedJavaClass.code("}");
 	}
 	
-	private boolean isWhileTrueDo()
-	{ // Check for:  while(true) do {}
+	private boolean isWhileTrueDo() {
+		// Check for:  while(true) do {}
 		if(condition instanceof Constant cnst) return((boolean)cnst.value);
 		else return(false);
 	}

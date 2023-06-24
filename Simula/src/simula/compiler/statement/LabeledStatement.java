@@ -36,7 +36,7 @@ public final class LabeledStatement extends Statement {
 	private final Vector<String> labels;
 	private final Statement statement;
 
-	public LabeledStatement(final int line,final Vector<String> labels,final Statement statement) {
+	LabeledStatement(final int line,final Vector<String> labels,final Statement statement) {
 		super(line);
 		this.labels = labels;
 		this.statement = statement;

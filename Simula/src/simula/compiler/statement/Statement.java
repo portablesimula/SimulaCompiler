@@ -54,7 +54,6 @@ public abstract class Statement extends SyntaxClass {
 	
 	protected Statement(int line) {
 		lineNumber=line;
-//		if(Option.TESTING) System.out.println("Statement.New "+this.getClass().getSimpleName()+": Line "+lineNumber+": "+this);
 	}
 
 	public static Statement doParse() {
@@ -112,9 +111,6 @@ public abstract class Statement extends SyntaxClass {
 		        	 }
 		        	 return (new StandaloneExpression(lineNumber,expr));
 		         }
-//		    default:
-//		    	Parser.skipMissplacedCurrentSymbol();
-//		    	return(new DummyStatement(lineNumber));
 		}
     	Parser.skipMissplacedCurrentSymbol();
     	return(new DummyStatement(lineNumber));
