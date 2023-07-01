@@ -161,8 +161,8 @@ public class _Directfile extends _Imagefile {
 	 */
 	public boolean open(final _TXT IMAGE) {
 		if (_OPEN) return (false);
-		File file=doCreateAction(new File(FILE_NAME.edText()));
-		if(_RT.DEBUGGING) TRACE_OPEN("Open Directfile: "+file);
+		File file=doCreateAction();
+		if(_RT.Option.VERBOSE) TRACE_OPEN("Open Directfile: "+file);
 		
 		_LOC = 1;
 		_MAXLOC = maxint - 1;

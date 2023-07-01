@@ -370,28 +370,28 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// *** Utility: findLocalAttribute
 	// ***********************************************************************************************
 	Declaration findLocalAttribute(final String ident) {
-		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		for (Parameter parameter : parameterList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Parameter "+parameter);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Parameter "+parameter);
 			if (Util.equals(ident, parameter.identifier)) return (parameter);
 		}
 		for (Declaration declaration : declarationList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Local "+declaration);
 			if (Util.equals(ident, declaration.identifier))	return (declaration);
 		}
 		for (LabelDeclaration label : labelList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Label "+label);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Label "+label);
 			if (Util.equals(ident, label.identifier)) return (label);
 		}
 		for (VirtualMatch match : virtualMatchList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Match "+match);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Match "+match);
 			if (Util.equals(ident, match.identifier)) return (match);
 		}
 		for (VirtualSpecification virtual : virtualSpecList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Virtual "+virtual);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Virtual "+virtual);
 			if (Util.equals(ident, virtual.identifier))	return (virtual);
 		}
-		if(Option.TRACE_FIND>0) Util.message("ENDOF Checking Class for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("ENDOF Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		return (null);
 	}
 
@@ -472,7 +472,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		boolean searchBehindHidden = false;
 		ClassDeclaration scope = this;
 		Declaration decl = scope.findLocalAttribute(ident);
@@ -495,7 +495,7 @@ SEARCH: while (scope != null) {
 			}
 			scope = scope.getPrefixClass();
 		}
-		if(Option.TRACE_FIND>0) Util.message("ENDOF Checking Class for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("ENDOF Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		return (null);
 	}
 

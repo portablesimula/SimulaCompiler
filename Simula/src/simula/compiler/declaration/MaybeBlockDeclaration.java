@@ -40,7 +40,8 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	public static MaybeBlockDeclaration createMaybeBlock() {
 		int lineNumber=Parser.prevToken.lineNumber;
 		if (Option.TRACE_PARSE)	Util.TRACE("BlockStatement.createMaybeBlock: line="+lineNumber+" "+Parser.prevToken);
-		MaybeBlockDeclaration module = new MaybeBlockDeclaration("_Block_"+Global.sourceName);
+//		MaybeBlockDeclaration module = new MaybeBlockDeclaration("_Block_"+Global.sourceName);
+		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName);
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
 		module.parseMaybeBlock(lineNumber);
@@ -129,18 +130,18 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("BEGIN Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Local "+declaration);
 			if (Util.equals(ident, declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
 		}
 		for (LabelDeclaration label : labelList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Label "+label);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Label "+label);
 			if (Util.equals(ident, label.identifier))
 				return (new Meaning(label, this, this, false));
 		}
-		if(Option.TRACE_FIND>0) Util.message("ENDOF Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("ENDOF Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
 		return (null);
 	}
 

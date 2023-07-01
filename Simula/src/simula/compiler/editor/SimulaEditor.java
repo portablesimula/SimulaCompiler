@@ -19,13 +19,24 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.attribute.FileTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -43,6 +54,7 @@ import simula.compiler.utilities.ConsolePanel;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
+import simula.runtime._RT;
 
 
 /**
@@ -127,9 +139,9 @@ public class SimulaEditor extends JFrame {
         this.setVisible(true);
         
 		int javaVersion=getJavaVersion();
-		if(javaVersion < 17) {
+		if(javaVersion < 21) {
 			Util.popUpError("You have installed Java "+System.getProperty("java.version")+'.'
-					     +"\nWe recommend at least Java 17."
+					     +"\nWe recommend at least Java 21."
 					     +"\nCheck the settings and consider"
 					     +"\ninstalling a newer version.\n");
 		}
@@ -153,8 +165,9 @@ public class SimulaEditor extends JFrame {
 	
 	
 	private static String getJavaID() {
-        String javaID="Java version "+System.getProperty("java.version");
-        if(RTOption.USE_VIRTUAL_THREAD) javaID=javaID+"-Virtual Threads";
+//		String javaID="Java version "+System.getProperty("java.version");
+        String javaID="JVM version "+System.getProperty("java.vm.specification.version");
+        //if(RTOption.USE_VIRTUAL_THREAD) javaID=javaID+"-Virtual Threads";
         return(javaID);
 	}
 
@@ -348,20 +361,98 @@ public class SimulaEditor extends JFrame {
     			tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
     			current.fileChanged=false;
     			if(file==null)current.fillTextPane(new StringReader("begin\n\nend;\n"),0);
-    			else try { Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
+    			else if(lang==Language.Simula) {
+    				try { Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
+    					  current.fillTextPane(reader,0);
+    				} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+    			}
+    			else if(lang==Language.Jar) {
+    				current.fillTextPane(getJarFileReader(file),0);
+    			}
+    			else if(lang==Language.Other) {
+    				current.fillTextPane(getHexFileReader(file),0);
+    			}
+    			else if(lang==Language.Text)
+    				try { Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
     				current.fillTextPane(reader,0);
     			} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
     			menuBar.updateMenuItems();
     		}}).start();
     }
+    
+    private static Reader getHexFileReader(File file) {
+    	StringBuilder sb=new StringBuilder();
+    	String hexPart="",charPart="";
+    	FileInputStream inpt;
+    	try { inpt=new FileInputStream(file);
+    		int b;
+    		while((b=inpt.read()) != -1) {
+    			hexPart=hexPart+' '+fill(Integer.toHexString(b),2);
+    			charPart=charPart+((b>31 && b<128)?((char)b):'.');
+    			if((charPart.length())>15) {
+    				sb.append("  "+hexPart+"  "+charPart+"\n");
+    				hexPart=""; charPart="";
+    			}
+    		}
+    		if((charPart.length())>0) {
+    	    	while(hexPart.length()<(16*3)) hexPart=hexPart+" ";
+				sb.append("  "+hexPart+"  "+charPart+"\n");    			
+    		}
+    	} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+    	return(new StringReader(sb.toString()));
+    }
+    
+    private static String fill(String s,int n) {
+    	while(s.length()<n) s="0"+s;
+    	return(s.toUpperCase());
+    }
+   
+    private static Reader getJarFileReader(File file) {
+    	StringBuilder sb=new StringBuilder();
+    	sb.append("File: "+file).append("\n");
+    	if(!(file.exists() && file.canRead())) {
+    		sb.append("Can't read .jar file: "+file).append("\n");
+    	} else {
+    		JarFile jarFile=null;
+    		try {
+    			jarFile=new JarFile(file);
+    			Manifest manifest=jarFile.getManifest();
+    			Attributes mainAttributes=manifest.getMainAttributes();
+    			Set<Object> keys=mainAttributes.keySet();
+    			for(Object key:keys) {
+    				String val=mainAttributes.getValue(key.toString());
+    				sb.append(key.toString()+"=\""+val+"\"").append("\n");
+    			}
+
+    			Enumeration<JarEntry> entries=jarFile.entries();
+    			while(entries.hasMoreElements()) {
+    				JarEntry entry=entries.nextElement();
+    				String size=""+entry.getSize();
+    				while(size.length()<6) size=" "+size;
+    				FileTime fileTime=entry.getLastModifiedTime();
+    				String date = DateTimeFormatter.ofPattern("uuuu-MMM-dd HH:mm:ss", Locale.getDefault())
+    						.withZone(ZoneId.systemDefault()).format(fileTime.toInstant());
+    				sb.append("Jar-Entry: "+size+"  "+date+"  \""+entry+"\"").append("\n");
+    			}
+    		} catch(IOException e) {
+    			Util.INTERNAL_ERROR("Caused by:",e);
+    		} finally {
+    			if(jarFile!=null)
+    				try { jarFile.close(); } catch (IOException e) { e.printStackTrace(); }
+    		}
+    	}
+    	return(new StringReader(sb.toString()));
+    }
 	
-    // ****************************************************************
-    // *** doRunJarFile
-    // ****************************************************************
+	// ****************************************************************
+	// *** doRunJarFile
+	// ****************************************************************
 	static void doRunJarFile(File jarFile) {
 		new Thread(new Runnable() {
 			public void run() {
-				String[] cmds= {"java","-jar",jarFile.toString(),"-USE_CONSOLE"};
+//				String[] cmds= {"java","-jar",jarFile.toString(),"-useConsole"};
+				String userDir=jarFile.getParentFile().getParent();
+				String[] cmds= {"java","-jar",jarFile.toString(),"-useConsole","-userDir",userDir};
 				try { SimulaCompiler.execute(cmds);
 				} catch (IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
 			}

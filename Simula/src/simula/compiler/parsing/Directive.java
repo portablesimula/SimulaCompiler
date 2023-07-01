@@ -70,8 +70,7 @@ public class Directive {
      * The initial value is ON.
      */
     private static void setSport(final String onoff) {
-    	Option.sport=(onoff.equalsIgnoreCase("ON"));
-    	Util.warning("Compiler Directive: %SPORT sets Option.sport="+Option.sport);
+		// Ignored in this implementation
     }
 
 	/**

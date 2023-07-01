@@ -440,6 +440,15 @@ public final class SimulaExtractor extends JFrame {
 			int result = JOptionPane.showOptionDialog(SimulaExtractor.this, msg2, "Warning",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, simulaIcon, options2, options2[0]);
 			if (result != 1) System.exit(-1); // Stop the install
+			
+			File rts=new File(INSTALL_DIR+"/rts");
+			System.out.println("SimulaExtractor.extract: rts="+rts);
+			if(rts.exists()) {
+				// Delete existing rts
+				boolean success=delete(rts);
+				System.out.println("SimulaExtractor.extract: rts="+rts+", deleted="+success);
+			}
+			
 		}
 		if (!INSTALL_DIR.exists()) {
 			if (!INSTALL_DIR.mkdirs()) {
@@ -452,6 +461,12 @@ public final class SimulaExtractor extends JFrame {
 		if(console!=null) console.write("Installing "+programAndVersion+"\n"
 		                               +"Simula-Directory:   "+INSTALL_DIR+'\n');
 		return(INSTALL_DIR);
+	}
+	
+	private boolean delete(File file) {
+	    File[] files = file.listFiles();
+	    if (files != null) for (File f:files) delete(f);
+	    return(file.delete());
 	}
 
 	// ***************************************************************

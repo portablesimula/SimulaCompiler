@@ -24,24 +24,28 @@ import simula.compiler.utilities.Util;
 public final class Simula {
 
 	private static void help() {
-		Util.println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
-		Util.println("Usage: java -jar simula.jar  [options]  sourceFile \n\n"
-				+ "possible options include:\n"
-				+ "  -help                      Print this synopsis of standard options\n"
-				+ "  -noexec                    Don't execute generated .jar file\n"
-				+ "  -nowarn                    Generate no warnings\n"
-				+ "  -noextension			    Disable all language extensions\n"
-				+ "					            In other words, follow the Simula Standard literally\n"
-				+ "  -select characters         First, all selectors are reset."
-				+ "                             Then, for each character, the corresponding selector is set\n"
-				+ "  -verbose                   Output messages about what the compiler is doing\n"
-				+ "  -keepJava <directory>      Specify where to place generated .java files\n"
-				+ "                             Default: Temp directory which is deleted upon exit\n"
-				+ "  -output <directory>        Specify where to place generated executable .jar file\n"
-				+ "                             Default: Same directory as source file\n"
-				+ "  -extLib <directory>		Specify where to search for precompiled classes and procedures\n"
-				+ "                             If not found, output directory is also searched "
-				+ "\nsourceFile      Simula Source File\n");
+		Util.println(Global.simulaReleaseID+" See: https://github.com/portablesimula");
+		Util.println("");
+		Util.println("Usage: java -jar simula.jar  [options]  sourceFile ");
+		Util.println("");
+		Util.println("possible options include:");
+		Util.println("  -help                      Print this synopsis of standard options");
+		Util.println("  -caseSensitive             Source file is case sensitive.");	
+		Util.println("  -noexec                    Don't execute generated .jar file");
+		Util.println("  -nowarn                    Generate no warnings");
+		Util.println("  -noextension               Disable all language extensions");
+		Util.println("                             In other words, follow the Simula Standard literally");
+		Util.println("  -select characters         First, all selectors are reset.");
+		Util.println("                             Then, for each character, the corresponding selector is set");
+		Util.println("  -verbose                   Output messages about what the compiler is doing");
+		Util.println("  -keepJava <directory>      Specify where to place generated .java files");
+		Util.println("                             Default: Temp directory which is deleted upon exit");
+		Util.println("  -output <directory>        Specify where to place generated executable .jar file");
+		Util.println("                             Default: Same directory as source file");
+		Util.println("  -extLib <directory>        Specify where to search for precompiled classes and procedures");
+		Util.println("                             If not found, output directory is also searched");
+		Util.println("");
+		Util.println("sourceFile      Simula Source File");
 		System.exit(0);
 	}
 
@@ -57,9 +61,10 @@ public final class Simula {
 			String arg=argv[i];
 			if (arg.charAt(0) == '-') { // command line option
 				if (arg.equalsIgnoreCase("-help")) help();
+				else if (arg.equalsIgnoreCase("-caseSensitive")) Option.CaseSensitive=true;
 				else if (arg.equalsIgnoreCase("-noexec")) Option.noExecution=true;
-				else if (arg.equalsIgnoreCase("-nowarn")) { Option.noJavacWarnings=true; Option.WARNINGS=false; }
-				else if (arg.equalsIgnoreCase("-noextension")) { Option.EXTENSIONS=false; }
+				else if (arg.equalsIgnoreCase("-nowarn")) Option.WARNINGS=false;
+				else if (arg.equalsIgnoreCase("-noextension")) Option.EXTENSIONS=false;
 				else if (arg.equalsIgnoreCase("-select")) setSelectors(argv[++i]);
 				else if (arg.equalsIgnoreCase("-verbose")) Option.verbose=true;
 				else if (arg.equalsIgnoreCase("-keepJava")) setKeepJava(argv[++i]);
@@ -70,7 +75,10 @@ public final class Simula {
 			} else if(fileName==null) fileName = arg;
 			else error("multiple input files specified");
 		}	
-	    Global.simulaRtsLib=new File(Global.simulaHome,"rts");
+	    if(!Option.INLINE_TESTING) Global.simulaRtsLib=new File(Global.simulaHome,"rts");
+	    
+//	    Util.IERR("");
+	    
 		if (fileName == null) {
 		    // *** STARTING SIMULA EDITOR ***
 			Global.sampleSourceDir=new File(Global.simulaHome,"samples");

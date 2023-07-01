@@ -152,7 +152,7 @@ public final class Global {
 	private static File getSimulaPropertiesFile() {
 		File javaClassPath=new File(System.getProperty("java.class.path"));
 		if(Option.INLINE_TESTING) {
-			if(RTOption.USE_VIRTUAL_THREAD) System.out.print("USE_VIRTUAL_THREAD, ");
+			//if(RTOption.USE_VIRTUAL_THREAD) System.out.print("USE_VIRTUAL_THREAD, ");
 			System.out.println("INLINE_TESTING");
 		}
 		if(javaClassPath.exists()) {

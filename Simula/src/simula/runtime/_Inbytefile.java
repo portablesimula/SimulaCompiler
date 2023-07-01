@@ -76,9 +76,9 @@ public class _Inbytefile extends _ByteFile {
 	 * @return
 	 */
 	public boolean open() {
-		if(_RT.DEBUGGING) TRACE_OPEN("Open InByteFile");
+		if(_RT.Option.VERBOSE) TRACE_OPEN("Open InByteFile");
 		if (_OPEN) return (false);
-		File file=doCreateAction(new File(FILE_NAME.edText()));
+		File file=doCreateAction();
 		if(!file.exists()) {
 			//File selected=popupFileSelector("Can't Open "+file+", select another");
 			File selected=trySelectFile(file.toString());

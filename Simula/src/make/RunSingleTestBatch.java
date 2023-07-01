@@ -226,7 +226,7 @@ public final class RunSingleTestBatch {
 //		Option.TRACE_ATTRIBUTE_INPUT=true;
 
 		// Checker Trace Options
-//		Option.TRACE_FIND=4;
+//		Option.TRACE_FIND_MEANING=4;
 //		Option.TRACE_CHECKER=true;
 //		Option.TRACE_CHECKER_OUTPUT=true;
 
@@ -242,15 +242,11 @@ public final class RunSingleTestBatch {
 		
 		// Set RunTime Options and tracing.
 //		RTOption.VERBOSE = true;
-//		RTOption.DEBUGGING = true;
-//		RTOption.USE_CONSOLE=true;
-//		RTOption.CODE_STEP_TRACING = true;
-//		RTOption.BLOCK_TRACING = true;
-//		RTOption.GOTO_TRACING = true;
-//		RTOption.THREAD_TRACING = true;
-//		RTOption.QPS_TRACING = true;
-//		RTOption.SML_TRACING = true;
-//		RTOption.USE_VIRTUAL_THREAD=false;
+//		RTOption.USE_CONSOLE=false;
+//		RTOption.BLOCK_TRACING = false;
+//		RTOption.GOTO_TRACING = false;
+//		RTOption.QPS_TRACING = false;
+//		RTOption.SML_TRACING = false;
 
 		for(String name:names) {
 			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;

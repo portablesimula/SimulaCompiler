@@ -68,10 +68,10 @@ public final class Meaning {
 			staticLink = connectedObject.toJavaCode();
 		else {
 			staticLink = declaredIn.edCTX();
-			if (RTOption.DEBUGGING)	{
-				String cast = declaredIn.getJavaIdentifier();
-				staticLink = "((" + cast + ")" + staticLink + ')';
-			}
+//			if (RTOption.DEBUGGING)	{
+//				String cast = declaredIn.getJavaIdentifier();
+//				staticLink = "((" + cast + ")" + staticLink + ')';
+//			}
 		}
 		return (staticLink);
 	}

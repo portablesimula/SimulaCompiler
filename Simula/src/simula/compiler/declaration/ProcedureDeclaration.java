@@ -234,23 +234,23 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		if(Option.TRACE_FIND>0) Util.message("BEGIN Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("BEGIN Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Local "+declaration);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Local "+declaration);
 			if (Util.equals(ident, declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
 		}
 		for (Parameter parameter : parameterList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Parameter "+parameter);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Parameter "+parameter);
 			if (Util.equals(ident, parameter.identifier))
 				return (new Meaning(parameter, this, this, false));
 		}
 		for (LabelDeclaration label : labelList) {
-			if(Option.TRACE_FIND>1) Util.message("Checking Label "+label);
+			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Label "+label);
 			if (Util.equals(ident, label.identifier))
 				return (new Meaning(label, this, this, false));
 		}
-		if(Option.TRACE_FIND>0) Util.message("ENDOF Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.message("ENDOF Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
 		return (null);
 	}
 
@@ -383,8 +383,8 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	private void doCodePrepareFormal() {
 		GeneratedJavaClass.debug("// Parameter Transmission in case of Formal/Virtual Procedure Call");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + " setPar(Object param) {");
-		GeneratedJavaClass.debug("//Util.BREAK(\"CALL " + getJavaIdentifier()
-				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+_nParLeft+\", staticLink=\"+_SL);");
+//		GeneratedJavaClass.debug("//Util.BREAK(\"CALL " + getJavaIdentifier()
+//				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+_nParLeft+\", staticLink=\"+_SL);");
 		GeneratedJavaClass.code("try {");
 		GeneratedJavaClass.code("switch(_nParLeft--) {");
 		int nPar = 0;

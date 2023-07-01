@@ -79,7 +79,7 @@ public class _Outfile extends _Imagefile {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(final _TXT IMAGE_) {
-		if(_RT.DEBUGGING) TRACE_OPEN("Open OutFile");
+		if(_RT.Option.VERBOSE) TRACE_OPEN("Open OutFile");
 		if (_OPEN) return (false); // File already opened
 		_OPEN = true;
 		image = IMAGE_;
@@ -89,7 +89,7 @@ public class _Outfile extends _Imagefile {
 //			outputStream = System.out;
 			writer = new OutputStreamWriter(System.out,_CHARSET);
 		else {
-			File file=doCreateAction(new File(FILE_NAME.edText()));
+			File file=doCreateAction();
 			try {
 //				outputStream = new FileOutputStream(file);
 //				writer = new OutputStreamWriter(outputStream,_CHARSET);

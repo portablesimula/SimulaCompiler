@@ -153,13 +153,13 @@ public class _Directbytefile extends _ByteFile {
 	 * @return
 	 */
 	public boolean open() {
-		if(_RT.DEBUGGING) TRACE_OPEN("Open Directbytefile");
+		if(_RT.Option.VERBOSE) TRACE_OPEN("Open Directbytefile");
 		if (_OPEN) return (false);
 		// _LOC = 1; // LOC is maintained by the underlying file system.
 		_MAXLOC = maxint - 1;
 		_BYTESIZE = 8;
 		_OPEN = true;
-		File file=doCreateAction(new File(FILE_NAME.edText()));
+		File file=doCreateAction();
 		try {
 			String mode; // mode is one of "r", "rw", "rws", or "rwd"
 			if(_SYNCHRONOUS) mode="rws";

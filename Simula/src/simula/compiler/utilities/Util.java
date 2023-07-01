@@ -131,10 +131,12 @@ public final class Util {
 	}
 
 	public static void println(final String s) {
-		String u = s.replace('\r', (char) 0);
-		u = u.replace('\n', (char) 0);
-		if (Global.console != null)	Global.console.write(u + '\n');
-		else System.out.println(u);
+		if (Global.console != null) {
+			String u = s.replace('\r', (char) 0);
+			u = u.replace('\n', (char) 0);
+			Global.console.write(u + '\n');
+		}
+		else System.out.println(s);
 	}  
 
 	public static void printError(final String s) {

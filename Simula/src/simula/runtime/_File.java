@@ -295,15 +295,13 @@ public class _File extends _CLASS {
 		return(false);
 	}
 
-	protected File doCreateAction(File file) {
+	protected File doCreateAction() {
+		File file=new File(FILE_NAME.edText());
 		try {
 			if(!file.isAbsolute() && _RT.Option.RUNTIME_USER_DIR.length()>0) {
 				file=new File(_RT.Option.RUNTIME_USER_DIR+'/'+FILE_NAME.edText());
 			}
-			
-//			File file = new File(FILE_NAME.edText().trim());
-//			System.out.println("FILE.doCreateAction: "+_CREATE+" on "+file);
-//			_RT.BREAK("FILE.doCreateAction: "+_CREATE+" on "+file);
+			//System.out.println("FILE.doCreateAction: "+_CREATE+" on "+file);
 			switch(_CREATE) {
 			      case NA -> {
 					  //System.out.println("FILE.doCreateAction: NA on "+file);
@@ -353,6 +351,6 @@ public class _File extends _CLASS {
 
 	protected void TRACE_OPEN(String mss) {
 		System.out.println(mss+": "+FILE_NAME.edText());
-		printStaticChain();
+		//printStaticChain();
 	}
 }

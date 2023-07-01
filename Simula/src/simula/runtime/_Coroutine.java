@@ -68,12 +68,12 @@ public class _Coroutine implements Runnable {
 					done=true; detach();
 				}};				
 			threadCount++;
-			if(_RT.Option.USE_VIRTUAL_THREAD) {
+//			if(_RT.Option.USE_VIRTUAL_THREAD) {
 				targetThread=Thread.startVirtualThread(runner);
-			} else {
-				targetThread=new Thread(runner);
-				targetThread.start();
-			}
+//			} else {
+//				targetThread=new Thread(runner);
+//				targetThread.start();
+//			}
 			targetThread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 		} else {
 	        resume(this);

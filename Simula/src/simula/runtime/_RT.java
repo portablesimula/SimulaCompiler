@@ -10,9 +10,9 @@ package simula.runtime;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.Vector;
-
 import javax.swing.JOptionPane;
+
+import simula.compiler.utilities.Global;
 
 /**
  * 
@@ -20,9 +20,9 @@ import javax.swing.JOptionPane;
  *
  */
 public final class _RT { 
-	static boolean BREAKING=true;//false;//true;
+//	static boolean BREAKING=true;//false;//true;
 	private static final boolean TRACING=true;//false;//true;
-	public  static boolean DEBUGGING=false;//true;
+//	public  static boolean DEBUGGING=false;//true;
   
 	public static _RTConsolePanel console;
 	public static boolean someConsolePresent;
@@ -35,14 +35,10 @@ public final class _RT {
 	public static class Option {
 		public static boolean VERBOSE = false;//true;
 		public static boolean USE_CONSOLE=false;//true;
-		public static boolean CODE_STEP_TRACING = false;// true;
 		public static boolean BLOCK_TRACING = false;// true;
 		public static boolean GOTO_TRACING = false;// true;
-		public static boolean THREAD_TRACING = false;// true;
-		public static boolean LOOM_TRACING = false;// true;
 		public static boolean QPS_TRACING = false; // true;
 		public static boolean SML_TRACING = false; // true;
-		public static boolean USE_VIRTUAL_THREAD=true;
 		public static String  RUNTIME_USER_DIR="";
 	}
 
@@ -51,13 +47,8 @@ public final class _RT {
 		public static String SourceDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
 		public static String SPORT_SysInsertDirName="C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
 		public static String SPORT_SourceFileName=SourceDirName+"/ModuleName";
-		public static Vector<String> SPORT_SourceFileNames=new Vector<String>();
-//		public static String SCodeDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/scode";
-//		public static String TempDirName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/temp";
-//		public static String SourceFileName="C:/GitHub/SimulaCompiler/Simula/src/sport/rts/_RT.DEF";
 		
-		// getTextInfo
-//		public static String getSourceFileName() { return(SourceDirName+"/"+ModuleName); }
+		// Used by getTextInfo
 		public static String getSourceFileName() { return(SPORT_SourceFileName); }
 	    public static String ListingFileName="#sysout";
 	    public static String getSCodeFileName() {
@@ -73,20 +64,6 @@ public final class _RT {
 	    
 	    public static String getScratchFileName() {	return(createSubfileName("temp",getModuleName()+".tmp")); }
 	    public static String getAttributeOutputFileName() { return(createSubfileName("temp",currentModuleID+".atr")); }
-	    
-//	    public static String getAttributeFileName() {
-//	    	String fileName=SourceDirName+"/"+"temp"+"/"+getModuleName()+".atr";
-//	    	File file=new File(fileName);
-//	    	if(!file.exists()) {
-//		    	String name=extIdent;
-//		    	int i=name.indexOf('.');
-//		    	if(i>0) name=name.substring(0,i);
-//	    		fileName=SPORT_SysInsertDirName+"/temp/"+name+".atr";
-//		    	file=new File(fileName);
-//	    		if(!file.exists()) System.out.println("getAttributeFileName: "+file+"  does NOT exists");
-//	    	}
-//	    	return(fileName);
-//	    }
 
 	    public static String getExternalAttributeFileName() {
 	        // 12 What is the name of the attribute file for an external declaration?
@@ -149,33 +126,28 @@ public final class _RT {
 	
 	public static void setRuntimeOptions(final String[] args) {
 		// Parse command line arguments.
+//		System.out.println("_RT.setRuntimeOptions: Parse command line arguments: "+args.length);
+		_RT.Option.RUNTIME_USER_DIR=System.getProperty("user.dir",null);
 		File file = null;
 		for(int i=0;i<args.length;i++) {
 			String arg=args[i];
+//			System.out.println("_RT.setRuntimeOptions: Parse command line argument: "+arg);
 			if (arg.charAt(0) == '-') { // command line option
 				// General RTS Options
-				if(arg.equalsIgnoreCase("-VERBOSE")) Option.VERBOSE=true;
-				else if(arg.equalsIgnoreCase("-DEBUGGING")) DEBUGGING=true;
-				else if(arg.equalsIgnoreCase("-USE_CONSOLE")) Option.USE_CONSOLE=true;
-				else if(arg.equalsIgnoreCase("-CODE_STEP_TRACING")) Option.CODE_STEP_TRACING=true;
-				else if(arg.equalsIgnoreCase("-BLOCK_TRACING")) Option.BLOCK_TRACING=true;
-				else if(arg.equalsIgnoreCase("-GOTO_TRACING")) Option.GOTO_TRACING=true;
-				else if(arg.equalsIgnoreCase("-THREAD_TRACING")) Option.THREAD_TRACING=true;
-				else if(arg.equalsIgnoreCase("-LOOM_TRACING")) Option.LOOM_TRACING=true;
-				else if(arg.equalsIgnoreCase("-QPS_TRACING")) Option.QPS_TRACING=true;
-				else if(arg.equalsIgnoreCase("-SML_TRACING")) Option.SML_TRACING=true;
-				else if(arg.equalsIgnoreCase("-USE_VIRTUAL_THREAD")) Option.USE_VIRTUAL_THREAD=true;
-				else if (arg.equalsIgnoreCase("-RUNTIME_USER_DIR")) Option.RUNTIME_USER_DIR=args[++i];
-				else if (arg.equalsIgnoreCase("-SPORT_SOURCE_FILE")) SPORT_Option.SPORT_SourceFileName=args[++i];
-				else if (arg.equalsIgnoreCase("-SPORT_SOURCE_FILES")) SPORT_Option.SPORT_SourceFileNames.add(args[++i]);
-				// Spesial S-Port Simula and Simuletta Options
-				else if (arg.equalsIgnoreCase("-noexec")) ;//Option.noExecution=true;
-				else if (arg.equalsIgnoreCase("-nowarn")) ;//{ Option.noJavacWarnings=true; Option.WARNINGS=false; }
-				else if (arg.equalsIgnoreCase("-select")) _RT.SPORT_Option.Selectors=args[++i];
-				else if (arg.equalsIgnoreCase("-listing")) SPORT_Option.ListingFileName=args[++i];
-				else if (arg.equalsIgnoreCase("-keepJava")) ;//setKeepJava(args[++i]);
-				else if (arg.equalsIgnoreCase("-output")) ;//setOutputDir(args[++i]);
-				else if (arg.equalsIgnoreCase("-trace")) _RT.SPORT_Option.TraceLevel=Integer.decode(args[++i]);
+				if (arg.equalsIgnoreCase("-help")) help();
+				else if(arg.equalsIgnoreCase("-verbose"))      _RT.Option.VERBOSE=true;
+				else if(arg.equalsIgnoreCase("-useConsole"))   _RT.Option.USE_CONSOLE=true;
+				else if(arg.equalsIgnoreCase("-blockTracing")) _RT.Option.BLOCK_TRACING=true;
+				else if(arg.equalsIgnoreCase("-gotoTracing"))  _RT.Option.GOTO_TRACING=true;
+				else if(arg.equalsIgnoreCase("-qpsTracing"))   _RT.Option.QPS_TRACING=true;
+				else if(arg.equalsIgnoreCase("-smlTracing"))   _RT.Option.SML_TRACING=true;
+				else if (arg.equalsIgnoreCase("-userDir"))     _RT.Option.RUNTIME_USER_DIR=args[++i];
+
+				// Spesial S-Port Simula and Simuletta Options. Used by  get/give ... info routines
+				else if (arg.equalsIgnoreCase("-SPORT_SOURCE_FILE"))  SPORT_Option.SPORT_SourceFileName=args[++i];
+				else if (arg.equalsIgnoreCase("-select"))  _RT.SPORT_Option.Selectors=args[++i];
+				else if (arg.equalsIgnoreCase("-listing")) _RT.SPORT_Option.ListingFileName=args[++i];
+				else if (arg.equalsIgnoreCase("-trace"))   _RT.SPORT_Option.TraceLevel=Integer.decode(args[++i]);
 				else error("Unknown option "+arg);
 			} else {
 				if(file==null) {
@@ -186,12 +158,27 @@ public final class _RT {
 				else error("multiple input files specified");
 			}
 		}	
-
-		
 		if(Option.VERBOSE) {
-			listRuntimeOptions();
 			_RT.println("Begin Execution of Simula Program using "+getJavaID());
+			listRuntimeOptions();
 		}
+	}
+	private static void help() {
+		println(Global.simulaReleaseID+" See: https://github.com/portablesimula\n");
+		println("Usage: java -jar simula.jar  [options]\n\n"
+				+ "jarFile			Any output jar file from the simula compiler\n\n"
+				+ "possible options include:\n"
+				+ "  -help                 Print this synopsis of standard options\n"
+				+ "  -verbose              Output messages about what the compiler is doing\n"
+				+ "  -useConsole           Map sysout and sysin to a popUp Console\n"
+				+ "  -blockTracing         Debug: Trace enter and exit of blocks, classes and procedures\n"
+				+ "  -gotoTracing          Debug: Trace goto statements\n"
+				+ "  -qpsTracing           Debug: Trace detach, resume and call\n"
+				+ "  -smlTracing           Debug: Trace Simulation events\n"
+				+ "  -userDir <directory>  Specify where Simula files (Outfile, Infile, ...) are written and read\n"
+				+ "                        Default: User working directory. System.property(\"user.dir\")\n"
+				+ "");
+		System.exit(0);
 	}
 
 	private static void error(final String msg) {
@@ -213,17 +200,13 @@ public final class _RT {
 	public static void listRuntimeOptions() {
 		System.out.println("file.encoding="+System.getProperty("file.encoding"));
 		System.out.println("defaultCharset="+Charset.defaultCharset());
-		System.out.println("VERBOSE="+Option.VERBOSE);
-		System.out.println("DEBUGGING="+DEBUGGING);
-		System.out.println("USE_CONSOLE="+Option.USE_CONSOLE);
-		System.out.println("CODE_STEP_TRACING="+Option.CODE_STEP_TRACING);
-		System.out.println("BLOCK_TRACING="+Option.BLOCK_TRACING);
-		System.out.println("GOTO_TRACING="+Option.GOTO_TRACING);
-		System.out.println("THREAD_TRACING="+Option.THREAD_TRACING);
-		System.out.println("LOOM_TRACING="+Option.LOOM_TRACING);
-		System.out.println("QPS_TRACING="+Option.QPS_TRACING);
-		System.out.println("SML_TRACING="+Option.SML_TRACING);
-		System.out.println("USE_VIRTUAL_THREAD="+Option.USE_VIRTUAL_THREAD);
+		System.out.println("verbose="+Option.VERBOSE);
+		System.out.println("useConsole="+Option.USE_CONSOLE);
+		System.out.println("blockTracing="+Option.BLOCK_TRACING);
+		System.out.println("gotoTracing="+Option.GOTO_TRACING);
+		System.out.println("qpsTracing="+Option.QPS_TRACING);
+		System.out.println("smlTracing="+Option.SML_TRACING);
+		System.out.println("userDir="+Option.RUNTIME_USER_DIR);
 	}
 	
 
@@ -250,10 +233,14 @@ public final class _RT {
 	public static void TRACE(final String msg) {
 		if (TRACING) println(Thread.currentThread().toString() + ": " + msg);
 	}
+	  
+	public static void IERR(final String s) {
+		printError(s);
+		Thread.dumpStack(); System.exit(-1);
+	}
   
 	public static void NOT_IMPLEMENTED(final String s) {
-		println("*** NOT IMPLEMENTED: " + s);
-		BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
+		IERR("*** NOT IMPLEMENTED: " + s);
 	}
 
 	public static void NoneCheck(final Object x) {
@@ -264,9 +251,7 @@ public final class _RT {
 	public static void ASSERT(final boolean test,final String msg) {
 		if (!test) {
 			if (_RT.console==null) { _RT.console = new _RTConsolePanel(); _RT.console.popup("Runtime Console"); }
-			printError("ASSERT(" + msg + ") -- FAILED");
-			if(BREAKING) BREAK("Press [ENTER] Continue or [Q] for a Stack-Trace");
-			else { Thread.dumpStack(); System.exit(-1); }
+			IERR("ASSERT(" + msg + ") -- FAILED");
 		}
 	}
 
@@ -278,24 +263,24 @@ public final class _RT {
 		}
 	}
 
-	public static void BREAK(final String msg) {
-		if (BREAKING) {
-			if (_RT.Option.CODE_STEP_TRACING) {
-				printWarning(msg + ": <");
-				try { Thread.sleep(2000);
-				} catch (Exception e) {	e.printStackTrace(); }
-				return;
-			}
-			if (_RT.console==null) { _RT.console = new _RTConsolePanel(); _RT.console.popup("Runtime Console"); }
-			printError("BREAK["+Thread.currentThread().getName()+"]: " + msg);
-			char c=_RT.console.read();
-			if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
-				printWarning("STACK-TRACE");
-				Thread.dumpStack();
-				printSimulaStackTrace(2);
-			}
-		}
-	}
+//	public static void BREAK(final String msg) {
+//		if (BREAKING) {
+//			if (_RT.Option.CODE_STEP_TRACING) {
+//				printWarning(msg + ": <");
+//				try { Thread.sleep(2000);
+//				} catch (Exception e) {	e.printStackTrace(); }
+//				return;
+//			}
+//			if (_RT.console==null) { _RT.console = new _RTConsolePanel(); _RT.console.popup("Runtime Console"); }
+//			printError("BREAK["+Thread.currentThread().getName()+"]: " + msg);
+//			char c=_RT.console.read();
+//			if (c == 'Q' || c == 'q') { // System.err.println("QUIT!");
+//				printWarning("STACK-TRACE");
+//				Thread.dumpStack();
+//				printSimulaStackTrace(2);
+//			}
+//		}
+//	}
 
 	
 	// *********************************************************************
@@ -316,8 +301,9 @@ public final class _RT {
 	}
 	
 	public static String getJavaID() {
-        String javaID="Java version "+System.getProperty("java.version");
-        if(Option.USE_VIRTUAL_THREAD) javaID=javaID+"-Virtual Threads";
+//        String javaID="Java version "+System.getProperty("java.version");
+        String javaID="JVM version "+System.getProperty("java.vm.specification.version");
+//		if(Option.USE_VIRTUAL_THREAD) javaID=javaID+"-Virtual Threads";
         return(javaID);
 	}
 

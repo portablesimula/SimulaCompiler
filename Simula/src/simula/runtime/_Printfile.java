@@ -116,7 +116,7 @@ public class _Printfile extends _Outfile {
 	@Override
 	public boolean open(final _TXT image) {
 		String fileName=FILE_NAME.edText();
-		if(_RT.DEBUGGING) TRACE_OPEN("Open PrintFile: "+fileName);
+		if(_RT.Option.VERBOSE) TRACE_OPEN("Open PrintFile");
 		if (_OPEN) return (false); // File already opened
 		_PAGE = 0;
 		_LINE = 1;
@@ -180,7 +180,7 @@ public class _Printfile extends _Outfile {
 	 */
 	@Override
 	public boolean close() {
-		if(_RT.DEBUGGING) TRACE_OPEN("Close PrintFile");
+		if(_RT.Option.VERBOSE) TRACE_OPEN("Close PrintFile");
 		if (!_OPEN)
 			return (false); // File not opened
 		if (pos() != 1)

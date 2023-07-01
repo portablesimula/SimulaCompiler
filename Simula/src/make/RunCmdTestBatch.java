@@ -213,16 +213,13 @@ public final class RunCmdTestBatch {
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.
-		RTOption.VERBOSE = false;
-		RTOption.DEBUGGING = false;
-		RTOption.USE_CONSOLE=false;
-		RTOption.CODE_STEP_TRACING = false;
-		RTOption.BLOCK_TRACING = false;
-		RTOption.GOTO_TRACING = false;
-		RTOption.THREAD_TRACING = false;
-		RTOption.QPS_TRACING = false;
-		RTOption.SML_TRACING = false;
-		RTOption.USE_VIRTUAL_THREAD=true;//false;
+//		RTOption.VERBOSE = false;
+//		RTOption.DEBUGGING = false;
+//		RTOption.USE_CONSOLE=false;
+//		RTOption.BLOCK_TRACING = false;
+//		RTOption.GOTO_TRACING = false;
+//		RTOption.QPS_TRACING = false;
+//		RTOption.SML_TRACING = false;
 
 		long startTimeMs = System.currentTimeMillis( );
 		

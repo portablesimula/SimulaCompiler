@@ -7,10 +7,7 @@
  */
 package simula.runtime;
 
-import java.lang.reflect.Array;
 import java.util.Iterator;
-
-import simula.compiler.declaration.ArrayDeclaration;
 
 /**
  * 
@@ -1141,7 +1138,6 @@ public abstract class _RTObject {
 	// *** endProgram
 	// *********************************************************************
 	private static void endProgram(final int exitValue) {
-		if (_RT.Option.THREAD_TRACING) _RT.TRACE("_RTObject.endProgram:");
 		// SYSIN_.close();
 		// SYSOUT_.close();
 		SYSOUT_.outimage();
@@ -1154,7 +1150,7 @@ public abstract class _RTObject {
 			Runtime runtime=Runtime.getRuntime();
 			_RT.println(" -  Memory(used="+runtime.totalMemory()+",free="+runtime.freeMemory()+')');
 			_RT.println(" -  nProcessors="+runtime.availableProcessors());
-			_RT.println(" -  "+(_RT.Option.USE_VIRTUAL_THREAD?"Virtual":"")+"Thread Count = " + _Coroutine.threadCount);
+//			_RT.println(" -  "+(_RT.Option.USE_VIRTUAL_THREAD?"Virtual":"")+"Thread Count = " + _Coroutine.threadCount);
 //			_RT.println(" -  Active Thread Count = " + Thread.activeCount());
 			_RT.println(" -  Elapsed Time Approximately " + timeUsed/1000 + " sec.");
 		} else if (_RT.numberOfEditOverflows > 0)
@@ -1168,21 +1164,19 @@ public abstract class _RTObject {
 	// *********************************************************************
 	static void swapCoroutines() {
 		_Coroutine cont = _Coroutine.getCurrentCoroutine();
-		
-		if(_RT.Option.LOOM_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);
-		
+		//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);
 		if (cont == null) {
 			cont = _CUR.CORUT_;
 			_RTObject next = _CUR;
 			while (next.CORUT_ != null) {
-				if(_RT.Option.LOOM_TRACING) _RT.TRACE("SWAP: RUN NEXT "+next);
+				//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN NEXT "+next);
 				next.CORUT_.run();
 				// Return here when Coroutine is Detached or Done
 				next = _CUR;
-				if(_RT.Option.LOOM_TRACING) _RT.TRACE("SWAP: RUN RETURNED "+next);
+				//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN RETURNED "+next);
 			}
 		} else {
-			if(_RT.Option.LOOM_TRACING) _RT.TRACE("SWAP: YIELD "+cont);
+			//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: YIELD "+cont);
 			_Coroutine.detach();
 		}
 	}

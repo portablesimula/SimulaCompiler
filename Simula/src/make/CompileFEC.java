@@ -85,15 +85,12 @@ public final class CompileFEC {
 		
 		// Set RunTime Options and tracing.
 		RTOption.VERBOSE = true;//false;
-		RTOption.DEBUGGING = false;
-		RTOption.USE_CONSOLE=false;
-		RTOption.CODE_STEP_TRACING = false;
-		RTOption.BLOCK_TRACING = false;
-		RTOption.GOTO_TRACING = false;
-		RTOption.THREAD_TRACING = false;
-		RTOption.QPS_TRACING = false;
-		RTOption.SML_TRACING = false;
-		RTOption.USE_VIRTUAL_THREAD=true;//false;
+//		RTOption.DEBUGGING = false;
+//		RTOption.USE_CONSOLE=false;
+//		RTOption.BLOCK_TRACING = false;
+//		RTOption.GOTO_TRACING = false;
+//		RTOption.QPS_TRACING = false;
+//		RTOption.SML_TRACING = false;
 		
 //		RTOption.SPORT_SOURCE_FILE="C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/MINI-PREDEF.DEF";
 //		RTOption.SPORT_SOURCE_FILE="C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/PREDEF.DEF";

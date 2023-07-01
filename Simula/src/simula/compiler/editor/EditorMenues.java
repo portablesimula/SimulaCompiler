@@ -69,7 +69,6 @@ public class EditorMenues extends JMenuBar {
 	private JMenuItem cut=new JMenuItem(new DefaultEditorKit.CutAction());
 	private JMenuItem copy=new JMenuItem(new DefaultEditorKit.CopyAction());
 	private JMenuItem paste = new JMenuItem(new DefaultEditorKit.PasteAction());
-	private JMenuItem search=new JMenuItem("Search");
 	private JMenuItem undo=new JMenuItem("Undo");
 	//private JMenuItem redo=new JMenuItem("Redo");
     
@@ -106,7 +105,6 @@ public class EditorMenues extends JMenuBar {
 	private JMenuItem cut2=new JMenuItem(new DefaultEditorKit.CutAction());
 	private JMenuItem copy2=new JMenuItem(new DefaultEditorKit.CopyAction());
 	private JMenuItem paste2=new JMenuItem(new DefaultEditorKit.PasteAction());
-	private JMenuItem search2=new JMenuItem("Search");
 	private JMenuItem undo2=new JMenuItem("Undo");
 	//private JMenuItem redo2=new JMenuItem("Redo");
     private JMenuItem run2 = new JMenuItem("Run");
@@ -146,8 +144,6 @@ public class EditorMenues extends JMenuBar {
 		editMenu.add(copy); copy.setEnabled(false); copy.setText("Copy");   
 		editMenu.add(paste); paste.setEnabled(false); paste.setText("Paste"); 
         editMenu.addSeparator();
-        editMenu.add(search); search.setEnabled(false); search.addActionListener(actionListener);
-        editMenu.addSeparator();
         editMenu.add(refresh); refresh.setEnabled(false); refresh.addActionListener(actionListener);
 		this.add(editMenu);
 		runMenu.add(run); run.setEnabled(false); run.addActionListener(actionListener);
@@ -182,7 +178,6 @@ public class EditorMenues extends JMenuBar {
 		cut.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
 		copy.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
 		paste.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
-		search.setAccelerator(KeyStroke.getKeyStroke('F', InputEvent.CTRL_DOWN_MASK));
 		refresh.setAccelerator(KeyStroke.getKeyStroke('R', InputEvent.CTRL_DOWN_MASK));
 		undo.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
 		//redo.setAccelerator(KeyStroke.getKeyStroke('Y', InputEvent.CTRL_DOWN_MASK));
@@ -196,7 +191,6 @@ public class EditorMenues extends JMenuBar {
 		cut2.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
 		copy2.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
 		paste2.setAccelerator(KeyStroke.getKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
-		search2.setAccelerator(KeyStroke.getKeyStroke('F', InputEvent.CTRL_DOWN_MASK));
 		refresh2.setAccelerator(KeyStroke.getKeyStroke('R', InputEvent.CTRL_DOWN_MASK));
 		undo2.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
 		//redo2.setAccelerator(KeyStroke.getKeyStroke('Y', InputEvent.CTRL_DOWN_MASK));
@@ -231,8 +225,6 @@ public class EditorMenues extends JMenuBar {
         popupMenu.add(copy2); copy2.setEnabled(false); copy2.setText("Copy");
         popupMenu.add(paste2); paste2.setEnabled(false); paste2.setText("Paste");
         popupMenu.addSeparator();
-        popupMenu.add(search2); search2.setEnabled(false); search2.addActionListener(actionListener);
-        popupMenu.addSeparator();
         popupMenu.add(refresh2); refresh2.setEnabled(false); refresh2.addActionListener(actionListener);
         popupMenu.addSeparator();
         popupMenu.add(autoRefresh2); autoRefresh2.setEnabled(false); autoRefresh2.addActionListener(actionListener);
@@ -256,6 +248,7 @@ public class EditorMenues extends JMenuBar {
 		SourceTextPanel current=SimulaEditor.current;
 		boolean source=false;
 		boolean text=false;
+		boolean mayRun=false;
 		boolean fileChanged=false;
 		boolean auto=false;
 		boolean canUndo=false;
@@ -264,24 +257,26 @@ public class EditorMenues extends JMenuBar {
 			source=true;
 			String editText=current.editTextPane.getText();
 			if(editText!=null && editText.trim().length()!=0) text=true; 
+			if(current.lang==Language.Simula && text) mayRun=true;
+			if(current.lang==Language.Simula && editText!=null && editText.trim().length()!=0) text=true; 
 			fileChanged=current.fileChanged;
 			auto=source && current.AUTO_REFRESH;
 			UndoManager undoManager = current.getUndoManager();
 			canUndo=undoManager.canUndo();
 //			canRedo=undoManager.canRedo();
 		}
-		//Util.println("EditMenu.updateMenuItems: src="+source+", chg="+fileChanged+", sourceTextPanel="+sourceTextPanel);
+		//Util.println("EditMenu.updateMenuItems: src="+source+", chg="+fileChanged+", text="+text+", lang="+current.lang);
 		saveFile.setEnabled(fileChanged); saveFile2.setEnabled(fileChanged);
-		saveAs.setEnabled(text);          saveAs2.setEnabled(text);
+		saveAs.setEnabled(mayRun);        saveAs2.setEnabled(mayRun);
 		close.setEnabled(source);         close2.setEnabled(source);
 		closeAll.setEnabled(source);      closeAll2.setEnabled(source);
 		cut.setEnabled(text);             cut2.setEnabled(text);
 		copy.setEnabled(text);            copy2.setEnabled(text); 
 		paste.setEnabled(source);         paste2.setEnabled(source);
-		search.setEnabled(text);          search2.setEnabled(text);
+//		search.setEnabled(text);          search2.setEnabled(text);
 		refresh.setEnabled(text);         refresh2.setEnabled(text);
-		run.setEnabled(text);             run2.setEnabled(text);
-		debug.setEnabled(text);           debug2.setEnabled(text);
+		run.setEnabled(mayRun);           run2.setEnabled(mayRun);
+		debug.setEnabled(mayRun);         debug2.setEnabled(mayRun);
 		autoRefresh.setSelected(auto);    autoRefresh2.setSelected(auto);
 		autoRefresh.setEnabled(source);   autoRefresh2.setEnabled(source);
 		undo.setEnabled(canUndo);         undo2.setEnabled(canUndo);
@@ -305,7 +300,6 @@ public class EditorMenues extends JMenuBar {
 			else if(item==exit     || item==exit2) doExitAction();
 			else if(item==undo || item==undo2) undoAction();
 //			else if(item==redo || item==redo2) redoAction();
-			else if(item==search  || item==search2) new Search();					
 			else if(item==refresh || item==refresh2) current.doRefresh();
 			else if(item==run   || item==run2) doRunAction();
 			else if(item==debug || item==debug2) doDebugAction();
@@ -336,13 +330,17 @@ public class EditorMenues extends JMenuBar {
     			SimulaEditor.doNewTabbedPanel(file,Language.Simula);
             	Global.setCurrentWorkspace(fileChooser.getCurrentDirectory());
     		}
-    		else if(lowName.endsWith(".jar")) SimulaEditor.doRunJarFile(file);
-    		else if(lowName.endsWith(".java")) {
-    			SimulaEditor.doNewTabbedPanel(file,Language.Java);
-    		}
+    		else if(lowName.endsWith(".jar")) SimulaEditor.doNewTabbedPanel(file,Language.Jar);
+    		else if(isTextFile(lowName)) SimulaEditor.doNewTabbedPanel(file,Language.Text);
     		else SimulaEditor.doNewTabbedPanel(file,Language.Other);
     		
         }
+	}
+	
+	private boolean isTextFile(String lowName) {
+		String[] kind= {".java", ".txt", ".bat", ".sh", ".md", ".html", ".xml" }; // TODO: More ?
+		for(String k:kind) if(lowName.endsWith(k)) return(true);
+		return(false);
 	}
 	
     // ****************************************************************
@@ -447,7 +445,7 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	private void doRunAction() {
 		Option.DEBUGGING=false;
-		RTOption.DEBUGGING=false;
+//		RTOption.DEBUGGING=false;
 		doStartRunning();
 	}
 	
@@ -456,7 +454,7 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	private void doDebugAction() {
 		Option.DEBUGGING=true;
-		RTOption.DEBUGGING=true;
+//		RTOption.DEBUGGING=true;
 		RTOption.VERBOSE=true;
 		RTOption.selectRuntimeOptions();
 		doStartRunning();
@@ -471,6 +469,9 @@ public class EditorMenues extends JMenuBar {
 		if(file==null) {
 			file=new File(Global.getTempFileDir("simula/tmp/"),"unnamed.sim");
 			file.getParentFile().mkdirs();
+		} else if(file.getName().toLowerCase().endsWith(".jar")) {
+			SimulaEditor.doRunJarFile(file);
+			return;
 		}
 		try {
 			// Start compiler ....

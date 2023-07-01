@@ -56,7 +56,7 @@ public class SourceTextPanel extends JPanel {
 	File sourceFile;
     boolean AUTO_REFRESH=true;//false;
  	
-    private Language lang;
+    Language lang;
 	private Style styleRegular;
 	private Style styleKeyword;
 	private Style styleComment;
@@ -168,7 +168,7 @@ public class SourceTextPanel extends JPanel {
     void fillTextPane(Reader reader,int caretPosition) {
     	switch(lang) {
 			case Simula: fillTextPane(reader,caretPosition,new SimulaScanner(reader,true)); break;
-			case Java:   fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break;
+//			case Java:   fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break;
 			default:     fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break;
     	}
     }

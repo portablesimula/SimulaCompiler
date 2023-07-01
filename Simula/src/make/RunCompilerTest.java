@@ -10,7 +10,6 @@ package make;
 import java.io.File;
 import simula.compiler.Simula;
 import simula.compiler.SimulaCompiler;
-import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 
@@ -68,7 +67,7 @@ public final class RunCompilerTest {
 		// String name="/samples/LiftSimulation.sim";
 		// String name="/samples/PrimeUnder.sim";
 		// String name="/samples/Quine.sim";
-		// String name="/samples/Sudoku.sim";
+		 String name="/samples/Sudoku.sim";
 		// String name="/samples/SudokuPuzzle.sim";
 		// String name="/samples/TQueens.sim";
 
@@ -183,7 +182,7 @@ public final class RunCompilerTest {
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
-		 String name="/simple/adHoc02.sim";
+		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
 		// String name="/simple/adHoc05.sim";
@@ -251,39 +250,31 @@ public final class RunCompilerTest {
 //			// Checker Trace Options
 //			Option.TRACE_CHECKER=true;
 //			Option.TRACE_CHECKER_OUTPUT=true;
-//			Option.TRACE_FIND=2;
+//			Option.TRACE_FIND_MEANING=2;
 //			
 //			// Coder Trace Options
-			Option.TRACE_CODING=true;
+//			Option.TRACE_CODING=true;
 			Option.GNERATE_LINE_CALLS=true;
 //			
 //			Option.TRACE_REPAIRING=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
 //			Option.DEBUGGING=true;
 
-			// Runtime Trace Options
-			Option.TRACE_LOOM=false;//true;
-
 			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
-			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			
 			
 			// Set RunTime Options and tracing.
-//			RTOption.VERBOSE = true;//false;//true;
-			RTOption.DEBUGGING = false;//true;
-			RTOption.USE_CONSOLE=false;
-			RTOption.CODE_STEP_TRACING = false;
-			RTOption.BLOCK_TRACING = false;
-			RTOption.GOTO_TRACING = false;
-			RTOption.THREAD_TRACING = false;
-			RTOption.QPS_TRACING = false;
-			RTOption.SML_TRACING = false;
-			RTOption.LOOM_TRACING = false;
-			RTOption.USE_VIRTUAL_THREAD=true;
+//			RTOption.VERBOSE = true;
+//			RTOption.USE_CONSOLE=true;
+//			RTOption.BLOCK_TRACING = true;
+//			RTOption.GOTO_TRACING = false;
+//			RTOption.QPS_TRACING = false;
+//			RTOption.SML_TRACING = false;
 
 			String fileName=simulaHome+"/src/"+Global.packetName + name;
 			Option.RUNTIME_USER_DIR=new File(fileName).getParent();

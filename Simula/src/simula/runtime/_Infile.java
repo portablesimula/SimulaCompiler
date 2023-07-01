@@ -92,7 +92,7 @@ public class _Infile extends _Imagefile {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(final _TXT IMAGE_) {
-		if(_RT.DEBUGGING) TRACE_OPEN("Open InFile");
+		if(_RT.Option.VERBOSE) TRACE_OPEN("Open InFile");
 		if (_OPEN)	return (false);
 		image = IMAGE_;
 		_ENDFILE = false;
@@ -105,9 +105,10 @@ public class _Infile extends _Imagefile {
 			else reader=new InputStreamReader(System.in,_CHARSET);
 		}
 		else {
-			File file=doCreateAction(new File(FILE_NAME.edText()));
+			File file=doCreateAction();
 			if(!file.exists()) {
-				File selected=trySelectFile(file.getAbsoluteFile().getParentFile().toString());
+//				File selected=trySelectFile(file.getAbsoluteFile().getParentFile().toString());
+				File selected=trySelectFile(file.getAbsoluteFile().toString());
 				if(selected!=null) file=selected;				
 			}
 			try {

@@ -393,8 +393,9 @@ public class _Ranking {
     }
 
     public static String edit(_Ranking sqs) {
-    	StringBuilder s=new StringBuilder();
     	_Ranking x=RANK_FIRST(sqs);
+    	if(x==null) return("none");
+    	StringBuilder s=new StringBuilder();
     	do s.append(x.ed()).append(", ");
     	while((x=RANK_SUC(x))!=null);
     	return(s.toString());

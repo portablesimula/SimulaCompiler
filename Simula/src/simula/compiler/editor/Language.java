@@ -12,4 +12,4 @@ package simula.compiler.editor;
  * @author Øystein Myhre Andersen
  *
  */
-public enum Language { Simula,Java,Other }
+public enum Language { Simula,Jar,Text,Other }

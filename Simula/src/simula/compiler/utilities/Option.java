@@ -31,11 +31,14 @@ public final class Option {
 	public static boolean CaseSensitive=false;
 	public static boolean verbose = false; 
 	public static boolean WARNINGS=true;
+	public static boolean noExecution = false;	// true: Don't execute generated .jar file.
 	public static boolean EXTENSIONS=true;
+	public static File keepJava = null;			// Used by Java-Coding to save the generated .java files.
+												// If not set, a temp directory is used/created.
 
 	// Overall TRACING Options
 	public static boolean TRACING=false;
-	public static boolean DEBUGGING=false; // Set by EditorMenues - doDebugAction
+	public static boolean DEBUGGING=false;		// Set by EditorMenues - doDebugAction
 
 	// Scanner Trace Options
 	public static boolean TRACE_SCAN=false;
@@ -49,7 +52,7 @@ public final class Option {
 	// Checker Trace Options
 	public static boolean TRACE_CHECKER=false;
 	public static boolean TRACE_CHECKER_OUTPUT=false;
-	public static int TRACE_FIND=0;
+	public static int TRACE_FIND_MEANING=0;
 
 	// Java Coder Options
 	public static boolean TRACE_CODING=false;
@@ -61,37 +64,15 @@ public final class Option {
 	public static boolean TRACE_REPAIRING=false;
 
 	// Runtime Options
-	public static boolean TRACE_LOOM=false;
 	public static String SOURCE_FILE="";
 	public static String RUNTIME_USER_DIR="";
 
 
-	/** 
-	 * Enables/disables special S-Port Simula features,
-	 * such as inclusion of the S-Port Library.
-	 */
-	public static boolean sport = true;
-
-	/**
-	 * Used by Java-Coding to save the generated .java files.
-	 * <p>
-	 * If not set, a temp directory is used/created.
-	 */
-	public static File keepJava = null;
-
-	/**
-	 * Don't execute generated .jar file.
-	 */
-	public static boolean noExecution = false;
-
-	/**
-	 * Generate no warnings from Java-Compiler.
-	 */
-	public static boolean noJavacWarnings = false;
 
 	public static void InitCompilerOptions() {
 		Option.CaseSensitive=false;
 		Option.verbose = false;
+		Option.noExecution = false;
 		Option.WARNINGS=true;
 		Option.EXTENSIONS=true;
 
@@ -113,13 +94,12 @@ public final class Option {
 		// Coder Trace Options
 		Option.TRACE_CODING=false;
 
-		Option.noExecution = false;
-		Option.noJavacWarnings = false;
 	}
 
 	public static boolean getOption(String id) {
 		if(id.equalsIgnoreCase("CaseSensitive")) return(CaseSensitive); 
 		if(id.equalsIgnoreCase("VERBOSE")) return(verbose); 
+		if(id.equalsIgnoreCase("noExecution")) return(noExecution); 
 		if(id.equalsIgnoreCase("WARNINGS")) return(WARNINGS); 
 		if(id.equalsIgnoreCase("EXTENSIONS")) return(EXTENSIONS); 
 		if(id.equalsIgnoreCase("TRACING")) return(TRACING); 
@@ -132,8 +112,6 @@ public final class Option {
 		if(id.equalsIgnoreCase("TRACE_CHECKER_OUTPUT")) return(TRACE_CHECKER_OUTPUT); 
 		if(id.equalsIgnoreCase("TRACE_CODING")) return(TRACE_CODING); 
 		if(id.equalsIgnoreCase("TRACE_BYTECODE_OUTPUT")) return(TRACE_BYTECODE_OUTPUT); 
-		if(id.equalsIgnoreCase("noExecution")) return(noExecution); 
-		if(id.equalsIgnoreCase("noJavacWarnings")) return(noJavacWarnings); 
 		return(false);
 	}
 
@@ -141,6 +119,7 @@ public final class Option {
 	public static void setOption(String id,boolean val) {
 		if(id.equalsIgnoreCase("CaseSensitive")) CaseSensitive=val; 
 		if(id.equalsIgnoreCase("VERBOSE")) verbose=val; 
+		if(id.equalsIgnoreCase("noExecution")) noExecution=val; 
 		if(id.equalsIgnoreCase("WARNINGS")) WARNINGS=val; 
 		if(id.equalsIgnoreCase("EXTENSIONS")) EXTENSIONS=val; 
 		if(id.equalsIgnoreCase("TRACING")) TRACING=val; 
@@ -153,8 +132,6 @@ public final class Option {
 		if(id.equalsIgnoreCase("TRACE_CHECKER_OUTPUT")) TRACE_CHECKER_OUTPUT=val; 
 		if(id.equalsIgnoreCase("TRACE_CODING")) TRACE_CODING=val; 
 		if(id.equalsIgnoreCase("TRACE_BYTECODE_OUTPUT")) TRACE_BYTECODE_OUTPUT=val; 
-		if(id.equalsIgnoreCase("noExecution")) noExecution=val; 
-		if(id.equalsIgnoreCase("noJavacWarnings")) noJavacWarnings=val; 
 	}
 
 	public static void selectCompilerOptions() {
@@ -165,7 +142,6 @@ public final class Option {
 		panel.add(checkBox("Warnings","Generate no warnings"));
 		panel.add(checkBox("Extensions","Disable all language extensions. In other words, follow the Simula Standard literally"));
 		panel.add(checkBox("noExecution","Don't execute generated .jar file"));
-//		panel.add(checkBox("noJavacWarnings",""));
 		panel.add(checkBox("TRACING","Debug option"));
 		panel.add(checkBox("TRACE_SCAN","Debug option"));
 		panel.add(checkBox("TRACE_COMMENTS","Debug option"));
