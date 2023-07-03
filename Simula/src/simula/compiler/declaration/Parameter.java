@@ -148,11 +148,11 @@ import simula.compiler.utilities.Util;
     		    	return("_NAME<"+type.toJavaTypeClass()+">");
     		    case Procedure: return("_NAME<_PRCQNT>");
     		    case Label:     return("_NAME<_LABQNT>");
-    		    case Array:		return("_NAME<_ABSTRACT_ARRAY>");
+    		    case Array:		return("_NAME<_ARRAY>");
     		}
     	}
     	switch(kind) {
-    		case Array:     return("_ABSTRACT_ARRAY");
+    		case Array:     return("_ARRAY");
     		case Label:     return("_LABQNT");
     		case Procedure: return("_PRCQNT");
     		case Simple: // Fall through

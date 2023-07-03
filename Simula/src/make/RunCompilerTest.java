@@ -67,7 +67,7 @@ public final class RunCompilerTest {
 		// String name="/samples/LiftSimulation.sim";
 		// String name="/samples/PrimeUnder.sim";
 		// String name="/samples/Quine.sim";
-		 String name="/samples/Sudoku.sim";
+		// String name="/samples/Sudoku.sim";
 		// String name="/samples/SudokuPuzzle.sim";
 		// String name="/samples/TQueens.sim";
 
@@ -93,9 +93,10 @@ public final class RunCompilerTest {
 		// *** SIMULA DESIGN EXAMPLES
 		// String name="/design/Test.sim";
 		// String name="/design/ActivationStatement.sim";
-		//	 String name="/design/ArrayAssignment.sim";
-		// String name="/design/ArrayAsParameters.sim";
+		// String name="/design/ArrayAssignment.sim";
+		 String name="/design/ArrayAsParameters.sim";
 		// String name="/design/ArrayByValue.sim";
+		// String name="/design/ArrayDeclaration.sim";
 		// String name="/design/CallProcedureRemote.sim";
 		// String name="/design/CallProcedureConnected.sim";
 		// String name="/design/ProcedureDeclaration.sim";
@@ -253,7 +254,7 @@ public final class RunCompilerTest {
 //			Option.TRACE_FIND_MEANING=2;
 //			
 //			// Coder Trace Options
-//			Option.TRACE_CODING=true;
+			Option.TRACE_CODING=true;
 			Option.GNERATE_LINE_CALLS=true;
 //			
 //			Option.TRACE_REPAIRING=true;
@@ -262,7 +263,7 @@ public final class RunCompilerTest {
 
 			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
 			Global.packetName="simulaTestPrograms";
-//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");

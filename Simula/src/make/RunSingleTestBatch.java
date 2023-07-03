@@ -63,7 +63,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
 //		names.add("simtst27.sim"); // OK:  Test while-loops.
 //		names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
-//		names.add("simtst29.sim"); // OK:  Procedure parameters by value
+		names.add("simtst29.sim"); // OK:  Procedure parameters by value
 //		names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 //
 //		names.add("simtst31.sim"); // OK:  Labels and switches as parameters to procedures
@@ -203,7 +203,7 @@ public final class RunSingleTestBatch {
 //		names.add("simerr06.sim"); // OK: ArrayIndexOutOfBounds
 //		names.add("simerr07.sim"); // OK: Wrong number of paramerters to virtual procedure
 //		names.add("simerr08.sim"); // OK: Illegal assignment. Name parameter is not a variable
-		names.add("simerr09.sim"); // OK: Read/write access on DirectFile and DirectByteFile
+//		names.add("simerr09.sim"); // OK: Read/write access on DirectFile and DirectByteFile
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;

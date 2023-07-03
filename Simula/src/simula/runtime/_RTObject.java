@@ -31,7 +31,7 @@ public abstract class _RTObject {
 		detached, resumed, attached, terminated, terminatingProcess
 	}
 	public OperationalState STATE_;
-	public _Coroutine CORUT_;
+	public Coroutine CORUT_;
 
 	// RTS
 	public static final _BASICIO CTX_ = new _BASICIO(null);
@@ -66,7 +66,7 @@ public abstract class _RTObject {
 	public _RTObject(final _RTObject SL) {
 		if (SL != null) {
 			this._SL = SL;
-			this.CORUT_ = _Coroutine.getCurrentCoroutine();
+			this.CORUT_ = Coroutine.getCurrentCoroutine();
 		}
 	}
 
@@ -106,7 +106,7 @@ public abstract class _RTObject {
 		}
 	}
 	
-	public final class _INT_ARRAY extends _ABSTRACT_ARRAY {
+	public final class _INT_ARRAY extends _ARRAY {
 		final private int[] ELTS;
 		public _INT_ARRAY(final _BOUNDS... BOUNDS) {
 			super(BOUNDS); ELTS=new int[SIZE]; }
@@ -120,7 +120,7 @@ public abstract class _RTObject {
 			return(copy); }
 	}
 	
-	public final class _CHAR_ARRAY extends _ABSTRACT_ARRAY {
+	public final class _CHAR_ARRAY extends _ARRAY {
 		final private char[] ELTS;
 		public _CHAR_ARRAY(final _BOUNDS... BOUNDS) {
 			super(BOUNDS); ELTS=new char[SIZE]; }
@@ -134,7 +134,7 @@ public abstract class _RTObject {
 			return(copy); }
 	}
 	
-	public final class _BOOL_ARRAY extends _ABSTRACT_ARRAY {
+	public final class _BOOL_ARRAY extends _ARRAY {
 		final private boolean[] ELTS;
 		public _BOOL_ARRAY(final _BOUNDS... BOUNDS) {
 			super(BOUNDS); ELTS=new boolean[SIZE]; }
@@ -148,7 +148,7 @@ public abstract class _RTObject {
 			return(copy); }
 	}
 	
-	public abstract class _REALTYPE_ARRAY extends _ABSTRACT_ARRAY {
+	public abstract class _REALTYPE_ARRAY extends _ARRAY {
 		public _REALTYPE_ARRAY(final _BOUNDS... BOUNDS) { super(BOUNDS); }
 		public abstract double getRealTypeELEMENT(int i);
 	}
@@ -185,7 +185,7 @@ public abstract class _RTObject {
 		public double getRealTypeELEMENT(int i) { return(ELTS[i]); }
 	}
 	
-	public final class _TEXT_ARRAY extends _ABSTRACT_ARRAY {
+	public final class _TEXT_ARRAY extends _ARRAY {
 		final private _TXT[] ELTS;
 		public _TEXT_ARRAY(final _BOUNDS... BOUNDS) {
 			super(BOUNDS); ELTS=new _TXT[SIZE]; }
@@ -199,7 +199,7 @@ public abstract class _RTObject {
 			return(copy); }
 	}
 	
-	public final class _REF_ARRAY<T> extends _ABSTRACT_ARRAY {
+	public final class _REF_ARRAY<T> extends _ARRAY {
 		final private _RTObject[] ELTS;
 		public _REF_ARRAY(final _BOUNDS... BOUNDS) {
 			super(BOUNDS);
@@ -218,9 +218,9 @@ public abstract class _RTObject {
 	}
 
 
-	public _ABSTRACT_ARRAY arrayValue(final Object par) {
-		if (par instanceof _NAME<?> arr) return((_ABSTRACT_ARRAY)arr.get());
-		return ((_ABSTRACT_ARRAY) par);
+	public _ARRAY arrayValue(final Object par) {
+		if (par instanceof _NAME<?> arr) return((_ARRAY)arr.get());
+		return ((_ARRAY) par);
 	}
 
 	public _PRCQNT procValue(final Object par) {
@@ -711,7 +711,7 @@ public abstract class _RTObject {
 				if (DL != null && DL != CTX_) {
 					if (_RT.Option.GOTO_TRACING)	System.err.println("DL=" + DL.edObjectAttributes());
 					if (_RT.Option.GOTO_TRACING)	_RT.println("DL=" + DL.edObjectAttributes());
-					_Coroutine._PENDING_EXCEPTION = (RuntimeException) e;
+					Coroutine._PENDING_EXCEPTION = (RuntimeException) e;
 					DL.CORUT_.run();
 				} else {
 					String msg="Illegal GOTO " + ((_LABQNT)e).identifier;
@@ -890,7 +890,7 @@ public abstract class _RTObject {
 			endProgram(0);
 		} else {
 			if (this.CORUT_ != null && this.isDetachUsed()) {
-				_Coroutine.detach();
+				Coroutine.detach();
 			}
 		}
 	}
@@ -991,7 +991,7 @@ public abstract class _RTObject {
 		this.STATE_ = OperationalState.detached;
  
 		if (_RT.Option.QPS_TRACING) _RT.TRACE("DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
-		_Coroutine.detach();
+		Coroutine.detach();
 	}
 
 	// *********************************************************************
@@ -1150,7 +1150,7 @@ public abstract class _RTObject {
 			Runtime runtime=Runtime.getRuntime();
 			_RT.println(" -  Memory(used="+runtime.totalMemory()+",free="+runtime.freeMemory()+')');
 			_RT.println(" -  nProcessors="+runtime.availableProcessors());
-//			_RT.println(" -  "+(_RT.Option.USE_VIRTUAL_THREAD?"Virtual":"")+"Thread Count = " + _Coroutine.threadCount);
+//			_RT.println(" -  "+(_RT.Option.USE_VIRTUAL_THREAD?"Virtual":"")+"Thread Count = " + Coroutine.threadCount);
 //			_RT.println(" -  Active Thread Count = " + Thread.activeCount());
 			_RT.println(" -  Elapsed Time Approximately " + timeUsed/1000 + " sec.");
 		} else if (_RT.numberOfEditOverflows > 0)
@@ -1163,7 +1163,7 @@ public abstract class _RTObject {
 	// *** swapCoroutines
 	// *********************************************************************
 	static void swapCoroutines() {
-		_Coroutine cont = _Coroutine.getCurrentCoroutine();
+		Coroutine cont = Coroutine.getCurrentCoroutine();
 		//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);
 		if (cont == null) {
 			cont = _CUR.CORUT_;
@@ -1177,7 +1177,7 @@ public abstract class _RTObject {
 			}
 		} else {
 			//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: YIELD "+cont);
-			_Coroutine.detach();
+			Coroutine.detach();
 		}
 	}
 

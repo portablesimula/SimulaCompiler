@@ -683,7 +683,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param i
 	 * @return
 	 */
-	public static int lowerbound(final _ABSTRACT_ARRAY a,final int i) {
+	public static int lowerbound(final _ARRAY a,final int i) {
 		try {
 			return (a.lowerBound(i - 1));
 		} catch (_SimulaRuntimeError e) {
@@ -709,7 +709,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param i
 	 * @return
 	 */
-	public static int upperbound(final _ABSTRACT_ARRAY a,final int i) {
+	public static int upperbound(final _ARRAY a,final int i) {
 		try {
 			return (a.upperBound(i - 1));
 		} catch (_SimulaRuntimeError e) {

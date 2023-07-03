@@ -1,0 +1,11 @@
+% ArrayDeclaration
+begin
+	text array ta(6:56,13:34,-74:-30);
+	text t;
+	integer x;
+
+	t :- ta(45,21,-60);
+	
+	ta(45,21,-60) :- t;	
+  
+end;  

@@ -34,7 +34,7 @@ public abstract class _CLASS extends _BASICIO implements Runnable {
 	// *********************************************************************
 	private void beginCoroutine() {
 		// Using Thread or Virtual Thread
-		this.CORUT_=new _Coroutine(this);
+		this.CORUT_=new Coroutine(this);
 		if(_RT.Option.QPS_TRACING) _RT.TRACE("START "+this.edObjectIdent());
 		_RT.ASSERT(_CUR==this,"_CLASS.START:Invariant-1");
 		swapCoroutines();

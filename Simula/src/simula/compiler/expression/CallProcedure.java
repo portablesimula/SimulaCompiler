@@ -474,8 +474,8 @@ public final class CallProcedure {
 			s.append(actualParameter.toJavaCode()).append(".COPY()");
 		}
 		else if(mode==Parameter.Mode.name) {
-			s.append("new _NAME<_ABSTRACT_ARRAY>()");
-			s.append("{ public _ABSTRACT_ARRAY get() { return("+actualParameter.toJavaCode()+"); }");
+			s.append("new _NAME<_ARRAY>()");
+			s.append("{ public _ARRAY get() { return("+actualParameter.toJavaCode()+"); }");
 			s.append(" }");	
 		} else s.append(actualParameter.toJavaCode());
 	}

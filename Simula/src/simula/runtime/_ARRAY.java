@@ -1,15 +1,28 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.runtime;
 
 import simula.runtime._RTObject._BOUNDS;
 
-public abstract class _ABSTRACT_ARRAY {
-//	final private Object[] ELTS;
-	public final _BOUNDS[] BOUNDS;
-	public final int SIZE;
+/*
+ * See <a href="doc/SimulaRTS.pdf">Mapping Simula to Java (runtime design)</a> 
+ * Sect. 3.4 Array Quantities
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
+public abstract class _ARRAY {
+	public  final _BOUNDS[] BOUNDS;
+	public  final int SIZE;
 	private final int BASE;
 	final private int[] DOPE;
 
-	public _ABSTRACT_ARRAY(final _BOUNDS... BOUNDS) {
+	public _ARRAY(final _BOUNDS... BOUNDS) {
 		this.BOUNDS = BOUNDS;
 		DOPE=new int[BOUNDS.length];
 		DOPE[0]=1;
@@ -28,7 +41,7 @@ public abstract class _ABSTRACT_ARRAY {
 	public int lowerBound(int i) { return(BOUNDS[i].LB); }
 	public int upperBound(int i) { return(BOUNDS[i].LB + BOUNDS[i].SIZE - 1); }
 
-	public abstract _ABSTRACT_ARRAY COPY();
+	public abstract _ARRAY COPY();
 
 	public int index(int... x) {
 		int idx=0;
