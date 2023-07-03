@@ -61,8 +61,6 @@ public class Coroutine implements Runnable {
 		return current;
 	}
 
-	private static int count = 0;
-
 	public final void run() {
 		if (isDone())
 			throw new IllegalStateException("Coroutine terminated");
