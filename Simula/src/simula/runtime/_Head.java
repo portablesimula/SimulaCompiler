@@ -51,21 +51,21 @@ public class _Head extends _Linkage {
 	 * The references SUC and PRED initially point to the "head" itself, which
 	 * thereby represents an empty set.
 	 */
-    public _Head(final _RTObject staticLink) {
-       super(staticLink);
-       SUC=PRED=(_Linkage)_CUR;
-    }
+	public _Head(final _RTObject staticLink) {
+		super(staticLink);
+		SUC = PRED = (_Linkage) _CUR;
+	}
 
-    public _Head _STM() {
-//      SUC=PRED=(_Linkage)_CUR; // Moved to Constructor
-        EBLK(); // LINKAGE
-        return(this);
-    }
-
+	@Override
+	public _Head _STM() {
+		// SUC=PRED=(_Linkage)_CUR; // Moved to Constructor
+		EBLK(); // LINKAGE
+		return (this);
+	}
 
 	/**
-	 * The procedure "first" may be used to obtain a reference to the first
-	 * member of the set.
+	 * The procedure "first" may be used to obtain a reference to the first member
+	 * of the set.
 	 * 
 	 * @return The first member of the set(Head)
 	 */
@@ -74,8 +74,8 @@ public class _Head extends _Linkage {
 	}
 
 	/**
-	 * The procedure "last" may be used to obtain a reference to the last member
-	 * of the set.
+	 * The procedure "last" may be used to obtain a reference to the last member of
+	 * the set.
 	 * 
 	 * @return The last member of the set(Head)
 	 */
@@ -112,7 +112,7 @@ public class _Head extends _Linkage {
 	 * The procedure "clear" removes all members from the set.
 	 */
 	public void clear() {
-		for (_Link x = first(); x != null;x = first())
+		for (_Link x = first(); x != null; x = first())
 			x.out();
 
 	}

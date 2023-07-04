@@ -44,12 +44,12 @@ package simula.runtime;
  *
  */
 public class _Imagefile extends _File {
-	
+
 	/**
 	 * 
 	 */
 	public _TXT image;
-	
+
 	/**
 	 * The variable ENDFILE is true when the file is closed or when an image with
 	 * location greater than "lastloc" has been input (through "inimage"). It is set
@@ -59,14 +59,15 @@ public class _Imagefile extends _File {
 	protected boolean _ENDFILE = true;
 
 	// Constructor
-	public _Imagefile(final _RTObject staticLink,final _TXT FILENAME) {
-		super(staticLink,FILENAME);
+	public _Imagefile(final _RTObject staticLink, final _TXT FILENAME) {
+		super(staticLink, FILENAME);
 	}
-   
+
 	// Class Statements
+	@Override
 	public _Imagefile _STM() {
 		EBLK();
-		return(this);
+		return (this);
 	}
 
 	public void setpos(final int i) {
@@ -84,8 +85,7 @@ public class _Imagefile extends _File {
 	public int length() {
 		return (_TXT.length(image));
 	}
-   
-   
+
 	// ************************************************************************
 	// *** Output Functions for Outfile, Printfile and Directfile
 	// ************************************************************************
@@ -103,13 +103,14 @@ public class _Imagefile extends _File {
 	 * end outchar;
 	 * </pre>
 	 * <p>
-	 * The procedure "outchar" stores a character in the POS position of
-	 * "image". If "more" is false, "outimage" is called first.
+	 * The procedure "outchar" stores a character in the POS position of "image". If
+	 * "more" is false, "outimage" is called first.
 	 * 
 	 * @param c
 	 */
 	public void outchar(final char c) {
-		if (!more()) outimage();
+		if (!more())
+			outimage();
 		_TXT.putchar(image, c);
 	}
 
@@ -129,17 +130,16 @@ public class _Imagefile extends _File {
 	 * The procedures "outint", "outfix", "outreal" and "outfrac" are defined in
 	 * terms of the corresponding editing procedures of "image". They provide
 	 * facilities for "item-oriented" output. Each item is edited into a "field"
-	 * (subtext of "image") normally starting at the current accessible
-	 * character. POS is advanced correspondingly. If the remainder of "image"
-	 * is too short to contain the item, "outimage" is called implicitly prior
-	 * to the editing operation. The field is space-filled before the editing
-	 * operation.
+	 * (subtext of "image") normally starting at the current accessible character.
+	 * POS is advanced correspondingly. If the remainder of "image" is too short to
+	 * contain the item, "outimage" is called implicitly prior to the editing
+	 * operation. The field is space-filled before the editing operation.
 	 * <p>
-	 * A run-time error occurs if a field cannot be contained within the full
-	 * length of "image".
+	 * A run-time error occurs if a field cannot be contained within the full length
+	 * of "image".
 	 * <p>
-	 * Parameter "w" determines both the length of this field and the adjustment
-	 * of the item within it, as follows.
+	 * Parameter "w" determines both the length of this field and the adjustment of
+	 * the item within it, as follows.
 	 * <p>
 	 * 
 	 * <pre>
@@ -176,56 +176,81 @@ public class _Imagefile extends _File {
 	 *     else FIELD(w).putint(i);
 	 * </pre>
 	 * 
-	 * @param i
-	 *            The integer value to be edited and outputed.
+	 * @param i The integer value to be edited and outputed.
 	 * @param w
-	 *            <pre>
+	 * 
+	 *          <pre>
 	 *     w > 0 The field length is w, the item is right-adjusted.
 	 * 
 	 *     w < 0 The field length is abs(w), the item is left-adjusted.
 	 * 
 	 *     w = 0 The field length is the exact number of characters needed to
 	 *     contain the item (i.e. no leading or trailing spaces).
-	 * </pre>
+	 *          </pre>
 	 */
-	public void outint(final int i,final int w) {
-		if(w<=0)
-		{ _TXT T=blanks(20); _TXT.putint(T, i);
-		  String S=T.edText().trim();
-		  if(w==0) outtext(S); else _ASGSTR(_FIELD(-w),S);
-		} else _TXT.putint(_FIELD(w), i);
+	public void outint(final int i, final int w) {
+		if (w <= 0) {
+			_TXT T = blanks(20);
+			_TXT.putint(T, i);
+			String S = T.edText().trim();
+			if (w == 0)
+				outtext(S);
+			else
+				_ASGSTR(_FIELD(-w), S);
+		} else
+			_TXT.putint(_FIELD(w), i);
 	}
 
-	public void outfix(final double r,final int n,final int w) {
-		if(w<=0)
-		{ _TXT T=blanks(n+10); _TXT.putfix(T, r, n);
-		  String S=T.edText().trim();
-		  if(w==0) outtext(S); else _ASGSTR(_FIELD(-w),S);
-		} else _TXT.putfix(_FIELD(w),r, n);
+	public void outfix(final double r, final int n, final int w) {
+		if (w <= 0) {
+			_TXT T = blanks(n + 10);
+			_TXT.putfix(T, r, n);
+			String S = T.edText().trim();
+			if (w == 0)
+				outtext(S);
+			else
+				_ASGSTR(_FIELD(-w), S);
+		} else
+			_TXT.putfix(_FIELD(w), r, n);
 	}
 
-	public void outreal(final double r,final int n,final int w) {
-		if(w<=0)
-		{ _TXT T=blanks(n+10); _TXT.putreal(T, r, n);
-		  String S=T.edText().trim();
-		  if(w==0) outtext(S); else _ASGSTR(_FIELD(-w),S);
-		} else _TXT.putreal(_FIELD(w),r, n);
+	public void outreal(final double r, final int n, final int w) {
+		if (w <= 0) {
+			_TXT T = blanks(n + 10);
+			_TXT.putreal(T, r, n);
+			String S = T.edText().trim();
+			if (w == 0)
+				outtext(S);
+			else
+				_ASGSTR(_FIELD(-w), S);
+		} else
+			_TXT.putreal(_FIELD(w), r, n);
 	}
 
-	public void outreal(final float r,final int n,final int w) {
-		if(w<=0)
-		{ _TXT T=blanks(n+10); _TXT.putreal(T, r, n);
-		  String S=T.edText().trim();
-		  if(w==0) outtext(S); else _ASGSTR(_FIELD(-w),S);
-		} else _TXT.putreal(_FIELD(w),r, n);
+	public void outreal(final float r, final int n, final int w) {
+		if (w <= 0) {
+			_TXT T = blanks(n + 10);
+			_TXT.putreal(T, r, n);
+			String S = T.edText().trim();
+			if (w == 0)
+				outtext(S);
+			else
+				_ASGSTR(_FIELD(-w), S);
+		} else
+			_TXT.putreal(_FIELD(w), r, n);
 	}
 
-	public void outfrac(final int i,final int n,final int w) {
-		if(w<=0)
-		{ _TXT T=blanks(n+10); _TXT.putfrac(T, i, n);
-		  String S=T.edText().trim();
-		  if(w==0) outtext(S); else _ASGSTR(_FIELD(-w),S);
-		} else _TXT.putfrac(_FIELD(w),i, n);
+	public void outfrac(final int i, final int n, final int w) {
+		if (w <= 0) {
+			_TXT T = blanks(n + 10);
+			_TXT.putfrac(T, i, n);
+			String S = T.edText().trim();
+			if (w == 0)
+				outtext(S);
+			else
+				_ASGSTR(_FIELD(-w), S);
+		} else
+			_TXT.putfrac(_FIELD(w), i, n);
 	}
 
 	/**
@@ -240,15 +265,20 @@ public class _Imagefile extends _File {
 	 * 
 	 * @param T
 	 */
-	public void outtext(final String s) { outtext(new _TXT(s)); }
-	public void outtext(final _TXT t) {
-		if(t==null) return;
-		if ((pos() > 1) && (_TXT.length(t) > length() - pos() + 1))	outimage();
-		_TXT.setpos(t, 1);
-		while (_TXT.more(t)) outchar(_TXT.getchar(t));
+	public void outtext(final String s) {
+		outtext(new _TXT(s));
 	}
 
-	   
+	public void outtext(final _TXT t) {
+		if (t == null)
+			return;
+		if ((pos() > 1) && (_TXT.length(t) > length() - pos() + 1))
+			outimage();
+		_TXT.setpos(t, 1);
+		while (_TXT.more(t))
+			outchar(_TXT.getchar(t));
+	}
+
 	// ************************************************************************
 	// *** Input Functions for Infile and Directfile
 	// ************************************************************************
@@ -275,8 +305,8 @@ public class _Imagefile extends _File {
 	 * @return
 	 */
 	public char inchar() {
-//		if (!more()) inimage();  // From Infile
-		while (!more())	inimage(); // From Directfile (Skip never-written-images ???)
+		while (!more())
+			inimage();
 		return (_TXT.getchar(image));
 	}
 
@@ -292,22 +322,22 @@ public class _Imagefile extends _File {
 	 *            end intext;
 	 * </pre>
 	 * <p>
-	 * The expression "intext(w)" where "w" is a positive integer is a reference
-	 * to a new alterable main frame of length w containing a copy of the next w
-	 * characters of the file. POS is set to the following character. The
-	 * expression "intext(0)" references notext. In contrast to the
-	 * item-oriented procedures (see below), "intext" operates on a continuous
-	 * stream of characters, reading several images if necessary.
+	 * The expression "intext(w)" where "w" is a positive integer is a reference to
+	 * a new alterable main frame of length w containing a copy of the next w
+	 * characters of the file. POS is set to the following character. The expression
+	 * "intext(0)" references notext. In contrast to the item-oriented procedures
+	 * (see below), "intext" operates on a continuous stream of characters, reading
+	 * several images if necessary.
 	 * <p>
-	 * Note: The result may be a reference to an "EOF-image" (cf.
-	 * inimage/inrecord).
+	 * Note: The result may be a reference to an "EOF-image" (cf. inimage/inrecord).
 	 * 
 	 * @param w
 	 * @return
 	 */
 	public _TXT intext(final int w) {
 		_TXT T = blanks(w);
-		while (_TXT.more(T)) _TXT.putchar(T,inchar());
+		while (_TXT.more(T))
+			_TXT.putchar(T, inchar());
 		return (T);
 	}
 
@@ -329,8 +359,7 @@ public class _Imagefile extends _File {
 	 * The purpose of the procedure "lastitem" is to skip past all SP and HT
 	 * characters (ISOrank 32 and 9 respectively). The process of scanning may
 	 * involve the transfer of several successive external images. If the file
-	 * contains no further non-space, non-tab characters the value true is
-	 * returned.
+	 * contains no further non-space, non-tab characters the value true is returned.
 	 * 
 	 * @return
 	 */
@@ -339,12 +368,15 @@ public class _Imagefile extends _File {
 		while (!_ENDFILE && (c == ' ' || c == '\t')) {
 			c = inchar();
 		}
-		if (c != ' ') setpos(pos() - 1);
+		if (c != ' ')
+			setpos(pos() - 1);
 		return (_ENDFILE);
 	}
+
 	private _TXT nextItem() {
-		if (lastitem())	throw new _SimulaRuntimeError("Attempt to read past EOF");
-		return(_TXT.sub(image, pos(), length() - pos() + 1));
+		if (lastitem())
+			throw new _SimulaRuntimeError("Attempt to read past EOF");
+		return (_TXT.sub(image, pos(), length() - pos() + 1));
 	}
 
 	/**
@@ -361,10 +393,9 @@ public class _Imagefile extends _File {
 	 * end inint;
 	 * </pre>
 	 * <p>
-	 * The procedures "inint" is defined in terms of the corresponding
-	 * de-editing procedure of "image". This procedure, starting at the current
-	 * "pos", skip spaces and tab's, and then scan past and convert a numeric
-	 * item.
+	 * The procedures "inint" is defined in terms of the corresponding de-editing
+	 * procedure of "image". This procedure, starting at the current "pos", skip
+	 * spaces and tab's, and then scan past and convert a numeric item.
 	 * 
 	 * @return the value of an integer item.
 	 */
@@ -389,12 +420,11 @@ public class _Imagefile extends _File {
 	 * end inreal;
 	 * </pre>
 	 * <p>
-	 * The procedure "inreal" is defined in terms of the corresponding
-	 * de-editing procedure of "image". This procedure, starting at the current
-	 * "pos", skip spaces and tab's, and then scan past and convert a numeric
-	 * item.
+	 * The procedure "inreal" is defined in terms of the corresponding de-editing
+	 * procedure of "image". This procedure, starting at the current "pos", skip
+	 * spaces and tab's, and then scan past and convert a numeric item.
 	 * 
-	 * @return
+	 * @return the value of an real item.
 	 */
 	public double inreal() {
 		_TXT T = nextItem();
@@ -416,13 +446,12 @@ public class _Imagefile extends _File {
 	 * end infrac;
 	 * </pre>
 	 * <p>
-	 * The procedure "infrac" is defined in terms of the corresponding
-	 * de-editing procedure of "image". This procedure, starting at the current
-	 * "pos", skip spaces and tab's, and then scan past and convert a numeric
-	 * item.
+	 * The procedure "infrac" is defined in terms of the corresponding de-editing
+	 * procedure of "image". This procedure, starting at the current "pos", skip
+	 * spaces and tab's, and then scan past and convert a numeric item.
 	 * 
 	 * 
-	 * @return
+	 * @return the value of a fractionated integer item.
 	 */
 	public int infrac() {
 		_TXT T = nextItem();

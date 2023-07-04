@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import simula.compiler.utilities.Util;
 import simula.runtime._RT.Option;
 
 /**
@@ -28,12 +27,11 @@ import simula.runtime._RT.Option;
  * @author Øystein Myhre Andersen
  *
  */
-// public final class _ENVIRONMENT {
 public class _ENVIRONMENT extends _RTObject {
 	// NOTE: When updating release id, change version in setup.SimulaExtractor and simula.Global
-    public static final String simulaReleaseID="Simula-2.0";
+	public static final String simulaReleaseID = "Simula-2.0";
 
-    static long _STARTTIME = System.currentTimeMillis();
+	static long _STARTTIME = System.currentTimeMillis();
 	static char CURRENTLOWTEN = '&';
 	static char CURRENTDECIMALMARK = '.';
 	public final static double maxlongreal = Double.MAX_VALUE;
@@ -61,7 +59,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 *   <prog>:    Identification of the executing task or program
 	 * </pre>
 	 */
-	public final static String simid = "Portable "+simulaReleaseID;
+	public final static String simid = "Portable " + simulaReleaseID;
 	public final static String siteid = "";
 	public final static String OS = "";
 	public final static String CPU = "";
@@ -69,8 +67,8 @@ public class _ENVIRONMENT extends _RTObject {
 	public final static String job = "";
 	public final static String acc = "";
 	public final static String prog = "";
-	public final static String simulaIdent = simid + "!!!" + siteid + "!!!" + OS + "!!!" + CPU + "!!!" + user + "!!!" + job
-			+ "!!!" + acc + "!!!" + prog;
+	public final static String simulaIdent = simid + "!!!" + siteid + "!!!" + OS + "!!!" + CPU + "!!!" + user + "!!!"
+			+ job + "!!!" + acc + "!!!" + prog;
 
 	public static _TXT simulaid() {
 		return (new _TXT(simulaIdent));
@@ -84,8 +82,8 @@ public class _ENVIRONMENT extends _RTObject {
 	// ************************************************************
 	// *** object IS classIdentifier
 	// ************************************************************
-	public static boolean _IS(final Object obj,final Class<?> cls) {
-		return((obj == null)?false:(obj.getClass() == cls));
+	public static boolean _IS(final Object obj, final Class<?> cls) {
+		return ((obj == null) ? false : (obj.getClass() == cls));
 	}
 
 	// *****************************************
@@ -109,7 +107,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param j
 	 * @return
 	 */
-	public static int mod(final int i,final int j) {
+	public static int mod(final int i, final int j) {
 		int res = i % j;
 		if (res == 0)
 			return (0);
@@ -131,7 +129,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param j
 	 * @return
 	 */
-	public static int rem(final int i,final int j) {
+	public static int rem(final int i, final int j) {
 		return (i % j);
 	}
 
@@ -200,7 +198,7 @@ public class _ENVIRONMENT extends _RTObject {
 	/**
 	 * Integer Power: b ** x
 	 */
-	public static int _IPOW(final int b,int x) {
+	public static int _IPOW(final int b, int x) {
 		// _RT.println("IPOW("+b+','+x+')');
 		if (x == 0) {
 			if (b == 0)
@@ -210,12 +208,12 @@ public class _ENVIRONMENT extends _RTObject {
 			throw new _SimulaRuntimeError("Exponentiation: " + b + " ** " + x + "  Result is undefined.");
 		else if (b == 0)
 			return (0); // 0 ** non_zero ==> 0
-		
-		long res=(long) Math.pow((double)b,(double)x);
-		if(res > Integer.MAX_VALUE || res < Integer.MIN_VALUE)
-			throw new _SimulaRuntimeError("Arithmetic overflow: "+b+" ** "+x+" ==> "+res
-					+" which is outside integer value range["+Integer.MIN_VALUE+':'+Integer.MAX_VALUE+']');
-		return((int)res);
+
+		long res = (long) Math.pow((double) b, (double) x);
+		if (res > Integer.MAX_VALUE || res < Integer.MIN_VALUE)
+			throw new _SimulaRuntimeError("Arithmetic overflow: " + b + " ** " + x + " ==> " + res
+					+ " which is outside integer value range[" + Integer.MIN_VALUE + ':' + Integer.MAX_VALUE + ']');
+		return ((int) res);
 	}
 
 	/**
@@ -292,6 +290,7 @@ public class _ENVIRONMENT extends _RTObject {
 	public static char Char(final int i) {
 		return ((char) i);
 	}
+
 	public static char _char(final int i) {
 		return ((char) i);
 	}
@@ -452,7 +451,7 @@ public class _ENVIRONMENT extends _RTObject {
 	public static char decimalmark(final char c) {
 		char decimalmark = 0;
 		if (c != '.' && c != ',') {
-			throw new _SimulaRuntimeError("Decimalmark error: "+c);
+			throw new _SimulaRuntimeError("Decimalmark error: " + c);
 		} else {
 			decimalmark = CURRENTDECIMALMARK;
 			CURRENTDECIMALMARK = c;
@@ -475,9 +474,10 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @return
 	 */
 	public static _TXT upcase(_TXT t) {
-		if (t == null) t = NOTEXT;
-		String s=t.edText().toUpperCase();
-		return(_ASGTXT(t,new _TXT(s)));
+		if (t == null)
+			t = NOTEXT;
+		String s = t.edText().toUpperCase();
+		return (_ASGTXT(t, new _TXT(s)));
 //		return(new _TXT(t.edText().toUpperCase()));
 	}
 
@@ -496,9 +496,10 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @return
 	 */
 	public static _TXT lowcase(_TXT t) {
-		if (t == null) t = NOTEXT;
-		String s=t.edText().toLowerCase();
-		return(_ASGTXT(t,new _TXT(s)));
+		if (t == null)
+			t = NOTEXT;
+		String s = t.edText().toLowerCase();
+		return (_ASGTXT(t, new _TXT(s)));
 //		return(new _TXT(t.edText().toLowerCase()));  blanks
 	}
 
@@ -538,7 +539,7 @@ public class _ENVIRONMENT extends _RTObject {
 		return (Math.atan(r));
 	}
 
-	public static double arctan2(final double y,final double x) {
+	public static double arctan2(final double y, final double x) {
 		return (Math.atan2(y, x));
 	}
 
@@ -584,23 +585,23 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param y
 	 * @return
 	 */
-	public static double max(final double x,final double y) {
+	public static double max(final double x, final double y) {
 		return (Math.max(x, y));
 	}
 
-	public static float max(final float x,final float y) {
+	public static float max(final float x, final float y) {
 		return (Math.max(x, y));
 	}
 
-	public static int max(final int x,final int y) {
+	public static int max(final int x, final int y) {
 		return (Math.max(x, y));
 	}
 
-	public static char max(final char x,final char y) {
+	public static char max(final char x, final char y) {
 		return ((char) Math.max((int) x, (int) y));
 	}
 
-	public static _TXT max(final _TXT x,final _TXT y) {
+	public static _TXT max(final _TXT x, final _TXT y) {
 		return (_TXTREL_LT(x, y) ? y : x);
 	}
 
@@ -618,23 +619,23 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param y
 	 * @return
 	 */
-	public static double min(final double x,final double y) {
+	public static double min(final double x, final double y) {
 		return (Math.min(x, y));
 	}
 
-	public static float min(final float x,final float y) {
+	public static float min(final float x, final float y) {
 		return (Math.min(x, y));
 	}
 
-	public static int min(final int x,final int y) {
+	public static int min(final int x, final int y) {
 		return (Math.min(x, y));
 	}
 
-	public static char min(final char x,final char y) {
+	public static char min(final char x, final char y) {
 		return ((char) Math.min((int) x, (int) y));
 	}
 
-	public static _TXT min(final _TXT x,final _TXT y) {
+	public static _TXT min(final _TXT x, final _TXT y) {
 		return (_TXTREL_LT(x, y) ? x : y);
 	}
 
@@ -657,8 +658,6 @@ public class _ENVIRONMENT extends _RTObject {
 	 */
 	public static void error(final _TXT msg) {
 		throw new _SimulaRuntimeError(msg.edText());
-//		System.out.println(msg.edText());
-//		terminate_program();
 	}
 
 	// *****************************************
@@ -683,7 +682,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param i
 	 * @return
 	 */
-	public static int lowerbound(final _ARRAY a,final int i) {
+	public static int lowerbound(final _ARRAY a, final int i) {
 		try {
 			return (a.lowerBound(i - 1));
 		} catch (_SimulaRuntimeError e) {
@@ -709,7 +708,7 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param i
 	 * @return
 	 */
-	public static int upperbound(final _ARRAY a,final int i) {
+	public static int upperbound(final _ARRAY a, final int i) {
 		try {
 			return (a.upperBound(i - 1));
 		} catch (_SimulaRuntimeError e) {
@@ -720,7 +719,7 @@ public class _ENVIRONMENT extends _RTObject {
 	// *********************************************************************
 	// *** Random drawing ***
 	// *********************************************************************
-	
+
 	// **********************************************************************
 	// *** Random drawing: Procedure draw
 	// **********************************************************************
@@ -735,9 +734,12 @@ public class _ENVIRONMENT extends _RTObject {
 	 */
 	public static boolean draw(final double a, final _NAME<Integer> U) {
 		boolean res;
-		if (a >= 1.0) res = true;
-		else if (a <= 0.0) res = false;
-		else res = a >= _RandomDrawing.basicDRAW(U);
+		if (a >= 1.0)
+			res = true;
+		else if (a <= 0.0)
+			res = false;
+		else
+			res = a >= _RandomDrawing.basicDRAW(U);
 		return (res);
 	}
 
@@ -754,8 +756,9 @@ public class _ENVIRONMENT extends _RTObject {
 	 * If b < a, the call constitutes an error.
 	 */
 	public static int randint(final int a, final int b, final _NAME<Integer> U) {
-		if (b < a) throw new _SimulaRuntimeError("Randint(a,b,u):  b < a");
-		return( entier(_RandomDrawing.basicDRAW(U) * ((b - a + 1))) + a );
+		if (b < a)
+			throw new _SimulaRuntimeError("Randint(a,b,u):  b < a");
+		return (entier(_RandomDrawing.basicDRAW(U) * ((b - a + 1))) + a);
 	}
 
 	// **********************************************************************
@@ -771,8 +774,9 @@ public class _ENVIRONMENT extends _RTObject {
 	 * call constitutes an error.
 	 */
 	public static double uniform(final double a, final double b, final _NAME<Integer> U) {
-		if (b < a) throw new _SimulaRuntimeError("Uniform(a,b,u): b < a");
-		return( a + ((b - a) * _RandomDrawing.basicDRAW(U)) );
+		if (b < a)
+			throw new _SimulaRuntimeError("Uniform(a,b,u): b < a");
+		return (a + ((b - a) * _RandomDrawing.basicDRAW(U)));
 	}
 
 	// **********************************************************************
@@ -790,7 +794,8 @@ public class _ENVIRONMENT extends _RTObject {
 	public static double normal(final double a, final double b, final _NAME<Integer> U) {
 		double t, p, q, v, x;
 		boolean z;
-		if (b < 0.0) throw new _SimulaRuntimeError("Normal(a,b,u):  b <= 0.");
+		if (b < 0.0)
+			throw new _SimulaRuntimeError("Normal(a,b,u):  b <= 0.");
 		v = _RandomDrawing.basicDRAW(U);
 		if (v > 0.5) {
 			z = true;
@@ -822,9 +827,10 @@ public class _ENVIRONMENT extends _RTObject {
 	 * 
 	 * If a is non-positive, a runtime error occurs.
 	 */
-	public static double negexp(final double a,final _NAME<Integer> U) {
-		if (a <= 0.0) throw new _SimulaRuntimeError("Negexp(a,u): a <= 0");
-		return( -Math.log(_RandomDrawing.basicDRAW(U)) / a );
+	public static double negexp(final double a, final _NAME<Integer> U) {
+		if (a <= 0.0)
+			throw new _SimulaRuntimeError("Negexp(a,u): a <= 0");
+		return (-Math.log(_RandomDrawing.basicDRAW(U)) / a);
 	}
 
 	// **********************************************************************
@@ -987,10 +993,10 @@ public class _ENVIRONMENT extends _RTObject {
 	 * 4. if D = 0: linear = B(i-1) if D <> 0: linear = B(i-1) + (B(i) -
 	 * B(i-1))*(u-A(i-1))/D
 	 */
-	public static double linear(final _REALTYPE_ARRAY A,final _REALTYPE_ARRAY B,final _NAME<Integer> U) {
+	public static double linear(final _REALTYPE_ARRAY A, final _REALTYPE_ARRAY B, final _NAME<Integer> U) {
 		double res;
-		int nelt=A.SIZE;
-		if(nelt != B.SIZE)
+		int nelt = A.SIZE;
+		if (nelt != B.SIZE)
 			throw new _SimulaRuntimeError("Linear(A,B,U): The number of elements in A and B are different.");
 		double v = _RandomDrawing.basicDRAW(U);
 		int i = 0;
@@ -1070,9 +1076,7 @@ public class _ENVIRONMENT extends _RTObject {
 		} while (j < nelt);
 		return (result);
 	}
-	
-	
-	
+
 	// *****************************************
 	// *** Calendar and timing utilities ***
 	// *****************************************
@@ -1147,60 +1151,71 @@ public class _ENVIRONMENT extends _RTObject {
 	 * @param c
 	 * @param d
 	 */
-	public static void histo(final _FLOAT_ARRAY A,final _FLOAT_ARRAY B,final float c,final float d) {
-		if(A.nDim()!=1) throw new _SimulaRuntimeError("histo(A,B,c,d) - A is not one-dimensional");
-		if(B.nDim()!=1) throw new _SimulaRuntimeError("histo(A,B,c,d) - B is not one-dimensional");
+	public static void histo(final _FLOAT_ARRAY A, final _FLOAT_ARRAY B, final float c, final float d) {
+		if (A.nDim() != 1)
+			throw new _SimulaRuntimeError("histo(A,B,c,d) - A is not one-dimensional");
+		if (B.nDim() != 1)
+			throw new _SimulaRuntimeError("histo(A,B,c,d) - B is not one-dimensional");
 		int nelt = B.SIZE;
-		if (nelt >= A.SIZE) throw new _SimulaRuntimeError("histo(A,B,c,d) - A'length <= B'length");
-//		try {
-			int i=0;
-			EX: do {
-				if (B.ELTS[i] >= c)
-					break EX;
-				i = i + 1;
-			} while (i < nelt);
-			A.ELTS[i] = A.ELTS[i] + d;
-//		} catch(Exception e) { 	
-//			throw new _SimulaRuntimeError("histo(A,B,c,d) - Internal Error",e);
-//		}
+		if (nelt >= A.SIZE)
+			throw new _SimulaRuntimeError("histo(A,B,c,d) - A'length <= B'length");
+		int i = 0;
+		EX: do {
+			if (B.ELTS[i] >= c)
+				break EX;
+			i = i + 1;
+		} while (i < nelt);
+		A.ELTS[i] = A.ELTS[i] + d;
 	}
 
 	// **********************************************************************
 	// *** Additional Standard Procedures
 	// **********************************************************************
-	
 
 	// **********************************************************************
 	// *** Editing: Text Procedure edit, edfix, edtime
 	// **********************************************************************
-	public static _TXT edit(final boolean n) { return(new _TXT(""+n)); }
-	public static _TXT edit(final char n)    { return(new _TXT(""+n)); }
-	public static _TXT edit(final long n)    { return(new _TXT((""+n))); }
-	public static _TXT edit(final float n)   { return(new _TXT((""+n).replace('E','&'))); }
-	public static _TXT edit(final double n)  { return(new _TXT((""+n).replace("E","&&"))); }
-	public static _TXT edfix(final double r,final int n) {
-		_TXT T=blanks(n+10); _TXT.putfix(T, r, n);
-		String S=T.edText().trim();
-		return(new _TXT(S));
-	}
-	public static _TXT edtime(double hours) {
-		return(new _TXT(LocalTime.ofSecondOfDay((long) (hours*60*60)).toString()));
+	public static _TXT edit(final boolean n) {
+		return (new _TXT("" + n));
 	}
 
-	
+	public static _TXT edit(final char n) {
+		return (new _TXT("" + n));
+	}
+
+	public static _TXT edit(final long n) {
+		return (new _TXT(("" + n)));
+	}
+
+	public static _TXT edit(final float n) {
+		return (new _TXT(("" + n).replace('E', '&')));
+	}
+
+	public static _TXT edit(final double n) {
+		return (new _TXT(("" + n).replace("E", "&&")));
+	}
+
+	public static _TXT edfix(final double r, final int n) {
+		_TXT T = blanks(n + 10);
+		_TXT.putfix(T, r, n);
+		String S = T.edText().trim();
+		return (new _TXT(S));
+	}
+
+	public static _TXT edtime(double hours) {
+		return (new _TXT(LocalTime.ofSecondOfDay((long) (hours * 60 * 60)).toString()));
+	}
+
 	// **********************************************************************
 	// *** Utility: Procedure waitSomeTime
 	// **********************************************************************
 	public static void waitSomeTime(final int millies) {
-		// _RT.println("ENVIRONMENT.waitSomeTime: sleep="+millies);
 		try {
 			Thread.sleep(millies);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// _RT.println("ENVIRONMENT.waitSomeTime: awake="+millies);
 	}
-
 
 	// **********************************************************************
 	// *** Utility: Procedure printThreadList
@@ -1208,554 +1223,569 @@ public class _ENVIRONMENT extends _RTObject {
 	public static void printThreadList(final boolean withStackTrace) {
 		_RT.printThreadList(withStackTrace);
 	}
-	  
-	
+
 	// **********************************************************************
 	// *** Utility: Procedure printStaticChain
 	// **********************************************************************
-	public static void printStaticChain() { _RT.printStaticChain(_RTObject._CUR); }
-
+	public static void printStaticChain() {
+		_RT.printStaticChain(_RTObject._CUR);
+	}
 
 	// **********************************************************************
 	// *** Additional S-Port'like Procedures
 	// **********************************************************************
-	
-	public static _PRCQNT EXCEPTION_HANDLER=null;
-    public static void DEFEXCEPTION(final _PRCQNT EXCEPTION_HANDLER) {
-    	//System.out.println("ENVIRONMENT.DEFEXCEPTION: EXCEPTION_HANDLER="+EXCEPTION_HANDLER);
-    	_ENVIRONMENT.EXCEPTION_HANDLER=EXCEPTION_HANDLER;
-    }
 
-    
-    public static int hash(final _TXT txt) {
-        if(txt==null || _TXT.length(txt)==0) return(0);
-        String s=txt.edText();
-        String tstrip=s.trim();
-        if(tstrip.length()==0) return(0);
-        int a=tstrip.charAt(0);
-        if(tstrip.length() > 3) {
-        	a= a +   8*tstrip.charAt(1);
-            a= a +  64*rank(tstrip.charAt(2));
-        }
-        a= a + 512*tstrip.charAt(tstrip.length()-1) + s.length();
-    	return(a & 255);
-    }
+	public static _PRCQNT EXCEPTION_HANDLER = null;
 
-   
-    public static char loadChar(final _TXT t,final int i) {
-    	// Returns the character at position i+1 (NB).
-    	// I.e. characters are counted from zero
-    	// c=t.char[i];
-    	_TEXTOBJ obj=t.OBJ;
-    	char c=obj.MAIN[t.START+i];
-//    	System.out.println("_ENVIRONMENT.loadrChar("+i+") ==> "+(int)c);
-    	return(c);
-    }
-    
-    public static void storeChar(final char c,final _TXT t,final int i) {
-    	// Deposit c at position i+1 (NB).
-    	// I.e. characters are counted from zero
-    	// t.char[i]=c;
-    	_TEXTOBJ obj=t.OBJ;
-    	obj.MAIN[t.START+i]=c;
-    }
-    
-    /**
-     * The routine getTextInfo is defined to get all information from the environment to the
-     * front-end that must be given as a text.
-     * 
-     * The parameter index is an integer that specifies what information we request. The
-     * result will be a string which is filled into result. The export parameter filled gives the
-     * number of characters in the string.
-     * 
-     * Index: Interpretation:
-     * 
-     * 1 What is the name of the source input file?
-     * Result will give the name.
-     * 
-     * 2 What is the name of the listing file?
-     * Result will give the file name. If no such output is to be produced, then the string will
-     * be empty.
-     * 
-     * 3 What is the name of the file for separate output of diagnostics messages?
-     * Result will give the file name. If no such output is to be produced, then the string will
-     * be empty.
-     * 
-     * 4 What is the name of the file for storing the normal (byte packed) S-code?
-     * Result will give the file name. If no such output is to be produced, then the string will
-     * be empty.
-     * 
-     * 5 What is the name of the file for storing decimally coded S-code?
-     * Result will give the file name. If no such output is to be produced, then the string will
-     * be empty.
-     * 
-     * 6 What is the name of the file for storing textually coded S-code?
-     * Result will give the file name. If no such output is to be produced, then the string will
-     * be empty.
-     * 
-     * 7 What is the name of the scratch file to be used for storing the intermediate code
-     * between the passes in the front-end?
-     * Result will give the name of the file.
-     * 
-     * 8 What is the name of the scratch file to be used for storing the declaration structures
-     * between the passes in the front-end?
-     * Result will give the name of the file.
-     * 
-     * 9 Reserved for further scratch file requests.
-     * Result will give the name of the file.
-     * 
-     * 10 Reserved for further scratch file requests.
-     * Result will give the name of the file.
-     * 
-     * 11 What is the name of the attribute file for the current compilation? This will only be
-     * necessary for a separate compilation. This file will be used as the front-end's attribute
-     * file. (Cf. section 4.6)
-     * Result will give the name of the file.
-     * 
-     * 12 What is the name of the attribute file for an external declaration?
-     * Before this request is issued, the environment will have received the identifier and the
-     * external identifier for the external declaration through the routine give_textinfo
-     * described below. (Cf. section 4.6)
-     * Result will give the name of the file.
-     * 
-     * 13 What is the environment part of the program head? (See below)
-     * Result will give the text string.
-     * 
-     * 14 What is the module identifier to be used for the current compilation? (Cf. section
-     * 4.6)
-     * This call will only be made for a separate compilation.
-     * Result will give the text string.
-     * 
-     * 15 What is the check code to be used for the current compilation? (Cf. section 4.6)
-     * This call will only be made for a separate compilation.
-     * Result will give the text string.
-     * If the empty string is delivered then the date_and_time string identifying this
-     * compilation will be used.
-     * 
-     * 16 What is the system debugging option string?
-     * The default answer here should be the empty string.
-     * 
-     * 17 Not used.
-     * 
-     * 18 Not used.
-     * 
-     * 19 What is the file name of the attribute file for the predefined classes and procedures
-     * (the class PREDEF)?
-     * 
-     * 20 What is the file name for the attribute file for the class SIMSET?
-     * 
-     * 21 What is the file name for the attribute file for the class SIMULATION?
-     * 
-     * 22 What is the file name of a file containing seldom used information for the front
-     * end compiler, such as extended error messages.
-     * 
-     * 23 What is the file name of a file containing seldom used information for the run time
-     * system, such as extended error messages.
-     * 
-     * 24 What is the identification string of the current execution? The answer should be as
-     * defined for procedure "simulaid" in the SIMULA Standard, section 9.6. If the answer
-     * is the empty string, RTS will fill out the first field (SIMULA system name) with an
-     * identification of the current S-port release, and leave the remainding fields empty (i.e.
-     * the release info will be terminated by 21 exclamation marks).
-     * 
-     * A short comment is necessary on the program head string.
-     * According to the definition an S-program should start with the
-     * keyword program followed by a string. This string is used to identify the compilation.
-     * The string will be given according to the following syntax:
-     * "< a >'< b >'< c >"
-     * The three parts of the string are:
-     * < a > This is the date and time of compilation given through the result from a call on
-     * the routine date_and_time.
-     * < b > This is an identifiaction of the front-end compiler chosen by itself to identify
-     * the version of the compiler.
-     * < c > This is an identification of the S-code compiler supplied to the front-end
-     * compiler when get_textinfo is called with index 13 (see page 15).
-     *
-     */
-    public static _TXT getTextInfo(final int index) {
-    	//_RT.println("getTextInfo: index="+index);
-    	switch(index) {
-    	case 1:
-    		String sourceFileName=_RT.SPORT_Option.getSourceFileName();
-    		if(Option.VERBOSE) _RT.println("getTextInfo(1)  SourceFileName="+sourceFileName);
-    		return(new _TXT(sourceFileName));
-    	case 2:
-    		String listingFileName=_RT.SPORT_Option.ListingFileName;
-    		if(Option.VERBOSE) _RT.println("getTextInfo(2)  Listing File Name="+listingFileName);
-    		if(listingFileName==null) return(null);  // no Listing
-    		return(new _TXT(listingFileName));       // listname  i.e.  Listing File Name
-    	case 4:
-    		String sCodeFileName= _RT.SPORT_Option.getSCodeFileName();
-    		if(Option.VERBOSE) _RT.println("getTextInfo(4)  S-Code File Name="+sCodeFileName);
-    		return(new _TXT(sCodeFileName));
-    	case 7:
-    		String scratchFileName= _RT.SPORT_Option.getScratchFileName();
-    		if(Option.VERBOSE) _RT.println("getTextInfo(7)  ScratchFileName="+scratchFileName);
-    		return(new _TXT(scratchFileName));  // FileName for intermediate code
-    	case 11:
-    		String attributeOutputFileName= _RT.SPORT_Option.getAttributeOutputFileName();
-    		if(Option.VERBOSE) _RT.println("getTextInfo(11) AttributeOutputFileName="+attributeOutputFileName);
-    		return(new _TXT(attributeOutputFileName));  // AttributeInputFileName
-    	case 12:
-    		String attributeFileName= _RT.SPORT_Option.getExternalAttributeFileName();
-    		if(Option.VERBOSE) _RT.println("getTextInfo(12) AttributeFileName="+attributeFileName);
-    		return(new _TXT(attributeFileName));
-    	case 13: // What is the environment part of the program head? 
-    		if(Option.VERBOSE) _RT.println("getTextInfo(13) environment part of the program head="+"/JAVA");
-    		return(new _TXT("/JAVA"));
-    	case 14: // Module identifier to be used for the current separate compilation?
-    		if(Option.VERBOSE) _RT.println("getTextInfo(14) Module identifier: "+_RT.SPORT_Option.currentModuleID);
-    		return(new _TXT(_RT.SPORT_Option.currentModuleID));
-    	case 15: // Module check code to be used for the current separate compilation?
-    		String checkCode="abracadab";
-    		if(Option.VERBOSE) _RT.println("getTextInfo(15) Module check code: "+checkCode);
-    		return(new _TXT(checkCode));
-    	case 16:
-    		if(Option.VERBOSE) _RT.println("getTextInfo(16) Selectors="+_RT.SPORT_Option.Selectors);
-    		return(new _TXT(_RT.SPORT_Option.Selectors)); // options and selectors
-    	case 19:
-    		if(Option.VERBOSE) _RT.println("getTextInfo(19) PredefFileName="+_RT.SPORT_Option.PredefFileName);
-    		return(new _TXT(_RT.SPORT_Option.PredefFileName)); // Name of attribute file for the predefined classes and procedures (the class PREDEF)?
-    	case 22:
-    		if(Option.VERBOSE) _RT.println("getTextInfo(22) XmessageFileName="+_RT.SPORT_Option.XmessageFileName);
-    		return(new _TXT(_RT.SPORT_Option.XmessageFileName)); // Name of a file containing seldom used information for the front end compiler, such as extended error messages.
-    	case 25:
-    		File file=new File(_RT.SPORT_Option.getSourceFileName());
-    		String ModuleIdent=file.getName();
-    		//_RT.println("ModuleIdent="+ModuleIdent+" ==> "+ModuleIdent.substring(0,ModuleIdent.length()-4));
-    		ModuleIdent=ModuleIdent.substring(0,ModuleIdent.length()-4).toLowerCase();
-    		if(Option.VERBOSE) _RT.println("getTextInfo(25) ModuleIdent=\""+ModuleIdent+'"');
-    		return(new _TXT(ModuleIdent)); // Modid par of source file name in lower case 
-    	default: _RT.NOT_IMPLEMENTED("getTextInfo: "+index);
-    	}
-    	return(null);
-    }
-    
-    /**
-     * The routine get_intinfo is defined to get all information from the environment that
-     * can be coded as an integer.
-     * 
-     * The parameter index is an integer specifying what information is requested. The
-     * result will be an integer whose interpretation gives the specified information. The
-     * result is given for each value of index as follows:
-     * Index: Interpretation:
-     * 1 NOT USED
-     * 
-     * 2 Is a source listing wanted?
-     * Result: 0 - No.
-     * >0 - Yes. The listing will be a copy of the source text, where each line is prefixed by
-     * its number.
-     * 
-     * 3 *) Should begin/end counters be included in the source listing?
-     * Result=0 means no, otherwise yes.
-     * 
-     * 4 What is the maximum number of error messages to be given?
-     * Result will be the number of messages.
-     * 
-     * 5 Should warning messages be suppressed?
-     * Result=0 means no, otherwise yes.
-     * 
-     * 6 Should a cross-reference listing be produced?
-     * Result=0 means no, otherwise yes.
-     * 
-     * 7 *) What is the image length for the listing file?
-     * Result will be the number of characters in the image.
-     * 
-     * *) These calls are only made after get_textinfo(2) (asking for name of the listing file)
-     * is called, and only if listing is wanted.
-     * 
-     * 
-     * 8 What is the line length of the source file?
-     * Result will be the number of characters in the image. 
-     * 
-     * 9 Should test for none be ommitted at remote access?
-     * Result=0 means no, otherwise yes.
-     * 
-     * 10 Should checking of indices be ommitted at array access?
-     * Result: 0 - Complete checking of array indices
-     * 1 - Partial checking of indices
-     * 2 - No checking will be done.
-     * 
-     * 11 What is the level of information wanted from the symbolic dump routine?
-     * Result: 0 - The symbolic dump module is not to be included
-     * 1 - The symbolic dump routine is included
-     * 2 - Individual instances of an object shall carry a count for identification
-     * 3 - Objects shall carry information of all identifier names.
-     * 
-     * 12 Should inclusion be made for production of a dynamic profile of the program
-     * execution?
-     * Result=0 means no inclusion, otherwise assignment counts are to be included
-     * 
-     * 13 Should inclusion be made for full tracing of control flow at run-time?
-     * Result=0 means no inclusion, otherwise full inclusion.
-     * 
-     * 14 Should inclusion be made for interactive debugging of the program?
-     * Result=0 means no inclusion, otherwise full inclusion.
-     * 
-     * 15 What is the level of debug information wanted in case of a run time error?
-     * Result: 0 - no debugging information is wanted
-     * 1 - a diagnostic message and the source program line number where the error
-     * occurred are wanted
-     * 2 - in addition to the above the static link and the dynamic link at the point of error
-     * are wanted
-     * 3 - in addition to the above the sequencing sets of all SIMULATION blocks and the
-     * local sequence controls of all scheduled processes are wanted
-     * 4 - in addition to the above the local sequence controls of all non-terminated objects
-     * are wanted
-     * 5 - in addition to the above all referable datastructures are wanted.
-     * 
-     * 16 Is tracing of control flow wanted?
-     * Result: 0 - no tracing is wanted
-     * >0 - the number of messages wanted is given
-     * <0 - tracing messages are printed to a buffer of size -(result), and only listed in case
-     * of a run-time error
-     * 
-     * 17 Is tracing of data flow wanted?
-     * Result: 0 - no tracing is wanted
-     * >0 - the number of messages wanted is given
-     * <0 - tracing messages are printed to a buffer of size -(result), and only listed in case
-     * of a run-time error
-     * Comment: If both control and data flow tracing are specified, they will go to the same
-     * destination.
-     * 
-     * 18 What is the maximum amount of time (cpu-time) to be used for the execution?
-     * Result will give the time, specified in 1/100 sec.
-     * 
-     * 19 Should the symbolic debugger SIMOB be entered prior to the execution of the
-     * program, and at program termination? An answer greater than zero will give this
-     * effect.
-     * 
-     * 20 What is the significant linelength of the source file image?
-     * 
-     * 21 What is the maximum index to setobj, getobj, and access instructions allowed in
-     * this implementation. A response of 0 will give the limit 255.
-     * 
-     * 22 Mode of separate compilation ?
-     * 0: normal separate compilation
-     * 1: recompilation.
-     * 
-     * 23 Amount of pass information from FEC on listing or message file ?
-     * 0: No information.
-     * 1: Minimum.
-     * 2: Medium.
-     * 3: Maximum.
-     * 
-     * 24 How many work areas may be requested (see chapter 5)?
-     * 
-     * 30 What is the level of data information which must be produced at compile-time, in
-     * order to observe the execution at run-time?
-     * Result: 0 - minimal information for error reporting.
-     * 1 - information at the module and block level, but no information about the attributes.
-     * 2 - complete information generated, including information about all attributes.
-     * SIMOB can always be used for observation, but the available information will
-     * depend on this response.
-     * 
-     * 31 Should inclusion be made at compile-time for statement execution counts?
-     * Result: 0 - no, statement execution counts not wanted
-     * 1 - yes, statement execution counts wanted
-     * 
-     * 32 Should inclusion be made at compile-time for processor usage measurements?
-     * Result: 0 - no, measuring of processor usage not wanted
-     * 1 - yes, measuring of processor usage wanted
-     * 
-     * 33 Is interaction with the user possible in the current execution?
-     * Result: 0 - no, this is not an interactive execution
-     * 1 - yes, this is an interactive execution
-     * Note that SIMOB uses this.
-     * 
-     * 34 Should inclusion for the possibility of statement start exceptions be made at
-     * compile-time by the S-Code Compiler?
-     * Result: 0 - no, no start of statement exceptions will ever occur
-     * 1 - yes, start of statement exceptions may occur
-     * 
-     * 35 Should inclusion be made at compile-time for storage usage measurements?
-     * Result: 0 - no, measuring of storage usage not wanted
-     * 1 - yes, measuring of storage usage wanted
-     * 
-     * 36 What is the maximum number of identifiers allowed in this program compilation.
-     * Result will be the number allowed.
-     * 
-     * 37 What is the maximum number of constants allowed for this compilation. Result
-     * will define the number.
-     * 
-     * 38 What is the maximum number of textual blocks allowed for this compilation.
-     * Result will define the number.
-     * 
-     * 39 What is the maximum number of block levels allowed for this compilation. Result
-     * will define the number.
-     * 
-     * 40 What is the maximum source depth allowed for this compilation. Result will
-     * define the maximum.
-     * 
-     * 41 What is the maximum dynamic depth in this program compilation. Result will
-     * define the maximum.
-     * 
-     * 42 What is the maximum number of parameters in a procedure call for this
-     * compilation. Result will define the maximum.
-     * 
-     * 43-127 As defined in the current Release Description.
-     * If the environment returns a value of zero for any of these indices, some default value
-     * will be chosen by the system.
-     */
-//    static int GenerateScode=1;
-//    static int MaxErrors=50;
-//    static int GiveNotes=1;
-//    static int Recompilation=0;
-//    static int SimobLevel=0;
-    public static int getIntInfo(final int index) {
-    	//_RT.println("getIntInfo: index="+index);
-    	switch(index) {
-    		case 1:
-        		if(Option.VERBOSE) _RT.println("getIntInfo(1)   GenerateScode="+_RT.SPORT_Option.GenerateScode);
-    			return(_RT.SPORT_Option.GenerateScode);
-    		case 4:
-        		if(Option.VERBOSE) _RT.println("getIntInfo(4)   MaxErrors="+_RT.SPORT_Option.MaxErrors);
-    			return(_RT.SPORT_Option.MaxErrors);  // maxerrno
-    		case 5:
-        		if(Option.VERBOSE) _RT.println("getIntInfo(5)   GiveNotes="+_RT.SPORT_Option.GiveNotes);
-    			return(_RT.SPORT_Option.GiveNotes);  // GiveNotes
-    		case 7:
-        		if(Option.VERBOSE) _RT.println("getIntInfo(7)   ListingImageLength=260");
-    			return(260);  // Image length for the listing file
-    		case 9: // NONE CHECK?  Result=0 means no, otherwise yes.
-    			return(1);
-    		case 10: // ARRAY BOUNDS CHECK ?  Result: 0 - Complete checking, 1 - Partial checking, 2 - No checking will be done.
-    			return(0);
-    		case 16:
-        		if(Option.VERBOSE) _RT.println("getIntInfo(16)   TraceLevel="+_RT.SPORT_Option.TraceLevel);
-    			return(_RT.SPORT_Option.TraceLevel);  // Image length for the listing file
-    		case 22:
-        		if(Option.VERBOSE) _RT.println("getIntInfo(22)  Recompilation="+_RT.SPORT_Option.Recompilation);
-    			return(_RT.SPORT_Option.Recompilation);  // recomp
-    		case 30:
-        		if(Option.VERBOSE) _RT.println("getIntInfo(30)  SimobLevel="+_RT.SPORT_Option.SimobLevel);
-    			return(_RT.SPORT_Option.SimobLevel);  // simob_level
-    		default: _RT.NOT_IMPLEMENTED("getIntInfo: "+index);
-    	}
-    	return(0);
-    }
-    
-    /**
-     * The routine give intinfo is defined to submit information from the front-end compiler
-     * or the run-time system to the environment. This information is gathered from the
-     * source input under compilation.
-     *
-     * The parameter index is an integer that specifies what information follows. Info will
-     * be an integer carrying the following interpretation:
-     *
-     * Index: Interpretation:
-     *   1   A call with this index is done immediately before the termination of each pass, and
-     *       the value of info signals the situation after this pass, by the following coding:
-     *          0 - No user errors found. Go on with next pass.
-     *          1 - User errors are found, but go on with next pass.
-     *          2 - Reserved for fututre use, continuation is possible.
-     *          3 - No user errors found, but because of options etc. (e.g. that S-code should not be
-     *              produced), the next pass should not be started.
-     *          4 - User errors found, therefore do not start next pass.
-     *          5 - Too many or too difficult user errors encountered. Therefore the current pass is
-     *              terminated, and the next pass should not be started.
-     *          6 - An internal error in the compiler has occurred. Therefore the current pass is
-     *              terminated, and the next pass should not be started.
-     *            
-     *   2   Info is the highest tag used in the S-code for this program.
-     *   3   Info is the number of source lines in the Simula program being compiled.
-     *   4   Info is the number of errors for this compilation.
-     *   5   Info is the number of warnings for this compilation.
-     *   6   Garbage collection information. Info=0 signals the start of a garbage collection, ENDOF hash:
-     *       Info=1 signals termination of g.c. (see 5.2).
-     * 
-     */
-    private static int PASS_NO=1;
-    public static void giveIntInfo(final int index,final int info) {
-    	//_RT.NOT_IMPLEMENTED("giveIntInfo");
-    	if(Option.VERBOSE) _RT.println("giveIntInfo: index="+index+", info="+info);
-    	StringBuilder sb=new StringBuilder();
-    	switch(index) {
-    	case 1 -> {
-    		sb.append("End of pass " + (PASS_NO++) + ": " );
-    		switch(info) {
-    			case 0 -> sb.append("No user errors found. Go on with next pass.");
-    			case 1 -> sb.append("User errors are found, but go on with next pass.");
-    			case 2 -> sb.append("Reserved for fututre use, continuation is possible.");
-    			case 3 -> sb.append("No user errors found, but because of options etc. the next pass should not be started.");
-    			case 4 -> sb.append("User errors found, therefore do not start next pass.");
-    			case 5 -> sb.append("Too many or too difficult user errors encountered. Compiler should terminate.");
-    			case 6 -> sb.append("An internal error in the compiler has occurred. Compiler should terminate.");
-    		}
-    	}
-    	case 2 -> sb.append("Max tag="+info);
-    	case 3 -> sb.append("nSourceLines="+info);
-    	case 4 -> sb.append("nErrors="+info);
-    	case 5 -> sb.append("nWarnings="+info);
-    	}
-    	if(Option.VERBOSE) _RT.println(sb.toString());
-    }
-    
-    /**
-     * The routine give_textinfo is defined to submit information from the front-end
-     * compiler or the run-time system to the environment. This information is gathered
-     * from the source input under compilation.
-     * 
-     * The parameter index is an integer that specifies what information follows. Info will
-     * be the string reference with the specific information as follows:
-     * 
-     * Index: Interpretation:
-     *   1  The string info is the identifier of a class or procedure being separately compiled.
-     *   2  The string info is the identifier given in an external declaration that is being processed.
-     *   3  The string info is the external identification given in an external declaration that is being processed.
-     *   
-     * E.g: When compiling:
-     * 
-     *   class SubSep; begin
-     *   	  external class MainSeparat="some file";
-     *   	  ...
-     *   end;
-     * 
-     * Index: Interpretation:
-     *   1  currentModuleID: SubSep
-     *   2  extIdent:      MainSeparate
-     *   3  extFile:       "some file"
-     *   
-     * 
-     */
-    public static void giveTextInfo(final int index,final _TXT info) {
-    	String infoString=((info==null)?null:info.edText());
-    	if(Option.VERBOSE) _RT.println("giveTextInfo: index="+index+", info="+infoString);
-    	switch(index) {
-    		case 1: _RT.SPORT_Option.currentModuleID=infoString; break; // got predefmodule when compiling PREDEF.DEF
-    		case 2: _RT.SPORT_Option.extIdent=infoString; break;
-    		case 3: _RT.SPORT_Option.extFile=infoString; break;
-    		case 4: _RT.SPORT_Option.SPORT_SysInsertDirName=infoString; break;
-    		default: _RT.NOT_IMPLEMENTED("giveTextInfo");
-    	}
-//    	System.out.println("_ENVIRONMENT.giveTextInfo: currentModuleID="+_RT.SPORT_Option.currentModuleID);
-//    	System.out.println("_ENVIRONMENT.giveTextInfo: extIdent="+_RT.SPORT_Option.extIdent);
-//    	System.out.println("_ENVIRONMENT.giveTextInfo: extFile="+_RT.SPORT_Option.extFile);
-    }
-    
-    /**
-     * Index 1: Error or Warning given
-     */
-    public static void rts_utility(final int index,final int level) {
-    	if(Option.VERBOSE) _RT.println("rts_utility: index="+index+", level="+level+"  Error or Warning given");
-    	switch(index) {
-    		case 0: return; // Note
-			case 1: break; //return; // Warning
-			case 2: break;//return; // Error
-			case 3: break;//return; // COMMON Error
-			case 4: break;//return; // Abort
-	    	case 5: // newTag check-point with Stack trace
-	        	if(Option.VERBOSE) _RT.println("rts_utility: index=5: newTag should be changed to newTTag(ident)");
-	        	break;
-    		default: _RT.NOT_IMPLEMENTED("rts_utility: index="+index+", level="+level);
-    	}
+	public static void DEFEXCEPTION(final _PRCQNT EXCEPTION_HANDLER) {
+		// System.out.println("ENVIRONMENT.DEFEXCEPTION:
+		// EXCEPTION_HANDLER="+EXCEPTION_HANDLER);
+		_ENVIRONMENT.EXCEPTION_HANDLER = EXCEPTION_HANDLER;
+	}
+
+	public static int hash(final _TXT txt) {
+		if (txt == null || _TXT.length(txt) == 0)
+			return (0);
+		String s = txt.edText();
+		String tstrip = s.trim();
+		if (tstrip.length() == 0)
+			return (0);
+		int a = tstrip.charAt(0);
+		if (tstrip.length() > 3) {
+			a = a + 8 * tstrip.charAt(1);
+			a = a + 64 * rank(tstrip.charAt(2));
+		}
+		a = a + 512 * tstrip.charAt(tstrip.length() - 1) + s.length();
+		return (a & 255);
+	}
+
+	public static char loadChar(final _TXT t, final int i) {
+		// Returns the character at position i+1 (NB).
+		// I.e. characters are counted from zero
+		// c=t.char[i];
+		_TEXTOBJ obj = t.OBJ;
+		char c = obj.MAIN[t.START + i];
+		return (c);
+	}
+
+	public static void storeChar(final char c, final _TXT t, final int i) {
+		// Deposit c at position i+1 (NB).
+		// I.e. characters are counted from zero
+		// t.char[i]=c;
+		_TEXTOBJ obj = t.OBJ;
+		obj.MAIN[t.START + i] = c;
+	}
+
+	/**
+	 * The routine getTextInfo is defined to get all information from the
+	 * environment to the front-end that must be given as a text.
+	 * 
+	 * The parameter index is an integer that specifies what information we request.
+	 * The result will be a string which is filled into result. The export parameter
+	 * filled gives the number of characters in the string.
+	 * 
+	 * Index: Interpretation:
+	 * 
+	 * 1 What is the name of the source input file? Result will give the name.
+	 * 
+	 * 2 What is the name of the listing file? Result will give the file name. If no
+	 * such output is to be produced, then the string will be empty.
+	 * 
+	 * 3 What is the name of the file for separate output of diagnostics messages?
+	 * Result will give the file name. If no such output is to be produced, then the
+	 * string will be empty.
+	 * 
+	 * 4 What is the name of the file for storing the normal (byte packed) S-code?
+	 * Result will give the file name. If no such output is to be produced, then the
+	 * string will be empty.
+	 * 
+	 * 5 What is the name of the file for storing decimally coded S-code? Result
+	 * will give the file name. If no such output is to be produced, then the string
+	 * will be empty.
+	 * 
+	 * 6 What is the name of the file for storing textually coded S-code? Result
+	 * will give the file name. If no such output is to be produced, then the string
+	 * will be empty.
+	 * 
+	 * 7 What is the name of the scratch file to be used for storing the
+	 * intermediate code between the passes in the front-end? Result will give the
+	 * name of the file.
+	 * 
+	 * 8 What is the name of the scratch file to be used for storing the declaration
+	 * structures between the passes in the front-end? Result will give the name of
+	 * the file.
+	 * 
+	 * 9 Reserved for further scratch file requests. Result will give the name of
+	 * the file.
+	 * 
+	 * 10 Reserved for further scratch file requests. Result will give the name of
+	 * the file.
+	 * 
+	 * 11 What is the name of the attribute file for the current compilation? This
+	 * will only be necessary for a separate compilation. This file will be used as
+	 * the front-end's attribute file. (Cf. section 4.6) Result will give the name
+	 * of the file.
+	 * 
+	 * 12 What is the name of the attribute file for an external declaration? Before
+	 * this request is issued, the environment will have received the identifier and
+	 * the external identifier for the external declaration through the routine
+	 * give_textinfo described below. (Cf. section 4.6) Result will give the name of
+	 * the file.
+	 * 
+	 * 13 What is the environment part of the program head? (See below) Result will
+	 * give the text string.
+	 * 
+	 * 14 What is the module identifier to be used for the current compilation? (Cf.
+	 * section 4.6) This call will only be made for a separate compilation. Result
+	 * will give the text string.
+	 * 
+	 * 15 What is the check code to be used for the current compilation? (Cf.
+	 * section 4.6) This call will only be made for a separate compilation. Result
+	 * will give the text string. If the empty string is delivered then the
+	 * date_and_time string identifying this compilation will be used.
+	 * 
+	 * 16 What is the system debugging option string? The default answer here should
+	 * be the empty string.
+	 * 
+	 * 17 Not used.
+	 * 
+	 * 18 Not used.
+	 * 
+	 * 19 What is the file name of the attribute file for the predefined classes and
+	 * procedures (the class PREDEF)?
+	 * 
+	 * 20 What is the file name for the attribute file for the class SIMSET?
+	 * 
+	 * 21 What is the file name for the attribute file for the class SIMULATION?
+	 * 
+	 * 22 What is the file name of a file containing seldom used information for the
+	 * front end compiler, such as extended error messages.
+	 * 
+	 * 23 What is the file name of a file containing seldom used information for the
+	 * run time system, such as extended error messages.
+	 * 
+	 * 24 What is the identification string of the current execution? The answer
+	 * should be as defined for procedure "simulaid" in the SIMULA Standard, section
+	 * 9.6. If the answer is the empty string, RTS will fill out the first field
+	 * (SIMULA system name) with an identification of the current S-port release,
+	 * and leave the remainding fields empty (i.e. the release info will be
+	 * terminated by 21 exclamation marks).
+	 * 
+	 * A short comment is necessary on the program head string. According to the
+	 * definition an S-program should start with the keyword program followed by a
+	 * string. This string is used to identify the compilation. The string will be
+	 * given according to the following syntax: "< a >'< b >'< c >" The three parts
+	 * of the string are: < a > This is the date and time of compilation given
+	 * through the result from a call on the routine date_and_time. < b > This is an
+	 * identifiaction of the front-end compiler chosen by itself to identify the
+	 * version of the compiler. < c > This is an identification of the S-code
+	 * compiler supplied to the front-end compiler when get_textinfo is called with
+	 * index 13 (see page 15).
+	 *
+	 */
+	public static _TXT getTextInfo(final int index) {
+		switch (index) {
+		case 1:
+			String sourceFileName = _RT.SPORT_Option.getSourceFileName();
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(1)  SourceFileName=" + sourceFileName);
+			return (new _TXT(sourceFileName));
+		case 2:
+			String listingFileName = _RT.SPORT_Option.ListingFileName;
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(2)  Listing File Name=" + listingFileName);
+			if (listingFileName == null)
+				return (null); // no Listing
+			return (new _TXT(listingFileName)); // listname i.e. Listing File Name
+		case 4:
+			String sCodeFileName = _RT.SPORT_Option.getSCodeFileName();
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(4)  S-Code File Name=" + sCodeFileName);
+			return (new _TXT(sCodeFileName));
+		case 7:
+			String scratchFileName = _RT.SPORT_Option.getScratchFileName();
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(7)  ScratchFileName=" + scratchFileName);
+			return (new _TXT(scratchFileName)); // FileName for intermediate code
+		case 11:
+			String attributeOutputFileName = _RT.SPORT_Option.getAttributeOutputFileName();
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(11) AttributeOutputFileName=" + attributeOutputFileName);
+			return (new _TXT(attributeOutputFileName)); // AttributeInputFileName
+		case 12:
+			String attributeFileName = _RT.SPORT_Option.getExternalAttributeFileName();
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(12) AttributeFileName=" + attributeFileName);
+			return (new _TXT(attributeFileName));
+		case 13: // What is the environment part of the program head?
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(13) environment part of the program head=" + "/JAVA");
+			return (new _TXT("/JAVA"));
+		case 14: // Module identifier to be used for the current separate compilation?
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(14) Module identifier: " + _RT.SPORT_Option.currentModuleID);
+			return (new _TXT(_RT.SPORT_Option.currentModuleID));
+		case 15: // Module check code to be used for the current separate compilation?
+			String checkCode = "abracadab";
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(15) Module check code: " + checkCode);
+			return (new _TXT(checkCode));
+		case 16:
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(16) Selectors=" + _RT.SPORT_Option.Selectors);
+			return (new _TXT(_RT.SPORT_Option.Selectors)); // options and selectors
+		case 19:
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(19) PredefFileName=" + _RT.SPORT_Option.PredefFileName);
+			return (new _TXT(_RT.SPORT_Option.PredefFileName)); // Name of attribute file for the predefined classes and
+																// procedures (the class PREDEF)?
+		case 22:
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(22) XmessageFileName=" + _RT.SPORT_Option.XmessageFileName);
+			return (new _TXT(_RT.SPORT_Option.XmessageFileName)); // Name of a file containing seldom used information
+																	// for the front end compiler, such as extended
+																	// error messages.
+		case 25:
+			File file = new File(_RT.SPORT_Option.getSourceFileName());
+			String ModuleIdent = file.getName();
+			ModuleIdent = ModuleIdent.substring(0, ModuleIdent.length() - 4).toLowerCase();
+			if (Option.VERBOSE)
+				_RT.println("getTextInfo(25) ModuleIdent=\"" + ModuleIdent + '"');
+			return (new _TXT(ModuleIdent)); // Modid par of source file name in lower case
+		default:
+			_RT.NOT_IMPLEMENTED("getTextInfo: " + index);
+		}
+		return (null);
+	}
+
+	/**
+	 * The routine get_intinfo is defined to get all information from the
+	 * environment that can be coded as an integer.
+	 * 
+	 * The parameter index is an integer specifying what information is requested.
+	 * The result will be an integer whose interpretation gives the specified
+	 * information. The result is given for each value of index as follows: Index:
+	 * Interpretation: 1 NOT USED
+	 * 
+	 * 2 Is a source listing wanted? Result: 0 - No. >0 - Yes. The listing will be a
+	 * copy of the source text, where each line is prefixed by its number.
+	 * 
+	 * 3 *) Should begin/end counters be included in the source listing? Result=0
+	 * means no, otherwise yes.
+	 * 
+	 * 4 What is the maximum number of error messages to be given? Result will be
+	 * the number of messages.
+	 * 
+	 * 5 Should warning messages be suppressed? Result=0 means no, otherwise yes.
+	 * 
+	 * 6 Should a cross-reference listing be produced? Result=0 means no, otherwise
+	 * yes.
+	 * 
+	 * 7 *) What is the image length for the listing file? Result will be the number
+	 * of characters in the image.
+	 * 
+	 * *) These calls are only made after get_textinfo(2) (asking for name of the
+	 * listing file) is called, and only if listing is wanted.
+	 * 
+	 * 
+	 * 8 What is the line length of the source file? Result will be the number of
+	 * characters in the image.
+	 * 
+	 * 9 Should test for none be ommitted at remote access? Result=0 means no,
+	 * otherwise yes.
+	 * 
+	 * 10 Should checking of indices be ommitted at array access? Result: 0 -
+	 * Complete checking of array indices 1 - Partial checking of indices 2 - No
+	 * checking will be done.
+	 * 
+	 * 11 What is the level of information wanted from the symbolic dump routine?
+	 * Result: 0 - The symbolic dump module is not to be included 1 - The symbolic
+	 * dump routine is included 2 - Individual instances of an object shall carry a
+	 * count for identification 3 - Objects shall carry information of all
+	 * identifier names.
+	 * 
+	 * 12 Should inclusion be made for production of a dynamic profile of the
+	 * program execution? Result=0 means no inclusion, otherwise assignment counts
+	 * are to be included
+	 * 
+	 * 13 Should inclusion be made for full tracing of control flow at run-time?
+	 * Result=0 means no inclusion, otherwise full inclusion.
+	 * 
+	 * 14 Should inclusion be made for interactive debugging of the program?
+	 * Result=0 means no inclusion, otherwise full inclusion.
+	 * 
+	 * 15 What is the level of debug information wanted in case of a run time error?
+	 * Result: 0 - no debugging information is wanted 1 - a diagnostic message and
+	 * the source program line number where the error occurred are wanted 2 - in
+	 * addition to the above the static link and the dynamic link at the point of
+	 * error are wanted 3 - in addition to the above the sequencing sets of all
+	 * SIMULATION blocks and the local sequence controls of all scheduled processes
+	 * are wanted 4 - in addition to the above the local sequence controls of all
+	 * non-terminated objects are wanted 5 - in addition to the above all referable
+	 * datastructures are wanted.
+	 * 
+	 * 16 Is tracing of control flow wanted? Result: 0 - no tracing is wanted >0 -
+	 * the number of messages wanted is given <0 - tracing messages are printed to a
+	 * buffer of size -(result), and only listed in case of a run-time error
+	 * 
+	 * 17 Is tracing of data flow wanted? Result: 0 - no tracing is wanted >0 - the
+	 * number of messages wanted is given <0 - tracing messages are printed to a
+	 * buffer of size -(result), and only listed in case of a run-time error
+	 * Comment: If both control and data flow tracing are specified, they will go to
+	 * the same destination.
+	 * 
+	 * 18 What is the maximum amount of time (cpu-time) to be used for the
+	 * execution? Result will give the time, specified in 1/100 sec.
+	 * 
+	 * 19 Should the symbolic debugger SIMOB be entered prior to the execution of
+	 * the program, and at program termination? An answer greater than zero will
+	 * give this effect.
+	 * 
+	 * 20 What is the significant linelength of the source file image?
+	 * 
+	 * 21 What is the maximum index to setobj, getobj, and access instructions
+	 * allowed in this implementation. A response of 0 will give the limit 255.
+	 * 
+	 * 22 Mode of separate compilation ? 0: normal separate compilation 1:
+	 * recompilation.
+	 * 
+	 * 23 Amount of pass information from FEC on listing or message file ? 0: No
+	 * information. 1: Minimum. 2: Medium. 3: Maximum.
+	 * 
+	 * 24 How many work areas may be requested (see chapter 5)?
+	 * 
+	 * 30 What is the level of data information which must be produced at
+	 * compile-time, in order to observe the execution at run-time? Result: 0 -
+	 * minimal information for error reporting. 1 - information at the module and
+	 * block level, but no information about the attributes. 2 - complete
+	 * information generated, including information about all attributes. SIMOB can
+	 * always be used for observation, but the available information will depend on
+	 * this response.
+	 * 
+	 * 31 Should inclusion be made at compile-time for statement execution counts?
+	 * Result: 0 - no, statement execution counts not wanted 1 - yes, statement
+	 * execution counts wanted
+	 * 
+	 * 32 Should inclusion be made at compile-time for processor usage measurements?
+	 * Result: 0 - no, measuring of processor usage not wanted 1 - yes, measuring of
+	 * processor usage wanted
+	 * 
+	 * 33 Is interaction with the user possible in the current execution? Result: 0
+	 * - no, this is not an interactive execution 1 - yes, this is an interactive
+	 * execution Note that SIMOB uses this.
+	 * 
+	 * 34 Should inclusion for the possibility of statement start exceptions be made
+	 * at compile-time by the S-Code Compiler? Result: 0 - no, no start of statement
+	 * exceptions will ever occur 1 - yes, start of statement exceptions may occur
+	 * 
+	 * 35 Should inclusion be made at compile-time for storage usage measurements?
+	 * Result: 0 - no, measuring of storage usage not wanted 1 - yes, measuring of
+	 * storage usage wanted
+	 * 
+	 * 36 What is the maximum number of identifiers allowed in this program
+	 * compilation. Result will be the number allowed.
+	 * 
+	 * 37 What is the maximum number of constants allowed for this compilation.
+	 * Result will define the number.
+	 * 
+	 * 38 What is the maximum number of textual blocks allowed for this compilation.
+	 * Result will define the number.
+	 * 
+	 * 39 What is the maximum number of block levels allowed for this compilation.
+	 * Result will define the number.
+	 * 
+	 * 40 What is the maximum source depth allowed for this compilation. Result will
+	 * define the maximum.
+	 * 
+	 * 41 What is the maximum dynamic depth in this program compilation. Result will
+	 * define the maximum.
+	 * 
+	 * 42 What is the maximum number of parameters in a procedure call for this
+	 * compilation. Result will define the maximum.
+	 * 
+	 * 43-127 As defined in the current Release Description. If the environment
+	 * returns a value of zero for any of these indices, some default value will be
+	 * chosen by the system.
+	 */
+	public static int getIntInfo(final int index) {
+		// _RT.println("getIntInfo: index="+index);
+		switch (index) {
+		case 1:
+			if (Option.VERBOSE)
+				_RT.println("getIntInfo(1)   GenerateScode=" + _RT.SPORT_Option.GenerateScode);
+			return (_RT.SPORT_Option.GenerateScode);
+		case 4:
+			if (Option.VERBOSE)
+				_RT.println("getIntInfo(4)   MaxErrors=" + _RT.SPORT_Option.MaxErrors);
+			return (_RT.SPORT_Option.MaxErrors); // maxerrno
+		case 5:
+			if (Option.VERBOSE)
+				_RT.println("getIntInfo(5)   GiveNotes=" + _RT.SPORT_Option.GiveNotes);
+			return (_RT.SPORT_Option.GiveNotes); // GiveNotes
+		case 7:
+			if (Option.VERBOSE)
+				_RT.println("getIntInfo(7)   ListingImageLength=260");
+			return (260); // Image length for the listing file
+		case 9: // NONE CHECK? Result=0 means no, otherwise yes.
+			return (1);
+		case 10: // ARRAY BOUNDS CHECK ? Result: 0 - Complete checking, 1 - Partial checking, 2 -
+					// No checking will be done.
+			return (0);
+		case 16:
+			if (Option.VERBOSE)
+				_RT.println("getIntInfo(16)   TraceLevel=" + _RT.SPORT_Option.TraceLevel);
+			return (_RT.SPORT_Option.TraceLevel); // Image length for the listing file
+		case 22:
+			if (Option.VERBOSE)
+				_RT.println("getIntInfo(22)  Recompilation=" + _RT.SPORT_Option.Recompilation);
+			return (_RT.SPORT_Option.Recompilation); // recomp
+		case 30:
+			if (Option.VERBOSE)
+				_RT.println("getIntInfo(30)  SimobLevel=" + _RT.SPORT_Option.SimobLevel);
+			return (_RT.SPORT_Option.SimobLevel); // simob_level
+		default:
+			_RT.NOT_IMPLEMENTED("getIntInfo: " + index);
+		}
+		return (0);
+	}
+
+	/**
+	 * The routine give intinfo is defined to submit information from the front-end
+	 * compiler or the run-time system to the environment. This information is
+	 * gathered from the source input under compilation.
+	 *
+	 * The parameter index is an integer that specifies what information follows.
+	 * Info will be an integer carrying the following interpretation:
+	 *
+	 * Index: Interpretation: 1 A call with this index is done immediately before
+	 * the termination of each pass, and the value of info signals the situation
+	 * after this pass, by the following coding: 0 - No user errors found. Go on
+	 * with next pass. 1 - User errors are found, but go on with next pass. 2 -
+	 * Reserved for fututre use, continuation is possible. 3 - No user errors found,
+	 * but because of options etc. (e.g. that S-code should not be produced), the
+	 * next pass should not be started. 4 - User errors found, therefore do not
+	 * start next pass. 5 - Too many or too difficult user errors encountered.
+	 * Therefore the current pass is terminated, and the next pass should not be
+	 * started. 6 - An internal error in the compiler has occurred. Therefore the
+	 * current pass is terminated, and the next pass should not be started.
+	 * 
+	 * 2 Info is the highest tag used in the S-code for this program. 3 Info is the
+	 * number of source lines in the Simula program being compiled. 4 Info is the
+	 * number of errors for this compilation. 5 Info is the number of warnings for
+	 * this compilation. 6 Garbage collection information. Info=0 signals the start
+	 * of a garbage collection, ENDOF hash: Info=1 signals termination of g.c. (see
+	 * 5.2).
+	 * 
+	 */
+	private static int PASS_NO = 1;
+
+	public static void giveIntInfo(final int index, final int info) {
+		if (Option.VERBOSE)
+			_RT.println("giveIntInfo: index=" + index + ", info=" + info);
+		StringBuilder sb = new StringBuilder();
+		switch (index) {
+		case 1 -> {
+			sb.append("End of pass " + (PASS_NO++) + ": ");
+			switch (info) {
+			case 0 -> sb.append("No user errors found. Go on with next pass.");
+			case 1 -> sb.append("User errors are found, but go on with next pass.");
+			case 2 -> sb.append("Reserved for fututre use, continuation is possible.");
+			case 3 ->
+				sb.append("No user errors found, but because of options etc. the next pass should not be started.");
+			case 4 -> sb.append("User errors found, therefore do not start next pass.");
+			case 5 -> sb.append("Too many or too difficult user errors encountered. Compiler should terminate.");
+			case 6 -> sb.append("An internal error in the compiler has occurred. Compiler should terminate.");
+			}
+		}
+		case 2 -> sb.append("Max tag=" + info);
+		case 3 -> sb.append("nSourceLines=" + info);
+		case 4 -> sb.append("nErrors=" + info);
+		case 5 -> sb.append("nWarnings=" + info);
+		}
+		if (Option.VERBOSE)
+			_RT.println(sb.toString());
+	}
+
+	/**
+	 * The routine give_textinfo is defined to submit information from the front-end
+	 * compiler or the run-time system to the environment. This information is
+	 * gathered from the source input under compilation.
+	 * 
+	 * The parameter index is an integer that specifies what information follows.
+	 * Info will be the string reference with the specific information as follows:
+	 * 
+	 * Index: Interpretation: 1 The string info is the identifier of a class or
+	 * procedure being separately compiled. 2 The string info is the identifier
+	 * given in an external declaration that is being processed. 3 The string info
+	 * is the external identification given in an external declaration that is being
+	 * processed.
+	 * 
+	 * E.g: When compiling:
+	 * 
+	 * class SubSep; begin external class MainSeparat="some file"; ... end;
+	 * 
+	 * Index: Interpretation: 1 currentModuleID: SubSep 2 extIdent: MainSeparate 3
+	 * extFile: "some file"
+	 * 
+	 * 
+	 */
+	public static void giveTextInfo(final int index, final _TXT info) {
+		String infoString = ((info == null) ? null : info.edText());
+		if (Option.VERBOSE)
+			_RT.println("giveTextInfo: index=" + index + ", info=" + infoString);
+		switch (index) {
+		case 1:
+			_RT.SPORT_Option.currentModuleID = infoString;
+			break; // got predefmodule when compiling PREDEF.DEF
+		case 2:
+			_RT.SPORT_Option.extIdent = infoString;
+			break;
+		case 3:
+			_RT.SPORT_Option.extFile = infoString;
+			break;
+		case 4:
+			_RT.SPORT_Option.SPORT_SysInsertDirName = infoString;
+			break;
+		default:
+			_RT.NOT_IMPLEMENTED("giveTextInfo");
+		}
+	}
+
+	/**
+	 * Index 1: Error or Warning given
+	 */
+	public static void rts_utility(final int index, final int level) {
+		if (Option.VERBOSE)
+			_RT.println("rts_utility: index=" + index + ", level=" + level + "  Error or Warning given");
+		switch (index) {
+		case 0:
+			return; // Note
+		case 1:
+			break; // return; // Warning
+		case 2:
+			break;// return; // Error
+		case 3:
+			break;// return; // COMMON Error
+		case 4:
+			break;// return; // Abort
+		case 5: // newTag check-point with Stack trace
+			if (Option.VERBOSE)
+				_RT.println("rts_utility: index=5: newTag should be changed to newTTag(ident)");
+			break;
+		default:
+			_RT.NOT_IMPLEMENTED("rts_utility: index=" + index + ", level=" + level);
+		}
 		printStaticChain();
-        try {Thread.sleep(10);}catch(Exception e) {}
-    	Thread.dumpStack();
-        try {Thread.sleep(10);}catch(Exception e) {}
-    	//System.exit(-1);
-    }
-
-
+		try {
+			Thread.sleep(10);
+		} catch (Exception e) {
+		}
+		Thread.dumpStack();
+		try {
+			Thread.sleep(10);
+		} catch (Exception e) {
+		}
+		// System.exit(-1);
+	}
 
 }
