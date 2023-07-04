@@ -74,43 +74,42 @@ public class _Directfile extends _Imagefile {
 	int _LOC;
 
 	/**
-	 * The variable MAXLOC indicates the maximum possible location on the
-	 * external file. If this is not meaningful MAXLOC has the value of
-	 * "maxint"-1. The procedure "maxloc" gives access to the current MAXLOC
-	 * value.
+	 * The variable MAXLOC indicates the maximum possible location on the external
+	 * file. If this is not meaningful MAXLOC has the value of "maxint"-1. The
+	 * procedure "maxloc" gives access to the current MAXLOC value.
 	 */
 	int _MAXLOC;
 
 	/**
-	 * The variable "LOCKED" indicates whether the file is currently locked by
-	 * the executing program. The procedure "locked" returns the current value.
+	 * The variable "LOCKED" indicates whether the file is currently locked by the
+	 * executing program. The procedure "locked" returns the current value.
 	 */
 	boolean _LOCKED;
 
 	/**
-	 * The variable "RECORDSIZE" is the fixed size of all external images. It is
-	 * set by "open" and subdivide the external file into series of external
-	 * images, without any image separating characters.
+	 * The variable "RECORDSIZE" is the fixed size of all external images. It is set
+	 * by "open" and subdivide the external file into series of external images,
+	 * without any image separating characters.
 	 */
 	int _RECORDSIZE;
-	
+
 	int INITIAL_LAST_LOC;
-	
+
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
 
 	// Constructor
-    public _Directfile(final _RTObject staticLink,final _TXT FILENAME) {
-    	super(staticLink,FILENAME);
-  	    _CREATE=_CreateAction.noCreate; // Default for Direct-type files
-    }
-    
-    // Class Statements
+	public _Directfile(final _RTObject staticLink, final _TXT FILENAME) {
+		super(staticLink, FILENAME);
+		_CREATE = _CreateAction.noCreate; // Default for Direct-type files
+	}
+
+	// Class Statements
 	@Override
-    public _Directfile _STM() {
-        EBLK();
-        return(this);
-    }
+	public _Directfile _STM() {
+		EBLK();
+		return (this);
+	}
 
 	/**
 	 * The procedure "location" returns the current value of LOC.
@@ -122,15 +121,15 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
-	 * The variable ENDFILE is true when the file is closed or when an image
-	 * with location greater than "lastloc" has been input (through "inimage").
-	 * It is set after each "inimage" statement. The procedure "endfile" returns
-	 * the current value.
+	 * The variable ENDFILE is true when the file is closed or when an image with
+	 * location greater than "lastloc" has been input (through "inimage"). It is set
+	 * after each "inimage" statement. The procedure "endfile" returns the current
+	 * value.
 	 * 
 	 * @return
 	 */
 	public boolean endfile() {
-		return(_ENDFILE);
+		return (_ENDFILE);
 	}
 
 	public boolean locked() {
@@ -150,17 +149,19 @@ public class _Directfile extends _Imagefile {
 	 * </pre>
 	 * 
 	 * The procedure "open" locates the first image of the file. The length of
-	 * "image" must, at all "inimage" and "outimage" statements, be identical to
-	 * the length of "image" at the "open" call. The value assigned to MAXLOC at
-	 * "open" is either a maximum length determined from the external file, or
-	 * it is "maxint"-1 if no such length exists.
+	 * "image" must, at all "inimage" and "outimage" statements, be identical to the
+	 * length of "image" at the "open" call. The value assigned to MAXLOC at "open"
+	 * is either a maximum length determined from the external file, or it is
+	 * "maxint"-1 if no such length exists.
 	 * 
 	 * @return
 	 */
 	public boolean open(final _TXT IMAGE) {
-		if (_OPEN) return (false);
-		File file=doCreateAction();
-		if(_RT.Option.VERBOSE) TRACE_OPEN("Open Directfile: "+file);
+		if (_OPEN)
+			return (false);
+		File file = doCreateAction();
+		if (_RT.Option.VERBOSE)
+			TRACE_OPEN("Open Directfile: " + file);
 		_LOC = 1;
 		_MAXLOC = maxint - 1;
 		image = IMAGE;
@@ -169,12 +170,16 @@ public class _Directfile extends _Imagefile {
 		setpos(1);
 		try {
 			String mode = "rws"; // mode is one of "r", "rw", "rws", or "rwd"
-			if(_SYNCHRONOUS) mode="rws";
-			else mode=(_CANREAD & !_CANWRITE)?"r":"rw";
+			if (_SYNCHRONOUS)
+				mode = "rws";
+			else
+				mode = (_CANREAD & !_CANWRITE) ? "r" : "rw";
 			randomAccessFile = new RandomAccessFile(file, mode);
-			if(_APPEND) INITIAL_LAST_LOC=lastloc();
+			if (_APPEND)
+				INITIAL_LAST_LOC = lastloc();
 		} catch (IOException e) {
-			if(_RT.Option.VERBOSE) e.printStackTrace();
+			if (_RT.Option.VERBOSE)
+				e.printStackTrace();
 			return (false);
 		}
 		locate(1);
@@ -197,36 +202,40 @@ public class _Directfile extends _Imagefile {
 	 * @return
 	 */
 	public boolean close() {
-		if (!_OPEN)	return (false);
+		if (!_OPEN)
+			return (false);
 		image = null;
-		if (_LOCKED) unlock();
+		if (_LOCKED)
+			unlock();
 		_LOC = 0;
 		_MAXLOC = 0;
 		try {
-			if(_PURGE) {
+			if (_PURGE) {
 				randomAccessFile.setLength(0);
 				randomAccessFile.close();
 				File file = new File(FILE_NAME.edText().trim());
 				file.deleteOnExit();
 				if (file.exists()) {
-					_RT.warning("Purge "+this.getClass().getSimpleName()+" \""+file.getName()
-					+"\" failed - the underlying OS was unable to perform the delete operation");
+					_RT.warning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
+							+ "\" failed - the underlying OS was unable to perform the delete operation");
 				}
-			} else randomAccessFile.close();
+			} else
+				randomAccessFile.close();
 			randomAccessFile = null;
 		} catch (IOException e) {
-			if(_RT.Option.VERBOSE) e.printStackTrace();
+			if (_RT.Option.VERBOSE)
+				e.printStackTrace();
 			return (false);
 		}
 		_OPEN = false;
-		_ENDFILE=true;
+		_ENDFILE = true;
 		return (true);
 	}
 
 	/**
-	 * The procedure "locate" is used to assign a given value to the variable
-	 * _LOC. A parameter value to "locate" which is less than one or greater
-	 * than MAXLOC constitutes a run-time error.
+	 * The procedure "locate" is used to assign a given value to the variable _LOC.
+	 * A parameter value to "locate" which is less than one or greater than MAXLOC
+	 * constitutes a run-time error.
 	 * 
 	 * <pre>
 	 *  procedure locate(i); integer i;
@@ -237,15 +246,15 @@ public class _Directfile extends _Imagefile {
 	 *  end locate;	 *
 	 * </pre>
 	 * <p>
-	 * In this implementation we use the method seek(p) which sets the
-	 * file-pointer offset, measured from the beginning of this file, at which
-	 * the next read or write occurs. The offset may be set beyond the end of
-	 * the file. Setting the offset beyond the end of the file does not change
-	 * the file length. The file length will change only by writing after the
-	 * offset has been set beyond the end of the file.
+	 * In this implementation we use the method seek(p) which sets the file-pointer
+	 * offset, measured from the beginning of this file, at which the next read or
+	 * write occurs. The offset may be set beyond the end of the file. Setting the
+	 * offset beyond the end of the file does not change the file length. The file
+	 * length will change only by writing after the offset has been set beyond the
+	 * end of the file.
 	 * <p>
-	 * Parameters: pos - the offset position, measured in bytes from the
-	 * beginning of the file, at which to set the file pointer.
+	 * Parameters: pos - the offset position, measured in bytes from the beginning
+	 * of the file, at which to set the file pointer.
 	 * <p>
 	 * Throws: IOException - if pos is less than 0 or if an I/O error occurs.
 	 * 
@@ -270,17 +279,18 @@ public class _Directfile extends _Imagefile {
 	 *    else lastloc := ...;
 	 * </pre>
 	 * 
-	 * The procedure "lastloc" indicates the largest location of any written
-	 * image. For a new file the value returned is zero.
+	 * The procedure "lastloc" indicates the largest location of any written image.
+	 * For a new file the value returned is zero.
 	 * 
 	 * @return The current last written location.
 	 */
 	public int lastloc() {
-		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
+		if (!_OPEN)
+			throw new _SimulaRuntimeError("file closed");
 		try {
 			// the length of this file, measured in bytes.
 			long length = randomAccessFile.length();
-			return ((int) length/_RECORDSIZE);
+			return ((int) length / _RECORDSIZE);
 		} catch (IOException e) {
 			throw new _SimulaRuntimeError("Lastloc failed", e);
 		}
@@ -293,14 +303,14 @@ public class _Directfile extends _Imagefile {
 	 *     else  maxloc := MAXLOC;
 	 * </pre>
 	 * 
-	 * The value assigned to MAXLOC at "open" is either a maximum length
-	 * determined from the external file, or it is "maxint"-1 if no such length
-	 * exists.
+	 * The value assigned to MAXLOC at "open" is either a maximum length determined
+	 * from the external file, or it is "maxint"-1 if no such length exists.
 	 * 
 	 * @return
 	 */
 	public int maxloc() {
-		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
+		if (!_OPEN)
+			throw new _SimulaRuntimeError("file closed");
 		return (_MAXLOC);
 	}
 
@@ -325,31 +335,32 @@ public class _Directfile extends _Imagefile {
 	 * </pre>
 	 * 
 	 * The procedure "inimage" transfers into the text "image" a copy of the
-	 * external image as currently identified by the variable LOC. If the file
-	 * does not contain an image with an ordinal number equal to the value of
-	 * LOC, the effect of the procedure "inimage" is as follows. If the location
-	 * indicated is greater than "lastloc", then ENDFILE is set to true and the
-	 * end of file text ("!25!") is assigned to "image". Otherwise, if the image
-	 * is a non-written image but there exists at least one written image whose
-	 * LOC is greater than current LOC, then the "image" is filled with NUL
-	 * ('!0!') characters and the position indicator is set to "length"+1 (i.e.
-	 * "more" becomes false). Finally the value of LOC is incremented by one
-	 * through a "locate" call.
+	 * external image as currently identified by the variable LOC. If the file does
+	 * not contain an image with an ordinal number equal to the value of LOC, the
+	 * effect of the procedure "inimage" is as follows. If the location indicated is
+	 * greater than "lastloc", then ENDFILE is set to true and the end of file text
+	 * ("!25!") is assigned to "image". Otherwise, if the image is a non-written
+	 * image but there exists at least one written image whose LOC is greater than
+	 * current LOC, then the "image" is filled with NUL ('!0!') characters and the
+	 * position indicator is set to "length"+1 (i.e. "more" becomes false). Finally
+	 * the value of LOC is incremented by one through a "locate" call.
 	 * 
 	 */
 	@Override
 	public void inimage() {
-		if(!_CANREAD)
+		if (!_CANREAD)
 			throw new _SimulaRuntimeError("Directfile: inimage failed - 'canread' is false");
-		if (!_OPEN)	throw new _SimulaRuntimeError("File not opened");
+		if (!_OPEN)
+			throw new _SimulaRuntimeError("File not opened");
 		if (_TXT.length(image) != _RECORDSIZE)
 			throw new _SimulaRuntimeError("Directfile image length changed");
-		
+
 		setpos(1); // For Filling
-		int nextSetpos=1;
+		int nextSetpos = 1;
 		char fill = ' '; // Fill character
-		
-		if (_LOC > lastloc()) _TXT.putchar(image, (char) 25);
+
+		if (_LOC > lastloc())
+			_TXT.putchar(image, (char) 25);
 		// else if(external image does not exists) fill=(char)0;
 		else
 			try {
@@ -358,17 +369,18 @@ public class _Directfile extends _Imagefile {
 					if (b < 0) {
 						_LOC = lastloc() + 1; // ENDFILE = true;
 						fill = (char) 0;
-						nextSetpos=_TXT.length(image)+1;
+						nextSetpos = _TXT.length(image) + 1;
 						break;
 					}
 					_TXT.putchar(image, (char) b);
 				}
 			} catch (IOException e) {
 				throw new _SimulaRuntimeError("Inimage failed", e);
-		}
-		_ENDFILE= _LOC > lastloc();
+			}
+		_ENDFILE = _LOC > lastloc();
 		locate(_LOC + 1);
-		while (more())	_TXT.putchar(image, fill);
+		while (more())
+			_TXT.putchar(image, fill);
 		setpos(nextSetpos);
 	}
 
@@ -385,11 +397,11 @@ public class _Directfile extends _Imagefile {
 	 * end outimage;
 	 * </pre>
 	 * 
-	 * The procedure "outimage" transfers a copy of the text value "image" to
-	 * the external image, thereby storing in the file an external image whose
-	 * ordinal number is equal to the current value of LOC. If the file contains
-	 * another image with the same ordinal number, that image is overwritten.
-	 * The value of LOC is then incremented by one through a "locate" call.
+	 * The procedure "outimage" transfers a copy of the text value "image" to the
+	 * external image, thereby storing in the file an external image whose ordinal
+	 * number is equal to the current value of LOC. If the file contains another
+	 * image with the same ordinal number, that image is overwritten. The value of
+	 * LOC is then incremented by one through a "locate" call.
 	 */
 	@Override
 	public void outimage() {
@@ -398,9 +410,9 @@ public class _Directfile extends _Imagefile {
 		if (_LOC > _MAXLOC)
 			throw new _SimulaRuntimeError("file overflow");
 		if (_LOC <= INITIAL_LAST_LOC)
-			throw new _SimulaRuntimeError("Directfile: outimage failed: location("+_LOC+") <= initial lastloc("+INITIAL_LAST_LOC+")"
-		                                + " - The file "+FILE_NAME.edText()+" was opend with APPEND");
-		if(!_CANWRITE)
+			throw new _SimulaRuntimeError("Directfile: outimage failed: location(" + _LOC + ") <= initial lastloc("
+					+ INITIAL_LAST_LOC + ")" + " - The file " + FILE_NAME.edText() + " was opend with APPEND");
+		if (!_CANWRITE)
 			throw new _SimulaRuntimeError("Directfile: outimage failed - 'canwrite' is false");
 		try {
 			randomAccessFile.write(image.edText().getBytes());
@@ -408,7 +420,7 @@ public class _Directfile extends _Imagefile {
 			throw new _SimulaRuntimeError("Outimage failed", e);
 		}
 		locate(_LOC + 1);
-		_ASGTXT(image,null);
+		_ASGTXT(image, null);
 		setpos(1);
 	}
 
@@ -426,16 +438,16 @@ public class _Directfile extends _Imagefile {
 	 *            end deleteimage;
 	 * </pre>
 	 * 
-	 * The Boolean procedure "deleteimage" makes the image identified by the
-	 * current value of LOC effectively un-written. Irrespective of any physical
-	 * differences on the external medium between never-written images and
-	 * deleted ones, there is no difference from the program's point of view.
-	 * Note that this means that "deleteimage" may decrement the value returned
-	 * by "lastloc" (in case LOC was equal to "lastloc").
+	 * The Boolean procedure "deleteimage" makes the image identified by the current
+	 * value of LOC effectively un-written. Irrespective of any physical differences
+	 * on the external medium between never-written images and deleted ones, there
+	 * is no difference from the program's point of view. Note that this means that
+	 * "deleteimage" may decrement the value returned by "lastloc" (in case LOC was
+	 * equal to "lastloc").
 	 * <p>
-	 * Note: Outputting a NUL-filled image at location "lastloc" in the file
-	 * does not necessarily decrement the "lastloc" value; explicit writing
-	 * (outimage) of such images should be avoided.
+	 * Note: Outputting a NUL-filled image at location "lastloc" in the file does
+	 * not necessarily decrement the "lastloc" value; explicit writing (outimage) of
+	 * such images should be avoided.
 	 * 
 	 * @return
 	 */
@@ -443,9 +455,10 @@ public class _Directfile extends _Imagefile {
 		if (!_OPEN)
 			return (false);
 		if (_LOC <= INITIAL_LAST_LOC)
-			throw new _SimulaRuntimeError("Directfile: deleteimage failed"+
-		    " - file opend with access-mode APPEND and location("+_LOC+") <= initial lastloc("+INITIAL_LAST_LOC+")");
-		if(!_CANWRITE)
+			throw new _SimulaRuntimeError(
+					"Directfile: deleteimage failed" + " - file opend with access-mode APPEND and location(" + _LOC
+							+ ") <= initial lastloc(" + INITIAL_LAST_LOC + ")");
+		if (!_CANWRITE)
 			throw new _SimulaRuntimeError("Directfile: deleteimage failed - 'canwrite' is false");
 		try {
 			for (int i = 0; i < _RECORDSIZE; i++)
@@ -461,12 +474,12 @@ public class _Directfile extends _Imagefile {
 	/**
 	 * All files producing output (sequential output or direct files) contain a
 	 * Boolean procedure "checkpoint". The procedure causes the environment to
-	 * attempt to secure the output produced so far. Depending on the nature of
-	 * the associated external device, this causes completion of output transfer
-	 * (i.e. intermediate buffer contents are transferred).
+	 * attempt to secure the output produced so far. Depending on the nature of the
+	 * associated external device, this causes completion of output transfer (i.e.
+	 * intermediate buffer contents are transferred).
 	 * <p>
-	 * If this is not possible or meaningful, "checkpoint" is a dummy operation
-	 * in which case the value false is returned.
+	 * If this is not possible or meaningful, "checkpoint" is a dummy operation in
+	 * which case the value false is returned.
 	 * 
 	 * @return
 	 */
@@ -482,28 +495,27 @@ public class _Directfile extends _Imagefile {
 	/**
 	 * Direct File Locking
 	 * <p>
-	 * Procedure "lock" enables the program to get exclusive access to all or
-	 * part of the file. The effect of a "lock" call while the file is locked
-	 * ("LOCKED" is true) is that the previous lock is immediately released
-	 * (prior to the new locking attempt).
+	 * Procedure "lock" enables the program to get exclusive access to all or part
+	 * of the file. The effect of a "lock" call while the file is locked ("LOCKED"
+	 * is true) is that the previous lock is immediately released (prior to the new
+	 * locking attempt).
 	 * <p>
-	 * The parameter "timelimit" is the (clock) time in seconds that is the
-	 * maximum waiting time for the resource. If "timelimit" is less than or
-	 * equal to zero, the procedure returns immediately without performing any
-	 * actions upon the file.
+	 * The parameter "timelimit" is the (clock) time in seconds that is the maximum
+	 * waiting time for the resource. If "timelimit" is less than or equal to zero,
+	 * the procedure returns immediately without performing any actions upon the
+	 * file.
 	 * <p>
-	 * The parameters "loc1" and "loc2" identify the part of the file to be
-	 * locked, by giving the ordinal numbers of two external images (bytes). The
-	 * program is given exclusive access to a part of the file which includes
-	 * the requested region. If the two parameters are both zero, this implies
-	 * locking the whole file. Otherwise, the size of the part of the file that
-	 * is actually locked, is implementation-dependent; it may even include the
-	 * entire file.
+	 * The parameters "loc1" and "loc2" identify the part of the file to be locked,
+	 * by giving the ordinal numbers of two external images (bytes). The program is
+	 * given exclusive access to a part of the file which includes the requested
+	 * region. If the two parameters are both zero, this implies locking the whole
+	 * file. Otherwise, the size of the part of the file that is actually locked, is
+	 * implementation-dependent; it may even include the entire file.
 	 * <p>
-	 * A return value of zero indicates a successful "lock" operation. The value
-	 * -1 indicates that "timelimit" was exceeded (or was zero or negative). A
-	 * negative value less than -1 indicates "lock" failure and its
-	 * interpretation is implementation-defined.
+	 * A return value of zero indicates a successful "lock" operation. The value -1
+	 * indicates that "timelimit" was exceeded (or was zero or negative). A negative
+	 * value less than -1 indicates "lock" failure and its interpretation is
+	 * implementation-defined.
 	 * 
 	 * 
 	 * <pre>
@@ -519,9 +531,9 @@ public class _Directfile extends _Imagefile {
 	 *            end lock;
 	 * </pre>
 	 * 
-	 * The procedures "lock" and "unlock" (see 10.2.2) provide locking
-	 * mechanisms. The last two parameters of "lock" indicate the minimum range
-	 * of (byte) locations to be locked (inclusive).
+	 * The procedures "lock" and "unlock" (see 10.2.2) provide locking mechanisms.
+	 * The last two parameters of "lock" indicate the minimum range of (byte)
+	 * locations to be locked (inclusive).
 	 * <p>
 	 * It is implemented using:
 	 * 
@@ -531,14 +543,14 @@ public class _Directfile extends _Imagefile {
 	 * 
 	 * With Parameters:
 	 * <ul>
-	 * <li>position - The position at which the locked region is to start; must
-	 * be non-negative</li>
-	 * <li>size - The size of the locked region; must be non-negative, and the
-	 * sum position + size must be non-negative</li>
-	 * <li>shared - true to request a shared lock, in which case this channel
-	 * must be open for reading (and possibly writing); false to request an
-	 * exclusive lock, in which case this channel must be open for writing (and
-	 * possibly reading)</li>
+	 * <li>position - The position at which the locked region is to start; must be
+	 * non-negative</li>
+	 * <li>size - The size of the locked region; must be non-negative, and the sum
+	 * position + size must be non-negative</li>
+	 * <li>shared - true to request a shared lock, in which case this channel must
+	 * be open for reading (and possibly writing); false to request an exclusive
+	 * lock, in which case this channel must be open for writing (and possibly
+	 * reading)</li>
 	 * </ul>
 	 * And Returns: A lock object representing the newly-acquired lock
 	 * 
@@ -548,7 +560,7 @@ public class _Directfile extends _Imagefile {
 	 * @param loc2
 	 * @return
 	 */
-	public int lock(final float timelimit,final int loc1,final int loc2) {
+	public int lock(final float timelimit, final int loc1, final int loc2) {
 		if (timelimit <= 0.0f)
 			return (-1);
 		if (_LOCKED)
@@ -556,12 +568,12 @@ public class _Directfile extends _Imagefile {
 		// Check that operations are completed within 'timelimit'
 		try {
 			int size = loc2 - loc1 + 1;
-			fileLock = randomAccessFile.getChannel().tryLock(loc1-1, size, true);
+			fileLock = randomAccessFile.getChannel().tryLock(loc1 - 1, size, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return (-2);
 		}
-		_LOCKED = fileLock!=null;
+		_LOCKED = fileLock != null;
 		return (0);
 	}
 
