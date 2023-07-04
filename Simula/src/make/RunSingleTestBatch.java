@@ -63,7 +63,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst26.sim"); // OK:  Designational expressions, goto statement and switch declaration.
 //		names.add("simtst27.sim"); // OK:  Test while-loops.
 //		names.add("simtst28.sim"); // OK:  Paramenter transmission to procedures by value.
-		names.add("simtst29.sim"); // OK:  Procedure parameters by value
+//		names.add("simtst29.sim"); // OK:  Procedure parameters by value
 //		names.add("simtst30.sim"); // OK:  Name parameters (Modified: 2-dim arrays removed)
 //
 //		names.add("simtst31.sim"); // OK:  Labels and switches as parameters to procedures
@@ -128,7 +128,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst81.sim"); // OK:  Test the value of close.
 //		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 //		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
-//		names.add("simtst84.sim"); // OK:  Test DirectBytefile.
+		names.add("simtst84.sim"); // OK:  Test DirectBytefile.
 //		names.add("simtst85.sim"); // OK:  Test Directfile.
 //		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 //		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.

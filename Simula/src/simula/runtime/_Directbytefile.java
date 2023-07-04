@@ -9,7 +9,6 @@ package simula.runtime;
 
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
@@ -60,34 +59,34 @@ public class _Directbytefile extends _ByteFile {
 	// int _LOC;
 
 	/**
-	 * The variable MAXLOC indicates the maximum possible location on the
-	 * external file. If this is not meaningful MAXLOC has the value of
-	 * "maxint"-1. The procedure "maxloc" gives access to the current MAXLOC
-	 * value.
+	 * The variable MAXLOC indicates the maximum possible location on the external
+	 * file. If this is not meaningful MAXLOC has the value of "maxint"-1. The
+	 * procedure "maxloc" gives access to the current MAXLOC value.
 	 */
 	int _MAXLOC;
 
 	/**
-	 * The variable "LOCKED" indicates whether the file is currently locked by
-	 * the executing program. The procedure "locked" returns the current value.
+	 * The variable "LOCKED" indicates whether the file is currently locked by the
+	 * executing program. The procedure "locked" returns the current value.
 	 */
 	boolean _LOCKED;
-	
+
 	int INITIAL_LAST_LOC;
 
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
 
 	// Constructor
-    public _Directbytefile(final _RTObject staticLink,final _TXT FILENAME) {
-      super(staticLink,FILENAME);
-  	  _CREATE=_CreateAction.noCreate; // Default for Direct-type files
-    }
-    // Class Statements
-    public _Directbytefile _STM() {
-        EBLK();
-        return(this);
-    }
+	public _Directbytefile(final _RTObject staticLink, final _TXT FILENAME) {
+		super(staticLink, FILENAME);
+		_CREATE = _CreateAction.noCreate; // Default for Direct-type files
+	}
+
+	// Class Statements
+	public _Directbytefile _STM() {
+		EBLK();
+		return (this);
+	}
 
 	/**
 	 * The procedure "endfile" returns true whenever LOC indicates an address
@@ -96,7 +95,7 @@ public class _Directbytefile extends _ByteFile {
 	 * @return
 	 */
 	public boolean endfile() {
-		return(_OPEN && (location() > lastloc()));
+		return (_OPEN && (location() > lastloc()));
 	}
 
 	/**
@@ -107,10 +106,11 @@ public class _Directbytefile extends _ByteFile {
 	 * @return the current read/write position.
 	 */
 	public int location() {
-		if(!_OPEN) return(0);
+		if (!_OPEN)
+			return (0);
 		try {
 			long loc = randomAccessFile.getFilePointer();
-			return ((int) loc+1);
+			return ((int) loc + 1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return (-1);
@@ -124,14 +124,12 @@ public class _Directbytefile extends _ByteFile {
 	 *     else  maxloc := MAXLOC;
 	 * </pre>
 	 * 
-	 * The value assigned to MAXLOC at "open" is either a maximum length
-	 * determined from the external file, or it is "maxint"-1 if no such length
-	 * exists.
+	 * The value assigned to MAXLOC at "open" is either a maximum length determined
+	 * from the external file, or it is "maxint"-1 if no such length exists.
 	 * 
 	 * @return
 	 */
 	public int maxloc() {
-//		if (!_OPEN) throw new _SimulaRuntimeError("file closed");
 		return (_MAXLOC);
 	}
 
@@ -153,18 +151,23 @@ public class _Directbytefile extends _ByteFile {
 	 * @return
 	 */
 	public boolean open() {
-		if(_RT.Option.VERBOSE) TRACE_OPEN("Open Directbytefile");
-		if (_OPEN) return (false);
+		if (_RT.Option.VERBOSE)
+			TRACE_OPEN("Open Directbytefile");
+		if (_OPEN)
+			return (false);
 		// _LOC = 1; // LOC is maintained by the underlying file system.
 		_MAXLOC = maxint - 1;
 		_OPEN = true;
-		File file=doCreateAction();
+		_BYTESIZE = _DEFAULT_BYTESIZE;
+		File file = doCreateAction();
 		try {
 			String mode; // mode is one of "r", "rw", "rws", or "rwd"
-			if(_SYNCHRONOUS) mode="rws";
-			else mode=(_CANREAD & !_CANWRITE)?"r":"rw";
+			if (_SYNCHRONOUS)
+				mode = "rws";
+			else
+				mode = (_CANREAD & !_CANWRITE) ? "r" : "rw";
 			randomAccessFile = new RandomAccessFile(file, mode);
-			INITIAL_LAST_LOC=(_APPEND)?lastloc(): -1;
+			INITIAL_LAST_LOC = (_APPEND) ? lastloc() : -1;
 		} catch (IOException e) {
 			return (false);
 		}
@@ -184,19 +187,21 @@ public class _Directbytefile extends _ByteFile {
 	 * @return
 	 */
 	public boolean close() {
-		if (!_OPEN)	return (false);
+		if (!_OPEN)
+			return (false);
 		_MAXLOC = 0;
 		_OPEN = false;
 		try {
-			if(_PURGE) {
+			if (_PURGE) {
 				randomAccessFile.setLength(0);
 				randomAccessFile.close();
 				File file = new File(FILE_NAME.edText().trim());
 				if (file.exists()) {
-					_RT.warning("Purge "+this.getClass().getSimpleName()+" \""+file.getName()
-					+"\" failed - the underlying OS was unable to perform the delete operation");
+					_RT.warning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
+							+ "\" failed - the underlying OS was unable to perform the delete operation");
 				}
-			} else randomAccessFile.close();
+			} else
+				randomAccessFile.close();
 			randomAccessFile = null;
 		} catch (IOException e) {
 			return (false);
@@ -206,9 +211,9 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "locate" is used to assign a given value to the variable
-	 * LOC. A parameter value to "locate" which is less than one or greater
-	 * than MAXLOC constitutes a run-time error.
+	 * The procedure "locate" is used to assign a given value to the variable LOC. A
+	 * parameter value to "locate" which is less than one or greater than MAXLOC
+	 * constitutes a run-time error.
 	 * <p>
 	 * 
 	 * <pre>
@@ -220,15 +225,15 @@ public class _Directbytefile extends _ByteFile {
 	 *  end locate;	 *
 	 * </pre>
 	 * 
-	 * In this implementation we use the method seek(p) which sets the
-	 * file-pointer offset, measured from the beginning of this file, at which
-	 * the next read or write occurs. The offset may be set beyond the end of
-	 * the file. Setting the offset beyond the end of the file does not change
-	 * the file length. The file length will change only by writing after the
-	 * offset has been set beyond the end of the file.
+	 * In this implementation we use the method seek(p) which sets the file-pointer
+	 * offset, measured from the beginning of this file, at which the next read or
+	 * write occurs. The offset may be set beyond the end of the file. Setting the
+	 * offset beyond the end of the file does not change the file length. The file
+	 * length will change only by writing after the offset has been set beyond the
+	 * end of the file.
 	 * <p>
-	 * Parameters: pos - the offset position, measured in bytes from the
-	 * beginning of the file, at which to set the file pointer.
+	 * Parameters: pos - the offset position, measured in bytes from the beginning
+	 * of the file, at which to set the file pointer.
 	 * <p>
 	 * Throws: IOException - if pos is less than 0 or if an I/O error occurs.
 	 * 
@@ -239,9 +244,9 @@ public class _Directbytefile extends _ByteFile {
 			throw new _SimulaRuntimeError("Parameter out of range");
 		else
 			try {
-				randomAccessFile.seek(p-1);
+				randomAccessFile.seek(p - 1);
 			} catch (IOException e) {
-				throw new _SimulaRuntimeError("I/O Error on file",e);
+				throw new _SimulaRuntimeError("I/O Error on file", e);
 			}
 		// LOC is maintained by the underlying file system.
 		// _LOC = p;
@@ -254,8 +259,8 @@ public class _Directbytefile extends _ByteFile {
 	 *    else lastloc := ...;
 	 * </pre>
 	 * 
-	 * The procedure "lastloc" indicates the largest location of any written
-	 * image. For a new file the value returned is zero.
+	 * The procedure "lastloc" indicates the largest location of any written image.
+	 * For a new file the value returned is zero.
 	 * 
 	 * @return The current last written location.
 	 */
@@ -267,7 +272,7 @@ public class _Directbytefile extends _ByteFile {
 			long length = randomAccessFile.length();
 			return ((int) length);
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("I/O Error on file",e);
+			throw new _SimulaRuntimeError("I/O Error on file", e);
 		}
 	}
 
@@ -292,7 +297,7 @@ public class _Directbytefile extends _ByteFile {
 	 * @return
 	 */
 	public int inbyte() {
-		if(!_CANREAD)
+		if (!_CANREAD)
 			throw new _SimulaRuntimeError("Directbytefile: inbyte failed - 'canread' is false");
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
@@ -300,13 +305,13 @@ public class _Directbytefile extends _ByteFile {
 		// if (_LOC <= lastloc())
 
 		try {
-			int b=randomAccessFile.read();
-			return(b== -1)?0:b;
+			int b = randomAccessFile.read();
+			return (b == -1) ? 0 : b;
 		} catch (EOFException e) {
 			return (0);
 
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("I/O Error on file",e);
+			throw new _SimulaRuntimeError("I/O Error on file", e);
 		}
 		// LOC is maintained by the underlying file system.
 		// _LOC = _LOC + 1;
@@ -316,9 +321,9 @@ public class _Directbytefile extends _ByteFile {
 	 * The procedure "outbyte" outputs a byte according to the given parameter
 	 * value.
 	 * <p>
-	 * In this implementation the file.write() writes a byte starting at the
-	 * file pointer and advance the file pointer past the byte written. I.e. LOC
-	 * is maintained by the underlying file system.
+	 * In this implementation the file.write() writes a byte starting at the file
+	 * pointer and advance the file pointer past the byte written. I.e. LOC is
+	 * maintained by the underlying file system.
 	 * 
 	 * <pre>
 	 * procedure outbyte(x);  short integer x;
@@ -335,21 +340,23 @@ public class _Directbytefile extends _ByteFile {
 	 * @param x
 	 */
 	public void outbyte(final int x) {
-		if(!_CANWRITE)
+		if (!_CANWRITE)
 			throw new _SimulaRuntimeError("Directbytefile: outbyte failed - 'canwrite' is false");
-		if (!_OPEN) throw new _SimulaRuntimeError("file closed");
+		if (!_OPEN)
+			throw new _SimulaRuntimeError("file closed");
 		if (location() <= INITIAL_LAST_LOC)
-			throw new _SimulaRuntimeError("Directbytefile: outbyte failed: location("+location()+") <= initial lastloc("+INITIAL_LAST_LOC+")"
-		                                + " - The file "+FILE_NAME.edText()+" was opend with APPEND");
+			throw new _SimulaRuntimeError(
+					"Directbytefile: outbyte failed: location(" + location() + ") <= initial lastloc("
+							+ INITIAL_LAST_LOC + ")" + " - The file " + FILE_NAME.edText() + " was opend with APPEND");
 		if (x < 0 || x > _MAXBYTE)
-			throw new _SimulaRuntimeError("Outbyte, illegal byte value: "+x);
+			throw new _SimulaRuntimeError("Outbyte, illegal byte value: " + x);
 		// else
 		// LOC is maintained by the underlying file system.
 		// if (_LOC > _MAXLOC) error("file overflow");
 		try {
 			randomAccessFile.write(x);
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("I/O Error on file",e);
+			throw new _SimulaRuntimeError("I/O Error on file", e);
 		}
 		// LOC is maintained by the underlying file system.
 		// _LOC = _LOC + 1;
@@ -358,12 +365,12 @@ public class _Directbytefile extends _ByteFile {
 	/**
 	 * All files producing output (sequential output or direct files) contain a
 	 * Boolean procedure "checkpoint". The procedure causes the environment to
-	 * attempt to secure the output produced so far. Depending on the nature of
-	 * the associated external device, this causes completion of output transfer
-	 * (i.e. intermediate buffer contents are transferred).
+	 * attempt to secure the output produced so far. Depending on the nature of the
+	 * associated external device, this causes completion of output transfer (i.e.
+	 * intermediate buffer contents are transferred).
 	 * <p>
-	 * If this is not possible or meaningful, "checkpoint" is a dummy operation
-	 * in which case the value false is returned.
+	 * If this is not possible or meaningful, "checkpoint" is a dummy operation in
+	 * which case the value false is returned.
 	 * 
 	 * @return
 	 */
@@ -380,28 +387,27 @@ public class _Directbytefile extends _ByteFile {
 	/**
 	 * Direct File Locking
 	 * <p>
-	 * Procedure "lock" enables the program to get exclusive access to all or
-	 * part of the file. The effect of a "lock" call while the file is locked
-	 * ("LOCKED" is true) is that the previous lock is immediately released
-	 * (prior to the new locking attempt).
+	 * Procedure "lock" enables the program to get exclusive access to all or part
+	 * of the file. The effect of a "lock" call while the file is locked ("LOCKED"
+	 * is true) is that the previous lock is immediately released (prior to the new
+	 * locking attempt).
 	 * <p>
-	 * The parameter "timelimit" is the (clock) time in seconds that is the
-	 * maximum waiting time for the resource. If "timelimit" is less than or
-	 * equal to zero, the procedure returns immediately without performing any
-	 * actions upon the file.
+	 * The parameter "timelimit" is the (clock) time in seconds that is the maximum
+	 * waiting time for the resource. If "timelimit" is less than or equal to zero,
+	 * the procedure returns immediately without performing any actions upon the
+	 * file.
 	 * <p>
-	 * The parameters "loc1" and "loc2" identify the part of the file to be
-	 * locked, by giving the ordinal numbers of two external images (bytes). The
-	 * program is given exclusive access to a part of the file which includes
-	 * the requested region. If the two parameters are both zero, this implies
-	 * locking the whole file. Otherwise, the size of the part of the file that
-	 * is actually locked, is implementation-dependent; it may even include the
-	 * entire file.
+	 * The parameters "loc1" and "loc2" identify the part of the file to be locked,
+	 * by giving the ordinal numbers of two external images (bytes). The program is
+	 * given exclusive access to a part of the file which includes the requested
+	 * region. If the two parameters are both zero, this implies locking the whole
+	 * file. Otherwise, the size of the part of the file that is actually locked, is
+	 * implementation-dependent; it may even include the entire file.
 	 * <p>
-	 * A return value of zero indicates a successful "lock" operation. The value
-	 * -1 indicates that "timelimit" was exceeded (or was zero or negative). A
-	 * negative value less than -1 indicates "lock" failure and its
-	 * interpretation is implementation-defined.
+	 * A return value of zero indicates a successful "lock" operation. The value -1
+	 * indicates that "timelimit" was exceeded (or was zero or negative). A negative
+	 * value less than -1 indicates "lock" failure and its interpretation is
+	 * implementation-defined.
 	 * 
 	 * 
 	 * <pre>
@@ -417,9 +423,9 @@ public class _Directbytefile extends _ByteFile {
 	 *            end lock;
 	 * </pre>
 	 * 
-	 * The procedures "lock" and "unlock" (see 10.2.2) provide locking
-	 * mechanisms. The last two parameters of "lock" indicate the minimum range
-	 * of (byte) locations to be locked (inclusive).
+	 * The procedures "lock" and "unlock" (see 10.2.2) provide locking mechanisms.
+	 * The last two parameters of "lock" indicate the minimum range of (byte)
+	 * locations to be locked (inclusive).
 	 * <p>
 	 * It is implemented using:
 	 * 
@@ -429,14 +435,14 @@ public class _Directbytefile extends _ByteFile {
 	 * 
 	 * With Parameters:
 	 * <ul>
-	 * <li>position - The position at which the locked region is to start; must
-	 * be non-negative</li>
-	 * <li>size - The size of the locked region; must be non-negative, and the
-	 * sum position + size must be non-negative</li>
-	 * <li>shared - true to request a shared lock, in which case this channel
-	 * must be open for reading (and possibly writing); false to request an
-	 * exclusive lock, in which case this channel must be open for writing (and
-	 * possibly reading)</li>
+	 * <li>position - The position at which the locked region is to start; must be
+	 * non-negative</li>
+	 * <li>size - The size of the locked region; must be non-negative, and the sum
+	 * position + size must be non-negative</li>
+	 * <li>shared - true to request a shared lock, in which case this channel must
+	 * be open for reading (and possibly writing); false to request an exclusive
+	 * lock, in which case this channel must be open for writing (and possibly
+	 * reading)</li>
 	 * </ul>
 	 * And Returns: A lock object representing the newly-acquired lock
 	 * 
@@ -446,10 +452,11 @@ public class _Directbytefile extends _ByteFile {
 	 * @param loc2
 	 * @return
 	 */
-	public int lock(final float timelimit,final int loc1,final int loc2) {
-		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
-		if (timelimit <= 0.0f) return (-1);
-		if (_LOCKED) unlock();
+	public int lock(final float timelimit, final int loc1, final int loc2) {
+		if (timelimit <= 0.0f)
+			return (-1);
+		if (_LOCKED)
+			unlock();
 		// Check that operations are completed within 'timelimit'
 		try {
 			int size = loc2 - loc1 + 1;
@@ -474,7 +481,6 @@ public class _Directbytefile extends _ByteFile {
 	 * @return
 	 */
 	public boolean unlock() {
-		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
 		boolean result = checkpoint();
 		if (_LOCKED)
 			try {
@@ -488,8 +494,8 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "intext" fills the frame of the parameter "t" with
-	 * successive input bytes.
+	 * The procedure "intext" fills the frame of the parameter "t" with successive
+	 * input bytes.
 	 * <p>
 	 * 
 	 * <pre>
@@ -517,8 +523,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "outtext" outputs all characters in the parameter "t" as
-	 * bytes.
+	 * The procedure "outtext" outputs all characters in the parameter "t" as bytes.
 	 * <p>
 	 * 
 	 * <pre>

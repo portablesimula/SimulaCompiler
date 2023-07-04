@@ -104,6 +104,7 @@ public class _File extends _CLASS {
 	protected boolean _APPEND=false;
 	protected Charset _CHARSET=Charset.defaultCharset();
 	
+	protected final int _DEFAULT_BYTESIZE=8;
 	protected boolean _SYNCHRONOUS;
 
 	// Constructor

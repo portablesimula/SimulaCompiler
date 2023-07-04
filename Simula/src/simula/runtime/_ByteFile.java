@@ -30,7 +30,7 @@ package simula.runtime;
  *
  */
 public class _ByteFile extends _File {
-	protected final int _BYTESIZE = 8;
+	protected int _BYTESIZE;
 	protected final int _MAXBYTE = 255;
 
 	public int bytesize() {

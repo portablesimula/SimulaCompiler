@@ -52,27 +52,24 @@ public class _Outbytefile extends _ByteFile {
         return(this);
     }
 
-	public boolean open() {
-		if(_RT.Option.VERBOSE) TRACE_OPEN("Open OutByteFile");
-		if (_OPEN) return (false);
-		if (FILE_NAME.edText().equalsIgnoreCase("#sysout"))
-			outputStream = System.out;
-		else {
-			//System.out.println("_OutbyteFile.open: FILE_NAME="+FILE_NAME);
-			File file=doCreateAction();
-			try {
-				outputStream = new FileOutputStream(file,_APPEND);
-			} catch (FileNotFoundException e) {
-				//e.printStackTrace();
-				return (false);
-			} catch (_SimulaRuntimeError e) {
-				//e.printStackTrace();
-				return (false);
-			}
-		}
-		_OPEN = true;
-		return (true);
-	}
+    public boolean open() {
+    	if(_RT.Option.VERBOSE) TRACE_OPEN("Open OutByteFile");
+    	if (_OPEN) return (false);
+    	//System.out.println("_OutbyteFile.open: FILE_NAME="+FILE_NAME);
+    	File file=doCreateAction();
+    	try {
+    		outputStream = new FileOutputStream(file,_APPEND);
+    	} catch (FileNotFoundException e) {
+    		//e.printStackTrace();
+    		return (false);
+//    	} catch (_SimulaRuntimeError e) {
+//    		//e.printStackTrace();
+//    		return (false);
+    	}
+    	_OPEN = true;
+    	_BYTESIZE = _DEFAULT_BYTESIZE;
+    	return (true);
+    }
 
 	public boolean close() {
 		if (_OPEN) {

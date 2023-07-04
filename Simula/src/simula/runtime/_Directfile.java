@@ -8,12 +8,9 @@
 package simula.runtime;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * The class "directfile"
@@ -109,6 +106,7 @@ public class _Directfile extends _Imagefile {
     }
     
     // Class Statements
+	@Override
     public _Directfile _STM() {
         EBLK();
         return(this);
@@ -163,7 +161,6 @@ public class _Directfile extends _Imagefile {
 		if (_OPEN) return (false);
 		File file=doCreateAction();
 		if(_RT.Option.VERBOSE) TRACE_OPEN("Open Directfile: "+file);
-		
 		_LOC = 1;
 		_MAXLOC = maxint - 1;
 		image = IMAGE;
@@ -177,7 +174,7 @@ public class _Directfile extends _Imagefile {
 			randomAccessFile = new RandomAccessFile(file, mode);
 			if(_APPEND) INITIAL_LAST_LOC=lastloc();
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		locate(1);
@@ -218,7 +215,7 @@ public class _Directfile extends _Imagefile {
 			} else randomAccessFile.close();
 			randomAccessFile = null;
 		} catch (IOException e) {
-			//e.printStackTrace();
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		_OPEN = false;
@@ -340,6 +337,7 @@ public class _Directfile extends _Imagefile {
 	 * through a "locate" call.
 	 * 
 	 */
+	@Override
 	public void inimage() {
 		if(!_CANREAD)
 			throw new _SimulaRuntimeError("Directfile: inimage failed - 'canread' is false");
@@ -393,6 +391,7 @@ public class _Directfile extends _Imagefile {
 	 * another image with the same ordinal number, that image is overwritten.
 	 * The value of LOC is then incremented by one through a "locate" call.
 	 */
+	@Override
 	public void outimage() {
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
@@ -550,7 +549,6 @@ public class _Directfile extends _Imagefile {
 	 * @return
 	 */
 	public int lock(final float timelimit,final int loc1,final int loc2) {
-		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
 		if (timelimit <= 0.0f)
 			return (-1);
 		if (_LOCKED)
@@ -579,7 +577,6 @@ public class _Directfile extends _Imagefile {
 	 * @return
 	 */
 	public boolean unlock() {
-		// TODO: Complete the implementation of access mode SHARED and procedure lock an unlock.
 		boolean result = checkpoint();
 		if (_LOCKED)
 			try {
