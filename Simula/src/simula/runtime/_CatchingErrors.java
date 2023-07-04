@@ -59,30 +59,37 @@ package simula.runtime;
  *
  */
 public abstract class _CatchingErrors extends _CLASS {
-    public _PRCQNT _onError_0(){ throw new _SimulaRuntimeError("No Virtual Match: onError"); }
+	public _PRCQNT _onError_0() {
+		throw new _SimulaRuntimeError("No Virtual Match: onError");
+	}
 
-    public _CatchingErrors(_RTObject staticLink) {
-        super(staticLink);
-        BBLK(); // Iff no prefix
-    }
-    
-    public void _onError(RuntimeException e,_PRCQNT match) {
-    	if(e instanceof _LABQNT) throw(e);
-    	try {
-    		String message=getErrorMessage(e);
-    		if(_RT.Option.VERBOSE) {
-    			System.out.println("GOT _SimulaRuntimeError:"+message);
-    			e.printStackTrace(System.out);
-    			_RT.printSimulaStackTrace(1);
-    		}
-    		match.CPF().setPar(new _NAME<_TXT>() {
-    			public _TXT get() { return(new _TXT(message)); } })._ENT();
-    	} catch(_LABQNT q) { throw(q);
-    	} catch(RuntimeException x) {
-    		System.out.println("RuntimeException within onError: "+getErrorMessage(e));
-    		e.printStackTrace(System.out);
-    		System.exit(-1);
-    	}
-    }
+	public _CatchingErrors(_RTObject staticLink) {
+		super(staticLink);
+		BBLK(); // Iff no prefix
+	}
+
+	public void _onError(RuntimeException e, _PRCQNT match) {
+		if (e instanceof _LABQNT)
+			throw (e);
+		try {
+			String message = getErrorMessage(e);
+			if (_RT.Option.VERBOSE) {
+				System.out.println("GOT _SimulaRuntimeError:" + message);
+				e.printStackTrace(System.out);
+				_RT.printSimulaStackTrace(1);
+			}
+			match.CPF().setPar(new _NAME<_TXT>() {
+				public _TXT get() {
+					return (new _TXT(message));
+				}
+			})._ENT();
+		} catch (_LABQNT q) {
+			throw (q);
+		} catch (RuntimeException x) {
+			System.out.println("RuntimeException within onError: " + getErrorMessage(e));
+			e.printStackTrace(System.out);
+			System.exit(-1);
+		}
+	}
 
 }

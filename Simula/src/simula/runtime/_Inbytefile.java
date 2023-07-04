@@ -92,7 +92,6 @@ public class _Inbytefile extends _ByteFile {
 			return (false);
 		}
 		_OPEN = true;
-		_BYTESIZE = 8;
 		_ENDFILE = false;
 		//_RT.BREAK("INBYTEFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
 		return (true);

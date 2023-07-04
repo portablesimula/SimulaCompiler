@@ -30,21 +30,24 @@ package simula.runtime;
  *
  */
 public class _ByteFile extends _File {
-	protected int _BYTESIZE;
+	protected final int _BYTESIZE = 8;
+	protected final int _MAXBYTE = 255;
 
-	public int bytesize() {	return (_BYTESIZE);	}
+	public int bytesize() {
+		return (_BYTESIZE);
+	}
 
 	// Constructor
-    public _ByteFile(final _RTObject staticLink,final _TXT FILENAME) {
-      super(staticLink,FILENAME);
-    }
-    
-    // Class Statements
-    public _ByteFile _STM() {
-        if(FILE_NAME==null)
-        	throw new _SimulaRuntimeError("Illegal File Name");
-        EBLK();
-        return(this);
-    }
+	public _ByteFile(final _RTObject staticLink, final _TXT FILENAME) {
+		super(staticLink, FILENAME);
+	}
+
+	// Class Statements
+	public _ByteFile _STM() {
+		if (FILE_NAME == null)
+			throw new _SimulaRuntimeError("Illegal File Name");
+		EBLK();
+		return (this);
+	}
 
 }

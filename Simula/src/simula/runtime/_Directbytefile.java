@@ -157,7 +157,6 @@ public class _Directbytefile extends _ByteFile {
 		if (_OPEN) return (false);
 		// _LOC = 1; // LOC is maintained by the underlying file system.
 		_MAXLOC = maxint - 1;
-		_BYTESIZE = 8;
 		_OPEN = true;
 		File file=doCreateAction();
 		try {
@@ -342,7 +341,7 @@ public class _Directbytefile extends _ByteFile {
 		if (location() <= INITIAL_LAST_LOC)
 			throw new _SimulaRuntimeError("Directbytefile: outbyte failed: location("+location()+") <= initial lastloc("+INITIAL_LAST_LOC+")"
 		                                + " - The file "+FILE_NAME.edText()+" was opend with APPEND");
-		if (x < 0 || x >= (Math.pow(2,_BYTESIZE)))
+		if (x < 0 || x > _MAXBYTE)
 			throw new _SimulaRuntimeError("Outbyte, illegal byte value: "+x);
 		// else
 		// LOC is maintained by the underlying file system.

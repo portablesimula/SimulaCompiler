@@ -20,12 +20,12 @@ begin
   
   integer procedure Q(p1); name p1; array p1;
   begin
-    P:=p1(4);
+    Q:=p1(4);
   end;
   
   integer procedure Q2(p1); array p1;
   begin
-    P:=p1(4);
+    Q2:=p1(4);
   end;
   
   j:=P(A);

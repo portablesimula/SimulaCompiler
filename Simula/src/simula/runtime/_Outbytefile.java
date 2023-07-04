@@ -71,7 +71,6 @@ public class _Outbytefile extends _ByteFile {
 			}
 		}
 		_OPEN = true;
-		_BYTESIZE =8;
 		return (true);
 	}
 
@@ -87,7 +86,7 @@ public class _Outbytefile extends _ByteFile {
 	public void outbyte(final int b) {
 		TRC("outbyte",""+b);
 		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
-		if (b < 0 || b >= (Math.pow(2,_BYTESIZE)))
+		if (b < 0 || b > _MAXBYTE)
 			throw new _SimulaRuntimeError("Illegal byte value");
 		try { outputStream.write(b); if(_SYNCHRONOUS) outputStream.flush();
 		} catch (IOException e) {

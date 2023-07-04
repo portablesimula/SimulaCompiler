@@ -21,22 +21,22 @@ public abstract class _CLASS extends _BASICIO implements Runnable {
 	// Runnable Body
 	public _RTObject _START() {
 		beginCoroutine();
-		return(this);
+		return (this);
 	}
-  
+
 	public void run() {
 		_STM();
 	}
 
-	
 	// *********************************************************************
 	// *** BEGIN QPS COMPONENT IN A SEPARATE COROUTINE
 	// *********************************************************************
 	private void beginCoroutine() {
 		// Using Thread or Virtual Thread
-		this.CORUT_=new Coroutine(this);
-		if(_RT.Option.QPS_TRACING) _RT.TRACE("START "+this.edObjectIdent());
-		_RT.ASSERT(_CUR==this,"_CLASS.START:Invariant-1");
+		this.CORUT_ = new Coroutine(this);
+		if (_RT.Option.QPS_TRACING)
+			_RT.TRACE("START " + this.edObjectIdent());
+		_RT.ASSERT(_CUR == this, "_CLASS.START:Invariant-1");
 		swapCoroutines();
 	}
 

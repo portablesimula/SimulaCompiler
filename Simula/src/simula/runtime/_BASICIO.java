@@ -103,19 +103,19 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class _BASICIO extends _ENVIRONMENT { 
+public class _BASICIO extends _ENVIRONMENT {
 
 	// Constructor
 	public _BASICIO(final _RTObject staticLink) {
 		super(staticLink);
 	}
-	
+
 //  procedure terminate_program;
 //  begin ... ;  goto STOP  end terminate_program;
 //  DEFINED IN _RTObject	
-    
-    public String toString()
-    { return("Simula "+this.getClass().getSimpleName()); }
 
+	public String toString() {
+		return ("Simula " + this.getClass().getSimpleName());
+	}
 
 }
