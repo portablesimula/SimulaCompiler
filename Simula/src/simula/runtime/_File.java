@@ -152,6 +152,7 @@ public class _File extends _CLASS {
 					if (tryFile.exists())
 						return (tryFile);
 				} catch (Throwable e) {
+		    		if(_RT.Option.VERBOSE) e.printStackTrace();
 				}
 		}
 		JFileChooser fileChooser = new JFileChooser(file.getParent());
@@ -372,6 +373,7 @@ public class _File extends _CLASS {
 			}
 			}
 		} catch (IOException e) {
+    		if(_RT.Option.VERBOSE) e.printStackTrace();
 		}
 		return (file);
 	}
@@ -386,6 +388,7 @@ public class _File extends _CLASS {
 				}
 			}
 		} catch (Exception e) {
+    		if(_RT.Option.VERBOSE) e.printStackTrace();
 		}
 	}
 

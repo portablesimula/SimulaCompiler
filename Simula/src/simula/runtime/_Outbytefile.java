@@ -60,7 +60,7 @@ public class _Outbytefile extends _ByteFile {
     	try {
     		outputStream = new FileOutputStream(file,_APPEND);
     	} catch (FileNotFoundException e) {
-    		//e.printStackTrace();
+    		if(_RT.Option.VERBOSE) e.printStackTrace();
     		return (false);
 //    	} catch (_SimulaRuntimeError e) {
 //    		//e.printStackTrace();
@@ -103,7 +103,7 @@ public class _Outbytefile extends _ByteFile {
 			outputStream.write(lo);
 			if(_SYNCHRONOUS) outputStream.flush();
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Out2byte failed", e);
+			throw new _SimulaRuntimeError("out2byte failed", e);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class _Outbytefile extends _ByteFile {
 				outputStream.write((int)_TXT.getchar(t));
 				if(_SYNCHRONOUS) outputStream.flush();
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new _SimulaRuntimeError("outtext failed", e);
 			}
 		}
 	}

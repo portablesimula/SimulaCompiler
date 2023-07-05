@@ -60,6 +60,7 @@ public class _Infile extends _Imagefile {
 	}
 
 	// Class Statements
+	@Override
 	public _Infile _STM() {
 		EBLK();
 		return(this);
@@ -107,16 +108,13 @@ public class _Infile extends _Imagefile {
 		else {
 			File file=doCreateAction();
 			if(!file.exists()) {
-//				File selected=trySelectFile(file.getAbsoluteFile().getParentFile().toString());
 				File selected=trySelectFile(file.getAbsoluteFile().toString());
 				if(selected!=null) file=selected;				
 			}
 			try {
-//				InputStream inputStream = new FileInputStream(file);
-//				reader = new InputStreamReader(inputStream,_CHARSET);
 				reader = new FileReader(file,_CHARSET);
 			} catch (IOException e) {
-				//e.printStackTrace();
+				if(_RT.Option.VERBOSE) e.printStackTrace();
 				_OPEN=false;
 //				_RT.BREAK("INFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
 				return(false);
@@ -159,6 +157,7 @@ public class _Infile extends _Imagefile {
 			if (lineReader != null)
 				lineReader.close();
 		} catch (IOException e) {
+    		if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		image = null; // image :- NOTEXT;

@@ -195,7 +195,7 @@ public class _Printfile extends _Outfile {
 				writer.flush();
 				writer.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				if(_RT.Option.VERBOSE) e1.printStackTrace();
 				return (false);
 			} //else console.close();
 		}

@@ -464,7 +464,7 @@ public class _Directfile extends _Imagefile {
 			for (int i = 0; i < _RECORDSIZE; i++)
 				randomAccessFile.write(0);
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Outimage failed", e);
+			throw new _SimulaRuntimeError("deleteimage failed", e);
 		}
 		locate(_LOC + 1);
 		return (true);
@@ -487,6 +487,7 @@ public class _Directfile extends _Imagefile {
 		try {
 			randomAccessFile.getChannel().force(true);
 		} catch (IOException e) {
+    		if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		return (false);
@@ -570,7 +571,7 @@ public class _Directfile extends _Imagefile {
 			int size = loc2 - loc1 + 1;
 			fileLock = randomAccessFile.getChannel().tryLock(loc1 - 1, size, true);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (-2);
 		}
 		_LOCKED = fileLock != null;
@@ -594,7 +595,7 @@ public class _Directfile extends _Imagefile {
 			try {
 				fileLock.release();
 			} catch (IOException e) {
-				e.printStackTrace();
+				if(_RT.Option.VERBOSE) e.printStackTrace();
 				result = false;
 			}
 		_LOCKED = false;

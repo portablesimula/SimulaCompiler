@@ -94,7 +94,10 @@ public class _Outfile extends _Imagefile {
 //				outputStream = new FileOutputStream(file);
 //				writer = new OutputStreamWriter(outputStream,_CHARSET);
 				writer = new FileWriter(file, _CHARSET, _APPEND);
-			} catch (IOException e) { return (false); }
+			} catch (IOException e) {
+				if(_RT.Option.VERBOSE) e.printStackTrace();
+				return (false);
+			}
 		}
 		return (true);
 	}
@@ -135,7 +138,7 @@ public class _Outfile extends _Imagefile {
 			writer.flush();
 			writer.close();
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			if(_RT.Option.VERBOSE) e1.printStackTrace();
 			return (false);
 		} //else console.close();
 		_OPEN = false;
@@ -241,6 +244,7 @@ public class _Outfile extends _Imagefile {
 		try {
 			writer.flush();
 		} catch (IOException e) {
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		return (true);

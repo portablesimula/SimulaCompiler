@@ -149,7 +149,9 @@ public class PageWriter extends Writer {
 		PrintService printService=lookupPrintService();
 		if(printService != null) {
 			try { printerJob.setPrintService(printService); ok=true;
-			} catch (PrinterException e) {}
+			} catch (PrinterException e) {
+				if(_RT.Option.VERBOSE) e.printStackTrace();
+			}
 		} else ok=printerJob.printDialog();
 		if(ok) while(tryPrint());
 	}

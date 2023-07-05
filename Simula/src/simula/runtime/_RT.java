@@ -296,7 +296,9 @@ public final class _RT {
 				ver = ver.substring(0, 2);
 				return (Integer.parseInt(ver));
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			if(_RT.Option.VERBOSE) e.printStackTrace();
+		}
 		return (0);
 	}
 	
@@ -419,7 +421,7 @@ public final class _RT {
 	        	  return(true);
 	        } catch(Throwable t) { t.printStackTrace(); }
 	    } catch (Exception e) {
-	    	//e.printStackTrace();
+	    	if(_RT.Option.VERBOSE) e.printStackTrace();
 	    }
 		return(false);
 	}

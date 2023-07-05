@@ -112,7 +112,7 @@ public class _Directbytefile extends _ByteFile {
 			long loc = randomAccessFile.getFilePointer();
 			return ((int) loc + 1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (-1);
 		}
 	}
@@ -169,6 +169,7 @@ public class _Directbytefile extends _ByteFile {
 			randomAccessFile = new RandomAccessFile(file, mode);
 			INITIAL_LAST_LOC = (_APPEND) ? lastloc() : -1;
 		} catch (IOException e) {
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		return (true);
@@ -204,6 +205,7 @@ public class _Directbytefile extends _ByteFile {
 				randomAccessFile.close();
 			randomAccessFile = null;
 		} catch (IOException e) {
+    		if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		_OPEN = false;
@@ -378,7 +380,7 @@ public class _Directbytefile extends _ByteFile {
 		try {
 			randomAccessFile.getChannel().force(true);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		return (false);
@@ -462,7 +464,7 @@ public class _Directbytefile extends _ByteFile {
 			int size = loc2 - loc1 + 1;
 			fileLock = randomAccessFile.getChannel().lock(loc1, size, true);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (-2);
 		}
 		_LOCKED = true;
@@ -486,7 +488,7 @@ public class _Directbytefile extends _ByteFile {
 			try {
 				fileLock.release();
 			} catch (IOException e) {
-				e.printStackTrace();
+				if(_RT.Option.VERBOSE) e.printStackTrace();
 				result = false;
 			}
 		_LOCKED = false;

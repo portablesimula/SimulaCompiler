@@ -41,22 +41,25 @@ import java.io.InputStream;
  *
  */
 public class _Inbytefile extends _ByteFile {
-	protected boolean _ENDFILE=true;
+	protected boolean _ENDFILE = true;
 	private InputStream inputStream;
-	
-	// Constructor
-    public _Inbytefile(final _RTObject staticLink,final _TXT FILENAME) {
-    	super(staticLink,FILENAME);
-    }
-    
-    // Class Statements
-    public _Inbytefile _STM() {
-        EBLK();
-        return(this);
-    }
 
-    /**
-	 * 
+	// Constructor
+	public _Inbytefile(final _RTObject staticLink, final _TXT FILENAME) {
+		super(staticLink, FILENAME);
+	}
+
+	// Class Statements
+	@Override
+	public _Inbytefile _STM() {
+		EBLK();
+		return (this);
+	}
+
+	/**
+	 * <pre>
+	 * Boolean procedure endfile;  endfile:= ENDFILE;
+	 * </pre>
 	 * @return true if there are no more bytes to read.
 	 */
 	public boolean endfile() {
@@ -76,25 +79,29 @@ public class _Inbytefile extends _ByteFile {
 	 * @return
 	 */
 	public boolean open() {
-		if(_RT.Option.VERBOSE) TRACE_OPEN("Open InByteFile");
-		if (_OPEN) return (false);
-		File file=doCreateAction();
-		if(!file.exists()) {
-			//File selected=popupFileSelector("Can't Open "+file+", select another");
-			File selected=trySelectFile(file.toString());
-			if(selected!=null) file=selected;				
+		if (_RT.Option.VERBOSE)
+			TRACE_OPEN("Open InByteFile");
+		if (_OPEN)
+			return (false);
+		File file = doCreateAction();
+		if (!file.exists()) {
+			// File selected=popupFileSelector("Can't Open "+file+", select another");
+			File selected = trySelectFile(file.toString());
+			if (selected != null)
+				file = selected;
 		}
 		try {
 			inputStream = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			_OPEN=false;
-			//_RT.BREAK("INBYTEFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
+			_OPEN = false;
+			// _RT.BREAK("INBYTEFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
+    		if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
 		_OPEN = true;
 		_ENDFILE = false;
 		_BYTESIZE = _DEFAULT_BYTESIZE;
-		//_RT.BREAK("INBYTEFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
+		// _RT.BREAK("INBYTEFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
 		return (true);
 	}
 
@@ -129,39 +136,36 @@ public class _Inbytefile extends _ByteFile {
 	 *    else inbyte  := ...! next byte of size BYTESIZE;
 	 * </pre>
 	 * 
-	 * The procedure "inbyte" returns the short integer value corresponding to
-	 * the input byte. If there are no more bytes to read, a zero result is
-	 * returned. If prior to an "inbyte" call ENDFILE is true, a run-time error
-	 * occurs.
+	 * The procedure "inbyte" returns the short integer value corresponding to the
+	 * input byte. If there are no more bytes to read, a zero result is returned. If
+	 * prior to an "inbyte" call ENDFILE is true, a run-time error occurs.
 	 * 
 	 * @return
 	 */
 	public int inbyte() {
 		if (_ENDFILE)
-			throw new _SimulaRuntimeError(FILE_NAME.edText()+": File not opened or attempt to read past EOF");
+			throw new _SimulaRuntimeError(FILE_NAME.edText() + ": File not opened or attempt to read past EOF");
 		try {
 			// read a single byte
 			int b = inputStream.read();
-			//_RT.TRACE("InbyteFile.inbyte: read byte: +" + b);
+			// _RT.TRACE("InbyteFile.inbyte: read byte: +" + b);
 			if (b == -1) {
 				_ENDFILE = true;
 				return (0);
 			}
-			return(b);
+			return (b);
 		} catch (IOException e) {
 			throw new _SimulaRuntimeError("Inbyte failed", e);
 		}
 	}
-	
-    
-    public int in2byte() {
-    	int b1=inbyte();
-    	int b2=inbyte();
-    	int res=((b1<<8) | b2);
-//    	System.out.println("in2byte: b1="+b1+", b2="+b2+" ==> "+res);
-    	return(res);
-    }
 
+	public int in2byte() {
+		int b1 = inbyte();
+		int b2 = inbyte();
+		int res = ((b1 << 8) | b2);
+//    	System.out.println("in2byte: b1="+b1+", b2="+b2+" ==> "+res);
+		return (res);
+	}
 
 	/**
 	 * <pre>
@@ -174,8 +178,8 @@ public class _Inbytefile extends _ByteFile {
 	 *            end intext;
 	 * </pre>
 	 * 
-	 * The procedure "intext" fills the frame of the parameter "t" with
-	 * successive input bytes.
+	 * The procedure "intext" fills the frame of the parameter "t" with successive
+	 * input bytes.
 	 * 
 	 * @param t
 	 * @return
