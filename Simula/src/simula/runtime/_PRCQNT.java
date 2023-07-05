@@ -19,14 +19,14 @@ public final class _PRCQNT {
 	final Class<?> procedure;
 
 	// Constructor
-	public _PRCQNT(final _RTObject staticLink,final Class<?> procedure) {
+	public _PRCQNT(final _RTObject staticLink, final Class<?> procedure) {
 		this.staticLink = staticLink;
 		this.procedure = procedure;
 	}
 
 	public _PROC CPF() {
 		try {
-			// Get 'default' constructor:  <Procedure>(_RTObject SL);
+			// Get 'default' constructor: <Procedure>(_RTObject SL);
 			Constructor<?> constr = procedure.getConstructor(new Class[] { _RTObject.class });
 			Object obj = constr.newInstance(staticLink);
 			return ((_PROC) obj);
@@ -41,6 +41,7 @@ public final class _PRCQNT {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return ("Simula _PRCQNT(" + staticLink + ',' + procedure + ')');
 	}

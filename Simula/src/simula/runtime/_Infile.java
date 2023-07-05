@@ -54,16 +54,16 @@ public class _Infile extends _Imagefile {
 	private BufferedReader lineReader;
 
 	// Constructor
-	public _Infile(_RTObject staticLink,_TXT FILENAME) {
-		super(staticLink,FILENAME);
-		_ENDFILE=true;
+	public _Infile(_RTObject staticLink, _TXT FILENAME) {
+		super(staticLink, FILENAME);
+		_ENDFILE = true;
 	}
 
 	// Class Statements
 	@Override
 	public _Infile _STM() {
 		EBLK();
-		return(this);
+		return (this);
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class _Infile extends _Imagefile {
 	 * <p>
 	 * Procedure "open" establishes the association with an external file (as
 	 * identified by FILENAME), checks the access modes and causes corresponding
-	 * opening actions on the external file. If the external file is closed, it
-	 * is opened.
+	 * opening actions on the external file. If the external file is closed, it is
+	 * opened.
 	 * <p>
 	 * If successful, "open" returns true and sets ENDFILE false. In addition,
 	 * "image" references the parameter "fileimage" which is space-filled.
@@ -93,36 +93,39 @@ public class _Infile extends _Imagefile {
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean open(final _TXT IMAGE_) {
-		if(_RT.Option.VERBOSE) TRACE_OPEN("Open InFile");
-		if (_OPEN)	return (false);
+		if (_RT.Option.VERBOSE)
+			TRACE_OPEN("Open InFile");
+		if (_OPEN)
+			return (false);
 		image = IMAGE_;
 		_ENDFILE = false;
-		_ASGTXT(image,null); // image := NOTEXT;
+		_ASGTXT(image, null); // image := NOTEXT;
 		setpos(length() + 1);
 
 		Reader reader;
 		if (FILE_NAME.edText().equalsIgnoreCase("#sysin")) {
-			if(_RT.console!=null) reader=_RT.console.getReader();
-			else reader=new InputStreamReader(System.in,_CHARSET);
-		}
-		else {
-			File file=doCreateAction();
-			if(!file.exists()) {
-				File selected=trySelectFile(file.getAbsoluteFile().toString());
-				if(selected!=null) file=selected;				
+			if (_RT.console != null)
+				reader = _RT.console.getReader();
+			else
+				reader = new InputStreamReader(System.in, _CHARSET);
+		} else {
+			File file = doCreateAction();
+			if (!file.exists()) {
+				File selected = trySelectFile(file.getAbsoluteFile().toString());
+				if (selected != null)
+					file = selected;
 			}
 			try {
-				reader = new FileReader(file,_CHARSET);
+				reader = new FileReader(file, _CHARSET);
 			} catch (IOException e) {
-				if(_RT.Option.VERBOSE) e.printStackTrace();
-				_OPEN=false;
-//				_RT.BREAK("INFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
-				return(false);
+				if (_RT.Option.VERBOSE)
+					e.printStackTrace();
+				_OPEN = false;
+				return (false);
 			}
 		}
 		lineReader = new BufferedReader(reader);
 		_OPEN = true;
-//		_RT.BREAK("INFILE.OPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
 		return (true);
 	}
 
@@ -140,26 +143,27 @@ public class _Infile extends _Imagefile {
 	 * end close;
 	 * </pre>
 	 * <p>
-	 * Procedure "close" causes closing actions on the external file, as
-	 * specified by the access modes. In addition, the association between the
-	 * file object and the external file is dissolved. If possible, the external
-	 * file is closed.
+	 * Procedure "close" causes closing actions on the external file, as specified
+	 * by the access modes. In addition, the association between the file object and
+	 * the external file is dissolved. If possible, the external file is closed.
 	 * <p>
-	 * If successful, "close" returns true. In addition, OPEN is false, ENDFILE
-	 * is true and "image" references notext.
+	 * If successful, "close" returns true. In addition, OPEN is false, ENDFILE is
+	 * true and "image" references notext.
 	 * 
 	 * @return true if successful, otherwise false.
 	 */
 	public boolean close() {
-		if (!_OPEN)	return (false);
-		if (!FILE_NAME.edText().equalsIgnoreCase("#sysin"))
-		try {
-			if (lineReader != null)
-				lineReader.close();
-		} catch (IOException e) {
-    		if(_RT.Option.VERBOSE) e.printStackTrace();
+		if (!_OPEN)
 			return (false);
-		}
+		if (!FILE_NAME.edText().equalsIgnoreCase("#sysin"))
+			try {
+				if (lineReader != null)
+					lineReader.close();
+			} catch (IOException e) {
+				if (_RT.Option.VERBOSE)
+					e.printStackTrace();
+				return (false);
+			}
 		image = null; // image :- NOTEXT;
 		_OPEN = false;
 		_ENDFILE = true;
@@ -189,33 +193,36 @@ public class _Infile extends _Imagefile {
 	 * end inimage;
 	 * </pre>
 	 * <p>
-	 * The procedure "inimage" performs the transfer of an external file image
-	 * into "image". A run-time error occurs if "image" is notext or too short
-	 * to contain the external image. If it is longer than the external image,
-	 * the latter is left-adjusted within "image" and the remainder of the text
-	 * is filled with spaces. The position indicator is set to one.
+	 * The procedure "inimage" performs the transfer of an external file image into
+	 * "image". A run-time error occurs if "image" is notext or too short to contain
+	 * the external image. If it is longer than the external image, the latter is
+	 * left-adjusted within "image" and the remainder of the text is filled with
+	 * spaces. The position indicator is set to one.
 	 * <p>
 	 * Note: If an "end of file" is encountered, EM ('!25!') is generated as a
-	 * single character external image, and the variable ENDFILE is given the
-	 * value true. A call on "inimage" or "inrecord" when ENDFILE already has
-	 * the value true constitutes a run-time error.
+	 * single character external image, and the variable ENDFILE is given the value
+	 * true. A call on "inimage" or "inrecord" when ENDFILE already has the value
+	 * true constitutes a run-time error.
 	 */
+	@Override
 	public void inimage() {
 		if (!_OPEN || _ENDFILE)
-			throw new _SimulaRuntimeError(FILE_NAME.edText()+": File not opened or attempt to read past EOF");
+			throw new _SimulaRuntimeError(FILE_NAME.edText() + ": File not opened or attempt to read past EOF");
 		try {
-//			String line = lineReader.readLine();
 			String line = (rest != null) ? rest : lineReader.readLine();
 			rest = null;
 			if (line != null) {
 				if (line.length() > _TXT.length(image))
-					throw new _SimulaRuntimeError( FILE_NAME.edText()+": Image too short: input.length="+line.length()+", image.length="+_TXT.length(image));
-				_ASGSTR(image,line);
+					throw new _SimulaRuntimeError(FILE_NAME.edText() + ": Image too short: input.length="
+							+ line.length() + ", image.length=" + _TXT.length(image));
+				_ASGSTR(image, line);
 			} else {
-				_ASGSTR(image,"" + (char) 25);
-				_ENDFILE=true;
+				_ASGSTR(image, "" + (char) 25);
+				_ENDFILE = true;
 			}
-		} catch (IOException e) { throw new _SimulaRuntimeError("Inimage failed",e); }
+		} catch (IOException e) {
+			throw new _SimulaRuntimeError("Inimage failed", e);
+		}
 		setpos(1);
 	}
 
@@ -242,19 +249,18 @@ public class _Infile extends _Imagefile {
 	 * <p>
 	 * The procedure "inrecord" is similar to "inimage" with the following
 	 * exceptions. Whenever the number of characters accessible in the external
-	 * image is less than "length", the rest of "image" is left unchanged. The
-	 * part of the "image" that was changed is from pos 1 upto (but not
-	 * including) the resulting value of POS. Moreover, if the external image is
-	 * too long, only the "length" first characters are input. The value
-	 * returned by the procedure is true and the remaining characters may be
-	 * input through subsequent "inrecord" (or possibly "inimage") statements.
-	 * Otherwise, if the input of the external image was completed, the value
-	 * false is returned.
+	 * image is less than "length", the rest of "image" is left unchanged. The part
+	 * of the "image" that was changed is from pos 1 upto (but not including) the
+	 * resulting value of POS. Moreover, if the external image is too long, only the
+	 * "length" first characters are input. The value returned by the procedure is
+	 * true and the remaining characters may be input through subsequent "inrecord"
+	 * (or possibly "inimage") statements. Otherwise, if the input of the external
+	 * image was completed, the value false is returned.
 	 * <p>
 	 * Note: If an "end of file" is encountered, EM ('!25!') is generated as a
-	 * single character external image, and the variable ENDFILE is given the
-	 * value true. A call on "inimage" or "inrecord" when ENDFILE already has
-	 * the value true constitutes a run-time error.
+	 * single character external image, and the variable ENDFILE is given the value
+	 * true. A call on "inimage" or "inrecord" when ENDFILE already has the value
+	 * true constitutes a run-time error.
 	 *
 	 * @return
 	 */
@@ -262,7 +268,7 @@ public class _Infile extends _Imagefile {
 
 	public boolean inrecord() {
 		if (!_OPEN || _ENDFILE)
-			throw new _SimulaRuntimeError(FILE_NAME.edText()+": File not opened or attempt to read past EOF");
+			throw new _SimulaRuntimeError(FILE_NAME.edText() + ": File not opened or attempt to read past EOF");
 		try {
 			_TXT.setpos(image, 1);
 			String line = (rest != null) ? rest : lineReader.readLine();
@@ -271,8 +277,6 @@ public class _Infile extends _Imagefile {
 				if (line.length() > _TXT.length(image)) { // Return partial image
 					rest = line.substring(_TXT.length(image));
 					line = line.substring(0, _TXT.length(image));
-					//System.out.println("_InFile.inrecord: line=\""+line+'"');
-					//System.out.println("_InFile.inrecord: rest=\""+rest+'"');
 				}
 				_TXT LINE = new _TXT(line);
 				while (_TXT.more(LINE))
@@ -282,7 +286,7 @@ public class _Infile extends _Imagefile {
 				_ENDFILE = true;
 			}
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Inrecord failed",e);
+			throw new _SimulaRuntimeError("Inrecord failed", e);
 		}
 		return (rest != null);
 	}

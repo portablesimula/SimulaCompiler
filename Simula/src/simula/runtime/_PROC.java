@@ -13,37 +13,43 @@ package simula.runtime;
 * @author Øystein Myhre Andersen
 */
 public abstract class _PROC extends _BASICIO {
-    protected int _nParLeft; // Number of actual parameters left to be transmitted.
+	protected int _nParLeft; // Number of actual parameters left to be transmitted.
 
-    // Constructor
+	// Constructor
 	public _PROC(final _RTObject staticLink) {
 		super(staticLink);
 	}
 
 	// Constructor in case of Formal/Virtual Procedure Call
-	public _PROC(final _RTObject staticLink,int nPar) {
+	public _PROC(final _RTObject staticLink, int nPar) {
 		super(staticLink);
-		this._nParLeft=nPar;
+		this._nParLeft = nPar;
 	}
-	
+
 	/**
-	 * This method is virtual and must be redefined in all procedure blocks with parameters.
+	 * This method is virtual and must be redefined in all procedure blocks with
+	 * parameters.
 	 * 
 	 * @param obj Procedure's Parameter Value Object
 	 * @return this object
 	 */
-	public _PROC setPar(final Object obj) { return (this); }
+	public _PROC setPar(final Object obj) {
+		return (this);
+	}
 
 	/**
 	 * This method is virtual and must be redefined in all type procedure blocks
 	 * 
 	 * @return
 	 */
-	public Object _RESULT() { return (null); }
+	public Object _RESULT() {
+		return (null);
+	}
 
 	public _PROC _ENT() {
 		// Enter Formal Procedure
-		if(_nParLeft!=0) throw new _SimulaRuntimeError("Too few parameters");
+		if (_nParLeft != 0)
+			throw new _SimulaRuntimeError("Too few parameters");
 		BBLK();
 		_STM();
 		return (this);

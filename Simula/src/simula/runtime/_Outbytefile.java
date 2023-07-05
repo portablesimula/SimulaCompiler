@@ -40,36 +40,36 @@ public class _Outbytefile extends _ByteFile {
 	private OutputStream outputStream;
 
 	// Constructor
-    public _Outbytefile(final _RTObject staticLink,final _TXT FILENAME) {
-    	super(staticLink,FILENAME);
-		//System.out.println("new _OutbyteFile: FILE_NAME="+FILE_NAME);
-    }
-    
-    // Class Statements
-    public _Outbytefile _STM() {
-        if(FILE_NAME==null)	throw new _SimulaRuntimeError("Illegal File Name: null");
-        EBLK();
-        return(this);
-    }
+	public _Outbytefile(final _RTObject staticLink, final _TXT FILENAME) {
+		super(staticLink, FILENAME);
+	}
 
-    public boolean open() {
-    	if(_RT.Option.VERBOSE) TRACE_OPEN("Open OutByteFile");
-    	if (_OPEN) return (false);
-    	//System.out.println("_OutbyteFile.open: FILE_NAME="+FILE_NAME);
-    	File file=doCreateAction();
-    	try {
-    		outputStream = new FileOutputStream(file,_APPEND);
-    	} catch (FileNotFoundException e) {
-    		if(_RT.Option.VERBOSE) e.printStackTrace();
-    		return (false);
-//    	} catch (_SimulaRuntimeError e) {
-//    		//e.printStackTrace();
-//    		return (false);
-    	}
-    	_OPEN = true;
-    	_BYTESIZE = _DEFAULT_BYTESIZE;
-    	return (true);
-    }
+	// Class Statements
+	@Override
+	public _Outbytefile _STM() {
+		if (FILE_NAME == null)
+			throw new _SimulaRuntimeError("Illegal File Name: null");
+		EBLK();
+		return (this);
+	}
+
+	public boolean open() {
+		if (_RT.Option.VERBOSE)
+			TRACE_OPEN("open Outbytefile");
+		if (_OPEN)
+			return (false);
+		File file = doCreateAction();
+		try {
+			outputStream = new FileOutputStream(file, _APPEND);
+		} catch (FileNotFoundException e) {
+			if (_RT.Option.VERBOSE)
+				e.printStackTrace();
+			return (false);
+		}
+		_OPEN = true;
+		_BYTESIZE = _DEFAULT_BYTESIZE;
+		return (true);
+	}
 
 	public boolean close() {
 		if (_OPEN) {
@@ -81,68 +81,45 @@ public class _Outbytefile extends _ByteFile {
 	}
 
 	public void outbyte(final int b) {
-		TRC("outbyte",""+b);
-		if (!_OPEN)	throw new _SimulaRuntimeError("file closed");
+		if (!_OPEN)
+			throw new _SimulaRuntimeError("file closed");
 		if (b < 0 || b > _MAXBYTE)
 			throw new _SimulaRuntimeError("Illegal byte value");
-		try { outputStream.write(b); if(_SYNCHRONOUS) outputStream.flush();
+		try {
+			outputStream.write(b);
+			if (_SYNCHRONOUS)
+				outputStream.flush();
 		} catch (IOException e) {
-			throw new _SimulaRuntimeError("Outbyte failed", e);
+			throw new _SimulaRuntimeError("outbyte failed", e);
 		}
 	}
 
 	public void out2byte(final int b) {
-		TRC("out2byte",""+b);
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
 		try {
-			int hi=b>>8;
-			int lo=b&0xFF;
-//	    	System.out.println("out2byte: "+b+" ==> hi="+hi+", lo="+lo);
+			int hi = b >> 8;
+			int lo = b & 0xFF;
 			outputStream.write(hi);
 			outputStream.write(lo);
-			if(_SYNCHRONOUS) outputStream.flush();
+			if (_SYNCHRONOUS)
+				outputStream.flush();
 		} catch (IOException e) {
 			throw new _SimulaRuntimeError("out2byte failed", e);
 		}
 	}
 
 	public void outtext(final _TXT t) {
-		TRC("outtext",""+intString(t.edText()));
 		_TXT.setpos(t, 1);
 		while (_TXT.more(t)) {
 			try {
-				outputStream.write((int)_TXT.getchar(t));
-				if(_SYNCHRONOUS) outputStream.flush();
+				outputStream.write((int) _TXT.getchar(t));
+				if (_SYNCHRONOUS)
+					outputStream.flush();
 			} catch (IOException e) {
 				throw new _SimulaRuntimeError("outtext failed", e);
 			}
 		}
-	}
-
-	private static final boolean TESTING=false;
-    private void TRC(String m, String v) {
-    	if(TESTING) {
-    		System.out.println(_RT.currentModid+"  LINE "+_RT.currentSimLine+": "+m+":  "+v);
-    	}
-    }
-
-	private static String intString(String s) {
-		String ddd="", chr=""; 
-		for(int i=0;i<s.length();i++) {
-			int b=s.charAt(i);
-			String val=Integer.toString(b).toUpperCase();
-			//String val=Integer.toString(b);
-			if(val.length() == 0) val="000";
-			if(val.length() == 1) val="00"+val;
-			if(val.length() == 2) val="0"+val;
-			ddd=ddd+val+" ";
-			if(!Character.isAlphabetic(b)) b='.';
-			chr=chr+((char)b)+" ";
-		}
-		String res="  "+ddd+"   "+chr;
-		//System.out.println(res);
-		return(res);
 	}
 
 	public boolean checkpoint() {

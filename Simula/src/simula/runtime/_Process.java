@@ -64,7 +64,10 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  */
 public class _Process extends _Link {
-    public boolean isDetachUsed() { return(true); }
+	@Override
+	public boolean isDetachUsed() {
+		return (true);
+	}
 
 	public _EVENT_NOTICE EVENT = null;
 
@@ -72,47 +75,51 @@ public class _Process extends _Link {
 	public _Process(final _RTObject staticLink) {
 		super(staticLink);
 	}
-	
+
+	@Override
 	public _Process _STM() {
 		detach();
 		// INNER
 		// TERMINATED_ = true;
 		terminate();
-        EBLK();
-		return(this);
+		EBLK();
+		return (this);
 	}
-	
+
 	protected void terminate() {
 		_Process nxtcur = ((_Simulation) _SL).passivate1();
-		resume(nxtcur,false); // Special Case without Swap
+		resume(nxtcur, false); // Special Case without Swap
 		// Signal special action in _RTObject.EBLK
-		_Process.this.STATE_=OperationalState.terminatingProcess;
+		_Process.this.STATE_ = OperationalState.terminatingProcess;
 	}
 
 	public boolean idle() {
-		return (EVENT == null);			
+		return (EVENT == null);
 	}
 
 	public boolean terminated() {
-		return (STATE_==OperationalState.terminated);
+		return (STATE_ == OperationalState.terminated);
 	}
 
 	public double evtime() {
 		if (idle())
 			throw new _SimulaRuntimeError("Process.Evtime:  The process is idle.");
-		return (EVENT.EVTIME());			
+		return (EVENT.EVTIME());
 	}
 
 	public _Process nextev() {
-		if (idle())	return (null);
+		if (idle())
+			return (null);
 		_EVENT_NOTICE suc;
-		suc=(_EVENT_NOTICE) _Ranking.RANK_SUC(EVENT);
-		if (suc == null) return (null);
+		suc = (_EVENT_NOTICE) _Ranking.RANK_SUC(EVENT);
+		if (suc == null)
+			return (null);
 		return (suc.PROC);
 	}
 
+	@Override
 	public String toString() {
-		return (this.edObjectIdent() + ": STATE_="+this.STATE_+", TERMINATED_=" + terminated());
+		return (this.edObjectIdent() + ": STATE_=" + this.STATE_ + ", TERMINATED_=" + terminated());
 	}
 
 }

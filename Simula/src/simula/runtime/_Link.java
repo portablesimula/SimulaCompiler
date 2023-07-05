@@ -56,19 +56,19 @@ package simula.runtime;
 public class _Link extends _Linkage {
 
 	// Constructor
-    public _Link(final _RTObject staticLink) {
-    	super(staticLink);
-    }
-    
-    public _Link _STM() {
-        EBLK();
-    	return(this);
-    }
+	public _Link(final _RTObject staticLink) {
+		super(staticLink);
+	}
+
+	@Override
+	public _Link _STM() {
+		EBLK();
+		return (this);
+	}
 
 	/**
-	 * The procedure "out" removes the object from the set (if any) of which it
-	 * is a member. The procedure call has no effect if the object has no set
-	 * membership.
+	 * The procedure "out" removes the object from the set (if any) of which it is a
+	 * member. The procedure call has no effect if the object has no set membership.
 	 */
 	public void out() {
 		if (SUC != null) {
@@ -79,14 +79,14 @@ public class _Link extends _Linkage {
 	}
 
 	/**
-	 * The procedures "follow" and "precede" remove the object from the set (if
-	 * any) of which it is a member and insert it in a set at a given position.
-	 * The set and the position are indicated by a parameter which is inner to
-	 * "linkage". The procedure call has the same effect as "out" (except for
-	 * possible side effects from evaluation of the parameter) if the parameter
-	 * is none or if it has no set membership and is not a set head. Otherwise
-	 * the object is inserted immediately after ("follow") or before ("precede")
-	 * the "linkage" object designated by the parameter.
+	 * The procedures "follow" and "precede" remove the object from the set (if any)
+	 * of which it is a member and insert it in a set at a given position. The set
+	 * and the position are indicated by a parameter which is inner to "linkage".
+	 * The procedure call has the same effect as "out" (except for possible side
+	 * effects from evaluation of the parameter) if the parameter is none or if it
+	 * has no set membership and is not a set head. Otherwise the object is inserted
+	 * immediately after ("follow") or before ("precede") the "linkage" object
+	 * designated by the parameter.
 	 * 
 	 * @param x
 	 */
@@ -102,14 +102,14 @@ public class _Link extends _Linkage {
 	}
 
 	/**
-	 * The procedures "follow" and "precede" remove the object from the set (if
-	 * any) of which it is a member and insert it in a set at a given position.
-	 * The set and the position are indicated by a parameter which is inner to
-	 * "linkage". The procedure call has the same effect as "out" (except for
-	 * possible side effects from evaluation of the parameter) if the parameter
-	 * is none or if it has no set membership and is not a set head. Otherwise
-	 * the object is inserted immediately after ("follow") or before ("precede")
-	 * the "linkage" object designated by the parameter.
+	 * The procedures "follow" and "precede" remove the object from the set (if any)
+	 * of which it is a member and insert it in a set at a given position. The set
+	 * and the position are indicated by a parameter which is inner to "linkage".
+	 * The procedure call has the same effect as "out" (except for possible side
+	 * effects from evaluation of the parameter) if the parameter is none or if it
+	 * has no set membership and is not a set head. Otherwise the object is inserted
+	 * immediately after ("follow") or before ("precede") the "linkage" object
+	 * designated by the parameter.
 	 * 
 	 * @param x
 	 */
@@ -125,11 +125,11 @@ public class _Link extends _Linkage {
 	}
 
 	/**
-	 * The procedure "into" removes the object from the set (if any) of which it
-	 * is a member and inserts it as the last member of the set designated by
-	 * the parameter. The procedure call has the same effect as "out" if the
-	 * parameter has the value none (except for possible side effects from
-	 * evaluating the actual parameter). *
+	 * The procedure "into" removes the object from the set (if any) of which it is
+	 * a member and inserts it as the last member of the set designated by the
+	 * parameter. The procedure call has the same effect as "out" if the parameter
+	 * has the value none (except for possible side effects from evaluating the
+	 * actual parameter). *
 	 * 
 	 * @param S The set(Head) to receive this Link.
 	 */

@@ -47,15 +47,16 @@ public class _Linkage extends _CLASS {
 	protected _Linkage PRED = null;
 
 	// Constructor
-    public _Linkage(final _RTObject staticLink) {
-    	super(staticLink);
-    	BBLK(); // Iff no prefix
-    }
-    
-    public _Linkage _STM() {
-        EBLK();
-        return(this);
-    }
+	public _Linkage(final _RTObject staticLink) {
+		super(staticLink);
+		BBLK(); // Iff no prefix
+	}
+
+	@Override
+	public _Linkage _STM() {
+		EBLK();
+		return (this);
+	}
 
 	public _Link suc() {
 		return ((SUC instanceof _Link suc) ? suc : null);

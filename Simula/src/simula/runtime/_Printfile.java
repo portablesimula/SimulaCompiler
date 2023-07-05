@@ -69,28 +69,32 @@ import java.io.PrintWriter;
  *
  */
 public class _Printfile extends _Outfile {
-	private int _DEFAULT_LINES_PER_PAGE=66;
-	public int _LINES_PER_PAGE=66;
-	private int _SPACING=1;
+	public int _LINES_PER_PAGE = 66;
+	private int _DEFAULT_LINES_PER_PAGE = 66;
+	private int _SPACING = 1;
 	private int _LINE;
 	private int _PAGE;
-	
+
 	// Constructor
-    public _Printfile(final _RTObject staticLink,final _TXT FILENAME) {
-    	super(staticLink,FILENAME);
-    }
-    
-    // Class Statements
+	public _Printfile(final _RTObject staticLink, final _TXT FILENAME) {
+		super(staticLink, FILENAME);
+	}
+
+	// Class Statements
 	@Override
-    public _Printfile _STM() {
-        EBLK();
-        return(this);
-    }
+	public _Printfile _STM() {
+		EBLK();
+		return (this);
+	}
 
-	public int line() { return (_LINE); }
+	public int line() {
+		return (_LINE);
+	}
 
-	public int page() { return (_PAGE); }
-	
+	public int page() {
+		return (_PAGE);
+	}
+
 	/**
 	 * <pre>
 	 * Boolean procedure open(fileimage);  text fileimage;
@@ -107,38 +111,41 @@ public class _Printfile extends _Outfile {
 	 * <p>
 	 * Procedure "open" establishes the association with an external file (as
 	 * identified by FILENAME), checks the access modes and causes corresponding
-	 * opening actions on the external file. If the external file is closed, it
-	 * is opened. *
+	 * opening actions on the external file. If the external file is closed, it is
+	 * opened. *
 	 * 
 	 * @param image
 	 * @return true if successful, otherwise false.
 	 */
 	@Override
 	public boolean open(final _TXT image) {
-		String fileName=FILE_NAME.edText();
-		if(_RT.Option.VERBOSE) TRACE_OPEN("Open PrintFile");
-		if (_OPEN) return (false); // File already opened
+		String fileName = FILE_NAME.edText();
+		if (_RT.Option.VERBOSE)
+			TRACE_OPEN("Open PrintFile");
+		if (_OPEN)
+			return (false); // File already opened
 		_PAGE = 0;
 		_LINE = 1;
 		_OPEN = true;
 		this.image = image;
 		setpos(1);
-		//_RT.BREAK("PrintFile.open: Filename=" + FILE_NAME);
 		if (FILE_NAME.edText().equalsIgnoreCase("#sysout")) {
-			if(_RT.console!=null) writer=_RT.console.getWriter();
-			else writer = new PrintWriter(System.out,true,_CHARSET);
-		} else if(fileName.toUpperCase().startsWith("CONSOLE: ")) {
+			if (_RT.console != null)
+				writer = _RT.console.getWriter();
+			else
+				writer = new PrintWriter(System.out, true, _CHARSET);
+		} else if (fileName.toUpperCase().startsWith("CONSOLE: ")) {
 			_RTConsolePanel console = new _RTConsolePanel();
-			String title=fileName.substring(9);
+			String title = fileName.substring(9);
 			console.popup(title);
-			writer=console.getWriter();
+			writer = console.getWriter();
 		} else {
 			PageWriter pageWriter = new PageWriter(fileName);
-			pageWriter.setFont(_FONT,_ORIENTATION,_ASK_PAPER);
+			pageWriter.setFont(_FONT, _ORIENTATION, _ASK_PAPER);
 			pageWriter.setMargins(_TOP_MARGIN, _LEFT_MARGIN, _BOT_MARGIN, _RIGHT_MARGIN);
 			pageWriter.open();
 			_DEFAULT_LINES_PER_PAGE = _LINES_PER_PAGE = pageWriter.getLinesPerSheet();
-			writer=pageWriter;
+			writer = pageWriter;
 		}
 		eject(1);
 		return (true);
@@ -165,13 +172,12 @@ public class _Printfile extends _Outfile {
 	 * end close;
 	 * </pre>
 	 * <p>
-	 * Procedure "close" causes closing actions on the external file, as
-	 * specified by the access modes. In addition, the association between the
-	 * file object and the external file is dissolved. If possible, the external
-	 * file is closed.
+	 * Procedure "close" causes closing actions on the external file, as specified
+	 * by the access modes. In addition, the association between the file object and
+	 * the external file is dissolved. If possible, the external file is closed.
 	 * <p>
-	 * The procedure "close" calls "outimage" if the position indicator is not
-	 * equal to 1.
+	 * The procedure "close" calls "outimage" if the position indicator is not equal
+	 * to 1.
 	 * <p>
 	 * If successful, "close" returns true. In addition, PAGE, LINE, SPACING,
 	 * LINES_PER_PAGE, OPEN and "image" are reinitiated.
@@ -180,13 +186,13 @@ public class _Printfile extends _Outfile {
 	 */
 	@Override
 	public boolean close() {
-		if(_RT.Option.VERBOSE) TRACE_OPEN("Close PrintFile");
+		if (_RT.Option.VERBOSE)
+			TRACE_OPEN("Close PrintFile");
 		if (!_OPEN)
 			return (false); // File not opened
 		if (pos() != 1)
 			outimage();
 		_SPACING = 1;
-		//eject(_LINES_PER_PAGE);
 		_LINES_PER_PAGE = 0;
 		_LINE = 0;
 		image = null; // image :- NOTEXT;
@@ -195,9 +201,10 @@ public class _Printfile extends _Outfile {
 				writer.flush();
 				writer.close();
 			} catch (IOException e1) {
-				if(_RT.Option.VERBOSE) e1.printStackTrace();
+				if (_RT.Option.VERBOSE)
+					e1.printStackTrace();
 				return (false);
-			} //else console.close();
+			}
 		}
 		_OPEN = false;
 		doPurgeAction();
@@ -214,26 +221,29 @@ public class _Printfile extends _Outfile {
 	 *                          else  ... ; ! default value;
 	 * </pre>
 	 * <p>
-	 * The variable LINES_PER_PAGE indicates the maximum number of physical
-	 * lines that may be printed on each page, including intervening blank
-	 * lines. An implementation-defined value is assigned to the variable at the
-	 * time of object generation, and when the printfile is closed. The value of
-	 * the variable may be retreived by a call on "linesperpage"; in addition
-	 * the variable is givan a new value as follows.
+	 * The variable LINES_PER_PAGE indicates the maximum number of physical lines
+	 * that may be printed on each page, including intervening blank lines. An
+	 * implementation-defined value is assigned to the variable at the time of
+	 * object generation, and when the printfile is closed. The value of the
+	 * variable may be retreived by a call on "linesperpage"; in addition the
+	 * variable is givan a new value as follows.
 	 * <p>
-	 * If the parameter to "linesperpage" is zero, LINES_PER_PAGE is reset to
-	 * the original value (assigned at object generation). A parameter value
-	 * less than zero may be used to indicate an "infinite" value of
-	 * LINES_PER_PAGE, thus avoiding any automatic calls on "eject".
+	 * If the parameter to "linesperpage" is zero, LINES_PER_PAGE is reset to the
+	 * original value (assigned at object generation). A parameter value less than
+	 * zero may be used to indicate an "infinite" value of LINES_PER_PAGE, thus
+	 * avoiding any automatic calls on "eject".
 	 * 
 	 * @param n
 	 */
 	public int linesperpage(final int n) {
-		int prev=_LINES_PER_PAGE;
-		if(n >0 ) _LINES_PER_PAGE=n;
-		else if(n < 0) _LINES_PER_PAGE=maxint;
-		else _LINES_PER_PAGE=_DEFAULT_LINES_PER_PAGE;
-		return(prev);
+		int prev = _LINES_PER_PAGE;
+		if (n > 0)
+			_LINES_PER_PAGE = n;
+		else if (n < 0)
+			_LINES_PER_PAGE = maxint;
+		else
+			_LINES_PER_PAGE = _DEFAULT_LINES_PER_PAGE;
+		return (prev);
 	}
 
 	/**
@@ -244,21 +254,20 @@ public class _Printfile extends _Outfile {
 	 * </pre>
 	 * <p>
 	 * The variable SPACING represents the value by which the variable LINE is
-	 * incremented after the next printing operation. Its value may be changed
-	 * by the procedure "spacing". A call on the procedure "spacing" with a
-	 * parameter less than zero or greater than LINES_PER_PAGE constitutes an
-	 * error. The effect of a a parameter to "spacing" which is equal to zero
-	 * may be defined as forcing successive printing operations on the same
-	 * physical line. Note, however, that on some physical media this may not be
-	 * possible, in which case spacing(0) has the same effect as spacing(1)
-	 * (i.e. no overprinting).
+	 * incremented after the next printing operation. Its value may be changed by
+	 * the procedure "spacing". A call on the procedure "spacing" with a parameter
+	 * less than zero or greater than LINES_PER_PAGE constitutes an error. The
+	 * effect of a a parameter to "spacing" which is equal to zero may be defined as
+	 * forcing successive printing operations on the same physical line. Note,
+	 * however, that on some physical media this may not be possible, in which case
+	 * spacing(0) has the same effect as spacing(1) (i.e. no overprinting).
 	 * 
 	 * @param n
 	 */
 	public void spacing(final int n) {
 		if (n < 0 || n > _LINES_PER_PAGE)
-			throw new _SimulaRuntimeError("Spacing("+n+") - Parameter out of range");
-		_SPACING = (n==0)?1:n; // spacing(0) has the same effect as spacing(1)
+			throw new _SimulaRuntimeError("Spacing(" + n + ") - Parameter out of range");
+		_SPACING = (n == 0) ? 1 : n; // spacing(0) has the same effect as spacing(1)
 	}
 
 	/**
@@ -278,9 +287,9 @@ public class _Printfile extends _Outfile {
 	 * end eject;
 	 * </pre>
 	 * <p>
-	 * The procedure "eject" is used to position to a certain line identified by
-	 * the parameter, n. The variable "PAGE" is incremented by one each time an
-	 * explicit or implicit "eject" implies a new page.
+	 * The procedure "eject" is used to position to a certain line identified by the
+	 * parameter, n. The variable "PAGE" is incremented by one each time an explicit
+	 * or implicit "eject" implies a new page.
 	 * <p>
 	 * The following cases can be distinguished:
 	 * 
@@ -296,38 +305,52 @@ public class _Printfile extends _Outfile {
 	 * @param n
 	 */
 	public void eject(int n) {
-		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
-		if (n <= 0) throw new _SimulaRuntimeError("Parameter out of range: eject "+n);
-		if (n > _LINES_PER_PAGE) n = 1;
+		if (!_OPEN)
+			throw new _SimulaRuntimeError("File not opened");
+		if (n <= 0)
+			throw new _SimulaRuntimeError("Parameter out of range: eject " + n);
+		if (n > _LINES_PER_PAGE)
+			n = 1;
 		try {
-			if(n <= _LINE) {
+			if (n <= _LINE) {
 				_PAGE = _PAGE + 1;
-				if(writer instanceof PageWriter pageWriter) {
+				if (writer instanceof PageWriter pageWriter) {
 					pageWriter.newPage(_PAGE);
-					for(int i=1;i<n;i++) writer.write("\n");
+					for (int i = 1; i < n; i++)
+						writer.write("\n");
 				}
 			} else {
-				int diff= n - _LINE;
-				for(int i=0;i<diff;i++) writer.write("\n");
+				int diff = n - _LINE;
+				for (int i = 0; i < diff; i++)
+					writer.write("\n");
 			}
-		} catch (IOException e) { throw new _SimulaRuntimeError("Eject failed", e); }
-		_LINE=n;
-	}
-	
-	@Override
-	protected void writeImage(String ident,String img,boolean blank) {
-		// Used by  Outimage, OutRecord and BreakOutimage in Outfile
-		if (!_OPEN) throw new _SimulaRuntimeError("File not opened");
-		if (_LINE > _LINES_PER_PAGE) eject(1);
-		try { //String line=(image==null)?nl:(image.edStripedText()+nl);
-			  writer.write(img);
-			  if(_SPACING > 1) { for(int i=1;i<_SPACING;i++) writer.write("\n"); }
-			  writer.flush();
-		} catch (IOException e) { throw new _SimulaRuntimeError(ident+" failed", e); }
-		_LINE = _LINE + _SPACING;
-		if(blank) _ASGTXT(image,null); // image := NOTEXT;
-		setpos(1);
+		} catch (IOException e) {
+			throw new _SimulaRuntimeError("Eject failed", e);
+		}
+		_LINE = n;
 	}
 
+	@Override
+	protected void writeImage(String ident, String img, boolean blank) {
+		// Used by Outimage, OutRecord and BreakOutimage in Outfile
+		if (!_OPEN)
+			throw new _SimulaRuntimeError("File not opened");
+		if (_LINE > _LINES_PER_PAGE)
+			eject(1);
+		try { // String line=(image==null)?nl:(image.edStripedText()+nl);
+			writer.write(img);
+			if (_SPACING > 1) {
+				for (int i = 1; i < _SPACING; i++)
+					writer.write("\n");
+			}
+			writer.flush();
+		} catch (IOException e) {
+			throw new _SimulaRuntimeError(ident + " failed", e);
+		}
+		_LINE = _LINE + _SPACING;
+		if (blank)
+			_ASGTXT(image, null); // image := NOTEXT;
+		setpos(1);
+	}
 
 }

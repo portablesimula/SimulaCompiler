@@ -41,12 +41,14 @@ public final class _MAIN_PROGRAM extends _Process {
 		super(staticLink);
 	}
 
-    // Class Statements
+	// Class Statements
+	@Override
 	public _MAIN_PROGRAM _STM() {
 		while (true)
 			detach();
 	}
 
+	@Override
 	public String toString() {
 		return ("MAIN_PROGRAM TERMINATED=" + terminated());
 	}
