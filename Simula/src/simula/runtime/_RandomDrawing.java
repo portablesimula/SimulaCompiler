@@ -3,10 +3,10 @@ package simula.runtime;
 import simula.runtime._RTObject._NAME;
 
 public class _RandomDrawing {
-	
-    private static final int    TWO_POW_31    = 0x80000000; // 2**31
-    private static final double TWO_POW_31M1D = 0x7FFFFFFF; // 2**31 - 1
-    private static final int    MULTIPLIER    = 1220703125; // 5**(2*6+1)
+
+	private static final int    TWO_POW_31    = 0x80000000; // 2**31
+	private static final double TWO_POW_31M1D = 0x7FFFFFFF; // 2**31 - 1
+	private static final int    MULTIPLIER    = 1220703125; // 5**(2*6+1)
 
 	/**
 	 * <pre>
@@ -43,19 +43,21 @@ public class _RandomDrawing {
 	 * </pre>
 	 * 
 	 * @param U The pseudo random number (seed) by name.
-	 * @return Returns the next pseudorandom, uniformly distributed value between 0.0 and 1.0
+	 * @return Returns the next pseudorandom, uniformly distributed value between
+	 *         0.0 and 1.0
 	 */
 	public static double basicDRAW(final _NAME<Integer> U) {
-		long seed=U.get();
-		if(seed == 0) seed = System.currentTimeMillis();
-		if(seed > 0) {
-			seed = ( (seed | 1) * MULTIPLIER) % TWO_POW_31;
+		long seed = U.get();
+		if (seed == 0)
+			seed = System.currentTimeMillis();
+		if (seed > 0) {
+			seed = ((seed | 1) * MULTIPLIER) % TWO_POW_31;
 			U.put((int) seed);
-			return(((double)seed) / TWO_POW_31M1D); 
+			return (((double) seed) / TWO_POW_31M1D);
 		} else { // Antithetic drawing
 			seed = (((-seed) | 1) * MULTIPLIER) % TWO_POW_31;
 			U.put((int) -seed);
-			return( 1.0d - ((double)seed) / TWO_POW_31M1D ); 
+			return (1.0d - ((double) seed) / TWO_POW_31M1D);
 		}
 	}
 
