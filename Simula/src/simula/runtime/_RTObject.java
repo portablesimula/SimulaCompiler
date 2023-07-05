@@ -16,20 +16,27 @@ import java.util.Iterator;
 @SuppressWarnings("unchecked")
 public abstract class _RTObject {
 
-
 	// BASICIO
 	static final int INPUT_LINELENGTH_ = 80;
 	static final int OUTPUT_LINELENGTH_ = 132;
 	static _Infile SYSIN_;
 	public static _Printfile SYSOUT_;
-	public static _Infile sysin() { return (SYSIN_); }
-	public static _Printfile sysout() { return (SYSOUT_); }
+
+	public static _Infile sysin() {
+		return (SYSIN_);
+	}
+
+	public static _Printfile sysout() {
+		return (SYSOUT_);
+	}
+
 	private static long startTimeMs;
 
 	// QPS
 	public enum OperationalState {
 		detached, resumed, attached, terminated, terminatingProcess
 	}
+
 	public OperationalState STATE_;
 	public Coroutine CORUT_;
 
@@ -38,8 +45,13 @@ public abstract class _RTObject {
 	public static _RTObject _CUR = CTX_; // Current Block Instance
 	public int _JTX; // Jump Table Index used by _STM()
 
-	public boolean isQPSystemBlock() { return (false); } // Needs Redefinition
-	public boolean isDetachUsed() {	return (false);	} // Needs Redefinition
+	public boolean isQPSystemBlock() {
+		return (false);
+	} // Needs Redefinition
+
+	public boolean isDetachUsed() {
+		return (false);
+	} // Needs Redefinition
 
 	/**
 	 * This is a pointer to the object of the nearest textually enclosing block
@@ -70,7 +82,6 @@ public abstract class _RTObject {
 		}
 	}
 
-
 	// ****************************************************
 	// *** The Abstract Generic Class _NAME<T> supporting
 	// *** Name-Parameters in Java Coding.
@@ -78,7 +89,9 @@ public abstract class _RTObject {
 	public abstract class _NAME<T> {
 		public _RTObject _CUR; // Thunk Environment
 
-		public _NAME() { _CUR = _RTObject._CUR;	}
+		public _NAME() {
+			_CUR = _RTObject._CUR;
+		}
 
 		public abstract T get();
 
@@ -93,171 +106,272 @@ public abstract class _RTObject {
 
 	public final class _BOUNDS {
 		final public int LB, SIZE;
-		
-		public _BOUNDS(final int LB,final int UB) {
-			if(LB > UB)
-				throw new _SimulaRuntimeError("Lower bound("+LB+") > upper bound("+UB+")");
+
+		public _BOUNDS(final int LB, final int UB) {
+			if (LB > UB)
+				throw new _SimulaRuntimeError("Lower bound(" + LB + ") > upper bound(" + UB + ")");
 			this.LB = LB;
 			SIZE = UB - LB + 1;
 		}
 
+		@Override
 		public String toString() {
-			return (""+LB+':'+(LB+SIZE-1));
+			return ("" + LB + ':' + (LB + SIZE - 1));
 		}
 	}
-	
+
 	public final class _INT_ARRAY extends _ARRAY {
 		final private int[] ELTS;
+
 		public _INT_ARRAY(final _BOUNDS... BOUNDS) {
-			super(BOUNDS); ELTS=new int[SIZE]; }
-		public int putELEMENT(int ix,int val) {
-			ELTS[ix]=val; return(val); }
+			super(BOUNDS);
+			ELTS = new int[SIZE];
+		}
+
+		public int putELEMENT(int ix, int val) {
+			ELTS[ix] = val;
+			return (val);
+		}
+
 		public int getELEMENT(int... x) {
-			return(ELTS[index(x)]); }
+			return (ELTS[index(x)]);
+		}
+
+		@Override
 		public _INT_ARRAY COPY() {
 			_INT_ARRAY copy = new _INT_ARRAY(BOUNDS);
 			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
-			return(copy); }
+			return (copy);
+		}
 	}
-	
+
 	public final class _CHAR_ARRAY extends _ARRAY {
 		final private char[] ELTS;
+
 		public _CHAR_ARRAY(final _BOUNDS... BOUNDS) {
-			super(BOUNDS); ELTS=new char[SIZE]; }
-		public char putELEMENT(int ix,char val) {
-			ELTS[ix]=val; return(val); }
+			super(BOUNDS);
+			ELTS = new char[SIZE];
+		}
+
+		public char putELEMENT(int ix, char val) {
+			ELTS[ix] = val;
+			return (val);
+		}
+
 		public char getELEMENT(int... x) {
-			return(ELTS[index(x)]); }
+			return (ELTS[index(x)]);
+		}
+
+		@Override
 		public _CHAR_ARRAY COPY() {
 			_CHAR_ARRAY copy = new _CHAR_ARRAY(BOUNDS);
 			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
-			return(copy); }
+			return (copy);
+		}
 	}
-	
+
 	public final class _BOOL_ARRAY extends _ARRAY {
 		final private boolean[] ELTS;
+
 		public _BOOL_ARRAY(final _BOUNDS... BOUNDS) {
-			super(BOUNDS); ELTS=new boolean[SIZE]; }
-		public boolean putELEMENT(int ix,boolean val) {
-			ELTS[ix]=val; return(val); }
+			super(BOUNDS);
+			ELTS = new boolean[SIZE];
+		}
+
+		public boolean putELEMENT(int ix, boolean val) {
+			ELTS[ix] = val;
+			return (val);
+		}
+
 		public boolean getELEMENT(int... x) {
-			return(ELTS[index(x)]); }
+			return (ELTS[index(x)]);
+		}
+
+		@Override
 		public _BOOL_ARRAY COPY() {
 			_BOOL_ARRAY copy = new _BOOL_ARRAY(BOUNDS);
 			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
-			return(copy); }
+			return (copy);
+		}
 	}
-	
+
 	public abstract class _REALTYPE_ARRAY extends _ARRAY {
-		public _REALTYPE_ARRAY(final _BOUNDS... BOUNDS) { super(BOUNDS); }
+		public _REALTYPE_ARRAY(final _BOUNDS... BOUNDS) {
+			super(BOUNDS);
+		}
+
 		public abstract double getRealTypeELEMENT(int i);
 	}
-	
+
 	public final class _FLOAT_ARRAY extends _REALTYPE_ARRAY {
 		final float[] ELTS;
+
 		public _FLOAT_ARRAY(final _BOUNDS... BOUNDS) {
-			super(BOUNDS); ELTS=new float[SIZE]; }
-		public float putELEMENT(int ix,float val) {
-			ELTS[ix]=val; return(val); }
+			super(BOUNDS);
+			ELTS = new float[SIZE];
+		}
+
+		public float putELEMENT(int ix, float val) {
+			ELTS[ix] = val;
+			return (val);
+		}
+
 		public float getELEMENT(int... x) {
-			return(ELTS[index(x)]); }
+			return (ELTS[index(x)]);
+		}
+
+		@Override
 		public _FLOAT_ARRAY COPY() {
 			_FLOAT_ARRAY copy = new _FLOAT_ARRAY(BOUNDS);
 			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
-			return(copy); }
+			return (copy);
+		}
+
 		@Override
-		public double getRealTypeELEMENT(int i) { return(ELTS[i]); }
+		public double getRealTypeELEMENT(int i) {
+			return (ELTS[i]);
+		}
 	}
-	
+
 	public final class _DOUBLE_ARRAY extends _REALTYPE_ARRAY {
 		final double[] ELTS;
+
 		public _DOUBLE_ARRAY(final _BOUNDS... BOUNDS) {
-			super(BOUNDS); ELTS=new double[SIZE]; }
-		public double putELEMENT(int ix,double val) {
-			ELTS[ix]=val; return(val); }
+			super(BOUNDS);
+			ELTS = new double[SIZE];
+		}
+
+		public double putELEMENT(int ix, double val) {
+			ELTS[ix] = val;
+			return (val);
+		}
+
 		public double getELEMENT(int... x) {
-			return(ELTS[index(x)]); }
+			return (ELTS[index(x)]);
+		}
+
+		@Override
 		public _DOUBLE_ARRAY COPY() {
 			_DOUBLE_ARRAY copy = new _DOUBLE_ARRAY(BOUNDS);
 			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
-			return(copy); }
+			return (copy);
+		}
+
 		@Override
-		public double getRealTypeELEMENT(int i) { return(ELTS[i]); }
+		public double getRealTypeELEMENT(int i) {
+			return (ELTS[i]);
+		}
 	}
-	
+
 	public final class _TEXT_ARRAY extends _ARRAY {
 		final private _TXT[] ELTS;
+
 		public _TEXT_ARRAY(final _BOUNDS... BOUNDS) {
-			super(BOUNDS); ELTS=new _TXT[SIZE]; }
-		public _TXT putELEMENT(int ix,_TXT val) {
-			ELTS[ix]=val; return(val); }
+			super(BOUNDS);
+			ELTS = new _TXT[SIZE];
+		}
+
+		public _TXT putELEMENT(int ix, _TXT val) {
+			ELTS[ix] = val;
+			return (val);
+		}
+
 		public _TXT getELEMENT(int... x) {
-			return(ELTS[index(x)]); }
+			return (ELTS[index(x)]);
+		}
+
+		@Override
 		public _TEXT_ARRAY COPY() {
 			_TEXT_ARRAY copy = new _TEXT_ARRAY(BOUNDS);
 			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
-			return(copy); }
+			return (copy);
+		}
 	}
-	
+
 	public final class _REF_ARRAY<T> extends _ARRAY {
 		final private _RTObject[] ELTS;
+
 		public _REF_ARRAY(final _BOUNDS... BOUNDS) {
 			super(BOUNDS);
-			ELTS=new _RTObject[SIZE]; }
-		public T putELEMENT(int ix,T val,int... x) {
-			ELTS[ix]=(_RTObject) val;
-			return(val);
+			ELTS = new _RTObject[SIZE];
 		}
+
+		public T putELEMENT(int ix, T val, int... x) {
+			ELTS[ix] = (_RTObject) val;
+			return (val);
+		}
+
 		public T getELEMENT(int... x) {
-			return( (T)ELTS[index(x)]);
+			return ((T) ELTS[index(x)]);
 		}
-		public  _REF_ARRAY<T> COPY() {
-			 _REF_ARRAY<T> copy = new  _REF_ARRAY<T>(BOUNDS);
+
+		@Override
+		public _REF_ARRAY<T> COPY() {
+			_REF_ARRAY<T> copy = new _REF_ARRAY<T>(BOUNDS);
 			System.arraycopy(ELTS, 0, copy.ELTS, 0, SIZE);
-			return(copy); }
+			return (copy);
+		}
 	}
 
-
 	public _ARRAY arrayValue(final Object par) {
-		if (par instanceof _NAME<?> arr) return((_ARRAY)arr.get());
+		if (par instanceof _NAME<?> arr)
+			return ((_ARRAY) arr.get());
 		return ((_ARRAY) par);
 	}
 
 	public _PRCQNT procValue(final Object par) {
-		if (par instanceof _NAME<?> proc) return((_PRCQNT)proc.get());
+		if (par instanceof _NAME<?> proc)
+			return ((_PRCQNT) proc.get());
 		return ((_PRCQNT) par);
 	}
 
 	public Object objectValue(Object par) {
-		if (par instanceof _NAME<?> npar) par = npar.get();
-		if (par instanceof _PRCQNT proc)  par = proc.CPF()._RESULT();
+		if (par instanceof _NAME<?> npar)
+			par = npar.get();
+		if (par instanceof _PRCQNT proc)
+			par = proc.CPF()._RESULT();
 		return (par);
 	}
 
 	public int intValue(Object par) {
-		if (par instanceof _NAME<?> npar) par = npar.get();
-		if (par instanceof _PRCQNT proc)  par = proc.CPF()._RESULT();
-		if (par instanceof Float   f) return (f.intValue());
-		if (par instanceof Double  d) return (d.intValue());
-		if (par instanceof Integer i) return (i);
+		if (par instanceof _NAME<?> npar)
+			par = npar.get();
+		if (par instanceof _PRCQNT proc)
+			par = proc.CPF()._RESULT();
+		if (par instanceof Float f)
+			return (f.intValue());
+		if (par instanceof Double d)
+			return (d.intValue());
+		if (par instanceof Integer i)
+			return (i);
 		throw new ClassCastException("Incompatible Types: int," + par.getClass().getSimpleName());
 	}
 
 	public float floatValue(Object par) {
-		if (par instanceof _NAME<?> npar) par = npar.get();
-		if (par instanceof _PRCQNT proc)  par = proc.CPF()._RESULT();
-		if (par instanceof Float   f) return (f);
-		if (par instanceof Double  d) return (d.floatValue());
-		if (par instanceof Integer i) return (i.floatValue());
+		if (par instanceof _NAME<?> npar)
+			par = npar.get();
+		if (par instanceof _PRCQNT proc)
+			par = proc.CPF()._RESULT();
+		if (par instanceof Float f)
+			return (f);
+		if (par instanceof Double d)
+			return (d.floatValue());
+		if (par instanceof Integer i)
+			return (i.floatValue());
 		throw new ClassCastException("Incompatible Types: float," + par.getClass().getSimpleName());
 	}
 
 	public double doubleValue(Object par) {
-		if (par instanceof _NAME<?> npar) par = npar.get();
-		if (par instanceof _PRCQNT proc)  par = proc.CPF()._RESULT();
-		if (par instanceof Float   f) return (f.doubleValue());
-		if (par instanceof Double  d) return (d);
-		if (par instanceof Integer i) return (i.doubleValue());
+		if (par instanceof _NAME<?> npar)
+			par = npar.get();
+		if (par instanceof _PRCQNT proc)
+			par = proc.CPF()._RESULT();
+		if (par instanceof Float f)
+			return (f.doubleValue());
+		if (par instanceof Double d)
+			return (d);
+		if (par instanceof Integer i)
+			return (i.doubleValue());
 		throw new ClassCastException("Incompatible Types: double," + par.getClass().getSimpleName());
 	}
 
@@ -272,6 +386,7 @@ public abstract class _RTObject {
 			forListIterator = new ForListIterator(forElt);
 		}
 
+		@Override
 		public Iterator<Boolean> iterator() {
 			return (forListIterator);
 		}
@@ -285,39 +400,51 @@ public abstract class _RTObject {
 			this.forElt = forElt;
 		}
 
+		@Override
 		public boolean hasNext() {
 			return (i < forElt.length && forElt[i].hasNext());
 		}
 
+		@Override
 		public Boolean next() {
 			Boolean val = forElt[i].next();
-			if (!forElt[i].hasNext()) i++;
+			if (!forElt[i].hasNext())
+				i++;
 			return (val);
 		}
 	}
 
 	public abstract class ForElt implements Iterator<Boolean> {
 		boolean more;
-		public ForElt() { more = true; }
-		public boolean hasNext() { return (more); }
+
+		public ForElt() {
+			more = true;
+		}
+
+		public boolean hasNext() {
+			return (more);
+		}
 	}
 
 	public final class SingleElt<T> extends ForElt {
 		final _NAME<T> cvar;
 		_NAME<T> nextValue;
 
-		public SingleElt(final _NAME<T> cvar,final _NAME<T> init) {
+		public SingleElt(final _NAME<T> cvar, final _NAME<T> init) {
 			this.cvar = cvar;
 			this.nextValue = init;
 			more = true;
 		}
 
+		@Override
 		public boolean hasNext() {
 			return (nextValue != null);
 		}
 
+		@Override
 		public Boolean next() {
-			if (nextValue == null) return (false);
+			if (nextValue == null)
+				return (false);
 			T val = nextValue.get();
 			cvar.put(val);
 			nextValue = null;
@@ -330,16 +457,21 @@ public abstract class _RTObject {
 		final _NAME<_TXT> cvar;
 		_NAME<_TXT> nextValue;
 
-		public SingleTValElt(final _NAME<_TXT> cvar,final _NAME<_TXT> init) {
+		public SingleTValElt(final _NAME<_TXT> cvar, final _NAME<_TXT> init) {
 			this.cvar = cvar;
 			this.nextValue = init;
 			more = true;
 		}
 
-		public boolean hasNext() { return (nextValue != null); }
+		@Override
+		public boolean hasNext() {
+			return (nextValue != null);
+		}
 
+		@Override
 		public Boolean next() {
-			if (nextValue == null) return (false);
+			if (nextValue == null)
+				return (false);
 			_TXT val = nextValue.get();
 			_ASGTXT(cvar.get(), val);
 			nextValue = null;
@@ -350,14 +482,14 @@ public abstract class _RTObject {
 	/**
 	 * <pre>
 	 *  A1 step A2 until A3 C := A1;
-     *                      DELTA := A2;
-     *                      while DELTA*(C-A3) <= 0
-     *                      do begin
-     *                            S;
-     *                            DELTA := A2;
-     *                            C := C + DELTA;
-     *                      end while;
-     *                      ... next for list element
+	 *                      DELTA := A2;
+	 *                      while DELTA*(C-A3) <= 0
+	 *                      do begin
+	 *                            S;
+	 *                            DELTA := A2;
+	 *                            C := C + DELTA;
+	 *                      end while;
+	 *                      ... next for list element
 	 * </pre>
 	 *
 	 */
@@ -365,57 +497,63 @@ public abstract class _RTObject {
 		final _NAME<Number> cvar, init, step, until;
 		Number nextValue;
 
-		public StepUntil(final _NAME<Number> cvar,final _NAME<Number> init,final _NAME<Number> step,final _NAME<Number> until) {
+		public StepUntil(final _NAME<Number> cvar, final _NAME<Number> init, final _NAME<Number> step,
+				final _NAME<Number> until) {
 			this.cvar = cvar;
 			this.init = init;
 			this.step = step;
 			this.until = until;
 		}
 
+		@Override
 		public Boolean next() {
 			try {
-			Number stp;
-			int sign;
-			if (nextValue == null) {
-				nextValue = init.get();
-				stp=0;//new Integer(0);
-				sign=(int) Math.signum(step.get().longValue());
-			} // First value
-			else {
-				stp= step.get();
-				sign=(int) Math.signum(stp.longValue());
+				Number stp;
+				int sign;
+				if (nextValue == null) {
+					nextValue = init.get();
+					stp = 0;// new Integer(0);
+					sign = (int) Math.signum(step.get().longValue());
+				} // First value
+				else {
+					stp = step.get();
+					sign = (int) Math.signum(stp.longValue());
+				}
+				Number val = nextValue;
+				Number utl = until.get();
+				if (val instanceof Double || stp instanceof Double) {
+					nextValue = val.doubleValue() + stp.doubleValue();
+					more = (sign * (nextValue.doubleValue() - utl.doubleValue()) <= 0);
+				} else if (val instanceof Float || stp instanceof Float) {
+					nextValue = val.floatValue() + stp.floatValue();
+					more = (sign * (nextValue.floatValue() - utl.floatValue()) <= 0);
+				} else if (val instanceof Long || stp instanceof Long) {
+					nextValue = val.longValue() + stp.longValue();
+					more = (sign * (nextValue.longValue() - utl.longValue()) <= 0);
+				} else {
+					nextValue = val.intValue() + stp.intValue();
+					more = (sign * (nextValue.intValue() - utl.intValue()) <= 0);
+				}
+				cvar.put(nextValue);
+				return (more);
+			} catch (Throwable e) {
+				e.printStackTrace();
+				return (null);
 			}
-			Number val = nextValue;
-			Number utl = until.get();
-			if (val instanceof Double || stp instanceof Double) {
-				nextValue = val.doubleValue() + stp.doubleValue();
-				more = ( sign * (nextValue.doubleValue() - utl.doubleValue()) <= 0);
-			} else if (val instanceof Float || stp instanceof Float) {
-				nextValue =val.floatValue() + stp.floatValue();
-				more = ( sign * (nextValue.floatValue() - utl.floatValue()) <= 0);
-			} else if (val instanceof Long || stp instanceof Long) {
-				nextValue = val.longValue() + stp.longValue();
-				more = ( sign * (nextValue.longValue() - utl.longValue()) <= 0);
-			} else {
-				nextValue = val.intValue() + stp.intValue();
-				more = ( sign * (nextValue.intValue() - utl.intValue()) <= 0);
-			}
-			cvar.put(nextValue);
-			return (more);
-			} catch(Throwable e) { e.printStackTrace(); return(null); }
 		}
 	}
-	
+
 	public final class WhileElt<T> extends ForElt {
 		final _NAME<T> cvar, expr;
 		_NAME<Boolean> cond;
 
-		public WhileElt(final _NAME<T> cvar,final _NAME<T> expr,final _NAME<Boolean> cond) {
+		public WhileElt(final _NAME<T> cvar, final _NAME<T> expr, final _NAME<Boolean> cond) {
 			this.cvar = cvar;
 			this.expr = expr;
 			this.cond = cond;
 		}
 
+		@Override
 		public Boolean next() {
 			T val = expr.get();
 			cvar.put(val);
@@ -429,12 +567,13 @@ public abstract class _RTObject {
 		final _NAME<_TXT> cvar, expr;
 		_NAME<Boolean> cond;
 
-		public WhileTValElt(final _NAME<_TXT> cvar,final _NAME<_TXT> expr,final _NAME<Boolean> cond) {
+		public WhileTValElt(final _NAME<_TXT> cvar, final _NAME<_TXT> expr, final _NAME<Boolean> cond) {
 			this.cvar = cvar;
 			this.expr = expr;
 			this.cond = cond;
 		}
 
+		@Override
 		public Boolean next() {
 			_TXT val = expr.get();
 			_ASGTXT(cvar.get(), val);
@@ -469,7 +608,8 @@ public abstract class _RTObject {
 	 * @return
 	 */
 	public static _TXT copy(final _TXT T) {
-		if (T == null) return (null);
+		if (T == null)
+			return (null);
 		_TXT U = blanks(T.LENGTH);
 		_ASGTXT(U, T);
 		return (U);
@@ -483,8 +623,10 @@ public abstract class _RTObject {
 	 * @return
 	 */
 	public _TXT CONC(_TXT T1, _TXT T2) {
-		if (T1 == null)	T1 = NOTEXT;
-		if (T2 == null)	T2 = NOTEXT;
+		if (T1 == null)
+			T1 = NOTEXT;
+		if (T2 == null)
+			T2 = NOTEXT;
 		_TXT U = blanks(_TXT.length(T1) + _TXT.length(T2));
 		_ASGTXT(_TXT.sub(U, 1, _TXT.length(T1)), T1);
 		_ASGTXT(_TXT.sub(U, 1 + _TXT.length(T1), _TXT.length(T2)), T2);
@@ -513,8 +655,10 @@ public abstract class _RTObject {
 	 * @return
 	 */
 	public static _TXT blanks(final int n) {
-		if (n < 0) throw new _SimulaRuntimeError("Parmameter to blanks < 0");
-		if (n == 0)	return (NOTEXT);
+		if (n < 0)
+			throw new _SimulaRuntimeError("Parmameter to blanks < 0");
+		if (n == 0)
+			return (NOTEXT);
 		_TXT textRef = new _TXT();
 		_TEXTOBJ textObj = new _TEXTOBJ(n, false);
 		textObj.fill(' ');
@@ -526,11 +670,14 @@ public abstract class _RTObject {
 	}
 
 	public static _TXT _ASGTXT(_TXT T, _TXT U) {
-		if (T == null) T = NOTEXT;
-		if (U == null) U = NOTEXT;
+		if (T == null)
+			T = NOTEXT;
+		if (U == null)
+			U = NOTEXT;
 		int fromLength = U.LENGTH;
 		if (fromLength > T.LENGTH)
-			throw (new _SimulaRuntimeError("RHS too long in text value assignment: RHS.length="+T.LENGTH+", LHS.length="+fromLength));
+			throw (new _SimulaRuntimeError(
+					"RHS too long in text value assignment: RHS.length=" + T.LENGTH + ", LHS.length=" + fromLength));
 		for (int i = 0; i < fromLength; i++)
 			T.OBJ.MAIN[T.START + i] = U.OBJ.MAIN[U.START + i];
 		for (int i = fromLength; i < T.LENGTH; i++)
@@ -538,12 +685,15 @@ public abstract class _RTObject {
 		return (T);
 	}
 
-	public _TXT _ASGSTR(_TXT T,final String s) {
-		if (T == null) T = NOTEXT;
+	public _TXT _ASGSTR(_TXT T, final String s) {
+		if (T == null)
+			T = NOTEXT;
 		int fromLength = 0;
-		if (s != null) fromLength = s.length();
+		if (s != null)
+			fromLength = s.length();
 		if (fromLength > T.LENGTH)
-			throw (new _SimulaRuntimeError("RHS too long in text value assignment: RHS.length="+T.LENGTH+", LHS.length="+fromLength));
+			throw (new _SimulaRuntimeError(
+					"RHS too long in text value assignment: RHS.length=" + T.LENGTH + ", LHS.length=" + fromLength));
 		for (int i = 0; i < fromLength; i++)
 			T.OBJ.MAIN[T.START + i] = s.charAt(i);
 		for (int i = fromLength; i < T.LENGTH; i++)
@@ -554,27 +704,27 @@ public abstract class _RTObject {
 	// **************************************************************
 	// *** TXTREL - Text value relations
 	// **************************************************************
-	public static boolean _TXTREL_LT(final _TXT left,final _TXT right) {
+	public static boolean _TXTREL_LT(final _TXT left, final _TXT right) {
 		return (TXTREL(left, right, 1));
 	}
 
-	public boolean _TXTREL_EQ(final _TXT left,final _TXT right) {
+	public boolean _TXTREL_EQ(final _TXT left, final _TXT right) {
 		return (TXTREL(left, right, 2));
 	}
 
-	public boolean _TXTREL_LE(final _TXT left,final _TXT right) {
+	public boolean _TXTREL_LE(final _TXT left, final _TXT right) {
 		return (TXTREL(left, right, 3));
 	}
 
-	public boolean _TXTREL_GT(final _TXT left,final _TXT right) {
+	public boolean _TXTREL_GT(final _TXT left, final _TXT right) {
 		return (TXTREL(left, right, 4));
 	}
 
-	public boolean _TXTREL_NE(final _TXT left,final _TXT right) {
+	public boolean _TXTREL_NE(final _TXT left, final _TXT right) {
 		return (TXTREL(left, right, 5));
 	}
 
-	public boolean _TXTREL_GE(final _TXT left,final _TXT right) {
+	public boolean _TXTREL_GE(final _TXT left, final _TXT right) {
 		return (TXTREL(left, right, 6));
 	}
 
@@ -582,14 +732,19 @@ public abstract class _RTObject {
 		int i; // Loop index.
 		int dif; // Difference between lengths.
 		int lng; // Length of common parts.
-		if (left == null) left = NOTEXT;
-		if (right == null) right = NOTEXT;
+		if (left == null)
+			left = NOTEXT;
+		if (right == null)
+			right = NOTEXT;
 		lng = right.LENGTH;
 		dif = lng - left.LENGTH;
 		if (dif != 0) {
-			if (code == 2) return (false);
-			if (code == 5) return (true);
-			if (dif > 0) lng = left.LENGTH;
+			if (code == 2)
+				return (false);
+			if (code == 5)
+				return (true);
+			if (dif > 0)
+				lng = left.LENGTH;
 		}
 		i = 0;
 		while (i < lng) {
@@ -602,13 +757,20 @@ public abstract class _RTObject {
 			i = i + 1;
 		}
 		switch (code) {
-		case 1:	return (0 < dif);
-		case 2:	return (0 == dif);
-		case 3:	return (0 <= dif);
-		case 4:	return (0 > dif);
-		case 5:	return (0 != dif);
-		case 6:	return (0 >= dif);
-		default: throw new _SimulaRuntimeError("Internal Error");
+		case 1:
+			return (0 < dif);
+		case 2:
+			return (0 == dif);
+		case 3:
+			return (0 <= dif);
+		case 4:
+			return (0 > dif);
+		case 5:
+			return (0 != dif);
+		case 6:
+			return (0 >= dif);
+		default:
+			throw new _SimulaRuntimeError("Internal Error");
 		}
 	}
 
@@ -616,15 +778,20 @@ public abstract class _RTObject {
 	// *** TXTREL - Text reference relations. == =/=
 	// **************************************************************
 	public boolean TRF_EQ(_TXT left, _TXT right) {
-		if (left == null) left = NOTEXT;
-		if (right == null) right = NOTEXT;
-		if (left.LENGTH != right.LENGTH) return (false);
-		if (left.START != right.START) return (false);
-		if (left.OBJ != right.OBJ) return (false);
+		if (left == null)
+			left = NOTEXT;
+		if (right == null)
+			right = NOTEXT;
+		if (left.LENGTH != right.LENGTH)
+			return (false);
+		if (left.START != right.START)
+			return (false);
+		if (left.OBJ != right.OBJ)
+			return (false);
 		return (true);
 	}
 
-	public boolean TRF_NE(final _TXT left,final _TXT right) {
+	public boolean TRF_NE(final _TXT left, final _TXT right) {
 		return (!TRF_EQ(left, right));
 	}
 
@@ -638,7 +805,7 @@ public abstract class _RTObject {
 	// ************************************************************
 	// *** lOCAL JUMP/LABEL - Meant for Byte-Code Engineering
 	// ************************************************************
-	public static void _LABEL(final int labelIndex,final String ident) {
+	public static void _LABEL(final int labelIndex, final String ident) {
 		// Local LABEL - Needs ByteCode Engineering.
 	}
 
@@ -648,8 +815,8 @@ public abstract class _RTObject {
 			_RT.TRACE("_RTObject._JUMPTABLE: labelIndex=" + labelIndex);
 		String msg = "FATAL ERROR: Local GOTO LABEL#" + labelIndex + " Needs ByteCode Engineering.";
 		_RT.println(msg);
-//		_RT.printSimulaStackTrace(0);
-		if (labelIndex == 0) return;
+		if (labelIndex == 0)
+			return;
 		_RT.println(msg);
 		throw new _SimulaRuntimeError(msg);
 	}
@@ -664,12 +831,13 @@ public abstract class _RTObject {
 		public final String identifier; // To improve error and trace messages.
 
 		// Constructor
-		public _LABQNT(final _RTObject _SL,final int index,final String identifier) {
+		public _LABQNT(final _RTObject _SL, final int index, final String identifier) {
 			this._SL = _SL;
 			this.index = index;
 			this.identifier = identifier;
 		}
 
+		@Override
 		public String toString() {
 			return ("_LABQNT(" + _SL + ", LABEL#" + index + ", identifier=" + identifier + ')');
 		}
@@ -679,14 +847,15 @@ public abstract class _RTObject {
 	// *** _GOTO -- To avoid Java-error: "Unreachable code" after GOTO
 	// ************************************************************
 	public void _GOTO(final _LABQNT q) {
-		if (_RT.Option.GOTO_TRACING)	_RT.TRACE("_RTObject.GOTO: " + q );
+		if (_RT.Option.GOTO_TRACING)
+			_RT.TRACE("_RTObject.GOTO: " + q);
 		throw (q);
 	}
 
 	// ************************************************************
 	// *** TRACING: TRACE_GOTO
 	// ************************************************************
-	public static void TRACE_GOTO(final String msg,final _LABQNT q) {
+	public static void TRACE_GOTO(final String msg, final _LABQNT q) {
 		_RT.TRACE(msg + " GOTO " + q);
 	}
 
@@ -700,68 +869,81 @@ public abstract class _RTObject {
 			this.obj = obj;
 		}
 
+		@Override
 		public void uncaughtException(Thread thread, Throwable e) {
-			String threadID =(_RT.Option.VERBOSE)? ( "Thread:" + thread.getName() + '[' + obj + "]: " ) : "";
-			if (_RT.Option.GOTO_TRACING)	_RT.println(threadID + " throws exception: " + e);
-			if (_RT.Option.GOTO_TRACING)	e.printStackTrace();
+			String threadID = (_RT.Option.VERBOSE) ? ("Thread:" + thread.getName() + '[' + obj + "]: ") : "";
+			if (_RT.Option.GOTO_TRACING) {
+				_RT.println(threadID + " throws exception: " + e);
+				e.printStackTrace();
+			}
 			if (e instanceof _LABQNT) {
-				if (_RT.Option.GOTO_TRACING)	System.err.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
-				if (_RT.Option.GOTO_TRACING)	_RT.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
+				if (_RT.Option.GOTO_TRACING) {
+					System.err.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
+					_RT.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
+				}
 				_RTObject DL = obj.DL_;
 				if (DL != null && DL != CTX_) {
-					if (_RT.Option.GOTO_TRACING)	System.err.println("DL=" + DL.edObjectAttributes());
-					if (_RT.Option.GOTO_TRACING)	_RT.println("DL=" + DL.edObjectAttributes());
+					if (_RT.Option.GOTO_TRACING) {
+						System.err.println("DL=" + DL.edObjectAttributes());
+						_RT.println("DL=" + DL.edObjectAttributes());
+					}
 					Coroutine._PENDING_EXCEPTION = (RuntimeException) e;
 					DL.CORUT_.run();
 				} else {
-					String msg="Illegal GOTO " + ((_LABQNT)e).identifier;
-					if(_ENVIRONMENT.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
+					String msg = "Illegal GOTO " + ((_LABQNT) e).identifier;
+					if (_ENVIRONMENT.EXCEPTION_HANDLER != null)
+						treatRuntimeError(msg);
 					_RT.println(threadID + "SIMULA RUNTIME ERROR: " + msg);
-					if(_RT.Option.VERBOSE) e.printStackTrace();
+					if (_RT.Option.VERBOSE)
+						e.printStackTrace();
 					endProgram(-1);
 				}
 			} else if (e instanceof RuntimeException) {
-				String msg=getErrorMessage(e);
-				msg=msg.replace("_SimulaRuntimeError: ","");
-				if(_ENVIRONMENT.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
+				String msg = getErrorMessage(e);
+				msg = msg.replace("_SimulaRuntimeError: ", "");
+				if (_ENVIRONMENT.EXCEPTION_HANDLER != null)
+					treatRuntimeError(msg);
 				_RT.printError(threadID + "SIMULA RUNTIME ERROR: " + msg);
 				_RT.printSimulaStackTrace(e, 0);
-				if(_RT.Option.VERBOSE) e.printStackTrace();
+				if (_RT.Option.VERBOSE)
+					e.printStackTrace();
 				endProgram(-1);
 			} else if (e instanceof Error) {
 				String msg = e.getClass().getSimpleName();
-//				if(_ENVIRONMENT.EXCEPTION_HANDLER!=null) treatRuntimeError(msg);
 				_RT.printError(threadID + "SIMULA RUNTIME ERROR: " + msg);
 				_RT.printSimulaStackTrace(e, 0);
-				if(_RT.Option.VERBOSE) e.printStackTrace();
+				if (_RT.Option.VERBOSE)
+					e.printStackTrace();
 				endProgram(-1);
 			} else {
 				_RT.printError(threadID + "UNCAUGHT EXCEPTION: " + e.getMessage());
 				e.printStackTrace();
 				endProgram(-1);
 			}
-			if (_RT.Option.GOTO_TRACING)	_RT.printThreadList();
+			if (_RT.Option.GOTO_TRACING)
+				_RT.printThreadList();
 		}
-		
+
 		private void treatRuntimeError(String msg) {
-  	       _PRCQNT erh=_ENVIRONMENT.EXCEPTION_HANDLER;
-  	       try { //System.out.println("Runtime Error(2): EXCEPTION_HANDLER="+_ENVIRONMENT.EXCEPTION_HANDLER);
-	    	     _ENVIRONMENT.EXCEPTION_HANDLER=null;
-	    	     erh.CPF().setPar(new _TXT(msg))._ENT();
-		   } catch (Throwable t) {
-			     _RT.printError("EXCEPTION IN SIMULA EXCEPTION_HANDLER: " + t);
-			     _RT.printError("EXCEPTION_HANDLER: " + erh);
-		    	 t.printStackTrace();
-		    }			
+			_PRCQNT erh = _ENVIRONMENT.EXCEPTION_HANDLER;
+			try {
+				_ENVIRONMENT.EXCEPTION_HANDLER = null;
+				erh.CPF().setPar(new _TXT(msg))._ENT();
+			} catch (Throwable t) {
+				_RT.printError("EXCEPTION IN SIMULA EXCEPTION_HANDLER: " + t);
+				_RT.printError("EXCEPTION_HANDLER: " + erh);
+				t.printStackTrace();
+			}
 		}
 	}
 
-	
 	public static String getErrorMessage(Throwable e) {
 		String msg = e.getMessage();
-		if (e instanceof NullPointerException) msg = "NONE-CHECK Failed";
-		else if (e instanceof ArrayIndexOutOfBoundsException) msg = "ArrayIndexOutOfBounds";
-		return(e.getClass().getSimpleName() + ": " + msg);
+		if (e instanceof NullPointerException)
+			msg = "NONE-CHECK Failed";
+		else if (e instanceof ArrayIndexOutOfBoundsException)
+			msg = "ArrayIndexOutOfBounds";
+		return (e.getClass().getSimpleName() + ": " + msg);
 	}
 
 	// ************************************************************
@@ -780,10 +962,11 @@ public abstract class _RTObject {
 	 * routine. It will initiate the global data in the runtime system.
 	 */
 	public void BPRG(final String ident) {
-		startTimeMs = System.currentTimeMillis( );
+		startTimeMs = System.currentTimeMillis();
 		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler(this));
-		_RT.progamIdent=ident;
-		if (_RT.Option.BLOCK_TRACING) _RT.TRACE("Begin Execution of Simula Program: " + ident);
+		_RT.progamIdent = ident;
+		if (_RT.Option.BLOCK_TRACING)
+			_RT.TRACE("Begin Execution of Simula Program: " + ident);
 		if (SYSIN_ == null) {
 			if (_RT.Option.USE_CONSOLE) {
 				_RT.console = new _RTConsolePanel();
@@ -810,11 +993,14 @@ public abstract class _RTObject {
 	 * </ul>
 	 */
 	public void BBLK() {
-		DL_ = _CUR;	_CUR = this;
+		DL_ = _CUR;
+		_CUR = this;
 		CORUT_ = DL_.CORUT_;
 		STATE_ = OperationalState.attached;
-		if (_RT.Option.BLOCK_TRACING) _RT.TRACE("BEGIN " + edObjectAttributes());
-		_RT.NoneCheck(_SL); // In case of Remote Call on Procedure x.Func, x==none
+		if (_RT.Option.BLOCK_TRACING)
+			_RT.TRACE("BEGIN " + edObjectAttributes());
+		if (_SL == null)
+			throw new _SimulaRuntimeError("NONE-CHECK FAILED: Remote Call on Procedure x.proc, x==none");
 	}
 
 	// *********************************************************************
@@ -847,46 +1033,51 @@ public abstract class _RTObject {
 	 * </ul>
 	 * Finally; Yield continuation and return to Compiler generated code.
 	 * <p>
-	 * However; If the program passes through its final end sysout.outimage is 
+	 * However; If the program passes through its final end sysout.outimage is
 	 * called. The the entire program is terminated.
 	 * <p>
 	 */
 	public void EBLK() {
-		switch(STATE_) {
-			case attached -> {
-					if (_RT.Option.BLOCK_TRACING) _RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
-					_RT.ASSERT(_CUR == this, "_RTObject.EBLK:invariant-1: CUR="+_CUR+", this="+this);
-					STATE_ = OperationalState.terminated;
-					_CUR = DL_; // Make the dynamic enclosure the new current instance.
-//					if (_RT.Option.BLOCK_TRACING) _RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
-				}
-			case resumed -> {
-					_RT.ASSERT(_CUR == this, "_RTObject.EBLK:invariant-2");
-					// Treat the case of a resumed and operating object.
-					// It is the head of an object component. The class
-					// object enters the terminated state, and the object component
-					// disappears from its system. The main component of that system
-					// takes its place as the operating component of the system.
-					// Invariant: _CUR.STATE_ = resumed and _CUR.DL = main.SL
-					STATE_ = OperationalState.terminated;
-					// Find main component (and system) head. It must be the static
-					// enclosure since the object has been RESUMEd.
-					_RTObject main = _SL;
-					// The main component becomes the operating component.
-					_RTObject dl = DL_; DL_ = null;
-					_CUR = main.DL_; main.DL_ = dl;
-					if (_RT.Option.BLOCK_TRACING) _RT.TRACE("END COMPONENT " + edObjectAttributes());
-				}
-			case terminatingProcess -> {
-					//_RT.TRACE("TERMINATING PROCESS "+edObjectAttributes());
-					STATE_ = OperationalState.terminated;
-					CORUT_ = null; // Leave it to the GarbageCollector
-					return; // Let this Continuation R.I.P.
-				}
-			default -> throw new _SimulaRuntimeError("_RTObject.EBLK: Internal Error " + edObjectAttributes());
+		switch (STATE_) {
+		case attached -> {
+			if (_RT.Option.BLOCK_TRACING)
+				_RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
+			_RT.ASSERT(_CUR == this, "_RTObject.EBLK:invariant-1: CUR=" + _CUR + ", this=" + this);
+			STATE_ = OperationalState.terminated;
+			_CUR = DL_; // Make the dynamic enclosure the new current instance.
+		}
+		case resumed -> {
+			_RT.ASSERT(_CUR == this, "_RTObject.EBLK:invariant-2");
+			// Treat the case of a resumed and operating object.
+			// It is the head of an object component. The class
+			// object enters the terminated state, and the object component
+			// disappears from its system. The main component of that system
+			// takes its place as the operating component of the system.
+			// Invariant: _CUR.STATE_ = resumed and _CUR.DL = main.SL
+			STATE_ = OperationalState.terminated;
+			// Find main component (and system) head. It must be the static
+			// enclosure since the object has been RESUMEd.
+			_RTObject main = _SL;
+			// The main component becomes the operating component.
+			_RTObject dl = DL_;
+			DL_ = null;
+			_CUR = main.DL_;
+			main.DL_ = dl;
+			if (_RT.Option.BLOCK_TRACING)
+				_RT.TRACE("END COMPONENT " + edObjectAttributes());
+		}
+		case terminatingProcess -> {
+			if (_RT.Option.BLOCK_TRACING)
+				_RT.TRACE("TERMINATING PROCESS " + edObjectAttributes());
+			STATE_ = OperationalState.terminated;
+			CORUT_ = null; // Leave it to the GarbageCollector
+			return; // Let this Continuation R.I.P.
+		}
+		default -> throw new _SimulaRuntimeError("_RTObject.EBLK: Internal Error " + edObjectAttributes());
 		}
 		if (_CUR == null || _CUR == CTX_) {
-			if (_RT.Option.BLOCK_TRACING) _RT.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
+			if (_RT.Option.BLOCK_TRACING)
+				_RT.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
 			endProgram(0);
 		} else {
 			if (this.CORUT_ != null && this.isDetachUsed()) {
@@ -900,51 +1091,51 @@ public abstract class _RTObject {
 	// *********************************************************************
 
 	// *********************************************************************
-	// *** DETACH  -  See Simula Standard 7.3.1 Detach
+	// *** DETACH - See Simula Standard 7.3.1 Detach
 	// *********************************************************************
 	/**
 	 * Consider a call of the detach attribute of a block instance X.
 	 * <p>
-	 * If X is an instance of a prefixed block the detach statement has no
-	 * effect. Assume that X is a class object. The following cases arise:
+	 * If X is an instance of a prefixed block the detach statement has no effect.
+	 * Assume that X is a class object. The following cases arise:
 	 * <ol>
 	 * <li>X is an attached object.<br>
-	 * If X is not operating the detach statement constitutes an error. Assume X
-	 * is operating. The effect of the detach statement is:
+	 * If X is not operating the detach statement constitutes an error. Assume X is
+	 * operating. The effect of the detach statement is:
 	 * <ul>
-	 * <li>X becomes detached and thereby (the head of) a new non-operative
-	 * object component, its reactivation point positioned immediately after the
-	 * detach statement. As a consequence, that part of the operating chain
-	 * which is dynamically enclosed by X becomes the (non-operating)
-	 * reactivation chain of X.
+	 * <li>X becomes detached and thereby (the head of) a new non-operative object
+	 * component, its reactivation point positioned immediately after the detach
+	 * statement. As a consequence, that part of the operating chain which is
+	 * dynamically enclosed by X becomes the (non-operating) reactivation chain of
+	 * X.
 	 * 
 	 * <li>The PSC returns to the block instance to which X was attached and
-	 * execution continues immediately after the associated object generator or
-	 * call statement (see 7.3.2).
+	 * execution continues immediately after the associated object generator or call
+	 * statement (see 7.3.2).
 	 * </ul>
 	 * If X is local to a system head, the new component becomes a member of the
-	 * associated system. It is a consequence of the language definition that,
-	 * prior to the execution of the detach statement, X was dynamically
-	 * enclosed by the head of the operative component of this system. The
-	 * operative component remains operative.
+	 * associated system. It is a consequence of the language definition that, prior
+	 * to the execution of the detach statement, X was dynamically enclosed by the
+	 * head of the operative component of this system. The operative component
+	 * remains operative.
 	 * 
 	 * <li>X is a detached object.<br>
 	 * The detach statement then constitutes an error.
 	 * 
 	 * <li>X is a resumed object.<br>
 	 * X is then (the head of) an operative system component. Let S be the
-	 * associated system. It is a consequence of the language definition that X
-	 * must be operating. The effect of the detach statement is:
+	 * associated system. It is a consequence of the language definition that X must
+	 * be operating. The effect of the detach statement is:
 	 * <ul>
-	 * <li>X enters the detached state and becomes non-operative, its
-	 * reactivation point positioned immediately after the detach statement. As
-	 * a consequence, that part of the operating chain which is dynamically
-	 * enclosed by X becomes the (non-operating) reactivation chain of X.
+	 * <li>X enters the detached state and becomes non-operative, its reactivation
+	 * point positioned immediately after the detach statement. As a consequence,
+	 * that part of the operating chain which is dynamically enclosed by X becomes
+	 * the (non-operating) reactivation chain of X.
 	 * 
-	 * <li>The PSC is moved to the current reactivation point of the main
-	 * component of S, whereby this main component becomes operative and
-	 * operating. As a consequence, all block instances on the reactivation
-	 * chain of the main component also become operating.
+	 * <li>The PSC is moved to the current reactivation point of the main component
+	 * of S, whereby this main component becomes operative and operating. As a
+	 * consequence, all block instances on the reactivation chain of the main
+	 * component also become operating.
 	 * </ul>
 	 * <li>X is a terminated object.<br>
 	 * The detach statement then constitutes an error.
@@ -953,17 +1144,22 @@ public abstract class _RTObject {
 	 */
 	public void detach(int sourceLine) {
 		if (_RT.Option.QPS_TRACING)
-			_RT.TRACE("LINE "+sourceLine+": BEGIN DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
+			_RT.TRACE("LINE " + sourceLine + ": BEGIN DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
 		detach();
 		if (_RT.Option.QPS_TRACING)
-			_RT.TRACE("LINE "+sourceLine+": DETACH(" + this.edObjectIdent() + ") CONTINUE IN " + _CUR.edObjectIdent());
+			_RT.TRACE("LINE " + sourceLine + ": DETACH(" + this.edObjectIdent() + ") CONTINUE IN "
+					+ _CUR.edObjectIdent());
 	}
+
 	public static void detach(_RTObject SL) {
 		SL.detach();
 	}
+
 	public void detach() {
-		//if (_RT.Option.QPS_TRACING) _RT.TRACE("BEGIN DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
-		if (isQPSystemBlock()) return; // Detach QPS System Block is no-operation.
+		// if (_RT.Option.QPS_TRACING) _RT.TRACE("BEGIN DETACH " + this.edObjectIdent()
+		// + " ==> " + _CUR.edObjectIdent());
+		if (isQPSystemBlock())
+			return; // Detach QPS System Block is no-operation.
 		// Make sure that this object is on the operating chain.
 		// Note that a detached or terminated object cannot be on the operating chain.
 		_RTObject dl = _CUR;
@@ -972,25 +1168,31 @@ public abstract class _RTObject {
 			if (dl == null)
 				throw new _SimulaRuntimeError("x.Detach: x is not on the operating chain.");
 		}
-		switch(this.STATE_) {
-			case resumed -> {
-				// Find main component for component to be detached. The main
-				// component head must be the static enclosure of the object.
-				_RTObject main = this._SL;
-				// Rotate the contents of '_CUR', 'this.DL_' and 'main.DL_'.
-				// <main.DL_,this.DL_,_CUR> := <this.DL_,_CUR,main.DL_>
-				dl = main.DL_; main.DL_ = this.DL_; this.DL_ = _CUR; _CUR = dl;
-			} 
-			case attached -> {
-				// Swap the contents of object's 'this.DL_' and '_CUR'.
-				// <this.DL_,_CUR> := <_CUR,this.DL_>
-				dl = this.DL_; this.DL_ = _CUR; _CUR = dl;
-			}
-			default -> throw new _SimulaRuntimeError("Illegal Detach");
+		switch (this.STATE_) {
+		case resumed -> {
+			// Find main component for component to be detached. The main
+			// component head must be the static enclosure of the object.
+			_RTObject main = this._SL;
+			// Rotate the contents of '_CUR', 'this.DL_' and 'main.DL_'.
+			// <main.DL_,this.DL_,_CUR> := <this.DL_,_CUR,main.DL_>
+			dl = main.DL_;
+			main.DL_ = this.DL_;
+			this.DL_ = _CUR;
+			_CUR = dl;
+		}
+		case attached -> {
+			// Swap the contents of object's 'this.DL_' and '_CUR'.
+			// <this.DL_,_CUR> := <_CUR,this.DL_>
+			dl = this.DL_;
+			this.DL_ = _CUR;
+			_CUR = dl;
+		}
+		default -> throw new _SimulaRuntimeError("Illegal Detach");
 		}
 		this.STATE_ = OperationalState.detached;
- 
-		if (_RT.Option.QPS_TRACING) _RT.TRACE("DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
+
+		if (_RT.Option.QPS_TRACING)
+			_RT.TRACE("DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
 		Coroutine.detach();
 	}
 
@@ -1020,19 +1222,21 @@ public abstract class _RTObject {
 	 * </ul>
 	 * <p>
 	 * 
-	 * @param obj
-	 *            The object to be Called (Coroutine)
+	 * @param obj The object to be Called (Coroutine)
 	 */
-	public void call(final _RTObject ins,int sourceLine) {
+	public void call(final _RTObject ins, int sourceLine) {
 		if (_RT.Option.QPS_TRACING)
-			_RT.TRACE("LINE "+sourceLine+": BEGIN CALL " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
+			_RT.TRACE("LINE " + sourceLine + ": BEGIN CALL " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
 		call(ins);
 		if (_RT.Option.QPS_TRACING)
-			_RT.TRACE("LINE "+sourceLine+": CALL(" + this.edObjectIdent() + ") CONTINUE IN " + _CUR.edObjectIdent());
+			_RT.TRACE(
+					"LINE " + sourceLine + ": CALL(" + this.edObjectIdent() + ") CONTINUE IN " + _CUR.edObjectIdent());
 	}
+
 	public void call(final _RTObject ins) {
 		_RTObject dl; // Temporary reference to dynamic enclosure.
-		if (ins == null) throw new _SimulaRuntimeError("Call(x): x is none.");
+		if (ins == null)
+			throw new _SimulaRuntimeError("Call(x): x is none.");
 		if (ins.STATE_ != OperationalState.detached)
 			throw new _SimulaRuntimeError("Call(x): x is not in detached state.");
 		// The object to be attached cannot be on the operating chain,
@@ -1040,11 +1244,14 @@ public abstract class _RTObject {
 
 		// Swap the contents of '_CUR' and object's 'dl'.
 		// <ins.DL_,_CUR>:=<_CUR,ins.DL_>;
-		dl = ins.DL_; ins.DL_ = _CUR; _CUR = dl;
+		dl = ins.DL_;
+		ins.DL_ = _CUR;
+		_CUR = dl;
 		// From now on the object is in attached state.
 		// It is no longer a component head.
 		ins.STATE_ = OperationalState.attached;
-		//if (_RT.Option.QPS_TRACING) _RT.TRACE("CALL " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
+		// if (_RT.Option.QPS_TRACING) _RT.TRACE("CALL " + this.edObjectIdent() + " ==>
+		// " + _CUR.edObjectIdent());
 		swapCoroutines();
 	}
 
@@ -1087,43 +1294,51 @@ public abstract class _RTObject {
 	 * block instances on the reactivation chain of Y also become operating.
 	 * </ul>
 	 * 
-	 * @param ins
-	 *            The object to be Resumed
+	 * @param ins The object to be Resumed
 	 */
-	public void resume(final _RTObject ins,int sourceLine) {
-		if (_RT.Option.QPS_TRACING) _RT.TRACE("LINE "+sourceLine+": BEGIN RESUME " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
+	public void resume(final _RTObject ins, int sourceLine) {
+		if (_RT.Option.QPS_TRACING)
+			_RT.TRACE("LINE " + sourceLine + ": BEGIN RESUME " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
 		resume(ins);
 	}
+
 	public void resume(final _RTObject ins) {
-		resume(ins,true); // Normal Case
+		resume(ins, true); // Normal Case
 	}
-	public void resume(final _RTObject ins,boolean doSwap) {
-		_RTObject comp;   // Component head.
+
+	public void resume(final _RTObject ins, boolean doSwap) {
+		_RTObject comp; // Component head.
 		_RTObject mainSL; // Static enclosure of main component head.
-		_RTObject main;   // The head of the main component and also
-						  // the head of the quasi-parallel system.
-		if (ins == null) throw new _SimulaRuntimeError("Resume(x): x is none.");
+		_RTObject main; // The head of the main component and also
+						// the head of the quasi-parallel system.
+		if (ins == null)
+			throw new _SimulaRuntimeError("Resume(x): x is none.");
 
 		if (ins.STATE_ != OperationalState.resumed) { // A no-operation?
-		    // The object to be resumed must be local to a system head.
+			// The object to be resumed must be local to a system head.
 			main = ins._SL;
 			if (!main.isQPSystemBlock())
 				throw new _SimulaRuntimeError("Resume(x): x is not local to sub-block or prefixed block.");
 			if (ins.STATE_ != OperationalState.detached)
 				throw new _SimulaRuntimeError("Resume(x): x is not in detached state but " + ins.STATE_);
 			// Find the operating component of the quasi-parallel system.
-			comp = _CUR; mainSL = main._SL;
-			while (comp.DL_ != mainSL) comp = comp.DL_;
+			comp = _CUR;
+			mainSL = main._SL;
+			while (comp.DL_ != mainSL)
+				comp = comp.DL_;
 			if (comp.STATE_ == OperationalState.resumed)
 				comp.STATE_ = OperationalState.detached;
 			// Rotate the contents of 'ins.dl', 'comp.dl' and '_CUR'.
 			// Invariant: comp.DL_ = mainSL
 			// <ins.DL_,comp.DL_,_CUR>=<comp.DL_,_CUR,ins.DL_>
-			comp.DL_ = _CUR; _CUR = ins.DL_; ins.DL_ = mainSL;
+			comp.DL_ = _CUR;
+			_CUR = ins.DL_;
+			ins.DL_ = mainSL;
 			ins.STATE_ = OperationalState.resumed;
 			if (_RT.Option.QPS_TRACING)
 				_RT.TRACE("RESUME " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
-			if(doSwap) swapCoroutines();
+			if (doSwap)
+				swapCoroutines();
 		}
 	}
 
@@ -1132,7 +1347,9 @@ public abstract class _RTObject {
 	 * 
 	 * @return
 	 */
-	public _RTObject _STM() { return (null); }
+	public _RTObject _STM() {
+		return (null);
+	}
 
 	// *********************************************************************
 	// *** endProgram
@@ -1141,22 +1358,19 @@ public abstract class _RTObject {
 		// SYSIN_.close();
 		// SYSOUT_.close();
 		SYSOUT_.outimage();
-//		ThreadUtils.printThreadList();
-		long timeUsed  = System.currentTimeMillis( ) - startTimeMs;
-		if(_RT.Option.VERBOSE) {
-			_RT.println("\nEnd program: " + _RT.progamIdent);		      
+		long timeUsed = System.currentTimeMillis() - startTimeMs;
+		if (_RT.Option.VERBOSE) {
+			_RT.println("\nEnd program: " + _RT.progamIdent);
 			if (_RT.numberOfEditOverflows > 0)
 				_RT.println(" -  WARNING " + _RT.numberOfEditOverflows + " EditOverflows");
-			Runtime runtime=Runtime.getRuntime();
-			_RT.println(" -  Memory(used="+runtime.totalMemory()+",free="+runtime.freeMemory()+')');
-			_RT.println(" -  nProcessors="+runtime.availableProcessors());
-//			_RT.println(" -  "+(_RT.Option.USE_VIRTUAL_THREAD?"Virtual":"")+"Thread Count = " + Coroutine.threadCount);
-//			_RT.println(" -  Active Thread Count = " + Thread.activeCount());
-			_RT.println(" -  Elapsed Time Approximately " + timeUsed/1000 + " sec.");
+			Runtime runtime = Runtime.getRuntime();
+			_RT.println(" -  Memory(used=" + runtime.totalMemory() + ",free=" + runtime.freeMemory() + ')');
+			_RT.println(" -  nProcessors=" + runtime.availableProcessors());
+			_RT.println(" -  Elapsed Time Approximately " + timeUsed / 1000 + " sec.");
 		} else if (_RT.numberOfEditOverflows > 0)
-			_RT.println("End program: WARNING " + _RT.numberOfEditOverflows + " EditOverflows");			
-//		if (_RT.console == null)	System.exit(exitValue);
-		if (!_RT.someConsolePresent) System.exit(exitValue);
+			_RT.println("End program: WARNING " + _RT.numberOfEditOverflows + " EditOverflows");
+		if (!_RT.someConsolePresent)
+			System.exit(exitValue);
 	}
 
 	// *********************************************************************
@@ -1164,19 +1378,19 @@ public abstract class _RTObject {
 	// *********************************************************************
 	static void swapCoroutines() {
 		Coroutine cont = Coroutine.getCurrentCoroutine();
-		//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);
+		// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);
 		if (cont == null) {
 			cont = _CUR.CORUT_;
 			_RTObject next = _CUR;
 			while (next.CORUT_ != null) {
-				//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN NEXT "+next);
+				// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN NEXT "+next);
 				next.CORUT_.run();
 				// Return here when Coroutine is Detached or Done
 				next = _CUR;
-				//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN RETURNED "+next);
+				// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN RETURNED "+next);
 			}
 		} else {
-			//if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: YIELD "+cont);
+			// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: YIELD "+cont);
 			Coroutine.detach();
 		}
 	}
@@ -1189,13 +1403,13 @@ public abstract class _RTObject {
 		return (new _TXT(staticLink.edObjectIdent()));
 	}
 
-	public _TXT objectTraceIdentifier() { return (new _TXT(edObjectIdent())); }
+	public _TXT objectTraceIdentifier() {
+		return (new _TXT(edObjectIdent()));
+	}
 
 	public String edObjectIdent() {
 		StringBuilder s = new StringBuilder();
 		s.append(this.getClass().getSimpleName());
-//		if (SEQU > 0) s.append('#').append(SEQU);
-//		s.append('#').append(this.hashCode());
 		return (s.toString());
 	}
 
@@ -1219,6 +1433,7 @@ public abstract class _RTObject {
 //		}
 //	}
 
+	@Override
 	public String toString() {
 		return (edObjectIdent());
 	}

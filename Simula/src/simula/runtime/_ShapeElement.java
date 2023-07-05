@@ -47,111 +47,134 @@ import java.awt.geom.RoundRectangle2D;
  */
 public class _ShapeElement extends _Link implements _Drawing.Animable {
 	final _Drawing drawing;
-    Color drawColor; // null: no drawing
-    Color fillColor; // null: no filling
-    Stroke stroke;
-    Shape shape;
+	Color drawColor; // null: no drawing
+	Color fillColor; // null: no filling
+	Stroke stroke;
+	Shape shape;
 
 	// Constructor
 	public _ShapeElement(_RTObject staticLink) {
 		super(staticLink);
-		drawing=(_Drawing)staticLink;
-		stroke=drawing.currentStroke;
-		//_RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
+		drawing = (_Drawing) staticLink;
+		stroke = drawing.currentStroke;
+		// _RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
 		into(drawing.RENDERING_SET);
 	}
+
+	@Override
 	public _ShapeElement _STM() {
-		//TRACE_BEGIN_STM("_ShapeElement");
+		// TRACE_BEGIN_STM("_ShapeElement");
 //		_ShapeElement.this.stroke=drawing.currentStroke;
-//		//_RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
 //		_ShapeElement.this.into(drawing.RENDERING_SET);
 		// INNER
-		//TRACE_END_STM("_ShapeElement");
+		// TRACE_END_STM("_ShapeElement");
 		EBLK();
-		return(this);
+		return (this);
 	}
 
-    public void drawLine(final double x1,final double y1,final double x2,final double y2) {
-    	shape=new Line2D.Double(x1,y1,x2,y2);
-    	drawColor=drawing.currentDrawColor;
-    	drawing.repaintMe();
-    }
+	public void drawLine(final double x1, final double y1, final double x2, final double y2) {
+		shape = new Line2D.Double(x1, y1, x2, y2);
+		drawColor = drawing.currentDrawColor;
+		drawing.repaintMe();
+	}
 
-    public void drawEllipse(final double x,final double y,final double width,final double height) {
-    	shape=new Ellipse2D.Double(x,y,width,height);
-    	drawColor=drawing.currentDrawColor;
-    	drawing.repaintMe();
-    }
+	public void drawEllipse(final double x, final double y, final double width, final double height) {
+		shape = new Ellipse2D.Double(x, y, width, height);
+		drawColor = drawing.currentDrawColor;
+		drawing.repaintMe();
+	}
 
-    public void drawRectangle(final double x,final double y,final double width,final double height) {
-    	shape=new Rectangle2D.Double(x,y,width,height);
-    	drawColor=drawing.currentDrawColor;
-    	drawing.repaintMe();
-    }
+	public void drawRectangle(final double x, final double y, final double width, final double height) {
+		shape = new Rectangle2D.Double(x, y, width, height);
+		drawColor = drawing.currentDrawColor;
+		drawing.repaintMe();
+	}
 
-    public void drawRoundRectangle(final double x,final double y,final double width,final double height, final double arcw, final double arch) {
-    	shape=new RoundRectangle2D.Double(x,y,width,height,arcw,arch);
-    	drawColor=drawing.currentDrawColor;
-    	drawing.repaintMe();
-    }
+	public void drawRoundRectangle(final double x, final double y, final double width, final double height,
+			final double arcw, final double arch) {
+		shape = new RoundRectangle2D.Double(x, y, width, height, arcw, arch);
+		drawColor = drawing.currentDrawColor;
+		drawing.repaintMe();
+	}
 
-    public void fillEllipse(final double x,final double y,final double width,final double height) {
-    	shape=new Ellipse2D.Double(x,y,width,height);
-    	//_RT.println("ShapeElement.fillEllipse: "+shape);
-    	fillColor=drawing.currentFillColor;
-    	drawing.repaintMe();
-    }
+	public void fillEllipse(final double x, final double y, final double width, final double height) {
+		shape = new Ellipse2D.Double(x, y, width, height);
+		// _RT.println("ShapeElement.fillEllipse: "+shape);
+		fillColor = drawing.currentFillColor;
+		drawing.repaintMe();
+	}
 
-    public void fillRectangle(final double x,final double y,final double width,final double height) {
-    	shape=new Rectangle2D.Double(x,y,width,height);
-    	fillColor=drawing.currentFillColor;
-    	drawing.repaintMe();
-    }
+	public void fillRectangle(final double x, final double y, final double width, final double height) {
+		shape = new Rectangle2D.Double(x, y, width, height);
+		fillColor = drawing.currentFillColor;
+		drawing.repaintMe();
+	}
 
-    public void fillRoundRectangle(final double x,final double y,final double width,final double height, final double arcw, final double arch) {
-    	shape=new RoundRectangle2D.Double(x,y,width,height,arcw,arch);
-    	fillColor=drawing.currentFillColor;
-    	drawing.repaintMe();
-    }
+	public void fillRoundRectangle(final double x, final double y, final double width, final double height,
+			final double arcw, final double arch) {
+		shape = new RoundRectangle2D.Double(x, y, width, height, arcw, arch);
+		fillColor = drawing.currentFillColor;
+		drawing.repaintMe();
+	}
 
-    public void setColor(final int rgb) {
-    	if(fillColor!=null) { fillColor=new Color(rgb); }
-    	if(drawColor!=null) { drawColor=new Color(rgb); }
-    	drawing.repaintMe();
-    }
+	public void setColor(final int rgb) {
+		if (fillColor != null) {
+			fillColor = new Color(rgb);
+		}
+		if (drawColor != null) {
+			drawColor = new Color(rgb);
+		}
+		drawing.repaintMe();
+	}
 
-    public void setStroke(final float size) { stroke=new BasicStroke(size); }
-    
-    public void instantMoveTo(final double x,final double y) {
-    	if(shape instanceof RectangularShape rect) {
-    		rect.setFrame(x,y,rect.getWidth(),rect.getHeight());
-    	}
-      drawing.repaintMe();
-    }
-    
-    // speed = pixels per milli-second ???
-    public void moveTo(final double x,final double y,final double speed) {
-    	if(shape==null) return;
-    	Rectangle2D bnd=shape.getBounds2D();
-    	double x1=bnd.getX();
-    	double y1=bnd.getY();
-    	double dx=(x-x1)/500;
-    	double dy=(y-y1)/500;
-    	int wait=(int)speed/100;
-    	if(wait<1) wait=1;
-    	if(wait>50) wait=50;
-    	for(int i=0;i<500;i++)
-    	{ x1=x1+dx; y1=y1+dy;
-    	instantMoveTo(x1,y1);
-    	try {Thread.sleep(wait);}catch(Exception e) {}
-    	}
-    	instantMoveTo(x,y);
-    }
+	public void setStroke(final float size) {
+		stroke = new BasicStroke(size);
+	}
 
-    public void paint(final Graphics2D g) {
-    	g.setStroke(stroke);
-    	if(fillColor!=null)	{ g.setColor(fillColor); g.fill(shape); }
-    	if(drawColor!=null)	{ g.setColor(drawColor); g.draw(shape); }
-    }
+	public void instantMoveTo(final double x, final double y) {
+		if (shape instanceof RectangularShape rect) {
+			rect.setFrame(x, y, rect.getWidth(), rect.getHeight());
+		}
+		drawing.repaintMe();
+	}
+
+	// speed = pixels per milli-second ???
+	public void moveTo(final double x, final double y, final double speed) {
+		if (shape == null)
+			return;
+		Rectangle2D bnd = shape.getBounds2D();
+		double x1 = bnd.getX();
+		double y1 = bnd.getY();
+		double dx = (x - x1) / 500;
+		double dy = (y - y1) / 500;
+		int wait = (int) speed / 100;
+		if (wait < 1)
+			wait = 1;
+		if (wait > 50)
+			wait = 50;
+		for (int i = 0; i < 500; i++) {
+			x1 = x1 + dx;
+			y1 = y1 + dy;
+			instantMoveTo(x1, y1);
+			try {
+				Thread.sleep(wait);
+			} catch (Exception e) {
+			}
+		}
+		instantMoveTo(x, y);
+	}
+
+	@Override
+	public void paint(final Graphics2D g) {
+		g.setStroke(stroke);
+		if (fillColor != null) {
+			g.setColor(fillColor);
+			g.fill(shape);
+		}
+		if (drawColor != null) {
+			g.setColor(drawColor);
+			g.draw(shape);
+		}
+	}
 
 }

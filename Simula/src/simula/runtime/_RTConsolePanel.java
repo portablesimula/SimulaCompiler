@@ -33,93 +33,117 @@ import java.io.Writer;
 
 public final class _RTConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-    private static JTextPane textPane;
+	private static JTextPane textPane;
 
-    private StyledDocument doc;
-    private Style styleRegular;
-    private Style styleWarning;
-    private Style styleError;
-    private JPopupMenu popupMenu;
-    private JMenuItem clearItem;
+	private StyledDocument doc;
+	private Style styleRegular;
+	private Style styleWarning;
+	private Style styleError;
+	private JPopupMenu popupMenu;
+	private JMenuItem clearItem;
 	private JMenuItem copyItem;
 	private boolean reading; // Used by KeyListener and read()
-	private char keyin;      // Used by KeyListener and read()
+	private char keyin; // Used by KeyListener and read()
 
 	private Reader consoleReader;
-	
+
 	public char read() {
 		textPane.requestFocus();
-		reading=true; // Enables KeyListener (see below)
-		while(reading) Thread.yield();
-		return(keyin);
+		reading = true; // Enables KeyListener (see below)
+		while (reading)
+			Thread.yield();
+		return (keyin);
 	}
 
 	public Reader getReader() {
 		if (consoleReader == null) {
 			consoleReader = new Reader() {
-				public int read(final char[] cbuf,final int off,final int len) throws IOException {
-					//reading=true;
-					int firstPos=textPane.getCaretPosition();
-					textPane.setEditable(true);
-					//textPane.getCaret().setVisible(true);
-					
-					//while(reading) Thread.yield();
-					while(_RTConsolePanel.this.read() != '\n');
-					
-					//textPane.getCaret().setVisible(false);
-					textPane.setEditable(false);
-					String input=textPane.getText().substring(firstPos);
-					int pos=0;
-					for(char c:input.toCharArray()) cbuf[off+(pos++)]=c;
-					return(pos);
-				}
 				@Override
-				public void close() throws IOException {}
+				public int read(final char[] cbuf, final int off, final int len) throws IOException {
+					// reading=true;
+					int firstPos = textPane.getCaretPosition();
+					textPane.setEditable(true);
+					// textPane.getCaret().setVisible(true);
+
+					// while(reading) Thread.yield();
+					while (_RTConsolePanel.this.read() != '\n')
+						;
+
+					// textPane.getCaret().setVisible(false);
+					textPane.setEditable(false);
+					String input = textPane.getText().substring(firstPos);
+					int pos = 0;
+					for (char c : input.toCharArray())
+						cbuf[off + (pos++)] = c;
+					return (pos);
+				}
+
+				@Override
+				public void close() throws IOException {
+				}
 			};
 		}
 		return (consoleReader);
 	}
-	
+
 	public OutputStream getOutputStream() {
-		return(new OutputStream() {
+		return (new OutputStream() {
 			@Override
 			public void write(int b) throws IOException {
-				String s=""+(char)b;
-				_RTConsolePanel.this.write(s,styleRegular);
-			}});
+				String s = "" + (char) b;
+				_RTConsolePanel.this.write(s, styleRegular);
+			}
+		});
 	}
 
 	public Writer getWriter() {
-		return(new Writer() {
+		return (new Writer() {
+			@Override
 			public void write(String s) {
-				_RTConsolePanel.this.write(s);		
+				_RTConsolePanel.this.write(s);
 			}
+
 			public void write(char[] cbuf, int off, int len) throws IOException {
-				_RTConsolePanel.this.write(new String(cbuf,off,len));
+				_RTConsolePanel.this.write(new String(cbuf, off, len));
 			}
-			public void flush() throws IOException {}
-			public void close() throws IOException {}
+
+			@Override
+			public void flush() throws IOException {
+			}
+
+			@Override
+			public void close() throws IOException {
+			}
 		});
 	}
 
 	public OutputStream getErrorStream() {
-		return(new OutputStream() {
+		return (new OutputStream() {
 			@Override
 			public void write(int b) throws IOException {
-				String s=""+(char)b;
-				_RTConsolePanel.this.write(s,styleError);
-			}});
+				String s = "" + (char) b;
+				_RTConsolePanel.this.write(s, styleError);
+			}
+		});
 	}
-	
-	public void write(final String s) { write(s,styleRegular); }
-	public void writeError(final String s) { write(s,styleError); }
-	public void writeWarning(final String s) { write(s,styleWarning);	}
 
-	private void write(final String s,final Style style) {
+	public void write(final String s) {
+		write(s, styleRegular);
+	}
+
+	public void writeError(final String s) {
+		write(s, styleError);
+	}
+
+	public void writeWarning(final String s) {
+		write(s, styleWarning);
+	}
+
+	private void write(final String s, final Style style) {
 		try {
 			doc.insertString(doc.getLength(), s, style);
 		} catch (BadLocationException e) {
-			INTERNAL_ERROR("Impossible",e);
+			INTERNAL_ERROR("Impossible", e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 	}
@@ -128,117 +152,135 @@ public final class _RTConsolePanel extends JPanel {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
-			INTERNAL_ERROR("Impossible",e);
+			INTERNAL_ERROR("Impossible", e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 		textPane.update(textPane.getGraphics());
 	}
-	
-	public static void INTERNAL_ERROR(final String msg,final Throwable e) {
-		System.out.println("INTERNAL_ERROR: " + msg +"  "+ e);
+
+	public static void INTERNAL_ERROR(final String msg, final Throwable e) {
+		System.out.println("INTERNAL_ERROR: " + msg + "  " + e);
 		e.printStackTrace();
 	}
 
 	public _RTConsolePanel() {
-    	super(new BorderLayout());
-    	JScrollPane scrollPane;
-    	textPane = new JTextPane();
-        textPane.addMouseListener(mouseListener);
-    	scrollPane = new JScrollPane(textPane);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    	doc=new DefaultStyledDocument();
-    	addStylesToDocument(doc);
-    	doc.putProperty(DefaultEditorKit.EndOfLineStringProperty,"\n");
-    	textPane.setStyledDocument(doc);
-    	textPane.addKeyListener(listener);
+		super(new BorderLayout());
+		JScrollPane scrollPane;
+		textPane = new JTextPane();
+		textPane.addMouseListener(mouseListener);
+		scrollPane = new JScrollPane(textPane);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		doc = new DefaultStyledDocument();
+		addStylesToDocument(doc);
+		doc.putProperty(DefaultEditorKit.EndOfLineStringProperty, "\n");
+		textPane.setStyledDocument(doc);
+		textPane.addKeyListener(listener);
 		textPane.setEditable(false);
-        popupMenu=new JPopupMenu();
-        clearItem = new JMenuItem("Clear Console");
-        //clearItem.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-        popupMenu.add(clearItem); clearItem.addActionListener(actionListener);
-        copyItem = new JMenuItem("Copy to Clipboard");
+		popupMenu = new JPopupMenu();
+		clearItem = new JMenuItem("Clear Console");
+		// clearItem.setAccelerator(KeyStroke.getKeyStroke('X',
+		// InputEvent.CTRL_DOWN_MASK));
+		popupMenu.add(clearItem);
+		clearItem.addActionListener(actionListener);
+		copyItem = new JMenuItem("Copy to Clipboard");
 		copyItem.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-        popupMenu.add(copyItem); copyItem.addActionListener(actionListener);
-        this.add(scrollPane);
-    }
-	
+		popupMenu.add(copyItem);
+		copyItem.addActionListener(actionListener);
+		this.add(scrollPane);
+	}
+
 	public void popup(String title) {
-    	JFrame frame=new JFrame();
-        frame.setSize(950, 500); // Initial frame size
-        frame.setTitle(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+		JFrame frame = new JFrame();
+		frame.setSize(950, 500); // Initial frame size
+		frame.setTitle(title);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
 
-        frame.getContentPane().add(this);
-        frame.setVisible(true);
-        _RT.someConsolePresent=true;
-    }
+		frame.getContentPane().add(this);
+		frame.setVisible(true);
+		_RT.someConsolePresent = true;
+	}
 
-    
-    private void addStylesToDocument(final StyledDocument doc) {
-        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
-        
-        Style regular = doc.addStyle("regular", defaultStyle);
-        StyleConstants.setFontFamily(defaultStyle, "Courier New");
- 
-        Style s = doc.addStyle("warning", regular);
-        StyleConstants.setItalic(s, true);
-        StyleConstants.setForeground(s,new Color(255,153,0));
+	private void addStylesToDocument(final StyledDocument doc) {
+		Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 
-        s = doc.addStyle("error", regular);
-        StyleConstants.setBold(s, true);
-        StyleConstants.setForeground(s,Color.RED);
-        
-        styleRegular=doc.getStyle("regular");
-        styleWarning=doc.getStyle("warning");
-        styleError=doc.getStyle("error");
-    }
-    
+		Style regular = doc.addStyle("regular", defaultStyle);
+		StyleConstants.setFontFamily(defaultStyle, "Courier New");
+
+		Style s = doc.addStyle("warning", regular);
+		StyleConstants.setItalic(s, true);
+		StyleConstants.setForeground(s, new Color(255, 153, 0));
+
+		s = doc.addStyle("error", regular);
+		StyleConstants.setBold(s, true);
+		StyleConstants.setForeground(s, Color.RED);
+
+		styleRegular = doc.getStyle("regular");
+		styleWarning = doc.getStyle("warning");
+		styleError = doc.getStyle("error");
+	}
 
 	// ****************************************************************
 	// *** MouseListener
 	// ****************************************************************
-    MouseListener mouseListener = new MouseListener() {
-		public void mousePressed(MouseEvent e) {}
-		public void mouseReleased(MouseEvent e) {}
-		public void mouseEntered(MouseEvent e) {}
-		public void mouseExited(MouseEvent e) {}
-		public void mouseClicked(MouseEvent e) {
-    	    if(e.getButton()==3) popupMenu.show(textPane,e.getX(),e.getY());
-    	}
-    };
+	MouseListener mouseListener = new MouseListener() {
+		public void mousePressed(MouseEvent e) {
+		}
 
-    
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		public void mouseExited(MouseEvent e) {
+		}
+
+		public void mouseClicked(MouseEvent e) {
+			if (e.getButton() == 3)
+				popupMenu.show(textPane, e.getX(), e.getY());
+		}
+	};
+
 	// ****************************************************************
 	// *** ActionListener
 	// ****************************************************************
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			Object item=e.getSource();
-			if(item==clearItem) clear();
-			else if(item==copyItem) {
-				String text=textPane.getSelectedText();
-				if(text==null) text=textPane.getText();
+			Object item = e.getSource();
+			if (item == clearItem)
+				clear();
+			else if (item == copyItem) {
+				String text = textPane.getSelectedText();
+				if (text == null)
+					text = textPane.getText();
 				StringSelection stringSelection = new StringSelection(text);
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(stringSelection, null);
 			}
 		}
 	};
-    
+
 	// ****************************************************************
 	// *** KeyListener
 	// ****************************************************************
-    private KeyListener listener = new KeyListener() {
-    	public void keyPressed(KeyEvent event) {}
-    	public void keyReleased(KeyEvent event) {}
-        public void keyTyped(KeyEvent event) {
-    	    if(reading) {
-    	    	keyin=event.getKeyChar();
-       	    	reading=false;
-    	    }
-    	}
-    };
+	private KeyListener listener = new KeyListener() {
+		@Override
+		public void keyPressed(KeyEvent event) {
+		}
+
+		@Override
+		public void keyReleased(KeyEvent event) {
+		}
+
+		@Override
+		public void keyTyped(KeyEvent event) {
+			if (reading) {
+				keyin = event.getKeyChar();
+				reading = false;
+			}
+		}
+	};
 
 }
