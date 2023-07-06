@@ -49,90 +49,119 @@ import java.awt.Stroke;
  */
 public class _TextElement extends _Link implements _Drawing.Animable {
 	final _Drawing animation;
-    double x,y;
-    String str;
-    Color color;
-    Font font;
-    Stroke stroke;
-    
+	double x, y;
+	String str;
+	Color color;
+	Font font;
+	Stroke stroke;
+
 	// Constructors
 
-	public _TextElement(final _RTObject staticLink,final _TXT txt,final double x,final double y) {
-		this(staticLink,txt.edText(),x,y);
+	public _TextElement(final _RTObject staticLink, final _TXT txt, final double x, final double y) {
+		this(staticLink, txt.edText(), x, y);
 	}
-    
-	public _TextElement(final _RTObject staticLink,final String str,final double x,final double y) {
+
+	public _TextElement(final _RTObject staticLink, final String str, final double x, final double y) {
 		super(staticLink);
-		//TRACE_BEGIN_DCL("_TextElement");
-		animation=(_Drawing)staticLink;
-		_TextElement.this.str=str; _TextElement.this.x=x; _TextElement.this.y=y;
-		_TextElement.this.color=((_Drawing)(staticLink)).currentDrawColor;
-		_TextElement.this.stroke=((_Drawing)(staticLink)).currentStroke;
-		_TextElement.this.font=((_Drawing)(staticLink)).currentFont;
-	    into(((_Drawing)(staticLink)).RENDERING_SET);
-	    animation.repaintMe();
+		// TRACE_BEGIN_DCL("_TextElement");
+		animation = (_Drawing) staticLink;
+		_TextElement.this.str = str;
+		_TextElement.this.x = x;
+		_TextElement.this.y = y;
+		_TextElement.this.color = ((_Drawing) (staticLink)).currentDrawColor;
+		_TextElement.this.stroke = ((_Drawing) (staticLink)).currentStroke;
+		_TextElement.this.font = ((_Drawing) (staticLink)).currentFont;
+		into(((_Drawing) (staticLink)).RENDERING_SET);
+		animation.repaintMe();
 	}
-	
+
+	@Override
 	public _TextElement _STM() {
-		//TRACE_BEGIN_STM("_TextElement");
+		// TRACE_BEGIN_STM("_TextElement");
 //		_TextElement.this.str=str; _TextElement.this.x=x; _TextElement.this.y=y;
 //		_TextElement.this.color=((_Drawing)(staticLink)).currentDrawColor;
 //		_TextElement.this.stroke=((_Drawing)(staticLink)).currentStroke;
 //		_TextElement.this.font=((_Drawing)(staticLink)).currentFont;
 //	    into(((_Drawing)(staticLink)).RENDERING_SET);
-//	      animation.repaintMe();
+//	    animation.repaintMe();
 		// INNER
-		//TRACE_END_STM("_TextElement");
+		// TRACE_END_STM("_TextElement");
 		EBLK();
-		return(this);
+		return (this);
 	}
-	
-    public void setFontStylePlain() { font=font.deriveFont(Font.PLAIN); }
-    public void setFontStyleBold() { font=font.deriveFont(Font.BOLD); }
-    public void setFontStyleItalic() { font=font.deriveFont(Font.ITALIC); }
-    public void setFontStyleBoldItalic() { font=font.deriveFont(Font.BOLD|Font.ITALIC); }
-    public void setStroke(final float size) { stroke=new BasicStroke(size); }
-    public float getFontSize() { return(font.getSize2D()); }
-    public void setFontSize(final float size) { font=font.deriveFont(size); }
 
-    public void setColor(final int rgb)
-    { color=new Color(rgb);
-      animation.repaintMe();
-    }
+	public void setFontStylePlain() {
+		font = font.deriveFont(Font.PLAIN);
+	}
 
-    public void setText(_TXT t)
-    { str=t.edText();
-      animation.repaintMe();
-    }
-    
-    public void instantMoveTo(final double x,final double y)
-    { this.x=x; this.y=y;
-      animation.repaintMe();
-    }
-    
-    // speed = pixels per milli-second ???
-    public void moveTo(final double x2,final double y2,final double speed)
-    { double x1=x;
-      double y1=y;
-      double dx=(x2-x1)/500;
-      double dy=(y2-y1)/500;
-      int wait=(int)speed/100;
-      if(wait<1) wait=1;
-      if(wait>50) wait=50;
-      for(int i=0;i<500;i++)
-      { x1=x1+dx; y1=y1+dy;
-        instantMoveTo(x1,y1);
-        try {Thread.sleep(wait);}catch(Exception e) {}
-      }
-      instantMoveTo(x,y);
-    }
+	public void setFontStyleBold() {
+		font = font.deriveFont(Font.BOLD);
+	}
 
-    public void paint(final Graphics2D g)
-    { g.setStroke(stroke);
-      g.setColor(color);
-      g.setFont(font);
-      //System.out.println("TextElement.paint: "+str+", color="+color+", font="+font);
-      g.drawString(str,(float)x,(float)y);
-    }
+	public void setFontStyleItalic() {
+		font = font.deriveFont(Font.ITALIC);
+	}
+
+	public void setFontStyleBoldItalic() {
+		font = font.deriveFont(Font.BOLD | Font.ITALIC);
+	}
+
+	public void setStroke(final float size) {
+		stroke = new BasicStroke(size);
+	}
+
+	public float getFontSize() {
+		return (font.getSize2D());
+	}
+
+	public void setFontSize(final float size) {
+		font = font.deriveFont(size);
+	}
+
+	public void setColor(final int rgb) {
+		color = new Color(rgb);
+		animation.repaintMe();
+	}
+
+	public void setText(_TXT t) {
+		str = t.edText();
+		animation.repaintMe();
+	}
+
+	public void instantMoveTo(final double x, final double y) {
+		this.x = x;
+		this.y = y;
+		animation.repaintMe();
+	}
+
+	// speed = pixels per milli-second ???
+	public void moveTo(final double x2, final double y2, final double speed) {
+		double x1 = x;
+		double y1 = y;
+		double dx = (x2 - x1) / 500;
+		double dy = (y2 - y1) / 500;
+		int wait = (int) speed / 100;
+		if (wait < 1)
+			wait = 1;
+		if (wait > 50)
+			wait = 50;
+		for (int i = 0; i < 500; i++) {
+			x1 = x1 + dx;
+			y1 = y1 + dy;
+			instantMoveTo(x1, y1);
+			try {
+				Thread.sleep(wait);
+			} catch (Exception e) {
+			}
+		}
+		instantMoveTo(x, y);
+	}
+
+	public void paint(final Graphics2D g) {
+		g.setStroke(stroke);
+		g.setColor(color);
+		g.setFont(font);
+		g.drawString(str, (float) x, (float) y);
+	}
 
 }

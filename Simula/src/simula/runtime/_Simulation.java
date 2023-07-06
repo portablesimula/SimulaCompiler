@@ -87,14 +87,18 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  */
 public class _Simulation extends _Simset {
-    public boolean isDetachUsed() { return(true); }
+	@Override
+	public boolean isDetachUsed() {
+		return (true);
+	}
+
 	public final _Ranking sqs;
 	public final _MAIN_PROGRAM main_1;
-	
+
 	// Constructor
 	public _Simulation(_RTObject staticLink) {
 		super(staticLink);
-		sqs=new _Ranking();//("MAIN");
+		sqs = new _Ranking();// ("MAIN");
 		sqs.bl = sqs;
 		sqs.ll = sqs;
 		sqs.rl = sqs;
@@ -104,59 +108,58 @@ public class _Simulation extends _Simset {
 		_Ranking.RANK_INTO(main_1.EVENT, sqs, 0);
 	}
 
+	@Override
 	public _Simulation _STM() {
 //		OLD_SQS = (Head_) new Head_(Simulation_.this)._STM();
 //		main = (MAIN_PROGRAM_) new MAIN_PROGRAM_((Simulation_) _CUR)._START();
 //		main.EVENT = (EVENT_NOTICE_) new EVENT_NOTICE_((Simulation_) _CUR, 0, main)._STM();
 //		main.EVENT.into(OLD_SQS);
-        EBLK();
-		return(this);
+		EBLK();
+		return (this);
 	}
-	
-	public _EVENT_NOTICE SQS_FIRST() { return((_EVENT_NOTICE)this.sqs.bl); }
-	public _EVENT_NOTICE SQS_LAST() { return((_EVENT_NOTICE)this.sqs.ll); }
 
+	public _EVENT_NOTICE SQS_FIRST() {
+		return ((_EVENT_NOTICE) this.sqs.bl);
+	}
+
+	public _EVENT_NOTICE SQS_LAST() {
+		return ((_EVENT_NOTICE) this.sqs.ll);
+	}
 
 	public double time() {
-		return (SQS_FIRST().EVTIME());			
+		return (SQS_FIRST().EVTIME());
 	}
 
 	/*
-	 * <pre>
-	 * ref (process) procedure current; current :- FIRSTEV.PROC;
-	 * </pre>
+	 * <pre> ref (process) procedure current; current :- FIRSTEV.PROC; </pre>
 	 */
 	public _Process current() {
-		return (SQS_FIRST().PROC);			
+		return (SQS_FIRST().PROC);
 	}
 
 	public void hold(double time) {
 		SIM_TRACE("Hold " + time);
-		_Process x=current();
-		if(time>0) {
-			time=x.evtime()+time;
+		_Process x = current();
+		if (time > 0) {
+			time = x.evtime() + time;
 			x.EVENT.SET_EVTIME(time);
-		} else time=x.evtime();
-		
-	    _Ranking suc=_Ranking.RANK_SUC(x.EVENT);
-	    if(suc !=null) {
-	    	if(suc.rnk <= time) {
-	    		_Ranking.RANK_INTO(x.EVENT,sqs,time);
-	            // simblk.cur:=suc;
-	    		resume(current());
-	    	}
-	    }
+		} else
+			time = x.evtime();
+
+		_Ranking suc = _Ranking.RANK_SUC(x.EVENT);
+		if (suc != null) {
+			if (suc.rnk <= time) {
+				_Ranking.RANK_INTO(x.EVENT, sqs, time);
+				// simblk.cur:=suc;
+				resume(current());
+			}
+		}
 	}
 
-
 	/*
-	 * <pre>
-	 * procedure passivate;
-     * begin
-     *    inspect current do begin  EVENT.out; EVENT :- none  end;
-     *    if SQS.empty then error("...") else resume(current)
-     * end passivate;
-     * </pre>
+	 * <pre> procedure passivate; begin inspect current do begin EVENT.out; EVENT :-
+	 * none end; if SQS.empty then error("...") else resume(current) end passivate;
+	 * </pre>
 	 */
 	public void passivate() {
 		_Process nxtcur = passivate1();
@@ -164,21 +167,19 @@ public class _Simulation extends _Simset {
 		resume(nxtcur);
 		SIM_TRACE("END Passivate AFTER Resume[" + nxtcur.edObjectIdent() + ']');
 	}
-	
+
 	_Process passivate1() { // Used directly by Process_.TERMINATE
 		_Process cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());
-		// _RT.println("Passivate: "+cur.edObjectIdent()+", SQS="+this.SQS);
 		if (cur != null) {
 			_Ranking.RANK_OUT(cur.EVENT);
 			cur.EVENT = null;
 		}
-		if(_Ranking.RANK_EMPTY(sqs))
+		if (_Ranking.RANK_EMPTY(sqs))
 			throw new _SimulaRuntimeError("Cancel,Passivate or Wait empties SQS");
 
 		_Process nxtcur = current();
-		// _RT.println("END Passivate: next current="+nxtcur.edObjectIdent()+", SQS="+this.SQS);
-		return(nxtcur);
+		return (nxtcur);
 	}
 
 	public void wait(final _Head S) {
@@ -189,7 +190,8 @@ public class _Simulation extends _Simset {
 
 	public void cancel(final _Process x) {
 		SIM_TRACE("Cancel " + x);
-		if (x == current())	passivate();
+		if (x == current())
+			passivate();
 		else if (x != null && x.EVENT != null) {
 			_Ranking.RANK_OUT(x.EVENT);
 			x.EVENT = null;
@@ -215,13 +217,13 @@ public class _Simulation extends _Simset {
 	 * @param c
 	 * @param d
 	 */
-	public void accum(final _NAME<Double> a,final _NAME<Double> b,final _NAME<Double> c,final double d) {
+	public void accum(final _NAME<Double> a, final _NAME<Double> b, final _NAME<Double> c, final double d) {
 		a.put(a.get() + (c.get() * (time() - b.get())));
 		b.put(time());
 		c.put(c.get() + d);
 	}
 
-	public void ActivateDirect(final boolean REAC,final _Process X) {
+	public void ActivateDirect(final boolean REAC, final _Process X) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE_ == OperationalState.terminated)
@@ -232,32 +234,34 @@ public class _Simulation extends _Simset {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent());
 			_Process z;
 			_EVENT_NOTICE EV = null;
-			if (REAC) EV = X.EVENT;
-			else if (X.EVENT != null) return;
+			if (REAC)
+				EV = X.EVENT;
+			else if (X.EVENT != null)
+				return;
 			z = current();
 			X.EVENT = new _EVENT_NOTICE(time(), X);
-			//X.EVENT.precede(FIRSTEV());
-			_Ranking.RANK_INTO(X.EVENT,sqs,X.EVENT.rnk);
+			// X.EVENT.precede(FIRSTEV());
+			_Ranking.RANK_INTO(X.EVENT, sqs, X.EVENT.rnk);
 			removePrevEvent(EV);
 			if (z != current())
 				resume(current());
 		}
 	}
-	
+
 	private void removePrevEvent(_EVENT_NOTICE EV) {
 		if (EV != null) {
-			//EV.out();
+			// EV.out();
 			_Ranking.RANK_OUT(EV);
-			if(_Ranking.RANK_EMPTY(sqs))
+			if (_Ranking.RANK_EMPTY(sqs))
 				throw new _SimulaRuntimeError("(Re)Activate empties SQS.");
 		}
 	}
 
-	public void ActivateDelay(final boolean REAC,final _Process X,final double T,final boolean PRIO) {
+	public void ActivateDelay(final boolean REAC, final _Process X, final double T, final boolean PRIO) {
 		ActivateAt(REAC, X, time() + T, PRIO);
 	}
 
-	public void ActivateAt(final boolean REAC,final _Process X,double T,final boolean PRIO) {
+	public void ActivateAt(final boolean REAC, final _Process X, double T, final boolean PRIO) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
 		else if (X.STATE_ == OperationalState.terminated)
@@ -268,27 +272,33 @@ public class _Simulation extends _Simset {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent() + " at " + T + ((PRIO) ? "prior" : ""));
 			_Process z;
 			_EVENT_NOTICE EV = null;
-			if (REAC) EV = X.EVENT;
-			else if (X.EVENT != null) return;
+			if (REAC)
+				EV = X.EVENT;
+			else if (X.EVENT != null)
+				return;
 			z = current();
-			if (T < time())	T = time();
+			if (T < time())
+				T = time();
 			X.EVENT = new _EVENT_NOTICE(T, X);
-			if(PRIO) _Ranking.RANK_PRIOR(X.EVENT,sqs, T);
-			else _Ranking.RANK_INTO(X.EVENT,sqs,T);
+			if (PRIO)
+				_Ranking.RANK_PRIOR(X.EVENT, sqs, T);
+			else
+				_Ranking.RANK_INTO(X.EVENT, sqs, T);
 			removePrevEvent(EV);
-			if (z != current())	resume(current());
+			if (z != current())
+				resume(current());
 		}
 	}
 
-	public void ActivateBefore(final boolean REAC,final _Process X,final _Process Y) {
+	public void ActivateBefore(final boolean REAC, final _Process X, final _Process Y) {
 		ACTIVATE3(REAC, X, true, Y);
 	}
 
-	public void ActivateAfter(final boolean REAC,final _Process X,final _Process Y) {
+	public void ActivateAfter(final boolean REAC, final _Process X, final _Process Y) {
 		ACTIVATE3(REAC, X, false, Y);
 	}
 
-	private void ACTIVATE3(final boolean REAC,final _Process X,final boolean BEFORE,final _Process Y) {
+	private void ACTIVATE3(final boolean REAC, final _Process X, final boolean BEFORE, final _Process Y) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, " none");
 		else if (X.STATE_ == OperationalState.terminated)
@@ -301,22 +311,30 @@ public class _Simulation extends _Simset {
 			TRACE_ACTIVATE(REAC, X.edObjectIdent() + ((BEFORE) ? " BEFORE " : " AFTER ") + Y.edObjectIdent());
 			_Process z;
 			_EVENT_NOTICE EV = null;
-			if (REAC) EV = X.EVENT;
-			else if (X.EVENT != null) return;
+			if (REAC)
+				EV = X.EVENT;
+			else if (X.EVENT != null)
+				return;
 			z = current();
-			if (Y == null || Y.EVENT == null) X.EVENT = null;
+			if (Y == null || Y.EVENT == null)
+				X.EVENT = null;
 			else {
-				if (X == Y)	return; // reactivate X before/after X;
-				double EVTIME=Y.EVENT.EVTIME();
+				if (X == Y)
+					return; // reactivate X before/after X;
+				double EVTIME = Y.EVENT.EVTIME();
 				X.EVENT = new _EVENT_NOTICE(EVTIME, X);
-				if(BEFORE) _Ranking.RANK_FOLLOW(X.EVENT,Y.EVENT); else _Ranking.RANK_PRECEDE(X.EVENT,Y.EVENT);
+				if (BEFORE)
+					_Ranking.RANK_FOLLOW(X.EVENT, Y.EVENT);
+				else
+					_Ranking.RANK_PRECEDE(X.EVENT, Y.EVENT);
 			}
 			removePrevEvent(EV);
-			if (z != current())
-			{ _Process nxtcur=current();
-			    SIM_TRACE("END ACTIVATE3 Resume["+nxtcur.edObjectIdent()+']');
+			if (z != current()) {
+				_Process nxtcur = current();
+				SIM_TRACE("END ACTIVATE3 Resume[" + nxtcur.edObjectIdent() + ']');
 				resume(nxtcur);
-			} else SIM_TRACE("END ACTIVATE3 Continue["+z.edObjectIdent()+']');
+			} else
+				SIM_TRACE("END ACTIVATE3 Continue[" + z.edObjectIdent() + ']');
 
 		}
 	}
@@ -325,7 +343,7 @@ public class _Simulation extends _Simset {
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
 
-	private void TRACE_ACTIVATE(final boolean REAC,final String msg) {
+	private void TRACE_ACTIVATE(final boolean REAC, final String msg) {
 		String act = (REAC) ? "REACTIVATE " : "ACTIVATE ";
 		SIM_TRACE(act + msg);
 	}
@@ -333,10 +351,11 @@ public class _Simulation extends _Simset {
 	public void SIM_TRACE(final String msg) {
 		if (_RT.Option.SML_TRACING) {
 			Thread thread = Thread.currentThread();
-			_RT.println(thread.toString() + ": Time=" + time() + "  " + msg +", SQS="+ sqs);
+			_RT.println(thread.toString() + ": Time=" + time() + "  " + msg + ", SQS=" + sqs);
 		}
 	}
 
+	@Override
 	public String toString() {
 		return ("Simulation_ SQS=" + sqs);
 	}

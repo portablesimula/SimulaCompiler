@@ -40,14 +40,15 @@ package simula.runtime;
 public class _Simset extends _CLASS {
 
 	// Constructor
-    public _Simset(final _RTObject staticLink) {
-    	super(staticLink);
-    	BBLK();
-    }
-    
-    public _Simset _STM() {
-        EBLK();
-        return(this);
-    }
+	public _Simset(final _RTObject staticLink) {
+		super(staticLink);
+		BBLK();
+	}
+
+	@Override
+	public _Simset _STM() {
+		EBLK();
+		return (this);
+	}
 
 }

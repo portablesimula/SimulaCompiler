@@ -60,11 +60,12 @@ package simula.runtime;
  *
  */
 public final class _TEXTOBJ extends _RTObject {
-	final int SIZE;      // Number of characters in the text object.
+	final int SIZE; // Number of characters in the text object.
 	final boolean CONST; // True: Indicates a text constant
-	final char[] MAIN;   // The characters
+	final char[] MAIN; // The characters
 	// Constructor
-	_TEXTOBJ(final int param_SIZE,final boolean param_CONST) {
+
+	_TEXTOBJ(final int param_SIZE, final boolean param_CONST) {
 		super(null);
 		// Parameter assignment to locals
 		SIZE = param_SIZE;
@@ -90,14 +91,16 @@ public final class _TEXTOBJ extends _RTObject {
 	}
 
 	// Utility
-	String edText(final int start,final int length) {
+	String edText(final int start, final int length) {
 		StringBuilder s = new StringBuilder();
-		for (int i = start; i < (start+length); i++) s.append(MAIN[i]);
+		for (int i = start; i < (start + length); i++)
+			s.append(MAIN[i]);
 		return (s.toString());
 	}
 
+	@Override
 	public String toString() {
-		return ("TEXTOBJ: SIZE=" + SIZE + ", CONST=" + CONST + ", MAIN=\"" + edText(0, SIZE)+"\"");
+		return ("TEXTOBJ: SIZE=" + SIZE + ", CONST=" + CONST + ", MAIN=\"" + edText(0, SIZE) + "\"");
 	}
 
 }
