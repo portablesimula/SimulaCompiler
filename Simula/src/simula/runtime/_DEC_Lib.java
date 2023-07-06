@@ -198,24 +198,11 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	private static int checkNumber(_NAME<_TXT> t, NumberChecker<Number> numberChecker) {
-		if (VERBOSE)
-			System.out.println("checkNumber: t=" + t.get());
 		_TXT NT = t.get();
-		if (VERBOSE)
-			System.out.println("checkNumber: NT=" + NT.edText() + ", start=" + NT.START + ", length=" + NT.LENGTH
-					+ ", pos=" + NT.POS);
 		_TXT U = _TXT.sub(NT, NT.POS + 1, NT.LENGTH - NT.POS);
-		if (VERBOSE)
-			System.out.println(
-					"checkNumber: U=" + U.edText() + ", start=" + U.START + ", length=" + U.LENGTH + ", pos=" + U.POS);
 		if (U != null) {
 			try {
-				if (VERBOSE)
-					System.out.println("checkNumber: t=" + U.edText() + ", BEFORE,    t.pos=" + U.POS);
-				// _TXT.getreal(U);
 				numberChecker.check(U);
-				if (VERBOSE)
-					System.out.println("checkNumber: t=" + U.edText() + ", return(1), t.pos=" + U.POS);
 				NT.POS = U.POS + NT.POS;
 				t.put(NT);
 				return (1);
@@ -226,12 +213,8 @@ public class _DEC_Lib extends _CLASS {
 		int N = s.stripLeading().length();
 		if (N == 0) {
 			U.POS = U.START + U.LENGTH;
-			if (VERBOSE)
-				System.out.println("checkNumber: t=" + U.edText() + ", return(0), t.pos=" + U.POS);
 			return (0);
 		}
-		if (VERBOSE)
-			System.out.println("checkNumber: t=" + U.edText() + ", return(-1), t.pos=" + U.POS + ", N=" + N);
 		U.POS = U.LENGTH - N;
 		t.put(U);
 		return (-1);
@@ -673,12 +656,6 @@ public class _DEC_Lib extends _CLASS {
 	 *
 	 * </pre>
 	 */
-	public static int hash2(final _TXT txt, int n) {
-		int h = txt.hashCode();
-		h ^= (h >>> 20) ^ (h >>> 12) ^ (h >>> 7) ^ (h >>> 4);
-		return (h & (n - 1));
-	}
-
 	public static int hash(_TXT t, int n) {
 		String S = t.edText();
 		String s = S.stripLeading();
@@ -939,8 +916,7 @@ public class _DEC_Lib extends _CLASS {
 				T.POS = T.POS + TAIL.POS;
 				t.put(T);
 				return (res);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 		return (minint);
 	}
@@ -983,8 +959,7 @@ public class _DEC_Lib extends _CLASS {
 				T.POS = T.POS + TAIL.POS;
 				t.put(T);
 				return (res);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 		return (minint);
 	}
@@ -1027,8 +1002,7 @@ public class _DEC_Lib extends _CLASS {
 				T.POS = T.POS + TAIL.POS;
 				t.put(T);
 				return (res);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 		return minreal;
 	}
@@ -1063,34 +1037,16 @@ public class _DEC_Lib extends _CLASS {
 	public static _TXT scanto(_NAME<_TXT> t, char c) {
 		_TXT TXT = t.get();
 		String s = TXT.edText();
-
-		String head = s.substring(0, TXT.POS);
 		String tail = s.substring(TXT.POS);
-		if (VERBOSE)
-			System.out.println(
-					"scanto SPLIT: M=\"" + s + "\", POS=" + TXT.POS + ", head=\"" + head + "\", tail=\"" + tail + '"');
-		_RT.ASSERT((head + tail).equals(s), head + tail + " NE " + s);
-
 		int pos = TXT.POS + 1;
 		int index = tail.indexOf(c); // returns: the index of the first occurrence of the specified substring, or -1
-										// if there is no such occurrence.
-		if (VERBOSE)
-			System.out.println("scanto: tail=" + tail + ", start=" + TXT.START + ", length=" + TXT.LENGTH + ", index="
-					+ index + ", pos=" + pos + ", c=" + c);
 		if (index >= 0) { // Character found at index in tail
 			TXT.POS = pos + index - 1;
 			t.put(TXT);
-			if (VERBOSE)
-				System.out.println("scanto(1): tail=" + tail + ", length=" + _TXT.length(TXT) + ", index=" + index
-						+ ", pos=" + pos);
-//			return(_TXT.sub(TXT,TXT.POS+1,tail.length()-index));
 			return (_TXT.sub(TXT, pos, index));
 		} else { // No character c is found
 			TXT.POS = TXT.START + TXT.LENGTH;
 			t.put(TXT);
-			if (VERBOSE)
-				System.out.println("scanto(2): tail=" + tail + ", length=" + _TXT.length(TXT) + ", index=" + index
-						+ ", pos=" + pos);
 			return (_TXT.sub(TXT, pos, _TXT.length(TXT) - pos + 1));
 		}
 	}
@@ -1139,9 +1095,6 @@ public class _DEC_Lib extends _CLASS {
 		String s = TXT.edText();
 		int pos = TXT.POS;
 		int lp = TXT.LENGTH - TXT.START;
-		if (VERBOSE)
-			System.out.println(
-					"skip: t=" + TXT.edText() + ", start=" + TXT.START + ", length=" + TXT.LENGTH + ", pos=" + pos);
 		_TEXTOBJ obj = TXT.OBJ;
 		while (pos < lp) {
 			if (obj.MAIN[pos] != c) {
@@ -1154,8 +1107,6 @@ public class _DEC_Lib extends _CLASS {
 		}
 		TXT.POS = pos;
 		t.put(TXT);
-		if (VERBOSE)
-			System.out.println("skip: t=" + TXT.edText() + ", return=null, pos=" + pos);
 		return null;
 	}
 
@@ -1274,12 +1225,6 @@ public class _DEC_Lib extends _CLASS {
 	public static boolean upcompare(_TXT master, _TXT test) {
 		String mst = master.edText().toUpperCase().substring(_TXT.pos(master) - 1);
 		String tst = test.edText();
-		if (VERBOSE)
-			System.out.println("upcompare pos=" + _TXT.pos(master));
-		if (VERBOSE)
-			System.out.println("upcompare mst=" + mst);
-		if (VERBOSE)
-			System.out.println("upcompare tst=" + tst);
 		return (mst.startsWith(tst));
 	}
 
