@@ -20,10 +20,10 @@ package simula.runtime;
  * <p>
  * 
  * <pre>
- *             BASICIO (inlength, outlength) Note  ! prefixed block;
- *                           inspect SYSIN do
- *                           inspect SYSOUT do
- *                              begin  <external-head> <program>   end
+ *             BASICIO (inlength, outlength) begin  ! prefixed block;
+ *                   inspect SYSIN do
+ *                   inspect SYSOUT do
+ *                   begin  <external-head> <program>  end
  *             end prefixed block
  * </pre>
  * 

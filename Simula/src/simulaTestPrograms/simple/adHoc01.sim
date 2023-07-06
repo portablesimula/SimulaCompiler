@@ -1,14 +1,5 @@
-external java class StringTokenizer = "java.util.StringTokenizer";
-begin    
-	ref(StringTokenizer) tokenizer;
-	
-	text t; t:-copy("once upon a time there were three brothers ...");
-	tokenizer :- new StringTokenizer(t," ");
-	tokenizer :- new StringTokenizer("once upon a time there were three brothers ..."," ");
-	
-	while tokenizer.hasMoreTokens do begin
-%         outtext(tokenizer.nextToken); outimage;
-         t:-tokenizer.nextToken;
-         outtext(t); outimage;
-    end;
-end
+             BASICIO (inlength, outlength) begin ! prefixed block;
+                           inspect SYSIN do
+                           inspect SYSOUT do
+                              begin  !<external-head> <program>;   end
+             end prefixed block

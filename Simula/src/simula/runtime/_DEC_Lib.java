@@ -28,56 +28,69 @@ public class _DEC_Lib extends _CLASS {
 		BBLK(); // Iff no prefix
 	}
 
+	@Override
 	public _DEC_Lib _STM() {
 		EBLK();
 		return (this);
 	}
 
 	/**
+	 * <pre>
 	 * procedure abort(message); ! Stop execution. ;
 	 *
 	 * Abort will print the message on the error device and then call
 	 * terminate_program.
+	 * </pre>
 	 */
 	public static void abort(_TXT mess) {
 		_RT.println(mess.edText());
 		_RTObject.terminate_program();
 	}
 
-	/**
-	 * boolean procedure change(master,oldtext,newtext); ! Replacing Subtexts. ;
-	 *
-	 * Starting at master.pos, the procedure change will search for the subtext
-	 * oldtext.
-	 * 
-	 * If not found, master remains unchanged and the procedure value is false. The
-	 * position indicator is set to length+1, i.e. master.setpos(0);
-	 * 
-	 * If found, oldtext will be replaced by newtext and the procedure value is
-	 * true. If oldtext.length >= newtext.length then master will denote a subtext
-	 * of the original master text, otherwise master will denote a new text object.
-	 * The position indicator is set to first character following newtext within the
-	 * resulting master.
-	 * 
-	 * Changing all occurrences of oldtext to newtext may be done with the following
-	 * procedure;
-	 *
-	 * procedure changeAll(master,oldtext,newtext); name master; text
-	 * master,oldtext,newtext; begin text local; local:- master; while local.more do
-	 * change(local,oldtext,newtext); master:- local end;
-	 * 
-	 * The position indicator 'pos' of master is set to first character after the
-	 * substituted text. If not found, 'pos' is unaltered.
-	 *
-	 * boolean procedure change(master,oldtext,newtext); name master; text
-	 * master,oldtext,newtext; begin text local; integer p; local:-master;
-	 * p:=search(local,oldtext); if p <= local.length then begin change:=true; if
-	 * oldtext.length>=newtext.length then begin
-	 * local.sub(p,newtext.length):=newtext; if oldtext.length>newtext.length then
-	 * begin from(local,p+newtext.length):=from(local,p+oldtext.length);
-	 * local:-local.sub(1,local.length-oldtext.length+newtext.length) end end else
-	 * local:-local.sub(1,p-1) & newtext & from(local,p+oldtext.length);
-	 * local.setpos(p+newtext.length); master:-local end else master.setpos(0) end;
+	/**<pre>
+	 * boolean procedure change(master,oldtext,newtext);   ! Replacing Subtexts. ;
+     *
+     * Starting at master.pos, the procedure change will search for the subtext oldtext.
+     * 
+     * If not found, master remains unchanged and the procedure value is false.
+     * The position indicator is set to length+1, i.e. master.setpos(0);
+     * 
+     * If found, oldtext will be replaced by newtext and the procedure value is true.
+     * If oldtext.length >= newtext.length then master will denote a subtext of the original master text,
+     * otherwise master will denote a new text object.
+     * The position indicator is set to first character following newtext within the resulting master.
+     * 
+     * Changing all occurrences of oldtext to newtext may be done with the following procedure;
+     *
+     *          procedure changeAll(master,oldtext,newtext); name master; text master,oldtext,newtext;
+     *          begin text local;
+     *             local:- master;
+     *             while local.more do change(local,oldtext,newtext);
+     *             master:- local
+     *          end;
+     *         
+     * The position indicator 'pos' of master is set to first character after the substituted text.
+     * If not found, 'pos' is unaltered.
+     *
+     *    boolean procedure change(master,oldtext,newtext); name master; text master,oldtext,newtext; begin
+     *        text local; integer p;
+     *        local:-master;
+     *        p:=search(local,oldtext);
+     *        if p <= local.length then begin
+     *            change:=true;
+     *            if oldtext.length>=newtext.length then begin
+     *                local.sub(p,newtext.length):=newtext;
+     *                if oldtext.length>newtext.length then begin
+     *                    from(local,p+newtext.length):=from(local,p+oldtext.length);
+     *                    local:-local.sub(1,local.length-oldtext.length+newtext.length)
+     *                end
+     *            end else local:-local.sub(1,p-1) & newtext & from(local,p+oldtext.length);
+     *            local.setpos(p+newtext.length);
+     *            master:-local
+     *        end else master.setpos(0)
+     *    end;
+     *    
+	 * </pre>
 	 */
 	public static boolean change(_NAME<_TXT> master, _TXT oldtext, _TXT newtext) {
 		String oldt = oldtext.edText();
@@ -112,13 +125,17 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure checkextension(fileName,defaultextension);
 	 *
-	 * The procedure checkextension may be used to add a default extension to file
-	 * specifications not containing a dot ('.'). I.e. fileName:- copy("myFile");
-	 * fileName:- checkextension(fileName,".txt"); will give fileName the value
-	 * "myFile.txt", while fileName:- copy("myFile.doc"); fileName:-
-	 * checkextension(fileName,".txt"); will leave fileName unaltered.
+     * The procedure checkextension may be used to add a default extension to
+     * file specifications not containing a dot ('.').  I.e.
+     *   fileName:- copy("myFile"); fileName:- checkextension(fileName,".txt");
+     *         will give fileName the value "myFile.txt", while
+     *   fileName:- copy("myFile.doc"); fileName:- checkextension(fileName,".txt");
+     *         will leave fileName unaltered.
+     *         
+	 * </pre>
 	 */
 	public static _TXT checkextension(_TXT fileName, _TXT defaultextension) {
 		String f = fileName.edText();
@@ -128,8 +145,8 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
-	 * <type> procedure check<type>(t); name t; text t; where <type> ::= real | int
-	 * | frac
+	 * <pre>
+	 * <type> procedure check<type>(t); name t; text t; where <type> ::= real | int | frac
 	 *
 	 * checkNumber analyses the text t from t.pos and on. If a get<Number> operation
 	 * from this position is legal the returned value is +1.
@@ -143,6 +160,7 @@ public class _DEC_Lib extends _CLASS {
 	 * NOTE: The current implementation will place t.pos after a complete real item,
 	 * even if it overflows. Real underflow produces +0, overflow Infinity, both of
 	 * which are treated as legal results
+	 * </pre>
 	 */
 	public abstract class NumberChecker<T> {
 		public abstract T check(_TXT T) throws Exception;
@@ -150,6 +168,7 @@ public class _DEC_Lib extends _CLASS {
 
 	public static int checkint(_NAME<_TXT> t) {
 		NumberChecker<Number> intChecker = DECLIB.new NumberChecker<Number>() {
+			@Override
 			public Integer check(_TXT T) {
 				return (_TXT.getint(T));
 			}
@@ -159,6 +178,7 @@ public class _DEC_Lib extends _CLASS {
 
 	public static int checkfrac(_NAME<_TXT> t) {
 		NumberChecker<Number> fracChecker = DECLIB.new NumberChecker<Number>() {
+			@Override
 			public Integer check(_TXT T) {
 				return (_TXT.getfrac(T));
 			}
@@ -168,6 +188,7 @@ public class _DEC_Lib extends _CLASS {
 
 	public static int checkreal(_NAME<_TXT> t) {
 		NumberChecker<Number> realChecker = DECLIB.new NumberChecker<Number>() {
+			@Override
 			public Double check(_TXT T) {
 				return (_TXT.getreal(T));
 			}
@@ -180,8 +201,7 @@ public class _DEC_Lib extends _CLASS {
 			System.out.println("checkNumber: t=" + t.get());
 		_TXT NT = t.get();
 		if (VERBOSE)
-			System.out.println("checkNumber: NT=" + NT.edText() + ", start=" + NT.START + ", length=" + NT.LENGTH
-					+ ", pos=" + NT.POS);
+			System.out.println("checkNumber: NT=" + NT.edText() + ", start=" + NT.START + ", length=" + NT.LENGTH + ", pos=" + NT.POS);
 		_TXT U = _TXT.sub(NT, NT.POS + 1, NT.LENGTH - NT.POS);
 		if (VERBOSE)
 			System.out.println(
@@ -216,6 +236,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure compress(t,c); text t; character c;
 	 * 
 	 * Removes all occurrences of the character c in the text t.
@@ -225,8 +246,10 @@ public class _DEC_Lib extends _CLASS {
 	 * (altered) which contains all characters of t not = c. The part of t after
 	 * this subtext is unchanged.
 	 * 
-	 * Example: t1:-copy("AxBxCxDx"); t2:-compress(t1,'x'); gives t1="ABCDCxDx",
-	 * t2==t1.sub(1,4), t2="ABCD".
+     * Example:  t1:-copy("AxBxCxDx");  t2:-compress(t1,'x');
+     *     gives t1="ABCDCxDx", t2==t1.sub(1,4), t2="ABCD".
+     *     
+	 * </pre>
 	 */
 	public static _TXT compress(_TXT t, char c) {
 		if (t == null)
@@ -247,13 +270,16 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
-	 * text procedure conc(t1,t2); text t1,t2; text procedure conc2(t1,t2); text
-	 * t1,t2; text procedure conc3(t1,t2,t3); text t1,t2,t3; text procedure
-	 * conc4(t1,t2,t3,t4); text t1,t2,t3,t4; text procedure conc5(t1,t2,t3,t4,t5);
-	 * text t1,t2,t3,t4,t5;
+	 * <pre>
+	 * text procedure conc(t1,t2); text t1,t2;
+	 * text procedure conc2(t1,t2); text t1,t2;
+	 * text procedure conc3(t1,t2,t3); text t1,t2,t3;
+	 * text procedure conc4(t1,t2,t3,t4); text t1,t2,t3,t4;
+	 * text procedure conc5(t1,t2,t3,t4,t5); text t1,t2,t3,t4,t5;
 	 * 
 	 * Concatenate texts. Provided for compatibility only, use the text
 	 * concatenation operator & instead!
+	 * </pre>
 	 */
 	public static _TXT conc2(_TXT t1, _TXT t2) {
 		return (new _TXT(t1.edText() + t2.edText()));
@@ -276,6 +302,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * real procedure cptime;
 	 *
 	 * Returns total CPU time spent since the beginning of the SIMULA program
@@ -285,32 +312,42 @@ public class _DEC_Lib extends _CLASS {
 	 * real procedure cptime; begin cptime:= cputime; end;
 	 *
 	 * @return
+	 * </pre>
 	 */
 	public static double cptime() {
 		return (cputime());
 	}
 
 	/**
+	 * <pre>
 	 * integer procedure dayno;
 	 *
 	 * Returns the day number in current month.
+	 * </pre>
 	 */
 	public static int dayno() {
 		return (_TXT.getint(_TXT.sub(datetime(), 9, 2)));
 	}
 
 	/**
+	 * <pre>
 	 * text procedure daytime;
-	 *
-	 * Returns a reference to a new text of length 8 with contents: "hh:mm:ss"
-	 * 
-	 * where hh is hours mm is minutes ss is seconds. at the time of the call.
+     *
+     * Returns a reference to a new text of length 8 with
+     * contents: "hh:mm:ss"
+     * 
+     *         where hh        is hours
+     *               mm        is minutes
+     *               ss        is seconds.
+     *         at the time of the call.
+	 * </pre>
 	 */
 	public static _TXT daytime() {
 		return (_TXT.sub(datetime(), 12, 8));
 	}
 
 	/**
+	 * <pre>
 	 * procedure depchar(t,p,c); text t; integer p; character c;
 	 *
 	 * Deposits the character c in the text t at position p. If p is out of range,
@@ -318,9 +355,11 @@ public class _DEC_Lib extends _CLASS {
 	 * 
 	 * This is a safe version of S-port standard procedure StoreChar.
 	 *
-	 * procedure depchar(t,p,c); text t; integer p; character c; if p>0 and
-	 * p<=t.length then t.sub(p,1).putchar(c);
+     *    procedure depchar(t,p,c); text t; integer p; character c;
+     *    if p>0 and p<=t.length
+     *    then t.sub(p,1).putchar(c);
 	 * 
+	 * </pre>
 	 */
 	public static void depchar(_TXT t1, int p, char c) {
 		if (p > 0 & p <= t1.LENGTH) {
@@ -330,14 +369,18 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * procedure enterdebug(maycontinue); boolean maycontinue; ! Enter SIMOB ;
 	 *
 	 * Enterdebug will activate SIMOB (if present). After SIMOB session, the
 	 * execution will either continue (maycontinue true) or it will terminate
 	 * (maycontinue false).
 	 *
-	 * procedure enterdebug(maycontinue); boolean maycontinue; begin ... enter SIMOB
-	 * if not maycontinue then terminate_program; end;
+     *    procedure enterdebug(maycontinue); boolean maycontinue;
+     *    begin  ... enter SIMOB
+     *           if not maycontinue then terminate_program;
+     *    end;
+	 * </pre>
 	 */
 	public static void enterdebug(boolean maycontinue) {
 //		if(SIMOB.isPresent) _RT.NOT_IMPLEMENTED("DECLIB: enterdebug");
@@ -346,18 +389,29 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * procedure exit(n); integer n;
-	 *
-	 * n=0: Terminate program immediately, with no further action. No files closed.
-	 * n=1: Terminate program as if final end was reached, i.e. all open files are
-	 * closed (and a message given for each). n=2: Equivalent to enterdebug(true).
-	 *
-	 * Other values of n are reserved for extensions.
-	 *
-	 * procedure exit(n); integer n; begin if n=0 then ... stop execution; if n=1
-	 * then terminate_program; if n=2 then enterdebug(true) else begin
-	 * outtext("Parameter to exit out of range (0,2)"); outimage; terminate_program;
-	 * end; end;
+     *
+     *   n=0: Terminate program immediately, with no further action.
+     *        No files closed.
+     *   n=1: Terminate program as if final end was reached, i.e. all
+     *        open files are closed (and a message given for each).
+     *   n=2: Equivalent to enterdebug(true).
+     *
+     *   Other values of n are reserved for extensions.
+     *
+     *    procedure exit(n); integer n;
+     *    begin
+     *          if n=0 then ... stop execution;
+     *          if n=1 then terminate_program;
+     *          if n=2 then enterdebug(true)
+     *          else begin
+     *             outtext("Parameter to exit out of range (0,2)");
+     *             outimage;
+     *             terminate_program;
+     *          end;
+     *    end;
+	 * </pre>
 	 */
 	public static void exit(int code) {
 		switch (code) {
@@ -375,15 +429,17 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * character procedure fetchar(t,p); text t; integer p;
 	 *
 	 * Returns the p'th character from t, if p is within range, otherwise '!0!'.
 	 * 
 	 * This is a safe version of S-port standard procedure LoadChar.
 	 *
-	 * character procedure fetchar(t,p); text t; integer p; if p>0 and p<=t.length
-	 * then fetchar:= t.sub(p,1).getchar;
+     *    character procedure fetchar(t,p); text t; integer p;
+     *    if p>0 and p<=t.length then fetchar:= t.sub(p,1).getchar;
 	 *
+	 * </pre>
 	 */
 	public static char fetchar(_TXT t, int p) {
 		if (p > 0 & p <= t.LENGTH) {
@@ -394,18 +450,25 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * character procedure findtrigger(master,triggers); name master; text
 	 * master,triggers;
 	 *
 	 * Starting from current master.pos, find first occurrence of any of the
 	 * characters in triggers.;
 	 *
-	 * character procedure findtrigger(master,triggers); name master; text
-	 * master,triggers; begin character c; text t; t:- master; while t.More do begin
-	 * c:= t.getchar; triggers.setpos(1); if scanto(triggers,c) =/= triggers then
-	 * begin comment c found in triggers; findtrigger1:= c; goto out; end end loop;
-	 * out: master.setpos(t.pos); end;
-	 *
+	 * character procedure findtrigger(master,triggers); name master; text master,triggers;
+	 * begin character c; text t;
+	 *       t:- master; while t.More do
+	 *       begin c:= t.getchar; triggers.setpos(1);
+	 *             if scanto(triggers,c) =/= triggers then
+	 *             begin comment c found in triggers; findtrigger1:= c;
+	 *                   goto out;
+	 *             end
+	 *       end loop;
+	 *  out: master.setpos(t.pos);
+	 * end;
+	 * </pre>
 	 */
 	public static char findtrigger(_NAME<_TXT> master, _TXT triggers) {
 		_TXT M = master.get();
@@ -423,13 +486,15 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure from(t,p); text t; integer p;
 	 *
 	 * Returns a reference to the longest subtext of t starting at pos = p.
 	 *
-	 * text procedure from(t,p); text t; integer p; if p<=t.Length then from :- if
-	 * p<=0 then t else t.Sub(p,t.Length-p+1);
+	 * text procedure from(t,p); text t; integer p;
+	 * if p<=t.Length then from :- if p<=0 then t else t.Sub(p,t.Length-p+1);
 	 *
+	 *</pre>
 	 */
 	public static _TXT from(_TXT t, int p) {
 		if (p < t.LENGTH) {
@@ -442,11 +507,14 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure front(t); text t;
 	 *
 	 * Returns a reference to the longest subtext of t before pos.
 	 *
 	 * text procedure front(t); text t; if t=/=notext then front:-t.sub(1,t.pos-1);
+	 * 
+	 * </pre>
 	 */
 	public static _TXT front(_TXT t) {
 		if (t != null)
@@ -455,6 +523,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * boolean procedure frontcompare(string,config); text string,config;
 	 *
 	 * Starting at current pos, does string begin with a substring equal to config ?
@@ -462,6 +531,8 @@ public class _DEC_Lib extends _CLASS {
 	 * boolean procedure frontcompare(string,config); text string,config; if
 	 * string.Length - string.pos+1 >= config.Length then frontcompare:=
 	 * string.Sub(string.pos,config.Length) = config;
+	 * 
+	 * </pre>
 	 */
 	public static boolean frontcompare(_TXT string, _TXT config) {
 		String t1 = string.edText().substring(string.POS);
@@ -470,10 +541,13 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure frontstrip(t); text t;
 	 *
 	 * Returns a reference to the longest subtext of t starting with the first
 	 * non-blank character.
+	 * 
+	 * </pre>
 	 */
 	public static _TXT frontstrip(_TXT t) {
 		String T = t.edText().stripLeading();
@@ -481,6 +555,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure getitem(tt); name tt; text tt;
 	 *
 	 * Skips any blanks or tabs, starting at tt.pos. If tt.more holds then, an item
@@ -503,21 +578,27 @@ public class _DEC_Lib extends _CLASS {
 	 * item.
 	 *
 	 *
-	 * text procedure getitem(tt); name tt; text tt; if tt =/= notext then begin
-	 * character window; integer startpos; text t;
+	 * text procedure getitem(tt); name tt; text tt; if tt =/= notext then
+	 * begin character window; integer startpos; text t;
 	 * 
-	 * character procedure getCharacter; if t.more then getCharacter:= window:=
-	 * t.getchar else goto out;
+	 *       character procedure getCharacter;
+	 *       if t.more then getCharacter:= window:=t.getchar else goto out;
 	 * 
-	 * boolean procedure idchar(c); character c; idchar:= letter(c) or digit(c);
+	 *       boolean procedure idchar(c); character c; idchar:= letter(c) or digit(c);
 	 * 
-	 * t:- tt; t.setpos(tt.pos); startpos:= t.length+1; getCharacter; while window =
-	 * ' ' or window = char(9) do getCharacter; startpos:= t.pos-1; if not
-	 * letter(window) then begin if digit(window) then while digit(getCharacter) do;
-	 * if window = '.' then while digit(getCharacter) do; end else while
-	 * idchar(getCharacter) do; if t.pos > startpos + 1 then t.setpos(t.pos-1); out:
-	 * getitem1 :- t.sub(startpos,t.pos-startpos); tt.setpos(t.pos) end;
+	 *       t:- tt; t.setpos(tt.pos); startpos:= t.length+1; getCharacter;
+	 *       while window = ' ' or window = char(9) do getCharacter;
+	 *       startpos:= t.pos-1;
+	 *       if not letter(window) then
+	 *       begin if digit(window) then while digit(getCharacter) do;
+	 *             if window = '.' then while digit(getCharacter) do;
+	 *       end else while idchar(getCharacter) do;
+	 *       if t.pos > startpos + 1 then t.setpos(t.pos-1);
+	 *  out: getitem1 :- t.sub(startpos,t.pos-startpos);
+	 *       tt.setpos(t.pos)
+	 * end;
 	 *
+	 *</pre>
 	 */
 	enum State {
 		NULL, NUMBER, IDENTIFIER, SYMBOL
@@ -566,6 +647,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * integer procedure hash(t,n); text t; integer n;
 	 *
 	 * Procedure HASH returns a calculated hash value, in the range (0:n-1), from a
@@ -573,13 +655,22 @@ public class _DEC_Lib extends _CLASS {
 	 * 
 	 * It is recommended to choose n as a prime number.
 	 *
-	 * integer procedure hash(t,n); text t; integer n; begin text tstrip; integer a;
-	 * tstrip:- frontstrip(t.Strip); if tstrip == notext then hash:= mod(t.length,n)
-	 * else begin a:= rank(tstrip.getchar); if tstrip.length > 3 then begin a:= a +
-	 * 8*rank(tstrip.getchar); a:= a + 64*rank(tstrip.getchar) end;
-	 * tstrip.setpos(tstrip.length); a:= a + 512*rank(tstrip.getchar) + t.length;
-	 * hash:= mod(a,n); end end of hash;
+     *    integer procedure hash(t,n); text t; integer n; begin
+     *        text tstrip; integer a;
+     *        tstrip:- frontstrip(t.Strip);
+     *        if tstrip == notext then hash:= mod(t.length,n) else begin
+     *            a:= rank(tstrip.getchar);
+     *            if tstrip.length > 3 then begin
+     *                a:= a +   8*rank(tstrip.getchar);
+     *                a:= a +  64*rank(tstrip.getchar)
+     *            end;
+     *            tstrip.setpos(tstrip.length);
+     *            a:= a + 512*rank(tstrip.getchar) + t.length;
+     *            hash:= mod(a,n);
+     *        end
+     *    end of hash;
 	 *
+	 * </pre>
 	 */
 	public static int hash2(final _TXT txt, int n) {
 		int h = txt.hashCode();
@@ -603,6 +694,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure initem(fileref); ref(file) fileref; begin
 	 *
 	 * The parameter is formally ref(file), but should refer an infile, directfile,
@@ -615,17 +707,30 @@ public class _DEC_Lib extends _CLASS {
 	 * since no copying is done, a call on initem may destroy previously located
 	 * items, if they are not copied by the program, since inimage may be invoked.
 	 *
-	 * NOTE: Initem is extended to cover bytefiles; it will then return a single
-	 * character item.
+	 * NOTE: Initem is extended to cover bytefiles;
+	 *       it will then return a single character item.
 	 *
-	 * text procedure initem(fileref); ref(file) fileref; begin text res; integer i;
-	 * inspect fileref when infile do if not lastitem then res:-getitem(image) when
-	 * directfile do if not lastitem then res:-getitem(image) when inbytefile do
-	 * begin res:-blanks(1); i:=rank('!9!'); while i=rank(' ') or i=rank('!9!')
-	 * !TAB; do i:=inbyte; res.sub(1,1).putchar(char(i)); end when directbytefile do
-	 * begin res:-blanks(1); i:=rank('!9!'); while i=rank(' ') or i=rank('!9!')
-	 * !TAB; do i:=inbyte; res.sub(1,1).putchar(char(i)); end; initem:-res; end;
-	 *
+	 *   text procedure initem(fileref); ref(file) fileref; begin
+     *       text res; integer i;
+     *       inspect fileref
+     *         when infile do
+     *              if not lastitem then res:-getitem(image)
+     *         when directfile do
+     *              if not lastitem then res:-getitem(image)
+     *         when inbytefile do begin
+     *              res:-blanks(1); i:=rank('!9!');
+     *              while i=rank(' ') or i=rank('!9!') !TAB; do i:=inbyte;
+     *              res.sub(1,1).putchar(char(i));
+     *         end
+     *         when directbytefile do begin
+     *              res:-blanks(1); i:=rank('!9!');
+     *              while i=rank(' ') or i=rank('!9!') !TAB; do i:=inbyte;
+     *              res.sub(1,1).putchar(char(i));
+     *         end;
+     *         initem:-res;
+     *   end;
+     *   
+	 * </pre>
 	 */
 	public static _TXT initem(_File f) {
 		if (f instanceof _Infile | f instanceof _Directfile) {
@@ -649,15 +754,17 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * character procedure insinglechar;
 	 * 
 	 * Returns next input character from sysin (after last inimage) without waiting
 	 * for break character. A subsequent inimage will begin reading after the last
 	 * character which has been input with insinglechar.
 	 * 
-	 * The use of this routine depends on runtime option USE_CONSOLE. If it is not
-	 * set a runtime error will occur.
+	 * The use of this routine depends on runtime option USE_CONSOLE.
+	 * If it is not set a runtime error will occur.
 	 * 
+	 * </pre>
 	 */
 	public static char insinglechar() {
 		try {
@@ -669,10 +776,18 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
-	 * integer procedure linecount(pfil); ref(PrintFile) pfil; begin if pfil==none
-	 * then linecount:=-1 else if not pfil.isOpen then linecount:=-2 else begin --
-	 * return current linesperpage setting integer lpp; lpp:=linesperpage(0);
-	 * linesperpage(lpp); linecount:=lpp; end; end;
+	 * <pre>
+	 * integer procedure linecount(pfil); ref(PrintFile) pfil; begin
+     *     if pfil==none then linecount:=-1
+     *     else if not pfil.isOpen then linecount:=-2
+     *     else begin
+     *         --  return current linesperpage setting
+     *         integer lpp; lpp:=linesperpage(0); linesperpage(lpp);
+     *         linecount:=lpp;
+     *     end;
+     * end;
+     * 
+     * </pre>
 	 */
 	public static int linecount(_Printfile pf) {
 		if (pf == null)
@@ -683,28 +798,37 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * character procedure lowc(c); character c;
 	 *
 	 * Returns uppercase character as lowercase equivalent, other characters
 	 * unchanged.
 	 *
-	 * character procedure lowc(c); character c; lowc:= if not Letter(c) then c else
-	 * if c > 'z' then char(rank(c)-rank('A')+rank('a')) else c;
-	 *
+     *   character procedure lowc(c); character c;
+     *   lowc:= if not Letter(c) then c else
+     *          if c > 'z' then
+     *              char(rank(c)-rank('A')+rank('a')) else c;
+	 * </pre>
 	 */
 	public static char lowc(char c) {
 		return (Character.toLowerCase(c));
 	}
 
 	/**
+	 * </pre>
 	 * text procedure maketext(ch,n); character ch; integer n;
 	 *
 	 * Return a text object of length n, filled with character ch.
 	 *
-	 * text procedure maketext(ch,n); character ch; integer n; if n > 0 then begin
-	 * text t; t:-blanks(n); while t.more do t.putchar(ch); t.setpos(1);
-	 * maketext:-t; end;
+     *    text procedure maketext(ch,n); character ch; integer n;
+     *    if n > 0 then
+     *    begin text t;
+     *          t:-blanks(n);
+     *          while t.more do t.putchar(ch);
+     *          t.setpos(1); maketext:-t;
+     *    end;
 	 *
+	 * </pre>
 	 */
 	public static _TXT maketext(final char c, final int n) {
 		if (n <= 0)
@@ -720,6 +844,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * boolean procedure puttext(oldstring,newstring); name oldstring; text
 	 * oldstring,newstring;
 	 *
@@ -730,11 +855,20 @@ public class _DEC_Lib extends _CLASS {
 	 * Returns false if there was not room for the new string, or if trying to
 	 * modify a Constant text.
 	 *
-	 * boolean procedure puttext(oldstring,newstring); name oldstring; text
-	 * oldstring,newstring; begin text s; s:-oldstring; if s.pos+newstring.length-1
-	 * <= s.length and then not s.constant then begin puttext:=true;
-	 * s.sub(s.pos,newstring.length):=newstring; s.setpos(s.pos+newstring.length)
-	 * oldstring.setpos(s.pos) end; end;
+     *  boolean procedure puttext(oldstring,newstring); name oldstring; text oldstring,newstring;
+     *  begin text s;
+     *      s:-oldstring;
+     *      if s.pos+newstring.length-1 <= s.length 
+     *         and then not s.constant
+     *      then begin
+     *          puttext:=true;
+     *          s.sub(s.pos,newstring.length):=newstring;
+     *          s.setpos(s.pos+newstring.length)
+     *          oldstring.setpos(s.pos)
+     *      end;
+     *  end;
+	 * 
+	 * </pre>
 	 */
 	public static boolean puttext(_NAME<_TXT> oldstring, _TXT newstring) {
 		_TXT s = oldstring.get();
@@ -748,12 +882,14 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure rest(t); text t;
 	 *
 	 * Returns a subtext reference of a text starting at pos.
 	 *
 	 * text procedure rest(t); text t; rest :- t.sub(t.pos,t.length+1-t.pos);
 	 *
+	 * </pre>
 	 */
 	public static _TXT rest(_TXT t) {
 		int pos = t.POS + 1;
@@ -761,13 +897,16 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * character procedure scanchar(t); name t; text t;
 	 *
 	 * Safe version of GETCHAR. Will not give RTS error, just returns char(0) if not
 	 * t.more.
 	 *
-	 * character procedure scanchar(t); name t; text t; scanchar:= if t.more then
-	 * t.getchar else char(0);
+	 * character procedure scanchar(t); name t; text t;
+	 * scanchar:= if t.more then t.getchar else char(0);
+	 * 
+	 * </pre>
 	 */
 	public static char scanchar(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -779,6 +918,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * integer procedure scanfrac(t); name t; text t;
 	 * 
 	 * Scanfrac is similar to getfrac, but differs in two principal ways:
@@ -790,6 +930,8 @@ public class _DEC_Lib extends _CLASS {
 	 * 'minint' is returned.
 	 * 
 	 * t.pos will only be moved if de-editing was successful.
+	 * 
+	 * </pre>
 	 */
 	public static int scanfrac(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -807,6 +949,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * integer procedure scanint(t); name t; text t;
 	 *
 	 * Scanint is similar to GETINT, but differs in two principal ways:
@@ -819,12 +962,20 @@ public class _DEC_Lib extends _CLASS {
 	 * 
 	 * t.pos will only be moved if de-editing was successful.
 	 *
-	 * integer procedure scanint(t); name t; text t; begin EXTERNAL text procedure
-	 * rest; EXTERNAL integer procedure checkint,maxint; text s; integer i;
-	 * s:-rest(t); i:=checkint(s); if i=1 then begin scanint:=s.Getint;
-	 * t.setpos(t.pos+s.pos-1) end else scanint:=Minint end;
+     *    integer procedure scanint(t); name t; text t;
+     *    begin
+     *      EXTERNAL text procedure rest;
+     *      EXTERNAL integer procedure checkint,maxint;
+     *      text s;  integer i;
+     *      s:-rest(t);
+     *      i:=checkint(s);
+     *      if i=1 then begin
+     *        scanint:=s.Getint;
+     *        t.setpos(t.pos+s.pos-1)
+     *      end else scanint:=Minint
+     *    end;
 	 *
-	 * 
+	 * </pre>
 	 */
 	public static int scanint(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -842,6 +993,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * long real procedure scanreal(t); name t; text t;
 	 *
 	 * Scanreal is similar to GETREAL, but differs in two principal ways:
@@ -854,12 +1006,20 @@ public class _DEC_Lib extends _CLASS {
 	 * 
 	 * t.pos will only be moved if de-editing was successful.
 	 *
-	 * comment -1&33 should be the most negative real value; long real procedure
-	 * scanreal(t); name t; text t; begin EXTERNAL text procedure rest; EXTERNAL
-	 * integer procedure checkreal; text s; integer i; s:-rest(t); i:=checkreal(s);
-	 * if i=1 then begin scanreal:=s.Getreal; t.setpos(t.pos+s.pos-1) end else
-	 * scanreal:=Minreal; end;
+     *    comment -1&33 should be the most negative real value;
+     *    long real procedure scanreal(t);  name t;  text t;
+     *    begin
+     *      EXTERNAL text procedure rest;
+     *      EXTERNAL integer procedure checkreal;
+     *      text s;  integer i;
+     *      s:-rest(t);
+     *      i:=checkreal(s);
+     *      if i=1 then begin scanreal:=s.Getreal;
+     *                        t.setpos(t.pos+s.pos-1)
+     *             end else scanreal:=Minreal;
+     *    end;
 	 * 
+	 * </pre>
 	 */
 	public static double scanreal(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -877,6 +1037,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure scanto(tt,c); name tt; text tt; character c;
 	 *
 	 * Scans from tt.pos until the next occurrence of the character c. Places tt.pos
@@ -888,10 +1049,19 @@ public class _DEC_Lib extends _CLASS {
 	 * If no character c is found, tt.pos will be = tt.length+1, and scan denotes
 	 * the rest of tt starting at the initial tt.pos.
 	 *
-	 * text procedure scanto(tt,c); name tt; text tt; character c; begin text t;
-	 * integer p; t:- tt; p:= t.pos; while t.more do if t.getchar = c then begin
-	 * scanto:- t.sub(p,t.pos-p-1); goto out; end; scanto:- from(t,p); out:
-	 * tt.setpos(t.pos); end of scanto;
+     *  text procedure scanto(tt,c); name tt; text tt; character c; begin
+     *      text t; integer p;
+     *      t:- tt; p:= t.pos;
+     *      while t.more do
+     *        if t.getchar = c then begin
+     *            scanto:- t.sub(p,t.pos-p-1);
+     *            goto out;
+     *        end;
+     *      scanto:- from(t,p);
+     *      out: tt.setpos(t.pos);
+     *    end of scanto;
+     *    
+     * </pre>
 	 */
 	public static _TXT scanto(_NAME<_TXT> t, char c) {
 		_TXT TXT = t.get();
@@ -929,10 +1099,13 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * integer procedure search(t1,t2); text t1,t2;
 	 *
-	 * Search: find first subtext = t2 from t1.pos; Return: The pos indicator of
-	 * first character of subtext within t1. If not found return t1.length+1
+     * Search: find first subtext = t2 from t1.pos;
+     * Return: The pos indicator of first character of subtext within t1.
+     *         If not found return t1.length+1
+	 * </pre>
 	 */
 	public static int search(_TXT t1, _TXT t2) {
 		if (t1 == null | t2 == null)
@@ -944,6 +1117,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure skip(tt,c); name tt; text tt; character c; begin
 	 *
 	 * If, starting at tt.pos, a sequence of characters = c is found, then tt.pos is
@@ -951,11 +1125,17 @@ public class _DEC_Lib extends _CLASS {
 	 * 
 	 * The function value of skip is rest(tt) (after changing tt.pos).
 	 *
-	 * text procedure skip(tt,c); name tt; text tt; character c; begin text t; t:-
-	 * tt; while t.more do if t.getchar <> c then begin t.setpos(t.pos-1); skip1:-
-	 * t.sub(t.pos,t.length-t.pos+1); goto out end; out: tt.setpos(t.pos) end of
-	 * skip;
+     *   text procedure skip(tt,c); name tt; text tt; character c; begin
+     *       text t; t:- tt;
+     *       while t.more do if t.getchar <> c then begin
+     *           t.setpos(t.pos-1);
+     *           skip1:- t.sub(t.pos,t.length-t.pos+1);
+     *           goto out
+     *       end;
+     *       out: tt.setpos(t.pos)
+     *   end of skip;
 	 *
+	 * </pre>
 	 */
 	public static _TXT skip(_NAME<_TXT> t, char c) {
 		_TXT TXT = t.get();
@@ -983,6 +1163,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * integer procedure startpos(t); text t;
 	 *
 	 * startpos returns the starting position of t within t.main. Provided for
@@ -990,12 +1171,14 @@ public class _DEC_Lib extends _CLASS {
 	 *
 	 * integer procedure startpos(t); text t; begin startpos:=t.start; end;
 	 *
+	 * </pre>
 	 */
 	public static int startpos(_TXT t) {
 		return (t.START + 1);
 	}
 
 	/**
+	 * <pre>
 	 * text procedure today;
 	 *
 	 * Returns a reference to a text object of length 10 with contents "yyyy-mm-nn"
@@ -1003,6 +1186,7 @@ public class _DEC_Lib extends _CLASS {
 	 * 01-31). This is the internationally standardized format for dates.
 	 *
 	 * text procedure today; today:-datetime.sub(1,10);
+	 * </pre>
 	 */
 	public static _TXT today() {
 		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1011,14 +1195,17 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure tsub(t,p,l); text t; integer p,l;
 	 *
 	 * tsub is a safe variant of sub. Parameters which give an error in sub will
 	 * return notext instead.
 	 *
-	 * text procedure tsub(t,p,l); text t; integer p,l; if p >= 1 and l >= 0 and p+l
-	 * <= t.length + 1 then tsub:- t.sub(p,l);
+     *   text procedure tsub(t,p,l); text t; integer p,l;
+     *   if p >= 1 and l >= 0 and p+l <= t.length + 1 then
+     *       tsub:- t.sub(p,l);
 	 *
+	 * </pre>
 	 */
 	public static _TXT tsub(_TXT t, int pos, int length) {
 		try {
@@ -1029,43 +1216,63 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
-	 * **** upc(c);
+	 * <pre>
+	 * character procedure upc(c); character c;
 	 *
 	 * Returns lowercase character as uppercase equivalent, other characters
 	 * unchanged.
 	 *
-	 * character procedure upc(c); character c; upc:= if not Letter(c) then c else
-	 * if c > 'Z' then char(rank(c)-rank('a')+rank('A')) else c;
+     *    character procedure upc(c); character c;
+     *       upc:= if not Letter(c) then c else
+     *             if c > 'Z' then
+     *                char(rank(c)-rank('a')+rank('A')) else c;
 	 *
+	 * </pre>
 	 */
 	public static char upc(char c) {
 		return (Character.toUpperCase(c));
 	}
 
 	/**
-	 * **** upcompare(master,test);
+	 * <pre>
+	 * boolean procedure upcompare(master,test);
 	 *
-	 * Upcompare returns true if the contents of TEST is equal to the next
-	 * TEST.length characters of MASTER, counted from current MASTER.pos. The MASTER
-	 * characters will be converted to upper case before comparison (without
-	 * changing the MASTER text). Note that the TEST text will not be converted.
-	 * Thus
+     *
+     *         Upcompare returns true if the contents
+     *         of TEST is equal to the next TEST.length characters of MASTER,
+     *         counted from current MASTER.pos.
+     *         The MASTER characters will be converted to upper case
+     *         before comparison (without changing the MASTER text).
+     *         Note that the TEST text will not be converted.
+     *         Thus
+     *
+     *         MASTER          TEST            UPCOMPARE
+     *
+     *         BEGIN           BEG             true
+     *         BEGIN           beg             false
+     *         begin           BEG             true
+     *         begin           beg             false
+     *         xxxxx           BEG             false
+     *
+     *         assuming that MASTER.pos = 1.
+     *         If TEST == notext the result will always be true.
+     *
+     *
+     *    boolean procedure upcompare(master,test); text master,test;
+     *    if master.pos + test.length <= master.length + 1 then begin
+     *        character cmaster,ctest;
+     *        integer shift;
+     *        shift:= rank('a') - rank('A');
+     *        while master.more and test.more and cmaster = ctest do begin
+     *            cmaster:= master.getchar;
+     *            ctest:= test.getchar;
+     *            if (if cmaster > 'Z' then Letter(cmaster) else FALSE)
+     *                then cmaster:= char(rank(cmaster) - shift);
+     *        end loop;
+     *    Out:upcompare:= cmaster = ctest;
+     *    end;
 	 *
-	 * MASTER TEST UPCOMPARE
-	 *
-	 * BEGIN BEG true BEGIN beg false begin BEG true begin beg false xxxxx BEG false
-	 *
-	 * assuming that MASTER.pos = 1. If TEST == notext the result will always be
-	 * true.
-	 *
-	 *
-	 * boolean procedure upcompare(master,test); text master,test; if master.pos +
-	 * test.length <= master.length + 1 then begin character cmaster,ctest; integer
-	 * shift; shift:= rank('a') - rank('A'); while master.more and test.more and
-	 * cmaster = ctest do begin cmaster:= master.getchar; ctest:= test.getchar; if
-	 * (if cmaster > 'Z' then Letter(cmaster) else FALSE) then cmaster:=
-	 * char(rank(cmaster) - shift); end loop; Out:upcompare:= cmaster = ctest; end;
-	 *
+	 * </pre>
 	 */
 	public static boolean upcompare(_TXT master, _TXT test) {
 		String mst = master.edText().toUpperCase().substring(_TXT.pos(master) - 1);
@@ -1080,13 +1287,15 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * <pre>
 	 * text procedure upto(t,p); text t; integer p;
 	 *
 	 * Returns a reference to the longest subtext of T before pos = p.
 	 *
-	 * text procedure upto(t,p); text t; integer p; if i>0 then upto :- if
-	 * p>t.length then t else t.sub(1,p-1);
+     *   text procedure upto(t,p); text t; integer p;
+     *   if i>0 then upto :- if p>t.length then t else t.sub(1,p-1);
 	 *
+	 * </pre>
 	 */
 	public static _TXT upto(_TXT t, int p) {
 		if (p <= 0)

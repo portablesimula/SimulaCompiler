@@ -94,7 +94,7 @@ public final class RunCompilerTest {
 		// String name="/design/Test.sim";
 		// String name="/design/ActivationStatement.sim";
 		// String name="/design/ArrayAssignment.sim";
-		 String name="/design/ArrayAsParameters.sim";
+		// String name="/design/ArrayAsParameters.sim";
 		// String name="/design/ArrayByValue.sim";
 		// String name="/design/ArrayDeclaration.sim";
 		// String name="/design/CallProcedureRemote.sim";
@@ -182,7 +182,7 @@ public final class RunCompilerTest {
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
 		// String name="/simple/adHoc00.sim";
-		// String name="/simple/adHoc01.sim";
+		 String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";
