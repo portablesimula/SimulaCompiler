@@ -94,45 +94,134 @@ import javax.swing.JFrame;
  * The variable RENDERING_SET refers to a set of graphical elements to be rendered.
  * The members of the rendering set are ShapeElements and TextElements.
  * The elements are rendered in the order defined by the RENDERING_SET, starting with RENDERING_SET.first.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Drawing.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public class _Drawing extends _Simset {
 	private static final boolean DEBUG = false;
 
+	/**
+	 * The color white.
+	 */
 	public static final int _white_1 = 0xffffff; // Color white: R=255, G=255, B=255.
+	/**
+	 * The color lightGray.
+	 */
 	public static final int _lightGray_1 = 0xc0c0c0; // Color light gray: R=192, G=192, B=192.
+	/**
+	 * The color gray.
+	 */
 	public static final int _gray_1 = 0x808080; // Color gray: R=128, G=128, B=128.
+	/**
+	 * The color darkGray.
+	 */
 	public static final int _darkGray_1 = 0x404040; // Color dark gray: R=64, G=64, B=64.
+	/**
+	 * The color black.
+	 */
 	public static final int _black_1 = 0x000000; // Color black: R=0, G=0, B=0.
+	/**
+	 * The color red.
+	 */
 	public static final int _red_1 = 0xff0000; // Color red: R=255, G=0, B=0.
+	/**
+	 * The color pink.
+	 */
 	public static final int _pink_1 = 0xffafaf; // Color pink: R=255, G=175, B=175.
+	/**
+	 * The color orange.
+	 */
 	public static final int _orange_1 = 0xffc800; // Color orange: R=255, G=200, B=0.
+	/**
+	 * The color yellow.
+	 */
 	public static final int _yellow_1 = 0xffff00; // Color yellow: R=255, G=255, B=0.
+	/**
+	 * The color green.
+	 */
 	public static final int _green_1 = 0x00ff00; // Color green: R=0, G=255, B=0.
+	/**
+	 * The color magenta.
+	 */
 	public static final int _magenta_1 = 0xff00ff; // Color magenta: R=255, G=0, B=255.
+	/**
+	 * The color cyan.
+	 */
 	public static final int _cyan_1 = 0x00ffff; // Color cyan: R=0, G=255, B=255.
+	/**
+	 * The color blue.
+	 */
 	public static final int _blue_1 = 0x0000ff; // Color blue: R=0, G=0, B=255.
 
+	/**
+	 * The color white.
+	 */
 	public static final int white = 0xffffff; // Color white: R=255, G=255, B=255.
+	/**
+	 * The color lightGray.
+	 */
 	public static final int lightGray = 0xc0c0c0; // Color light gray: R=192, G=192, B=192.
+	/**
+	 * The color gray.
+	 */
 	public static final int gray = 0x808080; // Color gray: R=128, G=128, B=128.
+	/**
+	 * The color darkgray.
+	 */
 	public static final int darkGray = 0x404040; // Color dark gray: R=64, G=64, B=64.
+	/**
+	 * The color black.
+	 */
 	public static final int black = 0x000000; // Color black: R=0, G=0, B=0.
+	/**
+	 * The color red.
+	 */
 	public static final int red = 0xff0000; // Color red: R=255, G=0, B=0.
+	/**
+	 * The color pink.
+	 */
 	public static final int pink = 0xffafaf; // Color pink: R=255, G=175, B=175.
+	/**
+	 * The color orange.
+	 */
 	public static final int orange = 0xffc800; // Color orange: R=255, G=200, B=0.
+	/**
+	 * The color yellow.
+	 */
 	public static final int yellow = 0xffff00; // Color yellow: R=255, G=255, B=0.
+	/**
+	 * The color green.
+	 */
 	public static final int green = 0x00ff00; // Color green: R=0, G=255, B=0.
+	/**
+	 * The color magenta.
+	 */
 	public static final int magenta = 0xff00ff; // Color magenta: R=255, G=0, B=255.
+	/**
+	 * The color cyan.
+	 */
 	public static final int cyan = 0x00ffff; // Color cyan: R=0, G=255, B=255.
+	
+	/**
+	 * The color blue.
+	 */
 	public static final int blue = 0x0000ff; // Color blue: R=0, G=0, B=255.
 
 	final JFrame frame;
 	final Drawing canvas;
 	final BufferStrategy strategy;
+	
+	/**
+	 * The redering set.
+	 */
 	final public _Head RENDERING_SET;// = null;
 
+	/**
+	 * Returns the rendering set.
+	 * @return the rendering set.
+	 */
 	public _Head renderingSet() {
 		return (RENDERING_SET);
 	}
@@ -147,6 +236,9 @@ public class _Drawing extends _Simset {
 		public void paint(Graphics2D g);
 	}
 
+	/**
+	 * Request a repaint.
+	 */
 	public void repaintMe() {
 		canvas.render();
 	}
@@ -157,22 +249,38 @@ public class _Drawing extends _Simset {
 	 * example, ITALIC or BOLD|ITALIC). If the style argument does not conform to
 	 * one of the expected integer bitmasks then the style is set to PLAIN.
 	 */
+	/**
+	 * set font style plain
+	 */
 	public void setFontStylePlain() {
 		currentFont = currentFont.deriveFont(Font.PLAIN);
 	}
 
+	/**
+	 * set font style bold
+	 */
 	public void setFontStyleBold() {
 		currentFont = currentFont.deriveFont(Font.BOLD);
 	}
 
+	/**
+	 * set font style italic
+	 */
 	public void setFontStyleItalic() {
 		currentFont = currentFont.deriveFont(Font.ITALIC);
 	}
 
+	/**
+	 * Set font style bold and italic.
+	 */
 	public void setFontStyleBoldItalic() {
 		currentFont = currentFont.deriveFont(Font.BOLD | Font.ITALIC);
 	}
 
+	/**
+	 * Set stroke size.
+	 * @param size the stroke size.
+	 */
 	public void setStroke(final float size) {
 		currentStroke = new BasicStroke(size);
 	}
@@ -180,24 +288,44 @@ public class _Drawing extends _Simset {
 	/*
 	 * FontSize usually 12.0 ?
 	 */
+	/**
+	 * Set font size.
+	 * @param size the font size.
+	 */
 	public void setFontSize(final float size) {
 		if (DEBUG)
 			_RT.println("SetFontSize: size=" + size + ", OldFont=" + currentFont);
 		currentFont = currentFont.deriveFont(size);
 	}
 
+	/**
+	 * Get font size.
+	 * @return the font size.
+	 */
 	public float getFontSize() {
 		return (currentFont.getSize2D());
 	}
 
+	/**
+	 * Set background color.
+	 * @param color the background color
+	 */
 	public void setBackgroundColor(final int color) {
 		currentBackgroundColor = new Color(color);
 	}
 
+	/**
+	 * Set draw color.
+	 * @param color the draw color
+	 */
 	public void setDrawColor(final int color) {
 		currentDrawColor = new Color(color);
 	}
 
+	/**
+	 * Set fill color.
+	 * @param color the fill color
+	 */
 	public void setFillColor(final int color) {
 		currentFillColor = new Color(color);
 	}
@@ -210,57 +338,136 @@ public class _Drawing extends _Simset {
 	 * Creates an opaque sRGB color with the specified combined RGB value consisting
 	 * of the red component in bits 16-23, the green component in bits 8-15, and the
 	 * blue component in bits 0-7.
+	 * 
+	 * @param red the red component
+	 * @param green the green component
+	 * @param blue the blue component
+	 * @return the resulting color
 	 */
 	public int color(final int red, final int green, final int blue) {
 		int value = (red << 16) | (green << 8) | blue;
 		return (value);
 	}
 
+	/**
+	 * Draw Text.
+	 * @param t the text
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return the resulting _TextElement
+	 */
 	public _TextElement drawText(final _TXT t, final double x, final double y) {
 		return (new _TextElement(this, t, x, y)._STM());
 	}
 
+	/**
+	 * Draw Line
+	 * 
+	 * @param x1 the X coordinate of the start point
+	 * @param y1 the Y coordinate of the start point
+	 * @param x2 the X coordinate of the end point
+	 * @param y2 the Y coordinate of the end point
+	 * @return the resulting _ShapeElement
+	 */
 	public _ShapeElement drawLine(final double x1, final double y1, final double x2, final double y2) {
 		_ShapeElement elt = new _ShapeElement(this)._STM();
 		elt.drawLine(x1, y1, x2, y2);
 		return (elt);
 	}
 
-	public _ShapeElement drawEllipse(final double x, final double y, final double width, final double height) {
+	/**
+	 * Draw Ellipse.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the ellipse
+	 * @param h the height of the ellipse
+	 * @return the resulting _ShapeElement
+	 */
+	public _ShapeElement drawEllipse(final double x, final double y, final double w, final double h) {
 		_ShapeElement elt = new _ShapeElement(this)._STM();
-		elt.drawEllipse(x, y, width, height);
+		elt.drawEllipse(x, y, w, h);
 		return (elt);
 	}
 
-	public _ShapeElement drawRectangle(final double x, final double y, final double width, final double height) {
+	/**
+	 * Draw Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 * @return the resulting _ShapeElement
+	 */
+	public _ShapeElement drawRectangle(final double x, final double y, final double w, final double h) {
 		_ShapeElement elt = new _ShapeElement(this)._STM();
-		elt.drawRectangle(x, y, width, height);
+		elt.drawRectangle(x, y, w, h);
 		return (elt);
 	}
 
-	public _ShapeElement drawRoundRectangle(final double x, final double y, final double width, final double height,
+	/**
+	 * Draw Rounded Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 * @param arcw the width of the arc to use to round off the corners
+	 * @param arch the height of the arc to use to round off the corners
+	 * @return the resulting _ShapeElement
+	 */
+	public _ShapeElement drawRoundRectangle(final double x, final double y, final double w, final double h,
 			final double arcw, final double arch) {
 		_ShapeElement elt = new _ShapeElement(this)._STM();
-		elt.drawRoundRectangle(x, y, width, height, arcw, arch);
+		elt.drawRoundRectangle(x, y, w, h, arcw, arch);
 		return (elt);
 	}
 
-	public _ShapeElement fillEllipse(final double x, final double y, final double width, final double height) {
+	/**
+	 * Fill Ellipse.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the ellipse
+	 * @param h the height of the ellipse
+	 * @return the resulting _ShapeElement
+	 */
+	public _ShapeElement fillEllipse(final double x, final double y, final double w, final double h) {
 		_ShapeElement elt = new _ShapeElement(this)._STM();
-		elt.fillEllipse(x, y, width, height);
+		elt.fillEllipse(x, y, w, h);
 		return (elt);
 	}
 
-	public _ShapeElement fillRectangle(final double x, final double y, final double width, final double height) {
+	/**
+	 * Fill Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 * @return the resulting _ShapeElement
+	 */
+	public _ShapeElement fillRectangle(final double x, final double y, final double w, final double h) {
 		_ShapeElement elt = new _ShapeElement(this)._STM();
-		elt.fillRectangle(x, y, width, height);
+		elt.fillRectangle(x, y, w, h);
 		return (elt);
 	}
 
-	public _ShapeElement fillRoundRectangle(final double x, final double y, final double width, final double height,
+	/**
+	 * Fill Rounded Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 * @param arcw the width of the arc to use to round off the corners
+	 * @param arch the height of the arc to use to round off the corners
+	 * @return the resulting _ShapeElement
+	 */
+	public _ShapeElement fillRoundRectangle(final double x, final double y, final double w, final double h,
 			final double arcw, final double arch) {
 		_ShapeElement elt = new _ShapeElement(this)._STM();
-		elt.fillRoundRectangle(x, y, width, height, arcw, arch);
+		elt.fillRoundRectangle(x, y, w, h, arcw, arch);
 		return (elt);
 	}
 
@@ -297,8 +504,15 @@ public class _Drawing extends _Simset {
 	}
 
 	// Constructor
-	public _Drawing(final _RTObject staticLink, final _TXT title, final int width, final int height) {
-		super(staticLink);
+	/**
+	 * Create a new Draing Panel.
+	 * @param SL staticLink
+	 * @param title panel's title
+	 * @param width the width of the panel
+	 * @param height the height of the panel
+	 */
+	public _Drawing(final _RTObject SL, final _TXT title, final int width, final int height) {
+		super(SL);
 		RENDERING_SET = (_Head) new _Head(_Drawing.this)._STM();
 		frame = new JFrame(title.edText());
 		canvas = new Drawing();

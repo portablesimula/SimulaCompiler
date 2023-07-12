@@ -57,21 +57,35 @@ public class _TextElement extends _Link implements _Drawing.Animable {
 
 	// Constructors
 
-	public _TextElement(final _RTObject staticLink, final _TXT txt, final double x, final double y) {
-		this(staticLink, txt.edText(), x, y);
+	/**
+	 * Create a new _TextElement.
+	 * @param SL staticLink
+	 * @param txt the initial text
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 */
+	public _TextElement(final _RTObject SL, final _TXT txt, final double x, final double y) {
+		this(SL, txt.edText(), x, y);
 	}
 
-	public _TextElement(final _RTObject staticLink, final String str, final double x, final double y) {
-		super(staticLink);
+	/**
+	 * Create a new _TextElement.
+	 * @param SL staticLink
+	 * @param str the initial text
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 */
+	public _TextElement(final _RTObject SL, final String str, final double x, final double y) {
+		super(SL);
 		// TRACE_BEGIN_DCL("_TextElement");
-		animation = (_Drawing) staticLink;
+		animation = (_Drawing) SL;
 		_TextElement.this.str = str;
 		_TextElement.this.x = x;
 		_TextElement.this.y = y;
-		_TextElement.this.color = ((_Drawing) (staticLink)).currentDrawColor;
-		_TextElement.this.stroke = ((_Drawing) (staticLink)).currentStroke;
-		_TextElement.this.font = ((_Drawing) (staticLink)).currentFont;
-		into(((_Drawing) (staticLink)).RENDERING_SET);
+		_TextElement.this.color = ((_Drawing) (SL)).currentDrawColor;
+		_TextElement.this.stroke = ((_Drawing) (SL)).currentStroke;
+		_TextElement.this.font = ((_Drawing) (SL)).currentFont;
+		into(((_Drawing) (SL)).RENDERING_SET);
 		animation.repaintMe();
 	}
 
@@ -90,44 +104,82 @@ public class _TextElement extends _Link implements _Drawing.Animable {
 		return (this);
 	}
 
+	/**
+	 * Set font style plain.
+	 */
 	public void setFontStylePlain() {
 		font = font.deriveFont(Font.PLAIN);
 	}
 
+	/**
+	 * Set font style bold.
+	 */
 	public void setFontStyleBold() {
 		font = font.deriveFont(Font.BOLD);
 	}
 
+	/**
+	 * Set font style talic.
+	 */
 	public void setFontStyleItalic() {
 		font = font.deriveFont(Font.ITALIC);
 	}
 
+	/**
+	 * Set font style bold and italic.
+	 */
 	public void setFontStyleBoldItalic() {
 		font = font.deriveFont(Font.BOLD | Font.ITALIC);
 	}
 
+	/**
+	 * Set stroke size.
+	 * @param size stroke size
+	 */
 	public void setStroke(final float size) {
 		stroke = new BasicStroke(size);
 	}
 
+	/**
+	 * Get font size.
+	 * @return the font size
+	 */
 	public float getFontSize() {
 		return (font.getSize2D());
 	}
 
+	/**
+	 * Set font size.
+	 * @param size font size
+	 */
 	public void setFontSize(final float size) {
 		font = font.deriveFont(size);
 	}
 
+	/**
+	 * Set color.
+	 * @param rgb color
+	 */
 	public void setColor(final int rgb) {
 		color = new Color(rgb);
 		animation.repaintMe();
 	}
 
+	/**
+	 * Set new text.
+	 * @param t new text
+	 */
 	public void setText(_TXT t) {
 		str = t.edText();
 		animation.repaintMe();
 	}
 
+	/**
+	 * Instant move.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 */
 	public void instantMoveTo(final double x, final double y) {
 		this.x = x;
 		this.y = y;
@@ -135,6 +187,13 @@ public class _TextElement extends _Link implements _Drawing.Animable {
 	}
 
 	// speed = pixels per milli-second ???
+	/**
+	 * Rolling motion to a new position.
+	 * 
+	 * @param x2 the X coordinate
+	 * @param y2 the Y coordinate
+	 * @param speed pixels per milli-second
+	 */
 	public void moveTo(final double x2, final double y2, final double speed) {
 		double x1 = x;
 		double y1 = y;

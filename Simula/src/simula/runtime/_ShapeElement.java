@@ -53,9 +53,13 @@ public class _ShapeElement extends _Link implements _Drawing.Animable {
 	Shape shape;
 
 	// Constructor
-	public _ShapeElement(_RTObject staticLink) {
-		super(staticLink);
-		drawing = (_Drawing) staticLink;
+	/**
+	 * Create a new _ShapeElement.
+	 * @param SL staticLink
+	 */
+	public _ShapeElement(_RTObject SL) {
+		super(SL);
+		drawing = (_Drawing) SL;
 		stroke = drawing.currentStroke;
 		// _RT.println("New ShapeElement: into "+drawing.RENDERING_SET);
 		into(drawing.RENDERING_SET);
@@ -72,51 +76,115 @@ public class _ShapeElement extends _Link implements _Drawing.Animable {
 		return (this);
 	}
 
+	/**
+	 * Draw Line
+	 * 
+	 * @param x1 the X coordinate of the start point
+	 * @param y1 the Y coordinate of the start point
+	 * @param x2 the X coordinate of the end point
+	 * @param y2 the Y coordinate of the end point
+	 */
 	public void drawLine(final double x1, final double y1, final double x2, final double y2) {
 		shape = new Line2D.Double(x1, y1, x2, y2);
 		drawColor = drawing.currentDrawColor;
 		drawing.repaintMe();
 	}
 
-	public void drawEllipse(final double x, final double y, final double width, final double height) {
-		shape = new Ellipse2D.Double(x, y, width, height);
+	/**
+	 * Draw Ellipse.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the ellipse
+	 * @param h the height of the ellipse
+	 */
+	public void drawEllipse(final double x, final double y, final double w, final double h) {
+		shape = new Ellipse2D.Double(x, y, w, h);
 		drawColor = drawing.currentDrawColor;
 		drawing.repaintMe();
 	}
 
-	public void drawRectangle(final double x, final double y, final double width, final double height) {
-		shape = new Rectangle2D.Double(x, y, width, height);
+	/**
+	 * Draw Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 */
+	public void drawRectangle(final double x, final double y, final double w, final double h) {
+		shape = new Rectangle2D.Double(x, y, w, h);
 		drawColor = drawing.currentDrawColor;
 		drawing.repaintMe();
 	}
 
-	public void drawRoundRectangle(final double x, final double y, final double width, final double height,
+	/**
+	 * Draw Rounded Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 * @param arcw the width of the arc to use to round off the corners
+	 * @param arch the height of the arc to use to round off the corners
+	 */
+	public void drawRoundRectangle(final double x, final double y, final double w, final double h,
 			final double arcw, final double arch) {
-		shape = new RoundRectangle2D.Double(x, y, width, height, arcw, arch);
+		shape = new RoundRectangle2D.Double(x, y, w, h, arcw, arch);
 		drawColor = drawing.currentDrawColor;
 		drawing.repaintMe();
 	}
 
-	public void fillEllipse(final double x, final double y, final double width, final double height) {
-		shape = new Ellipse2D.Double(x, y, width, height);
+	/**
+	 * Fill Ellipse.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the ellipse
+	 * @param h the height of the ellipse
+	 */
+	public void fillEllipse(final double x, final double y, final double w, final double h) {
+		shape = new Ellipse2D.Double(x, y, w, h);
 		// _RT.println("ShapeElement.fillEllipse: "+shape);
 		fillColor = drawing.currentFillColor;
 		drawing.repaintMe();
 	}
 
-	public void fillRectangle(final double x, final double y, final double width, final double height) {
-		shape = new Rectangle2D.Double(x, y, width, height);
+	/**
+	 * Fill Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 */
+	public void fillRectangle(final double x, final double y, final double w, final double h) {
+		shape = new Rectangle2D.Double(x, y, w, h);
 		fillColor = drawing.currentFillColor;
 		drawing.repaintMe();
 	}
 
-	public void fillRoundRectangle(final double x, final double y, final double width, final double height,
+	/**
+	 * Fill Rounded Rectangle.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 * @param arcw the width of the arc to use to round off the corners
+	 * @param arch the height of the arc to use to round off the corners
+	 */
+	public void fillRoundRectangle(final double x, final double y, final double w, final double h,
 			final double arcw, final double arch) {
-		shape = new RoundRectangle2D.Double(x, y, width, height, arcw, arch);
+		shape = new RoundRectangle2D.Double(x, y, w, h, arcw, arch);
 		fillColor = drawing.currentFillColor;
 		drawing.repaintMe();
 	}
 
+	/**
+	 * Set fill and draw color.
+	 * @param rgb the new fill and draw color.
+	 */
 	public void setColor(final int rgb) {
 		if (fillColor != null) {
 			fillColor = new Color(rgb);
@@ -127,10 +195,20 @@ public class _ShapeElement extends _Link implements _Drawing.Animable {
 		drawing.repaintMe();
 	}
 
+	/**
+	 * Set stroke size.
+	 * @param size the new stroke size.
+	 */
 	public void setStroke(final float size) {
 		stroke = new BasicStroke(size);
 	}
 
+	/**
+	 * Instant move.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 */
 	public void instantMoveTo(final double x, final double y) {
 		if (shape instanceof RectangularShape rect) {
 			rect.setFrame(x, y, rect.getWidth(), rect.getHeight());
@@ -139,6 +217,13 @@ public class _ShapeElement extends _Link implements _Drawing.Animable {
 	}
 
 	// speed = pixels per milli-second ???
+	/**
+	 * Rolling motion to a new position.
+	 * 
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param speed pixels per milli-second
+	 */
 	public void moveTo(final double x, final double y, final double speed) {
 		if (shape == null)
 			return;
