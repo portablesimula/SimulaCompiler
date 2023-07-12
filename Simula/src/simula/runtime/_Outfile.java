@@ -107,7 +107,7 @@ public class _Outfile extends _Imagefile {
 	 * Boolean procedure close;
 	 * if OPEN then
 	 * begin ... ! 
-	 *    if pos <> 1 then outimage;
+	 *    if pos ne 1 then outimage;
 	 *    image :- notext;
 	 *    ... ; ! perform closing actions on external file;
 	 *    OPEN  := false;

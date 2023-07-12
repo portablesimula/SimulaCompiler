@@ -33,7 +33,7 @@ public class _RandomDrawing {
 	 *		return val' = 1.0 - U' / (2**n-1)
 	 *
 	 * In this case the new value of U will also be negative,
-	 * while the returned real still lies in the interval <0,1>.
+	 * while the returned real still lies in the interval &lt;0,1>.
 	 * 
 	 * If the initial U is zero, U is replaced by System.currentTimeMillis()
 	 * Then U is forced to be an odd number by: U = U | 1

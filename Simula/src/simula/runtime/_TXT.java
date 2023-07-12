@@ -197,7 +197,7 @@ public final class _TXT {
 	 * <pre>
 	 *        X.sub(i,n).sub(j,m) == X.sub(i+j-1,m)
 	 * 
-	 *        n <> 0  imp  X.main == X.sub(i,n).main
+	 *        n ne 0  imp  X.main == X.sub(i,n).main
 	 * 
 	 *        X.main.sub(X.start,X.length) == X
 	 * </pre>
@@ -490,10 +490,10 @@ public final class _TXT {
 	 * The resulting numeric item is an INTEGER ITEM if n=0 or a DECIMAL ITEM with a
 	 * FRACTION of n digits if n>0. It designates a number equal to the value of r
 	 * or an approximation to the value of r, correctly rounded to n decimal places.
-	 * If n<0, a run-time error is caused.
+	 * If n&lt;0, a run-time error is caused.
 	 * 
-	 * @param r
-	 * @param n
+	 * @param r the argument
+	 * @param n number of digits after decimal sign
 	 */
 	public static void putfix(final _TXT T, double r, int n) {
 		if (n < 0)
@@ -518,7 +518,7 @@ public final class _TXT {
 	 * implementation-defined number of characters. The EXPONENT is preceded by a
 	 * SIGN PART if n=0, or by an INTEGER ITEM with one digit if n=1, or if n>1, by
 	 * a DECIMAL ITEM with an INTEGER ITEM of 1 digit only, and a fraction of n-1
-	 * digits. If n<0 a runtime error is caused.
+	 * digits. If n&lt;0 a runtime error is caused.
 	 * 
 	 * @param r
 	 * @param n
@@ -577,14 +577,14 @@ public final class _TXT {
 	}
 
 	/**
-	 * The resulting numeric item is a GROUPED ITEM with no DECIMAL MARK if n<=0,
+	 * The resulting numeric item is a GROUPED ITEM with no DECIMAL MARK if n&lt;=0,
 	 * and with a DECIMAL MARK followed by total of n digits if n>0. Each digit
 	 * group consists of 3 digits, except possibly the first one, and possibly the
 	 * last one following a DECIMAL MARK. The numeric item is an exact
 	 * representation of the number i * 10**(-n).
 	 * 
-	 * @param i
-	 * @param n
+	 * @param val an integer value
+	 * @param n number of digits after a decimal mark
 	 */
 	public static void putfrac(final _TXT T, final int val, final int n) {
 		int v; // Scaled value (abs)

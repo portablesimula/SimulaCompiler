@@ -17,8 +17,6 @@ import java.util.StringTokenizer;
 
 /**
  * The class file.
- * <p>
- * 
  * <pre>
  *    class file(FILENAME);  value FILENAME;  text FILENAME;
  *    begin Boolean OPEN;

@@ -253,8 +253,8 @@ public final class StandardClass extends ClassDeclaration {
 				,parameter("x",new OverLoad(Type.Integer,Type.Real,Type.LongReal,Type.Boolean,Type.Character)));
 			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edfix"
 				,parameter("x",new OverLoad(Type.Real,Type.LongReal)),parameter("n",Type.Integer));
-			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edtime"
-				,parameter("x",new OverLoad(Type.Real,Type.LongReal)));
+//			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Text,"edtime"
+//				,parameter("x",new OverLoad(Type.Real,Type.LongReal)));
 		}
 		
 		// *****************************************

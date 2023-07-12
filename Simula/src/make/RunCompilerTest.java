@@ -181,8 +181,8 @@ public final class RunCompilerTest {
 //		String name="/FECTest/fecTest.sim";
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		// String name="/simple/adHoc00.sim";
-		 String name="/simple/adHoc01.sim";
+		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";
 		// String name="/simple/adHoc04.sim";

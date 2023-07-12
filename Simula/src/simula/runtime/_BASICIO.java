@@ -17,13 +17,12 @@ package simula.runtime;
  * inaccessible to the user program (cf 1.10).
  * <p>
  * The user's main program acts as if it were embedded as follows:
- * <p>
  * 
  * <pre>
  *             BASICIO (inlength, outlength) begin  ! prefixed block;
  *                   inspect SYSIN do
  *                   inspect SYSOUT do
- *                   begin  <external-head> <program>  end
+ *                   begin  &lt;external-head&gt; &lt;program&gt;  end
  *             end prefixed block
  * </pre>
  * 
@@ -49,7 +48,6 @@ package simula.runtime;
  * subclass of one of these.
  * <p>
  * The overall organization of "BASICIO" is as follows:
- * <p>
  * 
  * <pre>
  *  ENVIRONMENT class BASICIO (INPUT_LINELENGTH, OUTPUT_LINELENGTH);
@@ -98,6 +96,8 @@ package simula.runtime;
  * The procedure "terminate_program" terminates program execution. It closes
  * SYSIN and SYSOUT. It is implementation-dependent with respect to whether or
  * not other open files are also closed.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_BASICIO.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -105,7 +105,11 @@ package simula.runtime;
  */
 public class _BASICIO extends _ENVIRONMENT {
 
-	// Constructor
+	/**
+	 *  Constructor
+	 *  
+	 *  @param staticLink pointer to enclosing block
+	 */  
 	public _BASICIO(final _RTObject staticLink) {
 		super(staticLink);
 	}
@@ -114,6 +118,7 @@ public class _BASICIO extends _ENVIRONMENT {
 //  begin ... ;  goto STOP  end terminate_program;
 //  DEFINED IN _RTObject	
 
+	@Override
 	public String toString() {
 		return ("Simula " + this.getClass().getSimpleName());
 	}

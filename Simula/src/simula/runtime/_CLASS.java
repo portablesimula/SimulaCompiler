@@ -8,10 +8,10 @@
 package simula.runtime;
 
 /**
-* 
+* This class ...
 * @author SIMULA Standards Group
 * @author Øystein Myhre Andersen
-*/
+ */
 public abstract class _CLASS extends _BASICIO implements Runnable {
 	// Constructor
 	public _CLASS(final _RTObject staticLink) {

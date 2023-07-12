@@ -12,16 +12,21 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Class DEC_Lib, a set of utility procedures from DEC Handbook.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_DEC_Lib.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public class _DEC_Lib extends _CLASS {
-	private static boolean VERBOSE = false;
 
 	private static _DEC_Lib DECLIB;
 
 	// Constructor
+	/**
+	 * Normal Constructor
+	 * @param staticLink static link
+	 */
 	public _DEC_Lib(final _RTObject staticLink) {
 		super(staticLink);
 		DECLIB = this;
@@ -34,20 +39,22 @@ public class _DEC_Lib extends _CLASS {
 		return (this);
 	}
 
-	/**
+	/** DEC_Lib Procedure abort.
 	 * <pre>
 	 * procedure abort(message); ! Stop execution. ;
 	 *
 	 * Abort will print the message on the error device and then call
 	 * terminate_program.
 	 * </pre>
+	 * 
+	 * @param mess a descriptive message
 	 */
 	public static void abort(_TXT mess) {
 		_RT.println(mess.edText());
 		_RTObject.terminate_program();
 	}
 
-	/**
+	/** DEC_Lib Procedure change.
 	 * <pre>
 	 * boolean procedure change(master,oldtext,newtext);   ! Replacing Subtexts. ;
 	 *
@@ -77,7 +84,7 @@ public class _DEC_Lib extends _CLASS {
 	 *        text local; integer p;
 	 *        local:-master;
 	 *        p:=search(local,oldtext);
-	 *        if p <= local.length then begin
+	 *        if p &lt;= local.length then begin
 	 *            change:=true;
 	 *            if oldtext.length>=newtext.length then begin
 	 *                local.sub(p,newtext.length):=newtext;
@@ -85,13 +92,18 @@ public class _DEC_Lib extends _CLASS {
 	 *                    from(local,p+newtext.length):=from(local,p+oldtext.length);
 	 *                    local:-local.sub(1,local.length-oldtext.length+newtext.length)
 	 *                end
-	 *            end else local:-local.sub(1,p-1) & newtext & from(local,p+oldtext.length);
+	 *            end else local:-local.sub(1,p-1) &amp; newtext &amp; from(local,p+oldtext.length);
 	 *            local.setpos(p+newtext.length);
 	 *            master:-local
 	 *        end else master.setpos(0)
 	 *    end;
 	 * 
 	 * </pre>
+	 * 
+	 * @param master argument
+	 * @param oldtext argument
+	 * @param newtext argument
+	 * @return false: no change has occurred
 	 */
 	public static boolean change(_NAME<_TXT> master, _TXT oldtext, _TXT newtext) {
 		String oldt = oldtext.edText();
@@ -125,7 +137,7 @@ public class _DEC_Lib extends _CLASS {
 		return (true);
 	}
 
-	/**
+	/** DEC_Lib Procedure checkextension.
 	 * <pre>
 	 * text procedure checkextension(fileName,defaultextension);
 	 *
@@ -137,6 +149,10 @@ public class _DEC_Lib extends _CLASS {
 	 *         will leave fileName unaltered.
 	 * 
 	 * </pre>
+	 * 
+	 * @param fileName argument
+	 * @param defaultextension argument
+	 * @return the resulting text
 	 */
 	public static _TXT checkextension(_TXT fileName, _TXT defaultextension) {
 		String f = fileName.edText();
@@ -146,27 +162,26 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * DEC_Lib Procedure checkint.
 	 * <pre>
-	 * <type> procedure check<type>(t); name t; text t; where <type> ::= real | int | frac
-	 *
-	 * checkNumber analyses the text t from t.pos and on. If a get<Number> operation
+	 * &lt;type> procedure check&lt;type>(t); name t; text t; where &lt;type> ::= real | int | frac
+	 * </pre>
+	 * check&lt;type> analyses the text t from t.pos and on. If a get&lt;Number> operation
 	 * from this position is legal the returned value is +1.
-	 * 
+	 * <p>
 	 * If it would give an error - then if the remaining text string is blank, the
 	 * result is 0, else -1.
-	 * 
+	 * <p>
 	 * pos is placed after a legal item (+1), after the first nonblank illegal
 	 * character (-1) or after the text if the rest is empty (0).
-	 * 
+	 * <p>
 	 * NOTE: The current implementation will place t.pos after a complete real item,
 	 * even if it overflows. Real underflow produces +0, overflow Infinity, both of
 	 * which are treated as legal results
-	 * </pre>
+	 * 
+	 * @param t name reference to argument text
+	 * @return resulting code +1:OK else error
 	 */
-	public abstract class NumberChecker<T> {
-		public abstract T check(_TXT T) throws Exception;
-	}
-
 	public static int checkint(_NAME<_TXT> t) {
 		NumberChecker<Number> intChecker = DECLIB.new NumberChecker<Number>() {
 			@Override
@@ -177,6 +192,12 @@ public class _DEC_Lib extends _CLASS {
 		return (checkNumber(t, intChecker));
 	}
 
+	/**
+	 * DEC_Lib Procedure checkfrac.
+	 * See <b>{@link _DEC_Lib#checkint(_NAME<_TXT>)}</b>
+	 * @param t name reference to argument text
+	 * @return resulting code +1:OK else error
+	 */
 	public static int checkfrac(_NAME<_TXT> t) {
 		NumberChecker<Number> fracChecker = DECLIB.new NumberChecker<Number>() {
 			@Override
@@ -187,6 +208,12 @@ public class _DEC_Lib extends _CLASS {
 		return (checkNumber(t, fracChecker));
 	}
 
+	/**
+	 * DEC_Lib Procedure checkrealc.
+	 * See <b>{@link _DEC_Lib#checkint(_NAME<_TXT>)}</b>
+	 * @param t name reference to argument text
+	 * @return resulting code +1:OK else error
+	 */
 	public static int checkreal(_NAME<_TXT> t) {
 		NumberChecker<Number> realChecker = DECLIB.new NumberChecker<Number>() {
 			@Override
@@ -195,6 +222,10 @@ public class _DEC_Lib extends _CLASS {
 			}
 		};
 		return (checkNumber(t, realChecker));
+	}
+
+	private abstract class NumberChecker<T> {
+		public abstract T check(_TXT T) throws Exception;
 	}
 
 	private static int checkNumber(_NAME<_TXT> t, NumberChecker<Number> numberChecker) {
@@ -220,7 +251,7 @@ public class _DEC_Lib extends _CLASS {
 		return (-1);
 	}
 
-	/**
+	/** DEC_Lib Procedure compress.
 	 * <pre>
 	 * text procedure compress(t,c); text t; character c;
 	 * 
@@ -235,6 +266,10 @@ public class _DEC_Lib extends _CLASS {
 	 *     gives t1="ABCDCxDx", t2==t1.sub(1,4), t2="ABCD".
 	 * 
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @param c search character
+	 * @return the resulting text
 	 */
 	public static _TXT compress(_TXT t, char c) {
 		if (t == null)
@@ -255,6 +290,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * DEC_Lib Procedure conc.
 	 * <pre>
 	 * text procedure conc(t1,t2); text t1,t2;
 	 * text procedure conc2(t1,t2); text t1,t2;
@@ -263,30 +299,68 @@ public class _DEC_Lib extends _CLASS {
 	 * text procedure conc5(t1,t2,t3,t4,t5); text t1,t2,t3,t4,t5;
 	 * 
 	 * Concatenate texts. Provided for compatibility only, use the text
-	 * concatenation operator & instead!
+	 * concatenation operator &amp; instead!
 	 * </pre>
+	 * 
+	 * @param t1 argument t1
+	 * @param t2 argument t2
+	 * @return the concatenated text
+	 */
+	public static _TXT conc(_TXT t1, _TXT t2) {
+		return (new _TXT(t1.edText() + t2.edText()));
+	}
+	
+	/**
+	 * DEC_Lib Procedure conc2.
+	 * See <b>{@link _DEC_Lib#conc(_TXT, _TXT)}</b>
+	 * @param t1 argument t1
+	 * @param t2 argument t2
+	 * @return the concatenated text
 	 */
 	public static _TXT conc2(_TXT t1, _TXT t2) {
 		return (new _TXT(t1.edText() + t2.edText()));
 	}
 
-	public static _TXT conc(_TXT t1, _TXT t2) {
-		return (new _TXT(t1.edText() + t2.edText()));
-	}
-
+	/**
+	 * DEC_Lib Procedure conc3.
+	 * See <b>{@link _DEC_Lib#conc(_TXT, _TXT)}</b>
+	 * @param t1 argument t1
+	 * @param t2 argument t2
+	 * @param t3 argument t3
+	 * @return the concatenated text
+	 */
 	public static _TXT conc3(_TXT t1, _TXT t2, _TXT t3) {
 		return (new _TXT(t1.edText() + t2.edText() + t3.edText()));
 	}
 
+	/**
+	 * DEC_Lib Procedure conc4.
+	 * See <b>{@link _DEC_Lib#conc(_TXT, _TXT)}</b>
+	 * @param t1 argument t1
+	 * @param t2 argument t2
+	 * @param t3 argument t3
+	 * @param t4 argument t4
+	 * @return the concatenated text
+	 */
 	public static _TXT conc4(_TXT t1, _TXT t2, _TXT t3, _TXT t4) {
 		return (new _TXT(t1.edText() + t2.edText() + t3.edText() + t4.edText()));
 	}
 
+	/**
+	 * DEC_Lib Procedure conc5.
+	 * See <b>{@link _DEC_Lib#conc(_TXT, _TXT)}</b>
+	 * @param t1 argument t1
+	 * @param t2 argument t2
+	 * @param t3 argument t3
+	 * @param t4 argument t4
+	 * @param t5 argument t5
+	 * @return the concatenated text
+	 */
 	public static _TXT conc5(_TXT t1, _TXT t2, _TXT t3, _TXT t4, _TXT t5) {
 		return (new _TXT(t1.edText() + t2.edText() + t3.edText() + t4.edText() + t5.edText()));
 	}
 
-	/**
+	/** DEC_Lib Procedure cptime.
 	 * <pre>
 	 * real procedure cptime;
 	 *
@@ -295,26 +369,26 @@ public class _DEC_Lib extends _CLASS {
 	 * instead!
 	 *
 	 * real procedure cptime; begin cptime:= cputime; end;
-	 *
-	 * @return
 	 * </pre>
+	 *
+	 * @return seconds since start of program
 	 */
 	public static double cptime() {
 		return (cputime());
 	}
 
-	/**
+	/** DEC_Lib Procedure datno-
 	 * <pre>
 	 * integer procedure dayno;
-	 *
-	 * Returns the day number in current month.
 	 * </pre>
+	 * 
+	 * @return the day number in current month.
 	 */
 	public static int dayno() {
 		return (_TXT.getint(_TXT.sub(datetime(), 9, 2)));
 	}
 
-	/**
+	/** DEC_Lib Procedure daytime.
 	 * <pre>
 	 * text procedure daytime;
 	 *
@@ -326,12 +400,14 @@ public class _DEC_Lib extends _CLASS {
 	 *               ss        is seconds.
 	 *         at the time of the call.
 	 * </pre>
+	 * 
+	 * @return the resulting text
 	 */
 	public static _TXT daytime() {
 		return (_TXT.sub(datetime(), 12, 8));
 	}
 
-	/**
+	/** DEC_Lib Procedure depchar.
 	 * <pre>
 	 * procedure depchar(t,p,c); text t; integer p; character c;
 	 *
@@ -341,19 +417,23 @@ public class _DEC_Lib extends _CLASS {
 	 * This is a safe version of S-port standard procedure StoreChar.
 	 *
 	 *    procedure depchar(t,p,c); text t; integer p; character c;
-	 *    if p>0 and p<=t.length
+	 *    if p>0 and p&lt;=t.length
 	 *    then t.sub(p,1).putchar(c);
 	 * 
 	 * </pre>
+	 * 
+	 * @param t a text reference
+	 * @param p the text position in which the character is stored 
+	 * @param c a character
 	 */
-	public static void depchar(_TXT t1, int p, char c) {
-		if (p > 0 & p <= t1.LENGTH) {
-			t1.POS = p - 1;
-			_TXT.putchar(t1, c);
+	public static void depchar(_TXT t, int p, char c) {
+		if (p > 0 & p <= t.LENGTH) {
+			t.POS = p - 1;
+			_TXT.putchar(t, c);
 		}
 	}
 
-	/**
+	/** DEC_Lib Procedure enterdebug
 	 * <pre>
 	 * procedure enterdebug(maycontinue); boolean maycontinue; ! Enter SIMOB ;
 	 *
@@ -366,6 +446,8 @@ public class _DEC_Lib extends _CLASS {
 	 *           if not maycontinue then terminate_program;
 	 *    end;
 	 * </pre>
+	 * 
+	 * @param maycontinue true: the program may continue after SIMOB session
 	 */
 	public static void enterdebug(boolean maycontinue) {
 //		if(SIMOB.isPresent) _RT.NOT_IMPLEMENTED("DECLIB: enterdebug");
@@ -373,7 +455,7 @@ public class _DEC_Lib extends _CLASS {
 			terminate_program();
 	}
 
-	/**
+	/** DEC_Lib Procedure exit.
 	 * <pre>
 	 * procedure exit(n); integer n;
 	 *
@@ -397,6 +479,8 @@ public class _DEC_Lib extends _CLASS {
 	 *          end;
 	 *    end;
 	 * </pre>
+	 * 
+	 * @param code integer value
 	 */
 	public static void exit(int code) {
 		switch (code) {
@@ -413,7 +497,7 @@ public class _DEC_Lib extends _CLASS {
 		}
 	}
 
-	/**
+	/** DEC_Lib Procedure fetchar.
 	 * <pre>
 	 * character procedure fetchar(t,p); text t; integer p;
 	 *
@@ -422,9 +506,13 @@ public class _DEC_Lib extends _CLASS {
 	 * This is a safe version of S-port standard procedure LoadChar.
 	 *
 	 *    character procedure fetchar(t,p); text t; integer p;
-	 *    if p>0 and p<=t.length then fetchar:= t.sub(p,1).getchar;
+	 *    if p>0 and p&lt;=t.length then fetchar:= t.sub(p,1).getchar;
 	 *
 	 * </pre>
+	 * 
+	 * @param t a text reference
+	 * @param p the text position in which the character is stored 
+	 * @return the character at position p
 	 */
 	public static char fetchar(_TXT t, int p) {
 		if (p > 0 & p <= t.LENGTH) {
@@ -434,7 +522,7 @@ public class _DEC_Lib extends _CLASS {
 		return (0);
 	}
 
-	/**
+	/** DEC_Lib Procedure findtrigger.
 	 * <pre>
 	 * character procedure findtrigger(master,triggers); name master; text master,triggers;
 	 *
@@ -453,6 +541,10 @@ public class _DEC_Lib extends _CLASS {
 	 *  out: master.setpos(t.pos);
 	 * end;
 	 * </pre>
+	 * 
+	 * @param master argument
+	 * @param triggers argument
+	 * @return the resulting character
 	 */
 	public static char findtrigger(_NAME<_TXT> master, _TXT triggers) {
 		_TXT M = master.get();
@@ -469,16 +561,20 @@ public class _DEC_Lib extends _CLASS {
 		return 0;
 	}
 
-	/**
+	/** DEC_Lib Procedure from.
 	 * <pre>
 	 * text procedure from(t,p); text t; integer p;
 	 *
 	 * Returns a reference to the longest subtext of t starting at pos = p.
 	 *
 	 * text procedure from(t,p); text t; integer p;
-	 * if p<=t.Length then from :- if p<=0 then t else t.Sub(p,t.Length-p+1);
+	 * if p&lt;=t.Length then from :- if p&lt;=0 then t else t.Sub(p,t.Length-p+1);
 	 *
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @param p start pos
+	 * @return the resulting text
 	 */
 	public static _TXT from(_TXT t, int p) {
 		if (p < t.LENGTH) {
@@ -490,7 +586,7 @@ public class _DEC_Lib extends _CLASS {
 		return (null);
 	}
 
-	/**
+	/** DEC_Lib Procedure front.
 	 * <pre>
 	 * text procedure front(t); text t;
 	 *
@@ -499,6 +595,9 @@ public class _DEC_Lib extends _CLASS {
 	 * text procedure front(t); text t; if t=/=notext then front:-t.sub(1,t.pos-1);
 	 * 
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @return the resulting text
 	 */
 	public static _TXT front(_TXT t) {
 		if (t != null)
@@ -506,7 +605,7 @@ public class _DEC_Lib extends _CLASS {
 		return (null);
 	}
 
-	/**
+	/** DEC_Lib Procedure frontcompare.
 	 * <pre>
 	 * boolean procedure frontcompare(string,config); text string,config;
 	 *
@@ -517,6 +616,10 @@ public class _DEC_Lib extends _CLASS {
 	 *   frontcompare:= string.Sub(string.pos,config.Length) = config;
 	 * 
 	 * </pre>
+	 * 
+	 * @param string argument
+	 * @param config argument
+	 * @return true: codition holds
 	 */
 	public static boolean frontcompare(_TXT string, _TXT config) {
 		String t1 = string.edText().substring(string.POS);
@@ -524,7 +627,7 @@ public class _DEC_Lib extends _CLASS {
 		return (t1.startsWith(t2));
 	}
 
-	/**
+	/** DEC_Lib Procedure frontstrip-
 	 * <pre>
 	 * text procedure frontstrip(t); text t;
 	 *
@@ -532,13 +635,16 @@ public class _DEC_Lib extends _CLASS {
 	 * non-blank character.
 	 * 
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @return the resulting text
 	 */
 	public static _TXT frontstrip(_TXT t) {
 		String T = t.edText().stripLeading();
 		return (new _TXT(T));
 	}
 
-	/**
+	/** DEC_Lib Procedure getitem.
 	 * <pre>
 	 * text procedure getitem(tt); name tt; text tt;
 	 *
@@ -583,17 +689,19 @@ public class _DEC_Lib extends _CLASS {
 	 * end;
 	 *
 	 * </pre>
+	 * @param tt argument text
+	 * @return the resulting text
 	 */
-	enum State {
-		NULL, NUMBER, IDENTIFIER, SYMBOL
-	};
-
 	public static _TXT getitem(_NAME<_TXT> tt) {
 		_TXT TXT = tt.get();
 		_TXT RES = GETITEM(TXT);
 		tt.put(TXT);
 		return (RES);
 	}
+
+	enum State {
+		NULL, NUMBER, IDENTIFIER, SYMBOL
+	};
 
 	private static _TXT GETITEM(_TXT TXT) {
 		String s = TXT.edText();
@@ -630,7 +738,7 @@ public class _DEC_Lib extends _CLASS {
 		return (new _TXT(rest.substring(0, p)));
 	}
 
-	/**
+	/** DEC_Lib Procedure hash.
 	 * <pre>
 	 * integer procedure hash(t,n); text t; integer n;
 	 *
@@ -655,6 +763,10 @@ public class _DEC_Lib extends _CLASS {
 	 *    end of hash;
 	 *
 	 * </pre>
+	 * 
+	 * @param t the argument text
+	 * @param n the argument n
+	 * @return resulting hash value, in the range (0:n-1)
 	 */
 	public static int hash(_TXT t, int n) {
 		String S = t.edText();
@@ -671,7 +783,7 @@ public class _DEC_Lib extends _CLASS {
 		return (mod(a, n));
 	}
 
-	/**
+	/** DEC_Lib Procedure initem.
 	 * <pre>
 	 * text procedure initem(fileref); ref(file) fileref; begin
 	 *
@@ -709,6 +821,9 @@ public class _DEC_Lib extends _CLASS {
 	 *   end;
 	 * 
 	 * </pre>
+	 * 
+	 * @param f argument File
+	 * @return the resulting text
 	 */
 	public static _TXT initem(_File f) {
 		if (f instanceof _Infile | f instanceof _Directfile) {
@@ -731,7 +846,7 @@ public class _DEC_Lib extends _CLASS {
 		return (null);
 	}
 
-	/**
+	/** DEC_Lib Procedure insinglechar.
 	 * <pre>
 	 * character procedure insinglechar;
 	 * 
@@ -743,6 +858,8 @@ public class _DEC_Lib extends _CLASS {
 	 * If it is not set a runtime error will occur.
 	 * 
 	 * </pre>
+	 * 
+	 * @return single character
 	 */
 	public static char insinglechar() {
 		try {
@@ -753,7 +870,7 @@ public class _DEC_Lib extends _CLASS {
 		}
 	}
 
-	/**
+	/** DEC_Lib Procedure linecount.
 	 * <pre>
 	 * integer procedure linecount(pfil); ref(PrintFile) pfil; begin
 	 *     if pfil==none then linecount:=-1
@@ -766,6 +883,9 @@ public class _DEC_Lib extends _CLASS {
 	 * end;
 	 * 
 	 * </pre>
+	 * 
+	 * @param pf argument Printfile
+	 * @return resulting lpp or code
 	 */
 	public static int linecount(_Printfile pf) {
 		if (pf == null)
@@ -775,7 +895,7 @@ public class _DEC_Lib extends _CLASS {
 		return (pf._LINES_PER_PAGE);
 	}
 
-	/**
+	/** DEC_Lib Procedure lowc.
 	 * <pre>
 	 * character procedure lowc(c); character c;
 	 *
@@ -787,13 +907,15 @@ public class _DEC_Lib extends _CLASS {
 	 *          if c > 'z' then
 	 *              char(rank(c)-rank('A')+rank('a')) else c;
 	 * </pre>
+	 * @param c argument character
+	 * @return the lower case versjon
 	 */
 	public static char lowc(char c) {
 		return (Character.toLowerCase(c));
 	}
 
-	/**
-	 * </pre>
+	/** DEC_Lib Procedure maketext.
+	 * <pre>
 	 * text procedure maketext(ch,n); character ch; integer n;
 	 *
 	 * Return a text object of length n, filled with character ch.
@@ -803,6 +925,10 @@ public class _DEC_Lib extends _CLASS {
 	 * maketext:-t; end;
 	 *
 	 * </pre>
+	 * 
+	 * @param c argument character
+	 * @param n text length
+	 * @return resulting text value
 	 */
 	public static _TXT maketext(final char c, final int n) {
 		if (n <= 0)
@@ -817,7 +943,7 @@ public class _DEC_Lib extends _CLASS {
 		return (textRef);
 	}
 
-	/**
+	/** DEC_Lib Procedure puttext.
 	 * <pre>
 	 * boolean procedure puttext(oldstring,newstring); name oldstring; text
 	 * oldstring,newstring;
@@ -832,7 +958,7 @@ public class _DEC_Lib extends _CLASS {
 	 *  boolean procedure puttext(oldstring,newstring); name oldstring; text oldstring,newstring;
 	 *  begin text s;
 	 *      s:-oldstring;
-	 *      if s.pos+newstring.length-1 <= s.length 
+	 *      if s.pos+newstring.length-1 &lt;= s.length 
 	 *         and then not s.constant
 	 *      then begin
 	 *          puttext:=true;
@@ -843,6 +969,9 @@ public class _DEC_Lib extends _CLASS {
 	 *  end;
 	 * 
 	 * </pre>
+	 * @param oldstring argument old string
+	 * @param newstring argument new string
+	 * @return tthe resulting text
 	 */
 	public static boolean puttext(_NAME<_TXT> oldstring, _TXT newstring) {
 		_TXT s = oldstring.get();
@@ -855,7 +984,7 @@ public class _DEC_Lib extends _CLASS {
 		return (false);
 	}
 
-	/**
+	/** DEC_Lib Procedure rest.
 	 * <pre>
 	 * text procedure rest(t); text t;
 	 *
@@ -864,13 +993,16 @@ public class _DEC_Lib extends _CLASS {
 	 * text procedure rest(t); text t; rest :- t.sub(t.pos,t.length+1-t.pos);
 	 *
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @return resulting text
 	 */
 	public static _TXT rest(_TXT t) {
 		int pos = t.POS + 1;
 		return (_TXT.sub(t, pos, t.LENGTH - pos + 1));
 	}
 
-	/**
+	/** DEC_Lib Procedure scanchar.
 	 * <pre>
 	 * character procedure scanchar(t); name t; text t;
 	 *
@@ -881,6 +1013,9 @@ public class _DEC_Lib extends _CLASS {
 	 * scanchar:= if t.more then t.getchar else char(0);
 	 * 
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @return resulting character value
 	 */
 	public static char scanchar(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -891,7 +1026,7 @@ public class _DEC_Lib extends _CLASS {
 		return (res);
 	}
 
-	/**
+	/** DEC_Lib Procedure scanfrac.
 	 * <pre>
 	 * integer procedure scanfrac(t); name t; text t;
 	 * 
@@ -906,6 +1041,8 @@ public class _DEC_Lib extends _CLASS {
 	 * t.pos will only be moved if de-editing was successful.
 	 * 
 	 * </pre>
+	 * @param t argument text
+	 * @return the resulting integer value
 	 */
 	public static int scanfrac(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -921,7 +1058,7 @@ public class _DEC_Lib extends _CLASS {
 		return (minint);
 	}
 
-	/**
+	/** DEC_Lib Procedure scanint.
 	 * <pre>
 	 * integer procedure scanint(t); name t; text t;
 	 *
@@ -949,6 +1086,8 @@ public class _DEC_Lib extends _CLASS {
 	 *    end;
 	 *
 	 * </pre>
+	 * @param t argument text
+	 * @return the resulting integer value
 	 */
 	public static int scanint(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -964,7 +1103,7 @@ public class _DEC_Lib extends _CLASS {
 		return (minint);
 	}
 
-	/**
+	/** DEC_Lib Procedure scanreal.
 	 * <pre>
 	 * long real procedure scanreal(t); name t; text t;
 	 *
@@ -978,7 +1117,7 @@ public class _DEC_Lib extends _CLASS {
 	 * 
 	 * t.pos will only be moved if de-editing was successful.
 	 *
-	 *    comment -1&33 should be the most negative real value;
+	 *    comment -1&amp;33 should be the most negative real value;
 	 *    long real procedure scanreal(t);  name t;  text t;
 	 *    begin
 	 *      EXTERNAL text procedure rest;
@@ -992,6 +1131,9 @@ public class _DEC_Lib extends _CLASS {
 	 *    end;
 	 * 
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @return resulting long real value
 	 */
 	public static double scanreal(_NAME<_TXT> t) {
 		_TXT T = t.get();
@@ -1007,7 +1149,7 @@ public class _DEC_Lib extends _CLASS {
 		return minreal;
 	}
 
-	/**
+	/** DEC_Lib Procedure scanto.
 	 * <pre>
 	 * text procedure scanto(tt,c); name tt; text tt; character c;
 	 *
@@ -1033,6 +1175,10 @@ public class _DEC_Lib extends _CLASS {
 	 *    end of scanto;
 	 * 
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @param c stop character c
+	 * @return the resulting text
 	 */
 	public static _TXT scanto(_NAME<_TXT> t, char c) {
 		_TXT TXT = t.get();
@@ -1052,6 +1198,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * DEC_Lib Procedure search.
 	 * <pre>
 	 * integer procedure search(t1,t2); text t1,t2;
 	 *
@@ -1059,6 +1206,10 @@ public class _DEC_Lib extends _CLASS {
 	 * Return: The pos indicator of first character of subtext within t1.
 	 *         If not found return t1.length+1
 	 * </pre>
+	 * 
+	 * @param t1 master text
+	 * @param t2 text to be searched for
+	 * @return resulting pos
 	 */
 	public static int search(_TXT t1, _TXT t2) {
 		if (t1 == null | t2 == null)
@@ -1070,6 +1221,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * DEC_Lib Procedure skip.
 	 * <pre>
 	 * text procedure skip(tt,c); name tt; text tt; character c; begin
 	 *
@@ -1080,7 +1232,7 @@ public class _DEC_Lib extends _CLASS {
 	 *
 	 *   text procedure skip(tt,c); name tt; text tt; character c; begin
 	 *       text t; t:- tt;
-	 *       while t.more do if t.getchar <> c then begin
+	 *       while t.more do if t.getchar ne c then begin
 	 *           t.setpos(t.pos-1);
 	 *           skip1:- t.sub(t.pos,t.length-t.pos+1);
 	 *           goto out
@@ -1089,7 +1241,11 @@ public class _DEC_Lib extends _CLASS {
 	 *   end of skip;
 	 *
 	 * </pre>
-	 */
+	 * 
+	 * @param t argument text
+	 * @param c argument character
+	 * @return the resulting text
+	 */	
 	public static _TXT skip(_NAME<_TXT> t, char c) {
 		_TXT TXT = t.get();
 		String s = TXT.edText();
@@ -1111,6 +1267,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * DEC_Lib Procedure startpos.
 	 * <pre>
 	 * integer procedure startpos(t); text t;
 	 *
@@ -1120,12 +1277,16 @@ public class _DEC_Lib extends _CLASS {
 	 * integer procedure startpos(t); text t; begin startpos:=t.start; end;
 	 *
 	 * </pre>
+	 * 
+	 * @param t argument text
+	 * @return starting position of t within t.main
 	 */
 	public static int startpos(_TXT t) {
 		return (t.START + 1);
 	}
 
 	/**
+	 * DEC_Lib Procedure today.
 	 * <pre>
 	 * text procedure today;
 	 *
@@ -1135,6 +1296,8 @@ public class _DEC_Lib extends _CLASS {
 	 *
 	 * text procedure today; today:-datetime.sub(1,10);
 	 * </pre>
+	 * 
+	 * @return the resulting text
 	 */
 	public static _TXT today() {
 		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1143,6 +1306,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * DEC_Lib Procedure tsub.
 	 * <pre>
 	 * text procedure tsub(t,p,l); text t; integer p,l;
 	 *
@@ -1150,20 +1314,24 @@ public class _DEC_Lib extends _CLASS {
 	 * return notext instead.
 	 *
 	 *   text procedure tsub(t,p,l); text t; integer p,l;
-	 *   if p >= 1 and l >= 0 and p+l <= t.length + 1 then
+	 *   if p >= 1 and l >= 0 and p+l &lt;= t.length + 1 then
 	 *       tsub:- t.sub(p,l);
 	 *
 	 * </pre>
+	 * @param t argument text
+	 * @param p argument pos
+	 * @param l argument length
+	 * @return the resulting text
 	 */
-	public static _TXT tsub(_TXT t, int pos, int length) {
+	public static _TXT tsub(_TXT t, int p, int l) {
 		try {
-			return (_TXT.sub(t, pos, length));
+			return (_TXT.sub(t, p, l));
 		} catch (Exception e) {
 			return (null);
 		}
 	}
 
-	/**
+	/** DEC_Lib Procedure upc.
 	 * <pre>
 	 * character procedure upc(c); character c;
 	 *
@@ -1176,12 +1344,16 @@ public class _DEC_Lib extends _CLASS {
 	 *                char(rank(c)-rank('a')+rank('A')) else c;
 	 *
 	 * </pre>
+	 * 
+	 * @param c argument character
+	 * @return the upper case versjon
 	 */
 	public static char upc(char c) {
 		return (Character.toUpperCase(c));
 	}
 
 	/**
+	 * DEC_Lib Procedure upcompare.
 	 * <pre>
 	 * boolean procedure upcompare(master,test);
 	 *
@@ -1207,7 +1379,7 @@ public class _DEC_Lib extends _CLASS {
 	 *
 	 *
 	 *    boolean procedure upcompare(master,test); text master,test;
-	 *    if master.pos + test.length <= master.length + 1 then begin
+	 *    if master.pos + test.length &lt;= master.length + 1 then begin
 	 *        character cmaster,ctest;
 	 *        integer shift;
 	 *        shift:= rank('a') - rank('A');
@@ -1221,6 +1393,10 @@ public class _DEC_Lib extends _CLASS {
 	 *    end;
 	 *
 	 * </pre>
+	 * 
+	 * @param master argument master
+	 * @param test argument test
+	 * @return true if condition holds
 	 */
 	public static boolean upcompare(_TXT master, _TXT test) {
 		String mst = master.edText().toUpperCase().substring(_TXT.pos(master) - 1);
@@ -1229,6 +1405,7 @@ public class _DEC_Lib extends _CLASS {
 	}
 
 	/**
+	 * DEC_Lib Procedure upto.
 	 * <pre>
 	 * text procedure upto(t,p); text t; integer p;
 	 *
@@ -1238,6 +1415,9 @@ public class _DEC_Lib extends _CLASS {
 	 *   if i>0 then upto :- if p>t.length then t else t.sub(1,p-1);
 	 *
 	 * </pre>
+	 * @param t argument text
+	 * @param p pos limit
+	 * @return the resulting text
 	 */
 	public static _TXT upto(_TXT t, int p) {
 		if (p <= 0)

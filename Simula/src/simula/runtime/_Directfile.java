@@ -239,7 +239,7 @@ public class _Directfile extends _Imagefile {
 	 * 
 	 * <pre>
 	 *  procedure locate(i); integer i;
-	 *     if i<1 or i>MAXLOC then error("..." ! Parameter out of range; )
+	 *     if i&lt;1 or i>MAXLOC then error("..." ! Parameter out of range; )
 	 *     else begin
 	 *        LOC:= i;
 	 *         ... ;

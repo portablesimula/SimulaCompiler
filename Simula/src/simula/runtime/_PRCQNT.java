@@ -11,7 +11,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
-* 
+* Procedure quantity.
+*  
 * @author Øystein Myhre Andersen
 */
 public final class _PRCQNT {

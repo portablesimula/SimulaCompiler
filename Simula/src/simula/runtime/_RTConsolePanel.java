@@ -31,22 +31,70 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+/**
+ * This is an implementation of a Console Panel.
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public final class _RTConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static JTextPane textPane;
 
+	/**
+	 * the StyledDocument showed in this panel
+	 */
 	private StyledDocument doc;
+	
+	/**
+	 * Regular style
+	 */
 	private Style styleRegular;
+	
+	/**
+	 * Warning style
+	 */
 	private Style styleWarning;
-	private Style styleError;
-	private JPopupMenu popupMenu;
-	private JMenuItem clearItem;
-	private JMenuItem copyItem;
-	private boolean reading; // Used by KeyListener and read()
-	private char keyin; // Used by KeyListener and read()
 
+	/**
+	 * Error style
+	 */
+	private Style styleError;
+
+	/**
+	 * the Popup Menu
+	 */
+	private JPopupMenu popupMenu;
+	
+	/**
+	 * Menu item clear
+	 */
+	private JMenuItem clearItem;
+	
+	/**
+	 * Menu item copy
+	 */
+	private JMenuItem copyItem;
+	
+	/**
+	 * Used by KeyListener and read()
+	 */
+	private boolean reading;
+	
+	/**
+	 * Used by KeyListener and read()
+	 */
+	private char keyin;
+
+	/**
+	 * the Reader to read input from the console
+	 */
 	private Reader consoleReader;
 
+	/**
+	 * Reads a single character. 
+	 * @return The character read
+	 */
 	public char read() {
 		textPane.requestFocus();
 		reading = true; // Enables KeyListener (see below)
@@ -55,6 +103,10 @@ public final class _RTConsolePanel extends JPanel {
 		return (keyin);
 	}
 
+	/**
+	 * Get a reade suitable for reading from this panel
+	 * @return a reader
+	 */
 	public Reader getReader() {
 		if (consoleReader == null) {
 			consoleReader = new Reader() {
@@ -86,6 +138,10 @@ public final class _RTConsolePanel extends JPanel {
 		return (consoleReader);
 	}
 
+	/**
+	 * Get a OutputStream suitable for writing on this panel
+	 * @return a OutputStream
+	 */
 	public OutputStream getOutputStream() {
 		return (new OutputStream() {
 			@Override
@@ -96,6 +152,10 @@ public final class _RTConsolePanel extends JPanel {
 		});
 	}
 
+	/**
+	 * Get a writer suitable for writing on this panel
+	 * @return a writer
+	 */
 	public Writer getWriter() {
 		return (new Writer() {
 			@Override
@@ -117,6 +177,10 @@ public final class _RTConsolePanel extends JPanel {
 		});
 	}
 
+	/**
+	 * Get a OutputStream suitable for writing errors on this panel
+	 * @return a OutputStream
+	 */
 	public OutputStream getErrorStream() {
 		return (new OutputStream() {
 			@Override
@@ -127,14 +191,26 @@ public final class _RTConsolePanel extends JPanel {
 		});
 	}
 
+	/**
+	 * Write a string on this panel using styleRegular.
+	 * @param s a string to write
+	 */
 	public void write(final String s) {
 		write(s, styleRegular);
 	}
 
+	/**
+	 * Write a string on this panel using styleError.
+	 * @param s a string to write
+	 */
 	public void writeError(final String s) {
 		write(s, styleError);
 	}
 
+	/**
+	 * Write a string on this panel using styleWarning.
+	 * @param s a string to write
+	 */
 	public void writeWarning(final String s) {
 		write(s, styleWarning);
 	}
@@ -148,6 +224,9 @@ public final class _RTConsolePanel extends JPanel {
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 	}
 
+	/**
+	 * Clear the panel. I.e. remove all content from the panel.
+	 */
 	public void clear() {
 		try {
 			doc.remove(0, doc.getLength());
@@ -158,11 +237,19 @@ public final class _RTConsolePanel extends JPanel {
 		textPane.update(textPane.getGraphics());
 	}
 
+	/**
+	 * Print an INTERNAL ERROR and StackTrace
+	 * @param msg the error message
+	 * @param e an Throwable
+	 */
 	public static void INTERNAL_ERROR(final String msg, final Throwable e) {
 		System.out.println("INTERNAL_ERROR: " + msg + "  " + e);
 		e.printStackTrace();
 	}
 
+	/**
+	 * Create a new _RTConsolePanel
+	 */
 	public _RTConsolePanel() {
 		super(new BorderLayout());
 		JScrollPane scrollPane;
@@ -190,6 +277,10 @@ public final class _RTConsolePanel extends JPanel {
 		this.add(scrollPane);
 	}
 
+	/**
+	 * popup this Console Panel
+	 * @param title for the Panel
+	 */
 	public void popup(String title) {
 		JFrame frame = new JFrame();
 		frame.setSize(950, 500); // Initial frame size
@@ -224,6 +315,9 @@ public final class _RTConsolePanel extends JPanel {
 	// ****************************************************************
 	// *** MouseListener
 	// ****************************************************************
+	/**
+	 * the MouseListener
+	 */
 	MouseListener mouseListener = new MouseListener() {
 		public void mousePressed(MouseEvent e) {
 		}
@@ -246,6 +340,9 @@ public final class _RTConsolePanel extends JPanel {
 	// ****************************************************************
 	// *** ActionListener
 	// ****************************************************************
+	/**
+	 * the ActionListener
+	 */
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Object item = e.getSource();
@@ -265,6 +362,9 @@ public final class _RTConsolePanel extends JPanel {
 	// ****************************************************************
 	// *** KeyListener
 	// ****************************************************************
+	/**
+	 * the KeyListener
+	 */
 	private KeyListener listener = new KeyListener() {
 		@Override
 		public void keyPressed(KeyEvent event) {

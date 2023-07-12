@@ -128,7 +128,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst81.sim"); // OK:  Test the value of close.
 //		names.add("simtst82.sim"); // OK:  Simple test of the operations +, -, *, / and //.
 //		names.add("simtst83.sim"); // OK:  Name Parameter with EXTREME BI-EFFECTS
-		names.add("simtst84.sim"); // OK:  Test DirectBytefile.
+//		names.add("simtst84.sim"); // OK:  Test DirectBytefile.
 //		names.add("simtst85.sim"); // OK:  Test Directfile.
 //		names.add("Separat.sim");  // OK:  Precompile this for Simtst 86.
 //		names.add("simtst86.sim"); // OK?: Reading of real numbers from SYSIN.
@@ -191,6 +191,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst135.sim"); // OK: OutBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
+		names.add("simtst138.sim"); // OK: ref() and Real type Arrays.
 //		
 //		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
 //		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
@@ -236,7 +237,7 @@ public final class RunSingleTestBatch {
 
 		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
 		Global.packetName="simulaTestBatch";
-//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
 //		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
 		

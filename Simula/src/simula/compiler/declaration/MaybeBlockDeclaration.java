@@ -64,7 +64,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	 *
 	 * </pre>
 	 * 
-	 * @param blockPrefix
+	 * @param line source line number
 	 */
 	public BlockStatement parseMaybeBlock(int line) {
 		this.lineNumber=line;

@@ -62,7 +62,6 @@ import java.io.PrintWriter;
  * <p>
  * The variable PAGE indicates the ordinal number of the current page. Its value
  * may be retrieved by means of procedure "page".
- * <p>
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -156,7 +155,7 @@ public class _Printfile extends _Outfile {
 	 * Boolean procedure close;
 	 * if OPEN then
 	 * begin ... ! 
-	 *    if pos <> 1 then outimage;
+	 *    if pos ne 1 then outimage;
 	 *    
 	 *    eject(LINES_PER_PAGE);
 	 *    PAGE := ... ;
@@ -217,7 +216,7 @@ public class _Printfile extends _Outfile {
 	 *    begin
 	 *       linesperpage := LINES_PER_PAGE;
 	 *       LINES_PER_PAGE:= if n > 0 then n
-	 *                         else if n < 0 then maxint
+	 *                         else if n &lt; 0 then maxint
 	 *                          else  ... ; ! default value;
 	 * </pre>
 	 * <p>
@@ -249,7 +248,7 @@ public class _Printfile extends _Outfile {
 	/**
 	 * <pre>
 	 * procedure spacing(n); integer n;
-	 *            if  0<=n and n<=LINES_PER_PAGE  then SPACING := n
+	 *            if  0&lt;=n and n&lt;=LINES_PER_PAGE  then SPACING := n
 	 *            else  error("..." ! Parameter out of range; );
 	 * </pre>
 	 * <p>
@@ -274,10 +273,10 @@ public class _Printfile extends _Outfile {
 	 * <pre>
 	 * procedure eject(n); integer n;
 	 *   if not OPEN then error("..." ! file closed;)
-	 *   else if n <= 0 then error("..." ! Parameter out of range;)
+	 *   else if n &lt;= 0 then error("..." ! Parameter out of range;)
 	 *   else begin
 	 *      if n > LINES_PER_PAGE then n := 1;
-	 *      if n <= LINE then
+	 *      if n &lt;= LINE then
 	 *      begin
 	 *         ... ; ! change to new page on external file;
 	 *         PAGE := PAGE + 1
@@ -294,9 +293,9 @@ public class _Printfile extends _Outfile {
 	 * The following cases can be distinguished:
 	 * 
 	 * <pre>
-	 *      n <= 0                 : error
+	 *      n &lt;= 0                 : error
 	 *      n >  LINES_PER_PAGE    : Equivalent to eject (1)
-	 *      n <= LINE              : Position to line number n on the next page
+	 *      n &lt;= LINE              : Position to line number n on the next page
 	 *      n >  LINE              : Position to line number n on the current page
 	 * </pre>
 	 * 

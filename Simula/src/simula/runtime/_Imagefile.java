@@ -145,7 +145,7 @@ public class _Imagefile extends _File {
 	 * <pre>
 	 *     w > 0 The field length is w, the item is right-adjusted.
 	 * 
-	 *     w < 0 The field length is abs(w), the item is left-adjusted.
+	 *     w &lt; 0 The field length is abs(w), the item is left-adjusted.
 	 * 
 	 *     w = 0 The field length is the exact number of characters needed to
 	 *     contain the item (i.e. no leading or trailing spaces).
@@ -168,7 +168,7 @@ public class _Imagefile extends _File {
 	 * <pre>
 	 * procedure outint(i,w); integer i,w;
 	 *     if      w = 0 then FIELD(...).putint(i)   ! see below;
-	 *     else if w < 0
+	 *     else if w &lt; 0
 	 *     then begin text f;
 	 *            f :- FIELD(-w);
 	 *            f := notext;
@@ -182,7 +182,7 @@ public class _Imagefile extends _File {
 	 *          <pre>
 	 *     w > 0 The field length is w, the item is right-adjusted.
 	 * 
-	 *     w < 0 The field length is abs(w), the item is left-adjusted.
+	 *     w &lt; 0 The field length is abs(w), the item is left-adjusted.
 	 * 
 	 *     w = 0 The field length is the exact number of characters needed to
 	 *     contain the item (i.e. no leading or trailing spaces).
@@ -263,7 +263,7 @@ public class _Imagefile extends _File {
 	 * end outtext;
 	 * </pre>
 	 * 
-	 * @param T
+	 * @param s the String representation of the text
 	 */
 	public void outtext(final String s) {
 		outtext(new _TXT(s));
@@ -352,7 +352,7 @@ public class _Imagefile extends _File {
 	 *     while not ENDFILE and then (c=' ' or else c='!9!')
 	 *     do c := inchar;
 	 *     lastitem := ENDFILE;
-	 *     if c <> ' ' then setpos(pos-1)
+	 *     if c ne ' ' then setpos(pos-1)
 	 * end lastitem;
 	 * </pre>
 	 * <p>

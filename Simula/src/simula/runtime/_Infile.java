@@ -16,7 +16,6 @@ import java.io.Reader;
 
 /**
  * The Class Infile.
- * <p>
  * 
  * <pre>
  * imagefile class infile;

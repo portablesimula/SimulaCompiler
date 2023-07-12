@@ -237,11 +237,11 @@ public class Type implements Externalizable {
 				String rtQual=getJavaRefIdent();
 				return("_REF_ARRAY<"+rtQual+">");
 			}
-			if(this.equals(LongReal)) return("_DOUBLE_ARRAY");
-			if(this.equals(Real)) return("_FLOAT_ARRAY");
-			if(this.equals(Integer)) return("_INT_ARRAY");
-			if(this.equals(Boolean)) return("_BOOL_ARRAY");
-			if(this.equals(Character)) return("_CHAR_ARRAY");
+			if(this.equals(LongReal)) return("_LONG_REAL_ARRAY");
+			if(this.equals(Real)) return("_REAL_ARRAY");
+			if(this.equals(Integer)) return("_INTEGER_ARRAY");
+			if(this.equals(Boolean)) return("_BOOLEAN_ARRAY");
+			if(this.equals(Character)) return("_CHARACTER_ARRAY");
 			if(this.equals(Text)) return("_TEXT_ARRAY");
 //			if(this.equals(Procedure)) return("_PRCQNT");
 //			if(this.equals(Label)) return("_LABQNT");

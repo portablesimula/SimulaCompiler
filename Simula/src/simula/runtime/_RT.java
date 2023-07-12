@@ -39,6 +39,10 @@ public final class _RT {
 		public static String RUNTIME_USER_DIR = "";
 	}
 
+	/**
+	 *  S-PORT Options
+	 *
+	 */
 	public static class SPORT_Option {
 		private static String getModuleName() {
 			return (new File(SPORT_SourceFileName).getName());
@@ -49,13 +53,13 @@ public final class _RT {
 		public static String SPORT_SourceFileName = SourceDirName + "/ModuleName";
 
 		// Used by getTextInfo
-		public static String getSourceFileName() {
+		static String getSourceFileName() {
 			return (SPORT_SourceFileName);
 		}
 
 		public static String ListingFileName = "#sysout";
 
-		public static String getSCodeFileName() {
+		static String getSCodeFileName() {
 			return (createSubfileName("scode", getModuleName() + ".scd"));
 		}
 
@@ -66,15 +70,15 @@ public final class _RT {
 			return (tempFileName);
 		}
 
-		public static String getScratchFileName() {
+		static String getScratchFileName() {
 			return (createSubfileName("temp", getModuleName() + ".tmp"));
 		}
 
-		public static String getAttributeOutputFileName() {
+		static String getAttributeOutputFileName() {
 			return (createSubfileName("temp", currentModuleID + ".atr"));
 		}
 
-		public static String getExternalAttributeFileName() {
+		static String getExternalAttributeFileName() {
 			// 12 What is the name of the attribute file for an external declaration?
 			// Before this request is issued, the environment will have received the
 			// identifier (extIdent) and the
@@ -103,7 +107,7 @@ public final class _RT {
 		// The following file is created when front-end compiling the RTS:
 		public static String PredefFileName = "C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
 
-		public static String XmessageFileName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/FECERROR.txt";
+		static String XmessageFileName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/FECERROR.txt";
 
 		// getIntInfo
 		public static int GenerateScode = 1;

@@ -220,7 +220,7 @@ public class _Directbytefile extends _ByteFile {
 	 * 
 	 * <pre>
 	 *  procedure locate(p); integer p;
-	 *     if p<1 or p>MAXLOC then error("..." ! Parameter out of range; )
+	 *     if p&lt;1 or p>MAXLOC then error("..." ! Parameter out of range; )
 	 *     else begin
 	 *        LOC:= p;
 	 *         ... ;
@@ -289,7 +289,7 @@ public class _Directbytefile extends _ByteFile {
 	 * <pre>
 	 * short integer procedure inbyte;
 	 *    if not OPEN then error("..." !file closed; )
-	 *    else if LOC <= lastloc
+	 *    else if LOC &lt;= lastloc
 	 *    then begin
 	 *       inbyte := ... ! next byte of size BYTESIZE;...;
 	 *       LOC := LOC+1
@@ -330,7 +330,7 @@ public class _Directbytefile extends _ByteFile {
 	 * <pre>
 	 * procedure outbyte(x);  short integer x;
 	 *    if not OPEN then error("..." !file closed; )
-	 *    else if x < 0 or else x >= 2**BYTESIZE
+	 *    else if x &lt; 0 or else x >= 2**BYTESIZE
 	 *    then error("..." ! Outbyte, illegal byte value ;);
 	 *    else if LOC > MAXLOC then error("..." !file overflow; )
 	 *    else begin

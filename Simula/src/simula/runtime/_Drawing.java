@@ -31,7 +31,7 @@ import javax.swing.JFrame;
  * <pre>
  * Simset class Drawing(title,width,height); Value title; Text title; Integer width,height;
  * begin ref(Head) RENDERING_SET;
- * 		 Integer CURRENT_BACKGROUND_COLOR,CURRENT_DRAW_COLOR,CURRENT_FILL_COLOR,CURRENT_STROKE_WIDTH;
+ * 	     Integer CURRENT_BACKGROUND_COLOR,CURRENT_DRAW_COLOR,CURRENT_FILL_COLOR,CURRENT_STROKE_WIDTH;
  *       ref(Font) CURRENT_FONT; ! Java Class Font is not visible in Simula ;
  *
  *       ref(Head) Procedure renderingSet; renderingSet :- RENDERING_SET;
@@ -53,10 +53,10 @@ import javax.swing.JFrame;
  *       Link class ShapeElement; ...
  *       Link class TextElement; ...
  *
- *	     ref(TextElement) Procedure drawText(t,x,y); Value t; Text t; Long Real x1,y1,x2,y2;
+ *       ref(TextElement) Procedure drawText(t,x,y); Value t; Text t; Long Real x1,y1,x2,y2;
  *       begin ref(TextElement) elt; drawText :- elt :- new TextElement(t,x,y); end;
  *
- *	     ref(ShapeElement) Procedure drawLine(x1,y1,x2,y2); Long Real x1,y1,x2,y2;
+ *       ref(ShapeElement) Procedure drawLine(x1,y1,x2,y2); Long Real x1,y1,x2,y2;
  *       begin ref(ShapeElement) elt; drawLine :- elt :- new ShapeElement; elt.drawLine(x1,y1,x2,y2); end;
  *      
  *       ref(ShapeElement) Procedure drawEllipse(x,y,width,height); Long Real x,y,width,height;
@@ -267,6 +267,7 @@ public class _Drawing extends _Simset {
 	class Drawing extends Canvas {
 		static final long serialVersionUID = 123;
 
+		@Override
 		public void paint(Graphics g) {
 			render();
 		}
@@ -313,14 +314,14 @@ public class _Drawing extends _Simset {
 		frame.setVisible(true);
 		canvas.createBufferStrategy(2);
 		strategy = canvas.getBufferStrategy();
-//	    frame.setAlwaysOnTop(true); // VIRKER
-//      frame.moveToFront(); //VIRKER IKKE !!!
 		frame.addWindowListener(new WindowListener() {
+			@Override
 			public void windowOpened(WindowEvent e) {
 				if (DEBUG)
 					_RT.println("windowOpened.WindowsEvent: " + e);
 			}
 
+			@Override
 			public void windowClosing(WindowEvent e) {
 				if (DEBUG)
 					_RT.println("windowClosing.WindowsEvent: " + e);
@@ -330,26 +331,31 @@ public class _Drawing extends _Simset {
 				}
 			}
 
+			@Override
 			public void windowClosed(WindowEvent e) {
 				if (DEBUG)
 					_RT.println("windowClosed.WindowsEvent: " + e);
 			}
 
+			@Override
 			public void windowIconified(WindowEvent e) {
 				if (DEBUG)
 					_RT.println("windowIconified.WindowsEvent: " + e);
 			}
 
+			@Override
 			public void windowDeiconified(WindowEvent e) {
 				if (DEBUG)
 					_RT.println("windowDeiconified.WindowsEvent: " + e);
 			}
 
+			@Override
 			public void windowActivated(WindowEvent e) {
 				if (DEBUG)
 					_RT.println("windowActivated.WindowsEvent: " + e);
 			}
 
+			@Override
 			public void windowDeactivated(WindowEvent e) {
 				if (DEBUG)
 					_RT.println("windowClosing.WindowsEvent: " + e);
@@ -357,6 +363,7 @@ public class _Drawing extends _Simset {
 		});
 		canvas.setFocusable(true);
 		canvas.addKeyListener(new KeyListener() {
+			@Override
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
 				if (DEBUG)
@@ -365,11 +372,13 @@ public class _Drawing extends _Simset {
 					System.exit(0);
 			}
 
+			@Override
 			public void keyPressed(KeyEvent e) {
 				if (DEBUG)
 					_RT.println("KEY " + e.getKeyChar() + " PRESSED");
 			}
 
+			@Override
 			public void keyReleased(KeyEvent e) {
 				if (DEBUG)
 					_RT.println("KEY " + e.getKeyChar() + " RELEASE");

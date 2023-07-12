@@ -182,7 +182,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	// --------------------------------------------------------------------
     	// integer array A(1:4,4:6,6:12);
     	// --------------------------------------------------------------------
-    	// A=new _INT_ARRAY(new _BOUNDS(1,4),new _BOUNDS(4,6),new _BOUNDS(6,7));
+    	// A=new _INTEGER_ARRAY(new _BOUNDS(1,4),new _BOUNDS(4,6),new _BOUNDS(6,7));
     	// --------------------------------------------------------------------
     	String arrayIdent=this.getJavaIdentifier();
 		String arrType=this.type.toJavaArrayType();

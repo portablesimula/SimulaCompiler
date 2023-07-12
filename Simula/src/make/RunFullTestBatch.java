@@ -182,6 +182,7 @@ public final class RunFullTestBatch {
 		names.add("simtst135.sim"); // OK: OutBytefile with CREATE, APPEND and PURGE.
 		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND and PURGE.
 		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND and PURGE.
+		names.add("simtst138.sim"); // OK: ref() and Real type Arrays.
 
 		names.add("RT_ErrorTest.sim"); // Simula Error TestBatch Framework
 		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.
