@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
  * @author Øystein Myhre Andersen
  *
  */
-public class _DEC_Lib extends _CLASS {
+public class _DEC_Lib extends _SIMULA_BLOCK {
 
 	private static _DEC_Lib DECLIB;
 

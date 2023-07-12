@@ -1,6 +1,6 @@
 // JavaLine 1 <== SourceLine 10
 package simulaTestBatch;
-// Simula-2.0 Compiled at Sat May 06 11:02:03 CEST 2023
+// Simula-2.0 Compiled at Wed Jul 12 11:20:40 CEST 2023
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
 public final class SimulaTest_err extends _PROC {
@@ -10,7 +10,6 @@ public final class SimulaTest_err extends _PROC {
     // Declare locals as attributes
     // Parameter Transmission in case of Formal/Virtual Procedure Call
     public SimulaTest_err setPar(Object param) {
-        //Util.BREAK("CALL SimulaTest_err.setPar: param="+param+", qual="+param.getClass().getSimpleName()+", npar="+_nParLeft+", staticLink="+_SL);
         try {
             switch(_nParLeft--) {
                 case 1: p_t=(_TXT)objectValue(param); break;
@@ -35,23 +34,23 @@ public final class SimulaTest_err extends _PROC {
     }
     // Procedure Statements
     public SimulaTest_err _STM() {
-        _RT._LINE("Procedure SimulaTest.err",11); // JavaLine 38 <== SourceLine 11
+        _RT._LINE("Procedure SimulaTest.err",11); // JavaLine 37 <== SourceLine 11
         sysout().setpos(1);
         ;
-        _RT._LINE("Procedure SimulaTest.err",12); // JavaLine 41 <== SourceLine 12
+        _RT._LINE("Procedure SimulaTest.err",12); // JavaLine 40 <== SourceLine 12
         sysout().outtext(new _TXT("*** error: in test "));
         ;
         sysout().outtext(p_t);
         ;
         sysout().outimage();
         ;
-        _RT._LINE("Procedure SimulaTest.err",13); // JavaLine 48 <== SourceLine 13
+        _RT._LINE("Procedure SimulaTest.err",13); // JavaLine 47 <== SourceLine 13
         ((SimulaTest)(_CUR._SL)).found_error=true;
         ;
-        ((SimulaTest)(_CUR._SL)).nFailed=Math.addExact(((SimulaTest)(_CUR._SL)).nFailed,1);
+        ((SimulaTest)(_CUR._SL)).nFailed=(((SimulaTest)(_CUR._SL)).nFailed+(1));
         ;
         EBLK();
         return(this);
     } // End of Procedure BODY
-    public static _PROGINFO _INFO=new _PROGINFO("SimulaTest.sim","Procedure err",1,10,38,11,41,12,48,13,55,14);
+    public static _PROGINFO _INFO=new _PROGINFO("SimulaTest.sim","Procedure err",1,10,37,11,40,12,47,13,54,14);
 } // End of Procedure

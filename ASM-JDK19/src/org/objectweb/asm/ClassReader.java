@@ -543,7 +543,7 @@ public class ClassReader {
         accessFlags |= Opcodes.ACC_RECORD;
       } else if (Constants.MODULE.equals(attributeName)) {
         moduleOffset = currentAttributeOffset;
-      } else if (Constants.MODULE_MAIN_CLASS.equals(attributeName)) {
+      } else if (Constants.MODULE_MAIN_SIMULA_BLOCK.equals(attributeName)) {
         moduleMainClass = readClass(currentAttributeOffset, charBuffer);
       } else if (Constants.MODULE_PACKAGES.equals(attributeName)) {
         modulePackagesOffset = currentAttributeOffset;

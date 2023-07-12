@@ -56,7 +56,7 @@ public class ASMifier extends Printer {
           + "Usage: ASMifier [-nodebug] <fully qualified class name or class file name>";
 
   /** A pseudo access flag used to distinguish class access flags. */
-  private static final int ACCESS_CLASS = 0x40000;
+  private static final int ACCESS_SIMULA_BLOCK = 0x40000;
 
   /** A pseudo access flag used to distinguish field access flags. */
   private static final int ACCESS_FIELD = 0x80000;
@@ -232,7 +232,7 @@ public class ASMifier extends Printer {
       stringBuilder.append(version);
     }
     stringBuilder.append(", ");
-    appendAccessFlags(access | ACCESS_CLASS);
+    appendAccessFlags(access | ACCESS_SIMULA_BLOCK);
     stringBuilder.append(", ");
     appendConstant(name);
     stringBuilder.append(", ");
@@ -1303,7 +1303,7 @@ public class ASMifier extends Printer {
       if (!isEmpty) {
         stringBuilder.append(" | ");
       }
-      if ((accessFlags & ACCESS_CLASS) == 0) {
+      if ((accessFlags & ACCESS_SIMULA_BLOCK) == 0) {
         if ((accessFlags & ACCESS_MODULE) == 0) {
           stringBuilder.append("ACC_SYNCHRONIZED");
         } else {
@@ -1331,7 +1331,7 @@ public class ASMifier extends Printer {
       isEmpty = false;
     }
     if ((accessFlags & Opcodes.ACC_VARARGS) != 0
-        && (accessFlags & (ACCESS_CLASS | ACCESS_FIELD)) == 0) {
+        && (accessFlags & (ACCESS_SIMULA_BLOCK | ACCESS_FIELD)) == 0) {
       if (!isEmpty) {
         stringBuilder.append(" | ");
       }
@@ -1346,7 +1346,7 @@ public class ASMifier extends Printer {
       isEmpty = false;
     }
     if ((accessFlags & Opcodes.ACC_NATIVE) != 0
-        && (accessFlags & (ACCESS_CLASS | ACCESS_FIELD)) == 0) {
+        && (accessFlags & (ACCESS_SIMULA_BLOCK | ACCESS_FIELD)) == 0) {
       if (!isEmpty) {
         stringBuilder.append(" | ");
       }
@@ -1354,7 +1354,7 @@ public class ASMifier extends Printer {
       isEmpty = false;
     }
     if ((accessFlags & Opcodes.ACC_ENUM) != 0
-        && (accessFlags & (ACCESS_CLASS | ACCESS_FIELD | ACCESS_INNER)) != 0) {
+        && (accessFlags & (ACCESS_SIMULA_BLOCK | ACCESS_FIELD | ACCESS_INNER)) != 0) {
       if (!isEmpty) {
         stringBuilder.append(" | ");
       }
@@ -1362,7 +1362,7 @@ public class ASMifier extends Printer {
       isEmpty = false;
     }
     if ((accessFlags & Opcodes.ACC_ANNOTATION) != 0
-        && (accessFlags & (ACCESS_CLASS | ACCESS_INNER)) != 0) {
+        && (accessFlags & (ACCESS_SIMULA_BLOCK | ACCESS_INNER)) != 0) {
       if (!isEmpty) {
         stringBuilder.append(" | ");
       }
@@ -1415,7 +1415,7 @@ public class ASMifier extends Printer {
       if (!isEmpty) {
         stringBuilder.append(" | ");
       }
-      if ((accessFlags & ACCESS_CLASS) == 0) {
+      if ((accessFlags & ACCESS_SIMULA_BLOCK) == 0) {
         stringBuilder.append("ACC_MANDATED");
       } else {
         stringBuilder.append("ACC_MODULE");

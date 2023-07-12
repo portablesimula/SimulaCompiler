@@ -42,7 +42,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class _Linkage extends _CLASS {
+public class _Linkage extends _SIMULA_BLOCK {
 	protected _Linkage SUC = null;
 	protected _Linkage PRED = null;
 

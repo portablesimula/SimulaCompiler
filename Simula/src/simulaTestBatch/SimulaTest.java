@@ -1,9 +1,9 @@
 // JavaLine 1 <== SourceLine 2
 package simulaTestBatch;
-// Simula-2.0 Compiled at Sat May 06 11:02:03 CEST 2023
+// Simula-2.0 Compiled at Wed Jul 12 11:20:40 CEST 2023
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
-public class SimulaTest extends _CLASS {
+public class SimulaTest extends _SIMULA_BLOCK {
     // ClassDeclaration: Kind=Class, BlockLevel=1, PrefixLevel=0, firstLine=2, lastLine=34, hasLocalClasses=false, System=false, detachUsed=false
     // Declare parameters as attributes
     public int p_n;

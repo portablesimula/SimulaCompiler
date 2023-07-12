@@ -46,7 +46,7 @@ import java.util.StringTokenizer;
  * @author Øystein Myhre Andersen
  *
  */
-public class _File extends _CLASS {
+public class _File extends _SIMULA_BLOCK {
 	protected final _TXT FILE_NAME;
 	protected boolean _OPEN;
 

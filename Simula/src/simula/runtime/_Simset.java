@@ -37,7 +37,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class _Simset extends _CLASS {
+public class _Simset extends _SIMULA_BLOCK {
 
 	// Constructor
 	public _Simset(final _RTObject staticLink) {

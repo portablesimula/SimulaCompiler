@@ -24,6 +24,8 @@ package simula.runtime;
  * object is accessible through procedure "bytesize".
  * <p>
  * Note: "Bytesize" returns zero before first "open" of the bytefile.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_ByteFile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -33,11 +35,20 @@ public class _ByteFile extends _File {
 	protected int _BYTESIZE;
 	protected final int _MAXBYTE = 255;
 
+	/**
+	 * Returns the _BYTESIZE value.
+	 * @return the _BYTESIZE value.
+	 */
 	public int bytesize() {
 		return (_BYTESIZE);
 	}
 
 	// Constructor
+	/**
+	 * Create a new _ByteFile.
+	 * @param staticLink static link
+	 * @param FILENAME the file name.
+	 */
 	public _ByteFile(final _RTObject staticLink, final _TXT FILENAME) {
 		super(staticLink, FILENAME);
 	}

@@ -32,8 +32,8 @@ public final class RunSingleTestBatch {
 //		names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-//		names.add("SimulaTest.sim"); // Simula TestBatch Framework
-//		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+		names.add("SimulaTest.sim"); // Simula TestBatch Framework
+		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 //		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 //		names.add("simtst03.sim"); // OK:  Test Text Value Relations
 //		names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -191,7 +191,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst135.sim"); // OK: OutBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
-		names.add("simtst138.sim"); // OK: ref() and Real type Arrays.
+//		names.add("simtst138.sim"); // OK: ref() and Real type Arrays.
 //		
 //		names.add("RT_ErrorTest.sim"); // Simula TestBatch Framework
 //		names.add("simerr01.sim"); // OK: ILLEGAL GOTO out of an operating Process and into the enclosing System.

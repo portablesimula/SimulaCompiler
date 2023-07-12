@@ -29,7 +29,7 @@ public final class StandardClass extends ClassDeclaration {
 	public  static StandardClass typeText;
 	public  static StandardClass ENVIRONMENT;
 	public  static StandardClass BASICIO;
-	        static StandardClass CLASS;
+	        static StandardClass SIMULA_BLOCK;
 	public  static StandardClass Infile;
 	public  static StandardClass Printfile;
 	
@@ -318,7 +318,7 @@ public final class StandardClass extends ClassDeclaration {
 
 
 	// ******************************************************************
-	// *** The Standard Class CLASS
+	// *** The Standard Class SIMULA_BLOCK
 	// ******************************************************************
 	/**
 	 * Simula Stadard States: Fictituous outermost prefix
@@ -331,9 +331,9 @@ public final class StandardClass extends ClassDeclaration {
 	 */
 
 	private static void initCLASS() {
-		CLASS=new StandardClass("RTObject","CLASS");
-		ENVIRONMENT.addStandardClass(CLASS);  // Declared in ENVIRONMENT
-		CLASS.addStandardProcedure(Declaration.Kind.MemberMethod,null,"detach");
+		SIMULA_BLOCK=new StandardClass("RTObject","SIMULA_BLOCK");
+		ENVIRONMENT.addStandardClass(SIMULA_BLOCK);  // Declared in ENVIRONMENT
+		SIMULA_BLOCK.addStandardProcedure(Declaration.Kind.MemberMethod,null,"detach");
 	}
 
 	// ******************************************************************
@@ -350,7 +350,7 @@ public final class StandardClass extends ClassDeclaration {
 	//  end File;      
 	private static StandardClass File;
 	private static void initFile() {
-		File=new StandardClass("CLASS","File",parameter("FILENAME_",Type.Text));
+		File=new StandardClass("SIMULA_BLOCK","File",parameter("FILENAME_",Type.Text));
 		BASICIO.addStandardClass(File);  // Declared in BASICIO
 		File.addStandardAttribute(Type.Boolean,"OPEN_");  
 		File.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Text,"filename");
@@ -685,7 +685,7 @@ public final class StandardClass extends ClassDeclaration {
 	// ******************************************************************
 	private static StandardClass Simset;
 	private static void initSimset() { 
-		Simset=new StandardClass("CLASS","Simset");
+		Simset=new StandardClass("SIMULA_BLOCK","Simset");
 		ENVIRONMENT.addStandardClass(Simset);  // Declared in ENVIRONMENT
 	}  
 
@@ -694,7 +694,7 @@ public final class StandardClass extends ClassDeclaration {
 	// ******************************************************************
 	private static StandardClass Linkage;
 	private static void initLinkage() { 
-		Linkage=new StandardClass("CLASS","Linkage");
+		Linkage=new StandardClass("SIMULA_BLOCK","Linkage");
 		Simset.addStandardClass(Linkage);  // Declared in Simset
 		Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"suc");  
 		Linkage.addStandardProcedure(Declaration.Kind.MemberMethod,Type.Ref("Link"),"pred");  
@@ -833,7 +833,7 @@ public final class StandardClass extends ClassDeclaration {
 	// *** The Standard Class CatchingErrors  NOTE: if(Option.EXTENSIONS)
 	// ******************************************************************
 	private static void initCatchingErrors() { 
-		StandardClass CatchingErrors=new StandardClass("CLASS","CatchingErrors");
+		StandardClass CatchingErrors=new StandardClass("SIMULA_BLOCK","CatchingErrors");
 		ENVIRONMENT.addStandardClass(CatchingErrors);  // Declared in ENVIRONMENT
 		CatchingErrors.virtualSpecList.add(new VirtualSpecification("onError",null,VirtualSpecification.Kind.Procedure,null));
 		CatchingErrors.code1=codeSet( // Statements before inner 
@@ -847,7 +847,7 @@ public final class StandardClass extends ClassDeclaration {
 	// *** The Standard Class DEC_Lib   - as defined in DEC handbook III    NOTE: if(Option.EXTENSIONS)
 	// ******************************************************************
 	private static void initDEC_Lib() { 
-		StandardClass DEC_Lib=new StandardClass("CLASS","DEC_Lib");
+		StandardClass DEC_Lib=new StandardClass("SIMULA_BLOCK","DEC_Lib");
 		ENVIRONMENT.addStandardClass(DEC_Lib);  // Declared in ENVIRONMENT.
 		DEC_Lib.isContextFree=true; // This class is a Context i.e. all members are static
 		DEC_Lib.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"abort",parameter("mess",Type.Text));  

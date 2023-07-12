@@ -203,7 +203,7 @@ final class ModuleWriter extends ModuleVisitor {
       size += 8 + packageIndex.length;
     }
     if (mainClassIndex > 0) {
-      symbolTable.addConstantUtf8(Constants.MODULE_MAIN_CLASS);
+      symbolTable.addConstantUtf8(Constants.MODULE_MAIN_SIMULA_BLOCK);
       // 6 attribute header bytes, and 2 bytes for main_class_index.
       size += 8;
     }
@@ -245,7 +245,7 @@ final class ModuleWriter extends ModuleVisitor {
     }
     if (mainClassIndex > 0) {
       output
-          .putShort(symbolTable.addConstantUtf8(Constants.MODULE_MAIN_CLASS))
+          .putShort(symbolTable.addConstantUtf8(Constants.MODULE_MAIN_SIMULA_BLOCK))
           .putInt(2)
           .putShort(mainClassIndex);
     }

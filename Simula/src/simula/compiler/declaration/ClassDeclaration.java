@@ -101,7 +101,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		block.prefix = prefix;
 		block.declaredIn.hasLocalClasses = true;
 		if (block.prefix == null)
-			block.prefix = StandardClass.CLASS.identifier;
+			block.prefix = StandardClass.SIMULA_BLOCK.identifier;
 		block.modifyIdentifier(expectIdentifier());
 		if (Parser.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
@@ -534,7 +534,7 @@ SEARCH: while (scope != null) {
 		if (prfx != null) {
 			noPrefix = false;
 			String prfxString = prfx.identifier;
-			if (Util.equals(prfxString, "CLASS")) noPrefix = true;
+			if (Util.equals(prfxString, "SIMULA_BLOCK")) noPrefix = true;
 		}
 		return (noPrefix);
 	}
@@ -606,9 +606,9 @@ SEARCH: while (scope != null) {
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
 		String line = "public class " + getJavaIdentifier();
-		if (prefix != null)
+//		if (prefix != null)
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
-		else line = line + " extends _BASICIO";
+//		else line = line + " extends _BASICIO";
 		GeneratedJavaClass.code(line + " {");
 		GeneratedJavaClass.debug("// ClassDeclaration: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel + ", PrefixLevel="
 					+ prefixLevel() + ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="

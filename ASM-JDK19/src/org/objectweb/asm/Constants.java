@@ -70,7 +70,7 @@ final class Constants {
   static final String METHOD_PARAMETERS = "MethodParameters";
   static final String MODULE = "Module";
   static final String MODULE_PACKAGES = "ModulePackages";
-  static final String MODULE_MAIN_CLASS = "ModuleMainClass";
+  static final String MODULE_MAIN_SIMULA_BLOCK = "ModuleMainClass";
   static final String NEST_HOST = "NestHost";
   static final String NEST_MEMBERS = "NestMembers";
   static final String PERMITTED_SUBCLASSES = "PermittedSubclasses";
