@@ -14,8 +14,6 @@ import java.nio.channels.FileLock;
 
 /**
  * The class "directfile"
- * <p>
- * 
  * <pre>
  *  imagefile class directfile;
  *     begin integer LOC, MAXLOC; Boolean ENDFILE, LOCKED;
@@ -59,6 +57,7 @@ import java.nio.channels.FileLock;
  * The variable LOC is defined to represent such ordinal numbers. When the file
  * is closed, the value of LOC is zero.
  * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Directfile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -98,9 +97,13 @@ public class _Directfile extends _Imagefile {
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
 
-	// Constructor
-	public _Directfile(final _RTObject staticLink, final _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Directbytefile.
+	 * @param SL staticLink
+	 * @param FN file name 
+	 */
+	public _Directfile(final _RTObject SL, final _TXT FN) {
+		super(SL, FN);
 		_CREATE = _CreateAction.noCreate; // Default for Direct-type files
 	}
 
@@ -126,17 +129,22 @@ public class _Directfile extends _Imagefile {
 	 * after each "inimage" statement. The procedure "endfile" returns the current
 	 * value.
 	 * 
-	 * @return
+	 * @return the resulting boolean.
 	 */
 	public boolean endfile() {
 		return (_ENDFILE);
 	}
 
+	/**
+	 * Returns the value _LOCKED.
+	 * @return the value _LOCKED.
+	 */
 	public boolean locked() {
 		return (_LOCKED);
 	}
 
 	/**
+	 * The procedure open.
 	 * <pre>
 	 *  Boolean procedure open(fileimage);  text fileimage;
 	 *     if ... then begin ...  ! see 10.1.2;
@@ -154,7 +162,8 @@ public class _Directfile extends _Imagefile {
 	 * is either a maximum length determined from the external file, or it is
 	 * "maxint"-1 if no such length exists.
 	 * 
-	 * @return
+	 * @param IMAGE the file's image.
+	 * @return true:ok, false:error
 	 */
 	public boolean open(final _TXT IMAGE) {
 		if (_OPEN)
@@ -187,6 +196,7 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure close.
 	 * <pre>
 	 * Boolean procedure close;
 	 *    if OPEN then begin ...
@@ -199,7 +209,7 @@ public class _Directfile extends _Imagefile {
 	 * end close;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return true:ok, false:error
 	 */
 	public boolean close() {
 		if (!_OPEN)
@@ -233,6 +243,8 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure locate.
+	 * <p>
 	 * The procedure "locate" is used to assign a given value to the variable _LOC.
 	 * A parameter value to "locate" which is less than one or greater than MAXLOC
 	 * constitutes a run-time error.
@@ -258,7 +270,8 @@ public class _Directfile extends _Imagefile {
 	 * <p>
 	 * Throws: IOException - if pos is less than 0 or if an I/O error occurs.
 	 * 
-	 * @param p
+	 * @param p desired location.
+	 * @throws _SimulaRuntimeError when unable to perform the operation.
 	 */
 	public void locate(final int p) {
 		if (p < 1 | p > _MAXLOC)
@@ -273,6 +286,7 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure lastloc.
 	 * <pre>
 	 * integer procedure lastloc;
 	 *    if not OPEN then error("..." ! file closed; )
@@ -283,6 +297,7 @@ public class _Directfile extends _Imagefile {
 	 * For a new file the value returned is zero.
 	 * 
 	 * @return The current last written location.
+	 * @throws _SimulaRuntimeError when unable to perform the operation.
 	 */
 	public int lastloc() {
 		if (!_OPEN)
@@ -297,6 +312,7 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure maxloc.
 	 * <pre>
 	 *  integer procedure maxloc;
 	 *     if not OPEN then error("..." ! file closed; )
@@ -306,7 +322,8 @@ public class _Directfile extends _Imagefile {
 	 * The value assigned to MAXLOC at "open" is either a maximum length determined
 	 * from the external file, or it is "maxint"-1 if no such length exists.
 	 * 
-	 * @return
+	 * @return the value _MAXLOC.
+	 * @throws _SimulaRuntimeError if the file is not open.
 	 */
 	public int maxloc() {
 		if (!_OPEN)
@@ -316,7 +333,6 @@ public class _Directfile extends _Imagefile {
 
 	/**
 	 * The Procedure Inimage.
-	 * 
 	 * <pre>
 	 * procedure inimage;
 	 *    if not OPEN then error("..." !file closed; )
@@ -345,6 +361,7 @@ public class _Directfile extends _Imagefile {
 	 * position indicator is set to "length"+1 (i.e. "more" becomes false). Finally
 	 * the value of LOC is incremented by one through a "locate" call.
 	 * 
+	 * @throws _SimulaRuntimeError when unable to perform the operation.
 	 */
 	@Override
 	public void inimage() {
@@ -385,6 +402,7 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure outimage.
 	 * <pre>
 	 * procedure outimage;
 	 *    if      not OPEN     then error("..." !file closed; )
@@ -402,6 +420,8 @@ public class _Directfile extends _Imagefile {
 	 * number is equal to the current value of LOC. If the file contains another
 	 * image with the same ordinal number, that image is overwritten. The value of
 	 * LOC is then incremented by one through a "locate" call.
+	 * 
+	 * @throws _SimulaRuntimeError when unable to perform the operation.
 	 */
 	@Override
 	public void outimage() {
@@ -425,6 +445,7 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure deleteimage.
 	 * <pre>
 	 * Boolean procedure deleteimage;
 	 *            if OPEN and then ... ! image LOC was written;
@@ -449,7 +470,8 @@ public class _Directfile extends _Imagefile {
 	 * not necessarily decrement the "lastloc" value; explicit writing (outimage) of
 	 * such images should be avoided.
 	 * 
-	 * @return
+	 * @return true:ok, false:error
+	 * @throws _SimulaRuntimeError when unable to perform the operation.
 	 */
 	public boolean deleteimage() {
 		if (!_OPEN)
@@ -472,6 +494,8 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure checkpoint.
+	 * <p>
 	 * All files producing output (sequential output or direct files) contain a
 	 * Boolean procedure "checkpoint". The procedure causes the environment to
 	 * attempt to secure the output produced so far. Depending on the nature of the
@@ -481,7 +505,7 @@ public class _Directfile extends _Imagefile {
 	 * If this is not possible or meaningful, "checkpoint" is a dummy operation in
 	 * which case the value false is returned.
 	 * 
-	 * @return
+	 * @return true:ok, false:error
 	 */
 	public boolean checkpoint() {
 		try {
@@ -494,6 +518,8 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure lock.
+	 * <p>
 	 * Direct File Locking
 	 * <p>
 	 * Procedure "lock" enables the program to get exclusive access to all or part
@@ -556,10 +582,10 @@ public class _Directfile extends _Imagefile {
 	 * And Returns: A lock object representing the newly-acquired lock
 	 * 
 	 * 
-	 * @param timelimit
-	 * @param loc1
-	 * @param loc2
-	 * @return
+	 * @param timelimit argument timelimit
+	 * @param loc1 argument loc1
+	 * @param loc2 argument loc2
+	 * @return code, 0:OK otherwise error
 	 */
 	public int lock(final float timelimit, final int loc1, final int loc2) {
 		if (timelimit <= 0.0f)
@@ -579,6 +605,7 @@ public class _Directfile extends _Imagefile {
 	}
 
 	/**
+	 * The procedure unlock.
 	 * <pre>
 	 * Boolean procedure unlock;
 	 * begin
@@ -587,7 +614,7 @@ public class _Directfile extends _Imagefile {
 	 * end unlock;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return the resulting boolean value
 	 */
 	public boolean unlock() {
 		boolean result = checkpoint();

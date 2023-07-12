@@ -94,7 +94,9 @@ public class _Directbytefile extends _Bytefile {
 	}
 
 	/**
-	 * The procedure endfile. It returns true whenever LOC indicates an address
+	 * The procedure endfile.
+	 * <p>
+	 * It returns true whenever LOC indicates an address
 	 * greater than "lastloc".
 	 * <pre>
 	 * 		Boolean procedure endfile; endfile:=OPEN and then LOC>lastloc;
@@ -107,7 +109,9 @@ public class _Directbytefile extends _Bytefile {
 	}
 
 	/**
-	 * The procedure location. It returns the current value of LOC.
+	 * The procedure location.
+	 * <p>
+	 * It returns the current value of LOC.
 	 * <p>
 	 * In this implementation file.getFilePointer() is used for this purpose.
 	 * 
@@ -162,7 +166,7 @@ public class _Directbytefile extends _Bytefile {
 	 * end open;
 	 * </pre>
 	 * 
-	 * @return false:error
+	 * @return true:ok, false:error
 	 */
 	public boolean open() {
 		if (_RT.Option.VERBOSE)
@@ -200,7 +204,7 @@ public class _Directbytefile extends _Bytefile {
 	 * end close;
 	 * </pre>
 	 * 
-	 * @return false:error
+	 * @return true:ok, false:error
 	 */
 	public boolean close() {
 		if (!_OPEN)
@@ -228,7 +232,9 @@ public class _Directbytefile extends _Bytefile {
 	}
 
 	/**
-	 * The procedure locate. It is used to assign a given value to the variable LOC. A
+	 * The procedure locate.
+	 * <p>
+	 * It is used to assign a given value to the variable LOC. A
 	 * parameter value to "locate" which is less than one or greater than MAXLOC
 	 * constitutes a run-time error.
 	 * <pre>
@@ -293,7 +299,9 @@ public class _Directbytefile extends _Bytefile {
 	}
 
 	/**
-	 * The procedure inbyte. It reads one byte, returning its integer value. The
+	 * The procedure inbyte.
+	 * <p>
+	 * It reads one byte, returning its integer value. The
 	 * result of "inbyte" from an unwritten LOC is zero.
 	 * <p>
 	 * In this implementation the file.read() read a byte starting at the file
@@ -334,7 +342,9 @@ public class _Directbytefile extends _Bytefile {
 	}
 
 	/**
-	 * The procedure outbyte. It outputs a byte according to the given parameter
+	 * The procedure outbyte.
+	 * <p>
+	 * It outputs a byte according to the given parameter
 	 * value.
 	 * <p>
 	 * In this implementation the file.write() writes a byte starting at the file
@@ -390,7 +400,7 @@ public class _Directbytefile extends _Bytefile {
 	 * If this is not possible or meaningful, "checkpoint" is a dummy operation in
 	 * which case the value false is returned.
 	 * 
-	 * @return false:error
+	 * @return true:ok, false:error
 	 */
 	public boolean checkpoint() {
 		try {
@@ -515,7 +525,9 @@ public class _Directbytefile extends _Bytefile {
 	}
 
 	/**
-	 * The procedure intext. It fills the frame of the parameter "t" with successive
+	 * The procedure intext.
+	 * <p>
+	 * It fills the frame of the parameter "t" with successive
 	 * input bytes.
 	 * <pre>
 	 * text procedure intext(t);   text t;

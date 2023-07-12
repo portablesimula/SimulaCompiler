@@ -12,7 +12,6 @@ package simula.runtime;
  * <p>
  * The (file) class "imagefile" defines the common attributes for all image-
  * oriented files.
- * <p>
  * <pre>
  *      file class imagefile;
  *           begin text image;
@@ -90,6 +89,9 @@ public class _Imagefile extends _File {
 	// *** Output Functions for Outfile, Printfile and Directfile
 	// ************************************************************************
 
+	/**
+	 * Virtual procedure outimage.
+	 */
 	public void outimage() { // Needs redefinition
 		throw new _SimulaRuntimeError("Internal Error");
 	}
@@ -283,6 +285,9 @@ public class _Imagefile extends _File {
 	// *** Input Functions for Infile and Directfile
 	// ************************************************************************
 
+	/**
+	 * Virtual procedure inimage.
+	 */
 	public void inimage() { // Needs redefinition
 		throw new _SimulaRuntimeError("Internal Error");
 	}
