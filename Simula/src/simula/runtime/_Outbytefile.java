@@ -36,7 +36,7 @@ import java.io.OutputStream;
  * @author Øystein Myhre Andersen
  *
  */
-public class _Outbytefile extends _ByteFile {
+public class _Outbytefile extends _Bytefile {
 	private OutputStream outputStream;
 
 	// Constructor

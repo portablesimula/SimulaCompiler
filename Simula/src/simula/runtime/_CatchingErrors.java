@@ -8,7 +8,9 @@
 package simula.runtime;
 
 /**
- * The class CatchingErrors is used to implement runtime error catching.
+ * The class CatchingErrors.
+ * <p>
+ * This class is used to implement runtime error catching.
  * The basic idea is to enclose the 'inner' statement by a Java try-catch
  * construction and, in the catch section to call a virtual procedure 'onError'
  * to deal with the error situation.

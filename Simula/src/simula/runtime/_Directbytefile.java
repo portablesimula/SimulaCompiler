@@ -14,9 +14,8 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 
 /**
- * The class "Directbytefile" defines a byte-oriented direct file.
- * <p>
- * 
+ * The class Directbytefile.
+ * This class defines a byte-oriented direct file.
  * <pre>
  *  bytefile class Directbytefile;
  *        begin integer LOC, MAXLOC; Boolean LOCKED;
@@ -46,12 +45,14 @@ import java.nio.channels.FileLock;
  * is closed, the value of LOC is zero.
  * <p>
  * In this implementation LOC is maintained by the underlying file system.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Directbytefile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  *
  */
-public class _Directbytefile extends _ByteFile {
+public class _Directbytefile extends _Bytefile {
 
 	/**
 	 * In this implementation LOC is maintained by the underlying file system.
@@ -76,9 +77,13 @@ public class _Directbytefile extends _ByteFile {
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
 
-	// Constructor
-	public _Directbytefile(final _RTObject staticLink, final _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Directbytefile.
+	 * @param SL staticLink
+	 * @param FN file name 
+	 */
+	public _Directbytefile(final _RTObject SL, final _TXT FN) {
+		super(SL, FN);
 		_CREATE = _CreateAction.noCreate; // Default for Direct-type files
 	}
 
@@ -89,17 +94,20 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "endfile" returns true whenever LOC indicates an address
+	 * The procedure endfile. It returns true whenever LOC indicates an address
 	 * greater than "lastloc".
+	 * <pre>
+	 * 		Boolean procedure endfile; endfile:=OPEN and then LOC>lastloc;
+	 * </pre>
 	 * 
-	 * @return
+	 * @return the resulting boolean.
 	 */
 	public boolean endfile() {
 		return (_OPEN && (location() > lastloc()));
 	}
 
 	/**
-	 * The procedure "location" returns the current value of LOC.
+	 * The procedure location. It returns the current value of LOC.
 	 * <p>
 	 * In this implementation file.getFilePointer() is used for this purpose.
 	 * 
@@ -118,6 +126,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
+	 * The procedure maxloc.
 	 * <pre>
 	 *  integer procedure maxloc;
 	 *     if not OPEN then error("..." ! file closed; )
@@ -127,17 +136,22 @@ public class _Directbytefile extends _ByteFile {
 	 * The value assigned to MAXLOC at "open" is either a maximum length determined
 	 * from the external file, or it is "maxint"-1 if no such length exists.
 	 * 
-	 * @return
+	 * @return the value _MAXLOC.
 	 */
 	public int maxloc() {
 		return (_MAXLOC);
 	}
 
+	/**
+	 * Returns the value _LOCKED.
+	 * @return the value _LOCKED.
+	 */
 	public boolean locked() {
 		return (_LOCKED);
 	}
 
 	/**
+	 * The procedure open.
 	 * <pre>
 	 * Boolean procedure open;
 	 *    if ... then begin ...
@@ -148,7 +162,7 @@ public class _Directbytefile extends _ByteFile {
 	 * end open;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return false:error
 	 */
 	public boolean open() {
 		if (_RT.Option.VERBOSE)
@@ -176,6 +190,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
+	 * The procedure close.
 	 * <pre>
 	 * Boolean procedure close;
 	 *    if OPEN then begin ...
@@ -185,7 +200,7 @@ public class _Directbytefile extends _ByteFile {
 	 * end close;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return false:error
 	 */
 	public boolean close() {
 		if (!_OPEN)
@@ -213,11 +228,9 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "locate" is used to assign a given value to the variable LOC. A
+	 * The procedure locate. It is used to assign a given value to the variable LOC. A
 	 * parameter value to "locate" which is less than one or greater than MAXLOC
 	 * constitutes a run-time error.
-	 * <p>
-	 * 
 	 * <pre>
 	 *  procedure locate(p); integer p;
 	 *     if p&lt;1 or p>MAXLOC then error("..." ! Parameter out of range; )
@@ -239,7 +252,7 @@ public class _Directbytefile extends _ByteFile {
 	 * <p>
 	 * Throws: IOException - if pos is less than 0 or if an I/O error occurs.
 	 * 
-	 * @param p
+	 * @param p desired location.
 	 */
 	public void locate(final int p) {
 		if (p < 1 | p > _MAXLOC)
@@ -255,6 +268,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
+	 * The procedure lastloc.
 	 * <pre>
 	 * integer procedure lastloc;
 	 *    if not OPEN then error("..." ! file closed; )
@@ -279,7 +293,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "inbyte" reads one byte, returning its integer value. The
+	 * The procedure inbyte. It reads one byte, returning its integer value. The
 	 * result of "inbyte" from an unwritten LOC is zero.
 	 * <p>
 	 * In this implementation the file.read() read a byte starting at the file
@@ -296,7 +310,7 @@ public class _Directbytefile extends _ByteFile {
 	 * end inbyte;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return the byte value read.
 	 */
 	public int inbyte() {
 		if (!_CANREAD)
@@ -320,7 +334,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "outbyte" outputs a byte according to the given parameter
+	 * The procedure outbyte. It outputs a byte according to the given parameter
 	 * value.
 	 * <p>
 	 * In this implementation the file.write() writes a byte starting at the file
@@ -339,9 +353,9 @@ public class _Directbytefile extends _ByteFile {
 	 * end outbyte;
 	 * </pre>
 	 * 
-	 * @param x
+	 * @param b the byte value to be written.
 	 */
-	public void outbyte(final int x) {
+	public void outbyte(final int b) {
 		if (!_CANWRITE)
 			throw new _SimulaRuntimeError("Directbytefile: outbyte failed - 'canwrite' is false");
 		if (!_OPEN)
@@ -350,13 +364,13 @@ public class _Directbytefile extends _ByteFile {
 			throw new _SimulaRuntimeError(
 					"Directbytefile: outbyte failed: location(" + location() + ") <= initial lastloc("
 							+ INITIAL_LAST_LOC + ")" + " - The file " + FILE_NAME.edText() + " was opend with APPEND");
-		if (x < 0 || x > _MAXBYTE)
-			throw new _SimulaRuntimeError("Outbyte, illegal byte value: " + x);
+		if (b < 0 || b > _MAXBYTE)
+			throw new _SimulaRuntimeError("Outbyte, illegal byte value: " + b);
 		// else
 		// LOC is maintained by the underlying file system.
 		// if (_LOC > _MAXLOC) error("file overflow");
 		try {
-			randomAccessFile.write(x);
+			randomAccessFile.write(b);
 		} catch (IOException e) {
 			throw new _SimulaRuntimeError("I/O Error on file", e);
 		}
@@ -365,6 +379,8 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
+	 * The procedure checkpoint.
+	 * <p>
 	 * All files producing output (sequential output or direct files) contain a
 	 * Boolean procedure "checkpoint". The procedure causes the environment to
 	 * attempt to secure the output produced so far. Depending on the nature of the
@@ -374,7 +390,7 @@ public class _Directbytefile extends _ByteFile {
 	 * If this is not possible or meaningful, "checkpoint" is a dummy operation in
 	 * which case the value false is returned.
 	 * 
-	 * @return
+	 * @return false:error
 	 */
 	public boolean checkpoint() {
 		try {
@@ -383,10 +399,12 @@ public class _Directbytefile extends _ByteFile {
 			if(_RT.Option.VERBOSE) e.printStackTrace();
 			return (false);
 		}
-		return (false);
+		return (true);
 	}
 
 	/**
+	 * The procedure lock.
+	 * <p>
 	 * Direct File Locking
 	 * <p>
 	 * Procedure "lock" enables the program to get exclusive access to all or part
@@ -449,10 +467,10 @@ public class _Directbytefile extends _ByteFile {
 	 * And Returns: A lock object representing the newly-acquired lock
 	 * 
 	 * 
-	 * @param timelimit
-	 * @param loc1
-	 * @param loc2
-	 * @return
+	 * @param timelimit argument timelimit
+	 * @param loc1 argument loc1
+	 * @param loc2 argument loc2
+	 * @return code, 0:OK otherwise error
 	 */
 	public int lock(final float timelimit, final int loc1, final int loc2) {
 		if (timelimit <= 0.0f)
@@ -472,6 +490,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
+	 * The procedure unlock.
 	 * <pre>
 	 * Boolean procedure unlock;
 	 * begin
@@ -480,7 +499,7 @@ public class _Directbytefile extends _ByteFile {
 	 * end unlock;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return the resulting boolean value
 	 */
 	public boolean unlock() {
 		boolean result = checkpoint();
@@ -496,10 +515,8 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "intext" fills the frame of the parameter "t" with successive
+	 * The procedure intext. It fills the frame of the parameter "t" with successive
 	 * input bytes.
-	 * <p>
-	 * 
 	 * <pre>
 	 * text procedure intext(t);   text t;
 	 *    begin
@@ -510,8 +527,8 @@ public class _Directbytefile extends _ByteFile {
 	 * end intext;
 	 * </pre>
 	 * 
-	 * @param t
-	 * @return
+	 * @param t the argument text
+	 * @return the resulting text
 	 */
 	public _TXT intext(final _TXT t) {
 		_TXT.setpos(t, 1);
@@ -525,9 +542,7 @@ public class _Directbytefile extends _ByteFile {
 	}
 
 	/**
-	 * The procedure "outtext" outputs all characters in the parameter "t" as bytes.
-	 * <p>
-	 * 
+	 * The procedure outtext. It outputs all characters in the parameter "t" as bytes.
 	 * <pre>
 	 * procedure outtext(t);   text t;
 	 *    begin
@@ -536,7 +551,7 @@ public class _Directbytefile extends _ByteFile {
 	 * end outtext;
 	 * </pre>
 	 * 
-	 * @param t
+	 * @param t the argument text
 	 */
 	public void outtext(final _TXT t) {
 		_TXT.setpos(t, 1);

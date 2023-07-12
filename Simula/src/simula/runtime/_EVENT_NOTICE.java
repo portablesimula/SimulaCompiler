@@ -8,6 +8,7 @@
 package simula.runtime;
 
 /**
+* The class EVENT_NOTICE.
 * 
 * @author SIMULA Standards Group
 * @author Øystein Myhre Andersen

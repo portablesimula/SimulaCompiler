@@ -10,6 +10,8 @@ package simula.runtime;
 import simula.runtime._RTObject._BOUNDS;
 
 /**
+ * The class ARRAY.
+ * <p>
  * This class provides an abstract superclass for Simula arrays.
  * The implementation technique used is called 'dope vector indexing'. The dope vector is
  * calculated in the constructor based on the array bound pairs.

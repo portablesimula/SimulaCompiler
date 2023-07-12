@@ -40,7 +40,7 @@ import java.io.InputStream;
  * @author Øystein Myhre Andersen
  *
  */
-public class _Inbytefile extends _ByteFile {
+public class _Inbytefile extends _Bytefile {
 	protected boolean _ENDFILE = true;
 	private InputStream inputStream;
 

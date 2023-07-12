@@ -8,6 +8,8 @@
 package simula.runtime;
 
 /**
+ * The class Bytefile.
+ * <p>
  * The class bytefile is the common prefix class for all byte-oriented files.
  * 
  * <pre>
@@ -31,7 +33,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class _ByteFile extends _File {
+public class _Bytefile extends _File {
 	protected int _BYTESIZE;
 	protected final int _MAXBYTE = 255;
 
@@ -49,12 +51,12 @@ public class _ByteFile extends _File {
 	 * @param staticLink static link
 	 * @param FILENAME the file name.
 	 */
-	public _ByteFile(final _RTObject staticLink, final _TXT FILENAME) {
+	public _Bytefile(final _RTObject staticLink, final _TXT FILENAME) {
 		super(staticLink, FILENAME);
 	}
 
 	// Class Statements
-	public _ByteFile _STM() {
+	public _Bytefile _STM() {
 		if (FILE_NAME == null)
 			throw new _SimulaRuntimeError("Illegal File Name");
 		EBLK();

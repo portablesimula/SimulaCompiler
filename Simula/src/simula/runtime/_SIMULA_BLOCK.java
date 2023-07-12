@@ -38,7 +38,10 @@ public abstract class _SIMULA_BLOCK extends _BASICIO implements Runnable {
 		super(SL);
 	}
 
-	// Runnable Body
+	/**
+	 * Runnable Body
+	 * @return this object
+	 */
 	public _RTObject _START() {
 		beginCoroutine();
 		return (this);

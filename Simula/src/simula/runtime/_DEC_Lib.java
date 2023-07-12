@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Class DEC_Lib, a set of utility procedures from DEC Handbook.
+ * The class DEC_Lib. A set of utility procedures from DEC Handbook.
  * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_DEC_Lib.java"><b>Source File</b></a>.
  * 
