@@ -106,17 +106,17 @@ package simula.runtime;
 public class _BASICIO extends _ENVIRONMENT {
 
 	/**
-	 *  Constructor
-	 *  
-	 *  @param staticLink pointer to enclosing block
-	 */  
+	 * Constructor
+	 * 
+	 * @param staticLink pointer to enclosing block
+	 */
 	public _BASICIO(final _RTObject staticLink) {
 		super(staticLink);
 	}
 
-//  procedure terminate_program;
-//  begin ... ;  goto STOP  end terminate_program;
-//  DEFINED IN _RTObject	
+//	procedure terminate_program;
+//	begin ... ;  goto STOP  end terminate_program;
+//	DEFINED IN _RTObject	
 
 	@Override
 	public String toString() {
