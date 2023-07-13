@@ -16,7 +16,7 @@ import javax.swing.JFileChooser;
 import java.util.StringTokenizer;
 
 /**
- * The class file.
+ * The class File.
  * <pre>
  *    class file(FILENAME);  value FILENAME;  text FILENAME;
  *    begin Boolean OPEN;
@@ -40,7 +40,8 @@ import java.util.StringTokenizer;
  * notext, a run-time error occurs.
  * <p>
  * The procedure "filename" retrieves the value of FILENAME. 
- * 
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_File.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -108,13 +109,17 @@ public class _File extends _SIMULA_BLOCK {
 	protected final int _DEFAULT_BYTESIZE = 8;
 	protected boolean _SYNCHRONOUS;
 
-	// Constructor
-	public _File(final _RTObject staticLink, final _TXT FILE_NAME) {
-		super(staticLink);
+	/**
+	 * Create a new _File.
+	 * @param SL staticLink
+	 * @param FN file name
+	 */
+	public _File(final _RTObject SL, final _TXT FN) {
+		super(SL);
 		BBLK(); // Iff no prefix
-		if (FILE_NAME == null)
+		if (FN == null)
 			throw new _SimulaRuntimeError("Illegal File Name: null");
-		this.FILE_NAME = FILE_NAME;
+		this.FILE_NAME = FN;
 	}
 
 	// Class Statements
@@ -124,12 +129,19 @@ public class _File extends _SIMULA_BLOCK {
 		return (this);
 	}
 
+	/**
+	 * Returns the filename.
+	 * @return the filename
+	 */
 	public _TXT filename() {
 		return (copy(FILE_NAME));
 	}
 
+	/**
+	 * Returns true when this file is open.
+	 * @return true when this file is open
+	 */
 	public boolean isopen() {
-		// _RT.BREAK("ISOPEN: "+FILE_NAME.edText()+", Returns "+_OPEN);
 		return (_OPEN);
 	}
 
@@ -188,7 +200,7 @@ public class _File extends _SIMULA_BLOCK {
 	 * See <a href="http://simula67.at.ifi.uio.no/Standard-86/">Simula Standard</a>
 	 * Chapter 10, INPUT-OUTPUT.
 	 * 
-	 * @param mode
+	 * @param mode the access mode text
 	 * @return true if mode is recognized, otherwise false.
 	 */
 	public boolean setaccess(final _TXT mode) {

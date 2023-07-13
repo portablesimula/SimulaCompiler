@@ -7,6 +7,10 @@
  */
 package simula.runtime;
 
+/**
+ * Class _Ranking
+ *
+ */
 public class _Ranking {
 	_Ranking bl, ll, rl;
 	double rnk;

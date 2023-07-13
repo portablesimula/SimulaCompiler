@@ -42,6 +42,7 @@ import java.awt.geom.RoundRectangle2D;
  *       into(RENDERING_SET);
  * end;
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_ShapeElement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

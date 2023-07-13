@@ -9,23 +9,43 @@ package simula.runtime;
 
 /**
 * The class EVENT_NOTICE.
+* <p>
+* Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_EVENT_NOTICE.java"><b>Source File</b></a>.
 * 
 * @author SIMULA Standards Group
 * @author Øystein Myhre Andersen
 */
 public final class _EVENT_NOTICE extends _Ranking {
-	public final _Process PROC;
+	/**
+	 * The owning process.
+	 */
+	final _Process PROC;
 
-	// Constructors
+	/**
+	 * Create a new _EVENT_NOTICE.
+	 * 
+	 * @param EVTIME the simulated time
+	 * @param PROC the owning process
+	 */
 	public _EVENT_NOTICE(final double EVTIME, final _Process PROC) {
 		this.rnk = EVTIME;
 		this.PROC = PROC;
 	}
 
+	/**
+	 * Set this event's simulated time.
+	 * 
+	 * @param time the simulated time
+	 */
 	public void SET_EVTIME(double time) {
 		rnk = time;
 	}
 
+	/**
+	 * Returns this event's simulated time.
+	 * 
+	 * @return this event's simulated time
+	 */
 	public double EVTIME() {
 		return (rnk);
 	}

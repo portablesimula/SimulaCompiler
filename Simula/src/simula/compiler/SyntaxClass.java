@@ -111,14 +111,24 @@ public abstract class SyntaxClass {
 		}
 	}
 
+	/**
+	 * Output possible declaration code.
+	 */
 	public void doDeclarationCoding() {
 	}
 
+	/**
+	 * Output Java code.
+	 */
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
 		GeneratedJavaClass.code(toJavaCode());
 	}
 
+	/**
+	 * Generate Java code for this Syntax Class.
+	 * @return Java code
+	 */
 	public String toJavaCode() {
 		return (toString());
 	}
