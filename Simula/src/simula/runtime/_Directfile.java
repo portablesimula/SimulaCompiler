@@ -13,7 +13,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 
 /**
- * The class "directfile"
+ * The class Directfile.
  * <pre>
  *  imagefile class directfile;
  *     begin integer LOC, MAXLOC; Boolean ENDFILE, LOCKED;

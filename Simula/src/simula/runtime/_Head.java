@@ -9,7 +9,7 @@ package simula.runtime;
 
 /**
  * 
- * The Class "head"
+ * The Class Head.
  * <pre>
  *  linkage class head;
  *          begin
@@ -37,6 +37,8 @@ package simula.runtime;
  * An object of the class "head", or a subclass of "head" is used to represent a
  * set. "head" objects may not acquire set membership. Thus, a unique "head" is
  * defined for each set.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Head.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -48,9 +50,11 @@ public class _Head extends _Linkage {
 	 * <p>
 	 * The references SUC and PRED initially point to the "head" itself, which
 	 * thereby represents an empty set.
+	 * 
+	 * @param SL staticLink
 	 */
-	public _Head(final _RTObject staticLink) {
-		super(staticLink);
+	public _Head(final _RTObject SL) {
+		super(SL);
 		SUC = PRED = (_Linkage) _CUR;
 	}
 
@@ -94,7 +98,7 @@ public class _Head extends _Linkage {
 	/**
 	 * The integer procedure "cardinal" counts the number of members in a set.
 	 * 
-	 * @return
+	 * @return the number of members in this set
 	 */
 	public int cardinal() {
 		int i = 0;

@@ -36,6 +36,8 @@ package simula.runtime;
  * <p>
  * The procedure "prev" enables a user to access a set head from its first
  * member.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Linkage.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -46,8 +48,12 @@ public class _Linkage extends _SIMULA_BLOCK {
 	protected _Linkage PRED = null;
 
 	// Constructor
-	public _Linkage(final _RTObject staticLink) {
-		super(staticLink);
+	/**
+	 * Create a new _Linkage.
+	 * @param SL staticLink
+	 */
+	public _Linkage(final _RTObject SL) {
+		super(SL);
 		BBLK(); // Iff no prefix
 	}
 
@@ -57,14 +63,26 @@ public class _Linkage extends _SIMULA_BLOCK {
 		return (this);
 	}
 
+	/**
+	 * Returns the successor link.
+	 * @return the successor link
+	 */
 	public _Link suc() {
 		return ((SUC instanceof _Link suc) ? suc : null);
 	}
 
+	/**
+	 * Returns the predecessor link.
+	 * @return the predecessor link
+	 */
 	public _Link pred() {
 		return ((PRED instanceof _Link pred) ? pred : null);
 	}
 
+	/**
+	 * Return the previous linkage.
+	 * @return the previous linkage
+	 */
 	public _Linkage prev() {
 		return (PRED);
 	}

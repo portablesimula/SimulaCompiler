@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * The Class "link"
+ * The Class Link.
  * <pre>
  *  linkage class link;
  *          begin
@@ -45,6 +45,8 @@ package simula.runtime;
  * <p>
  * In addition to the procedures "suc" and "pred", there are four procedures
  * associated with each "link" object: "out", "follow", "precede" and "into".
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Link.java"><b>Source File</b></a>.
  * 
  * 
  * 
@@ -55,8 +57,12 @@ package simula.runtime;
 public class _Link extends _Linkage {
 
 	// Constructor
-	public _Link(final _RTObject staticLink) {
-		super(staticLink);
+	/**
+	 * Create a new _Link.
+	 * @param SL staticLink
+	 */
+	public _Link(final _RTObject SL) {
+		super(SL);
 	}
 
 	@Override
@@ -66,6 +72,8 @@ public class _Link extends _Linkage {
 	}
 
 	/**
+	 * Procedure out.
+	 * <p>
 	 * The procedure "out" removes the object from the set (if any) of which it is a
 	 * member. The procedure call has no effect if the object has no set membership.
 	 */
@@ -78,16 +86,18 @@ public class _Link extends _Linkage {
 	}
 
 	/**
-	 * The procedures "follow" and "precede" remove the object from the set (if any)
+	 * Procedure follow.
+	 * <p>
+	 * The procedure "follow" remove the object from the set (if any)
 	 * of which it is a member and insert it in a set at a given position. The set
 	 * and the position are indicated by a parameter which is inner to "linkage".
 	 * The procedure call has the same effect as "out" (except for possible side
 	 * effects from evaluation of the parameter) if the parameter is none or if it
 	 * has no set membership and is not a set head. Otherwise the object is inserted
-	 * immediately after ("follow") or before ("precede") the "linkage" object
+	 * immediately after the "linkage" object
 	 * designated by the parameter.
 	 * 
-	 * @param x
+	 * @param x argument x
 	 */
 	public void follow(final _Linkage x) {
 		out();
@@ -101,16 +111,18 @@ public class _Link extends _Linkage {
 	}
 
 	/**
-	 * The procedures "follow" and "precede" remove the object from the set (if any)
+	 * Procedure precede.
+	 * <p>
+	 * The procedure "precede" remove the object from the set (if any)
 	 * of which it is a member and insert it in a set at a given position. The set
 	 * and the position are indicated by a parameter which is inner to "linkage".
 	 * The procedure call has the same effect as "out" (except for possible side
 	 * effects from evaluation of the parameter) if the parameter is none or if it
 	 * has no set membership and is not a set head. Otherwise the object is inserted
-	 * immediately after ("follow") or before ("precede") the "linkage" object
+	 * immediately before the "linkage" object
 	 * designated by the parameter.
 	 * 
-	 * @param x
+	 * @param x argument x
 	 */
 	public void precede(final _Linkage x) {
 		out();
@@ -124,11 +136,13 @@ public class _Link extends _Linkage {
 	}
 
 	/**
+	 * Procedure into.
+	 * <p>
 	 * The procedure "into" removes the object from the set (if any) of which it is
 	 * a member and inserts it as the last member of the set designated by the
 	 * parameter. The procedure call has the same effect as "out" if the parameter
 	 * has the value none (except for possible side effects from evaluating the
-	 * actual parameter). *
+	 * actual parameter).
 	 * 
 	 * @param S The set(Head) to receive this Link.
 	 */

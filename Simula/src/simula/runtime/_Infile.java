@@ -43,7 +43,8 @@ import java.io.Reader;
  * The variable ENDFILE is true whenever the file object is closed or the
  * external file is exhausted (i.e. "end of file" has been encountered). The
  * procedure "endfile" gives access to the value of ENDFILE.
- * 
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Infile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -53,8 +54,13 @@ public class _Infile extends _Imagefile {
 	private BufferedReader lineReader;
 
 	// Constructor
-	public _Infile(_RTObject staticLink, _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Infile.
+	 * @param SL staticLink
+	 * @param FN FILENAME
+	 */
+	public _Infile(_RTObject SL, _TXT FN) {
+		super(SL, FN);
 		_ENDFILE = true;
 	}
 
@@ -67,7 +73,7 @@ public class _Infile extends _Imagefile {
 
 	/**
 	 * <p>
-	 * Open Infile.
+	 * Procedure open.
 	 * 
 	 * <pre>
 	 *  Boolean procedure open(fileimage);  text fileimage;
@@ -88,15 +94,15 @@ public class _Infile extends _Imagefile {
 	 * If successful, "open" returns true and sets ENDFILE false. In addition,
 	 * "image" references the parameter "fileimage" which is space-filled.
 	 * 
-	 * @param IMAGE_
+	 * @param image the givent image
 	 * @return true if successful, otherwise false.
 	 */
-	public boolean open(final _TXT IMAGE_) {
+	public boolean open(final _TXT image) {
 		if (_RT.Option.VERBOSE)
 			TRACE_OPEN("Open InFile");
 		if (_OPEN)
 			return (false);
-		image = IMAGE_;
+		this.image = image;
 		_ENDFILE = false;
 		_ASGTXT(image, null); // image := NOTEXT;
 		setpos(length() + 1);
@@ -129,9 +135,7 @@ public class _Infile extends _Imagefile {
 	}
 
 	/**
-	 * Close Infile.
-	 * <p>
-	 * 
+	 * Procedure close.
 	 * <pre>
 	 * Boolean procedure close;
 	 *      if OPEN then
@@ -170,12 +174,19 @@ public class _Infile extends _Imagefile {
 		return (true);
 	}
 
+	/**
+	 * Procedure endfile.
+	 * <p>
+	 * Returns true whenever the file object is closed or the external file is exhausted
+	 * (i.e. "end of file" has been encountered).
+	 * @return the resulting boolean value
+	 */
 	public boolean endfile() {
 		return (_ENDFILE);
 	}
 
 	/**
-	 * The Procedure Inimage.
+	 * Procedure Inimage.
 	 * 
 	 * <pre>
 	 * procedure inimage;
@@ -202,6 +213,8 @@ public class _Infile extends _Imagefile {
 	 * single character external image, and the variable ENDFILE is given the value
 	 * true. A call on "inimage" or "inrecord" when ENDFILE already has the value
 	 * true constitutes a run-time error.
+	 * 
+	 * @throws _SimulaRuntimeError if inimage fail
 	 */
 	@Override
 	public void inimage() {
@@ -226,8 +239,7 @@ public class _Infile extends _Imagefile {
 	}
 
 	/**
-	 * The Procedure Inrecord
-	 * <p>
+	 * Procedure inrecord.
 	 * 
 	 * <pre>
 	 *  Boolean procedure inrecord;
@@ -261,10 +273,9 @@ public class _Infile extends _Imagefile {
 	 * true. A call on "inimage" or "inrecord" when ENDFILE already has the value
 	 * true constitutes a run-time error.
 	 *
-	 * @return
+	 * @return true if a partial record is read, otherwise false
+	 * @throws _SimulaRuntimeError if inrecord fail
 	 */
-	private String rest = null;
-
 	public boolean inrecord() {
 		if (!_OPEN || _ENDFILE)
 			throw new _SimulaRuntimeError(FILE_NAME.edText() + ": File not opened or attempt to read past EOF");
@@ -289,5 +300,7 @@ public class _Infile extends _Imagefile {
 		}
 		return (rest != null);
 	}
+	private String rest = null;
+
 
 }

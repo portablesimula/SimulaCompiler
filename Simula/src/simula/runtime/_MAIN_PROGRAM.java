@@ -8,6 +8,7 @@
 package simula.runtime;
 
 /**
+ * The Class MAIN_PROGRAM
  * <pre>
  *  process class MAIN_PROGRAM;
              begin
@@ -30,6 +31,8 @@ package simula.runtime;
  * A simulation model is initialized by generating the MAIN_PROGRAM object and
  * scheduling an active phase for it at system time zero. Then the PSC proceeds
  * to the first user-defined statement of the "simulation" block.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_MAIN_PROGRAM.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -37,8 +40,12 @@ package simula.runtime;
 public final class _MAIN_PROGRAM extends _Process {
 
 	// Constructor
-	public _MAIN_PROGRAM(final _RTObject staticLink) {
-		super(staticLink);
+	/**
+	 * Create a new _MAIN_PROGRAM.
+	 * @param SL staticLink
+	 */
+	public _MAIN_PROGRAM(final _RTObject SL) {
+		super(SL);
 	}
 
 	// Class Statements

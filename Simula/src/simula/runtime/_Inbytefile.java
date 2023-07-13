@@ -14,20 +14,20 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * The class "inbytefile"
+ * The class Inbytefile.
  * 
  * <pre>
- *  bytefile class inbytefile;
- *           begin Boolean ENDFILE;
- *           Boolean procedure endfile;  endfile:= ENDFILE;
- *           Boolean procedure open;
- *           Boolean procedure close; 
- *           short integer procedure inbyte; 
- *           text procedure intext(t);   text t;
+ *  bytefile class inbytefile; begin
+ *      Boolean ENDFILE;
+ *      Boolean procedure endfile;  endfile:= ENDFILE;
+ *      Boolean procedure open;
+ *      Boolean procedure close; 
+ *      short integer procedure inbyte; 
+ *      text procedure intext(t);   text t;
  * 
- *           ENDFILE:= true;
- *           ...
- *        end inbytefile;
+ *      ENDFILE:= true;
+ *      ...
+ * end inbytefile;
  * </pre>
  * 
  * An object of the class "inbytefile" is used to represent a byte-oriented
@@ -35,6 +35,8 @@ import java.io.InputStream;
  * <p>
  * Variable "ENDFILE" is true if there are no more bytes to read. The procedure
  * "endfile" returns the value of ENDFILE.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Inbytefile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -45,8 +47,13 @@ public class _Inbytefile extends _Bytefile {
 	private InputStream inputStream;
 
 	// Constructor
-	public _Inbytefile(final _RTObject staticLink, final _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Inbytefile.
+	 * @param SL staticLink
+	 * @param FN file name
+	 */
+	public _Inbytefile(final _RTObject SL, final _TXT FN) {
+		super(SL, FN);
 	}
 
 	// Class Statements
@@ -57,6 +64,7 @@ public class _Inbytefile extends _Bytefile {
 	}
 
 	/**
+	 * Procedure endfile.
 	 * <pre>
 	 * Boolean procedure endfile;  endfile:= ENDFILE;
 	 * </pre>
@@ -67,6 +75,7 @@ public class _Inbytefile extends _Bytefile {
 	}
 
 	/**
+	 * Procedure open.
 	 * <pre>
 	 * Boolean procedure open;
 	 *    if ... then begin ...  
@@ -76,7 +85,7 @@ public class _Inbytefile extends _Bytefile {
 	 * end open;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return true if the file was successfully opened, otherwise false
 	 */
 	public boolean open() {
 		if (_RT.Option.VERBOSE)
@@ -106,6 +115,7 @@ public class _Inbytefile extends _Bytefile {
 	}
 
 	/**
+	 * Procedure close.
 	 * <pre>
 	 * Boolean procedure close;
 	 *    if OPEN then begin ... ! see 10.1.2;
@@ -115,7 +125,7 @@ public class _Inbytefile extends _Bytefile {
 	 * end close;
 	 * </pre>
 	 * 
-	 * @return
+	 * @return false if the file is not open.
 	 */
 	public boolean close() {
 		if (_OPEN) {
@@ -128,6 +138,7 @@ public class _Inbytefile extends _Bytefile {
 	}
 
 	/**
+	 * Procedure inbyte
 	 * <pre>
 	 * short integer procedure inbyte;
 	 *    if ENDFILE then error("..." ! End of file ;)
@@ -140,7 +151,8 @@ public class _Inbytefile extends _Bytefile {
 	 * input byte. If there are no more bytes to read, a zero result is returned. If
 	 * prior to an "inbyte" call ENDFILE is true, a run-time error occurs.
 	 * 
-	 * @return
+	 * @return the resulting integer value
+	 * @throws _SimulaRuntimeError if inbyte fail
 	 */
 	public int inbyte() {
 		if (_ENDFILE)
@@ -159,30 +171,35 @@ public class _Inbytefile extends _Bytefile {
 		}
 	}
 
+	/**
+	 * Procedure in2byte.
+	 * @return the resulting integer value
+	 * @throws _SimulaRuntimeError if intext fail
+	 */
 	public int in2byte() {
 		int b1 = inbyte();
 		int b2 = inbyte();
 		int res = ((b1 << 8) | b2);
-//    	System.out.println("in2byte: b1="+b1+", b2="+b2+" ==> "+res);
 		return (res);
 	}
 
 	/**
+	 * Procedure intext.
 	 * <pre>
 	 * text procedure intext(t);   text t;
-	 *            begin
-	 *               t.setpos(1);
-	 *               while t.more and not ENDFILE do t.putchar(char(inbyte));
-	 *               if ENDFILE then t.setpos(t.pos-1);
-	 *               intext:- t.sub(1,t.pos-1)
-	 *            end intext;
+	 * begin
+	 *       t.setpos(1);
+	 *       while t.more and not ENDFILE do t.putchar(char(inbyte));
+	 *       if ENDFILE then t.setpos(t.pos-1);
+	 *       intext:- t.sub(1,t.pos-1)
+	 * end intext;
 	 * </pre>
 	 * 
 	 * The procedure "intext" fills the frame of the parameter "t" with successive
 	 * input bytes.
 	 * 
-	 * @param t
-	 * @return
+	 * @param t the text frame to fill
+	 * @return the text frame
 	 */
 	public _TXT intext(final _TXT t) {
 		_TXT.setpos(t, 1);

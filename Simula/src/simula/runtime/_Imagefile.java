@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * Image-Oriented Files.
+ * The Class Imagefile.
  * <p>
  * The (file) class "imagefile" defines the common attributes for all image-
  * oriented files.
@@ -37,6 +37,8 @@ package simula.runtime;
  * file), "outfile" (sequential output file) and "directfile" (bidirectional
  * direct file). In addition, "printfile", a standard subclass of class outfile,
  * is available. It represents a line printer oriented file.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Imagefile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -45,12 +47,12 @@ package simula.runtime;
 public class _Imagefile extends _File {
 
 	/**
-	 * 
+	 * The image attribute of this _Imagefile.
 	 */
 	public _TXT image;
 
 	/**
-	 * The variable ENDFILE is true when the file is closed or when an image with
+	 * The variable ENDFILE. It is true when the file is closed or when an image with
 	 * location greater than "lastloc" has been input (through "inimage"). It is set
 	 * after each "inimage" statement. The procedure "endfile" returns the current
 	 * value.
@@ -58,8 +60,13 @@ public class _Imagefile extends _File {
 	protected boolean _ENDFILE = true;
 
 	// Constructor
-	public _Imagefile(final _RTObject staticLink, final _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Imagefile.
+	 * @param SL staticLink
+	 * @param FN file name
+	 */
+	public _Imagefile(final _RTObject SL, final _TXT FN) {
+		super(SL, FN);
 	}
 
 	// Class Statements
@@ -69,18 +76,34 @@ public class _Imagefile extends _File {
 		return (this);
 	}
 
-	public void setpos(final int i) {
-		_TXT.setpos(image, i);
+	/**
+	 * Set pos indikator in image.
+	 * @param p new pos in image
+	 */
+	public void setpos(final int p) {
+		_TXT.setpos(image, p);
 	}
 
+	/**
+	 * Returns the image's pos.
+	 * @return the image's pos
+	 */
 	public int pos() {
 		return (_TXT.pos(image));
 	}
 
+	/**
+	 * Returns the image's more.
+	 * @return the image's more
+	 */
 	public boolean more() {
 		return (_TXT.more(image));
 	}
 
+	/**
+	 * Returns the image's length.
+	 * @return the image's length
+	 */
 	public int length() {
 		return (_TXT.length(image));
 	}
@@ -90,13 +113,17 @@ public class _Imagefile extends _File {
 	// ************************************************************************
 
 	/**
-	 * Virtual procedure outimage.
+	 * Procedure outimage.
+	 * <p>
+	 * This method is virtual and may be redefined in subclasses.
+	 * @throws _SimulaRuntimeError if no redefinition is available
 	 */
 	public void outimage() { // Needs redefinition
 		throw new _SimulaRuntimeError("Internal Error");
 	}
 
 	/**
+	 * Procedure outchar.
 	 * <pre>
 	 * procedure outchar(c); character c;
 	 * begin
@@ -108,7 +135,7 @@ public class _Imagefile extends _File {
 	 * The procedure "outchar" stores a character in the POS position of "image". If
 	 * "more" is false, "outimage" is called first.
 	 * 
-	 * @param c
+	 * @param c the character to output
 	 */
 	public void outchar(final char c) {
 		if (!more())
@@ -117,7 +144,7 @@ public class _Imagefile extends _File {
 	}
 
 	/**
-	 * Item-oriented output.
+	 * Utility procedure _FIELD.
 	 * 
 	 * <pre>
 	 *  text procedure FIELD(w); integer w;
@@ -128,35 +155,13 @@ public class _Imagefile extends _File {
 	 *         setpos(pos+w)
 	 *      end FIELD;
 	 * </pre>
-	 * <p>
-	 * The procedures "outint", "outfix", "outreal" and "outfrac" are defined in
-	 * terms of the corresponding editing procedures of "image". They provide
-	 * facilities for "item-oriented" output. Each item is edited into a "field"
-	 * (subtext of "image") normally starting at the current accessible character.
-	 * POS is advanced correspondingly. If the remainder of "image" is too short to
-	 * contain the item, "outimage" is called implicitly prior to the editing
-	 * operation. The field is space-filled before the editing operation.
-	 * <p>
-	 * A run-time error occurs if a field cannot be contained within the full length
-	 * of "image".
-	 * <p>
-	 * Parameter "w" determines both the length of this field and the adjustment of
-	 * the item within it, as follows.
-	 * <p>
+	 * See <b>{@link _Imagefile#outint(int,int)}</b>
 	 * 
-	 * <pre>
-	 *     w > 0 The field length is w, the item is right-adjusted.
-	 * 
-	 *     w &lt; 0 The field length is abs(w), the item is left-adjusted.
-	 * 
-	 *     w = 0 The field length is the exact number of characters needed to
-	 *     contain the item (i.e. no leading or trailing spaces).
-	 * </pre>
-	 * 
-	 * @param w
-	 * @return
+	 * @param w the width of the field.
+	 * @return the resulting text field
+	 * @throws _SimulaRuntimeError if Item is too long
 	 */
-	public _TXT _FIELD(final int w) {
+	private _TXT _FIELD(final int w) {
 		if (w > length())
 			throw new _SimulaRuntimeError("Item too long in output operation");
 		if (pos() + w - 1 > length())
@@ -167,7 +172,27 @@ public class _Imagefile extends _File {
 	}
 
 	/**
+	 * Procedure outint.
+	 * <p>
+	 * The procedures "outint", "outfix", "outreal" and "outfrac" are defined in terms of the corresponding
+	 * editing procedures of "image". They provide facilities for "item-oriented" output. Each item is
+	 * edited into a "field" (subtext of "image") normally starting at the current accessible character. POS
+	 * is advanced correspondingly. If the remainder of "image" is too short to contain the item,
+	 * "outimage" is called implicitly prior to the editing operation. The field is space-filled before the
+	 * editing operation.
+	 * <p>
+	 * A run-time error occurs if a field cannot be contained within the full length of "image".
+	 * <p>
+	 * Parameter "w" determines both the length of this field and the adjustment of the item within it, as follows.
 	 * <pre>
+	 *     w > 0 The field length is w, the item is right-adjusted.
+	 * 
+	 *     w &lt; 0 The field length is abs(w), the item is left-adjusted.
+	 * 
+	 *     w = 0 The field length is the exact number of characters needed to
+	 *     contain the item (i.e. no leading or trailing spaces).
+	 *     
+	 *     
 	 * procedure outint(i,w); integer i,w;
 	 *     if      w = 0 then FIELD(...).putint(i)   ! see below;
 	 *     else if w &lt; 0
@@ -178,17 +203,10 @@ public class _Imagefile extends _File {
 	 *     else FIELD(w).putint(i);
 	 * </pre>
 	 * 
-	 * @param i The integer value to be edited and outputed.
-	 * @param w
+	 * @param i the integer value to be edited and outputed
+	 * @param w the width of editing field
+	 * @throws _SimulaRuntimeError if the Item is too long in output operation
 	 * 
-	 *          <pre>
-	 *     w > 0 The field length is w, the item is right-adjusted.
-	 * 
-	 *     w &lt; 0 The field length is abs(w), the item is left-adjusted.
-	 * 
-	 *     w = 0 The field length is the exact number of characters needed to
-	 *     contain the item (i.e. no leading or trailing spaces).
-	 *          </pre>
 	 */
 	public void outint(final int i, final int w) {
 		if (w <= 0) {
@@ -203,6 +221,16 @@ public class _Imagefile extends _File {
 			_TXT.putint(_FIELD(w), i);
 	}
 
+	/**
+	 * Procedure outfix.
+	 * <p>
+	 * See <b>{@link _Imagefile#outint(int,int)}</b>
+	 * 
+	 * @param r the long real value to be edited and outputed
+	 * @param n the number of digits after decimal sign
+	 * @param w the width of editing field
+	 * @throws _SimulaRuntimeError if the Item is too long in output operation
+	 */
 	public void outfix(final double r, final int n, final int w) {
 		if (w <= 0) {
 			_TXT T = blanks(n + 10);
@@ -216,6 +244,16 @@ public class _Imagefile extends _File {
 			_TXT.putfix(_FIELD(w), r, n);
 	}
 
+	/**
+	 * Procedure outreal.
+	 * <p>
+	 * See <b>{@link _Imagefile#outint(int,int)}</b>
+	 * 
+	 * @param r the long real value to be edited and outputed
+	 * @param n the number of digits after decimal sign
+	 * @param w the width of editing field
+	 * @throws _SimulaRuntimeError if the Item is too long in output operation
+	 */
 	public void outreal(final double r, final int n, final int w) {
 		if (w <= 0) {
 			_TXT T = blanks(n + 10);
@@ -229,6 +267,16 @@ public class _Imagefile extends _File {
 			_TXT.putreal(_FIELD(w), r, n);
 	}
 
+	/**
+	 * Procedure outreal.
+	 * <p>
+	 * See <b>{@link _Imagefile#outint(int,int)}</b>
+	 * 
+	 * @param r the real value to be edited and outputed
+	 * @param n the number of digits after decimal sign
+	 * @param w the width of editing field
+	 * @throws _SimulaRuntimeError if the Item is too long in output operation
+	 */
 	public void outreal(final float r, final int n, final int w) {
 		if (w <= 0) {
 			_TXT T = blanks(n + 10);
@@ -242,6 +290,16 @@ public class _Imagefile extends _File {
 			_TXT.putreal(_FIELD(w), r, n);
 	}
 
+	/**
+	 * Procedure outfrac.
+	 * <p>
+	 * See <b>{@link _Imagefile#outint(int,int)}</b>
+	 * 
+	 * @param i the integer value to be edited and outputed
+	 * @param n the number of digits after decimal sign
+	 * @param w the width of editing field
+	 * @throws _SimulaRuntimeError if the Item is too long in output operation
+	 */
 	public void outfrac(final int i, final int n, final int w) {
 		if (w <= 0) {
 			_TXT T = blanks(n + 10);
@@ -256,6 +314,7 @@ public class _Imagefile extends _File {
 	}
 
 	/**
+	 * Procedure outtext.
 	 * <pre>
 	 * procedure outtext(t); text t;
 	 * begin
@@ -271,6 +330,13 @@ public class _Imagefile extends _File {
 		outtext(new _TXT(s));
 	}
 
+	/**
+	 * Procedure outtext.
+	 * <p>
+	 * See <b>{@link _Imagefile#outtext(String)}</b>
+	 * 
+	 * @param t the _TXT representation of the text
+	 */
 	public void outtext(final _TXT t) {
 		if (t == null)
 			return;
@@ -286,15 +352,17 @@ public class _Imagefile extends _File {
 	// ************************************************************************
 
 	/**
-	 * Virtual procedure inimage.
+	 * Procedure inimage.
+	 * <p>
+	 * This method is virtual and may be redefined in subclasses.
+	 * @throws _SimulaRuntimeError if no redefinition is available
 	 */
 	public void inimage() { // Needs redefinition
 		throw new _SimulaRuntimeError("Internal Error");
 	}
 
 	/**
-	 * Inchar.
-	 * <p>
+	 * Procedure inchar.
 	 * 
 	 * <pre>
 	 * character procedure inchar;
@@ -307,7 +375,7 @@ public class _Imagefile extends _File {
 	 * The procedure "inchar" gives access to and scans past the next character.
 	 * Note: The result may be the "EOF-character" EM (ISOrank 25).
 	 * 
-	 * @return
+	 * @return the resulting character
 	 */
 	public char inchar() {
 		while (!more())
@@ -316,8 +384,7 @@ public class _Imagefile extends _File {
 	}
 
 	/**
-	 * Intext.
-	 * <p>
+	 * Procedure intext.
 	 * 
 	 * <pre>
 	 * text procedure intext(w); integer w;
@@ -336,8 +403,8 @@ public class _Imagefile extends _File {
 	 * <p>
 	 * Note: The result may be a reference to an "EOF-image" (cf. inimage/inrecord).
 	 * 
-	 * @param w
-	 * @return
+	 * @param w the width of the input field.
+	 * @return the resulting text
 	 */
 	public _TXT intext(final int w) {
 		_TXT T = blanks(w);
@@ -347,8 +414,7 @@ public class _Imagefile extends _File {
 	}
 
 	/**
-	 * Lastintem.
-	 * <p>
+	 * Procedure lastintem.
 	 * 
 	 * <pre>
 	 *  Boolean procedure lastitem;
@@ -366,7 +432,7 @@ public class _Imagefile extends _File {
 	 * involve the transfer of several successive external images. If the file
 	 * contains no further non-space, non-tab characters the value true is returned.
 	 * 
-	 * @return
+	 * @return the resulting boolean value
 	 */
 	public boolean lastitem() {
 		char c = ' ';
@@ -385,8 +451,7 @@ public class _Imagefile extends _File {
 	}
 
 	/**
-	 * Inint.
-	 * <p>
+	 * Procedure inint.
 	 * 
 	 * <pre>
 	 * integer procedure inint;
@@ -412,8 +477,7 @@ public class _Imagefile extends _File {
 	}
 
 	/**
-	 * Inreal.
-	 * <p>
+	 * Procedure inreal.
 	 * 
 	 * <pre>
 	 * long real procedure inreal;
@@ -439,7 +503,7 @@ public class _Imagefile extends _File {
 	}
 
 	/**
-	 * <p>
+	 * Procedure infrac.
 	 * 
 	 * <pre>
 	 * integer procedure infrac;
