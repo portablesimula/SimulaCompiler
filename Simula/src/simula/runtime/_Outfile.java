@@ -14,9 +14,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 /**
- * The Class OutFile.
- * <p>
- * 
+ * The Class Outfile.
  * <pre>
  *  file class outfile;
  *       begin
@@ -40,6 +38,8 @@ import java.io.Writer;
  * <p>
  * An object of the class "outfile" is used to represent an image-oriented
  * sequential output file.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Outfile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -49,8 +49,13 @@ public class _Outfile extends _Imagefile {
 	protected Writer writer;
 
 	// Constructor
-	public _Outfile(final _RTObject staticLink, final _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Outfile.
+	 * @param SL staticLink
+	 * @param FN FILENAME
+	 */
+	public _Outfile(final _RTObject SL, final _TXT FN) {
+		super(SL, FN);
 	}
 
 	// Class Statements
@@ -61,6 +66,7 @@ public class _Outfile extends _Imagefile {
 	}
 
 	/**
+	 * Procedure open.
 	 * <pre>
 	 * Boolean procedure open(fileimage);  text fileimage;
 	 * if ... then
@@ -76,16 +82,16 @@ public class _Outfile extends _Imagefile {
 	 * opening actions on the external file. If the external file is closed, it is
 	 * opened.
 	 * 
-	 * @param IMAGE_
+	 * @param image the givent image
 	 * @return true if successful, otherwise false.
 	 */
-	public boolean open(final _TXT IMAGE_) {
+	public boolean open(final _TXT image) {
 		if (_RT.Option.VERBOSE)
 			TRACE_OPEN("Open OutFile");
 		if (_OPEN)
 			return (false); // File already opened
 		_OPEN = true;
-		image = IMAGE_;
+		this.image = image;
 		setpos(1);
 		if (FILE_NAME.edText().equalsIgnoreCase("#sysout"))
 			writer = new OutputStreamWriter(System.out, _CHARSET);
@@ -103,6 +109,7 @@ public class _Outfile extends _Imagefile {
 	}
 
 	/**
+	 * Procedure close.
 	 * <pre>
 	 * Boolean procedure close;
 	 * if OPEN then
@@ -147,6 +154,7 @@ public class _Outfile extends _Imagefile {
 	}
 
 	/**
+	 * Procedure outimage.
 	 * <pre>
 	 * procedure outimage;
 	 *            if not OPEN then error("..." ! file closed; )
@@ -191,6 +199,7 @@ public class _Outfile extends _Imagefile {
 	}
 
 	/**
+	 * Procedure outrecord.
 	 * <pre>
 	 * procedure outrecord;
 	 * if not OPEN then  error("..." ! file closed; )
@@ -210,6 +219,7 @@ public class _Outfile extends _Imagefile {
 	}
 
 	/**
+	 * Procedure breakoutimage.
 	 * <pre>
 	 *  procedure breakoutimage;
 	 *            if not OPEN then error("..." ! file closed; )
@@ -236,6 +246,8 @@ public class _Outfile extends _Imagefile {
 	}
 
 	/**
+	 * Procedure checkpoint.
+	 * <p>
 	 * All files producing output (sequential output or direct files) contain a
 	 * Boolean procedure "checkpoint". The procedure causes the environment to
 	 * attempt to secure the output produced so far. Depending on the nature of the
@@ -243,7 +255,6 @@ public class _Outfile extends _Imagefile {
 	 * intermediate buffer contents are transferred). If this is not possible or
 	 * meaningful, "checkpoint" is a dummy operation in which case the value false
 	 * is returned.
-	 * <p>
 	 * 
 	 * @return true if successful, otherwise false.
 	 */

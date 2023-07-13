@@ -31,6 +31,8 @@ import java.io.OutputStream;
  * 
  * An object of the class "outbytefile" is used to represent a sequential output
  * file of bytes.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Outbytefile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -40,8 +42,13 @@ public class _Outbytefile extends _Bytefile {
 	private OutputStream outputStream;
 
 	// Constructor
-	public _Outbytefile(final _RTObject staticLink, final _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Outbytefile.
+	 * @param SL staticLink
+	 * @param FN file name
+	 */
+	public _Outbytefile(final _RTObject SL, final _TXT FN) {
+		super(SL, FN);
 	}
 
 	// Class Statements
@@ -53,6 +60,18 @@ public class _Outbytefile extends _Bytefile {
 		return (this);
 	}
 
+	/**
+	 * The procedure open.
+	 * <pre>
+	 * Boolean procedure open;
+	 *    if ... then begin ...
+	 *       BYTESIZE := ... ! value of access mode BYTESIZE;
+	 *       open     := OPEN := true;
+	 * end open;
+	 * </pre>
+	 * 
+	 * @return true:ok, false:error
+	 */
 	public boolean open() {
 		if (_RT.Option.VERBOSE)
 			TRACE_OPEN("open Outbytefile");
@@ -71,6 +90,18 @@ public class _Outbytefile extends _Bytefile {
 		return (true);
 	}
 
+	/**
+	 * The procedure close.
+	 * <pre>
+	 * Boolean procedure close;
+	 *    if OPEN then begin ...
+	 *       OPEN   := false;
+	 *       close  := true;
+	 * end close;
+	 * </pre>
+	 * 
+	 * @return true:ok, false:error
+	 */
 	public boolean close() {
 		if (_OPEN) {
 			_OPEN = false;
@@ -80,6 +111,17 @@ public class _Outbytefile extends _Bytefile {
 		return (false);
 	}
 
+	/**
+	 * Procedure outbyte.
+	 * <p>
+	 * The procedure "outbyte" outputs a byte corresponding to the parameter value.
+	 * If the parameter value is less than zero or exceeds the maximum permitted value,
+	 * as defined by BYTESIZE, a runtime error occurs.
+	 * <p>
+	 * If the file is not open, a run-time error occurs.
+	 * @param b the byte to output
+	 * @throws _SimulaRuntimeError if the operations fail
+	 */
 	public void outbyte(final int b) {
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
@@ -94,6 +136,15 @@ public class _Outbytefile extends _Bytefile {
 		}
 	}
 
+	/**
+	 * Procedure out2byte.
+	 * <p>
+	 * The procedure "out2byte" outputs a byte corresponding to the parameter value.
+	 * <p>
+	 * If the file is not open, a run-time error occurs.
+	 * @param b the integer to output
+	 * @throws _SimulaRuntimeError if the operations fail
+	 */
 	public void out2byte(final int b) {
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("file closed");
@@ -109,6 +160,18 @@ public class _Outbytefile extends _Bytefile {
 		}
 	}
 
+	/**
+	 * Procedure outtext. It outputs all characters in the parameter "t" as bytes.
+	 * <pre>
+	 * procedure outtext(t);   text t;
+	 *    begin
+	 *       t.setpos(1);
+	 *       while t.more do outbyte(rank(t.getchar))
+	 * end outtext;
+	 * </pre>
+	 * 
+	 * @param t the argument text
+	 */
 	public void outtext(final _TXT t) {
 		_TXT.setpos(t, 1);
 		while (_TXT.more(t)) {
@@ -122,7 +185,25 @@ public class _Outbytefile extends _Bytefile {
 		}
 	}
 
+	/**
+	 * Procedure checkpoint.
+	 * <p>
+	 * All files producing output (sequential output or direct files) contain a Boolean procedure
+	 * "checkpoint". The procedure causes the environment to attempt to secure the output produced so far.
+	 * Depending on the nature of the associated external device, this causes completion of output
+	 * transfer (i.e. intermediate buffer contents are transferred). If this is not possible or meaningful,
+	 * "checkpoint" is a dummy operation in which case the value false is returned.
+	 * 
+	 * @return true:ok, false:error
+	 */
 	public boolean checkpoint() {
-		return (false);
+		try {
+			outputStream.flush();
+		} catch (IOException e) {
+			if (_RT.Option.VERBOSE)
+				e.printStackTrace();
+			return (false);
+		}
+		return (true);
 	}
 }
