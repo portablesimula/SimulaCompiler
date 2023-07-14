@@ -9,44 +9,64 @@ package simula.runtime;
 
 
 /**
+* Utility class _PROC.
+* <p>
+* This class is used as prefix to all java classes representing Simula Procedures.
 * 
 * @author Øystein Myhre Andersen
 */
-public abstract class _PROC extends _BASICIO {
+public abstract class _PROCEDURE extends _BASICIO {
 	protected int _nParLeft; // Number of actual parameters left to be transmitted.
 
-	// Constructor
-	public _PROC(final _RTObject staticLink) {
-		super(staticLink);
+	/**
+	 * Create a normal procedure.
+	 * 
+	 * @param SL staticLink
+	 */
+	public _PROCEDURE(final _RTObject SL) {
+		super(SL);
 	}
 
-	// Constructor in case of Formal/Virtual Procedure Call
-	public _PROC(final _RTObject staticLink, int nPar) {
-		super(staticLink);
+	/**
+	 * Create a formal/virtual Procedure.
+	 * @param SL staticLink
+	 * @param nPar number of actual parameters
+	 */
+	public _PROCEDURE(final _RTObject SL, int nPar) {
+		super(SL);
 		this._nParLeft = nPar;
 	}
 
 	/**
+	 * Sets next procedure parameter value.
+	 * <p>
 	 * This method is virtual and must be redefined in all procedure blocks with
 	 * parameters.
 	 * 
 	 * @param obj Procedure's Parameter Value Object
 	 * @return this object
 	 */
-	public _PROC setPar(final Object obj) {
+	public _PROCEDURE setPar(final Object obj) {
 		return (this);
 	}
 
 	/**
+	 * Deliver the result from the Simula procedure.
+	 * <p>
 	 * This method is virtual and must be redefined in all type procedure blocks
 	 * 
-	 * @return
+	 * @return the result from the Simula procedure.
 	 */
 	public Object _RESULT() {
 		return (null);
 	}
 
-	public _PROC _ENT() {
+	/**
+	 * Enter formal procedure
+	 * @return this class instance
+	 * @throws _SimulaRuntimeError if too few parameters
+	 */
+	public _PROCEDURE _ENT() {
 		// Enter Formal Procedure
 		if (_nParLeft != 0)
 			throw new _SimulaRuntimeError("Too few parameters");

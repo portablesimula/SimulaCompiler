@@ -62,21 +62,28 @@ import java.io.PrintWriter;
  * <p>
  * The variable PAGE indicates the ordinal number of the current page. Its value
  * may be retrieved by means of procedure "page".
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Printfile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  *
  */
 public class _Printfile extends _Outfile {
-	public int _LINES_PER_PAGE = 66;
+	int _LINES_PER_PAGE = 66;
 	private int _DEFAULT_LINES_PER_PAGE = 66;
 	private int _SPACING = 1;
 	private int _LINE;
 	private int _PAGE;
 
 	// Constructor
-	public _Printfile(final _RTObject staticLink, final _TXT FILENAME) {
-		super(staticLink, FILENAME);
+	/**
+	 * Create a new _Printfile
+	 * @param SL staticLink
+	 * @param FN file name
+	 */
+	public _Printfile(final _RTObject SL, final _TXT FN) {
+		super(SL, FN);
 	}
 
 	// Class Statements
@@ -86,15 +93,24 @@ public class _Printfile extends _Outfile {
 		return (this);
 	}
 
+	/**
+	 * Return the current line number.
+	 * @return the current line number
+	 */
 	public int line() {
 		return (_LINE);
 	}
 
+	/**
+	 * Return the current page number.
+	 * @return the current page number
+	 */
 	public int page() {
 		return (_PAGE);
 	}
 
 	/**
+	 * Procedure open.
 	 * <pre>
 	 * Boolean procedure open(fileimage);  text fileimage;
 	 * if ... then
@@ -113,7 +129,7 @@ public class _Printfile extends _Outfile {
 	 * opening actions on the external file. If the external file is closed, it is
 	 * opened. *
 	 * 
-	 * @param image
+	 * @param image the givent image
 	 * @return true if successful, otherwise false.
 	 */
 	@Override
@@ -151,6 +167,7 @@ public class _Printfile extends _Outfile {
 	}
 
 	/**
+	 * Procedure close.
 	 * <pre>
 	 * Boolean procedure close;
 	 * if OPEN then
@@ -211,6 +228,7 @@ public class _Printfile extends _Outfile {
 	}
 
 	/**
+	 * Procedure linesperpage.
 	 * <pre>
 	 * integer procedure linesperpage(n); integer n;
 	 *    begin
@@ -232,7 +250,8 @@ public class _Printfile extends _Outfile {
 	 * zero may be used to indicate an "infinite" value of LINES_PER_PAGE, thus
 	 * avoiding any automatic calls on "eject".
 	 * 
-	 * @param n
+	 * @param n the requested lines per page
+	 * @return the new lines per page
 	 */
 	public int linesperpage(final int n) {
 		int prev = _LINES_PER_PAGE;
@@ -246,6 +265,7 @@ public class _Printfile extends _Outfile {
 	}
 
 	/**
+	 * Procedure spacing.
 	 * <pre>
 	 * procedure spacing(n); integer n;
 	 *            if  0&lt;=n and n&lt;=LINES_PER_PAGE  then SPACING := n
@@ -261,7 +281,8 @@ public class _Printfile extends _Outfile {
 	 * however, that on some physical media this may not be possible, in which case
 	 * spacing(0) has the same effect as spacing(1) (i.e. no overprinting).
 	 * 
-	 * @param n
+	 * @param n line increment
+	 * @throws _SimulaRuntimeError if n is out of range
 	 */
 	public void spacing(final int n) {
 		if (n < 0 || n > _LINES_PER_PAGE)
@@ -270,6 +291,7 @@ public class _Printfile extends _Outfile {
 	}
 
 	/**
+	 * Procedure eject.
 	 * <pre>
 	 * procedure eject(n); integer n;
 	 *   if not OPEN then error("..." ! file closed;)
@@ -301,7 +323,8 @@ public class _Printfile extends _Outfile {
 	 * 
 	 * The tests above are performed in the given sequence.
 	 * 
-	 * @param n
+	 * @param n requested line number
+	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	public void eject(int n) {
 		if (!_OPEN)

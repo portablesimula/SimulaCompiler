@@ -175,6 +175,8 @@ public class _Outfile extends _Imagefile {
 	 * <p>
 	 * After the transfer, "image" is cleared to blanks and the position indicator
 	 * is set to 1.
+	 * <p>
+	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	@Override
 	public void outimage() {
@@ -213,6 +215,8 @@ public class _Outfile extends _Imagefile {
 	 * The procedure "outrecord" transfers to the file only that part of "image"
 	 * which precedes POS. The contents are not blanked after the transfer, although
 	 * POS is set to one.
+	 * <p>
+	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	public void outrecord() {
 		writeImage("Outrecord", (image == null) ? "\n" : (image.edTextToPos() + '\n'), false);
@@ -240,6 +244,8 @@ public class _Outfile extends _Imagefile {
 	 * <p>
 	 * One use of "breakoutimage" is to allow input from a terminal display on the
 	 * same line as one on which output (e.g. a prompt) has already been written.
+	 * <p>
+	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	public void breakoutimage() {
 		writeImage("BreakOutimage", (image == null) ? "" : (image.edTextToPos()), true);

@@ -3,7 +3,7 @@ package simulaTestBatch;
 // Simula-2.0 Compiled at Wed Jul 12 11:20:40 CEST 2023
 import simula.runtime.*;
 @SuppressWarnings("unchecked")
-public final class SimulaTest_err extends _PROC {
+public final class SimulaTest_err extends _PROCEDURE {
     // ProcedureDeclaration: Kind=Procedure, BlockLevel=2, firstLine=10, lastLine=14, hasLocalClasses=false, System=false
     // Declare parameters as attributes
     public _TXT p_t;

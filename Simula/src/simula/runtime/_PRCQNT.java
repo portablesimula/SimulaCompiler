@@ -12,6 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
 * Procedure quantity.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_PRCQNT.java"><b>Source File</b></a>.
 *  
 * @author Øystein Myhre Andersen
 */
@@ -20,17 +22,27 @@ public final class _PRCQNT {
 	final Class<?> procedure;
 
 	// Constructor
-	public _PRCQNT(final _RTObject staticLink, final Class<?> procedure) {
-		this.staticLink = staticLink;
+	/**
+	 * Creeate a new _PRCQNT.
+	 * @param SL staticLink
+	 * @param procedure procedure class
+	 */
+	public _PRCQNT(final _RTObject SL, final Class<?> procedure) {
+		this.staticLink = SL;
 		this.procedure = procedure;
 	}
 
-	public _PROC CPF() {
+	/**
+	 * Call procedure formal.
+	 * @return the procedure instance
+	 * @throws _SimulaRuntimeError if operation fail
+	 */
+	public _PROCEDURE CPF() {
 		try {
 			// Get 'default' constructor: <Procedure>(_RTObject SL);
 			Constructor<?> constr = procedure.getConstructor(new Class[] { _RTObject.class });
 			Object obj = constr.newInstance(staticLink);
-			return ((_PROC) obj);
+			return ((_PROCEDURE) obj);
 		} catch (InvocationTargetException e) {
 			Throwable targetException = e.getTargetException();
 			if (targetException instanceof RuntimeException) {
