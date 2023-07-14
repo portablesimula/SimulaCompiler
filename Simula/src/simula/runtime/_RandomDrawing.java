@@ -1,14 +1,32 @@
+/*
+ * (CC) This work is licensed under a Creative Commons
+ * Attribution 4.0 International License.
+ *
+ * You find a copy of the License on the following
+ * page: https://creativecommons.org/licenses/by/4.0/
+ */
 package simula.runtime;
 
 import simula.runtime._RTObject._NAME;
 
-public class _RandomDrawing {
+/**
+ * Utility class _RandomDrawing.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_RandomDrawing.java"><b>Source File</b></a>.
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
+public abstract class _RandomDrawing {
 
 	private static final int    TWO_POW_31    = 0x80000000; // 2**31
 	private static final double TWO_POW_31M1D = 0x7FFFFFFF; // 2**31 - 1
 	private static final int    MULTIPLIER    = 1220703125; // 5**(2*6+1)
 
+	private _RandomDrawing() {}
+	
 	/**
+	 * Procedure basicDRAW.
 	 * <pre>
 	 * The routine will replace the value of the specified integer variable U
 	 * by a new value according to an implementation defined algorithm, which

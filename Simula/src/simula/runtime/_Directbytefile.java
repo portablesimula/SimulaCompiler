@@ -217,7 +217,7 @@ public class _Directbytefile extends _Bytefile {
 				randomAccessFile.close();
 				File file = new File(FILE_NAME.edText().trim());
 				if (file.exists()) {
-					_RT.warning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
+					_RT.printWarning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
 							+ "\" failed - the underlying OS was unable to perform the delete operation");
 				}
 			} else

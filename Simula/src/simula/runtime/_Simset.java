@@ -8,6 +8,8 @@
 package simula.runtime;
 
 /**
+ * Standard class Simset.
+ * <p>
  * The class "simset" contains facilities for the manipulation of circular
  * two-way lists, called "sets".
  * 
@@ -32,6 +34,8 @@ package simula.runtime;
  * The sets are represented by objects belonging to a subclass "head" of
  * "linkage". Objects which may be set members belong to subclasses of "link"
  * which is itself another subclass of "linkage".
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Simset.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -40,8 +44,12 @@ package simula.runtime;
 public class _Simset extends _SIMULA_BLOCK {
 
 	// Constructor
-	public _Simset(final _RTObject staticLink) {
-		super(staticLink);
+	/**
+	 * Create a new _Simset.
+	 * @param SL staticLink
+	 */
+	public _Simset(final _RTObject SL) {
+		super(SL);
 		BBLK();
 	}
 

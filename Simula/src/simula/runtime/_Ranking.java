@@ -8,24 +8,27 @@
 package simula.runtime;
 
 /**
- * Class _Ranking
+ * Class _Ranking.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Ranking.java"><b>Source File</b></a>.
  *
+ * @author Øystein Myhre Andersen
  */
 public class _Ranking {
 	_Ranking bl, ll, rl;
 	double rnk;
 
-	public final String name;
+	/* packet */ final String name;
 
 	_Ranking(String name) {
 		this.name = name;
 	}
 
-	public _Ranking() {
+	/* packet */ _Ranking() {
 		this.name = null;
 	}
 
-	public static _Ranking RANK_PRED(_Ranking ins) {
+	/* packet */ static _Ranking RANK_PRED(_Ranking ins) {
 		_Ranking prd = null; // Return value
 		if (ins.rl == ins) {
 			prd = null;
@@ -48,7 +51,7 @@ public class _Ranking {
 		return (prd);
 	}
 
-	public static _Ranking RANK_SUC(_Ranking ins) {
+	/* packet */ static _Ranking RANK_SUC(_Ranking ins) {
 		_Ranking suc = null; // Return value
 		if (ins.bl == null) {
 			suc = null;
@@ -66,7 +69,7 @@ public class _Ranking {
 		return (suc);
 	}
 
-	public static void RANK_CLEAR(_Ranking head) {
+	/* packet */ static void RANK_CLEAR(_Ranking head) {
 		_Ranking ins = null;
 		_Ranking temp = null;
 		if (head.rl != head) {
@@ -102,7 +105,7 @@ public class _Ranking {
 		}
 	}
 
-	public static boolean RANK_EMPTY(_Ranking head) {
+	/* packet */ static boolean RANK_EMPTY(_Ranking head) {
 		boolean empty = false; // Return value
 		if (head.rl != head) {
 			IERR("RANK_EMPTY");
@@ -111,7 +114,7 @@ public class _Ranking {
 		return (empty);
 	}
 
-	public static _Ranking RANK_FIRST(_Ranking head) {
+	/* packet */ static _Ranking RANK_FIRST(_Ranking head) {
 		_Ranking first = null; // Return value
 		if (head.rl != head) {
 			IERR("RANK_FIRST");
@@ -123,7 +126,7 @@ public class _Ranking {
 		return (first);
 	}
 
-	public static _Ranking RANK_LAST(_Ranking head) {
+	/* packet */ static _Ranking RANK_LAST(_Ranking head) {
 		_Ranking last = null; // Return value
 		if (head.rl != head) {
 			IERR("RANK_LAST");
@@ -135,7 +138,7 @@ public class _Ranking {
 		return (last);
 	}
 
-	public static void RANK_FOLLOW(_Ranking ins, _Ranking prd) {
+	/* packet */ static void RANK_FOLLOW(_Ranking ins, _Ranking prd) {
 		if (ins.rl == ins) {
 			IERR("RANK_FOLLOW");
 		}
@@ -157,7 +160,7 @@ public class _Ranking {
 		}
 	}
 
-	public static void RANK_OUT(_Ranking ins) {
+	/* packet */ static void RANK_OUT(_Ranking ins) {
 		_Ranking suc = null;
 		_Ranking bl = null;
 		_Ranking ll = null;
@@ -215,7 +218,7 @@ public class _Ranking {
 		}
 	}
 
-	public static void RANK_INTO(_Ranking ins, _Ranking head, double rnk) {
+	/* packet */ static void RANK_INTO(_Ranking ins, _Ranking head, double rnk) {
 		if (ins.rl == ins)
 			IERR("RANK_INTO-1");
 		if (ins.bl != null)
@@ -260,7 +263,7 @@ public class _Ranking {
 		}
 	}
 
-	public static void RANK_PRECEDE(_Ranking ins, _Ranking suc) {
+	/* packet */ static void RANK_PRECEDE(_Ranking ins, _Ranking suc) {
 		if (ins.rl == ins)
 			IERR("RANK_PRECEDE-1");
 		if (ins.bl != null)
@@ -284,7 +287,7 @@ public class _Ranking {
 		}
 	}
 
-	public static void RANK_PRIOR(_Ranking ins, _Ranking head, double rnk) {
+	/* packet */ static void RANK_PRIOR(_Ranking ins, _Ranking head, double rnk) {
 		if (ins.rl == ins)
 			IERR("RANK_PRIOR-1");
 		if (ins.bl != null)
@@ -330,7 +333,7 @@ public class _Ranking {
 		}
 	}
 
-	public static void IERR(String msg) {
+	/* packet */ static void IERR(String msg) {
 	}
 
 	@Override
@@ -338,11 +341,11 @@ public class _Ranking {
 		return ("" + edit(this));
 	}
 
-	public String ed() {
+	/* packet */ String ed() {
 		return (name + "[" + rnk + "]");
 	}
 
-	public static String edit(_Ranking sqs) {
+	/* packet */ static String edit(_Ranking sqs) {
 		_Ranking x = RANK_FIRST(sqs);
 		if (x == null)
 			return ("none");
@@ -353,24 +356,24 @@ public class _Ranking {
 		return (s.toString());
 	}
 
-	public static void main(String[] args) {
-		_Ranking sqs;
-		System.out.println("BEGIN TESTING Class Ranking");
-		sqs = new _Ranking("MAIN");
-		sqs.bl = sqs;
-		sqs.ll = sqs;
-		sqs.rl = sqs;
-
-		RANK_INTO(new _Ranking(), sqs, 34);
-		RANK_INTO(new _Ranking(), sqs, 14);
-		RANK_INTO(new _Ranking(), sqs, 36);
-		RANK_INTO(new _Ranking(), sqs, 3);
-		RANK_PRIOR(new _Ranking("PRIOR"), sqs, 34);
-		RANK_INTO(new _Ranking("NORMAL"), sqs, 34);
-
-		System.out.println("FIRST=" + _Ranking.RANK_FIRST(sqs));
-
-		System.out.println("  END TESTING Class Ranking");
-	}
+//	public static void main(String[] args) {
+//		_Ranking sqs;
+//		System.out.println("BEGIN TESTING Class Ranking");
+//		sqs = new _Ranking("MAIN");
+//		sqs.bl = sqs;
+//		sqs.ll = sqs;
+//		sqs.rl = sqs;
+//
+//		RANK_INTO(new _Ranking(), sqs, 34);
+//		RANK_INTO(new _Ranking(), sqs, 14);
+//		RANK_INTO(new _Ranking(), sqs, 36);
+//		RANK_INTO(new _Ranking(), sqs, 3);
+//		RANK_PRIOR(new _Ranking("PRIOR"), sqs, 34);
+//		RANK_INTO(new _Ranking("NORMAL"), sqs, 34);
+//
+//		System.out.println("FIRST=" + _Ranking.RANK_FIRST(sqs));
+//
+//		System.out.println("  END TESTING Class Ranking");
+//	}
 
 }

@@ -250,7 +250,7 @@ public class _File extends _SIMULA_BLOCK {
 		else
 			unrecognized = true;
 		if (unrecognized) {
-			_RT.warning("FILE(" + FILE_NAME.edText() + ").setaccess(" + id + ") -- is not recognized.");
+			_RT.printWarning("FILE(" + FILE_NAME.edText() + ").setaccess(" + id + ") -- is not recognized.");
 		}
 		return (!unrecognized);
 	}
@@ -261,11 +261,11 @@ public class _File extends _SIMULA_BLOCK {
 			charset = charset.substring(1).trim();
 			if (Charset.isSupported(charset)) {
 				if (_RT.Option.VERBOSE)
-					_RT.warning("FILE(" + FILE_NAME.edText() + ").CHARSET Changed from " + _CHARSET + " to " + charset);
+					_RT.printWarning("FILE(" + FILE_NAME.edText() + ").CHARSET Changed from " + _CHARSET + " to " + charset);
 				_CHARSET = Charset.forName(charset);
 				return (true);
 			} else {
-				_RT.warning(
+				_RT.printWarning(
 						"FILE(" + FILE_NAME.edText() + ").setaccess: The Charset \"" + charset + "\" is not supported");
 				return (false);
 			}
@@ -393,7 +393,7 @@ public class _File extends _SIMULA_BLOCK {
 			File file = new File(FILE_NAME.edText().trim());
 			if (_PURGE) {
 				if (!file.delete()) {
-					_RT.warning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
+					_RT.printWarning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
 							+ "\" failed - the underlying OS was unable to perform the delete operation");
 				}
 			}

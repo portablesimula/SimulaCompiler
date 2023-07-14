@@ -15,27 +15,71 @@ import javax.swing.JOptionPane;
 import simula.compiler.utilities.Global;
 
 /**
+ * Utility class _RT.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_RT.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class _RT {
+	private _RT(){}
 
-	public static _RTConsolePanel console;
-	public static boolean someConsolePresent;
+	static _RTConsolePanel console;
+	static boolean someConsolePresent;
 
-	public static String progamIdent;
-	public static String currentModid;
-	public static int currentSimLine;
-	public static int numberOfEditOverflows;
+	static String progamIdent;
+	static String currentModid;
+	static int currentSimLine;
+	static int numberOfEditOverflows;
 
+	/**
+	 *  Runtime Options
+	 *
+	 */
 	public static class Option {
-		public static boolean VERBOSE = false;// true;
-		public static boolean USE_CONSOLE = false;// true;
-		public static boolean BLOCK_TRACING = false;// true;
-		public static boolean GOTO_TRACING = false;// true;
-		public static boolean QPS_TRACING = false; // true;
-		public static boolean SML_TRACING = false; // true;
+		private Option() {}
+		
+		/**
+		 * Output messages about what the RTS is doing.
+		 * Default: false.
+		 */
+		public static boolean VERBOSE = false;
+		
+		/**
+		 * Map sysout and sysin to a popUp Console.
+		 * Default: false.
+		 */
+		public static boolean USE_CONSOLE = false;
+		
+		/**
+		 * Debug: Trace enter and exit of blocks, classes and procedures.
+		 * Default: false.
+		 */
+		public static boolean BLOCK_TRACING = false;
+		
+		/**
+		 * Debug: Trace goto statements.
+		 * Default: false.
+		 */
+		public static boolean GOTO_TRACING = false;
+		
+		/**
+		 *  Debug: Trace detach, resume and call.
+		 * Default: false.
+		 */
+		public static boolean QPS_TRACING = false;
+		
+		/**
+		 * Debug: Trace Simulation events.
+		 * Default: false.
+		 */
+		public static boolean SML_TRACING = false;
+		
+		/**
+		 * Specify where Simula files (Outfile, Infile, ...) are written and read.
+		 * Default: User working directory. System.property("user.dir")
+		 */
 		public static String RUNTIME_USER_DIR = "";
 	}
 
@@ -43,21 +87,22 @@ public final class _RT {
 	 *  S-PORT Options
 	 *
 	 */
-	public static class SPORT_Option {
+	static class SPORT_Option {
+		private SPORT_Option() {}
 		private static String getModuleName() {
 			return (new File(SPORT_SourceFileName).getName());
 		}
 
-		public static String SourceDirName = "C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
-		public static String SPORT_SysInsertDirName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
-		public static String SPORT_SourceFileName = SourceDirName + "/ModuleName";
+		static String SourceDirName = "C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
+		static String SPORT_SysInsertDirName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
+		static String SPORT_SourceFileName = SourceDirName + "/ModuleName";
 
 		// Used by getTextInfo
 		static String getSourceFileName() {
 			return (SPORT_SourceFileName);
 		}
 
-		public static String ListingFileName = "#sysout";
+		static String ListingFileName = "#sysout";
 
 		static String getSCodeFileName() {
 			return (createSubfileName("scode", getModuleName() + ".scd"));
@@ -102,20 +147,20 @@ public final class _RT {
 			return (fileName);
 		}
 
-		public static String Selectors = "AZ";
+		static String Selectors = "AZ";
 
 		// The following file is created when front-end compiling the RTS:
-		public static String PredefFileName = "C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
+		static String PredefFileName = "C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
 
 		static String XmessageFileName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/FECERROR.txt";
 
 		// getIntInfo
-		public static int GenerateScode = 1;
-		public static int MaxErrors = 50;
-		public static int GiveNotes = 1;
-		public static int TraceLevel = 0;
-		public static int Recompilation = 0;
-		public static int SimobLevel = 0;
+		static int GenerateScode = 1;
+		static int MaxErrors = 50;
+		static int GiveNotes = 1;
+		static int TraceLevel = 0;
+		static int Recompilation = 0;
+		static int SimobLevel = 0;
 
 		// giveTextInfo
 		// Index: Interpretation:
@@ -125,15 +170,15 @@ public final class _RT {
 		// being processed.
 		// 3 The string info is the external identification given in an external
 		// declaration that is being processed.
-		public static String currentModuleID;	// 1 The identifier of a class or procedure being separately compiled. E.g
+		static String currentModuleID;	// 1 The identifier of a class or procedure being separately compiled. E.g
 												// class or procedure identifier
-		public static String extIdent;			// 2 The identifier given in an external declaration that is being processed.
+		static String extIdent;			// 2 The identifier given in an external declaration that is being processed.
 												// E.g class or procedure identifier
-		public static String extFile;			// 3 The external identification given in an external declaration that is being
+		static String extFile;			// 3 The external identification given in an external declaration that is being
 												// processed. E.g. FileName
 	}
 
-	public static void setRuntimeOptions(final String[] args) {
+	static void setRuntimeOptions(final String[] args) {
 		// Parse command line arguments.
 		_RT.Option.RUNTIME_USER_DIR = System.getProperty("user.dir", null);
 		File file = null;
@@ -188,7 +233,7 @@ public final class _RT {
 		println("Usage: java -jar simula.jar  [options]\n\n"
 				+ "jarFile			Any output jar file from the simula compiler\n\n" + "possible options include:\n"
 				+ "  -help                 Print this synopsis of standard options\n"
-				+ "  -verbose              Output messages about what the compiler is doing\n"
+				+ "  -verbose              Output messages about what the RTS is doing\n"
 				+ "  -useConsole           Map sysout and sysin to a popUp Console\n"
 				+ "  -blockTracing         Debug: Trace enter and exit of blocks, classes and procedures\n"
 				+ "  -gotoTracing          Debug: Trace goto statements\n"
@@ -204,19 +249,19 @@ public final class _RT {
 		popUpError(msg);
 	}
 
-	public static void popUpError(final String msg) {
+	static void popUpError(final String msg) {
 		int res = optionDialog(msg + "\nDo you want to continue ?", "Error", JOptionPane.YES_NO_OPTION,
 				JOptionPane.ERROR_MESSAGE, "Yes", "No");
 		if (res != JOptionPane.YES_OPTION)
 			System.exit(0);
 	}
 
-	public static int optionDialog(final Object msg, final String title, final int optionType, final int messageType, final String... option) {
+	static int optionDialog(final Object msg, final String title, final int optionType, final int messageType, final String... option) {
 		int answer = JOptionPane.showOptionDialog(null, msg, title, optionType, messageType, null, option, option[0]);
 		return (answer);
 	}
 
-	public static void listRuntimeOptions() {
+	static void listRuntimeOptions() {
 		System.out.println("file.encoding=" + System.getProperty("file.encoding"));
 		System.out.println("defaultCharset=" + Charset.defaultCharset());
 		System.out.println("verbose=" + Option.VERBOSE);
@@ -228,46 +273,46 @@ public final class _RT {
 		System.out.println("userDir=" + Option.RUNTIME_USER_DIR);
 	}
 
-	public static void println(final String s) {
+	static void println(final String s) {
 		if (console != null)
 			console.write(s + '\n');
 		else
 			System.out.println(s);
 	}
 
-	public static void printError(final String s) {
+	static void printError(final String s) {
 		if (console != null)
 			console.writeError(s + '\n');
 		else
 			System.out.println("\n" + s);
 	}
 
-	public static void printWarning(final String s) {
+	/**
+	 * Print a warning message.
+	 * @param msg the message to print
+	 */
+	static void printWarning(final String msg) {
 		if (console != null)
-			console.writeWarning(s + '\n');
+			console.writeWarning(msg + '\n');
 		else
-			System.out.println(s);
+			System.out.println(msg);
 	}
 
-	public static void warning(final String msg) {
-		printWarning("Simula Runtime Warning: " + msg);
-	}
-
-	public static void TRACE(final String msg) {
+	static void TRACE(final String msg) {
 		println(Thread.currentThread().toString() + ": " + msg);
 	}
 
-	public static void IERR(final String s) {
+	static void IERR(final String s) {
 		printError(s);
 		Thread.dumpStack();
 		System.exit(-1);
 	}
 
-	public static void NOT_IMPLEMENTED(final String s) {
+	static void NOT_IMPLEMENTED(final String s) {
 		IERR("*** NOT IMPLEMENTED: " + s);
 	}
 
-	public static void ASSERT(final boolean test, final String msg) {
+	static void ASSERT(final boolean test, final String msg) {
 		if (!test) {
 			if (_RT.console == null) {
 				_RT.console = new _RTConsolePanel();
@@ -277,7 +322,7 @@ public final class _RT {
 		}
 	}
 
-	public static void ASSERT_CUR_(final _RTObject obj, final String msg) {
+	static void ASSERT_CUR_(final _RTObject obj, final String msg) {
 		if (_RTObject._CUR != obj) {
 			println(msg + ": _CUR=" + _RTObject._CUR.edObjectAttributes());
 			println(msg + ":  obj=" + obj.edObjectAttributes());
@@ -289,7 +334,7 @@ public final class _RT {
 	// *** GET JAVA VERSION
 	// *********************************************************************
 
-	public static String getJavaID() {
+	static String getJavaID() {
 		return ("JVM version " + System.getProperty("java.vm.specification.version"));
 	}
 
@@ -297,11 +342,11 @@ public final class _RT {
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
 
-	public static void printStaticChain() {
+	static void printStaticChain() {
 		_RT.printStaticChain(_RTObject._CUR);
 	}
 
-	public static void printStaticChain(final _RTObject ins) {
+	static void printStaticChain(final _RTObject ins) {
 		_RTObject x = ins;
 		println("*** STATIC CHAIN:");
 		while (x != null) {
@@ -314,15 +359,15 @@ public final class _RT {
 
 	}
 
-	public static void printSimulaStackTrace(final Thread thread, final int start) {
+	static void printSimulaStackTrace(final Thread thread, final int start) {
 		printSimulaStackTrace(thread.getStackTrace(), start);
 	}
 
-	public static void printSimulaStackTrace(final int start) {
+	static void printSimulaStackTrace(final int start) {
 		printSimulaStackTrace(Thread.currentThread(), start);
 	}
 
-	public static void printSimulaStackTrace(final Throwable e, final int start) {
+	static void printSimulaStackTrace(final Throwable e, final int start) {
 		printSimulaStackTrace(e.getStackTrace(), start);
 	}
 
@@ -384,11 +429,11 @@ public final class _RT {
 	// **********************************************************************
 	// *** Debugging utility: Procedure printThreadList
 	// **********************************************************************
-	public static void printThreadList() {
+	static void printThreadList() {
 		printThreadList(false);
 	}
 
-	public static synchronized void printThreadList(boolean withStackTrace) {
+	static synchronized void printThreadList(boolean withStackTrace) {
 		Thread[] t = new Thread[50];
 		int i = Thread.enumerate(t);
 		_RT.println("ACTIVE THREAD LIST:");
@@ -406,7 +451,7 @@ public final class _RT {
 		_RT.println("-----------------------------------------------------------------------------------------------");
 	}
 
-	public static void _LINE(String modid, int simLine) {
+	static void _LINE(String modid, int simLine) {
 		currentModid = modid;
 		currentSimLine = simLine;
 	}

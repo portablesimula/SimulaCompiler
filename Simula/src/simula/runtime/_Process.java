@@ -8,6 +8,7 @@
 package simula.runtime;
 
 /**
+ * Standard class Process.
  * <pre>
  * link class process;
  *      begin ref (EVENT_NOTICE) EVENT;
@@ -59,6 +60,8 @@ package simula.runtime;
  * by the attribute EVTIME of its event notice. This time value may be accessed
  * through the procedure "evtime". The procedure "nextev" references the process
  * object, if any, represented by the next event notice in the sequencing set.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Process.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -69,11 +72,14 @@ public class _Process extends _Link {
 		return (true);
 	}
 
-	public _EVENT_NOTICE EVENT = null;
+	/* packet */ _EVENT_NOTICE EVENT = null;
 
-	// Constructor
-	public _Process(final _RTObject staticLink) {
-		super(staticLink);
+	/**
+	 * Create a new _Process.
+	 * @param SL staticLink
+	 */
+	public _Process(final _RTObject SL) {
+		super(SL);
 	}
 
 	@Override
@@ -93,20 +99,37 @@ public class _Process extends _Link {
 		_Process.this.STATE_ = OperationalState.terminatingProcess;
 	}
 
+	/**
+	 * Returns true if this process is scheduled (in SQS)
+	 * @return true if this process is scheduled, otherwise false
+	 */
 	public boolean idle() {
 		return (EVENT == null);
 	}
 
+	/**
+	 * Procedure terminated.
+	 * @return true if this process is terminated
+	 */
 	public boolean terminated() {
 		return (STATE_ == OperationalState.terminated);
 	}
 
+	/**
+	 * Returns the event time.
+	 * @return the event time
+	 * @throws _SimulaRuntimeError if this process is idle
+	 */
 	public double evtime() {
 		if (idle())
 			throw new _SimulaRuntimeError("Process.Evtime:  The process is idle.");
 		return (EVENT.EVTIME());
 	}
 
+	/**
+	 * Returns the next process in SQS.
+	 * @return the next process in SQS
+	 */
 	public _Process nextev() {
 		if (idle())
 			return (null);

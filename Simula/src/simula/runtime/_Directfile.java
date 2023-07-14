@@ -226,7 +226,7 @@ public class _Directfile extends _Imagefile {
 				File file = new File(FILE_NAME.edText().trim());
 				file.deleteOnExit();
 				if (file.exists()) {
-					_RT.warning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
+					_RT.printWarning("Purge " + this.getClass().getSimpleName() + " \"" + file.getName()
 							+ "\" failed - the underlying OS was unable to perform the delete operation");
 				}
 			} else
