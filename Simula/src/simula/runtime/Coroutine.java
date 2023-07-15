@@ -10,6 +10,7 @@ package simula.runtime;
 import java.util.concurrent.Semaphore;
 
 /**
+ * Utility class Coroutine.
  *  <pre>
  *  Implementing Coroutines using Virtual Threads
  *
@@ -23,6 +24,7 @@ import java.util.concurrent.Semaphore;
  * 
  *  More info: https://wiki.openjdk.java.net/display/loom/Main
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/Coroutine.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -36,7 +38,11 @@ public class Coroutine implements Runnable {
 	private Thread callerThread;
 	private static Semaphore mainSemaphore = new Semaphore(0); // Used to suspend/resume main (platform) Thread
 	private Semaphore semaphore = new Semaphore(0); // Used to suspend/resume this coroutine's Thread
-	public static RuntimeException _PENDING_EXCEPTION = null; // Used to propagate exceptions to caller
+	
+	/**
+	 * Used to propagate exceptions to caller.
+	 */
+	public static RuntimeException _PENDING_EXCEPTION = null;
 
 	Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
 		public void uncaughtException(Thread thread, Throwable e) {
@@ -49,18 +55,35 @@ public class Coroutine implements Runnable {
 		}
 	};
 
+	/**
+	 * Create a new Coroutine with the given target.
+	 * 
+	 * @param target a runnable target
+	 */
 	public Coroutine(Runnable target) {
 		this.target = target;
 	}
 
+	/**
+	 * Returns true if target is terminated.
+	 * @return true if target is terminated
+	 */
 	public boolean isDone() {
 		return (done);
 	}
 
+	/**
+	 * Returns the current Coroutine.
+	 * @return the current Coroutine
+	 */
 	public static Coroutine getCurrentCoroutine() {
 		return current;
 	}
 
+	/**
+	 * Start or resume this Coroutine.
+	 */
+	@Override
 	public final void run() {
 		if (isDone())
 			throw new IllegalStateException("Coroutine terminated");
@@ -96,6 +119,9 @@ public class Coroutine implements Runnable {
 		current = this.caller;
 	}
 
+	/**
+	 * Detach this Coroutine.
+	 */
 	public static void detach() {
 		Coroutine cur = current;
 		if (cur == null)
@@ -131,6 +157,7 @@ public class Coroutine implements Runnable {
 		semaphore.release();
 	}
 
+	@Override
 	public String toString() {
 		return (target.getClass().getSimpleName());
 	}

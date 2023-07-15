@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * The Class BASICIO.
+ * System class BASICIO.
  * <p>
  * The standard I/O facilities are contained by the class "BASICIO". They
  * are available to the program through block prefixing as described below.

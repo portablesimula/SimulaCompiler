@@ -14,7 +14,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 
 /**
- * The class Directbytefile.
+ * System class Directbytefile.
  * This class defines a byte-oriented direct file.
  * <pre>
  *  bytefile class Directbytefile;

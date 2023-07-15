@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * The Class Imagefile.
+ * System class Imagefile.
  * <p>
  * The (file) class "imagefile" defines the common attributes for all image-
  * oriented files.

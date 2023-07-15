@@ -14,7 +14,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 /**
- * The Class Outfile.
+ * System class Outfile.
  * <pre>
  *  file class outfile;
  *       begin

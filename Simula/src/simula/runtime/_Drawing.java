@@ -24,8 +24,9 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 /**
- * 
- * The additional system class "Drawing" introduce basic graphical capabilities.
+ * Additional System Drawing.
+ * <p>
+ * The class "Drawing" introduce basic graphical capabilities.
  * It has the class "simset" as prefix, so set-handling facilities are thus immediately available.
  * 
  * <pre>

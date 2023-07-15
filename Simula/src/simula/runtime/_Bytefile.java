@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * The class Bytefile.
+ * System class Bytefile.
  * <p>
  * The class bytefile is the common prefix class for all byte-oriented files.
  * 

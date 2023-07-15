@@ -8,7 +8,8 @@
 package simula.runtime;
 
 /**
- * 
+ * System class Simulation.
+ * <p>
  * The system class "simulation" may be considered an "application package"
  * oriented towards simulation problems. It has the class "simset" as prefix,
  * and set-handling facilities are thus immediately available.
@@ -82,22 +83,34 @@ package simula.runtime;
  * Note: Since the statements and procedures introduced by "simulation" make
  * implicit use of the sequencing procedures (detach, call and resume) explicit
  * sequencing by these procedures should be done with care.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Simulation.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public class _Simulation extends _Simset {
+	/**
+	 * Always true in this class.
+	 */
 	@Override
 	public boolean isDetachUsed() {
 		return (true);
 	}
 
-	public final _Ranking sqs;
+	final _Ranking sqs;
+	
+	/**
+	 * The main program.
+	 */
 	public final _MAIN_PROGRAM main_1;
 
-	// Constructor
-	public _Simulation(_RTObject staticLink) {
-		super(staticLink);
+	/**
+	 * Create a new _Simulation.
+	 * @param SL staticLink
+	 */
+	public _Simulation(_RTObject SL) {
+		super(SL);
 		sqs = new _Ranking();// ("MAIN");
 		sqs.bl = sqs;
 		sqs.ll = sqs;
@@ -110,22 +123,25 @@ public class _Simulation extends _Simset {
 
 	@Override
 	public _Simulation _STM() {
-//		OLD_SQS = (Head_) new Head_(Simulation_.this)._STM();
-//		main = (MAIN_PROGRAM_) new MAIN_PROGRAM_((Simulation_) _CUR)._START();
-//		main.EVENT = (EVENT_NOTICE_) new EVENT_NOTICE_((Simulation_) _CUR, 0, main)._STM();
-//		main.EVENT.into(OLD_SQS);
 		EBLK();
 		return (this);
 	}
 
-	public _EVENT_NOTICE SQS_FIRST() {
+	private _EVENT_NOTICE SQS_FIRST() {
 		return ((_EVENT_NOTICE) this.sqs.bl);
 	}
 
-	public _EVENT_NOTICE SQS_LAST() {
-		return ((_EVENT_NOTICE) this.sqs.ll);
-	}
+//	private _EVENT_NOTICE SQS_LAST() {
+//		return ((_EVENT_NOTICE) this.sqs.ll);
+//	}
 
+	/**
+	 * Returns the current simulation time.
+	 * <pre>
+	 * 		long real procedure time; time := FIRSTEV.EVTIME;
+	 * </pre>
+	 * @return the current simulation time
+	 */
 	public double time() {
 		return (SQS_FIRST().EVTIME());
 	}
@@ -133,10 +149,37 @@ public class _Simulation extends _Simset {
 	/*
 	 * <pre> ref (process) procedure current; current :- FIRSTEV.PROC; </pre>
 	 */
+	/**
+	 * Returns the current process.
+	 * <pre>
+	 * 		ref (process) procedure current; current :- FIRSTEV.PROC;
+	 * </pre>
+	 * @return the current process
+	 */
 	public _Process current() {
 		return (SQS_FIRST().PROC);
 	}
 
+	/**
+	 * Procedure hold.
+	 * <p>
+	 * The statement "hold(T)", where T is a long real number greater than or equal to zero, halts the
+	 * active phase of the currently active process object, and schedules its next active phase at the system
+	 * time "time + T". The statement thus represents an inactive period of duration T. During the inactive
+	 * period the reactivation point is positioned within the "hold" statement. The process object becomes
+	 * suspended.
+	 * <pre>
+	 * 		procedure hold(T); long real T;
+	 * 		inspect FIRSTEV do begin
+	 * 			if T > 0 then EVTIME:= EVTIME + T;
+	 * 			if suc =/= none and then suc.EVTIME &lt;= EVTIME
+	 * 			then begin out; RANK_IN_SQS(false);
+	 * 				resume(current)
+	 * 			end if
+	 * 		end hold;
+	 * </pre>
+	 * @param time holding time
+	 */
 	public void hold(double time) {
 		SIM_TRACE("Hold " + time);
 		_Process x = current();
@@ -156,9 +199,18 @@ public class _Simulation extends _Simset {
 		}
 	}
 
-	/*
-	 * <pre> procedure passivate; begin inspect current do begin EVENT.out; EVENT :-
-	 * none end; if SQS.empty then error("...") else resume(current) end passivate;
+	/**
+	 * The procedure passivate. It stops the active phase of the currently active process object and deletes
+	 * its event notice. The process object becomes passive. Its next active phase must be scheduled from
+	 * outside the process object. The statement thus represents an inactive period of indefinite duration.
+	 * The reactivation point of the process object is positioned within the "passivate" statement.
+	 * <pre>
+	 * 		procedure passivate; begin
+	 * 			inspect current do begin
+	 * 				EVENT.out; EVENT :- none
+	 * 			end;
+	 * 			if SQS.empty then error("...") else resume(current)
+	 * 		end passivate;
 	 * </pre>
 	 */
 	public void passivate() {
@@ -182,12 +234,37 @@ public class _Simulation extends _Simset {
 		return (nxtcur);
 	}
 
+	/**
+	 * The procedure wait. It includes the currently active process object in a referenced set,
+	 * and then calls the procedure "passivate".
+	 * <pre>
+	 *		procedure wait(S); ref (head) S;
+	 *		begin current.into(S); passivate end wait;
+	 * </pre>
+	 * @param S the head of the set
+	 */
 	public void wait(final _Head S) {
 		SIM_TRACE("Wait in Queue " + S);
 		current().into(S);
 		passivate();
 	}
 
+	/**
+	 * The Procedure cancel.
+	 * <br>
+	 * The statement "cancel(X)", where X is a reference to a process object, deletes the corresponding
+	 * event notice, if any. If the process object is currently active or suspended, it becomes passive.
+	 * Otherwise, the statement has no effect. The statement "cancel(current)" is equivalent to "passivate".
+	 * <pre>
+	 *		procedure cancel(X); ref (process) X;
+	 *		if X == current then passivate
+	 *		else inspect X do
+	 *			if EVENT =/= none
+	 *			then begin EVENT.out; EVENT :- none
+	 *		end cancel;
+	 * </pre>
+	 * @param x the argument process
+	 */
 	public void cancel(final _Process x) {
 		SIM_TRACE("Cancel " + x);
 		if (x == current())
@@ -199,11 +276,12 @@ public class _Simulation extends _Simset {
 	}
 
 	/**
+	 * Utility procedure accum.
 	 * <pre>
-	 * procedure accum (a,b,c,d);  name a,b,c;  long real a,b,c,d;
-	       begin
-	          a:= a+c * (time-b);  b:= time;  c:= c + d
-	       end accum;
+	 *		procedure accum (a,b,c,d);  name a,b,c;  long real a,b,c,d;
+	 *		begin
+	 *			a:= a + c * (time-b);  b:= time;  c:= c + d
+	 *		end accum;
 	 * </pre>
 	 * 
 	 * A statement of the form "accum (A,B,C,D)" may be used to accumulate the
@@ -212,10 +290,10 @@ public class _Simulation extends _Simset {
 	 * contains the system time at which the variables were last updated. The value
 	 * of D is the current increment of the step function.
 	 * 
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param d
+	 * @param a argument a
+	 * @param b argument b
+	 * @param c argument c
+	 * @param d argument d
 	 */
 	public void accum(final _NAME<Double> a, final _NAME<Double> b, final _NAME<Double> c, final double d) {
 		a.put(a.get() + (c.get() * (time() - b.get())));
@@ -223,6 +301,11 @@ public class _Simulation extends _Simset {
 		c.put(c.get() + d);
 	}
 
+	/**
+	 * Direct activation: (re)activate x
+	 * @param REAC signals reactivation
+	 * @param X the Process to avtivate
+	 */
 	public void ActivateDirect(final boolean REAC, final _Process X) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
@@ -257,10 +340,24 @@ public class _Simulation extends _Simset {
 		}
 	}
 
+	/**
+	 * Delayed activation: (re)activate x delay t [ prior ]
+	 * @param REAC signals reactivation
+	 * @param X the Process to activate
+	 * @param T the delay time
+	 * @param PRIO indicates priority
+	 */
 	public void ActivateDelay(final boolean REAC, final _Process X, final double T, final boolean PRIO) {
 		ActivateAt(REAC, X, time() + T, PRIO);
 	}
 
+	/**
+	 * Activate at: (re)activate x at t [ prior ]
+	 * @param REAC signals reactivation
+	 * @param X the Process to activate
+	 * @param T the activation time
+	 * @param PRIO indicates priority
+	 */
 	public void ActivateAt(final boolean REAC, final _Process X, double T, final boolean PRIO) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
@@ -290,10 +387,22 @@ public class _Simulation extends _Simset {
 		}
 	}
 
+	/**
+	 * Activate before: (re)Activate x before y
+	 * @param REAC signals reactivation
+	 * @param X the Process to activate
+	 * @param Y the Process to precede 
+	 */
 	public void ActivateBefore(final boolean REAC, final _Process X, final _Process Y) {
 		ACTIVATE3(REAC, X, true, Y);
 	}
 
+	/**
+	 * Activate after: (re)Activate x after y
+	 * @param REAC signals reactivation
+	 * @param X the Process to activate
+	 * @param Y the Process to succeed 
+	 */
 	public void ActivateAfter(final boolean REAC, final _Process X, final _Process Y) {
 		ACTIVATE3(REAC, X, false, Y);
 	}
@@ -348,7 +457,7 @@ public class _Simulation extends _Simset {
 		SIM_TRACE(act + msg);
 	}
 
-	public void SIM_TRACE(final String msg) {
+	private void SIM_TRACE(final String msg) {
 		if (_RT.Option.SML_TRACING) {
 			Thread thread = Thread.currentThread();
 			_RT.println(thread.toString() + ": Time=" + time() + "  " + msg + ", SQS=" + sqs);

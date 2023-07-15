@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 /**
- * The Class Infile.
+ * System class Infile.
  * 
  * <pre>
  * imagefile class infile;

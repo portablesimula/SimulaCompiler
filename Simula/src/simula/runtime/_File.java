@@ -16,7 +16,7 @@ import javax.swing.JFileChooser;
 import java.util.StringTokenizer;
 
 /**
- * The class File.
+ * System class File.
  * <pre>
  *    class file(FILENAME);  value FILENAME;  text FILENAME;
  *    begin Boolean OPEN;

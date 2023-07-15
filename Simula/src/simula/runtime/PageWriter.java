@@ -23,7 +23,10 @@ import java.util.Vector;
 import javax.print.PrintService;
 import javax.swing.JOptionPane;
 
-/*
+/**
+ * Utility class PageWriter.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/PageWriter.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -61,16 +64,37 @@ public class PageWriter extends Writer {
 	private double left, right, top, bot;
 	private StringBuilder currentLine;
 
-	public PageWriter(String fileName) {
-		this.fileName = fileName;
+	/**
+	 * Create a new PageWriter.
+	 * @param FN fileName
+	 */
+	public PageWriter(String FN) {
+		this.fileName = FN;
 	}
 
+	/**
+	 * Set font and paper orientation.
+	 * 
+	 * @param font the font
+	 * @param orientation 0:LANDSCAPE, 1:PORTRAIT
+	 * @param ask true: ask user through a popup dialogue
+	 */
 	public void setFont(Font font, int orientation, boolean ask) {
 		this.font = font;
 		this.orientation = orientation;
 		this.ask = ask;
 	}
 
+	/**
+	 * Set margins.
+	 * <p>
+	 * All fields are desimal numbers measured in mm.
+	 * 
+	 * @param top margin
+	 * @param left margin
+	 * @param bot margin
+	 * @param right margin
+	 */
 	public void setMargins(double top, double left, double bot, double right) {
 		this.left = left;
 		this.right = right;
@@ -78,6 +102,9 @@ public class PageWriter extends Writer {
 		this.bot = bot;
 	}
 
+	/**
+	 * Sets defaults
+	 */
 	public void open() {
 		if (font == null) {
 			this.font = new Font(Font.MONOSPACED, Font.PLAIN, 12);
@@ -112,11 +139,19 @@ public class PageWriter extends Writer {
 	public void flush() throws IOException {
 	}
 
+	/**
+	 * Create a new page.
+	 * @param n page number
+	 */
 	public void newPage(int n) {
 		currentSheet = new Sheet(this, n, 1);
 		book.append(currentSheet, pageFormat);
 	}
 
+	/**
+	 * Returns the number of lines per sheet.
+	 * @return the number of lines per sheet
+	 */
 	public int getLinesPerSheet() {
 		return (linesPerSheet);
 	}

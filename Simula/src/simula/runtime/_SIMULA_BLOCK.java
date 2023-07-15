@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * Class _SIMULA_BLOCK.
+ * Utility class _SIMULA_BLOCK.
  * <p>
  * Each and every Simula Class, Prefixed Block, Procedure or
  * Sub-Block is compiled into a Java Class by the Simula Compiler.

@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * Standard class Process.
+ * System class Process.
  * <pre>
  * link class process;
  *      begin ref (EVENT_NOTICE) EVENT;

@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * The Class MAIN_PROGRAM
+ * System class MAIN_PROGRAM
  * <pre>
  *  process class MAIN_PROGRAM;
              begin

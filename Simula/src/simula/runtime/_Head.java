@@ -9,7 +9,7 @@ package simula.runtime;
 
 /**
  * 
- * The Class Head.
+ * System class Head.
  * <pre>
  *  linkage class head;
  *          begin

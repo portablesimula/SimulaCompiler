@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * The Class PrintFile.
+ * System class PrintFile.
  * <p>
  * The class "printfile" defines a class for line printer oriented output.
  * 

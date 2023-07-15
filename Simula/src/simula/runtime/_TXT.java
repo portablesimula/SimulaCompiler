@@ -37,8 +37,9 @@ import java.text.DecimalFormat;
  * </pre>
  * <p>
  * It references (and has as its value the contents of) some text frame defined
- * by the three first components. POS identifies the current character. See
- * 3.1.2.
+ * by the three first components. POS identifies the current character. See 3.1.2.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_TXT.java"><b>Source File</b></a>.
  * 
  * 
  * @author SIMULA Standards Group
@@ -55,10 +56,17 @@ public final class _TXT {
 				// Note this differ from Simula Definition.
 
 	// Constructor
+	/**
+	 * Create a new _TXT.
+	 */
 	public _TXT() {
 	}
 
 	// Constructor
+	/**
+	 * Create a new _TXT containing the string s.
+	 * @param s initial string value
+	 */
 	public _TXT(final String s) {
 		OBJ = new _TEXTOBJ(s);
 		START = 0; // Note: Counting from zero in this implementation
@@ -66,21 +74,20 @@ public final class _TXT {
 		POS = 0; // Note: Counting from zero in this implementation
 	}
 
-	// Utility
 	@Override
 	public String toString() {
 		return ("_TEXT: START=" + START + ", LENGTH=" + LENGTH + ", POS=" + POS + ", OBJ=" + OBJ);
 	}
 
 	// Utility
-	public String edText() {
+	String edText() {
 		if (OBJ == null)
 			return ("");
 		return (OBJ.edText(START, LENGTH));
 	}
 
 	// Utility
-	public String edStripedText() {
+	String edStripedText() {
 		if (OBJ == null)
 			return ("");
 		_TXT stp = _TXT.strip(this);
@@ -90,20 +97,36 @@ public final class _TXT {
 	}
 
 	// Utility
-	public String edTextToPos() {
+	String edTextToPos() {
 		return (OBJ.edText(START, POS));
 	}
 
+	/**
+	 * Procedure constant.
+	 * @param T the argument text reference
+	 * @return true if T is constant, otherwise false
+	 */
 	public static boolean constant(_TXT T) {
 		return (T == null || T.OBJ == null || T.OBJ.CONST);
 	}
 
+	/**
+	 * Procedure start.
+	 * @param T the argument text reference
+	 * @return the start position of T within T'main frame
+	 */
 	public static int start(_TXT T) {
 		if (T == null)
 			return (1);
 		return (T.START + 1);
 	}
 
+	/**
+	 * Procedure length.
+	 * 
+	 * @param T the argument text reference
+	 * @return the length of T
+	 */
 	public static int length(_TXT T) {
 		if (T == null)
 			return (0);
@@ -111,6 +134,8 @@ public final class _TXT {
 	}
 
 	/**
+	 * Procedure main.
+	 * <p>
 	 * "X.main" is a reference to the main frame which contains the frame referenced
 	 * by X.
 	 * <p>
@@ -129,7 +154,8 @@ public final class _TXT {
 	 *         (but "ABC".main =/= "ABC")
 	 * </pre>
 	 * 
-	 * @return
+	 * @param T the argument text reference
+	 * @return the main frame of T
 	 */
 	public static _TXT main(_TXT T) {
 		if (T == null)
@@ -144,23 +170,56 @@ public final class _TXT {
 		return (U);
 	}
 
+	/**
+	 * Procedure pos.
+	 * <pre>
+	 * 		integer procedure pos; pos := POS;
+	 * </pre>
+	 * @param T the argument text reference
+	 * @return the current POS
+	 */
 	public static int pos(_TXT T) {
 		if (T == null)
 			return (1);
 		return (T.POS + 1);
 	}
 
-	public static void setpos(_TXT T, int i) {
+	/**
+	 * Procedure setpos.
+	 * <pre>
+	 * 		procedure setpos(i); integer i;
+	 * 			POS := if i &lt; 1 or i > LENGTH + 1 then LENGTH + 1 else i;
+	 * </pre>
+	 * @param T the argument text reference
+	 * @param p the new POS
+	 */
+	public static void setpos(_TXT T, int p) {
 		if (T != null)
-			T.POS = (i < 1 || i > T.LENGTH + 1) ? T.LENGTH : (i - 1);
+			T.POS = (p < 1 || p > T.LENGTH + 1) ? T.LENGTH : (p - 1);
 	}
 
+	/**
+	 * Procedure more.
+	 * 
+	 * @param T the argument text reference
+	 * @return true if T.pos &lt; T.length, otherwise false
+	 */
 	public static boolean more(_TXT T) {
 		if (T == null)
 			return (false);
 		return (T.POS < T.LENGTH);
 	}
 
+	/**
+	 * Procedure getchar.
+	 * <p>
+	 * Get the character at the current POS of T.
+	 * POS is then incremented.
+	 * 
+	 * @param T the argument text reference
+	 * @return the character at the current pos
+	 * @throws _SimulaRuntimeError if the operation fail
+	 */
 	public static char getchar(_TXT T) {
 		if (T.POS >= T.LENGTH) {
 			throw new _SimulaRuntimeError("Getchar: pos >= length  pos=" + T.POS + ", length=" + T.LENGTH);
@@ -178,6 +237,16 @@ public final class _TXT {
 		}
 	}
 
+	/**
+	 * Procedure putchar.
+	 * <p>
+	 * Put the character c into the text T at the current POS.
+	 * POS is then incremented.
+	 * 
+	 * @param T the argument text reference
+	 * @param c the argument character
+	 * @throws _SimulaRuntimeError if the operation fail
+	 */
 	public static void putchar(final _TXT T, final char c) {
 		checkAssignable(T);
 		if (T.POS >= T.LENGTH)
@@ -187,6 +256,8 @@ public final class _TXT {
 	}
 
 	/**
+	 * Procedure sub.
+	 * <p>
 	 * If legal, "X.sub(i,n)" references that subframe of X whose first character is
 	 * character number i of X, and which contains n consecutive characters. The POS
 	 * attribute of the expression defines a local numbering of the characters
@@ -202,9 +273,11 @@ public final class _TXT {
 	 *        X.main.sub(X.start,X.length) == X
 	 * </pre>
 	 * 
-	 * @param i
-	 * @param n
-	 * @return
+	 * @param T the argument text reference
+	 * @param i first character index
+	 * @param n number of charaters
+	 * @return the resulting text reference
+	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	public static _TXT sub(_TXT T, final int i, final int n) {
 //		if (i < 0 || n < 0 || i + n > LENGTH + 1)  // NOTE: FEIL I SIMULA STANDARD
@@ -230,6 +303,8 @@ public final class _TXT {
 	}
 
 	/**
+	 * Procedure strip.
+	 * <p>
 	 * The expression "X.strip" is equivalent to "X.sub(1,n)", where n indicates the
 	 * position of the last non-blank character in X. If X does not contain any
 	 * non-blank character, notext is returned.
@@ -238,7 +313,8 @@ public final class _TXT {
 	 * legal, the relation "X.strip = Y.strip" has the value true, while "X = Y" is
 	 * true only if X.length = Y.length.
 	 * 
-	 * @return
+	 * @param T the argument text reference
+	 * @return the resulting text reference
 	 */
 	public static _TXT strip(_TXT T) {
 		if (T == null || T.OBJ == null)
@@ -258,16 +334,17 @@ public final class _TXT {
 	}
 
 	/**
+	 * <pre>
 	 * INTEGER-ITEM = SIGN-PART DIGITS
 	 *
-	 * SIGN-PART = BLANKS [ SIGN ] BLANKS
+	 *    SIGN-PART = BLANKS [ SIGN ] BLANKS
 	 *
-	 * SIGN = + | -
+	 *       SIGN = + | -
 	 *
-	 * DIGITS = DIGIT { DIGIT }
+	 *       DIGITS = DIGIT { DIGIT }
 	 *
-	 * DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-	 * 
+	 *       DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	 * </pre>
 	 * @return
 	 */
 	private static String getIntegerItem(final _TXT T) {
@@ -300,6 +377,25 @@ public final class _TXT {
 		return (sb.toString());
 	}
 
+	/**
+	 * Procedure getint.
+	 * <pre>
+	 * INTEGER-ITEM = SIGN-PART DIGITS
+	 *
+	 *    SIGN-PART = BLANKS [ SIGN ] BLANKS
+	 *
+	 *       SIGN = + | -
+	 *
+	 *       DIGITS = DIGIT { DIGIT }
+	 *
+	 *       DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	 * </pre>
+	 * The procedure locates an INTEGER ITEM. The function value is
+	 * equal to the corresponding integer.
+	 * 
+	 * @param T the text reference
+	 * @return the resulting real
+	 */
 	public static int getint(final _TXT T) {
 		String item = getIntegerItem(T);
 		int res = Integer.parseInt(item);
@@ -307,30 +403,31 @@ public final class _TXT {
 	}
 
 	/**
+	 * <pre>
 	 * REAL-ITEM = DECIMAL-ITEM [ EXPONENT ] | SIGN-PART EXPONENT
 	 *
-	 * DECIMAL-ITEM = INTEGER-ITEM [ FRACTION ] | SIGN-PART FRACTION
+	 *    DECIMAL-ITEM = INTEGER-ITEM [ FRACTION ] | SIGN-PART FRACTION
 	 *
-	 * INTEGER-ITEM = SIGN-PART DIGITS
+	 *       INTEGER-ITEM = SIGN-PART DIGITS
 	 *
-	 * FRACTION = DECIMAL-MARK DIGITS
+	 *       FRACTION = DECIMAL-MARK DIGITS
 	 *
-	 * SIGN-PART = BLANKS [ SIGN ] BLANKS
+	 *       SIGN-PART = BLANKS [ SIGN ] BLANKS
 	 *
-	 * EXPONENT = LOWTEN-CHARACTER INTEGER-ITEM
+	 *    EXPONENT = LOWTEN-CHARACTER INTEGER-ITEM
 	 *
-	 * SIGN = + | -
+	 *          SIGN = + | -
 	 *
-	 * DIGITS = DIGIT { DIGIT }
+	 *          DIGITS = DIGIT { DIGIT }
 	 *
-	 * DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	 *          DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 	 *
-	 * LOWTEN-CHARACTER = & | ...
+	 *          LOWTEN-CHARACTER = &amp; | ...
 	 *
-	 * DECIMAL-MARK = . | ,
+	 *          DECIMAL-MARK = . | ,
 	 *
-	 * BLANKS = { BLANK | TAB }
-	 * 
+	 *          BLANKS = { BLANK | TAB }
+	 * </pre>
 	 * @return
 	 */
 	private static String getRealItem(final _TXT T) {
@@ -377,6 +474,41 @@ public final class _TXT {
 		return (sb.toString());
 	}
 
+	/**
+	 * Procedure getreal.
+	 * <pre>
+	 * REAL-ITEM = DECIMAL-ITEM [ EXPONENT ] | SIGN-PART EXPONENT
+	 *
+	 *    DECIMAL-ITEM = INTEGER-ITEM [ FRACTION ] | SIGN-PART FRACTION
+	 *
+	 *       INTEGER-ITEM = SIGN-PART DIGITS
+	 *
+	 *       FRACTION = DECIMAL-MARK DIGITS
+	 *
+	 *       SIGN-PART = BLANKS [ SIGN ] BLANKS
+	 *
+	 *    EXPONENT = LOWTEN-CHARACTER INTEGER-ITEM
+	 *
+	 *          SIGN = + | -
+	 *
+	 *          DIGITS = DIGIT { DIGIT }
+	 *
+	 *          DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	 *
+	 *          LOWTEN-CHARACTER = &amp; | ...
+	 *
+	 *          DECIMAL-MARK = . | ,
+	 *
+	 *          BLANKS = { BLANK | TAB }
+	 * </pre>
+	 * The procedure locates a REAL ITEM. The function value is equal
+	 * to or approximates to the corresponding number. An INTEGER ITEM
+	 * exceeding a certain implementation-defined range may lose
+	 * precision when converted to long real.
+	 * 
+	 * @param T the text reference
+	 * @return the resulting real
+	 */
 	public static double getreal(final _TXT T) {
 		String item = getRealItem(T);
 		double res = Double.parseDouble(item);
@@ -384,8 +516,9 @@ public final class _TXT {
 	}
 
 	/**
-	 * GROUPED-ITEM = SIGN-PART GROUPS [ DECIMAL-MARK GROUPS ] | SIGN-PART
-	 * DECIMAL-MARK GROUPS
+	 * <pre>
+	 * GROUPED-ITEM = SIGN-PART GROUPS [ DECIMAL-MARK GROUPS ]
+	 *              | SIGN-PART DECIMAL-MARK GROUPS
 	 *
 	 * SIGN-PART = BLANKS [ SIGN ] BLANKS
 	 *
@@ -394,7 +527,7 @@ public final class _TXT {
 	 * GROUPS = DIGITS { BLANK DIGITS } DIGITS = DIGIT { DIGIT }
 	 *
 	 * DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-	 * 
+	 * </pre>
 	 * @return
 	 */
 	private static String getFracItem(final _TXT T) {
@@ -436,6 +569,28 @@ public final class _TXT {
 		return (sb.toString());
 	}
 
+	/**
+	 * Procedure getfrac.
+	 * <pre>
+	 * GROUPED-ITEM = SIGN-PART GROUPS [ DECIMAL-MARK GROUPS ]
+	 *              | SIGN-PART DECIMAL-MARK GROUPS
+	 *
+	 * SIGN-PART = BLANKS [ SIGN ] BLANKS
+	 *
+	 * SIGN = + | -
+	 *
+	 * GROUPS = DIGITS { BLANK DIGITS } DIGITS = DIGIT { DIGIT }
+	 *
+	 * DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	 * </pre>
+	 * The procedure locates a GROUPED ITEM. The function value is
+	 * equal to the resulting integer. The digits of a GROUPED ITEM
+	 * may be interspersed with BLANKS and a single DECIMAL MARK which
+	 * are ignored by the procedure.
+	 * 
+	 * @param T the text reference
+	 * @return the resulting integer
+	 */
 	public static int getfrac(final _TXT T) {
 		return (Integer.parseInt(getFracItem(T)));
 	}
@@ -477,23 +632,27 @@ public final class _TXT {
 	}
 
 	/**
+	 * Procedure putint.
 	 * The value of the parameter is converted to an INTEGER ITEM which designates
 	 * an integer equal to that value.
 	 * 
-	 * @param i
+	 * @param T the text reference
+	 * @param i the integer value to be edited
 	 */
 	public static void putint(final _TXT T, final int i) {
 		putResult(T, "" + i);
 	}
 
 	/**
+	 * Procedure putfix.
 	 * The resulting numeric item is an INTEGER ITEM if n=0 or a DECIMAL ITEM with a
 	 * FRACTION of n digits if n>0. It designates a number equal to the value of r
 	 * or an approximation to the value of r, correctly rounded to n decimal places.
 	 * If n&lt;0, a run-time error is caused.
 	 * 
-	 * @param r the argument
-	 * @param n number of digits after decimal sign
+	 * @param T the text reference
+	 * @param r the long real value to be edited
+	 * @param n the number of digits after decimal sign
 	 */
 	public static void putfix(final _TXT T, double r, int n) {
 		if (n < 0)
@@ -514,14 +673,17 @@ public final class _TXT {
 	}
 
 	/**
+	 * Procedure putreal.
+	 * <p>
 	 * The resulting numeric item is a REAL ITEM containing an EXPONENT with a fixed
 	 * implementation-defined number of characters. The EXPONENT is preceded by a
 	 * SIGN PART if n=0, or by an INTEGER ITEM with one digit if n=1, or if n>1, by
 	 * a DECIMAL ITEM with an INTEGER ITEM of 1 digit only, and a fraction of n-1
 	 * digits. If n&lt;0 a runtime error is caused.
 	 * 
-	 * @param r
-	 * @param n
+	 * @param T the text reference
+	 * @param r the long real value to be edited
+	 * @param n the number of digits after decimal sign
 	 */
 	public static void putreal(final _TXT T, double r, int n) {
 		if (n < 0)
@@ -545,6 +707,15 @@ public final class _TXT {
 		putRealResult(T, output);
 	}
 
+	/**
+	 * Procedure putreal.
+	 * <p>
+	 * See <b>{@link _TXT#putreal(_TXT,double,int)}</b>
+	 * 
+	 * @param T the text reference
+	 * @param r the real value to be edited
+	 * @param n the number of digits after decimal sign
+	 */
 	public static void putreal(final _TXT T, float r, int n) {
 		if (n < 0)
 			throw new _SimulaRuntimeError("putreal(r,n) - n < 0");
@@ -577,12 +748,15 @@ public final class _TXT {
 	}
 
 	/**
+	 * Procedure putfrac.
+	 * <p>
 	 * The resulting numeric item is a GROUPED ITEM with no DECIMAL MARK if n&lt;=0,
 	 * and with a DECIMAL MARK followed by total of n digits if n>0. Each digit
 	 * group consists of 3 digits, except possibly the first one, and possibly the
 	 * last one following a DECIMAL MARK. The numeric item is an exact
 	 * representation of the number i * 10**(-n).
 	 * 
+	 * @param T the text reference
 	 * @param val an integer value
 	 * @param n number of digits after a decimal mark
 	 */

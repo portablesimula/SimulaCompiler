@@ -15,7 +15,7 @@ import java.io.OutputStream;
 
 
 /**
- * The class "outbytefile".
+ * System class Outbytefile.
  * 
  * <pre>
  *  bytefile class outbytefile;

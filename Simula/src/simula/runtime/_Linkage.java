@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * The Class "linkage".
+ * System class Linkage.
  * <pre>
  *          class linkage;
  *          begin ref (linkage) SUC, PRED;

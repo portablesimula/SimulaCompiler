@@ -19,6 +19,7 @@ import java.awt.geom.RectangularShape;
 import java.awt.geom.RoundRectangle2D;
 
 /**
+ * Additional System class ShapeElement.
  * <pre>
  * Link class ShapeElement;
  * begin Integer COLOR,STROKE;

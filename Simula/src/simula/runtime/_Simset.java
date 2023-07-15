@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * Standard class Simset.
+ * System class Simset.
  * <p>
  * The class "simset" contains facilities for the manipulation of circular
  * two-way lists, called "sets".

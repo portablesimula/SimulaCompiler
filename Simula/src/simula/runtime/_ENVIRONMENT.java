@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import simula.runtime._RT.Option;
 
 /**
- * The class ENVIRONMENT.
+ * System class ENVIRONMENT.
  * <p>
  * The purpose of the environmental class is to encapsulate all constants,
  * procedures and classes which are accessible to all source modules. It

@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
-* The class EVENT_NOTICE.
+* System class EVENT_NOTICE.
 * <p>
 * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_EVENT_NOTICE.java"><b>Source File</b></a>.
 * 

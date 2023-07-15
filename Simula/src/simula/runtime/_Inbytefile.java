@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * The class Inbytefile.
+ * System class Inbytefile.
  * 
  * <pre>
  *  bytefile class inbytefile; begin

@@ -178,7 +178,7 @@ public final class _RT {
 												// processed. E.g. FileName
 	}
 
-	static void setRuntimeOptions(final String[] args) {
+	public static void setRuntimeOptions(final String[] args) {
 		// Parse command line arguments.
 		_RT.Option.RUNTIME_USER_DIR = System.getProperty("user.dir", null);
 		File file = null;
@@ -451,7 +451,7 @@ public final class _RT {
 		_RT.println("-----------------------------------------------------------------------------------------------");
 	}
 
-	static void _LINE(String modid, int simLine) {
+	public static void _LINE(String modid, int simLine) {
 		currentModid = modid;
 		currentSimLine = simLine;
 	}

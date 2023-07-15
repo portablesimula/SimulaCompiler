@@ -9,7 +9,7 @@ package simula.runtime;
 
 
 /**
-* Utility class _PROC.
+* Utility class _PROCEDURE.
 * <p>
 * This class is used as prefix to all java classes representing Simula Procedures.
 * 

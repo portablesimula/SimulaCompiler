@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * The Class Link.
+ * System class Link.
  * <pre>
  *  linkage class link;
  *          begin

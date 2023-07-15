@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 
 /**
+ *  Additional System class TextElement.
  * <pre>
  * Link class TextElement(t,x,y); Value t; Text t; Long Real x,y;
  * begin Integer COLOR,STROKE; Text T; Long Real X,Y;

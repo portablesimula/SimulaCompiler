@@ -8,7 +8,7 @@
 package simula.runtime;
 
 /**
- * Class _Ranking.
+ * Utility class _Ranking.
  * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Ranking.java"><b>Source File</b></a>.
  *
