@@ -14,6 +14,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 
 /**
+ * Label Declaration.
  * 
  * @author Øystein Myhre Andersen
  */

@@ -16,6 +16,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 /**
+ * Protected Specification.
  * 
  * @author Øystein Myhre Andersen
  *

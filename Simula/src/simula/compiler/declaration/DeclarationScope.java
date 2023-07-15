@@ -14,6 +14,7 @@ import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Util;
 
 /**
+ * Declaration Scope.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -49,6 +50,11 @@ import simula.compiler.utilities.Util;
 	// ***********************************************************************************************
 	// *** Utility: findVisibleAttributeMeaning
 	// ***********************************************************************************************
+	/**
+	 * Find visible attribute's Meaning
+	 * @param ident attribute identifier
+	 * @return the resulting Meaning
+	 */
 	public Meaning findVisibleAttributeMeaning(final String ident) {
 		Util.FATAL_ERROR("DeclarationScope.findVisibleAttributeMeaning: SHOULD BEEN REDEFINED: "+identifier);
 		return (null);

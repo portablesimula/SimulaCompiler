@@ -19,6 +19,7 @@ import simula.compiler.CodeLine;
 import simula.compiler.expression.Constant;
 
 /**
+ * Standard Class.
  * 
  * @author Øystein Myhre Andersen
  */

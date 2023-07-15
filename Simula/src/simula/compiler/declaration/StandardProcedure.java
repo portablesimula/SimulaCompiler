@@ -13,6 +13,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
+ * Standard Procedure.
  * 
  * @author Øystein Myhre Andersen
  */

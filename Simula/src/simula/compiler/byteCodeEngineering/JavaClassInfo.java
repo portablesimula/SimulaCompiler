@@ -12,19 +12,41 @@ import java.util.Set;
 import simula.compiler.utilities.Global;
 
 /**
+ * Java class info.
+ * <p>
  * This class is introduced to compensate for a weakness in ASM.
  * ClassWriter.getCommonSuperClass does not work because Global.tempClassFileDir is not present in java.class.path
- * 
+ * <p>
  * See: ExtendedClassWriter.getCommonSuperClass
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/byteCodeEngineering/JavaClassInfo.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public class JavaClassInfo {
 	private static final boolean DEBUG=false;
+	
+	/**
+	 * External identifier.
+	 */
 	public String externalIdent;
+	
+	/**
+	 * Prefix identifier.
+	 */
 	public String prefixIdent;
 	
+	/**
+	 * Default constructor.
+	 */
+	public JavaClassInfo(){}
+	
+	/**
+	 * Update Global.javaClassMap.
+	 * @param key the key
+	 * @param info the info
+	 */
 	public static void put(String key,JavaClassInfo info) {
 		Global.javaClassMap.putIfAbsent(key,info);
 	}

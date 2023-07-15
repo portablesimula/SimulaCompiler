@@ -18,7 +18,7 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * </pre>
+ * Prefixed Block Declaration.
  * 
  * @author Øystein Myhre Andersen
  */

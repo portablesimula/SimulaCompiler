@@ -24,6 +24,14 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
+/**
+ * Repair STM_ MethodVisitor.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/byteCodeEngineering/RepairSTM_MethodVisitor.java"><b>Source File</b></a>.
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class RepairSTM_MethodVisitor extends MethodVisitor {
 	private static final boolean DEBUG=false;
 

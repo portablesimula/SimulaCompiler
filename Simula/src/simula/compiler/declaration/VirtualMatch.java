@@ -16,6 +16,7 @@ import simula.compiler.GeneratedJavaClass;
 import simula.compiler.utilities.Util;
 
 /**
+ * Virtual match.
  * 
  * @author Øystein Myhre Andersen
  *

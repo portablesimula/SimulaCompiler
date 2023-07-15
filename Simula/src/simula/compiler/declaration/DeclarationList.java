@@ -12,12 +12,17 @@ import java.util.Vector;
 import simula.compiler.utilities.Util;
 
 /**
+ * Declaration List.
  * 
  * @author Øystein Myhre Andersen
  */
 public class DeclarationList extends Vector<Declaration> {
 	
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Identifier.
+	 */
 	public final String identifier;
 
 	DeclarationList(String identifier) {

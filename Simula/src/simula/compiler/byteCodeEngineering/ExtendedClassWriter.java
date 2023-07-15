@@ -14,9 +14,13 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Util;
 
 /**
+ * Extended ClassWriter.
+ * <p>
  * This class is introduced to compensate for a weakness in ASM ( https://asm.ow2.io/ ).
  * ClassWriter.getCommonSuperClass does not work because Global.tempClassFileDir is not present in java.class.path
  * Instead we use the information we have about all generated .class files to find common superclass of two types.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/byteCodeEngineering/ExtendedClassWriter.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -24,6 +28,12 @@ import simula.compiler.utilities.Util;
 public class ExtendedClassWriter extends ClassWriter {
 	private static final boolean DEBUG=false;
 
+	/**
+	 * Create a new ExtendedClassWriter.
+	 * 
+     * @param classReader the {@link ClassReader} used to read the original class.
+     * @param flags option flags that can be used to modify the default behavior of this class.
+	 */
 	public ExtendedClassWriter(ClassReader classReader, int flags) {
 		super(classReader, flags);
 	}

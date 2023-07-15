@@ -15,8 +15,14 @@ import java.util.Vector;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
-
- public final class Parameter extends Declaration implements Externalizable { 
+	
+/**
+ * Parameter Declaration.
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
+public final class Parameter extends Declaration implements Externalizable { 
 	// String identifier;    // Inherited
 	// String externalIdent; // Inherited
 	// Type type;            // Inherited:

@@ -14,16 +14,32 @@ import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
 
 /**
- * </pre>
+ * Block Declaration.
+ * <p>
+ * This class is prefix to ClassDeclaration, ProcedureDeclaration and MaybeBlockDeclaration.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/BlockDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public abstract class BlockDeclaration extends DeclarationScope {
-	public int lastLineNumber;
 	protected boolean isMainModule; // If true; this is the outermost Subblock or Prefixed Block.
-	public boolean isContextFree; // If true; all member methods are independent of context
-	public boolean isPreCompiled; // If true; this Class/Procedure is Pre-Compiled
 	protected final Vector<Statement> statements = new Vector<Statement>();
+
+	/**
+	 * Last source line number
+	 */
+	public int lastLineNumber;
+	
+	/**
+	 * If true; all member methods are independent of context
+	 */
+	public boolean isContextFree;
+	
+	/**
+	 * If true; this Class/Procedure is Pre-Compiled
+	 */
+	public boolean isPreCompiled;
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
@@ -42,9 +58,9 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Utility: prefixLevel
 	// ***********************************************************************************************
-	protected int prefixLevel() {
-		return (0);
-	} // Needs redefinition for Class and Prefixed Block
+//	protected int prefixLevel() {
+//		return (0);
+//	} // Needs redefinition for Class and Prefixed Block
 
 	// ***********************************************************************************************
 	// *** Checking: doCheckLabelList
@@ -85,6 +101,11 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// *** Coding Utility: AD'HOC Leading Label
 	// ***********************************************************************************************
 	protected Vector<String> labelcode;
+	
+	/**
+	 * Coding Utility: AD'HOC Leading Label
+	 * @param labelcode argument
+	 */
 	public void addLeadingLabel(String labelcode) {
 		if(this.labelcode==null) this.labelcode=new Vector<String>();
 		this.labelcode.add(labelcode);

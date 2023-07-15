@@ -24,6 +24,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
+ * Procedure Declaration.
  * 
  * @author Øystein Myhre Andersen
  */

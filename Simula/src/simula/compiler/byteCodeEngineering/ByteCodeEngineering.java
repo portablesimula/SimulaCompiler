@@ -26,8 +26,12 @@ import simula.compiler.utilities.Util;
 
 /**
  * Based on the 'ASM' Java bytecode manipulation and analysis framework. 
+ * <p>
  * Main page: https://asm.ow2.io/index.html
+ * <p>
  * Wikipedia: https://en.wikipedia.org/wiki/ObjectWeb_ASM
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/byteCodeEngineering/ByteCodeEngineering.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -36,9 +40,16 @@ public final class ByteCodeEngineering {
 	private static final boolean LIST_ASM_CODE=false;
 	private static final boolean DEBUG=false;
 	
+	/**
+	 * Create a new ByteCodeEngineering.
+	 */
 	public ByteCodeEngineering() {
 	}
 
+	/**
+	 * Repair a single .class file.
+	 * @param classFileName the .class file name
+	 */
     public void doRepairSingleByteCode(String classFileName) {
     	InputStream inputStream=null;
         try {

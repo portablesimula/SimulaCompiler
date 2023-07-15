@@ -28,21 +28,39 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * </pre>
+ * Class Declaration.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ClassDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public class ClassDeclaration extends BlockDeclaration implements Externalizable {
-	public String prefix; // Class Prefix in case of a SubClass or Prefixed Block.
-	public boolean detachUsed = false; // Set true when attribute procedure 'detach' is used in/on this class.
+	private String externalPrefixIdent;
 	Vector<Parameter> parameterList = new Vector<Parameter>();
 	protected Vector<VirtualSpecification> virtualSpecList = new Vector<VirtualSpecification>();
 	protected Vector<VirtualMatch> virtualMatchList = new Vector<VirtualMatch>();
 	Vector<ProtectedSpecification> protectedList = new Vector<ProtectedSpecification>();
 	Vector<HiddenSpecification> hiddenList = new Vector<HiddenSpecification>();
+	
+	/**
+	 * Statement code before inner.
+	 */
 	protected Vector<CodeLine> code1; // Statement code before inner
-	public Vector<CodeLine> code2; // Statement code after inner
-	private String externalPrefixIdent;
+	
+	/**
+	 * Statement code after inner.
+	 */
+	public Vector<CodeLine> code2;
+	
+	/**
+	 * Class Prefix in case of a SubClass or Prefixed Block.
+	 */
+	public String prefix;
+
+	/**
+	 * Set true when attribute procedure 'detach' is used in/on this class.
+	 */
+	public boolean detachUsed = false;
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTOR
@@ -94,6 +112,9 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 *				InnerPart = [ Label : ] INNER ;
 	 *
 	 * </pre>
+	 * 
+	 * @param prefix class identifier
+	 * @return the resulting ClassDeclaration
 	 */
 	public static ClassDeclaration doParseClassDeclaration(final String prefix) {
 		ClassDeclaration block = new ClassDeclaration(null);
@@ -268,7 +289,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 * Then Class B is a subclass of Class A, While Class C is subclass of both B
 	 * and A.
 	 * 
-	 * @param other
+	 * @param other the other ClassDeclaration
 	 * @return Boolean true iff this class is a subclass of the 'other' class.
 	 */
 	public boolean isSubClassOf(final ClassDeclaration other) {
@@ -348,7 +369,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: prefixLevel
 	// ***********************************************************************************************
-	@Override
+
+	/**
+	 * Returns the prefix level.
+	 * @return the prefix level
+	 */
 	public int prefixLevel() {
 		if (hasNoRealPrefix()) return (0);
 		ClassDeclaration prfx = getPrefixClass();
@@ -410,6 +435,12 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: findRemoteAttributeMeaning
 	// ***********************************************************************************************
+	/**
+	 * Find Remote Attribute's Meaning.
+	 * 
+	 * @param ident attribute identifier
+	 * @return the resulting Meaning
+	 */
 	public Meaning findRemoteAttributeMeaning(final String ident) {
 		boolean behindProtected = false;
 		ClassDeclaration scope = this;
@@ -511,6 +542,10 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Utility: getPrefixClass
 	// ***********************************************************************************************
+	/**
+	 * Returns the prefix ClassDeclaration or null.
+	 * @return the prefix ClassDeclaration or null
+	 */
 	public ClassDeclaration getPrefixClass() {
 		if (prefix == null)	return (null);
 		Meaning meaning = declaredIn.findMeaning(prefix);
@@ -542,11 +577,15 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding: isDetachUsed -- If the 'detach' attribute is used
 	// ***********************************************************************************************
+	//
+	// COMMENT FROM Stein: Ta utgangspunkt i hvilke klasser man har kalt "detach"
+	// i, altså kvalifikasjonen av de X som er brukt i "X.detach". Men da må man jo
+	// også holde greie på hvilke slike som har forekommet i eksterne "moduler" (som
+	// f.eks. SIMULATION), uten at det burde være problematisk.
+	// ***********************************************************************************************
 	/**
-	 * COMMENT FROM Stein: Ta utgangspunkt i hvilke klasser man har kalt "detach"
-	 * i, altså kvalifikasjonen av de X som er brukt i "X.detach". Men da må man jo
-	 * også holde greie på hvilke slike som har forekommet i eksterne "moduler" (som
-	 * f.eks. SIMULATION), uten at det burde være problematisk.
+	 * Returns true if detach is called in/on this class.
+	 * @return true if detach is called in/on this class
 	 */
 	public boolean isDetachUsed() {
 		// TRAVERSER PREFIX LOOKING FOR (detachUsed==true)
@@ -561,16 +600,24 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Utility: ClassParameterIterator - // Iterates through prefix-chain
 	// ***********************************************************************************************
+	/**
+	 * Utility: ClassParameterIterator - Iterates through prefix-chain.
+	 *
+	 */
 	public final class ClassParameterIterator implements Iterator<Parameter>, Iterable<Parameter> {
 		Iterator<Parameter> prefixIterator;
 		Iterator<Parameter> localIterator;
 
+		/**
+		 * Constructor
+		 */
 		public ClassParameterIterator() {
 			ClassDeclaration prefix = getPrefixClass();
 			if (prefix != null)	prefixIterator = prefix.parameterIterator();
 			localIterator = parameterList.iterator();
 		}
 
+		@Override
 		public boolean hasNext() {
 			if (prefixIterator != null) {
 				if (prefixIterator.hasNext()) return (true);
@@ -579,17 +626,23 @@ SEARCH: while (scope != null) {
 			return (localIterator.hasNext());
 		}
 
+		@Override
 		public Parameter next() {
 			if (!hasNext())	return (null);
 			if (prefixIterator != null)	return (prefixIterator.next());
 			return (localIterator.next());
 		}
 
+		@Override
 		public Iterator<Parameter> iterator() {
 			return (new ClassParameterIterator());
 		}
 	}
 
+	/**
+	 * Iterates through all class parameters.
+	 * @return a ClassParameterIterator
+	 */
 	public Iterator<Parameter> parameterIterator() {
 		return (new ClassParameterIterator());
 	}
@@ -832,6 +885,9 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public ClassDeclaration() {
 		super(null);
 	}

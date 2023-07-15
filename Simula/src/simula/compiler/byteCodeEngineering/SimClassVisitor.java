@@ -14,10 +14,22 @@ import org.objectweb.asm.commons.InstructionAdapter;
 
 import simula.compiler.utilities.Util;
 
+/**
+ * Simula's ClassVisitor.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/byteCodeEngineering/SimClassVisitor.java"><b>Source File</b></a>.
+ * 
+ * @author Øystein Myhre Andersen
+ *
+ */
 public class SimClassVisitor extends ClassVisitor {
-	public static final int ASM_Release=Opcodes.ASM7;
 	private static final boolean DEBUG=false;
 	private String classFileName;
+	
+	/**
+	 * Current ASM release.
+	 */
+	public static final int ASM_Release=Opcodes.ASM7;
 	
 //	SimClassVisitor(String classFileName) {
 //		super(ASM_Release);

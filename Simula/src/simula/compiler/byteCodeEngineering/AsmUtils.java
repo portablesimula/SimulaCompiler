@@ -54,7 +54,14 @@ import org.objectweb.asm.util.Textifier;
 
 import simula.compiler.utilities.Util;
 
+/**
+ * ASM Utilities.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/byteCodeEngineering/AsmUtils.java"><b>Source File</b></a>.
+ *
+ */
 public class AsmUtils {
+	private AsmUtils() {}
 	
 	static void exploreTableswitch(TableSwitchInsnNode tableSwitch) {
 		StringBuilder s=new StringBuilder();

@@ -37,7 +37,7 @@ import simula.compiler.utilities.Util;
  * 	IdentifierList = Identifier { , Identifier }
  * 
  * 	BoundPairList = BoundPair { , BoundPair }
- * 	 BoundPair = ArithmeticExpression : ArithmeticExpression
+ * 	   BoundPair = ArithmeticExpression : ArithmeticExpression
  *
  * </pre>
  * 
@@ -78,16 +78,21 @@ import simula.compiler.utilities.Util;
  * <pre>
  * Examples
  * 
- *           integer array a(2:20)                    ! 19 elements;
- *           real array  q(-7:if c<0 then 2 else 1)   ! 10 or 9 elements;
- *           array  a,b,c(7:n,2:m), s(-2:10)      ! any value of n or m legal;
+ *           integer array a(2:20)                      ! 19 elements;
+ *           real array  q(-7:if c &lt; 0 then 2 else 1)   ! 10 or 9 elements;
+ *           array  a,b,c(7:n,2:m), s(-2:10)            ! any value of n or m legal;
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ArrayDeclaration.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ArrayDeclaration extends Declaration implements Externalizable {
 	// Type type; inherited
+	
+	/**
+	 * Number of dimensions.
+	 */
 	public int nDim;
 	private Vector<BoundPair> boundPairList;
 
@@ -209,6 +214,9 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public ArrayDeclaration() {
 		super(null);
 		this.declarationKind=Declaration.Kind.ArrayDeclaration;
