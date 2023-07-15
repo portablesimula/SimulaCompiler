@@ -1,4 +1,4 @@
 /**
- * Source text: <a href="https://github.com/portablesimula/SimulaCompiler/tree/master/Simula/src/simula/compiler/declaration"><b>Simula Compiler Declarations</b></a>.
+ * Simula Compiler Declarations.
  */
 package simula.compiler.declaration;

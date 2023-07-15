@@ -1,4 +1,4 @@
 /**
- * Source text: <a href="https://github.com/portablesimula/SimulaCompiler/tree/master/Simula/src/simula/compiler/editor"><b>Simula Editor</b></a>.
+ * Simula Editor.
  */
 package simula.compiler.editor;

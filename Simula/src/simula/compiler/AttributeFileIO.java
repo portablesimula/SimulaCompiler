@@ -25,6 +25,9 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
+ * Simula attribute file input/output.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/AttributeFileIO.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -58,6 +61,15 @@ public final class AttributeFileIO {
 		if (Option.verbose)	Util.TRACE("*** ENDOF Generate SimulaAttributeFile: " + file);
 	}
 
+	/**
+	 * Read an attribute file.
+	 * @param inputStream argument
+	 * @param file argument
+	 * @param declarationList argument
+	 * @return the module type
+	 * @throws IOException if an input operation fail
+	 * @throws ClassNotFoundException if a class cast fail
+	 */
 	public static Type readAttributeFile(final InputStream inputStream,final File file,
             final DeclarationList declarationList) throws IOException, ClassNotFoundException {
 		AttributeFileIO attributeFile = new AttributeFileIO(file);

@@ -15,6 +15,9 @@ import java.io.ObjectOutput;
 import simula.compiler.utilities.Util;
 
 /**
+ * A single line of output Java code.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/CodeLine.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -24,6 +27,12 @@ public final class CodeLine implements Externalizable {
 	int sourceLineNumber;
 	String codeLine;
 	
+	/**
+	 * Create a new CodeLine.
+	 * @param modid module identifier
+	 * @param sourceLineNumber argument
+	 * @param codeLine argument
+	 */
 	public CodeLine(final String modid,final int sourceLineNumber,final String codeLine) {
 		this.modid=modid;
 		this.sourceLineNumber=sourceLineNumber;
@@ -38,6 +47,10 @@ public final class CodeLine implements Externalizable {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public CodeLine() { }
 	
 	@Override
