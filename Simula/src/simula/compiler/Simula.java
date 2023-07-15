@@ -17,11 +17,15 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * 
+ * Simula Main class.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/Simula.java"><b>Source File</b></a>.
+
  * @author Øystein Myhre Andersen
  *
  */
 public final class Simula {
+	private Simula(){}
 
 	private static void help() {
 		Util.println(Global.simulaReleaseID+" See: https://github.com/portablesimula");
@@ -49,6 +53,10 @@ public final class Simula {
 		System.exit(0);
 	}
 
+	/**
+	 * Main entry.
+	 * @param argv arguments
+	 */
 	public static void main(String[] argv) {
 		String fileName = null;
 		Option.verbose=false;
@@ -102,7 +110,9 @@ public final class Simula {
      * %SELECT select-character { select-character }
      * <p>
      * Set selectors for conditional compilation.
-     */
+	 * 
+	 * @param chars select characters
+	 */
     public static void setSelectors(String chars) {
     	for(int i=0;i<255;i++) SimulaScanner.selector[i]=false;
     	for(int j=0;j<chars.length();j++) {

@@ -16,12 +16,16 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
+ * The class SyntaxClass.
+ * <p>
+ * The Simula Compiler uses Recursive Descent Parsing. Each syntax class is a subclass of this class.
+ * <p>
  * A NonTerminal object represents non terminal symbol in the formal syntax.
- *
+ * <p>
  * Parsing descends in a top-down manner, until the final nonterminal has been processed.
  * The parsing process depends on a global variable, currentToken, which contains the current symbol
  * from the input, and the function nextSymb, which updates currentToken when called.
- * 
+ * <p>
  * For further description of Recursive Descent Parsing
  * see <a href="https://en.wikipedia.org/wiki/Recursive_descent_parser">Wikipedia</a>.
  *
@@ -47,7 +51,15 @@ import simula.compiler.utilities.Util;
 
 public abstract class SyntaxClass { 
 	private boolean CHECKED = false; // Set true when doChecking(), put or get is called
+	
+	/**
+	 * The type
+	 */
 	public Type type = null;
+	
+	/**
+	 * The source line number
+	 */
 	public int lineNumber;
 
 	protected SyntaxClass() {
@@ -87,6 +99,11 @@ public abstract class SyntaxClass {
 		return(type);  
     }
 
+    /**
+     * Perform semantic checking.
+     * <p>
+     * This must be redefined in every subclass.
+     */
 	public void doChecking() {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
@@ -133,6 +150,10 @@ public abstract class SyntaxClass {
 		return (toString());
 	}
 
+	/**
+	 * Utility print method.
+	 * @param indent number of spaces leading the line
+	 */
 	public void print(final int indent) {
 		Util.println(edIndent(indent) + this);
 	}

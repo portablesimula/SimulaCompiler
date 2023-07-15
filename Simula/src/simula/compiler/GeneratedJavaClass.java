@@ -37,7 +37,7 @@ public final class GeneratedJavaClass {
 	private final Vector<Integer> lineMap = new Vector<Integer>();
 	
 	/**
-	 * given as argument.
+	 * Given as argument.
 	 */
 	public final BlockDeclaration blockDeclaration;
 	
@@ -206,7 +206,7 @@ public final class GeneratedJavaClass {
 	}
 
 	/**
-	 * Output Program info. I.e. identifier and lineMap.
+	 * Output program info. I.e. identifier and lineMap.
 	 */
 	public void codeProgramInfo() {
 		appendLine(currentJavaLineNumber, blockDeclaration.lastLineNumber);

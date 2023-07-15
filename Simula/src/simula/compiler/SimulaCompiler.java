@@ -42,7 +42,10 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * 
+ * The Simula Compiler
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/SimulaCompiler.java"><b>Source File</b></a>.
+ *
  * @author Øystein Myhre Andersen
  *
  */
@@ -53,10 +56,19 @@ public final class SimulaCompiler {
 	private File jarFile;
 	private String mainEntry;
 	
+	/**
+	 * Create a new SimulaCompiler.
+	 * @param inputFileName the source file name
+	 */
 	public SimulaCompiler(final String inputFileName) {
 		this(inputFileName,null);
 	}
 	
+	/**
+	 * Create a new SimulaCompiler.
+	 * @param inputFileName the source file name
+	 * @param reader Reader in case of SimulaEditor
+	 */
 	public SimulaCompiler(final String inputFileName,Reader reader) {
 		Global.initiate();
 		if(reader==null) {
@@ -163,6 +175,9 @@ public final class SimulaCompiler {
 		} catch (Exception e) { Util.INTERNAL_ERROR("SimulaCompiler.deleteFiles FAILED: ", e);	e.printStackTrace(); }
 	}
 
+	/**
+	 * Do Compile
+	 */
 	public void doCompile() {
 		try {
 			Util.nError=0;
@@ -581,6 +596,11 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** LIST .class file
 	// ***************************************************************
+	/**
+	 * Print a .class file listing.
+	 * 
+	 * @param classFileName the .class file name
+	 */
 	public static void doListClassFile(final String classFileName) {
 		try { execute("javap","-c","-l","-p","-s","-verbose",classFileName);
 		} catch (IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
@@ -595,6 +615,12 @@ public final class SimulaCompiler {
 		return(execute(cmds));
 	}
 	
+	/**
+	 * Execute an OS command
+	 * @param cmdarray command array
+	 * @return exit value
+	 * @throws IOException if an I/O error occurs
+	 */
 	public static int execute(final String... cmdarray) throws IOException {
 		Runtime runtime = Runtime.getRuntime();
 		if (Option.verbose) {

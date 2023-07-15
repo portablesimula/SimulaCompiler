@@ -25,20 +25,22 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * Simula Program.
+ * Simula Program Module.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/AttributeFileIO.java"><b>Source File</b></a>.
  * 
  * <pre>
  * 
  * Syntax:
  *
- * ProgramModule = SimulaProgram | ClassDeclaration | ProcedureDeclaration
+ *		ProgramModule = SimulaProgram | ClassDeclaration | ProcedureDeclaration
  * 
- * SimulaProgram = [ BlockPrefix ] Block | [ BlockPrefix ] CompoundStatement
+ *			SimulaProgram = [ BlockPrefix ] Block | [ BlockPrefix ] CompoundStatement
  * 
- *	 BlockPrefix = ClassIdentifier [ ( ActualParameterList ) ]
+ *				BlockPrefix = ClassIdentifier [ ( ActualParameterList ) ]
  *
- * ProcedureDeclaration
- *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead ProcedureBody
+ *			ProcedureDeclaration
+ *			     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead ProcedureBody
  *
  * </pre>
  * 
