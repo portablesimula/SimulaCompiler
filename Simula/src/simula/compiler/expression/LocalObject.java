@@ -40,7 +40,8 @@ import simula.compiler.utilities.Util;
  * If there is no such block the local object is illegal (in the given context).
  * For an instance of a procedure or a class body, "textually enclosing" means
  * containing its declaration.
- * 
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/LocalObject.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
@@ -58,6 +59,10 @@ public final class LocalObject extends Expression {
 			Util.TRACE("NEW ThisObjectExpression: " + toString());
 	}
 
+	/**
+	 * Accept This Identifier.
+	 * @return the newly created LocalObject.
+	 */
 	static Expression acceptThisIdentifier() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ThisObjectExpression, current=" + Parser.currentToken);

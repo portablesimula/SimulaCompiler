@@ -23,6 +23,7 @@ import simula.compiler.utilities.Util;
  *   RelationalOperation = Expression  RelationalOperator  Expression
  * 
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/RelationalOperation.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -31,6 +32,12 @@ public final class RelationalOperation extends Expression {
 	private final KeyWord opr;
 	private Expression rhs;
 
+	/**
+	 * Create a new RelationalOperation.
+	 * @param lhs the left hand side
+	 * @param opr the relation
+	 * @param rhs the right hand side
+	 */
 	RelationalOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
 		this.lhs = lhs;
 		this.opr = opr;

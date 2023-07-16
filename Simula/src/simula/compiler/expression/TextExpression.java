@@ -13,7 +13,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * Simula Standard: 3.7 Text expressions
+ * Text expression.
  * 
  * <pre>
  *    text-expression
@@ -69,15 +69,17 @@ import simula.compiler.utilities.Util;
  * Observe further that it follows from the syntax (cfr. 3.1.5) that . is
  * evaluated before &, thus the two expressions "T1 & T2.sub(1,2) & T3.main" and
  * "T1 & (T2.sub(1,2)) & (T3.main)" are equivalent.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/TextExpression.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
-public final class TextOperation extends Expression {
+public final class TextExpression extends Expression {
 	private Expression lhs;
 	private Expression rhs;
 
-	TextOperation(final Expression lhs, final Expression rhs) {
+	TextExpression(final Expression lhs, final Expression rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;
 		if (this.lhs == null) {

@@ -182,7 +182,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseTEXTCONC() {
 		Expression expr=parseREL();
 		while(Parser.accept(KeyWord.CONC))
-			expr=new TextOperation(expr,parseREL());
+			expr=new TextExpression(expr,parseREL());
 		return(expr);
 	}
 

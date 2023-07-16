@@ -47,14 +47,24 @@ import simula.compiler.utilities.Util;
  * innermost prefix level equal or outer to the access level, or, if no such
  * match exists, it is that of the virtual specification.
  * </ul>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/QualifiedObject.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class QualifiedObject extends Expression {
 	private final Expression lhs;
 	private final String classIdentifier;
+	
+	/**
+	 * The right hand class identifier.
+	 */
 	ClassDeclaration classDeclaration; // Set by doChecking
 
+	/**
+	 * Create a new QualifiedObject
+	 * @param lhs left hand side
+	 * @param classIdentifier class identifier
+	 */
 	QualifiedObject(final Expression lhs, final String classIdentifier) {
 		this.lhs = lhs;
 		this.classIdentifier = classIdentifier;

@@ -21,9 +21,6 @@ import simula.compiler.utilities.Util;
  *  ObjectRelation
  *        =  SimpleObjectExpression  IS  ClassIdentifier
  *        |  SimpleObjectExpression  IN  ClassIdentifier
- *        
- *  QualifiedObject
- *        =  SimpleObjectExpression  QUA  ClassIdentifier
  * </pre>
  * 
  * The operators IS and IN may be used to test the class membership of an
@@ -62,15 +59,38 @@ import simula.compiler.utilities.Util;
  * innermost prefix level equal or outer to the access level, or, if no such
  * match exists, it is that of the virtual specification.
  * </ul>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ObjectRelation.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class ObjectRelation extends Expression {
+	
+	/**
+	 * The left hand side.
+	 */
 	private final Expression lhs;
+	
+	/**
+	 * The operation: IN, IS or QUA
+	 */
 	private final KeyWord opr;
+	
+	/**
+	 * The right hand class identifier.
+	 */
 	private final String classIdentifier;
+	
+	/**
+	 * The class declaration.
+	 */
 	ClassDeclaration classDeclaration; // Set by doChecking
 
+	/**
+	 * Create a new ObjectRelation
+	 * @param lhs left hand side
+	 * @param opr the operation: IN, IS or QUA
+	 * @param classIdentifier the right hand class identifier
+	 */
 	ObjectRelation(final Expression lhs, final KeyWord opr, final String classIdentifier) {
 		this.lhs = lhs;
 		this.opr = opr;

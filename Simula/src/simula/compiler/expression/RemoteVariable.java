@@ -30,18 +30,32 @@ import simula.compiler.utilities.Util;
  *   RemoteVariable = Expression  DOT  Variable
  * 
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/RemoteVariable.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class RemoteVariable extends Expression {
-	final Expression obj;
-	final Variable var;
 	private Meaning remoteAttribute; // Set by doChecking
 	private ProcedureDeclaration callRemoteProcedure = null;
 	private VirtualSpecification callRemoteVirtual = null;
+	
+	/**
+	 * The object expression
+	 */
+	final Expression obj;
+	
+	/**
+	 * The variable
+	 */
+	final Variable var;
 
 	private boolean accessRemoteArray = false; // Set by doChecking
 
+	/**
+	 * Create a new RemoteVariable
+	 * @param obj object expression
+	 * @param var the variable
+	 */
 	RemoteVariable(final Expression obj, final Variable var) {
 		this.obj = obj;
 		this.var = var;

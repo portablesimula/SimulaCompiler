@@ -40,6 +40,7 @@ import simula.compiler.utilities.Util;
  *        |  procedure-identifier-1
  * 
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ObjectGenerator.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -56,6 +57,10 @@ public final class ObjectGenerator extends Expression {
 		if (Option.TRACE_PARSE) Util.TRACE("NEW ObjectGenerator: " + toString());
 	}
 
+	/**
+	 * Parse an object generator
+	 * @return the newly created ObjectGenerator.
+	 */
 	static Expression parse() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ObjectGenerator, current=" + Parser.currentToken);
