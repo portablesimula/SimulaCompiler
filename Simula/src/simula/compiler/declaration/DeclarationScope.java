@@ -15,36 +15,74 @@ import simula.compiler.utilities.Util;
 
 /**
  * Declaration Scope.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationScope.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
- public abstract class DeclarationScope extends Declaration {
+public abstract class DeclarationScope extends Declaration {
+	protected static int currentRTBlockLevel = 0; // Runtime Block level - Used during doChecking
+
+	/**
+	 * The source block level. Set during Parsing.
+	 */
+	public int sourceBlockLevel;
 	
-	public int sourceBlockLevel; // Set during Parsing
-	protected static int currentRTBlockLevel = 0; // Runtime  Block level - Used during doChecking
-	public int ctBlockLevel; // Set during doChecking
-	public int rtBlockLevel; // Set during doChecking
+	/**
+	 * The Compile time block level. Set during doChecking.
+	 */
+	public int ctBlockLevel;
+	
+	/**
+	 * The Runtime block level. Set during doChecking.
+	 */
+	public int rtBlockLevel;
+	
+	/**
+	 * Indicate if this scope has local classes.
+	 */
 	public boolean hasLocalClasses = false;
+	
+	/**
+	 * The declaration list.
+	 */
 	public DeclarationList declarationList;// = new DeclarationList();
+	
+	/**
+	 * The label list.
+	 */
 	public Vector<LabelDeclaration> labelList = new Vector<LabelDeclaration>();
 
 	// ***********************************************************************************************
 	// *** Constructor
 	// ***********************************************************************************************
+	/**
+	 * Create a new DeclarationScope.
+	 * 
+	 * @param ident scope identifier
+	 */
 	protected DeclarationScope(final String ident) {
 		super(ident);
-		declarationList = new DeclarationList(this.getClass().getSimpleName()+':'+ident+":Line="+Global.sourceLineNumber);
+		declarationList = new DeclarationList(
+				this.getClass().getSimpleName() + ':' + ident + ":Line=" + Global.sourceLineNumber);
 		declaredIn = Global.getCurrentScope();
 		Global.setScope(this);
-		if (declaredIn != null)	sourceBlockLevel = declaredIn.sourceBlockLevel + 1;
+		if (declaredIn != null)
+			sourceBlockLevel = declaredIn.sourceBlockLevel + 1;
 	}
 
 	// ***********************************************************************************************
 	// *** Utility: scopeID
 	// ***********************************************************************************************
+	/**
+	 * Returns a printable scope ID.
+	 * 
+	 * @return a printable scope ID
+	 */
 	public String scopeID() {
-		if(rtBlockLevel>1) return(declaredIn.scopeID()+'.'+identifier);
-		return(identifier);
+		if (rtBlockLevel > 1)
+			return (declaredIn.scopeID() + '.' + identifier);
+		return (identifier);
 	}
 
 	// ***********************************************************************************************
@@ -52,100 +90,144 @@ import simula.compiler.utilities.Util;
 	// ***********************************************************************************************
 	/**
 	 * Find visible attribute's Meaning
+	 * 
 	 * @param ident attribute identifier
 	 * @return the resulting Meaning
 	 */
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		Util.FATAL_ERROR("DeclarationScope.findVisibleAttributeMeaning: SHOULD BEEN REDEFINED: "+identifier);
+		Util.FATAL_ERROR("DeclarationScope.findVisibleAttributeMeaning: SHOULD BEEN REDEFINED: " + identifier);
 		return (null);
 	}
-	  
-    // ***********************************************************************************************
-    // *** Utility: findMeaning
-    // ***********************************************************************************************
-    public Meaning findMeaning(final String identifier) {
-    	Meaning meaning=findVisibleAttributeMeaning(identifier);
-    	if(meaning==null && declaredIn!=null) meaning=declaredIn.findMeaning(identifier);
-    	if(meaning==null) {
-    		if(!Global.duringParsing) Util.error("Undefined variable: "+identifier);
-    		meaning=new Meaning(null,null); // Error Recovery: No Meaning
-    	}
-    	return(meaning);
-    }
-	  
-    // ***********************************************************************************************
-    // *** Utility: findLabelMeaning
-    // ***********************************************************************************************
-    public Meaning findLabelMeaning(final String identifier) {
-    	for(LabelDeclaration dcl:labelList) {
-    		if(Util.equals(dcl.identifier, identifier)) {
-				return (new Meaning(dcl, this, this, false));
-    		}
-    	}
-    	if(declaredIn!=null) return(declaredIn.findLabelMeaning(identifier));
-    	return(null);
-    }
 
 	// ***********************************************************************************************
-	// *** Utility: findProcedure -- Follow Static Chain Looking for a Procedure named 'identifier'
+	// *** Utility: findMeaning
 	// ***********************************************************************************************
-	public ProcedureDeclaration findProcedure(final String identifier) {
-		DeclarationScope scope=this;
-		while(scope!=null) {
-			if(Util.equals(identifier, scope.identifier)) {
-				if(scope instanceof ProcedureDeclaration proc) return(proc);
-	    		return(null);
-			}
-			scope=scope.declaredIn;
+	/**
+	 * Find Meaning
+	 * 
+	 * @param identifier declared identifier
+	 * @return the resulting Meaning
+	 */
+	public Meaning findMeaning(final String identifier) {
+		Meaning meaning = findVisibleAttributeMeaning(identifier);
+		if (meaning == null && declaredIn != null)
+			meaning = declaredIn.findMeaning(identifier);
+		if (meaning == null) {
+			if (!Global.duringParsing)
+				Util.error("Undefined variable: " + identifier);
+			meaning = new Meaning(null, null); // Error Recovery: No Meaning
 		}
-		return(null);
+		return (meaning);
 	}
 
-    // ***********************************************************************************************
-    // *** Coding Utility: edCTX
-    // ***********************************************************************************************
-    public String edCTX() {
-    	if(rtBlockLevel==0) return("CTX_");
-    	int curLevel=Global.getCurrentScope().rtBlockLevel;
-        int ctxDiff=curLevel-rtBlockLevel;
-        return(edCTX(ctxDiff));
-        
-    }
+	// ***********************************************************************************************
+	// *** Utility: findLabelMeaning
+	// ***********************************************************************************************
+	/**
+	 * Find Label's Meaning
+	 * 
+	 * @param identifier declared label identifier
+	 * @return the resulting Meaning
+	 */
+	public Meaning findLabelMeaning(final String identifier) {
+		for (LabelDeclaration dcl : labelList) {
+			if (Util.equals(dcl.identifier, identifier)) {
+				return (new Meaning(dcl, this, this, false));
+			}
+		}
+		if (declaredIn != null)
+			return (declaredIn.findLabelMeaning(identifier));
+		return (null);
+	}
 
-    // ***********************************************************************************************
-    // *** Coding Utility: edCTX
-    // ***********************************************************************************************
-    public static String edCTX(int ctxDiff) {
-        String ret="_CUR";
-        while((ctxDiff--)>0) ret=ret+"._SL";
-        return("("+ret+')');
-    }
-	  
-    // ***********************************************************************************************
-    // *** Print Utility: edScopeChain
-    // ***********************************************************************************************
+	// ***********************************************************************************************
+	// *** Utility: findProcedure -- Follow Static Chain Looking for a Procedure
+	// named 'identifier'
+	// ***********************************************************************************************
+	/**
+	 * Follow Static Chain Looking for a Procedure named 'identifier'
+	 * 
+	 * @param identifier the procedure identifier
+	 * @return the resulting ProcedureDeclaration
+	 */
+	public ProcedureDeclaration findProcedure(final String identifier) {
+		DeclarationScope scope = this;
+		while (scope != null) {
+			if (Util.equals(identifier, scope.identifier)) {
+				if (scope instanceof ProcedureDeclaration proc)
+					return (proc);
+				return (null);
+			}
+			scope = scope.declaredIn;
+		}
+		return (null);
+	}
+
+	// ***********************************************************************************************
+	// *** Coding Utility: edCTX
+	// ***********************************************************************************************
+	/**
+	 * Coding utility: Edit current context chain.
+	 * 
+	 * @return edited context chain
+	 */
+	public String edCTX() {
+		if (rtBlockLevel == 0)
+			return ("CTX_");
+		int curLevel = Global.getCurrentScope().rtBlockLevel;
+		int ctxDiff = curLevel - rtBlockLevel;
+		return (edCTX(ctxDiff));
+
+	}
+
+	// ***********************************************************************************************
+	// *** Coding Utility: edCTX
+	// ***********************************************************************************************
+	/**
+	 * Coding utility: Edit context chain.
+	 * 
+	 * @param ctxDiff block level difference.
+	 * @return edited context chain
+	 */
+	public static String edCTX(int ctxDiff) {
+		String ret = "_CUR";
+		while ((ctxDiff--) > 0)
+			ret = ret + "._SL";
+		return ("(" + ret + ')');
+	}
+
+	// ***********************************************************************************************
+	// *** Print Utility: edScopeChain
+	// ***********************************************************************************************
+	/**
+	 * Edit scope chain.
+	 * 
+	 * @return edited scope chain
+	 */
 	public String edScopeChain() {
-		if (declaredIn == null) return (identifier);
+		if (declaredIn == null)
+			return (identifier);
 		String encName = declaredIn.edScopeChain();
 		return (identifier + '.' + encName);
 	}
-	  
+
 	// ***********************************************************************************************
 	// *** Utility: edJavaClassName
 	// ***********************************************************************************************
 	protected String edJavaClassName() {
-		DeclarationScope scope=this;
-		String id=null;
-		while(scope!=null) {
-			if((scope instanceof BlockDeclaration)
-    		&& !(scope instanceof StandardClass)
-    		&& !(scope instanceof StandardProcedure)) {
-				if(id==null) id=scope.identifier;
-				else id=scope.identifier+'_'+id;
-	        }
-			scope=scope.declaredIn;
+		DeclarationScope scope = this;
+		String id = null;
+		while (scope != null) {
+			if ((scope instanceof BlockDeclaration) && !(scope instanceof StandardClass)
+					&& !(scope instanceof StandardProcedure)) {
+				if (id == null)
+					id = scope.identifier;
+				else
+					id = scope.identifier + '_' + id;
+			}
+			scope = scope.declaredIn;
 		}
-		return(id);
+		return (id);
 	}
 
 }

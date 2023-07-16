@@ -20,6 +20,9 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
+ * Maybe Block Declaration.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/MaybeBlockDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -29,18 +32,26 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
 	// Used by parseMaybeBlock, i.e. CompoundStatement or SubBlock.
+	/**
+	 * Create a new MaybeBlockDeclaration.
+	 * 
+	 * @param identifier block identifier
+	 */
 	public MaybeBlockDeclaration(final String identifier) {
 		super(identifier);
 	}
 
 	// ***********************************************************************************************
-	// *** createMaybeBlock
+	// *** createMainProgramBlock
 	// ***********************************************************************************************
-	// Used by ProgramModule
-	public static MaybeBlockDeclaration createMaybeBlock() {
+	/**
+	 * Create the main program block. Used by ProgramModule.
+	 * 
+	 * @return the main program block
+	 */
+	public static MaybeBlockDeclaration createMainProgramBlock() {
 		int lineNumber=Parser.prevToken.lineNumber;
-		if (Option.TRACE_PARSE)	Util.TRACE("BlockStatement.createMaybeBlock: line="+lineNumber+" "+Parser.prevToken);
-//		MaybeBlockDeclaration module = new MaybeBlockDeclaration("_Block_"+Global.sourceName);
+		if (Option.TRACE_PARSE)	Util.TRACE("BlockStatement.createMainProgramBlock: line="+lineNumber+" "+Parser.prevToken);
 		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName);
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
@@ -65,6 +76,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	 * </pre>
 	 * 
 	 * @param line source line number
+	 * @return a BlockStatement
 	 */
 	public BlockStatement parseMaybeBlock(int line) {
 		this.lineNumber=line;

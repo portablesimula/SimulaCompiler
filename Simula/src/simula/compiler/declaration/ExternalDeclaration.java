@@ -88,7 +88,8 @@ import simula.compiler.utilities.Util;
  * <p>
  * A non-Simula procedure cannot be used as an actual parameter corresponding to
  * a formal procedure.
- * 
+ * <p> 
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ExternalDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -98,6 +99,10 @@ public final class ExternalDeclaration extends Declaration {
 		this.declarationKind=Declaration.Kind.ExternalDeclaration;
 	}
 
+	/**
+	 * Parse an external declaration updating a declaration list.
+	 * @param declarationList the declaration list which is updated
+	 */
 	public static void doParse(final DeclarationList declarationList) {
         // = EXTERNAL  CLASS  ExternalList
         // | EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList

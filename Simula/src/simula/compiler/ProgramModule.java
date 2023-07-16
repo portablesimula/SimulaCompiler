@@ -91,7 +91,7 @@ public final class ProgramModule extends Statement {
 		        	module=new PrefixedBlockDeclaration(null,blockPrefix,true);
 			    }
 			}
-			else if(Parser.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMaybeBlock(); 
+			else if(Parser.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMainProgramBlock(); 
 			else if(Parser.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(null);
 			else {
 				Type type=acceptType();

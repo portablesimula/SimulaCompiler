@@ -19,17 +19,32 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * </pre>
+ * Connection Block.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ConnectionBlock.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class ConnectionBlock extends DeclarationScope {
-	public final Variable inspectedVariable;
-	public ClassDeclaration classDeclaration;
 	private Statement statement;
 	private final String whenClassIdentifier;
 	private Declaration whenClassDeclaration; // Set during cheching
+	
+	/**
+	 * The inspected variable.
+	 */
+	public final Variable inspectedVariable;
+	
+	/**
+	 * The when class identifier
+	 */
+	public ClassDeclaration classDeclaration;
 
+	/**
+	 * Create a new ConnectionBlock.
+	 * @param inspectedVariable the inspected variable
+	 * @param whenClassIdentifier the when class identifier
+	 */
 	public ConnectionBlock(final Variable inspectedVariable,final String whenClassIdentifier) {
 		super("Connection block at line " + (Global.sourceLineNumber-1));
 		declarationKind = Declaration.Kind.ConnectionBlock;
@@ -37,21 +52,36 @@ public final class ConnectionBlock extends DeclarationScope {
 		this.whenClassIdentifier = whenClassIdentifier;
 	}
 
+	/**
+	 * Get inspected variable.
+	 * @return inspected variable.
+	 */
 	public Expression getInspectedVariable() {
 		Type type = classDeclaration.type;
 		return ((Expression) TypeConversion.testAndCreate(type, inspectedVariable));
 	}
 
+	/**
+	 * Connection block end.
+	 */
 	public void end() {
 		if (Option.TRACE_PARSE)	Util.TRACE("END ConnectionBlock: " + this.edScopeChain());
 	    if(!labelList.isEmpty()) MaybeBlockDeclaration.moveLabelsFrom(this); // Label is also declaration
 		Global.setScope(declaredIn);
 	}
 	
+	/**
+	 * Set the Connected ClassDecleration.
+	 * @param classDeclaration the Connected ClassDecleration.
+	 */
 	public void setClassDeclaration(final ClassDeclaration classDeclaration) {
 		this.classDeclaration = classDeclaration;
 	}
 
+	/**
+	 * Set the Connection Statement.
+	 * @param statement the Connection Statement
+	 */
 	public void setStatement(final Statement statement) {
 		this.statement = statement;
 	}

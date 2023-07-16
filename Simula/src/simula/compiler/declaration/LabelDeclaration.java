@@ -15,12 +15,21 @@ import simula.compiler.utilities.Type;
 
 /**
  * Label Declaration.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/LabelDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class LabelDeclaration extends SimpleVariableDeclaration implements Externalizable {
+	/**
+	 * The label index. Set by BlockDeclaration.doCheckLabelList.
+	 */
     public int index; // set by BlockDeclaration.doCheckLabelList
     
+    /**
+     * Create a new Label Declaration.
+     * @param identifier label identifier
+     */
 	public LabelDeclaration(final String identifier) {
 		super(Type.Label,identifier);
 	    this.externalIdent="_LABEL"+identifier;
@@ -65,6 +74,9 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public LabelDeclaration() { }
 
 }

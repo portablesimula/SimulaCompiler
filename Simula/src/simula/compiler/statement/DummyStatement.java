@@ -21,6 +21,7 @@ import simula.compiler.utilities.Util;
  * DummyStatement = Empty
  * 
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DummyStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

@@ -13,6 +13,8 @@ import simula.compiler.utilities.Util;
 
 /**
  * Declaration List.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationList.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -29,6 +31,11 @@ public class DeclarationList extends Vector<Declaration> {
 		this.identifier=identifier;
 	}
 	
+	/**
+	 * Find a declaration in this DeclarationList
+	 * @param identifier declaration identifier
+	 * @return the resulting Declaration
+	 */
 	public Declaration find(String identifier) {
 		for(Declaration d:this)
 			if(d.identifier.equals(identifier)) return(d);
@@ -46,6 +53,10 @@ public class DeclarationList extends Vector<Declaration> {
 		return(true);
 	}
 
+	/**
+	 * Utility print method.
+	 * @param title the title
+	 */
 	public void print(String title) {
 		Util.println("DeclarationList: "+identifier+" -- "+title);
 		for(Declaration decl:this) Util.println(decl.toString());

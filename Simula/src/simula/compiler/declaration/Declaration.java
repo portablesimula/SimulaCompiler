@@ -31,35 +31,110 @@ import simula.compiler.utilities.Util;
  *
  *   	Type ::= BOOLEAN | CHARACTER | INTEGER | REAL | REF(ClassIdentifier) | TEXT
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/Declaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public abstract class Declaration extends SyntaxClass {
-	public String identifier; // Simula Identifier from Source Text
-	public String externalIdent; // External Identifier set by doChecking
-	public DeclarationScope declaredIn;  // The DeclarationScope in which this Declaration is defined.	  
 	protected ProtectedSpecification isProtected; // Set during Checking
+	
+	/**
+	 * Simula Identifier from Source Text
+	 */
+	public String identifier;
+	
+	/**
+	 * External Identifier set by doChecking
+	 */
+	public String externalIdent;
+	
+	/**
+	 * The DeclarationScope in which this Declaration is defined.	
+	 */
+	public DeclarationScope declaredIn;
+	
+	/**
+	 * The declarationKind.
+	 */
 	public Kind declarationKind;
+	
+	/**
+	 * The declarationKind
+	 *
+	 */
 	public enum Kind {
+		/**
+		 * Standard Class.
+		 */
 		StandardClass,
+		/**
+		 * Connection Block.
+		 */
 		ConnectionBlock,
+		/**
+		 * Compound Statement.
+		 */
 		CompoundStatement,
+		/**
+		 * Subblock.
+		 */
 	    SubBlock,
+	    /**
+	     * Normal Simula Procedure implemented as a Java Class
+	     */
 	    Procedure,			// Normal Simula Procedure implemented as a Java Class
+	    /**
+	     * Procedure coded as a Java Member Method. 
+	     */
 	    MemberMethod,		// Procedure coded as a Java Member Method. 
+	    /**
+	     * Procedure treated as a Java Static Method.
+	     */
 		ContextFreeMethod,	// Treated as a Java Static Method.
+		/**
+		 * Class.
+		 */
 	    Class,
+	    /**
+	     * Prefixed Block.
+	     */
 	    PrefixedBlock,
+	    /**
+	     * Simula Program.
+	     */
 	    SimulaProgram,
 	    
+	    /**
+	     * Array Declaration.
+	     */
 		ArrayDeclaration,
+		
+		/**
+		 * Virtual Specification.
+		 */
 		VirtualSpecification,
+		
+		/**
+		 * Virtual Match.
+		 */
 		VirtualMatch,
 //		ProcedureDeclaration,
+		/**
+		 * Parameter.
+		 */
 		Parameter,
+		/**
+		 * Label Declaration
+		 */
 		LabelDeclaration,
+		/**
+		 * Simple Variable Declaration.
+		 */
 		SimpleVariableDeclaration,
 //		ClassDeclaration,
+		/**
+		 * External Declaration.
+		 */
 		ExternalDeclaration,
 //		ConnectionBlock
 	}
@@ -75,6 +150,10 @@ public abstract class Declaration extends SyntaxClass {
 	    checkAlreadyDefined();
     }
 	
+    /**
+     * Returns the Java identifier for this declaration.
+     * @return the Java identifier for this declaration
+     */
 	public final String getJavaIdentifier() { return(this.externalIdent); }  // May be redefined
 	
 	protected void modifyIdentifier(final String newIdentifier) {
@@ -149,6 +228,11 @@ public abstract class Declaration extends SyntaxClass {
     // ***********************************************************************************************
     // *** Utility: isCompatibleClasses -- Used by IS/IN/QUA-checking and Inspect WHEN
     // ***********************************************************************************************
+    /**
+     * Check if these classes are isCompatible.
+     * @param other the other ClassDeclaration
+     * @return the resulting boolean value
+     */
     public boolean isCompatibleClasses(final Declaration other) {
     	if (!(this instanceof ClassDeclaration)) Util.error(""+ this + " is not a class");
     	if (!(other instanceof ClassDeclaration)) Util.error("" + other + " is not a class");
