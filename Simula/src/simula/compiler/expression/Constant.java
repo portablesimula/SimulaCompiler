@@ -29,18 +29,33 @@ import simula.compiler.utilities.Util;
  *   Constant = UnsignedNumber | String | Character | NONE | NOTEXT | Label ???
  *   
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/Constant.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  * @see simula.compiler.parsing.SimulaScanner
  */
 public final class Constant extends Expression implements Externalizable {
+	
+	/**
+	 * The constant's value
+	 */
 	public Object value;
 
+	/**
+	 * Create a new Constant.
+	 * @param type the constant's type
+	 * @param value the constant's value
+	 */
 	public Constant(final Type type,final Object value) {
 		this.type=type;
 		this.value = value;
 	}
 	
+	/**
+	 * Create a real type Constant.
+	 * @param value a real type value
+	 * @return the resulting Constant
+	 */
     static Constant createRealType(final Object value)
     { Type type=Type.Real;
       if(value instanceof Double) type=Type.LongReal;
@@ -54,6 +69,12 @@ public final class Constant extends Expression implements Externalizable {
     	return(Type.LongReal);
     }
     
+    /**
+     * Simplify this Constant.
+     * @param opr an unary operation
+     * @param rhn a right hand Number
+     * @return the resulting Constant
+     */
     static Constant evaluate(final KeyWord opr,final Number rhn) { 
     	Type type=getType(rhn);
 		Number result=null;
@@ -80,6 +101,13 @@ public final class Constant extends Expression implements Externalizable {
 		return(new Constant(type,result));
     }
   
+    /**
+     * Simplify this Constant.
+     * @param lhn a left hand Number
+     * @param opr an binary operation
+     * @param rhn a right hand Number
+     * @return the resulting Constant
+     */
     static Constant evaluate(final Number lhn,final KeyWord opr,final Number rhn) { 
     	Type type=Type.arithmeticTypeConversion(getType(lhn),getType(rhn));
 		if(opr==KeyWord.DIV && type==Type.Integer) type=Type.Real;
@@ -199,6 +227,9 @@ public final class Constant extends Expression implements Externalizable {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public Constant() {}
 
 	@Override

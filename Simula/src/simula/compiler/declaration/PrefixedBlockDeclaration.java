@@ -19,11 +19,17 @@ import simula.compiler.utilities.Util;
 
 /**
  * Prefixed Block Declaration.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/PrefixedBlockDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class PrefixedBlockDeclaration extends ClassDeclaration {
-	public final Variable blockPrefix; // Block Prefix
+	
+	/**
+	 * The block prefix.
+	 */
+	public final Variable blockPrefix;
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTOR
@@ -39,6 +45,10 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	 *		prefix = class-identifier [ actual-parameter-part ]
 	 *
 	 * </pre>
+	 * 
+	 * @param identifier the block identifier
+	 * @param blockPrefix the block prefix
+	 * @param isMainModule true if this block is the main program module.
 	 */
 	public PrefixedBlockDeclaration(String identifier,final Variable blockPrefix,boolean isMainModule) {
 		super(identifier);

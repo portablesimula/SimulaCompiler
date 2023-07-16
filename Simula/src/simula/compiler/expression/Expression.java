@@ -37,9 +37,9 @@ import simula.compiler.utilities.Util;
  *  BooleanTerm       =  BooleanFactor  { OR  BooleanFactor }
  *  BooleanFactor     =  BooleanSecondary  { AND  BooleanSecondary }
  *  BooleanSecondary  =  [ NOT ]  BooleanPrimary
- *  BooleanPrimary    =  TextPrimary  { & TextPrimary }
+ *  BooleanPrimary    =  TextPrimary  { &amp; TextPrimary }
  *  TextPrimary       =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
- *       RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
+ *       RelationOperator  =  &lt;  |  &lt;=  |  =  |  >=  |  >  |  &lt;> |  ==  |  =/=
  *  SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
  *  Term    =  Factor  {  ( * | / | // )  Factor }
  *  Factor  =  BasicExpression  { **  BasicExpression }
@@ -61,18 +61,29 @@ import simula.compiler.utilities.Util;
  *		SubscriptedVariable  =  Identifier  "("  Expression  {  ,  Expression  }  ")"
  *   
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/Expression.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  * @author Stein Krogdahl
  */
 public abstract class Expression extends SyntaxClass {
-	public SyntaxClass backLink; // True: This Expression is part of <backLink>Expression/Statement
+	
+	/**
+	 * This Expression is part of  backLink Expression/Statement.
+	 */
+	public SyntaxClass backLink;
 
+	/**
+	 * Expression.
+	 */
+	Expression(){}
+	
 	@Override
 	public String toString() { return("NO EXPRESSION"); }
 
 
 	/**
+	 * Parse expression.
 	 * <pre>
 	 * Expression  =  SimpleExpression
 	 *	         |  IF  BooleanExpression  THEN  SimpleExpression  ELSE  Expression
@@ -91,6 +102,7 @@ public abstract class Expression extends SyntaxClass {
 	}  
 
 	/**
+	 * Parse simple expression.
 	 * <pre>
 	 *  SimpleExpression  =  BooleanTertiary  { OR ELSE  BooleanTertiary }
 	 *  BooleanTertiary   =  Equivalence  { AND THEN  Equivalence }
@@ -99,9 +111,9 @@ public abstract class Expression extends SyntaxClass {
 	 *  BooleanTerm       =  BooleanFactor  { OR  BooleanFactor }
 	 *  BooleanFactor     =  BooleanSecondary  { AND  BooleanSecondary }
 	 *  BooleanSecondary  =  [ NOT ]  BooleanPrimary
-	 *  BooleanPrimary    =  TextPrimary  { & TextPrimary }
+	 *  BooleanPrimary    =  TextPrimary  { &amp; TextPrimary }
 	 *  TextPrimary       =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
-	 *       RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
+	 *       RelationOperator  =  &lt;  |  &lt;=  |  =  |  >=  |  >  |  &lt;> |  ==  |  =/=
 	 *  SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
 	 *  Term    =  Factor  {  ( * | / | // )  Factor }
 	 *  Factor  =  BasicExpression  { **  BasicExpression }
@@ -166,7 +178,7 @@ public abstract class Expression extends SyntaxClass {
 		return(expr);
 	}
 
-	// BooleanPrimary  =  TextPrimary  { & TextPrimary }
+	// BooleanPrimary  =  TextPrimary  { &amp; TextPrimary }
 	private static Expression parseTEXTCONC() {
 		Expression expr=parseREL();
 		while(Parser.accept(KeyWord.CONC))
@@ -229,6 +241,7 @@ public abstract class Expression extends SyntaxClass {
 
 
 	/**
+	 * Parse basic expression.
 	 * <pre>
 	 *  BasicExpression  =  PrimaryExpression  |  {  RemoteIdentifier  |  ObjectRelation  |  QualifiedObject   }
 	 *		RemoteIdentifier =  PrimaryExpression  .  AttributeIdentifier
@@ -302,7 +315,12 @@ public abstract class Expression extends SyntaxClass {
 	}
 
 
-	// Is redefined in Variable, RemoteVariable and TypeConversion
+	/**
+	 * Get a writeable variable.
+	 * <p>
+	 * This method is redefined in Variable, RemoteVariable and TypeConversion
+	 * @return a writeable variable or null
+	 */
 	public Variable getWriteableVariable() { return(null); } 
 
 	private static ClassDeclaration getQualification(final Expression simpleObjectExpression) {
@@ -313,6 +331,11 @@ public abstract class Expression extends SyntaxClass {
 		return(null);
 	}
 
+	/**
+	 * Get qualification.
+	 * @param classIdentifier a class identifier
+	 * @return the ClassDeclaration with same identifier
+	 */
 	public static ClassDeclaration getQualification(final String classIdentifier) {
 		Declaration classDecl=Global.getCurrentScope().findMeaning(classIdentifier).declaredAs;
 		if(classDecl instanceof ClassDeclaration cls) return(cls);
@@ -320,7 +343,13 @@ public abstract class Expression extends SyntaxClass {
 		return(null);
 	}
 
-	public static boolean checkCompatability(final Expression simpleObjectExpression,final String classIdentifier) {
+	/**
+	 * Check compatibility between simpleObjectExpression and a classDeclaration.
+	 * @param simpleObjectExpression a simple object expression
+	 * @param classIdentifier a class identifier
+	 * @return true if compatible, otherwise false
+	 */
+	public static boolean checkCompatibility(final Expression simpleObjectExpression,final String classIdentifier) {
 		ClassDeclaration objDecl=getQualification(simpleObjectExpression);
 		ClassDeclaration quaDecl=getQualification(classIdentifier);
 		if(quaDecl==objDecl) ; // Nothing: Util.warning("Unneccessary QUA/IS/IN "+ classIdentifier);
@@ -329,22 +358,39 @@ public abstract class Expression extends SyntaxClass {
 		return(true);
 	}
 
-	// Try to Compile-time Evaluate this expression
+	/**
+	 * Try to Compile-time Evaluate this expression
+	 * @return the resulting evaluated expression
+	 */
 	public Expression evaluate() { return(this); }
 
-	// Returns true if this expression may be used as a statement.
+	/**
+	 * Returns true if this expression may be used as a statement.
+	 * @return true if this expression may be used as a statement
+	 */
 	public abstract boolean maybeStatement();
 
-	// Generate code for getting the value of this Expression
+	/**
+	 * Generate code for getting the value of this Expression
+	 * @return the resulting Java code
+	 */
 	protected String get() {
 		return (this.toJavaCode());
 	}
 
-	// Generate code for putting the value into this Expression
+	/**
+	 * Generate code for putting the value into this Expression
+	 * @param evaluated a evaluated expression.
+	 * @return the resulting Java code
+	 */
 	String put(String evaluated) {
 		return (this.toJavaCode() + '=' + evaluated);
 	}
 	
+	/**
+	 * Try to evaluate this expression to a number.
+	 * @return the resulting number or null
+	 */
     public Number getNumber() {
     	if(this instanceof UnaryOperation u) {
     		if(u.oprator==KeyWord.MINUS) {
@@ -369,6 +415,10 @@ public abstract class Expression extends SyntaxClass {
 	    return(null);
     }
 	
+	/**
+	 * Try to evaluate this expression to an integer.
+	 * @return the resulting int or 0
+	 */
 	public int getInt() {
 		if(this instanceof Constant cnst) {
 			if(cnst.value instanceof Number num)	return(num.intValue());
@@ -388,7 +438,7 @@ public abstract class Expression extends SyntaxClass {
 				}
 			}
 		}
-		Util.error("Switch Statement: "+this+" is not a Constant");
+		Util.error("Expression: "+this+" is not a Constant");
 		return(0);
 	}
 

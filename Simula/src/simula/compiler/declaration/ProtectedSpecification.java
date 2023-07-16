@@ -17,15 +17,34 @@ import simula.compiler.utilities.Util;
 
 /**
  * Protected Specification.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProtectedSpecification.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class ProtectedSpecification implements Externalizable {
+	
+	/**
+	 * The protected identifier.
+	 */
 	String identifier;
+	
+	/**
+	 * .
+	 */
 	ClassDeclaration definedIn;
+	
+	/**
+	 * .
+	 */
     HiddenSpecification hiddenBy; // Set during doChecking
 
+    /**
+     * Create a new ProtectedSpecification.
+     * @param definedIn the class it is defined in
+     * @param identifier the protected identifier
+     */
 	ProtectedSpecification(final ClassDeclaration definedIn,final String identifier) {
 		this.definedIn=definedIn;
 		this.identifier=identifier;
@@ -44,6 +63,9 @@ public final class ProtectedSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: doChecking -- Called from ClassDeclaration.checkProtectedList
 	// ***********************************************************************************************
+	/**
+	 * Perform semantic checking.
+	 */
 	void doChecking() {
 		Declaration attribute=getAttribute();
 		if(attribute!=null) attribute.isProtected=this;
@@ -78,6 +100,9 @@ public final class ProtectedSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public ProtectedSpecification() {}
 
 	@Override

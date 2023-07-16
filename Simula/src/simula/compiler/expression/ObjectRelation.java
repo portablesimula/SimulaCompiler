@@ -115,10 +115,10 @@ public final class ObjectRelation extends Expression {
 		String refIdent = lhs.type.getRefIdent();
 		if (refIdent == null) return ("false"); // NONE IS/IN Any is always FALSE
 		if (opr == KeyWord.IN) {
-			if (!checkCompatability(lhs, classIdentifier)) return ("false"); // warning("IN is always FALSE
+			if (!checkCompatibility(lhs, classIdentifier)) return ("false"); // warning("IN is always FALSE
 			return (lhs.get() + opr.toJavaCode() + classDeclaration.getJavaIdentifier());
 		} else if (opr == KeyWord.IS) {
-			if (!checkCompatability(lhs, classIdentifier)) return ("false"); // warning("IS is always FALSE
+			if (!checkCompatibility(lhs, classIdentifier)) return ("false"); // warning("IS is always FALSE
 			return ("_IS(" + lhs.get() + "," + classDeclaration.getJavaIdentifier() + ".class)");
 		} else {
 			Util.FATAL_ERROR("Impossible");

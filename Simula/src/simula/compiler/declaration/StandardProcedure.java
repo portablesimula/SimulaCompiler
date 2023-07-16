@@ -14,14 +14,31 @@ import simula.compiler.utilities.Util;
 
 /**
  * Standard Procedure.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/StandardProcedure.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class StandardProcedure extends ProcedureDeclaration {
 	
+	/**
+	 * Create a new StandardProcedure without parameters.
+	 * @param declaredIn the enclosing scope
+	 * @param kind the declaration kind
+	 * @param type the procure's type
+	 * @param ident the procedure identifier
+	 */
 	StandardProcedure(DeclarationScope declaredIn,Declaration.Kind kind,Type type, String ident) {
 		super(ident,kind); this.declaredIn=declaredIn; this.type=type; }
 
+	/**
+	 * Create a new StandardProcedure with parameters.
+	 * @param declaredIn the enclosing scope
+	 * @param kind the declaration kind
+	 * @param type the procure's type
+	 * @param ident the procedure identifier
+	 * @param param the parameters
+	 */
 	StandardProcedure(DeclarationScope declaredIn,Declaration.Kind kind,Type type, String ident,Parameter... param) {
 		this(declaredIn,kind,type,ident);
 		for(int i=0;i<param.length;i++) param[i].into(parameterList); }
@@ -48,6 +65,9 @@ public final class StandardProcedure extends ProcedureDeclaration {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public StandardProcedure() {}
 
 }

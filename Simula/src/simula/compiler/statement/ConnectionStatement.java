@@ -149,7 +149,7 @@ public final class ConnectionStatement extends Statement {
 				classDeclaration = AssignmentOperation.getQualification(classIdentifier);
 				connectionBlock.setClassDeclaration(classDeclaration);
 			}
-			if (!AssignmentOperation.checkCompatability(objectExpression, classIdentifier)) {
+			if (!AssignmentOperation.checkCompatibility(objectExpression, classIdentifier)) {
 				Util.warning("Impossible When Part: " + objectExpression + " is not compatible with " + classIdentifier);
 				impossibleWhenPart = true;
 			}

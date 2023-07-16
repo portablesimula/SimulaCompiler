@@ -46,8 +46,8 @@ import simula.compiler.utilities.Util;
  *   	Type ::= BOOLEAN | CHARACTER | INTEGER | REAL | REF(ClassIdentifier) | TEXT
  *   
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/SimpleVariableDeclaration.java"><b>Source File</b></a>.
  * 
- * @see Type
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
@@ -55,25 +55,56 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	// String identifier;    // Inherited
 	// String externalIdent; // Inherited
 	// Type type;            // Inherited
+	
+	/**
+	 * Constant indicator.
+	 * Is used to prevent assignment of a new value.
+	 */
 	private boolean constant;
+	
+	/**
+	 * The constant initial value.
+	 */
 	public Expression constantElement;
 
+	/**
+	 * Create a new SimpleVariableDeclaration.
+	 * @param type the variable type
+	 * @param identifier the variable identifier
+	 */
 	public SimpleVariableDeclaration(final Type type,final String identifier) {
 		super(identifier);
 		this.declarationKind=Declaration.Kind.SimpleVariableDeclaration;
 		this.type=type;
 	}
 
+	/**
+	 * Create a new SimpleVariableDeclaration.
+	 * @param type the variable type
+	 * @param identifier the variable identifier
+	 * @param constant the constant indicator
+	 * @param constantElement a constant initial value
+	 */
 	SimpleVariableDeclaration(final Type type,final String identifier,final boolean constant,final Constant constantElement) {
 		this(type,identifier);
 		this.constant=constant;
 		this.constantElement=constantElement;
 	}
 	
-	public boolean isConstant() { // Is used to prevent assignment of new value
+	/**
+	 * Constant indicator.
+	 * Is used to prevent assignment of a new value.
+	 * @return the constant indicator
+	 */
+	public boolean isConstant() { 
 		return(constant || constantElement!=null);	
 	}
 	   
+	/**
+	 * Parse a simple variable declaration.
+	 * @param type the variable type
+	 * @param declarationList the declaration list to update
+	 */
 	static void parse(final Type type,final DeclarationList declarationList) {
 		// identifier-list = identifier { , identifier }
 	    if(Option.TRACE_PARSE) Parser.TRACE("Parse IdentifierList");
@@ -146,6 +177,9 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public SimpleVariableDeclaration() {
 		super(null);
 		this.declarationKind=Declaration.Kind.SimpleVariableDeclaration;

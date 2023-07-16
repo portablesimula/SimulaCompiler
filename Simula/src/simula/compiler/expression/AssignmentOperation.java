@@ -30,6 +30,7 @@ import simula.compiler.utilities.Util;
  *		AssignmentOperator =  :=  |  :-
  *   
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/AssignmentOperation.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -37,44 +38,59 @@ public final class AssignmentOperation extends Expression {
 	private Expression lhs;
 	private final KeyWord opr;
 	private Expression rhs;
-	private boolean textValueAssignment=false; // Set by doChecking
-	
-	  
-	public AssignmentOperation(final Expression lhs,final KeyWord opr,final Expression rhs) {
-		this.lhs=lhs; this.opr=opr; this.rhs=rhs;
-		if(this.lhs==null) {
-			Util.error("Missing operand before "+opr);
-			this.lhs=new Variable("UNKNOWN_");
+	private boolean textValueAssignment = false; // Set by doChecking
+
+	/**
+	 * AssignmentOperation.
+	 * @param lhs the left hand side
+	 * @param opr the operation
+	 * @param rhs the right hand side
+	 */
+	public AssignmentOperation(final Expression lhs, final KeyWord opr, final Expression rhs) {
+		this.lhs = lhs;
+		this.opr = opr;
+		this.rhs = rhs;
+		if (this.lhs == null) {
+			Util.error("Missing operand before " + opr);
+			this.lhs = new Variable("UNKNOWN_");
 		}
-		if(this.rhs==null) {
-			Util.error("Missing operand after "+opr);
-			this.rhs=new Variable("UNKNOWN_");
+		if (this.rhs == null) {
+			Util.error("Missing operand after " + opr);
+			this.rhs = new Variable("UNKNOWN_");
 		}
-	    this.lhs.backLink=this.rhs.backLink=this;
+		this.lhs.backLink = this.rhs.backLink = this;
 	}
 
 	@Override
 	public void doChecking() {
-		if(IS_SEMANTICS_CHECKED()) return;
-	   	Global.sourceLineNumber=lineNumber;
-		if(Option.TRACE_CHECKER) Util.TRACE("BEGIN Assignment"+toString()+".doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
-	    lhs.doChecking(); Type toType=lhs.type;
-	    if(lhs instanceof Variable var) {
-		    Meaning meaning=var.getMeaning();
-		    if(meaning.declaredAs instanceof SimpleVariableDeclaration dcl) {
-		        if(dcl.isConstant()) Util.error("Assignment to Constant: '"+lhs+"' is Illegal");
-		    }
-	    } else {
-	    	if(lhs.getWriteableVariable()==null) Util.error("Can't assign to "+lhs);
-	    }
-	    rhs.doChecking(); Type fromType=rhs.type;
-		if(opr==KeyWord.ASSIGNVALUE) this.textValueAssignment=(toType==Type.Text);
-		rhs=(Expression)TypeConversion.testAndCreate(toType,rhs);
-		this.type=toType;
-		if(this.type==null) Util.error("doAssignmentChecking: Illegal types: "+toType+" := "+fromType);
+		if (IS_SEMANTICS_CHECKED())
+			return;
+		Global.sourceLineNumber = lineNumber;
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("BEGIN Assignment" + toString() + ".doChecking - Current Scope Chain: "
+					+ Global.getCurrentScope().edScopeChain());
+		lhs.doChecking();
+		Type toType = lhs.type;
+		if (lhs instanceof Variable var) {
+			Meaning meaning = var.getMeaning();
+			if (meaning.declaredAs instanceof SimpleVariableDeclaration dcl) {
+				if (dcl.isConstant())
+					Util.error("Assignment to Constant: '" + lhs + "' is Illegal");
+			}
+		} else {
+			if (lhs.getWriteableVariable() == null)
+				Util.error("Can't assign to " + lhs);
+		}
+		rhs.doChecking();
+		Type fromType = rhs.type;
+		if (opr == KeyWord.ASSIGNVALUE)
+			this.textValueAssignment = (toType == Type.Text);
+		rhs = (Expression) TypeConversion.testAndCreate(toType, rhs);
+		this.type = toType;
+		if (this.type == null)
+			Util.error("doAssignmentChecking: Illegal types: " + toType + " := " + fromType);
 		SET_SEMANTICS_CHECKED();
-	  }
-
+	}
 
 	// Returns true if this expression may be used as a statement.
 	@Override
@@ -87,8 +103,9 @@ public final class AssignmentOperation extends Expression {
 	public String toJavaCode() {
 		ASSERT_SEMANTICS_CHECKED(this);
 		if (this.textValueAssignment)
-			return(doCodeTextValueAssignment());
-		else return(doCodeAssignment());
+			return (doCodeTextValueAssignment());
+		else
+			return (doCodeAssignment());
 	}
 
 	// ***********************************************************************
@@ -105,7 +122,7 @@ public final class AssignmentOperation extends Expression {
 		}
 		s.append("_ASGTXT(").append(lhs.toJavaCode()).append(',').append(rhs.toJavaCode()).append(')');
 		return (s.toString());
-	}  
+	}
 
 	// ***********************************************************************
 	// *** CODE: doCodeAssignment
@@ -114,16 +131,16 @@ public final class AssignmentOperation extends Expression {
 		StringBuilder s = new StringBuilder();
 		// -------------------------------------------------------------------------
 		// CHECK FOR SPECIAL CASE:
-		//     OBJECT DOT ARRAY(x1,x2,...) := Expression ;
+		// OBJECT DOT ARRAY(x1,x2,...) := Expression ;
 		// SHOULD BE CODED LIKES:
-		//     OBJECT.ARRAY.putELEMENT(OBJECT.ARRAY.index(x1,x2),Expression);
+		// OBJECT.ARRAY.putELEMENT(OBJECT.ARRAY.index(x1,x2),Expression);
 		// -------------------------------------------------------------------------
-		if(lhs instanceof RemoteVariable rem) {
-			Expression afterDot=((RemoteVariable)lhs).var;
-			if(afterDot instanceof Variable varAfterDot &&  varAfterDot.hasArguments()) {
+		if (lhs instanceof RemoteVariable rem) {
+			Expression afterDot = ((RemoteVariable) lhs).var;
+			if (afterDot instanceof Variable varAfterDot && varAfterDot.hasArguments()) {
 				Declaration decl = varAfterDot.meaning.declaredAs;
 				Expression beforeDot = rem.obj;
-				System.out.println("AssignmentOperation.doCodeAssignment: beforeDot = "+beforeDot+", decl="+decl);
+				System.out.println("AssignmentOperation.doCodeAssignment: beforeDot = " + beforeDot + ", decl=" + decl);
 				if (decl instanceof ArrayDeclaration)
 					return (doAccessRemoteArray(beforeDot, varAfterDot, rhs.toJavaCode()));
 				else if (decl instanceof Parameter par) {
@@ -134,16 +151,16 @@ public final class AssignmentOperation extends Expression {
 			}
 		}
 		s.append(lhs.put(rhs.get()));
-		return(s.toString());
+		return (s.toString());
 	}
-  
+
 	// ***********************************************************************
 	// *** CODE: doAccessRemoteArray
 	// ***********************************************************************
 	private String doAccessRemoteArray(final Expression beforeDot, final Variable array, final String rightPart) {
 		String obj = beforeDot.toJavaCode();
 		String remoteIdent = obj + '.' + array.edIdentifierAccess(true);
-		return(array.doPutELEMENT(remoteIdent,rightPart));
+		return (array.doPutELEMENT(remoteIdent, rightPart));
 	}
 
 	@Override

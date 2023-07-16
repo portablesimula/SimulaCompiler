@@ -78,6 +78,8 @@ import simula.compiler.utilities.Util;
  * 
  * NOTE: The implementation of EXP '**' deviates from the definition in Simula Standard.
  *   It is always evaluated in long real and the result is converted to the appropriate type. 
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ArithmeticExpression.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
@@ -100,6 +102,13 @@ public final class ArithmeticExpression extends Expression {
 		this.lhs.backLink=this.rhs.backLink=this;
 	}
 
+	/**
+	 * Create a new ArithmeticExpression.
+	 * @param lhs the left hand side
+	 * @param opr the operation
+	 * @param rhs the right hand side
+	 * @return the newly created ArithmeticExpression
+	 */
 	static Expression create(final Expression lhs,final KeyWord opr,final Expression rhs) {
 		try { // Try to Compile-time Evaluate this expression
 			Number lhn=lhs.getNumber();

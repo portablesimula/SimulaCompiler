@@ -28,12 +28,18 @@ import simula.compiler.utilities.Util;
 
 /**
  * 
- * Coding Utilities
+ * Coding Utilities.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/CallProcedure.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class CallProcedure {
+	/**
+	 * Default constructor.
+	 */
+	CallProcedure(){}
 	
 	// ********************************************************************
 	// *** CallProcedure.normal
@@ -41,7 +47,7 @@ public final class CallProcedure {
 	/**
 	 * CallProcedure.normal
 	 * 
-	 * @param variable
+	 * @param variable the procedure variable
 	 * @return piece of Java source code
 	 */
 	static String normal(final Variable variable) {
@@ -67,6 +73,7 @@ public final class CallProcedure {
 	 * @param obj Object Expression before DOT
 	 * @param procedure Procedure Declaration
 	 * @param func Function Designator, may be subscripted
+	 * @param backLink if not null, this procedure call is part of the backLink Expression/Statement.
 	 * @return piece of Java source code
 	 */
 	static String remote(final Expression obj,final ProcedureDeclaration procedure,final Variable func,final SyntaxClass backLink) {
@@ -121,7 +128,7 @@ public final class CallProcedure {
 	/**
 	 * CallProcedure.asNormalMethod
 	 * 
-	 * @param params
+	 * @param variable the procedure variable
 	 * @return piece of Java source code
 	 */
 	static String asNormalMethod(final Variable variable) { 
@@ -161,7 +168,8 @@ public final class CallProcedure {
 	/**
 	 * CallProcedure.asStaticMethod
 	 * 
-	 * @param params
+	 * @param variable the procedure variable
+	 * @param isContextFree true if the procedure is independent of context
 	 * @return piece of Java source code
 	 */
 	static String asStaticMethod(final Variable variable,final boolean isContextFree) { 
@@ -196,7 +204,7 @@ public final class CallProcedure {
 	/**
 	 * CallProcedure.formal
 	 * 
-	 * @param variable
+	 * @param variable the procedure variable
 	 * @param par declared as parameter 'par'
 	 * @return piece of Java source code
 	 */
@@ -213,10 +221,11 @@ public final class CallProcedure {
 	/**
 	 * CallProcedure.virtual
 	 * 
-	 * @param variable
-	 * @param ident
+	 * @param variable the procedure variable
+	 * @param virtual the virtual specification
+	 * @param remotelyAccessed true if remotely accessed.
 	 * @return piece of Java source code
-	 */	
+	 */
 	static String virtual(final Variable variable,final VirtualSpecification virtual,final boolean remotelyAccessed) {
 		//return("<IDENT>.CPF().setPar(4).setpar(3.14)._ENT()");
 	    String ident=virtual.getVirtualIdentifier();
@@ -238,9 +247,8 @@ public final class CallProcedure {
 	 * CallProcedure.remoteVirtual
 	 * 
 	 * @param obj Object Expression before DOT
-	 * @param variable
+	 * @param variable the procedure variable
 	 * @param virtual Virtual Specification
-	 * @param remotelyAccessed
 	 * @return piece of Java source code
 	 */
 	static String remoteVirtual(final Expression obj,final Variable variable,final VirtualSpecification virtual) {

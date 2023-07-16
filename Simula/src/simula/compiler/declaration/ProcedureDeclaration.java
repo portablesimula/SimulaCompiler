@@ -25,16 +25,35 @@ import simula.compiler.utilities.Util;
 
 /**
  * Procedure Declaration.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public class ProcedureDeclaration extends BlockDeclaration implements Externalizable {
+	
+	/**
+	 * Parameter list.
+	 */
 	public Vector<Parameter> parameterList = new Vector<Parameter>();
+	
+	/**
+	 * Virtual Match indicator. 
+	 * <p>
+	 * If myVirtual != null, this Procedure is a Virtual Match.
+	 * <p>
+	 * Set during doChecking.
+	 */
 	public VirtualMatch myVirtual; // Set during doChecking
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
+	/**
+	 * Create a new ProcedureDeclaration.
+	 * @param identifier procedure identifier
+	 * @param declarationKind procedure or switch
+	 */
 	protected ProcedureDeclaration(final String identifier,final Declaration.Kind declarationKind) {
 		super(identifier);
 		this.declarationKind = declarationKind;
@@ -72,6 +91,9 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	 * ProcedureBody = Statement
 	 * 
 	 * </pre>
+	 * 
+	 * @param type procedure's type
+	 * @return a newly created ProcedureDeclaration
 	 */
 	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
 		Declaration.Kind declarationKind = Declaration.Kind.Procedure;
@@ -417,6 +439,9 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Coding Utility: codeProcedureBody -- Redefined in SwitchDeclaration
 	// ***********************************************************************************************
+	/**
+	 * Coding Utility: codeProcedureBody. Redefined in SwitchDeclaration.
+	 */
 	protected void codeProcedureBody() {
 		boolean duringSTM_Coding=Global.duringSTM_Coding;
 		Global.duringSTM_Coding=true;
@@ -465,6 +490,9 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public ProcedureDeclaration() {	super(null); }
 
 	@Override

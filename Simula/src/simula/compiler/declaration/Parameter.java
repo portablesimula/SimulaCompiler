@@ -18,37 +18,102 @@ import simula.compiler.utilities.Util;
 	
 /**
  * Parameter Declaration.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/Parameter.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
-public final class Parameter extends Declaration implements Externalizable { 
-	// String identifier;    // Inherited
+public final class Parameter extends Declaration implements Externalizable {
+	// String identifier; // Inherited
 	// String externalIdent; // Inherited
-	// Type type;            // Inherited:
-    public Parameter.Mode mode;
-    public Parameter.Kind kind;
-    public int nDim= -1; // Array Param's nDim. Set during doChecking
-  
-    public enum Mode { value, name } // Procedure parameter transfer mode
-    public enum Kind { Simple, Procedure, Array, Label } //, Switch }
+	// Type type; // Inherited:
+	
+	/**
+	 * Parameter transfer Mode.
+	 */
+	public Parameter.Mode mode;
+	
+	/**
+	 * Parameter Kind.
+	 */
+	public Parameter.Kind kind;
+	
+	/**
+	 * Parameter's number of dimension in case of array kind.
+	 * Set during doChecking
+	 */
+	public int nDim = -1;
 
-	Parameter(final String identifier) {
-		super(identifier);
-		this.declarationKind=Declaration.Kind.Parameter;
+	/**
+	 * Procedure parameter transfer Mode.
+	 */
+	public enum Mode {
+		/**
+		 * Parameter transfered by value
+		 */
+		value,
+		/**
+		 * Parameter transfered by name
+		 */
+		name
 	}
 
-	Parameter(final String identifier,final Type type,final Parameter.Kind kind) {
+	/**
+	 * Procedure parameter Kind.
+	 */
+	public enum Kind {
+		/**
+		 * Simple parameter.
+		 */
+		Simple,
+		/**
+		 * Procedure parameter.
+		 */
+		Procedure,
+		/**
+		 * Array parameter.
+		 */
+		Array,
+		/**
+		 * Label parameter.
+		 */
+		Label
+	}
+
+	/**
+	 * Create a new Parameter.
+	 * @param identifier parameter identifier
+	 */
+	Parameter(final String identifier) {
+		super(identifier);
+		this.declarationKind = Declaration.Kind.Parameter;
+	}
+
+	/**
+	 * Create a new Parameter.
+	 * @param identifier parameter identifier
+	 * @param type parameter type
+	 * @param kind parameter kind
+	 */
+	Parameter(final String identifier, final Type type, final Parameter.Kind kind) {
 		this(identifier);
 		this.type = type;
 		this.kind = kind;
 	}
 
-	public Parameter(final String identifier,final Type type,final Parameter.Kind kind,final int nDim) {
+	/**
+	 * Create a new Parameter.
+	 * @param identifier parameter identifier
+	 * @param type parameter type
+	 * @param kind parameter kind
+	 * @param nDim parameter's number of dimension in case of array kind.
+	 */
+	public Parameter(final String identifier, final Type type, final Parameter.Kind kind, final int nDim) {
 		this(identifier, type, kind);
 		this.nDim = nDim;
 	}
-	
+
 	// ***********************************************************************************************
 	// *** Utility: into
 	// ***********************************************************************************************
@@ -60,14 +125,18 @@ public final class Parameter extends Declaration implements Externalizable {
 			}
 		parameterList.add(this);
 	}
-  
+
 	@Override
 	public boolean equals(final Object other) {
-		if (!(other instanceof Parameter)) return (false);
+		if (!(other instanceof Parameter))
+			return (false);
 		Parameter otherPar = (Parameter) other;
-		if (!type.equals(otherPar.type)) return (false);
-		if (kind != otherPar.kind) return (false);
-		if (mode != otherPar.mode) return (false);
+		if (!type.equals(otherPar.type))
+			return (false);
+		if (kind != otherPar.kind)
+			return (false);
+		if (mode != otherPar.mode)
+			return (false);
 		return (true);
 	}
 
@@ -77,100 +146,120 @@ public final class Parameter extends Declaration implements Externalizable {
 		this.mode = mode;
 	}
 
-	void setTypeAndKind(final Type type,final Parameter.Kind kind) {
+	void setTypeAndKind(final Type type, final Parameter.Kind kind) {
 		this.type = type;
 		this.kind = kind;
 	}
 
 	void setExternalIdentifier(final int prefixLevel) {
 		if (prefixLevel > 0)
-			 externalIdent = "p" + prefixLevel + '_' + identifier;
-		else externalIdent = "p_" + identifier;
+			externalIdent = "p" + prefixLevel + '_' + identifier;
+		else
+			externalIdent = "p_" + identifier;
 	}
 
 	@Override
 	public void doChecking() {
-		if(IS_SEMANTICS_CHECKED()) return;
-		Global.sourceLineNumber=lineNumber;
-		if(kind==null) {
-			Util.error("Parameter "+identifier+" is not specified -- assumed Simple Integer");
-			kind=Kind.Simple; type=Type.Integer;
+		if (IS_SEMANTICS_CHECKED())
+			return;
+		Global.sourceLineNumber = lineNumber;
+		if (kind == null) {
+			Util.error("Parameter " + identifier + " is not specified -- assumed Simple Integer");
+			kind = Kind.Simple;
+			type = Type.Integer;
 		}
-		if(type!=null) type.doChecking(Global.getCurrentScope().declaredIn);
-		if(!legalTransmitionMode())
-			Util.error("Illegal transmission mode: "+mode+' '+kind+' '
-					+identifier+" by "+((mode!=null)?mode:"default")+" is not allowed");
-		SET_SEMANTICS_CHECKED();	  
+		if (type != null)
+			type.doChecking(Global.getCurrentScope().declaredIn);
+		if (!legalTransmitionMode())
+			Util.error("Illegal transmission mode: " + mode + ' ' + kind + ' ' + identifier + " by "
+					+ ((mode != null) ? mode : "default") + " is not allowed");
+		SET_SEMANTICS_CHECKED();
 	}
-	
-    /**
-    * The available transmission modes for the different kinds of parameters to procedures.
-    * <pre>
-    *     --------------------------------------------------------------
-    *    |                       |         Transmission modes           |
-    *    |   Parameter           | - - - - - - - - - - - - - - - - - - -|
-    *    |                       |  by value | by reference |  by name  |
-    *    |--------------------------------------------------------------|
-    *    |   value type          |     D     |       I      |     O     |
-    *    |   object ref. type    |     I     |       D      |     O     |
-    *    |   text                |     O     |       D      |     O     |
-    *    |   value type array    |     O     |       D      |     O     |
-    *    |   reference type array|     I     |       D      |     O     |
-    *    |   procedure           |     I     |       D      |     O     |
-    *    |   type procedure      |     I     |       D      |     O     |
-    *    |   label               |     I     |       D      |     O     |
-    *    |   switch              |     I     |       D      |     O     |
-    *     --------------------------------------------------------------
-    *
-    *        D:  default mode       O:  optional mode       I:  illegal
-    * </pre>
-    */
-    private boolean legalTransmitionMode() { 
-    	boolean illegal=false;
-    	switch(kind) {
-    	    case Simple: 
-    		    if(type==Type.Text) break; // Simple Text	 
-    		    else if(type.isReferenceType()) { if(mode==Parameter.Mode.value) illegal=true; } // Simple ref(ClassIdentifier)
-    		    else if(mode==null) mode=Parameter.Mode.value; // Simple Type Integer, Real, Character
-    		    break;
-    	    case Array:
-    	    	if(type.isReferenceType() && mode==Parameter.Mode.value) illegal=true;
-    	    	break;
-    	    case Procedure:
-    	    case Label:
-    	    	if(mode==Parameter.Mode.value) illegal=true;
-    	    	break;
-    	    default:	
-    	}
-    	return(!illegal);
-	}
-    
-    String toJavaType() {
-    	ASSERT_SEMANTICS_CHECKED(this);
-    	if(mode==Parameter.Mode.name) {
-    		switch(kind) {
-    		    case Simple:
-    		    	if(type==Type.Label) return("_NAME<_LABQNT>");
-    		    	return("_NAME<"+type.toJavaTypeClass()+">");
-    		    case Procedure: return("_NAME<_PRCQNT>");
-    		    case Label:     return("_NAME<_LABQNT>");
-    		    case Array:		return("_NAME<_ARRAY>");
-    		}
-    	}
-    	switch(kind) {
-    		case Array:     return("_ARRAY");
-    		case Label:     return("_LABQNT");
-    		case Procedure: return("_PRCQNT");
-    		case Simple: // Fall through
+
+	/**
+	 * The available transmission modes for the different kinds of parameters to
+	 * procedures.
+	 * 
+	 * <pre>
+	 *     --------------------------------------------------------------
+	 *    |                       |         Transmission modes           |
+	 *    |   Parameter           | - - - - - - - - - - - - - - - - - - -|
+	 *    |                       |  by value | by reference |  by name  |
+	 *    |--------------------------------------------------------------|
+	 *    |   value type          |     D     |       I      |     O     |
+	 *    |   object ref. type    |     I     |       D      |     O     |
+	 *    |   text                |     O     |       D      |     O     |
+	 *    |   value type array    |     O     |       D      |     O     |
+	 *    |   reference type array|     I     |       D      |     O     |
+	 *    |   procedure           |     I     |       D      |     O     |
+	 *    |   type procedure      |     I     |       D      |     O     |
+	 *    |   label               |     I     |       D      |     O     |
+	 *    |   switch              |     I     |       D      |     O     |
+	 *     --------------------------------------------------------------
+	 *
+	 *        D:  default mode       O:  optional mode       I:  illegal
+	 * </pre>
+	 */
+	private boolean legalTransmitionMode() {
+		boolean illegal = false;
+		switch (kind) {
+		case Simple:
+			if (type == Type.Text)
+				break; // Simple Text
+			else if (type.isReferenceType()) {
+				if (mode == Parameter.Mode.value)
+					illegal = true;
+			} // Simple ref(ClassIdentifier)
+			else if (mode == null)
+				mode = Parameter.Mode.value; // Simple Type Integer, Real, Character
+			break;
+		case Array:
+			if (type.isReferenceType() && mode == Parameter.Mode.value)
+				illegal = true;
+			break;
+		case Procedure:
+		case Label:
+			if (mode == Parameter.Mode.value)
+				illegal = true;
+			break;
+		default:
 		}
-    	return(type.toJavaType());
-    }
-  
+		return (!illegal);
+	}
+
+	String toJavaType() {
+		ASSERT_SEMANTICS_CHECKED(this);
+		if (mode == Parameter.Mode.name) {
+			switch (kind) {
+			case Simple:
+				if (type == Type.Label)
+					return ("_NAME<_LABQNT>");
+				return ("_NAME<" + type.toJavaTypeClass() + ">");
+			case Procedure:
+				return ("_NAME<_PRCQNT>");
+			case Label:
+				return ("_NAME<_LABQNT>");
+			case Array:
+				return ("_NAME<_ARRAY>");
+			}
+		}
+		switch (kind) {
+		case Array:
+			return ("_ARRAY");
+		case Label:
+			return ("_LABQNT");
+		case Procedure:
+			return ("_PRCQNT");
+		case Simple: // Fall through
+		}
+		return (type.toJavaType());
+	}
+
 	@Override
-    public String toJavaCode() {
-    	return(toJavaType() + ' ' + externalIdent);
-    }
-    
+	public String toJavaCode() {
+		return (toJavaType() + ' ' + externalIdent);
+	}
+
 	// ***********************************************************************************************
 	// *** Printing Utility: editParameterList
 	// ***********************************************************************************************
@@ -179,7 +268,8 @@ public final class Parameter extends Declaration implements Externalizable {
 		s.append('(');
 		boolean first = true;
 		for (Parameter par : parameterList) {
-			if (!first)	s.append(',');
+			if (!first)
+				s.append(',');
 			s.append(par);
 			first = false;
 		}
@@ -188,42 +278,52 @@ public final class Parameter extends Declaration implements Externalizable {
 	}
 
 	@Override
-    public String toString() {
-    	String s="";
-    	if(type!=null) s=s+type; else s="NOTYPE";
-    	if(mode!=null) s=""+mode+" "+type;
-    	if(kind==null) s=s+" NOKIND";
-    	if(nDim>0) s=s+" "+nDim+"-Dimentional";
-    	else if(kind!=Parameter.Kind.Simple) s=s+" "+kind;
-    	return(s+' '+identifier+"("+externalIdent+')');
-    }
+	public String toString() {
+		String s = "";
+		if (type != null)
+			s = s + type;
+		else
+			s = "NOTYPE";
+		if (mode != null)
+			s = "" + mode + " " + type;
+		if (kind == null)
+			s = s + " NOKIND";
+		if (nDim > 0)
+			s = s + " " + nDim + "-Dimentional";
+		else if (kind != Parameter.Kind.Simple)
+			s = s + " " + kind;
+		return (s + ' ' + identifier + "(" + externalIdent + ')');
+	}
 
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public Parameter() {
 		super(null);
-		this.declarationKind=Declaration.Kind.Parameter;
+		this.declarationKind = Declaration.Kind.Parameter;
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		Util.TRACE_OUTPUT("Parameter: "+type+' '+identifier+' '+kind+' '+mode);
-	    oupt.writeObject(identifier);
-	    oupt.writeObject(externalIdent);
-	    oupt.writeObject(type);
-	    oupt.writeObject(kind);
-	    oupt.writeObject(mode);
+		Util.TRACE_OUTPUT("Parameter: " + type + ' ' + identifier + ' ' + kind + ' ' + mode);
+		oupt.writeObject(identifier);
+		oupt.writeObject(externalIdent);
+		oupt.writeObject(type);
+		oupt.writeObject(kind);
+		oupt.writeObject(mode);
 	}
 
 	@Override
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
-		identifier=(String)inpt.readObject();
-		externalIdent=(String)inpt.readObject();
-		type=Type.inType(inpt);
-		kind=(Parameter.Kind)inpt.readObject();
-		mode=(Parameter.Mode)inpt.readObject();
-		Util.TRACE_INPUT("Parameter: "+type+' '+identifier+' '+kind+' '+mode);
+		identifier = (String) inpt.readObject();
+		externalIdent = (String) inpt.readObject();
+		type = Type.inType(inpt);
+		kind = (Parameter.Kind) inpt.readObject();
+		mode = (Parameter.Mode) inpt.readObject();
+		Util.TRACE_INPUT("Parameter: " + type + ' ' + identifier + ' ' + kind + ' ' + mode);
 	}
 
 }

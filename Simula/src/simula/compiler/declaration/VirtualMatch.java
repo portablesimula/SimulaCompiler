@@ -17,65 +17,80 @@ import simula.compiler.utilities.Util;
 
 /**
  * Virtual match.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/VirtualMatch.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
- public final class VirtualMatch extends Declaration implements Externalizable {
+public final class VirtualMatch extends Declaration implements Externalizable {
+	private ProcedureDeclaration match; // Set during doChecking
+
+	/**
+	 * The virtual specification.
+	 */
 	public VirtualSpecification virtualSpec; // Set during doChecking
-    private ProcedureDeclaration match;      // Set during doChecking
-	
-	VirtualMatch(final VirtualSpecification virtualSpec,final ProcedureDeclaration match) {
+
+	/**
+	 * Create a new VirtualSpecification.
+	 * @param virtualSpec the virtual specification
+	 * @param match a matching ProcedureDeclaration
+	 */
+	VirtualMatch(final VirtualSpecification virtualSpec, final ProcedureDeclaration match) {
 		super(virtualSpec.identifier);
-		this.declarationKind=Declaration.Kind.VirtualMatch;
+		this.declarationKind = Declaration.Kind.VirtualMatch;
 		// NOTE: Called during Checking
-		this.virtualSpec=virtualSpec;
-		this.match=match;
+		this.virtualSpec = virtualSpec;
+		this.match = match;
 	}
 
 	@Override
-	public void doJavaCoding(){
-	    String matchCode="{ throw new _SimulaRuntimeError(\"No Virtual Match: "+identifier+"\"); }";
-	    if(match!=null)
-		    matchCode="{ return(new _PRCQNT(this,"+match.getJavaIdentifier()+".class)); }";
-	    GeneratedJavaClass.code("public _PRCQNT "+virtualSpec.getVirtualIdentifier()+" "+matchCode);
+	public void doJavaCoding() {
+		String matchCode = "{ throw new _SimulaRuntimeError(\"No Virtual Match: " + identifier + "\"); }";
+		if (match != null)
+			matchCode = "{ return(new _PRCQNT(this," + match.getJavaIdentifier() + ".class)); }";
+		GeneratedJavaClass.code("public _PRCQNT " + virtualSpec.getVirtualIdentifier() + " " + matchCode);
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder s=new StringBuilder();
-	    if(match.type!=null) s.append(match.type).append(' '); 
-	    s.append("PROCEDURE ").append(match.identifier);
-	    if(virtualSpec!=null)
-		    s.append("[Specified by ").append(virtualSpec.identifier).append(']');
-	    return(s.toString());
+		StringBuilder s = new StringBuilder();
+		if (match.type != null)
+			s.append(match.type).append(' ');
+		s.append("PROCEDURE ").append(match.identifier);
+		if (virtualSpec != null)
+			s.append("[Specified by ").append(virtualSpec.identifier).append(']');
+		return (s.toString());
 	}
 
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public VirtualMatch() {
 		super(null);
-		this.declarationKind=Declaration.Kind.VirtualMatch;
+		this.declarationKind = Declaration.Kind.VirtualMatch;
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		Util.TRACE_OUTPUT("VirtualMatch: "+identifier);
-	    oupt.writeObject(identifier);
-	    oupt.writeObject(externalIdent);
+		Util.TRACE_OUTPUT("VirtualMatch: " + identifier);
+		oupt.writeObject(identifier);
+		oupt.writeObject(externalIdent);
 	}
 
 	@Override
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
-		identifier=(String)inpt.readObject();
-		externalIdent=(String)inpt.readObject();
-		Util.TRACE_INPUT("VirtualMatch: "+identifier);
-		match=((ClassDeclaration) this.declaredIn).findLocalProcedure(identifier);
-		if(match!=null) {
-			virtualSpec=VirtualSpecification.getVirtualSpecification(match);  // AdHoc
+		identifier = (String) inpt.readObject();
+		externalIdent = (String) inpt.readObject();
+		Util.TRACE_INPUT("VirtualMatch: " + identifier);
+		match = ((ClassDeclaration) this.declaredIn).findLocalProcedure(identifier);
+		if (match != null) {
+			virtualSpec = VirtualSpecification.getVirtualSpecification(match); // AdHoc
 		} else
-	  	Util.error("Malformed Attribute File (at VirtualMatch "+identifier+")");
+			Util.error("Malformed Attribute File (at VirtualMatch " + identifier + ")");
 	}
 
 }

@@ -23,14 +23,34 @@ import simula.compiler.utilities.Util;
  *       = IF BooleanExpression THEN SimpleExpression ELSE Expression
  * 
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ConditionalExpression.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class ConditionalExpression extends Expression {
+	
+	/**
+	 * The condition.
+	 */
 	final Expression condition;
+	
+	/**
+	 * The then branch expression
+	 */
 	Expression thenExpression;
+	
+	/**
+	 * The else branch expression
+	 */
 	Expression elseExpression;
 
+	/**
+	 * Create a new ConditionalExpression.
+	 * @param type expression's type
+	 * @param condition the condition
+	 * @param thenExpression then branch expression
+	 * @param elseExpression else branch expression
+	 */
 	ConditionalExpression(final Type type, final Expression condition, final Expression thenExpression, final Expression elseExpression) {
 		this.condition = condition;
 		this.thenExpression = thenExpression; thenExpression.backLink=this;

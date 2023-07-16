@@ -89,6 +89,8 @@ import simula.compiler.utilities.Util;
  * definitions imply that the evaluation of the second operand is suppressed
  * when the evaluation result is already evident from the value of the first
  * operand alone.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/BooleanExpression.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
@@ -98,6 +100,12 @@ public final class BooleanExpression extends Expression {
 	private final KeyWord opr;
 	private Expression rhs;
 
+	/**
+	 * BooleanExpression.
+	 * @param lhs the left hand side
+	 * @param opr the operation
+	 * @param rhs the right hand side
+	 */
 	BooleanExpression(Expression lhs, KeyWord opr, Expression rhs) {
 		this.lhs = lhs;
 		this.opr = opr;

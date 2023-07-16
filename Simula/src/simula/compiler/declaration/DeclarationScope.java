@@ -214,6 +214,10 @@ public abstract class DeclarationScope extends Declaration {
 	// ***********************************************************************************************
 	// *** Utility: edJavaClassName
 	// ***********************************************************************************************
+	/**
+	 * Utility to edit JavaClass'Name
+	 * @return the edited JavaClass'Name
+	 */
 	protected String edJavaClassName() {
 		DeclarationScope scope = this;
 		String id = null;

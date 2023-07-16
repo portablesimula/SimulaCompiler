@@ -69,7 +69,7 @@ public final class QualifiedObject extends Expression {
 			Util.TRACE("BEGIN QualifiedObject" + toString() + ".doChecking - Current Scope Chain: "	+ Global.getCurrentScope().edScopeChain());
 		classDeclaration = getQualification(classIdentifier);
 		lhs.doChecking();
-		if (!checkCompatability(lhs, classIdentifier))
+		if (!checkCompatibility(lhs, classIdentifier))
 			Util.error("Illegal Object Expression: " + lhs + " is not compatible with " + classIdentifier);
 		this.type = new Type(classIdentifier);
 		if (Option.TRACE_CHECKER)

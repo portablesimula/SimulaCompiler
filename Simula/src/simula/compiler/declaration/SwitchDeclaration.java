@@ -28,13 +28,22 @@ import simula.compiler.utilities.Util;
  *  SwitchDeclaration
  *     = SWITCH SwitchIdentifier := DesignationalExpression { , DesignationalExpression }
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/SwitchDeclaration.java"><b>Source File</b></a>.
  *
  * @see simula.compiler.expression.ConditionalExpression
  * @author Øystein Myhre Andersen
  */
 public final class SwitchDeclaration extends ProcedureDeclaration {
+	
+	/**
+	 * The switch list of label expressions.
+	 */
 	Vector<Expression> switchList = new Vector<Expression>();
 
+	/**
+	 * Create a new SwitchDeclaration.
+	 * @param ident switch identifier
+	 */
 	public SwitchDeclaration(final String ident) {
 		super(ident,Declaration.Kind.Procedure);
 		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration");
@@ -96,6 +105,9 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public SwitchDeclaration() { super(null, Declaration.Kind.Procedure); }
 
 	// Inherited from ProcedureDeclaration:

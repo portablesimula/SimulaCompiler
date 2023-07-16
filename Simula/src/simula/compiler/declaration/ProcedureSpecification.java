@@ -20,13 +20,23 @@ import simula.compiler.utilities.Util;
 
 /**
  * Procedure Specification.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureSpecification.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
- public final class ProcedureSpecification implements Externalizable {
-	public Type type;
-	public Vector<Parameter> parameterList;
+public final class ProcedureSpecification implements Externalizable {
 	private String identifier;
+
+	/**
+	 * The procedure's type.
+	 */
+	public Type type;
+	
+	/**
+	 * The parameter list.
+	 */
+	public Vector<Parameter> parameterList;
 
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
@@ -57,29 +67,41 @@ import simula.compiler.utilities.Util;
 	 * ProcedureIdentifier = Identifier
 	 * 
 	 * </pre>
+	 * 
+	 * @param type procedure's type
+	 * @return a newly created ProcedureSpecification
 	 */
 	static ProcedureSpecification doParseProcedureSpecification(final Type type) {
 		ProcedureDeclaration block = ProcedureDeclaration.doParseProcedureDeclaration(type);
-		if (Option.TRACE_PARSE)	Util.TRACE("END ProcedureSpecification: " + block);
+		if (Option.TRACE_PARSE)
+			Util.TRACE("END ProcedureSpecification: " + block);
 		Global.setScope(block.declaredIn);
-		ProcedureSpecification procedureSpecification = new ProcedureSpecification(block.identifier, type, block.parameterList);
+		ProcedureSpecification procedureSpecification = new ProcedureSpecification(block.identifier, type,
+				block.parameterList);
 		return (procedureSpecification);
 	}
 
 	// ***********************************************************************************************
 	// *** Utility: doChecking
 	// ***********************************************************************************************
+	/**
+	 * Perform semantic checking.
+	 * 
+	 * @param scope the DeclarationScope
+	 */
 	void doChecking(final DeclarationScope scope) {
-		if (type != null) type.doChecking(scope);
+		if (type != null)
+			type.doChecking(scope);
 		// Check parameters
-		for (Parameter par : parameterList)	par.doChecking();
+		for (Parameter par : parameterList)
+			par.doChecking();
 	}
 
-	
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
-		if (type != null) s.append(type).append(' ');
+		if (type != null)
+			s.append(type).append(' ');
 		s.append("PROCEDURE ").append(identifier).append(Parameter.editParameterList(parameterList));
 		return (s.toString());
 	}
@@ -87,11 +109,15 @@ import simula.compiler.utilities.Util;
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
-	public ProcedureSpecification() {}
+	/**
+	 * Default constructor used by Externalization.
+	 */
+	public ProcedureSpecification() {
+	}
 
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		Util.TRACE_OUTPUT("BEGIN Write ProcedureSpecification: "+identifier);
+		Util.TRACE_OUTPUT("BEGIN Write ProcedureSpecification: " + identifier);
 		oupt.writeObject(identifier);
 		oupt.writeObject(type);
 
@@ -101,11 +127,11 @@ import simula.compiler.utilities.Util;
 	@Override
 	@SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
-		identifier=(String)inpt.readObject();
-		type=Type.inType(inpt);
-		
-		parameterList=(Vector<Parameter>) inpt.readObject();
-		Util.TRACE_INPUT("END Read ProcedureSpecification: "+identifier);
+		identifier = (String) inpt.readObject();
+		type = Type.inType(inpt);
+
+		parameterList = (Vector<Parameter>) inpt.readObject();
+		Util.TRACE_INPUT("END Read ProcedureSpecification: " + identifier);
 	}
 
 }

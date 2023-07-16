@@ -20,21 +20,50 @@ import simula.compiler.expression.Constant;
 
 /**
  * Standard Class.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/StandardClass.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class StandardClass extends ClassDeclaration {
 //  private Declaration.Kind getBlockKind() { return(Declaration.Kind.StandardClass); }
-	public String edJavaClassName() { return(identifier); }
-  
-	public  static StandardClass typeText;
-	public  static StandardClass ENVIRONMENT;
-	public  static StandardClass BASICIO;
-	        static StandardClass SIMULA_BLOCK;
-	public  static StandardClass Infile;
-	public  static StandardClass Printfile;
-	
-	
+	public String edJavaClassName() {
+		return (identifier);
+	}
+
+	/**
+	 * The type text.
+	 */
+	public static StandardClass typeText;
+
+	/**
+	 * Standard class ENVIRONMENT.
+	 */
+	public static StandardClass ENVIRONMENT;
+
+	/**
+	 * Standard class BASICIO.
+	 */
+	public static StandardClass BASICIO;
+
+	/**
+	 * Standard class SIMULA_BLOCK.
+	 */
+	static StandardClass SIMULA_BLOCK;
+
+	/**
+	 * Standard class Infile.
+	 */
+	public static StandardClass Infile;
+
+	/**
+	 * Standard class Printfile.
+	 */
+	public static StandardClass Printfile;
+
+	/**
+	 * Method to initiate all standard classes.
+	 */
 	public static void INITIATE() {
 		initTypeText();
 		initUNIVERSE();
@@ -1111,6 +1140,9 @@ public final class StandardClass extends ClassDeclaration {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public StandardClass() {
 		super(null);
 	}
