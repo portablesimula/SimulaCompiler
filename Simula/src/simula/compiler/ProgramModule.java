@@ -16,7 +16,7 @@ import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.declaration.ProcedureDeclaration;
 import simula.compiler.declaration.StandardClass;
 import simula.compiler.expression.Variable;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -71,31 +71,31 @@ public final class ProgramModule extends Statement {
 		sysin=new Variable("sysin");
 		sysout=new Variable("sysout");
 		try	{
-			if(Option.TRACE_PARSE) Parser.TRACE("Parse Program");
+			if(Option.TRACE_PARSE) Parse.TRACE("Parse Program");
 			Global.setScope(StandardClass.BASICIO);		    	// BASICIO Begin
 			new ConnectionBlock(sysin,null)                     //    Inspect sysin do
 			     .setClassDeclaration(StandardClass.Infile);
 			new ConnectionBlock(sysout,null)                    //    Inspect sysout do
 			     .setClassDeclaration(StandardClass.Printfile);
 			Global.getCurrentScope().sourceBlockLevel=0;
-			while(Parser.accept(KeyWord.EXTERNAL)) {
+			while(Parse.accept(KeyWord.EXTERNAL)) {
 				ExternalDeclaration.doParse(StandardClass.ENVIRONMENT.declarationList);
-				Parser.expect(KeyWord.SEMICOLON);
+				Parse.expect(KeyWord.SEMICOLON);
 			}
 			String ident=acceptIdentifier();
 			if(ident!=null) {
-				if(Parser.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(ident);
+				if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(ident);
 			    else {
 			    	Variable blockPrefix=Variable.parse(ident);	
-			  	    Parser.expect(KeyWord.BEGIN);
+			  	    Parse.expect(KeyWord.BEGIN);
 		        	module=new PrefixedBlockDeclaration(null,blockPrefix,true);
 			    }
 			}
-			else if(Parser.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMainProgramBlock(); 
-			else if(Parser.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(null);
+			else if(Parse.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMainProgramBlock(); 
+			else if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(null);
 			else {
 				Type type=acceptType();
-			    if(Parser.expect(KeyWord.PROCEDURE)) module=ProcedureDeclaration.doParseProcedureDeclaration(type);
+			    if(Parse.expect(KeyWord.PROCEDURE)) module=ProcedureDeclaration.doParseProcedureDeclaration(type);
 			}
 			StandardClass.BASICIO.declarationList.add(module);
 		

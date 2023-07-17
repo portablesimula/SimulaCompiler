@@ -10,7 +10,7 @@ package simula.compiler.declaration;
 import java.util.Vector;
 
 import simula.compiler.GeneratedJavaClass;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.statement.BlockStatement;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
@@ -50,8 +50,8 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	 * @return the main program block
 	 */
 	public static MaybeBlockDeclaration createMainProgramBlock() {
-		int lineNumber=Parser.prevToken.lineNumber;
-		if (Option.TRACE_PARSE)	Util.TRACE("BlockStatement.createMainProgramBlock: line="+lineNumber+" "+Parser.prevToken);
+		int lineNumber=Parse.prevToken.lineNumber;
+		if (Option.TRACE_PARSE)	Util.TRACE("BlockStatement.createMainProgramBlock: line="+lineNumber+" "+Parse.prevToken);
 		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName);
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
@@ -80,10 +80,10 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	 */
 	public BlockStatement parseMaybeBlock(int line) {
 		this.lineNumber=line;
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse MayBeBlock");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse MayBeBlock");
 		while (Declaration.parseDeclaration(declarationList))
-			Parser.accept(KeyWord.SEMICOLON);
-		while (!Parser.accept(KeyWord.END)) {
+			Parse.accept(KeyWord.SEMICOLON);
+		while (!Parse.accept(KeyWord.END)) {
 			Statement stm = Statement.doParse();
 			if (stm != null) statements.add(stm);
 		}

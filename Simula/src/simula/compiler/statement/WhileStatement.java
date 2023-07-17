@@ -3,7 +3,7 @@ package simula.compiler.statement;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -29,9 +29,9 @@ public final class WhileStatement extends Statement {
 
 	WhileStatement(int line) {
 		super(line);
-		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement: line="+line+", current=" + Parser.currentToken);
+		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement: line="+line+", current=" + Parse.currentToken);
 		condition = Expression.parseExpression();
-		Parser.expect(KeyWord.DO);
+		Parse.expect(KeyWord.DO);
 		doStatement = Statement.doParse();
 		if (Option.TRACE_PARSE)	Util.TRACE("Line "+lineNumber+": WhileStatement: "+this);
 	}

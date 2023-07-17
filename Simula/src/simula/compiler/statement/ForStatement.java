@@ -17,7 +17,7 @@ import simula.compiler.declaration.Parameter;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
 import simula.compiler.expression.Variable;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -56,15 +56,15 @@ public final class ForStatement extends Statement {
 	ForStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE)
-			Parser.TRACE("Parse ForStatement");
+			Parse.TRACE("Parse ForStatement");
 		controlVariable = new Variable(expectIdentifier());
-		if (!Parser.accept(KeyWord.ASSIGNVALUE))
-			Parser.expect(KeyWord.ASSIGNREF);
-		assignmentOperator = Parser.prevToken;
+		if (!Parse.accept(KeyWord.ASSIGNVALUE))
+			Parse.expect(KeyWord.ASSIGNREF);
+		assignmentOperator = Parse.prevToken;
 		do {
 			forList.add(parseForListElement());
-		} while (Parser.accept(KeyWord.COMMA));
-		Parser.expect(KeyWord.DO);
+		} while (Parse.accept(KeyWord.COMMA));
+		Parse.expect(KeyWord.DO);
 		Statement doStatement = Statement.doParse();
 		if (doStatement == null) {
 			Util.error("No statement following DO in For statement");
@@ -76,13 +76,13 @@ public final class ForStatement extends Statement {
 
 	private ForListElement parseForListElement() {
 		if (Option.TRACE_PARSE)
-			Parser.TRACE("Parse ForListElement");
+			Parse.TRACE("Parse ForListElement");
 		Expression expr1 = Expression.parseExpression();
-		if (Parser.accept(KeyWord.WHILE))
+		if (Parse.accept(KeyWord.WHILE))
 			return (new WhileElement(expr1, Expression.parseExpression()));
-		if (Parser.accept(KeyWord.STEP)) {
+		if (Parse.accept(KeyWord.STEP)) {
 			Expression expr2 = Expression.parseExpression();
-			Parser.expect(KeyWord.UNTIL);
+			Parse.expect(KeyWord.UNTIL);
 			return (new StepUntilElement(expr1, expr2, Expression.parseExpression()));
 		} else
 			return (new ForListElement(expr1));

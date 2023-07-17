@@ -10,7 +10,7 @@ package simula.compiler.declaration;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -52,15 +52,15 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	 */
 	public PrefixedBlockDeclaration(String identifier,final Variable blockPrefix,boolean isMainModule) {
 		super(identifier);
-		this.lineNumber=Parser.prevToken.lineNumber;
+		this.lineNumber=Parse.prevToken.lineNumber;
 		this.declarationKind=Declaration.Kind.PrefixedBlock;
 		Util.ASSERT(blockPrefix != null,"blockPrefix == null");
 		this.blockPrefix = blockPrefix;
 		this.prefix = blockPrefix.identifier;
 		this.isMainModule=isMainModule;
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse PrefixedBlock");
-		while (Declaration.parseDeclaration(declarationList)) Parser.accept(KeyWord.SEMICOLON);
-		while (!Parser.accept(KeyWord.END)) {
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse PrefixedBlock");
+		while (Declaration.parseDeclaration(declarationList)) Parse.accept(KeyWord.SEMICOLON);
+		while (!Parse.accept(KeyWord.END)) {
 			Statement stm = Statement.doParse();
 			if (stm != null) statements.add(stm);
 		}

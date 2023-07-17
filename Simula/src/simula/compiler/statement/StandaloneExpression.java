@@ -10,7 +10,7 @@ package simula.compiler.statement;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.AssignmentOperation;
 import simula.compiler.expression.Expression;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -39,16 +39,16 @@ public final class StandaloneExpression extends Statement {
 		super(line);
 		this.expression = expression;
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": StandaloneExpression: "+this);
-		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) { 
-			this.expression = new AssignmentOperation(this.expression, Parser.prevToken.getKeyWord(),parseStandaloneExpression());
+		while (Parse.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) { 
+			this.expression = new AssignmentOperation(this.expression, Parse.prevToken.getKeyWord(),parseStandaloneExpression());
 		}		
 	}
 
 	//  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
 	private static Expression parseStandaloneExpression() { 
 		Expression retExpr=Expression.parseExpression();
-		while (Parser.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
-			KeyWord opr=Parser.prevToken.getKeyWord();
+		while (Parse.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
+			KeyWord opr=Parse.prevToken.getKeyWord();
 			retExpr=new AssignmentOperation(retExpr,opr,parseStandaloneExpression());
 		}
 		return retExpr;

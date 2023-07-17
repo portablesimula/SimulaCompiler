@@ -11,7 +11,7 @@ import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.SimpleVariableDeclaration;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
@@ -91,10 +91,10 @@ public abstract class Expression extends SyntaxClass {
 	 * @return Expression or null if no expression is found.
 	 */
 	public static Expression parseExpression() {
-		if(Parser.accept(KeyWord.IF)) {
+		if(Parse.accept(KeyWord.IF)) {
 			Expression condition=parseExpression();
-			Parser.expect(KeyWord.THEN); Expression thenExpression=parseSimpleExpression();
-			Parser.expect(KeyWord.ELSE); Expression elseExpression=parseExpression();
+			Parse.expect(KeyWord.THEN); Expression thenExpression=parseSimpleExpression();
+			Parse.expect(KeyWord.ELSE); Expression elseExpression=parseExpression();
 			Expression expr=new ConditionalExpression(Type.Boolean,condition,thenExpression,elseExpression);
 			if(Option.TRACE_PARSE) Util.TRACE("Expression: ParseExpression, result="+expr);
 			return(expr);
@@ -123,7 +123,7 @@ public abstract class Expression extends SyntaxClass {
 	 */
 	protected static Expression parseSimpleExpression()  {   
 		Expression expr = parseANDTHEN();
-		while(Parser.accept(KeyWord.OR_ELSE))  {
+		while(Parse.accept(KeyWord.OR_ELSE))  {
 			expr=new BooleanExpression(expr,KeyWord.OR_ELSE,parseANDTHEN());
 		}
 		return(expr);
@@ -132,7 +132,7 @@ public abstract class Expression extends SyntaxClass {
 	// BooleanTertiary =  Equivalence  { AND THEN  Equivalence }
 	private static Expression parseANDTHEN() {
 		Expression expr = parseEQV();
-		while(Parser.accept(KeyWord.AND_THEN))
+		while(Parse.accept(KeyWord.AND_THEN))
 			expr=new BooleanExpression(expr,KeyWord.AND_THEN,parseEQV());
 		return(expr);
 	}
@@ -140,7 +140,7 @@ public abstract class Expression extends SyntaxClass {
 	// Equivalence  =  Implication  { EQV  Implication }
 	private static Expression parseEQV() { 
 		Expression expr=parseIMP();
-		while(Parser.accept(KeyWord.EQV))
+		while(Parse.accept(KeyWord.EQV))
 			expr=new BooleanExpression(expr,KeyWord.EQV,parseIMP());
 		return(expr);
 	}
@@ -148,7 +148,7 @@ public abstract class Expression extends SyntaxClass {
 	// Implication =  BooleanTerm  { IMP  BooleanTerm }
 	private static Expression parseIMP() {
 		Expression expr=parseOR();
-		while(Parser.accept(KeyWord.IMP))
+		while(Parse.accept(KeyWord.IMP))
 			expr=new BooleanExpression(expr,KeyWord.IMP,parseOR());
 		return(expr);
 	}
@@ -156,7 +156,7 @@ public abstract class Expression extends SyntaxClass {
 	// BooleanTerm  =  BooleanFactor  { OR  BooleanFactor }
 	private static Expression parseOR() {
 		Expression expr=parseAND();
-		while(Parser.accept(KeyWord.OR))
+		while(Parse.accept(KeyWord.OR))
 			expr=new BooleanExpression(expr,KeyWord.OR,parseAND());
 		return(expr);
 	}
@@ -164,7 +164,7 @@ public abstract class Expression extends SyntaxClass {
 	// BooleanFactor =  BooleanSecondary  { AND  BooleanSecondary }
 	private static Expression parseAND() {
 		Expression expr=parseNOT();
-		while(Parser.accept(KeyWord.AND))
+		while(Parse.accept(KeyWord.AND))
 			expr=new BooleanExpression(expr,KeyWord.AND,parseNOT());
 		return(expr);
 	}
@@ -172,7 +172,7 @@ public abstract class Expression extends SyntaxClass {
 	// BooleanSecondary  =  [ NOT ]  BooleanPrimary
 	private static Expression  parseNOT() {
 		Expression expr;
-		if(Parser.accept(KeyWord.NOT)) {
+		if(Parse.accept(KeyWord.NOT)) {
 			expr=UnaryOperation.create(KeyWord.NOT,parseTEXTCONC());
 		} else expr = parseTEXTCONC();
 		return(expr);
@@ -181,7 +181,7 @@ public abstract class Expression extends SyntaxClass {
 	// BooleanPrimary  =  TextPrimary  { &amp; TextPrimary }
 	private static Expression parseTEXTCONC() {
 		Expression expr=parseREL();
-		while(Parser.accept(KeyWord.CONC))
+		while(Parse.accept(KeyWord.CONC))
 			expr=new TextExpression(expr,parseREL());
 		return(expr);
 	}
@@ -190,8 +190,8 @@ public abstract class Expression extends SyntaxClass {
 	//    RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
 	private static Expression parseREL() {   // Metode-form      
 		Expression expr = parseAdditiveOperation();
-		if(Parser.acceptRelationalOperator())   { 
-			KeyWord opr=Parser.prevToken.getKeyWord();
+		if(Parse.acceptRelationalOperator())   { 
+			KeyWord opr=Parse.prevToken.getKeyWord();
 			expr=new RelationalOperation(expr,opr,parseAdditiveOperation());
 		}
 		return(expr);
@@ -201,8 +201,8 @@ public abstract class Expression extends SyntaxClass {
 	// SimpleArithmeticExpression  =  UnaryTerm  {  ( + | - )  Term }
 	private static Expression parseAdditiveOperation() {
 		Expression expr=parseUNIMULDIV();
-		while(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
-			KeyWord opr=Parser.prevToken.getKeyWord();
+		while(Parse.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
+			KeyWord opr=Parse.prevToken.getKeyWord();
 			expr=ArithmeticExpression.create(expr,opr,parseMULDIV());
 		}
 		return(expr);
@@ -211,8 +211,8 @@ public abstract class Expression extends SyntaxClass {
 	// UnaryTerm  =  [ + | - ]  Term
 	private static Expression parseUNIMULDIV() {
 		Expression expr;
-		if(Parser.accept(KeyWord.PLUS,KeyWord.MINUS)) {
-			KeyWord opr=Parser.prevToken.getKeyWord();
+		if(Parse.accept(KeyWord.PLUS,KeyWord.MINUS)) {
+			KeyWord opr=Parse.prevToken.getKeyWord();
 			if(opr==KeyWord.PLUS) expr=parseMULDIV();
 			else expr=UnaryOperation.create(opr,parseMULDIV());
 		} else expr = parseMULDIV();
@@ -222,8 +222,8 @@ public abstract class Expression extends SyntaxClass {
 	// Term  =  Factor  {  ( * | / | // )  Factor }
 	private static Expression parseMULDIV() {
 		Expression expr=parseEXPON();
-		while(Parser.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
-			KeyWord opr=Parser.prevToken.getKeyWord();
+		while(Parse.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
+			KeyWord opr=Parse.prevToken.getKeyWord();
 			expr=ArithmeticExpression.create(expr,opr,parseEXPON());
 			//expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseEXPON());
 		}
@@ -233,7 +233,7 @@ public abstract class Expression extends SyntaxClass {
 	// Factor  =  BasicExpression  { **  BasicExpression }
 	private static Expression parseEXPON() {
 		Expression expr=parseBASICEXPR();
-		while(Parser.accept(KeyWord.EXP))
+		while(Parse.accept(KeyWord.EXP))
 			expr=ArithmeticExpression.create(expr,KeyWord.EXP,parseBASICEXPR());
 		//expr=ArithmeticOperation.newArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
 		return(expr);
@@ -263,29 +263,29 @@ public abstract class Expression extends SyntaxClass {
 	private static Expression parseBASICEXPR() {
 		// Dette er vel kanskje det samme som “primary”?
 		// Merk: Alt som kan stå foran et postfix (DOT, IS, IN og QUA) må være et BASICEXPR
-		if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression");
+		if(Option.TRACE_PARSE) Parse.TRACE("Expression: parseBasicExpression");
 		Expression expr=null;
-		if(Parser.accept(KeyWord.BEGPAR)) { expr = parseExpression(); Parser.expect(KeyWord.ENDPAR); }
-		else if(Parser.accept(KeyWord.INTEGERKONST)) expr = new Constant(Type.Integer,Parser.prevToken.getValue());
-		else if(Parser.accept(KeyWord.REALKONST)) expr = Constant.createRealType(Parser.prevToken.getValue());
-		else if(Parser.accept(KeyWord.BOOLEANKONST)) expr = new Constant(Type.Boolean,Parser.prevToken.getValue());
-		else if(Parser.accept(KeyWord.CHARACTERKONST)) expr = new Constant(Type.Character,Parser.prevToken.getValue());
-		else if(Parser.accept(KeyWord.TEXTKONST)) expr = new Constant(Type.Text,Parser.prevToken.getValue());
-		else if(Parser.accept(KeyWord.NONE)) expr = new Constant(Type.Ref,null);
-		else if(Parser.accept(KeyWord.NOTEXT)) expr = new Constant(Type.Text,null);
-		else if(Parser.accept(KeyWord.NEW)) expr =ObjectGenerator.parse();
-		else if(Parser.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
+		if(Parse.accept(KeyWord.BEGPAR)) { expr = parseExpression(); Parse.expect(KeyWord.ENDPAR); }
+		else if(Parse.accept(KeyWord.INTEGERKONST)) expr = new Constant(Type.Integer,Parse.prevToken.getValue());
+		else if(Parse.accept(KeyWord.REALKONST)) expr = Constant.createRealType(Parse.prevToken.getValue());
+		else if(Parse.accept(KeyWord.BOOLEANKONST)) expr = new Constant(Type.Boolean,Parse.prevToken.getValue());
+		else if(Parse.accept(KeyWord.CHARACTERKONST)) expr = new Constant(Type.Character,Parse.prevToken.getValue());
+		else if(Parse.accept(KeyWord.TEXTKONST)) expr = new Constant(Type.Text,Parse.prevToken.getValue());
+		else if(Parse.accept(KeyWord.NONE)) expr = new Constant(Type.Ref,null);
+		else if(Parse.accept(KeyWord.NOTEXT)) expr = new Constant(Type.Text,null);
+		else if(Parse.accept(KeyWord.NEW)) expr =ObjectGenerator.parse();
+		else if(Parse.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
 		else { String ident=acceptIdentifier();
 			if(ident!=null) expr=Variable.parse(ident);
 			else {
-				if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBASICEXPR returns: NULL, prevKeyword="+Parser.prevToken.getKeyWord());
-				if(Parser.prevToken.getKeyWord()==KeyWord.SEMICOLON) Parser.skipMissplacedCurrentSymbol(); // Ad'Hoc
+				if(Option.TRACE_PARSE) Parse.TRACE("Expression: parseBASICEXPR returns: NULL, prevKeyword="+Parse.prevToken.getKeyWord());
+				if(Parse.prevToken.getKeyWord()==KeyWord.SEMICOLON) Parse.skipMisplacedCurrentSymbol(); // Ad'Hoc
 				return(null);
 			}
 		}
 		// Så kan det komme en sekvens av postfikser, som bygger tre “oppover mot høyre”
-		while (Parser.acceptPostfixOprator()) {
-			KeyWord opr=Parser.prevToken.getKeyWord(); // opr == DOT || opr== IS || opr == IN || opr == QUA
+		while (Parse.acceptPostfixOprator()) {
+			KeyWord opr=Parse.prevToken.getKeyWord(); // opr == DOT || opr== IS || opr == IN || opr == QUA
 			if (opr == KeyWord.DOT ) 
 				expr=new RemoteVariable(expr,parseVariable());
 			else {  // Vet at opr == IS or opr == IN or opr == QUA.  Alle skal ha et klassenavn etter seg
@@ -295,7 +295,7 @@ public abstract class Expression extends SyntaxClass {
 				else expr=new ObjectRelation(expr,opr,classIdentifier);
 			}
 		}
-		if(Option.TRACE_PARSE) Parser.TRACE("Expression: parseBasicExpression returns: "+expr);
+		if(Option.TRACE_PARSE) Parse.TRACE("Expression: parseBasicExpression returns: "+expr);
 		return(expr);
 	}
   

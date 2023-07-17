@@ -22,11 +22,20 @@ import simula.compiler.utilities.Util;
  * 
  *   UnaryOperation =  operation  Expression
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/UnaryOperation.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 final class UnaryOperation extends Expression {
+	
+	/**
+	 * The unary operator.
+	 */
 	final KeyWord oprator;
+	
+	/**
+	 * The operand Expression.
+	 */
 	Expression operand;
 
 	private UnaryOperation(final KeyWord oprator,final Expression operand) {
@@ -39,6 +48,12 @@ final class UnaryOperation extends Expression {
 		this.operand.backLink=this;
 	}
 
+	/**
+	 * Create a new UnaryOperation.
+	 * @param oprator the unary operator.
+	 * @param operand the operand Expression
+	 * @return the newly created UnaryOperation
+	 */
 	static Expression create(final KeyWord oprator,final Expression operand) {
 		if (oprator == KeyWord.PLUS || oprator == KeyWord.MINUS) {
 			try { // Try to Compile-time Evaluate this expression

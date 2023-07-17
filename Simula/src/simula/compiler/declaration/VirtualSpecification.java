@@ -13,7 +13,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import simula.compiler.GeneratedJavaClass;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Type;
@@ -99,32 +99,32 @@ public final class VirtualSpecification extends Declaration implements Externali
 	 * @param block argument block
 	 */
 	static void parseInto(final ClassDeclaration block) {
-		Parser.expect(KeyWord.COLON);
+		Parse.expect(KeyWord.COLON);
 		LOOP: while (true) {
 			Type type;
-			if (Parser.accept(KeyWord.SWITCH)) {
+			if (Parse.accept(KeyWord.SWITCH)) {
 				parseSimpleSpecList(block, Type.Label, Kind.Switch);
-			} else if (Parser.accept(KeyWord.LABEL)) {
+			} else if (Parse.accept(KeyWord.LABEL)) {
 				parseSimpleSpecList(block, Type.Label, Kind.Label);
 			} else {
 				type = acceptType();
-				if (!Parser.accept(KeyWord.PROCEDURE))
+				if (!Parse.accept(KeyWord.PROCEDURE))
 					break LOOP;
 
 				String identifier = expectIdentifier();
 				ProcedureSpecification procedureSpec = null;
-				if (Parser.accept(KeyWord.IS)) {
+				if (Parse.accept(KeyWord.IS)) {
 					Type procedureType = acceptType();
-					Parser.expect(KeyWord.PROCEDURE);
+					Parse.expect(KeyWord.PROCEDURE);
 					procedureSpec = ProcedureSpecification.doParseProcedureSpecification(procedureType);
 					block.virtualSpecList
 							.add(new VirtualSpecification(identifier, type, Kind.Procedure, procedureSpec));
 				} else {
 					block.virtualSpecList.add(new VirtualSpecification(identifier, type, Kind.Procedure, null));
-					if (Parser.accept(KeyWord.COMMA))
+					if (Parse.accept(KeyWord.COMMA))
 						parseSimpleSpecList(block, type, Kind.Procedure);
 					else
-						Parser.expect(KeyWord.SEMICOLON);
+						Parse.expect(KeyWord.SEMICOLON);
 				}
 			}
 		}
@@ -134,8 +134,8 @@ public final class VirtualSpecification extends Declaration implements Externali
 		do {
 			String identifier = expectIdentifier();
 			block.virtualSpecList.add(new VirtualSpecification(identifier, type, kind, null));
-		} while (Parser.accept(KeyWord.COMMA));
-		Parser.expect(KeyWord.SEMICOLON);
+		} while (Parse.accept(KeyWord.COMMA));
+		Parse.expect(KeyWord.SEMICOLON);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import simula.compiler.declaration.MaybeBlockDeclaration;
 import simula.compiler.declaration.PrefixedBlockDeclaration;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -58,11 +58,11 @@ public abstract class Statement extends SyntaxClass {
 
 	public static Statement doParse() {
 		Vector<String> labels = null;
-		int lineNumber=Parser.currentToken.lineNumber;
+		int lineNumber=Parse.currentToken.lineNumber;
 		if (Option.TRACE_PARSE)
-			Util.TRACE("Statement.doParse: LabeledStatement: lineNumber="+lineNumber+", current=" + Parser.currentToken	+ ", prev=" + Parser.prevToken);
+			Util.TRACE("Statement.doParse: LabeledStatement: lineNumber="+lineNumber+", current=" + Parse.currentToken	+ ", prev=" + Parse.prevToken);
 		String ident = acceptIdentifier();
-		while (Parser.accept(KeyWord.COLON)) {
+		while (Parse.accept(KeyWord.COLON)) {
 			if (ident != null) {
 				if (labels == null)	labels = new Vector<String>();
 				labels.add(ident);
@@ -71,7 +71,7 @@ public abstract class Statement extends SyntaxClass {
 			} else Util.error("Missplaced ':'");
 			ident = acceptIdentifier();
 		}
-		if(ident!=null) Parser.saveCurrentToken(); // Not Label: Pushback
+		if(ident!=null) Parse.saveCurrentToken(); // Not Label: Pushback
 		Statement statement = doUnlabeledStatement();
 		if (labels != null && statement != null)
 			statement = new LabeledStatement(lineNumber,labels, statement);
@@ -80,39 +80,39 @@ public abstract class Statement extends SyntaxClass {
 
 	@SuppressWarnings("incomplete-switch")
 	private static Statement doUnlabeledStatement() {
-		int lineNumber=Parser.currentToken.lineNumber;
+		int lineNumber=Parse.currentToken.lineNumber;
 		if (Option.TRACE_PARSE)
-			Util.TRACE("Statement.doUnlabeledStatement: lineNumber="+lineNumber+", current=" + Parser.currentToken	+ ", prev=" + Parser.prevToken);
-		switch(Parser.currentToken.getKeyWord()) {
-		    case BEGIN: Parser.nextSymb(); return (new MaybeBlockDeclaration(null).parseMaybeBlock(lineNumber));
-		    case IF:    Parser.nextSymb(); return (new ConditionalStatement(lineNumber));
-		    case GOTO:  Parser.nextSymb(); return (new GotoStatement(lineNumber));
-		    case GO:    Parser.nextSymb(); 
-				        if (!Parser.accept(KeyWord.TO))	Util.error("Missing 'TO' after 'GO'");
+			Util.TRACE("Statement.doUnlabeledStatement: lineNumber="+lineNumber+", current=" + Parse.currentToken	+ ", prev=" + Parse.prevToken);
+		switch(Parse.currentToken.getKeyWord()) {
+		    case BEGIN: Parse.nextSymb(); return (new MaybeBlockDeclaration(null).parseMaybeBlock(lineNumber));
+		    case IF:    Parse.nextSymb(); return (new ConditionalStatement(lineNumber));
+		    case GOTO:  Parse.nextSymb(); return (new GotoStatement(lineNumber));
+		    case GO:    Parse.nextSymb(); 
+				        if (!Parse.accept(KeyWord.TO))	Util.error("Missing 'TO' after 'GO'");
 				        return (new GotoStatement(lineNumber));
-		    case FOR:        Parser.nextSymb(); return (new ForStatement(lineNumber));
-		    case WHILE:      Parser.nextSymb(); return (new WhileStatement(lineNumber));
-		    case INSPECT:    Parser.nextSymb(); return (new ConnectionStatement(lineNumber));
+		    case FOR:        Parse.nextSymb(); return (new ForStatement(lineNumber));
+		    case WHILE:      Parse.nextSymb(); return (new WhileStatement(lineNumber));
+		    case INSPECT:    Parse.nextSymb(); return (new ConnectionStatement(lineNumber));
 		    case SWITCH:	 if(Option.EXTENSIONS) {
-		    					Parser.nextSymb(); return (new SwitchStatement(lineNumber));
+		    					Parse.nextSymb(); return (new SwitchStatement(lineNumber));
 		    				 }
-		    case ACTIVATE:   Parser.nextSymb(); return (new ActivationStatement(lineNumber));
-		    case REACTIVATE: Parser.nextSymb(); return (new ActivationStatement(lineNumber));
-		    case INNER:      Parser.nextSymb(); return (new InnerStatement(lineNumber));
-		    case SEMICOLON:  Parser.nextSymb(); return (new DummyStatement(lineNumber)); // Dummy Statement
+		    case ACTIVATE:   Parse.nextSymb(); return (new ActivationStatement(lineNumber));
+		    case REACTIVATE: Parse.nextSymb(); return (new ActivationStatement(lineNumber));
+		    case INNER:      Parse.nextSymb(); return (new InnerStatement(lineNumber));
+		    case SEMICOLON:  Parse.nextSymb(); return (new DummyStatement(lineNumber)); // Dummy Statement
 		    case END:        return (new DummyStatement(lineNumber)); // Dummy Statement, keep END
 		
 		    case IDENTIFIER: case NEW: case THIS: case BEGPAR:
 		         Expression expr = Expression.parseExpression();
 		         if(expr!=null) {
 		        	 if(expr instanceof Variable var) {
-		        		 if (Parser.accept(KeyWord.BEGIN))
+		        		 if (Parse.accept(KeyWord.BEGIN))
 		        			 return new BlockStatement(new PrefixedBlockDeclaration(null,var,false));
 		        	 }
 		        	 return (new StandaloneExpression(lineNumber,expr));
 		         }
 		}
-    	Parser.skipMissplacedCurrentSymbol();
+    	Parse.skipMisplacedCurrentSymbol();
     	return(new DummyStatement(lineNumber));
 	}
 

@@ -11,7 +11,7 @@ import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.ConnectionBlock;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Meaning;
 import simula.compiler.utilities.Option;
@@ -65,7 +65,7 @@ public final class LocalObject extends Expression {
 	 */
 	static Expression acceptThisIdentifier() {
 		if (Option.TRACE_PARSE)
-			Util.TRACE("Parse ThisObjectExpression, current=" + Parser.currentToken);
+			Util.TRACE("Parse ThisObjectExpression, current=" + Parse.currentToken);
 		String classIdentifier = expectIdentifier();
 		Expression expr = new LocalObject(classIdentifier);
 		return(expr);

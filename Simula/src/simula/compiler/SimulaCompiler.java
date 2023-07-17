@@ -36,7 +36,7 @@ import javax.tools.ToolProvider;
 import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.editor.RTOption;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -190,13 +190,13 @@ public final class SimulaCompiler {
 			// *** Scanning and Parsing
 			// ***************************************************************
 			Global.generatedJavaClass=new Vector<GeneratedJavaClass>();
-			Parser.open(reader);
+			Parse.initiate(reader);
 			programModule = new ProgramModule();
 			if (Option.TRACING) {
 				Util.message("END Parsing, resulting Program: \""+programModule+"\"");
 				if (Option.TRACE_PARSE && programModule != null) programModule.print(0);
 			}
-			Parser.close(); Global.duringParsing=false;
+			Parse.close(); Global.duringParsing=false;
 			if(Util.nError>0) {
 				Util.message("Compiler terminate "+Global.sourceName+" after "+Util.nError+" errors during parsing");
 				return;

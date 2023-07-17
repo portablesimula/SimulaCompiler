@@ -12,7 +12,17 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Type.ConversionKind;
 import simula.compiler.utilities.Util;
 
+/**
+ * Type Conversion.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/TypeConversion.java"><b>Source File</b></a>.
+ *
+ */
 public final class TypeConversion extends Expression {
+	
+	/**
+	 * The expression.
+	 */
 	final Expression expression;
 
 	private TypeConversion(final Type type,final Expression expression) {
@@ -22,6 +32,13 @@ public final class TypeConversion extends Expression {
 	}
 
 	// Test if a TypeConversion is necessary and then do it.
+	/**
+	 * Test if a TypeConversion is necessary and then create it.
+	 * @param fromType convert from this type
+	 * @param toType convert to this type
+	 * @param expr the expression
+	 * @return piece of Java source code
+	 */
 	public static String mayBeConvert(final Type fromType,final Type toType,final String expr) {
 		if(fromType==Type.Real || fromType==Type.LongReal)
 		{ if(toType==Type.Integer)
@@ -30,7 +47,12 @@ public final class TypeConversion extends Expression {
         return("=("+toType.toJavaType()+")("+expr+");");
 	}
 
-	// Test if a TypeConversion is necessary and then create it.
+	/**
+	 * Test if a TypeConversion is necessary and then create it.
+	 * @param toType convert to toType
+	 * @param expression the expression
+	 * @return the resulting expression
+	 */
 	public static Expression testAndCreate(final Type toType,final Expression expression) {
 		Type fromType=expression.type;
 		String qual=(fromType==null)?null:fromType.getRefIdent();

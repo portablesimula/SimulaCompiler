@@ -9,7 +9,7 @@ package simula.compiler.statement;
 
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
@@ -48,17 +48,17 @@ public final class ActivationStatement extends Statement {
 
 	ActivationStatement(final int line) {
 		super(line);
-		Token activator = Parser.prevToken;
+		Token activator = Parse.prevToken;
 		REAC = activator.getKeyWord() == KeyWord.REACTIVATE;
-		if (Option.TRACE_PARSE) Parser.TRACE("Parse ActivationStatement");
+		if (Option.TRACE_PARSE) Parse.TRACE("Parse ActivationStatement");
 		object1 = Expression.parseExpression();
 		code = ActivationCode.direct;
-		if (Parser.accept(KeyWord.AT) || Parser.accept(KeyWord.DELAY)) {
-			code = (Parser.prevToken.getKeyWord() == KeyWord.AT) ? ActivationCode.at : ActivationCode.delay;
+		if (Parse.accept(KeyWord.AT) || Parse.accept(KeyWord.DELAY)) {
+			code = (Parse.prevToken.getKeyWord() == KeyWord.AT) ? ActivationCode.at : ActivationCode.delay;
 			time = Expression.parseExpression();
-			if (Parser.accept(KeyWord.PRIOR)) prior = true;
-		} else if (Parser.accept(KeyWord.BEFORE) || Parser.accept(KeyWord.AFTER)) {
-			code = (Parser.prevToken.getKeyWord() == KeyWord.BEFORE) ? ActivationCode.before : ActivationCode.after;
+			if (Parse.accept(KeyWord.PRIOR)) prior = true;
+		} else if (Parse.accept(KeyWord.BEFORE) || Parse.accept(KeyWord.AFTER)) {
+			code = (Parse.prevToken.getKeyWord() == KeyWord.BEFORE) ? ActivationCode.before : ActivationCode.after;
 			object2 = Expression.parseExpression();
 		}
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": ActivationStatement: "+this);

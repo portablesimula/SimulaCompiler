@@ -13,7 +13,7 @@ import java.util.Vector;
 import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.Parameter;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Meaning;
@@ -63,16 +63,16 @@ public final class ObjectGenerator extends Expression {
 	 */
 	static Expression parse() {
 		if (Option.TRACE_PARSE)
-			Util.TRACE("Parse ObjectGenerator, current=" + Parser.currentToken);
+			Util.TRACE("Parse ObjectGenerator, current=" + Parse.currentToken);
 		String classIdentifier = expectIdentifier();
 		Vector<Expression> params = new Vector<Expression>();
-		if (Parser.accept(KeyWord.BEGPAR)) {
+		if (Parse.accept(KeyWord.BEGPAR)) {
 			do {
 				Expression par=parseExpression();
 				if(par==null) Util.error("Missing class parameter");
 				else params.add(par);
-			} while (Parser.accept(KeyWord.COMMA));
-			Parser.expect(KeyWord.ENDPAR);
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.ENDPAR);
 		}
 
 		Expression expr = new ObjectGenerator(classIdentifier, params);

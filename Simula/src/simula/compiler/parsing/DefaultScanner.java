@@ -13,11 +13,11 @@ import java.io.Reader;
 
 import simula.compiler.utilities.Token;
 import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.Option;
-import simula.compiler.utilities.Util;
 
 /**
- * A Default Scanner
+ * A Default Scanner.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/DefaultScanner.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -43,6 +43,10 @@ public class DefaultScanner {
     //********************************************************************************
     //**	                                                                 nextToken 
     //********************************************************************************
+	/**
+	 * Returns the next Token.
+	 * @return the next Token
+	 */
 	public Token nextToken() {
     	String line=null;
 		try { line = lineNumberReader.readLine(); } catch (IOException e) {}

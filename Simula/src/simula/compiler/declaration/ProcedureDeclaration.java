@@ -14,7 +14,7 @@ import java.io.ObjectOutput;
 import java.util.Vector;
 
 import simula.compiler.GeneratedJavaClass;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
@@ -98,39 +98,39 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
 		Declaration.Kind declarationKind = Declaration.Kind.Procedure;
 		ProcedureDeclaration block = new ProcedureDeclaration(null, declarationKind);
-		block.lineNumber=Parser.prevToken.lineNumber;
+		block.lineNumber=Parse.prevToken.lineNumber;
 		block.type = type;
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ProcedureDeclaration, type=" + type);
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ProcedureDeclaration, type=" + type);
 		block.modifyIdentifier(expectIdentifier());
-		if (Parser.accept(KeyWord.BEGPAR)) {
+		if (Parse.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
 				new Parameter(expectIdentifier()).into(block.parameterList);
-			} while (Parser.accept(KeyWord.COMMA));
-			Parser.expect(KeyWord.ENDPAR);
-			Parser.expect(KeyWord.SEMICOLON);
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.ENDPAR);
+			Parse.expect(KeyWord.SEMICOLON);
 			// ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
 			// ValuePart = VALUE IdentifierList ;
 			// NamePart = NAME IdentifierList ;
-			if (Parser.accept(KeyWord.VALUE)) {
+			if (Parse.accept(KeyWord.VALUE)) {
 				expectModeList(block, block.parameterList, Parameter.Mode.value);
-				Parser.expect(KeyWord.SEMICOLON);
+				Parse.expect(KeyWord.SEMICOLON);
 			}
-			if (Parser.accept(KeyWord.NAME)) {
+			if (Parse.accept(KeyWord.NAME)) {
 				expectModeList(block, block.parameterList, Parameter.Mode.name);
-				Parser.expect(KeyWord.SEMICOLON);
+				Parse.expect(KeyWord.SEMICOLON);
 			}
-			if (Parser.accept(KeyWord.VALUE)) {
+			if (Parse.accept(KeyWord.VALUE)) {
 				expectModeList(block, block.parameterList, Parameter.Mode.value);
-				Parser.expect(KeyWord.SEMICOLON);
+				Parse.expect(KeyWord.SEMICOLON);
 			}
 			// ParameterPart = Parameter ; { Parameter ; }
 			// Parameter = Specifier IdentifierList
 			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
 			while (acceptProcedureParameterSpecifications(block, block.parameterList)) {
-				Parser.expect(KeyWord.SEMICOLON);
+				Parse.expect(KeyWord.SEMICOLON);
 			}
-		} else Parser.expect(KeyWord.SEMICOLON);
-		if (Parser.accept(KeyWord.BEGIN))
+		} else Parse.expect(KeyWord.SEMICOLON);
+		if (Parse.accept(KeyWord.BEGIN))
 			doParseBody(block);
 		else block.statements.add(Statement.doParse());
 
@@ -157,7 +157,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 				parameter = new Parameter(identifier);
 			}
 			parameter.setMode(mode);
-		} while (Parser.accept(KeyWord.COMMA));
+		} while (Parse.accept(KeyWord.COMMA));
 	}
 
 	// ***********************************************************************************************
@@ -166,18 +166,18 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	private static boolean acceptProcedureParameterSpecifications(final BlockDeclaration block,final Vector<Parameter> parameterList) {
 		// ProcedureParameter = ProcedureParameterSpecifier IdentifierList
 		// ProcedureParameterSpecifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ParameterSpecifications");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ParameterSpecifications");
 		Type type;
 		Parameter.Kind kind = Parameter.Kind.Simple;
-		if (Parser.accept(KeyWord.SWITCH)) {
+		if (Parse.accept(KeyWord.SWITCH)) {
 			type = Type.Label;
 			kind = Parameter.Kind.Procedure;
-		} else if (Parser.accept(KeyWord.LABEL))
+		} else if (Parse.accept(KeyWord.LABEL))
 			type = Type.Label;
 		else {
 			type = acceptType();
 			//if (type == null) return (false);
-			if (Parser.accept(KeyWord.ARRAY)) {
+			if (Parse.accept(KeyWord.ARRAY)) {
 				if (type == null) {
 					// See Simula Standard 5.2 -
 					// If no type is given the type real is understood.
@@ -185,7 +185,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 				}
 				kind = Parameter.Kind.Array;
 			}
-			else if (Parser.accept(KeyWord.PROCEDURE)) kind = Parameter.Kind.Procedure;
+			else if (Parse.accept(KeyWord.PROCEDURE)) kind = Parameter.Kind.Procedure;
 			else if(type == null) return (false);
 		}
 		do {
@@ -198,7 +198,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 				parameter = new Parameter(identifier);
 			}
 			parameter.setTypeAndKind(type, kind);
-		} while (Parser.accept(KeyWord.COMMA));
+		} while (Parse.accept(KeyWord.COMMA));
 		return (true);
 	}
 
@@ -207,12 +207,12 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private static void doParseBody(final BlockDeclaration block) {
 		Statement stm;
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse Block");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse Block");
 		while (Declaration.parseDeclaration(block.declarationList)) {
-			Parser.accept(KeyWord.SEMICOLON);
+			Parse.accept(KeyWord.SEMICOLON);
 		}
 		Vector<Statement> stmList = block.statements;
-		while (!Parser.accept(KeyWord.END)) {
+		while (!Parse.accept(KeyWord.END)) {
 			stm = Statement.doParse();
 			if (stm != null) stmList.add(stm);
 		}

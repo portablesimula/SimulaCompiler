@@ -12,7 +12,7 @@ import java.util.Vector;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -69,40 +69,40 @@ public final class SwitchStatement extends Statement {
 
 	SwitchStatement(int line) {
 		super(line);
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchStatement: line="+line);
-		Parser.expect(KeyWord.BEGPAR);
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse SwitchStatement: line="+line);
+		Parse.expect(KeyWord.BEGPAR);
 		lowKey = Expression.parseExpression();
-		Parser.expect(KeyWord.COLON);
+		Parse.expect(KeyWord.COLON);
 		hiKey = Expression.parseExpression();
-		Parser.expect(KeyWord.ENDPAR);
+		Parse.expect(KeyWord.ENDPAR);
 		switchKey = Expression.parseExpression();
 		switchKey.backLink=this;
-		Parser.expect(KeyWord.BEGIN);
+		Parse.expect(KeyWord.BEGIN);
     	boolean noneCaseUsed=false;
-		while (Parser.accept(KeyWord.WHEN)) {
+		while (Parse.accept(KeyWord.WHEN)) {
 			Vector<SwitchInterval> caseKeyList=new Vector<SwitchInterval>();
-			if (Parser.accept(KeyWord.NONE)) {
+			if (Parse.accept(KeyWord.NONE)) {
 				caseKeyList.add(null);
 				if(noneCaseUsed) Util.error("NONE Case is already used");
 				noneCaseUsed=true;
 			}
 			else {
 				caseKeyList.add(parseCasePair());
-				while(Parser.accept(KeyWord.COMMA)) caseKeyList.add(parseCasePair());
+				while(Parse.accept(KeyWord.COMMA)) caseKeyList.add(parseCasePair());
 			}
-			Parser.expect(KeyWord.DO);
+			Parse.expect(KeyWord.DO);
 			Statement statement = Statement.doParse();
-			Parser.accept(KeyWord.SEMICOLON);
+			Parse.accept(KeyWord.SEMICOLON);
 			switchCases.add(new WhenPart(caseKeyList, statement));
 		}
-		Parser.expect(KeyWord.END);
+		Parse.expect(KeyWord.END);
 		if (Option.TRACE_PARSE)	Util.TRACE("Line "+lineNumber+": SwitchStatement: "+this);
 	}
 
 	private SwitchInterval parseCasePair() {
 		Expression lowCase=Expression.parseExpression();
 		Expression hiCase=null;
-		if(Parser.accept(KeyWord.COLON)) hiCase=Expression.parseExpression();
+		if(Parse.accept(KeyWord.COLON)) hiCase=Expression.parseExpression();
 		return(new SwitchInterval(lowCase,hiCase));
 	}
 

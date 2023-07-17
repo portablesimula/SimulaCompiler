@@ -21,7 +21,7 @@ import simula.compiler.utilities.Util;
  *        |  if-clause  simple-text-expression  else  text-expression
 *
  *    simple-text-expression
- *        =  text-primary  {  &  text-primary  }
+ *        =  text-primary  {  &amp;  text-primary  }
 *
  *    text-primary
  *        =  notext
@@ -45,8 +45,8 @@ import simula.compiler.utilities.Util;
  * 
  * Simula Standard: 3.7.1 Text concatenation
  * <p>
- * The operator & permits text concatenation. The simple text expression "TP1 &
- * TP2 & ... & TPn", where TPi is a text primary (1<=i<=n), references a new
+ * The operator &amp; permits text concatenation. The simple text expression "TP1 &amp;
+ * TP2 &amp; ... &amp; TPn", where TPi is a text primary (1&lt;=i&lt;=n), references a new
  * alterable main frame whose contents is formed by concatenating copies of the
  * frames referenced by TP1, TP2, ... , TPn (in that order). The expression is
  * equivalent to CONCATENATE_n(T1,T2,...,Tn) defined by
@@ -64,11 +64,11 @@ import simula.compiler.utilities.Util;
  * 
  * Note: It follows that the text primary constituents of a simple text
  * expression are evaluated in strict lexical order. The evaluation of Ti may
- * influence the result of evaluating Tj, if i<j (due to the specified "by
+ * influence the result of evaluating Tj, if i&lt;j (due to the specified "by
  * reference" transmission of parameters to the procedures CONCATENATE_n).
  * Observe further that it follows from the syntax (cfr. 3.1.5) that . is
- * evaluated before &, thus the two expressions "T1 & T2.sub(1,2) & T3.main" and
- * "T1 & (T2.sub(1,2)) & (T3.main)" are equivalent.
+ * evaluated before &amp;, thus the two expressions "T1 &amp; T2.sub(1,2) &amp; T3.main" and
+ * "T1 &amp; (T2.sub(1,2)) &amp; (T3.main)" are equivalent.
  * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/TextExpression.java"><b>Source File</b></a>.
  * 
@@ -79,6 +79,11 @@ public final class TextExpression extends Expression {
 	private Expression lhs;
 	private Expression rhs;
 
+	/**
+	 * Create a new TextExpression
+	 * @param lhs left hand side
+	 * @param rhs rigth hand side
+	 */
 	TextExpression(final Expression lhs, final Expression rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;

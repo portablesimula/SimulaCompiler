@@ -17,7 +17,7 @@ import java.util.Vector;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
 import simula.compiler.CodeLine;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.statement.InnerStatement;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
@@ -118,45 +118,45 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	 */
 	public static ClassDeclaration doParseClassDeclaration(final String prefix) {
 		ClassDeclaration block = new ClassDeclaration(null);
-		block.lineNumber=Parser.prevToken.lineNumber;
+		block.lineNumber=Parse.prevToken.lineNumber;
 		block.prefix = prefix;
 		block.declaredIn.hasLocalClasses = true;
 		if (block.prefix == null)
 			block.prefix = StandardClass.SIMULA_BLOCK.identifier;
 		block.modifyIdentifier(expectIdentifier());
-		if (Parser.accept(KeyWord.BEGPAR)) {
+		if (Parse.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
 				new Parameter(expectIdentifier()).into(block.parameterList);
-			} while (Parser.accept(KeyWord.COMMA));
-			Parser.expect(KeyWord.ENDPAR);
-			Parser.expect(KeyWord.SEMICOLON);
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.ENDPAR);
+			Parse.expect(KeyWord.SEMICOLON);
 			// ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
 			// ValuePart = VALUE IdentifierList ;
 			// NamePart = NAME IdentifierList ;
-			if (Parser.accept(KeyWord.VALUE)) {
+			if (Parse.accept(KeyWord.VALUE)) {
 				expectModeList(block, block.parameterList, Parameter.Mode.value);
-				Parser.expect(KeyWord.SEMICOLON);
+				Parse.expect(KeyWord.SEMICOLON);
 			}
 			// ParameterPart = Parameter ; { Parameter ; }
 			// Parameter = Specifier IdentifierList
 			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
 			while (acceptClassParameterSpecifications(block, block.parameterList)) {
-				Parser.expect(KeyWord.SEMICOLON);
+				Parse.expect(KeyWord.SEMICOLON);
 			}
 		} else
-			Parser.expect(KeyWord.SEMICOLON);
+			Parse.expect(KeyWord.SEMICOLON);
 
 		// ProtectionPart = ProtectionParameter { ; ProtectionParameter }
 		// ProtectionParameter = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
 		// | PROTECTED IdentifierList | PROTECTED HIDDEN IdentifierList
 		while (true) {
-			if (Parser.accept(KeyWord.HIDDEN)) {
-				if (Parser.accept(KeyWord.PROTECTED))
+			if (Parse.accept(KeyWord.HIDDEN)) {
+				if (Parse.accept(KeyWord.PROTECTED))
 					expectHiddenProtectedList(block, true, true);
 				else
 					expectHiddenProtectedList(block, true, false);
-			} else if (Parser.accept(KeyWord.PROTECTED)) {
-				if (Parser.accept(KeyWord.HIDDEN))
+			} else if (Parse.accept(KeyWord.PROTECTED)) {
+				if (Parse.accept(KeyWord.HIDDEN))
 					expectHiddenProtectedList(block, true, true);
 				else
 					expectHiddenProtectedList(block, false, true);
@@ -167,18 +167,18 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		// VirtualParameterPart = VirtualParameter ; { VirtualParameter ; }
 		// VirtualParameter = VirtualSpecifier IdentifierList
 		// VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
-		if (Parser.accept(KeyWord.VIRTUAL))
+		if (Parse.accept(KeyWord.VIRTUAL))
 			VirtualSpecification.parseInto(block);
 
-		if (Parser.accept(KeyWord.BEGIN))
+		if (Parse.accept(KeyWord.BEGIN))
 			doParseBody(block);
 		else {
 			block.statements.add(Statement.doParse());
-			block.statements.add(new InnerStatement(Parser.currentToken.lineNumber)); // Implicit INNER
+			block.statements.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
 		}
 		block.lastLineNumber = Global.sourceLineNumber;
 		block.type = Type.Ref(block.identifier);
-		if (Option.TRACE_PARSE)	Parser.TRACE("Line "+block.lineNumber+": ClassDeclaration: "+block);
+		if (Option.TRACE_PARSE)	Parse.TRACE("Line "+block.lineNumber+": ClassDeclaration: "+block);
 		Global.setScope(block.declaredIn);
 		return (block);
 	}
@@ -200,7 +200,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 				parameter = new Parameter(identifier);
 			}
 			parameter.setMode(mode);
-		} while (Parser.accept(KeyWord.COMMA));
+		} while (Parse.accept(KeyWord.COMMA));
 	}
 	
 	// ***********************************************************************************************
@@ -210,11 +210,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		// ClassParameter = ClassParameterSpecifier IdentifierList
 		// ClassParameterSpecifier = Type | [Type] ARRAY 
 		if (Option.TRACE_PARSE)
-			Parser.TRACE("Parse ParameterSpecifications");
+			Parse.TRACE("Parse ParameterSpecifications");
 		Type type;
 		Parameter.Kind kind = Parameter.Kind.Simple;
 		type = acceptType();
-		if (Parser.accept(KeyWord.ARRAY)) {
+		if (Parse.accept(KeyWord.ARRAY)) {
 			if (type == null) {
 				// See Simula Standard 5.2 -
 				// If no type is given the type real is understood.
@@ -233,7 +233,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 				parameter = new Parameter(identifier);
 			}
 			parameter.setTypeAndKind(type, kind);
-		} while (Parser.accept(KeyWord.COMMA));
+		} while (Parse.accept(KeyWord.COMMA));
 		return (true);
 	}
 
@@ -245,8 +245,8 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			String identifier = expectIdentifier();
 			if (hidden)	block.hiddenList.add(new HiddenSpecification(block, identifier));
 			if (prtected) block.protectedList.add(new ProtectedSpecification(block, identifier));
-		} while (Parser.accept(KeyWord.COMMA));
-		Parser.expect(KeyWord.SEMICOLON);
+		} while (Parse.accept(KeyWord.COMMA));
+		Parse.expect(KeyWord.SEMICOLON);
 		return (true);
 	}
 
@@ -255,22 +255,22 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	private static void doParseBody(final BlockDeclaration block) {
 		Statement stm;
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse Block");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse Block");
 		while (Declaration.parseDeclaration(block.declarationList)) {
-			Parser.accept(KeyWord.SEMICOLON);
+			Parse.accept(KeyWord.SEMICOLON);
 		}
 		boolean seen=false;
 		Vector<Statement> stmList = block.statements;
-		while (!Parser.accept(KeyWord.END)) {
+		while (!Parse.accept(KeyWord.END)) {
 			stm = Statement.doParse();
 			if (stm != null) stmList.add(stm);
-			if (Parser.accept(KeyWord.INNER)) {
+			if (Parse.accept(KeyWord.INNER)) {
 				if (seen) Util.error("Max one INNER per Block");
-				else stmList.add(new InnerStatement(Parser.currentToken.lineNumber));
+				else stmList.add(new InnerStatement(Parse.currentToken.lineNumber));
 				seen = true;
 			}
 		}
-		if (!seen) stmList.add(new InnerStatement(Parser.currentToken.lineNumber)); // Implicit INNER
+		if (!seen) stmList.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
 	}
 
 	// ***********************************************************************************************

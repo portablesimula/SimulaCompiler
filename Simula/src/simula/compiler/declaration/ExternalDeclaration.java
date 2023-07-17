@@ -20,7 +20,7 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
 import simula.compiler.AttributeFileIO;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -110,15 +110,15 @@ public final class ExternalDeclaration extends Declaration {
 		String kind=acceptIdentifier();
 		if(kind!=null) Util.NOT_IMPLEMENTED("External "+kind+" Procedure");
 		Type expectedType = acceptType();
-		if (!(Parser.accept(KeyWord.CLASS) || Parser.accept(KeyWord.PROCEDURE)))
+		if (!(Parse.accept(KeyWord.CLASS) || Parse.accept(KeyWord.PROCEDURE)))
 			Util.error("parseExternalDeclaration: Expecting CLASS or PROCEDURE");
 		
 		String identifier = expectIdentifier();
    LOOP:while(true) {
 			Token externalIdentifier = null;
-			if (Parser.accept(KeyWord.EQ)) {
-				externalIdentifier = Parser.currentToken;
-				Parser.expect(KeyWord.TEXTKONST);
+			if (Parse.accept(KeyWord.EQ)) {
+				externalIdentifier = Parse.currentToken;
+				Parse.expect(KeyWord.TEXTKONST);
 			}
 			File jarFile=findJarFile(identifier,externalIdentifier);
 			if(jarFile!=null) {
@@ -128,12 +128,12 @@ public final class ExternalDeclaration extends Declaration {
 				}
 			}
 
-			if(Parser.accept(KeyWord.IS)) {
+			if(Parse.accept(KeyWord.IS)) {
 				// ...
 				Util.NOT_IMPLEMENTED("External non-Simula Procedure");
 				break LOOP;
 			}
-			if(!Parser.accept(KeyWord.COMMA)) break LOOP;
+			if(!Parse.accept(KeyWord.COMMA)) break LOOP;
 			identifier=expectIdentifier();
 		}
 	}

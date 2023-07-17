@@ -9,7 +9,7 @@ package simula.compiler.statement;
 
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Expression;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -39,14 +39,14 @@ public final class ConditionalStatement extends Statement {
 	ConditionalStatement(final int line) {
 		super(line);
 		condition = Expression.parseExpression();
-		Parser.expect(KeyWord.THEN);
+		Parse.expect(KeyWord.THEN);
 		Statement elseStatement = null;
-		if (Parser.accept(KeyWord.ELSE)) {
-			thenStatement = new DummyStatement(Parser.currentToken.lineNumber);
+		if (Parse.accept(KeyWord.ELSE)) {
+			thenStatement = new DummyStatement(Parse.currentToken.lineNumber);
 			elseStatement = Statement.doParse();
 		} else {
 		    thenStatement = Statement.doParse();
-		    if (Parser.accept(KeyWord.ELSE)) {
+		    if (Parse.accept(KeyWord.ELSE)) {
 			    elseStatement = Statement.doParse();
 		    }
 		}

@@ -17,7 +17,7 @@ import simula.compiler.declaration.SimpleVariableDeclaration;
 import simula.compiler.expression.AssignmentOperation;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.Variable;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -50,7 +50,7 @@ public final class ConnectionStatement extends Statement {
 
 	ConnectionStatement(final int line) {
 		super(line);
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ConnectionStatement");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ConnectionStatement");
 		objectExpression = Expression.parseExpression();
 		String ident = "_inspect_" + lineNumber + '_' + (SEQU++);
 		inspectedVariable = new Variable(ident);
@@ -63,16 +63,16 @@ public final class ConnectionStatement extends Statement {
 
 		boolean hasDoPart=false;
 		boolean hasWhenPart=false;
-		if (Parser.accept(KeyWord.DO)) {
+		if (Parse.accept(KeyWord.DO)) {
 			hasDoPart = true;
 			ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, null);
 			Statement statement = Statement.doParse();
 			connectionPart.add(new DoPart(connectionBlock, statement));
 			connectionBlock.end();
 		} else {
-			while (Parser.accept(KeyWord.WHEN)) {
+			while (Parse.accept(KeyWord.WHEN)) {
 				String classIdentifier = expectIdentifier();
-				Parser.expect(KeyWord.DO);
+				Parse.expect(KeyWord.DO);
 				ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, classIdentifier);
 				hasWhenPart = true;
 				Statement statement = Statement.doParse();
@@ -82,7 +82,7 @@ public final class ConnectionStatement extends Statement {
 		}
 		if(!(hasDoPart | hasWhenPart)) Util.error("Incomplete Inspect statement: "+objectExpression);
 		Statement otherwise = null;
-		if (Parser.accept(KeyWord.OTHERWISE)) otherwise = Statement.doParse();
+		if (Parse.accept(KeyWord.OTHERWISE)) otherwise = Statement.doParse();
 		this.otherwise=otherwise;
 		this.hasWhenPart=hasWhenPart;
 		if (Option.TRACE_PARSE)	Util.TRACE("Line "+this.lineNumber+": ConnectionStatement: "+this);

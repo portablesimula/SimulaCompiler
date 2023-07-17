@@ -15,7 +15,7 @@ import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Constant;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -107,16 +107,16 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	 */
 	static void parse(final Type type,final DeclarationList declarationList) {
 		// identifier-list = identifier { , identifier }
-	    if(Option.TRACE_PARSE) Parser.TRACE("Parse IdentifierList");
-	    if(Parser.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));
-	    else if(Parser.accept(KeyWord.ARRAY)) ArrayDeclaration.parse(type,declarationList);
+	    if(Option.TRACE_PARSE) Parse.TRACE("Parse IdentifierList");
+	    if(Parse.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));
+	    else if(Parse.accept(KeyWord.ARRAY)) ArrayDeclaration.parse(type,declarationList);
 	    else {
 	    	do { 
 	    	    String ident=expectIdentifier();
 	            SimpleVariableDeclaration typeDeclaration=new SimpleVariableDeclaration(type,ident);
-	            if(Parser.accept(KeyWord.EQ)) typeDeclaration.constantElement=Expression.parseExpression();
+	            if(Parse.accept(KeyWord.EQ)) typeDeclaration.constantElement=Expression.parseExpression();
 	            declarationList.add(typeDeclaration);
-	        } while(Parser.accept(KeyWord.COMMA)); 
+	        } while(Parse.accept(KeyWord.COMMA)); 
 	    }
 	} 
 

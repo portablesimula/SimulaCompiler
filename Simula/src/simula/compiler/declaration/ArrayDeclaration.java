@@ -17,7 +17,7 @@ import java.util.Vector;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -107,29 +107,29 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 
 	static void parse(final Type type,final DeclarationList declarationList) {
 		if (Option.TRACE_PARSE)
-			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current=" + Parser.currentToken);
+			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current=" + Parse.currentToken);
 		do { parseArraySegment(type, declarationList);
-		} while (Parser.accept(KeyWord.COMMA));
+		} while (Parse.accept(KeyWord.COMMA));
 	}
 
 	private static void parseArraySegment(final Type type,final DeclarationList declarationList) {
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse ArraySegment");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ArraySegment");
 		// IdentifierList = Identifier { , Identifier }
 		Vector<String> identList = new Vector<String>();
 		do {
 			identList.add(expectIdentifier());
-		} while (Parser.accept(KeyWord.COMMA));
-		Parser.expect(KeyWord.BEGPAR);
+		} while (Parse.accept(KeyWord.COMMA));
+		Parse.expect(KeyWord.BEGPAR);
 		// BoundPairList = BoundPair { , BoundPair }
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse BoundPairList");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse BoundPairList");
 		Vector<BoundPair> boundPairList = new Vector<BoundPair>();
 		do {
 			Expression LB = Expression.parseExpression();
-			Parser.expect(KeyWord.COLON);
+			Parse.expect(KeyWord.COLON);
 			Expression UB = Expression.parseExpression();
 			boundPairList.add(new BoundPair(LB, UB));
-		} while (Parser.accept(KeyWord.COMMA));
-		Parser.expect(KeyWord.ENDPAR);
+		} while (Parse.accept(KeyWord.COMMA));
+		Parse.expect(KeyWord.ENDPAR);
 		for (Enumeration<String> e = identList.elements(); e.hasMoreElements();) {
 			String identifier = e.nextElement();
 			declarationList.add(new ArrayDeclaration(identifier.toString(),type, boundPairList));

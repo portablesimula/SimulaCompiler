@@ -11,7 +11,7 @@ import java.util.Vector;
 
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Expression;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
@@ -46,12 +46,12 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 	 */
 	public SwitchDeclaration(final String ident) {
 		super(ident,Declaration.Kind.Procedure);
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration");
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse SwitchDeclaration");
 		this.type = Type.Label;
-		Parser.expect(KeyWord.ASSIGNVALUE);
+		Parse.expect(KeyWord.ASSIGNVALUE);
 		do { switchList.add(Expression.parseExpression());
-		} while (Parser.accept(KeyWord.COMMA));
-		if (Option.TRACE_PARSE)	Parser.TRACE("Parse SwitchDeclaration(3), switchList=" + switchList);
+		} while (Parse.accept(KeyWord.COMMA));
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse SwitchDeclaration(3), switchList=" + switchList);
 		new Parameter("_SW", Type.Integer, Parameter.Kind.Simple).into(parameterList);
 //		Global.currentScope = declaredIn;
 		Global.setScope(declaredIn);

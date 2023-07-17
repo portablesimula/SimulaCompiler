@@ -8,7 +8,7 @@
 package simula.compiler;
 
 import simula.compiler.declaration.Declaration;
-import simula.compiler.parsing.Parser;
+import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
@@ -67,14 +67,14 @@ public abstract class SyntaxClass {
 	}
 
 	protected static String acceptIdentifier() {
-		Token token = Parser.currentToken;
-		if (Parser.accept(KeyWord.IDENTIFIER))
+		Token token = Parse.currentToken;
+		if (Parse.accept(KeyWord.IDENTIFIER))
 			return (token.getIdentifier().toString());
 		return (null);
 	}
 
 	protected static String expectIdentifier() {
-		Token token = Parser.currentToken;
+		Token token = Parse.currentToken;
 		if (acceptIdentifier() != null)
 			return (token.getIdentifier().toString());
 		Util.error("Got symbol " + token + " while expecting an Identifier");
@@ -84,16 +84,16 @@ public abstract class SyntaxClass {
   
     protected static Type acceptType() {
     	Type type=null; //Type.Notype;
-    	if(Parser.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
-    	else if(Parser.accept(KeyWord.CHARACTER)) type=Type.Character;
-    	else if(Parser.accept(KeyWord.INTEGER)) type=Type.Integer;
-		else if(Parser.accept(KeyWord.SHORT)) { Parser.expect(KeyWord.INTEGER); type=Type.Integer; }
-		else if(Parser.accept(KeyWord.REAL)) type=Type.Real;
-		else if(Parser.accept(KeyWord.LONG)) { Parser.expect(KeyWord.REAL); type=Type.LongReal; }
-		else if(Parser.accept(KeyWord.TEXT)) type=Type.Text;
-		else if(Parser.accept(KeyWord.REF))	{
-			Parser.expect(KeyWord.BEGPAR); Token classIdentifier=Parser.currentToken;
-			Parser.expect(KeyWord.IDENTIFIER); Parser.expect(KeyWord.ENDPAR); 
+    	if(Parse.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
+    	else if(Parse.accept(KeyWord.CHARACTER)) type=Type.Character;
+    	else if(Parse.accept(KeyWord.INTEGER)) type=Type.Integer;
+		else if(Parse.accept(KeyWord.SHORT)) { Parse.expect(KeyWord.INTEGER); type=Type.Integer; }
+		else if(Parse.accept(KeyWord.REAL)) type=Type.Real;
+		else if(Parse.accept(KeyWord.LONG)) { Parse.expect(KeyWord.REAL); type=Type.LongReal; }
+		else if(Parse.accept(KeyWord.TEXT)) type=Type.Text;
+		else if(Parse.accept(KeyWord.REF))	{
+			Parse.expect(KeyWord.BEGPAR); Token classIdentifier=Parse.currentToken;
+			Parse.expect(KeyWord.IDENTIFIER); Parse.expect(KeyWord.ENDPAR); 
 			type=Type.Ref(classIdentifier.toString()); 
 		}
 		return(type);  
