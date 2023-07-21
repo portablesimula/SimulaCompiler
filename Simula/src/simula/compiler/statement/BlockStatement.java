@@ -19,6 +19,9 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
+ * BlockStatement.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/BlockStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -30,12 +33,20 @@ public final class BlockStatement extends Statement {
 		return (blockDeclaration.getJavaIdentifier());
 	}
 
+	/**
+	 * Create a new BlockStatement.
+	 * @param blockDeclaration the BlockDeclaration
+	 */
 	public BlockStatement(final BlockDeclaration blockDeclaration) {
 		super(blockDeclaration.lineNumber);
 		this.blockDeclaration = blockDeclaration;
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": BlockStatement: "+this);
 	}
 	
+	/**
+	 * Check if this BlockStatement is a CompoundStatement.
+	 * @return true if this BlockStatement is a CompoundStatement
+	 */
 	boolean isCompoundStatement() {
 		return(blockDeclaration.declarationKind == Declaration.Kind.CompoundStatement);
 	}
@@ -47,6 +58,10 @@ public final class BlockStatement extends Statement {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	/**
+	 * Add a leading label to this BlockStatement.
+	 * @param labelcode the label code
+	 */
 	void addLeadingLabel(String labelcode) {
 		blockDeclaration.addLeadingLabel(labelcode);
 	}

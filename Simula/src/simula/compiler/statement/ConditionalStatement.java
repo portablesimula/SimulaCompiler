@@ -28,6 +28,7 @@ import simula.compiler.utilities.Util;
  *     Ifclause = IF BooleanExpression THEN
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/ConditionalStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -36,6 +37,10 @@ public final class ConditionalStatement extends Statement {
 	private final Statement thenStatement;
 	private final Statement elseStatement;
 
+	/**
+	 * Create a new ConditionalStatement.
+	 * @param line the source line number
+	 */
 	ConditionalStatement(final int line) {
 		super(line);
 		condition = Expression.parseExpression();

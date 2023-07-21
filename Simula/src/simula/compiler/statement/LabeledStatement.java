@@ -29,6 +29,7 @@ import simula.compiler.utilities.Util;
  * 	Label = Identifier
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/LabeledStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -36,6 +37,12 @@ public final class LabeledStatement extends Statement {
 	private final Vector<String> labels;
 	private final Statement statement;
 
+	/**
+	 * Create a new LabeledStatement.
+	 * @param line the source line number
+	 * @param labels the label identifiers
+	 * @param statement the labeled statement
+	 */
 	LabeledStatement(final int line,final Vector<String> labels,final Statement statement) {
 		super(line);
 		this.labels = labels;

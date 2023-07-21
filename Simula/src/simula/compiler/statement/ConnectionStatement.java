@@ -30,12 +30,17 @@ import simula.compiler.utilities.Util;
  * <pre>
  * 
  * Syntax:
- * 
- * connection-statement = INSPECT object-expression  connection-part [ OTHERWISE statement ]
- *		connection-part = DO statement | selective-part
- *			selective-part = { WHEN <class identifier> DO <statement> }
+ *
+ *	connection-statement
+ *			= INSPECT object-expression when-clause { when-clause } [ otherwise-clause ]
+ *			| INSPECT object-expression DO statement [ otherwise-clause ]
+ *
+ *			when-clause = WHEN class-identifier DO statement
+ *
+ *			otherwise-clause = OTHERWISE statement
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/ConnectionStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -48,6 +53,10 @@ public final class ConnectionStatement extends Statement {
 	private final boolean hasWhenPart;
 	private static int SEQU = 0;
 
+	/**
+	 * Create a new ConnectionStatement.
+	 * @param line the source line number
+	 */
 	ConnectionStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ConnectionStatement");

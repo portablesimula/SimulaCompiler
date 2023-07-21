@@ -20,6 +20,7 @@ import simula.compiler.utilities.Util;
  *   WhileStatement = WHILE BooleanExpression DO Statement
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/WhileStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -27,6 +28,10 @@ public final class WhileStatement extends Statement {
 	private final Expression condition;
 	private final Statement doStatement;
 
+	/**
+	 * Create a new WhileStatement.
+	 * @param line the source line number
+	 */
 	WhileStatement(int line) {
 		super(line);
 		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement: line="+line+", current=" + Parse.currentToken);

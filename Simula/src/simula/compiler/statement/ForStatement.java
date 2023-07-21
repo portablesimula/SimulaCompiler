@@ -44,6 +44,7 @@ import simula.compiler.utilities.Util;
  *                           | ArithmeticExpression STEP ArithmeticExpression UNTIL ArithmeticExpression
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/ForStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -53,6 +54,10 @@ public final class ForStatement extends Statement {
 	private final Vector<ForListElement> forList = new Vector<ForListElement>();
 	private final Statement doStatement;
 
+	/**
+	 * Create a new ForStatement.
+	 * @param line the source line number
+	 */
 	ForStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE)

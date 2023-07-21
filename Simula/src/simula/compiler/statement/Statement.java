@@ -47,15 +47,24 @@ import simula.compiler.utilities.Util;
  *         |  ActivationStatement
  * 
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/Statement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public abstract class Statement extends SyntaxClass {
 	
+	/**
+	 * Create a new Statement.
+	 * @param line the source line number
+	 */
 	protected Statement(int line) {
 		lineNumber=line;
 	}
 
+	/**
+	 * Parse a statement.
+	 * @return the statement
+	 */
 	public static Statement doParse() {
 		Vector<String> labels = null;
 		int lineNumber=Parse.currentToken.lineNumber;

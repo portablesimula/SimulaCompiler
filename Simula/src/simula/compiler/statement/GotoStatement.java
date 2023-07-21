@@ -25,12 +25,17 @@ import simula.compiler.utilities.Util;
  *                | GO TO DesignationalExpression
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/GotoStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class GotoStatement extends Statement {
 	private final Expression label;
 
+	/**
+	 * Create a new GotoStatement.
+	 * @param line source line
+	 */
 	GotoStatement(final int line) {
 		super(line);
 		label = Expression.parseExpression();

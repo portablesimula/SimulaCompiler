@@ -29,12 +29,18 @@ import simula.compiler.utilities.Util;
  *        =  Expression { AssignmentOperator  Expression }
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/StandaloneExpression.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class StandaloneExpression extends Statement {
 	private Expression expression;
 
+	/**
+	 * Create a new StandaloneExpression.
+	 * @param line the source line number
+	 * @param expression the expression
+	 */
 	StandaloneExpression(final int line,final Expression expression) {
 		super(line);
 		this.expression = expression;

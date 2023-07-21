@@ -34,6 +34,7 @@ import simula.compiler.utilities.Util;
  *                     | BEFORE ObjectExpression
  *                     | AFTER ObjectExpression
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/ActivationStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -46,6 +47,10 @@ public final class ActivationStatement extends Statement {
 	private ActivationCode code;
 	private enum ActivationCode { direct, at, delay, before, after }
 
+	/**
+	 * Create a new ActivationStatement.
+	 * @param line the source line number
+	 */
 	ActivationStatement(final int line) {
 		super(line);
 		Token activator = Parse.prevToken;

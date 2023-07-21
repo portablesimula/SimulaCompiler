@@ -22,52 +22,86 @@ import simula.compiler.utilities.Util;
 //*************************************************************************************
 
 /**
+* Utility class SourceFileReader.
+* <p>
 * Input Utilities for the Simula Scanner.
+* <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/SourceFileReader.java"><b>Source File</b></a>.
 * 
 * @author Øystein Myhre Andersen
 *
 */
 public final class SourceFileReader {
-	private final Stack<Reader> stack=new Stack<Reader>();
+	private final Stack<Reader> stack = new Stack<Reader>();
 	private Reader current; // current source file reader;
-	private final Stack<String> nameStack=new Stack<String>();
-	private final Stack<Integer> lineStack=new Stack<Integer>();
-	
+	private final Stack<String> nameStack = new Stack<String>();
+	private final Stack<Integer> lineStack = new Stack<Integer>();
+
+	/**
+	 * Create a new SourceFileReader.
+	 * @param reader the initial underlying Reader
+	 */
 	SourceFileReader(final Reader reader) {
-		current=reader;
+		current = reader;
 	}
-	
+
+	/**
+	 * Read next character.
+	 * 
+	 * @return next character
+	 */
 	int read() {
-		int c= -1;
-		try { c = current.read();
-			  while (c == -1) {
-				  close();
-				  if (stack.isEmpty()) return (-1);
-				  forceEOF();
-				  c = current.read();
-			  }
-		} catch (IOException e) {}
+		int c = -1;
+		try {
+			c = current.read();
+			while (c == -1) {
+				close();
+				if (stack.isEmpty())
+					return (-1);
+				forceEOF();
+				c = current.read();
+			}
+		} catch (IOException e) {
+		}
 		return (c);
 	}
-	
+
+	/**
+	 * Insert a file.
+	 * 
+	 * @param file the file to be inserted
+	 */
 	void insert(final File file) {
-		lineStack.push(Global.sourceLineNumber); Global.sourceLineNumber=1;
-	    try {
-			Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
+		lineStack.push(Global.sourceLineNumber);
+		Global.sourceLineNumber = 1;
+		try {
+			Reader reader = new InputStreamReader(new FileInputStream(file), Global._CHARSET);
 			nameStack.push(Global.insertName);
-			Global.insertName=file.getName();
-			stack.push(current); current=reader;
-	    } catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+			Global.insertName = file.getName();
+			stack.push(current);
+			current = reader;
+		} catch (IOException e) {
+			Util.INTERNAL_ERROR("Impossible", e);
+		}
 	}
-	
+
+	/**
+	 * Force EOF on the current underlying reader.
+	 */
 	void forceEOF() {
-		Global.insertName=nameStack.pop();
-		Global.sourceLineNumber=lineStack.pop();
+		Global.insertName = nameStack.pop();
+		Global.sourceLineNumber = lineStack.pop();
 		current = stack.pop();
 	}
-	    
+
+	/**
+	 * Close this source file reader
+	 */
 	void close() {
-		try { current.close(); } catch (IOException e) {}
+		try {
+			current.close();
+		} catch (IOException e) {
+		}
 	}
 
 }

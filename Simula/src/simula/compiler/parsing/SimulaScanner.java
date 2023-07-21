@@ -19,7 +19,9 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * A Simula Scanner
+ * The Simula Scanner.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/SimulaScanner.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -27,14 +29,22 @@ import simula.compiler.utilities.Util;
 public final class SimulaScanner extends DefaultScanner { 
     private static final int EOF_MARK=25; // ISO EM(EndMedia) character used to denote end-of-input
     private boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
-    SourceFileReader sourceFileReader;      // The source file reader;
     private Stack<Character> puchBackStack=new Stack<Character>();
-    public static boolean selector[]=new boolean[256];
     
     private StringBuilder accum;
     private final boolean editorMode;
 
     private LinkedList<Token> tokenQueue=new LinkedList<Token>();
+
+    /**
+     * The current source file reader;
+     */
+    SourceFileReader sourceFileReader;
+    
+    /**
+     * The selector array.
+     */
+    public static boolean selector[]=new boolean[256];
 
 
 	/**
@@ -65,6 +75,10 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //*** Insert
     //********************************************************************************
+	/**
+	 * Insert a file.
+	 * @param file the file to be inserted
+	 */
 	void insert(File file) {
 		this.sourceFileReader.insert(file);
 	}
@@ -72,6 +86,9 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //*** Close
     //********************************************************************************
+	/**
+	 * Close the scanner.
+	 */
 	void close() {
 		SEARCH:while(!EOF_SEEN) {
 			int c=readNextCharacter();

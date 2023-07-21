@@ -21,12 +21,16 @@ import simula.compiler.utilities.Util;
  * DummyStatement = Empty
  * 
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DummyStatement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/DummyStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class DummyStatement extends Statement {
 	
+	/**
+	 * Create a new DummyStatement.
+	 * @param line the source line number
+	 */
 	DummyStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": DummyStatement: "+this);

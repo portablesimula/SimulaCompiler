@@ -29,10 +29,10 @@ import simula.compiler.utilities.Util;
  * Syntax:
  * 
  * switch-statement = SWITCH ( lowKey : hiKey ) switchKey BEGIN { switch-case } [ none-case ] END [ otherwise-case ]
- *      switch-case = WHEN <caseKey-list> do <statement> ;
- *      none-case   = WHEN NONE do <statement> ;
- *      otherwise-case   = OTHERWISE <statement> ;
- *      <caseKey-list> = caseKey { , caseKey }
+ *      switch-case = WHEN caseKey-list do statement ;
+ *      none-case   = WHEN NONE do statement ;
+ *      otherwise-case = OTHERWISE statement ;
+ *      caseKey-list = caseKey { , caseKey }
  *      caseKey = caseConstant  | caseConstant : caseConstant
  *      
  *      lowKey = integer-or-character-expression
@@ -44,21 +44,22 @@ import simula.compiler.utilities.Util;
  * 
  *   switch(lowkey:hikey) key
  *   begin
- *      when 0 do <statement-0> ;
+ *      when 0 do statement-0 ;
  *      ...
- *      when NONE do <statement-e> ;
+ *      when NONE do statement-e ;
  *   end
  *   
  *   Is compiled into Java-code:
  *   
- *   if(key<lowkey || key>hikey) throw new _SimulaRuntimeError("Switch key outside key interval");
+ *   if(key &lt; lowkey || key > hikey) throw new _SimulaRuntimeError("Switch key outside key interval");
  *   switch(key) {
- *       case 0: <statement-0> ;
+ *       case 0: statement-0 ;
  *       ...
- *       default: <statement-e> ;
+ *       default: statement-e ;
  *   }
  *   
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/SwitchStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -67,6 +68,10 @@ public final class SwitchStatement extends Statement {
 	private Expression switchKey;
 	private final Vector<WhenPart> switchCases=new Vector<WhenPart>();
 
+	/**
+	 * Create a new SwitchStatement.
+	 * @param line the source line number
+	 */
 	SwitchStatement(int line) {
 		super(line);
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse SwitchStatement: line="+line);

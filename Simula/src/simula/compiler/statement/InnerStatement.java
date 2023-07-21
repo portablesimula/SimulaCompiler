@@ -25,11 +25,16 @@ import simula.compiler.utilities.Util;
  *   InnerStatement = INNER
  *
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/InnerStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class InnerStatement extends Statement {
 
+	/**
+	 * Create a new InnerStatement.
+	 * @param line the source line number
+	 */
 	 public InnerStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": InnerStatement: "+this);
