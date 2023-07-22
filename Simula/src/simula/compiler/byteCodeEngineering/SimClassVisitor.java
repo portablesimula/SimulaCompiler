@@ -36,6 +36,11 @@ public class SimClassVisitor extends ClassVisitor {
 //		this.classFileName=classFileName;
 //	}
 	
+	/**
+	 * The Simula class visitor.
+	 * @param classFileName the class file name
+	 * @param classVisitor the class visitor
+	 */
 	SimClassVisitor(String classFileName,ClassVisitor classVisitor) {
 		super(ASM_Release,classVisitor);
 		this.classFileName=classFileName;

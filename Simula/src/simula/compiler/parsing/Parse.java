@@ -162,11 +162,11 @@ public final class Parse {
 	 * Test to accept a Type.
 	 * @return the type or null
 	 */
-   public static Type acceptType() {
-    	Type type=null; //Type.Notype;
-    	if(Parse.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
-    	else if(Parse.accept(KeyWord.CHARACTER)) type=Type.Character;
-    	else if(Parse.accept(KeyWord.INTEGER)) type=Type.Integer;
+	public static Type acceptType() {
+		Type type=null; //Type.Notype;
+		if(Parse.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
+		else if(Parse.accept(KeyWord.CHARACTER)) type=Type.Character;
+		else if(Parse.accept(KeyWord.INTEGER)) type=Type.Integer;
 		else if(Parse.accept(KeyWord.SHORT)) { Parse.expect(KeyWord.INTEGER); type=Type.Integer; }
 		else if(Parse.accept(KeyWord.REAL)) type=Type.Real;
 		else if(Parse.accept(KeyWord.LONG)) { Parse.expect(KeyWord.REAL); type=Type.LongReal; }
@@ -177,7 +177,7 @@ public final class Parse {
 			type=Type.Ref(classIdentifier.toString()); 
 		}
 		return(type);  
-    }
+	}
 	
 	/**
 	 * Test to accept a postfix operator ( DOT, IS, IN, QUA).

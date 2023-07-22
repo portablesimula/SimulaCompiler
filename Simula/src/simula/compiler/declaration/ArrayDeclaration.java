@@ -105,6 +105,11 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 		if (Option.TRACE_PARSE)	Util.TRACE("END NEW ArrayDeclaration: " + toString());
 	}
 
+	/**
+	 * 
+	 * @param type
+	 * @param declarationList
+	 */
 	static void parse(final Type type,final DeclarationList declarationList) {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current=" + Parse.currentToken);

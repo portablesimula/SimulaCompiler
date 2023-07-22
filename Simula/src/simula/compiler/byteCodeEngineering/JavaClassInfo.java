@@ -15,6 +15,7 @@ import simula.compiler.utilities.Global;
  * Java class info.
  * <p>
  * This class is introduced to compensate for a weakness in ASM.
+ * <p>
  * ClassWriter.getCommonSuperClass does not work because Global.tempClassFileDir is not present in java.class.path
  * <p>
  * See: ExtendedClassWriter.getCommonSuperClass
@@ -51,14 +52,25 @@ public class JavaClassInfo {
 		Global.javaClassMap.putIfAbsent(key,info);
 	}
 	
+	/**
+	 * Get the JavaClassInfo associated with 'key'
+	 * @param key a java class map key
+	 * @return the associated info or an empty String if not found
+	 */
 	static JavaClassInfo get(String key) {
 		JavaClassInfo info=Global.javaClassMap.get(key);
 		if(info==null) printJavaClassMap("");
 		return(info);		
 	}
 
+	/**
+	 * Test if this JavaClassInfo is super of the other JavaClassInfo.
+	 * <p>
+	 * This is subtype of other   iff   This is in other's prefix chain.
+	 * @param other the other JavaClassInfo
+	 * @return true if condition holds
+	 */
 	boolean isSuperTypeOf(final JavaClassInfo other) {
-		// This is subtype of other   iff   This is in other's prefix chain.
 		boolean res=false;
 		String prefix=other.prefixIdent;
 		LOOP:while(prefix != null) {
@@ -76,6 +88,10 @@ public class JavaClassInfo {
 		return(res);
 	}
 	
+	/**
+	 * Utility: Print Java class map
+	 * @param title the title
+	 */
 	static void printJavaClassMap(String title) {
 		Set<String> keys=Global.javaClassMap.keySet();
 		for(String key:keys) {
