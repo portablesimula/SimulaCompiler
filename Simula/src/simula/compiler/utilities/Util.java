@@ -14,21 +14,44 @@ import javax.swing.UIManager;
 
 /**
  * A set of all static Utility Methods
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Util.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class Util { 
+	/**
+	 * Default constructor.
+	 */
+	Util(){}
 	
+	/**
+	 * Pop up a message box.
+	 * @param msg the message
+	 */
 	public static void popUpMessage(final Object msg) {
 		Util.optionDialog(msg,"Message",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE, "OK");
 	}
 	
+	/**
+	 * Pop up an error message box.
+	 * @param msg the error message
+	 */
 	public static void popUpError(final String msg) {
 		int res=Util.optionDialog(msg+"\nDo you want to continue ?","Error",JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, "Yes", "No");
 		if(res!=JOptionPane.YES_OPTION) System.exit(0);
 	}
 
+	/**
+	 * Brings up an option dialog.
+	 * @param msg the message to display
+	 * @param title the title string for the dialog
+	 * @param optionType an integer designating the options available on the dialog
+	 * @param messageType an integer designating the kind of message this is
+	 * @param option an array of objects indicating the possible choices the user can make
+	 * @return an integer indicating the option chosen by the user, or CLOSED_OPTION if the user closed the dialog
+	 */
 	public static int optionDialog(final Object msg,final String title,final int optionType,final int messageType,final String... option) {
 		Object OptionPaneBackground=UIManager.get("OptionPane.background");
 		Object PanelBackground=UIManager.get("Panel.background");
@@ -41,15 +64,25 @@ public final class Util {
 		return(answer);
 	}
 
-	
+	/**
+	 * Number of error messages.
+	 */
 	public static int nError;
 
+	/**
+	 * Print a error message.
+	 * @param msg the message
+	 */
 	public static void error(final String msg) {
 		String err = edLINE(": Error: " + msg);
 		nError++;
 		printError(err);
 	}
 
+	/**
+	 * Print a internal error message.
+	 * @param msg the message
+	 */
 	public static void IERR(final String msg) {
 		String err = edLINE(": Internal error - " + msg);
 		nError++;
@@ -58,7 +91,17 @@ public final class Util {
 		FORCED_EXIT();
 	}
 
-	public static void INTERNAL_ERROR(final String msg,final Throwable e) {
+	private static void FORCED_EXIT() {
+		System.out.println("FORCED EXIT");
+		if (Global.console == null) System.exit(-1);
+	}
+
+	/**
+	 * Print a internal error message.
+	 * @param msg the message
+	 * @param e any Throwable
+	 */
+	public static void IERR(final String msg,final Throwable e) {
 		String err = edLINE(": Internal error - " + msg +"  "+ e);
 		nError++;
 		printError(err);
@@ -66,15 +109,10 @@ public final class Util {
 		FORCED_EXIT();
 	}
 
-	public static void FATAL_ERROR(final String s) {
-		String msg = edLINE(": FATAL ERROR - " + s);
-		nError++;
-		printError(msg);
-		println("STACK-TRACE");
-		Thread.dumpStack();
-		FORCED_EXIT();
-	}
-
+	/**
+	 * Print a warning message.
+	 * @param msg the message
+	 */
 	public static void warning(final String msg) {
 		String line = edLINE(": WARNING: " + msg);
 		if (Option.WARNINGS) {
@@ -88,48 +126,52 @@ public final class Util {
 		return(line);
 	}
 
-	public static void message(final String msg) {
-		println(msg);
-	}
-
-	public static void LIST(final String msg) {
-		TRACE("LIST", msg);
-	}
-
+	/**
+	 * Utility method: TRACE
+	 * @param msg the message to print
+	 */
 	public static void TRACE(final String msg) {
 		TRACE("TRACE", msg);
 	}
 
-	public static void TRACE(final String id,final String msg) {
+	private static void TRACE(final String id,final String msg) {
 		if (Option.TRACING)
 			println(id + " " + Global.sourceLineNumber + ": " + msg);
 	}
 
+	/**
+	 * Utility method: TRACE_OUTPUT
+	 * @param msg the message to print
+	 */
 	public static void TRACE_OUTPUT(final String msg) {
 		if (Option.TRACE_ATTRIBUTE_OUTPUT)
 			Util.println("ATTR OUTPUT: " + msg);
 	}
 
+	/**
+	 * Utility method: TRACE_INPUT
+	 * @param msg the message to print
+	 */
 	public static void TRACE_INPUT(final String msg) {
 		if (Option.TRACE_ATTRIBUTE_INPUT)
 			Util.println("ATTR INPUT: " + msg);
 	}
 
-	public static void NOT_IMPLEMENTED(final String s) {
-		IERR("*** NOT IMPLEMENTED: " + s);
-	}
-
-	public static void FORCED_EXIT() {
-		System.out.println("FORCED EXIT");
-		if (Global.console == null) System.exit(-1);
-	}
-
+	/**
+	 * Utility method: ASSERT
+	 * @param test this test must be true
+	 * @param msg the message when test = false
+	 */
 	public static void ASSERT(final boolean test, final String msg) {
 		if (!test) {
 			IERR("ASSERT(" + msg + ") -- FAILED");
 		}
 	}
 
+	/**
+	 * Print a string.
+	 * @param s the string
+	 */
 	public static void println(final String s) {
 		if (Global.console != null) {
 			String u = s.replace('\r', (char) 0);
@@ -139,12 +181,20 @@ public final class Util {
 		else System.out.println(s);
 	}  
 
+	/**
+	 * Print a error message.
+	 * @param s the message
+	 */
 	public static void printError(final String s) {
 		String u = s.replace('\r', (char) 0);
 		if (Global.console != null)	Global.console.writeError(u + '\n');
 		else System.err.println(u);
 	}  
 
+	/**
+	 * Print a warning message.
+	 * @param s the message
+	 */
 	public static void printWarning(final String s) {
 		String u = s.replace('\r', (char) 0);
 		if (Global.console != null)	Global.console.writeWarning(u + '\n');
@@ -152,14 +202,19 @@ public final class Util {
 	}  
 
     //*******************************************************************************
-    //*** isJavaIdentifier - Check if 's' is a legal Java Identifier
+    //*** isJavaIdentifier - Check if 'ident' is a legal Java Identifier
     //*******************************************************************************
-	public static boolean isJavaIdentifier(final String s) {
-		if (s.length() == 0 || !Character.isJavaIdentifierStart(s.charAt(0))) {
+	/**
+	 * Check if 'ident' is a legal Java Identifier.
+	 * @param ident the given identifier
+	 * @return true if 'ident' is a legal Java Identifier otherwise false
+	 */
+	public static boolean isJavaIdentifier(final String ident) {
+		if (ident.length() == 0 || !Character.isJavaIdentifierStart(ident.charAt(0))) {
 			return false;
 		}
-		for (int i = 1; i < s.length(); i++) {
-			if (!Character.isJavaIdentifierPart(s.charAt(i))) {
+		for (int i = 1; i < ident.length(); i++) {
+			if (!Character.isJavaIdentifierPart(ident.charAt(i))) {
 				return false;
 			}
 		}
@@ -167,16 +222,21 @@ public final class Util {
 	}
 
     //*******************************************************************************
-    //*** makeJavaIdentifier - Make 's' a legal Java Identifier
+    //*** makeJavaIdentifier - Make 'ident' a legal Java Identifier
     //*******************************************************************************
-	public static String makeJavaIdentifier(final String s) {
+	/**
+	 * Make 'ident' a legal Java Identifier.
+	 * @param ident the given identifier
+	 * @return the resulting Java identifier
+	 */
+	public static String makeJavaIdentifier(final String ident) {
 		StringBuilder sb=new StringBuilder();
-		char c=s.charAt(0);
-		if (s.length() == 0 || !Character.isJavaIdentifierStart(c)) c='_';
+		char c=ident.charAt(0);
+		if (ident.length() == 0 || !Character.isJavaIdentifierStart(c)) c='_';
 		sb.append(c);
 		
-		for (int i = 1; i < s.length(); i++) {
-			c=s.charAt(i);
+		for (int i = 1; i < ident.length(); i++) {
+			c=ident.charAt(i);
 			if (!Character.isJavaIdentifierPart(c)) c='_';
 			sb.append(c);
 		}
@@ -186,6 +246,12 @@ public final class Util {
     //*******************************************************************************
     //*** 
     //*******************************************************************************
+	/**
+	 * Returns true if the two specified strings are equal to one another.
+	 * @param s1 argument string
+	 * @param s2 argument string
+	 * @return true if the two specified strings are equal to one another
+	 */
 	public static boolean equals(String s1,String s2) {
 		if(Option.CaseSensitive)
 			 return(s1.equals(s2));			
@@ -195,6 +261,12 @@ public final class Util {
     //*******************************************************************************
     //*** IPOW - Integer Power: b ** x
     //*******************************************************************************
+	/**
+	 * Utility: Integer Power: b ** x
+	 * @param base argument base
+	 * @param x argument x
+	 * @return Returns the value of 'base' raised to the power of 'x'
+	 */
 	public static int IPOW(final long base, long x) {
 //		System.out.println("Util.IPOW: base="+base+", x="+x);
 		if (x == 0) {

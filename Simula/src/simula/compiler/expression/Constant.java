@@ -97,7 +97,7 @@ public final class Constant extends Expression implements Externalizable {
 				default:
 			}
 		}
-		if(result==null) Util.FATAL_ERROR("Impossible");
+		if(result==null) Util.IERR("Impossible");
 		return(new Constant(type,result));
     }
   
@@ -143,7 +143,7 @@ public final class Constant extends Expression implements Externalizable {
         		default    -> Util.IERR("Unexpected value: " + opr);
 			}
 		}
-		if(result==null) Util.FATAL_ERROR("Impossible");
+		if(result==null) Util.IERR("Impossible");
 		return(new Constant(type,result));
     }
     

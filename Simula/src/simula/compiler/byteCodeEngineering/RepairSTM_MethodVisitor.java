@@ -190,7 +190,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			Object cst=lprev.cst;
 			//labelIndex=VALUE(cst); // Hva gjør vi her ??
 			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: UNKNOWN ", pushLabelIndexInstrution.getPrevious().getPrevious(), 8);
-			Util.NOT_IMPLEMENTED("More than 32767 labels in same Block (cst="+cst+')');
+			Util.IERR("*** NOT IMPLEMENTED: " +"More than 32767 labels in same Block (cst="+cst+')');
 		} else {
 			Util.IERR("Repair_STMMethodVisitor.treatLABEL: IMPOSSIBLE-3");
 		}
@@ -257,7 +257,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 			for(LabelHandle h:labelHandles) {
 				Util.println("Repair_STMMethodVisitor.treatJUMPTABLE: "+h);
 			}
-			Util.FATAL_ERROR("ByteCode Engineering FAILED");
+			Util.IERR("ByteCode Engineering FAILED");
 		}
 		
 		int min=1; // the minimum key value.

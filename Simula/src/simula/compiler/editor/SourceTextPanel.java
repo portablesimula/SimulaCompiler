@@ -42,6 +42,9 @@ import java.io.StringReader;
 import java.util.StringTokenizer;
 
 /**
+ * The Source text Panel.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/editor/SourceTextPanel.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -50,13 +53,9 @@ public class SourceTextPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static final boolean DEBUG=false;//true;
 
-	JTextPane editTextPane;  // Editable text pane with undo/redo history
 	private JTextPane lineNumbers;
 	private JScrollPane styleScrollPane;
-	File sourceFile;
-    boolean AUTO_REFRESH=true;//false;
  	
-    Language lang;
 	private Style styleRegular;
 	private Style styleKeyword;
 	private Style styleComment;
@@ -65,14 +64,54 @@ public class SourceTextPanel extends JPanel {
 	private JPopupMenu popupMenu;
 	private StyledDocument doc;
 	
-    boolean fileChanged = false;
-    boolean refreshNeeded = false;
+	/**
+	 * Editable text pane with undo/redo history.
+	 */
+	JTextPane editTextPane;
+	
+	/**
+	 * Current language.
+	 */
+    SimulaEditor.Language lang;
+
+	
+	/**
+	 * The source file.
+	 */
+	File sourceFile;
+	
+	/**
+	 * Signals auto refresh.
+	 */
+    boolean AUTO_REFRESH=true;//false;
+
+	/**
+	 * The undo manager.
+	 */
 	private UndoManager undoManager = new UndoManager();
+	
+	/**
+	 * Returns the undo manager.
+	 * @return the undo manager
+	 */
 	UndoManager getUndoManager() { return(undoManager); }
+	
+    /**
+     * Indicates that the source file has changed.
+     */
+    boolean fileChanged = false;
     
+    /**
+     * Indicates that refresh is needed.
+     */
+    boolean refreshNeeded = false;
+
 	// ****************************************************************
 	// *** UndoableEditListener
 	// ****************************************************************
+    /**
+     * The UndoableEditListener.
+     */
     private UndoableEditListener undoListener=new UndoableEditListener() {
 		public void undoableEditHappened(UndoableEditEvent e) {
 			UndoableEdit edit=e.getEdit();
@@ -90,6 +129,9 @@ public class SourceTextPanel extends JPanel {
 	// ****************************************************************
 	// *** MouseListener
 	// ****************************************************************
+	/**
+	 * The MouseListener.
+	 */
     MouseListener mouseListener = new MouseListener() {
 		public void mousePressed(MouseEvent e) {}
 		public void mouseReleased(MouseEvent e) {}
@@ -103,6 +145,9 @@ public class SourceTextPanel extends JPanel {
 	// ****************************************************************
 	// *** DocumentListener
 	// ****************************************************************
+    /**
+     * The DocumentListener.
+     */
 	DocumentListener documentListener=new DocumentListener() {
 		public void insertUpdate(DocumentEvent e)  { Testutskrift("Insert",e); }
 		public void removeUpdate(DocumentEvent e)  { Testutskrift("Remove",e); }
@@ -127,14 +172,20 @@ public class SourceTextPanel extends JPanel {
 			    styleName=(String)leaf.getAttribute(StyleConstants.NameAttribute);
 		    }
 		    lastText=lastText.replace("\n","\\n");
-		} catch (Exception ex) { Util.INTERNAL_ERROR("Impossible",ex); }			
+		} catch (Exception ex) { Util.IERR("Impossible",ex); }			
 	    return(id + '[' + ofst + ',' + lng + "]="+styleName+"\"" + lastText + '"');
 	}	
 	
 	// ****************************************************************
 	// *** Constructor
 	// ****************************************************************
-    SourceTextPanel(File sourceFile,Language lang,JPopupMenu popupMenu) {
+	/**
+	 * Create a new SourceTextPanel.
+	 * @param sourceFile the source file
+	 * @param lang the language
+	 * @param popupMenu the popupMenu
+	 */
+    SourceTextPanel(File sourceFile,SimulaEditor.Language lang,JPopupMenu popupMenu) {
     	this.sourceFile=sourceFile;
     	this.lang=lang;
     	this.popupMenu=popupMenu;
@@ -165,6 +216,11 @@ public class SourceTextPanel extends JPanel {
 	// ****************************************************************
 	// *** fillTextPane
 	// ****************************************************************
+    /**
+     * Fill the text pane with text from the source file reader.
+     * @param reader the source file reader
+     * @param caretPosition argument
+     */
     void fillTextPane(Reader reader,int caretPosition) {
     	switch(lang) {
 			case Simula: fillTextPane(reader,caretPosition,new SimulaScanner(reader,true)); break;
@@ -209,6 +265,9 @@ public class SourceTextPanel extends JPanel {
 	// ****************************************************************
 	// *** doRefresh
 	// ****************************************************************
+    /**
+     * Do refresh action.
+     */
 	void doRefresh() {
 	    int pos=editTextPane.getCaretPosition();
 	    String txt=editTextPane.getText();

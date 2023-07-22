@@ -257,23 +257,23 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		if(Option.TRACE_FIND_MEANING>0) Util.message("BEGIN Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.println("BEGIN Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
-			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Local "+declaration);
+			if(Option.TRACE_FIND_MEANING>1) Util.println("Checking Local "+declaration);
 			if (Util.equals(ident, declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
 		}
 		for (Parameter parameter : parameterList) {
-			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Parameter "+parameter);
+			if(Option.TRACE_FIND_MEANING>1) Util.println("Checking Parameter "+parameter);
 			if (Util.equals(ident, parameter.identifier))
 				return (new Meaning(parameter, this, this, false));
 		}
 		for (LabelDeclaration label : labelList) {
-			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Label "+label);
+			if(Option.TRACE_FIND_MEANING>1) Util.println("Checking Label "+label);
 			if (Util.equals(ident, label.identifier))
 				return (new Meaning(label, this, this, false));
 		}
-		if(Option.TRACE_FIND_MEANING>0) Util.message("ENDOF Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.println("ENDOF Checking Procedure for "+ident+" ================================== "+identifier+" ==================================");
 		return (null);
 	}
 
@@ -288,7 +288,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		case ContextFreeMethod -> doMethodJavaCoding("static ", false);
 		case MemberMethod -> doMethodJavaCoding("", true);
 		case Procedure -> doProcedureCoding();
-		default -> Util.FATAL_ERROR("Impossible Situation !");
+		default -> Util.IERR("Impossible Situation !");
 		}
 	}
 

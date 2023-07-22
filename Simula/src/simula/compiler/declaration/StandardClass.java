@@ -1058,14 +1058,14 @@ public final class StandardClass extends ClassDeclaration {
 
 	@Override
 	public Meaning findVisibleAttributeMeaning(String ident) {
-		if(Option.TRACE_FIND_MEANING>0) Util.message("BEGIN Checking Standard Class "+identifier+" for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.println("BEGIN Checking Standard Class "+identifier+" for "+ident+" ================================== "+identifier+" ==================================");
 		for(Declaration declaration:declarationList) {
-			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Local "+declaration.identifier);
+			if(Option.TRACE_FIND_MEANING>1) Util.println("Checking Local "+declaration.identifier);
 			if(Util.equals(ident, declaration.identifier)) {
 				return(new Meaning(declaration,this));
 			}
 		}
-		if(Option.TRACE_FIND_MEANING>0) Util.message("ENDOF Checking Standard Class "+identifier+" for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.println("ENDOF Checking Standard Class "+identifier+" for "+ident+" ================================== "+identifier+" ==================================");
 		ClassDeclaration prfx=getPrefixClass();
 		if(prfx!=null) return(prfx.findVisibleAttributeMeaning(ident));
 		return(null);

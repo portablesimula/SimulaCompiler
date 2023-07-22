@@ -13,9 +13,21 @@ import java.io.ObjectOutput;
 
 import simula.compiler.declaration.ClassDeclaration;
 
+/**
+ * Utility class OverLoad.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/OverLoad.java"><b>Source File</b></a>.
+ * 
+ * @author Øystein
+ *
+ */
 public final class OverLoad extends Type {
 	private Type[] type;
 	
+	/**
+	 * Create a new OverLoad type list.
+	 * @param type the types
+	 */
 	public OverLoad(final Type... type)
 	{  super("OverLoad");
 	   this.type=type;
@@ -36,6 +48,9 @@ public final class OverLoad extends Type {
 	// ***********************************************************************************************
 	// *** Externalization
 	// ***********************************************************************************************
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public OverLoad() {} // Externalization
 
 

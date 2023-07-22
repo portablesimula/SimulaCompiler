@@ -95,7 +95,7 @@ public abstract class DeclarationScope extends Declaration {
 	 * @return the resulting Meaning
 	 */
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		Util.FATAL_ERROR("DeclarationScope.findVisibleAttributeMeaning: SHOULD BEEN REDEFINED: " + identifier);
+		Util.IERR("DeclarationScope.findVisibleAttributeMeaning: SHOULD BEEN REDEFINED: " + identifier);
 		return (null);
 	}
 

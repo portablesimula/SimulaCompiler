@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.util.Vector;
 
 import simula.compiler.Simula;
-import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -79,7 +78,7 @@ public final class RunCmdTest {
 //		cmds.add("-help");
 		cmds.add("-verbose");
 		int exitValue3=execute(cmds);
-		if (Option.verbose)	Util.message("END Execute .jar File. Exit value="+exitValue3);
+		if (Option.verbose)	Util.println("END Execute .jar File. Exit value="+exitValue3);
 	}
 	
 //	public static void listJarfile(String jarFile) {
@@ -88,7 +87,7 @@ public final class RunCmdTest {
 //		cmds.add("-tf");
 //		cmds.add(jarFile);
 //		int exitValue3=execute(cmds);
-//		if (Option.verbose)	Util.message("END Execute list .jar File. Exit value="+exitValue3);
+//		if (Option.verbose)	Util.println("END Execute list .jar File. Exit value="+exitValue3);
 //		
 //	}
 
@@ -112,7 +111,7 @@ public final class RunCmdTest {
 		if (Option.TRACING) {
 			String line="";
 			for(int i=0;i<cmdarray.length;i++) line=line+" "+cmdarray[i];
-			Util.message("Execute: " + line);
+			Util.println("Execute: " + line);
 		}
 		Process process = runtime.exec(cmdarray);
 		InputStream err = process.getErrorStream();

@@ -108,7 +108,7 @@ public final class ExternalDeclaration extends Declaration {
         // | EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
         // | EXTERNAL kind PROCEDURE ExternalItem  IS ProcedureDeclaration
 		String kind=acceptIdentifier();
-		if(kind!=null) Util.NOT_IMPLEMENTED("External "+kind+" Procedure");
+		if(kind!=null) Util.IERR("*** NOT IMPLEMENTED: " +"External "+kind+" Procedure");
 		Type expectedType = acceptType();
 		if (!(Parse.accept(KeyWord.CLASS) || Parse.accept(KeyWord.PROCEDURE)))
 			Util.error("parseExternalDeclaration: Expecting CLASS or PROCEDURE");
@@ -130,7 +130,7 @@ public final class ExternalDeclaration extends Declaration {
 
 			if(Parse.accept(KeyWord.IS)) {
 				// ...
-				Util.NOT_IMPLEMENTED("External non-Simula Procedure");
+				Util.IERR("*** NOT IMPLEMENTED: " +"External non-Simula Procedure");
 				break LOOP;
 			}
 			if(!Parse.accept(KeyWord.COMMA)) break LOOP;
@@ -156,7 +156,7 @@ public final class ExternalDeclaration extends Declaration {
 				//System.out.println("ExternalDeclaration.findJarFile(3): try "+jarFile+", exists="+jarFile.exists());
 				if(jarFile.exists()) return(jarFile);
 			}
-		} catch(Exception e) { Util.INTERNAL_ERROR("Can't find attribute file: "+jarFile,e); }
+		} catch(Exception e) { Util.IERR("Can't find attribute file: "+jarFile,e); }
 		Util.error("Can't find attribute file: "+jarFile);
 		return(null);
 	}
@@ -186,13 +186,13 @@ public final class ExternalDeclaration extends Declaration {
 	    } catch(IOException | ClassNotFoundException e) {
 			Util.error("Unable to read Attribute File: "+file+" caused by: "+e);
 			Util.warning("It may be necessary to recompile '"+identifier+"'");
-	    	Util.INTERNAL_ERROR("Caused by:",e);
+	    	Util.IERR("Caused by:",e);
 	    }
 	    return(moduleType);
 	}
 
 	private static void expandJarEntries(final JarFile jarFile,final File destDir) throws IOException {
-		if(Option.verbose) Util.message("---------  EXPAND .jar File: "+jarFile.getName()+"  ---------");
+		if(Option.verbose) Util.println("---------  EXPAND .jar File: "+jarFile.getName()+"  ---------");
 		new File(destDir,Global.packetName).mkdirs(); // Create directories
 		Enumeration<JarEntry> entries = jarFile.entries();
 		int nEntriesAdded=0;
@@ -223,7 +223,7 @@ public final class ExternalDeclaration extends Declaration {
 				}
 			}
 		}
-		if(Option.verbose) Util.message("---------  END EXPAND .jar File, "+nEntriesAdded+" Entries Added  ---------");
+		if(Option.verbose) Util.println("---------  END EXPAND .jar File, "+nEntriesAdded+" Entries Added  ---------");
 	}
 
 }

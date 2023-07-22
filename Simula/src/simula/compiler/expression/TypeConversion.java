@@ -71,7 +71,7 @@ public final class TypeConversion extends Expression {
 				}
 				else if(toType==Type.Real) val=val.floatValue();
 				else if(toType==Type.LongReal) val=val.doubleValue();
-				else Util.FATAL_ERROR("IMPOSSIBLE - TypeConversion.testAndCreate: "+expression);
+				else Util.IERR("IMPOSSIBLE - TypeConversion.testAndCreate: "+expression);
 				Constant c=new Constant(toType,val); c.doChecking();
 				return(c);
 			}

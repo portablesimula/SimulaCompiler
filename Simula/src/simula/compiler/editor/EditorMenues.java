@@ -42,6 +42,9 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
+ * The editor's menues.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/editor/EditorMenues.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -65,6 +68,10 @@ public class EditorMenues extends JMenuBar {
     private JMenuItem exit = new JMenuItem("Exit");
     
     private JMenu editMenu=new JMenu("Edit");
+    
+    /**
+     * Refresh item.
+     */
 	JMenuItem refresh=new JMenuItem("Refresh");
 	private JMenuItem cut=new JMenuItem(new DefaultEditorKit.CutAction());
 	private JMenuItem copy=new JMenuItem(new DefaultEditorKit.CopyAction());
@@ -93,6 +100,9 @@ public class EditorMenues extends JMenuBar {
     private JMenuItem about = new JMenuItem("About Simula");
     private JMenuItem more = new JMenuItem("More Info");
     
+    /**
+     * The popup menu.
+     */
     JPopupMenu popupMenu;
     private JMenuItem newFile2 = new JMenuItem("New");
     private JMenuItem openFile2 = new JMenuItem("Open");
@@ -124,6 +134,9 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** Constructor
 	// ****************************************************************
+    /**
+     * Create a new instance of EditorMenues.
+     */
 	EditorMenues() {
     	fileMenu.add(newFile); newFile.addActionListener(actionListener);
     	fileMenu.add(openFile); openFile.addActionListener(actionListener);
@@ -244,6 +257,9 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** EditMenu: UpdateMenuItems
 	// ****************************************************************
+	/**
+	 * Update menu items.
+	 */
 	void updateMenuItems() {
 		SourceTextPanel current=SimulaEditor.current;
 		boolean source=false;
@@ -257,8 +273,8 @@ public class EditorMenues extends JMenuBar {
 			source=true;
 			String editText=current.editTextPane.getText();
 			if(editText!=null && editText.trim().length()!=0) text=true; 
-			if(current.lang==Language.Simula && text) mayRun=true;
-			if(current.lang==Language.Simula && editText!=null && editText.trim().length()!=0) text=true; 
+			if(current.lang==SimulaEditor.Language.Simula && text) mayRun=true;
+			if(current.lang==SimulaEditor.Language.Simula && editText!=null && editText.trim().length()!=0) text=true; 
 			fileChanged=current.fileChanged;
 			auto=source && current.AUTO_REFRESH;
 			UndoManager undoManager = current.getUndoManager();
@@ -287,11 +303,14 @@ public class EditorMenues extends JMenuBar {
 	// ****************************************************************
 	// *** HelpMenu: ActionListener
 	// ****************************************************************
+	/**
+	 * the ActionListener
+	 */
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Object item=e.getSource();
 			SourceTextPanel current=SimulaEditor.current;
-			if(item==newFile || item==newFile2) SimulaEditor.doNewTabbedPanel(null,Language.Simula);
+			if(item==newFile || item==newFile2) SimulaEditor.doNewTabbedPanel(null,SimulaEditor.Language.Simula);
 			else if(item==openFile || item==openFile2) doOpenFileAction();
 			else if(item==saveFile || item==saveFile2) doSaveCurrentFile(false);
 			else if(item==saveAs   || item==saveAs2) doSaveCurrentFile(true);
@@ -327,12 +346,12 @@ public class EditorMenues extends JMenuBar {
     		if(!file.exists()) { Util.popUpError("Can't open file\n"+file); return; }
     		String lowName=file.getName().toLowerCase();
     		if(lowName.endsWith(".sim")) {
-    			SimulaEditor.doNewTabbedPanel(file,Language.Simula);
+    			SimulaEditor.doNewTabbedPanel(file,SimulaEditor.Language.Simula);
             	Global.setCurrentWorkspace(fileChooser.getCurrentDirectory());
     		}
-    		else if(lowName.endsWith(".jar")) SimulaEditor.doNewTabbedPanel(file,Language.Jar);
-    		else if(isTextFile(lowName)) SimulaEditor.doNewTabbedPanel(file,Language.Text);
-    		else SimulaEditor.doNewTabbedPanel(file,Language.Other);
+    		else if(lowName.endsWith(".jar")) SimulaEditor.doNewTabbedPanel(file,SimulaEditor.Language.Jar);
+    		else if(isTextFile(lowName)) SimulaEditor.doNewTabbedPanel(file,SimulaEditor.Language.Text);
+    		else SimulaEditor.doNewTabbedPanel(file,SimulaEditor.Language.Other);
     		
         }
 	}
@@ -346,6 +365,10 @@ public class EditorMenues extends JMenuBar {
     // ****************************************************************
     // *** doSaveCurrentFile
     // ****************************************************************
+	/**
+	 * Do save current source file.
+	 * @param saveAs true if a file chooser is wanted
+	 */
 	void doSaveCurrentFile(boolean saveAs) {
 		SourceTextPanel current=SimulaEditor.current;
 		if(saveAs || current.sourceFile==null) {
@@ -381,6 +404,9 @@ public class EditorMenues extends JMenuBar {
     // ****************************************************************
     // *** doCloseAllAction
     // ****************************************************************
+	/**
+	 * Do close action.
+	 */
 	void doCloseAllAction() {
 		while(SimulaEditor.tabbedPane.getSelectedIndex()>=0)
 		    doCloseCurrentFileAction();
@@ -389,6 +415,9 @@ public class EditorMenues extends JMenuBar {
     // ****************************************************************
     // *** doExitAction
     // ****************************************************************
+	/**
+	 * Do exit action.
+	 */
 	void doExitAction() {
 		doCloseAllAction();
 		System.exit(0);
@@ -397,7 +426,11 @@ public class EditorMenues extends JMenuBar {
     // ****************************************************************
     // *** maybeSaveCurrentFile
     // ****************************************************************
-	// Also used by RunMeny[Run]
+	/**
+	 * Maybe save current source file.
+	 * <p>
+	 * Also used by RunMeny[Run]
+	 */
 	void maybeSaveCurrentFile() {
 		SourceTextPanel current=SimulaEditor.current;
 		if(current==null) return; if(!current.fileChanged) return;

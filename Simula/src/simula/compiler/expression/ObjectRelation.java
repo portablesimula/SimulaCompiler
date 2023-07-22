@@ -141,7 +141,7 @@ public final class ObjectRelation extends Expression {
 			if (!checkCompatibility(lhs, classIdentifier)) return ("false"); // warning("IS is always FALSE
 			return ("_IS(" + lhs.get() + "," + classDeclaration.getJavaIdentifier() + ".class)");
 		} else {
-			Util.FATAL_ERROR("Impossible");
+			Util.IERR("Impossible");
 			return ("");
 		}
 	}

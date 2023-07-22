@@ -106,7 +106,7 @@ public final class _RTConsolePanel extends JPanel {
 	}
 
 	/**
-	 * Get a reade suitable for reading from this panel
+	 * Get a reader suitable for reading from this panel
 	 * @return a reader
 	 */
 	public Reader getReader() {
@@ -221,7 +221,7 @@ public final class _RTConsolePanel extends JPanel {
 		try {
 			doc.insertString(doc.getLength(), s, style);
 		} catch (BadLocationException e) {
-			INTERNAL_ERROR("Impossible", e);
+			IERR("Impossible", e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 	}
@@ -233,7 +233,7 @@ public final class _RTConsolePanel extends JPanel {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
-			INTERNAL_ERROR("Impossible", e);
+			IERR("Impossible", e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 		textPane.update(textPane.getGraphics());
@@ -244,8 +244,8 @@ public final class _RTConsolePanel extends JPanel {
 	 * @param msg the error message
 	 * @param e an Throwable
 	 */
-	public static void INTERNAL_ERROR(final String msg, final Throwable e) {
-		System.out.println("INTERNAL_ERROR: " + msg + "  " + e);
+	public static void IERR(final String msg, final Throwable e) {
+		System.out.println("IERR: " + msg + "  " + e);
 		e.printStackTrace();
 	}
 

@@ -140,7 +140,7 @@ public final class BooleanExpression extends Expression {
 					Util.error("Incompatible types in binary operation: " + toString());
 				break;
 		    }
-		    default: Util.FATAL_ERROR("Impossible");
+		    default: Util.IERR("Impossible");
 		}
 		if (Option.TRACE_CHECKER)
 			Util.TRACE("END BooleanOperation" + toString() + ".doChecking - Result type=" + this.type);

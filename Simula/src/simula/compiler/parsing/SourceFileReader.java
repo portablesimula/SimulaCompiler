@@ -81,7 +81,7 @@ public final class SourceFileReader {
 			stack.push(current);
 			current = reader;
 		} catch (IOException e) {
-			Util.INTERNAL_ERROR("Impossible", e);
+			Util.IERR("Impossible", e);
 		}
 	}
 

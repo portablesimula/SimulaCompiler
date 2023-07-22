@@ -13,6 +13,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /**
+ * Utility class Token.
  * 
  * @author Øystein Myhre Andersen
  *

@@ -23,10 +23,11 @@ import simula.compiler.GeneratedJavaClass;
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
 import simula.compiler.declaration.DeclarationScope;
 import simula.compiler.declaration.StandardClass;
-import simula.compiler.editor.RTOption;
 
 /**
- * Global Variables 
+ * Global Variables.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Global.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -152,7 +153,6 @@ public final class Global {
 	private static File getSimulaPropertiesFile() {
 		File javaClassPath=new File(System.getProperty("java.class.path"));
 		if(Option.INLINE_TESTING) {
-			//if(RTOption.USE_VIRTUAL_THREAD) System.out.print("USE_VIRTUAL_THREAD, ");
 			System.out.println("INLINE_TESTING");
 		}
 		if(javaClassPath.exists()) {
@@ -223,7 +223,7 @@ public final class Global {
     			}
     		} catch(Exception e) {
     			Util.popUpError("Can't load: "+simulaWorkspacesFile+"\nGot error: "+e );
-    			Util.INTERNAL_ERROR("Global.loadWorkspaces FAILED: ", e);
+    			Util.IERR("Global.loadWorkspaces FAILED: ", e);
     		}
     	} else {
     		loadWorkspacesFromOldPropertyFile();
@@ -263,7 +263,7 @@ public final class Global {
 		Global.currentWorkspace=workspaces.getFirst();
 		simulaWorkspacesFile.getParentFile().mkdirs();
 		try { simulaWorkspaces.storeToXML(new FileOutputStream(simulaWorkspacesFile),"Simula Workspaces");
-		} catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
+		} catch(Exception e) { Util.IERR("Impossible",e); }
 	}
 	
 	

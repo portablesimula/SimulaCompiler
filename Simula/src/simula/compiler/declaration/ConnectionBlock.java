@@ -53,10 +53,10 @@ public final class ConnectionBlock extends DeclarationScope {
 	}
 
 	/**
-	 * Get inspected variable.
-	 * @return inspected variable.
+	 * Get inspected expression.
+	 * @return inspected expression.
 	 */
-	public Expression getInspectedVariable() {
+	public Expression getInspectedExpression() {
 		Type type = classDeclaration.type;
 		return ((Expression) TypeConversion.testAndCreate(type, inspectedVariable));
 	}

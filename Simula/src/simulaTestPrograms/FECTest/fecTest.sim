@@ -330,7 +330,7 @@ Begin
                      idlo:=hashlo:=identlo:=char(rank(identlo)+1);
                      idhi:=hashhi:=identhi end;
                   if idhi = consthi and then idlo >= constlo
-%+A               then FATAL_ERROR("Symbol table overflow");
+%+A               then IERR("Symbol table overflow");
 %-A               then CommonError(297);
                   symhi:-symtab(rank(idhi));
                   if symhi==dummyGroup then begin
@@ -373,7 +373,7 @@ Begin
                      idlo:=hashlo:=constlo:=char(rank(constlo)-1);
                      idhi:=hashhi:=consthi end;
                   if idhi = identhi and then idlo <= identlo
-%+A               then FATAL_ERROR("Symbol table overflow");
+%+A               then IERR("Symbol table overflow");
 %-A               then CommonError(297);
                   symhi:-symtab(rank(idhi));
                   if symhi==dummyGroup then begin

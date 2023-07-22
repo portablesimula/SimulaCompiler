@@ -20,7 +20,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
- * Compile Time Options
+ * Compile Time Options.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Option.java"><b>Source File</b></a>.
  * 
  * @author Øystein
  *

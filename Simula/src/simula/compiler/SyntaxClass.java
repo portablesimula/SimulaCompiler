@@ -108,7 +108,7 @@ public abstract class SyntaxClass {
 		if (IS_SEMANTICS_CHECKED())	return;
 		Global.sourceLineNumber = lineNumber;
 		String name = this.getClass().getSimpleName();
-		Util.NOT_IMPLEMENTED("" + name + ".doChecking");
+		Util.IERR("*** NOT IMPLEMENTED: " +"" + name + ".doChecking");
 	}
 
 	// Should be called from all doChecking,put,get methods

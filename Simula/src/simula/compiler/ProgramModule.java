@@ -100,7 +100,7 @@ public final class ProgramModule extends Statement {
 			StandardClass.BASICIO.declarationList.add(module);
 		
 			if(Option.verbose) Util.TRACE("ProgramModule: END NEW SimulaProgram: "+toString());
-		} catch(Throwable e) { Util.INTERNAL_ERROR("Impossible",e); }
+		} catch(Throwable e) { Util.IERR("Impossible",e); }
 		this.module=module;
 	}	
 

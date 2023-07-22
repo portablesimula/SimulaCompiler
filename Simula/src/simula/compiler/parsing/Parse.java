@@ -77,7 +77,7 @@ public final class Parse {
 	 * Save current Token
 	 */
 	public static void saveCurrentToken() {
-		if (savedToken != null) Util.FATAL_ERROR("saveCurrentToken: Already called");
+		if (savedToken != null) Util.IERR("saveCurrentToken: Already called");
 		savedToken = Parse.currentToken;
 		Parse.currentToken = Parse.prevToken;
 		Parse.prevToken = null;

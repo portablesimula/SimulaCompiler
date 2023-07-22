@@ -19,7 +19,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -54,10 +53,12 @@ import simula.compiler.utilities.ConsolePanel;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
-import simula.runtime._RT;
 
 
 /**
+ * The SimulaEditor.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/editor/SimulaEditor.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -69,6 +70,12 @@ public class SimulaEditor extends JFrame {
     static EditorMenues menuBar;
     static SourceTextPanel current;
     static AutoRefresher autoRefresher;
+    
+    /**
+     * Available languages.
+     */
+    public enum Language { Simula,Jar,Text,Other }
+
     
 	// ****************************************************************
 	// *** SimulaEditor: Main Entry for TESTING ONLY
@@ -91,7 +98,7 @@ public class SimulaEditor extends JFrame {
     public SimulaEditor() {
 		Global.initiate();
         try { setIconImage(Global.simIcon.getImage()); } 
-        catch (Exception e) {}// Util.INTERNAL_ERROR("Impossible",e); }
+        catch (Exception e) {}// Util.IERR("Impossible",e); }
 		Global.console=new ConsolePanel();
     	String revision=Global.getProperty("simula.revision","?");
     	String dated=Global.getProperty("simula.setup.dated","?");
@@ -174,6 +181,9 @@ public class SimulaEditor extends JFrame {
 	// ****************************************************************
 	// *** MouseListener
 	// ****************************************************************
+	/**
+	 * The MouseListener.
+	 */
     MouseListener mouseListener = new MouseListener() {
 		public void mousePressed(MouseEvent e) {}
 		public void mouseReleased(MouseEvent e) {}
@@ -335,7 +345,7 @@ public class SimulaEditor extends JFrame {
 					}
     			}
             }
-        } catch(Exception e) { Util.INTERNAL_ERROR("Impossible",e); }
+        } catch(Exception e) { Util.IERR("Impossible",e); }
     }
     
     
@@ -364,7 +374,7 @@ public class SimulaEditor extends JFrame {
     			else if(lang==Language.Simula) {
     				try { Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
     					  current.fillTextPane(reader,0);
-    				} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+    				} catch(IOException e) { Util.IERR("Impossible",e); }
     			}
     			else if(lang==Language.Jar) {
     				current.fillTextPane(getJarFileReader(file),0);
@@ -375,7 +385,7 @@ public class SimulaEditor extends JFrame {
     			else if(lang==Language.Text)
     				try { Reader reader=new InputStreamReader(new FileInputStream(file),Global._CHARSET);
     				current.fillTextPane(reader,0);
-    			} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+    			} catch(IOException e) { Util.IERR("Impossible",e); }
     			menuBar.updateMenuItems();
     		}}).start();
     }
@@ -398,7 +408,7 @@ public class SimulaEditor extends JFrame {
     	    	while(hexPart.length()<(16*3)) hexPart=hexPart+" ";
 				sb.append("  "+hexPart+"  "+charPart+"\n");    			
     		}
-    	} catch(IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+    	} catch(IOException e) { Util.IERR("Impossible",e); }
     	return(new StringReader(sb.toString()));
     }
     
@@ -435,7 +445,7 @@ public class SimulaEditor extends JFrame {
     				sb.append("Jar-Entry: "+size+"  "+date+"  \""+entry+"\"").append("\n");
     			}
     		} catch(IOException e) {
-    			Util.INTERNAL_ERROR("Caused by:",e);
+    			Util.IERR("Caused by:",e);
     		} finally {
     			if(jarFile!=null)
     				try { jarFile.close(); } catch (IOException e) { e.printStackTrace(); }
@@ -454,7 +464,7 @@ public class SimulaEditor extends JFrame {
 				String userDir=jarFile.getParentFile().getParent();
 				String[] cmds= {"java","-jar",jarFile.toString(),"-useConsole","-userDir",userDir};
 				try { SimulaCompiler.execute(cmds);
-				} catch (IOException e) { Util.INTERNAL_ERROR("Impossible",e); }
+				} catch (IOException e) { Util.IERR("Impossible",e); }
 			}
 		}).start();
 	}

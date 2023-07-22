@@ -99,7 +99,7 @@ public final class RelationalOperation extends Expression {
 			break;
 		}
 		default:
-			Util.NOT_IMPLEMENTED("RelationalOperation -- Util.error(Something went wrong) opr=" + opr);
+			Util.IERR("*** NOT IMPLEMENTED: " +"RelationalOperation -- Util.error(Something went wrong) opr=" + opr);
 			this.type = rhs.type;
 		}
 		if (Option.TRACE_CHECKER)

@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
 
-import simula.compiler.GeneratedJavaClass;
-import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -246,7 +244,7 @@ public final class RunCmdTestBatch {
 		int exitValue;
 		exitValue = execute(cmds);
 		if (Option.TRACING) 
-			Util.message("END Generate .class Output Code. Exit value=" + exitValue);
+			Util.println("END Generate .class Output Code. Exit value=" + exitValue);
 		return(exitValue);
 	}
 
@@ -271,7 +269,7 @@ public final class RunCmdTestBatch {
 		if (Option.TRACING) {
 			String line="";
 			for(int i=0;i<cmdarray.length;i++) line=line+" "+cmdarray[i];
-			Util.message("Execute: " + line);
+			Util.println("Execute: " + line);
 		}
 		Process process = runtime.exec(cmdarray);
 		InputStream err = process.getErrorStream();

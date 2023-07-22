@@ -33,6 +33,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
+ * a Console panel.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/ConsolePanel.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -40,18 +43,66 @@ public final class ConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
     private static JTextPane textPane;
 
-    private StyledDocument doc;
-    private Style styleRegular;
-    private Style styleWarning;
-    private Style styleError;
-    private JPopupMenu popupMenu;
-    private JMenuItem clearItem;
+//    private StyledDocument doc;
+//    private Style styleRegular;
+//    private Style styleWarning;
+//    private Style styleError;
+//    private JPopupMenu popupMenu;
+//    private JMenuItem clearItem;
+//	private JMenuItem copyItem;
+//	private boolean reading; // Used by KeyListener and read()
+//	private char keyin;      // Used by KeyListener and read()
+	/**
+	 * the StyledDocument showed in this panel
+	 */
+	private StyledDocument doc;
+	
+	/**
+	 * Regular style
+	 */
+	private Style styleRegular;
+	
+	/**
+	 * Warning style
+	 */
+	private Style styleWarning;
+
+	/**
+	 * Error style
+	 */
+	private Style styleError;
+
+	/**
+	 * the Popup Menu
+	 */
+	private JPopupMenu popupMenu;
+	
+	/**
+	 * Menu item clear
+	 */
+	private JMenuItem clearItem;
+	
+	/**
+	 * Menu item copy
+	 */
 	private JMenuItem copyItem;
-	private boolean reading; // Used by KeyListener and read()
-	private char keyin;      // Used by KeyListener and read()
+	
+	/**
+	 * Used by KeyListener and read()
+	 */
+	private boolean reading;
+	
+	/**
+	 * Used by KeyListener and read()
+	 */
+	private char keyin;
 
 //	private Reader consoleReader;
 	
+	/**
+	 * Reads a single character. 
+	 * @return The character read
+	 */
 	char read() {
 		textPane.requestFocus();
 		reading=true; // Enables KeyListener (see below)
@@ -59,6 +110,10 @@ public final class ConsolePanel extends JPanel {
 		return(keyin);
 	}
 
+//	/**
+//	 * Get a reader suitable for reading from this panel
+//	 * @return a reader
+//	 */
 //	private Reader getReader() {
 //		if (consoleReader == null) {
 //			consoleReader = new Reader() {
@@ -79,6 +134,10 @@ public final class ConsolePanel extends JPanel {
 //		return (consoleReader);
 //	}
 	
+	/**
+	 * Get a OutputStream suitable for writing on this panel
+	 * @return a OutputStream
+	 */
 	public OutputStream getOutputStream() {
 		return(new OutputStream() {
 			@Override
@@ -88,6 +147,10 @@ public final class ConsolePanel extends JPanel {
 			}});
 	}
 
+//	/**
+//	 * Get a writer suitable for writing on this panel
+//	 * @return a writer
+//	 */
 //	private Writer getWriter() {
 //		return(new Writer() {
 //			@Override
@@ -102,6 +165,10 @@ public final class ConsolePanel extends JPanel {
 //		});
 //	}
 
+	/**
+	 * Get a OutputStream suitable for writing errors on this panel
+	 * @return a OutputStream
+	 */
 	public OutputStream getErrorStream() {
 		return(new OutputStream() {
 			@Override
@@ -111,15 +178,29 @@ public final class ConsolePanel extends JPanel {
 			}});
 	}
 	
+	/**
+	 * Write a string on this panel using styleRegular.
+	 * @param s a string to write
+	 */
 	public void write(final String s) { write(s,styleRegular); }
+	
+	/**
+	 * Write a string on this panel using styleError.
+	 * @param s a string to write
+	 */
 	void writeError(final String s) { write(s,styleError); }
+	
+	/**
+	 * Write a string on this panel using styleWarning.
+	 * @param s a string to write
+	 */
 	void writeWarning(final String s) { write(s,styleWarning);	}
 
 	private void write(final String s,final Style style) {
 		try {
 			doc.insertString(doc.getLength(), s, style);
 		} catch (BadLocationException e) {
-			INTERNAL_ERROR("Impossible",e);
+			IERR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 	}
@@ -128,17 +209,20 @@ public final class ConsolePanel extends JPanel {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
-			INTERNAL_ERROR("Impossible",e);
+			IERR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 		textPane.update(textPane.getGraphics());
 	}
 	
-	private static void INTERNAL_ERROR(final String msg,final Throwable e) {
-		System.out.println("INTERNAL_ERROR: " + msg +"  "+ e);
+	private static void IERR(final String msg,final Throwable e) {
+		System.out.println("IERR: " + msg +"  "+ e);
 		e.printStackTrace();
 	}
 
+	/**
+	 * Create a new ConsolePanel.
+	 */
 	public ConsolePanel() {
     	super(new BorderLayout());
     	JScrollPane scrollPane;
@@ -163,7 +247,10 @@ public final class ConsolePanel extends JPanel {
         this.add(scrollPane);
     }
 	
-	private void popup() {
+	/**
+	 * popup this Console Panel
+	 */
+	public void popup() {
     	JFrame frame=new JFrame();
         frame.setSize(950, 500); // Initial frame size
         frame.setTitle("Runtime Console");
@@ -197,6 +284,9 @@ public final class ConsolePanel extends JPanel {
 	// ****************************************************************
 	// *** MouseListener
 	// ****************************************************************
+	/**
+	 * the MouseListener
+	 */
     MouseListener mouseListener = new MouseListener() {
 		public void mousePressed(MouseEvent e) {}
 		public void mouseReleased(MouseEvent e) {}
@@ -211,6 +301,9 @@ public final class ConsolePanel extends JPanel {
 	// ****************************************************************
 	// *** ActionListener
 	// ****************************************************************
+	/**
+	 * the ActionListener
+	 */
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Object item=e.getSource();
@@ -228,6 +321,9 @@ public final class ConsolePanel extends JPanel {
 	// ****************************************************************
 	// *** KeyListener
 	// ****************************************************************
+	/**
+	 * the KeyListener
+	 */
     private KeyListener listener = new KeyListener() {
     	public void keyPressed(KeyEvent event) {}
     	public void keyReleased(KeyEvent event) {}

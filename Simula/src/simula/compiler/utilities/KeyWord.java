@@ -8,26 +8,38 @@
 package simula.compiler.utilities;
 
 /**
+ * The Simula Keywords and some additional symbols.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/ConsolePanel.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
-public enum KeyWord
-{ // Simula Reserved Words
-  ACTIVATE,AND,AFTER,ARRAY,AT,BEFORE,BEGIN,BOOLEAN,CHARACTER,CLASS,COMMENT,CONC,DELAY,DO,ELSE,END,EQ,EQV,EXTERNAL,
-  FALSE,FOR,GE,GO,GOTO,GT,HIDDEN,IF,IMP,IN,INNER,INSPECT,INTEGER,IS,LABEL,LE,LONG,LT,NAME,NE,NEW,NONE,NOT,NOTEXT,
-  OR,OTHERWISE,PRIOR,PROCEDURE,PROTECTED,QUA,REACTIVATE,REAL,REF,SHORT,STEP,SWITCH,TEXT,THEN,THIS,TO,TRUE,UNTIL,
-  VALUE,VIRTUAL,WHEN,WHILE,
-  // Other Symbols
-  ASSIGNVALUE,ASSIGNREF,COMMA,COLON,SEMICOLON,BEGPAR,ENDPAR,BEGBRACKET,ENDBRACKET,EQR,NER,PLUS,MINUS,MUL,DIV,INTDIV,EXP,
-  IDENTIFIER,BOOLEANKONST,INTEGERKONST,CHARACTERKONST,REALKONST,TEXTKONST,OR_ELSE,AND_THEN,DOT,NEWLINE,STRING;
-	  
-	  public String toLowerCase() {
-		  return(this.toString().toLowerCase());
-	  }
-  
-  public String toJavaCode() {
-	  switch (this) {
+public enum KeyWord {
+	// Simula Reserved Words
+	ACTIVATE, AND, AFTER, ARRAY, AT, BEFORE, BEGIN, BOOLEAN, CHARACTER, CLASS, COMMENT, CONC, DELAY, DO, ELSE, END, EQ,
+	EQV, EXTERNAL, FALSE, FOR, GE, GO, GOTO, GT, HIDDEN, IF, IMP, IN, INNER, INSPECT, INTEGER, IS, LABEL, LE, LONG, LT,
+	NAME, NE, NEW, NONE, NOT, NOTEXT, OR, OTHERWISE, PRIOR, PROCEDURE, PROTECTED, QUA, REACTIVATE, REAL, REF, SHORT,
+	STEP, SWITCH, TEXT, THEN, THIS, TO, TRUE, UNTIL, VALUE, VIRTUAL, WHEN, WHILE,
+	// Other Symbols
+	ASSIGNVALUE, ASSIGNREF, COMMA, COLON, SEMICOLON, BEGPAR, ENDPAR, BEGBRACKET, ENDBRACKET, EQR, NER, PLUS, MINUS, MUL,
+	DIV, INTDIV, EXP, IDENTIFIER, BOOLEANKONST, INTEGERKONST, CHARACTERKONST, REALKONST, TEXTKONST, OR_ELSE, AND_THEN,
+	DOT, NEWLINE, STRING;
+
+	/**
+	 * Returns the lower case version.
+	 * @return the lower case version
+	 */
+	public String toLowerCase() {
+		return (this.toString().toLowerCase());
+	}
+
+	/**
+	 * Returns the corresponding Java code.
+	 * @return the corresponding Java code
+	 */
+	public String toJavaCode() {
+		  switch (this) {
 	  case NONE: return("null");
 	  case NOTEXT: return("null");
 	  case ASSIGNVALUE: return(":=");

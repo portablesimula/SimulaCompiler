@@ -148,7 +148,7 @@ public final class ConsolePanel extends JPanel {
 		try {
 			doc.insertString(doc.getLength(), s, style);
 		} catch (BadLocationException e) {
-			Util.INTERNAL_ERROR("Impossible",e);
+			Util.IERR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
         //Util.BREAK("ConsolePanel.write: done s="+s);
@@ -161,7 +161,7 @@ public final class ConsolePanel extends JPanel {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
-			Util.INTERNAL_ERROR("Impossible",e);
+			Util.IERR("Impossible",e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
         //Util.BREAK("ConsolePanel.write: done s="+s);

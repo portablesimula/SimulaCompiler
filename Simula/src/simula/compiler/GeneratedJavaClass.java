@@ -178,7 +178,7 @@ public final class GeneratedJavaClass {
 				Util.ASSERT(writer != null, "Can't Output Code - writer==null");
 				writer.write(s + '\n');
 			} catch (IOException e) {
-				Util.INTERNAL_ERROR("Error Writing File: " + javaOutputFile, e);
+				Util.IERR("Error Writing File: " + javaOutputFile, e);
 			}
 		prevLineNumber = sourceLineNumber;
 	}
@@ -233,7 +233,7 @@ public final class GeneratedJavaClass {
 		try {
 			writer.write(s.toString() + '\n');
 		} catch (IOException e) {
-			Util.INTERNAL_ERROR("Error Writing File: " + javaOutputFile, e);
+			Util.IERR("Error Writing File: " + javaOutputFile, e);
 		}
 
 	}

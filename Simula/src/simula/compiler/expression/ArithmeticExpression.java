@@ -176,7 +176,7 @@ public final class ArithmeticExpression extends Expression {
     	    	} else this.type=Type.Integer;
     	    	break; 
     	    }
-    	    default: Util.FATAL_ERROR("Impossible");
+    	    default: Util.IERR("Impossible");
     	}
     	if(Option.TRACE_CHECKER) Util.TRACE("END ArithmeticOperation"+toString()+".doChecking - Result type="+this.type);
     	SET_SEMANTICS_CHECKED();

@@ -167,7 +167,6 @@ public final class Variable extends Expression {
 		if (meaning == null) {
 			meaning = Global.getCurrentScope().findMeaning(identifier);
 		}
-		Util.ASSERT(meaning.isNO_MEANING() || meaning.declaredIn != null, "Invariant");
 		return (meaning);
 	}
 
@@ -328,7 +327,7 @@ public final class Variable extends Expression {
 				break;
 
 			default:
-				Util.FATAL_ERROR("Variable.doChecking: Impossible - " + decl.declarationKind + "  " + decl);
+				Util.IERR("Variable.doChecking: Impossible - " + decl.declarationKind + "  " + decl);
 			}
 
 		if (Option.TRACE_CHECKER)
@@ -450,7 +449,7 @@ public final class Variable extends Expression {
 		boolean destination = (rightPart != null);
 		Declaration decl = meaning.declaredAs;
 		ASSERT_SEMANTICS_CHECKED(this);
-		Expression inspectedVariable = meaning.getInspectedVariable();
+		Expression inspectedVariable = meaning.getInspectedExpression();
 		StringBuilder s;
 		// System.out.println("Variable.editVariable: "+decl);
 		switch (decl.declarationKind) {
@@ -598,7 +597,7 @@ public final class Variable extends Expression {
 			return (CallProcedure.virtual(this, virtual, remotelyAccessed));
 
 		default:
-			Util.FATAL_ERROR("Variable.editVariable: Impossible - " + decl.declarationKind);
+			Util.IERR("Variable.editVariable: Impossible - " + decl.declarationKind);
 		}
 		return (null);
 
@@ -631,7 +630,7 @@ public final class Variable extends Expression {
 			return (id);
 		}
 		if (meaning.isConnected()) {
-			Expression inspectedVariable = ((ConnectionBlock) meaning.declaredIn).getInspectedVariable();
+			Expression inspectedVariable = ((ConnectionBlock) meaning.declaredIn).getInspectedExpression();
 			if (meaning.foundBehindInvisible) {
 				String remoteCast = meaning.foundIn.getJavaIdentifier();
 				id = "((" + remoteCast + ")(" + inspectedVariable.toJavaCode() + "))." + id;

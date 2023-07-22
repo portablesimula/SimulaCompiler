@@ -142,18 +142,18 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public Meaning findVisibleAttributeMeaning(final String ident) {
-		if(Option.TRACE_FIND_MEANING>0) Util.message("BEGIN Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.println("BEGIN Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
 		for (Declaration declaration : declarationList) {
-			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Local "+declaration);
+			if(Option.TRACE_FIND_MEANING>1) Util.println("Checking Local "+declaration);
 			if (Util.equals(ident, declaration.identifier))
 				return (new Meaning(declaration, this, this, false));
 		}
 		for (LabelDeclaration label : labelList) {
-			if(Option.TRACE_FIND_MEANING>1) Util.message("Checking Label "+label);
+			if(Option.TRACE_FIND_MEANING>1) Util.println("Checking Label "+label);
 			if (Util.equals(ident, label.identifier))
 				return (new Meaning(label, this, this, false));
 		}
-		if(Option.TRACE_FIND_MEANING>0) Util.message("ENDOF Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
+		if(Option.TRACE_FIND_MEANING>0) Util.println("ENDOF Checking MayBeBlock for "+ident+" ================================== "+identifier+" ==================================");
 		return (null);
 	}
 

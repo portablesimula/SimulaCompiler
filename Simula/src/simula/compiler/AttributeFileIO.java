@@ -49,13 +49,13 @@ public final class AttributeFileIO {
 		if (relativeAttributeFileName == null) return;
 		File file = new File(Global.tempClassFileDir,relativeAttributeFileName);
 		if (Option.verbose)
-			Util.message("*** BEGIN Generate SimulaAttributeFile: \"" + file+"\"");
+			Util.println("*** BEGIN Generate SimulaAttributeFile: \"" + file+"\"");
 		AttributeFileIO attributeFile = new AttributeFileIO(file);
 		attributeFile.write((BlockDeclaration) program.module);
 		if (Option.TRACE_ATTRIBUTE_OUTPUT) {
 			try { attributeFile.listAttributeFile(file);
 			} catch (ClassNotFoundException e) {
-				Util.INTERNAL_ERROR("Unable to list Attribute File: "+file, e);
+				Util.IERR("Unable to list Attribute File: "+file, e);
 			}
 		}
 		if (Option.verbose)	Util.TRACE("*** ENDOF Generate SimulaAttributeFile: " + file);

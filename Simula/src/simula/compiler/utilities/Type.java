@@ -16,34 +16,113 @@ import simula.compiler.declaration.ConnectionBlock;
 import simula.compiler.declaration.Declaration;
 import simula.compiler.declaration.DeclarationScope;
 
+/**
+ * Utility class Type.
+ * <p>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Type.java"><b>Source File</b></a>.
+ * 
+ * @author Øystein
+ *
+ */
 public class Type implements Externalizable {
+	/**
+	 * Simula's Integer type
+	 */
 	public static final Type Integer = new Type(new Token(KeyWord.INTEGER));
+	
+	/**
+	 * Simula's Real type
+	 */
 	public static final Type Real = new Type(new Token(KeyWord.REAL));
+
+	/**
+	 * Simula's Long Real type
+	 */
 	public static final Type LongReal = new Type(new Token(KeyWord.REAL, KeyWord.LONG));
+	
+	/**
+	 * Simula's Boolean type
+	 */
 	public static final Type Boolean = new Type(new Token(KeyWord.BOOLEAN));
+	
+	/**
+	 * Simula's Character type
+	 */
 	public static final Type Character = new Type(new Token(KeyWord.CHARACTER));
+	
+	/**
+	 * Simula's Text type
+	 */
 	public static final Type Text = new Type(new Token(KeyWord.TEXT));
+	
+	/**
+	 * Simula's Ref() type
+	 */
 	public static final Type Ref = new Type(new Token(KeyWord.REF));
+	
+	/**
+	 * Simula's Ref(className) type
+	 * @param className the class name
+	 * @return a new ref(className) type.
+	 */
 	public static final Type Ref(String className) { return (new Type(className)); }
+	
+	/**
+	 * Simula's Procedure type
+	 */
 	public static final Type Procedure = new Type(new Token(KeyWord.PROCEDURE));
+	
+	/**
+	 * Simula's Label type
+	 */
 	public static final Type Label = new Type(new Token(KeyWord.LABEL));
 	
+	/**
+	 * Qual in case of ref(Qual) type. Set by doChecking
+	 */
 	protected ClassDeclaration qual;   // Qual in case of ref(Qual) type; Set by doChecking below
+	
+	/**
+	 * Qual's scope in case of ref(Qual) type. Set by doChecking
+	 */
 	public ConnectionBlock declaredIn; // Qual'scope in case of ref(Qual) type; Set by Variable'doChecking
 
+	/**
+	 * Returns the qualifying ClassDeclaration or null.
+	 * @return the qualifying ClassDeclaration or null
+	 */
 	public ClassDeclaration getQual() {
 		Util.ASSERT(CHECKED, "Type is not Checked");
 		return (qual);
 	}
 
-	Token key;  // KeyWord or ref(classIdentifier)
+	/**
+	 * KeyWord or ref(classIdentifier)
+	 */
+	Token key;
+	
+	/**
+	 * Returns the keyWord or the ref-identifier.
+	 * @return the keyWord or the ref-identifier
+	 */
 	public KeyWord getKeyWord() { return(key.getKeyWord()); }
 	
 
+	/**
+	 * Default constructor used by Externalization.
+	 */
 	public Type() {} // Externalization
 	  
+	/**
+	 * Create a new simple Type with the given key Token
+	 * @param key the given key Token
+	 */
 	public Type(Token key) { this.key=key; }
 
+	/**
+	 * Create a new ref(className) type.
+	 * @param className the class name
+	 */
 	public Type(String className) {
 		if(className==null) className="UNKNOWN"; // Error recovery
 		if(Option.CaseSensitive)
@@ -51,12 +130,21 @@ public class Type implements Externalizable {
 		else this.key=new Token(KeyWord.REF,className.toUpperCase());
 	}
 	
+	/**
+	 * Create a new Type based on the given Type and ConnectionBlock.
+	 * @param tp the given Type
+	 * @param declaredIn the ConnectionBlock
+	 */
 	public Type(Type tp,ConnectionBlock declaredIn) {
 		this.key=tp.key;
 		this.qual=tp.qual;
 		this.declaredIn=declaredIn;
 	}
 	
+	/**
+	 * Returns the ref-identifier or null.
+	 * @return the ref-identifier or null
+	 */
 	public String getRefIdent() {
 		if(key.getKeyWord()==KeyWord.REF) {
 			if(key.getValue()==null) return(null);
@@ -65,6 +153,10 @@ public class Type implements Externalizable {
 		return(null); 
 	}
   
+	/**
+	 * Returns the Java ref-identifier or null.
+	 * @return the Java ref-identifier or null
+	 */
 	public String getJavaRefIdent() {
 		if(key.getKeyWord()==KeyWord.REF) {
 			if(key.getValue()==null) return("_RTObject");
@@ -76,6 +168,10 @@ public class Type implements Externalizable {
 	}
   
 	private boolean CHECKED=false; // Set true when doChecking is called
+    /**
+     * Perform semantic checking in the given scope.
+	 * @param scope the given scope
+	 */
 	public void doChecking(final DeclarationScope scope) {
 		if(qual!=null) CHECKED=true; // This Ref-Type is read from attribute file
 		if(CHECKED) return;
@@ -92,9 +188,18 @@ public class Type implements Externalizable {
 		CHECKED=true;
 	}
 
+	/**
+	 * Returns true if this type is an arithmetic type.
+	 * Integer, real or long real.
+	 * @return true if this type is an arithmetic type.
+	 */
 	public boolean isArithmeticType() {
 		return(this==Type.Integer||this==Type.Real||this==Type.LongReal); }
   
+	/**
+	 * Returns true if this type is ref() type.
+	 * @return true if this type is ref() type
+	 */
 	public boolean isReferenceType() {
 		if(key.getKeyWord()==KeyWord.REF) return(true);
 		if(this.equals(Type.Text)) return(true);
@@ -104,10 +209,34 @@ public class Type implements Externalizable {
 	public boolean equals(final Object obj) {
 		Type other=(Type) obj;
 		return(this.key.equals(other.key));
-//		if(!this.key.equals(other.key)) return(false);
-//		return(true);
 	}
   
+	/**
+	 * Utility enum ConversionKind.
+	 *
+	 */
+    public enum ConversionKind { 
+    	/**
+    	 * Type conversion is illegal.
+    	 */
+    	Illegal,
+    	
+    	/**
+    	 * No type-conversion is necessary. E.g. integer to integer
+    	 */
+    	DirectAssignable,
+    	
+    	/**
+    	 * Type-conversion with possible Runtime check is necessary. E.g. real to integer.
+    	 */
+    	ConvertValue,
+    	
+    	/**
+    	 * Type-conversion with Runtime check is necessary. E.g. ref(A) to ref(B) where B is a subclass of A.
+    	 */
+    	ConvertRef
+    }
+
 	/**
      * Checks if a type-conversion is legal.
      * <p>
@@ -117,8 +246,10 @@ public class Type implements Externalizable {
      * <li>ConvertValue - Type-conversion with possible Runtime check is necessary. E.g. real to integer.
      * <li>ConvertRef - Type-conversion with Runtime check is necessary. E.g. ref(A) to ref(B) where B is a subclass of A.
      * <li>Illegal - Conversion is illegal
+     * </ul>
+     * @param to the to type-
+     * @return the resulting ConversionKind
      */
-    public enum ConversionKind { Illegal, DirectAssignable, ConvertValue, ConvertRef }
     public ConversionKind isConvertableTo(final Type to) {
 	    ConversionKind result;
 	    if(to==null) result=ConversionKind.Illegal;
@@ -131,8 +262,16 @@ public class Type implements Externalizable {
 	    return(result); 
     }
   
-	// ref(B) is a sub-reference of ref(A) iff B is a subclass of A
-	// any ref is a sub-reference of NONE
+    /**
+     * Utility method isSubReferenceOf.
+     * <p>
+     * ref(B) is a sub-reference of ref(A) iff B is a subclass of A.
+     * <p>
+     * Any ref is a sub-reference of NONE
+     * 
+     * @param other the other type
+     * @return true if the condition holds
+     */
 	public boolean isSubReferenceOf(final Type other) {
 		String thisRef=this.getRefIdent(); // May be null for NONE
 		String otherRef=other.getRefIdent(); // May be null for NONE
@@ -149,12 +288,24 @@ public class Type implements Externalizable {
 		return(result); 
 	}
   
+	/**
+	 * Returns the type to which both types can be converted.
+	 * @param type1 argument
+	 * @param type2 argument
+	 * @return the resulting Type
+	 */
 	public static Type commonRefType(final Type type1,final Type type2) {
 		if(type1.isSubReferenceOf(type2)) return(type2);
 	    if(type2.isSubReferenceOf(type1)) return(type1);
 		return(type1);
 	}
   
+	/**
+	 * Returns the type to which both types can be converted.
+	 * @param type1 argument
+	 * @param type2 argument
+	 * @return the resulting Type
+	 */
 	public static Type commonTypeConversion(final Type type1,final Type type2) {
 		if(type1.equals(type2)) return(type1);
 		Type atype=arithmeticTypeConversion(type1,type2);
@@ -168,7 +319,13 @@ public class Type implements Externalizable {
 		Util.error("Incompatible types: "+type1+", "+type2);
 		return(null);
 	}
-  
+	
+	/**
+	 * Returns the most dominant type.
+	 * @param type1 argument
+	 * @param type2 argument
+	 * @return the most dominant type
+	 */
 	public static Type arithmeticTypeConversion(final Type type1,final Type type2) {
 		if(type1==Type.Integer)	{
 			if(type2==Type.Integer) return(Type.Integer); 
@@ -188,6 +345,10 @@ public class Type implements Externalizable {
 		return(null);  
 	}
   
+	/**
+	 * Returns an edited default value of this Type.
+	 * @return an edited default value of this Type
+	 */
 	public String edDefaultValue() {
 		if(key==null) return("void");
 		if(key.getKeyWord()==KeyWord.IDENTIFIER) return(null);
@@ -202,6 +363,10 @@ public class Type implements Externalizable {
 		return(this.toString());
 	}
   
+	/**
+	 * Codeing utility: toJavaType.
+	 * @return the resulting code string.
+	 */
 	public String toJavaType() {
 		if(key==null) return("void");
 	    //if(this.equals(Array)) return("array"); // ARRAY Elements 
@@ -217,6 +382,10 @@ public class Type implements Externalizable {
 		return(this.toString());
 	}
 	 
+	/**
+	 * Codeing utility: toJavaTypeClass.
+	 * @return the resulting code string.
+	 */
 	public String toJavaTypeClass() {
 		if(key==null) return("void");
 		if(key.getKeyWord()==KeyWord.REF) return(getJavaRefIdent());
@@ -228,26 +397,27 @@ public class Type implements Externalizable {
 		if(this.equals(Text)) return("_TXT");
 		return(this.toString());
 	}
-	  
-		public String toJavaArrayType() {
-			//if(key==null) return("void");
-		    //if(this.equals(Array)) return("array"); // ARRAY Elements 
-//			if(key.getKeyWord()==KeyWord.REF) { return("_RTOBJECT_ARRAY");
-			if(key.getKeyWord()==KeyWord.REF) {
-				String rtQual=getJavaRefIdent();
-				return("_REF_ARRAY<"+rtQual+">");
-			}
-			if(this.equals(LongReal)) return("_LONG_REAL_ARRAY");
-			if(this.equals(Real)) return("_REAL_ARRAY");
-			if(this.equals(Integer)) return("_INTEGER_ARRAY");
-			if(this.equals(Boolean)) return("_BOOLEAN_ARRAY");
-			if(this.equals(Character)) return("_CHARACTER_ARRAY");
-			if(this.equals(Text)) return("_TEXT_ARRAY");
-//			if(this.equals(Procedure)) return("_PRCQNT");
-//			if(this.equals(Label)) return("_LABQNT");
-			Util.IERR("");
-			return(this.toString());
+	
+	/**
+	 * Codeing utility: toJavaArrayType.
+	 * @return the resulting code string.
+	 */
+	public String toJavaArrayType() {
+		if(key.getKeyWord()==KeyWord.REF) {
+			String rtQual=getJavaRefIdent();
+			return("_REF_ARRAY<"+rtQual+">");
 		}
+		if(this.equals(LongReal)) return("_LONG_REAL_ARRAY");
+		if(this.equals(Real)) return("_REAL_ARRAY");
+		if(this.equals(Integer)) return("_INTEGER_ARRAY");
+		if(this.equals(Boolean)) return("_BOOLEAN_ARRAY");
+		if(this.equals(Character)) return("_CHARACTER_ARRAY");
+		if(this.equals(Text)) return("_TEXT_ARRAY");
+//		if(this.equals(Procedure)) return("_PRCQNT");
+//		if(this.equals(Label)) return("_LABQNT");
+		Util.IERR("");
+		return(this.toString());
+	}
 	  
 	@Override
 	public String toString() {
@@ -263,6 +433,13 @@ public class Type implements Externalizable {
 		return(key.toString());
 	}
 	
+	/**
+	 * Read a type from an ObjectInput file.
+	 * @param inpt the ObjectInput
+	 * @return the resulting Type
+	 * @throws IOException if an IOException occur
+	 * @throws ClassNotFoundException if the operation failed
+	 */
 	public static Type inType(ObjectInput inpt) throws IOException, ClassNotFoundException {
 		Type tp=(Type)inpt.readObject();
 		if(tp==null) return(null);

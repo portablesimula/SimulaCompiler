@@ -30,9 +30,7 @@ import simula.compiler.utilities.Util;
 /**
  * NOTE:
  * <p>
- * <ul>
- * <li> Update Global.simulaReleaseID
- * </li>
+ * Update Global.simulaReleaseID
  * 
  * @author Øystein Myhre Andersen
  *
@@ -186,7 +184,7 @@ public final class MakeSetup {
 	// ***************************************************************
 	private static void list(final String dirName) { list(new File(dirName)); }
 	private static void list(final File dir) {
-		try { Util.message("------------  LIST "+dir+"  ------------");
+		try { Util.println("------------  LIST "+dir+"  ------------");
 			  list("",dir);
 		} catch (Exception e) { e.printStackTrace(); }
 	}
