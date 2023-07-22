@@ -91,7 +91,7 @@ public final class ConditionalStatement extends Statement {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass.code("if(_VALUE(" + condition.toJavaCode() + ")) {");
 		thenStatement.doJavaCoding();
 		if (elseStatement != null) {

@@ -8,10 +8,7 @@
 package simula.compiler;
 
 import simula.compiler.declaration.Declaration;
-import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
-import simula.compiler.utilities.KeyWord;
-import simula.compiler.utilities.Token;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
@@ -45,6 +42,7 @@ import simula.compiler.utilities.Util;
  *     MetaIdentifier              a non terminal symbol
  * ***********************************************************************	
  * </pre>
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/SyntaxClass.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -62,42 +60,12 @@ public abstract class SyntaxClass {
 	 */
 	public int lineNumber;
 
+	/**
+	 * Create a new SyntaxClass.
+	 */
 	protected SyntaxClass() {
 		lineNumber = Global.sourceLineNumber;
 	}
-
-	protected static String acceptIdentifier() {
-		Token token = Parse.currentToken;
-		if (Parse.accept(KeyWord.IDENTIFIER))
-			return (token.getIdentifier().toString());
-		return (null);
-	}
-
-	protected static String expectIdentifier() {
-		Token token = Parse.currentToken;
-		if (acceptIdentifier() != null)
-			return (token.getIdentifier().toString());
-		Util.error("Got symbol " + token + " while expecting an Identifier");
-		return (null);
-	}  
-
-  
-    protected static Type acceptType() {
-    	Type type=null; //Type.Notype;
-    	if(Parse.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
-    	else if(Parse.accept(KeyWord.CHARACTER)) type=Type.Character;
-    	else if(Parse.accept(KeyWord.INTEGER)) type=Type.Integer;
-		else if(Parse.accept(KeyWord.SHORT)) { Parse.expect(KeyWord.INTEGER); type=Type.Integer; }
-		else if(Parse.accept(KeyWord.REAL)) type=Type.Real;
-		else if(Parse.accept(KeyWord.LONG)) { Parse.expect(KeyWord.REAL); type=Type.LongReal; }
-		else if(Parse.accept(KeyWord.TEXT)) type=Type.Text;
-		else if(Parse.accept(KeyWord.REF))	{
-			Parse.expect(KeyWord.BEGPAR); Token classIdentifier=Parse.currentToken;
-			Parse.expect(KeyWord.IDENTIFIER); Parse.expect(KeyWord.ENDPAR); 
-			type=Type.Ref(classIdentifier.toString()); 
-		}
-		return(type);  
-    }
 
     /**
      * Perform semantic checking.
@@ -113,16 +81,29 @@ public abstract class SyntaxClass {
 
 	// Should be called from all doChecking,put,get methods
 	// to signal that semantic checking is done.
+	/**
+	 * Set semantic checked.
+	 * <p>
+	 * Should be called from all doChecking,put,get methods
+	 * to signal that semantic checking is done.
+	 */
 	protected void SET_SEMANTICS_CHECKED() {
 		CHECKED = true;
 	}
 
+	/**
+	 * Returns true if semantic checking is done.
+	 * @return true if semantic checking is done
+	 */
 	protected boolean IS_SEMANTICS_CHECKED() {
 		return (CHECKED);
 	}
 
-	protected void ASSERT_SEMANTICS_CHECKED(final Object obj) {
-		if (!CHECKED) Util.error("FATAL error - Semantic checker not called: " + obj.getClass().getName() + ", " + obj);
+	/**
+	 * Assert that semantic checking done.
+	 */
+	protected void ASSERT_SEMANTICS_CHECKED() { //(final Object obj) {
+		if (!CHECKED) Util.error("FATAL error - Semantic checker not called: " + this.getClass().getName() + ", " + this);
 		if (this instanceof Declaration decl) {
 			if (decl.externalIdent == null)	Util.error("External Identifier is not set");
 		}
@@ -158,6 +139,11 @@ public abstract class SyntaxClass {
 		Util.println(edIndent(indent) + this);
 	}
 	
+	/**
+	 * Utility: Returns a number of blanks.
+	 * @param indent the number of blanks requested
+	 * @return a number of blanks.
+	 */
 	protected String edIndent(final int indent) {
 		int i=indent; String s="";
 		while((i--)>0) s=s+"    ";

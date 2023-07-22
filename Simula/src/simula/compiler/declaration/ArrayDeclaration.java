@@ -117,7 +117,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 		// IdentifierList = Identifier { , Identifier }
 		Vector<String> identList = new Vector<String>();
 		do {
-			identList.add(expectIdentifier());
+			identList.add(Parse.expectIdentifier());
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.BEGPAR);
 		// BoundPairList = BoundPair { , BoundPair }
@@ -171,7 +171,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 	@Override
     public void doJavaCoding() {
     	Global.sourceLineNumber=lineNumber;
-    	ASSERT_SEMANTICS_CHECKED(this);
+    	ASSERT_SEMANTICS_CHECKED();
     	// --------------------------------------------------------------------
     	// public _FLOAT_GARRAY Tab=null;
     	// --------------------------------------------------------------------
@@ -183,7 +183,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 	@Override
     public void doDeclarationCoding() {
     	Global.sourceLineNumber=lineNumber;
-    	ASSERT_SEMANTICS_CHECKED(this);
+    	ASSERT_SEMANTICS_CHECKED();
     	// --------------------------------------------------------------------
     	// integer array A(1:4,4:6,6:12);
     	// --------------------------------------------------------------------

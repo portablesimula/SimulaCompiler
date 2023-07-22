@@ -64,7 +64,7 @@ public final class ObjectGenerator extends Expression {
 	static Expression parse() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ObjectGenerator, current=" + Parse.currentToken);
-		String classIdentifier = expectIdentifier();
+		String classIdentifier = Parse.expectIdentifier();
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parse.accept(KeyWord.BEGPAR)) {
 			do {
@@ -126,13 +126,13 @@ public final class ObjectGenerator extends Expression {
 	// Returns true if this expression may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (true);
 	}
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		StringBuilder s = new StringBuilder();
 		String classIdent = meaning.declaredAs.getJavaIdentifier();
 		s.append("new ").append(classIdent).append('(');

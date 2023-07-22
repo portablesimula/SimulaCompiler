@@ -101,10 +101,10 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		block.lineNumber=Parse.prevToken.lineNumber;
 		block.type = type;
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ProcedureDeclaration, type=" + type);
-		block.modifyIdentifier(expectIdentifier());
+		block.modifyIdentifier(Parse.expectIdentifier());
 		if (Parse.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
-				new Parameter(expectIdentifier()).into(block.parameterList);
+				new Parameter(Parse.expectIdentifier()).into(block.parameterList);
 			} while (Parse.accept(KeyWord.COMMA));
 			Parse.expect(KeyWord.ENDPAR);
 			Parse.expect(KeyWord.SEMICOLON);
@@ -145,7 +145,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private static void expectModeList(final BlockDeclaration block, final Vector<Parameter> parameterList,final Parameter.Mode mode) {
 		do {
-			String identifier = expectIdentifier();
+			String identifier = Parse.expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
 				if (Util.equals(identifier, par.identifier)) {
@@ -175,7 +175,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		} else if (Parse.accept(KeyWord.LABEL))
 			type = Type.Label;
 		else {
-			type = acceptType();
+			type = Parse.acceptType();
 			//if (type == null) return (false);
 			if (Parse.accept(KeyWord.ARRAY)) {
 				if (type == null) {
@@ -189,7 +189,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			else if(type == null) return (false);
 		}
 		do {
-			String identifier = expectIdentifier();
+			String identifier = Parse.expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
 				if (Util.equals(identifier,par.identifier)) { parameter = par; break; }
@@ -282,7 +282,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	@Override
 	public void doJavaCoding() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (this.isPreCompiled)	return;
 		switch (declarationKind) {
 		case ContextFreeMethod -> doMethodJavaCoding("static ", false);
@@ -298,7 +298,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// Generate Inline Method code for Procedure.
 	private void doMethodJavaCoding(final String modifier,final boolean addStaticLink) {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		Global.enterScope(this);
 		String line = "public " + modifier + ((type == null) ? "void" : type.toJavaType());
 		line = line + ' ' + getJavaIdentifier() + ' ' + edFormalParameterList(true, addStaticLink);
@@ -345,7 +345,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private void doProcedureCoding() {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (this.isPreCompiled)	return;
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);

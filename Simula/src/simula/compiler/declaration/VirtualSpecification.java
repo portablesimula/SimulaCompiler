@@ -107,14 +107,14 @@ public final class VirtualSpecification extends Declaration implements Externali
 			} else if (Parse.accept(KeyWord.LABEL)) {
 				parseSimpleSpecList(block, Type.Label, Kind.Label);
 			} else {
-				type = acceptType();
+				type = Parse.acceptType();
 				if (!Parse.accept(KeyWord.PROCEDURE))
 					break LOOP;
 
-				String identifier = expectIdentifier();
+				String identifier = Parse.expectIdentifier();
 				ProcedureSpecification procedureSpec = null;
 				if (Parse.accept(KeyWord.IS)) {
-					Type procedureType = acceptType();
+					Type procedureType = Parse.acceptType();
 					Parse.expect(KeyWord.PROCEDURE);
 					procedureSpec = ProcedureSpecification.doParseProcedureSpecification(procedureType);
 					block.virtualSpecList
@@ -132,7 +132,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 
 	private static void parseSimpleSpecList(final ClassDeclaration block, final Type type, final Kind kind) {
 		do {
-			String identifier = expectIdentifier();
+			String identifier = Parse.expectIdentifier();
 			block.virtualSpecList.add(new VirtualSpecification(identifier, type, kind, null));
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.SEMICOLON);
@@ -190,7 +190,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 
 	@Override
 	public void doJavaCoding() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		String matchCode = "{ throw new _SimulaRuntimeError(\"No Virtual Match: " + identifier + "\"); }";
 		String qnt = (kind == Kind.Label) ? "_LABQNT " : "_PRCQNT ";
 		GeneratedJavaClass.code("public " + qnt + getVirtualIdentifier() + matchCode);

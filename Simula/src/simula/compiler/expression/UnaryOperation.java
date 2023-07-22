@@ -97,13 +97,13 @@ final class UnaryOperation extends Expression {
 	// Returns true if this expression may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (false);
 	}
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return ("(" + oprator.toJavaCode() + "(" + operand.toJavaCode() + "))");
 	}
 

@@ -69,7 +69,7 @@ public final class BlockStatement extends Statement {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if(blockDeclaration.declarationKind!=Declaration.Kind.CompoundStatement) {
 			String staticLink=blockDeclaration.declaredIn.edCTX();
 			StringBuilder s = new StringBuilder();

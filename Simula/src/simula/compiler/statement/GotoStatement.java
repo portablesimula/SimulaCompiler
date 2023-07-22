@@ -55,7 +55,7 @@ public final class GotoStatement extends Statement {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
   		Type type = label.type;
 		Util.ASSERT(type == Type.Label, "Invariant");
 		GeneratedJavaClass.code("_GOTO(" + label.toJavaCode() + ");","GOTO EVALUATED LABEL");

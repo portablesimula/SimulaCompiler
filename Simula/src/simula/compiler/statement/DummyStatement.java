@@ -45,7 +45,7 @@ public final class DummyStatement extends Statement {
 
 	@Override
 	public void doJavaCoding() { /* No Coding */
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass.code(";");
 	}
 

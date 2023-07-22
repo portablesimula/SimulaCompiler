@@ -33,17 +33,25 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class AttributeFileIO {
-	private final String version="SimulaAttributeFile: Version 1.0";
+	private final static String version="SimulaAttributeFile: Version 1.0";
 
+	/**
+	 * The attribute file.
+	 */
 	final File attributeFile;
-	ObjectOutputStream oupt;
-	ObjectInputStream inpt;
-	boolean verbose=false;//true;
+//	ObjectOutputStream oupt;
+//	ObjectInputStream inpt;
+//	boolean verbose=false;//true;
 	
 	private AttributeFileIO(final File attributeFile) {
 		this.attributeFile = attributeFile;
 	}
 
+	/**
+	 * Write an attribute file.
+	 * @param program the program module
+	 * @throws IOException if an output operation fail
+	 */
 	static void write(final ProgramModule program) throws IOException {
 		String relativeAttributeFileName = program.getRelativeAttributeFileName();
 		if (relativeAttributeFileName == null) return;
@@ -74,13 +82,13 @@ public final class AttributeFileIO {
             final DeclarationList declarationList) throws IOException, ClassNotFoundException {
 		AttributeFileIO attributeFile = new AttributeFileIO(file);
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + file);
-		attributeFile.inpt = new ObjectInputStream(inputStream);
-		if (!attributeFile.checkVersion())
-			Util.error("Malformed SimulaAttributeFile: " + file);
+		ObjectInputStream inpt = new ObjectInputStream(inputStream);
+		String vers=(String)inpt.readObject();
+		if(!(vers.equals(version))) Util.error("Malformed SimulaAttributeFile: " + attributeFile);
 		Type moduleType=null;
 		LOOP: while (true) {
 			BlockDeclaration module=null;
-			try { module=(BlockDeclaration) attributeFile.inpt.readObject();}
+			try { module=(BlockDeclaration) inpt.readObject();}
 			catch (EOFException e1) { break LOOP; }
 			module.isPreCompiled = true;
 			Declaration d=declarationList.find(module.identifier);
@@ -95,7 +103,7 @@ public final class AttributeFileIO {
 				if (Option.TRACE_ATTRIBUTE_INPUT) module.print(0);
 			}
 		}
-		attributeFile.inpt.close();
+		inpt.close();
 		if (Option.verbose)	Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + file);
 		return(moduleType);
 	}	
@@ -106,16 +114,10 @@ public final class AttributeFileIO {
 		attributeDir.mkdirs();
 		attributeFile.createNewFile();
 		FileOutputStream fileOutputStream = new FileOutputStream(attributeFile);
-		oupt = new ObjectOutputStream(fileOutputStream);
-		writeVersion();
-		writeDependencies();
-		if (Option.verbose)
-			Util.TRACE("***       Write External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
-		oupt.writeObject(module);
-		oupt.flush(); oupt.close();	oupt = null;
-	}
-
-	private void writeDependencies() throws IOException {
+		ObjectOutputStream oupt = new ObjectOutputStream(fileOutputStream);
+		// writeVersion:
+		oupt.writeObject(version);
+		// writeDependencies:
 		for(Declaration dcl:StandardClass.ENVIRONMENT.declarationList) {
 			if(dcl instanceof BlockDeclaration ext) {
 				if(ext.isPreCompiled) {
@@ -124,13 +126,18 @@ public final class AttributeFileIO {
 				}
 			}
 		}
+		if (Option.verbose)
+			Util.TRACE("***       Write External " + module.declarationKind + ' ' + module.identifier + '[' + module.externalIdent + ']');
+		oupt.writeObject(module);
+		oupt.flush(); oupt.close();	oupt = null;
 	}
 	  
 	private BlockDeclaration listAttributeFile(final File attributeFile) throws IOException, ClassNotFoundException {
 		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFile);
 		FileInputStream fileInputStream = new FileInputStream(attributeFile);
-		inpt = new ObjectInputStream(fileInputStream);
-		if (!checkVersion()) Util.error("Malformed SimulaAttributeFile: " + attributeFile);
+		ObjectInputStream inpt = new ObjectInputStream(fileInputStream);
+		String vers=(String)inpt.readObject();
+		if(!(vers.equals(version))) Util.error("Malformed SimulaAttributeFile: " + attributeFile);
 		BlockDeclaration blockDeclaration=(BlockDeclaration)inpt.readObject();
 		inpt.close();
 		if (Option.verbose) {
@@ -141,13 +148,5 @@ public final class AttributeFileIO {
 		}
 		return (blockDeclaration);
 	}	
-	  
-	private void writeVersion() throws IOException {
-		oupt.writeObject(version);
-	}
-	
-	private boolean checkVersion() throws IOException, ClassNotFoundException {
-		return(((String)inpt.readObject()).equals(version));
-	}
 
 }

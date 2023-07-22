@@ -162,7 +162,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	@Override
 	public void doJavaCoding() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (this.isPreCompiled)	return;
 		if (declarationKind == Declaration.Kind.CompoundStatement)
 			 doCompoundStatementCoding();
@@ -174,7 +174,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doCompoundStatementCoding() {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		Util.ASSERT(declarationList.isEmpty(), "Invariant");
 		Util.ASSERT(labelList.isEmpty(), "Invariant");
 		Global.enterScope(this);
@@ -192,7 +192,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doSubBlockCoding() {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);
 		Global.duringSTM_Coding=false;

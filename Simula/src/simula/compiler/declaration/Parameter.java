@@ -228,7 +228,7 @@ public final class Parameter extends Declaration implements Externalizable {
 	}
 
 	String toJavaType() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (mode == Parameter.Mode.name) {
 			switch (kind) {
 			case Simple:

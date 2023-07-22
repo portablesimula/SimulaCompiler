@@ -158,13 +158,13 @@ public final class Constant extends Expression implements Externalizable {
     // Returns true if this expression may be used as a statement.
 	@Override
     public boolean maybeStatement() {
-    	ASSERT_SEMANTICS_CHECKED(this);
+    	ASSERT_SEMANTICS_CHECKED();
 		return(false);  
     }
 
 	@Override
 	public String toJavaCode() {
-		//ASSERT_SEMANTICS_CHECKED(this); // ØM: Ad'Hoc
+		//ASSERT_SEMANTICS_CHECKED(); // ØM: Ad'Hoc
 		if(type==Type.Text)
 		{ if(value==null) return("null");
 		  String val=value.toString();

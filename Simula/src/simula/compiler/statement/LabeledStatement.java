@@ -69,7 +69,7 @@ public final class LabeledStatement extends Statement {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass.code("{");
 		for (String label:labels) {
 			Meaning meaning=Global.getCurrentScope().findLabelMeaning(label);

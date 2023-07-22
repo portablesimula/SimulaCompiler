@@ -111,7 +111,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);
 		Global.duringSTM_Coding=false;

@@ -135,7 +135,7 @@ public final class SwitchStatement extends Statement {
     	}
 	
     	private void doCoding(final boolean first)	{
-    		ASSERT_SEMANTICS_CHECKED(this);
+    		ASSERT_SEMANTICS_CHECKED();
     		for(SwitchInterval casePair:caseKeyList)
     		if(casePair==null)
     			 GeneratedJavaClass.code("default:");
@@ -198,7 +198,7 @@ public final class SwitchStatement extends Statement {
 	@Override
     public void doJavaCoding() {
     	Global.sourceLineNumber=lineNumber;
-	    ASSERT_SEMANTICS_CHECKED(this);
+	    ASSERT_SEMANTICS_CHECKED();
 	    StringBuilder sb=new StringBuilder();
 	    sb.append("if(").append(switchKey.toJavaCode()).append("<").append(lowKey.toJavaCode());
 	    sb.append(" || ").append(switchKey.toJavaCode()).append(">").append(hiKey.toJavaCode());

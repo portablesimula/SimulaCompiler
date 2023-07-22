@@ -66,7 +66,7 @@ public final class LocalObject extends Expression {
 	static Expression acceptThisIdentifier() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ThisObjectExpression, current=" + Parse.currentToken);
-		String classIdentifier = expectIdentifier();
+		String classIdentifier = Parse.expectIdentifier();
 		Expression expr = new LocalObject(classIdentifier);
 		return(expr);
 	}
@@ -118,13 +118,13 @@ public final class LocalObject extends Expression {
 	// Returns true if this expression may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (false);
 	}
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		String cast = classDeclaration.getJavaIdentifier();
 		if (thisScope instanceof ConnectionBlock connectionBlock) {
 			return ("((" + cast + ")" + connectionBlock.inspectedVariable.toJavaCode() + ")");

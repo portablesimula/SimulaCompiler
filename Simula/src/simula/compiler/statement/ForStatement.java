@@ -62,7 +62,7 @@ public final class ForStatement extends Statement {
 		super(line);
 		if (Option.TRACE_PARSE)
 			Parse.TRACE("Parse ForStatement");
-		controlVariable = new Variable(expectIdentifier());
+		controlVariable = new Variable(Parse.expectIdentifier());
 		if (!Parse.accept(KeyWord.ASSIGNVALUE))
 			Parse.expect(KeyWord.ASSIGNREF);
 		assignmentOperator = Parse.prevToken;
@@ -128,7 +128,7 @@ public final class ForStatement extends Statement {
 	    //	}
 	    // ------------------------------------------------------------
 		Global.sourceLineNumber=lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		boolean refType=controlVariable.type.isReferenceType();
 		String CB="CB_"+lineNumber;
 	    GeneratedJavaClass.code("for(boolean "+CB+":new ForList(");

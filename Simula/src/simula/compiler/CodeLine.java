@@ -23,8 +23,20 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class CodeLine implements Externalizable {
+	
+	/**
+	 * The module identifier.
+	 */
 	String modid;
+	
+	/**
+	 * The sourceLineNumber.
+	 */
 	int sourceLineNumber;
+	
+	/**
+	 * The codeline string.
+	 */
 	String codeLine;
 	
 	/**

@@ -33,9 +33,13 @@ import simula.compiler.utilities.Util;
 public final class GeneratedJavaClass {
 	private GeneratedJavaClass enclosingJavaModule;
 	private final Writer writer;
-	final File javaOutputFile;
 	private final Vector<Integer> lineMap = new Vector<Integer>();
 	
+	/**
+	 * The output file for generated Java code.
+	 */
+	final File javaOutputFile;
+
 	/**
 	 * Given as argument.
 	 */
@@ -85,6 +89,10 @@ public final class GeneratedJavaClass {
 		return (blk.declarationKind + " " + blk.scopeID());
 	}
 
+	/**
+	 * Returns the output file for generated Java code.
+	 * @return the output file for generated Java code
+	 */
 	String getClassOutputFileName() {
 		return (Global.tempClassFileDir + "/" + Global.packetName + '/' + blockDeclaration.getJavaIdentifier()
 				+ ".class");

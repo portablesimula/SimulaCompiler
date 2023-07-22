@@ -112,7 +112,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	    else if(Parse.accept(KeyWord.ARRAY)) ArrayDeclaration.parse(type,declarationList);
 	    else {
 	    	do { 
-	    	    String ident=expectIdentifier();
+	    	    String ident=Parse.expectIdentifier();
 	            SimpleVariableDeclaration typeDeclaration=new SimpleVariableDeclaration(type,ident);
 	            if(Parse.accept(KeyWord.EQ)) typeDeclaration.constantElement=Expression.parseExpression();
 	            declarationList.add(typeDeclaration);
@@ -149,7 +149,7 @@ public class SimpleVariableDeclaration extends Declaration implements Externaliz
 	
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		String modifier="public ";
 		if (this.isConstant()) modifier = modifier+"final ";
 		if(constantElement!=null) {

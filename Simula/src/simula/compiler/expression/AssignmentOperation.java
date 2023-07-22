@@ -95,13 +95,13 @@ public final class AssignmentOperation extends Expression {
 	// Returns true if this expression may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (true);
 	}
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (this.textValueAssignment)
 			return (doCodeTextValueAssignment());
 		else

@@ -54,7 +54,7 @@ public final class WhileStatement extends Statement {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass.code("while(" + condition.toJavaCode() + ") {");
 		doStatement.doJavaCoding();
 		if(isWhileTrueDo())

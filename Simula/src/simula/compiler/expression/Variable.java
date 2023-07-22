@@ -338,7 +338,7 @@ public final class Variable extends Expression {
 	// Returns true if this variable may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (meaning == null)
 			return (false); // Error Recovery
 		Declaration declaredAs = meaning.declaredAs;
@@ -368,7 +368,7 @@ public final class Variable extends Expression {
 	// ******************************************************************
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (get());
 	}
 
@@ -377,7 +377,7 @@ public final class Variable extends Expression {
 	// ******************************************************************
 	// Generate code for putting an value(expression) into this Variable
 	public String put(final String rightPart) {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		String edited = this.editVariable(rightPart); // Is a Destination
 		return (edited);
 	}
@@ -387,7 +387,7 @@ public final class Variable extends Expression {
 	// ******************************************************************
 	// Generate code for getting the value of this Variable
 	public String get() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		String result = this.editVariable(null); // Not a destination
 		// System.out.println("Variable.get: RETURN "+result);
 		return (result);
@@ -448,7 +448,7 @@ public final class Variable extends Expression {
 	private String editVariable(final String rightPart) {
 		boolean destination = (rightPart != null);
 		Declaration decl = meaning.declaredAs;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		Expression inspectedVariable = meaning.getInspectedExpression();
 		StringBuilder s;
 		// System.out.println("Variable.editVariable: "+decl);

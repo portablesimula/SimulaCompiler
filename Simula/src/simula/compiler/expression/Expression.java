@@ -275,7 +275,7 @@ public abstract class Expression extends SyntaxClass {
 		else if(Parse.accept(KeyWord.NOTEXT)) expr = new Constant(Type.Text,null);
 		else if(Parse.accept(KeyWord.NEW)) expr =ObjectGenerator.parse();
 		else if(Parse.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
-		else { String ident=acceptIdentifier();
+		else { String ident=Parse.acceptIdentifier();
 			if(ident!=null) expr=Variable.parse(ident);
 			else {
 				if(Option.TRACE_PARSE) Parse.TRACE("Expression: parseBASICEXPR returns: NULL, prevKeyword="+Parse.prevToken.getKeyWord());
@@ -289,7 +289,7 @@ public abstract class Expression extends SyntaxClass {
 			if (opr == KeyWord.DOT ) 
 				expr=new RemoteVariable(expr,parseVariable());
 			else {  // Vet at opr == IS or opr == IN or opr == QUA.  Alle skal ha et klassenavn etter seg
-				String classIdentifier=expectIdentifier();
+				String classIdentifier=Parse.expectIdentifier();
 				if(opr==KeyWord.QUA)
 					expr=new QualifiedObject(expr,classIdentifier);
 				else expr=new ObjectRelation(expr,opr,classIdentifier);
@@ -310,7 +310,7 @@ public abstract class Expression extends SyntaxClass {
 	private static Variable parseVariable() { 
 		// Et navn med valgfri argument-parentes etter.  Er også det som kan stå etter DOT
 		// Altså: Enkelt-variabel, array-aksess eller prosedyre-kall. 
-		String ident=expectIdentifier();
+		String ident=Parse.expectIdentifier();
 		return(Variable.parse(ident));
 	}
 

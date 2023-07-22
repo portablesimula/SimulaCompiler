@@ -27,7 +27,7 @@ import simula.compiler.utilities.Util;
 /**
  * Simula Program Module.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/AttributeFileIO.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/ProgramModule.java"><b>Source File</b></a>.
  * 
  * <pre>
  * 
@@ -47,24 +47,43 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ProgramModule extends Statement {
-	final Declaration module;
 	final private Variable sysin;
 	final private Variable sysout;
-  
+	
+	/**
+	 * The module declaration.
+	 */
+	final Declaration module;
+
+	/**
+	 * Returns the module identifier.
+	 * @return the module identifier
+	 */
 	String getIdentifier() { return(module.identifier); }
 
+	/**
+	 * Returns the relative file name.
+	 * @return the relative file name
+	 */
 	String getRelativeAttributeFileName() {
 		if(module.declarationKind==Declaration.Kind.Class) return(Global.packetName+"/CLASS.AF");
 		if(module.declarationKind==Declaration.Kind.Procedure) return(Global.packetName+"/PROCEDURE.AF");
 		else return(null);
-	  }
+	}
 	  
+	/**
+	 * Returns true if this program module is executable.
+	 * @return true if this program module is executable
+	 */
 	boolean isExecutable() {
 		if(module.declarationKind==Declaration.Kind.SimulaProgram) return(true);
 		if(module.declarationKind==Declaration.Kind.PrefixedBlock) return(true);
 		else return(false);
 	}
 
+	/**
+	 * Create a new ProgramModule.
+	 */
 	ProgramModule() {
 		super(0);
 		Declaration module=null;
@@ -82,7 +101,7 @@ public final class ProgramModule extends Statement {
 				ExternalDeclaration.doParse(StandardClass.ENVIRONMENT.declarationList);
 				Parse.expect(KeyWord.SEMICOLON);
 			}
-			String ident=acceptIdentifier();
+			String ident=Parse.acceptIdentifier();
 			if(ident!=null) {
 				if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(ident);
 			    else {
@@ -94,7 +113,7 @@ public final class ProgramModule extends Statement {
 			else if(Parse.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMainProgramBlock(); 
 			else if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(null);
 			else {
-				Type type=acceptType();
+				Type type=Parse.acceptType();
 			    if(Parse.expect(KeyWord.PROCEDURE)) module=ProcedureDeclaration.doParseProcedureDeclaration(type);
 			}
 			StandardClass.BASICIO.declarationList.add(module);

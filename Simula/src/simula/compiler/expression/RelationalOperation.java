@@ -110,13 +110,13 @@ public final class RelationalOperation extends Expression {
 	// Returns true if this expression may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (false);
 	}
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		switch (opr) {
 			case LT: case LE: case EQ: case NE: case GE: case GT: {
 				Type type1 = lhs.type;

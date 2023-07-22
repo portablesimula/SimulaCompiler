@@ -79,7 +79,7 @@ public final class StandaloneExpression extends Statement {
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		String result=expression.toJavaCode();
 		return (result);
 	}

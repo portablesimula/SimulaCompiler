@@ -10,6 +10,7 @@ package simula.compiler.parsing;
 import java.io.Reader;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
+import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
@@ -130,6 +131,53 @@ public final class Parse {
 	public static boolean accept(final KeyWord key1,final KeyWord key2,final KeyWord key3) {
 		return(accept(key1) || accept(key2) || accept(key3));
 	}
+	
+	/**
+	 * Test to accept an identifier.
+	 * @return the identifier or null
+	 */
+	public static String acceptIdentifier() {
+		Token token = Parse.currentToken;
+		if (Parse.accept(KeyWord.IDENTIFIER))
+			return (token.getIdentifier().toString());
+		return (null);
+	}
+
+	/**
+	 * Test to expect an identifier.
+	 * <p>
+	 * If failing to do so, an error is printed.
+	 * @return the identifier or null
+	 */
+	public static String expectIdentifier() {
+		Token token = Parse.currentToken;
+		if (acceptIdentifier() != null)
+			return (token.getIdentifier().toString());
+		Util.error("Got symbol " + token + " while expecting an Identifier");
+		return (null);
+	}  
+
+  
+	/**
+	 * Test to accept a Type.
+	 * @return the type or null
+	 */
+   public static Type acceptType() {
+    	Type type=null; //Type.Notype;
+    	if(Parse.accept(KeyWord.BOOLEAN)) type=Type.Boolean;
+    	else if(Parse.accept(KeyWord.CHARACTER)) type=Type.Character;
+    	else if(Parse.accept(KeyWord.INTEGER)) type=Type.Integer;
+		else if(Parse.accept(KeyWord.SHORT)) { Parse.expect(KeyWord.INTEGER); type=Type.Integer; }
+		else if(Parse.accept(KeyWord.REAL)) type=Type.Real;
+		else if(Parse.accept(KeyWord.LONG)) { Parse.expect(KeyWord.REAL); type=Type.LongReal; }
+		else if(Parse.accept(KeyWord.TEXT)) type=Type.Text;
+		else if(Parse.accept(KeyWord.REF))	{
+			Parse.expect(KeyWord.BEGPAR); Token classIdentifier=Parse.currentToken;
+			Parse.expect(KeyWord.IDENTIFIER); Parse.expect(KeyWord.ENDPAR); 
+			type=Type.Ref(classIdentifier.toString()); 
+		}
+		return(type);  
+    }
 	
 	/**
 	 * Test to accept a postfix operator ( DOT, IS, IN, QUA).

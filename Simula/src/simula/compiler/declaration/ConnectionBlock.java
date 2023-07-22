@@ -123,7 +123,7 @@ public final class ConnectionBlock extends DeclarationScope {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		Global.enterScope(this);
 		GeneratedJavaClass.code("{");
 		statement.doJavaCoding();

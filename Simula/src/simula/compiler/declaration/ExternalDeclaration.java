@@ -107,13 +107,13 @@ public final class ExternalDeclaration extends Declaration {
         // = EXTERNAL  CLASS  ExternalList
         // | EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
         // | EXTERNAL kind PROCEDURE ExternalItem  IS ProcedureDeclaration
-		String kind=acceptIdentifier();
+		String kind=Parse.acceptIdentifier();
 		if(kind!=null) Util.IERR("*** NOT IMPLEMENTED: " +"External "+kind+" Procedure");
-		Type expectedType = acceptType();
+		Type expectedType = Parse.acceptType();
 		if (!(Parse.accept(KeyWord.CLASS) || Parse.accept(KeyWord.PROCEDURE)))
 			Util.error("parseExternalDeclaration: Expecting CLASS or PROCEDURE");
 		
-		String identifier = expectIdentifier();
+		String identifier = Parse.expectIdentifier();
    LOOP:while(true) {
 			Token externalIdentifier = null;
 			if (Parse.accept(KeyWord.EQ)) {
@@ -134,7 +134,7 @@ public final class ExternalDeclaration extends Declaration {
 				break LOOP;
 			}
 			if(!Parse.accept(KeyWord.COMMA)) break LOOP;
-			identifier=expectIdentifier();
+			identifier=Parse.expectIdentifier();
 		}
 	}
 	

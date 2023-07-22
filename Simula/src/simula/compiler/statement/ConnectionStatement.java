@@ -80,7 +80,7 @@ public final class ConnectionStatement extends Statement {
 			connectionBlock.end();
 		} else {
 			while (Parse.accept(KeyWord.WHEN)) {
-				String classIdentifier = expectIdentifier();
+				String classIdentifier = Parse.expectIdentifier();
 				Parse.expect(KeyWord.DO);
 				ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, classIdentifier);
 				hasWhenPart = true;
@@ -118,7 +118,7 @@ public final class ConnectionStatement extends Statement {
 		}
 
 		public void doCoding(final boolean first) {
-			ASSERT_SEMANTICS_CHECKED(this);
+			ASSERT_SEMANTICS_CHECKED();
 			connectionBlock.doJavaCoding();
 		}
 
@@ -167,7 +167,7 @@ public final class ConnectionStatement extends Statement {
 
 		@Override
 		public void doCoding(final boolean first) {
-			ASSERT_SEMANTICS_CHECKED(this);
+			ASSERT_SEMANTICS_CHECKED();
 			String prfx = (first) ? "" : "else ";
 			String cid = classDeclaration.getJavaIdentifier();
 			if (!impossibleWhenPart) {
@@ -211,7 +211,7 @@ public final class ConnectionStatement extends Statement {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber = lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass.code("{");
 		GeneratedJavaClass.debug("// BEGIN INSPECTION ");
 		Expression assignment = new AssignmentOperation(inspectedVariable, KeyWord.ASSIGNREF, objectExpression);

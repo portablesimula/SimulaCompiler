@@ -70,7 +70,7 @@ public abstract class Statement extends SyntaxClass {
 		int lineNumber=Parse.currentToken.lineNumber;
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Statement.doParse: LabeledStatement: lineNumber="+lineNumber+", current=" + Parse.currentToken	+ ", prev=" + Parse.prevToken);
-		String ident = acceptIdentifier();
+		String ident = Parse.acceptIdentifier();
 		while (Parse.accept(KeyWord.COLON)) {
 			if (ident != null) {
 				if (labels == null)	labels = new Vector<String>();
@@ -78,7 +78,7 @@ public abstract class Statement extends SyntaxClass {
 				LabelDeclaration label = new LabelDeclaration(ident);
 				Global.getCurrentScope().labelList.add(label);
 			} else Util.error("Missplaced ':'");
-			ident = acceptIdentifier();
+			ident = Parse.acceptIdentifier();
 		}
 		if(ident!=null) Parse.saveCurrentToken(); // Not Label: Pushback
 		Statement statement = doUnlabeledStatement();
@@ -128,7 +128,7 @@ public abstract class Statement extends SyntaxClass {
 	@Override
 	public void doJavaCoding() {
 		Global.sourceLineNumber=lineNumber;
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		GeneratedJavaClass.code(toJavaCode() + ';');
 	}
 

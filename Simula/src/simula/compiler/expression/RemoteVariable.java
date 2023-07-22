@@ -145,13 +145,13 @@ public final class RemoteVariable extends Expression {
 	// Returns true if this expression may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (var.maybeStatement());
 	}
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (callRemoteProcedure != null)
 			return (CallProcedure.remote(obj, callRemoteProcedure, var, backLink));
 		else if (callRemoteVirtual != null)

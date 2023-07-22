@@ -190,7 +190,7 @@ public abstract class Declaration extends SyntaxClass {
   
     protected static boolean parseDeclaration(final DeclarationList declarationList) {
     	if(Option.TRACE_PARSE) Parse.TRACE("Parse Declaration");
-    	String prefix=acceptIdentifier();
+    	String prefix=Parse.acceptIdentifier();
     	if(prefix!=null) {
     		if(Parse.accept(KeyWord.CLASS)) declarationList.add(ClassDeclaration.doParseClassDeclaration(prefix)); 
     		else {
@@ -202,13 +202,13 @@ public abstract class Declaration extends SyntaxClass {
     	else if(Parse.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(null));
     	else if(Parse.accept(KeyWord.PRIOR)) {
     		Util.warning("Keyword 'prior' ignored - prior procedure is not implemented");
-    		Type type=acceptType();
+    		Type type=Parse.acceptType();
     		Parse.expect(KeyWord.PROCEDURE);
     		declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));
     	}
     	else if(Parse.accept(KeyWord.CLASS)) declarationList.add(ClassDeclaration.doParseClassDeclaration(null));
     	else if(Parse.accept(KeyWord.SWITCH)) {
-    		String ident=acceptIdentifier();
+    		String ident=Parse.acceptIdentifier();
     		if(ident==null) {
     			// Switch Statement
     			Parse.saveCurrentToken();
@@ -218,7 +218,7 @@ public abstract class Declaration extends SyntaxClass {
     	}
     	else if(Parse.accept(KeyWord.EXTERNAL)) ExternalDeclaration.doParse(declarationList);
     	else {
-    		Type type=acceptType(); if(type==null) return(false);
+    		Type type=Parse.acceptType(); if(type==null) return(false);
     		SimpleVariableDeclaration.parse(type,declarationList);
     		if(Option.TRACE_PARSE) Parse.TRACE("Parse Declaration(2)");
     	}

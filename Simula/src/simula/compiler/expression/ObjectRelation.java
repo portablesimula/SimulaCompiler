@@ -125,13 +125,13 @@ public final class ObjectRelation extends Expression {
 	// Returns true if this expression may be used as a statement.
 	@Override
 	public boolean maybeStatement() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		return (false);
 	}
 
 	@Override
 	public String toJavaCode() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		String refIdent = lhs.type.getRefIdent();
 		if (refIdent == null) return ("false"); // NONE IS/IN Any is always FALSE
 		if (opr == KeyWord.IN) {

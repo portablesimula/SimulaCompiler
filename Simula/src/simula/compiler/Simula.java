@@ -107,9 +107,10 @@ public final class Simula {
 	}
 
     /**
-     * %SELECT select-character { select-character }
-     * <p>
      * Set selectors for conditional compilation.
+     * <pre>
+     * %SELECT select-character { select-character }
+	 * </pre>
 	 * 
 	 * @param chars select characters
 	 */

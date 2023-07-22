@@ -123,10 +123,10 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		block.declaredIn.hasLocalClasses = true;
 		if (block.prefix == null)
 			block.prefix = StandardClass.SIMULA_BLOCK.identifier;
-		block.modifyIdentifier(expectIdentifier());
+		block.modifyIdentifier(Parse.expectIdentifier());
 		if (Parse.accept(KeyWord.BEGPAR)) {
 			do { // ParameterPart = Parameter ; { Parameter ; }
-				new Parameter(expectIdentifier()).into(block.parameterList);
+				new Parameter(Parse.expectIdentifier()).into(block.parameterList);
 			} while (Parse.accept(KeyWord.COMMA));
 			Parse.expect(KeyWord.ENDPAR);
 			Parse.expect(KeyWord.SEMICOLON);
@@ -188,7 +188,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	private static void expectModeList(final BlockDeclaration block, final Vector<Parameter> parameterList,final Parameter.Mode mode) {
 		do {
-			String identifier = expectIdentifier();
+			String identifier = Parse.expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
 				if (Util.equals(identifier, par.identifier)) {
@@ -213,7 +213,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 			Parse.TRACE("Parse ParameterSpecifications");
 		Type type;
 		Parameter.Kind kind = Parameter.Kind.Simple;
-		type = acceptType();
+		type = Parse.acceptType();
 		if (Parse.accept(KeyWord.ARRAY)) {
 			if (type == null) {
 				// See Simula Standard 5.2 -
@@ -224,7 +224,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 		}
 		if (type == null) return (false);
 		do {
-			String identifier = expectIdentifier();
+			String identifier = Parse.expectIdentifier();
 			Parameter parameter = null;
 			for (Parameter par : parameterList)
 				if (Util.equals(identifier, par.identifier)) { parameter = par; break; }
@@ -242,7 +242,7 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	private static boolean expectHiddenProtectedList(final ClassDeclaration block, final boolean hidden,final boolean prtected) {
 		do {
-			String identifier = expectIdentifier();
+			String identifier = Parse.expectIdentifier();
 			if (hidden)	block.hiddenList.add(new HiddenSpecification(block, identifier));
 			if (prtected) block.protectedList.add(new ProtectedSpecification(block, identifier));
 		} while (Parse.accept(KeyWord.COMMA));
@@ -652,7 +652,7 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	@Override
 	public void doJavaCoding() {
-		ASSERT_SEMANTICS_CHECKED(this);
+		ASSERT_SEMANTICS_CHECKED();
 		if (this.isPreCompiled)	return;
 		Global.sourceLineNumber = lineNumber;
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
