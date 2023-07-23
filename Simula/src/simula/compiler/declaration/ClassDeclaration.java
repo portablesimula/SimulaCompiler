@@ -36,10 +36,30 @@ import simula.compiler.utilities.Util;
  */
 public class ClassDeclaration extends BlockDeclaration implements Externalizable {
 	private String externalPrefixIdent;
+	
+	/**
+	 * The parameter list. 
+	 */
 	Vector<Parameter> parameterList = new Vector<Parameter>();
+	
+	/**
+	 * The virtual spec list. 
+	 */
 	protected Vector<VirtualSpecification> virtualSpecList = new Vector<VirtualSpecification>();
+	
+	/**
+	 * The virtual match list. 
+	 */
 	protected Vector<VirtualMatch> virtualMatchList = new Vector<VirtualMatch>();
+	
+	/**
+	 * The protected list. 
+	 */
 	Vector<ProtectedSpecification> protectedList = new Vector<ProtectedSpecification>();
+	
+	/**
+	 * The hidden list. 
+	 */
 	Vector<HiddenSpecification> hiddenList = new Vector<HiddenSpecification>();
 	
 	/**
@@ -65,6 +85,10 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** CONSTRUCTOR
 	// ***********************************************************************************************
+	/**
+	 * Create a new ClassDeclaration.
+	 * @param identifier the given identifier
+	 */
 	protected ClassDeclaration(String identifier) {
 		super(identifier);
 		this.declarationKind=Declaration.Kind.Class;
@@ -360,6 +384,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: searchVirtualSpecList -- - Search VirtualSpec-list for 'ident'
 	// ***********************************************************************************************
+	/**
+	 * Utility: Search VirtualSpec-list for 'ident'
+	 * @param ident argument
+	 * @return a VirtualSpecification when it was found, otherwise null
+	 */
 	VirtualSpecification searchVirtualSpecList(final String ident) {
 		for (VirtualSpecification virtual : virtualSpecList) {
 			if (Util.equals(ident, virtual.identifier)) return (virtual);
@@ -369,7 +398,6 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: prefixLevel
 	// ***********************************************************************************************
-
 	/**
 	 * Returns the prefix level.
 	 * @return the prefix level
@@ -385,6 +413,10 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: getNlabels
 	// ***********************************************************************************************
+	/**
+	 * Returns the number of labels in this class.
+	 * @return the number of labels in this class
+	 */
 	int getNlabels() {
 		if (hasNoRealPrefix())
 			return (labelList.size());
@@ -394,6 +426,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: findLocalAttribute
 	// ***********************************************************************************************
+	/**
+	 * Utility: Search for an attribute named 'ident'
+	 * @param ident argument
+	 * @return a ProcedureDeclaration when it was found, otherwise null
+	 */
 	Declaration findLocalAttribute(final String ident) {
 		if(Option.TRACE_FIND_MEANING>0) Util.println("BEGIN Checking Class for "+ident+" ================================== "+identifier+" ==================================");
 		for (Parameter parameter : parameterList) {
@@ -423,6 +460,11 @@ public class ClassDeclaration extends BlockDeclaration implements Externalizable
 	// ***********************************************************************************************
 	// *** Utility: findLocalProcedure
 	// ***********************************************************************************************
+	/**
+	 * Utility: Search Declaration-list for a procedure named 'ident'
+	 * @param ident argument
+	 * @return a ProcedureDeclaration when it was found, otherwise null
+	 */
 	ProcedureDeclaration findLocalProcedure(final String ident) {
 		for (Declaration decl : declarationList)
 			if (Util.equals(ident, decl.identifier)) {
@@ -473,6 +515,11 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Utility: searchProtectedList - Search Protected-list for 'ident'
 	// ***********************************************************************************************
+	/**
+	 * Utility: Search Protected-list for 'ident'
+	 * @param ident argument
+	 * @return a ProtectedSpecification when it was found, otherwise null
+	 */
 	ProtectedSpecification searchProtectedList(final String ident) {
 		for (ProtectedSpecification pct : protectedList)
 			if (Util.equals(ident, pct.identifier)) return (pct);
@@ -533,6 +580,11 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Utility: searchHiddenList -- Search Hidden-list for 'ident'
 	// ***********************************************************************************************
+	/**
+	 * Utility: Search Hidden-list for 'ident'
+	 * @param ident argument
+	 * @return a HiddenSpecification when it was found, otherwise null
+	 */
 	HiddenSpecification searchHiddenList(final String ident) {
 		for (HiddenSpecification hdn : hiddenList)
 			if (Util.equals(ident, hdn.identifier)) return (hdn);
@@ -605,8 +657,8 @@ SEARCH: while (scope != null) {
 	 *
 	 */
 	public final class ClassParameterIterator implements Iterator<Parameter>, Iterable<Parameter> {
-		Iterator<Parameter> prefixIterator;
-		Iterator<Parameter> localIterator;
+		private Iterator<Parameter> prefixIterator;
+		private Iterator<Parameter> localIterator;
 
 		/**
 		 * Constructor
@@ -698,12 +750,15 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeConstructor
 	// ***********************************************************************************************
+	/**
+	 * Coding utility: Code the constructor.
+	 */
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + edFormalParameterList(false));
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + edFormalParameterList());
 		if (prefix != null) {
 			ClassDeclaration prefixClass = this.getPrefixClass();
-			GeneratedJavaClass.code("super" + prefixClass.edSuperParameterList());
+			GeneratedJavaClass.code("super" + prefixClass.edCompleteParameterList());
 		} else
 			GeneratedJavaClass.code("super(staticLink);");
 		GeneratedJavaClass.debug("// Parameter assignment to locals");
@@ -720,24 +775,23 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: edFormalParameterList
 	// ***********************************************************************************************
-	// Also used by subclass StandardProcedure
-	protected String edFormalParameterList(final boolean isMethod) {
+	/**
+	 * Edit the formal parameter list
+	 * <p>
+	 * Also used by subclass StandardProcedure.
+	 * @return the resulting Java code
+	 */
+	protected String edFormalParameterList() {
 		// Accumulates through prefix-chain when class
 		StringBuilder s = new StringBuilder();
 		s.append('(');
-		boolean withparams = false;
-		if (!isMethod) {
-			s.append("_RTObject staticLink");
-			withparams = true;
-		}
+		s.append("_RTObject staticLink");
 		for (Declaration par : new ClassParameterIterator()) {
 			// Iterates through prefix-chain
-			if (withparams)	s.append(',');
-			withparams = true;
+			s.append(',');
 			s.append(((Parameter) par).toJavaType());
 			s.append(' ');
-			if (isMethod) s.append(par.identifier);
-			else s.append('s').append(par.externalIdent); // s to indicate Specified Parameter
+			s.append('s').append(par.externalIdent); // s to indicate Specified Parameter
 		}
 		s.append(") {");
 		return (s.toString());
@@ -781,6 +835,9 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: writeCode1 -- Write code before inner
 	// ***********************************************************************************************
+	/**
+	 * Coding utility: writeCode1 -- Write code before inner
+	 */
 	protected void writeCode1() {
 		if (!this.hasNoRealPrefix()) {
 			ClassDeclaration prfx = this.getPrefixClass();
@@ -795,6 +852,9 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: writeCode2 -- Write code after inner
 	// ***********************************************************************************************
+	/**
+	 * Coding utility: writeCode2 -- Write code after inner
+	 */
 	protected void writeCode2() {
 		if (code2 != null && code2.size()>0) {
 			GeneratedJavaClass.debug("// Class " + this.identifier + ": Code after inner");
@@ -828,6 +888,9 @@ SEARCH: while (scope != null) {
 	// ***********************************************************************************************
 	// *** Coding Utility: codeClassStatements
 	// ***********************************************************************************************
+	/**
+	 * Coding utility: Code class statements.
+	 */
 	protected void codeClassStatements() {
 		boolean duringSTM_Coding=Global.duringSTM_Coding;
 		Global.duringSTM_Coding=true;
@@ -841,9 +904,13 @@ SEARCH: while (scope != null) {
 	}
 
 	// ***********************************************************************************************
-	// *** Coding Utility: edSuperParameterList
+	// *** Coding Utility: edCompleteParameterList
 	// ***********************************************************************************************
-	protected String edSuperParameterList() {
+	/**
+	 * Coding Utility: Edit the complete parameter list including all prefixes.
+	 * @return the resulting Java code
+	 */
+	protected String edCompleteParameterList() {
 		StringBuilder s = new StringBuilder();
 		s.append("(staticLink");
 		for (Parameter par : new ClassParameterIterator()) // Iterates through prefix-chain

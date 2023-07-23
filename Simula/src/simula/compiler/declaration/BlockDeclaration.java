@@ -23,7 +23,15 @@ import simula.compiler.utilities.Global;
  * @author Øystein Myhre Andersen
  */
 public abstract class BlockDeclaration extends DeclarationScope {
-	protected boolean isMainModule; // If true; this is the outermost Subblock or Prefixed Block.
+	
+	/**
+	 * If true; this is the outermost Subblock or Prefixed Block.
+	 */
+	protected boolean isMainModule;
+	
+	/**
+	 * The statements belonging to this block.
+	 */
 	protected final Vector<Statement> statements = new Vector<Statement>();
 
 	/**
@@ -44,7 +52,12 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	// Used by parseMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
+	/**
+	 * Create a new BlockDeclaration with the given identifier.
+	 * <p>
+	 * Used by parseMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
+	 * @param identifier the given identifier
+	 */
 	protected BlockDeclaration(String identifier) {
 		super(identifier);
 	}
@@ -65,6 +78,10 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Checking: doCheckLabelList
 	// ***********************************************************************************************
+	/**
+	 * Checking utility: doCheckLabelList.
+	 * @param prefixClass possible prefix or null
+	 */
 	protected void doCheckLabelList(final ClassDeclaration prefixClass) {
 		int labelIndex = (prefixClass == null)?(1) : prefixClass.getNlabels() + 1;
 		for (LabelDeclaration label : labelList) label.index = labelIndex++;
@@ -73,6 +90,11 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding: isBlockWithLocalClasses
 	// ***********************************************************************************************
+	/**
+	 * Returns true if this block has local class(es).
+	 * 
+	 * @return true if this block has local class(es)
+	 */
 	protected boolean isBlockWithLocalClasses() {
 		if (this.hasLocalClasses) return (true);
 		if (this instanceof ClassDeclaration cls) {
@@ -85,6 +107,13 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding: isQPSystemBlock -- QPS System is any block with local class(es)
 	// ***********************************************************************************************
+	/**
+	 * Returns true if this block is a QPS System block.
+	 * <p>
+	 * QPS System is any block with local class(es)
+	 * 
+	 * @return true if this block is a QPS System block
+	 */
 	protected boolean isQPSystemBlock() {
 		switch (declarationKind) {
 		case SimulaProgram:
@@ -100,10 +129,13 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding Utility: AD'HOC Leading Label
 	// ***********************************************************************************************
+	/**
+	 * The leading labels.
+	 */
 	protected Vector<String> labelcode;
 	
 	/**
-	 * Coding Utility: AD'HOC Leading Label
+	 * Coding utility: AD'HOC Leading Label
 	 * @param labelcode argument
 	 */
 	public void addLeadingLabel(String labelcode) {
@@ -114,6 +146,10 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding Utility: hasLabel
 	// ***********************************************************************************************
+	/**
+	 * Returns true if this block has one ore more labels.
+	 * @return true if this block has one ore more labels.
+	 */
 	protected boolean hasLabel() {
 		// Needs redefinition for ClassDeclaration
 		return (!labelList.isEmpty());
@@ -122,6 +158,9 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding Utility: codeSTMBody
 	// ***********************************************************************************************
+	/**
+	 * Coding utility: Code STM body
+	 */
 	protected void codeSTMBody() {
 		if (hasLabel()) {
 			GeneratedJavaClass.code(externalIdent + " _THIS=(" + externalIdent + ")_CUR;");
@@ -152,6 +191,9 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	// ***********************************************************************************************
 	// *** Coding Utility: codeStatements
 	// ***********************************************************************************************
+	/**
+	 * Coding utility: Code statements
+	 */
 	protected void codeStatements() {
 		boolean duringSTM_Coding=Global.duringSTM_Coding;
 		Global.duringSTM_Coding=true;

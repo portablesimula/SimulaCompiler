@@ -174,10 +174,10 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + edFormalParameterList(false));
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + edFormalParameterList());
 		if (prefix != null) {
 			ClassDeclaration prefixClass = this.getPrefixClass();
-			GeneratedJavaClass.code("super" + prefixClass.edSuperParameterList());
+			GeneratedJavaClass.code("super" + prefixClass.edCompleteParameterList());
 		} else GeneratedJavaClass.code("super(staticLink);");
 		GeneratedJavaClass.debug("// Parameter assignment to locals");
 		for (Parameter par : parameterList)

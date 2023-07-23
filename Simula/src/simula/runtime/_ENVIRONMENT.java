@@ -1503,6 +1503,16 @@ public class _ENVIRONMENT extends _RTObject {
 		String S = T.edText().trim();
 		return (new _TXT(S));
 	}
+	
+	/**
+	 * Edit simulated time.
+	 * @param hours simulated time 
+	 * @return the edited text
+	 */
+	public static _TXT edtime(double hours) {
+		return(new _TXT(LocalTime.ofSecondOfDay((long) (hours*60*60)).toString()));
+	}
+
 
 	// **********************************************************************
 	// *** Utility: Procedure waitSomeTime

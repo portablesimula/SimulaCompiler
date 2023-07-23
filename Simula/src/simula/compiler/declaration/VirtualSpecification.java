@@ -152,6 +152,10 @@ public final class VirtualSpecification extends Declaration implements Externali
 		SET_SEMANTICS_CHECKED();
 	}
 
+	/**
+	 * Returns the virtual identifier used i Java code.
+	 * @return the virtual identifier used i Java code
+	 */
 	public String getVirtualIdentifier() {
 		ClassDeclaration specifiedIn = (ClassDeclaration) this.declaredIn;
 		return (getJavaIdentifier() + '_' + specifiedIn.prefixLevel() + "()");
@@ -162,8 +166,8 @@ public final class VirtualSpecification extends Declaration implements Externali
 	// ***********************************************************************************************
 	/**
 	 * Get virtual specification.
-	 * @param decl 
-	 * @return
+	 * @param decl the declaration to search for
+	 * @return a VirtualSpecification or null
 	 */
 	public static VirtualSpecification getVirtualSpecification(final Declaration decl) {
 		if (!(decl.declaredIn instanceof ClassDeclaration))

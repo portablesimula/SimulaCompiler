@@ -36,6 +36,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public abstract class Declaration extends SyntaxClass {
+	
+	/**
+	 * Indicates that this declaration is protected.
+	 */
 	protected ProtectedSpecification isProtected; // Set during Checking
 	
 	/**
@@ -143,6 +147,10 @@ public abstract class Declaration extends SyntaxClass {
     // ***********************************************************************************************
     // *** Constructor
     // ***********************************************************************************************
+	/**
+	 * Create a new Declaration.
+	 * @param identifier the given identifier
+	 */
     protected Declaration(final String identifier) {
 	    this.identifier=identifier;
 	    this.externalIdent=identifier; // May be overwritten in doChecking()
@@ -156,6 +164,10 @@ public abstract class Declaration extends SyntaxClass {
      */
 	public final String getJavaIdentifier() { return(this.externalIdent); }  // May be redefined
 	
+	/**
+	 * Modify the identifier of this class.
+	 * @param newIdentifier the new identifier
+	 */
 	protected void modifyIdentifier(final String newIdentifier) {
 		this.identifier=newIdentifier;
 	    checkAlreadyDefined();
@@ -188,6 +200,11 @@ public abstract class Declaration extends SyntaxClass {
     	else if(warning) Util.warning(identifier+" is alrerady defined in "+declaredIn.identifier);
     }
   
+    /**
+     * Parse a declaration and add it to the given declaration list.
+     * @param declarationList the given declaration list
+     * @return true if a declaration was found, false otherwise
+     */
     protected static boolean parseDeclaration(final DeclarationList declarationList) {
     	if(Option.TRACE_PARSE) Parse.TRACE("Parse Declaration");
     	String prefix=Parse.acceptIdentifier();

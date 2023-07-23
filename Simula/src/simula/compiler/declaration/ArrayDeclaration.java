@@ -106,9 +106,9 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 	}
 
 	/**
-	 * 
-	 * @param type
-	 * @param declarationList
+	 * Parse an array declaration and add it to the given declaration list.
+	 * @param type the array's type
+	 * @param declarationList the given declaration list
 	 */
 	static void parse(final Type type,final DeclarationList declarationList) {
 		if (Option.TRACE_PARSE)

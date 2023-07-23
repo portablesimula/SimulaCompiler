@@ -64,7 +64,7 @@ public final class RunCompilerTest {
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/InfectionDisease.sim";
 		// String name="/samples/JensensDevice.sim";
-		// String name="/samples/LiftSimulation.sim";
+		 String name="/samples/LiftSimulation.sim";
 		// String name="/samples/PrimeUnder.sim";
 		// String name="/samples/Quine.sim";
 		// String name="/samples/Sudoku.sim";
@@ -181,7 +181,7 @@ public final class RunCompilerTest {
 //		String name="/FECTest/fecTest.sim";
 
 		// *** SMÅ ENKLE SIMULA TEST PROGRAMMER
-		 String name="/simple/adHoc00.sim";
+		// String name="/simple/adHoc00.sim";
 		// String name="/simple/adHoc01.sim";
 		// String name="/simple/adHoc02.sim";
 		// String name="/simple/adHoc03.sim";

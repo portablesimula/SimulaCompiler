@@ -103,10 +103,16 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		return (new BlockStatement(this));
 	}
 
+	/**
+	 * Utility: Moves labels from the givent block.
+	 * <p>
+	 * Special case: Labels in a CompoundStatement or ConnectionBlock.
+	 * <p>
+	 * Move Label Declaration to nearest enclosing Block which is not
+	 * a CompoundStatement or ConnectionBlock.
+	 * @param block the block containing labels to be moved
+	 */
 	static void moveLabelsFrom(DeclarationScope block) {
-		// Special case: Labels in a CompoundStatement or ConnectionBlock.
-		// Move Label Declaration to nearest enclosing Block which is not
-		// a CompoundStatement or ConnectionBlock.
 		DeclarationScope declaredIn = block.declaredIn;
 		Vector<LabelDeclaration> labelList = block.labelList;
 		DeclarationScope enc = declaredIn;

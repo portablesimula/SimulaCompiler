@@ -21,7 +21,11 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public abstract class DeclarationScope extends Declaration {
-	protected static int currentRTBlockLevel = 0; // Runtime Block level - Used during doChecking
+	
+	/**
+	 * Current Runtime Block level - Used during doChecking
+	 */
+	protected static int currentRTBlockLevel = 0;
 
 	/**
 	 * The source block level. Set during Parsing.

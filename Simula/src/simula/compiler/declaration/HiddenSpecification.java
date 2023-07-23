@@ -24,7 +24,15 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class HiddenSpecification implements Externalizable {
+	
+	/**
+	 * The hidden identifier.
+	 */
 	String identifier;
+	
+	/**
+	 * The class in which this HiddenSpecification occur.
+	 */
 	ClassDeclaration definedIn;
 	private ProtectedSpecification protectedBy; // Set during doChecking
 
@@ -48,6 +56,11 @@ public final class HiddenSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: doChecking -- Called from ClassDeclaration.checkHiddenList
 	// ***********************************************************************************************
+    /**
+     * Perform semantic checking.
+     * <p>
+     * Called from ClassDeclaration.checkHiddenList.
+     */
 	void doChecking() {
 		protectedBy = getMatchingProtected();
 		if (protectedBy != null)
@@ -84,6 +97,10 @@ public final class HiddenSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: getScopeBehindHidden -- Search backwards from 'hidden' ...
 	// ***********************************************************************************************
+	/**
+	 * Utility: Get scope behind hidden.
+	 * @return the ClassDeclaration found
+	 */
 	ClassDeclaration getScopeBehindHidden() {
 		ProtectedSpecification protectedBy = getProtectedBy();
 		ClassDeclaration definedIn = protectedBy.definedIn;

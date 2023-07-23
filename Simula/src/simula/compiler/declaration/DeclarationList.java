@@ -27,6 +27,10 @@ public class DeclarationList extends Vector<Declaration> {
 	 */
 	public final String identifier;
 
+	/**
+	 * Create a new DeclarationList.
+	 * @param identifier the given identifier
+	 */
 	DeclarationList(String identifier) {
 		this.identifier=identifier;
 	}
