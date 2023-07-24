@@ -18,7 +18,15 @@ import java.lang.reflect.InvocationTargetException;
 * @author Øystein Myhre Andersen
 */
 public final class _PRCQNT {
+	
+	/**
+	 * Static link.
+	 */
 	final _RTObject staticLink;
+	
+	/**
+	 * The Java class representing the Simula Procedure.
+	 */
 	final Class<?> procedure;
 
 	// Constructor

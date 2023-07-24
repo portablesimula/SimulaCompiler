@@ -43,8 +43,12 @@ import java.io.InputStream;
  *
  */
 public class _Inbytefile extends _Bytefile {
-	protected boolean _ENDFILE = true;
 	private InputStream inputStream;
+	
+	/**
+	 * The variable ENDFILE.
+	 */
+	protected boolean _ENDFILE = true;
 
 	// Constructor
 	/**

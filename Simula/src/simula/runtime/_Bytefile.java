@@ -34,7 +34,15 @@ package simula.runtime;
  *
  */
 public class _Bytefile extends _File {
+	
+	/**
+	 * The current _BYTESIZE value.
+	 */
 	protected int _BYTESIZE;
+	
+	/**
+	 * The constant _MAXBYTE value.
+	 */
 	protected final int _MAXBYTE = 255;
 
 	/**

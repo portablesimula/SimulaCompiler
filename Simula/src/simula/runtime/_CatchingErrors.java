@@ -73,6 +73,10 @@ public abstract class _CatchingErrors extends _SIMULA_BLOCK {
 		throw new _SimulaRuntimeError("No Virtual Match: onError");
 	}
 
+	/**
+	 * Create a new _CatchingErrors instance.
+	 * @param staticLink the static link
+	 */
 	public _CatchingErrors(_RTObject staticLink) {
 		super(staticLink);
 		BBLK(); // Iff no prefix

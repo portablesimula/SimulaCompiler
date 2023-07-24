@@ -92,10 +92,9 @@ public class _Directfile extends _Imagefile {
 	 */
 	int _RECORDSIZE;
 
-	int INITIAL_LAST_LOC;
-
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
+	private int INITIAL_LAST_LOC;
 
 	/**
 	 * Create a new _Directbytefile.

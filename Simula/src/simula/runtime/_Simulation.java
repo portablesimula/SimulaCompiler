@@ -118,7 +118,7 @@ public class _Simulation extends _Simset {
 
 		main_1 = (_MAIN_PROGRAM) new _MAIN_PROGRAM((_Simulation) _CUR)._START();
 		main_1.EVENT = new _EVENT_NOTICE(0, main_1);
-		_Ranking.RANK_INTO(main_1.EVENT, sqs, 0);
+		_Ranking.INTO(main_1.EVENT, sqs, 0);
 	}
 
 	@Override
@@ -189,10 +189,10 @@ public class _Simulation extends _Simset {
 		} else
 			time = x.evtime();
 
-		_Ranking suc = _Ranking.RANK_SUC(x.EVENT);
+		_Ranking suc = _Ranking.SUC(x.EVENT);
 		if (suc != null) {
 			if (suc.rnk <= time) {
-				_Ranking.RANK_INTO(x.EVENT, sqs, time);
+				_Ranking.INTO(x.EVENT, sqs, time);
 				// simblk.cur:=suc;
 				resume(current());
 			}
@@ -224,10 +224,10 @@ public class _Simulation extends _Simset {
 		_Process cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());
 		if (cur != null) {
-			_Ranking.RANK_OUT(cur.EVENT);
+			_Ranking.OUT(cur.EVENT);
 			cur.EVENT = null;
 		}
-		if (_Ranking.RANK_EMPTY(sqs))
+		if (_Ranking.EMPTY(sqs))
 			throw new _SimulaRuntimeError("Cancel,Passivate or Wait empties SQS");
 
 		_Process nxtcur = current();
@@ -270,7 +270,7 @@ public class _Simulation extends _Simset {
 		if (x == current())
 			passivate();
 		else if (x != null && x.EVENT != null) {
-			_Ranking.RANK_OUT(x.EVENT);
+			_Ranking.OUT(x.EVENT);
 			x.EVENT = null;
 		}
 	}
@@ -324,7 +324,7 @@ public class _Simulation extends _Simset {
 			z = current();
 			X.EVENT = new _EVENT_NOTICE(time(), X);
 			// X.EVENT.precede(FIRSTEV());
-			_Ranking.RANK_INTO(X.EVENT, sqs, X.EVENT.rnk);
+			_Ranking.INTO(X.EVENT, sqs, X.EVENT.rnk);
 			removePrevEvent(EV);
 			if (z != current())
 				resume(current());
@@ -334,8 +334,8 @@ public class _Simulation extends _Simset {
 	private void removePrevEvent(_EVENT_NOTICE EV) {
 		if (EV != null) {
 			// EV.out();
-			_Ranking.RANK_OUT(EV);
-			if (_Ranking.RANK_EMPTY(sqs))
+			_Ranking.OUT(EV);
+			if (_Ranking.EMPTY(sqs))
 				throw new _SimulaRuntimeError("(Re)Activate empties SQS.");
 		}
 	}
@@ -378,9 +378,9 @@ public class _Simulation extends _Simset {
 				T = time();
 			X.EVENT = new _EVENT_NOTICE(T, X);
 			if (PRIO)
-				_Ranking.RANK_PRIOR(X.EVENT, sqs, T);
+				_Ranking.INTO_PRIOR(X.EVENT, sqs, T);
 			else
-				_Ranking.RANK_INTO(X.EVENT, sqs, T);
+				_Ranking.INTO(X.EVENT, sqs, T);
 			removePrevEvent(EV);
 			if (z != current())
 				resume(current());
@@ -433,9 +433,9 @@ public class _Simulation extends _Simset {
 				double EVTIME = Y.EVENT.EVTIME();
 				X.EVENT = new _EVENT_NOTICE(EVTIME, X);
 				if (BEFORE)
-					_Ranking.RANK_FOLLOW(X.EVENT, Y.EVENT);
+					_Ranking.FOLLOW(X.EVENT, Y.EVENT);
 				else
-					_Ranking.RANK_PRECEDE(X.EVENT, Y.EVENT);
+					_Ranking.PRECEDE(X.EVENT, Y.EVENT);
 			}
 			removePrevEvent(EV);
 			if (z != current()) {

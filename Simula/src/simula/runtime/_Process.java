@@ -72,6 +72,9 @@ public class _Process extends _Link {
 		return (true);
 	}
 
+	/**
+	 * The corresponding EVENT to this Process.
+	 */
 	/* packet */ _EVENT_NOTICE EVENT = null;
 
 	/**
@@ -92,6 +95,9 @@ public class _Process extends _Link {
 		return (this);
 	}
 
+	/**
+	 * Utility: Terminate this Process.
+	 */
 	protected void terminate() {
 		_Process nxtcur = ((_Simulation) _SL).passivate1();
 		resume(nxtcur, false); // Special Case without Swap
@@ -134,7 +140,7 @@ public class _Process extends _Link {
 		if (idle())
 			return (null);
 		_EVENT_NOTICE suc;
-		suc = (_EVENT_NOTICE) _Ranking.RANK_SUC(EVENT);
+		suc = (_EVENT_NOTICE) _Ranking.SUC(EVENT);
 		if (suc == null)
 			return (null);
 		return (suc.PROC);

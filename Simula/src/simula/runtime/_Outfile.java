@@ -46,6 +46,10 @@ import java.io.Writer;
  *
  */
 public class _Outfile extends _Imagefile {
+	
+	/**
+	 * The underlying Writer.
+	 */
 	protected Writer writer;
 
 	// Constructor
@@ -175,7 +179,7 @@ public class _Outfile extends _Imagefile {
 	 * <p>
 	 * After the transfer, "image" is cleared to blanks and the position indicator
 	 * is set to 1.
-	 * <p>
+	 *
 	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	@Override
@@ -183,9 +187,15 @@ public class _Outfile extends _Imagefile {
 		writeImage("Outimage", (image == null) ? "\n" : (image.edStripedText() + '\n'), true);
 	}
 
+	/**
+	 * Output utility: Used by outimage, outrecord and breakoutimage.
+	 * <p>
+	 * Redefined in PrintFile
+	 * @param ident identifier used in error message
+	 * @param img the image to output
+	 * @param blank true if the image should be blank-filled after the output operation
+	 */
 	protected void writeImage(String ident, String img, boolean blank) {
-		// Used by outimage, outrecord and breakoutimage
-		// Redefined in PrintFile
 		if (!_OPEN)
 			throw new _SimulaRuntimeError("File not opened");
 		try {
@@ -215,7 +225,7 @@ public class _Outfile extends _Imagefile {
 	 * The procedure "outrecord" transfers to the file only that part of "image"
 	 * which precedes POS. The contents are not blanked after the transfer, although
 	 * POS is set to one.
-	 * <p>
+	 *
 	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	public void outrecord() {
@@ -244,7 +254,7 @@ public class _Outfile extends _Imagefile {
 	 * <p>
 	 * One use of "breakoutimage" is to allow input from a terminal display on the
 	 * same line as one on which output (e.g. a prompt) has already been written.
-	 * <p>
+	 *
 	 * @throws _SimulaRuntimeError if the operation fail
 	 */
 	public void breakoutimage() {

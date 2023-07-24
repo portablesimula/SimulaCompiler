@@ -7,28 +7,50 @@
  */
 package simula.runtime;
 
+import simula.compiler.utilities.Util;
+
 /**
  * Utility class _Ranking.
+ * <p>
+ * This is an implementation of a balanced tree used to support the sequencing set in class Simulation.
  * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Ranking.java"><b>Source File</b></a>.
  *
  * @author Øystein Myhre Andersen
  */
 public class _Ranking {
-	_Ranking bl, ll, rl;
+	
+	/**
+	 * Back link.
+	 */
+	_Ranking bl;
+	
+	/**
+	 * Left link.
+	 */
+	_Ranking ll;
+	
+	/**
+	 * Right link.
+	 */
+	_Ranking rl;
+	
+	/**
+	 * The ranking value.
+	 */
 	double rnk;
 
-	/* packet */ final String name;
+	/**
+	 * Default Constructor.
+	 */
+	/* packet */ _Ranking() {}
 
-	_Ranking(String name) {
-		this.name = name;
-	}
-
-	/* packet */ _Ranking() {
-		this.name = null;
-	}
-
-	/* packet */ static _Ranking RANK_PRED(_Ranking ins) {
+	/**
+	 * Returns the predecessor of the given instance.
+	 * @param ins the given instance
+	 * @return pred the predecessor of the given instance.
+	 */
+	static _Ranking PRED(_Ranking ins) {
 		_Ranking prd = null; // Return value
 		if (ins.rl == ins) {
 			prd = null;
@@ -51,7 +73,12 @@ public class _Ranking {
 		return (prd);
 	}
 
-	/* packet */ static _Ranking RANK_SUC(_Ranking ins) {
+	/**
+	 * Returns the successor of the given instance.
+	 * @param ins the given instance
+	 * @return suc the successor of the given instance.
+	 */
+	static _Ranking SUC(_Ranking ins) {
 		_Ranking suc = null; // Return value
 		if (ins.bl == null) {
 			suc = null;
@@ -69,11 +96,15 @@ public class _Ranking {
 		return (suc);
 	}
 
-	/* packet */ static void RANK_CLEAR(_Ranking head) {
+	/**
+	 * Clear the Ranking tree.
+	 * @param head the head of the tree
+	 */
+	static void CLEAR(_Ranking head) {
 		_Ranking ins = null;
 		_Ranking temp = null;
 		if (head.rl != head) {
-			IERR("RANK_CLEAR");
+			Util.IERR("RANK_CLEAR");
 		}
 		if (head.bl != head) {
 			ins = head.bl;
@@ -105,19 +136,29 @@ public class _Ranking {
 		}
 	}
 
-	/* packet */ static boolean RANK_EMPTY(_Ranking head) {
+	/**
+	 * Check if the Ranking tree is empty.
+	 * @param head the head of the tree
+	 * @return true if the Ranking tree is empty, otherwise false
+	 */
+	static boolean EMPTY(_Ranking head) {
 		boolean empty = false; // Return value
 		if (head.rl != head) {
-			IERR("RANK_EMPTY");
+			Util.IERR("RANK_EMPTY");
 		}
 		empty = (head.bl == head);
 		return (empty);
 	}
 
-	/* packet */ static _Ranking RANK_FIRST(_Ranking head) {
+	/**
+	 * Returns the first element of the ranking tree.
+	 * @param head the head of the tree
+	 * @return the first element of the ranking tree
+	 */
+	static _Ranking FIRST(_Ranking head) {
 		_Ranking first = null; // Return value
 		if (head.rl != head) {
-			IERR("RANK_FIRST");
+			Util.IERR("RANK_FIRST");
 		}
 		first = head.bl;
 		if (first == head) {
@@ -126,10 +167,15 @@ public class _Ranking {
 		return (first);
 	}
 
-	/* packet */ static _Ranking RANK_LAST(_Ranking head) {
+	/**
+	 * Returns the last element of the ranking tree.
+	 * @param head the head of the tree
+	 * @return the last element of the ranking tree
+	 */
+	static _Ranking LAST(_Ranking head) {
 		_Ranking last = null; // Return value
 		if (head.rl != head) {
-			IERR("RANK_LAST");
+			Util.IERR("RANK_LAST");
 		}
 		last = head.ll;
 		if (last == head) {
@@ -138,12 +184,17 @@ public class _Ranking {
 		return (last);
 	}
 
-	/* packet */ static void RANK_FOLLOW(_Ranking ins, _Ranking prd) {
+	/**
+	 * Insert 'ins' following 'prd'.
+	 * @param ins argument
+	 * @param prd argument
+	 */
+	static void FOLLOW(_Ranking ins, _Ranking prd) {
 		if (ins.rl == ins) {
-			IERR("RANK_FOLLOW");
+			Util.IERR("RANK_FOLLOW");
 		}
 		if (ins.bl != null) {
-			RANK_OUT(ins);
+			OUT(ins);
 		}
 		if (prd != null) {
 			if (prd.bl != null) {
@@ -160,13 +211,17 @@ public class _Ranking {
 		}
 	}
 
-	/* packet */ static void RANK_OUT(_Ranking ins) {
+	/**
+	 * Remove 'ins' from the ranking tree.
+	 * @param ins argument
+	 */
+	static void OUT(_Ranking ins) {
 		_Ranking suc = null;
 		_Ranking bl = null;
 		_Ranking ll = null;
 		_Ranking rl = null;
 		if (ins.rl == ins) {
-			IERR("RANK_OUT");
+			Util.IERR("RANK_OUT");
 		}
 		if (ins.bl != null) {
 			bl = ins.bl;
@@ -218,14 +273,20 @@ public class _Ranking {
 		}
 	}
 
-	/* packet */ static void RANK_INTO(_Ranking ins, _Ranking head, double rnk) {
+	/**
+	 * Insert 'ins' intp the ranking tree acording to the ranking value.
+	 * @param ins argument
+	 * @param head the head of the tree
+	 * @param rnk the ranking value
+	 */
+	static void INTO(_Ranking ins, _Ranking head, double rnk) {
 		if (ins.rl == ins)
-			IERR("RANK_INTO-1");
+			Util.IERR("RANK_INTO-1");
 		if (ins.bl != null)
-			RANK_OUT(ins);
+			OUT(ins);
 		if (head != null) {
 			if (head.rl != head)
-				IERR("RANK_INTO-2");
+				Util.IERR("RANK_INTO-2");
 			ins.rnk = rnk;
 			if (rnk >= head.ll.rnk) {
 				ins.bl = head;
@@ -263,14 +324,19 @@ public class _Ranking {
 		}
 	}
 
-	/* packet */ static void RANK_PRECEDE(_Ranking ins, _Ranking suc) {
+	/**
+	 * Insert 'ins' preceding 'suc'.
+	 * @param ins argument
+	 * @param suc argument
+	 */
+	static void PRECEDE(_Ranking ins, _Ranking suc) {
 		if (ins.rl == ins)
-			IERR("RANK_PRECEDE-1");
+			Util.IERR("RANK_PRECEDE-1");
 		if (ins.bl != null)
-			RANK_OUT(ins);
+			OUT(ins);
 		if (suc != null) {
 			if (suc.rl == suc)
-				IERR("RANK_PRECEDE-2");
+				Util.IERR("RANK_PRECEDE-2");
 			if (suc.bl != null) {
 				ins.rnk = suc.rnk;
 				ins.bl = suc;
@@ -287,14 +353,20 @@ public class _Ranking {
 		}
 	}
 
-	/* packet */ static void RANK_PRIOR(_Ranking ins, _Ranking head, double rnk) {
+	/**
+	 * Insert 'ins' into the ranking tree acording to the ranking value with priority.
+	 * @param ins argument
+	 * @param head the head of the tree
+	 * @param rnk the ranking value
+	 */
+	static void INTO_PRIOR(_Ranking ins, _Ranking head, double rnk) {
 		if (ins.rl == ins)
-			IERR("RANK_PRIOR-1");
+			Util.IERR("RANK_PRIOR-1");
 		if (ins.bl != null)
-			RANK_OUT(ins);
+			OUT(ins);
 		if (head != null) {
 			if (head.rl != head)
-				IERR("RANK_PRIOR-2");
+				Util.IERR("RANK_PRIOR-2");
 			ins.rnk = rnk;
 			if (rnk > head.ll.rnk) {
 				ins.bl = head;
@@ -332,48 +404,5 @@ public class _Ranking {
 			}
 		}
 	}
-
-	/* packet */ static void IERR(String msg) {
-	}
-
-	@Override
-	public String toString() {
-		return ("" + edit(this));
-	}
-
-	/* packet */ String ed() {
-		return (name + "[" + rnk + "]");
-	}
-
-	/* packet */ static String edit(_Ranking sqs) {
-		_Ranking x = RANK_FIRST(sqs);
-		if (x == null)
-			return ("none");
-		StringBuilder s = new StringBuilder();
-		do
-			s.append(x.ed()).append(", ");
-		while ((x = RANK_SUC(x)) != null);
-		return (s.toString());
-	}
-
-//	public static void main(String[] args) {
-//		_Ranking sqs;
-//		System.out.println("BEGIN TESTING Class Ranking");
-//		sqs = new _Ranking("MAIN");
-//		sqs.bl = sqs;
-//		sqs.ll = sqs;
-//		sqs.rl = sqs;
-//
-//		RANK_INTO(new _Ranking(), sqs, 34);
-//		RANK_INTO(new _Ranking(), sqs, 14);
-//		RANK_INTO(new _Ranking(), sqs, 36);
-//		RANK_INTO(new _Ranking(), sqs, 3);
-//		RANK_PRIOR(new _Ranking("PRIOR"), sqs, 34);
-//		RANK_INTO(new _Ranking("NORMAL"), sqs, 34);
-//
-//		System.out.println("FIRST=" + _Ranking.RANK_FIRST(sqs));
-//
-//		System.out.println("  END TESTING Class Ranking");
-//	}
 
 }

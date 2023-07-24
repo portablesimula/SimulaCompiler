@@ -18,8 +18,20 @@ package simula.runtime;
  *
  */
 public class _PROGINFO {
-	final String file; // Simula Source File - e.g. program.sim
+	
+	/**
+	 * Simula Source File - e.g. program.sim
+	 */
+	final String file;
+	
+	/**
+	 * Program ident.
+	 */
 	final String ident;
+	
+	/**
+	 * The line-map.
+	 */
 	final int[] LINEMAP_;
 
 	/**

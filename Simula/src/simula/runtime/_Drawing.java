@@ -156,62 +156,19 @@ public class _Drawing extends _Simset {
 	 */
 	public static final int _blue_1 = 0x0000ff; // Color blue: R=0, G=0, B=255.
 
-//	/**
-//	 * The color white.
-//	 */
-//	public static final int white = 0xffffff; // Color white: R=255, G=255, B=255.
-//	/**
-//	 * The color lightGray.
-//	 */
-//	public static final int lightGray = 0xc0c0c0; // Color light gray: R=192, G=192, B=192.
-//	/**
-//	 * The color gray.
-//	 */
-//	public static final int gray = 0x808080; // Color gray: R=128, G=128, B=128.
-//	/**
-//	 * The color darkgray.
-//	 */
-//	public static final int darkGray = 0x404040; // Color dark gray: R=64, G=64, B=64.
-//	/**
-//	 * The color black.
-//	 */
-//	public static final int black = 0x000000; // Color black: R=0, G=0, B=0.
-//	/**
-//	 * The color red.
-//	 */
-//	public static final int red = 0xff0000; // Color red: R=255, G=0, B=0.
-//	/**
-//	 * The color pink.
-//	 */
-//	public static final int pink = 0xffafaf; // Color pink: R=255, G=175, B=175.
-//	/**
-//	 * The color orange.
-//	 */
-//	public static final int orange = 0xffc800; // Color orange: R=255, G=200, B=0.
-//	/**
-//	 * The color yellow.
-//	 */
-//	public static final int yellow = 0xffff00; // Color yellow: R=255, G=255, B=0.
-//	/**
-//	 * The color green.
-//	 */
-//	public static final int green = 0x00ff00; // Color green: R=0, G=255, B=0.
-//	/**
-//	 * The color magenta.
-//	 */
-//	public static final int magenta = 0xff00ff; // Color magenta: R=255, G=0, B=255.
-//	/**
-//	 * The color cyan.
-//	 */
-//	public static final int cyan = 0x00ffff; // Color cyan: R=0, G=255, B=255.
-//	
-//	/**
-//	 * The color blue.
-//	 */
-//	public static final int blue = 0x0000ff; // Color blue: R=0, G=0, B=255.
-
+	/**
+	 * The current Frame.
+	 */
 	final JFrame frame;
+	
+	/**
+	 * The current canvas.
+	 */
 	final Drawing canvas;
+	
+	/**
+	 * The buffer strategy.
+	 */
 	final BufferStrategy strategy;
 	
 	/**
@@ -227,13 +184,40 @@ public class _Drawing extends _Simset {
 		return (RENDERING_SET);
 	}
 
+	/**
+	 * The current background color
+	 */
 	Color currentBackgroundColor = Color.WHITE;
+
+	/**
+	 * The current draw color
+	 */
 	Color currentDrawColor = Color.BLACK;
+
+	/**
+	 * The current currentBackgroundColor
+	 */
 	Color currentFillColor = Color.GRAY;
+
+	/**
+	 * The current stroke
+	 */
 	Stroke currentStroke = new BasicStroke(2.5f);
+
+	/**
+	 * The current font
+	 */
 	Font currentFont;
 
+	/**
+	 * The Animable interface.
+	 */
 	interface Animable {
+		/**
+		 * Paint this Animable
+		 * 
+		 * @param g the graphic context
+		 */
 		public void paint(Graphics2D g);
 	}
 
@@ -472,14 +456,25 @@ public class _Drawing extends _Simset {
 		return (elt);
 	}
 
+	/**
+	 * Additional System Class Drawing. 
+	 */
+	@SuppressWarnings("serial")
 	class Drawing extends Canvas {
-		static final long serialVersionUID = 123;
+		
+		/**
+		 *  Default Constructor.
+		 */
+		Drawing(){}
 
 		@Override
 		public void paint(Graphics g) {
 			render();
 		}
 
+		/**
+		 * Render all elements in the RENDERING_SET.
+		 */
 		public void render() {
 			Graphics graphics = strategy.getDrawGraphics();
 			Graphics2D g = (Graphics2D) graphics;

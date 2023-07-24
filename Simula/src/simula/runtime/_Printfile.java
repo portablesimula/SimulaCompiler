@@ -70,11 +70,15 @@ import java.io.PrintWriter;
  *
  */
 public class _Printfile extends _Outfile {
-	int _LINES_PER_PAGE = 66;
 	private int _DEFAULT_LINES_PER_PAGE = 66;
 	private int _SPACING = 1;
 	private int _LINE;
 	private int _PAGE;
+
+	/**
+	 * The current lines per page
+	 */
+	int _LINES_PER_PAGE = 66;
 
 	// Constructor
 	/**

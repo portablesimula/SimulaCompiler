@@ -44,7 +44,14 @@ package simula.runtime;
  *
  */
 public class _Linkage extends _SIMULA_BLOCK {
+	
+	/**
+	 * The variable SUC.
+	 */
 	protected _Linkage SUC = null;
+	/**
+	 * The variable PRED.
+	 */
 	protected _Linkage PRED = null;
 
 	// Constructor

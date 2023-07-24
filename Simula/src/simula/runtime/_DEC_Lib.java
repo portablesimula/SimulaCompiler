@@ -701,7 +701,10 @@ public class _DEC_Lib extends _SIMULA_BLOCK {
 		return (RES);
 	}
 
-	enum State {
+	/**
+	 * The item states used by GETITEM below.
+	 */
+	private enum State {
 		NULL, NUMBER, IDENTIFIER, SYMBOL
 	};
 

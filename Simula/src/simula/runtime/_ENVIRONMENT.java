@@ -29,11 +29,26 @@ import simula.runtime._RT.Option;
  *
  */
 public class _ENVIRONMENT extends _RTObject {
-	// NOTE: When updating release id, change version in setup.SimulaExtractor and simula.Global
+	/**
+	 * The Simula release identification.
+	 * <p>
+	 * NOTE: When updating release id, change version in setup.SimulaExtractor and simula.Global
+	 */
 	static final String simulaReleaseID = "Simula-2.0";
 
+	/**
+	 * The start time from System.currentTimeMillis
+	 */
 	static long _STARTTIME = System.currentTimeMillis();
+	
+	/**
+	 * The current lowten character.
+	 */
 	static char CURRENTLOWTEN = '&';
+	
+	/**
+	 * The current decimal mark character.
+	 */
 	static char CURRENTDECIMALMARK = '.';
 	
 	/**

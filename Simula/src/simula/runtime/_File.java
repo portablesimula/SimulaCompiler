@@ -48,7 +48,15 @@ import java.util.StringTokenizer;
  *
  */
 public class _File extends _SIMULA_BLOCK {
+	
+	/**
+	 * The file name.
+	 */
 	protected final _TXT FILE_NAME;
+	
+	/**
+	 * The OPEN indicator.
+	 */
 	protected boolean _OPEN;
 
 	/**
@@ -80,9 +88,28 @@ public class _File extends _SIMULA_BLOCK {
 	 * "open" the file is opened, otherwise a new file is created.
 	 */
 	protected enum _CreateAction {
-		NA, noCreate, create, anyCreate
+		/**
+		 * not applicable
+		 */
+		NA,
+		/**
+		 * the associated file must exist at "open"
+		 */
+		noCreate,
+		/**
+		 * the external file associated with FILENAME must not exist at "open"
+		 */
+		create,
+		/**
+		 * if the file does exist at "open" the file is opened,
+		 * otherwise a new file is created
+		 */
+		anyCreate
 	};
 
+	/**
+	 * CREATE: Action is performed as 'open'
+	 */
 	protected _CreateAction _CREATE = _CreateAction.NA; // May be Redefined
 
 	/**
@@ -95,18 +122,51 @@ public class _File extends _SIMULA_BLOCK {
 	protected boolean _PURGE = false; // True:purge, False:noPurge
 
 	/**
-	 * READWRITE: If the value is "readonly", output operations cannot be performed.
-	 * If the value is "writeonly", input operations cannot be performed. The value
-	 * "readwrite" enables both input and output. This mode is relevant only for
-	 * direct files.
+	 * If the value is true, input operations can be performed.
+	 * <p>
+	 * This mode is relevant only for direct files.
 	 */
 	protected boolean _CANREAD = true;
+	
+	/**
+	 * If the value is true, output operations can be performed.
+	 * <p>
+	 * This mode is relevant only for direct files.
+	 */
 	protected boolean _CANWRITE = true;
 
+	/**
+	 * The output to the file is added to
+	 * the existing contents of the file.
+	 * <p>
+	 * If the value is true, output to the file is added to the existing
+	 * contents of the file. The value false implies
+	 * for a sequential file that, after "close", the external file will
+	 * contain only the output produced while the file was open.
+	 * <p>
+	 * The mode is not relevant for in(byte)files.
+	 */
 	protected boolean _APPEND = false;
+	
+	/**
+	 * The current character set when encode/decode files.
+	 */
 	protected Charset _CHARSET = Charset.defaultCharset();
 
+	/**
+	 * The default BYTESIXE is 8 in this implementation.
+	 */
 	protected final int _DEFAULT_BYTESIZE = 8;
+	
+	/**
+	 * The access mode SYNCHRONOUS.
+	 * <p>
+	 * It is available for Out- files and Direct- files.
+	 * For Outfile/OutBytefile, each write operation will be followed by a flush to ensure that the
+	 * underlying storage device is updated. For Directfile/DirectBytefile the underlaying Java
+	 * RandomAccessFile will be created open for reading and writing, and also require that every
+	 * update to the file's content or metadata be written synchronously to the underlying storage device.
+	 */
 	protected boolean _SYNCHRONOUS;
 
 	/**
@@ -146,11 +206,28 @@ public class _File extends _SIMULA_BLOCK {
 	}
 
 	// trySelectFile
+	/**
+	 * Try to select a file named 'fileName'.
+	 * <p>
+	 * If no file exists with that fileName it will try several possibilities:
+	 * <ul>
+	 * <li>First it will search the Option.RUNTIME_USER_DIR</li>
+	 * <li>Second, system properties "user.dir" and "java.class.path".parent</li>
+	 * <li>Finally, a JFileChooser dialog is opened to let the user select the file</li>
+	 * </ul>
+	 * @param fileName the given fale name
+	 * @return the resulting file or null
+	 */
 	protected File trySelectFile(final String fileName) {
 		File file = new File(fileName);
+		if (file.exists())
+			return (file);
 		if (!file.isAbsolute()) {
+			File tryFile = new File(_RT.Option.RUNTIME_USER_DIR, fileName);
+			if (tryFile.exists())
+				return (tryFile);
 			File dir = new File(System.getProperty("user.dir", null));
-			File tryFile = new File(dir, fileName);
+			tryFile = new File(dir, fileName);
 			if (tryFile.exists())
 				return (tryFile);
 
@@ -255,6 +332,11 @@ public class _File extends _SIMULA_BLOCK {
 		return (!unrecognized);
 	}
 
+	/**
+	 * Set new Charset.
+	 * @param id charset identifier
+	 * @return true if the operation was successful, otherwise false
+	 */
 	protected boolean setCharset(String id) {
 		String charset = id.substring(7).trim();
 		if (charset.startsWith(":")) {
@@ -274,11 +356,46 @@ public class _File extends _SIMULA_BLOCK {
 		return (false);
 	}
 
+	/**
+	 * The current Font.
+	 */
 	protected Font _FONT = null;// new Font(Font.MONOSPACED, Font.PLAIN, 12);
+	
+	/**
+	 * The current paper orientation.
+	 */
 	protected int _ORIENTATION = PageFormat.PORTRAIT;
+	
+	/**
+	 * Indicator to decide whether to ask, by a dialog, for the paper and orientation.
+	 */
 	protected boolean _ASK_PAPER = false;
-	protected double _LEFT_MARGIN = 0, _RIGHT_MARGIN = 0, _TOP_MARGIN = 0, _BOT_MARGIN = 0;
+	
+	/**
+	 * The papar's current left margin
+	 */
+	protected double _LEFT_MARGIN = 0;
+	
+	/**
+	 * The papar's current right margin
+	 */
+	protected double _RIGHT_MARGIN = 0;
+	
+	/**
+	 * The papar's current top margin
+	 */
+	protected double _TOP_MARGIN = 0;
+	
+	/**
+	 * The papar's current bottom margin
+	 */
+	protected double _BOT_MARGIN = 0;
 
+	/**
+	 * Set new Font.
+	 * @param id font identifier
+	 * @return true if the operation was successful, otherwise false
+	 */
 	protected boolean setFont(String id) {
 		String fld = id.substring(4).trim();
 		if (fld.startsWith(":")) {
@@ -327,6 +444,11 @@ public class _File extends _SIMULA_BLOCK {
 		return (false);
 	}
 
+	/**
+	 * Utility: Set paper margins.
+	 * @param id an margin string "top:left:bottom:right"
+	 * @return true if the operation was successful, otherwise false
+	 */
 	protected boolean setMargins(String id) {
 		String fld = id.substring(7).trim();
 		if (fld.startsWith(":")) {
@@ -344,6 +466,10 @@ public class _File extends _SIMULA_BLOCK {
 		return (false);
 	}
 
+	/**
+	 * Do the Create action.
+	 * @return the File 
+	 */
 	protected File doCreateAction() {
 		File file = new File(FILE_NAME.edText());
 		try {
@@ -388,6 +514,9 @@ public class _File extends _SIMULA_BLOCK {
 		return (file);
 	}
 
+	/**
+	 * Do the Purge action
+	 */
 	protected void doPurgeAction() {
 		try {
 			File file = new File(FILE_NAME.edText().trim());
@@ -402,6 +531,10 @@ public class _File extends _SIMULA_BLOCK {
 		}
 	}
 
+	/**
+	 * Utility: Trace file open.
+	 * @param mss a trace message
+	 */
 	protected void TRACE_OPEN(String mss) {
 		System.out.println(mss + ": " + FILE_NAME.edText());
 	}

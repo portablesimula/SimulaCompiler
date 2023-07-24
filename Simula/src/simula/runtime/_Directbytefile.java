@@ -72,10 +72,9 @@ public class _Directbytefile extends _Bytefile {
 	 */
 	boolean _LOCKED;
 
-	int INITIAL_LAST_LOC;
-
 	private RandomAccessFile randomAccessFile;
 	private FileLock fileLock;
+	private int INITIAL_LAST_LOC;
 
 	/**
 	 * Create a new _Directbytefile.

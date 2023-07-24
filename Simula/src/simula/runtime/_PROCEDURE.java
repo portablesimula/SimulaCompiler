@@ -16,7 +16,11 @@ package simula.runtime;
 * @author Øystein Myhre Andersen
 */
 public abstract class _PROCEDURE extends _BASICIO {
-	protected int _nParLeft; // Number of actual parameters left to be transmitted.
+	
+	/**
+	 * Number of actual parameters left to be transmitted.
+	 */
+	protected int _nParLeft;
 
 	/**
 	 * Create a normal procedure.
