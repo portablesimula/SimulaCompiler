@@ -60,7 +60,6 @@ public abstract class _SIMULA_BLOCK extends _BASICIO implements Runnable {
 		this.CORUT_ = new Coroutine(this);
 		if (_RT.Option.QPS_TRACING)
 			_RT.TRACE("START " + this.edObjectIdent());
-		_RT.ASSERT(_CUR == this, "_SIMULA_BLOCK.START:Invariant-1");
 		swapCoroutines();
 	}
 

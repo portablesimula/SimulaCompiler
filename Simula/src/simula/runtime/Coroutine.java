@@ -44,6 +44,9 @@ public class Coroutine implements Runnable {
 	 */
 	public static RuntimeException _PENDING_EXCEPTION = null;
 
+	/**
+	 * The UncaughtExceptionHandler.
+	 */
 	Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
 		public void uncaughtException(Thread thread, Throwable e) {
 			if (e instanceof RuntimeException)

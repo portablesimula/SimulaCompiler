@@ -14,7 +14,7 @@ import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 
 /**
- * 
+ * Run inline compiler tests.
  * @author Øystein Myhre Andersen
  *
  */

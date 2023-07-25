@@ -50,14 +50,34 @@ import java.awt.Stroke;
  * @author Øystein Myhre Andersen
  */
 public class _TextElement extends _Link implements _Drawing.Animable {
+	/**
+	 * The current animation.
+	 */
 	final _Drawing animation;
-	double x, y;
+	/**
+	 * The X coordinate
+	 */
+	double x;
+	/**
+	 * The Y coordinate
+	 */
+	double y;
+	/**
+	 * The current string text.
+	 */
 	String str;
+	/**
+	 * The current color.
+	 */
 	Color color;
+	/**
+	 * The current Font.
+	 */
 	Font font;
+	/**
+	 * The current stroke.
+	 */
 	Stroke stroke;
-
-	// Constructors
 
 	/**
 	 * Create a new _TextElement.

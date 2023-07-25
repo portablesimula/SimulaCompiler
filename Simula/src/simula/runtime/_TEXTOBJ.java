@@ -59,22 +59,38 @@ package simula.runtime;
  *
  */
 public final class _TEXTOBJ extends _RTObject {
-	final int SIZE; // Number of characters in the text object.
-	final boolean CONST; // True: Indicates a text constant
-	final char[] MAIN; // The characters
-	// Constructor
+	/**
+	 * Number of characters in the text object.
+	 */
+	final int SIZE;
+	/**
+	 * True: Indicates a text constant
+	 */
+	final boolean CONST;
+	/**
+	 * The characters
+	 */
+	final char[] MAIN;
 
-	_TEXTOBJ(final int param_SIZE, final boolean param_CONST) {
+	/**
+	 * Create a new TEXTOBJ of the given size.
+	 * @param size the givent size
+	 * @param cnst true if this text object is constant
+	 */
+	_TEXTOBJ(final int size, final boolean cnst) {
 		super(null);
 		// Parameter assignment to locals
-		SIZE = param_SIZE;
-		CONST = param_CONST;
+		SIZE = size;
+		CONST = cnst;
 		// Class Body
 		MAIN = new char[SIZE];
 		fill(' ');
 	}
 
-	// Constructor
+	/**
+	 * Create a new TEXTOBJ with initial text.
+	 * @param s the initial text value
+	 */
 	_TEXTOBJ(final String s) {
 		super(null);
 		CONST = true;
@@ -83,13 +99,21 @@ public final class _TEXTOBJ extends _RTObject {
 		// _RT.BREAK("new "+this);
 	}
 
-	// Utility
+	/**
+	 * Utility to fill the text object with the given character.
+	 * @param c the given character
+	 */
 	void fill(char c) {
 		for (int i = 0; i < SIZE; i++)
 			MAIN[i] = c;
 	}
 
-	// Utility
+	/**
+	 * Edit a part of this text into a String.
+	 * @param start the start index
+	 * @param length the length
+	 * @return the resulting String
+	 */
 	String edText(final int start, final int length) {
 		StringBuilder s = new StringBuilder();
 		for (int i = start; i < (start + length); i++)

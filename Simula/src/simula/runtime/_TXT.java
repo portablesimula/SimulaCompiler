@@ -48,14 +48,28 @@ import java.text.DecimalFormat;
  */
 public final class _TXT {
 	private static final int UNICODE_MINUS_SIGN = 8722; // 0x2212
+	/**
+	 * The Text object referred.
+	 */
 	_TEXTOBJ OBJ;
-	int START;	// Start index of OBJ.MAIN[], counting from zero.
-				// Note this differ from Simula Definition.
+	/**
+	 * Start index of OBJ.MAIN[], counting from zero.
+	 * <p>
+	 * Note this differ from Simula Definition.
+	 */
+	int START;
+	/**
+	 * The length of this text.
+	 */
 	int LENGTH;
-	int POS;	// Current index of OBJ.MAIN[], counting from zero.
-				// Note this differ from Simula Definition.
-
-	// Constructor
+	/**
+	 * Current index of OBJ.MAIN[], counting from zero.
+	 * <p>
+	 * Note this differ from Simula Definition.
+	 */
+	int POS;
+	
+	
 	/**
 	 * Create a new _TXT.
 	 */
@@ -79,14 +93,20 @@ public final class _TXT {
 		return ("_TEXT: START=" + START + ", LENGTH=" + LENGTH + ", POS=" + POS + ", OBJ=" + OBJ);
 	}
 
-	// Utility
+	/**
+	 * Utility: Edit text into a String.
+	 * @return the resulting String
+	 */
 	String edText() {
 		if (OBJ == null)
 			return ("");
 		return (OBJ.edText(START, LENGTH));
 	}
 
-	// Utility
+	/**
+	 * Utility: Edit stripped text into a String.
+	 * @return the resulting String
+	 */
 	String edStripedText() {
 		if (OBJ == null)
 			return ("");
@@ -96,7 +116,10 @@ public final class _TXT {
 		return (stp.OBJ.edText(START, stp.LENGTH));
 	}
 
-	// Utility
+	/**
+	 * Utility: Edit text until current pos into a String.
+	 * @return the resulting String
+	 */
 	String edTextToPos() {
 		return (OBJ.edText(START, POS));
 	}
@@ -294,7 +317,6 @@ public final class _TXT {
 			_TXT U = new _TXT();
 			U.OBJ = T.OBJ;
 			U.START = T.START + i - 1;
-			_RT.ASSERT(U.START >= 0, "Invariant");
 			U.LENGTH = n;
 			U.POS = 0; // Note: Counting from zero in this implementation
 			return (U);
@@ -688,11 +710,8 @@ public final class _TXT {
 	public static void putreal(final _TXT T, double r, int n) {
 		if (n < 0)
 			throw new _SimulaRuntimeError("putreal(r,n) - n < 0");
-		if (n == 0)
-			_RT.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
 		if (r == -0.0d)
 			r = 0.0d;
-
 		StringBuilder pattern = new StringBuilder("0");
 		if (n > 1)
 			pattern.append('.');
@@ -719,8 +738,6 @@ public final class _TXT {
 	public static void putreal(final _TXT T, float r, int n) {
 		if (n < 0)
 			throw new _SimulaRuntimeError("putreal(r,n) - n < 0");
-		if (n == 0)
-			_RT.NOT_IMPLEMENTED("putreal(r,n) - n = 0");
 		if (r == -0.0f)
 			r = 0.0f;
 		StringBuilder pattern = new StringBuilder("0");

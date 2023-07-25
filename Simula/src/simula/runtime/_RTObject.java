@@ -18,9 +18,17 @@ import java.util.Iterator;
 @SuppressWarnings("unchecked")
 public abstract class _RTObject {
 
-	// BASICIO
+	/**
+	 * The default input line length. I.e. BASICIO'INPUT_LINELENGTH
+	 */
 	static final int INPUT_LINELENGTH_ = 80;
+	/**
+	 * The default output line length. I.e. BASICIO'OUTPUT_LINELENGTH
+	 */
 	static final int OUTPUT_LINELENGTH_ = 132;
+	/**
+	 * The variable SYSIN. 
+	 */
 	static _Infile SYSIN_;
 	
 	/**
@@ -866,6 +874,9 @@ public abstract class _RTObject {
 	 *
 	 */
 	public final class ForList implements Iterable<Boolean> {
+		/**
+		 * The ForList Iterator.
+		 */
 		ForListIterator forListIterator;
 
 		/**
@@ -887,8 +898,14 @@ public abstract class _RTObject {
 	 * 
 	 */
 	public final class ForListIterator implements Iterator<Boolean> {
+		/**
+		 * The ForElt array.
+		 */
 		final ForElt[] forElt;
-		int i;
+		/**
+		 * Current index into the ForElt array.
+		 */
+		int index;
 
 		/**
 		 * Create a ForListIterator consisting of an array of ForElt Iterators.
@@ -900,14 +917,14 @@ public abstract class _RTObject {
 
 		@Override
 		public boolean hasNext() {
-			return (i < forElt.length && forElt[i].hasNext());
+			return (index < forElt.length && forElt[index].hasNext());
 		}
 
 		@Override
 		public Boolean next() {
-			Boolean val = forElt[i].next();
-			if (!forElt[i].hasNext())
-				i++;
+			Boolean val = forElt[index].next();
+			if (!forElt[index].hasNext())
+				index++;
 			return (val);
 		}
 	}
@@ -919,6 +936,9 @@ public abstract class _RTObject {
 	 * 
 	 */
 	public abstract class ForElt implements Iterator<Boolean> {
+		/**
+		 * More to come ?
+		 */
 		boolean more;
 
 		/**
@@ -944,7 +964,13 @@ public abstract class _RTObject {
 	 * @param <T> the type of this element
 	 */
 	public final class SingleElt<T> extends ForElt {
+		/**
+		 * The for-statement control variable.
+		 */
 		final _NAME<T> cvar;
+		/**
+		 * Next value.
+		 */
 		_NAME<T> nextValue;
 
 		/**
@@ -985,7 +1011,13 @@ public abstract class _RTObject {
 	 *
 	 */
 	public final class SingleTValElt extends ForElt {
+		/**
+		 * The for-statement control variable.
+		 */
 		final _NAME<_TXT> cvar;
+		/**
+		 * Next value.
+		 */
 		_NAME<_TXT> nextValue;
 
 		/**
@@ -1034,7 +1066,25 @@ public abstract class _RTObject {
 	 *
 	 */
 	public final class StepUntil extends ForElt {
-		final _NAME<Number> cvar, init, step, until;
+		/**
+		 * The for-statement control variable.
+		 */
+		final _NAME<Number> cvar;
+		/**
+		 * The initial value.
+		 */
+		final _NAME<Number> init;
+		/**
+		 * The step value.
+		 */
+		final _NAME<Number> step;
+		/**
+		 * The until value.
+		 */
+		final _NAME<Number> until;
+		/**
+		 * Next value.
+		 */
 		Number nextValue;
 
 		/**
@@ -1102,7 +1152,17 @@ public abstract class _RTObject {
 	 * @param <T> the type of this element
 	 */
 	public final class WhileElt<T> extends ForElt {
-		final _NAME<T> cvar, expr;
+		/**
+		 * The for-statement control variable.
+		 */
+		final _NAME<T> cvar;
+		/**
+		 * A Value expression.
+		 */
+		final _NAME<T> expr;
+		/**
+		 * The condition that determines whether to continue.
+		 */
 		_NAME<Boolean> cond;
 
 		/**
@@ -1136,14 +1196,24 @@ public abstract class _RTObject {
 	 */
 	public final class WhileTValElt extends ForElt {
 		// For t:= <TextExpr> while <Cond> // Text Value Assignment
-		final _NAME<_TXT> cvar, expr;
+		/**
+		 * The for-statement control variable.
+		 */
+		final _NAME<_TXT> cvar;
+		/**
+		 * A Text Value expression.
+		 */
+		final _NAME<_TXT> expr;
+		/**
+		 * The condition that determines whether to continue.
+		 */
 		_NAME<Boolean> cond;
 
 		/**
 		 * Create Text Value While-element. 
 		 * @param cvar the for-statement control variable
 		 * @param expr a Text Value expression
-		 * @param cond a Boolean exppression
+		 * @param cond a Boolean expression
 		 */
 		public WhileTValElt(final _NAME<_TXT> cvar, final _NAME<_TXT> expr, final _NAME<Boolean> cond) {
 			this.cvar = cvar;
@@ -1758,12 +1828,10 @@ public abstract class _RTObject {
 		case attached -> {
 			if (_RT.Option.BLOCK_TRACING)
 				_RT.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
-			_RT.ASSERT(_CUR == this, "_RTObject.EBLK:invariant-1: CUR=" + _CUR + ", this=" + this);
 			STATE_ = OperationalState.terminated;
 			_CUR = DL_; // Make the dynamic enclosure the new current instance.
 		}
 		case resumed -> {
-			_RT.ASSERT(_CUR == this, "_RTObject.EBLK:invariant-2");
 			// Treat the case of a resumed and operating object.
 			// It is the head of an object component. The class
 			// object enters the terminated state, and the object component
@@ -2112,13 +2180,16 @@ public abstract class _RTObject {
 			_RT.println(" -  Elapsed Time Approximately " + timeUsed / 1000 + " sec.");
 		} else if (_RT.numberOfEditOverflows > 0)
 			_RT.println("End program: WARNING " + _RT.numberOfEditOverflows + " EditOverflows");
-		if (!_RT.someConsolePresent)
+		if (_RT.console == null)
 			System.exit(exitValue);
 	}
 
 	// *********************************************************************
 	// *** swapCoroutines
 	// *********************************************************************
+	/**
+	 * Utility: Swap Coroutines.
+	 */
 	static void swapCoroutines() {
 		Coroutine cont = Coroutine.getCurrentCoroutine();
 		// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);

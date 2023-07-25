@@ -1791,7 +1791,7 @@ public class _ENVIRONMENT extends _RTObject {
 		case 16:
 			return (new _TXT(_RT.SPORT_Option.Selectors)); // options and selectors
 		case 19:
-			return (new _TXT(_RT.SPORT_Option.PredefFileName)); // Name of attribute file for the predefined classes and												// procedures (the class PREDEF)?
+			return (new _TXT(_RT.SPORT_Option.PredefFileName)); // Name of attribute file for the predefined classes etc.												// procedures (the class PREDEF)?
 		case 22:
 			return (new _TXT(_RT.SPORT_Option.XmessageFileName)); // Name of a file containing seldom used information
 																  // for the front end compiler, such as extended error messages.
@@ -1801,7 +1801,7 @@ public class _ENVIRONMENT extends _RTObject {
 			ModuleIdent = ModuleIdent.substring(0, ModuleIdent.length() - 4).toLowerCase();
 			return (new _TXT(ModuleIdent)); // Modid par of source file name in lower case
 		default:
-			_RT.NOT_IMPLEMENTED("getTextInfo: " + index);
+			NOT_IMPLEMENTED("getTextInfo: " + index);
 		}
 		return (null);
 	}
@@ -2002,7 +2002,7 @@ public class _ENVIRONMENT extends _RTObject {
 		case 30:
 			return (_RT.SPORT_Option.SimobLevel); // simob_level
 		default:
-			_RT.NOT_IMPLEMENTED("getIntInfo: " + index);
+			NOT_IMPLEMENTED("getIntInfo: " + index);
 		}
 		return (0);
 	}
@@ -2111,7 +2111,7 @@ public class _ENVIRONMENT extends _RTObject {
 			_RT.SPORT_Option.SPORT_SysInsertDirName = infoString;
 			break;
 		default:
-			_RT.NOT_IMPLEMENTED("giveTextInfo");
+			NOT_IMPLEMENTED("giveTextInfo");
 		}
 	}
 
@@ -2141,7 +2141,7 @@ public class _ENVIRONMENT extends _RTObject {
 				_RT.println("rts_utility: index=5: newTag should be changed to newTTag(ident)");
 			break;
 		default:
-			_RT.NOT_IMPLEMENTED("rts_utility: index=" + index + ", level=" + level);
+			NOT_IMPLEMENTED("rts_utility: index=" + index + ", level=" + level);
 		}
 		printStaticChain();
 		try {
@@ -2154,6 +2154,11 @@ public class _ENVIRONMENT extends _RTObject {
 		} catch (Exception e) {
 		}
 		// System.exit(-1);
+	}
+
+
+	private static void NOT_IMPLEMENTED(final String s) {
+		_RT.IERR("*** NOT IMPLEMENTED: " + s);
 	}
 
 }

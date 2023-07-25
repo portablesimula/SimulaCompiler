@@ -25,6 +25,10 @@ import simula.compiler.utilities.Option;
  *
  */
 public final class CompileFEC {
+	/**
+	 * Default Constructor.
+	 */
+	CompileFEC(){}
 	
 	// The following files are created when Simuletta front-end compiling the RTS:
     // - "C:\Simuletta\Attrs\BEC\simulaRTS\RTS$INTERFACE.dat"
@@ -34,6 +38,10 @@ public final class CompileFEC {
 	// - "C:/WorkSpaces/SPort-System/S-Port/attrs/FEC/PREDEF.atr
 
 
+	/** 
+	 * Main program to execute.
+	 * @param args the arguments array
+	 */
 	public static void main(String[] args) {
     	//System.setProperty("file.encoding","UTF-8");
 		Vector<String> names=new Vector<String>();

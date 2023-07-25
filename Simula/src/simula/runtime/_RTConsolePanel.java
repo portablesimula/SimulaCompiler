@@ -292,7 +292,6 @@ public final class _RTConsolePanel extends JPanel {
 
 		frame.getContentPane().add(this);
 		frame.setVisible(true);
-		_RT.someConsolePresent = true;
 	}
 
 	private void addStylesToDocument(final StyledDocument doc) {

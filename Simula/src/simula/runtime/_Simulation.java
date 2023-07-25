@@ -98,6 +98,9 @@ public class _Simulation extends _Simset {
 		return (true);
 	}
 
+	/**
+	 * The sequencing set.
+	 */
 	final _Ranking sqs;
 	
 	/**
@@ -220,6 +223,10 @@ public class _Simulation extends _Simset {
 		SIM_TRACE("END Passivate AFTER Resume[" + nxtcur.edObjectIdent() + ']');
 	}
 
+	/**
+	 * Special version of 'passivate'
+	 * @return next Process
+	 */
 	_Process passivate1() { // Used directly by Process_.TERMINATE
 		_Process cur = current();
 		SIM_TRACE("Passivate " + cur.edObjectIdent());

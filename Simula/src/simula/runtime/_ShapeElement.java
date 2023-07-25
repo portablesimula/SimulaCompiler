@@ -48,10 +48,25 @@ import java.awt.geom.RoundRectangle2D;
  * @author Øystein Myhre Andersen
  */
 public class _ShapeElement extends _Link implements _Drawing.Animable {
+	/**
+	 * The current drawing.
+	 */
 	final _Drawing drawing;
+	/**
+	 * The current draw color. If null: no drawing
+	 */
 	Color drawColor; // null: no drawing
+	/**
+	 * The current fill color. If null: no filling
+	 */
 	Color fillColor; // null: no filling
+	/**
+	 * The current stroke.
+	 */
 	Stroke stroke;
+	/**
+	 * The current shape.
+	 */
 	Shape shape;
 
 	// Constructor

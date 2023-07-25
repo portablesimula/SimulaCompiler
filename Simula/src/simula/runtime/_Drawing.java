@@ -536,7 +536,6 @@ public class _Drawing extends _Simset {
 				if (DEBUG)
 					_RT.println("windowClosing.WindowsEvent: " + e);
 				if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-					// printThreadList(true);
 					System.exit(0);
 				}
 			}

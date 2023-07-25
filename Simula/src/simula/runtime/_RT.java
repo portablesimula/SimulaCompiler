@@ -25,12 +25,29 @@ import simula.compiler.utilities.Global;
 public final class _RT {
 	private _RT(){}
 
+	/**
+	 * The runtime console. May be null
+	 */
 	static _RTConsolePanel console;
-	static boolean someConsolePresent;
 
+	/**
+	 * The program ident.
+	 */
 	static String progamIdent;
+	
+	/**
+	 * The current module ident.
+	 */
 	static String currentModid;
+	
+	/**
+	 * The current simula source line number.
+	 */
 	static int currentSimLine;
+	
+	/**
+	 * Number of edit overflows.
+	 */
 	static int numberOfEditOverflows;
 
 	/**
@@ -93,17 +110,35 @@ public final class _RT {
 			return (new File(SPORT_SourceFileName).getName());
 		}
 
-		static String SourceDirName = "C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
+		private static String SourceDirName = "C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
+		private static String SPORT_SourceFileName = SourceDirName + "/ModuleName";
+		
+		/**
+		 * SPORT Sysinsert directory name.
+		 */
 		static String SPORT_SysInsertDirName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
-		static String SPORT_SourceFileName = SourceDirName + "/ModuleName";
 
-		// Used by getTextInfo
+		/**
+		 * Returns the source file name.
+		 * <p>
+		 * Used by ENVIRONMENT'getTextInfo
+		 * @return the source file name
+		 */
 		static String getSourceFileName() {
 			return (SPORT_SourceFileName);
 		}
 
+		/**
+		 * The S-PORT listing file
+		 */
 		static String ListingFileName = "#sysout";
 
+		/**
+		 * Returns the S-Code file name.
+		 * <p>
+		 * Used by ENVIRONMENT'getTextInfo
+		 * @return the S-Code file name
+		 */
 		static String getSCodeFileName() {
 			return (createSubfileName("scode", getModuleName() + ".scd"));
 		}
@@ -115,14 +150,32 @@ public final class _RT {
 			return (tempFileName);
 		}
 
+		/**
+		 * Returns the scratch file name.
+		 * <p>
+		 * Used by ENVIRONMENT'getTextInfo
+		 * @return the scratch file name
+		 */
 		static String getScratchFileName() {
 			return (createSubfileName("temp", getModuleName() + ".tmp"));
 		}
 
+		/**
+		 * Returns the attribute output file name.
+		 * <p>
+		 * Used by ENVIRONMENT'getTextInfo
+		 * @return the attribute output file name
+		 */
 		static String getAttributeOutputFileName() {
 			return (createSubfileName("temp", currentModuleID + ".atr"));
 		}
 
+		/**
+		 * Returns the external attribute file name.
+		 * <p>
+		 * Used by ENVIRONMENT'getTextInfo
+		 * @return the external attribute file name
+		 */
 		static String getExternalAttributeFileName() {
 			// 12 What is the name of the attribute file for an external declaration?
 			// Before this request is issued, the environment will have received the
@@ -147,37 +200,71 @@ public final class _RT {
 			return (fileName);
 		}
 
+		/**
+		 * Selectors for conditional compilation.
+		 */
 		static String Selectors = "AZ";
 
 		// The following file is created when front-end compiling the RTS:
+		/**
+		 * Name of attribute file for the predefined classes etc. 
+		 * <p>
+		 * NOTE: This file is created when front-end compiling the RTS:
+		 */
 		static String PredefFileName = "C:/WorkSpaces/SPort-System/S-Port/Attrs/FEC/PREDEF.atr";
 
+		/**
+		 * Name of a file containing seldom used information for the front end compiler,
+		 * such as extended error messages.
+		 */
 		static String XmessageFileName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/fec/FECERROR.txt";
-
-		// getIntInfo
+		
+		/**
+		 * Used by getIntInfo.
+		 */
 		static int GenerateScode = 1;
+		/**
+		 * Used by getIntInfo.
+		 */
 		static int MaxErrors = 50;
+		/**
+		 * Used by getIntInfo.
+		 */
 		static int GiveNotes = 1;
+		/**
+		 * Used by getIntInfo.
+		 */
 		static int TraceLevel = 0;
+		/**
+		 * Used by getIntInfo.
+		 */
 		static int Recompilation = 0;
+		/**
+		 * Used by getIntInfo.
+		 */
 		static int SimobLevel = 0;
 
-		// giveTextInfo
-		// Index: Interpretation:
-		// 1 The string info is the identifier of a class or procedure being separately
-		// compiled.
-		// 2 The string info is the identifier given in an external declaration that is
-		// being processed.
-		// 3 The string info is the external identification given in an external
-		// declaration that is being processed.
-		static String currentModuleID;	// 1 The identifier of a class or procedure being separately compiled. E.g
-												// class or procedure identifier
-		static String extIdent;			// 2 The identifier given in an external declaration that is being processed.
-												// E.g class or procedure identifier
-		static String extFile;			// 3 The external identification given in an external declaration that is being
-												// processed. E.g. FileName
+		/**
+		 * Used by giveTextInfo(1) The identifier of a class or procedure being separately compiled.
+		 * E.g class or procedure identifier
+		 */
+		static String currentModuleID;
+		/**
+		 * Used by giveTextInfo(2)The identifier given in an external declaration that is being processed.
+		 * E.g class or procedure identifier
+		 */
+		static String extIdent;
+		/**
+		 * Used by giveTextInfo(3) The external identification given in an external declaration that
+		 * is being processed. E.g. FileName
+		 */
+		static String extFile;
 	}
 
+	/**
+	 * Set runtime options.
+	 * @param args argument array
+	 */
 	public static void setRuntimeOptions(final String[] args) {
 		// Parse command line arguments.
 		_RT.Option.RUNTIME_USER_DIR = System.getProperty("user.dir", null);
@@ -249,6 +336,10 @@ public final class _RT {
 		popUpError(msg);
 	}
 
+	/**
+	 * Popup an error message box.
+	 * @param msg the error message
+	 */
 	static void popUpError(final String msg) {
 		int res = optionDialog(msg + "\nDo you want to continue ?", "Error", JOptionPane.YES_NO_OPTION,
 				JOptionPane.ERROR_MESSAGE, "Yes", "No");
@@ -256,11 +347,23 @@ public final class _RT {
 			System.exit(0);
 	}
 
+	/**
+	 * Brings up an option dialog.
+	 * @param msg the message to display
+	 * @param title the title string for the dialog
+	 * @param optionType an integer designating the options available on the dialog
+	 * @param messageType an integer designating the kind of message this is
+	 * @param option an array of objects indicating the possible choices the user can make
+	 * @return an integer indicating the option chosen by the user, or CLOSED_OPTION if the user closed the dialog
+	 */
 	static int optionDialog(final Object msg, final String title, final int optionType, final int messageType, final String... option) {
 		int answer = JOptionPane.showOptionDialog(null, msg, title, optionType, messageType, null, option, option[0]);
 		return (answer);
 	}
 
+	/**
+	 * List runtime options.
+	 */
 	static void listRuntimeOptions() {
 		System.out.println("file.encoding=" + System.getProperty("file.encoding"));
 		System.out.println("defaultCharset=" + Charset.defaultCharset());
@@ -273,22 +376,30 @@ public final class _RT {
 		System.out.println("userDir=" + Option.RUNTIME_USER_DIR);
 	}
 
-	static void println(final String s) {
+	/**
+	 * Print a line on the runtime console if present, otherwise on System.out
+	 * @param msg the message to print
+	 */
+	static void println(final String msg) {
 		if (console != null)
-			console.write(s + '\n');
+			console.write(msg + '\n');
 		else
-			System.out.println(s);
-	}
-
-	static void printError(final String s) {
-		if (console != null)
-			console.writeError(s + '\n');
-		else
-			System.out.println("\n" + s);
+			System.out.println(msg);
 	}
 
 	/**
-	 * Print a warning message.
+	 * Print an error on the runtime console if present, otherwise on System.out
+	 * @param msg the message to print
+	 */
+	static void printError(final String msg) {
+		if (console != null)
+			console.writeError(msg + '\n');
+		else
+			System.out.println("\n" + msg);
+	}
+
+	/**
+	 * Print a warning message on the runtime console if present, otherwise on System.out
 	 * @param msg the message to print
 	 */
 	static void printWarning(final String msg) {
@@ -298,42 +409,32 @@ public final class _RT {
 			System.out.println(msg);
 	}
 
+	/**
+	 * TRACE Utility.
+	 * @param msg a trace message
+	 */
 	static void TRACE(final String msg) {
 		println(Thread.currentThread().toString() + ": " + msg);
 	}
 
-	static void IERR(final String s) {
-		printError(s);
+	/**
+	 * Utility: Internal error.
+	 * @param msg an error message
+	 */
+	static void IERR(final String msg) {
+		printError(msg);
 		Thread.dumpStack();
 		System.exit(-1);
-	}
-
-	static void NOT_IMPLEMENTED(final String s) {
-		IERR("*** NOT IMPLEMENTED: " + s);
-	}
-
-	static void ASSERT(final boolean test, final String msg) {
-		if (!test) {
-			if (_RT.console == null) {
-				_RT.console = new _RTConsolePanel();
-				_RT.console.popup("Runtime Console");
-			}
-			IERR("ASSERT(" + msg + ") -- FAILED");
-		}
-	}
-
-	static void ASSERT_CUR_(final _RTObject obj, final String msg) {
-		if (_RTObject._CUR != obj) {
-			println(msg + ": _CUR=" + _RTObject._CUR.edObjectAttributes());
-			println(msg + ":  obj=" + obj.edObjectAttributes());
-			_RT.ASSERT(_RTObject._CUR == obj, msg);
-		}
 	}
 
 	// *********************************************************************
 	// *** GET JAVA VERSION
 	// *********************************************************************
 
+	/**
+	 * Returns System property "java.vm.specification.version"
+	 * @return System property "java.vm.specification.version"
+	 */
 	static String getJavaID() {
 		return ("JVM version " + System.getProperty("java.vm.specification.version"));
 	}
@@ -342,10 +443,17 @@ public final class _RT {
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
 
+	/**
+	 * Print static chain starting with the current instance.
+	 */
 	static void printStaticChain() {
 		_RT.printStaticChain(_RTObject._CUR);
 	}
 
+	/**
+	 * Print static chain starting with 'ins'
+	 * @param ins argument
+	 */
 	static void printStaticChain(final _RTObject ins) {
 		_RTObject x = ins;
 		println("*** STATIC CHAIN:");
@@ -359,14 +467,23 @@ public final class _RT {
 
 	}
 
-	static void printSimulaStackTrace(final Thread thread, final int start) {
+	private static void printSimulaStackTrace(final Thread thread, final int start) {
 		printSimulaStackTrace(thread.getStackTrace(), start);
 	}
 
+	/**
+	 * Print Simula stack trace.
+	 * @param start block level
+	 */
 	static void printSimulaStackTrace(final int start) {
 		printSimulaStackTrace(Thread.currentThread(), start);
 	}
 
+	/**
+	 * Print Simula stack trace.
+	 * @param e a Throwable
+	 * @param start block level
+	 */
 	static void printSimulaStackTrace(final Throwable e, final int start) {
 		printSimulaStackTrace(e.getStackTrace(), start);
 	}
@@ -429,10 +546,17 @@ public final class _RT {
 	// **********************************************************************
 	// *** Debugging utility: Procedure printThreadList
 	// **********************************************************************
+	/**
+	 * Print Thread list.
+	 */
 	static void printThreadList() {
 		printThreadList(false);
 	}
 
+	/**
+	 * Print Thread list.
+	 * @param withStackTrace argument
+	 */
 	static synchronized void printThreadList(boolean withStackTrace) {
 		Thread[] t = new Thread[50];
 		int i = Thread.enumerate(t);
@@ -451,6 +575,11 @@ public final class _RT {
 		_RT.println("-----------------------------------------------------------------------------------------------");
 	}
 
+	/**
+	 * Utility: Set current modid and Simula source line number.
+	 * @param modid new current modid
+	 * @param simLine new Simula source line number
+	 */
 	public static void _LINE(String modid, int simLine) {
 		currentModid = modid;
 		currentSimLine = simLine;

@@ -35,6 +35,10 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Writer;
 
+/**
+ * A Console panel.
+ *
+ */
 public final class ConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
     private static JTextPane textPane;
