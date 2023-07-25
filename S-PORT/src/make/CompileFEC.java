@@ -45,14 +45,14 @@ public final class CompileFEC {
 	public static void main(String[] args) {
     	//System.setProperty("file.encoding","UTF-8");
 		Vector<String> names=new Vector<String>();
-//		names.add("COMMON.sim");   // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\COMMON.jar
-//		names.add("ERRMSG.sim");   // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\ERRMSG.jar
-//		names.add("SCANNER.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCANNER.jar
-//		names.add("SCANINP.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCANINP.jar 
-//		names.add("PARSER.sim");   // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\PARSER.jar
-//		names.add("PAS1INIT.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\PAS1INIT.jar
-//		names.add("BUILDER1.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\BUILDER1.jar
-//		names.add("BUILDER2.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\BUILDER2.jar
+		names.add("COMMON.sim");   // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\COMMON.jar
+		names.add("ERRMSG.sim");   // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\ERRMSG.jar
+		names.add("SCANNER.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCANNER.jar
+		names.add("SCANINP.sim");  // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\SCANINP.jar 
+		names.add("PARSER.sim");   // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\PARSER.jar
+		names.add("PAS1INIT.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\PAS1INIT.jar
+		names.add("BUILDER1.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\BUILDER1.jar
+		names.add("BUILDER2.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\BUILDER2.jar
 //		
 //		names.add("CHECKER1.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\CHECKER1.jar
 //		names.add("CHECKER2.sim"); // END Create .jar File: C:\WorkSpaces\SPort-System\S-Port\src\sport\fec\bin\CHECKER2.jar
@@ -70,11 +70,11 @@ public final class CompileFEC {
 //		names.add("GENMSG.sim");            // WILL GENERATE FILE MessageGenerator.sim
 //		names.add("MessageGenerator.sim");  // WILL GENERATE ERROR MESSAGE FILE FECERROR.txt
 		
-		names.add("FECMAIN.sim");  // WILL CREATE THE S-PORT COMPILER
+//		names.add("FECMAIN.sim");  // WILL CREATE THE S-PORT COMPILER
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
-//		Option.verbose=true;
+		Option.verbose=true;
 //		Option.TRACING=false;
 		Option.WARNINGS=false;
 //		Option.CASE_SENSITIVE=true;
@@ -84,11 +84,18 @@ public final class CompileFEC {
 		Option.noExecution=false;//true;
 //		Option.verbose=true;
 		
-		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
+//		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
+		File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
+		File userDir=new File("C:/GitHub/SimulaCompiler/S-PORT");
+		
+		
 //		Option.keepJava=new File("C:/GitHub/SimulaCompiler/javaCodeFEC"); // Generated .java Source is then found in project javaCodeFEC
 		Global.packetName="simulaFEC";
 
-		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+//		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
+
+		
 		System.out.println("SimulaRtsLib: "+Global.simulaRtsLib);
 		
 		// Set RunTime Options and tracing.

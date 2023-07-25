@@ -74,7 +74,7 @@ public final class SimulaExtractor extends JFrame {
 	
 	private String myClassName;
 	private JTextField installDirField;
-	private static ConsolePanel console;
+	private static Console console;
 	private static JFrame mainFrame;
 
 	// ****************************************************************
@@ -139,7 +139,7 @@ public final class SimulaExtractor extends JFrame {
 	        setDefaultCloseOperation(EXIT_ON_CLOSE);
 			setLocationRelativeTo(null); // center the frame on screen
 			if(DEBUG) System.out.println("Open ConsolePanel");
-			console=new ConsolePanel();
+			console=new Console();
 			mainFrame.setTitle("Installing Simula");
 			mainFrame.add(console);
 //			mainFrame.setVisible(true);

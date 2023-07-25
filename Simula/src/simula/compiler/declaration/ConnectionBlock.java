@@ -7,6 +7,11 @@
  */
 package simula.compiler.declaration;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.expression.Expression;
 import simula.compiler.expression.TypeConversion;
@@ -25,7 +30,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public final class ConnectionBlock extends DeclarationScope {
+public final class ConnectionBlock extends DeclarationScope implements Externalizable {
 	private Statement statement;
 	private final String whenClassIdentifier;
 	private Declaration whenClassDeclaration; // Set during cheching
@@ -159,6 +164,24 @@ public final class ConnectionBlock extends DeclarationScope {
 	@Override
 	public String toString() {
 		return ("Inspect(" + inspectedVariable + ") do " + statement);
+	}
+
+	public ConnectionBlock() {
+		super("");
+		this.whenClassIdentifier = "";
+		this.inspectedVariable = null;
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

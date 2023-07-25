@@ -117,7 +117,7 @@ public final class SimulaCompiler {
 			Util.println("------------  ENVIRONMENT SUMMARY  ------------");
 			Util.println("Simula Properties    "+Global.simulaPropertiesFile);
 			Util.println("Simula Home          "+Global.simulaHome);
-			Util.println("Simula Home (prev)   "+Global.getProperty("simula.home",null));
+			Util.println("Simula Home (prev)   "+Global.getSimulaProperty("simula.home",null));
 			Util.println("Java Home            "+System.getProperty("java.home"));
 			Util.println("User Home            "+System.getProperty("user.home"));
 			String s=(desktop.exists())?"true ":"false";

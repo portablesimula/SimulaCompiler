@@ -62,7 +62,7 @@ public final class Simula {
 		Option.verbose=false;
 		Option.WARNINGS=true;
 		Option.EXTENSIONS=true;
-		Global.initProperties();
+		Global.initSimulaProperties();
 
 		// Parse command line arguments.
 		for(int i=0;i<argv.length;i++) {

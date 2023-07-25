@@ -100,8 +100,8 @@ public class SimulaEditor extends JFrame {
         try { setIconImage(Global.simIcon.getImage()); } 
         catch (Exception e) {}// Util.IERR("Impossible",e); }
 		Global.console=new ConsolePanel();
-    	String revision=Global.getProperty("simula.revision","?");
-    	String dated=Global.getProperty("simula.setup.dated","?");
+    	String revision=Global.getSimulaProperty("simula.revision","?");
+    	String dated=Global.getSimulaProperty("simula.setup.dated","?");
         String releaseID=Global.simulaReleaseID+'R'+revision;
 		Global.simulaVersion="SimulaEditor ("+releaseID+ " built "+dated+" using "+getJavaID()+")";
         Global.console.write(Global.simulaVersion+"\n");
@@ -307,8 +307,8 @@ public class SimulaEditor extends JFrame {
     void doCheckForNewVersion() {
     	if (Option.TRACING) Util.println("SimulaEditor.doCheckForNewVersion: ");
         try {
-        	String thisRevision=Global.getProperty("simula.revision","?");
-        	String thisSetupDated=Global.getProperty("simula.setup.dated","?");
+        	String thisRevision=Global.getSimulaProperty("simula.revision","?");
+        	String thisSetupDated=Global.getSimulaProperty("simula.setup.dated","?");
 	        String thisReleaseID=Global.simulaReleaseID+'R'+thisRevision;
 
 		    String remoteFileName="https://portablesimula.github.io/github.io/setup/setupProperties.xml";

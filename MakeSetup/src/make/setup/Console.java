@@ -16,8 +16,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Util;
+//import simula.compiler.utilities.Global;
+//import simula.compiler.utilities.Util;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -39,7 +39,7 @@ import java.io.Writer;
  * A Console panel.
  *
  */
-public final class ConsolePanel extends JPanel {
+public final class Console extends JPanel {
 	private static final long serialVersionUID = 1L;
     private static JTextPane textPane;
 
@@ -88,7 +88,7 @@ public final class ConsolePanel extends JPanel {
 					//textPane.getCaret().setVisible(true);
 					
 					//while(reading) Thread.yield();
-					while(ConsolePanel.this.read() != '\n');
+					while(Console.this.read() != '\n');
 					
 					//textPane.getCaret().setVisible(false);
 					textPane.setEditable(false);
@@ -109,7 +109,7 @@ public final class ConsolePanel extends JPanel {
 			@Override
 			public void write(int b) throws IOException {
 				String s=""+(char)b;
-				ConsolePanel.this.write(s,styleRegular);
+				Console.this.write(s,styleRegular);
 			}});
 	}
 	
@@ -118,17 +118,17 @@ public final class ConsolePanel extends JPanel {
 			@Override
 			public void write(int b) throws IOException {
 				String s=""+(char)b;
-				ConsolePanel.this.write(s,styleRegular);
+				Console.this.write(s,styleRegular);
 			}}));
 	}
 
 	public Writer getWriter() {
 		return(new Writer() {
 			public void write(String s) {
-				ConsolePanel.this.write(s);		
+				Console.this.write(s);		
 			}
 			public void write(char[] cbuf, int off, int len) throws IOException {
-				ConsolePanel.this.write(new String(cbuf,off,len));
+				Console.this.write(new String(cbuf,off,len));
 			}
 			public void flush() throws IOException {}
 			public void close() throws IOException {}
@@ -140,7 +140,7 @@ public final class ConsolePanel extends JPanel {
 			@Override
 			public void write(int b) throws IOException {
 				String s=""+(char)b;
-				ConsolePanel.this.write(s,styleError);
+				Console.this.write(s,styleError);
 			}});
 	}
 	
@@ -152,7 +152,7 @@ public final class ConsolePanel extends JPanel {
 		try {
 			doc.insertString(doc.getLength(), s, style);
 		} catch (BadLocationException e) {
-			Util.IERR("Impossible",e);
+			Util.IERR("Impossible: "+e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
         //Util.BREAK("ConsolePanel.write: done s="+s);
@@ -165,17 +165,17 @@ public final class ConsolePanel extends JPanel {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
-			Util.IERR("Impossible",e);
+			Util.IERR("Impossible: "+e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
         //Util.BREAK("ConsolePanel.write: done s="+s);
 //	    textPane.repaint();
 		textPane.update(textPane.getGraphics());
-        Global.console.write(Global.simulaVersion+"\n");
+//      Global.console.write(Global.simulaVersion+"\n");
 //		write("Simula Compiler Console:\n");
 	}
 
-	public ConsolePanel() {
+	public Console() {
     	super(new BorderLayout());
     	JScrollPane scrollPane;
     	textPane = new JTextPane();

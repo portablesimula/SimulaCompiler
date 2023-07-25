@@ -234,10 +234,14 @@ public final class RunSingleTestBatch {
 //		Option.TRACE_CODING=true;
 		Option.GNERATE_LINE_CALLS=true;
 
-		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
+//		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
+		File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
+		File userDir=new File("C:/GitHub/SimulaCompiler/TestBatch");
+		
 		Global.packetName="simulaTestBatch";
 		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
-		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+//		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
 		
 		// Set RunTime Options and tracing.

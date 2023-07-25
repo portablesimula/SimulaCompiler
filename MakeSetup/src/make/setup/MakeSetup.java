@@ -24,8 +24,8 @@ import java.util.jar.Manifest;
 
 import static java.nio.file.StandardCopyOption.*;
 
-import simula.compiler.utilities.Global;
-import simula.compiler.utilities.Util;
+//import simula.compiler.utilities.Global;
+//import simula.compiler.utilities.Util;
 
 /**
  * NOTE:
@@ -36,20 +36,25 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class MakeSetup {
-	
+	public static final String simulaReleaseID = "Simula-2.0";
+
 //	private final static int EXPLICIT_REVISION = -1; // Normal update
 	private final static int EXPLICIT_REVISION = 20;
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
-	private final static String RELEASE_ID=Global.simulaReleaseID; // E.g. "Simula-1.0";
+	private final static String RELEASE_ID=simulaReleaseID; // E.g. "Simula-2.0";
 
 	private final static String RELEASE_HOME=GIT_BINARIES+"\\"+RELEASE_ID;
 	private final static String RELEASE_SAMPLES=RELEASE_HOME+"\\samples";
 
 	private final static String GITHUB_ROOT="C:\\GitHub";
-	private final static String ECLIPSE_ROOT="C:\\GitHub\\SimulaCompiler\\Simula";
-	private final static String COMPILER_BIN=ECLIPSE_ROOT+"\\bin";
-	private final static String INSTALLER_BIN=ECLIPSE_ROOT+"\\bin";
+	private final static String SETUP_ROOT="C:\\GitHub\\SimulaCompiler\\MakeSetup";
+	private final static String SIMULA_ROOT="C:\\GitHub\\SimulaCompiler\\Simula";
+	private final static String TESTBATCH_ROOT="C:\\GitHub\\SimulaCompiler\\TestBatch";
+	private final static String COMPILER_BIN=SIMULA_ROOT+"\\bin";
+	
+//	private final static String INSTALLER_BIN=ECLIPSE_ROOT+"\\bin";
+	private final static String INSTALLER_BIN=SETUP_ROOT+"\\bin";
 
 	public static void main(String[] args) {
         //System.setProperty("file.encoding","UTF-8");
@@ -80,7 +85,8 @@ public final class MakeSetup {
 		list(RELEASE_HOME);
 		File releaseHome=new File(RELEASE_HOME);
 		releaseHome.mkdirs();
-		String compilerManifest=ECLIPSE_ROOT+"\\src\\make\\setup\\CompilerManifest.MF";
+//		String compilerManifest=SIMULA_ROOT+"\\src\\make\\setup\\CompilerManifest.MF";
+		String compilerManifest=SETUP_ROOT+"\\src\\make\\setup\\CompilerManifest.MF";
 //		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/common -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/objectweb/asm");
 		execute("jar","cmf",compilerManifest,RELEASE_HOME+"\\simula.jar",
 //				"-C",COMPILER_BIN,"./simula/common",
@@ -113,7 +119,7 @@ public final class MakeSetup {
 		copyImageFile("simula.png");
 	}
 	private static void copyImageFile(String fileName) throws IOException	{
-		File source=new File(ECLIPSE_ROOT+"\\src\\icons\\"+fileName);
+		File source=new File(SIMULA_ROOT+"\\src\\icons\\"+fileName);
 		File target=new File(RELEASE_HOME+"\\icons\\"+fileName);
 		target.mkdirs();
 		System.out.println("source="+source);
@@ -125,12 +131,12 @@ public final class MakeSetup {
 	// *** COPY SIMULA RELEASE TEST BATCH FILES
 	// ***************************************************************
 	private static void copySimulaReleaseTestBats() throws IOException	{
-		printHeading("Copy Simula Release Info into "+RELEASE_HOME);
-		copyTxtFile("ReleaseNotes.txt");
-		copyTxtFile("Issues.txt");
+//		printHeading("Copy Simula Release Info into "+RELEASE_HOME);
+//		copyTxtFile("ReleaseNotes.txt");
+//		copyTxtFile("Issues.txt");
 	}
 	private static void copyTxtFile(String batName) throws IOException	{
-		File source=new File(ECLIPSE_ROOT+"\\src\\make\\setup\\"+batName);
+		File source=new File(SIMULA_ROOT+"\\src\\make\\setup\\"+batName);
 		File target=new File(RELEASE_HOME+"\\"+batName);
 		target.mkdirs();
 		System.out.println("source="+source);
@@ -144,9 +150,10 @@ public final class MakeSetup {
 	private static void copySimulaReleaseTests() throws IOException	{
 		printHeading("Copy Simula TestPrograms into "+RELEASE_SAMPLES);
 		deleteFiles(RELEASE_SAMPLES);
-//		execute("Robocopy "+ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples "+RELEASE_SAMPLES+" /E");
-		copyFolder(new File(ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples"), new File(RELEASE_SAMPLES), false);
-		copyFolder(new File(ECLIPSE_ROOT+"\\src\\simulaTestPrograms\\samples\\data"), new File(RELEASE_SAMPLES+"\\data"), false);
+		copyFolder(new File(TESTBATCH_ROOT+"\\src\\simulaTestPrograms\\samples"), new File(RELEASE_SAMPLES), false);
+		list(new File(TESTBATCH_ROOT+"\\src\\simulaTestPrograms\\samples"));
+		list(new File(RELEASE_SAMPLES));
+		copyFolder(new File(TESTBATCH_ROOT+"\\src\\simulaTestPrograms\\samples\\data"), new File(RELEASE_SAMPLES+"\\data"), false);
 	}
 	
 	// ***************************************************************
@@ -250,19 +257,21 @@ public final class MakeSetup {
 		printHeading("Make Simula Setup.jar in "+GIT_BINARIES);
 		File releaseHome=new File(RELEASE_HOME);
 		releaseHome.mkdirs();
-		String SETUP_SRC=ECLIPSE_ROOT+"\\src\\make\\setup";
+//		String SETUP_SRC=SIMULA_ROOT+"\\src\\make\\setup";
+		String SETUP_SRC=SETUP_ROOT+"\\src\\make\\setup";
 		// CopySimulaIcon  --> INSTALLER_BIN;
 		File source=new File(SETUP_SRC+"\\sim.png");
 		File target=new File(INSTALLER_BIN+"\\make\\setup\\sim.png");
+		target.mkdirs();
 		System.out.println("source="+source);
 		System.out.println("target="+target);
 		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
 			
 		String installerManifest=SETUP_SRC+"\\InstallerManifest.MF";
 		
-//		String files=" -C "+RELEASE_HOME+"."  // Complete Simula Release
-//				    +" -C "+INSTALLER_BIN+" ./make/setup";
-//		System.out.println("jar cmf "+installerManifest+" "+GIT_BINARIES+"\\setup.jar"+files);
+		String files=" -C "+RELEASE_HOME+"."  // Complete Simula Release
+				    +" -C "+INSTALLER_BIN+" ./make/setup";
+		System.out.println("jar cmf "+installerManifest+" "+GIT_BINARIES+"\\setup.jar"+files);
 		
 		execute("jar", "cmf", installerManifest, GIT_BINARIES+"\\setup.jar",
 				"-C",RELEASE_HOME, ".",  // Complete Simula Release
@@ -340,10 +349,11 @@ public final class MakeSetup {
 		//revision=xx; // TODO: Ad'Hoc
 		String setupDated=""+new Date();
 		setProperty("simula.setup.dated",setupDated);
-		setProperty("simula.version",""+Global.simulaReleaseID);
+		setProperty("simula.version",""+simulaReleaseID);
 		setProperty("simula.revision",""+revision);
 		try { // also update 'Simula-Revision' and 'Simula-Setup-Dated' in InstallerManifest.MF
-		   String SETUP_SRC=ECLIPSE_ROOT+"\\src\\make\\setup";
+//		   String SETUP_SRC=SIMULA_ROOT+"\\src\\make\\setup";
+		   String SETUP_SRC=SETUP_ROOT+"\\src\\make\\setup";
 		   File installerManifestFile=new File(SETUP_SRC+"\\InstallerManifest.MF");
 		   System.out.println("installerManifestFile: "+installerManifestFile);
 		   Manifest manifest=new Manifest();

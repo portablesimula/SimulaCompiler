@@ -205,9 +205,14 @@ public final class RunFullTestBatch {
 //		Option.CaseSensitive=true;
 		Option.GNERATE_LINE_CALLS=true;
 		
-		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
+//		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
+		File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
+		File userDir=new File("C:/GitHub/SimulaCompiler/TestBatch");
+		
+		
 		Global.packetName="simulaTestBatch";
-		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+//		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 		
 		// Set RunTime Options and tracing.
 //		RTOption.VERBOSE = true;
