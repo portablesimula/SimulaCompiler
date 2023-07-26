@@ -31,7 +31,7 @@ import javax.swing.JOptionPane;
  * @author Øystein Myhre Andersen
  *
  */
-public class PageWriter extends Writer {
+public class RTS_PageWriter extends Writer {
 	// ===========================================================================================================
 	//
 	// Page oriented Print Service
@@ -68,7 +68,7 @@ public class PageWriter extends Writer {
 	 * Create a new PageWriter.
 	 * @param FN fileName
 	 */
-	public PageWriter(String FN) {
+	public RTS_PageWriter(String FN) {
 		this.fileName = FN;
 	}
 
@@ -255,7 +255,7 @@ public class PageWriter extends Writer {
 	// *** CLASS: Sheet
 	// ********************************************************************
 	private class Sheet implements Printable {
-		private PageWriter printer;
+		private RTS_PageWriter printer;
 		public int pageNumber;
 		public int sheetNumber;
 		private Vector<String> lines = new Vector<String>();
@@ -264,7 +264,7 @@ public class PageWriter extends Writer {
 			return (lines.size());
 		}
 
-		public Sheet(PageWriter printer, int pageNumber, int sheetNumber) {
+		public Sheet(RTS_PageWriter printer, int pageNumber, int sheetNumber) {
 			this.printer = printer;
 			this.pageNumber = pageNumber;
 			this.sheetNumber = sheetNumber;

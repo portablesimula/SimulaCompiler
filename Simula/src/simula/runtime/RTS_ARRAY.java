@@ -10,7 +10,7 @@ package simula.runtime;
 import simula.runtime.RTS_RTObject.RTS_BOUNDS;
 
 /**
- * Utility class _ARRAY.
+ * Utility class ARRAY.
  * <p>
  * This class provides an abstract superclass for Simula arrays.
  * The implementation technique used is called 'dope vector indexing'. The dope vector is
@@ -47,7 +47,7 @@ public abstract class RTS_ARRAY {
 	/**
 	 * Create an _ARRAY with the given BOUNDS.
 	 * 
-	 * @param BOUNDS the _ARRAY BOUNDS
+	 * @param BOUNDS the ARRAY BOUNDS
 	 */
 	public RTS_ARRAY(final RTS_BOUNDS... BOUNDS) {
 		this.BOUNDS = BOUNDS;

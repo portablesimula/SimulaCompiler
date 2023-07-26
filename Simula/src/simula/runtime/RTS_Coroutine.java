@@ -29,9 +29,9 @@ import java.util.concurrent.Semaphore;
  * @author Øystein Myhre Andersen
  *
  */
-public class Coroutine implements Runnable {
-	private static Coroutine current;
-	private Coroutine caller;
+public class RTS_Coroutine implements Runnable {
+	private static RTS_Coroutine current;
+	private RTS_Coroutine caller;
 	private boolean done;
 	private Runnable target;
 	private Thread targetThread;
@@ -63,7 +63,7 @@ public class Coroutine implements Runnable {
 	 * 
 	 * @param target a runnable target
 	 */
-	public Coroutine(Runnable target) {
+	public RTS_Coroutine(Runnable target) {
 		this.target = target;
 	}
 
@@ -79,7 +79,7 @@ public class Coroutine implements Runnable {
 	 * Returns the current Coroutine.
 	 * @return the current Coroutine
 	 */
-	public static Coroutine getCurrentCoroutine() {
+	public static RTS_Coroutine getCurrentCoroutine() {
 		return current;
 	}
 
@@ -126,7 +126,7 @@ public class Coroutine implements Runnable {
 	 * Detach this Coroutine.
 	 */
 	public static void detach() {
-		Coroutine cur = current;
+		RTS_Coroutine cur = current;
 		if (cur == null)
 			throw new IllegalStateException("Not within a Coroutine");
 		resume(cur.caller);
@@ -137,8 +137,8 @@ public class Coroutine implements Runnable {
 	// *********************************************************************
 	// *** COROUTINE: suspend
 	// *********************************************************************
-	private static void suspend(Coroutine coroutine) {
-		Semaphore semaphore = (coroutine == null) ? Coroutine.mainSemaphore : coroutine.semaphore;
+	private static void suspend(RTS_Coroutine coroutine) {
+		Semaphore semaphore = (coroutine == null) ? RTS_Coroutine.mainSemaphore : coroutine.semaphore;
 		try {
 			semaphore.acquire();
 		} catch (InterruptedException e) {
@@ -155,8 +155,8 @@ public class Coroutine implements Runnable {
 	// *********************************************************************
 	// *** COROUTINE: resume
 	// *********************************************************************
-	private static void resume(Coroutine coroutine) {
-		Semaphore semaphore = (coroutine == null) ? Coroutine.mainSemaphore : coroutine.semaphore;
+	private static void resume(RTS_Coroutine coroutine) {
+		Semaphore semaphore = (coroutine == null) ? RTS_Coroutine.mainSemaphore : coroutine.semaphore;
 		semaphore.release();
 	}
 

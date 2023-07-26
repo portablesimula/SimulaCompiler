@@ -39,7 +39,7 @@ import java.io.Writer;
  * @author Øystein Myhre Andersen
  *
  */
-public final class RTS_RTConsolePanel extends JPanel {
+public final class RTS_ConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static JTextPane textPane;
 
@@ -120,7 +120,7 @@ public final class RTS_RTConsolePanel extends JPanel {
 					// textPane.getCaret().setVisible(true);
 
 					// while(reading) Thread.yield();
-					while (RTS_RTConsolePanel.this.read() != '\n')
+					while (RTS_ConsolePanel.this.read() != '\n')
 						;
 
 					// textPane.getCaret().setVisible(false);
@@ -149,7 +149,7 @@ public final class RTS_RTConsolePanel extends JPanel {
 			@Override
 			public void write(int b) throws IOException {
 				String s = "" + (char) b;
-				RTS_RTConsolePanel.this.write(s, styleRegular);
+				RTS_ConsolePanel.this.write(s, styleRegular);
 			}
 		});
 	}
@@ -162,11 +162,11 @@ public final class RTS_RTConsolePanel extends JPanel {
 		return (new Writer() {
 			@Override
 			public void write(String s) {
-				RTS_RTConsolePanel.this.write(s);
+				RTS_ConsolePanel.this.write(s);
 			}
 
 			public void write(char[] cbuf, int off, int len) throws IOException {
-				RTS_RTConsolePanel.this.write(new String(cbuf, off, len));
+				RTS_ConsolePanel.this.write(new String(cbuf, off, len));
 			}
 
 			@Override
@@ -188,7 +188,7 @@ public final class RTS_RTConsolePanel extends JPanel {
 			@Override
 			public void write(int b) throws IOException {
 				String s = "" + (char) b;
-				RTS_RTConsolePanel.this.write(s, styleError);
+				RTS_ConsolePanel.this.write(s, styleError);
 			}
 		});
 	}
@@ -252,7 +252,7 @@ public final class RTS_RTConsolePanel extends JPanel {
 	/**
 	 * Create a new _RTConsolePanel
 	 */
-	public RTS_RTConsolePanel() {
+	public RTS_ConsolePanel() {
 		super(new BorderLayout());
 		JScrollPane scrollPane;
 		textPane = new JTextPane();

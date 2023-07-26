@@ -28,7 +28,7 @@ public final class RTS_COMMON {
 	/**
 	 * The runtime console. May be null
 	 */
-	static RTS_RTConsolePanel console;
+	static RTS_ConsolePanel console;
 
 	/**
 	 * The program ident.

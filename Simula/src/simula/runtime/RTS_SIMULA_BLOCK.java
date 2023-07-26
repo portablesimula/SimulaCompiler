@@ -57,7 +57,7 @@ public abstract class RTS_SIMULA_BLOCK extends RTS_BASICIO implements Runnable {
 	// *********************************************************************
 	private void beginCoroutine() {
 		// Using Thread or Virtual Thread
-		this.CORUT_ = new Coroutine(this);
+		this.CORUT_ = new RTS_Coroutine(this);
 		if (RTS_COMMON.Option.QPS_TRACING)
 			RTS_COMMON.TRACE("START " + this.edObjectIdent());
 		swapCoroutines();

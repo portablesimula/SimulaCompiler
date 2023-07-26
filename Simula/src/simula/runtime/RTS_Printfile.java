@@ -154,12 +154,12 @@ public class RTS_Printfile extends RTS_Outfile {
 			else
 				writer = new PrintWriter(System.out, true, _CHARSET);
 		} else if (fileName.toUpperCase().startsWith("CONSOLE: ")) {
-			RTS_RTConsolePanel console = new RTS_RTConsolePanel();
+			RTS_ConsolePanel console = new RTS_ConsolePanel();
 			String title = fileName.substring(9);
 			console.popup(title);
 			writer = console.getWriter();
 		} else {
-			PageWriter pageWriter = new PageWriter(fileName);
+			RTS_PageWriter pageWriter = new RTS_PageWriter(fileName);
 			pageWriter.setFont(_FONT, _ORIENTATION, _ASK_PAPER);
 			pageWriter.setMargins(_TOP_MARGIN, _LEFT_MARGIN, _BOT_MARGIN, _RIGHT_MARGIN);
 			pageWriter.open();
@@ -340,7 +340,7 @@ public class RTS_Printfile extends RTS_Outfile {
 		try {
 			if (n <= _LINE) {
 				_PAGE = _PAGE + 1;
-				if (writer instanceof PageWriter pageWriter) {
+				if (writer instanceof RTS_PageWriter pageWriter) {
 					pageWriter.newPage(_PAGE);
 					for (int i = 1; i < n; i++)
 						writer.write("\n");

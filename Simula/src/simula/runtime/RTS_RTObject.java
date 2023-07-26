@@ -92,7 +92,7 @@ public abstract class RTS_RTObject {
 	 * If this block instance is detached it is used to save the complete
 	 * reactivation point (call stack and the continuation point).
 	 */
-	public Coroutine CORUT_;
+	public RTS_Coroutine CORUT_;
 
 	/**
 	 * Outmost Block Instance
@@ -160,7 +160,7 @@ public abstract class RTS_RTObject {
 	public RTS_RTObject(final RTS_RTObject SL) {
 		if (SL != null) {
 			this._SL = SL;
-			this.CORUT_ = Coroutine.getCurrentCoroutine();
+			this.CORUT_ = RTS_Coroutine.getCurrentCoroutine();
 		}
 	}
 
@@ -1670,7 +1670,7 @@ public abstract class RTS_RTObject {
 						System.err.println("DL=" + DL.edObjectAttributes());
 						RTS_COMMON.println("DL=" + DL.edObjectAttributes());
 					}
-					Coroutine._PENDING_EXCEPTION = (RuntimeException) e;
+					RTS_Coroutine._PENDING_EXCEPTION = (RuntimeException) e;
 					DL.CORUT_.run();
 				} else {
 					String msg = "Illegal GOTO " + ((RTS_LABQNT) e).identifier;
@@ -1762,7 +1762,7 @@ public abstract class RTS_RTObject {
 			RTS_COMMON.TRACE("Begin Execution of Simula Program: " + ident);
 		if (SYSIN_ == null) {
 			if (RTS_COMMON.Option.USE_CONSOLE) {
-				RTS_COMMON.console = new RTS_RTConsolePanel();
+				RTS_COMMON.console = new RTS_ConsolePanel();
 				RTS_COMMON.console.popup("Runtime Console");
 			}
 			SYSIN_ = new RTS_Infile(this, new RTS_TXT("#sysin"));
@@ -1866,7 +1866,7 @@ public abstract class RTS_RTObject {
 			endProgram(0);
 		} else {
 			if (this.CORUT_ != null && this.isDetachUsed()) {
-				Coroutine.detach();
+				RTS_Coroutine.detach();
 			}
 		}
 	}
@@ -1966,7 +1966,7 @@ public abstract class RTS_RTObject {
 
 		if (RTS_COMMON.Option.QPS_TRACING)
 			RTS_COMMON.TRACE("DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
-		Coroutine.detach();
+		RTS_Coroutine.detach();
 	}
 
 	/**
@@ -2192,7 +2192,7 @@ public abstract class RTS_RTObject {
 	 * Utility: Swap Coroutines.
 	 */
 	static void swapCoroutines() {
-		Coroutine cont = Coroutine.getCurrentCoroutine();
+		RTS_Coroutine cont = RTS_Coroutine.getCurrentCoroutine();
 		// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);
 		if (cont == null) {
 			cont = _CUR.CORUT_;
@@ -2206,7 +2206,7 @@ public abstract class RTS_RTObject {
 			}
 		} else {
 			// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: YIELD "+cont);
-			Coroutine.detach();
+			RTS_Coroutine.detach();
 		}
 	}
 
