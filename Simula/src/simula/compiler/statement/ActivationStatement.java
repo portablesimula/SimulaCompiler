@@ -96,35 +96,35 @@ public final class ActivationStatement extends Statement {
 	}
 
 	private String edActivateDirect() {
-		String obj1 = (object1 == null) ? "null" : "(_Process)"+object1.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(RTS_Process)"+object1.toJavaCode();
 		Meaning activate1 = Global.getCurrentScope().findMeaning("ActivateDirect");
 		String staticLink = activate1.edQualifiedStaticLink();
 		return (staticLink + ".ActivateDirect(" + REAC + ',' + obj1 + ')');
 	}
 
 	private String edActivateAt() {
-		String obj1 = (object1 == null) ? "null" : "(_Process)"+object1.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(RTS_Process)"+object1.toJavaCode();
 		String staticLink = Global.getCurrentScope().findMeaning("ActivateAt").edQualifiedStaticLink();
 		return (staticLink + ".ActivateAt(" + REAC + ',' + obj1 + ',' + time.toJavaCode() + ',' + prior + ')');
 	}
 
 	private String edActivateDelay() {
-		String obj1 = (object1 == null) ? "null" : "(_Process)"+object1.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(RTS_Process)"+object1.toJavaCode();
 		String staticLink = Global.getCurrentScope().findMeaning("ActivateDelay").edQualifiedStaticLink();
 		return (staticLink + ".ActivateDelay(" + REAC + ',' + obj1 + ',' + time.toJavaCode() + ',' + prior + ')');
 	}
 
 	private String edActivateBefore() {
-		String obj1 = (object1 == null) ? "null" : "(_Process)"+object1.toJavaCode();
-		String obj2 = (object2 == null) ? "null" : "(_Process)"+object2.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(RTS_Process)"+object1.toJavaCode();
+		String obj2 = (object2 == null) ? "null" : "(RTS_Process)"+object2.toJavaCode();
 		Meaning activate3 = Global.getCurrentScope().findMeaning("ActivateBefore");
 		String staticLink = activate3.edQualifiedStaticLink();
 		return (staticLink + ".ActivateBefore(" + REAC + ',' + obj1 + ',' + obj2 + ')');
 	}
 
 	private String edActivateAfter() {
-		String obj1 = (object1 == null) ? "null" : "(_Process)"+object1.toJavaCode();
-		String obj2 = (object2 == null) ? "null" : "(_Process)"+object2.toJavaCode();
+		String obj1 = (object1 == null) ? "null" : "(RTS_Process)"+object1.toJavaCode();
+		String obj2 = (object2 == null) ? "null" : "(RTS_Process)"+object2.toJavaCode();
 		Meaning activate3 = Global.getCurrentScope().findMeaning("ActivateAfter");
 		String staticLink = activate3.edQualifiedStaticLink();
 		return (staticLink + ".ActivateAfter(" + REAC + ',' + obj1 + ',' + obj2 + ')');

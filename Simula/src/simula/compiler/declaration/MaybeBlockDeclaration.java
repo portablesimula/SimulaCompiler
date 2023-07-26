@@ -203,7 +203,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		Global.enterScope(this);
 		Global.duringSTM_Coding=false;
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
-		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends _BASICIO" + " {");
+		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends RTS_BASICIO" + " {");
 		GeneratedJavaClass.debug("// SubBlock: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel + ", firstLine="
 				+ lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 				+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
@@ -224,7 +224,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 			GeneratedJavaClass.code("");
 			GeneratedJavaClass.code("public static void main(String[] args) {");
 			GeneratedJavaClass.debug("//System.setProperty(\"file.encoding\",\"UTF-8\");");
-			GeneratedJavaClass.code("_RT.setRuntimeOptions(args);");
+			GeneratedJavaClass.code("RTS_COMMON.setRuntimeOptions(args);");
 			GeneratedJavaClass.code("new " + getJavaIdentifier() + "(CTX_)._STM();");
 			GeneratedJavaClass.code("}", "End of main");
 		}
@@ -239,7 +239,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(_RTObject staticLink) {");
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(RTS_RTObject staticLink) {");
 		GeneratedJavaClass.code("super(staticLink);");
 		GeneratedJavaClass.code("BBLK();");
 		if (declarationKind == Declaration.Kind.SimulaProgram) GeneratedJavaClass.code("BPRG(\"" + identifier + "\");");
@@ -253,7 +253,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doCodeStatements() {
 		GeneratedJavaClass.debug("// " + declarationKind + " Statements");
-		GeneratedJavaClass.code("public _RTObject _STM() {");
+		GeneratedJavaClass.code("public RTS_RTObject _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");

@@ -194,7 +194,7 @@ public final class GeneratedJavaClass {
 	private String edLineNumberLine(final int simulaLine, final String modid) {
 		StringBuilder sb = new StringBuilder();
 		if (Global.duringSTM_Coding && Option.GNERATE_LINE_CALLS) {
-			sb.append("_RT._LINE(\"").append(modid).append("\",").append(simulaLine).append("); ");
+			sb.append("RTS_COMMON._LINE(\"").append(modid).append("\",").append(simulaLine).append("); ");
 		}
 		sb.append("// JavaLine ").append(currentJavaLineNumber).append(" <== SourceLine ").append(simulaLine);
 		return (sb.toString());
@@ -218,10 +218,10 @@ public final class GeneratedJavaClass {
 	 */
 	public void codeProgramInfo() {
 		appendLine(currentJavaLineNumber, blockDeclaration.lastLineNumber);
-		// public static _PROGINFO _INFO=new
-		// _PROGINFO("file.sim","MainProgram",1,4,12,5,14,12,32,14,37,16);
+		// public static RTS_PROGINFO _INFO=new
+		// RTS_PROGINFO("file.sim","MainProgram",1,4,12,5,14,12,32,14,37,16);
 		StringBuilder s = new StringBuilder();
-		s.append(edIndent() + "public static _PROGINFO _INFO=new _PROGINFO(\"");
+		s.append(edIndent() + "public static RTS_PROGINFO _INFO=new RTS_PROGINFO(\"");
 		s.append(Global.sourceFileName);
 		s.append("\",\"");
 		s.append(blockDeclaration.declarationKind + " " + blockDeclaration.identifier);

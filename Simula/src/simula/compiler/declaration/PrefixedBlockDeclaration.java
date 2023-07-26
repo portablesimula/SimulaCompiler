@@ -119,7 +119,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		String line = "public final class " + getJavaIdentifier();
 		if (prefix != null)
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
-		else line = line + " extends _BASICIO";
+		else line = line + " extends RTS_BASICIO";
 		GeneratedJavaClass.code(line + " {");
 		GeneratedJavaClass.debug("// PrefixedBlockDeclaration: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel
 				+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
@@ -151,7 +151,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 			GeneratedJavaClass.code("");
 			GeneratedJavaClass.code("public static void main(String[] args) {");
 			GeneratedJavaClass.debug("//System.setProperty(\"file.encoding\",\"UTF-8\");");
-			GeneratedJavaClass.code("_RT.setRuntimeOptions(args);");
+			GeneratedJavaClass.code("RTS_COMMON.setRuntimeOptions(args);");
 			StringBuilder s = new StringBuilder();
 			s.append("new " + getJavaIdentifier() + "(CTX_");
 			if (blockPrefix != null && blockPrefix.hasArguments()) {

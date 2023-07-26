@@ -54,7 +54,7 @@ SimulaTest(137,"--- Test DirectBytefile with CREATE, APPEND and PURGE.") begin
 
 		CatchingErrors begin
 			procedure onError(message); text message; begin
-				text expected="_SimulaRuntimeError: Directbytefile: outbyte failed:"
+				text expected="RTS_SimulaRuntimeError: Directbytefile: outbyte failed:"
 							  " location(6) <= initial lastloc(20)"
 				              " - The file TEMP006 was opend with APPEND";
 %				sysout.outtext("ERR: " & message); sysout.outimage;

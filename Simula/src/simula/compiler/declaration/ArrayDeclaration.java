@@ -192,7 +192,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	// --------------------------------------------------------------------
     	// integer array A(1:4,4:6,6:12);
     	// --------------------------------------------------------------------
-    	// A=new _INTEGER_ARRAY(new _BOUNDS(1,4),new _BOUNDS(4,6),new _BOUNDS(6,7));
+    	// A=new RTS_INTEGER_ARRAY(new _BOUNDS(1,4),new _BOUNDS(4,6),new _BOUNDS(6,7));
     	// --------------------------------------------------------------------
     	String arrayIdent=this.getJavaIdentifier();
 		String arrType=this.type.toJavaArrayType();
@@ -201,7 +201,7 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
     	char sep='(';
     	for(BoundPair boundPair:boundPairList) {	
     		sb.append(sep); sep=',';
-    		sb.append("new _BOUNDS(").append(boundPair.LB.toJavaCode())
+    		sb.append("new RTS_BOUNDS(").append(boundPair.LB.toJavaCode())
     		           .append(',').append(boundPair.UB.toJavaCode()).append(')');
     	}
     	sb.append(");");

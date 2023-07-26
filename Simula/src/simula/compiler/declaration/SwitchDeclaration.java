@@ -88,7 +88,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 		for (Expression expr : ((SwitchDeclaration) this).switchList) {
 			GeneratedJavaClass.code("case " + (n++) + ": _RESULT=" + expr.toJavaCode() + "; break;");
 		}
-		GeneratedJavaClass.code("default: throw new _SimulaRuntimeError(\"Illegal switch index: \"+p__SW);");
+		GeneratedJavaClass.code("default: throw new RTS_SimulaRuntimeError(\"Illegal switch index: \"+p__SW);");
 		GeneratedJavaClass.code("}");
 		GeneratedJavaClass.code("EBLK();");
 		GeneratedJavaClass.code("return(this);");

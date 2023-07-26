@@ -69,7 +69,7 @@ SimulaTest(136,"--- Test Directfile with CREATE, APPEND and PURGE.") begin
 		CatchingErrors begin
 			procedure onError(message); text message; begin
 %				sysout.outtext("ERROR: " & message); sysout.outimage;
-				text expected="_SimulaRuntimeError: Directfile: outimage failed:"
+				text expected="RTS_SimulaRuntimeError: Directfile: outimage failed:"
 							  " location(6) <= initial lastloc(20)"
 				              " - The file TEMP005 was opend with APPEND";
 %				sysout.outtext("ERR: " & message); sysout.outimage;

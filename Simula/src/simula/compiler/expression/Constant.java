@@ -169,7 +169,7 @@ public final class Constant extends Expression implements Externalizable {
 		{ if(value==null) return("null");
 		  String val=value.toString();
           val=encode(val);
-		  return("new _TXT(\""+val+"\")");
+		  return("new RTS_TXT(\""+val+"\")");
 		}
 		if(type==Type.Character) {
 			char charValue=((Character)value).charValue();

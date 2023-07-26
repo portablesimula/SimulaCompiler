@@ -31,8 +31,8 @@ RT_ErrorTest("  8 --- Test Illegal assignment. Name parameter is not a variable"
    
    facit(0):-"--- Test Illegal assignment. Name parameter is not a variable";
    facit(1):-"x := 8";
-   facit(2):-"onError got error: _SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
-   facit(3):-"onError got error: _SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
+   facit(2):-"onError got error: RTS_SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
+   facit(3):-"onError got error: RTS_SimulaRuntimeError: Illegal assignment. Name parameter is not a variable";
    facit(4):-"END OF TEST08";
 
    trace("--- Test Illegal assignment. Name parameter is not a variable");

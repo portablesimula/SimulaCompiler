@@ -173,15 +173,15 @@ public abstract class BlockDeclaration extends DeclarationScope {
 		if (hasLabel()) {
 			GeneratedJavaClass.code("break _LOOP;");
 			GeneratedJavaClass.code("}");
-			GeneratedJavaClass.code("catch(_LABQNT q) {");
+			GeneratedJavaClass.code("catch(RTS_LABQNT q) {");
 			GeneratedJavaClass.code("_CUR=_THIS;");
 			GeneratedJavaClass.code("if(q._SL!=_CUR) {");
-			GeneratedJavaClass.debug("if(_RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":NON-LOCAL\",q);");
+			GeneratedJavaClass.debug("if(RTS_COMMON.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":NON-LOCAL\",q);");
 			GeneratedJavaClass.code("_CUR.STATE_=OperationalState.terminated;");
-			GeneratedJavaClass.debug("if(_RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":RE-THROW\",q);");
+			GeneratedJavaClass.debug("if(RTS_COMMON.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":RE-THROW\",q);");
 			GeneratedJavaClass.code("throw(q);");
 			GeneratedJavaClass.code("}");
-			GeneratedJavaClass.debug("if(_RT.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":LOCAL\",q);");
+			GeneratedJavaClass.debug("if(RTS_COMMON.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":LOCAL\",q);");
 			GeneratedJavaClass.code("_JTX=q.index; continue _LOOP;","EG. GOTO Lx");
 			GeneratedJavaClass.code("}");
 			GeneratedJavaClass.code("}");

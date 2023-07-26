@@ -138,7 +138,7 @@ public final class ForStatement extends Statement {
 	    	if(elt.expr1.type==Type.Character) classIdent="Character"; // AD'HOC
 	    	if(elt.expr1.type==Type.Boolean) classIdent="Boolean"; // AD'HOC
 	    	if(elt.expr1.type==Type.Text) {
-	    		classIdent="_TXT"; // AD'HOC
+	    		classIdent="RTS_TXT"; // AD'HOC
 	    	}
 	    	GeneratedJavaClass.code("   "+del+elt.edCode(classIdent,elt.expr1.type));
 	    	del=',';
@@ -164,7 +164,7 @@ public final class ForStatement extends Statement {
     		ClassDeclaration qual=controlVariable.type.getQual();
     		if(!(controlVariable.type.equals(xType))) castVar="("+qual.getJavaIdentifier()+")x_;";
     	}
-    	String cvName="new _NAME<"+classIdent+">()"+
+    	String cvName="new RTS_NAME<"+classIdent+">()"+
     			"{ public "+classIdent+" put("+classIdent+" x_){"+cv+"="+castVar+" return(x_);};"+
     			"  public "+classIdent+" get(){return(("+classIdent+")"+cv+"); }	}";
     	return(cvName);
@@ -202,7 +202,7 @@ public final class ForStatement extends Statement {
 		public String edCode(final String classIdent,Type xType) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 		    return("new Single"+forElt+"("+edControlVariableByName(classIdent,xType)
-		      +",new _NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
+		      +",new RTS_NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }})");
 		}
 		public ForListElement isOptimizable() {
 			return(this);
@@ -246,8 +246,8 @@ public final class ForStatement extends Statement {
 		public String edCode(final String classIdent,Type xType) {
 			String forElt=(type==Type.Text && assignmentOperator.getKeyWord()==KeyWord.ASSIGNVALUE)?"TValElt":"Elt<"+classIdent+">";
 			return("new While"+forElt+"("+edControlVariableByName(classIdent,xType)
-			+",new _NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
-			+",new _NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
+			+",new RTS_NAME<"+classIdent+">() { public "+classIdent+" get(){return("+expr1.toJavaCode()+"); }}"
+			+",new RTS_NAME<Boolean>() { public Boolean get(){return("+expr2.toJavaCode()+"); }})");
 		}
 		@Override
 		public ForListElement isOptimizable() {
@@ -292,9 +292,9 @@ public final class ForStatement extends Statement {
 		}
 		public String edCode(final String classIdent,Type xType) {
 			return("new StepUntil("+edControlVariableByName(classIdent,xType)
-	  	                     +",new _NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
-	  	                     +",new _NAME<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
-	  	                     +",new _NAME<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
+	  	                     +",new RTS_NAME<Number>() { public Number get(){return("+expr1.toJavaCode()+"); }}"
+	  	                     +",new RTS_NAME<Number>() { public Number get(){return("+expr2.toJavaCode()+"); }}"
+	  	                     +",new RTS_NAME<Number>() { public Number get(){return("+expr3.toJavaCode()+"); }})");
 	      
 		}
 		@Override

@@ -51,7 +51,7 @@ import simula.compiler.utilities.Util;
  *   
  *   Is compiled into Java-code:
  *   
- *   if(key &lt; lowkey || key > hikey) throw new _SimulaRuntimeError("Switch key outside key interval");
+ *   if(key &lt; lowkey || key > hikey) throw new RTS_SimulaRuntimeError("Switch key outside key interval");
  *   switch(key) {
  *       case 0: statement-0 ;
  *       ...
@@ -202,7 +202,7 @@ public final class SwitchStatement extends Statement {
 	    StringBuilder sb=new StringBuilder();
 	    sb.append("if(").append(switchKey.toJavaCode()).append("<").append(lowKey.toJavaCode());
 	    sb.append(" || ").append(switchKey.toJavaCode()).append(">").append(hiKey.toJavaCode());
-	    sb.append(") throw new _SimulaRuntimeError(\"Switch key outside key interval\");");
+	    sb.append(") throw new RTS_SimulaRuntimeError(\"Switch key outside key interval\");");
 	    GeneratedJavaClass.code(sb.toString());
         GeneratedJavaClass.code("switch("+switchKey.toJavaCode()+") { // BEGIN SWITCH STATEMENT");
         for(WhenPart when:switchCases) when.doCoding(false);

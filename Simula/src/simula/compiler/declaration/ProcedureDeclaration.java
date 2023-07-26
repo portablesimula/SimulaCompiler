@@ -325,7 +325,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		s.append('(');
 		boolean withparams = false;
 		if (addStaticLink) {
-			s.append("_RTObject _SL");
+			s.append("RTS_RTObject _SL");
 			withparams = true;
 		}
 		for (Declaration par : this.parameterList) {
@@ -350,7 +350,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		GeneratedJavaClass javaModule = new GeneratedJavaClass(this);
 		Global.enterScope(this);
 		GeneratedJavaClass.code("@SuppressWarnings(\"unchecked\")");
-		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends _PROCEDURE {");
+		GeneratedJavaClass.code("public final class " + getJavaIdentifier() + " extends RTS_PROCEDURE {");
 		GeneratedJavaClass.debug("// ProcedureDeclaration: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel
 					+ ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
 					+ ((hasLocalClasses) ? "true" : "false") + ", System=" + ((isQPSystemBlock()) ? "true" : "false"));
@@ -424,14 +424,14 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 			else typeValue = ("(" + tp + ")objectValue(param)");
 			GeneratedJavaClass.code("case " + ( parameterList.size() - (nPar++)) + ": " + par.externalIdent + "=" + typeValue + "; break;");
 		}
-		GeneratedJavaClass.code("default: throw new _SimulaRuntimeError(\"Too many parameters\");");
+		GeneratedJavaClass.code("default: throw new RTS_SimulaRuntimeError(\"Too many parameters\");");
 		GeneratedJavaClass.code("}");
 		GeneratedJavaClass.code("}");
-		GeneratedJavaClass.code("catch(ClassCastException e) { throw new _SimulaRuntimeError(\"Wrong type of parameter: \"+param,e);}");
+		GeneratedJavaClass.code("catch(ClassCastException e) { throw new RTS_SimulaRuntimeError(\"Wrong type of parameter: \"+param,e);}");
 		GeneratedJavaClass.code("return(this);");
 		GeneratedJavaClass.code("}");
 		GeneratedJavaClass.debug("// Constructor in case of Formal/Virtual Procedure Call");
-		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(_RTObject _SL) {");
+		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(RTS_RTObject _SL) {");
 		GeneratedJavaClass.code("super(_SL,"+parameterList.size()+");","Expecting "+parameterList.size()+" parameters");
 		GeneratedJavaClass.code("}");
 	}

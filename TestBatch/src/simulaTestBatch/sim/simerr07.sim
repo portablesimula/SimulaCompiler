@@ -35,10 +35,10 @@ RT_ErrorTest("  7 --- Test Wrong number of paramerters to virtual procedure") be
    
    
    facit(0):-"--- Testing Wrong number of paramerters to virtual procedure";
-   facit(1):-"onError got error: _SimulaRuntimeError: Too few parameters";
-   facit(2):-"onError got error: _SimulaRuntimeError: Too few parameters";
+   facit(1):-"onError got error: RTS_SimulaRuntimeError: Too few parameters";
+   facit(2):-"onError got error: RTS_SimulaRuntimeError: Too few parameters";
    facit(3):-"V Called by V(text,4,3.14)";
-   facit(4):-"onError got error: _SimulaRuntimeError: Too many parameters";
+   facit(4):-"onError got error: RTS_SimulaRuntimeError: Too many parameters";
    facit(5):-"END OF TEST07";
 
 

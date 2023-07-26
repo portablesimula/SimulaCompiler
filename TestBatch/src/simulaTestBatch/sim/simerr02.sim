@@ -24,6 +24,8 @@ RT_ErrorTest("  2 --- Testing NONE-CHECK") begin
 
    DEFEXCEPTION(ExceptionHandler);
 
+%   verbose:=true;
+
    trace("--- Testing NONE-CHECK");
    
    inspect x do r:=F(r);

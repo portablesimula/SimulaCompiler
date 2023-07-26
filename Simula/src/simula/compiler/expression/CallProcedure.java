@@ -399,8 +399,8 @@ public final class CallProcedure {
 		    case Label -> {
 		    		String labQuant=actualParameter.toJavaCode();
 		    		if(mode==Parameter.Mode.name) {
-		    			s.append("new _NAME<_LABQNT>()");
-		    			s.append("{ public _LABQNT get() { return("+labQuant+"); }");
+		    			s.append("new RTS_NAME<RTS_LABQNT>()");
+		    			s.append("{ public RTS_LABQNT get() { return("+labQuant+"); }");
 		    			s.append(" }");
 		    		}
 		    		else s.append(labQuant);
@@ -423,8 +423,8 @@ public final class CallProcedure {
 		} else if(formalType==Type.Label) {
 		    	String labQuant=actualParameter.toJavaCode();
 		    	if(mode==Parameter.Mode.name) {
-			    	  s.append("new _NAME<_LABQNT>()");
-				      s.append("{ public _LABQNT get() { return("+labQuant+"); }");
+			    	  s.append("new RTS_NAME<RTS_LABQNT>()");
+				      s.append("{ public RTS_LABQNT get() { return("+labQuant+"); }");
 				      s.append(" }");
 			    }
 			    else s.append(labQuant);
@@ -432,7 +432,7 @@ public final class CallProcedure {
 		    String javaTypeClass=formalType.toJavaTypeClass();
 		    Variable writeableVariable=actualParameter.getWriteableVariable();
 		    if(writeableVariable!=null) {
-		    	s.append("new _NAME<"+javaTypeClass+">()");
+		    	s.append("new RTS_NAME<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
 		    	if(!(writeableVariable.meaning.declaredAs instanceof BlockDeclaration)) {
 		    		Type actualType=actualParameter.type;
@@ -466,7 +466,7 @@ public final class CallProcedure {
 		    	}
 		    	s.append(" }");
 		    } else {
-		    	s.append("new _NAME<"+javaTypeClass+">()");
+		    	s.append("new RTS_NAME<"+javaTypeClass+">()");
 		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
 		    	s.append(" }");
 		    }
@@ -482,8 +482,8 @@ public final class CallProcedure {
 			s.append(actualParameter.toJavaCode()).append(".COPY()");
 		}
 		else if(mode==Parameter.Mode.name) {
-			s.append("new _NAME<_ARRAY>()");
-			s.append("{ public _ARRAY get() { return("+actualParameter.toJavaCode()+"); }");
+			s.append("new RTS_NAME<RTS_ARRAY>()");
+			s.append("{ public RTS_ARRAY get() { return("+actualParameter.toJavaCode()+"); }");
 			s.append(" }");	
 		} else s.append(actualParameter.toJavaCode());
 	}
@@ -496,14 +496,14 @@ public final class CallProcedure {
 		String procQuant = edProcedureQuant(mode,actualParameter);
 		if (mode == Parameter.Mode.name) {
 			// --- EXAMPLE -------------------------------------------------------------------------
-			// r = new ParamSample_Q(this, new _NAME<_PRCQNT>() {
-			//     public _PRCQNT get() {
-			//         return (new _PRCQNT(ParamSample.this, ParamSample_P.class));
+			// r = new ParamSample_Q(this, new RTS_NAME<RTS_PRCQNT>() {
+			//     public RTS_PRCQNT get() {
+			//         return (new RTS_PRCQNT(ParamSample.this, ParamSample_P.class));
 			//     }
 			// })._RESULT;
 			// -------------------------------------------------------------------------------------
-			s.append("new _NAME<_PRCQNT>()");
-			s.append("{ public _PRCQNT get() { return(" + procQuant + "); }");
+			s.append("new RTS_NAME<RTS_PRCQNT>()");
+			s.append("{ public RTS_PRCQNT get() { return(" + procQuant + "); }");
 			s.append(" }");
 		} else s.append(procQuant);
 	}
@@ -516,7 +516,7 @@ public final class CallProcedure {
 			Declaration decl=var.meaning.declaredAs;
 	    	String staticLink=var.meaning.edQualifiedStaticLink();
 	    	String procIdent = decl.getJavaIdentifier();
-			String procQuant = "new _PRCQNT(" + staticLink + "," + procIdent + ".class)";
+			String procQuant = "new RTS_PRCQNT(" + staticLink + "," + procIdent + ".class)";
 			if (decl instanceof Parameter par) {
 				procQuant = ((Variable) actualParameter).getJavaIdentifier();
 				if (par.mode == Parameter.Mode.name)
@@ -544,7 +544,7 @@ public final class CallProcedure {
     	    	}
 			} else Util.IERR("Flere sånne(2) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			String procIdent = var.meaning.declaredAs.getJavaIdentifier();
-			return("new _PRCQNT(" + staticLink + "," + procIdent + ".class)");
+			return("new RTS_PRCQNT(" + staticLink + "," + procIdent + ".class)");
 		} else Util.error("Illegal Procedure Expression as Actual Parameter: " + actualParameter);
 	    return("UNKNOWN"); // Error recovery
 	}

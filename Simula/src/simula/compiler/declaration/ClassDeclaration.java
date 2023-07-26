@@ -713,7 +713,7 @@ SEARCH: while (scope != null) {
 		String line = "public class " + getJavaIdentifier();
 //		if (prefix != null)
 			 line = line + " extends " + getPrefixClass().getJavaIdentifier();
-//		else line = line + " extends _BASICIO";
+//		else line = line + " extends RTS_BASICIO";
 		GeneratedJavaClass.code(line + " {");
 		GeneratedJavaClass.debug("// ClassDeclaration: Kind=" + declarationKind + ", BlockLevel=" + rtBlockLevel + ", PrefixLevel="
 					+ prefixLevel() + ", firstLine=" + lineNumber + ", lastLine=" + lastLineNumber + ", hasLocalClasses="
@@ -785,7 +785,7 @@ SEARCH: while (scope != null) {
 		// Accumulates through prefix-chain when class
 		StringBuilder s = new StringBuilder();
 		s.append('(');
-		s.append("_RTObject staticLink");
+		s.append("RTS_RTObject staticLink");
 		for (Declaration par : new ClassParameterIterator()) {
 			// Iterates through prefix-chain
 			s.append(',');

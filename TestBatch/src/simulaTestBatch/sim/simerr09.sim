@@ -49,15 +49,15 @@ RT_ErrorTest("  9 --- Test Read/write access on Directfile and Directbytefile") 
    facit(4):-"testFileOperation: 1 df.open(blanks(29))";
    facit(5):-"testFileOperation: 2 db.open";
    facit(6):-"testFileOperation: 3 ... df.outimage";
-   facit(7):-"onError got error: _SimulaRuntimeError: Directfile: outimage failed - 'canwrite' is false";
+   facit(7):-"onError got error: RTS_SimulaRuntimeError: Directfile: outimage failed - 'canwrite' is false";
    facit(8):-"testFileOperation: 4 ... df.inimage";
-   facit(9):-"onError got error: _SimulaRuntimeError: Directfile: inimage failed - 'canread' is false";
+   facit(9):-"onError got error: RTS_SimulaRuntimeError: Directfile: inimage failed - 'canread' is false";
    facit(10):-"testFileOperation: 5 ... df.deleteimage";
-   facit(11):-"onError got error: _SimulaRuntimeError: Directfile: deleteimage failed - 'canwrite' is false";
+   facit(11):-"onError got error: RTS_SimulaRuntimeError: Directfile: deleteimage failed - 'canwrite' is false";
    facit(12):-"testFileOperation: 6 ... db.outtext";
-   facit(13):-"onError got error: _SimulaRuntimeError: Directbytefile: outbyte failed - 'canwrite' is false";
+   facit(13):-"onError got error: RTS_SimulaRuntimeError: Directbytefile: outbyte failed - 'canwrite' is false";
    facit(14):-"testFileOperation: 7 ... df.intext";
-   facit(15):-"onError got error: _SimulaRuntimeError: Directbytefile: inbyte failed - 'canread' is false";
+   facit(15):-"onError got error: RTS_SimulaRuntimeError: Directbytefile: inbyte failed - 'canread' is false";
    facit(16):-"END OF TEST09";
 
    trace("--- Test Read/write access on Directfile and Directbytefile");

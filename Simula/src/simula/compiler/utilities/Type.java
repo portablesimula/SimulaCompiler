@@ -159,7 +159,7 @@ public class Type implements Externalizable {
 	 */
 	public String getJavaRefIdent() {
 		if(key.getKeyWord()==KeyWord.REF) {
-			if(key.getValue()==null) return("_RTObject");
+			if(key.getValue()==null) return("RTS_RTObject");
 			if(!CHECKED) this.doChecking(Global.getCurrentScope());
 			if(qual==null) return("UNKNOWN");
 			return(qual.getJavaIdentifier());
@@ -178,7 +178,7 @@ public class Type implements Externalizable {
 		Global.enterScope(scope);
 		String refIdent=getRefIdent();
 		if(refIdent!=null) {
-			if(!refIdent.equals("_LABQNT") && !refIdent.equals("_UNKNOWN")) {
+			if(!refIdent.equals("RTS_LABQNT") && !refIdent.equals("_UNKNOWN")) {
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
 			    if(decl instanceof ClassDeclaration cdecl) qual=cdecl;
 			    else Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
@@ -376,9 +376,9 @@ public class Type implements Externalizable {
 		if(this.equals(Integer)) return("int");
 		if(this.equals(Boolean)) return("boolean");
 		if(this.equals(Character)) return("char");
-		if(this.equals(Text)) return("_TXT");
-		if(this.equals(Procedure)) return("_PRCQNT");
-		if(this.equals(Label)) return("_LABQNT");
+		if(this.equals(Text)) return("RTS_TXT");
+		if(this.equals(Procedure)) return("RTS_PRCQNT");
+		if(this.equals(Label)) return("RTS_LABQNT");
 		return(this.toString());
 	}
 	 
@@ -394,7 +394,7 @@ public class Type implements Externalizable {
 		if(this.equals(Integer)) return("Integer");
 		if(this.equals(Boolean)) return("Boolean");
 		if(this.equals(Character)) return("Character");
-		if(this.equals(Text)) return("_TXT");
+		if(this.equals(Text)) return("RTS_TXT");
 		return(this.toString());
 	}
 	
@@ -405,16 +405,16 @@ public class Type implements Externalizable {
 	public String toJavaArrayType() {
 		if(key.getKeyWord()==KeyWord.REF) {
 			String rtQual=getJavaRefIdent();
-			return("_REF_ARRAY<"+rtQual+">");
+			return("RTS_REF_ARRAY<"+rtQual+">");
 		}
-		if(this.equals(LongReal)) return("_LONG_REAL_ARRAY");
-		if(this.equals(Real)) return("_REAL_ARRAY");
-		if(this.equals(Integer)) return("_INTEGER_ARRAY");
-		if(this.equals(Boolean)) return("_BOOLEAN_ARRAY");
-		if(this.equals(Character)) return("_CHARACTER_ARRAY");
-		if(this.equals(Text)) return("_TEXT_ARRAY");
-//		if(this.equals(Procedure)) return("_PRCQNT");
-//		if(this.equals(Label)) return("_LABQNT");
+		if(this.equals(LongReal)) return("RTS_LONG_REAL_ARRAY");
+		if(this.equals(Real)) return("RTS_REAL_ARRAY");
+		if(this.equals(Integer)) return("RTS_INTEGER_ARRAY");
+		if(this.equals(Boolean)) return("RTS_BOOLEAN_ARRAY");
+		if(this.equals(Character)) return("RTS_CHARACTER_ARRAY");
+		if(this.equals(Text)) return("RTS_TEXT_ARRAY");
+//		if(this.equals(Procedure)) return("RTS_PRCQNT");
+//		if(this.equals(Label)) return("RTS_LABQNT");
 		Util.IERR("");
 		return(this.toString());
 	}

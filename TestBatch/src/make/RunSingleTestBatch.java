@@ -13,7 +13,7 @@ import java.util.Vector;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.runtime._RT;
+import simula.runtime.RTS_COMMON;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -180,8 +180,8 @@ public final class RunSingleTestBatch {
 //		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
 //		names.add("simtst127.sim"); // OK: Switch (character) Statement
 //		names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
-		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
-		names.add("simtst129.sim"); // OK: Switch in precompiled class
+//		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
+//		names.add("simtst129.sim"); // OK: Switch in precompiled class
 //		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
@@ -189,7 +189,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
 //		names.add("simtst134.sim"); // OK: Outfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst135.sim"); // OK: OutBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
-//		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
+		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst138.sim"); // OK: ref() and Real type Arrays.
 //		

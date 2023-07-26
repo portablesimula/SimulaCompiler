@@ -214,7 +214,7 @@ public class PageWriter extends Writer {
 				printerJob.setPrintService(printService);
 				ok = true;
 			} catch (PrinterException e) {
-				if (_RT.Option.VERBOSE)
+				if (RTS_COMMON.Option.VERBOSE)
 					e.printStackTrace();
 			}
 		} else
@@ -234,7 +234,7 @@ public class PageWriter extends Writer {
 			msg1 = (printService == null) ? "" : "to " + printService;
 			String msg2 = e.getMessage();
 			msg2 = (msg2 == null) ? "" : "\n" + msg2;
-			int res = _RT.optionDialog("Attempt to print " + msg1 + " - FAILED" + msg2 + "\nDo you want to retry ?",
+			int res = RTS_COMMON.optionDialog("Attempt to print " + msg1 + " - FAILED" + msg2 + "\nDo you want to retry ?",
 					"Error", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, "Yes", "No");
 			if (res == JOptionPane.YES_OPTION)
 				return (true);

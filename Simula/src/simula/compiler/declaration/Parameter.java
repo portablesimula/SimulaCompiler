@@ -254,23 +254,23 @@ public final class Parameter extends Declaration implements Externalizable {
 			switch (kind) {
 			case Simple:
 				if (type == Type.Label)
-					return ("_NAME<_LABQNT>");
-				return ("_NAME<" + type.toJavaTypeClass() + ">");
+					return ("RTS_NAME<RTS_LABQNT>");
+				return ("RTS_NAME<" + type.toJavaTypeClass() + ">");
 			case Procedure:
-				return ("_NAME<_PRCQNT>");
+				return ("RTS_NAME<RTS_PRCQNT>");
 			case Label:
-				return ("_NAME<_LABQNT>");
+				return ("RTS_NAME<RTS_LABQNT>");
 			case Array:
-				return ("_NAME<_ARRAY>");
+				return ("RTS_NAME<RTS_ARRAY>");
 			}
 		}
 		switch (kind) {
 		case Array:
-			return ("_ARRAY");
+			return ("RTS_ARRAY");
 		case Label:
-			return ("_LABQNT");
+			return ("RTS_LABQNT");
 		case Procedure:
-			return ("_PRCQNT");
+			return ("RTS_PRCQNT");
 		case Simple: // Fall through
 		}
 		return (type.toJavaType());

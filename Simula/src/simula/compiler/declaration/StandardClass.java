@@ -1032,7 +1032,7 @@ public final class StandardClass extends ClassDeclaration {
 
 	private StandardClass(String className) {
 		super(className);
-		this.externalIdent="_"+className;
+		this.externalIdent="RTS_"+className;
 		this.declarationKind=Declaration.Kind.StandardClass;
 		this.type=Type.Ref(className);
 	}
