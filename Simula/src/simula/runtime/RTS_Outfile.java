@@ -39,7 +39,7 @@ import java.io.Writer;
  * An object of the class "outfile" is used to represent an image-oriented
  * sequential output file.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Outfile.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Outfile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen

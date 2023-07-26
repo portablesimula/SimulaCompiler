@@ -32,7 +32,7 @@ import java.io.OutputStream;
  * An object of the class "outbytefile" is used to represent a sequential output
  * file of bytes.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Outbytefile.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Outbytefile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen

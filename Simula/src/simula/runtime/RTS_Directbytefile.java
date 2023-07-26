@@ -46,7 +46,7 @@ import java.nio.channels.FileLock;
  * <p>
  * In this implementation LOC is maintained by the underlying file system.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Directbytefile.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Directbytefile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen

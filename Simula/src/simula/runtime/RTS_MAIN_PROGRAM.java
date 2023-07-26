@@ -32,7 +32,7 @@ package simula.runtime;
  * scheduling an active phase for it at system time zero. Then the PSC proceeds
  * to the first user-defined statement of the "simulation" block.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_MAIN_PROGRAM.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_MAIN_PROGRAM.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen

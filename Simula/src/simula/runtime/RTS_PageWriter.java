@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
 /**
  * Utility class PageWriter.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/PageWriter.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_PageWriter.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

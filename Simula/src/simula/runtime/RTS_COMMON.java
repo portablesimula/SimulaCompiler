@@ -15,9 +15,9 @@ import javax.swing.JOptionPane;
 import simula.compiler.utilities.Global;
 
 /**
- * Utility class _RT.
+ * Utility class containing a lot of common stuff.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_RT.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_COMMON.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

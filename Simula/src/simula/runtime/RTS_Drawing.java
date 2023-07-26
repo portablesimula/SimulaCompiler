@@ -24,7 +24,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 /**
- * Additional System Drawing.
+ * Additional System class Drawing.
  * <p>
  * The class "Drawing" introduce basic graphical capabilities.
  * It has the class "simset" as prefix, so set-handling facilities are thus immediately available.
@@ -96,7 +96,7 @@ import javax.swing.JFrame;
  * The members of the rendering set are ShapeElements and TextElements.
  * The elements are rendered in the order defined by the RENDERING_SET, starting with RENDERING_SET.first.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Drawing.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Drawing.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

@@ -36,7 +36,7 @@ import java.io.InputStream;
  * Variable "ENDFILE" is true if there are no more bytes to read. The procedure
  * "endfile" returns the value of ENDFILE.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Inbytefile.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Inbytefile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
