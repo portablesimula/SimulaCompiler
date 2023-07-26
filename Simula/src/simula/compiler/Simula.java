@@ -39,6 +39,7 @@ public final class Simula {
 		Util.println("  -nowarn                    Generate no warnings");
 		Util.println("  -noextension               Disable all language extensions");
 		Util.println("                             In other words, follow the Simula Standard literally");
+		Util.println("  -sport                     Enable all S-PORT extensions");
 		Util.println("  -select characters         First, all selectors are reset.");
 		Util.println("                             Then, for each character, the corresponding selector is set");
 		Util.println("  -verbose                   Output messages about what the compiler is doing");
@@ -73,6 +74,7 @@ public final class Simula {
 				else if (arg.equalsIgnoreCase("-noexec")) Option.noExecution=true;
 				else if (arg.equalsIgnoreCase("-nowarn")) Option.WARNINGS=false;
 				else if (arg.equalsIgnoreCase("-noextension")) Option.EXTENSIONS=false;
+				else if (arg.equalsIgnoreCase("-sport")) Option.SPORT=true;
 				else if (arg.equalsIgnoreCase("-select")) setSelectors(argv[++i]);
 				else if (arg.equalsIgnoreCase("-verbose")) Option.verbose=true;
 				else if (arg.equalsIgnoreCase("-keepJava")) setKeepJava(argv[++i]);

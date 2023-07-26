@@ -198,6 +198,7 @@ public final class RunFullTestBatch {
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
+		Option.SPORT=true;
 		Option.TRACING=false;
 		Option.WARNINGS=false;
 		Option.verbose=false;

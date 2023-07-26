@@ -8,6 +8,7 @@
 package simula.compiler.expression;
 
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Type.ConversionKind;
 import simula.compiler.utilities.Util;
@@ -56,7 +57,7 @@ public final class TypeConversion extends Expression {
 	public static Expression testAndCreate(final Type toType,final Expression expression) {
 		Type fromType=expression.type;
 		String qual=(fromType==null)?null:fromType.getRefIdent();
-		if(qual != null) {
+		if(!Option.SPORT && qual != null) {
 			int rhsBL=(fromType!=null && fromType.declaredIn!=null)?fromType.declaredIn.ctBlockLevel : 0;
 			int lhsBL=(toType!=null && toType.declaredIn!=null)?toType.declaredIn.ctBlockLevel : 0;
 			if(rhsBL != 0 && lhsBL != 0 && rhsBL != lhsBL)

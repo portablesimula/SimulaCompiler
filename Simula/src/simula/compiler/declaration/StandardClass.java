@@ -290,7 +290,7 @@ public final class StandardClass extends ClassDeclaration {
 		// *****************************************
 		// *** Additional S-Port'like Procedures ***
 		// *****************************************
-		if(Option.EXTENSIONS) {
+		if(Option.SPORT) {
 			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,null,"DEFEXCEPTION",parameter("erh",Parameter.Kind.Procedure,Parameter.Mode.value,null));
 			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Integer,"hash",parameter("t",Type.Text));
 			ENVIRONMENT.addStandardProcedure(Declaration.Kind.ContextFreeMethod,Type.Character,"loadChar",parameter("t",Type.Text),parameter("i",Type.Integer)); 

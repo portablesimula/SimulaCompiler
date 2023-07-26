@@ -140,7 +140,7 @@ public final class AssignmentOperation extends Expression {
 			if (afterDot instanceof Variable varAfterDot && varAfterDot.hasArguments()) {
 				Declaration decl = varAfterDot.meaning.declaredAs;
 				Expression beforeDot = rem.obj;
-				System.out.println("AssignmentOperation.doCodeAssignment: beforeDot = " + beforeDot + ", decl=" + decl);
+//				System.out.println("AssignmentOperation.doCodeAssignment: beforeDot = " + beforeDot + ", decl=" + decl);
 				if (decl instanceof ArrayDeclaration)
 					return (doAccessRemoteArray(beforeDot, varAfterDot, rhs.toJavaCode()));
 				else if (decl instanceof Parameter par) {

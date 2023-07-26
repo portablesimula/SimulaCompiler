@@ -22,7 +22,7 @@ external class SimulaTest;
 
 SimulaTest(100,"--- Test that put-get-put delivers the identity.") begin
 
-       text outputFrom100="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/outputFrom100";
+       text outputFrom100="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/outputFrom100";
      
        integer signpos=17;  !***  number of sign. digits in long real;
        integer signpos1=signpos+1;

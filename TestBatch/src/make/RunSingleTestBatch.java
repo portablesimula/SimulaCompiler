@@ -13,6 +13,7 @@ import java.util.Vector;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.runtime._RT;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -31,8 +32,8 @@ public final class RunSingleTestBatch {
 //		names.add("adHoc00.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
-		names.add("SimulaTest.sim"); // Simula TestBatch Framework
-		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
+//		names.add("SimulaTest.sim"); // Simula TestBatch Framework
+//		names.add("simtst01.sim"); // OK:  Meaningless test of conditional statements,
 //		names.add("simtst02.sim"); // OK:  Test boolean operators/expressions
 //		names.add("simtst03.sim"); // OK:  Test Text Value Relations
 //		names.add("simtst04.sim"); // OK:  To test putint and putreal.
@@ -179,8 +180,8 @@ public final class RunSingleTestBatch {
 //		names.add("simtst126.sim"); // OK: GOTO SIMPLE SWITCH
 //		names.add("simtst127.sim"); // OK: Switch (character) Statement
 //		names.add("simtst128.sim"); // OK: Standard Procedure edit and edfix
-//		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
-//		names.add("simtst129.sim"); // OK: Switch in precompiled class
+		names.add("Precompiled129.sim"); // OK: Precompile this for Simtst 129.
+		names.add("simtst129.sim"); // OK: Switch in precompiled class
 //		names.add("simtst130.sim"); // OK: Class SimLib, a set of utility procedures from DEC Handbook.
 //
 //		names.add("simtst131.sim"); // OK: Catching Errors
@@ -207,7 +208,8 @@ public final class RunSingleTestBatch {
 
 		// Set options and tracing.
 		Option.INLINE_TESTING=true;
-//		Option.verbose = true;
+		Option.SPORT=true;
+		Option.verbose = true;
 		Option.WARNINGS=true;
 //		Option.DEBUGGING=true;
 //		Option.EXTENSIONS=false;
@@ -239,8 +241,7 @@ public final class RunSingleTestBatch {
 		File userDir=new File("C:/GitHub/SimulaCompiler/TestBatch");
 		
 		Global.packetName="simulaTestBatch";
-		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
-//		Global.simulaRtsLib=new File(userDir,"bin"); // To use Eclipse Project's simula.runtime
+//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
 		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
 		
@@ -251,10 +252,12 @@ public final class RunSingleTestBatch {
 //		RTOption.GOTO_TRACING = false;
 //		RTOption.QPS_TRACING = false;
 //		RTOption.SML_TRACING = false;
-
+//		Option.RUNTIME_USER_DIR = "C:/GitHub/SimulaCompiler/TestBatch/";
+		
+		
 		for(String name:names) {
 			String fileName = userDir+"/src/"+Global.packetName+"/sim/"+name;
-			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
+//			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
 			try { SimulaCompiler compiler = new SimulaCompiler(fileName);
 				  compiler.doCompile();
 			}

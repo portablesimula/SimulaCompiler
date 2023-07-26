@@ -91,8 +91,9 @@ public final class RemoteVariable extends Expression {
 		if (qual == null)
 			Util.error("doRemoteChecking: Object Expression (" + obj + ") is not a ref() type rather " + objType);
 		else if (qual.hasLocalClasses)
-//			Util.warning("Illegal remote access into object of class with local classes.");
-			Util.error("Illegal remote access into object of class with local classes.");
+			if(Option.SPORT)
+			     Util.warning("Illegal remote access into object of class with local classes.");
+			else Util.error("Illegal remote access into object of class with local classes.");
 
 		if (attr instanceof Variable var) {
 			String ident = var.identifier;

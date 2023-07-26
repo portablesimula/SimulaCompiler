@@ -35,6 +35,7 @@ public final class Option {
 	public static boolean WARNINGS=true;
 	public static boolean noExecution = false;	// true: Don't execute generated .jar file.
 	public static boolean EXTENSIONS=true;
+	public static boolean SPORT=false;
 	public static File keepJava = null;			// Used by Java-Coding to save the generated .java files.
 												// If not set, a temp directory is used/created.
 
@@ -77,6 +78,7 @@ public final class Option {
 		Option.noExecution = false;
 		Option.WARNINGS=true;
 		Option.EXTENSIONS=true;
+		Option.SPORT=false;
 
 		// Overall TRACING Options
 		Option.TRACING=false;
@@ -104,6 +106,7 @@ public final class Option {
 		if(id.equalsIgnoreCase("noExecution")) return(noExecution); 
 		if(id.equalsIgnoreCase("WARNINGS")) return(WARNINGS); 
 		if(id.equalsIgnoreCase("EXTENSIONS")) return(EXTENSIONS); 
+		if(id.equalsIgnoreCase("SPORT")) return(SPORT); 
 		if(id.equalsIgnoreCase("TRACING")) return(TRACING); 
 		if(id.equalsIgnoreCase("TRACE_SCAN")) return(TRACE_SCAN); 
 		if(id.equalsIgnoreCase("TRACE_COMMENTS")) return(TRACE_COMMENTS); 
@@ -124,6 +127,7 @@ public final class Option {
 		if(id.equalsIgnoreCase("noExecution")) noExecution=val; 
 		if(id.equalsIgnoreCase("WARNINGS")) WARNINGS=val; 
 		if(id.equalsIgnoreCase("EXTENSIONS")) EXTENSIONS=val; 
+		if(id.equalsIgnoreCase("SPORT")) SPORT=val; 
 		if(id.equalsIgnoreCase("TRACING")) TRACING=val; 
 		if(id.equalsIgnoreCase("TRACE_SCAN")) TRACE_SCAN=val; 
 		if(id.equalsIgnoreCase("TRACE_COMMENTS")) TRACE_COMMENTS=val; 

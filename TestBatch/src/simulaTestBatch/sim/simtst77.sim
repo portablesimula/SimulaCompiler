@@ -11,7 +11,7 @@ external class SimulaTest;
 
 SimulaTest(77,"--- Test infile using two infile objects reading from the same external file.") begin
    
-   text fileName="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/files/any77";
+   text fileName="C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestBatch/files/any77";
 
    class Read(n, other); integer n; ref(Read) other;
    begin text array linjer(1:300);
