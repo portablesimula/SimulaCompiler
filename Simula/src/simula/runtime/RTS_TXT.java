@@ -39,7 +39,7 @@ import java.text.DecimalFormat;
  * It references (and has as its value the contents of) some text frame defined
  * by the three first components. POS identifies the current character. See 3.1.2.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_TXT.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_TXT.java"><b>Source File</b></a>.
  * 
  * 
  * @author SIMULA Standards Group

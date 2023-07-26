@@ -10,7 +10,7 @@ package simula.runtime;
 import simula.runtime.RTS_RTObject.RTS_NAME;
 
 /**
- * Utility class _RandomDrawing.
+ * Utility class RandomDrawing.
  * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_RandomDrawing.java"><b>Source File</b></a>.
  * 

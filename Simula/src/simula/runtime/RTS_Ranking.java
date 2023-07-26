@@ -10,11 +10,11 @@ package simula.runtime;
 import simula.compiler.utilities.Util;
 
 /**
- * Utility class _Ranking.
+ * Utility class Ranking.
  * <p>
  * This is an implementation of a balanced tree used to support the sequencing set in class Simulation.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_Ranking.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Ranking.java"><b>Source File</b></a>.
  *
  * @author Øystein Myhre Andersen
  */

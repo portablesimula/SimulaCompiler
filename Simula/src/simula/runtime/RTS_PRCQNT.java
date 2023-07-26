@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
 * Procedure quantity.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_PRCQNT.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_PRCQNT.java"><b>Source File</b></a>.
 *  
 * @author Øystein Myhre Andersen
 */

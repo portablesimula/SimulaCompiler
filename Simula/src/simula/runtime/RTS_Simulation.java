@@ -109,7 +109,7 @@ public class RTS_Simulation extends RTS_Simset {
 	public final RTS_MAIN_PROGRAM main_1;
 
 	/**
-	 * Create a new _Simulation.
+	 * Create a new Simulation.
 	 * @param SL staticLink
 	 */
 	public RTS_Simulation(RTS_RTObject SL) {

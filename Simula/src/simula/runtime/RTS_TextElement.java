@@ -45,7 +45,7 @@ import java.awt.Stroke;
  *
  * end;
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_TextElement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_TextElement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

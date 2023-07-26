@@ -8,11 +8,11 @@
 package simula.runtime;
 
 /**
- * Utility class _PROGINFO.
+ * Utility class PROGINFO.
  * <p>
  * This class is used to hold a mapping of source line numbers and java lines.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_PROGINFO.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_PROGINFO.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

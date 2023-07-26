@@ -52,7 +52,7 @@ package simula.runtime;
  * <p>
  * Note: <b>In this implementation the characters in MAIN are indexed 0 through SIZE-1.</b>
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/_TEXTOBJ.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_TEXTOBJ.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen

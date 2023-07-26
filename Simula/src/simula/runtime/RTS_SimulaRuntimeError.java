@@ -12,7 +12,7 @@ public class RTS_SimulaRuntimeError extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs a new _SimulaRuntimeError with the specified detail message.
+	 * Constructs a new RTS_SimulaRuntimeError with the specified detail message.
 	 * @param message the detail message
 	 */
 	public RTS_SimulaRuntimeError(String message) {
