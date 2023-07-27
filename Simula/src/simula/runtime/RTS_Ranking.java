@@ -7,7 +7,7 @@
  */
 package simula.runtime;
 
-import simula.compiler.utilities.Util;
+import static simula.runtime.RTS_COMMON.*;
 
 /**
  * Utility class Ranking.
@@ -104,7 +104,7 @@ public class RTS_Ranking {
 		RTS_Ranking ins = null;
 		RTS_Ranking temp = null;
 		if (head.rl != head) {
-			Util.IERR("RANK_CLEAR");
+			IERR("RANK_CLEAR");
 		}
 		if (head.bl != head) {
 			ins = head.bl;
@@ -144,7 +144,7 @@ public class RTS_Ranking {
 	static boolean EMPTY(RTS_Ranking head) {
 		boolean empty = false; // Return value
 		if (head.rl != head) {
-			Util.IERR("RANK_EMPTY");
+			IERR("RANK_EMPTY");
 		}
 		empty = (head.bl == head);
 		return (empty);
@@ -158,7 +158,7 @@ public class RTS_Ranking {
 	static RTS_Ranking FIRST(RTS_Ranking head) {
 		RTS_Ranking first = null; // Return value
 		if (head.rl != head) {
-			Util.IERR("RANK_FIRST");
+			IERR("RANK_FIRST");
 		}
 		first = head.bl;
 		if (first == head) {
@@ -175,7 +175,7 @@ public class RTS_Ranking {
 	static RTS_Ranking LAST(RTS_Ranking head) {
 		RTS_Ranking last = null; // Return value
 		if (head.rl != head) {
-			Util.IERR("RANK_LAST");
+			IERR("RANK_LAST");
 		}
 		last = head.ll;
 		if (last == head) {
@@ -191,7 +191,7 @@ public class RTS_Ranking {
 	 */
 	static void FOLLOW(RTS_Ranking ins, RTS_Ranking prd) {
 		if (ins.rl == ins) {
-			Util.IERR("RANK_FOLLOW");
+			IERR("RANK_FOLLOW");
 		}
 		if (ins.bl != null) {
 			OUT(ins);
@@ -221,7 +221,7 @@ public class RTS_Ranking {
 		RTS_Ranking ll = null;
 		RTS_Ranking rl = null;
 		if (ins.rl == ins) {
-			Util.IERR("RANK_OUT");
+			IERR("RANK_OUT");
 		}
 		if (ins.bl != null) {
 			bl = ins.bl;
@@ -281,12 +281,12 @@ public class RTS_Ranking {
 	 */
 	static void INTO(RTS_Ranking ins, RTS_Ranking head, double rnk) {
 		if (ins.rl == ins)
-			Util.IERR("RANK_INTO-1");
+			IERR("RANK_INTO-1");
 		if (ins.bl != null)
 			OUT(ins);
 		if (head != null) {
 			if (head.rl != head)
-				Util.IERR("RANK_INTO-2");
+				IERR("RANK_INTO-2");
 			ins.rnk = rnk;
 			if (rnk >= head.ll.rnk) {
 				ins.bl = head;
@@ -331,12 +331,12 @@ public class RTS_Ranking {
 	 */
 	static void PRECEDE(RTS_Ranking ins, RTS_Ranking suc) {
 		if (ins.rl == ins)
-			Util.IERR("RANK_PRECEDE-1");
+			IERR("RANK_PRECEDE-1");
 		if (ins.bl != null)
 			OUT(ins);
 		if (suc != null) {
 			if (suc.rl == suc)
-				Util.IERR("RANK_PRECEDE-2");
+				IERR("RANK_PRECEDE-2");
 			if (suc.bl != null) {
 				ins.rnk = suc.rnk;
 				ins.bl = suc;
@@ -361,12 +361,12 @@ public class RTS_Ranking {
 	 */
 	static void INTO_PRIOR(RTS_Ranking ins, RTS_Ranking head, double rnk) {
 		if (ins.rl == ins)
-			Util.IERR("RANK_PRIOR-1");
+			IERR("RANK_PRIOR-1");
 		if (ins.bl != null)
 			OUT(ins);
 		if (head != null) {
 			if (head.rl != head)
-				Util.IERR("RANK_PRIOR-2");
+				IERR("RANK_PRIOR-2");
 			ins.rnk = rnk;
 			if (rnk > head.ll.rnk) {
 				ins.bl = head;

@@ -12,8 +12,6 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import javax.swing.JOptionPane;
 
-import simula.compiler.utilities.Global;
-
 /**
  * Utility class containing a lot of common stuff.
  * <p>
@@ -316,7 +314,7 @@ public final class RTS_COMMON {
 	}
 
 	private static void help() {
-		println(Global.simulaReleaseID + " See: https://github.com/portablesimula\n");
+		println(RTS_ENVIRONMENT.simulaReleaseID + " See: https://github.com/portablesimula\n");
 		println("Usage: java -jar simula.jar  [options]\n\n"
 				+ "jarFile			Any output jar file from the simula compiler\n\n" + "possible options include:\n"
 				+ "  -help                 Print this synopsis of standard options\n"

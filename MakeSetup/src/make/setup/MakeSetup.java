@@ -67,7 +67,7 @@ public final class MakeSetup {
 			copySimulaRuntimeSystem();
 			copySimulaIconFiles();
 //			dummyExecuteSimulaCompiler();
-			copySimulaReleaseTestBats();
+//			copySimulaReleaseTestBats();
 //			compileAndExecuteSimulaPrograms();
 			copySimulaReleaseTests();
 			makeSimulaInstaller();
@@ -127,22 +127,21 @@ public final class MakeSetup {
 		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
 	}
 	
-	// ***************************************************************
-	// *** COPY SIMULA RELEASE TEST BATCH FILES
-	// ***************************************************************
-	private static void copySimulaReleaseTestBats() throws IOException	{
+//	// ***************************************************************
+//	// *** COPY SIMULA RELEASE TEST BATCH FILES
+//	// ***************************************************************
+//	private static void copySimulaReleaseTestBats() throws IOException	{
 //		printHeading("Copy Simula Release Info into "+RELEASE_HOME);
 //		copyTxtFile("ReleaseNotes.txt");
-//		copyTxtFile("Issues.txt");
-	}
-	private static void copyTxtFile(String batName) throws IOException	{
-		File source=new File(SIMULA_ROOT+"\\src\\make\\setup\\"+batName);
-		File target=new File(RELEASE_HOME+"\\"+batName);
-		target.mkdirs();
-		System.out.println("source="+source);
-		System.out.println("target="+target);
-		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
-	}
+//	}
+//	private static void copyTxtFile(String batName) throws IOException	{
+//		File source=new File(SIMULA_ROOT+"\\src\\make\\setup\\"+batName);
+//		File target=new File(RELEASE_HOME+"\\"+batName);
+//		target.mkdirs();
+//		System.out.println("source="+source);
+//		System.out.println("target="+target);
+//		Files.copy(source.toPath(), target.toPath(), REPLACE_EXISTING);
+//	}
 	
 	// ***************************************************************
 	// *** COPY SIMULA RELEASE TEST PROGRAMS
