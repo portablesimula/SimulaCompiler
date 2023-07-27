@@ -164,7 +164,7 @@ public class RTS_Drawing extends RTS_Simset {
 	/**
 	 * The current canvas.
 	 */
-	final Drawing canvas;
+	final DrawCanvas canvas;
 	
 	/**
 	 * The buffer strategy.
@@ -457,15 +457,15 @@ public class RTS_Drawing extends RTS_Simset {
 	}
 
 	/**
-	 * Additional System Class Drawing. 
+	 * Local class DrawCanvas. 
 	 */
 	@SuppressWarnings("serial")
-	class Drawing extends Canvas {
+	class DrawCanvas extends Canvas {
 		
 		/**
 		 *  Default Constructor.
 		 */
-		Drawing(){}
+		DrawCanvas(){}
 
 		@Override
 		public void paint(Graphics g) {
@@ -501,7 +501,7 @@ public class RTS_Drawing extends RTS_Simset {
 
 	// Constructor
 	/**
-	 * Create a new Draing Panel.
+	 * Create a new Drawing Canvas.
 	 * @param SL staticLink
 	 * @param title panel's title
 	 * @param width the width of the panel
@@ -511,7 +511,7 @@ public class RTS_Drawing extends RTS_Simset {
 		super(SL);
 		RENDERING_SET = (RTS_Head) new RTS_Head(RTS_Drawing.this)._STM();
 		frame = new JFrame(title.edText());
-		canvas = new Drawing();
+		canvas = new DrawCanvas();
 		canvas.setSize(width, height);
 		currentFont = new Font(Font.SERIF, 12, Font.PLAIN);
 		if (DEBUG)
