@@ -1929,8 +1929,7 @@ public abstract class RTS_RTObject {
 	 * </ol>
 	 */
 	public void detach() {
-		// if (_RT.Option.QPS_TRACING) _RT.TRACE("BEGIN DETACH " + this.edObjectIdent()
-		// + " ==> " + _CUR.edObjectIdent());
+		// if (_RT.Option.QPS_TRACING) _RT.TRACE("BEGIN DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
 		if (isQPSystemBlock())
 			return; // Detach QPS System Block is no-operation.
 		// Make sure that this object is on the operating chain.

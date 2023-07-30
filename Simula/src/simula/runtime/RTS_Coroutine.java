@@ -16,6 +16,7 @@ import java.util.concurrent.Semaphore;
  *
  *  public class Coroutine implements Runnable {
  *      public Coroutine(Runnable target)
+ *		public static Coroutine getCurrentCoroutine()
  *      public final void run()
  *      public static void detach()
  *      public boolean isDone()
