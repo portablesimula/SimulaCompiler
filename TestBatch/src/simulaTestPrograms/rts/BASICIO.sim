@@ -6,14 +6,14 @@ BASICIO class _BASICIO(INPUT_LINELENGTH, OUTPUT_LINELENGTH);
 begin
    ref(InFile) SYSIN_;
    ref(InFile) procedure sysin; sysin:-SYSIN_;
-   ref(PrintFile) SYSOUT_;
-   ref(PrintFile) procedure sysout; sysout:-SYSOUT_;
+   ref(PrintFile) _SYSOUT;
+   ref(PrintFile) procedure sysout; sysout:-_SYSOUT;
    
    SYSIN_ :- new InFile("_SYSIN");
-   SYSOUT_ :- new PrintFile("_SYSOUT");
+   _SYSOUT :- new PrintFile("_SYSOUT");
    SYSIN_.open(blanks(INPUT_LINELENGTH));
-   SYSOUT_.open(blanks(OUTPUT_LINELENGTH));
+   _SYSOUT.open(blanks(OUTPUT_LINELENGTH));
    inner;
    SYSIN_.close;
-   SYSOUT_.close;
+   _SYSOUT.close;
 end BASICIO;

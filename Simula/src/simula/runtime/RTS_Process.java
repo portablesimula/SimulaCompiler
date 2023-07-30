@@ -102,7 +102,7 @@ public class RTS_Process extends RTS_Link {
 		RTS_Process nxtcur = ((RTS_Simulation) _SL).passivate1();
 		resume(nxtcur, false); // Special Case without Swap
 		// Signal special action in _RTObject.EBLK
-		RTS_Process.this.STATE_ = OperationalState.terminatingProcess;
+		RTS_Process.this._STATE = OperationalState.terminatingProcess;
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class RTS_Process extends RTS_Link {
 	 * @return true if this process is terminated
 	 */
 	public boolean terminated() {
-		return (STATE_ == OperationalState.terminated);
+		return (_STATE == OperationalState.terminated);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class RTS_Process extends RTS_Link {
 
 	@Override
 	public String toString() {
-		return (this.edObjectIdent() + ": STATE_=" + this.STATE_ + ", TERMINATED_=" + terminated());
+		return (this.edObjectIdent() + ": _STATE=" + this._STATE + ", TERMINATED_=" + terminated());
 	}
 
 }

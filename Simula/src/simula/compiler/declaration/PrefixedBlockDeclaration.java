@@ -153,7 +153,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 			GeneratedJavaClass.debug("//System.setProperty(\"file.encoding\",\"UTF-8\");");
 			GeneratedJavaClass.code("RTS_COMMON.setRuntimeOptions(args);");
 			StringBuilder s = new StringBuilder();
-			s.append("new " + getJavaIdentifier() + "(CTX_");
+			s.append("new " + getJavaIdentifier() + "(_CTX");
 			if (blockPrefix != null && blockPrefix.hasArguments()) {
 				for (Expression par : blockPrefix.checkedParams) {
 					s.append(',').append(par.toJavaCode());

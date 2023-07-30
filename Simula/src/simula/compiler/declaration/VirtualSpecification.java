@@ -196,7 +196,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 	public void doJavaCoding() {
 		ASSERT_SEMANTICS_CHECKED();
 		String matchCode = "{ throw new RTS_SimulaRuntimeError(\"No Virtual Match: " + identifier + "\"); }";
-		String qnt = (kind == Kind.Label) ? "RTS_LABQNT " : "RTS_PRCQNT ";
+		String qnt = (kind == Kind.Label) ? "RTS_LABEL " : "RTS_PRCQNT ";
 		GeneratedJavaClass.code("public " + qnt + getVirtualIdentifier() + matchCode);
 	}
 

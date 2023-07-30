@@ -1,0 +1,24 @@
+
+begin
+	integer i,j,k;
+	boolean cond;
+	text t;
+	
+	text procedure other;;
+	procedure statement;;
+	integer procedure expr_1;;
+	integer procedure expr_2;;
+  
+	for i:=1,6,13 step 6 until 66,i+1 while i<80 do j:=j+i;	
+	
+	for t:="one",other while k < 7 do statement;
+	
+	for i:=expr_1 step 1 until expr_2 do statement;
+	for i:=expr_1 step -1 until expr_2 do statement;
+	for i:=expr_1 step 6 until expr_2 do statement;
+	for i:=expr_1 step -6 until expr_2 do statement;
+	
+	for i:=expr_1 do statement;
+	
+	for i:=expr_1 while cond do statement;
+end;

@@ -1,0 +1,5 @@
+external class SimulaTest;
+
+SimulaTest(1,"--- Simple test of conditional statements") begin
+
+end of program;

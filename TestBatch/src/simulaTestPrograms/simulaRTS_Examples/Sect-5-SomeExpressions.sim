@@ -1,0 +1,22 @@
+
+begin
+  
+  class A; virtual: integer procedure V;
+  begin
+  end;
+  
+  A class C;
+  begin
+  	integer p3;
+  end;
+  
+  ref(A) x;
+  boolean b;
+
+  b :=  x is C;	
+  
+  b :=  x in C;	
+  
+  x qua C.p3 := 3.14;
+  
+end;

@@ -62,7 +62,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public abstract class RTS_CatchingErrors extends RTS_SIMULA_BLOCK {
+public abstract class RTS_CatchingErrors extends RTS_CLASS {
 	
 	/**
 	 * Default virtual match for procedure onError.
@@ -88,7 +88,7 @@ public abstract class RTS_CatchingErrors extends RTS_SIMULA_BLOCK {
 	 * @param match virtual match procedure 
 	 */
 	public void _onError(RuntimeException e, RTS_PRCQNT match) {
-		if (e instanceof RTS_LABQNT)
+		if (e instanceof RTS_LABEL)
 			throw (e);
 		try {
 			String message = getErrorMessage(e);
@@ -102,7 +102,7 @@ public abstract class RTS_CatchingErrors extends RTS_SIMULA_BLOCK {
 					return (new RTS_TXT(message));
 				}
 			})._ENT();
-		} catch (RTS_LABQNT q) {
+		} catch (RTS_LABEL q) {
 			throw (q);
 		} catch (RuntimeException x) {
 			System.out.println("RuntimeException within onError: " + getErrorMessage(e));

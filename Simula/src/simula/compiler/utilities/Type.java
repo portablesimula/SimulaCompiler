@@ -178,7 +178,7 @@ public class Type implements Externalizable {
 		Global.enterScope(scope);
 		String refIdent=getRefIdent();
 		if(refIdent!=null) {
-			if(!refIdent.equals("RTS_LABQNT") && !refIdent.equals("_UNKNOWN")) {
+			if(!refIdent.equals("RTS_LABEL") && !refIdent.equals("_UNKNOWN")) {
 				Declaration decl=scope.findMeaning(refIdent).declaredAs;
 			    if(decl instanceof ClassDeclaration cdecl) qual=cdecl;
 			    else Util.error("Illegal Type: "+this.toString()+" - "+refIdent+" is not a Class");
@@ -378,7 +378,7 @@ public class Type implements Externalizable {
 		if(this.equals(Character)) return("char");
 		if(this.equals(Text)) return("RTS_TXT");
 		if(this.equals(Procedure)) return("RTS_PRCQNT");
-		if(this.equals(Label)) return("RTS_LABQNT");
+		if(this.equals(Label)) return("RTS_LABEL");
 		return(this.toString());
 	}
 	 
@@ -414,7 +414,7 @@ public class Type implements Externalizable {
 		if(this.equals(Character)) return("RTS_CHARACTER_ARRAY");
 		if(this.equals(Text)) return("RTS_TEXT_ARRAY");
 //		if(this.equals(Procedure)) return("RTS_PRCQNT");
-//		if(this.equals(Label)) return("RTS_LABQNT");
+//		if(this.equals(Label)) return("RTS_LABEL");
 		Util.IERR("");
 		return(this.toString());
 	}

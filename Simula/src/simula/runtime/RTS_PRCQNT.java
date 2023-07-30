@@ -31,7 +31,7 @@ public final class RTS_PRCQNT {
 
 	// Constructor
 	/**
-	 * Creeate a new _PRCQNT.
+	 * Creeate a new RTS_PRCQNT.
 	 * @param SL staticLink
 	 * @param procedure procedure class
 	 */
@@ -56,15 +56,15 @@ public final class RTS_PRCQNT {
 			if (targetException instanceof RuntimeException) {
 				throw (RuntimeException) targetException; // RE-THROW TargetException
 			}
-			throw new RTS_SimulaRuntimeError("_PRCQNT.CPF: FATAL error (1) - Impossible situation - " + e, e);
+			throw new RTS_SimulaRuntimeError("RTS_PRCQNT.CPF: FATAL error (1) - Impossible situation - " + e, e);
 		} catch (Throwable e) {
-			throw new RTS_SimulaRuntimeError("_PRCQNT.CPF: FATAL error (2) - Impossible situation - " + e, e);
+			throw new RTS_SimulaRuntimeError("RTS_PRCQNT.CPF: FATAL error (2) - Impossible situation - " + e, e);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return ("Simula _PRCQNT(" + staticLink + ',' + procedure + ')');
+		return ("Simula RTS_PRCQNT(" + staticLink + ',' + procedure + ')');
 	}
 
 }

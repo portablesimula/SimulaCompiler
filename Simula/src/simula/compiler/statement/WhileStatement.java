@@ -58,7 +58,7 @@ public final class WhileStatement extends Statement {
 		GeneratedJavaClass.code("while(" + condition.toJavaCode() + ") {");
 		doStatement.doJavaCoding();
 		if(isWhileTrueDo())
-			GeneratedJavaClass.code("if(CTX_==null) break; // Ad'Hoc to prevent JAVAC error: 'dead code' and terminate");
+			GeneratedJavaClass.code("if(_CTX==null) break; // Ad'Hoc to prevent JAVAC error: 'dead code' and terminate");
 		GeneratedJavaClass.code("}");
 	}
 	

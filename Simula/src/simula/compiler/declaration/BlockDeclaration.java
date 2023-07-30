@@ -173,11 +173,11 @@ public abstract class BlockDeclaration extends DeclarationScope {
 		if (hasLabel()) {
 			GeneratedJavaClass.code("break _LOOP;");
 			GeneratedJavaClass.code("}");
-			GeneratedJavaClass.code("catch(RTS_LABQNT q) {");
+			GeneratedJavaClass.code("catch(RTS_LABEL q) {");
 			GeneratedJavaClass.code("_CUR=_THIS;");
 			GeneratedJavaClass.code("if(q._SL!=_CUR) {");
 			GeneratedJavaClass.debug("if(RTS_COMMON.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":NON-LOCAL\",q);");
-			GeneratedJavaClass.code("_CUR.STATE_=OperationalState.terminated;");
+			GeneratedJavaClass.code("_CUR._STATE=OperationalState.terminated;");
 			GeneratedJavaClass.debug("if(RTS_COMMON.Option.GOTO_TRACING) TRACE_GOTO(\"" + identifier + ":RE-THROW\",q);");
 			GeneratedJavaClass.code("throw(q);");
 			GeneratedJavaClass.code("}");

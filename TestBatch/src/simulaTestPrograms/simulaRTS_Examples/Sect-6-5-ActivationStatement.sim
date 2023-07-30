@@ -1,0 +1,19 @@
+Simulation
+begin
+	ref(Process) x,y;
+	
+	activate x;                    ! ActivateDirect(false,x);
+	activate x delay 1.34;         ! ActivateDelay(false,x,1.34f,false);
+	activate x delay 1.34 prior;   ! ActivateDelay(false,x,1.34f,true);
+	activate x at 13.7;            ! ActivateAt(false,x,13.7f,false);
+	activate x at 13.7 prior;      ! ActivateAt(false,x,13.7f,true);
+	activate x before y;           ! ActivateBefore(false,x,y);
+	activate x after y;            ! ActivateAfter(false,x,y);
+	reactivate x;                  ! ActivateDirect(true,x);
+	reactivate x delay 1.34;       ! ActivateDelay(true,x,1.34f,false);
+	reactivate x delay 1.34 prior; ! ActivateDelay(true,x,1.34f,true);
+	reactivate x at 13.7;          ! ActivateAt(true,x,13.7f,false);
+	reactivate x at 13.7 prior;    ! ActivateAt(true,x,13.7f,true);
+	reactivate x before y;         ! ActivateBefore(true,x,y);
+	reactivate x after y;          ! ActivateAfter(true,x,y);	
+end;

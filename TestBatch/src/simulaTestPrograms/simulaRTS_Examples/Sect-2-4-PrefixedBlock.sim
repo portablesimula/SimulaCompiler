@@ -1,0 +1,38 @@
+begin
+		
+%	Example: Class A
+	Class A(p1,p2); integer p1; real p2;
+	virtual: integer procedure V is integer procedure V(p1,p2); integer p1; real p2;;
+	begin
+		integer lim=40;
+		text array TA(1:lim);
+		integer i; real r;
+		i:=p1;
+		inner;
+		r:=p2;
+	end;
+		
+%	Example: SubClass B
+	A Class B(p3); long real p3; begin
+		integer Procedure V(p1,p2); integer p1; real p2; begin
+			V:=p1+p2;
+		end;
+		integer Procedure P(p1,p2); integer p1; real p2; begin
+			text Array TA(1:40); integer i;
+			P:=p1;
+			i:=6;
+		end;
+		array RA(1:lim);
+		RA(14):=r;
+		inner;
+		r:=RA(14);
+	end;
+	
+%	Example: Prefixed Block
+	B(1,2,3) begin
+		text array TA(1:lim);
+		integer i;
+		i:=6;
+	end;
+	
+end;

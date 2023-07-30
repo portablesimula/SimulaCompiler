@@ -82,6 +82,7 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 		boolean duringSTM_Coding=Global.duringSTM_Coding;
 		Global.duringSTM_Coding=true;
 		GeneratedJavaClass.debug("// Switch Body");
+		GeneratedJavaClass.code("@Override");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + " _STM() {");
 		GeneratedJavaClass.code("switch(p__SW-1) {");
 		int n = 0;

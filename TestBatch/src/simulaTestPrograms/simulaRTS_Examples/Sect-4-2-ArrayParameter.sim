@@ -1,0 +1,30 @@
+
+begin
+
+	integer procedure P(A); value A; array A;
+	begin
+		P:=44;
+	end;
+
+	integer procedure Q(A); name A; array A;
+	begin
+		Q:=A(33);
+	end;
+
+	integer procedure R(A); array A;
+	begin
+		R:=A(33);
+	end;
+	
+	boolean cond;
+	integer i;
+	array A(0:99);
+	array B(0:99);
+	
+	i:=P(A);
+	
+	i:=Q(if cond then A else B);
+	
+	i:=R(A);
+	
+end;

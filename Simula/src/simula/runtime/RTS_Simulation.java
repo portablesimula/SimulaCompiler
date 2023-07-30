@@ -316,7 +316,7 @@ public class RTS_Simulation extends RTS_Simset {
 	public void ActivateDirect(final boolean REAC, final RTS_Process X) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
-		else if (X.STATE_ == OperationalState.terminated)
+		else if (X._STATE == OperationalState.terminated)
 			TRACE_ACTIVATE(REAC, "terminated process");
 		else if (X.EVENT != null && !REAC)
 			TRACE_ACTIVATE(REAC, "scheduled process");
@@ -368,7 +368,7 @@ public class RTS_Simulation extends RTS_Simset {
 	public void ActivateAt(final boolean REAC, final RTS_Process X, double T, final boolean PRIO) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, "none");
-		else if (X.STATE_ == OperationalState.terminated)
+		else if (X._STATE == OperationalState.terminated)
 			TRACE_ACTIVATE(REAC, "terminated process");
 		else if (X.EVENT != null && !REAC)
 			TRACE_ACTIVATE(REAC, "scheduled process");
@@ -417,7 +417,7 @@ public class RTS_Simulation extends RTS_Simset {
 	private void ACTIVATE3(final boolean REAC, final RTS_Process X, final boolean BEFORE, final RTS_Process Y) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, " none");
-		else if (X.STATE_ == OperationalState.terminated)
+		else if (X._STATE == OperationalState.terminated)
 			TRACE_ACTIVATE(REAC, " terminated process");
 		else if (X.EVENT != null && !REAC)
 			TRACE_ACTIVATE(REAC, " scheduled process");

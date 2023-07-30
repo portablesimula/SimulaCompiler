@@ -1,0 +1,13 @@
+
+begin
+	integer lowkey,hikey,key;
+	procedure statement;;
+	
+	switch(lowkey:hikey) key
+	begin
+		when 1 do Statement;
+		when 2 do Statement;
+		when NONE do Statement;
+	end switch;
+	
+end;

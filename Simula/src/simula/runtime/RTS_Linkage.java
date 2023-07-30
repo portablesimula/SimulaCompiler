@@ -43,7 +43,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class RTS_Linkage extends RTS_SIMULA_BLOCK {
+public class RTS_Linkage extends RTS_CLASS {
 	
 	/**
 	 * The variable SUC.

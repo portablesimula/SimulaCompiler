@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
+import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.runtime.RTS_COMMON;
@@ -29,7 +30,7 @@ public final class RunSingleTestBatch {
     	//System.setProperty("file.encoding","UTF-8");
 		Vector<String> names=new Vector<String>();
 //		names.add("adHoc00.sim"); // For ad'hoc testing
-//		names.add("adHoc00.sim"); // For ad'hoc testing
+//		names.add("adHoc01.sim"); // For ad'hoc testing
 		// *** SIMULA TEST BATCH TIL EKSEKVERING
 		// String name=Global.packetName+"/sim/InspectionSamples.sim";
 //		names.add("SimulaTest.sim"); // Simula TestBatch Framework
@@ -93,7 +94,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
 //
 //		names.add("simtst51.sim"); // OK:  Test 'inner'.
-//		names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
+		names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
 //		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 //		names.add("simtst54.sim"); // OK: A VERY Simple Simulation
 //		names.add("simtst55.sim"); // OK:  Test virtual procedures.
@@ -189,7 +190,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst133.sim"); // OK: Test infile reading with inimage and inrecord.
 //		names.add("simtst134.sim"); // OK: Outfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst135.sim"); // OK: OutBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
-		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
+//		names.add("simtst136.sim"); // OK: Directfile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst137.sim"); // OK: DirectBytefile with CREATE, APPEND, SYNCHRONOUS and PURGE.
 //		names.add("simtst138.sim"); // OK: ref() and Real type Arrays.
 //		
@@ -247,11 +248,11 @@ public final class RunSingleTestBatch {
 		
 		// Set RunTime Options and tracing.
 //		RTOption.VERBOSE = true;
-//		RTOption.USE_CONSOLE=false;
-//		RTOption.BLOCK_TRACING = false;
-//		RTOption.GOTO_TRACING = false;
-//		RTOption.QPS_TRACING = false;
-//		RTOption.SML_TRACING = false;
+//		RTOption.USE_CONSOLE=true;
+//		RTOption.BLOCK_TRACING = true;
+//		RTOption.GOTO_TRACING = true;
+//		RTOption.QPS_TRACING = true;
+//		RTOption.SML_TRACING = true;
 //		Option.RUNTIME_USER_DIR = "C:/GitHub/SimulaCompiler/TestBatch/";
 		
 		

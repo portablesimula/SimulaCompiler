@@ -1,0 +1,43 @@
+
+begin
+  ref(A) x;
+  integer i;
+  
+  class A; virtual: integer procedure V;
+  begin
+	  integer procedure P;
+	  begin
+	  	P:=44;
+	  end;
+  end;
+  
+  A class B;
+  begin
+  	integer procedure V; V:=99;
+  	
+  	i:=Q(V);
+  end;
+  
+  integer procedure P;
+  begin
+  	P:=44;
+  end;
+  
+  integer procedure Q(P); name P; integer procedure P;
+  begin
+  	Q:=44;
+  end;
+  
+%  i:=x.P(4,3.14); 
+
+  i:=Q(P);
+  
+  i:=Q(x.P);
+  
+  inspect x do i:=Q(P);
+	
+  i:=Q(x.V);
+	
+  inspect x do i:=Q(V);
+	
+end;

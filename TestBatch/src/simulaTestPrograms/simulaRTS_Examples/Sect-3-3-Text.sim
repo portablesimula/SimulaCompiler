@@ -1,0 +1,11 @@
+
+begin
+
+class TEXTOBJ(SIZE,CONST); integer SIZE; Boolean CONST;
+begin character array MAIN(1:SIZE); end;
+
+class TXT;
+begin ref(TEXTOBJ) OBJ; integer START,LENGTH,POS;
+
+
+end;

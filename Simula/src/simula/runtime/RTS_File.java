@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  * @author Øystein Myhre Andersen
  *
  */
-public class RTS_File extends RTS_SIMULA_BLOCK {
+public class RTS_File extends RTS_CLASS {
 	
 	/**
 	 * The file name.

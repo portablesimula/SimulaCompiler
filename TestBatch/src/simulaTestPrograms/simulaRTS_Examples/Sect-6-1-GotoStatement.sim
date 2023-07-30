@@ -1,0 +1,9 @@
+
+begin
+  integer i;
+  
+L:
+   i:=44;
+   
+   goto L;	
+end;

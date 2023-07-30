@@ -177,7 +177,7 @@ public abstract class DeclarationScope extends Declaration {
 	 */
 	public String edCTX() {
 		if (rtBlockLevel == 0)
-			return ("CTX_");
+			return ("_CTX");
 		int curLevel = Global.getCurrentScope().rtBlockLevel;
 		int ctxDiff = curLevel - rtBlockLevel;
 		return (edCTX(ctxDiff));

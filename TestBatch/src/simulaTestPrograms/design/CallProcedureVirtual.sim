@@ -17,6 +17,13 @@ begin
     p1:=Q(4,3.14); 
   end;
   
-  i:=x.P(4,3.14); 
+  integer procedure Q(P); name P; integer procedure P;
+  begin
+  	Q:=44;
+  end;
+  
+%  i:=x.P(4,3.14); 
+
+  i:=Q(P);
   
 end;  

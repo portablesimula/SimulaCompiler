@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
  * @author Øystein Myhre Andersen
  *
  */
-public class RTS_DEC_Lib extends RTS_SIMULA_BLOCK {
+public class RTS_DEC_Lib extends RTS_CLASS {
 
 	private static RTS_DEC_Lib DECLIB;
 

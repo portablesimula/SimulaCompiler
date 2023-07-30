@@ -21,35 +21,35 @@ public abstract class RTS_RTObject {
 	/**
 	 * The default input line length. I.e. BASICIO'INPUT_LINELENGTH
 	 */
-	static final int INPUT_LINELENGTH_ = 80;
+	static final int _INPUT_LINELENGTH = 80;
 	/**
 	 * The default output line length. I.e. BASICIO'OUTPUT_LINELENGTH
 	 */
-	static final int OUTPUT_LINELENGTH_ = 132;
+	static final int _OUTPUT_LINELENGTH = 132;
 	/**
 	 * The variable SYSIN. 
 	 */
-	static RTS_Infile SYSIN_;
+	static RTS_Infile _SYSIN;
 	
 	/**
 	 * The intenal pointer to sysout.
 	 */
-	public static RTS_Printfile SYSOUT_;
+	public static RTS_Printfile _SYSOUT;
 
 	/**
 	 * Implementation of Simula's Procedure sysin.
-	 * @return a pointer to SYSIN_
+	 * @return a pointer to _SYSIN
 	 */
 	public static RTS_Infile sysin() {
-		return (SYSIN_);
+		return (_SYSIN);
 	}
 
 	/**
 	 * Implementation of Simula's Procedure sysout.
-	 * @return a pointer to SYSOUT_
+	 * @return a pointer to _SYSOUT
 	 */
 	public static RTS_Printfile sysout() {
-		return (SYSOUT_);
+		return (_SYSOUT);
 	}
 
 	private static long startTimeMs;
@@ -84,7 +84,7 @@ public abstract class RTS_RTObject {
 	 * This object's Operational State.
 	 * @see OperationalState
 	 */
-	public OperationalState STATE_;
+	public OperationalState _STATE;
 	
 	/**
 	 * This is a pointer to the Coroutine in which this block instance is running.
@@ -92,17 +92,17 @@ public abstract class RTS_RTObject {
 	 * If this block instance is detached it is used to save the complete
 	 * reactivation point (call stack and the continuation point).
 	 */
-	public RTS_Coroutine CORUT_;
+	public RTS_Coroutine _CORUT;
 
 	/**
 	 * Outmost Block Instance
 	 */
-	public static final RTS_BASICIO CTX_ = new RTS_BASICIO(null);
+	public static final RTS_BASICIO _CTX = new RTS_BASICIO(null);
 	
 	/**
 	 * Current Block Instance
 	 */
-	public static RTS_RTObject _CUR = CTX_;
+	public static RTS_RTObject _CUR = _CTX;
 	
 	/**
 	 * Jump Table Index used by _STM()
@@ -146,7 +146,7 @@ public abstract class RTS_RTObject {
 	 * block instance to which the instance is attached (also called dynamic link),
 	 * i.e. it points to the block instance which called this one.
 	 */
-	RTS_RTObject DL_; // Dynamic Link
+	RTS_RTObject _DL; // Dynamic Link
 
 	// ************************************************************
 	// *** Constructor
@@ -160,7 +160,7 @@ public abstract class RTS_RTObject {
 	public RTS_RTObject(final RTS_RTObject SL) {
 		if (SL != null) {
 			this._SL = SL;
-			this.CORUT_ = RTS_Coroutine.getCurrentCoroutine();
+			this._CORUT = RTS_Coroutine.getCurrentCoroutine();
 		}
 	}
 
@@ -1571,7 +1571,7 @@ public abstract class RTS_RTObject {
 	 *
 	 */
 	@SuppressWarnings("serial")
-	public final class RTS_LABQNT extends RuntimeException { // RuntimeError {
+	public final class RTS_LABEL extends RuntimeException { // RuntimeError {
 //		static final long serialVersionUID = 42L;
 		/**
 		 * Static link, i.e. the block in which the label is defined.
@@ -1593,7 +1593,7 @@ public abstract class RTS_RTObject {
 		 * @param index label index
 		 * @param identifier label identifier
 		 */
-		public RTS_LABQNT(final RTS_RTObject _SL, final int index, final String identifier) {
+		public RTS_LABEL(final RTS_RTObject _SL, final int index, final String identifier) {
 			this._SL = _SL;
 			this.index = index;
 			this.identifier = identifier;
@@ -1601,7 +1601,7 @@ public abstract class RTS_RTObject {
 
 		@Override
 		public String toString() {
-			return ("RTS_LABQNT(" + _SL + ", LABEL#" + index + ", identifier=" + identifier + ')');
+			return ("RTS_LABEL(" + _SL + ", LABEL#" + index + ", identifier=" + identifier + ')');
 		}
 	}
 
@@ -1610,9 +1610,9 @@ public abstract class RTS_RTObject {
 	// ************************************************************
 	/**
 	 * Utility method to avoid Java-error: "Unreachable code" after GOTO
-	 * @param q the RTS_LABQNT
+	 * @param q the RTS_LABEL
 	 */
-	public void _GOTO(final RTS_LABQNT q) {
+	public void _GOTO(final RTS_LABEL q) {
 		if (RTS_COMMON.Option.GOTO_TRACING)
 			RTS_COMMON.TRACE("_RTObject.GOTO: " + q);
 		throw (q);
@@ -1626,7 +1626,7 @@ public abstract class RTS_RTObject {
 	 * @param msg a descriptive message
 	 * @param label the label quant
 	 */
-	public static void TRACE_GOTO(final String msg, final RTS_LABQNT label) {
+	public static void TRACE_GOTO(final String msg, final RTS_LABEL label) {
 		RTS_COMMON.TRACE(msg + " GOTO " + label);
 	}
 
@@ -1659,21 +1659,21 @@ public abstract class RTS_RTObject {
 				RTS_COMMON.println(threadID + " throws exception: " + e);
 				e.printStackTrace();
 			}
-			if (e instanceof RTS_LABQNT) {
+			if (e instanceof RTS_LABEL) {
 				if (RTS_COMMON.Option.GOTO_TRACING) {
 					System.err.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
 					RTS_COMMON.println("POSSIBLE GOTO OUT OF COMPONENT " + obj.edObjectAttributes());
 				}
-				RTS_RTObject DL = obj.DL_;
-				if (DL != null && DL != CTX_) {
+				RTS_RTObject DL = obj._DL;
+				if (DL != null && DL != _CTX) {
 					if (RTS_COMMON.Option.GOTO_TRACING) {
 						System.err.println("DL=" + DL.edObjectAttributes());
 						RTS_COMMON.println("DL=" + DL.edObjectAttributes());
 					}
 					RTS_Coroutine._PENDING_EXCEPTION = (RuntimeException) e;
-					DL.CORUT_.run();
+					DL._CORUT.run();
 				} else {
-					String msg = "Illegal GOTO " + ((RTS_LABQNT) e).identifier;
+					String msg = "Illegal GOTO " + ((RTS_LABEL) e).identifier;
 					if (RTS_ENVIRONMENT.EXCEPTION_HANDLER != null)
 						treatRuntimeError(msg);
 					RTS_COMMON.println(threadID + "SIMULA RUNTIME ERROR: " + msg);
@@ -1687,9 +1687,9 @@ public abstract class RTS_RTObject {
 				if (RTS_ENVIRONMENT.EXCEPTION_HANDLER != null)
 					treatRuntimeError(msg);
 				RTS_COMMON.printError(threadID + "SIMULA RUNTIME ERROR: " + msg);
-				RTS_COMMON.printSimulaStackTrace(e, 0);
 				if (RTS_COMMON.Option.VERBOSE)
 					e.printStackTrace();
+				RTS_COMMON.printSimulaStackTrace(e, 0);
 				endProgram(-1);
 			} else if (e instanceof Error) {
 				String msg = e.getClass().getSimpleName();
@@ -1760,15 +1760,15 @@ public abstract class RTS_RTObject {
 		RTS_COMMON.progamIdent = ident;
 		if (RTS_COMMON.Option.BLOCK_TRACING)
 			RTS_COMMON.TRACE("Begin Execution of Simula Program: " + ident);
-		if (SYSIN_ == null) {
+		if (_SYSIN == null) {
 			if (RTS_COMMON.Option.USE_CONSOLE) {
 				RTS_COMMON.console = new RTS_ConsolePanel();
 				RTS_COMMON.console.popup("Runtime Console");
 			}
-			SYSIN_ = new RTS_Infile(this, new RTS_TXT("#sysin"));
-			SYSOUT_ = new RTS_Printfile(this, new RTS_TXT("#sysout"));
-			SYSIN_.open(blanks(INPUT_LINELENGTH_));
-			SYSOUT_.open(blanks(OUTPUT_LINELENGTH_));
+			_SYSIN = new RTS_Infile(this, new RTS_TXT("#sysin"));
+			_SYSOUT = new RTS_Printfile(this, new RTS_TXT("#sysout"));
+			_SYSIN.open(blanks(_INPUT_LINELENGTH));
+			_SYSOUT.open(blanks(_OUTPUT_LINELENGTH));
 		}
 		_CUR = this;
 	}
@@ -1784,10 +1784,10 @@ public abstract class RTS_RTObject {
 	 * </ul>
 	 */
 	public void BBLK() {
-		DL_ = _CUR;
+		_DL = _CUR;
 		_CUR = this;
-		CORUT_ = DL_.CORUT_;
-		STATE_ = OperationalState.attached;
+		_CORUT = _DL._CORUT;
+		_STATE = OperationalState.attached;
 		if (RTS_COMMON.Option.BLOCK_TRACING)
 			RTS_COMMON.TRACE("BEGIN " + edObjectAttributes());
 		if (_SL == null) {
@@ -1825,12 +1825,12 @@ public abstract class RTS_RTObject {
 	 * called. The the entire program is terminated.
 	 */
 	public void EBLK() {
-		switch (STATE_) {
+		switch (_STATE) {
 		case attached -> {
 			if (RTS_COMMON.Option.BLOCK_TRACING)
 				RTS_COMMON.TRACE("END ATTACHED BLOCK " + edObjectAttributes());
-			STATE_ = OperationalState.terminated;
-			_CUR = DL_; // Make the dynamic enclosure the new current instance.
+			_STATE = OperationalState.terminated;
+			_CUR = _DL; // Make the dynamic enclosure the new current instance.
 		}
 		case resumed -> {
 			// Treat the case of a resumed and operating object.
@@ -1838,34 +1838,34 @@ public abstract class RTS_RTObject {
 			// object enters the terminated state, and the object component
 			// disappears from its system. The main component of that system
 			// takes its place as the operating component of the system.
-			// Invariant: _CUR.STATE_ = resumed and _CUR.DL = main.SL
-			STATE_ = OperationalState.terminated;
+			// Invariant: _CUR._STATE = resumed and _CUR.DL = main.SL
+			_STATE = OperationalState.terminated;
 			// Find main component (and system) head. It must be the static
 			// enclosure since the object has been RESUMEd.
 			RTS_RTObject main = _SL;
 			// The main component becomes the operating component.
-			RTS_RTObject dl = DL_;
-			DL_ = null;
-			_CUR = main.DL_;
-			main.DL_ = dl;
+			RTS_RTObject dl = _DL;
+			_DL = null;
+			_CUR = main._DL;
+			main._DL = dl;
 			if (RTS_COMMON.Option.BLOCK_TRACING)
 				RTS_COMMON.TRACE("END COMPONENT " + edObjectAttributes());
 		}
 		case terminatingProcess -> {
 			if (RTS_COMMON.Option.BLOCK_TRACING)
 				RTS_COMMON.TRACE("TERMINATING PROCESS " + edObjectAttributes());
-			STATE_ = OperationalState.terminated;
-			CORUT_ = null; // Leave it to the GarbageCollector
+			_STATE = OperationalState.terminated;
+			_CORUT = null; // Leave it to the GarbageCollector
 			return; // Let this Continuation R.I.P.
 		}
 		default -> throw new RTS_SimulaRuntimeError("_RTObject.EBLK: Internal Error " + edObjectAttributes());
 		}
-		if (_CUR == null || _CUR == CTX_) {
+		if (_CUR == null || _CUR == _CTX) {
 			if (RTS_COMMON.Option.BLOCK_TRACING)
 				RTS_COMMON.TRACE("PROGRAM PASSES THROUGH FINAL END " + edObjectAttributes());
 			endProgram(0);
 		} else {
-			if (this.CORUT_ != null && this.isDetachUsed()) {
+			if (this._CORUT != null && this.isDetachUsed()) {
 				RTS_Coroutine.detach();
 			}
 		}
@@ -1937,32 +1937,32 @@ public abstract class RTS_RTObject {
 		// Note that a detached or terminated object cannot be on the operating chain.
 		RTS_RTObject dl = _CUR;
 		while (dl != this) {
-			dl = dl.DL_;
+			dl = dl._DL;
 			if (dl == null)
 				throw new RTS_SimulaRuntimeError("x.Detach: x is not on the operating chain.");
 		}
-		switch (this.STATE_) {
+		switch (this._STATE) {
 		case resumed -> {
 			// Find main component for component to be detached. The main
 			// component head must be the static enclosure of the object.
 			RTS_RTObject main = this._SL;
-			// Rotate the contents of '_CUR', 'this.DL_' and 'main.DL_'.
-			// <main.DL_,this.DL_,_CUR> := <this.DL_,_CUR,main.DL_>
-			dl = main.DL_;
-			main.DL_ = this.DL_;
-			this.DL_ = _CUR;
+			// Rotate the contents of '_CUR', 'this._DL' and 'main._DL'.
+			// <main._DL,this._DL,_CUR> := <this._DL,_CUR,main._DL>
+			dl = main._DL;
+			main._DL = this._DL;
+			this._DL = _CUR;
 			_CUR = dl;
 		}
 		case attached -> {
-			// Swap the contents of object's 'this.DL_' and '_CUR'.
-			// <this.DL_,_CUR> := <_CUR,this.DL_>
-			dl = this.DL_;
-			this.DL_ = _CUR;
+			// Swap the contents of object's 'this._DL' and '_CUR'.
+			// <this._DL,_CUR> := <_CUR,this._DL>
+			dl = this._DL;
+			this._DL = _CUR;
 			_CUR = dl;
 		}
 		default -> throw new RTS_SimulaRuntimeError("Illegal Detach");
 		}
-		this.STATE_ = OperationalState.detached;
+		this._STATE = OperationalState.detached;
 
 		if (RTS_COMMON.Option.QPS_TRACING)
 			RTS_COMMON.TRACE("DETACH " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
@@ -2023,19 +2023,19 @@ public abstract class RTS_RTObject {
 		RTS_RTObject dl; // Temporary reference to dynamic enclosure.
 		if (ins == null)
 			throw new RTS_SimulaRuntimeError("Call(x): x is none.");
-		if (ins.STATE_ != OperationalState.detached)
+		if (ins._STATE != OperationalState.detached)
 			throw new RTS_SimulaRuntimeError("Call(x): x is not in detached state.");
 		// The object to be attached cannot be on the operating chain,
 		// because then its state would have been resumed and not detached.
 
 		// Swap the contents of '_CUR' and object's 'dl'.
-		// <ins.DL_,_CUR>:=<_CUR,ins.DL_>;
-		dl = ins.DL_;
-		ins.DL_ = _CUR;
+		// <ins._DL,_CUR>:=<_CUR,ins._DL>;
+		dl = ins._DL;
+		ins._DL = _CUR;
 		_CUR = dl;
 		// From now on the object is in attached state.
 		// It is no longer a component head.
-		ins.STATE_ = OperationalState.attached;
+		ins._STATE = OperationalState.attached;
 		// if (_RT.Option.QPS_TRACING) _RT.TRACE("CALL " + this.edObjectIdent() + " ==>
 		// " + _CUR.edObjectIdent());
 		swapCoroutines();
@@ -2125,27 +2125,27 @@ public abstract class RTS_RTObject {
 		if (ins == null)
 			throw new RTS_SimulaRuntimeError("Resume(x): x is none.");
 
-		if (ins.STATE_ != OperationalState.resumed) { // A no-operation?
+		if (ins._STATE != OperationalState.resumed) { // A no-operation?
 			// The object to be resumed must be local to a system head.
 			main = ins._SL;
 			if (!main.isQPSystemBlock())
 				throw new RTS_SimulaRuntimeError("Resume(x): x is not local to sub-block or prefixed block.");
-			if (ins.STATE_ != OperationalState.detached)
-				throw new RTS_SimulaRuntimeError("Resume(x): x is not in detached state but " + ins.STATE_);
+			if (ins._STATE != OperationalState.detached)
+				throw new RTS_SimulaRuntimeError("Resume(x): x is not in detached state but " + ins._STATE);
 			// Find the operating component of the quasi-parallel system.
 			comp = _CUR;
 			mainSL = main._SL;
-			while (comp.DL_ != mainSL)
-				comp = comp.DL_;
-			if (comp.STATE_ == OperationalState.resumed)
-				comp.STATE_ = OperationalState.detached;
+			while (comp._DL != mainSL)
+				comp = comp._DL;
+			if (comp._STATE == OperationalState.resumed)
+				comp._STATE = OperationalState.detached;
 			// Rotate the contents of 'ins.dl', 'comp.dl' and '_CUR'.
-			// Invariant: comp.DL_ = mainSL
-			// <ins.DL_,comp.DL_,_CUR>=<comp.DL_,_CUR,ins.DL_>
-			comp.DL_ = _CUR;
-			_CUR = ins.DL_;
-			ins.DL_ = mainSL;
-			ins.STATE_ = OperationalState.resumed;
+			// Invariant: comp._DL = mainSL
+			// <ins._DL,comp._DL,_CUR>=<comp._DL,_CUR,ins._DL>
+			comp._DL = _CUR;
+			_CUR = ins._DL;
+			ins._DL = mainSL;
+			ins._STATE = OperationalState.resumed;
 			if (RTS_COMMON.Option.QPS_TRACING)
 				RTS_COMMON.TRACE("RESUME " + this.edObjectIdent() + " ==> " + _CUR.edObjectIdent());
 			if (doSwap)
@@ -2167,9 +2167,9 @@ public abstract class RTS_RTObject {
 	// *** endProgram
 	// *********************************************************************
 	private static void endProgram(final int exitValue) {
-		// SYSIN_.close();
-		// SYSOUT_.close();
-		SYSOUT_.outimage();
+		// _SYSIN.close();
+		// _SYSOUT.close();
+		_SYSOUT.outimage();
 		long timeUsed = System.currentTimeMillis() - startTimeMs;
 		if (RTS_COMMON.Option.VERBOSE) {
 			RTS_COMMON.println("\nEnd program: " + RTS_COMMON.progamIdent);
@@ -2195,11 +2195,11 @@ public abstract class RTS_RTObject {
 		RTS_Coroutine cont = RTS_Coroutine.getCurrentCoroutine();
 		// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: CURRENT= "+cont);
 		if (cont == null) {
-			cont = _CUR.CORUT_;
+			cont = _CUR._CORUT;
 			RTS_RTObject next = _CUR;
-			while (next.CORUT_ != null) {
+			while (next._CORUT != null) {
 				// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN NEXT "+next);
-				next.CORUT_.run();
+				next._CORUT.run();
 				// Return here when Coroutine is Detached or Done
 				next = _CUR;
 				// if(_RT.Option.QPS_TRACING) _RT.TRACE("SWAP: RUN RETURNED "+next);
@@ -2257,9 +2257,9 @@ public abstract class RTS_RTObject {
 		StringBuilder s = new StringBuilder();
 		s.append(edObjectIdent());
 		s.append(" SL=").append((_SL == null) ? "null" : _SL.edObjectIdent());
-		s.append(" DL=").append((DL_ == null) ? "null" : DL_.edObjectIdent());
-		s.append(" STATE=").append(STATE_);
-		s.append(" CORUT_=").append(CORUT_);
+		s.append(" DL=").append((_DL == null) ? "null" : _DL.edObjectIdent());
+		s.append(" STATE=").append(_STATE);
+		s.append(" CORUT=").append(_CORUT);
 		s.append(" CUR=").append(_CUR);
 		return (s.toString());
 	}

@@ -225,7 +225,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 			GeneratedJavaClass.code("public static void main(String[] args) {");
 			GeneratedJavaClass.debug("//System.setProperty(\"file.encoding\",\"UTF-8\");");
 			GeneratedJavaClass.code("RTS_COMMON.setRuntimeOptions(args);");
-			GeneratedJavaClass.code("new " + getJavaIdentifier() + "(CTX_)._STM();");
+			GeneratedJavaClass.code("new " + getJavaIdentifier() + "(_CTX)._STM();");
 			GeneratedJavaClass.code("}", "End of main");
 		}
 		javaModule.codeProgramInfo();
@@ -253,6 +253,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	private void doCodeStatements() {
 		GeneratedJavaClass.debug("// " + declarationKind + " Statements");
+		GeneratedJavaClass.code("@Override");
 		GeneratedJavaClass.code("public RTS_RTObject _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");

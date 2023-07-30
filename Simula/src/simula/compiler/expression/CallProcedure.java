@@ -399,8 +399,8 @@ public final class CallProcedure {
 		    case Label -> {
 		    		String labQuant=actualParameter.toJavaCode();
 		    		if(mode==Parameter.Mode.name) {
-		    			s.append("new RTS_NAME<RTS_LABQNT>()");
-		    			s.append("{ public RTS_LABQNT get() { return("+labQuant+"); }");
+		    			s.append("new RTS_NAME<RTS_LABEL>()");
+		    			s.append("{ public RTS_LABEL get() { return("+labQuant+"); }");
 		    			s.append(" }");
 		    		}
 		    		else s.append(labQuant);
@@ -423,8 +423,8 @@ public final class CallProcedure {
 		} else if(formalType==Type.Label) {
 		    	String labQuant=actualParameter.toJavaCode();
 		    	if(mode==Parameter.Mode.name) {
-			    	  s.append("new RTS_NAME<RTS_LABQNT>()");
-				      s.append("{ public RTS_LABQNT get() { return("+labQuant+"); }");
+			    	  s.append("new RTS_NAME<RTS_LABEL>()");
+				      s.append("{ public RTS_LABEL get() { return("+labQuant+"); }");
 				      s.append(" }");
 			    }
 			    else s.append(labQuant);

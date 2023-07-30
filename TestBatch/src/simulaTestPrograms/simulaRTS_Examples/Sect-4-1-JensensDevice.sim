@@ -1,0 +1,22 @@
+
+begin
+
+	long real procedure sum(k, lower, upper, ak);
+	value lower, upper; name k, ak;
+	integer k, lower, upper; long real ak;
+	begin long real s;
+		s := 0.0;
+		k := lower;
+		while k <= upper do
+		begin
+			s := s + ak;
+			k := k + 1;
+		end while;
+		sum := s
+	end;
+	
+	integer i;
+	long real array A(0:99);
+	long real result;
+	result:=Sum(i,10,60,A(i));
+end;

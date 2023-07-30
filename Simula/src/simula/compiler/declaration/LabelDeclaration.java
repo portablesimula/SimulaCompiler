@@ -32,7 +32,7 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
      */
 	public LabelDeclaration(final String identifier) {
 		super(Type.Label,identifier);
-	    this.externalIdent="_LABEL"+identifier;
+	    this.externalIdent="_LABEL_"+identifier;
 		this.declarationKind=Declaration.Kind.LabelDeclaration;
 	}
 
@@ -61,9 +61,9 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 		String ident=getJavaIdentifier();
 		VirtualSpecification virtSpec=VirtualSpecification.getVirtualSpecification(this);
 		if(virtSpec!=null)
-			 GeneratedJavaClass.code("public RTS_LABQNT "+virtSpec.getVirtualIdentifier()
-			                     +" { return(new RTS_LABQNT(this,"+index+",\""+identifier+"\")); }"," // Virtual Label #"+index+'='+identifier);
-		else GeneratedJavaClass.code("final RTS_LABQNT "+ident+"=new RTS_LABQNT(this,"+index+",\""+identifier+"\");","Local Label #"+index+'='+identifier);
+			 GeneratedJavaClass.code("public RTS_LABEL "+virtSpec.getVirtualIdentifier()
+			                     +" { return(new RTS_LABEL(this,"+index+",\""+identifier+"\")); }"," // Virtual Label #"+index+'='+identifier);
+		else GeneratedJavaClass.code("final RTS_LABEL "+ident+"=new RTS_LABEL(this,"+index+",\""+identifier+"\");","Local Label #"+index+'='+identifier);
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public final class RunCompilerTest {
 		// String name="/samples/HexDump.sim";
 		// String name="/samples/InfectionDisease.sim";
 		// String name="/samples/JensensDevice.sim";
-		 String name="/samples/LiftSimulation.sim";
+		// String name="/samples/LiftSimulation.sim";
 		// String name="/samples/PrimeUnder.sim";
 		// String name="/samples/Quine.sim";
 		// String name="/samples/Sudoku.sim";
@@ -89,6 +89,24 @@ public final class RunCompilerTest {
 		// String name="/singulares/Transplantation1.sim";
 		// String name="/singulares/Transplantation2.sim";
 		// String name="/singulares/Transplantation3.sim";
+
+		// *** SimulaRTS Document EXAMPLES
+		// String name="/simulaRTS_Examples/Sect-2-1-SubBlock.sim";
+		// String name="/simulaRTS_Examples/Sect-2-2-Class.sim";
+		// String name="/simulaRTS_Examples/Sect-2-3-SubClass.sim";
+		// String name="/simulaRTS_Examples/Sect-2-4-PrefixedBlock.sim";
+		// String name="/simulaRTS_Examples/Sect-2-5-Procedure.sim";
+		// String name="/simulaRTS_Examples/Sect-2-6-Switch.sim";
+		// String name="/simulaRTS_Examples/Sect-3-3-Text.sim";
+		// String name="/simulaRTS_Examples/Sect-4-1-JensensDevice.sim";
+		// String name="/simulaRTS_Examples/Sect-4-2-ArrayParameter.sim";
+		// String name="/simulaRTS_Examples/Sect-4-3-ProcedureAsParameter.sim";
+		// String name="/simulaRTS_Examples/Sect-5-SomeExpressions.sim";
+		// String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
+		// String name="/simulaRTS_Examples/Sect-6-2-ForStatement.sim";
+		// String name="/simulaRTS_Examples/Sect-6-3-ConnectionStatement.sim";
+		// String name="/simulaRTS_Examples/Sect-6-4-SwitchStatement.sim";
+		 String name="/simulaRTS_Examples/Sect-6-5-ActivationStatement.sim";
 
 		// *** SIMULA DESIGN EXAMPLES
 		// String name="/design/Test.sim";
@@ -255,18 +273,22 @@ public final class RunCompilerTest {
 //			
 //			// Coder Trace Options
 			Option.TRACE_CODING=true;
-			Option.GNERATE_LINE_CALLS=true;
+//			Option.GNERATE_LINE_CALLS=true;
 //			
 //			Option.TRACE_REPAIRING=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
 //			Option.DEBUGGING=true;
 
-			File simulaHome=new File("C:/GitHub/SimulaCompiler/Simula");
+//			File simulaHome=new File("C:/GitHub/SimulaCompiler/TestBatch");
+			File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
+			File userDir=new File("C:/GitHub/SimulaCompiler/TestBatch");
+			
+			
 			Global.packetName="simulaTestPrograms";
-//			Option.keepJava=simulaHome; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
-			Global.simulaRtsLib=new File(simulaHome,"bin"); // To use Eclipse Project's simula.runtime
+			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+			Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
-			Global.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
+			Global.outputDir=new File("C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestPrograms/samples/simula/bin");
 			
 			
 			// Set RunTime Options and tracing.
@@ -277,7 +299,7 @@ public final class RunCompilerTest {
 //			RTOption.QPS_TRACING = false;
 //			RTOption.SML_TRACING = false;
 
-			String fileName=simulaHome+"/src/"+Global.packetName + name;
+			String fileName=userDir+"/src/"+Global.packetName + name;
 			Option.RUNTIME_USER_DIR=new File(fileName).getParent();
 			
 			Simula.setSelectors("ZD");

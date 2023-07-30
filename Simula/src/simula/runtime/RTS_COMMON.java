@@ -458,7 +458,7 @@ public final class RTS_COMMON {
 		while (x != null) {
 			boolean qps = x.isQPSystemBlock();
 			boolean dau = x.isDetachUsed();
-			println(" - " + x.edObjectIdent() + "[QPSystemBlock=" + qps + ",detachUsed=" + dau + ",state=" + x.STATE_
+			println(" - " + x.edObjectIdent() + "[QPSystemBlock=" + qps + ",detachUsed=" + dau + ",state=" + x._STATE
 					+ ']');
 			x = x._SL;
 		}
@@ -498,6 +498,7 @@ public final class RTS_COMMON {
 		}
 		if (RTS_COMMON.Option.VERBOSE) {
 			RTS_COMMON.println("*** DYNAMIC CHAIN:");
+//			Thread.dumpStack();
 			int n = stackTraceElement.length;
 			for (int i = start; i < (n - 1); i++) {
 				printSimulaLineInfo(stackTraceElement[i], " - ");
@@ -535,8 +536,8 @@ public final class RTS_COMMON {
 				t.printStackTrace();
 			}
 		} catch (Exception e) {
-			if (RTS_COMMON.Option.VERBOSE)
-				e.printStackTrace();
+//			if (RTS_COMMON.Option.VERBOSE)
+//				e.printStackTrace();
 		}
 		return (false);
 	}

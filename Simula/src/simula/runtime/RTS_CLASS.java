@@ -8,33 +8,37 @@
 package simula.runtime;
 
 /**
- * Utility class RTS_SIMULA_BLOCK.
+ * Utility class RTS_CLASS - Fictituous outermost prefix.
  * <p>
- * Each and every Simula Class, Prefixed Block, Procedure or
- * Sub-Block is compiled into a Java Class by the Simula Compiler.
+ * Any class that has no (textually given) prefix is by definition prefixed
+ * by a fictitious class whose only attribute is:
+ * <pre>
+ *                     procedure detach; ... ; (see 7.3.1)
+ * </pre>
+ * Thus every class object or instance of a prefixed block has this attribute.
  * <p>
- * This java class is used as prefix to a Simula Class, Procedure or Sub-Block.
+ * This java class is used as prefix to a Simula Class.
  * <p>
  * Example:
  * 
  * <pre>
- * 		public class SimulaTest extends RTS_SIMULA_BLOCK {
+ * 		public class SimulaTest extends RTS_CLASS {
  * 			...
  * 		}
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_SIMULA_BLOCK.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_CLASS.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public abstract class RTS_SIMULA_BLOCK extends RTS_BASICIO implements Runnable {
+public abstract class RTS_CLASS extends RTS_BASICIO implements Runnable {
 
 	/**
-	 * Create a new RTS_SIMULA_BLOCK instance.
+	 * Create a new RTS_CLASS instance.
 	 * 
 	 * @param SL staticLink
 	 */
-	public RTS_SIMULA_BLOCK(final RTS_RTObject SL) {
+	public RTS_CLASS(final RTS_RTObject SL) {
 		super(SL);
 	}
 
@@ -57,7 +61,7 @@ public abstract class RTS_SIMULA_BLOCK extends RTS_BASICIO implements Runnable {
 	// *********************************************************************
 	private void beginCoroutine() {
 		// Using Thread or Virtual Thread
-		this.CORUT_ = new RTS_Coroutine(this);
+		this._CORUT = new RTS_Coroutine(this);
 		if (RTS_COMMON.Option.QPS_TRACING)
 			RTS_COMMON.TRACE("START " + this.edObjectIdent());
 		swapCoroutines();

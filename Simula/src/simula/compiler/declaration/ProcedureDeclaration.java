@@ -359,6 +359,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		if (declarationKind == Declaration.Kind.Procedure && type != null) {
 			GeneratedJavaClass.debug("// Declare return value as attribute");
 			GeneratedJavaClass.code("public " + type.toJavaType() + ' ' + "_RESULT;");
+			GeneratedJavaClass.code("@Override");
 			GeneratedJavaClass.code("public Object _RESULT() { return(_RESULT); }");
 		}
 		GeneratedJavaClass.debug("// Declare parameters as attributes");
@@ -405,6 +406,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 	// ***********************************************************************************************
 	private void doCodePrepareFormal() {
 		GeneratedJavaClass.debug("// Parameter Transmission in case of Formal/Virtual Procedure Call");
+		GeneratedJavaClass.code("@Override");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + " setPar(Object param) {");
 //		GeneratedJavaClass.debug("//Util.BREAK(\"CALL " + getJavaIdentifier()
 //				+ ".setPar: param=\"+param+\", qual=\"+param.getClass().getSimpleName()+\", npar=\"+_nParLeft+\", staticLink=\"+_SL);");
@@ -446,6 +448,7 @@ public class ProcedureDeclaration extends BlockDeclaration implements Externaliz
 		boolean duringSTM_Coding=Global.duringSTM_Coding;
 		Global.duringSTM_Coding=true;
 		GeneratedJavaClass.debug("// Procedure Statements");
+		GeneratedJavaClass.code("@Override");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + " _STM() {");
 		codeSTMBody();
 		GeneratedJavaClass.code("EBLK();");

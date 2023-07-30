@@ -41,7 +41,7 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
-public class RTS_Simset extends RTS_SIMULA_BLOCK {
+public class RTS_Simset extends RTS_CLASS {
 
 	// Constructor
 	/**

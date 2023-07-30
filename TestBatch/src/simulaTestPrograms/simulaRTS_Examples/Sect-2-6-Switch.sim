@@ -1,0 +1,38 @@
+begin
+	
+%	Example: SwitchDeclaration
+	Procedure test;
+	begin
+		integer expr;
+		boolean cond;
+		switch S:=L1,L2;
+		switch S2:=L1,L2,S(3),S(expr);
+		switch S3:=L1,L2,S(3), if cond then L1 else L2;
+		goto S(2);
+	  L1:
+	  L2:
+	end;      
+	
+%	Example: Formal Switch
+	
+	Procedure PP(F); switch F; begin
+		goto F(4);
+	end;
+	
+%	Example: Virtual Switch
+
+	Class A; virtual: switch S;
+	begin
+		goto S(2);
+	end;
+  
+	A class B;
+	begin
+		switch S:=L1,L2;
+	end;   
+  
+	new B;
+  
+  L1:L2:
+  
+end;

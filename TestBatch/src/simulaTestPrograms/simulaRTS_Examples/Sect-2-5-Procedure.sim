@@ -44,20 +44,6 @@ begin
 	integer i;
 	
 	x :- new B(1,2,3);
-
-%	Example: SubBlock
-	begin integer lim=40;
-		  text array TA(1:lim);
-		  integer i;
-		  i:=6;
-	end;
-	
-%	Example: Prefixed Block
-	B(1,2,3) begin
-		text array TA(1:lim);
-		integer i;
-		i:=6;
-	end;
 	
 %	Example: Procedure Calls
 	P(4,3.14);
@@ -71,16 +57,5 @@ begin
 	PP(P);
 	
 	i:=x.V(4,3.14);
-	
-%	Example: SwitchDeclaration
-	begin
-		integer expr;
-		boolean cond;
-		switch S:=L1,L2;
-		switch S2:=L1,L2,S(3),S(expr);
-		switch S3:=L1,L2,S(3), if cond then L1 else L2;
-	  L1:
-	  L2:
-	end;      
 	
 end;

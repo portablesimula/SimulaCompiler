@@ -1,0 +1,10 @@
+begin
+
+%	Example: SubBlock
+	begin integer lim=40;
+		  text array TA(1:lim);
+		  integer i;
+		  i:=6;
+	end;
+	
+end;
