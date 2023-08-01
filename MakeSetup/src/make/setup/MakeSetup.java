@@ -39,7 +39,7 @@ public final class MakeSetup {
 	public static final String simulaReleaseID = "Simula-2.0";
 
 //	private final static int EXPLICIT_REVISION = -1; // Normal update
-	private final static int EXPLICIT_REVISION = 20;
+	private final static int EXPLICIT_REVISION = 21;
 	
 	private final static String GIT_BINARIES="C:\\GitHub\\Binaries";
 	private final static String RELEASE_ID=simulaReleaseID; // E.g. "Simula-2.0";

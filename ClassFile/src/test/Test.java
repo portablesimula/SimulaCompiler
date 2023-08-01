@@ -4,10 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import jdk.internal.classfile.ClassModel;
-import jdk.internal.classfile.Classfile;
-import jdk.internal.classfile.MethodModel;
-import jdk.internal.classfile.constantpool.Utf8Entry;
+import java.lang.classfile.ClassModel;
+import java.lang.classfile.Classfile;
+import java.lang.classfile.MethodModel;
+import java.lang.classfile.constantpool.Utf8Entry;
 
 //import org.glavo.classfile.ClassModel;
 //import org.glavo.classfile.Classfile;
