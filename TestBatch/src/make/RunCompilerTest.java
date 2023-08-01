@@ -102,11 +102,11 @@ public final class RunCompilerTest {
 		// String name="/simulaRTS_Examples/Sect-4-2-ArrayParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-4-3-ProcedureAsParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-5-SomeExpressions.sim";
-		// String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
+		 String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-2-ForStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-3-ConnectionStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-4-SwitchStatement.sim";
-		 String name="/simulaRTS_Examples/Sect-6-5-ActivationStatement.sim";
+		// String name="/simulaRTS_Examples/Sect-6-5-ActivationStatement.sim";
 
 		// *** SIMULA DESIGN EXAMPLES
 		// String name="/design/Test.sim";

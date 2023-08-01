@@ -28,13 +28,14 @@ import simula.compiler.utilities.Util;
  *
  */
 public class ExtendedClassWriter extends ClassWriter {
-	private static final boolean DEBUG=false;
+	private static final boolean DEBUG = false;
 
 	/**
 	 * Create a new ExtendedClassWriter.
 	 * 
-     * @param classReader the {@link ClassReader} used to read the original class.
-     * @param flags option flags that can be used to modify the default behavior of this class.
+	 * @param classReader the {@link ClassReader} used to read the original class.
+	 * @param flags       option flags that can be used to modify the default
+	 *                    behavior of this class.
 	 */
 	public ExtendedClassWriter(ClassReader classReader, int flags) {
 		super(classReader, flags);
@@ -43,32 +44,41 @@ public class ExtendedClassWriter extends ClassWriter {
 	@Override
 	protected String getCommonSuperClass(final String type1, final String type2) {
 		// Called from: ClassWriter.getCommonSuperClass
-    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);
-    	try { String superType=null;
-    		JavaClassInfo info1=getClassInfo(type1);
-	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info1="+info1);
-	    	JavaClassInfo info2=getClassInfo(type2);
-	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: info2="+info2);
-			if(info1.isSuperTypeOf(info2)) superType=type1;
-			else if(info2.isSuperTypeOf(info1)) superType=type2;
-	    	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: "+type1+", "+type2+" ==> "+superType);
-			return(superType);
-    	} catch(Exception e) {
-    		e.printStackTrace();
-    		JavaClassInfo.printJavaClassMap("");
-        	if(DEBUG) System.out.println("ExtendedClassWriter.getCommonSuperType: type1="+type1+", type2="+type2);
-    		throw new RuntimeException("Unable to find CommonSuperType: "+type1+", "+type2);
-    	}
+		if (DEBUG)
+			System.out.println("ExtendedClassWriter.getCommonSuperType: type1=" + type1 + ", type2=" + type2);
+		try {
+			String superType = null;
+			JavaClassInfo info1 = getClassInfo(type1);
+			if (DEBUG)
+				System.out.println("ExtendedClassWriter.getCommonSuperType: info1=" + info1);
+			JavaClassInfo info2 = getClassInfo(type2);
+			if (DEBUG)
+				System.out.println("ExtendedClassWriter.getCommonSuperType: info2=" + info2);
+			if (info1.isSuperTypeOf(info2))
+				superType = type1;
+			else if (info2.isSuperTypeOf(info1))
+				superType = type2;
+			if (DEBUG)
+				System.out.println(
+						"ExtendedClassWriter.getCommonSuperType: " + type1 + ", " + type2 + " ==> " + superType);
+			return (superType);
+		} catch (Exception e) {
+			e.printStackTrace();
+			JavaClassInfo.printJavaClassMap("");
+			if (DEBUG)
+				System.out.println("ExtendedClassWriter.getCommonSuperType: type1=" + type1 + ", type2=" + type2);
+			throw new RuntimeException("Unable to find CommonSuperType: " + type1 + ", " + type2);
+		}
 	}
-	
+
 	private static JavaClassInfo getClassInfo(String type) {
-		int n=type.lastIndexOf('/');
-		String dir=type.substring(0, n);
-		Util.ASSERT(dir.equals(Global.packetName)," dir="+dir+", Global.packetName="+Global.packetName);
-		type=type.substring(n+1);
-		if(DEBUG) System.out.println("ExtendedClassWriter.getClassInfo: javaClassMap.get("+type+")");
-		return(JavaClassInfo.get(type));
+		int n = type.lastIndexOf('/');
+		String dir = type.substring(0, n);
+		Util.ASSERT(dir.equals(Global.packetName), " dir=" + dir + ", Global.packetName=" + Global.packetName);
+		type = type.substring(n + 1);
+		if (DEBUG)
+			System.out.println("ExtendedClassWriter.getClassInfo: javaClassMap.get(" + type + ")");
+		return (JavaClassInfo.get(type));
 	}
 
-}	
-
+}

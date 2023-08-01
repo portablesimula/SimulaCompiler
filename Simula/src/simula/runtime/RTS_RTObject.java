@@ -1584,7 +1584,7 @@ public abstract class RTS_RTObject {
 		/**
 		 * Label identifier. To improve error and trace messages.
 		 */
-		public final String identifier;
+		public final String identifier; // To improve error and trace messages.
 
 		// Constructor
 		/**

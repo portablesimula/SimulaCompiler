@@ -37,9 +37,9 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class ByteCodeEngineering {
-	private static final boolean LIST_ASM_CODE=false;
-	private static final boolean DEBUG=false;
-	
+	private static final boolean LIST_ASM_CODE = false;
+	private static final boolean DEBUG = false;
+
 	/**
 	 * Create a new ByteCodeEngineering.
 	 */
@@ -48,53 +48,66 @@ public final class ByteCodeEngineering {
 
 	/**
 	 * Repair a single .class file.
+	 * 
 	 * @param classFileName the .class file name
 	 */
-    public void doRepairSingleByteCode(String classFileName) {
-    	InputStream inputStream=null;
-        try {
-        	File file=new File(classFileName);
-        	String fileName=file.getName();
-            if(Option.TRACE_REPAIRING) Util.println("ByteCodeEngineering.doRepairSingleByteCode: Load "+classFileName);
-            if(LIST_ASM_CODE) SimulaCompiler.doListClassFile(classFileName);
-			inputStream=new FileInputStream(classFileName);
+	public void doRepairSingleByteCode(String classFileName) {
+		InputStream inputStream = null;
+		try {
+			File file = new File(classFileName);
+			String fileName = file.getName();
+			if (Option.TRACE_REPAIRING)
+				Util.println("ByteCodeEngineering.doRepairSingleByteCode: Load " + classFileName);
+			if (LIST_ASM_CODE)
+				SimulaCompiler.doListClassFile(classFileName);
+			inputStream = new FileInputStream(classFileName);
 			ClassReader classReader = new ClassReader(inputStream);
 			ClassWriter classWriter = new ExtendedClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
 			// classVisitor forwards all events to classWriter
-			ClassVisitor classVisitor; 
-			if(DEBUG) {
+			ClassVisitor classVisitor;
+			if (DEBUG) {
 				classWriter = new ExtendedClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
-				classVisitor = new CheckClassAdapter(new SimClassVisitor(fileName,classWriter), true);
-			} else classVisitor = new SimClassVisitor(fileName,classWriter);
+				classVisitor = new CheckClassAdapter(new SimClassVisitor(fileName, classWriter), true);
+			} else
+				classVisitor = new SimClassVisitor(fileName, classWriter);
 			classReader.accept(classVisitor, 0); // ClassReader will call methods in classWriter
-			if(DEBUG) Util.println("ByteCodeEngineering.doRepairSingleByteCode: AFTER  classReader.accept(classVisitor, 0);");
+			if (DEBUG)
+				Util.println("ByteCodeEngineering.doRepairSingleByteCode: AFTER  classReader.accept(classVisitor, 0);");
 			// Dump the class to <classFileName>
-            if(Option.TRACE_REPAIRING) Util.println("ByteCodeEngineering.doRepairSingleByteCode: Dump "+classFileName);
+			if (Option.TRACE_REPAIRING)
+				Util.println("ByteCodeEngineering.doRepairSingleByteCode: Dump " + classFileName);
 			byte[] b2 = classWriter.toByteArray(); // b2 represents the repaired version of the input class
-            dumpToFile(b2,classFileName);
-            if(LIST_ASM_CODE) SimulaCompiler.doListClassFile(classFileName);
-        } catch (Exception e) {
-        	Util.println("ByteCodeEngineering FAILED for "+classFileName);
-        	e.printStackTrace();
-        	Util.warning("ByteCodeEngineering FAILED for "+classFileName+", Exception="+e.getClass().getSimpleName()+", msg="+e.getMessage());
-       } finally {
-        	if(inputStream!=null)
-				try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
-        }
-    }
-    
-    private void dumpToFile(byte[] bytes,String classFileName) {
-		if(DEBUG) Util.println("ByteCodeEngineering.dumpToFile: "+classFileName);
-    	try {
-    		OutputStream outputStream=new FileOutputStream(classFileName);
-    		BufferedOutputStream out = new BufferedOutputStream(outputStream);
-    		out.write(bytes,0,bytes.length);
-    		out.flush();
-    		out.close();
-    	} catch (Exception ex) {
-    		System.err.println(ex.getMessage());
-    	}
+			dumpToFile(b2, classFileName);
+			if (LIST_ASM_CODE)
+				SimulaCompiler.doListClassFile(classFileName);
+		} catch (Exception e) {
+			Util.println("ByteCodeEngineering FAILED for " + classFileName);
+			e.printStackTrace();
+			Util.warning("ByteCodeEngineering FAILED for " + classFileName + ", Exception="
+					+ e.getClass().getSimpleName() + ", msg=" + e.getMessage());
+		} finally {
+			if (inputStream != null)
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+	}
 
-    }
+	private void dumpToFile(byte[] bytes, String classFileName) {
+		if (DEBUG)
+			Util.println("ByteCodeEngineering.dumpToFile: " + classFileName);
+		try {
+			OutputStream outputStream = new FileOutputStream(classFileName);
+			BufferedOutputStream out = new BufferedOutputStream(outputStream);
+			out.write(bytes, 0, bytes.length);
+			out.flush();
+			out.close();
+		} catch (Exception ex) {
+			System.err.println(ex.getMessage());
+		}
+
+	}
 
 }
