@@ -1,4 +1,4 @@
-package java.lang.classfile;
+package jjava.lang.classfile;
 
 import java.util.List;
 

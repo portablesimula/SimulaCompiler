@@ -1,4 +1,4 @@
-package java.lang.classfile.constantpool;
+package jjava.lang.classfile.constantpool;
 
 public class Utf8Entry {
 

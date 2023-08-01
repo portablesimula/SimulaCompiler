@@ -1,6 +1,6 @@
-package java.lang.classfile;
+package jjava.lang.classfile;
 
-import java.lang.classfile.constantpool.Utf8Entry;
+import jjava.lang.classfile.constantpool.Utf8Entry;
 
 public class MethodModel {
 

@@ -4,10 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import java.lang.classfile.ClassModel;
-import java.lang.classfile.Classfile;
-import java.lang.classfile.MethodModel;
-import java.lang.classfile.constantpool.Utf8Entry;
+import jjava.lang.classfile.ClassModel;
+import jjava.lang.classfile.Classfile;
+import jjava.lang.classfile.MethodModel;
+import jjava.lang.classfile.constantpool.Utf8Entry;
 
 //import org.glavo.classfile.ClassModel;
 //import org.glavo.classfile.Classfile;
@@ -25,8 +25,7 @@ public class Test {
 	}
 	
 	static void doTesting() throws IOException {
-//		String name="C:/GitHub/SimulaCompiler/ClassFile/bin/test/Test.class";
-		String name="C:/GitHub/SimulaCompiler/ClassFile/bin/org/glavo/classfile/MethodModel.class";
+		String name="C:/GitHub/SimulaCompiler/ClassFile/bin/test/Test.class";
 		FileInputStream inpt=new FileInputStream(name);
 		byte[] bytes=inpt.readAllBytes();
 		inpt.close();
