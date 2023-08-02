@@ -9,12 +9,12 @@ package simula.compiler;
 
 import java.io.File;
 
-import simula.compiler.editor.RTOption;
-import simula.compiler.editor.SimulaEditor;
 import simula.compiler.parsing.SimulaScanner;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
+import simula.editor.RTOption;
+import simula.editor.SimulaEditor;
 
 /**
  * Simula Main class.

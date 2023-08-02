@@ -11,9 +11,9 @@ import java.io.File;
 import java.util.Vector;
 
 import simula.compiler.SimulaCompiler;
-import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.editor.RTOption;
 import simula.runtime.RTS_COMMON;
 
 /**

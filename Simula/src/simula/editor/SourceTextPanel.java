@@ -5,7 +5,7 @@
  * You find a copy of the License on the following
  * page: https://creativecommons.org/licenses/by/4.0/
  */
-package simula.compiler.editor;
+package simula.editor;
 
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;

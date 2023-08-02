@@ -12,9 +12,9 @@ import java.util.Vector;
 
 import simula.compiler.Simula;
 import simula.compiler.SimulaCompiler;
-import simula.compiler.editor.RTOption;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
+import simula.editor.RTOption;
 
 /**
  * Simula Test Batch donated by Simula as.

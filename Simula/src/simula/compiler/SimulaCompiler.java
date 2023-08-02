@@ -35,11 +35,11 @@ import javax.tools.ToolProvider;
 
 import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
 import simula.compiler.declaration.ClassDeclaration;
-import simula.compiler.editor.RTOption;
 import simula.compiler.parsing.Parse;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
+import simula.editor.RTOption;
 
 /**
  * The Simula Compiler
