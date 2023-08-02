@@ -90,6 +90,7 @@ public final class MakeSetup {
 //		execute("jar cmf "+compilerManifest+" "+RELEASE_HOME+"\\simula.jar -C "+COMPILER_BIN+" ./simula/common -C "+COMPILER_BIN+" ./simula/compiler -C "+COMPILER_BIN+" ./org/objectweb/asm");
 		execute("jar","cmf",compilerManifest,RELEASE_HOME+"\\simula.jar",
 //				"-C",COMPILER_BIN,"./simula/common",
+				"-C", COMPILER_BIN, "./simula/editor",
 				"-C", COMPILER_BIN, "./simula/compiler",
 				"-C", COMPILER_BIN, "./org/objectweb/asm");
 //		execute("jar -tvf "+RELEASE_HOME+"\\simula.jar");
