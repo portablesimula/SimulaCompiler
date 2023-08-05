@@ -12,6 +12,7 @@ import java.util.Vector;
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.Option;
 
 /**
  * Block Declaration.
@@ -132,15 +133,15 @@ public abstract class BlockDeclaration extends DeclarationScope {
 	/**
 	 * The leading labels.
 	 */
-	protected Vector<String> labelcode;
+	protected Vector<String> labelcodeList;
 	
 	/**
 	 * Coding utility: AD'HOC Leading Label
 	 * @param labelcode argument
 	 */
 	public void addLeadingLabel(String labelcode) {
-		if(this.labelcode==null) this.labelcode=new Vector<String>();
-		this.labelcode.add(labelcode);
+		if(this.labelcodeList==null) this.labelcodeList=new Vector<String>();
+		this.labelcodeList.add(labelcode);
 	}
 
 	// ***********************************************************************************************
@@ -166,7 +167,12 @@ public abstract class BlockDeclaration extends DeclarationScope {
 			GeneratedJavaClass.code(externalIdent + " _THIS=(" + externalIdent + ")_CUR;");
 			GeneratedJavaClass.code("_LOOP:while(_JTX>=0) {");
 			GeneratedJavaClass.code("try {");
-			GeneratedJavaClass.code("_JUMPTABLE(_JTX);","For ByteCode Engineering");
+			if(Option.USE_FILE_CLASS_API) {
+				GeneratedJavaClass.code("_PRE_TABLE();","For ByteCode Engineering");
+				GeneratedJavaClass.code("_JUMPTABLE(_JTX,"+labelList.size()+");","For ByteCode Engineering");			
+			} else{
+				GeneratedJavaClass.code("_JUMPTABLE(_JTX);","For ByteCode Engineering");
+			}
 			Global.currentJavaModule.mustDoByteCodeEngineering=true;
 		}
 		codeStatements();

@@ -74,14 +74,23 @@ public final class LabeledStatement extends Statement {
 		for (String label:labels) {
 			Meaning meaning=Global.getCurrentScope().findLabelMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
-			String labelcode="_LABEL("+decl.index+",\""+decl.identifier+"\");";
+			String labelcode;
+			if(Option.USE_FILE_CLASS_API)
+				 labelcode="_SIM_LABEL("+decl.index+");";
+			else labelcode="_LABEL("+decl.index+",\""+decl.identifier+"\");";
 			if(statement instanceof BlockStatement stat) {
 				BlockStatement blockStatement=stat;
 				if(blockStatement.isCompoundStatement())
 				    blockStatement.addLeadingLabel(labelcode);
-				else GeneratedJavaClass.code(labelcode);
+				else {
+					GeneratedJavaClass.code("_PRE_LABEL()");
+					GeneratedJavaClass.code(labelcode);
+				}
 			}
-			else GeneratedJavaClass.code(labelcode);
+			else {
+				GeneratedJavaClass.code("_PRE_LABEL();");
+				GeneratedJavaClass.code(labelcode);
+			}
 		}
 		statement.doJavaCoding();
 		GeneratedJavaClass.code("}");	}

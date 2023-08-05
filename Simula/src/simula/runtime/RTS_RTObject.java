@@ -1532,12 +1532,41 @@ public abstract class RTS_RTObject {
 	 * Method meant for Byte-Code Engineering.
 	 * <br>
 	 * During Byte-Code Engineering this method-call is used to signal the occurrence of a Simula Label.
+	 */
+	public static void _PRE_LABEL() {
+		// Local LABEL - Needs ByteCode Engineering.
+	}
+
+	// ************************************************************
+	// *** lOCAL JUMP/LABEL - Meant for Byte-Code Engineering -- TODO: OLD VERSION
+	// ************************************************************
+	/**
+	 * Method meant for Byte-Code Engineering.
+	 * <br>
+	 * During Byte-Code Engineering this method-call is used to signal the occurrence of a Simula Label.
 	 * The bytecode address is collected and some instruction are removed.
 	 * The parameter 'labelIndex' is the label's ordinal number.
-	 * @param labelIndex the label's ordinal number.
+	 * <p>deprecated
+     * This method will be removed when java.lang.classfile becomes available.
+     * @param labelIndex the label's ordinal number.
 	 * @param ident the label's identifier
 	 */
 	public static void _LABEL(final int labelIndex, final String ident) {
+		// Local LABEL - Needs ByteCode Engineering.
+	}
+
+	// ************************************************************
+	// *** lOCAL JUMP/LABEL - Meant for Byte-Code Engineering
+	// ************************************************************
+	/**
+	 * Method meant for Byte-Code Engineering.
+	 * <br>
+	 * During Byte-Code Engineering this method-call is used to signal the occurrence of a Simula Label.
+	 * A pseudo label instruction is added some instruction are removed.
+	 * The parameter 'labelIndex' is the label's ordinal number.
+	 * @param labelIndex the label's ordinal number.
+	 */
+	public static void _SIM_LABEL(final int labelIndex) {
 		// Local LABEL - Needs ByteCode Engineering.
 	}
 
@@ -1548,10 +1577,21 @@ public abstract class RTS_RTObject {
 	 * <br>
 	 * See <a href="doc/SimulaRTS.pdf">Mapping Simula to Java (runtime design)</a> 
 	 * Sect. 6.1.2 Byte Code Engineering.
+	 */
+	public static void _PRE_TABLE() {}
+
+	/**
+	 * Method meant for Byte-Code Engineering.
+	 * <br>
+	 * This method-call is a placeholder for where to put in a Jump-Table.
+	 * <br>
+	 * See <a href="doc/SimulaRTS.pdf">Mapping Simula to Java (runtime design)</a> 
+	 * Sect. 6.1.2 Byte Code Engineering.
 	 * 
 	 * @param labelIndex the label index
+	 * @param labelIndex the jumptable size
 	 */
-	public static void _JUMPTABLE(final int labelIndex) {
+	public static void _JUMPTABLE(final int labelIndex,final int tableSize) {
 		// Local GOTO - Needs ByteCode Engineering.
 		if (RTS_COMMON.Option.GOTO_TRACING)
 			RTS_COMMON.TRACE("_RTObject._JUMPTABLE: labelIndex=" + labelIndex);
@@ -1562,7 +1602,20 @@ public abstract class RTS_RTObject {
 		RTS_COMMON.println(msg);
 		throw new RTS_SimulaRuntimeError(msg);
 	}
-
+	
+	// ************************************************************
+	// *** lOCAL JUMP/LABEL - Meant for Byte-Code Engineering --  TODO: OLD VERSION
+	// ************************************************************
+	/**
+	 * Method meant for Byte-Code Engineering.
+	 * <p>deprecated
+     * This method will be removed when java.lang.classfile becomes available.
+	 * @param labelIndex
+	 */
+	public static void _JUMPTABLE(final int labelIndex) {
+		_JUMPTABLE(labelIndex,0);
+	}
+	
 	// ************************************************************
 	// *** FRAMEWORK for NonLocal Label-Parameters in Java Coding
 	// ************************************************************

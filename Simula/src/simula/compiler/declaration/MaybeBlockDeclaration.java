@@ -185,8 +185,11 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		Util.ASSERT(labelList.isEmpty(), "Invariant");
 		Global.enterScope(this);
 		GeneratedJavaClass.code("{");
-		if(labelcode!=null) {
-			for(String labCode:labelcode) GeneratedJavaClass.code(labCode);
+		if(labelcodeList!=null) {
+			for(String labCode:labelcodeList) {
+				GeneratedJavaClass.code("_PRE_LABEL();");
+				GeneratedJavaClass.code(labCode);
+			}
 		}
 		for (Statement stm : statements) stm.doJavaCoding();
 		GeneratedJavaClass.code("}");

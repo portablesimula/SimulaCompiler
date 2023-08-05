@@ -134,6 +134,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
         	while(iterator3.hasNext()) {
         		AbstractInsnNode instr=iterator3.next();
 //				Util.println("  "+AsmUtils.edInstruction(instr));
+				Util.println("  "+instr);
           }
         }
 	}
