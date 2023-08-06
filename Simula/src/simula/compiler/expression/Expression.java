@@ -66,7 +66,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  * @author Stein Krogdahl
  */
-public abstract class Expression extends SyntaxClass {
+public abstract sealed class Expression extends SyntaxClass permits Variable, ArithmeticExpression, AssignmentOperation, BooleanExpression, ConditionalExpression, Constant, LocalObject, ObjectGenerator, ObjectRelation, QualifiedObject, RelationalOperation, RemoteVariable, TextExpression, TypeConversion, UnaryOperation {
 	
 	/**
 	 * This Expression is part of  backLink Expression/Statement.

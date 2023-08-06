@@ -34,7 +34,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ClassDeclaration extends BlockDeclaration implements Externalizable {
+public sealed class ClassDeclaration extends BlockDeclaration implements Externalizable permits StandardClass, PrefixedBlockDeclaration {
 	private String externalPrefixIdent;
 	
 	/**

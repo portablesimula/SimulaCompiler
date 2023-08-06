@@ -30,7 +30,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public class ProcedureDeclaration extends BlockDeclaration implements Externalizable {
+public sealed class ProcedureDeclaration extends BlockDeclaration implements Externalizable permits StandardProcedure, SwitchDeclaration {
 	
 	/**
 	 * Parameter list.

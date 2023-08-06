@@ -31,12 +31,16 @@ import simula.compiler.utilities.Util;
  *
  *   	Type ::= BOOLEAN | CHARACTER | INTEGER | REAL | REF(ClassIdentifier) | TEXT
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/Declaration.java"><b>Source File</b></a>.
+ * 
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/Declaration.java"><b>Source
+ * File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
-public abstract class Declaration extends SyntaxClass {
-	
+public abstract sealed class Declaration extends SyntaxClass permits DeclarationScope, ExternalDeclaration, Parameter,
+		SimpleVariableDeclaration, VirtualSpecification, VirtualMatch, ArrayDeclaration {
+
 	/**
 	 * Indicates that this declaration is protected.
 	 */

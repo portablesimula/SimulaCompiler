@@ -10,6 +10,7 @@ package simula.compiler.statement;
 import java.util.Vector;
 
 import simula.compiler.GeneratedJavaClass;
+import simula.compiler.ProgramModule;
 import simula.compiler.SyntaxClass;
 import simula.compiler.declaration.LabelDeclaration;
 import simula.compiler.declaration.MaybeBlockDeclaration;
@@ -47,12 +48,17 @@ import simula.compiler.utilities.Util;
  *         |  ActivationStatement
  * 
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/Statement.java"><b>Source File</b></a>.
+ * 
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/Statement.java"><b>Source
+ * File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
-public abstract class Statement extends SyntaxClass {
-	
+public abstract sealed class Statement extends SyntaxClass permits InnerStatement, ActivationStatement, BlockStatement,
+		ConditionalStatement, ConnectionStatement, DummyStatement, ForStatement, GotoStatement, LabeledStatement,
+		StandaloneExpression, SwitchStatement, WhileStatement, ProgramModule {
+
 	/**
 	 * Create a new Statement.
 	 * @param line the source line number

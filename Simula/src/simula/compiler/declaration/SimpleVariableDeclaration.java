@@ -51,7 +51,7 @@ import simula.compiler.utilities.Util;
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
-public class SimpleVariableDeclaration extends Declaration implements Externalizable {
+public sealed class SimpleVariableDeclaration extends Declaration implements Externalizable permits LabelDeclaration {
 	// String identifier;    // Inherited
 	// String externalIdent; // Inherited
 	// Type type;            // Inherited

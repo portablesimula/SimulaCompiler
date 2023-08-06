@@ -20,7 +20,7 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
-public abstract class DeclarationScope extends Declaration {
+public abstract sealed class DeclarationScope extends Declaration permits BlockDeclaration, ConnectionBlock  {
 	
 	/**
 	 * Current Runtime Block level - Used during doChecking

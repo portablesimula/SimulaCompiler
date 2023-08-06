@@ -8,6 +8,8 @@
 package simula.compiler;
 
 import simula.compiler.declaration.Declaration;
+import simula.compiler.expression.Expression;
+import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
@@ -52,7 +54,7 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 
-public abstract class SyntaxClass {
+public abstract sealed class SyntaxClass permits Declaration, Statement, Expression {
 	private boolean CHECKED = false; // Set true when doChecking(), put or get is called
 
 	/**
