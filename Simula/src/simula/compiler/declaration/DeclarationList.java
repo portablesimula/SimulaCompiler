@@ -14,11 +14,13 @@ import simula.compiler.utilities.Util;
 /**
  * Declaration List.
  * <p>
+ * This is a utility class to hold local declaration lists in declaration scopes.
+ * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationList.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
-public class DeclarationList extends Vector<Declaration> {
+public final class DeclarationList extends Vector<Declaration> {
 	
 	private static final long serialVersionUID = 1L;
 	

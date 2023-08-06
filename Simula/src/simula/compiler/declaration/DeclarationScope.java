@@ -16,11 +16,17 @@ import simula.compiler.utilities.Util;
 /**
  * Declaration Scope.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationScope.java"><b>Source File</b></a>.
+ * This class is prefix to BlockDeclaration and ConnectionBlock, and superclass
+ * of ClassDeclaration, ProcedureDeclaration and MaybeBlockDeclaration.
+ * <p>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationScope.java"><b>Source
+ * File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
-public abstract sealed class DeclarationScope extends Declaration permits BlockDeclaration, ConnectionBlock  {
+public abstract sealed class DeclarationScope extends Declaration
+permits BlockDeclaration, ConnectionBlock  {
 	
 	/**
 	 * Current Runtime Block level - Used during doChecking
@@ -31,27 +37,27 @@ public abstract sealed class DeclarationScope extends Declaration permits BlockD
 	 * The source block level. Set during Parsing.
 	 */
 	public int sourceBlockLevel;
-	
+
 	/**
 	 * The Compile time block level. Set during doChecking.
 	 */
 	public int ctBlockLevel;
-	
+
 	/**
 	 * The Runtime block level. Set during doChecking.
 	 */
 	public int rtBlockLevel;
-	
+
 	/**
 	 * Indicate if this scope has local classes.
 	 */
 	public boolean hasLocalClasses = false;
-	
+
 	/**
 	 * The declaration list.
 	 */
 	public DeclarationList declarationList;// = new DeclarationList();
-	
+
 	/**
 	 * The label list.
 	 */
@@ -220,6 +226,7 @@ public abstract sealed class DeclarationScope extends Declaration permits BlockD
 	// ***********************************************************************************************
 	/**
 	 * Utility to edit JavaClass'Name
+	 * 
 	 * @return the edited JavaClass'Name
 	 */
 	protected String edJavaClassName() {

@@ -271,8 +271,7 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 	}
 
 	// ***********************************************************************************************
-	// *** Utility: isCompatibleClasses -- Used by IS/IN/QUA-checking and Inspect
-	// WHEN
+	// *** Utility: isCompatibleClasses -- Used by IS/IN/QUA-checking and Inspect WHEN
 	// ***********************************************************************************************
 	/**
 	 * Check if these classes are isCompatible.
