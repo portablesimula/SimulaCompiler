@@ -26,7 +26,17 @@ import simula.compiler.utilities.Util;
 /**
  * Connection Block.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ConnectionBlock.java"><b>Source File</b></a>.
+ * A Connection Block is a Statement within a Connection Statement.
+ * It acts as a block, whether it takes the form of a block or not.
+ * It further acts as if enclosed by a second fictitious block, called a
+ * "connection block". During the execution of a connection block the object X is said to be
+ * "connected".
+ * <p>
+ * See Simula Standard 4.8 Connection statement.
+ * <p>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ConnectionBlock.java"><b>Source
+ * File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -34,12 +44,12 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 	private Statement statement;
 	private final String whenClassIdentifier;
 	private Declaration whenClassDeclaration; // Set during cheching
-	
+
 	/**
 	 * The inspected variable.
 	 */
 	public final Variable inspectedVariable;
-	
+
 	/**
 	 * The when class identifier
 	 */
@@ -47,11 +57,12 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 
 	/**
 	 * Create a new ConnectionBlock.
-	 * @param inspectedVariable the inspected variable
+	 * 
+	 * @param inspectedVariable   the inspected variable
 	 * @param whenClassIdentifier the when class identifier
 	 */
-	public ConnectionBlock(final Variable inspectedVariable,final String whenClassIdentifier) {
-		super("Connection block at line " + (Global.sourceLineNumber-1));
+	public ConnectionBlock(final Variable inspectedVariable, final String whenClassIdentifier) {
+		super("Connection block at line " + (Global.sourceLineNumber - 1));
 		declarationKind = Declaration.Kind.ConnectionBlock;
 		this.inspectedVariable = inspectedVariable;
 		this.whenClassIdentifier = whenClassIdentifier;
@@ -59,6 +70,7 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 
 	/**
 	 * Get inspected expression.
+	 * 
 	 * @return inspected expression.
 	 */
 	public Expression getInspectedExpression() {
@@ -70,13 +82,16 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 	 * Connection block end.
 	 */
 	public void end() {
-		if (Option.TRACE_PARSE)	Util.TRACE("END ConnectionBlock: " + this.edScopeChain());
-	    if(!labelList.isEmpty()) MaybeBlockDeclaration.moveLabelsFrom(this); // Label is also declaration
+		if (Option.TRACE_PARSE)
+			Util.TRACE("END ConnectionBlock: " + this.edScopeChain());
+		if (!labelList.isEmpty())
+			MaybeBlockDeclaration.moveLabelsFrom(this); // Label is also declaration
 		Global.setScope(declaredIn);
 	}
-	
+
 	/**
 	 * Set the Connected ClassDecleration.
+	 * 
 	 * @param classDeclaration the Connected ClassDecleration.
 	 */
 	public void setClassDeclaration(final ClassDeclaration classDeclaration) {
@@ -85,6 +100,7 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 
 	/**
 	 * Set the Connection Statement.
+	 * 
 	 * @param statement the Connection Statement
 	 */
 	public void setStatement(final Statement statement) {
@@ -93,9 +109,11 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 
 	@Override
 	public Meaning findMeaning(final String identifier) {
-		if (classDeclaration == null && Global.duringParsing) return (null); // Still in Pass1(Parser)
-		Meaning result=null;
-		if(classDeclaration!=null) result = classDeclaration.findRemoteAttributeMeaning(identifier);
+		if (classDeclaration == null && Global.duringParsing)
+			return (null); // Still in Pass1(Parser)
+		Meaning result = null;
+		if (classDeclaration != null)
+			result = classDeclaration.findRemoteAttributeMeaning(identifier);
 		if (result != null) {
 			result.declaredIn = this;
 		} else if (declaredIn != null) {
@@ -110,17 +128,18 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 
 	@Override
 	public void doChecking() {
-		if (IS_SEMANTICS_CHECKED())	return;
+		if (IS_SEMANTICS_CHECKED())
+			return;
 		Global.sourceLineNumber = lineNumber;
 		// Set External Identifier
 		externalIdent = inspectedVariable.identifier + '_' + lineNumber;
 		Global.enterScope(this);
-			rtBlockLevel = currentRTBlockLevel;
-			if (whenClassIdentifier != null) {
-				Meaning meaning = findMeaning(whenClassIdentifier);
-				whenClassDeclaration = meaning.declaredAs;
-			}
-			statement.doChecking();
+		rtBlockLevel = currentRTBlockLevel;
+		if (whenClassIdentifier != null) {
+			Meaning meaning = findMeaning(whenClassIdentifier);
+			whenClassDeclaration = meaning.declaredAs;
+		}
+		statement.doChecking();
 		Global.exitScope();
 		SET_SEMANTICS_CHECKED();
 	}
@@ -140,7 +159,8 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 	public String toJavaCode() {
 		String connID = inspectedVariable.toJavaCode();
 		Declaration when = whenClassDeclaration;
-		if (when == null) return (connID);
+		if (when == null)
+			return (connID);
 		return ("((" + when.getJavaIdentifier() + ')' + connID + ')');
 	}
 
@@ -149,14 +169,15 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 	// ***********************************************************************************************
 	@Override
 	public void print(final int indent) {
-    	String spc=edIndent(indent);
+		String spc = edIndent(indent);
 		StringBuilder s = new StringBuilder(indent);
-	    s.append('[').append(sourceBlockLevel).append(':').append(rtBlockLevel).append("] ");
+		s.append('[').append(sourceBlockLevel).append(':').append(rtBlockLevel).append("] ");
 		s.append(declarationKind).append(' ').append(identifier);
 		Util.println(s.toString());
 		String beg = "begin[" + edScopeChain() + ']';
 		Util.println(spc + beg);
-		for (Declaration decl : declarationList) decl.print(indent + 1);
+		for (Declaration decl : declarationList)
+			decl.print(indent + 1);
 		statement.print(indent + 1);
 		Util.println(spc + "end[" + edScopeChain() + ']');
 	}
@@ -166,22 +187,25 @@ public final class ConnectionBlock extends DeclarationScope implements Externali
 		return ("Inspect(" + inspectedVariable + ") do " + statement);
 	}
 
+	/**
+	 * Create a new ConnectionBlock.
+	 */
 	public ConnectionBlock() {
 		super("");
 		this.whenClassIdentifier = "";
 		this.inspectedVariable = null;
 	}
-	
+
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

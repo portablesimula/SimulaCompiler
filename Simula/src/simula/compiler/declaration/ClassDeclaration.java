@@ -28,7 +28,7 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * Class Declaration.
+ * Simula Class Declaration.
  * 
  * <pre>
  * 
