@@ -18,18 +18,19 @@ import simula.compiler.utilities.Util;
 /**
  * Hidden Specification.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/HiddenSpecification.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/HiddenSpecification.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class HiddenSpecification implements Externalizable {
-	
+
 	/**
 	 * The hidden identifier.
 	 */
 	String identifier;
-	
+
 	/**
 	 * The class in which this HiddenSpecification occur.
 	 */
@@ -56,11 +57,11 @@ public final class HiddenSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** Utility: doChecking -- Called from ClassDeclaration.checkHiddenList
 	// ***********************************************************************************************
-    /**
-     * Perform semantic checking.
-     * <p>
-     * Called from ClassDeclaration.checkHiddenList.
-     */
+	/**
+	 * Perform semantic checking.
+	 * <p>
+	 * Called from ClassDeclaration.checkHiddenList.
+	 */
 	void doChecking() {
 		protectedBy = getMatchingProtected();
 		if (protectedBy != null)
@@ -99,6 +100,7 @@ public final class HiddenSpecification implements Externalizable {
 	// ***********************************************************************************************
 	/**
 	 * Utility: Get scope behind hidden.
+	 * 
 	 * @return the ClassDeclaration found
 	 */
 	ClassDeclaration getScopeBehindHidden() {
