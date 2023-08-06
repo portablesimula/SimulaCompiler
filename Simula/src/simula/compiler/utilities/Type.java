@@ -24,7 +24,7 @@ import simula.compiler.declaration.DeclarationScope;
  * @author Øystein
  *
  */
-public class Type implements Externalizable {
+public sealed class Type implements Externalizable permits OverLoad {
 	/**
 	 * Simula's Integer type
 	 */

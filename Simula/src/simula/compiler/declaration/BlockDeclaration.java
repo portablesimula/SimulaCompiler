@@ -23,7 +23,8 @@ import simula.compiler.utilities.Option;
  * 
  * @author Øystein Myhre Andersen
  */
-public abstract sealed class BlockDeclaration extends DeclarationScope permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
+public abstract sealed class BlockDeclaration extends DeclarationScope
+permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 	
 	/**
 	 * If true; this is the outermost Subblock or Prefixed Block.
