@@ -399,7 +399,7 @@ public final class SimulaCompiler {
 					Util.println("Execute .jar File");
 				Vector<String> cmds = new Vector<String>();
 				cmds.add("java");
-//				cmds.add("--enable-preview"); // TODO: Change when ClassFile API is releeased
+//				cmds.add("--enable-preview"); // TODO: Change when ClassFile API is released
 				cmds.add("-jar");
 				cmds.add(jarFile);
 				if (Option.RUNTIME_USER_DIR.length() > 0) {
@@ -431,10 +431,10 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	private int callJavaSystemCompiler(final JavaCompiler compiler, final String classPath) throws IOException {
 		Vector<String> arguments = new Vector<String>();
-//		arguments.add("-source"); arguments.add("21"); // TODO: Change when ClassFile API is releeased
+//		arguments.add("-source"); arguments.add("21"); // TODO: Change when ClassFile API is released
 		arguments.add("-target");
 		arguments.add("21");
-//		arguments.add("-release"); arguments.add("21"); // TODO: Change when ClassFile API is releeased
+//		arguments.add("-release"); arguments.add("21"); // TODO: Change when ClassFile API is released
 		if (Option.DEBUGGING) {
 			arguments.add("-version");
 		}
@@ -478,10 +478,10 @@ public final class SimulaCompiler {
 	private int callJavacCompiler(final String classPath) throws IOException {
 		Vector<String> cmds = new Vector<String>();
 		cmds.add("javac");
-//		cmds.add("-source"); cmds.add("21"); // TODO: Change when ClassFile API is releeased
+//		cmds.add("-source"); cmds.add("21"); // TODO: Change when ClassFile API is released
 		cmds.add("-target");
 		cmds.add("21");
-//		cmds.add("-release"); cmds.add("21"); // TODO: Change when ClassFile API is releeased
+//		cmds.add("-release"); cmds.add("21"); // TODO: Change when ClassFile API is released
 		if (Option.DEBUGGING) {
 			cmds.add("-version");
 		}
