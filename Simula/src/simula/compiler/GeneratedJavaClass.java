@@ -94,8 +94,7 @@ public final class GeneratedJavaClass {
 	 * @return the output file for generated Java code
 	 */
 	String getClassOutputFileName() {
-		return (Global.tempClassFileDir + "/" + Global.packetName + '/' + blockDeclaration.getJavaIdentifier()
-				+ ".class");
+		return (Global.tempClassFileDir + "/" + Global.packetName + '/' + blockDeclaration.getJavaIdentifier() + ".class");
 	}
 
 	/**

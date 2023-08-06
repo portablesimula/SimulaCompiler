@@ -187,7 +187,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		GeneratedJavaClass.code("{");
 		if(labelcodeList!=null) {
 			for(String labCode:labelcodeList) {
-				GeneratedJavaClass.code("_PRE_LABEL();");
+				if(Option.USE_FILE_CLASS_API==2) GeneratedJavaClass.code("_PRE_LABEL();");
 				GeneratedJavaClass.code(labCode);
 			}
 		}

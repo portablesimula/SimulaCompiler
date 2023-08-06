@@ -17,7 +17,49 @@ import simula.editor.RTOption;
 import simula.editor.SimulaEditor;
 
 /**
- * Simula Main class.
+ * Simula Main class containing the 'main' entry.
+ * <p>
+ * The Simula Compiler is normally activated through a command-line of this form:
+ * <pre>
+ *		java -jar releaseHome\simula.jar
+ *</pre>
+ * In this simple case the Simula Editor is started.
+ * <h2>General Case:</h2>
+ * In special rare situations you may use the general version of the command-line form:
+ * <pre>
+ * 		java [java-options] -jar releaseHome\simula.jar [simula-options] simula-sourceFile
+ * </pre>
+ * Java-options are described in the relevant Java Technical Dokumentation.
+ * <p>
+ * Simula-sourceFile is the file containing the Simula text to be compiled and executed.
+ * <p>
+ * Possible simula-options include:
+ * <pre>
+ *      -help                   Print this synopsis of standard options
+ *      
+ *      -caseSensitive          Source file is case sensitive. See next page.
+ *      
+ *      -noexec                 Don't execute generated .jar file
+ *      
+ *      -nowarn                 Generate no warnings
+ *      
+ *      -noextension            Disable all language extensions.
+ *                              In other words, follow the Simula Standard literally
+ *                              
+ *      -select characters      First, all selectors are reset.
+ *                              Then, for each character, the corresponding selector is set
+ *                              
+ *      -verbose                Output messages about what the compiler is doing
+ *      
+ *      -keepJava directory     Specify where to place generated .java files
+ *                              Default: Temp directory which is deleted upon exit
+ *                              
+ *      -output directory       Specify where to place generated executable .jar file
+ *                              Default: Current workspace\bin
+ *                              
+ *      -extLib directory       Specify where to search for precompiled classes and
+ *                              procedures. If not found, output directory is also searched.
+ * </pre>
  * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/Simula.java"><b>Source File</b></a>.
 
@@ -87,18 +129,16 @@ public final class Simula {
 		}	
 	    if(!Option.INLINE_TESTING) Global.simulaRtsLib=new File(Global.simulaHome,"rts");
 	    
-//	    Util.IERR("");
-	    
 		if (fileName == null) {
-		    // *** STARTING SIMULA EDITOR ***
-			Global.sampleSourceDir=new File(Global.simulaHome,"samples");
+			// *** STARTING SIMULA EDITOR ***
+			Global.sampleSourceDir = new File(Global.simulaHome, "samples");
 			RTOption.InitRuntimeOptions();
-	    	Option.InitCompilerOptions();
-	    	SimulaEditor editor=new SimulaEditor();
-	    	editor.setVisible(true);
+			Option.InitCompilerOptions();
+			SimulaEditor editor = new SimulaEditor();
+			editor.setVisible(true);
 		} else {
-		    // *** STARTING SIMULA COMPILER ***
-		    new SimulaCompiler(fileName).doCompile();
+			// *** STARTING SIMULA COMPILER ***
+			new SimulaCompiler(fileName).doCompile();
 		}
 	}
 
@@ -108,24 +148,25 @@ public final class Simula {
 		help();
 	}
 
-    /**
-     * Set selectors for conditional compilation.
-     * <pre>
-     * %SELECT select-character { select-character }
+	/**
+	 * Set selectors for conditional compilation.
+	 * 
+	 * <pre>
+	 * %SELECT select-character { select-character }
 	 * </pre>
 	 * 
 	 * @param chars select characters
 	 */
-    public static void setSelectors(String chars) {
-    	for(int i=0;i<255;i++) SimulaScanner.selector[i]=false;
-    	for(int j=0;j<chars.length();j++) {
-    		char c=chars.charAt(j);
-    		if(c!=' ' && c!='\n') {
-    			//System.out.println("Simula.setSelectors: "+ c + " ON");
-    			SimulaScanner.selector[c]=true;
-    		}
-    	}
-    }
+	public static void setSelectors(String chars) {
+		for (int i = 0; i < 255; i++)
+			SimulaScanner.selector[i] = false;
+		for (int j = 0; j < chars.length(); j++) {
+			char c = chars.charAt(j);
+			if (c != ' ' && c != '\n') {
+				SimulaScanner.selector[c] = true;
+			}
+		}
+	}
 
 	/**
 	 * Option: -keepJava <directory> Specify where to place generated .java files

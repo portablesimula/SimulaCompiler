@@ -75,7 +75,7 @@ public final class LabeledStatement extends Statement {
 			Meaning meaning=Global.getCurrentScope().findLabelMeaning(label);
 			LabelDeclaration decl=(LabelDeclaration)meaning.declaredAs;
 			String labelcode;
-			if(Option.USE_FILE_CLASS_API)
+			if(Option.USE_FILE_CLASS_API > 0)
 				 labelcode="_SIM_LABEL("+decl.index+");";
 			else labelcode="_LABEL("+decl.index+",\""+decl.identifier+"\");";
 			if(statement instanceof BlockStatement stat) {
@@ -83,12 +83,12 @@ public final class LabeledStatement extends Statement {
 				if(blockStatement.isCompoundStatement())
 				    blockStatement.addLeadingLabel(labelcode);
 				else {
-					GeneratedJavaClass.code("_PRE_LABEL()");
+					if(Option.USE_FILE_CLASS_API==2) GeneratedJavaClass.code("_PRE_LABEL()");
 					GeneratedJavaClass.code(labelcode);
 				}
 			}
 			else {
-				GeneratedJavaClass.code("_PRE_LABEL();");
+				if(Option.USE_FILE_CLASS_API==2) GeneratedJavaClass.code("_PRE_LABEL();");
 				GeneratedJavaClass.code(labelcode);
 			}
 		}

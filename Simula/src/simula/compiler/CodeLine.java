@@ -63,20 +63,21 @@ public final class CodeLine implements Externalizable {
 	/**
 	 * Default constructor used by Externalization.
 	 */
-	public CodeLine() { }
-	
+	public CodeLine() {	}
+
 	@Override
 	public void writeExternal(ObjectOutput oupt) throws IOException {
-		Util.TRACE_OUTPUT(""+this);
-	    oupt.writeInt(sourceLineNumber);
-	    oupt.writeObject(codeLine);
-	    oupt.writeObject(modid);
+		Util.TRACE_OUTPUT("" + this);
+		oupt.writeInt(sourceLineNumber);
+		oupt.writeObject(codeLine);
+		oupt.writeObject(modid);
 	}
+
 	@Override
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
-		sourceLineNumber=inpt.readInt();
-		codeLine=(String)inpt.readObject();
-		modid=(String)inpt.readObject();
-		Util.TRACE_INPUT(""+this);
+		sourceLineNumber = inpt.readInt();
+		codeLine = (String) inpt.readObject();
+		modid = (String) inpt.readObject();
+		Util.TRACE_INPUT("" + this);
 	}
 }

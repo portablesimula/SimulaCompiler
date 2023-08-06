@@ -39,9 +39,6 @@ public final class AttributeFileIO {
 	 * The attribute file.
 	 */
 	final File attributeFile;
-//	ObjectOutputStream oupt;
-//	ObjectInputStream inpt;
-//	boolean verbose=false;//true;
 	
 	private AttributeFileIO(final File attributeFile) {
 		this.attributeFile = attributeFile;

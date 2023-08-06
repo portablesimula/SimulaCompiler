@@ -275,7 +275,9 @@ public final class RunCompilerTest {
 			Option.TRACE_CODING=true;
 //			Option.GNERATE_LINE_CALLS=true;
 //			
-			Option.USE_FILE_CLASS_API=true;
+			Option.USE_FILE_CLASS_API=1;
+//			Option.USE_FILE_CLASS_API=2;
+			
 //			Option.TRACE_REPAIRING=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
 //			Option.DEBUGGING=true;

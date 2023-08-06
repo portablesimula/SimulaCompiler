@@ -62,7 +62,7 @@ public final class Option {
 	public static boolean GNERATE_LINE_CALLS=false;
 
 	// Byte code engineering Options
-	public static boolean USE_FILE_CLASS_API=false;
+	public static int USE_FILE_CLASS_API=0;
 	public static boolean TRACE_BYTECODE_OUTPUT=false;
 	public static boolean LIST_REPAIRED_INSTRUCTION_LIST=false;
 	public static boolean TRACE_REPAIRING=false;
