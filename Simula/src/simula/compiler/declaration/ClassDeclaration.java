@@ -36,34 +36,34 @@ import simula.compiler.utilities.Util;
  * 
  * ClassDeclaration = [ Prefix ] MainPart
  * 
- *	Prefix = ClassIdentifier
+ *   Prefix = ClassIdentifier
  *
- *    MainPart = CLASS ClassIdentifier  ClassHead  ClassBody
- *		ClassIdentifier = Identifier
+ *   MainPart = CLASS ClassIdentifier  ClassHead  ClassBody
+ *      ClassIdentifier = Identifier
  *
- *		ClassHead = [ FormalParameterPart ; [ ValuePart ] SpecificationPart ] ;
- *				    [ ProtectionPart ; ] [ VirtualPart ]
+ *      ClassHead = [ FormalParameterPart ; [ ValuePart ] SpecificationPart ] ;
+ *                  [ ProtectionPart ; ] [ VirtualPart ]
  *
- *			FormalParameterPart = "(" FormalParameter { , FormalParameter } ")"
- *				FormalParameter = Identifier
+ *         FormalParameterPart = "(" FormalParameter { , FormalParameter } ")"
+ *            FormalParameter = Identifier
  *
- *			ValuePart = VALUE IdentifierList
+ *            ValuePart = VALUE IdentifierList
  *
- *			SpecificationPart = ClassParameterSpecifier  IdentifierList ; { ClassParameterSpecifier  IdentifierList ; }
- *				ClassParameterSpecifier = Type | [Type] ARRAY 
+ *            SpecificationPart = ClassParameterSpecifier  IdentifierList ; { ClassParameterSpecifier  IdentifierList ; }
+ *               ClassParameterSpecifier = Type | [Type] ARRAY 
  *
- *			ProtectionPart = ProtectionSpecification { ; ProtectionSpecification }
- *				ProtectionSpecification = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
- *										| PROTECTED IdentifierList | PROTECTED HIDDEN IdentifierList
+ *            ProtectionPart = ProtectionSpecification { ; ProtectionSpecification }
+ *               ProtectionSpecification = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
+ *                                       | PROTECTED IdentifierList | PROTECTED HIDDEN IdentifierList
  *
- *			VirtualPart = VIRTUAL: virtual-specification-part
- *				VirtualSpecificationPart = VirtualSpecification ; { VirtualSpecification ; }
- *					VirtualSpecification = VirtualSpecifier IdentifierList
- *						VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
+ *         VirtualPart = VIRTUAL: virtual-specification-part
+ *            VirtualSpecificationPart = VirtualSpecification ; { VirtualSpecification ; }
+ *               VirtualSpecification = VirtualSpecifier IdentifierList
+ *                  VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
  *
- *		ClassBody = SplitBody | Statement
- *			SplitBody = BEGIN [ { Declaration ; } ]  [ { Statement ; } ] InnerPart  [ { Statement ; } ] 
- *				InnerPart = [ Label : ] INNER ;
+ *      ClassBody = SplitBody | Statement
+ *         SplitBody = BEGIN [ { Declaration ; } ]  [ { Statement ; } ] InnerPart  [ { Statement ; } ] 
+ *            InnerPart = [ Label : ] INNER ;
  *
  * </pre>
  * 
