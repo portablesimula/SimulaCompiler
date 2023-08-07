@@ -19,8 +19,18 @@ import simula.compiler.utilities.Util;
 
 /**
  * Prefixed Block Declaration.
- * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/PrefixedBlockDeclaration.java"><b>Source File</b></a>.
+ * <pre>
+ * Syntax:
+ * 
+ *	 PrefixedBlock = prefix BEGIN [ { Declaration ; } ]  [ { Statement ; } ] END
+ *
+ *		prefix = class-identifier [ actual-parameter-part ]
+ *
+ * </pre>
+ * 
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/PrefixedBlockDeclaration.java"><b>Source
+ * File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -36,15 +46,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	/**
 	 * PrefixedBlock.
-	 * 
-	 * <pre>
-	 * Syntax:
-	 * 
-	 *	 PrefixedBlock = prefix BEGIN [ { Declaration ; } ]  [ { Statement ; } ] END
-	 *
-	 *		prefix = class-identifier [ actual-parameter-part ]
-	 *
-	 * </pre>
 	 * 
 	 * @param identifier the block identifier
 	 * @param blockPrefix the block prefix

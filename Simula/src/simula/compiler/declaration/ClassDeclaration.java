@@ -165,7 +165,7 @@ permits StandardClass, PrefixedBlockDeclaration {
 			// ValuePart = VALUE IdentifierList ;
 			// NamePart = NAME IdentifierList ;
 			if (Parse.accept(KeyWord.VALUE)) {
-				expectModeList(block, block.parameterList, Parameter.Mode.value);
+				expectValueList(block.parameterList);
 				Parse.expect(KeyWord.SEMICOLON);
 			}
 			// ParameterPart = Parameter ; { Parameter ; }
@@ -216,14 +216,23 @@ permits StandardClass, PrefixedBlockDeclaration {
 	}
 
 	// ***********************************************************************************************
-	// *** PARSING: expectModeList
+	// *** PARSING: expectValueList
 	// ***********************************************************************************************
-	private static void expectModeList(final BlockDeclaration block, final Vector<Parameter> parameterList,
-			final Parameter.Mode mode) {
+	/**
+	 * Parse utility: Expect value list and set matching parameter's mode.
+	 * 
+	 * <pre>
+	 * Syntax:
+	 *              VALUE identifier-list ;
+	 * </pre>
+	 * 
+	 * @param pList Parameter list
+	 */
+	private static void expectValueList(final Vector<Parameter> pList) {
 		do {
 			String identifier = Parse.expectIdentifier();
 			Parameter parameter = null;
-			for (Parameter par : parameterList)
+			for (Parameter par : pList)
 				if (Util.equals(identifier, par.identifier)) {
 					parameter = par;
 					break;
@@ -232,7 +241,7 @@ permits StandardClass, PrefixedBlockDeclaration {
 				Util.error("Identifier " + identifier + " is not defined in this scope");
 				parameter = new Parameter(identifier);
 			}
-			parameter.setMode(mode);
+			parameter.setMode(Parameter.Mode.value);
 		} while (Parse.accept(KeyWord.COMMA));
 	}
 
@@ -590,6 +599,11 @@ permits StandardClass, PrefixedBlockDeclaration {
 	// ***********************************************************************************************
 	// *** Utility: withinScope -- Used by findRemoteAttributeMeaning
 	// ***********************************************************************************************
+	/**
+	 * Checks if the other scope is this scope or any of the prefixes.
+	 * @param otherScope the other scope
+	 * @return true if the other scope is this scope or any of the prefixes
+	 */
 	private static boolean withinScope(final DeclarationScope otherScope) {
 		DeclarationScope scope = Global.getCurrentScope();
 		while (scope != null) {
@@ -735,7 +749,13 @@ permits StandardClass, PrefixedBlockDeclaration {
 	 *
 	 */
 	public final class ClassParameterIterator implements Iterator<Parameter>, Iterable<Parameter> {
+		/**
+		 * The prefix Iterator
+		 */
 		private Iterator<Parameter> prefixIterator;
+		/**
+		 * The local Iterator
+		 */
 		private Iterator<Parameter> localIterator;
 
 		/**
@@ -866,7 +886,7 @@ permits StandardClass, PrefixedBlockDeclaration {
 	/**
 	 * Edit the formal parameter list
 	 * <p>
-	 * Also used by subclass StandardProcedure.
+	 * Also used by subclass PrefixedBlockDeclaration.
 	 * 
 	 * @return the resulting Java code
 	 */

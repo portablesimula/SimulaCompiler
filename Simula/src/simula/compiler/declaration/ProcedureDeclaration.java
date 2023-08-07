@@ -25,12 +25,53 @@ import simula.compiler.utilities.Util;
 
 /**
  * Procedure Declaration.
- * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureDeclaration.java"><b>Source File</b></a>.
+ * <pre>
+ *      procedure-declaration
+ *          = [ type ] PROCEDURE procedure-heading ; procedure-body
+ *      
+ *            procedure-heading
+ *                = procedure-identifier [ formal-parameter-part ; [ mode-part ] specification-part ] 
+ *                
+ *            procedure-body
+ *                = statement
+ *                
+ *            procedure-identifier
+ *                = identifier
+ *                
+ *            formal-parameter-part
+ *                = "(" formal-parameter { , formal-parameter } ")"
+ *            
+ *            formal-parameter
+ *                = identifier
+ *            
+ *            specification-part
+ *                = specifier identifier-list { ; specifier identifier-list }
+ *            
+ *            specifier
+ *                = type [ ARRAY | PROCEDURE ]
+ *                | LABEL
+ *                | SWITCH 
+ *                
+ *            mode-part
+ *                = name-part [ value-part ]
+ *                | value-part [ name-part ]
+ *            
+ *            name-part
+ *                = NAME identifier-list ;
+ *            
+ *            value-part
+ *                = VALUE identifier-list ;
+ *            
+ *            identifier-list
+ *                = identifier { , identifier }
+ * </pre>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
-public sealed class ProcedureDeclaration extends BlockDeclaration implements Externalizable permits StandardProcedure, SwitchDeclaration {
+public sealed class ProcedureDeclaration extends BlockDeclaration implements Externalizable
+permits StandardProcedure, SwitchDeclaration {
 	
 	/**
 	 * Parameter list.
@@ -64,34 +105,8 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	/**
 	 * Procedure Declaration.
-	 * 
-	 * <pre>
-	 * Syntax:
-	 * 
-	 * ProcedureDeclaration
-	 *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead ProcedureBody
-	 *     
-	 * ProcedureIdentifier = Identifier
-	 * 
-	 * ProcedureHead
-	 *     = ProcedureIdentifier [ FormalParameterPart ; [ ModePart ] ProcedureSpecificationPart  ] ;
-	 *         
-	 * ProcedureHead = [ FormalParameterPart ; [ ModePart ] ParameterPart  ] ;
-	 *
-	 *	FormalParameterPart = "(" FormalParameter { , FormalParameter } ")"
-	 *		FormalParameter = Identifier
-	 *	
-	 *	ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
-	 *		ValuePart = VALUE IdentifierList ;
-	 *		NamePart  = NAME  IdentifierList ;
-	 *	
-	 *	ProcedureSpecificationPart = ProcedureSpecifier IdentifierList ; { ProcedureSpecifier IdentifierList ; }
-	 *		ProcedureSpecifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
-	 *
-	 * ProcedureBody = Statement
-	 * 
-	 * </pre>
-	 * 
+	 * <p>
+	 * Parse and build a ProcedureDeclaration.
 	 * @param type procedure's type
 	 * @return a newly created ProcedureDeclaration
 	 */
@@ -112,26 +127,26 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 			// ValuePart = VALUE IdentifierList ;
 			// NamePart = NAME IdentifierList ;
 			if (Parse.accept(KeyWord.VALUE)) {
-				expectModeList(block, block.parameterList, Parameter.Mode.value);
+				expectModeList(block.parameterList, Parameter.Mode.value);
 				Parse.expect(KeyWord.SEMICOLON);
 			}
 			if (Parse.accept(KeyWord.NAME)) {
-				expectModeList(block, block.parameterList, Parameter.Mode.name);
+				expectModeList(block.parameterList, Parameter.Mode.name);
 				Parse.expect(KeyWord.SEMICOLON);
 			}
 			if (Parse.accept(KeyWord.VALUE)) {
-				expectModeList(block, block.parameterList, Parameter.Mode.value);
+				expectModeList(block.parameterList, Parameter.Mode.value);
 				Parse.expect(KeyWord.SEMICOLON);
 			}
 			// ParameterPart = Parameter ; { Parameter ; }
 			// Parameter = Specifier IdentifierList
 			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
-			while (acceptProcedureParameterSpecifications(block, block.parameterList)) {
+			while (acceptProcedureParameterSpecifications(block)) {
 				Parse.expect(KeyWord.SEMICOLON);
 			}
 		} else Parse.expect(KeyWord.SEMICOLON);
 		if (Parse.accept(KeyWord.BEGIN))
-			doParseBody(block);
+			doParseBodyBlock(block);
 		else block.statements.add(Statement.doParse());
 
 		block.lastLineNumber = Global.sourceLineNumber;
@@ -143,11 +158,23 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	// *** PARSING: expectModeList
 	// ***********************************************************************************************
-	private static void expectModeList(final BlockDeclaration block, final Vector<Parameter> parameterList,final Parameter.Mode mode) {
+	/**
+	 * Parse utility: Expect mode list and set matching parameter's mode.
+	 * 
+	 * <pre>
+	 * Syntax:
+	 *              name  identifier-list ;
+	 *              value identifier-list ;
+	 * </pre>
+	 * 
+	 * @param pList Parameter list
+	 * @param mode  Transmission mode
+	 */
+	private static void expectModeList(final Vector<Parameter> pList,final Parameter.Mode mode) {
 		do {
 			String identifier = Parse.expectIdentifier();
 			Parameter parameter = null;
-			for (Parameter par : parameterList)
+			for (Parameter par : pList)
 				if (Util.equals(identifier, par.identifier)) {
 					parameter = par;
 					break;
@@ -163,9 +190,20 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	// *** PARSING: acceptProcedureParameterSpecifications
 	// ***********************************************************************************************
-	private static boolean acceptProcedureParameterSpecifications(final BlockDeclaration block,final Vector<Parameter> parameterList) {
-		// ProcedureParameter = ProcedureParameterSpecifier IdentifierList
-		// ProcedureParameterSpecifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
+	/**
+	 * Parse utility: accept Procedure Parameter specification-part
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *     specification-part
+     *           = specifier identifier-list { ; specifier identifier-list }
+	 *     
+	 *        specifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
+	 * </pre>
+	 * @param proc the procedure declaration
+	 * @return false when no specification-part is found, otherwise true
+	 */
+	private static boolean acceptProcedureParameterSpecifications(final ProcedureDeclaration proc) {
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ParameterSpecifications");
 		Type type;
 		Parameter.Kind kind = Parameter.Kind.Simple;
@@ -191,7 +229,7 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 		do {
 			String identifier = Parse.expectIdentifier();
 			Parameter parameter = null;
-			for (Parameter par : parameterList)
+			for (Parameter par : proc.parameterList)
 				if (Util.equals(identifier,par.identifier)) { parameter = par; break; }
 			if (parameter == null) {
 				Util.error("Identifier " + identifier + " is not defined in this scope");
@@ -203,15 +241,23 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	}
 
 	// ***********************************************************************************************
-	// *** PARSING: doParseBody
+	// *** PARSING: doParseBodyBlock
 	// ***********************************************************************************************
-	private static void doParseBody(final BlockDeclaration block) {
+	/**
+	 * Parse utility: parse procedure body block updating the procedure's declaration and statement lists.
+	 * <pre>
+	 * Syntax:
+	 *          BEGIN declaration { ; declaration } statement { ; statement } END
+	 * </pre>
+	 * @param proc the procedure
+	 */
+	private static void doParseBodyBlock(final ProcedureDeclaration proc) {
 		Statement stm;
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse Block");
-		while (Declaration.parseDeclaration(block.declarationList)) {
+		while (Declaration.parseDeclaration(proc.declarationList)) {
 			Parse.accept(KeyWord.SEMICOLON);
 		}
-		Vector<Statement> stmList = block.statements;
+		Vector<Statement> stmList = proc.statements;
 		while (!Parse.accept(KeyWord.END)) {
 			stm = Statement.doParse();
 			if (stm != null) stmList.add(stm);
@@ -295,7 +341,11 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	// *** Coding: METHOD -- Generate Inline Method code for Procedure.
 	// ***********************************************************************************************
-	// Generate Inline Method code for Procedure.
+	/**
+	 * Generate Inline Method code for Procedure.
+	 * @param modifier mthod modifier: "static " or ""
+	 * @param addStaticLink add static link as 0'th parameter
+	 */
 	private void doMethodJavaCoding(final String modifier,final boolean addStaticLink) {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED();
@@ -318,7 +368,12 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	// *** Coding Utility: edFormalParameterList
 	// ***********************************************************************************************
-	// Also used by subclass StandardProcedure
+	/**
+	 * Edit the formal parameter list
+	 * @param isInlineMethod true if generating an inline method, otherwise false
+	 * @param addStaticLink add static link as 0'th parameter
+	 * @return the resulting Java code
+	 */
 	private String edFormalParameterList(final boolean isInlineMethod,final boolean addStaticLink) {
 		// Accumulates through prefix-chain when class
 		StringBuilder s = new StringBuilder();
@@ -343,6 +398,9 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	// *** Coding: PROCEDURE
 	// ***********************************************************************************************
+	/**
+	 * Generate java source code for this Procedure.
+	 */
 	private void doProcedureCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED();
@@ -387,6 +445,9 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeConstructor
 	// ***********************************************************************************************
+	/**
+	 * Generate Java source code for the constructor.
+	 */
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + edFormalParameterList(false, true));
@@ -404,6 +465,9 @@ public sealed class ProcedureDeclaration extends BlockDeclaration implements Ext
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodePrepareFormal
 	// ***********************************************************************************************
+	/**
+	 * Generate Java source code prepared for 'call formal procedure'.
+	 */
 	private void doCodePrepareFormal() {
 		GeneratedJavaClass.debug("// Parameter Transmission in case of Formal/Virtual Procedure Call");
 		GeneratedJavaClass.code("@Override");

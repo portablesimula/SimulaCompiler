@@ -19,7 +19,10 @@ import simula.compiler.utilities.Util;
 /**
  * Parameter Declaration.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/Parameter.java"><b>Source File</b></a>.
+ * A parameter models class and procedure parameters.
+ * <p>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/Parameter.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

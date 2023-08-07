@@ -20,9 +20,23 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * Maybe Block Declaration.
- * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/MaybeBlockDeclaration.java"><b>Source File</b></a>.
+ * Maybe Block Declaration. I.e: CompoundStatement or SubBlock depends on
+ * whether it contains declarations.
+ * 
+ * <pre>
+ * Syntax:
+ * 
+ * Block = CompoundStatement | SubBlock
+ * 
+ *	 CompoundStatement = BEGIN [ { Statement ; } ] END
+ *
+ * 	 SubBlock = BEGIN [ { Declaration ; } ]  [ { Statement ; } ] END
+ *
+ * </pre>
+ * 
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/MaybeBlockDeclaration.java"><b>Source
+ * File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -63,7 +77,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// *** Parsing: parseMaybeBlock
 	// ***********************************************************************************************
 	/**
-	 * Parse CompoundStatement, SubBlock or PrefixedBlock.
+	 * Parse CompoundStatement or SubBlock.
 	 * 
 	 * <pre>
 	 * Syntax:
