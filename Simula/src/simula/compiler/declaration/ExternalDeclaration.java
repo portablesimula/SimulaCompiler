@@ -40,8 +40,8 @@ import simula.compiler.utilities.Util;
  * External Class Declaration
  * 
  * <pre>
-     external-class-declaration
-         =  EXTERNAL  CLASS  ExternalList
+ *    external-class-declaration
+ *        =  EXTERNAL  CLASS  external-list
  * </pre>
  * 
  * An implementation may restrict the number of block levels at which an
@@ -60,15 +60,15 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * ExternalProcedureDeclaration
- *         = EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
- *         | EXTERNAL kind PROCEDURE ExternalItem  IS ProcedureDeclaration
+ * external-procedure-declaration
+ *         = EXTERNAL [ kind ] [ type ] PROCEDURE external-list
+ *         | EXTERNAL kind PROCEDURE external-item  IS procedure-declaration
  *         
- *    ExternalList = ExternalItem { , ExternalItem }
- * 	  ExternalItem = identifier [ "=" ExternalIdentifier ]
+ *    external-list = external-item { , external-item }
+ * 	  external-item = identifier [ "=" external-identification ]
  * 
  *		 kind  =  identifier  // E.g. FORTRAN, JAVA, ...
- *		 ExternalIdentifier = TextConstant   // E.g  a file-name
+ *		 external-identification = string   // E.g  a file-name
  * 
  * </pre>
  * <p>
@@ -95,6 +95,10 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ExternalDeclaration extends Declaration {
+	
+	/**
+	 * Create a new ExternalDeclaration.
+	 */
 	private ExternalDeclaration() {
 		super(null);
 		this.declarationKind = Declaration.Kind.ExternalDeclaration;
@@ -102,13 +106,18 @@ public final class ExternalDeclaration extends Declaration {
 
 	/**
 	 * Parse an external declaration updating a declaration list.
-	 * 
+	 * <pre>
+	 *    external-class-declaration
+	 *         =  EXTERNAL  CLASS  external-list
+	 *        
+	 *    external-procedure-declaration
+	 *         = EXTERNAL [ kind ] [ type ] PROCEDURE external-list
+	 *         | EXTERNAL kind PROCEDURE external-item  IS procedure-declaration
+	 * </pre>
+	 * Precondition: EXTERNAL  is already read.
 	 * @param declarationList the declaration list which is updated
 	 */
-	public static void doParse(final DeclarationList declarationList) {
-		// = EXTERNAL CLASS ExternalList
-		// | EXTERNAL [ kind ] [ type ] PROCEDURE ExternalList
-		// | EXTERNAL kind PROCEDURE ExternalItem IS ProcedureDeclaration
+	public static void expectExternalDeclaration(final DeclarationList declarationList) {
 		String kind = Parse.acceptIdentifier();
 		if (kind != null)
 			Util.IERR("*** NOT IMPLEMENTED: " + "External " + kind + " Procedure");
@@ -143,6 +152,12 @@ public final class ExternalDeclaration extends Declaration {
 		}
 	}
 
+	/**
+	 * Find the .jar file containing an external class or procedure.
+	 * @param identifier class or procedure identifier
+	 * @param externalIdentifier the external identifier if any
+	 * @return the resulting File
+	 */
 	private static File findJarFile(final String identifier, final Token externalIdentifier) {
 		File jarFile = null;
 		try {
@@ -168,6 +183,13 @@ public final class ExternalDeclaration extends Declaration {
 		return (null);
 	}
 
+	/**
+	 * Read an attribute file.
+	 * @param identifier class or procedure identifier
+	 * @param file the file to read
+	 * @param declarationList the declaration list to update
+	 * @return the module type
+	 */
 	private static Type readAttributeFile(final String identifier, final File file,
 			final DeclarationList declarationList) {
 		Type moduleType = null;
@@ -199,6 +221,12 @@ public final class ExternalDeclaration extends Declaration {
 		return (moduleType);
 	}
 
+	/**
+	 * Expand .jar file entries into the given directory.
+	 * @param jarFile the .jar file
+	 * @param destDir the output directory
+	 * @throws IOException if something went wrong
+	 */
 	private static void expandJarEntries(final JarFile jarFile, final File destDir) throws IOException {
 		if (Option.verbose)
 			Util.println("---------  EXPAND .jar File: " + jarFile.getName() + "  ---------");

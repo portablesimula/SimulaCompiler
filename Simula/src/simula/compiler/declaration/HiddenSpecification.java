@@ -17,7 +17,14 @@ import simula.compiler.utilities.Util;
 
 /**
  * Hidden Specification.
- * <p>
+ * <pre>
+ * Syntax: 
+ *     protection-specification
+ *         = hidden identifier-list
+ *         | protected identifier-list
+ *         | hidden protected identifier-list
+ *         | protected hidden identifier-list
+ * </pre>
  * Link to GitHub: <a href=
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/HiddenSpecification.java"><b>Source File</b></a>.
  * 
@@ -35,8 +42,16 @@ public final class HiddenSpecification implements Externalizable {
 	 * The class in which this HiddenSpecification occur.
 	 */
 	ClassDeclaration definedIn;
+	
+	/**
+	 * The ProtectedSpecification set during doChecking
+	 */
 	private ProtectedSpecification protectedBy; // Set during doChecking
 
+	/**
+	 * Returns the ProtectedSpecification which protect this hidden.
+	 * @return the ProtectedSpecification which protect this hidden.
+	 */
 	private ProtectedSpecification getProtectedBy() {
 		if (protectedBy == null)
 			doChecking();
@@ -69,9 +84,12 @@ public final class HiddenSpecification implements Externalizable {
 	}
 
 	// ***********************************************************************************************
-	// *** Utility: getMatchingProtected -- Find protected attribute and update
-	// pointers
+	// *** Utility: getMatchingProtected -- Find protected attribute and update pointers
 	// ***********************************************************************************************
+	/**
+	 * Find protected attribute and update pointers.
+	 * @return the resulting ProtectedSpecification
+	 */
 	private ProtectedSpecification getMatchingProtected() {
 		ClassDeclaration scope = this.definedIn;
 		ProtectedSpecification gotProtected = scope.searchProtectedList(identifier);
@@ -110,8 +128,14 @@ public final class HiddenSpecification implements Externalizable {
 	}
 
 	// ***********************************************************************************************
-	// *** Utility: findHidden -- Search Protected-list for 'ident'
+	// *** Utility: findHidden -- Search hidden-list for 'ident'
 	// ***********************************************************************************************
+	/**
+	 * Search scope's hidden-list for 'ident'
+	 * @param scope the given scope
+	 * @param ident the given ident
+	 * @return the resulting HiddenSpecification
+	 */
 	private static HiddenSpecification findHidden(final ClassDeclaration scope, final String ident) {
 		for (HiddenSpecification hdn : scope.hiddenList)
 			if (Util.equals(ident, hdn.identifier))

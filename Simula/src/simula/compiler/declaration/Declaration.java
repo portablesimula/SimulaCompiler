@@ -264,7 +264,7 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 			}
 			declarationList.add(new SwitchDeclaration(ident));
 		} else if (Parse.accept(KeyWord.EXTERNAL))
-			ExternalDeclaration.doParse(declarationList);
+			ExternalDeclaration.expectExternalDeclaration(declarationList);
 		else {
 			Type type = Parse.acceptType();
 			if (type == null)
@@ -280,7 +280,7 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 	// *** Utility: isCompatibleClasses -- Used by IS/IN/QUA-checking and Inspect WHEN
 	// ***********************************************************************************************
 	/**
-	 * Check if these classes are isCompatible.
+	 * Check if these classes are compatible.
 	 * 
 	 * @param other the other ClassDeclaration
 	 * @return the resulting boolean value

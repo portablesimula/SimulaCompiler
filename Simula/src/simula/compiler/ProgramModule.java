@@ -98,7 +98,7 @@ public final class ProgramModule extends Statement {
 			     .setClassDeclaration(StandardClass.Printfile);
 			Global.getCurrentScope().sourceBlockLevel=0;
 			while(Parse.accept(KeyWord.EXTERNAL)) {
-				ExternalDeclaration.doParse(StandardClass.ENVIRONMENT.declarationList);
+				ExternalDeclaration.expectExternalDeclaration(StandardClass.ENVIRONMENT.declarationList);
 				Parse.expect(KeyWord.SEMICOLON);
 			}
 			String ident=Parse.acceptIdentifier();

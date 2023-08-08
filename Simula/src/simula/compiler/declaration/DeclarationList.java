@@ -20,9 +20,8 @@ import simula.compiler.utilities.Util;
  * 
  * @author Øystein Myhre Andersen
  */
+@SuppressWarnings("serial")
 public final class DeclarationList extends Vector<Declaration> {
-	
-	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Identifier.
