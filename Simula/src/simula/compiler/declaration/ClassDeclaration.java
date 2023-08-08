@@ -34,36 +34,51 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * ClassDeclaration = [ Prefix ] MainPart
+ * class-declaration = [ prefix ] main-part
  * 
- *   Prefix = ClassIdentifier
+ *   prefix = class-identifier
  *
- *   MainPart = CLASS ClassIdentifier  ClassHead  ClassBody
- *      ClassIdentifier = Identifier
+ *   main-part = CLASS class-identifier
+ *               [ formal-parameter-part ; [ value-part ] specification-part ] ;
+ *               [ protection-part ; ]
+ *               [ virtual-part ; ]
+ *               class-body
+ *   
+ *      class-identifier = identifier
+ * 
+ *      formal-parameter-part = "(" FormalParameter { , FormalParameter } ")"
+ *            FormalParameter = identifier
  *
- *      ClassHead = [ FormalParameterPart ; [ ValuePart ] SpecificationPart ] ;
- *                  [ ProtectionPart ; ] [ VirtualPart ]
+ *      value-part = VALUE identifier-list
  *
- *         FormalParameterPart = "(" FormalParameter { , FormalParameter } ")"
- *            FormalParameter = Identifier
+ *      specification-part = class-parameter-specifier  identifier-list ; { class-parameter-specifier  identifier-list ; }
+ *               class-parameter-specifier = Type | [Type] ARRAY 
  *
- *            ValuePart = VALUE IdentifierList
+ *      protection-part = protection-specification { ; protection-specification }
+ *               protection-specification = HIDDEN identifier-list | HIDDEN PROTECTED identifier-list
+ *                                        | PROTECTED identifier-list | PROTECTED HIDDEN identifier-list
  *
- *            SpecificationPart = ClassParameterSpecifier  IdentifierList ; { ClassParameterSpecifier  IdentifierList ; }
- *               ClassParameterSpecifier = Type | [Type] ARRAY 
+ *      virtual-part = VIRTUAL: virtual-spec ; { virtual-spec ; }
+ *         virtual-spec
+ *             = virtual-specifier identifier-list
+ *             | PROCEDURE procedure-identifier  procedure-specification
+ *             
+ *                virtual-Specifier = [ type ] PROCEDURE | LABEL | SWITCH
+ *                
+ *                procedure-specification = IS procedure-declaration
  *
- *            ProtectionPart = ProtectionSpecification { ; ProtectionSpecification }
- *               ProtectionSpecification = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
- *                                       | PROTECTED IdentifierList | PROTECTED HIDDEN IdentifierList
- *
- *         VirtualPart = VIRTUAL: virtual-specification-part
- *            VirtualSpecificationPart = VirtualSpecification ; { VirtualSpecification ; }
- *               VirtualSpecification = VirtualSpecifier IdentifierList
- *                  VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
- *
- *      ClassBody = SplitBody | Statement
- *         SplitBody = BEGIN [ { Declaration ; } ]  [ { Statement ; } ] InnerPart  [ { Statement ; } ] 
- *            InnerPart = [ Label : ] INNER ;
+ *      
+ *      class-body = statement | split-body
+ *      
+ *         split-body = initial-operations inner-part final-operations
+ *         
+ *            initial-operations = ( BEGIN | block-head ; ) { statement ; }
+ *         
+ *            inner-part = [ label : ] INNER ;
+ *'
+ *            final-operations
+ *               = END
+ *               | ; statement { ; statement } END
  *
  * </pre>
  * 
@@ -78,6 +93,9 @@ import simula.compiler.utilities.Util;
  */
 public sealed class ClassDeclaration extends BlockDeclaration implements Externalizable
 permits StandardClass, PrefixedBlockDeclaration {
+	/**
+	 * The external prefix'identifier.
+	 */
 	private String externalPrefixIdent;
 
 	/**
@@ -139,87 +157,65 @@ permits StandardClass, PrefixedBlockDeclaration {
 	}
 
 	// ***********************************************************************************************
-	// *** Parsing: doParseClassDeclaration
+	// *** Parsing: expectClassDeclaration
 	// ***********************************************************************************************
 	/**
 	 * Parse Class Declaration.
+ * <pre>
+ * 
+ * Syntax:
+ * 
+ * class-declaration = [ prefix ] main-part
+ * 
+ *   prefix = class-identifier
+ *
+ *   main-part = CLASS class-identifier
+ *               [ formal-parameter-part ; [ value-part ] specification-part ] ;
+ *               [ protection-part ; ]
+ *               [ virtual-part ; ]
+ *               class-body
+ *
+ * </pre>
 	 * 
 	 * @param prefix class identifier
 	 * @return the resulting ClassDeclaration
 	 */
-	public static ClassDeclaration doParseClassDeclaration(final String prefix) {
-		ClassDeclaration block = new ClassDeclaration(null);
-		block.lineNumber = Parse.prevToken.lineNumber;
-		block.prefix = prefix;
-		block.declaredIn.hasLocalClasses = true;
-		if (block.prefix == null)
-			block.prefix = StandardClass.CLASS.identifier;
-		block.modifyIdentifier(Parse.expectIdentifier());
+	public static ClassDeclaration expectClassDeclaration(final String prefix) {
+		ClassDeclaration cls = new ClassDeclaration(null);
+		cls.lineNumber = Parse.prevToken.lineNumber;
+		cls.prefix = prefix;
+		cls.declaredIn.hasLocalClasses = true;
+		if (cls.prefix == null)
+			cls.prefix = StandardClass.CLASS.identifier;
+		cls.modifyIdentifier(Parse.expectIdentifier());
 		if (Parse.accept(KeyWord.BEGPAR)) {
-			do { // ParameterPart = Parameter ; { Parameter ; }
-				new Parameter(Parse.expectIdentifier()).into(block.parameterList);
-			} while (Parse.accept(KeyWord.COMMA));
-			Parse.expect(KeyWord.ENDPAR);
+			expectFormalParameterPart(cls.parameterList);
 			Parse.expect(KeyWord.SEMICOLON);
-			// ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
-			// ValuePart = VALUE IdentifierList ;
-			// NamePart = NAME IdentifierList ;
-			if (Parse.accept(KeyWord.VALUE)) {
-				expectValueList(block.parameterList);
-				Parse.expect(KeyWord.SEMICOLON);
-			}
-			// ParameterPart = Parameter ; { Parameter ; }
-			// Parameter = Specifier IdentifierList
-			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
-			while (acceptClassParameterSpecifications(block, block.parameterList)) {
-				Parse.expect(KeyWord.SEMICOLON);
-			}
+			acceptValuePart(cls.parameterList);
+//			while (acceptParameterSpecificationPart(cls.parameterList))
+//				Parse.expect(KeyWord.SEMICOLON);
+			acceptParameterSpecificationPart(cls.parameterList);
 		} else
 			Parse.expect(KeyWord.SEMICOLON);
 
-		// ProtectionPart = ProtectionParameter { ; ProtectionParameter }
-		// ProtectionParameter = HIDDEN IdentifierList | HIDDEN PROTECTED IdentifierList
-		// | PROTECTED IdentifierList | PROTECTED HIDDEN IdentifierList
-		while (true) {
-			if (Parse.accept(KeyWord.HIDDEN)) {
-				if (Parse.accept(KeyWord.PROTECTED))
-					expectHiddenProtectedList(block, true, true);
-				else
-					expectHiddenProtectedList(block, true, false);
-			} else if (Parse.accept(KeyWord.PROTECTED)) {
-				if (Parse.accept(KeyWord.HIDDEN))
-					expectHiddenProtectedList(block, true, true);
-				else
-					expectHiddenProtectedList(block, false, true);
-			} else
-				break;
-		}
-		// VirtualPart = VIRTUAL: virtual-specification-part
-		// VirtualParameterPart = VirtualParameter ; { VirtualParameter ; }
-		// VirtualParameter = VirtualSpecifier IdentifierList
-		// VirtualSpecifier = [ type ] PROCEDURE | LABEL | SWITCH
+		acceptProtectionPart(cls);
 		if (Parse.accept(KeyWord.VIRTUAL))
-			VirtualSpecification.parseInto(block);
-
-		if (Parse.accept(KeyWord.BEGIN))
-			doParseBody(block);
-		else {
-			block.statements.add(Statement.doParse());
-			block.statements.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
-		}
-		block.lastLineNumber = Global.sourceLineNumber;
-		block.type = Type.Ref(block.identifier);
+			VirtualSpecification.expectVirtualPart(cls);
+		expectClassBody(cls);
+		
+		cls.lastLineNumber = Global.sourceLineNumber;
+		cls.type = Type.Ref(cls.identifier);
 		if (Option.TRACE_PARSE)
-			Parse.TRACE("Line " + block.lineNumber + ": ClassDeclaration: " + block);
-		Global.setScope(block.declaredIn);
-		return (block);
+			Parse.TRACE("Line " + cls.lineNumber + ": ClassDeclaration: " + cls);
+		Global.setScope(cls.declaredIn);
+		return (cls);
 	}
-
+	
 	// ***********************************************************************************************
-	// *** PARSING: expectValueList
+	// *** PARSING: acceptValuePart
 	// ***********************************************************************************************
 	/**
-	 * Parse utility: Expect value list and set matching parameter's mode.
+	 * Parse utility: Accept value part and set matching parameter's mode.
 	 * 
 	 * <pre>
 	 * Syntax:
@@ -228,110 +224,197 @@ permits StandardClass, PrefixedBlockDeclaration {
 	 * 
 	 * @param pList Parameter list
 	 */
-	private static void expectValueList(final Vector<Parameter> pList) {
-		do {
-			String identifier = Parse.expectIdentifier();
-			Parameter parameter = null;
-			for (Parameter par : pList)
-				if (Util.equals(identifier, par.identifier)) {
-					parameter = par;
-					break;
+	private static void acceptValuePart(final Vector<Parameter> pList) {
+		if (Parse.accept(KeyWord.VALUE)) {
+			do {
+				String identifier = Parse.expectIdentifier();
+				Parameter parameter = null;
+				for (Parameter par : pList)
+					if (Util.equals(identifier, par.identifier)) {
+						parameter = par;
+						break;
+					}
+				if (parameter == null) {
+					Util.error("Identifier " + identifier + " is not defined in this scope");
+					parameter = new Parameter(identifier);
 				}
-			if (parameter == null) {
-				Util.error("Identifier " + identifier + " is not defined in this scope");
-				parameter = new Parameter(identifier);
-			}
-			parameter.setMode(Parameter.Mode.value);
-		} while (Parse.accept(KeyWord.COMMA));
+				parameter.setMode(Parameter.Mode.value);
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.SEMICOLON);
+		}
 	}
 
 	// ***********************************************************************************************
-	// *** PARSING: acceptClassParameterSpecifications
+	// *** PARSING: acceptParameterSpecificationPart
 	// ***********************************************************************************************
-	private static boolean acceptClassParameterSpecifications(final BlockDeclaration block,
-			final Vector<Parameter> parameterList) {
-		// ClassParameter = ClassParameterSpecifier IdentifierList
-		// ClassParameterSpecifier = Type | [Type] ARRAY
+	/**
+	 * Parse Utility: Accept Class Parameter specification-part updating Parameter's type and kind.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *     specification-part
+     *           = class-parameter-specifier identifier-list { ; class-parameter-specifier identifier-list }
+	 *     
+	 *        class-parameter-specifier = Type | [Type] ARRAY
+	 * </pre>
+	 * @param pList the parameter list
+	 */
+	private static void acceptParameterSpecificationPart(final Vector<Parameter> pList) {
 		if (Option.TRACE_PARSE)
 			Parse.TRACE("Parse ParameterSpecifications");
-		Type type;
-		Parameter.Kind kind = Parameter.Kind.Simple;
-		type = Parse.acceptType();
-		if (Parse.accept(KeyWord.ARRAY)) {
-			if (type == null) {
-				// See Simula Standard 5.2 -
-				// If no type is given the type real is understood.
-				type = Type.Real;
-			}
-			kind = Parameter.Kind.Array;
-		}
-		if (type == null)
-			return (false);
-		do {
-			String identifier = Parse.expectIdentifier();
-			Parameter parameter = null;
-			for (Parameter par : parameterList)
-				if (Util.equals(identifier, par.identifier)) {
-					parameter = par;
-					break;
+		while (true) {
+			Type type;
+			Parameter.Kind kind = Parameter.Kind.Simple;
+			type = Parse.acceptType();
+			if (Parse.accept(KeyWord.ARRAY)) {
+				if (type == null) {
+					// See Simula Standard 5.2 -
+					// If no type is given the type real is understood.
+					type = Type.Real;
 				}
-			if (parameter == null) {
-				Util.error("Identifier " + identifier + " is not defined in this scope");
-				parameter = new Parameter(identifier);
+				kind = Parameter.Kind.Array;
 			}
-			parameter.setTypeAndKind(type, kind);
-		} while (Parse.accept(KeyWord.COMMA));
-		return (true);
+			if (type == null)
+				return;
+			do {
+				String identifier = Parse.expectIdentifier();
+				Parameter parameter = null;
+				for (Parameter par : pList)
+					if (Util.equals(identifier, par.identifier)) {
+						parameter = par;
+						break;
+					}
+				if (parameter == null) {
+					Util.error("Identifier " + identifier + " is not defined in this scope");
+					parameter = new Parameter(identifier);
+				}
+				parameter.setTypeAndKind(type, kind);
+			} while (Parse.accept(KeyWord.COMMA));
+
+			Parse.expect(KeyWord.SEMICOLON);
+		}
 	}
 
+
 	// ***********************************************************************************************
-	// *** PARSING: expectHiddenProtectedList
+	// *** PARSING: acceptProtectionPart
 	// ***********************************************************************************************
-	private static boolean expectHiddenProtectedList(final ClassDeclaration block, final boolean hidden,
+	/**
+	 * Parse Utility: Accept protection-part updating Hidden and Protected lists.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *      protection-part = protection-specification { ; protection-specification }
+	 *      
+	 *           protection-specification
+	 *                = HIDDEN identifier-list
+	 *                | HIDDEN PROTECTED identifier-list
+	 *                | PROTECTED identifier-list
+	 *                | PROTECTED HIDDEN identifier-list
+	 * </pre>
+	 * @param cls the ClassDeclaration
+	 */
+	private static void acceptProtectionPart(ClassDeclaration cls) {
+		while (true) {
+			if (Parse.accept(KeyWord.HIDDEN)) {
+				if (Parse.accept(KeyWord.PROTECTED))
+					expectHiddenProtectedList(cls, true, true);
+				else
+					expectHiddenProtectedList(cls, true, false);
+			} else if (Parse.accept(KeyWord.PROTECTED)) {
+				if (Parse.accept(KeyWord.HIDDEN))
+					expectHiddenProtectedList(cls, true, true);
+				else
+					expectHiddenProtectedList(cls, false, true);
+			} else
+				break;
+		}	
+	}
+	
+	/**
+	 * Parse Utility: Expect Hidden Protected list.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *      identifier-list
+	 * </pre>
+	 * @param cls the ClassDeclaration
+	 * @param hidden if true, update the hidden list
+	 * @param prtected if true, update the protected list
+	 */
+	private static void expectHiddenProtectedList(final ClassDeclaration cls, final boolean hidden,
 			final boolean prtected) {
 		do {
 			String identifier = Parse.expectIdentifier();
 			if (hidden)
-				block.hiddenList.add(new HiddenSpecification(block, identifier));
+				cls.hiddenList.add(new HiddenSpecification(cls, identifier));
 			if (prtected)
-				block.protectedList.add(new ProtectedSpecification(block, identifier));
+				cls.protectedList.add(new ProtectedSpecification(cls, identifier));
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.SEMICOLON);
-		return (true);
 	}
 
 	// ***********************************************************************************************
-	// *** PARSING: doParseBody
+	// *** PARSING: expectClassBody
 	// ***********************************************************************************************
-	private static void doParseBody(final BlockDeclaration block) {
-		Statement stm;
-		if (Option.TRACE_PARSE)
-			Parse.TRACE("Parse Block");
-		while (Declaration.parseDeclaration(block.declarationList)) {
-			Parse.accept(KeyWord.SEMICOLON);
-		}
-		boolean seen = false;
-		Vector<Statement> stmList = block.statements;
-		while (!Parse.accept(KeyWord.END)) {
-			stm = Statement.doParse();
-			if (stm != null)
-				stmList.add(stm);
-			if (Parse.accept(KeyWord.INNER)) {
-				if (seen)
-					Util.error("Max one INNER per Block");
-				else
-					stmList.add(new InnerStatement(Parse.currentToken.lineNumber));
-				seen = true;
+	/**
+	 * Parse Utility: Expect class-body.
+	 * In case of a split-body, updating the class's declaration and statement lists.
+	 * <pre>
+	 * Syntax:
+	 *                
+	 *      class-body = statement | split-body
+	 *      
+	 *         split-body = initial-operations inner-part final-operations
+	 *         
+	 *            initial-operations = ( BEGIN | block-head ; ) { statement ; }
+	 *         
+	 *            inner-part = [ label : ] INNER ;
+	 *'
+	 *            final-operations
+	 *               = END
+	 *               | ; statement { ; statement } END
+	 * </pre>
+	 * 
+	 * @param cls the ClassDeclaration
+	 */
+	private static void expectClassBody(ClassDeclaration cls) {
+		if (Parse.accept(KeyWord.BEGIN)) {
+			Statement stm;
+			if (Option.TRACE_PARSE)
+				Parse.TRACE("Parse Block");
+			while (Declaration.parseDeclaration(cls.declarationList)) {
+				Parse.accept(KeyWord.SEMICOLON);
 			}
+			boolean seen = false;
+			Vector<Statement> stmList = cls.statements;
+			while (!Parse.accept(KeyWord.END)) {
+				stm = Statement.doParse();
+				if (stm != null)
+					stmList.add(stm);
+				if (Parse.accept(KeyWord.INNER)) {
+					if (seen)
+						Util.error("Max one INNER per Block");
+					else
+						stmList.add(new InnerStatement(Parse.currentToken.lineNumber));
+					seen = true;
+				}
+			}
+			if (!seen)
+				stmList.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
 		}
-		if (!seen)
-			stmList.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
+		else {
+			cls.statements.add(Statement.doParse());
+			cls.statements.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
+		}
 	}
 
 	// ***********************************************************************************************
 	// *** Utility: isSubClassOf
 	// ***********************************************************************************************
 	/**
+	 * Checks if this class is a subclass of the 'other' class.
+	 * <p>
 	 * Consider the class definitions:
 	 * 
 	 * <pre>
@@ -407,6 +490,9 @@ permits StandardClass, PrefixedBlockDeclaration {
 	// ***********************************************************************************************
 	// *** Utility: checkHiddenList
 	// ***********************************************************************************************
+	/**
+	 * Perform sematic checking of the Hidden list.
+	 */
 	private void checkHiddenList() {
 		for (HiddenSpecification hdn : hiddenList)
 			hdn.doChecking();
@@ -415,6 +501,9 @@ permits StandardClass, PrefixedBlockDeclaration {
 	// ***********************************************************************************************
 	// *** Utility: checkProtectedList
 	// ***********************************************************************************************
+	/**
+	 * Perform sematic checking of the Protected list.
+	 */
 	private void checkProtectedList() {
 		for (ProtectedSpecification pct : protectedList) {
 			pct.doChecking();
@@ -703,6 +792,10 @@ permits StandardClass, PrefixedBlockDeclaration {
 	// ***********************************************************************************************
 	// *** Coding Utility: hasNoRealPrefix
 	// ***********************************************************************************************
+	/**
+	 * Check if this class has a real prefix.
+	 * @return true if this class has a real prefix, otherwise false.
+	 */
 	private boolean hasNoRealPrefix() {
 		ClassDeclaration prfx = getPrefixClass();
 		boolean noPrefix = true;
@@ -857,7 +950,7 @@ permits StandardClass, PrefixedBlockDeclaration {
 	// *** Coding Utility: doCodeConstructor
 	// ***********************************************************************************************
 	/**
-	 * Coding utility: Code the constructor.
+	 * Coding Utility: Code the constructor.
 	 */
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
@@ -924,15 +1017,15 @@ permits StandardClass, PrefixedBlockDeclaration {
 	// ***********************************************************************************************
 	// *** Coding Utility: saveClassStms
 	// ***********************************************************************************************
-	private void saveClassStms() {
-		if (code1 == null) {
-			code1 = new Vector<CodeLine>();
-			Global.currentJavaModule.saveCode = code1;
-			for (Statement stm : statements)
-				stm.doJavaCoding();
-			Global.currentJavaModule.saveCode = null;
-		}
-	}
+//	private void saveClassStms() {
+//		if (code1 == null) {
+//			code1 = new Vector<CodeLine>();
+//			Global.currentJavaModule.saveCode = code1;
+//			for (Statement stm : statements)
+//				stm.doJavaCoding();
+//			Global.currentJavaModule.saveCode = null;
+//		}
+//	}
 
 	// ***********************************************************************************************
 	// *** Coding Utility: codeStatements
@@ -956,7 +1049,16 @@ permits StandardClass, PrefixedBlockDeclaration {
 			if (prfx != null)
 				prfx.writeCode1();
 		}
-		saveClassStms();
+		//saveClassStms();
+		if (code1 == null) {
+			code1 = new Vector<CodeLine>();
+			Global.currentJavaModule.saveCode = code1;
+			for (Statement stm : statements)
+				stm.doJavaCoding();
+			Global.currentJavaModule.saveCode = null;
+		}
+		
+		
 		String comment = (code2 != null && code2.size() > 0) ? "Code before inner" : "Code";
 		GeneratedJavaClass.debug("// Class " + this.identifier + ": " + comment);
 		for (CodeLine c : code1)

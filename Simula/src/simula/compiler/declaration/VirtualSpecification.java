@@ -95,10 +95,24 @@ public final class VirtualSpecification extends Declaration implements Externali
 	}
 
 	/**
-	 * Parse a VirtualSpecification and put it into the given block.
-	 * @param block argument block
+	 * Parse a VirtualPart and put it into the given class.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *      virtual-part = VIRTUAL: virtual-spec ; { virtual-spec ; }
+	 *         virtual-spec
+	 *             = virtual-specifier identifier-list
+	 *             | PROCEDURE procedure-identifier  procedure-specification
+	 *             
+	 *                virtual-Specifier = [ type ] PROCEDURE | LABEL | SWITCH
+	 *                
+	 *                procedure-specification = IS procedure-declaration
+	 *
+	 * </pre>
+	 * Precondition: VIRTUAL  is already read.
+	 * @param cla the ClassDeclaration
 	 */
-	static void parseInto(final ClassDeclaration block) {
+	static void expectVirtualPart(final ClassDeclaration block) {
 		Parse.expect(KeyWord.COLON);
 		LOOP: while (true) {
 			Type type;

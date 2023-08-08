@@ -103,18 +103,19 @@ public final class ProgramModule extends Statement {
 			}
 			String ident=Parse.acceptIdentifier();
 			if(ident!=null) {
-				if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(ident);
+				if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.expectClassDeclaration(ident);
 			    else {
 			    	Variable blockPrefix=Variable.parse(ident);	
+			    	
 			  	    Parse.expect(KeyWord.BEGIN);
-		        	module=new PrefixedBlockDeclaration(null,blockPrefix,true);
+		        	module=new PrefixedBlockDeclaration(blockPrefix,true);
 			    }
 			}
 			else if(Parse.accept(KeyWord.BEGIN)) module=MaybeBlockDeclaration.createMainProgramBlock(); 
-			else if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.doParseClassDeclaration(null);
+			else if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.expectClassDeclaration(null);
 			else {
 				Type type=Parse.acceptType();
-			    if(Parse.expect(KeyWord.PROCEDURE)) module=ProcedureDeclaration.doParseProcedureDeclaration(type);
+			    if(Parse.expect(KeyWord.PROCEDURE)) module=ProcedureDeclaration.expectProcedureDeclaration(type);
 			}
 			StandardClass.BASICIO.declarationList.add(module);
 		

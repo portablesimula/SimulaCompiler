@@ -233,7 +233,7 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 		String prefix = Parse.acceptIdentifier();
 		if (prefix != null) {
 			if (Parse.accept(KeyWord.CLASS))
-				declarationList.add(ClassDeclaration.doParseClassDeclaration(prefix));
+				declarationList.add(ClassDeclaration.expectClassDeclaration(prefix));
 			else {
 				Parse.saveCurrentToken(); // Identifier is NOT a class prefix.
 				return (false);
@@ -241,14 +241,14 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 		} else if (Parse.accept(KeyWord.ARRAY))
 			ArrayDeclaration.parse(Type.Real, declarationList); // Default type real for arrays
 		else if (Parse.accept(KeyWord.PROCEDURE))
-			declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(null));
+			declarationList.add(ProcedureDeclaration.expectProcedureDeclaration(null));
 		else if (Parse.accept(KeyWord.PRIOR)) {
 			Util.warning("Keyword 'prior' ignored - prior procedure is not implemented");
 			Type type = Parse.acceptType();
 			Parse.expect(KeyWord.PROCEDURE);
-			declarationList.add(ProcedureDeclaration.doParseProcedureDeclaration(type));
+			declarationList.add(ProcedureDeclaration.expectProcedureDeclaration(type));
 		} else if (Parse.accept(KeyWord.CLASS))
-			declarationList.add(ClassDeclaration.doParseClassDeclaration(null));
+			declarationList.add(ClassDeclaration.expectClassDeclaration(null));
 		else if (Parse.accept(KeyWord.SWITCH)) {
 			String ident = Parse.acceptIdentifier();
 			if (ident == null) {

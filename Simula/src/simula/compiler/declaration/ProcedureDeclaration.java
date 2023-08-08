@@ -32,39 +32,33 @@ import simula.compiler.utilities.Util;
  *            procedure-heading
  *                = procedure-identifier [ formal-parameter-part ; [ mode-part ] specification-part ] 
  *                
- *            procedure-body
- *                = statement
+ *               procedure-identifier = identifier
  *                
- *            procedure-identifier
- *                = identifier
+ *               formal-parameter-part = "(" formal-parameter { , formal-parameter } ")"
+ *            
+ *                  formal-parameter = identifier
+ *            
+ *               specification-part = specifier identifier-list { ; specifier identifier-list }
+ *            
+ *                  specifier
+ *                      = type [ ARRAY | PROCEDURE ]
+ *                      | LABEL
+ *                      | SWITCH 
  *                
- *            formal-parameter-part
- *                = "(" formal-parameter { , formal-parameter } ")"
+ *               mode-part
+ *                   = name-part [ value-part ]
+ *                   | value-part [ name-part ]
  *            
- *            formal-parameter
- *                = identifier
+ *                  name-part = NAME identifier-list ;
  *            
- *            specification-part
- *                = specifier identifier-list { ; specifier identifier-list }
+ *                  value-part = VALUE identifier-list ;
  *            
- *            specifier
- *                = type [ ARRAY | PROCEDURE ]
- *                | LABEL
- *                | SWITCH 
+ *               identifier-list = identifier { , identifier }
  *                
- *            mode-part
- *                = name-part [ value-part ]
- *                | value-part [ name-part ]
- *            
- *            name-part
- *                = NAME identifier-list ;
- *            
- *            value-part
- *                = VALUE identifier-list ;
- *            
- *            identifier-list
- *                = identifier { , identifier }
+ *            procedure-body = statement
  * </pre>
+ * This class is prefix to StandardProcedure and SwitchDeclaration.
+ * <p>
  * Link to GitHub: <a href=
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureDeclaration.java"><b>Source File</b></a>.
  * 
@@ -101,97 +95,89 @@ permits StandardProcedure, SwitchDeclaration {
 	}
 
 	// ***********************************************************************************************
-	// *** Parsing: doParseProcedureDeclaration
+	// *** Parsing: expectProcedureDeclaration
 	// ***********************************************************************************************
 	/**
-	 * Procedure Declaration.
-	 * <p>
 	 * Parse and build a ProcedureDeclaration.
-	 * @param type procedure's type
-	 * @return a newly created ProcedureDeclaration
-	 */
-	public static ProcedureDeclaration doParseProcedureDeclaration(final Type type) {
-		Declaration.Kind declarationKind = Declaration.Kind.Procedure;
-		ProcedureDeclaration block = new ProcedureDeclaration(null, declarationKind);
-		block.lineNumber=Parse.prevToken.lineNumber;
-		block.type = type;
-		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ProcedureDeclaration, type=" + type);
-		block.modifyIdentifier(Parse.expectIdentifier());
-		if (Parse.accept(KeyWord.BEGPAR)) {
-			do { // ParameterPart = Parameter ; { Parameter ; }
-				new Parameter(Parse.expectIdentifier()).into(block.parameterList);
-			} while (Parse.accept(KeyWord.COMMA));
-			Parse.expect(KeyWord.ENDPAR);
-			Parse.expect(KeyWord.SEMICOLON);
-			// ModePart = ValuePart [ NamePart ] | NamePart [ ValuePart ]
-			// ValuePart = VALUE IdentifierList ;
-			// NamePart = NAME IdentifierList ;
-			if (Parse.accept(KeyWord.VALUE)) {
-				expectModeList(block.parameterList, Parameter.Mode.value);
-				Parse.expect(KeyWord.SEMICOLON);
-			}
-			if (Parse.accept(KeyWord.NAME)) {
-				expectModeList(block.parameterList, Parameter.Mode.name);
-				Parse.expect(KeyWord.SEMICOLON);
-			}
-			if (Parse.accept(KeyWord.VALUE)) {
-				expectModeList(block.parameterList, Parameter.Mode.value);
-				Parse.expect(KeyWord.SEMICOLON);
-			}
-			// ParameterPart = Parameter ; { Parameter ; }
-			// Parameter = Specifier IdentifierList
-			// Specifier = Type [ ARRAY | PROCEDURE ] | LABEL | SWITCH
-			while (acceptProcedureParameterSpecifications(block)) {
-				Parse.expect(KeyWord.SEMICOLON);
-			}
-		} else Parse.expect(KeyWord.SEMICOLON);
-		if (Parse.accept(KeyWord.BEGIN))
-			doParseBodyBlock(block);
-		else block.statements.add(Statement.doParse());
-
-		block.lastLineNumber = Global.sourceLineNumber;
-		if (Option.TRACE_PARSE)	Util.TRACE("Line "+block.lineNumber+": ProcedureDeclaration: "+block);
-		Global.setScope(block.declaredIn);
-		return (block);
-	}
-
-	// ***********************************************************************************************
-	// *** PARSING: expectModeList
-	// ***********************************************************************************************
-	/**
-	 * Parse utility: Expect mode list and set matching parameter's mode.
 	 * 
 	 * <pre>
 	 * Syntax:
-	 *              name  identifier-list ;
-	 *              value identifier-list ;
+	 * 
+	 *      procedure-declaration
+	 *          = [ type ] PROCEDURE procedure-heading ; procedure-body
+	 *      
+	 *            procedure-heading
+	 *                = procedure-identifier [ formal-parameter-part ; [ mode-part ] specification-part ] 
+	 *                
+	 *            procedure-identifier = identifier
 	 * </pre>
 	 * 
-	 * @param pList Parameter list
-	 * @param mode  Transmission mode
+	 * Precondition: [ type ] PROCEDURE is already read.
+	 * 
+	 * @param type procedure's type
+	 * @return a newly created ProcedureDeclaration
 	 */
-	private static void expectModeList(final Vector<Parameter> pList,final Parameter.Mode mode) {
-		do {
-			String identifier = Parse.expectIdentifier();
-			Parameter parameter = null;
-			for (Parameter par : pList)
-				if (Util.equals(identifier, par.identifier)) {
-					parameter = par;
-					break;
-				}
-			if (parameter == null) {
-				Util.error("Identifier " + identifier + " is not defined in this scope");
-				parameter = new Parameter(identifier);
-			}
-			parameter.setMode(mode);
-		} while (Parse.accept(KeyWord.COMMA));
-	}
+	public static ProcedureDeclaration expectProcedureDeclaration(final Type type) {
+		Declaration.Kind declarationKind = Declaration.Kind.Procedure;
+		ProcedureDeclaration proc = new ProcedureDeclaration(null, declarationKind);
+		proc.lineNumber=Parse.prevToken.lineNumber;
+		proc.type = type;
+		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ProcedureDeclaration, type=" + type);
+		proc.modifyIdentifier(Parse.expectIdentifier());
+		if (Parse.accept(KeyWord.BEGPAR)) {
+			expectFormalParameterPart(proc.parameterList);
+			Parse.expect(KeyWord.SEMICOLON);
+			acceptModePart(proc.parameterList);
+			expectSpecificationPart(proc);
+		} else Parse.expect(KeyWord.SEMICOLON);
+		expectProcedureBody(proc);
 
-	// ***********************************************************************************************
-	// *** PARSING: acceptProcedureParameterSpecifications
-	// ***********************************************************************************************
+		proc.lastLineNumber = Global.sourceLineNumber;
+		if (Option.TRACE_PARSE)	Util.TRACE("Line "+proc.lineNumber+": ProcedureDeclaration: "+proc);
+		Global.setScope(proc.declaredIn);
+		return (proc);
+	}
+	
 	/**
-	 * Parse utility: accept Procedure Parameter specification-part
+	 * Parse Utility: Accept mode-part and set matching parameter's mode.
+	 * <pre>
+	 *   mode-part
+	 *      = name-part [ value-part ]
+	 *      | value-part [ name-part ]
+	 *            
+	 *   name-part = NAME identifier-list ;
+	 *            
+	 *   value-part = VALUE identifier-list ;
+	 *            
+	 *   identifier-list = identifier { , identifier }
+	 * </pre>
+	 * @param pList the parameter list
+	 */
+	private static void acceptModePart(Vector<Parameter> pList) {
+		if (Parse.accept(KeyWord.VALUE, KeyWord.NAME)) {
+			Parameter.Mode mode = (Parse.prevToken.getKeyWord() == KeyWord.VALUE)
+					? Parameter.Mode.value
+					: Parameter.Mode.name;
+			do {
+				String identifier = Parse.expectIdentifier();
+				Parameter parameter = null;
+				for (Parameter par : pList)
+					if (Util.equals(identifier, par.identifier)) {
+						parameter = par;
+						break;
+					}
+				if (parameter == null) {
+					Util.error("Identifier " + identifier + " is not defined in this scope");
+					parameter = new Parameter(identifier);
+				}
+				parameter.setMode(mode);
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.SEMICOLON);
+		}
+	}
+	
+	/**
+	 * Parse Utility: Accept Procedure Parameter specification-part updating Parameter's type and kind.
 	 * <pre>
 	 * Syntax:
 	 * 
@@ -201,67 +187,81 @@ permits StandardProcedure, SwitchDeclaration {
 	 *        specifier = Type | [Type] ARRAY | [Type] PROCEDURE ] | LABEL | SWITCH
 	 * </pre>
 	 * @param proc the procedure declaration
-	 * @return false when no specification-part is found, otherwise true
 	 */
-	private static boolean acceptProcedureParameterSpecifications(final ProcedureDeclaration proc) {
+	private static void expectSpecificationPart(ProcedureDeclaration proc) {
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ParameterSpecifications");
-		Type type;
-		Parameter.Kind kind = Parameter.Kind.Simple;
-		if (Parse.accept(KeyWord.SWITCH)) {
-			type = Type.Label;
-			kind = Parameter.Kind.Procedure;
-		} else if (Parse.accept(KeyWord.LABEL))
-			type = Type.Label;
-		else {
-			type = Parse.acceptType();
-			//if (type == null) return (false);
-			if (Parse.accept(KeyWord.ARRAY)) {
-				if (type == null) {
-					// See Simula Standard 5.2 -
-					// If no type is given the type real is understood.
-					type=Type.Real;
+		LOOP: while(true) {
+			Type type;
+			Parameter.Kind kind = Parameter.Kind.Simple;
+			if (Parse.accept(KeyWord.SWITCH)) {
+				type = Type.Label;
+				kind = Parameter.Kind.Procedure;
+			} else if (Parse.accept(KeyWord.LABEL))
+				type = Type.Label;
+			else {
+				type = Parse.acceptType();
+				//if (type == null) return (false);
+				if (Parse.accept(KeyWord.ARRAY)) {
+					if (type == null) {
+						// See Simula Standard 5.2 -
+						// If no type is given the type real is understood.
+						type=Type.Real;
+					}
+					kind = Parameter.Kind.Array;
 				}
-				kind = Parameter.Kind.Array;
+				else if (Parse.accept(KeyWord.PROCEDURE)) kind = Parameter.Kind.Procedure;
+				else if(type == null) break LOOP;
 			}
-			else if (Parse.accept(KeyWord.PROCEDURE)) kind = Parameter.Kind.Procedure;
-			else if(type == null) return (false);
+			do {
+				String identifier = Parse.expectIdentifier();
+				Parameter parameter = null;
+				for (Parameter par : proc.parameterList)
+					if (Util.equals(identifier,par.identifier)) { parameter = par; break; }
+				if (parameter == null) {
+					Util.error("Identifier " + identifier + " is not defined in this scope");
+					parameter = new Parameter(identifier);
+				}
+				parameter.setTypeAndKind(type, kind);
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.SEMICOLON);
+			continue LOOP;
 		}
-		do {
-			String identifier = Parse.expectIdentifier();
-			Parameter parameter = null;
-			for (Parameter par : proc.parameterList)
-				if (Util.equals(identifier,par.identifier)) { parameter = par; break; }
-			if (parameter == null) {
-				Util.error("Identifier " + identifier + " is not defined in this scope");
-				parameter = new Parameter(identifier);
+		for(Parameter par:proc.parameterList) {
+			switch(par.kind) {
+			case Array:	case Label:	case Procedure:	break; // OK
+			case Simple: default:
+				if(par.type==null) Util.error("Missing specification of parameter: "+par.identifier);
 			}
-			parameter.setTypeAndKind(type, kind);
-		} while (Parse.accept(KeyWord.COMMA));
-		return (true);
+		}
 	}
 
-	// ***********************************************************************************************
-	// *** PARSING: doParseBodyBlock
-	// ***********************************************************************************************
 	/**
-	 * Parse utility: parse procedure body block updating the procedure's declaration and statement lists.
+	 * Parse Utility: Expect procedure-body.
+	 * In case of a compound-statement, updating the procedure's declaration and statement lists.
 	 * <pre>
 	 * Syntax:
-	 *          BEGIN declaration { ; declaration } statement { ; statement } END
+	 *                
+	 *        procedure-body = statement
 	 * </pre>
+	 * 
 	 * @param proc the procedure
 	 */
-	private static void doParseBodyBlock(final ProcedureDeclaration proc) {
-		Statement stm;
-		if (Option.TRACE_PARSE)	Parse.TRACE("Parse Block");
-		while (Declaration.parseDeclaration(proc.declarationList)) {
-			Parse.accept(KeyWord.SEMICOLON);
+	private static void expectProcedureBody(ProcedureDeclaration proc) {
+		if (Parse.accept(KeyWord.BEGIN)) {
+//			doParseBodyBlock(proc);
+			// BEGIN declaration { ; declaration } statement { ; statement } END
+			Statement stm;
+			if (Option.TRACE_PARSE)	Parse.TRACE("Parse Procedure Block");
+			while (Declaration.parseDeclaration(proc.declarationList)) {
+				Parse.accept(KeyWord.SEMICOLON);
+			}
+			Vector<Statement> stmList = proc.statements;
+			while (!Parse.accept(KeyWord.END)) {
+				stm = Statement.doParse();
+				if (stm != null) stmList.add(stm);
+			}
 		}
-		Vector<Statement> stmList = proc.statements;
-		while (!Parse.accept(KeyWord.END)) {
-			stm = Statement.doParse();
-			if (stm != null) stmList.add(stm);
-		}
+		else proc.statements.add(Statement.doParse());
 	}
 
 	// ***********************************************************************************************

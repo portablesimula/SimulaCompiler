@@ -21,10 +21,23 @@ import simula.compiler.utilities.Util;
  * Prefixed Block Declaration.
  * <pre>
  * Syntax:
- * 
- *	 PrefixedBlock = prefix BEGIN [ { Declaration ; } ]  [ { Statement ; } ] END
  *
- *		prefix = class-identifier [ actual-parameter-part ]
+ *  prefixed-block = block-prefix main-block
+ *  
+ *     block-prefix = class-identifier [ actual-parameter-part ]
+ *     
+ *     main-block
+ *        = block
+ *        | compound-statement
+ *        
+ *       actual-parameter-part = "(" actual-parameter { , actual-parameter } ")"
+ *       
+ *          actual-parameter = expression
+ *                           | array-identifier-1
+ *                           | switch-identifier
+ *                           | procedure-identifier-1
+ *          
+ *          compound-statement = BEGIN statement { ; statement } END
  *
  * </pre>
  * 
@@ -47,12 +60,11 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	/**
 	 * PrefixedBlock.
 	 * 
-	 * @param identifier the block identifier
 	 * @param blockPrefix the block prefix
 	 * @param isMainModule true if this block is the main program module.
 	 */
-	public PrefixedBlockDeclaration(String identifier,final Variable blockPrefix,boolean isMainModule) {
-		super(identifier);
+	public PrefixedBlockDeclaration(final Variable blockPrefix,boolean isMainModule) {
+		super(null);
 		this.lineNumber=Parse.prevToken.lineNumber;
 		this.declarationKind=Declaration.Kind.PrefixedBlock;
 		Util.ASSERT(blockPrefix != null,"blockPrefix == null");
@@ -173,6 +185,9 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeConstructor
 	// ***********************************************************************************************
+	/**
+	 * Coding Utility: Code the constructor.
+	 */
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + edFormalParameterList());

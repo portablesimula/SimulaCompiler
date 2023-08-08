@@ -10,8 +10,10 @@ package simula.compiler.declaration;
 import java.util.Vector;
 
 import simula.compiler.GeneratedJavaClass;
+import simula.compiler.parsing.Parse;
 import simula.compiler.statement.Statement;
 import simula.compiler.utilities.Global;
+import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Option;
 
 /**
@@ -68,6 +70,24 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 	private BlockDeclaration(final String identifier,final Declaration.Kind declarationKind) {
 		super(identifier);
 		this.declarationKind = declarationKind;
+	}
+	
+	/**
+	 * Parse Utility: Expect formal-parameter-part and build the parameter list.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *     formal-parameter-part = "(" identifier { , identifier } ")"
+	 * </pre>
+	 * 
+	 * Precondition: BEGPAR is already read.
+	 * @param pList the parameter list
+	 */
+	protected static void expectFormalParameterPart(final Vector<Parameter> pList) {
+		do { // ParameterPart = Parameter ; { Parameter ; }
+			new Parameter(Parse.expectIdentifier()).into(pList);
+		} while (Parse.accept(KeyWord.COMMA));
+		Parse.expect(KeyWord.ENDPAR);
 	}
 
 	// ***********************************************************************************************

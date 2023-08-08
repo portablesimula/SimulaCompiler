@@ -122,7 +122,7 @@ public abstract sealed class Statement extends SyntaxClass permits InnerStatemen
 		         if(expr!=null) {
 		        	 if(expr instanceof Variable var) {
 		        		 if (Parse.accept(KeyWord.BEGIN))
-		        			 return new BlockStatement(new PrefixedBlockDeclaration(null,var,false));
+		        			 return new BlockStatement(new PrefixedBlockDeclaration(var,false));
 		        	 }
 		        	 return (new StandaloneExpression(lineNumber,expr));
 		         }
