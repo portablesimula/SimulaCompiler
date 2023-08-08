@@ -24,14 +24,17 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * Declaration = TypeDeclaration | ArrayDeclaration | SwitchDeclaration
- *             | ProcedureDeclaration | ClassDeclaration | ExternalDeclaration
- *             
- *		TypeDeclaration = Type IdentifierList
- *
- *   	Type ::= BOOLEAN | CHARACTER | INTEGER | REAL | REF(ClassIdentifier) | TEXT
+ *   declaration
+ *      = simple-variable-declaration
+ *      | array-declaration
+ *      | switch-declaration
+ *      | procedure-declaration
+ *      | class-declaration
+ *      | external-declaration
  * </pre>
- * 
+ * This class is prefix to DeclarationScope, ExternalDeclaration, Parameter,
+ * SimpleVariableDeclaration, VirtualSpecification, VirtualMatch, ArrayDeclaration
+ * <p> 
  * Link to GitHub: <a href=
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/Declaration.java"><b>Source
  * File</b></a>.
@@ -179,6 +182,9 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 		checkAlreadyDefined();
 	}
 
+	/**
+	 * Check if a declaration with this identifier is already defined.
+	 */
 	private void checkAlreadyDefined() {
 		boolean error = false;
 		boolean warning = false;
@@ -239,7 +245,7 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 				return (false);
 			}
 		} else if (Parse.accept(KeyWord.ARRAY))
-			ArrayDeclaration.parse(Type.Real, declarationList); // Default type real for arrays
+			ArrayDeclaration.expectArrayDeclaration(Type.Real, declarationList); // Default type real for arrays
 		else if (Parse.accept(KeyWord.PROCEDURE))
 			declarationList.add(ProcedureDeclaration.expectProcedureDeclaration(null));
 		else if (Parse.accept(KeyWord.PRIOR)) {

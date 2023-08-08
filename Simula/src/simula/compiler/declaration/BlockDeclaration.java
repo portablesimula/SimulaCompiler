@@ -66,7 +66,13 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 		super(identifier);
 	}
 
-	// Used by ClassDeclaration and ProcedureDeclaration
+	/**
+	 * Create a new BlockDeclaration.
+	 * <p>
+	 * This constructor is only used by ClassDeclaration. ProcedureDeclaration and MaybeBlockDeclaration.
+	 * @param identifier the block identifier
+	 * @param declarationKind the declaration kind
+	 */
 	private BlockDeclaration(final String identifier,final Declaration.Kind declarationKind) {
 		super(identifier);
 		this.declarationKind = declarationKind;

@@ -109,7 +109,7 @@ public sealed class SimpleVariableDeclaration extends Declaration implements Ext
 		// identifier-list = identifier { , identifier }
 	    if(Option.TRACE_PARSE) Parse.TRACE("Parse IdentifierList");
 	    if(Parse.accept(KeyWord.PROCEDURE)) declarationList.add(ProcedureDeclaration.expectProcedureDeclaration(type));
-	    else if(Parse.accept(KeyWord.ARRAY)) ArrayDeclaration.parse(type,declarationList);
+	    else if(Parse.accept(KeyWord.ARRAY)) ArrayDeclaration.expectArrayDeclaration(type,declarationList);
 	    else {
 	    	do { 
 	    	    String ident=Parse.expectIdentifier();

@@ -41,9 +41,18 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class ConnectionBlock extends DeclarationScope implements Externalizable {
+	/**
+	 * The Connection Statement.
+	 */
 	private Statement statement;
+	/**
+	 * When clause class identifier.
+	 */
 	private final String whenClassIdentifier;
-	private Declaration whenClassDeclaration; // Set during cheching
+	/**
+	 * When clause class Declaration. Set during checking.
+	 */
+	private Declaration whenClassDeclaration; // Set during checking
 
 	/**
 	 * The inspected variable.

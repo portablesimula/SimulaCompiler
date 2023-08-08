@@ -94,8 +94,18 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 	 * Number of dimensions.
 	 */
 	public int nDim;
+	
+	/**
+	 * The list of BoundPair.
+	 */
 	private Vector<BoundPair> boundPairList;
 
+	/**
+	 * Create a new ArrayDeclaration
+	 * @param identifier the array identifier
+	 * @param type the array type
+	 * @param boundPairList The list of BoundPair
+	 */
 	private ArrayDeclaration(final String identifier, final Type type, final Vector<BoundPair> boundPairList) {
 		super(identifier);
 		this.declarationKind = Declaration.Kind.ArrayDeclaration;
@@ -108,53 +118,86 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 
 	/**
 	 * Parse an array declaration and add it to the given declaration list.
+	 * <pre>
+	 * 
+	 * Syntax:
+	 * 
+	 * ArrayDeclaration = [ Type ] ARRAY ArraySegment { , ArraySegment }
+	 *   ArraySegment = IdentifierList "(" BoundPairList ")"
+	 * 
+	 * 	IdentifierList = Identifier { , Identifier }
+	 * 
+	 * 	BoundPairList = BoundPair { , BoundPair }
+	 * 	   BoundPair = ArithmeticExpression : ArithmeticExpression
+	 *
+	 * </pre>
+	 * Precondition:  [ Type ] ARRAY  is already read.
 	 * 
 	 * @param type            the array's type
 	 * @param declarationList the given declaration list
 	 */
-	static void parse(final Type type, final DeclarationList declarationList) {
+	static void expectArrayDeclaration(final Type type, final DeclarationList declarationList) {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ArrayDeclaration, type=" + type + ", current=" + Parse.currentToken);
 		do {
-			parseArraySegment(type, declarationList);
+			if (Option.TRACE_PARSE)
+				Parse.TRACE("Parse ArraySegment");
+			// IdentifierList = Identifier { , Identifier }
+			Vector<String> identList = new Vector<String>();
+			do {
+				identList.add(Parse.expectIdentifier());
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.BEGPAR);
+			// BoundPairList = BoundPair { , BoundPair }
+			if (Option.TRACE_PARSE)
+				Parse.TRACE("Parse BoundPairList");
+			Vector<BoundPair> boundPairList = new Vector<BoundPair>();
+			do {
+				Expression LB = Expression.parseExpression();
+				Parse.expect(KeyWord.COLON);
+				Expression UB = Expression.parseExpression();
+				boundPairList.add(new BoundPair(LB, UB));
+			} while (Parse.accept(KeyWord.COMMA));
+			Parse.expect(KeyWord.ENDPAR);
+			for (Enumeration<String> e = identList.elements(); e.hasMoreElements();) {
+				String identifier = e.nextElement();
+				declarationList.add(new ArrayDeclaration(identifier.toString(), type, boundPairList));
+			}
+			
 		} while (Parse.accept(KeyWord.COMMA));
 	}
 
-	private static void parseArraySegment(final Type type, final DeclarationList declarationList) {
-		if (Option.TRACE_PARSE)
-			Parse.TRACE("Parse ArraySegment");
-		// IdentifierList = Identifier { , Identifier }
-		Vector<String> identList = new Vector<String>();
-		do {
-			identList.add(Parse.expectIdentifier());
-		} while (Parse.accept(KeyWord.COMMA));
-		Parse.expect(KeyWord.BEGPAR);
-		// BoundPairList = BoundPair { , BoundPair }
-		if (Option.TRACE_PARSE)
-			Parse.TRACE("Parse BoundPairList");
-		Vector<BoundPair> boundPairList = new Vector<BoundPair>();
-		do {
-			Expression LB = Expression.parseExpression();
-			Parse.expect(KeyWord.COLON);
-			Expression UB = Expression.parseExpression();
-			boundPairList.add(new BoundPair(LB, UB));
-		} while (Parse.accept(KeyWord.COMMA));
-		Parse.expect(KeyWord.ENDPAR);
-		for (Enumeration<String> e = identList.elements(); e.hasMoreElements();) {
-			String identifier = e.nextElement();
-			declarationList.add(new ArrayDeclaration(identifier.toString(), type, boundPairList));
-		}
-	}
-
+	/**
+	 * Utility Class to hold a BoundPair.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *    BoundPair = ArithmeticExpression : ArithmeticExpression
+	 * </pre>
+	 */
 	private static class BoundPair {
-		// BoundPair = ArithmeticExpression : ArithmeticExpression
-		Expression LB, UB;
+		/**
+		 * The lower bound expression.
+		 */
+		Expression LB;
+		/**
+		 * The upper bound expression.
+		 */
+		Expression UB;
 
+		/**
+		 * Create a new BoundPair.
+		 * @param LB The lower bound expression
+		 * @param UB The upper bound expression
+		 */
 		BoundPair(final Expression LB, final Expression UB) {
 			this.LB = LB;
 			this.UB = UB;
 		}
 
+		/**
+		 * Perform semantic checking.
+		 */
 		private void doChecking() {
 			LB.doChecking();
 			UB.doChecking();
