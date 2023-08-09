@@ -48,7 +48,7 @@ public final class ProcedureSpecification implements Externalizable {
 	}
 
 	// ***********************************************************************************************
-	// *** Parsing: doParseProcedureSpecification
+	// *** Parsing: expectProcedureSpecification
 	// ***********************************************************************************************
 	/**
 	 * Procedure Specification.
@@ -67,11 +67,11 @@ public final class ProcedureSpecification implements Externalizable {
 	 * ProcedureIdentifier = Identifier
 	 * 
 	 * </pre>
-	 * 
+	 * Precondition:  [ type ] PROCEDURE  is already read.
 	 * @param type procedure's type
 	 * @return a newly created ProcedureSpecification
 	 */
-	static ProcedureSpecification doParseProcedureSpecification(final Type type) {
+	static ProcedureSpecification expectProcedureSpecification(final Type type) {
 		ProcedureDeclaration block = ProcedureDeclaration.expectProcedureDeclaration(type);
 		if (Option.TRACE_PARSE)
 			Util.TRACE("END ProcedureSpecification: " + block);

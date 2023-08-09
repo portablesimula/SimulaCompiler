@@ -56,7 +56,7 @@ permits BlockDeclaration, ConnectionBlock  {
 	/**
 	 * The declaration list.
 	 */
-	public DeclarationList declarationList;// = new DeclarationList();
+	public DeclarationList declarationList;
 
 	/**
 	 * The label list.

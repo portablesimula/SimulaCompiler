@@ -28,7 +28,8 @@ import simula.compiler.utilities.Util;
  *  SwitchDeclaration
  *     = SWITCH SwitchIdentifier := DesignationalExpression { , DesignationalExpression }
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/SwitchDeclaration.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/SwitchDeclaration.java"><b>Source File</b></a>.
  *
  * @see simula.compiler.expression.ConditionalExpression
  * @author Øystein Myhre Andersen
@@ -53,7 +54,6 @@ public final class SwitchDeclaration extends ProcedureDeclaration {
 		} while (Parse.accept(KeyWord.COMMA));
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse SwitchDeclaration(3), switchList=" + switchList);
 		new Parameter("_SW", Type.Integer, Parameter.Kind.Simple).into(parameterList);
-//		Global.currentScope = declaredIn;
 		Global.setScope(declaredIn);
 	}
 

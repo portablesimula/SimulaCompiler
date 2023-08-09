@@ -269,7 +269,13 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 			Type type = Parse.acceptType();
 			if (type == null)
 				return (false);
-			SimpleVariableDeclaration.parse(type, declarationList);
+			if (Parse.accept(KeyWord.PROCEDURE))
+				declarationList.add(ProcedureDeclaration.expectProcedureDeclaration(type));
+			else if (Parse.accept(KeyWord.ARRAY))
+				ArrayDeclaration.expectArrayDeclaration(type, declarationList);
+			else 
+				SimpleVariableDeclaration.expectSimpleVariable(type, declarationList);
+			
 			if (Option.TRACE_PARSE)
 				Parse.TRACE("Parse Declaration(2)");
 		}

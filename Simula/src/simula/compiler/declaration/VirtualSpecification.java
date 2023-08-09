@@ -22,15 +22,16 @@ import simula.compiler.utilities.Util;
 /**
  * Virtual Quantities.
  * <pre>
- *    VirtualPart  =  VIRTUAL  :  VirtualSpec  ;  {  VirtualSpec  ;  }
- *    VirtualSpec  =  VirtualSpecifier  IdentifierList
- *        |  PROCEDURE  ProcedureIdentifier  IS  ProcedureDeclaration
+ *    virtual-part  =  VIRTUAL  :  virtual-spec  ;  {  virtual-spec  ;  }
+ *    virtual-spec  =  virtual-specifier  identifier-list
+ *        |  PROCEDURE  procedure-identifier  IS  procedure-declaration
  *        
- *   	VirtualSpecifier = LABEL | SWITCH |  [ type ] PROCEDURE
- *    	IdentifierList  =  Identifier  { , Identifier }
+ *   	virtual-specifier = LABEL | SWITCH |  [ type ] PROCEDURE
+ *    	identifier-list  =  identifier  { , identifier }
  *
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/VirtualSpecification.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/VirtualSpecification.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -95,7 +96,7 @@ public final class VirtualSpecification extends Declaration implements Externali
 	}
 
 	/**
-	 * Parse a VirtualPart and put it into the given class.
+	 * Parse a virtual-part and put it into the given class.
 	 * <pre>
 	 * Syntax:
 	 * 
@@ -106,20 +107,22 @@ public final class VirtualSpecification extends Declaration implements Externali
 	 *             
 	 *                virtual-Specifier = [ type ] PROCEDURE | LABEL | SWITCH
 	 *                
+	 *                identifier-list = identifier { , identifier }
+	 *                
 	 *                procedure-specification = IS procedure-declaration
 	 *
 	 * </pre>
 	 * Precondition: VIRTUAL  is already read.
-	 * @param cla the ClassDeclaration
+	 * @param cls the ClassDeclaration
 	 */
-	static void expectVirtualPart(final ClassDeclaration block) {
+	static void expectVirtualPart(final ClassDeclaration cls) {
 		Parse.expect(KeyWord.COLON);
 		LOOP: while (true) {
 			Type type;
 			if (Parse.accept(KeyWord.SWITCH)) {
-				parseSimpleSpecList(block, Type.Label, Kind.Switch);
+				expectIdentifierList(cls, Type.Label, Kind.Switch);
 			} else if (Parse.accept(KeyWord.LABEL)) {
-				parseSimpleSpecList(block, Type.Label, Kind.Label);
+				expectIdentifierList(cls, Type.Label, Kind.Label);
 			} else {
 				type = Parse.acceptType();
 				if (!Parse.accept(KeyWord.PROCEDURE))
@@ -130,13 +133,13 @@ public final class VirtualSpecification extends Declaration implements Externali
 				if (Parse.accept(KeyWord.IS)) {
 					Type procedureType = Parse.acceptType();
 					Parse.expect(KeyWord.PROCEDURE);
-					procedureSpec = ProcedureSpecification.doParseProcedureSpecification(procedureType);
-					block.virtualSpecList
+					procedureSpec = ProcedureSpecification.expectProcedureSpecification(procedureType);
+					cls.virtualSpecList
 							.add(new VirtualSpecification(identifier, type, Kind.Procedure, procedureSpec));
 				} else {
-					block.virtualSpecList.add(new VirtualSpecification(identifier, type, Kind.Procedure, null));
+					cls.virtualSpecList.add(new VirtualSpecification(identifier, type, Kind.Procedure, null));
 					if (Parse.accept(KeyWord.COMMA))
-						parseSimpleSpecList(block, type, Kind.Procedure);
+						expectIdentifierList(cls, type, Kind.Procedure);
 					else
 						Parse.expect(KeyWord.SEMICOLON);
 				}
@@ -144,10 +147,21 @@ public final class VirtualSpecification extends Declaration implements Externali
 		}
 	}
 
-	private static void parseSimpleSpecList(final ClassDeclaration block, final Type type, final Kind kind) {
+	/**
+	 * Parse a virtual identifier list.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *        identifier-list = identifier { , identifier
+	 * </pre>
+	 * @param cls the ClassDeclaration
+	 * @param type the specifiers type
+	 * @param kind the specifiers kind
+	 */
+	private static void expectIdentifierList(final ClassDeclaration cls, final Type type, final Kind kind) {
 		do {
 			String identifier = Parse.expectIdentifier();
-			block.virtualSpecList.add(new VirtualSpecification(identifier, type, kind, null));
+			cls.virtualSpecList.add(new VirtualSpecification(identifier, type, kind, null));
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.SEMICOLON);
 	}

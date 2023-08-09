@@ -16,7 +16,8 @@ import simula.compiler.utilities.Util;
  * <p>
  * This is a utility class to hold local declaration lists in declaration scopes.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationList.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationList.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -47,6 +48,9 @@ public final class DeclarationList extends Vector<Declaration> {
 		return(null);
 	}
 	
+	/**
+	 * Add a declaration to this list.
+	 */
 	@Override
 	public boolean add(Declaration dcl) {
 		Declaration d=find(dcl.identifier);

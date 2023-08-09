@@ -18,16 +18,21 @@ import simula.compiler.utilities.Util;
 /**
  * Virtual match.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/VirtualMatch.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/VirtualMatch.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class VirtualMatch extends Declaration implements Externalizable {
+	
+	/**
+	 * The matching ProcedureDeclaration. Set during doChecking.
+	 */
 	private ProcedureDeclaration match; // Set during doChecking
 
 	/**
-	 * The virtual specification.
+	 * The virtual specification. Set during doChecking.
 	 */
 	public VirtualSpecification virtualSpec; // Set during doChecking
 
