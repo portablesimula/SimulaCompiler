@@ -25,9 +25,9 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   AssignmentOperation = Expression  AssignmentOperator  Expression
+ *   assignment-operation = expression  assignment-operator  expression
  *   
- *		AssignmentOperator =  :=  |  :-
+ *		assignment-operator =  :=  |  :-
  *   
  * </pre>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/AssignmentOperation.java"><b>Source File</b></a>.
@@ -35,9 +35,25 @@ import simula.compiler.utilities.Util;
  * @author Øystein Myhre Andersen
  */
 public final class AssignmentOperation extends Expression {
+
+	/**
+	 * The left hand side
+	 */
 	private Expression lhs;
+
+	/**
+	 * The arithmetic operation
+	 */
 	private final KeyWord opr;
+
+	/**
+	 * The right hand side
+	 */
 	private Expression rhs;
+	
+	/**
+	 * Indicates that this assignment is a text value assignment.
+	 */
 	private boolean textValueAssignment = false; // Set by doChecking
 
 	/**
@@ -111,6 +127,10 @@ public final class AssignmentOperation extends Expression {
 	// ***********************************************************************
 	// *** CODE: doCodeTextValueAssignment
 	// ***********************************************************************
+	/**
+	 * Code Utility: Code text value assignment.
+	 * @return the resulting Java source code
+	 */
 	private String doCodeTextValueAssignment() {
 		StringBuilder s = new StringBuilder();
 		if (rhs instanceof Constant cnst) {
@@ -127,6 +147,10 @@ public final class AssignmentOperation extends Expression {
 	// ***********************************************************************
 	// *** CODE: doCodeAssignment
 	// ***********************************************************************
+	/**
+	 * Code Utility: Code assignment.
+	 * @return the resulting Java source code
+	 */
 	private String doCodeAssignment() {
 		StringBuilder s = new StringBuilder();
 		// -------------------------------------------------------------------------
@@ -157,6 +181,13 @@ public final class AssignmentOperation extends Expression {
 	// ***********************************************************************
 	// *** CODE: doAccessRemoteArray
 	// ***********************************************************************
+	/**
+	 * Code Utility: Code access remote array.
+	 * @param beforeDot expression before dot
+	 * @param array the array  variable
+	 * @param rightPart right part of assignment
+	 * @return the resulting Java source code
+	 */
 	private String doAccessRemoteArray(final Expression beforeDot, final Variable array, final String rightPart) {
 		String obj = beforeDot.toJavaCode();
 		String remoteIdent = obj + '.' + array.edIdentifierAccess(true);

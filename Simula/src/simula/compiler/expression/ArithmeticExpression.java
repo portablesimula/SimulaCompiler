@@ -79,137 +79,186 @@ import simula.compiler.utilities.Util;
  * NOTE: The implementation of EXP '**' deviates from the definition in Simula Standard.
  *   It is always evaluated in long real and the result is converted to the appropriate type. 
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ArithmeticExpression.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ArithmeticExpression.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
 public final class ArithmeticExpression extends Expression {
+
+	/**
+	 * The left hand side
+	 */
 	private Expression lhs;
+
+	/**
+	 * The arithmetic operation
+	 */
 	private final KeyWord opr;
+
+	/**
+	 * The right hand side
+	 */
 	private Expression rhs;
-  
-	private ArithmeticExpression(final Expression lhs,final KeyWord opr,final Expression rhs) {
-		this.opr=opr;
-		if(lhs==null) {
-			Util.error("Missing operand before "+opr);
-			this.lhs=new Variable("UNKNOWN_");
-		} else this.lhs=lhs;
-		if(rhs==null) {
-			Util.error("Missing operand after "+opr);
-			this.rhs=new Variable("UNKNOWN_");
-		} else this.rhs=rhs;
-		this.lhs.backLink=this.rhs.backLink=this;
+
+	/**
+	 * Create a new ArithmeticExpression
+	 * 
+	 * @param lhs left hand side
+	 * @param opr arithmetic operation
+	 * @param rhs right hand side
+	 */
+	private ArithmeticExpression(final Expression lhs, final KeyWord opr, final Expression rhs) {
+		this.opr = opr;
+		if (lhs == null) {
+			Util.error("Missing operand before " + opr);
+			this.lhs = new Variable("UNKNOWN_");
+		} else
+			this.lhs = lhs;
+		if (rhs == null) {
+			Util.error("Missing operand after " + opr);
+			this.rhs = new Variable("UNKNOWN_");
+		} else
+			this.rhs = rhs;
+		this.lhs.backLink = this.rhs.backLink = this;
 	}
 
 	/**
 	 * Create a new ArithmeticExpression.
+	 * 
 	 * @param lhs the left hand side
-	 * @param opr the operation
+	 * @param opr the arithmetic operation
 	 * @param rhs the right hand side
 	 * @return the newly created ArithmeticExpression
 	 */
-	static Expression create(final Expression lhs,final KeyWord opr,final Expression rhs) {
+	static Expression create(final Expression lhs, final KeyWord opr, final Expression rhs) {
 		try { // Try to Compile-time Evaluate this expression
-			Number lhn=lhs.getNumber();
-			if(lhn!=null) {
-				Number rhn=rhs.getNumber();
-				if(rhn!=null) return(Constant.evaluate(lhn,opr,rhn));
+			Number lhn = lhs.getNumber();
+			if (lhn != null) {
+				Number rhn = rhs.getNumber();
+				if (rhn != null)
+					return (Constant.evaluate(lhn, opr, rhn));
 			}
-		} catch(Exception e) { Util.error("Arithmetic overflow: "+lhs+' '+opr+' '+rhs+"   "+e); e.printStackTrace(); }
-		return(new ArithmeticExpression(lhs,opr,rhs));
+		} catch (Exception e) {
+			Util.error("Arithmetic overflow: " + lhs + ' ' + opr + ' ' + rhs + "   " + e);
+			e.printStackTrace();
+		}
+		return (new ArithmeticExpression(lhs, opr, rhs));
 	}
-  
+
 	@Override
 	public Expression evaluate() {
 		// Try to Compile-time Evaluate this expression
-		Number lhn=lhs.getNumber();
-		if(lhn!=null) {
-			Number rhn=rhs.getNumber();
-			if(rhn!=null) return(Constant.evaluate(lhn,opr,rhn));
+		Number lhn = lhs.getNumber();
+		if (lhn != null) {
+			Number rhn = rhs.getNumber();
+			if (rhn != null)
+				return (Constant.evaluate(lhn, opr, rhn));
 		}
-		return(this);
+		return (this);
 	}
-  
-	@Override
-    public void doChecking() {
-    	if(IS_SEMANTICS_CHECKED()) return;
-    	Global.sourceLineNumber=lineNumber;
-    	if(Option.TRACE_CHECKER) Util.TRACE("BEGIN ArithmeticOperation"+toString()+".doChecking - Current Scope Chain: "+Global.getCurrentScope().edScopeChain());
-    	switch(opr) {
-    	    case PLUS: case MINUS: case MUL: {
-	    	    // ArithmeticExpression
-    	    	lhs.doChecking(); rhs.doChecking();
-    	    	Type type1=lhs.type; Type type2=rhs.type;
-    	    	this.type=Type.arithmeticTypeConversion(type1,type2);
-    	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-    	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-    	    	if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
-    	    	break;
-    	    } case DIV: {
-    	    	// Real Division
-    	    	// The operator / denotes real division.
-    	    	// Any operand of integer type is converted before the operation.
-    	    	// Division by zero constitutes an error.
-    	    	lhs.doChecking(); rhs.doChecking();
-    	    	Type type1=lhs.type; Type type2=rhs.type;
-    	    	this.type=Type.arithmeticTypeConversion(type1,type2);
-    	    	if(this.type==Type.Integer) this.type=Type.Real;
-    	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-    	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-    	    	if(this.type==null) Util.error("Incompatible types in binary operation: "+toString());
-    	    	break;
-    	    } case INTDIV: { // Integer Division
-    	    	lhs.doChecking(); rhs.doChecking();
-    	    	if(lhs.type!=Type.Integer || rhs.type!=Type.Integer)
-    	    		Util.error("Incompatible types in binary operation: "+toString());
-    	    	this.type=Type.Integer;
-    	    	lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-    	    	rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-    	    	break; 
-    	    } case EXP: {
-    	    	lhs.doChecking(); rhs.doChecking();
-    	    	if(lhs.type!=Type.Integer || rhs.type!=Type.Integer) {
-    	    		this.type=Type.LongReal; // Deviation from Simula Standard
-    	    		lhs=(Expression)TypeConversion.testAndCreate(this.type,lhs);
-    	    		rhs=(Expression)TypeConversion.testAndCreate(this.type,rhs);
-    	    	} else this.type=Type.Integer;
-    	    	break; 
-    	    }
-    	    default: Util.IERR("Impossible");
-    	}
-    	if(Option.TRACE_CHECKER) Util.TRACE("END ArithmeticOperation"+toString()+".doChecking - Result type="+this.type);
-    	SET_SEMANTICS_CHECKED();
-    }
-
-  
-    // Returns true if this expression may be used as a statement.
-	@Override
-    public boolean maybeStatement() {
-    	ASSERT_SEMANTICS_CHECKED();
-	    return(false);  
-    }
-
-  
-	@Override
-    public String toJavaCode() {
-    	ASSERT_SEMANTICS_CHECKED();
-   		switch (opr) {
-   		   case EXP: {
-   			   if (this.type == Type.Integer)
-   				   return ("_IPOW(" + lhs.get() + ',' + rhs.get() + ')');
-   			   else return ("Math.pow(" + lhs.get() + ',' + rhs.get() + ')');
-   		   }
-   		   default: {
-   			   if (this.backLink == null)
-   				   return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
-   			   else return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
-   		   }
-   		}
-    }
 
 	@Override
-    public String toString()
-    { return("("+lhs+' '+opr+' '+rhs+")"); }
+	public void doChecking() {
+		if (IS_SEMANTICS_CHECKED())
+			return;
+		Global.sourceLineNumber = lineNumber;
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("BEGIN ArithmeticOperation" + toString() + ".doChecking - Current Scope Chain: "
+					+ Global.getCurrentScope().edScopeChain());
+		switch (opr) {
+		case PLUS:
+		case MINUS:
+		case MUL: {
+			// ArithmeticExpression
+			lhs.doChecking();
+			rhs.doChecking();
+			Type type1 = lhs.type;
+			Type type2 = rhs.type;
+			this.type = Type.arithmeticTypeConversion(type1, type2);
+			lhs = (Expression) TypeConversion.testAndCreate(this.type, lhs);
+			rhs = (Expression) TypeConversion.testAndCreate(this.type, rhs);
+			if (this.type == null)
+				Util.error("Incompatible types in binary operation: " + toString());
+			break;
+		}
+		case DIV: {
+			// Real Division
+			// The operator / denotes real division.
+			// Any operand of integer type is converted before the operation.
+			// Division by zero constitutes an error.
+			lhs.doChecking();
+			rhs.doChecking();
+			Type type1 = lhs.type;
+			Type type2 = rhs.type;
+			this.type = Type.arithmeticTypeConversion(type1, type2);
+			if (this.type == Type.Integer)
+				this.type = Type.Real;
+			lhs = (Expression) TypeConversion.testAndCreate(this.type, lhs);
+			rhs = (Expression) TypeConversion.testAndCreate(this.type, rhs);
+			if (this.type == null)
+				Util.error("Incompatible types in binary operation: " + toString());
+			break;
+		}
+		case INTDIV: { // Integer Division
+			lhs.doChecking();
+			rhs.doChecking();
+			if (lhs.type != Type.Integer || rhs.type != Type.Integer)
+				Util.error("Incompatible types in binary operation: " + toString());
+			this.type = Type.Integer;
+			lhs = (Expression) TypeConversion.testAndCreate(this.type, lhs);
+			rhs = (Expression) TypeConversion.testAndCreate(this.type, rhs);
+			break;
+		}
+		case EXP: {
+			lhs.doChecking();
+			rhs.doChecking();
+			if (lhs.type != Type.Integer || rhs.type != Type.Integer) {
+				this.type = Type.LongReal; // Deviation from Simula Standard
+				lhs = (Expression) TypeConversion.testAndCreate(this.type, lhs);
+				rhs = (Expression) TypeConversion.testAndCreate(this.type, rhs);
+			} else
+				this.type = Type.Integer;
+			break;
+		}
+		default:
+			Util.IERR("Impossible");
+		}
+		if (Option.TRACE_CHECKER)
+			Util.TRACE("END ArithmeticOperation" + toString() + ".doChecking - Result type=" + this.type);
+		SET_SEMANTICS_CHECKED();
+	}
+
+	// Returns true if this expression may be used as a statement.
+	@Override
+	public boolean maybeStatement() {
+		ASSERT_SEMANTICS_CHECKED();
+		return (false);
+	}
+
+	@Override
+	public String toJavaCode() {
+		ASSERT_SEMANTICS_CHECKED();
+		switch (opr) {
+		case EXP: {
+			if (this.type == Type.Integer)
+				return ("_IPOW(" + lhs.get() + ',' + rhs.get() + ')');
+			else
+				return ("Math.pow(" + lhs.get() + ',' + rhs.get() + ')');
+		}
+		default: {
+			if (this.backLink == null)
+				return (lhs.get() + opr.toJavaCode() + '(' + rhs.get() + ')');
+			else
+				return ("(" + lhs.get() + opr.toJavaCode() + '(' + rhs.get() + "))");
+		}
+		}
+	}
+
+	@Override
+	public String toString() {
+		return ("(" + lhs + ' ' + opr + ' ' + rhs + ")");
+	}
 
 }

@@ -19,28 +19,28 @@ import simula.compiler.utilities.Util;
  * <pre>
  *    Boolean-expression
  *        =  simple-Boolean-expression
- *        |  if-clause  simple-Boolean-expression  else  Boolean-expression
+ *        |  IF Boolean-expression THEN  simple-Boolean-expression  ELSE  Boolean-expression
  *
  *    simple-Boolean-expression
- *        =  Boolean-tertiary  { or else  Boolean-tertiary }
+ *        =  Boolean-tertiary  { OR ELSE  Boolean-tertiary }
  *
  *    Boolean-tertiary
- *        =  equivalence  { and then  equivalence }
+ *        =  equivalence  { AND THEN  equivalence }
  *
  *    equivalence
- *        =  implication  { eqv  implication }
+ *        =  implication  { EQV  implication }
  *
  *    implication
- *        =  Boolean-term  { imp  Boolean-term }
+ *        =  Boolean-term  { IMP  Boolean-term }
  *
  *    Boolean-term
- *        =  Boolean-factor  { or  Boolean-factor }
+ *        =  Boolean-factor  { OR  Boolean-factor }
  *
  *    Boolean-factor
- *        =  Boolean-secondary  { and  Boolean-secondary }
+ *        =  Boolean-secondary  { AND  Boolean-secondary }
  *
  *    Boolean-secondary
- *        =  [ not ]  Boolean-primary
+ *        =  [ NOT ]  Boolean-primary
  *
  *    Boolean-primary
  *        =  logical-value
@@ -90,21 +90,34 @@ import simula.compiler.utilities.Util;
  * when the evaluation result is already evident from the value of the first
  * operand alone.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/BooleanExpression.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/BooleanExpression.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
 public final class BooleanExpression extends Expression {
+
+	/**
+	 * The left hand side
+	 */
 	private Expression lhs;
+
+	/**
+	 * The Boolean operation
+	 */
 	private final KeyWord opr;
+
+	/**
+	 * The right hand side
+	 */
 	private Expression rhs;
 
 	/**
-	 * BooleanExpression.
-	 * @param lhs the left hand side
-	 * @param opr the operation
-	 * @param rhs the right hand side
+	 * Create a new BooleanExpression.
+	 * @param lhs left hand side
+	 * @param opr Boolean operation
+	 * @param rhs right hand side
 	 */
 	BooleanExpression(Expression lhs, KeyWord opr, Expression rhs) {
 		this.lhs = lhs;

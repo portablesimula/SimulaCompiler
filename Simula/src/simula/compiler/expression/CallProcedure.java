@@ -30,7 +30,8 @@ import simula.compiler.utilities.Util;
  * 
  * Coding Utilities.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/CallProcedure.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/CallProcedure.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -82,10 +83,10 @@ public final class CallProcedure {
 			return(remoteVirtual(obj,func,procedure.myVirtual.virtualSpec));
 		} else if(procedure.declarationKind==Declaration.Kind.ContextFreeMethod) {
 			// Call Remote Method
-			return(asRemoteMethod(obj,procedure,func,backLink));
+			return(asRemoteMethod(obj,procedure,func));
 		} else if(procedure.declarationKind==Declaration.Kind.MemberMethod) {
 			// Call Remote Method
-			return(asRemoteMethod(obj,procedure,func,backLink));
+			return(asRemoteMethod(obj,procedure,func));
 		}
 		String call="new "+procedure.getJavaIdentifier();
 		String staticLink=obj.get();	  
@@ -106,7 +107,7 @@ public final class CallProcedure {
 	 * @param func Function Designator, may be subscripted
 	 * @return piece of Java source code
 	 */
-	private static String asRemoteMethod(final Expression obj,final ProcedureDeclaration procedure,final Variable func,final SyntaxClass backLink) {
+	private static String asRemoteMethod(final Expression obj,final ProcedureDeclaration procedure,final Variable func) {
 		BlockDeclaration declaredIn=(BlockDeclaration)procedure.declaredIn;
 		if(declaredIn.isContextFree) {
 			// Call Static Member Method
@@ -260,6 +261,13 @@ public final class CallProcedure {
 	// ********************************************************************
 	// *** codeCPF
 	// ********************************************************************
+	/**
+	 * Code Utility: Edit Call Procedure Formal.
+	 * @param ident the procedure identifier
+	 * @param variable the procedure variable
+	 * @param procedureSpec the procedure spec
+	 * @return the resulting Java source code
+	 */
 	private static String codeCPF(final String ident,final Variable variable,final ProcedureSpecification procedureSpec) {
 		StringBuilder s=new StringBuilder();
 		if(procedureSpec!=null) s.append(codeCSVP(ident,variable,procedureSpec));
@@ -317,6 +325,13 @@ public final class CallProcedure {
 	// ********************************************************************
 	// *** codeCSVP  -- Call Specified Virtual Procedure
 	// ********************************************************************
+	/**
+	 * Code Utility: Edit Call Specified Virtual Procedure.
+	 * @param ident the procedure identifier
+	 * @param variable the procedure variable
+	 * @param procedureSpec the procedure spec
+	 * @return the resulting Java source code
+	 */
 	private static String codeCSVP(final String ident, final Variable variable,	final ProcedureSpecification procedureSpec) {
 		StringBuilder s = new StringBuilder();
 		s.append(ident).append(".CPF()");
@@ -341,12 +356,19 @@ public final class CallProcedure {
 	// ********************************************************************
 	// *** edProcedureParameters
 	// ********************************************************************
-	private static String edProcedureParameters(final Variable variable, final String staticLink, final ProcedureDeclaration procedure) {
+	/**
+	 * Code Utility: Edit procedure parameters.
+	 * @param variable a variable
+	 * @param SL static link
+	 * @param procedure the procedure
+	 * @return the resulting Java source code
+	 */
+	private static String edProcedureParameters(final Variable variable, final String SL, final ProcedureDeclaration procedure) {
 		StringBuilder s = new StringBuilder();
 		boolean prevPar = false;
 		s.append('(');
-		if (staticLink != null) {
-			s.append(staticLink);
+		if (SL != null) {
+			s.append(SL);
 			prevPar = true;
 		}
 		if (variable.hasArguments()) {
@@ -376,6 +398,11 @@ public final class CallProcedure {
 		return (s.toString());
 	}
 	
+	/**
+	 * Returns the array's number of dimensions.
+	 * @param actualParameter the array parameter
+	 * @return the array's number of dimensions.
+	 */
     private static int getNdim(final Expression actualParameter) {
     	Variable aVar=null;
     	if(actualParameter instanceof RemoteVariable rem) aVar=rem.var;
@@ -390,14 +417,22 @@ public final class CallProcedure {
 	// ********************************************************************
 	// *** doParameterTransmition
 	// ********************************************************************
-	private static String doParameterTransmition(final Type formalType,final Parameter.Kind kind,final Parameter.Mode mode,final Expression actualParameter) {
+    /**
+     * Code Utility: Edit parameter transmission,
+     * @param formalType parameter's formal type
+     * @param kind parameter's kind
+     * @param mode parameter's transmission mode
+     * @param apar the actual parameter
+     * @return the resulting Java source code
+     */
+	private static String doParameterTransmition(final Type formalType,final Parameter.Kind kind,final Parameter.Mode mode,final Expression apar) {
 		StringBuilder s = new StringBuilder();
 		switch(kind) {
-		    case Simple -> doSimpleParameter(s,formalType,mode,actualParameter);
-		    case Procedure -> doProcedureParameter(s,formalType,mode,actualParameter);
-		    case Array -> doArrayParameter(s,formalType,mode,actualParameter);
+		    case Simple -> doSimpleParameter(s,formalType,mode,apar);
+		    case Procedure -> doProcedureParameter(s,formalType,mode,apar);
+		    case Array -> doArrayParameter(s,formalType,mode,apar);
 		    case Label -> {
-		    		String labQuant=actualParameter.toJavaCode();
+		    		String labQuant=apar.toJavaCode();
 		    		if(mode==Parameter.Mode.name) {
 		    			s.append("new RTS_NAME<RTS_LABEL>()");
 		    			s.append("{ public RTS_LABEL get() { return("+labQuant+"); }");
@@ -413,15 +448,23 @@ public final class CallProcedure {
 	// ********************************************************************
 	// *** doSimpleParameter -- Simple Variable as Actual Parameter
 	// ********************************************************************
-	private static void doSimpleParameter(final StringBuilder s,final Type formalType,final Parameter.Mode mode,final Expression actualParameter) {
+	/**
+	 * Code Utility: Edit simple parameter into the given StringBuilder. 
+	 * 
+	 * @param s the StringBuilder
+	 * @param formalType the formal type
+	 * @param mode the parameter's mode
+	 * @param apar actual parameter
+	 */
+	private static void doSimpleParameter(final StringBuilder s,final Type formalType,final Parameter.Mode mode,final Expression apar) {
 		if(mode==null) // Simple Type/Ref/Text by Default
-		  	s.append(actualParameter.toJavaCode());
+		  	s.append(apar.toJavaCode());
 		else if(mode==Parameter.Mode.value) { // Simple Type/Ref/Text by Value
 		        if(formalType==Type.Text)
-		    	     s.append("copy(").append(actualParameter.toJavaCode()).append(')');
-		        else s.append(actualParameter.toJavaCode());
+		    	     s.append("copy(").append(apar.toJavaCode()).append(')');
+		        else s.append(apar.toJavaCode());
 		} else if(formalType==Type.Label) {
-		    	String labQuant=actualParameter.toJavaCode();
+		    	String labQuant=apar.toJavaCode();
 		    	if(mode==Parameter.Mode.name) {
 			    	  s.append("new RTS_NAME<RTS_LABEL>()");
 				      s.append("{ public RTS_LABEL get() { return("+labQuant+"); }");
@@ -430,14 +473,14 @@ public final class CallProcedure {
 			    else s.append(labQuant);
 		} else { // Simple Type/Ref/Text by Name
 		    String javaTypeClass=formalType.toJavaTypeClass();
-		    Variable writeableVariable=actualParameter.getWriteableVariable();
+		    Variable writeableVariable=apar.getWriteableVariable();
 		    if(writeableVariable!=null) {
 		    	s.append("new RTS_NAME<"+javaTypeClass+">()");
-		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
+		    	s.append("{ public "+javaTypeClass+" get() { return("+apar.get()+"); }");
 		    	if(!(writeableVariable.meaning.declaredAs instanceof BlockDeclaration)) {
-		    		Type actualType=actualParameter.type;
+		    		Type actualType=apar.type;
 		    		String rhs="("+actualType.toJavaType()+")x_";
-		    		if(actualParameter instanceof TypeConversion) {
+		    		if(apar instanceof TypeConversion) {
 		    			// --------------------------------------------------
 		    			// Generate something like:
 		    			//  
@@ -461,13 +504,13 @@ public final class CallProcedure {
 		    			//  }
 		    			// --------------------------------------------------
 		    			s.append(" public "+javaTypeClass+" put("+javaTypeClass+" x_)"
-		    					+" { return("+actualParameter.put(rhs)+"); }");
+		    					+" { return("+apar.put(rhs)+"); }");
 		    		}
 		    	}
 		    	s.append(" }");
 		    } else {
 		    	s.append("new RTS_NAME<"+javaTypeClass+">()");
-		    	s.append("{ public "+javaTypeClass+" get() { return("+actualParameter.get()+"); }");
+		    	s.append("{ public "+javaTypeClass+" get() { return("+apar.get()+"); }");
 		    	s.append(" }");
 		    }
 		}
@@ -477,23 +520,37 @@ public final class CallProcedure {
 	// ********************************************************************
 	// *** doArrayParameter -- Array as Actual Parameter
 	// ********************************************************************
-	private static void doArrayParameter(final StringBuilder s,final Type formalType,final Parameter.Mode mode,final Expression actualParameter) {
+	/**
+	 * Code Utility: Edit Array as Actual Parameter into the given StringBuilder.
+	 * @param s the StringBuilder
+	 * @param formalType the formal type
+	 * @param mode the parameter mode
+	 * @param apar actual parameter
+	 */
+	private static void doArrayParameter(final StringBuilder s,final Type formalType,final Parameter.Mode mode,final Expression apar) {
 		if(mode==Parameter.Mode.value) {
-			s.append(actualParameter.toJavaCode()).append(".COPY()");
+			s.append(apar.toJavaCode()).append(".COPY()");
 		}
 		else if(mode==Parameter.Mode.name) {
 			s.append("new RTS_NAME<RTS_ARRAY>()");
-			s.append("{ public RTS_ARRAY get() { return("+actualParameter.toJavaCode()+"); }");
+			s.append("{ public RTS_ARRAY get() { return("+apar.toJavaCode()+"); }");
 			s.append(" }");	
-		} else s.append(actualParameter.toJavaCode());
+		} else s.append(apar.toJavaCode());
 	}
 	
 	
 	// ********************************************************************
 	// *** doProcedureParameter -- Procedure as Actual Parameter
 	// ********************************************************************
-	private static void doProcedureParameter(final StringBuilder s, final Type formalType, final Parameter.Mode mode, final Expression actualParameter) {
-		String procQuant = edProcedureQuant(mode,actualParameter);
+	/**
+	 * Code Utility: Edit Procedure as Actual Parameter into the given StringBuilder.
+	 * @param s the StringBuilder
+	 * @param formalType the formal type
+	 * @param mode the parameter mode
+	 * @param apar actual parameter
+	 */
+	private static void doProcedureParameter(final StringBuilder s, final Type formalType, final Parameter.Mode mode, final Expression apar) {
+		String procQuant = edProcedureQuant(apar);
 		if (mode == Parameter.Mode.name) {
 			// --- EXAMPLE -------------------------------------------------------------------------
 			// r = new ParamSample_Q(this, new RTS_NAME<RTS_PRCQNT>() {
@@ -511,14 +568,19 @@ public final class CallProcedure {
 	// ********************************************************************
 	// *** edProcedureQuant
 	// ********************************************************************
-	private static String edProcedureQuant(final Parameter.Mode mode, final Expression actualParameter) {
-	    if (actualParameter instanceof Variable var) {
+	/**
+	 * Code Utility: Edit new procedure quant.
+	 * @param apar the actual parameter
+	 * @return the resulting Java source code
+	 */
+	private static String edProcedureQuant(final Expression apar) {
+	    if (apar instanceof Variable var) {
 			Declaration decl=var.meaning.declaredAs;
 	    	String staticLink=var.meaning.edQualifiedStaticLink();
 	    	String procIdent = decl.getJavaIdentifier();
 			String procQuant = "new RTS_PRCQNT(" + staticLink + "," + procIdent + ".class)";
 			if (decl instanceof Parameter par) {
-				procQuant = ((Variable) actualParameter).getJavaIdentifier();
+				procQuant = ((Variable) apar).getJavaIdentifier();
 				if (par.mode == Parameter.Mode.name)
 					procQuant = procQuant + ".get()";
 			} else if (decl instanceof ProcedureDeclaration procedure) {
@@ -530,7 +592,7 @@ public final class CallProcedure {
 				procQuant=staticLink+'.'+vir.getVirtualIdentifier();
 			} else Util.IERR("Flere sånne(1) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			return(procQuant);
-	    } else if (actualParameter instanceof RemoteVariable rem) {
+	    } else if (apar instanceof RemoteVariable rem) {
 			// Check for <ObjectExpression> DOT <Variable>
 			String staticLink = rem.obj.toJavaCode();
 			Variable var = rem.var;
@@ -545,7 +607,7 @@ public final class CallProcedure {
 			} else Util.IERR("Flere sånne(2) tilfeller ???  QUAL="+decl.getClass().getSimpleName());
 			String procIdent = var.meaning.declaredAs.getJavaIdentifier();
 			return("new RTS_PRCQNT(" + staticLink + "," + procIdent + ".class)");
-		} else Util.error("Illegal Procedure Expression as Actual Parameter: " + actualParameter);
+		} else Util.error("Illegal Procedure Expression as Actual Parameter: " + apar);
 	    return("UNKNOWN"); // Error recovery
 	}
 
