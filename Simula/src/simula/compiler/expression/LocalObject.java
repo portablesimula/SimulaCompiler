@@ -25,7 +25,7 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * LocalObject = THIS ClassIdentifier
+ * local-object = THIS class-identifier
  * 
  * </pre>
  * 
@@ -41,29 +41,50 @@ import simula.compiler.utilities.Util;
  * For an instance of a procedure or a class body, "textually enclosing" means
  * containing its declaration.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/LocalObject.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/LocalObject.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
 public final class LocalObject extends Expression {
+	
+	/**
+	 * The class identifier.
+	 */
 	private final String classIdentifier;
+	
+	/**
+	 * The class declaration. Set by doChecking.
+	 */
 	private ClassDeclaration classDeclaration; // Set by doChecking
+	
+	/**
+	 * THIS scope. Set by doChecking.
+	 */
 	private DeclarationScope thisScope; // Set by doChecking
+	
+	/**
+	 * Context difference. Set by doChecking.
+	 */
 	private int ctxDiff;  // Set by doChecking
 
-	private LocalObject(final String classIdentifier) {
-		this.classIdentifier = classIdentifier;
+	/**
+	 * Create a new LocalObject
+	 * @param ident class-identifier
+	 */
+	private LocalObject(final String ident) {
+		this.classIdentifier = ident;
 		this.type=Type.Ref(classIdentifier);
 		if (Option.TRACE_PARSE)
 			Util.TRACE("NEW ThisObjectExpression: " + toString());
 	}
 
 	/**
-	 * Accept This Identifier.
+	 * Expect This Identifier.
 	 * @return the newly created LocalObject.
 	 */
-	static Expression acceptThisIdentifier() {
+	static Expression expectThisIdentifier() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ThisObjectExpression, current=" + Parse.currentToken);
 		String classIdentifier = Parse.expectIdentifier();
@@ -88,6 +109,9 @@ public final class LocalObject extends Expression {
     //***********************************************************************************************
     //*** Utility: findThis  --  Follow Static Chain Looking for a Class named 'classIdentifier'
     //***********************************************************************************************
+	/**
+	 * Follow Static Chain Looking for a Class named 'classIdentifier'
+	 */
 	private void findThis() {
 		ctxDiff=0;
 		thisScope=Global.getCurrentScope();

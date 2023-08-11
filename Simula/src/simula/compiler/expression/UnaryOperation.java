@@ -20,7 +20,9 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   UnaryOperation =  operation  Expression
+ *   unary-operation =  unary-operator  Expression
+ *   
+ *      unary-operator = NOT | + | -
  * </pre>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/UnaryOperation.java"><b>Source File</b></a>.
  * 
@@ -38,6 +40,11 @@ final class UnaryOperation extends Expression {
 	 */
 	Expression operand;
 
+	/**
+	 * Create a new UnaryOperation.
+	 * @param oprator the unary operator.
+	 * @param operand the operand Expression
+	 */
 	private UnaryOperation(final KeyWord oprator,final Expression operand) {
 		this.oprator = oprator;
 		this.operand = operand;

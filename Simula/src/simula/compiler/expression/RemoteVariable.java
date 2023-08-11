@@ -27,16 +27,29 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   RemoteVariable = Expression  DOT  Variable
+ *   remote-variable = expression  DOT  variable
  * 
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/RemoteVariable.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/RemoteVariable.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class RemoteVariable extends Expression {
+	
+	/**
+	 * The remote attribute's semantic meaning.
+	 */
 	private Meaning remoteAttribute; // Set by doChecking
+	
+	/**
+	 * If the remoteAttribute is declared as a ProcedureDeclaration 'callRemoteProcedure' is the procedure to be called.
+	 */
 	private ProcedureDeclaration callRemoteProcedure = null;
+	
+	/**
+	 * If the remoteAttribute is declared as a VirtualSpecification 'callRemoteVirtual' is the procedure to be called.
+	 */
 	private VirtualSpecification callRemoteVirtual = null;
 	
 	/**
@@ -49,7 +62,10 @@ public final class RemoteVariable extends Expression {
 	 */
 	final Variable var;
 
-	private boolean accessRemoteArray = false; // Set by doChecking
+	/**
+	 * Used to indicate access remote array. Set by doChecking.
+	 */
+	private boolean accessRemoteArray = false;
 
 	/**
 	 * Create a new RemoteVariable
@@ -78,6 +94,12 @@ public final class RemoteVariable extends Expression {
 		SET_SEMANTICS_CHECKED();
 	}
 
+	/**
+	 * Perform semantic checking
+	 * @param obj remote object
+	 * @param attr remote attribute
+	 * @return the attribute's type
+	 */
 	private Type doRemoteChecking(final Expression obj, final Expression attr) {
 		Global.sourceLineNumber = lineNumber;
 		Type result;
@@ -125,6 +147,12 @@ public final class RemoteVariable extends Expression {
 		return (result);
 	}
 
+	/**
+	 * Perform semantic checking
+	 * @param obj remote object
+	 * @param attr remote attribute
+	 * @return the attribute's type
+	 */
 	private Type doRemoteTextChecking(final Expression obj, final Expression attr) {
 		Type result;
 		if (attr instanceof Variable var) { // Covers FunctionDesignator and SubscriptedVariable since they are subclasses
@@ -174,6 +202,12 @@ public final class RemoteVariable extends Expression {
 	// ***********************************************************************
 	// *** CODE: doAccessRemoteArray
 	// ***********************************************************************
+	/**
+	 * Coding Utility: Edit remote array access.
+	 * @param beforeDot expression before dot
+	 * @param array the array variable
+	 * @return the resulting Java source code
+	 */
 	private String doAccessRemoteArray(final Expression beforeDot, final Variable array) {
 		String obj = beforeDot.toJavaCode();
 		String cast=array.type.toJavaArrayType();

@@ -128,7 +128,7 @@ public final class AssignmentOperation extends Expression {
 	// *** CODE: doCodeTextValueAssignment
 	// ***********************************************************************
 	/**
-	 * Code Utility: Code text value assignment.
+	 * Coding Utility: Code text value assignment.
 	 * @return the resulting Java source code
 	 */
 	private String doCodeTextValueAssignment() {
@@ -148,7 +148,7 @@ public final class AssignmentOperation extends Expression {
 	// *** CODE: doCodeAssignment
 	// ***********************************************************************
 	/**
-	 * Code Utility: Code assignment.
+	 * Coding Utility: Code assignment.
 	 * @return the resulting Java source code
 	 */
 	private String doCodeAssignment() {
@@ -182,7 +182,7 @@ public final class AssignmentOperation extends Expression {
 	// *** CODE: doAccessRemoteArray
 	// ***********************************************************************
 	/**
-	 * Code Utility: Code access remote array.
+	 * Coding Utility: Code access remote array.
 	 * @param beforeDot expression before dot
 	 * @param array the array  variable
 	 * @param rightPart right part of assignment

@@ -17,8 +17,8 @@ import simula.compiler.utilities.Util;
  * Qualified Object
  * 
  * <pre>
- *  QualifiedObject
- *        =  SimpleObjectExpression  QUA  ClassIdentifier
+ *  qualified-object
+ *        =  simple-object-expression  QUA  class-identifier
  * </pre>
  * 
  * The qualification of an object expression is defined by the following rules:
@@ -47,16 +47,25 @@ import simula.compiler.utilities.Util;
  * innermost prefix level equal or outer to the access level, or, if no such
  * match exists, it is that of the virtual specification.
  * </ul>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/QualifiedObject.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/QualifiedObject.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class QualifiedObject extends Expression {
+	
+	/**
+	 * The left hand simple-object-expression 
+	 */
 	private final Expression lhs;
-	private final String classIdentifier;
 	
 	/**
 	 * The right hand class identifier.
+	 */
+	private final String classIdentifier;
+	
+	/**
+	 * The right hand class declaration. Set by doChecking.
 	 */
 	ClassDeclaration classDeclaration; // Set by doChecking
 

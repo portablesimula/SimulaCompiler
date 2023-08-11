@@ -262,7 +262,7 @@ public final class CallProcedure {
 	// *** codeCPF
 	// ********************************************************************
 	/**
-	 * Code Utility: Edit Call Procedure Formal.
+	 * Coding Utility: Edit Call Procedure Formal.
 	 * @param ident the procedure identifier
 	 * @param variable the procedure variable
 	 * @param procedureSpec the procedure spec
@@ -326,7 +326,7 @@ public final class CallProcedure {
 	// *** codeCSVP  -- Call Specified Virtual Procedure
 	// ********************************************************************
 	/**
-	 * Code Utility: Edit Call Specified Virtual Procedure.
+	 * Coding Utility: Edit Call Specified Virtual Procedure.
 	 * @param ident the procedure identifier
 	 * @param variable the procedure variable
 	 * @param procedureSpec the procedure spec
@@ -357,7 +357,7 @@ public final class CallProcedure {
 	// *** edProcedureParameters
 	// ********************************************************************
 	/**
-	 * Code Utility: Edit procedure parameters.
+	 * Coding Utility: Edit procedure parameters.
 	 * @param variable a variable
 	 * @param SL static link
 	 * @param procedure the procedure
@@ -418,7 +418,7 @@ public final class CallProcedure {
 	// *** doParameterTransmition
 	// ********************************************************************
     /**
-     * Code Utility: Edit parameter transmission,
+     * Coding Utility: Edit parameter transmission,
      * @param formalType parameter's formal type
      * @param kind parameter's kind
      * @param mode parameter's transmission mode
@@ -449,7 +449,7 @@ public final class CallProcedure {
 	// *** doSimpleParameter -- Simple Variable as Actual Parameter
 	// ********************************************************************
 	/**
-	 * Code Utility: Edit simple parameter into the given StringBuilder. 
+	 * Coding Utility: Edit simple parameter into the given StringBuilder. 
 	 * 
 	 * @param s the StringBuilder
 	 * @param formalType the formal type
@@ -521,7 +521,7 @@ public final class CallProcedure {
 	// *** doArrayParameter -- Array as Actual Parameter
 	// ********************************************************************
 	/**
-	 * Code Utility: Edit Array as Actual Parameter into the given StringBuilder.
+	 * Coding Utility: Edit Array as Actual Parameter into the given StringBuilder.
 	 * @param s the StringBuilder
 	 * @param formalType the formal type
 	 * @param mode the parameter mode
@@ -543,7 +543,7 @@ public final class CallProcedure {
 	// *** doProcedureParameter -- Procedure as Actual Parameter
 	// ********************************************************************
 	/**
-	 * Code Utility: Edit Procedure as Actual Parameter into the given StringBuilder.
+	 * Coding Utility: Edit Procedure as Actual Parameter into the given StringBuilder.
 	 * @param s the StringBuilder
 	 * @param formalType the formal type
 	 * @param mode the parameter mode
@@ -569,7 +569,7 @@ public final class CallProcedure {
 	// *** edProcedureQuant
 	// ********************************************************************
 	/**
-	 * Code Utility: Edit new procedure quant.
+	 * Coding Utility: Edit new procedure quant.
 	 * @param apar the actual parameter
 	 * @return the resulting Java source code
 	 */

@@ -34,26 +34,30 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * Variable = SimpleObjectExpression . Variable | SimpleVariable | SubscriptedVariable
+ * variable = simple-variable | subscripted-variable | simple-object-expression . variable
  * 
- * 	SimpleObjectExpression = NONE | Variable | FunctionDesignator | ObjectGenerator
- *                             | LocalObject | QualifiedObject | ( ObjectExpression)
+ *    simple-object-expression = NONE | variable | function-designator | object-generator
+ *                             | local-object | qualified-object | ( object-expression )
  *                             
- * 	SimpleVariable = Identifier
+ *    simple-variable = identifier
  * 
- *	SubscriptedVariable = FunctionDesignator | ArrayElement
+ *    subscripted-variable = function-designator | array-element
  * 
- *  FunctionDesignator = ProcedureIdentifier ( [ ActualParameterPart ] )
+ *       function-designator = procedure-identifier ( [ actual-parameter-part ] )
  *  
- * 	ActualParameterPart = ActualParameter { , ActualParameter }
- * 		ActualParameter = Expression | ArrayIdentifier1 
- *                      | SwitchIdentifier1 | ProcedureIdentifier1
- * 			Identifier1 = Identifier | RemoteIdentifier
- * 				RemoteIdentifier = SimpleObjectExpression . AttributeIdentifier
- * 								 | TextPrimary . AttributeIdentifier
+ *          actual-parameter-part = actual-parameter { , actual-parameter }
+ *          
+ *             actual-parameter = expression | array-identifier1 
+ *                              | switch-identifier1 | procedure-identifier1
+ *                              
+ *                identifier1 = identifier | remote-identifier
+ *                
+ *                   remote-identifier = simple-object-expression . attribute-identifier
+ *                                     | text-primary . attribute-identifier
  *
- *	ArrayElement = ArrayIdentifier [ SubscriptList ]
- *		SubscriptList ::= ArithmeticExpression { , ArithmeticExpression }
+ *       array-element = array-identifier [ subscript-list ]
+ *       
+ *          subscript-list = arithmetic-expression { , arithmetic-expression }
  * 
  * </pre>
  * <b>Function designators:</b>
@@ -82,7 +86,8 @@ import simula.compiler.utilities.Util;
  * associated subscript bounds of the array. A subscript expression value
  * outside its associated bounds causes a run time error.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/Variable.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/Variable.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
@@ -449,6 +454,11 @@ public final class Variable extends Expression {
 	// ******************************************************************
 	// *** Coding: editVariable
 	// ******************************************************************
+	/**
+	 * Coding Utility: Edit this Variable.
+	 * @param rightPart When destination, this is the right part of the assignment
+	 * @return the resulting Java source code
+	 */
 	private String editVariable(final String rightPart) {
 		boolean destination = (rightPart != null);
 		Declaration decl = meaning.declaredAs;
@@ -623,6 +633,12 @@ public final class Variable extends Expression {
 		return (res);
 	}
 
+	/**
+	 * Coding Utility: Edit identifier access.
+	 * @param id the identifier
+	 * @param destination true if destination
+	 * @return a suitable java code
+	 */
 	private String edIdentifierAccess(String id, boolean destination) {
 		Expression constantElement = meaning.getConstant();
 		if (constantElement != null) {

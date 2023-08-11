@@ -14,22 +14,40 @@ import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
- * Binary Operation.
+ * Relational Operation.
  * 
  * <pre>
  * 
  * Syntax:
  * 
- *   RelationalOperation = Expression  RelationalOperator  Expression
- * 
+ *   relational-operation = expression  relational-operator  expression
+ *   
+ *      relational-operator = value-relational-operator | reference-comparator
+ *      
+ *         value-relational-operator =  &lt; | &lt;= | = | >= | > | &lt;>
+ *         
+ *         reference-comparator =  == | =/= 
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/RelationalOperation.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/RelationalOperation.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class RelationalOperation extends Expression {
+
+	/**
+	 * The left hand side
+	 */
 	private Expression lhs;
+
+	/**
+	 * The relational operation
+	 */
 	private final KeyWord opr;
+
+	/**
+	 * The right hand side
+	 */
 	private Expression rhs;
 
 	/**
@@ -141,6 +159,10 @@ public final class RelationalOperation extends Expression {
 	// ***********************************************************************
 	// *** CODE: doCodeTextValueRelation
 	// ***********************************************************************
+	/**
+	 * Coding Utility: Code text value relation
+	 * @return the resulting Java source code
+	 */
 	private String doCodeTextValueRelation() {
 		StringBuilder s = new StringBuilder();
 		String fnc = "??";
@@ -162,6 +184,10 @@ public final class RelationalOperation extends Expression {
 	// ***********************************************************************
 	// *** CODE: doCodeTextRefRelation
 	// ***********************************************************************
+	/**
+	 * Coding Utility: Code text reference relation
+	 * @return the resulting Java source code
+	 */
 	private String doCodeTextRefRelation() {
 		String fnc = "TRF_EQ(";
 		StringBuilder s = new StringBuilder();

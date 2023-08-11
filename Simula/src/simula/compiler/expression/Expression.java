@@ -359,7 +359,7 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 		else if(Parse.accept(KeyWord.NONE)) expr = new Constant(Type.Ref,null);
 		else if(Parse.accept(KeyWord.NOTEXT)) expr = new Constant(Type.Text,null);
 		else if(Parse.accept(KeyWord.NEW)) expr =ObjectGenerator.expectNew();
-		else if(Parse.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
+		else if(Parse.accept(KeyWord.THIS)) expr =LocalObject.expectThisIdentifier(); 
 		else { String ident=Parse.acceptIdentifier();
 			if(ident!=null) expr=Variable.expectVariable(ident);
 			else {

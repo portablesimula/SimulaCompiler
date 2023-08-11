@@ -40,18 +40,40 @@ import simula.compiler.utilities.Util;
  *           |  procedure-identifier-1
  * 
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ObjectGenerator.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ObjectGenerator.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class ObjectGenerator extends Expression {
+	
+	/**
+	 * The class-identifier
+	 */
 	private final String classIdentifier;
+	
+	/**
+	 * The semantic meaning 
+	 */
 	private Meaning meaning;
+	
+	/**
+	 * The actual parameters before checking
+	 */
 	private final Vector<Expression> params;
+	
+	/**
+	 * The actual parameters after checking
+	 */
 	private final Vector<Expression> checkedParams = new Vector<Expression>();
 
-	private ObjectGenerator(final String classIdentifier,final Vector<Expression> params) {
-		this.classIdentifier = classIdentifier;
+	/**
+	 * Create a new ObjectGenerator
+	 * @param ident class-identifier
+	 * @param params the actual parameters
+	 */
+	private ObjectGenerator(final String ident,final Vector<Expression> params) {
+		this.classIdentifier = ident;
 		this.type = Type.Ref(classIdentifier);
 		this.params = params;
 		if (Option.TRACE_PARSE) Util.TRACE("NEW ObjectGenerator: " + toString());

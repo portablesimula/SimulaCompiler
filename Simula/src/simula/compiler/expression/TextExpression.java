@@ -70,13 +70,22 @@ import simula.compiler.utilities.Util;
  * evaluated before &amp;, thus the two expressions "T1 &amp; T2.sub(1,2) &amp; T3.main" and
  * "T1 &amp; (T2.sub(1,2)) &amp; (T3.main)" are equivalent.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/TextExpression.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/TextExpression.java"><b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen
  */
 public final class TextExpression extends Expression {
+	
+	/**
+	 * The left hand side of &amp;
+	 */
 	private Expression lhs;
+	
+	/**
+	 * The right hand side of &amp;
+	 */
 	private Expression rhs;
 
 	/**

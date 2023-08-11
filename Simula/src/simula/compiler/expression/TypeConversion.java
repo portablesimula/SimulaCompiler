@@ -16,7 +16,8 @@ import simula.compiler.utilities.Util;
 /**
  * Type Conversion.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/TypeConversion.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/TypeConversion.java"><b>Source File</b></a>.
  *
  */
 public final class TypeConversion extends Expression {
@@ -26,13 +27,17 @@ public final class TypeConversion extends Expression {
 	 */
 	final Expression expression;
 
+	/**
+	 * Create a new TypeConversion.
+	 * @param type the new type
+	 * @param expression the expression
+	 */
 	private TypeConversion(final Type type,final Expression expression) {
 		this.type=type;
 		this.expression = expression; expression.backLink=this;
 	    this.doChecking();
 	}
 
-	// Test if a TypeConversion is necessary and then do it.
 	/**
 	 * Test if a TypeConversion is necessary and then create it.
 	 * @param fromType convert from this type
@@ -81,7 +86,12 @@ public final class TypeConversion extends Expression {
 		return (expression);
 	}
 
-	// Test if a TypeConversion is necessary.
+	/**
+	 * Test if a TypeConversion is necessary.
+	 * @param toType the desired type
+	 * @param expression the expression
+	 * @return piece of Java source code
+	 */
 	private static boolean testCastNeccessary(final Type toType,final Expression expression) {
 		if (toType == null)	return (false);
 		Type fromType = expression.type;
