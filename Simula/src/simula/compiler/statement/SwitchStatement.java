@@ -76,11 +76,11 @@ public final class SwitchStatement extends Statement {
 		super(line);
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse SwitchStatement: line="+line);
 		Parse.expect(KeyWord.BEGPAR);
-		lowKey = Expression.parseExpression();
+		lowKey = Expression.expectExpression();
 		Parse.expect(KeyWord.COLON);
-		hiKey = Expression.parseExpression();
+		hiKey = Expression.expectExpression();
 		Parse.expect(KeyWord.ENDPAR);
-		switchKey = Expression.parseExpression();
+		switchKey = Expression.expectExpression();
 		switchKey.backLink=this;
 		Parse.expect(KeyWord.BEGIN);
     	boolean noneCaseUsed=false;
@@ -105,9 +105,9 @@ public final class SwitchStatement extends Statement {
 	}
 
 	private SwitchInterval parseCasePair() {
-		Expression lowCase=Expression.parseExpression();
+		Expression lowCase=Expression.expectExpression();
 		Expression hiCase=null;
-		if(Parse.accept(KeyWord.COLON)) hiCase=Expression.parseExpression();
+		if(Parse.accept(KeyWord.COLON)) hiCase=Expression.expectExpression();
 		return(new SwitchInterval(lowCase,hiCase));
 	}
 

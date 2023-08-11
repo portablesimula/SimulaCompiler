@@ -56,15 +56,15 @@ public final class ActivationStatement extends Statement {
 		Token activator = Parse.prevToken;
 		REAC = activator.getKeyWord() == KeyWord.REACTIVATE;
 		if (Option.TRACE_PARSE) Parse.TRACE("Parse ActivationStatement");
-		object1 = Expression.parseExpression();
+		object1 = Expression.expectExpression();
 		code = ActivationCode.direct;
 		if (Parse.accept(KeyWord.AT) || Parse.accept(KeyWord.DELAY)) {
 			code = (Parse.prevToken.getKeyWord() == KeyWord.AT) ? ActivationCode.at : ActivationCode.delay;
-			time = Expression.parseExpression();
+			time = Expression.expectExpression();
 			if (Parse.accept(KeyWord.PRIOR)) prior = true;
 		} else if (Parse.accept(KeyWord.BEFORE) || Parse.accept(KeyWord.AFTER)) {
 			code = (Parse.prevToken.getKeyWord() == KeyWord.BEFORE) ? ActivationCode.before : ActivationCode.after;
-			object2 = Expression.parseExpression();
+			object2 = Expression.expectExpression();
 		}
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": ActivationStatement: "+this);
 	}

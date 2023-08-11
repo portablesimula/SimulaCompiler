@@ -43,7 +43,7 @@ public final class ConditionalStatement extends Statement {
 	 */
 	ConditionalStatement(final int line) {
 		super(line);
-		condition = Expression.parseExpression();
+		condition = Expression.expectExpression();
 		Parse.expect(KeyWord.THEN);
 		Statement elseStatement = null;
 		if (Parse.accept(KeyWord.ELSE)) {

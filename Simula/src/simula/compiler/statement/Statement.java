@@ -118,7 +118,7 @@ public abstract sealed class Statement extends SyntaxClass permits InnerStatemen
 		    case END:        return (new DummyStatement(lineNumber)); // Dummy Statement, keep END
 		
 		    case IDENTIFIER: case NEW: case THIS: case BEGPAR:
-		         Expression expr = Expression.parseExpression();
+		         Expression expr = Expression.acceptExpression();
 		         if(expr!=null) {
 		        	 if(expr instanceof Variable var) {
 		        		 if (Parse.accept(KeyWord.BEGIN))

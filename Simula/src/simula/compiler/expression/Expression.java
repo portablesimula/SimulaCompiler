@@ -83,23 +83,38 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 
 
 	/**
-	 * Parse expression.
+	 * Accept expression.
 	 * <pre>
 	 * Expression  =  SimpleExpression
 	 *	         |  IF  BooleanExpression  THEN  SimpleExpression  ELSE  Expression
 	 * </pre>
 	 * @return Expression or null if no expression is found.
 	 */
-	public static Expression parseExpression() {
+	public static Expression acceptExpression() {
 		if(Parse.accept(KeyWord.IF)) {
-			Expression condition=parseExpression();
-			Parse.expect(KeyWord.THEN); Expression thenExpression=parseSimpleExpression();
-			Parse.expect(KeyWord.ELSE); Expression elseExpression=parseExpression();
+			Expression condition=acceptExpression();
+			Parse.expect(KeyWord.THEN); Expression thenExpression=acceptSimpleExpression();
+			Parse.expect(KeyWord.ELSE); Expression elseExpression=acceptExpression();
 			Expression expr=new ConditionalExpression(Type.Boolean,condition,thenExpression,elseExpression);
 			if(Option.TRACE_PARSE) Util.TRACE("Expression: ParseExpression, result="+expr);
 			return(expr);
-		} else return(parseSimpleExpression());
-	}  
+		} else return(acceptSimpleExpression());
+	} 
+	
+	/**
+	 * Expect expression.
+	 * <pre>
+	 * Expression  =  SimpleExpression
+	 *	         |  IF  BooleanExpression  THEN  SimpleExpression  ELSE  Expression
+	 * </pre>
+	 * If no expression is found an error message is printed.
+	 * @return Expression or null if no expression is found.
+	 */
+	public static Expression expectExpression() {
+		Expression expr=acceptExpression();
+		if(expr==null) Util.error("Expecting Expression");
+		return(expr);
+	}
 
 	/**
 	 * Parse simple expression.
@@ -121,121 +136,191 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 	 *        
 	 * @return Expression or null if no expression is found.
 	 */
-	protected static Expression parseSimpleExpression()  {   
-		Expression expr = parseANDTHEN();
+	private static Expression acceptSimpleExpression()  {   
+		Expression expr = acceptANDTHEN();
 		while(Parse.accept(KeyWord.OR_ELSE))  {
-			expr=new BooleanExpression(expr,KeyWord.OR_ELSE,parseANDTHEN());
+			expr=new BooleanExpression(expr,KeyWord.OR_ELSE,acceptANDTHEN());
 		}
 		return(expr);
 	}
 
-	// BooleanTertiary =  Equivalence  { AND THEN  Equivalence }
-	private static Expression parseANDTHEN() {
-		Expression expr = parseEQV();
+	/**
+	 * Parse Utility: Accept Boolean AND THEN.
+	 * <pre>
+	 * BooleanTertiary =  Equivalence  { AND THEN  Equivalence }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptANDTHEN() {
+		Expression expr = acceptEQV();
 		while(Parse.accept(KeyWord.AND_THEN))
-			expr=new BooleanExpression(expr,KeyWord.AND_THEN,parseEQV());
+			expr=new BooleanExpression(expr,KeyWord.AND_THEN,acceptEQV());
 		return(expr);
 	}
 
-	// Equivalence  =  Implication  { EQV  Implication }
-	private static Expression parseEQV() { 
-		Expression expr=parseIMP();
+	/**
+	 * Parse Utility: Accept Boolean EQV.
+	 * <pre>
+	 * Equivalence  =  Implication  { EQV  Implication }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptEQV() { 
+		Expression expr=acceptIMP();
 		while(Parse.accept(KeyWord.EQV))
-			expr=new BooleanExpression(expr,KeyWord.EQV,parseIMP());
+			expr=new BooleanExpression(expr,KeyWord.EQV,acceptIMP());
 		return(expr);
 	}
 
-	// Implication =  BooleanTerm  { IMP  BooleanTerm }
-	private static Expression parseIMP() {
-		Expression expr=parseOR();
+	/**
+	 * Parse Utility: Accept Boolean IMP.
+	 * <pre>
+	 * Implication =  BooleanTerm  { IMP  BooleanTerm }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptIMP() {
+		Expression expr=acceptOR();
 		while(Parse.accept(KeyWord.IMP))
-			expr=new BooleanExpression(expr,KeyWord.IMP,parseOR());
+			expr=new BooleanExpression(expr,KeyWord.IMP,acceptOR());
 		return(expr);
 	}
 
-	// BooleanTerm  =  BooleanFactor  { OR  BooleanFactor }
-	private static Expression parseOR() {
-		Expression expr=parseAND();
+	/**
+	 * Parse Utility: Accept Boolean OR.
+	 * <pre>
+	 * BooleanTerm  =  BooleanFactor  { OR  BooleanFactor }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptOR() {
+		Expression expr=acceptAND();
 		while(Parse.accept(KeyWord.OR))
-			expr=new BooleanExpression(expr,KeyWord.OR,parseAND());
+			expr=new BooleanExpression(expr,KeyWord.OR,acceptAND());
 		return(expr);
 	}
 
-	// BooleanFactor =  BooleanSecondary  { AND  BooleanSecondary }
-	private static Expression parseAND() {
-		Expression expr=parseNOT();
+	/**
+	 * Parse Utility: Accept Boolean AND.
+	 * <pre>
+	 * BooleanFactor =  BooleanSecondary  { AND  BooleanSecondary }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptAND() {
+		Expression expr=acceptNOT();
 		while(Parse.accept(KeyWord.AND))
-			expr=new BooleanExpression(expr,KeyWord.AND,parseNOT());
+			expr=new BooleanExpression(expr,KeyWord.AND,acceptNOT());
 		return(expr);
 	}
 
-	// BooleanSecondary  =  [ NOT ]  BooleanPrimary
-	private static Expression  parseNOT() {
+	/**
+	 * Parse Utility: Accept Boolean NOT.
+	 * <pre>
+	 * BooleanSecondary  =  [ NOT ]  BooleanPrimary
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression  acceptNOT() {
 		Expression expr;
 		if(Parse.accept(KeyWord.NOT)) {
-			expr=UnaryOperation.create(KeyWord.NOT,parseTEXTCONC());
-		} else expr = parseTEXTCONC();
+			expr=UnaryOperation.create(KeyWord.NOT,acceptTEXTCONC());
+		} else expr = acceptTEXTCONC();
 		return(expr);
 	}
 
-	// BooleanPrimary  =  TextPrimary  { &amp; TextPrimary }
-	private static Expression parseTEXTCONC() {
-		Expression expr=parseREL();
+	/**
+	 * Parse Utility: Accept text concatenation.
+	 * <pre>
+	 * BooleanPrimary  =  TextPrimary  { &amp; TextPrimary }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptTEXTCONC() {
+		Expression expr=acceptRelation();
 		while(Parse.accept(KeyWord.CONC))
-			expr=new TextExpression(expr,parseREL());
+			expr=new TextExpression(expr,acceptRelation());
 		return(expr);
 	}
 
-	// TextPrimary =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
-	//    RelationOperator  =  <  |  <=  |  =  |  >=  |  >  |  <> |  ==  |  =/=
-	private static Expression parseREL() {   // Metode-form      
-		Expression expr = parseAdditiveOperation();
+	/**
+	 * Parse Utility: Accept relation.
+	 * <pre>
+	 * TextPrimary =  SimpleArithmeticExpression  [ RelationOperator  SimpleArithmeticExpression ]
+	 *    RelationOperator  =  &lt;  |  &lt;=  |  =  |  >=  |  >  |  &lt;> |  ==  |  =/=
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptRelation() {   // Metode-form      
+		Expression expr = acceptAdditiveOperation();
 		if(Parse.acceptRelationalOperator())   { 
 			KeyWord opr=Parse.prevToken.getKeyWord();
-			expr=new RelationalOperation(expr,opr,parseAdditiveOperation());
+			expr=new RelationalOperation(expr,opr,acceptAdditiveOperation());
 		}
 		return(expr);
 	}
 
-	// SimpleArithmeticExpression  =  [ + | - ]  Term  {  ( + | - )  Term }
-	// SimpleArithmeticExpression  =  UnaryTerm  {  ( + | - )  Term }
-	private static Expression parseAdditiveOperation() {
-		Expression expr=parseUNIMULDIV();
+
+	/**
+	 * Parse Utility: Accept additive operation.
+	 * <pre>
+	 * SimpleArithmeticExpression  =  UnaryTerm  {  ( + | - )  Term }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptAdditiveOperation() {
+		Expression expr=acceptUNIMULDIV();
 		while(Parse.accept(KeyWord.PLUS,KeyWord.MINUS)) { 
 			KeyWord opr=Parse.prevToken.getKeyWord();
-			expr=ArithmeticExpression.create(expr,opr,parseMULDIV());
+			expr=ArithmeticExpression.create(expr,opr,acceptMULDIV());
 		}
 		return(expr);
 	}
 
-	// UnaryTerm  =  [ + | - ]  Term
-	private static Expression parseUNIMULDIV() {
+	/**
+	 * Parse Utility: Accept unary plus and minus.
+	 * <pre>
+	 * UnaryTerm  =  [ + | - ]  Term
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptUNIMULDIV() {
 		Expression expr;
 		if(Parse.accept(KeyWord.PLUS,KeyWord.MINUS)) {
 			KeyWord opr=Parse.prevToken.getKeyWord();
-			if(opr==KeyWord.PLUS) expr=parseMULDIV();
-			else expr=UnaryOperation.create(opr,parseMULDIV());
-		} else expr = parseMULDIV();
+			if(opr==KeyWord.PLUS) expr=acceptMULDIV();
+			else expr=UnaryOperation.create(opr,acceptMULDIV());
+		} else expr = acceptMULDIV();
 		return(expr);
 	}
 
-	// Term  =  Factor  {  ( * | / | // )  Factor }
-	private static Expression parseMULDIV() {
-		Expression expr=parseEXPON();
+	/**
+	 * Parse Utility: Accept multiplicative operation.
+	 * <pre>
+	 * Term  =  Factor  {  ( * | / | // )  Factor }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptMULDIV() {
+		Expression expr=acceptEXPON();
 		while(Parse.accept(KeyWord.MUL,KeyWord.DIV,KeyWord.INTDIV)) {
 			KeyWord opr=Parse.prevToken.getKeyWord();
-			expr=ArithmeticExpression.create(expr,opr,parseEXPON());
-			//expr=ArithmeticOperation.newArithmeticOperation(expr,opr,parseEXPON());
+			expr=ArithmeticExpression.create(expr,opr,acceptEXPON());
 		}
 		return(expr);
 	}
 
-	// Factor  =  BasicExpression  { **  BasicExpression }
-	private static Expression parseEXPON() {
-		Expression expr=parseBASICEXPR();
+	/**
+	 * Parse Utility: Accept exponentiation.
+	 * <pre>
+	 * Factor  =  BasicExpression  { **  BasicExpression }
+	 * </pre>
+	 * @return an expression
+	 */
+	private static Expression acceptEXPON() {
+		Expression expr=acceptBASICEXPR();
 		while(Parse.accept(KeyWord.EXP))
-			expr=ArithmeticExpression.create(expr,KeyWord.EXP,parseBASICEXPR());
-		//expr=ArithmeticOperation.newArithmeticOperation(expr,KeyWord.EXP,parseBASICEXPR());
+			expr=ArithmeticExpression.create(expr,KeyWord.EXP,acceptBASICEXPR());
 		return(expr);
 	}
 
@@ -260,12 +345,12 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 	 * </pre>
 	 * @return Expression or null if no expression is found.
 	 */
-	private static Expression parseBASICEXPR() {
+	private static Expression acceptBASICEXPR() {
 		// Dette er vel kanskje det samme som “primary”?
 		// Merk: Alt som kan stå foran et postfix (DOT, IS, IN og QUA) må være et BASICEXPR
-		if(Option.TRACE_PARSE) Parse.TRACE("Expression: parseBasicExpression");
+		if(Option.TRACE_PARSE) Parse.TRACE("Expression: acceptExpression");
 		Expression expr=null;
-		if(Parse.accept(KeyWord.BEGPAR)) { expr = parseExpression(); Parse.expect(KeyWord.ENDPAR); }
+		if(Parse.accept(KeyWord.BEGPAR)) { expr = acceptExpression(); Parse.expect(KeyWord.ENDPAR); }
 		else if(Parse.accept(KeyWord.INTEGERKONST)) expr = new Constant(Type.Integer,Parse.prevToken.getValue());
 		else if(Parse.accept(KeyWord.REALKONST)) expr = Constant.createRealType(Parse.prevToken.getValue());
 		else if(Parse.accept(KeyWord.BOOLEANKONST)) expr = new Constant(Type.Boolean,Parse.prevToken.getValue());
@@ -273,12 +358,12 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 		else if(Parse.accept(KeyWord.TEXTKONST)) expr = new Constant(Type.Text,Parse.prevToken.getValue());
 		else if(Parse.accept(KeyWord.NONE)) expr = new Constant(Type.Ref,null);
 		else if(Parse.accept(KeyWord.NOTEXT)) expr = new Constant(Type.Text,null);
-		else if(Parse.accept(KeyWord.NEW)) expr =ObjectGenerator.parse();
+		else if(Parse.accept(KeyWord.NEW)) expr =ObjectGenerator.expectNew();
 		else if(Parse.accept(KeyWord.THIS)) expr =LocalObject.acceptThisIdentifier(); 
 		else { String ident=Parse.acceptIdentifier();
-			if(ident!=null) expr=Variable.parse(ident);
+			if(ident!=null) expr=Variable.expectVariable(ident);
 			else {
-				if(Option.TRACE_PARSE) Parse.TRACE("Expression: parseBASICEXPR returns: NULL, prevKeyword="+Parse.prevToken.getKeyWord());
+				if(Option.TRACE_PARSE) Parse.TRACE("Expression: acceptBASICEXPR returns: NULL, prevKeyword="+Parse.prevToken.getKeyWord());
 				if(Parse.prevToken.getKeyWord()==KeyWord.SEMICOLON) Parse.skipMisplacedCurrentSymbol(); // Ad'Hoc
 				return(null);
 			}
@@ -287,7 +372,7 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 		while (Parse.acceptPostfixOprator()) {
 			KeyWord opr=Parse.prevToken.getKeyWord(); // opr == DOT || opr== IS || opr == IN || opr == QUA
 			if (opr == KeyWord.DOT ) 
-				expr=new RemoteVariable(expr,parseVariable());
+				expr=new RemoteVariable(expr,expectVariable());
 			else {  // Vet at opr == IS or opr == IN or opr == QUA.  Alle skal ha et klassenavn etter seg
 				String classIdentifier=Parse.expectIdentifier();
 				if(opr==KeyWord.QUA)
@@ -295,23 +380,24 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 				else expr=new ObjectRelation(expr,opr,classIdentifier);
 			}
 		}
-		if(Option.TRACE_PARSE) Parse.TRACE("Expression: parseBasicExpression returns: "+expr);
+		if(Option.TRACE_PARSE) Parse.TRACE("Expression: acceptBasicExpression returns: "+expr);
 		return(expr);
 	}
   
 	/**
+	 * Parse Utility: Expect Variable
 	 * <pre>
 	 * Variable  =  Identifier  |  SubscriptedVariable
 	 *	SubscriptedVariable  =  Identifier  "("  Expression  {  ,  Expression  }  ")"
 	 * </pre>
 	 * NOTE: That a SubscriptedVariable may be an subscripted array or a function designator.
-	 * @return
+	 * @return the created Variable
 	 */
-	private static Variable parseVariable() { 
+	private static Variable expectVariable() { 
 		// Et navn med valgfri argument-parentes etter.  Er også det som kan stå etter DOT
 		// Altså: Enkelt-variabel, array-aksess eller prosedyre-kall. 
 		String ident=Parse.expectIdentifier();
-		return(Variable.parse(ident));
+		return(Variable.expectVariable(ident));
 	}
 
 
@@ -323,8 +409,13 @@ public abstract sealed class Expression extends SyntaxClass permits Variable, Ar
 	 */
 	public Variable getWriteableVariable() { return(null); } 
 
-	private static ClassDeclaration getQualification(final Expression simpleObjectExpression) {
-		String refIdent=simpleObjectExpression.type.getRefIdent();
+	/**
+	 * Returns the qualification of the given simpleObjectExpression.
+	 * @param expr simpleObjectExpression
+	 * @return  the qualification of the given simpleObjectExpression
+	 */
+	private static ClassDeclaration getQualification(final Expression expr) {
+		String refIdent=expr.type.getRefIdent();
 		Declaration objDecl = Global.getCurrentScope().findMeaning(refIdent).declaredAs;
 		if(objDecl instanceof ClassDeclaration cls)	return(cls);
 		Util.error("Illegal ref(" + refIdent + "): " + refIdent + " is not a class");

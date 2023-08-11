@@ -28,16 +28,16 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * ObjectGenerator = NEW ClassIdentifier [ ( ActualParameterList ) ]
+ * object-generator = NEW class-identifier [ ( actual-parameter-list ) ]
  * 
- * ActualParameterList
- *         =  "("  ActualParameter  {  ,  ActualParameter  }  ")"
+ *    actual-parameter-list
+ *         =  "("  actual-parameter  {  ,  actual-parameter  }  ")"
  *
- *    ActualParameter
- *        =  expression
- *        |  array-identifier-1
- *        |  switch-identifier
- *        |  procedure-identifier-1
+ *       actual-parameter
+ *           =  expression
+ *           |  array-identifier-1
+ *           |  switch-identifier
+ *           |  procedure-identifier-1
  * 
  * </pre>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ObjectGenerator.java"><b>Source File</b></a>.
@@ -59,16 +59,22 @@ public final class ObjectGenerator extends Expression {
 
 	/**
 	 * Parse an object generator
+	 * <pre>
+	 * object-generator = NEW class-identifier [ ( actual-parameter-list ) ]
+	 * 
+	 *    actual-parameter-list
+	 *         =  "("  actual-parameter  {  ,  actual-parameter  }  ")"
+	 * </pre>
 	 * @return the newly created ObjectGenerator.
 	 */
-	static Expression parse() {
+	static Expression expectNew() {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse ObjectGenerator, current=" + Parse.currentToken);
 		String classIdentifier = Parse.expectIdentifier();
 		Vector<Expression> params = new Vector<Expression>();
 		if (Parse.accept(KeyWord.BEGPAR)) {
 			do {
-				Expression par=parseExpression();
+				Expression par=acceptExpression();
 				if(par==null) Util.error("Missing class parameter");
 				else params.add(par);
 			} while (Parse.accept(KeyWord.COMMA));

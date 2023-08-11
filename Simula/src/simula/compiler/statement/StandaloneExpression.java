@@ -52,7 +52,7 @@ public final class StandaloneExpression extends Statement {
 
 	//  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
 	private static Expression parseStandaloneExpression() { 
-		Expression retExpr=Expression.parseExpression();
+		Expression retExpr=Expression.expectExpression();
 		while (Parse.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
 			KeyWord opr=Parse.prevToken.getKeyWord();
 			retExpr=new AssignmentOperation(retExpr,opr,parseStandaloneExpression());

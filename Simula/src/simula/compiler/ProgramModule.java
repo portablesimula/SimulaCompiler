@@ -105,7 +105,7 @@ public final class ProgramModule extends Statement {
 			if(ident!=null) {
 				if(Parse.accept(KeyWord.CLASS)) module=ClassDeclaration.expectClassDeclaration(ident);
 			    else {
-			    	Variable blockPrefix=Variable.parse(ident);	
+			    	Variable blockPrefix=Variable.expectVariable(ident);	
 			    	
 			  	    Parse.expect(KeyWord.BEGIN);
 		        	module=new PrefixedBlockDeclaration(blockPrefix,true);

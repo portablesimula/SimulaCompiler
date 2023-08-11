@@ -171,19 +171,23 @@ public final class Variable extends Expression {
 	}
 
 	/**
-	 * Parse possible arguments.
-	 * 
+	 * Parse Utility: Expect Variable.
+	 * <pre>
+	 * Variable  =  Identifier  |  SubscriptedVariable
+	 *	SubscriptedVariable  =  Identifier  "("  Expression  {  ,  Expression  }  ")"
+	 * </pre>
+	 * Precondition: Identifier  is already read.
 	 * @param ident the variable identifier
 	 * @return the created Variable
 	 */
-	public static Variable parse(final String ident) {
+	public static Variable expectVariable(final String ident) {
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Parse Variable, current=" + Parse.currentToken + ", prev=" + Parse.prevToken);
 		Variable variable = new Variable(ident);
 		if (Parse.accept(KeyWord.BEGPAR)) {
 			variable.params = new Vector<Expression>();
 			do {
-				Expression par = parseExpression();
+				Expression par = acceptExpression();
 				if (par == null)
 					Util.error("Missing procedure parameter");
 				else

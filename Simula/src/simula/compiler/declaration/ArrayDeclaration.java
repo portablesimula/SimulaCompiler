@@ -153,9 +153,9 @@ public final class ArrayDeclaration extends Declaration implements Externalizabl
 				Parse.TRACE("Parse BoundPairList");
 			Vector<BoundPair> boundPairList = new Vector<BoundPair>();
 			do {
-				Expression LB = Expression.parseExpression();
+				Expression LB = Expression.expectExpression();
 				Parse.expect(KeyWord.COLON);
-				Expression UB = Expression.parseExpression();
+				Expression UB = Expression.expectExpression();
 				boundPairList.add(new BoundPair(LB, UB));
 			} while (Parse.accept(KeyWord.COMMA));
 			Parse.expect(KeyWord.ENDPAR);

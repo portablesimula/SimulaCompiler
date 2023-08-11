@@ -60,7 +60,7 @@ public final class ConnectionStatement extends Statement {
 	ConnectionStatement(final int line) {
 		super(line);
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse ConnectionStatement");
-		objectExpression = Expression.parseExpression();
+		objectExpression = Expression.expectExpression();
 		String ident = "_inspect_" + lineNumber + '_' + (SEQU++);
 		inspectedVariable = new Variable(ident);
 		inspectVariableDeclaration = new SimpleVariableDeclaration(Type.Ref("RTObject"), ident);

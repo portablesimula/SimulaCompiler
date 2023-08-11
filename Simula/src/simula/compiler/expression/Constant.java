@@ -26,7 +26,7 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   Constant = UnsignedNumber | String | Character | NONE | NOTEXT | Label ???
+ *   Constant = unsigned-number | string | character-constant | NONE | NOTEXT
  *   
  * </pre>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/Constant.java"><b>Source File</b></a>.
@@ -62,6 +62,11 @@ public final class Constant extends Expression implements Externalizable {
       return(new Constant(type,value));
     }
     
+    /**
+     * Returns the type of this number.
+     * @param n the number
+     * @return the type of this number.
+     */
     private static Type getType(final Number n) {
     	if(n instanceof Integer) return(Type.Integer);
     	if(n instanceof Long) return(Type.Integer);
@@ -184,6 +189,11 @@ public final class Constant extends Expression implements Externalizable {
 		return (""+value);
 	}
 	
+	/**
+	 * Encode a string with escape sequences.
+	 * @param s the string
+	 * @return a string with escape sequences.
+	 */
 	private String encode(final String s) {
 		StringBuilder b = new StringBuilder();
 		for (char c : s.toCharArray()) {
@@ -207,14 +217,19 @@ public final class Constant extends Expression implements Externalizable {
 		return (b.toString());
 	}
 	
-	private void appendHex(StringBuilder b,char c) {
+	/**
+	 * Encoding Utility: Edit hex(c) and append it to the given StringBuilder.
+	 * @param sb the StringBuilder
+	 * @param c the input character
+	 */
+	private void appendHex(StringBuilder sb,char c) {
 		String hex=Integer.toHexString(c);
 		switch(hex.length()) {
 		case 1-> hex="000"+hex;
 		case 2-> hex="00"+hex;
 		case 3-> hex="0"+hex;
 		}
-		b.append("\\u"+hex);	
+		sb.append("\\u"+hex);	
 	}
 
 	@Override

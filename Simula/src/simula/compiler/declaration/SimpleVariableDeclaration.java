@@ -134,7 +134,7 @@ public sealed class SimpleVariableDeclaration extends Declaration implements Ext
 				String ident = Parse.expectIdentifier();
 				SimpleVariableDeclaration typeDeclaration = new SimpleVariableDeclaration(type, ident);
 				if (Parse.accept(KeyWord.EQ))
-					typeDeclaration.constantElement = Expression.parseExpression();
+					typeDeclaration.constantElement = Expression.expectExpression();
 				declarationList.add(typeDeclaration);
 			} while (Parse.accept(KeyWord.COMMA));
 	}

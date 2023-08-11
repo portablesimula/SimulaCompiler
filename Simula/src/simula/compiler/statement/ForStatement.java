@@ -82,13 +82,13 @@ public final class ForStatement extends Statement {
 	private ForListElement parseForListElement() {
 		if (Option.TRACE_PARSE)
 			Parse.TRACE("Parse ForListElement");
-		Expression expr1 = Expression.parseExpression();
+		Expression expr1 = Expression.expectExpression();
 		if (Parse.accept(KeyWord.WHILE))
-			return (new WhileElement(expr1, Expression.parseExpression()));
+			return (new WhileElement(expr1, Expression.expectExpression()));
 		if (Parse.accept(KeyWord.STEP)) {
-			Expression expr2 = Expression.parseExpression();
+			Expression expr2 = Expression.expectExpression();
 			Parse.expect(KeyWord.UNTIL);
-			return (new StepUntilElement(expr1, expr2, Expression.parseExpression()));
+			return (new StepUntilElement(expr1, expr2, Expression.expectExpression()));
 		} else
 			return (new ForListElement(expr1));
 	}

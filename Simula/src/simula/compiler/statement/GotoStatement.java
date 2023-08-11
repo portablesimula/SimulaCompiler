@@ -38,7 +38,7 @@ public final class GotoStatement extends Statement {
 	 */
 	GotoStatement(final int line) {
 		super(line);
-		label = Expression.parseExpression();
+		label = Expression.expectExpression();
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+this.lineNumber+": GotoStatement: "+this);
 	}
 
