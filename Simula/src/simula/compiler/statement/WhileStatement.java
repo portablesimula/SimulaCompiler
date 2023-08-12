@@ -37,7 +37,7 @@ public final class WhileStatement extends Statement {
 		if (Option.TRACE_PARSE)	Util.TRACE("Parse WhileStatement: line="+line+", current=" + Parse.currentToken);
 		condition = Expression.expectExpression();
 		Parse.expect(KeyWord.DO);
-		doStatement = Statement.doParse();
+		doStatement = Statement.expectStatement();
 		if (Option.TRACE_PARSE)	Util.TRACE("Line "+lineNumber+": WhileStatement: "+this);
 	}
 

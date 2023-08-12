@@ -389,7 +389,7 @@ permits StandardClass, PrefixedBlockDeclaration {
 			boolean seen = false;
 			Vector<Statement> stmList = cls.statements;
 			while (!Parse.accept(KeyWord.END)) {
-				stm = Statement.doParse();
+				stm = Statement.expectStatement();
 				if (stm != null)
 					stmList.add(stm);
 				if (Parse.accept(KeyWord.INNER)) {
@@ -404,7 +404,7 @@ permits StandardClass, PrefixedBlockDeclaration {
 				stmList.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
 		}
 		else {
-			cls.statements.add(Statement.doParse());
+			cls.statements.add(Statement.expectStatement());
 			cls.statements.add(new InnerStatement(Parse.currentToken.lineNumber)); // Implicit INNER
 		}
 	}

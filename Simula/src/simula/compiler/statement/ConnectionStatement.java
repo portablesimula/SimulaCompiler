@@ -140,7 +140,7 @@ public final class ConnectionStatement extends Statement {
 		if (Parse.accept(KeyWord.DO)) {
 			hasDoPart = true;
 			ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, null);
-			Statement statement = Statement.doParse();
+			Statement statement = Statement.expectStatement();
 			connectionPart.add(new DoPart(connectionBlock, statement));
 			connectionBlock.end();
 		} else {
@@ -149,14 +149,14 @@ public final class ConnectionStatement extends Statement {
 				Parse.expect(KeyWord.DO);
 				ConnectionBlock connectionBlock = new ConnectionBlock(inspectedVariable, classIdentifier);
 				hasWhenPart = true;
-				Statement statement = Statement.doParse();
+				Statement statement = Statement.expectStatement();
 				connectionPart.add(new WhenPart(classIdentifier, connectionBlock, statement));
 				connectionBlock.end();
 			}
 		}
 		if(!(hasDoPart | hasWhenPart)) Util.error("Incomplete Inspect statement: "+objectExpression);
 		Statement otherwise = null;
-		if (Parse.accept(KeyWord.OTHERWISE)) otherwise = Statement.doParse();
+		if (Parse.accept(KeyWord.OTHERWISE)) otherwise = Statement.expectStatement();
 		this.otherwise=otherwise;
 		this.hasWhenPart=hasWhenPart;
 		if (Option.TRACE_PARSE)	Util.TRACE("Line "+this.lineNumber+": ConnectionStatement: "+this);

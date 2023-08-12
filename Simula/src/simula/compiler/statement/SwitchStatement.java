@@ -96,7 +96,7 @@ public final class SwitchStatement extends Statement {
 				while(Parse.accept(KeyWord.COMMA)) caseKeyList.add(parseCasePair());
 			}
 			Parse.expect(KeyWord.DO);
-			Statement statement = Statement.doParse();
+			Statement statement = Statement.expectStatement();
 			Parse.accept(KeyWord.SEMICOLON);
 			switchCases.add(new WhenPart(caseKeyList, statement));
 		}

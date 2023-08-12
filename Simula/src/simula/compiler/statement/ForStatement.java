@@ -171,7 +171,7 @@ public final class ForStatement extends Statement {
 			forList.add(parseForListElement());
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.DO);
-		Statement doStatement = Statement.doParse();
+		Statement doStatement = Statement.expectStatement();
 		if (doStatement == null) {
 			Util.error("No statement following DO in For statement");
 			doStatement = new DummyStatement(line);

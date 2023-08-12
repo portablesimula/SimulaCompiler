@@ -62,11 +62,11 @@ public final class ConditionalStatement extends Statement {
 		Statement elseStatement = null;
 		if (Parse.accept(KeyWord.ELSE)) {
 			thenStatement = new DummyStatement(Parse.currentToken.lineNumber);
-			elseStatement = Statement.doParse();
+			elseStatement = Statement.expectStatement();
 		} else {
-		    thenStatement = Statement.doParse();
+		    thenStatement = Statement.expectStatement();
 		    if (Parse.accept(KeyWord.ELSE)) {
-			    elseStatement = Statement.doParse();
+			    elseStatement = Statement.expectStatement();
 		    }
 		}
 		this.elseStatement=elseStatement;

@@ -248,7 +248,7 @@ permits StandardProcedure, SwitchDeclaration {
 	 */
 	private static void expectProcedureBody(ProcedureDeclaration proc) {
 		if (Parse.accept(KeyWord.BEGIN)) {
-//			doParseBodyBlock(proc);
+//			expectStatementBodyBlock(proc);
 			// BEGIN declaration { ; declaration } statement { ; statement } END
 			Statement stm;
 			if (Option.TRACE_PARSE)	Parse.TRACE("Parse Procedure Block");
@@ -257,11 +257,11 @@ permits StandardProcedure, SwitchDeclaration {
 			}
 			Vector<Statement> stmList = proc.statements;
 			while (!Parse.accept(KeyWord.END)) {
-				stm = Statement.doParse();
+				stm = Statement.expectStatement();
 				if (stm != null) stmList.add(stm);
 			}
 		}
-		else proc.statements.add(Statement.doParse());
+		else proc.statements.add(Statement.expectStatement());
 	}
 
 	// ***********************************************************************************************

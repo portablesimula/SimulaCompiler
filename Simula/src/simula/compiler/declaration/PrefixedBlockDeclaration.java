@@ -74,7 +74,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse PrefixedBlock");
 		while (Declaration.parseDeclaration(declarationList)) Parse.accept(KeyWord.SEMICOLON);
 		while (!Parse.accept(KeyWord.END)) {
-			Statement stm = Statement.doParse();
+			Statement stm = Statement.expectStatement();
 			if (stm != null) statements.add(stm);
 		}
 		if(isMainModule)

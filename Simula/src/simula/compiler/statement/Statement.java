@@ -31,21 +31,21 @@ import simula.compiler.utilities.Util;
  * Syntax:
  * 
  *  Statement
- *         =  { label : }  UnconditionalStatement
- *         |  { label : }  ConditionalStatement
- *         |  { label : }  ForStatement
+ *         =  { label : }  unconditional-statement
+ *         |  { label : }  conditional-statement
+ *         |  { label : }  for-statement
  * 
- *     UnconditionalStatement
- *         =  AssignmentStatement  NOTE: Treated as a binary operation
- *         |  WhileStatement
- *         |  GotoStatement
- *         |  ProcedureStatement
- *         |  ObjectGenerator
- *         |  ConnectionStatement
- *         |  CompoundStatement
- *         |  Block
- *         |  DummyStatement
- *         |  ActivationStatement
+ *     Unconditional-statement
+ *         =  assignment-statement  NOTE: Treated as a binary operation
+ *         |  while-statement
+ *         |  goto-statement
+ *         |  procedure-statement
+ *         |  object-generator
+ *         |  connection-statement
+ *         |  compound-statement
+ *         |  block
+ *         |  dummy-statement
+ *         |  activation-statement
  * 
  * </pre>
  * 
@@ -71,7 +71,7 @@ public abstract sealed class Statement extends SyntaxClass permits InnerStatemen
 	 * Parse a statement.
 	 * @return the statement
 	 */
-	public static Statement doParse() {
+	public static Statement expectStatement() {
 		Vector<String> labels = null;
 		int lineNumber=Parse.currentToken.lineNumber;
 		if (Option.TRACE_PARSE)
@@ -87,14 +87,18 @@ public abstract sealed class Statement extends SyntaxClass permits InnerStatemen
 			ident = Parse.acceptIdentifier();
 		}
 		if(ident!=null) Parse.saveCurrentToken(); // Not Label: Pushback
-		Statement statement = doUnlabeledStatement();
+		Statement statement = expectUnlabeledStatement();
 		if (labels != null && statement != null)
 			statement = new LabeledStatement(lineNumber,labels, statement);
 		return (statement);
 	}
 
+	/**
+	 * Parse Utility: Expect a statement.
+	 * @return the resulting statement
+	 */
 	@SuppressWarnings("incomplete-switch")
-	private static Statement doUnlabeledStatement() {
+	private static Statement expectUnlabeledStatement() {
 		int lineNumber=Parse.currentToken.lineNumber;
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Statement.doUnlabeledStatement: lineNumber="+lineNumber+", current=" + Parse.currentToken	+ ", prev=" + Parse.prevToken);

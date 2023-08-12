@@ -98,7 +98,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		while (Declaration.parseDeclaration(declarationList))
 			Parse.accept(KeyWord.SEMICOLON);
 		while (!Parse.accept(KeyWord.END)) {
-			Statement stm = Statement.doParse();
+			Statement stm = Statement.expectStatement();
 			if (stm != null) statements.add(stm);
 		}
 		if (declarationKind != Declaration.Kind.SimulaProgram) {
