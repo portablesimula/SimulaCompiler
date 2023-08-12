@@ -23,17 +23,22 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   StandaloneStatement = Expression | AssignmentStatement
+ *   standalone-expression = expression | assignment-statement
  *
- *   AssignmentStatement
- *        =  Expression { AssignmentOperator  Expression }
+ *      assignment-statement
+ *           = expression { assignment-operator expression }
  *
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/StandaloneExpression.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/StandaloneExpression.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class StandaloneExpression extends Statement {
+	
+	/**
+	 * The expression.
+	 */
 	private Expression expression;
 
 	/**
@@ -46,16 +51,25 @@ public final class StandaloneExpression extends Statement {
 		this.expression = expression;
 		if (Option.TRACE_PARSE) Util.TRACE("Line "+lineNumber+": StandaloneExpression: "+this);
 		while (Parse.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) { 
-			this.expression = new AssignmentOperation(this.expression, Parse.prevToken.getKeyWord(),parseStandaloneExpression());
+			this.expression = new AssignmentOperation(this.expression, Parse.prevToken.getKeyWord(),expectStandaloneExpression());
 		}		
 	}
 
-	//  StandaloneExpression  =  Expression  { AssignmentOperator  Expression }
-	private static Expression parseStandaloneExpression() { 
+	/**
+	 * Parse a standalone expression.
+	 * <pre>
+	 * Syntax:
+	 * 
+	 *    standalone-expression  =  expression  { assignment-operator  expression }
+	 * </pre>
+	 * Pre-Condition: First expression is already read.
+	 * @return the resulting StandaloneExpression
+	 */
+	private static Expression expectStandaloneExpression() { 
 		Expression retExpr=Expression.expectExpression();
 		while (Parse.accept(KeyWord.ASSIGNVALUE,KeyWord.ASSIGNREF)) {
 			KeyWord opr=Parse.prevToken.getKeyWord();
-			retExpr=new AssignmentOperation(retExpr,opr,parseStandaloneExpression());
+			retExpr=new AssignmentOperation(retExpr,opr,expectStandaloneExpression());
 		}
 		return retExpr;
 	}

@@ -18,10 +18,11 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * DummyStatement = Empty
+ *   dummy-statement = Empty
  * 
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/DummyStatement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/DummyStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

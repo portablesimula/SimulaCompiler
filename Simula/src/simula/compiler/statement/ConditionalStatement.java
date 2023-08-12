@@ -23,18 +23,32 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   ConditionalStatement = Ifclause { Label : } ForStatement
- *                        | Ifclause { Label : } UnconditionalStatement  [ ELSE Statement ]
- *     Ifclause = IF BooleanExpression THEN
+ *   conditional-statement = if-clause { Label : } for-statement
+ *                         | if-clause { Label : } unconditional-statement  [ ELSE statement ]
+ *                         
+ *     if-clause = IF boolean-expression THEN
  *
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/ConditionalStatement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/ConditionalStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class ConditionalStatement extends Statement {
+	
+	/**
+	 * The if-clause condition
+	 */
 	private final Expression condition;
+	
+	/**
+	 * The then-statement
+	 */
 	private final Statement thenStatement;
+	
+	/**
+	 * The else-statement
+	 */
 	private final Statement elseStatement;
 
 	/**

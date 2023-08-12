@@ -21,15 +21,27 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *  GotoStatement = GOTO DesignationalExpression
- *                | GO TO DesignationalExpression
+ *  goto-statement = GOTO designational-expression
+ *                 | GO TO designational-expression
  *
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/GotoStatement.java"><b>Source File</b></a>.
+ * Java does not support labels like Simula. The Java Virtual Machine (JVM), however, has labels.
+ * A JVM-label is simply a relative byte-address within the byte-code of a method. We will use Java's
+ * exception handling together with byte code engineering to re-introduce goto in the Java Language.
+ * This is done by generating Java-code which is prepared for Byte Code Engineering.
+ * <p>
+ * See <a href="https://portablesimula.github.io/github.io/doc/SimulaRTS.pdf">Mapping Simula to Java (runtime design)</a> 
+ * Sect. 6.1 Goto Statement
+ * <p>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/GotoStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class GotoStatement extends Statement {
+	/**
+	 * The target label.
+	 */
 	private final Expression label;
 
 	/**

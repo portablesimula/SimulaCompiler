@@ -18,7 +18,7 @@ import simula.runtime.RTS_RTObject.RTS_BOUNDS;
  * A fictitious base is also Calculated.
  * This base is the relative address of the array element (0,0, ... 0).
  * <p>
- * See <a href="doc/SimulaRTS.pdf">Mapping Simula to Java (runtime design)</a> 
+ * See <a href="https://portablesimula.github.io/github.io/doc/SimulaRTS.pdf">Mapping Simula to Java (runtime design)</a> 
  * Sect. 3.4 Array Quantities
  * <p>
  * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_ARRAY.java"><b>Source File</b></a>.

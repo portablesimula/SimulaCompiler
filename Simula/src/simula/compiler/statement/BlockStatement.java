@@ -20,18 +20,36 @@ import simula.compiler.utilities.Util;
 
 /**
  * BlockStatement.
- * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/BlockStatement.java"><b>Source File</b></a>.
+ * <pre>
+ *   block
+ *      = subblock
+ *      | prefixed-block
+ *      
+ *         subblock = BEGIN declaration { ; declaration } ; statement { ; statement } END
+ *         
+ *         prefixed-block
+ *            = block-prefix main-block
+ *            
+ *            block-prefix
+ *               = class-identifier [ actual-parameter-part ]
+ *               
+ *            main-block
+ *            
+ *               = block
+ *               | BEGIN statement { ; statement } END
+ * </pre>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/BlockStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class BlockStatement extends Statement {
+	
+	/**
+	 * The associated block declaration.
+	 */
 	private final BlockDeclaration blockDeclaration;
-
-	private String getJavaIdentifier() {
-		return (blockDeclaration.getJavaIdentifier());
-	}
 
 	/**
 	 * Create a new BlockStatement.
@@ -73,7 +91,7 @@ public final class BlockStatement extends Statement {
 		if(blockDeclaration.declarationKind!=Declaration.Kind.CompoundStatement) {
 			String staticLink=blockDeclaration.declaredIn.edCTX();
 			StringBuilder s = new StringBuilder();
-			s.append("new ").append(getJavaIdentifier()).append('(');
+			s.append("new ").append(blockDeclaration.getJavaIdentifier()).append('(');
 			s.append(staticLink);
 			if(blockDeclaration instanceof PrefixedBlockDeclaration pref) {
 				Variable blockPrefix=pref.blockPrefix;

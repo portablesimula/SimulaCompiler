@@ -22,10 +22,11 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   InnerStatement = INNER
+ *   inner-statement = INNER
  *
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/InnerStatement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/InnerStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

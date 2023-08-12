@@ -61,7 +61,8 @@ import simula.editor.SimulaEditor;
  *                              procedures. If not found, output directory is also searched.
  * </pre>
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/Simula.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/Simula.java"><b>Source File</b></a>.
 
  * @author Øystein Myhre Andersen
  *
@@ -169,7 +170,7 @@ public final class Simula {
 	}
 
 	/**
-	 * Option: -keepJava <directory> Specify where to place generated .java files
+	 * Option: -keepJava &lt;directory> Specify where to place generated .java files
 	 */
 	private static void setKeepJava(final String dir) {
 		Option.keepJava = new File(dir);
@@ -177,7 +178,7 @@ public final class Simula {
 	}
 
 	/**
-	 * Option: -output <directory> Specify where to place generated executable .jar
+	 * Option: -output &lt;directory> Specify where to place generated executable .jar
 	 * file
 	 */
 	private static void setOutputDir(final String dir) {

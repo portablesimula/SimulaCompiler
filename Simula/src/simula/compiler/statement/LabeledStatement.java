@@ -24,17 +24,26 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- * LabelStatement =  Label : { Label : } Statement 
+ *   label-statement =  label : { label : } statement 
  * 
- * 	Label = Identifier
+ * 	    label = identifier
  *
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/LabeledStatement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/LabeledStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class LabeledStatement extends Statement {
+	
+	/**
+	 * The list of labels.
+	 */
 	private final Vector<String> labels;
+	
+	/**
+	 * The statement
+	 */
 	private final Statement statement;
 
 	/**
