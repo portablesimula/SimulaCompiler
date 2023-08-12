@@ -54,6 +54,9 @@ public class Directive {
 	 * line number of the line containing the outermost INSERT). Furthermore, if the
 	 * source is being listed, listing is turned off during the inclusion and turned
 	 * on again when reading continues after this directive.
+	 * 
+	 * @param scanner the SimulaScanner
+	 * @param fileName the file to insert
 	 */
 	private static void insert(final SimulaScanner scanner, final String fileName) {
 		Util.warning("%INSERT " + fileName);
@@ -92,6 +95,8 @@ public class Directive {
 	 * S-Port Library.
 	 * <p>
 	 * The initial value is ON.
+	 * 
+	 * @param onoff the on/off string
 	 */
 	private static void setSport(final String onoff) {
 		// Ignored in this implementation
@@ -99,6 +104,8 @@ public class Directive {
 
 	/**
 	 * %EOF
+	 * 
+	 * @param scanner the SimulaScanner
 	 */
 	private static void eof(final SimulaScanner scanner) {
 		scanner.sourceFileReader.forceEOF();
@@ -106,6 +113,8 @@ public class Directive {
 
 	/**
 	 * %TITLE title-string
+	 * 
+	 * @param title title string
 	 */
 	private static void setTitle(final String title) {
 		// Ignored in this implementation
@@ -113,6 +122,8 @@ public class Directive {
 
 	/**
 	 * %KEEP_JAVA directory-string
+	 * 
+	 * @param dir directory-string
 	 */
 	private static void setKeepJava(final String dir) {
 		if (dir != null)

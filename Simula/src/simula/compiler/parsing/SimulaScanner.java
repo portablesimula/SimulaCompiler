@@ -21,19 +21,43 @@ import simula.compiler.utilities.Util;
 /**
  * The Simula Scanner.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/SimulaScanner.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/SimulaScanner.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class SimulaScanner extends DefaultScanner { 
-    private static final int EOF_MARK=25; // ISO EM(EndMedia) character used to denote end-of-input
-    private boolean EOF_SEEN=false;        // Set 'true' when EOF-character ( -1 ) was read.
+	
+	/**
+	 * ISO EM(EndMedia) character used to denote end-of-input
+	 */
+    private static final int EOF_MARK=25;
+    
+    /**
+     * Set 'true' when EOF-character ( -1 ) was read.
+     */
+    private boolean EOF_SEEN=false;
+    
+    /**
+     * The pushBack stack
+     */
     private Stack<Character> puchBackStack=new Stack<Character>();
     
+    /**
+     * StringBuilder used to accumulate input strings for Simula Editor.
+     */
     private StringBuilder accum;
+    
+    /**
+     * Editor mode. Set when the scanner is used by Simula Editor
+     */
     private final boolean editorMode;
 
+    /**
+     * The Token queue. The method nextToken will pick Tokens from the queue first.
+     * 
+     */
     private LinkedList<Token> tokenQueue=new LinkedList<Token>();
 
     /**
@@ -91,7 +115,8 @@ public final class SimulaScanner extends DefaultScanner {
 	 */
 	void close() {
 		SEARCH:while(!EOF_SEEN) {
-			int c=readNextCharacter();
+//			int c=readNextCharacter();
+			int c=getNext();
 			if(!EOF_SEEN && !isWhiteSpace(c)) {
 				Util.warning("Text after final END");
 				break SEARCH;
@@ -137,9 +162,14 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                                 scanToken 
     //********************************************************************************
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+	/**
+	 * Scan and return a Token.
+	 * <pre>
+     * End-Condition: current is last character of construct
+     *                getNext will return first character after construct
+     * </pre>
+	 * @return next Token
+	 */
     private Token scanToken() {
   	  Token token;
   	  if (editorMode) {
@@ -154,6 +184,10 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                                 scanBasic 
     //********************************************************************************
+    /**
+     * Scan basic Token
+     * @return next Token
+     */
     private Token scanBasic() {
     	if(Option.TRACE_SCAN) Util.TRACE("SimulaScanner.scanBasic, "+edcurrent());
     	while(true)	{
@@ -229,19 +263,41 @@ public final class SimulaScanner extends DefaultScanner {
     }
   
     //********************************************************************************
-    //**	                                                            scanIdentifier 
+    //**	                                                               javaKeyword 
     //********************************************************************************
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scanner Utility: Create an Java-name Token.
+     * @param name the Token's Java-name
+     * @return an identifier Token
+     */
     private Token javaKeyword(final String name) {
     	return(identifierToken('_'+name));
     }
+    
+    //********************************************************************************
+    //**	                                                           identifierToken 
+    //********************************************************************************
+    /**
+     * Scanner Utility: Create an identifier Token.
+     * @param name the Token's name
+     * @return an identifier Token
+     */
     private Token identifierToken(final String name) {
     	Token token=newToken(KeyWord.IDENTIFIER,name);
     	return(token);
     }
 
+    //********************************************************************************
+    //**	                                                            scanIdentifier 
+    //********************************************************************************
+    /**
+     * Scan and return an identifier Token.
+     * <pre>
+     * End-Condition: current is last character of construct
+     *                getNext will return first character after construct
+     * </pre>
+     * @return next Token
+     */
 	private Token scanIdentifier() {
 		String name=scanName();
 	    if(Option.TRACE_SCAN) Util.TRACE("scanIdentifier: name=\""+name+"\"");
@@ -410,7 +466,7 @@ public final class SimulaScanner extends DefaultScanner {
     *      decimal-fraction
     *        = .  unsigned-integer
     *      exponent-part
-    *        =  ( & | && )  [ + | - ]  unsigned-integer
+    *        =  ( &amp; | &amp;&amp; )  [ + | - ]  unsigned-integer
     *      unsigned-integer
     *        =  digit  {  digit  |  _  }
     *        |  radix  R  radix-digit  {  radix-digit  |  _  radix-digit  }
@@ -424,7 +480,7 @@ public final class SimulaScanner extends DefaultScanner {
     *  <li>current is last character of construct</li>
     *  <li>getNext will return first character after construct</li>
     * </ul>
-    * @return A Item representing a constant number.
+    * @return A Token representing a unsigned number.
     */
     private Token scanNumber() {
     	int radix=10;
@@ -471,9 +527,21 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                              scanDotDigit 
     //********************************************************************************
-    //** End-Condition: current is last character of construct                 
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scan decimal-fraction possibly followed by an exponent-part.
+     * And append it to the given number.
+     * <pre>
+     * Reference-Syntax:
+     * 
+     *      decimal-fraction = .  unsigned-integer
+     *      
+     *      
+     * End-Condition: current is last character of construct                 
+     *                getNext will return first character after construct
+     * </pre>
+     * @param number The edited number so far
+     * @return next Token
+     */
     private Token scanDotDigit(StringBuilder number) {
     	/* Behandling av tall som starter med tegnet '.' */
     	if(Option.TRACE_SCAN) Util.TRACE("scanDotDigit, "+edcurrent());
@@ -498,9 +566,21 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                             scanDigitsExp 
     //********************************************************************************
-    //** End-Condition: current is last character of construct                 
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scan exponent-part. And append it to the given number.
+     * <pre>
+     * Reference-Syntax:
+     * 
+     *      exponent-part =  ( &amp; | &amp;&amp; )  [ + | - ]  unsigned-integer
+     * </pre>
+     * Pre-Condition: First &amp; is already read
+     * 
+     * End-Condition: current is last character of construct                 
+     *                getNext will return first character after construct
+     *                
+     * @param number The edited number so far
+     * @return next Token
+     */
     private Token scanDigitsExp(StringBuilder number) {
     	String result;
     	boolean doubleAmpersand=false;
@@ -529,14 +609,19 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**					                                                  scanName
     //********************************************************************************
-    //**  Reference-Syntax:
-    //**      identifier
-    //**       = letter  { letter  |  digit  |  _  }
-    //********************************************************************************
-    // Scan identifier or reserved name.                                       
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scan identifier or reserved name.
+     * <pre>
+     * Reference-Syntax:
+     * 
+     *    identifier = letter  { letter  |  digit  |  _  }
+     *    
+     *    
+     * End-Condition: current is last character of construct
+     *                getNext will return first character after construct
+     * </pre>
+     * @return the resulting identifier
+     */
     private String scanName() {
     	StringBuilder name=new StringBuilder();
     	if(Option.TRACE_SCAN) Util.TRACE("scanName, "+edcurrent());
@@ -553,19 +638,26 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                     scanCharacterConstant
     //********************************************************************************
-    //**  Reference-Syntax:                                                    
-    //**      character-constant
-    //**       = '  character-designator  '
-    //**      character-designator
-    //**       = iso-code
-    //**        |  non-quote-character
-    //**        |  "
-    //**      iso-code
-    //**       =! digit  [ digit ]  [ digit ]  !
-    //********************************************************************************
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scan and deliver a Character constant.
+     * <pre>
+     *  Reference-Syntax:   
+     *                                                   
+     *      character-constant  = '  character-designator  '
+     *      
+     *      character-designator
+     *         = iso-code
+     *         |  non-quote-character
+     *         |  "
+     *         
+     *         iso-code =  ! digit  [ digit ]  [ digit ]  !
+     *       
+     *       
+     * End-Condition: current is last character of construct
+     *                getNext will return first character after construct
+     * </pre>
+     * @return next Token
+     */
     private Token scanCharacterConstant() {
     	char result=0;
     	if(Option.TRACE_SCAN) Util.TRACE("scanCharacterConstant, "+edcurrent());
@@ -588,24 +680,31 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                          scanTextConstant
     //********************************************************************************
-    //**  Reference-Syntax:                                                    
-    //**      string
-    //**       = simple-string  {  string-separator  simple-string  }
-    //**      simple-string
-    //**       = " { iso-code |  non-quote-character  |  ""  }  "
-    //**      iso-code
-    //**       = ! digit  [ digit ]  [ digit ]  !
-    //**      string-separator
-    //**       = token-separator  {  token-separator  }
-    //**      token-separator
-    //**       = a direct comment
-    //**        |  a space  { except in simple strings and character constants }
-    //**        |  a format effector  { except as noted for spaces }
-    //**        |  the separation of consecutive lines
-    //********************************************************************************
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scan and deliver a Text constant.
+     * <pre>
+    *  Reference-Syntax:   
+    *                                                   
+    *      string = simple-string  {  string-separator  simple-string  }
+    *      
+    *         simple-string = " { iso-code |  non-quote-character  |  ""  }  "
+    *         
+    *            iso-code = ! digit  [ digit ]  [ digit ]  !
+    *            
+    *         string-separator = token-separator  {  token-separator  }
+    *         
+    *            token-separator
+    *                = a direct comment
+    *                |  a space  { except in simple strings and character constants }
+    *                |  a format effector  { except as noted for spaces }
+    *                |  the separation of consecutive lines
+    *        
+    *        
+    * End-Condition: current is last character of construct
+    *                getNext will return first character after construct
+     * </pre>
+     * @return next Token
+     */
     private Token scanTextConstant() {
     	if(Option.TRACE_SCAN) Util.TRACE("scanTextConstant, "+edcurrent());
     	StringBuilder accumulatedTextConstant=new StringBuilder();
@@ -655,18 +754,25 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
   	//**	                                                  currentIsStringSeparator
     //********************************************************************************
-    //**  Reference-Syntax:
-    //**      string-separator
-    //**       = token-separator  {  token-separator  }
-    //**      token-separator
-    //**       = a direct comment
-    //**        |  a space  { except in simple strings and character constants }
-    //**        |  a format effector  { except as noted for spaces }
-    //**        |  the separation of consecutive lines
-    //********************************************************************************
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scanner Utility: Check if current is a string separator.
+     * <pre>
+     *  Reference-Syntax:
+     *  
+     *      string-separator = token-separator  {  token-separator  }
+     *      
+     *         token-separator
+     *            = a direct comment
+     *            | a space  { except in simple strings and character constants }
+     *            | a format effector  { except as noted for spaces }
+     *            | the separation of consecutive lines
+     *        
+     *        
+     * End-Condition: current is last character of construct
+     *                getNext will return first character after construct
+     * </pre>
+     * @return true if current is a string separator
+     */
     private boolean currentIsStringSeparator() {
     	if(current=='!') {
     		Token cc=scanComment();
@@ -694,13 +800,21 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                       scanPossibleIsoCode
     //********************************************************************************
-    //**  Reference-Syntax:
-    //**      iso-code
-    //**       =! digit  [ digit ]  [ digit ]  !
-    //********************************************************************************
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+    /**
+     * Scanner Utility: Scan possible iso-code
+     * <pre>
+    *  Reference-Syntax:
+    *  
+    *      iso-code =  ! digit  [ digit ]  [ digit ]  !
+    *       
+    * 
+    * Pre-Condition: The leading character ! is already read
+    * 
+    * End-Condition: current is last character of construct
+    *                getNext will return first character after construct
+     * </pre>
+     * @return the resulting iso-code
+     */
 	private int scanPossibleIsoCode() {
 		char firstchar, secondchar, thirdchar;
 		if (Option.TRACE_SCAN) Util.TRACE("scanPossibleIsoCode, " + edcurrent());
@@ -754,28 +868,36 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                         scanDirectiveLine
     //********************************************************************************
-    //**  Reference-Syntax:
-    //**      directive
-    //**       =  % { any character except end-of-line }
-	//**
-	//**    A conditional line takes the form:
-	//**		%selector-expression ….
-	//**	where '' …. '' represents the line to be conditionally included
-	//**	and the selector-expression has the form:
-	//**
-	//**		Selector-expression
-	//**			= selector-group { selector-group }
-	//**
-	//**		Selector-group
-	//**			= + letter_or_digit { letter_or_digit }
-	//**			| - letter_or_digit { letter_or_digit }
-	//**
-	//**	i.e. a string of letters and signs, with the first character being a sign.
-	//**	The selector-expression is terminated by a SP.
-    //********************************************************************************
-    //** End-Condition: current is last character of construct
-    //**                getNext will return first character after construct
-    //********************************************************************************
+	/**
+	 * Scan a %Directive line
+	 * <pre>
+     *  Reference-Syntax:
+     *  
+     *      directive =  % { any character except end-of-line }
+	 *
+	 *  A conditional line takes the form:
+	 *    
+	 *		%selector-expression <i>text-line</i>
+	 *
+	 *	where <i>text-line</i> represents the line to be conditionally included
+	 *	and the selector-expression has the form:
+	 *
+	 *		Selector-expression
+	 *			= selector-group { selector-group }
+	 *
+	 *		Selector-group
+	 *			= + letter_or_digit { letter_or_digit }
+	 *			| - letter_or_digit { letter_or_digit }
+	 *
+	 *	i.e. a string of letters and signs, with the first character being a sign.
+	 *	The selector-expression is terminated by a SPACE.
+	 *
+	 *
+     * End-Condition: current is last character of construct
+     *                getNext will return first character after construct
+	 * </pre>
+	 * @return a Comment Token
+	 */
 	private Token scanDirectiveLine() {
 		getNext();
 		if(current==' ') {
@@ -797,6 +919,10 @@ public final class SimulaScanner extends DefaultScanner {
 	    return (newToken(KeyWord.COMMENT));
 	}
 	
+	/**
+	 * Utility: Read until end-of-line.
+	 * @return the string read
+	 */
 	private String readUntilEndofLine() {
 		StringBuilder line=new StringBuilder();
 		while(getNext()!='\n') {
@@ -821,6 +947,10 @@ public final class SimulaScanner extends DefaultScanner {
     	}
     }
     
+    /**
+     * Determine if current line is selected.
+     * @return true if current line is selected
+     */
 	private boolean lineSelected() {
 		while (true) {
 			if (current == '+') {
@@ -848,13 +978,19 @@ public final class SimulaScanner extends DefaultScanner {
 	// ********************************************************************************
 	// ** scanComment
 	// ********************************************************************************
-	// ** Reference-Syntax:
-	// ** comment
-	// ** = COMMENT { any character except semicolon } ;
-	// ********************************************************************************
-	// ** End-Condition: current is last character of construct 
-	// ** getNext will return first character after construct
-	// ********************************************************************************
+	/**
+	 * Scan a Comment.
+	 * <pre>
+	 * Reference-Syntax:
+	 * 
+	 *       comment = COMMENT { any character except semicolon } ;
+	 *       
+	 *       
+	 * End-Condition: current is last character of construct 
+	 *                getNext will return first character after construct
+	 * </pre>
+	 * @return a Comment Token
+	 */
 	private Token scanComment() {
 		StringBuilder skipped = new StringBuilder();
 		if (Option.TRACE_SCAN) Util.TRACE("BEGIN scanComment, " + edcurrent());
@@ -875,13 +1011,19 @@ public final class SimulaScanner extends DefaultScanner {
 	// ********************************************************************************
 	// ** scanCommentToEndOfLine
 	// ********************************************************************************
-	// ** Reference-Syntax:
-	// ** comment
-	// ** = -- { any character until end-of-line }
-	// ********************************************************************************
-	// ** End-Condition: current is last character of construct 
-	// ** getNext will return first character after construct
-	// ********************************************************************************
+	/**
+	 * Scan Comment to end-of-line.
+	 * <pre>
+	 * Reference-Syntax:
+	 * 
+	 *       comment = -- { any character until end-of-line }
+	 *       
+	 *       
+	 * End-Condition: current is last character of construct 
+	 *                getNext will return first character after construct
+	 * </pre>
+	 * @return a Comment Token
+	 */
 	private Token scanCommentToEndOfLine() {
 		StringBuilder skipped = new StringBuilder();
 		if (Option.TRACE_SCAN) Util.TRACE("BEGIN scanCommentToEndOfLine, " + edcurrent());
@@ -896,16 +1038,25 @@ public final class SimulaScanner extends DefaultScanner {
 	// ********************************************************************************
 	// ** scanEndComment
 	// ********************************************************************************
-	// ** reference-Syntax:
-	// ** The sequence:
-	// ** END { any sequence of printable characters not
-	// ** containing END, ELSE, WHEN, OTHERWISE or ; }
-	// ** is equivalent to:
-	// ** END
-	// ********************************************************************************
-	// ** End-Condition: current is last character of construct
-	// ** getNext will return first character after construct
-	// ********************************************************************************
+	/**
+	 * Scan end-comment.
+	 * <pre>
+	 * reference-Syntax:
+	 * 
+	 *       The sequence:
+	 *       
+	 *          END { any sequence of printable characters not containing END, ELSE, WHEN, OTHERWISE or ; }
+	 *          
+	 *       is equivalent to:
+	 *       
+	 *          END
+	 * 
+	 * 
+	 * End-Condition: current is last character of construct
+	 *                getNext will return first character after construct
+	 * </pre>
+	 * @return next Token
+	 */
 	private Token scanEndComment() {
 		//Util.println("SimulaScanner.scanEndComment");
 		tokenQueue.add(newToken(KeyWord.END));				   
@@ -958,29 +1109,44 @@ public final class SimulaScanner extends DefaultScanner {
     //********************************************************************************
     //**	                                                                 UTILITIES 
     //********************************************************************************
+	
+	/**
+	 * The previous character read.
+	 */
     private int prevChar;
+	
+	/**
+	 * The current character read.
+	 */
     private int current;
+    
+    /**
+     * Returns next input character.
+     * @return next input character
+     */
     private int getNext() {
     	prevChar=current;
-	    current=readNextCharacter();
-	    if(editorMode) {
-	        if(accum==null) accum=new StringBuilder();
-	        if(current!='\r' && current!=EOF_MARK) {
-	    	    accum.append((char)current);
-	        }
-	    }
-	    return(current);
+    	if(puchBackStack.empty()) {
+    		int c=sourceFileReader.read();
+    		if(c=='\n') Global.sourceLineNumber++;
+    		else if(c<0) { EOF_SEEN=true; c=EOF_MARK; }
+    		else if(c<32) c=' '; // Whitespace
+    		current=c;
+    	} else current=puchBackStack.pop();
+
+    	if(editorMode) {
+    		if(accum==null) accum=new StringBuilder();
+    		if(current!='\r' && current!=EOF_MARK) {
+    			accum.append((char)current);
+    		}
+    	}
+    	return(current);
     }
 
-    private int readNextCharacter() {
-    	if(!puchBackStack.empty()) return(puchBackStack.pop());
-		int c=sourceFileReader.read();
-		if(c<0) { EOF_SEEN=true; return(EOF_MARK); }
-		if(c=='\n') Global.sourceLineNumber++;
-		if(c<32 && c!='\n') c=' '; // Whitespace
-		return(c);
-	}
-
+    /**
+     * Push a character onto the puchBackStack.
+     * @param chr character to be pushed
+     */
     private void pushBack(final int chr) {
 	    // push given value back into the input stream
     	if(editorMode) {
@@ -991,12 +1157,23 @@ public final class SimulaScanner extends DefaultScanner {
 	    current=' ';
     }
   
+
+    /**
+     * Push a string onto the puchBackStack.
+     * @param s string to be pushed
+     */
     private void pushBack(final String s) {
 	    // put given value back into the input stream
 	    int i=s.length();
 		while((i--)>0) pushBack(s.charAt(i));
     }
   
+    /**
+     * Create a new Token
+     * @param keyWord the KeyWord
+     * @param value the value
+     * @return the newly created Token
+     */
 	private Token newToken(final KeyWord keyWord, final Object value) {
 		String text=null;
 		if(editorMode) {
@@ -1006,16 +1183,30 @@ public final class SimulaScanner extends DefaultScanner {
 		return(new Token(text,keyWord,value));
 	  }
 
+    /**
+     * Create a new Token without a value
+     * @param keyWord the KeyWord
+     * @return the newly created Token
+     */
 	private Token newToken(final KeyWord keyWord) {
 		return (newToken(keyWord, null));
 	}
 
+	/**
+	 * Utility: Edit current character.
+	 * @return edited current character
+	 */
 	private String edcurrent() {
 		if (current < 32)
 			return ("Current code=" + current);
 		return ("Current='" + (char) current + "' value=" + current);
 	}
 	
+	/**
+	 * Utility: Check if a character is a hex digit.
+	 * @param c the character
+	 * @return true if character c is a hex digit
+	 */
     private boolean isHexDigit(final int c) {
 	    switch(c) {
 	        case '0':case '1':case '2':case '3':case '4':
@@ -1026,12 +1217,22 @@ public final class SimulaScanner extends DefaultScanner {
 	    }
     }
 	
+	/**
+	 * Utility: Check if a character is printable.
+	 * @param c the character
+	 * @return true if character c is printable
+	 */
 	private boolean isPrintable(final int c) {
 		if (c < 32) return (false);
 		if (c > 126) return (false);
 		return (true);
 	}
 
+	/**
+	 * Utility: Check if a character is a whiteSpace.
+	 * @param c the character
+	 * @return true if character c is a whiteSpace
+	 */
 	private boolean isWhiteSpace(final int c) {
 		switch(c) {
 		    case '\n':	/* NL (LF) */

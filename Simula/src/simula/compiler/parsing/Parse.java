@@ -24,8 +24,20 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class Parse {
+	
+	/**
+	 * The saved Token used by 'pushBack'
+	 */
 	private static Token savedToken; // Used by 'pushBack'
+	
+	/**
+	 * Indicate that endOfFile error is given
+	 */
 	private static boolean endOfFileErrorGiven;
+	
+	/**
+	 * The SimulaScanner
+	 */
 	private static SimulaScanner simulaScanner;
 	
 	/**

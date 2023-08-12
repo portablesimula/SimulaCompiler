@@ -26,15 +26,32 @@ import simula.compiler.utilities.Util;
 * <p>
 * Input Utilities for the Simula Scanner.
 * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/SourceFileReader.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/SourceFileReader.java"><b>Source File</b></a>.
 * 
 * @author Øystein Myhre Andersen
 *
 */
 public final class SourceFileReader {
+	
+	/**
+	 * The stack of readers
+	 */
 	private final Stack<Reader> stack = new Stack<Reader>();
+	
+	/**
+	 * The current Reader
+	 */
 	private Reader current; // current source file reader;
+	
+	/**
+	 * The stack of file names
+	 */
 	private final Stack<String> nameStack = new Stack<String>();
+	
+	/**
+	 * The stack of line numbers
+	 */
 	private final Stack<Integer> lineStack = new Stack<Integer>();
 
 	/**
