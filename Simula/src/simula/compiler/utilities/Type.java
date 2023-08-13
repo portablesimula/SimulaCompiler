@@ -19,7 +19,8 @@ import simula.compiler.declaration.DeclarationScope;
 /**
  * Utility class Type.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Type.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Type.java"><b>Source File</b></a>.
  * 
  * @author Øystein
  *
@@ -167,7 +168,13 @@ public sealed class Type implements Externalizable permits OverLoad {
 		return(null); 
 	}
   
-	private boolean CHECKED=false; // Set true when doChecking is called
+	/**
+	 * Controls the semantic checking process.
+	 * <p>
+	 * Set true when doChecking is called
+	 */
+	private boolean CHECKED=false;
+	
     /**
      * Perform semantic checking in the given scope.
 	 * @param scope the given scope

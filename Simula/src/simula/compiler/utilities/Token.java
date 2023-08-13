@@ -38,24 +38,34 @@ public final class Token implements Externalizable {
 	 * The Token's line number
 	 */
 	public int lineNumber;
-	
+
 	/**
 	 * The line number before scan basic.
 	 */
-    public static int lineNumberBeforeScanBasic;
-  
-    /**
-     * The style codes used by Simula Editor.
-     */
-	public enum StyleCode {/**Regular*/regular,/**Keyword*/keyword,/**Comment*/comment,/**Constant*/constant};
+	public static int lineNumberBeforeScanBasic;
+
+	/**
+	 * The style codes used by Simula Editor.
+	 */
+	public enum StyleCode {
+		/** Regular */
+		regular,
+		/** Keyword */
+		keyword,
+		/** Comment */
+		comment,
+		/** Constant */
+		constant
+	};
 
 	/**
 	 * Create a new Token.
-	 * @param text the Token's text attribute
+	 * 
+	 * @param text    the Token's text attribute
 	 * @param keyWord the Token's keyword attribute
-	 * @param value the Token's value attribute
+	 * @param value   the Token's value attribute
 	 */
-	public Token(final String text,final KeyWord keyWord,final Object value) {
+	public Token(final String text, final KeyWord keyWord, final Object value) {
 		this.text = text;
 		this.keyWord = keyWord;
 		this.value = value;
@@ -64,24 +74,27 @@ public final class Token implements Externalizable {
 
 	/**
 	 * Create a new Token.
-	 * @param text the Token's text attribute
+	 * 
+	 * @param text    the Token's text attribute
 	 * @param keyWord the Token's keyword attribute
 	 */
-	public Token(final String text,final KeyWord keyWord) {
+	public Token(final String text, final KeyWord keyWord) {
 		this(text, keyWord, null);
 	}
 
 	/**
 	 * Create a new Token.
+	 * 
 	 * @param keyWord the Token's keyword attribute
-	 * @param value the Token's value attribute
+	 * @param value   the Token's value attribute
 	 */
-	public Token(final KeyWord keyWord,final Object value) {
+	public Token(final KeyWord keyWord, final Object value) {
 		this(null, keyWord, value);
 	}
 
 	/**
 	 * Create a new Token.
+	 * 
 	 * @param keyWord the Token's keyword attribute
 	 */
 	public Token(final KeyWord keyWord) {
@@ -91,10 +104,12 @@ public final class Token implements Externalizable {
 	/**
 	 * The default constructor used by Externalization.
 	 */
-	public Token() {} // Externalization
+	public Token() {
+	} // Externalization
 
 	/**
 	 * Set this Token's text attribute.
+	 * 
 	 * @param text new text attribute
 	 */
 	public void setText(final String text) {
@@ -103,6 +118,7 @@ public final class Token implements Externalizable {
 
 	/**
 	 * Get this Token's text attribute.
+	 * 
 	 * @return this Token's text attribute
 	 */
 	public String getText() {
@@ -113,6 +129,7 @@ public final class Token implements Externalizable {
 
 	/**
 	 * Returns the style code for this Token's keyword.
+	 * 
 	 * @return the style code for this Token's keyword
 	 */
 	public StyleCode getStyleCode() {
@@ -137,82 +154,102 @@ public final class Token implements Externalizable {
 
 	/**
 	 * Get this Token's keyword attribute.
+	 * 
 	 * @return this Token's keyword attribute
 	 */
-    public KeyWord getKeyWord() { return(keyWord); }
-    
-    /**
+	public KeyWord getKeyWord() {
+		return (keyWord);
+	}
+
+	/**
 	 * Get this Token's keyword code.
-     * @return this Token's keyword code
-     */
-    public int getKeyWordCode() { return(keyWord.ordinal()); }
-    
+	 * 
+	 * @return this Token's keyword code
+	 */
+	public int getKeyWordCode() {
+		return (keyWord.ordinal());
+	}
+
 	/**
 	 * Get this Token's value attribute.
+	 * 
 	 * @return this Token's value attribute
 	 */
-    public Object getValue() { return(value); }
-    
+	public Object getValue() {
+		return (value);
+	}
+
 	/**
 	 * Get this Token's value string.
+	 * 
 	 * @return this Token's value string
 	 */
-    public String getIdentifier() { return((String)value); }
-  
+	public String getIdentifier() {
+		return ((String) value);
+	}
+
 	public boolean equals(final Object other) {
-		Token othr=(Token)other;
-		if(!this.keyWord.equals(othr.keyWord)) return(false);
-		if(this.value==othr.value) return(true);
-		if(this.value==null) return(false);
-		if(othr.value==null) return(false);
-	    if(!this.value.equals(othr.value)) return(false);
-		return(true);
+		Token othr = (Token) other;
+		if (!this.keyWord.equals(othr.keyWord))
+			return (false);
+		if (this.value == othr.value)
+			return (true);
+		if (this.value == null)
+			return (false);
+		if (othr.value == null)
+			return (false);
+		if (!this.value.equals(othr.value))
+			return (false);
+		return (true);
 	}
 
 	public String toString() {
 		switch (keyWord) {
-		    case COMMA: return (","); 
-		    case COLON: return (":"); 
-		    case SEMICOLON: return (";"); 
-			case BEGPAR: return ("("); 
-			case ENDPAR: return (")"); 
-			case BEGBRACKET: return ("["); 
-			case ENDBRACKET: return ("]"); 
-			case EXP: return ("**"); 
-			case DOT: return ("."); 
-			case CONC: return ("&");
-			  
-			case EQ: return ("=");
-			case GE: return (">=");
-			case GT: return (">");
-			case LE: return ("<=");
-			case LT: return ("<");
-			case NE: return ("<>");
-			case EQR: return ("==");
-			case NER: return ("=/=");
-			case IN: return ("IN");
-			case IS: return ("IS");
-			case PLUS: return ("+");
-			case MINUS: return ("-");
-			case MUL: return ("*");
-			case DIV: return ("/");
-			case INTDIV: return ("//");
-			case ASSIGNVALUE: return (":=");
-			case ASSIGNREF: return (":-");
-		
-			case INTEGERKONST: return("INTEGERKONST("+(Long)value+")"); 
-			case REALKONST: return("REALKONST("+(Number)value+")");
-			case CHARACTERKONST: return("CHARACTERKONST("+(Character)value+")");
-			case TEXTKONST: return("TEXTKONST("+(String)value+")");
-			case BOOLEANKONST: return("BOOLEANKONST("+(Boolean)value+")");
-			case IDENTIFIER: return(""+value);
-		
-			case INTEGER: case REAL: {
-				// Possible SHORT  or  LONG  in value part
-			    String res=keyWord.toString(); if(value!=null) res=value.toString()+' '+res;
-			    return(res);
-			} 
-			default: return(keyWord.toLowerCase());
+		case COMMA:			return (",");
+		case COLON:			return (":");
+		case SEMICOLON:		return (";");
+		case BEGPAR:		return ("(");
+		case ENDPAR:		return (")");
+		case BEGBRACKET:	return ("[");
+		case ENDBRACKET:	return ("]");
+		case EXP:			return ("**");
+		case DOT:			return (".");
+		case CONC:			return ("&");
+
+		case EQ:			return ("=");
+		case GE:			return (">=");
+		case GT:			return (">");
+		case LE:			return ("<=");
+		case LT:			return ("<");
+		case NE:			return ("<>");
+		case EQR:			return ("==");
+		case NER:			return ("=/=");
+		case IN:			return ("IN");
+		case IS:			return ("IS");
+		case PLUS:			return ("+");
+		case MINUS:			return ("-");
+		case MUL:			return ("*");
+		case DIV:			return ("/");
+		case INTDIV:		return ("//");
+		case ASSIGNVALUE:	return (":=");
+		case ASSIGNREF:		return (":-");
+
+		case INTEGERKONST:	return ("INTEGERKONST(" + (Long) value + ")");
+		case REALKONST:		return ("REALKONST(" + (Number) value + ")");
+		case CHARACTERKONST:return ("CHARACTERKONST(" + (Character) value + ")");
+		case TEXTKONST:		return ("TEXTKONST(" + (String) value + ")");
+		case BOOLEANKONST:	return ("BOOLEANKONST(" + (Boolean) value + ")");
+		case IDENTIFIER:	return ("" + value);
+
+		case INTEGER: case REAL: {
+			// Possible SHORT or LONG in value part
+			String res = keyWord.toString();
+			if (value != null)
+				res = value.toString() + ' ' + res;
+			return (res);
+		}
+		default:
+			return (keyWord.toLowerCase());
 		}
 	}
 
@@ -230,8 +267,8 @@ public final class Token implements Externalizable {
 	@Override
 	public void readExternal(ObjectInput inpt) throws IOException, ClassNotFoundException {
 //		if(AttributeOutput.USE_ATTRIBUTE_IO) Util.IERR("");
-		keyWord=(KeyWord)inpt.readObject();
-		value=inpt.readObject();
+		keyWord = (KeyWord) inpt.readObject();
+		value = inpt.readObject();
 	}
 
 }

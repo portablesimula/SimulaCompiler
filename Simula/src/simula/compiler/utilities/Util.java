@@ -91,6 +91,9 @@ public final class Util {
 		FORCED_EXIT();
 	}
 
+	/**
+	 * Perform FORCED EXIT.
+	 */
 	private static void FORCED_EXIT() {
 		System.out.println("FORCED EXIT");
 		if (Global.console == null) System.exit(-1);
@@ -120,8 +123,13 @@ public final class Util {
 		}
 	}
 	
-	private static String edLINE(String msg) {		
-		String line = "LINE " + Global.sourceLineNumber + msg;
+	/**
+	 * Edit a line with source line number etc.
+	 * @param s the line string
+	 * @return the resulting string
+	 */
+	private static String edLINE(String s) {		
+		String line = "LINE " + Global.sourceLineNumber + s;
 		if(Global.insertName!=null) line = Global.insertName + ':' + line;
 		return(line);
 	}
@@ -131,12 +139,8 @@ public final class Util {
 	 * @param msg the message to print
 	 */
 	public static void TRACE(final String msg) {
-		TRACE("TRACE", msg);
-	}
-
-	private static void TRACE(final String id,final String msg) {
 		if (Option.TRACING)
-			println(id + " " + Global.sourceLineNumber + ": " + msg);
+			println("TRACE " + Global.sourceLineNumber + ": " + msg);
 	}
 
 	/**
