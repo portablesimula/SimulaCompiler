@@ -35,33 +35,29 @@ import java.io.OutputStream;
 /**
  * a Console panel.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/ConsolePanel.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/ConsolePanel.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
+@SuppressWarnings("serial")
 public final class ConsolePanel extends JPanel {
-	private static final long serialVersionUID = 1L;
-    private static JTextPane textPane;
 
-//    private StyledDocument doc;
-//    private Style styleRegular;
-//    private Style styleWarning;
-//    private Style styleError;
-//    private JPopupMenu popupMenu;
-//    private JMenuItem clearItem;
-//	private JMenuItem copyItem;
-//	private boolean reading; // Used by KeyListener and read()
-//	private char keyin;      // Used by KeyListener and read()
+	/**
+	 * The text pane.
+	 */
+	private static JTextPane textPane;
+
 	/**
 	 * the StyledDocument showed in this panel
 	 */
 	private StyledDocument doc;
-	
+
 	/**
 	 * Regular style
 	 */
 	private Style styleRegular;
-	
+
 	/**
 	 * Warning style
 	 */
@@ -76,38 +72,40 @@ public final class ConsolePanel extends JPanel {
 	 * the Popup Menu
 	 */
 	private JPopupMenu popupMenu;
-	
+
 	/**
 	 * Menu item clear
 	 */
 	private JMenuItem clearItem;
-	
+
 	/**
 	 * Menu item copy
 	 */
 	private JMenuItem copyItem;
-	
+
 	/**
 	 * Used by KeyListener and read()
 	 */
 	private boolean reading;
-	
+
 	/**
 	 * Used by KeyListener and read()
 	 */
 	private char keyin;
 
 //	private Reader consoleReader;
-	
+
 	/**
-	 * Reads a single character. 
+	 * Reads a single character.
+	 * 
 	 * @return The character read
 	 */
 	char read() {
 		textPane.requestFocus();
-		reading=true; // Enables KeyListener (see below)
-		while(reading) Thread.yield();
-		return(keyin);
+		reading = true; // Enables KeyListener (see below)
+		while (reading)
+			Thread.yield();
+		return (keyin);
 	}
 
 //	/**
@@ -136,15 +134,17 @@ public final class ConsolePanel extends JPanel {
 	
 	/**
 	 * Get a OutputStream suitable for writing on this panel
+	 * 
 	 * @return a OutputStream
 	 */
 	public OutputStream getOutputStream() {
-		return(new OutputStream() {
+		return (new OutputStream() {
 			@Override
 			public void write(int b) throws IOException {
-				String s=""+(char)b;
-				ConsolePanel.this.write(s,styleRegular);
-			}});
+				String s = "" + (char) b;
+				ConsolePanel.this.write(s, styleRegular);
+			}
+		});
 	}
 
 //	/**
@@ -167,56 +167,82 @@ public final class ConsolePanel extends JPanel {
 
 	/**
 	 * Get a OutputStream suitable for writing errors on this panel
+	 * 
 	 * @return a OutputStream
 	 */
 	public OutputStream getErrorStream() {
-		return(new OutputStream() {
+		return (new OutputStream() {
 			@Override
 			public void write(int b) throws IOException {
-				String s=""+(char)b;
-				ConsolePanel.this.write(s,styleError);
-			}});
+				String s = "" + (char) b;
+				ConsolePanel.this.write(s, styleError);
+			}
+		});
 	}
-	
+
 	/**
 	 * Write a string on this panel using styleRegular.
+	 * 
 	 * @param s a string to write
 	 */
-	public void write(final String s) { write(s,styleRegular); }
-	
+	public void write(final String s) {
+		write(s, styleRegular);
+	}
+
 	/**
 	 * Write a string on this panel using styleError.
+	 * 
 	 * @param s a string to write
 	 */
-	void writeError(final String s) { write(s,styleError); }
-	
+	void writeError(final String s) {
+		write(s, styleError);
+	}
+
 	/**
 	 * Write a string on this panel using styleWarning.
+	 * 
 	 * @param s a string to write
 	 */
-	void writeWarning(final String s) { write(s,styleWarning);	}
+	void writeWarning(final String s) {
+		write(s, styleWarning);
+	}
 
-	private void write(final String s,final Style style) {
+	/**
+	 * Write a string onto this Console.
+	 * 
+	 * @param s     the string to write
+	 * @param style the style
+	 */
+	private void write(final String s, final Style style) {
 		try {
 			doc.insertString(doc.getLength(), s, style);
 		} catch (BadLocationException e) {
-			IERR("Impossible",e);
+			IERR("Impossible", e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 	}
 
+	/**
+	 * Clear the Console.
+	 */
 	private void clear() {
 		try {
 			doc.remove(0, doc.getLength());
 		} catch (BadLocationException e) {
-			IERR("Impossible",e);
+			IERR("Impossible", e);
 		}
 		textPane.setCaretPosition(textPane.getDocument().getLength());
 		textPane.update(textPane.getGraphics());
 	}
-	
-	private static void IERR(final String msg,final Throwable e) {
-		System.out.println("IERR: " + msg +"  "+ e);
+
+	/**
+	 * Utility method IERR
+	 * 
+	 * @param msg error message
+	 * @param e   the underlying cause
+	 */
+	private static void IERR(final String msg, final Throwable e) {
+		System.out.println("IERR: " + msg + "  " + e);
 		e.printStackTrace();
 	}
 
@@ -224,62 +250,68 @@ public final class ConsolePanel extends JPanel {
 	 * Create a new ConsolePanel.
 	 */
 	public ConsolePanel() {
-    	super(new BorderLayout());
-    	JScrollPane scrollPane;
-    	textPane = new JTextPane();
-        textPane.addMouseListener(mouseListener);
-    	scrollPane = new JScrollPane(textPane);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    	doc=new DefaultStyledDocument();
-    	addStylesToDocument(doc);
-    	doc.putProperty(DefaultEditorKit.EndOfLineStringProperty,"\n");
-    	textPane.setStyledDocument(doc);
-    	textPane.addKeyListener(listener);
+		super(new BorderLayout());
+		JScrollPane scrollPane;
+		textPane = new JTextPane();
+		textPane.addMouseListener(mouseListener);
+		scrollPane = new JScrollPane(textPane);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		doc = new DefaultStyledDocument();
+		addStylesToDocument(doc);
+		doc.putProperty(DefaultEditorKit.EndOfLineStringProperty, "\n");
+		textPane.setStyledDocument(doc);
+		textPane.addKeyListener(listener);
 		textPane.setEditable(false);
-        popupMenu=new JPopupMenu();
-        clearItem = new JMenuItem("Clear Console");
-        //clearItem.setAccelerator(KeyStroke.getKeyStroke('X', InputEvent.CTRL_DOWN_MASK));
-        popupMenu.add(clearItem); clearItem.addActionListener(actionListener);
-        copyItem = new JMenuItem("Copy to Clipboard");
+		popupMenu = new JPopupMenu();
+		clearItem = new JMenuItem("Clear Console");
+		// clearItem.setAccelerator(KeyStroke.getKeyStroke('X',
+		// InputEvent.CTRL_DOWN_MASK));
+		popupMenu.add(clearItem);
+		clearItem.addActionListener(actionListener);
+		copyItem = new JMenuItem("Copy to Clipboard");
 		copyItem.setAccelerator(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
-        popupMenu.add(copyItem); copyItem.addActionListener(actionListener);
-        this.add(scrollPane);
-    }
-	
+		popupMenu.add(copyItem);
+		copyItem.addActionListener(actionListener);
+		this.add(scrollPane);
+	}
+
 	/**
 	 * popup this Console Panel
 	 */
 	public void popup() {
-    	JFrame frame=new JFrame();
-        frame.setSize(950, 500); // Initial frame size
-        frame.setTitle("Runtime Console");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.getContentPane().add(this);
-        frame.setVisible(true);
-    }
+		JFrame frame = new JFrame();
+		frame.setSize(950, 500); // Initial frame size
+		frame.setTitle("Runtime Console");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.getContentPane().add(this);
+		frame.setVisible(true);
+	}
 
-    
-    private void addStylesToDocument(final StyledDocument doc) {
-        Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
-        
-        Style regular = doc.addStyle("regular", defaultStyle);
-        StyleConstants.setFontFamily(defaultStyle, "Courier New");
- 
-        Style s = doc.addStyle("warning", regular);
-        StyleConstants.setItalic(s, true);
-        StyleConstants.setForeground(s,new Color(255,153,0));
+	/**
+	 * Utility to add styles to the document
+	 * 
+	 * @param doc the document
+	 */
+	private void addStylesToDocument(final StyledDocument doc) {
+		Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 
-        s = doc.addStyle("error", regular);
-        StyleConstants.setBold(s, true);
-        StyleConstants.setForeground(s,Color.RED);
-        
-        styleRegular=doc.getStyle("regular");
-        styleWarning=doc.getStyle("warning");
-        styleError=doc.getStyle("error");
-    }
-    
+		Style regular = doc.addStyle("regular", defaultStyle);
+		StyleConstants.setFontFamily(defaultStyle, "Courier New");
+
+		Style s = doc.addStyle("warning", regular);
+		StyleConstants.setItalic(s, true);
+		StyleConstants.setForeground(s, new Color(255, 153, 0));
+
+		s = doc.addStyle("error", regular);
+		StyleConstants.setBold(s, true);
+		StyleConstants.setForeground(s, Color.RED);
+
+		styleRegular = doc.getStyle("regular");
+		styleWarning = doc.getStyle("warning");
+		styleError = doc.getStyle("error");
+	}
 
 	// ****************************************************************
 	// *** MouseListener
@@ -287,17 +319,25 @@ public final class ConsolePanel extends JPanel {
 	/**
 	 * the MouseListener
 	 */
-    MouseListener mouseListener = new MouseListener() {
-		public void mousePressed(MouseEvent e) {}
-		public void mouseReleased(MouseEvent e) {}
-		public void mouseEntered(MouseEvent e) {}
-		public void mouseExited(MouseEvent e) {}
-		public void mouseClicked(MouseEvent e) {
-    	    if(e.getButton()==3) popupMenu.show(textPane,e.getX(),e.getY());
-    	}
-    };
+	MouseListener mouseListener = new MouseListener() {
+		public void mousePressed(MouseEvent e) {
+		}
 
-    
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		public void mouseExited(MouseEvent e) {
+		}
+
+		public void mouseClicked(MouseEvent e) {
+			if (e.getButton() == 3)
+				popupMenu.show(textPane, e.getX(), e.getY());
+		}
+	};
+
 	// ****************************************************************
 	// *** ActionListener
 	// ****************************************************************
@@ -306,33 +346,39 @@ public final class ConsolePanel extends JPanel {
 	 */
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			Object item=e.getSource();
-			if(item==clearItem) clear();
-			else if(item==copyItem) {
-				String text=textPane.getSelectedText();
-				if(text==null) text=textPane.getText();
+			Object item = e.getSource();
+			if (item == clearItem)
+				clear();
+			else if (item == copyItem) {
+				String text = textPane.getSelectedText();
+				if (text == null)
+					text = textPane.getText();
 				StringSelection stringSelection = new StringSelection(text);
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(stringSelection, null);
 			}
 		}
 	};
-    
+
 	// ****************************************************************
 	// *** KeyListener
 	// ****************************************************************
 	/**
 	 * the KeyListener
 	 */
-    private KeyListener listener = new KeyListener() {
-    	public void keyPressed(KeyEvent event) {}
-    	public void keyReleased(KeyEvent event) {}
-        public void keyTyped(KeyEvent event) {
-    	    if(reading) {
-    	    	keyin=event.getKeyChar();
-       	    	reading=false;
-    	    }
-    	}
-    };
+	private KeyListener listener = new KeyListener() {
+		public void keyPressed(KeyEvent event) {
+		}
+
+		public void keyReleased(KeyEvent event) {
+		}
+
+		public void keyTyped(KeyEvent event) {
+			if (reading) {
+				keyin = event.getKeyChar();
+				reading = false;
+			}
+		}
+	};
 
 }

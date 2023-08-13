@@ -18,7 +18,8 @@ import simula.compiler.expression.Expression;
  * <p>
  * Holding the semantic meaning of an identifier.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Meaning.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Meaning.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

@@ -22,57 +22,88 @@ import javax.swing.JPanel;
 /**
  * Compile Time Options.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Option.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Option.java"><b>Source File</b></a>.
  * 
- * @author Øystein
+ * @author Øystein Myhre Andersen
  *
  */
 public final class Option {
 
 	public static boolean INLINE_TESTING = false; 
+	/**
+	 * Source file is case sensitive.
+	 */
 	public static boolean CaseSensitive=false;
+	
+	/**
+	 * Output messages about what the compiler is doing.
+	 */
 	public static boolean verbose = false; 
+	
+	/**
+	 * Generate no warnings
+	 */
 	public static boolean WARNINGS=true;
+	
+	/**
+	 * Don't execute generated .jar file
+	 */
 	public static boolean noExecution = false;	// true: Don't execute generated .jar file.
+	
+	/**
+	 * Disable all language extensions. In other words,
+	 * follow the Simula Standard literally
+	 */
 	public static boolean EXTENSIONS=true;
+	
+	/**
+	 * S-PORT extensions  on/off
+	 */
 	public static boolean SPORT=false;
-	public static File keepJava = null;			// Used by Java-Coding to save the generated .java files.
-												// If not set, a temp directory is used/created.
+	
+	/**
+	 * Used by Java-Coding to save the generated .java files.
+     * If not set, a temp directory is used/created.
+	 */
+	public static File keepJava = null;
 
 	// Overall TRACING Options
-	public static boolean TRACING=false;
-	public static boolean DEBUGGING=false;		// Set by EditorMenues - doDebugAction
+	/** Debug option */	public static boolean TRACING=false;
+	/** Debug option */	public static boolean DEBUGGING=false;		// Set by EditorMenues - doDebugAction
 
 	// Scanner Trace Options
-	public static boolean TRACE_SCAN=false;
-	public static boolean TRACE_COMMENTS=false;
+	/** Debug option */	public static boolean TRACE_SCAN=false;
+	/** Debug option */	public static boolean TRACE_COMMENTS=false;
 
 	// Parser Trace Options
-	public static boolean TRACE_PARSE=true;
-	public static boolean TRACE_ATTRIBUTE_OUTPUT=false;
-	public static boolean TRACE_ATTRIBUTE_INPUT=false;
+	/** Debug option */	public static boolean TRACE_PARSE=true;
+	/** Debug option */	public static boolean TRACE_ATTRIBUTE_OUTPUT=false;
+	/** Debug option */	public static boolean TRACE_ATTRIBUTE_INPUT=false;
 
 	// Checker Trace Options
-	public static boolean TRACE_CHECKER=false;
-	public static boolean TRACE_CHECKER_OUTPUT=false;
-	public static int TRACE_FIND_MEANING=0;
+	/** Debug option */	public static boolean TRACE_CHECKER=false;
+	/** Debug option */	public static boolean TRACE_CHECKER_OUTPUT=false;
+	/** Debug option */	public static int TRACE_FIND_MEANING=0;
 
 	// Java Coder Options
-	public static boolean TRACE_CODING=false;
-	public static boolean GNERATE_LINE_CALLS=false;
+	/** Debug option */	public static boolean TRACE_CODING=false;
+	/** Debug option */	public static boolean GNERATE_LINE_CALLS=false;
 
 	// Byte code engineering Options
-	public static int USE_FILE_CLASS_API=0;
-	public static boolean TRACE_BYTECODE_OUTPUT=false;
-	public static boolean LIST_REPAIRED_INSTRUCTION_LIST=false;
-	public static boolean TRACE_REPAIRING=false;
+	/** Debug option */	public static int USE_FILE_CLASS_API=0;
+	/** Debug option */	public static boolean TRACE_BYTECODE_OUTPUT=false;
+	/** Debug option */	public static boolean LIST_REPAIRED_INSTRUCTION_LIST=false;
+	/** Debug option */	public static boolean TRACE_REPAIRING=false;
 
 	// Runtime Options
 	public static String SOURCE_FILE="";
 	public static String RUNTIME_USER_DIR="";
 
 
-
+	/**
+	 * Initiate Compiler options
+	 */
 	public static void InitCompilerOptions() {
 		Option.CaseSensitive=false;
 		Option.verbose = false;
@@ -101,6 +132,11 @@ public final class Option {
 
 	}
 
+	/**
+	 * Returns the option name 'id'
+	 * @param id option id
+	 * @return the option name 'id'
+	 */
 	public static boolean getOption(String id) {
 		if(id.equalsIgnoreCase("CaseSensitive")) return(CaseSensitive); 
 		if(id.equalsIgnoreCase("VERBOSE")) return(verbose); 
@@ -122,6 +158,11 @@ public final class Option {
 	}
 
 
+	/**
+	 * Set the option named 'id' to the given value
+	 * @param id option id
+	 * @param val new option value
+	 */
 	public static void setOption(String id,boolean val) {
 		if(id.equalsIgnoreCase("CaseSensitive")) CaseSensitive=val; 
 		if(id.equalsIgnoreCase("VERBOSE")) verbose=val; 
@@ -141,6 +182,9 @@ public final class Option {
 		if(id.equalsIgnoreCase("TRACE_BYTECODE_OUTPUT")) TRACE_BYTECODE_OUTPUT=val; 
 	}
 
+	/**
+	 * Editor Utility: Select Compiler Options.
+	 */
 	public static void selectCompilerOptions() {
 		JPanel panel=new JPanel();
 		panel.setBackground(Color.white);
@@ -163,6 +207,12 @@ public final class Option {
 		Util.optionDialog(panel,"Select Compiler Options",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,"Ok");
 	}
 
+	/**
+	 * Editor Utility: checkBox.
+	 * @param id option id
+	 * @param info option description
+	 * @return the resulting check box
+	 */
 	private static JCheckBox checkBox(String id,String info) {
         JCheckBox item = new JCheckBox(id);
     	item.setBackground(Color.white);
@@ -174,15 +224,14 @@ public final class Option {
         item.setToolTipText(info);
         item.addMouseListener(new MouseAdapter() {
             Color color = item.getBackground();
-//            JFrame frame;
+            @Override
             public void mouseEntered(MouseEvent me) {
                color = item.getBackground();
-               item.setBackground(Color.lightGray); // change the color to green when mouse over a button
-//               frame=popup(item);
+               item.setBackground(Color.lightGray); // change the color to lightGray when mouse over a button
             }
+            @Override
             public void mouseExited(MouseEvent me) {
             	item.setBackground(color);
-//            	frame.setVisible(false);
             }
          });
         return(item);

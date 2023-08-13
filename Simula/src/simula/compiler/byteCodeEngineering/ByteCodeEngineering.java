@@ -37,7 +37,13 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class ByteCodeEngineering {
+	/**
+	 * List ASM code on/off
+	 */
 	private static final boolean LIST_ASM_CODE = false;
+	/**
+	 * DEBUG on/off
+	 */
 	private static final boolean DEBUG = false;
 
 	/**
@@ -95,6 +101,11 @@ public final class ByteCodeEngineering {
 		}
 	}
 
+	/**
+	 * Dump bytes to the given class file
+	 * @param bytes the bytes
+	 * @param classFileName the class file
+	 */
 	private void dumpToFile(byte[] bytes, String classFileName) {
 		if (DEBUG)
 			Util.println("ByteCodeEngineering.dumpToFile: " + classFileName);

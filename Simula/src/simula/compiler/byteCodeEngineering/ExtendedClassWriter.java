@@ -28,6 +28,9 @@ import simula.compiler.utilities.Util;
  *
  */
 public class ExtendedClassWriter extends ClassWriter {
+	/**
+	 * DEBUG on/off
+	 */
 	private static final boolean DEBUG = false;
 
 	/**
@@ -71,13 +74,18 @@ public class ExtendedClassWriter extends ClassWriter {
 		}
 	}
 
+	/**
+	 * Get class info
+	 * @param type the type
+	 * @return the resulting JavaClassInfo
+	 */
 	private static JavaClassInfo getClassInfo(String type) {
 		int n = type.lastIndexOf('/');
 		String dir = type.substring(0, n);
 		Util.ASSERT(dir.equals(Global.packetName), " dir=" + dir + ", Global.packetName=" + Global.packetName);
 		type = type.substring(n + 1);
 		if (DEBUG)
-			System.out.println("ExtendedClassWriter.getClassInfo: javaClassMap.get(" + type + ")");
+			System.out.println("ExtendedClassWriter.getClassInfo: javaClassInfo.get(" + type + ")");
 		return (JavaClassInfo.get(type));
 	}
 

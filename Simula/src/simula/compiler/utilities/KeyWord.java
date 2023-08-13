@@ -10,21 +10,32 @@ package simula.compiler.utilities;
 /**
  * The Simula Keywords and some additional symbols.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/ConsolePanel.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/ConsolePanel.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public enum KeyWord {
 	// Simula Reserved Words
-	ACTIVATE, AND, AFTER, ARRAY, AT, BEFORE, BEGIN, BOOLEAN, CHARACTER, CLASS, COMMENT, CONC, DELAY, DO, ELSE, END, EQ,
-	EQV, EXTERNAL, FALSE, FOR, GE, GO, GOTO, GT, HIDDEN, IF, IMP, IN, INNER, INSPECT, INTEGER, IS, LABEL, LE, LONG, LT,
-	NAME, NE, NEW, NONE, NOT, NOTEXT, OR, OTHERWISE, PRIOR, PROCEDURE, PROTECTED, QUA, REACTIVATE, REAL, REF, SHORT,
-	STEP, SWITCH, TEXT, THEN, THIS, TO, TRUE, UNTIL, VALUE, VIRTUAL, WHEN, WHILE,
+	/** Simula Keyword */ACTIVATE, /** Simula Keyword */AND, /** Simula Keyword */AFTER, /** Simula Keyword */ARRAY,
+	/** Simula Keyword */AT, /** Simula Keyword */BEFORE, /** Simula Keyword */BEGIN, /** Simula Keyword */BOOLEAN,
+	/** Simula Keyword */CHARACTER, /** Simula Keyword */CLASS, /** Simula Keyword */COMMENT, /** Simula Keyword */CONC,
+	/** Simula Keyword */DELAY, /** Simula Keyword */DO, /** Simula Keyword */ELSE, /** Simula Keyword */END, /** Simula Keyword */EQ,
+	/** Simula Keyword */EQV, /** Simula Keyword */EXTERNAL, /** Simula Keyword */FALSE, /** Simula Keyword */FOR,
+	/** Simula Keyword */GE, /** Simula Keyword */GO, /** Simula Keyword */GOTO, /** Simula Keyword */GT, /** Simula Keyword */HIDDEN,
+	/** Simula Keyword */IF, /** Simula Keyword */IMP, /** Simula Keyword */IN, /** Simula Keyword */INNER, /** Simula Keyword */INSPECT,
+	/** Simula Keyword */INTEGER, /** Simula Keyword */IS, /** Simula Keyword */LABEL, /** Simula Keyword */LE, /** Simula Keyword */LONG,
+	/** Simula Keyword */LT, /** Simula Keyword */NAME, /** Simula Keyword */NE, /** Simula Keyword */NEW, /** Simula Keyword */NONE,
+	/** Simula Keyword */NOT, /** Simula Keyword */NOTEXT, /** Simula Keyword */OR, /** Simula Keyword */OTHERWISE, /** Simula Keyword */PRIOR,
+	/** Simula Keyword */PROCEDURE, /** Simula Keyword */PROTECTED, /** Simula Keyword */QUA, /** Simula Keyword */REACTIVATE,
+	/** Simula Keyword */REAL, /** Simula Keyword */REF, /** Simula Keyword */SHORT, /** Simula Keyword */STEP, /** Simula Keyword */SWITCH,
+	/** Simula Keyword */TEXT, /** Simula Keyword */THEN, /** Simula Keyword */THIS, /** Simula Keyword */TO, /** Simula Keyword */TRUE,
+	/** Simula Keyword */UNTIL, /** Simula Keyword */VALUE, /** Simula Keyword */VIRTUAL, /** Simula Keyword */WHEN, /** Simula Keyword */WHILE,
 	// Other Symbols
-	ASSIGNVALUE, ASSIGNREF, COMMA, COLON, SEMICOLON, BEGPAR, ENDPAR, BEGBRACKET, ENDBRACKET, EQR, NER, PLUS, MINUS, MUL,
-	DIV, INTDIV, EXP, IDENTIFIER, BOOLEANKONST, INTEGERKONST, CHARACTERKONST, REALKONST, TEXTKONST, OR_ELSE, AND_THEN,
-	DOT, NEWLINE, STRING;
+	/** Simula Symbol */ASSIGNVALUE, /** Simula Symbol */ASSIGNREF, /** Simula Symbol */COMMA, /** Simula Symbol */COLON, /** Simula Symbol */SEMICOLON, /** Simula Symbol */BEGPAR, /** Simula Symbol */ENDPAR, /** Simula Symbol */BEGBRACKET, /** Simula Symbol */ENDBRACKET, /** Simula Symbol */EQR, /** Simula Symbol */NER, /** Simula Symbol */PLUS, /** Simula Symbol */MINUS, /** Simula Symbol */MUL,
+	/** Simula Symbol */DIV, /** Simula Symbol */INTDIV, /** Simula Symbol */EXP, /** Simula Symbol */IDENTIFIER, /** Simula Symbol */BOOLEANKONST, /** Simula Symbol */INTEGERKONST, /** Simula Symbol */CHARACTERKONST, /** Simula Symbol */REALKONST, /** Simula Symbol */TEXTKONST, /** Simula Symbol */OR_ELSE, /** Simula Symbol */AND_THEN,
+	/** Simula Symbol */DOT, /** Simula Symbol */NEWLINE, /** Simula Symbol */STRING;
 
 	/**
 	 * Returns the lower case version.

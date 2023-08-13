@@ -33,6 +33,9 @@ import simula.compiler.utilities.Util;
  *
  */
 public final class AttributeFileIO {
+	/**
+	 * The Simula version.
+	 */
 	private final static String version="SimulaAttributeFile: Version 1.0";
 
 	/**
@@ -40,8 +43,12 @@ public final class AttributeFileIO {
 	 */
 	final File attributeFile;
 	
-	private AttributeFileIO(final File attributeFile) {
-		this.attributeFile = attributeFile;
+	/**
+	 * Create a new AttributeFileIO.
+	 * @param aFile the attributeFile 
+	 */
+	private AttributeFileIO(final File aFile) {
+		this.attributeFile = aFile;
 	}
 
 	/**
@@ -105,7 +112,11 @@ public final class AttributeFileIO {
 		return(moduleType);
 	}	
 
-	
+	/**
+	 * Write a module's attribute file.
+	 * @param module the module
+	 * @throws IOException if an io-error occurs
+	 */
 	private void write(final BlockDeclaration module) throws IOException {
 		File attributeDir = new File(Global.tempClassFileDir,Global.packetName);
 		attributeDir.mkdirs();
@@ -129,21 +140,26 @@ public final class AttributeFileIO {
 		oupt.flush(); oupt.close();	oupt = null;
 	}
 	  
-	private BlockDeclaration listAttributeFile(final File attributeFile) throws IOException, ClassNotFoundException {
-		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + attributeFile);
-		FileInputStream fileInputStream = new FileInputStream(attributeFile);
+	/**
+	 * List an attribute file.
+	 * @param aFile the attributeFile
+	 * @throws IOException if an io-error occurs
+	 * @throws ClassNotFoundException if readObject fails
+	 */
+	private void listAttributeFile(final File aFile) throws IOException, ClassNotFoundException {
+		if (Option.verbose)	Util.TRACE("*** BEGIN Read SimulaAttributeFile: " + aFile);
+		FileInputStream fileInputStream = new FileInputStream(aFile);
 		ObjectInputStream inpt = new ObjectInputStream(fileInputStream);
 		String vers=(String)inpt.readObject();
-		if(!(vers.equals(version))) Util.error("Malformed SimulaAttributeFile: " + attributeFile);
+		if(!(vers.equals(version))) Util.error("Malformed SimulaAttributeFile: " + aFile);
 		BlockDeclaration blockDeclaration=(BlockDeclaration)inpt.readObject();
 		inpt.close();
 		if (Option.verbose) {
 			if (Option.TRACE_ATTRIBUTE_INPUT) {
-				Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + attributeFile);
+				Util.TRACE("*** ENDOF Read SimulaAttributeFile: " + aFile);
 				blockDeclaration.print(0);
 			}
 		}
-		return (blockDeclaration);
 	}	
 
 }

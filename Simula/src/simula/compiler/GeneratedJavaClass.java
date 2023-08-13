@@ -25,14 +25,27 @@ import simula.compiler.utilities.Util;
 /**
  * Generated Java class.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/GeneratedJavaClass.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/GeneratedJavaClass.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen 
  *
  */
 public final class GeneratedJavaClass {
+	
+	/**
+	 * The enclosing JavaModule
+	 */
 	private GeneratedJavaClass enclosingJavaModule;
+	
+	/**
+	 * The Java output writer.
+	 */
 	private final Writer writer;
+	
+	/**
+	 * The line number map
+	 */
 	private final Vector<Integer> lineMap = new Vector<Integer>();
 	
 	/**
@@ -84,6 +97,10 @@ public final class GeneratedJavaClass {
 		JavaClassInfo.put(info.externalIdent, info);
 	}
 
+	/**
+	 * Edit the current module's identification.
+	 * @return the current module's identification
+	 */
 	private String modid() {
 		BlockDeclaration blk = Global.currentJavaModule.blockDeclaration;
 		return (blk.declarationKind + " " + blk.scopeID());
@@ -151,11 +168,27 @@ public final class GeneratedJavaClass {
 		Global.currentJavaModule.write(c.sourceLineNumber, c.codeLine, c.modid);
 	}
 
+	/**
+	 * Current Java line number
+	 */
 	private int currentJavaLineNumber = 0;
 
+	/**
+	 * Previous source line number.
+	 */
 	private static int prevLineNumber = 0;
+	
+	/**
+	 * Current indentation
+	 */
 	private int indent;
 
+	/**
+	 * Write a code line to the Java output writer.
+	 * @param sourceLineNumber the source line number
+	 * @param line the code line string
+	 * @param modid module identifier
+	 */
 	private void write(final int sourceLineNumber, final String line, final String modid) {
 		Util.ASSERT(sourceLineNumber > 0, "Invariant");
 		if (saveCode != null) {
@@ -190,6 +223,17 @@ public final class GeneratedJavaClass {
 		prevLineNumber = sourceLineNumber;
 	}
 
+	/**
+	 * Code Utility: Edit line number comment line.
+	 * <p>
+	 * On the form:
+	 * <pre>
+	 * 		// JavaLine currentJavaLineNumber &lt;== SourceLine simulaLine
+	 * </pre>
+	 * @param simulaLine Simula line number
+	 * @param modid the module identifier
+	 * @return the resulting Java source line
+	 */
 	private String edLineNumberLine(final int simulaLine, final String modid) {
 		StringBuilder sb = new StringBuilder();
 		if (Global.duringSTM_Coding && Option.GNERATE_LINE_CALLS) {
@@ -199,6 +243,10 @@ public final class GeneratedJavaClass {
 		return (sb.toString());
 	}
 
+	/** 
+	 * Utility: Edit indent string
+	 * @return the indent string
+	 */
 	private String edIndent() {
 		int i = indent;
 		String s = "";
@@ -207,6 +255,11 @@ public final class GeneratedJavaClass {
 		return (s);
 	}
 
+	/**
+	 * Append an entry to the line map.
+	 * @param javaLine the Java line number
+	 * @param simulaLine the simula line number
+	 */
 	private void appendLine(final int javaLine, final int simulaLine) {
 		lineMap.add(javaLine);
 		lineMap.addElement(simulaLine);
@@ -233,6 +286,10 @@ public final class GeneratedJavaClass {
 		writeCode(s.toString());
 	}
 
+	/**
+	 * Write a code line to the Java output writer.
+	 * @param s the code line string
+	 */
 	private void writeCode(String s) {
 		if (Option.TRACE_CODING)
 			Util.println("CODE " + Global.sourceLineNumber + ": " + s);

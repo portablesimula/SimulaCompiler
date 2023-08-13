@@ -7,9 +7,8 @@
  */
 package simula.compiler.byteCodeEngineering;
 
+import java.util.Hashtable;
 import java.util.Set;
-
-import simula.compiler.utilities.Global;
 
 /**
  * Java class info.
@@ -26,7 +25,16 @@ import simula.compiler.utilities.Global;
  *
  */
 public class JavaClassInfo {
+	
+	/**
+	 * DEBUG on/off
+	 */
 	private static final boolean DEBUG = false;
+	
+	/**
+	 * The java class map
+	 */
+	private static Hashtable<String, JavaClassInfo> javaClassMap;
 
 	/**
 	 * External identifier.
@@ -45,13 +53,20 @@ public class JavaClassInfo {
 	}
 
 	/**
-	 * Update Global.javaClassMap.
+	 * Update javaClassMap.
 	 * 
 	 * @param key  the key
 	 * @param info the info
 	 */
 	public static void put(String key, JavaClassInfo info) {
-		Global.javaClassMap.putIfAbsent(key, info);
+		javaClassMap.putIfAbsent(key, info);
+	}
+	
+	/**
+	 * Initiate javaClassMap
+	 */
+	public static void init() {
+		javaClassMap = new Hashtable<String, JavaClassInfo>();
 	}
 
 	/**
@@ -61,7 +76,7 @@ public class JavaClassInfo {
 	 * @return the associated info or an empty String if not found
 	 */
 	static JavaClassInfo get(String key) {
-		JavaClassInfo info = Global.javaClassMap.get(key);
+		JavaClassInfo info = javaClassMap.get(key);
 		if (info == null)
 			printJavaClassMap("");
 		return (info);
@@ -91,8 +106,13 @@ public class JavaClassInfo {
 		return (res);
 	}
 
+	/**
+	 * Return the prefix identifier of a class named 'ident'. May be null
+	 * @param ident class identifier
+	 * @return the prefix identifier or null
+	 */
 	private String getPrefixIdent(String ident) {
-		JavaClassInfo prefix = Global.javaClassMap.get(ident);
+		JavaClassInfo prefix = javaClassMap.get(ident);
 		String res = ((prefix == null) ? null : prefix.prefixIdent);
 		if (DEBUG)
 			System.out.println("JavaClassInfo.getClassInfo: getPrefixIdent(" + ident + ") ==> " + res);
@@ -105,9 +125,9 @@ public class JavaClassInfo {
 	 * @param title the title
 	 */
 	static void printJavaClassMap(String title) {
-		Set<String> keys = Global.javaClassMap.keySet();
+		Set<String> keys = javaClassMap.keySet();
 		for (String key : keys) {
-			System.out.println("JavaClassMap-Key: " + key + ", value=" + Global.javaClassMap.get(key));
+			System.out.println("JavaClassMap-Key: " + key + ", value=" + javaClassMap.get(key));
 		}
 	}
 

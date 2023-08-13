@@ -103,7 +103,9 @@ public final class SimulaCompiler {
 		// Create Output File Path
 		String name = inputFile.getName();
 		Global.sourceFileName = name;
-		Global.sourceName = name.substring(0, name.length() - 4);
+		int p=name.lastIndexOf(".");
+		if(p > 0)
+			Global.sourceName = name.substring(0, p);
 		Global.sourceFileDir = inputFile.getParentFile();
 
 		if (Option.TRACING)
@@ -322,18 +324,15 @@ public final class SimulaCompiler {
 			}
 			int exitValue = -1;
 			String msg = "Commandline";
-			if (Global.USE_JAVA_SYSTEM_COMPILER) {
-				JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-				if (compiler != null) {
-					exitValue = callJavaSystemCompiler(compiler, classPath);
-					msg = "System";
-					if (exitValue != 0) {
-						Util.error("Java " + msg + " Compiler returns exit=" + exitValue + "\n");
-						msg = "Commandline"; // Try use CommandLine Compiler
-						exitValue = callJavacCompiler(classPath);
-					}
-				} else
+			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			if (compiler != null) {
+				exitValue = callJavaSystemCompiler(compiler, classPath);
+				msg = "System";
+				if (exitValue != 0) {
+					Util.error("Java " + msg + " Compiler returns exit=" + exitValue + "\n");
+					msg = "Commandline"; // Try use CommandLine Compiler
 					exitValue = callJavacCompiler(classPath);
+				}
 			} else
 				exitValue = callJavacCompiler(classPath);
 			if (Option.DEBUGGING) {
@@ -537,7 +536,7 @@ public final class SimulaCompiler {
 
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 		add(target, new File(Global.tempClassFileDir, Global.packetName), Global.tempClassFileDir.toString().length());
-		if (programModule.isExecutable() && Global.INCLUDE_RUNTIME_SYSTEM_IN_JAR) {
+		if (programModule.isExecutable()) {
 			File rtsHome = new File(Global.simulaRtsLib, "simula/runtime");
 			add(target, rtsHome, Global.simulaRtsLib.toString().length());
 		}

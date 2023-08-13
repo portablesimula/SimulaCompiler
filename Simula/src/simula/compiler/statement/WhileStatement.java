@@ -17,15 +17,23 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  * 
- *   WhileStatement = WHILE BooleanExpression DO Statement
+ *   while-statement = WHILE Boolean-expression DO Statement
  *
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/WhileStatement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/WhileStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class WhileStatement extends Statement {
+	/**
+	 * The WHILE condition
+	 */
 	private final Expression condition;
+	
+	/**
+	 * The statement after DO
+	 */
 	private final Statement doStatement;
 
 	/**
@@ -62,6 +70,10 @@ public final class WhileStatement extends Statement {
 		GeneratedJavaClass.code("}");
 	}
 	
+	/**
+	 * Check if this while statement is a 'while true do'.
+	 * @return true if this while statement is a 'while true do'
+	 */
 	private boolean isWhileTrueDo() {
 		// Check for:  while(true) do {}
 		if(condition instanceof Constant cnst) return((boolean)cnst.value);

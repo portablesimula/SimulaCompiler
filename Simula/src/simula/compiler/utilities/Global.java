@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayDeque;
-import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
@@ -27,57 +26,170 @@ import simula.compiler.declaration.StandardClass;
 /**
  * Global Variables.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Global.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Global.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class Global {
-	// NOTE: When updating release id, change version in SimulaExtractor and
-	// RuntimeSystem
+	/**
+	 * The Simula release identification.
+	 * <p>
+	 * NOTE: When updating release id, change version in SimulaExtractor and RuntimeSystem
+	 */
 	public static final String simulaReleaseID = "Simula-2.0";
-	public static ImageIcon simulaIcon;
+	
+//	public static ImageIcon simulaIcon;
+	/**
+	 * A Simula icon
+	 */
 	public static ImageIcon simIcon;
+	/**
+	 * A Simula icon
+	 */
 	static ImageIcon sIcon;
+	
+	/**
+	 * Max number of work spaces.
+	 */
 	private static final int MAX_WORKSPACE = 10;
 
-	public static final boolean INCLUDE_RUNTIME_SYSTEM_IN_JAR = true;
-	public static final boolean USE_JAVA_SYSTEM_COMPILER = true;// false;//true;
-
+	/**
+	 * The Simula Home directory.
+	 */
 	public static File simulaHome;
+	
+	/**
+	 * The Simula Version
+	 */
 	public static String simulaVersion;
+	
+	/**
+	 * The set of external .jar files.
+	 */
 	public static Vector<File> externalJarFiles;
+	
+	/**
+	 * The current Charset.
+	 */
 	public static Charset _CHARSET = Charset.defaultCharset();
 
-	public static int sourceLineNumber; // =1;
+	/**
+	 * The current source line number.
+	 */
+	public static int sourceLineNumber;
+	
+	/**
+	 * The source file's directory.
+	 */
 	public static File sourceFileDir;
+	
+	/**
+	 * The source file name.
+	 */
 	public static String sourceFileName;
+	
+	/**
+	 * The source file name without .sim
+	 */
 	public static String sourceName;
+	
+	/**
+	 * The insert name.
+	 */
 	public static String insertName;
+	
+	/**
+	 * Where to find the Simula Runtime System.
+	 */
 	public static File simulaRtsLib; // The simula runtime system
 
+	/**
+	 * The Simula properties file
+	 */
 	public static File simulaPropertiesFile;
+	
+	/**
+	 * The Simula properties
+	 */
 	private static Properties simulaProperties;
-	public static File sampleSourceDir; // Where to find sample simula files
-	public static File currentWorkspace; // Where to find .sim source files
+	
+	/**
+	 * The sample source directory. Where to find sample Simula files
+	 */
+	public static File sampleSourceDir;
+	
+	/**
+	 * Current workspace. Where to find .sim source files
+	 */
+	public static File currentWorkspace;
+
+	
+	/**
+	 * The set of workspaces
+	 */
 	public static ArrayDeque<File> workspaces;
-	public static File outputDir; // Used by Java-Coding to save the generated .jar files.
-	public static File extLib; // Used by ExternalDeclaration.readAttributeFile
+	
+	/**
+	 * The output directory. Used by Java-Coding to save the generated .jar files.
+	 */
+	public static File outputDir;
+	
+	/**
+	 * The external library. Used by ExternalDeclaration.readAttributeFile
+	 */
+	public static File extLib;
 
-	public static boolean duringParsing; // True while Parsing
-	public static boolean duringChecking; // True while Checking
-	public static boolean duringSTM_Coding; // True while generating STM code
+	/**
+	 * Compiler state: True while Parsing
+	 */
+	public static boolean duringParsing;
 
-	public static File simulaTempDir; // Temp directory
-	public static File tempJavaFileDir; // Temp sub-dir for .java files
-	public static File tempClassFileDir; // Temp sub-dir for .class files
+	/**
+	 * Compiler state: True while Checking
+	 */
+	public static boolean duringChecking;
 
-	public static String packetName = "simprog"; // NOTE: Must be a single identifier
-	public static GeneratedJavaClass currentJavaModule; // Current Java output Module. Maintained by JavaModule during
-														// Java Coding
-	public static Hashtable<String, JavaClassInfo> javaClassMap; // SKAL MERGE'ES MED DEN NEDENFOR ?????
+	/**
+	 * Compiler state: True while generating STM code
+	 */
+	public static boolean duringSTM_Coding;
+
+	/**
+	 * The Simula temp directory
+	 */
+	public static File simulaTempDir;
+	
+	/**
+	 * Temp directory for generated .java files
+	 */
+	public static File tempJavaFileDir;
+	
+	/**
+	 * Temp directory for generated .class files
+	 */
+	public static File tempClassFileDir;
+
+	/**
+	 * Packet name used in generated .java files.
+	 * NOTE: Must be a single identifier.
+	 */
+	public static String packetName = "simprog";
+	
+	/**
+	 * Current Java output Module. Maintained by JavaModule during Java Coding
+	 */
+	public static GeneratedJavaClass currentJavaModule;
+	
+	/**
+	 * The set of generated Java files
+	 */
 	public static Vector<GeneratedJavaClass> generatedJavaClass;
 
+	/**
+	 * The console
+	 */
 	public static ConsolePanel console;
 
 	/**
@@ -90,7 +202,7 @@ public final class Global {
 	 * Initiate Global variables.
 	 */
 	public static void initiate() {
-		javaClassMap = new Hashtable<String, JavaClassInfo>();
+		JavaClassInfo.init();
 		duringParsing = true;
 		duringChecking = false;
 		duringSTM_Coding = false;
@@ -101,14 +213,22 @@ public final class Global {
 			String SIMULA_VERSION = getSimulaProperty("simula.version", null);
 			if (SIMULA_VERSION != null) {
 				File simdir = new File(SIMULA_HOME, SIMULA_VERSION);
-				simulaIcon = new ImageIcon(new File(simdir, "icons/simula.png").toString());
+//				simulaIcon = new ImageIcon(new File(simdir, "icons/simula.png").toString());
 				simIcon = new ImageIcon(new File(simdir, "icons/sim2.png").toString());
 				sIcon = new ImageIcon(new File(simdir, "icons/sim.png").toString());
 			}
 		}
 	}
 
+	/**
+	 * The declaration scope stack.
+	 */
 	private static Stack<DeclarationScope> scopeStack = new Stack<DeclarationScope>();
+	
+	/**
+	 * Current declaration scope.
+	 * Maintained during Checking and Coding
+	 */
 	private static DeclarationScope currentScope = null; // Current Scope. Maintained during Checking and Coding
 
 	/**
@@ -129,7 +249,10 @@ public final class Global {
 		currentScope = scope;
 	} // During Parsing
 
-	private static int currentCTBlockLevel = 3; // CompileTime Block level
+	/**
+	 * Current CompileTime Block level.
+	 */
+	private static int currentCTBlockLevel = 3;
 
 	/**
 	 * During Checking and Coding: Enter declaration scope.
@@ -170,6 +293,10 @@ public final class Global {
 		return (tempFileDir);
 	}
 
+	/**
+	 * Utility: Set read-write-execute access on a directory
+	 * @param dir the directory
+	 */
 	private static void setAccessRWX(File dir) {
 		dir.setReadable(true, false); // Readable for all users
 		dir.setWritable(true, false); // Writable for all users
@@ -211,6 +338,10 @@ public final class Global {
 		return (simulaProperties.getProperty(key, defaultValue));
 	}
 
+	/**
+	 * Returns the simula properties .xml file
+	 * @return the simula properties .xml file
+	 */
 	private static File getSimulaPropertiesFile() {
 		File javaClassPath = new File(System.getProperty("java.class.path"));
 		if (Option.INLINE_TESTING) {
@@ -243,6 +374,9 @@ public final class Global {
 		return (simulaPropertiesFile);
 	}
 
+	/**
+	 * Load Simula properties.
+	 */
 	private static void loadProperties() {
 		simulaPropertiesFile = getSimulaPropertiesFile();
 		simulaProperties = new Properties();
@@ -256,7 +390,14 @@ public final class Global {
 	// **********************************************************
 	// *** WORKSPACES
 	// **********************************************************
+	/**
+	 * The Simula workspace .xml file.
+	 */
 	private static File simulaWorkspacesFile;
+	
+	/**
+	 * The Simula workspace properties.
+	 */
 	private static Properties simulaWorkspaces;
 
 	/**
@@ -297,6 +438,9 @@ public final class Global {
 		currentWorkspace = workspaces.getFirst();
 	}
 
+	/**
+	 * Load workspaces from old propertyFile.
+	 */
 	private static void loadWorkspacesFromOldPropertyFile() {
 		for (int i = 1; i <= MAX_WORKSPACE; i++) {
 			String ws = getSimulaProperty("simula.workspace." + i, null);
@@ -311,7 +455,7 @@ public final class Global {
 	/**
 	 * Set current Workspace.
 	 * 
-	 * @param workspace
+	 * @param workspace the workspace
 	 */
 	public static void setCurrentWorkspace(File workspace) {
 		if (!workspace.equals(Global.currentWorkspace)) {

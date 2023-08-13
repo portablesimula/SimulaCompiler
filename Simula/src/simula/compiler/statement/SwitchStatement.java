@@ -29,43 +29,69 @@ import simula.compiler.utilities.Util;
  * Syntax:
  * 
  * switch-statement = SWITCH ( lowKey : hiKey ) switchKey BEGIN { switch-case } [ none-case ] END [ otherwise-case ]
+ * 
  *      switch-case = WHEN caseKey-list do statement ;
+ *      
  *      none-case   = WHEN NONE do statement ;
+ *      
  *      otherwise-case = OTHERWISE statement ;
- *      caseKey-list = caseKey { , caseKey }
- *      caseKey = caseConstant  | caseConstant : caseConstant
+ *      
+ *         caseKey-list = caseKey { , caseKey }
+ *      
+ *            caseKey = caseConstant  | caseConstant : caseConstant
+ *            
+ *               caseConstant = integer-or-character-constant
  *      
  *      lowKey = integer-or-character-expression
  *      hiKey = integer-or-character-expression
  *      switchKey = integer-or-character-expression
- *      caseConstant = integer-or-character-constant
  *
+ * Translated into a Java Switch Statement with break after each statement.
+ * 
  * Example:
  * 
- *   switch(lowkey:hikey) key
- *   begin
- *      when 0 do statement-0 ;
+ *   <b>switch</b>(lowkey:hikey) key
+ *   <b>begin</b>
+ *      <b>when</b> 0 <b>do</b> statement-0 ;
  *      ...
- *      when NONE do statement-e ;
- *   end
+ *      <b>when</b> <b>none</b> <b>do</b> statement-e ;
+ *   <b>end</b>
  *   
  *   Is compiled into Java-code:
  *   
  *   if(key &lt; lowkey || key > hikey) throw new RTS_SimulaRuntimeError("Switch key outside key interval");
  *   switch(key) {
- *       case 0: statement-0 ;
+ *       case 0: statement-0; break;
  *       ...
- *       default: statement-e ;
+ *       default: statement-e; break;
  *   }
  *   
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/SwitchStatement.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/SwitchStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class SwitchStatement extends Statement {
-	private final Expression lowKey,hiKey;
+	
+	/**
+	 * The low key.
+	 */
+	private final Expression lowKey;
+	
+	/**
+	 * The high key
+	 */
+	private final Expression hiKey;
+	
+	/**
+	 * The switchKey
+	 */
 	private Expression switchKey;
+	
+	/**
+	 * The list of When parts
+	 */
 	private final Vector<WhenPart> switchCases=new Vector<WhenPart>();
 
 	/**
@@ -92,8 +118,8 @@ public final class SwitchStatement extends Statement {
 				noneCaseUsed=true;
 			}
 			else {
-				caseKeyList.add(parseCasePair());
-				while(Parse.accept(KeyWord.COMMA)) caseKeyList.add(parseCasePair());
+				caseKeyList.add(expectCasePair());
+				while(Parse.accept(KeyWord.COMMA)) caseKeyList.add(expectCasePair());
 			}
 			Parse.expect(KeyWord.DO);
 			Statement statement = Statement.expectStatement();
@@ -104,16 +130,36 @@ public final class SwitchStatement extends Statement {
 		if (Option.TRACE_PARSE)	Util.TRACE("Line "+lineNumber+": SwitchStatement: "+this);
 	}
 
-	private SwitchInterval parseCasePair() {
+	/**
+	 * Parse Utility: Expect case pair.
+	 * @return the resulting SwitchInterval
+	 */
+	private SwitchInterval expectCasePair() {
 		Expression lowCase=Expression.expectExpression();
 		Expression hiCase=null;
 		if(Parse.accept(KeyWord.COLON)) hiCase=Expression.expectExpression();
 		return(new SwitchInterval(lowCase,hiCase));
 	}
 
-	
+	/**
+	 * Utility class SwitchInterval
+	 */
     private class SwitchInterval {
-    	Expression lowCase,hiCase;
+    	/**
+    	 * The lower case key
+    	 */
+    	Expression lowCase;
+    	
+    	/**
+    	 * The high case key
+    	 */
+    	Expression hiCase;
+    	
+    	/**
+    	 * Utility class: SwitchInterval
+    	 * @param lowCase lower case
+    	 * @param hiCase high case
+    	 */
     	private SwitchInterval(Expression lowCase,Expression hiCase) {
     		this.lowCase=lowCase; this.hiCase=hiCase;
     	}
@@ -125,15 +171,36 @@ public final class SwitchStatement extends Statement {
     	}
     }
     
+    /**
+     * Utility class WhenPart.
+     */
     private class WhenPart {
+    	
+    	/**
+    	 * The case key list.
+    	 */
     	Vector<SwitchInterval> caseKeyList;
+    	
+    	/**
+    	 * The statement
+    	 */
     	Statement statement;
+    	
+    	/**
+    	 * Create a new WhenPart.
+    	 * @param caseKeyList the case key list
+    	 * @param statement the statement
+    	 */
     	private WhenPart(Vector<SwitchInterval> caseKeyList,Statement statement)	{
     		this.caseKeyList=caseKeyList;
     		this.statement=statement;
     		if(Option.TRACE_PARSE) Util.TRACE("NEW WhenPart: " + toString());
     	}
 	
+    	/**
+    	 * Coding Utility: Edit this when-part.
+    	 * @param first true if this when-part is the first being edited
+    	 */
     	private void doCoding(final boolean first)	{
     		ASSERT_SEMANTICS_CHECKED();
     		for(SwitchInterval casePair:caseKeyList)
@@ -151,12 +218,20 @@ public final class SwitchStatement extends Statement {
     		GeneratedJavaClass.code("break;");
     	}
 	
+    	/**
+    	 * Utility method print.
+    	 * @param indent the indentation
+    	 */
     	private void print(final int indent) {
         	String spc=edIndent(indent);
     		System.out.print(spc+edWhen());
     		statement.print(indent);
     	}
     	
+    	/**
+    	 * Utility: Edit when clause.
+    	 * @return the resulting string
+    	 */
     	private String edWhen() {
     		StringBuilder s=new StringBuilder();
     		s.append("WHEN ");
