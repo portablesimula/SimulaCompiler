@@ -16,12 +16,17 @@ import simula.compiler.declaration.ClassDeclaration;
 /**
  * Utility class OverLoad.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/OverLoad.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/OverLoad.java"><b>Source File</b></a>.
  * 
- * @author Øystein
+ * @author Øystein Myhre Andersen
  *
  */
 public final class OverLoad extends Type {
+	
+	/**
+	 * The overloaded types.
+	 */
 	private Type[] type;
 	
 	/**

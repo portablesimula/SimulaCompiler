@@ -14,19 +14,47 @@ import java.io.ObjectOutput;
 
 /**
  * Utility class Token.
+ * <p>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/utilities/Token.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class Token implements Externalizable {
+	/**
+	 * The Token's text attribute
+	 */
 	private String text;
+	/**
+	 * The Token's keyWord attribute
+	 */
 	private KeyWord keyWord;
+	/**
+	 * The Token's value attribute
+	 */
 	private Object value;
+	/**
+	 * The Token's line number
+	 */
 	public int lineNumber;
+	
+	/**
+	 * The line number before scan basic.
+	 */
     public static int lineNumberBeforeScanBasic;
   
-	public enum StyleCode {regular,keyword,comment,constant};
+    /**
+     * The style codes used by Simula Editor.
+     */
+	public enum StyleCode {/**Regular*/regular,/**Keyword*/keyword,/**Comment*/comment,/**Constant*/constant};
 
+	/**
+	 * Create a new Token.
+	 * @param text the Token's text attribute
+	 * @param keyWord the Token's keyword attribute
+	 * @param value the Token's value attribute
+	 */
 	public Token(final String text,final KeyWord keyWord,final Object value) {
 		this.text = text;
 		this.keyWord = keyWord;
@@ -34,30 +62,59 @@ public final class Token implements Externalizable {
 		this.lineNumber = lineNumberBeforeScanBasic;
 	}
 
+	/**
+	 * Create a new Token.
+	 * @param text the Token's text attribute
+	 * @param keyWord the Token's keyword attribute
+	 */
 	public Token(final String text,final KeyWord keyWord) {
 		this(text, keyWord, null);
 	}
 
+	/**
+	 * Create a new Token.
+	 * @param keyWord the Token's keyword attribute
+	 * @param value the Token's value attribute
+	 */
 	public Token(final KeyWord keyWord,final Object value) {
 		this(null, keyWord, value);
 	}
 
+	/**
+	 * Create a new Token.
+	 * @param keyWord the Token's keyword attribute
+	 */
 	public Token(final KeyWord keyWord) {
 		this(keyWord, null);
 	}
 
+	/**
+	 * The default constructor used by Externalization.
+	 */
 	public Token() {} // Externalization
 
+	/**
+	 * Set this Token's text attribute.
+	 * @param text new text attribute
+	 */
 	public void setText(final String text) {
 		this.text = text;
 	}
 
+	/**
+	 * Get this Token's text attribute.
+	 * @return this Token's text attribute
+	 */
 	public String getText() {
 		if (text == null)
 			return (toString());
 		return (text);
 	}
 
+	/**
+	 * Returns the style code for this Token's keyword.
+	 * @return the style code for this Token's keyword
+	 */
 	public StyleCode getStyleCode() {
 		switch(keyWord) {
 		    case ASSIGNVALUE: case ASSIGNREF: case COMMA: case COLON: case SEMICOLON:
@@ -78,9 +135,28 @@ public final class Token implements Externalizable {
 		}
 	}
 
+	/**
+	 * Get this Token's keyword attribute.
+	 * @return this Token's keyword attribute
+	 */
     public KeyWord getKeyWord() { return(keyWord); }
+    
+    /**
+	 * Get this Token's keyword code.
+     * @return this Token's keyword code
+     */
     public int getKeyWordCode() { return(keyWord.ordinal()); }
+    
+	/**
+	 * Get this Token's value attribute.
+	 * @return this Token's value attribute
+	 */
     public Object getValue() { return(value); }
+    
+	/**
+	 * Get this Token's value string.
+	 * @return this Token's value string
+	 */
     public String getIdentifier() { return((String)value); }
   
 	public boolean equals(final Object other) {
