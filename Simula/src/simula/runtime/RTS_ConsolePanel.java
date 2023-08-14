@@ -39,8 +39,12 @@ import java.io.Writer;
  * @author Øystein Myhre Andersen
  *
  */
+@SuppressWarnings("serial")
 public final class RTS_ConsolePanel extends JPanel {
-	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * The text pane.
+	 */
 	private static JTextPane textPane;
 
 	/**
@@ -217,6 +221,11 @@ public final class RTS_ConsolePanel extends JPanel {
 		write(s, styleWarning);
 	}
 
+	/**
+	 * Write a styled string onto the console
+	 * @param s the string to write
+	 * @param style the Style
+	 */
 	private void write(final String s, final Style style) {
 		try {
 			doc.insertString(doc.getLength(), s, style);
@@ -294,6 +303,10 @@ public final class RTS_ConsolePanel extends JPanel {
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Add styles to a Document
+	 * @param doc the Document
+	 */
 	private void addStylesToDocument(final StyledDocument doc) {
 		Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 

@@ -444,7 +444,11 @@ public class RTS_Imagefile extends RTS_File {
 		return (_ENDFILE);
 	}
 
-	private RTS_TXT nextItem() {
+	/**
+	 * Starting at pos return the rest of image.
+	 * @return the rest of image
+	 */
+	private RTS_TXT ImageRest() {
 		if (lastitem())
 			throw new RTS_SimulaRuntimeError("Attempt to read past EOF");
 		return (RTS_TXT.sub(image, pos(), length() - pos() + 1));
@@ -470,7 +474,7 @@ public class RTS_Imagefile extends RTS_File {
 	 * @return the value of an integer item.
 	 */
 	public int inint() {
-		RTS_TXT T = nextItem();
+		RTS_TXT T = ImageRest();
 		int result = RTS_TXT.getint(T);
 		setpos(pos() + RTS_TXT.pos(T) - 1);
 		return (result);
@@ -496,7 +500,7 @@ public class RTS_Imagefile extends RTS_File {
 	 * @return the value of an real item.
 	 */
 	public double inreal() {
-		RTS_TXT T = nextItem();
+		RTS_TXT T = ImageRest();
 		double result = RTS_TXT.getreal(T);
 		setpos(pos() + RTS_TXT.pos(T) - 1);
 		return (result);
@@ -523,7 +527,7 @@ public class RTS_Imagefile extends RTS_File {
 	 * @return the value of a fractionated integer item.
 	 */
 	public int infrac() {
-		RTS_TXT T = nextItem();
+		RTS_TXT T = ImageRest();
 		int result = RTS_TXT.getfrac(T);
 		setpos(pos() + RTS_TXT.pos(T) - 1);
 		return (result);

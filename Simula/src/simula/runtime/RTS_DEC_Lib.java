@@ -22,6 +22,9 @@ import java.time.format.DateTimeFormatter;
  */
 public class RTS_DEC_Lib extends RTS_CLASS {
 
+	/**
+	 * A local static instance of RTS_DEC_Lib.
+	 */
 	private static RTS_DEC_Lib DECLIB;
 
 	// Constructor
@@ -185,10 +188,10 @@ public class RTS_DEC_Lib extends RTS_CLASS {
 	 * @return resulting code +1:OK else error
 	 */
 	public static int checkint(RTS_NAME<RTS_TXT> t) {
-		NumberChecker<Number> intChecker = DECLIB.new NumberChecker<Number>() {
+		NumberChecker intChecker = DECLIB.new NumberChecker() {
 			@Override
-			public Integer check(RTS_TXT T) {
-				return (RTS_TXT.getint(T));
+			public Integer check(RTS_TXT Number) {
+				return (RTS_TXT.getint(Number));
 			}
 		};
 		return (checkNumber(t, intChecker));
@@ -201,10 +204,10 @@ public class RTS_DEC_Lib extends RTS_CLASS {
 	 * @return resulting code +1:OK else error
 	 */
 	public static int checkfrac(RTS_NAME<RTS_TXT> t) {
-		NumberChecker<Number> fracChecker = DECLIB.new NumberChecker<Number>() {
+		NumberChecker fracChecker = DECLIB.new NumberChecker() {
 			@Override
-			public Integer check(RTS_TXT T) {
-				return (RTS_TXT.getfrac(T));
+			public Integer check(RTS_TXT Number) {
+				return (RTS_TXT.getfrac(Number));
 			}
 		};
 		return (checkNumber(t, fracChecker));
@@ -217,20 +220,48 @@ public class RTS_DEC_Lib extends RTS_CLASS {
 	 * @return resulting code +1:OK else error
 	 */
 	public static int checkreal(RTS_NAME<RTS_TXT> t) {
-		NumberChecker<Number> realChecker = DECLIB.new NumberChecker<Number>() {
+		NumberChecker realChecker = DECLIB.new NumberChecker() {
 			@Override
-			public Double check(RTS_TXT T) {
-				return (RTS_TXT.getreal(T));
+			public Double check(RTS_TXT Number) {
+				return (RTS_TXT.getreal(Number));
 			}
 		};
 		return (checkNumber(t, realChecker));
 	}
 
-	private abstract class NumberChecker<T> {
-		public abstract T check(RTS_TXT T) throws Exception;
+	/**
+	 * The abstract NumberChecker.
+	 */
+	private abstract class NumberChecker {
+		/** Default Constructor */ private NumberChecker() {}
+		/** Virtual to be redefined.
+		 * @param Number the number to check
+		 * @return the given number when ok
+		 * @throws Exception if the given number is illegal
+		 */
+		public abstract Number check(RTS_TXT Number) throws Exception;
 	}
 
-	private static int checkNumber(RTS_NAME<RTS_TXT> t, NumberChecker<Number> numberChecker) {
+	/**
+	 * Check number using the given NumberChecker.
+	 * <p>
+	 * Each check number produre analyses the text t from t.pos and on.
+	 * If a get&lt;number> operation from this position is legal the returned value is +1.
+	 * <p>
+	 * If it would give an error - then if the remaining text string is blank, the result is 0, else -1.
+	 * <pre>
+	 *    pos is placed after a legal item (+1),
+	 *    after the first nonblank illegal character (-1)
+	 *    or after the text if the rest is empty (0).
+	 * </pre>
+	 * NOTE: The current implementation will place t.pos after a complete real item,
+	 * even if it overflows. Real underflow produces +0, overflow Infinity,
+	 * both of which are treated as legal results
+	 * @param t the text to check
+	 * @param numberChecker the given number checker
+	 * @return code (see above)
+	 */
+	private static int checkNumber(RTS_NAME<RTS_TXT> t, NumberChecker numberChecker) {
 		RTS_TXT NT = t.get();
 		RTS_TXT U = RTS_TXT.sub(NT, NT.POS + 1, NT.LENGTH - NT.POS);
 		if (U != null) {
@@ -705,9 +736,14 @@ public class RTS_DEC_Lib extends RTS_CLASS {
 	 * The item states used by GETITEM below.
 	 */
 	private enum State {
-		NULL, NUMBER, IDENTIFIER, SYMBOL
+		/** Default */NULL, /** Number */NUMBER, /** Identifier */IDENTIFIER, /** Symbol */SYMBOL
 	};
 
+	/**
+	 * Starting at pos, get next item in the given text.
+	 * @param TXT the given text
+	 * @return the resulting item
+	 */
 	private static RTS_TXT GETITEM(RTS_TXT TXT) {
 		String s = TXT.edText();
 		String head = s.substring(0, TXT.POS);

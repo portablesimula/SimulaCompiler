@@ -64,10 +64,25 @@ import simula.editor.RTOption;
  *
  */
 public final class SimulaCompiler {
-	final private Reader reader; // Reader in case of SimulaEditor
+	
+	/**
+	 * The Reader in case of SimulaEditor.
+	 */
+	final private Reader reader;
 
+	/**
+	 * The ProgramModule.
+	 */
 	private ProgramModule programModule;
-	private File jarFile;
+	
+	/**
+	 * The output .jar file
+	 */
+	private File outputJarFile;
+	
+	/**
+	 * Main entry name.
+	 */
 	private String mainEntry;
 
 	/**
@@ -161,17 +176,26 @@ public final class SimulaCompiler {
 		}
 	}
 
-	private void list(final File tempClassFileDir) {
+	/**
+	 * List temp class file directory tree
+	 * @param dir tempClassFileDir
+	 */
+	private void list(final File dir) {
 		try {
-			Util.println("------------ BEGIN LIST tempClassFileDir: " + tempClassFileDir + "  ------------");
-			list("", tempClassFileDir);
-			Util.println("------------ ENDOF LIST tempClassFileDir: " + tempClassFileDir + "  ------------");
+			Util.println("------------ BEGIN LIST tempClassFileDir: " + dir + "  ------------");
+			list("", dir);
+			Util.println("------------ ENDOF LIST tempClassFileDir: " + dir + "  ------------");
 		} catch (Exception e) {
 			Util.IERR("SimulaCompiler.listFiles FAILED: ", e);
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * List a directory tree.
+	 * @param indent the indentation
+	 * @param dir the directory
+	 */
 	private void list(String indent, final File dir) {
 		try {
 			File[] elt = dir.listFiles();
@@ -190,9 +214,13 @@ public final class SimulaCompiler {
 		}
 	}
 
-	private void deleteTempFiles(final File tmpClass) {
+	/**
+	 * Delete temporary .class files.
+	 * @param dir temporary .class directory
+	 */
+	private void deleteTempFiles(final File dir) {
 		try {
-			File[] elt = tmpClass.listFiles();
+			File[] elt = dir.listFiles();
 			if (elt == null)
 				return;
 			for (File f : elt) {
@@ -428,6 +456,13 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** CALL JAVA SYSTEM COMPILER
 	// ***************************************************************
+	/**
+	 * Call Java system compiler
+	 * @param compiler the Java compiler
+	 * @param classPath the classPath
+	 * @return return value from the Java compiler
+	 * @throws IOException if something went wrong
+	 */
 	private int callJavaSystemCompiler(final JavaCompiler compiler, final String classPath) throws IOException {
 		Vector<String> arguments = new Vector<String>();
 //		arguments.add("-source"); arguments.add("21"); // TODO: Change when ClassFile API is released
@@ -474,6 +509,12 @@ public final class SimulaCompiler {
 	// https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html
 	// https://docs.oracle.com/javase/10/tools/tools-and-command-reference.htm
 	// ***************************************************************************
+	/**
+	 * Call Java command line compiler.
+	 * @param classPath the classPath
+	 * @return return value from the Java compiler
+	 * @throws IOException if something went wrong
+	 */
 	private int callJavacCompiler(final String classPath) throws IOException {
 		Vector<String> cmds = new Vector<String>();
 		cmds.add("javac");
@@ -507,23 +548,29 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** CREATE .jar FILE
 	// ***************************************************************
+	/**
+	 * Create .jar file.
+	 * @param program the ProgramModule
+	 * @return .jar file name
+	 * @throws IOException if something went wrong
+	 */
 	private String createJarFile(final ProgramModule program) throws IOException {
 		if (Option.TRACING)
 			Util.println("BEGIN Create .jar File");
-		jarFile = new File(Global.outputDir, program.getIdentifier() + ".jar");
-		jarFile.getParentFile().mkdirs();
+		outputJarFile = new File(Global.outputDir, program.getIdentifier() + ".jar");
+		outputJarFile.getParentFile().mkdirs();
 		if (!program.isExecutable()) {
 			String id = program.module.identifier;
 			String kind = "Procedure ";
 			if (program.module instanceof ClassDeclaration)
 				kind = "Class ";
-			Util.warning("No execution - Separate Compiled " + kind + id + " is written to: \"" + jarFile + "\"");
+			Util.warning("No execution - Separate Compiled " + kind + id + " is written to: \"" + outputJarFile + "\"");
 		}
 		Manifest manifest = new Manifest();
 		mainEntry = Global.packetName + '/' + program.getIdentifier();
 		mainEntry = mainEntry.replace('/', '.');
 		if (Option.TRACING)
-			Util.println("Output " + jarFile + " MANIFEST'mainEntry=\"" + mainEntry + "\"");
+			Util.println("Output " + outputJarFile + " MANIFEST'mainEntry=\"" + mainEntry + "\"");
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		manifest.getMainAttributes().putValue("Created-By", Global.simulaReleaseID + " (Portable Simula)");
 		if (program.isExecutable()) {
@@ -534,7 +581,7 @@ public final class SimulaCompiler {
 				manifest.getMainAttributes().putValue("SIMULA-INFO", relativeAttributeFileName);
 		}
 
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(jarFile), manifest);
+		JarOutputStream target = new JarOutputStream(new FileOutputStream(outputJarFile), manifest);
 		add(target, new File(Global.tempClassFileDir, Global.packetName), Global.tempClassFileDir.toString().length());
 		if (programModule.isExecutable()) {
 			File rtsHome = new File(Global.simulaRtsLib, "simula/runtime");
@@ -542,17 +589,24 @@ public final class SimulaCompiler {
 		}
 		target.close();
 		if (Option.TRACING)
-			Util.println("END Create .jar File: " + jarFile);
+			Util.println("END Create .jar File: " + outputJarFile);
 		if (Option.DEBUGGING) {
 			Util.println(
 					"SimulaCompiler.createJarFile: BEGIN LIST GENERATED .jar FILE  ========================================================");
-			listJarFile(jarFile);
+			listJarFile(outputJarFile);
 			Util.println(
 					"SimulaCompiler.createJarFile: ENDOF LIST GENERATED .jar FILE  ========================================================");
 		}
-		return (jarFile.toString());
+		return (outputJarFile.toString());
 	}
 
+	/**
+	 * Add directory or a file to a JarOutputStream.
+	 * @param target the JarOutputStream
+	 * @param source source file or directory
+	 * @param pathSize the path size
+	 * @throws IOException if something went wrong
+	 */
 	private void add(final JarOutputStream target, final File source, final int pathSize) throws IOException {
 		BufferedInputStream inpt = null;
 		try {
@@ -600,6 +654,9 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** FILE SUMMARY
 	// ***************************************************************
+	/**
+	 * File Summary
+	 */
 	private void fileSummary() {
 		Util.println("------------  FILE SUMMARY  ------------");
 		Util.println("Package Name:    \"" + Global.packetName + "\"");
@@ -616,23 +673,30 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** PRINT SUMMARY
 	// ***************************************************************
+	/**
+	 * Print summary at program end.
+	 */
 	private void printSummary() {
 		Util.println("------------  COMPILATION SUMMARY  ------------");
 		if (!programModule.isExecutable()) {
-			Util.println("Separate Compiled " + programModule.module.declarationKind + " is written to: \"" + jarFile
+			Util.println("Separate Compiled " + programModule.module.declarationKind + " is written to: \"" + outputJarFile
 					+ "\"");
 			Util.println("Rel Attr.File:   \"" + programModule.getRelativeAttributeFileName() + "\"");
 		} else {
-			Util.println("Resulting File:  \"" + jarFile.getAbsolutePath() + "\"");
+			Util.println("Resulting File:  \"" + outputJarFile.getAbsolutePath() + "\"");
 			Util.println("Main Entry:      \"" + mainEntry + "\"");
 		}
 		if (Option.DEBUGGING)
-			listJarFile(jarFile);
+			listJarFile(outputJarFile);
 	}
 
 	// ***************************************************************
 	// *** LIST .jar file
 	// ***************************************************************
+	/**
+	 * List .jar file
+	 * @param file the .jar file
+	 */
 	private static void listJarFile(final File file) {
 		Util.println("---------  LIST .jar File: " + file + "  ---------");
 		if (!(file.exists() && file.canRead())) {
@@ -692,9 +756,15 @@ public final class SimulaCompiler {
 	// ***************************************************************
 	// *** EXECUTE OS COMMAND
 	// ***************************************************************
-	private static int execute(final Vector<String> cmdarray) throws IOException {
-		String[] cmds = new String[cmdarray.size()];
-		cmdarray.copyInto(cmds);
+	/**
+	 * Execute OS Command
+	 * @param cmd command vector
+	 * @return return value from the OS
+	 * @throws IOException if something went wrong
+	 */
+	private static int execute(final Vector<String> cmd) throws IOException {
+		String[] cmds = new String[cmd.size()];
+		cmd.copyInto(cmds);
 		return (execute(cmds));
 	}
 

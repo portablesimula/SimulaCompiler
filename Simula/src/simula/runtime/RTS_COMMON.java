@@ -21,6 +21,9 @@ import javax.swing.JOptionPane;
  *
  */
 public final class RTS_COMMON {
+	/**
+	 * Default constructor.
+	 */
 	private RTS_COMMON(){}
 
 	/**
@@ -53,6 +56,10 @@ public final class RTS_COMMON {
 	 *
 	 */
 	public static class Option {
+		
+		/**
+		 * Default constructor.
+		 */
 		private Option() {}
 		
 		/**
@@ -103,16 +110,31 @@ public final class RTS_COMMON {
 	 *
 	 */
 	static class SPORT_Option {
+		/**
+		 * Default constructor.
+		 */
 		private SPORT_Option() {}
+		
+		/**
+		 * Returns S-PORT Module name
+		 * @return S-PORT Module name
+		 */
 		private static String getModuleName() {
 			return (new File(SPORT_SourceFileName).getName());
 		}
 
+		/**
+		 * S-PORT: Source directory name
+		 */
 		private static String SourceDirName = "C:/GitHub/SimulaCompiler/Simula/src/sport/rts";
+
+		/**
+		 * S-PORT: Source file name
+		 */
 		private static String SPORT_SourceFileName = SourceDirName + "/ModuleName";
 		
 		/**
-		 * SPORT Sysinsert directory name.
+		 * S-PORT: Sysinsert directory name.
 		 */
 		static String SPORT_SysInsertDirName = "C:/WorkSpaces/SPort-System/S-Port/src/sport/rts";
 
@@ -141,6 +163,12 @@ public final class RTS_COMMON {
 			return (createSubfileName("scode", getModuleName() + ".scd"));
 		}
 
+		/**
+		 * Utility: Create sub-file-name
+		 * @param subdir sub-directory
+		 * @param name file-name
+		 * @return the resulting file-name
+		 */
 		private static String createSubfileName(String subdir, String name) {
 			String tempFileName = SourceDirName + "/" + subdir + "/" + name;
 			File file = new File(tempFileName);
@@ -313,6 +341,9 @@ public final class RTS_COMMON {
 		}
 	}
 
+	/**
+	 * Print synopsis of standard options
+	 */
 	private static void help() {
 		println(RTS_ENVIRONMENT.simulaReleaseID + " See: https://github.com/portablesimula\n");
 		println("Usage: java -jar simula.jar  [options]\n\n"
@@ -329,6 +360,10 @@ public final class RTS_COMMON {
 		System.exit(0);
 	}
 
+	/**
+	 * Utility: Print an error message in a popup panel.
+	 * @param msg the error message
+	 */
 	private static void error(final String msg) {
 		System.err.println("Simula: " + msg + "\n");
 		popUpError(msg);
@@ -465,27 +500,28 @@ public final class RTS_COMMON {
 
 	}
 
-	private static void printSimulaStackTrace(final Thread thread, final int start) {
-		printSimulaStackTrace(thread.getStackTrace(), start);
-	}
-
 	/**
-	 * Print Simula stack trace.
-	 * @param start block level
+	 * Utility: Print Simula stack trace.
+	 * @param start start index in Java stackTrace
 	 */
 	static void printSimulaStackTrace(final int start) {
-		printSimulaStackTrace(Thread.currentThread(), start);
+		printSimulaStackTrace(Thread.currentThread().getStackTrace(), start);
 	}
 
 	/**
-	 * Print Simula stack trace.
+	 * Utility: Print Simula stack trace.
 	 * @param e a Throwable
-	 * @param start block level
+	 * @param start start index in Java stackTrace
 	 */
 	static void printSimulaStackTrace(final Throwable e, final int start) {
 		printSimulaStackTrace(e.getStackTrace(), start);
 	}
 
+	/**
+	 * Utility: Print Simula StackTrace.
+	 * @param stackTraceElement Java stackTrace
+	 * @param start start index in Java stackTrace
+	 */
 	private static void printSimulaStackTrace(final StackTraceElement stackTraceElement[], final int start) {
 		if (currentModid != null) {
 			RTS_COMMON.println("In " + currentModid + " at line " + currentSimLine);
@@ -514,6 +550,12 @@ public final class RTS_COMMON {
 		}
 	}
 
+	/**
+	 * Utility: Print SimulaLineInfo
+	 * @param elt a StackTraceElement
+	 * @param lead the keading string
+	 * @return the resulting line info
+	 */
 	private static boolean printSimulaLineInfo(final StackTraceElement elt, final String lead) {
 		try {
 			Class<?> cls = Class.forName(elt.getClassName());
@@ -567,7 +609,7 @@ public final class RTS_COMMON {
 				msg = msg + " = CurrentThread";
 			RTS_COMMON.println(msg + "   STATE=" + T.getState());
 			if (withStackTrace) {
-				RTS_COMMON.printSimulaStackTrace(T, 0);
+				RTS_COMMON.printSimulaStackTrace(T.getStackTrace(), 0);
 				RTS_COMMON.println("");
 			}
 		}

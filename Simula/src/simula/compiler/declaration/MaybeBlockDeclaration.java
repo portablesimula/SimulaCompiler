@@ -192,6 +192,9 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Coding: CompoundStatement as Java Subblock
 	// ***********************************************************************************************
+	/**
+	 * Code utility: Code compound statement
+	 */
 	private void doCompoundStatementCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED();
@@ -213,6 +216,9 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Coding: SUBBLOCK ==> .java file
 	// ***********************************************************************************************
+	/**
+	 * Code utility: Code sub-block
+	 */
 	private void doSubBlockCoding() {
 		Global.sourceLineNumber = lineNumber;
 		ASSERT_SEMANTICS_CHECKED();
@@ -254,6 +260,9 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeConstructor
 	// ***********************************************************************************************
+	/**
+	 * Code utility: Code constructor
+	 */
 	private void doCodeConstructor() {
 		GeneratedJavaClass.debug("// Normal Constructor");
 		GeneratedJavaClass.code("public " + getJavaIdentifier() + "(RTS_RTObject staticLink) {");
@@ -268,6 +277,9 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** Coding Utility: doCodeStatements
 	// ***********************************************************************************************
+	/**
+	 * Code utility: Code statements
+	 */
 	private void doCodeStatements() {
 		GeneratedJavaClass.debug("// " + declarationKind + " Statements");
 		GeneratedJavaClass.code("@Override");

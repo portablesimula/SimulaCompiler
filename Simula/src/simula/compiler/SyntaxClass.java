@@ -55,7 +55,12 @@ import simula.compiler.utilities.Util;
  */
 
 public abstract sealed class SyntaxClass permits Declaration, Statement, Expression {
-	private boolean CHECKED = false; // Set true when doChecking(), put or get is called
+	/**
+	 * Controls semantic checking.
+	 * <p>
+	 * Set true when doChecking(), put or get is called
+	 */
+	private boolean CHECKED = false;
 
 	/**
 	 * The type

@@ -26,7 +26,8 @@ import javax.swing.JOptionPane;
 /**
  * Utility class PageWriter.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_PageWriter.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_PageWriter.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -45,23 +46,99 @@ public class RTS_PageWriter extends Writer {
 	// Stående A3: Width: 11.7 inches = 297 mm = 842 pixels
 	// Height: 16.5 inches = 420 mm = 1191 pixels.
 	// ===========================================================================================================
+	/**
+	 * 1 inch == 0.02540 meter
+	 */
 	private static final double inch = 0.02540; // 1 inch == 0.02540 meter
+	
+	/**
+	 * Dots Per Inch = 72
+	 */
 	private static final int printerDPI = 72; // DPI = Dots Per Inch
+	
+	/**
+	 * Pixels per meter.
+	 */
 	private static final double pixelsPerMeter = ((double) printerDPI) / inch;
+	
+	/**
+	 * Pixels per millimeter.
+	 */
 	private static final double pixelsPerMilli = pixelsPerMeter / 1000.0d;
 
+	/**
+	 * The file name.
+	 */
 	private String fileName;
+	
+	/**
+	 * The associated printerJob.
+	 */
 	private PrinterJob printerJob;
+	
+	/**
+	 * The associated Book
+	 */
 	private Book book;
+	
+	/**
+	 * The current sheet
+	 */
 	private Sheet currentSheet;
+	
+	/**
+	 * The page format
+	 */
 	private PageFormat pageFormat;
-	private float lineGap; //
+	
+	/**
+	 * The line gap
+	 */
+	private float lineGap;
+	
+	/**
+	 * Number of lines per page.
+	 */
 	private int linesPerSheet;
 
+	/**
+	 * The current Font
+	 */
 	private Font font;
+	
+	/**
+	 * The current paper sheet orientation.
+	 */
 	private int orientation;
+	
+	/**
+	 * If true: ask user to set font and paper orientation through a popup dialogue.
+	 */
 	private boolean ask;
-	private double left, right, top, bot;
+	
+	/**
+	 * The left margin.
+	 */
+	private double left;
+	
+	/**
+	 * The right margin.
+	 */
+	private double right;
+	
+	/**
+	 * The top margin.
+	 */
+	private double top;
+	
+	/**
+	 * The bottom margin.
+	 */
+	private double bot;
+	
+	/**
+	 * The current line
+	 */
 	private StringBuilder currentLine;
 
 	/**
@@ -156,6 +233,10 @@ public class RTS_PageWriter extends Writer {
 		return (linesPerSheet);
 	}
 
+	/**
+	 * Add a character to the current line.
+	 * @param c the character to add
+	 */
 	private void addChar(char c) {
 		if (c == '\n')
 			newLine();
@@ -163,6 +244,10 @@ public class RTS_PageWriter extends Writer {
 			currentLine.append(c);
 	}
 
+	/**
+	 * Advance to the next line.
+	 * If there is no space on the current page, create a new page
+	 */
 	private void newLine() {
 		if (currentSheet.nLines() >= linesPerSheet) {
 			int page = currentSheet.pageNumber;
@@ -174,6 +259,14 @@ public class RTS_PageWriter extends Writer {
 		currentLine = new StringBuilder();
 	}
 
+	/**
+	 * Set page format and the margins.
+	 * @param sheet the page format
+	 * @param top the top margin in mm
+	 * @param left the left margin in mm
+	 * @param bot the bottom margin in mm
+	 * @param right the right margin in mm
+	 */
 	private void setMargins(final PageFormat sheet, double top, double left, double bot, double right) {
 		if (sheet.getOrientation() == PageFormat.LANDSCAPE) {
 			double ll = left;
@@ -194,6 +287,10 @@ public class RTS_PageWriter extends Writer {
 		pageFormat.setPaper(paper);
 	}
 
+	/**
+	 * Check if book is empty
+	 * @return true  if book is empty
+	 */
 	private boolean isBookEmpty() {
 		int n = book.getNumberOfPages();
 		for (int i = 0; i < n; i++) {
@@ -204,6 +301,9 @@ public class RTS_PageWriter extends Writer {
 		return (true);
 	}
 
+	/**
+	 * Perfor printing
+	 */
 	private void print() {
 		if (isBookEmpty())
 			return; // Nothing to print
@@ -224,6 +324,10 @@ public class RTS_PageWriter extends Writer {
 				;
 	}
 
+	/**
+	 * Try to print, if failed open an error dialog.
+	 * @return false if success.
+	 */
 	private boolean tryPrint() {
 		try {
 			printerJob.print();
@@ -242,6 +346,10 @@ public class RTS_PageWriter extends Writer {
 		return (false);
 	}
 
+	/**
+	 * Lookup print service
+	 * @return a print service
+	 */
 	private PrintService lookupPrintService() {
 		PrintService[] printServices = PrinterJob.lookupPrintServices();
 		for (PrintService printService : printServices) {
@@ -254,22 +362,54 @@ public class RTS_PageWriter extends Writer {
 	// ********************************************************************
 	// *** CLASS: Sheet
 	// ********************************************************************
+	/**
+	 * Utility class to represent a printable sheet.
+	 */
 	private class Sheet implements Printable {
+		/**
+		 * The printer.
+		 */
 		private RTS_PageWriter printer;
+		
+		/**
+		 * The page number
+		 */
 		public int pageNumber;
+		
+		/**
+		 * The sheet number
+		 */
 		public int sheetNumber;
+		
+		/**
+		 * The set of lines
+		 */
 		private Vector<String> lines = new Vector<String>();
 
+		/**
+		 * Returns the number of lines.
+		 * @return the number of lines
+		 */
 		public int nLines() {
 			return (lines.size());
 		}
 
+		/**
+		 * Create a new Sheet.
+		 * @param printer the printer
+		 * @param pageNumber the page number
+		 * @param sheetNumber the sheet number
+		 */
 		public Sheet(RTS_PageWriter printer, int pageNumber, int sheetNumber) {
 			this.printer = printer;
 			this.pageNumber = pageNumber;
 			this.sheetNumber = sheetNumber;
 		}
 
+		/**
+		 * Add a line of text to this Sheet.
+		 * @param text the text to add
+		 */
 		public void addLine(String text) {
 			lines.add(text);
 		}

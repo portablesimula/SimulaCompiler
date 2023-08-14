@@ -197,6 +197,8 @@ public final class Parameter extends Declaration implements Externalizable {
 	}
 
 	/**
+	 * Check if the parameter has a legal transmission mode.
+	 * <p>
 	 * The available transmission modes for the different kinds of parameters to
 	 * procedures.
 	 * 
@@ -219,6 +221,7 @@ public final class Parameter extends Declaration implements Externalizable {
 	 *
 	 *        D:  default mode       O:  optional mode       I:  illegal
 	 * </pre>
+	 * @return true if the parameter has a legal transmission mode
 	 */
 	private boolean legalTransmitionMode() {
 		boolean illegal = false;

@@ -52,6 +52,9 @@ public abstract class RTS_RTObject {
 		return (_SYSOUT);
 	}
 
+	/**
+	 * Execution stat time in millis
+	 */
 	private static long startTimeMs;
 
 	/**
@@ -1589,7 +1592,7 @@ public abstract class RTS_RTObject {
 	 * Sect. 6.1.2 Byte Code Engineering.
 	 * 
 	 * @param labelIndex the label index
-	 * @param labelIndex the jumptable size
+	 * @param tableSize the jumptable size
 	 */
 	public static void _JUMPTABLE(final int labelIndex,final int tableSize) {
 		// Local GOTO - Needs ByteCode Engineering.
@@ -1610,7 +1613,7 @@ public abstract class RTS_RTObject {
 	 * Method meant for Byte-Code Engineering.
 	 * <p>deprecated
      * This method will be removed when java.lang.classfile becomes available.
-	 * @param labelIndex
+	 * @param labelIndex the label index
 	 */
 	public static void _JUMPTABLE(final int labelIndex) {
 		_JUMPTABLE(labelIndex,0);
@@ -1760,6 +1763,10 @@ public abstract class RTS_RTObject {
 				RTS_COMMON.printThreadList();
 		}
 
+		/**
+		 * Utility: Treat Runtime error
+		 * @param msg the message
+		 */
 		private void treatRuntimeError(String msg) {
 			RTS_PRCQNT erh = RTS_ENVIRONMENT.EXCEPTION_HANDLER;
 			try {
@@ -2218,6 +2225,10 @@ public abstract class RTS_RTObject {
 	// *********************************************************************
 	// *** endProgram
 	// *********************************************************************
+	/**
+	 * End of Simula program execution.
+	 * @param exitValue the exit value
+	 */
 	private static void endProgram(final int exitValue) {
 		// _SYSIN.close();
 		// _SYSOUT.close();

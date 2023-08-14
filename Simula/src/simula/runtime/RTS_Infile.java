@@ -44,13 +44,18 @@ import java.io.Reader;
  * external file is exhausted (i.e. "end of file" has been encountered). The
  * procedure "endfile" gives access to the value of ENDFILE.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Infile.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Infile.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  *
  */
 public class RTS_Infile extends RTS_Imagefile {
+	
+	/**
+	 * The BufferedReader used.
+	 */
 	private BufferedReader lineReader;
 
 	// Constructor
@@ -300,6 +305,10 @@ public class RTS_Infile extends RTS_Imagefile {
 		}
 		return (rest != null);
 	}
+	
+	/**
+	 * Utility variable
+	 */
 	private String rest = null;
 
 

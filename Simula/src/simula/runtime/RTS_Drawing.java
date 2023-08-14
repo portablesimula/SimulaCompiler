@@ -101,6 +101,10 @@ import javax.swing.JFrame;
  * @author Øystein Myhre Andersen
  */
 public class RTS_Drawing extends RTS_Simset {
+	
+	/**
+	 * DEBUG on/off
+	 */
 	private static final boolean DEBUG = false;
 
 	/**

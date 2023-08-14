@@ -19,10 +19,24 @@ import simula.runtime.RTS_RTObject.RTS_NAME;
  */
 public abstract class RTS_RandomDrawing {
 
+	/**
+	 * Utility constant: 2**31
+	 */
 	private static final int    TWO_POW_31    = 0x80000000; // 2**31
+
+	/**
+	 * Utility constant: 2**31 - 1
+	 */
 	private static final double TWO_POW_31M1D = 0x7FFFFFFF; // 2**31 - 1
+	
+	/**
+	 * Utility constant: 5**(2*6+1)
+	 */
 	private static final int    MULTIPLIER    = 1220703125; // 5**(2*6+1)
 
+	/**
+	 * Default constructor
+	 */
 	private RTS_RandomDrawing() {}
 	
 	/**

@@ -92,8 +92,20 @@ public class RTS_Directfile extends RTS_Imagefile {
 	 */
 	int _RECORDSIZE;
 
+
+	/**
+	 * The RandomAccessFile used.
+	 */
 	private RandomAccessFile randomAccessFile;
+	
+	/**
+	 * The FileLock
+	 */
 	private FileLock fileLock;
+	
+	/**
+	 * The initial value of LAST_LOC
+	 */
 	private int INITIAL_LAST_LOC;
 
 	/**

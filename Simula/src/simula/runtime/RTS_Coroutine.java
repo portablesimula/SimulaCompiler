@@ -12,7 +12,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Utility class Coroutine.
  *  <pre>
- *  Implementing Coroutines using Virtual Threads
+ *  Implementing Coroutines using Virtual Threads and Semaphores
  *
  *  public class Coroutine implements Runnable {
  *      public Coroutine(Runnable target)
@@ -25,20 +25,53 @@ import java.util.concurrent.Semaphore;
  * 
  *  More info: https://wiki.openjdk.java.net/display/loom/Main
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Coroutine.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/runtime/RTS_Coroutine.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public class RTS_Coroutine implements Runnable {
+	
+	/**
+	 * The current Coroutine
+	 */
 	private static RTS_Coroutine current;
+	
+	/**
+	 * The caller
+	 */
 	private RTS_Coroutine caller;
+	
+	/**
+	 * True if all actions are done.
+	 */
 	private boolean done;
+	
+	/**
+	 * The runnable target
+	 */
 	private Runnable target;
+	
+	/**
+	 * The target thread
+	 */
 	private Thread targetThread;
+	
+	/**
+	 * The caller thread
+	 */
 	private Thread callerThread;
-	private static Semaphore mainSemaphore = new Semaphore(0); // Used to suspend/resume main (platform) Thread
-	private Semaphore semaphore = new Semaphore(0); // Used to suspend/resume this coroutine's Thread
+	
+	/**
+	 * Semaphore used to suspend/resume main (platform) Thread
+	 */
+	private static Semaphore mainSemaphore = new Semaphore(0);
+	
+	/**
+	 * Semaphore used to suspend/resume this coroutine's Thread
+	 */
+	private Semaphore semaphore = new Semaphore(0);
 	
 	/**
 	 * Used to propagate exceptions to caller.
@@ -138,6 +171,10 @@ public class RTS_Coroutine implements Runnable {
 	// *********************************************************************
 	// *** COROUTINE: suspend
 	// *********************************************************************
+	/**
+	 * Suspend the given Coroutine
+	 * @param coroutine the given Coroutine
+	 */
 	private static void suspend(RTS_Coroutine coroutine) {
 		Semaphore semaphore = (coroutine == null) ? RTS_Coroutine.mainSemaphore : coroutine.semaphore;
 		try {
@@ -156,6 +193,10 @@ public class RTS_Coroutine implements Runnable {
 	// *********************************************************************
 	// *** COROUTINE: resume
 	// *********************************************************************
+	/**
+	 * Resume the given Coroutine
+	 * @param coroutine the given Coroutine
+	 */
 	private static void resume(RTS_Coroutine coroutine) {
 		Semaphore semaphore = (coroutine == null) ? RTS_Coroutine.mainSemaphore : coroutine.semaphore;
 		semaphore.release();

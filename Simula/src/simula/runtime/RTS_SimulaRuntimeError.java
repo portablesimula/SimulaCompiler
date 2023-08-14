@@ -8,8 +8,8 @@ package simula.runtime;
  * @author Øystein Myhre Andersen
  *
  */
+@SuppressWarnings("serial")
 public class RTS_SimulaRuntimeError extends RuntimeException {
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs a new RTS_SimulaRuntimeError with the specified detail message.

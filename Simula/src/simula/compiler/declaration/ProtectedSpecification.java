@@ -58,13 +58,21 @@ public final class ProtectedSpecification implements Externalizable {
 		this.identifier=identifier;
 	}
 	
+	/**
+	 * Returns the Attribute being Protected.
+	 * @return the Attribute being Protected
+	 */
 	private Declaration getAttribute() {
-		// The Attribute being Protected
 		return(definedIn.findLocalAttribute(identifier));
 	}
 	
+	/**
+	 * Returns the virtual specification or null.
+	 * <p>
+	 * The Attribute being Protected may be Virtual.
+	 * @return the virtual specification or null
+	 */
 	private VirtualSpecification getVirtualSpecification() {
-		// The Attribute being Protected may be Virtual
 		return(definedIn.searchVirtualSpecList(identifier));
 	}
 	

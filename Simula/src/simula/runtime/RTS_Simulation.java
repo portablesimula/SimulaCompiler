@@ -130,6 +130,10 @@ public class RTS_Simulation extends RTS_Simset {
 		return (this);
 	}
 
+	/**
+	 * Utility: Returns the first event in the SQS.
+	 * @return the first event in the SQS
+	 */
 	private RTS_EVENT_NOTICE SQS_FIRST() {
 		return ((RTS_EVENT_NOTICE) this.sqs.bl);
 	}
@@ -332,13 +336,18 @@ public class RTS_Simulation extends RTS_Simset {
 			X.EVENT = new RTS_EVENT_NOTICE(time(), X);
 			// X.EVENT.precede(FIRSTEV());
 			RTS_Ranking.INTO(X.EVENT, sqs, X.EVENT.rnk);
-			removePrevEvent(EV);
+			removeEvent(EV);
 			if (z != current())
 				resume(current());
 		}
 	}
 
-	private void removePrevEvent(RTS_EVENT_NOTICE EV) {
+	/**
+	 * Utility: Remove event from SQS
+	 * @param EV the event
+	 * @throws RTS_SimulaRuntimeError if this action empties SQS.
+	 */
+	private void removeEvent(RTS_EVENT_NOTICE EV) {
 		if (EV != null) {
 			// EV.out();
 			RTS_Ranking.OUT(EV);
@@ -388,7 +397,7 @@ public class RTS_Simulation extends RTS_Simset {
 				RTS_Ranking.INTO_PRIOR(X.EVENT, sqs, T);
 			else
 				RTS_Ranking.INTO(X.EVENT, sqs, T);
-			removePrevEvent(EV);
+			removeEvent(EV);
 			if (z != current())
 				resume(current());
 		}
@@ -414,6 +423,13 @@ public class RTS_Simulation extends RTS_Simset {
 		ACTIVATE3(REAC, X, false, Y);
 	}
 
+	/**
+	 * Utility: Activate after: (re)Activate x after or after y
+	 * @param REAC signals reactivation
+	 * @param X the Process to activate
+	 * @param BEFORE indicates before/after
+	 * @param Y the other process
+	 */
 	private void ACTIVATE3(final boolean REAC, final RTS_Process X, final boolean BEFORE, final RTS_Process Y) {
 		if (X == null)
 			TRACE_ACTIVATE(REAC, " none");
@@ -444,7 +460,7 @@ public class RTS_Simulation extends RTS_Simset {
 				else
 					RTS_Ranking.PRECEDE(X.EVENT, Y.EVENT);
 			}
-			removePrevEvent(EV);
+			removeEvent(EV);
 			if (z != current()) {
 				RTS_Process nxtcur = current();
 				SIM_TRACE("END ACTIVATE3 Resume[" + nxtcur.edObjectIdent() + ']');
@@ -459,11 +475,20 @@ public class RTS_Simulation extends RTS_Simset {
 	// *** TRACING AND DEBUGGING UTILITIES
 	// *********************************************************************
 
+	/**
+	 * Utility: Trace (re)activate
+	 * @param REAC true if Reactivate
+	 * @param msg trace message
+	 */
 	private void TRACE_ACTIVATE(final boolean REAC, final String msg) {
 		String act = (REAC) ? "REACTIVATE " : "ACTIVATE ";
 		SIM_TRACE(act + msg);
 	}
 
+	/**
+	 * Utility: Trace Simulation event
+	 * @param msg the event message
+	 */
 	private void SIM_TRACE(final String msg) {
 		if (RTS_COMMON.Option.SML_TRACING) {
 			Thread thread = Thread.currentThread();

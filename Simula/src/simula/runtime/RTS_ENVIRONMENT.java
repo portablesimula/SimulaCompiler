@@ -506,6 +506,11 @@ public class RTS_ENVIRONMENT extends RTS_RTObject {
 		return (lowten);
 	}
 
+	/**
+	 * Check if the given character is illegal as lowten.
+	 * @param c the given character
+	 * @return true if the given character is illegal as lowten.
+	 */
 	private static boolean illegalLowten(final char c) {
 		if (c <= 32)
 			return (true); // SPACE is also Illegal in this implementation
@@ -2064,6 +2069,10 @@ public class RTS_ENVIRONMENT extends RTS_RTObject {
 		if (Option.VERBOSE)
 			RTS_COMMON.println(sb.toString());
 	}
+	
+	/**
+	 * The S-port FEC pass number.
+	 */
 	private static int PASS_NO = 1;
 
 	/**
@@ -2156,7 +2165,10 @@ public class RTS_ENVIRONMENT extends RTS_RTObject {
 		// System.exit(-1);
 	}
 
-
+	/**
+	 * Internal error NOT IMPLEMENTED
+	 * @param s explanation
+	 */
 	private static void NOT_IMPLEMENTED(final String s) {
 		RTS_COMMON.IERR("*** NOT IMPLEMENTED: " + s);
 	}

@@ -20,12 +20,49 @@ import simula.compiler.utilities.Util;
 
 /**
  * Procedure Specification.
- * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureSpecification.java"><b>Source File</b></a>.
+ * <pre>
+ * Syntax:
+ * 
+ * procedure-specification
+ *     = [ type ] PROCEDURE procedure-identifier procedure-head empty-body
+ *     
+ *    procedure-head
+ *        = [ formal-parameter-part ; [ mode-part ] specification-part  ] ;
+ *         
+ *    empty-body = dummy-statement
+ * 
+ *    procedure-identifier = identifier
+ * 
+ *       formal-parameter-part = "(" formal-parameter { , formal-parameter } ")"
+ *       
+ *          formal-parameter = identifier
+ *          
+ *       specification-part = specifier identifier-list ; { specifier identifier-list ; }
+ *       
+ *          specifier
+ *             = type [ array | procedure ]
+ *             | label
+ *             | switch
+ *             
+ *       mode-part 
+ *          = name-part [ value-part ]
+ *          | value-part [ name-part ]
+ *          
+ *          name-part = name identifier-list ;
+ *          value-part = value identifier-list ;
+ *          
+ *             identifier-list = identifier { , identifier }
+ * </pre>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureSpecification.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
 public final class ProcedureSpecification implements Externalizable {
+	
+	/**
+	 * The procedure identifier.
+	 */
 	private String identifier;
 
 	/**
@@ -41,10 +78,16 @@ public final class ProcedureSpecification implements Externalizable {
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	private ProcedureSpecification(final String identifier, final Type type, final Vector<Parameter> parameterList) {
+	/**
+	 * Create a new ProcedureSpecification
+	 * @param identifier procedure-identifier
+	 * @param type procedure's type or null
+	 * @param pList the parameter lList
+	 */
+	private ProcedureSpecification(final String identifier, final Type type, final Vector<Parameter> pList) {
 		this.identifier = identifier;
 		this.type = type;
-		this.parameterList = parameterList;
+		this.parameterList = pList;
 	}
 
 	// ***********************************************************************************************
@@ -56,15 +99,15 @@ public final class ProcedureSpecification implements Externalizable {
 	 * <pre>
 	 * Syntax:
 	 * 
-	 * ProcedureSpecification
-	 *     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead EmptyBody
+	 * procedure-specification
+	 *     = [ type ] PROCEDURE procedure-identifier procedure-head empty-body
 	 *     
-	 * ProcedureHead
-	 *     = [ FormalParameterPart ; [ ModePart ] ProcedureSpecificationPart  ] ;
+	 *    procedure-head
+	 *        = [ formal-parameter-part ; [ mode-part ] procedure-specification-part  ] ;
 	 *         
-	 * EmptyBody = DummyStatement
+	 *    empty-body = dummy-statement
 	 * 
-	 * ProcedureIdentifier = Identifier
+	 *    procedure-identifier = identifier
 	 * 
 	 * </pre>
 	 * Precondition:  [ type ] PROCEDURE  is already read.

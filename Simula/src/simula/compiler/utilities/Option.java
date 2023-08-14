@@ -30,7 +30,11 @@ import javax.swing.JPanel;
  */
 public final class Option {
 
+	/**
+	 * INLINE_TESTING on/off
+	 */
 	public static boolean INLINE_TESTING = false; 
+	
 	/**
 	 * Source file is case sensitive.
 	 */
@@ -64,7 +68,7 @@ public final class Option {
 	
 	/**
 	 * Used by Java-Coding to save the generated .java files.
-     * If not set, a temp directory is used/created.
+	 * If not set, a temp directory is used/created.
 	 */
 	public static File keepJava = null;
 
@@ -96,11 +100,14 @@ public final class Option {
 	/** Debug option */	public static boolean LIST_REPAIRED_INSTRUCTION_LIST=false;
 	/** Debug option */	public static boolean TRACE_REPAIRING=false;
 
-	// Runtime Options
-	public static String SOURCE_FILE="";
-	public static String RUNTIME_USER_DIR="";
+	/** Runtime Options */ public static String SOURCE_FILE="";
+	/** Runtime Options */ public static String RUNTIME_USER_DIR="";
 
-
+	/**
+	 * The default constructor
+	 */
+	private Option() {}
+	
 	/**
 	 * Initiate Compiler options
 	 */
@@ -208,12 +215,12 @@ public final class Option {
 	}
 
 	/**
-	 * Editor Utility: checkBox.
+	 * Editor Utility: Create a checkBox with tooltips.
 	 * @param id option id
-	 * @param info option description
+	 * @param tooltip option's tooltip or null
 	 * @return the resulting check box
 	 */
-	private static JCheckBox checkBox(String id,String info) {
+	private static JCheckBox checkBox(String id,String tooltip) {
         JCheckBox item = new JCheckBox(id);
     	item.setBackground(Color.white);
         item.setSelected(Option.getOption(id));
@@ -221,7 +228,7 @@ public final class Option {
         	public void actionPerformed(ActionEvent e) {
         		Option.setOption(id,item.isSelected());
 		}});
-        item.setToolTipText(info);
+        if(tooltip != null) item.setToolTipText(tooltip);
         item.addMouseListener(new MouseAdapter() {
             Color color = item.getBackground();
             @Override

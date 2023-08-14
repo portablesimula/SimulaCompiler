@@ -22,20 +22,29 @@ import simula.compiler.utilities.Util;
 /**
  * Runtime Options
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/editor/RTOption.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/editor/RTOption.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
 public final class RTOption {
-	public static boolean VERBOSE = false;//true;
-	public static boolean USE_CONSOLE=false;//true;
-	public static boolean BLOCK_TRACING = false;// true;
-	public static boolean GOTO_TRACING = false;// true;
-	public static boolean QPS_TRACING = false; // true;
-	public static boolean SML_TRACING = false; // true;
-	public static String SPORT_SOURCE_FILE;
+	/** Runtime Option */ public static boolean VERBOSE = false;//true;
+	/** Runtime Option */ public static boolean USE_CONSOLE=false;//true;
+	/** Runtime Option */ public static boolean BLOCK_TRACING = false;// true;
+	/** Runtime Option */ public static boolean GOTO_TRACING = false;// true;
+	/** Runtime Option */ public static boolean QPS_TRACING = false; // true;
+	/** Runtime Option */ public static boolean SML_TRACING = false; // true;
+	/** Runtime Option */ public static String SPORT_SOURCE_FILE;
 
+	/**
+	 * The default constructor
+	 */
+	private RTOption() {}
+
+	/**
+	 * Initiate Runtime options with default values.
+	 */
     public static void InitRuntimeOptions() {
 		RTOption.VERBOSE = false;
 		RTOption.USE_CONSOLE=true;
@@ -46,6 +55,10 @@ public final class RTOption {
 		RTOption.SPORT_SOURCE_FILE = null;
 	}
 
+    /**
+     * Add Runtime options to the argument vector.
+     * @param args the argument vector
+     */
 	public static void addRTArguments(Vector<String> args) {
 		if(RTOption.VERBOSE) args.add("-verbose");
 		if(RTOption.USE_CONSOLE) args.add("-useConsole");
@@ -59,6 +72,9 @@ public final class RTOption {
 		}
 	}
     
+	/**
+	 * Editor Utility: Select Runtime Options.
+	 */
     static void selectRuntimeOptions() {
     	JPanel panel=new JPanel();
     	panel.setBackground(Color.white);
@@ -72,6 +88,11 @@ public final class RTOption {
 		Util.optionDialog(panel,"Select Runtime Options",JOptionPane.OK_OPTION, JOptionPane.INFORMATION_MESSAGE,"Ok");
     }
 
+	/**
+	 * Editor Utility: Create a checkBox without tooltips.
+	 * @param id option id
+	 * @return the resulting check box
+	 */
 	private static JCheckBox checkBox(String id) {
         JCheckBox item = new JCheckBox(id);
     	item.setBackground(Color.white);
@@ -83,6 +104,11 @@ public final class RTOption {
         return(item);
 	}
 
+	/**
+	 * Returns the option name 'id'
+	 * @param id option id
+	 * @return the option name 'id'
+	 */
 	private static boolean getOption(String id) {
 		if(id.equalsIgnoreCase("VERBOSE")) return(VERBOSE); 
 		if(id.equalsIgnoreCase("USE_CONSOLE")) return(USE_CONSOLE); 
@@ -93,6 +119,11 @@ public final class RTOption {
 		return(false);
 	}
 
+	/**
+	 * Set the option named 'id' to the given value
+	 * @param id option id
+	 * @param val new option value
+	 */
 	private static void setOption(String id,boolean val) {
 		if(id.equalsIgnoreCase("VERBOSE")) VERBOSE=val; 
 		if(id.equalsIgnoreCase("USE_CONSOLE")) USE_CONSOLE=val;

@@ -72,8 +72,19 @@ public class RTS_Directbytefile extends RTS_Bytefile {
 	 */
 	boolean _LOCKED;
 
+	/**
+	 * The RandomAccessFile used.
+	 */
 	private RandomAccessFile randomAccessFile;
+	
+	/**
+	 * The FileLock
+	 */
 	private FileLock fileLock;
+	
+	/**
+	 * The initial value of LAST_LOC
+	 */
 	private int INITIAL_LAST_LOC;
 
 	/**

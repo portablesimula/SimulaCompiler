@@ -47,6 +47,9 @@ import java.text.DecimalFormat;
  *
  */
 public final class RTS_TXT {
+	/**
+	 * Unicode minus sign = 8722 = 0x2212
+	 */
 	private static final int UNICODE_MINUS_SIGN = 8722; // 0x2212
 	/**
 	 * The Text object referred.
@@ -252,6 +255,11 @@ public final class RTS_TXT {
 		}
 	}
 
+	/**
+	 * Check if it is legal to assign to the given text reference.
+	 * @param T the given text reference
+	 * @throws RTS_SimulaRuntimeError if assignment is illegal
+	 */
 	private static void checkAssignable(RTS_TXT T) {
 		if (T == null || T.OBJ == null)
 			throw new RTS_SimulaRuntimeError("Illegal Text T.put...  T==NOTEXT");
@@ -356,6 +364,7 @@ public final class RTS_TXT {
 	}
 
 	/**
+	 * Scan the input text for an integer item.
 	 * <pre>
 	 * INTEGER-ITEM = SIGN-PART DIGITS
 	 *
@@ -367,7 +376,9 @@ public final class RTS_TXT {
 	 *
 	 *       DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 	 * </pre>
-	 * @return
+	 * 
+	 * @param T the input text
+	 * @return the resulting string
 	 */
 	private static String getIntegerItem(final RTS_TXT T) {
 		StringBuilder sb = new StringBuilder();
@@ -425,6 +436,7 @@ public final class RTS_TXT {
 	}
 
 	/**
+	 * Scan the input text for a real item.
 	 * <pre>
 	 * REAL-ITEM = DECIMAL-ITEM [ EXPONENT ] | SIGN-PART EXPONENT
 	 *
@@ -450,7 +462,9 @@ public final class RTS_TXT {
 	 *
 	 *          BLANKS = { BLANK | TAB }
 	 * </pre>
-	 * @return
+	 * 
+	 * @param T the input text
+	 * @return the resulting string
 	 */
 	private static String getRealItem(final RTS_TXT T) {
 		StringBuilder sb = new StringBuilder();
@@ -538,6 +552,7 @@ public final class RTS_TXT {
 	}
 
 	/**
+	 * Scan the input text for a fraction item.
 	 * <pre>
 	 * GROUPED-ITEM = SIGN-PART GROUPS [ DECIMAL-MARK GROUPS ]
 	 *              | SIGN-PART DECIMAL-MARK GROUPS
@@ -550,7 +565,9 @@ public final class RTS_TXT {
 	 *
 	 * DIGIT = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 	 * </pre>
-	 * @return
+	 * 
+	 * @param T the input text
+	 * @return the resulting string
 	 */
 	private static String getFracItem(final RTS_TXT T) {
 		StringBuilder sb = new StringBuilder();
@@ -617,6 +634,11 @@ public final class RTS_TXT {
 		return (Integer.parseInt(getFracItem(T)));
 	}
 
+	/**
+	 * Put the result of putReal type operation into the text T.
+	 * @param T the text reference
+	 * @param output the result of putReal
+	 */
 	private static void putRealResult(final RTS_TXT T, String output) {
 		if (RTS_ENVIRONMENT.CURRENTDECIMALMARK != ',')
 			output = output.replace(',', RTS_ENVIRONMENT.CURRENTDECIMALMARK);
@@ -624,11 +646,14 @@ public final class RTS_TXT {
 	}
 
 	/**
+	 * Put the result of put... operation into the text T.
+	 * <p>
 	 * If the text frame is too short to contain the resulting numeric item, the
 	 * text frame into which the number was to be edited is filled with asterisks.
 	 * The final value of the position indicator of X is X.length+1.
 	 * 
-	 * @param s
+	 * @param T the text reference
+	 * @param s the result of put... operation
 	 */
 	private static void putResult(RTS_TXT T, final String s) {
 		checkAssignable(T);
@@ -655,6 +680,7 @@ public final class RTS_TXT {
 
 	/**
 	 * Procedure putint.
+	 * <p>
 	 * The value of the parameter is converted to an INTEGER ITEM which designates
 	 * an integer equal to that value.
 	 * 
@@ -667,6 +693,7 @@ public final class RTS_TXT {
 
 	/**
 	 * Procedure putfix.
+	 * <p>
 	 * The resulting numeric item is an INTEGER ITEM if n=0 or a DECIMAL ITEM with a
 	 * FRACTION of n digits if n>0. It designates a number equal to the value of r
 	 * or an approximation to the value of r, correctly rounded to n decimal places.
@@ -754,6 +781,11 @@ public final class RTS_TXT {
 		putRealResult(T, output);
 	}
 
+	/**
+	 * Real Edit Utility: Add plus exponent to the given string 
+	 * @param s the given string
+	 * @return the resulting string
+	 */
 	private static String addPlussExponent(String s) {
 		s = s.replace((char) UNICODE_MINUS_SIGN, '-');
 		String[] part = s.split("E");

@@ -68,8 +68,14 @@ import simula.editor.SimulaEditor;
  *
  */
 public final class Simula {
+	/**
+	 * Default constructor.
+	 */
 	private Simula(){}
 
+	/**
+	 * Print synopsis of standard options
+	 */
 	private static void help() {
 		Util.println(Global.simulaReleaseID+" See: https://github.com/portablesimula");
 		Util.println("");
@@ -143,6 +149,10 @@ public final class Simula {
 		}
 	}
 
+	/**
+	 * Utility: Print an error message on a popup panel.
+	 * @param msg the error message
+	 */
 	private static void error(final String msg) {
 		System.err.println("Simula: " + msg + "\n");
 		Util.popUpError(msg);
@@ -170,7 +180,11 @@ public final class Simula {
 	}
 
 	/**
+	 * Set keep .java files.
+	 * <p>
 	 * Option: -keepJava &lt;directory> Specify where to place generated .java files
+	 * 
+	 * @param dir the .java output directory-
 	 */
 	private static void setKeepJava(final String dir) {
 		Option.keepJava = new File(dir);
@@ -178,8 +192,11 @@ public final class Simula {
 	}
 
 	/**
-	 * Option: -output &lt;directory> Specify where to place generated executable .jar
-	 * file
+	 * Set output directory.
+	 * <p>
+	 * Option: -output &lt;directory> Specify where to place generated executable .jar file
+	 * 
+	 * @param dir the output directory-
 	 */
 	private static void setOutputDir(final String dir) {
 		Global.outputDir = new File(dir);

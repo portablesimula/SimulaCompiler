@@ -44,24 +44,43 @@ import java.util.StringTokenizer;
 /**
  * The Source text Panel.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/editor/SourceTextPanel.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/editor/SourceTextPanel.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
  */
+@SuppressWarnings("serial")
 public class SourceTextPanel extends JPanel {
-	private static final long serialVersionUID = 1L;
+	/**
+	 * DEBUG on/off
+	 */
 	private static final boolean DEBUG=false;//true;
 
+	/**
+	 * The line number side-panel.
+	 */
 	private JTextPane lineNumbers;
+	
+	/**
+	 * The ScrollPane
+	 */
 	private JScrollPane styleScrollPane;
  	
-	private Style styleRegular;
-	private Style styleKeyword;
-	private Style styleComment;
-	private Style styleConstant;
-	private Style styleLineNumber;
+	/** Style */ private Style styleRegular;
+	/** Style */ private Style styleKeyword;
+	/** Style */ private Style styleComment;
+	/** Style */ private Style styleConstant;
+	/** Style */ private Style styleLineNumber;
+	
+	/**
+	 * The popup Menu.
+	 */
 	private JPopupMenu popupMenu;
+	
+	/**
+	 * The StyledDocument.
+	 */
 	private StyledDocument doc;
 	
 	/**
@@ -115,16 +134,11 @@ public class SourceTextPanel extends JPanel {
     private UndoableEditListener undoListener=new UndoableEditListener() {
 		public void undoableEditHappened(UndoableEditEvent e) {
 			UndoableEdit edit=e.getEdit();
-			if(DEBUG) Testutskrift(edit);
 			undoManager.addEdit(edit);
 			fileChanged=true; refreshNeeded=true;
 			SimulaEditor.menuBar.updateMenuItems();
 		}
 	};
-	
-	private void Testutskrift(UndoableEdit edt) {
-		System.out.println("UndoableEditListener: "+edit(edt.getPresentationName(),(DocumentEvent)edt));		
-	}
 
 	// ****************************************************************
 	// *** MouseListener
@@ -149,32 +163,30 @@ public class SourceTextPanel extends JPanel {
      * The DocumentListener.
      */
 	DocumentListener documentListener=new DocumentListener() {
-		public void insertUpdate(DocumentEvent e)  { Testutskrift("Insert",e); }
-		public void removeUpdate(DocumentEvent e)  { Testutskrift("Remove",e); }
-		public void changedUpdate(DocumentEvent e) { Testutskrift("Changed",e); }
+		public void insertUpdate(DocumentEvent e)  { debugTrace("Insert",e); }
+		public void removeUpdate(DocumentEvent e)  { debugTrace("Remove",e); }
+		public void changedUpdate(DocumentEvent e) { debugTrace("Changed",e); }
 		
-		private void Testutskrift(String id,DocumentEvent evt) {
-			if(DEBUG) System.out.println("DocumentListener: "+edit(id,evt));
+		private void debugTrace(String id,DocumentEvent evt) {
+			if(DEBUG) {
+			    int ofst=evt.getOffset();
+			    int lng=evt.getLength();
+			    String styleName="UNKNOWN";
+			    String lastText="UNKNOWN";
+				try { // debugTrace
+				    StyledDocument doc=(StyledDocument)editTextPane.getDocument();
+				    if(id.equals("Insert")) lastText= doc.getText(ofst,lng);
+				    if(id.equals("addition")) lastText= doc.getText(ofst,lng);
+				    Element elt=doc.getCharacterElement(ofst);
+				    if(elt instanceof LeafElement leaf) {
+					    styleName=(String)leaf.getAttribute(StyleConstants.NameAttribute);
+				    }
+				    lastText=lastText.replace("\n","\\n");
+				} catch (Exception ex) { Util.IERR("Impossible",ex); }			
+				System.out.println("DocumentListener: "+id + '[' + ofst + ',' + lng + "]="+styleName+"\"" + lastText + '"');
+			}
 		}	
 	};
-	
-	private String edit(String id,DocumentEvent evt) {
-	    int ofst=evt.getOffset();
-	    int lng=evt.getLength();
-	    String styleName="UNKNOWN";
-	    String lastText="UNKNOWN";
-		try { // Testutskrift
-		    StyledDocument doc=(StyledDocument)editTextPane.getDocument();
-		    if(id.equals("Insert")) lastText= doc.getText(ofst,lng);
-		    if(id.equals("addition")) lastText= doc.getText(ofst,lng);
-		    Element elt=doc.getCharacterElement(ofst);
-		    if(elt instanceof LeafElement leaf) {
-			    styleName=(String)leaf.getAttribute(StyleConstants.NameAttribute);
-		    }
-		    lastText=lastText.replace("\n","\\n");
-		} catch (Exception ex) { Util.IERR("Impossible",ex); }			
-	    return(id + '[' + ofst + ',' + lng + "]="+styleName+"\"" + lastText + '"');
-	}	
 	
 	// ****************************************************************
 	// *** Constructor
@@ -223,16 +235,21 @@ public class SourceTextPanel extends JPanel {
      */
     void fillTextPane(Reader reader,int caretPosition) {
     	switch(lang) {
-			case Simula: fillTextPane(reader,caretPosition,new SimulaScanner(reader,true)); break;
-//			case Java:   fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break;
-			default:     fillTextPane(reader,caretPosition,new DefaultScanner(reader)); break;
+			case Simula: fillTextPane(caretPosition,new SimulaScanner(reader,true)); break;
+//			case Java:   fillTextPane(caretPosition,new DefaultScanner(reader)); break;
+			default:     fillTextPane(caretPosition,new DefaultScanner(reader)); break;
     	}
     }
     
 	// ****************************************************************
 	// *** fillTextPane
 	// ****************************************************************
-    private void fillTextPane(Reader reader,int caretPosition,DefaultScanner preScanner) {
+    /**
+     * Fill the text pane with text delivered from the scanner.
+     * @param caretPosition the caretPosition after the operations
+     * @param preScanner the scanner to use
+     */
+    private void fillTextPane(int caretPosition,DefaultScanner preScanner) {
 		int lineNumber=1;
 		StyledDocument lin=new DefaultStyledDocument(); addStylesToDocument(lin);
         editTextPane.setEditable(false);
@@ -282,6 +299,12 @@ public class SourceTextPanel extends JPanel {
 	// ****************************************************************
 	// *** Utilities
 	// ****************************************************************
+	/**
+	 * Utility: Edit right justified line number string.
+	 * 
+	 * @param n the length of line number field
+	 * @return the resulting line number string
+	 */
     private String edLineNumber(int n) {
 	    String fill="";
 	    if(n<10) fill="   ";
@@ -290,6 +313,12 @@ public class SourceTextPanel extends JPanel {
     	return(fill+n+": \n");
     }
 	
+    /**
+     * Utility: Count extra control characters in the given string
+     * @param s the given string
+     * @param pos limitin position in s
+     * @return the resulting number of control characters
+     */
 	private int countExtraControlCharacters(final String s,int pos) {
 		int count=0;
 		for(int i=0;i<pos;i++) {
@@ -298,6 +327,11 @@ public class SourceTextPanel extends JPanel {
 		return(count);
 	}
     
+	/**
+	 * Utility: Get Style
+	 * @param code style code
+	 * @return the resuting Style
+	 */
     private Style getStyle(final Token.StyleCode code) {
     	switch(code) {
     		case regular: return(styleRegular);
@@ -309,6 +343,10 @@ public class SourceTextPanel extends JPanel {
     	return(null);
     }
     
+    /**
+     * Add Styles to the document.
+     * @param doc the document
+     */
     private void addStylesToDocument(final StyledDocument doc) {
         //Initialize some styles.
         Style defaultStyle = StyleContext.getDefaultStyleContext().

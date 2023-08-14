@@ -52,16 +52,17 @@ public final class Util {
 	 * @param option an array of objects indicating the possible choices the user can make
 	 * @return an integer indicating the option chosen by the user, or CLOSED_OPTION if the user closed the dialog
 	 */
-	public static int optionDialog(final Object msg,final String title,final int optionType,final int messageType,final String... option) {
-		Object OptionPaneBackground=UIManager.get("OptionPane.background");
-		Object PanelBackground=UIManager.get("Panel.background");
- 		UIManager.put("OptionPane.background", Color.WHITE);
-        UIManager.put("Panel.background", Color.WHITE);
-		int answer = JOptionPane.showOptionDialog(null,msg,title,optionType,messageType,Global.sIcon, option, option[0]);
-		//System.out.println("doClose.saveDialog: answer="+answer);
-		UIManager.put("OptionPane.background",OptionPaneBackground);
-        UIManager.put("Panel.background",PanelBackground);
-		return(answer);
+	public static int optionDialog(final Object msg, final String title, final int optionType, final int messageType,
+			final String... option) {
+		Object OptionPaneBackground = UIManager.get("OptionPane.background");
+		Object PanelBackground = UIManager.get("Panel.background");
+		UIManager.put("OptionPane.background", Color.WHITE);
+		UIManager.put("Panel.background", Color.WHITE);
+		int answer = JOptionPane.showOptionDialog(null, msg, title, optionType, messageType, Global.sIcon, option, option[0]);
+		// System.out.println("doClose.saveDialog: answer="+answer);
+		UIManager.put("OptionPane.background", OptionPaneBackground);
+		UIManager.put("Panel.background", PanelBackground);
+		return (answer);
 	}
 
 	/**

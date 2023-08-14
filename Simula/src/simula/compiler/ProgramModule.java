@@ -33,21 +33,29 @@ import simula.compiler.utilities.Util;
  * 
  * Syntax:
  *
- *		ProgramModule = SimulaProgram | ClassDeclaration | ProcedureDeclaration
+ *		program-module = simula-program | class-declaration | procedure-declaration
  * 
- *			SimulaProgram = [ BlockPrefix ] Block | [ BlockPrefix ] CompoundStatement
+ *			simula-program = [ block-prefix ] block | [ block-prefix ] compound-statement
  * 
- *				BlockPrefix = ClassIdentifier [ ( ActualParameterList ) ]
+ *				block-prefix = class-identifier [ ( actual-parameter-list ) ]
  *
- *			ProcedureDeclaration
- *			     = [ type ] PROCEDURE ProcedureIdentifier ProcedureHead ProcedureBody
+ *			procedure-declaration
+ *			     = [ type ] PROCEDURE procedure-identifier procedure-head procedure-body
  *
  * </pre>
  * 
  * @author Øystein Myhre Andersen
  */
 public final class ProgramModule extends Statement {
+	
+	/**
+	 * The Variable SYSIN.
+	 */
 	final private Variable sysin;
+	
+	/**
+	 * The Variable SYSOUT.
+	 */
 	final private Variable sysout;
 	
 	/**
