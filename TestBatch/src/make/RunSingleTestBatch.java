@@ -13,8 +13,6 @@ import java.util.Vector;
 import simula.compiler.SimulaCompiler;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.editor.RTOption;
-import simula.runtime.RTS_COMMON;
 
 /**
  * Simula Test Batch donated by Simula as.
@@ -41,7 +39,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst05.sim"); // OK:  Test Aritmetisk Relations
 //		names.add("simtst06.sim"); // OK:  Test Mathematical Functions
 //		names.add("simtst07.sim"); // OK:  Test Mathematical Library
-//		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
+		names.add("simtst08.sim"); // OK:  Test Scope of Variables.
 //		names.add("simtst09.sim"); // OK:  Test relation operator and some Funtions
 //		names.add("simtst10.sim"); // OK:  Test Evaluation of Text-Constants
 //
@@ -94,7 +92,7 @@ public final class RunSingleTestBatch {
 //		names.add("simtst50.sim"); // OK:  Test binding and qualification in Connection Blocks
 //
 //		names.add("simtst51.sim"); // OK:  Test 'inner'.
-		names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
+//		names.add("simtst52.sim"); // OK:  Test 'inner'         Scanning past END-OF-FILE
 //		names.add("simtst53.sim"); // OK:  Syntax check on virtual part
 //		names.add("simtst54.sim"); // OK: A VERY Simple Simulation
 //		names.add("simtst55.sim"); // OK:  Test virtual procedures.
@@ -225,6 +223,7 @@ public final class RunSingleTestBatch {
 
 		// Parser Trace Options
 //		Option.TRACE_PARSE=true;
+		Option.PRINT_SYNTAX_TREE=true;
 //		Option.TRACE_ATTRIBUTE_OUTPUT=true;
 //		Option.TRACE_ATTRIBUTE_INPUT=true;
 

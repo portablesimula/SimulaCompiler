@@ -15,3 +15,168 @@ begin
   
   L1:L2:
 end;  
+
+
+SourceFile: "VirtualSwitch.java"
+InnerClasses:
+  public final #131= #7 of #80;           // RTS_LABEL=class simula/runtime/RTS_RTObject$RTS_LABEL of class simula/runtime/RTS_RTObject
+  public static #132= #62 of #95;         // Option=class simula/runtime/RTS_COMMON$Option of class simula/runtime/RTS_COMMON
+  public static final #133= #74 of #80;   // OperationalState=class simula/runtime/RTS_RTObject$OperationalState of class simula/runtime/RTS_RTObject
+Classfile /C:/Users/YSTEIN~1/AppData/Local/Temp/simula/classes/simulaTestPrograms/VirtualSwitch_A.class
+  Last modified 18. aug. 2023; size 1640 bytes
+  SHA-256 checksum 6252a354e703c46d158e336ee145f032b50b8f95a7c5324bd9d0375e2c007f2c
+  Compiled from "VirtualSwitch_A.java"
+public class simulaTestPrograms.VirtualSwitch_A extends simula.runtime.RTS_CLASS
+  minor version: 0
+  major version: 65
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #15                         // simulaTestPrograms/VirtualSwitch_A
+  super_class: #10                        // simula/runtime/RTS_CLASS
+  interfaces: 0, fields: 1, methods: 5, attributes: 3
+Constant pool:
+   #1 = Class              #2             // simula/runtime/RTS_SimulaRuntimeError
+   #2 = Utf8               simula/runtime/RTS_SimulaRuntimeError
+   #3 = String             #4             // No Virtual Match: S
+   #4 = Utf8               No Virtual Match: S
+   #5 = Methodref          #1.#6          // simula/runtime/RTS_SimulaRuntimeError."<init>":(Ljava/lang/String;)V
+   #6 = NameAndType        #7:#8          // "<init>":(Ljava/lang/String;)V
+   #7 = Utf8               <init>
+   #8 = Utf8               (Ljava/lang/String;)V
+   #9 = Methodref          #10.#11        // simula/runtime/RTS_CLASS."<init>":(Lsimula/runtime/RTS_RTObject;)V
+  #10 = Class              #12            // simula/runtime/RTS_CLASS
+  #11 = NameAndType        #7:#13         // "<init>":(Lsimula/runtime/RTS_RTObject;)V
+  #12 = Utf8               simula/runtime/RTS_CLASS
+  #13 = Utf8               (Lsimula/runtime/RTS_RTObject;)V
+  #14 = Methodref          #15.#16        // simulaTestPrograms/VirtualSwitch_A.BBLK:()V
+  #15 = Class              #17            // simulaTestPrograms/VirtualSwitch_A
+  #16 = NameAndType        #18:#19        // BBLK:()V
+  #17 = Utf8               simulaTestPrograms/VirtualSwitch_A
+  #18 = Utf8               BBLK
+  #19 = Utf8               ()V
+  #20 = Fieldref           #15.#21        // simulaTestPrograms/VirtualSwitch_A._CUR:Lsimula/runtime/RTS_RTObject;
+  #21 = NameAndType        #22:#23        // _CUR:Lsimula/runtime/RTS_RTObject;
+  #22 = Utf8               _CUR
+  #23 = Utf8               Lsimula/runtime/RTS_RTObject;
+  #24 = Methodref          #15.#25        // simulaTestPrograms/VirtualSwitch_A.S_0:()Lsimula/runtime/RTS_PRCQNT;
+  #25 = NameAndType        #26:#27        // S_0:()Lsimula/runtime/RTS_PRCQNT;
+  #26 = Utf8               S_0
+  #27 = Utf8               ()Lsimula/runtime/RTS_PRCQNT;
+  #28 = Methodref          #29.#30        // simula/runtime/RTS_PRCQNT.CPF:()Lsimula/runtime/RTS_PROCEDURE;
+  #29 = Class              #31            // simula/runtime/RTS_PRCQNT
+  #30 = NameAndType        #32:#33        // CPF:()Lsimula/runtime/RTS_PROCEDURE;
+  #31 = Utf8               simula/runtime/RTS_PRCQNT
+  #32 = Utf8               CPF
+  #33 = Utf8               ()Lsimula/runtime/RTS_PROCEDURE;
+  #34 = Class              #35            // simulaTestPrograms/VirtualSwitch_A$1
+  #35 = Utf8               simulaTestPrograms/VirtualSwitch_A$1
+  #36 = Methodref          #34.#37        // simulaTestPrograms/VirtualSwitch_A$1."<init>":(LsimulaTestPrograms/VirtualSwitch_A;)V
+  #37 = NameAndType        #7:#38         // "<init>":(LsimulaTestPrograms/VirtualSwitch_A;)V
+  #38 = Utf8               (LsimulaTestPrograms/VirtualSwitch_A;)V
+  #39 = Methodref          #40.#41        // simula/runtime/RTS_PROCEDURE.setPar:(Ljava/lang/Object;)Lsimula/runtime/RTS_PROCEDURE;
+  #40 = Class              #42            // simula/runtime/RTS_PROCEDURE
+  #41 = NameAndType        #43:#44        // setPar:(Ljava/lang/Object;)Lsimula/runtime/RTS_PROCEDURE;
+  #42 = Utf8               simula/runtime/RTS_PROCEDURE
+  #43 = Utf8               setPar
+  #44 = Utf8               (Ljava/lang/Object;)Lsimula/runtime/RTS_PROCEDURE;
+  #45 = Methodref          #40.#46        // simula/runtime/RTS_PROCEDURE._ENT:()Lsimula/runtime/RTS_PROCEDURE;
+  #46 = NameAndType        #47:#33        // _ENT:()Lsimula/runtime/RTS_PROCEDURE;
+  #47 = Utf8               _ENT
+  #48 = Methodref          #40.#49        // simula/runtime/RTS_PROCEDURE._RESULT:()Ljava/lang/Object;
+  #49 = NameAndType        #50:#51        // _RESULT:()Ljava/lang/Object;
+  #50 = Utf8               _RESULT
+  #51 = Utf8               ()Ljava/lang/Object;
+  #52 = Class              #53            // simula/runtime/RTS_RTObject$RTS_LABEL
+  #53 = Utf8               simula/runtime/RTS_RTObject$RTS_LABEL
+  #54 = Methodref          #15.#55        // simulaTestPrograms/VirtualSwitch_A._GOTO:(Lsimula/runtime/RTS_RTObject$RTS_LABEL;)V
+  #55 = NameAndType        #56:#57        // _GOTO:(Lsimula/runtime/RTS_RTObject$RTS_LABEL;)V
+  #56 = Utf8               _GOTO
+  #57 = Utf8               (Lsimula/runtime/RTS_RTObject$RTS_LABEL;)V
+  #58 = Methodref          #15.#59        // simulaTestPrograms/VirtualSwitch_A.EBLK:()V
+  #59 = NameAndType        #60:#19        // EBLK:()V
+  #60 = Utf8               EBLK
+  #61 = Methodref          #15.#62        // simulaTestPrograms/VirtualSwitch_A._STM:()LsimulaTestPrograms/VirtualSwitch_A;
+  #62 = NameAndType        #63:#64        // _STM:()LsimulaTestPrograms/VirtualSwitch_A;
+  #63 = Utf8               _STM
+  #64 = Utf8               ()LsimulaTestPrograms/VirtualSwitch_A;
+  #65 = Class              #66            // simula/runtime/RTS_PROGINFO
+  #66 = Utf8               simula/runtime/RTS_PROGINFO
+  #67 = String             #68            // VirtualSwitch.sim
+  #68 = Utf8               VirtualSwitch.sim
+  #69 = String             #70            // Class A
+  #70 = Utf8               Class A
+  #71 = Methodref          #65.#72        // simula/runtime/RTS_PROGINFO."<init>":(Ljava/lang/String;Ljava/lang/String;[I)V
+  #72 = NameAndType        #7:#73         // "<init>":(Ljava/lang/String;Ljava/lang/String;[I)V
+  #73 = Utf8               (Ljava/lang/String;Ljava/lang/String;[I)V
+  #74 = Fieldref           #15.#75        // simulaTestPrograms/VirtualSwitch_A._INFO:Lsimula/runtime/RTS_PROGINFO;
+  #75 = NameAndType        #76:#77        // _INFO:Lsimula/runtime/RTS_PROGINFO;
+  #76 = Utf8               _INFO
+  #77 = Utf8               Lsimula/runtime/RTS_PROGINFO;
+  #78 = Utf8               Code
+  #79 = Utf8               LineNumberTable
+  #80 = Utf8               ()Lsimula/runtime/RTS_RTObject;
+  #81 = Utf8               <clinit>
+  #82 = Utf8               SourceFile
+  #83 = Utf8               VirtualSwitch_A.java
+  #84 = Utf8               NestMembers
+  #85 = Utf8               InnerClasses
+  #86 = Class              #87            // simula/runtime/RTS_RTObject
+  #87 = Utf8               simula/runtime/RTS_RTObject
+  #88 = Utf8               RTS_LABEL
+
+
+
+  public simulaTestPrograms.VirtualSwitch_B_S _STM();
+    descriptor: ()LsimulaTestPrograms/VirtualSwitch_B_S;
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=3, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #15                 // Field p__SW:I
+         4: iconst_1
+         5: isub
+         6: lookupswitch  { // 2
+
+                       0: 32
+
+                       1: 54
+                 default: 76
+            }
+        32: aload_0
+        33: getstatic     #57                 // Field _CUR:Lsimula/runtime/RTS_RTObject;
+        36: getfield      #61                 // Field simula/runtime/RTS_RTObject._SL:Lsimula/runtime/RTS_RTObject;
+        39: getfield      #61                 // Field simula/runtime/RTS_RTObject._SL:Lsimula/runtime/RTS_RTObject;
+        42: checkcast     #66                 // class simulaTestPrograms/VirtualSwitch
+        45: getfield      #68                 // Field simulaTestPrograms/VirtualSwitch._LABEL_L1:Lsimula/runtime/RTS_RTObject$RTS_LABEL;
+        48: putfield      #1                  // Field _RESULT:Lsimula/runtime/RTS_RTObject$RTS_LABEL;
+        51: goto          93
+        54: aload_0
+        55: getstatic     #57                 // Field _CUR:Lsimula/runtime/RTS_RTObject;
+        58: getfield      #61                 // Field simula/runtime/RTS_RTObject._SL:Lsimula/runtime/RTS_RTObject;
+        61: getfield      #61                 // Field simula/runtime/RTS_RTObject._SL:Lsimula/runtime/RTS_RTObject;
+        64: checkcast     #66                 // class simulaTestPrograms/VirtualSwitch
+        67: getfield      #71                 // Field simulaTestPrograms/VirtualSwitch._LABEL_L2:Lsimula/runtime/RTS_RTObject$RTS_LABEL;
+        70: putfield      #1                  // Field _RESULT:Lsimula/runtime/RTS_RTObject$RTS_LABEL;
+        73: goto          93
+        76: new           #18                 // class simula/runtime/RTS_SimulaRuntimeError
+        79: dup
+        80: aload_0
+        81: getfield      #15                 // Field p__SW:I
+        84: invokedynamic #74,  0             // InvokeDynamic #1:makeConcatWithConstants:(I)Ljava/lang/String;
+        89: invokespecial #22                 // Method simula/runtime/RTS_SimulaRuntimeError."<init>":(Ljava/lang/String;)V
+        92: athrow
+        93: aload_0
+        94: invokevirtual #77                 // Method EBLK:()V
+        97: aload_0
+        98: areturn
+      LineNumberTable:
+        line 43: 0
+        line 44: 32
+        line 45: 54
+        line 46: 76
+        line 48: 93
+        line 49: 97
+      StackMapTable: number_of_entries = 4
+        frame_type = 32 /* same */
+        frame_type = 21 /* same */
+        frame_type = 21 /* same */
+        frame_type = 16 /* same */

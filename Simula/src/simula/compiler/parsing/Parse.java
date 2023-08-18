@@ -8,9 +8,10 @@
 package simula.compiler.parsing;
 
 import java.io.Reader;
+
+import simula.compiler.syntaxClass.Type;
 import simula.compiler.utilities.KeyWord;
 import simula.compiler.utilities.Token;
-import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**
@@ -18,7 +19,37 @@ import simula.compiler.utilities.Util;
  * <p>
  * It contains all static utilities for parsing Simula Syntax.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/Parse.java"><b>Source File</b></a>.
+ * The Simula Compiler uses Recursive Descent Parsing. Each syntax class is a
+ * subclass of this class.
+ * <p>
+ * A NonTerminal object represents non terminal symbol in the formal syntax.
+ * <p>
+ * Parsing descends in a top-down manner, until the final nonterminal has been
+ * processed. The parsing process depends on a global variable, currentToken,
+ * which contains the current symbol from the input, and the function nextToken,
+ * which updates currentToken when called.
+ * <p>
+ * For further description of Recursive Descent Parsing see <a href=
+ * "https://en.wikipedia.org/wiki/Recursive_descent_parser">Wikipedia</a>.
+ *
+ * <pre>
+ * 
+ * ***********************************************************************	
+ *  META-SYNTAX:
+ *  
+ *       MetaSymbol                    Meaning
+ *       
+ *           =                     is defined to be
+ *           |                     alternatively
+ *         [ x ]                   0 or 1 instance of x
+ *         { x }                   0 or more instances of x
+ *       ( x | y )                 grouping: either x or y
+ *          xyz                    the terminal symbol xyz
+ *     MetaIdentifier              a non terminal symbol
+ * ***********************************************************************
+ * </pre>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/parsing/Parse.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *
@@ -69,7 +100,7 @@ public final class Parse {
 		savedToken = null; // Used by 'pushBack'
 		endOfFileErrorGiven=false;
 
-		nextSymb();
+		nextToken();
 	}
 
 	// *********************************************************************************
@@ -95,19 +126,60 @@ public final class Parse {
 		Parse.currentToken = Parse.prevToken;
 		Parse.prevToken = null;
 	}
+	
+	/**
+	 * Advance to next Token.
+	 */
+	public static void nextToken() {
+		Parse.prevToken = Parse.currentToken;
+		if (savedToken == null) {
+			Parse.currentToken = simulaScanner.nextToken();
+			if (Parse.currentToken == null) {
+				if (!endOfFileErrorGiven) {
+					//Util.warning("Possible scanning past END-OF-FILE");
+				}
+				endOfFileErrorGiven = true;
+				Parse.currentToken = new Token(KeyWord.END);
+			}
+		} else {
+			Parse.currentToken = savedToken;
+			savedToken = null;
+		}
+		if(Parse.currentToken.getKeyWord()==KeyWord.IDENTIFIER)
+			if(Parse.prevToken!=null && Parse.prevToken.getKeyWord()==KeyWord.IDENTIFIER) {
+				Util.error("Misplaced identifier "+Parse.currentToken+" directly after the identifier "+Parse.prevToken+" - Ignored");
+		        nextToken();
+			}
+	}
 
 	/**
-	 * Test to accept the given KeyWord.
+	 * Test to accept a KeyWord.
 	 * <p>
-	 * If it is accepted 'nextSymb' is called.
-	 * @param key t the given KeyWord
-	 * @return true if the keyword is accepted, false otherwise.
+	 * Test currentToken against each given key.
+	 * If accepted 'nextToken' is called,
+	 * thus setting prevToken.
+	 * @param key t the given keywords
+	 * @return true if a keyword is accepted, false otherwise.
 	 */
-	public static boolean accept(final KeyWord key) {
-		if (Parse.currentToken.getKeyWord() == key) {
-			nextSymb();
-			return (true);
-		}
+	public static boolean accept(final KeyWord... key) {
+		for (int i = 0; i < key.length; i++)
+			if (Parse.currentToken.getKeyWord() == key[i]) {
+				nextToken();
+				return (true);
+			}
+		return (false);
+	}
+
+	/**
+	 * Expect the given KeyWord.
+	 * <p>
+	 * If it is not accepted an error message is given.
+	 * @param key a keyword
+	 * @return true if the keyword was accepted, otherwise false
+	 */
+	public static boolean expect(final KeyWord key) {
+		if (accept(key)) return (true);
+		Util.error("Got symbol '" + Parse.currentToken + "' while expecting KeyWord " + key.toLowerCase());
 		return (false);
 	}
 
@@ -116,32 +188,7 @@ public final class Parse {
 	 */
 	public static void skipMisplacedCurrentSymbol() {
 		Util.error("Misplaced symbol: "+Parse.currentToken+" -- Ignored");
-		nextSymb();
-	}
-
-	/**
-	 * Test to accept any of the given KeyWords.
-	 * <p>
-	 * If it is accepted 'nextSymb' is called.
-	 * @param key1 a KeyWord
-	 * @param key2 a KeyWord
-	 * @return true if any of the keywords are accepted, false otherwise.
-	 */
-	public static boolean accept(final KeyWord key1,final KeyWord key2) {
-		return(accept(key1) || accept(key2));
-	}
-
-	/**
-	 * Test to accept any of the given KeyWords.
-	 * <p>
-	 * If it is accepted 'nextSymb' is called.
-	 * @param key1 a KeyWord
-	 * @param key2 a KeyWord
-	 * @param key3 a KeyWord
-	 * @return true if any of the keywords are accepted, false otherwise.
-	 */
-	public static boolean accept(final KeyWord key1,final KeyWord key2,final KeyWord key3) {
-		return(accept(key1) || accept(key2) || accept(key3));
+		nextToken();
 	}
 	
 	/**
@@ -224,19 +271,6 @@ public final class Parse {
 		return(false);
 	}
 
-
-	/**
-	 * Expect the given KeyWord.
-	 * <p>
-	 * If it is not accepted an error message is given.
-	 * @param key a keyword
-	 * @return true if the keyword was accepted, otherwise false
-	 */
-	public static boolean expect(final KeyWord key) {
-		if (accept(key)) return (true);
-		Util.error("Got symbol '" + Parse.currentToken + "' while expecting KeyWord " + key.toLowerCase());
-		return (false);
-	}
 	
 	/**
 	 * Utility TRACE.
@@ -244,31 +278,6 @@ public final class Parse {
 	 */
 	public static void TRACE(final String msg) {
 		Util.TRACE(msg + ", current=" + Parse.currentToken + ", prev=" + Parse.prevToken);
-	}
-	
-	/**
-	 * Advance to next symbol.
-	 */
-	public static void nextSymb() {
-		Parse.prevToken = Parse.currentToken;
-		if (savedToken == null) {
-			Parse.currentToken = simulaScanner.nextToken();
-			if (Parse.currentToken == null) {
-				if (!endOfFileErrorGiven) {
-					//Util.warning("Possible scanning past END-OF-FILE");
-				}
-				endOfFileErrorGiven = true;
-				Parse.currentToken = new Token(KeyWord.END);
-			}
-		} else {
-			Parse.currentToken = savedToken;
-			savedToken = null;
-		}
-		if(Parse.currentToken.getKeyWord()==KeyWord.IDENTIFIER)
-			if(Parse.prevToken!=null && Parse.prevToken.getKeyWord()==KeyWord.IDENTIFIER) {
-				Util.error("Misplaced identifier "+Parse.currentToken+" directly after the identifier "+Parse.prevToken+" - Ignored");
-		        nextSymb();
-			}
 	}
 	
 

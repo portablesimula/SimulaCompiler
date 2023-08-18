@@ -81,7 +81,8 @@ public final class Option {
 	/** Debug option */	public static boolean TRACE_COMMENTS=false;
 
 	// Parser Trace Options
-	/** Debug option */	public static boolean TRACE_PARSE=true;
+	/** Debug option */	public static boolean TRACE_PARSE=false;
+	/** Debug option */	public static boolean PRINT_SYNTAX_TREE=false;
 	/** Debug option */	public static boolean TRACE_ATTRIBUTE_OUTPUT=false;
 	/** Debug option */	public static boolean TRACE_ATTRIBUTE_INPUT=false;
 

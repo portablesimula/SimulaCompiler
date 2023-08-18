@@ -1,0 +1,13 @@
+Simulation begin
+	long real timeLeft;
+
+	Process class Car(id); text id; hidden protected id;
+		virtual: procedure proc;
+	begin
+		procedure proc(j); integer j;;
+		integer i;
+		hold(8);
+	end;
+	
+	new Car("First");
+end;  

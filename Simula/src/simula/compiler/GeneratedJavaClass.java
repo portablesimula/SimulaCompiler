@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.Vector;
 
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
-import simula.compiler.declaration.BlockDeclaration;
-import simula.compiler.declaration.ClassDeclaration;
+import simula.compiler.syntaxClass.declaration.BlockDeclaration;
+import simula.compiler.syntaxClass.declaration.ClassDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;

@@ -15,13 +15,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import simula.compiler.declaration.BlockDeclaration;
-import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.DeclarationList;
-import simula.compiler.declaration.StandardClass;
+
+import simula.compiler.syntaxClass.ProgramModule;
+import simula.compiler.syntaxClass.Type;
+import simula.compiler.syntaxClass.declaration.BlockDeclaration;
+import simula.compiler.syntaxClass.declaration.Declaration;
+import simula.compiler.syntaxClass.declaration.StandardClass;
+import simula.compiler.utilities.DeclarationList;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
-import simula.compiler.utilities.Type;
 import simula.compiler.utilities.Util;
 
 /**

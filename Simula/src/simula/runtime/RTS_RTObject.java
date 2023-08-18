@@ -730,7 +730,7 @@ public abstract class RTS_RTObject {
 	 * <p>
 	 * If the parameter is 'by name' the parameter is evaluated.
 	 * <p>
-	 * See {@link simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
+	 * See {@link simula.compiler.syntaxClass.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
 	 * @param par an Object
 	 * @return a RTS_ARRAY value
 	 */
@@ -745,7 +745,7 @@ public abstract class RTS_RTObject {
 	 * <p>
 	 * If the parameter is 'by name' the parameter is evaluated.
 	 * <p>
-	 * See {@link simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
+	 * See {@link simula.compiler.syntaxClass.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
 	 * @param par an Object
 	 * @return a RTS_PRCQNT value
 	 */
@@ -762,7 +762,7 @@ public abstract class RTS_RTObject {
 	 * <p>
 	 * If the parameter is a RTS_PRCQNT that procedure is called 
 	 * <p>
-	 * See {@link simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
+	 * See {@link simula.compiler.syntaxClass.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
 	 * @param par an Object
 	 * @return a Object value
 	 */
@@ -783,7 +783,7 @@ public abstract class RTS_RTObject {
 	 * <p>
 	 * If the parameter is a Float or Double they are casted to Integer 
 	 * <p>
-	 * See {@link simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
+	 * See {@link simula.compiler.syntaxClass.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
 	 * @param par an Object
 	 * @return an Integer value
 	 */
@@ -810,7 +810,7 @@ public abstract class RTS_RTObject {
 	 * <p>
 	 * If the parameter is a Integer or Double they are casted to Float 
 	 * <p>
-	 * See {@link simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
+	 * See {@link simula.compiler.syntaxClass.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
 	 * @param par an Object
 	 * @return a Float value
 	 */
@@ -837,7 +837,7 @@ public abstract class RTS_RTObject {
 	 * <p>
 	 * If the parameter is an Integer or Float they are casted to Double 
 	 * <p>
-	 * See {@link simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
+	 * See {@link simula.compiler.syntaxClass.declaration.ProcedureDeclaration#doCodePrepareFormal() simula.compiler.declaration.ProcedureDeclaration#doCodePrepareFormal}
 	 * @param par an Object
 	 * @return a Double value
 	 */

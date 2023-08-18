@@ -102,7 +102,7 @@ public final class RunCompilerTest {
 		// String name="/simulaRTS_Examples/Sect-4-2-ArrayParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-4-3-ProcedureAsParameter.sim";
 		// String name="/simulaRTS_Examples/Sect-5-SomeExpressions.sim";
-		 String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
+		// String name="/simulaRTS_Examples/Sect-6-1-GotoStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-2-ForStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-3-ConnectionStatement.sim";
 		// String name="/simulaRTS_Examples/Sect-6-4-SwitchStatement.sim";
@@ -125,7 +125,8 @@ public final class RunCompilerTest {
 		// String name="/design/RandomDrawing.sim";
 		// String name="/design/SwitchDeclaration.sim";
 		// String name="/design/SwitchStatement.sim";
-		// String name="/design/VirtualSwitch.sim";
+		// String name="/design/SyntaxTree.sim";
+		 String name="/design/VirtualSwitch.sim";
 		// String name="/design/FormalSwitch.sim";
 		// String name="/design/NormalSwitch.sim";
 		// String name="/design/ForStatement.sim";
@@ -263,6 +264,7 @@ public final class RunCompilerTest {
 //
 //			// Parser Trace Options
 //			Option.TRACE_PARSE=true;
+			Option.PRINT_SYNTAX_TREE=true;
 //			Option.TRACE_ATTRIBUTE_OUTPUT=true;
 //			Option.TRACE_ATTRIBUTE_INPUT=true;
 //
@@ -272,13 +274,14 @@ public final class RunCompilerTest {
 //			Option.TRACE_FIND_MEANING=2;
 //			
 //			// Coder Trace Options
-			Option.TRACE_CODING=true;
+//			Option.TRACE_CODING=true;
 //			Option.GNERATE_LINE_CALLS=true;
 //			
-			Option.USE_FILE_CLASS_API=1;
+//			Option.USE_FILE_CLASS_API=1;
 //			Option.USE_FILE_CLASS_API=2;
 			
 //			Option.TRACE_REPAIRING=true;
+//			Option.LIST_REPAIRED_INSTRUCTION_LIST=true;
 //			Option.TRACE_BYTECODE_OUTPUT=true;
 //			Option.DEBUGGING=true;
 
@@ -288,7 +291,7 @@ public final class RunCompilerTest {
 			
 			
 			Global.packetName="simulaTestPrograms";
-			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+//			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestPrograms/samples/simula/bin");

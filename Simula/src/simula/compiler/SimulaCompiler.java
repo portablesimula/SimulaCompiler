@@ -34,8 +34,9 @@ import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
 import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
-import simula.compiler.declaration.ClassDeclaration;
 import simula.compiler.parsing.Parse;
+import simula.compiler.syntaxClass.ProgramModule;
+import simula.compiler.syntaxClass.declaration.ClassDeclaration;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
@@ -281,6 +282,7 @@ public final class SimulaCompiler {
 					programModule.print(0);
 			}
 			Global.duringChecking = false;
+			if(Option.PRINT_SYNTAX_TREE) programModule.printTree(0);
 			if (Util.nError > 0) {
 				Util.println("Compiler terminate " + Global.sourceName + " after " + Util.nError
 						+ " errors during semantic checking");

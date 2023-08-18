@@ -7,11 +7,11 @@
  */
 package simula.compiler.utilities;
 
-import simula.compiler.declaration.ConnectionBlock;
-import simula.compiler.declaration.Declaration;
-import simula.compiler.declaration.DeclarationScope;
-import simula.compiler.declaration.SimpleVariableDeclaration;
-import simula.compiler.expression.Expression;
+import simula.compiler.syntaxClass.declaration.ConnectionBlock;
+import simula.compiler.syntaxClass.declaration.Declaration;
+import simula.compiler.syntaxClass.declaration.DeclarationScope;
+import simula.compiler.syntaxClass.declaration.SimpleVariableDeclaration;
+import simula.compiler.syntaxClass.expression.Expression;
 
 /**
  * Utility class Meaning.

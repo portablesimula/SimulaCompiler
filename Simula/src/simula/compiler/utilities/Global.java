@@ -20,8 +20,8 @@ import javax.swing.ImageIcon;
 
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.byteCodeEngineering.JavaClassInfo;
-import simula.compiler.declaration.DeclarationScope;
-import simula.compiler.declaration.StandardClass;
+import simula.compiler.syntaxClass.declaration.DeclarationScope;
+import simula.compiler.syntaxClass.declaration.StandardClass;
 
 /**
  * Global Variables.

@@ -94,7 +94,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 				String name=invokeStatic.name;
 				if(name.equals("_LABEL"))  {
 //					if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS1 GOT: INVOKESTATIC _LABEL (I)V false, opcode="+opcode+", Opcode="+Opcodes.INVOKESTATIC);
-//					if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS1 GOT: INVOKESTATIC _LABEL (I)V false, instr="+AsmUtils.edInstruction(instr));
+					if(DEBUG) Util.println("Repair_STMMethodVisitor.treat_STMMethod: PASS1 GOT: INVOKESTATIC _LABEL (I)V false, instr="+AsmUtils.edInstruction(instr));
 					treatLABEL(invokeStatic);
 				}
 			}
@@ -133,8 +133,8 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
         	ListIterator<AbstractInsnNode> iterator3=instructions.iterator();
         	while(iterator3.hasNext()) {
         		AbstractInsnNode instr=iterator3.next();
-//				Util.println("  "+AsmUtils.edInstruction(instr));
-				Util.println("  "+instr);
+				Util.println("  "+AsmUtils.edInstruction(instr));
+//				Util.println("  "+instr);
           }
         }
 	}
@@ -160,6 +160,7 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 		if(pushLabelIdentifier.getType()!=AbstractInsnNode.LDC_INSN) {
 			Util.println("Repair_STMMethodVisitor.treatLABEL: UNEXPECTED INSTRUCTION SEQUENCE BEFORE INVOKE _LABEL");
 			listInstructionSequence("Repair_STMMethodVisitor.treatLABEL: UNKNOWN ", pushLabelIdentifier.getPrevious().getPrevious(), 8);
+			Util.IERR("FORCED EXIT");
 		} else {
 			LdcInsnNode labid=(LdcInsnNode)pushLabelIdentifier;
 			labelIdentifier=labid.cst;
@@ -220,9 +221,9 @@ public class RepairSTM_MethodVisitor extends MethodVisitor {
 	}
 	
 	private void listInstructionSequence(String id,AbstractInsnNode START,int n) {
-//		AbstractInsnNode HHH=START;
-//		Util.println(id+"INSTRUCTION SEQUENCE:");
-//		while((n--)>0) { Util.println(id+AsmUtils.edInstruction(HHH)); HHH=HHH.getNext(); }
+		AbstractInsnNode HHH=START;
+		Util.println(id+"INSTRUCTION SEQUENCE:");
+		while((n--)>0) { Util.println(id+AsmUtils.edInstruction(HHH)); HHH=HHH.getNext(); }
 	}
 
 	
