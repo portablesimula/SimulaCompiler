@@ -31,7 +31,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 4.4 For-statement
  * 
  *  for-statement = FOR variable :- reference-list DO statement
  *                | FOR variable := value-list DO statement
@@ -128,8 +128,10 @@ import simula.compiler.utilities.Util;
  *           }
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/ForStatement.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/ForStatement.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ForStatement extends Statement {

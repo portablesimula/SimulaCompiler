@@ -19,7 +19,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 4.5 Goto-statement
  * 
  *  goto-statement = GOTO designational-expression
  *                 | GO TO designational-expression
@@ -34,8 +34,10 @@ import simula.compiler.utilities.Util;
  * Sect. 6.1 Goto Statement
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/GotoStatement.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/GotoStatement.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class GotoStatement extends Statement {

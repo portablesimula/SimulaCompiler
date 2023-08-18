@@ -25,6 +25,7 @@ import simula.compiler.utilities.Util;
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/DummyStatement.java"><b>Source File
  * </b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class DummyStatement extends Statement {

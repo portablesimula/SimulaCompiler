@@ -27,7 +27,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: Chapter 4: Statements
  * 
  *  Statement
  *         =  { label : }  unconditional-statement
@@ -49,9 +49,10 @@ import simula.compiler.utilities.Util;
  * </pre>
  * 
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/Statement.java"><b>Source
- * File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/Statement.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public abstract sealed class Statement extends SyntaxClass permits InnerStatement, ActivationStatement, BlockStatement,

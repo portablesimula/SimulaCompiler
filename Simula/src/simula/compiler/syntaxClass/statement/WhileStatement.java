@@ -15,14 +15,16 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 4.3 While-statement
  * 
  *   while-statement = WHILE Boolean-expression DO Statement
  *
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/WhileStatement.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/WhileStatement.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class WhileStatement extends Statement {

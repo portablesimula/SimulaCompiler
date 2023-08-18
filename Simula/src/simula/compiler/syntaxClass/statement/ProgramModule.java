@@ -32,7 +32,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: Chapter 6 Program Modules
  *
  *      SIMULA-source-module
  *         = [ external-head ] ( program | procedure-declaration | class-declaration )
@@ -50,6 +50,7 @@ import simula.compiler.utilities.Util;
  *
  * </pre>
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ProgramModule extends Statement {
