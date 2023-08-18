@@ -35,7 +35,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 5.5 Class declaration
  * 
  * class-declaration = [ prefix ] main-part
  * 
@@ -92,6 +92,7 @@ import simula.compiler.utilities.Util;
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ClassDeclaration.java"><b>Source
  * File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public sealed class ClassDeclaration extends BlockDeclaration implements Externalizable

@@ -31,16 +31,17 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 5.2 Array declaration
  * 
- * ArrayDeclaration = [ Type ] ARRAY ArraySegment { , ArraySegment }
- *   ArraySegment = IdentifierList "(" BoundPairList ")"
- * 
- * 	IdentifierList = Identifier { , Identifier }
- * 
- * 	BoundPairList = BoundPair { , BoundPair }
- * 	   BoundPair = ArithmeticExpression : ArithmeticExpression
- *
+ *   array-declaration = [ type ] ARRAY array-segment { , array-segment }
+ *   
+ *      array-segment = array-identifier { , array-identifier } "(" bound-pair-list ")"
+ *      
+ *         array-identifier = identifier
+ *         
+ *         bound-pair-list = bound-pair { , bound-pair }
+ *         
+ *            bound-pair = arithmetic-expression : arithmetic-expression 
  * </pre>
  * 
  * An array declaration declares one or several identifiers to represent
@@ -84,7 +85,8 @@ import simula.compiler.utilities.Util;
  *           real array  q(-7:if c &lt; 0 then 2 else 1)   ! 10 or 9 elements;
  *           array  a,b,c(7:n,2:m), s(-2:10)            ! any value of n or m legal;
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ArrayDeclaration.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ArrayDeclaration.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen

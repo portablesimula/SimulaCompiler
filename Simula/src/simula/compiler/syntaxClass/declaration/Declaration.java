@@ -24,7 +24,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: Chapter 5. Declarations
  * 
  *   declaration
  *      = simple-variable-declaration

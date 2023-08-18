@@ -21,7 +21,10 @@ import simula.compiler.utilities.Option;
  * <p>
  * This class is prefix to ClassDeclaration, ProcedureDeclaration and MaybeBlockDeclaration.
  * <p>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/BlockDeclaration.java"><b>Source File</b></a>.
+ * It contains a number of useful fields and methods common to its subclasses.
+ * <p>
+ * Link to GitHub: <a href=
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/BlockDeclaration.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
@@ -95,13 +98,6 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.ENDPAR);
 	}
-
-	// ***********************************************************************************************
-	// *** Utility: prefixLevel
-	// ***********************************************************************************************
-//	protected int prefixLevel() {
-//		return (0);
-//	} // Needs redefinition for Class and Prefixed Block
 
 	// ***********************************************************************************************
 	// *** Checking: doCheckLabelList

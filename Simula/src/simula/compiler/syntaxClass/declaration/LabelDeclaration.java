@@ -26,7 +26,7 @@ public final class LabelDeclaration extends SimpleVariableDeclaration implements
 	/**
 	 * The label index. Set by BlockDeclaration.doCheckLabelList.
 	 */
-	public int index; // set by BlockDeclaration.doCheckLabelList
+	public int index;
 
 	/**
 	 * Create a new Label Declaration.

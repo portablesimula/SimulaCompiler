@@ -31,7 +31,14 @@ import simula.compiler.utilities.Util;
 
 /**
  * External Declaration.
- * <p>
+ * <pre>
+ * Simula Standard: 6.1 External declarations
+ * 
+ *   external-head = external-declaration ; { external-declaration ; }
+ *   
+ *   external-declaration
+ *      = external-procedure-declaration | external-class-declaration
+ * </pre>
  * An external declaration is a substitute for a complete introduction of the
  * corresponding source module referred to, including its external head. In the
  * case where multiple but identical external declarations occur as a
@@ -93,6 +100,7 @@ import simula.compiler.utilities.Util;
  * Link to GitHub: <a href=
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ExternalDeclaration.java"><b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ExternalDeclaration extends Declaration {

@@ -24,13 +24,14 @@ import simula.compiler.utilities.Util;
  * whether it contains declarations.
  * 
  * <pre>
- * Syntax:
+ * Simula Standard: 4.9 Compound statement
+ * Simula Standard: 4.9 Blocks
+ *  
+ *   MaybeBlockDeclaration = compound-statement | subblock
  * 
- * Block = CompoundStatement | SubBlock
- * 
- *	 CompoundStatement = BEGIN [ { Statement ; } ] END
+ *	    compound-statement = BEGIN [ { statement ; } ] END
  *
- * 	 SubBlock = BEGIN [ { Declaration ; } ]  [ { Statement ; } ] END
+ * 	    subblock = BEGIN [ { declaration ; } ]  [ { statement ; } ] END
  *
  * </pre>
  * 

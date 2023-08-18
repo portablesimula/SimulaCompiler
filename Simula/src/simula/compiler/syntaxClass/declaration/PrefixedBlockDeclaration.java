@@ -20,7 +20,7 @@ import simula.compiler.utilities.Util;
 /**
  * Prefixed Block Declaration.
  * <pre>
- * Syntax:
+ * Simula Standard: 4.10.1 Prefixed blocks
  *
  *  prefixed-block = block-prefix main-block
  *  
@@ -42,8 +42,8 @@ import simula.compiler.utilities.Util;
  * </pre>
  * 
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/PrefixedBlockDeclaration.java"><b>Source
- * File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/PrefixedBlockDeclaration.java">
+ * <b>SourceFile</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */
