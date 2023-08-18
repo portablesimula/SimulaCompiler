@@ -29,7 +29,7 @@ import simula.compiler.utilities.Util;
  *   Constant = unsigned-number | string | character-constant | NONE | NOTEXT
  *   
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/Constant.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/Constant.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  * @see simula.compiler.parsing.SimulaScanner

@@ -34,7 +34,7 @@ import simula.compiler.utilities.Util;
  * Sect. 6.1 Goto Statement
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/GotoStatement.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/GotoStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

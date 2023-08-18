@@ -42,7 +42,7 @@ import simula.compiler.utilities.Util;
  * </pre>
  * 
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/PrefixedBlockDeclaration.java">
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/PrefixedBlockDeclaration.java">
  * <b>SourceFile</b></a>.
  * 
  * @author Øystein Myhre Andersen
@@ -89,6 +89,12 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	// ***********************************************************************************************
 	// *** Expect Prefixed Block
 	// ***********************************************************************************************
+	/**
+	 * Parse Utility: Expect PrefixedBlockDeclaration
+	 * @param blockPrefix the block prefix
+	 * @param isMainModule true if main module
+	 * @return the resulting PrefixedBlockDeclaration
+	 */
 	public static PrefixedBlockDeclaration expectPrefixedBlock(final VariableExpression blockPrefix,boolean isMainModule) {
 		PrefixedBlockDeclaration block=new PrefixedBlockDeclaration(blockPrefix,isMainModule);
 		block.lineNumber=Parse.prevToken.lineNumber;

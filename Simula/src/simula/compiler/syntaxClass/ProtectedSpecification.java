@@ -29,7 +29,7 @@ import simula.compiler.utilities.Util;
  *         | protected hidden identifier-list
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProtectedSpecification.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ProtectedSpecification.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

@@ -39,7 +39,7 @@ import simula.compiler.utilities.Util;
  *               | BEGIN statement { ; statement } END
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/statement/BlockStatement.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/BlockStatement.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

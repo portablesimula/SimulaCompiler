@@ -54,7 +54,7 @@ import simula.compiler.utilities.Util;
  *             identifier-list = identifier { , identifier }
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ProcedureSpecification.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ProcedureSpecification.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

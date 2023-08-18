@@ -17,7 +17,7 @@ import simula.compiler.syntaxClass.declaration.Declaration;
  * This is a utility class to hold local declaration lists in declaration scopes.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/DeclarationList.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/DeclarationList.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

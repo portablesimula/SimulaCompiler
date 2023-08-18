@@ -30,7 +30,7 @@ import simula.compiler.utilities.Util;
  *		assignment-operator =  :=  |  :-
  *   
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/AssignmentOperation.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/AssignmentOperation.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

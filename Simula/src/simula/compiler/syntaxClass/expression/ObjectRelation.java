@@ -60,7 +60,7 @@ import simula.compiler.utilities.Util;
  * match exists, it is that of the virtual specification.
  * </ul>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/expression/ObjectRelation.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/ObjectRelation.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

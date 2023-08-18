@@ -20,7 +20,7 @@ import simula.compiler.utilities.Util;
  * Virtual match.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/VirtualMatch.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/VirtualMatch.java"><b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  *

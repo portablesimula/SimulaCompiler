@@ -86,7 +86,7 @@ import simula.compiler.utilities.Util;
  *           array  a,b,c(7:n,2:m), s(-2:10)            ! any value of n or m legal;
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/ArrayDeclaration.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ArrayDeclaration.java"><b>Source File</b></a>.
  * 
  * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen

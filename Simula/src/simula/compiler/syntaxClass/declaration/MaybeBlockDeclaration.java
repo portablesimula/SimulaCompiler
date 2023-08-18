@@ -36,7 +36,7 @@ import simula.compiler.utilities.Util;
  * </pre>
  * 
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/MaybeBlockDeclaration.java"><b>Source
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/MaybeBlockDeclaration.java"><b>Source
  * File</b></a>.
  * 
  * @author Øystein Myhre Andersen

@@ -30,7 +30,7 @@ import simula.compiler.utilities.Util;
  *     = SWITCH SwitchIdentifier := DesignationalExpression { , DesignationalExpression }
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/declaration/SwitchDeclaration.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/SwitchDeclaration.java"><b>Source File</b></a>.
  *
  * @see simula.compiler.syntaxClass.expression.ConditionalExpression
  * @author Øystein Myhre Andersen
