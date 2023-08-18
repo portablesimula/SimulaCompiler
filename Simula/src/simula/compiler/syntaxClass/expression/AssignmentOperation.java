@@ -20,18 +20,21 @@ import simula.compiler.utilities.Util;
 
 /**
  * Assignment Operation.
- * 
+ * <p>
+ * The Simula assignment statement is for convenience implemented as an assignment operation.
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 4.1 Assignment statements
  * 
  *   assignment-operation = expression  assignment-operator  expression
  *   
  *		assignment-operator =  :=  |  :-
  *   
  * </pre>
- * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/AssignmentOperation.java"><b>Source File</b></a>.
+ * Link to GitHub: <a href="https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/AssignmentOperation.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class AssignmentOperation extends Expression {

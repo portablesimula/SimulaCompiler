@@ -25,17 +25,25 @@ import simula.compiler.utilities.Util;
 /**
  * Virtual Quantities.
  * <pre>
+ * Simula Standard: 5.5.3 Virtual quantities
+ * 
  *    virtual-part  =  VIRTUAL  :  virtual-spec  ;  {  virtual-spec  ;  }
+ *    
  *    virtual-spec  =  virtual-specifier  identifier-list
- *        |  PROCEDURE  procedure-identifier  IS  procedure-declaration
+ *                  |  PROCEDURE  procedure-identifier  procedure-specification
+ *                  
+ *      procedure-specification =  IS  procedure-declaration
  *        
  *   	virtual-specifier = LABEL | SWITCH |  [ type ] PROCEDURE
+ *   
  *    	identifier-list  =  identifier  { , identifier }
  *
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/VirtualSpecification.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/VirtualSpecification.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  *
  */

@@ -26,11 +26,11 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 3.8 Object expressions
  * 
- * object-generator = NEW class-identifier [ ( actual-parameter-list ) ]
+ * object-generator = NEW class-identifier [ ( actual-parameter-part ) ]
  * 
- *    actual-parameter-list
+ *    actual-parameter-part
  *         =  "("  actual-parameter  {  ,  actual-parameter  }  ")"
  *
  *       actual-parameter
@@ -43,6 +43,7 @@ import simula.compiler.utilities.Util;
  * Link to GitHub: <a href=
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/ObjectGenerator.java"><b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ObjectGenerator extends Expression {
@@ -82,9 +83,9 @@ public final class ObjectGenerator extends Expression {
 	/**
 	 * Parse an object generator
 	 * <pre>
-	 * object-generator = NEW class-identifier [ ( actual-parameter-list ) ]
+	 * object-generator = NEW class-identifier [ ( actual-parameter-part ) ]
 	 * 
-	 *    actual-parameter-list
+	 *    actual-parameter-part
 	 *         =  "("  actual-parameter  {  ,  actual-parameter  }  ")"
 	 * </pre>
 	 * @return the newly created ObjectGenerator.

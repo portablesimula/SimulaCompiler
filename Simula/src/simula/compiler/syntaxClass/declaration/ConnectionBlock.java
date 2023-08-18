@@ -35,8 +35,8 @@ import simula.compiler.utilities.Util;
  * See Simula Standard 4.8 Connection statement.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ConnectionBlock.java"><b>Source
- * File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ConnectionBlock.java">
+ * <b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

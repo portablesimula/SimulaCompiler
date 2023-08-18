@@ -29,7 +29,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 4.8 Connection statement
  *
  *	connection-statement
  *			= INSPECT object-expression when-clause { when-clause } [ otherwise-clause ]
@@ -75,8 +75,10 @@ import simula.compiler.utilities.Util;
  * 
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/ConnectionStatement.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/ConnectionStatement.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ConnectionStatement extends Statement {

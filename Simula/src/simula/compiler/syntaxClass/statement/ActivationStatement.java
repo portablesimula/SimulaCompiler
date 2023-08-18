@@ -23,7 +23,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 12.2 Activation statement
  * 
  *   activation-statement = activator  object-expression [ scheduling-part ]
  * 
@@ -61,6 +61,7 @@ import simula.compiler.utilities.Util;
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/ActivationStatement.java">
  * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ActivationStatement extends Statement {

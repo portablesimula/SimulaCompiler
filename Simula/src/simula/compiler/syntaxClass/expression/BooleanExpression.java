@@ -14,9 +14,11 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * Simula Standard: 3.2 Boolean expressions
+ * Boolean expressions
  * 
  * <pre>
+ * Simula Standard: 3.2 Boolean expressions
+ *
  *    Boolean-expression
  *        =  simple-Boolean-expression
  *        |  IF Boolean-expression THEN  simple-Boolean-expression  ELSE  Boolean-expression
@@ -91,7 +93,8 @@ import simula.compiler.utilities.Util;
  * operand alone.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/BooleanExpression.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/BooleanExpression.java">
+ * <b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen

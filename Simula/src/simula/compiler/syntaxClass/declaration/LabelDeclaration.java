@@ -18,7 +18,8 @@ import simula.compiler.utilities.Global;
  * Label Declaration.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/LabelDeclaration.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/LabelDeclaration.java">
+ * <b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

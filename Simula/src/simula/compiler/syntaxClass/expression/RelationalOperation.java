@@ -18,7 +18,13 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 3.3 Relations
+ * 
+ * </pre>
+ * 
+ * <h2>Syntax used during Parsing:</h2>
+ * 
+ * <pre>
  * 
  *   relational-operation = expression  relational-operator  expression
  *   
@@ -29,7 +35,8 @@ import simula.compiler.utilities.Util;
  *         reference-comparator =  == | =/= 
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/RelationalOperation.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/RelationalOperation.java">
+ * <b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

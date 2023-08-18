@@ -21,8 +21,8 @@ import simula.compiler.utilities.Util;
  * of ClassDeclaration, ProcedureDeclaration and MaybeBlockDeclaration.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/DeclarationScope.java"><b>Source
- * File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/DeclarationScope.java">
+ * <b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

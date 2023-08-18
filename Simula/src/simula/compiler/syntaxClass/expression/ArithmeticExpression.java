@@ -14,9 +14,11 @@ import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;
 
 /**
- * Simula Standard:  3.5 Arithmetic expressions
+ * Arithmetic expressions
  * 
  * <pre>
+ * Simula Standard:  3.5 Arithmetic expressions
+
  *    arithmetic-expression
  *        =  simple-arithmetic-expression
  *        |  if-clause  simple-arithmetic-expression

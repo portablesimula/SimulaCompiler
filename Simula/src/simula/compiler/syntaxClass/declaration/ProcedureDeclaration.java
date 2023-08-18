@@ -27,6 +27,8 @@ import simula.compiler.utilities.Util;
 /**
  * Procedure Declaration.
  * <pre>
+ * Simula Standard: 5.4 Procedure declaration
+ * 
  *      procedure-declaration
  *          = [ type ] PROCEDURE procedure-heading ; procedure-body
  *      
@@ -61,8 +63,10 @@ import simula.compiler.utilities.Util;
  * This class is prefix to StandardProcedure and SwitchDeclaration.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ProcedureDeclaration.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ProcedureDeclaration.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public sealed class ProcedureDeclaration extends BlockDeclaration implements Externalizable

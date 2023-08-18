@@ -24,9 +24,26 @@ import simula.compiler.utilities.Util;
  * Expression.
  * 
  * <pre>
+ * Simula Standard: Chapter 3 Expressions
  * 
- * Syntax used during Parsing:
+ *   expression
+ *      = value-expression
+ *      | reference-expression
+ *      | designational-expression
+ *      
+ *   value-expression
+ *      = arithmetic-expression
+ *      | Boolean-expression
+ *      | character-expression
+ *      
+ *   reference-expression
+ *      = object-expression
+ *      | text-expression
+ * </pre>
  * 
+ * <h2>Syntax used during Parsing:</h2>
+ * 
+ * <pre>
  * Expression  =  SimpleExpression
  *	           |  IF  BooleanExpression  THEN  SimpleExpression  ELSE  Expression
  *
@@ -62,8 +79,10 @@ import simula.compiler.utilities.Util;
  *   
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/Expression.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/Expression.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  * @author Stein Krogdahl
  */

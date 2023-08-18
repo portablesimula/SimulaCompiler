@@ -17,7 +17,9 @@ import simula.compiler.utilities.Util;
  * Qualified Object
  * 
  * <pre>
- *  qualified-object
+ * Simula Standard: 3.8 Object expressions
+ * 
+ *   qualified-object
  *        =  simple-object-expression  QUA  class-identifier
  * </pre>
  * 
@@ -48,8 +50,10 @@ import simula.compiler.utilities.Util;
  * match exists, it is that of the virtual specification.
  * </ul>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/QualifiedObject.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/QualifiedObject.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class QualifiedObject extends Expression {

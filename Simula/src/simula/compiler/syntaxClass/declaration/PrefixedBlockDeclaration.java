@@ -43,8 +43,9 @@ import simula.compiler.utilities.Util;
  * 
  * Link to GitHub: <a href=
  * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/PrefixedBlockDeclaration.java">
- * <b>SourceFile</b></a>.
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class PrefixedBlockDeclaration extends ClassDeclaration {

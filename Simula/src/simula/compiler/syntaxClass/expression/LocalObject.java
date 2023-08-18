@@ -23,7 +23,7 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Simula Standard: 3.8 Object expressions
  * 
  * local-object = THIS class-identifier
  * 
@@ -42,7 +42,8 @@ import simula.compiler.utilities.Util;
  * containing its declaration.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/LocalObject.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/LocalObject.java">
+ * <b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen

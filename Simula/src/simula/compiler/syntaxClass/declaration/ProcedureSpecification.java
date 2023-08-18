@@ -21,7 +21,8 @@ import simula.compiler.utilities.Util;
 /**
  * Procedure Specification.
  * <pre>
- * Syntax:
+ * Simula Standard: 5.5.3 Virtual quantities
+ * Simula Standard: 6.3 External procedure declaration
  * 
  * procedure-specification
  *     = [ type ] PROCEDURE procedure-identifier procedure-head empty-body
@@ -54,8 +55,10 @@ import simula.compiler.utilities.Util;
  *             identifier-list = identifier { , identifier }
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ProcedureSpecification.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/ProcedureSpecification.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ProcedureSpecification implements Externalizable {

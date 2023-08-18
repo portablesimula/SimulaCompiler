@@ -17,14 +17,15 @@ import simula.compiler.utilities.Util;
  * 
  * <pre>
  * 
- * Syntax:
+ * Syntax: 
  * 
  *   conditional-expression
  *       = IF Boolean-expression THEN simple-expression ELSE expression
  * 
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/ConditionalExpression.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/ConditionalExpression.java">
+ * <b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

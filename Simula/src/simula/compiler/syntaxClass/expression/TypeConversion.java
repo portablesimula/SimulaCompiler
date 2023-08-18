@@ -17,7 +17,8 @@ import simula.compiler.utilities.Util;
  * Type Conversion.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/TypeConversion.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/TypeConversion.java">
+ * <b>Source File</b></a>.
  *
  */
 public final class TypeConversion extends Expression {

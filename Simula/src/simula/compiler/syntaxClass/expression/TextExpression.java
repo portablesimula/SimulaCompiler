@@ -16,6 +16,8 @@ import simula.compiler.utilities.Util;
  * Text expression.
  * 
  * <pre>
+ * Simula Standard: 3.7 Text expressions
+ * 
  *    text-expression
  *        =  simple-text-expression
  *        |  if-clause  simple-text-expression  else  text-expression
@@ -71,7 +73,8 @@ import simula.compiler.utilities.Util;
  * "T1 &amp; (T2.sub(1,2)) &amp; (T3.main)" are equivalent.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/TextExpression.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/TextExpression.java">
+ * <b>Source File</b></a>.
  * 
  * @author Simula Standard
  * @author Øystein Myhre Andersen

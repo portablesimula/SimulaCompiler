@@ -24,7 +24,8 @@ import simula.compiler.utilities.Option;
  * It contains a number of useful fields and methods common to its subclasses.
  * <p>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/BlockDeclaration.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/declaration/BlockDeclaration.java">
+ * <b>Source File</b></a>.
  * 
  * @author Øystein Myhre Andersen
  */

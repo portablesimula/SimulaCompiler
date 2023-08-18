@@ -21,6 +21,8 @@ import simula.compiler.utilities.Util;
 /**
  * BlockStatement.
  * <pre>
+ * Simula Standard: 4.10 Blocks
+ * 
  *   block
  *      = subblock
  *      | prefixed-block
@@ -39,8 +41,10 @@ import simula.compiler.utilities.Util;
  *               | BEGIN statement { ; statement } END
  * </pre>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/BlockStatement.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/statement/BlockStatement.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  *
  */

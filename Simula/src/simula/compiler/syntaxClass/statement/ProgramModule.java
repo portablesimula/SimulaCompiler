@@ -43,7 +43,7 @@ import simula.compiler.utilities.Util;
  *            
  *			program = [ block-prefix ] block | [ block-prefix ] compound-statement
  * 
- *				block-prefix = class-identifier [ ( actual-parameter-list ) ]
+ *				block-prefix = class-identifier [ ( actual-parameter-part ) ]
  *
  *			procedure-declaration
  *			     = [ type ] PROCEDURE procedure-identifier procedure-head procedure-body

@@ -18,7 +18,9 @@ import simula.compiler.utilities.Util;
  * Object relations
  * 
  * <pre>
- *  object-relation
+ * Simula Standard: 3.3.4. Object relations
+ * 
+ *   object-relation
  *        =  simple-object-expression  IS  class-identifier
  *        |  simple-object-expression  IN  class-identifier
  * </pre>
@@ -60,8 +62,10 @@ import simula.compiler.utilities.Util;
  * match exists, it is that of the virtual specification.
  * </ul>
  * Link to GitHub: <a href=
- * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/ObjectRelation.java"><b>Source File</b></a>.
+ * "https://github.com/portablesimula/SimulaCompiler/blob/master/Simula/src/simula/compiler/syntaxClass/expression/ObjectRelation.java">
+ * <b>Source File</b></a>.
  * 
+ * @author SIMULA Standards Group
  * @author Øystein Myhre Andersen
  */
 public final class ObjectRelation extends Expression {
