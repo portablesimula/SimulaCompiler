@@ -35,8 +35,8 @@ import javax.tools.ToolProvider;
 
 import simula.compiler.byteCodeEngineering.ByteCodeEngineering;
 import simula.compiler.parsing.Parse;
-import simula.compiler.syntaxClass.ProgramModule;
 import simula.compiler.syntaxClass.declaration.ClassDeclaration;
+import simula.compiler.syntaxClass.statement.ProgramModule;
 import simula.compiler.utilities.Global;
 import simula.compiler.utilities.Option;
 import simula.compiler.utilities.Util;

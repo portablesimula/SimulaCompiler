@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import simula.compiler.GeneratedJavaClass;
 import simula.compiler.parsing.Parse;
-import simula.compiler.syntaxClass.ProgramModule;
 import simula.compiler.syntaxClass.SyntaxClass;
 import simula.compiler.syntaxClass.declaration.LabelDeclaration;
 import simula.compiler.syntaxClass.declaration.MaybeBlockDeclaration;

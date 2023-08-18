@@ -52,8 +52,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 
-import simula.compiler.utilities.Util;
-
 /**
  * ASM Utilities.
  * <p>
