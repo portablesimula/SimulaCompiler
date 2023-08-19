@@ -66,25 +66,6 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 	 */
 	private PrefixedBlockDeclaration(final VariableExpression blockPrefix,boolean isMainModule) {
 		super(null);
-//		this.lineNumber=Parse.prevToken.lineNumber;
-//		this.declarationKind=Declaration.Kind.PrefixedBlock;
-//		Util.ASSERT(blockPrefix != null,"blockPrefix == null");
-//		this.blockPrefix = blockPrefix;
-//		this.prefix = blockPrefix.identifier;
-//		this.isMainModule=isMainModule;
-//		if (Option.TRACE_PARSE)	Parse.TRACE("Parse PrefixedBlock");
-//		while (Declaration.parseDeclaration(declarationList)) Parse.accept(KeyWord.SEMICOLON);
-//		while (!Parse.accept(KeyWord.END)) {
-//			Statement stm = Statement.expectStatement();
-//			if (stm != null) statements.add(stm);
-//		}
-//		if(isMainModule)
-//		     modifyIdentifier(Global.sourceName);
-//		else modifyIdentifier("" + Global.sourceName + "_PBLK" + lineNumber);
-//		this.externalIdent = this.identifier;
-//		this.lastLineNumber = Global.sourceLineNumber;
-//		if (Option.TRACE_PARSE)	Util.TRACE("Line "+this.lineNumber+": PrefixedBlockDeclaration: "+this);
-//		Global.setScope(declaredIn);
 	}
 
 	// ***********************************************************************************************
@@ -105,7 +86,7 @@ public final class PrefixedBlockDeclaration extends ClassDeclaration {
 		block.prefix = blockPrefix.identifier;
 		block.isMainModule=isMainModule;
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse PrefixedBlock");
-		while (Declaration.parseDeclaration(block.declarationList)) Parse.accept(KeyWord.SEMICOLON);
+		while (Declaration.acceptDeclaration(block.declarationList)) Parse.accept(KeyWord.SEMICOLON);
 		while (!Parse.accept(KeyWord.END)) {
 			Statement stm = Statement.expectStatement();
 			if (stm != null) block.statements.add(stm);

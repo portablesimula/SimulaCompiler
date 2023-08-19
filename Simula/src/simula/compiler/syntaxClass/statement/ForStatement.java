@@ -170,7 +170,7 @@ public final class ForStatement extends Statement {
 			Parse.expect(KeyWord.ASSIGNREF);
 		assignmentOperator = Parse.prevToken;
 		do {
-			forList.add(parseForListElement());
+			forList.add(expectForListElement());
 		} while (Parse.accept(KeyWord.COMMA));
 		Parse.expect(KeyWord.DO);
 		Statement doStatement = Statement.expectStatement();
@@ -187,7 +187,7 @@ public final class ForStatement extends Statement {
 	 * Parse a for-list element.
 	 * @return the resulting ForListElement
 	 */
-	private ForListElement parseForListElement() {
+	private ForListElement expectForListElement() {
 		if (Option.TRACE_PARSE)
 			Parse.TRACE("Parse ForListElement");
 		Expression expr1 = Expression.expectExpression();

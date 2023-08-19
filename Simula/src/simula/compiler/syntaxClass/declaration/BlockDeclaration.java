@@ -63,7 +63,7 @@ permits ClassDeclaration, ProcedureDeclaration, MaybeBlockDeclaration {
 	/**
 	 * Create a new BlockDeclaration with the given identifier.
 	 * <p>
-	 * Used by parseMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
+	 * Used by expectMaybeBlock, i.e. CompoundStatement, SubBlock or PrefixedBlock.
 	 * @param identifier the given identifier
 	 */
 	protected BlockDeclaration(String identifier) {

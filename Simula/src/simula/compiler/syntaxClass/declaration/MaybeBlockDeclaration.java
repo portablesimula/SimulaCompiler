@@ -47,7 +47,7 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	// ***********************************************************************************************
 	// *** CONSTRUCTORS
 	// ***********************************************************************************************
-	// Used by parseMaybeBlock, i.e. CompoundStatement or SubBlock.
+	// Used by expectMaybeBlock, i.e. CompoundStatement or SubBlock.
 	/**
 	 * Create a new MaybeBlockDeclaration.
 	 * 
@@ -71,12 +71,12 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 		MaybeBlockDeclaration module = new MaybeBlockDeclaration(Global.sourceName);
 		module.isMainModule = true;
 		module.declarationKind = Declaration.Kind.SimulaProgram;
-		module.parseMaybeBlock(lineNumber);
+		module.expectMaybeBlock(lineNumber);
 		return (module);
 	}
 
 	// ***********************************************************************************************
-	// *** Parsing: parseMaybeBlock
+	// *** Parsing: expectMaybeBlock
 	// ***********************************************************************************************
 	/**
 	 * Parse CompoundStatement or SubBlock.
@@ -87,18 +87,19 @@ public final class MaybeBlockDeclaration extends BlockDeclaration {
 	 * Block = CompoundStatement | SubBlock
 	 * 
 	 *	 CompoundStatement = BEGIN [ { Statement ; } ] END
+	 *
 	 * 	 SubBlock = BEGIN [ { Declaration ; } ]  [ { Statement ; } ] END
 	 *
 	 * </pre>
-	 * 
+	 * Pre-condition: BEGIN is already read.
 	 * @param line source line number
 	 * @return a BlockStatement
 	 */
-	public BlockStatement parseMaybeBlock(int line) {
+	public BlockStatement expectMaybeBlock(int line) {
 		this.lineNumber=line;
 		if (Option.TRACE_PARSE)	Parse.TRACE("Parse MayBeBlock");
-		while (Declaration.parseDeclaration(declarationList))
-			Parse.accept(KeyWord.SEMICOLON);
+		while (Declaration.acceptDeclaration(declarationList))
+			Parse.expect(KeyWord.SEMICOLON);
 		while (!Parse.accept(KeyWord.END)) {
 			Statement stm = Statement.expectStatement();
 			if (stm != null) statements.add(stm);

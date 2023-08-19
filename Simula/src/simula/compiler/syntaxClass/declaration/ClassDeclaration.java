@@ -387,7 +387,7 @@ permits StandardClass, PrefixedBlockDeclaration {
 			Statement stm;
 			if (Option.TRACE_PARSE)
 				Parse.TRACE("Parse Block");
-			while (Declaration.parseDeclaration(cls.declarationList)) {
+			while (Declaration.acceptDeclaration(cls.declarationList)) {
 				Parse.accept(KeyWord.SEMICOLON);
 			}
 			boolean seen = false;

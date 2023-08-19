@@ -62,6 +62,10 @@ public abstract class RTS_RTObject {
 	 */
 	public enum OperationalState {
 		/**
+		 * The object is attached
+		 */
+		attached,
+		/**
 		 * The object is detached
 		 */
 		detached,
@@ -69,10 +73,6 @@ public abstract class RTS_RTObject {
 		 * The object is resumed
 		 */
 		resumed,
-		/**
-		 * The object is attached
-		 */
-		attached,
 		/**
 		 * The object is terminated
 		 */

@@ -196,9 +196,8 @@ public final class Parse {
 	 * @return the identifier or null
 	 */
 	public static String acceptIdentifier() {
-		Token token = Parse.currentToken;
 		if (Parse.accept(KeyWord.IDENTIFIER))
-			return (token.getIdentifier().toString());
+			return (Parse.prevToken.getIdentifier());
 		return (null);
 	}
 
@@ -211,7 +210,7 @@ public final class Parse {
 	public static String expectIdentifier() {
 		Token token = Parse.currentToken;
 		if (acceptIdentifier() != null)
-			return (token.getIdentifier().toString());
+			return (token.getIdentifier());
 		Util.error("Got symbol " + token + " while expecting an Identifier");
 		return (null);
 	}  

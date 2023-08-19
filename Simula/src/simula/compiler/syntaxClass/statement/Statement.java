@@ -103,7 +103,7 @@ public abstract sealed class Statement extends SyntaxClass permits InnerStatemen
 		if (Option.TRACE_PARSE)
 			Util.TRACE("Statement.doUnlabeledStatement: lineNumber="+lineNumber+", current=" + Parse.currentToken	+ ", prev=" + Parse.prevToken);
 		switch(Parse.currentToken.getKeyWord()) {
-		    case BEGIN: Parse.nextToken(); return (new MaybeBlockDeclaration(null).parseMaybeBlock(lineNumber));
+		    case BEGIN: Parse.nextToken(); return (new MaybeBlockDeclaration(null).expectMaybeBlock(lineNumber));
 		    case IF:    Parse.nextToken(); return (new ConditionalStatement(lineNumber));
 		    case GOTO:  Parse.nextToken(); return (new GotoStatement(lineNumber));
 		    case GO:    Parse.nextToken(); 

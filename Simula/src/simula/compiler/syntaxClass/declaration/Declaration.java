@@ -240,7 +240,7 @@ permits DeclarationScope, ExternalDeclaration, Parameter, SimpleVariableDeclarat
 	 * @param declarationList the given declaration list
 	 * @return true if a declaration was found, false otherwise
 	 */
-	protected static boolean parseDeclaration(final DeclarationList declarationList) {
+	protected static boolean acceptDeclaration(final DeclarationList declarationList) {
 		if (Option.TRACE_PARSE)
 			Parse.TRACE("Parse Declaration");
 		String prefix = Parse.acceptIdentifier();

@@ -265,7 +265,7 @@ permits StandardProcedure, SwitchDeclaration {
 			// BEGIN declaration { ; declaration } statement { ; statement } END
 			Statement stm;
 			if (Option.TRACE_PARSE)	Parse.TRACE("Parse Procedure Block");
-			while (Declaration.parseDeclaration(proc.declarationList)) {
+			while (Declaration.acceptDeclaration(proc.declarationList)) {
 				Parse.accept(KeyWord.SEMICOLON);
 			}
 			Vector<Statement> stmList = proc.statements;
