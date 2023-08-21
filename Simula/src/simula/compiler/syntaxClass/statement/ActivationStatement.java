@@ -161,10 +161,10 @@ public final class ActivationStatement extends Statement {
 		if (object2 != null)
 			object2 = TypeConversion.testAndCreate(refProcess, object2);
 		switch (code) {
-		    case at:return (edActivateAt());
-		    case delay:	return (edActivateDelay());
-		    case before:return (edActivateBefore());
-		    case after:return (edActivateAfter());
+		    case at:     return (edActivateAt());
+		    case delay:	 return (edActivateDelay());
+		    case before: return (edActivateBefore());
+		    case after:  return (edActivateAfter());
 		    case direct:
 			default: return (edActivateDirect());
 		}

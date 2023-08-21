@@ -96,7 +96,7 @@ public final class RunCompilerTest {
 		// String name="/simulaRTS_Examples/Sect-2-3-SubClass.sim";
 		// String name="/simulaRTS_Examples/Sect-2-4-PrefixedBlock.sim";
 		// String name="/simulaRTS_Examples/Sect-2-5-Procedure.sim";
-		// String name="/simulaRTS_Examples/Sect-2-6-Switch.sim";
+		 String name="/simulaRTS_Examples/Sect-2-6-Switch.sim";
 		// String name="/simulaRTS_Examples/Sect-3-3-Text.sim";
 		// String name="/simulaRTS_Examples/Sect-4-1-JensensDevice.sim";
 		// String name="/simulaRTS_Examples/Sect-4-2-ArrayParameter.sim";
@@ -126,7 +126,7 @@ public final class RunCompilerTest {
 		// String name="/design/SwitchDeclaration.sim";
 		// String name="/design/SwitchStatement.sim";
 		// String name="/design/SyntaxTree.sim";
-		 String name="/design/VirtualSwitch.sim";
+		// String name="/design/VirtualSwitch.sim";
 		// String name="/design/FormalSwitch.sim";
 		// String name="/design/NormalSwitch.sim";
 		// String name="/design/ForStatement.sim";
@@ -291,7 +291,7 @@ public final class RunCompilerTest {
 			
 			
 			Global.packetName="simulaTestPrograms";
-//			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
+			Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestPrograms
 			Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
 //			Option.outputDir=new File("C:/GitHub/SimulaCompiler/Simula/src/simulaTestPrograms/samples/simula/bin");
 			Global.outputDir=new File("C:/GitHub/SimulaCompiler/TestBatch/src/simulaTestPrograms/samples/simula/bin");
