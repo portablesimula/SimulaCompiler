@@ -25,15 +25,10 @@ class Testmatlib ;
    boolean  found_error;
    boolean verbose=false;
 
-   procedure Error (t) ;  value t ;  text t ;
+   procedure report (t) ;  value t ;  text t ;
       begin
-      outimage ;
-      outtext ("*** Error in the ") ;
-      outtext (t) ;
-      outtext (" routine") ;
-      outimage ;
-      found_error := true
-      end Error ;
+	      err("*** Error in the " & t & " routine");
+      end report ;
 
    boolean procedure realdiff (x, y) ;  real x, y ;
       begin
@@ -46,8 +41,7 @@ class Testmatlib ;
          outreal (diff, 15, 22) ;
          outimage ;
          realdiff := true
-         end
-
+      end;
    end of procedure realdiff ;
 
 
@@ -87,7 +81,7 @@ class Testmatlib ;
       if realdiff (x, y) or realdiff (y, z)
       then
          begin
-         Error ("Rpower") ;
+         report ("Rpower") ;
          outtext ("  base=") ;
          outreal (r, 15, 22) ;
          outtext ("  exp=") ;
@@ -115,7 +109,7 @@ class Testmatlib ;
       if realdiff (x, y) or realdiff (y, z)
       then
          begin
-         Error ("Ipower") ;
+         report ("Ipower") ;
          outtext ("  base=") ;
          outreal (r, 15, 22) ;
          outtext ("  exp=") ;
@@ -141,7 +135,7 @@ class Testmatlib ;
       if realdiff (a, x)
       then
          begin
-         Error ("sqrt") ;
+         report ("sqrt") ;
          outtext ("   x=") ;
          outreal (x, 15, 22) ;
          outtext (" SQRT (x)**2=") ;
@@ -162,7 +156,7 @@ class Testmatlib ;
       if realdiff (a, b)
       then
          begin
-         Error ("ln") ;
+         report ("ln") ;
          outtext ("   x, y=") ;
          outreal (x, 15, 22) ;
          outreal (y, 15, 22) ;
@@ -187,7 +181,7 @@ class Testmatlib ;
       if  realdiff (a, b)
       then
          begin
-         Error ("exp") ;
+         report ("exp") ;
          outtext ("   x, y=") ;
          outreal (x, 15, 22) ;
          outreal (y, 15, 22) ;
@@ -212,7 +206,7 @@ class Testmatlib ;
       if realdiff (a, b) or realdiff (b, x)
       then
          begin
-         Error ("ln or exp") ;
+         report ("ln or exp") ;
          outtext ("   x=") ;
          outreal (x, 15, 22) ;
          outimage ;
@@ -236,7 +230,7 @@ class Testmatlib ;
       if realdiff (a, 1)
       then
          begin
-         Error ("sin or cos") ;
+         report ("sin or cos") ;
          outtext ("   x=") ;
          outreal (x, 15, 22) ;
          outtext ("   sin (x)**2+ cos (x)**2=") ;
@@ -256,7 +250,7 @@ class Testmatlib ;
       if realdiff (a, x)
       then
          begin
-         Error ("arctan") ;
+         report ("arctan") ;
          outtext ("   x=") ;
          outreal (x, 15, 22) ;
          outtext ("   arctan (sin (x)/cos (x))=") ;
@@ -275,7 +269,7 @@ class Testmatlib ;
          b:= addepsilon(subepsilon(x));
          if realdiff(a,x) or realdiff (b,x) then
          begin
-            error("Add/sub-epsilon");
+            report("Add/sub-epsilon");
             outtext("   x=");
             outreal(x,15,22); outimage;
          end;

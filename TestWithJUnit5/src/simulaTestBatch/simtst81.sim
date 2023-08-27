@@ -22,7 +22,7 @@ SimulaTest(81,"--- Test the value of close.") begin
    procedure report(line,t,abort); integer line; text t; boolean abort;
    begin err("Failed");
          outimage; outtext("Line "); outint(line,0); outtext(": *** report: "); outtext(t); outimage;
-         if abort then error("Abort requested");
+         if abort then err("Abort requested");
    end;
 
    xf:- new Infile(anyIntypeFile);

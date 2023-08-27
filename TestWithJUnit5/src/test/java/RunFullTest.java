@@ -15,10 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -40,141 +40,33 @@ import org.junit.jupiter.api.MethodOrderer;
  */
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public final class RunFullTest {
-//	static {
-//        System.out.println("Static Initialization block is called");
-//        System.setProperty("junit.platform.output.capture.stdout","true");
-//        System.setProperty("junit.platform.output.capture.stderr","true");
-//    }
+	private static final File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
+	private static final File userDir=new File("C:/GitHub/SimulaCompiler/TestWithJUnit5");
+	private static final String testBatchDir = userDir+"/src/simulaTestBatch/bin/";
 
-	static File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
-	static File userDir=new File("C:/GitHub/SimulaCompiler/TestWithJUnit5");
 
     @BeforeAll                                         
     static void init() {
 		
-		String fileName = userDir+"/src/simulaTestBatch/bin/";
-		list(fileName);
-		deleteFiles(fileName);
-		list(fileName);
+//		list(testBatchDir);
+		deleteFiles(testBatchDir);
+//		list(testBatchDir);
 		
 		initCompilerOptions();
 		initRuntimerOptions();
+
     }
     
-    static void initCompilerOptions() {
+    @AfterAll
+    static void postActions() {
 
-		// Set options and tracing.
-		Option.INLINE_TESTING=true;
-		Option.SPORT=true;
-//		Option.verbose = true;
-		Option.WARNINGS=false;
-//		Option.DEBUGGING=true;
-//		Option.EXTENSIONS=false;
-		Option.CaseSensitive=true;
-
-		// Overall TRACING Options
-//		Option.TRACING=true;
-
-		// Scanner Trace Options
-//		Option.TRACE_SCAN=true;
-//		Option.TRACE_COMMENTS=true;
-
-		// Parser Trace Options
-//		Option.TRACE_PARSE=true;
-//		Option.PRINT_SYNTAX_TREE=true;
-//		Option.TRACE_ATTRIBUTE_OUTPUT=true;
-//		Option.TRACE_ATTRIBUTE_INPUT=true;
-
-		// Checker Trace Options
-//		Option.TRACE_FIND_MEANING=4;
-//		Option.TRACE_CHECKER=true;
-//		Option.TRACE_CHECKER_OUTPUT=true;
-
-		// Coder Trace Options
-//		Option.TRACE_CODING=true;
-		Option.GNERATE_LINE_CALLS=true;
-
-////		File userDir=new File("C:/GitHub/SimulaCompiler/Simula");
-//		File simulaDir=new File("C:/GitHub/SimulaCompiler/Simula");
-//		File userDir=new File("C:/GitHub/SimulaCompiler/TestBatch");
-		
-		Global.packetName="simulaTestBatch";
-//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
-		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
-//		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
-		
-    }
-    
-    static void initRuntimerOptions() {
-		// Set RunTime Options and tracing.
-//		RTOption.VERBOSE = true;
-//		RTOption.USE_CONSOLE=true;
-//		RTOption.BLOCK_TRACING = true;
-//		RTOption.GOTO_TRACING = true;
-//		RTOption.QPS_TRACING = true;
-//		RTOption.SML_TRACING = true;
-//		Option.RUNTIME_USER_DIR = "C:/GitHub/SimulaCompiler/TestBatch/";
+//		list(testBatchDir);
+		deleteFiles(testBatchDir);
+//		list(testBatchDir);
+    	
     }
 
-    
-    void doCompile(String name) {
-		String fileName = userDir+"/src/"+Global.packetName+"/"+name;
-//		Option.RUNTIME_USER_DIR=new File(fileName).getParent();
-//		System.out.println("RUN: "+fileName);
-		SimulaCompiler compiler = new SimulaCompiler(fileName);
-		assertDoesNotThrow( () -> compiler.doCompile() );
-    }
-
-	
-	// ***************************************************************
-	// *** DELETE FILES
-	// ***************************************************************
-	private static void deleteFiles(final String dirName) {
-		try { File tmpClass = new File(dirName);
-			  File[] elt = tmpClass.listFiles();
-			  if(elt==null) return; 
-			  for (File f : elt) {
-				  if(f.isDirectory()) deleteFiles(f.getPath());
-				  f.delete();
-			  }
-		} catch (Exception e) { e.printStackTrace(); }
-	}
-
-	// ***************************************************************
-	// *** LIST FILES
-	// ***************************************************************
-	private static void list(final String dirName) { list(new File(dirName)); }
-	private static void list(final File dir) {
-		try { System.out.println("------------  LIST "+dir+"  ------------");
-			  list("",dir);
-		} catch (Exception e) { e.printStackTrace(); }
-	}
-	
-	private static void list(String indent,final File dir) {
-		try {
-			//System.out.println("tmpClass: "+dir);
-			File[] elt = dir.listFiles();
-			if(elt==null || elt.length==0) {
-				System.out.println("Empty Directory: "+dir);
-				return; 
-			}
-			System.out.println("Elements: "+elt.length);
-			for (File f : elt) {
-				System.out.println(indent+"- "+getModifiedTime(f)+"  "+f);
-				if(f.isDirectory()) list(indent+"   ",f);
-			}
-		} catch (Exception e) { e.printStackTrace(); }
-	}
-
-	private static String getModifiedTime(File file) {
-		try { Path path = Paths.get(file.toString());
-			  BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
-			  return(attr.lastModifiedTime().toString().substring(0,19).replace('T',' '));
-		} catch (IOException e) { e.printStackTrace(); }
-		return(null);
-	}
-
-
+ 
     
 	@Test @DisplayName("Precompile 0: SimulaTest.sim") void testPreSimulaTest() { doCompile("SimulaTest.sim"); }
 
@@ -187,7 +79,7 @@ public final class RunFullTest {
 	@Test @DisplayName("Run simtst007.sim - Test Mathematical Library") void testSimtst07() { doCompile("simtst07.sim"); }
 	@Test @DisplayName("Run simtst008.sim - Test Scope of Variables.") void testSimtst08() { doCompile("simtst08.sim"); }
 	@Test @DisplayName("Run simtst009.sim - Test relation operator and some Funtions") void testSimtst09() { doCompile("simtst09.sim"); }
-	@Test @DisplayName("Run simtst030.sim - Test Evaluation of Text-Constants") void testSimtst10() { doCompile("simtst10.sim"); }
+	@Test @DisplayName("Run simtst010.sim - Test Evaluation of Text-Constants") void testSimtst10() { doCompile("simtst10.sim"); }
 
 	@Test @DisplayName("Run simtst011.sim - Text Attributes constant, start, length, pos and main") void testSimtst11() { doCompile("simtst11.sim"); }
 	@Test @DisplayName("Run simtst012.sim - Text value and reference relations.") void testSimtst12() { doCompile("simtst12.sim"); }
@@ -327,7 +219,7 @@ public final class RunFullTest {
 	@Test @DisplayName("Run simtst128.sim - Standard Procedure edit and edfix") void testSimtst128() { doCompile("simtst128.sim"); }
 	@Test @DisplayName("Precompile Precompiled129.sim for Simtst 129.") void testPre129() { doCompile("Precompiled129.sim"); }
 	@Test @DisplayName("Run simtst129.sim - Switch in precompiled class") void testSimtst129() { doCompile("simtst129.sim"); }
-	@Test @DisplayName("Run simtst112.sim - Class SimLib, a set of utility procedures from DEC Handbook.") void testSimtst130() { doCompile("simtst130.sim"); }
+	@Test @DisplayName("Run simtst130.sim - Class SimLib, a set of utility procedures from DEC Handbook.") void testSimtst130() { doCompile("simtst130.sim"); }
 
 	@Test @DisplayName("Run simtst131.sim - Catching Errors") void testSimtst131() { doCompile("simtst131.sim"); }
 	@Test @DisplayName("Run simtst132.sim - ERR: SPORT Options") void testSimtst132() { doCompile("simtst132.sim"); }
@@ -350,5 +242,126 @@ public final class RunFullTest {
 	@Test @DisplayName("Run simerr07.sim - Wrong number of paramerters to virtual procedure") void testSimerr07() { doCompile("simerr07.sim"); }
 	@Test @DisplayName("Run simerr08.sim - Illegal assignment. Name parameter is not a variable") void testSimerr08() { doCompile("simerr08.sim"); }
 	@Test @DisplayName("Run simerr09.sim - Read/write access on DirectFile and DirectByteFile") void testSimerr09() { doCompile("simerr09.sim"); }
+
+	
+	   
+	// ***************************************************************
+	// *** INIT COMPILER OPTIONS
+	// ***************************************************************
+	static void initCompilerOptions() {
+
+		// Set options and tracing.
+		Option.INLINE_TESTING=true;
+		Option.SPORT=true;
+//		Option.verbose = true;
+		Option.WARNINGS=false;
+//		Option.DEBUGGING=true;
+//		Option.EXTENSIONS=false;
+		Option.CaseSensitive=true;
+
+		// Overall TRACING Options
+//		Option.TRACING=true;
+
+		// Scanner Trace Options
+//		Option.TRACE_SCAN=true;
+//		Option.TRACE_COMMENTS=true;
+
+		// Parser Trace Options
+//		Option.TRACE_PARSE=true;
+//		Option.PRINT_SYNTAX_TREE=true;
+//		Option.TRACE_ATTRIBUTE_OUTPUT=true;
+//		Option.TRACE_ATTRIBUTE_INPUT=true;
+
+		// Checker Trace Options
+//		Option.TRACE_FIND_MEANING=4;
+//		Option.TRACE_CHECKER=true;
+//		Option.TRACE_CHECKER_OUTPUT=true;
+
+		// Coder Trace Options
+//		Option.TRACE_CODING=true;
+		Option.GNERATE_LINE_CALLS=true;
+
+		Global.packetName="simulaTestBatch";
+//		Option.keepJava=userDir; // Generated .java Source is then found in Eclipse Package simulaTestBatch
+		Global.simulaRtsLib=new File(simulaDir,"bin"); // To use Eclipse Project's simula.runtime
+//		Global.extLib="C:/GitHub/SimulaCompiler/Simula/src/simulaTestBatch/sim/bin";
+
+	}
+
+	// ***************************************************************
+	// *** INIT RUNTIME OPTIONS
+	// ***************************************************************
+	static void initRuntimerOptions() {
+		// Set RunTime Options and tracing.
+//		RTOption.VERBOSE = true;
+//		RTOption.USE_CONSOLE=true;
+//		RTOption.BLOCK_TRACING = true;
+//		RTOption.GOTO_TRACING = true;
+//		RTOption.QPS_TRACING = true;
+//		RTOption.SML_TRACING = true;
+//		Option.RUNTIME_USER_DIR = "C:/GitHub/SimulaCompiler/TestBatch/";
+	}
+
+
+	// ***************************************************************
+	// *** CALL SIMULA COMPILER
+	// ***************************************************************
+	void doCompile(String name) {
+		String fileName = userDir+"/src/"+Global.packetName+"/"+name;
+//		Option.RUNTIME_USER_DIR=new File(fileName).getParent();
+//		System.out.println("RUN: "+fileName);
+		SimulaCompiler compiler = new SimulaCompiler(fileName);
+		assertDoesNotThrow( () -> compiler.doCompile() );
+	}
+
+
+	// ***************************************************************
+	// *** DELETE FILES
+	// ***************************************************************
+	private static void deleteFiles(final String dirName) {
+		try { File tmpClass = new File(dirName);
+		File[] elt = tmpClass.listFiles();
+		if(elt==null) return; 
+		for (File f : elt) {
+			if(f.isDirectory()) deleteFiles(f.getPath());
+			f.delete();
+		}
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	// ***************************************************************
+	// *** LIST FILES
+	// ***************************************************************
+	private static void list(final String dirName) { list(new File(dirName)); }
+	private static void list(final File dir) {
+		try { System.out.println("------------  LIST "+dir+"  ------------");
+		list("",dir);
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	private static void list(String indent,final File dir) {
+		try {
+			//System.out.println("tmpClass: "+dir);
+			File[] elt = dir.listFiles();
+			if(elt==null || elt.length==0) {
+				System.out.println("Empty Directory: "+dir);
+				return; 
+			}
+			System.out.println("Elements: "+elt.length);
+			for (File f : elt) {
+				System.out.println(indent+"- "+getModifiedTime(f)+"  "+f);
+				if(f.isDirectory()) list(indent+"   ",f);
+			}
+		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	private static String getModifiedTime(File file) {
+		try { Path path = Paths.get(file.toString());
+		BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
+		return(attr.lastModifiedTime().toString().substring(0,19).replace('T',' '));
+		} catch (IOException e) { e.printStackTrace(); }
+		return(null);
+	}
+
 
 }

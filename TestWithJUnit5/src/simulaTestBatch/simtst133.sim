@@ -58,7 +58,7 @@ SimulaTest(133,"--- Test infile reading with inimage and inrecord.") begin
 
          fil :- new Infile(fileName);
          if not fil.open(blanks(7)) then
-                error("Can't open Infile: " & fileName);
+                err("Can't open Infile: " & fileName);
          trace(inrecord);
          trace(inrecord);
          trace(inimage);

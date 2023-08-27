@@ -23,6 +23,7 @@ begin
 	
 	if noMessage then else begin
 	if found_error then begin
+		outtext ("--- " & edit(nFailed) & " ERROR(S) FOUND IN TEST"); outint(n,4); outtext("  "); outtext(title); outimage;
 		error("Test sample has " & edit(nFailed) & " error(s)");
 	end else begin
 		outtext ("--- NO ERRORS FOUND IN TEST"); outint(n,4); outtext("  "); outtext(title); -- outimage;

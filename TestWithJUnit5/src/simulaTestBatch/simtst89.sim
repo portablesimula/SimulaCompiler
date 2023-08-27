@@ -20,9 +20,9 @@ SimulaTest(89,"--- Test Inbytefile and Outbytefile.") begin
       
       
       inpt:-new Inbytefile(inptFileName);
-      if not inpt.open then error("Can't open " & inptFileName);
+      if not inpt.open then err("Can't open " & inptFileName);
       oupt:-new Outbytefile(ouptFileName);
-      if not oupt.open then error("Can't open " & ouptFileName);
+      if not oupt.open then err("Can't open " & ouptFileName);
 
       inpt.close; inpt.open;
 %     for b:=inpt.inbyte while b <> 26 do oupt.outbyte(b);
@@ -35,8 +35,8 @@ SimulaTest(89,"--- Test Inbytefile and Outbytefile.") begin
       inpt.close; oupt.close;
       
       inoupt:-new Inbytefile(oupt.filename); oupt:-none;
-      if not inpt.open then error("Can't re-open " & inpt.filename);
-      if not inoupt.open then error("Can't re-open " & inoupt.filename);
+      if not inpt.open then err("Can't re-open " & inpt.filename);
+      if not inoupt.open then err("Can't re-open " & inoupt.filename);
       b:=inpt.inbyte; bb:=inoupt.inbyte;
       while not inpt.endfile do begin
             if not b=bb then err("The files differ");

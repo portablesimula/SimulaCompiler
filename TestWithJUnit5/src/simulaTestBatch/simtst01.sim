@@ -13,32 +13,32 @@ external class SimulaTest;
 
 SimulaTest(1,"--- Simple test of conditional statements") begin
 
-if true then else error("*** error: (1)");
-if false then error("*** error: (2)");
-if false then error("*** error: (3)") else;
+if true then else err("*** error: (1)");
+if false then err("*** error: (2)");
+if false then err("*** error: (3)") else;
 
 if true then begin
    if true then begin
       if true then begin
-         if false then error("*** error: (4)");
+         if false then err("*** error: (4)");
       end
-      else error("*** error: (5)");
+      else err("*** error: (5)");
    end
-   else error("*** error: (6)");
+   else err("*** error: (6)");
 end
 else 
-   error("*** error: (7)");
+   err("*** error: (7)");
 ;
 
-     if false then error("*** error: (8)")
+     if false then err("*** error: (8)")
 else if true then begin
-        if false then error("*** error: (9)");
+        if false then err("*** error: (9)");
      end
-else error("*** error: (10)");
+else err("*** error: (10)");
 ;
 
 if if if true then false else true then true else false then 
-   error("*** error: (11)");
+   err("*** error: (11)");
 ;
 
 if if true then
@@ -46,8 +46,7 @@ if if true then
    else
       if false then true else false
 then
-else error("*** error: (12)");
+else err("*** error: (12)");
 ;
 
-error("JUST FOR TEST");
 end of program;

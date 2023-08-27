@@ -39,7 +39,7 @@ SimulaTest(66,"--- Test corutines and two infiles which read from the same file.
       begin outtext("The file does not exist,");
             outtext("or cannot be opened as infile.");  outimage;
             
-            error("Can't open infile: " & navn);
+            err("Can't open infile: " & navn);
       end;
 
       trace("RETT FØR FØRSTE DETACH I INFILE: ");

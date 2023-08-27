@@ -25,7 +25,7 @@ SimulaTest(80,"--- Test the attribute 'isopen' of class file.") begin
    f1:- new Infile(fileName);                  !**** NOTE 1 ****;
    f2:- new Infile(fileName);                  !**** NOTE 1 ****;
 
-   if not f1 qua Infile.open(blanks(100)) then error("Can't open file: " & fileName);
+   if not f1 qua Infile.open(blanks(100)) then err("Can't open file: " & fileName);
    if not f2 qua Infile.open(blanks(100)) then begin
       outtext("WARNING: cannot open Infile(f2)"); outimage end;
 

@@ -5,7 +5,7 @@ SimulaTest(99,"--- Test mod, rem, min, max.") begin
        integer i,j;  integer array modres,remres(-4:4,-3:3);
        real x,y; long real lx,ly; text t,tx,ty,tlx,tly;
 
-       procedure error(func,i,j,res); text func; integer i,j,res;
+       procedure report(func,i,j,res); text func; integer i,j,res;
        begin outtext("*** error: "); outtext(func);
              outchar('('); outint(i,2); outchar(','); outint(j,2);
              outtext(") evaluates to "); outint(res,2);
@@ -28,8 +28,8 @@ SimulaTest(99,"--- Test mod, rem, min, max.") begin
 
        for i:=4,-4 do
         for j:=3,-3 do begin
-           if mod(i,j)<>modres(i,j) then error("mod",i,j,mod(i,j));
-           if rem(i,j)<>remres(i,j) then error("rem",i,j,rem(i,j));
+           if mod(i,j)<>modres(i,j) then report("mod",i,j,mod(i,j));
+           if rem(i,j)<>remres(i,j) then report("rem",i,j,rem(i,j));
        end;
 
        x:=minreal+1; y:=maxreal-1; lx:=minlongreal+1; ly:=maxlongreal-1;

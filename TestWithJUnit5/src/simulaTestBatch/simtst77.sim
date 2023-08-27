@@ -49,7 +49,7 @@ SimulaTest(77,"--- Test infile using two infile objects reading from the same ex
 
          fil :- new Infile(fileName);
          if not fil.open(blanks(30)) then
-                error("Can't open Infile: " & fileName);
+                err("Can't open Infile: " & fileName);
          fil.inrecord;
 
          while not fil.endfile do
